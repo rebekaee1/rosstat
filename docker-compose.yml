@@ -1,21 +1,75 @@
-version: '3.8'
-
 services:
-  web:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: rustats
+      POSTGRES_USER: rustats
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-rustats_dev}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rustats"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      RUSTATS_DATABASE_URL: postgresql+asyncpg://rustats:${POSTGRES_PASSWORD:-rustats_dev}@postgres:5432/rustats
+      RUSTATS_REDIS_URL: redis://redis:6379/0
+      RUSTATS_ROSSTAT_CA_CERT: /app/certs/russiantrustedca2024.pem
+      RUSTATS_SCHEDULER_ENABLED: "true"
+      RUSTATS_DEBUG: "false"
+      TZ: Europe/Moscow
+    volumes:
+      - ./output:/app/data:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "8080:80"
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 10s
-    environment:
-      - TZ=Europe/Moscow
 
-# For development with hot reload:
-# docker-compose -f docker-compose.dev.yml up
+volumes:
+  postgres_data:

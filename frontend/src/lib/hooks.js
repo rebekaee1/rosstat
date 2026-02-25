@@ -1,0 +1,71 @@
+import { useQuery } from '@tanstack/react-query';
+import {
+  fetchIndicators,
+  fetchIndicator,
+  fetchIndicatorData,
+  fetchIndicatorStats,
+  fetchForecast,
+  fetchInflation,
+  fetchSystemStatus,
+} from './api';
+
+export function useIndicators() {
+  return useQuery({
+    queryKey: ['indicators'],
+    queryFn: fetchIndicators,
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+export function useIndicator(code) {
+  return useQuery({
+    queryKey: ['indicator', code],
+    queryFn: () => fetchIndicator(code),
+    enabled: !!code,
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+export function useIndicatorData(code, params) {
+  return useQuery({
+    queryKey: ['indicator-data', code, params],
+    queryFn: () => fetchIndicatorData(code, params),
+    enabled: !!code,
+    staleTime: 60 * 60 * 1000,
+  });
+}
+
+export function useIndicatorStats(code) {
+  return useQuery({
+    queryKey: ['indicator-stats', code],
+    queryFn: () => fetchIndicatorStats(code),
+    enabled: !!code,
+    staleTime: 60 * 60 * 1000,
+  });
+}
+
+export function useForecast(code) {
+  return useQuery({
+    queryKey: ['forecast', code],
+    queryFn: () => fetchForecast(code),
+    enabled: !!code,
+    staleTime: 60 * 60 * 1000,
+  });
+}
+
+export function useInflation(code) {
+  return useQuery({
+    queryKey: ['inflation', code],
+    queryFn: () => fetchInflation(code),
+    enabled: !!code,
+    staleTime: 60 * 60 * 1000,
+  });
+}
+
+export function useSystemStatus() {
+  return useQuery({
+    queryKey: ['system-status'],
+    queryFn: fetchSystemStatus,
+    staleTime: 30 * 1000,
+  });
+}

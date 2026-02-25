@@ -1,89 +1,153 @@
-# RuStats - Экономические индикаторы России
+# RuStats — Аналитическая платформа экономических индикаторов России
 
-Демонстрационный проект для анализа и визуализации экономических показателей России.
+Enterprise-grade платформа для сбора, анализа и прогнозирования экономических индикаторов России на основе данных Росстата.
 
-## Стек технологий
+## Архитектура
 
-- **Frontend**: React 18 + Vite
-- **Графики**: Recharts
-- **Роутинг**: React Router v6
-- **Стили**: CSS Variables (темная тема)
-- **Контейнеризация**: Docker + Nginx
-- **Анализ**: Python + SARIMA
+```
+┌──────────────┐     ┌──────────────┐     ┌───────────┐
+│   Frontend   │────▶│   Backend    │────▶│ PostgreSQL│
+│  React 19    │     │   FastAPI    │     └───────────┘
+│  Tailwind    │     │              │     ┌───────────┐
+│  GSAP        │     │  APScheduler │────▶│   Redis   │
+│  TanStack Q  │     │  OLS Forecast│     └───────────┘
+└──────────────┘     └──────┬───────┘
+                            │
+                     ┌──────▼───────┐
+                     │   Росстат    │
+                     │  (daily ETL) │
+                     └──────────────┘
+```
+
+## Стек
+
+### Backend
+- **FastAPI** — async REST API
+- **PostgreSQL 16** + **SQLAlchemy 2** (asyncpg) — хранение данных
+- **Redis 7** — кеширование API-ответов
+- **APScheduler** — ежедневная загрузка данных из Росстата (06:00 MSK)
+- **OLS Multi-Window** (statsmodels) — прогнозирование временных рядов
+- **Alembic** — миграции БД
+
+### Frontend
+- **React 19** + **Vite 7** — SPA
+- **Tailwind CSS v4** — стилизация (dark editorial design system)
+- **GSAP 3** — анимации (fade-up, number counters, stagger)
+- **TanStack Query** — data fetching + кеширование
+- **Recharts** — интерактивные графики
+- **Lucide React** — иконки
+
+### Инфраструктура
+- **Docker Compose** — PostgreSQL, Redis, Backend, Frontend
+- **Nginx** — SPA + API proxy
+- **Russian Trusted CA** — SSL для Росстата
 
 ## Быстрый старт
 
-### Разработка
+### Docker Compose (рекомендуется)
 
 ```bash
-cd frontend
-npm install
-npm run dev
+cp .env.example .env
+# Отредактируй POSTGRES_PASSWORD в .env
+docker compose up -d --build
 ```
 
-Откройте http://localhost:5173
+**Всё остальное автоматически:**
+- `entrypoint.sh` применяет миграции (`alembic upgrade head`)
+- При пустой БД автоматически запускает seed (6 индикаторов + 419 точек ИПЦ + OLS-прогноз)
+- Запускает uvicorn
 
-### Production (Docker)
+Платформа будет доступна на `http://localhost`.
+
+### Ручной запуск ETL (опционально)
 
 ```bash
-# Сборка и запуск
-docker-compose up -d --build
-
-# Остановка
-docker-compose down
+docker compose exec backend python -c "
+import asyncio
+from app.tasks.scheduler import daily_update_job
+asyncio.run(daily_update_job())
+"
 ```
 
-Откройте http://localhost
+## API
+
+Base URL: `/api/v1`
+
+| Endpoint | Описание |
+|---|---|
+| `GET /indicators` | Список всех индикаторов |
+| `GET /indicators/{code}` | Детали индикатора |
+| `GET /indicators/{code}/data` | Исторические данные |
+| `GET /indicators/{code}/stats` | Статистика (min/max/avg) |
+| `GET /indicators/{code}/forecast` | Прогноз OLS (помесячный) |
+| `GET /indicators/{code}/inflation` | Кумулятивная 12-мес. инфляция + прогноз |
+| `GET /system/status` | Статус системы |
+| `GET /health` | Health check |
+
+Документация Swagger: `/api/docs`
+
+## Индикаторы
+
+| Код | Название | Статус |
+|---|---|---|
+| `cpi` | Индекс потребительских цен | Active |
+| `cpi-food` | ИПЦ — продовольственные товары | Active |
+| `cpi-nonfood` | ИПЦ — непродовольственные товары | Active |
+| `cpi-services` | ИПЦ — услуги | Active |
+| `unemployment` | Уровень безработицы | Planned |
+| `key-rate` | Ключевая ставка ЦБ РФ | Planned |
 
 ## Структура проекта
 
 ```
-росстат/
+rosstat/
+├── backend/
+│   ├── app/
+│   │   ├── api/            # FastAPI routes
+│   │   ├── core/           # Cache, deps
+│   │   ├── services/       # Fetcher, Parser, Forecaster
+│   │   ├── tasks/          # ETL Scheduler
+│   │   ├── config.py       # Settings (pydantic-settings)
+│   │   ├── database.py     # Async SQLAlchemy engine
+│   │   ├── models.py       # ORM models
+│   │   ├── schemas.py      # Pydantic schemas
+│   │   └── main.py         # FastAPI app
+│   ├── alembic/            # DB migrations
+│   ├── certs/              # Russian Trusted CA
+│   ├── seed_data.py        # Initial data seeder
+│   ├── requirements.txt
+│   └── Dockerfile
 ├── frontend/
 │   ├── src/
-│   │   ├── components/     # UI компоненты
-│   │   ├── pages/          # Страницы
-│   │   ├── data/           # JSON данные
-│   │   └── styles/         # Глобальные стили
-│   ├── Dockerfile
-│   └── nginx.conf
-├── output/                 # Исходные данные
+│   │   ├── components/     # Navbar, Chart, MetricCard, DataTable...
+│   │   ├── pages/          # Dashboard, IndicatorDetail
+│   │   └── lib/            # API client, hooks, formatters
+│   ├── nginx.conf
+│   └── Dockerfile
+├── output/                 # Legacy CSV for initial seed
 ├── docker-compose.yml
-└── README.md
+└── .env.example
 ```
 
-## Доступные индикаторы
+## Деплой
 
-| Индикатор | Статус | Данные |
-|-----------|--------|--------|
-| ИПЦ (Индекс потребительских цен) | ✅ Готов | 1991-2025, прогноз SARIMA |
-| Уровень безработицы | 🚧 В разработке | Заглушка |
-| Ключевая ставка ЦБ РФ | 🚧 В разработке | Заглушка |
-
-## Деплой на TimeWeb Cloud
-
-1. Соберите Docker образ:
 ```bash
-docker build -t rustats-demo ./frontend
+git clone <repo-url> && cd rosstat
+cp .env.example .env
+# Отредактируй POSTGRES_PASSWORD
+docker compose up -d --build
+# Готово. Миграции, seed, прогноз — всё автоматически.
 ```
 
-2. Загрузите образ в Docker Hub или TimeWeb Registry:
-```bash
-docker tag rustats-demo your-registry/rustats-demo:latest
-docker push your-registry/rustats-demo:latest
-```
+### Что автоматизировано
 
-3. Создайте контейнер в TimeWeb Cloud:
-   - Выберите "Создать контейнер"
-   - Укажите образ из реестра
-   - Настройте порт 80
-   - Добавьте домен/поддомен
-
-## Источники данных
-
-- [Росстат](https://rosstat.gov.ru) — Федеральная служба государственной статистики
-- [ЦБ РФ](https://cbr.ru) — Центральный банк Российской Федерации
-
-## Лицензия
-
-MIT
+| Процесс | Как |
+|---|---|
+| Миграции БД | `entrypoint.sh` → `alembic upgrade head` при каждом старте |
+| Первичный seed | `entrypoint.sh` → проверяет пустую БД → seed + forecast |
+| Ежедневная выгрузка Росстата | APScheduler cron 06:00 MSK |
+| Парсинг Excel | Автоматический в ETL |
+| Перетренировка OLS | Автоматическая при новых данных |
+| Инвалидация кэша | Автоматическая после обновления данных |
+| Рестарт при падении | `restart: unless-stopped` |
+| SSL для Росстата | Сертификат включён в Docker-образ |

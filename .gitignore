@@ -37,6 +37,7 @@ __pycache__/
 *.so
 .Python
 venv/
+.venv/
 ENV/
 
 # Temp files

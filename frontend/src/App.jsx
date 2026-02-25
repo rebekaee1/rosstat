@@ -1,24 +1,22 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Header, Footer } from './components';
-import { Home, IndicatorPage, StubIndicator } from './pages';
-import './styles/global.css';
+import Navbar from './components/Navbar';
+import NoiseOverlay from './components/NoiseOverlay';
+import Footer from './components/Footer';
+import Dashboard from './pages/Dashboard';
+import IndicatorDetail from './pages/IndicatorDetail';
 
-function App() {
+export default function App() {
   return (
     <Router>
-      <div className="app">
-        <Header />
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/indicator/cpi" element={<IndicatorPage />} />
-            <Route path="/indicator/:code" element={<StubIndicator />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
+      <NoiseOverlay />
+      <Navbar />
+      <main className="flex-1">
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/indicator/:code" element={<IndicatorDetail />} />
+        </Routes>
+      </main>
+      <Footer />
     </Router>
   );
 }
-
-export default App;
