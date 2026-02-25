@@ -60,19 +60,30 @@ async def run_etl_for_indicator(indicator_code: str):
                 await db.commit()
                 return
 
-            # 3. Upsert data (ON CONFLICT DO NOTHING for idempotency)
-            records_added = 0
+            # 3. Count existing, upsert, count again to detect new records
+            from sqlalchemy import func
+            count_before = (await db.execute(
+                select(func.count(IndicatorData.id))
+                .where(IndicatorData.indicator_id == indicator.id)
+            )).scalar() or 0
+
             for point in points:
                 stmt = pg_insert(IndicatorData).values(
                     indicator_id=indicator.id,
                     date=point.date,
                     value=point.value,
                 ).on_conflict_do_nothing(constraint="uq_indicator_date")
-                result = await db.execute(stmt)
-                if result.rowcount > 0:
-                    records_added += 1
+                await db.execute(stmt)
 
-            logger.info("Upserted %d new records for '%s'", records_added, indicator_code)
+            await db.flush()
+            count_after = (await db.execute(
+                select(func.count(IndicatorData.id))
+                .where(IndicatorData.indicator_id == indicator.id)
+            )).scalar() or 0
+
+            records_added = count_after - count_before
+            logger.info("Upserted %d new records for '%s' (total: %d)",
+                        records_added, indicator_code, count_after)
             fetch_log.records_added = records_added
 
             # 4. Retrain forecast if new data was added
