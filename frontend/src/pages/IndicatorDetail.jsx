@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import gsap from 'gsap';
-import { ArrowLeft, ExternalLink, Activity, Info, TrendingUp, TrendingDown, Database, Terminal } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Activity, Info, TrendingUp, TrendingDown, Database, Terminal, Download } from 'lucide-react';
 import {
-  useIndicator, useIndicatorData, useIndicatorStats, useInflation,
+  useIndicator, useIndicatorData, useIndicatorStats, useInflation, useForecast,
 } from '../lib/hooks';
 import { formatValue, formatDate, formatChange, cn } from '../lib/format';
 import CpiChart from '../components/CpiChart';
@@ -11,7 +11,6 @@ import ForecastTable from '../components/ForecastTable';
 import DataTable from '../components/DataTable';
 import { ChartSkeleton, SkeletonBox } from '../components/Skeleton';
 
-// Specialized telemetry typewriter effect card
 function TelemetryCard({ label, value, unit, change, meta, delay = 0 }) {
   const ref = useRef(null);
   const valRef = useRef(null);
@@ -92,11 +91,15 @@ export default function IndicatorDetail() {
   const { code } = useParams();
   const headerRef = useRef(null);
   const [showForecast, setShowForecast] = useState(true);
+  const [viewMode, setViewMode] = useState('inflation');
+  const [chartData, setChartData] = useState([]);
+  const [currentRange, setCurrentRange] = useState('5y');
 
   const { data: indicator, isLoading: loadingInd } = useIndicator(code);
   const { data: dataResp, isLoading: loadingData } = useIndicatorData(code);
   const { data: stats } = useIndicatorStats(code);
   const { data: inflationResp, isLoading: loadingInflation } = useInflation(code);
+  const { data: forecastResp } = useForecast(code);
 
   useEffect(() => {
     const els = headerRef.current?.querySelectorAll('[data-animate]');
@@ -109,6 +112,25 @@ export default function IndicatorDetail() {
   }, []);
 
   const dataPoints = dataResp?.data || [];
+
+  const handleChartData = useCallback((data) => {
+    setChartData(data);
+  }, []);
+
+  const handleRangeChange = useCallback((range) => {
+    setCurrentRange(range);
+  }, []);
+
+  const handleDownloadExcel = useCallback(async () => {
+    const { downloadExcel } = await import('../lib/excel.js');
+    downloadExcel(chartData, viewMode, code, currentRange);
+  }, [chartData, viewMode, code, currentRange]);
+
+  const chartLoading = viewMode === 'inflation' ? loadingInflation : loadingData;
+
+  const hasForecastData = viewMode === 'inflation'
+    ? inflationResp?.forecast?.length > 0
+    : forecastResp?.forecast?.values?.length > 0;
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 pt-32 pb-24">
@@ -153,7 +175,6 @@ export default function IndicatorDetail() {
         )}
       </div>
 
-      {/* Telemetry Cards - replacing standard MetricCards with premium ones */}
       <section className="mb-12">
         {loadingInd ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -197,54 +218,88 @@ export default function IndicatorDetail() {
         )}
       </section>
 
-      {/* Primary Chart Area */}
       <section className="mb-16">
-        <div className="flex items-center justify-between mb-6 border-b border-border-subtle pb-4">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between mb-6 border-b border-border-subtle pb-4 flex-wrap gap-3">
+          <div className="flex items-center gap-4">
             <Terminal className="w-4 h-4 text-champagne" />
-            <h2 className="text-xs font-mono uppercase tracking-[0.2em] text-text-secondary">
-              Векторная визуализация
-            </h2>
-          </div>
-          
-          <label className="flex items-center gap-3 cursor-pointer group select-none">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-text-tertiary group-hover:text-text-secondary transition-colors">
-              Предиктивный слой
-            </span>
-            <div
-              role="switch"
-              aria-checked={showForecast}
-              tabIndex={0}
-              onClick={() => setShowForecast(v => !v)}
-              onKeyDown={e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); setShowForecast(v => !v); } }}
-              className={cn(
-                'relative w-10 h-5 rounded-full transition-colors duration-300 cursor-pointer',
-                showForecast ? 'bg-champagne/30' : 'bg-obsidian-lighter border border-border-subtle'
-              )}
-            >
-              <div className={cn(
-                'absolute top-[2px] left-[2px] w-4 h-4 rounded-full transition-transform duration-300',
-                showForecast ? 'translate-x-5 bg-champagne' : 'translate-x-0 bg-text-tertiary'
-              )} />
+            <div className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle">
+              <button
+                onClick={() => setViewMode('inflation')}
+                className={cn(
+                  'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
+                  viewMode === 'inflation'
+                    ? 'bg-champagne/15 text-champagne'
+                    : 'text-text-tertiary hover:text-text-secondary'
+                )}
+              >
+                Инфляция 12 мес.
+              </button>
+              <button
+                onClick={() => setViewMode('cpi')}
+                className={cn(
+                  'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
+                  viewMode === 'cpi'
+                    ? 'bg-champagne/15 text-champagne'
+                    : 'text-text-tertiary hover:text-text-secondary'
+                )}
+              >
+                ИПЦ помесячно
+              </button>
             </div>
-          </label>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleDownloadExcel}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-text-tertiary hover:text-champagne hover:border-champagne/30 transition-colors text-xs font-mono uppercase tracking-wider magnetic-btn"
+              title="Скачать Excel"
+            >
+              <Download className="w-3.5 h-3.5" />
+              Excel
+            </button>
+
+            <label className="flex items-center gap-3 cursor-pointer group select-none">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-text-tertiary group-hover:text-text-secondary transition-colors">
+                Прогноз
+              </span>
+              <div
+                role="switch"
+                aria-checked={showForecast}
+                tabIndex={0}
+                onClick={() => setShowForecast(v => !v)}
+                onKeyDown={e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); setShowForecast(v => !v); } }}
+                className={cn(
+                  'relative w-10 h-5 rounded-full transition-colors duration-300 cursor-pointer',
+                  showForecast ? 'bg-champagne/30' : 'bg-obsidian-lighter border border-border-subtle'
+                )}
+              >
+                <div className={cn(
+                  'absolute top-[2px] left-[2px] w-4 h-4 rounded-full transition-transform duration-300',
+                  showForecast ? 'translate-x-5 bg-champagne' : 'translate-x-0 bg-text-tertiary'
+                )} />
+              </div>
+            </label>
+          </div>
         </div>
 
-        {loadingInflation ? (
+        {chartLoading ? (
           <ChartSkeleton />
         ) : (
           <div className="relative overflow-hidden rounded-[2rem]">
-            <div className="absolute inset-0 bg-gradient-to-b from-champagne/5 to-transparent opacity-50 pointer-events-none" />
             <CpiChart
+              mode={viewMode}
               inflation={inflationResp}
+              cpiData={dataPoints}
+              forecastData={forecastResp}
               showForecast={showForecast}
+              onChartData={handleChartData}
+              onRangeChange={handleRangeChange}
             />
           </div>
         )}
       </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
-        {/* Info Box - Brutalist approach */}
         <section className="lg:col-span-1 p-8 rounded-[2rem] bg-obsidian-light border border-border-subtle flex flex-col h-full">
           <div className="flex items-center gap-3 mb-6">
             <Info className="w-4 h-4 text-champagne" />
@@ -253,10 +308,10 @@ export default function IndicatorDetail() {
             </h3>
           </div>
           
-          <div className="prose prose-invert prose-sm prose-p:text-text-secondary prose-p:leading-relaxed max-w-none">
-            <p>{indicator?.description}</p>
+          <div className="prose prose-sm max-w-none">
+            <p className="text-text-secondary leading-relaxed">{indicator?.description}</p>
             {indicator?.methodology && (
-              <p className="text-text-tertiary border-l border-champagne/30 pl-4 my-4 font-mono text-[10px] uppercase tracking-wider">
+              <p className="text-text-tertiary border-l-2 border-champagne/30 pl-4 my-4 font-mono text-[10px] uppercase tracking-wider">
                 {indicator.methodology}
               </p>
             )}
@@ -276,10 +331,13 @@ export default function IndicatorDetail() {
           </div>
         </section>
 
-        {/* Forecast Table */}
         <section className="lg:col-span-2">
-          {showForecast && inflationResp?.forecast?.length ? (
-            <ForecastTable inflation={inflationResp} />
+          {showForecast && hasForecastData ? (
+            <ForecastTable
+              mode={viewMode}
+              inflation={inflationResp}
+              forecastData={forecastResp}
+            />
           ) : (
             <div className="h-full min-h-[300px] rounded-[2rem] bg-surface border border-border-subtle border-dashed flex flex-col items-center justify-center text-text-tertiary p-8">
               <Activity className="w-8 h-8 mb-4 opacity-20" />

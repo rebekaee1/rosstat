@@ -47,9 +47,9 @@ export default function IndicatorTile({ indicator, delay = 0 }) {
       {isActive && (
         <div
           ref={glowRef}
-          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none mix-blend-screen"
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
           style={{
-            background: `radial-gradient(circle 300px at var(--mouse-x, 0) var(--mouse-y, 0), rgba(201, 168, 76, 0.08), transparent 80%)`,
+            background: `radial-gradient(circle 300px at var(--mouse-x, 0) var(--mouse-y, 0), rgba(184, 148, 47, 0.06), transparent 80%)`,
           }}
         />
       )}

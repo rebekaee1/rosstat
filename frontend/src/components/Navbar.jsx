@@ -32,7 +32,7 @@ export default function Navbar() {
     'text-sm font-medium transition-colors duration-200',
     isActive
       ? 'text-champagne'
-      : 'text-ivory-muted/70 hover:text-text-primary'
+      : 'text-text-secondary hover:text-text-primary'
   );
 
   return (
@@ -41,10 +41,10 @@ export default function Navbar() {
       className={cn(
         'fixed top-4 inset-x-0 mx-auto z-50 transition-all duration-500 ease-out',
         'rounded-[2rem] px-6 py-3 flex items-center gap-6',
-        'max-w-3xl w-[calc(100%-2rem)]',
+        'max-w-4xl w-[calc(100%-2rem)]',
         scrolled
-          ? 'glass-surface border border-border-subtle shadow-lg shadow-black/30'
-          : 'bg-obsidian/50 backdrop-blur-sm border border-white/[0.03]'
+          ? 'glass-surface border border-border-subtle shadow-lg shadow-black/5'
+          : 'bg-white/60 backdrop-blur-sm border border-black/[0.04]'
       )}
     >
       <Link to="/" className="flex items-center gap-2 shrink-0">
@@ -58,6 +58,7 @@ export default function Navbar() {
         <NavLink to="/" end className={linkClass}>Обзор</NavLink>
         <NavLink to="/indicator/cpi" className={linkClass}>ИПЦ</NavLink>
         <NavLink to="/indicator/cpi-food" className={linkClass}>Продтовары</NavLink>
+        <NavLink to="/indicator/cpi-nonfood" className={linkClass}>Непрод. товары</NavLink>
         <NavLink to="/indicator/cpi-services" className={linkClass}>Услуги</NavLink>
       </div>
 
@@ -81,6 +82,7 @@ export default function Navbar() {
             <NavLink to="/" end className={linkClass}>Обзор</NavLink>
             <NavLink to="/indicator/cpi" className={linkClass}>ИПЦ</NavLink>
             <NavLink to="/indicator/cpi-food" className={linkClass}>Продтовары</NavLink>
+            <NavLink to="/indicator/cpi-nonfood" className={linkClass}>Непрод. товары</NavLink>
             <NavLink to="/indicator/cpi-services" className={linkClass}>Услуги</NavLink>
           </div>
         </div>

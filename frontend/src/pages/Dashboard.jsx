@@ -1,15 +1,12 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import { Activity, Database, Clock, Terminal } from 'lucide-react';
-import { useIndicators, useSystemStatus } from '../lib/hooks';
+import { useIndicators } from '../lib/hooks';
 import IndicatorTile from '../components/IndicatorTile';
 import { TileSkeleton } from '../components/Skeleton';
 
 export default function Dashboard() {
   const heroRef = useRef(null);
-  const statsRef = useRef(null);
   const { data: indicators, isLoading } = useIndicators();
-  const { data: status } = useSystemStatus();
 
   useEffect(() => {
     const elements = heroRef.current?.querySelectorAll('[data-animate]');
@@ -21,17 +18,9 @@ export default function Dashboard() {
     }
   }, []);
 
-  useEffect(() => {
-    if (!statsRef.current) return;
-    gsap.fromTo(statsRef.current,
-      { y: 20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }
-    );
-  }, [status]);
-
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 pt-32 pb-20">
-      <section ref={heroRef} className="mb-16 md:mb-24 flex flex-col md:flex-row md:items-end justify-between gap-8">
+      <section ref={heroRef} className="mb-16 md:mb-24">
         <div className="max-w-2xl">
           <div data-animate className="flex items-center gap-3 mb-6">
             <div className="h-[1px] w-8 bg-champagne"></div>
@@ -50,28 +39,6 @@ export default function Dashboard() {
             Исторические ряды с 1991 года и предиктивное моделирование OLS.
           </p>
         </div>
-
-        {status && (
-          <div ref={statsRef} className="shrink-0 flex flex-col gap-3 font-mono text-[10px] uppercase tracking-wider text-text-tertiary bg-surface border border-border-subtle p-5 rounded-[1.5rem]">
-            <div className="flex items-center gap-3">
-              <Terminal className="w-3.5 h-3.5 text-champagne" />
-              <span className="text-text-secondary">System Status</span>
-            </div>
-            <div className="h-[1px] w-full bg-border-subtle my-1"></div>
-            <div className="flex items-center gap-3">
-              <Activity className="w-3 h-3 text-positive pulse-dot" />
-              <span>Network: <span className="text-positive">Secured</span></span>
-            </div>
-            <div className="flex items-center gap-3">
-              <Database className="w-3 h-3" />
-              <span>Records: {status.total_data_points?.toLocaleString('ru-RU')}</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <Clock className="w-3 h-3" />
-              <span>Last Sync: {status.last_fetch ? new Date(status.last_fetch.started_at).toLocaleDateString('ru-RU') : 'N/A'}</span>
-            </div>
-          </div>
-        )}
       </section>
 
       <section>

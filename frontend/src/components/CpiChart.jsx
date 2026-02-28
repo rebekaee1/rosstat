@@ -13,13 +13,16 @@ const RANGE_OPTIONS = [
   { key: 'all', label: 'Все', months: null },
 ];
 
-function CustomTooltip({ active, payload, label }) {
+function CustomTooltip({ active, payload, label, mode }) {
   if (!active || !payload?.length) return null;
 
   const actual = payload.find(p => p.dataKey === 'actual' && p.value != null);
   const forecast = payload.find(p => p.dataKey === 'forecast' && p.value != null);
   const upper = payload.find(p => p.dataKey === 'upper' && p.value != null);
   const lower = payload.find(p => p.dataKey === 'lower' && p.value != null);
+
+  const actualLabel = mode === 'cpi' ? 'ИПЦ к пред. месяцу' : 'Инфляция (12 мес.)';
+  const forecastLabel = mode === 'cpi' ? 'Прогноз ИПЦ' : 'Прогноз (12 мес.)';
 
   return (
     <div className="glass-surface rounded-xl border border-border-subtle px-4 py-3 shadow-2xl min-w-[200px]">
@@ -29,7 +32,7 @@ function CustomTooltip({ active, payload, label }) {
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-champagne" />
-            <span className="text-xs text-text-tertiary">Инфляция (12 мес.)</span>
+            <span className="text-xs text-text-tertiary">{actualLabel}</span>
           </div>
           <span className="text-sm font-mono font-semibold text-champagne">
             {actual.value.toFixed(2)}%
@@ -41,15 +44,15 @@ function CustomTooltip({ active, payload, label }) {
         <>
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full" style={{ background: '#A78BFA' }} />
-              <span className="text-xs text-text-tertiary">Прогноз (12 мес.)</span>
+              <span className="w-2 h-2 rounded-full" style={{ background: '#7C3AED' }} />
+              <span className="text-xs text-text-tertiary">{forecastLabel}</span>
             </div>
-            <span className="text-sm font-mono font-semibold text-[#A78BFA]">
+            <span className="text-sm font-mono font-semibold text-[#7C3AED]">
               {forecast.value.toFixed(2)}%
             </span>
           </div>
           {lower && upper && (
-            <div className="flex items-center justify-between gap-4 mt-1.5 pt-1.5 border-t border-white/5">
+            <div className="flex items-center justify-between gap-4 mt-1.5 pt-1.5 border-t border-border-subtle">
               <span className="text-[10px] text-text-tertiary">95% CI</span>
               <span className="text-[10px] font-mono text-text-tertiary">
                 {lower.value.toFixed(2)} – {upper.value.toFixed(2)}%
@@ -62,7 +65,15 @@ function CustomTooltip({ active, payload, label }) {
   );
 }
 
-export default function CpiChart({ inflation, showForecast = true }) {
+export default function CpiChart({
+  inflation,
+  showForecast = true,
+  mode = 'inflation',
+  cpiData,
+  forecastData,
+  onChartData,
+  onRangeChange,
+}) {
   const ref = useRef(null);
   const [range, setRange] = useState('5y');
 
@@ -74,7 +85,43 @@ export default function CpiChart({ inflation, showForecast = true }) {
     );
   }, []);
 
+  const handleRangeChange = (key) => {
+    setRange(key);
+    onRangeChange?.(key);
+  };
+
   const { chartData, forecastStartDate } = useMemo(() => {
+    if (mode === 'cpi') {
+      const points = cpiData || [];
+      const fcValues = forecastData?.forecast?.values || [];
+
+      const rangeOpt = RANGE_OPTIONS.find(r => r.key === range);
+      let sliced = points;
+      if (rangeOpt?.months && sliced.length > rangeOpt.months) {
+        sliced = sliced.slice(-rangeOpt.months);
+      }
+
+      const merged = sliced.map(p => ({ date: p.date, actual: p.value }));
+      let startDate = null;
+
+      if (showForecast && fcValues.length > 0 && merged.length > 0) {
+        const last = merged[merged.length - 1];
+        last.forecast = last.actual;
+        startDate = last.date;
+
+        for (const fv of fcValues) {
+          merged.push({
+            date: fv.date,
+            forecast: fv.value,
+            lower: fv.lower_bound,
+            upper: fv.upper_bound,
+          });
+        }
+      }
+
+      return { chartData: merged, forecastStartDate: startDate };
+    }
+
     if (!inflation) return { chartData: [], forecastStartDate: null };
 
     const actuals = inflation.actuals || [];
@@ -87,7 +134,6 @@ export default function CpiChart({ inflation, showForecast = true }) {
     }
 
     const merged = sliced.map(a => ({ date: a.date, actual: a.value }));
-
     let startDate = null;
 
     if (showForecast && forecasts.length > 0 && merged.length > 0) {
@@ -106,19 +152,27 @@ export default function CpiChart({ inflation, showForecast = true }) {
     }
 
     return { chartData: merged, forecastStartDate: startDate };
-  }, [inflation, showForecast, range]);
+  }, [inflation, cpiData, forecastData, showForecast, range, mode]);
+
+  useEffect(() => {
+    onChartData?.(chartData);
+  }, [chartData, onChartData]);
+
+  const title = mode === 'cpi'
+    ? 'ИПЦ (к предыдущему месяцу, %)'
+    : 'Инфляция (скользящие 12 месяцев)';
 
   return (
     <div ref={ref} className="p-5 md:p-6 rounded-[2rem] bg-surface border border-border-subtle">
       <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
         <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
-          Инфляция (скользящие 12 месяцев)
+          {title}
         </h3>
         <div className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle">
           {RANGE_OPTIONS.map(opt => (
             <button
               key={opt.key}
-              onClick={() => setRange(opt.key)}
+              onClick={() => handleRangeChange(opt.key)}
               className={cn(
                 'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
                 range === opt.key
@@ -136,45 +190,45 @@ export default function CpiChart({ inflation, showForecast = true }) {
         <ComposedChart data={chartData} margin={{ top: 5, right: 10, bottom: 5, left: -5 }}>
           <defs>
             <linearGradient id="inflGradActual" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#C9A84C" stopOpacity={0.2} />
-              <stop offset="100%" stopColor="#C9A84C" stopOpacity={0} />
+              <stop offset="0%" stopColor="#B8942F" stopOpacity={0.15} />
+              <stop offset="100%" stopColor="#B8942F" stopOpacity={0} />
             </linearGradient>
             <linearGradient id="inflGradCI" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#A78BFA" stopOpacity={0.12} />
-              <stop offset="100%" stopColor="#A78BFA" stopOpacity={0.02} />
+              <stop offset="0%" stopColor="#7C3AED" stopOpacity={0.10} />
+              <stop offset="100%" stopColor="#7C3AED" stopOpacity={0.02} />
             </linearGradient>
           </defs>
 
           <CartesianGrid
             strokeDasharray="3 3"
-            stroke="rgba(255,255,255,0.04)"
+            stroke="rgba(0,0,0,0.06)"
             vertical={false}
           />
           <XAxis
             dataKey="date"
             tickFormatter={d => formatDate(d)}
-            stroke="rgba(255,255,255,0.1)"
-            tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
+            stroke="rgba(0,0,0,0.1)"
+            tick={{ fill: 'rgba(0,0,0,0.4)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
             tickLine={false}
             interval="preserveStartEnd"
             minTickGap={50}
           />
           <YAxis
-            stroke="rgba(255,255,255,0.1)"
-            tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
+            stroke="rgba(0,0,0,0.1)"
+            tick={{ fill: 'rgba(0,0,0,0.4)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
             tickLine={false}
             axisLine={false}
             domain={['auto', 'auto']}
             tickFormatter={v => `${v}%`}
             width={55}
           />
-          <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(255,255,255,0.08)' }} />
-          <ReferenceLine y={0} stroke="rgba(255,255,255,0.12)" strokeDasharray="6 3" />
+          <Tooltip content={<CustomTooltip mode={mode} />} cursor={{ stroke: 'rgba(0,0,0,0.08)' }} />
+          <ReferenceLine y={mode === 'cpi' ? 100 : 0} stroke="rgba(0,0,0,0.12)" strokeDasharray="6 3" />
 
           {forecastStartDate && showForecast && (
             <ReferenceLine
               x={forecastStartDate}
-              stroke="rgba(167,139,250,0.35)"
+              stroke="rgba(124,58,237,0.35)"
               strokeDasharray="4 4"
               strokeWidth={1}
             />
@@ -182,11 +236,11 @@ export default function CpiChart({ inflation, showForecast = true }) {
 
           <Area
             dataKey="actual"
-            stroke="#C9A84C"
+            stroke="#B8942F"
             strokeWidth={2}
             fill="url(#inflGradActual)"
             dot={false}
-            activeDot={{ r: 4, fill: '#C9A84C', stroke: '#0D0D12', strokeWidth: 2 }}
+            activeDot={{ r: 4, fill: '#B8942F', stroke: '#FFFFFF', strokeWidth: 2 }}
           />
 
           {showForecast && (
@@ -201,13 +255,13 @@ export default function CpiChart({ inflation, showForecast = true }) {
               <Area
                 dataKey="lower"
                 stroke="none"
-                fill="#16161E"
+                fill="#FFFFFF"
                 dot={false}
                 activeDot={false}
               />
               <Line
                 dataKey="upper"
-                stroke="rgba(167,139,250,0.2)"
+                stroke="rgba(124,58,237,0.25)"
                 strokeWidth={1}
                 strokeDasharray="3 3"
                 dot={false}
@@ -215,7 +269,7 @@ export default function CpiChart({ inflation, showForecast = true }) {
               />
               <Line
                 dataKey="lower"
-                stroke="rgba(167,139,250,0.2)"
+                stroke="rgba(124,58,237,0.25)"
                 strokeWidth={1}
                 strokeDasharray="3 3"
                 dot={false}
@@ -223,32 +277,34 @@ export default function CpiChart({ inflation, showForecast = true }) {
               />
               <Line
                 dataKey="forecast"
-                stroke="#A78BFA"
+                stroke="#7C3AED"
                 strokeWidth={2.5}
                 strokeDasharray="8 4"
                 dot={false}
-                activeDot={{ r: 5, fill: '#A78BFA', stroke: '#0D0D12', strokeWidth: 2 }}
+                activeDot={{ r: 5, fill: '#7C3AED', stroke: '#FFFFFF', strokeWidth: 2 }}
               />
             </>
           )}
         </ComposedChart>
       </ResponsiveContainer>
 
-      {showForecast && inflation?.forecast?.length > 0 && (
-        <div className="flex items-center gap-5 mt-4 pt-3 border-t border-border-subtle">
-          <div className="flex items-center gap-2">
-            <span className="w-5 h-0.5 bg-champagne rounded-full" />
-            <span className="text-[11px] text-text-tertiary">Факт</span>
+      {showForecast && (
+        (mode === 'inflation' ? inflation?.forecast?.length > 0 : forecastData?.forecast?.values?.length > 0) && (
+          <div className="flex items-center gap-5 mt-4 pt-3 border-t border-border-subtle">
+            <div className="flex items-center gap-2">
+              <span className="w-5 h-0.5 bg-champagne rounded-full" />
+              <span className="text-[11px] text-text-tertiary">Факт</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-5 h-0.5 rounded-full" style={{ background: '#7C3AED', opacity: 0.8 }} />
+              <span className="text-[11px] text-text-tertiary">Прогноз OLS</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-5 h-3 rounded-sm" style={{ background: 'rgba(124,58,237,0.12)' }} />
+              <span className="text-[11px] text-text-tertiary">95% CI</span>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="w-5 h-0.5 rounded-full" style={{ background: '#A78BFA', opacity: 0.8 }} />
-            <span className="text-[11px] text-text-tertiary">Прогноз OLS</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="w-5 h-3 rounded-sm" style={{ background: 'rgba(167,139,250,0.15)' }} />
-            <span className="text-[11px] text-text-tertiary">95% CI</span>
-          </div>
-        </div>
+        )
       )}
     </div>
   );
