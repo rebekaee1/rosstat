@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo, useState } from 'react';
+import { useEffect, useRef, useMemo, useState, useCallback } from 'react';
 import gsap from 'gsap';
 import {
   ResponsiveContainer, ComposedChart, Area, Line, XAxis, YAxis,
@@ -63,8 +63,13 @@ export default function CpiChart({
   onRangeChange,
 }) {
   const ref = useRef(null);
+  const chartAreaRef = useRef(null);
   const [range, setRange] = useState('5y');
-  const [brushRange, setBrushRange] = useState({ start: 0, end: 0 });
+  const [brushRange, setBrushRange] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragRef = useRef(null);
+  const onChartDataRef = useRef(onChartData);
+  onChartDataRef.current = onChartData;
 
   useEffect(() => {
     if (!ref.current) return;
@@ -116,36 +121,81 @@ export default function CpiChart({
     return { chartData: merged, forecastStartDate: startDate };
   }, [inflation, cpiData, forecastData, showForecast, mode]);
 
+  const dataLen = chartData.length;
+
   useEffect(() => {
-    if (!chartData.length) return;
+    if (!dataLen) return;
     const opt = RANGE_OPTIONS.find(r => r.key === range);
-    const window = opt?.months ?? chartData.length;
-    setBrushRange({
-      start: Math.max(0, chartData.length - window),
-      end: chartData.length - 1,
-    });
-  }, [chartData.length, mode]);
+    const win = opt?.months ?? dataLen;
+    const newStart = Math.max(0, dataLen - win);
+    const newEnd = dataLen - 1;
+    setBrushRange({ start: newStart, end: newEnd });
+    onChartDataRef.current?.(chartData.slice(newStart, newEnd + 1));
+  }, [dataLen, mode]);
 
   const handleRangeChange = (key) => {
     setRange(key);
     onRangeChange?.(key);
     const opt = RANGE_OPTIONS.find(r => r.key === key);
-    const window = opt?.months ?? chartData.length;
-    setBrushRange({
-      start: Math.max(0, chartData.length - window),
-      end: chartData.length - 1,
-    });
+    const win = opt?.months ?? dataLen;
+    const newStart = Math.max(0, dataLen - win);
+    const newEnd = dataLen - 1;
+    setBrushRange({ start: newStart, end: newEnd });
+    onChartDataRef.current?.(chartData.slice(newStart, newEnd + 1));
   };
 
-  useEffect(() => {
-    if (!chartData.length) return;
-    const visible = chartData.slice(brushRange.start, brushRange.end + 1);
-    onChartData?.(visible);
-  }, [chartData, brushRange, onChartData]);
+  const handleBrushChange = useCallback(({ startIndex, endIndex }) => {
+    setBrushRange(prev => {
+      if (prev && prev.start === startIndex && prev.end === endIndex) return prev;
+      return { start: startIndex, end: endIndex };
+    });
+    onChartDataRef.current?.(chartData.slice(startIndex, endIndex + 1));
+  }, [chartData]);
+
+  const applyPan = useCallback((newStart, newEnd) => {
+    setBrushRange({ start: newStart, end: newEnd });
+    onChartDataRef.current?.(chartData.slice(newStart, newEnd + 1));
+  }, [chartData]);
+
+  const handlePointerDown = useCallback((e) => {
+    if (e.target.closest('.recharts-brush')) return;
+    const rect = chartAreaRef.current?.getBoundingClientRect();
+    if (!rect || !brushRange) return;
+    dragRef.current = {
+      startX: e.clientX,
+      initStart: brushRange.start,
+      initEnd: brushRange.end,
+      chartWidth: rect.width,
+    };
+    setIsDragging(true);
+    e.currentTarget.setPointerCapture(e.pointerId);
+  }, [brushRange]);
+
+  const handlePointerMove = useCallback((e) => {
+    const d = dragRef.current;
+    if (!d) return;
+    const deltaX = e.clientX - d.startX;
+    const windowSize = d.initEnd - d.initStart;
+    const pixelsPerPoint = d.chartWidth / (windowSize || 1);
+    const shift = -Math.round(deltaX / pixelsPerPoint);
+    let newStart = d.initStart + shift;
+    newStart = Math.max(0, Math.min(newStart, dataLen - 1 - windowSize));
+    const newEnd = newStart + windowSize;
+    applyPan(newStart, newEnd);
+  }, [dataLen, applyPan]);
+
+  const handlePointerUp = useCallback((e) => {
+    if (!dragRef.current) return;
+    dragRef.current = null;
+    setIsDragging(false);
+    e.currentTarget.releasePointerCapture(e.pointerId);
+  }, []);
 
   const title = mode === 'cpi'
     ? 'ИПЦ (к предыдущему месяцу, %)'
     : 'Инфляция (скользящие 12 месяцев)';
+
+  if (!brushRange) return null;
 
   return (
     <div ref={ref} className="p-5 md:p-6 rounded-[2rem] bg-surface border border-border-subtle">
@@ -171,83 +221,97 @@ export default function CpiChart({
         </div>
       </div>
 
-      <ResponsiveContainer width="100%" height={420}>
-        <ComposedChart data={chartData} margin={{ top: 5, right: 10, bottom: 5, left: -5 }}>
-          <defs>
-            <linearGradient id="inflGradActual" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#B8942F" stopOpacity={0.15} />
-              <stop offset="100%" stopColor="#B8942F" stopOpacity={0} />
-            </linearGradient>
-          </defs>
+      <div
+        ref={chartAreaRef}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+        className={isDragging ? 'cursor-grabbing select-none' : 'cursor-grab'}
+        style={{ touchAction: 'pan-y' }}
+      >
+        <ResponsiveContainer width="100%" height={420}>
+          <ComposedChart data={chartData} margin={{ top: 5, right: 10, bottom: 5, left: -5 }}>
+            <defs>
+              <linearGradient id="inflGradActual" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#B8942F" stopOpacity={0.15} />
+                <stop offset="100%" stopColor="#B8942F" stopOpacity={0} />
+              </linearGradient>
+            </defs>
 
-          <CartesianGrid
-            strokeDasharray="3 3"
-            stroke="rgba(0,0,0,0.06)"
-            vertical={false}
-          />
-          <XAxis
-            dataKey="date"
-            tickFormatter={d => formatDate(d)}
-            stroke="rgba(0,0,0,0.1)"
-            tick={{ fill: 'rgba(0,0,0,0.4)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
-            tickLine={false}
-            interval="preserveStartEnd"
-            minTickGap={50}
-          />
-          <YAxis
-            stroke="rgba(0,0,0,0.1)"
-            tick={{ fill: 'rgba(0,0,0,0.4)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
-            tickLine={false}
-            axisLine={false}
-            domain={['auto', 'auto']}
-            tickFormatter={v => `${v}%`}
-            width={55}
-          />
-          <Tooltip content={<CustomTooltip mode={mode} />} cursor={{ stroke: 'rgba(0,0,0,0.08)' }} />
-          <ReferenceLine y={mode === 'cpi' ? 100 : 0} stroke="rgba(0,0,0,0.12)" strokeDasharray="6 3" />
-
-          {forecastStartDate && showForecast && (
-            <ReferenceLine
-              x={forecastStartDate}
-              stroke="rgba(124,58,237,0.35)"
-              strokeDasharray="4 4"
-              strokeWidth={1}
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke="rgba(0,0,0,0.06)"
+              vertical={false}
             />
-          )}
+            <XAxis
+              dataKey="date"
+              tickFormatter={d => formatDate(d)}
+              stroke="rgba(0,0,0,0.1)"
+              tick={{ fill: 'rgba(0,0,0,0.4)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
+              tickLine={false}
+              interval="preserveStartEnd"
+              minTickGap={50}
+            />
+            <YAxis
+              stroke="rgba(0,0,0,0.1)"
+              tick={{ fill: 'rgba(0,0,0,0.4)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
+              tickLine={false}
+              axisLine={false}
+              domain={['auto', 'auto']}
+              tickFormatter={v => `${v}%`}
+              width={55}
+            />
+            <Tooltip
+              content={<CustomTooltip mode={mode} />}
+              cursor={isDragging ? false : { stroke: 'rgba(0,0,0,0.08)' }}
+              active={!isDragging}
+            />
+            <ReferenceLine y={mode === 'cpi' ? 100 : 0} stroke="rgba(0,0,0,0.12)" strokeDasharray="6 3" />
 
-          <Area
-            dataKey="actual"
-            stroke="#B8942F"
-            strokeWidth={2}
-            fill="url(#inflGradActual)"
-            dot={false}
-            activeDot={{ r: 4, fill: '#B8942F', stroke: '#FFFFFF', strokeWidth: 2 }}
-          />
+            {forecastStartDate && showForecast && (
+              <ReferenceLine
+                x={forecastStartDate}
+                stroke="rgba(124,58,237,0.35)"
+                strokeDasharray="4 4"
+                strokeWidth={1}
+              />
+            )}
 
-          {showForecast && (
-            <Line
-              dataKey="forecast"
-              stroke="#7C3AED"
-              strokeWidth={2.5}
-              strokeDasharray="8 4"
+            <Area
+              dataKey="actual"
+              stroke="#B8942F"
+              strokeWidth={2}
+              fill="url(#inflGradActual)"
               dot={false}
-              activeDot={{ r: 5, fill: '#7C3AED', stroke: '#FFFFFF', strokeWidth: 2 }}
+              activeDot={isDragging ? false : { r: 4, fill: '#B8942F', stroke: '#FFFFFF', strokeWidth: 2 }}
             />
-          )}
 
-          <Brush
-            dataKey="date"
-            height={30}
-            stroke="#B8942F"
-            fill="#F8F9FC"
-            tickFormatter={d => formatDate(d)}
-            startIndex={brushRange.start}
-            endIndex={brushRange.end}
-            onChange={({ startIndex, endIndex }) => setBrushRange({ start: startIndex, end: endIndex })}
-            travellerWidth={8}
-          />
-        </ComposedChart>
-      </ResponsiveContainer>
+            {showForecast && (
+              <Line
+                dataKey="forecast"
+                stroke="#7C3AED"
+                strokeWidth={2.5}
+                strokeDasharray="8 4"
+                dot={false}
+                activeDot={isDragging ? false : { r: 5, fill: '#7C3AED', stroke: '#FFFFFF', strokeWidth: 2 }}
+              />
+            )}
+
+            <Brush
+              dataKey="date"
+              height={30}
+              stroke="#B8942F"
+              fill="#F8F9FC"
+              tickFormatter={d => formatDate(d)}
+              startIndex={brushRange.start}
+              endIndex={brushRange.end}
+              onChange={handleBrushChange}
+              travellerWidth={8}
+            />
+          </ComposedChart>
+        </ResponsiveContainer>
+      </div>
 
       {showForecast && (
         (mode === 'inflation' ? inflation?.forecast?.length > 0 : forecastData?.forecast?.values?.length > 0) && (
