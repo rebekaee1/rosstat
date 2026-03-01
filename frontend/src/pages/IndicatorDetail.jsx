@@ -123,6 +123,7 @@ export default function IndicatorDetail() {
       currentValue: current.value,
       currentDate: current.date,
       previousValue: previous?.value,
+      previousDate: previous?.date,
       change: previous ? current.value - previous.value : null,
       highest: { value: highest.value, date: highest.date },
       average: avg,
@@ -142,6 +143,7 @@ export default function IndicatorDetail() {
 
   const dataPoints = dataResp?.data || [];
   const s = inflationStats;
+  const cpiPrevDate = dataPoints.length >= 2 ? dataPoints[dataPoints.length - 2].date : null;
 
   const handleChartData = useCallback((data) => {
     setChartData(data);
@@ -171,7 +173,7 @@ export default function IndicatorDetail() {
           className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-text-tertiary hover:text-champagne transition-colors mb-8 lift-hover group"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-          Терминал
+          Обзор
         </Link>
 
         {loadingInd ? (
@@ -224,6 +226,7 @@ export default function IndicatorDetail() {
               label="Предыдущий месяц"
               value={s?.previousValue ?? indicator?.previous_value}
               unit="%"
+              meta={`ДАТА: ${formatDate(s?.previousDate ?? cpiPrevDate, 'full')}`}
               delay={1}
             />
             {(s?.highest || stats?.highest) && (
@@ -373,14 +376,17 @@ export default function IndicatorDetail() {
           ) : (
             <div className="h-full min-h-[300px] rounded-[2rem] bg-surface border border-border-subtle border-dashed flex flex-col items-center justify-center text-text-tertiary p-8">
               <Activity className="w-8 h-8 mb-4 opacity-20" />
-              <p className="text-xs font-mono uppercase tracking-widest text-center">Предиктивный слой отключен</p>
+              <p className="text-xs font-mono uppercase tracking-widest text-center">Прогноз отключён</p>
             </div>
           )}
         </section>
       </div>
 
       <section>
-        <DataTable data={dataPoints} />
+        <DataTable
+          data={viewMode === 'inflation' ? (inflationResp?.actuals || []) : dataPoints}
+          title={viewMode === 'inflation' ? 'Исторические данные — Инфляция 12 мес.' : 'Исторические данные — ИПЦ'}
+        />
       </section>
     </div>
   );

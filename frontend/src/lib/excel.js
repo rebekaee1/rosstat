@@ -26,7 +26,7 @@ export async function downloadExcel(chartData, mode, indicatorCode, range) {
     XLSX.utils.book_append_sheet(wb, ws2, 'Прогноз');
   }
 
-  const modeLabel = mode === 'cpi' ? 'monthly' : 'inflation';
+  const modeLabel = mode === 'cpi' ? 'ипц_помесячно' : 'инфляция_12мес';
   const filename = `${indicatorCode}_${modeLabel}_${range}.xlsx`;
   XLSX.writeFile(wb, filename);
 }
