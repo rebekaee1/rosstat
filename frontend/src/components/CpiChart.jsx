@@ -2,7 +2,7 @@ import { useEffect, useRef, useMemo, useState, useCallback } from 'react';
 import gsap from 'gsap';
 import {
   ResponsiveContainer, ComposedChart, Area, Line, XAxis, YAxis,
-  Tooltip, CartesianGrid, ReferenceLine, Brush,
+  Tooltip, CartesianGrid, ReferenceLine,
 } from 'recharts';
 import { formatDate, cn } from '../lib/format';
 
@@ -65,7 +65,7 @@ export default function CpiChart({
   const ref = useRef(null);
   const chartAreaRef = useRef(null);
   const [range, setRange] = useState('5y');
-  const [brushRange, setBrushRange] = useState(null);
+  const [offset, setOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const dragRef = useRef(null);
   const onChartDataRef = useRef(onChartData);
@@ -79,110 +79,100 @@ export default function CpiChart({
     );
   }, []);
 
-  const { chartData, forecastStartDate } = useMemo(() => {
+  const chartData = useMemo(() => {
     if (mode === 'cpi') {
       const points = cpiData || [];
       const fcValues = forecastData?.forecast?.values || [];
-
       const merged = points.map(p => ({ date: p.date, actual: p.value }));
-      let startDate = null;
 
       if (showForecast && fcValues.length > 0 && merged.length > 0) {
         const last = merged[merged.length - 1];
         last.forecast = last.actual;
-        startDate = last.date;
-
         for (const fv of fcValues) {
           merged.push({ date: fv.date, forecast: fv.value });
         }
       }
-
-      return { chartData: merged, forecastStartDate: startDate };
+      return merged;
     }
 
-    if (!inflation) return { chartData: [], forecastStartDate: null };
+    if (!inflation) return [];
 
     const actuals = inflation.actuals || [];
     const forecasts = inflation.forecast || [];
-
     const merged = actuals.map(a => ({ date: a.date, actual: a.value }));
-    let startDate = null;
 
     if (showForecast && forecasts.length > 0 && merged.length > 0) {
       const last = merged[merged.length - 1];
       last.forecast = last.actual;
-      startDate = last.date;
-
       for (const fp of forecasts) {
         merged.push({ date: fp.date, forecast: fp.value });
       }
     }
-
-    return { chartData: merged, forecastStartDate: startDate };
+    return merged;
   }, [inflation, cpiData, forecastData, showForecast, mode]);
 
   const dataLen = chartData.length;
 
   useEffect(() => {
-    if (!dataLen) return;
-    const opt = RANGE_OPTIONS.find(r => r.key === range);
-    const win = opt?.months ?? dataLen;
-    const newStart = Math.max(0, dataLen - win);
-    const newEnd = dataLen - 1;
-    setBrushRange({ start: newStart, end: newEnd });
-    onChartDataRef.current?.(chartData.slice(newStart, newEnd + 1));
+    setOffset(0);
   }, [dataLen, mode]);
+
+  const windowMonths = RANGE_OPTIONS.find(r => r.key === range)?.months ?? dataLen;
+  const maxOffset = Math.max(0, dataLen - windowMonths);
+  const clampedOffset = Math.min(Math.max(0, offset), maxOffset);
+
+  const startIdx = Math.max(0, dataLen - windowMonths - clampedOffset);
+  const endIdx = dataLen - clampedOffset;
+  const visibleData = useMemo(
+    () => chartData.slice(startIdx, endIdx),
+    [chartData, startIdx, endIdx]
+  );
+
+  const forecastStartDate = useMemo(() => {
+    if (!showForecast) return null;
+    for (let i = 0; i < visibleData.length; i++) {
+      if (visibleData[i].actual != null && visibleData[i].forecast != null) {
+        return visibleData[i].date;
+      }
+    }
+    return null;
+  }, [visibleData, showForecast]);
+
+  useEffect(() => {
+    onChartDataRef.current?.(visibleData);
+  }, [visibleData]);
 
   const handleRangeChange = (key) => {
     setRange(key);
+    setOffset(0);
     onRangeChange?.(key);
-    const opt = RANGE_OPTIONS.find(r => r.key === key);
-    const win = opt?.months ?? dataLen;
-    const newStart = Math.max(0, dataLen - win);
-    const newEnd = dataLen - 1;
-    setBrushRange({ start: newStart, end: newEnd });
-    onChartDataRef.current?.(chartData.slice(newStart, newEnd + 1));
   };
 
-  const handleBrushChange = useCallback(({ startIndex, endIndex }) => {
-    setBrushRange(prev => {
-      if (prev && prev.start === startIndex && prev.end === endIndex) return prev;
-      return { start: startIndex, end: endIndex };
-    });
-    onChartDataRef.current?.(chartData.slice(startIndex, endIndex + 1));
-  }, [chartData]);
-
-  const applyPan = useCallback((newStart, newEnd) => {
-    setBrushRange({ start: newStart, end: newEnd });
-    onChartDataRef.current?.(chartData.slice(newStart, newEnd + 1));
-  }, [chartData]);
+  const handleSlider = useCallback((e) => {
+    setOffset(maxOffset - Number(e.target.value));
+  }, [maxOffset]);
 
   const handlePointerDown = useCallback((e) => {
-    if (e.target.closest('.recharts-brush')) return;
     const rect = chartAreaRef.current?.getBoundingClientRect();
-    if (!rect || !brushRange) return;
+    if (!rect) return;
     dragRef.current = {
       startX: e.clientX,
-      initStart: brushRange.start,
-      initEnd: brushRange.end,
+      initOffset: clampedOffset,
       chartWidth: rect.width,
     };
     setIsDragging(true);
     e.currentTarget.setPointerCapture(e.pointerId);
-  }, [brushRange]);
+  }, [clampedOffset]);
 
   const handlePointerMove = useCallback((e) => {
     const d = dragRef.current;
     if (!d) return;
     const deltaX = e.clientX - d.startX;
-    const windowSize = d.initEnd - d.initStart;
-    const pixelsPerPoint = d.chartWidth / (windowSize || 1);
-    const shift = -Math.round(deltaX / pixelsPerPoint);
-    let newStart = d.initStart + shift;
-    newStart = Math.max(0, Math.min(newStart, dataLen - 1 - windowSize));
-    const newEnd = newStart + windowSize;
-    applyPan(newStart, newEnd);
-  }, [dataLen, applyPan]);
+    const pixelsPerPoint = d.chartWidth / (windowMonths || 1);
+    const shift = Math.round(deltaX / pixelsPerPoint);
+    const newOffset = Math.max(0, Math.min(d.initOffset + shift, maxOffset));
+    setOffset(newOffset);
+  }, [windowMonths, maxOffset]);
 
   const handlePointerUp = useCallback((e) => {
     if (!dragRef.current) return;
@@ -191,11 +181,28 @@ export default function CpiChart({
     e.currentTarget.releasePointerCapture(e.pointerId);
   }, []);
 
+  const yDomain = useMemo(() => {
+    if (!visibleData.length) return ['auto', 'auto'];
+    let min = Infinity, max = -Infinity;
+    for (const d of visibleData) {
+      if (d.actual != null) { min = Math.min(min, d.actual); max = Math.max(max, d.actual); }
+      if (d.forecast != null) { min = Math.min(min, d.forecast); max = Math.max(max, d.forecast); }
+    }
+    if (!isFinite(min)) return ['auto', 'auto'];
+    const pad = (max - min) * 0.08 || 1;
+    return [Math.floor((min - pad) * 100) / 100, Math.ceil((max + pad) * 100) / 100];
+  }, [visibleData]);
+
   const title = mode === 'cpi'
     ? 'ИПЦ (к предыдущему месяцу, %)'
     : 'Инфляция (скользящие 12 месяцев)';
 
-  if (!brushRange) return null;
+  const sliderValue = maxOffset - clampedOffset;
+  const hasForecast = mode === 'inflation'
+    ? inflation?.forecast?.length > 0
+    : forecastData?.forecast?.values?.length > 0;
+
+  if (!dataLen) return null;
 
   return (
     <div ref={ref} className="p-5 md:p-6 rounded-[2rem] bg-surface border border-border-subtle">
@@ -231,7 +238,7 @@ export default function CpiChart({
         style={{ touchAction: 'pan-y' }}
       >
         <ResponsiveContainer width="100%" height={420}>
-          <ComposedChart data={chartData} margin={{ top: 5, right: 10, bottom: 5, left: -5 }}>
+          <ComposedChart data={visibleData} margin={{ top: 5, right: 10, bottom: 5, left: -5 }}>
             <defs>
               <linearGradient id="inflGradActual" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#B8942F" stopOpacity={0.15} />
@@ -253,15 +260,15 @@ export default function CpiChart({
               interval="preserveStartEnd"
               minTickGap={50}
             />
-          <YAxis
-            stroke="rgba(0,0,0,0.1)"
-            tick={{ fill: 'rgba(0,0,0,0.4)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
-            tickLine={false}
-            axisLine={false}
-            domain={['auto', 'auto']}
-            tickFormatter={v => `${v}%`}
-            width={mode === 'cpi' ? 70 : 55}
-          />
+            <YAxis
+              stroke="rgba(0,0,0,0.1)"
+              tick={{ fill: 'rgba(0,0,0,0.4)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
+              tickLine={false}
+              axisLine={false}
+              domain={yDomain}
+              tickFormatter={v => `${v}%`}
+              width={mode === 'cpi' ? 70 : 55}
+            />
             <Tooltip
               content={<CustomTooltip mode={mode} />}
               cursor={isDragging ? false : { stroke: 'rgba(0,0,0,0.08)' }}
@@ -297,35 +304,45 @@ export default function CpiChart({
                 activeDot={isDragging ? false : { r: 5, fill: '#7C3AED', stroke: '#FFFFFF', strokeWidth: 2 }}
               />
             )}
-
-            <Brush
-              dataKey="date"
-              height={30}
-              stroke="#B8942F"
-              fill="#F8F9FC"
-              tickFormatter={d => formatDate(d)}
-              startIndex={brushRange.start}
-              endIndex={brushRange.end}
-              onChange={handleBrushChange}
-              travellerWidth={8}
-            />
           </ComposedChart>
         </ResponsiveContainer>
       </div>
 
-      {showForecast && (
-        (mode === 'inflation' ? inflation?.forecast?.length > 0 : forecastData?.forecast?.values?.length > 0) && (
-          <div className="flex items-center gap-5 mt-4 pt-3 border-t border-border-subtle">
-            <div className="flex items-center gap-2">
-              <span className="w-5 h-0.5 bg-champagne rounded-full" />
-              <span className="text-[11px] text-text-tertiary">Факт</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-5 h-0.5 rounded-full" style={{ background: '#7C3AED', opacity: 0.8 }} />
-              <span className="text-[11px] text-text-tertiary">Прогноз OLS</span>
-            </div>
+      {maxOffset > 0 && (
+        <div className="px-2 mt-2">
+          <input
+            type="range"
+            min={0}
+            max={maxOffset}
+            value={sliderValue}
+            onChange={handleSlider}
+            className="w-full h-1.5 appearance-none bg-obsidian-lighter rounded-full
+              [&::-webkit-slider-thumb]:appearance-none
+              [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4
+              [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-champagne
+              [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md
+              [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4
+              [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-champagne
+              [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-0"
+          />
+          <div className="flex justify-between text-[10px] font-mono text-text-tertiary mt-1">
+            <span>{visibleData[0] ? formatDate(visibleData[0].date) : ''}</span>
+            <span>{visibleData.length ? formatDate(visibleData[visibleData.length - 1].date) : ''}</span>
           </div>
-        )
+        </div>
+      )}
+
+      {showForecast && hasForecast && (
+        <div className="flex items-center gap-5 mt-4 pt-3 border-t border-border-subtle">
+          <div className="flex items-center gap-2">
+            <span className="w-5 h-0.5 bg-champagne rounded-full" />
+            <span className="text-[11px] text-text-tertiary">Факт</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-5 h-0.5 rounded-full" style={{ background: '#7C3AED', opacity: 0.8 }} />
+            <span className="text-[11px] text-text-tertiary">Прогноз OLS</span>
+          </div>
+        </div>
       )}
     </div>
   );
