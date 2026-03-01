@@ -19,6 +19,10 @@ export default function DataTable({ data, title = 'Исторические да
     );
   }, []);
 
+  useEffect(() => {
+    setPage(0);
+  }, [data]);
+
   const filtered = useMemo(() => {
     let rows = [...(data || [])];
     if (search) {

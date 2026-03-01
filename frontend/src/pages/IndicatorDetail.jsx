@@ -38,13 +38,14 @@ function TelemetryCard({ label, value, unit, change, meta, delay = 0 }) {
 
   useEffect(() => {
     if (value == null || !valRef.current) return;
+    const from = parseFloat(valRef.current.textContent) || 0;
     gsap.fromTo(valRef.current,
-      { textContent: 0 },
+      { textContent: from },
       {
         textContent: Number(value),
-        duration: 1.5,
+        duration: from === 0 ? 1.5 : 0.6,
         ease: 'power2.out',
-        delay: 0.2,
+        delay: from === 0 ? 0.2 : 0,
         snap: { textContent: 0.01 },
         onUpdate() {
           if (valRef.current) {
@@ -132,6 +133,7 @@ export default function IndicatorDetail() {
   }, [viewMode, inflationResp]);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const els = headerRef.current?.querySelectorAll('[data-animate]');
     if (els?.length) {
       gsap.fromTo(els,
@@ -208,7 +210,7 @@ export default function IndicatorDetail() {
       </div>
 
       <section className="mb-12">
-        {loadingInd ? (
+        {(loadingInd || (viewMode === 'inflation' && loadingInflation)) ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[...Array(4)].map((_, i) => <SkeletonBox key={i} className="h-48 rounded-[2rem]" />)}
           </div>

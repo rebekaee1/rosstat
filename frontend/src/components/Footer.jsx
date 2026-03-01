@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Activity, BarChart3 } from 'lucide-react';
 
 export default function Footer() {
@@ -21,10 +22,10 @@ export default function Footer() {
               Индикаторы
             </h4>
             <ul className="space-y-2 text-sm text-text-secondary">
-              <li><a href="/indicator/cpi" className="lift-hover inline-block hover:text-text-primary transition-colors">Индекс потребительских цен</a></li>
-              <li><a href="/indicator/cpi-food" className="lift-hover inline-block hover:text-text-primary transition-colors">ИПЦ — продовольствие</a></li>
-              <li><a href="/indicator/cpi-nonfood" className="lift-hover inline-block hover:text-text-primary transition-colors">ИПЦ — непродовольственные товары</a></li>
-              <li><a href="/indicator/cpi-services" className="lift-hover inline-block hover:text-text-primary transition-colors">ИПЦ — услуги</a></li>
+              <li><Link to="/indicator/cpi" className="lift-hover inline-block hover:text-text-primary transition-colors">Индекс потребительских цен</Link></li>
+              <li><Link to="/indicator/cpi-food" className="lift-hover inline-block hover:text-text-primary transition-colors">ИПЦ — продовольствие</Link></li>
+              <li><Link to="/indicator/cpi-nonfood" className="lift-hover inline-block hover:text-text-primary transition-colors">ИПЦ — непродовольственные товары</Link></li>
+              <li><Link to="/indicator/cpi-services" className="lift-hover inline-block hover:text-text-primary transition-colors">ИПЦ — услуги</Link></li>
             </ul>
           </div>
 

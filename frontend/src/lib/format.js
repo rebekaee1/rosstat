@@ -9,9 +9,10 @@ const monthsFull = [
 ];
 
 export function formatDate(dateStr, format = 'short') {
+  if (!dateStr) return '—';
   const d = new Date(dateStr);
-  const month = d.getMonth();
-  const year = d.getFullYear();
+  const month = d.getUTCMonth();
+  const year = d.getUTCFullYear();
   if (format === 'full') return `${monthsFull[month]} ${year}`;
   return `${monthsShort[month]} ${year}`;
 }
