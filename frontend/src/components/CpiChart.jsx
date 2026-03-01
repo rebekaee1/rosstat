@@ -181,16 +181,21 @@ export default function CpiChart({
     e.currentTarget.releasePointerCapture(e.pointerId);
   }, []);
 
-  const yDomain = useMemo(() => {
-    if (!visibleData.length) return ['auto', 'auto'];
+  const { yDomain, yWidth } = useMemo(() => {
+    if (!visibleData.length) return { yDomain: ['auto', 'auto'], yWidth: 55 };
     let min = Infinity, max = -Infinity;
     for (const d of visibleData) {
       if (d.actual != null) { min = Math.min(min, d.actual); max = Math.max(max, d.actual); }
       if (d.forecast != null) { min = Math.min(min, d.forecast); max = Math.max(max, d.forecast); }
     }
-    if (!isFinite(min)) return ['auto', 'auto'];
+    if (!isFinite(min)) return { yDomain: ['auto', 'auto'], yWidth: 55 };
     const pad = (max - min) * 0.08 || 1;
-    return [Math.floor((min - pad) * 100) / 100, Math.ceil((max + pad) * 100) / 100];
+    const absMax = Math.max(Math.abs(min), Math.abs(max));
+    const w = absMax >= 1000 ? 85 : absMax >= 100 ? 70 : 55;
+    return {
+      yDomain: [Math.floor((min - pad) * 100) / 100, Math.ceil((max + pad) * 100) / 100],
+      yWidth: w,
+    };
   }, [visibleData]);
 
   const title = mode === 'cpi'
@@ -267,7 +272,7 @@ export default function CpiChart({
               axisLine={false}
               domain={yDomain}
               tickFormatter={v => `${v}%`}
-              width={mode === 'cpi' ? 70 : 55}
+              width={yWidth}
             />
             <Tooltip
               content={<CustomTooltip mode={mode} />}
