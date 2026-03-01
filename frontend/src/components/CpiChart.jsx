@@ -2,7 +2,7 @@ import { useEffect, useRef, useMemo, useState } from 'react';
 import gsap from 'gsap';
 import {
   ResponsiveContainer, ComposedChart, Area, Line, XAxis, YAxis,
-  Tooltip, CartesianGrid, ReferenceLine,
+  Tooltip, CartesianGrid, ReferenceLine, Brush,
 } from 'recharts';
 import { formatDate, cn } from '../lib/format';
 
@@ -18,8 +18,6 @@ function CustomTooltip({ active, payload, label, mode }) {
 
   const actual = payload.find(p => p.dataKey === 'actual' && p.value != null);
   const forecast = payload.find(p => p.dataKey === 'forecast' && p.value != null);
-  const upper = payload.find(p => p.dataKey === 'upper' && p.value != null);
-  const lower = payload.find(p => p.dataKey === 'lower' && p.value != null);
 
   const actualLabel = mode === 'cpi' ? 'ИПЦ к пред. месяцу' : 'Инфляция (12 мес.)';
   const forecastLabel = mode === 'cpi' ? 'Прогноз ИПЦ' : 'Прогноз (12 мес.)';
@@ -41,25 +39,15 @@ function CustomTooltip({ active, payload, label, mode }) {
       )}
 
       {forecast && !actual && (
-        <>
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full" style={{ background: '#7C3AED' }} />
-              <span className="text-xs text-text-tertiary">{forecastLabel}</span>
-            </div>
-            <span className="text-sm font-mono font-semibold text-[#7C3AED]">
-              {forecast.value.toFixed(2)}%
-            </span>
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full" style={{ background: '#7C3AED' }} />
+            <span className="text-xs text-text-tertiary">{forecastLabel}</span>
           </div>
-          {lower && upper && (
-            <div className="flex items-center justify-between gap-4 mt-1.5 pt-1.5 border-t border-border-subtle">
-              <span className="text-[10px] text-text-tertiary">95% CI</span>
-              <span className="text-[10px] font-mono text-text-tertiary">
-                {lower.value.toFixed(2)} – {upper.value.toFixed(2)}%
-              </span>
-            </div>
-          )}
-        </>
+          <span className="text-sm font-mono font-semibold text-[#7C3AED]">
+            {forecast.value.toFixed(2)}%
+          </span>
+        </div>
       )}
     </div>
   );
@@ -76,6 +64,7 @@ export default function CpiChart({
 }) {
   const ref = useRef(null);
   const [range, setRange] = useState('5y');
+  const [brushRange, setBrushRange] = useState({ start: 0, end: 0 });
 
   useEffect(() => {
     if (!ref.current) return;
@@ -85,23 +74,12 @@ export default function CpiChart({
     );
   }, []);
 
-  const handleRangeChange = (key) => {
-    setRange(key);
-    onRangeChange?.(key);
-  };
-
   const { chartData, forecastStartDate } = useMemo(() => {
     if (mode === 'cpi') {
       const points = cpiData || [];
       const fcValues = forecastData?.forecast?.values || [];
 
-      const rangeOpt = RANGE_OPTIONS.find(r => r.key === range);
-      let sliced = points;
-      if (rangeOpt?.months && sliced.length > rangeOpt.months) {
-        sliced = sliced.slice(-rangeOpt.months);
-      }
-
-      const merged = sliced.map(p => ({ date: p.date, actual: p.value }));
+      const merged = points.map(p => ({ date: p.date, actual: p.value }));
       let startDate = null;
 
       if (showForecast && fcValues.length > 0 && merged.length > 0) {
@@ -110,12 +88,7 @@ export default function CpiChart({
         startDate = last.date;
 
         for (const fv of fcValues) {
-          merged.push({
-            date: fv.date,
-            forecast: fv.value,
-            lower: fv.lower_bound,
-            upper: fv.upper_bound,
-          });
+          merged.push({ date: fv.date, forecast: fv.value });
         }
       }
 
@@ -127,13 +100,7 @@ export default function CpiChart({
     const actuals = inflation.actuals || [];
     const forecasts = inflation.forecast || [];
 
-    const rangeOpt = RANGE_OPTIONS.find(r => r.key === range);
-    let sliced = actuals;
-    if (rangeOpt?.months && sliced.length > rangeOpt.months) {
-      sliced = sliced.slice(-rangeOpt.months);
-    }
-
-    const merged = sliced.map(a => ({ date: a.date, actual: a.value }));
+    const merged = actuals.map(a => ({ date: a.date, actual: a.value }));
     let startDate = null;
 
     if (showForecast && forecasts.length > 0 && merged.length > 0) {
@@ -142,21 +109,39 @@ export default function CpiChart({
       startDate = last.date;
 
       for (const fp of forecasts) {
-        merged.push({
-          date: fp.date,
-          forecast: fp.value,
-          lower: fp.lower_bound,
-          upper: fp.upper_bound,
-        });
+        merged.push({ date: fp.date, forecast: fp.value });
       }
     }
 
     return { chartData: merged, forecastStartDate: startDate };
-  }, [inflation, cpiData, forecastData, showForecast, range, mode]);
+  }, [inflation, cpiData, forecastData, showForecast, mode]);
 
   useEffect(() => {
-    onChartData?.(chartData);
-  }, [chartData, onChartData]);
+    if (!chartData.length) return;
+    const opt = RANGE_OPTIONS.find(r => r.key === range);
+    const window = opt?.months ?? chartData.length;
+    setBrushRange({
+      start: Math.max(0, chartData.length - window),
+      end: chartData.length - 1,
+    });
+  }, [chartData.length, mode]);
+
+  const handleRangeChange = (key) => {
+    setRange(key);
+    onRangeChange?.(key);
+    const opt = RANGE_OPTIONS.find(r => r.key === key);
+    const window = opt?.months ?? chartData.length;
+    setBrushRange({
+      start: Math.max(0, chartData.length - window),
+      end: chartData.length - 1,
+    });
+  };
+
+  useEffect(() => {
+    if (!chartData.length) return;
+    const visible = chartData.slice(brushRange.start, brushRange.end + 1);
+    onChartData?.(visible);
+  }, [chartData, brushRange, onChartData]);
 
   const title = mode === 'cpi'
     ? 'ИПЦ (к предыдущему месяцу, %)'
@@ -186,16 +171,12 @@ export default function CpiChart({
         </div>
       </div>
 
-      <ResponsiveContainer width="100%" height={380}>
+      <ResponsiveContainer width="100%" height={420}>
         <ComposedChart data={chartData} margin={{ top: 5, right: 10, bottom: 5, left: -5 }}>
           <defs>
             <linearGradient id="inflGradActual" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#B8942F" stopOpacity={0.15} />
               <stop offset="100%" stopColor="#B8942F" stopOpacity={0} />
-            </linearGradient>
-            <linearGradient id="inflGradCI" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#7C3AED" stopOpacity={0.10} />
-              <stop offset="100%" stopColor="#7C3AED" stopOpacity={0.02} />
             </linearGradient>
           </defs>
 
@@ -244,47 +225,27 @@ export default function CpiChart({
           />
 
           {showForecast && (
-            <>
-              <Area
-                dataKey="upper"
-                stroke="none"
-                fill="url(#inflGradCI)"
-                dot={false}
-                activeDot={false}
-              />
-              <Area
-                dataKey="lower"
-                stroke="none"
-                fill="#FFFFFF"
-                dot={false}
-                activeDot={false}
-              />
-              <Line
-                dataKey="upper"
-                stroke="rgba(124,58,237,0.25)"
-                strokeWidth={1}
-                strokeDasharray="3 3"
-                dot={false}
-                activeDot={false}
-              />
-              <Line
-                dataKey="lower"
-                stroke="rgba(124,58,237,0.25)"
-                strokeWidth={1}
-                strokeDasharray="3 3"
-                dot={false}
-                activeDot={false}
-              />
-              <Line
-                dataKey="forecast"
-                stroke="#7C3AED"
-                strokeWidth={2.5}
-                strokeDasharray="8 4"
-                dot={false}
-                activeDot={{ r: 5, fill: '#7C3AED', stroke: '#FFFFFF', strokeWidth: 2 }}
-              />
-            </>
+            <Line
+              dataKey="forecast"
+              stroke="#7C3AED"
+              strokeWidth={2.5}
+              strokeDasharray="8 4"
+              dot={false}
+              activeDot={{ r: 5, fill: '#7C3AED', stroke: '#FFFFFF', strokeWidth: 2 }}
+            />
           )}
+
+          <Brush
+            dataKey="date"
+            height={30}
+            stroke="#B8942F"
+            fill="#F8F9FC"
+            tickFormatter={d => formatDate(d)}
+            startIndex={brushRange.start}
+            endIndex={brushRange.end}
+            onChange={({ startIndex, endIndex }) => setBrushRange({ start: startIndex, end: endIndex })}
+            travellerWidth={8}
+          />
         </ComposedChart>
       </ResponsiveContainer>
 
@@ -298,10 +259,6 @@ export default function CpiChart({
             <div className="flex items-center gap-2">
               <span className="w-5 h-0.5 rounded-full" style={{ background: '#7C3AED', opacity: 0.8 }} />
               <span className="text-[11px] text-text-tertiary">Прогноз OLS</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-5 h-3 rounded-sm" style={{ background: 'rgba(124,58,237,0.12)' }} />
-              <span className="text-[11px] text-text-tertiary">95% CI</span>
             </div>
           </div>
         )

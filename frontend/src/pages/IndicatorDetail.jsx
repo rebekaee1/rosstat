@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ArrowLeft, ExternalLink, Activity, Info, TrendingUp, TrendingDown, Database, Terminal, Download } from 'lucide-react';
@@ -10,6 +10,17 @@ import CpiChart from '../components/CpiChart';
 import ForecastTable from '../components/ForecastTable';
 import DataTable from '../components/DataTable';
 import { ChartSkeleton, SkeletonBox } from '../components/Skeleton';
+
+const FREQ_MAP = { monthly: 'Помесячно', quarterly: 'Ежеквартально', irregular: 'Нерегулярно' };
+
+const INFLATION_DESCRIPTION =
+  'Накопленная инфляция за 12 месяцев показывает, на сколько процентов выросли ' +
+  'потребительские цены за последний год. Рассчитывается как произведение 12 ' +
+  'последовательных месячных индексов ИПЦ минус 100%.';
+
+const INFLATION_METHODOLOGY =
+  'Формула: (∏ᵢ₌₁¹² ИПЦᵢ / 100) × 100 − 100, где ИПЦᵢ — индекс потребительских ' +
+  'цен за i-й месяц в % к предыдущему месяцу.';
 
 function TelemetryCard({ label, value, unit, change, meta, delay = 0 }) {
   const ref = useRef(null);
@@ -101,6 +112,24 @@ export default function IndicatorDetail() {
   const { data: inflationResp, isLoading: loadingInflation } = useInflation(code);
   const { data: forecastResp } = useForecast(code);
 
+  const inflationStats = useMemo(() => {
+    if (viewMode !== 'inflation' || !inflationResp?.actuals?.length) return null;
+    const a = inflationResp.actuals;
+    const current = a[a.length - 1];
+    const previous = a.length > 1 ? a[a.length - 2] : null;
+    const highest = a.reduce((max, p) => p.value > max.value ? p : max, a[0]);
+    const avg = a.reduce((s, p) => s + p.value, 0) / a.length;
+    return {
+      currentValue: current.value,
+      currentDate: current.date,
+      previousValue: previous?.value,
+      change: previous ? current.value - previous.value : null,
+      highest: { value: highest.value, date: highest.date },
+      average: avg,
+      dataCount: a.length,
+    };
+  }, [viewMode, inflationResp]);
+
   useEffect(() => {
     const els = headerRef.current?.querySelectorAll('[data-animate]');
     if (els?.length) {
@@ -112,6 +141,7 @@ export default function IndicatorDetail() {
   }, []);
 
   const dataPoints = dataResp?.data || [];
+  const s = inflationStats;
 
   const handleChartData = useCallback((data) => {
     setChartData(data);
@@ -155,7 +185,7 @@ export default function IndicatorDetail() {
             <div data-animate className="flex items-center gap-3 mb-4">
               <span className="px-3 py-1 rounded-full border border-border-subtle bg-obsidian-light text-[10px] font-mono uppercase tracking-widest text-text-secondary flex items-center gap-2">
                 <Activity className="w-3 h-3 text-champagne" />
-                {indicator?.frequency}
+                {FREQ_MAP[indicator?.frequency] || indicator?.frequency}
               </span>
               <span className="text-xs font-mono text-text-tertiary">
                 ID: {indicator?.code.toUpperCase()}
@@ -184,33 +214,33 @@ export default function IndicatorDetail() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <TelemetryCard
               label="Текущее значение"
-              value={indicator?.current_value}
-              unit={indicator?.unit}
-              change={indicator?.change}
-              meta={`DATA: ${formatDate(indicator?.current_date, 'full')}`}
+              value={s?.currentValue ?? indicator?.current_value}
+              unit="%"
+              change={s?.change ?? indicator?.change}
+              meta={`ДАТА: ${formatDate(s?.currentDate ?? indicator?.current_date, 'full')}`}
               delay={0}
             />
             <TelemetryCard
               label="Предыдущий месяц"
-              value={indicator?.previous_value}
-              unit={indicator?.unit}
+              value={s?.previousValue ?? indicator?.previous_value}
+              unit="%"
               delay={1}
             />
-            {stats?.highest && (
+            {(s?.highest || stats?.highest) && (
               <TelemetryCard
                 label="Абсолютный максимум"
-                value={stats.highest.value}
-                unit={indicator?.unit}
-                meta={`PEAK: ${formatDate(stats.highest.date, 'full')}`}
+                value={s?.highest?.value ?? stats?.highest?.value}
+                unit="%"
+                meta={`ПИК: ${formatDate(s?.highest?.date ?? stats?.highest?.date, 'full')}`}
                 delay={2}
               />
             )}
-            {stats?.average != null && (
+            {(s?.average != null || stats?.average != null) && (
               <TelemetryCard
                 label="Среднее значение"
-                value={stats.average}
-                unit={indicator?.unit}
-                meta={`OBS: ${stats.data_count} PERIODS`}
+                value={s?.average ?? stats?.average}
+                unit="%"
+                meta={`НАБЛ.: ${s?.dataCount ?? stats?.data_count} ПЕРИОД.`}
                 delay={3}
               />
             )}
@@ -309,10 +339,12 @@ export default function IndicatorDetail() {
           </div>
           
           <div className="prose prose-sm max-w-none">
-            <p className="text-text-secondary leading-relaxed">{indicator?.description}</p>
-            {indicator?.methodology && (
+            <p className="text-text-secondary leading-relaxed">
+              {viewMode === 'inflation' ? INFLATION_DESCRIPTION : indicator?.description}
+            </p>
+            {(viewMode === 'inflation' ? INFLATION_METHODOLOGY : indicator?.methodology) && (
               <p className="text-text-tertiary border-l-2 border-champagne/30 pl-4 my-4 font-mono text-[10px] uppercase tracking-wider">
-                {indicator.methodology}
+                {viewMode === 'inflation' ? INFLATION_METHODOLOGY : indicator?.methodology}
               </p>
             )}
           </div>

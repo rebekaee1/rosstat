@@ -49,36 +49,19 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
               <th className="text-right px-5 py-3 text-xs font-medium text-text-tertiary uppercase tracking-wider">
                 {valueLabel}
               </th>
-              <th className="text-right px-5 py-3 text-xs font-medium text-text-tertiary uppercase tracking-wider">
-                Нижняя (95%)
-              </th>
-              <th className="text-right px-5 py-3 text-xs font-medium text-text-tertiary uppercase tracking-wider">
-                Верхняя (95%)
-              </th>
             </tr>
           </thead>
           <tbody>
-            {rows.map(row => {
-              const val = isCpi ? row.value : row.value;
-              const lb = isCpi ? row.lower_bound : row.lower_bound;
-              const ub = isCpi ? row.upper_bound : row.upper_bound;
-              return (
-                <tr key={row.date} className="border-t border-border-subtle hover:bg-surface-hover transition-colors">
-                  <td className="px-5 py-2.5 text-text-secondary font-mono text-xs">
-                    {formatDate(row.date, 'full')}
-                  </td>
-                  <td className="px-5 py-2.5 text-right font-mono font-medium text-champagne">
-                    {val?.toFixed(2)}%
-                  </td>
-                  <td className="px-5 py-2.5 text-right font-mono text-xs text-text-tertiary">
-                    {lb != null ? `${lb.toFixed(2)}%` : '—'}
-                  </td>
-                  <td className="px-5 py-2.5 text-right font-mono text-xs text-text-tertiary">
-                    {ub != null ? `${ub.toFixed(2)}%` : '—'}
-                  </td>
-                </tr>
-              );
-            })}
+            {rows.map(row => (
+              <tr key={row.date} className="border-t border-border-subtle hover:bg-surface-hover transition-colors">
+                <td className="px-5 py-2.5 text-text-secondary font-mono text-xs">
+                  {formatDate(row.date, 'full')}
+                </td>
+                <td className="px-5 py-2.5 text-right font-mono font-medium text-champagne">
+                  {row.value?.toFixed(2)}%
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

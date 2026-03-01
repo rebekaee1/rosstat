@@ -65,7 +65,7 @@ export default function Navbar() {
       <div className="hidden md:flex items-center shrink-0">
         <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-obsidian-lighter/50 border border-border-subtle">
           <Activity className="w-3 h-3 text-positive pulse-dot" />
-          <span className="text-xs font-mono text-text-secondary">Live</span>
+          <span className="text-xs font-mono text-text-secondary">Онлайн</span>
         </div>
       </div>
 

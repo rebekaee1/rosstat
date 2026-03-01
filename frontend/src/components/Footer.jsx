@@ -53,7 +53,7 @@ export default function Footer() {
           <div className="flex items-center gap-2">
             <Activity className="w-3 h-3 text-positive pulse-dot" />
             <span className="text-xs font-mono text-text-tertiary">
-              System Operational
+              Система работает
             </span>
           </div>
 

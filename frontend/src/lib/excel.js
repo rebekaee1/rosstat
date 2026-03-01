@@ -14,8 +14,6 @@ export async function downloadExcel(chartData, mode, indicatorCode, range) {
   const forecastSheet = forecasts.map(d => ({
     'Дата': d.date,
     [`Прогноз ${valueLabel}`]: Number(d.forecast?.toFixed(4)),
-    'Нижняя граница (95%)': d.lower != null ? Number(d.lower.toFixed(4)) : '',
-    'Верхняя граница (95%)': d.upper != null ? Number(d.upper.toFixed(4)) : '',
   }));
 
   const wb = XLSX.utils.book_new();
