@@ -253,15 +253,15 @@ export default function CpiChart({
               interval="preserveStartEnd"
               minTickGap={50}
             />
-            <YAxis
-              stroke="rgba(0,0,0,0.1)"
-              tick={{ fill: 'rgba(0,0,0,0.4)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
-              tickLine={false}
-              axisLine={false}
-              domain={['auto', 'auto']}
-              tickFormatter={v => `${v}%`}
-              width={55}
-            />
+          <YAxis
+            stroke="rgba(0,0,0,0.1)"
+            tick={{ fill: 'rgba(0,0,0,0.4)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
+            tickLine={false}
+            axisLine={false}
+            domain={['auto', 'auto']}
+            tickFormatter={v => `${v}%`}
+            width={mode === 'cpi' ? 70 : 55}
+          />
             <Tooltip
               content={<CustomTooltip mode={mode} />}
               cursor={isDragging ? false : { stroke: 'rgba(0,0,0,0.08)' }}
