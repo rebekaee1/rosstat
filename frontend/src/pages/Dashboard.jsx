@@ -1,12 +1,22 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { useIndicators } from '../lib/hooks';
+import useDocumentMeta from '../lib/useMeta';
 import IndicatorTile from '../components/IndicatorTile';
 import { TileSkeleton } from '../components/Skeleton';
 
 export default function Dashboard() {
   const heroRef = useRef(null);
   const { data: indicators, isLoading } = useIndicators();
+
+  useDocumentMeta({
+    title: 'Прогноз инфляции и ИПЦ России',
+    description:
+      'Аналитическая платформа экономических индикаторов России. ' +
+      'Исторические ряды ИПЦ с 1991 года, OLS-прогноз инфляции на 12 месяцев, ' +
+      'ИПЦ по категориям: продовольствие, непродовольственные товары, услуги.',
+    path: '/',
+  });
 
   useEffect(() => {
     const elements = heroRef.current?.querySelectorAll('[data-animate]');

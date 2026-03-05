@@ -1,4 +1,18 @@
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /assets/
+
+User-agent: Yandex
+Allow: /
+Disallow: /api/
+Disallow: /assets/
+Host: forecasteconomy.com
+Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content
+
+User-agent: Googlebot
+Allow: /
+Disallow: /api/
+Disallow: /assets/
 
 Sitemap: https://forecasteconomy.com/sitemap.xml

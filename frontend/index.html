@@ -19,23 +19,32 @@
     <!-- /Yandex.Metrika counter -->
 
     <title>RuStats | Прогноз инфляции и ИПЦ России</title>
-    <meta name="description" content="RuStats — аналитическая платформа прогнозирования инфляции в России. Данные Росстата, OLS-модель, исторические ряды с 1991 года." />
-    <meta name="keywords" content="ИПЦ, инфляция, Росстат, прогноз, индекс потребительских цен, Россия, экономика, аналитика, OLS" />
+    <meta name="description" content="RuStats — аналитическая платформа прогнозирования инфляции в России. Данные Росстата, OLS-модель, исторические ряды ИПЦ с 1991 года. Прогноз на 12 месяцев." />
+    <meta name="keywords" content="ИПЦ, инфляция, Росстат, прогноз инфляции, индекс потребительских цен, Россия, экономика, аналитика, OLS, прогноз ИПЦ, потребительские цены, инфляция России 2026" />
     <meta name="author" content="RuStats" />
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <meta name="theme-color" content="#F8F9FC" />
+
+    <!-- Yandex Webmaster — замените XXXXX на код из webmaster.yandex.ru -->
+    <meta name="yandex-verification" content="XXXXX" />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href="https://forecasteconomy.com" />
 
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="RuStats" />
     <meta property="og:url" content="https://forecasteconomy.com" />
-    <meta property="og:title" content="RuStats — Прогноз инфляции России" />
-    <meta property="og:description" content="Аналитическая платформа прогнозирования инфляции. Данные Росстата с 1991 года, OLS-модель, ИПЦ по категориям." />
+    <meta property="og:title" content="RuStats — Прогноз инфляции и ИПЦ России" />
+    <meta property="og:description" content="Аналитическая платформа: данные Росстата с 1991 года, OLS-прогноз на 12 месяцев, ИПЦ по категориям (продовольствие, непродовольственные товары, услуги)." />
     <meta property="og:locale" content="ru_RU" />
+    <meta property="og:image" content="https://forecasteconomy.com/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
 
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="RuStats — Прогноз инфляции России" />
-    <meta name="twitter:description" content="Аналитическая платформа прогнозирования инфляции. Данные Росстата, OLS-модель." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="RuStats — Прогноз инфляции и ИПЦ России" />
+    <meta name="twitter:description" content="Аналитическая платформа: данные Росстата, OLS-прогноз инфляции, ИПЦ по категориям." />
+    <meta name="twitter:image" content="https://forecasteconomy.com/og-image.png" />
 
     <script type="application/ld+json">
     {
@@ -43,10 +52,20 @@
       "@type": "WebApplication",
       "name": "RuStats",
       "url": "https://forecasteconomy.com",
-      "description": "Аналитическая платформа прогнозирования инфляции в России на основе данных Росстата",
+      "description": "Аналитическая платформа прогнозирования инфляции в России на основе данных Росстата. Исторические ряды ИПЦ с 1991 года и OLS-прогноз на 12 месяцев.",
       "applicationCategory": "FinanceApplication",
       "operatingSystem": "Web",
-      "inLanguage": "ru"
+      "inLanguage": "ru",
+      "provider": {
+        "@type": "Organization",
+        "name": "RuStats",
+        "url": "https://forecasteconomy.com"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "RUB"
+      }
     }
     </script>
 
@@ -56,6 +75,22 @@
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <div style="max-width:800px;margin:40px auto;padding:20px;font-family:sans-serif">
+        <h1>RuStats — Прогноз инфляции и ИПЦ России</h1>
+        <p>Аналитическая платформа прогнозирования инфляции в России на основе данных Росстата. Исторические ряды индекса потребительских цен (ИПЦ) с 1991 года и OLS-прогноз на 12 месяцев вперёд.</p>
+        <h2>Индикаторы</h2>
+        <ul>
+          <li><a href="/indicator/cpi">Индекс потребительских цен (ИПЦ)</a> — общий индекс цен к предыдущему месяцу</li>
+          <li><a href="/indicator/cpi-food">ИПЦ на продовольственные товары</a> — динамика цен на продукты питания</li>
+          <li><a href="/indicator/cpi-nonfood">ИПЦ на непродовольственные товары</a> — динамика цен на непродовольственные товары</li>
+          <li><a href="/indicator/cpi-services">ИПЦ на услуги</a> — динамика цен на услуги населению</li>
+        </ul>
+        <h2>О платформе</h2>
+        <p>Данные загружаются автоматически с сайта Росстата. Прогноз строится на основе модели OLS (метод наименьших квадратов) с множественными временными окнами. Для каждого индикатора доступны: скользящая 12-месячная инфляция, помесячный ИПЦ, исторические данные и таблица прогнозных значений.</p>
+        <p>Источник данных: <a href="https://rosstat.gov.ru">Росстат</a></p>
+      </div>
+    </noscript>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

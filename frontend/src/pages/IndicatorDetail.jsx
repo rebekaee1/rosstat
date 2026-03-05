@@ -6,10 +6,30 @@ import {
   useIndicator, useIndicatorData, useIndicatorStats, useInflation, useForecast,
 } from '../lib/hooks';
 import { formatValue, formatDate, formatChange, cn } from '../lib/format';
+import useDocumentMeta from '../lib/useMeta';
 import CpiChart from '../components/CpiChart';
 import ForecastTable from '../components/ForecastTable';
 import DataTable from '../components/DataTable';
 import { ChartSkeleton, SkeletonBox } from '../components/Skeleton';
+
+const SEO_MAP = {
+  cpi: {
+    title: 'Индекс потребительских цен (ИПЦ) — прогноз и данные',
+    description: 'ИПЦ России: исторические данные с 1991 года, скользящая 12-месячная инфляция, OLS-прогноз на 12 месяцев. Данные Росстата, обновление ежедневно.',
+  },
+  'cpi-food': {
+    title: 'ИПЦ на продовольственные товары — прогноз и данные',
+    description: 'Индекс потребительских цен на продовольствие: динамика, инфляция продовольственных товаров, OLS-прогноз. Данные Росстата с 1991 года.',
+  },
+  'cpi-nonfood': {
+    title: 'ИПЦ на непродовольственные товары — прогноз и данные',
+    description: 'Индекс цен на непродовольственные товары: динамика, инфляция, OLS-прогноз на 12 месяцев. Данные Росстата с 1991 года.',
+  },
+  'cpi-services': {
+    title: 'ИПЦ на услуги — прогноз и данные',
+    description: 'Индекс потребительских цен на услуги: динамика цен, инфляция в сфере услуг, OLS-прогноз. Данные Росстата с 1991 года.',
+  },
+};
 
 const FREQ_MAP = { monthly: 'Помесячно', quarterly: 'Ежеквартально', irregular: 'Нерегулярно' };
 
@@ -106,6 +126,13 @@ export default function IndicatorDetail() {
   const [viewMode, setViewMode] = useState('inflation');
   const [chartData, setChartData] = useState([]);
   const [currentRange, setCurrentRange] = useState('5y');
+
+  const seo = SEO_MAP[code] || {};
+  useDocumentMeta({
+    title: seo.title || `Индикатор ${code}`,
+    description: seo.description,
+    path: `/indicator/${code}`,
+  });
 
   const { data: indicator, isLoading: loadingInd } = useIndicator(code);
   const { data: dataResp, isLoading: loadingData } = useIndicatorData(code);
