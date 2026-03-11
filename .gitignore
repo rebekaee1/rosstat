@@ -43,3 +43,6 @@ ENV/
 # Temp files
 *.tmp
 *.temp
+
+# Auto-sync
+.auto-sync.log
