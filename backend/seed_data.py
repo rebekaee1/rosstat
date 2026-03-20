@@ -34,8 +34,8 @@ CPI_METHODOLOGY = (
     "База сравнения — предыдущий месяц (100%)."
 )
 
-# Коды ниже должны быть перечислены в frontend/nginx.conf (location ~ ^/indicator/(...)/?$),
-# иначе страница индикатора отдаст 404 на проде.
+# Коды ниже должны быть в frontend/nginx.conf (location ~ ^/indicator/(...)/?$).
+# Статические страницы /about и /privacy — отдельный location в том же файле.
 INDICATORS = [
     {
         "code": "cpi",

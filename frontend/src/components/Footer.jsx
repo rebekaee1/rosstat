@@ -5,7 +5,7 @@ export default function Footer() {
   return (
     <footer className="mt-auto bg-obsidian-light rounded-t-[3rem] border-t border-border-subtle">
       <div className="max-w-6xl mx-auto px-6 py-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center gap-2 mb-3">
               <BarChart3 className="w-5 h-5 text-champagne" />
@@ -48,6 +48,29 @@ export default function Footer() {
               </li>
             </ul>
           </div>
+
+          <div>
+            <h4 className="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-medium">
+              Информация
+            </h4>
+            <ul className="space-y-2 text-sm text-text-secondary">
+              <li>
+                <Link to="/about" className="lift-hover inline-block hover:text-text-primary transition-colors">
+                  О проекте
+                </Link>
+              </li>
+              <li>
+                <Link to="/privacy" className="lift-hover inline-block hover:text-text-primary transition-colors">
+                  Политика конфиденциальности
+                </Link>
+              </li>
+              <li>
+                <a href="mailto:contact@forecasteconomy.com" className="lift-hover inline-block hover:text-text-primary transition-colors">
+                  Связь: contact@forecasteconomy.com
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
 
         <div className="mt-8 pt-6 border-t border-border-subtle flex flex-col md:flex-row items-center justify-between gap-4">
@@ -58,8 +81,8 @@ export default function Footer() {
             </span>
           </div>
 
-          <p className="text-xs text-text-tertiary">
-            &copy; {new Date().getFullYear()} RuStats. Данные предоставлены Росстатом.
+          <p className="text-xs text-text-tertiary text-center md:text-right max-w-md">
+            &copy; {new Date().getFullYear()} RuStats. Материалы носят информационный характер и не являются инвестиционной рекомендацией.
           </p>
         </div>
       </div>

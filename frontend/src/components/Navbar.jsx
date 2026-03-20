@@ -56,6 +56,7 @@ export default function Navbar() {
 
       <div className="hidden md:flex items-center gap-5 flex-1 justify-end">
         <NavLink to="/" end className={linkClass}>Обзор</NavLink>
+        <NavLink to="/about" className={linkClass}>О проекте</NavLink>
         <NavLink to="/indicator/cpi" className={linkClass}>ИПЦ</NavLink>
         <NavLink to="/indicator/cpi-food" className={linkClass}>Продтовары</NavLink>
         <NavLink to="/indicator/cpi-nonfood" className={linkClass}>Непрод. товары</NavLink>
@@ -80,6 +81,7 @@ export default function Navbar() {
         <div className="absolute top-full left-0 right-0 mt-2 p-4 rounded-2xl glass-surface border border-border-subtle md:hidden">
           <div className="flex flex-col gap-3">
             <NavLink to="/" end className={linkClass}>Обзор</NavLink>
+            <NavLink to="/about" className={linkClass}>О проекте</NavLink>
             <NavLink to="/indicator/cpi" className={linkClass}>ИПЦ</NavLink>
             <NavLink to="/indicator/cpi-food" className={linkClass}>Продтовары</NavLink>
             <NavLink to="/indicator/cpi-nonfood" className={linkClass}>Непрод. товары</NavLink>

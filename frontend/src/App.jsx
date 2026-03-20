@@ -4,6 +4,8 @@ import NoiseOverlay from './components/NoiseOverlay';
 import Footer from './components/Footer';
 import Dashboard from './pages/Dashboard';
 import IndicatorDetail from './pages/IndicatorDetail';
+import About from './pages/About';
+import Privacy from './pages/Privacy';
 
 function IndicatorDetailKeyed() {
   const { code } = useParams();
@@ -18,6 +20,8 @@ export default function App() {
       <main className="flex-1">
         <Routes>
           <Route path="/" element={<Dashboard />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/privacy" element={<Privacy />} />
           <Route path="/indicator/:code" element={<IndicatorDetailKeyed />} />
         </Routes>
       </main>

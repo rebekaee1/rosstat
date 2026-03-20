@@ -52,23 +52,41 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "RuStats",
-      "url": "https://forecasteconomy.com",
-      "description": "Аналитическая платформа прогнозирования инфляции в России на основе данных Росстата. Исторические ряды ИПЦ с 1991 года и OLS-прогноз на 12 месяцев.",
-      "applicationCategory": "FinanceApplication",
-      "operatingSystem": "Web",
-      "inLanguage": "ru",
-      "provider": {
-        "@type": "Organization",
-        "name": "RuStats",
-        "url": "https://forecasteconomy.com"
-      },
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "RUB"
-      }
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://forecasteconomy.com/#website",
+          "url": "https://forecasteconomy.com",
+          "name": "RuStats",
+          "description": "Прогноз инфляции и ИПЦ России: данные Росстата, OLS-прогноз.",
+          "inLanguage": "ru-RU",
+          "publisher": { "@id": "https://forecasteconomy.com/#organization" }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://forecasteconomy.com/#organization",
+          "name": "RuStats",
+          "url": "https://forecasteconomy.com",
+          "email": "contact@forecasteconomy.com",
+          "description": "Информационный проект forecasteconomy.com: макроэкономические индикаторы России на основе открытых данных."
+        },
+        {
+          "@type": "WebApplication",
+          "name": "RuStats",
+          "url": "https://forecasteconomy.com",
+          "description": "Аналитическая платформа прогнозирования инфляции в России на основе данных Росстата. Исторические ряды ИПЦ с 1991 года и OLS-прогноз на 12 месяцев.",
+          "applicationCategory": "FinanceApplication",
+          "operatingSystem": "Web",
+          "inLanguage": "ru",
+          "isPartOf": { "@id": "https://forecasteconomy.com/#website" },
+          "provider": { "@id": "https://forecasteconomy.com/#organization" },
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "RUB"
+          }
+        }
+      ]
     }
     </script>
 
@@ -83,6 +101,7 @@
       <div style="max-width:800px;margin:40px auto;padding:20px;font-family:sans-serif">
         <h1>RuStats — Прогноз инфляции и ИПЦ России</h1>
         <p>Аналитическая платформа прогнозирования инфляции в России на основе данных Росстата. Исторические ряды индекса потребительских цен (ИПЦ) с 1991 года и OLS-прогноз на 12 месяцев вперёд.</p>
+        <p><a href="/about">О проекте</a> · <a href="/privacy">Политика конфиденциальности</a></p>
         <h2>Индикаторы</h2>
         <ul>
           <li><a href="/indicator/cpi">Индекс потребительских цен (ИПЦ)</a> — общий индекс цен к предыдущему месяцу</li>
