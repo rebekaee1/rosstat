@@ -3,7 +3,7 @@ from pathlib import Path
 
 
 class Settings(BaseSettings):
-    app_name: str = "RuStats API"
+    app_name: str = "Forecast Economy API"
     debug: bool = False
 
     # Database
@@ -14,6 +14,10 @@ class Settings(BaseSettings):
     redis_url: str = "redis://localhost:6379/0"
     cache_ttl_data: int = 3600      # 1 hour for historical data
     cache_ttl_meta: int = 300       # 5 min for metadata/indicators list
+
+    # ЦБ РФ / Минфин (зарезервировано для парсеров Фазы 2+)
+    cbr_base_url: str = "https://www.cbr.ru"
+    minfin_base_url: str = "https://minfin.gov.ru"
 
     # Rosstat
     rosstat_base_url: str = "https://rosstat.gov.ru/storage/mediabank"

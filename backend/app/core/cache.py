@@ -55,5 +55,5 @@ async def cache_delete_pattern(pattern: str):
 
 
 async def cache_invalidate_indicator(code: str):
-    await cache_delete_pattern(f"rustats:{code}:*")
-    await cache_delete_pattern("rustats:indicators:*")
+    await cache_delete_pattern(f"fe:{code}:*")
+    await cache_delete_pattern("fe:indicators:*")

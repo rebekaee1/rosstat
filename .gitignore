@@ -46,3 +46,4 @@ ENV/
 
 # Auto-sync
 .auto-sync.log
+.cursor/

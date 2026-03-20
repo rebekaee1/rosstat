@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import IndicatorDetail from './pages/IndicatorDetail';
 import About from './pages/About';
 import Privacy from './pages/Privacy';
+import CategoryPage from './pages/CategoryPage';
 
 function IndicatorDetailKeyed() {
   const { code } = useParams();
@@ -22,6 +23,7 @@ export default function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/about" element={<About />} />
           <Route path="/privacy" element={<Privacy />} />
+          <Route path="/category/:slug" element={<CategoryPage />} />
           <Route path="/indicator/:code" element={<IndicatorDetailKeyed />} />
         </Routes>
       </main>

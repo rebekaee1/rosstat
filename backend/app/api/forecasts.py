@@ -18,7 +18,7 @@ router = APIRouter(prefix="/indicators", tags=["forecasts"])
 
 @router.get("/{code}/forecast", response_model=ForecastResponse)
 async def get_forecast(code: str, db: AsyncSession = Depends(get_db)):
-    cached = await cache_get(f"rustats:{code}:forecast")
+    cached = await cache_get(f"fe:{code}:forecast")
     if cached:
         return cached
 
@@ -59,14 +59,14 @@ async def get_forecast(code: str, db: AsyncSession = Depends(get_db)):
     )
 
     response = ForecastResponse(indicator=code, forecast=out)
-    await cache_set(f"rustats:{code}:forecast", response.model_dump(mode="json"), settings.cache_ttl_data)
+    await cache_set(f"fe:{code}:forecast", response.model_dump(mode="json"), settings.cache_ttl_data)
     return response
 
 
 @router.get("/{code}/inflation", response_model=InflationResponse)
 async def get_inflation(code: str, db: AsyncSession = Depends(get_db)):
     """Cumulative trailing 12-month inflation: actuals + forecast."""
-    cached = await cache_get(f"rustats:{code}:inflation")
+    cached = await cache_get(f"fe:{code}:inflation")
     if cached:
         return cached
 
@@ -74,6 +74,13 @@ async def get_inflation(code: str, db: AsyncSession = Depends(get_db)):
     indicator = ind.scalar_one_or_none()
     if not indicator:
         raise HTTPException(status_code=404, detail=f"Indicator '{code}' not found")
+
+    # Скользящая годовая инфляция осмыслена только для помесячного ИПЦ (категория «Цены»)
+    if indicator.category != "Цены":
+        raise HTTPException(
+            status_code=400,
+            detail="Endpoint /inflation is only available for CPI indicators (category «Цены»)",
+        )
 
     data_q = await db.execute(
         select(IndicatorData)
@@ -149,7 +156,7 @@ async def get_inflation(code: str, db: AsyncSession = Depends(get_db)):
         forecast=forecast_points,
     )
     await cache_set(
-        f"rustats:{code}:inflation",
+        f"fe:{code}:inflation",
         response.model_dump(mode="json"),
         settings.cache_ttl_data,
     )

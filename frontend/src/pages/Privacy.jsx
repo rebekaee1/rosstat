@@ -2,9 +2,9 @@ import useDocumentMeta from '../lib/useMeta';
 
 export default function Privacy() {
   useDocumentMeta({
-    title: 'Политика конфиденциальности — RuStats',
+    title: 'Политика конфиденциальности — Forecast Economy',
     description:
-      'Как RuStats обрабатывает данные посетителей: Яндекс.Метрика, cookies, контакты. Проект forecasteconomy.com.',
+      'Как Forecast Economy обрабатывает данные посетителей: Яндекс.Метрика, cookies, контакты. Проект forecasteconomy.com.',
     path: '/privacy',
   });
 
@@ -21,7 +21,7 @@ export default function Privacy() {
 
         <h2 className="text-xl font-semibold text-text-primary mt-8 mb-3">1. Общие положения</h2>
         <p className="text-text-secondary leading-relaxed mb-4">
-          Сайт <strong className="text-text-primary">forecasteconomy.com</strong> (проект RuStats) уважает
+          Сайт <strong className="text-text-primary">forecasteconomy.com</strong> (проект Forecast Economy) уважает
           конфиденциальность посетителей. Настоящая политика описывает, какие данные могут собираться
           при использовании сайта и с какой целью.
         </p>

@@ -1,31 +1,55 @@
 import { Link } from 'react-router-dom';
-import { Activity, BarChart3 } from 'lucide-react';
+import { Activity, TrendingUp } from 'lucide-react';
+import { CATEGORIES } from '../lib/categories';
 
 export default function Footer() {
   return (
     <footer className="mt-auto bg-obsidian-light rounded-t-[3rem] border-t border-border-subtle">
       <div className="max-w-6xl mx-auto px-6 py-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
+          <div className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-2 mb-3">
-              <BarChart3 className="w-5 h-5 text-champagne" />
-              <span className="text-base font-bold">RuStats</span>
+              <TrendingUp className="w-5 h-5 text-champagne" />
+              <span className="text-base font-bold">Forecast Economy</span>
             </div>
             <p className="text-sm text-text-secondary leading-relaxed max-w-xs">
-              Аналитическая платформа экономических индикаторов России.
-              Данные Росстата, OLS прогнозирование.
+              Бесплатная аналитическая платформа экономических данных России. Официальные источники,
+              графики и прогнозы.
             </p>
           </div>
 
           <div>
             <h4 className="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-medium">
-              Индикаторы
+              Категории
             </h4>
             <ul className="space-y-2 text-sm text-text-secondary">
-              <li><Link to="/indicator/cpi" className="lift-hover inline-block hover:text-text-primary transition-colors">Индекс потребительских цен</Link></li>
-              <li><Link to="/indicator/cpi-food" className="lift-hover inline-block hover:text-text-primary transition-colors">ИПЦ — продовольствие</Link></li>
-              <li><Link to="/indicator/cpi-nonfood" className="lift-hover inline-block hover:text-text-primary transition-colors">ИПЦ — непродовольственные товары</Link></li>
-              <li><Link to="/indicator/cpi-services" className="lift-hover inline-block hover:text-text-primary transition-colors">ИПЦ — услуги</Link></li>
+              {CATEGORIES.filter((c) => c.apiCategory).map((c) => (
+                <li key={c.slug}>
+                  <Link
+                    to={`/category/${c.slug}`}
+                    className="lift-hover inline-block hover:text-text-primary transition-colors"
+                  >
+                    {c.name}
+                  </Link>
+                </li>
+              ))}
+              {CATEGORIES.filter((c) => !c.apiCategory).map((c) => (
+                <li key={c.slug} className="text-text-tertiary/80">
+                  {c.name} <span className="text-[10px] uppercase">скоро</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-medium">
+              ИПЦ (Росстат)
+            </h4>
+            <ul className="space-y-2 text-sm text-text-secondary">
+              <li><Link to="/indicator/cpi" className="lift-hover inline-block hover:text-text-primary transition-colors">Общий ИПЦ</Link></li>
+              <li><Link to="/indicator/cpi-food" className="lift-hover inline-block hover:text-text-primary transition-colors">Продовольствие</Link></li>
+              <li><Link to="/indicator/cpi-nonfood" className="lift-hover inline-block hover:text-text-primary transition-colors">Непродтовары</Link></li>
+              <li><Link to="/indicator/cpi-services" className="lift-hover inline-block hover:text-text-primary transition-colors">Услуги</Link></li>
             </ul>
           </div>
 
@@ -43,7 +67,7 @@ export default function Footer() {
               <li>
                 <a href="https://cbr.ru" target="_blank" rel="noopener noreferrer"
                    className="lift-hover inline-block hover:text-text-primary transition-colors">
-                  Центральный банк РФ
+                  Банк России
                 </a>
               </li>
             </ul>
@@ -66,7 +90,7 @@ export default function Footer() {
               </li>
               <li>
                 <a href="mailto:contact@forecasteconomy.com" className="lift-hover inline-block hover:text-text-primary transition-colors">
-                  Связь: contact@forecasteconomy.com
+                  contact@forecasteconomy.com
                 </a>
               </li>
             </ul>
@@ -82,7 +106,7 @@ export default function Footer() {
           </div>
 
           <p className="text-xs text-text-tertiary text-center md:text-right max-w-md">
-            &copy; {new Date().getFullYear()} RuStats. Материалы носят информационный характер и не являются инвестиционной рекомендацией.
+            &copy; {new Date().getFullYear()} Forecast Economy. Материалы носят информационный характер и не являются инвестиционной рекомендацией.
           </p>
         </div>
       </div>

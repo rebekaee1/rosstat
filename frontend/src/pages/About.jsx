@@ -2,9 +2,9 @@ import useDocumentMeta from '../lib/useMeta';
 
 export default function About() {
   useDocumentMeta({
-    title: 'О проекте RuStats — открытые данные и прогноз ИПЦ',
+    title: 'О проекте Forecast Economy — открытые данные и прогноз',
     description:
-      'RuStats: бесплатная аналитика инфляции и ИПЦ России на основе официальных данных Росстата и ЦБ РФ. OLS-прогноз, исторические ряды с 1991 года. Для кого сервис и чем отличается от СМИ и агрегаторов.',
+      'Forecast Economy: бесплатная аналитика инфляции и ИПЦ России на основе официальных данных Росстата и ЦБ РФ. OLS-прогноз, исторические ряды с 1991 года.',
     path: '/about',
   });
 
@@ -15,10 +15,10 @@ export default function About() {
           О проекте
         </p>
         <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-6">
-          RuStats — макроэкономический терминал для России
+          Forecast Economy — макроэкономический терминал для России
         </h1>
         <p className="text-text-secondary leading-relaxed mb-6">
-          <strong className="text-text-primary">RuStats</strong> — веб-платформа для работы с официальной
+          <strong className="text-text-primary">Forecast Economy</strong> — веб-платформа для работы с официальной
           статистикой по инфляции и смежным индикаторам. Мы агрегируем данные из открытых источников
           (прежде всего <a href="https://rosstat.gov.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer">Росстат</a>
           {' '}и <a href="https://cbr.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer">Банк России</a>),

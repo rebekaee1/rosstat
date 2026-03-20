@@ -6,8 +6,14 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-export const fetchIndicators = () =>
-  api.get('/indicators').then(r => r.data);
+export const fetchIndicators = (params = {}) => {
+  const { category, includeInactive } = params;
+  const search = new URLSearchParams();
+  if (category) search.set('category', category);
+  if (includeInactive) search.set('include_inactive', 'true');
+  const q = search.toString();
+  return api.get(`/indicators${q ? `?${q}` : ''}`).then((r) => r.data);
+};
 
 export const fetchIndicator = (code) =>
   api.get(`/indicators/${code}`).then(r => r.data);

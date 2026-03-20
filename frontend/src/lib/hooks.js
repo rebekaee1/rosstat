@@ -9,11 +9,13 @@ import {
   fetchSystemStatus,
 } from './api';
 
-export function useIndicators() {
+export function useIndicators(options = {}) {
+  const { category, includeInactive, enabled = true } = options;
   return useQuery({
-    queryKey: ['indicators'],
-    queryFn: fetchIndicators,
+    queryKey: ['indicators', category ?? 'all', includeInactive ? 'with_inactive' : 'active_only'],
+    queryFn: () => fetchIndicators({ category, includeInactive }),
     staleTime: 5 * 60 * 1000,
+    enabled,
   });
 }
 

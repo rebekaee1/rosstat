@@ -2,10 +2,10 @@ import { useEffect } from 'react';
 
 const BASE = 'https://forecasteconomy.com';
 const DEFAULTS = {
-  title: 'RuStats | Прогноз инфляции и ИПЦ России',
+  title: 'Forecast Economy | Бесплатная аналитика экономики России',
   description:
-    'RuStats — аналитическая платформа прогнозирования инфляции в России. ' +
-    'Данные Росстата, OLS-модель, исторические ряды ИПЦ с 1991 года.',
+    'Forecast Economy — бесплатная аналитическая платформа экономических данных России. ' +
+    'Официальные данные Росстата и ЦБ, ИПЦ, OLS-прогноз. Без регистрации.',
 };
 
 function setMeta(name, content) {
@@ -40,7 +40,7 @@ function setCanonical(href) {
 
 export default function useDocumentMeta({ title, description, path = '/' }) {
   useEffect(() => {
-    const fullTitle = title ? `${title} | RuStats` : DEFAULTS.title;
+    const fullTitle = title ? `${title} | Forecast Economy` : DEFAULTS.title;
     const desc = description || DEFAULTS.description;
     const url = `${BASE}${path}`;
 

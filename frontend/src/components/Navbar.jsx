@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { BarChart3, Activity, Menu, X } from 'lucide-react';
+import { TrendingUp, Activity, Menu, X } from 'lucide-react';
 import gsap from 'gsap';
 import { cn } from '../lib/format';
 
@@ -48,19 +48,19 @@ export default function Navbar() {
       )}
     >
       <Link to="/" className="flex items-center gap-2 shrink-0">
-        <BarChart3 className="w-5 h-5 text-champagne" />
+        <TrendingUp className="w-5 h-5 text-champagne" />
         <span className="text-base font-bold tracking-tight text-text-primary">
-          RuStats
+          Forecast Economy
         </span>
       </Link>
 
-      <div className="hidden md:flex items-center gap-5 flex-1 justify-end">
+      <div className="hidden md:flex items-center gap-4 flex-1 justify-end flex-wrap">
         <NavLink to="/" end className={linkClass}>Обзор</NavLink>
-        <NavLink to="/about" className={linkClass}>О проекте</NavLink>
+        <NavLink to="/category/prices" className={linkClass}>Цены</NavLink>
+        <NavLink to="/category/rates" className={linkClass}>Ставки</NavLink>
+        <NavLink to="/category/labor" className={linkClass}>Труд</NavLink>
         <NavLink to="/indicator/cpi" className={linkClass}>ИПЦ</NavLink>
-        <NavLink to="/indicator/cpi-food" className={linkClass}>Продтовары</NavLink>
-        <NavLink to="/indicator/cpi-nonfood" className={linkClass}>Непрод. товары</NavLink>
-        <NavLink to="/indicator/cpi-services" className={linkClass}>Услуги</NavLink>
+        <NavLink to="/about" className={linkClass}>О проекте</NavLink>
       </div>
 
       <div className="hidden md:flex items-center shrink-0">
@@ -71,6 +71,7 @@ export default function Navbar() {
       </div>
 
       <button
+        type="button"
         onClick={() => setMobileOpen(!mobileOpen)}
         className="md:hidden ml-auto text-text-secondary hover:text-text-primary transition-colors"
       >
@@ -81,11 +82,11 @@ export default function Navbar() {
         <div className="absolute top-full left-0 right-0 mt-2 p-4 rounded-2xl glass-surface border border-border-subtle md:hidden">
           <div className="flex flex-col gap-3">
             <NavLink to="/" end className={linkClass}>Обзор</NavLink>
-            <NavLink to="/about" className={linkClass}>О проекте</NavLink>
+            <NavLink to="/category/prices" className={linkClass}>Цены</NavLink>
+            <NavLink to="/category/rates" className={linkClass}>Ставки</NavLink>
+            <NavLink to="/category/labor" className={linkClass}>Труд</NavLink>
             <NavLink to="/indicator/cpi" className={linkClass}>ИПЦ</NavLink>
-            <NavLink to="/indicator/cpi-food" className={linkClass}>Продтовары</NavLink>
-            <NavLink to="/indicator/cpi-nonfood" className={linkClass}>Непрод. товары</NavLink>
-            <NavLink to="/indicator/cpi-services" className={linkClass}>Услуги</NavLink>
+            <NavLink to="/about" className={linkClass}>О проекте</NavLink>
           </div>
         </div>
       )}

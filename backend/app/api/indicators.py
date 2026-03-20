@@ -15,12 +15,21 @@ router = APIRouter(prefix="/indicators", tags=["indicators"])
 
 
 @router.get("", response_model=list[IndicatorSummary])
-async def list_indicators(db: AsyncSession = Depends(get_db)):
-    cached = await cache_get("rustats:indicators:list")
+async def list_indicators(
+    db: AsyncSession = Depends(get_db),
+    category: Optional[str] = Query(None, description="Точное совпадение с полем category в БД"),
+    include_inactive: bool = Query(False, description="Показать неактивные индикаторы"),
+):
+    cache_key = f"fe:indicators:list:{category or 'all'}:{'all' if include_inactive else 'active'}"
+    cached = await cache_get(cache_key)
     if cached:
         return cached
 
     stmt = select(Indicator).order_by(Indicator.code)
+    if not include_inactive:
+        stmt = stmt.where(Indicator.is_active.is_(True))
+    if category:
+        stmt = stmt.where(Indicator.category == category)
     result = await db.execute(stmt)
     indicators = result.scalars().all()
 
@@ -48,13 +57,13 @@ async def list_indicators(db: AsyncSession = Depends(get_db)):
         ))
 
     serialized = [s.model_dump(mode="json") for s in out]
-    await cache_set("rustats:indicators:list", serialized, settings.cache_ttl_meta)
+    await cache_set(cache_key, serialized, settings.cache_ttl_meta)
     return out
 
 
 @router.get("/{code}", response_model=IndicatorDetail)
 async def get_indicator(code: str, db: AsyncSession = Depends(get_db)):
-    cached = await cache_get(f"rustats:{code}:detail")
+    cached = await cache_get(f"fe:{code}:detail")
     if cached:
         return cached
 
@@ -96,7 +105,7 @@ async def get_indicator(code: str, db: AsyncSession = Depends(get_db)):
         updated_at=indicator.updated_at,
     )
 
-    await cache_set(f"rustats:{code}:detail", detail.model_dump(mode="json"), settings.cache_ttl_meta)
+    await cache_set(f"fe:{code}:detail", detail.model_dump(mode="json"), settings.cache_ttl_meta)
     return detail
 
 
@@ -108,7 +117,7 @@ async def get_indicator_data(
     limit: int = Query(10000, ge=1, le=10000),
     db: AsyncSession = Depends(get_db),
 ):
-    cache_key = f"rustats:{code}:data:{from_date}:{to_date}:{limit}"
+    cache_key = f"fe:{code}:data:{from_date}:{to_date}:{limit}"
     cached = await cache_get(cache_key)
     if cached:
         return cached
