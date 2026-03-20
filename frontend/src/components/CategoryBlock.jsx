@@ -67,7 +67,7 @@ export default function CategoryBlock({
         {category.apiCategory && (
           <span
             className="text-xs font-mono text-text-tertiary"
-            title={!countsKnown ? 'Список индикаторов не загружен (проверьте API)' : undefined}
+            title={!countsKnown ? 'Число показателей не обновилось — нет ответа от сервера данных' : undefined}
           >
             {!countsKnown
               ? '—'

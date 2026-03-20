@@ -4,9 +4,11 @@ import useDocumentMeta from '../lib/useMeta';
 import { CATEGORIES, countInCategory } from '../lib/categories';
 import CategoryBlock from '../components/CategoryBlock';
 import { TileSkeleton } from '../components/Skeleton';
+import { FOCUS_RING } from '../lib/uiTokens';
+import { cn } from '../lib/format';
 
 export default function Dashboard() {
-  const { data: indicators, isLoading, isError } = useIndicators();
+  const { data: indicators, isLoading, isError, refetch, isFetching } = useIndicators();
 
   const counts = useMemo(() => {
     const m = {};
@@ -45,17 +47,24 @@ export default function Dashboard() {
 
         {isError && (
           <div
-            className="mb-6 rounded-2xl border border-champagne/25 bg-warn-surface px-4 py-3.5 text-sm text-warn-text shadow-sm"
+            className="mb-6 flex flex-col gap-3 rounded-2xl border border-champagne/25 bg-warn-surface px-4 py-3.5 text-sm text-warn-text shadow-sm sm:flex-row sm:items-center sm:justify-between"
             role="status"
           >
-            <span className="font-semibold text-text-primary">Список индикаторов не загрузился.</span>{' '}
-            <span className="text-warn-muted">
-              Разделы ниже открываются, но без чисел по показателям. Запустите backend (
-            </span>
-            <code className="text-xs font-mono bg-champagne/10 text-champagne-muted px-1.5 py-0.5 rounded-md">
-              docker compose
-            </code>
-            <span className="text-warn-muted">) или проверьте сеть.</span>
+            <p className="text-warn-muted">
+              <span className="font-semibold text-text-primary">Данные о показателях сейчас не подгрузились.</span>{' '}
+              Разделы ниже по-прежнему открываются; счётчики обновятся, когда соединение с сервером восстановится.
+            </p>
+            <button
+              type="button"
+              onClick={() => refetch()}
+              disabled={isFetching}
+              className={cn(
+                FOCUS_RING,
+                'shrink-0 rounded-xl border border-champagne/30 bg-surface px-4 py-2 text-sm font-medium text-champagne-muted transition-colors hover:bg-champagne/5 hover:border-champagne/45 disabled:opacity-60'
+              )}
+            >
+              {isFetching ? 'Загрузка…' : 'Повторить'}
+            </button>
           </div>
         )}
 
