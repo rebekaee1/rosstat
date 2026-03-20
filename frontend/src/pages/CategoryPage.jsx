@@ -5,8 +5,7 @@ import useDocumentMeta from '../lib/useMeta';
 import IndicatorTile from '../components/IndicatorTile';
 import { TileSkeleton } from '../components/Skeleton';
 import { getCategoryBySlug } from '../lib/categories';
-import { FOCUS_RING } from '../lib/uiTokens';
-import { cn } from '../lib/format';
+import ApiRetryBanner from '../components/ApiRetryBanner';
 
 export default function CategoryPage() {
   const { slug } = useParams();
@@ -64,31 +63,19 @@ export default function CategoryPage() {
         <p className="text-text-secondary leading-relaxed text-[1.02rem]">{cat.description}</p>
       </header>
 
-      <section className="rounded-[2rem] border border-border-subtle bg-surface/80 p-6 md:p-8 shadow-sm">
-        <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-6">
+      <section className="rounded-[2rem] border border-border-subtle bg-surface p-6 shadow-md ring-1 ring-black/[0.06] md:p-8">
+        <h2 className="mb-6 text-xs font-semibold uppercase tracking-[0.2em] text-text-primary/70">
           Индикаторы
         </h2>
         {isError && (
-          <div
-            className="mb-6 flex flex-col gap-3 rounded-xl border border-champagne/25 bg-warn-surface px-4 py-3.5 text-sm text-warn-text sm:flex-row sm:items-center sm:justify-between"
-            role="alert"
+          <ApiRetryBanner
+            className="mb-6"
+            onRetry={() => refetch()}
+            isFetching={isFetching}
           >
-            <p className="text-warn-muted">
-              <span className="font-semibold text-text-primary">Список индикаторов сейчас недоступен.</span>{' '}
-              Чуть позже всё обычно подтягивается — можно обновить попытку.
-            </p>
-            <button
-              type="button"
-              onClick={() => refetch()}
-              disabled={isFetching}
-              className={cn(
-                FOCUS_RING,
-                'shrink-0 rounded-xl border border-champagne/30 bg-surface px-4 py-2 text-sm font-medium text-champagne-muted transition-colors hover:bg-champagne/5 hover:border-champagne/45 disabled:opacity-60'
-              )}
-            >
-              {isFetching ? 'Загрузка…' : 'Повторить'}
-            </button>
-          </div>
+            <span className="font-semibold">Список индикаторов сейчас недоступен.</span>{' '}
+            Чуть позже данные обычно подтягиваются — нажмите «Повторить».
+          </ApiRetryBanner>
         )}
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">

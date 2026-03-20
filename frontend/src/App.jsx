@@ -18,7 +18,7 @@ export default function App() {
     <Router>
       <NoiseOverlay />
       <Navbar />
-      <main className="flex-1">
+      <main className="relative z-0 flex-1">
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/about" element={<About />} />

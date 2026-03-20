@@ -56,18 +56,28 @@ export default function Navbar() {
     'rounded-xl block px-4 py-2.5 text-sm text-left transition-colors hover:bg-obsidian-lighter/80'
   );
 
+  const menuOpen = catOpen || mobileOpen;
+
   return (
-    <nav
-      ref={navRef}
-      className={cn(
-        'fixed top-4 inset-x-0 mx-auto z-50 transition-all duration-500 ease-out',
-        'rounded-[2rem] px-6 py-3 flex items-center gap-4 md:gap-6',
-        'max-w-5xl w-[calc(100%-2rem)]',
-        scrolled
-          ? 'glass-surface border border-border-subtle shadow-lg shadow-black/5'
-          : 'bg-white/60 backdrop-blur-sm border border-black/[0.04]'
+    <>
+      {menuOpen && (
+        <div
+          className="fixed inset-0 z-[80] bg-text-primary/25 backdrop-blur-[2px] md:bg-text-primary/20"
+          aria-hidden
+          onClick={closeAll}
+        />
       )}
-    >
+      <nav
+        ref={navRef}
+        className={cn(
+          'fixed top-4 inset-x-0 mx-auto z-[100] transition-all duration-500 ease-out',
+          'rounded-[2rem] px-6 py-3 flex items-center gap-4 md:gap-6',
+          'max-w-5xl w-[calc(100%-2rem)]',
+          scrolled
+            ? 'glass-surface border border-border-subtle shadow-lg shadow-black/5'
+            : 'bg-white/60 backdrop-blur-sm border border-black/[0.04]'
+        )}
+      >
       <Link
         to="/"
         className={cn(FOCUS_RING, 'flex items-center gap-2 shrink-0 rounded-xl')}
@@ -101,7 +111,7 @@ export default function Navbar() {
           </button>
           {catOpen && (
             <div
-              className="absolute right-0 top-full mt-2 py-2 min-w-[min(100vw-2rem,280px)] max-h-[min(70vh,420px)] overflow-y-auto rounded-2xl glass-surface border border-border-subtle shadow-xl z-[60]"
+              className="absolute right-0 top-full z-[110] mt-2 max-h-[min(70vh,420px)] min-w-[min(100vw-2rem,280px)] overflow-y-auto rounded-2xl border border-border-subtle bg-surface py-2 shadow-2xl ring-1 ring-black/[0.08]"
               role="menu"
             >
               {CATEGORIES.map((c) =>
@@ -120,7 +130,7 @@ export default function Navbar() {
                 ) : (
                   <div
                     key={c.slug}
-                    className={cn(itemClass, 'text-text-tertiary cursor-default')}
+                    className={cn(itemClass, 'cursor-default text-text-secondary')}
                   >
                     {c.name}
                     <span className="ml-2 text-[10px] uppercase font-mono">скоро</span>
@@ -160,7 +170,7 @@ export default function Navbar() {
       </button>
 
       {mobileOpen && (
-        <div className="absolute top-full left-0 right-0 mt-2 p-4 rounded-2xl glass-surface border border-border-subtle md:hidden max-h-[min(80vh,520px)] overflow-y-auto">
+        <div className="absolute left-0 right-0 top-full z-[110] mt-2 max-h-[min(80vh,520px)] overflow-y-auto rounded-2xl border border-border-subtle bg-surface p-4 shadow-2xl ring-1 ring-black/[0.08] md:hidden">
           <div className="flex flex-col gap-1">
             <NavLink to="/" end className={linkClass} onClick={closeAll}>
               Обзор
@@ -195,5 +205,6 @@ export default function Navbar() {
         </div>
       )}
     </nav>
+    </>
   );
 }

@@ -4,8 +4,7 @@ import useDocumentMeta from '../lib/useMeta';
 import { CATEGORIES, countInCategory } from '../lib/categories';
 import CategoryBlock from '../components/CategoryBlock';
 import { TileSkeleton } from '../components/Skeleton';
-import { FOCUS_RING } from '../lib/uiTokens';
-import { cn } from '../lib/format';
+import ApiRetryBanner from '../components/ApiRetryBanner';
 
 export default function Dashboard() {
   const { data: indicators, isLoading, isError, refetch, isFetching } = useIndicators();
@@ -46,26 +45,14 @@ export default function Dashboard() {
         </div>
 
         {isError && (
-          <div
-            className="mb-6 flex flex-col gap-3 rounded-2xl border border-champagne/25 bg-warn-surface px-4 py-3.5 text-sm text-warn-text shadow-sm sm:flex-row sm:items-center sm:justify-between"
-            role="status"
+          <ApiRetryBanner
+            className="mb-6"
+            onRetry={() => refetch()}
+            isFetching={isFetching}
           >
-            <p className="text-warn-muted">
-              <span className="font-semibold text-text-primary">Данные о показателях сейчас не подгрузились.</span>{' '}
-              Разделы ниже по-прежнему открываются; счётчики обновятся, когда соединение с сервером восстановится.
-            </p>
-            <button
-              type="button"
-              onClick={() => refetch()}
-              disabled={isFetching}
-              className={cn(
-                FOCUS_RING,
-                'shrink-0 rounded-xl border border-champagne/30 bg-surface px-4 py-2 text-sm font-medium text-champagne-muted transition-colors hover:bg-champagne/5 hover:border-champagne/45 disabled:opacity-60'
-              )}
-            >
-              {isFetching ? 'Загрузка…' : 'Повторить'}
-            </button>
-          </div>
+            <span className="font-semibold">Данные о показателях сейчас не подгрузились.</span>{' '}
+            Разделы ниже по-прежнему открываются; счётчики обновятся, когда соединение с сервером восстановится.
+          </ApiRetryBanner>
         )}
 
         {isLoading ? (
