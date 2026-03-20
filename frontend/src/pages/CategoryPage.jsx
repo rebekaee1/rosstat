@@ -40,21 +40,26 @@ export default function CategoryPage() {
   const filtered = (indicators ?? []).filter((i) => i.category === cat.apiCategory);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 pt-24 pb-20">
-      <nav className="flex items-center gap-2 text-sm text-text-tertiary mb-8">
+    <div className="max-w-7xl mx-auto px-4 md:px-8 pt-20 pb-24">
+      <nav
+        className="flex items-center gap-2 text-sm text-text-tertiary mb-8"
+        aria-label="Хлебные крошки"
+      >
         <Link to="/" className="hover:text-champagne transition-colors">
           Главная
         </Link>
-        <ChevronRight className="w-4 h-4" />
-        <span className="text-text-primary">{cat.name}</span>
+        <ChevronRight className="w-4 h-4 shrink-0 opacity-60" />
+        <span className="text-text-primary font-medium">{cat.name}</span>
       </nav>
 
-      <header className="mb-10 max-w-3xl">
-        <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-4">{cat.name}</h1>
-        <p className="text-text-secondary leading-relaxed">{cat.description}</p>
+      <header className="mb-12 max-w-3xl">
+        <h1 className="text-3xl md:text-[2.15rem] font-bold text-text-primary tracking-tight mb-4">
+          {cat.name}
+        </h1>
+        <p className="text-text-secondary leading-relaxed text-[1.02rem]">{cat.description}</p>
       </header>
 
-      <section>
+      <section className="rounded-[2rem] border border-border-subtle bg-surface/80 p-6 md:p-8 shadow-sm">
         <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-6">
           Индикаторы
         </h2>

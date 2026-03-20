@@ -7,7 +7,7 @@ import {
 } from '../lib/hooks';
 import { formatValue, formatDate, formatChange, cn } from '../lib/format';
 import useDocumentMeta from '../lib/useMeta';
-import CpiChart from '../components/CpiChart';
+import IndicatorChart from '../components/IndicatorChart';
 import ForecastTable from '../components/ForecastTable';
 import DataTable from '../components/DataTable';
 import { ChartSkeleton, SkeletonBox } from '../components/Skeleton';
@@ -358,7 +358,8 @@ export default function IndicatorDetail() {
           <ChartSkeleton />
         ) : (
           <div className="relative overflow-hidden rounded-[2rem]">
-            <CpiChart
+            <IndicatorChart
+              key={`${indicator?.code}-${viewMode}`}
               mode={viewMode}
               inflation={inflationResp}
               cpiData={dataPoints}
@@ -423,6 +424,7 @@ export default function IndicatorDetail() {
 
       <section>
         <DataTable
+          key={`${indicator?.code}-${viewMode}`}
           data={viewMode === 'inflation' ? (inflationResp?.actuals || []) : dataPoints}
           title={viewMode === 'inflation' ? 'Исторические данные — Инфляция 12 мес.' : 'Исторические данные — ИПЦ'}
         />

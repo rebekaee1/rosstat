@@ -15,6 +15,10 @@ export const fetchIndicators = (params = {}) => {
   return api.get(`/indicators${q ? `?${q}` : ''}`).then((r) => r.data);
 };
 
+/** Алиас для списка индикаторов по категории (план Фазы 1). */
+export const fetchIndicatorsByCategory = (category, opts = {}) =>
+  fetchIndicators({ category, ...opts });
+
 export const fetchIndicator = (code) =>
   api.get(`/indicators/${code}`).then(r => r.data);
 

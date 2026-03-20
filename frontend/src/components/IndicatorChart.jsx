@@ -53,7 +53,11 @@ function CustomTooltip({ active, payload, label, mode }) {
   );
 }
 
-export default function CpiChart({
+/**
+ * График ИПЦ / скользящей инфляции.
+ * Жест панорамы: capture только если движение преимущественно горизонтальное (страница может скроллиться вертикально).
+ */
+export default function IndicatorChart({
   inflation,
   showForecast = true,
   mode = 'inflation',
@@ -69,7 +73,10 @@ export default function CpiChart({
   const [isDragging, setIsDragging] = useState(false);
   const dragRef = useRef(null);
   const onChartDataRef = useRef(onChartData);
-  onChartDataRef.current = onChartData;
+
+  useEffect(() => {
+    onChartDataRef.current = onChartData;
+  }, [onChartData]);
 
   useEffect(() => {
     if (!ref.current) return;
@@ -113,10 +120,6 @@ export default function CpiChart({
 
   const dataLen = chartData.length;
 
-  useEffect(() => {
-    setOffset(0);
-  }, [dataLen, mode]);
-
   const windowMonths = RANGE_OPTIONS.find(r => r.key === range)?.months ?? dataLen;
   const maxOffset = Math.max(0, dataLen - windowMonths);
   const clampedOffset = Math.min(Math.max(0, offset), maxOffset);
@@ -157,16 +160,38 @@ export default function CpiChart({
     if (!rect) return;
     dragRef.current = {
       startX: e.clientX,
+      startY: e.clientY,
       initOffset: clampedOffset,
       chartWidth: rect.width,
+      pointerId: e.pointerId,
+      phase: 'deciding',
     };
-    setIsDragging(true);
-    e.currentTarget.setPointerCapture(e.pointerId);
   }, [clampedOffset]);
 
   const handlePointerMove = useCallback((e) => {
-    const d = dragRef.current;
+    let d = dragRef.current;
     if (!d) return;
+
+    if (d.phase === 'deciding') {
+      const dx = e.clientX - d.startX;
+      const dy = e.clientY - d.startY;
+      if (Math.hypot(dx, dy) < 8) return;
+      if (Math.abs(dy) >= Math.abs(dx)) {
+        dragRef.current = null;
+        return;
+      }
+      d.phase = 'dragging';
+      try {
+        e.currentTarget.setPointerCapture(e.pointerId);
+      } catch {
+        /* ignore */
+      }
+      setIsDragging(true);
+    }
+
+    d = dragRef.current;
+    if (!d || d.phase !== 'dragging') return;
+
     const deltaX = e.clientX - d.startX;
     const pixelsPerPoint = d.chartWidth / (windowMonths || 1);
     const shift = Math.round(deltaX / pixelsPerPoint);
@@ -175,18 +200,24 @@ export default function CpiChart({
   }, [windowMonths, maxOffset]);
 
   const handlePointerUp = useCallback((e) => {
-    if (!dragRef.current) return;
+    const d = dragRef.current;
+    if (d?.phase === 'dragging') {
+      try {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      } catch {
+        /* ignore */
+      }
+    }
     dragRef.current = null;
     setIsDragging(false);
-    e.currentTarget.releasePointerCapture(e.pointerId);
   }, []);
 
   const { yDomain, yWidth } = useMemo(() => {
     if (!visibleData.length) return { yDomain: ['auto', 'auto'], yWidth: 55 };
-    let min = Infinity, max = -Infinity;
-    for (const d of visibleData) {
-      if (d.actual != null) { min = Math.min(min, d.actual); max = Math.max(max, d.actual); }
-      if (d.forecast != null) { min = Math.min(min, d.forecast); max = Math.max(max, d.forecast); }
+    let min = Infinity; let max = -Infinity;
+    for (const row of visibleData) {
+      if (row.actual != null) { min = Math.min(min, row.actual); max = Math.max(max, row.actual); }
+      if (row.forecast != null) { min = Math.min(min, row.forecast); max = Math.max(max, row.forecast); }
     }
     if (!isFinite(min)) return { yDomain: ['auto', 'auto'], yWidth: 55 };
     const pad = (max - min) * 0.08 || 1;
@@ -210,7 +241,7 @@ export default function CpiChart({
   if (!dataLen) return null;
 
   return (
-    <div ref={ref} className="p-5 md:p-6 rounded-[2rem] bg-surface border border-border-subtle">
+    <div ref={ref} className="p-5 md:p-6 rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03]">
       <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
         <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
           {title}
@@ -219,6 +250,7 @@ export default function CpiChart({
           {RANGE_OPTIONS.map(opt => (
             <button
               key={opt.key}
+              type="button"
               onClick={() => handleRangeChange(opt.key)}
               className={cn(
                 'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
@@ -233,13 +265,20 @@ export default function CpiChart({
         </div>
       </div>
 
+      <p className="text-[11px] text-text-tertiary mb-3 md:hidden">
+        Подсказка: горизонтальный свайт по графику — листать период; вертикальный — скролл страницы.
+      </p>
+
       <div
         ref={chartAreaRef}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
-        className={isDragging ? 'cursor-grabbing select-none' : 'cursor-grab'}
+        className={cn(
+          'rounded-xl',
+          isDragging ? 'cursor-grabbing select-none' : 'cursor-grab'
+        )}
         style={{ touchAction: 'pan-y' }}
       >
         <ResponsiveContainer width="100%" height={420}>
@@ -321,6 +360,7 @@ export default function CpiChart({
             max={maxOffset}
             value={sliderValue}
             onChange={handleSlider}
+            aria-label="Позиция окна по времени"
             className="w-full h-1.5 appearance-none bg-obsidian-lighter rounded-full
               [&::-webkit-slider-thumb]:appearance-none
               [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4

@@ -18,7 +18,7 @@
   --color-text-tertiary: rgba(26, 26, 46, 0.4);
   --color-positive: #16A34A;
   --color-negative: #DC2626;
-  --font-sans: "Inter", system-ui, sans-serif;
+  --font-sans: "DM Sans", system-ui, sans-serif;
   --font-display: "Playfair Display", Georgia, serif;
   --font-mono: "JetBrains Mono", monospace;
 }
