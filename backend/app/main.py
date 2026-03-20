@@ -34,12 +34,15 @@ async def lifespan(app: FastAPI):
                 timezone="Europe/Moscow",
             ),
             id="daily_etl",
-            name="Daily Rosstat ETL",
+            name="Daily ETL (all active indicators: Rosstat, CBR, …)",
             replace_existing=True,
         )
         scheduler.start()
-        logger.info("Scheduler started (daily at %02d:%02d MSK)",
-                     settings.scheduler_cron_hour, settings.scheduler_cron_minute)
+        logger.info(
+            "Scheduler started: daily ETL at %02d:%02d MSK (Europe/Moscow), all is_active indicators",
+            settings.scheduler_cron_hour,
+            settings.scheduler_cron_minute,
+        )
 
     yield
 

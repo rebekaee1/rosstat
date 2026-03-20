@@ -1,6 +1,8 @@
 """
-ETL scheduler: daily check for new Rosstat data.
-On new data: parse, upsert to DB, retrain forecast, invalidate cache.
+ETL scheduler: ежедневный прогон **всех активных** индикаторов (`is_active=True`).
+
+Включает Росстат (ИПЦ) и ЦБ (ключевая ставка и др.), каждый через свой `parser_type`
+из `PARSER_REGISTRY`. При новых данных — upsert, при необходимости пересчёт прогноза, сброс кеша.
 """
 
 import logging
@@ -38,14 +40,19 @@ async def run_etl_for_indicator(indicator_code: str):
 
 
 async def daily_update_job():
-    """Плановая задача: обновить все активные индикаторы."""
-    logger.info("Starting daily ETL update...")
-
+    """Плановая задача: обновить все активные индикаторы (как ИПЦ, так и ключевая ставка и т.д.)."""
     async with async_session() as db:
         active_q = await db.execute(
-            select(Indicator).where(Indicator.is_active.is_(True))
+            select(Indicator).where(Indicator.is_active.is_(True)).order_by(Indicator.code)
         )
         active_indicators = active_q.scalars().all()
+
+    codes = [i.code for i in active_indicators]
+    logger.info(
+        "Starting daily ETL: %d active indicator(s): %s",
+        len(codes),
+        ", ".join(codes) if codes else "(none)",
+    )
 
     for indicator in active_indicators:
         try:
