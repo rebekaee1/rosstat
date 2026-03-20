@@ -4,6 +4,7 @@ import { TrendingUp, Activity, Menu, X, ChevronDown } from 'lucide-react';
 import gsap from 'gsap';
 import { cn } from '../lib/format';
 import { CATEGORIES } from '../lib/categories';
+import { FOCUS_RING } from '../lib/uiTokens';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -43,13 +44,17 @@ export default function Navbar() {
   }, []);
 
   const linkClass = ({ isActive }) => cn(
-    'text-sm font-medium transition-colors duration-200',
+    FOCUS_RING,
+    'rounded-lg text-sm font-medium transition-colors duration-200 px-0.5 py-0.5 -mx-0.5',
     isActive
       ? 'text-champagne'
       : 'text-text-secondary hover:text-text-primary'
   );
 
-  const itemClass = 'block px-4 py-2.5 text-sm text-left transition-colors rounded-xl hover:bg-obsidian-lighter/80';
+  const itemClass = cn(
+    FOCUS_RING,
+    'rounded-xl block px-4 py-2.5 text-sm text-left transition-colors hover:bg-obsidian-lighter/80'
+  );
 
   return (
     <nav
@@ -63,7 +68,11 @@ export default function Navbar() {
           : 'bg-white/60 backdrop-blur-sm border border-black/[0.04]'
       )}
     >
-      <Link to="/" className="flex items-center gap-2 shrink-0" onClick={closeAll}>
+      <Link
+        to="/"
+        className={cn(FOCUS_RING, 'flex items-center gap-2 shrink-0 rounded-xl')}
+        onClick={closeAll}
+      >
         <TrendingUp className="w-5 h-5 text-champagne" />
         <span className="text-base font-bold tracking-tight text-text-primary">
           Forecast Economy
@@ -80,6 +89,7 @@ export default function Navbar() {
             type="button"
             onClick={() => setCatOpen((o) => !o)}
             className={cn(
+              FOCUS_RING,
               'flex items-center gap-1 text-sm font-medium transition-colors px-2 py-1 rounded-xl',
               catOpen ? 'text-champagne' : 'text-text-secondary hover:text-text-primary'
             )}
@@ -139,7 +149,10 @@ export default function Navbar() {
       <button
         type="button"
         onClick={() => setMobileOpen(!mobileOpen)}
-        className="md:hidden ml-auto text-text-secondary hover:text-text-primary transition-colors p-1"
+        className={cn(
+          FOCUS_RING,
+          'md:hidden ml-auto rounded-xl text-text-secondary hover:text-text-primary transition-colors p-1.5'
+        )}
         aria-expanded={mobileOpen}
         aria-label={mobileOpen ? 'Закрыть меню' : 'Открыть меню'}
       >

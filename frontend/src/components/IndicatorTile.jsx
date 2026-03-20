@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
 import { formatValue, formatChange, formatDate, cn } from '../lib/format';
+import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
 
 export default function IndicatorTile({ indicator, delay = 0 }) {
   const ref = useRef(null);
@@ -36,6 +37,7 @@ export default function IndicatorTile({ indicator, delay = 0 }) {
       to={isActive ? `/indicator/${indicator.code}` : '#'}
       onMouseMove={handleMouseMove}
       className={cn(
+        FOCUS_RING_SURFACE,
         'group relative p-6 rounded-[2rem] border transition-all duration-500 overflow-hidden',
         'bg-surface border-border-subtle',
         isActive

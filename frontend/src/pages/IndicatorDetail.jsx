@@ -204,7 +204,7 @@ export default function IndicatorDetail() {
     : forecastResp?.forecast?.values?.length > 0;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 pt-32 pb-24">
+    <div className="max-w-7xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24 md:pb-28">
       <div ref={headerRef} className="mb-12 md:mb-16 max-w-4xl">
         <Link
           to="/"

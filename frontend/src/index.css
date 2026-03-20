@@ -18,6 +18,10 @@
   --color-text-tertiary: rgba(26, 26, 46, 0.4);
   --color-positive: #16A34A;
   --color-negative: #DC2626;
+  /* Предупреждения (API и т.д.) — тёплый тон под champagne, не «дефолтный» amber */
+  --color-warn-surface: #faf7f0;
+  --color-warn-text: #2c2618;
+  --color-warn-muted: rgba(44, 38, 24, 0.72);
   --font-sans: "DM Sans", system-ui, sans-serif;
   --font-display: "Playfair Display", Georgia, serif;
   --font-mono: "JetBrains Mono", monospace;
@@ -25,6 +29,18 @@
 
 html {
   overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+::selection {
+  background-color: rgba(184, 148, 47, 0.2);
+  color: var(--color-text-primary);
 }
 
 body {
@@ -109,4 +125,13 @@ body {
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
   border-radius: 0.5rem;
+}
+
+/* Про страницы About / Privacy: ссылки в тексте */
+.prose a {
+  border-radius: 0.125rem;
+}
+.prose a:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-obsidian), 0 0 0 4px rgba(184, 148, 47, 0.45);
 }

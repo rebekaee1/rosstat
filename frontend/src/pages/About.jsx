@@ -9,12 +9,12 @@ export default function About() {
   });
 
   return (
-    <div className="max-w-3xl mx-auto px-4 md:px-8 pt-32 pb-20">
+    <div className="max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-20 md:pb-24">
       <article className="prose prose-sm max-w-none">
         <p className="text-[10px] uppercase tracking-[0.3em] text-champagne font-semibold mb-4">
           О проекте
         </p>
-        <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-6">
+        <h1 className="font-display text-3xl md:text-4xl font-bold text-text-primary mb-6 leading-tight">
           Forecast Economy — макроэкономический терминал для России
         </h1>
         <p className="text-text-secondary leading-relaxed mb-6">

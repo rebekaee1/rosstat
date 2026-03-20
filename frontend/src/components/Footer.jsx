@@ -1,6 +1,13 @@
 import { Link } from 'react-router-dom';
 import { Activity, TrendingUp } from 'lucide-react';
 import { CATEGORIES } from '../lib/categories';
+import { cn } from '../lib/format';
+import { FOCUS_RING } from '../lib/uiTokens';
+
+const footLink = cn(
+  FOCUS_RING,
+  'rounded-sm lift-hover inline-block hover:text-text-primary transition-colors'
+);
 
 export default function Footer() {
   return (
@@ -25,10 +32,7 @@ export default function Footer() {
             <ul className="space-y-2 text-sm text-text-secondary">
               {CATEGORIES.filter((c) => c.apiCategory).map((c) => (
                 <li key={c.slug}>
-                  <Link
-                    to={`/category/${c.slug}`}
-                    className="lift-hover inline-block hover:text-text-primary transition-colors"
-                  >
+                  <Link to={`/category/${c.slug}`} className={footLink}>
                     {c.name}
                   </Link>
                 </li>
@@ -46,10 +50,10 @@ export default function Footer() {
               ИПЦ (Росстат)
             </h4>
             <ul className="space-y-2 text-sm text-text-secondary">
-              <li><Link to="/indicator/cpi" className="lift-hover inline-block hover:text-text-primary transition-colors">Общий ИПЦ</Link></li>
-              <li><Link to="/indicator/cpi-food" className="lift-hover inline-block hover:text-text-primary transition-colors">Продовольствие</Link></li>
-              <li><Link to="/indicator/cpi-nonfood" className="lift-hover inline-block hover:text-text-primary transition-colors">Непродтовары</Link></li>
-              <li><Link to="/indicator/cpi-services" className="lift-hover inline-block hover:text-text-primary transition-colors">Услуги</Link></li>
+              <li><Link to="/indicator/cpi" className={footLink}>Общий ИПЦ</Link></li>
+              <li><Link to="/indicator/cpi-food" className={footLink}>Продовольствие</Link></li>
+              <li><Link to="/indicator/cpi-nonfood" className={footLink}>Непродтовары</Link></li>
+              <li><Link to="/indicator/cpi-services" className={footLink}>Услуги</Link></li>
             </ul>
           </div>
 
@@ -59,14 +63,12 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2 text-sm text-text-secondary">
               <li>
-                <a href="https://rosstat.gov.ru" target="_blank" rel="noopener noreferrer"
-                   className="lift-hover inline-block hover:text-text-primary transition-colors">
+                <a href="https://rosstat.gov.ru" target="_blank" rel="noopener noreferrer" className={footLink}>
                   Росстат
                 </a>
               </li>
               <li>
-                <a href="https://cbr.ru" target="_blank" rel="noopener noreferrer"
-                   className="lift-hover inline-block hover:text-text-primary transition-colors">
+                <a href="https://cbr.ru" target="_blank" rel="noopener noreferrer" className={footLink}>
                   Банк России
                 </a>
               </li>
@@ -79,17 +81,17 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2 text-sm text-text-secondary">
               <li>
-                <Link to="/about" className="lift-hover inline-block hover:text-text-primary transition-colors">
+                <Link to="/about" className={footLink}>
                   О проекте
                 </Link>
               </li>
               <li>
-                <Link to="/privacy" className="lift-hover inline-block hover:text-text-primary transition-colors">
+                <Link to="/privacy" className={footLink}>
                   Политика конфиденциальности
                 </Link>
               </li>
               <li>
-                <a href="mailto:contact@forecasteconomy.com" className="lift-hover inline-block hover:text-text-primary transition-colors">
+                <a href="mailto:contact@forecasteconomy.com" className={footLink}>
                   contact@forecasteconomy.com
                 </a>
               </li>

@@ -28,7 +28,7 @@ export default function CategoryPage() {
 
   if (!cat.apiCategory) {
     return (
-      <div className="max-w-3xl mx-auto px-4 pt-32 pb-20 text-center">
+      <div className="max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-20 text-center">
         <p className="text-text-secondary mb-6">{cat.description}</p>
         <Link to="/" className="text-champagne hover:underline">
           На главную
@@ -45,7 +45,10 @@ export default function CategoryPage() {
         className="flex items-center gap-2 text-sm text-text-tertiary mb-8"
         aria-label="Хлебные крошки"
       >
-        <Link to="/" className="hover:text-champagne transition-colors">
+        <Link
+          to="/"
+          className="hover:text-champagne transition-colors rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-champagne/40 focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian"
+        >
           Главная
         </Link>
         <ChevronRight className="w-4 h-4 shrink-0 opacity-60" />
@@ -53,7 +56,7 @@ export default function CategoryPage() {
       </nav>
 
       <header className="mb-12 max-w-3xl">
-        <h1 className="text-3xl md:text-[2.15rem] font-bold text-text-primary tracking-tight mb-4">
+        <h1 className="font-display text-3xl md:text-[2.15rem] font-bold text-text-primary tracking-tight mb-4">
           {cat.name}
         </h1>
         <p className="text-text-secondary leading-relaxed text-[1.02rem]">{cat.description}</p>
@@ -65,10 +68,13 @@ export default function CategoryPage() {
         </h2>
         {isError && (
           <div
-            className="mb-6 rounded-xl border border-amber-200/90 bg-amber-50/95 px-4 py-3 text-sm text-amber-950"
+            className="mb-6 rounded-xl border border-champagne/25 bg-warn-surface px-4 py-3.5 text-sm text-warn-text"
             role="alert"
           >
-            Не удалось загрузить индикаторы. Проверьте, что API доступен, и обновите страницу.
+            <span className="font-semibold text-text-primary">Не удалось загрузить индикаторы.</span>{' '}
+            <span className="text-warn-muted">
+              Проверьте, что API доступен, и обновите страницу.
+            </span>
           </div>
         )}
         {isLoading ? (

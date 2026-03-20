@@ -13,6 +13,7 @@ import {
   LayoutGrid,
 } from 'lucide-react';
 import { cn } from '../lib/format';
+import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
 
 const CATEGORY_ICONS = {
   TrendingUp,
@@ -46,6 +47,7 @@ export default function CategoryBlock({
       }}
       style={{ animationDelay: `${delay * 50}ms` }}
       className={cn(
+        FOCUS_RING_SURFACE,
         'group relative flex flex-col p-6 rounded-[2rem] border transition-all duration-500 overflow-hidden',
         'bg-surface border-border-subtle',
         category.apiCategory && 'hover:border-champagne/30 lift-hover cursor-pointer',

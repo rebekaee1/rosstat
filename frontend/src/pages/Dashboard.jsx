@@ -30,7 +30,7 @@ export default function Dashboard() {
         <p className="text-[10px] uppercase tracking-[0.3em] text-champagne font-semibold mb-3">
           Бесплатная аналитическая платформа экономических данных России
         </p>
-        <h1 className="text-2xl md:text-3xl font-bold text-text-primary tracking-tight">
+        <h1 className="font-display text-2xl md:text-[1.85rem] font-bold text-text-primary tracking-tight leading-snug max-w-4xl">
           Выберите раздел — индикаторы, графики и прогнозы по мере подключения источников
         </h1>
       </header>
@@ -45,13 +45,17 @@ export default function Dashboard() {
 
         {isError && (
           <div
-            className="mb-6 rounded-2xl border border-amber-200/90 bg-amber-50/95 px-4 py-3 text-sm text-amber-950 shadow-sm"
+            className="mb-6 rounded-2xl border border-champagne/25 bg-warn-surface px-4 py-3.5 text-sm text-warn-text shadow-sm"
             role="status"
           >
-            <span className="font-semibold">Список индикаторов не загрузился.</span>{' '}
-            Разделы ниже открываются, но без чисел по показателям. Запустите backend (
-            <code className="text-xs font-mono bg-amber-100/80 px-1 rounded">docker compose</code>
-            ) или проверьте сеть.
+            <span className="font-semibold text-text-primary">Список индикаторов не загрузился.</span>{' '}
+            <span className="text-warn-muted">
+              Разделы ниже открываются, но без чисел по показателям. Запустите backend (
+            </span>
+            <code className="text-xs font-mono bg-champagne/10 text-champagne-muted px-1.5 py-0.5 rounded-md">
+              docker compose
+            </code>
+            <span className="text-warn-muted">) или проверьте сеть.</span>
           </div>
         )}
 
