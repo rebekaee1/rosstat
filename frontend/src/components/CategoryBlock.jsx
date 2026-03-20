@@ -26,11 +26,17 @@ const CATEGORY_ICONS = {
   GraduationCap,
 };
 
-export default function CategoryBlock({ category, indicatorCount = 0, delay = 0 }) {
+export default function CategoryBlock({
+  category,
+  indicatorCount = 0,
+  delay = 0,
+  /** false, если список индикаторов с API не загрузился — не показываем «0 показ.» */
+  countsKnown = true,
+}) {
   const IconComponent = CATEGORY_ICONS[category.icon] || LayoutGrid;
   const isPlanned = category.status === 'planned' && !category.apiCategory;
   const hasData = category.apiCategory && indicatorCount > 0;
-  const soon = category.apiCategory && indicatorCount === 0;
+  const soon = category.apiCategory && indicatorCount === 0 && countsKnown;
 
   return (
     <Link
@@ -57,8 +63,17 @@ export default function CategoryBlock({ category, indicatorCount = 0, delay = 0 
           <IconComponent className="w-6 h-6" strokeWidth={1.5} />
         </div>
         {category.apiCategory && (
-          <span className="text-xs font-mono text-text-tertiary">
-            {hasData || soon ? `${indicatorCount} показ.` : isPlanned ? 'Скоро' : ''}
+          <span
+            className="text-xs font-mono text-text-tertiary"
+            title={!countsKnown ? 'Список индикаторов не загружен (проверьте API)' : undefined}
+          >
+            {!countsKnown
+              ? '—'
+              : hasData || soon
+                ? `${indicatorCount} показ.`
+                : isPlanned
+                  ? 'Скоро'
+                  : ''}
           </span>
         )}
         {isPlanned && <span className="text-xs font-mono text-champagne/80">Скоро</span>}

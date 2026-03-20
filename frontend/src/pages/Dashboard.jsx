@@ -6,7 +6,7 @@ import CategoryBlock from '../components/CategoryBlock';
 import { TileSkeleton } from '../components/Skeleton';
 
 export default function Dashboard() {
-  const { data: indicators, isLoading } = useIndicators();
+  const { data: indicators, isLoading, isError } = useIndicators();
 
   const counts = useMemo(() => {
     const m = {};
@@ -43,6 +43,18 @@ export default function Dashboard() {
           <div className="h-[1px] flex-1 bg-border-subtle" />
         </div>
 
+        {isError && (
+          <div
+            className="mb-6 rounded-2xl border border-amber-200/90 bg-amber-50/95 px-4 py-3 text-sm text-amber-950 shadow-sm"
+            role="status"
+          >
+            <span className="font-semibold">Список индикаторов не загрузился.</span>{' '}
+            Разделы ниже открываются, но без чисел по показателям. Запустите backend (
+            <code className="text-xs font-mono bg-amber-100/80 px-1 rounded">docker compose</code>
+            ) или проверьте сеть.
+          </div>
+        )}
+
         {isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {[...Array(9)].map((_, i) => (
@@ -56,6 +68,7 @@ export default function Dashboard() {
                 key={cat.slug}
                 category={cat}
                 indicatorCount={counts[cat.slug] ?? 0}
+                countsKnown={!isError}
                 delay={i}
               />
             ))}

@@ -10,7 +10,7 @@ export default function CategoryPage() {
   const { slug } = useParams();
   const cat = getCategoryBySlug(slug);
 
-  const { data: indicators, isLoading } = useIndicators({
+  const { data: indicators, isLoading, isError } = useIndicators({
     category: cat?.apiCategory ?? undefined,
     includeInactive: true,
     enabled: !!cat?.apiCategory,
@@ -63,13 +63,21 @@ export default function CategoryPage() {
         <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-6">
           Индикаторы
         </h2>
+        {isError && (
+          <div
+            className="mb-6 rounded-xl border border-amber-200/90 bg-amber-50/95 px-4 py-3 text-sm text-amber-950"
+            role="alert"
+          >
+            Не удалось загрузить индикаторы. Проверьте, что API доступен, и обновите страницу.
+          </div>
+        )}
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {[...Array(4)].map((_, i) => (
               <TileSkeleton key={i} />
             ))}
           </div>
-        ) : filtered.length === 0 ? (
+        ) : isError ? null : filtered.length === 0 ? (
           <p className="text-text-secondary">В этой категории пока нет показателей в базе.</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
