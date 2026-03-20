@@ -61,6 +61,12 @@ docker compose up -d --build
 
 Платформа будет доступна на `http://localhost`.
 
+### Только фронтенд (`npm run dev`)
+
+Прокси Vite по умолчанию направляет `/api` на **`https://forecasteconomy.com`** — индикаторы и графики в браузере **с реальными данными**, без поднятого локального backend.
+
+Локальный API (полный стек у себя): в `frontend/.env.local` задайте `VITE_DEV_API_PROXY=http://127.0.0.1:8000` и поднимите backend (см. Docker Compose выше).
+
 ### Ручной запуск ETL (опционально)
 
 ```bash
