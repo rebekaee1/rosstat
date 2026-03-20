@@ -13,13 +13,15 @@ const RANGE_OPTIONS = [
   { key: 'all', label: 'Все', months: null },
 ];
 
-function CustomTooltip({ active, payload, label, mode }) {
+function CustomTooltip({ active, payload, label, mode, levelTooltipLabel }) {
   if (!active || !payload?.length) return null;
 
   const actual = payload.find(p => p.dataKey === 'actual' && p.value != null);
   const forecast = payload.find(p => p.dataKey === 'forecast' && p.value != null);
 
-  const actualLabel = mode === 'cpi' ? 'ИПЦ к пред. месяцу' : 'Инфляция (12 мес.)';
+  const actualLabel = mode === 'cpi'
+    ? (levelTooltipLabel || 'ИПЦ к пред. месяцу')
+    : 'Инфляция (12 мес.)';
   const forecastLabel = mode === 'cpi' ? 'Прогноз ИПЦ' : 'Прогноз (12 мес.)';
 
   return (
@@ -65,6 +67,12 @@ export default function IndicatorChart({
   forecastData,
   onChartData,
   onRangeChange,
+  /** null — не рисовать опорную линию; undefined — по умолчанию (100 для cpi, 0 для inflation) */
+  referenceLineY,
+  /** Заголовок графика в режиме «уровень» (бывш. ИПЦ) */
+  cpiChartTitle,
+  /** Подпись факта в тултипе для режима «уровень» */
+  levelTooltipLabel,
 }) {
   const ref = useRef(null);
   const chartAreaRef = useRef(null);
@@ -230,8 +238,12 @@ export default function IndicatorChart({
   }, [visibleData]);
 
   const title = mode === 'cpi'
-    ? 'ИПЦ (к предыдущему месяцу, %)'
+    ? (cpiChartTitle || 'ИПЦ (к предыдущему месяцу, %)')
     : 'Инфляция (скользящие 12 месяцев)';
+
+  const baselineY = referenceLineY !== undefined
+    ? referenceLineY
+    : (mode === 'cpi' ? 100 : 0);
 
   const sliderValue = maxOffset - clampedOffset;
   const hasForecast = mode === 'inflation'
@@ -314,11 +326,18 @@ export default function IndicatorChart({
               width={yWidth}
             />
             <Tooltip
-              content={<CustomTooltip mode={mode} />}
+              content={(
+                <CustomTooltip
+                  mode={mode}
+                  levelTooltipLabel={levelTooltipLabel}
+                />
+              )}
               cursor={isDragging ? false : { stroke: 'rgba(0,0,0,0.08)' }}
               active={!isDragging}
             />
-            <ReferenceLine y={mode === 'cpi' ? 100 : 0} stroke="rgba(0,0,0,0.12)" strokeDasharray="6 3" />
+            {baselineY !== null && (
+              <ReferenceLine y={baselineY} stroke="rgba(0,0,0,0.12)" strokeDasharray="6 3" />
+            )}
 
             {forecastStartDate && showForecast && (
               <ReferenceLine

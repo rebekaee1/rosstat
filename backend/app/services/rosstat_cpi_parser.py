@@ -13,6 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import FetchLog, Indicator, IndicatorData
 from app.services.base_parser import BaseParser
+from app.services.cbr_keyrate_parser import CbrKeyRateParser
 from app.services.data_validator import validate_points
 from app.services.fetcher import RosstatFetcher
 from app.services.forecast_pipeline import retrain_indicator_forecast
@@ -98,6 +99,7 @@ class RosstatCpiParser(BaseParser):
 
 PARSER_REGISTRY: dict[str, type[BaseParser]] = {
     RosstatCpiParser.parser_type: RosstatCpiParser,
+    CbrKeyRateParser.parser_type: CbrKeyRateParser,
 }
 
 

@@ -10,7 +10,7 @@ import sys
 from datetime import date, datetime
 from pathlib import Path
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 
 # Add parent to path for imports
@@ -114,11 +114,24 @@ INDICATORS = [
         "name": "Ключевая ставка ЦБ РФ",
         "name_en": "Key Interest Rate",
         "unit": "%",
-        "frequency": "irregular",
-        "source": "ЦБ РФ",
-        "source_url": "https://cbr.ru/hd_base/KeyRate/",
-        "description": "Процентная ставка, по которой ЦБ РФ предоставляет кредиты банкам.",
-        "is_active": False,
+        "frequency": "daily",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/hd_base/KeyRate/",
+        "description": (
+            "Ключевая ставка — основной инструмент денежно-кредитной политики Банка России. "
+            "Данные — официальная база cbr.ru (история значений по дням)."
+        ),
+        "methodology": (
+            "Ряд подгружается из публичной страницы «Ключевая ставка Банка России» "
+            "(единая база данных). Значение указывается в % годовых; при смене ставки "
+            "ряд отражает уровень на каждую дату публикации."
+        ),
+        "parser_type": "cbr_keyrate_html",
+        "model_config_json": {
+            "forecast_steps": 0,
+            "validation": {"min": 0, "max": 60},
+        },
+        "is_active": True,
         "category": "Денежно-кредитная политика",
     },
 ]
@@ -139,6 +152,25 @@ async def seed():
             db.add(indicator)
             print(f"  Added indicator: {ind_data['code']}")
 
+        await db.commit()
+
+        # Фаза 2: актуализировать key-rate в уже существующих БД (parser_type / URL / активность)
+        await db.execute(
+            update(Indicator)
+            .where(Indicator.code == "key-rate")
+            .values(
+                parser_type="cbr_keyrate_html",
+                is_active=True,
+                frequency="daily",
+                source="Банк России",
+                source_url="https://www.cbr.ru/hd_base/KeyRate/",
+                methodology=(
+                    "Ряд подгружается из публичной страницы «Ключевая ставка Банка России» "
+                    "(единая база данных). Значение указывается в % годовых."
+                ),
+                model_config_json={"forecast_steps": 0, "validation": {"min": 0, "max": 60}},
+            )
+        )
         await db.commit()
 
         # Seed CPI data from CSV

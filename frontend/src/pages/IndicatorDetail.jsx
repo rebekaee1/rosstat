@@ -41,7 +41,12 @@ const SEO_MAP = {
   },
 };
 
-const FREQ_MAP = { monthly: 'Помесячно', quarterly: 'Ежеквартально', irregular: 'Нерегулярно' };
+const FREQ_MAP = {
+  monthly: 'Помесячно',
+  quarterly: 'Ежеквартально',
+  irregular: 'Нерегулярно',
+  daily: 'По дням',
+};
 
 const INFLATION_DESCRIPTION =
   'Накопленная инфляция за 12 месяцев показывает, на сколько процентов выросли ' +
@@ -52,7 +57,10 @@ const INFLATION_METHODOLOGY =
   'Формула: (∏ᵢ₌₁¹² ИПЦᵢ / 100) × 100 − 100, где ИПЦᵢ — индекс потребительских ' +
   'цен за i-й месяц в % к предыдущему месяцу.';
 
-function TelemetryCard({ label, value, unit, change, meta, delay = 0 }) {
+function TelemetryCard({
+  label, value, unit, change, meta, delay = 0,
+  deltaSuffix = 'к пред. месяцу',
+}) {
   const ref = useRef(null);
   const valRef = useRef(null);
   const animated = useRef(false);
@@ -116,7 +124,9 @@ function TelemetryCard({ label, value, unit, change, meta, delay = 0 }) {
             {isUp && <TrendingUp className="w-3.5 h-3.5" />}
             {isDown && <TrendingDown className="w-3.5 h-3.5" />}
             <span>Δ {formatChange(changeNum)}</span>
-            <span className="text-text-tertiary text-[10px] uppercase tracking-wider ml-1">к пред. месяцу</span>
+            <span className="text-text-tertiary text-[10px] uppercase tracking-wider ml-1">
+              {deltaSuffix}
+            </span>
           </div>
         )}
         {meta && (
@@ -145,13 +155,18 @@ export default function IndicatorDetail() {
   });
 
   const { data: indicator, isLoading: loadingInd } = useIndicator(code);
+  const isPriceCategory = indicator?.category === 'Цены';
   const { data: dataResp, isLoading: loadingData } = useIndicatorData(code);
   const { data: stats } = useIndicatorStats(code);
-  const { data: inflationResp, isLoading: loadingInflation } = useInflation(code);
+  const { data: inflationResp, isLoading: loadingInflation } = useInflation(code, {
+    enabled: isPriceCategory,
+  });
   const { data: forecastResp } = useForecast(code);
 
+  const chartMode = isPriceCategory ? viewMode : 'cpi';
+
   const inflationStats = useMemo(() => {
-    if (viewMode !== 'inflation' || !inflationResp?.actuals?.length) return null;
+    if (chartMode !== 'inflation' || !inflationResp?.actuals?.length) return null;
     const a = inflationResp.actuals;
     const current = a[a.length - 1];
     const previous = a.length > 1 ? a[a.length - 2] : null;
@@ -167,7 +182,7 @@ export default function IndicatorDetail() {
       average: avg,
       dataCount: a.length,
     };
-  }, [viewMode, inflationResp]);
+  }, [chartMode, inflationResp]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -194,12 +209,12 @@ export default function IndicatorDetail() {
 
   const handleDownloadExcel = useCallback(async () => {
     const { downloadExcel } = await import('../lib/excel.js');
-    downloadExcel(chartData, viewMode, code, currentRange);
-  }, [chartData, viewMode, code, currentRange]);
+    downloadExcel(chartData, chartMode, code, currentRange);
+  }, [chartData, chartMode, code, currentRange]);
 
-  const chartLoading = viewMode === 'inflation' ? loadingInflation : loadingData;
+  const chartLoading = chartMode === 'inflation' ? loadingInflation : loadingData;
 
-  const hasForecastData = viewMode === 'inflation'
+  const hasForecastData = chartMode === 'inflation'
     ? inflationResp?.forecast?.length > 0
     : forecastResp?.forecast?.values?.length > 0;
 
@@ -247,7 +262,7 @@ export default function IndicatorDetail() {
       </div>
 
       <section className="mb-12">
-        {(loadingInd || (viewMode === 'inflation' && loadingInflation)) ? (
+        {(loadingInd || (chartMode === 'inflation' && loadingInflation)) ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[...Array(4)].map((_, i) => <SkeletonBox key={i} className="h-48 rounded-[2rem]" />)}
           </div>
@@ -260,9 +275,10 @@ export default function IndicatorDetail() {
               change={s?.change ?? indicator?.change}
               meta={`ДАТА: ${formatDate(s?.currentDate ?? indicator?.current_date, 'full')}`}
               delay={0}
+              deltaSuffix={isPriceCategory ? 'к пред. месяцу' : 'к пред. значению'}
             />
             <TelemetryCard
-              label="Предыдущий месяц"
+              label={isPriceCategory ? 'Предыдущий месяц' : 'Предыдущее значение'}
               value={s?.previousValue ?? indicator?.previous_value}
               unit="%"
               meta={`ДАТА: ${formatDate(s?.previousDate ?? cpiPrevDate, 'full')}`}
@@ -294,30 +310,38 @@ export default function IndicatorDetail() {
         <div className="flex items-center justify-between mb-6 border-b border-border-subtle pb-4 flex-wrap gap-3">
           <div className="flex items-center gap-4">
             <Terminal className="w-4 h-4 text-champagne" />
-            <div className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle">
-              <button
-                onClick={() => setViewMode('inflation')}
-                className={cn(
-                  'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
-                  viewMode === 'inflation'
-                    ? 'bg-champagne/15 text-champagne'
-                    : 'text-text-tertiary hover:text-text-secondary'
-                )}
-              >
-                Инфляция 12 мес.
-              </button>
-              <button
-                onClick={() => setViewMode('cpi')}
-                className={cn(
-                  'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
-                  viewMode === 'cpi'
-                    ? 'bg-champagne/15 text-champagne'
-                    : 'text-text-tertiary hover:text-text-secondary'
-                )}
-              >
-                ИПЦ помесячно
-              </button>
-            </div>
+            {isPriceCategory ? (
+              <div className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle">
+                <button
+                  type="button"
+                  onClick={() => setViewMode('inflation')}
+                  className={cn(
+                    'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
+                    viewMode === 'inflation'
+                      ? 'bg-champagne/15 text-champagne'
+                      : 'text-text-tertiary hover:text-text-secondary'
+                  )}
+                >
+                  Инфляция 12 мес.
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode('cpi')}
+                  className={cn(
+                    'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
+                    viewMode === 'cpi'
+                      ? 'bg-champagne/15 text-champagne'
+                      : 'text-text-tertiary hover:text-text-secondary'
+                  )}
+                >
+                  ИПЦ помесячно
+                </button>
+              </div>
+            ) : (
+              <span className="text-[11px] font-mono uppercase tracking-widest text-text-tertiary">
+                Динамика показателя
+              </span>
+            )}
           </div>
 
           <div className="flex items-center gap-3">
@@ -359,14 +383,21 @@ export default function IndicatorDetail() {
         ) : (
           <div className="relative overflow-hidden rounded-[2rem]">
             <IndicatorChart
-              key={`${indicator?.code}-${viewMode}`}
-              mode={viewMode}
+              key={`${indicator?.code}-${chartMode}`}
+              mode={chartMode}
               inflation={inflationResp}
               cpiData={dataPoints}
               forecastData={forecastResp}
               showForecast={showForecast}
               onChartData={handleChartData}
               onRangeChange={handleRangeChange}
+              referenceLineY={isPriceCategory ? undefined : null}
+              cpiChartTitle={
+                isPriceCategory
+                  ? undefined
+                  : `${indicator?.name || 'Показатель'} (% годовых)`
+              }
+              levelTooltipLabel={isPriceCategory ? undefined : 'Значение'}
             />
           </div>
         )}
@@ -383,11 +414,11 @@ export default function IndicatorDetail() {
           
           <div className="prose prose-sm max-w-none">
             <p className="text-text-secondary leading-relaxed">
-              {viewMode === 'inflation' ? INFLATION_DESCRIPTION : indicator?.description}
+              {chartMode === 'inflation' ? INFLATION_DESCRIPTION : indicator?.description}
             </p>
-            {(viewMode === 'inflation' ? INFLATION_METHODOLOGY : indicator?.methodology) && (
+            {(chartMode === 'inflation' ? INFLATION_METHODOLOGY : indicator?.methodology) && (
               <p className="text-text-tertiary border-l-2 border-champagne/30 pl-4 my-4 font-mono text-[10px] uppercase tracking-wider">
-                {viewMode === 'inflation' ? INFLATION_METHODOLOGY : indicator?.methodology}
+                {chartMode === 'inflation' ? INFLATION_METHODOLOGY : indicator?.methodology}
               </p>
             )}
           </div>
@@ -409,7 +440,7 @@ export default function IndicatorDetail() {
         <section className="lg:col-span-2">
           {showForecast && hasForecastData ? (
             <ForecastTable
-              mode={viewMode}
+              mode={chartMode}
               inflation={inflationResp}
               forecastData={forecastResp}
             />
@@ -424,9 +455,13 @@ export default function IndicatorDetail() {
 
       <section>
         <DataTable
-          key={`${indicator?.code}-${viewMode}`}
-          data={viewMode === 'inflation' ? (inflationResp?.actuals || []) : dataPoints}
-          title={viewMode === 'inflation' ? 'Исторические данные — Инфляция 12 мес.' : 'Исторические данные — ИПЦ'}
+          key={`${indicator?.code}-${chartMode}`}
+          data={chartMode === 'inflation' ? (inflationResp?.actuals || []) : dataPoints}
+          title={
+            chartMode === 'inflation'
+              ? 'Исторические данные — Инфляция 12 мес.'
+              : (isPriceCategory ? 'Исторические данные — ИПЦ' : `Исторические данные — ${indicator?.name || 'ряд'}`)
+          }
         />
       </section>
     </div>

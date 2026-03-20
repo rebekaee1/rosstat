@@ -55,11 +55,12 @@ export function useForecast(code) {
   });
 }
 
-export function useInflation(code) {
+export function useInflation(code, options = {}) {
+  const { enabled = true } = options;
   return useQuery({
     queryKey: ['inflation', code],
     queryFn: () => fetchInflation(code),
-    enabled: !!code,
+    enabled: !!code && enabled,
     staleTime: 60 * 60 * 1000,
   });
 }

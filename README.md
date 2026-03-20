@@ -79,12 +79,20 @@ docker compose up -d --build
 
 ### Ручной запуск ETL (опционально)
 
+Все активные индикаторы (в т.ч. ключевая ставка ЦБ):
+
 ```bash
 docker compose exec backend python -c "
 import asyncio
 from app.tasks.scheduler import daily_update_job
 asyncio.run(daily_update_job())
 "
+```
+
+Только ключевая ставка (локально, если настроен `PYTHONPATH` и `RUSTATS_DATABASE_URL`):
+
+```bash
+./scripts/etl-key-rate.sh
 ```
 
 ## API
@@ -113,7 +121,7 @@ Base URL: `/api/v1`
 | `cpi-nonfood` | ИПЦ — непродовольственные товары | Active |
 | `cpi-services` | ИПЦ — услуги | Active |
 | `unemployment` | Уровень безработицы | Planned |
-| `key-rate` | Ключевая ставка ЦБ РФ | Planned |
+| `key-rate` | Ключевая ставка ЦБ РФ | Active (ETL с [cbr.ru](https://www.cbr.ru/hd_base/KeyRate/), см. [docs/cbr_sources.md](docs/cbr_sources.md)) |
 
 ## Структура проекта
 

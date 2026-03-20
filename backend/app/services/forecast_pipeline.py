@@ -15,6 +15,11 @@ logger = logging.getLogger(__name__)
 
 async def retrain_indicator_forecast(db: AsyncSession, indicator: Indicator) -> None:
     """Переобучить модель и сохранить текущий прогноз для индикатора."""
+    cfg = indicator.model_config_json or {}
+    if int(cfg.get("forecast_steps", settings.forecast_steps) or 0) <= 0:
+        logger.info("forecast_steps<=0 for '%s', skipping OLS retrain", indicator.code)
+        return
+
     data_q = await db.execute(
         select(IndicatorData)
         .where(IndicatorData.indicator_id == indicator.id)
@@ -29,7 +34,6 @@ async def retrain_indicator_forecast(db: AsyncSession, indicator: Indicator) -> 
     dates = [d.date for d in all_data]
     values = [float(d.value) for d in all_data]
 
-    cfg = indicator.model_config_json or {}
     forecast_steps = cfg.get("forecast_steps", settings.forecast_steps)
 
     result = await asyncio.to_thread(train_and_forecast, dates, values, forecast_steps=forecast_steps)

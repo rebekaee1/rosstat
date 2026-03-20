@@ -15,8 +15,9 @@ class Settings(BaseSettings):
     cache_ttl_data: int = 3600      # 1 hour for historical data
     cache_ttl_meta: int = 300       # 5 min for metadata/indicators list
 
-    # ЦБ РФ / Минфин (зарезервировано для парсеров Фазы 2+)
+    # ЦБ РФ / Минфин (Фаза 2+)
     cbr_base_url: str = "https://www.cbr.ru"
+    cbr_request_timeout: int = 90  # KeyRate HTML может быть большим
     minfin_base_url: str = "https://minfin.gov.ru"
 
     # Rosstat
