@@ -132,7 +132,279 @@ INDICATORS = [
             "validation": {"min": 0, "max": 60},
         },
         "is_active": True,
-        "category": "Денежно-кредитная политика",
+        "category": "Ставки",
+    },
+    # ─── Курсы валют ───
+    {
+        "code": "usd-rub",
+        "name": "Курс доллара США",
+        "name_en": "USD/RUB Exchange Rate",
+        "unit": "руб.",
+        "frequency": "daily",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/currency_base/daily/",
+        "description": (
+            "Официальный курс доллара США к рублю, устанавливаемый Банком России. "
+            "Обновляется ежедневно."
+        ),
+        "methodology": (
+            "Курс устанавливается на основе результатов биржевых торгов. "
+            "Источник: XML-канал ЦБ РФ (XML_dynamic.asp)."
+        ),
+        "parser_type": "cbr_fx_xml",
+        "model_config_json": {
+            "forecast_steps": 6,
+            "forecast_transform": "absolute",
+            "validation": {"min": 1, "max": 500},
+        },
+        "is_active": True,
+        "category": "Финансы",
+    },
+    {
+        "code": "eur-rub",
+        "name": "Курс евро",
+        "name_en": "EUR/RUB Exchange Rate",
+        "unit": "руб.",
+        "frequency": "daily",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/currency_base/daily/",
+        "description": "Официальный курс евро к рублю, устанавливаемый Банком России.",
+        "parser_type": "cbr_fx_xml",
+        "model_config_json": {
+            "forecast_steps": 6,
+            "forecast_transform": "absolute",
+            "validation": {"min": 1, "max": 500},
+        },
+        "is_active": True,
+        "category": "Финансы",
+    },
+    {
+        "code": "cny-rub",
+        "name": "Курс юаня",
+        "name_en": "CNY/RUB Exchange Rate",
+        "unit": "руб.",
+        "frequency": "daily",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/currency_base/daily/",
+        "description": "Официальный курс китайского юаня к рублю, устанавливаемый Банком России.",
+        "parser_type": "cbr_fx_xml",
+        "model_config_json": {
+            "forecast_steps": 6,
+            "forecast_transform": "absolute",
+            "validation": {"min": 0.1, "max": 100},
+        },
+        "is_active": True,
+        "category": "Финансы",
+    },
+    # ─── RUONIA ───
+    {
+        "code": "ruonia",
+        "name": "Ставка RUONIA",
+        "name_en": "RUONIA Rate",
+        "unit": "%",
+        "frequency": "daily",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/hd_base/ruonia/",
+        "description": (
+            "Ruble OverNight Index Average — индикативная взвешенная ставка "
+            "однодневных рублёвых кредитов (депозитов) на условиях «овернайт» "
+            "на межбанковском рынке."
+        ),
+        "methodology": (
+            "Рассчитывается Банком России по данным о необеспеченных сделках банков-участников. "
+            "Источник: HTML-таблица cbr.ru/hd_base/ruonia/."
+        ),
+        "parser_type": "cbr_ruonia_html",
+        "model_config_json": {
+            "forecast_steps": 0,
+            "validation": {"min": -5, "max": 100},
+        },
+        "is_active": True,
+        "category": "Ставки",
+    },
+    # ─── Денежные агрегаты ───
+    {
+        "code": "m0",
+        "name": "Денежная масса М0",
+        "name_en": "M0 Money Supply",
+        "unit": "млрд руб.",
+        "frequency": "monthly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/macro_itm/dkfs/",
+        "description": (
+            "Наличные деньги в обращении вне банковской системы (агрегат М0). "
+            "Публикуется ежемесячно на 1-е число."
+        ),
+        "parser_type": "cbr_dataservice_json",
+        "model_config_json": {
+            "dataservice": {
+                "publicationId": 5,
+                "datasetId": 5,
+                "measureId": None,
+                "element_id": None,
+                "date_offset_months": 0,
+            },
+            "backfill_from_year": 2010,
+            "forecast_steps": 6,
+            "forecast_transform": "absolute",
+            "validation": {"min": 0},
+        },
+        "is_active": True,
+        "category": "Финансы",
+    },
+    {
+        "code": "m2",
+        "name": "Денежная масса М2",
+        "name_en": "M2 Money Supply",
+        "unit": "млрд руб.",
+        "frequency": "monthly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/macro_itm/dkfs/",
+        "description": (
+            "Широкая денежная масса (агрегат М2): наличные + безналичные средства "
+            "на счетах резидентов. Публикуется ежемесячно на 1-е число."
+        ),
+        "parser_type": "cbr_dataservice_json",
+        "model_config_json": {
+            "dataservice": {
+                "publicationId": 5,
+                "datasetId": 7,
+                "measureId": None,
+                "element_id": 12,
+                "date_offset_months": 0,
+            },
+            "backfill_from_year": 2010,
+            "forecast_steps": 6,
+            "forecast_transform": "absolute",
+            "validation": {"min": 0},
+        },
+        "is_active": True,
+        "category": "Финансы",
+    },
+    # ─── Банковские ставки (CBR Data Service) ───
+    {
+        "code": "mortgage-rate",
+        "name": "Ставка по ипотеке",
+        "name_en": "Mortgage Interest Rate",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/pdko/int_rat/",
+        "description": (
+            "Средневзвешенная процентная ставка по ипотечным жилищным кредитам "
+            "физическим лицам-резидентам в рублях."
+        ),
+        "methodology": (
+            "Данные из REST API CBR DataService (publicationId=14, datasetId=29). "
+            "Значение — ставка по кредитам в рублях (element_id=36)."
+        ),
+        "parser_type": "cbr_dataservice_json",
+        "model_config_json": {
+            "dataservice": {
+                "publicationId": 14,
+                "datasetId": 29,
+                "measureId": None,
+                "element_id": 36,
+            },
+            "backfill_from_year": 2017,
+            "forecast_steps": 6,
+            "forecast_transform": "percentage",
+            "validation": {"min": 0, "max": 50},
+        },
+        "is_active": True,
+        "category": "Ставки",
+    },
+    {
+        "code": "deposit-rate",
+        "name": "Ставка по вкладам",
+        "name_en": "Deposit Interest Rate",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/pdko/int_rat/",
+        "description": (
+            "Средневзвешенная процентная ставка по привлечённым вкладам (депозитам) "
+            "физических лиц в рублях, до 1 года включая «до востребования»."
+        ),
+        "parser_type": "cbr_dataservice_json",
+        "model_config_json": {
+            "dataservice": {
+                "publicationId": 18,
+                "datasetId": 37,
+                "measureId": 2,
+                "element_id": 7,
+            },
+            "backfill_from_year": 2014,
+            "forecast_steps": 6,
+            "forecast_transform": "percentage",
+            "validation": {"min": 0, "max": 50},
+        },
+        "is_active": True,
+        "category": "Ставки",
+    },
+    {
+        "code": "auto-loan-rate",
+        "name": "Ставка по автокредитам",
+        "name_en": "Auto Loan Interest Rate",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/pdko/int_rat/",
+        "description": (
+            "Средневзвешенная процентная ставка по автокредитам физическим лицам "
+            "в рублях, свыше 1 года."
+        ),
+        "parser_type": "cbr_dataservice_json",
+        "model_config_json": {
+            "dataservice": {
+                "publicationId": 14,
+                "datasetId": 28,
+                "measureId": 2,
+                "element_id": 11,
+            },
+            "backfill_from_year": 2014,
+            "forecast_steps": 6,
+            "forecast_transform": "percentage",
+            "validation": {"min": 0, "max": 50},
+        },
+        "is_active": True,
+        "category": "Ставки",
+    },
+    # ─── Производные (CalculationEngine) ───
+    {
+        "code": "inflation-quarterly",
+        "name": "Инфляция квартальная",
+        "name_en": "Quarterly Inflation",
+        "unit": "%",
+        "frequency": "quarterly",
+        "source": "Расчёт",
+        "description": (
+            "Квартальный индекс инфляции, рассчитываемый как произведение "
+            "трёх месячных ИПЦ (к предыдущему кварталу)."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {"forecast_steps": 0},
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "inflation-annual",
+        "name": "Инфляция годовая",
+        "name_en": "Annual Inflation",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Расчёт",
+        "description": (
+            "Годовая инфляция: произведение 12 месячных ИПЦ — процент роста цен "
+            "к аналогичному месяцу предыдущего года."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {
+            "forecast_steps": 12,
+            "forecast_transform": "percentage",
+        },
+        "is_active": True,
+        "category": "Цены",
     },
 ]
 
@@ -154,7 +426,7 @@ async def seed():
 
         await db.commit()
 
-        # Фаза 2: актуализировать key-rate в уже существующих БД (parser_type / URL / активность)
+        # Фаза 2: актуализировать key-rate в уже существующих БД
         await db.execute(
             update(Indicator)
             .where(Indicator.code == "key-rate")
@@ -164,6 +436,7 @@ async def seed():
                 frequency="daily",
                 source="Банк России",
                 source_url="https://www.cbr.ru/hd_base/KeyRate/",
+                category="Ставки",
                 methodology=(
                     "Ряд подгружается из публичной страницы «Ключевая ставка Банка России» "
                     "(единая база данных). Значение указывается в % годовых."
@@ -235,9 +508,16 @@ async def generate_forecasts():
             values = [float(d.value) for d in all_data]
 
             cfg = indicator.model_config_json or {}
-            forecast_steps = cfg.get("forecast_steps", 12)
+            forecast_steps = int(cfg.get("forecast_steps", 12) or 0)
+            if forecast_steps <= 0:
+                print(f"  {indicator.code}: forecast_steps=0, skipping")
+                continue
+            forecast_transform = cfg.get("forecast_transform", "cpi_index")
 
-            result = train_and_forecast(dates, values, forecast_steps=forecast_steps)
+            result = train_and_forecast(
+                dates, values, forecast_steps=forecast_steps,
+                forecast_transform=forecast_transform,
+            )
 
             old_q = await db.execute(
                 select(Forecast).where(

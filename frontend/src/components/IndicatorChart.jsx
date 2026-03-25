@@ -4,7 +4,8 @@ import {
   ResponsiveContainer, ComposedChart, Area, Line, XAxis, YAxis,
   Tooltip, CartesianGrid, ReferenceLine,
 } from 'recharts';
-import { formatDate, cn } from '../lib/format';
+import { Activity, ZoomIn } from 'lucide-react';
+import { formatDate, formatValueWithUnit, unitSuffix, unitDigits, cn } from '../lib/format';
 
 const RANGE_OPTIONS = [
   { key: '3y', label: '3 года', months: 36 },
@@ -13,7 +14,22 @@ const RANGE_OPTIONS = [
   { key: 'all', label: 'Все', months: null },
 ];
 
-function CustomTooltip({ active, payload, label, mode, levelTooltipLabel }) {
+const MIN_WINDOW = 10;
+const ZOOM_STEP = 1.18;
+
+function dateBasedWindowSize(data, months) {
+  if (!months || !data.length) return data.length;
+  const last = new Date(data[data.length - 1].date);
+  const cutoff = new Date(last);
+  cutoff.setUTCMonth(cutoff.getUTCMonth() - months);
+  const cutoffStr = cutoff.toISOString().slice(0, 10);
+  for (let i = 0; i < data.length; i++) {
+    if (data[i].date >= cutoffStr) return Math.max(MIN_WINDOW, data.length - i);
+  }
+  return data.length;
+}
+
+function CustomTooltip({ active, payload, label, mode, levelTooltipLabel, dateFormat = 'full', unit = '%' }) {
   if (!active || !payload?.length) return null;
 
   const actual = payload.find(p => p.dataKey === 'actual' && p.value != null);
@@ -22,11 +38,11 @@ function CustomTooltip({ active, payload, label, mode, levelTooltipLabel }) {
   const actualLabel = mode === 'cpi'
     ? (levelTooltipLabel || 'ИПЦ к пред. месяцу')
     : 'Инфляция (12 мес.)';
-  const forecastLabel = mode === 'cpi' ? 'Прогноз ИПЦ' : 'Прогноз (12 мес.)';
+  const forecastLabel = mode === 'cpi' ? 'Прогноз' : 'Прогноз (12 мес.)';
 
   return (
     <div className="glass-surface rounded-xl border border-border-subtle px-4 py-3 shadow-2xl min-w-[200px]">
-      <p className="text-xs font-mono text-text-tertiary mb-2">{formatDate(label, 'full')}</p>
+      <p className="text-xs font-mono text-text-tertiary mb-2">{formatDate(label, dateFormat)}</p>
 
       {actual && (
         <div className="flex items-center justify-between gap-4">
@@ -35,7 +51,7 @@ function CustomTooltip({ active, payload, label, mode, levelTooltipLabel }) {
             <span className="text-xs text-text-tertiary">{actualLabel}</span>
           </div>
           <span className="text-sm font-mono font-semibold text-champagne">
-            {actual.value.toFixed(2)}%
+            {formatValueWithUnit(actual.value, unit)}
           </span>
         </div>
       )}
@@ -47,7 +63,7 @@ function CustomTooltip({ active, payload, label, mode, levelTooltipLabel }) {
             <span className="text-xs text-text-tertiary">{forecastLabel}</span>
           </div>
           <span className="text-sm font-mono font-semibold text-[#7C3AED]">
-            {forecast.value.toFixed(2)}%
+            {formatValueWithUnit(forecast.value, unit)}
           </span>
         </div>
       )}
@@ -55,10 +71,6 @@ function CustomTooltip({ active, payload, label, mode, levelTooltipLabel }) {
   );
 }
 
-/**
- * График ИПЦ / скользящей инфляции.
- * Жест панорамы: capture только если движение преимущественно горизонтальное (страница может скроллиться вертикально).
- */
 export default function IndicatorChart({
   inflation,
   showForecast = true,
@@ -67,24 +79,24 @@ export default function IndicatorChart({
   forecastData,
   onChartData,
   onRangeChange,
-  /** null — не рисовать опорную линию; undefined — по умолчанию (100 для cpi, 0 для inflation) */
   referenceLineY,
-  /** Заголовок графика в режиме «уровень» (бывш. ИПЦ) */
   cpiChartTitle,
-  /** Подпись факта в тултипе для режима «уровень» */
   levelTooltipLabel,
+  emptyHint,
+  dateFormat = 'full',
+  unit = '%',
 }) {
   const ref = useRef(null);
   const chartAreaRef = useRef(null);
   const [range, setRange] = useState('5y');
+  const [windowOverride, setWindowOverride] = useState(null);
   const [offset, setOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
   const dragRef = useRef(null);
   const onChartDataRef = useRef(onChartData);
 
-  useEffect(() => {
-    onChartDataRef.current = onChartData;
-  }, [onChartData]);
+  useEffect(() => { onChartDataRef.current = onChartData; }, [onChartData]);
 
   useEffect(() => {
     if (!ref.current) return;
@@ -128,11 +140,16 @@ export default function IndicatorChart({
 
   const dataLen = chartData.length;
 
-  const windowMonths = RANGE_OPTIONS.find(r => r.key === range)?.months ?? dataLen;
-  const maxOffset = Math.max(0, dataLen - windowMonths);
+  const presetWindow = useMemo(() => {
+    const opt = RANGE_OPTIONS.find(r => r.key === range);
+    return dateBasedWindowSize(chartData, opt?.months);
+  }, [chartData, range]);
+
+  const windowSize = windowOverride ?? presetWindow;
+  const maxOffset = Math.max(0, dataLen - windowSize);
   const clampedOffset = Math.min(Math.max(0, offset), maxOffset);
 
-  const startIdx = Math.max(0, dataLen - windowMonths - clampedOffset);
+  const startIdx = Math.max(0, dataLen - windowSize - clampedOffset);
   const endIdx = dataLen - clampedOffset;
   const visibleData = useMemo(
     () => chartData.slice(startIdx, endIdx),
@@ -149,12 +166,11 @@ export default function IndicatorChart({
     return null;
   }, [visibleData, showForecast]);
 
-  useEffect(() => {
-    onChartDataRef.current?.(visibleData);
-  }, [visibleData]);
+  useEffect(() => { onChartDataRef.current?.(visibleData); }, [visibleData]);
 
   const handleRangeChange = (key) => {
     setRange(key);
+    setWindowOverride(null);
     setOffset(0);
     onRangeChange?.(key);
   };
@@ -163,6 +179,36 @@ export default function IndicatorChart({
     setOffset(maxOffset - Number(e.target.value));
   }, [maxOffset]);
 
+  /* ── Wheel zoom (TradingView-style) ── */
+  const handleWheel = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const zoomIn = e.deltaY < 0;
+    const factor = zoomIn ? 1 / ZOOM_STEP : ZOOM_STEP;
+    const current = windowOverride ?? presetWindow;
+    const next = Math.max(MIN_WINDOW, Math.min(dataLen, Math.round(current * factor)));
+    if (next === current) return;
+
+    const rect = chartAreaRef.current?.getBoundingClientRect();
+    if (rect) {
+      const mouseRatio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      const pointsAdded = next - current;
+      const shiftLeft = Math.round(pointsAdded * mouseRatio);
+      setOffset(prev => Math.max(0, Math.min(dataLen - next, prev - shiftLeft)));
+    }
+
+    setWindowOverride(next);
+  }, [windowOverride, presetWindow, dataLen]);
+
+  useEffect(() => {
+    const el = chartAreaRef.current;
+    if (!el) return;
+    el.addEventListener('wheel', handleWheel, { passive: false });
+    return () => el.removeEventListener('wheel', handleWheel);
+  }, [handleWheel]);
+
+  /* ── Drag pan ── */
   const handlePointerDown = useCallback((e) => {
     const rect = chartAreaRef.current?.getBoundingClientRect();
     if (!rect) return;
@@ -189,11 +235,7 @@ export default function IndicatorChart({
         return;
       }
       d.phase = 'dragging';
-      try {
-        e.currentTarget.setPointerCapture(e.pointerId);
-      } catch {
-        /* ignore */
-      }
+      try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* ok */ }
       setIsDragging(true);
     }
 
@@ -201,40 +243,46 @@ export default function IndicatorChart({
     if (!d || d.phase !== 'dragging') return;
 
     const deltaX = e.clientX - d.startX;
-    const pixelsPerPoint = d.chartWidth / (windowMonths || 1);
+    const pixelsPerPoint = d.chartWidth / (windowSize || 1);
     const shift = Math.round(deltaX / pixelsPerPoint);
     const newOffset = Math.max(0, Math.min(d.initOffset + shift, maxOffset));
     setOffset(newOffset);
-  }, [windowMonths, maxOffset]);
+  }, [windowSize, maxOffset]);
 
   const handlePointerUp = useCallback((e) => {
     const d = dragRef.current;
     if (d?.phase === 'dragging') {
-      try {
-        e.currentTarget.releasePointerCapture(e.pointerId);
-      } catch {
-        /* ignore */
-      }
+      try { e.currentTarget.releasePointerCapture(e.pointerId); } catch { /* ok */ }
     }
     dragRef.current = null;
     setIsDragging(false);
   }, []);
 
-  const { yDomain, yWidth } = useMemo(() => {
-    if (!visibleData.length) return { yDomain: ['auto', 'auto'], yWidth: 55 };
+  const { yDomain, yWidth, yTicks } = useMemo(() => {
+    if (!visibleData.length) return { yDomain: ['auto', 'auto'], yWidth: 55, yTicks: undefined };
     let min = Infinity; let max = -Infinity;
     for (const row of visibleData) {
       if (row.actual != null) { min = Math.min(min, row.actual); max = Math.max(max, row.actual); }
       if (row.forecast != null) { min = Math.min(min, row.forecast); max = Math.max(max, row.forecast); }
     }
-    if (!isFinite(min)) return { yDomain: ['auto', 'auto'], yWidth: 55 };
-    const pad = (max - min) * 0.08 || 1;
-    const absMax = Math.max(Math.abs(min), Math.abs(max));
+    if (!isFinite(min)) return { yDomain: ['auto', 'auto'], yWidth: 55, yTicks: undefined };
+
+    const range = max - min || 1;
+    const rough = range / 5;
+    const pow = Math.pow(10, Math.floor(Math.log10(rough)));
+    const frac = rough / pow;
+    const step = frac <= 1.5 ? pow : frac <= 3.5 ? 2 * pow : frac <= 7.5 ? 5 * pow : 10 * pow;
+
+    const niceMin = Math.floor(min / step) * step;
+    const niceMax = Math.ceil(max / step) * step;
+    const ticks = [];
+    for (let v = niceMin; v <= niceMax + step * 0.01; v += step) {
+      ticks.push(Math.round(v * 1e6) / 1e6);
+    }
+
+    const absMax = Math.max(Math.abs(niceMin), Math.abs(niceMax));
     const w = absMax >= 1000 ? 85 : absMax >= 100 ? 70 : 55;
-    return {
-      yDomain: [Math.floor((min - pad) * 100) / 100, Math.ceil((max + pad) * 100) / 100],
-      yWidth: w,
-    };
+    return { yDomain: [niceMin, niceMax], yWidth: w, yTicks: ticks };
   }, [visibleData]);
 
   const title = mode === 'cpi'
@@ -250,7 +298,23 @@ export default function IndicatorChart({
     ? inflation?.forecast?.length > 0
     : forecastData?.forecast?.values?.length > 0;
 
-  if (!dataLen) return null;
+  const isZoomed = windowOverride != null;
+
+  if (!dataLen) {
+    return (
+      <div className="p-8 md:p-10 rounded-[2rem] bg-surface border border-border-subtle border-dashed shadow-sm min-h-[320px] flex flex-col items-center justify-center text-center gap-4">
+        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-obsidian-lighter border border-border-subtle">
+          <Activity className="w-7 h-7 text-champagne/80" aria-hidden />
+        </div>
+        <div className="max-w-md space-y-2">
+          <p className="text-sm font-semibold text-text-primary">Нет данных для графика</p>
+          <p className="text-sm text-text-tertiary leading-relaxed">
+            {emptyHint || 'Загрузите ряд с сервера или проверьте доступность API. Если данные только что добавлены на backend — обновите страницу.'}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div ref={ref} className="p-5 md:p-6 rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03]">
@@ -258,28 +322,36 @@ export default function IndicatorChart({
         <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
           {title}
         </h3>
-        <div className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle">
-          {RANGE_OPTIONS.map(opt => (
+        <div className="flex items-center gap-2">
+          {isZoomed && (
             <button
-              key={opt.key}
               type="button"
-              onClick={() => handleRangeChange(opt.key)}
-              className={cn(
-                'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
-                range === opt.key
-                  ? 'bg-champagne/15 text-champagne'
-                  : 'text-text-tertiary hover:text-text-secondary'
-              )}
+              onClick={() => { setWindowOverride(null); setOffset(0); }}
+              className="px-2 py-1.5 text-[10px] font-mono uppercase tracking-wider text-text-tertiary hover:text-champagne transition-colors"
+              title="Сбросить зум"
             >
-              {opt.label}
+              Сброс
             </button>
-          ))}
+          )}
+          <div className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle">
+            {RANGE_OPTIONS.map(opt => (
+              <button
+                key={opt.key}
+                type="button"
+                onClick={() => handleRangeChange(opt.key)}
+                className={cn(
+                  'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
+                  range === opt.key && !isZoomed
+                    ? 'bg-champagne/15 text-champagne'
+                    : 'text-text-tertiary hover:text-text-secondary'
+                )}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
-
-      <p className="text-[11px] text-text-tertiary mb-3 md:hidden">
-        Подсказка: горизонтальный свайт по графику — листать период; вертикальный — скролл страницы.
-      </p>
 
       <div
         ref={chartAreaRef}
@@ -287,9 +359,11 @@ export default function IndicatorChart({
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
+        onMouseEnter={() => setIsHovering(true)}
+        onMouseLeave={() => setIsHovering(false)}
         className={cn(
-          'rounded-xl',
-          isDragging ? 'cursor-grabbing select-none' : 'cursor-grab'
+          'rounded-xl relative',
+          isDragging ? 'cursor-grabbing select-none' : 'cursor-crosshair'
         )}
         style={{ touchAction: 'pan-y' }}
       >
@@ -322,17 +396,13 @@ export default function IndicatorChart({
               tickLine={false}
               axisLine={false}
               domain={yDomain}
-              tickFormatter={v => `${v}%`}
+              ticks={yTicks}
+              tickFormatter={v => `${Number(v.toFixed(unitDigits(unit)))}${unitSuffix(unit)}`}
               width={yWidth}
             />
             <Tooltip
-              content={(
-                <CustomTooltip
-                  mode={mode}
-                  levelTooltipLabel={levelTooltipLabel}
-                />
-              )}
-              cursor={isDragging ? false : { stroke: 'rgba(0,0,0,0.08)' }}
+              content={<CustomTooltip mode={mode} levelTooltipLabel={levelTooltipLabel} dateFormat={dateFormat} unit={unit} />}
+              cursor={isDragging ? false : { stroke: 'rgba(0,0,0,0.15)', strokeWidth: 1 }}
               active={!isDragging}
             />
             {baselineY !== null && (
@@ -355,6 +425,7 @@ export default function IndicatorChart({
               fill="url(#inflGradActual)"
               dot={false}
               activeDot={isDragging ? false : { r: 4, fill: '#B8942F', stroke: '#FFFFFF', strokeWidth: 2 }}
+              isAnimationActive={false}
             />
 
             {showForecast && (
@@ -365,10 +436,18 @@ export default function IndicatorChart({
                 strokeDasharray="8 4"
                 dot={false}
                 activeDot={isDragging ? false : { r: 5, fill: '#7C3AED', stroke: '#FFFFFF', strokeWidth: 2 }}
+                isAnimationActive={false}
               />
             )}
           </ComposedChart>
         </ResponsiveContainer>
+
+        {isHovering && !isDragging && (
+          <div className="absolute bottom-3 right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-obsidian/70 backdrop-blur-sm border border-border-subtle/50 pointer-events-none opacity-60 transition-opacity">
+            <ZoomIn className="w-3 h-3 text-text-tertiary" />
+            <span className="text-[10px] font-mono text-text-tertiary">scroll — зум · drag — сдвиг</span>
+          </div>
+        )}
       </div>
 
       {maxOffset > 0 && (

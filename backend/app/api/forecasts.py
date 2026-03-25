@@ -18,14 +18,20 @@ router = APIRouter(prefix="/indicators", tags=["forecasts"])
 
 @router.get("/{code}/forecast", response_model=ForecastResponse)
 async def get_forecast(code: str, db: AsyncSession = Depends(get_db)):
-    cached = await cache_get(f"fe:{code}:forecast")
-    if cached:
-        return cached
-
     ind = await db.execute(select(Indicator).where(Indicator.code == code))
     indicator = ind.scalar_one_or_none()
     if not indicator:
         raise HTTPException(status_code=404, detail=f"Indicator '{code}' not found")
+
+    cfg = indicator.model_config_json or {}
+    if int(cfg.get("forecast_steps", settings.forecast_steps) or 0) <= 0:
+        response = ForecastResponse(indicator=code, forecast=None)
+        await cache_set(f"fe:{code}:forecast", response.model_dump(mode="json"), settings.cache_ttl_data)
+        return response
+
+    cached = await cache_get(f"fe:{code}:forecast")
+    if cached:
+        return cached
 
     fc = await db.execute(
         select(Forecast)

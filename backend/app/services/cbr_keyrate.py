@@ -59,6 +59,17 @@ def parse_keyrate_html(html: str) -> List[DataPoint]:
     return points
 
 
+def assert_keyrate_response_plausible(html: str, final_url: str) -> None:
+    """Защита от HTML-заглушек, DDOS-страниц и пустых ответов (enterprise sanity-check)."""
+    if not html or len(html) < 2500:
+        raise ValueError(f"KeyRate HTML слишком короткий ({len(html or '')} bytes), URL={final_url[:120]}")
+    lower = html.lower()
+    if "cbr.ru/error" in lower or "страница не найдена" in lower:
+        raise ValueError(f"Похоже на страницу ошибки ЦБ: {final_url[:120]}")
+    if "unidbquery" not in lower and "ключев" not in lower:
+        raise ValueError("Ответ не похож на страницу ключевой ставки (разметка изменилась?)")
+
+
 def fetch_key_rate_html(date_from: date, date_to: date) -> tuple[str, str]:
     """GET страницы KeyRate; возвращает (html, final_url)."""
     url = f"{settings.cbr_base_url.rstrip('/')}/hd_base/KeyRate/"
@@ -79,6 +90,5 @@ def fetch_key_rate_html(date_from: date, date_to: date) -> tuple[str, str]:
     )
     resp = session.get(url, params=params, timeout=settings.cbr_request_timeout)
     resp.raise_for_status()
-    if "charset" not in resp.headers.get("Content-Type", "").lower() and len(resp.text) < 5000:
-        logger.warning("Short response from CBR KeyRate (%d bytes)", len(resp.text))
+    assert_keyrate_response_plausible(resp.text, resp.url)
     return resp.text, resp.url

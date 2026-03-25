@@ -14,6 +14,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import FetchLog, Indicator, IndicatorData
 from app.services.base_parser import BaseParser
 from app.services.cbr_keyrate_parser import CbrKeyRateParser
+from app.services.cbr_fx_parser import CbrFxParser
+from app.services.cbr_ruonia_parser import CbrRuoniaParser
+from app.services.cbr_monetary_parser import CbrMonetaryParser
+from app.services.cbr_dataservice_parser import CbrDataServiceParser
 from app.services.data_validator import validate_points
 from app.services.fetcher import RosstatFetcher
 from app.services.forecast_pipeline import retrain_indicator_forecast
@@ -100,6 +104,10 @@ class RosstatCpiParser(BaseParser):
 PARSER_REGISTRY: dict[str, type[BaseParser]] = {
     RosstatCpiParser.parser_type: RosstatCpiParser,
     CbrKeyRateParser.parser_type: CbrKeyRateParser,
+    CbrFxParser.parser_type: CbrFxParser,
+    CbrRuoniaParser.parser_type: CbrRuoniaParser,
+    CbrMonetaryParser.parser_type: CbrMonetaryParser,
+    CbrDataServiceParser.parser_type: CbrDataServiceParser,
 }
 
 

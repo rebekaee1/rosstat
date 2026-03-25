@@ -5,11 +5,12 @@ import { ArrowLeft, ExternalLink, Activity, Info, TrendingUp, TrendingDown, Data
 import {
   useIndicator, useIndicatorData, useIndicatorStats, useInflation, useForecast,
 } from '../lib/hooks';
-import { formatValue, formatDate, formatChange, cn } from '../lib/format';
+import { formatValue, formatValueWithUnit, formatDate, formatChange, unitSuffix, unitDigits, cn } from '../lib/format';
 import useDocumentMeta from '../lib/useMeta';
 import IndicatorChart from '../components/IndicatorChart';
 import ForecastTable from '../components/ForecastTable';
 import DataTable from '../components/DataTable';
+import ApiRetryBanner from '../components/ApiRetryBanner';
 import { ChartSkeleton, SkeletonBox } from '../components/Skeleton';
 
 const SEO_MAP = {
@@ -31,13 +32,55 @@ const SEO_MAP = {
   },
   unemployment: {
     title: 'Уровень безработицы в России — данные и динамика',
-    description:
-      'Доля безработных в экономически активном населении: официальная статистика Росстата, история ряда, контекст для макроанализа.',
+    description: 'Доля безработных в экономически активном населении: официальная статистика Росстата.',
   },
   'key-rate': {
     title: 'Ключевая ставка ЦБ РФ — график и история',
-    description:
-      'Ключевая ставка Банка России: нерегулярный ряд решений ЦБ, визуализация и справка. Официальный источник — cbr.ru.',
+    description: 'Ключевая ставка Банка России: ежедневный ряд, визуализация и справка. Источник — cbr.ru.',
+  },
+  'usd-rub': {
+    title: 'Курс доллара к рублю (USD/RUB) — график и прогноз',
+    description: 'Официальный курс доллара к рублю ЦБ РФ: ежедневные данные, история, OLS-прогноз.',
+  },
+  'eur-rub': {
+    title: 'Курс евро к рублю (EUR/RUB) — график и прогноз',
+    description: 'Официальный курс евро к рублю ЦБ РФ: ежедневные данные, история, OLS-прогноз.',
+  },
+  'cny-rub': {
+    title: 'Курс юаня к рублю (CNY/RUB) — график и прогноз',
+    description: 'Официальный курс юаня к рублю ЦБ РФ: ежедневные данные, история, OLS-прогноз.',
+  },
+  ruonia: {
+    title: 'Ставка RUONIA — график и динамика',
+    description: 'RUONIA: индикативная ставка однодневных рублёвых межбанковских кредитов. Данные Банка России.',
+  },
+  m0: {
+    title: 'Денежная масса М0 — график и прогноз',
+    description: 'Наличные деньги в обращении (агрегат М0): данные Банка России, история, OLS-прогноз.',
+  },
+  m2: {
+    title: 'Денежная масса М2 — график и прогноз',
+    description: 'Широкая денежная масса (агрегат М2): данные Банка России, история, OLS-прогноз.',
+  },
+  'mortgage-rate': {
+    title: 'Ставка по ипотеке — график и прогноз',
+    description: 'Средневзвешенная ставка по ипотечным жилищным кредитам в рублях. Данные Банка России.',
+  },
+  'deposit-rate': {
+    title: 'Ставка по вкладам — график и прогноз',
+    description: 'Средневзвешенная ставка по вкладам физических лиц в рублях. Данные Банка России.',
+  },
+  'auto-loan-rate': {
+    title: 'Ставка по автокредитам — график и прогноз',
+    description: 'Средневзвешенная ставка по автокредитам физическим лицам в рублях. Данные Банка России.',
+  },
+  'inflation-quarterly': {
+    title: 'Инфляция квартальная — график и данные',
+    description: 'Квартальный индекс инфляции, рассчитанный на основе месячных ИПЦ Росстата.',
+  },
+  'inflation-annual': {
+    title: 'Инфляция годовая — график и прогноз',
+    description: 'Годовая инфляция: скользящий 12-месячный показатель роста цен. Расчёт на основе ИПЦ.',
   },
 };
 
@@ -108,9 +151,9 @@ function TelemetryCard({
 
       <div className="flex items-baseline gap-2 mb-2">
         <span ref={valRef} className="text-4xl md:text-5xl font-mono font-bold tracking-tight text-text-primary">
-          {formatValue(value)}
+          {formatValue(value, unitDigits(unit))}
         </span>
-        <span className="text-sm font-medium text-text-tertiary">{unit}</span>
+        <span className="text-sm font-medium text-text-tertiary">{unitSuffix(unit)}</span>
       </div>
 
       <div className="flex flex-col gap-1.5 mt-4 pt-4 border-t border-border-subtle/50">
@@ -154,9 +197,23 @@ export default function IndicatorDetail() {
     path: `/indicator/${code}`,
   });
 
-  const { data: indicator, isLoading: loadingInd } = useIndicator(code);
-  const isPriceCategory = indicator?.category === 'Цены';
-  const { data: dataResp, isLoading: loadingData } = useIndicatorData(code);
+  const {
+    data: indicator,
+    isLoading: loadingInd,
+    isError: indError,
+    error: indErr,
+    refetch: refetchInd,
+    isFetching: fetchingInd,
+  } = useIndicator(code);
+  const CPI_CODES = ['cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services'];
+  const isPriceCategory = CPI_CODES.includes(code);
+  const {
+    data: dataResp,
+    isLoading: loadingData,
+    isError: dataError,
+    refetch: refetchData,
+    isFetching: fetchingData,
+  } = useIndicatorData(code);
   const { data: stats } = useIndicatorStats(code);
   const { data: inflationResp, isLoading: loadingInflation } = useInflation(code, {
     enabled: isPriceCategory,
@@ -195,7 +252,10 @@ export default function IndicatorDetail() {
     }
   }, []);
 
-  const dataPoints = dataResp?.data || [];
+  const dataPoints = useMemo(
+    () => (Array.isArray(dataResp?.data) ? dataResp.data : []),
+    [dataResp?.data],
+  );
   const s = inflationStats;
   const cpiPrevDate = dataPoints.length >= 2 ? dataPoints[dataPoints.length - 2].date : null;
 
@@ -218,8 +278,49 @@ export default function IndicatorDetail() {
     ? inflationResp?.forecast?.length > 0
     : forecastResp?.forecast?.values?.length > 0;
 
+  const chartEmptyHint = useMemo(() => {
+    if (dataError) {
+      return 'Не удалось получить исторический ряд. Нажмите «Повторить» выше или проверьте backend / прокси Vite.';
+    }
+    if (!loadingData && (dataPoints?.length ?? 0) === 0) {
+      return (
+        'В API пока нет точек для этого кода — например, прод ещё без backfill ключевой ставки, или локальный backend не запущен. '
+        + 'После появления данных график заполнится автоматически.'
+      );
+    }
+    return undefined;
+  }, [dataError, loadingData, dataPoints]);
+
+  const refetchIndicatorPage = useCallback(() => {
+    refetchInd();
+    refetchData();
+  }, [refetchInd, refetchData]);
+
+  const apiBannerFetching = fetchingInd || fetchingData;
+
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24 md:pb-28">
+      {(indError || dataError) && (
+        <div className="mb-8">
+          <ApiRetryBanner
+            onRetry={refetchIndicatorPage}
+            isFetching={apiBannerFetching}
+          >
+            {indError && (
+              <span className="block">
+                Карточка индикатора не загрузилась
+                {indErr?.message ? ` (${indErr.message})` : ''}.
+              </span>
+            )}
+            {dataError && (
+              <span className="block">
+                Исторические данные недоступны — график и таблица без ряда.
+              </span>
+            )}
+          </ApiRetryBanner>
+        </div>
+      )}
+
       <div ref={headerRef} className="mb-12 md:mb-16 max-w-4xl">
         <Link
           to="/"
@@ -271,7 +372,7 @@ export default function IndicatorDetail() {
             <TelemetryCard
               label="Текущее значение"
               value={s?.currentValue ?? indicator?.current_value}
-              unit="%"
+              unit={indicator?.unit || '%'}
               change={s?.change ?? indicator?.change}
               meta={`ДАТА: ${formatDate(s?.currentDate ?? indicator?.current_date, 'full')}`}
               delay={0}
@@ -280,7 +381,7 @@ export default function IndicatorDetail() {
             <TelemetryCard
               label={isPriceCategory ? 'Предыдущий месяц' : 'Предыдущее значение'}
               value={s?.previousValue ?? indicator?.previous_value}
-              unit="%"
+              unit={indicator?.unit || '%'}
               meta={`ДАТА: ${formatDate(s?.previousDate ?? cpiPrevDate, 'full')}`}
               delay={1}
             />
@@ -288,7 +389,7 @@ export default function IndicatorDetail() {
               <TelemetryCard
                 label="Абсолютный максимум"
                 value={s?.highest?.value ?? stats?.highest?.value}
-                unit="%"
+                unit={indicator?.unit || '%'}
                 meta={`ПИК: ${formatDate(s?.highest?.date ?? stats?.highest?.date, 'full')}`}
                 delay={2}
               />
@@ -297,7 +398,7 @@ export default function IndicatorDetail() {
               <TelemetryCard
                 label="Среднее значение"
                 value={s?.average ?? stats?.average}
-                unit="%"
+                unit={indicator?.unit || '%'}
                 meta={`НАБЛ.: ${s?.dataCount ?? stats?.data_count} ПЕРИОД.`}
                 delay={3}
               />
@@ -395,9 +496,12 @@ export default function IndicatorDetail() {
               cpiChartTitle={
                 isPriceCategory
                   ? undefined
-                  : `${indicator?.name || 'Показатель'} (% годовых)`
+                  : `${indicator?.name || 'Показатель'} (${unitSuffix(indicator?.unit)})`
               }
               levelTooltipLabel={isPriceCategory ? undefined : 'Значение'}
+              emptyHint={chartEmptyHint}
+              dateFormat={chartMode !== 'inflation' && indicator?.frequency === 'daily' ? 'day' : 'full'}
+              unit={indicator?.unit || '%'}
             />
           </div>
         )}
@@ -443,11 +547,22 @@ export default function IndicatorDetail() {
               mode={chartMode}
               inflation={inflationResp}
               forecastData={forecastResp}
+              unit={indicator?.unit || '%'}
             />
-          ) : (
+          ) : !showForecast ? (
             <div className="h-full min-h-[300px] rounded-[2rem] bg-surface border border-border-subtle border-dashed flex flex-col items-center justify-center text-text-tertiary p-8">
               <Activity className="w-8 h-8 mb-4 opacity-20" />
-              <p className="text-xs font-mono uppercase tracking-widest text-center">Прогноз отключён</p>
+              <p className="text-xs font-mono uppercase tracking-widest text-center">Включите переключатель «Прогноз», чтобы показать таблицу OLS</p>
+            </div>
+          ) : (
+            <div className="h-full min-h-[300px] rounded-[2rem] bg-surface border border-border-subtle border-dashed flex flex-col items-center justify-center gap-3 text-text-tertiary p-8">
+              <Activity className="w-8 h-8 mb-1 opacity-20" />
+              <p className="text-sm font-medium text-text-secondary text-center max-w-md">
+                Прогноз OLS для этого показателя не рассчитан или недоступен
+              </p>
+              <p className="text-xs text-center max-w-lg leading-relaxed text-text-tertiary">
+                Для ступенчатых рядов (ключевая ставка) и показателей без модели прогноз может отсутствовать — это ожидаемо.
+              </p>
             </div>
           )}
         </section>
@@ -462,6 +577,8 @@ export default function IndicatorDetail() {
               ? 'Исторические данные — Инфляция 12 мес.'
               : (isPriceCategory ? 'Исторические данные — ИПЦ' : `Исторические данные — ${indicator?.name || 'ряд'}`)
           }
+          dateFormat={chartMode !== 'inflation' && indicator?.frequency === 'daily' ? 'day' : 'full'}
+          unit={indicator?.unit || '%'}
         />
       </section>
     </div>

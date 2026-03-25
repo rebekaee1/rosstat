@@ -130,31 +130,67 @@ def _build_ols_forecast_for_horizon(
     return float(weighted_pred), float(combined_var)
 
 
+def _apply_transform(series: pd.Series, transform: str) -> tuple[pd.Series, dict]:
+    """Forward transform before OLS. Returns (transformed, meta for inverse)."""
+    if transform == "cpi_index":
+        return series / 100 - 1, {}
+    if transform == "percentage":
+        return series / 100, {}
+    if transform == "absolute":
+        mean, std = series.mean(), series.std()
+        if std == 0:
+            std = 1.0
+        return (series - mean) / std, {"mean": mean, "std": std}
+    return series.copy(), {}
+
+
+def _inverse_transform(pred: float, std_pred: float, transform: str, meta: dict) -> tuple[float, float, float]:
+    """Inverse-transform a single prediction back to original scale. Returns (value, lower, upper)."""
+    z = 1.96
+    if transform == "cpi_index":
+        val = round((pred + 1) * 100, 4)
+        lo = round((pred - z * std_pred + 1) * 100, 4)
+        hi = round((pred + z * std_pred + 1) * 100, 4)
+    elif transform == "percentage":
+        val = round(pred * 100, 4)
+        lo = round((pred - z * std_pred) * 100, 4)
+        hi = round((pred + z * std_pred) * 100, 4)
+    elif transform == "absolute":
+        m, s = meta["mean"], meta["std"]
+        val = round(pred * s + m, 4)
+        lo = round((pred - z * std_pred) * s + m, 4)
+        hi = round((pred + z * std_pred) * s + m, 4)
+    else:
+        val = round(pred, 4)
+        lo = round(pred - z * std_pred, 4)
+        hi = round(pred + z * std_pred, 4)
+    return val, lo, hi
+
+
 def train_and_forecast(
     dates: List[date],
     values: List[float],
     forecast_steps: int = 12,
     confidence_z: float = 1.96,
+    forecast_transform: str = "cpi_index",
     **_kwargs,
 ) -> ForecastResult:
-    """Train OLS multi-window model and generate CPI forecast.
+    """Train OLS multi-window model and generate forecast.
 
     Args:
         dates: sorted list of observation dates
-        values: corresponding CPI index values (e.g. 100.5 = +0.5% m/m)
-        forecast_steps: number of months to forecast (default 12)
+        values: corresponding values
+        forecast_steps: number of periods to forecast
         confidence_z: z-score for confidence intervals (1.96 = 95%)
-
-    Returns:
-        ForecastResult with model info and individual month forecast points
+        forecast_transform: "cpi_index" | "percentage" | "absolute" | "none"
     """
     series = pd.Series(values, index=pd.DatetimeIndex(dates), dtype=float, name='value')
-    data = series / 100 - 1  # CPI 100.5 → 0.005
+    data, meta = _apply_transform(series, forecast_transform)
 
     window_size = len(data)
     model_name = "OLS-MultiWindow"
-    logger.info("Training %s on %d observations, horizon=%d...",
-                model_name, len(data), forecast_steps)
+    logger.info("Training %s on %d observations, horizon=%d, transform=%s...",
+                model_name, len(data), forecast_steps, forecast_transform)
 
     last_date = data.index[-1]
     monthly_dates = [last_date + relativedelta(months=i + 1) for i in range(forecast_steps)]
@@ -167,39 +203,47 @@ def train_and_forecast(
         forecasts_aux.append(pred)
         variances_aux.append(var)
 
-    recent_actuals = data.iloc[-(12 - 1):].values
-    cumulative_product = 1.0
-    for v in recent_actuals:
-        cumulative_product *= (v + 1)
-    forecast_product = 1.0
-    for v in forecasts_aux:
-        forecast_product *= (v + 1)
-    cumulative_12m = cumulative_product * forecast_product * 100 - 100
+    cumulative_12m = None
+    if forecast_transform == "cpi_index":
+        recent_actuals = data.iloc[-(12 - 1):].values
+        cumulative_product = 1.0
+        for v in recent_actuals:
+            cumulative_product *= (v + 1)
+        forecast_product = 1.0
+        for v in forecasts_aux:
+            forecast_product *= (v + 1)
+        cumulative_12m = cumulative_product * forecast_product * 100 - 100
 
     points = []
     for idx in range(forecast_steps):
-        pred_frac = forecasts_aux[idx]
-        var_frac = variances_aux[idx]
-        std_frac = np.sqrt(var_frac)
-
-        cpi_value = round((pred_frac + 1) * 100, 4)
-        cpi_lower = round((pred_frac - confidence_z * std_frac + 1) * 100, 4)
-        cpi_upper = round((pred_frac + confidence_z * std_frac + 1) * 100, 4)
-
+        val, lo, hi = _inverse_transform(
+            forecasts_aux[idx], np.sqrt(variances_aux[idx]),
+            forecast_transform, meta,
+        )
         points.append(ForecastPoint(
-            date=monthly_dates[idx].date(),
-            value=cpi_value,
-            lower_bound=cpi_lower,
-            upper_bound=cpi_upper,
+            date=monthly_dates[idx].date(), value=val,
+            lower_bound=lo, upper_bound=hi,
         ))
 
-    logger.info("Forecast complete: %s, cumulative 12m = %.2f%%", model_name, cumulative_12m)
+    logger.info("Forecast complete: %s, cumulative 12m = %s", model_name,
+                f"{cumulative_12m:.2f}%" if cumulative_12m is not None else "N/A")
+
+    monthly_preds = []
+    for f in forecasts_aux:
+        if forecast_transform == "cpi_index":
+            monthly_preds.append(round((f + 1) * 100, 4))
+        elif forecast_transform == "percentage":
+            monthly_preds.append(round(f * 100, 4))
+        elif forecast_transform == "absolute":
+            monthly_preds.append(round(f * meta["std"] + meta["mean"], 4))
+        else:
+            monthly_preds.append(round(f, 4))
 
     return ForecastResult(
         model_name=model_name,
         aic=None,
         bic=None,
         points=points,
-        cumulative_12m=round(cumulative_12m, 4),
-        monthly_predictions=[round((f + 1) * 100, 4) for f in forecasts_aux],
+        cumulative_12m=round(cumulative_12m, 4) if cumulative_12m is not None else None,
+        monthly_predictions=monthly_preds,
     )

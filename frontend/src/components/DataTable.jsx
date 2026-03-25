@@ -1,11 +1,11 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ChevronDown, ChevronUp, Search } from 'lucide-react';
-import { formatDate, formatValue, cn } from '../lib/format';
+import { formatDate, formatValueWithUnit, unitSuffix, cn } from '../lib/format';
 
 const PAGE_SIZE = 20;
 
-export default function DataTable({ data, title = 'Исторические данные' }) {
+export default function DataTable({ data, title = 'Исторические данные', dateFormat = 'full', unit = '%' }) {
   const ref = useRef(null);
   const [page, setPage] = useState(0);
   const [sortAsc, setSortAsc] = useState(false);
@@ -24,7 +24,7 @@ export default function DataTable({ data, title = 'Исторические да
     if (search) {
       const q = search.toLowerCase();
       rows = rows.filter(r =>
-        formatDate(r.date, 'full').toLowerCase().includes(q) ||
+        formatDate(r.date, dateFormat).toLowerCase().includes(q) ||
         String(r.value).includes(q)
       );
     }
@@ -73,27 +73,38 @@ export default function DataTable({ data, title = 'Исторические да
                 </span>
               </th>
               <th className="text-right px-5 py-3 text-xs font-medium text-text-tertiary uppercase tracking-wider">
-                Значение (%)
+                Значение ({unitSuffix(unit)})
               </th>
             </tr>
           </thead>
           <tbody>
-            {pageData.map((row) => (
-              <tr
-                key={row.date}
-                className={cn(
-                  'border-t border-border-subtle transition-colors',
-                  'hover:bg-surface-hover'
-                )}
-              >
-                <td className="px-5 py-2.5 text-text-secondary font-mono text-xs">
-                  {formatDate(row.date, 'full')}
-                </td>
-                <td className="px-5 py-2.5 text-right font-mono text-sm font-medium text-text-primary">
-                  {formatValue(row.value)}
+            {pageData.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={2}
+                  className="px-5 py-12 text-center text-sm text-text-tertiary"
+                >
+                  Нет строк для отображения — сузьте поиск или дождитесь загрузки ряда с API.
                 </td>
               </tr>
-            ))}
+            ) : (
+              pageData.map((row) => (
+                <tr
+                  key={row.date}
+                  className={cn(
+                    'border-t border-border-subtle transition-colors',
+                    'hover:bg-surface-hover'
+                  )}
+                >
+                  <td className="px-5 py-2.5 text-text-secondary font-mono text-xs">
+                    {formatDate(row.date, dateFormat)}
+                  </td>
+                  <td className="px-5 py-2.5 text-right font-mono text-sm font-medium text-text-primary">
+                    {formatValueWithUnit(row.value, unit)}
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

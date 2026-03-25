@@ -4,7 +4,7 @@ from datetime import date
 
 import pytest
 
-from app.services.cbr_keyrate import parse_keyrate_html
+from app.services.cbr_keyrate import assert_keyrate_response_plausible, parse_keyrate_html
 
 
 SAMPLE_HTML = """
@@ -38,3 +38,15 @@ def test_parse_keyrate_html_duplicate_date_last_wins():
 def test_parse_keyrate_html_empty_raises():
     with pytest.raises(ValueError, match="No key rate rows"):
         parse_keyrate_html("<html></html>")
+
+
+def test_assert_keyrate_response_plausible_rejects_short_html():
+    with pytest.raises(ValueError, match="слишком короткий"):
+        assert_keyrate_response_plausible("<html>x</html>", "https://www.cbr.ru/hd_base/KeyRate/")
+
+
+def test_assert_keyrate_response_plausible_accepts_typical_page():
+    # Минимальная длина + маркеры разметки (как на реальной странице UniDbQuery)
+    filler = "x" * 3000
+    html = f"<html><body>UniDbQuery ключев{filler}</body></html>"
+    assert_keyrate_response_plausible(html, "https://www.cbr.ru/hd_base/KeyRate/")

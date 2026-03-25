@@ -13,11 +13,30 @@ from app.config import settings
 logger = logging.getLogger(__name__)
 
 
+async def clear_current_forecasts(db: AsyncSession, indicator: Indicator) -> int:
+    """Удалить текущие прогнозы для индикатора, если прогнозирование отключено."""
+    old_forecasts_q = await db.execute(
+        select(Forecast).where(
+            Forecast.indicator_id == indicator.id,
+            Forecast.is_current.is_(True),
+        )
+    )
+    old_forecasts = old_forecasts_q.scalars().all()
+    for old_fc in old_forecasts:
+        await db.delete(old_fc)
+    return len(old_forecasts)
+
+
 async def retrain_indicator_forecast(db: AsyncSession, indicator: Indicator) -> None:
     """Переобучить модель и сохранить текущий прогноз для индикатора."""
     cfg = indicator.model_config_json or {}
     if int(cfg.get("forecast_steps", settings.forecast_steps) or 0) <= 0:
-        logger.info("forecast_steps<=0 for '%s', skipping OLS retrain", indicator.code)
+        removed = await clear_current_forecasts(db, indicator)
+        logger.info(
+            "forecast_steps<=0 for '%s', skipping OLS retrain and removed %d stale forecast(s)",
+            indicator.code,
+            removed,
+        )
         return
 
     data_q = await db.execute(
@@ -35,8 +54,13 @@ async def retrain_indicator_forecast(db: AsyncSession, indicator: Indicator) -> 
     values = [float(d.value) for d in all_data]
 
     forecast_steps = cfg.get("forecast_steps", settings.forecast_steps)
+    forecast_transform = cfg.get("forecast_transform", "cpi_index")
 
-    result = await asyncio.to_thread(train_and_forecast, dates, values, forecast_steps=forecast_steps)
+    result = await asyncio.to_thread(
+        train_and_forecast, dates, values,
+        forecast_steps=forecast_steps,
+        forecast_transform=forecast_transform,
+    )
 
     old_forecasts_q = await db.execute(
         select(Forecast).where(
