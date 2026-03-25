@@ -99,17 +99,6 @@ INDICATORS = [
         "excel_sheet": "04",
     },
     {
-        "code": "unemployment",
-        "name": "Уровень безработицы",
-        "name_en": "Unemployment Rate",
-        "unit": "%",
-        "frequency": "monthly",
-        "source": "Росстат",
-        "description": "Доля безработных в экономически активном населении.",
-        "is_active": False,
-        "category": "Рынок труда",
-    },
-    {
         "code": "key-rate",
         "name": "Ключевая ставка ЦБ РФ",
         "name_en": "Key Interest Rate",
@@ -370,7 +359,133 @@ INDICATORS = [
         "is_active": True,
         "category": "Ставки",
     },
+    # ─── Рынок труда (Росстат SDDS) ───
+    {
+        "code": "unemployment",
+        "name": "Уровень безработицы",
+        "name_en": "Unemployment Rate",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/labor_market_employment_salaries",
+        "description": (
+            "Доля безработных в экономически активном населении по методологии МОТ. "
+            "Данные Росстата из обследования рабочей силы."
+        ),
+        "methodology": (
+            "Расчёт: число безработных / экономически активное население × 100. "
+            "Источник: SDDS XLSX Росстата (eng.rosstat.gov.ru). Обновляется ежемесячно."
+        ),
+        "parser_type": "rosstat_sdds_labor",
+        "model_config_json": {
+            "forecast_steps": 12,
+            "forecast_transform": "percentage",
+            "validation": {"min": 0, "max": 50},
+        },
+        "is_active": True,
+        "category": "Рынок труда",
+    },
+    {
+        "code": "wages-nominal",
+        "name": "Средняя заработная плата",
+        "name_en": "Average Nominal Wages",
+        "unit": "руб.",
+        "frequency": "monthly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/labor_market_employment_salaries",
+        "description": (
+            "Среднемесячная номинальная начисленная заработная плата "
+            "работников организаций."
+        ),
+        "methodology": (
+            "Фонд начисленной зарплаты / среднесписочная численность. "
+            "Источник: SDDS XLSX Росстата. Обновляется ежемесячно."
+        ),
+        "parser_type": "rosstat_sdds_labor",
+        "model_config_json": {
+            "forecast_steps": 6,
+            "forecast_transform": "absolute",
+            "validation": {"min": 0},
+        },
+        "is_active": True,
+        "category": "Рынок труда",
+    },
+    # ─── ВВП (Росстат SDDS) ───
+    {
+        "code": "gdp-nominal",
+        "name": "ВВП номинальный",
+        "name_en": "Nominal GDP",
+        "unit": "млрд руб.",
+        "frequency": "quarterly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/accounts",
+        "description": (
+            "Валовой внутренний продукт в текущих ценах (по расходному методу). "
+            "Квартальные данные."
+        ),
+        "methodology": (
+            "Рассчитывается Росстатом по системе национальных счетов (СНС 2008). "
+            "Источник: SDDS XLSX национальных счетов. Обновляется поквартально."
+        ),
+        "parser_type": "rosstat_sdds_gdp",
+        "model_config_json": {
+            "forecast_steps": 4,
+            "forecast_transform": "absolute",
+            "validation": {"min": 0},
+        },
+        "is_active": True,
+        "category": "ВВП",
+    },
     # ─── Производные (CalculationEngine) ───
+    {
+        "code": "wages-real",
+        "name": "Реальная заработная плата",
+        "name_en": "Real Wages Index",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Расчёт",
+        "description": (
+            "Индекс реальной заработной платы: отношение номинальной зарплаты "
+            "к индексу потребительских цен. Показывает покупательную способность."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {
+            "forecast_steps": 6,
+            "forecast_transform": "percentage",
+        },
+        "is_active": True,
+        "category": "Рынок труда",
+    },
+    {
+        "code": "gdp-yoy",
+        "name": "Рост ВВП (г/г)",
+        "name_en": "GDP Growth YoY",
+        "unit": "%",
+        "frequency": "quarterly",
+        "source": "Расчёт",
+        "description": (
+            "Темп роста номинального ВВП к аналогичному кварталу предыдущего года."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {"forecast_steps": 0},
+        "is_active": True,
+        "category": "ВВП",
+    },
+    {
+        "code": "gdp-qoq",
+        "name": "Рост ВВП (кв/кв)",
+        "name_en": "GDP Growth QoQ",
+        "unit": "%",
+        "frequency": "quarterly",
+        "source": "Расчёт",
+        "description": (
+            "Темп роста номинального ВВП к предыдущему кварталу."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {"forecast_steps": 0},
+        "is_active": True,
+        "category": "ВВП",
+    },
     {
         "code": "inflation-quarterly",
         "name": "Инфляция квартальная",

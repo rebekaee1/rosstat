@@ -141,6 +141,9 @@ export default function Navbar() {
           )}
         </div>
 
+        <NavLink to="/compare" className={linkClass} onClick={closeAll}>
+          Сравнение
+        </NavLink>
         <NavLink to="/indicator/cpi" className={linkClass} onClick={closeAll}>
           ИПЦ
         </NavLink>
@@ -195,6 +198,9 @@ export default function Navbar() {
                 </span>
               )
             )}
+            <NavLink to="/compare" className={linkClass} onClick={closeAll}>
+              Сравнение
+            </NavLink>
             <NavLink to="/indicator/cpi" className={linkClass} onClick={closeAll}>
               ИПЦ
             </NavLink>

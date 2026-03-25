@@ -165,5 +165,155 @@ async def _compute_annual_inflation(db: AsyncSession) -> int:
     return added
 
 
+async def _compute_wages_real(db: AsyncSession) -> int:
+    """Реальная зарплата = (wages_t / wages_base) / (cpi_t / cpi_base) * 100.
+
+    Берём первый доступный месяц за базу. Результат — индекс в % (100 = базовый уровень).
+    """
+    wages_q = await db.execute(select(Indicator).where(Indicator.code == "wages-nominal"))
+    wages_ind = wages_q.scalar_one_or_none()
+    cpi_q = await db.execute(select(Indicator).where(Indicator.code == "cpi"))
+    cpi_ind = cpi_q.scalar_one_or_none()
+    dst_q = await db.execute(select(Indicator).where(Indicator.code == "wages-real"))
+    dst = dst_q.scalar_one_or_none()
+    if not wages_ind or not cpi_ind or not dst:
+        return 0
+
+    w_data = (await db.execute(
+        select(IndicatorData).where(IndicatorData.indicator_id == wages_ind.id).order_by(IndicatorData.date)
+    )).scalars().all()
+    c_data = (await db.execute(
+        select(IndicatorData).where(IndicatorData.indicator_id == cpi_ind.id).order_by(IndicatorData.date)
+    )).scalars().all()
+
+    if len(w_data) < 2 or len(c_data) < 12:
+        return 0
+
+    wages_by_ym = {(r.date.year, r.date.month): float(r.value) for r in w_data}
+    cpi_by_ym = {(r.date.year, r.date.month): float(r.value) for r in c_data}
+
+    cpi_index: dict[tuple[int, int], float] = {}
+    cumulative = 1.0
+    sorted_cpi = sorted(cpi_by_ym.items())
+    for (y, m), v in sorted_cpi:
+        cumulative *= v / 100.0
+        cpi_index[(y, m)] = cumulative
+
+    sorted_wages = sorted(wages_by_ym.items())
+    base_wage = sorted_wages[0][1]
+    base_ym = sorted_wages[0][0]
+    base_cpi = cpi_index.get(base_ym, 1.0)
+
+    points: list[tuple[date, float]] = []
+    for (y, m), wage in sorted_wages:
+        ci = cpi_index.get((y, m))
+        if ci is None:
+            continue
+        real_idx = round((wage / base_wage) / (ci / base_cpi) * 100, 2)
+        points.append((date(y, m, 1), real_idx))
+
+    added = 0
+    for d, v in points:
+        stmt = (
+            pg_insert(IndicatorData)
+            .values(indicator_id=dst.id, date=d, value=v)
+            .on_conflict_do_nothing(constraint="uq_indicator_date")
+        )
+        result = await db.execute(stmt)
+        if result.rowcount:
+            added += 1
+    if added:
+        await db.flush()
+    return added
+
+
+async def _compute_gdp_yoy(db: AsyncSession) -> int:
+    """Рост ВВП year-over-year: (GDP_q / GDP_{q-4} - 1) * 100."""
+    src_q = await db.execute(select(Indicator).where(Indicator.code == "gdp-nominal"))
+    src = src_q.scalar_one_or_none()
+    dst_q = await db.execute(select(Indicator).where(Indicator.code == "gdp-yoy"))
+    dst = dst_q.scalar_one_or_none()
+    if not src or not dst:
+        return 0
+
+    data = (await db.execute(
+        select(IndicatorData).where(IndicatorData.indicator_id == src.id).order_by(IndicatorData.date)
+    )).scalars().all()
+    if len(data) < 5:
+        return 0
+
+    by_date: dict[date, float] = {r.date: float(r.value) for r in data}
+    sorted_dates = sorted(by_date.keys())
+
+    date_to_prev: dict[date, date] = {}
+    for d in sorted_dates:
+        prev_y = d.year - 1
+        prev_d = date(prev_y, d.month, d.day)
+        if prev_d in by_date:
+            date_to_prev[d] = prev_d
+
+    points: list[tuple[date, float]] = []
+    for d, prev_d in sorted(date_to_prev.items()):
+        growth = round((by_date[d] / by_date[prev_d] - 1) * 100, 2)
+        points.append((d, growth))
+
+    added = 0
+    for d, v in points:
+        stmt = (
+            pg_insert(IndicatorData)
+            .values(indicator_id=dst.id, date=d, value=v)
+            .on_conflict_do_nothing(constraint="uq_indicator_date")
+        )
+        result = await db.execute(stmt)
+        if result.rowcount:
+            added += 1
+    if added:
+        await db.flush()
+    return added
+
+
+async def _compute_gdp_qoq(db: AsyncSession) -> int:
+    """Рост ВВП quarter-over-quarter: (GDP_q / GDP_{q-1} - 1) * 100."""
+    src_q = await db.execute(select(Indicator).where(Indicator.code == "gdp-nominal"))
+    src = src_q.scalar_one_or_none()
+    dst_q = await db.execute(select(Indicator).where(Indicator.code == "gdp-qoq"))
+    dst = dst_q.scalar_one_or_none()
+    if not src or not dst:
+        return 0
+
+    data = (await db.execute(
+        select(IndicatorData).where(IndicatorData.indicator_id == src.id).order_by(IndicatorData.date)
+    )).scalars().all()
+    if len(data) < 2:
+        return 0
+
+    sorted_data = sorted(data, key=lambda r: r.date)
+
+    points: list[tuple[date, float]] = []
+    for i in range(1, len(sorted_data)):
+        cur = float(sorted_data[i].value)
+        prev = float(sorted_data[i - 1].value)
+        if prev > 0:
+            growth = round((cur / prev - 1) * 100, 2)
+            points.append((sorted_data[i].date, growth))
+
+    added = 0
+    for d, v in points:
+        stmt = (
+            pg_insert(IndicatorData)
+            .values(indicator_id=dst.id, date=d, value=v)
+            .on_conflict_do_nothing(constraint="uq_indicator_date")
+        )
+        result = await db.execute(stmt)
+        if result.rowcount:
+            added += 1
+    if added:
+        await db.flush()
+    return added
+
+
 calculation_engine.register("inflation-quarterly", ["cpi"], _compute_quarterly_inflation)
 calculation_engine.register("inflation-annual", ["cpi"], _compute_annual_inflation)
+calculation_engine.register("wages-real", ["wages-nominal", "cpi"], _compute_wages_real)
+calculation_engine.register("gdp-yoy", ["gdp-nominal"], _compute_gdp_yoy)
+calculation_engine.register("gdp-qoq", ["gdp-nominal"], _compute_gdp_qoq)

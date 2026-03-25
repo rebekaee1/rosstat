@@ -5,7 +5,7 @@ import { ArrowLeft, ExternalLink, Activity, Info, TrendingUp, TrendingDown, Data
 import {
   useIndicator, useIndicatorData, useIndicatorStats, useInflation, useForecast,
 } from '../lib/hooks';
-import { formatValue, formatValueWithUnit, formatDate, formatChange, unitSuffix, unitDigits, cn } from '../lib/format';
+import { formatValue, formatDate, formatChange, unitSuffix, unitDigits, cn } from '../lib/format';
 import useDocumentMeta from '../lib/useMeta';
 import IndicatorChart from '../components/IndicatorChart';
 import ForecastTable from '../components/ForecastTable';
@@ -29,10 +29,6 @@ const SEO_MAP = {
   'cpi-services': {
     title: 'ИПЦ на услуги — прогноз и данные',
     description: 'Индекс потребительских цен на услуги: динамика цен, инфляция в сфере услуг, OLS-прогноз. Данные Росстата с 1991 года.',
-  },
-  unemployment: {
-    title: 'Уровень безработицы в России — данные и динамика',
-    description: 'Доля безработных в экономически активном населении: официальная статистика Росстата.',
   },
   'key-rate': {
     title: 'Ключевая ставка ЦБ РФ — график и история',
@@ -81,6 +77,30 @@ const SEO_MAP = {
   'inflation-annual': {
     title: 'Инфляция годовая — график и прогноз',
     description: 'Годовая инфляция: скользящий 12-месячный показатель роста цен. Расчёт на основе ИПЦ.',
+  },
+  'unemployment': {
+    title: 'Уровень безработицы в России — данные и прогноз',
+    description: 'Безработица по методологии МОТ: ежемесячные данные с 2015 года, динамика и OLS-прогноз. Данные Росстата.',
+  },
+  'wages-nominal': {
+    title: 'Средняя заработная плата в России — данные и прогноз',
+    description: 'Среднемесячная номинальная начисленная зарплата: ежемесячные данные, динамика, OLS-прогноз. Данные Росстата.',
+  },
+  'wages-real': {
+    title: 'Реальная заработная плата — индекс и динамика',
+    description: 'Индекс реальной заработной платы с учётом инфляции. Расчёт: номинальная зарплата / ИПЦ.',
+  },
+  'gdp-nominal': {
+    title: 'ВВП России — номинальный, квартальные данные',
+    description: 'Валовой внутренний продукт России в текущих ценах: квартальные данные с 2011 года, прогноз. Данные Росстата.',
+  },
+  'gdp-yoy': {
+    title: 'Рост ВВП России (год к году) — данные',
+    description: 'Темп роста номинального ВВП к аналогичному кварталу прошлого года. Расчёт на основе данных Росстата.',
+  },
+  'gdp-qoq': {
+    title: 'Рост ВВП России (квартал к кварталу) — данные',
+    description: 'Темп роста номинального ВВП к предыдущему кварталу. Расчёт на основе данных Росстата.',
   },
 };
 

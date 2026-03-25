@@ -145,8 +145,52 @@
   <!-- Labor -->
   <url>
     <loc>https://forecasteconomy.com/indicator/unemployment</loc>
-    <lastmod>2026-03-20</lastmod>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://forecasteconomy.com/indicator/wages-nominal</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://forecasteconomy.com/indicator/wages-real</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- GDP -->
+  <url>
+    <loc>https://forecasteconomy.com/category/gdp</loc>
+    <lastmod>2026-03-25</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://forecasteconomy.com/indicator/gdp-nominal</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>quarterly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://forecasteconomy.com/indicator/gdp-yoy</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>quarterly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://forecasteconomy.com/indicator/gdp-qoq</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>quarterly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <!-- Compare -->
+  <url>
+    <loc>https://forecasteconomy.com/compare</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>

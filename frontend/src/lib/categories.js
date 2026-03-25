@@ -45,9 +45,9 @@ export const CATEGORIES = [
     name: 'ВВП и рост',
     nameEn: 'GDP & Growth',
     icon: 'Landmark',
-    apiCategory: null,
-    status: 'planned',
-    description: 'Валовой внутренний продукт и темпы роста — в разработке.',
+    apiCategory: 'ВВП',
+    status: 'active',
+    description: 'Валовой внутренний продукт, темпы роста и структура экономики по данным Росстата.',
   },
   {
     slug: 'population',
