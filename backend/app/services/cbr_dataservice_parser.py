@@ -167,14 +167,17 @@ class CbrDataServiceParser(BaseParser):
                 await db.commit()
                 return
 
+            value_divisor = float(cfg.get("value_divisor", 1))
+
             count_before = (await db.execute(
                 select(func.count(IndicatorData.id)).where(IndicatorData.indicator_id == indicator.id)
             )).scalar() or 0
 
             for dt, val in points:
+                stored_val = round(val / value_divisor, 4) if value_divisor != 1 else val
                 stmt = (
                     pg_insert(IndicatorData)
-                    .values(indicator_id=indicator.id, date=dt, value=val)
+                    .values(indicator_id=indicator.id, date=dt, value=stored_val)
                     .on_conflict_do_nothing(constraint="uq_indicator_date")
                 )
                 await db.execute(stmt)

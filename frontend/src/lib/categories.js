@@ -29,7 +29,7 @@ export const CATEGORIES = [
     icon: 'Wallet',
     apiCategory: 'Финансы',
     status: 'active',
-    description: 'Курсы валют (USD, EUR, CNY) и денежные агрегаты M0, M2 по данным Банка России.',
+    description: 'Курсы валют, денежные агрегаты M0–M2, кредиты, депозиты, бюджет — данные ЦБ РФ и Минфина.',
   },
   {
     slug: 'labor',

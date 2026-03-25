@@ -186,6 +186,63 @@
     <changefreq>quarterly</changefreq>
     <priority>0.75</priority>
   </url>
+  <!-- Additional Finance -->
+  <url>
+    <loc>https://forecasteconomy.com/indicator/m1</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://forecasteconomy.com/indicator/consumer-credit</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://forecasteconomy.com/indicator/business-credit</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://forecasteconomy.com/indicator/deposits-individual</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://forecasteconomy.com/indicator/deposits-business</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://forecasteconomy.com/indicator/budget-deficit</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <!-- Additional Prices -->
+  <url>
+    <loc>https://forecasteconomy.com/indicator/inflation-weekly</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- Additional Labor -->
+  <url>
+    <loc>https://forecasteconomy.com/indicator/unemployment-quarterly</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>quarterly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://forecasteconomy.com/indicator/unemployment-annual</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
   <!-- Compare -->
   <url>
     <loc>https://forecasteconomy.com/compare</loc>

@@ -312,8 +312,114 @@ async def _compute_gdp_qoq(db: AsyncSession) -> int:
     return added
 
 
+async def _compute_unemployment_quarterly(db: AsyncSession) -> int:
+    """Безработица квартальная = среднее 3 месячных значений."""
+    src_q = await db.execute(select(Indicator).where(Indicator.code == "unemployment"))
+    src = src_q.scalar_one_or_none()
+    dst_q = await db.execute(select(Indicator).where(Indicator.code == "unemployment-quarterly"))
+    dst = dst_q.scalar_one_or_none()
+    if not src or not dst:
+        return 0
+
+    data_q = await db.execute(
+        select(IndicatorData)
+        .where(IndicatorData.indicator_id == src.id)
+        .order_by(IndicatorData.date)
+    )
+    rows = data_q.scalars().all()
+    if len(rows) < 3:
+        return 0
+
+    by_ym: dict[tuple[int, int], float] = {}
+    for r in rows:
+        by_ym[(r.date.year, r.date.month)] = float(r.value)
+
+    points: list[tuple[date, float]] = []
+    quarter_ends = [3, 6, 9, 12]
+    years = sorted({y for y, _ in by_ym})
+    for y in years:
+        for qe in quarter_ends:
+            m1, m2, m3 = qe - 2, qe - 1, qe
+            v1 = by_ym.get((y, m1))
+            v2 = by_ym.get((y, m2))
+            v3 = by_ym.get((y, m3))
+            if v1 is not None and v2 is not None and v3 is not None:
+                avg = round((v1 + v2 + v3) / 3, 2)
+                points.append((date(y, qe, 1), avg))
+
+    added = 0
+    for d, v in points:
+        stmt = (
+            pg_insert(IndicatorData)
+            .values(indicator_id=dst.id, date=d, value=v)
+            .on_conflict_do_nothing(constraint="uq_indicator_date")
+        )
+        result = await db.execute(stmt)
+        if result.rowcount:
+            added += 1
+    if added:
+        await db.flush()
+    return added
+
+
+async def _compute_unemployment_annual(db: AsyncSession) -> int:
+    """Безработица среднегодовая = скользящее среднее 12 месяцев."""
+    src_q = await db.execute(select(Indicator).where(Indicator.code == "unemployment"))
+    src = src_q.scalar_one_or_none()
+    dst_q = await db.execute(select(Indicator).where(Indicator.code == "unemployment-annual"))
+    dst = dst_q.scalar_one_or_none()
+    if not src or not dst:
+        return 0
+
+    data_q = await db.execute(
+        select(IndicatorData)
+        .where(IndicatorData.indicator_id == src.id)
+        .order_by(IndicatorData.date)
+    )
+    rows = data_q.scalars().all()
+    if len(rows) < 12:
+        return 0
+
+    by_ym: dict[tuple[int, int], float] = {}
+    for r in rows:
+        by_ym[(r.date.year, r.date.month)] = float(r.value)
+
+    sorted_keys = sorted(by_ym.keys())
+    points: list[tuple[date, float]] = []
+    for y, m in sorted_keys:
+        trailing = []
+        for offset in range(12):
+            mo = m - offset
+            yr = y
+            if mo <= 0:
+                mo += 12
+                yr -= 1
+            val = by_ym.get((yr, mo))
+            if val is not None:
+                trailing.append(val)
+        if len(trailing) == 12:
+            avg = round(sum(trailing) / 12, 2)
+            points.append((date(y, m, 1), avg))
+
+    added = 0
+    for d, v in points:
+        stmt = (
+            pg_insert(IndicatorData)
+            .values(indicator_id=dst.id, date=d, value=v)
+            .on_conflict_do_nothing(constraint="uq_indicator_date")
+        )
+        result = await db.execute(stmt)
+        if result.rowcount:
+            added += 1
+    if added:
+        await db.flush()
+    return added
+
+
 calculation_engine.register("inflation-quarterly", ["cpi"], _compute_quarterly_inflation)
 calculation_engine.register("inflation-annual", ["cpi"], _compute_annual_inflation)
 calculation_engine.register("wages-real", ["wages-nominal", "cpi"], _compute_wages_real)
 calculation_engine.register("gdp-yoy", ["gdp-nominal"], _compute_gdp_yoy)
 calculation_engine.register("gdp-qoq", ["gdp-nominal"], _compute_gdp_qoq)
+calculation_engine.register("unemployment-quarterly", ["unemployment"], _compute_unemployment_quarterly)
+calculation_engine.register("unemployment-annual", ["unemployment"], _compute_unemployment_annual)

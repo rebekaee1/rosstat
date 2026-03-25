@@ -27,6 +27,7 @@ export function formatDate(dateStr, format = 'short') {
 const UNIT_CONFIG = {
   '%':         { digits: 2, suffix: '%',       space: false },
   'руб.':      { digits: 2, suffix: ' руб.',   space: false },
+  'млн руб.':  { digits: 0, suffix: ' млн ₽',  space: false },
   'млрд руб.': { digits: 1, suffix: ' млрд ₽', space: false },
   'трлн руб.': { digits: 2, suffix: ' трлн ₽', space: false },
   'млн чел.':  { digits: 1, suffix: ' млн',    space: false },

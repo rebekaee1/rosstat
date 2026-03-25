@@ -103,6 +103,10 @@ class RosstatCpiParser(BaseParser):
             await db.commit()
 
 
+from app.services.cbr_dataservice_sum_parser import CbrDataServiceSumParser
+from app.services.minfin_budget_parser import MinfinBudgetParser
+from app.services.rosstat_weekly_inflation_parser import RosstatWeeklyCpiParser
+
 PARSER_REGISTRY: dict[str, type[BaseParser]] = {
     RosstatCpiParser.parser_type: RosstatCpiParser,
     CbrKeyRateParser.parser_type: CbrKeyRateParser,
@@ -112,6 +116,9 @@ PARSER_REGISTRY: dict[str, type[BaseParser]] = {
     CbrDataServiceParser.parser_type: CbrDataServiceParser,
     RosstatLaborParser.parser_type: RosstatLaborParser,
     RosstatGdpParser.parser_type: RosstatGdpParser,
+    CbrDataServiceSumParser.parser_type: CbrDataServiceSumParser,
+    MinfinBudgetParser.parser_type: MinfinBudgetParser,
+    RosstatWeeklyCpiParser.parser_type: RosstatWeeklyCpiParser,
 }
 
 

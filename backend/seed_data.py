@@ -521,6 +521,228 @@ INDICATORS = [
         "is_active": True,
         "category": "Цены",
     },
+    # ─── Дополнительные финансы (CBR DataService) ───
+    {
+        "code": "m1",
+        "name": "Денежная масса М1",
+        "name_en": "M1 Money Supply",
+        "unit": "млрд руб.",
+        "frequency": "monthly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/macro_itm/dkfs/",
+        "description": (
+            "Денежный агрегат М1: наличные деньги (М0) плюс переводные депозиты. "
+            "Публикуется ежемесячно на 1-е число."
+        ),
+        "parser_type": "cbr_dataservice_json",
+        "model_config_json": {
+            "dataservice": {
+                "publicationId": 5,
+                "datasetId": 6,
+                "measureId": None,
+                "element_id": 12,
+                "date_offset_months": 0,
+            },
+            "backfill_from_year": 2010,
+            "forecast_steps": 6,
+            "forecast_transform": "absolute",
+            "validation": {"min": 0},
+        },
+        "is_active": True,
+        "category": "Финансы",
+    },
+    {
+        "code": "consumer-credit",
+        "name": "Кредиты физическим лицам",
+        "name_en": "Consumer Credit Outstanding",
+        "unit": "трлн руб.",
+        "frequency": "monthly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/bank_sector/sors/",
+        "description": (
+            "Задолженность по кредитам физическим лицам (портфель). "
+            "Данные Банка России по банковскому сектору."
+        ),
+        "parser_type": "cbr_dataservice_json",
+        "model_config_json": {
+            "dataservice": {
+                "publicationId": 20,
+                "datasetId": 42,
+                "measureId": 22,
+                "element_id": 35,
+                "date_offset_months": 0,
+            },
+            "backfill_from_year": 2019,
+            "forecast_steps": 6,
+            "forecast_transform": "absolute",
+            "validation": {"min": 0},
+            "value_divisor": 1000000,
+        },
+        "is_active": True,
+        "category": "Финансы",
+    },
+    {
+        "code": "business-credit",
+        "name": "Кредиты бизнесу",
+        "name_en": "Business Credit Outstanding",
+        "unit": "трлн руб.",
+        "frequency": "monthly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/bank_sector/sors/",
+        "description": (
+            "Задолженность по кредитам юридическим лицам и ИП (портфель). "
+            "Данные Банка России."
+        ),
+        "parser_type": "cbr_dataservice_json",
+        "model_config_json": {
+            "dataservice": {
+                "publicationId": 22,
+                "datasetId": 50,
+                "measureId": 22,
+                "element_id": 35,
+                "date_offset_months": 0,
+            },
+            "backfill_from_year": 2019,
+            "forecast_steps": 6,
+            "forecast_transform": "absolute",
+            "validation": {"min": 0},
+            "value_divisor": 1000000,
+        },
+        "is_active": True,
+        "category": "Финансы",
+    },
+    # ─── Депозиты (CBR DataService sum) ───
+    {
+        "code": "deposits-individual",
+        "name": "Вклады физических лиц",
+        "name_en": "Individual Deposits",
+        "unit": "млрд руб.",
+        "frequency": "monthly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/macro_itm/dkfs/",
+        "description": (
+            "Суммарные вклады физических лиц: переводные, срочные "
+            "и валютные депозиты домашних хозяйств."
+        ),
+        "parser_type": "cbr_dataservice_sum",
+        "model_config_json": {
+            "dataservice_components": [
+                {"publicationId": 5, "datasetId": 6, "element_id": 16, "date_offset_months": 0},
+                {"publicationId": 5, "datasetId": 7, "element_id": 22, "date_offset_months": 0},
+                {"publicationId": 5, "datasetId": 8, "element_id": 26, "date_offset_months": 0},
+            ],
+            "backfill_from_year": 2010,
+            "forecast_steps": 6,
+            "forecast_transform": "absolute",
+            "validation": {"min": 0},
+        },
+        "is_active": True,
+        "category": "Финансы",
+    },
+    {
+        "code": "deposits-business",
+        "name": "Депозиты организаций",
+        "name_en": "Business Deposits",
+        "unit": "млрд руб.",
+        "frequency": "monthly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/macro_itm/dkfs/",
+        "description": (
+            "Суммарные депозиты нефинансовых организаций: переводные, "
+            "срочные и валютные."
+        ),
+        "parser_type": "cbr_dataservice_sum",
+        "model_config_json": {
+            "dataservice_components": [
+                {"publicationId": 5, "datasetId": 6, "element_id": 15, "date_offset_months": 0},
+                {"publicationId": 5, "datasetId": 7, "element_id": 21, "date_offset_months": 0},
+                {"publicationId": 5, "datasetId": 8, "element_id": 25, "date_offset_months": 0},
+            ],
+            "backfill_from_year": 2010,
+            "forecast_steps": 6,
+            "forecast_transform": "absolute",
+            "validation": {"min": 0},
+        },
+        "is_active": True,
+        "category": "Финансы",
+    },
+    # ─── Дефицит бюджета (Минфин CSV) ───
+    {
+        "code": "budget-deficit",
+        "name": "Дефицит/профицит бюджета",
+        "name_en": "Federal Budget Balance",
+        "unit": "млрд руб.",
+        "frequency": "monthly",
+        "source": "Минфин",
+        "source_url": "https://minfin.gov.ru/ru/statistics/fedbud/execute/",
+        "description": (
+            "Помесячный дефицит (−) или профицит (+) федерального бюджета РФ. "
+            "Рассчитывается как разница доходов и расходов."
+        ),
+        "methodology": (
+            "Данные из CSV открытых данных Минфина (7710168360-fedbud_month). "
+            "Помесячные значения вычисляются из нарастающего итога с начала года."
+        ),
+        "parser_type": "minfin_budget_csv",
+        "model_config_json": {
+            "forecast_steps": 6,
+            "forecast_transform": "absolute",
+        },
+        "is_active": True,
+        "category": "Финансы",
+    },
+    # ─── Недельная инфляция (Росстат HTML) ───
+    {
+        "code": "inflation-weekly",
+        "name": "Инфляция недельная",
+        "name_en": "Weekly CPI Change",
+        "unit": "%",
+        "frequency": "weekly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/statistics/price",
+        "description": (
+            "Индекс потребительских цен за неделю (к предыдущей неделе). "
+            "Публикуется Росстатом по средам."
+        ),
+        "parser_type": "rosstat_weekly_cpi",
+        "model_config_json": {
+            "forecast_steps": 0,
+            "validation": {"min": 99, "max": 102},
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
+    # ─── Производные: безработица агрегаты ───
+    {
+        "code": "unemployment-quarterly",
+        "name": "Безработица квартальная",
+        "name_en": "Quarterly Unemployment Rate",
+        "unit": "%",
+        "frequency": "quarterly",
+        "source": "Расчёт",
+        "description": (
+            "Среднее значение месячного уровня безработицы за квартал."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {"forecast_steps": 0},
+        "is_active": True,
+        "category": "Рынок труда",
+    },
+    {
+        "code": "unemployment-annual",
+        "name": "Безработица среднегодовая",
+        "name_en": "Annual Unemployment Rate",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Расчёт",
+        "description": (
+            "Скользящее среднее уровня безработицы за последние 12 месяцев."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {"forecast_steps": 0},
+        "is_active": True,
+        "category": "Рынок труда",
+    },
 ]
 
 
@@ -664,8 +886,9 @@ async def generate_forecasts():
                 ))
 
             await db.commit()
-            print(f"  {indicator.code}: forecast saved ({result.model_name}, "
-                  f"cumulative 12m = {result.cumulative_12m:.2f}%)")
+            cum = result.cumulative_12m
+            cum_str = f"{cum:.2f}%" if cum is not None else "N/A"
+            print(f"  {indicator.code}: forecast saved ({result.model_name}, cumulative 12m = {cum_str})")
 
 
 if __name__ == "__main__":
