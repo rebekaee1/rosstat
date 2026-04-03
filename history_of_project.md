@@ -66,3 +66,9 @@
   - **Кат. 2 (UI-логика):** Инверсия цветов: рост=зелёный, падение=красный (стандарт). Тултип «Онлайн» → «Все данные актуальны. Обновление ежедневно в 06:00 МСК». Toggle прогноза disabled для не-ценовых индикаторов с подсказкой «Прогноз скоро будет доступен». Адаптивный размер шрифта для длинных значений. Тултип графика скрывается при уходе курсора.
   - **Кат. 3 (ИПЦ−100):** Хелперы `isCpiIndex`, `adjustCpiDisplay` в format.js. Коды cpi/cpi-food/cpi-nonfood/cpi-services/inflation-quarterly отображаются как value−100 (0.73 вместо 100.73). Трансформация в IndicatorTile, TelemetryCard, IndicatorChart (baseline 0), ForecastTable, DataTable.
   - **Деплой:** git push → сервер 5.129.204.194 → docker compose up --build. Frontend 200, Backend API 200. Файлы: IndicatorDetail.jsx, IndicatorChart.jsx, IndicatorTile.jsx, format.js.
+
+## 2026-04-04
+
+- **Глубокий UI-аудит продакшена (cursor-ide-browser, forecasteconomy.com):** пройдены `/`, `/category/prices`, `/indicator/cpi` (вкладки 12 мес / помесячно / квартальная), `/compare?a=cpi&b=usd-rub`, `/about`, `/privacy`, 404 SPA, `/indicator/key-rate`. Консоль: только предупреждения CursorBrowser, ошибок приложения нет.
+- **Исправлено по результатам аудита:** дублирование бренда в `<title>` (`useMeta` добавляет `| Forecast Economy`, а в title уже было «… Forecast Economy») — **ComparePage**, **Privacy**, **About** (`frontend/src/pages/ComparePage.jsx`, `Privacy.jsx`, `About.jsx`).
+- **Зафиксировано к дальнейшей адаптации (отчёт пользователю):** см. ответ в чате — контент/иерархия заголовков, «показ.», терминология «показатели» vs «индикаторы», подписи дат vs «прогноз», мобильный навбар на широком вьюпорте в автоматизации, a11y карточек и overlay меню, отдельный meta title для 404.
