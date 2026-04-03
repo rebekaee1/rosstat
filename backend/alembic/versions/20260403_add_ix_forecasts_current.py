@@ -7,7 +7,7 @@ Create Date: 2026-04-03
 from alembic import op
 
 revision = "a3f7c8d91e02"
-down_revision = "20260320_add_ix_indicators_category"
+down_revision = "b3c1d2e4f5a6"
 branch_labels = None
 depends_on = None
 
