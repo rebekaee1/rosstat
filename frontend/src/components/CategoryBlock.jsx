@@ -11,6 +11,9 @@ import {
   Factory,
   GraduationCap,
   LayoutGrid,
+  ShoppingCart,
+  Briefcase,
+  BarChart3,
 } from 'lucide-react';
 import { cn } from '../lib/format';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
@@ -25,6 +28,9 @@ const CATEGORY_ICONS = {
   Globe,
   Factory,
   GraduationCap,
+  ShoppingCart,
+  Briefcase,
+  BarChart3,
 };
 
 export default function CategoryBlock({

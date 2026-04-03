@@ -18,7 +18,12 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from app.database import async_session
 from app.models import Indicator, IndicatorData, Forecast, ForecastValue
-from app.services.forecaster import train_and_forecast
+from app.services.forecaster import (
+    train_and_forecast,
+    train_monthly_cpi,
+    train_inflation_12m,
+    CPI_INDICATOR_CODES,
+)
 
 CPI_DESCRIPTION = (
     "Индекс потребительских цен (ИПЦ) измеряет изменение цен на товары и услуги, "
@@ -820,7 +825,7 @@ async def seed():
 
 
 async def generate_forecasts():
-    """Generate OLS forecasts for all active indicators that have enough data."""
+    """Generate forecasts for all active indicators that have enough data."""
     async with async_session() as db:
         ind_q = await db.execute(
             select(Indicator).where(Indicator.is_active.is_(True))
@@ -849,46 +854,56 @@ async def generate_forecasts():
             if forecast_steps <= 0:
                 print(f"  {indicator.code}: forecast_steps=0, skipping")
                 continue
-            forecast_transform = cfg.get("forecast_transform", "cpi_index")
 
-            result = train_and_forecast(
-                dates, values, forecast_steps=forecast_steps,
-                forecast_transform=forecast_transform,
-            )
+            if indicator.code in CPI_INDICATOR_CODES:
+                results = [
+                    train_monthly_cpi(dates, values, forecast_steps=forecast_steps),
+                    train_inflation_12m(dates, values, forecast_steps=forecast_steps),
+                ]
+            else:
+                forecast_transform = cfg.get("forecast_transform", "cpi_index")
+                results = [
+                    train_and_forecast(
+                        dates, values, forecast_steps=forecast_steps,
+                        forecast_transform=forecast_transform,
+                    )
+                ]
 
-            old_q = await db.execute(
-                select(Forecast).where(
-                    Forecast.indicator_id == indicator.id,
-                    Forecast.is_current.is_(True),
+            for result in results:
+                is_inflation = result.model_name.startswith("Inflation-12M")
+                old_q = await db.execute(
+                    select(Forecast).where(
+                        Forecast.indicator_id == indicator.id,
+                        Forecast.is_current.is_(True),
+                        Forecast.model_name.like("Inflation-12M%") if is_inflation
+                        else ~Forecast.model_name.like("Inflation-12M%"),
+                    )
                 )
-            )
-            for old_fc in old_q.scalars().all():
-                old_fc.is_current = False
+                for old_fc in old_q.scalars().all():
+                    old_fc.is_current = False
 
-            new_forecast = Forecast(
-                indicator_id=indicator.id,
-                model_name=result.model_name,
-                model_params={"cumulative_12m": result.cumulative_12m},
-                aic=result.aic,
-                bic=result.bic,
-                is_current=True,
-            )
-            db.add(new_forecast)
-            await db.flush()
+                new_forecast = Forecast(
+                    indicator_id=indicator.id,
+                    model_name=result.model_name,
+                    model_params={"cumulative_12m": result.cumulative_12m},
+                    aic=result.aic,
+                    bic=result.bic,
+                    is_current=True,
+                )
+                db.add(new_forecast)
+                await db.flush()
 
-            for fp in result.points:
-                db.add(ForecastValue(
-                    forecast_id=new_forecast.id,
-                    date=fp.date,
-                    value=fp.value,
-                    lower_bound=fp.lower_bound,
-                    upper_bound=fp.upper_bound,
-                ))
+                for fp in result.points:
+                    db.add(ForecastValue(
+                        forecast_id=new_forecast.id,
+                        date=fp.date,
+                        value=fp.value,
+                        lower_bound=fp.lower_bound,
+                        upper_bound=fp.upper_bound,
+                    ))
 
-            await db.commit()
-            cum = result.cumulative_12m
-            cum_str = f"{cum:.2f}%" if cum is not None else "N/A"
-            print(f"  {indicator.code}: forecast saved ({result.model_name}, cumulative 12m = {cum_str})")
+                await db.commit()
+                print(f"  {indicator.code}: forecast saved ({result.model_name})")
 
 
 if __name__ == "__main__":

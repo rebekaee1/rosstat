@@ -38,7 +38,10 @@ export default function CategoryPage() {
     );
   }
 
-  const filtered = (indicators ?? []).filter((i) => i.category === cat.apiCategory);
+  const HIDDEN_CODES = new Set(['inflation-annual', 'inflation-quarterly', 'inflation-weekly']);
+  const filtered = (indicators ?? [])
+    .filter((i) => i.category === cat.apiCategory)
+    .filter((i) => !HIDDEN_CODES.has(i.code));
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 pt-20 pb-24">

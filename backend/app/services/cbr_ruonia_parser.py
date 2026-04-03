@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 _DATE_RE = re.compile(r"\d{2}\.\d{2}\.\d{4}")
 
-DEFAULT_BACKFILL_FROM = date(2015, 1, 1)
+DEFAULT_BACKFILL_FROM = date(2010, 9, 1)
 
 
 def _parse_ru_float(s: str) -> float:

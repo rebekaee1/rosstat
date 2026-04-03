@@ -35,7 +35,11 @@ async def get_forecast(code: str, db: AsyncSession = Depends(get_db)):
 
     fc = await db.execute(
         select(Forecast)
-        .where(Forecast.indicator_id == indicator.id, Forecast.is_current.is_(True))
+        .where(
+            Forecast.indicator_id == indicator.id,
+            Forecast.is_current.is_(True),
+            ~Forecast.model_name.like("Inflation-12M%"),
+        )
         .order_by(desc(Forecast.created_at))
         .limit(1)
     )
@@ -81,7 +85,6 @@ async def get_inflation(code: str, db: AsyncSession = Depends(get_db)):
     if not indicator:
         raise HTTPException(status_code=404, detail=f"Indicator '{code}' not found")
 
-    # Скользящая годовая инфляция осмыслена только для помесячного ИПЦ (категория «Цены»)
     if indicator.category != "Цены":
         raise HTTPException(
             status_code=400,
@@ -106,54 +109,87 @@ async def get_inflation(code: str, db: AsyncSession = Depends(get_db)):
         cum = math.prod(factors[i - 11:i + 1]) * 100 - 100
         actuals.append(InflationPoint(date=dates[i], value=round(cum, 4)))
 
-    fc_q = await db.execute(
+    # Check for dedicated Inflation-12M forecast (НА's Model 1)
+    infl_fc_q = await db.execute(
         select(Forecast)
-        .where(Forecast.indicator_id == indicator.id, Forecast.is_current.is_(True))
+        .where(
+            Forecast.indicator_id == indicator.id,
+            Forecast.is_current.is_(True),
+            Forecast.model_name.like("Inflation-12M%"),
+        )
         .order_by(desc(Forecast.created_at))
         .limit(1)
     )
-    forecast_obj = fc_q.scalar_one_or_none()
+    infl_forecast = infl_fc_q.scalar_one_or_none()
 
     forecast_points = []
     model_name = None
 
-    if forecast_obj:
-        model_name = forecast_obj.model_name
+    if infl_forecast:
+        model_name = infl_forecast.model_name
         vals_q = await db.execute(
             select(ForecastValue)
-            .where(ForecastValue.forecast_id == forecast_obj.id)
+            .where(ForecastValue.forecast_id == infl_forecast.id)
             .order_by(ForecastValue.date)
         )
-        fc_values = vals_q.scalars().all()
+        for v in vals_q.scalars().all():
+            forecast_points.append(InflationForecastPoint(
+                date=v.date,
+                value=round(float(v.value), 4),
+                lower_bound=round(float(v.lower_bound), 4) if v.lower_bound else None,
+                upper_bound=round(float(v.upper_bound), 4) if v.upper_bound else None,
+            ))
+    else:
+        # Fallback: compute from monthly CPI forecast
+        fc_q = await db.execute(
+            select(Forecast)
+            .where(
+                Forecast.indicator_id == indicator.id,
+                Forecast.is_current.is_(True),
+                ~Forecast.model_name.like("Inflation-12M%"),
+            )
+            .order_by(desc(Forecast.created_at))
+            .limit(1)
+        )
+        forecast_obj = fc_q.scalar_one_or_none()
 
-        if fc_values:
-            fc_factors = [float(fv.value) / 100.0 for fv in fc_values]
-            fc_lowers = [float(fv.lower_bound) / 100.0 if fv.lower_bound else None for fv in fc_values]
-            fc_uppers = [float(fv.upper_bound) / 100.0 if fv.upper_bound else None for fv in fc_values]
+        if forecast_obj:
+            model_name = forecast_obj.model_name
+            vals_q = await db.execute(
+                select(ForecastValue)
+                .where(ForecastValue.forecast_id == forecast_obj.id)
+                .order_by(ForecastValue.date)
+            )
+            fc_values = vals_q.scalars().all()
 
-            for m in range(len(fc_factors)):
-                n_actual = 12 - (m + 1)
-                actual_part = factors[-n_actual:] if n_actual > 0 else []
+            if fc_values:
+                fc_factors = [float(fv.value) / 100.0 for fv in fc_values]
+                fc_lowers = [float(fv.lower_bound) / 100.0 if fv.lower_bound else None for fv in fc_values]
+                fc_uppers = [float(fv.upper_bound) / 100.0 if fv.upper_bound else None for fv in fc_values]
 
-                fc_part = fc_factors[:m + 1]
-                cum = math.prod(actual_part + fc_part) * 100 - 100
+                for m in range(len(fc_factors)):
+                    n_actual = 12 - (m + 1)
+                    actual_part = factors[-n_actual:] if n_actual > 0 else []
 
-                lower = None
-                if all(x is not None for x in fc_lowers[:m + 1]):
-                    lower_part = fc_lowers[:m + 1]
-                    lower = round(math.prod(actual_part + lower_part) * 100 - 100, 4)
+                    fc_part = fc_factors[:m + 1]
+                    cum = math.prod(actual_part + fc_part) * 100 - 100
 
-                upper = None
-                if all(x is not None for x in fc_uppers[:m + 1]):
-                    upper_part = fc_uppers[:m + 1]
-                    upper = round(math.prod(actual_part + upper_part) * 100 - 100, 4)
+                    lower = None
+                    if all(x is not None for x in fc_lowers[:m + 1]):
+                        lower_part = fc_lowers[:m + 1]
+                        lower = round(math.prod(actual_part + lower_part) * 100 - 100, 4)
 
-                forecast_points.append(InflationForecastPoint(
-                    date=fc_values[m].date,
-                    value=round(cum, 4),
-                    lower_bound=lower,
-                    upper_bound=upper,
-                ))
+                    upper = None
+                    if all(x is not None for x in fc_uppers[:m + 1]):
+                        upper_part = fc_uppers[:m + 1]
+                        upper = round(math.prod(actual_part + upper_part) * 100 - 100, 4)
+
+                    forecast_points.append(InflationForecastPoint(
+                        date=fc_values[m].date,
+                        value=round(cum, 4),
+                        lower_bound=lower,
+                        upper_bound=upper,
+                    ))
 
     response = InflationResponse(
         indicator=code,
