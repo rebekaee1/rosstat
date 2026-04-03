@@ -17,9 +17,15 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
   const rows = isCpi
     ? (forecastData?.forecast?.values || [])
     : (inflation?.forecast || []);
-  const modelName = isCpi
+  const MODEL_LABELS = {
+    'CPI-Monthly-MW': 'Многооконная OLS',
+    'Inflation-12M-MW': 'Многооконная OLS',
+    'OLS-MultiWindow': 'Многооконная OLS',
+  };
+  const rawModelName = isCpi
     ? forecastData?.forecast?.model_name
     : inflation?.model_name;
+  const modelName = rawModelName ? (MODEL_LABELS[rawModelName] || rawModelName) : null;
 
   if (!rows.length) return null;
 

@@ -6,6 +6,7 @@ import {
   useIndicator, useIndicatorData, useIndicatorStats, useInflation, useForecast,
 } from '../lib/hooks';
 import { formatValue, formatDate, formatChange, unitSuffix, unitDigits, cn, isCpiIndex } from '../lib/format';
+import { CATEGORIES } from '../lib/categories';
 import useDocumentMeta from '../lib/useMeta';
 import IndicatorChart from '../components/IndicatorChart';
 import ForecastTable from '../components/ForecastTable';
@@ -157,6 +158,13 @@ const INFLATION_METHODOLOGY =
   'Формула: (∏ᵢ₌₁¹² ИПЦᵢ / 100) × 100 − 100, где ИПЦᵢ — индекс потребительских ' +
   'цен за i-й месяц в % к предыдущему месяцу.';
 
+const QUARTERLY_DESCRIPTION =
+  'Квартальная инфляция показывает, на сколько процентов выросли потребительские цены за квартал (3 месяца). ' +
+  'Рассчитывается как произведение 3 последовательных месячных индексов ИПЦ минус 100%.';
+
+const QUARTERLY_METHODOLOGY =
+  'Формула: (ИПЦ₁ / 100) × (ИПЦ₂ / 100) × (ИПЦ₃ / 100) × 100 − 100.';
+
 function TelemetryCard({
   label, value, unit, change, meta, delay = 0,
   deltaSuffix = 'к пред. месяцу',
@@ -282,6 +290,14 @@ export default function IndicatorDetail() {
   });
   const { data: forecastResp } = useForecast(code);
 
+  const hasQuarterlyTab = code === 'cpi';
+  const {
+    data: quarterlyResp,
+    isLoading: loadingQuarterly,
+  } = useIndicatorData('inflation-quarterly', undefined, {
+    enabled: hasQuarterlyTab && viewMode === 'quarterly',
+  });
+
   const chartMode = isPriceCategory ? viewMode : 'cpi';
 
   const inflationStats = useMemo(() => {
@@ -343,7 +359,31 @@ export default function IndicatorDetail() {
     return Number(v) - 100;
   }, [shouldSubtract100]);
 
-  const s = inflationStats;
+  const quarterlyDataPoints = useMemo(() => {
+    if (!quarterlyResp?.data?.length) return [];
+    return quarterlyResp.data.map(p => ({ ...p, value: Number(p.value) - 100 }));
+  }, [quarterlyResp]);
+
+  const quarterlyStats = useMemo(() => {
+    if (viewMode !== 'quarterly' || !quarterlyDataPoints.length) return null;
+    const a = quarterlyDataPoints;
+    const current = a[a.length - 1];
+    const previous = a.length > 1 ? a[a.length - 2] : null;
+    const highest = a.reduce((max, p) => p.value > max.value ? p : max, a[0]);
+    const avg = a.reduce((sum, p) => sum + p.value, 0) / a.length;
+    return {
+      currentValue: current.value,
+      currentDate: current.date,
+      previousValue: previous?.value,
+      previousDate: previous?.date,
+      change: previous ? current.value - previous.value : null,
+      highest: { value: highest.value, date: highest.date },
+      average: avg,
+      dataCount: a.length,
+    };
+  }, [viewMode, quarterlyDataPoints]);
+
+  const s = viewMode === 'quarterly' ? quarterlyStats : inflationStats;
   const cpiPrevDate = dataPoints.length >= 2 ? dataPoints[dataPoints.length - 2].date : null;
 
   const handleChartData = useCallback((data) => {
@@ -359,7 +399,9 @@ export default function IndicatorDetail() {
     downloadExcel(chartData, chartMode, code, currentRange);
   }, [chartData, chartMode, code, currentRange]);
 
-  const chartLoading = chartMode === 'inflation' ? loadingInflation : loadingData;
+  const chartLoading = chartMode === 'inflation' ? loadingInflation
+    : chartMode === 'quarterly' ? loadingQuarterly
+    : loadingData;
 
   const hasForecastData = chartMode === 'inflation'
     ? inflationResp?.forecast?.length > 0
@@ -409,14 +451,27 @@ export default function IndicatorDetail() {
       )}
 
       <div ref={headerRef} className="mb-12 md:mb-16 max-w-4xl">
-        <Link
-          to="/"
-          data-animate
-          className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-text-tertiary hover:text-champagne transition-colors mb-8 lift-hover group"
-        >
-          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-          Главная
-        </Link>
+        <nav data-animate className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-text-tertiary mb-8">
+          <Link
+            to="/"
+            className="hover:text-champagne transition-colors lift-hover inline-flex items-center gap-1.5 group"
+          >
+            <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
+            Главная
+          </Link>
+          {indicator?.category && (() => {
+            const cat = CATEGORIES.find(c => c.apiCategory === indicator.category);
+            if (!cat) return null;
+            return (
+              <>
+                <span className="text-text-tertiary/40">/</span>
+                <Link to={`/category/${cat.slug}`} className="hover:text-champagne transition-colors">
+                  {cat.name}
+                </Link>
+              </>
+            );
+          })()}
+        </nav>
 
         {loadingInd ? (
           <div className="space-y-4">
@@ -431,9 +486,11 @@ export default function IndicatorDetail() {
                 <Activity className="w-3 h-3 text-champagne" />
                 {FREQ_MAP[indicator?.frequency] || indicator?.frequency}
               </span>
-              <span className="text-xs font-mono text-text-tertiary">
-                ID: {indicator?.code.toUpperCase()}
-              </span>
+              {indicator?.category && (
+                <span className="text-xs font-mono text-text-tertiary">
+                  {indicator.category}
+                </span>
+              )}
             </div>
 
             <h1 data-animate className="text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight mb-4 leading-tight">
@@ -524,6 +581,20 @@ export default function IndicatorDetail() {
                 >
                   ИПЦ помесячно
                 </button>
+                {hasQuarterlyTab && (
+                  <button
+                    type="button"
+                    onClick={() => setViewMode('quarterly')}
+                    className={cn(
+                      'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
+                      viewMode === 'quarterly'
+                        ? 'bg-champagne/15 text-champagne'
+                        : 'text-text-tertiary hover:text-text-secondary'
+                    )}
+                  >
+                    Квартальная
+                  </button>
+                )}
               </div>
             ) : (
               <span className="text-[11px] font-mono uppercase tracking-widest text-text-tertiary">
@@ -583,20 +654,22 @@ export default function IndicatorDetail() {
           <div className="relative overflow-hidden rounded-[2rem]">
             <IndicatorChart
               key={`${indicator?.code}-${chartMode}`}
-              mode={chartMode}
+              mode={chartMode === 'quarterly' ? 'cpi' : chartMode}
               inflation={inflationResp}
-              cpiData={dataPoints}
-              forecastData={displayForecastData}
-              showForecast={canForecast && showForecast}
+              cpiData={chartMode === 'quarterly' ? quarterlyDataPoints : dataPoints}
+              forecastData={chartMode === 'quarterly' ? null : displayForecastData}
+              showForecast={chartMode !== 'quarterly' && canForecast && showForecast}
               onChartData={handleChartData}
               onRangeChange={handleRangeChange}
               referenceLineY={isPriceCategory ? undefined : null}
               cpiChartTitle={
-                isPriceCategory
-                  ? undefined
-                  : `${indicator?.name || 'Показатель'} (${unitSuffix(indicator?.unit)})`
+                chartMode === 'quarterly'
+                  ? 'Квартальная инфляция (%)'
+                  : isPriceCategory
+                    ? undefined
+                    : `${indicator?.name || 'Показатель'} (${unitSuffix(indicator?.unit)})`
               }
-              levelTooltipLabel={isPriceCategory ? undefined : 'Значение'}
+              levelTooltipLabel={chartMode === 'quarterly' ? 'Кв. инфляция' : isPriceCategory ? undefined : 'Значение'}
               emptyHint={chartEmptyHint}
               dateFormat={chartMode !== 'inflation' && indicator?.frequency === 'daily' ? 'day' : 'full'}
               unit={indicator?.unit || '%'}
@@ -616,11 +689,17 @@ export default function IndicatorDetail() {
           
           <div className="prose prose-sm max-w-none">
             <p className="text-text-secondary leading-relaxed">
-              {chartMode === 'inflation' ? INFLATION_DESCRIPTION : indicator?.description}
+              {chartMode === 'inflation' ? INFLATION_DESCRIPTION
+                : viewMode === 'quarterly' ? QUARTERLY_DESCRIPTION
+                : indicator?.description}
             </p>
-            {(chartMode === 'inflation' ? INFLATION_METHODOLOGY : indicator?.methodology) && (
+            {(chartMode === 'inflation' ? INFLATION_METHODOLOGY
+              : viewMode === 'quarterly' ? QUARTERLY_METHODOLOGY
+              : indicator?.methodology) && (
               <p className="text-text-tertiary border-l-2 border-champagne/30 pl-4 my-4 font-mono text-[10px] uppercase tracking-wider">
-                {chartMode === 'inflation' ? INFLATION_METHODOLOGY : indicator?.methodology}
+                {chartMode === 'inflation' ? INFLATION_METHODOLOGY
+                  : viewMode === 'quarterly' ? QUARTERLY_METHODOLOGY
+                  : indicator?.methodology}
               </p>
             )}
           </div>
@@ -669,11 +748,17 @@ export default function IndicatorDetail() {
       <section>
         <DataTable
           key={`${indicator?.code}-${chartMode}`}
-          data={chartMode === 'inflation' ? (inflationResp?.actuals || []) : dataPoints}
+          data={
+            chartMode === 'inflation' ? (inflationResp?.actuals || [])
+            : chartMode === 'quarterly' ? quarterlyDataPoints
+            : dataPoints
+          }
           title={
             chartMode === 'inflation'
               ? 'Исторические данные — Инфляция 12 мес.'
-              : (isPriceCategory ? 'Исторические данные — ИПЦ' : `Исторические данные — ${indicator?.name || 'ряд'}`)
+              : chartMode === 'quarterly'
+                ? 'Исторические данные — Квартальная инфляция'
+                : (isPriceCategory ? 'Исторические данные — ИПЦ' : `Исторические данные — ${indicator?.name || 'ряд'}`)
           }
           dateFormat={chartMode !== 'inflation' && indicator?.frequency === 'daily' ? 'day' : 'full'}
           unit={indicator?.unit || '%'}

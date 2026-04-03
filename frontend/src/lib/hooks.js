@@ -28,11 +28,12 @@ export function useIndicator(code) {
   });
 }
 
-export function useIndicatorData(code, params) {
+export function useIndicatorData(code, params, options = {}) {
+  const { enabled = true } = options;
   return useQuery({
     queryKey: ['indicator-data', code, params],
     queryFn: () => fetchIndicatorData(code, params),
-    enabled: !!code,
+    enabled: !!code && enabled,
     staleTime: 60 * 60 * 1000,
   });
 }
