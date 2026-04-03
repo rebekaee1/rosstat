@@ -64,3 +64,16 @@ export function formatChange(val) {
 export function cn(...classes) {
   return classes.filter(Boolean).join(' ');
 }
+
+const CPI_INDEX_CODES = new Set([
+  'cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services', 'inflation-quarterly',
+]);
+
+export function isCpiIndex(code) {
+  return CPI_INDEX_CODES.has(code);
+}
+
+export function adjustCpiDisplay(value) {
+  if (value == null) return value;
+  return Number(value) - 100;
+}

@@ -29,8 +29,8 @@ function dateBasedWindowSize(data, months) {
   return data.length;
 }
 
-function CustomTooltip({ active, payload, label, mode, levelTooltipLabel, dateFormat = 'full', unit = '%' }) {
-  if (!active || !payload?.length) return null;
+function CustomTooltip({ active, payload, label, mode, levelTooltipLabel, dateFormat = 'full', unit = '%', visible = true }) {
+  if (!visible || !active || !payload?.length) return null;
 
   const actual = payload.find(p => p.dataKey === 'actual' && p.value != null);
   const forecast = payload.find(p => p.dataKey === 'forecast' && p.value != null);
@@ -291,7 +291,7 @@ export default function IndicatorChart({
 
   const baselineY = referenceLineY !== undefined
     ? referenceLineY
-    : (mode === 'cpi' ? 100 : 0);
+    : 0;
 
   const sliderValue = maxOffset - clampedOffset;
   const hasForecast = mode === 'inflation'
@@ -401,9 +401,9 @@ export default function IndicatorChart({
               width={yWidth}
             />
             <Tooltip
-              content={<CustomTooltip mode={mode} levelTooltipLabel={levelTooltipLabel} dateFormat={dateFormat} unit={unit} />}
-              cursor={isDragging ? false : { stroke: 'rgba(0,0,0,0.15)', strokeWidth: 1 }}
-              active={!isDragging}
+              content={<CustomTooltip mode={mode} levelTooltipLabel={levelTooltipLabel} dateFormat={dateFormat} unit={unit} visible={isHovering} />}
+              cursor={isDragging || !isHovering ? false : { stroke: 'rgba(0,0,0,0.15)', strokeWidth: 1 }}
+              active={isHovering && !isDragging}
             />
             {baselineY !== null && (
               <ReferenceLine y={baselineY} stroke="rgba(0,0,0,0.12)" strokeDasharray="6 3" />

@@ -5,7 +5,7 @@ import { ArrowLeft, ExternalLink, Activity, Info, TrendingUp, TrendingDown, Data
 import {
   useIndicator, useIndicatorData, useIndicatorStats, useInflation, useForecast,
 } from '../lib/hooks';
-import { formatValue, formatDate, formatChange, unitSuffix, unitDigits, cn } from '../lib/format';
+import { formatValue, formatDate, formatChange, unitSuffix, unitDigits, cn, isCpiIndex } from '../lib/format';
 import useDocumentMeta from '../lib/useMeta';
 import IndicatorChart from '../components/IndicatorChart';
 import ForecastTable from '../components/ForecastTable';
@@ -267,6 +267,8 @@ export default function IndicatorDetail() {
   } = useIndicator(code);
   const CPI_CODES = ['cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services'];
   const isPriceCategory = CPI_CODES.includes(code);
+  const canForecast = indicator?.category === 'Цены';
+  const shouldSubtract100 = isCpiIndex(code);
   const {
     data: dataResp,
     isLoading: loadingData,
@@ -312,10 +314,35 @@ export default function IndicatorDetail() {
     }
   }, []);
 
-  const dataPoints = useMemo(
+  const rawDataPoints = useMemo(
     () => (Array.isArray(dataResp?.data) ? dataResp.data : []),
     [dataResp?.data],
   );
+
+  const dataPoints = useMemo(() => {
+    if (!shouldSubtract100 || !rawDataPoints.length) return rawDataPoints;
+    return rawDataPoints.map(p => ({ ...p, value: Number(p.value) - 100 }));
+  }, [rawDataPoints, shouldSubtract100]);
+
+  const displayForecastData = useMemo(() => {
+    if (!shouldSubtract100 || !forecastResp?.forecast?.values?.length) return forecastResp;
+    return {
+      ...forecastResp,
+      forecast: {
+        ...forecastResp.forecast,
+        values: forecastResp.forecast.values.map(v => ({
+          ...v,
+          value: Number(v.value) - 100,
+        })),
+      },
+    };
+  }, [forecastResp, shouldSubtract100]);
+
+  const adj = useCallback((v) => {
+    if (v == null || !shouldSubtract100) return v;
+    return Number(v) - 100;
+  }, [shouldSubtract100]);
+
   const s = inflationStats;
   const cpiPrevDate = dataPoints.length >= 2 ? dataPoints[dataPoints.length - 2].date : null;
 
@@ -336,7 +363,7 @@ export default function IndicatorDetail() {
 
   const hasForecastData = chartMode === 'inflation'
     ? inflationResp?.forecast?.length > 0
-    : forecastResp?.forecast?.values?.length > 0;
+    : displayForecastData?.forecast?.values?.length > 0;
 
   const chartEmptyHint = useMemo(() => {
     if (dataError) {
@@ -431,7 +458,7 @@ export default function IndicatorDetail() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <TelemetryCard
               label="Текущее значение"
-              value={s?.currentValue ?? indicator?.current_value}
+              value={s?.currentValue ?? adj(indicator?.current_value)}
               unit={indicator?.unit || '%'}
               change={s?.change ?? indicator?.change}
               meta={`ДАТА: ${formatDate(s?.currentDate ?? indicator?.current_date, 'full')}`}
@@ -440,7 +467,7 @@ export default function IndicatorDetail() {
             />
             <TelemetryCard
               label={isPriceCategory ? 'Предыдущий месяц' : 'Предыдущее значение'}
-              value={s?.previousValue ?? indicator?.previous_value}
+              value={s?.previousValue ?? adj(indicator?.previous_value)}
               unit={indicator?.unit || '%'}
               meta={`ДАТА: ${formatDate(s?.previousDate ?? cpiPrevDate, 'full')}`}
               delay={1}
@@ -448,7 +475,7 @@ export default function IndicatorDetail() {
             {(s?.highest || stats?.highest) && (
               <TelemetryCard
                 label="Абсолютный максимум"
-                value={s?.highest?.value ?? stats?.highest?.value}
+                value={s?.highest?.value ?? adj(stats?.highest?.value)}
                 unit={indicator?.unit || '%'}
                 meta={`ПИК: ${formatDate(s?.highest?.date ?? stats?.highest?.date, 'full')}`}
                 delay={2}
@@ -457,7 +484,7 @@ export default function IndicatorDetail() {
             {(s?.average != null || stats?.average != null) && (
               <TelemetryCard
                 label="Среднее значение"
-                value={s?.average ?? stats?.average}
+                value={s?.average ?? adj(stats?.average)}
                 unit={indicator?.unit || '%'}
                 meta={`НАБЛ.: ${s?.dataCount ?? stats?.data_count} ПЕРИОД.`}
                 delay={3}
@@ -515,27 +542,38 @@ export default function IndicatorDetail() {
               Excel
             </button>
 
-            <label className="flex items-center gap-3 cursor-pointer group select-none">
-              <span className="text-[10px] font-mono uppercase tracking-widest text-text-tertiary group-hover:text-text-secondary transition-colors">
-                Прогноз
-              </span>
-              <div
-                role="switch"
-                aria-checked={showForecast}
-                tabIndex={0}
-                onClick={() => setShowForecast(v => !v)}
-                onKeyDown={e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); setShowForecast(v => !v); } }}
-                className={cn(
-                  'relative w-10 h-5 rounded-full transition-colors duration-300 cursor-pointer',
-                  showForecast ? 'bg-champagne/30' : 'bg-obsidian-lighter border border-border-subtle'
-                )}
-              >
-                <div className={cn(
-                  'absolute top-[2px] left-[2px] w-4 h-4 rounded-full transition-transform duration-300',
-                  showForecast ? 'translate-x-5 bg-champagne' : 'translate-x-0 bg-text-tertiary'
-                )} />
-              </div>
-            </label>
+            <div className="relative group">
+              <label className={cn(
+                'flex items-center gap-3 select-none',
+                canForecast ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'
+              )}>
+                <span className="text-[10px] font-mono uppercase tracking-widest text-text-tertiary group-hover:text-text-secondary transition-colors">
+                  Прогноз
+                </span>
+                <div
+                  role="switch"
+                  aria-checked={canForecast && showForecast}
+                  tabIndex={canForecast ? 0 : -1}
+                  onClick={() => canForecast && setShowForecast(v => !v)}
+                  onKeyDown={e => { if (canForecast && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); setShowForecast(v => !v); } }}
+                  className={cn(
+                    'relative w-10 h-5 rounded-full transition-colors duration-300',
+                    canForecast ? 'cursor-pointer' : 'cursor-not-allowed',
+                    canForecast && showForecast ? 'bg-champagne/30' : 'bg-obsidian-lighter border border-border-subtle'
+                  )}
+                >
+                  <div className={cn(
+                    'absolute top-[2px] left-[2px] w-4 h-4 rounded-full transition-transform duration-300',
+                    canForecast && showForecast ? 'translate-x-5 bg-champagne' : 'translate-x-0 bg-text-tertiary'
+                  )} />
+                </div>
+              </label>
+              {!canForecast && (
+                <div className="absolute top-full right-0 mt-2 px-3 py-2 rounded-xl bg-obsidian border border-border-subtle text-xs text-text-secondary whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-xl z-50">
+                  Прогноз скоро будет доступен
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -548,8 +586,8 @@ export default function IndicatorDetail() {
               mode={chartMode}
               inflation={inflationResp}
               cpiData={dataPoints}
-              forecastData={forecastResp}
-              showForecast={showForecast}
+              forecastData={displayForecastData}
+              showForecast={canForecast && showForecast}
               onChartData={handleChartData}
               onRangeChange={handleRangeChange}
               referenceLineY={isPriceCategory ? undefined : null}
@@ -602,14 +640,14 @@ export default function IndicatorDetail() {
         </section>
 
         <section className="lg:col-span-2">
-          {showForecast && hasForecastData ? (
+          {canForecast && showForecast && hasForecastData ? (
             <ForecastTable
               mode={chartMode}
               inflation={inflationResp}
-              forecastData={forecastResp}
+              forecastData={displayForecastData}
               unit={indicator?.unit || '%'}
             />
-          ) : !showForecast ? (
+          ) : canForecast && !showForecast ? (
             <div className="h-full min-h-[300px] rounded-[2rem] bg-surface border border-border-subtle border-dashed flex flex-col items-center justify-center text-text-tertiary p-8">
               <Activity className="w-8 h-8 mb-4 opacity-20" />
               <p className="text-xs font-mono uppercase tracking-widest text-center">Включите переключатель «Прогноз», чтобы показать таблицу прогноза</p>

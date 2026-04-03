@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
-import { formatValue, formatChange, formatDate, cn } from '../lib/format';
+import { formatValue, formatChange, formatDate, cn, isCpiIndex } from '../lib/format';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
 
 export default function IndicatorTile({ indicator, delay = 0 }) {
@@ -30,6 +30,9 @@ export default function IndicatorTile({ indicator, delay = 0 }) {
   const isUp = changeNum != null && changeNum > 0;
   const isDown = changeNum != null && changeNum < 0;
   const isActive = indicator.is_active;
+  const displayVal = isCpiIndex(indicator.code)
+    ? (indicator.current_value != null ? Number(indicator.current_value) - 100 : null)
+    : indicator.current_value;
 
   return (
     <Link
@@ -86,9 +89,9 @@ export default function IndicatorTile({ indicator, delay = 0 }) {
               <div className="flex items-baseline gap-1.5 mb-1">
                 <span className={cn(
                   'font-bold tracking-tight text-text-primary font-mono',
-                  String(formatValue(indicator.current_value)).length > 8 ? 'text-xl' : 'text-3xl'
+                  String(formatValue(displayVal)).length > 8 ? 'text-xl' : 'text-3xl'
                 )}>
-                  {formatValue(indicator.current_value)}
+                  {formatValue(displayVal)}
                 </span>
                 <span className="text-sm font-medium text-text-tertiary">{indicator.unit}</span>
               </div>
