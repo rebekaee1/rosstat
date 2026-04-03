@@ -2,252 +2,236 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://forecasteconomy.com/</loc>
-    <lastmod>2026-03-20</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://forecasteconomy.com/about</loc>
-    <lastmod>2026-03-20</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://forecasteconomy.com/privacy</loc>
-    <lastmod>2026-03-20</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
-  <!-- Categories -->
+  <url>
+    <loc>https://forecasteconomy.com/compare</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
   <url>
     <loc>https://forecasteconomy.com/category/prices</loc>
-    <lastmod>2026-03-20</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://forecasteconomy.com/category/rates</loc>
-    <lastmod>2026-03-20</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://forecasteconomy.com/category/finance</loc>
-    <lastmod>2026-03-20</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://forecasteconomy.com/category/labor</loc>
-    <lastmod>2026-03-20</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
   </url>
-  <!-- Prices & Inflation -->
+  <url>
+    <loc>https://forecasteconomy.com/category/gdp</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
   <url>
     <loc>https://forecasteconomy.com/indicator/cpi</loc>
-    <lastmod>2026-03-20</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://forecasteconomy.com/indicator/cpi-food</loc>
-    <lastmod>2026-03-20</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://forecasteconomy.com/indicator/cpi-nonfood</loc>
-    <lastmod>2026-03-20</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://forecasteconomy.com/indicator/cpi-services</loc>
-    <lastmod>2026-03-20</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://forecasteconomy.com/indicator/inflation-quarterly</loc>
-    <lastmod>2026-03-20</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://forecasteconomy.com/indicator/inflation-annual</loc>
-    <lastmod>2026-03-20</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  <!-- Rates -->
   <url>
     <loc>https://forecasteconomy.com/indicator/key-rate</loc>
-    <lastmod>2026-03-20</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://forecasteconomy.com/indicator/ruonia</loc>
-    <lastmod>2026-03-20</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://forecasteconomy.com/indicator/mortgage-rate</loc>
-    <lastmod>2026-03-20</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://forecasteconomy.com/indicator/deposit-rate</loc>
-    <lastmod>2026-03-20</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://forecasteconomy.com/indicator/auto-loan-rate</loc>
-    <lastmod>2026-03-20</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  <!-- Finance & FX -->
   <url>
     <loc>https://forecasteconomy.com/indicator/usd-rub</loc>
-    <lastmod>2026-03-20</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://forecasteconomy.com/indicator/eur-rub</loc>
-    <lastmod>2026-03-20</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://forecasteconomy.com/indicator/cny-rub</loc>
-    <lastmod>2026-03-20</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://forecasteconomy.com/indicator/m0</loc>
-    <lastmod>2026-03-20</lastmod>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://forecasteconomy.com/indicator/m1</loc>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://forecasteconomy.com/indicator/m2</loc>
-    <lastmod>2026-03-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <!-- Labor -->
-  <url>
-    <loc>https://forecasteconomy.com/indicator/unemployment</loc>
-    <lastmod>2026-03-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://forecasteconomy.com/indicator/wages-nominal</loc>
-    <lastmod>2026-03-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://forecasteconomy.com/indicator/wages-real</loc>
-    <lastmod>2026-03-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <!-- GDP -->
-  <url>
-    <loc>https://forecasteconomy.com/category/gdp</loc>
-    <lastmod>2026-03-25</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://forecasteconomy.com/indicator/gdp-nominal</loc>
-    <lastmod>2026-03-25</lastmod>
-    <changefreq>quarterly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://forecasteconomy.com/indicator/gdp-yoy</loc>
-    <lastmod>2026-03-25</lastmod>
-    <changefreq>quarterly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://forecasteconomy.com/indicator/gdp-qoq</loc>
-    <lastmod>2026-03-25</lastmod>
-    <changefreq>quarterly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <!-- Additional Finance -->
-  <url>
-    <loc>https://forecasteconomy.com/indicator/m1</loc>
-    <lastmod>2026-03-25</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://forecasteconomy.com/indicator/consumer-credit</loc>
-    <lastmod>2026-03-25</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://forecasteconomy.com/indicator/business-credit</loc>
-    <lastmod>2026-03-25</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://forecasteconomy.com/indicator/deposits-individual</loc>
-    <lastmod>2026-03-25</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://forecasteconomy.com/indicator/deposits-business</loc>
-    <lastmod>2026-03-25</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://forecasteconomy.com/indicator/budget-deficit</loc>
-    <lastmod>2026-03-25</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
-  <!-- Additional Prices -->
   <url>
-    <loc>https://forecasteconomy.com/indicator/inflation-weekly</loc>
-    <lastmod>2026-03-25</lastmod>
-    <changefreq>weekly</changefreq>
+    <loc>https://forecasteconomy.com/indicator/unemployment</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://forecasteconomy.com/indicator/wages-nominal</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://forecasteconomy.com/indicator/wages-real</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  <!-- Additional Labor -->
   <url>
     <loc>https://forecasteconomy.com/indicator/unemployment-quarterly</loc>
-    <lastmod>2026-03-25</lastmod>
-    <changefreq>quarterly</changefreq>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://forecasteconomy.com/indicator/unemployment-annual</loc>
-    <lastmod>2026-03-25</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-  <!-- Compare -->
   <url>
-    <loc>https://forecasteconomy.com/compare</loc>
-    <lastmod>2026-03-25</lastmod>
+    <loc>https://forecasteconomy.com/indicator/gdp-nominal</loc>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://forecasteconomy.com/indicator/gdp-yoy</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://forecasteconomy.com/indicator/gdp-qoq</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
   </url>
 </urlset>

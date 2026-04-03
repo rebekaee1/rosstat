@@ -21,7 +21,7 @@ export default function Dashboard() {
     title: 'Прогноз инфляции и экономические данные России — бесплатно',
     description:
       'Forecast Economy — бесплатная аналитическая платформа экономических данных России. ' +
-      'Официальные данные Росстата и ЦБ, ИПЦ, OLS-прогноз. Без регистрации.',
+      'Официальные данные Росстата и ЦБ, ИПЦ, прогноз. Без регистрации.',
     path: '/',
   });
 
@@ -31,8 +31,8 @@ export default function Dashboard() {
         <p className="text-[10px] uppercase tracking-[0.3em] text-champagne font-semibold mb-3">
           Бесплатная аналитическая платформа экономических данных России
         </p>
-        <h1 className="font-display text-2xl md:text-[1.85rem] font-bold text-text-primary tracking-tight leading-snug max-w-4xl">
-          Выберите раздел — индикаторы, графики и прогнозы по мере подключения источников
+        <h1 className="text-xl md:text-2xl font-semibold text-text-primary tracking-tight leading-snug max-w-4xl">
+          Анализируйте и скачивайте прогнозы и фактические данные по 100+ макроэкономическим индикаторам Российской Федерации
         </h1>
       </header>
 

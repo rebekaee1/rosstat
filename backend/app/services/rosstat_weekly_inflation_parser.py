@@ -1,22 +1,21 @@
-"""ETL: Росстат weekly CPI press releases → IndicatorData.
+"""ETL: Еженедельный ИПЦ → IndicatorData.
 
-Rosstat publishes weekly CPI estimates on Wednesdays at
-ssl.rosstat.gov.ru/storage/mediabank/{id}_{date}.html
+Росстат публикует агрегатный недельный ИПЦ в пресс-релизах (не в XLSX).
+XLSX `nedel_Ipc.xlsx` содержит только per-product индексы без итога.
 
-Strategy:
-  1. Fetch the Rosstat prices section page to find links to weekly releases.
-  2. For each new release, parse the HTML table for CPI value and date range.
-  3. Store weekly CPI index (к предыдущей неделе, e.g. 100.13).
+Стратегия:
+  Парсим inflation-monitor.ru/weekly_inflation — структурированное зеркало
+  данных Росстата. Таблица 0 = агрегатный ИПЦ (столбец «За неделю Росстат»).
+  Обходим пагинацию «Пред.» для backfill.
 """
 
 from __future__ import annotations
 
-import asyncio
 import logging
 import re
+import time
 from dataclasses import dataclass
 from datetime import date, datetime
-from pathlib import Path
 from typing import ClassVar
 
 import requests
@@ -31,27 +30,9 @@ from app.core.cache import cache_invalidate_indicator
 
 logger = logging.getLogger(__name__)
 
-ROSSTAT_PRICE_URL = "https://rosstat.gov.ru/statistics/price"
-SSL_ROSSTAT_BASE = "https://ssl.rosstat.gov.ru"
-
-CERT_PATH = Path(__file__).resolve().parents[2] / "certs" / "russiantrustedca2024.pem"
-
-_DATE_RE = re.compile(
-    r"с\s+(\d{1,2})\s+по\s+(\d{1,2})\s+"
-    r"(январ[яь]|феврал[яь]|март[а]?|апрел[яь]|ма[яй]|июн[яь]|"
-    r"июл[яь]|август[а]?|сентябр[яь]|октябр[яь]|ноябр[яь]|декабр[яь])\s+"
-    r"(\d{4})",
-    re.IGNORECASE,
-)
-
-_MONTH_MAP = {
-    "январ": 1, "феврал": 2, "март": 3, "апрел": 4,
-    "ма": 5, "июн": 6, "июл": 7, "август": 8,
-    "сентябр": 9, "октябр": 10, "ноябр": 11, "декабр": 12,
-}
-
-_LINK_RE = re.compile(r"оценк[еи]\s+индекс", re.IGNORECASE)
-_CPI_VAL_RE = re.compile(r"(\d{2,3}[.,]\d{1,3})\s*%?")
+BASE_URL = "https://inflation-monitor.ru/weekly_inflation"
+_DATE_RANGE_RE = re.compile(r"(\d{2}\.\d{2})(?:\.\d{4})?\s*-\s*(\d{2})\.(\d{2})\.(\d{4})")
+_PREV_RE = re.compile(r"Пред", re.IGNORECASE)
 
 
 @dataclass
@@ -60,122 +41,94 @@ class WeeklyPoint:
     value: float
 
 
-def _month_from_stem(stem: str) -> int | None:
-    stem_lower = stem.lower()
-    for prefix, month in _MONTH_MAP.items():
-        if stem_lower.startswith(prefix):
-            return month
-    return None
-
-
 def _get_session() -> requests.Session:
     s = requests.Session()
     s.headers.update({
         "User-Agent": "Mozilla/5.0 (compatible; ForecastEconomy/1.0; +https://forecasteconomy.com)",
         "Accept-Language": "ru-RU,ru;q=0.9",
     })
-    cert = str(CERT_PATH) if CERT_PATH.exists() else None
-    if cert:
-        s.verify = cert
     return s
 
 
-def _discover_release_links(session: requests.Session) -> list[str]:
-    """Fetch Rosstat prices page and find links to weekly CPI releases."""
-    links: list[str] = []
+def _parse_page(html: bytes) -> tuple[WeeklyPoint | None, str | None]:
+    """Parse one page → (data point, prev_page_url or None)."""
+    soup = BeautifulSoup(html, "html.parser")
+    text = soup.get_text()
 
-    for url in [
-        ROSSTAT_PRICE_URL,
-        "https://rosstat.gov.ru/price",
-        f"{SSL_ROSSTAT_BASE}/storage/mediabank/ind_potreb_cen_05.html",
-    ]:
+    m = _DATE_RANGE_RE.search(text)
+    if not m:
+        return None, None
+
+    end_day = int(m.group(2))
+    end_month = int(m.group(3))
+    end_year = int(m.group(4))
+    try:
+        end_date = date(end_year, end_month, end_day)
+    except ValueError:
+        return None, None
+
+    tables = soup.find_all("table")
+    point = None
+    if tables:
+        rows = tables[0].find_all("tr")
+        if rows:
+            cells = [td.get_text(strip=True) for td in rows[0].find_all(["td", "th"])]
+            if len(cells) >= 3:
+                raw = cells[2].replace(",", ".")
+                try:
+                    val = float(raw)
+                    if 98 < val < 105:
+                        point = WeeklyPoint(date=end_date, value=val)
+                except ValueError:
+                    pass
+
+    prev_url = None
+    for a in soup.find_all("a", href=True):
+        if _PREV_RE.search(a.get_text(strip=True)):
+            href = a["href"]
+            if href.startswith("/"):
+                prev_url = f"https://inflation-monitor.ru{href}"
+            elif href.startswith("http"):
+                prev_url = href
+            break
+
+    return point, prev_url
+
+
+def fetch_weekly_cpi(max_pages: int = 200, existing_dates: set[date] | None = None) -> list[WeeklyPoint]:
+    """Follow pagination and collect weekly CPI points."""
+    session = _get_session()
+    points: list[WeeklyPoint] = []
+    url: str | None = BASE_URL
+    seen_dates: set[date] = set()
+    existing = existing_dates or set()
+
+    for _ in range(max_pages):
+        if not url:
+            break
         try:
-            resp = session.get(url, timeout=30)
+            resp = session.get(url, timeout=20)
             if resp.status_code != 200:
-                continue
-            soup = BeautifulSoup(resp.text, "html.parser")
-            for a in soup.find_all("a", href=True):
-                text = a.get_text(strip=True).lower()
-                href = a["href"]
-                if _LINK_RE.search(text) or ("потребительских цен" in text and "оценк" in text):
-                    if href.startswith("http"):
-                        links.append(href)
-                    elif href.startswith("/"):
-                        base = url.split("/")[0] + "//" + url.split("/")[2]
-                        links.append(base + href)
-            if links:
+                logger.warning("HTTP %d for %s", resp.status_code, url)
                 break
         except requests.RequestException as e:
-            logger.debug("Failed to fetch %s: %s", url, e)
+            logger.warning("Request failed: %s", e)
+            break
 
-    return list(dict.fromkeys(links))
+        point, prev_url = _parse_page(resp.content)
+        if point and point.date not in seen_dates:
+            seen_dates.add(point.date)
+            points.append(point)
+            if point.date in existing and len(points) > 4:
+                break
+        elif point is None and prev_url is None:
+            break
 
-
-def _parse_release_page(session: requests.Session, url: str) -> WeeklyPoint | None:
-    """Parse a single weekly CPI release page for the CPI value and date."""
-    try:
-        resp = session.get(url, timeout=20)
-        if resp.status_code != 200:
-            return None
-    except requests.RequestException:
-        return None
-
-    text = resp.text
-    date_match = _DATE_RE.search(text)
-    if not date_match:
-        return None
-
-    end_day = int(date_match.group(2))
-    month_stem = date_match.group(3)
-    year = int(date_match.group(4))
-    month = _month_from_stem(month_stem)
-    if not month:
-        return None
-
-    try:
-        end_date = date(year, month, end_day)
-    except ValueError:
-        return None
-
-    soup = BeautifulSoup(text, "html.parser")
-    tables = soup.find_all("table")
-    for table in tables:
-        rows = table.find_all("tr")
-        for row in rows:
-            cells = row.find_all(["td", "th"])
-            cell_texts = [c.get_text(strip=True) for c in cells]
-            for ct in cell_texts:
-                if "предыдущ" in ct.lower() and "недел" in ct.lower():
-                    for ct2 in cell_texts:
-                        m = _CPI_VAL_RE.search(ct2.replace(",", "."))
-                        if m:
-                            val = float(m.group(1))
-                            if 99 < val < 102:
-                                return WeeklyPoint(date=end_date, value=val)
-                    break
-
-    return None
-
-
-def fetch_weekly_cpi() -> list[WeeklyPoint]:
-    """Discover and parse all available weekly CPI releases."""
-    session = _get_session()
-    links = _discover_release_links(session)
-    if not links:
-        logger.warning("No weekly CPI release links found on Rosstat")
-        return []
-
-    points: list[WeeklyPoint] = []
-    for link in links[:52]:
-        pt = _parse_release_page(session, link)
-        if pt:
-            points.append(pt)
+        url = prev_url
+        time.sleep(0.3)
 
     points.sort(key=lambda p: p.date)
-    seen: dict[date, float] = {}
-    for p in points:
-        seen[p.date] = p.value
-    return [WeeklyPoint(date=d, value=v) for d, v in sorted(seen.items())]
+    return points
 
 
 class RosstatWeeklyCpiParser(BaseParser):
@@ -184,12 +137,25 @@ class RosstatWeeklyCpiParser(BaseParser):
     async def run(self, db: AsyncSession, indicator: Indicator, fetch_log: FetchLog) -> None:
         code = indicator.code
         try:
-            points = await asyncio.to_thread(fetch_weekly_cpi)
-            fetch_log.source_url = ROSSTAT_PRICE_URL
+            existing_q = await db.execute(
+                select(IndicatorData.date)
+                .where(IndicatorData.indicator_id == indicator.id)
+            )
+            existing_dates = {row[0] for row in existing_q.fetchall()}
+
+            import asyncio
+            cfg = indicator.model_config_json or {}
+            max_pages = cfg.get("backfill_max_pages", 200)
+            points = await asyncio.to_thread(
+                fetch_weekly_cpi,
+                max_pages=max_pages,
+                existing_dates=existing_dates,
+            )
+            fetch_log.source_url = BASE_URL
 
             if not points:
                 fetch_log.status = "no_new_data"
-                fetch_log.error_message = "No weekly CPI data found"
+                fetch_log.error_message = "No weekly CPI data found on inflation-monitor.ru"
                 fetch_log.completed_at = datetime.utcnow()
                 await db.commit()
                 return

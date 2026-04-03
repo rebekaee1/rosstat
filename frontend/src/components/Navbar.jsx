@@ -91,7 +91,7 @@ export default function Navbar() {
 
       <div className="hidden md:flex items-center gap-2 flex-1 justify-end flex-wrap">
         <NavLink to="/" end className={linkClass} onClick={closeAll}>
-          Обзор
+          Главная
         </NavLink>
 
         <div className="relative" ref={catWrapRef}>
@@ -142,10 +142,7 @@ export default function Navbar() {
         </div>
 
         <NavLink to="/compare" className={linkClass} onClick={closeAll}>
-          Сравнение
-        </NavLink>
-        <NavLink to="/indicator/cpi" className={linkClass} onClick={closeAll}>
-          ИПЦ
+          Сравнение индикаторов
         </NavLink>
         <NavLink to="/about" className={linkClass} onClick={closeAll}>
           О проекте
@@ -153,9 +150,12 @@ export default function Navbar() {
       </div>
 
       <div className="hidden md:flex items-center shrink-0">
-        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-obsidian-lighter/50 border border-border-subtle">
+        <div className="relative group flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-obsidian-lighter/50 border border-border-subtle cursor-default">
           <Activity className="w-3 h-3 text-positive pulse-dot" />
           <span className="text-xs font-mono text-text-secondary">Онлайн</span>
+          <div className="absolute top-full right-0 mt-2 px-3 py-2 rounded-xl bg-obsidian border border-border-subtle text-xs text-text-secondary whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-xl z-50">
+            Все данные актуальны. Обновление ежедневно в 06:00 МСК
+          </div>
         </div>
       </div>
 
@@ -176,7 +176,7 @@ export default function Navbar() {
         <div className="absolute left-0 right-0 top-full z-[110] mt-2 max-h-[min(80vh,520px)] overflow-y-auto rounded-2xl border border-border-subtle bg-surface p-4 shadow-2xl ring-1 ring-black/[0.08] md:hidden">
           <div className="flex flex-col gap-1">
             <NavLink to="/" end className={linkClass} onClick={closeAll}>
-              Обзор
+              Главная
             </NavLink>
             <p className="text-[10px] uppercase tracking-wider text-text-tertiary px-2 pt-3 pb-1">
               Категории
@@ -199,10 +199,7 @@ export default function Navbar() {
               )
             )}
             <NavLink to="/compare" className={linkClass} onClick={closeAll}>
-              Сравнение
-            </NavLink>
-            <NavLink to="/indicator/cpi" className={linkClass} onClick={closeAll}>
-              ИПЦ
+              Сравнение индикаторов
             </NavLink>
             <NavLink to="/about" className={linkClass} onClick={closeAll}>
               О проекте

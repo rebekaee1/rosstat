@@ -483,7 +483,7 @@ export default function IndicatorChart({
           </div>
           <div className="flex items-center gap-2">
             <span className="w-5 h-0.5 rounded-full" style={{ background: '#7C3AED', opacity: 0.8 }} />
-            <span className="text-[11px] text-text-tertiary">Прогноз OLS</span>
+            <span className="text-[11px] text-text-tertiary">Прогноз</span>
           </div>
         </div>
       )}

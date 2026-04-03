@@ -84,7 +84,10 @@ export default function IndicatorTile({ indicator, delay = 0 }) {
           <div className="flex items-end justify-between">
             <div>
               <div className="flex items-baseline gap-1.5 mb-1">
-                <span className="text-3xl font-bold tracking-tight text-text-primary font-mono">
+                <span className={cn(
+                  'font-bold tracking-tight text-text-primary font-mono',
+                  String(formatValue(indicator.current_value)).length > 8 ? 'text-xl' : 'text-3xl'
+                )}>
                   {formatValue(indicator.current_value)}
                 </span>
                 <span className="text-sm font-medium text-text-tertiary">{indicator.unit}</span>
@@ -100,8 +103,8 @@ export default function IndicatorTile({ indicator, delay = 0 }) {
             {changeNum != null && (
               <div className={cn(
                 'flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border font-mono text-xs font-medium',
-                isUp ? 'bg-negative/10 border-negative/20 text-negative' : '',
-                isDown ? 'bg-positive/10 border-positive/20 text-positive' : '',
+                isUp ? 'bg-positive/10 border-positive/20 text-positive' : '',
+                isDown ? 'bg-negative/10 border-negative/20 text-negative' : '',
                 !isUp && !isDown ? 'bg-obsidian border-border-subtle text-text-tertiary' : ''
               )}>
                 {isUp && <TrendingUp className="w-3 h-3" />}

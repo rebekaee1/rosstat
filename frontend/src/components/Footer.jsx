@@ -47,18 +47,6 @@ export default function Footer() {
 
           <div>
             <h4 className="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-medium">
-              ИПЦ (Росстат)
-            </h4>
-            <ul className="space-y-2 text-sm text-text-secondary">
-              <li><Link to="/indicator/cpi" className={footLink}>Общий ИПЦ</Link></li>
-              <li><Link to="/indicator/cpi-food" className={footLink}>Продовольствие</Link></li>
-              <li><Link to="/indicator/cpi-nonfood" className={footLink}>Непродтовары</Link></li>
-              <li><Link to="/indicator/cpi-services" className={footLink}>Услуги</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-medium">
               Источники
             </h4>
             <ul className="space-y-2 text-sm text-text-secondary">

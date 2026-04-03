@@ -4,7 +4,7 @@ export default function About() {
   useDocumentMeta({
     title: 'О проекте Forecast Economy — открытые данные и прогноз',
     description:
-      'Forecast Economy: бесплатная аналитика инфляции и ИПЦ России на основе официальных данных Росстата и ЦБ РФ. OLS-прогноз, исторические ряды с 1991 года.',
+      'Forecast Economy: бесплатная аналитика инфляции и ИПЦ России на основе официальных данных Росстата и ЦБ РФ. Прогноз, исторические ряды с 1991 года.',
     path: '/about',
   });
 
@@ -23,7 +23,7 @@ export default function About() {
           (прежде всего <a href="https://rosstat.gov.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer">Росстат</a>
           {' '}и <a href="https://cbr.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer">Банк России</a>),
           показываем исторические ряды и строим{' '}
-          <strong className="text-text-primary">OLS-прогноз</strong> на горизонт до 12 месяцев вперёд.
+          <strong className="text-text-primary">прогноз</strong> на горизонт до 12 месяцев вперёд.
         </p>
 
         <h2 className="text-xl font-semibold text-text-primary mt-10 mb-3">Для кого этот сервис</h2>
@@ -40,7 +40,7 @@ export default function About() {
             странице; вы можете свериться с оригиналом на сайте Росстата или ЦБ.
           </li>
           <li>
-            <strong className="text-text-primary">Прогноз с методологией.</strong> Модель OLS и окна
+            <strong className="text-text-primary">Прогноз с методологией.</strong> Модель и окна
             обучения описаны в интерфейсе; прогноз — оценка по истории ряда, а не «мнение редакции».
           </li>
           <li>

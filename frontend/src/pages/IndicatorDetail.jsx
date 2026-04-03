@@ -16,19 +16,19 @@ import { ChartSkeleton, SkeletonBox } from '../components/Skeleton';
 const SEO_MAP = {
   cpi: {
     title: 'Индекс потребительских цен (ИПЦ) — прогноз и данные',
-    description: 'ИПЦ России: исторические данные с 1991 года, скользящая 12-месячная инфляция, OLS-прогноз на 12 месяцев. Данные Росстата, обновление ежедневно.',
+    description: 'ИПЦ России: исторические данные с 1991 года, скользящая 12-месячная инфляция, прогноз на 12 месяцев. Данные Росстата, обновление ежедневно.',
   },
   'cpi-food': {
     title: 'ИПЦ на продовольственные товары — прогноз и данные',
-    description: 'Индекс потребительских цен на продовольствие: динамика, инфляция продовольственных товаров, OLS-прогноз. Данные Росстата с 1991 года.',
+    description: 'Индекс потребительских цен на продовольствие: динамика, инфляция продовольственных товаров, прогноз. Данные Росстата с 1991 года.',
   },
   'cpi-nonfood': {
     title: 'ИПЦ на непродовольственные товары — прогноз и данные',
-    description: 'Индекс цен на непродовольственные товары: динамика, инфляция, OLS-прогноз на 12 месяцев. Данные Росстата с 1991 года.',
+    description: 'Индекс цен на непродовольственные товары: динамика, инфляция, прогноз на 12 месяцев. Данные Росстата с 1991 года.',
   },
   'cpi-services': {
     title: 'ИПЦ на услуги — прогноз и данные',
-    description: 'Индекс потребительских цен на услуги: динамика цен, инфляция в сфере услуг, OLS-прогноз. Данные Росстата с 1991 года.',
+    description: 'Индекс потребительских цен на услуги: динамика цен, инфляция в сфере услуг, прогноз. Данные Росстата с 1991 года.',
   },
   'key-rate': {
     title: 'Ключевая ставка ЦБ РФ — график и история',
@@ -36,15 +36,15 @@ const SEO_MAP = {
   },
   'usd-rub': {
     title: 'Курс доллара к рублю (USD/RUB) — график и прогноз',
-    description: 'Официальный курс доллара к рублю ЦБ РФ: ежедневные данные, история, OLS-прогноз.',
+    description: 'Официальный курс доллара к рублю ЦБ РФ: ежедневные данные, история.',
   },
   'eur-rub': {
     title: 'Курс евро к рублю (EUR/RUB) — график и прогноз',
-    description: 'Официальный курс евро к рублю ЦБ РФ: ежедневные данные, история, OLS-прогноз.',
+    description: 'Официальный курс евро к рублю ЦБ РФ: ежедневные данные, история.',
   },
   'cny-rub': {
     title: 'Курс юаня к рублю (CNY/RUB) — график и прогноз',
-    description: 'Официальный курс юаня к рублю ЦБ РФ: ежедневные данные, история, OLS-прогноз.',
+    description: 'Официальный курс юаня к рублю ЦБ РФ: ежедневные данные, история.',
   },
   ruonia: {
     title: 'Ставка RUONIA — график и динамика',
@@ -52,11 +52,11 @@ const SEO_MAP = {
   },
   m0: {
     title: 'Денежная масса М0 — график и прогноз',
-    description: 'Наличные деньги в обращении (агрегат М0): данные Банка России, история, OLS-прогноз.',
+    description: 'Наличные деньги в обращении (агрегат М0): данные Банка России, история.',
   },
   m2: {
     title: 'Денежная масса М2 — график и прогноз',
-    description: 'Широкая денежная масса (агрегат М2): данные Банка России, история, OLS-прогноз.',
+    description: 'Широкая денежная масса (агрегат М2): данные Банка России, история.',
   },
   'mortgage-rate': {
     title: 'Ставка по ипотеке — график и прогноз',
@@ -80,11 +80,11 @@ const SEO_MAP = {
   },
   'unemployment': {
     title: 'Уровень безработицы в России — данные и прогноз',
-    description: 'Безработица по методологии МОТ: ежемесячные данные с 2015 года, динамика и OLS-прогноз. Данные Росстата.',
+    description: 'Безработица по методологии МОТ: ежемесячные данные с 2015 года, динамика. Данные Росстата.',
   },
   'wages-nominal': {
     title: 'Средняя заработная плата в России — данные и прогноз',
-    description: 'Среднемесячная номинальная начисленная зарплата: ежемесячные данные, динамика, OLS-прогноз. Данные Росстата.',
+    description: 'Среднемесячная номинальная начисленная зарплата: ежемесячные данные, динамика. Данные Росстата.',
   },
   'wages-real': {
     title: 'Реальная заработная плата — индекс и динамика',
@@ -104,7 +104,7 @@ const SEO_MAP = {
   },
   m1: {
     title: 'Денежная масса М1 — график и прогноз',
-    description: 'Денежный агрегат М1 (наличные + переводные депозиты): данные Банка России, история, OLS-прогноз.',
+    description: 'Денежный агрегат М1 (наличные + переводные депозиты): данные Банка России, история.',
   },
   'consumer-credit': {
     title: 'Кредиты физическим лицам — данные и прогноз',
@@ -116,7 +116,7 @@ const SEO_MAP = {
   },
   'deposits-individual': {
     title: 'Вклады физических лиц — данные и прогноз',
-    description: 'Суммарные вклады населения в банках РФ: данные Банка России, история, OLS-прогноз.',
+    description: 'Суммарные вклады населения в банках РФ: данные Банка России, история.',
   },
   'deposits-business': {
     title: 'Депозиты организаций — данные и прогноз',
@@ -207,7 +207,10 @@ function TelemetryCard({
       </p>
 
       <div className="flex items-baseline gap-2 mb-2">
-        <span ref={valRef} className="text-4xl md:text-5xl font-mono font-bold tracking-tight text-text-primary">
+        <span ref={valRef} className={cn(
+          'font-mono font-bold tracking-tight text-text-primary',
+          String(formatValue(value, unitDigits(unit))).length > 8 ? 'text-2xl md:text-3xl' : 'text-4xl md:text-5xl'
+        )}>
           {formatValue(value, unitDigits(unit))}
         </span>
         <span className="text-sm font-medium text-text-tertiary">{unitSuffix(unit)}</span>
@@ -217,8 +220,8 @@ function TelemetryCard({
         {changeNum != null && (
           <div className={cn(
             'flex items-center gap-1.5 text-xs font-mono font-medium',
-            isUp ? 'text-negative' : '',
-            isDown ? 'text-positive' : '',
+            isUp ? 'text-positive' : '',
+            isDown ? 'text-negative' : '',
             !isUp && !isDown ? 'text-text-tertiary' : ''
           )}>
             {isUp && <TrendingUp className="w-3.5 h-3.5" />}
@@ -385,7 +388,7 @@ export default function IndicatorDetail() {
           className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-text-tertiary hover:text-champagne transition-colors mb-8 lift-hover group"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-          Обзор
+          Главная
         </Link>
 
         {loadingInd ? (
@@ -609,13 +612,13 @@ export default function IndicatorDetail() {
           ) : !showForecast ? (
             <div className="h-full min-h-[300px] rounded-[2rem] bg-surface border border-border-subtle border-dashed flex flex-col items-center justify-center text-text-tertiary p-8">
               <Activity className="w-8 h-8 mb-4 opacity-20" />
-              <p className="text-xs font-mono uppercase tracking-widest text-center">Включите переключатель «Прогноз», чтобы показать таблицу OLS</p>
+              <p className="text-xs font-mono uppercase tracking-widest text-center">Включите переключатель «Прогноз», чтобы показать таблицу прогноза</p>
             </div>
           ) : (
             <div className="h-full min-h-[300px] rounded-[2rem] bg-surface border border-border-subtle border-dashed flex flex-col items-center justify-center gap-3 text-text-tertiary p-8">
               <Activity className="w-8 h-8 mb-1 opacity-20" />
               <p className="text-sm font-medium text-text-secondary text-center max-w-md">
-                Прогноз OLS для этого показателя не рассчитан или недоступен
+                Прогноз для этого показателя не рассчитан или недоступен
               </p>
               <p className="text-xs text-center max-w-lg leading-relaxed text-text-tertiary">
                 Для ступенчатых рядов (ключевая ставка) и показателей без модели прогноз может отсутствовать — это ожидаемо.
