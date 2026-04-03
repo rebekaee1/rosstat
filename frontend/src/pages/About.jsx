@@ -2,7 +2,7 @@ import useDocumentMeta from '../lib/useMeta';
 
 export default function About() {
   useDocumentMeta({
-    title: 'О проекте Forecast Economy — открытые данные и прогноз',
+    title: 'О проекте — открытые данные и прогноз',
     description:
       'Forecast Economy: бесплатная аналитика инфляции и ИПЦ России на основе официальных данных Росстата и ЦБ РФ. Прогноз, исторические ряды с 1991 года.',
     path: '/about',

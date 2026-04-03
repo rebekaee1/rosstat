@@ -2,7 +2,7 @@ import useDocumentMeta from '../lib/useMeta';
 
 export default function Privacy() {
   useDocumentMeta({
-    title: 'Политика конфиденциальности — Forecast Economy',
+    title: 'Политика конфиденциальности',
     description:
       'Как Forecast Economy обрабатывает данные посетителей: Яндекс.Метрика, cookies, контакты. Проект forecasteconomy.com.',
     path: '/privacy',

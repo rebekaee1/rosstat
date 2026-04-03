@@ -71,7 +71,7 @@ export default function ComparePage() {
   const [range, setRange] = useState('5y');
 
   useDocumentMeta({
-    title: 'Сравнение индикаторов — Forecast Economy',
+    title: 'Сравнение индикаторов',
     description: 'Сравните два экономических показателя на одном графике с двумя осями Y.',
     path: '/compare',
   });
