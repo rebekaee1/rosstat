@@ -403,9 +403,11 @@ export default function IndicatorDetail() {
     : chartMode === 'quarterly' ? loadingQuarterly
     : loadingData;
 
-  const hasForecastData = chartMode === 'inflation'
-    ? inflationResp?.forecast?.length > 0
-    : displayForecastData?.forecast?.values?.length > 0;
+  const hasForecastData = chartMode === 'quarterly'
+    ? false
+    : chartMode === 'inflation'
+      ? inflationResp?.forecast?.length > 0
+      : displayForecastData?.forecast?.values?.length > 0;
 
   const chartEmptyHint = useMemo(() => {
     if (dataError) {
@@ -613,38 +615,40 @@ export default function IndicatorDetail() {
               Excel
             </button>
 
-            <div className="relative group">
-              <label className={cn(
-                'flex items-center gap-3 select-none',
-                canForecast ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'
-              )}>
-                <span className="text-[10px] font-mono uppercase tracking-widest text-text-tertiary group-hover:text-text-secondary transition-colors">
-                  Прогноз
-                </span>
-                <div
-                  role="switch"
-                  aria-checked={canForecast && showForecast}
-                  tabIndex={canForecast ? 0 : -1}
-                  onClick={() => canForecast && setShowForecast(v => !v)}
-                  onKeyDown={e => { if (canForecast && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); setShowForecast(v => !v); } }}
-                  className={cn(
-                    'relative w-10 h-5 rounded-full transition-colors duration-300',
-                    canForecast ? 'cursor-pointer' : 'cursor-not-allowed',
-                    canForecast && showForecast ? 'bg-champagne/30' : 'bg-obsidian-lighter border border-border-subtle'
-                  )}
-                >
-                  <div className={cn(
-                    'absolute top-[2px] left-[2px] w-4 h-4 rounded-full transition-transform duration-300',
-                    canForecast && showForecast ? 'translate-x-5 bg-champagne' : 'translate-x-0 bg-text-tertiary'
-                  )} />
-                </div>
-              </label>
-              {!canForecast && (
-                <div className="absolute top-full right-0 mt-2 px-3 py-2 rounded-xl bg-obsidian border border-border-subtle text-xs text-text-secondary whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-xl z-50">
-                  Прогноз скоро будет доступен
-                </div>
-              )}
-            </div>
+            {viewMode !== 'quarterly' && (
+              <div className="relative group">
+                <label className={cn(
+                  'flex items-center gap-3 select-none',
+                  canForecast ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'
+                )}>
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-text-tertiary group-hover:text-text-secondary transition-colors">
+                    Прогноз
+                  </span>
+                  <div
+                    role="switch"
+                    aria-checked={canForecast && showForecast}
+                    tabIndex={canForecast ? 0 : -1}
+                    onClick={() => canForecast && setShowForecast(v => !v)}
+                    onKeyDown={e => { if (canForecast && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); setShowForecast(v => !v); } }}
+                    className={cn(
+                      'relative w-10 h-5 rounded-full transition-colors duration-300',
+                      canForecast ? 'cursor-pointer' : 'cursor-not-allowed',
+                      canForecast && showForecast ? 'bg-champagne/30' : 'bg-obsidian-lighter border border-border-subtle'
+                    )}
+                  >
+                    <div className={cn(
+                      'absolute top-[2px] left-[2px] w-4 h-4 rounded-full transition-transform duration-300',
+                      canForecast && showForecast ? 'translate-x-5 bg-champagne' : 'translate-x-0 bg-text-tertiary'
+                    )} />
+                  </div>
+                </label>
+                {!canForecast && (
+                  <div className="absolute top-full right-0 mt-2 px-3 py-2 rounded-xl bg-obsidian border border-border-subtle text-xs text-text-secondary whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-xl z-50">
+                    Прогноз скоро будет доступен
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
@@ -719,7 +723,17 @@ export default function IndicatorDetail() {
         </section>
 
         <section className="lg:col-span-2">
-          {canForecast && showForecast && hasForecastData ? (
+          {viewMode === 'quarterly' ? (
+            <div className="h-full min-h-[300px] rounded-[2rem] bg-surface border border-border-subtle border-dashed flex flex-col items-center justify-center gap-3 text-text-tertiary p-8">
+              <Activity className="w-8 h-8 mb-1 opacity-20" />
+              <p className="text-sm font-medium text-text-secondary text-center max-w-md">
+                Квартальные данные рассчитываются на основе месячных значений ИПЦ
+              </p>
+              <p className="text-xs text-center max-w-lg leading-relaxed text-text-tertiary">
+                Прогнозирование квартальной инфляции не предусмотрено — для прогноза переключитесь на помесячный или годовой режим
+              </p>
+            </div>
+          ) : canForecast && showForecast && hasForecastData ? (
             <ForecastTable
               mode={chartMode}
               inflation={inflationResp}

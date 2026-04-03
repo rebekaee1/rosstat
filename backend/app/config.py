@@ -32,7 +32,7 @@ class Settings(BaseSettings):
     scheduler_cron_hour: int = 6
     scheduler_cron_minute: int = 0
 
-    # OLS forecast defaults
+    # Forecast defaults
     forecast_steps: int = 12
 
     model_config = {"env_prefix": "RUSTATS_", "env_file": ".env"}
