@@ -4,7 +4,7 @@ export async function downloadExcel(chartData, mode, indicatorCode, range) {
   const actuals = chartData.filter(d => d.actual != null);
   const forecasts = chartData.filter(d => d.forecast != null && d.actual == null);
 
-  const valueLabel = mode === 'cpi' ? 'ИПЦ (%)' : 'Инфляция 12 мес. (%)';
+  const valueLabel = mode === 'cpi' ? 'ИПЦ (изм. к пред. мес., %)' : 'Инфляция 12 мес. (%)';
 
   const factsSheet = actuals.map(d => ({
     'Дата': d.date,
