@@ -6,7 +6,7 @@ import {
 } from 'recharts';
 import { ArrowLeft, Activity, GitCompare } from 'lucide-react';
 import { useIndicators, useIndicatorData } from '../lib/hooks';
-import { formatDate, formatValueWithUnit, unitSuffix, unitDigits, cn } from '../lib/format';
+import { formatDate, formatValueWithUnit, unitSuffix, unitDigits, cn, isCpiIndex } from '../lib/format';
 import useDocumentMeta from '../lib/useMeta';
 import { SkeletonBox, ChartSkeleton } from '../components/Skeleton';
 
@@ -94,13 +94,15 @@ export default function ComparePage() {
     const pointsA = Array.isArray(dataA?.data) ? dataA.data : [];
     const pointsB = Array.isArray(dataB?.data) ? dataB.data : [];
 
+    const adjA = isCpiIndex(codeA);
+    const adjB = isCpiIndex(codeB);
     const dateMap = new Map();
     for (const p of pointsA) {
-      dateMap.set(p.date, { date: p.date, valA: p.value, valA_unit: indA?.unit || '%' });
+      dateMap.set(p.date, { date: p.date, valA: adjA ? p.value - 100 : p.value, valA_unit: indA?.unit || '%' });
     }
     for (const p of pointsB) {
       const existing = dateMap.get(p.date) || { date: p.date };
-      existing.valB = p.value;
+      existing.valB = adjB ? p.value - 100 : p.value;
       existing.valB_unit = indB?.unit || '%';
       dateMap.set(p.date, existing);
     }
@@ -129,7 +131,7 @@ export default function ComparePage() {
           className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-text-tertiary hover:text-champagne transition-colors mb-8 lift-hover group"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-          Обзор
+          Главная
         </Link>
 
         <div className="flex items-center gap-3 mb-4">

@@ -2,7 +2,7 @@ from datetime import date
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import select, func, desc
+from sqlalchemy import select, func, desc, literal_column, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
@@ -32,20 +32,41 @@ async def list_indicators(
         stmt = stmt.where(Indicator.category == category)
     result = await db.execute(stmt)
     indicators = result.scalars().all()
+    if not indicators:
+        return []
+
+    ind_ids = [ind.id for ind in indicators]
+
+    ranked = (
+        select(
+            IndicatorData.indicator_id,
+            IndicatorData.date,
+            IndicatorData.value,
+            func.row_number()
+            .over(partition_by=IndicatorData.indicator_id, order_by=desc(IndicatorData.date))
+            .label("rn"),
+        )
+        .where(IndicatorData.indicator_id.in_(ind_ids))
+        .subquery()
+    )
+    latest_q = await db.execute(
+        select(ranked.c.indicator_id, ranked.c.date, ranked.c.value, ranked.c.rn)
+        .where(ranked.c.rn <= 2)
+    )
+    latest_rows = latest_q.all()
+
+    by_ind: dict[int, list] = {}
+    for row in latest_rows:
+        by_ind.setdefault(row.indicator_id, []).append(row)
+    for v in by_ind.values():
+        v.sort(key=lambda r: r.rn)
 
     out = []
     for ind in indicators:
-        latest = await db.execute(
-            select(IndicatorData)
-            .where(IndicatorData.indicator_id == ind.id)
-            .order_by(desc(IndicatorData.date))
-            .limit(2)
-        )
-        recent = latest.scalars().all()
-
-        current_val = recent[0].value if recent else None
-        current_dt = recent[0].date if recent else None
-        prev_val = recent[1].value if len(recent) > 1 else None
+        rows = by_ind.get(ind.id, [])
+        current_val = rows[0].value if rows else None
+        current_dt = rows[0].date if rows else None
+        prev_val = rows[1].value if len(rows) > 1 else None
         change = round(float(current_val - prev_val), 4) if current_val and prev_val else None
 
         out.append(IndicatorSummary(
