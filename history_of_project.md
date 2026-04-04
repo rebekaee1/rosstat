@@ -72,3 +72,12 @@
 - **Глубокий UI-аудит продакшена (cursor-ide-browser, forecasteconomy.com):** пройдены `/`, `/category/prices`, `/indicator/cpi` (вкладки 12 мес / помесячно / квартальная), `/compare?a=cpi&b=usd-rub`, `/about`, `/privacy`, 404 SPA, `/indicator/key-rate`. Консоль: только предупреждения CursorBrowser, ошибок приложения нет.
 - **Исправлено по результатам аудита:** дублирование бренда в `<title>` (`useMeta` добавляет `| Forecast Economy`, а в title уже было «… Forecast Economy») — **ComparePage**, **Privacy**, **About** (`frontend/src/pages/ComparePage.jsx`, `Privacy.jsx`, `About.jsx`).
 - **Зафиксировано к дальнейшей адаптации (отчёт пользователю):** см. ответ в чате — контент/иерархия заголовков, «показ.», терминология «показатели» vs «индикаторы», подписи дат vs «прогноз», мобильный навбар на широком вьюпорте в автоматизации, a11y карточек и overlay меню, отдельный meta title для 404.
+- **Числовое форматирование — системное исправление:**
+  - Все пути форматирования (`formatValue`, `formatValueWithUnit`, `formatChange`) теперь используют общий `groupThousands` → разделители тысяч неразрывным пробелом (`\u00A0`).
+  - Новый `formatAxisTick` — для оси Y графика, убирает хвостовые `.0` у круглых чисел.
+  - **TelemetryCard**: убран `truncate` (обрезал числа типа `69 63...`), 4-тировая адаптивная шкала шрифтов: >10ch→lg, >7→xl, >5→2xl, else→3xl.
+  - **IndicatorTile**: 3-тировая шкала: >10→base, >7→xl, else→2xl.
+  - **Ось Y графика**: убран уродливый label единицы (единица уже в заголовке), ширина оси авторасчётная по длине самого длинного тика.
+  - **ComparePage**: оси тоже через `formatAxisTick`, ширина 60→75.
+  - **Файлы**: `format.js`, `IndicatorChart.jsx`, `IndicatorDetail.jsx`, `IndicatorTile.jsx`, `ComparePage.jsx`.
+- **Переключатель «Прогноз» — унификация layout:** ранее скрывался на квартальной вкладке, ломая layout. Теперь рендерится всегда, но disabled когда прогноз недоступен (квартальная вкладка или не-ценовой индикатор). Tooltip адаптивный: «Квартальный прогноз недоступен» vs «Прогноз скоро будет доступен». Введена переменная `forecastEnabled = canForecast && viewMode !== 'quarterly'`.

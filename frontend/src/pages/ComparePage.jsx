@@ -6,7 +6,7 @@ import {
 } from 'recharts';
 import { ArrowLeft, Activity, GitCompare } from 'lucide-react';
 import { useIndicators, useIndicatorData } from '../lib/hooks';
-import { formatDate, formatValue, formatAxisTick, formatValueWithUnit, unitSuffix, unitDigits, cn, isCpiIndex } from '../lib/format';
+import { formatDate, formatAxisTick, formatValueWithUnit, unitSuffix, unitDigits, cn, isCpiIndex } from '../lib/format';
 import useDocumentMeta from '../lib/useMeta';
 import { SkeletonBox, ChartSkeleton } from '../components/Skeleton';
 
@@ -230,14 +230,8 @@ export default function ComparePage() {
                     tick={{ fill: COLOR_A, fontSize: 10, fontFamily: 'monospace' }}
                     axisLine={false}
                     tickLine={false}
-                    width={75}
+                    width={60}
                     tickFormatter={(v) => formatAxisTick(v, unitDigits(indA?.unit))}
-                    label={{
-                      value: unitSuffix(indA?.unit),
-                      angle: -90,
-                      position: 'insideLeft',
-                      style: { fill: COLOR_A, fontSize: 10, fontFamily: 'monospace' },
-                    }}
                   />
                 )}
                 {codeB && (
@@ -247,14 +241,8 @@ export default function ComparePage() {
                     tick={{ fill: COLOR_B, fontSize: 10, fontFamily: 'monospace' }}
                     axisLine={false}
                     tickLine={false}
-                    width={75}
-                    tickFormatter={(v) => formatValue(v, unitDigits(indB?.unit))}
-                    label={{
-                      value: unitSuffix(indB?.unit),
-                      angle: 90,
-                      position: 'insideRight',
-                      style: { fill: COLOR_B, fontSize: 10, fontFamily: 'monospace' },
-                    }}
+                    width={60}
+                    tickFormatter={(v) => formatAxisTick(v, unitDigits(indB?.unit))}
                   />
                 )}
                 <Tooltip
