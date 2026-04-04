@@ -88,12 +88,17 @@ export default function IndicatorTile({ indicator, delay = 0 }) {
             <div>
               <div className="flex items-baseline gap-1.5 mb-1">
                 <span className={cn(
-                  'font-bold tracking-tight text-text-primary font-mono',
-                  String(formatValue(displayVal)).length > 8 ? 'text-xl' : 'text-3xl'
+                  'font-bold tracking-tight text-text-primary font-mono whitespace-nowrap',
+                  (() => {
+                    const len = String(formatValue(displayVal)).length;
+                    if (len > 10) return 'text-base';
+                    if (len > 7) return 'text-xl';
+                    return 'text-2xl';
+                  })()
                 )}>
                   {formatValue(displayVal)}
                 </span>
-                <span className="text-sm font-medium text-text-tertiary">{indicator.unit}</span>
+                <span className="text-xs font-medium text-text-tertiary whitespace-nowrap">{indicator.unit}</span>
               </div>
               
               {indicator.current_date && (

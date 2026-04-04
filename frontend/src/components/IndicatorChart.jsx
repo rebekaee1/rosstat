@@ -281,8 +281,8 @@ export default function IndicatorChart({
     }
 
     const absMax = Math.max(Math.abs(niceMin), Math.abs(niceMax));
-    const sampleLabel = formatAxisTick(absMax, unitDigits(unit));
-    const w = Math.max(50, Math.min(110, sampleLabel.length * 8 + 8));
+    const sampleLabel = formatAxisTick(niceMin < 0 ? niceMin : absMax, unitDigits(unit));
+    const w = Math.max(45, Math.min(120, sampleLabel.length * 7.5 + 12));
     return { yDomain: [niceMin, niceMax], yWidth: w, yTicks: ticks };
   }, [visibleData, unit]);
 
@@ -400,7 +400,6 @@ export default function IndicatorChart({
               ticks={yTicks}
               tickFormatter={v => formatAxisTick(v, unitDigits(unit))}
               width={yWidth}
-              label={{ value: unitSuffix(unit), position: 'insideTopLeft', offset: -5, style: { fontSize: 10, fill: 'rgba(0,0,0,0.35)', fontFamily: 'JetBrains Mono' } }}
             />
             <Tooltip
               content={<CustomTooltip mode={mode} levelTooltipLabel={levelTooltipLabel} dateFormat={dateFormat} unit={unit} visible={isHovering} />}
