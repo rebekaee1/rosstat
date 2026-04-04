@@ -66,6 +66,19 @@ export function unitDigits(unit = '%') {
   return (UNIT_CONFIG[unit] || { digits: 2 }).digits;
 }
 
+export function formatAxisTick(val, digits = 2) {
+  if (val == null) return '';
+  const num = Number(val);
+  if (!Number.isFinite(num)) return '';
+  const fixed = num.toFixed(digits);
+  const cleaned = fixed.replace(/\.?0+$/, '');
+  const [intPart, decPart] = cleaned.split('.');
+  const sign = intPart.startsWith('-') ? '-' : '';
+  const abs = intPart.replace('-', '');
+  const grouped = groupThousands(abs);
+  return decPart ? `${sign}${grouped}.${decPart}` : `${sign}${grouped}`;
+}
+
 export function formatChange(val) {
   if (val == null) return null;
   const num = Number(val);

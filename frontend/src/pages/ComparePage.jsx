@@ -6,7 +6,7 @@ import {
 } from 'recharts';
 import { ArrowLeft, Activity, GitCompare } from 'lucide-react';
 import { useIndicators, useIndicatorData } from '../lib/hooks';
-import { formatDate, formatValue, formatValueWithUnit, unitSuffix, unitDigits, cn, isCpiIndex } from '../lib/format';
+import { formatDate, formatValue, formatAxisTick, formatValueWithUnit, unitSuffix, unitDigits, cn, isCpiIndex } from '../lib/format';
 import useDocumentMeta from '../lib/useMeta';
 import { SkeletonBox, ChartSkeleton } from '../components/Skeleton';
 
@@ -231,7 +231,7 @@ export default function ComparePage() {
                     axisLine={false}
                     tickLine={false}
                     width={75}
-                    tickFormatter={(v) => formatValue(v, unitDigits(indA?.unit))}
+                    tickFormatter={(v) => formatAxisTick(v, unitDigits(indA?.unit))}
                     label={{
                       value: unitSuffix(indA?.unit),
                       angle: -90,

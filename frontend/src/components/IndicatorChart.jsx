@@ -5,7 +5,7 @@ import {
   Tooltip, CartesianGrid, ReferenceLine,
 } from 'recharts';
 import { Activity, ZoomIn } from 'lucide-react';
-import { formatDate, formatValue, formatValueWithUnit, unitSuffix, unitDigits, cn } from '../lib/format';
+import { formatDate, formatValue, formatAxisTick, formatValueWithUnit, unitSuffix, unitDigits, cn } from '../lib/format';
 
 const RANGE_OPTIONS = [
   { key: '3y', label: '3 года', months: 36 },
@@ -281,9 +281,8 @@ export default function IndicatorChart({
     }
 
     const absMax = Math.max(Math.abs(niceMin), Math.abs(niceMax));
-    const suf = unitSuffix(unit);
-    const sampleLabel = `${formatValue(absMax, unitDigits(unit))}${suf}`;
-    const w = Math.max(55, Math.min(130, sampleLabel.length * 8 + 10));
+    const sampleLabel = formatAxisTick(absMax, unitDigits(unit));
+    const w = Math.max(50, Math.min(110, sampleLabel.length * 8 + 8));
     return { yDomain: [niceMin, niceMax], yWidth: w, yTicks: ticks };
   }, [visibleData, unit]);
 
@@ -399,8 +398,9 @@ export default function IndicatorChart({
               axisLine={false}
               domain={yDomain}
               ticks={yTicks}
-              tickFormatter={v => `${formatValue(v, unitDigits(unit))}${unitSuffix(unit)}`}
+              tickFormatter={v => formatAxisTick(v, unitDigits(unit))}
               width={yWidth}
+              label={{ value: unitSuffix(unit), position: 'insideTopLeft', offset: -5, style: { fontSize: 10, fill: 'rgba(0,0,0,0.35)', fontFamily: 'JetBrains Mono' } }}
             />
             <Tooltip
               content={<CustomTooltip mode={mode} levelTooltipLabel={levelTooltipLabel} dateFormat={dateFormat} unit={unit} visible={isHovering} />}
