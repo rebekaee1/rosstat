@@ -282,6 +282,7 @@ export default function IndicatorDetail() {
   const CPI_CODES = ['cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services'];
   const isPriceCategory = CPI_CODES.includes(code);
   const canForecast = indicator?.category === 'Цены';
+  const forecastEnabled = canForecast && viewMode !== 'quarterly';
   const shouldSubtract100 = isCpiIndex(code);
   const {
     data: dataResp,
@@ -621,40 +622,38 @@ export default function IndicatorDetail() {
               Excel
             </button>
 
-            {viewMode !== 'quarterly' && (
-              <div className="relative group">
-                <label className={cn(
-                  'flex items-center gap-3 select-none',
-                  canForecast ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'
-                )}>
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-text-tertiary group-hover:text-text-secondary transition-colors">
-                    Прогноз
-                  </span>
-                  <div
-                    role="switch"
-                    aria-checked={canForecast && showForecast}
-                    tabIndex={canForecast ? 0 : -1}
-                    onClick={() => canForecast && setShowForecast(v => !v)}
-                    onKeyDown={e => { if (canForecast && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); setShowForecast(v => !v); } }}
-                    className={cn(
-                      'relative w-10 h-5 rounded-full transition-colors duration-300',
-                      canForecast ? 'cursor-pointer' : 'cursor-not-allowed',
-                      canForecast && showForecast ? 'bg-champagne/30' : 'bg-obsidian-lighter border border-border-subtle'
-                    )}
-                  >
-                    <div className={cn(
-                      'absolute top-[2px] left-[2px] w-4 h-4 rounded-full transition-transform duration-300',
-                      canForecast && showForecast ? 'translate-x-5 bg-champagne' : 'translate-x-0 bg-text-tertiary'
-                    )} />
-                  </div>
-                </label>
-                {!canForecast && (
-                  <div className="absolute top-full right-0 mt-2 px-3 py-2 rounded-xl bg-obsidian border border-border-subtle text-xs text-text-secondary whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-xl z-50">
-                    Прогноз скоро будет доступен
-                  </div>
-                )}
-              </div>
-            )}
+            <div className="relative group">
+              <label className={cn(
+                'flex items-center gap-3 select-none',
+                forecastEnabled ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'
+              )}>
+                <span className="text-[10px] font-mono uppercase tracking-widest text-text-tertiary group-hover:text-text-secondary transition-colors">
+                  Прогноз
+                </span>
+                <div
+                  role="switch"
+                  aria-checked={forecastEnabled && showForecast}
+                  tabIndex={forecastEnabled ? 0 : -1}
+                  onClick={() => forecastEnabled && setShowForecast(v => !v)}
+                  onKeyDown={e => { if (forecastEnabled && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); setShowForecast(v => !v); } }}
+                  className={cn(
+                    'relative w-10 h-5 rounded-full transition-colors duration-300',
+                    forecastEnabled ? 'cursor-pointer' : 'cursor-not-allowed',
+                    forecastEnabled && showForecast ? 'bg-champagne/30' : 'bg-obsidian-lighter border border-border-subtle'
+                  )}
+                >
+                  <div className={cn(
+                    'absolute top-[2px] left-[2px] w-4 h-4 rounded-full transition-transform duration-300',
+                    forecastEnabled && showForecast ? 'translate-x-5 bg-champagne' : 'translate-x-0 bg-text-tertiary'
+                  )} />
+                </div>
+              </label>
+              {!forecastEnabled && (
+                <div className="absolute top-full right-0 mt-2 px-3 py-2 rounded-xl bg-obsidian border border-border-subtle text-xs text-text-secondary whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-xl z-50">
+                  {viewMode === 'quarterly' ? 'Квартальный прогноз недоступен' : 'Прогноз скоро будет доступен'}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -668,7 +667,7 @@ export default function IndicatorDetail() {
               inflation={inflationResp}
               cpiData={chartMode === 'quarterly' ? quarterlyDataPoints : dataPoints}
               forecastData={chartMode === 'quarterly' ? null : displayForecastData}
-              showForecast={chartMode !== 'quarterly' && canForecast && showForecast}
+              showForecast={forecastEnabled && showForecast}
               onChartData={handleChartData}
               onRangeChange={handleRangeChange}
               referenceLineY={isPriceCategory ? undefined : null}
@@ -739,14 +738,14 @@ export default function IndicatorDetail() {
                 Прогнозирование квартальной инфляции не предусмотрено — для прогноза переключитесь на помесячный или годовой режим
               </p>
             </div>
-          ) : canForecast && showForecast && hasForecastData ? (
+          ) : forecastEnabled && showForecast && hasForecastData ? (
             <ForecastTable
               mode={chartMode}
               inflation={inflationResp}
               forecastData={displayForecastData}
               unit={indicator?.unit || '%'}
             />
-          ) : canForecast && !showForecast ? (
+          ) : forecastEnabled && !showForecast ? (
             <div className="h-full min-h-[300px] rounded-[2rem] bg-surface border border-border-subtle border-dashed flex flex-col items-center justify-center text-text-tertiary p-8">
               <Activity className="w-8 h-8 mb-4 opacity-20" />
               <p className="text-xs font-mono uppercase tracking-widest text-center">Включите переключатель «Прогноз», чтобы показать таблицу прогноза</p>
