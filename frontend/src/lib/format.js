@@ -33,21 +33,28 @@ const UNIT_CONFIG = {
   'млн чел.':  { digits: 1, suffix: ' млн',    space: false },
 };
 
-export function formatValue(val, digits = 2) {
-  if (val == null) return '—';
-  const fixed = Number(val).toFixed(digits);
+function groupThousands(str) {
+  return str.replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0');
+}
+
+function formatFixed(num, digits) {
+  const fixed = num.toFixed(digits);
   const [intPart, decPart] = fixed.split('.');
   const sign = intPart.startsWith('-') ? '-' : '';
   const abs = intPart.replace('-', '');
-  const grouped = abs.replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0');
+  const grouped = groupThousands(abs);
   return decPart !== undefined ? `${sign}${grouped}.${decPart}` : `${sign}${grouped}`;
+}
+
+export function formatValue(val, digits = 2) {
+  if (val == null) return '—';
+  return formatFixed(Number(val), digits);
 }
 
 export function formatValueWithUnit(val, unit = '%') {
   if (val == null) return '—';
   const cfg = UNIT_CONFIG[unit] || { digits: 2, suffix: ` ${unit}`, space: false };
-  const n = Number(val);
-  return `${n.toFixed(cfg.digits)}${cfg.suffix}`;
+  return `${formatFixed(Number(val), cfg.digits)}${cfg.suffix}`;
 }
 
 export function unitSuffix(unit = '%') {
@@ -63,7 +70,7 @@ export function formatChange(val) {
   if (val == null) return null;
   const num = Number(val);
   const sign = num >= 0 ? '+' : '';
-  return `${sign}${num.toFixed(2)}`;
+  return `${sign}${formatFixed(num, 2)}`;
 }
 
 export function cn(...classes) {

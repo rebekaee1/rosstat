@@ -6,7 +6,7 @@ import {
 } from 'recharts';
 import { ArrowLeft, Activity, GitCompare } from 'lucide-react';
 import { useIndicators, useIndicatorData } from '../lib/hooks';
-import { formatDate, formatValueWithUnit, unitSuffix, unitDigits, cn, isCpiIndex } from '../lib/format';
+import { formatDate, formatValue, formatValueWithUnit, unitSuffix, unitDigits, cn, isCpiIndex } from '../lib/format';
 import useDocumentMeta from '../lib/useMeta';
 import { SkeletonBox, ChartSkeleton } from '../components/Skeleton';
 
@@ -230,8 +230,8 @@ export default function ComparePage() {
                     tick={{ fill: COLOR_A, fontSize: 10, fontFamily: 'monospace' }}
                     axisLine={false}
                     tickLine={false}
-                    width={60}
-                    tickFormatter={(v) => `${v.toFixed(unitDigits(indA?.unit))}`}
+                    width={75}
+                    tickFormatter={(v) => formatValue(v, unitDigits(indA?.unit))}
                     label={{
                       value: unitSuffix(indA?.unit),
                       angle: -90,
@@ -247,8 +247,8 @@ export default function ComparePage() {
                     tick={{ fill: COLOR_B, fontSize: 10, fontFamily: 'monospace' }}
                     axisLine={false}
                     tickLine={false}
-                    width={60}
-                    tickFormatter={(v) => `${v.toFixed(unitDigits(indB?.unit))}`}
+                    width={75}
+                    tickFormatter={(v) => formatValue(v, unitDigits(indB?.unit))}
                     label={{
                       value: unitSuffix(indB?.unit),
                       angle: 90,

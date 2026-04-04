@@ -5,7 +5,7 @@ import {
   Tooltip, CartesianGrid, ReferenceLine,
 } from 'recharts';
 import { Activity, ZoomIn } from 'lucide-react';
-import { formatDate, formatValueWithUnit, unitSuffix, unitDigits, cn } from '../lib/format';
+import { formatDate, formatValue, formatValueWithUnit, unitSuffix, unitDigits, cn } from '../lib/format';
 
 const RANGE_OPTIONS = [
   { key: '3y', label: '3 года', months: 36 },
@@ -281,9 +281,11 @@ export default function IndicatorChart({
     }
 
     const absMax = Math.max(Math.abs(niceMin), Math.abs(niceMax));
-    const w = absMax >= 1000 ? 85 : absMax >= 100 ? 70 : 55;
+    const suf = unitSuffix(unit);
+    const sampleLabel = `${formatValue(absMax, unitDigits(unit))}${suf}`;
+    const w = Math.max(55, Math.min(130, sampleLabel.length * 8 + 10));
     return { yDomain: [niceMin, niceMax], yWidth: w, yTicks: ticks };
-  }, [visibleData]);
+  }, [visibleData, unit]);
 
   const title = mode === 'cpi'
     ? (cpiChartTitle || 'ИПЦ (к предыдущему месяцу, %)')
@@ -397,7 +399,7 @@ export default function IndicatorChart({
               axisLine={false}
               domain={yDomain}
               ticks={yTicks}
-              tickFormatter={v => `${Number(v.toFixed(unitDigits(unit)))}${unitSuffix(unit)}`}
+              tickFormatter={v => `${formatValue(v, unitDigits(unit))}${unitSuffix(unit)}`}
               width={yWidth}
             />
             <Tooltip
