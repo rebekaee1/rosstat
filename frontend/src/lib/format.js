@@ -35,7 +35,12 @@ const UNIT_CONFIG = {
 
 export function formatValue(val, digits = 2) {
   if (val == null) return '—';
-  return Number(val).toFixed(digits);
+  const fixed = Number(val).toFixed(digits);
+  const [intPart, decPart] = fixed.split('.');
+  const sign = intPart.startsWith('-') ? '-' : '';
+  const abs = intPart.replace('-', '');
+  const grouped = abs.replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0');
+  return decPart !== undefined ? `${sign}${grouped}.${decPart}` : `${sign}${grouped}`;
 }
 
 export function formatValueWithUnit(val, unit = '%') {

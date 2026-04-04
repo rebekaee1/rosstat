@@ -182,25 +182,25 @@ function TelemetryCard({
     );
   }, [delay]);
 
+  const digits = unitDigits(unit);
   useEffect(() => {
     if (value == null || !valRef.current) return;
-    const from = parseFloat(valRef.current.textContent) || 0;
-    gsap.fromTo(valRef.current,
-      { textContent: from },
-      {
-        textContent: Number(value),
-        duration: from === 0 ? 1.5 : 0.6,
-        ease: 'power2.out',
-        delay: from === 0 ? 0.2 : 0,
-        snap: { textContent: 0.01 },
-        onUpdate() {
-          if (valRef.current) {
-            valRef.current.textContent = Number(valRef.current.textContent).toFixed(2);
-          }
-        },
-      }
-    );
-  }, [value]);
+    const raw = valRef.current.textContent.replace(/\s/g, '') || '0';
+    const from = parseFloat(raw) || 0;
+    const target = Number(value);
+    const counter = { v: from };
+    gsap.to(counter, {
+      v: target,
+      duration: from === 0 ? 1.5 : 0.6,
+      ease: 'power2.out',
+      delay: from === 0 ? 0.2 : 0,
+      onUpdate() {
+        if (valRef.current) {
+          valRef.current.textContent = formatValue(counter.v, digits);
+        }
+      },
+    });
+  }, [value, digits]);
 
   const changeNum = change != null ? Number(change) : null;
   const isUp = changeNum != null && changeNum > 0;
@@ -214,14 +214,19 @@ function TelemetryCard({
         {label}
       </p>
 
-      <div className="flex items-baseline gap-2 mb-2">
+      <div className="flex items-baseline gap-2 mb-2 min-w-0">
         <span ref={valRef} className={cn(
-          'font-mono font-bold tracking-tight text-text-primary',
-          String(formatValue(value, unitDigits(unit))).length > 8 ? 'text-2xl md:text-3xl' : 'text-4xl md:text-5xl'
+          'font-mono font-bold tracking-tight text-text-primary truncate',
+          (() => {
+            const len = String(formatValue(value, unitDigits(unit))).length;
+            if (len > 12) return 'text-xl md:text-2xl';
+            if (len > 8) return 'text-2xl md:text-3xl';
+            return 'text-4xl md:text-5xl';
+          })()
         )}>
           {formatValue(value, unitDigits(unit))}
         </span>
-        <span className="text-sm font-medium text-text-tertiary">{unitSuffix(unit)}</span>
+        <span className="text-sm font-medium text-text-tertiary shrink-0">{unitSuffix(unit)}</span>
       </div>
 
       <div className="flex flex-col gap-1.5 mt-4 pt-4 border-t border-border-subtle/50">

@@ -47,3 +47,7 @@ ENV/
 # Auto-sync
 .auto-sync.log
 .cursor/
+
+# Local working folders (not part of the project)
+правки/
+article_NA/
