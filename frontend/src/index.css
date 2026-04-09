@@ -127,6 +127,57 @@ body {
   border-radius: 0.5rem;
 }
 
+/* Calculator slider */
+.calc-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: linear-gradient(to right, var(--color-champagne) 0%, var(--color-border-subtle) 100%);
+  border-radius: 9999px;
+  outline: none;
+  cursor: pointer;
+}
+.calc-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 2px solid var(--color-champagne);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+  cursor: grab;
+}
+.calc-slider::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 0 6px rgba(184,148,47,0.12), 0 1px 4px rgba(0,0,0,0.12);
+}
+.calc-slider::-webkit-slider-thumb:active {
+  cursor: grabbing;
+  transform: scale(1.1);
+  box-shadow: 0 0 0 8px rgba(184,148,47,0.18), 0 2px 6px rgba(0,0,0,0.15);
+}
+.calc-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 2px solid var(--color-champagne);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+  cursor: grab;
+}
+.calc-slider::-moz-range-track {
+  height: 4px;
+  background: var(--color-border-subtle);
+  border-radius: 9999px;
+  border: none;
+}
+.calc-slider:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 2px var(--color-obsidian), 0 0 0 4px rgba(184,148,47,0.45);
+}
+.calc-slider:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 2px var(--color-obsidian), 0 0 0 4px rgba(184,148,47,0.45);
+}
+
 /* Про страницы About / Privacy: ссылки в тексте */
 .prose a {
   border-radius: 0.125rem;

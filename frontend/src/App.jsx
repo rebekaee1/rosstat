@@ -15,6 +15,7 @@ const CategoryPage = lazy(() => import('./pages/CategoryPage'));
 const ComparePage = lazy(() => import('./pages/ComparePage'));
 const CalendarPage = lazy(() => import('./pages/CalendarPage'));
 const EmbedBuilder = lazy(() => import('./pages/EmbedBuilder'));
+const CalculatorPage = lazy(() => import('./pages/CalculatorPage'));
 
 const EmbedChart = lazy(() => import('./embed/EmbedChart'));
 const EmbedCard = lazy(() => import('./embed/EmbedCard'));
@@ -97,6 +98,7 @@ function AppRoutes() {
             <Route path="/compare" element={<ComparePage />} />
             <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/widgets" element={<EmbedBuilder />} />
+            <Route path="/calculator" element={<CalculatorPage />} />
             <Route path="/indicator/:code" element={<IndicatorDetailKeyed />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

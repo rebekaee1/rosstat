@@ -782,7 +782,41 @@
 - **Security:** текущий `X-Frame-Options: SAMEORIGIN` и `frame-src: 'none'` в Caddy/nginx блокируют embed — нужны дифференцированные заголовки для `/embed/*` (`frame-ancestors *`).
 - **Рекомендация MVP (4.5 дня):** iframe + SVG sparkline endpoint + embed builder page (`/embed`).
 - **Документ:** [docs/embed_widgets_research.md](docs/embed_widgets_research.md)
-- **Статус:** исследование завершено, код не менялся, ожидается решение по реализации.
+- **Статус:** исследование завершено, РЕАЛИЗАЦИЯ ВЫПОЛНЕНА.
+
+## 2026-04-09 — Реализация: Embeddable Widgets (full system)
+
+- **User intent:** enterprise-level embed-система уровня TradingView — 6 типов виджетов, конструктор, SVG API, аналитика.
+- **Backend (`backend/app/api/embed.py`):**
+  - `GET /api/v1/embed/spark/{code}.svg` — серверный SVG sparkline (Catmull-Rom spline, gradient fill, Redis cache 1h)
+  - `GET /api/v1/embed/card/{code}.svg` — SVG карточка (name + value + change + sparkline)
+  - `POST /api/v1/embed/impression` — fire-and-forget tracking (Redis HINCRBY по дням)
+  - `GET /api/v1/embed/pixel.gif` — 1×1 tracking pixel для статических embed'ов
+  - Зарегистрирован в `backend/app/api/router.py`
+- **Frontend — 5 embed-виджетов (lazy-loaded, без Navbar/Footer/GSAP):**
+  - `frontend/src/embed/EmbedChart.jsx` — AreaChart, period pills, tooltip, forecast, attribution (6.4 KB / 2.65 gzip)
+  - `frontend/src/embed/EmbedCard.jsx` — карточка 300×200: name, value, change badge, SVG sparkline (3.5 KB / 1.6 gzip)
+  - `frontend/src/embed/EmbedTable.jsx` — таблица последних N значений (2.8 KB / 1.2 gzip)
+  - `frontend/src/embed/EmbedTicker.jsx` — бегущая строка с CSS animation (2.5 KB / 1.2 gzip)
+  - `frontend/src/embed/EmbedCompare.jsx` — dual Y-axis, два индикатора (4.9 KB / 1.9 gzip)
+  - `frontend/src/embed/useEmbedParams.js` — URL params parsing, impression beacon, postMessage auto-height
+  - `frontend/src/embed/Attribution.jsx` — universal attribution footer
+- **Embed Builder (`frontend/src/pages/EmbedBuilder.jsx`, route `/widgets`):**
+  - Два столбца: настройки (тип, индикатор, период, тема, размер, forecast) + live preview (iframe) + код (iframe/SVG/Markdown)
+  - Searchable indicator dropdown с группировкой по категориям
+  - Copy button with feedback
+  - 17.5 KB / 5.4 gzip
+- **Routing (`frontend/src/App.jsx`):**
+  - `EMBED_RE` regex отделяет embed-маршруты от основного SPA
+  - Embed routes рендерятся без Navbar/Footer/NoiseOverlay/ScrollToTop
+  - Маршруты: `/embed/chart/:code`, `/embed/card/:code`, `/embed/table/:code`, `/embed/ticker`, `/embed/compare`
+  - `/widgets` — страница конструктора (с полным layout)
+- **Infrastructure:**
+  - `frontend/nginx.conf` — отдельный `location` для `/embed/*` с `frame-ancestors *` (без X-Frame-Options)
+  - `Caddyfile` — `@embed` path matcher: убирает X-Frame-Options, ставит `frame-ancestors *`; `@embedapi` matcher: CORS `Access-Control-Allow-Origin: *`
+- **Build:** Vite сборка успешна, все embed-чанки корректно tree-shaken, lint clean.
+- **Budget:** Chart embed ~115 KB gzip (с Recharts), Card/Table/Ticker ~83 KB gzip (без Recharts).
+- **Не реализовано (отложено):** Calculator Widget (самый сложный, wow-фактор).
 
 ## 2026-04-09 — Исследование: Экономический календарь
 

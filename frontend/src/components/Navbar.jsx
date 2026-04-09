@@ -156,6 +156,9 @@ export default function Navbar() {
         <NavLink to="/compare" className={linkClass} onClick={closeAll}>
           Сравнение
         </NavLink>
+        <NavLink to="/calculator" className={linkClass} onClick={closeAll}>
+          Калькулятор
+        </NavLink>
         <NavLink to="/about" className={linkClass} onClick={closeAll}>
           О проекте
         </NavLink>
@@ -215,6 +218,9 @@ export default function Navbar() {
             </NavLink>
             <NavLink to="/compare" className={linkClass} onClick={closeAll}>
               Сравнение
+            </NavLink>
+            <NavLink to="/calculator" className={linkClass} onClick={closeAll}>
+              Калькулятор
             </NavLink>
             <NavLink to="/about" className={linkClass} onClick={closeAll}>
               О проекте
