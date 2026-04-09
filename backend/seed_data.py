@@ -1652,9 +1652,13 @@ async def seed():
             "description", "methodology", "parser_type", "model_config_json",
             "is_active", "category", "excel_sheet",
         ]
+        _attr_to_col = {"model_config_json": "model_config"}
         for ind_data in INDICATORS:
             stmt = pg_insert(Indicator).values(**ind_data)
-            update_vals = {k: ind_data[k] for k in _metadata_cols if k in ind_data}
+            update_vals = {
+                _attr_to_col.get(k, k): ind_data[k]
+                for k in _metadata_cols if k in ind_data
+            }
             stmt = stmt.on_conflict_do_update(
                 index_elements=["code"],
                 set_=update_vals,
