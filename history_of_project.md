@@ -776,3 +776,25 @@
 - **Task 3 — Sentry:** `@sentry/react` установлен (npm). `main.jsx` — `Sentry.init()` перед `createRoot`, DSN из `VITE_SENTRY_DSN`, tracesSampleRate 0.1. `ErrorBoundary.jsx` — `componentDidCatch` отправляет `captureException` через dynamic import.
 - **Task 5 — SEO:** `construction-work` и `capital-investment` добавлены в `SEO_MAP` (IndicatorDetail.jsx).
 - **Файлы:** `format.js`, `IndicatorTile.jsx`, `excel.js`, `IndicatorDetail.jsx`, `main.jsx`, `ErrorBoundary.jsx`, `package.json` (sentry dep). ESLint: 0 errors.
+
+## 2026-04-09 — Фаза 4: Возрастная структура населения (пирамида)
+
+- **Парсер:** `rosstat_demo_parser.py` — `parse_demo14_xlsx()` теперь возвращает dict с 3 возрастными группами: `pop-under-working-age` (моложе трудоспособного), `working-age-population` (трудоспособные), `pop-over-working-age` (старше трудоспособного). `DEMO_FILES` обновлён. `RosstatDemoParser.run()` обрабатывает demo14 как dict через `demo_series` ключ.
+- **Новые индикаторы:** `pop-under-working-age` и `pop-over-working-age` добавлены в `seed_data.py` с `parser_type: "rosstat_demo"`, `model_config_json: {demo_file: "demo14", demo_series: "..."}`.
+- **Batch API:** NEW `backend/app/api/demographics.py` — `GET /api/v1/demographics/structure` возвращает merged series (год + 3 группы) + meta. Кэширование через Redis. Роутер подключен в `router.py`.
+- **Frontend:** NEW `DemographicsPage.jsx` — stacked area chart (Recharts), структурная полоска с процентами, toggle абсолютные/процентные значения, CSV-выгрузка, карточки всех демографических индикаторов. Маршрут `/demographics` в `App.jsx`.
+- **Навигация:** Ссылка «Возрастная структура» добавлена в desktop dropdown и mobile menu в `Navbar.jsx`.
+- **SEO:** `pop-under-working-age` и `pop-over-working-age` добавлены в `SEO_MAP`. `/demographics` добавлен в `sitemap.py`.
+- **Nginx:** маршрут `/demographics` добавлен в SPA-fallback regex.
+- **Bugfix:** Добавлена отсутствующая ORM-модель `EconomicEvent` в `models.py` (таблица `economic_events` существовала в миграции, но модель отсутствовала → ломался import в `calendar.py` → падал `test_health_ok`).
+- **Верификация:** py_compile OK, pytest 89/89, ESLint 0 errors, vitest 25/25, vite build OK (3.45s).
+
+## 2026-04-09 — Экономический календарь: месячная сетка вместо таймлайна
+
+- **Проблема:** пользователь счёл список-таймлайн неудобным — «какой-то неудобный календарь, может сделать его как календарь именно?»
+- **Решение:** полностью переработан UI: новый компонент `CalendarGrid.jsx` — месячная сетка (Пн–Вс) с цветными точками по источникам (синий ЦБ, зелёный Росстат, оранжевый Минфин), счётчиками событий, выделением сегодня (champagne), навигацией `← Месяц Год →`.
+- **Фильтры источников** встроены в шапку сетки (pills: Все, ЦБ, Росстат, Минфин). Убран отдельный `CalendarFilters` sticky-бар и period picker (week/month/quarter) — месяц теперь определяется навигацией по сетке.
+- **Клик по дню** фильтрует список событий ниже; кнопка «Показать весь месяц» сбрасывает. Год и месяц сохраняются в URL params (?y=&m=).
+- **Bugfix:** `hooks.js` не содержал `useCalendarEvents`, `useCalendarUpcoming`, `useDashboardSparklines` — хуки были потеряны при предыдущих правках. Восстановлены из git history.
+- **Файлы:** `CalendarGrid.jsx` (new), `CalendarPage.jsx` (rewrite), `hooks.js` (fix).
+- **Деплой:** git push → docker compose build frontend --no-cache → up -d. Проверено на forecasteconomy.com/calendar: сетка, точки, фильтры, клик по дню — всё работает. Консоль: 0 ошибок.
