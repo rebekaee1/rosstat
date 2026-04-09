@@ -16,6 +16,7 @@ const monthsGenitive = [
 export function formatDate(dateStr, format = 'short') {
   if (!dateStr) return '—';
   const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return '—';
   const month = d.getUTCMonth();
   const year = d.getUTCFullYear();
   const day = d.getUTCDate();
@@ -52,13 +53,17 @@ function formatFixed(num, digits) {
 
 export function formatValue(val, digits = 2) {
   if (val == null) return '—';
-  return formatFixed(Number(val), digits);
+  const num = Number(val);
+  if (!Number.isFinite(num)) return '—';
+  return formatFixed(num, digits);
 }
 
 export function formatValueWithUnit(val, unit = '%') {
   if (val == null) return '—';
+  const num = Number(val);
+  if (!Number.isFinite(num)) return '—';
   const cfg = UNIT_CONFIG[unit] || { digits: 2, suffix: ` ${unit}`, space: false };
-  return `${formatFixed(Number(val), cfg.digits)}${cfg.suffix}`;
+  return `${formatFixed(num, cfg.digits)}${cfg.suffix}`;
 }
 
 export function unitSuffix(unit = '%') {
@@ -86,6 +91,7 @@ export function formatAxisTick(val, digits = 2) {
 export function formatChange(val) {
   if (val == null) return null;
   const num = Number(val);
+  if (!Number.isFinite(num)) return null;
   const sign = num >= 0 ? '+' : '';
   return `${sign}${formatFixed(num, 2)}`;
 }

@@ -1,4 +1,4 @@
-import { Link, useParams, Navigate } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { useIndicators } from '../lib/hooks';
 import useDocumentMeta from '../lib/useMeta';
@@ -24,7 +24,15 @@ export default function CategoryPage() {
   });
 
   if (!cat) {
-    return <Navigate to="/" replace />;
+    return (
+      <div className="max-w-2xl mx-auto px-4 pt-32 pb-24 text-center">
+        <h1 className="text-6xl font-display font-bold text-text-primary mb-4">404</h1>
+        <p className="text-lg text-text-secondary mb-8">Категория не найдена</p>
+        <Link to="/" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-champagne/10 text-champagne font-medium hover:bg-champagne/20 transition-colors">
+          На главную
+        </Link>
+      </div>
+    );
   }
 
   if (!cat.apiCategory) {

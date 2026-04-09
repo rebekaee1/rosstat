@@ -4,7 +4,17 @@ export async function downloadExcel(chartData, mode, indicatorCode, range) {
   const actuals = chartData.filter(d => d.actual != null);
   const forecasts = chartData.filter(d => d.forecast != null && d.actual == null);
 
-  const valueLabel = mode === 'cpi' ? 'ИПЦ (изм. к пред. мес., %)' : 'Инфляция 12 мес. (%)';
+  const VALUE_LABELS = {
+    cpi: 'ИПЦ (изм. к пред. мес., %)',
+    quarterly: 'ИПЦ квартальный (%)',
+    inflation: 'Инфляция 12 мес. (%)',
+  };
+  const MODE_LABELS = {
+    cpi: 'ипц_помесячно',
+    quarterly: 'ипц_квартальный',
+    inflation: 'инфляция_12мес',
+  };
+  const valueLabel = VALUE_LABELS[mode] || `Значение (${mode})`;
 
   const factsSheet = actuals.map(d => ({
     'Дата': d.date,
@@ -26,7 +36,7 @@ export async function downloadExcel(chartData, mode, indicatorCode, range) {
     XLSX.utils.book_append_sheet(wb, ws2, 'Прогноз');
   }
 
-  const modeLabel = mode === 'cpi' ? 'ипц_помесячно' : 'инфляция_12мес';
+  const modeLabel = MODE_LABELS[mode] || mode;
   const filename = `${indicatorCode}_${modeLabel}_${range}.xlsx`;
   XLSX.writeFile(wb, filename);
 }

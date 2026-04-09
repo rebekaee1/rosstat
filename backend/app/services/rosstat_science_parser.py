@@ -29,6 +29,7 @@ from app.models import Indicator, IndicatorData, FetchLog
 from app.services.http_client import create_session
 from app.services.base_parser import BaseParser
 from app.services.upsert import upsert_indicator_data
+from app.core.cache import cache_invalidate_indicator
 
 logger = logging.getLogger(__name__)
 
@@ -238,52 +239,60 @@ class RosstatScienceParser(BaseParser):
 
     async def run(self, db: AsyncSession, indicator: Indicator, fetch_log: FetchLog) -> None:
         code = indicator.code
-        cfg = indicator.model_config_json or {}
-        sci_cfg = cfg.get("science_config") or SCIENCE_CONFIG.get(code)
-        if not sci_cfg:
-            raise ValueError(f"No science config for {code}")
+        try:
+            cfg = indicator.model_config_json or {}
+            sci_cfg = cfg.get("science_config") or SCIENCE_CONFIG.get(code)
+            if not sci_cfg:
+                raise ValueError(f"No science config for {code}")
 
-        session = create_session()
-        session.verify = settings.rosstat_ca_cert
-        content = None
-        used_file = ""
-        for fn in sci_cfg["files"]:
-            content = _try_download_xls(session, fn)
-            if content:
-                used_file = fn
-                break
+            session = create_session()
+            session.verify = settings.rosstat_ca_cert
+            content = None
+            used_file = ""
+            for fn in sci_cfg["files"]:
+                content = _try_download_xls(session, fn)
+                if content:
+                    used_file = fn
+                    break
 
-        if not content:
-            raise ValueError(f"Science XLS not found for {code}: {sci_cfg['files']}")
+            if not content:
+                raise ValueError(f"Science XLS not found for {code}: {sci_cfg['files']}")
 
-        fetch_log.source_url = BASE_URL + used_file
-        parser_type = sci_cfg.get("parser", "nauka_total")
+            fetch_log.source_url = BASE_URL + used_file
+            parser_type = sci_cfg.get("parser", "nauka_total")
 
-        if parser_type == "kadry":
-            sheet_idx = sci_cfg.get("sheet_idx", 0)
-            points = parse_kadry_xls(content, sheet_idx)
-        elif parser_type == "nauka_total":
-            sheet = sci_cfg.get("sheet", "1")
-            points = parse_nauka_total_xls(content, sheet)
-        elif parser_type == "innov_russia":
-            sheet = sci_cfg.get("sheet", "1")
-            points = parse_innov_russia_xls(content, sheet)
-        else:
-            raise ValueError(f"Unknown science parser: {parser_type}")
+            if parser_type == "kadry":
+                sheet_idx = sci_cfg.get("sheet_idx", 0)
+                points = parse_kadry_xls(content, sheet_idx)
+            elif parser_type == "nauka_total":
+                sheet = sci_cfg.get("sheet", "1")
+                points = parse_nauka_total_xls(content, sheet)
+            elif parser_type == "innov_russia":
+                sheet = sci_cfg.get("sheet", "1")
+                points = parse_innov_russia_xls(content, sheet)
+            else:
+                raise ValueError(f"Unknown science parser: {parser_type}")
 
-        if not points:
-            fetch_log.status = "no_new_data"
-            fetch_log.records_added = 0
+            if not points:
+                fetch_log.status = "no_new_data"
+                fetch_log.records_added = 0
+                fetch_log.completed_at = datetime.utcnow()
+                await db.commit()
+                return
+
+            for p in points:
+                await db.execute(upsert_indicator_data(indicator.id, p.date, p.value))
+            await db.flush()
+
+            fetch_log.status = "success"
+            fetch_log.records_added = len(points)
             fetch_log.completed_at = datetime.utcnow()
             await db.commit()
-            return
-
-        for p in points:
-            await db.execute(upsert_indicator_data(indicator.id, p.date, p.value))
-        await db.flush()
-
-        fetch_log.status = "success"
-        fetch_log.records_added = len(points)
-        fetch_log.completed_at = datetime.utcnow()
-        await db.commit()
-        logger.info("%s: upserted %d points from %s", code, len(points), used_file)
+            await cache_invalidate_indicator(code)
+            logger.info("%s: upserted %d points from %s", code, len(points), used_file)
+        except Exception as exc:
+            fetch_log.status = "failed"
+            fetch_log.error_message = str(exc)[:500]
+            fetch_log.completed_at = datetime.utcnow()
+            await db.commit()
+            raise

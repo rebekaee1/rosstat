@@ -57,8 +57,8 @@ async def get_forecast(code: str, db: AsyncSession = Depends(get_db)):
 
     out = ForecastOut(
         model_name=forecast.model_name,
-        aic=float(forecast.aic) if forecast.aic else None,
-        bic=float(forecast.bic) if forecast.bic else None,
+        aic=float(forecast.aic) if forecast.aic is not None else None,
+        bic=float(forecast.bic) if forecast.bic is not None else None,
         created_at=forecast.created_at,
         values=[ForecastValueOut(
             date=v.date,
@@ -85,10 +85,11 @@ async def get_inflation(code: str, db: AsyncSession = Depends(get_db)):
     if not indicator:
         raise HTTPException(status_code=404, detail=f"Indicator '{code}' not found")
 
-    if indicator.category != "Цены":
+    CPI_ALLOWED = {"cpi", "cpi-food", "cpi-nonfood", "cpi-services"}
+    if indicator.code not in CPI_ALLOWED:
         raise HTTPException(
             status_code=400,
-            detail="Endpoint /inflation is only available for CPI indicators (category «Цены»)",
+            detail="Endpoint /inflation is only available for CPI indicators (cpi, cpi-food, cpi-nonfood, cpi-services)",
         )
 
     data_q = await db.execute(

@@ -12,9 +12,21 @@ _RETRY_STRATEGY = Retry(
 )
 
 
+class _TimeoutAdapter(HTTPAdapter):
+    """HTTPAdapter that applies a default timeout to every request."""
+
+    def __init__(self, timeout: int = 60, **kwargs):
+        self._default_timeout = timeout
+        super().__init__(**kwargs)
+
+    def send(self, request, **kwargs):
+        kwargs.setdefault("timeout", self._default_timeout)
+        return super().send(request, **kwargs)
+
+
 def create_session(timeout: int = 60) -> requests.Session:
     s = requests.Session()
-    adapter = HTTPAdapter(max_retries=_RETRY_STRATEGY)
+    adapter = _TimeoutAdapter(timeout=timeout, max_retries=_RETRY_STRATEGY)
     s.mount("https://", adapter)
     s.mount("http://", adapter)
     s.headers.update({

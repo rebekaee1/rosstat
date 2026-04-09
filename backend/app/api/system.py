@@ -1,12 +1,13 @@
 import time
 
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy import select, func, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.models import Indicator, IndicatorData, FetchLog, Forecast
 from app.schemas import SystemStatus
+from app.config import settings
 
 router = APIRouter(tags=["system"])
 
@@ -18,8 +19,13 @@ async def health():
     return {"status": "ok"}
 
 
+def _check_metrics_token(token: str = Query("", alias="token")):
+    if settings.metrics_token and token != settings.metrics_token:
+        raise HTTPException(status_code=403, detail="Forbidden")
+
+
 @router.get("/metrics", include_in_schema=False)
-async def prometheus_metrics(db: AsyncSession = Depends(get_db)):
+async def prometheus_metrics(db: AsyncSession = Depends(get_db), _=Depends(_check_metrics_token)):
     """Prometheus-compatible metrics endpoint."""
     ind_count = (await db.execute(select(func.count(Indicator.id)))).scalar() or 0
     active_count = (await db.execute(
@@ -60,7 +66,7 @@ async def prometheus_metrics(db: AsyncSession = Depends(get_db)):
 
 
 @router.get("/system/status", response_model=SystemStatus)
-async def system_status(db: AsyncSession = Depends(get_db)):
+async def system_status(db: AsyncSession = Depends(get_db), _=Depends(_check_metrics_token)):
     ind_count = await db.execute(select(func.count(Indicator.id)))
     data_count = await db.execute(select(func.count(IndicatorData.id)))
 

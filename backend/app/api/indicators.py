@@ -2,7 +2,7 @@ from datetime import date
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import select, func, desc, literal_column, text
+from sqlalchemy import select, func, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
@@ -67,7 +67,7 @@ async def list_indicators(
         current_val = rows[0].value if rows else None
         current_dt = rows[0].date if rows else None
         prev_val = rows[1].value if len(rows) > 1 else None
-        change = round(float(current_val - prev_val), 4) if current_val and prev_val else None
+        change = round(float(current_val - prev_val), 4) if current_val is not None and prev_val is not None else None
 
         out.append(IndicatorSummary(
             code=ind.code, name=ind.name, name_en=ind.name_en,
@@ -112,7 +112,7 @@ async def get_indicator(code: str, db: AsyncSession = Depends(get_db)):
     current_val = recent[0].value if recent else None
     current_dt = recent[0].date if recent else None
     prev_val = recent[1].value if len(recent) > 1 else None
-    change = round(float(current_val - prev_val), 4) if current_val and prev_val else None
+    change = round(float(current_val - prev_val), 4) if current_val is not None and prev_val is not None else None
 
     detail = IndicatorDetail(
         code=indicator.code, name=indicator.name, name_en=indicator.name_en,
@@ -151,16 +151,20 @@ async def get_indicator_data(
     stmt = (
         select(IndicatorData)
         .where(IndicatorData.indicator_id == indicator.id)
-        .order_by(IndicatorData.date)
-        .limit(limit)
     )
     if from_date:
         stmt = stmt.where(IndicatorData.date >= from_date)
     if to_date:
         stmt = stmt.where(IndicatorData.date <= to_date)
 
-    result = await db.execute(stmt)
-    rows = result.scalars().all()
+    if not from_date and not to_date:
+        stmt = stmt.order_by(desc(IndicatorData.date)).limit(limit)
+        result = await db.execute(stmt)
+        rows = list(reversed(result.scalars().all()))
+    else:
+        stmt = stmt.order_by(IndicatorData.date).limit(limit)
+        result = await db.execute(stmt)
+        rows = result.scalars().all()
 
     response = DataResponse(
         indicator=code,

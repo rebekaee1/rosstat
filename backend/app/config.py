@@ -39,6 +39,9 @@ class Settings(BaseSettings):
     # Forecast defaults
     forecast_steps: int = 12
 
+    # Internal endpoints protection
+    metrics_token: str = ""
+
     model_config = {"env_prefix": "RUSTATS_", "env_file": ".env"}
 
 

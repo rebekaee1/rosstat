@@ -57,7 +57,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                     headers={"Retry-After": str(self.WINDOW)},
                 )
         except Exception:
-            pass
+            logger.warning("Rate limit check failed (Redis unavailable), allowing request from %s", ip)
         return await call_next(request)
 
 scheduler = AsyncIOScheduler()

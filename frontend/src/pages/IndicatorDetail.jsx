@@ -910,18 +910,27 @@ export default function IndicatorDetail() {
             )}
           </div>
           
+          {indicator?.source_url ? (
           <div className="mt-auto pt-6 border-t border-border-subtle">
             <a
-              href={indicator?.source_url}
+              href={indicator.source_url}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface border border-border-subtle text-xs font-mono uppercase tracking-widest text-champagne hover:bg-champagne/10 transition-colors lift-hover w-full justify-center"
             >
               <Database className="w-3.5 h-3.5" />
-              Источник: {indicator?.source}
+              Источник: {indicator.source}
               <ExternalLink className="w-3 h-3 ml-auto opacity-50" />
             </a>
           </div>
+          ) : indicator?.source ? (
+          <div className="mt-auto pt-6 border-t border-border-subtle">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface border border-border-subtle text-xs font-mono uppercase tracking-widest text-text-secondary w-full justify-center">
+              <Database className="w-3.5 h-3.5" />
+              Источник: {indicator.source}
+            </span>
+          </div>
+          ) : null}
         </section>
 
         <section className="lg:col-span-2">

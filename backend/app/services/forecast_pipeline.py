@@ -113,6 +113,7 @@ async def retrain_indicator_forecast(db: AsyncSession, indicator: Indicator) -> 
             train_and_forecast, dates, values,
             forecast_steps=forecast_steps,
             forecast_transform=forecast_transform,
+            frequency=indicator.frequency or "monthly",
         )
         await _save_forecast(db, indicator, result)
 

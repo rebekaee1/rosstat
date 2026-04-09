@@ -53,6 +53,11 @@ export default function useDocumentMeta({ title, description, path = '/' }) {
 
     return () => {
       document.title = DEFAULTS.title;
+      setMeta('description', DEFAULTS.description);
+      setCanonical(BASE + '/');
+      setProperty('og:title', DEFAULTS.title);
+      setProperty('og:description', DEFAULTS.description);
+      setProperty('og:url', BASE + '/');
     };
   }, [title, description, path]);
 }

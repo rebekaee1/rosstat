@@ -1,14 +1,15 @@
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useParams, useLocation, Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import NoiseOverlay from './components/NoiseOverlay';
 import Footer from './components/Footer';
 import Dashboard from './pages/Dashboard';
-import IndicatorDetail from './pages/IndicatorDetail';
-import About from './pages/About';
-import Privacy from './pages/Privacy';
-import CategoryPage from './pages/CategoryPage';
-import ComparePage from './pages/ComparePage';
+
+const IndicatorDetail = lazy(() => import('./pages/IndicatorDetail'));
+const About = lazy(() => import('./pages/About'));
+const Privacy = lazy(() => import('./pages/Privacy'));
+const CategoryPage = lazy(() => import('./pages/CategoryPage'));
+const ComparePage = lazy(() => import('./pages/ComparePage'));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -43,15 +44,17 @@ export default function App() {
       <NoiseOverlay />
       <Navbar />
       <main className="relative z-0 flex-1">
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/category/:slug" element={<CategoryPage />} />
-          <Route path="/compare" element={<ComparePage />} />
-          <Route path="/indicator/:code" element={<IndicatorDetailKeyed />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <Suspense fallback={<div className="min-h-screen" />}>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/category/:slug" element={<CategoryPage />} />
+            <Route path="/compare" element={<ComparePage />} />
+            <Route path="/indicator/:code" element={<IndicatorDetailKeyed />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
       </main>
       <Footer />
     </Router>

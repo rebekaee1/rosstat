@@ -309,3 +309,51 @@
 - `rozn_torg.xlsx` — региональные данные (Орловская обл.), не федеральные
 - `invest.xlsx` — туристическая индустрия, не инвестиции в ОК
 - Файлы `3-X_torg.xlsx` (folder 11188) — импорт ФТС, не розничная торговля
+
+## 2026-04-09 (Production deployment & critical fixes for 18 new indicators)
+
+### Проблема 1: SSL — все 4 новых парсера не устанавливали `session.verify = settings.rosstat_ca_cert`
+- Симптом: `SSLCertVerificationError` при скачивании с rosstat.gov.ru на сервере
+- Причина: `create_session()` не устанавливает CA-сертификат автоматически; старые парсеры (CPI, GDP, SDDS) устанавливали его вручную, а новые (demo, ind, science, fixedassets) — нет
+- Фикс: добавлен `from app.config import settings` + `session.verify = settings.rosstat_ca_cert` во все 4 файла
+- Коммит: `b414aad`
+
+### Проблема 2: Неверная сигнатура `upsert_indicator_data`
+- Симптом: `TypeError: object Insert can't be used in 'await' expression`
+- Причина: новые парсеры вызывали `await upsert_indicator_data(db, indicator.id, list_of_tuples)` вместо правильного `await db.execute(upsert_indicator_data(indicator.id, dt, val))` в цикле
+- Фикс: переписан на паттерн `for p in points: await db.execute(upsert_indicator_data(...))` + `await db.flush()`
+
+### Проблема 3: Отсутствие `db.commit()` и `completed_at`
+- Симптом: данные вставлялись через flush, но не коммитились — транзакция откатывалась при закрытии сессии
+- Причина: все старые парсеры делают `await db.commit()` в конце `run()`, а новые — нет
+- Фикс: добавлен `await db.commit()` + `fetch_log.completed_at = datetime.utcnow()` во все 4 парсера
+- Коммит: `bd9933c`
+
+### Результат после фиксов
+- ETL успешно запущен для всех 18 новых индикаторов
+- **80 из 80 индикаторов имеют данные** в production
+- API проверен: detail/data/stats endpoints возвращают корректные данные
+- Фронтенд: категория «Наука и образование» отображается, все карточки с данными
+- Консоль браузера чистая (0 ошибок/предупреждений)
+
+### Данные по новым индикаторам:
+| Индикатор | Точки | Послед. значение | Дата |
+|---|---|---|---|
+| births | 26 | 314.6 тыс. | Q1 2023 |
+| deaths | 26 | 475.7 тыс. | Q1 2023 |
+| birth-rate | 26 | 8.6‰ | Q1 2023 |
+| death-rate | 26 | 13.0‰ | Q1 2023 |
+| working-age-population | 21 | 83.44 млн | 2023 |
+| pensioners | 12 | 41170 тыс. | 2025 |
+| retail-trade | 326 | 4784.2 млрд | фев 2026 |
+| housing-commissioned | 249 | 6.74 млн кв.м | фев 2026 |
+| depreciation-rate | 35 | 42.3% | 2024 |
+| exports-qoq | 127 | 4.37% | Q4 2025 |
+| imports-qoq | 127 | 15.4% | Q4 2025 |
+| grad-students | 16 | 126196 | 2025 |
+| doctoral-students | 16 | 835 | 2025 |
+| rd-organizations | 17 | 4157 | 2024 |
+| rd-personnel | 17 | 675696 | 2024 |
+| innovation-activity | 15 | 12.53% | 2024 |
+| tech-innovation-share | 15 | 24.49% | 2024 |
+| small-business-innovation | 4 | 7.39% | 2024 |

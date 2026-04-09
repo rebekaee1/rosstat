@@ -33,7 +33,7 @@ export default function DataTable({ data, title = 'Исторические да
       : new Date(b.date) - new Date(a.date)
     );
     return rows;
-  }, [data, search, sortAsc]);
+  }, [data, search, sortAsc, dateFormat]);
 
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
   const pageData = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);

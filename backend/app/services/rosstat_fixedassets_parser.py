@@ -22,6 +22,7 @@ from app.models import Indicator, IndicatorData, FetchLog
 from app.services.http_client import create_session
 from app.services.base_parser import BaseParser
 from app.services.upsert import upsert_indicator_data
+from app.core.cache import cache_invalidate_indicator
 
 logger = logging.getLogger(__name__)
 
@@ -72,41 +73,49 @@ class RosstatFixedAssetsParser(BaseParser):
     parser_type: ClassVar[str] = "rosstat_fixed_assets"
 
     async def run(self, db: AsyncSession, indicator: Indicator, fetch_log: FetchLog) -> None:
-        session = create_session()
-        session.verify = settings.rosstat_ca_cert
-        content = None
-        used_url = ""
-        for year in range(2026, 2020, -1):
-            fn = f"St_izn_of_{year}.xlsx"
-            url = BASE_URL + fn
-            try:
-                resp = session.get(url, timeout=60)
-                if resp.status_code == 200 and resp.content[:4] == b"PK\x03\x04":
-                    content = resp.content
-                    used_url = url
-                    break
-            except Exception:
-                continue
+        try:
+            session = create_session()
+            session.verify = settings.rosstat_ca_cert
+            content = None
+            used_url = ""
+            for year in range(2026, 2020, -1):
+                fn = f"St_izn_of_{year}.xlsx"
+                url = BASE_URL + fn
+                try:
+                    resp = session.get(url, timeout=60)
+                    if resp.status_code == 200 and resp.content[:4] == b"PK\x03\x04":
+                        content = resp.content
+                        used_url = url
+                        break
+                except Exception:
+                    continue
 
-        if not content:
-            raise ValueError("St_izn_of XLSX not found")
+            if not content:
+                raise ValueError("St_izn_of XLSX not found")
 
-        fetch_log.source_url = used_url
-        points = parse_depreciation_xlsx(content)
+            fetch_log.source_url = used_url
+            points = parse_depreciation_xlsx(content)
 
-        if not points:
-            fetch_log.status = "no_new_data"
-            fetch_log.records_added = 0
+            if not points:
+                fetch_log.status = "no_new_data"
+                fetch_log.records_added = 0
+                fetch_log.completed_at = datetime.utcnow()
+                await db.commit()
+                return
+
+            for p in points:
+                await db.execute(upsert_indicator_data(indicator.id, p.date, p.value))
+            await db.flush()
+
+            fetch_log.status = "success"
+            fetch_log.records_added = len(points)
             fetch_log.completed_at = datetime.utcnow()
             await db.commit()
-            return
-
-        for p in points:
-            await db.execute(upsert_indicator_data(indicator.id, p.date, p.value))
-        await db.flush()
-
-        fetch_log.status = "success"
-        fetch_log.records_added = len(points)
-        fetch_log.completed_at = datetime.utcnow()
-        await db.commit()
-        logger.info("depreciation-rate: upserted %d points", len(points))
+            await cache_invalidate_indicator(indicator.code)
+            logger.info("depreciation-rate: upserted %d points", len(points))
+        except Exception as exc:
+            fetch_log.status = "failed"
+            fetch_log.error_message = str(exc)[:500]
+            fetch_log.completed_at = datetime.utcnow()
+            await db.commit()
+            raise

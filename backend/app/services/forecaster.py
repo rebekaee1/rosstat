@@ -379,12 +379,24 @@ def _build_ols_forecast_for_horizon(
     return float(weighted_pred), float(combined_var)
 
 
+def _date_step(frequency: str) -> relativedelta:
+    """Return the appropriate date step for a given frequency."""
+    if frequency == "daily":
+        return relativedelta(days=1)
+    if frequency == "quarterly":
+        return relativedelta(months=3)
+    if frequency == "annual":
+        return relativedelta(years=1)
+    return relativedelta(months=1)
+
+
 def train_and_forecast(
     dates: List[date],
     values: List[float],
     forecast_steps: int = 12,
     confidence_z: float = 1.96,
     forecast_transform: str = "cpi_index",
+    frequency: str = "monthly",
     **_kwargs,
 ) -> ForecastResult:
     """Original OLS multi-window model for non-CPI indicators."""
@@ -393,11 +405,12 @@ def train_and_forecast(
 
     window_size = len(data)
     model_name = "OLS-MultiWindow"
-    logger.info("Training %s on %d observations, horizon=%d, transform=%s...",
-                model_name, len(data), forecast_steps, forecast_transform)
+    logger.info("Training %s on %d observations, horizon=%d, transform=%s, freq=%s...",
+                model_name, len(data), forecast_steps, forecast_transform, frequency)
 
     last_date = data.index[-1]
-    monthly_dates = [last_date + relativedelta(months=i + 1) for i in range(forecast_steps)]
+    step = _date_step(frequency)
+    forecast_dates = [last_date + step * (i + 1) for i in range(forecast_steps)]
 
     forecasts_aux = []
     variances_aux = []
@@ -408,15 +421,15 @@ def train_and_forecast(
         variances_aux.append(var)
 
     cumulative_12m = None
-    if forecast_transform == "cpi_index":
-        recent_actuals = data.iloc[-(12 - 1):].values
-        cumulative_product = 1.0
-        for v in recent_actuals:
-            cumulative_product *= (v + 1)
-        forecast_product = 1.0
-        for v in forecasts_aux:
-            forecast_product *= (v + 1)
-        cumulative_12m = cumulative_product * forecast_product * 100 - 100
+    if forecast_transform == "cpi_index" and forecast_steps <= 12:
+        n_actual = max(0, 12 - forecast_steps)
+        recent = list(data.iloc[-n_actual:].values) if n_actual > 0 else []
+        fc_part = list(forecasts_aux[:min(forecast_steps, 12)])
+        factors_12 = (recent + fc_part)[-12:]
+        cumulative_12m = 1.0
+        for v in factors_12:
+            cumulative_12m *= (v + 1)
+        cumulative_12m = cumulative_12m * 100 - 100
 
     points = []
     for idx in range(forecast_steps):
@@ -425,7 +438,7 @@ def train_and_forecast(
             forecast_transform, meta,
         )
         points.append(ForecastPoint(
-            date=monthly_dates[idx].date(), value=val,
+            date=forecast_dates[idx].date(), value=val,
             lower_bound=lo, upper_bound=hi,
         ))
 

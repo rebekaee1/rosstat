@@ -25,6 +25,7 @@ from app.models import Indicator, IndicatorData, FetchLog
 from app.services.http_client import create_session
 from app.services.base_parser import BaseParser
 from app.services.upsert import upsert_indicator_data
+from app.core.cache import cache_invalidate_indicator
 
 logger = logging.getLogger(__name__)
 
@@ -203,64 +204,72 @@ class RosstatDemoParser(BaseParser):
 
     async def run(self, db: AsyncSession, indicator: Indicator, fetch_log: FetchLog) -> None:
         code = indicator.code
-        cfg = indicator.model_config_json or {}
-        file_type = cfg.get("demo_file", "demo21")
+        try:
+            cfg = indicator.model_config_json or {}
+            file_type = cfg.get("demo_file", "demo21")
 
-        session = create_session()
-        session.verify = settings.rosstat_ca_cert
+            session = create_session()
+            session.verify = settings.rosstat_ca_cert
 
-        if file_type == "demo21":
-            filenames = [f"demo21_{y}.xlsx" for y in range(2026, 2020, -1)]
-            content = None
-            used_url = ""
-            for fn in filenames:
-                content = _try_download(session, fn)
-                if content:
-                    used_url = BASE_URL + fn
-                    break
-            if not content:
-                raise ValueError(f"demo21 XLSX not found (tried {filenames})")
+            if file_type == "demo21":
+                filenames = [f"demo21_{y}.xlsx" for y in range(2026, 2020, -1)]
+                content = None
+                used_url = ""
+                for fn in filenames:
+                    content = _try_download(session, fn)
+                    if content:
+                        used_url = BASE_URL + fn
+                        break
+                if not content:
+                    raise ValueError(f"demo21 XLSX not found (tried {filenames})")
 
-            fetch_log.source_url = used_url
-            result = parse_demo21_xlsx(content)
-            series_key = cfg.get("demo_series", code)
-            points = result.get(series_key, [])
+                fetch_log.source_url = used_url
+                result = parse_demo21_xlsx(content)
+                series_key = cfg.get("demo_series", code)
+                points = result.get(series_key, [])
 
-        elif file_type == "demo14":
-            content = _try_download(session, "demo14.xlsx")
-            if not content:
-                raise ValueError("demo14.xlsx not found")
-            fetch_log.source_url = BASE_URL + "demo14.xlsx"
-            points = parse_demo14_xlsx(content)
+            elif file_type == "demo14":
+                content = _try_download(session, "demo14.xlsx")
+                if not content:
+                    raise ValueError("demo14.xlsx not found")
+                fetch_log.source_url = BASE_URL + "demo14.xlsx"
+                points = parse_demo14_xlsx(content)
 
-        elif file_type == "pensioners":
-            filenames = [f"Sp_2.1_{y}.xlsx" for y in range(2026, 2020, -1)]
-            content = None
-            for fn in filenames:
-                content = _try_download(session, fn)
-                if content:
-                    fetch_log.source_url = BASE_URL + fn
-                    break
-            if not content:
-                raise ValueError(f"Pensioners XLSX not found")
-            points = parse_pensioners_xlsx(content)
+            elif file_type == "pensioners":
+                filenames = [f"Sp_2.1_{y}.xlsx" for y in range(2026, 2020, -1)]
+                content = None
+                for fn in filenames:
+                    content = _try_download(session, fn)
+                    if content:
+                        fetch_log.source_url = BASE_URL + fn
+                        break
+                if not content:
+                    raise ValueError("Pensioners XLSX not found")
+                points = parse_pensioners_xlsx(content)
 
-        else:
-            raise ValueError(f"Unknown demo_file type: {file_type}")
+            else:
+                raise ValueError(f"Unknown demo_file type: {file_type}")
 
-        if not points:
-            fetch_log.status = "no_new_data"
-            fetch_log.records_added = 0
+            if not points:
+                fetch_log.status = "no_new_data"
+                fetch_log.records_added = 0
+                fetch_log.completed_at = datetime.utcnow()
+                await db.commit()
+                return
+
+            for p in points:
+                await db.execute(upsert_indicator_data(indicator.id, p.date, p.value))
+            await db.flush()
+
+            fetch_log.status = "success"
+            fetch_log.records_added = len(points)
             fetch_log.completed_at = datetime.utcnow()
             await db.commit()
-            return
-
-        for p in points:
-            await db.execute(upsert_indicator_data(indicator.id, p.date, p.value))
-        await db.flush()
-
-        fetch_log.status = "success"
-        fetch_log.records_added = len(points)
-        fetch_log.completed_at = datetime.utcnow()
-        await db.commit()
-        logger.info("%s: upserted %d points from %s", code, len(points), file_type)
+            await cache_invalidate_indicator(code)
+            logger.info("%s: upserted %d points from %s", code, len(points), file_type)
+        except Exception as exc:
+            fetch_log.status = "failed"
+            fetch_log.error_message = str(exc)[:500]
+            fetch_log.completed_at = datetime.utcnow()
+            await db.commit()
+            raise

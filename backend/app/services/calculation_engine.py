@@ -12,11 +12,11 @@ from datetime import date
 from typing import Awaitable, Callable
 
 from sqlalchemy import func, select
-from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import Indicator, IndicatorData
 from app.core.cache import cache_invalidate_indicator
+from app.services.upsert import upsert_indicator_data
 
 logger = logging.getLogger(__name__)
 
@@ -93,12 +93,7 @@ async def _compute_quarterly_inflation(db: AsyncSession) -> int:
 
     added = 0
     for d, v in points:
-        stmt = (
-            pg_insert(IndicatorData)
-            .values(indicator_id=dst.id, date=d, value=v)
-            .on_conflict_do_nothing(constraint="uq_indicator_date")
-        )
-        result = await db.execute(stmt)
+        result = await db.execute(upsert_indicator_data(dst.id, d, v))
         if result.rowcount:
             added += 1
     if added:
@@ -152,12 +147,7 @@ async def _compute_annual_inflation(db: AsyncSession) -> int:
 
     added = 0
     for d, v in points:
-        stmt = (
-            pg_insert(IndicatorData)
-            .values(indicator_id=dst.id, date=d, value=v)
-            .on_conflict_do_nothing(constraint="uq_indicator_date")
-        )
-        result = await db.execute(stmt)
+        result = await db.execute(upsert_indicator_data(dst.id, d, v))
         if result.rowcount:
             added += 1
     if added:
@@ -214,12 +204,7 @@ async def _compute_wages_real(db: AsyncSession) -> int:
 
     added = 0
     for d, v in points:
-        stmt = (
-            pg_insert(IndicatorData)
-            .values(indicator_id=dst.id, date=d, value=v)
-            .on_conflict_do_nothing(constraint="uq_indicator_date")
-        )
-        result = await db.execute(stmt)
+        result = await db.execute(upsert_indicator_data(dst.id, d, v))
         if result.rowcount:
             added += 1
     if added:
@@ -254,17 +239,15 @@ async def _compute_gdp_yoy(db: AsyncSession) -> int:
 
     points: list[tuple[date, float]] = []
     for d, prev_d in sorted(date_to_prev.items()):
-        growth = round((by_date[d] / by_date[prev_d] - 1) * 100, 2)
+        denom = by_date[prev_d]
+        if denom == 0:
+            continue
+        growth = round((by_date[d] / denom - 1) * 100, 2)
         points.append((d, growth))
 
     added = 0
     for d, v in points:
-        stmt = (
-            pg_insert(IndicatorData)
-            .values(indicator_id=dst.id, date=d, value=v)
-            .on_conflict_do_nothing(constraint="uq_indicator_date")
-        )
-        result = await db.execute(stmt)
+        result = await db.execute(upsert_indicator_data(dst.id, d, v))
         if result.rowcount:
             added += 1
     if added:
@@ -299,12 +282,7 @@ async def _compute_gdp_qoq(db: AsyncSession) -> int:
 
     added = 0
     for d, v in points:
-        stmt = (
-            pg_insert(IndicatorData)
-            .values(indicator_id=dst.id, date=d, value=v)
-            .on_conflict_do_nothing(constraint="uq_indicator_date")
-        )
-        result = await db.execute(stmt)
+        result = await db.execute(upsert_indicator_data(dst.id, d, v))
         if result.rowcount:
             added += 1
     if added:
@@ -349,12 +327,7 @@ async def _compute_unemployment_quarterly(db: AsyncSession) -> int:
 
     added = 0
     for d, v in points:
-        stmt = (
-            pg_insert(IndicatorData)
-            .values(indicator_id=dst.id, date=d, value=v)
-            .on_conflict_do_nothing(constraint="uq_indicator_date")
-        )
-        result = await db.execute(stmt)
+        result = await db.execute(upsert_indicator_data(dst.id, d, v))
         if result.rowcount:
             added += 1
     if added:
@@ -403,12 +376,7 @@ async def _compute_unemployment_annual(db: AsyncSession) -> int:
 
     added = 0
     for d, v in points:
-        stmt = (
-            pg_insert(IndicatorData)
-            .values(indicator_id=dst.id, date=d, value=v)
-            .on_conflict_do_nothing(constraint="uq_indicator_date")
-        )
-        result = await db.execute(stmt)
+        result = await db.execute(upsert_indicator_data(dst.id, d, v))
         if result.rowcount:
             added += 1
     if added:
@@ -443,10 +411,7 @@ async def _compute_yoy_generic(db: AsyncSession, src_code: str, dst_code: str) -
 
     added = 0
     for d, v in points:
-        stmt = pg_insert(IndicatorData).values(
-            indicator_id=dst.id, date=d, value=v
-        ).on_conflict_do_nothing(constraint="uq_indicator_date")
-        result = await db.execute(stmt)
+        result = await db.execute(upsert_indicator_data(dst.id, d, v))
         if result.rowcount:
             added += 1
     if added:
@@ -504,10 +469,7 @@ async def _compute_qoq_generic(db: AsyncSession, src_code: str, dst_code: str) -
 
     added = 0
     for d, v in points:
-        stmt = pg_insert(IndicatorData).values(
-            indicator_id=dst.id, date=d, value=v
-        ).on_conflict_do_nothing(constraint="uq_indicator_date")
-        result = await db.execute(stmt)
+        result = await db.execute(upsert_indicator_data(dst.id, d, v))
         if result.rowcount:
             added += 1
     if added:

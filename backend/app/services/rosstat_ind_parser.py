@@ -31,6 +31,7 @@ from app.models import Indicator, IndicatorData, FetchLog
 from app.services.http_client import create_session
 from app.services.base_parser import BaseParser
 from app.services.upsert import upsert_indicator_data
+from app.core.cache import cache_invalidate_indicator
 
 logger = logging.getLogger(__name__)
 
@@ -155,32 +156,40 @@ class RosstatIndParser(BaseParser):
 
     async def run(self, db: AsyncSession, indicator: Indicator, fetch_log: FetchLog) -> None:
         code = indicator.code
-        cfg = indicator.model_config_json or {}
-        sheet_name = cfg.get("ind_sheet", SHEET_MAP.get(code, ""))
+        try:
+            cfg = indicator.model_config_json or {}
+            sheet_name = cfg.get("ind_sheet", SHEET_MAP.get(code, ""))
 
-        if not sheet_name:
-            raise ValueError(f"No sheet mapping for indicator {code}")
+            if not sheet_name:
+                raise ValueError(f"No sheet mapping for indicator {code}")
 
-        session = create_session()
-        session.verify = settings.rosstat_ca_cert
-        content, url = _fetch_latest_ind(session)
-        fetch_log.source_url = url
+            session = create_session()
+            session.verify = settings.rosstat_ca_cert
+            content, url = _fetch_latest_ind(session)
+            fetch_log.source_url = url
 
-        points = parse_ind_sheet(content, sheet_name)
+            points = parse_ind_sheet(content, sheet_name)
 
-        if not points:
-            fetch_log.status = "no_new_data"
-            fetch_log.records_added = 0
+            if not points:
+                fetch_log.status = "no_new_data"
+                fetch_log.records_added = 0
+                fetch_log.completed_at = datetime.utcnow()
+                await db.commit()
+                return
+
+            for p in points:
+                await db.execute(upsert_indicator_data(indicator.id, p.date, p.value))
+            await db.flush()
+
+            fetch_log.status = "success"
+            fetch_log.records_added = len(points)
             fetch_log.completed_at = datetime.utcnow()
             await db.commit()
-            return
-
-        for p in points:
-            await db.execute(upsert_indicator_data(indicator.id, p.date, p.value))
-        await db.flush()
-
-        fetch_log.status = "success"
-        fetch_log.records_added = len(points)
-        fetch_log.completed_at = datetime.utcnow()
-        await db.commit()
-        logger.info("%s: upserted %d monthly points from ind XLSX", code, len(points))
+            await cache_invalidate_indicator(code)
+            logger.info("%s: upserted %d monthly points from ind XLSX", code, len(points))
+        except Exception as exc:
+            fetch_log.status = "failed"
+            fetch_log.error_message = str(exc)[:500]
+            fetch_log.completed_at = datetime.utcnow()
+            await db.commit()
+            raise
