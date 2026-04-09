@@ -150,8 +150,11 @@ export default function Navbar() {
           )}
         </div>
 
+        <NavLink to="/calendar" className={linkClass} onClick={closeAll}>
+          Календарь
+        </NavLink>
         <NavLink to="/compare" className={linkClass} onClick={closeAll}>
-          Сравнение индикаторов
+          Сравнение
         </NavLink>
         <NavLink to="/about" className={linkClass} onClick={closeAll}>
           О проекте
@@ -207,8 +210,11 @@ export default function Navbar() {
                 </span>
               )
             )}
+            <NavLink to="/calendar" className={linkClass} onClick={closeAll}>
+              Календарь
+            </NavLink>
             <NavLink to="/compare" className={linkClass} onClick={closeAll}>
-              Сравнение индикаторов
+              Сравнение
             </NavLink>
             <NavLink to="/about" className={linkClass} onClick={closeAll}>
               О проекте

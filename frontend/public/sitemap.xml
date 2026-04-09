@@ -25,6 +25,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://forecasteconomy.com/calendar</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
     <loc>https://forecasteconomy.com/category/prices</loc>
     <lastmod>2026-04-03</lastmod>
     <changefreq>weekly</changefreq>

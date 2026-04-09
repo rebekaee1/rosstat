@@ -1,4 +1,5 @@
 forecasteconomy.com {
+	# Default security headers for all routes
 	header {
 		Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
 		X-Content-Type-Options "nosniff"
@@ -6,6 +7,15 @@ forecasteconomy.com {
 		Referrer-Policy "strict-origin-when-cross-origin"
 		Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://mc.yandex.ru; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://mc.yandex.ru; connect-src 'self' https://mc.yandex.ru;"
 	}
+
+	# Embed widget routes: allow framing from any domain
+	@embed path_regexp embed ^/embed/(chart|card|table|ticker|compare|calculator)(/|$)
+	header @embed X-Frame-Options ""
+	header @embed Content-Security-Policy "frame-ancestors *; default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'"
+
+	# Embed SVG API: CORS for cross-origin <img> usage
+	@embedapi path_regexp embedapi ^/api/v1/embed/
+	header @embedapi Access-Control-Allow-Origin "*"
 
 	reverse_proxy localhost:3000 {
 		header_up X-Real-IP {remote_host}

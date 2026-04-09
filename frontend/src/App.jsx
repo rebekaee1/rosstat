@@ -13,6 +13,14 @@ const About = lazy(() => import('./pages/About'));
 const Privacy = lazy(() => import('./pages/Privacy'));
 const CategoryPage = lazy(() => import('./pages/CategoryPage'));
 const ComparePage = lazy(() => import('./pages/ComparePage'));
+const CalendarPage = lazy(() => import('./pages/CalendarPage'));
+const EmbedBuilder = lazy(() => import('./pages/EmbedBuilder'));
+
+const EmbedChart = lazy(() => import('./embed/EmbedChart'));
+const EmbedCard = lazy(() => import('./embed/EmbedCard'));
+const EmbedTable = lazy(() => import('./embed/EmbedTable'));
+const EmbedTicker = lazy(() => import('./embed/EmbedTicker'));
+const EmbedCompare = lazy(() => import('./embed/EmbedCompare'));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -46,9 +54,31 @@ function NotFound() {
   );
 }
 
-export default function App() {
+const EMBED_RE = /^\/embed\/(chart|card|table|ticker|compare|calculator)/;
+
+function EmbedRoutes() {
   return (
-    <Router>
+    <Suspense fallback={null}>
+      <Routes>
+        <Route path="/embed/chart/:code" element={<EmbedChart />} />
+        <Route path="/embed/card/:code" element={<EmbedCard />} />
+        <Route path="/embed/table/:code" element={<EmbedTable />} />
+        <Route path="/embed/ticker" element={<EmbedTicker />} />
+        <Route path="/embed/compare" element={<EmbedCompare />} />
+      </Routes>
+    </Suspense>
+  );
+}
+
+function AppRoutes() {
+  const location = useLocation();
+
+  if (EMBED_RE.test(location.pathname)) {
+    return <EmbedRoutes />;
+  }
+
+  return (
+    <>
       <ScrollToTop />
       <NoiseOverlay />
       <Navbar />
@@ -65,6 +95,8 @@ export default function App() {
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/category/:slug" element={<CategoryPage />} />
             <Route path="/compare" element={<ComparePage />} />
+            <Route path="/calendar" element={<CalendarPage />} />
+            <Route path="/widgets" element={<EmbedBuilder />} />
             <Route path="/indicator/:code" element={<IndicatorDetailKeyed />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
@@ -72,6 +104,14 @@ export default function App() {
         </ErrorBoundary>
       </main>
       <Footer />
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <Router>
+      <AppRoutes />
     </Router>
   );
 }

@@ -81,6 +81,43 @@ class ForecastValue(Base):
     forecast: Mapped["Forecast"] = relationship(back_populates="values")
 
 
+class EconomicEvent(Base):
+    __tablename__ = "economic_events"
+    __table_args__ = (
+        UniqueConstraint("source", "event_type", "scheduled_date", "indicator_id",
+                         name="uq_event_natural_key"),
+        Index("ix_event_scheduled", "scheduled_date"),
+        Index("ix_event_source", "source"),
+        Index("ix_event_upcoming", "scheduled_date", "importance"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    title: Mapped[str] = mapped_column(String(300), nullable=False)
+    title_en: Mapped[str | None] = mapped_column(String(300))
+    event_type: Mapped[str] = mapped_column(String(30), nullable=False)
+    source: Mapped[str] = mapped_column(String(20), nullable=False)
+    indicator_id: Mapped[int | None] = mapped_column(
+        ForeignKey("indicators.id", ondelete="SET NULL"),
+    )
+    scheduled_date: Mapped[date] = mapped_column(Date, nullable=False)
+    scheduled_time: Mapped[str | None] = mapped_column(String(5))
+    is_estimated: Mapped[bool] = mapped_column(Boolean, default=False)
+    actual_date: Mapped[date | None] = mapped_column(Date)
+    reference_period: Mapped[str | None] = mapped_column(String(80))
+    importance: Mapped[int] = mapped_column(Integer, default=2)
+    previous_value: Mapped[str | None] = mapped_column(String(50))
+    forecast_value: Mapped[str | None] = mapped_column(String(50))
+    actual_value: Mapped[str | None] = mapped_column(String(50))
+    status: Mapped[str] = mapped_column(String(20), default="scheduled")
+    description: Mapped[str | None] = mapped_column(Text)
+    source_url: Mapped[str | None] = mapped_column(String(500))
+    metadata_json: Mapped[dict | None] = mapped_column(JSON)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None), onupdate=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+
+    indicator: Mapped["Indicator | None"] = relationship()
+
+
 class FetchLog(Base):
     __tablename__ = "fetch_log"
 

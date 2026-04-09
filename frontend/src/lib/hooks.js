@@ -7,6 +7,8 @@ import {
   fetchForecast,
   fetchInflation,
   fetchSystemStatus,
+  fetchCalendarEvents,
+  fetchCalendarUpcoming,
 } from './api';
 
 export function useIndicators(options = {}) {
@@ -80,5 +82,25 @@ export function useSystemStatus() {
     gcTime: 5 * 60 * 1000,
     retry: 2,
     retryDelay: 3000,
+  });
+}
+
+export function useCalendarEvents(params = {}, options = {}) {
+  const { enabled = true } = options;
+  return useQuery({
+    queryKey: ['calendar-events', params],
+    queryFn: ({ signal }) => fetchCalendarEvents(params, { signal }),
+    enabled,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+  });
+}
+
+export function useCalendarUpcoming(params = {}) {
+  return useQuery({
+    queryKey: ['calendar-upcoming', params],
+    queryFn: ({ signal }) => fetchCalendarUpcoming(params, { signal }),
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   });
 }

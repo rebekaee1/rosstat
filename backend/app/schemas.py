@@ -100,6 +100,36 @@ class InflationResponse(BaseModel):
     forecast: list[InflationForecastPoint]
 
 
+# ── Calendar Events ──────────────────────────────────────────────────
+
+class CalendarEventOut(BaseModel):
+    id: int
+    title: str
+    title_en: str | None = None
+    event_type: str
+    source: str
+    scheduled_date: date
+    scheduled_time: str | None = None
+    is_estimated: bool = False
+    reference_period: str | None = None
+    importance: int = 2
+    status: str = "scheduled"
+    previous_value: str | None = None
+    forecast_value: str | None = None
+    actual_value: str | None = None
+    description: str | None = None
+    source_url: str | None = None
+    indicator_code: str | None = None
+    indicator_name: str | None = None
+
+    model_config = {"from_attributes": True}
+
+
+class CalendarResponse(BaseModel):
+    events: list[CalendarEventOut]
+    total: int
+
+
 # ── System ───────────────────────────────────────────────────────────
 
 class SystemStatus(BaseModel):

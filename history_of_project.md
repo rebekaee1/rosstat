@@ -747,3 +747,53 @@
   2. `models.py`: `datetime.now(timezone.utc)` → `.replace(tzinfo=None)` для `TIMESTAMP WITHOUT TIME ZONE` колонок
 - **Production verified:** health OK, 80 indicators, frontend HTTP 200, `forecasteconomy.com` live.
 - **Commits:** `53bffdc` (mega-audit), `e7c6871` (seed fix), `7682c3c` (datetime fix).
+
+## 2026-04-09 — Research: Inflation Calculator concept & UI design
+
+- **Задача:** исследовать концепцию калькулятора инфляции для страницы `/calculator`.
+- **Конкуренты проанализированы:** calcus.ru, a2-finance.com, уровне-инфляции.рф, BLS (США). Главная находка: ни один конкурент не имеет realtime-обновления + графика покупательной способности + современного UI.
+- **UI-решения:** вертикальный layout (mobile-first, max-w-3xl), range slider для годов (не dropdown), preset-кнопки (1/5/10 лет, с 2000), GSAP-анимация числа, Area chart покупательной способности (Recharts, champagne gradient).
+- **Математика:** кумулятивная инфляция = Π(CPI_i/100) − 1; покупательная способность = amount / cumProduct; среднегодовая = cumProduct^(1/years) − 1.
+- **API:** новый эндпоинт не нужен — хватит `GET /indicators/cpi/data` (420 точек ~15KB), расчёт на клиенте.
+- **Компонентная структура:** CalculatorPage → InflationCalculator (inputs) + CalculatorResult (animated) + PurchasingPowerChart (Recharts) + FaqAccordion. Хук: `useInflationCalc(amount, fromYear, toYear)`.
+- **SEO:** title/description, JSON-LD WebApplication + FAQPage, 5 FAQ для featured snippets. Целевые запросы: «калькулятор инфляции» ~15k, «покупательная способность рубля» ~5k.
+- **Share:** URL с параметрами `?amount=100000&from=2015&to=2025`, кнопка «Поделиться» → clipboard + toast.
+- **User intent:** глубокое исследование перед реализацией — конкуренты, UI, математика, SEO, компоненты.
+
+## 2026-04-09 — Sparkline research report
+
+- **User intent:** глубокое исследование sparkline-миниграфиков для Dashboard — концепция, UX, техническая реализация, API-оптимизация.
+- **Отчёт:** Recharts (уже в проекте) как рекомендованный рендер (LineChart, isAnimationActive=false, dot=false, type=monotone). Размер 140×32px. Цвет по тренду (positive/negative из дизайн-системы).
+- **API:** рекомендован новый батч-эндпоинт `GET /api/v1/sparklines?codes=...&limit=12` — один запрос вместо 9, Redis-кэш, компактный формат (массив чисел, не объектов).
+- **Flagship mapping:** cpi (Цены), key-rate (Ставки), usd-rub (Финансы), unemployment (Труд), gdp-nominal (ВВП), population (Население), current-account (Торговля), ipi (Бизнес), rd-personnel (Наука).
+- **UX:** skeleton при загрузке, CSS fade-in, без GSAP, без tooltip на sparkline, показывать на mobile. aria-hidden на SVG.
+- **Оценка:** ~3.5ч полная реализация (backend endpoint + frontend component + CategoryBlock + Dashboard + hooks + тесты).
+- **Статус:** отчёт предоставлен, код не менялся, ожидается решение.
+
+## 2026-04-09 — Исследование: Embeddable Widgets
+
+- **Задача:** глубокое исследование концепции встраиваемых виджетов для Forecast Economy.
+- **Конкуренты исследованы:** TradingEconomics (iframe на PNG, платный API), TradingView (Web Components + iframe, industry standard), FRED (iframe + JS для responsive), World Bank (iframe + Share button), Google Finance (deprecated).
+- **3 архитектурных подхода детально разобраны:**
+  - A. iframe (`/embed/:code` → React без Navbar/Footer) — ~250 KB gzip, полная интерактивность, 1-2 дня
+  - B. Lightweight бандл (отдельный Vite entry, Recharts ~80 KB или Chart.ts ~15 KB) — 3-5 дней
+  - C. Серверный SVG/PNG (hand-crafted SVG через Jinja2, 5-20 KB, 0 JS) — 2-3 дня
+- **Каталог виджетов:** полный график, sparkline, карточка (tile), таблица, сравнение, калькулятор инфляции.
+- **Security:** текущий `X-Frame-Options: SAMEORIGIN` и `frame-src: 'none'` в Caddy/nginx блокируют embed — нужны дифференцированные заголовки для `/embed/*` (`frame-ancestors *`).
+- **Рекомендация MVP (4.5 дня):** iframe + SVG sparkline endpoint + embed builder page (`/embed`).
+- **Документ:** [docs/embed_widgets_research.md](docs/embed_widgets_research.md)
+- **Статус:** исследование завершено, код не менялся, ожидается решение по реализации.
+
+## 2026-04-09 — Исследование: Экономический календарь
+
+- **User intent:** глубокое исследование feasibility экономического календаря для Forecast Economy — откуда брать данные, как выглядит UI, стоит ли делать.
+- **Проверены живые источники:**
+  - `cbr.ru/dkp/cal_mp/` — HTML-таблица, 8 заседаний/год, с 2014, парсится легко
+  - `cbr.ru/statistics/indcalendar/` — ~200+ дат публикаций статистики ЦБ (M2, резервы, BOP, ставки)
+  - `minfin.gov.ru/en/policy_issues/macroeconomics/release_calendar/` — IMF SDDS ARC, HTML-таблица, 4 месяца вперёд, покрывает GDP/CPI/PPI/Employment/Wages/Trade
+  - `dsbb.imf.org` — SPA Angular, пустой HTML при fetch, НЕ подходит для автопарсинга
+  - `rosstat.gov.ru` — НЕТ собственного календаря публикаций
+- **Вывод: ДЕЛАТЬ.** Данные реально доступны в машиночитаемом HTML (ЦБ + Минфин). Пустая SEO-ниша в рунете.
+- **Рекомендация:** Фаза A (MVP) — модель EconomicEvent, seed 16 заседаний ЦБ + ~25 ARC-событий, API, фронт /calendar. Фаза B — автопарсеры. Фаза C — actual_value, push, iCal, RSS.
+- **Модель данных:** EconomicEvent (title, event_type, source, indicator_id FK, scheduled_date/time, is_estimated, reference_period, importance 1-3, values, status, recurrence_pattern).
+- **UI:** список событий (не grid), фильтры по источнику/категории/значимости, карточки с привязкой к индикаторам.

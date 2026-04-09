@@ -56,4 +56,25 @@ export const fetchInflation = (code, { signal } = {}) =>
 export const fetchSystemStatus = ({ signal } = {}) =>
   api.get('/system/status', { signal }).then((r) => r.data);
 
+export const fetchCalendarEvents = (params = {}, { signal } = {}) => {
+  const search = new URLSearchParams();
+  if (params.from) search.set('from', params.from);
+  if (params.to) search.set('to', params.to);
+  if (params.source) search.set('source', params.source);
+  if (params.importance) search.set('importance', params.importance);
+  if (params.event_type) search.set('event_type', params.event_type);
+  if (params.limit) search.set('limit', String(params.limit));
+  if (params.offset) search.set('offset', String(params.offset));
+  const q = search.toString();
+  return api.get(`/calendar${q ? `?${q}` : ''}`, { signal }).then((r) => r.data);
+};
+
+export const fetchCalendarUpcoming = (params = {}, { signal } = {}) => {
+  const search = new URLSearchParams();
+  if (params.limit) search.set('limit', String(params.limit));
+  if (params.importance_min) search.set('importance_min', String(params.importance_min));
+  const q = search.toString();
+  return api.get(`/calendar/upcoming${q ? `?${q}` : ''}`, { signal }).then((r) => r.data);
+};
+
 export default api;
