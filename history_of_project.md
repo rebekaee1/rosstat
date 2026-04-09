@@ -132,3 +132,9 @@
 ## 2026-04-09
 
 - **ETL HTTP:** Ручные `requests.Session()` в парсерах заменены на `create_session()` из `app.services.http_client` (ретраи + единый User-Agent). Удалены локальные `session.headers.update(...)`; в `fetcher.py` и `rosstat_sdds_fetcher.py` сохранён `session.verify = settings.rosstat_ca_cert`. В `minfin_budget_parser.py` удалены константа `_SESSION_HEADERS` и неиспользуемый `import requests`; в `cbr_fx_parser.py` убран неиспользуемый `import requests` после перехода на `create_session`. Файлы: `cbr_fx_parser.py`, `cbr_ruonia_parser.py`, `cbr_keyrate.py`, `cbr_monetary_parser.py`, `cbr_dataservice_parser.py`, `minfin_budget_parser.py`, `rosstat_weekly_inflation_parser.py`, `fetcher.py`, `rosstat_sdds_fetcher.py`. `http_client.py` не менялся. Pytest: 39 passed.
+- **Enterprise hardening audit (итерация 2):**
+  - **Fix: RUONIA backfill** — парсер использовал `/hd_base/ruonia/` (возвращает 2 дня), переключен на `/hd_base/ruonia/dynamics/` (полная история). Порционная загрузка по 365 дней. Результат: 3835 точек с 2010-09-01.
+  - **Fix: Scheduler derived spam** — планировщик логировал ERROR для derived-индикаторов (wages-real, gdp-yoy и др.). Добавлен `if indicator.parser_type == "derived": continue`.
+  - **Docker: log rotation** — backend 50MB×5, frontend 20MB×3 (json-file driver).
+  - **Полный аудит данных:** 41 активный индикатор, все с current_value и current_date. API smoke test: 41/41 OK, 0 ошибок. FetchLog: 97 success, 416 no_new_data, 1 failed (транзиентный таймаут CBR 1 апреля).
+  - **Браузер:** все 8 категорий, индикаторы с данными, RUONIA 3835 pts, IPI 134 pts, консоль без JS-ошибок.
