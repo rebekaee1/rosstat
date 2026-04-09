@@ -56,7 +56,7 @@ export const CATEGORIES = [
     icon: 'UserCircle',
     apiCategory: 'Население',
     status: 'active',
-    description: 'Численность, естественный и миграционный прирост населения — данные Росстата с 1990 года.',
+    description: 'Численность, рождаемость, смертность, пенсионеры, трудоспособные — демографические данные Росстата с 1990 года.',
   },
   {
     slug: 'trade',
@@ -74,16 +74,16 @@ export const CATEGORIES = [
     icon: 'Factory',
     apiCategory: 'Бизнес',
     status: 'active',
-    description: 'ИПП, ИЦП, инвестиции в капитал, ПИИ — данные Росстата и Банка России.',
+    description: 'ИПП, розничная торговля, ввод жилья, износ фондов, инвестиции — данные Росстата и Банка России.',
   },
   {
     slug: 'science',
     name: 'Наука и образование',
     nameEn: 'Science & Education',
     icon: 'GraduationCap',
-    apiCategory: null,
-    status: 'planned',
-    description: 'Наука, образование, инновации — в разработке.',
+    apiCategory: 'Наука',
+    status: 'active',
+    description: 'Аспиранты, докторанты, организации НИР, инновационная активность — годовые данные Росстата.',
   },
 ];
 

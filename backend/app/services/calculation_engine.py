@@ -478,6 +478,51 @@ async def _compute_wages_yoy(db: AsyncSession) -> int:
     return await _compute_yoy_generic(db, "wages-nominal", "wages-yoy")
 
 
+async def _compute_qoq_generic(db: AsyncSession, src_code: str, dst_code: str) -> int:
+    """Quarter-over-quarter: (val_q / val_{q-1} - 1) * 100."""
+    src_q = await db.execute(select(Indicator).where(Indicator.code == src_code))
+    src = src_q.scalar_one_or_none()
+    dst_q = await db.execute(select(Indicator).where(Indicator.code == dst_code))
+    dst = dst_q.scalar_one_or_none()
+    if not src or not dst:
+        return 0
+
+    data = (await db.execute(
+        select(IndicatorData).where(IndicatorData.indicator_id == src.id).order_by(IndicatorData.date)
+    )).scalars().all()
+    if len(data) < 2:
+        return 0
+
+    sorted_data = sorted(data, key=lambda r: r.date)
+    points: list[tuple[date, float]] = []
+    for i in range(1, len(sorted_data)):
+        cur = float(sorted_data[i].value)
+        prev = float(sorted_data[i - 1].value)
+        if prev != 0:
+            growth = round((cur / prev - 1) * 100, 2)
+            points.append((sorted_data[i].date, growth))
+
+    added = 0
+    for d, v in points:
+        stmt = pg_insert(IndicatorData).values(
+            indicator_id=dst.id, date=d, value=v
+        ).on_conflict_do_nothing(constraint="uq_indicator_date")
+        result = await db.execute(stmt)
+        if result.rowcount:
+            added += 1
+    if added:
+        await db.flush()
+    return added
+
+
+async def _compute_exports_qoq(db: AsyncSession) -> int:
+    return await _compute_qoq_generic(db, "exports", "exports-qoq")
+
+
+async def _compute_imports_qoq(db: AsyncSession) -> int:
+    return await _compute_qoq_generic(db, "imports", "imports-qoq")
+
+
 calculation_engine.register("inflation-quarterly", ["cpi"], _compute_quarterly_inflation)
 calculation_engine.register("inflation-annual", ["cpi"], _compute_annual_inflation)
 calculation_engine.register("wages-real", ["wages-nominal", "cpi"], _compute_wages_real)
@@ -491,3 +536,5 @@ calculation_engine.register("exports-yoy", ["exports"], _compute_exports_yoy)
 calculation_engine.register("imports-yoy", ["imports"], _compute_imports_yoy)
 calculation_engine.register("ppi-yoy", ["ppi"], _compute_ppi_yoy)
 calculation_engine.register("wages-yoy", ["wages-nominal"], _compute_wages_yoy)
+calculation_engine.register("exports-qoq", ["exports"], _compute_exports_qoq)
+calculation_engine.register("imports-qoq", ["imports"], _compute_imports_qoq)
