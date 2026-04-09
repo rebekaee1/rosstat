@@ -63,3 +63,10 @@ class TestParseGdpXlsx:
         result = parse_gdp_xlsx(content)
         dates = [p.date for p in result]
         assert dates == sorted(dates)
+
+    def test_custom_row_index(self):
+        """Test that row_index parameter selects the right data row."""
+        content = _make_sample_xlsx()
+        result = parse_gdp_xlsx(content, row_index=2)
+        assert len(result) == 3
+        assert result[0].value == 43268.6
