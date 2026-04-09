@@ -737,3 +737,13 @@
 ## 2026-04-09
 
 - Верификация аудит-фиксов по бизнес-логике (read-only): отчёт DONE/MISSING по `calculation_engine`, `forecaster`, `forecast_pipeline`, `data_validator`, `alerting`, `scheduler`, `seed_data`; зафиксировано: несогласованность дефолта `forecast_steps` в `seed_data.generate_forecasts` (0) vs `forecast_pipeline` (`settings.forecast_steps`).
+
+## 2026-04-09 — MEGA-FIX deployed to production
+
+- **80 файлов, +1744/-789 строк.** 145 аудит-правок применены 7 параллельными агентами.
+- **Верификация:** 4 параллельных агента проверили каждый фикс по всем 7 категориям → нашли 5 пробелов → все 5 исправлены.
+- **Deploy issues fixed on server:**
+  1. `seed_data.py`: `model_config_json` (ORM attr) → `model_config` (SQL column) в `on_conflict_do_update`
+  2. `models.py`: `datetime.now(timezone.utc)` → `.replace(tzinfo=None)` для `TIMESTAMP WITHOUT TIME ZONE` колонок
+- **Production verified:** health OK, 80 indicators, frontend HTTP 200, `forecasteconomy.com` live.
+- **Commits:** `53bffdc` (mega-audit), `e7c6871` (seed fix), `7682c3c` (datetime fix).
