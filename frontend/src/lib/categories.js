@@ -29,7 +29,7 @@ export const CATEGORIES = [
     icon: 'Wallet',
     apiCategory: 'Финансы',
     status: 'active',
-    description: 'Курсы валют, денежные агрегаты M0–M2, резервы, внешний долг, кредиты, депозиты, бюджет — данные ЦБ РФ и Минфина.',
+    description: 'Курсы валют, золото, М0–М2, резервы, внешний долг, кредиты, депозиты, доходы/расходы бюджета — данные ЦБ РФ и Минфина.',
   },
   {
     slug: 'labor',
@@ -38,7 +38,7 @@ export const CATEGORIES = [
     icon: 'Briefcase',
     apiCategory: 'Рынок труда',
     status: 'active',
-    description: 'Безработица, зарплаты и занятость по данным Росстата.',
+    description: 'Безработица, зарплаты, рабочая сила, занятость — ежемесячные данные Росстата.',
   },
   {
     slug: 'gdp',
@@ -47,7 +47,7 @@ export const CATEGORIES = [
     icon: 'BarChart3',
     apiCategory: 'ВВП',
     status: 'active',
-    description: 'Валовой внутренний продукт, темпы роста и структура экономики по данным Росстата.',
+    description: 'ВВП, темпы роста, потребление, госрасходы — структура экономики по данным Росстата.',
   },
   {
     slug: 'population',
@@ -65,7 +65,7 @@ export const CATEGORIES = [
     icon: 'Globe',
     apiCategory: 'Торговля',
     status: 'active',
-    description: 'Экспорт, импорт, торговый баланс и текущий счёт — квартальные данные Банка России с 1994 года.',
+    description: 'Экспорт, импорт товаров и услуг, торговый баланс, текущий счёт, ПИИ — квартальные данные Банка России.',
   },
   {
     slug: 'business',
@@ -74,7 +74,7 @@ export const CATEGORIES = [
     icon: 'Factory',
     apiCategory: 'Бизнес',
     status: 'active',
-    description: 'Индекс промышленного производства и ИЦП — ежемесячные данные Росстата и Банка России.',
+    description: 'ИПП, ИЦП, инвестиции в капитал, ПИИ — данные Росстата и Банка России.',
   },
   {
     slug: 'science',

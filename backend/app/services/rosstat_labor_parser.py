@@ -73,7 +73,8 @@ def _parse_header_date(header: str) -> date | None:
 def parse_labor_xlsx(content: bytes) -> dict[str, list[DataPoint]]:
     """Parse SDDS labor market XLSX.
 
-    Returns dict with keys: 'unemployment_rate', 'wages_nominal'.
+    Returns dict with keys: 'unemployment_rate', 'wages_nominal',
+    'labor_force', 'employment'.
     """
     wb = openpyxl.load_workbook(io.BytesIO(content), data_only=True, read_only=True)
     ws = wb.worksheets[0]
@@ -98,22 +99,34 @@ def parse_labor_xlsx(content: bytes) -> dict[str, list[DataPoint]]:
 
     unemployment_rate: list[DataPoint] = []
     wages_nominal: list[DataPoint] = []
+    labor_force: list[DataPoint] = []
+    employment: list[DataPoint] = []
 
     active_row = rows_data[ROW_LABELS["active"] - 1]
+    employed_row = rows_data[ROW_LABELS["employed"] - 1]
     unemployed_row = rows_data[ROW_LABELS["unemployed"] - 1]
     wages_row = rows_data[ROW_LABELS["wages"] - 1]
 
     for col_idx, d in dates:
         active_val = active_row[col_idx] if col_idx < len(active_row) else None
+        employed_val = employed_row[col_idx] if col_idx < len(employed_row) else None
         unemp_val = unemployed_row[col_idx] if col_idx < len(unemployed_row) else None
 
-        if active_val is not None and unemp_val is not None:
+        if active_val is not None:
             try:
                 active_f = float(active_val)
-                unemp_f = float(unemp_val)
-                if active_f > 0:
-                    rate = round(unemp_f / active_f * 100, 2)
-                    unemployment_rate.append(DataPoint(date=d, value=rate))
+                labor_force.append(DataPoint(date=d, value=round(active_f, 2)))
+                if unemp_val is not None:
+                    unemp_f = float(unemp_val)
+                    if active_f > 0:
+                        rate = round(unemp_f / active_f * 100, 2)
+                        unemployment_rate.append(DataPoint(date=d, value=rate))
+            except (ValueError, TypeError):
+                pass
+
+        if employed_val is not None:
+            try:
+                employment.append(DataPoint(date=d, value=round(float(employed_val), 2)))
             except (ValueError, TypeError):
                 pass
 
@@ -127,12 +140,16 @@ def parse_labor_xlsx(content: bytes) -> dict[str, list[DataPoint]]:
     return {
         "unemployment_rate": sorted(unemployment_rate, key=lambda p: p.date),
         "wages_nominal": sorted(wages_nominal, key=lambda p: p.date),
+        "labor_force": sorted(labor_force, key=lambda p: p.date),
+        "employment": sorted(employment, key=lambda p: p.date),
     }
 
 
 INDICATOR_SERIES_MAP: dict[str, str] = {
     "unemployment": "unemployment_rate",
     "wages-nominal": "wages_nominal",
+    "labor-force": "labor_force",
+    "employment": "employment",
 }
 
 

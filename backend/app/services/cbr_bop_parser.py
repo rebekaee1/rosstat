@@ -130,27 +130,63 @@ def parse_bop_xlsx(content: bytes, target: str) -> list[DataPoint]:
         raise ValueError("BOP XLSX: 'Товары' section not found")
 
     data_row_idx = None
-    search_start = goods_section_start
 
-    if target == "exports":
-        for i in range(search_start, min(search_start + 5, len(rows_data))):
-            cell = str(rows_data[i][0] or "").strip()
-            if cell == "Экспорт":
+    if target in ("exports", "imports", "trade-balance"):
+        search_start = goods_section_start
+        if target == "exports":
+            for i in range(search_start, min(search_start + 5, len(rows_data))):
+                cell = str(rows_data[i][0] or "").strip()
+                if cell == "Экспорт":
+                    data_row_idx = i
+                    break
+        elif target == "imports":
+            for i in range(search_start, min(search_start + 5, len(rows_data))):
+                cell = str(rows_data[i][0] or "").strip()
+                if cell == "Импорт":
+                    data_row_idx = i
+                    break
+        elif target == "trade-balance":
+            data_row_idx = goods_section_start
+    elif target in ("services-exports", "services-imports", "services-balance"):
+        services_row = None
+        for i, row in enumerate(rows_data):
+            cell = str(row[0] or "").strip()
+            if cell == "Услуги" and i > (goods_section_start or 0):
+                services_row = i
+                break
+        if services_row is None:
+            raise ValueError("BOP XLSX: 'Услуги' section not found")
+        if target == "services-balance":
+            data_row_idx = services_row
+        elif target == "services-exports":
+            for i in range(services_row, min(services_row + 3, len(rows_data))):
+                cell = str(rows_data[i][0] or "").strip()
+                if cell == "Экспорт":
+                    data_row_idx = i
+                    break
+        elif target == "services-imports":
+            for i in range(services_row, min(services_row + 3, len(rows_data))):
+                cell = str(rows_data[i][0] or "").strip()
+                if cell == "Импорт":
+                    data_row_idx = i
+                    break
+    elif target == "fdi-net":
+        for i, row in enumerate(rows_data):
+            cell = str(row[0] or "").strip()
+            if cell == "Прямые инвестиции" and i > 250:
                 data_row_idx = i
                 break
-    elif target == "imports":
-        for i in range(search_start, min(search_start + 5, len(rows_data))):
-            cell = str(rows_data[i][0] or "").strip()
-            if cell == "Импорт":
+    elif target == "current-account-bop":
+        for i, row in enumerate(rows_data):
+            cell = str(row[0] or "").strip()
+            if cell.startswith("Счет текущих операций"):
                 data_row_idx = i
                 break
-    elif target == "trade-balance":
-        data_row_idx = goods_section_start
     else:
         raise ValueError(f"Unknown BOP target: {target}")
 
     if data_row_idx is None:
-        raise ValueError(f"BOP XLSX: row for '{target}' not found near 'Товары'")
+        raise ValueError(f"BOP XLSX: row for '{target}' not found")
 
     row = rows_data[data_row_idx]
     points: list[DataPoint] = []

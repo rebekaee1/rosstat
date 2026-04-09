@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends
+import time
+
+from fastapi import APIRouter, Depends, Response
 from sqlalchemy import select, func, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -8,10 +10,53 @@ from app.schemas import SystemStatus
 
 router = APIRouter(tags=["system"])
 
+_START_TIME = time.time()
+
 
 @router.get("/health")
 async def health():
     return {"status": "ok"}
+
+
+@router.get("/metrics", include_in_schema=False)
+async def prometheus_metrics(db: AsyncSession = Depends(get_db)):
+    """Prometheus-compatible metrics endpoint."""
+    ind_count = (await db.execute(select(func.count(Indicator.id)))).scalar() or 0
+    active_count = (await db.execute(
+        select(func.count(Indicator.id)).where(Indicator.is_active.is_(True))
+    )).scalar() or 0
+    data_count = (await db.execute(select(func.count(IndicatorData.id)))).scalar() or 0
+
+    fetch_success = (await db.execute(
+        select(func.count(FetchLog.id)).where(FetchLog.status == "success")
+    )).scalar() or 0
+    fetch_failed = (await db.execute(
+        select(func.count(FetchLog.id)).where(FetchLog.status == "failed")
+    )).scalar() or 0
+
+    uptime = time.time() - _START_TIME
+
+    lines = [
+        "# HELP fe_indicators_total Total number of indicators",
+        "# TYPE fe_indicators_total gauge",
+        f"fe_indicators_total {ind_count}",
+        "# HELP fe_indicators_active Active indicators",
+        "# TYPE fe_indicators_active gauge",
+        f"fe_indicators_active {active_count}",
+        "# HELP fe_data_points_total Total data points stored",
+        "# TYPE fe_data_points_total gauge",
+        f"fe_data_points_total {data_count}",
+        "# HELP fe_etl_success_total Successful ETL runs",
+        "# TYPE fe_etl_success_total counter",
+        f"fe_etl_success_total {fetch_success}",
+        "# HELP fe_etl_failed_total Failed ETL runs",
+        "# TYPE fe_etl_failed_total counter",
+        f"fe_etl_failed_total {fetch_failed}",
+        "# HELP fe_uptime_seconds Backend uptime in seconds",
+        "# TYPE fe_uptime_seconds gauge",
+        f"fe_uptime_seconds {uptime:.0f}",
+    ]
+    return Response(content="\n".join(lines) + "\n", media_type="text/plain")
 
 
 @router.get("/system/status", response_model=SystemStatus)

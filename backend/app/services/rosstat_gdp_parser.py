@@ -2,13 +2,21 @@
 
 Файл: SDDS national accounts_{year}.xlsx
 Лист: "National Accounts"
-Строки:
+Строки (0-indexed in code, 1-indexed in XLSX):
   Row 1: заголовки кварталов (Qn-YYYY или Qn-YYYY**)
   Row 3: GDP in current prices (billion rubles)
-  Rows 4-14: компоненты ВВП
+  Row 4: Final consumption
+  Row 5: Household consumption expenditure
+  Row 6: Government consumption expenditure
+  Row 9: Gross fixed capital formation
+  Row 12: Exports of goods and services
+  Row 13: Imports of goods and services
 
 Индикаторы:
-  gdp-nominal — row 3 (прямое значение, млрд руб.)
+  gdp-nominal        — row 3 (gdp_row_index=2)
+  gdp-consumption    — row 5 (gdp_row_index=4)
+  gdp-government     — row 6 (gdp_row_index=5)
+  gdp-investment     — row 9 (gdp_row_index=8)
 """
 
 from __future__ import annotations
@@ -60,8 +68,12 @@ def _parse_quarter_header(header: str) -> date | None:
     return None
 
 
-def parse_gdp_xlsx(content: bytes) -> list[DataPoint]:
-    """Parse SDDS national accounts XLSX → list of GDP data points."""
+def parse_gdp_xlsx(content: bytes, row_index: int = 2) -> list[DataPoint]:
+    """Parse SDDS national accounts XLSX → list of data points.
+
+    row_index: 0-based index of the data row to extract.
+    Default 2 = Row 3 (GDP nominal).
+    """
     wb = openpyxl.load_workbook(io.BytesIO(content), data_only=True, read_only=True)
     ws = wb.worksheets[0]
 
@@ -70,8 +82,8 @@ def parse_gdp_xlsx(content: bytes) -> list[DataPoint]:
         rows_data.append(list(row))
     wb.close()
 
-    if len(rows_data) < 3:
-        raise ValueError(f"GDP XLSX: expected >=3 rows, got {len(rows_data)}")
+    if len(rows_data) <= row_index:
+        raise ValueError(f"GDP XLSX: expected >={row_index + 1} rows, got {len(rows_data)}")
 
     dates: list[tuple[int, date]] = []
     for col_idx in range(2, len(rows_data[0])):
@@ -83,11 +95,11 @@ def parse_gdp_xlsx(content: bytes) -> list[DataPoint]:
     if not dates:
         raise ValueError("GDP XLSX: no valid quarter headers found")
 
-    gdp_row = rows_data[2]
+    data_row = rows_data[row_index]
     points: list[DataPoint] = []
 
     for col_idx, d in dates:
-        val = gdp_row[col_idx] if col_idx < len(gdp_row) else None
+        val = data_row[col_idx] if col_idx < len(data_row) else None
         if val is not None:
             try:
                 points.append(DataPoint(date=d, value=round(float(val), 1)))
@@ -107,9 +119,10 @@ class RosstatGdpParser(BaseParser):
             content, final_url = await asyncio.to_thread(fetch_sdds_xlsx, "gdp")
             fetch_log.source_url = final_url[:500]
 
-            points = await asyncio.to_thread(parse_gdp_xlsx, content)
-
             cfg = indicator.model_config_json or {}
+            row_index = int(cfg.get("gdp_row_index", 2))
+            points = await asyncio.to_thread(parse_gdp_xlsx, content, row_index)
+
             points = validate_points(points, cfg)
 
             if not points:

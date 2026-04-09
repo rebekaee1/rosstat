@@ -1121,6 +1121,249 @@ INDICATORS = [
         "is_active": True,
         "category": "Цены",
     },
+    # ─── Компоненты ВВП (Росстат SDDS National Accounts) ───
+    {
+        "code": "gdp-consumption",
+        "name": "Расходы домохозяйств",
+        "name_en": "Household Consumption",
+        "unit": "млрд руб.",
+        "frequency": "quarterly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/accounts",
+        "description": (
+            "Расходы на конечное потребление домашних хозяйств в текущих ценах. "
+            "Компонент ВВП по расходному методу. Квартальные данные."
+        ),
+        "parser_type": "rosstat_sdds_gdp",
+        "model_config_json": {
+            "gdp_row_index": 4,
+            "forecast_steps": 0,
+            "validation": {"min": 0},
+        },
+        "is_active": True,
+        "category": "ВВП",
+    },
+    {
+        "code": "gdp-government",
+        "name": "Государственное потребление",
+        "name_en": "Government Consumption",
+        "unit": "млрд руб.",
+        "frequency": "quarterly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/accounts",
+        "description": (
+            "Расходы на конечное потребление государственного управления в текущих ценах. "
+            "Компонент ВВП по расходному методу."
+        ),
+        "parser_type": "rosstat_sdds_gdp",
+        "model_config_json": {
+            "gdp_row_index": 5,
+            "forecast_steps": 0,
+            "validation": {"min": 0},
+        },
+        "is_active": True,
+        "category": "ВВП",
+    },
+    {
+        "code": "gdp-investment",
+        "name": "Инвестиции в основной капитал",
+        "name_en": "Gross Fixed Capital Formation",
+        "unit": "млрд руб.",
+        "frequency": "quarterly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/accounts",
+        "description": (
+            "Валовое накопление основного капитала в текущих ценах. "
+            "Включает строительство, оборудование, транспорт. Квартальные данные."
+        ),
+        "parser_type": "rosstat_sdds_gdp",
+        "model_config_json": {
+            "gdp_row_index": 8,
+            "forecast_steps": 0,
+            "validation": {"min": 0},
+        },
+        "is_active": True,
+        "category": "Бизнес",
+    },
+    # ─── Рынок труда: рабочая сила и занятость ───
+    {
+        "code": "labor-force",
+        "name": "Рабочая сила",
+        "name_en": "Labor Force",
+        "unit": "млн чел.",
+        "frequency": "monthly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/labor_market_employment_salaries",
+        "description": (
+            "Численность экономически активного населения (рабочая сила). "
+            "Данные обследования рабочей силы Росстата."
+        ),
+        "parser_type": "rosstat_sdds_labor",
+        "model_config_json": {
+            "forecast_steps": 0,
+            "validation": {"min": 50, "max": 100},
+        },
+        "is_active": True,
+        "category": "Рынок труда",
+    },
+    {
+        "code": "employment",
+        "name": "Занятое население",
+        "name_en": "Employment",
+        "unit": "млн чел.",
+        "frequency": "monthly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/labor_market_employment_salaries",
+        "description": (
+            "Численность занятого населения по данным обследования рабочей силы Росстата."
+        ),
+        "parser_type": "rosstat_sdds_labor",
+        "model_config_json": {
+            "forecast_steps": 0,
+            "validation": {"min": 50, "max": 100},
+        },
+        "is_active": True,
+        "category": "Рынок труда",
+    },
+    {
+        "code": "wages-yoy",
+        "name": "Зарплаты (изм. г/г)",
+        "name_en": "Wages YoY Change",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Расчёт",
+        "description": "Изменение средней номинальной зарплаты к аналогичному месяцу предыдущего года.",
+        "parser_type": "derived",
+        "model_config_json": {"forecast_steps": 0},
+        "is_active": True,
+        "category": "Рынок труда",
+    },
+    # ─── Бюджет: доходы и расходы (Минфин CSV) ───
+    {
+        "code": "budget-revenue",
+        "name": "Доходы бюджета",
+        "name_en": "Federal Budget Revenue",
+        "unit": "млрд руб.",
+        "frequency": "monthly",
+        "source": "Минфин",
+        "source_url": "https://minfin.gov.ru/ru/statistics/fedbud/execute/",
+        "description": (
+            "Доходы федерального бюджета помесячно. "
+            "Рассчитываются из нарастающего итога открытых данных Минфина."
+        ),
+        "parser_type": "minfin_budget_csv",
+        "model_config_json": {
+            "budget_target": "revenue",
+            "forecast_steps": 6,
+            "forecast_transform": "absolute",
+        },
+        "is_active": True,
+        "category": "Финансы",
+    },
+    {
+        "code": "budget-expenditure",
+        "name": "Расходы бюджета",
+        "name_en": "Federal Budget Expenditure",
+        "unit": "млрд руб.",
+        "frequency": "monthly",
+        "source": "Минфин",
+        "source_url": "https://minfin.gov.ru/ru/statistics/fedbud/execute/",
+        "description": (
+            "Расходы федерального бюджета помесячно. "
+            "Рассчитываются из нарастающего итога открытых данных Минфина."
+        ),
+        "parser_type": "minfin_budget_csv",
+        "model_config_json": {
+            "budget_target": "expenditure",
+            "forecast_steps": 6,
+            "forecast_transform": "absolute",
+        },
+        "is_active": True,
+        "category": "Финансы",
+    },
+    # ─── Услуги BOP (ЦБ BOP XLSX) ───
+    {
+        "code": "services-exports",
+        "name": "Экспорт услуг",
+        "name_en": "Services Exports",
+        "unit": "млн $",
+        "frequency": "quarterly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/macro_itm/svs/",
+        "description": (
+            "Экспорт услуг из России по методологии платёжного баланса. "
+            "Квартальные данные в млн долларов."
+        ),
+        "parser_type": "cbr_bop_xlsx",
+        "model_config_json": {
+            "bop_target": "services-exports",
+            "forecast_steps": 0,
+        },
+        "is_active": True,
+        "category": "Торговля",
+    },
+    {
+        "code": "services-imports",
+        "name": "Импорт услуг",
+        "name_en": "Services Imports",
+        "unit": "млн $",
+        "frequency": "quarterly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/macro_itm/svs/",
+        "description": (
+            "Импорт услуг в Россию по методологии платёжного баланса. "
+            "Квартальные данные в млн долларов."
+        ),
+        "parser_type": "cbr_bop_xlsx",
+        "model_config_json": {
+            "bop_target": "services-imports",
+            "forecast_steps": 0,
+        },
+        "is_active": True,
+        "category": "Торговля",
+    },
+    {
+        "code": "fdi-net",
+        "name": "Прямые иностранные инвестиции (нетто)",
+        "name_en": "Foreign Direct Investment Net",
+        "unit": "млн $",
+        "frequency": "quarterly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/macro_itm/svs/",
+        "description": (
+            "Чистый приток прямых иностранных инвестиций по финансовому счёту. "
+            "Квартальные данные платёжного баланса ЦБ."
+        ),
+        "parser_type": "cbr_bop_xlsx",
+        "model_config_json": {
+            "bop_target": "fdi-net",
+            "forecast_steps": 0,
+        },
+        "is_active": True,
+        "category": "Бизнес",
+    },
+    # ─── Цена золота (ЦБ учётные цены) ───
+    {
+        "code": "gold-price",
+        "name": "Цена золота (ЦБ)",
+        "name_en": "Gold Price (CBR)",
+        "unit": "руб./г",
+        "frequency": "daily",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/hd_base/metall/metall_base_new/",
+        "description": (
+            "Учётная цена на золото, устанавливаемая Банком России. "
+            "Ежедневные данные в рублях за грамм."
+        ),
+        "parser_type": "cbr_gold_html",
+        "model_config_json": {
+            "metal": "gold",
+            "forecast_steps": 0,
+            "validation": {"min": 100},
+        },
+        "is_active": True,
+        "category": "Финансы",
+    },
 ]
 
 

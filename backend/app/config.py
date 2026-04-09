@@ -32,6 +32,10 @@ class Settings(BaseSettings):
     scheduler_cron_hour: int = 6
     scheduler_cron_minute: int = 0
 
+    # Alerting
+    telegram_bot_token: str = ""
+    telegram_chat_id: str = ""
+
     # Forecast defaults
     forecast_steps: int = 12
 

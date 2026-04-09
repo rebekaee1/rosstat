@@ -474,6 +474,10 @@ async def _compute_ppi_yoy(db: AsyncSession) -> int:
     return await _compute_yoy_generic(db, "ppi", "ppi-yoy")
 
 
+async def _compute_wages_yoy(db: AsyncSession) -> int:
+    return await _compute_yoy_generic(db, "wages-nominal", "wages-yoy")
+
+
 calculation_engine.register("inflation-quarterly", ["cpi"], _compute_quarterly_inflation)
 calculation_engine.register("inflation-annual", ["cpi"], _compute_annual_inflation)
 calculation_engine.register("wages-real", ["wages-nominal", "cpi"], _compute_wages_real)
@@ -486,3 +490,4 @@ calculation_engine.register("ipi-yoy", ["ipi"], _compute_ipi_yoy)
 calculation_engine.register("exports-yoy", ["exports"], _compute_exports_yoy)
 calculation_engine.register("imports-yoy", ["imports"], _compute_imports_yoy)
 calculation_engine.register("ppi-yoy", ["ppi"], _compute_ppi_yoy)
+calculation_engine.register("wages-yoy", ["wages-nominal"], _compute_wages_yoy)

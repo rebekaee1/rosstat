@@ -108,6 +108,7 @@ from app.services.rosstat_ppi_parser import RosstatPpiParser
 from app.services.cbr_bop_parser import CbrBopParser
 from app.services.cbr_reserves_parser import CbrReservesParser
 from app.services.cbr_debt_parser import CbrDebtParser
+from app.services.cbr_gold_parser import CbrGoldParser
 
 PARSER_REGISTRY: dict[str, type[BaseParser]] = {
     RosstatCpiParser.parser_type: RosstatCpiParser,
@@ -128,6 +129,7 @@ PARSER_REGISTRY: dict[str, type[BaseParser]] = {
     CbrBopParser.parser_type: CbrBopParser,
     CbrReservesParser.parser_type: CbrReservesParser,
     CbrDebtParser.parser_type: CbrDebtParser,
+    CbrGoldParser.parser_type: CbrGoldParser,
 }
 
 

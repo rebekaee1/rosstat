@@ -138,3 +138,10 @@
   - **Docker: log rotation** — backend 50MB×5, frontend 20MB×3 (json-file driver).
   - **Полный аудит данных:** 41 активный индикатор, все с current_value и current_date. API smoke test: 41/41 OK, 0 ошибок. FetchLog: 97 success, 416 no_new_data, 1 failed (транзиентный таймаут CBR 1 апреля).
   - **Браузер:** все 8 категорий, индикаторы с данными, RUONIA 3835 pts, IPI 134 pts, консоль без JS-ошибок.
+
+## 2026-04-09 (Аудит доступных данных ЦБ)
+
+- **Полный аудит cbr.ru** на предмет неиспользуемых источников данных.
+- Проверены: 24 эндпоинта `/hd_base/`, страницы `/statistics/`, DataService API (pub 1-25 × ds 1-50), xlsx-файлы внешнего сектора.
+- **Уже используем:** KeyRate, RUONIA, FX XML, mb_nd_month, DataService (pub=5 ds=5/6/7/8, pub=8 ds=9, pub=14 ds=28/29, pub=18 ds=37, pub=20 ds=42, pub=22 ds=50).
+- **Найдены новые источники — подробный отчёт в чате.**

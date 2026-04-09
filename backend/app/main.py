@@ -1,20 +1,64 @@
+import json
 import logging
+import time
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 
 from app.api.router import api_router
 from app.config import settings
-from app.core.cache import close_redis
+from app.core.cache import close_redis, get_redis
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-)
+class JsonFormatter(logging.Formatter):
+    def format(self, record):
+        log_obj = {
+            "ts": self.formatTime(record),
+            "level": record.levelname,
+            "logger": record.name,
+            "msg": record.getMessage(),
+        }
+        if record.exc_info and record.exc_info[1]:
+            log_obj["exc"] = self.formatException(record.exc_info)
+        return json.dumps(log_obj, ensure_ascii=False)
+
+
+_handler = logging.StreamHandler()
+_handler.setFormatter(JsonFormatter())
+logging.basicConfig(level=logging.INFO, handlers=[_handler])
 logger = logging.getLogger(__name__)
+
+
+class RateLimitMiddleware(BaseHTTPMiddleware):
+    """Simple Redis-based rate limiter: 120 req/min per IP for /api/ endpoints."""
+
+    LIMIT = 120
+    WINDOW = 60
+
+    async def dispatch(self, request: Request, call_next):
+        if not request.url.path.startswith("/api/"):
+            return await call_next(request)
+
+        ip = request.client.host if request.client else "unknown"
+        key = f"rl:{ip}"
+        try:
+            redis = await get_redis()
+            count = await redis.incr(key)
+            if count == 1:
+                await redis.expire(key, self.WINDOW)
+            if count > self.LIMIT:
+                return Response(
+                    content=json.dumps({"detail": "Rate limit exceeded"}),
+                    status_code=429,
+                    media_type="application/json",
+                    headers={"Retry-After": str(self.WINDOW)},
+                )
+        except Exception:
+            pass
+        return await call_next(request)
 
 scheduler = AsyncIOScheduler()
 
@@ -63,6 +107,7 @@ app = FastAPI(
     openapi_url="/api/openapi.json" if settings.debug else None,
 )
 
+app.add_middleware(RateLimitMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
