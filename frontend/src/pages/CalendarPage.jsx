@@ -1,23 +1,24 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { ChevronRight, Download } from 'lucide-react';
+import { ChevronRight, Download, X } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import { useCalendarEvents, useCalendarUpcoming } from '../lib/hooks';
 import { cn } from '../lib/format';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
 import CalendarHero from '../components/calendar/CalendarHero';
-import CalendarFilters from '../components/calendar/CalendarFilters';
+import CalendarGrid from '../components/calendar/CalendarGrid';
 import CalendarEventCard from '../components/calendar/CalendarEventCard';
 import { SkeletonBox } from '../components/Skeleton';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 
-const WEEKDAYS_RU = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
 const MONTHS_GENITIVE = [
   'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
   'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря',
 ];
 
-function formatDayHeader(dateStr) {
+const WEEKDAYS_RU = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
+
+function formatDayLabel(dateStr) {
   const d = new Date(dateStr + 'T12:00:00');
   const today = new Date();
   today.setHours(12, 0, 0, 0);
@@ -26,44 +27,31 @@ function formatDayHeader(dateStr) {
   const eventDate = new Date(d);
   eventDate.setHours(12, 0, 0, 0);
 
-  const day = d.getUTCDate();
-  const month = MONTHS_GENITIVE[d.getUTCMonth()];
-  const year = d.getUTCFullYear();
+  const day = d.getDate();
+  const month = MONTHS_GENITIVE[d.getMonth()];
+  const year = d.getFullYear();
   const weekday = WEEKDAYS_RU[d.getDay()];
-  const capitalized = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+  const cap = weekday.charAt(0).toUpperCase() + weekday.slice(1);
 
-  if (eventDate.getTime() === today.getTime()) {
-    return { label: `Сегодня, ${day} ${month}`, isToday: true };
-  }
-  if (eventDate.getTime() === tomorrow.getTime()) {
-    return { label: `Завтра, ${day} ${month}`, isToday: false };
-  }
-  return { label: `${capitalized}, ${day} ${month} ${year}`, isToday: false };
+  if (eventDate.getTime() === today.getTime()) return `Сегодня, ${day} ${month}`;
+  if (eventDate.getTime() === tomorrow.getTime()) return `Завтра, ${day} ${month}`;
+  return `${cap}, ${day} ${month} ${year}`;
 }
 
-function periodToDates(period) {
-  const now = new Date();
-  const from = new Date(now);
-  from.setDate(from.getDate() - 7);
-  const to = new Date(now);
-  if (period === 'week') to.setDate(to.getDate() + 7);
-  else if (period === 'quarter') to.setDate(to.getDate() + 90);
-  else to.setDate(to.getDate() + 30);
-  const fmt = (d) => d.toISOString().slice(0, 10);
-  return { from: fmt(from), to: fmt(to) };
+function monthRange(year, month) {
+  const from = `${year}-${String(month + 1).padStart(2, '0')}-01`;
+  const lastDay = new Date(year, month + 1, 0).getDate();
+  const to = `${year}-${String(month + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+  return { from, to };
 }
 
 function CalendarSkeleton() {
   return (
-    <div className="space-y-6">
-      {[1, 2, 3].map((g) => (
-        <div key={g}>
-          <SkeletonBox className="h-5 w-48 mb-4" />
-          <div className="space-y-3">
-            {[1, 2].map((i) => <SkeletonBox key={i} className="h-28 w-full rounded-2xl" />)}
-          </div>
-        </div>
-      ))}
+    <div className="space-y-4">
+      <SkeletonBox className="h-[22rem] w-full rounded-2xl" />
+      <div className="space-y-3">
+        {[1, 2, 3].map((i) => <SkeletonBox key={i} className="h-24 w-full rounded-2xl" />)}
+      </div>
     </div>
   );
 }
@@ -85,9 +73,18 @@ const FAQ_ITEMS = [
 
 export default function CalendarPage() {
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const now = new Date();
+  const [year, setYear] = useState(() => {
+    const p = parseInt(searchParams.get('y'), 10);
+    return isNaN(p) ? now.getFullYear() : p;
+  });
+  const [month, setMonth] = useState(() => {
+    const p = parseInt(searchParams.get('m'), 10);
+    return isNaN(p) ? now.getMonth() : Math.max(0, Math.min(11, p));
+  });
   const [source, setSource] = useState(searchParams.get('source') || '');
-  const [importance, setImportance] = useState(searchParams.get('importance') || '');
-  const [period, setPeriod] = useState(searchParams.get('period') || 'month');
+  const [selectedDate, setSelectedDate] = useState(null);
 
   useDocumentMeta({
     title: 'Экономический календарь России 2026 — даты ЦБ, Росстата, Минфина',
@@ -97,33 +94,60 @@ export default function CalendarPage() {
     path: '/calendar',
   });
 
-  const updateParam = (key, value, setter) => {
-    setter(value);
+  const syncParams = useCallback((y, m, src) => {
     const next = new URLSearchParams(searchParams);
-    if (value) next.set(key, value);
-    else next.delete(key);
+    const isCurrentMonth = y === now.getFullYear() && m === now.getMonth();
+    if (isCurrentMonth) { next.delete('y'); next.delete('m'); }
+    else { next.set('y', String(y)); next.set('m', String(m)); }
+    if (src) next.set('source', src); else next.delete('source');
     setSearchParams(next, { replace: true });
-  };
+  }, [searchParams, setSearchParams, now]);
 
-  const dates = useMemo(() => periodToDates(period), [period]);
+  const goMonth = useCallback((delta) => {
+    let newMonth = month + delta;
+    let newYear = year;
+    if (newMonth > 11) { newMonth = 0; newYear++; }
+    else if (newMonth < 0) { newMonth = 11; newYear--; }
+    setMonth(newMonth);
+    setYear(newYear);
+    setSelectedDate(null);
+    syncParams(newYear, newMonth, source);
+  }, [month, year, source, syncParams]);
+
+  const handleSourceChange = useCallback((v) => {
+    setSource(v);
+    syncParams(year, month, v);
+  }, [year, month, syncParams]);
+
+  const handleSelectDate = useCallback((d) => {
+    setSelectedDate(d);
+  }, []);
+
+  const dates = useMemo(() => monthRange(year, month), [year, month]);
 
   const apiParams = useMemo(() => ({
     from: dates.from,
     to: dates.to,
     source: source || undefined,
-    importance: importance || undefined,
-    limit: 300,
-  }), [dates, source, importance]);
+    limit: 500,
+  }), [dates, source]);
 
   const { data, isLoading, isError, refetch, isFetching } = useCalendarEvents(apiParams);
   const { data: upcomingData } = useCalendarUpcoming({ limit: 1, importance_min: 3 });
-
   const nextImportant = upcomingData?.events?.[0] || null;
 
+  const allEvents = data?.events || [];
+
+  const todayStr = now.toISOString().slice(0, 10);
+
+  const visibleEvents = useMemo(() => {
+    if (!selectedDate) return allEvents;
+    return allEvents.filter((e) => e.scheduled_date === selectedDate);
+  }, [allEvents, selectedDate]);
+
   const grouped = useMemo(() => {
-    if (!data?.events) return [];
     const map = new Map();
-    for (const ev of data.events) {
+    for (const ev of visibleEvents) {
       const key = ev.scheduled_date;
       if (!map.has(key)) map.set(key, []);
       map.get(key).push(ev);
@@ -134,21 +158,15 @@ export default function CalendarPage() {
         if (a.importance !== b.importance) return b.importance - a.importance;
         return (a.scheduled_time || '').localeCompare(b.scheduled_time || '');
       }),
-      ...formatDayHeader(dateStr),
+      label: formatDayLabel(dateStr),
+      isToday: dateStr === todayStr,
     }));
-  }, [data]);
-
-  const todayStr = new Date().toISOString().slice(0, 10);
+  }, [visibleEvents, todayStr]);
 
   return (
     <div className="max-w-4xl mx-auto px-4 md:px-8 pt-20 pb-24">
-      <nav
-        className="flex items-center gap-2 text-sm text-text-tertiary mb-6"
-        aria-label="Хлебные крошки"
-      >
-        <Link to="/" className="hover:text-champagne transition-colors rounded-sm">
-          Главная
-        </Link>
+      <nav className="flex items-center gap-2 text-sm text-text-tertiary mb-6" aria-label="Хлебные крошки">
+        <Link to="/" className="hover:text-champagne transition-colors rounded-sm">Главная</Link>
         <ChevronRight className="w-4 h-4 shrink-0 opacity-60" />
         <span className="text-text-primary font-medium">Календарь</span>
       </nav>
@@ -165,15 +183,6 @@ export default function CalendarPage() {
 
       <CalendarHero nextEvent={nextImportant} />
 
-      <CalendarFilters
-        source={source}
-        onSourceChange={(v) => updateParam('source', v, setSource)}
-        importance={importance}
-        onImportanceChange={(v) => updateParam('importance', v, setImportance)}
-        period={period}
-        onPeriodChange={(v) => updateParam('period', v, setPeriod)}
-      />
-
       {isError && (
         <ApiRetryBanner className="mb-6" onRetry={() => refetch()} isFetching={isFetching}>
           <span className="font-semibold">Календарь временно недоступен.</span>{' '}
@@ -183,54 +192,86 @@ export default function CalendarPage() {
 
       {isLoading ? (
         <CalendarSkeleton />
-      ) : grouped.length === 0 ? (
-        <div className="text-center py-16">
-          <p className="text-text-secondary text-lg mb-2">Нет событий в выбранном периоде</p>
-          <p className="text-text-tertiary text-sm">Попробуйте расширить диапазон или сбросить фильтры</p>
-        </div>
       ) : (
-        <div className="relative">
-          <div className="absolute left-3 md:left-4 top-0 bottom-0 w-px bg-gradient-to-b from-champagne/30 via-border-subtle to-transparent pointer-events-none" />
+        <>
+          <CalendarGrid
+            year={year}
+            month={month}
+            onPrev={() => goMonth(-1)}
+            onNext={() => goMonth(1)}
+            events={allEvents}
+            selectedDate={selectedDate}
+            onSelectDate={handleSelectDate}
+            source={source}
+            onSourceChange={handleSourceChange}
+          />
 
-          <div className="space-y-8">
-            {grouped.map((group) => {
-              const isPast = group.dateStr < todayStr;
-              return (
-                <section key={group.dateStr}>
-                  <div className="relative flex items-center gap-3 mb-4">
-                    <div className={cn(
-                      'w-2.5 h-2.5 rounded-full shrink-0 ring-4 ring-obsidian z-10',
-                      group.isToday ? 'bg-champagne' : isPast ? 'bg-slate-dark' : 'bg-border-subtle',
-                    )} />
-                    <h2 className={cn(
-                      'text-sm font-semibold uppercase tracking-wider',
-                      group.isToday ? 'text-champagne' : 'text-text-secondary',
-                    )}>
-                      {group.label}
-                    </h2>
-                    {group.isToday && (
-                      <span className="px-2 py-0.5 rounded-full bg-champagne/10 text-champagne text-[10px] font-bold uppercase tracking-wider">
-                        Сегодня
-                      </span>
+          {selectedDate && (
+            <div className="flex items-center gap-2 mb-4">
+              <h2 className="text-sm font-semibold text-text-primary">
+                {formatDayLabel(selectedDate)}
+              </h2>
+              <button
+                type="button"
+                onClick={() => setSelectedDate(null)}
+                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs text-text-tertiary hover:text-text-primary hover:bg-surface-hover transition-colors"
+              >
+                <X className="w-3 h-3" />
+                Показать весь месяц
+              </button>
+            </div>
+          )}
+
+          {grouped.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-text-secondary text-lg mb-2">
+                {selectedDate ? 'Нет событий в этот день' : 'Нет событий в этом месяце'}
+              </p>
+              <p className="text-text-tertiary text-sm">
+                {selectedDate
+                  ? 'Выберите другую дату или покажите весь месяц'
+                  : 'Попробуйте другой месяц или сбросьте фильтр источника'}
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {grouped.map((group) => {
+                const isPast = group.dateStr < todayStr;
+                return (
+                  <section key={group.dateStr}>
+                    {!selectedDate && (
+                      <h3 className={cn(
+                        'text-xs font-semibold uppercase tracking-wider mb-3 flex items-center gap-2',
+                        group.isToday ? 'text-champagne' : 'text-text-tertiary',
+                      )}>
+                        {group.label}
+                        {group.isToday && (
+                          <span className="px-1.5 py-px rounded bg-champagne/10 text-champagne text-[10px] font-bold">
+                            Сегодня
+                          </span>
+                        )}
+                        <span className="text-text-tertiary font-normal">
+                          — {group.events.length} {group.events.length === 1 ? 'событие' : group.events.length < 5 ? 'события' : 'событий'}
+                        </span>
+                      </h3>
                     )}
-                  </div>
-
-                  <div className="ml-6 md:ml-8 space-y-3">
-                    {group.events.map((ev, i) => (
-                      <CalendarEventCard
-                        key={ev.id}
-                        event={ev}
-                        isPast={isPast}
-                        isToday={group.isToday}
-                        index={i}
-                      />
-                    ))}
-                  </div>
-                </section>
-              );
-            })}
-          </div>
-        </div>
+                    <div className="space-y-2.5">
+                      {group.events.map((ev, i) => (
+                        <CalendarEventCard
+                          key={ev.id}
+                          event={ev}
+                          isPast={isPast}
+                          isToday={group.isToday}
+                          index={i}
+                        />
+                      ))}
+                    </div>
+                  </section>
+                );
+              })}
+            </div>
+          )}
+        </>
       )}
 
       {data?.total > 0 && (

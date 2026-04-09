@@ -9,7 +9,6 @@ import {
   fetchSystemStatus,
   fetchCalendarEvents,
   fetchCalendarUpcoming,
-  fetchDashboardSparklines,
 } from './api';
 
 export function useIndicators(options = {}) {
@@ -86,23 +85,12 @@ export function useSystemStatus() {
   });
 }
 
-export function useCalendarEvents(params = {}, options = {}) {
-  const { enabled = true } = options;
+export function useCalendarEvents(params = {}) {
   return useQuery({
     queryKey: ['calendar-events', params],
     queryFn: ({ signal }) => fetchCalendarEvents(params, { signal }),
-    enabled,
     staleTime: 5 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
-  });
-}
-
-export function useDashboardSparklines() {
-  return useQuery({
-    queryKey: ['dashboard-sparklines'],
-    queryFn: ({ signal }) => fetchDashboardSparklines({ signal }),
-    staleTime: 30 * 60 * 1000,
-    gcTime: 60 * 60 * 1000,
   });
 }
 
@@ -110,7 +98,7 @@ export function useCalendarUpcoming(params = {}) {
   return useQuery({
     queryKey: ['calendar-upcoming', params],
     queryFn: ({ signal }) => fetchCalendarUpcoming(params, { signal }),
-    staleTime: 5 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
+    staleTime: 2 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 }
