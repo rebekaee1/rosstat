@@ -305,22 +305,22 @@ async def card_svg(
 async def badge_svg(
     code: str,
     theme: str = Query("light"),
+    period: str = Query("1y"),
     db: AsyncSession = Depends(get_db),
 ):
     """shields.io-compatible badge: ``label | value  ▲change``."""
     _validate_code(code)
-    ck = f"fe:embed:badge:{code}:{theme}"
+    ck = f"fe:embed:badge:{code}:{theme}:{period}"
     cached = await cache_get(ck)
     if cached:
         return _svg_response(cached)
 
-    q = await db.execute(select(Indicator).where(Indicator.code == code))
-    ind = q.scalar_one_or_none()
+    ind, rows = await _fetch_points(code, period, db, limit=2)
     if not ind:
         raise HTTPException(404, f"Indicator '{code}' not found")
 
-    cur = float(ind.current_value) if ind.current_value is not None else None
-    prev = float(ind.previous_value) if ind.previous_value is not None else None
+    cur = float(rows[-1].value) if rows else None
+    prev = float(rows[-2].value) if len(rows) > 1 else None
     change = round(cur - prev, 4) if cur is not None and prev is not None else None
     val_str = _fmt_value(cur) if cur is not None else "—"
     unit = ind.unit or ""
