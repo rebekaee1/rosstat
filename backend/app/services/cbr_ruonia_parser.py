@@ -1,7 +1,7 @@
-"""ETL: RUONIA (ставка однодневного MBK) с cbr.ru/hd_base/ruonia → IndicatorData.
+"""ETL: RUONIA (ставка однодневного MBK) с cbr.ru/hd_base/ruonia/dynamics → IndicatorData.
 
-Источник: HTML-таблица https://www.cbr.ru/hd_base/ruonia/
-Аналогичен KeyRate — POST с датами DD.MM.YYYY.
+Источник: HTML-таблица https://www.cbr.ru/hd_base/ruonia/dynamics/
+Вертикальная таблица: колонки — «Дата ставки», «Ставка RUONIA, % годовых», …
 """
 
 from __future__ import annotations
@@ -12,7 +12,6 @@ import re
 from datetime import date, datetime, timedelta
 from typing import ClassVar
 
-import requests
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -29,6 +28,7 @@ logger = logging.getLogger(__name__)
 _DATE_RE = re.compile(r"\d{2}\.\d{2}\.\d{4}")
 
 DEFAULT_BACKFILL_FROM = date(2010, 9, 1)
+CHUNK_DAYS = 365
 
 
 def _parse_ru_float(s: str) -> float:
@@ -37,7 +37,7 @@ def _parse_ru_float(s: str) -> float:
 
 
 def fetch_ruonia_html(date_from: date, date_to: date) -> tuple[str, str]:
-    url = f"{settings.cbr_base_url.rstrip('/')}/hd_base/ruonia/"
+    url = f"{settings.cbr_base_url.rstrip('/')}/hd_base/ruonia/dynamics/"
     params = {
         "UniDbQuery.Posted": "True",
         "UniDbQuery.From": date_from.strftime("%d.%m.%Y"),
@@ -50,41 +50,29 @@ def fetch_ruonia_html(date_from: date, date_to: date) -> tuple[str, str]:
 
 
 def parse_ruonia_html(html: str) -> list[tuple[date, float]]:
-    """Parse RUONIA transposed table: dates in first row, rates in second row."""
+    """Parse vertical RUONIA dynamics table: each row = one date."""
     rows = re.findall(r"<tr[^>]*>(.*?)</tr>", html, re.DOTALL)
-    if len(rows) < 2:
-        return []
+    results: list[tuple[date, float]] = []
 
-    def extract_cells(row_html: str) -> list[str]:
-        return [
+    for row_html in rows:
+        cells = [
             re.sub(r"<[^>]+>", "", td).strip()
             for td in re.findall(r"<td[^>]*>(.*?)</td>", row_html, re.DOTALL)
         ]
-
-    date_row = extract_cells(rows[0])
-    rate_row = extract_cells(rows[1])
-
-    results: list[tuple[date, float]] = []
-    for i, cell in enumerate(date_row):
-        if not _DATE_RE.match(cell):
+        if len(cells) < 2:
             continue
-        if i >= len(rate_row):
-            break
-        val_str = rate_row[i]
+        date_str = cells[0]
+        if not _DATE_RE.match(date_str):
+            continue
         try:
-            d, mo, y = (int(x) for x in cell.split("."))
-            val = _parse_ru_float(val_str)
+            d, mo, y = (int(x) for x in date_str.split("."))
+            val = _parse_ru_float(cells[1])
             results.append((date(y, mo, d), round(val, 4)))
         except (ValueError, TypeError):
             continue
 
-    by_date: dict[date, float] = {}
-    for d, v in results:
-        by_date[d] = v
-    return sorted(by_date.items())
-
-
-CHUNK_DAYS = 180  # CBR truncates large date ranges; fetch in 6-month chunks
+    results.sort(key=lambda x: x[0])
+    return results
 
 
 class CbrRuoniaParser(BaseParser):
@@ -113,9 +101,13 @@ class CbrRuoniaParser(BaseParser):
             final_url = ""
             while chunk_start < date_to:
                 chunk_end = min(chunk_start + timedelta(days=CHUNK_DAYS), date_to)
-                html, final_url = await asyncio.to_thread(fetch_ruonia_html, chunk_start, chunk_end)
-                chunk_points = await asyncio.to_thread(parse_ruonia_html, html)
-                all_points.extend(chunk_points)
+                try:
+                    html, final_url = await asyncio.to_thread(fetch_ruonia_html, chunk_start, chunk_end)
+                    chunk_points = await asyncio.to_thread(parse_ruonia_html, html)
+                    all_points.extend(chunk_points)
+                    logger.debug("RUONIA chunk %s–%s: %d points", chunk_start, chunk_end, len(chunk_points))
+                except Exception:
+                    logger.warning("RUONIA chunk %s–%s failed, skipping", chunk_start, chunk_end, exc_info=True)
                 chunk_start = chunk_end + timedelta(days=1)
 
             fetch_log.source_url = final_url[:500]
