@@ -26,11 +26,12 @@ from typing import ClassVar
 
 import requests
 from sqlalchemy import func, select
-from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import FetchLog, Indicator, IndicatorData
 from app.services.base_parser import BaseParser
+from app.services.http_client import create_session
+from app.services.upsert import upsert_indicator_data
 from app.services.forecast_pipeline import retrain_indicator_forecast
 from app.core.cache import cache_invalidate_indicator
 
@@ -102,11 +103,7 @@ def fetch_dataservice(
     if measure_id is not None:
         params["measureId"] = measure_id
 
-    session = requests.Session()
-    session.headers.update({
-        "User-Agent": "Mozilla/5.0 (compatible; ForecastEconomy/1.0; +https://forecasteconomy.com)",
-        "Accept": "application/json",
-    })
+    session = create_session()
     resp = session.get(CBR_DATASERVICE_URL, params=params, timeout=60)
     resp.raise_for_status()
     data = resp.json()
@@ -175,12 +172,7 @@ class CbrDataServiceParser(BaseParser):
 
             for dt, val in points:
                 stored_val = round(val / value_divisor, 4) if value_divisor != 1 else val
-                stmt = (
-                    pg_insert(IndicatorData)
-                    .values(indicator_id=indicator.id, date=dt, value=stored_val)
-                    .on_conflict_do_nothing(constraint="uq_indicator_date")
-                )
-                await db.execute(stmt)
+                await db.execute(upsert_indicator_data(indicator.id, dt, stored_val))
 
             await db.flush()
             count_after = (await db.execute(

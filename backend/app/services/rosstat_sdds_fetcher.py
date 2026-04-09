@@ -18,6 +18,7 @@ from typing import Optional
 import requests
 
 from app.config import settings
+from app.services.http_client import create_session
 
 logger = logging.getLogger(__name__)
 
@@ -44,11 +45,7 @@ _session: requests.Session | None = None
 def _get_session() -> requests.Session:
     global _session
     if _session is None:
-        _session = requests.Session()
-        _session.headers.update({
-            "User-Agent": "Mozilla/5.0 (compatible; ForecastEconomy/1.0; +https://forecasteconomy.com)",
-            "Accept-Language": "en-US,en;q=0.9",
-        })
+        _session = create_session()
         _session.verify = settings.rosstat_ca_cert
     return _session
 

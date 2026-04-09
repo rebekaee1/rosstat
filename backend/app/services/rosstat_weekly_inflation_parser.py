@@ -21,11 +21,12 @@ from typing import ClassVar
 import requests
 from bs4 import BeautifulSoup
 from sqlalchemy import func, select
-from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import FetchLog, Indicator, IndicatorData
 from app.services.base_parser import BaseParser
+from app.services.http_client import create_session
+from app.services.upsert import upsert_indicator_data
 from app.core.cache import cache_invalidate_indicator
 
 logger = logging.getLogger(__name__)
@@ -42,12 +43,7 @@ class WeeklyPoint:
 
 
 def _get_session() -> requests.Session:
-    s = requests.Session()
-    s.headers.update({
-        "User-Agent": "Mozilla/5.0 (compatible; ForecastEconomy/1.0; +https://forecasteconomy.com)",
-        "Accept-Language": "ru-RU,ru;q=0.9",
-    })
-    return s
+    return create_session()
 
 
 def _parse_page(html: bytes) -> tuple[WeeklyPoint | None, str | None]:
@@ -166,12 +162,7 @@ class RosstatWeeklyCpiParser(BaseParser):
             )).scalar() or 0
 
             for p in points:
-                stmt = (
-                    pg_insert(IndicatorData)
-                    .values(indicator_id=indicator.id, date=p.date, value=p.value)
-                    .on_conflict_do_nothing(constraint="uq_indicator_date")
-                )
-                await db.execute(stmt)
+                await db.execute(upsert_indicator_data(indicator.id, p.date, p.value))
 
             await db.flush()
             count_after = (await db.execute(

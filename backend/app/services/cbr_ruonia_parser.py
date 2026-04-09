@@ -14,12 +14,13 @@ from typing import ClassVar
 
 import requests
 from sqlalchemy import func, select
-from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.models import FetchLog, Indicator, IndicatorData
 from app.services.base_parser import BaseParser
+from app.services.http_client import create_session
+from app.services.upsert import upsert_indicator_data
 from app.services.forecast_pipeline import retrain_indicator_forecast
 from app.core.cache import cache_invalidate_indicator
 
@@ -42,12 +43,7 @@ def fetch_ruonia_html(date_from: date, date_to: date) -> tuple[str, str]:
         "UniDbQuery.From": date_from.strftime("%d.%m.%Y"),
         "UniDbQuery.To": date_to.strftime("%d.%m.%Y"),
     }
-    session = requests.Session()
-    session.headers.update({
-        "User-Agent": "Mozilla/5.0 (compatible; ForecastEconomy/1.0; +https://forecasteconomy.com)",
-        "Accept": "text/html,application/xhtml+xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": "ru-RU,ru;q=0.9",
-    })
+    session = create_session()
     resp = session.get(url, params=params, timeout=settings.cbr_request_timeout)
     resp.raise_for_status()
     return resp.text, str(resp.url)
@@ -88,6 +84,9 @@ def parse_ruonia_html(html: str) -> list[tuple[date, float]]:
     return sorted(by_date.items())
 
 
+CHUNK_DAYS = 180  # CBR truncates large date ranges; fetch in 6-month chunks
+
+
 class CbrRuoniaParser(BaseParser):
     parser_type: ClassVar[str] = "cbr_ruonia_html"
 
@@ -109,10 +108,23 @@ class CbrRuoniaParser(BaseParser):
                 win = int(cfg.get("incremental_fetch_days", 60))
                 date_from = date_to - timedelta(days=win)
 
-            html, final_url = await asyncio.to_thread(fetch_ruonia_html, date_from, date_to)
+            all_points: list[tuple[date, float]] = []
+            chunk_start = date_from
+            final_url = ""
+            while chunk_start < date_to:
+                chunk_end = min(chunk_start + timedelta(days=CHUNK_DAYS), date_to)
+                html, final_url = await asyncio.to_thread(fetch_ruonia_html, chunk_start, chunk_end)
+                chunk_points = await asyncio.to_thread(parse_ruonia_html, html)
+                all_points.extend(chunk_points)
+                chunk_start = chunk_end + timedelta(days=1)
+
             fetch_log.source_url = final_url[:500]
 
-            points = await asyncio.to_thread(parse_ruonia_html, html)
+            by_date: dict[date, float] = {}
+            for d, v in all_points:
+                by_date[d] = v
+            points = sorted(by_date.items())
+
             if not points:
                 fetch_log.status = "no_new_data"
                 fetch_log.error_message = "No RUONIA rows parsed"
@@ -125,12 +137,7 @@ class CbrRuoniaParser(BaseParser):
             )).scalar() or 0
 
             for dt, val in points:
-                stmt = (
-                    pg_insert(IndicatorData)
-                    .values(indicator_id=indicator.id, date=dt, value=val)
-                    .on_conflict_do_nothing(constraint="uq_indicator_date")
-                )
-                await db.execute(stmt)
+                await db.execute(upsert_indicator_data(indicator.id, dt, val))
 
             await db.flush()
             count_after = (await db.execute(

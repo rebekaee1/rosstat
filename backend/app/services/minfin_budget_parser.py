@@ -16,14 +16,14 @@ from dataclasses import dataclass
 from datetime import date, datetime
 from typing import ClassVar
 
-import requests
 from bs4 import BeautifulSoup
 from sqlalchemy import func, select
-from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import FetchLog, Indicator, IndicatorData
 from app.services.base_parser import BaseParser
+from app.services.http_client import create_session
+from app.services.upsert import upsert_indicator_data
 from app.services.forecast_pipeline import retrain_indicator_forecast
 from app.core.cache import cache_invalidate_indicator
 
@@ -38,11 +38,6 @@ MONTH_MAP = {
     "сентябрь": 9, "октябрь": 10, "ноябрь": 11, "декабрь": 12,
 }
 
-_SESSION_HEADERS = {
-    "User-Agent": "Mozilla/5.0 (compatible; ForecastEconomy/1.0; +https://forecasteconomy.com)",
-}
-
-
 @dataclass
 class BudgetPoint:
     date: date
@@ -51,8 +46,7 @@ class BudgetPoint:
 
 def _find_csv_url() -> str:
     """Discover the latest data CSV URL from the Minfin open data catalog page."""
-    session = requests.Session()
-    session.headers.update(_SESSION_HEADERS)
+    session = create_session()
     resp = session.get(CATALOG_URL, timeout=30)
     resp.raise_for_status()
     soup = BeautifulSoup(resp.text, "html.parser")
@@ -137,8 +131,7 @@ def _parse_budget_csv(content: str) -> list[BudgetPoint]:
 def fetch_and_parse_budget() -> tuple[list[BudgetPoint], str]:
     """Download and parse budget CSV. Returns (points, source_url)."""
     csv_url = _find_csv_url()
-    session = requests.Session()
-    session.headers.update(_SESSION_HEADERS)
+    session = create_session()
     resp = session.get(csv_url, timeout=60)
     resp.raise_for_status()
     resp.encoding = "utf-8"
@@ -168,12 +161,7 @@ class MinfinBudgetParser(BaseParser):
             )).scalar() or 0
 
             for p in points:
-                stmt = (
-                    pg_insert(IndicatorData)
-                    .values(indicator_id=indicator.id, date=p.date, value=p.value)
-                    .on_conflict_do_nothing(constraint="uq_indicator_date")
-                )
-                await db.execute(stmt)
+                await db.execute(upsert_indicator_data(indicator.id, p.date, p.value))
 
             await db.flush()
             count_after = (await db.execute(

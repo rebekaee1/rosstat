@@ -59,6 +59,8 @@ async def daily_update_job():
 
     updated_codes: list[str] = []
     for indicator in active_indicators:
+        if indicator.parser_type == "derived":
+            continue
         try:
             had_new = await run_etl_for_indicator(indicator.code)
             if had_new:

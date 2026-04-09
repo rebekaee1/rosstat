@@ -98,3 +98,37 @@
     - Внешняя торговля, Предпринимательство, Наука — разделы существуют, контент через JS
   - ЕМИСС (fedstat.ru) — HTTP 403, недоступен.
   - **Вывод:** Население — легко (SDDS + демография). Бизнес — средне (ИПП + цены жилья из SDDS). Торговля — средне (нет SDDS, парсить Росстат/ЦБ). Наука — сложно (нет SDDS, только годовые публикации).
+- **Реализованы 4 новые категории** (15 индикаторов):
+  - **Население** (4 индикатора): `population` (SDDS, 16 точек 2010–2025), `population-natural-growth`, `population-total-growth`, `population-migration` (Росстат static XLSX `Popul components_1990+.xlsx`, ~30 точек 1990–2021).
+  - **Торговля** (2 индикатора): `current-account` (CBR DataService publicationId=8/datasetId=9, квартальные, 2000–2026), `current-account-yoy` (derived). Прямые экспорт/импорт недоступны через API — деактивированы.
+  - **Бизнес** (2 индикатора): `ipi` (SDDS, 134 точки, 01.2015–02.2026, месячный), `ipi-yoy` (derived).
+  - **Цены** (2 доп.): `housing-price-primary`, `housing-price-secondary` (SDDS Housing, 44 точки, Q1-2015–Q4-2025).
+  - **Наука и образование** — оставлена как `planned`: нет машиночитаемых источников с автоматическим обновлением.
+- **Новые файлы backend:**
+  - `app/services/rosstat_ipi_parser.py` — парсер SDDS IPI
+  - `app/services/rosstat_housing_parser.py` — парсер SDDS Housing (primary + secondary)
+  - `app/services/rosstat_population_parser.py` — парсер SDDS Population + Rosstat static XLSX
+- **Обновлены:** `rosstat_sdds_fetcher.py` (SDDS ipi/housing + static XLSX fetcher), `rosstat_cpi_parser.py` (PARSER_REGISTRY), `seed_data.py` (15 индикаторов + деактивация exports/imports), `calculation_engine.py` (ipi-yoy, current-account-yoy).
+- **Frontend:** 8 из 9 категорий активны в `categories.js`, SEO_MAP для всех новых индикаторов, `FREQ_MAP` += annual, `UNIT_CONFIG` += тыс.чел./млн$/индекс, sitemap обновлён.
+- **Баг-фикс:** `CategoryPage.jsx` — `includeInactive: true → false`, убрал отображение деактивированных экспорт/импорт/торговый-баланс на странице «Торговля».
+- **Деплой:** git push → server `5.129.204.194` → `docker compose build frontend && up -d`. Верификация в браузере: все 4 категории, все плитки с данными, графики, консоль чистая.
+
+## 2026-04-09
+
+- **Верификация продакшена после деплоя:**
+  - `/category/population` — 4 индикатора с данными (146.10 млн чел., прирост с 1990 г.)
+  - `/category/trade` — 2 индикатора (сальдо текущего счёта 9 364.71 млн $, изм. г/г −31.75%)
+  - `/category/business` — 2 индикатора (ИПП 100.20, ИПП г/г +4.27%)
+  - `/indicator/ipi` — график 2021–2026, 134 точки, сезонные пики видны
+  - Консоль: 0 ошибок приложения на всех страницах forecasteconomy.com
+- **Итого на платформе:** 8 активных категорий, 38 индикаторов (из них ~15 новых), 9-я категория «Наука» в разработке.
+- **Рефакторинг ETL: on_conflict_do_nothing → upsert_indicator_data** во всех 14 парсерах.
+  - Создан `backend/app/services/upsert.py` с `upsert_indicator_data()` — `ON CONFLICT DO UPDATE SET value = excluded.value` (ревизии данных теперь обновляют значение вместо игнорирования).
+  - Все 14 ETL-парсеров переведены на `upsert_indicator_data`: cbr_fx, cbr_keyrate, cbr_ruonia, cbr_monetary, cbr_dataservice, cbr_dataservice_sum, minfin_budget, rosstat_cpi, rosstat_labor, rosstat_gdp, rosstat_ipi, rosstat_housing, rosstat_population, rosstat_weekly_inflation.
+  - `seed_data.py` и `calculation_engine.py` — оставлены с `do_nothing` (по плану).
+  - Из каждого парсера удалён неиспользуемый `from sqlalchemy.dialects.postgresql import pg_insert`, добавлен `from app.services.upsert import upsert_indicator_data`.
+  - `IndicatorData` оставлен — используется в count-запросах.
+
+## 2026-04-09
+
+- **ETL HTTP:** Ручные `requests.Session()` в парсерах заменены на `create_session()` из `app.services.http_client` (ретраи + единый User-Agent). Удалены локальные `session.headers.update(...)`; в `fetcher.py` и `rosstat_sdds_fetcher.py` сохранён `session.verify = settings.rosstat_ca_cert`. В `minfin_budget_parser.py` удалены константа `_SESSION_HEADERS` и неиспользуемый `import requests`; в `cbr_fx_parser.py` убран неиспользуемый `import requests` после перехода на `create_session`. Файлы: `cbr_fx_parser.py`, `cbr_ruonia_parser.py`, `cbr_keyrate.py`, `cbr_monetary_parser.py`, `cbr_dataservice_parser.py`, `minfin_budget_parser.py`, `rosstat_weekly_inflation_parser.py`, `fetcher.py`, `rosstat_sdds_fetcher.py`. `http_client.py` не менялся. Pytest: 39 passed.

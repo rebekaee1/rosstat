@@ -8,11 +8,11 @@ from datetime import date, datetime, timedelta
 from typing import ClassVar
 
 from sqlalchemy import func, select
-from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import FetchLog, Indicator, IndicatorData
 from app.services.base_parser import BaseParser
+from app.services.upsert import upsert_indicator_data
 from app.services.cbr_keyrate import DataPoint, fetch_key_rate_html, parse_keyrate_html
 from app.services.data_validator import validate_points
 from app.services.forecast_pipeline import clear_current_forecasts, retrain_indicator_forecast
@@ -68,12 +68,7 @@ class CbrKeyRateParser(BaseParser):
             ).scalar() or 0
 
             for point in points:
-                stmt = (
-                    pg_insert(IndicatorData)
-                    .values(indicator_id=indicator.id, date=point.date, value=point.value)
-                    .on_conflict_do_nothing(constraint="uq_indicator_date")
-                )
-                await db.execute(stmt)
+                await db.execute(upsert_indicator_data(indicator.id, point.date, point.value))
 
             await db.flush()
             count_after = (

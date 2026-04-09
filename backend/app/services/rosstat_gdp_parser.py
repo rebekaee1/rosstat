@@ -23,11 +23,11 @@ from typing import ClassVar
 
 import openpyxl
 from sqlalchemy import func, select
-from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import FetchLog, Indicator, IndicatorData
 from app.services.base_parser import BaseParser
+from app.services.upsert import upsert_indicator_data
 from app.services.data_validator import validate_points
 from app.services.forecast_pipeline import retrain_indicator_forecast
 from app.services.rosstat_sdds_fetcher import fetch_sdds_xlsx
@@ -125,12 +125,7 @@ class RosstatGdpParser(BaseParser):
             )).scalar() or 0
 
             for p in points:
-                stmt = (
-                    pg_insert(IndicatorData)
-                    .values(indicator_id=indicator.id, date=p.date, value=p.value)
-                    .on_conflict_do_nothing(constraint="uq_indicator_date")
-                )
-                await db.execute(stmt)
+                await db.execute(upsert_indicator_data(indicator.id, p.date, p.value))
 
             await db.flush()
             count_after = (await db.execute(

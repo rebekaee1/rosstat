@@ -8,7 +8,6 @@ from datetime import datetime
 from typing import ClassVar
 
 from sqlalchemy import func, select
-from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import FetchLog, Indicator, IndicatorData
@@ -22,6 +21,7 @@ from app.services.rosstat_labor_parser import RosstatLaborParser
 from app.services.rosstat_gdp_parser import RosstatGdpParser
 from app.services.data_validator import validate_points
 from app.services.fetcher import RosstatFetcher
+from app.services.upsert import upsert_indicator_data
 from app.services.forecast_pipeline import retrain_indicator_forecast
 from app.services.parser import parse_cpi_sheet
 from app.core.cache import cache_invalidate_indicator
@@ -65,12 +65,7 @@ class RosstatCpiParser(BaseParser):
             )).scalar() or 0
 
             for point in points:
-                stmt = pg_insert(IndicatorData).values(
-                    indicator_id=indicator.id,
-                    date=point.date,
-                    value=point.value,
-                ).on_conflict_do_nothing(constraint="uq_indicator_date")
-                await db.execute(stmt)
+                await db.execute(upsert_indicator_data(indicator.id, point.date, point.value))
 
             await db.flush()
             count_after = (await db.execute(

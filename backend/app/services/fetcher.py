@@ -14,6 +14,7 @@ from typing import Optional, Tuple
 import requests
 
 from app.config import settings
+from app.services.http_client import create_session
 
 logger = logging.getLogger(__name__)
 
@@ -22,13 +23,7 @@ XLSX_MAGIC = b"PK\x03\x04"
 
 class RosstatFetcher:
     def __init__(self):
-        self.session = requests.Session()
-        self.session.headers.update({
-            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-                          "Chrome/120.0.0.0 Safari/537.36",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            "Accept-Language": "ru-RU,ru;q=0.9",
-        })
+        self.session = create_session()
         self.session.verify = settings.rosstat_ca_cert
 
     def _build_url(self, month: int, year: int) -> str:

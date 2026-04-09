@@ -15,12 +15,13 @@ from typing import ClassVar
 
 import requests
 from sqlalchemy import func, select
-from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.models import FetchLog, Indicator, IndicatorData
 from app.services.base_parser import BaseParser
+from app.services.http_client import create_session
+from app.services.upsert import upsert_indicator_data
 from app.services.forecast_pipeline import retrain_indicator_forecast
 from app.core.cache import cache_invalidate_indicator
 
@@ -48,12 +49,7 @@ def fetch_mb_html(date_from: date, date_to: date) -> tuple[str, str]:
         "UniDbQuery.From": date_from.strftime("%d.%m.%Y"),
         "UniDbQuery.To": date_to.strftime("%d.%m.%Y"),
     }
-    session = requests.Session()
-    session.headers.update({
-        "User-Agent": "Mozilla/5.0 (compatible; ForecastEconomy/1.0; +https://forecasteconomy.com)",
-        "Accept": "text/html,application/xhtml+xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": "ru-RU,ru;q=0.9",
-    })
+    session = create_session()
     resp = session.get(url, params=params, timeout=settings.cbr_request_timeout)
     resp.raise_for_status()
     return resp.text, str(resp.url)
@@ -117,12 +113,7 @@ class CbrMonetaryParser(BaseParser):
             for row in parsed:
                 dt = row[0]
                 val = row[col_index + 1]
-                stmt = (
-                    pg_insert(IndicatorData)
-                    .values(indicator_id=indicator.id, date=dt, value=val)
-                    .on_conflict_do_nothing(constraint="uq_indicator_date")
-                )
-                await db.execute(stmt)
+                await db.execute(upsert_indicator_data(indicator.id, dt, val))
 
             await db.flush()
             count_after = (await db.execute(

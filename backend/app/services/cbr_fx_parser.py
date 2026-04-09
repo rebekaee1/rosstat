@@ -12,14 +12,14 @@ from datetime import date, datetime, timedelta
 from typing import ClassVar
 from xml.etree import ElementTree
 
-import requests
 from sqlalchemy import func, select
-from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.models import FetchLog, Indicator, IndicatorData
 from app.services.base_parser import BaseParser
+from app.services.http_client import create_session
+from app.services.upsert import upsert_indicator_data
 from app.services.forecast_pipeline import retrain_indicator_forecast
 from app.core.cache import cache_invalidate_indicator
 
@@ -46,10 +46,7 @@ def fetch_fx_xml(val_code: str, date_from: date, date_to: date) -> tuple[str, st
         "date_req2": date_to.strftime("%d/%m/%Y"),
         "VAL_NM_RQ": val_code,
     }
-    session = requests.Session()
-    session.headers.update({
-        "User-Agent": "Mozilla/5.0 (compatible; ForecastEconomy/1.0; +https://forecasteconomy.com)",
-    })
+    session = create_session()
     resp = session.get(url, params=params, timeout=settings.cbr_request_timeout)
     resp.raise_for_status()
     return resp.text, str(resp.url)
@@ -120,12 +117,7 @@ class CbrFxParser(BaseParser):
             )).scalar() or 0
 
             for dt, val in points:
-                stmt = (
-                    pg_insert(IndicatorData)
-                    .values(indicator_id=indicator.id, date=dt, value=val)
-                    .on_conflict_do_nothing(constraint="uq_indicator_date")
-                )
-                await db.execute(stmt)
+                await db.execute(upsert_indicator_data(indicator.id, dt, val))
 
             await db.flush()
             count_after = (await db.execute(

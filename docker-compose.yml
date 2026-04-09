@@ -33,6 +33,11 @@ services:
       dockerfile: Dockerfile
     ports:
       - "127.0.0.1:8000:8000"
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "5"
     environment:
       RUSTATS_DATABASE_URL: postgresql+asyncpg://rustats:${POSTGRES_PASSWORD:-rustats_dev}@postgres:5432/rustats
       RUSTATS_REDIS_URL: redis://redis:6379/0
@@ -61,6 +66,11 @@ services:
       dockerfile: Dockerfile
     ports:
       - "127.0.0.1:3000:80"
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "3"
     depends_on:
       backend:
         condition: service_healthy

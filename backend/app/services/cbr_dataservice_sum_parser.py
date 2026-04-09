@@ -23,11 +23,11 @@ from datetime import date, datetime
 from typing import ClassVar
 
 from sqlalchemy import func, select
-from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import FetchLog, Indicator, IndicatorData
 from app.services.base_parser import BaseParser
+from app.services.upsert import upsert_indicator_data
 from app.services.cbr_dataservice_parser import fetch_dataservice
 from app.services.forecast_pipeline import retrain_indicator_forecast
 from app.core.cache import cache_invalidate_indicator
@@ -84,12 +84,7 @@ class CbrDataServiceSumParser(BaseParser):
             )).scalar() or 0
 
             for dt in sorted(sums):
-                stmt = (
-                    pg_insert(IndicatorData)
-                    .values(indicator_id=indicator.id, date=dt, value=round(sums[dt], 2))
-                    .on_conflict_do_nothing(constraint="uq_indicator_date")
-                )
-                await db.execute(stmt)
+                await db.execute(upsert_indicator_data(indicator.id, dt, round(sums[dt], 2)))
 
             await db.flush()
             count_after = (await db.execute(
