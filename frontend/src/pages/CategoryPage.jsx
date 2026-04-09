@@ -1,11 +1,20 @@
 import { Link, useParams } from 'react-router-dom';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Users, ArrowRight } from 'lucide-react';
 import { useIndicators } from '../lib/hooks';
 import useDocumentMeta from '../lib/useMeta';
 import IndicatorTile from '../components/IndicatorTile';
 import { TileSkeleton } from '../components/Skeleton';
 import { getCategoryBySlug } from '../lib/categories';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+
+const CATEGORY_FEATURES = {
+  population: {
+    to: '/demographics',
+    icon: Users,
+    title: 'Возрастная структура населения',
+    description: 'Визуализация трёх возрастных групп: дети, трудоспособные, старше трудоспособного. Данные Росстата.',
+  },
+};
 
 export default function CategoryPage() {
   const { slug } = useParams();
@@ -73,6 +82,26 @@ export default function CategoryPage() {
         </h1>
         <p className="text-text-secondary leading-relaxed text-[1.02rem]">{cat.description}</p>
       </header>
+
+      {CATEGORY_FEATURES[slug] && (() => {
+        const feat = CATEGORY_FEATURES[slug];
+        const Icon = feat.icon;
+        return (
+          <Link
+            to={feat.to}
+            className="group flex items-center gap-5 rounded-[2rem] border border-border-champagne bg-champagne/[0.04] p-6 md:p-8 mb-8 transition-colors hover:bg-champagne/[0.07]"
+          >
+            <div className="shrink-0 flex items-center justify-center w-12 h-12 rounded-2xl bg-champagne/10">
+              <Icon className="w-6 h-6 text-champagne" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-text-primary mb-0.5">{feat.title}</p>
+              <p className="text-xs text-text-secondary leading-relaxed">{feat.description}</p>
+            </div>
+            <ArrowRight className="w-5 h-5 text-champagne shrink-0 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
+          </Link>
+        );
+      })()}
 
       <section className="rounded-[2rem] border border-border-subtle bg-surface p-6 shadow-md ring-1 ring-black/[0.06] md:p-8">
         <h2 className="mb-6 text-xs font-semibold uppercase tracking-[0.2em] text-text-primary/70">
