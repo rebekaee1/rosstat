@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import {
   ResponsiveContainer, ComposedChart, Line, XAxis, YAxis,
-  Tooltip, CartesianGrid, Legend,
+  Tooltip, CartesianGrid,
 } from 'recharts';
 import { ArrowLeft, Activity, GitCompare } from 'lucide-react';
 import { useIndicators, useIndicatorData } from '../lib/hooks';
@@ -84,8 +84,8 @@ export default function ComparePage() {
     setSearchParams(next, { replace: true });
   }, [searchParams, setSearchParams]);
 
-  const { data: dataA, isLoading: loadA } = useIndicatorData(codeA);
-  const { data: dataB, isLoading: loadB } = useIndicatorData(codeB);
+  const { data: dataA, isLoading: loadA, isError: errorA } = useIndicatorData(codeA);
+  const { data: dataB, isLoading: loadB, isError: errorB } = useIndicatorData(codeB);
 
   const indA = useMemo(() => indicators?.find((i) => i.code === codeA), [indicators, codeA]);
   const indB = useMemo(() => indicators?.find((i) => i.code === codeB), [indicators, codeB]);
@@ -118,10 +118,11 @@ export default function ComparePage() {
     const cutoffStr = cutoff.toISOString().slice(0, 10);
 
     return all.filter((p) => p.date >= cutoffStr);
-  }, [dataA, dataB, indA, indB, range]);
+  }, [dataA, dataB, indA, indB, range, codeA, codeB]);
 
   const hasData = chartData.length > 0 && (codeA || codeB);
   const loading = loadA || loadB;
+  const hasError = (codeA && errorA) || (codeB && errorB);
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24 md:pb-28">
@@ -173,6 +174,16 @@ export default function ComparePage() {
           </div>
         )}
       </section>
+
+      {hasError && (
+        <div className="mb-6 rounded-2xl border border-champagne/35 bg-warn-surface px-4 py-4 text-sm shadow-md" role="alert">
+          <p className="text-text-primary">
+            <span className="font-semibold">Не удалось загрузить данные</span>{' '}
+            для {errorA && codeA ? `«${indA?.name || codeA}»` : ''}{errorA && errorB ? ' и ' : ''}{errorB && codeB ? `«${indB?.name || codeB}»` : ''}.
+            Попробуйте выбрать другие показатели или обновите страницу.
+          </p>
+        </div>
+      )}
 
       <section className="mb-8">
         <div className="flex items-center gap-4 border-b border-border-subtle pb-4 mb-6 flex-wrap">
@@ -258,7 +269,7 @@ export default function ComparePage() {
                     stroke={COLOR_A}
                     strokeWidth={2}
                     dot={false}
-                    connectNulls
+                    connectNulls={false}
                     isAnimationActive={false}
                   />
                 )}
@@ -271,7 +282,7 @@ export default function ComparePage() {
                     stroke={COLOR_B}
                     strokeWidth={2}
                     dot={false}
-                    connectNulls
+                    connectNulls={false}
                     isAnimationActive={false}
                   />
                 )}

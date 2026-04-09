@@ -1646,18 +1646,21 @@ INDICATORS = [
 
 async def seed():
     async with async_session() as db:
-        # Seed indicators
+        # Seed indicators — upsert metadata, preserve data
+        _metadata_cols = [
+            "name", "name_en", "unit", "frequency", "source", "source_url",
+            "description", "methodology", "parser_type", "model_config_json",
+            "is_active", "category", "excel_sheet",
+        ]
         for ind_data in INDICATORS:
-            existing = await db.execute(
-                select(Indicator).where(Indicator.code == ind_data["code"])
+            stmt = pg_insert(Indicator).values(**ind_data)
+            update_vals = {k: ind_data[k] for k in _metadata_cols if k in ind_data}
+            stmt = stmt.on_conflict_do_update(
+                index_elements=["code"],
+                set_=update_vals,
             )
-            if existing.scalar_one_or_none():
-                print(f"  Indicator '{ind_data['code']}' already exists, skipping")
-                continue
-
-            indicator = Indicator(**ind_data)
-            db.add(indicator)
-            print(f"  Added indicator: {ind_data['code']}")
+            await db.execute(stmt)
+            print(f"  Upserted indicator: {ind_data['code']}")
 
         await db.commit()
 
@@ -1765,7 +1768,7 @@ async def generate_forecasts():
             values = [float(d.value) for d in all_data]
 
             cfg = indicator.model_config_json or {}
-            forecast_steps = int(cfg.get("forecast_steps", 12) or 0)
+            forecast_steps = int(cfg.get("forecast_steps", 0) or 0)
             if forecast_steps <= 0:
                 print(f"  {indicator.code}: forecast_steps=0, skipping")
                 continue
@@ -1776,7 +1779,7 @@ async def generate_forecasts():
                     train_inflation_12m(dates, values, forecast_steps=forecast_steps),
                 ]
             else:
-                forecast_transform = cfg.get("forecast_transform", "cpi_index")
+                forecast_transform = cfg.get("forecast_transform", "absolute")
                 results = [
                     train_and_forecast(
                         dates, values, forecast_steps=forecast_steps,

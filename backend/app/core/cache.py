@@ -1,3 +1,4 @@
+import asyncio
 import json
 import logging
 from typing import Any, Optional
@@ -6,13 +7,17 @@ from app.config import settings
 
 logger = logging.getLogger(__name__)
 _redis: Optional[Redis] = None
+_redis_lock = asyncio.Lock()
 
 
 async def get_redis() -> Redis:
     global _redis
-    if _redis is None:
-        _redis = Redis.from_url(settings.redis_url, decode_responses=True)
-    return _redis
+    if _redis is not None:
+        return _redis
+    async with _redis_lock:
+        if _redis is None:
+            _redis = Redis.from_url(settings.redis_url, decode_responses=True)
+        return _redis
 
 
 async def close_redis():
@@ -26,7 +31,7 @@ async def cache_get(key: str) -> Optional[Any]:
     try:
         r = await get_redis()
         val = await r.get(key)
-        if val:
+        if val is not None:
             return json.loads(val)
     except Exception:
         logger.warning("Redis cache_get failed for key '%s', proceeding without cache", key)

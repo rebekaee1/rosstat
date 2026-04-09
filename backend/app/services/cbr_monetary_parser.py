@@ -10,10 +10,9 @@ from __future__ import annotations
 import asyncio
 import logging
 import re
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from typing import ClassVar
 
-import requests
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -39,7 +38,7 @@ _ROW_RE = re.compile(
 
 
 def _parse_ru_float(s: str) -> float:
-    return float(s.strip().replace(" ", "").replace("\xa0", "").replace(",", "."))
+    return float(s.strip().replace("\u2212", "-").replace(" ", "").replace("\xa0", "").replace(",", "."))
 
 
 def fetch_mb_html(date_from: date, date_to: date) -> tuple[str, str]:
@@ -50,9 +49,12 @@ def fetch_mb_html(date_from: date, date_to: date) -> tuple[str, str]:
         "UniDbQuery.To": date_to.strftime("%d.%m.%Y"),
     }
     session = create_session()
-    resp = session.get(url, params=params, timeout=settings.cbr_request_timeout)
-    resp.raise_for_status()
-    return resp.text, str(resp.url)
+    try:
+        resp = session.get(url, params=params, timeout=settings.cbr_request_timeout)
+        resp.raise_for_status()
+        return resp.text, str(resp.url)
+    finally:
+        session.close()
 
 
 def parse_mb_html(html: str) -> list[tuple[date, float, float, float]]:
@@ -100,9 +102,10 @@ class CbrMonetaryParser(BaseParser):
 
             parsed = await asyncio.to_thread(parse_mb_html, html)
             if not parsed:
+                logger.warning("No data points parsed for %s", code)
                 fetch_log.status = "no_new_data"
                 fetch_log.error_message = "No monetary data rows parsed"
-                fetch_log.completed_at = datetime.utcnow()
+                fetch_log.completed_at = datetime.now(timezone.utc)
                 await db.commit()
                 return
 
@@ -132,12 +135,14 @@ class CbrMonetaryParser(BaseParser):
                 await cache_invalidate_indicator(code)
 
             fetch_log.status = "success" if records_added > 0 else "no_new_data"
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
             await db.commit()
 
         except Exception as e:
             logger.exception("ETL failed for '%s'", code)
+            await db.rollback()
             fetch_log.status = "failed"
             fetch_log.error_message = str(e)[:500]
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
+            db.add(fetch_log)
             await db.commit()

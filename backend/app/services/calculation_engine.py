@@ -194,6 +194,13 @@ async def _compute_wages_real(db: AsyncSession) -> int:
     base_ym = sorted_wages[0][0]
     base_cpi = cpi_index.get(base_ym, 1.0)
 
+    if base_wage is None or base_wage == 0:
+        logger.warning("No base wage available for wages-real calculation (base_wage=%s)", base_wage)
+        return 0
+    if base_cpi is None or base_cpi == 0:
+        logger.warning("No base CPI available for wages-real calculation (base_cpi=%s)", base_cpi)
+        return 0
+
     points: list[tuple[date, float]] = []
     for (y, m), wage in sorted_wages:
         ci = cpi_index.get((y, m))
@@ -276,7 +283,7 @@ async def _compute_gdp_qoq(db: AsyncSession) -> int:
     for i in range(1, len(sorted_data)):
         cur = float(sorted_data[i].value)
         prev = float(sorted_data[i - 1].value)
-        if prev > 0:
+        if prev != 0:
             growth = round((cur / prev - 1) * 100, 2)
             points.append((sorted_data[i].date, growth))
 
@@ -405,7 +412,7 @@ async def _compute_yoy_generic(db: AsyncSession, src_code: str, dst_code: str) -
     points: list[tuple[date, float]] = []
     for d in sorted_dates:
         prev_d = date(d.year - 1, d.month, d.day)
-        if prev_d in by_date and by_date[prev_d] > 0:
+        if prev_d in by_date and by_date[prev_d] != 0:
             growth = round((by_date[d] / by_date[prev_d] - 1) * 100, 2)
             points.append((d, growth))
 

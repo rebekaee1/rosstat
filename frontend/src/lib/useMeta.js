@@ -4,8 +4,9 @@ const BASE = 'https://forecasteconomy.com';
 const DEFAULTS = {
   title: 'Forecast Economy | Бесплатная аналитика экономики России',
   description:
-    'Forecast Economy — бесплатная аналитическая платформа экономических данных России. ' +
-    'Официальные данные Росстата и ЦБ, ИПЦ, прогноз. Без регистрации.',
+    'Forecast Economy — бесплатная платформа макроэкономической аналитики России. ' +
+    '80+ индикаторов в 9 категориях: ИПЦ, ВВП, ставки, валюты, рынок труда, торговля. ' +
+    'Данные Росстата и ЦБ РФ, прогнозы. Без регистрации.',
 };
 
 function setMeta(name, content) {
@@ -51,13 +52,5 @@ export default function useDocumentMeta({ title, description, path = '/' }) {
     setProperty('og:description', desc);
     setProperty('og:url', url);
 
-    return () => {
-      document.title = DEFAULTS.title;
-      setMeta('description', DEFAULTS.description);
-      setCanonical(BASE + '/');
-      setProperty('og:title', DEFAULTS.title);
-      setProperty('og:description', DEFAULTS.description);
-      setProperty('og:url', BASE + '/');
-    };
   }, [title, description, path]);
 }

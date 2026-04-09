@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from sqlalchemy import (
     String, Text, Boolean, Integer, Numeric, Date, DateTime,
     ForeignKey, UniqueConstraint, Index, JSON,
@@ -28,8 +28,8 @@ class Indicator(Base):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     category: Mapped[str | None] = mapped_column(String(100))
     excel_sheet: Mapped[str | None] = mapped_column(String(10))
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
     data_points: Mapped[list["IndicatorData"]] = relationship(back_populates="indicator", cascade="all, delete-orphan")
     forecasts: Mapped[list["Forecast"]] = relationship(back_populates="indicator", cascade="all, delete-orphan")
@@ -47,7 +47,7 @@ class IndicatorData(Base):
     indicator_id: Mapped[int] = mapped_column(ForeignKey("indicators.id", ondelete="CASCADE"), nullable=False)
     date: Mapped[date] = mapped_column(Date, nullable=False)
     value: Mapped[float] = mapped_column(Numeric(12, 4), nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     indicator: Mapped["Indicator"] = relationship(back_populates="data_points")
 
@@ -62,7 +62,7 @@ class Forecast(Base):
     aic: Mapped[float | None] = mapped_column(Numeric(10, 2))
     bic: Mapped[float | None] = mapped_column(Numeric(10, 2))
     is_current: Mapped[bool] = mapped_column(Boolean, default=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     indicator: Mapped["Indicator"] = relationship(back_populates="forecasts")
     values: Mapped[list["ForecastValue"]] = relationship(back_populates="forecast", cascade="all, delete-orphan")
@@ -90,7 +90,7 @@ class FetchLog(Base):
     source_url: Mapped[str | None] = mapped_column(String(500))
     records_added: Mapped[int] = mapped_column(Integer, default=0)
     error_message: Mapped[str | None] = mapped_column(Text)
-    started_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    started_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
     completed_at: Mapped[datetime | None] = mapped_column(DateTime)
 
     indicator: Mapped["Indicator"] = relationship(back_populates="fetch_logs")

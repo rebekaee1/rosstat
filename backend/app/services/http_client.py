@@ -7,7 +7,7 @@ from urllib3.util.retry import Retry
 _RETRY_STRATEGY = Retry(
     total=3,
     backoff_factor=2,
-    status_forcelist=[429, 500, 502, 503, 504],
+    status_forcelist=[408, 429, 500, 502, 503, 504],
     allowed_methods=["GET", "POST"],
 )
 

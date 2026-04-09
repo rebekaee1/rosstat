@@ -108,7 +108,7 @@ async def retrain_indicator_forecast(db: AsyncSession, indicator: Indicator) -> 
         )
         await _save_forecast(db, indicator, inflation_result, model_name_prefix="Inflation-12M")
     else:
-        forecast_transform = cfg.get("forecast_transform", "cpi_index")
+        forecast_transform = cfg.get("forecast_transform", "absolute")
         result = await asyncio.to_thread(
             train_and_forecast, dates, values,
             forecast_steps=forecast_steps,

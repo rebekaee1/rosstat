@@ -11,9 +11,10 @@ from __future__ import annotations
 
 import io
 import logging
+import math
 import re
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from typing import ClassVar
 
 import openpyxl
@@ -53,7 +54,7 @@ def _extract_year(cell) -> int | None:
 def _to_float(cell) -> float | None:
     if cell is None:
         return None
-    s = str(cell).strip().replace(",", ".").replace("\xa0", "").replace(" ", "")
+    s = str(cell).strip().replace("\u2212", "-").replace(",", ".").replace("\xa0", "").replace(" ", "")
     if s in ("", "…", "-", "..."):
         return None
     try:
@@ -65,9 +66,11 @@ def _to_float(cell) -> float | None:
 def parse_demo21_xlsx(content: bytes) -> dict[str, list[DataPoint]]:
     """Parse demo21_YYYY.xlsx → births, deaths, birth_rate, death_rate."""
     wb = openpyxl.load_workbook(io.BytesIO(content), data_only=True, read_only=True)
-    ws = wb.worksheets[0]
-    rows_data = [list(row) for row in ws.iter_rows(values_only=True)]
-    wb.close()
+    try:
+        ws = wb.worksheets[0]
+        rows_data = [list(row) for row in ws.iter_rows(values_only=True)]
+    finally:
+        wb.close()
 
     births, deaths, birth_rate, death_rate = [], [], [], []
 
@@ -104,9 +107,11 @@ def parse_demo21_xlsx(content: bytes) -> dict[str, list[DataPoint]]:
 def parse_demo14_xlsx(content: bytes) -> list[DataPoint]:
     """Parse demo14.xlsx → working-age population (тыс. чел.) from row 25."""
     wb = openpyxl.load_workbook(io.BytesIO(content), data_only=True, read_only=True)
-    ws = wb.worksheets[0]
-    rows_data = [list(row) for row in ws.iter_rows(values_only=True)]
-    wb.close()
+    try:
+        ws = wb.worksheets[0]
+        rows_data = [list(row) for row in ws.iter_rows(values_only=True)]
+    finally:
+        wb.close()
 
     if len(rows_data) < 26:
         raise ValueError(f"demo14: expected >= 26 rows, got {len(rows_data)}")
@@ -137,17 +142,19 @@ def parse_demo14_xlsx(content: bytes) -> list[DataPoint]:
 def parse_pensioners_xlsx(content: bytes) -> list[DataPoint]:
     """Parse Sp_2.1_YYYY.xlsx → total pensioners (тыс. чел.)."""
     wb = openpyxl.load_workbook(io.BytesIO(content), data_only=True, read_only=True)
-    sheets = wb.sheetnames
-    ws = None
-    for name in sheets:
-        if "РФ" in name or "2014" in name:
-            ws = wb[name]
-            break
-    if ws is None:
-        ws = wb.worksheets[-1]
+    try:
+        sheets = wb.sheetnames
+        ws = None
+        for name in sheets:
+            if "РФ" in name or "2014" in name:
+                ws = wb[name]
+                break
+        if ws is None:
+            ws = wb.worksheets[-1]
 
-    rows_data = [list(row) for row in ws.iter_rows(values_only=True)]
-    wb.close()
+        rows_data = [list(row) for row in ws.iter_rows(values_only=True)]
+    finally:
+        wb.close()
 
     if len(rows_data) < 5:
         raise ValueError(f"Pensioners: expected >= 5 rows, got {len(rows_data)}")
@@ -192,10 +199,14 @@ def _try_download(session, filename: str) -> bytes | None:
     url = BASE_URL + filename
     try:
         resp = session.get(url, timeout=60)
+        ct = resp.headers.get("content-type", "")
+        if "html" in ct.lower() and resp.status_code == 200:
+            logger.warning("Got HTML instead of XLSX from %s", url)
+            return None
         if resp.status_code == 200 and resp.content[:4] == b"PK\x03\x04":
             return resp.content
-    except Exception:
-        pass
+    except Exception as e:
+        logger.debug("Download failed for %s: %s", url, e)
     return None
 
 
@@ -208,68 +219,95 @@ class RosstatDemoParser(BaseParser):
             cfg = indicator.model_config_json or {}
             file_type = cfg.get("demo_file", "demo21")
 
+            current_year = datetime.now().year
+
             session = create_session()
-            session.verify = settings.rosstat_ca_cert
+            try:
+                session.verify = settings.rosstat_ca_cert
 
-            if file_type == "demo21":
-                filenames = [f"demo21_{y}.xlsx" for y in range(2026, 2020, -1)]
-                content = None
-                used_url = ""
-                for fn in filenames:
-                    content = _try_download(session, fn)
-                    if content:
-                        used_url = BASE_URL + fn
-                        break
-                if not content:
-                    raise ValueError(f"demo21 XLSX not found (tried {filenames})")
+                if file_type == "demo21":
+                    filenames = [f"demo21_{y}.xlsx" for y in range(current_year + 1, current_year - 7, -1)]
+                    content = None
+                    used_url = ""
+                    for fn in filenames:
+                        content = _try_download(session, fn)
+                        if content:
+                            used_url = BASE_URL + fn
+                            break
+                    if not content:
+                        raise ValueError(f"demo21 XLSX not found (tried {filenames})")
 
-                fetch_log.source_url = used_url
-                result = parse_demo21_xlsx(content)
-                series_key = cfg.get("demo_series", code)
-                points = result.get(series_key, [])
+                    fetch_log.source_url = used_url
+                    result = parse_demo21_xlsx(content)
+                    series_key = cfg.get("demo_series", code)
+                    points = result.get(series_key, [])
 
-            elif file_type == "demo14":
-                content = _try_download(session, "demo14.xlsx")
-                if not content:
-                    raise ValueError("demo14.xlsx not found")
-                fetch_log.source_url = BASE_URL + "demo14.xlsx"
-                points = parse_demo14_xlsx(content)
+                elif file_type == "demo14":
+                    content = _try_download(session, "demo14.xlsx")
+                    if not content:
+                        raise ValueError("demo14.xlsx not found")
+                    fetch_log.source_url = BASE_URL + "demo14.xlsx"
+                    points = parse_demo14_xlsx(content)
 
-            elif file_type == "pensioners":
-                filenames = [f"Sp_2.1_{y}.xlsx" for y in range(2026, 2020, -1)]
-                content = None
-                for fn in filenames:
-                    content = _try_download(session, fn)
-                    if content:
-                        fetch_log.source_url = BASE_URL + fn
-                        break
-                if not content:
-                    raise ValueError("Pensioners XLSX not found")
-                points = parse_pensioners_xlsx(content)
+                elif file_type == "pensioners":
+                    filenames = [f"Sp_2.1_{y}.xlsx" for y in range(current_year + 1, current_year - 7, -1)]
+                    content = None
+                    for fn in filenames:
+                        content = _try_download(session, fn)
+                        if content:
+                            fetch_log.source_url = BASE_URL + fn
+                            break
+                    if not content:
+                        raise ValueError("Pensioners XLSX not found")
+                    points = parse_pensioners_xlsx(content)
 
-            else:
-                raise ValueError(f"Unknown demo_file type: {file_type}")
+                else:
+                    raise ValueError(f"Unknown demo_file type: {file_type}")
+            finally:
+                session.close()
 
             if not points:
+                logger.warning("No points parsed for %s", code)
                 fetch_log.status = "no_new_data"
                 fetch_log.records_added = 0
-                fetch_log.completed_at = datetime.utcnow()
+                fetch_log.completed_at = datetime.now(timezone.utc)
                 await db.commit()
                 return
+
+            valid_points = [
+                p for p in points
+                if isinstance(p.value, (int, float)) and not math.isnan(p.value)
+            ]
+            if len(valid_points) < len(points):
+                logger.warning("%s: filtered out %d invalid values", code, len(points) - len(valid_points))
+            points = valid_points
+
+            count_before = (await db.execute(
+                select(func.count(IndicatorData.id))
+                .where(IndicatorData.indicator_id == indicator.id)
+            )).scalar() or 0
 
             for p in points:
                 await db.execute(upsert_indicator_data(indicator.id, p.date, p.value))
             await db.flush()
 
+            count_after = (await db.execute(
+                select(func.count(IndicatorData.id))
+                .where(IndicatorData.indicator_id == indicator.id)
+            )).scalar() or 0
+
+            records_added = count_after - count_before
             fetch_log.status = "success"
-            fetch_log.records_added = len(points)
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.records_added = records_added
+            fetch_log.completed_at = datetime.now(timezone.utc)
             await db.commit()
             await cache_invalidate_indicator(code)
-            logger.info("%s: upserted %d points from %s", code, len(points), file_type)
+            logger.info("%s: upserted %d new points (of %d) from %s", code, records_added, len(points), file_type)
         except Exception as exc:
+            await db.rollback()
             fetch_log.status = "failed"
             fetch_log.error_message = str(exc)[:500]
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
+            db.add(fetch_log)
             await db.commit()
             raise

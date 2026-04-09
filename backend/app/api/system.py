@@ -92,7 +92,7 @@ async def system_status(db: AsyncSession = Depends(get_db), _=Depends(_check_met
         } if last_fetch else None,
         last_forecast={
             "model": last_forecast.model_name,
-            "aic": float(last_forecast.aic) if last_forecast.aic else None,
+            "aic": float(last_forecast.aic) if last_forecast.aic is not None else None,
             "created_at": str(last_forecast.created_at),
         } if last_forecast else None,
     )

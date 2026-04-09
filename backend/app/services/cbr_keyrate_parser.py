@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from typing import ClassVar
 
 from sqlalchemy import func, select
@@ -55,9 +55,10 @@ class CbrKeyRateParser(BaseParser):
             points = validate_points(points, cfg)
 
             if not points:
-                fetch_log.status = "failed"
+                logger.warning("No data points parsed for %s", code)
+                fetch_log.status = "no_new_data"
                 fetch_log.error_message = "Parser returned 0 data points"
-                fetch_log.completed_at = datetime.utcnow()
+                fetch_log.completed_at = datetime.now(timezone.utc)
                 await db.commit()
                 return
 
@@ -95,12 +96,14 @@ class CbrKeyRateParser(BaseParser):
                 await cache_invalidate_indicator(code)
 
             fetch_log.status = "success" if records_added > 0 else "no_new_data"
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
             await db.commit()
 
         except Exception as e:
             logger.exception("ETL failed for '%s'", code)
+            await db.rollback()
             fetch_log.status = "failed"
             fetch_log.error_message = str(e)[:500]
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
+            db.add(fetch_log)
             await db.commit()

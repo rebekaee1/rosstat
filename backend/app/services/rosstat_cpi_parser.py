@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import ClassVar
 
 from sqlalchemy import func, select
@@ -36,12 +36,15 @@ class RosstatCpiParser(BaseParser):
         indicator_code = indicator.code
         try:
             fetcher = RosstatFetcher()
-            content, source_url = await asyncio.to_thread(fetcher.fetch_latest)
+            try:
+                content, source_url = await asyncio.to_thread(fetcher.fetch_latest)
+            finally:
+                fetcher.session.close()
 
             if not content:
                 fetch_log.status = "failed"
                 fetch_log.error_message = "No file available on Rosstat"
-                fetch_log.completed_at = datetime.utcnow()
+                fetch_log.completed_at = datetime.now(timezone.utc)
                 await db.commit()
                 return
 
@@ -52,10 +55,14 @@ class RosstatCpiParser(BaseParser):
             cfg = indicator.model_config_json or {}
             points = validate_points(points, cfg)
 
+            for p in points:
+                if p.value < 90 or p.value > 200:
+                    logger.warning("Suspicious CPI value %.2f for %s at %s", p.value, indicator_code, p.date)
+
             if not points:
                 fetch_log.status = "failed"
                 fetch_log.error_message = "Parser returned 0 data points"
-                fetch_log.completed_at = datetime.utcnow()
+                fetch_log.completed_at = datetime.now(timezone.utc)
                 await db.commit()
                 return
 
@@ -85,16 +92,18 @@ class RosstatCpiParser(BaseParser):
                 await cache_invalidate_indicator(indicator_code)
 
             fetch_log.status = "success" if records_added > 0 else "no_new_data"
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
             await db.commit()
 
             logger.info("ETL complete for '%s': %d new records", indicator_code, records_added)
 
         except Exception as e:
             logger.exception("ETL failed for '%s'", indicator_code)
+            await db.rollback()
             fetch_log.status = "failed"
             fetch_log.error_message = str(e)[:500]
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
+            db.add(fetch_log)
             await db.commit()
 
 
@@ -143,4 +152,11 @@ PARSER_REGISTRY: dict[str, type[BaseParser]] = {
 
 def get_parser(parser_type: str) -> BaseParser | None:
     cls = PARSER_REGISTRY.get(parser_type)
-    return cls() if cls else None
+    if cls is None:
+        logger.error(
+            "Unknown parser_type %r; available: %s",
+            parser_type,
+            ", ".join(sorted(PARSER_REGISTRY)),
+        )
+        return None
+    return cls()

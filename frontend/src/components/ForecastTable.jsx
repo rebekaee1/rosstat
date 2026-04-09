@@ -7,10 +7,12 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
 
   useEffect(() => {
     if (!ref.current) return;
-    gsap.fromTo(ref.current,
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const tween = gsap.fromTo(ref.current,
       { y: 20, opacity: 0 },
       { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out', delay: 0.6 }
     );
+    return () => tween.kill();
   }, []);
 
   const isCpi = mode === 'cpi';

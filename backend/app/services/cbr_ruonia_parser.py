@@ -9,7 +9,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import re
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from typing import ClassVar
 
 from sqlalchemy import func, select
@@ -32,7 +32,7 @@ CHUNK_DAYS = 365
 
 
 def _parse_ru_float(s: str) -> float:
-    t = s.strip().replace(" ", "").replace("\xa0", "").replace(",", ".")
+    t = s.strip().replace("\u2212", "-").replace(" ", "").replace("\xa0", "").replace(",", ".")
     return float(t)
 
 
@@ -44,9 +44,12 @@ def fetch_ruonia_html(date_from: date, date_to: date) -> tuple[str, str]:
         "UniDbQuery.To": date_to.strftime("%d.%m.%Y"),
     }
     session = create_session()
-    resp = session.get(url, params=params, timeout=settings.cbr_request_timeout)
-    resp.raise_for_status()
-    return resp.text, str(resp.url)
+    try:
+        resp = session.get(url, params=params, timeout=settings.cbr_request_timeout)
+        resp.raise_for_status()
+        return resp.text, str(resp.url)
+    finally:
+        session.close()
 
 
 def parse_ruonia_html(html: str) -> list[tuple[date, float]]:
@@ -97,6 +100,7 @@ class CbrRuoniaParser(BaseParser):
                 date_from = date_to - timedelta(days=win)
 
             all_points: list[tuple[date, float]] = []
+            chunk_errors: list[str] = []
             chunk_start = date_from
             final_url = ""
             while chunk_start < date_to:
@@ -106,8 +110,9 @@ class CbrRuoniaParser(BaseParser):
                     chunk_points = await asyncio.to_thread(parse_ruonia_html, html)
                     all_points.extend(chunk_points)
                     logger.debug("RUONIA chunk %s–%s: %d points", chunk_start, chunk_end, len(chunk_points))
-                except Exception:
+                except Exception as chunk_exc:
                     logger.warning("RUONIA chunk %s–%s failed, skipping", chunk_start, chunk_end, exc_info=True)
+                    chunk_errors.append(f"{chunk_start}–{chunk_end}: {chunk_exc}")
                 chunk_start = chunk_end + timedelta(days=1)
 
             fetch_log.source_url = final_url[:500]
@@ -118,9 +123,10 @@ class CbrRuoniaParser(BaseParser):
             points = sorted(by_date.items())
 
             if not points:
+                logger.warning("No data points parsed for %s", code)
                 fetch_log.status = "no_new_data"
                 fetch_log.error_message = "No RUONIA rows parsed"
-                fetch_log.completed_at = datetime.utcnow()
+                fetch_log.completed_at = datetime.now(timezone.utc)
                 await db.commit()
                 return
 
@@ -148,12 +154,16 @@ class CbrRuoniaParser(BaseParser):
                 await cache_invalidate_indicator(code)
 
             fetch_log.status = "success" if records_added > 0 else "no_new_data"
-            fetch_log.completed_at = datetime.utcnow()
+            if chunk_errors:
+                fetch_log.error_message = f"{len(chunk_errors)} chunk errors: {'; '.join(chunk_errors[:3])}"[:500]
+            fetch_log.completed_at = datetime.now(timezone.utc)
             await db.commit()
 
         except Exception as e:
             logger.exception("ETL failed for '%s'", code)
+            await db.rollback()
             fetch_log.status = "failed"
             fetch_log.error_message = str(e)[:500]
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
+            db.add(fetch_log)
             await db.commit()

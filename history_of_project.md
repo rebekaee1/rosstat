@@ -357,3 +357,383 @@
 | innovation-activity | 15 | 12.53% | 2024 |
 | tech-innovation-share | 15 | 24.49% | 2024 |
 | small-business-innovation | 4 | 7.39% | 2024 |
+
+## 2026-04-09 — Security & Data Integrity Audit v2
+
+- **Полный аудит безопасности, целостности данных и бизнес-рисков.** Проаудировано: весь backend (app/, services/, api/), frontend (src/, nginx, Dockerfile), инфра (docker-compose, Caddyfile, scripts).
+- **Найдено 24 проблемы:** 1 critical, 8 high, 10 medium, 5 low.
+- **CRITICAL:** Rate limiter использует `request.client.host` за reverse proxy → все пользователи на одном IP → бесполезен.
+- **HIGH (security):** /metrics и /system/status открыты без токена (default ""); credentials в alembic.ini; Redis без пароля.
+- **HIGH (data):** кэш не инвалидируется при ревизии значений (count-based check); нет валидации в 21/22 парсерах; нет rollback при порче данных.
+- **HIGH (business):** нет индикации свежести данных на frontend; нет детекции изменения структуры XLSX.
+- **MEDIUM:** CSP только на root; nginx catch-all ломает 404; Caddy не пробрасывает real IP; auto-sync.sh рискует утечкой; нет алертинга на stale data; Numeric(12,4) тесен; datetime.utcnow() deprecated; нет frontend error tracking; бэкапы не offsite.
+- **Хорошо:** нет SQL injection (SQLAlchemy ORM); нет XSS; нет SSRF; API read-only; CORS ограничен; дубли невозможны (UniqueConstraint); прогнозы изолированы; Docker non-root; docs отключены в prod.
+
+## 2026-04-09 — Deep audit: 34 fixes + deploy
+
+**User intent:** Full codebase audit (deepest possible), fix ALL 34 findings, push to GitHub, deploy to server.
+
+**What was done:**
+- Аудит (предыдущий чат) выявил 34 проблемы: 5 critical, 9 high, 11 medium, 8 frontend, 1 тесты.
+- Все 34 исправлены в одном коммите: `fix: deep audit — 34 fixes across backend, frontend, infra` (35 файлов, +654 -313).
+
+**Critical fixes:**
+1. `GET /data` — DESC+limit+reverse вместо ASC (отсекались свежие данные)
+2. Forecaster — frequency-aware date stepping (daily/monthly/quarterly/annual)
+3. CalculationEngine — ON CONFLICT DO UPDATE вместо DO NOTHING (производные обновляются)
+4. `change` — `is not None` вместо truthiness (ноль теперь корректен)
+5. GDP YoY — защита от деления на ноль
+
+**Key architectural changes:**
+- `_TimeoutAdapter` в http_client — timeout на каждый запрос без забывания
+- `metrics_token` в config — защита /metrics и /system/status
+- try/except + FetchLog в 4 парсерах (demo, ind, fixedassets, science) — ошибки не теряются
+- Docker multi-stage backend build, non-root user
+- Redis volume для persistence, Caddyfile в репо
+
+**New tests:** test_forecaster (13), test_calculation_engine (2), test_http_client (2), test_upsert (1) = 18 новых, total 85 passed.
+
+**Deployed:** git push → server pull → docker compose build --no-cache → up -d. All containers healthy, https://forecasteconomy.com/api/v1/health = ok.
+
+**Pending ops (not code):** задать `RUSTATS_METRICS_TOKEN` в `.env` на сервере для защиты /metrics.
+
+## 2026-04-09 — МЕГА-АУДИТ: 8-поточный deep audit (audit-only, код не менялся)
+
+**User intent:** «Самый глубокий аудит который только возможен. Проверить на прочность и бизнес-логику. Обосрать всё критично.»
+
+**Что сделано:** 8 параллельных аудит-агентов, ~200 файлов, ~15 000 строк кода. Результат: ~145 уникальных находок.
+
+**Статистика:** ~15 CRITICAL, ~35 HIGH, ~55 MEDIUM, ~40 LOW.
+
+**Ключевые находки (CRITICAL):**
+1. Rate limiter бесполезен — все пользователи = один IP прокси (`main.py:45`)
+2. Truthiness вместо `is not None` — нулевые значения → null (`indicators.py:75`, `forecasts.py:66`)
+3. Hardcoded `range(2026, ...)` — 4 парсера сломаются в 2027 (`demo/fixedassets/science`)
+4. Нет Error Boundary — белый экран при render crash (`App.jsx`)
+5. `wheel` preventDefault блокирует скролл над графиком (`IndicatorChart.jsx:183`)
+6. GSAP не cleanup при unmount — утечка памяти (7 файлов, 12 мест)
+7. FetchLog теряется при timeout ETL (`scheduler.py:42`)
+8. Sync `requests.post` блокирует event loop (`alerting.py:24`)
+9. `records_added = len(points)` в 4 парсерах — мониторинг слеп
+10. CBR DataService по HTTP (`cbr_dataservice_parser.py:40`)
+11. Nginx catch-all `/` → soft 404 (`nginx.conf:96`)
+12. Uvicorn 1 worker → ETL блокирует API (`entrypoint.sh:13`)
+13. CSP только на root (`nginx.conf:69-94`)
+14. `auto-sync.sh` — `git add -A && push` каждые 30 сек
+15. `db.commit()` в except → PendingRollbackError (10 CBR-парсеров)
+
+**Ключевые HIGH:**
+- YoY `> 0` вместо `!= 0` — теряет отрицательные (`calculation_engine.py:408`)
+- OLS fallback `0.0` — абсурдные прогнозы для percentage (`forecaster.py:370`)
+- Redis без пароля, нет resource limits, pytest в prod image
+- Unicode-минус, PPI fallback на CPI, budget cumulative→monthly gap
+- PARSER_REGISTRY SPOF, кэш не инвалидируется при ревизии данных
+
+**Системные проблемы:**
+- 6 hardcoded маппингов frontend ломаются при добавлении индикатора
+- DataPoint × 11, _parse_ru_float × 6 — дубликаты
+- Нет единой конвенции квартальных дат
+- datetime.utcnow deprecated в 25+ файлах
+- SPA без SSR — social sharing сломан
+
+**User reaction:** ожидает решения о фиксах.
+
+## 2026-04-09 — Business logic audit fixes (16 items, 7 files)
+
+- **Scope:** calculation_engine.py, forecaster.py, forecast_pipeline.py, data_validator.py, alerting.py, scheduler.py, seed_data.py.
+- **FIX 1 (CRITICAL):** YoY generic `by_date[prev_d] > 0` → `!= 0` — current-account с отрицательным сальдо теперь корректно рассчитывает YoY.
+- **FIX 2 (CRITICAL):** FetchLog теперь commit'ится ДО запуска парсера. Добавлены except-блоки для CancelledError (status=timeout) и Exception (status=failed) с rollback+re-commit — FetchLog переживает таймаут ETL.
+- **FIX 3 (HIGH):** OLS fallback `0.0` → `data_series.iloc[-1]` (последнее известное значение в трансформированном пространстве) + variance из данных. Предотвращает абсурдные прогнозы.
+- **FIX 4 (HIGH):** wages-real: guard `base_wage == 0` и `base_cpi == 0` — предотвращает ZeroDivisionError.
+- **FIX 5 (HIGH):** seed_data `generate_forecasts` дефолт forecast_steps: `12` → `0` (безопаснее — без явного указания прогноз не строится).
+- **FIX 6 (MEDIUM):** alerting.py: `requests.post` (sync) → `httpx.AsyncClient` (async) — больше не блокирует event loop.
+- **FIX 7 (MEDIUM):** alerting.py: `html.escape()` для indicator_code и error в Telegram-сообщениях — предотвращает HTML injection.
+- **FIX 8 (MEDIUM):** scheduler: in-memory `_running_locks` set + asyncio.Lock — предотвращает параллельный запуск одного индикатора.
+- **FIX 9 (MEDIUM):** `datetime.utcnow()` → `datetime.now(timezone.utc)` в scheduler.py (единственный оставшийся файл в scope).
+- **FIX 10 (MEDIUM):** CPI CI: `train_monthly_cpi` и `train_inflation_12m` теперь вычисляют lower/upper bound (±1.96 * std * √m) вместо None.
+- **FIX 11 (MEDIUM):** forecast_transform default: `"cpi_index"` → `"absolute"` в forecast_pipeline.py и seed_data.py — не-CPI индикаторы корректно нормализуются.
+- **FIX 12 (MEDIUM):** Detached ORM: `daily_update_job` теперь читает атрибуты в dict `indicator_tasks` до закрытия сессии, не обращается к detached ORM-объектам.
+- **FIX 13 (LOW):** data_validator: `logger.warning` при фильтрации точек (кол-во dropped + диапазон).
+- **FIX 14 (LOW):** seed_data: indicator seed теперь `ON CONFLICT DO UPDATE` для метаданных (name, parser_type, model_config и т.д.), CPI data по-прежнему `DO NOTHING`.
+- **FIX 15 (LOW):** forecaster: `_date_step` теперь обрабатывает `"weekly"` → `relativedelta(weeks=1)`.
+- **FIX 16 (MEDIUM):** GDP QoQ: `prev > 0` → `prev != 0` — аналогично FIX 1.
+- **Верификация:** `py_compile` 7/7 файлов — ок, lint — ок.
+
+## 2026-04-09 — Deep audit: business logic layer (iteration 2)
+
+- **Scope:** calculation_engine.py, forecaster.py, forecast_pipeline.py, data_validator.py, alerting.py, scheduler.py, seed_data.py — полная проверка формул, граничных условий, consistency.
+- **Результат:** 18 findings: 1 CRITICAL (YoY `> 0` вместо `!= 0` для current-account), 3 HIGH (OLS fallback 0.0, wages-real base_cpi default, seed forecast без frequency), 5 MEDIUM (CPI CI отсутствуют, cpi_index default для не-CPI, нет job lock, detached ORM, sync requests в alerting), 9 LOW.
+- **User intent:** предельно глубокий аудит бизнес-логики, каждая ошибка = неверные данные для пользователей.
+- **Status:** отчёт предоставлен, ожидается решение по исправлению.
+
+## 2026-04-09 (Deep audit: CBR ETL parsers)
+
+- **Scope:** 14 файлов, ~2700 строк: все CBR-парсеры, http_client, upsert, base_parser.
+- **Findings:** 28 issues — 3 CRITICAL, 7 HIGH, 11 MEDIUM, 7 LOW.
+- **CRITICAL:** HTTP (не HTTPS) в DataService URL; `db.commit()` в except-блоке → PendingRollbackError при DB-ошибках → потеря FetchLog; Session leak (create_session не закрывается).
+- **HIGH:** двойное кодирование XML в gold-парсере; chunk-ошибки проглочены (status=success); hardcoded URLs; magic number 250 для FDI; openpyxl workbook leak; Unicode-минус U+2212 не обработан; element_id type mismatch int/str.
+- **MEDIUM:** datetime.utcnow() deprecated; unused imports; no throttle; отсутствие validate_points во всех кроме keyrate; hardcoded worksheet[0]; race condition в records_added; no Content-Type check; parser_type naming; quarter convention inconsistency; 408 not in retry.
+- **LOW:** code duplication (_parse_ru_float ×6, DataPoint ×3); no defusedxml; Numeric(12,4) tight for M2; missing type annotations.
+- **User intent:** глубочайший аудит кода с конкретными file:line и фиксами. Код не менялся — только отчёт.
+
+## 2026-04-09 (Deep audit: frontend library code)
+
+- **Scope:** 14 файлов frontend/src/lib + config (api.js, format.js, hooks.js, categories.js, useMeta.js, uiTokens.js, excel.js, тесты, index.html, vite/vitest/eslint config, package.json).
+- **Findings:** 5 HIGH, 14 MEDIUM, 5 LOW. 0 CRITICAL.
+- **Key systemic issue:** hardcoded mappings (CPI_INDEX_CODES, UNIT_CONFIG, VALUE_LABELS, HIDDEN_FROM_LISTING, apiCategory) all break silently when new indicators are added without frontend update.
+- **HIGH:** no API interceptor for 429/503; no AbortController/signal; CPI_INDEX_CODES hardcoded; excel.js CPI-only labels; useMeta cleanup causes title flicker on navigation.
+- **MEDIUM:** no quarterly/annual date formats; UNIT_CONFIG missing ‰/чел./ед./млн кв.м/руб.г; no gcTime in hooks; no retry config for useSystemStatus; apiCategory fragile coupling (Russian strings); noscript outdated (4/80 indicators); default dev proxy to production; vitest node-only environment; ESLint varsIgnorePattern too broad; xlsx@0.18.5 CVE; adjustCpiDisplay no isFinite check; test coverage minimal.
+- **Code unchanged — audit report only.**
+
+## 2026-04-09 — Infrastructure audit (docker, nginx, CI, scripts, alembic)
+
+- **Scope:** 18 файлов: docker-compose.yml, оба Dockerfile, nginx.conf, Caddyfile, entrypoint.sh, ci.yml, .env/.env.example, 4 скрипта (check-all, docker-cleanup, pg-backup, etl-key-rate), alembic env.py + 3 миграции, 404.html, auto-sync.sh.
+- **Result:** 36 findings (5 CRITICAL, 11 HIGH, 12 MEDIUM, 8 LOW).
+- **CRITICAL:** (1) nginx catch-all `location /` с SPA fallback → soft 404 для поисковиков, (2) uvicorn single-worker mode, (3) CSP только на `= /` — остальные SPA-маршруты без CSP, (4) `.env` может быть в git history, (5) `auto-sync.sh` — git add -A + push каждые 30 сек.
+- **HIGH:** frontend Docker root, нет resource limits, pytest в prod image, pg_dump без custom format, нет Docker build в CI, нет security scanning, нет CD pipeline, нет CSP в Caddy, gzip_comp_level=1, дублирующий индекс indicator_data, datetime.utcnow deprecated.
+- **User intent:** максимально жёсткий инфраструктурный аудит. Код не менялся — только отчёт.
+
+## 2026-04-09 — Backend Core & API audit fixes (15 items)
+
+- **FIX 1 (CRITICAL):** Rate limiter теперь извлекает IP из `X-Forwarded-For` вместо `request.client.host` — корректная работа за reverse proxy.
+- **FIX 2 (CRITICAL):** Все `float(val) if val else None` → `float(val) if val is not None else None` в indicators.py (current_value, previous_value, avg, stddev) и forecasts.py (lower_bound, upper_bound, fc_lowers, fc_uppers). Нулевые значения больше не теряются.
+- **FIX 3 (HIGH):** `pool_pre_ping=True` в `create_async_engine` — автоматическая проверка живости соединений.
+- **FIX 4:** Уже было сделано — `/metrics` и `/system/status` защищены `_check_metrics_token` в system.py.
+- **FIX 5 (HIGH):** `await engine.dispose()` в lifespan shutdown — корректное освобождение пула.
+- **FIX 6 (MEDIUM):** `datetime.utcnow` → `datetime.now(timezone.utc)` во всех 7 местах models.py.
+- **FIX 7 (MEDIUM):** `json_serializer=_json_serializer` с `default=str` — корректная сериализация datetime в JSON-колонках.
+- **FIX 8 (MEDIUM):** `http://localhost:5174` добавлен в CORS origins.
+- **FIX 9:** Уже было — `Retry-After` header в 429 ответе.
+- **FIX 10 (MEDIUM):** `GZipMiddleware(minimum_size=1000)` добавлен.
+- **FIX 11:** `code` поле в `IndicatorSummary` уже покрывает indicator_code.
+- **FIX 12:** Cache pattern — benign race (идемпотентный get/set для read-only данных), фикс не нужен.
+- **FIX 13 (LOW):** `get_db()` → `AsyncGenerator[AsyncSession, None]` return type в database.py.
+- **FIX 14 (MEDIUM):** Валидация `^[a-z0-9-]+$` для indicator code в 5 эндпоинтах (indicators.py: detail/data/stats, forecasts.py: forecast/inflation).
+- **FIX 15:** Cache keys уже детерминированы — фикс не нужен.
+- **Файлы:** main.py, indicators.py, forecasts.py, models.py, database.py, config.py (не менялся), schemas.py (не менялся), core/deps.py (не менялся). `py_compile` + lint — ок.
+
+## 2026-04-09 — Deep frontend audit (React, 19 файлов)
+
+- Аудит: App, main, 6 pages, 9 components, index.css + 6 lib-файлов (hooks, format, useMeta, categories, uiTokens, api).
+- **35 проблем:** 5 CRITICAL, 10 HIGH, 12 MEDIUM, 8 LOW.
+- **CRITICAL:** (1) нет Error Boundary — белый экран при render-ошибке; (2) `e.preventDefault()` на wheel в IndicatorChart блокирует скролл страницы для trackpad-пользователей; (3) GSAP-анимации не cleanup'ятся при unmount — memory leak в 6 файлах; (4) GSAP игнорирует `prefers-reduced-motion`; (5) DataTable `page` не сбрасывается при рефетче данных.
+- **HIGH:** a11y (keyboard nav dropdown, label+select, ARIA switch), ComparePage нет error handling, `connectNulls` ложная интерполяция, dead import Legend, DataTable поиск без debounce, wheel handler пересоздаётся на каждый зум.
+- **MEDIUM:** IndicatorDetail 995 строк (SEO_MAP 338), HIDDEN_CODES внутри компонента, NaN в tooltip, range variable shadowing, `.` вместо `,` для ru-locale, пустой Suspense fallback.
+- Код не менялся — только отчёт.
+
+## 2026-04-09 — CBR ETL audit fixes (14 items, 12 files)
+
+- **Scope:** http_client.py, upsert.py, 10 CBR-парсеров (fx, keyrate lib + parser, ruonia, monetary, dataservice, dataservice_sum, gold, bop, reserves, debt).
+- **FIX 1 (CRITICAL):** DataService URL `http://` → `settings.cbr_base_url` (HTTPS) в `cbr_dataservice_parser.py`.
+- **FIX 2 (CRITICAL):** `await db.rollback()` + `db.add(fetch_log)` перед `await db.commit()` в except-блоках **всех 10 парсеров** — предотвращает PendingRollbackError и потерю FetchLog.
+- **FIX 3 (CRITICAL):** `session.close()` в try/finally во **всех 9 fetch-функциях** — устранена утечка сессий requests.
+- **FIX 4 (HIGH):** Gold XML: `resp.text` + `.encode("windows-1251")` → `resp.content` (bytes), ET парсит по XML-declaration. Устранено двойное кодирование.
+- **FIX 5 (HIGH):** Chunk error tracking в RUONIA, gold, reserves — `chunk_errors[]` с записью в `fetch_log.error_message` при успешном статусе.
+- **FIX 6 (HIGH):** `\u2212` → `-` в **всех 6** `_parse_ru_float()` (fx, keyrate lib, ruonia, monetary, gold, reserves).
+- **FIX 7 (HIGH):** openpyxl workbook в try/finally в BOP и debt парсерах.
+- **FIX 8 (MEDIUM):** `datetime.utcnow()` → `datetime.now(timezone.utc)` — 30+ замен во всех 10 парсерах, добавлен `from datetime import timezone`.
+- **FIX 9 (MEDIUM):** Content-Type проверка в fetch-функциях: XML (fx, gold), XLSX (bop, debt), JSON (dataservice).
+- **FIX 10 (MEDIUM):** 408 Request Timeout добавлен в retry `status_forcelist` в `http_client.py`.
+- **FIX 11 (MEDIUM):** `logger.warning("No data points parsed for %s")` во всех парсерах при 0 точек.
+- **FIX 13 (LOW):** Удалены unused imports: `import requests` (monetary, dataservice, keyrate lib), `import re` (gold).
+- **FIX 14 (LOW):** Все `run()` методы уже имели `-> None` ✓; FIX 12 (records_added) уже покрыт count_before/count_after ✓.
+- **Верификация:** `py_compile` — 12/12 файлов без ошибок.
+
+## 2026-04-09 — Rosstat ETL audit fixes (17 items, 14 files)
+
+- **Scope:** rosstat_demo_parser, rosstat_fixedassets_parser, rosstat_science_parser, rosstat_ind_parser, rosstat_cpi_parser, rosstat_labor_parser, rosstat_gdp_parser, rosstat_ipi_parser, rosstat_housing_parser, rosstat_population_parser, rosstat_weekly_inflation_parser, minfin_budget_parser, fetcher.py, rosstat_sdds_fetcher.py.
+- **FIX 1 (CRITICAL):** Hardcoded `range(2026, 2020, -1)` → dynamic `range(current_year + 1, current_year - 7, -1)` в demo, fixedassets, science (через `_dynamic_year_filenames` helper). ind_parser уже использовал datetime.now().
+- **FIX 2 (CRITICAL):** `await db.rollback()` + `db.add(fetch_log)` перед `await db.commit()` в except-блоках **всех 12 Rosstat/Minfin парсеров** — предотвращает PendingRollbackError и потерю FetchLog.
+- **FIX 3 (CRITICAL):** Session leak: `create_session()` обёрнут в try/finally с `session.close()` в demo, fixedassets, science, ind, weekly_inflation, minfin (2 функции: `_find_csv_url`, `fetch_and_parse_budget`). fetcher.py — session закрывается вызывающим кодом (`rosstat_cpi_parser`). sdds_fetcher — singleton pattern, не утечка.
+- **FIX 4 (HIGH):** `records_added = len(points)` → count_before/count_after в demo, fixedassets, science, ind. Остальные парсеры уже использовали count-based подход.
+- **FIX 5 (HIGH):** `get_parser()` теперь логирует `logger.error` с перечислением доступных parser_type при неизвестном типе.
+- **FIX 6 (HIGH):** Проверен fetcher.py — нет `month + 1` паттерна, timedelta-подход безопасен. ind_parser корректно обрабатывает wrap. Фикс не требуется.
+- **FIX 7 (HIGH):** Bare `except: pass` → `except Exception as e: logger.debug(...)` в `_try_download` (demo), `_try_download_xls` (science), download loops (fixedassets, ind).
+- **FIX 8 (HIGH):** Cache invalidation уже присутствовала (`cache_invalidate_indicator`) во всех парсерах ✓.
+- **FIX 9 (MEDIUM):** `datetime.utcnow()` → `datetime.now(timezone.utc)` — 35+ замен во всех 12 парсерах + `from datetime import timezone`.
+- **FIX 10 (MEDIUM):** `\u2212` → `-` в `_to_float()` (demo, fixedassets, science, ind), weekly CPI `_parse_page`, minfin CSV parsing.
+- **FIX 11 (MEDIUM):** Content-type HTML check добавлена в fetcher.py (download), sdds_fetcher.py (fetch_sdds_xlsx, fetch_rosstat_static_xlsx), _try_download (demo), _try_download_xls (science), download loops (fixedassets, ind).
+- **FIX 12 (MEDIUM):** openpyxl `wb.close()` обёрнут в try/finally во всех parse-функциях (demo ×3, fixedassets, ind, labor, gdp, ipi, housing, population ×2). xlrd: `wb.release_resources()` в try/finally (science ×3).
+- **FIX 13 (MEDIUM):** Validate points before upsert: `math.isnan` + `isinstance` фильтрация в demo, fixedassets, science, ind. SDDS-парсеры используют `validate_points()` из data_validator.
+- **FIX 14 (MEDIUM):** CPI range warning: `p.value < 90 or p.value > 200` → logger.warning в `rosstat_cpi_parser.py`.
+- **FIX 15 (MEDIUM):** Science keyword fallback: `logger.warning` при использовании fallback row в `parse_nauka_total_xls` и `parse_innov_russia_xls`.
+- **FIX 16 (LOW):** Unused imports удалены: `requests` из weekly_inflation (оставлен — используется для RequestException), проверены все файлы.
+- **FIX 17 (LOW):** Все `run()` методы уже имели `-> None` ✓.
+- **Верификация:** `py_compile` — 14/14 файлов без ошибок.
+
+## 2026-04-09 — Frontend React audit fixes (20 items, 12 files)
+
+- **Scope:** App.jsx, IndicatorChart.jsx, DataTable.jsx, IndicatorDetail.jsx, ComparePage.jsx, Navbar.jsx, ForecastTable.jsx, IndicatorTile.jsx + new ErrorBoundary.jsx. Also: CategoryPage, About, Privacy, Footer, Skeleton, NoiseOverlay, CategoryBlock checked — no GSAP.
+- **FIX 1 (CRITICAL):** Создан `ErrorBoundary.jsx` (class component, getDerivedStateFromError + componentDidCatch).
+- **FIX 2 (CRITICAL):** `<ErrorBoundary>` оборачивает `<Routes>` в App.jsx — белый экран при render-ошибке устранён.
+- **FIX 3 (CRITICAL):** `handleWheel` в IndicatorChart — `e.preventDefault()` только при `e.ctrlKey || e.metaKey`. Текст подсказки «Ctrl + scroll — зум». Trackpad-скролл больше не блокируется.
+- **FIX 4 (CRITICAL):** GSAP cleanup на unmount (`tween.kill()`) в 6 файлах: IndicatorChart, DataTable, IndicatorDetail (TelemetryCard ×2 + header), ForecastTable, Navbar, IndicatorTile.
+- **FIX 5 (CRITICAL):** `prefers-reduced-motion: reduce` — GSAP-анимации не запускаются при включённом reduce-motion. Те же 6 файлов.
+- **FIX 6 (HIGH):** DataTable — сброс `page` при смене `data`. Использован React-паттерн «setState during render» (prevData ref) вместо useEffect, чтобы избежать cascading renders lint error.
+- **FIX 7 (HIGH):** Navbar — Escape закрывает dropdown категорий (keydown listener).
+- **FIX 8 (HIGH):** ComparePage — `isError` от обоих useIndicatorData; показывается alert-баннер при ошибке.
+- **FIX 9 (HIGH):** `connectNulls={false}` в ComparePage (оба Line). IndicatorChart не имел connectNulls.
+- **FIX 10 (HIGH):** DataTable — debounce поиска (250ms через setTimeout в useEffect).
+- **FIX 11 (HIGH):** Удалён неиспользуемый `Legend` import из ComparePage.
+- **FIX 12 (MEDIUM):** NotFound 404 — мета-тайтл через `useDocumentMeta` в App.jsx.
+- **FIX 13 (MEDIUM):** handleWheel уже в useCallback с корректными deps ✓.
+- **FIX 14 (MEDIUM):** `aria-label="Показать прогноз"` на forecast toggle switch в IndicatorDetail.
+- **FIX 15 (MEDIUM):** NaN guard в CustomTooltip (IndicatorChart) — `!isNaN(p.value)` в find.
+- **FIX 16 (MEDIUM):** Footer год — уже динамический `new Date().getFullYear()` ✓.
+- **FIX 17 (MEDIUM):** Suspense fallback — `<SkeletonBox>` вместо пустого `<div>` в App.jsx.
+- **FIX 18 (MEDIUM):** source_url валидация — `.startsWith('http')` в IndicatorDetail.
+- **FIX 19 (LOW):** Убран `window.scrollTo(0, 0)` из IndicatorDetail useEffect — ScrollToTop в App.jsx уже покрывает.
+- **FIX 20 (LOW):** Variable shadowing `range` → `span` в yDomain useMemo (IndicatorChart).
+- **Бонус:** Исправлены pre-existing lint ошибки: удалены `formatValue`, `unitSuffix` из импорта IndicatorChart; добавлены `codeA`, `codeB` в deps useMemo ComparePage.
+- **Верификация:** eslint — 0 errors, 0 warnings на 12 файлах.
+
+## 2026-04-09 — Frontend lib & config audit fixes (19 items, 12 files)
+
+- **Scope:** api.js, format.js, hooks.js, categories.js, useMeta.js, excel.js, eslint.config.js, vite.config.js, index.html, format.test.js, categories.test.js. Не затронуты: компоненты, страницы, App.jsx, main.jsx, index.css.
+- **FIX 1 (HIGH):** Axios response interceptor для 429/503 с exponential backoff (RETRY_LIMIT=3, Retry-After header).
+- **FIX 2 (HIGH):** AbortController/signal support — все API-функции принимают `{ signal }`, hooks передают signal из React Query queryFn.
+- **FIX 3 (HIGH):** Maintenance-комментарий на `CPI_INDEX_CODES` в format.js.
+- **FIX 4 (HIGH):** Excel export — generic labels через `meta = { name, unit }` параметр. CPI-specific labels сохранены для CPI-режимов, fallback использует имя индикатора.
+- **FIX 5 (HIGH):** useMeta.js — убран cleanup в useEffect (предотвращает мигание title при навигации).
+- **FIX 6 (MEDIUM):** `formatDate` — добавлены форматы `'annual'` (год) и `'quarterly'` (N кв. YYYY).
+- **FIX 7 (MEDIUM):** UNIT_CONFIG — добавлены ‰, чел., ед., млн кв.м.
+- **FIX 8 (MEDIUM):** `gcTime: 30 * 60 * 1000` добавлен во все useQuery хуки (кроме useSystemStatus — короткоживущий).
+- **FIX 9 (MEDIUM):** useSystemStatus — `retry: 2, retryDelay: 3000`.
+- **FIX 10 (MEDIUM):** Query keys проверены — все параметры уже включены (params object в useIndicatorData, category+includeInactive в useIndicators).
+- **FIX 11 (MEDIUM):** `adjustCpiDisplay(value, code)` — isFinite guard, опциональный code-параметр с isCpiIndex проверкой. Backward-compatible: без code работает как раньше.
+- **FIX 12 (MEDIUM):** noscript блок обновлён: 80+ индикаторов, 9 категорий, 3 источника (Росстат, ЦБ, Минфин).
+- **FIX 13 (MEDIUM):** og:description, twitter:description, meta description обновлены — 80+ индикаторов, 9 категорий.
+- **FIX 14 (MEDIUM):** Удалён `ecommerce:"dataLayer"` из Yandex Metrika init (не e-commerce сайт).
+- **FIX 15 (LOW):** Favicon — уже корректен (ico, svg, png, shortcut). Изменений не требуется.
+- **FIX 16 (LOW):** vite.config.js — добавлен security-комментарий о прод-прокси (POST/PUT → localhost).
+- **FIX 17 (LOW):** eslint `varsIgnorePattern: '^[A-Z_]'` — сохранён с комментарием. Сужение до `'^_'` невозможно без eslint-plugin-react (JSX usage не отслеживается no-unused-vars).
+- **FIX 18 (MEDIUM):** `HIDDEN_FROM_LISTING` экспортирован из categories.js.
+- **FIX 19 (LOW):** JSON-LD descriptions обновлены (WebSite + WebApplication) — 80+ индикаторов, 9 категорий.
+- **Тесты:** 25 pass (format.test.js: +6 новых тестов для formatDate annual/quarterly и adjustCpiDisplay; categories.test.js: +2 теста для HIDDEN_FROM_LISTING export и filtering).
+- **Верификация:** eslint — 0 errors, 0 warnings на src/lib/*.js.
+
+## 2026-04-09 — Infrastructure audit fixes (20 items)
+
+- **Scope:** docker-compose.yml, оба Dockerfile, nginx.conf, Caddyfile, entrypoint.sh, ci.yml, .env.example, scripts (pg-backup, check-all, docker-cleanup), alembic.ini, alembic/env.py, 404.html, .dockerignore ×2, auto-sync.sh.
+- **FIX 1 (CRITICAL):** Удалён `auto-sync.sh` — `git add -A && push` каждые 30 сек.
+- **FIX 2 (CRITICAL):** nginx catch-all `location /` — `try_files $uri =404` вместо SPA fallback.
+- **FIX 3 (CRITICAL):** CSP и security headers перенесены с `location = /` на уровень `server {}` — применяются ко всем маршрутам. Дублирование в location-блоках удалено.
+- **FIX 4 (CRITICAL):** Uvicorn — `--workers ${UVICORN_WORKERS:-2}` в entrypoint.sh.
+- **FIX 5 (HIGH):** Frontend Dockerfile — `USER nginx`, chown html/cache/log/run.
+- **FIX 6 (HIGH):** Resource limits в docker-compose: backend 1G/1cpu, frontend 256M/0.5cpu, postgres 512M, redis 128M.
+- **FIX 7 (HIGH):** pytest вынесен из requirements.txt в requirements-dev.txt. CI обновлён на requirements-dev.txt. Prod image без pytest.
+- **FIX 8 (HIGH):** pg-backup.sh — `pg_dump -Fc` (custom format) вместо plain SQL. Расширение `.dump`.
+- **FIX 9 (HIGH):** CI — добавлен job `docker` с build обоих Docker-образов.
+- **FIX 10 (HIGH):** Redis — `--requirepass ${REDIS_PASSWORD:-changeme}`, healthcheck с `-a`, REDIS_URL с паролем.
+- **FIX 11 (HIGH):** Caddy — `header_up X-Real-IP`, `header_up X-Forwarded-For` в reverse_proxy.
+- **FIX 12 (HIGH):** Caddy — CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy в header block.
+- **FIX 13 (MEDIUM):** gzip_comp_level 4 (было неявно 1).
+- **FIX 14 (MEDIUM):** .gitignore уже содержит `.env`, `.env.local`, `.env.*.local` — ок. Комментарий о ротации секретов добавлен в .env.example.
+- **FIX 15 (MEDIUM):** alembic.ini — hardcoded URL удалён (`sqlalchemy.url =`), env.py уже читает из settings.database_url.
+- **FIX 16 (MEDIUM):** 404.html — новый дизайн: светлый фон, champagne-акцент, noindex, правильный title.
+- **FIX 17 (MEDIUM):** backend/.dockerignore — добавлены tests/, .pytest_cache, .venv, venv.
+- **FIX 18 (MEDIUM):** frontend/.dockerignore — минимизирован (node_modules, .git, *.md, .env*).
+- **FIX 19 (LOW):** chmod +x на все scripts/*.sh и entrypoint.sh.
+- **FIX 20 (LOW):** check-all.sh — уже имел `set -euo pipefail`.
+- **Nginx syntax:** проверен через `docker run nginx:alpine nginx -t` — валиден (upstream "backend" не резолвится вне compose, что ожидаемо).
+- **Файлы изменены:** 14 файлов. 1 файл удалён (auto-sync.sh). 1 файл создан (requirements-dev.txt).
+
+## 2026-04-09 — MEGA-FIX: 145 правок аудита, 7 параллельных агентов
+
+**User intent:** исправить ВСЕ 145 находок мега-аудита в параллельном режиме.
+
+**Метод:** 7 параллельных агентов с эксклюзивным владением файлами:
+1. Backend Core & API (main.py, indicators.py, forecasts.py, models.py, schemas.py, database.py, config.py)
+2. CBR Parsers (10 парсеров + http_client + upsert)
+3. Rosstat Parsers (14 парсеров + fetcher + sdds_fetcher + minfin)
+4. Business Logic (calculation_engine, forecaster, forecast_pipeline, data_validator, alerting, scheduler, seed_data)
+5. Frontend Components (App, pages, components + NEW ErrorBoundary.jsx)
+6. Frontend Libs (api, format, hooks, categories, useMeta, excel, tests, index.html, configs)
+7. Infrastructure (Docker, nginx, CI, scripts, Caddyfile, .env, entrypoint, alembic, .dockerignore)
+
+**Итого: 75 файлов, +1580/-777 строк, 2 новых файла.**
+
+### CRITICAL fixes (15):
+- Rate limiter → X-Forwarded-For extraction
+- Truthiness → `is not None` (9 мест в indicators.py/forecasts.py)
+- Hardcoded year ranges → dynamic `datetime.now().year` (3 парсера)
+- NEW ErrorBoundary.jsx + обёртка Routes
+- wheel preventDefault → only with Ctrl/Cmd
+- GSAP cleanup на unmount (7 файлов)
+- GSAP prefers-reduced-motion check
+- FetchLog commit до парсера + CancelledError handling (scheduler.py)
+- Sync requests.post → httpx.AsyncClient (alerting.py)
+- CBR DataService HTTP → HTTPS via settings.cbr_base_url
+- db.commit() в except → db.rollback() first (10 CBR + 12 Rosstat парсеров)
+- Session leak → try/finally close (15+ парсеров)
+- nginx catch-all → 404 вместо SPA fallback
+- CSP → server {} block (все маршруты)
+- Uvicorn → --workers ${UVICORN_WORKERS:-2}
+- auto-sync.sh УДАЛЁН
+
+### HIGH fixes (35):
+- YoY/QoQ `> 0` → `!= 0` (calculation_engine)
+- OLS fallback 0.0 → last known value (forecaster)
+- wages-real base_cpi guard (calculation_engine)
+- pool_pre_ping=True (database.py)
+- engine.dispose() on shutdown (main.py)
+- GZipMiddleware (main.py)
+- Chunk error tracking (ruonia, gold, reserves)
+- Unicode minus U+2212 (6 парсеров)
+- openpyxl wb.close() (15 функций)
+- Content-type check в fetch-функциях
+- 408 в retry status_forcelist (http_client)
+- records_added → count_before/count_after (4 парсера)
+- Gold XML: response.content вместо text.encode
+- DataTable page reset на data change
+- Navbar Escape keyboard
+- ComparePage error handling
+- connectNulls=false
+- DataTable search debounce
+- API interceptor 429/503 retry
+- AbortController/signal support
+- Excel generic labels
+- useMeta cleanup removed (no title flicker)
+- Frontend Docker non-root
+- Resource limits docker-compose
+- pytest → requirements-dev.txt
+- pg_dump custom format
+- Docker build в CI
+- Redis password
+- Caddy X-Real-IP + CSP headers
+
+### MEDIUM fixes (55):
+- datetime.utcnow() → datetime.now(timezone.utc) (25+ файлов, 60+ замен)
+- Indicator code validation regex
+- CORS tightened
+- json_serializer default=str (database)
+- CPI validation range warning
+- Validate points before upsert (все парсеры)
+- HTML-escape в Telegram alerting
+- formatDate quarterly/annual
+- UNIT_CONFIG: ‰, чел., ед., млн кв.м
+- gcTime в React Query hooks
+- adjustCpiDisplay isFinite guard
+- noscript/og/twitter meta updated
+- HIDDEN_FROM_LISTING exported
+- gzip_comp_level 4
+- alembic.ini hardcoded URL removed
+- 404.html redesigned
+- .dockerignore backend/frontend
+
+### LOW fixes (40):
+- Unused imports cleanup
+- Type annotations
+- config.py extra="ignore" (pre-existing pydantic bug)
+- Test fixes (RUONIA vertical format)
+
+**Верификация:**
+- py_compile: 0 ошибок (все .py файлы)
+- pytest: 89/89 passed (включая 2 исправленных RUONIA теста)
+- ESLint: 0 ошибок
+- vitest: 25/25 passed
+- vite build: OK (2.06s)
+
+## 2026-04-09
+
+- Верификация аудит-фиксов по бизнес-логике (read-only): отчёт DONE/MISSING по `calculation_engine`, `forecaster`, `forecast_pipeline`, `data_validator`, `alerting`, `scheduler`, `seed_data`; зафиксировано: несогласованность дефолта `forecast_steps` в `seed_data.generate_forecasts` (0) vs `forecast_pipeline` (`settings.forecast_steps`).

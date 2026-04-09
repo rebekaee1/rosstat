@@ -17,8 +17,13 @@ export function formatDate(dateStr, format = 'short') {
   if (!dateStr) return '—';
   const d = new Date(dateStr);
   if (isNaN(d.getTime())) return '—';
-  const month = d.getUTCMonth();
   const year = d.getUTCFullYear();
+  if (format === 'annual') return year.toString();
+  if (format === 'quarterly') {
+    const q = Math.ceil((d.getUTCMonth() + 1) / 3);
+    return `${q} кв. ${year}`;
+  }
+  const month = d.getUTCMonth();
   const day = d.getUTCDate();
   if (format === 'day') return `${day} ${monthsGenitive[month]} ${year}`;
   if (format === 'full') return `${monthsFull[month]} ${year}`;
@@ -36,6 +41,10 @@ const UNIT_CONFIG = {
   'млрд $':    { digits: 1, suffix: ' млрд $',  space: false },
   'млн $':     { digits: 0, suffix: ' млн $',   space: false },
   'индекс':    { digits: 1, suffix: '',          space: false },
+  '‰':         { digits: 2, suffix: '‰',         space: false },
+  'чел.':      { digits: 0, suffix: ' чел.',     space: false },
+  'ед.':       { digits: 0, suffix: ' ед.',      space: false },
+  'млн кв.м':  { digits: 1, suffix: ' млн кв.м', space: false },
 };
 
 function groupThousands(str) {
@@ -100,6 +109,10 @@ export function cn(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
+/**
+ * Codes that need CPI-100 display adjustment.
+ * MAINTENANCE: Update when adding new CPI-based indicators.
+ */
 const CPI_INDEX_CODES = new Set([
   'cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services', 'inflation-quarterly',
 ]);
@@ -108,7 +121,8 @@ export function isCpiIndex(code) {
   return CPI_INDEX_CODES.has(code);
 }
 
-export function adjustCpiDisplay(value) {
-  if (value == null) return value;
-  return Number(value) - 100;
+export function adjustCpiDisplay(value, code) {
+  if (value == null || !isFinite(value)) return value;
+  if (code !== undefined && !isCpiIndex(code)) return value;
+  return +(Number(value) - 100).toFixed(2);
 }

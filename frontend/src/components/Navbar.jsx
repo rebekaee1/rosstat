@@ -25,22 +25,31 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    if (!catOpen) return;
+    if (!catOpen && !mobileOpen) return;
     const onDoc = (e) => {
-      if (catWrapRef.current && !catWrapRef.current.contains(e.target)) {
+      if (catOpen && catWrapRef.current && !catWrapRef.current.contains(e.target)) {
         setCatOpen(false);
       }
     };
+    const onKey = (e) => {
+      if (e.key === 'Escape') closeAll();
+    };
     document.addEventListener('mousedown', onDoc);
-    return () => document.removeEventListener('mousedown', onDoc);
-  }, [catOpen]);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDoc);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [catOpen, mobileOpen]);
 
   useEffect(() => {
     if (!navRef.current) return;
-    gsap.fromTo(navRef.current,
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const tween = gsap.fromTo(navRef.current,
       { y: -20, opacity: 0 },
       { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', delay: 0.2 }
     );
+    return () => tween.kill();
   }, []);
 
   const linkClass = ({ isActive }) => cn(

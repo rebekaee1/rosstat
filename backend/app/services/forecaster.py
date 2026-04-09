@@ -178,6 +178,9 @@ def train_monthly_cpi(
     window_size = len(data)
     monthly_dates = [data.index[-1] + relativedelta(months=j + 1) for j in range(forecast_steps)]
 
+    residual_std = float(data['value'].iloc[-24:].std()) if len(data) > 1 else 0.0
+    z = 1.96
+
     points = []
     for m in range(1, forecast_steps + 1):
         lags = _get_horizon_lags(m)
@@ -187,11 +190,12 @@ def train_monthly_cpi(
             pred = float(np.median(data['value'].iloc[-12:]))
 
         cpi_value = round(pred + 100, 4)
+        ci_width = z * residual_std * np.sqrt(m)
         points.append(ForecastPoint(
             date=monthly_dates[m - 1].date(),
             value=cpi_value,
-            lower_bound=None,
-            upper_bound=None,
+            lower_bound=round(pred - ci_width + 100, 4),
+            upper_bound=round(pred + ci_width + 100, 4),
         ))
 
     logger.info("CPI-Monthly-MW forecast: %d points, last=%.4f", len(points),
@@ -234,6 +238,8 @@ def train_inflation_12m(
     i = len(data)
 
     median_val = float(np.median(data.iloc[-12:, 0]))
+    residual_std = float(data.iloc[-24:, 0].std()) if len(data) > 1 else 0.0
+    z = 1.96
     forecasts_aux = []
     points = []
 
@@ -252,11 +258,15 @@ def train_inflation_12m(
         actual_sum = float(np.sum(data.iloc[i - (12 - m):i, 0])) if m < 12 else 0.0
         inflation_pct = float(np.exp(actual_sum + m * blend) * 100 - 100)
 
+        ci_margin = z * residual_std * np.sqrt(m)
+        lo_pct = float(np.exp(actual_sum + m * (blend - ci_margin)) * 100 - 100)
+        hi_pct = float(np.exp(actual_sum + m * (blend + ci_margin)) * 100 - 100)
+
         points.append(ForecastPoint(
             date=monthly_dates[m - 1].date(),
             value=round(inflation_pct, 4),
-            lower_bound=None,
-            upper_bound=None,
+            lower_bound=round(lo_pct, 4),
+            upper_bound=round(hi_pct, 4),
         ))
 
     logger.info("Inflation-12M-MW forecast: %d points, last=%.2f%%", len(points),
@@ -368,7 +378,9 @@ def _build_ols_forecast_for_horizon(
             variances.append(mse)
 
     if not predictions:
-        return 0.0, 1.0
+        fallback = float(data_series.iloc[-1]) if len(data_series) > 0 else 0.0
+        fallback_var = float(data_series.var()) if len(data_series) > 1 and data_series.var() > 0 else 1.0
+        return fallback, fallback_var
 
     preds = np.array(predictions)
     varis = np.array(variances)
@@ -383,6 +395,8 @@ def _date_step(frequency: str) -> relativedelta:
     """Return the appropriate date step for a given frequency."""
     if frequency == "daily":
         return relativedelta(days=1)
+    if frequency == "weekly":
+        return relativedelta(weeks=1)
     if frequency == "quarterly":
         return relativedelta(months=3)
     if frequency == "annual":

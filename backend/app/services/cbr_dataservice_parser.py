@@ -21,10 +21,9 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from typing import ClassVar
 
-import requests
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -33,11 +32,12 @@ from app.services.base_parser import BaseParser
 from app.services.http_client import create_session
 from app.services.upsert import upsert_indicator_data
 from app.services.forecast_pipeline import retrain_indicator_forecast
+from app.config import settings as _settings
 from app.core.cache import cache_invalidate_indicator
 
 logger = logging.getLogger(__name__)
 
-CBR_DATASERVICE_URL = "http://www.cbr.ru/dataservice/data"
+CBR_DATASERVICE_URL = f"{_settings.cbr_base_url.rstrip('/')}/dataservice/data"
 
 MONTH_MAP = {
     "январь": 1, "февраль": 2, "март": 3, "апрель": 4,
@@ -104,9 +104,15 @@ def fetch_dataservice(
         params["measureId"] = measure_id
 
     session = create_session()
-    resp = session.get(CBR_DATASERVICE_URL, params=params, timeout=60)
-    resp.raise_for_status()
-    data = resp.json()
+    try:
+        resp = session.get(CBR_DATASERVICE_URL, params=params, timeout=60)
+        resp.raise_for_status()
+        ct = resp.headers.get("content-type", "").lower()
+        if "json" not in ct and resp.status_code == 200:
+            logger.warning("DataService unexpected content-type: %s", resp.headers.get("content-type"))
+        data = resp.json()
+    finally:
+        session.close()
 
     raw_data = data.get("RawData") or []
     results: list[tuple[date, float]] = []
@@ -140,7 +146,7 @@ class CbrDataServiceParser(BaseParser):
             if not ds_cfg:
                 fetch_log.status = "failed"
                 fetch_log.error_message = "Missing 'dataservice' in model_config_json"
-                fetch_log.completed_at = datetime.utcnow()
+                fetch_log.completed_at = datetime.now(timezone.utc)
                 await db.commit()
                 return
 
@@ -158,9 +164,10 @@ class CbrDataServiceParser(BaseParser):
             fetch_log.source_url = f"cbr.ru/dataservice/data?pub={pub_id}&ds={ds_id}&el={element_id}"
 
             if not points:
+                logger.warning("No data points parsed for %s", code)
                 fetch_log.status = "no_new_data"
                 fetch_log.error_message = "DataService returned 0 matching rows"
-                fetch_log.completed_at = datetime.utcnow()
+                fetch_log.completed_at = datetime.now(timezone.utc)
                 await db.commit()
                 return
 
@@ -191,12 +198,14 @@ class CbrDataServiceParser(BaseParser):
                 await cache_invalidate_indicator(code)
 
             fetch_log.status = "success" if records_added > 0 else "no_new_data"
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
             await db.commit()
 
         except Exception as e:
             logger.exception("ETL failed for '%s'", code)
+            await db.rollback()
             fetch_log.status = "failed"
             fetch_log.error_message = str(e)[:500]
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
+            db.add(fetch_log)
             await db.commit()

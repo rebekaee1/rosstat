@@ -11,10 +11,12 @@ export default function IndicatorTile({ indicator, delay = 0 }) {
 
   useEffect(() => {
     if (!ref.current) return;
-    gsap.fromTo(ref.current,
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const tween = gsap.fromTo(ref.current,
       { y: 30, opacity: 0 },
       { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', delay: 0.2 + delay * 0.1 }
     );
+    return () => tween.kill();
   }, [delay]);
 
   const handleMouseMove = (e) => {

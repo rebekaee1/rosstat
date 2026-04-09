@@ -1,20 +1,23 @@
-export async function downloadExcel(chartData, mode, indicatorCode, range) {
+export async function downloadExcel(chartData, mode, indicatorCode, range, meta = {}) {
   const XLSX = await import('xlsx');
 
   const actuals = chartData.filter(d => d.actual != null);
   const forecasts = chartData.filter(d => d.forecast != null && d.actual == null);
 
-  const VALUE_LABELS = {
+  const CPI_VALUE_LABELS = {
     cpi: 'ИПЦ (изм. к пред. мес., %)',
     quarterly: 'ИПЦ квартальный (%)',
     inflation: 'Инфляция 12 мес. (%)',
   };
-  const MODE_LABELS = {
+  const CPI_MODE_LABELS = {
     cpi: 'ипц_помесячно',
     quarterly: 'ипц_квартальный',
     inflation: 'инфляция_12мес',
   };
-  const valueLabel = VALUE_LABELS[mode] || `Значение (${mode})`;
+  const genericLabel = meta.name
+    ? `${meta.name}${meta.unit ? ` (${meta.unit})` : ''}`
+    : 'Значение';
+  const valueLabel = CPI_VALUE_LABELS[mode] || genericLabel;
 
   const factsSheet = actuals.map(d => ({
     'Дата': d.date,
@@ -36,7 +39,7 @@ export async function downloadExcel(chartData, mode, indicatorCode, range) {
     XLSX.utils.book_append_sheet(wb, ws2, 'Прогноз');
   }
 
-  const modeLabel = MODE_LABELS[mode] || mode;
+  const modeLabel = CPI_MODE_LABELS[mode] || mode || 'data';
   const filename = `${indicatorCode}_${modeLabel}_${range}.xlsx`;
   XLSX.writeFile(wb, filename);
 }

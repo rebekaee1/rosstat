@@ -42,7 +42,7 @@ class Settings(BaseSettings):
     # Internal endpoints protection
     metrics_token: str = ""
 
-    model_config = {"env_prefix": "RUSTATS_", "env_file": ".env"}
+    model_config = {"env_prefix": "RUSTATS_", "env_file": ".env", "extra": "ignore"}
 
 
 settings = Settings()

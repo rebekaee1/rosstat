@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Routes, Route, useParams, useLocation, Link } 
 import Navbar from './components/Navbar';
 import NoiseOverlay from './components/NoiseOverlay';
 import Footer from './components/Footer';
+import ErrorBoundary from './components/ErrorBoundary';
+import { SkeletonBox } from './components/Skeleton';
+import useDocumentMeta from './lib/useMeta';
 import Dashboard from './pages/Dashboard';
 
 const IndicatorDetail = lazy(() => import('./pages/IndicatorDetail'));
@@ -23,6 +26,12 @@ function IndicatorDetailKeyed() {
 }
 
 function NotFound() {
+  useDocumentMeta({
+    title: '404 — Страница не найдена',
+    description: 'Запрашиваемая страница не существует.',
+    path: '/404',
+  });
+
   return (
     <div className="max-w-2xl mx-auto px-4 pt-32 pb-24 text-center">
       <h1 className="text-6xl font-display font-bold text-text-primary mb-4">404</h1>
@@ -44,7 +53,12 @@ export default function App() {
       <NoiseOverlay />
       <Navbar />
       <main className="relative z-0 flex-1">
-        <Suspense fallback={<div className="min-h-screen" />}>
+        <ErrorBoundary>
+        <Suspense fallback={
+          <div className="min-h-screen flex items-center justify-center">
+            <SkeletonBox className="h-8 w-48" />
+          </div>
+        }>
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/about" element={<About />} />
@@ -55,6 +69,7 @@ export default function App() {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
+        </ErrorBoundary>
       </main>
       <Footer />
     </Router>

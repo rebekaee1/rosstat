@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from typing import ClassVar
 from xml.etree import ElementTree
 
@@ -35,7 +35,7 @@ DEFAULT_BACKFILL_FROM = date(2015, 1, 1)
 
 
 def _parse_ru_float(s: str) -> float:
-    return float(s.strip().replace(",", ".").replace("\xa0", "").replace(" ", ""))
+    return float(s.strip().replace("\u2212", "-").replace(",", ".").replace("\xa0", "").replace(" ", ""))
 
 
 def fetch_fx_xml(val_code: str, date_from: date, date_to: date) -> tuple[str, str]:
@@ -47,9 +47,15 @@ def fetch_fx_xml(val_code: str, date_from: date, date_to: date) -> tuple[str, st
         "VAL_NM_RQ": val_code,
     }
     session = create_session()
-    resp = session.get(url, params=params, timeout=settings.cbr_request_timeout)
-    resp.raise_for_status()
-    return resp.text, str(resp.url)
+    try:
+        resp = session.get(url, params=params, timeout=settings.cbr_request_timeout)
+        resp.raise_for_status()
+        ct = resp.headers.get("content-type", "").lower()
+        if "xml" not in ct and resp.status_code == 200:
+            logger.warning("FX XML unexpected content-type: %s", resp.headers.get("content-type"))
+        return resp.text, str(resp.url)
+    finally:
+        session.close()
 
 
 def parse_fx_xml(xml_text: str) -> list[tuple[date, float]]:
@@ -82,7 +88,7 @@ class CbrFxParser(BaseParser):
             if not val_code:
                 fetch_log.status = "failed"
                 fetch_log.error_message = f"Unknown currency code '{code}'"
-                fetch_log.completed_at = datetime.utcnow()
+                fetch_log.completed_at = datetime.now(timezone.utc)
                 await db.commit()
                 return
 
@@ -106,9 +112,10 @@ class CbrFxParser(BaseParser):
 
             points = await asyncio.to_thread(parse_fx_xml, xml_text)
             if not points:
+                logger.warning("No data points parsed for %s", code)
                 fetch_log.status = "no_new_data"
                 fetch_log.error_message = "XML returned 0 records"
-                fetch_log.completed_at = datetime.utcnow()
+                fetch_log.completed_at = datetime.now(timezone.utc)
                 await db.commit()
                 return
 
@@ -136,12 +143,14 @@ class CbrFxParser(BaseParser):
                 await cache_invalidate_indicator(code)
 
             fetch_log.status = "success" if records_added > 0 else "no_new_data"
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
             await db.commit()
 
         except Exception as e:
             logger.exception("ETL failed for '%s'", code)
+            await db.rollback()
             fetch_log.status = "failed"
             fetch_log.error_message = str(e)[:500]
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
+            db.add(fetch_log)
             await db.commit()

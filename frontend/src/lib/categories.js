@@ -91,7 +91,7 @@ export function getCategoryBySlug(slug) {
   return CATEGORIES.find((c) => c.slug === slug);
 }
 
-const HIDDEN_FROM_LISTING = new Set(['inflation-annual', 'inflation-quarterly', 'inflation-weekly']);
+export const HIDDEN_FROM_LISTING = new Set(['inflation-annual', 'inflation-quarterly', 'inflation-weekly']);
 
 /** Подсчёт индикаторов по полю category в API (исключая скрытые карточки) */
 export function countInCategory(indicators, apiCategory) {

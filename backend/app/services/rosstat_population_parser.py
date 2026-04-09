@@ -17,7 +17,7 @@ import asyncio
 import io
 import logging
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from typing import ClassVar
 
 import openpyxl
@@ -44,11 +44,13 @@ class DataPoint:
 def parse_sdds_population_xlsx(content: bytes) -> list[DataPoint]:
     """Parse SDDS population XLSX → annual population in millions."""
     wb = openpyxl.load_workbook(io.BytesIO(content), data_only=True, read_only=True)
-    ws = wb.worksheets[0]
-    rows_data: list[list] = []
-    for row in ws.iter_rows(values_only=True):
-        rows_data.append(list(row))
-    wb.close()
+    try:
+        ws = wb.worksheets[0]
+        rows_data: list[list] = []
+        for row in ws.iter_rows(values_only=True):
+            rows_data.append(list(row))
+    finally:
+        wb.close()
 
     if len(rows_data) < 3:
         raise ValueError(f"Population XLSX: expected >=3 rows, got {len(rows_data)}")
@@ -88,13 +90,14 @@ def parse_popul_components_xlsx(content: bytes) -> dict[str, list[DataPoint]]:
     Col E: Migration change (thousands)
     """
     wb = openpyxl.load_workbook(io.BytesIO(content), data_only=True, read_only=True)
-    sheets = wb.sheetnames
-    ws = wb["1"] if "1" in sheets else wb.worksheets[1]
-
-    rows_data: list[list] = []
-    for row in ws.iter_rows(values_only=True):
-        rows_data.append(list(row))
-    wb.close()
+    try:
+        sheets = wb.sheetnames
+        ws = wb["1"] if "1" in sheets else wb.worksheets[1]
+        rows_data: list[list] = []
+        for row in ws.iter_rows(values_only=True):
+            rows_data.append(list(row))
+    finally:
+        wb.close()
 
     population: list[DataPoint] = []
     total_growth: list[DataPoint] = []
@@ -187,7 +190,7 @@ class RosstatPopulationParser(BaseParser):
             if not points:
                 fetch_log.status = "no_new_data"
                 fetch_log.error_message = "Parser returned 0 data points"
-                fetch_log.completed_at = datetime.utcnow()
+                fetch_log.completed_at = datetime.now(timezone.utc)
                 await db.commit()
                 return
 
@@ -217,12 +220,14 @@ class RosstatPopulationParser(BaseParser):
                 await cache_invalidate_indicator(code)
 
             fetch_log.status = "success" if records_added > 0 else "no_new_data"
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
             await db.commit()
 
         except Exception as e:
             logger.exception("ETL failed for '%s'", code)
+            await db.rollback()
             fetch_log.status = "failed"
             fetch_log.error_message = str(e)[:500]
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
+            db.add(fetch_log)
             await db.commit()

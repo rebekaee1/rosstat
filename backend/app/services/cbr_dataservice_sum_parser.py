@@ -19,7 +19,7 @@ from __future__ import annotations
 import asyncio
 import logging
 from collections import defaultdict
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from typing import ClassVar
 
 from sqlalchemy import func, select
@@ -46,7 +46,7 @@ class CbrDataServiceSumParser(BaseParser):
             if not components or not isinstance(components, list):
                 fetch_log.status = "failed"
                 fetch_log.error_message = "Missing 'dataservice_components' in model_config_json"
-                fetch_log.completed_at = datetime.utcnow()
+                fetch_log.completed_at = datetime.now(timezone.utc)
                 await db.commit()
                 return
 
@@ -72,9 +72,10 @@ class CbrDataServiceSumParser(BaseParser):
             fetch_log.source_url = f"cbr.ru/dataservice (sum of {len(components)} components)"
 
             if not sums:
+                logger.warning("No data points parsed for %s", code)
                 fetch_log.status = "no_new_data"
                 fetch_log.error_message = "DataService returned 0 matching rows across components"
-                fetch_log.completed_at = datetime.utcnow()
+                fetch_log.completed_at = datetime.now(timezone.utc)
                 await db.commit()
                 return
 
@@ -104,12 +105,14 @@ class CbrDataServiceSumParser(BaseParser):
                 await cache_invalidate_indicator(code)
 
             fetch_log.status = "success" if records_added > 0 else "no_new_data"
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
             await db.commit()
 
         except Exception as e:
             logger.exception("ETL failed for '%s'", code)
+            await db.rollback()
             fetch_log.status = "failed"
             fetch_log.error_message = str(e)[:500]
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
+            db.add(fetch_log)
             await db.commit()

@@ -15,9 +15,10 @@ from __future__ import annotations
 
 import io
 import logging
+import math
 import re
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from typing import ClassVar
 
 import xlrd
@@ -45,7 +46,7 @@ class DataPoint:
 def _to_float(val) -> float | None:
     if val is None or val == "":
         return None
-    s = str(val).strip().replace(",", ".").replace("\xa0", "").replace(" ", "")
+    s = str(val).strip().replace("\u2212", "-").replace(",", ".").replace("\xa0", "").replace(" ", "")
     if s in ("", "…", "-", "...", "0"):
         return None
     try:
@@ -77,29 +78,32 @@ def parse_kadry_xls(content: bytes, sheet_idx: int) -> list[DataPoint]:
     Sheet 1 = grad students, Sheet 4 = doctoral students.
     """
     wb = xlrd.open_workbook(file_contents=content)
-    ws = wb.sheet_by_index(sheet_idx)
+    try:
+        ws = wb.sheet_by_index(sheet_idx)
 
-    points = []
-    seen_years: set[int] = set()
-    for r in range(ws.nrows):
-        year_val = ws.cell_value(r, 0)
-        year = None
-        if isinstance(year_val, float) and 1990 <= year_val <= 2100:
-            year = int(year_val)
-        elif isinstance(year_val, str):
-            m = re.match(r"(\d{4})", year_val.strip())
-            if m:
-                y = int(m.group(1))
-                if 1990 <= y <= 2100:
-                    year = y
+        points = []
+        seen_years: set[int] = set()
+        for r in range(ws.nrows):
+            year_val = ws.cell_value(r, 0)
+            year = None
+            if isinstance(year_val, float) and 1990 <= year_val <= 2100:
+                year = int(year_val)
+            elif isinstance(year_val, str):
+                m = re.match(r"(\d{4})", year_val.strip())
+                if m:
+                    y = int(m.group(1))
+                    if 1990 <= y <= 2100:
+                        year = y
 
-        if year is None or year in seen_years:
-            continue
+            if year is None or year in seen_years:
+                continue
 
-        val = _to_float(ws.cell_value(r, 1))
-        if val is not None and val > 0:
-            seen_years.add(year)
-            points.append(DataPoint(date=date(year, 1, 1), value=round(val, 0)))
+            val = _to_float(ws.cell_value(r, 1))
+            if val is not None and val > 0:
+                seen_years.add(year)
+                points.append(DataPoint(date=date(year, 1, 1), value=round(val, 0)))
+    finally:
+        wb.release_resources()
 
     return sorted(points, key=lambda p: p.date)
 
@@ -107,41 +111,45 @@ def parse_kadry_xls(content: bytes, sheet_idx: int) -> list[DataPoint]:
 def parse_nauka_total_xls(content: bytes, sheet_name: str = "1") -> list[DataPoint]:
     """Parse Nauka_1.xls or nauka_2.xls → total from "всего" row."""
     wb = xlrd.open_workbook(file_contents=content)
-    ws = None
-    for s in wb.sheets():
-        if s.name.strip() == sheet_name:
-            ws = s
-            break
-    if ws is None:
-        ws = wb.sheet_by_index(min(1, wb.nsheets - 1))
+    try:
+        ws = None
+        for s in wb.sheets():
+            if s.name.strip() == sheet_name:
+                ws = s
+                break
+        if ws is None:
+            ws = wb.sheet_by_index(min(1, wb.nsheets - 1))
 
-    year_row = None
-    for r in range(min(10, ws.nrows)):
-        years = _parse_year_row_xls(ws, r)
-        if len(years) >= 3:
-            year_row = r
-            break
+        year_row = None
+        for r in range(min(10, ws.nrows)):
+            years = _parse_year_row_xls(ws, r)
+            if len(years) >= 3:
+                year_row = r
+                break
 
-    if year_row is None:
-        raise ValueError("Nauka: no year header found")
+        if year_row is None:
+            raise ValueError("Nauka: no year header found")
 
-    years = _parse_year_row_xls(ws, year_row)
+        years = _parse_year_row_xls(ws, year_row)
 
-    total_row = None
-    for r in range(year_row + 1, min(year_row + 5, ws.nrows)):
-        cell = str(ws.cell_value(r, 0)).lower().strip()
-        if "всего" in cell or "число" in cell or "численность" in cell:
-            total_row = r
-            break
-    if total_row is None:
-        total_row = year_row + 2
+        total_row = None
+        for r in range(year_row + 1, min(year_row + 5, ws.nrows)):
+            cell = str(ws.cell_value(r, 0)).lower().strip()
+            if "всего" in cell or "число" in cell or "численность" in cell:
+                total_row = r
+                break
+        if total_row is None:
+            logger.warning("Nauka: keyword row not found after row %d, falling back to row %d", year_row, year_row + 2)
+            total_row = year_row + 2
 
-    points = []
-    for col, year in years:
-        if total_row < ws.nrows and col < ws.ncols:
-            val = _to_float(ws.cell_value(total_row, col))
-            if val is not None:
-                points.append(DataPoint(date=date(year, 1, 1), value=round(val, 2)))
+        points = []
+        for col, year in years:
+            if total_row < ws.nrows and col < ws.ncols:
+                val = _to_float(ws.cell_value(total_row, col))
+                if val is not None:
+                    points.append(DataPoint(date=date(year, 1, 1), value=round(val, 2)))
+    finally:
+        wb.release_resources()
 
     return sorted(points, key=lambda p: p.date)
 
@@ -149,41 +157,45 @@ def parse_nauka_total_xls(content: bytes, sheet_name: str = "1") -> list[DataPoi
 def parse_innov_russia_xls(content: bytes, sheet_name: str = "1") -> list[DataPoint]:
     """Parse innov_*.xls → Russia-level % from first data row after 'Российская Федерация'."""
     wb = xlrd.open_workbook(file_contents=content)
-    ws = None
-    for s in wb.sheets():
-        if s.name.strip() == sheet_name:
-            ws = s
-            break
-    if ws is None:
-        ws = wb.sheet_by_index(min(1, wb.nsheets - 1))
+    try:
+        ws = None
+        for s in wb.sheets():
+            if s.name.strip() == sheet_name:
+                ws = s
+                break
+        if ws is None:
+            ws = wb.sheet_by_index(min(1, wb.nsheets - 1))
 
-    year_row = None
-    for r in range(min(10, ws.nrows)):
-        years = _parse_year_row_xls(ws, r)
-        if len(years) >= 3:
-            year_row = r
-            break
+        year_row = None
+        for r in range(min(10, ws.nrows)):
+            years = _parse_year_row_xls(ws, r)
+            if len(years) >= 3:
+                year_row = r
+                break
 
-    if year_row is None:
-        raise ValueError("Innov: no year header found")
+        if year_row is None:
+            raise ValueError("Innov: no year header found")
 
-    years = _parse_year_row_xls(ws, year_row)
+        years = _parse_year_row_xls(ws, year_row)
 
-    russia_row = None
-    for r in range(year_row + 1, min(year_row + 10, ws.nrows)):
-        cell = str(ws.cell_value(r, 0)).lower().strip()
-        if "российская" in cell or "всего" in cell or "итого" in cell:
-            russia_row = r
-            break
-    if russia_row is None:
-        russia_row = year_row + 2
+        russia_row = None
+        for r in range(year_row + 1, min(year_row + 10, ws.nrows)):
+            cell = str(ws.cell_value(r, 0)).lower().strip()
+            if "российская" in cell or "всего" in cell or "итого" in cell:
+                russia_row = r
+                break
+        if russia_row is None:
+            logger.warning("Innov: keyword row not found after row %d, falling back to row %d", year_row, year_row + 2)
+            russia_row = year_row + 2
 
-    points = []
-    for col, year in years:
-        if russia_row < ws.nrows and col < ws.ncols:
-            val = _to_float(ws.cell_value(russia_row, col))
-            if val is not None:
-                points.append(DataPoint(date=date(year, 1, 1), value=round(val, 2)))
+        points = []
+        for col, year in years:
+            if russia_row < ws.nrows and col < ws.ncols:
+                val = _to_float(ws.cell_value(russia_row, col))
+                if val is not None:
+                    points.append(DataPoint(date=date(year, 1, 1), value=round(val, 2)))
+    finally:
+        wb.release_resources()
 
     return sorted(points, key=lambda p: p.date)
 
@@ -192,11 +204,21 @@ def _try_download_xls(session, filename: str) -> bytes | None:
     url = BASE_URL + filename
     try:
         resp = session.get(url, timeout=60)
+        ct = resp.headers.get("content-type", "")
+        if "html" in ct.lower() and resp.status_code == 200:
+            logger.warning("Got HTML instead of XLS from %s", url)
+            return None
         if resp.status_code == 200 and len(resp.content) > 100:
             return resp.content
-    except Exception:
-        pass
+    except Exception as e:
+        logger.debug("Download failed for %s: %s", url, e)
     return None
+
+
+def _dynamic_year_filenames(template: str) -> list[str]:
+    """Generate filenames with dynamic year range."""
+    current_year = datetime.now().year
+    return [template.format(y=y) for y in range(current_year + 1, current_year - 7, -1)]
 
 
 SCIENCE_CONFIG = {
@@ -219,11 +241,11 @@ SCIENCE_CONFIG = {
         "parser": "nauka_total",
     },
     "innovation-activity": {
-        "files": [f"innov_1_{y}.xls" for y in range(2026, 2020, -1)],
+        "files_template": "innov_1_{y}.xls",
         "parser": "innov_russia",
     },
     "tech-innovation-share": {
-        "files": [f"innov_2_{y}.xls" for y in range(2026, 2020, -1)],
+        "files_template": "innov_2_{y}.xls",
         "parser": "innov_russia",
     },
     "small-business-innovation": {
@@ -245,18 +267,27 @@ class RosstatScienceParser(BaseParser):
             if not sci_cfg:
                 raise ValueError(f"No science config for {code}")
 
+            file_list = sci_cfg.get("files")
+            if not file_list and "files_template" in sci_cfg:
+                file_list = _dynamic_year_filenames(sci_cfg["files_template"])
+            if not file_list:
+                raise ValueError(f"No file list resolved for {code}")
+
             session = create_session()
-            session.verify = settings.rosstat_ca_cert
-            content = None
-            used_file = ""
-            for fn in sci_cfg["files"]:
-                content = _try_download_xls(session, fn)
-                if content:
-                    used_file = fn
-                    break
+            try:
+                session.verify = settings.rosstat_ca_cert
+                content = None
+                used_file = ""
+                for fn in file_list:
+                    content = _try_download_xls(session, fn)
+                    if content:
+                        used_file = fn
+                        break
+            finally:
+                session.close()
 
             if not content:
-                raise ValueError(f"Science XLS not found for {code}: {sci_cfg['files']}")
+                raise ValueError(f"Science XLS not found for {code}: {file_list}")
 
             fetch_log.source_url = BASE_URL + used_file
             parser_type = sci_cfg.get("parser", "nauka_total")
@@ -274,25 +305,47 @@ class RosstatScienceParser(BaseParser):
                 raise ValueError(f"Unknown science parser: {parser_type}")
 
             if not points:
+                logger.warning("No points parsed for %s", code)
                 fetch_log.status = "no_new_data"
                 fetch_log.records_added = 0
-                fetch_log.completed_at = datetime.utcnow()
+                fetch_log.completed_at = datetime.now(timezone.utc)
                 await db.commit()
                 return
+
+            valid_points = [
+                p for p in points
+                if isinstance(p.value, (int, float)) and not math.isnan(p.value)
+            ]
+            if len(valid_points) < len(points):
+                logger.warning("%s: filtered out %d invalid values", code, len(points) - len(valid_points))
+            points = valid_points
+
+            count_before = (await db.execute(
+                select(func.count(IndicatorData.id))
+                .where(IndicatorData.indicator_id == indicator.id)
+            )).scalar() or 0
 
             for p in points:
                 await db.execute(upsert_indicator_data(indicator.id, p.date, p.value))
             await db.flush()
 
+            count_after = (await db.execute(
+                select(func.count(IndicatorData.id))
+                .where(IndicatorData.indicator_id == indicator.id)
+            )).scalar() or 0
+
+            records_added = count_after - count_before
             fetch_log.status = "success"
-            fetch_log.records_added = len(points)
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.records_added = records_added
+            fetch_log.completed_at = datetime.now(timezone.utc)
             await db.commit()
             await cache_invalidate_indicator(code)
-            logger.info("%s: upserted %d points from %s", code, len(points), used_file)
+            logger.info("%s: upserted %d new points (of %d) from %s", code, records_added, len(points), used_file)
         except Exception as exc:
+            await db.rollback()
             fetch_log.status = "failed"
             fetch_log.error_message = str(exc)[:500]
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
+            db.add(fetch_log)
             await db.commit()
             raise

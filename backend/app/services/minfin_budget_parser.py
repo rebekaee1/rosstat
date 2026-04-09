@@ -13,7 +13,7 @@ import io
 import logging
 import re
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from typing import ClassVar
 
 from bs4 import BeautifulSoup
@@ -47,16 +47,19 @@ class BudgetPoint:
 def _find_csv_url() -> str:
     """Discover the latest data CSV URL from the Minfin open data catalog page."""
     session = create_session()
-    resp = session.get(CATALOG_URL, timeout=30)
-    resp.raise_for_status()
-    soup = BeautifulSoup(resp.text, "html.parser")
-    for a in soup.find_all("a", href=True):
-        href = a["href"]
-        if _DATA_RE.search(href):
-            if href.startswith("http"):
-                return href
-            return f"https://minfin.gov.ru{href}"
-    raise RuntimeError("Minfin: could not find data CSV link on catalog page")
+    try:
+        resp = session.get(CATALOG_URL, timeout=30)
+        resp.raise_for_status()
+        soup = BeautifulSoup(resp.text, "html.parser")
+        for a in soup.find_all("a", href=True):
+            href = a["href"]
+            if _DATA_RE.search(href):
+                if href.startswith("http"):
+                    return href
+                return f"https://minfin.gov.ru{href}"
+        raise RuntimeError("Minfin: could not find data CSV link on catalog page")
+    finally:
+        session.close()
 
 
 def _find_col_index(header: list[str], target: str) -> int | None:
@@ -81,8 +84,8 @@ def _parse_budget_csv(content: str, target: str = "deficit") -> list[BudgetPoint
     if target == "deficit":
         col_idx = _find_col_index(header, "Дефицит")
         if col_idx is None:
-            rev = _find_col_index(header, "Доходы, всего")
-            exp = _find_col_index(header, "Расходы, всего")
+            _find_col_index(header, "Доходы, всего")
+            _find_col_index(header, "Расходы, всего")
     elif target == "revenue":
         col_idx = _find_col_index(header, "Доходы, всего")
     elif target == "expenditure":
@@ -105,7 +108,7 @@ def _parse_budget_csv(content: str, target: str = "deficit") -> list[BudgetPoint
 
         cumulative = None
         if col_idx is not None and col_idx < len(row):
-            raw = row[col_idx].strip().replace(",", ".")
+            raw = row[col_idx].strip().replace("\u2212", "-").replace(",", ".")
             if raw and raw != "":
                 try:
                     cumulative = float(raw)
@@ -116,7 +119,9 @@ def _parse_budget_csv(content: str, target: str = "deficit") -> list[BudgetPoint
             exp = _find_col_index(header, "Расходы, всего")
             if rev is not None and exp is not None:
                 try:
-                    cumulative = float(row[rev].strip().replace(",", ".")) - float(row[exp].strip().replace(",", "."))
+                    rev_raw = row[rev].strip().replace("\u2212", "-").replace(",", ".")
+                    exp_raw = row[exp].strip().replace("\u2212", "-").replace(",", ".")
+                    cumulative = float(rev_raw) - float(exp_raw)
                 except (ValueError, IndexError):
                     continue
         if cumulative is None:
@@ -143,11 +148,14 @@ def fetch_and_parse_budget(target: str = "deficit") -> tuple[list[BudgetPoint], 
     """Download and parse budget CSV. Returns (points, source_url)."""
     csv_url = _find_csv_url()
     session = create_session()
-    resp = session.get(csv_url, timeout=60)
-    resp.raise_for_status()
-    resp.encoding = "utf-8"
-    points = _parse_budget_csv(resp.text, target=target)
-    return points, csv_url
+    try:
+        resp = session.get(csv_url, timeout=60)
+        resp.raise_for_status()
+        resp.encoding = "utf-8"
+        points = _parse_budget_csv(resp.text, target=target)
+        return points, csv_url
+    finally:
+        session.close()
 
 
 class MinfinBudgetParser(BaseParser):
@@ -164,7 +172,7 @@ class MinfinBudgetParser(BaseParser):
             if not points:
                 fetch_log.status = "no_new_data"
                 fetch_log.error_message = "CSV parsed but 0 budget points extracted"
-                fetch_log.completed_at = datetime.utcnow()
+                fetch_log.completed_at = datetime.now(timezone.utc)
                 await db.commit()
                 return
 
@@ -186,7 +194,6 @@ class MinfinBudgetParser(BaseParser):
             fetch_log.records_added = records_added
             logger.info("MinfinBudget '%s': +%d rows (total %d)", code, records_added, count_after)
 
-            cfg = indicator.model_config_json or {}
             steps = int(cfg.get("forecast_steps", 0) or 0)
             if steps > 0 and records_added > 0:
                 await retrain_indicator_forecast(db, indicator)
@@ -195,12 +202,14 @@ class MinfinBudgetParser(BaseParser):
                 await cache_invalidate_indicator(code)
 
             fetch_log.status = "success" if records_added > 0 else "no_new_data"
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
             await db.commit()
 
         except Exception as e:
             logger.exception("ETL failed for '%s'", code)
+            await db.rollback()
             fetch_log.status = "failed"
             fetch_log.error_message = str(e)[:500]
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
+            db.add(fetch_log)
             await db.commit()

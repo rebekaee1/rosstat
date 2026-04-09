@@ -1,3 +1,4 @@
+import re
 from datetime import date
 from typing import Optional
 
@@ -72,8 +73,8 @@ async def list_indicators(
         out.append(IndicatorSummary(
             code=ind.code, name=ind.name, name_en=ind.name_en,
             unit=ind.unit, category=ind.category, is_active=ind.is_active,
-            current_value=float(current_val) if current_val else None,
-            current_date=current_dt, previous_value=float(prev_val) if prev_val else None,
+            current_value=float(current_val) if current_val is not None else None,
+            current_date=current_dt, previous_value=float(prev_val) if prev_val is not None else None,
             change=change,
         ))
 
@@ -82,8 +83,17 @@ async def list_indicators(
     return out
 
 
+_CODE_RE = re.compile(r'^[a-z0-9-]+$')
+
+
+def _validate_code(code: str) -> None:
+    if not _CODE_RE.match(code):
+        raise HTTPException(status_code=400, detail="Invalid indicator code format")
+
+
 @router.get("/{code}", response_model=IndicatorDetail)
 async def get_indicator(code: str, db: AsyncSession = Depends(get_db)):
+    _validate_code(code)
     cached = await cache_get(f"fe:{code}:detail")
     if cached:
         return cached
@@ -120,8 +130,8 @@ async def get_indicator(code: str, db: AsyncSession = Depends(get_db)):
         frequency=indicator.frequency, source=indicator.source,
         source_url=indicator.source_url, description=indicator.description,
         methodology=indicator.methodology,
-        current_value=float(current_val) if current_val else None,
-        current_date=current_dt, previous_value=float(prev_val) if prev_val else None,
+        current_value=float(current_val) if current_val is not None else None,
+        current_date=current_dt, previous_value=float(prev_val) if prev_val is not None else None,
         change=change, data_count=count, first_date=first_dt, last_date=last_dt,
         updated_at=indicator.updated_at,
     )
@@ -138,6 +148,7 @@ async def get_indicator_data(
     limit: int = Query(10000, ge=1, le=10000),
     db: AsyncSession = Depends(get_db),
 ):
+    _validate_code(code)
     cache_key = f"fe:{code}:data:{from_date}:{to_date}:{limit}"
     cached = await cache_get(cache_key)
     if cached:
@@ -178,6 +189,7 @@ async def get_indicator_data(
 
 @router.get("/{code}/stats", response_model=IndicatorStats)
 async def get_indicator_stats(code: str, db: AsyncSession = Depends(get_db)):
+    _validate_code(code)
     ind = await db.execute(select(Indicator).where(Indicator.code == code))
     indicator = ind.scalar_one_or_none()
     if not indicator:
@@ -212,7 +224,7 @@ async def get_indicator_stats(code: str, db: AsyncSession = Depends(get_db)):
         code=code,
         highest={"value": float(highest.value), "date": str(highest.date)} if highest else None,
         lowest={"value": float(lowest.value), "date": str(lowest.date)} if lowest else None,
-        average=round(float(avg_val), 2) if avg_val else None,
-        std_dev=round(float(std_val), 2) if std_val else None,
+        average=round(float(avg_val), 2) if avg_val is not None else None,
+        std_dev=round(float(std_val), 2) if std_val is not None else None,
         data_count=count or 0,
     )

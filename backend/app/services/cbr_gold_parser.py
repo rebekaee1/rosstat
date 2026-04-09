@@ -9,8 +9,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-import re
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from typing import ClassVar
 from xml.etree import ElementTree
 
@@ -36,24 +35,30 @@ _XML_URL = "https://www.cbr.ru/scripts/xml_metall.asp"
 
 
 def _parse_ru_float(s: str) -> float:
-    return float(s.strip().replace("\xa0", "").replace(" ", "").replace(",", "."))
+    return float(s.strip().replace("\u2212", "-").replace("\xa0", "").replace(" ", "").replace(",", "."))
 
 
-def fetch_gold_xml(date_from: date, date_to: date) -> tuple[str, str]:
+def fetch_gold_xml(date_from: date, date_to: date) -> tuple[bytes, str]:
     url = _XML_URL
     params = {
         "date_req1": date_from.strftime("%d/%m/%Y"),
         "date_req2": date_to.strftime("%d/%m/%Y"),
     }
     session = create_session()
-    resp = session.get(url, params=params, timeout=settings.cbr_request_timeout)
-    resp.raise_for_status()
-    return resp.text, str(resp.url)
+    try:
+        resp = session.get(url, params=params, timeout=settings.cbr_request_timeout)
+        resp.raise_for_status()
+        ct = resp.headers.get("content-type", "").lower()
+        if "xml" not in ct and resp.status_code == 200:
+            logger.warning("Gold XML unexpected content-type: %s", resp.headers.get("content-type"))
+        return resp.content, str(resp.url)
+    finally:
+        session.close()
 
 
-def parse_gold_xml(xml_text: str, metal_code: str = "1") -> list[tuple[date, float]]:
+def parse_gold_xml(xml_data: bytes, metal_code: str = "1") -> list[tuple[date, float]]:
     """Parse CBR metals XML. metal_code: 1=gold, 2=silver, 3=platinum, 4=palladium."""
-    root = ElementTree.fromstring(xml_text.encode("windows-1251", errors="replace"))
+    root = ElementTree.fromstring(xml_data)
     results: list[tuple[date, float]] = []
 
     for record in root.findall("Record"):
@@ -96,16 +101,18 @@ class CbrGoldParser(BaseParser):
                 date_from = date_to - timedelta(days=90)
 
             all_points: list[tuple[date, float]] = []
+            chunk_errors: list[str] = []
             chunk_start = date_from
             final_url = ""
             while chunk_start < date_to:
                 chunk_end = min(chunk_start + timedelta(days=CHUNK_DAYS), date_to)
                 try:
-                    xml_text, final_url = await asyncio.to_thread(fetch_gold_xml, chunk_start, chunk_end)
-                    chunk_points = await asyncio.to_thread(parse_gold_xml, xml_text, metal_code)
+                    xml_data, final_url = await asyncio.to_thread(fetch_gold_xml, chunk_start, chunk_end)
+                    chunk_points = await asyncio.to_thread(parse_gold_xml, xml_data, metal_code)
                     all_points.extend(chunk_points)
-                except Exception:
+                except Exception as chunk_exc:
                     logger.warning("Gold chunk %s-%s failed", chunk_start, chunk_end, exc_info=True)
+                    chunk_errors.append(f"{chunk_start}–{chunk_end}: {chunk_exc}")
                 chunk_start = chunk_end + timedelta(days=1)
 
             fetch_log.source_url = final_url[:500]
@@ -116,9 +123,10 @@ class CbrGoldParser(BaseParser):
             points = sorted(by_date.items())
 
             if not points:
+                logger.warning("No data points parsed for %s", code)
                 fetch_log.status = "no_new_data"
                 fetch_log.error_message = "No gold rows parsed"
-                fetch_log.completed_at = datetime.utcnow()
+                fetch_log.completed_at = datetime.now(timezone.utc)
                 await db.commit()
                 return
 
@@ -146,12 +154,16 @@ class CbrGoldParser(BaseParser):
                 await cache_invalidate_indicator(code)
 
             fetch_log.status = "success" if records_added > 0 else "no_new_data"
-            fetch_log.completed_at = datetime.utcnow()
+            if chunk_errors:
+                fetch_log.error_message = f"{len(chunk_errors)} chunk errors: {'; '.join(chunk_errors[:3])}"[:500]
+            fetch_log.completed_at = datetime.now(timezone.utc)
             await db.commit()
 
         except Exception as e:
             logger.exception("ETL failed for '%s'", code)
+            await db.rollback()
             fetch_log.status = "failed"
             fetch_log.error_message = str(e)[:500]
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
+            db.add(fetch_log)
             await db.commit()

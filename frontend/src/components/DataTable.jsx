@@ -9,15 +9,29 @@ export default function DataTable({ data, title = 'Исторические да
   const ref = useRef(null);
   const [page, setPage] = useState(0);
   const [sortAsc, setSortAsc] = useState(false);
+  const [searchInput, setSearchInput] = useState('');
   const [search, setSearch] = useState('');
 
   useEffect(() => {
     if (!ref.current) return;
-    gsap.fromTo(ref.current,
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const tween = gsap.fromTo(ref.current,
       { y: 20, opacity: 0 },
       { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out', delay: 0.7 }
     );
+    return () => tween.kill();
   }, []);
+
+  const [prevData, setPrevData] = useState(data);
+  if (data !== prevData) {
+    setPrevData(data);
+    setPage(0);
+  }
+
+  useEffect(() => {
+    const timer = setTimeout(() => { setSearch(searchInput); setPage(0); }, 250);
+    return () => clearTimeout(timer);
+  }, [searchInput]);
 
   const filtered = useMemo(() => {
     let rows = [...(data || [])];
@@ -52,8 +66,8 @@ export default function DataTable({ data, title = 'Исторические да
           <input
             type="text"
             placeholder="Поиск..."
-            value={search}
-            onChange={e => { setSearch(e.target.value); setPage(0); }}
+            value={searchInput}
+            onChange={e => setSearchInput(e.target.value)}
             className="pl-8 pr-3 py-1.5 text-sm bg-obsidian-lighter border border-border-subtle rounded-lg text-text-primary placeholder:text-text-tertiary focus:outline-none focus:border-champagne/30 w-40"
           />
         </div>

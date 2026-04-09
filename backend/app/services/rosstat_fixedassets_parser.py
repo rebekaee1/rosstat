@@ -9,12 +9,14 @@ from __future__ import annotations
 
 import io
 import logging
+import math
 import re
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from typing import ClassVar
 
 import openpyxl
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
@@ -37,15 +39,17 @@ class DataPoint:
 
 def parse_depreciation_xlsx(content: bytes) -> list[DataPoint]:
     wb = openpyxl.load_workbook(io.BytesIO(content), data_only=True, read_only=True)
-    ws = None
-    for s in wb.worksheets:
-        if s.title != "Содержание":
-            ws = s
-            break
-    if ws is None:
-        ws = wb.worksheets[-1]
-    rows_data = [list(row) for row in ws.iter_rows(values_only=True)]
-    wb.close()
+    try:
+        ws = None
+        for s in wb.worksheets:
+            if s.title != "Содержание":
+                ws = s
+                break
+        if ws is None:
+            ws = wb.worksheets[-1]
+        rows_data = [list(row) for row in ws.iter_rows(values_only=True)]
+    finally:
+        wb.close()
 
     points = []
     for row in rows_data:
@@ -58,7 +62,7 @@ def parse_depreciation_xlsx(content: bytes) -> list[DataPoint]:
         year = int(m.group(1))
         if year < 1990 or year > 2100:
             continue
-        val_str = str(row[1] or "").strip().replace(",", ".")
+        val_str = str(row[1] or "").strip().replace("\u2212", "-").replace(",", ".")
         try:
             val = float(val_str)
             if 0 < val < 100:
@@ -73,22 +77,33 @@ class RosstatFixedAssetsParser(BaseParser):
     parser_type: ClassVar[str] = "rosstat_fixed_assets"
 
     async def run(self, db: AsyncSession, indicator: Indicator, fetch_log: FetchLog) -> None:
+        code = indicator.code
         try:
+            current_year = datetime.now().year
+
             session = create_session()
-            session.verify = settings.rosstat_ca_cert
-            content = None
-            used_url = ""
-            for year in range(2026, 2020, -1):
-                fn = f"St_izn_of_{year}.xlsx"
-                url = BASE_URL + fn
-                try:
-                    resp = session.get(url, timeout=60)
-                    if resp.status_code == 200 and resp.content[:4] == b"PK\x03\x04":
-                        content = resp.content
-                        used_url = url
-                        break
-                except Exception:
-                    continue
+            try:
+                session.verify = settings.rosstat_ca_cert
+                content = None
+                used_url = ""
+                for year in range(current_year + 1, current_year - 7, -1):
+                    fn = f"St_izn_of_{year}.xlsx"
+                    url = BASE_URL + fn
+                    try:
+                        resp = session.get(url, timeout=60)
+                        ct = resp.headers.get("content-type", "")
+                        if "html" in ct.lower() and resp.status_code == 200:
+                            logger.warning("Got HTML instead of XLSX from %s", url)
+                            continue
+                        if resp.status_code == 200 and resp.content[:4] == b"PK\x03\x04":
+                            content = resp.content
+                            used_url = url
+                            break
+                    except Exception as e:
+                        logger.debug("Download failed for %s: %s", url, e)
+                        continue
+            finally:
+                session.close()
 
             if not content:
                 raise ValueError("St_izn_of XLSX not found")
@@ -97,25 +112,47 @@ class RosstatFixedAssetsParser(BaseParser):
             points = parse_depreciation_xlsx(content)
 
             if not points:
+                logger.warning("No points parsed for %s", code)
                 fetch_log.status = "no_new_data"
                 fetch_log.records_added = 0
-                fetch_log.completed_at = datetime.utcnow()
+                fetch_log.completed_at = datetime.now(timezone.utc)
                 await db.commit()
                 return
+
+            valid_points = [
+                p for p in points
+                if isinstance(p.value, (int, float)) and not math.isnan(p.value)
+            ]
+            if len(valid_points) < len(points):
+                logger.warning("%s: filtered out %d invalid values", code, len(points) - len(valid_points))
+            points = valid_points
+
+            count_before = (await db.execute(
+                select(func.count(IndicatorData.id))
+                .where(IndicatorData.indicator_id == indicator.id)
+            )).scalar() or 0
 
             for p in points:
                 await db.execute(upsert_indicator_data(indicator.id, p.date, p.value))
             await db.flush()
 
+            count_after = (await db.execute(
+                select(func.count(IndicatorData.id))
+                .where(IndicatorData.indicator_id == indicator.id)
+            )).scalar() or 0
+
+            records_added = count_after - count_before
             fetch_log.status = "success"
-            fetch_log.records_added = len(points)
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.records_added = records_added
+            fetch_log.completed_at = datetime.now(timezone.utc)
             await db.commit()
-            await cache_invalidate_indicator(indicator.code)
-            logger.info("depreciation-rate: upserted %d points", len(points))
+            await cache_invalidate_indicator(code)
+            logger.info("depreciation-rate: upserted %d new points (of %d)", records_added, len(points))
         except Exception as exc:
+            await db.rollback()
             fetch_log.status = "failed"
             fetch_log.error_message = str(exc)[:500]
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
+            db.add(fetch_log)
             await db.commit()
             raise

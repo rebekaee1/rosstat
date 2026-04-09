@@ -372,21 +372,27 @@ function TelemetryCard({
   
   useEffect(() => {
     if (animated.current || !ref.current) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     animated.current = true;
-    gsap.fromTo(ref.current,
+    const tween = gsap.fromTo(ref.current,
       { y: 20, opacity: 0 },
       { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', delay: 0.4 + delay * 0.1 }
     );
+    return () => tween.kill();
   }, [delay]);
 
   const digits = unitDigits(unit);
   useEffect(() => {
     if (value == null || !valRef.current) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      valRef.current.textContent = formatValue(value, digits);
+      return;
+    }
     const raw = valRef.current.textContent.replace(/\s/g, '') || '0';
     const from = parseFloat(raw) || 0;
     const target = Number(value);
     const counter = { v: from };
-    gsap.to(counter, {
+    const tween = gsap.to(counter, {
       v: target,
       duration: from === 0 ? 1.5 : 0.6,
       ease: 'power2.out',
@@ -397,6 +403,7 @@ function TelemetryCard({
         }
       },
     });
+    return () => tween.kill();
   }, [value, digits]);
 
   const changeNum = change != null ? Number(change) : null;
@@ -524,14 +531,14 @@ export default function IndicatorDetail() {
   }, [chartMode, inflationResp]);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
     const els = headerRef.current?.querySelectorAll('[data-animate]');
-    if (els?.length) {
-      gsap.fromTo(els,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1, ease: 'power3.out', stagger: 0.1 }
-      );
-    }
+    if (!els?.length) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const tween = gsap.fromTo(els,
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1, ease: 'power3.out', stagger: 0.1 }
+    );
+    return () => tween.kill();
   }, []);
 
   const rawDataPoints = useMemo(
@@ -830,6 +837,7 @@ export default function IndicatorDetail() {
                 <div
                   role="switch"
                   aria-checked={forecastEnabled && showForecast}
+                  aria-label="Показать прогноз"
                   tabIndex={forecastEnabled ? 0 : -1}
                   onClick={() => forecastEnabled && setShowForecast(v => !v)}
                   onKeyDown={e => { if (forecastEnabled && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); setShowForecast(v => !v); } }}
@@ -910,7 +918,7 @@ export default function IndicatorDetail() {
             )}
           </div>
           
-          {indicator?.source_url ? (
+          {indicator?.source_url && indicator.source_url.startsWith('http') ? (
           <div className="mt-auto pt-6 border-t border-border-subtle">
             <a
               href={indicator.source_url}

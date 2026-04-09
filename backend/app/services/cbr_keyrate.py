@@ -13,8 +13,6 @@ from dataclasses import dataclass
 from datetime import date
 from typing import List
 
-import requests
-
 from app.config import settings
 from app.services.http_client import create_session
 
@@ -34,7 +32,7 @@ class DataPoint:
 
 
 def _parse_ru_float(s: str) -> float:
-    t = s.strip().replace(" ", "").replace("\xa0", "")
+    t = s.strip().replace("\u2212", "-").replace(" ", "").replace("\xa0", "")
     t = t.replace(",", ".")
     return float(t)
 
@@ -80,7 +78,10 @@ def fetch_key_rate_html(date_from: date, date_to: date) -> tuple[str, str]:
         "UniDbQuery.To": date_to.strftime("%d.%m.%Y"),
     }
     session = create_session()
-    resp = session.get(url, params=params, timeout=settings.cbr_request_timeout)
-    resp.raise_for_status()
-    assert_keyrate_response_plausible(resp.text, resp.url)
-    return resp.text, resp.url
+    try:
+        resp = session.get(url, params=params, timeout=settings.cbr_request_timeout)
+        resp.raise_for_status()
+        assert_keyrate_response_plausible(resp.text, resp.url)
+        return resp.text, resp.url
+    finally:
+        session.close()

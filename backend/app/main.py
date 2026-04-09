@@ -6,12 +6,14 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.middleware.gzip import GZipMiddleware
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 
 from app.api.router import api_router
 from app.config import settings
 from app.core.cache import close_redis, get_redis
+from app.database import engine
 
 class JsonFormatter(logging.Formatter):
     def format(self, record):
@@ -42,8 +44,9 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         if not request.url.path.startswith("/api/"):
             return await call_next(request)
 
-        ip = request.client.host if request.client else "unknown"
-        key = f"rl:{ip}"
+        forwarded = request.headers.get("x-forwarded-for", "")
+        client_ip = forwarded.split(",")[0].strip() if forwarded else (request.client.host if request.client else "unknown")
+        key = f"rl:{client_ip}"
         try:
             redis = await get_redis()
             count = await redis.incr(key)
@@ -57,7 +60,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                     headers={"Retry-After": str(self.WINDOW)},
                 )
         except Exception:
-            logger.warning("Rate limit check failed (Redis unavailable), allowing request from %s", ip)
+            logger.warning("Rate limit check failed (Redis unavailable), allowing request from %s", client_ip)
         return await call_next(request)
 
 scheduler = AsyncIOScheduler()
@@ -93,6 +96,7 @@ async def lifespan(app: FastAPI):
     # Shutdown
     if scheduler.running:
         scheduler.shutdown(wait=False)
+    await engine.dispose()
     await close_redis()
     logger.info("Shutdown complete.")
 
@@ -107,6 +111,7 @@ app = FastAPI(
     openapi_url="/api/openapi.json" if settings.debug else None,
 )
 
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 app.add_middleware(RateLimitMiddleware)
 app.add_middleware(
     CORSMiddleware,
@@ -114,6 +119,7 @@ app.add_middleware(
         "https://forecasteconomy.com",
         "https://www.forecasteconomy.com",
         "http://localhost:5173",
+        "http://localhost:5174",
         "http://localhost:3000",
     ],
     allow_credentials=True,

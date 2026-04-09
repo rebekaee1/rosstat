@@ -5,7 +5,7 @@ import {
   Tooltip, CartesianGrid, ReferenceLine,
 } from 'recharts';
 import { Activity, ZoomIn } from 'lucide-react';
-import { formatDate, formatValue, formatAxisTick, formatValueWithUnit, unitSuffix, unitDigits, cn } from '../lib/format';
+import { formatDate, formatAxisTick, formatValueWithUnit, unitDigits, cn } from '../lib/format';
 
 const RANGE_OPTIONS = [
   { key: '3y', label: '3 года', months: 36 },
@@ -32,8 +32,8 @@ function dateBasedWindowSize(data, months) {
 function CustomTooltip({ active, payload, label, mode, levelTooltipLabel, dateFormat = 'full', unit = '%', visible = true }) {
   if (!visible || !active || !payload?.length) return null;
 
-  const actual = payload.find(p => p.dataKey === 'actual' && p.value != null);
-  const forecast = payload.find(p => p.dataKey === 'forecast' && p.value != null);
+  const actual = payload.find(p => p.dataKey === 'actual' && p.value != null && !isNaN(p.value));
+  const forecast = payload.find(p => p.dataKey === 'forecast' && p.value != null && !isNaN(p.value));
 
   const actualLabel = mode === 'cpi'
     ? (levelTooltipLabel || 'ИПЦ к пред. месяцу')
@@ -100,10 +100,12 @@ export default function IndicatorChart({
 
   useEffect(() => {
     if (!ref.current) return;
-    gsap.fromTo(ref.current,
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const tween = gsap.fromTo(ref.current,
       { y: 30, opacity: 0 },
       { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', delay: 0.5 }
     );
+    return () => tween.kill();
   }, []);
 
   const chartData = useMemo(() => {
@@ -181,6 +183,7 @@ export default function IndicatorChart({
 
   /* ── Wheel zoom (TradingView-style) ── */
   const handleWheel = useCallback((e) => {
+    if (!e.ctrlKey && !e.metaKey) return;
     e.preventDefault();
     e.stopPropagation();
 
@@ -267,8 +270,8 @@ export default function IndicatorChart({
     }
     if (!isFinite(min)) return { yDomain: ['auto', 'auto'], yWidth: 55, yTicks: undefined };
 
-    const range = max - min || 1;
-    const rough = range / 5;
+    const span = max - min || 1;
+    const rough = span / 5;
     const pow = Math.pow(10, Math.floor(Math.log10(rough)));
     const frac = rough / pow;
     const step = frac <= 1.5 ? pow : frac <= 3.5 ? 2 * pow : frac <= 7.5 ? 5 * pow : 10 * pow;
@@ -446,7 +449,7 @@ export default function IndicatorChart({
         {isHovering && !isDragging && (
           <div className="absolute bottom-3 right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-obsidian/70 backdrop-blur-sm border border-border-subtle/50 pointer-events-none opacity-60 transition-opacity">
             <ZoomIn className="w-3 h-3 text-text-tertiary" />
-            <span className="text-[10px] font-mono text-text-tertiary">scroll — зум · drag — сдвиг</span>
+            <span className="text-[10px] font-mono text-text-tertiary">Ctrl + scroll — зум · drag — сдвиг</span>
           </div>
         )}
       </div>

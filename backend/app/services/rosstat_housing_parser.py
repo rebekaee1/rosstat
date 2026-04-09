@@ -15,7 +15,7 @@ import io
 import logging
 import re
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from typing import ClassVar
 
 import openpyxl
@@ -62,12 +62,13 @@ INDICATOR_ROW_MAP: dict[str, int] = {
 
 def parse_housing_xlsx(content: bytes) -> dict[str, list[DataPoint]]:
     wb = openpyxl.load_workbook(io.BytesIO(content), data_only=True, read_only=True)
-    ws = wb.worksheets[0]
-
-    rows_data: list[list] = []
-    for row in ws.iter_rows(values_only=True):
-        rows_data.append(list(row))
-    wb.close()
+    try:
+        ws = wb.worksheets[0]
+        rows_data: list[list] = []
+        for row in ws.iter_rows(values_only=True):
+            rows_data.append(list(row))
+    finally:
+        wb.close()
 
     if len(rows_data) < 3:
         raise ValueError(f"Housing XLSX: expected >=3 rows, got {len(rows_data)}")
@@ -113,7 +114,7 @@ class RosstatHousingParser(BaseParser):
             if series_key not in all_series:
                 fetch_log.status = "failed"
                 fetch_log.error_message = f"No series mapping for '{code}'"
-                fetch_log.completed_at = datetime.utcnow()
+                fetch_log.completed_at = datetime.now(timezone.utc)
                 await db.commit()
                 return
 
@@ -125,7 +126,7 @@ class RosstatHousingParser(BaseParser):
             if not points:
                 fetch_log.status = "no_new_data"
                 fetch_log.error_message = "Parser returned 0 data points"
-                fetch_log.completed_at = datetime.utcnow()
+                fetch_log.completed_at = datetime.now(timezone.utc)
                 await db.commit()
                 return
 
@@ -155,12 +156,14 @@ class RosstatHousingParser(BaseParser):
                 await cache_invalidate_indicator(code)
 
             fetch_log.status = "success" if records_added > 0 else "no_new_data"
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
             await db.commit()
 
         except Exception as e:
             logger.exception("ETL failed for '%s'", code)
+            await db.rollback()
             fetch_log.status = "failed"
             fetch_log.error_message = str(e)[:500]
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
+            db.add(fetch_log)
             await db.commit()

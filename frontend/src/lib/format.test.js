@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { formatDate, formatValue, formatChange, formatValueWithUnit, unitSuffix, unitDigits, cn } from './format';
+import { formatDate, formatValue, formatChange, formatValueWithUnit, unitSuffix, unitDigits, cn, adjustCpiDisplay } from './format';
 
 describe('format', () => {
   it('formatDate full month in Russian', () => {
@@ -10,6 +10,17 @@ describe('format', () => {
   it('formatDate day format includes day number in genitive', () => {
     expect(formatDate('2024-01-15', 'day')).toBe('15 января 2024');
     expect(formatDate('2024-02-03', 'day')).toBe('3 февраля 2024');
+  });
+
+  it('formatDate annual returns year only', () => {
+    expect(formatDate('2024-06-15', 'annual')).toBe('2024');
+  });
+
+  it('formatDate quarterly returns quarter and year', () => {
+    expect(formatDate('2024-01-15', 'quarterly')).toBe('1 кв. 2024');
+    expect(formatDate('2024-04-15', 'quarterly')).toBe('2 кв. 2024');
+    expect(formatDate('2024-07-15', 'quarterly')).toBe('3 кв. 2024');
+    expect(formatDate('2024-10-15', 'quarterly')).toBe('4 кв. 2024');
   });
 
   it('formatValue handles null', () => {
@@ -63,5 +74,22 @@ describe('unitDigits', () => {
   });
   it('returns 1 for млрд руб.', () => {
     expect(unitDigits('млрд руб.')).toBe(1);
+  });
+});
+
+describe('adjustCpiDisplay', () => {
+  it('subtracts 100 when no code given (backward compat)', () => {
+    expect(adjustCpiDisplay(102.5)).toBe(2.5);
+  });
+  it('subtracts 100 for CPI code', () => {
+    expect(adjustCpiDisplay(102.5, 'cpi')).toBe(2.5);
+  });
+  it('returns value unchanged for non-CPI code', () => {
+    expect(adjustCpiDisplay(102.5, 'gdp')).toBe(102.5);
+  });
+  it('handles null and non-finite', () => {
+    expect(adjustCpiDisplay(null)).toBe(null);
+    expect(adjustCpiDisplay(Infinity)).toBe(Infinity);
+    expect(adjustCpiDisplay(NaN)).toBeNaN();
   });
 });

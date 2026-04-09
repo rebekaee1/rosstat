@@ -60,6 +60,10 @@ class RosstatFetcher:
             resp = self.session.get(url, timeout=settings.rosstat_request_timeout)
             resp.raise_for_status()
 
+            ct = resp.headers.get("content-type", "")
+            if "html" in ct.lower():
+                logger.warning("Got HTML content-type from %s", url)
+
             if resp.content[:4] != XLSX_MAGIC:
                 logger.error("Downloaded content is not XLSX (got HTML?). URL: %s", url)
                 return None

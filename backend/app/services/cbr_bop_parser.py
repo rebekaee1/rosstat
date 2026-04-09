@@ -14,7 +14,7 @@ import io
 import logging
 import re
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from typing import ClassVar
 
 import openpyxl
@@ -67,12 +67,18 @@ def _find_row_by_label(rows: list[list], label_contains: str, exact_strip: str |
 
 def fetch_bop_xlsx() -> tuple[bytes, str]:
     session = create_session()
-    resp = session.get(BOP_URL, timeout=90)
-    resp.raise_for_status()
-    if resp.content[:4] != b"PK\x03\x04":
-        raise ValueError("BOP response is not XLSX")
-    logger.info("Downloaded BOP XLSX: %d KB", len(resp.content) // 1024)
-    return resp.content, BOP_URL
+    try:
+        resp = session.get(BOP_URL, timeout=90)
+        resp.raise_for_status()
+        ct = resp.headers.get("content-type", "").lower()
+        if "spreadsheet" not in ct and "openxml" not in ct and resp.status_code == 200:
+            logger.warning("BOP unexpected content-type: %s", resp.headers.get("content-type"))
+        if resp.content[:4] != b"PK\x03\x04":
+            raise ValueError("BOP response is not XLSX")
+        logger.info("Downloaded BOP XLSX: %d KB", len(resp.content) // 1024)
+        return resp.content, BOP_URL
+    finally:
+        session.close()
 
 
 def parse_bop_xlsx(content: bytes, target: str) -> list[DataPoint]:
@@ -83,19 +89,20 @@ def parse_bop_xlsx(content: bytes, target: str) -> list[DataPoint]:
             "trade-balance" → row «Товары » (with trailing space in source)
     """
     wb = openpyxl.load_workbook(io.BytesIO(content), data_only=True, read_only=True)
+    try:
+        ws = None
+        for name in wb.sheetnames:
+            if "квартал" in name.lower():
+                ws = wb[name]
+                break
+        if ws is None:
+            ws = wb.worksheets[0]
 
-    ws = None
-    for name in wb.sheetnames:
-        if "квартал" in name.lower():
-            ws = wb[name]
-            break
-    if ws is None:
-        ws = wb.worksheets[0]
-
-    rows_data: list[list] = []
-    for row in ws.iter_rows(values_only=True):
-        rows_data.append(list(row))
-    wb.close()
+        rows_data: list[list] = []
+        for row in ws.iter_rows(values_only=True):
+            rows_data.append(list(row))
+    finally:
+        wb.close()
 
     dates: list[tuple[int, date]] = []
     header_row_idx = None
@@ -217,9 +224,10 @@ class CbrBopParser(BaseParser):
             points = await asyncio.to_thread(parse_bop_xlsx, content, target)
 
             if not points:
+                logger.warning("No data points parsed for %s", code)
                 fetch_log.status = "no_new_data"
                 fetch_log.error_message = "BOP parser returned 0 data points"
-                fetch_log.completed_at = datetime.utcnow()
+                fetch_log.completed_at = datetime.now(timezone.utc)
                 await db.commit()
                 return
 
@@ -249,12 +257,14 @@ class CbrBopParser(BaseParser):
                 await cache_invalidate_indicator(code)
 
             fetch_log.status = "success" if records_added > 0 else "no_new_data"
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
             await db.commit()
 
         except Exception as e:
             logger.exception("ETL failed for '%s'", code)
+            await db.rollback()
             fetch_log.status = "failed"
             fetch_log.error_message = str(e)[:500]
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
+            db.add(fetch_log)
             await db.commit()

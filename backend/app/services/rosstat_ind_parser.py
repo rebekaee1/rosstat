@@ -17,9 +17,10 @@ from __future__ import annotations
 
 import io
 import logging
+import math
 import re
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from typing import ClassVar
 
 import openpyxl
@@ -47,7 +48,7 @@ class DataPoint:
 def _to_float(cell) -> float | None:
     if cell is None:
         return None
-    s = str(cell).strip().replace(",", ".").replace("\xa0", "").replace(" ", "")
+    s = str(cell).strip().replace("\u2212", "-").replace(",", ".").replace("\xa0", "").replace(" ", "")
     if s in ("", "…", "-", "..."):
         return None
     try:
@@ -71,17 +72,18 @@ def _extract_year(cell) -> int | None:
 def parse_ind_sheet(content: bytes, sheet_name: str) -> list[DataPoint]:
     """Parse a sheet from ind_MM-YYYY.xlsx → monthly DataPoints."""
     wb = openpyxl.load_workbook(io.BytesIO(content), data_only=True, read_only=True)
-    ws = None
-    for name in wb.sheetnames:
-        if sheet_name.strip() in name.strip():
-            ws = wb[name]
-            break
-    if ws is None:
-        wb.close()
-        raise ValueError(f"Sheet '{sheet_name}' not found in {wb.sheetnames[:10]}")
+    try:
+        ws = None
+        for name in wb.sheetnames:
+            if sheet_name.strip() in name.strip():
+                ws = wb[name]
+                break
+        if ws is None:
+            raise ValueError(f"Sheet '{sheet_name}' not found in {wb.sheetnames[:10]}")
 
-    rows_data = [list(row) for row in ws.iter_rows(values_only=True)]
-    wb.close()
+        rows_data = [list(row) for row in ws.iter_rows(values_only=True)]
+    finally:
+        wb.close()
 
     points = []
     seen: set[tuple[int, int]] = set()
@@ -121,7 +123,6 @@ def parse_ind_sheet(content: bytes, sheet_name: str) -> list[DataPoint]:
 
 def _fetch_latest_ind(session) -> tuple[bytes, str]:
     """Try to download the latest ind_MM-YYYY.xlsx by trying recent months."""
-    from datetime import datetime
     now = datetime.now()
     candidates = []
     for offset in range(6):
@@ -136,10 +137,15 @@ def _fetch_latest_ind(session) -> tuple[bytes, str]:
         url = BASE_URL + fn
         try:
             resp = session.get(url, timeout=90)
+            ct = resp.headers.get("content-type", "")
+            if "html" in ct.lower() and resp.status_code == 200:
+                logger.warning("Got HTML instead of XLSX from %s", url)
+                continue
             if resp.status_code == 200 and resp.content[:4] == b"PK\x03\x04":
                 logger.info("Downloaded %s (%d KB)", fn, len(resp.content) // 1024)
                 return resp.content, url
-        except Exception:
+        except Exception as e:
+            logger.debug("Download failed for %s: %s", url, e)
             continue
 
     raise ValueError(f"ind XLSX not found (tried {candidates})")
@@ -164,32 +170,57 @@ class RosstatIndParser(BaseParser):
                 raise ValueError(f"No sheet mapping for indicator {code}")
 
             session = create_session()
-            session.verify = settings.rosstat_ca_cert
-            content, url = _fetch_latest_ind(session)
-            fetch_log.source_url = url
+            try:
+                session.verify = settings.rosstat_ca_cert
+                content, url = _fetch_latest_ind(session)
+            finally:
+                session.close()
 
+            fetch_log.source_url = url
             points = parse_ind_sheet(content, sheet_name)
 
             if not points:
+                logger.warning("No points parsed for %s", code)
                 fetch_log.status = "no_new_data"
                 fetch_log.records_added = 0
-                fetch_log.completed_at = datetime.utcnow()
+                fetch_log.completed_at = datetime.now(timezone.utc)
                 await db.commit()
                 return
+
+            valid_points = [
+                p for p in points
+                if isinstance(p.value, (int, float)) and not math.isnan(p.value)
+            ]
+            if len(valid_points) < len(points):
+                logger.warning("%s: filtered out %d invalid values", code, len(points) - len(valid_points))
+            points = valid_points
+
+            count_before = (await db.execute(
+                select(func.count(IndicatorData.id))
+                .where(IndicatorData.indicator_id == indicator.id)
+            )).scalar() or 0
 
             for p in points:
                 await db.execute(upsert_indicator_data(indicator.id, p.date, p.value))
             await db.flush()
 
+            count_after = (await db.execute(
+                select(func.count(IndicatorData.id))
+                .where(IndicatorData.indicator_id == indicator.id)
+            )).scalar() or 0
+
+            records_added = count_after - count_before
             fetch_log.status = "success"
-            fetch_log.records_added = len(points)
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.records_added = records_added
+            fetch_log.completed_at = datetime.now(timezone.utc)
             await db.commit()
             await cache_invalidate_indicator(code)
-            logger.info("%s: upserted %d monthly points from ind XLSX", code, len(points))
+            logger.info("%s: upserted %d new monthly points (of %d) from ind XLSX", code, records_added, len(points))
         except Exception as exc:
+            await db.rollback()
             fetch_log.status = "failed"
             fetch_log.error_message = str(exc)[:500]
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
+            db.add(fetch_log)
             await db.commit()
             raise

@@ -12,7 +12,7 @@ import asyncio
 import io
 import logging
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from typing import ClassVar
 
 import openpyxl
@@ -39,22 +39,30 @@ class DataPoint:
 
 def fetch_debt_xlsx() -> tuple[bytes, str]:
     session = create_session()
-    resp = session.get(DEBT_URL, timeout=90)
-    resp.raise_for_status()
-    if resp.content[:4] != b"PK\x03\x04":
-        raise ValueError("Debt response is not XLSX")
-    logger.info("Downloaded debt XLSX: %d KB", len(resp.content) // 1024)
-    return resp.content, DEBT_URL
+    try:
+        resp = session.get(DEBT_URL, timeout=90)
+        resp.raise_for_status()
+        ct = resp.headers.get("content-type", "").lower()
+        if "spreadsheet" not in ct and "openxml" not in ct and resp.status_code == 200:
+            logger.warning("Debt unexpected content-type: %s", resp.headers.get("content-type"))
+        if resp.content[:4] != b"PK\x03\x04":
+            raise ValueError("Debt response is not XLSX")
+        logger.info("Downloaded debt XLSX: %d KB", len(resp.content) // 1024)
+        return resp.content, DEBT_URL
+    finally:
+        session.close()
 
 
 def parse_debt_xlsx(content: bytes) -> list[DataPoint]:
     wb = openpyxl.load_workbook(io.BytesIO(content), data_only=True, read_only=True)
-    ws = wb.worksheets[0]
+    try:
+        ws = wb.worksheets[0]
 
-    rows_data: list[list] = []
-    for row in ws.iter_rows(values_only=True):
-        rows_data.append(list(row))
-    wb.close()
+        rows_data: list[list] = []
+        for row in ws.iter_rows(values_only=True):
+            rows_data.append(list(row))
+    finally:
+        wb.close()
 
     if len(rows_data) < 5:
         raise ValueError(f"Debt XLSX: expected >=5 rows, got {len(rows_data)}")
@@ -121,9 +129,10 @@ class CbrDebtParser(BaseParser):
             cfg = indicator.model_config_json or {}
 
             if not points:
+                logger.warning("No data points parsed for %s", code)
                 fetch_log.status = "no_new_data"
                 fetch_log.error_message = "Debt parser returned 0 data points"
-                fetch_log.completed_at = datetime.utcnow()
+                fetch_log.completed_at = datetime.now(timezone.utc)
                 await db.commit()
                 return
 
@@ -153,12 +162,14 @@ class CbrDebtParser(BaseParser):
                 await cache_invalidate_indicator(code)
 
             fetch_log.status = "success" if records_added > 0 else "no_new_data"
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
             await db.commit()
 
         except Exception as e:
             logger.exception("ETL failed for '%s'", code)
+            await db.rollback()
             fetch_log.status = "failed"
             fetch_log.error_message = str(e)[:500]
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
+            db.add(fetch_log)
             await db.commit()

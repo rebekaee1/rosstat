@@ -11,11 +11,12 @@ XLSX `nedel_Ipc.xlsx` содержит только per-product индексы �
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import re
 import time
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from typing import ClassVar
 
 import requests
@@ -42,10 +43,6 @@ class WeeklyPoint:
     value: float
 
 
-def _get_session() -> requests.Session:
-    return create_session()
-
-
 def _parse_page(html: bytes) -> tuple[WeeklyPoint | None, str | None]:
     """Parse one page → (data point, prev_page_url or None)."""
     soup = BeautifulSoup(html, "html.parser")
@@ -70,7 +67,7 @@ def _parse_page(html: bytes) -> tuple[WeeklyPoint | None, str | None]:
         if rows:
             cells = [td.get_text(strip=True) for td in rows[0].find_all(["td", "th"])]
             if len(cells) >= 3:
-                raw = cells[2].replace(",", ".")
+                raw = cells[2].replace("\u2212", "-").replace(",", ".")
                 try:
                     val = float(raw)
                     if 98 < val < 105:
@@ -93,38 +90,41 @@ def _parse_page(html: bytes) -> tuple[WeeklyPoint | None, str | None]:
 
 def fetch_weekly_cpi(max_pages: int = 200, existing_dates: set[date] | None = None) -> list[WeeklyPoint]:
     """Follow pagination and collect weekly CPI points."""
-    session = _get_session()
-    points: list[WeeklyPoint] = []
-    url: str | None = BASE_URL
-    seen_dates: set[date] = set()
-    existing = existing_dates or set()
+    session = create_session()
+    try:
+        points: list[WeeklyPoint] = []
+        url: str | None = BASE_URL
+        seen_dates: set[date] = set()
+        existing = existing_dates or set()
 
-    for _ in range(max_pages):
-        if not url:
-            break
-        try:
-            resp = session.get(url, timeout=20)
-            if resp.status_code != 200:
-                logger.warning("HTTP %d for %s", resp.status_code, url)
+        for _ in range(max_pages):
+            if not url:
                 break
-        except requests.RequestException as e:
-            logger.warning("Request failed: %s", e)
-            break
-
-        point, prev_url = _parse_page(resp.content)
-        if point and point.date not in seen_dates:
-            seen_dates.add(point.date)
-            points.append(point)
-            if point.date in existing and len(points) > 4:
+            try:
+                resp = session.get(url, timeout=20)
+                if resp.status_code != 200:
+                    logger.warning("HTTP %d for %s", resp.status_code, url)
+                    break
+            except requests.RequestException as e:
+                logger.warning("Request failed: %s", e)
                 break
-        elif point is None and prev_url is None:
-            break
 
-        url = prev_url
-        time.sleep(0.3)
+            point, prev_url = _parse_page(resp.content)
+            if point and point.date not in seen_dates:
+                seen_dates.add(point.date)
+                points.append(point)
+                if point.date in existing and len(points) > 4:
+                    break
+            elif point is None and prev_url is None:
+                break
 
-    points.sort(key=lambda p: p.date)
-    return points
+            url = prev_url
+            time.sleep(0.3)
+
+        points.sort(key=lambda p: p.date)
+        return points
+    finally:
+        session.close()
 
 
 class RosstatWeeklyCpiParser(BaseParser):
@@ -139,7 +139,6 @@ class RosstatWeeklyCpiParser(BaseParser):
             )
             existing_dates = {row[0] for row in existing_q.fetchall()}
 
-            import asyncio
             cfg = indicator.model_config_json or {}
             max_pages = cfg.get("backfill_max_pages", 200)
             points = await asyncio.to_thread(
@@ -152,7 +151,7 @@ class RosstatWeeklyCpiParser(BaseParser):
             if not points:
                 fetch_log.status = "no_new_data"
                 fetch_log.error_message = "No weekly CPI data found on inflation-monitor.ru"
-                fetch_log.completed_at = datetime.utcnow()
+                fetch_log.completed_at = datetime.now(timezone.utc)
                 await db.commit()
                 return
 
@@ -178,12 +177,14 @@ class RosstatWeeklyCpiParser(BaseParser):
                 await cache_invalidate_indicator(code)
 
             fetch_log.status = "success" if records_added > 0 else "no_new_data"
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
             await db.commit()
 
         except Exception as e:
             logger.exception("ETL failed for '%s'", code)
+            await db.rollback()
             fetch_log.status = "failed"
             fetch_log.error_message = str(e)[:500]
-            fetch_log.completed_at = datetime.utcnow()
+            fetch_log.completed_at = datetime.now(timezone.utc)
+            db.add(fetch_log)
             await db.commit()

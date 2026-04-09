@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime
-from typing import Optional
 
 import requests
 
@@ -71,6 +70,9 @@ def fetch_sdds_xlsx(dataset: str) -> tuple[bytes, str]:
             if resp.status_code != 200:
                 logger.debug("SDDS %s %d: HTTP %d", dataset, year, resp.status_code)
                 continue
+            ct = resp.headers.get("content-type", "")
+            if "html" in ct.lower():
+                logger.warning("SDDS %s %d: got HTML content-type (error page?)", dataset, year)
             if resp.content[:4] != XLSX_MAGIC:
                 logger.warning("SDDS %s %d: not XLSX (HTML error page?)", dataset, year)
                 continue
@@ -95,6 +97,9 @@ def fetch_rosstat_static_xlsx(key: str) -> tuple[bytes, str]:
     resp = session.get(url, timeout=settings.rosstat_request_timeout)
     if resp.status_code != 200:
         raise RuntimeError(f"Rosstat {key}: HTTP {resp.status_code}")
+    ct = resp.headers.get("content-type", "")
+    if "html" in ct.lower():
+        logger.warning("Rosstat %s: got HTML content-type", key)
     if resp.content[:4] != XLSX_MAGIC:
         raise RuntimeError(f"Rosstat {key}: response is not XLSX")
     logger.info("Downloaded Rosstat %s: %d KB", key, len(resp.content) // 1024)

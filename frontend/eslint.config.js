@@ -31,6 +31,7 @@ export default defineConfig([
       },
     },
     rules: {
+      // Uppercase: JSX components not tracked by no-unused-vars without eslint-plugin-react
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
     },
   },
