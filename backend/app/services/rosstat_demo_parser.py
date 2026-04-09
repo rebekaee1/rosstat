@@ -13,7 +13,7 @@ import io
 import logging
 import re
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime
 from typing import ClassVar
 
 import openpyxl
@@ -251,9 +251,16 @@ class RosstatDemoParser(BaseParser):
         if not points:
             fetch_log.status = "no_new_data"
             fetch_log.records_added = 0
+            fetch_log.completed_at = datetime.utcnow()
+            await db.commit()
             return
 
-        count = await upsert_indicator_data(db, indicator.id, [(p.date, p.value) for p in points])
+        for p in points:
+            await db.execute(upsert_indicator_data(indicator.id, p.date, p.value))
+        await db.flush()
+
         fetch_log.status = "success"
-        fetch_log.records_added = count
-        logger.info("%s: upserted %d points from %s", code, count, file_type)
+        fetch_log.records_added = len(points)
+        fetch_log.completed_at = datetime.utcnow()
+        await db.commit()
+        logger.info("%s: upserted %d points from %s", code, len(points), file_type)
