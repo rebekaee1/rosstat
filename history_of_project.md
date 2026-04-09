@@ -847,3 +847,36 @@
 - **Результат:** build успешен (CalculatorPage: 25 KB / 8.4 KB gzip), lint clean, страница рендерится корректно (проверено в браузере). Данные CPI не отображаются без backend, но loading/error states работают.
 - **URL sharing:** `/calculator?amount=100000&from=2015&to=2025` — параметры из URL восстанавливаются при mount.
 - **Edge cases обработаны:** from ≥ to → 0% / no change, будущие годы → clip to lastAvailableYear, сумма 0 → no result, гиперинфляция 1991-1995 → extreme glow (>200%).
+
+## 2026-04-09 — Embed system polish + badge + sparkline dashboard
+
+- **User intent:** продолжить реализацию embeddable виджетов из предыдущего исследования (exported conversation).
+- **Текущее состояние embed-системы:** 5 виджетов (chart, card, table, ticker, compare) + конструктор `/widgets` + backend SVG endpoints + impression tracking + nginx/Caddy frame-ancestors * — всё уже реализовано.
+- **Доработки embed (этот сеанс):**
+  - Исправлены 3 lint-ошибки: unused `period` (EmbedCard), unused `cn` (EmbedChart), unused `dark` param (EmbedBuilder IndicatorCombobox), лишний `w` в deps useMemo.
+  - `theme=auto` — `useEmbedParams` теперь поддерживает `?theme=auto` через `useSyncExternalStore` + `matchMedia('prefers-color-scheme: dark')`. Реагирует на переключение системной темы в реальном времени.
+  - Badge SVG endpoint — `GET /api/v1/embed/badge/{code}.svg?theme=light|dark` — shields.io-стиль бейдж (label | value ▲change) с цветовой индикацией (зелёный/красный/серый). Кэш Redis 1h.
+  - EmbedBuilder — добавлена вкладка «Badge» в секции кода, формирует Markdown с badge-ссылкой.
+  - Navbar — ссылка «Виджеты» добавлена в desktop + mobile меню.
+  - CalendarHero — удалён unused import `cn`.
+- **Sparkline dashboard (из предыдущей сессии, не закоммичено):**
+  - `backend/app/api/dashboard.py` — sparkline batch endpoint
+  - `frontend/src/components/Sparkline.jsx` — Recharts sparkline component
+  - `frontend/src/components/CategoryBlock.jsx` — sparkline интеграция
+  - `frontend/src/lib/hooks.js`, `api.js`, `categories.js` — sparkline hooks и flagship mapping
+- **Проверка в браузере (localhost:5174):**
+  - `/widgets` — конструктор загружается, 5 типов виджетов, live preview в iframe
+  - `/embed/chart/cpi?period=1y&theme=light&height=400&title=true` — AreaChart с данными, period pills, attribution
+  - `/embed/card/usd-rub?theme=light` — карточка: 84.84 руб., +1.71, sparkline
+  - Консоль: 0 ошибок приложения на всех embed-маршрутах
+- **Верификация:** eslint 0 errors, vitest 25/25, vite build OK (2.67s).
+- **Коммит:** `e91563a`, запушен в main. SSH на сервер недоступен (пароль изменён) — деплой вручную.
+
+## 2026-04-09 — Inflation Calculator: lint fixes & browser verification
+
+- **User intent:** продолжить работу по калькулятору инфляции из экспортированного чата исследования. Реализация уже была выполнена ранее — нужна верификация и исправление ошибок.
+- **FIX 1 (CRITICAL):** `useInflationCalc.js` — Rules of Hooks violation: `useIndicatorData` вызывался внутри `.map()` callback. Переписано на 4 явных вызова хука (`qCpi`, `qFood`, `qNonfood`, `qServices`). Промежуточные массивы данных обёрнуты в `useMemo` чтобы не создавать новые ссылки на каждый рендер.
+- **FIX 2:** `CalculatorPage.jsx` — ESLint `no-unused-vars` на destructured JSX component prop `icon: Icon`. Переписан на `props.icon` → `const Icon = props.icon` (varsIgnorePattern `'^[A-Z_]'` не покрывает destructured function args).
+- **Верификация в браузере (localhost:5175/calculator):** все секции рендерятся — hero, inputs, sliders, presets, результат (100 000 ₽ в 2016 → 181 203 ₽ в 2026, инфляция +81.2%), график покупательной способности, разбивка по категориям (продовольственные +83.8%, непрод. +72.5%, услуги +88.1%), методология, FAQ. Консоль: 0 ошибок приложения.
+- **Тесты:** 25/25 vitest, build OK (2.3s), eslint clean.
+- **Файлы:** `frontend/src/lib/useInflationCalc.js`, `frontend/src/pages/CalculatorPage.jsx`.
