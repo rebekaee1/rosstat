@@ -416,42 +416,6 @@ async def _compute_unemployment_annual(db: AsyncSession) -> int:
     return added
 
 
-async def _compute_trade_balance(db: AsyncSession) -> int:
-    """Торговый баланс = экспорт − импорт."""
-    exp_q = await db.execute(select(Indicator).where(Indicator.code == "exports"))
-    exp_ind = exp_q.scalar_one_or_none()
-    imp_q = await db.execute(select(Indicator).where(Indicator.code == "imports"))
-    imp_ind = imp_q.scalar_one_or_none()
-    dst_q = await db.execute(select(Indicator).where(Indicator.code == "trade-balance"))
-    dst = dst_q.scalar_one_or_none()
-    if not exp_ind or not imp_ind or not dst:
-        return 0
-
-    exp_data = {r.date: float(r.value) for r in (await db.execute(
-        select(IndicatorData).where(IndicatorData.indicator_id == exp_ind.id)
-    )).scalars().all()}
-    imp_data = {r.date: float(r.value) for r in (await db.execute(
-        select(IndicatorData).where(IndicatorData.indicator_id == imp_ind.id)
-    )).scalars().all()}
-
-    points: list[tuple[date, float]] = []
-    for d in sorted(exp_data.keys()):
-        if d in imp_data:
-            points.append((d, round(exp_data[d] - imp_data[d], 2)))
-
-    added = 0
-    for d, v in points:
-        stmt = pg_insert(IndicatorData).values(
-            indicator_id=dst.id, date=d, value=v
-        ).on_conflict_do_nothing(constraint="uq_indicator_date")
-        result = await db.execute(stmt)
-        if result.rowcount:
-            added += 1
-    if added:
-        await db.flush()
-    return added
-
-
 async def _compute_yoy_generic(db: AsyncSession, src_code: str, dst_code: str) -> int:
     """Year-over-year: (val_t / val_{t-4quarters or t-12months} - 1) * 100."""
     src_q = await db.execute(select(Indicator).where(Indicator.code == src_code))
@@ -490,12 +454,8 @@ async def _compute_yoy_generic(db: AsyncSession, src_code: str, dst_code: str) -
     return added
 
 
-async def _compute_exports_yoy(db: AsyncSession) -> int:
-    return await _compute_yoy_generic(db, "exports", "exports-yoy")
-
-
-async def _compute_imports_yoy(db: AsyncSession) -> int:
-    return await _compute_yoy_generic(db, "imports", "imports-yoy")
+async def _compute_current_account_yoy(db: AsyncSession) -> int:
+    return await _compute_yoy_generic(db, "current-account", "current-account-yoy")
 
 
 async def _compute_ipi_yoy(db: AsyncSession) -> int:
@@ -509,7 +469,5 @@ calculation_engine.register("gdp-yoy", ["gdp-nominal"], _compute_gdp_yoy)
 calculation_engine.register("gdp-qoq", ["gdp-nominal"], _compute_gdp_qoq)
 calculation_engine.register("unemployment-quarterly", ["unemployment"], _compute_unemployment_quarterly)
 calculation_engine.register("unemployment-annual", ["unemployment"], _compute_unemployment_annual)
-calculation_engine.register("trade-balance", ["exports", "imports"], _compute_trade_balance)
-calculation_engine.register("exports-yoy", ["exports"], _compute_exports_yoy)
-calculation_engine.register("imports-yoy", ["imports"], _compute_imports_yoy)
+calculation_engine.register("current-account-yoy", ["current-account"], _compute_current_account_yoy)
 calculation_engine.register("ipi-yoy", ["ipi"], _compute_ipi_yoy)

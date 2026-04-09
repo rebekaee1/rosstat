@@ -33,6 +33,7 @@ const UNIT_CONFIG = {
   'млн чел.':  { digits: 1, suffix: ' млн',    space: false },
   'тыс. чел.': { digits: 1, suffix: ' тыс.',   space: false },
   'млрд $':    { digits: 1, suffix: ' млрд $',  space: false },
+  'млн $':     { digits: 0, suffix: ' млн $',   space: false },
   'индекс':    { digits: 1, suffix: '',          space: false },
 };
 

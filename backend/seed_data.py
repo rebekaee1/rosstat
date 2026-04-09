@@ -856,59 +856,29 @@ INDICATORS = [
     },
     # ─── Внешняя торговля (ЦБ DataService — BOP) ───
     {
-        "code": "exports",
-        "name": "Экспорт товаров",
-        "name_en": "Goods Exports",
-        "unit": "млрд $",
+        "code": "current-account",
+        "name": "Сальдо текущего счёта",
+        "name_en": "Current Account Balance",
+        "unit": "млн $",
         "frequency": "quarterly",
         "source": "Банк России",
-        "source_url": "https://www.cbr.ru/statistics/macro_itm/svs/",
+        "source_url": "https://www.cbr.ru/statistics/svs/",
         "description": (
-            "Экспорт товаров из России (платёжный баланс, квартальные данные). "
-            "Источник: Банк России."
+            "Сальдо счёта текущих операций платёжного баланса РФ. "
+            "Квартальные данные в млн долларов. Источник: Банк России."
         ),
         "parser_type": "cbr_dataservice_json",
         "model_config_json": {
             "dataservice": {
-                "publicationId": 4,
-                "datasetId": 4,
+                "publicationId": 8,
+                "datasetId": 9,
                 "measureId": None,
-                "element_id": 3,
+                "element_id": None,
                 "date_offset_months": 0,
             },
             "backfill_from_year": 2000,
             "forecast_steps": 4,
             "forecast_transform": "absolute",
-            "validation": {"min": 0},
-        },
-        "is_active": True,
-        "category": "Торговля",
-    },
-    {
-        "code": "imports",
-        "name": "Импорт товаров",
-        "name_en": "Goods Imports",
-        "unit": "млрд $",
-        "frequency": "quarterly",
-        "source": "Банк России",
-        "source_url": "https://www.cbr.ru/statistics/macro_itm/svs/",
-        "description": (
-            "Импорт товаров в Россию (платёжный баланс, квартальные данные). "
-            "Источник: Банк России."
-        ),
-        "parser_type": "cbr_dataservice_json",
-        "model_config_json": {
-            "dataservice": {
-                "publicationId": 4,
-                "datasetId": 4,
-                "measureId": None,
-                "element_id": 4,
-                "date_offset_months": 0,
-            },
-            "backfill_from_year": 2000,
-            "forecast_steps": 4,
-            "forecast_transform": "absolute",
-            "validation": {"min": 0},
         },
         "is_active": True,
         "category": "Торговля",
@@ -944,44 +914,15 @@ INDICATORS = [
         "is_active": True,
         "category": "Рынок труда",
     },
-    # ─── Производные: торговый баланс ───
+    # ─── Производные: текущий счёт г/г ───
     {
-        "code": "trade-balance",
-        "name": "Сальдо торгового баланса",
-        "name_en": "Trade Balance",
-        "unit": "млрд $",
-        "frequency": "quarterly",
-        "source": "Расчёт",
-        "description": (
-            "Сальдо торгового баланса (экспорт минус импорт). "
-            "Расчёт на основе данных ЦБ РФ."
-        ),
-        "parser_type": "derived",
-        "model_config_json": {"forecast_steps": 0},
-        "is_active": True,
-        "category": "Торговля",
-    },
-    {
-        "code": "exports-yoy",
-        "name": "Экспорт (изм. г/г)",
-        "name_en": "Exports YoY Change",
+        "code": "current-account-yoy",
+        "name": "Текущий счёт (изм. г/г)",
+        "name_en": "Current Account YoY Change",
         "unit": "%",
         "frequency": "quarterly",
         "source": "Расчёт",
-        "description": "Изменение экспорта к аналогичному кварталу предыдущего года.",
-        "parser_type": "derived",
-        "model_config_json": {"forecast_steps": 0},
-        "is_active": True,
-        "category": "Торговля",
-    },
-    {
-        "code": "imports-yoy",
-        "name": "Импорт (изм. г/г)",
-        "name_en": "Imports YoY Change",
-        "unit": "%",
-        "frequency": "quarterly",
-        "source": "Расчёт",
-        "description": "Изменение импорта к аналогичному кварталу предыдущего года.",
+        "description": "Изменение сальдо текущего счёта к аналогичному кварталу предыдущего года.",
         "parser_type": "derived",
         "model_config_json": {"forecast_steps": 0},
         "is_active": True,
@@ -1039,6 +980,11 @@ async def seed():
                 model_config_json={"forecast_steps": 0, "validation": {"min": 0, "max": 60}},
             )
         )
+        # Деактивировать устаревшие индикаторы (exports/imports — нет надёжного API)
+        for old_code in ("exports", "imports", "trade-balance", "exports-yoy", "imports-yoy"):
+            await db.execute(
+                update(Indicator).where(Indicator.code == old_code).values(is_active=False)
+            )
         await db.commit()
 
         # Seed CPI data from CSV
