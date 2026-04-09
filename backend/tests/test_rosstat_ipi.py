@@ -14,7 +14,6 @@ def _make_ipi_xlsx() -> bytes:
     ws.title = "IPI"
 
     ws.append(["SDDS", None, "01.2024", "02.2024", "03.2024"])
-    ws.append(["Label", None, None, None, None])
     ws.append(["IPI (2023=100)", None, 98.5, 101.2, 103.7])
 
     buf = io.BytesIO()

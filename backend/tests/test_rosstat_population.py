@@ -16,7 +16,8 @@ def _make_sdds_population_xlsx() -> bytes:
     ws = wb.active
     ws.title = "Population"
 
-    ws.append(["SDDS", None, "2020", "2021", "2022"])
+    ws.append(["SDDS", None, 2020, 2021, 2022])
+    ws.append(["Label", None, None, None, None])
     ws.append(["Population", None, 146748.6, 145478.1, 144236.9])
 
     buf = io.BytesIO()
@@ -69,7 +70,7 @@ class TestParsePopulComponents:
     def test_natural_growth(self):
         content = _make_popul_components_xlsx()
         result = parse_popul_components_xlsx(content)
-        natural = result["natural_growth"]
+        natural = result["natural-growth"]
         assert len(natural) == 3
         assert natural[0].value == -316.2
         assert natural[2].value == -1038.8
@@ -84,6 +85,6 @@ class TestParsePopulComponents:
     def test_total_growth(self):
         content = _make_popul_components_xlsx()
         result = parse_popul_components_xlsx(content)
-        total = result["total_growth"]
+        total = result["total-growth"]
         assert len(total) == 3
         assert total[0].value == -31.1
