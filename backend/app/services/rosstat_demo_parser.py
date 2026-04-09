@@ -104,8 +104,8 @@ def parse_demo21_xlsx(content: bytes) -> dict[str, list[DataPoint]]:
     }
 
 
-def parse_demo14_xlsx(content: bytes) -> list[DataPoint]:
-    """Parse demo14.xlsx → working-age population (тыс. чел.) from row 25."""
+def parse_demo14_xlsx(content: bytes) -> dict[str, list[DataPoint]]:
+    """Parse demo14.xlsx → 3 age groups (тыс. чел.): under-working, working, over-working."""
     wb = openpyxl.load_workbook(io.BytesIO(content), data_only=True, read_only=True)
     try:
         ws = wb.worksheets[0]
@@ -117,26 +117,38 @@ def parse_demo14_xlsx(content: bytes) -> list[DataPoint]:
         raise ValueError(f"demo14: expected >= 26 rows, got {len(rows_data)}")
 
     year_row = rows_data[5]
-    working_age_row = None
-    for i in range(20, min(30, len(rows_data))):
+
+    age_groups: dict[str, list | None] = {
+        "working-age-population": None,
+        "pop-under-working-age": None,
+        "pop-over-working-age": None,
+    }
+
+    for i in range(15, min(35, len(rows_data))):
         cell = str(rows_data[i][0] or "").lower().replace("\xa0", " ").strip()
         if "трудоспособном" in cell and "моложе" not in cell and "старше" not in cell:
-            working_age_row = rows_data[i]
-            break
+            age_groups["working-age-population"] = rows_data[i]
+        elif "моложе" in cell and "трудоспособ" in cell:
+            age_groups["pop-under-working-age"] = rows_data[i]
+        elif "старше" in cell and "трудоспособ" in cell:
+            age_groups["pop-over-working-age"] = rows_data[i]
 
-    if working_age_row is None:
-        raise ValueError("demo14: working-age row not found")
-
-    points = []
-    for col_idx in range(1, min(len(year_row), len(working_age_row))):
-        year = _extract_year(year_row[col_idx])
-        if year is None or year < 1990:
+    result: dict[str, list[DataPoint]] = {}
+    for code, data_row in age_groups.items():
+        if data_row is None:
+            logger.warning("demo14: row not found for %s", code)
             continue
-        val = _to_float(working_age_row[col_idx])
-        if val is not None:
-            points.append(DataPoint(date=date(year, 1, 1), value=round(val / 1000, 2)))
+        points = []
+        for col_idx in range(1, min(len(year_row), len(data_row))):
+            year = _extract_year(year_row[col_idx])
+            if year is None or year < 1990:
+                continue
+            val = _to_float(data_row[col_idx])
+            if val is not None:
+                points.append(DataPoint(date=date(year, 1, 1), value=round(val / 1000, 2)))
+        result[code] = sorted(points, key=lambda p: p.date)
 
-    return sorted(points, key=lambda p: p.date)
+    return result
 
 
 def parse_pensioners_xlsx(content: bytes) -> list[DataPoint]:
@@ -190,7 +202,9 @@ DEMO_FILES = {
     "deaths": ("demo21", "deaths"),
     "birth-rate": ("demo21", "birth-rate"),
     "death-rate": ("demo21", "death-rate"),
-    "working-age-population": ("demo14", None),
+    "working-age-population": ("demo14", "working-age-population"),
+    "pop-under-working-age": ("demo14", "pop-under-working-age"),
+    "pop-over-working-age": ("demo14", "pop-over-working-age"),
     "pensioners": ("pensioners", None),
 }
 
@@ -247,7 +261,9 @@ class RosstatDemoParser(BaseParser):
                     if not content:
                         raise ValueError("demo14.xlsx not found")
                     fetch_log.source_url = BASE_URL + "demo14.xlsx"
-                    points = parse_demo14_xlsx(content)
+                    result = parse_demo14_xlsx(content)
+                    series_key = cfg.get("demo_series", code)
+                    points = result.get(series_key, [])
 
                 elif file_type == "pensioners":
                     filenames = [f"Sp_2.1_{y}.xlsx" for y in range(current_year + 1, current_year - 7, -1)]

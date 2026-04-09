@@ -335,6 +335,22 @@ const SEO_MAP = {
     title: 'Инновации малых предприятий — данные',
     description: 'Удельный вес малых предприятий с инновационной деятельностью: данные Росстата.',
   },
+  'construction-work': {
+    title: 'Объём строительных работ — данные и прогноз',
+    description: 'Объём строительных работ в России: ежемесячные данные Росстата, динамика и прогноз. Краткосрочные экономические показатели.',
+  },
+  'capital-investment': {
+    title: 'Инвестиции в основной капитал — данные и прогноз',
+    description: 'Инвестиции в основной капитал России: ежемесячные данные Росстата, динамика и прогноз.',
+  },
+  'pop-under-working-age': {
+    title: 'Население моложе трудоспособного возраста — данные',
+    description: 'Численность населения моложе трудоспособного возраста (0–15 лет): исторические данные Росстата с 1990 года.',
+  },
+  'pop-over-working-age': {
+    title: 'Население старше трудоспособного возраста — данные',
+    description: 'Численность населения старше трудоспособного возраста: данные Росстата с 1990 года.',
+  },
 };
 
 const FREQ_MAP = {
@@ -605,10 +621,19 @@ export default function IndicatorDetail() {
     setCurrentRange(range);
   }, []);
 
+  const downloadMeta = useMemo(() => ({
+    name: indicator?.name, unit: indicator?.unit,
+  }), [indicator?.name, indicator?.unit]);
+
   const handleDownloadExcel = useCallback(async () => {
     const { downloadExcel } = await import('../lib/excel.js');
-    downloadExcel(chartData, chartMode, code, currentRange);
-  }, [chartData, chartMode, code, currentRange]);
+    downloadExcel(chartData, chartMode, code, currentRange, downloadMeta);
+  }, [chartData, chartMode, code, currentRange, downloadMeta]);
+
+  const handleDownloadCSV = useCallback(async () => {
+    const { downloadCSV } = await import('../lib/excel.js');
+    downloadCSV(chartData, chartMode, code, currentRange, downloadMeta);
+  }, [chartData, chartMode, code, currentRange, downloadMeta]);
 
   const chartLoading = chartMode === 'inflation' ? loadingInflation
     : chartMode === 'quarterly' ? loadingQuarterly
@@ -817,6 +842,14 @@ export default function IndicatorDetail() {
           </div>
 
           <div className="flex items-center gap-3">
+            <button
+              onClick={handleDownloadCSV}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-text-tertiary hover:text-champagne hover:border-champagne/30 transition-colors text-xs font-mono uppercase tracking-wider magnetic-btn"
+              title="Скачать CSV"
+            >
+              <Download className="w-3.5 h-3.5" />
+              CSV
+            </button>
             <button
               onClick={handleDownloadExcel}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-text-tertiary hover:text-champagne hover:border-champagne/30 transition-colors text-xs font-mono uppercase tracking-wider magnetic-btn"

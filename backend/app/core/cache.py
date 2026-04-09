@@ -62,3 +62,7 @@ async def cache_delete_pattern(pattern: str):
 async def cache_invalidate_indicator(code: str):
     await cache_delete_pattern(f"fe:{code}:*")
     await cache_delete_pattern("fe:indicators:*")
+    await cache_delete_pattern(f"fe:embed:spark:{code}:*")
+    await cache_delete_pattern(f"fe:embed:card:{code}:*")
+    await cache_delete_pattern(f"fe:embed:badge:{code}:*")
+    await cache_delete_pattern("fe:dashboard:*")

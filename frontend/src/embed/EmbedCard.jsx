@@ -47,7 +47,7 @@ export default function EmbedCard() {
   useEmbedImpression(code, 'card');
   useEmbedAutoHeight();
 
-  const { data: meta } = useIndicator(code);
+  const { data: meta, isLoading: metaLoading, isError: metaError } = useIndicator(code);
   const { data: dataResp } = useIndicatorData(code);
 
   const recentPoints = useMemo(() => {
@@ -55,11 +55,19 @@ export default function EmbedCard() {
     return pts.slice(-60);
   }, [dataResp]);
 
-  if (!meta) {
+  if (metaLoading) {
     return (
       <div style={{ background: colors.bg, borderRadius: 16, border: `1px solid ${colors.border}`, height: 160, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ width: 20, height: 20, border: '2px solid', borderColor: `${colors.border} transparent`, borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-        <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
+        <div className="embed-spin" style={{ width: 20, height: 20, border: '2px solid', borderColor: `${colors.border} transparent`, borderRadius: '50%' }} />
+        <style>{`@keyframes espin{to{transform:rotate(360deg)}}.embed-spin{animation:espin 1s linear infinite}@media(prefers-reduced-motion:reduce){.embed-spin{animation:none;opacity:.4}}`}</style>
+      </div>
+    );
+  }
+
+  if (metaError || !meta) {
+    return (
+      <div style={{ background: colors.bg, borderRadius: 16, border: `1px solid ${colors.border}`, height: 160, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'system-ui', fontSize: 13, color: colors.textTertiary }}>
+        {metaError ? 'Ошибка загрузки' : 'Нет данных'}
       </div>
     );
   }

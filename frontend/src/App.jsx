@@ -16,6 +16,7 @@ const ComparePage = lazy(() => import('./pages/ComparePage'));
 const CalendarPage = lazy(() => import('./pages/CalendarPage'));
 const EmbedBuilder = lazy(() => import('./pages/EmbedBuilder'));
 const CalculatorPage = lazy(() => import('./pages/CalculatorPage'));
+const DemographicsPage = lazy(() => import('./pages/DemographicsPage'));
 
 const EmbedChart = lazy(() => import('./embed/EmbedChart'));
 const EmbedCard = lazy(() => import('./embed/EmbedCard'));
@@ -55,19 +56,30 @@ function NotFound() {
   );
 }
 
-const EMBED_RE = /^\/embed\/(chart|card|table|ticker|compare|calculator)/;
+const EMBED_RE = /^\/embed\/(chart|card|table|ticker|compare)/;
+
+function EmbedSpinner() {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
+      <div className="embed-spin" style={{ width: 24, height: 24, border: '2px solid #e5e5e5', borderTopColor: 'transparent', borderRadius: '50%' }} />
+      <style>{`@keyframes espin{to{transform:rotate(360deg)}}.embed-spin{animation:espin 1s linear infinite}@media(prefers-reduced-motion:reduce){.embed-spin{animation:none;opacity:.4}}`}</style>
+    </div>
+  );
+}
 
 function EmbedRoutes() {
   return (
-    <Suspense fallback={null}>
-      <Routes>
-        <Route path="/embed/chart/:code" element={<EmbedChart />} />
-        <Route path="/embed/card/:code" element={<EmbedCard />} />
-        <Route path="/embed/table/:code" element={<EmbedTable />} />
-        <Route path="/embed/ticker" element={<EmbedTicker />} />
-        <Route path="/embed/compare" element={<EmbedCompare />} />
-      </Routes>
-    </Suspense>
+    <ErrorBoundary>
+      <Suspense fallback={<EmbedSpinner />}>
+        <Routes>
+          <Route path="/embed/chart/:code" element={<EmbedChart />} />
+          <Route path="/embed/card/:code" element={<EmbedCard />} />
+          <Route path="/embed/table/:code" element={<EmbedTable />} />
+          <Route path="/embed/ticker" element={<EmbedTicker />} />
+          <Route path="/embed/compare" element={<EmbedCompare />} />
+        </Routes>
+      </Suspense>
+    </ErrorBoundary>
   );
 }
 
@@ -99,6 +111,7 @@ function AppRoutes() {
             <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/widgets" element={<EmbedBuilder />} />
             <Route path="/calculator" element={<CalculatorPage />} />
+            <Route path="/demographics" element={<DemographicsPage />} />
             <Route path="/indicator/:code" element={<IndicatorDetailKeyed />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

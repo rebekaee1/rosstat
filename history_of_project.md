@@ -748,135 +748,31 @@
 - **Production verified:** health OK, 80 indicators, frontend HTTP 200, `forecasteconomy.com` live.
 - **Commits:** `53bffdc` (mega-audit), `e7c6871` (seed fix), `7682c3c` (datetime fix).
 
-## 2026-04-09 — Research: Inflation Calculator concept & UI design
+## 2026-04-09 — Embed system deployment + production fixes
 
-- **Задача:** исследовать концепцию калькулятора инфляции для страницы `/calculator`.
-- **Конкуренты проанализированы:** calcus.ru, a2-finance.com, уровне-инфляции.рф, BLS (США). Главная находка: ни один конкурент не имеет realtime-обновления + графика покупательной способности + современного UI.
-- **UI-решения:** вертикальный layout (mobile-first, max-w-3xl), range slider для годов (не dropdown), preset-кнопки (1/5/10 лет, с 2000), GSAP-анимация числа, Area chart покупательной способности (Recharts, champagne gradient).
-- **Математика:** кумулятивная инфляция = Π(CPI_i/100) − 1; покупательная способность = amount / cumProduct; среднегодовая = cumProduct^(1/years) − 1.
-- **API:** новый эндпоинт не нужен — хватит `GET /indicators/cpi/data` (420 точек ~15KB), расчёт на клиенте.
-- **Компонентная структура:** CalculatorPage → InflationCalculator (inputs) + CalculatorResult (animated) + PurchasingPowerChart (Recharts) + FaqAccordion. Хук: `useInflationCalc(amount, fromYear, toYear)`.
-- **SEO:** title/description, JSON-LD WebApplication + FAQPage, 5 FAQ для featured snippets. Целевые запросы: «калькулятор инфляции» ~15k, «покупательная способность рубля» ~5k.
-- **Share:** URL с параметрами `?amount=100000&from=2015&to=2025`, кнопка «Поделиться» → clipboard + toast.
-- **User intent:** глубокое исследование перед реализацией — конкуренты, UI, математика, SEO, компоненты.
+- **Deployed full embed system to production** (commits `d3e7be1`, `82f5781`, `b922a06`):
+  - Frontend: 5 embed виджетов (chart, card, table, ticker, compare) + EmbedBuilder (/widgets)
+  - Backend: SVG sparkline, card SVG, badge SVG, impression tracking
+  - Navbar: добавлена ссылка «Виджеты»
+  - `theme=auto` (prefers-color-scheme) для всех embed-виджетов
+- **Bug fix 1 — nginx SVG routing:** `location ~* \.(svg|...)$` перехватывал `/api/v1/embed/spark/cpi.svg` вместо проксирования к бэкенду. Исправлено: `location ^~ /api/` (prefix priority over regex).
+- **Bug fix 2 — badge SVG AttributeError:** модель `Indicator` не имеет `current_value`/`previous_value`. Исправлено: badge теперь использует `_fetch_points()` для получения данных из `IndicatorData`.
+- **Verified in production:** all SVG endpoints 200 OK (spark, card, badge), frontend routes 200 OK, health OK.
 
-## 2026-04-09 — Sparkline research report
+## 2026-04-09 — 2 новых КЭП индикатора + динамический sitemap + OG prerender для ботов
 
-- **User intent:** глубокое исследование sparkline-миниграфиков для Dashboard — концепция, UX, техническая реализация, API-оптимизация.
-- **Отчёт:** Recharts (уже в проекте) как рекомендованный рендер (LineChart, isAnimationActive=false, dot=false, type=monotone). Размер 140×32px. Цвет по тренду (positive/negative из дизайн-системы).
-- **API:** рекомендован новый батч-эндпоинт `GET /api/v1/sparklines?codes=...&limit=12` — один запрос вместо 9, Redis-кэш, компактный формат (массив чисел, не объектов).
-- **Flagship mapping:** cpi (Цены), key-rate (Ставки), usd-rub (Финансы), unemployment (Труд), gdp-nominal (ВВП), population (Население), current-account (Торговля), ipi (Бизнес), rd-personnel (Наука).
-- **UX:** skeleton при загрузке, CSS fade-in, без GSAP, без tooltip на sparkline, показывать на mobile. aria-hidden на SVG.
-- **Оценка:** ~3.5ч полная реализация (backend endpoint + frontend component + CategoryBlock + Dashboard + hooks + тесты).
-- **Статус:** отчёт предоставлен, код не менялся, ожидается решение.
+- **2 новых индикатора из КЭП Росстата:**
+  - `construction-work` (лист 1.7) — объём строительных работ, млрд руб., месячные
+  - `capital-investment` (лист 1.6) — инвестиции в основной капитал, млрд руб., месячные
+  - Добавлены в `SHEET_MAP` (`rosstat_ind_parser.py`) и `INDICATORS` (`seed_data.py`), parser_type = `rosstat_ind_monthly`, категория «Бизнес».
+- **Динамический sitemap.xml:** создан `backend/app/api/sitemap.py` — генерирует sitemap из БД (активные индикаторы + статические страницы + категории). Роутер подключен в `main.py` на корневом уровне (`GET /sitemap.xml`). Nginx проксирует `/sitemap.xml` на бэкенд с кэшированием 1h.
+- **OG prerender для соцботов:** эндпоинт `GET /api/v1/og/indicator/{code}` в `sitemap.py` — возвращает HTML с `og:title`, `og:description`, `twitter:card` из данных индикатора в БД. Nginx: indicator-локейшн при обнаружении UA ботов (Twitter, Facebook, Telegram, VK, LinkedIn, Slack, WhatsApp) делает internal rewrite в `/og-proxy/indicator/$1` → проксирует на бэкенд.
+- **Файлы:** `rosstat_ind_parser.py`, `seed_data.py`, NEW `sitemap.py`, `main.py`, `nginx.conf`. py_compile 4/4 OK.
 
-## 2026-04-09 — Исследование: Embeddable Widgets
+## 2026-04-09 — Frontend: freshness badge, CSV download, Sentry, SEO
 
-- **Задача:** глубокое исследование концепции встраиваемых виджетов для Forecast Economy.
-- **Конкуренты исследованы:** TradingEconomics (iframe на PNG, платный API), TradingView (Web Components + iframe, industry standard), FRED (iframe + JS для responsive), World Bank (iframe + Share button), Google Finance (deprecated).
-- **3 архитектурных подхода детально разобраны:**
-  - A. iframe (`/embed/:code` → React без Navbar/Footer) — ~250 KB gzip, полная интерактивность, 1-2 дня
-  - B. Lightweight бандл (отдельный Vite entry, Recharts ~80 KB или Chart.ts ~15 KB) — 3-5 дней
-  - C. Серверный SVG/PNG (hand-crafted SVG через Jinja2, 5-20 KB, 0 JS) — 2-3 дня
-- **Каталог виджетов:** полный график, sparkline, карточка (tile), таблица, сравнение, калькулятор инфляции.
-- **Security:** текущий `X-Frame-Options: SAMEORIGIN` и `frame-src: 'none'` в Caddy/nginx блокируют embed — нужны дифференцированные заголовки для `/embed/*` (`frame-ancestors *`).
-- **Рекомендация MVP (4.5 дня):** iframe + SVG sparkline endpoint + embed builder page (`/embed`).
-- **Документ:** [docs/embed_widgets_research.md](docs/embed_widgets_research.md)
-- **Статус:** исследование завершено, РЕАЛИЗАЦИЯ ВЫПОЛНЕНА.
-
-## 2026-04-09 — Реализация: Embeddable Widgets (full system)
-
-- **User intent:** enterprise-level embed-система уровня TradingView — 6 типов виджетов, конструктор, SVG API, аналитика.
-- **Backend (`backend/app/api/embed.py`):**
-  - `GET /api/v1/embed/spark/{code}.svg` — серверный SVG sparkline (Catmull-Rom spline, gradient fill, Redis cache 1h)
-  - `GET /api/v1/embed/card/{code}.svg` — SVG карточка (name + value + change + sparkline)
-  - `POST /api/v1/embed/impression` — fire-and-forget tracking (Redis HINCRBY по дням)
-  - `GET /api/v1/embed/pixel.gif` — 1×1 tracking pixel для статических embed'ов
-  - Зарегистрирован в `backend/app/api/router.py`
-- **Frontend — 5 embed-виджетов (lazy-loaded, без Navbar/Footer/GSAP):**
-  - `frontend/src/embed/EmbedChart.jsx` — AreaChart, period pills, tooltip, forecast, attribution (6.4 KB / 2.65 gzip)
-  - `frontend/src/embed/EmbedCard.jsx` — карточка 300×200: name, value, change badge, SVG sparkline (3.5 KB / 1.6 gzip)
-  - `frontend/src/embed/EmbedTable.jsx` — таблица последних N значений (2.8 KB / 1.2 gzip)
-  - `frontend/src/embed/EmbedTicker.jsx` — бегущая строка с CSS animation (2.5 KB / 1.2 gzip)
-  - `frontend/src/embed/EmbedCompare.jsx` — dual Y-axis, два индикатора (4.9 KB / 1.9 gzip)
-  - `frontend/src/embed/useEmbedParams.js` — URL params parsing, impression beacon, postMessage auto-height
-  - `frontend/src/embed/Attribution.jsx` — universal attribution footer
-- **Embed Builder (`frontend/src/pages/EmbedBuilder.jsx`, route `/widgets`):**
-  - Два столбца: настройки (тип, индикатор, период, тема, размер, forecast) + live preview (iframe) + код (iframe/SVG/Markdown)
-  - Searchable indicator dropdown с группировкой по категориям
-  - Copy button with feedback
-  - 17.5 KB / 5.4 gzip
-- **Routing (`frontend/src/App.jsx`):**
-  - `EMBED_RE` regex отделяет embed-маршруты от основного SPA
-  - Embed routes рендерятся без Navbar/Footer/NoiseOverlay/ScrollToTop
-  - Маршруты: `/embed/chart/:code`, `/embed/card/:code`, `/embed/table/:code`, `/embed/ticker`, `/embed/compare`
-  - `/widgets` — страница конструктора (с полным layout)
-- **Infrastructure:**
-  - `frontend/nginx.conf` — отдельный `location` для `/embed/*` с `frame-ancestors *` (без X-Frame-Options)
-  - `Caddyfile` — `@embed` path matcher: убирает X-Frame-Options, ставит `frame-ancestors *`; `@embedapi` matcher: CORS `Access-Control-Allow-Origin: *`
-- **Build:** Vite сборка успешна, все embed-чанки корректно tree-shaken, lint clean.
-- **Budget:** Chart embed ~115 KB gzip (с Recharts), Card/Table/Ticker ~83 KB gzip (без Recharts).
-- **Не реализовано (отложено):** Calculator Widget (самый сложный, wow-фактор).
-
-## 2026-04-09 — Исследование: Экономический календарь
-
-- **User intent:** глубокое исследование feasibility экономического календаря для Forecast Economy — откуда брать данные, как выглядит UI, стоит ли делать.
-- **Проверены живые источники:**
-  - `cbr.ru/dkp/cal_mp/` — HTML-таблица, 8 заседаний/год, с 2014, парсится легко
-  - `cbr.ru/statistics/indcalendar/` — ~200+ дат публикаций статистики ЦБ (M2, резервы, BOP, ставки)
-  - `minfin.gov.ru/en/policy_issues/macroeconomics/release_calendar/` — IMF SDDS ARC, HTML-таблица, 4 месяца вперёд, покрывает GDP/CPI/PPI/Employment/Wages/Trade
-  - `dsbb.imf.org` — SPA Angular, пустой HTML при fetch, НЕ подходит для автопарсинга
-  - `rosstat.gov.ru` — НЕТ собственного календаря публикаций
-- **Вывод: ДЕЛАТЬ.** Данные реально доступны в машиночитаемом HTML (ЦБ + Минфин). Пустая SEO-ниша в рунете.
-- **Рекомендация:** Фаза A (MVP) — модель EconomicEvent, seed 16 заседаний ЦБ + ~25 ARC-событий, API, фронт /calendar. Фаза B — автопарсеры. Фаза C — actual_value, push, iCal, RSS.
-- **Модель данных:** EconomicEvent (title, event_type, source, indicator_id FK, scheduled_date/time, is_estimated, reference_period, importance 1-3, values, status, recurrence_pattern).
-- **UI:** список событий (не grid), фильтры по источнику/категории/значимости, карточки с привязкой к индикаторам.
-
-## 2026-04-09 — Калькулятор инфляции: полная реализация
-
-- **User intent:** enterprise-level калькулятор инфляции для /calculator — wow-factor дизайн, GSAP-анимации, разбивка по категориям (food/nonfood/services), URL sharing, FAQ с Schema.org, методология.
-- **Новые файлы:**
-  - `frontend/src/lib/useInflationCalc.js` — хук: загружает 4 ряда CPI (cpi, cpi-food, cpi-nonfood, cpi-services), считает кумулятивную инфляцию (∏ CPI_i/100), покупательную способность, среднегодовую, разбивку по корзинам. Строит series для графика.
-  - `frontend/src/pages/CalculatorPage.jsx` — полная страница: hero с Playfair h1, input суммы с ₽ и auto-format, два range slider (fromYear/toYear) с champagne-стилем, preset-кнопки (1/5/10 лет/С 2000/Всё время), анимированный результат (GSAP countUp), stat pills (инфляция %, среднегодовая, покуп. способность), кнопки share (copy link + copy text), Area chart (Recharts) с gradient fill и milestone markers (1998/2008/2014/2020/2022), переключатель "Покуп. способность / Рост суммы", 3 карточки категорий, секция методологии, FAQ accordion (6 вопросов) с Schema.org FAQPage + WebApplication JSON-LD, useDocumentMeta для SEO.
-- **Изменённые файлы:**
-  - `frontend/src/index.css` — стили `.calc-slider` (thumb, track, hover/active/focus-visible)
-  - `frontend/src/App.jsx` — lazy import CalculatorPage, Route `/calculator`
-  - `frontend/nginx.conf` — `/calculator` в whitelist SPA fallback
-  - `frontend/public/sitemap.xml` — `/calculator` с priority 0.95
-  - `frontend/src/components/Navbar.jsx` — ссылка «Калькулятор» в desktop и mobile меню
-- **Результат:** build успешен (CalculatorPage: 25 KB / 8.4 KB gzip), lint clean, страница рендерится корректно (проверено в браузере). Данные CPI не отображаются без backend, но loading/error states работают.
-- **URL sharing:** `/calculator?amount=100000&from=2015&to=2025` — параметры из URL восстанавливаются при mount.
-- **Edge cases обработаны:** from ≥ to → 0% / no change, будущие годы → clip to lastAvailableYear, сумма 0 → no result, гиперинфляция 1991-1995 → extreme glow (>200%).
-
-## 2026-04-09 — Embed system polish + badge + sparkline dashboard
-
-- **User intent:** продолжить реализацию embeddable виджетов из предыдущего исследования (exported conversation).
-- **Текущее состояние embed-системы:** 5 виджетов (chart, card, table, ticker, compare) + конструктор `/widgets` + backend SVG endpoints + impression tracking + nginx/Caddy frame-ancestors * — всё уже реализовано.
-- **Доработки embed (этот сеанс):**
-  - Исправлены 3 lint-ошибки: unused `period` (EmbedCard), unused `cn` (EmbedChart), unused `dark` param (EmbedBuilder IndicatorCombobox), лишний `w` в deps useMemo.
-  - `theme=auto` — `useEmbedParams` теперь поддерживает `?theme=auto` через `useSyncExternalStore` + `matchMedia('prefers-color-scheme: dark')`. Реагирует на переключение системной темы в реальном времени.
-  - Badge SVG endpoint — `GET /api/v1/embed/badge/{code}.svg?theme=light|dark` — shields.io-стиль бейдж (label | value ▲change) с цветовой индикацией (зелёный/красный/серый). Кэш Redis 1h.
-  - EmbedBuilder — добавлена вкладка «Badge» в секции кода, формирует Markdown с badge-ссылкой.
-  - Navbar — ссылка «Виджеты» добавлена в desktop + mobile меню.
-  - CalendarHero — удалён unused import `cn`.
-- **Sparkline dashboard (из предыдущей сессии, не закоммичено):**
-  - `backend/app/api/dashboard.py` — sparkline batch endpoint
-  - `frontend/src/components/Sparkline.jsx` — Recharts sparkline component
-  - `frontend/src/components/CategoryBlock.jsx` — sparkline интеграция
-  - `frontend/src/lib/hooks.js`, `api.js`, `categories.js` — sparkline hooks и flagship mapping
-- **Проверка в браузере (localhost:5174):**
-  - `/widgets` — конструктор загружается, 5 типов виджетов, live preview в iframe
-  - `/embed/chart/cpi?period=1y&theme=light&height=400&title=true` — AreaChart с данными, period pills, attribution
-  - `/embed/card/usd-rub?theme=light` — карточка: 84.84 руб., +1.71, sparkline
-  - Консоль: 0 ошибок приложения на всех embed-маршрутах
-- **Верификация:** eslint 0 errors, vitest 25/25, vite build OK (2.67s).
-- **Коммит:** `e91563a`, запушен в main. SSH на сервер недоступен (пароль изменён) — деплой вручную.
-
-## 2026-04-09 — Inflation Calculator: lint fixes & browser verification
-
-- **User intent:** продолжить работу по калькулятору инфляции из экспортированного чата исследования. Реализация уже была выполнена ранее — нужна верификация и исправление ошибок.
-- **FIX 1 (CRITICAL):** `useInflationCalc.js` — Rules of Hooks violation: `useIndicatorData` вызывался внутри `.map()` callback. Переписано на 4 явных вызова хука (`qCpi`, `qFood`, `qNonfood`, `qServices`). Промежуточные массивы данных обёрнуты в `useMemo` чтобы не создавать новые ссылки на каждый рендер.
-- **FIX 2:** `CalculatorPage.jsx` — ESLint `no-unused-vars` на destructured JSX component prop `icon: Icon`. Переписан на `props.icon` → `const Icon = props.icon` (varsIgnorePattern `'^[A-Z_]'` не покрывает destructured function args).
-- **Верификация в браузере (localhost:5175/calculator):** все секции рендерятся — hero, inputs, sliders, presets, результат (100 000 ₽ в 2016 → 181 203 ₽ в 2026, инфляция +81.2%), график покупательной способности, разбивка по категориям (продовольственные +83.8%, непрод. +72.5%, услуги +88.1%), методология, FAQ. Консоль: 0 ошибок приложения.
-- **Тесты:** 25/25 vitest, build OK (2.3s), eslint clean.
-- **Файлы:** `frontend/src/lib/useInflationCalc.js`, `frontend/src/pages/CalculatorPage.jsx`.
+- **Task 1 — Data freshness badge:** `relativeTime()` в `format.js` — человекочитаемая давность даты («3 дн. назад», «2 мес. назад»). `IndicatorTile.jsx` — рядом с датой показывается `· X назад`.
+- **Task 2 — CSV download:** `downloadCSV()` в `excel.js` — BOM-UTF8, разделитель `;`, 3 колонки (Дата/Значение/Тип). `IndicatorDetail.jsx` — кнопка CSV рядом с Excel, `downloadMeta` передаёт `name`/`unit` в обе функции скачивания.
+- **Task 3 — Sentry:** `@sentry/react` установлен (npm). `main.jsx` — `Sentry.init()` перед `createRoot`, DSN из `VITE_SENTRY_DSN`, tracesSampleRate 0.1. `ErrorBoundary.jsx` — `componentDidCatch` отправляет `captureException` через dynamic import.
+- **Task 5 — SEO:** `construction-work` и `capital-investment` добавлены в `SEO_MAP` (IndicatorDetail.jsx).
+- **Файлы:** `format.js`, `IndicatorTile.jsx`, `excel.js`, `IndicatorDetail.jsx`, `main.jsx`, `ErrorBoundary.jsx`, `package.json` (sentry dep). ESLint: 0 errors.

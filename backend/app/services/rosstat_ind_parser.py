@@ -154,6 +154,8 @@ def _fetch_latest_ind(session) -> tuple[bytes, str]:
 SHEET_MAP = {
     "retail-trade": "1.12 ",
     "housing-commissioned": "1.8 ",
+    "construction-work": "1.7 ",
+    "capital-investment": "1.6 ",
 }
 
 

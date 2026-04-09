@@ -39,6 +39,63 @@ function buildPurchasingPowerSeries(amount, cpiPoints, fromDate, toDate) {
   return series;
 }
 
+function computeYearlyBreakdown(cpiPoints, fromDate, toDate, amount) {
+  const yearBuckets = new Map();
+
+  for (const p of cpiPoints) {
+    if (p.date < fromDate || p.date > toDate) continue;
+    const yr = new Date(p.date).getUTCFullYear();
+    if (!yearBuckets.has(yr)) yearBuckets.set(yr, []);
+    yearBuckets.get(yr).push(p.value);
+  }
+
+  const breakdown = [];
+  let runningProduct = 1;
+  let peakRate = -Infinity;
+  let peakIdx = 0;
+  let troughRate = Infinity;
+  let troughIdx = 0;
+
+  const sortedYears = [...yearBuckets.keys()].sort((a, b) => a - b);
+
+  for (let i = 0; i < sortedYears.length; i++) {
+    const year = sortedYears[i];
+    const values = yearBuckets.get(year);
+
+    let yearProduct = 1;
+    for (const v of values) yearProduct *= v / 100;
+    runningProduct *= yearProduct;
+
+    const annualRate = (yearProduct - 1) * 100;
+
+    if (annualRate > peakRate) { peakRate = annualRate; peakIdx = i; }
+    if (annualRate < troughRate) { troughRate = annualRate; troughIdx = i; }
+
+    breakdown.push({
+      year,
+      annualRate,
+      months: values.length,
+      cumulativeRate: (runningProduct - 1) * 100,
+      purchasingPower: Math.round(amount / runningProduct),
+      equivalent: Math.round(amount * runningProduct),
+    });
+  }
+
+  if (breakdown.length) {
+    breakdown[peakIdx].isPeak = true;
+    breakdown[troughIdx].isTrough = true;
+  }
+
+  const peakYear = breakdown.length
+    ? { year: breakdown[peakIdx].year, rate: peakRate }
+    : null;
+  const troughYear = breakdown.length
+    ? { year: breakdown[troughIdx].year, rate: troughRate }
+    : null;
+
+  return { breakdown, peakYear, troughYear };
+}
+
 function toDateStr(year, month = 1) {
   return `${year}-${String(month).padStart(2, '0')}-01`;
 }
@@ -92,16 +149,11 @@ export default function useInflationCalc(amount, fromYear, toYear) {
       return {
         ...base,
         result: {
-          equivalent: amount,
-          purchasing: amount,
-          totalInflation: 0,
-          avgAnnual: 0,
-          multiplier: 1,
-          series: [],
-          months: 0,
-          food: 0,
-          nonfood: 0,
-          services: 0,
+          equivalent: amount, purchasing: amount,
+          totalInflation: 0, avgAnnual: 0, multiplier: 1,
+          series: [], months: 0,
+          food: 0, nonfood: 0, services: 0,
+          yearlyBreakdown: [], peakYear: null, troughYear: null, doublingYears: null,
         },
       };
     }
@@ -122,6 +174,10 @@ export default function useInflationCalc(amount, fromYear, toYear) {
     const nonfoodCum = computeCumulative(cpiNonfood, fromDate, toDate);
     const servicesCum = computeCumulative(cpiServices, fromDate, toDate);
 
+    const { breakdown, peakYear, troughYear } = computeYearlyBreakdown(cpiAll, fromDate, toDate, amount);
+
+    const doublingYears = avgAnnual > 0.5 ? Math.round(72 / avgAnnual) : null;
+
     return {
       ...base,
       result: {
@@ -135,6 +191,10 @@ export default function useInflationCalc(amount, fromYear, toYear) {
         food: (foodCum.product - 1) * 100,
         nonfood: (nonfoodCum.product - 1) * 100,
         services: (servicesCum.product - 1) * 100,
+        yearlyBreakdown: breakdown,
+        peakYear,
+        troughYear,
+        doublingYears,
       },
     };
   }, [amount, fromYear, toYear, cpiAll, cpiFood, cpiNonfood, cpiServices, isLoading, isError, lastAvailableYear, minYear, lastAvailableDate]);

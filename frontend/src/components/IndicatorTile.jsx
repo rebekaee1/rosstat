@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
-import { formatValue, formatChange, formatDate, cn, isCpiIndex } from '../lib/format';
+import { formatValue, formatChange, formatDate, cn, isCpiIndex, relativeTime } from '../lib/format';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
 
 export default function IndicatorTile({ indicator, delay = 0 }) {
@@ -104,9 +104,16 @@ export default function IndicatorTile({ indicator, delay = 0 }) {
               </div>
               
               {indicator.current_date && (
-                <p className="text-[10px] uppercase tracking-widest text-text-tertiary font-mono">
-                  {formatDate(indicator.current_date, 'full')}
-                </p>
+                <div className="flex items-center gap-2">
+                  <p className="text-[10px] uppercase tracking-widest text-text-tertiary font-mono">
+                    {formatDate(indicator.current_date, 'full')}
+                  </p>
+                  {relativeTime(indicator.current_date) && (
+                    <span className="text-[9px] text-text-tertiary/60 font-mono">
+                      · {relativeTime(indicator.current_date)}
+                    </span>
+                  )}
+                </div>
               )}
             </div>
 

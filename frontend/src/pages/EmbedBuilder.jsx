@@ -98,7 +98,7 @@ function CopyButton({ text }) {
     navigator.clipboard.writeText(text).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    });
+    }).catch(() => { /* clipboard API unavailable */ });
   }, [text]);
 
   return (
@@ -230,17 +230,53 @@ export default function EmbedBuilder() {
     if (codeTab === 'iframe') {
       return `<!-- ${title} -->\n<iframe src="${src}"\n  ${widthAttr} height="${iframeH}" frameborder="0"\n  style="border: none; border-radius: 12px; overflow: hidden;"\n  title="${title}" loading="lazy"\n  allow="clipboard-write"></iframe>`;
     }
+
     if (codeTab === 'markdown') {
-      if (type === 'chart' || type === 'compare') return `[![${title}](${EMBED_ORIGIN}/api/v1/embed/spark/${code}.svg?period=${period}&w=600&h=100)](${EMBED_ORIGIN}/indicator/${code})`;
-      return `[![${title}](${EMBED_ORIGIN}/api/v1/embed/card/${code}.svg?theme=${theme})](${EMBED_ORIGIN}/indicator/${code})`;
+      if (type === 'ticker') {
+        return tickerCodes.split(',').filter(Boolean).map(c => {
+          const n = indicators?.find(i => i.code === c.trim())?.name || c.trim();
+          return `[![${n}](${EMBED_ORIGIN}/api/v1/embed/badge/${c.trim()}.svg?theme=${theme})](${EMBED_ORIGIN}/indicator/${c.trim()})`;
+        }).join(' ');
+      }
+      if (type === 'compare') {
+        const nameB = indicators?.find(i => i.code === codeB)?.name || codeB;
+        return `[![${name}](${EMBED_ORIGIN}/api/v1/embed/spark/${code}.svg?period=${period}&w=300&h=80)](${EMBED_ORIGIN}/indicator/${code}) [![${nameB}](${EMBED_ORIGIN}/api/v1/embed/spark/${codeB}.svg?period=${period}&w=300&h=80)](${EMBED_ORIGIN}/indicator/${codeB})`;
+      }
+      if (type === 'card') return `[![${name}](${EMBED_ORIGIN}/api/v1/embed/card/${code}.svg?theme=${theme})](${EMBED_ORIGIN}/indicator/${code})`;
+      return `[![${name}](${EMBED_ORIGIN}/api/v1/embed/spark/${code}.svg?period=${period}&w=600&h=100)](${EMBED_ORIGIN}/indicator/${code})`;
     }
+
     if (codeTab === 'svg') {
-      if (type === 'card') return `<a href="${EMBED_ORIGIN}/indicator/${code}" target="_blank">\n  <img src="${EMBED_ORIGIN}/api/v1/embed/card/${code}.svg?theme=${theme}&w=${w}&h=${h}"\n    alt="${name}" width="${w}" height="${h}">\n</a>`;
-      return `<a href="${EMBED_ORIGIN}/indicator/${code}" target="_blank">\n  <img src="${EMBED_ORIGIN}/api/v1/embed/spark/${code}.svg?period=${period}&w=${w}&h=60"\n    alt="${name}" width="${w}" height="60">\n</a>`;
+      const cw = Math.min(w, 600);
+      const ch = Math.min(h, 400);
+      if (type === 'card') return `<a href="${EMBED_ORIGIN}/indicator/${code}" target="_blank">\n  <img src="${EMBED_ORIGIN}/api/v1/embed/card/${code}.svg?theme=${theme}&w=${cw}&h=${ch}"\n    alt="${name}" width="${cw}" height="${ch}">\n</a>`;
+      if (type === 'ticker') {
+        return tickerCodes.split(',').filter(Boolean).map(c => {
+          const n = indicators?.find(i => i.code === c.trim())?.name || c.trim();
+          return `<a href="${EMBED_ORIGIN}/indicator/${c.trim()}" target="_blank"><img src="${EMBED_ORIGIN}/api/v1/embed/badge/${c.trim()}.svg?theme=${theme}" alt="${n}"></a>`;
+        }).join('\n');
+      }
+      if (type === 'compare') {
+        const nameB = indicators?.find(i => i.code === codeB)?.name || codeB;
+        return `<a href="${EMBED_ORIGIN}/indicator/${code}" target="_blank">\n  <img src="${EMBED_ORIGIN}/api/v1/embed/spark/${code}.svg?period=${period}&w=${cw}&h=60"\n    alt="${name}" width="${cw}" height="60">\n</a>\n<a href="${EMBED_ORIGIN}/indicator/${codeB}" target="_blank">\n  <img src="${EMBED_ORIGIN}/api/v1/embed/spark/${codeB}.svg?period=${period}&w=${cw}&h=60"\n    alt="${nameB}" width="${cw}" height="60">\n</a>`;
+      }
+      return `<a href="${EMBED_ORIGIN}/indicator/${code}" target="_blank">\n  <img src="${EMBED_ORIGIN}/api/v1/embed/spark/${code}.svg?period=${period}&w=${cw}&h=60"\n    alt="${name}" width="${cw}" height="60">\n</a>`;
     }
+
     if (codeTab === 'badge') {
+      if (type === 'ticker') {
+        return tickerCodes.split(',').filter(Boolean).map(c => {
+          const n = indicators?.find(i => i.code === c.trim())?.name || c.trim();
+          return `[![${n}](${EMBED_ORIGIN}/api/v1/embed/badge/${c.trim()}.svg?theme=${theme})](${EMBED_ORIGIN}/indicator/${c.trim()})`;
+        }).join('\n');
+      }
+      if (type === 'compare') {
+        const nameB = indicators?.find(i => i.code === codeB)?.name || codeB;
+        return `[![${name}](${EMBED_ORIGIN}/api/v1/embed/badge/${code}.svg?theme=${theme})](${EMBED_ORIGIN}/indicator/${code})\n[![${nameB}](${EMBED_ORIGIN}/api/v1/embed/badge/${codeB}.svg?theme=${theme})](${EMBED_ORIGIN}/indicator/${codeB})`;
+      }
       return `[![${name}](${EMBED_ORIGIN}/api/v1/embed/badge/${code}.svg?theme=${theme})](${EMBED_ORIGIN}/indicator/${code})`;
     }
+
     return '';
   }, [type, code, codeB, period, theme, w, h, showTitle, showForecast, limit, tickerCodes, speed, codeTab, indicators]);
 

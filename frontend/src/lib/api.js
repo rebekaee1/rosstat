@@ -80,4 +80,7 @@ export const fetchCalendarUpcoming = (params = {}, { signal } = {}) => {
 export const fetchDashboardSparklines = ({ signal } = {}) =>
   api.get('/dashboard/sparklines', { signal }).then((r) => r.data);
 
+export const fetchDemographicsStructure = ({ signal } = {}) =>
+  api.get('/demographics/structure', { signal }).then((r) => r.data);
+
 export default api;

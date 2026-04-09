@@ -97,7 +97,7 @@ class EconomicEvent(Base):
     event_type: Mapped[str] = mapped_column(String(30), nullable=False)
     source: Mapped[str] = mapped_column(String(20), nullable=False)
     indicator_id: Mapped[int | None] = mapped_column(
-        ForeignKey("indicators.id", ondelete="SET NULL"),
+        ForeignKey("indicators.id", ondelete="SET NULL"), nullable=True
     )
     scheduled_date: Mapped[date] = mapped_column(Date, nullable=False)
     scheduled_time: Mapped[str | None] = mapped_column(String(5))
@@ -112,8 +112,8 @@ class EconomicEvent(Base):
     description: Mapped[str | None] = mapped_column(Text)
     source_url: Mapped[str | None] = mapped_column(String(500))
     metadata_json: Mapped[dict | None] = mapped_column(JSON)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None), onupdate=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+    created_at: Mapped[datetime | None] = mapped_column(DateTime)
+    updated_at: Mapped[datetime | None] = mapped_column(DateTime)
 
     indicator: Mapped["Indicator | None"] = relationship()
 

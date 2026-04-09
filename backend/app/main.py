@@ -35,24 +35,28 @@ logger = logging.getLogger(__name__)
 
 
 class RateLimitMiddleware(BaseHTTPMiddleware):
-    """Simple Redis-based rate limiter: 120 req/min per IP for /api/ endpoints."""
+    """Redis-based rate limiter with separate limits for main API and embed endpoints."""
 
     LIMIT = 120
+    EMBED_LIMIT = 600
     WINDOW = 60
 
     async def dispatch(self, request: Request, call_next):
         if not request.url.path.startswith("/api/"):
             return await call_next(request)
 
+        is_embed = request.url.path.startswith("/api/v1/embed/")
+        limit = self.EMBED_LIMIT if is_embed else self.LIMIT
+
         forwarded = request.headers.get("x-forwarded-for", "")
         client_ip = forwarded.split(",")[0].strip() if forwarded else (request.client.host if request.client else "unknown")
-        key = f"rl:{client_ip}"
+        key = f"rle:{client_ip}" if is_embed else f"rl:{client_ip}"
         try:
             redis = await get_redis()
             count = await redis.incr(key)
             if count == 1:
                 await redis.expire(key, self.WINDOW)
-            if count > self.LIMIT:
+            if count > limit:
                 return Response(
                     content=json.dumps({"detail": "Rate limit exceeded"}),
                     status_code=429,
@@ -128,3 +132,6 @@ app.add_middleware(
 )
 
 app.include_router(api_router)
+
+from app.api.sitemap import router as sitemap_router
+app.include_router(sitemap_router)

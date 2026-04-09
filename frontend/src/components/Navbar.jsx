@@ -146,21 +146,23 @@ export default function Navbar() {
                   </div>
                 )
               )}
+              <div className="mx-4 my-1 h-px bg-border-subtle" />
+              <NavLink
+                to="/demographics"
+                className={({ isActive }) =>
+                  cn(itemClass, isActive ? 'text-champagne bg-champagne/5' : 'text-text-primary')
+                }
+                onClick={closeAll}
+                role="menuitem"
+              >
+                Возрастная структура
+              </NavLink>
             </div>
           )}
         </div>
 
-        <NavLink to="/calendar" className={linkClass} onClick={closeAll}>
-          Календарь
-        </NavLink>
         <NavLink to="/compare" className={linkClass} onClick={closeAll}>
-          Сравнение
-        </NavLink>
-        <NavLink to="/calculator" className={linkClass} onClick={closeAll}>
-          Калькулятор
-        </NavLink>
-        <NavLink to="/widgets" className={linkClass} onClick={closeAll}>
-          Виджеты
+          Сравнение индикаторов
         </NavLink>
         <NavLink to="/about" className={linkClass} onClick={closeAll}>
           О проекте
@@ -216,17 +218,12 @@ export default function Navbar() {
                 </span>
               )
             )}
-            <NavLink to="/calendar" className={linkClass} onClick={closeAll}>
-              Календарь
+            <div className="mx-2 my-1 h-px bg-border-subtle" />
+            <NavLink to="/demographics" className={linkClass} onClick={closeAll}>
+              Возрастная структура
             </NavLink>
             <NavLink to="/compare" className={linkClass} onClick={closeAll}>
-              Сравнение
-            </NavLink>
-            <NavLink to="/calculator" className={linkClass} onClick={closeAll}>
-              Калькулятор
-            </NavLink>
-            <NavLink to="/widgets" className={linkClass} onClick={closeAll}>
-              Виджеты
+              Сравнение индикаторов
             </NavLink>
             <NavLink to="/about" className={linkClass} onClick={closeAll}>
               О проекте

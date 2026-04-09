@@ -14,7 +14,7 @@ export default function EmbedTable() {
   useEmbedAutoHeight();
 
   const { data: meta } = useIndicator(code);
-  const { data: dataResp, isLoading } = useIndicatorData(code);
+  const { data: dataResp, isLoading, isError } = useIndicatorData(code);
 
   const rows = useMemo(() => {
     const pts = dataResp?.data || [];
@@ -42,6 +42,10 @@ export default function EmbedTable() {
       {isLoading ? (
         <div style={{ padding: 24, textAlign: 'center', color: colors.textTertiary, fontSize: 13 }}>
           Загрузка…
+        </div>
+      ) : isError ? (
+        <div style={{ padding: 24, textAlign: 'center', color: colors.textTertiary, fontSize: 13 }}>
+          Ошибка загрузки данных
         </div>
       ) : rows.length === 0 ? (
         <div style={{ padding: 24, textAlign: 'center', color: colors.textTertiary, fontSize: 13 }}>

@@ -9,7 +9,7 @@ forecasteconomy.com {
 	}
 
 	# Embed widget routes: allow framing from any domain
-	@embed path_regexp embed ^/embed/(chart|card|table|ticker|compare|calculator)(/|$)
+	@embed path_regexp embed ^/embed/(chart|card|table|ticker|compare)(/.*)?$
 	header @embed X-Frame-Options ""
 	header @embed Content-Security-Policy "frame-ancestors *; default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'"
 

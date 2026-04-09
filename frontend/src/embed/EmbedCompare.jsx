@@ -46,8 +46,10 @@ export default function EmbedCompare() {
 
   const { data: metaA } = useIndicator(codeA);
   const { data: metaB } = useIndicator(codeB);
-  const { data: dataA } = useIndicatorData(codeA);
-  const { data: dataB } = useIndicatorData(codeB);
+  const { data: dataA, isLoading: loadA, isError: errA } = useIndicatorData(codeA);
+  const { data: dataB, isLoading: loadB, isError: errB } = useIndicatorData(codeB);
+  const isLoading = loadA || loadB;
+  const isError = errA || errB;
 
   const chartData = useMemo(() => {
     const ptsA = dataA?.data || [];
@@ -94,7 +96,15 @@ export default function EmbedCompare() {
       )}
 
       <div style={{ flex: 1, minHeight: 0 }}>
-        {chartData.length === 0 ? (
+        {isLoading ? (
+          <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="embed-spin" style={{ width: 24, height: 24, border: '2px solid', borderColor: `${colors.border} transparent`, borderRadius: '50%' }} />
+          </div>
+        ) : isError ? (
+          <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: colors.textTertiary, fontSize: 13, fontFamily: 'system-ui' }}>
+            Ошибка загрузки данных
+          </div>
+        ) : chartData.length === 0 ? (
           <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: colors.textTertiary, fontSize: 13 }}>
             Нет данных
           </div>
@@ -136,6 +146,8 @@ export default function EmbedCompare() {
         )}
         <Attribution code={codeA} dark={theme === 'dark'} />
       </div>
+
+      <style>{`@keyframes espin{to{transform:rotate(360deg)}}.embed-spin{animation:espin 1s linear infinite}@media(prefers-reduced-motion:reduce){.embed-spin{animation:none;opacity:.4}}`}</style>
     </div>
   );
 }

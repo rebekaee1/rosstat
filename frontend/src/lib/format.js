@@ -126,3 +126,20 @@ export function adjustCpiDisplay(value, code) {
   if (code !== undefined && !isCpiIndex(code)) return value;
   return +(Number(value) - 100).toFixed(2);
 }
+
+export function relativeTime(dateStr) {
+  if (!dateStr) return null;
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return null;
+  const now = new Date();
+  const diffMs = now - d;
+  const diffMin = Math.floor(diffMs / 60000);
+  const diffH = Math.floor(diffMs / 3600000);
+  const diffD = Math.floor(diffMs / 86400000);
+  if (diffD > 365) return `${Math.floor(diffD / 365)} г. назад`;
+  if (diffD > 30) return `${Math.floor(diffD / 30)} мес. назад`;
+  if (diffD > 0) return `${diffD} дн. назад`;
+  if (diffH > 0) return `${diffH} ч. назад`;
+  if (diffMin > 0) return `${diffMin} мин. назад`;
+  return 'только что';
+}

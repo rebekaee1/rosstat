@@ -4,6 +4,7 @@ Embed API — server-side SVG generation + impression tracking.
 Endpoints:
   GET  /api/v1/embed/spark/{code}.svg  — sparkline SVG (0 JS, cacheable)
   GET  /api/v1/embed/card/{code}.svg   — card SVG (name + value + sparkline)
+  GET  /api/v1/embed/badge/{code}.svg  — shields.io-style badge SVG
   POST /api/v1/embed/impression        — fire-and-forget impression counter
   GET  /api/v1/embed/pixel.gif         — 1×1 tracking pixel for <img> embeds
 """
@@ -255,7 +256,8 @@ async def card_svg(
 
     p = [
         f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"'
-        f' viewBox="0 0 {w} {h}" width="{w}" height="{h}">',
+        f' viewBox="0 0 {w} {h}" width="{w}" height="{h}"'
+        f' role="img" aria-label="{_xml(ind.name)}: {val_str} {unit}">',
         f'<rect width="{w}" height="{h}" rx="12" fill="{bg}" stroke="{border}" stroke-width="1"/>',
         f'<text x="16" y="24" font-family="{FONT}" font-size="11" fill="{t2}"'
         f' font-weight="500">{_xml(ind.name)}</text>',
@@ -323,14 +325,16 @@ async def badge_svg(
     prev = float(rows[-2].value) if len(rows) > 1 else None
     change = round(cur - prev, 4) if cur is not None and prev is not None else None
     val_str = _fmt_value(cur) if cur is not None else "—"
-    unit = ind.unit or ""
+    unit_str = (ind.unit or "").strip()
 
-    label = _xml(ind.name)[:40]
-    value_text = f"{val_str} {_xml(unit)}".strip()
+    label_raw = (ind.name or "")[:40]
+    label = _xml(label_raw)
+    vt_raw = f"{val_str} {unit_str}".strip()
     if change is not None:
         arrow = "\u25B2" if change > 0 else ("\u25BC" if change < 0 else "")
         chg_str = f'{"+" if change >= 0 else ""}{change:.2f}'
-        value_text += f"  {arrow}{chg_str}"
+        vt_raw += f"  {arrow}{chg_str}"
+    value_text = _xml(vt_raw)
 
     dark = theme == "dark"
     label_bg = "#333" if dark else "#555"
@@ -341,15 +345,15 @@ async def badge_svg(
 
     char_w = 6.5
     pad = 12
-    label_w = len(label) * char_w + pad * 2
-    value_w = len(value_text) * char_w + pad * 2
+    label_w = len(label_raw) * char_w + pad * 2
+    value_w = len(vt_raw) * char_w + pad * 2
     total_w = label_w + value_w
     h = 22
     r = 4
 
     svg = (
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{total_w:.0f}" height="{h}"'
-        f' role="img" aria-label="{label}: {_xml(value_text)}">'
+        f' role="img" aria-label="{label}: {value_text}">'
         f'<rect width="{total_w:.0f}" height="{h}" rx="{r}" fill="{label_bg}"/>'
         f'<rect x="{label_w:.0f}" width="{value_w:.0f}" height="{h}"'
         f' rx="{r}" fill="{value_bg}"/>'
@@ -359,7 +363,7 @@ async def badge_svg(
         f'{label}</text>'
         f'<text x="{label_w + value_w / 2:.0f}" y="15" fill="{text_color}"'
         f' font-family="{MONO}" font-size="11" font-weight="600" text-anchor="middle">'
-        f'{_xml(value_text)}</text>'
+        f'{value_text}</text>'
         f'</svg>'
     )
     await cache_set(ck, svg, 3600)

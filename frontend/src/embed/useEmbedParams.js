@@ -1,4 +1,4 @@
-import { useEffect, useSyncExternalStore } from 'react';
+import { useEffect, useRef, useSyncExternalStore } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 const MQ = typeof window !== 'undefined'
@@ -37,7 +37,10 @@ export function useEmbedParams() {
 }
 
 export function useEmbedImpression(code, type) {
+  const sent = useRef(false);
   useEffect(() => {
+    if (sent.current) return;
+    sent.current = true;
     try {
       const blob = new Blob(
         [JSON.stringify({ code, type, referrer: document.referrer })],

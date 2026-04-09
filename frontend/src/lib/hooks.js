@@ -10,6 +10,7 @@ import {
   fetchCalendarEvents,
   fetchCalendarUpcoming,
   fetchDashboardSparklines,
+  fetchDemographicsStructure,
 } from './api';
 
 export function useIndicators(options = {}) {
@@ -111,6 +112,15 @@ export function useCalendarUpcoming(params = {}) {
     queryKey: ['calendar-upcoming', params],
     queryFn: ({ signal }) => fetchCalendarUpcoming(params, { signal }),
     staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+  });
+}
+
+export function useDemographicsStructure() {
+  return useQuery({
+    queryKey: ['demographics-structure'],
+    queryFn: ({ signal }) => fetchDemographicsStructure({ signal }),
+    staleTime: 60 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
   });
 }

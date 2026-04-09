@@ -43,3 +43,26 @@ export async function downloadExcel(chartData, mode, indicatorCode, range, meta 
   const filename = `${indicatorCode}_${modeLabel}_${range}.xlsx`;
   XLSX.writeFile(wb, filename);
 }
+
+export function downloadCSV(chartData, mode, indicatorCode, range, meta = {}) {
+  const rows = chartData.filter(d => d.actual != null || d.forecast != null);
+  if (!rows.length) return;
+
+  const header = ['Дата', meta.name || 'Значение', 'Тип'];
+  const csvRows = [header.join(';')];
+
+  for (const d of rows) {
+    const val = d.actual != null ? d.actual : d.forecast;
+    const type = d.actual != null ? 'факт' : 'прогноз';
+    csvRows.push([d.date, val?.toFixed(4) ?? '', type].join(';'));
+  }
+
+  const bom = '\uFEFF';
+  const blob = new Blob([bom + csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${indicatorCode}_${mode || 'data'}_${range}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}

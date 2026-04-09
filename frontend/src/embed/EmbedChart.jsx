@@ -49,7 +49,7 @@ export default function EmbedChart() {
   useEmbedAutoHeight();
 
   const { data: meta } = useIndicator(code);
-  const { data: dataResp, isLoading } = useIndicatorData(code);
+  const { data: dataResp, isLoading, isError } = useIndicatorData(code);
   const { data: forecastResp } = useForecast(code);
 
   const chartData = useMemo(() => {
@@ -142,7 +142,11 @@ export default function EmbedChart() {
       <div style={{ flex: 1, minHeight: 0 }}>
         {isLoading ? (
           <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ width: 24, height: 24, border: '2px solid', borderColor: `${colors.border} transparent`, borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+            <div className="embed-spin" style={{ width: 24, height: 24, border: '2px solid', borderColor: `${colors.border} transparent`, borderRadius: '50%' }} />
+          </div>
+        ) : isError ? (
+          <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: colors.textTertiary, fontSize: 13, fontFamily: 'system-ui' }}>
+            Ошибка загрузки данных
           </div>
         ) : chartData.length === 0 ? (
           <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: colors.textTertiary, fontSize: 13, fontFamily: 'system-ui' }}>
@@ -201,7 +205,7 @@ export default function EmbedChart() {
         <Attribution code={code} dark={theme === 'dark'} />
       </div>
 
-      <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
+      <style>{`@keyframes espin{to{transform:rotate(360deg)}}.embed-spin{animation:espin 1s linear infinite}@media(prefers-reduced-motion:reduce){.embed-spin{animation:none;opacity:.4}}`}</style>
     </div>
   );
 }

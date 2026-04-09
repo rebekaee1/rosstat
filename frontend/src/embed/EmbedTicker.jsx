@@ -43,7 +43,7 @@ export default function EmbedTicker() {
 
   useEmbedImpression(codes.join(','), 'ticker');
 
-  const { data: allIndicators } = useIndicators();
+  const { data: allIndicators, isLoading, isError } = useIndicators();
 
   const items = useMemo(() => {
     if (!allIndicators?.length) return [];
@@ -56,13 +56,11 @@ export default function EmbedTicker() {
       .slice(0, 8);
   }, [allIndicators, codes]);
 
-  if (!items.length) {
-    return (
-      <div style={{ background: colors.bg, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', color: colors.textTertiary, fontSize: 12, fontFamily: 'system-ui' }}>
-        Загрузка…
-      </div>
-    );
-  }
+  const statusStyle = { background: colors.bg, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', color: colors.textTertiary, fontSize: 12, fontFamily: 'system-ui' };
+
+  if (isLoading) return <div style={statusStyle}>Загрузка…</div>;
+  if (isError) return <div style={statusStyle}>Ошибка загрузки</div>;
+  if (!items.length) return <div style={statusStyle}>Нет данных</div>;
 
   return (
     <div style={{
@@ -70,7 +68,7 @@ export default function EmbedTicker() {
       height: 40, overflow: 'hidden', position: 'relative',
       fontFamily: 'system-ui, -apple-system, sans-serif',
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', height: '100%', animation: `ticker-scroll ${dur}s linear infinite`, whiteSpace: 'nowrap' }}>
+      <div className="ticker-track" style={{ display: 'flex', alignItems: 'center', height: '100%', whiteSpace: 'nowrap' }}>
         {items.map(ind => <TickerItem key={ind.code} ind={ind} colors={colors} />)}
         {items.map(ind => <TickerItem key={`dup-${ind.code}`} ind={ind} colors={colors} />)}
         <a href="https://forecasteconomy.com" target="_blank" rel="noopener"
@@ -80,10 +78,10 @@ export default function EmbedTicker() {
       </div>
 
       <style>{`
-        @keyframes ticker-scroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
+        @keyframes ticker-scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+        .ticker-track{animation:ticker-scroll ${dur}s linear infinite}
+        .ticker-track:hover{animation-play-state:paused}
+        @media(prefers-reduced-motion:reduce){.ticker-track{animation:none;overflow-x:auto}}
       `}</style>
     </div>
   );
