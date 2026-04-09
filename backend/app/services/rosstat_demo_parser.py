@@ -20,6 +20,7 @@ import openpyxl
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config import settings
 from app.models import Indicator, IndicatorData, FetchLog
 from app.services.http_client import create_session
 from app.services.base_parser import BaseParser
@@ -206,6 +207,7 @@ class RosstatDemoParser(BaseParser):
         file_type = cfg.get("demo_file", "demo21")
 
         session = create_session()
+        session.verify = settings.rosstat_ca_cert
 
         if file_type == "demo21":
             filenames = [f"demo21_{y}.xlsx" for y in range(2026, 2020, -1)]

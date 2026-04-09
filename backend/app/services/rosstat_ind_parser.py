@@ -26,6 +26,7 @@ import openpyxl
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config import settings
 from app.models import Indicator, IndicatorData, FetchLog
 from app.services.http_client import create_session
 from app.services.base_parser import BaseParser
@@ -161,6 +162,7 @@ class RosstatIndParser(BaseParser):
             raise ValueError(f"No sheet mapping for indicator {code}")
 
         session = create_session()
+        session.verify = settings.rosstat_ca_cert
         content, url = _fetch_latest_ind(session)
         fetch_log.source_url = url
 

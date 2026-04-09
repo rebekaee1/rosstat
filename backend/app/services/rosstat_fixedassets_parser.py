@@ -17,6 +17,7 @@ from typing import ClassVar
 import openpyxl
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config import settings
 from app.models import Indicator, IndicatorData, FetchLog
 from app.services.http_client import create_session
 from app.services.base_parser import BaseParser
@@ -72,6 +73,7 @@ class RosstatFixedAssetsParser(BaseParser):
 
     async def run(self, db: AsyncSession, indicator: Indicator, fetch_log: FetchLog) -> None:
         session = create_session()
+        session.verify = settings.rosstat_ca_cert
         content = None
         used_url = ""
         for year in range(2026, 2020, -1):
