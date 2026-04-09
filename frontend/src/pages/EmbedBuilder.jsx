@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
-import { Check, Copy, Code2, Image, ChevronDown, Search, BarChart3, CreditCard, Table2, ScrollText, GitCompare } from 'lucide-react';
+import { Check, Copy, Code2, Image, ChevronDown, Search, BarChart3, CreditCard, Table2, ScrollText, GitCompare, Shield } from 'lucide-react';
 import { useIndicators } from '../lib/hooks';
 import { CATEGORIES, HIDDEN_FROM_LISTING } from '../lib/categories';
 import { cn } from '../lib/format';
@@ -22,7 +22,7 @@ const SIZE_PRESETS = [
 
 const EMBED_ORIGIN = 'https://forecasteconomy.com';
 
-function IndicatorCombobox({ indicators, value, onChange, dark = false }) {
+function IndicatorCombobox({ indicators, value, onChange }) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
   const ref = useRef(null);
@@ -173,7 +173,7 @@ export default function EmbedBuilder() {
       default:
         return '';
     }
-  }, [type, code, codeB, period, theme, w, h, showTitle, showForecast, limit, tickerCodes, speed]);
+  }, [type, code, codeB, period, theme, h, showTitle, showForecast, limit, tickerCodes, speed]);
 
   const embedCode = useMemo(() => {
     const meta = indicators?.find(i => i.code === code);
@@ -237,6 +237,9 @@ export default function EmbedBuilder() {
     if (codeTab === 'svg') {
       if (type === 'card') return `<a href="${EMBED_ORIGIN}/indicator/${code}" target="_blank">\n  <img src="${EMBED_ORIGIN}/api/v1/embed/card/${code}.svg?theme=${theme}&w=${w}&h=${h}"\n    alt="${name}" width="${w}" height="${h}">\n</a>`;
       return `<a href="${EMBED_ORIGIN}/indicator/${code}" target="_blank">\n  <img src="${EMBED_ORIGIN}/api/v1/embed/spark/${code}.svg?period=${period}&w=${w}&h=60"\n    alt="${name}" width="${w}" height="60">\n</a>`;
+    }
+    if (codeTab === 'badge') {
+      return `[![${name}](${EMBED_ORIGIN}/api/v1/embed/badge/${code}.svg?theme=${theme})](${EMBED_ORIGIN}/indicator/${code})`;
     }
     return '';
   }, [type, code, codeB, period, theme, w, h, showTitle, showForecast, limit, tickerCodes, speed, codeTab, indicators]);
@@ -335,7 +338,7 @@ export default function EmbedBuilder() {
             <div>
               <label className="block text-xs text-text-secondary mb-1.5 font-medium">Тема</label>
               <div className="flex gap-2">
-                {[['light', 'Светлая'], ['dark', 'Тёмная']].map(([k, l]) => (
+                {[['light', 'Светлая'], ['dark', 'Тёмная'], ['auto', 'Авто']].map(([k, l]) => (
                   <button key={k} type="button" onClick={() => setTheme(k)}
                     className={cn('flex-1 py-2 rounded-xl text-xs font-medium transition-all border', theme === k ? 'bg-champagne/10 border-champagne/30 text-champagne' : 'border-border-subtle text-text-tertiary hover:text-text-secondary')}>
                     {l}
@@ -444,6 +447,7 @@ export default function EmbedBuilder() {
                   { key: 'iframe', label: 'iframe', icon: Code2 },
                   { key: 'svg', label: 'SVG / IMG', icon: Image },
                   { key: 'markdown', label: 'Markdown', icon: Code2 },
+                  { key: 'badge', label: 'Badge', icon: Shield },
                 ].map(tab => (
                   <button key={tab.key} type="button" onClick={() => setCodeTab(tab.key)}
                     className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all', codeTab === tab.key ? 'bg-champagne/10 text-champagne' : 'text-text-tertiary hover:text-text-secondary')}>

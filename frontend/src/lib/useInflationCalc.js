@@ -1,8 +1,6 @@
 import { useMemo } from 'react';
 import { useIndicatorData } from './hooks';
 
-const CPI_CODES = ['cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services'];
-
 function computeCumulative(points, fromDate, toDate) {
   let product = 1;
   const series = [];
@@ -45,19 +43,26 @@ function toDateStr(year, month = 1) {
   return `${year}-${String(month).padStart(2, '0')}-01`;
 }
 
+const CPI_QUERY_PARAMS = { limit: 5000 };
+
 export default function useInflationCalc(amount, fromYear, toYear) {
-  const queries = CPI_CODES.map(code =>
-    useIndicatorData(code, { limit: 5000 })
-  );
+  const qCpi = useIndicatorData('cpi', CPI_QUERY_PARAMS);
+  const qFood = useIndicatorData('cpi-food', CPI_QUERY_PARAMS);
+  const qNonfood = useIndicatorData('cpi-nonfood', CPI_QUERY_PARAMS);
+  const qServices = useIndicatorData('cpi-services', CPI_QUERY_PARAMS);
 
-  const isLoading = queries.some(q => q.isLoading);
-  const isError = queries.some(q => q.isError);
-  const allData = queries.map(q => q.data?.data || []);
+  const isLoading = qCpi.isLoading || qFood.isLoading || qNonfood.isLoading || qServices.isLoading;
+  const isError = qCpi.isError || qFood.isError || qNonfood.isError || qServices.isError;
 
-  const cpiAll = allData[0];
-  const cpiFood = allData[1];
-  const cpiNonfood = allData[2];
-  const cpiServices = allData[3];
+  const cpiAllRaw = qCpi.data?.data;
+  const cpiFoodRaw = qFood.data?.data;
+  const cpiNonfoodRaw = qNonfood.data?.data;
+  const cpiServicesRaw = qServices.data?.data;
+
+  const cpiAll = useMemo(() => cpiAllRaw || [], [cpiAllRaw]);
+  const cpiFood = useMemo(() => cpiFoodRaw || [], [cpiFoodRaw]);
+  const cpiNonfood = useMemo(() => cpiNonfoodRaw || [], [cpiNonfoodRaw]);
+  const cpiServices = useMemo(() => cpiServicesRaw || [], [cpiServicesRaw]);
 
   const lastAvailableDate = useMemo(() => {
     if (!cpiAll.length) return null;

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Calendar as CalendarIcon } from 'lucide-react';
 import gsap from 'gsap';
-import { cn } from '../../lib/format';
+
 
 function CountdownUnit({ value, label }) {
   return (

@@ -178,6 +178,50 @@ body {
   box-shadow: 0 0 0 2px var(--color-obsidian), 0 0 0 4px rgba(184,148,47,0.45);
 }
 
+/* ── Sparkline animations ──────────────────────────────────── */
+
+@keyframes sparkline-reveal {
+  from { stroke-dashoffset: var(--path-length, 1000); }
+  to   { stroke-dashoffset: 0; }
+}
+
+@keyframes sparkline-area-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes sparkline-pulse {
+  0%, 100% { transform: scale(1);   opacity: 0.2; }
+  50%      { transform: scale(1.8); opacity: 0.06; }
+}
+
+.sparkline-area-animate {
+  opacity: 0;
+  animation: sparkline-area-fade 600ms ease-out forwards;
+}
+
+.sparkline-glow {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sparkline-pulse 2.4s ease-in-out infinite, sparkline-area-fade 300ms ease-out forwards;
+}
+
+.sparkline-container {
+  contain: layout style;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sparkline-area-animate,
+  .sparkline-glow {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+  .sparkline-glow {
+    opacity: 0.2 !important;
+  }
+}
+
 /* Про страницы About / Privacy: ссылки в тексте */
 .prose a {
   border-radius: 0.125rem;

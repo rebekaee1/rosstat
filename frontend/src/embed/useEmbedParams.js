@@ -1,10 +1,29 @@
-import { useEffect } from 'react';
+import { useEffect, useSyncExternalStore } from 'react';
 import { useSearchParams } from 'react-router-dom';
+
+const MQ = typeof window !== 'undefined'
+  ? window.matchMedia('(prefers-color-scheme: dark)')
+  : null;
+
+function subscribeMQ(cb) {
+  MQ?.addEventListener('change', cb);
+  return () => MQ?.removeEventListener('change', cb);
+}
+
+function getPrefersDark() {
+  return MQ?.matches ?? false;
+}
 
 export function useEmbedParams() {
   const [params] = useSearchParams();
+  const rawTheme = params.get('theme') || 'light';
+  const prefersDark = useSyncExternalStore(subscribeMQ, getPrefersDark, () => false);
+  const theme = rawTheme === 'dark' ? 'dark'
+    : rawTheme === 'auto' && prefersDark ? 'dark'
+    : 'light';
+
   return {
-    theme: params.get('theme') === 'dark' ? 'dark' : 'light',
+    theme,
     height: Math.max(100, parseInt(params.get('height')) || 400),
     period: params.get('period') || '5y',
     showTitle: params.get('title') !== 'false',

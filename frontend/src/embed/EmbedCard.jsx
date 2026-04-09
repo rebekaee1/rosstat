@@ -41,7 +41,7 @@ function MiniSparkline({ data, width = 140, height = 36, color = '#B8942F' }) {
 
 export default function EmbedCard() {
   const { code } = useParams();
-  const { theme, period } = useEmbedParams();
+  const { theme } = useEmbedParams();
   const colors = THEME_COLORS[theme];
 
   useEmbedImpression(code, 'card');

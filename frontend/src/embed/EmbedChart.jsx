@@ -6,7 +6,7 @@ import {
 } from 'recharts';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import { useIndicator, useIndicatorData, useForecast } from '../lib/hooks';
-import { formatDate, formatAxisTick, formatValueWithUnit, formatChange, unitDigits, isCpiIndex, cn } from '../lib/format';
+import { formatDate, formatAxisTick, formatValueWithUnit, formatChange, unitDigits, isCpiIndex } from '../lib/format';
 import { useEmbedParams, useEmbedImpression, useEmbedAutoHeight, PERIODS, THEME_COLORS } from './useEmbedParams';
 import Attribution from './Attribution';
 

@@ -77,4 +77,7 @@ export const fetchCalendarUpcoming = (params = {}, { signal } = {}) => {
   return api.get(`/calendar/upcoming${q ? `?${q}` : ''}`, { signal }).then((r) => r.data);
 };
 
+export const fetchDashboardSparklines = ({ signal } = {}) =>
+  api.get('/dashboard/sparklines', { signal }).then((r) => r.data);
+
 export default api;

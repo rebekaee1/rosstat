@@ -831,3 +831,19 @@
 - **Рекомендация:** Фаза A (MVP) — модель EconomicEvent, seed 16 заседаний ЦБ + ~25 ARC-событий, API, фронт /calendar. Фаза B — автопарсеры. Фаза C — actual_value, push, iCal, RSS.
 - **Модель данных:** EconomicEvent (title, event_type, source, indicator_id FK, scheduled_date/time, is_estimated, reference_period, importance 1-3, values, status, recurrence_pattern).
 - **UI:** список событий (не grid), фильтры по источнику/категории/значимости, карточки с привязкой к индикаторам.
+
+## 2026-04-09 — Калькулятор инфляции: полная реализация
+
+- **User intent:** enterprise-level калькулятор инфляции для /calculator — wow-factor дизайн, GSAP-анимации, разбивка по категориям (food/nonfood/services), URL sharing, FAQ с Schema.org, методология.
+- **Новые файлы:**
+  - `frontend/src/lib/useInflationCalc.js` — хук: загружает 4 ряда CPI (cpi, cpi-food, cpi-nonfood, cpi-services), считает кумулятивную инфляцию (∏ CPI_i/100), покупательную способность, среднегодовую, разбивку по корзинам. Строит series для графика.
+  - `frontend/src/pages/CalculatorPage.jsx` — полная страница: hero с Playfair h1, input суммы с ₽ и auto-format, два range slider (fromYear/toYear) с champagne-стилем, preset-кнопки (1/5/10 лет/С 2000/Всё время), анимированный результат (GSAP countUp), stat pills (инфляция %, среднегодовая, покуп. способность), кнопки share (copy link + copy text), Area chart (Recharts) с gradient fill и milestone markers (1998/2008/2014/2020/2022), переключатель "Покуп. способность / Рост суммы", 3 карточки категорий, секция методологии, FAQ accordion (6 вопросов) с Schema.org FAQPage + WebApplication JSON-LD, useDocumentMeta для SEO.
+- **Изменённые файлы:**
+  - `frontend/src/index.css` — стили `.calc-slider` (thumb, track, hover/active/focus-visible)
+  - `frontend/src/App.jsx` — lazy import CalculatorPage, Route `/calculator`
+  - `frontend/nginx.conf` — `/calculator` в whitelist SPA fallback
+  - `frontend/public/sitemap.xml` — `/calculator` с priority 0.95
+  - `frontend/src/components/Navbar.jsx` — ссылка «Калькулятор» в desktop и mobile меню
+- **Результат:** build успешен (CalculatorPage: 25 KB / 8.4 KB gzip), lint clean, страница рендерится корректно (проверено в браузере). Данные CPI не отображаются без backend, но loading/error states работают.
+- **URL sharing:** `/calculator?amount=100000&from=2015&to=2025` — параметры из URL восстанавливаются при mount.
+- **Edge cases обработаны:** from ≥ to → 0% / no change, будущие годы → clip to lastAvailableYear, сумма 0 → no result, гиперинфляция 1991-1995 → extreme glow (>200%).

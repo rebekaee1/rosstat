@@ -298,6 +298,74 @@ async def card_svg(
     return _svg_response(svg)
 
 
+# ─── Badge SVG (shields.io style) ─────────────────────────────────
+
+
+@router.get("/badge/{code}.svg")
+async def badge_svg(
+    code: str,
+    theme: str = Query("light"),
+    db: AsyncSession = Depends(get_db),
+):
+    """shields.io-compatible badge: ``label | value  ▲change``."""
+    _validate_code(code)
+    ck = f"fe:embed:badge:{code}:{theme}"
+    cached = await cache_get(ck)
+    if cached:
+        return _svg_response(cached)
+
+    q = await db.execute(select(Indicator).where(Indicator.code == code))
+    ind = q.scalar_one_or_none()
+    if not ind:
+        raise HTTPException(404, f"Indicator '{code}' not found")
+
+    cur = float(ind.current_value) if ind.current_value is not None else None
+    prev = float(ind.previous_value) if ind.previous_value is not None else None
+    change = round(cur - prev, 4) if cur is not None and prev is not None else None
+    val_str = _fmt_value(cur) if cur is not None else "—"
+    unit = ind.unit or ""
+
+    label = _xml(ind.name)[:40]
+    value_text = f"{val_str} {_xml(unit)}".strip()
+    if change is not None:
+        arrow = "\u25B2" if change > 0 else ("\u25BC" if change < 0 else "")
+        chg_str = f'{"+" if change >= 0 else ""}{change:.2f}'
+        value_text += f"  {arrow}{chg_str}"
+
+    dark = theme == "dark"
+    label_bg = "#333" if dark else "#555"
+    value_bg = "#22c55e" if (change is not None and change > 0) else (
+        "#ef4444" if (change is not None and change < 0) else "#999"
+    )
+    text_color = "#fff"
+
+    char_w = 6.5
+    pad = 12
+    label_w = len(label) * char_w + pad * 2
+    value_w = len(value_text) * char_w + pad * 2
+    total_w = label_w + value_w
+    h = 22
+    r = 4
+
+    svg = (
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{total_w:.0f}" height="{h}"'
+        f' role="img" aria-label="{label}: {_xml(value_text)}">'
+        f'<rect width="{total_w:.0f}" height="{h}" rx="{r}" fill="{label_bg}"/>'
+        f'<rect x="{label_w:.0f}" width="{value_w:.0f}" height="{h}"'
+        f' rx="{r}" fill="{value_bg}"/>'
+        f'<rect x="{label_w:.0f}" width="{min(r, value_w)}" height="{h}" fill="{value_bg}"/>'
+        f'<text x="{label_w / 2:.0f}" y="15" fill="{text_color}"'
+        f' font-family="{FONT}" font-size="11" font-weight="500" text-anchor="middle">'
+        f'{label}</text>'
+        f'<text x="{label_w + value_w / 2:.0f}" y="15" fill="{text_color}"'
+        f' font-family="{MONO}" font-size="11" font-weight="600" text-anchor="middle">'
+        f'{_xml(value_text)}</text>'
+        f'</svg>'
+    )
+    await cache_set(ck, svg, 3600)
+    return _svg_response(svg)
+
+
 # ─── Impression tracking ─────────────────────────────────────────
 
 PIXEL_GIF = (

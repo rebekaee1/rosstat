@@ -10,6 +10,8 @@ export const CATEGORIES = [
     icon: 'ShoppingCart',
     apiCategory: 'Цены',
     status: 'active',
+    flagshipCode: 'cpi',
+    sentiment: 'inverse',
     description:
       'ИПЦ и инфляция: официальные данные Росстата, скользящая годовая инфляция и прогноз.',
   },
@@ -20,6 +22,8 @@ export const CATEGORIES = [
     icon: 'Percent',
     apiCategory: 'Ставки',
     status: 'active',
+    flagshipCode: 'key-rate',
+    sentiment: 'neutral',
     description: 'Ключевая ставка ЦБ, RUONIA, ипотека, депозиты, автокредиты — актуальные данные Банка России.',
   },
   {
@@ -29,6 +33,8 @@ export const CATEGORIES = [
     icon: 'Wallet',
     apiCategory: 'Финансы',
     status: 'active',
+    flagshipCode: 'usd-rub',
+    sentiment: 'inverse',
     description: 'Курсы валют, золото, М0–М2, резервы, внешний долг, кредиты, депозиты, доходы/расходы бюджета — данные ЦБ РФ и Минфина.',
   },
   {
@@ -38,6 +44,8 @@ export const CATEGORIES = [
     icon: 'Briefcase',
     apiCategory: 'Рынок труда',
     status: 'active',
+    flagshipCode: 'unemployment',
+    sentiment: 'inverse',
     description: 'Безработица, зарплаты, рабочая сила, занятость — ежемесячные данные Росстата.',
   },
   {
@@ -47,6 +55,8 @@ export const CATEGORIES = [
     icon: 'BarChart3',
     apiCategory: 'ВВП',
     status: 'active',
+    flagshipCode: 'gdp-nominal',
+    sentiment: 'positive',
     description: 'ВВП, темпы роста, потребление, госрасходы — структура экономики по данным Росстата.',
   },
   {
@@ -56,6 +66,8 @@ export const CATEGORIES = [
     icon: 'UserCircle',
     apiCategory: 'Население',
     status: 'active',
+    flagshipCode: 'population',
+    sentiment: 'positive',
     description: 'Численность, рождаемость, смертность, пенсионеры, трудоспособные — демографические данные Росстата с 1990 года.',
   },
   {
@@ -65,6 +77,8 @@ export const CATEGORIES = [
     icon: 'Globe',
     apiCategory: 'Торговля',
     status: 'active',
+    flagshipCode: 'current-account',
+    sentiment: 'neutral',
     description: 'Экспорт, импорт товаров и услуг, торговый баланс, текущий счёт, ПИИ — квартальные данные Банка России.',
   },
   {
@@ -74,6 +88,8 @@ export const CATEGORIES = [
     icon: 'Factory',
     apiCategory: 'Бизнес',
     status: 'active',
+    flagshipCode: 'ipi',
+    sentiment: 'positive',
     description: 'ИПП, розничная торговля, ввод жилья, износ фондов, инвестиции — данные Росстата и Банка России.',
   },
   {
@@ -83,6 +99,8 @@ export const CATEGORIES = [
     icon: 'GraduationCap',
     apiCategory: 'Наука',
     status: 'active',
+    flagshipCode: 'rd-personnel',
+    sentiment: 'positive',
     description: 'Аспиранты, докторанты, организации НИР, инновационная активность — годовые данные Росстата.',
   },
 ];

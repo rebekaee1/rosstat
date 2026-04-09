@@ -9,6 +9,7 @@ import {
   fetchSystemStatus,
   fetchCalendarEvents,
   fetchCalendarUpcoming,
+  fetchDashboardSparklines,
 } from './api';
 
 export function useIndicators(options = {}) {
@@ -93,6 +94,15 @@ export function useCalendarEvents(params = {}, options = {}) {
     enabled,
     staleTime: 5 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
+  });
+}
+
+export function useDashboardSparklines() {
+  return useQuery({
+    queryKey: ['dashboard-sparklines'],
+    queryFn: ({ signal }) => fetchDashboardSparklines({ signal }),
+    staleTime: 30 * 60 * 1000,
+    gcTime: 60 * 60 * 1000,
   });
 }
 

@@ -123,7 +123,9 @@ function YearSlider({ value, onChange, min, max, label, ariaLabel }) {
   );
 }
 
-function CategoryCard({ icon: Icon, label, rate, color }) {
+function CategoryCard(props) {
+  const { label, rate, color } = props;
+  const Icon = props.icon;
   const formatted = rate != null && Number.isFinite(rate)
     ? `${rate >= 0 ? '+' : ''}${rate.toFixed(1)}%`
     : '—';
