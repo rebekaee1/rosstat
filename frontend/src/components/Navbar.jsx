@@ -161,8 +161,17 @@ export default function Navbar() {
           )}
         </div>
 
+        <NavLink to="/calendar" className={linkClass} onClick={closeAll}>
+          Календарь
+        </NavLink>
         <NavLink to="/compare" className={linkClass} onClick={closeAll}>
-          Сравнение индикаторов
+          Сравнение
+        </NavLink>
+        <NavLink to="/calculator" className={linkClass} onClick={closeAll}>
+          Калькулятор
+        </NavLink>
+        <NavLink to="/widgets" className={linkClass} onClick={closeAll}>
+          Виджеты
         </NavLink>
         <NavLink to="/about" className={linkClass} onClick={closeAll}>
           О проекте
@@ -222,8 +231,17 @@ export default function Navbar() {
             <NavLink to="/demographics" className={linkClass} onClick={closeAll}>
               Возрастная структура
             </NavLink>
+            <NavLink to="/calendar" className={linkClass} onClick={closeAll}>
+              Календарь
+            </NavLink>
             <NavLink to="/compare" className={linkClass} onClick={closeAll}>
-              Сравнение индикаторов
+              Сравнение
+            </NavLink>
+            <NavLink to="/calculator" className={linkClass} onClick={closeAll}>
+              Калькулятор
+            </NavLink>
+            <NavLink to="/widgets" className={linkClass} onClick={closeAll}>
+              Виджеты
             </NavLink>
             <NavLink to="/about" className={linkClass} onClick={closeAll}>
               О проекте
