@@ -13,7 +13,7 @@ export default function CategoryPage() {
 
   const { data: indicators, isLoading, isError, refetch, isFetching } = useIndicators({
     category: cat?.apiCategory ?? undefined,
-    includeInactive: true,
+    includeInactive: false,
     enabled: !!cat?.apiCategory,
   });
 
