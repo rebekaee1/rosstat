@@ -36,7 +36,7 @@ describe('formatValueWithUnit', () => {
   });
 
   it('formats mlrd rubles', () => {
-    expect(formatValueWithUnit(17624.3, 'млрд руб.')).toBe('17624.3 млрд ₽');
+    expect(formatValueWithUnit(17624.3, 'млрд руб.')).toBe('17\u00A0624.3 млрд ₽');
   });
 
   it('handles null', () => {

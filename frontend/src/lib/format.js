@@ -31,6 +31,9 @@ const UNIT_CONFIG = {
   'млрд руб.': { digits: 1, suffix: ' млрд ₽', space: false },
   'трлн руб.': { digits: 2, suffix: ' трлн ₽', space: false },
   'млн чел.':  { digits: 1, suffix: ' млн',    space: false },
+  'тыс. чел.': { digits: 1, suffix: ' тыс.',   space: false },
+  'млрд $':    { digits: 1, suffix: ' млрд $',  space: false },
+  'индекс':    { digits: 1, suffix: '',          space: false },
 };
 
 function groupThousands(str) {

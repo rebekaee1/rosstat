@@ -106,6 +106,9 @@ class RosstatCpiParser(BaseParser):
 from app.services.cbr_dataservice_sum_parser import CbrDataServiceSumParser
 from app.services.minfin_budget_parser import MinfinBudgetParser
 from app.services.rosstat_weekly_inflation_parser import RosstatWeeklyCpiParser
+from app.services.rosstat_ipi_parser import RosstatIpiParser
+from app.services.rosstat_housing_parser import RosstatHousingParser
+from app.services.rosstat_population_parser import RosstatPopulationParser
 
 PARSER_REGISTRY: dict[str, type[BaseParser]] = {
     RosstatCpiParser.parser_type: RosstatCpiParser,
@@ -119,6 +122,9 @@ PARSER_REGISTRY: dict[str, type[BaseParser]] = {
     CbrDataServiceSumParser.parser_type: CbrDataServiceSumParser,
     MinfinBudgetParser.parser_type: MinfinBudgetParser,
     RosstatWeeklyCpiParser.parser_type: RosstatWeeklyCpiParser,
+    RosstatIpiParser.parser_type: RosstatIpiParser,
+    RosstatHousingParser.parser_type: RosstatHousingParser,
+    RosstatPopulationParser.parser_type: RosstatPopulationParser,
 }
 
 

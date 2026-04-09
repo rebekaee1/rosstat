@@ -717,6 +717,202 @@ INDICATORS = [
         "is_active": True,
         "category": "Цены",
     },
+    # ─── Цены на жильё (Росстат SDDS Housing) ───
+    {
+        "code": "housing-price-primary",
+        "name": "Цены на первичное жильё",
+        "name_en": "Primary Housing Price Index",
+        "unit": "индекс",
+        "frequency": "quarterly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/folder/10705",
+        "description": (
+            "Индекс цен на первичном рынке жилья (2010=100). "
+            "Данные SDDS Росстата, квартальные."
+        ),
+        "parser_type": "rosstat_sdds_housing",
+        "model_config_json": {
+            "forecast_steps": 4,
+            "forecast_transform": "absolute",
+            "validation": {"min": 50, "max": 500},
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "housing-price-secondary",
+        "name": "Цены на вторичное жильё",
+        "name_en": "Secondary Housing Price Index",
+        "unit": "индекс",
+        "frequency": "quarterly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/folder/10705",
+        "description": (
+            "Индекс цен на вторичном рынке жилья (2010=100). "
+            "Данные SDDS Росстата, квартальные."
+        ),
+        "parser_type": "rosstat_sdds_housing",
+        "model_config_json": {
+            "forecast_steps": 4,
+            "forecast_transform": "absolute",
+            "validation": {"min": 50, "max": 500},
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
+    # ─── Индекс промышленного производства (Росстат SDDS IPI) ───
+    {
+        "code": "ipi",
+        "name": "Индекс промышленного производства",
+        "name_en": "Industrial Production Index",
+        "unit": "индекс",
+        "frequency": "monthly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/folder/10705",
+        "description": (
+            "Индекс промышленного производства (2023=100): горнодобыча, "
+            "обработка, энергетика, водоснабжение. Ежемесячные данные SDDS Росстата."
+        ),
+        "parser_type": "rosstat_sdds_ipi",
+        "model_config_json": {
+            "forecast_steps": 6,
+            "forecast_transform": "absolute",
+            "validation": {"min": 30, "max": 200},
+        },
+        "is_active": True,
+        "category": "Бизнес",
+    },
+    # ─── Население (Росстат SDDS + Popul components) ───
+    {
+        "code": "population",
+        "name": "Численность населения",
+        "name_en": "Population",
+        "unit": "млн чел.",
+        "frequency": "annual",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/folder/12781",
+        "description": (
+            "Численность постоянного населения РФ на 1 января (млн чел.). "
+            "Данные SDDS Росстата."
+        ),
+        "parser_type": "rosstat_population",
+        "model_config_json": {
+            "forecast_steps": 0,
+            "validation": {"min": 100, "max": 200},
+        },
+        "is_active": True,
+        "category": "Население",
+    },
+    {
+        "code": "population-natural-growth",
+        "name": "Естественный прирост населения",
+        "name_en": "Natural Population Growth",
+        "unit": "тыс. чел.",
+        "frequency": "annual",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/folder/12781",
+        "description": (
+            "Естественный прирост населения (рождения минус смерти), "
+            "тысяч человек в год. Данные Росстата с 1990 года."
+        ),
+        "parser_type": "rosstat_population",
+        "model_config_json": {"forecast_steps": 0},
+        "is_active": True,
+        "category": "Население",
+    },
+    {
+        "code": "population-total-growth",
+        "name": "Общий прирост населения",
+        "name_en": "Total Population Growth",
+        "unit": "тыс. чел.",
+        "frequency": "annual",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/folder/12781",
+        "description": (
+            "Общий прирост населения (естественный + миграционный), "
+            "тысяч человек в год. Данные Росстата с 1990 года."
+        ),
+        "parser_type": "rosstat_population",
+        "model_config_json": {"forecast_steps": 0},
+        "is_active": True,
+        "category": "Население",
+    },
+    {
+        "code": "population-migration",
+        "name": "Миграционный прирост",
+        "name_en": "Migration Growth",
+        "unit": "тыс. чел.",
+        "frequency": "annual",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/folder/12781",
+        "description": (
+            "Миграционный прирост населения, тысяч человек в год. "
+            "Данные Росстата с 1990 года."
+        ),
+        "parser_type": "rosstat_population",
+        "model_config_json": {"forecast_steps": 0},
+        "is_active": True,
+        "category": "Население",
+    },
+    # ─── Внешняя торговля (ЦБ DataService — BOP) ───
+    {
+        "code": "exports",
+        "name": "Экспорт товаров",
+        "name_en": "Goods Exports",
+        "unit": "млрд $",
+        "frequency": "quarterly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/macro_itm/svs/",
+        "description": (
+            "Экспорт товаров из России (платёжный баланс, квартальные данные). "
+            "Источник: Банк России."
+        ),
+        "parser_type": "cbr_dataservice_json",
+        "model_config_json": {
+            "dataservice": {
+                "publicationId": 4,
+                "datasetId": 4,
+                "measureId": None,
+                "element_id": 3,
+                "date_offset_months": 0,
+            },
+            "backfill_from_year": 2000,
+            "forecast_steps": 4,
+            "forecast_transform": "absolute",
+            "validation": {"min": 0},
+        },
+        "is_active": True,
+        "category": "Торговля",
+    },
+    {
+        "code": "imports",
+        "name": "Импорт товаров",
+        "name_en": "Goods Imports",
+        "unit": "млрд $",
+        "frequency": "quarterly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/macro_itm/svs/",
+        "description": (
+            "Импорт товаров в Россию (платёжный баланс, квартальные данные). "
+            "Источник: Банк России."
+        ),
+        "parser_type": "cbr_dataservice_json",
+        "model_config_json": {
+            "dataservice": {
+                "publicationId": 4,
+                "datasetId": 4,
+                "measureId": None,
+                "element_id": 4,
+                "date_offset_months": 0,
+            },
+            "backfill_from_year": 2000,
+            "forecast_steps": 4,
+            "forecast_transform": "absolute",
+            "validation": {"min": 0},
+        },
+        "is_active": True,
+        "category": "Торговля",
+    },
     # ─── Производные: безработица агрегаты ───
     {
         "code": "unemployment-quarterly",
@@ -747,6 +943,63 @@ INDICATORS = [
         "model_config_json": {"forecast_steps": 0},
         "is_active": True,
         "category": "Рынок труда",
+    },
+    # ─── Производные: торговый баланс ───
+    {
+        "code": "trade-balance",
+        "name": "Сальдо торгового баланса",
+        "name_en": "Trade Balance",
+        "unit": "млрд $",
+        "frequency": "quarterly",
+        "source": "Расчёт",
+        "description": (
+            "Сальдо торгового баланса (экспорт минус импорт). "
+            "Расчёт на основе данных ЦБ РФ."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {"forecast_steps": 0},
+        "is_active": True,
+        "category": "Торговля",
+    },
+    {
+        "code": "exports-yoy",
+        "name": "Экспорт (изм. г/г)",
+        "name_en": "Exports YoY Change",
+        "unit": "%",
+        "frequency": "quarterly",
+        "source": "Расчёт",
+        "description": "Изменение экспорта к аналогичному кварталу предыдущего года.",
+        "parser_type": "derived",
+        "model_config_json": {"forecast_steps": 0},
+        "is_active": True,
+        "category": "Торговля",
+    },
+    {
+        "code": "imports-yoy",
+        "name": "Импорт (изм. г/г)",
+        "name_en": "Imports YoY Change",
+        "unit": "%",
+        "frequency": "quarterly",
+        "source": "Расчёт",
+        "description": "Изменение импорта к аналогичному кварталу предыдущего года.",
+        "parser_type": "derived",
+        "model_config_json": {"forecast_steps": 0},
+        "is_active": True,
+        "category": "Торговля",
+    },
+    # ─── Производные: ИПП год к году ───
+    {
+        "code": "ipi-yoy",
+        "name": "ИПП (изм. г/г)",
+        "name_en": "Industrial Production YoY",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Расчёт",
+        "description": "Изменение индекса промышленного производства к аналогичному месяцу предыдущего года.",
+        "parser_type": "derived",
+        "model_config_json": {"forecast_steps": 0},
+        "is_active": True,
+        "category": "Бизнес",
     },
 ]
 
