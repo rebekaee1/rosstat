@@ -32,6 +32,7 @@ DATASET_URLS: dict[str, str] = {
     "population": "SDDS_population_{year}.xlsx",
     "ipi": "SDDS_industrial%20production%20index_{year}.xlsx",
     "housing": "SDDS_housing%20market%20price%20indices_{year}_.xlsx",
+    "prices": "SDDS_price%20indices_{year}.xlsx",
 }
 
 ROSSTAT_STATIC_URLS: dict[str, str] = {

@@ -942,6 +942,185 @@ INDICATORS = [
         "is_active": True,
         "category": "Бизнес",
     },
+    # ─── ИЦП (Росстат SDDS Price Indices) ───
+    {
+        "code": "ppi",
+        "name": "Индекс цен производителей",
+        "name_en": "Producer Price Index",
+        "unit": "индекс",
+        "frequency": "monthly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/statistics/price",
+        "description": (
+            "Индекс цен производителей промышленных товаров (2010=100). "
+            "Ежемесячные данные SDDS Росстата."
+        ),
+        "methodology": (
+            "Рассчитывается по ценам отгруженной продукции промышленных предприятий. "
+            "Источник: SDDS XLSX Росстата (Price Indices)."
+        ),
+        "parser_type": "rosstat_sdds_ppi",
+        "model_config_json": {
+            "forecast_steps": 6,
+            "forecast_transform": "absolute",
+            "validation": {"min": 50, "max": 500},
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
+    # ─── Внешняя торговля (ЦБ BOP XLSX) ───
+    {
+        "code": "exports",
+        "name": "Экспорт товаров",
+        "name_en": "Goods Exports",
+        "unit": "млн $",
+        "frequency": "quarterly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/macro_itm/svs/",
+        "description": (
+            "Экспорт товаров из России (по методологии платёжного баланса). "
+            "Квартальные данные в млн долларов. Источник: ЦБ РФ."
+        ),
+        "parser_type": "cbr_bop_xlsx",
+        "model_config_json": {
+            "bop_target": "exports",
+            "forecast_steps": 4,
+            "forecast_transform": "absolute",
+            "validation": {"min": 0},
+        },
+        "is_active": True,
+        "category": "Торговля",
+    },
+    {
+        "code": "imports",
+        "name": "Импорт товаров",
+        "name_en": "Goods Imports",
+        "unit": "млн $",
+        "frequency": "quarterly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/macro_itm/svs/",
+        "description": (
+            "Импорт товаров в Россию (по методологии платёжного баланса). "
+            "Квартальные данные в млн долларов. Источник: ЦБ РФ."
+        ),
+        "parser_type": "cbr_bop_xlsx",
+        "model_config_json": {
+            "bop_target": "imports",
+            "forecast_steps": 4,
+            "forecast_transform": "absolute",
+            "validation": {"min": 0},
+        },
+        "is_active": True,
+        "category": "Торговля",
+    },
+    {
+        "code": "trade-balance",
+        "name": "Торговый баланс",
+        "name_en": "Trade Balance",
+        "unit": "млн $",
+        "frequency": "quarterly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/macro_itm/svs/",
+        "description": (
+            "Торговый баланс (экспорт минус импорт товаров) по методологии "
+            "платёжного баланса. Квартальные данные. Источник: ЦБ РФ."
+        ),
+        "parser_type": "cbr_bop_xlsx",
+        "model_config_json": {
+            "bop_target": "trade-balance",
+            "forecast_steps": 4,
+            "forecast_transform": "absolute",
+        },
+        "is_active": True,
+        "category": "Торговля",
+    },
+    # ─── Производные: торговля г/г ───
+    {
+        "code": "exports-yoy",
+        "name": "Экспорт (изм. г/г)",
+        "name_en": "Exports YoY Change",
+        "unit": "%",
+        "frequency": "quarterly",
+        "source": "Расчёт",
+        "description": "Изменение экспорта товаров к аналогичному кварталу предыдущего года.",
+        "parser_type": "derived",
+        "model_config_json": {"forecast_steps": 0},
+        "is_active": True,
+        "category": "Торговля",
+    },
+    {
+        "code": "imports-yoy",
+        "name": "Импорт (изм. г/г)",
+        "name_en": "Imports YoY Change",
+        "unit": "%",
+        "frequency": "quarterly",
+        "source": "Расчёт",
+        "description": "Изменение импорта товаров к аналогичному кварталу предыдущего года.",
+        "parser_type": "derived",
+        "model_config_json": {"forecast_steps": 0},
+        "is_active": True,
+        "category": "Торговля",
+    },
+    # ─── Международные резервы (ЦБ HTML) ───
+    {
+        "code": "international-reserves",
+        "name": "Международные резервы",
+        "name_en": "International Reserves",
+        "unit": "млрд $",
+        "frequency": "weekly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/hd_base/mrrf/mrrf_7d/",
+        "description": (
+            "Международные (золотовалютные) резервы Российской Федерации. "
+            "Еженедельные данные Банка России в млрд долларов."
+        ),
+        "methodology": (
+            "Публикуются ЦБ РФ еженедельно на основе учётных данных. "
+            "Включают валютные резервы, СДР, позицию в МВФ и монетарное золото."
+        ),
+        "parser_type": "cbr_reserves_html",
+        "model_config_json": {
+            "forecast_steps": 0,
+            "validation": {"min": 0, "max": 2000},
+        },
+        "is_active": True,
+        "category": "Финансы",
+    },
+    # ─── Внешний долг (ЦБ XLSX) ───
+    {
+        "code": "external-debt",
+        "name": "Внешний долг",
+        "name_en": "External Debt",
+        "unit": "млн $",
+        "frequency": "quarterly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/macro_itm/svs/",
+        "description": (
+            "Внешний долг Российской Федерации (всего). "
+            "Квартальные данные в млн долларов с 2003 года. Источник: ЦБ РФ."
+        ),
+        "parser_type": "cbr_debt_xlsx",
+        "model_config_json": {
+            "forecast_steps": 0,
+            "validation": {"min": 0},
+        },
+        "is_active": True,
+        "category": "Финансы",
+    },
+    # ─── Производные: ИЦП г/г ───
+    {
+        "code": "ppi-yoy",
+        "name": "ИЦП (изм. г/г)",
+        "name_en": "Producer Price Index YoY",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Расчёт",
+        "description": "Изменение индекса цен производителей к аналогичному месяцу предыдущего года.",
+        "parser_type": "derived",
+        "model_config_json": {"forecast_steps": 0},
+        "is_active": True,
+        "category": "Цены",
+    },
 ]
 
 
@@ -980,10 +1159,27 @@ async def seed():
                 model_config_json={"forecast_steps": 0, "validation": {"min": 0, "max": 60}},
             )
         )
-        # Деактивировать устаревшие индикаторы (exports/imports — нет надёжного API)
-        for old_code in ("exports", "imports", "trade-balance", "exports-yoy", "imports-yoy"):
+        # Реактивировать торговые индикаторы (теперь парсятся из BOP XLSX ЦБ)
+        for trade_code, trade_parser, trade_target in [
+            ("exports", "cbr_bop_xlsx", "exports"),
+            ("imports", "cbr_bop_xlsx", "imports"),
+            ("trade-balance", "cbr_bop_xlsx", "trade-balance"),
+        ]:
             await db.execute(
-                update(Indicator).where(Indicator.code == old_code).values(is_active=False)
+                update(Indicator)
+                .where(Indicator.code == trade_code)
+                .values(
+                    is_active=True,
+                    parser_type=trade_parser,
+                    source="Банк России",
+                    source_url="https://www.cbr.ru/statistics/macro_itm/svs/",
+                )
+            )
+        for yoy_code in ("exports-yoy", "imports-yoy"):
+            await db.execute(
+                update(Indicator)
+                .where(Indicator.code == yoy_code)
+                .values(is_active=True, parser_type="derived")
             )
         await db.commit()
 

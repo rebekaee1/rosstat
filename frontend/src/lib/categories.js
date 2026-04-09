@@ -29,7 +29,7 @@ export const CATEGORIES = [
     icon: 'Wallet',
     apiCategory: 'Финансы',
     status: 'active',
-    description: 'Курсы валют, денежные агрегаты M0–M2, кредиты, депозиты, бюджет — данные ЦБ РФ и Минфина.',
+    description: 'Курсы валют, денежные агрегаты M0–M2, резервы, внешний долг, кредиты, депозиты, бюджет — данные ЦБ РФ и Минфина.',
   },
   {
     slug: 'labor',
@@ -65,7 +65,7 @@ export const CATEGORIES = [
     icon: 'Globe',
     apiCategory: 'Торговля',
     status: 'active',
-    description: 'Экспорт, импорт и торговый баланс — квартальные данные Банка России.',
+    description: 'Экспорт, импорт, торговый баланс и текущий счёт — квартальные данные Банка России с 1994 года.',
   },
   {
     slug: 'business',
@@ -74,7 +74,7 @@ export const CATEGORIES = [
     icon: 'Factory',
     apiCategory: 'Бизнес',
     status: 'active',
-    description: 'Индекс промышленного производства — ежемесячные данные Росстата.',
+    description: 'Индекс промышленного производства и ИЦП — ежемесячные данные Росстата и Банка России.',
   },
   {
     slug: 'science',

@@ -104,6 +104,10 @@ from app.services.rosstat_weekly_inflation_parser import RosstatWeeklyCpiParser
 from app.services.rosstat_ipi_parser import RosstatIpiParser
 from app.services.rosstat_housing_parser import RosstatHousingParser
 from app.services.rosstat_population_parser import RosstatPopulationParser
+from app.services.rosstat_ppi_parser import RosstatPpiParser
+from app.services.cbr_bop_parser import CbrBopParser
+from app.services.cbr_reserves_parser import CbrReservesParser
+from app.services.cbr_debt_parser import CbrDebtParser
 
 PARSER_REGISTRY: dict[str, type[BaseParser]] = {
     RosstatCpiParser.parser_type: RosstatCpiParser,
@@ -120,6 +124,10 @@ PARSER_REGISTRY: dict[str, type[BaseParser]] = {
     RosstatIpiParser.parser_type: RosstatIpiParser,
     RosstatHousingParser.parser_type: RosstatHousingParser,
     RosstatPopulationParser.parser_type: RosstatPopulationParser,
+    RosstatPpiParser.parser_type: RosstatPpiParser,
+    CbrBopParser.parser_type: CbrBopParser,
+    CbrReservesParser.parser_type: CbrReservesParser,
+    CbrDebtParser.parser_type: CbrDebtParser,
 }
 
 
