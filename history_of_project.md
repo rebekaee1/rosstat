@@ -798,3 +798,33 @@
 - **Bugfix:** `hooks.js` не содержал `useCalendarEvents`, `useCalendarUpcoming`, `useDashboardSparklines` — хуки были потеряны при предыдущих правках. Восстановлены из git history.
 - **Файлы:** `CalendarGrid.jsx` (new), `CalendarPage.jsx` (rewrite), `hooks.js` (fix).
 - **Деплой:** git push → docker compose build frontend --no-cache → up -d. Проверено на forecasteconomy.com/calendar: сетка, точки, фильтры, клик по дню — всё работает. Консоль: 0 ошибок.
+
+## 2026-04-09 — Enterprise embed system: 15 fixes (P0/P1/P2)
+
+Аудит показал: embed-система была MVP, не enterprise. Исправлено 15 проблем:
+
+**P0 (было сломано):**
+- Caddy regex не матчил `/embed/chart/cpi` — переписан на `handle @embed` с mutual exclusion
+- Embed SVG cache не инвалидировался при ETL — добавлены `fe:embed:spark/card/badge:{code}:*` в `cache_invalidate_indicator`
+- Badge SVG: двойное XML-экранирование unit → одиночный `_xml()`, truncate до escape
+- EmbedBuilder: markdown/svg/badge вкладки генерировали неверный код для table/ticker/compare → корректная обработка каждого типа
+- EmbedCompare: flash «Нет данных» при загрузке → добавлен `isLoading` state
+
+**P1 (enterprise baseline):**
+- Error states (`isError`) во всех 5 embed-компонентах (Chart, Card, Table, Ticker, Compare)
+- ErrorBoundary для embed routes (оборачивает Suspense)
+- Suspense fallback: `null` → spinner с `prefers-reduced-motion`
+- Убран phantom `calculator` из `EMBED_RE` (Route не существует)
+- Card SVG: добавлены `role="img"` + `aria-label` для a11y
+
+**P2 (polish):**
+- `prefers-reduced-motion` для всех спиннеров и тикера
+- Тикер: loading vs empty vs error; пауза при hover (`animation-play-state: paused`)
+- Badge: `label[:40]` до `_xml()` escape (не после)
+- Отдельный rate limit: 600/мин для `/api/v1/embed/` vs 120/мин для основного API
+- Impression dedup через `useRef` (StrictMode double-mount)
+
+**Caddy CSP fix:** глобальный `header{}` блок не перекрывался `header @embed` → dual CSP + X-Frame-Options на embed. Переписан на `handle @embed` / `handle` (mutually exclusive). nginx embed location делегирует security headers Caddy.
+
+**Verified:** embed CSP `frame-ancestors *`, no `X-Frame-Options`; main site `SAMEORIGIN`; все SVG endpoints 200; frontend lint/build clean.
+**Commits:** `e8a5a8a`, `708f936`, `b2d02d4`.
