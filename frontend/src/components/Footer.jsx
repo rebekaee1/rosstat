@@ -60,6 +60,11 @@ export default function Footer() {
                   Банк России
                 </a>
               </li>
+              <li>
+                <a href="https://minfin.gov.ru" target="_blank" rel="noopener noreferrer" className={footLink}>
+                  Минфин России
+                </a>
+              </li>
             </ul>
           </div>
 

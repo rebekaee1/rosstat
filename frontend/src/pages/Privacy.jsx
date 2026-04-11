@@ -17,7 +17,7 @@ export default function Privacy() {
         <h1 className="font-display text-3xl md:text-4xl font-bold text-text-primary mb-6 leading-tight">
           Политика конфиденциальности
         </h1>
-        <p className="text-sm text-text-tertiary mb-8">Последнее обновление: 20 марта 2026 г.</p>
+        <p className="text-sm text-text-tertiary mb-8">Последнее обновление: 9 апреля 2026 г.</p>
 
         <h2 className="text-xl font-semibold text-text-primary mt-8 mb-3">1. Общие положения</h2>
         <p className="text-text-secondary leading-relaxed mb-4">

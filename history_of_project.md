@@ -848,3 +848,37 @@
 
 **Результат:** ESLint clean, 0 ошибок в консоли, все секции рендерятся корректно. Калькулятор теперь показывает не одно число, а полную аналитическую картину по годам и категориям.
 **Файлы:** `frontend/src/lib/useInflationCalc.js`, `frontend/src/pages/CalculatorPage.jsx`
+
+## 2026-04-09 — Deep Technical SEO Audit (forecasteconomy.com)
+
+- **Полный аудит live-сайта:** curl (HTTP headers, redirects, performance), browser (rendered meta, console errors), sitemap validation, robots.txt, OG prerender, trailing slashes, structured data.
+- **P0 найдено 4:**
+  1. CSP `connect-src` блокирует `wss://mc.yandex.ru` → Метрика теряет WebSocket-данные (Вебвизор)
+  2. `<link rel="canonical">` в index.html = homepage для ВСЕХ маршрутов (SPA не обновляет)
+  3. `sitemap.xml` HEAD → 405 (FastAPI не создаёт HEAD-маршрут)
+  4. Дублированные HTTP-заголовки (CSP, referrer-policy, x-frame-options) на 404 (nginx + Caddy оба добавляют)
+- **P1 найдено 4:** trailing slash дубликаты без redirect; OG prerender без og:image; twitter:card = summary; sitemap lastmod одинаковый для всех URL.
+- **Всё OK:** HSTS preload, HTTP→HTTPS 308, www→non-www 301, robots.txt, Yandex Metrika/Webmaster, JSON-LD (WebSite+Organization+WebApplication), viewport, lang=ru, favicons 3 формата, TTFB ~376ms, все 97 URL из sitemap → 200.
+
+### P0/P1 исправления (все файлы в одном цикле):
+- **Caddyfile:** CSP connect-src += `wss://mc.yandex.ru`, `https://*.ingest.sentry.io`; Caddy = единственный источник security headers.
+- **nginx.conf:** убраны server-level add_header (дублирование); trailing slash `rewrite ^(.+)/$ $1 permanent`; OG prerender для social bots (Twitterbot/facebookexternalhit/TelegramBot/vkShare/LinkedInBot/Slackbot/WhatsApp) через `set $is_bot` + `if` + `rewrite` → backend `/api/v1/og/{indicator,category,page}` endpoints; `internal` locations для og-proxy.
+- **index.html:** убран hardcoded `<link rel="canonical">` (дублировал homepage на всех маршрутах); убран `<meta keywords>` (устарел).
+- **backend/app/api/sitemap.py:** `/sitemap.xml` GET+HEAD; OG endpoints для category/{slug} и page/{page}; og:image, canonical, twitter:card=summary_large_image.
+- **Dashboard.jsx:** H1 100+ → 80+; 'Российской Федерации' → 'России'; Wordstat-оптимизация title/description.
+- **About.jsx:** полная переработка — текст про 80+ индикаторов, 9 категорий, 3 источника.
+- **Footer.jsx:** +Минфин в источниках.
+- **Privacy.jsx:** дата обновления → 9 апреля 2026.
+- **CategoryPage.jsx:** BreadcrumbList JSON-LD; H1 с h1Suffix; обогащённые descriptions.
+- **categories.js:** +h1Suffix для каждой категории; расширенные descriptions.
+- **IndicatorDetail.jsx:** SEO_MAP Wordstat titles; секция «О показателе» (description + methodology).
+- **DemographicsPage.jsx:** fix Recharts -1 width/height — `w-full overflow-hidden` на chart container.
+- **CalendarPage.jsx:** title `2026` → dynamic `${year}` из state.
+- **Тесты:** 25/25 passed; lint 0 errors; build clean.
+
+### Визуальный аудит (браузер, 10 маршрутов):
+Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calculator, /demographics, /widgets, /privacy — все визуально корректны. Footer подтверждён с Минфином (localhost). Консоль: ошибки только Recharts -1 (fix applied) и CSP wss (fix applied) — обе от production-версии.
+
+## 2026-04-11
+
+- **Яндекс.Метрика — исправлена некорректная работа в SPA:** Все визиты записывались как 1 просмотр, Вебвизор не фиксировал навигацию. Причины: 1) `ssr: true` в `ym('init')` — говорил Метрике, что первый хит отправлен сервером (а это CSR-приложение); 2) при клиентской навигации (React Router) не вызывался `ym('hit')` — Метрика не знала о переходах между страницами. Исправлено: убран `ssr: true` из `index.html`, добавлен компонент `YandexMetrikaHit` в `App.jsx` — отправляет `ym(id, 'hit', url, {title})` при каждой смене `location.pathname` / `location.search` (кроме первого рендера). Файлы: `frontend/index.html`, `frontend/src/App.jsx`.

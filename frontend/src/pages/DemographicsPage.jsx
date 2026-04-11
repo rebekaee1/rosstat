@@ -252,7 +252,7 @@ export default function DemographicsPage() {
         ) : series.length === 0 ? (
           <p className="text-text-secondary py-12 text-center">Нет данных для отображения</p>
         ) : (
-          <div className="h-[360px]">
+          <div className="h-[360px] w-full overflow-hidden">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart
                 data={chartType === 'percent' ? series.map(r => {

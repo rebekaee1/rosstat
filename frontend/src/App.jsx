@@ -1,4 +1,4 @@
-import { useEffect, lazy, Suspense } from 'react';
+import { useEffect, useRef, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useParams, useLocation, Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import NoiseOverlay from './components/NoiseOverlay';
@@ -27,6 +27,20 @@ const EmbedCompare = lazy(() => import('./embed/EmbedCompare'));
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+}
+
+function YandexMetrikaHit() {
+  const location = useLocation();
+  const isFirst = useRef(true);
+  useEffect(() => {
+    if (isFirst.current) { isFirst.current = false; return; }
+    if (typeof window.ym === 'function') {
+      window.ym(107136069, 'hit', location.pathname + location.search, {
+        title: document.title,
+      });
+    }
+  }, [location.pathname, location.search]);
   return null;
 }
 
@@ -93,6 +107,7 @@ function AppRoutes() {
   return (
     <>
       <ScrollToTop />
+      <YandexMetrikaHit />
       <NoiseOverlay />
       <Navbar />
       <main className="relative z-0 flex-1">
