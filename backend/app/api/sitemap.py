@@ -32,7 +32,7 @@ CATEGORIES = [
 ]
 
 
-@router.api_route("/sitemap.xml", methods=["GET", "HEAD"], include_in_schema=False)
+@router.get("/sitemap.xml", include_in_schema=False)
 async def sitemap_xml(db: AsyncSession = Depends(get_db)):
     today = date.today().isoformat()
 
@@ -82,59 +82,6 @@ async def sitemap_xml(db: AsyncSession = Depends(get_db)):
     return Response(content=xml, media_type="application/xml")
 
 
-OG_IMAGE = f"{DOMAIN}/og-image.png"
-
-CATEGORY_META = {
-    "prices": ("Цены и инфляция в России", "ИПЦ, инфляция, цены на жильё — данные Росстата и прогнозы."),
-    "rates": ("Процентные ставки в России", "Ключевая ставка ЦБ, RUONIA, ипотека, депозиты — данные Банка России."),
-    "finance": ("Финансы и валюты России", "Курсы валют, золото, денежная масса, кредиты, бюджет — данные ЦБ РФ и Минфина."),
-    "labor": ("Рынок труда России", "Безработица, зарплаты, занятость — ежемесячные данные Росстата."),
-    "gdp": ("ВВП и экономический рост России", "ВВП, потребление, госрасходы, инвестиции — квартальные данные Росстата."),
-    "population": ("Население России", "Численность, рождаемость, смертность, пенсионеры — демографические данные Росстата."),
-    "trade": ("Внешняя торговля России", "Экспорт, импорт, торговый баланс, текущий счёт — квартальные данные Банка России."),
-    "business": ("Бизнес и инвестиции в России", "ИПП, розничная торговля, ввод жилья, инвестиции — данные Росстата."),
-    "science": ("Наука и образование в России", "Аспиранты, организации НИР, инновационная активность — данные Росстата."),
-}
-
-PAGE_META = {
-    "about": ("О проекте Forecast Economy", "Бесплатная аналитическая платформа макроэкономических данных России. 80+ индикаторов, данные Росстата и ЦБ РФ."),
-    "privacy": ("Политика конфиденциальности — Forecast Economy", "Как Forecast Economy обрабатывает данные посетителей."),
-    "compare": ("Сравнение индикаторов — Forecast Economy", "Сравнивайте любые два макроэкономических индикатора России на одном графике."),
-    "calculator": ("Калькулятор инфляции — Forecast Economy", "Рассчитайте обесценивание денег за любой период. Данные ИПЦ Росстата с 1991 года."),
-    "calendar": ("Экономический календарь России — Forecast Economy", "Расписание публикации макроэкономических данных: Росстат, ЦБ РФ, Минфин."),
-    "demographics": ("Возрастная структура населения России — Forecast Economy", "Дети, трудоспособные, старше трудоспособного — данные Росстата с 1990 года."),
-    "widgets": ("Виджеты Forecast Economy", "Встраиваемые графики, карточки и тикеры для вашего сайта."),
-}
-
-
-def _og_html(title: str, desc: str, url: str) -> str:
-    t = escape(title)
-    d = escape(desc[:300])
-    u = escape(url)
-    return f"""<!DOCTYPE html>
-<html lang="ru"><head>
-<meta charset="utf-8">
-<title>{t}</title>
-<meta name="description" content="{d}">
-<link rel="canonical" href="{u}">
-<meta property="og:title" content="{t}">
-<meta property="og:description" content="{d}">
-<meta property="og:url" content="{u}">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Forecast Economy">
-<meta property="og:image" content="{OG_IMAGE}">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:locale" content="ru_RU">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{t}">
-<meta name="twitter:description" content="{d}">
-<meta name="twitter:image" content="{OG_IMAGE}">
-</head>
-<body><h1>{t}</h1><p>{d}</p></body>
-</html>"""
-
-
 @router.get("/api/v1/og/indicator/{code}", include_in_schema=False)
 async def og_indicator(code: str, db: AsyncSession = Depends(get_db)):
     """Pre-rendered HTML with OG meta tags for social media bots."""
@@ -143,30 +90,24 @@ async def og_indicator(code: str, db: AsyncSession = Depends(get_db)):
     if not indicator:
         return Response(content="Not found", status_code=404)
 
-    title = f"{indicator.name} — Forecast Economy"
-    desc = (indicator.description or f"{indicator.name}: данные и аналитика")[:300]
-    url = f"{DOMAIN}/indicator/{code}"
-    return Response(content=_og_html(title, desc, url), media_type="text/html")
+    title = escape(f"{indicator.name} — Forecast Economy")
+    desc = escape((indicator.description or f"{indicator.name}: данные и аналитика")[:200])
+    url = f"{DOMAIN}/indicator/{escape(code)}"
 
-
-@router.get("/api/v1/og/category/{slug}", include_in_schema=False)
-async def og_category(slug: str):
-    """Pre-rendered HTML with OG meta tags for category pages."""
-    meta = CATEGORY_META.get(slug)
-    if not meta:
-        return Response(content="Not found", status_code=404)
-    title, desc = meta
-    title = f"{title} — Forecast Economy"
-    url = f"{DOMAIN}/category/{slug}"
-    return Response(content=_og_html(title, desc, url), media_type="text/html")
-
-
-@router.get("/api/v1/og/page/{page}", include_in_schema=False)
-async def og_page(page: str):
-    """Pre-rendered HTML with OG meta tags for static pages."""
-    meta = PAGE_META.get(page)
-    if not meta:
-        return Response(content="Not found", status_code=404)
-    title, desc = meta
-    url = f"{DOMAIN}/{page}" if page != "home" else DOMAIN
-    return Response(content=_og_html(title, desc, url), media_type="text/html")
+    html = f"""<!DOCTYPE html>
+<html lang="ru"><head>
+<meta charset="utf-8">
+<title>{title}</title>
+<meta name="description" content="{desc}">
+<meta property="og:title" content="{title}">
+<meta property="og:description" content="{desc}">
+<meta property="og:url" content="{url}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Forecast Economy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{title}">
+<meta name="twitter:description" content="{desc}">
+</head>
+<body><h1>{title}</h1><p>{desc}</p></body>
+</html>"""
+    return Response(content=html, media_type="text/html")
