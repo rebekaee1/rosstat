@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useIndicators } from '../lib/hooks';
+import { useIndicators, useDashboardSparklines } from '../lib/hooks';
 import useDocumentMeta from '../lib/useMeta';
 import { CATEGORIES, countInCategory } from '../lib/categories';
 import CategoryBlock from '../components/CategoryBlock';
@@ -8,6 +8,7 @@ import ApiRetryBanner from '../components/ApiRetryBanner';
 
 export default function Dashboard() {
   const { data: indicators, isLoading, isError, refetch, isFetching } = useIndicators();
+  const { data: sparklines, isLoading: sparklinesLoading } = useDashboardSparklines();
 
   const counts = useMemo(() => {
     const m = {};
@@ -18,10 +19,11 @@ export default function Dashboard() {
   }, [indicators]);
 
   useDocumentMeta({
-    title: 'Прогноз инфляции и экономические данные России — бесплатно',
+    title: 'Экономические данные России — инфляция, ВВП, ставки, курсы',
     description:
-      'Forecast Economy — бесплатная аналитическая платформа экономических данных России. ' +
-      'Официальные данные Росстата и ЦБ, ИПЦ, прогноз. Без регистрации.',
+      'Forecast Economy — бесплатная платформа макроэкономической аналитики. ' +
+      '80+ индикаторов: ИПЦ, курс доллара, ключевая ставка ЦБ, ВВП, безработица, зарплаты. ' +
+      'Данные Росстата и ЦБ РФ, графики и прогнозы. Без регистрации.',
     path: '/',
   });
 
@@ -32,7 +34,7 @@ export default function Dashboard() {
           Бесплатная аналитическая платформа экономических данных России
         </p>
         <h1 className="text-xl md:text-2xl font-semibold text-text-primary tracking-tight leading-snug max-w-4xl">
-          Анализируйте и скачивайте прогнозы и фактические данные по 100+ макроэкономическим индикаторам Российской Федерации
+          Прогнозы, графики и данные по 80+ макроэкономическим индикаторам России — бесплатно
         </h1>
       </header>
 
@@ -70,6 +72,8 @@ export default function Dashboard() {
                 indicatorCount={counts[cat.slug] ?? 0}
                 countsKnown={!isError}
                 delay={i}
+                sparkline={sparklines?.[cat.slug] ?? null}
+                sparklineLoading={sparklinesLoading}
               />
             ))}
           </div>
