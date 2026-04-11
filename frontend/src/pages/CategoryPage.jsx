@@ -27,13 +27,9 @@ export default function CategoryPage() {
     enabled: !!cat?.apiCategory,
   });
 
-  const seoTitle = cat?.h1Suffix
-    ? `${cat.name} ${cat.h1Suffix} — графики, данные`
-    : cat ? `${cat.name} — индикаторы и данные` : 'Категория';
-
   useDocumentMeta({
-    title: seoTitle,
-    description: cat ? `${cat.description} Бесплатные данные, графики и прогнозы.` : '',
+    title: cat ? `${cat.name} — индикаторы и данные` : 'Категория',
+    description: cat ? `${cat.description} Бесплатно, официальные источники.` : '',
     path: `/category/${slug || ''}`,
   });
 
@@ -103,7 +99,7 @@ export default function CategoryPage() {
 
       <header className="mb-12 max-w-3xl">
         <h1 className="font-display text-3xl md:text-[2.15rem] font-bold text-text-primary tracking-tight mb-4">
-          {cat.h1Suffix ? `${cat.name} ${cat.h1Suffix}` : cat.name}
+          {cat.name}
         </h1>
         <p className="text-text-secondary leading-relaxed text-[1.02rem]">{cat.description}</p>
       </header>

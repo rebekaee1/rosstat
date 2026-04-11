@@ -2,9 +2,9 @@ import useDocumentMeta from '../lib/useMeta';
 
 export default function About() {
   useDocumentMeta({
-    title: 'О проекте — экономические данные России бесплатно',
+    title: 'О проекте — открытые данные и прогноз',
     description:
-      'Forecast Economy — бесплатная платформа макроэкономической аналитики России. 80+ индикаторов в 9 категориях: ИПЦ, ВВП, курсы валют, ставки, рынок труда, торговля, население, бизнес, наука. Данные Росстата, ЦБ РФ и Минфина.',
+      'Forecast Economy: бесплатная аналитика инфляции и ИПЦ России на основе официальных данных Росстата и ЦБ РФ. Прогноз, исторические ряды с 1991 года.',
     path: '/about',
   });
 
@@ -15,62 +15,53 @@ export default function About() {
           О проекте
         </p>
         <h1 className="font-display text-3xl md:text-4xl font-bold text-text-primary mb-6 leading-tight">
-          Forecast Economy — бесплатная аналитика экономики России
+          Forecast Economy — макроэкономический терминал для России
         </h1>
         <p className="text-text-secondary leading-relaxed mb-6">
-          <strong className="text-text-primary">Forecast Economy</strong> — веб-платформа для работы
-          с макроэкономическими данными России. Мы автоматически собираем <strong className="text-text-primary">80+ индикаторов</strong> из
-          трёх официальных источников —{' '}
-          <a href="https://rosstat.gov.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer">Росстат</a>,{' '}
-          <a href="https://cbr.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer">Банк России</a> и{' '}
-          <a href="https://minfin.gov.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer">Минфин</a> —
-          и представляем их в удобном виде: графики, таблицы, сравнения и прогнозы.
+          <strong className="text-text-primary">Forecast Economy</strong> — веб-платформа для работы с официальной
+          статистикой по инфляции и смежным индикаторам. Мы агрегируем данные из открытых источников
+          (прежде всего <a href="https://rosstat.gov.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer">Росстат</a>
+          {' '}и <a href="https://cbr.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer">Банк России</a>),
+          показываем исторические ряды и строим{' '}
+          <strong className="text-text-primary">прогноз</strong> на горизонт до 12 месяцев вперёд.
         </p>
 
-        <h2 className="text-xl font-semibold text-text-primary mt-10 mb-3">Что есть на платформе</h2>
+        <h2 className="text-xl font-semibold text-text-primary mt-10 mb-3">Для кого этот сервис</h2>
         <ul className="list-disc pl-5 text-text-secondary space-y-2 mb-6">
-          <li><strong className="text-text-primary">9 категорий</strong> — цены и инфляция, процентные ставки, финансы и валюты, ВВП, рынок труда, население, внешняя торговля, бизнес, наука и образование.</li>
-          <li><strong className="text-text-primary">Исторические ряды</strong> — от ежедневных курсов валют до годовых демографических данных с 1990 года.</li>
-          <li><strong className="text-text-primary">Калькулятор инфляции</strong> — обесценивание денег за любой период на основе ИПЦ.</li>
-          <li><strong className="text-text-primary">Сравнение индикаторов</strong> — два показателя на одном графике с двумя осями.</li>
-          <li><strong className="text-text-primary">Экспорт</strong> — скачивание данных в Excel и CSV.</li>
-          <li><strong className="text-text-primary">Встраиваемые виджеты</strong> — графики и карточки для вашего сайта.</li>
+          <li>аналитикам и исследователям, которым нужны ряды и прогноз в одном месте;</li>
+          <li>журналистам и редакторам — быстрые графики и контекст по ИПЦ;</li>
+          <li>всем, кто хочет видеть <strong className="text-text-primary">официальные данные</strong>, а не только заголовки новостей.</li>
         </ul>
 
-        <h2 className="text-xl font-semibold text-text-primary mt-10 mb-3">Для кого</h2>
+        <h2 className="text-xl font-semibold text-text-primary mt-10 mb-3">Чем мы отличаемся</h2>
         <ul className="list-disc pl-5 text-text-secondary space-y-2 mb-6">
-          <li>Экономистам и аналитикам — вместо ручного скачивания Excel с Росстата и ЦБ.</li>
-          <li>Журналистам — быстрые графики с источниками для публикаций.</li>
-          <li>Студентам и исследователям — бесплатные временные ряды для курсовых и дипломных работ.</li>
-          <li>Бизнесу — мониторинг ключевой ставки, инфляции, курсов для планирования.</li>
-          <li>Всем, кто предпочитает <strong className="text-text-primary">первичные данные</strong> вместо интерпретаций СМИ.</li>
+          <li>
+            <strong className="text-text-primary">Первичные данные.</strong> Источники указаны на каждой
+            странице; вы можете свериться с оригиналом на сайте Росстата или ЦБ.
+          </li>
+          <li>
+            <strong className="text-text-primary">Прогноз с методологией.</strong> Модель и окна
+            обучения описаны в интерфейсе; прогноз — оценка по истории ряда, а не «мнение редакции».
+          </li>
+          <li>
+            <strong className="text-text-primary">Бесплатный доступ.</strong> Просмотр данных и прогнозов
+            не требует регистрации.
+          </li>
         </ul>
 
-        <h2 className="text-xl font-semibold text-text-primary mt-10 mb-3">Источники данных</h2>
-        <p className="text-text-secondary leading-relaxed mb-4">
-          Данные загружаются автоматически и обновляются ежедневно в 06:00 МСК. Для каждого индикатора
-          указан конкретный источник — вы всегда можете свериться с оригиналом. Мы используем только открытые данные
-          государственной статистики, без коммерческих и биржевых источников.
-        </p>
-
-        <h2 className="text-xl font-semibold text-text-primary mt-10 mb-3">Прогнозы</h2>
-        <p className="text-text-secondary leading-relaxed mb-4">
-          Для индикаторов с достаточной историей строятся статистические прогнозы. Модели и параметры
-          описаны на странице каждого индикатора. Прогноз — математическая экстраполяция, не экспертное
-          мнение. Доверительные интервалы показывают степень неопределённости.
-        </p>
-
-        <h2 className="text-xl font-semibold text-text-primary mt-10 mb-3">Ограничения и дисклеймер</h2>
+        <h2 className="text-xl font-semibold text-text-primary mt-10 mb-3">Доверие и ограничения</h2>
         <p className="text-text-secondary leading-relaxed mb-4">
           Материалы носят <strong className="text-text-primary">исключительно информационный характер</strong> и не являются
-          инвестиционной рекомендацией. Прогнозы могут расходиться с реальностью из-за экономических
-          шоков, пересмотра данных и изменения методологии источников.
+          индивидуальной инвестиционной рекомендацией, финансовым или юридическим советом. Прогнозы
+          отражают статистическую экстраполяцию прошлых данных и могут расходиться с фактической
+          динамикой из-за шоков, смены политики и пересмотра рядов.
         </p>
         <p className="text-text-secondary leading-relaxed">
-          Вопросы, предложения и замечания по данным:{' '}
+          По вопросам сотрудничества и замечаний по данным:{' '}
           <a href="mailto:contact@forecasteconomy.com" className="text-champagne hover:underline">
             contact@forecasteconomy.com
           </a>
+          .
         </p>
       </article>
     </div>
