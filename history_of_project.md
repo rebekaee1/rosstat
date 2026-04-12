@@ -901,3 +901,15 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
   - `EmbedBuilder.jsx` — widget type, indicator select, period, theme, size, option toggles (title/forecast), code tab, copy button
   - Все вызовы добавлены в существующие обработчики, новые обработчики не создавались, поведение не менялось.
 - **Analytics tracking добавлен в 10 компонентов** — используя `track()`, `trackOutbound()`, `events` из `lib/track.js` (Яндекс.Метрика reachGoal/extLink). Навбар (категории дропдаун, мобильное меню), Footer (внешние ссылки, mailto), IndicatorChart (range change, zoom reset), DataTable (sort, pagination, debounced search), ApiRetryBanner (retry), ErrorBoundary (reload), CalendarGrid (месяц навигация, фильтр источников, выбор дня), CalendarEventCard (внешняя ссылка источника), About (внешние ссылки, mailto), Privacy (mailto). Все трекинг-вызовы добавлены в существующие обработчики, новые хендлеры не создавались. Lint: 0 ошибок.
+
+## 2026-04-12 — ETL починен: datetime tz-aware crash + duplicate scheduler
+
+- **Проблема:** ETL не работал 3 дня (с 9 апреля). `capital-investment` и `construction-work` были без данных.
+- **Корневая причина:** `datetime.now(timezone.utc)` в `scheduler.py` и 22 парсерах создавал tz-aware datetime, а колонки `fetch_log.started_at`/`completed_at` — `TIMESTAMP WITHOUT TIME ZONE`. asyncpg отказывался вставлять → первый же INSERT FetchLog падал → весь ETL-цикл проваливался.
+- **Вторая проблема:** `--workers 2` в entrypoint → APScheduler запускался в обоих форкнутых воркерах → двойной ETL, двойная нагрузка.
+- **Фикс 1:** `.replace(tzinfo=None)` добавлен во все 72 вхождения `datetime.now(timezone.utc)` в scheduler.py + 22 парсера (25 файлов, 82 ins / 76 del).
+- **Фикс 2:** `--workers ${UVICORN_WORKERS:-2}` → `--workers ${UVICORN_WORKERS:-1}`. При <10 req/s и 2GB RAM один воркер — правильное решение. Backend RAM: 310→166 MB, swap: 420→155 MB.
+- **Ручной ETL:** запущен через `docker compose exec`, все 69 не-derived индикаторов отработали: 0 failed. Новые данные: usd-rub +2 точки (до 11 апреля), ruonia +2, key-rate +1. `capital-investment` и `construction-work` получили данные (204 и 249 точек).
+- **Итого:** 84/84 индикаторов с данными, scheduler единственный, следующий ETL — 06:00 МСК 13 апреля.
+- **Бонус:** очищен Docker build cache — освобождено 17.15 GB на диске (было 77%, стало ~20 GB свободно).
+- **Коммиты:** `70f1b29` (datetime fix), `396df11` (single worker).
