@@ -452,13 +452,9 @@ function TelemetryCard({
       <div className="flex items-baseline gap-2 mb-2">
         <span ref={valRef} className={cn(
           'font-mono font-bold tracking-tight text-text-primary whitespace-nowrap',
-          (() => {
-            const len = String(formatValue(value, unitDigits(unit))).length;
-            if (len > 10) return 'text-lg md:text-xl';
-            if (len > 7) return 'text-xl md:text-2xl';
-            if (len > 5) return 'text-2xl md:text-3xl';
-            return 'text-3xl md:text-4xl';
-          })()
+          String(formatValue(value, unitDigits(unit))).length > 12
+            ? 'text-xl md:text-2xl'
+            : 'text-2xl md:text-3xl'
         )}>
           {formatValue(value, unitDigits(unit))}
         </span>

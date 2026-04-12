@@ -980,3 +980,20 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 - Frontend: 200, 5 вкладок на /indicator/cpi (Инфляция 12 мес., ИПЦ помесячно, Квартальная, Годовая, Недельная) ✓
 - Navbar: Календарь/Сравнение/Виджеты отсутствуют ✓
 - Console: 0 errors на /indicator/cpi ✓
+
+### Перепроверка и второй деплой (коммит `24800ea`)
+
+Скептическая перечитка кода выявила 4 бага:
+
+1. **DataTable не показывал данные для annual/weekly** — fallthrough к базовым CPI данным
+2. **Excel filenames для annual/weekly** — были английские ('annual'), стали русские ('инфляция_годовая')
+3. **TelemetryCards** — не показывали skeleton при загрузке annual/weekly/quarterly данных
+4. **Forecast section** — generic сообщение заменено на осмысленное для каждого derived-режима
+
+Все 4 исправлены, backend тесты 89/89 OK, frontend build clean, задеплоено.
+
+Верификация на production:
+- /indicator/cpi: вкладка "Годовая" — график с данными (18% пик, 412 точек), DataTable "Годовая инфляция (412)"
+- /calculator: 2016→2026 = +89.0%, 6.4% среднегодовая (ранее ~4.4% из-за бага январь)
+- /indicator/gdp-nominal: нет ИПЦ-вкладок, downloadMode=null → корректные имена
+- Console: 0 JS errors на всех проверенных страницах (cpi, calculator, gdp-nominal)
