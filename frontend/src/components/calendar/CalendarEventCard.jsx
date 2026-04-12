@@ -4,6 +4,7 @@ import { ArrowUpRight, Clock, ExternalLink } from 'lucide-react';
 import gsap from 'gsap';
 import { cn } from '../../lib/format';
 import { FOCUS_RING_SURFACE } from '../../lib/uiTokens';
+import { trackOutbound } from '../../lib/track';
 
 const SOURCE_STYLES = {
   cbr: {
@@ -231,6 +232,7 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0 })
               href={event.source_url}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackOutbound(event.source_url)}
               className="inline-flex items-center gap-1 text-xs text-text-tertiary hover:text-text-secondary transition-colors"
             >
               Источник <ExternalLink className="w-3 h-3" />

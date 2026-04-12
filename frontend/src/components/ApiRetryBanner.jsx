@@ -1,5 +1,6 @@
 import { FOCUS_RING } from '../lib/uiTokens';
 import { cn } from '../lib/format';
+import { track, events } from '../lib/track';
 
 /**
  * Единый блок «данные не пришли» — непрозрачный фон, контрастная кнопка (не сливается с баннером).
@@ -16,7 +17,7 @@ export default function ApiRetryBanner({ children, onRetry, isFetching, classNam
       <p className="min-w-0 text-[0.9375rem] leading-relaxed text-text-primary">{children}</p>
       <button
         type="button"
-        onClick={onRetry}
+        onClick={() => { track(events.API_RETRY); onRetry(); }}
         disabled={isFetching}
         className={cn(
           FOCUS_RING,

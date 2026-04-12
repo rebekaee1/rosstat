@@ -10,6 +10,7 @@ import useDocumentMeta from '../lib/useMeta';
 import { cn } from '../lib/format';
 import { SkeletonBox } from '../components/Skeleton';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+import { track, trackFile, events } from '../lib/track';
 
 const GROUPS = [
   { key: 'pop-under-working-age', color: '#D4A574', colorMuted: '#D4A574', label: 'Моложе трудоспособного', short: 'Дети (0–15)' },
@@ -145,9 +146,8 @@ function downloadStructureCSV(series) {
   a.download = 'demographics_structure.csv';
   a.click();
   URL.revokeObjectURL(url);
-  if (typeof window.ym === 'function') {
-    window.ym(107136069, 'file', 'https://forecasteconomy.com/downloads/demographics_structure.csv');
-  }
+  trackFile('demographics_structure.csv');
+  track(events.DEMOGRAPHICS_CSV);
 }
 
 export default function DemographicsPage() {
@@ -228,7 +228,7 @@ export default function DemographicsPage() {
             {['stacked', 'percent'].map((t) => (
               <button
                 key={t}
-                onClick={() => setChartType(t)}
+                onClick={() => { setChartType(t); track(events.DEMOGRAPHICS_CHART_TYPE, { type: t }); }}
                 className={cn(
                   'px-3 py-1.5 rounded-lg text-xs font-medium transition-colors',
                   chartType === t

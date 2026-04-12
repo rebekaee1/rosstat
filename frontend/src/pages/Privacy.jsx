@@ -1,4 +1,5 @@
 import useDocumentMeta from '../lib/useMeta';
+import { track, events } from '../lib/track';
 
 export default function Privacy() {
   useDocumentMeta({
@@ -48,7 +49,7 @@ export default function Privacy() {
         <h2 className="text-xl font-semibold text-text-primary mt-10 mb-3">4. Контакты</h2>
         <p className="text-text-secondary leading-relaxed">
           Вопросы по политике и данным:{' '}
-          <a href="mailto:contact@forecasteconomy.com" className="text-champagne hover:underline">
+          <a href="mailto:contact@forecasteconomy.com" className="text-champagne hover:underline" onClick={() => track(events.CONTACT_EMAIL)}>
             contact@forecasteconomy.com
           </a>
           .

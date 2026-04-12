@@ -13,6 +13,7 @@ import ForecastTable from '../components/ForecastTable';
 import DataTable from '../components/DataTable';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import { ChartSkeleton, SkeletonBox } from '../components/Skeleton';
+import { track, trackOutbound, events } from '../lib/track';
 
 const SEO_MAP = {
   cpi: {
@@ -628,11 +629,13 @@ export default function IndicatorDetail() {
   const handleDownloadExcel = useCallback(async () => {
     const { downloadExcel } = await import('../lib/excel.js');
     downloadExcel(chartData, chartMode, code, currentRange, downloadMeta);
+    track(events.DOWNLOAD_EXCEL, { indicator: code, range: currentRange });
   }, [chartData, chartMode, code, currentRange, downloadMeta]);
 
   const handleDownloadCSV = useCallback(async () => {
     const { downloadCSV } = await import('../lib/excel.js');
     downloadCSV(chartData, chartMode, code, currentRange, downloadMeta);
+    track(events.DOWNLOAD_CSV, { indicator: code, range: currentRange });
   }, [chartData, chartMode, code, currentRange, downloadMeta]);
 
   const chartLoading = chartMode === 'inflation' ? loadingInflation
@@ -797,7 +800,7 @@ export default function IndicatorDetail() {
               <div className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle">
                 <button
                   type="button"
-                  onClick={() => setViewMode('inflation')}
+                  onClick={() => { setViewMode('inflation'); track(events.CHART_MODE_CHANGE, { mode: 'inflation', indicator: code }); }}
                   className={cn(
                     'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
                     viewMode === 'inflation'
@@ -809,7 +812,7 @@ export default function IndicatorDetail() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setViewMode('cpi')}
+                  onClick={() => { setViewMode('cpi'); track(events.CHART_MODE_CHANGE, { mode: 'cpi', indicator: code }); }}
                   className={cn(
                     'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
                     viewMode === 'cpi'
@@ -822,7 +825,7 @@ export default function IndicatorDetail() {
                 {hasQuarterlyTab && (
                   <button
                     type="button"
-                    onClick={() => setViewMode('quarterly')}
+                    onClick={() => { setViewMode('quarterly'); track(events.CHART_MODE_CHANGE, { mode: 'quarterly', indicator: code }); }}
                     className={cn(
                       'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
                       viewMode === 'quarterly'
@@ -872,8 +875,8 @@ export default function IndicatorDetail() {
                   aria-checked={forecastEnabled && showForecast}
                   aria-label="Показать прогноз"
                   tabIndex={forecastEnabled ? 0 : -1}
-                  onClick={() => forecastEnabled && setShowForecast(v => !v)}
-                  onKeyDown={e => { if (forecastEnabled && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); setShowForecast(v => !v); } }}
+                  onClick={() => { if (forecastEnabled) { setShowForecast(v => !v); track(events.FORECAST_TOGGLE, { show: !showForecast, indicator: code }); } }}
+                  onKeyDown={e => { if (forecastEnabled && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); setShowForecast(v => !v); track(events.FORECAST_TOGGLE, { show: !showForecast, indicator: code }); } }}
                   className={cn(
                     'relative w-10 h-5 rounded-full transition-colors duration-300',
                     forecastEnabled ? 'cursor-pointer' : 'cursor-not-allowed',
@@ -957,6 +960,7 @@ export default function IndicatorDetail() {
               href={indicator.source_url}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackOutbound(indicator.source_url)}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface border border-border-subtle text-xs font-mono uppercase tracking-widest text-champagne hover:bg-champagne/10 transition-colors lift-hover w-full justify-center"
             >
               <Database className="w-3.5 h-3.5" />

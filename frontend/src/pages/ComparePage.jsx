@@ -9,6 +9,7 @@ import { useIndicators, useIndicatorData } from '../lib/hooks';
 import { formatDate, formatAxisTick, formatValueWithUnit, unitSuffix, unitDigits, cn, isCpiIndex } from '../lib/format';
 import useDocumentMeta from '../lib/useMeta';
 import { SkeletonBox, ChartSkeleton } from '../components/Skeleton';
+import { track, events } from '../lib/track';
 
 const RANGE_OPTIONS = [
   { key: '3y', label: '3 года', months: 36 },
@@ -82,6 +83,7 @@ export default function ComparePage() {
     const next = new URLSearchParams(searchParams);
     next.set(which, code);
     setSearchParams(next, { replace: true });
+    track(events.COMPARE_CHANGE, { position: which, code });
   }, [searchParams, setSearchParams]);
 
   const { data: dataA, isLoading: loadA, isError: errorA } = useIndicatorData(codeA);
@@ -193,7 +195,7 @@ export default function ComparePage() {
             {RANGE_OPTIONS.map((opt) => (
               <button
                 key={opt.key}
-                onClick={() => setRange(opt.key)}
+                onClick={() => { setRange(opt.key); track(events.COMPARE_RANGE, { range: opt.key }); }}
                 className={cn(
                   'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
                   range === opt.key

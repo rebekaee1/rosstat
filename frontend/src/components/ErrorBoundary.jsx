@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { track, events } from '../lib/track';
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -29,7 +30,7 @@ class ErrorBoundary extends Component {
               Что-то пошло не так. Попробуйте обновить страницу.
             </p>
             <button
-              onClick={() => window.location.reload()}
+              onClick={() => { track(events.ERROR_RELOAD); window.location.reload(); }}
               className="px-6 py-2 bg-champagne text-white rounded-lg hover:bg-champagne/90 transition-colors"
             >
               Обновить страницу

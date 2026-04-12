@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ChevronDown, ChevronUp, Search } from 'lucide-react';
 import { formatDate, formatValueWithUnit, unitSuffix, cn } from '../lib/format';
+import { track, events } from '../lib/track';
 
 const PAGE_SIZE = 20;
 
@@ -29,7 +30,11 @@ export default function DataTable({ data, title = 'Исторические да
   }
 
   useEffect(() => {
-    const timer = setTimeout(() => { setSearch(searchInput); setPage(0); }, 250);
+    const timer = setTimeout(() => {
+      setSearch(searchInput);
+      setPage(0);
+      if (searchInput) track(events.TABLE_SEARCH, { query: searchInput });
+    }, 250);
     return () => clearTimeout(timer);
   }, [searchInput]);
 
@@ -79,7 +84,7 @@ export default function DataTable({ data, title = 'Исторические да
             <tr className="border-t border-border-subtle">
               <th
                 className="text-left px-5 py-3 text-xs font-medium text-text-tertiary uppercase tracking-wider cursor-pointer hover:text-text-secondary transition-colors select-none"
-                onClick={() => setSortAsc(!sortAsc)}
+                onClick={() => { const next = !sortAsc; setSortAsc(next); track(events.TABLE_SORT, { order: next ? 'asc' : 'desc' }); }}
               >
                 <span className="inline-flex items-center gap-1">
                   Дата
@@ -126,7 +131,7 @@ export default function DataTable({ data, title = 'Исторические да
       {totalPages > 1 && (
         <div className="p-4 border-t border-border-subtle flex items-center justify-between">
           <button
-            onClick={() => setPage(p => Math.max(0, p - 1))}
+            onClick={() => { setPage(p => Math.max(0, p - 1)); track(events.TABLE_PAGE, { direction: 'prev' }); }}
             disabled={page === 0}
             className="px-3 py-1.5 text-xs font-medium text-text-secondary hover:text-text-primary disabled:text-text-tertiary disabled:cursor-not-allowed rounded-lg bg-obsidian-lighter border border-border-subtle transition-colors magnetic-btn"
           >
@@ -136,7 +141,7 @@ export default function DataTable({ data, title = 'Исторические да
             {page + 1} / {totalPages}
           </span>
           <button
-            onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+            onClick={() => { setPage(p => Math.min(totalPages - 1, p + 1)); track(events.TABLE_PAGE, { direction: 'next' }); }}
             disabled={page >= totalPages - 1}
             className="px-3 py-1.5 text-xs font-medium text-text-secondary hover:text-text-primary disabled:text-text-tertiary disabled:cursor-not-allowed rounded-lg bg-obsidian-lighter border border-border-subtle transition-colors magnetic-btn"
           >

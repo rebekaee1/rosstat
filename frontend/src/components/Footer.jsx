@@ -3,6 +3,7 @@ import { Activity, TrendingUp } from 'lucide-react';
 import { CATEGORIES } from '../lib/categories';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
+import { track, trackOutbound, events } from '../lib/track';
 
 const footLink = cn(
   FOCUS_RING,
@@ -51,12 +52,12 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2 text-sm text-text-secondary">
               <li>
-                <a href="https://rosstat.gov.ru" target="_blank" rel="noopener noreferrer" className={footLink}>
+                <a href="https://rosstat.gov.ru" target="_blank" rel="noopener noreferrer" className={footLink} onClick={() => trackOutbound('https://rosstat.gov.ru')}>
                   Росстат
                 </a>
               </li>
               <li>
-                <a href="https://cbr.ru" target="_blank" rel="noopener noreferrer" className={footLink}>
+                <a href="https://cbr.ru" target="_blank" rel="noopener noreferrer" className={footLink} onClick={() => trackOutbound('https://cbr.ru')}>
                   Банк России
                 </a>
               </li>
@@ -79,7 +80,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="mailto:contact@forecasteconomy.com" className={footLink}>
+                <a href="mailto:contact@forecasteconomy.com" className={footLink} onClick={() => track(events.CONTACT_EMAIL)}>
                   contact@forecasteconomy.com
                 </a>
               </li>

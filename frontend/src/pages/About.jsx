@@ -1,4 +1,5 @@
 import useDocumentMeta from '../lib/useMeta';
+import { track, trackOutbound, events } from '../lib/track';
 
 export default function About() {
   useDocumentMeta({
@@ -20,8 +21,8 @@ export default function About() {
         <p className="text-text-secondary leading-relaxed mb-6">
           <strong className="text-text-primary">Forecast Economy</strong> — веб-платформа для работы с официальной
           статистикой по инфляции и смежным индикаторам. Мы агрегируем данные из открытых источников
-          (прежде всего <a href="https://rosstat.gov.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer">Росстат</a>
-          {' '}и <a href="https://cbr.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer">Банк России</a>),
+          (прежде всего <a href="https://rosstat.gov.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer" onClick={() => trackOutbound('https://rosstat.gov.ru')}>Росстат</a>
+          {' '}и <a href="https://cbr.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer" onClick={() => trackOutbound('https://cbr.ru')}>Банк России</a>),
           показываем исторические ряды и строим{' '}
           <strong className="text-text-primary">прогноз</strong> на горизонт до 12 месяцев вперёд.
         </p>
@@ -58,7 +59,7 @@ export default function About() {
         </p>
         <p className="text-text-secondary leading-relaxed">
           По вопросам сотрудничества и замечаний по данным:{' '}
-          <a href="mailto:contact@forecasteconomy.com" className="text-champagne hover:underline">
+          <a href="mailto:contact@forecasteconomy.com" className="text-champagne hover:underline" onClick={() => track(events.CONTACT_EMAIL)}>
             contact@forecasteconomy.com
           </a>
           .

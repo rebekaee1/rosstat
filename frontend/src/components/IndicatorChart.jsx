@@ -6,6 +6,7 @@ import {
 } from 'recharts';
 import { Activity, ZoomIn } from 'lucide-react';
 import { formatDate, formatAxisTick, formatValueWithUnit, unitDigits, cn } from '../lib/format';
+import { track, events } from '../lib/track';
 
 const RANGE_OPTIONS = [
   { key: '3y', label: '3 года', months: 36 },
@@ -175,6 +176,7 @@ export default function IndicatorChart({
     setWindowOverride(null);
     setOffset(0);
     onRangeChange?.(key);
+    track(events.CHART_RANGE_CHANGE, { range: key });
   };
 
   const handleSlider = useCallback((e) => {
@@ -330,7 +332,7 @@ export default function IndicatorChart({
           {isZoomed && (
             <button
               type="button"
-              onClick={() => { setWindowOverride(null); setOffset(0); }}
+              onClick={() => { setWindowOverride(null); setOffset(0); track(events.CHART_ZOOM, { action: 'reset' }); }}
               className="px-2 py-1.5 text-[10px] font-mono uppercase tracking-wider text-text-tertiary hover:text-champagne transition-colors"
               title="Сбросить зум"
             >

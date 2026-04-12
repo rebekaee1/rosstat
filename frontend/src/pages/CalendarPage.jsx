@@ -10,6 +10,7 @@ import CalendarGrid from '../components/calendar/CalendarGrid';
 import CalendarEventCard from '../components/calendar/CalendarEventCard';
 import { SkeletonBox } from '../components/Skeleton';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+import { track, events } from '../lib/track';
 
 const MONTHS_GENITIVE = [
   'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
@@ -283,6 +284,7 @@ export default function CalendarPage() {
               'inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium',
               'border border-border-subtle text-text-secondary hover:text-text-primary hover:border-champagne/30 transition-colors',
             )}
+            onClick={() => track(events.DOWNLOAD_ICAL)}
             download
           >
             <Download className="w-4 h-4" />

@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '../../lib/format';
 import { FOCUS_RING_SURFACE } from '../../lib/uiTokens';
+import { track, events as trackEvents } from '../../lib/track';
 
 const WEEKDAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
@@ -69,7 +70,7 @@ export default function CalendarGrid({
     <div className="rounded-2xl border border-border-subtle bg-surface overflow-hidden mb-6">
       <div className="flex items-center justify-between px-4 py-3 border-b border-border-subtle">
         <button
-          type="button" onClick={onPrev}
+          type="button" onClick={() => { onPrev(); track(trackEvents.CALENDAR_MONTH_NAV, { direction: 'prev' }); }}
           className={cn(FOCUS_RING_SURFACE, 'p-1.5 rounded-lg hover:bg-surface-hover transition-colors')}
           aria-label="Предыдущий месяц"
         >
@@ -81,7 +82,7 @@ export default function CalendarGrid({
         </h2>
 
         <button
-          type="button" onClick={onNext}
+          type="button" onClick={() => { onNext(); track(trackEvents.CALENDAR_MONTH_NAV, { direction: 'next' }); }}
           className={cn(FOCUS_RING_SURFACE, 'p-1.5 rounded-lg hover:bg-surface-hover transition-colors')}
           aria-label="Следующий месяц"
         >
@@ -94,7 +95,7 @@ export default function CalendarGrid({
           <button
             key={sb.value}
             type="button"
-            onClick={() => onSourceChange(sb.value)}
+            onClick={() => { onSourceChange(sb.value); track(trackEvents.CALENDAR_SOURCE_FILTER, { source: sb.value || 'all' }); }}
             className={cn(
               FOCUS_RING_SURFACE,
               'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all',
@@ -136,7 +137,7 @@ export default function CalendarGrid({
             <button
               key={dateStr}
               type="button"
-              onClick={() => onSelectDate(isSelected ? null : dateStr)}
+              onClick={() => { onSelectDate(isSelected ? null : dateStr); if (!isSelected) track(trackEvents.CALENDAR_DAY_SELECT, { day: dateStr }); }}
               className={cn(
                 'relative min-h-[3.5rem] md:min-h-[4.5rem] border-b border-r border-border-subtle/50 transition-all',
                 'flex flex-col items-center pt-1.5 gap-0.5',

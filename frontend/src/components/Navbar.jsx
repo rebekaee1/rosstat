@@ -5,6 +5,7 @@ import gsap from 'gsap';
 import { cn } from '../lib/format';
 import { CATEGORIES } from '../lib/categories';
 import { FOCUS_RING } from '../lib/uiTokens';
+import { track, events } from '../lib/track';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -106,7 +107,7 @@ export default function Navbar() {
         <div className="relative" ref={catWrapRef}>
           <button
             type="button"
-            onClick={() => setCatOpen((o) => !o)}
+            onClick={() => { setCatOpen((o) => !o); track(events.NAV_CATEGORY_OPEN); }}
             className={cn(
               FOCUS_RING,
               'flex items-center gap-1 text-sm font-medium transition-colors px-2 py-1 rounded-xl',
@@ -190,7 +191,7 @@ export default function Navbar() {
 
       <button
         type="button"
-        onClick={() => setMobileOpen(!mobileOpen)}
+        onClick={() => { setMobileOpen(!mobileOpen); track(events.NAV_MOBILE_TOGGLE); }}
         className={cn(
           FOCUS_RING,
           'md:hidden ml-auto rounded-xl text-text-secondary hover:text-text-primary transition-colors p-1.5'

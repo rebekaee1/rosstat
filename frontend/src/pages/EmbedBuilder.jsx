@@ -5,6 +5,7 @@ import { CATEGORIES, HIDDEN_FROM_LISTING } from '../lib/categories';
 import { cn } from '../lib/format';
 import useDocumentMeta from '../lib/useMeta';
 import { PERIODS } from '../embed/useEmbedParams';
+import { track, events } from '../lib/track';
 
 const WIDGET_TYPES = [
   { key: 'chart', label: 'График', icon: BarChart3, desc: 'Интерактивный AreaChart с данными и прогнозом' },
@@ -92,14 +93,15 @@ function IndicatorCombobox({ indicators, value, onChange }) {
   );
 }
 
-function CopyButton({ text }) {
+function CopyButton({ text, onCopy }) {
   const [copied, setCopied] = useState(false);
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(text).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+      onCopy?.();
     }).catch(() => { /* clipboard API unavailable */ });
-  }, [text]);
+  }, [text, onCopy]);
 
   return (
     <button type="button" onClick={handleCopy}
@@ -303,7 +305,7 @@ export default function EmbedBuilder() {
       {/* Widget type tabs */}
       <div className="flex gap-2 justify-center mb-8 flex-wrap">
         {WIDGET_TYPES.map(wt => (
-          <button key={wt.key} type="button" onClick={() => setType(wt.key)}
+          <button key={wt.key} type="button" onClick={() => { setType(wt.key); track(events.EMBED_TYPE_CHANGE, { type: wt.key }); }}
             className={cn(
               'flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all border',
               type === wt.key
@@ -326,7 +328,7 @@ export default function EmbedBuilder() {
             {needsIndicator && (
               <div>
                 <label className="block text-xs text-text-secondary mb-1.5 font-medium">Индикатор</label>
-                <IndicatorCombobox indicators={indicators} value={code} onChange={setCode} />
+                <IndicatorCombobox indicators={indicators} value={code} onChange={(c) => { setCode(c); track(events.EMBED_INDICATOR_SELECT, { code: c }); }} />
               </div>
             )}
 
@@ -361,7 +363,7 @@ export default function EmbedBuilder() {
                 <label className="block text-xs text-text-secondary mb-1.5 font-medium">Период</label>
                 <div className="flex gap-1 flex-wrap">
                   {PERIODS.map(p => (
-                    <button key={p.key} type="button" onClick={() => setPeriod(p.key)}
+                    <button key={p.key} type="button" onClick={() => { setPeriod(p.key); track(events.EMBED_PERIOD_CHANGE, { period: p.key }); }}
                       className={cn('px-3 py-1.5 rounded-lg text-xs font-medium transition-all', period === p.key ? 'bg-champagne/10 text-champagne' : 'text-text-tertiary hover:text-text-secondary')}>
                       {p.label}
                     </button>
@@ -375,7 +377,7 @@ export default function EmbedBuilder() {
               <label className="block text-xs text-text-secondary mb-1.5 font-medium">Тема</label>
               <div className="flex gap-2">
                 {[['light', 'Светлая'], ['dark', 'Тёмная'], ['auto', 'Авто']].map(([k, l]) => (
-                  <button key={k} type="button" onClick={() => setTheme(k)}
+                  <button key={k} type="button" onClick={() => { setTheme(k); track(events.EMBED_THEME_CHANGE, { theme: k }); }}
                     className={cn('flex-1 py-2 rounded-xl text-xs font-medium transition-all border', theme === k ? 'bg-champagne/10 border-champagne/30 text-champagne' : 'border-border-subtle text-text-tertiary hover:text-text-secondary')}>
                     {l}
                   </button>
@@ -389,7 +391,7 @@ export default function EmbedBuilder() {
                 <label className="block text-xs text-text-secondary mb-1.5 font-medium">Размер</label>
                 <div className="flex gap-1 flex-wrap mb-2">
                   {SIZE_PRESETS.map((sp, i) => (
-                    <button key={i} type="button" onClick={() => setSizePreset(i)}
+                    <button key={i} type="button" onClick={() => { setSizePreset(i); track(events.EMBED_SIZE_CHANGE, { size: sp.label }); }}
                       className={cn('px-3 py-1.5 rounded-lg text-xs font-medium transition-all', sizePreset === i ? 'bg-champagne/10 text-champagne' : 'text-text-tertiary hover:text-text-secondary')}>
                       {sp.label}
                     </button>
@@ -424,13 +426,13 @@ export default function EmbedBuilder() {
             {/* Toggles */}
             <div className="space-y-2 pt-2 border-t border-border-subtle">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={showTitle} onChange={e => setShowTitle(e.target.checked)}
+                <input type="checkbox" checked={showTitle} onChange={e => { setShowTitle(e.target.checked); track(events.EMBED_OPTION_TOGGLE, { option: 'title', value: e.target.checked }); }}
                   className="w-4 h-4 rounded border-border-subtle text-champagne focus:ring-champagne/30" />
                 <span className="text-xs text-text-secondary">Показать заголовок</span>
               </label>
               {needsForecast && (
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" checked={showForecast} onChange={e => setShowForecast(e.target.checked)}
+                  <input type="checkbox" checked={showForecast} onChange={e => { setShowForecast(e.target.checked); track(events.EMBED_OPTION_TOGGLE, { option: 'forecast', value: e.target.checked }); }}
                     className="w-4 h-4 rounded border-border-subtle text-champagne focus:ring-champagne/30" />
                   <span className="text-xs text-text-secondary">Показать прогноз</span>
                 </label>
@@ -485,14 +487,14 @@ export default function EmbedBuilder() {
                   { key: 'markdown', label: 'Markdown', icon: Code2 },
                   { key: 'badge', label: 'Badge', icon: Shield },
                 ].map(tab => (
-                  <button key={tab.key} type="button" onClick={() => setCodeTab(tab.key)}
+                  <button key={tab.key} type="button" onClick={() => { setCodeTab(tab.key); track(events.EMBED_CODE_TAB, { tab: tab.key }); }}
                     className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all', codeTab === tab.key ? 'bg-champagne/10 text-champagne' : 'text-text-tertiary hover:text-text-secondary')}>
                     <tab.icon className="w-3 h-3" />
                     {tab.label}
                   </button>
                 ))}
               </div>
-              <CopyButton text={embedCode} />
+              <CopyButton text={embedCode} onCopy={() => track(events.EMBED_CODE_COPY, { format: codeTab })} />
             </div>
             <pre className="p-4 text-xs font-mono text-text-secondary leading-relaxed overflow-x-auto bg-ivory/[0.02] whitespace-pre-wrap break-all">
               {embedCode}

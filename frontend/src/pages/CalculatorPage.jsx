@@ -15,6 +15,7 @@ import useInflationCalc from '../lib/useInflationCalc';
 import { formatDate, formatAxisTick, cn } from '../lib/format';
 import { FOCUS_RING, FOCUS_RING_SURFACE } from '../lib/uiTokens';
 import { SkeletonBox } from '../components/Skeleton';
+import { track, events } from '../lib/track';
 
 /* ─── Constants ─── */
 
@@ -275,7 +276,7 @@ function YearlyBreakdownTable({ breakdown }) {
       {showToggle && (
         <button
           type="button"
-          onClick={() => setExpanded(e => !e)}
+          onClick={() => { setExpanded(e => !e); track(events.CALC_BREAKDOWN, { expanded: !expanded }); }}
           className="mt-3 flex items-center gap-1 text-xs text-champagne hover:text-champagne-muted transition-colors font-medium"
         >
           <ChevronRight className={cn('w-3.5 h-3.5 transition-transform', expanded && 'rotate-90')} />
@@ -294,7 +295,7 @@ function FAQAccordion() {
         <div key={i}>
           <button
             type="button"
-            onClick={() => setOpen(open === i ? null : i)}
+            onClick={() => { setOpen(open === i ? null : i); track(events.FAQ_TOGGLE, { question: item.q }); }}
             className={cn(FOCUS_RING, 'w-full flex items-center justify-between gap-4 py-5 text-left rounded-sm')}
             aria-expanded={open === i}
           >
@@ -369,12 +370,14 @@ export default function CalculatorPage() {
     else if (preset.from === null) setFromYear(effectiveMin);
     else setFromYear(Math.max(effectiveMax - preset.offset, effectiveMin));
     setToYear(effectiveMax);
+    track(events.CALC_PRESET, { preset: preset.label });
   }, [effectiveMin, effectiveMax]);
 
   const handleShare = useCallback(async () => {
     const params = new URLSearchParams({ amount: String(amount), from: String(fromYear), to: String(toYear) });
     setSearchParams(params, { replace: true });
     const url = `${window.location.origin}/calculator?${params}`;
+    track(events.CALC_SHARE);
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
@@ -384,6 +387,7 @@ export default function CalculatorPage() {
 
   const handleCopyText = useCallback(async () => {
     if (!result) return;
+    track(events.CALC_COPY_RESULT);
     const text = reversed
       ? `${formatInput(amount)} ₽ в ${toYear} году — это было ${formatRubles(result.purchasing)} в ${fromYear} году (инфляция ${result.totalInflation.toFixed(1)}%). Рассчитано на forecasteconomy.com/calculator`
       : `${formatInput(amount)} ₽ в ${fromYear} году эквивалентны ${formatRubles(result.equivalent)} в ${toYear} году (инфляция ${result.totalInflation.toFixed(1)}%). Рассчитано на forecasteconomy.com/calculator`;
@@ -560,7 +564,7 @@ export default function CalculatorPage() {
           </label>
           <button
             type="button"
-            onClick={() => setReversed(r => !r)}
+            onClick={() => { setReversed(r => !r); track(events.CALC_DIRECTION, { reversed: !reversed }); }}
             className={cn(
               FOCUS_RING_SURFACE,
               'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium transition-all duration-200',
@@ -731,7 +735,7 @@ export default function CalculatorPage() {
                     { key: 'purchasing', label: 'Покуп. способность' },
                     { key: 'equivalent', label: 'Рост суммы' },
                   ].map(m => (
-                    <button key={m.key} type="button" onClick={() => setChartMode(m.key)}
+                    <button key={m.key} type="button" onClick={() => { setChartMode(m.key); track(events.CALC_CHART_MODE, { mode: m.key }); }}
                       className={cn(
                         'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
                         chartMode === m.key ? 'bg-champagne/15 text-champagne' : 'text-text-tertiary hover:text-text-secondary'

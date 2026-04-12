@@ -1,8 +1,4 @@
-function trackDownload(filename) {
-  if (typeof window.ym === 'function') {
-    window.ym(107136069, 'file', `https://forecasteconomy.com/downloads/${filename}`);
-  }
-}
+import { trackFile } from './track';
 
 export async function downloadExcel(chartData, mode, indicatorCode, range, meta = {}) {
   const XLSX = await import('xlsx');
@@ -48,7 +44,7 @@ export async function downloadExcel(chartData, mode, indicatorCode, range, meta 
   const modeLabel = CPI_MODE_LABELS[mode] || mode || 'data';
   const filename = `${indicatorCode}_${modeLabel}_${range}.xlsx`;
   XLSX.writeFile(wb, filename);
-  trackDownload(filename);
+  trackFile(filename);
 }
 
 export function downloadCSV(chartData, mode, indicatorCode, range, meta = {}) {
@@ -73,5 +69,5 @@ export function downloadCSV(chartData, mode, indicatorCode, range, meta = {}) {
   a.download = filename;
   a.click();
   URL.revokeObjectURL(url);
-  trackDownload(filename);
+  trackFile(filename);
 }
