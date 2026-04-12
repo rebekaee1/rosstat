@@ -44,7 +44,7 @@ class RosstatCpiParser(BaseParser):
             if not content:
                 fetch_log.status = "failed"
                 fetch_log.error_message = "No file available on Rosstat"
-                fetch_log.completed_at = datetime.now(timezone.utc)
+                fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
                 await db.commit()
                 return
 
@@ -62,7 +62,7 @@ class RosstatCpiParser(BaseParser):
             if not points:
                 fetch_log.status = "failed"
                 fetch_log.error_message = "Parser returned 0 data points"
-                fetch_log.completed_at = datetime.now(timezone.utc)
+                fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
                 await db.commit()
                 return
 
@@ -92,7 +92,7 @@ class RosstatCpiParser(BaseParser):
                 await cache_invalidate_indicator(indicator_code)
 
             fetch_log.status = "success" if records_added > 0 else "no_new_data"
-            fetch_log.completed_at = datetime.now(timezone.utc)
+            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
             await db.commit()
 
             logger.info("ETL complete for '%s': %d new records", indicator_code, records_added)
@@ -102,7 +102,7 @@ class RosstatCpiParser(BaseParser):
             await db.rollback()
             fetch_log.status = "failed"
             fetch_log.error_message = str(e)[:500]
-            fetch_log.completed_at = datetime.now(timezone.utc)
+            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
             db.add(fetch_log)
             await db.commit()
 

@@ -190,7 +190,7 @@ class RosstatPopulationParser(BaseParser):
             if not points:
                 fetch_log.status = "no_new_data"
                 fetch_log.error_message = "Parser returned 0 data points"
-                fetch_log.completed_at = datetime.now(timezone.utc)
+                fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
                 await db.commit()
                 return
 
@@ -220,7 +220,7 @@ class RosstatPopulationParser(BaseParser):
                 await cache_invalidate_indicator(code)
 
             fetch_log.status = "success" if records_added > 0 else "no_new_data"
-            fetch_log.completed_at = datetime.now(timezone.utc)
+            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
             await db.commit()
 
         except Exception as e:
@@ -228,6 +228,6 @@ class RosstatPopulationParser(BaseParser):
             await db.rollback()
             fetch_log.status = "failed"
             fetch_log.error_message = str(e)[:500]
-            fetch_log.completed_at = datetime.now(timezone.utc)
+            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
             db.add(fetch_log)
             await db.commit()

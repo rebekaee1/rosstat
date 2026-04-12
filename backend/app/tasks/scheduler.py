@@ -43,7 +43,7 @@ async def run_etl_for_indicator(indicator_code: str) -> bool:
 
         indicator_id = indicator.id
 
-        started_at = datetime.now(timezone.utc)
+        started_at = datetime.now(timezone.utc).replace(tzinfo=None)
         fetch_log = FetchLog(indicator_id=indicator_id, status="running", started_at=started_at)
         db.add(fetch_log)
         await db.commit()
@@ -54,7 +54,7 @@ async def run_etl_for_indicator(indicator_code: str) -> bool:
         except asyncio.CancelledError:
             await db.rollback()
             fetch_log.status = "timeout"
-            fetch_log.completed_at = datetime.now(timezone.utc)
+            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
             fetch_log.error_message = f"ETL cancelled/timed out after {ETL_TIMEOUT_SECONDS}s"
             db.add(fetch_log)
             await db.commit()
@@ -62,7 +62,7 @@ async def run_etl_for_indicator(indicator_code: str) -> bool:
         except Exception as e:
             await db.rollback()
             fetch_log.status = "failed"
-            fetch_log.completed_at = datetime.now(timezone.utc)
+            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
             fetch_log.error_message = str(e)[:500]
             db.add(fetch_log)
             await db.commit()

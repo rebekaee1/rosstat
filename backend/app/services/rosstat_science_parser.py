@@ -308,7 +308,7 @@ class RosstatScienceParser(BaseParser):
                 logger.warning("No points parsed for %s", code)
                 fetch_log.status = "no_new_data"
                 fetch_log.records_added = 0
-                fetch_log.completed_at = datetime.now(timezone.utc)
+                fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
                 await db.commit()
                 return
 
@@ -337,7 +337,7 @@ class RosstatScienceParser(BaseParser):
             records_added = count_after - count_before
             fetch_log.status = "success"
             fetch_log.records_added = records_added
-            fetch_log.completed_at = datetime.now(timezone.utc)
+            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
             await db.commit()
             await cache_invalidate_indicator(code)
             logger.info("%s: upserted %d new points (of %d) from %s", code, records_added, len(points), used_file)
@@ -345,7 +345,7 @@ class RosstatScienceParser(BaseParser):
             await db.rollback()
             fetch_log.status = "failed"
             fetch_log.error_message = str(exc)[:500]
-            fetch_log.completed_at = datetime.now(timezone.utc)
+            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
             db.add(fetch_log)
             await db.commit()
             raise

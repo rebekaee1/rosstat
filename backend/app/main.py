@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 import time
 from contextlib import asynccontextmanager
 
@@ -75,7 +76,9 @@ async def lifespan(app: FastAPI):
     # Startup
     logger.info("Starting %s...", settings.app_name)
 
-    if settings.scheduler_enabled:
+    is_main_worker = os.environ.get("_SCHEDULER_STARTED") is None
+    if settings.scheduler_enabled and is_main_worker:
+        os.environ["_SCHEDULER_STARTED"] = "1"
         from app.tasks.scheduler import daily_update_job
         scheduler.add_job(
             daily_update_job,
@@ -94,6 +97,8 @@ async def lifespan(app: FastAPI):
             settings.scheduler_cron_hour,
             settings.scheduler_cron_minute,
         )
+    elif settings.scheduler_enabled:
+        logger.info("Scheduler already started by another worker, skipping")
 
     yield
 

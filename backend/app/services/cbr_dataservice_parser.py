@@ -146,7 +146,7 @@ class CbrDataServiceParser(BaseParser):
             if not ds_cfg:
                 fetch_log.status = "failed"
                 fetch_log.error_message = "Missing 'dataservice' in model_config_json"
-                fetch_log.completed_at = datetime.now(timezone.utc)
+                fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
                 await db.commit()
                 return
 
@@ -167,7 +167,7 @@ class CbrDataServiceParser(BaseParser):
                 logger.warning("No data points parsed for %s", code)
                 fetch_log.status = "no_new_data"
                 fetch_log.error_message = "DataService returned 0 matching rows"
-                fetch_log.completed_at = datetime.now(timezone.utc)
+                fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
                 await db.commit()
                 return
 
@@ -198,7 +198,7 @@ class CbrDataServiceParser(BaseParser):
                 await cache_invalidate_indicator(code)
 
             fetch_log.status = "success" if records_added > 0 else "no_new_data"
-            fetch_log.completed_at = datetime.now(timezone.utc)
+            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
             await db.commit()
 
         except Exception as e:
@@ -206,6 +206,6 @@ class CbrDataServiceParser(BaseParser):
             await db.rollback()
             fetch_log.status = "failed"
             fetch_log.error_message = str(e)[:500]
-            fetch_log.completed_at = datetime.now(timezone.utc)
+            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
             db.add(fetch_log)
             await db.commit()
