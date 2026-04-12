@@ -145,6 +145,9 @@ function downloadStructureCSV(series) {
   a.download = 'demographics_structure.csv';
   a.click();
   URL.revokeObjectURL(url);
+  if (typeof window.ym === 'function') {
+    window.ym(107136069, 'file', 'https://forecasteconomy.com/downloads/demographics_structure.csv');
+  }
 }
 
 export default function DemographicsPage() {
