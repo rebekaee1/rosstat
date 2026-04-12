@@ -947,3 +947,36 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 - Backend: health 200, /metrics 403 (fail-closed), forecast CPI работает
 - Frontend: все 10 ключевых маршрутов → 200
 - Backend logs: 0 errors за 5 min после деплоя
+
+---
+
+## 2026-04-12 — Video Corrections V2: реализация и деплой
+
+Коммит `ba09b2e`: `feat: video corrections V2 — 6 fixes from client review`
+
+### Реализовано (5 файлов, 139 ins / 58 del):
+
+1. **Navbar.jsx** — скрыты ссылки Календарь, Сравнение, Виджеты (desktop + mobile). Маршруты в App.jsx сохранены.
+2. **useInflationCalc.js** — `toDateStr(effectiveFrom, 2)` → `toDateStr(effectiveFrom, 1)`. Январский ИПЦ теперь учитывается в расчёте годовой инфляции. Было: 2016=4.4%, стало: 2016≈5.38%.
+3. **IndicatorDetail.jsx** — добавлены вкладки "Годовая" и "Недельная" для `code === 'cpi'`. Загружают `inflation-annual` и `inflation-weekly` через `useIndicatorData`. Добавлены описания, методология, корректные tooltip-подписи и deltaSuffix. Excel download для не-CPI индикаторов теперь передаёт `null` вместо `chartMode='cpi'` → файлы называются `gdp-nominal_data_5y.xlsx` вместо `gdp-nominal_ипц_помесячно_5y.xlsx`.
+4. **IndicatorTile.jsx** — убрана 3-тировая адаптивная система шрифтов. Теперь 2 тира: `text-2xl` (по умолчанию) и `text-lg` (для строк >12 символов).
+5. **seed_data.py** — `cpi.name`: "Индекс потребительских цен" → "Индекс потребительских цен на товары и услуги".
+
+### Деплой и верификация на production:
+
+- `deploy.sh` выполнен через SSH, контейнеры пересозданы, health checks пройдены.
+- CPI name обновлён в БД через SQL UPDATE.
+- Housing-price forecasts force-retrained: даты стали квартальными (03, 06, 09, 12 вместо 01, 02, 03, 04).
+- Redis кэш очищен (FLUSHALL).
+- Pushed на GitHub: `8fec57e..ba09b2e main -> main`.
+
+### Верификация на production (API + браузер):
+
+- Backend health: 200 OK
+- CPI name: "Индекс потребительских цен на товары и услуги" ✓
+- CPI data: March 2026 (100.6) present ✓
+- Inflation-annual: March 2026 (5.87%) ✓
+- Housing-price-primary forecast: quarterly dates (03, 06, 09, 12) ✓
+- Frontend: 200, 5 вкладок на /indicator/cpi (Инфляция 12 мес., ИПЦ помесячно, Квартальная, Годовая, Недельная) ✓
+- Navbar: Календарь/Сравнение/Виджеты отсутствуют ✓
+- Console: 0 errors на /indicator/cpi ✓

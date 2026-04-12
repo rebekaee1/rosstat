@@ -806,7 +806,7 @@ export default function IndicatorDetail() {
       </div>
 
       <section className="mb-12">
-        {(loadingInd || (chartMode === 'inflation' && loadingInflation)) ? (
+        {(loadingInd || (chartMode === 'inflation' && loadingInflation) || (chartMode === 'annual' && loadingAnnual) || (chartMode === 'weekly' && loadingWeekly) || (chartMode === 'quarterly' && loadingQuarterly)) ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[...Array(4)].map((_, i) => <SkeletonBox key={i} className="h-48 rounded-[2rem]" />)}
           </div>
@@ -1083,14 +1083,16 @@ export default function IndicatorDetail() {
         </section>
 
         <section className="lg:col-span-2">
-          {viewMode === 'quarterly' ? (
+          {['quarterly', 'annual', 'weekly'].includes(viewMode) ? (
             <div className="h-full min-h-[300px] rounded-[2rem] bg-surface border border-border-subtle border-dashed flex flex-col items-center justify-center gap-3 text-text-tertiary p-8">
               <Activity className="w-8 h-8 mb-1 opacity-20" />
               <p className="text-sm font-medium text-text-secondary text-center max-w-md">
-                Квартальные данные рассчитываются на основе месячных значений ИПЦ
+                {viewMode === 'quarterly' && 'Квартальные данные рассчитываются на основе месячных значений ИПЦ'}
+                {viewMode === 'annual' && 'Годовая инфляция рассчитывается как скользящее произведение 12 месячных ИПЦ'}
+                {viewMode === 'weekly' && 'Недельный ИПЦ публикуется Росстатом еженедельно'}
               </p>
               <p className="text-xs text-center max-w-lg leading-relaxed text-text-tertiary">
-                Прогнозирование квартальной инфляции не предусмотрено — для прогноза переключитесь на помесячный или годовой режим
+                Для прогноза переключитесь на вкладку «Инфляция 12 мес.» или «ИПЦ помесячно»
               </p>
             </div>
           ) : forecastEnabled && showForecast && hasForecastData ? (
@@ -1125,6 +1127,8 @@ export default function IndicatorDetail() {
           data={
             chartMode === 'inflation' ? (inflationResp?.actuals || [])
             : chartMode === 'quarterly' ? quarterlyDataPoints
+            : chartMode === 'annual' ? annualDataPoints
+            : chartMode === 'weekly' ? weeklyDataPoints
             : dataPoints
           }
           title={
@@ -1132,7 +1136,11 @@ export default function IndicatorDetail() {
               ? 'Исторические данные — Инфляция 12 мес.'
               : chartMode === 'quarterly'
                 ? 'Исторические данные — Квартальная инфляция'
-                : (isPriceCategory ? 'Исторические данные — ИПЦ' : `Исторические данные — ${indicator?.name || 'ряд'}`)
+                : chartMode === 'annual'
+                  ? 'Исторические данные — Годовая инфляция'
+                  : chartMode === 'weekly'
+                    ? 'Исторические данные — Недельный ИПЦ'
+                    : (isPriceCategory ? 'Исторические данные — ИПЦ' : `Исторические данные — ${indicator?.name || 'ряд'}`)
           }
           dateFormat={chartMode !== 'inflation' && indicator?.frequency === 'daily' ? 'day' : 'full'}
           unit={indicator?.unit || '%'}

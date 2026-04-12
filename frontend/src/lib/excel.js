@@ -10,11 +10,15 @@ export async function downloadExcel(chartData, mode, indicatorCode, range, meta 
     cpi: 'ИПЦ (изм. к пред. мес., %)',
     quarterly: 'ИПЦ квартальный (%)',
     inflation: 'Инфляция 12 мес. (%)',
+    annual: 'Годовая инфляция (%)',
+    weekly: 'Недельный ИПЦ (изм. к пред. нед., %)',
   };
   const CPI_MODE_LABELS = {
     cpi: 'ипц_помесячно',
     quarterly: 'ипц_квартальный',
     inflation: 'инфляция_12мес',
+    annual: 'инфляция_годовая',
+    weekly: 'ипц_недельный',
   };
   const genericLabel = meta.name
     ? `${meta.name}${meta.unit ? ` (${meta.unit})` : ''}`
