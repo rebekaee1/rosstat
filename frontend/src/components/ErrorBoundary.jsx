@@ -23,10 +23,10 @@ class ErrorBoundary extends Component {
       return (
         <div className="min-h-screen flex items-center justify-center bg-surface p-8">
           <div className="text-center max-w-md">
-            <h1 className="text-2xl font-display text-heading mb-4">
+            <h1 className="text-2xl font-display text-text-primary mb-4">
               Произошла ошибка
             </h1>
-            <p className="text-muted mb-6">
+            <p className="text-text-secondary mb-6">
               Что-то пошло не так. Попробуйте обновить страницу.
             </p>
             <button

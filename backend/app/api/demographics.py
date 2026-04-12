@@ -1,6 +1,4 @@
 """Batch endpoint for demographic age structure data (population pyramid)."""
-import logging
-
 from fastapi import APIRouter, Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -9,8 +7,6 @@ from app.database import get_db
 from app.models import Indicator, IndicatorData
 from app.core.cache import cache_get, cache_set
 from app.config import settings
-
-logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/demographics", tags=["demographics"])
 
 AGE_GROUP_CODES = [

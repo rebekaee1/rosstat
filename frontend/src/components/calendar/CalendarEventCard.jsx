@@ -98,7 +98,7 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0 })
   const src = SOURCE_STYLES[event.source] || SOURCE_STYLES.cbr;
   const isHigh = event.importance === 3;
   const isLow = event.importance === 1;
-  const hasValues = event.previous_value || event.forecast_value || event.actual_value;
+  const hasValues = event.previous_value != null || event.forecast_value != null || event.actual_value != null;
 
   useEffect(() => {
     if (!ref.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -134,6 +134,7 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0 })
             to={`/indicator/${event.indicator_code}`}
             className={cn(FOCUS_RING_SURFACE, 'text-champagne hover:text-champagne-muted rounded-md')}
             title={event.indicator_name || event.indicator_code}
+            aria-label={`Перейти к ${event.indicator_name || event.indicator_code}`}
           >
             <ArrowUpRight className="w-3.5 h-3.5" />
           </Link>

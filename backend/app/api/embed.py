@@ -420,7 +420,7 @@ async def tracking_pixel(
         r = await get_redis()
         await r.hincrby(f"fe:embed:imp:{today}", f"{code}:{t}:{domain}", 1)
     except Exception:
-        pass
+        logger.debug("Pixel tracking failed", exc_info=True)
     return Response(
         content=PIXEL_GIF,
         media_type="image/gif",

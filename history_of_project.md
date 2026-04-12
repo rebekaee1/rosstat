@@ -913,3 +913,37 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 - **Итого:** 84/84 индикаторов с данными, scheduler единственный, следующий ETL — 06:00 МСК 13 апреля.
 - **Бонус:** очищен Docker build cache — освобождено 17.15 GB на диске (было 77%, стало ~20 GB свободно).
 - **Коммиты:** `70f1b29` (datetime fix), `396df11` (single worker).
+
+### fix: capital-investment parser — fallback to quarterly data
+- Индикатор `capital-investment` в файлах Росстата `ind_MM-YYYY.xlsx` на листе `1.6` содержит помесячные данные только до 2015 года; с 2016 — только квартальные (столбцы 2–5).
+- Парсер `rosstat_ind_parser.py` → `parse_ind_sheet()` дополнен fallback: если месячных данных нет (столбцы G–R пусты), читаются квартальные значения и привязываются к первому месяцу квартала (Jan, Apr, Jul, Oct).
+- Результат: `capital-investment` — 244 точки (было 204), последняя дата 2025-10-01.
+
+## 2026-04-12 — Комплексный аудит и исправление багов (14 файлов)
+
+Полный аудит бэкенда и фронтенда. Найдено и исправлено 14 багов, задеплоено.
+
+### Backend (7 файлов):
+
+1. **`system.py` — /metrics и /system/status открыты без токена (SECURITY):** `_check_metrics_token` пропускал запрос если `metrics_token` пустой (fail-open). Исправлено на fail-closed: `if not settings.metrics_token or token != settings.metrics_token: 403`.
+2. **`embed.py` — tracking_pixel: исключения glоtались молча:** `except Exception: pass` → добавлено `logger.debug("Pixel tracking failed", exc_info=True)`.
+3. **`dashboard.py` — мёртвые импорты:** удалены `import logging`, `from datetime import timezone, datetime`, `logger = ...` (не используются).
+4. **`demographics.py` — мёртвые импорты:** удалены `import logging`, `logger = ...`.
+5. **`forecasts.py` — forecast cache bypass (PERF):** при `forecast_steps <= 0` всегда ходил в БД и писал в Redis, минуя `cache_get`. Перемещён `cache_get` ПЕРЕД проверкой `forecast_steps` — теперь попадание в кэш отсекает запрос сразу.
+6. **`database.py` — double session close:** `async with ... as session` уже закрывает сессию; лишний `finally: await session.close()` удалён.
+7. **`scheduler.py` — двойная обработка ошибок ETL (BUG):** парсеры ловили исключения, писали `failed` в fetch_log, но НЕ делали re-raise. Scheduler не знал об ошибке → не добавлял в `failed_codes` → не слал алерт. Фикс: scheduler теперь проверяет `fetch_log.status == "failed"` после `parser.run()` и бросает `RuntimeError`; обработчик ошибок не дублирует запись если парсер уже обработал.
+8. **`fetcher.py` — datetime.now() без таймзоны:** `datetime.now()` для резолва URL файлов Росстата зависел от TZ хоста. Исправлено на `datetime.now(tz=timezone(timedelta(hours=3)))` (МСК).
+9. **`forecaster.py` — _ols_step: исключения глотались без лога:** `except Exception: return None, None` → добавлен `logger.debug(...)` с `exc_info=True`.
+
+### Frontend (5 файлов):
+
+1. **`ErrorBoundary.jsx` — сломанные Tailwind-классы:** `text-heading` и `text-muted` не существуют в теме → `text-text-primary` и `text-text-secondary`.
+2. **`DataTable.jsx` — setState во время рендера (React antipattern):** `if (data !== prevData) { setPrevData(data); setPage(0); }` прямо в теле компонента. Обёрнуто в `useEffect`.
+3. **`CalendarEventCard.jsx` — hasValues: falsy check пропускает 0:** `event.previous_value || ...` → `event.previous_value != null || ...`. Также добавлен `aria-label` на иконку-ссылку индикатора (a11y).
+4. **`IndicatorDetail.jsx` — пустой h1 при ошибке:** `{indicator?.name}` → `{indicator?.name || code}` — при ошибке загрузки показывает код из URL вместо пустого заголовка.
+5. **`EmbedBuilder.jsx` — XSS в генерируемых сниппетах (SECURITY):** имена индикаторов из API подставлялись в HTML-атрибуты (`title=`, `alt=`) без экранирования. Добавлена функция `escHtml()` для экранирования `&<>"` в iframe title и img alt.
+
+### Верификация:
+- Backend: health 200, /metrics 403 (fail-closed), forecast CPI работает
+- Frontend: все 10 ключевых маршрутов → 200
+- Backend logs: 0 errors за 5 min после деплоя

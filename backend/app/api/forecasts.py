@@ -27,6 +27,10 @@ def _validate_code(code: str) -> None:
 @router.get("/{code}/forecast", response_model=ForecastResponse)
 async def get_forecast(code: str, db: AsyncSession = Depends(get_db)):
     _validate_code(code)
+    cached = await cache_get(f"fe:{code}:forecast")
+    if cached:
+        return cached
+
     ind = await db.execute(select(Indicator).where(Indicator.code == code))
     indicator = ind.scalar_one_or_none()
     if not indicator:
@@ -37,10 +41,6 @@ async def get_forecast(code: str, db: AsyncSession = Depends(get_db)):
         response = ForecastResponse(indicator=code, forecast=None)
         await cache_set(f"fe:{code}:forecast", response.model_dump(mode="json"), settings.cache_ttl_data)
         return response
-
-    cached = await cache_get(f"fe:{code}:forecast")
-    if cached:
-        return cached
 
     fc = await db.execute(
         select(Forecast)

@@ -20,7 +20,7 @@ async def health():
 
 
 def _check_metrics_token(token: str = Query("", alias="token")):
-    if settings.metrics_token and token != settings.metrics_token:
+    if not settings.metrics_token or token != settings.metrics_token:
         raise HTTPException(status_code=403, detail="Forbidden")
 
 

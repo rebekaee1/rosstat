@@ -50,22 +50,26 @@ async def run_etl_for_indicator(indicator_code: str) -> bool:
 
         try:
             await parser.run(db, indicator, fetch_log)
+            if fetch_log.status == "failed":
+                raise RuntimeError(fetch_log.error_message or "Parser reported failure")
             return (fetch_log.records_added or 0) > 0
         except asyncio.CancelledError:
-            await db.rollback()
-            fetch_log.status = "timeout"
-            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-            fetch_log.error_message = f"ETL cancelled/timed out after {ETL_TIMEOUT_SECONDS}s"
-            db.add(fetch_log)
-            await db.commit()
+            if fetch_log.status not in ("failed", "timeout"):
+                await db.rollback()
+                fetch_log.status = "timeout"
+                fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
+                fetch_log.error_message = f"ETL cancelled/timed out after {ETL_TIMEOUT_SECONDS}s"
+                db.add(fetch_log)
+                await db.commit()
             raise
         except Exception as e:
-            await db.rollback()
-            fetch_log.status = "failed"
-            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-            fetch_log.error_message = str(e)[:500]
-            db.add(fetch_log)
-            await db.commit()
+            if fetch_log.status not in ("failed", "timeout"):
+                await db.rollback()
+                fetch_log.status = "failed"
+                fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
+                fetch_log.error_message = str(e)[:500]
+                db.add(fetch_log)
+                await db.commit()
             raise
 
 

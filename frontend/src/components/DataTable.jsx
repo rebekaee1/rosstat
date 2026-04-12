@@ -24,10 +24,12 @@ export default function DataTable({ data, title = 'Исторические да
   }, []);
 
   const [prevData, setPrevData] = useState(data);
-  if (data !== prevData) {
-    setPrevData(data);
-    setPage(0);
-  }
+  useEffect(() => {
+    if (data !== prevData) {
+      setPrevData(data);
+      setPage(0);
+    }
+  }, [data, prevData]);
 
   useEffect(() => {
     const timer = setTimeout(() => {

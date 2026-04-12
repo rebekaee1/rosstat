@@ -23,6 +23,10 @@ const SIZE_PRESETS = [
 
 const EMBED_ORIGIN = 'https://forecasteconomy.com';
 
+function escHtml(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
 function IndicatorCombobox({ indicators, value, onChange }) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
@@ -230,7 +234,8 @@ export default function EmbedBuilder() {
     const widthAttr = iframeW === '100%' ? 'width="100%"' : `width="${iframeW}"`;
 
     if (codeTab === 'iframe') {
-      return `<!-- ${title} -->\n<iframe src="${src}"\n  ${widthAttr} height="${iframeH}" frameborder="0"\n  style="border: none; border-radius: 12px; overflow: hidden;"\n  title="${title}" loading="lazy"\n  allow="clipboard-write"></iframe>`;
+      const t = escHtml(title);
+      return `<!-- ${t} -->\n<iframe src="${src}"\n  ${widthAttr} height="${iframeH}" frameborder="0"\n  style="border: none; border-radius: 12px; overflow: hidden;"\n  title="${t}" loading="lazy"\n  allow="clipboard-write"></iframe>`;
     }
 
     if (codeTab === 'markdown') {
@@ -251,18 +256,18 @@ export default function EmbedBuilder() {
     if (codeTab === 'svg') {
       const cw = Math.min(w, 600);
       const ch = Math.min(h, 400);
-      if (type === 'card') return `<a href="${EMBED_ORIGIN}/indicator/${code}" target="_blank">\n  <img src="${EMBED_ORIGIN}/api/v1/embed/card/${code}.svg?theme=${theme}&w=${cw}&h=${ch}"\n    alt="${name}" width="${cw}" height="${ch}">\n</a>`;
+      if (type === 'card') return `<a href="${EMBED_ORIGIN}/indicator/${code}" target="_blank">\n  <img src="${EMBED_ORIGIN}/api/v1/embed/card/${code}.svg?theme=${theme}&w=${cw}&h=${ch}"\n    alt="${escHtml(name)}" width="${cw}" height="${ch}">\n</a>`;
       if (type === 'ticker') {
         return tickerCodes.split(',').filter(Boolean).map(c => {
           const n = indicators?.find(i => i.code === c.trim())?.name || c.trim();
-          return `<a href="${EMBED_ORIGIN}/indicator/${c.trim()}" target="_blank"><img src="${EMBED_ORIGIN}/api/v1/embed/badge/${c.trim()}.svg?theme=${theme}" alt="${n}"></a>`;
+          return `<a href="${EMBED_ORIGIN}/indicator/${c.trim()}" target="_blank"><img src="${EMBED_ORIGIN}/api/v1/embed/badge/${c.trim()}.svg?theme=${theme}" alt="${escHtml(n)}"></a>`;
         }).join('\n');
       }
       if (type === 'compare') {
         const nameB = indicators?.find(i => i.code === codeB)?.name || codeB;
-        return `<a href="${EMBED_ORIGIN}/indicator/${code}" target="_blank">\n  <img src="${EMBED_ORIGIN}/api/v1/embed/spark/${code}.svg?period=${period}&w=${cw}&h=60"\n    alt="${name}" width="${cw}" height="60">\n</a>\n<a href="${EMBED_ORIGIN}/indicator/${codeB}" target="_blank">\n  <img src="${EMBED_ORIGIN}/api/v1/embed/spark/${codeB}.svg?period=${period}&w=${cw}&h=60"\n    alt="${nameB}" width="${cw}" height="60">\n</a>`;
+        return `<a href="${EMBED_ORIGIN}/indicator/${code}" target="_blank">\n  <img src="${EMBED_ORIGIN}/api/v1/embed/spark/${code}.svg?period=${period}&w=${cw}&h=60"\n    alt="${escHtml(name)}" width="${cw}" height="60">\n</a>\n<a href="${EMBED_ORIGIN}/indicator/${codeB}" target="_blank">\n  <img src="${EMBED_ORIGIN}/api/v1/embed/spark/${codeB}.svg?period=${period}&w=${cw}&h=60"\n    alt="${escHtml(nameB)}" width="${cw}" height="60">\n</a>`;
       }
-      return `<a href="${EMBED_ORIGIN}/indicator/${code}" target="_blank">\n  <img src="${EMBED_ORIGIN}/api/v1/embed/spark/${code}.svg?period=${period}&w=${cw}&h=60"\n    alt="${name}" width="${cw}" height="60">\n</a>`;
+      return `<a href="${EMBED_ORIGIN}/indicator/${code}" target="_blank">\n  <img src="${EMBED_ORIGIN}/api/v1/embed/spark/${code}.svg?period=${period}&w=${cw}&h=60"\n    alt="${escHtml(name)}" width="${cw}" height="60">\n</a>`;
     }
 
     if (codeTab === 'badge') {

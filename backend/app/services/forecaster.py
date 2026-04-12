@@ -126,6 +126,7 @@ def _ols_step(df_aux: pd.Series, lags: list[int], horizon_m: int,
             return None, None
         return float(pred), float(mse)
     except Exception:
+        logger.debug("_ols_step failed for horizon=%d", horizon_m, exc_info=True)
         return None, None
 
 

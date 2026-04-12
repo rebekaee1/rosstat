@@ -735,7 +735,7 @@ export default function IndicatorDetail() {
             </div>
 
             <h1 data-animate className="text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight mb-4 leading-tight">
-              {indicator?.name}
+              {indicator?.name || code}
             </h1>
             
             {indicator?.name_en && (

@@ -8,7 +8,7 @@ Verified through spike testing (2026-02-24):
 """
 
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional, Tuple
 
 import requests
@@ -35,7 +35,7 @@ class RosstatFetcher:
         Uses HEAD requests (returns proper 404) scanning from current month backward.
         Returns (url, filename) or (None, None).
         """
-        now = datetime.now()
+        now = datetime.now(tz=timezone(timedelta(hours=3)))
 
         for months_back in range(settings.rosstat_max_months_back):
             check_date = now - timedelta(days=30 * months_back)
