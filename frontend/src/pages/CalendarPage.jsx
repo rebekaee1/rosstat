@@ -214,7 +214,7 @@ export default function CalendarPage() {
               </h2>
               <button
                 type="button"
-                onClick={() => setSelectedDate(null)}
+                onClick={() => { setSelectedDate(null); track(events.CALENDAR_CLEAR_DAY); }}
                 className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs text-text-tertiary hover:text-text-primary hover:bg-surface-hover transition-colors"
               >
                 <X className="w-3 h-3" />

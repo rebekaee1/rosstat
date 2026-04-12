@@ -336,7 +336,7 @@ export default function EmbedBuilder() {
             {needsSecondIndicator && (
               <div>
                 <label className="block text-xs text-text-secondary mb-1.5 font-medium">Второй индикатор</label>
-                <IndicatorCombobox indicators={indicators} value={codeB} onChange={setCodeB} />
+                <IndicatorCombobox indicators={indicators} value={codeB} onChange={(c) => { setCodeB(c); track(events.EMBED_INDICATOR_SELECT, { code: c, position: 'b' }); }} />
               </div>
             )}
 
