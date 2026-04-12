@@ -379,6 +379,20 @@ const QUARTERLY_DESCRIPTION =
 const QUARTERLY_METHODOLOGY =
   'Формула: (ИПЦ₁ / 100) × (ИПЦ₂ / 100) × (ИПЦ₃ / 100) × 100 − 100.';
 
+const ANNUAL_DESCRIPTION =
+  'Годовая инфляция — изменение цен за последние 12 месяцев. ' +
+  'Рассчитывается как произведение 12 последовательных месячных индексов ИПЦ минус 100%.';
+
+const ANNUAL_METHODOLOGY =
+  'Формула: (∏ᵢ₌₁¹² ИПЦᵢ / 100) × 100 − 100, скользящее окно 12 месяцев.';
+
+const WEEKLY_DESCRIPTION =
+  'Недельный ИПЦ — изменение потребительских цен за неделю по данным Росстата. ' +
+  'Публикуется еженедельно, является оперативным индикатором инфляционных процессов.';
+
+const WEEKLY_METHODOLOGY =
+  'Данные Росстата (публикация через inflation-monitor.ru). Значение 100 = без изменений.';
+
 function TelemetryCard({
   label, value, unit, change, meta, delay = 0,
   deltaSuffix = 'к пред. месяцу',
@@ -503,7 +517,7 @@ export default function IndicatorDetail() {
   const CPI_CODES = ['cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services'];
   const isPriceCategory = CPI_CODES.includes(code);
   const canForecast = indicator?.category === 'Цены';
-  const forecastEnabled = canForecast && viewMode !== 'quarterly';
+  const forecastEnabled = canForecast && viewMode !== 'quarterly' && viewMode !== 'annual' && viewMode !== 'weekly';
   const shouldSubtract100 = isCpiIndex(code);
   const {
     data: dataResp,
@@ -518,12 +532,24 @@ export default function IndicatorDetail() {
   });
   const { data: forecastResp } = useForecast(code);
 
-  const hasQuarterlyTab = code === 'cpi';
+  const hasCpiTabs = code === 'cpi';
   const {
     data: quarterlyResp,
     isLoading: loadingQuarterly,
   } = useIndicatorData('inflation-quarterly', undefined, {
-    enabled: hasQuarterlyTab && viewMode === 'quarterly',
+    enabled: hasCpiTabs && viewMode === 'quarterly',
+  });
+  const {
+    data: annualResp,
+    isLoading: loadingAnnual,
+  } = useIndicatorData('inflation-annual', undefined, {
+    enabled: hasCpiTabs && viewMode === 'annual',
+  });
+  const {
+    data: weeklyResp,
+    isLoading: loadingWeekly,
+  } = useIndicatorData('inflation-weekly', undefined, {
+    enabled: hasCpiTabs && viewMode === 'weekly',
   });
 
   const chartMode = isPriceCategory ? viewMode : 'cpi';
@@ -592,9 +618,19 @@ export default function IndicatorDetail() {
     return quarterlyResp.data.map(p => ({ ...p, value: Number(p.value) - 100 }));
   }, [quarterlyResp]);
 
-  const quarterlyStats = useMemo(() => {
-    if (viewMode !== 'quarterly' || !quarterlyDataPoints.length) return null;
-    const a = quarterlyDataPoints;
+  const annualDataPoints = useMemo(() => {
+    if (!annualResp?.data?.length) return [];
+    return annualResp.data;
+  }, [annualResp]);
+
+  const weeklyDataPoints = useMemo(() => {
+    if (!weeklyResp?.data?.length) return [];
+    return weeklyResp.data.map(p => ({ ...p, value: Number(p.value) - 100 }));
+  }, [weeklyResp]);
+
+  function computeDerivedStats(points, mode) {
+    if (!points.length) return null;
+    const a = points;
     const current = a[a.length - 1];
     const previous = a.length > 1 ? a[a.length - 2] : null;
     const highest = a.reduce((max, p) => p.value > max.value ? p : max, a[0]);
@@ -609,9 +645,27 @@ export default function IndicatorDetail() {
       average: avg,
       dataCount: a.length,
     };
+  }
+
+  const quarterlyStats = useMemo(() => {
+    if (viewMode !== 'quarterly') return null;
+    return computeDerivedStats(quarterlyDataPoints);
   }, [viewMode, quarterlyDataPoints]);
 
-  const s = viewMode === 'quarterly' ? quarterlyStats : inflationStats;
+  const annualStats = useMemo(() => {
+    if (viewMode !== 'annual') return null;
+    return computeDerivedStats(annualDataPoints);
+  }, [viewMode, annualDataPoints]);
+
+  const weeklyStats = useMemo(() => {
+    if (viewMode !== 'weekly') return null;
+    return computeDerivedStats(weeklyDataPoints);
+  }, [viewMode, weeklyDataPoints]);
+
+  const s = viewMode === 'quarterly' ? quarterlyStats
+    : viewMode === 'annual' ? annualStats
+    : viewMode === 'weekly' ? weeklyStats
+    : inflationStats;
   const cpiPrevDate = dataPoints.length >= 2 ? dataPoints[dataPoints.length - 2].date : null;
 
   const handleChartData = useCallback((data) => {
@@ -626,20 +680,24 @@ export default function IndicatorDetail() {
     name: indicator?.name, unit: indicator?.unit,
   }), [indicator?.name, indicator?.unit]);
 
+  const downloadMode = isPriceCategory ? chartMode : null;
+
   const handleDownloadExcel = useCallback(async () => {
     const { downloadExcel } = await import('../lib/excel.js');
-    downloadExcel(chartData, chartMode, code, currentRange, downloadMeta);
+    downloadExcel(chartData, downloadMode, code, currentRange, downloadMeta);
     track(events.DOWNLOAD_EXCEL, { indicator: code, range: currentRange });
-  }, [chartData, chartMode, code, currentRange, downloadMeta]);
+  }, [chartData, downloadMode, code, currentRange, downloadMeta]);
 
   const handleDownloadCSV = useCallback(async () => {
     const { downloadCSV } = await import('../lib/excel.js');
-    downloadCSV(chartData, chartMode, code, currentRange, downloadMeta);
+    downloadCSV(chartData, downloadMode, code, currentRange, downloadMeta);
     track(events.DOWNLOAD_CSV, { indicator: code, range: currentRange });
-  }, [chartData, chartMode, code, currentRange, downloadMeta]);
+  }, [chartData, downloadMode, code, currentRange, downloadMeta]);
 
   const chartLoading = chartMode === 'inflation' ? loadingInflation
     : chartMode === 'quarterly' ? loadingQuarterly
+    : chartMode === 'annual' ? loadingAnnual
+    : chartMode === 'weekly' ? loadingWeekly
     : loadingData;
 
   const hasForecastData = chartMode === 'quarterly'
@@ -761,7 +819,12 @@ export default function IndicatorDetail() {
               change={s?.change ?? indicator?.change}
               meta={`ДАТА: ${formatDate(s?.currentDate ?? indicator?.current_date, 'full')}`}
               delay={0}
-              deltaSuffix={isPriceCategory ? 'к пред. месяцу' : 'к пред. значению'}
+              deltaSuffix={
+                viewMode === 'quarterly' ? 'к пред. кварталу'
+                  : viewMode === 'annual' ? 'к пред. месяцу'
+                  : viewMode === 'weekly' ? 'к пред. неделе'
+                  : isPriceCategory ? 'к пред. месяцу' : 'к пред. значению'
+              }
             />
             <TelemetryCard
               label={isPriceCategory ? 'Предыдущий месяц' : 'Предыдущее значение'}
@@ -822,19 +885,45 @@ export default function IndicatorDetail() {
                 >
                   ИПЦ помесячно
                 </button>
-                {hasQuarterlyTab && (
-                  <button
-                    type="button"
-                    onClick={() => { setViewMode('quarterly'); track(events.CHART_MODE_CHANGE, { mode: 'quarterly', indicator: code }); }}
-                    className={cn(
-                      'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
-                      viewMode === 'quarterly'
-                        ? 'bg-champagne/15 text-champagne'
-                        : 'text-text-tertiary hover:text-text-secondary'
-                    )}
-                  >
-                    Квартальная
-                  </button>
+                {hasCpiTabs && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => { setViewMode('quarterly'); track(events.CHART_MODE_CHANGE, { mode: 'quarterly', indicator: code }); }}
+                      className={cn(
+                        'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
+                        viewMode === 'quarterly'
+                          ? 'bg-champagne/15 text-champagne'
+                          : 'text-text-tertiary hover:text-text-secondary'
+                      )}
+                    >
+                      Квартальная
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setViewMode('annual'); track(events.CHART_MODE_CHANGE, { mode: 'annual', indicator: code }); }}
+                      className={cn(
+                        'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
+                        viewMode === 'annual'
+                          ? 'bg-champagne/15 text-champagne'
+                          : 'text-text-tertiary hover:text-text-secondary'
+                      )}
+                    >
+                      Годовая
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setViewMode('weekly'); track(events.CHART_MODE_CHANGE, { mode: 'weekly', indicator: code }); }}
+                      className={cn(
+                        'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
+                        viewMode === 'weekly'
+                          ? 'bg-champagne/15 text-champagne'
+                          : 'text-text-tertiary hover:text-text-secondary'
+                      )}
+                    >
+                      Недельная
+                    </button>
+                  </>
                 )}
               </div>
             ) : (
@@ -891,7 +980,7 @@ export default function IndicatorDetail() {
               </label>
               {!forecastEnabled && (
                 <div className="absolute top-full right-0 mt-2 px-3 py-2 rounded-xl bg-obsidian border border-border-subtle text-xs text-text-secondary whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-xl z-50">
-                  {viewMode === 'quarterly' ? 'Квартальный прогноз недоступен' : 'Прогноз скоро будет доступен'}
+                  {['quarterly', 'annual', 'weekly'].includes(viewMode) ? 'Прогноз недоступен для этого режима' : 'Прогноз скоро будет доступен'}
                 </div>
               )}
             </div>
@@ -904,22 +993,31 @@ export default function IndicatorDetail() {
           <div className="relative overflow-hidden rounded-[2rem]">
             <IndicatorChart
               key={`${indicator?.code}-${chartMode}`}
-              mode={chartMode === 'quarterly' ? 'cpi' : chartMode}
+              mode={['quarterly', 'annual', 'weekly'].includes(chartMode) ? 'cpi' : chartMode}
               inflation={inflationResp}
-              cpiData={chartMode === 'quarterly' ? quarterlyDataPoints : dataPoints}
-              forecastData={chartMode === 'quarterly' ? null : displayForecastData}
+              cpiData={chartMode === 'quarterly' ? quarterlyDataPoints
+                : chartMode === 'annual' ? annualDataPoints
+                : chartMode === 'weekly' ? weeklyDataPoints
+                : dataPoints}
+              forecastData={['quarterly', 'annual', 'weekly'].includes(chartMode) ? null : displayForecastData}
               showForecast={forecastEnabled && showForecast}
               onChartData={handleChartData}
               onRangeChange={handleRangeChange}
               referenceLineY={isPriceCategory ? undefined : null}
               cpiChartTitle={
-                chartMode === 'quarterly'
-                  ? 'Квартальная инфляция (%)'
+                chartMode === 'quarterly' ? 'Квартальная инфляция (%)'
+                  : chartMode === 'annual' ? 'Годовая инфляция (%)'
+                  : chartMode === 'weekly' ? 'Недельная инфляция (%)'
                   : isPriceCategory
                     ? undefined
                     : `${indicator?.name || 'Показатель'} (${unitSuffix(indicator?.unit)})`
               }
-              levelTooltipLabel={chartMode === 'quarterly' ? 'Кв. инфляция' : isPriceCategory ? undefined : 'Значение'}
+              levelTooltipLabel={
+                chartMode === 'quarterly' ? 'Кв. инфляция'
+                  : chartMode === 'annual' ? 'Год. инфляция'
+                  : chartMode === 'weekly' ? 'Нед. ИПЦ'
+                  : isPriceCategory ? undefined : 'Значение'
+              }
               emptyHint={chartEmptyHint}
               dateFormat={chartMode !== 'inflation' && indicator?.frequency === 'daily' ? 'day' : 'full'}
               unit={indicator?.unit || '%'}
@@ -941,14 +1039,20 @@ export default function IndicatorDetail() {
             <p className="text-text-secondary leading-relaxed">
               {chartMode === 'inflation' ? INFLATION_DESCRIPTION
                 : viewMode === 'quarterly' ? QUARTERLY_DESCRIPTION
+                : viewMode === 'annual' ? ANNUAL_DESCRIPTION
+                : viewMode === 'weekly' ? WEEKLY_DESCRIPTION
                 : indicator?.description}
             </p>
             {(chartMode === 'inflation' ? INFLATION_METHODOLOGY
               : viewMode === 'quarterly' ? QUARTERLY_METHODOLOGY
+              : viewMode === 'annual' ? ANNUAL_METHODOLOGY
+              : viewMode === 'weekly' ? WEEKLY_METHODOLOGY
               : indicator?.methodology) && (
               <p className="text-text-tertiary border-l-2 border-champagne/30 pl-4 my-4 font-mono text-[10px] uppercase tracking-wider">
                 {chartMode === 'inflation' ? INFLATION_METHODOLOGY
                   : viewMode === 'quarterly' ? QUARTERLY_METHODOLOGY
+                  : viewMode === 'annual' ? ANNUAL_METHODOLOGY
+                  : viewMode === 'weekly' ? WEEKLY_METHODOLOGY
                   : indicator?.methodology}
               </p>
             )}

@@ -44,7 +44,7 @@ CPI_METHODOLOGY = (
 INDICATORS = [
     {
         "code": "cpi",
-        "name": "Индекс потребительских цен",
+        "name": "Индекс потребительских цен на товары и услуги",
         "name_en": "Consumer Price Index",
         "unit": "%",
         "frequency": "monthly",

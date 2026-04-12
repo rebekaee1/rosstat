@@ -158,7 +158,7 @@ export default function useInflationCalc(amount, fromYear, toYear) {
       };
     }
 
-    const fromDate = toDateStr(effectiveFrom, 2);
+    const fromDate = toDateStr(effectiveFrom, 1);
     const toDate = lastAvailableDate && effectiveTo === lastAvailableYear
       ? lastAvailableDate
       : toDateStr(effectiveTo, 12);

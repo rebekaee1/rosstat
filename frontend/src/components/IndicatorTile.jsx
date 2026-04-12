@@ -91,12 +91,7 @@ export default function IndicatorTile({ indicator, delay = 0 }) {
               <div className="flex items-baseline gap-1.5 mb-1">
                 <span className={cn(
                   'font-bold tracking-tight text-text-primary font-mono whitespace-nowrap',
-                  (() => {
-                    const len = String(formatValue(displayVal)).length;
-                    if (len > 10) return 'text-base';
-                    if (len > 7) return 'text-xl';
-                    return 'text-2xl';
-                  })()
+                  String(formatValue(displayVal)).length > 12 ? 'text-lg' : 'text-2xl'
                 )}>
                   {formatValue(displayVal)}
                 </span>
