@@ -89,6 +89,8 @@ def parse_ind_sheet(content: bytes, sheet_name: str) -> list[DataPoint]:
     seen: set[tuple[int, int]] = set()
     data_started = False
 
+    QUARTER_START_MONTH = {0: 1, 1: 4, 2: 7, 3: 10}
+
     for row in rows_data:
         if not row or len(row) < 3:
             continue
@@ -103,6 +105,7 @@ def parse_ind_sheet(content: bytes, sheet_name: str) -> list[DataPoint]:
 
         data_started = True
 
+        has_monthly = False
         for month_idx in range(12):
             col = 6 + month_idx
             if col >= len(row):
@@ -117,6 +120,24 @@ def parse_ind_sheet(content: bytes, sheet_name: str) -> list[DataPoint]:
                     date=date(year, month_idx + 1, 1),
                     value=round(val, 2),
                 ))
+                has_monthly = True
+
+        if not has_monthly:
+            for q_idx in range(4):
+                col = 2 + q_idx
+                if col >= len(row):
+                    break
+                month = QUARTER_START_MONTH[q_idx]
+                key = (year, month)
+                if key in seen:
+                    continue
+                val = _to_float(row[col])
+                if val is not None and val > 0:
+                    seen.add(key)
+                    points.append(DataPoint(
+                        date=date(year, month, 1),
+                        value=round(val, 2),
+                    ))
 
     return sorted(points, key=lambda p: p.date)
 
