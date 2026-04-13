@@ -1,7 +1,7 @@
 import { trackFile } from './track';
+import * as XLSX from 'xlsx';
 
-export async function downloadExcel(chartData, mode, indicatorCode, range, meta = {}) {
-  const XLSX = await import('xlsx');
+export function downloadExcel(chartData, mode, indicatorCode, range, meta = {}) {
 
   const actuals = chartData.filter(d => d.actual != null);
   const forecasts = chartData.filter(d => d.forecast != null && d.actual == null);
@@ -47,7 +47,17 @@ export async function downloadExcel(chartData, mode, indicatorCode, range, meta 
 
   const modeLabel = CPI_MODE_LABELS[mode] || mode || 'data';
   const filename = `${indicatorCode}_${modeLabel}_${range}.xlsx`;
-  XLSX.writeFile(wb, filename);
+
+  const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+  const blob = new Blob([wbout], { type: 'application/octet-stream' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 100);
   trackFile(filename);
 }
 
@@ -71,7 +81,9 @@ export function downloadCSV(chartData, mode, indicatorCode, range, meta = {}) {
   a.href = url;
   const filename = `${indicatorCode}_${mode || 'data'}_${range}.csv`;
   a.download = filename;
+  document.body.appendChild(a);
   a.click();
-  URL.revokeObjectURL(url);
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 100);
   trackFile(filename);
 }

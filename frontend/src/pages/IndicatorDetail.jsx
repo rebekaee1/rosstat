@@ -13,6 +13,7 @@ import ForecastTable from '../components/ForecastTable';
 import DataTable from '../components/DataTable';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import { ChartSkeleton, SkeletonBox } from '../components/Skeleton';
+import { downloadExcel, downloadCSV } from '../lib/excel';
 import { track, trackOutbound, events } from '../lib/track';
 
 const SEO_MAP = {
@@ -679,14 +680,12 @@ export default function IndicatorDetail() {
 
   const downloadMode = isPriceCategory ? chartMode : null;
 
-  const handleDownloadExcel = useCallback(async () => {
-    const { downloadExcel } = await import('../lib/excel.js');
+  const handleDownloadExcel = useCallback(() => {
     downloadExcel(chartData, downloadMode, code, currentRange, downloadMeta);
     track(events.DOWNLOAD_EXCEL, { indicator: code, range: currentRange });
   }, [chartData, downloadMode, code, currentRange, downloadMeta]);
 
-  const handleDownloadCSV = useCallback(async () => {
-    const { downloadCSV } = await import('../lib/excel.js');
+  const handleDownloadCSV = useCallback(() => {
     downloadCSV(chartData, downloadMode, code, currentRange, downloadMeta);
     track(events.DOWNLOAD_CSV, { indicator: code, range: currentRange });
   }, [chartData, downloadMode, code, currentRange, downloadMeta]);

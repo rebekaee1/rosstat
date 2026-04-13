@@ -1199,3 +1199,5 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 - `cbr_keyrate_parser`: сохранена специальная логика clear_current_forecasts
 - `rosstat_weekly_inflation_parser`: сохранён `select` (нужен для existing_dates запроса), убран только `func`
 - Файлы с `existing_n` запросом (ruonia, reserves, fx, monetary, gold, keyrate): `func`, `select`, `IndicatorData` сохранены
+
+**Коммит**: `67595b5`, push в main, deploy на production OK (smoke OK, forecast CPI доступен, API отвечает)
