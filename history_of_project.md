@@ -1060,3 +1060,13 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 - Файл: `frontend/src/pages/IndicatorDetail.jsx`
 
 **Верификация**: vite build ✓, все Python файлы compile ✓, 11 файлов изменено
+
+### Перепроверка и деплой (та же дата)
+- При аудите R1 найден баг: LOCF не инициализировал lastA/lastB значениями до cutoff → исправлено
+- При аудите R2 найден баг: dateFormat не учитывал chartMode для CPI-вкладок (quarterly/annual) → исправлено
+- Коммит: `0ab618a`, push → GitHub OK
+- Deploy: `scripts/deploy.sh` → Docker build OK, smoke test OK
+- Принудительный retrain housing-price-primary/secondary → даты теперь квартальные (03, 06, 09, 12)
+- Redis cache flush → API возвращает свежие данные
+- _promote_past_events() → календарь: все прошлые события "released"
+- Production verification: sitemap 98 URLs (без скрытых), forecasts квартальные, health OK
