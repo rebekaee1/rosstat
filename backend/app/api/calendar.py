@@ -16,6 +16,13 @@ router = APIRouter(prefix="/calendar", tags=["calendar"])
 CACHE_TTL = 900  # 15 min
 
 
+def _effective_status(ev: EconomicEvent) -> str:
+    """Auto-promote 'scheduled' → 'released' when the date has passed."""
+    if ev.status == "scheduled" and ev.scheduled_date < date.today():
+        return "released"
+    return ev.status
+
+
 def _build_event_out(ev: EconomicEvent, indicator: Indicator | None) -> CalendarEventOut:
     return CalendarEventOut(
         id=ev.id,
@@ -28,7 +35,7 @@ def _build_event_out(ev: EconomicEvent, indicator: Indicator | None) -> Calendar
         is_estimated=ev.is_estimated,
         reference_period=ev.reference_period,
         importance=ev.importance,
-        status=ev.status,
+        status=_effective_status(ev),
         previous_value=ev.previous_value,
         forecast_value=ev.forecast_value,
         actual_value=ev.actual_value,

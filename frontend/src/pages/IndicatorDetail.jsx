@@ -394,7 +394,7 @@ const WEEKLY_METHODOLOGY =
   'Данные Росстата (публикация через inflation-monitor.ru). Значение 100 = без изменений.';
 
 function TelemetryCard({
-  label, value, unit, change, meta, delay = 0,
+  label, value, unit, change, pctChange, meta, delay = 0,
   deltaSuffix = 'к пред. месяцу',
 }) {
   const ref = useRef(null);
@@ -471,7 +471,7 @@ function TelemetryCard({
           )}>
             {isUp && <TrendingUp className="w-3.5 h-3.5" />}
             {isDown && <TrendingDown className="w-3.5 h-3.5" />}
-            <span>Δ {formatChange(changeNum)}</span>
+            <span>{pctChange != null ? `${formatChange(pctChange)}%` : `Δ ${formatChange(changeNum)}`}</span>
             <span className="text-text-tertiary text-[10px] uppercase tracking-wider ml-1">
               {deltaSuffix}
             </span>
@@ -813,12 +813,19 @@ export default function IndicatorDetail() {
               value={s?.currentValue ?? adj(indicator?.current_value)}
               unit={indicator?.unit || '%'}
               change={s?.change ?? indicator?.change}
+              pctChange={
+                indicator?.unit === 'индекс' && (s?.previousValue ?? indicator?.previous_value)
+                  ? +(((s?.currentValue ?? indicator?.current_value) - (s?.previousValue ?? indicator?.previous_value))
+                      / (s?.previousValue ?? indicator?.previous_value) * 100).toFixed(2)
+                  : undefined
+              }
               meta={`ДАТА: ${formatDate(s?.currentDate ?? indicator?.current_date, 'full')}`}
               delay={0}
               deltaSuffix={
                 viewMode === 'quarterly' ? 'к пред. кварталу'
                   : viewMode === 'annual' ? 'к пред. месяцу'
                   : viewMode === 'weekly' ? 'к пред. неделе'
+                  : indicator?.frequency === 'quarterly' ? 'к пред. кварталу'
                   : isPriceCategory ? 'к пред. месяцу' : 'к пред. значению'
               }
             />
@@ -1015,7 +1022,14 @@ export default function IndicatorDetail() {
                   : isPriceCategory ? undefined : 'Значение'
               }
               emptyHint={chartEmptyHint}
-              dateFormat={chartMode !== 'inflation' && indicator?.frequency === 'daily' ? 'day' : 'full'}
+              dateFormat={
+                chartMode === 'quarterly' ? 'quarterly'
+                : chartMode === 'annual' ? 'annual'
+                : chartMode !== 'inflation' && indicator?.frequency === 'daily' ? 'day'
+                : indicator?.frequency === 'quarterly' ? 'quarterly'
+                : indicator?.frequency === 'annual' ? 'annual'
+                : 'full'
+              }
               unit={indicator?.unit || '%'}
             />
           </div>
@@ -1097,6 +1111,11 @@ export default function IndicatorDetail() {
               inflation={inflationResp}
               forecastData={displayForecastData}
               unit={indicator?.unit || '%'}
+              dateFormat={
+                indicator?.frequency === 'quarterly' ? 'quarterly'
+                : indicator?.frequency === 'annual' ? 'annual'
+                : 'full'
+              }
             />
           ) : forecastEnabled && !showForecast ? (
             <div className="h-full min-h-[300px] rounded-[2rem] bg-surface border border-border-subtle border-dashed flex flex-col items-center justify-center text-text-tertiary p-8">
@@ -1138,7 +1157,14 @@ export default function IndicatorDetail() {
                     ? 'Исторические данные — Недельный ИПЦ'
                     : (isPriceCategory ? 'Исторические данные — ИПЦ' : `Исторические данные — ${indicator?.name || 'ряд'}`)
           }
-          dateFormat={chartMode !== 'inflation' && indicator?.frequency === 'daily' ? 'day' : 'full'}
+          dateFormat={
+            chartMode === 'quarterly' ? 'quarterly'
+            : chartMode === 'annual' ? 'annual'
+            : chartMode !== 'inflation' && indicator?.frequency === 'daily' ? 'day'
+            : indicator?.frequency === 'quarterly' ? 'quarterly'
+            : indicator?.frequency === 'annual' ? 'annual'
+            : 'full'
+          }
           unit={indicator?.unit || '%'}
         />
       </section>

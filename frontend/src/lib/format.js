@@ -21,7 +21,8 @@ export function formatDate(dateStr, format = 'short') {
   if (format === 'annual') return year.toString();
   if (format === 'quarterly') {
     const q = Math.ceil((d.getUTCMonth() + 1) / 3);
-    return `${q} кв. ${year}`;
+    const roman = ['I', 'II', 'III', 'IV'][q - 1];
+    return `${roman} кв. ${year}`;
   }
   const month = d.getUTCMonth();
   const day = d.getUTCDate();

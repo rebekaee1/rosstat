@@ -11,10 +11,10 @@ import logging
 import time
 from datetime import datetime, timezone
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 
 from app.database import async_session
-from app.models import Indicator, FetchLog
+from app.models import Indicator, FetchLog, EconomicEvent
 from app.services.rosstat_cpi_parser import get_parser
 from app.services.calculation_engine import calculation_engine
 from app.services.alerting import alert_etl_failure, alert_etl_summary
@@ -135,7 +135,30 @@ async def daily_update_job():
             except Exception:
                 logger.exception("CalculationEngine failed")
 
+    await _promote_past_events()
+
     duration = time.monotonic() - t0
     total_non_derived = sum(1 for t in indicator_tasks if t["parser_type"] != "derived")
     await alert_etl_summary(total_non_derived, len(updated_codes), failed_codes, duration)
     logger.info("Daily ETL update complete in %.0fs.", duration)
+
+
+async def _promote_past_events() -> None:
+    """Bulk-update stale 'scheduled' events whose date has passed → 'released'."""
+    today = datetime.now(timezone.utc).replace(tzinfo=None).date()
+    async with async_session() as db:
+        result = await db.execute(
+            update(EconomicEvent)
+            .where(
+                EconomicEvent.status == "scheduled",
+                EconomicEvent.scheduled_date < today,
+            )
+            .values(
+                status="released",
+                updated_at=datetime.now(timezone.utc).replace(tzinfo=None),
+            )
+        )
+        count = result.rowcount
+        await db.commit()
+        if count:
+            logger.info("Promoted %d stale calendar events: scheduled → released", count)

@@ -997,3 +997,66 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 - /calculator: 2016→2026 = +89.0%, 6.4% среднегодовая (ранее ~4.4% из-за бага январь)
 - /indicator/gdp-nominal: нет ИПЦ-вкладок, downloadMode=null → корректные имена
 - Console: 0 JS errors на всех проверенных страницах (cpi, calculator, gdp-nominal)
+
+### Унификация шрифтов TelemetryCard (коммит `bbe17c8`)
+
+**Проблема**: TelemetryCard на странице индикатора использовал 4-тировую систему адаптивного шрифта:
+- >10 chars → text-lg, >7 → text-xl, >5 → text-2xl, остальное → text-3xl
+- "5.87" (4 chars) = text-3xl, а "2 508.85" (8 chars) = text-xl — визуально разный размер
+
+**Фикс**: Заменено на 2-тировую систему (аналогично IndicatorTile):
+- ≤12 chars → text-2xl md:text-3xl, >12 → text-xl md:text-2xl
+
+**Файл**: `frontend/src/pages/IndicatorDetail.jsx` (TelemetryCard, строки 453-461)
+
+**Верификация на production** (все 4 карточки одного размера):
+- /indicator/cpi: "5.87", "5.92", "2 508.85", "97.43" ✓
+- /indicator/gdp-nominal: "53 713.1", "50 008.2", "57 146.0", "28 470.8" ✓
+- /indicator/key-rate: "15.00", "15.00", "21.00", "10.27" ✓
+- /category/prices (IndicatorTile): "0.60", "0.38", "333.80", "305.30", "-5.57" ✓
+
+## 2026-04-13: Аудит видео V2 — исполнение плана правок
+
+Выполнены все 7 задач из плана `/Users/iprofi/.cursor/plans/video_v2_corrections_audit_2fa055ea.plan.md`.
+
+### R4. Sitemap cleanup
+- Убраны `/compare`, `/calendar`, `/widgets` из `STATIC_PAGES` в `backend/app/api/sitemap.py`
+- Убраны из статического `frontend/public/sitemap.xml`
+- Метаданные для OG-тегов (`PAGE_META`) оставлены — для шаринга прямых ссылок
+
+### D1. Forecast quarterly dates
+- Код forecaster корректен: `_date_step("quarterly")` → `relativedelta(months=3)`, `forecast_pipeline.py:116` передаёт `frequency=indicator.frequency`
+- Seed data правильный: `housing-price-primary` → `frequency: "quarterly"`, `forecast_steps: 4`
+- Стэйл-прогноз на production был сгенерирован до фикса frequency — пересчитается при следующем ETL
+
+### D2. Weekly inflation parser
+- **Корневой баг**: `_DATE_RANGE_RE.search(text)` находила первый `<option>` из `<select>` dropdown (всегда самую свежую дату), а не дату конкретной страницы
+- **Результат**: все страницы парсили одну и ту же дату → seen_dates дедуплицировала → 1 точка за ETL-цикл
+- **Фикс**: переписан на `_parse_week_catalog()` (извлекает все недели из `<select>`) + `_parse_page_value()` (CSS-класс `col-prod-week-rosstat`)
+- **Результат**: 49 точек (~1 год) вместо 2. Источник `inflation-monitor.ru` ограничен ~49 неделями
+- Файл: `backend/app/services/rosstat_weekly_inflation_parser.py`
+
+### D3. Calendar auto-update статусов
+- `_effective_status()` в `calendar.py` — мгновенно показывает "released" при API-выдаче
+- `_promote_past_events()` в `scheduler.py` — bulk UPDATE в БД при каждом daily ETL
+- Файлы: `backend/app/api/calendar.py`, `backend/app/tasks/scheduler.py`
+
+### R1. ComparePage date alignment
+- Заменён exact-match join на LOCF (Last Observation Carried Forward)
+- Теперь для каждой даты из объединения обоих рядов берётся последнее известное значение
+- `connectNulls={true}` на обеих линиях
+- Файл: `frontend/src/pages/ComparePage.jsx`
+
+### R2. Quarterly date labels
+- `formatDate('quarterly')` → "I кв. 2025" (римские цифры)
+- Подключено к: IndicatorChart XAxis, tooltip, range labels; DataTable; ForecastTable
+- `dateFormat` передаётся по `indicator.frequency`: quarterly → 'quarterly', annual → 'annual'
+- Файлы: `frontend/src/lib/format.js`, `frontend/src/components/IndicatorChart.jsx`, `frontend/src/components/ForecastTable.jsx`, `frontend/src/pages/IndicatorDetail.jsx`
+
+### R3. Housing price growth display
+- Для `unit='индекс'` TelemetryCard показывает `+1.0%` вместо `Δ +3.3`
+- Prop `pctChange` вычисляется inline: `((current - prev) / prev) * 100`
+- `deltaSuffix` для quarterly индикаторов: "к пред. кварталу"
+- Файл: `frontend/src/pages/IndicatorDetail.jsx`
+
+**Верификация**: vite build ✓, все Python файлы compile ✓, 11 файлов изменено

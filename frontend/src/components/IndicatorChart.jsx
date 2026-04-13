@@ -389,7 +389,7 @@ export default function IndicatorChart({
             />
             <XAxis
               dataKey="date"
-              tickFormatter={d => formatDate(d)}
+              tickFormatter={d => formatDate(d, dateFormat === 'full' ? 'short' : dateFormat)}
               stroke="rgba(0,0,0,0.1)"
               tick={{ fill: 'rgba(0,0,0,0.4)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
               tickLine={false}
@@ -475,8 +475,8 @@ export default function IndicatorChart({
               [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-0"
           />
           <div className="flex justify-between text-[10px] font-mono text-text-tertiary mt-1">
-            <span>{visibleData[0] ? formatDate(visibleData[0].date) : ''}</span>
-            <span>{visibleData.length ? formatDate(visibleData[visibleData.length - 1].date) : ''}</span>
+            <span>{visibleData[0] ? formatDate(visibleData[0].date, dateFormat) : ''}</span>
+            <span>{visibleData.length ? formatDate(visibleData[visibleData.length - 1].date, dateFormat) : ''}</span>
           </div>
         </div>
       )}

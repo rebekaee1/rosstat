@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { formatDate, formatValueWithUnit, unitSuffix } from '../lib/format';
 
-export default function ForecastTable({ mode = 'inflation', inflation, forecastData, unit = '%' }) {
+export default function ForecastTable({ mode = 'inflation', inflation, forecastData, unit = '%', dateFormat = 'full' }) {
   const ref = useRef(null);
 
   useEffect(() => {
@@ -63,7 +63,7 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
             {rows.map(row => (
               <tr key={row.date} className="border-t border-border-subtle hover:bg-surface-hover transition-colors">
                 <td className="px-5 py-2.5 text-text-secondary font-mono text-xs">
-                  {formatDate(row.date, 'full')}
+                  {formatDate(row.date, dateFormat)}
                 </td>
                 <td className="px-5 py-2.5 text-right font-mono font-medium text-champagne">
                   {formatValueWithUnit(row.value, unit)}

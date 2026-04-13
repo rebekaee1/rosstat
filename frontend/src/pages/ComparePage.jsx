@@ -98,28 +98,44 @@ export default function ComparePage() {
 
     const adjA = isCpiIndex(codeA);
     const adjB = isCpiIndex(codeB);
-    const dateMap = new Map();
-    for (const p of pointsA) {
-      dateMap.set(p.date, { date: p.date, valA: adjA ? p.value - 100 : p.value, valA_unit: indA?.unit || '%' });
-    }
-    for (const p of pointsB) {
-      const existing = dateMap.get(p.date) || { date: p.date };
-      existing.valB = adjB ? p.value - 100 : p.value;
-      existing.valB_unit = indB?.unit || '%';
-      dateMap.set(p.date, existing);
-    }
 
-    const all = [...dateMap.values()].sort((a, b) => a.date.localeCompare(b.date));
+    const mapA = new Map(pointsA.map((p) => [p.date, adjA ? p.value - 100 : p.value]));
+    const mapB = new Map(pointsB.map((p) => [p.date, adjB ? p.value - 100 : p.value]));
+
+    const allDates = [...new Set([...mapA.keys(), ...mapB.keys()])].sort();
+    if (allDates.length === 0) return [];
 
     const rangeOpt = RANGE_OPTIONS.find((r) => r.key === range);
-    if (!rangeOpt?.months || all.length === 0) return all;
+    let dates = allDates;
+    let lastA = null;
+    let lastB = null;
 
-    const last = new Date(all[all.length - 1].date);
-    const cutoff = new Date(last);
-    cutoff.setUTCMonth(cutoff.getUTCMonth() - rangeOpt.months);
-    const cutoffStr = cutoff.toISOString().slice(0, 10);
+    if (rangeOpt?.months) {
+      const last = new Date(allDates[allDates.length - 1]);
+      const cutoff = new Date(last);
+      cutoff.setUTCMonth(cutoff.getUTCMonth() - rangeOpt.months);
+      const cutoffStr = cutoff.toISOString().slice(0, 10);
 
-    return all.filter((p) => p.date >= cutoffStr);
+      for (const d of allDates) {
+        if (d >= cutoffStr) break;
+        if (mapA.has(d)) lastA = mapA.get(d);
+        if (mapB.has(d)) lastB = mapB.get(d);
+      }
+
+      dates = allDates.filter((d) => d >= cutoffStr);
+    }
+
+    const unitA = indA?.unit || '%';
+    const unitB = indB?.unit || '%';
+
+    return dates.map((d) => {
+      if (mapA.has(d)) lastA = mapA.get(d);
+      if (mapB.has(d)) lastB = mapB.get(d);
+      const row = { date: d };
+      if (lastA != null) { row.valA = lastA; row.valA_unit = unitA; }
+      if (lastB != null) { row.valB = lastB; row.valB_unit = unitB; }
+      return row;
+    });
   }, [dataA, dataB, indA, indB, range, codeA, codeB]);
 
   const hasData = chartData.length > 0 && (codeA || codeB);
@@ -271,7 +287,7 @@ export default function ComparePage() {
                     stroke={COLOR_A}
                     strokeWidth={2}
                     dot={false}
-                    connectNulls={false}
+                    connectNulls
                     isAnimationActive={false}
                   />
                 )}
@@ -284,7 +300,7 @@ export default function ComparePage() {
                     stroke={COLOR_B}
                     strokeWidth={2}
                     dot={false}
-                    connectNulls={false}
+                    connectNulls
                     isAnimationActive={false}
                   />
                 )}

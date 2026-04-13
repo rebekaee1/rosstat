@@ -19,11 +19,9 @@ STATIC_PAGES = [
     ("/", "daily", "1.0"),
     ("/about", "monthly", "0.5"),
     ("/privacy", "monthly", "0.3"),
-    ("/compare", "weekly", "0.6"),
-    ("/calendar", "daily", "0.7"),
     ("/calculator", "monthly", "0.6"),
-    ("/widgets", "monthly", "0.4"),
     ("/demographics", "monthly", "0.7"),
+    # Hidden from nav until ready: /compare, /calendar, /widgets
 ]
 
 CATEGORIES = [
