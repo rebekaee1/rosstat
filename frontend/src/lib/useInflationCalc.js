@@ -145,7 +145,7 @@ export default function useInflationCalc(amount, fromYear, toYear) {
 
     const effectiveFrom = Math.max(fromYear, minYear);
     const effectiveTo = Math.min(toYear, lastAvailableYear);
-    if (effectiveFrom >= effectiveTo) {
+    if (effectiveFrom > effectiveTo) {
       return {
         ...base,
         result: {

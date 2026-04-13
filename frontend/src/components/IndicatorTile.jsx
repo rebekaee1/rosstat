@@ -5,7 +5,7 @@ import { TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
 import { formatValue, formatChange, formatDate, cn, isCpiIndex, relativeTime } from '../lib/format';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
 
-export default function IndicatorTile({ indicator, delay = 0 }) {
+export default function IndicatorTile({ indicator, delay = 0, displayOverride }) {
   const ref = useRef(null);
   const glowRef = useRef(null);
 
@@ -28,13 +28,16 @@ export default function IndicatorTile({ indicator, delay = 0 }) {
     glowRef.current.style.setProperty('--mouse-y', `${y}px`);
   };
 
-  const changeNum = indicator.change != null ? Number(indicator.change) : null;
+  const rawChange = displayOverride ? displayOverride.change : indicator.change;
+  const changeNum = rawChange != null ? Number(rawChange) : null;
   const isUp = changeNum != null && changeNum > 0;
   const isDown = changeNum != null && changeNum < 0;
   const isActive = indicator.is_active;
-  const displayVal = isCpiIndex(indicator.code)
-    ? (indicator.current_value != null ? Number(indicator.current_value) - 100 : null)
-    : indicator.current_value;
+  const displayVal = displayOverride
+    ? displayOverride.value
+    : isCpiIndex(indicator.code)
+      ? (indicator.current_value != null ? Number(indicator.current_value) - 100 : null)
+      : indicator.current_value;
 
   return (
     <Link

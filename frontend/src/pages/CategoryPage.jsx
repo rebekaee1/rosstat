@@ -77,9 +77,9 @@ export default function CategoryPage() {
   }
 
   const HIDDEN_CODES = new Set(['inflation-annual', 'inflation-quarterly', 'inflation-weekly']);
-  const filtered = (indicators ?? [])
-    .filter((i) => i.category === cat.apiCategory)
-    .filter((i) => !HIDDEN_CODES.has(i.code));
+  const allIndicators = (indicators ?? []).filter((i) => i.category === cat.apiCategory);
+  const annualInflation = allIndicators.find((i) => i.code === 'inflation-annual');
+  const filtered = allIndicators.filter((i) => !HIDDEN_CODES.has(i.code));
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 pt-20 pb-24">
@@ -149,7 +149,16 @@ export default function CategoryPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {filtered.map((ind, i) => (
-              <IndicatorTile key={ind.code} indicator={ind} delay={i} />
+              <IndicatorTile
+                key={ind.code}
+                indicator={ind}
+                delay={i}
+                displayOverride={
+                  ind.code === 'cpi' && annualInflation
+                    ? { value: annualInflation.current_value, change: annualInflation.change }
+                    : undefined
+                }
+              />
             ))}
           </div>
         )}
