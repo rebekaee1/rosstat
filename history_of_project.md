@@ -1102,3 +1102,32 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 5. `seed_data.py` → добавлен `backfill_max_pages=1` для inflation-weekly
 
 **Deploy**: коммит `c732925`, push → GitHub, `deploy.sh` → Docker rebuild OK, smoke OK
+
+### 2026-04-13: Переход weekly CPI на Росстат XLSX (замена inflation-monitor.ru)
+**Проблема**: парсер `rosstat_weekly_inflation_parser.py` использовал сторонний сайт inflation-monitor.ru как источник. Пользователь указал что нужен Росстат напрямую. Кроме того, inflation-monitor.ru имел только ~1 год данных → кнопки диапазона (3 года, 5 лет) не работали.
+
+**Исследование источников Росстата:**
+- `Nedel_ipc.xlsx` (`rosstat.gov.ru/storage/mediabank/Nedel_ipc.xlsx`) — покомпонентные недельные ИПЦ, ~110 товаров, листы по годам 2022-2026
+- `ipc_spr_MM-YYYY.xlsx` — помесячная справка с весами корзины (структура потребительских расходов)
+- Агрегатного недельного ИПЦ в XLSX нет — только покомпонентный
+- Можно вычислить взвешенное среднее: 110/110 продуктов совпали между файлами, суммарный вес 42.943%
+
+**Решение**: полная перепись парсера:
+- Скачивает `Nedel_ipc.xlsx` (verify=False для SSL) — per-product weekly CPI
+- Скачивает `ipc_spr` — весá из справки
+- Для каждой недели вычисляет `weighted_avg = Σ(w_i × CPI_i) / Σ(w_i)` по ~110 товарам
+- Даты парсятся из заголовков: "на 10 января" → date(year, 1, 10)
+- Результат: 216 точек за 2022-01-10 .. 2026-04-06
+
+**Файлы**: `backend/app/services/rosstat_weekly_inflation_parser.py` (полная перепись), `frontend/src/pages/IndicatorDetail.jsx` (обновлена методология)
+
+**Верификация на production:**
+- API `/api/v1/indicators/inflation-weekly/data`: 216 точек, годы 2022-2026
+- График заполнен, ось X: янв 2022 — апр 2026
+- Кнопка "3 года": отсекает до апр 2023 ✓
+- Кнопка "5 лет": показывает весь диапазон (данных ~4.3 года) ✓
+- Кнопка "Все": полный диапазон ✓
+- Телеметрия: текущее, предыдущее, максимум, среднее — корректно
+- Console errors: нет
+
+**Deploy**: коммиты `9087a0b`, `8c198a7`, push → GitHub, `deploy.sh` → Docker rebuild (frontend + backend) OK, smoke OK
