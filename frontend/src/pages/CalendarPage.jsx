@@ -75,14 +75,15 @@ const FAQ_ITEMS = [
 export default function CalendarPage() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const now = new Date();
+  const [initYear] = useState(() => new Date().getFullYear());
+  const [initMonth] = useState(() => new Date().getMonth());
   const [year, setYear] = useState(() => {
     const p = parseInt(searchParams.get('y'), 10);
-    return isNaN(p) ? now.getFullYear() : p;
+    return isNaN(p) ? initYear : p;
   });
   const [month, setMonth] = useState(() => {
     const p = parseInt(searchParams.get('m'), 10);
-    return isNaN(p) ? now.getMonth() : Math.max(0, Math.min(11, p));
+    return isNaN(p) ? initMonth : Math.max(0, Math.min(11, p));
   });
   const [source, setSource] = useState(searchParams.get('source') || '');
   const [selectedDate, setSelectedDate] = useState(null);
@@ -97,12 +98,12 @@ export default function CalendarPage() {
 
   const syncParams = useCallback((y, m, src) => {
     const next = new URLSearchParams(searchParams);
-    const isCurrentMonth = y === now.getFullYear() && m === now.getMonth();
+    const isCurrentMonth = y === initYear && m === initMonth;
     if (isCurrentMonth) { next.delete('y'); next.delete('m'); }
     else { next.set('y', String(y)); next.set('m', String(m)); }
     if (src) next.set('source', src); else next.delete('source');
     setSearchParams(next, { replace: true });
-  }, [searchParams, setSearchParams, now]);
+  }, [searchParams, setSearchParams, initYear, initMonth]);
 
   const goMonth = useCallback((delta) => {
     let newMonth = month + delta;
@@ -139,7 +140,10 @@ export default function CalendarPage() {
 
   const allEvents = data?.events || [];
 
-  const todayStr = now.toISOString().slice(0, 10);
+  const todayStr = useMemo(() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }, []);
 
   const visibleEvents = useMemo(() => {
     if (!selectedDate) return allEvents;

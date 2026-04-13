@@ -21,7 +21,7 @@ from app.services.rosstat_labor_parser import RosstatLaborParser
 from app.services.rosstat_gdp_parser import RosstatGdpParser
 from app.services.data_validator import validate_points
 from app.services.fetcher import RosstatFetcher
-from app.services.upsert import upsert_indicator_data
+from app.services.upsert import bulk_upsert
 from app.services.forecast_pipeline import retrain_indicator_forecast
 from app.services.parser import parse_cpi_sheet
 from app.core.cache import cache_invalidate_indicator
@@ -66,36 +66,22 @@ class RosstatCpiParser(BaseParser):
                 await db.commit()
                 return
 
-            count_before = (await db.execute(
-                select(func.count(IndicatorData.id))
-                .where(IndicatorData.indicator_id == indicator.id)
-            )).scalar() or 0
-
-            for point in points:
-                await db.execute(upsert_indicator_data(indicator.id, point.date, point.value))
-
-            await db.flush()
-            count_after = (await db.execute(
-                select(func.count(IndicatorData.id))
-                .where(IndicatorData.indicator_id == indicator.id)
-            )).scalar() or 0
-
-            records_added = count_after - count_before
+            records_added, records_updated = await bulk_upsert(db, indicator.id, points)
             logger.info(
-                "Upserted %d new records for '%s' (total: %d)",
-                records_added, indicator_code, count_after,
+                "Upserted %d new, %d updated for '%s'",
+                records_added, records_updated, indicator_code,
             )
             fetch_log.records_added = records_added
 
-            if records_added > 0:
+            if records_added > 0 or records_updated > 0:
                 await retrain_indicator_forecast(db, indicator)
                 await cache_invalidate_indicator(indicator_code)
 
-            fetch_log.status = "success" if records_added > 0 else "no_new_data"
+            fetch_log.status = "success" if (records_added > 0 or records_updated > 0) else "no_new_data"
             fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
             await db.commit()
 
-            logger.info("ETL complete for '%s': %d new records", indicator_code, records_added)
+            logger.info("ETL complete for '%s': %d new, %d updated", indicator_code, records_added, records_updated)
 
         except Exception as e:
             logger.exception("ETL failed for '%s'", indicator_code)

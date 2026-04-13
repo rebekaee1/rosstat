@@ -55,7 +55,9 @@ async def get_forecast(code: str, db: AsyncSession = Depends(get_db)):
     forecast = fc.scalar_one_or_none()
 
     if not forecast:
-        return ForecastResponse(indicator=code, forecast=None)
+        response = ForecastResponse(indicator=code, forecast=None)
+        await cache_set(f"fe:{code}:forecast", response.model_dump(mode="json"), 300)
+        return response
 
     vals = await db.execute(
         select(ForecastValue)

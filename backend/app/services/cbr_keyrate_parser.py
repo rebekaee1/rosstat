@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import FetchLog, Indicator, IndicatorData
 from app.services.base_parser import BaseParser
-from app.services.upsert import upsert_indicator_data
+from app.services.upsert import bulk_upsert
 from app.services.cbr_keyrate import DataPoint, fetch_key_rate_html, parse_keyrate_html
 from app.services.data_validator import validate_points
 from app.services.forecast_pipeline import clear_current_forecasts, retrain_indicator_forecast
@@ -62,40 +62,27 @@ class CbrKeyRateParser(BaseParser):
                 await db.commit()
                 return
 
-            count_before = (
-                await db.execute(
-                    select(func.count(IndicatorData.id)).where(IndicatorData.indicator_id == indicator.id)
-                )
-            ).scalar() or 0
-
-            for point in points:
-                await db.execute(upsert_indicator_data(indicator.id, point.date, point.value))
-
-            await db.flush()
-            count_after = (
-                await db.execute(
-                    select(func.count(IndicatorData.id)).where(IndicatorData.indicator_id == indicator.id)
-                )
-            ).scalar() or 0
-
-            records_added = count_after - count_before
+            records_added, records_updated = await bulk_upsert(db, indicator.id, points)
+            logger.info(
+                "Upserted %d new, %d updated for '%s'",
+                records_added, records_updated, code,
+            )
             fetch_log.records_added = records_added
-            logger.info("Key rate '%s': +%d rows (total %d)", code, records_added, count_after)
 
             steps = int((indicator.model_config_json or {}).get("forecast_steps", 12) or 0)
             removed_forecasts = 0
             if steps > 0:
-                if records_added > 0:
+                if records_added > 0 or records_updated > 0:
                     await retrain_indicator_forecast(db, indicator)
             else:
                 removed_forecasts = await clear_current_forecasts(db, indicator)
                 if removed_forecasts:
                     logger.info("Removed %d stale forecast(s) for '%s'", removed_forecasts, code)
 
-            if records_added > 0 or removed_forecasts > 0:
+            if records_added > 0 or records_updated > 0 or removed_forecasts > 0:
                 await cache_invalidate_indicator(code)
 
-            fetch_log.status = "success" if records_added > 0 else "no_new_data"
+            fetch_log.status = "success" if (records_added > 0 or records_updated > 0) else "no_new_data"
             fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
             await db.commit()
 

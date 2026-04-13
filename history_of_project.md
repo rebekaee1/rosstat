@@ -1148,3 +1148,54 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 
 **Файлы**: `IndicatorTile.jsx`, `CategoryPage.jsx`, `useInflationCalc.js`
 **Коммит**: `50e06d4`, push в main. Деплой требует SSH (ключ не настроен в текущем окружении)
+
+### 2026-04-13: Batch fix — deltaSuffix, refetch coverage, CompareTooltip, HIDDEN_CODES
+
+**Процесс**: runtime debug с инструментацией (session c9950e), гипотезы H1–H5.
+
+**H5 — deltaSuffix «к пред. месяцу» на вкладке «Годовая»** (ПОДТВЕРЖДЕНО логами)
+- Было: на вкладке «Годовая» IndicatorDetail показывал `deltaSuffix: "к пред. месяцу"` — вводило в заблуждение
+- Стало: `"к пред. значению"` — нейтральная формулировка для скользящего годового окна
+- Файл: `IndicatorDetail.jsx`
+
+**H2 — refetchIndicatorPage не покрывал inflation/forecast**
+- Было: при retry загружались только `indicator` и `data`, но не `inflation` и `forecast`
+- Стало: добавлены `refetchInflation()` и `refetchForecast()` в `refetchIndicatorPage`
+- Файл: `IndicatorDetail.jsx`
+
+**H1 — CompareTooltip рендерил `false` для null-значений**
+- Было: `payload.map(p => p.value != null && (...))` — возвращал `false` в JSX
+- Стало: `payload.filter(p => p.value != null).map(...)` — чистый рендер
+- Файл: `ComparePage.jsx`
+
+**Дедупликация HIDDEN_CODES**
+- Было: `CategoryPage.jsx` дублировал `HIDDEN_CODES` Set, уже определённый как `HIDDEN_FROM_LISTING` в `categories.js`
+- Стало: импорт `HIDDEN_FROM_LISTING` из `categories.js`
+- Файл: `CategoryPage.jsx`
+
+**H4 — Navbar «Онлайн» захардкожен**: отложен, `/system/status` возвращает 403 на production (endpoint защищён).
+
+**Коммит**: `96e434f`, push в main, деплой на production OK (sshpass → deploy.sh → Docker rebuild → smoke OK)
+
+### 2026-04-13: Миграция 22 ETL-парсеров на bulk_upsert
+
+**Контекст**: замена старого паттерна count_before/for-loop upsert_indicator_data/count_after на единый вызов `bulk_upsert(db, indicator.id, points)` → returns `(records_added, records_updated)`.
+
+**Изменения в каждом файле**:
+1. Импорт: `upsert_indicator_data` → `bulk_upsert`
+2. Удалён блок count_before / for-loop / flush / count_after / records_added вычисление
+3. Заменён на `records_added, records_updated = await bulk_upsert(...)`
+4. Логирование: единый формат `"Upserted %d new, %d updated for '%s'"`
+5. Условия retrain/cache: `records_added > 0 or records_updated > 0`
+6. Статус: `"success" if (records_added > 0 or records_updated > 0) else "no_new_data"`
+7. Удалены неиспользуемые импорты `func`, `select`, `IndicatorData` где они больше не нужны
+
+**Файлы** (22 шт): cbr_ruonia_parser, rosstat_fixedassets_parser, rosstat_ipi_parser, cbr_reserves_parser, minfin_budget_parser, cbr_fx_parser, cbr_monetary_parser, rosstat_ppi_parser, cbr_debt_parser, cbr_bop_parser, rosstat_gdp_parser, rosstat_demo_parser, rosstat_housing_parser, rosstat_ind_parser, rosstat_science_parser, rosstat_labor_parser, rosstat_weekly_inflation_parser, cbr_keyrate_parser, cbr_gold_parser, cbr_dataservice_sum_parser, cbr_dataservice_parser, rosstat_population_parser
+
+**Специальные случаи**:
+- `cbr_monetary_parser`: создаётся points из parsed `[(row[0], row[col_index+1]) for row in parsed]`
+- `cbr_dataservice_parser`: value_divisor трансформация применяется к points ДО bulk_upsert
+- `cbr_dataservice_sum_parser`: points собираются из sums dict ДО bulk_upsert
+- `cbr_keyrate_parser`: сохранена специальная логика clear_current_forecasts
+- `rosstat_weekly_inflation_parser`: сохранён `select` (нужен для existing_dates запроса), убран только `func`
+- Файлы с `existing_n` запросом (ruonia, reserves, fx, monetary, gold, keyrate): `func`, `select`, `IndicatorData` сохранены

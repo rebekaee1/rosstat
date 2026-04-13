@@ -22,12 +22,11 @@ from collections import defaultdict
 from datetime import date, datetime, timezone
 from typing import ClassVar
 
-from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models import FetchLog, Indicator, IndicatorData
+from app.models import FetchLog, Indicator
 from app.services.base_parser import BaseParser
-from app.services.upsert import upsert_indicator_data
+from app.services.upsert import bulk_upsert
 from app.services.cbr_dataservice_parser import fetch_dataservice
 from app.services.forecast_pipeline import retrain_indicator_forecast
 from app.core.cache import cache_invalidate_indicator
@@ -79,32 +78,22 @@ class CbrDataServiceSumParser(BaseParser):
                 await db.commit()
                 return
 
-            count_before = (await db.execute(
-                select(func.count(IndicatorData.id))
-                .where(IndicatorData.indicator_id == indicator.id)
-            )).scalar() or 0
-
-            for dt in sorted(sums):
-                await db.execute(upsert_indicator_data(indicator.id, dt, round(sums[dt], 2)))
-
-            await db.flush()
-            count_after = (await db.execute(
-                select(func.count(IndicatorData.id))
-                .where(IndicatorData.indicator_id == indicator.id)
-            )).scalar() or 0
-
-            records_added = count_after - count_before
+            points = [(dt, round(sums[dt], 2)) for dt in sorted(sums)]
+            records_added, records_updated = await bulk_upsert(db, indicator.id, points)
+            logger.info(
+                "Upserted %d new, %d updated for '%s'",
+                records_added, records_updated, code,
+            )
             fetch_log.records_added = records_added
-            logger.info("DataServiceSum '%s': +%d rows (total %d)", code, records_added, count_after)
 
             steps = int(cfg.get("forecast_steps", 0) or 0)
-            if steps > 0 and records_added > 0:
+            if steps > 0 and (records_added > 0 or records_updated > 0):
                 await retrain_indicator_forecast(db, indicator)
 
-            if records_added > 0:
+            if records_added > 0 or records_updated > 0:
                 await cache_invalidate_indicator(code)
 
-            fetch_log.status = "success" if records_added > 0 else "no_new_data"
+            fetch_log.status = "success" if (records_added > 0 or records_updated > 0) else "no_new_data"
             fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
             await db.commit()
 

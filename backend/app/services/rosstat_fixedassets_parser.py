@@ -16,14 +16,13 @@ from datetime import date, datetime, timezone
 from typing import ClassVar
 
 import openpyxl
-from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
-from app.models import Indicator, IndicatorData, FetchLog
+from app.models import Indicator, FetchLog
 from app.services.http_client import create_session
 from app.services.base_parser import BaseParser
-from app.services.upsert import upsert_indicator_data
+from app.services.upsert import bulk_upsert
 from app.core.cache import cache_invalidate_indicator
 
 logger = logging.getLogger(__name__)
@@ -127,27 +126,19 @@ class RosstatFixedAssetsParser(BaseParser):
                 logger.warning("%s: filtered out %d invalid values", code, len(points) - len(valid_points))
             points = valid_points
 
-            count_before = (await db.execute(
-                select(func.count(IndicatorData.id))
-                .where(IndicatorData.indicator_id == indicator.id)
-            )).scalar() or 0
-
-            for p in points:
-                await db.execute(upsert_indicator_data(indicator.id, p.date, p.value))
-            await db.flush()
-
-            count_after = (await db.execute(
-                select(func.count(IndicatorData.id))
-                .where(IndicatorData.indicator_id == indicator.id)
-            )).scalar() or 0
-
-            records_added = count_after - count_before
-            fetch_log.status = "success"
+            records_added, records_updated = await bulk_upsert(db, indicator.id, points)
+            logger.info(
+                "Upserted %d new, %d updated for '%s'",
+                records_added, records_updated, code,
+            )
             fetch_log.records_added = records_added
+
+            if records_added > 0 or records_updated > 0:
+                await cache_invalidate_indicator(code)
+
+            fetch_log.status = "success" if (records_added > 0 or records_updated > 0) else "no_new_data"
             fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
             await db.commit()
-            await cache_invalidate_indicator(code)
-            logger.info("depreciation-rate: upserted %d new points (of %d)", records_added, len(points))
         except Exception as exc:
             await db.rollback()
             fetch_log.status = "failed"

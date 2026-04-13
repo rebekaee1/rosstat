@@ -91,7 +91,11 @@ async def retrain_indicator_forecast(db: AsyncSession, indicator: Indicator) -> 
     all_data = data_q.scalars().all()
 
     if len(all_data) < 36:
-        logger.warning("Not enough data for forecast (%d points)", len(all_data))
+        removed = await clear_current_forecasts(db, indicator)
+        logger.warning(
+            "Not enough data for forecast (%d points), removed %d stale forecast(s)",
+            len(all_data), removed,
+        )
         return
 
     dates = [d.date for d in all_data]
