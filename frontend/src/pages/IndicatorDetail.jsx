@@ -523,10 +523,10 @@ export default function IndicatorDetail() {
     isFetching: fetchingData,
   } = useIndicatorData(code);
   const { data: stats } = useIndicatorStats(code);
-  const { data: inflationResp, isLoading: loadingInflation } = useInflation(code, {
+  const { data: inflationResp, isLoading: loadingInflation, refetch: refetchInflation } = useInflation(code, {
     enabled: isPriceCategory,
   });
-  const { data: forecastResp } = useForecast(code);
+  const { data: forecastResp, refetch: refetchForecast } = useForecast(code);
 
   const hasCpiTabs = code === 'cpi';
   const {
@@ -664,6 +664,7 @@ export default function IndicatorDetail() {
     : inflationStats;
   const cpiPrevDate = dataPoints.length >= 2 ? dataPoints[dataPoints.length - 2].date : null;
 
+
   const handleChartData = useCallback((data) => {
     setChartData(data);
   }, []);
@@ -718,7 +719,9 @@ export default function IndicatorDetail() {
   const refetchIndicatorPage = useCallback(() => {
     refetchInd();
     refetchData();
-  }, [refetchInd, refetchData]);
+    if (isPriceCategory) refetchInflation();
+    refetchForecast();
+  }, [refetchInd, refetchData, refetchInflation, refetchForecast, isPriceCategory]);
 
   const apiBannerFetching = fetchingInd || fetchingData;
 
@@ -823,7 +826,7 @@ export default function IndicatorDetail() {
               delay={0}
               deltaSuffix={
                 viewMode === 'quarterly' ? 'к пред. кварталу'
-                  : viewMode === 'annual' ? 'к пред. месяцу'
+                  : viewMode === 'annual' ? 'к пред. значению'
                   : viewMode === 'weekly' ? 'к пред. неделе'
                   : indicator?.frequency === 'quarterly' ? 'к пред. кварталу'
                   : isPriceCategory ? 'к пред. месяцу' : 'к пред. значению'

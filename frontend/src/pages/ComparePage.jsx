@@ -45,11 +45,11 @@ function IndicatorSelector({ value, onChange, indicators, label, disabled }) {
 function CompareTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
 
+
   return (
     <div className="glass-surface rounded-xl border border-border-subtle px-4 py-3 shadow-2xl min-w-[220px]">
       <p className="text-xs font-mono text-text-tertiary mb-2">{formatDate(label, 'full')}</p>
-      {payload.map((p) => (
-        p.value != null && (
+      {payload.filter((p) => p.value != null).map((p) => (
           <div key={p.dataKey} className="flex items-center justify-between gap-4 mb-1">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
@@ -59,7 +59,6 @@ function CompareTooltip({ active, payload, label }) {
               {formatValueWithUnit(p.value, p.payload?.[`${p.dataKey}_unit`] || '%')}
             </span>
           </div>
-        )
       ))}
     </div>
   );

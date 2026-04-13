@@ -5,7 +5,7 @@ import { useIndicators } from '../lib/hooks';
 import useDocumentMeta from '../lib/useMeta';
 import IndicatorTile from '../components/IndicatorTile';
 import { TileSkeleton } from '../components/Skeleton';
-import { getCategoryBySlug } from '../lib/categories';
+import { getCategoryBySlug, HIDDEN_FROM_LISTING } from '../lib/categories';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 
 const CATEGORY_FEATURES = {
@@ -76,10 +76,9 @@ export default function CategoryPage() {
     );
   }
 
-  const HIDDEN_CODES = new Set(['inflation-annual', 'inflation-quarterly', 'inflation-weekly']);
   const allIndicators = (indicators ?? []).filter((i) => i.category === cat.apiCategory);
   const annualInflation = allIndicators.find((i) => i.code === 'inflation-annual');
-  const filtered = allIndicators.filter((i) => !HIDDEN_CODES.has(i.code));
+  const filtered = allIndicators.filter((i) => !HIDDEN_FROM_LISTING.has(i.code));
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 pt-20 pb-24">
