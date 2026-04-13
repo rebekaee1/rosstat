@@ -391,7 +391,7 @@ const WEEKLY_DESCRIPTION =
   'Публикуется еженедельно, является оперативным индикатором инфляционных процессов.';
 
 const WEEKLY_METHODOLOGY =
-  'Данные Росстата (публикация через inflation-monitor.ru). Значение 100 = без изменений.';
+  'Данные Росстата (XLSX nedel_Ipc.xlsx). Взвешенное среднее ~110 товаров. Значение 100 = без изменений.';
 
 function TelemetryCard({
   label, value, unit, change, pctChange, meta, delay = 0,
