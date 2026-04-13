@@ -1131,3 +1131,20 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 - Console errors: нет
 
 **Deploy**: коммиты `9087a0b`, `8c198a7`, push → GitHub, `deploy.sh` → Docker rebuild (frontend + backend) OK, smoke OK
+
+### 2026-04-13: BUG-1 + BUG-3 — CPI карточка + калькулятор одного года
+**Контекст**: видео-аудит V2, пользователь подтвердил что BUG-2 (GSAP opacity) не воспроизводится.
+
+**BUG-1 — CPI карточка на /category/prices показывала 0.60% вместо 5.87%**
+- Причина: `IndicatorTile` для CPI кодов делал `current_value - 100` → 100.60 - 100 = 0.60 (месячный ИПЦ)
+- Решение: `CategoryPage` извлекает `inflation-annual` из полного списка индикаторов, передаёт `displayOverride` в `IndicatorTile` для CPI карточки
+- `IndicatorTile` принимает `displayOverride` проп, который переопределяет значение и change
+- Результат: CPI карточка показывает 5.87% (годовая инфляция) и Δ-0.05
+
+**BUG-3 — Калькулятор from=to возвращал 0%**
+- Причина: `effectiveFrom >= effectiveTo` → при одинаковом годе (2015→2015) возвращал пустой результат
+- Решение: `>=` → `>` в `useInflationCalc.js`
+- Результат: 2015→2015 теперь корректно считает 12.91%
+
+**Файлы**: `IndicatorTile.jsx`, `CategoryPage.jsx`, `useInflationCalc.js`
+**Коммит**: `50e06d4`, push в main. Деплой требует SSH (ключ не настроен в текущем окружении)
