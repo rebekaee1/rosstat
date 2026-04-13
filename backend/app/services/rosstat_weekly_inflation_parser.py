@@ -1,12 +1,13 @@
 """ETL: Еженедельный ИПЦ → IndicatorData.
 
-Росстат публикует агрегатный недельный ИПЦ в пресс-релизах (не в XLSX).
-XLSX `nedel_Ipc.xlsx` содержит только per-product индексы без итога.
+Источник: Росстат XLSX — rosstat.gov.ru/storage/mediabank/
 
-Стратегия:
-  Парсим inflation-monitor.ru/weekly_inflation — структурированное зеркало
-  данных Росстата. Таблица 0 = агрегатный ИПЦ (столбец «За неделю Росстат»).
-  Обходим пагинацию «Пред.» для backfill.
+Файлы:
+  - Nedel_ipc.xlsx  — покомпонентные недельные ИПЦ (~110 товаров), листы по годам (2022-2026+)
+  - ipc_spr_MM-YYYY.xlsx — помесячная справка с весами корзины (структура расходов)
+
+Для каждой недели вычисляется взвешенное среднее ИПЦ по всем продуктам
+из недельного файла, используя веса из справки.
 """
 
 from __future__ import annotations
@@ -14,13 +15,14 @@ from __future__ import annotations
 import asyncio
 import logging
 import re
-import time
 from dataclasses import dataclass
 from datetime import date, datetime, timezone
+from difflib import get_close_matches
+from io import BytesIO
 from typing import ClassVar
 
+import openpyxl
 import requests
-from bs4 import BeautifulSoup
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -32,9 +34,21 @@ from app.core.cache import cache_invalidate_indicator
 
 logger = logging.getLogger(__name__)
 
-BASE_URL = "https://inflation-monitor.ru/weekly_inflation"
-_DATE_RANGE_RE = re.compile(r"(\d{2}\.\d{2})(?:\.\d{4})?\s*-\s*(\d{2})\.(\d{2})\.(\d{4})")
-_PREV_RE = re.compile(r"Пред", re.IGNORECASE)
+NEDEL_IPC_URL = "https://rosstat.gov.ru/storage/mediabank/Nedel_ipc.xlsx"
+IPC_SPR_URL = "https://rosstat.gov.ru/storage/mediabank/ipc_spr_{mm}-{yyyy}.xlsx"
+
+_MONTH_MAP = {
+    "января": 1, "февраля": 2, "марта": 3, "апреля": 4,
+    "мая": 5, "июня": 6, "июля": 7, "августа": 8,
+    "сентября": 9, "октября": 10, "ноября": 11, "декабря": 12,
+}
+
+_HEADER_RE = re.compile(
+    r"на\s+(\d{1,2})\s+("
+    + "|".join(_MONTH_MAP.keys())
+    + r")",
+    re.IGNORECASE,
+)
 
 
 @dataclass
@@ -43,176 +57,174 @@ class WeeklyPoint:
     value: float
 
 
-def _parse_week_catalog(html: bytes) -> list[tuple[str, date]]:
-    """Extract all available weeks from the <select> dropdown.
+def _parse_column_date(header: str, year: int) -> date | None:
+    """Parse 'на 10 января **' → date(year, 1, 10)."""
+    m = _HEADER_RE.search(header)
+    if not m:
+        return None
+    day = int(m.group(1))
+    month = _MONTH_MAP.get(m.group(2).lower())
+    if month is None:
+        return None
+    try:
+        return date(year, month, day)
+    except ValueError:
+        return None
 
-    Returns list of (url_slug, period_end_date) sorted newest-first.
+
+def _load_weights(session: requests.Session) -> dict[str, float]:
+    """Download ipc_spr and extract per-product weights.
+
+    Tries recent months (descending) to find the latest available file.
+    Returns {product_name: weight}.
     """
-    soup = BeautifulSoup(html, "html.parser")
-    select = soup.find("select")
-    if not select:
-        return []
+    today = date.today()
+    for month_offset in range(0, 6):
+        m = today.month - month_offset
+        y = today.year
+        while m <= 0:
+            m += 12
+            y -= 1
+        url = IPC_SPR_URL.format(mm=f"{m:02d}", yyyy=y)
+        try:
+            r = session.get(url, timeout=30, verify=False)
+            if r.status_code == 200 and len(r.content) > 5000:
+                break
+        except requests.RequestException:
+            continue
+    else:
+        logger.warning("Could not download ipc_spr for weights")
+        return {}
 
-    weeks: list[tuple[str, date]] = []
-    for opt in select.find_all("option"):
-        slug = opt.get("value", "").strip()
-        text = opt.get_text(strip=True)
-        m = _DATE_RANGE_RE.search(text)
-        if not m or not slug:
+    wb = openpyxl.load_workbook(BytesIO(r.content), data_only=True)
+    sheet_name = None
+    for sn in reversed(wb.sheetnames):
+        if sn != "Содержание":
+            sheet_name = sn
+            break
+    if not sheet_name:
+        return {}
+
+    ws = wb[sheet_name]
+    weights: dict[str, float] = {}
+    for ri in range(7, ws.max_row + 1):
+        name = str(ws.cell(ri, 1).value or "").strip()
+        w_raw = ws.cell(ri, 3).value
+        if not name or w_raw is None:
             continue
         try:
-            end_date = date(int(m.group(4)), int(m.group(3)), int(m.group(2)))
-        except ValueError:
+            w = float(w_raw)
+        except (ValueError, TypeError):
             continue
-        weeks.append((slug, end_date))
-    return weeks
+        if w > 0:
+            weights[name] = w
+    return weights
 
 
-def _parse_page_value(html: bytes) -> float | None:
-    """Extract the Rosstat weekly CPI value from the ipc-table."""
-    soup = BeautifulSoup(html, "html.parser")
-    td = soup.find("td", class_="col-prod-week-rosstat")
-    if td:
-        raw = td.get_text(strip=True).replace("\u2212", "-").replace(",", ".")
-        try:
-            val = float(raw)
-            if 98 < val < 105:
-                return val
-        except ValueError:
-            pass
-
-    tables = soup.find_all("table")
-    if tables:
-        rows = tables[0].find_all("tr")
-        if rows:
-            cells = [c.get_text(strip=True) for c in rows[0].find_all(["td", "th"])]
-            if len(cells) >= 3:
-                raw = cells[2].replace("\u2212", "-").replace(",", ".")
-                try:
-                    val = float(raw)
-                    if 98 < val < 105:
-                        return val
-                except ValueError:
-                    pass
+def _match_weight(name: str, weights: dict[str, float],
+                  cache: dict[str, float | None]) -> float | None:
+    """Find the weight for a weekly product name, caching fuzzy results."""
+    if name in cache:
+        return cache[name]
+    w = weights.get(name)
+    if w is not None:
+        cache[name] = w
+        return w
+    close = get_close_matches(name, weights.keys(), n=1, cutoff=0.75)
+    if close:
+        w = weights[close[0]]
+        cache[name] = w
+        return w
+    cache[name] = None
     return None
 
 
-def fetch_weekly_cpi(max_pages: int = 900, existing_dates: set[date] | None = None) -> list[WeeklyPoint]:
-    """Fetch all available weekly CPI data points from inflation-monitor.ru.
+def _parse_weekly_xlsx(weekly_content: bytes, weights: dict[str, float]) -> list[WeeklyPoint]:
+    """Parse Nedel_ipc.xlsx and compute weighted-average weekly CPI."""
+    wb = openpyxl.load_workbook(BytesIO(weekly_content), data_only=True)
+    points: list[WeeklyPoint] = []
+    match_cache: dict[str, float | None] = {}
 
-    Strategy: parse the week-selector dropdown on the first page to discover
-    all available weeks, then fetch only the pages for dates not yet in DB.
-    Follows "Пред" (prev-year) pagination to backfill prior years.
-    """
+    for sheet_name in wb.sheetnames:
+        if sheet_name == "Содержание":
+            continue
+        try:
+            year = int(sheet_name)
+        except ValueError:
+            continue
+
+        ws = wb[sheet_name]
+        header_row = 4
+
+        col_dates: list[tuple[int, date]] = []
+        for ci in range(2, ws.max_column + 1):
+            hdr = str(ws.cell(header_row, ci).value or "")
+            d = _parse_column_date(hdr, year)
+            if d:
+                col_dates.append((ci, d))
+
+        if not col_dates:
+            continue
+
+        products: list[tuple[int, str, float]] = []
+        for ri in range(5, ws.max_row + 1):
+            name = str(ws.cell(ri, 1).value or "").strip()
+            if not name or name.startswith("*") or name.startswith("…"):
+                continue
+            w = _match_weight(name, weights, match_cache)
+            if w is None:
+                continue
+            products.append((ri, name, w))
+
+        for ci, d in col_dates:
+            weighted_sum = 0.0
+            weight_sum = 0.0
+            for ri, name, w in products:
+                raw = ws.cell(ri, ci).value
+                if raw is None or raw == "…" or raw == "":
+                    continue
+                try:
+                    val = float(str(raw).replace(",", ".").replace("\u2212", "-"))
+                except (ValueError, TypeError):
+                    continue
+                if 95 < val < 110:
+                    weighted_sum += w * val
+                    weight_sum += w
+
+            if weight_sum > 0:
+                aggregate = weighted_sum / weight_sum
+                points.append(WeeklyPoint(date=d, value=round(aggregate, 2)))
+
+    points.sort(key=lambda p: p.date)
+    return points
+
+
+def fetch_weekly_cpi(existing_dates: set[date] | None = None) -> list[WeeklyPoint]:
+    """Fetch weekly CPI from Rosstat XLSX files."""
     session = create_session()
     try:
-        points: list[WeeklyPoint] = []
-        existing = existing_dates or set()
-        seen_dates: set[date] = set()
+        session.verify = False
 
-        resp = session.get(BASE_URL, timeout=20)
-        if resp.status_code != 200:
-            logger.warning("HTTP %d for %s", resp.status_code, BASE_URL)
+        logger.info("Downloading Nedel_ipc.xlsx from rosstat.gov.ru")
+        r = session.get(NEDEL_IPC_URL, timeout=60)
+        if r.status_code != 200:
+            logger.warning("HTTP %d for %s", r.status_code, NEDEL_IPC_URL)
             return []
+        weekly_content = r.content
 
-        all_weeks = _parse_week_catalog(resp.content)
-        if not all_weeks:
-            logger.warning("No weeks found in <select> dropdown")
-            return []
-        logger.info("Weekly CPI: found %d weeks in catalog", len(all_weeks))
+        logger.info("Loading CPI weights from ipc_spr")
+        weights = _load_weights(session)
+        if not weights:
+            logger.warning("No weights available — using equal weights")
 
-        first_val = _parse_page_value(resp.content)
-        if first_val is not None and all_weeks:
-            first_date = all_weeks[0][1]
-            if first_date not in seen_dates:
-                seen_dates.add(first_date)
-                points.append(WeeklyPoint(date=first_date, value=first_val))
+        points = _parse_weekly_xlsx(weekly_content, weights)
+        logger.info("Rosstat weekly CPI: parsed %d total points", len(points))
 
-        new_count = 0
-        for slug, end_date in all_weeks[1:]:
-            if end_date in seen_dates:
-                continue
-            if end_date in existing:
-                continue
+        if existing_dates:
+            new_points = [p for p in points if p.date not in existing_dates]
+            logger.info("Weekly CPI: %d new points (filtered from %d)", len(new_points), len(points))
+            return new_points
 
-            url = f"{BASE_URL}/{slug}"
-            try:
-                r = session.get(url, timeout=20)
-                if r.status_code != 200:
-                    logger.debug("HTTP %d for %s", r.status_code, url)
-                    continue
-            except requests.RequestException as e:
-                logger.debug("Request failed for %s: %s", url, e)
-                continue
-
-            val = _parse_page_value(r.content)
-            if val is not None:
-                seen_dates.add(end_date)
-                points.append(WeeklyPoint(date=end_date, value=val))
-                new_count += 1
-
-            time.sleep(0.25)
-
-        prev_url = None
-        soup_first = BeautifulSoup(resp.content, "html.parser")
-        for a in soup_first.find_all("a", href=True):
-            if _PREV_RE.search(a.get_text(strip=True)):
-                href = a["href"]
-                if href.startswith("/"):
-                    prev_url = f"https://inflation-monitor.ru{href}"
-                elif href.startswith("http"):
-                    prev_url = href
-                break
-
-        pages_crawled = 0
-        while prev_url and pages_crawled < max_pages:
-            try:
-                r = session.get(prev_url, timeout=20)
-                if r.status_code != 200:
-                    break
-            except requests.RequestException:
-                break
-
-            year_weeks = _parse_week_catalog(r.content)
-            if not year_weeks:
-                break
-
-            all_existing = all(d in existing for _, d in year_weeks)
-            if all_existing and pages_crawled > 0:
-                break
-
-            for slug, end_date in year_weeks:
-                if end_date in seen_dates or end_date in existing:
-                    continue
-                page_url = f"{BASE_URL}/{slug}"
-                try:
-                    pr = session.get(page_url, timeout=20)
-                    if pr.status_code != 200:
-                        continue
-                except requests.RequestException:
-                    continue
-                val = _parse_page_value(pr.content)
-                if val is not None:
-                    seen_dates.add(end_date)
-                    points.append(WeeklyPoint(date=end_date, value=val))
-                    new_count += 1
-                time.sleep(0.25)
-
-            prev_url = None
-            for a in BeautifulSoup(r.content, "html.parser").find_all("a", href=True):
-                if _PREV_RE.search(a.get_text(strip=True)):
-                    href = a["href"]
-                    if href.startswith("/"):
-                        prev_url = f"https://inflation-monitor.ru{href}"
-                    elif href.startswith("http"):
-                        prev_url = href
-                    break
-
-            pages_crawled += 1
-            time.sleep(0.3)
-
-        logger.info("Weekly CPI: collected %d total points (%d new)", len(points), new_count)
-        points.sort(key=lambda p: p.date)
         return points
     finally:
         session.close()
@@ -230,18 +242,15 @@ class RosstatWeeklyCpiParser(BaseParser):
             )
             existing_dates = {row[0] for row in existing_q.fetchall()}
 
-            cfg = indicator.model_config_json or {}
-            max_pages = cfg.get("backfill_max_pages", 200)
             points = await asyncio.to_thread(
                 fetch_weekly_cpi,
-                max_pages=max_pages,
-                existing_dates=existing_dates,
+                existing_dates=None,
             )
-            fetch_log.source_url = BASE_URL
+            fetch_log.source_url = NEDEL_IPC_URL
 
             if not points:
                 fetch_log.status = "no_new_data"
-                fetch_log.error_message = "No weekly CPI data found on inflation-monitor.ru"
+                fetch_log.error_message = "No weekly CPI data parsed from Rosstat XLSX"
                 fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
                 await db.commit()
                 return
