@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ChevronRight, Users, ArrowRight } from 'lucide-react';
-import { useIndicators } from '../lib/hooks';
+import { useIndicators, useInflation } from '../lib/hooks';
 import useDocumentMeta from '../lib/useMeta';
 import IndicatorTile from '../components/IndicatorTile';
 import { TileSkeleton } from '../components/Skeleton';
@@ -76,9 +76,32 @@ export default function CategoryPage() {
     );
   }
 
+  const isPricesCategory = cat?.apiCategory === 'Цены';
+  const { data: foodInflResp } = useInflation('cpi-food', { enabled: isPricesCategory });
+  const { data: nonfoodInflResp } = useInflation('cpi-nonfood', { enabled: isPricesCategory });
+  const { data: servicesInflResp } = useInflation('cpi-services', { enabled: isPricesCategory });
+
   const allIndicators = (indicators ?? []).filter((i) => i.category === cat.apiCategory);
   const annualInflation = allIndicators.find((i) => i.code === 'inflation-annual');
   const filtered = allIndicators.filter((i) => !HIDDEN_FROM_LISTING.has(i.code));
+
+  const subInflationMap = useMemo(() => {
+    const map = {};
+    const sources = {
+      'cpi-food': foodInflResp,
+      'cpi-nonfood': nonfoodInflResp,
+      'cpi-services': servicesInflResp,
+    };
+    for (const [code, resp] of Object.entries(sources)) {
+      const a = resp?.actuals;
+      if (a?.length >= 2) {
+        const last = a[a.length - 1];
+        const prev = a[a.length - 2];
+        map[code] = { value: last.value, change: +(last.value - prev.value).toFixed(4) };
+      }
+    }
+    return map;
+  }, [foodInflResp, nonfoodInflResp, servicesInflResp]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 pt-20 pb-24">
@@ -155,7 +178,7 @@ export default function CategoryPage() {
                 displayOverride={
                   ind.code === 'cpi' && annualInflation
                     ? { value: annualInflation.current_value, change: annualInflation.change }
-                    : undefined
+                    : subInflationMap[ind.code]
                 }
               />
             ))}
