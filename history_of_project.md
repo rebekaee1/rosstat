@@ -1080,3 +1080,25 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 - Обновлён `model_config_json.backfill_max_pages = 1` для предотвращения зависания daily ETL
 - Cache invalidation → API возвращает 42 точки, range 2025-06-09..2026-04-06
 - Проверка в браузере: график заполнен, телеметрия корректна (тек. 0.19, пред. 0.17, макс 1.26, среднее 0.14)
+
+### 2026-04-13: Глубокая ревизия всех пунктов аудита + дополнительные фиксы
+**Метод**: каждый пункт плана (D1-D3, R1-R4) проверен на реальном production сайте через браузер и API, а не только на уровне кода.
+
+**Верифицировано на production:**
+- D1: housing-price-primary/secondary forecast → даты квартальные (03,06,09,12) ✓
+- D2: inflation-weekly → 42 точки, график заполнен ✓
+- D3: calendar → past events автоматически released, 0 stale events ✓
+- R1: ComparePage → LOCF работает на паре auto-loan-rate + birth-rate (monthly + annual) ✓
+- R2: housing-price-primary → оси X: "IV кв. 2021", DataTable: "I кв. 2022" ✓
+- R3: housing-price-primary → TelemetryCard: "+4.97% к пред. кварталу" ✓
+- R4: sitemap → 98 URLs, /compare /calendar /widgets отсутствуют ✓
+- Console errors → чисто на всех проверенных страницах ✓
+
+**Найдено и исправлено при ревизии:**
+1. Заголовок графика `"Цены на первичное жильё ()"` — пустые скобки для unit='индекс'. Исправлено: скобки не показываются если unitSuffix пустой. Файл: `IndicatorDetail.jsx`
+2. ForecastTable `"Прогноз (помесячно)"` — hardcoded "помесячно" для всех индикаторов. Исправлено: динамический label (помесячно/ежеквартально/ежегодно) по dateFormat. Файл: `ForecastTable.jsx`
+3. ForecastTable столбец `"Значение ()"` — пустые скобки. Исправлено аналогично.
+4. 18 orphaned calendar events (indicator_id=NULL) — удалены из production БД
+5. `seed_data.py` → добавлен `backfill_max_pages=1` для inflation-weekly
+
+**Deploy**: коммит `c732925`, push → GitHub, `deploy.sh` → Docker rebuild OK, smoke OK
