@@ -713,6 +713,7 @@ INDICATORS = [
         "model_config_json": {
             "forecast_steps": 0,
             "validation": {"min": 99, "max": 102},
+            "backfill_max_pages": 1,
         },
         "is_active": True,
         "category": "Цены",

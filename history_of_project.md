@@ -1070,3 +1070,13 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 - Redis cache flush → API возвращает свежие данные
 - _promote_past_events() → календарь: все прошлые события "released"
 - Production verification: sitemap 98 URLs (без скрытых), forecasts квартальные, health OK
+
+### 2026-04-13: Backfill weekly inflation data (D2 fix completion)
+- Проблема: парсер `rosstat_weekly_inflation_parser.py` был исправлен и задеплоен, но ETL для `inflation-weekly` не был запущен на сервере → в БД оставались только 2 исходные точки
+- Скриншот пользователя: вкладка «Недельная» на `/indicator/cpi` показывала график с 2 точками (НАБЛ.: 2 ПЕРИОД.)
+- Диагностика: парсер работает корректно — `_parse_week_catalog()` находит 49 недель, `_parse_page_value()` парсит значения
+- Проблема ETL: `backfill_max_pages=200` вызывал таймаут из-за «Пред.» пагинации (сотни HTTP-запросов с паузами 0.25с)
+- Решение: запуск парсера с `max_pages=0` (только текущий каталог), ручной upsert 40 новых точек, обновление metadata индикатора (`observations=42`)
+- Обновлён `model_config_json.backfill_max_pages = 1` для предотвращения зависания daily ETL
+- Cache invalidation → API возвращает 42 точки, range 2025-06-09..2026-04-06
+- Проверка в браузере: график заполнен, телеметрия корректна (тек. 0.19, пред. 0.17, макс 1.26, среднее 0.14)

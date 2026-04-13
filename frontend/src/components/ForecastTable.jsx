@@ -31,8 +31,10 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
 
   if (!rows.length) return null;
 
-  const title = isCpi ? 'Прогноз (помесячно)' : 'Прогноз инфляции (12 мес.)';
-  const valueLabel = isCpi ? `Значение (${unitSuffix(unit)})` : 'Инфляция (12 мес.)';
+  const period = dateFormat === 'quarterly' ? 'ежеквартально' : dateFormat === 'annual' ? 'ежегодно' : 'помесячно';
+  const title = isCpi ? `Прогноз (${period})` : 'Прогноз инфляции (12 мес.)';
+  const suffix = unitSuffix(unit);
+  const valueLabel = isCpi ? (suffix ? `Значение (${suffix})` : 'Значение') : 'Инфляция (12 мес.)';
 
   return (
     <div ref={ref} className="rounded-[2rem] bg-surface border border-border-subtle overflow-hidden">

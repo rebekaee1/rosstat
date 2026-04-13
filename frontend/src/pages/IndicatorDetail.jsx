@@ -1013,7 +1013,7 @@ export default function IndicatorDetail() {
                   : chartMode === 'weekly' ? 'Недельная инфляция (%)'
                   : isPriceCategory
                     ? undefined
-                    : `${indicator?.name || 'Показатель'} (${unitSuffix(indicator?.unit)})`
+                    : `${indicator?.name || 'Показатель'}${unitSuffix(indicator?.unit) ? ` (${unitSuffix(indicator?.unit)})` : ''}`
               }
               levelTooltipLabel={
                 chartMode === 'quarterly' ? 'Кв. инфляция'
