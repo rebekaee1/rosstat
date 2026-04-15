@@ -85,7 +85,7 @@ export default function EmbedCard() {
       padding: 16, display: 'flex', flexDirection: 'column', gap: 8,
       fontFamily: 'system-ui, -apple-system, sans-serif', overflow: 'hidden',
     }}>
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 6, flexWrap: 'wrap' }}>
         <div style={{ fontSize: 11, fontWeight: 500, color: colors.textSecondary, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '65%' }}>
           {meta.name}
         </div>
@@ -103,7 +103,7 @@ export default function EmbedCard() {
         )}
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, flexWrap: 'wrap', overflow: 'hidden' }}>
         <span style={{ fontSize: 28, fontWeight: 700, color: colors.text, fontFamily: 'ui-monospace, monospace', letterSpacing: '-0.02em' }}>
           {formatValueWithUnit(displayVal, unit)}
         </span>

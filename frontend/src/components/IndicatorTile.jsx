@@ -46,7 +46,7 @@ export default function IndicatorTile({ indicator, delay = 0, displayOverride })
       onMouseMove={handleMouseMove}
       className={cn(
         FOCUS_RING_SURFACE,
-        'group relative p-6 rounded-[2rem] border transition-all duration-500 overflow-hidden',
+        'group relative p-4 sm:p-6 rounded-[2rem] border transition-all duration-500 overflow-hidden',
         'bg-surface border-border-subtle',
         isActive
           ? 'hover:border-champagne/40 cursor-pointer lift-hover'
@@ -65,7 +65,7 @@ export default function IndicatorTile({ indicator, delay = 0, displayOverride })
       )}
 
       <div className="relative z-10 flex flex-col h-full">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-5 sm:mb-8">
           <span className="text-[10px] uppercase tracking-[0.2em] font-medium text-text-tertiary">
             {indicator.category || 'Метрика'}
           </span>
@@ -89,8 +89,8 @@ export default function IndicatorTile({ indicator, delay = 0, displayOverride })
             <p className="text-xs text-text-tertiary mb-6 font-mono">{indicator.name_en}</p>
           )}
 
-          <div className="flex items-end justify-between">
-            <div>
+          <div className="flex items-end justify-between gap-x-3 gap-y-2 flex-wrap">
+            <div className="min-w-0">
               <div className="flex items-baseline gap-1.5 mb-1">
                 <span className={cn(
                   'font-bold tracking-tight text-text-primary font-mono whitespace-nowrap',
@@ -102,7 +102,7 @@ export default function IndicatorTile({ indicator, delay = 0, displayOverride })
               </div>
               
               {indicator.current_date && (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <p className="text-[10px] uppercase tracking-widest text-text-tertiary font-mono">
                     {formatDate(indicator.current_date, 'full')}
                   </p>
@@ -117,7 +117,7 @@ export default function IndicatorTile({ indicator, delay = 0, displayOverride })
 
             {changeNum != null && (
               <div className={cn(
-                'flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border font-mono text-xs font-medium',
+                'flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border font-mono text-xs font-medium shrink-0',
                 isUp ? 'bg-positive/10 border-positive/20 text-positive' : '',
                 isDown ? 'bg-negative/10 border-negative/20 text-negative' : '',
                 !isUp && !isDown ? 'bg-obsidian border-border-subtle text-text-tertiary' : ''

@@ -443,14 +443,14 @@ function TelemetryCard({
   const isDown = changeNum != null && changeNum < 0;
 
   return (
-    <div ref={ref} className="group relative p-6 rounded-[2rem] bg-surface border border-border-subtle hover:border-champagne/30 transition-colors duration-500 overflow-hidden lift-hover">
+    <div ref={ref} className="group relative p-4 sm:p-6 rounded-[2rem] bg-surface border border-border-subtle hover:border-champagne/30 transition-colors duration-500 overflow-hidden lift-hover">
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-champagne/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
       
       <p className="text-[10px] uppercase tracking-widest text-text-tertiary font-medium mb-4">
         {label}
       </p>
 
-      <div className="flex items-baseline gap-2 mb-2">
+      <div className="flex items-baseline gap-2 mb-2 flex-wrap">
         <span ref={valRef} className={cn(
           'font-mono font-bold tracking-tight text-text-primary whitespace-nowrap',
           String(formatValue(value, unitDigits(unit))).length > 12
@@ -465,13 +465,13 @@ function TelemetryCard({
       <div className="flex flex-col gap-1.5 mt-4 pt-4 border-t border-border-subtle/50">
         {changeNum != null && (
           <div className={cn(
-            'flex items-center gap-1.5 text-xs font-mono font-medium',
+            'flex items-center gap-1.5 text-xs font-mono font-medium flex-wrap',
             isUp ? 'text-positive' : '',
             isDown ? 'text-negative' : '',
             !isUp && !isDown ? 'text-text-tertiary' : ''
           )}>
-            {isUp && <TrendingUp className="w-3.5 h-3.5" />}
-            {isDown && <TrendingDown className="w-3.5 h-3.5" />}
+            {isUp && <TrendingUp className="w-3.5 h-3.5 shrink-0" />}
+            {isDown && <TrendingDown className="w-3.5 h-3.5 shrink-0" />}
             <span>{pctChange != null ? `${formatChange(pctChange)}%` : `Δ ${formatChange(changeNum)}`}</span>
             <span className="text-text-tertiary text-[10px] uppercase tracking-wider ml-1">
               {deltaSuffix}

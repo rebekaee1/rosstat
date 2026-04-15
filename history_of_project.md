@@ -1237,3 +1237,17 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 
 **Файлы**: `frontend/src/pages/CategoryPage.jsx`
 **Коммит**: `2981a61`, push в main, deploy на production OK
+
+## 2026-04-15: Fix mobile overflow — change badges and card padding
+
+**Проблема**: На мобильных (375px) бейджи изменений (+1 758.10, +3 220.00, +6 299.20) обрезались правым краем карточки IndicatorTile. Причина — в нижнем ряду карточки `flex items-end justify-between` значение и бейдж конкурировали за горизонтальное пространство. Кумулятивный padding (page px-4 + section p-6 + card p-6 = 128px) оставлял только ~247px на контент, чего не хватало для длинных значений + бейджа.
+
+**Фикс**:
+- `IndicatorTile.jsx`: добавлен `flex-wrap gap-x-3 gap-y-2` на нижний flex-контейнер — бейдж переносится на новую строку если не помещается; `min-w-0` на левый div, `shrink-0` на бейдж; padding `p-4 sm:p-6` вместо `p-6`; margin `mb-5 sm:mb-8` вместо `mb-8`; `flex-wrap` на дату-строку
+- `CategoryPage.jsx`: section padding `p-3 sm:p-6 md:p-8` вместо `p-6 md:p-8`
+- `IndicatorDetail.jsx` (TelemetryCard): аналогичные `flex-wrap` и `p-4 sm:p-6`
+- `EmbedCard.jsx`: добавлены `flexWrap` и `gap` для защиты от переполнения
+
+**Верификация**: Локально (Vite dev, 375px viewport). M1 (+1 758.10), M2 (+3 220.00), Fixed Capital Investment (+6 299.20) — бейджи полностью видимы, карточки не наезжают. Console clean.
+
+**Файлы**: `frontend/src/components/IndicatorTile.jsx`, `frontend/src/pages/CategoryPage.jsx`, `frontend/src/pages/IndicatorDetail.jsx`, `frontend/src/embed/EmbedCard.jsx`
