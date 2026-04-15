@@ -33,13 +33,22 @@ function ScrollToTop() {
 function YandexMetrikaHit() {
   const location = useLocation();
   const isFirst = useRef(true);
+  const prevUrl = useRef(window.location.pathname + window.location.search);
   useEffect(() => {
     if (isFirst.current) { isFirst.current = false; return; }
-    if (typeof window.ym === 'function') {
-      window.ym(107136069, 'hit', location.pathname + location.search, {
-        title: document.title,
-      });
-    }
+    const url = location.pathname + location.search;
+    const referer = prevUrl.current;
+    prevUrl.current = url;
+    // Delay to let page component update document.title via useDocumentMeta
+    const timer = setTimeout(() => {
+      if (typeof window.ym === 'function') {
+        window.ym(107136069, 'hit', url, {
+          title: document.title,
+          referer: window.location.origin + referer,
+        });
+      }
+    }, 50);
+    return () => clearTimeout(timer);
   }, [location.pathname, location.search]);
   return null;
 }
