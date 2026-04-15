@@ -882,6 +882,7 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 ## 2026-04-11
 
 - **Яндекс.Метрика — исправлена некорректная работа в SPA:** Все визиты записывались как 1 просмотр, Вебвизор не фиксировал навигацию. Причины: 1) `ssr: true` в `ym('init')` — говорил Метрике, что первый хит отправлен сервером (а это CSR-приложение); 2) при клиентской навигации (React Router) не вызывался `ym('hit')` — Метрика не знала о переходах между страницами. Исправлено: убран `ssr: true` из `index.html`, добавлен компонент `YandexMetrikaHit` в `App.jsx` — отправляет `ym(id, 'hit', url, {title})` при каждой смене `location.pathname` / `location.search` (кроме первого рендера). Файлы: `frontend/index.html`, `frontend/src/App.jsx`.
+- **Яндекс.Метрика — карта кликов / Вебвизор не работали из-за X-Frame-Options:** Caddy отдавал `X-Frame-Options: SAMEORIGIN`, что запрещало загрузку сайта во фрейме с `webvisor.com`. Убран `X-Frame-Options`, добавлен `frame-ancestors 'self' https://webvisor.com https://*.webvisor.com https://metrika.yandex.ru https://metrika.yandex.com` в CSP. Файл: `Caddyfile`. Деплой: `cp /opt/rosstat/Caddyfile /etc/caddy/Caddyfile && systemctl reload caddy` (Caddy читает из `/etc/caddy/`, а не из `/opt/rosstat/`).
 
 ## 2026-04-12
 
@@ -1201,3 +1202,38 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 - Файлы с `existing_n` запросом (ruonia, reserves, fx, monetary, gold, keyrate): `func`, `select`, `IndicatorData` сохранены
 
 **Коммит**: `67595b5`, push в main, deploy на production OK (smoke OK, forecast CPI доступен, API отвечает)
+
+## 2026-04-13: Fix CSV/Excel download buttons
+
+**Проблема**: кнопки CSV и Excel на странице индикатора не скачивали файлы.
+
+**Причина** (3 фактора):
+1. `handleDownloadCSV`/`handleDownloadExcel` были `async`, с `await import('../lib/excel.js')` внутри — это ломало цепочку user gesture, и браузер блокировал программный `a.click()`.
+2. Элемент `<a>` не был добавлен в DOM (`document.body.appendChild`) перед вызовом `.click()` — в ряде браузеров это не инициирует скачивание.
+3. `URL.revokeObjectURL(url)` вызывался синхронно сразу после `.click()` — скачивание не успевало начаться.
+
+**Фикс** (`excel.js`, `IndicatorDetail.jsx`):
+- `xlsx` импортируется статически (`import * as XLSX from 'xlsx'`) вместо динамического `await import('xlsx')`
+- `downloadExcel` теперь синхронный (`function` вместо `async function`), использует `XLSX.write()` + Blob вместо `XLSX.writeFile()`
+- В обеих функциях: `document.body.appendChild(a)` перед `.click()`, `removeChild` после, `setTimeout(() => URL.revokeObjectURL(url), 100)`
+- Обработчики в `IndicatorDetail.jsx` — синхронные `useCallback` с прямым импортом
+
+**Файлы**: `frontend/src/lib/excel.js`, `frontend/src/pages/IndicatorDetail.jsx`
+**Коммит**: `52efd77`, push в main, deploy на production OK
+
+## 2026-04-13: CPI sub-indices show annual inflation on category cards
+
+**Проблема**: Карточки Food CPI (0.38%), Non-food CPI (0.47%), Services CPI (1.07%) на странице категории «Цены и инфляция» показывали месячное изменение ИПЦ (raw index - 100), в то время как детальные страницы этих индикаторов открывались на табе «Инфляция 12 мес.» с годовой инфляцией (4.98%, 3.55%, 9.97%). Пользователь видел разные цифры на карточке и на странице — UX-несоответствие.
+
+**Причина**: Для основного CPI ранее был добавлен `displayOverride` (из inflation-annual), но для суб-индексов (food, nonfood, services) override не применялся — они показывали raw CPI index.
+
+**Фикс** (`CategoryPage.jsx`):
+- Добавлены `useInflation` хуки для cpi-food, cpi-nonfood, cpi-services (enabled только для prices category)
+- `subInflationMap` useMemo вычисляет последнее значение и изменение годовой инфляции из inflation endpoint actuals
+- `displayOverride` теперь передаётся для всех CPI sub-indices, не только для main CPI
+- React Query кеширует на 1 час → 3 доп. запроса при первом визите, затем из кеша
+
+**Верификация**: Локально (Vite dev) + production. Значения сверены с API inflation endpoints. Console clean.
+
+**Файлы**: `frontend/src/pages/CategoryPage.jsx`
+**Коммит**: `2981a61`, push в main, deploy на production OK
