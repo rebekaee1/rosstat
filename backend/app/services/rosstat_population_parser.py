@@ -16,6 +16,7 @@ from __future__ import annotations
 import asyncio
 import io
 import logging
+import re
 from dataclasses import dataclass
 from datetime import date, datetime, timezone
 from typing import ClassVar
@@ -38,6 +39,23 @@ logger = logging.getLogger(__name__)
 class DataPoint:
     date: date
     value: float
+
+
+_YEAR_RE = re.compile(r"(\d{4})")
+
+
+def _extract_year(cell) -> int | None:
+    """Extract 4-digit year from a cell that may contain footnote markers like '20222),3)'."""
+    if cell is None:
+        return None
+    if isinstance(cell, (int, float)) and not isinstance(cell, bool):
+        y = int(cell)
+        return y if 1900 <= y <= 2100 else None
+    m = _YEAR_RE.match(str(cell).strip())
+    if not m:
+        return None
+    y = int(m.group(1))
+    return y if 1900 <= y <= 2100 else None
 
 
 def parse_sdds_population_xlsx(content: bytes) -> list[DataPoint]:
@@ -106,11 +124,8 @@ def parse_popul_components_xlsx(content: bytes) -> dict[str, list[DataPoint]]:
     for row in rows_data[7:]:
         if not row or row[0] is None:
             continue
-        try:
-            year = int(row[0])
-        except (ValueError, TypeError):
-            continue
-        if year < 1990 or year > 2100:
+        year = _extract_year(row[0])
+        if year is None:
             continue
 
         d = date(year, 1, 1)
