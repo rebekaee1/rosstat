@@ -812,7 +812,7 @@ export default function IndicatorDetail() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <TelemetryCard
-              label="Текущее значение"
+              label={viewMode === 'weekly' ? 'Инфляция за неделю' : 'Текущее значение'}
               value={s?.currentValue ?? adj(indicator?.current_value)}
               unit={indicator?.unit || '%'}
               change={s?.change ?? indicator?.change}
@@ -822,7 +822,11 @@ export default function IndicatorDetail() {
                       / (s?.previousValue ?? indicator?.previous_value) * 100).toFixed(2)
                   : undefined
               }
-              meta={`ДАТА: ${formatDate(s?.currentDate ?? indicator?.current_date, 'full')}`}
+              meta={
+                viewMode === 'weekly' && Number(s?.currentValue) === 0
+                  ? `ДАТА: ${formatDate(s?.currentDate ?? indicator?.current_date, 'full')} · ЦЕНЫ БЕЗ ИЗМЕНЕНИЙ`
+                  : `ДАТА: ${formatDate(s?.currentDate ?? indicator?.current_date, 'full')}`
+              }
               delay={0}
               deltaSuffix={
                 viewMode === 'quarterly' ? 'к пред. кварталу'
@@ -833,7 +837,12 @@ export default function IndicatorDetail() {
               }
             />
             <TelemetryCard
-              label={isPriceCategory ? 'Предыдущий месяц' : 'Предыдущее значение'}
+              label={
+                viewMode === 'weekly' ? 'Предыдущая неделя'
+                  : viewMode === 'quarterly' ? 'Предыдущий квартал'
+                  : viewMode === 'annual' ? 'Год назад'
+                  : isPriceCategory ? 'Предыдущий месяц' : 'Предыдущее значение'
+              }
               value={s?.previousValue ?? adj(indicator?.previous_value)}
               unit={indicator?.unit || '%'}
               meta={`ДАТА: ${formatDate(s?.previousDate ?? cpiPrevDate, 'full')}`}

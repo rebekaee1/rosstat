@@ -40,7 +40,8 @@ from app.core.cache import cache_invalidate_indicator
 
 logger = logging.getLogger(__name__)
 
-NEDEL_IPC_URL = "https://rosstat.gov.ru/storage/mediabank/Nedel_ipc.xlsx"
+NEDEL_IPC_URL = "https://rosstat.gov.ru/storage/mediabank/nedel_Ipc.xlsx"
+NEDEL_IPC_URL_FALLBACK = "https://rosstat.gov.ru/storage/mediabank/Nedel_ipc.xlsx"
 IPC_SPR_URL = "https://rosstat.gov.ru/storage/mediabank/ipc_spr_{mm}-{yyyy}.xlsx"
 
 ROSSTAT_SEARCH_URL = "https://rosstat.gov.ru/search"
@@ -318,22 +319,23 @@ def fetch_weekly_cpi(existing_dates: set[date] | None = None) -> list[WeeklyPoin
         bulletin_points = fetch_bulletin_points(session, bulletin_years)
         logger.info("Weekly CPI: parsed %d points from HTML bulletins", len(bulletin_points))
 
-        logger.info("Downloading Nedel_ipc.xlsx from rosstat.gov.ru")
         xlsx_points: list[WeeklyPoint] = []
-        try:
-            r = session.get(NEDEL_IPC_URL, timeout=60)
-            if r.status_code == 200:
-                weekly_content = r.content
+        for xlsx_url in (NEDEL_IPC_URL, NEDEL_IPC_URL_FALLBACK):
+            logger.info("Downloading weekly XLSX: %s", xlsx_url)
+            try:
+                r = session.get(xlsx_url, timeout=60)
+                if r.status_code != 200:
+                    logger.warning("HTTP %d for %s", r.status_code, xlsx_url)
+                    continue
                 weights = _load_weights(session)
                 if not weights:
                     logger.warning("No weights available — XLSX fallback skipped")
-                else:
-                    xlsx_points = _parse_weekly_xlsx(weekly_content, weights)
-                    logger.info("Weekly CPI: parsed %d points from XLSX", len(xlsx_points))
-            else:
-                logger.warning("HTTP %d for %s", r.status_code, NEDEL_IPC_URL)
-        except requests.RequestException as exc:
-            logger.warning("XLSX fetch failed: %s", exc)
+                    break
+                xlsx_points = _parse_weekly_xlsx(r.content, weights)
+                logger.info("Weekly CPI: parsed %d points from %s", len(xlsx_points), xlsx_url)
+                break
+            except requests.RequestException as exc:
+                logger.warning("XLSX fetch failed for %s: %s", xlsx_url, exc)
 
         merged: dict[date, float] = {p.date: p.value for p in xlsx_points}
         for p in bulletin_points:
