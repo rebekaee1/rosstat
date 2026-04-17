@@ -329,7 +329,7 @@ async def _compute_unemployment_quarterly(db: AsyncSession) -> int:
             v2 = by_ym.get((y, m2))
             v3 = by_ym.get((y, m3))
             if v1 is not None and v2 is not None and v3 is not None:
-                avg = round((v1 + v2 + v3) / 3, 2)
+                avg = round((v1 + v2 + v3) / 3, 1)
                 points.append((date(y, qe, 1), avg))
 
     added = 0
@@ -378,7 +378,7 @@ async def _compute_unemployment_annual(db: AsyncSession) -> int:
             if val is not None:
                 trailing.append(val)
         if len(trailing) == 12:
-            avg = round(sum(trailing) / 12, 2)
+            avg = round(sum(trailing) / 12, 1)
             points.append((date(y, m, 1), avg))
 
     added = 0
