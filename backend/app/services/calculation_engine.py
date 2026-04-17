@@ -94,7 +94,7 @@ async def _compute_quarterly_inflation(db: AsyncSession) -> int:
     added = 0
     for d, v in points:
         result = await db.execute(upsert_indicator_data(dst.id, d, v))
-        if result.rowcount:
+        if result.fetchone() is not None:
             added += 1
     if added:
         await db.flush()
@@ -148,7 +148,7 @@ async def _compute_annual_inflation(db: AsyncSession) -> int:
     added = 0
     for d, v in points:
         result = await db.execute(upsert_indicator_data(dst.id, d, v))
-        if result.rowcount:
+        if result.fetchone() is not None:
             added += 1
     if added:
         await db.flush()
@@ -212,7 +212,7 @@ async def _compute_wages_real(db: AsyncSession) -> int:
     added = 0
     for d, v in points:
         result = await db.execute(upsert_indicator_data(dst.id, d, v))
-        if result.rowcount:
+        if result.fetchone() is not None:
             added += 1
     if added:
         await db.flush()
@@ -255,7 +255,7 @@ async def _compute_gdp_yoy(db: AsyncSession) -> int:
     added = 0
     for d, v in points:
         result = await db.execute(upsert_indicator_data(dst.id, d, v))
-        if result.rowcount:
+        if result.fetchone() is not None:
             added += 1
     if added:
         await db.flush()
@@ -290,7 +290,7 @@ async def _compute_gdp_qoq(db: AsyncSession) -> int:
     added = 0
     for d, v in points:
         result = await db.execute(upsert_indicator_data(dst.id, d, v))
-        if result.rowcount:
+        if result.fetchone() is not None:
             added += 1
     if added:
         await db.flush()
@@ -335,7 +335,7 @@ async def _compute_unemployment_quarterly(db: AsyncSession) -> int:
     added = 0
     for d, v in points:
         result = await db.execute(upsert_indicator_data(dst.id, d, v))
-        if result.rowcount:
+        if result.fetchone() is not None:
             added += 1
     if added:
         await db.flush()
@@ -384,7 +384,7 @@ async def _compute_unemployment_annual(db: AsyncSession) -> int:
     added = 0
     for d, v in points:
         result = await db.execute(upsert_indicator_data(dst.id, d, v))
-        if result.rowcount:
+        if result.fetchone() is not None:
             added += 1
     if added:
         await db.flush()
@@ -419,7 +419,7 @@ async def _compute_yoy_generic(db: AsyncSession, src_code: str, dst_code: str) -
     added = 0
     for d, v in points:
         result = await db.execute(upsert_indicator_data(dst.id, d, v))
-        if result.rowcount:
+        if result.fetchone() is not None:
             added += 1
     if added:
         await db.flush()
@@ -477,7 +477,7 @@ async def _compute_qoq_generic(db: AsyncSession, src_code: str, dst_code: str) -
     added = 0
     for d, v in points:
         result = await db.execute(upsert_indicator_data(dst.id, d, v))
-        if result.rowcount:
+        if result.fetchone() is not None:
             added += 1
     if added:
         await db.flush()
