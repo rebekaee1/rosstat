@@ -1251,3 +1251,36 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 **Верификация**: Локально (Vite dev, 375px viewport). M1 (+1 758.10), M2 (+3 220.00), Fixed Capital Investment (+6 299.20) — бейджи полностью видимы, карточки не наезжают. Console clean.
 
 **Файлы**: `frontend/src/components/IndicatorTile.jsx`, `frontend/src/pages/CategoryPage.jsx`, `frontend/src/pages/IndicatorDetail.jsx`, `frontend/src/embed/EmbedCard.jsx`
+
+## 2026-04-17: Weekly CPI — переход на HTML-бюллетени Росстата (фикс отставания)
+
+**Проблема**: на сайте недельная инфляция застряла на первой неделе апреля (100.19% за 31.03–06.04). Пользователь указал, что Росстат уже опубликовал данные за 07–13 апреля (100.00%, нулевая инфляция) — мы отстаём.
+
+**Диагностика**:
+- Парсер `rosstat_weekly_inflation_parser.py` после миграции 2026-04-13 берёт `Nedel_ipc.xlsx` (~110 товаров) + `ipc_spr` (веса), строит взвешенное среднее.
+- Проверено: `Last-Modified` на `Nedel_ipc.xlsx` = 8 апреля. Файл не содержит неделю 7–13 апреля.
+- Росстат публикует официальное агрегированное значение недельного ИПЦ в HTML-бюллетенях `/storage/mediabank/<num>_<DD-MM-YYYY>.html` (напр. `54_15-04-2026.html`) с заголовком «Об оценке индекса потребительских цен с N по M месяца YYYY». XLSX покомпонентник обновляется с задержкой.
+- Найдено через `rosstat.gov.ru/search` по month-name-запросам: 14 бюллетеней для 2026 покрывают все недели включая 13-Apr.
+
+**Решение**:
+- Парсер теперь скачивает HTML-бюллетени как **первичный источник**. Функции:
+  - `_find_bulletin_urls(session, year)` — ищет URL'ы через Rosstat search per-month (genitive) и объединяет результаты.
+  - `_parse_bulletin_html(html)` — regex на диапазон «с N (MonthA) по M MonthB YYYY г» (включая cross-month) + «составил D,DD%».
+  - `fetch_bulletin_points(session, years)` — итерирует, дедупицирует по дате.
+- XLSX сохранён как fallback для исторического ряда вне покрытия бюллетенями.
+- Merge: если дата есть в обеих коллекциях — HTML имеет приоритет (официальная цифра Росстата).
+- Encoding fix: HTML-страницы Росстата не отдают `charset` в заголовке, `requests.text` декодирует как ISO-8859-1 → используется `r.content.decode('utf-8')`.
+- Regex `с \d+ (?:[а-яё]+ )?по (\d+) ([а-яё]+) (\d{4})` обрабатывает и same-month и cross-month форматы.
+
+**Верификация локально**: 14 точек для 2026 из бюллетеней: `2026-04-13 → 100.00`, `2026-04-06 → 100.19` (матчит ТАСС/Фонтанку).
+
+**Production**:
+- Коммит `61d51e2` (backend), `57c9f74` (frontend methodology text) → `main`
+- `deploy.sh` → Docker rebuild OK, smoke OK
+- ETL через `run_etl_for_indicator("inflation-weekly")`: DB вырос с 216 до 217 точек, последние 2: `2026-04-13=100.00`, `2026-04-06=100.19` (было `100.16` из XLSX — перезаписалось на официальное 100.19).
+- API `/api/v1/indicators/inflation-weekly/data`: 217 точек, последняя `2026-04-13 = 100.0` ✓
+- Frontend `/indicator/cpi?t=weekly`: таблица «Исторические данные — Недельный ИПЦ (217)», первая строка `апрель 2026 · 0.00%`, вторая `апрель 2026 · 0.19%`. График полный, конечная точка уходит вниз к 100.00. Console clean.
+
+**Файлы**: `backend/app/services/rosstat_weekly_inflation_parser.py`, `frontend/src/pages/IndicatorDetail.jsx`
+
+**Намерение пользователя**: видимое отставание UX — сайт показывает данные старше, чем Росстат. Раздражение из-за «позиционирования свежести». Фикс: не просто точку добавить, а автоматизировать забор из официального источника, чтобы не повторялось каждую неделю.
