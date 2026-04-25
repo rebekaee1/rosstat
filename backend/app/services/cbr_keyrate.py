@@ -1,8 +1,15 @@
 """
 Ключевая ставка Банка России — загрузка с официальной базы cbr.ru.
 
-Проверено 2026-03-20: HTML-таблица на
-https://www.cbr.ru/hd_base/KeyRate/ (UniDbQuery, даты DD.MM.YYYY, значение с запятой как десятичный разделитель).
+Источники:
+1. https://www.cbr.ru/hd_base/KeyRate/ — фактический ряд (HTML-таблица UniDbQuery,
+   даты DD.MM.YYYY, значение с запятой как десятичный разделитель).
+2. https://cbr.ru/press/keypr/ — пресс-релиз последнего решения Совета директоров.
+   Используется для **опережающей** точки: после решения СД и до даты вступления
+   в силу новая ставка появляется на этой странице, но ещё отсутствует в hd_base.
+   Например, решение 24.04.2026 (снижение до 14,50%) → действует с 27.04.2026,
+   но в hd_base появится только 27.04. Без опережающего парсера сайт ~3 дня
+   показывает старую ставку, что воспринимается как баг.
 """
 
 from __future__ import annotations
@@ -10,8 +17,8 @@ from __future__ import annotations
 import logging
 import re
 from dataclasses import dataclass
-from datetime import date
-from typing import List
+from datetime import date, timedelta
+from typing import List, Optional
 
 from app.config import settings
 from app.services.http_client import create_session
@@ -85,3 +92,114 @@ def fetch_key_rate_html(date_from: date, date_to: date) -> tuple[str, str]:
         return resp.text, resp.url
     finally:
         session.close()
+
+
+# ---- Анонс решения СД (пресс-релиз) -----------------------------------------
+
+@dataclass
+class KeyRateAnnouncement:
+    """Решение Совета директоров ЦБ по ключевой ставке."""
+    decision_date: date
+    effective_date: date
+    rate: float
+
+    def __str__(self) -> str:
+        return f"СД {self.decision_date}: {self.rate:.2f}% с {self.effective_date}"
+
+
+_RU_MONTHS = {
+    "января": 1, "февраля": 2, "марта": 3, "апреля": 4, "мая": 5, "июня": 6,
+    "июля": 7, "августа": 8, "сентября": 9, "октября": 10, "ноября": 11, "декабря": 12,
+}
+
+# Извлечение значения новой ставки из пресс-релиза:
+#   «...снизить/повысить ключевую ставку на 50 б.п., до 14,50% годовых»
+#   «...сохранить/оставить ключевую ставку на уровне 21,00% годовых»
+# В тексте встречаются точки внутри «б.п.», поэтому ищем ключевые слова
+# «до» и «на уровне» как отдельные токены, без длинных гринго-паттернов.
+_RATE_FROM_HEADLINE = re.compile(
+    r"(?:до|на\s+уровне)\s+(\d{1,2}[.,]\d{1,2})\s*%\s*годов",
+    re.IGNORECASE,
+)
+# Дата принятия решения: «Совет директоров Банка России 24 апреля 2026 года принял решение»
+_DECISION_DATE_RE = re.compile(
+    r"(\d{1,2})\s+(" + "|".join(_RU_MONTHS.keys()) + r")\s+(\d{4})\s*года?\s+принял",
+    re.IGNORECASE,
+)
+
+
+def _next_business_day(d: date) -> date:
+    """Следующий рабочий день (пн-пт, без учёта праздников ЦБ — для биржевого календаря этого достаточно)."""
+    nxt = d + timedelta(days=1)
+    while nxt.weekday() >= 5:  # 5=сб, 6=вс
+        nxt += timedelta(days=1)
+    return nxt
+
+
+def _normalize_html_whitespace(html: str) -> str:
+    """Заменить HTML-сущности и неразрывные пробелы на обычные.
+
+    Без этого `\\s+` в регэкспе не матчит ни `\\xa0`, ни последовательность `&nbsp;`,
+    которыми ЦБ разделяет числа и слова в шаблоне CMS.
+    """
+    return (
+        html.replace("&nbsp;", " ")
+            .replace("\xa0", " ")
+            .replace("&ndash;", "-")
+            .replace("&mdash;", "-")
+    )
+
+
+def parse_keyrate_press_release(html: str) -> Optional[KeyRateAnnouncement]:
+    """Извлечь (decision_date, effective_date, rate) из пресс-релиза cbr.ru/press/keypr/.
+
+    Возвращает None, если не удалось распарсить (например, страница пустая
+    или формат изменился) — это не критическая ошибка для основного ETL.
+    """
+    if not html or len(html) < 800:
+        return None
+
+    norm = _normalize_html_whitespace(html)
+
+    m_rate = _RATE_FROM_HEADLINE.search(norm)
+    if not m_rate:
+        return None
+    rate = _parse_ru_float(m_rate.group(1))
+
+    m_date = _DECISION_DATE_RE.search(norm)
+    if not m_date:
+        return None
+    day, month_ru, year = m_date.group(1), m_date.group(2).lower(), m_date.group(3)
+    decision = date(int(year), _RU_MONTHS[month_ru], int(day))
+
+    # Эффективная дата = следующий рабочий день (соглашение ЦБ для решений с 2023 г.).
+    effective = _next_business_day(decision)
+
+    return KeyRateAnnouncement(decision_date=decision, effective_date=effective, rate=round(rate, 4))
+
+
+def fetch_keyrate_press_release() -> Optional[str]:
+    """GET https://cbr.ru/press/keypr/ — последняя пресс-конференция СД по ставке."""
+    url = f"{settings.cbr_base_url.rstrip('/')}/press/keypr/"
+    session = create_session()
+    try:
+        resp = session.get(url, timeout=settings.cbr_request_timeout)
+        resp.raise_for_status()
+        return resp.text
+    except Exception:
+        logger.warning("Failed to fetch press release at %s", url, exc_info=True)
+        return None
+    finally:
+        session.close()
+
+
+def get_latest_keyrate_announcement() -> Optional[KeyRateAnnouncement]:
+    """Совмещает fetch + parse; молча возвращает None при любой ошибке (best-effort)."""
+    html = fetch_keyrate_press_release()
+    if not html:
+        return None
+    try:
+        return parse_keyrate_press_release(html)
+    except Exception:
+        logger.warning("Failed to parse press release HTML", exc_info=True)
+        return None

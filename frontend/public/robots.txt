@@ -1,4 +1,6 @@
+# robots.txt — forecasteconomy.com
 # Не запрещаем /assets/ — роботам нужны JS/CSS для рендеринга.
+
 User-agent: *
 Allow: /
 Disallow: /api/
@@ -6,11 +8,16 @@ Disallow: /api/
 User-agent: Yandex
 Allow: /
 Disallow: /api/
-Host: forecasteconomy.com
-Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content
 
 User-agent: Googlebot
 Allow: /
 Disallow: /api/
+
+# Clean-param — межсекционная директива Яндекса (Yandex.Webmaster → «Найдены страницы-дубли с GET-параметрами»).
+# Сообщает роботу, какие GET-параметры считать незначащими, чтобы не индексировать дубли и склеить сигналы на канонической странице.
+# Лимит длины правила — 500 символов; разбиваем на несколько строк.
+Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content&utm_referrer
+Clean-param: yclid&gclid&fbclid&etext&ybaip&_openstat&clid&yandex_referrer
+Clean-param: from&ref&ref_src&source&mc_cid&mc_eid&igshid&_ga
 
 Sitemap: https://forecasteconomy.com/sitemap.xml

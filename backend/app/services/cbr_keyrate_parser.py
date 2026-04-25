@@ -13,7 +13,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import FetchLog, Indicator, IndicatorData
 from app.services.base_parser import BaseParser
 from app.services.upsert import bulk_upsert
-from app.services.cbr_keyrate import DataPoint, fetch_key_rate_html, parse_keyrate_html
+from app.services.cbr_keyrate import (
+    DataPoint,
+    fetch_key_rate_html,
+    parse_keyrate_html,
+    get_latest_keyrate_announcement,
+)
 from app.services.data_validator import validate_points
 from app.services.forecast_pipeline import clear_current_forecasts, retrain_indicator_forecast
 from app.core.cache import cache_invalidate_indicator
@@ -68,6 +73,47 @@ class CbrKeyRateParser(BaseParser):
                 records_added, records_updated, code,
             )
             fetch_log.records_added = records_added
+
+            # Опережающая точка по пресс-релизу СД ЦБ.
+            # ЦБ публикует решение в 13:30 МСК, новая ставка вступает в силу
+            # со следующего рабочего дня; в hd_base она появится только тогда же.
+            # Чтобы сайт не «висел» с устаревшим значением, добавляем точку из
+            # пресс-релиза, если она новее последней в БД и отличается от неё.
+            try:
+                ann = await asyncio.to_thread(get_latest_keyrate_announcement)
+            except Exception:
+                ann = None
+                logger.exception("Press-release lookup failed (non-critical)")
+
+            if ann is not None and ann.rate is not None:
+                last_in_series = points[-1] if points else None
+                last_value = float(last_in_series.value) if last_in_series else None
+                last_date = last_in_series.date if last_in_series else None
+                # Добавляем только если: (а) дата вступления в силу > последней даты в ряду,
+                # (б) ставка отличается от последней (защита от no-op для решения «оставить»),
+                # (в) дата объявления ≥ дата последней точки (нет регрессии устаревшим решением).
+                if (
+                    last_date is not None
+                    and ann.effective_date > last_date
+                    and ann.decision_date >= last_date
+                    and (last_value is None or abs(float(ann.rate) - last_value) > 1e-9)
+                ):
+                    extra_added, extra_updated = await bulk_upsert(
+                        db, indicator.id,
+                        [DataPoint(date=ann.effective_date, value=float(ann.rate))],
+                    )
+                    logger.info(
+                        "Press-release announcement applied: %s — %s (added=%d, updated=%d)",
+                        ann, code, extra_added, extra_updated,
+                    )
+                    records_added += extra_added
+                    records_updated += extra_updated
+                    fetch_log.records_added = records_added
+                else:
+                    logger.info(
+                        "Press-release announcement %s — already in series or stale, skip",
+                        ann,
+                    )
 
             steps = int((indicator.model_config_json or {}).get("forecast_steps", 12) or 0)
             removed_forecasts = 0
