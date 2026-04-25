@@ -80,7 +80,9 @@ async def sitemap_xml(db: AsyncSession = Depends(get_db)):
     return Response(content=xml, media_type="application/xml")
 
 
-OG_IMAGE = f"{DOMAIN}/og-image.png"
+# og-image-v2: новый URL после ребрендинга RuStats→Forecast Economy,
+# чтобы соцсети сбросили закэшированное превью со старым логотипом.
+OG_IMAGE = f"{DOMAIN}/og-image-v2.png"
 
 CATEGORY_META = {
     "prices": ("Цены и инфляция в России", "ИПЦ, инфляция, цены на жильё — данные Росстата и прогнозы."),
