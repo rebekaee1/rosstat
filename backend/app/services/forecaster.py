@@ -296,7 +296,7 @@ def aggregate_quarterly_from_monthly(
         product = 1.0
         for f in factors:
             product *= f
-        value = round(product * 100 - 100, 4)
+        value = round(product * 100, 4)
         points.append(ForecastPoint(
             date=q_start,
             value=value,
