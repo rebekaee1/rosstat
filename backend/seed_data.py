@@ -520,8 +520,7 @@ INDICATORS = [
         ),
         "parser_type": "derived",
         "model_config_json": {
-            "forecast_steps": 12,
-            "forecast_transform": "percentage",
+            "forecast_steps": 0,
         },
         "is_active": True,
         "category": "Цены",

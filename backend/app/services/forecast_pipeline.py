@@ -2,6 +2,7 @@
 
 import asyncio
 import logging
+from datetime import date
 from sqlalchemy import select
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -11,6 +12,9 @@ from app.services.forecaster import (
     train_and_forecast,
     train_monthly_cpi,
     train_inflation_12m,
+    aggregate_quarterly_from_monthly,
+    ForecastResult,
+    ForecastPoint,
     CPI_INDICATOR_CODES,
 )
 from app.config import settings
@@ -111,6 +115,11 @@ async def retrain_indicator_forecast(db: AsyncSession, indicator: Indicator) -> 
             train_inflation_12m, dates, values, forecast_steps=forecast_steps,
         )
         await _save_forecast(db, indicator, inflation_result, model_name_prefix="Inflation-12M")
+
+        if indicator.code == "cpi":
+            await _propagate_cpi_forecast_to_derived(
+                db, dates, values, monthly_result, inflation_result,
+            )
     else:
         forecast_transform = cfg.get("forecast_transform", "absolute")
         result = await asyncio.to_thread(
@@ -122,3 +131,48 @@ async def retrain_indicator_forecast(db: AsyncSession, indicator: Indicator) -> 
         await _save_forecast(db, indicator, result)
 
     logger.info("Retrain complete for '%s'", indicator.code)
+
+
+async def _propagate_cpi_forecast_to_derived(
+    db: AsyncSession,
+    dates: list[date],
+    values: list[float],
+    monthly_result: ForecastResult,
+    inflation_result: ForecastResult,
+) -> None:
+    """Save quarterly/annual aggregated forecasts under their dedicated indicators.
+
+    Quarterly: aggregated from monthly CPI forecast (Никита's spec, April 2026).
+    Annual: identical to Inflation-12M-MW result — published as forecast for
+    `inflation-annual` indicator so the frontend can read it via the standard
+    /forecast endpoint.
+    """
+    quarterly_result = await asyncio.to_thread(
+        aggregate_quarterly_from_monthly,
+        dates, values, monthly_result.points,
+    )
+    quarterly_indicator = (await db.execute(
+        select(Indicator).where(Indicator.code == "inflation-quarterly")
+    )).scalar_one_or_none()
+    if quarterly_indicator is not None and quarterly_result.points:
+        await _save_forecast(db, quarterly_indicator, quarterly_result)
+
+    annual_indicator = (await db.execute(
+        select(Indicator).where(Indicator.code == "inflation-annual")
+    )).scalar_one_or_none()
+    if annual_indicator is not None and inflation_result.points:
+        annual_result = ForecastResult(
+            model_name="Annual-From-12M-Rolling",
+            aic=None,
+            bic=None,
+            points=[
+                ForecastPoint(
+                    date=p.date,
+                    value=p.value,
+                    lower_bound=p.lower_bound,
+                    upper_bound=p.upper_bound,
+                )
+                for p in inflation_result.points
+            ],
+        )
+        await _save_forecast(db, annual_indicator, annual_result)

@@ -15,16 +15,18 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
     return () => tween.kill();
   }, []);
 
-  const isCpi = mode === 'cpi';
-  const rows = isCpi
+  const usesForecastData = mode === 'cpi' || mode === 'quarterly' || mode === 'annual';
+  const rows = usesForecastData
     ? (forecastData?.forecast?.values || [])
     : (inflation?.forecast || []);
   const MODEL_LABELS = {
     'CPI-Monthly-MW': 'Многооконная OLS',
     'Inflation-12M-MW': 'Многооконная OLS',
     'OLS-MultiWindow': 'Многооконная OLS',
+    'CPI-Quarterly-Agg': 'Агрегация месячных прогнозов',
+    'Annual-From-12M-Rolling': 'Скользящая 12-месячная',
   };
-  const rawModelName = isCpi
+  const rawModelName = usesForecastData
     ? forecastData?.forecast?.model_name
     : inflation?.model_name;
   const modelName = rawModelName ? (MODEL_LABELS[rawModelName] || rawModelName) : null;
@@ -32,9 +34,11 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
   if (!rows.length) return null;
 
   const period = dateFormat === 'quarterly' ? 'ежеквартально' : dateFormat === 'annual' ? 'ежегодно' : 'помесячно';
-  const title = isCpi ? `Прогноз (${period})` : 'Прогноз инфляции (12 мес.)';
+  const title = mode === 'inflation' ? 'Прогноз инфляции (12 мес.)' : `Прогноз (${period})`;
   const suffix = unitSuffix(unit);
-  const valueLabel = isCpi ? (suffix ? `Значение (${suffix})` : 'Значение') : 'Инфляция (12 мес.)';
+  const valueLabel = mode === 'inflation'
+    ? 'Инфляция (12 мес.)'
+    : (mode === 'quarterly' ? 'Квартальная (%)' : mode === 'annual' ? 'Годовая (%)' : (suffix ? `Значение (${suffix})` : 'Значение'));
 
   return (
     <div ref={ref} className="rounded-[2rem] bg-surface border border-border-subtle overflow-hidden">

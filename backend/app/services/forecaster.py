@@ -168,29 +168,54 @@ def _multi_window_predict(data_col: pd.Series, window_size: int,
 #  НА Model 2: Monthly CPI forecast
 # ---------------------------------------------------------------------------
 
+def _monthly_blend_weights(m: int) -> tuple[float, float, float]:
+    """НА's Model 2 (April 2026): weights for OLS-prediction blend with median and prior."""
+    if m <= 4:
+        return (1.0, 0.0, 0.0)
+    if m <= 9:
+        return (0.8, 0.0, 0.2)
+    return (0.7, 0.0, 0.3)
+
+
+_MONTHLY_PRIOR = 4.0 / 1200.0
+
+
 def train_monthly_cpi(
     dates: List[date],
     values: List[float],
     forecast_steps: int = 12,
 ) -> ForecastResult:
-    """Multi-window OLS for monthly CPI. Transform: df - 100."""
+    """Multi-window OLS for monthly CPI. Transform: df - 100.
+
+    Blend (per Никита's April 2026 update):
+        m∈[1..4]   → 1.0 * OLS
+        m∈[5..9]   → 0.8 * OLS + 0.2 * (4/1200)
+        m∈[10..12] → 0.7 * OLS + 0.3 * (4/1200)
+    Trivial-median weight is kept zero (computed for reference only).
+    """
     series = pd.Series(values, index=pd.DatetimeIndex(dates), dtype=float, name='value')
     data = pd.DataFrame(series - 100, columns=['value'])
     window_size = len(data)
     monthly_dates = [data.index[-1] + relativedelta(months=j + 1) for j in range(forecast_steps)]
 
     residual_std = float(data['value'].iloc[-24:].std()) if len(data) > 1 else 0.0
+    trivial = float(np.median(data['value'].iloc[-12:]))
     z = 1.96
 
-    points = []
+    points: list[ForecastPoint] = []
+    monthly_preds: list[float] = []
     for m in range(1, forecast_steps + 1):
         lags = _get_horizon_lags(m)
-        pred = _multi_window_predict(data['value'], window_size, m, lags, apply_rolling=False)
+        pred_ols = _multi_window_predict(data['value'], window_size, m, lags, apply_rolling=False)
 
-        if pred is None:
-            pred = float(np.median(data['value'].iloc[-12:]))
+        if pred_ols is None:
+            pred_ols = trivial
+
+        w = _monthly_blend_weights(m)
+        pred = pred_ols * w[0] + trivial * w[1] + _MONTHLY_PRIOR * w[2]
 
         cpi_value = round(pred + 100, 4)
+        monthly_preds.append(cpi_value)
         ci_width = z * residual_std * np.sqrt(m)
         points.append(ForecastPoint(
             date=monthly_dates[m - 1].date(),
@@ -201,7 +226,88 @@ def train_monthly_cpi(
 
     logger.info("CPI-Monthly-MW forecast: %d points, last=%.4f", len(points),
                 points[-1].value if points else 0)
-    return ForecastResult(model_name="CPI-Monthly-MW", aic=None, bic=None, points=points)
+    return ForecastResult(
+        model_name="CPI-Monthly-MW",
+        aic=None,
+        bic=None,
+        points=points,
+        monthly_predictions=monthly_preds,
+    )
+
+
+# ---------------------------------------------------------------------------
+#  Quarterly inflation forecast — aggregation from monthly CPI forecast
+# ---------------------------------------------------------------------------
+
+def aggregate_quarterly_from_monthly(
+    monthly_actual_dates: List[date],
+    monthly_actual_values: List[float],
+    monthly_forecast_points: List[ForecastPoint],
+) -> ForecastResult:
+    """Build quarterly inflation forecast as aggregation of monthly CPI forecast.
+
+    For each upcoming calendar quarter, multiply 3 monthly CPI values
+    (factual where available + forecast otherwise) and convert to %.
+
+    Pure forecast quarters (all 3 months forecasted) are returned;
+    a partial quarter (mix of actual + forecast) is also returned and
+    will be re-computed on every monthly release.
+    """
+    if not monthly_forecast_points or not monthly_actual_dates:
+        return ForecastResult(
+            model_name="CPI-Quarterly-Agg", aic=None, bic=None, points=[],
+        )
+
+    actual_factors = {
+        d.replace(day=1): v / 100.0
+        for d, v in zip(monthly_actual_dates, monthly_actual_values)
+    }
+    forecast_factors = {
+        p.date.replace(day=1): p.value / 100.0
+        for p in monthly_forecast_points
+    }
+
+    all_dates = sorted(set(actual_factors) | set(forecast_factors))
+    if not all_dates:
+        return ForecastResult(
+            model_name="CPI-Quarterly-Agg", aic=None, bic=None, points=[],
+        )
+
+    last_actual_month = max(actual_factors)
+    quarters: dict[date, list[date]] = {}
+    for d in all_dates:
+        q_idx = (d.month - 1) // 3
+        q_start = date(d.year, q_idx * 3 + 1, 1)
+        quarters.setdefault(q_start, []).append(d)
+
+    points: list[ForecastPoint] = []
+    for q_start, months in sorted(quarters.items()):
+        if len(months) != 3:
+            continue
+        if all(m <= last_actual_month for m in months):
+            continue
+
+        factors = [
+            actual_factors.get(m, forecast_factors.get(m))
+            for m in months
+        ]
+        if any(f is None for f in factors):
+            continue
+        product = 1.0
+        for f in factors:
+            product *= f
+        value = round(product * 100 - 100, 4)
+        points.append(ForecastPoint(
+            date=q_start,
+            value=value,
+            lower_bound=None,
+            upper_bound=None,
+        ))
+
+    logger.info("CPI-Quarterly-Agg: %d quarters", len(points))
+    return ForecastResult(
+        model_name="CPI-Quarterly-Agg", aic=None, bic=None, points=points,
+    )
 
 
 # ---------------------------------------------------------------------------

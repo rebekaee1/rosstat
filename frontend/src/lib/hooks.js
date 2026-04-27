@@ -55,11 +55,12 @@ export function useIndicatorStats(code) {
   });
 }
 
-export function useForecast(code) {
+export function useForecast(code, options = {}) {
+  const { enabled = true } = options;
   return useQuery({
     queryKey: ['forecast', code],
     queryFn: ({ signal }) => fetchForecast(code, { signal }),
-    enabled: !!code,
+    enabled: !!code && enabled,
     staleTime: 60 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
   });

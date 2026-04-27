@@ -523,7 +523,7 @@ export default function IndicatorDetail() {
   const CPI_CODES = ['cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services'];
   const isPriceCategory = CPI_CODES.includes(code);
   const canForecast = indicator?.category === 'Цены';
-  const forecastEnabled = canForecast && viewMode !== 'quarterly' && viewMode !== 'annual' && viewMode !== 'weekly';
+  const forecastEnabled = canForecast && viewMode !== 'weekly';
   const shouldSubtract100 = isCpiIndex(code);
   const {
     data: dataResp,
@@ -540,6 +540,12 @@ export default function IndicatorDetail() {
 
   const hasCpiTabs = ['cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services'].includes(code);
   const hasMainCpiDerived = code === 'cpi';
+  const { data: quarterlyForecastResp } = useForecast('inflation-quarterly', {
+    enabled: hasMainCpiDerived && viewMode === 'quarterly',
+  });
+  const { data: annualForecastResp } = useForecast('inflation-annual', {
+    enabled: hasMainCpiDerived && viewMode === 'annual',
+  });
   const {
     data: quarterlyResp,
     isLoading: loadingQuarterly,
@@ -723,10 +729,14 @@ export default function IndicatorDetail() {
     : loadingData;
 
   const hasForecastData = chartMode === 'quarterly'
-    ? false
-    : chartMode === 'inflation'
-      ? inflationResp?.forecast?.length > 0
-      : displayForecastData?.forecast?.values?.length > 0;
+    ? quarterlyForecastResp?.forecast?.values?.length > 0
+    : chartMode === 'annual'
+      ? annualForecastResp?.forecast?.values?.length > 0
+      : chartMode === 'weekly'
+        ? false
+        : chartMode === 'inflation'
+          ? inflationResp?.forecast?.length > 0
+          : displayForecastData?.forecast?.values?.length > 0;
 
   const chartEmptyHint = useMemo(() => {
     if (dataError) {
@@ -991,7 +1001,7 @@ export default function IndicatorDetail() {
               </label>
               {!forecastEnabled && (
                 <div className="absolute top-full right-0 mt-2 px-3 py-2 rounded-xl bg-obsidian border border-border-subtle text-xs text-text-secondary whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-xl z-50">
-                  {['quarterly', 'annual', 'weekly'].includes(viewMode) ? 'Прогноз недоступен для этого режима' : 'Прогноз скоро будет доступен'}
+                  {viewMode === 'weekly' ? 'Недельный прогноз не публикуется' : 'Прогноз скоро будет доступен'}
                 </div>
               )}
             </div>
@@ -1010,7 +1020,12 @@ export default function IndicatorDetail() {
                 : chartMode === 'annual' ? annualDataPoints
                 : chartMode === 'weekly' ? weeklyDataPoints
                 : dataPoints}
-              forecastData={['quarterly', 'annual', 'weekly'].includes(chartMode) ? null : displayForecastData}
+              forecastData={
+                chartMode === 'quarterly' ? quarterlyForecastResp
+                  : chartMode === 'annual' ? annualForecastResp
+                  : chartMode === 'weekly' ? null
+                  : displayForecastData
+              }
               showForecast={forecastEnabled && showForecast}
               onChartData={handleChartData}
               onRangeChange={handleRangeChange}
@@ -1108,26 +1123,30 @@ export default function IndicatorDetail() {
         </section>
 
         <section className="lg:col-span-2">
-          {['quarterly', 'annual', 'weekly'].includes(viewMode) ? (
+          {viewMode === 'weekly' ? (
             <div className="h-full min-h-[300px] rounded-[2rem] bg-surface border border-border-subtle border-dashed flex flex-col items-center justify-center gap-3 text-text-tertiary p-8">
               <Activity className="w-8 h-8 mb-1 opacity-20" />
               <p className="text-sm font-medium text-text-secondary text-center max-w-md">
-                {viewMode === 'quarterly' && 'Квартальные данные рассчитываются на основе месячных значений ИПЦ'}
-                {viewMode === 'annual' && 'Годовая инфляция рассчитывается как скользящее произведение 12 месячных ИПЦ'}
-                {viewMode === 'weekly' && 'Недельный ИПЦ публикуется Росстатом еженедельно'}
+                Недельный ИПЦ публикуется Росстатом еженедельно
               </p>
               <p className="text-xs text-center max-w-lg leading-relaxed text-text-tertiary">
-                Для прогноза переключитесь на вкладку «Инфляция 12 мес.» или «ИПЦ помесячно»
+                Прогноз недоступен для недельной частоты — переключитесь на вкладку «Инфляция за год», «Месячная», «Квартальная» или «Годовая»
               </p>
             </div>
           ) : forecastEnabled && showForecast && hasForecastData ? (
             <ForecastTable
               mode={chartMode}
               inflation={inflationResp}
-              forecastData={displayForecastData}
+              forecastData={
+                chartMode === 'quarterly' ? quarterlyForecastResp
+                  : chartMode === 'annual' ? annualForecastResp
+                  : displayForecastData
+              }
               unit={indicator?.unit || '%'}
               dateFormat={
-                indicator?.frequency === 'quarterly' ? 'quarterly'
+                chartMode === 'quarterly' ? 'quarterly'
+                : chartMode === 'annual' ? 'annual'
+                : indicator?.frequency === 'quarterly' ? 'quarterly'
                 : indicator?.frequency === 'annual' ? 'annual'
                 : 'full'
               }
