@@ -88,7 +88,7 @@ export default function CategoryBlock({
       </div>
 
       <h3 className="text-lg font-semibold text-text-primary mb-2 pr-6">{category.name}</h3>
-      <p className="text-sm text-text-secondary leading-relaxed line-clamp-2 flex-1">{category.description}</p>
+      <p className="text-sm text-text-secondary leading-relaxed line-clamp-3 flex-1">{category.description}</p>
 
       <div className="mt-4 flex items-center gap-2 text-sm font-medium text-champagne opacity-0 group-hover:opacity-100 transition-opacity">
         {category.apiCategory ? (
