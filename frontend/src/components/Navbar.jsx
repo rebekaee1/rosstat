@@ -92,8 +92,10 @@ export default function Navbar() {
         to="/"
         className={cn(FOCUS_RING, 'flex items-center gap-2 shrink-0 rounded-xl')}
         onClick={closeAll}
+        aria-label="Forecast Economy — на главную"
+        title="На главную"
       >
-        <TrendingUp className="w-5 h-5 text-champagne" />
+        <TrendingUp className="w-5 h-5 text-champagne" aria-hidden="true" />
         <span className="text-base font-bold tracking-tight text-text-primary">
           Forecast Economy
         </span>
@@ -162,8 +164,15 @@ export default function Navbar() {
           )}
         </div>
 
-        <NavLink to="/calculator" className={linkClass} onClick={closeAll}>
-          Калькулятор
+        <NavLink to="/compare" className={linkClass} onClick={closeAll}>
+          Сравнение
+        </NavLink>
+        <NavLink
+          to="/calculator"
+          className={({ isActive }) => cn(linkClass({ isActive }), 'ml-1.5')}
+          onClick={closeAll}
+        >
+          Калькулятор инфляции
         </NavLink>
         <NavLink to="/about" className={linkClass} onClick={closeAll}>
           О проекте
@@ -223,8 +232,11 @@ export default function Navbar() {
             <NavLink to="/demographics" className={linkClass} onClick={closeAll}>
               Возрастная структура
             </NavLink>
+            <NavLink to="/compare" className={linkClass} onClick={closeAll}>
+              Сравнение
+            </NavLink>
             <NavLink to="/calculator" className={linkClass} onClick={closeAll}>
-              Калькулятор
+              Калькулятор инфляции
             </NavLink>
             <NavLink to="/about" className={linkClass} onClick={closeAll}>
               О проекте
