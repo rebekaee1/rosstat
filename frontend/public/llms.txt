@@ -1,0 +1,65 @@
+# Forecast Economy
+
+> Forecast Economy (forecasteconomy.com) — публичная аналитическая платформа с официальными макроэкономическими данными России: индекс потребительских цен, ключевая ставка ЦБ, курсы валют, ВВП, безработица, демография и ещё 80+ индикаторов. Источники: Росстат, Банк России, Минфин РФ. Обновление ежедневно в 06:00 МСК.
+
+## Что есть на сайте
+
+- **84+ индикатора** в 9 категориях: цены, процентные ставки, финансы и валюты, рынок труда, ВВП и рост, население, внешняя торговля, бизнес и инвестиции, наука и образование.
+- **Прогнозы** по ключевым показателям (ИПЦ, USD/RUB, ключевая ставка, безработица) — собственные эконометрические модели (Holt-Winters, SARIMAX), пересчёт после каждого релиза источника.
+- **Калькулятор инфляции** — пересчёт суммы между двумя датами через накопленный ИПЦ; обратный режим (сколько было в N лет назад).
+- **Сравнение индикаторов** — попарное сравнение временных рядов с двойной осью Y и LOCF-выравниванием по датам.
+- **Календарь публикаций** — расписание ключевых релизов Росстата, ЦБ, Минфина (заседания совета директоров ЦБ, ИПЦ, безработица и т.д.).
+- **Возрастная пирамида** — структура населения России с 1990 по текущий год.
+- **API** для разработчиков: REST-эндпоинты `/api/v1/indicators/{code}`, `/api/v1/indicators/{code}/data`, `/api/v1/indicators/{code}/forecast`.
+- **Embed-виджеты** для встраивания на сторонние сайты: chart, card, table, ticker, compare; SVG sparkline.
+
+## Категории и ключевые URL
+
+- Главная: https://forecasteconomy.com/
+- Цены и инфляция: https://forecasteconomy.com/category/prices
+- Процентные ставки: https://forecasteconomy.com/category/rates
+- Финансы и валюты: https://forecasteconomy.com/category/finance
+- Рынок труда: https://forecasteconomy.com/category/labor
+- ВВП и рост: https://forecasteconomy.com/category/gdp
+- Население: https://forecasteconomy.com/category/population
+- Внешняя торговля: https://forecasteconomy.com/category/trade
+- Бизнес и инвестиции: https://forecasteconomy.com/category/business
+- Наука и образование: https://forecasteconomy.com/category/science
+
+## Топ-индикаторы (наиболее посещаемые)
+
+- Индекс потребительских цен (ИПЦ): https://forecasteconomy.com/indicator/cpi
+- Ключевая ставка ЦБ РФ: https://forecasteconomy.com/indicator/key-rate
+- Курс доллара к рублю (USD/RUB): https://forecasteconomy.com/indicator/usd-rub
+- Курс евро к рублю (EUR/RUB): https://forecasteconomy.com/indicator/eur-rub
+- Курс юаня к рублю (CNY/RUB): https://forecasteconomy.com/indicator/cny-rub
+- Уровень безработицы: https://forecasteconomy.com/indicator/unemployment
+- ВВП России (номинальный): https://forecasteconomy.com/indicator/gdp-nominal
+- Численность населения: https://forecasteconomy.com/indicator/population
+- Индекс промышленного производства: https://forecasteconomy.com/indicator/ipi
+- Сальдо текущего счёта: https://forecasteconomy.com/indicator/current-account
+
+## Дополнительно
+
+- О проекте: https://forecasteconomy.com/about
+- Калькулятор инфляции: https://forecasteconomy.com/calculator
+- Сравнение индикаторов: https://forecasteconomy.com/compare
+- Возрастная структура населения: https://forecasteconomy.com/demographics
+- Конфиденциальность: https://forecasteconomy.com/privacy
+- Sitemap: https://forecasteconomy.com/sitemap.xml
+
+## Источники данных
+
+- **Росстат:** SDDS XLSX, КЭП (`ind_MM-YYYY.xlsx`), demo*.xlsx, Sp_*.xlsx, недельные бюллетени по ИПЦ, Kadry_VO.xls, Nauka_*.xls, innov_*.xls.
+- **Банк России (cbr.ru):** XML/JSON DataService (FX, key rate), hd_base, XLSX BoP/debt/reserves, пресс-релизы Совета Директоров.
+- **Минфин РФ:** CSV доходы/расходы федерального бюджета.
+
+Все данные публичные, точные ссылки на источник указаны на странице каждого индикатора в блоке «Методология». Лицензия — общественное достояние / открытые данные госорганов РФ.
+
+## Технологии
+
+Frontend: React 18 + Vite + Tailwind + Recharts. Backend: FastAPI + PostgreSQL + Redis. Размещение: VDS, deploy через docker compose.
+
+## Контакт
+
+Email: hello@forecasteconomy.com
