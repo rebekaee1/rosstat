@@ -13,7 +13,7 @@ export const CATEGORIES = [
     flagshipCode: 'cpi',
     sentiment: 'inverse',
     description:
-      'ИПЦ и инфляция: официальные данные Росстата, скользящая годовая инфляция и прогноз.',
+      'Индекс потребительских цен на товары и услуги. Индекс цен производителей. Цены на недвижимость.',
   },
   {
     slug: 'rates',
@@ -24,7 +24,7 @@ export const CATEGORIES = [
     status: 'active',
     flagshipCode: 'key-rate',
     sentiment: 'neutral',
-    description: 'Ключевая ставка ЦБ, RUONIA, ипотека, депозиты, автокредиты — актуальные данные Банка России.',
+    description: 'Ключевая ставка ЦБ, RUONIA. Ставки по вкладам, автокредитам и ипотеке.',
   },
   {
     slug: 'finance',
@@ -35,7 +35,7 @@ export const CATEGORIES = [
     status: 'active',
     flagshipCode: 'usd-rub',
     sentiment: 'inverse',
-    description: 'Курсы валют, золото, М0–М2, резервы, внешний долг, кредиты, депозиты, доходы/расходы бюджета — данные ЦБ РФ и Минфина.',
+    description: 'Курсы валют. Денежные агрегаты М0, М1, М2. Резервы, внешний долг, расходы бюджета и депозиты.',
   },
   {
     slug: 'labor',
@@ -46,7 +46,7 @@ export const CATEGORIES = [
     status: 'active',
     flagshipCode: 'unemployment',
     sentiment: 'inverse',
-    description: 'Безработица, зарплаты, рабочая сила, занятость — ежемесячные данные Росстата.',
+    description: 'Уровень безработицы, реальные и номинальные заработные платы. Рабочая сила и занятость.',
   },
   {
     slug: 'gdp',
@@ -57,7 +57,7 @@ export const CATEGORIES = [
     status: 'active',
     flagshipCode: 'gdp-nominal',
     sentiment: 'positive',
-    description: 'ВВП, темпы роста, потребление, госрасходы — структура экономики по данным Росстата.',
+    description: 'Валовой внутренний продукт, госрасходы, расходы домохозяйств. Темпы роста экономики.',
   },
   {
     slug: 'population',
@@ -68,7 +68,7 @@ export const CATEGORIES = [
     status: 'active',
     flagshipCode: 'population',
     sentiment: 'positive',
-    description: 'Численность, рождаемость, смертность, пенсионеры, трудоспособные — демографические данные Росстата с 1990 года.',
+    description: 'Численность населения, рождаемость, смертность, численность пенсионеров, трудоспособное население.',
   },
   {
     slug: 'trade',
@@ -79,7 +79,7 @@ export const CATEGORIES = [
     status: 'active',
     flagshipCode: 'current-account',
     sentiment: 'neutral',
-    description: 'Экспорт, импорт товаров и услуг, торговый баланс, текущий счёт, ПИИ — квартальные данные Банка России.',
+    description: 'Экспорт товаров и услуг, импорт товаров и услуг, сальдо торгового баланса, сальдо текущего счёта.',
   },
   {
     slug: 'business',
@@ -90,7 +90,7 @@ export const CATEGORIES = [
     status: 'active',
     flagshipCode: 'ipi',
     sentiment: 'positive',
-    description: 'ИПП, розничная торговля, ввод жилья, износ фондов, инвестиции — данные Росстата и Банка России.',
+    description: 'Индекс промышленного производства, розничная торговля, износ основных фондов, инвестиции.',
   },
   {
     slug: 'science',
@@ -101,7 +101,7 @@ export const CATEGORIES = [
     status: 'active',
     flagshipCode: 'rd-personnel',
     sentiment: 'positive',
-    description: 'Аспиранты, докторанты, организации НИР, инновационная активность — годовые данные Росстата.',
+    description: 'Аспиранты, докторанты. Число организаций НИР. Инновационная активность предприятий.',
   },
 ];
 
