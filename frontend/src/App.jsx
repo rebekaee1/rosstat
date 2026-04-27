@@ -6,6 +6,7 @@ import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
 import { SkeletonBox } from './components/Skeleton';
 import useDocumentMeta from './lib/useMeta';
+import { cleanPathWithSearch } from './lib/cleanUrl';
 import Dashboard from './pages/Dashboard';
 
 const IndicatorDetail = lazy(() => import('./pages/IndicatorDetail'));
@@ -33,10 +34,10 @@ function ScrollToTop() {
 function YandexMetrikaHit() {
   const location = useLocation();
   const isFirst = useRef(true);
-  const prevUrl = useRef(window.location.pathname + window.location.search);
+  const prevUrl = useRef(cleanPathWithSearch(window.location.pathname, window.location.search));
   useEffect(() => {
     if (isFirst.current) { isFirst.current = false; return; }
-    const url = location.pathname + location.search;
+    const url = cleanPathWithSearch(location.pathname, location.search);
     const referer = prevUrl.current;
     prevUrl.current = url;
     // Delay to let page component update document.title via useDocumentMeta

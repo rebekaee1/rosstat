@@ -13,7 +13,28 @@
             k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
         })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=107136069', 'ym');
 
-        ym(107136069, 'init', {webvisor:true, clickmap:true, accurateTrackBounce:true, trackLinks:true});
+        // defer:true отключает автоматический первый hit, который отправил бы
+        // window.location.href со всеми трекинг-параметрами (etext, ybaip, yclid…).
+        // Вручную шлём очищенный URL — без них «Страницы входа» в Метрике не дублируются.
+        ym(107136069, 'init', {defer:true, webvisor:true, clickmap:true, accurateTrackBounce:true, trackLinks:true});
+
+        (function () {
+          var TRACKING = ['etext','ybaip','yclid','ysclid','gclid','fbclid','_openstat','openstat','clid','yandex_referrer','_ga','utm_source','utm_medium','utm_campaign','utm_term','utm_content','utm_referrer','from','ref','ref_src','source','mc_cid','mc_eid','igshid'];
+          var search = window.location.search;
+          if (search && search.length > 1) {
+            var params = new URLSearchParams(search);
+            var changed = false;
+            for (var i = 0; i < TRACKING.length; i++) {
+              if (params.has(TRACKING[i])) { params.delete(TRACKING[i]); changed = true; }
+            }
+            if (changed) {
+              var rest = params.toString();
+              search = rest ? '?' + rest : '';
+            }
+          }
+          var cleanUrl = window.location.pathname + search + window.location.hash;
+          ym(107136069, 'hit', cleanUrl, { title: document.title, referer: document.referrer });
+        })();
     </script>
     <!-- /Yandex.Metrika counter — pixel noscript в &lt;body&gt; (валидный HTML) -->
 
