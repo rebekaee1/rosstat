@@ -364,6 +364,204 @@ INDICATORS = [
         "is_active": True,
         "category": "Ставки",
     },
+    # ─── Ставки по кредитам по срочности (CBR DataService) ───
+    # ЦБ публикует средневзвешенные ставки по новым выданным рублёвым кредитам
+    # с разбивкой по срочности кредитного договора. Нефинансовые организации (ds=25)
+    # и физические лица — потребительские кредиты без ипотеки (ds=27).
+    # Ряды доступны с января 2014 г. ежемесячно (publicationId=14).
+    {
+        "code": "credit-rate-corp-short",
+        "name": "Ставка по кредитам ЮЛ до 1 года",
+        "name_en": "Corporate Loan Rate (up to 1 year)",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/pdko/int_rat/",
+        "description": (
+            "Средневзвешенная процентная ставка по кредитам нефинансовым "
+            "организациям в рублях со сроком погашения до 1 года, включая "
+            "«до востребования»."
+        ),
+        "methodology": (
+            "Источник: REST API CBR DataService (publicationId=14, datasetId=25, "
+            "measureId=2, element_id=7)."
+        ),
+        "parser_type": "cbr_dataservice_json",
+        "model_config_json": {
+            "dataservice": {
+                "publicationId": 14,
+                "datasetId": 25,
+                "measureId": 2,
+                "element_id": 7,
+            },
+            "backfill_from_year": 2014,
+            "forecast_steps": 6,
+            "forecast_transform": "percentage",
+            "validation": {"min": 0, "max": 50},
+        },
+        "is_active": True,
+        "category": "Ставки",
+    },
+    {
+        "code": "credit-rate-corp-1to3y",
+        "name": "Ставка по кредитам ЮЛ от 1 до 3 лет",
+        "name_en": "Corporate Loan Rate (1–3 years)",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/pdko/int_rat/",
+        "description": (
+            "Средневзвешенная процентная ставка по кредитам нефинансовым "
+            "организациям в рублях со сроком погашения от 1 года до 3 лет."
+        ),
+        "methodology": (
+            "Источник: REST API CBR DataService (publicationId=14, datasetId=25, "
+            "measureId=2, element_id=9)."
+        ),
+        "parser_type": "cbr_dataservice_json",
+        "model_config_json": {
+            "dataservice": {
+                "publicationId": 14,
+                "datasetId": 25,
+                "measureId": 2,
+                "element_id": 9,
+            },
+            "backfill_from_year": 2014,
+            "forecast_steps": 6,
+            "forecast_transform": "percentage",
+            "validation": {"min": 0, "max": 50},
+        },
+        "is_active": True,
+        "category": "Ставки",
+    },
+    {
+        "code": "credit-rate-corp-over3y",
+        "name": "Ставка по кредитам ЮЛ свыше 3 лет",
+        "name_en": "Corporate Loan Rate (over 3 years)",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/pdko/int_rat/",
+        "description": (
+            "Средневзвешенная процентная ставка по кредитам нефинансовым "
+            "организациям в рублях со сроком погашения свыше 3 лет."
+        ),
+        "methodology": (
+            "Источник: REST API CBR DataService (publicationId=14, datasetId=25, "
+            "measureId=2, element_id=10)."
+        ),
+        "parser_type": "cbr_dataservice_json",
+        "model_config_json": {
+            "dataservice": {
+                "publicationId": 14,
+                "datasetId": 25,
+                "measureId": 2,
+                "element_id": 10,
+            },
+            "backfill_from_year": 2014,
+            "forecast_steps": 6,
+            "forecast_transform": "percentage",
+            "validation": {"min": 0, "max": 50},
+        },
+        "is_active": True,
+        "category": "Ставки",
+    },
+    {
+        "code": "credit-rate-ind-short",
+        "name": "Ставка по кредитам ФЛ до 1 года",
+        "name_en": "Individual Loan Rate (up to 1 year)",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/pdko/int_rat/",
+        "description": (
+            "Средневзвешенная процентная ставка по кредитам физическим лицам "
+            "в рублях со сроком погашения до 1 года, включая «до востребования»."
+        ),
+        "methodology": (
+            "Источник: REST API CBR DataService (publicationId=14, datasetId=27, "
+            "measureId=2, element_id=7)."
+        ),
+        "parser_type": "cbr_dataservice_json",
+        "model_config_json": {
+            "dataservice": {
+                "publicationId": 14,
+                "datasetId": 27,
+                "measureId": 2,
+                "element_id": 7,
+            },
+            "backfill_from_year": 2014,
+            "forecast_steps": 6,
+            "forecast_transform": "percentage",
+            "validation": {"min": 0, "max": 50},
+        },
+        "is_active": True,
+        "category": "Ставки",
+    },
+    {
+        "code": "credit-rate-ind-1to3y",
+        "name": "Ставка по кредитам ФЛ от 1 до 3 лет",
+        "name_en": "Individual Loan Rate (1–3 years)",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/pdko/int_rat/",
+        "description": (
+            "Средневзвешенная процентная ставка по кредитам физическим лицам "
+            "в рублях со сроком погашения от 1 года до 3 лет."
+        ),
+        "methodology": (
+            "Источник: REST API CBR DataService (publicationId=14, datasetId=27, "
+            "measureId=2, element_id=9)."
+        ),
+        "parser_type": "cbr_dataservice_json",
+        "model_config_json": {
+            "dataservice": {
+                "publicationId": 14,
+                "datasetId": 27,
+                "measureId": 2,
+                "element_id": 9,
+            },
+            "backfill_from_year": 2014,
+            "forecast_steps": 6,
+            "forecast_transform": "percentage",
+            "validation": {"min": 0, "max": 50},
+        },
+        "is_active": True,
+        "category": "Ставки",
+    },
+    {
+        "code": "credit-rate-ind-over3y",
+        "name": "Ставка по кредитам ФЛ свыше 3 лет",
+        "name_en": "Individual Loan Rate (over 3 years)",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/pdko/int_rat/",
+        "description": (
+            "Средневзвешенная процентная ставка по кредитам физическим лицам "
+            "в рублях со сроком погашения свыше 3 лет."
+        ),
+        "methodology": (
+            "Источник: REST API CBR DataService (publicationId=14, datasetId=27, "
+            "measureId=2, element_id=10)."
+        ),
+        "parser_type": "cbr_dataservice_json",
+        "model_config_json": {
+            "dataservice": {
+                "publicationId": 14,
+                "datasetId": 27,
+                "measureId": 2,
+                "element_id": 10,
+            },
+            "backfill_from_year": 2014,
+            "forecast_steps": 6,
+            "forecast_transform": "percentage",
+            "validation": {"min": 0, "max": 50},
+        },
+        "is_active": True,
+        "category": "Ставки",
+    },
     # ─── Рынок труда (Росстат SDDS) ───
     {
         "code": "unemployment",
