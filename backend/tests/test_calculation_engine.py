@@ -12,6 +12,7 @@ def test_all_derived_registered():
         "current-account-yoy", "ipi-yoy",
         "exports-yoy", "imports-yoy", "ppi-yoy", "wages-yoy",
         "exports-qoq", "imports-qoq",
+        "housing-yoy-primary", "housing-yoy-secondary",
     }
     assert set(calculation_engine._derived.keys()) == expected
 

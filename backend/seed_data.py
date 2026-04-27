@@ -1122,6 +1122,38 @@ INDICATORS = [
         "is_active": True,
         "category": "Цены",
     },
+    {
+        "code": "housing-yoy-primary",
+        "name": "Цены на первичное жильё (изм. г/г)",
+        "name_en": "Primary Housing Prices YoY",
+        "unit": "%",
+        "frequency": "quarterly",
+        "source": "Расчёт",
+        "description": (
+            "Изменение индекса цен на первичном рынке жилья к аналогичному кварталу "
+            "предыдущего года. Расчёт на основе housing-price-primary."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {"forecast_steps": 0},
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "housing-yoy-secondary",
+        "name": "Цены на вторичное жильё (изм. г/г)",
+        "name_en": "Secondary Housing Prices YoY",
+        "unit": "%",
+        "frequency": "quarterly",
+        "source": "Расчёт",
+        "description": (
+            "Изменение индекса цен на вторичном рынке жилья к аналогичному кварталу "
+            "предыдущего года. Расчёт на основе housing-price-secondary."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {"forecast_steps": 0},
+        "is_active": True,
+        "category": "Цены",
+    },
     # ─── Компоненты ВВП (Росстат SDDS National Accounts) ───
     {
         "code": "gdp-consumption",

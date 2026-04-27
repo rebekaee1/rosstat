@@ -50,4 +50,9 @@ ENV/
 
 # Local working folders (not part of the project)
 правки/
+правки_v2/
 article_NA/
+
+# Large media files outside the app
+*.mov
+*.mp4
