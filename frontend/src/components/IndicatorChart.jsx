@@ -1,19 +1,31 @@
 import { useEffect, useRef, useMemo, useState, useCallback } from 'react';
 import gsap from 'gsap';
 import {
-  ResponsiveContainer, ComposedChart, Area, Line, XAxis, YAxis,
+  ResponsiveContainer, ComposedChart, Area, Line, Bar, XAxis, YAxis,
   Tooltip, CartesianGrid, ReferenceLine,
 } from 'recharts';
-import { Activity, ZoomIn } from 'lucide-react';
+import { Activity, ZoomIn, AreaChart as AreaIcon, BarChart3, LineChart as LineIcon } from 'lucide-react';
 import { formatDate, formatAxisTick, formatValueWithUnit, unitDigits, cn } from '../lib/format';
 import { track, events } from '../lib/track';
 
-const RANGE_OPTIONS = [
-  { key: '3y', label: '3 года', months: 36 },
-  { key: '5y', label: '5 лет', months: 60 },
-  { key: '10y', label: '10 лет', months: 120 },
-  { key: 'all', label: 'Все', months: null },
-];
+const RANGE_PRESETS = {
+  default: [
+    { key: '3y', label: '3 года', months: 36 },
+    { key: '5y', label: '5 лет', months: 60 },
+    { key: '10y', label: '10 лет', months: 120 },
+    { key: 'all', label: 'Все', months: null },
+  ],
+  annual: [
+    { key: '10y', label: '10 лет', months: 120 },
+    { key: '25y', label: '25 лет', months: 300 },
+    { key: 'all', label: 'Все', months: null },
+  ],
+};
+
+const RANGE_DEFAULTS = {
+  default: '5y',
+  annual: '10y',
+};
 
 const MIN_WINDOW = 10;
 const ZOOM_STEP = 1.18;
@@ -86,18 +98,33 @@ export default function IndicatorChart({
   emptyHint,
   dateFormat = 'full',
   unit = '%',
+  rangePreset = 'default',
+  indicatorCode,
+  indicatorCategory,
+  defaultChartType = 'area',
 }) {
   const ref = useRef(null);
   const chartAreaRef = useRef(null);
-  const [range, setRange] = useState('5y');
+  const rangeOptions = RANGE_PRESETS[rangePreset] || RANGE_PRESETS.default;
+  const defaultRange = RANGE_DEFAULTS[rangePreset] || RANGE_DEFAULTS.default;
+  const [range, setRange] = useState(defaultRange);
   const [windowOverride, setWindowOverride] = useState(null);
   const [offset, setOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+  const [prevPreset, setPrevPreset] = useState(rangePreset);
+  const [chartType, setChartType] = useState(defaultChartType);
   const dragRef = useRef(null);
   const onChartDataRef = useRef(onChartData);
 
   useEffect(() => { onChartDataRef.current = onChartData; }, [onChartData]);
+
+  if (prevPreset !== rangePreset) {
+    setPrevPreset(rangePreset);
+    setRange(defaultRange);
+    setWindowOverride(null);
+    setOffset(0);
+  }
 
   useEffect(() => {
     if (!ref.current) return;
@@ -144,9 +171,9 @@ export default function IndicatorChart({
   const dataLen = chartData.length;
 
   const presetWindow = useMemo(() => {
-    const opt = RANGE_OPTIONS.find(r => r.key === range);
+    const opt = rangeOptions.find(r => r.key === range);
     return dateBasedWindowSize(chartData, opt?.months);
-  }, [chartData, range]);
+  }, [chartData, range, rangeOptions]);
 
   const windowSize = windowOverride ?? presetWindow;
   const maxOffset = Math.max(0, dataLen - windowSize);
@@ -176,7 +203,7 @@ export default function IndicatorChart({
     setWindowOverride(null);
     setOffset(0);
     onRangeChange?.(key);
-    track(events.CHART_RANGE_CHANGE, { range: key });
+    track(events.CHART_RANGE_CHANGE, { range: key, indicator: indicatorCode, indicatorCategory });
   };
 
   const handleSlider = useCallback((e) => {
@@ -328,11 +355,43 @@ export default function IndicatorChart({
         <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
           {title}
         </h3>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          <div
+            className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle"
+            role="radiogroup"
+            aria-label="Тип графика"
+          >
+            {[
+              { key: 'area', label: 'Линия с заливкой', icon: AreaIcon },
+              { key: 'line', label: 'Линия', icon: LineIcon },
+              { key: 'bar', label: 'Столбцы', icon: BarChart3 },
+            ].map((opt) => {
+              const IconComp = opt.icon;
+              return (
+                <button
+                  key={opt.key}
+                  type="button"
+                  onClick={() => setChartType(opt.key)}
+                  role="radio"
+                  aria-checked={chartType === opt.key}
+                  aria-label={opt.label}
+                  title={opt.label}
+                  className={cn(
+                    'p-1.5 rounded-lg transition-colors duration-200',
+                    chartType === opt.key
+                      ? 'bg-champagne/15 text-champagne'
+                      : 'text-text-tertiary hover:text-text-secondary'
+                  )}
+                >
+                  <IconComp className="w-3.5 h-3.5" aria-hidden="true" />
+                </button>
+              );
+            })}
+          </div>
           {isZoomed && (
             <button
               type="button"
-              onClick={() => { setWindowOverride(null); setOffset(0); track(events.CHART_ZOOM, { action: 'reset' }); }}
+              onClick={() => { setWindowOverride(null); setOffset(0); track(events.CHART_ZOOM, { action: 'reset', indicator: indicatorCode, indicatorCategory }); }}
               className="px-2 py-1.5 text-[10px] font-mono uppercase tracking-wider text-text-tertiary hover:text-champagne transition-colors"
               title="Сбросить зум"
             >
@@ -340,7 +399,7 @@ export default function IndicatorChart({
             </button>
           )}
           <div className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle">
-            {RANGE_OPTIONS.map(opt => (
+            {rangeOptions.map(opt => (
               <button
                 key={opt.key}
                 type="button"
@@ -424,15 +483,35 @@ export default function IndicatorChart({
               />
             )}
 
-            <Area
-              dataKey="actual"
-              stroke="#B8942F"
-              strokeWidth={2}
-              fill="url(#inflGradActual)"
-              dot={false}
-              activeDot={isDragging ? false : { r: 4, fill: '#B8942F', stroke: '#FFFFFF', strokeWidth: 2 }}
-              isAnimationActive={false}
-            />
+            {chartType === 'bar' ? (
+              <Bar
+                dataKey="actual"
+                fill="#B8942F"
+                fillOpacity={0.7}
+                stroke="#B8942F"
+                isAnimationActive={false}
+                maxBarSize={28}
+              />
+            ) : chartType === 'line' ? (
+              <Line
+                dataKey="actual"
+                stroke="#B8942F"
+                strokeWidth={2}
+                dot={false}
+                activeDot={isDragging ? false : { r: 4, fill: '#B8942F', stroke: '#FFFFFF', strokeWidth: 2 }}
+                isAnimationActive={false}
+              />
+            ) : (
+              <Area
+                dataKey="actual"
+                stroke="#B8942F"
+                strokeWidth={2}
+                fill="url(#inflGradActual)"
+                dot={false}
+                activeDot={isDragging ? false : { r: 4, fill: '#B8942F', stroke: '#FFFFFF', strokeWidth: 2 }}
+                isAnimationActive={false}
+              />
+            )}
 
             {showForecast && (
               <Line
@@ -454,6 +533,13 @@ export default function IndicatorChart({
             <span className="text-[10px] font-mono text-text-tertiary">Ctrl + scroll — зум · drag — сдвиг</span>
           </div>
         )}
+
+        <span
+          aria-hidden="true"
+          className="pointer-events-none select-none absolute bottom-2 right-3 text-[10px] font-mono text-text-tertiary opacity-40 tracking-tight"
+        >
+          forecasteconomy.com
+        </span>
       </div>
 
       {maxOffset > 0 && (

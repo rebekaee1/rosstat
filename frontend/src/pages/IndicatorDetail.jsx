@@ -149,6 +149,14 @@ const SEO_MAP = {
     title: 'Цены на вторичное жильё — индекс и динамика',
     description: 'Индекс цен на вторичном рынке жилья (2010=100): квартальные данные Росстата.',
   },
+  'housing-yoy-primary': {
+    title: 'Цены на первичное жильё (год к году) — данные',
+    description: 'Изменение индекса цен на первичном рынке жилья к аналогичному кварталу предыдущего года. Расчёт на основе данных Росстата.',
+  },
+  'housing-yoy-secondary': {
+    title: 'Цены на вторичное жильё (год к году) — данные',
+    description: 'Изменение индекса цен на вторичном рынке жилья к аналогичному кварталу предыдущего года. Расчёт на основе данных Росстата.',
+  },
   ipi: {
     title: 'Индекс промышленного производства — данные и прогноз',
     description: 'ИПП России (2023=100): ежемесячные данные с 2015 года, динамика. Данные Росстата.',
@@ -530,24 +538,25 @@ export default function IndicatorDetail() {
   });
   const { data: forecastResp, refetch: refetchForecast } = useForecast(code);
 
-  const hasCpiTabs = code === 'cpi';
+  const hasCpiTabs = ['cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services'].includes(code);
+  const hasMainCpiDerived = code === 'cpi';
   const {
     data: quarterlyResp,
     isLoading: loadingQuarterly,
   } = useIndicatorData('inflation-quarterly', undefined, {
-    enabled: hasCpiTabs && viewMode === 'quarterly',
+    enabled: hasMainCpiDerived && viewMode === 'quarterly',
   });
   const {
     data: annualResp,
     isLoading: loadingAnnual,
   } = useIndicatorData('inflation-annual', undefined, {
-    enabled: hasCpiTabs && viewMode === 'annual',
+    enabled: hasMainCpiDerived && viewMode === 'annual',
   });
   const {
     data: weeklyResp,
     isLoading: loadingWeekly,
   } = useIndicatorData('inflation-weekly', undefined, {
-    enabled: hasCpiTabs && viewMode === 'weekly',
+    enabled: hasMainCpiDerived && viewMode === 'weekly',
   });
 
   const chartMode = isPriceCategory ? viewMode : 'cpi';
@@ -581,6 +590,14 @@ export default function IndicatorDetail() {
     );
     return () => tween.kill();
   }, []);
+
+  useEffect(() => {
+    if (!indicator?.code) return;
+    track(events.INDICATOR_VIEW, {
+      indicator: indicator.code,
+      indicatorCategory: indicator.category,
+    });
+  }, [indicator?.code, indicator?.category]);
 
   const rawDataPoints = useMemo(
     () => (Array.isArray(dataResp?.data) ? dataResp.data : []),
@@ -618,7 +635,15 @@ export default function IndicatorDetail() {
 
   const annualDataPoints = useMemo(() => {
     if (!annualResp?.data?.length) return [];
-    return annualResp.data;
+    const byYear = new Map();
+    for (const p of annualResp.data) {
+      const year = String(p.date).slice(0, 4);
+      const existing = byYear.get(year);
+      if (!existing || String(p.date) > String(existing.date)) {
+        byYear.set(year, p);
+      }
+    }
+    return Array.from(byYear.values()).sort((a, b) => String(a.date).localeCompare(String(b.date)));
   }, [annualResp]);
 
   const weeklyDataPoints = useMemo(() => {
@@ -683,13 +708,13 @@ export default function IndicatorDetail() {
 
   const handleDownloadExcel = useCallback(() => {
     downloadExcel(chartData, downloadMode, code, currentRange, downloadMeta);
-    track(events.DOWNLOAD_EXCEL, { indicator: code, range: currentRange });
-  }, [chartData, downloadMode, code, currentRange, downloadMeta]);
+    track(events.DOWNLOAD_EXCEL, { indicator: code, range: currentRange, indicatorCategory: indicator?.category });
+  }, [chartData, downloadMode, code, currentRange, downloadMeta, indicator?.category]);
 
   const handleDownloadCSV = useCallback(() => {
     downloadCSV(chartData, downloadMode, code, currentRange, downloadMeta);
-    track(events.DOWNLOAD_CSV, { indicator: code, range: currentRange });
-  }, [chartData, downloadMode, code, currentRange, downloadMeta]);
+    track(events.DOWNLOAD_CSV, { indicator: code, range: currentRange, indicatorCategory: indicator?.category });
+  }, [chartData, downloadMode, code, currentRange, downloadMeta, indicator?.category]);
 
   const chartLoading = chartMode === 'inflation' ? loadingInflation
     : chartMode === 'quarterly' ? loadingQuarterly
@@ -707,6 +732,15 @@ export default function IndicatorDetail() {
     if (dataError) {
       return 'Не удалось получить исторический ряд. Нажмите «Повторить» выше или проверьте backend / прокси Vite.';
     }
+    if (
+      hasCpiTabs && !hasMainCpiDerived
+      && ['quarterly', 'annual', 'weekly'].includes(viewMode)
+    ) {
+      return (
+        'Для подкатегорий ИПЦ (продовольствие, непродовольственные товары, услуги) квартальная, годовая и недельная агрегации '
+        + 'пока не рассчитываются. Используйте вкладку «Инфляция за год» или «Месячная».'
+      );
+    }
     if (!loadingData && (dataPoints?.length ?? 0) === 0) {
       return (
         'В API пока нет точек для этого кода — например, прод ещё без backfill ключевой ставки, или локальный backend не запущен. '
@@ -714,7 +748,7 @@ export default function IndicatorDetail() {
       );
     }
     return undefined;
-  }, [dataError, loadingData, dataPoints]);
+  }, [dataError, loadingData, dataPoints, hasCpiTabs, hasMainCpiDerived, viewMode]);
 
   const refetchIndicatorPage = useCallback(() => {
     refetchInd();
@@ -875,71 +909,33 @@ export default function IndicatorDetail() {
           <div className="flex items-center gap-4">
             <Terminal className="w-4 h-4 text-champagne" />
             {isPriceCategory ? (
-              <div className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle">
-                <button
-                  type="button"
-                  onClick={() => { setViewMode('inflation'); track(events.CHART_MODE_CHANGE, { mode: 'inflation', indicator: code }); }}
-                  className={cn(
-                    'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
-                    viewMode === 'inflation'
-                      ? 'bg-champagne/15 text-champagne'
-                      : 'text-text-tertiary hover:text-text-secondary'
-                  )}
-                >
-                  Инфляция 12 мес.
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setViewMode('cpi'); track(events.CHART_MODE_CHANGE, { mode: 'cpi', indicator: code }); }}
-                  className={cn(
-                    'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
-                    viewMode === 'cpi'
-                      ? 'bg-champagne/15 text-champagne'
-                      : 'text-text-tertiary hover:text-text-secondary'
-                  )}
-                >
-                  ИПЦ помесячно
-                </button>
-                {hasCpiTabs && (
-                  <>
+              <div className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle flex-wrap">
+                {[
+                  { mode: 'inflation', label: 'Инфляция за год', always: true },
+                  { mode: 'weekly', label: 'Недельная', always: false },
+                  { mode: 'cpi', label: 'Месячная', always: true },
+                  { mode: 'quarterly', label: 'Квартальная', always: false },
+                  { mode: 'annual', label: 'Годовая', always: false },
+                ]
+                  .filter(t => t.always || hasCpiTabs)
+                  .map(t => (
                     <button
+                      key={t.mode}
                       type="button"
-                      onClick={() => { setViewMode('quarterly'); track(events.CHART_MODE_CHANGE, { mode: 'quarterly', indicator: code }); }}
+                      onClick={() => {
+                        setViewMode(t.mode);
+                        track(events.CHART_MODE_CHANGE, { mode: t.mode, indicator: code, indicatorCategory: indicator?.category });
+                      }}
                       className={cn(
                         'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
-                        viewMode === 'quarterly'
+                        viewMode === t.mode
                           ? 'bg-champagne/15 text-champagne'
                           : 'text-text-tertiary hover:text-text-secondary'
                       )}
                     >
-                      Квартальная
+                      {t.label}
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => { setViewMode('annual'); track(events.CHART_MODE_CHANGE, { mode: 'annual', indicator: code }); }}
-                      className={cn(
-                        'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
-                        viewMode === 'annual'
-                          ? 'bg-champagne/15 text-champagne'
-                          : 'text-text-tertiary hover:text-text-secondary'
-                      )}
-                    >
-                      Годовая
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => { setViewMode('weekly'); track(events.CHART_MODE_CHANGE, { mode: 'weekly', indicator: code }); }}
-                      className={cn(
-                        'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
-                        viewMode === 'weekly'
-                          ? 'bg-champagne/15 text-champagne'
-                          : 'text-text-tertiary hover:text-text-secondary'
-                      )}
-                    >
-                      Недельная
-                    </button>
-                  </>
-                )}
+                  ))}
               </div>
             ) : (
               <span className="text-[11px] font-mono uppercase tracking-widest text-text-tertiary">
@@ -979,8 +975,8 @@ export default function IndicatorDetail() {
                   aria-checked={forecastEnabled && showForecast}
                   aria-label="Показать прогноз"
                   tabIndex={forecastEnabled ? 0 : -1}
-                  onClick={() => { if (forecastEnabled) { setShowForecast(v => !v); track(events.FORECAST_TOGGLE, { show: !showForecast, indicator: code }); } }}
-                  onKeyDown={e => { if (forecastEnabled && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); setShowForecast(v => !v); track(events.FORECAST_TOGGLE, { show: !showForecast, indicator: code }); } }}
+                  onClick={() => { if (forecastEnabled) { setShowForecast(v => !v); track(events.FORECAST_TOGGLE, { show: !showForecast, indicator: code, indicatorCategory: indicator?.category }); } }}
+                  onKeyDown={e => { if (forecastEnabled && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); setShowForecast(v => !v); track(events.FORECAST_TOGGLE, { show: !showForecast, indicator: code, indicatorCategory: indicator?.category }); } }}
                   className={cn(
                     'relative w-10 h-5 rounded-full transition-colors duration-300',
                     forecastEnabled ? 'cursor-pointer' : 'cursor-not-allowed',
@@ -1043,6 +1039,13 @@ export default function IndicatorDetail() {
                 : 'full'
               }
               unit={indicator?.unit || '%'}
+              rangePreset={
+                chartMode === 'annual' || indicator?.frequency === 'annual'
+                  ? 'annual'
+                  : 'default'
+              }
+              indicatorCode={code}
+              indicatorCategory={indicator?.category}
             />
           </div>
         )}
