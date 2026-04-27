@@ -16,11 +16,11 @@ describe('format', () => {
     expect(formatDate('2024-06-15', 'annual')).toBe('2024');
   });
 
-  it('formatDate quarterly returns quarter and year', () => {
-    expect(formatDate('2024-01-15', 'quarterly')).toBe('1 кв. 2024');
-    expect(formatDate('2024-04-15', 'quarterly')).toBe('2 кв. 2024');
-    expect(formatDate('2024-07-15', 'quarterly')).toBe('3 кв. 2024');
-    expect(formatDate('2024-10-15', 'quarterly')).toBe('4 кв. 2024');
+  it('formatDate quarterly returns roman quarter and year', () => {
+    expect(formatDate('2024-01-15', 'quarterly')).toBe('I кв. 2024');
+    expect(formatDate('2024-04-15', 'quarterly')).toBe('II кв. 2024');
+    expect(formatDate('2024-07-15', 'quarterly')).toBe('III кв. 2024');
+    expect(formatDate('2024-10-15', 'quarterly')).toBe('IV кв. 2024');
   });
 
   it('formatValue handles null', () => {
