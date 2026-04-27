@@ -20,8 +20,9 @@ STATIC_PAGES = [
     ("/about", "monthly", "0.5"),
     ("/privacy", "monthly", "0.3"),
     ("/calculator", "monthly", "0.6"),
+    ("/compare", "monthly", "0.6"),
     ("/demographics", "monthly", "0.7"),
-    # Hidden from nav until ready: /compare, /calendar, /widgets
+    # Hidden from nav until ready: /calendar, /widgets
 ]
 
 CATEGORIES = [
@@ -97,6 +98,10 @@ CATEGORY_META = {
 }
 
 PAGE_META = {
+    "home": (
+        "Forecast Economy — экономические данные и прогнозы по России",
+        "Бесплатная аналитическая платформа: ИПЦ, ставка ЦБ, курсы валют, ВВП, безработица — данные Росстата и ЦБ РФ с прогнозами. 80+ индикаторов, обновление ежедневно.",
+    ),
     "about": ("О проекте Forecast Economy", "Бесплатная аналитическая платформа макроэкономических данных России. 80+ индикаторов, данные Росстата и ЦБ РФ."),
     "privacy": ("Политика конфиденциальности — Forecast Economy", "Как Forecast Economy обрабатывает данные посетителей."),
     "compare": ("Сравнение индикаторов — Forecast Economy", "Сравнивайте любые два макроэкономических индикатора России на одном графике."),

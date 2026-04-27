@@ -1545,3 +1545,38 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
     - `/api/v1/indicators/inflation-annual/forecast` → 12 точек `Annual-From-12M-Rolling`, апр-26 = 6.0257% → мар-27 = 5.7351%.
   - Тесты: backend pytest 93/94 passed (1 pre-existing fail в `test_rosstat_labor.py` от 17.04 — unemployment precision), frontend `npm run build` чистый (453.85 kB main bundle), 13/13 forecaster тестов зелёные.
   - **User intention:** перенести алгоритм из ipynb в backend без потерь точности; обеспечить квартальный и годовой прогноз через агрегацию, не отдельную модель. **Результат:** месячный прогноз воспроизводится бит-в-бит с ноутбуком; квартальный и годовой прогнозы появились на проде и доступны через стандартный `/forecast` endpoint.
+
+## 2026-04-27 — Ветка `feat/growth-chart-and-prerender`: вкладка «Прирост, %» + бот-роутинг для поисковиков
+
+**Триггер**: партнёр попросил две связанные правки на `/indicator/cpi` — отдельный график «Индексы прироста цен» (m/m в %) и решение проблемы дублей title/description в Яндекс.Вебмастере.
+
+### Правка 1 — вкладка «Прирост, %» на CPI-страницах
+
+- `frontend/src/pages/IndicatorDetail.jsx` — добавлен 6-й `viewMode = 'growth'` рядом с `inflation`/`weekly`/`cpi`/`quarterly`/`annual`. Кнопка показывается только для `hasCpiTabs` (cpi/cpi-food/cpi-nonfood/cpi-services).
+- Данные те же, что и для `cpi`-режима — `dataPoints` уже трансформированы через существующий `shouldSubtract100`/`isCpiIndex` (т.е. `value − 100`). Прогноз тоже общий: `displayForecastData` уже содержит значения с вычтенной 100 для CPI-кодов.
+- В `IndicatorChart` для growth: `mode='cpi'`, `cpiData=dataPoints`, `cpiChartTitle='Прирост цен (%, к предыдущему месяцу)'`, `levelTooltipLabel='Прирост'`, `referenceLineY=0` (горизонтальная ось 0 % посередине), `dateFormat='full'`. Прогноз отображается как обычно — фиолетовая пунктирная линия от последней фактической точки.
+- TelemetryCard: label первой карточки = «Прирост за месяц», deltaSuffix = «к пред. месяцу». Текущее и предыдущее значения берутся из `adj(indicator?.current_value)` / `adj(indicator?.previous_value)`, которые уже учитывают `shouldSubtract100`.
+- ForecastTable: для growth передаётся `mode='cpi'`, чтобы он использовал `forecastData` (а не `inflation.forecast`). Лейбл колонки/таблицы — стандартный CPI-помесячный.
+- DataTable: `title = 'Исторические данные — Прирост цен (%, м/м)'`, `dateFormat='full'`.
+- Methodology: новые константы `GROWTH_DESCRIPTION` и `GROWTH_METHODOLOGY` показывают суть `value − 100` без упоминания «индекса 100.5».
+- Браузерная проверка на `localhost:5175/indicator/cpi`: вкладка `Прирост, %` переключается, заголовок графика «Прирост цен (%, к предыдущему месяцу)», ось Y — `0 → 8` (вместо `100 → 108` для cpi-режима), методология обновлена. Snapshot и скриншоты подтвердили все лейблы.
+
+### Правка 4 — бот-роутинг для поисковых ботов (выбран backend OG + nginx, не vite-plugin)
+
+- **Подход**: расширить уже существующий механизм `og-proxy` в `frontend/nginx.conf`. Раньше регэксп `User-Agent` ловил только соцботов (Telegram/FB/Twitter/...), и для каждого `/indicator/*`, `/category/*`, `/(about|privacy|...)` отдавался pre-rendered HTML с уникальным `<title>` и `<meta name="description">` из backend `/api/v1/og/*`. Теперь регэксп охватывает поисковые боты: `Yandex[A-Z]\w*` (YandexBot, YandexMobileBot, YandexImagesBot, YandexAccessibilityBot и др.), `YaDirectFetcher`, `Googlebot`, `Google-InspectionTool`, `GoogleOther`, `bingbot`, `DuckDuckBot`, `Slurp`, `Mail.RU_Bot`, `MJ12bot`, `AhrefsBot`, `SemrushBot`, `DotBot`, `BLEXBot`, `Applebot`, `PetalBot`, `Bytespider`, `GPTBot`, `ClaudeBot`. Решение в одну изменённую строку nginx + лёгкий backend.
+- **Почему не vite-plugin-prerender**: (1) Vite 7 не имеет проверенного prerender-плагина, риски совместимости; (2) prerender требует Puppeteer/headless browser на этапе билда — медленнее CI и больше зависимостей; (3) у нас уже есть рабочий backend OG endpoint, расширение nginx — это +1 строка. Backend как источник истины для SEO_MAP-эквивалента: при добавлении нового индикатора OG title/description работает автоматически (читает `Indicator.name` и `description` из БД), без обновления списков пререндера.
+- **Что сделано в коде**:
+  - `frontend/nginx.conf` — расширен регэксп `is_bot`; добавлено бот-роутинг для `location = /` (раньше home page не редиректился на OG, теперь `/og-proxy/page/home`); комментарий объясняет рациональность.
+  - `backend/app/api/sitemap.py` — `PAGE_META["home"]` (нужен для нового маршрута `/api/v1/og/page/home`); `STATIC_PAGES` += `/compare` (тоже была выпавшая страница).
+  - `frontend/public/sitemap.xml` — добавлены `/compare`, `/demographics`, `housing-yoy-primary`, `housing-yoy-secondary`. Для прода сайтмеп всё равно отдаётся динамически из backend (`location = /sitemap.xml` проксирует на `http://backend:8000/sitemap.xml`), который итерирует **все** `is_active=True` индикаторы — включая credit-rate-*, housing-yoy-*, growth-chart нет (это вкладка, не отдельный URL). Статический файл оставлен как fallback и для read-only потребителей.
+  - `backend/tests/test_seo_og.py` — 8 новых тестов: `og_page_home`/`og_page_about`/`og_page_compare` (200 + правильный title), `og_page_unknown` (404), `og_category_prices` (200 + canonical), `og_category_unknown` (404), `og_page_privacy_unique_title` (на разных путях разные `<title>` — это собственно лекарство от дублей), `sitemap_static_pages_constant` (без БД, проверяет константы STATIC_PAGES/CATEGORIES/PAGE_META).
+- **Тесты**: backend `pytest -q` → 101 passed / 1 failed (`test_rosstat_labor.py::test_basic` — pre-existing с 17.04, не моё). Frontend `npm run build` (built in 2.98s) + `vitest run` → 34/34 passed. nginx синтаксис валидируется на проде через docker rebuild — локальный docker daemon недоступен в среде агента.
+- **Конфликт с параллельным агентом на `feat/credit-indicators`**: пока я применял StrReplace для growth chart на `feat/growth-chart-and-prerender`, параллельный агент `rebekaee1 <floydii1010@gmail.com>` (работавший на ветке `feat/credit-indicators`) сделал `git checkout` поверх моего рабочего дерева и закоммитил мои незастейдженные growth-правки в свой коммит `cbdc11c feat(seo): titles/descriptions for credit-rate-* indicators`. Восстановил: `git checkout feat/growth-chart-and-prerender` → файл вернулся к чистому состоянию → повторно применил все StrReplace для growth → коммит `0ed5526 feat(cpi): add «Прирост, %» tab — m/m growth view of CPI`. Кредитные индикаторы остались на их ветке, growth — на моей.
+- **Файлы**:
+  - `frontend/src/pages/IndicatorDetail.jsx` (+30/-5)
+  - `frontend/nginx.conf` (расширен `is_bot` regex + добавлен бот-роутинг для `/`)
+  - `backend/app/api/sitemap.py` (PAGE_META["home"], STATIC_PAGES += /compare)
+  - `backend/tests/test_seo_og.py` (новый файл, 8 тестов)
+  - `frontend/public/sitemap.xml` (+4 URL)
+- **Не делал**: деплой на прод, мердж в main. Ветка `feat/growth-chart-and-prerender` запушена; родителю передаётся compare URL, чтобы вручную решить мерджить или нет (пользователь явно просил остановиться на этом этапе).
+- **User intention**: точечно две правки в одном PR (growth chart + SEO бот-роутинг) с обоснованием выбора подхода в финальном отчёте; не ломать параллельные ветки. Реакция (ожидаемая): хочет видеть, что выбран простой надёжный подход (backend OG endpoint вместо vite-plugin), и что регэксп правда покроет основные поисковые боты Рунета.
