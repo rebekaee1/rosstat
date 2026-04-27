@@ -446,6 +446,14 @@ async def _compute_ppi_yoy(db: AsyncSession) -> int:
     return await _compute_yoy_generic(db, "ppi", "ppi-yoy")
 
 
+async def _compute_housing_yoy_primary(db: AsyncSession) -> int:
+    return await _compute_yoy_generic(db, "housing-price-primary", "housing-yoy-primary")
+
+
+async def _compute_housing_yoy_secondary(db: AsyncSession) -> int:
+    return await _compute_yoy_generic(db, "housing-price-secondary", "housing-yoy-secondary")
+
+
 async def _compute_wages_yoy(db: AsyncSession) -> int:
     return await _compute_yoy_generic(db, "wages-nominal", "wages-yoy")
 
@@ -504,6 +512,8 @@ calculation_engine.register("ipi-yoy", ["ipi"], _compute_ipi_yoy)
 calculation_engine.register("exports-yoy", ["exports"], _compute_exports_yoy)
 calculation_engine.register("imports-yoy", ["imports"], _compute_imports_yoy)
 calculation_engine.register("ppi-yoy", ["ppi"], _compute_ppi_yoy)
+calculation_engine.register("housing-yoy-primary", ["housing-price-primary"], _compute_housing_yoy_primary)
+calculation_engine.register("housing-yoy-secondary", ["housing-price-secondary"], _compute_housing_yoy_secondary)
 calculation_engine.register("wages-yoy", ["wages-nominal"], _compute_wages_yoy)
 calculation_engine.register("exports-qoq", ["exports"], _compute_exports_qoq)
 calculation_engine.register("imports-qoq", ["imports"], _compute_imports_qoq)
