@@ -194,7 +194,7 @@ export default function DemographicsPage() {
         <p className="text-text-secondary leading-relaxed">
           Три возрастные группы по классификации Росстата: моложе трудоспособного возраста (0–15 лет),
           в трудоспособном возрасте (мужчины 16–59, женщины 16–54) и старше трудоспособного.
-          {firstYear && <> Данные с {firstYear} года, источник — <span className="font-mono text-text-primary/70">demo14.xlsx</span>.</>}
+          {firstYear && <> Источник: данные Росстата с {firstYear} года.</>}
         </p>
       </header>
 
@@ -203,6 +203,29 @@ export default function DemographicsPage() {
           <span className="font-semibold">Данные о возрастной структуре недоступны.</span>{' '}
           Нажмите «Повторить» через пару секунд.
         </ApiRetryBanner>
+      )}
+
+      {isLoading && (
+        <section
+          aria-busy="true"
+          aria-label="Загрузка структуры населения"
+          className="rounded-[2rem] border border-border-subtle bg-surface p-6 shadow-md ring-1 ring-black/[0.06] md:p-8 mb-8"
+        >
+          <div className="flex items-center justify-between mb-6">
+            <SkeletonBox className="h-3 w-44 rounded-md" />
+            <SkeletonBox className="h-3 w-24 rounded-md" />
+          </div>
+          <SkeletonBox className="h-10 w-full rounded-xl mb-6" />
+          <div className="grid grid-cols-3 gap-6">
+            {[0, 1, 2].map(i => (
+              <div key={i} className="space-y-3 text-center">
+                <SkeletonBox className="h-3 w-2/3 mx-auto rounded-md" />
+                <SkeletonBox className="h-8 w-24 mx-auto rounded-md" />
+                <SkeletonBox className="h-3 w-24 mx-auto rounded-md" />
+              </div>
+            ))}
+          </div>
+        </section>
       )}
 
       {!isLoading && latest && (
