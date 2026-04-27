@@ -73,6 +73,30 @@ const SEO_MAP = {
     title: 'Ставка по автокредитам — график и прогноз',
     description: 'Средневзвешенная ставка по автокредитам физическим лицам в рублях. Данные Банка России.',
   },
+  'credit-rate-corp-short': {
+    title: 'Ставка по кредитам ЮЛ до 1 года — график и прогноз',
+    description: 'Средневзвешенная ставка по кредитам нефинансовым организациям в рублях со сроком до 1 года. Данные Банка России с 2014 года.',
+  },
+  'credit-rate-corp-1to3y': {
+    title: 'Ставка по кредитам ЮЛ от 1 до 3 лет — график и прогноз',
+    description: 'Средневзвешенная ставка по кредитам нефинансовым организациям в рублях со сроком от 1 года до 3 лет. Данные Банка России.',
+  },
+  'credit-rate-corp-over3y': {
+    title: 'Ставка по кредитам ЮЛ свыше 3 лет — график и прогноз',
+    description: 'Средневзвешенная ставка по долгосрочным кредитам нефинансовым организациям в рублях со сроком свыше 3 лет. Данные Банка России.',
+  },
+  'credit-rate-ind-short': {
+    title: 'Ставка по кредитам ФЛ до 1 года — график и прогноз',
+    description: 'Средневзвешенная ставка по потребительским кредитам физлицам в рублях со сроком до 1 года. Данные Банка России с 2014 года.',
+  },
+  'credit-rate-ind-1to3y': {
+    title: 'Ставка по кредитам ФЛ от 1 до 3 лет — график и прогноз',
+    description: 'Средневзвешенная ставка по потребительским кредитам физлицам в рублях со сроком от 1 года до 3 лет. Данные Банка России.',
+  },
+  'credit-rate-ind-over3y': {
+    title: 'Ставка по кредитам ФЛ свыше 3 лет — график и прогноз',
+    description: 'Средневзвешенная ставка по долгосрочным кредитам физлицам в рублях со сроком свыше 3 лет. Данные Банка России.',
+  },
   'inflation-quarterly': {
     title: 'Инфляция квартальная — график и данные',
     description: 'Квартальный индекс инфляции, рассчитанный на основе месячных ИПЦ Росстата.',
@@ -402,6 +426,14 @@ const WEEKLY_DESCRIPTION =
 const WEEKLY_METHODOLOGY =
   'Источник — еженедельные бюллетени Росстата «Об оценке индекса потребительских цен». ' +
   'Официальный агрегированный недельный ИПЦ по всей потребительской корзине. Значение 100 = без изменений.';
+
+const GROWTH_DESCRIPTION =
+  'Прирост потребительских цен — процентное изменение ИПЦ к предыдущему месяцу. ' +
+  'Положительное значение означает рост цен, отрицательное — снижение. ' +
+  'Это та же цепная динамика, что и месячный ИПЦ, но в формате «прирост в %».';
+
+const GROWTH_METHODOLOGY =
+  'Формула: ИПЦᵢ − 100, где ИПЦᵢ — индекс потребительских цен за i-й месяц в % к предыдущему месяцу. Шкала по оси Y центрирована на 0.';
 
 function TelemetryCard({
   label, value, unit, change, pctChange, meta, delay = 0,
@@ -856,7 +888,11 @@ export default function IndicatorDetail() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <TelemetryCard
-              label={viewMode === 'weekly' ? 'Инфляция за неделю' : 'Текущее значение'}
+              label={
+                viewMode === 'weekly' ? 'Инфляция за неделю'
+                  : viewMode === 'growth' ? 'Прирост за месяц'
+                  : 'Текущее значение'
+              }
               value={s?.currentValue ?? adj(indicator?.current_value)}
               unit={indicator?.unit || '%'}
               change={s?.change ?? indicator?.change}
@@ -876,6 +912,7 @@ export default function IndicatorDetail() {
                 viewMode === 'quarterly' ? 'к пред. кварталу'
                   : viewMode === 'annual' ? 'к пред. значению'
                   : viewMode === 'weekly' ? 'к пред. неделе'
+                  : viewMode === 'growth' ? 'к пред. месяцу'
                   : indicator?.frequency === 'quarterly' ? 'к пред. кварталу'
                   : isPriceCategory ? 'к пред. месяцу' : 'к пред. значению'
               }
@@ -885,6 +922,7 @@ export default function IndicatorDetail() {
                 viewMode === 'weekly' ? 'Предыдущая неделя'
                   : viewMode === 'quarterly' ? 'Предыдущий квартал'
                   : viewMode === 'annual' ? 'Год назад'
+                  : viewMode === 'growth' ? 'Предыдущий месяц'
                   : isPriceCategory ? 'Предыдущий месяц' : 'Предыдущее значение'
               }
               value={s?.previousValue ?? adj(indicator?.previous_value)}
@@ -924,6 +962,7 @@ export default function IndicatorDetail() {
                   { mode: 'inflation', label: 'Инфляция за год', always: true },
                   { mode: 'weekly', label: 'Недельная', always: false },
                   { mode: 'cpi', label: 'Месячная', always: true },
+                  { mode: 'growth', label: 'Прирост, %', always: false },
                   { mode: 'quarterly', label: 'Квартальная', always: false },
                   { mode: 'annual', label: 'Годовая', always: false },
                 ]
@@ -1014,7 +1053,7 @@ export default function IndicatorDetail() {
           <div className="relative overflow-hidden rounded-[2rem]">
             <IndicatorChart
               key={`${indicator?.code}-${chartMode}`}
-              mode={['quarterly', 'annual', 'weekly'].includes(chartMode) ? 'cpi' : chartMode}
+              mode={['quarterly', 'annual', 'weekly', 'growth'].includes(chartMode) ? 'cpi' : chartMode}
               inflation={inflationResp}
               cpiData={chartMode === 'quarterly' ? quarterlyDataPoints
                 : chartMode === 'annual' ? annualDataPoints
@@ -1029,11 +1068,12 @@ export default function IndicatorDetail() {
               showForecast={forecastEnabled && showForecast}
               onChartData={handleChartData}
               onRangeChange={handleRangeChange}
-              referenceLineY={isPriceCategory ? undefined : null}
+              referenceLineY={chartMode === 'growth' ? 0 : (isPriceCategory ? undefined : null)}
               cpiChartTitle={
                 chartMode === 'quarterly' ? 'Квартальная инфляция (%)'
                   : chartMode === 'annual' ? 'Годовая инфляция (%)'
                   : chartMode === 'weekly' ? 'Недельная инфляция (%)'
+                  : chartMode === 'growth' ? 'Прирост цен (%, к предыдущему месяцу)'
                   : isPriceCategory
                     ? undefined
                     : `${indicator?.name || 'Показатель'}${unitSuffix(indicator?.unit) ? ` (${unitSuffix(indicator?.unit)})` : ''}`
@@ -1042,12 +1082,14 @@ export default function IndicatorDetail() {
                 chartMode === 'quarterly' ? 'Кв. инфляция'
                   : chartMode === 'annual' ? 'Год. инфляция'
                   : chartMode === 'weekly' ? 'Нед. ИПЦ'
+                  : chartMode === 'growth' ? 'Прирост'
                   : isPriceCategory ? undefined : 'Значение'
               }
               emptyHint={chartEmptyHint}
               dateFormat={
                 chartMode === 'quarterly' ? 'quarterly'
                 : chartMode === 'annual' ? 'annual'
+                : chartMode === 'growth' ? 'full'
                 : chartMode !== 'inflation' && indicator?.frequency === 'daily' ? 'day'
                 : indicator?.frequency === 'quarterly' ? 'quarterly'
                 : indicator?.frequency === 'annual' ? 'annual'
@@ -1081,18 +1123,21 @@ export default function IndicatorDetail() {
                 : viewMode === 'quarterly' ? QUARTERLY_DESCRIPTION
                 : viewMode === 'annual' ? ANNUAL_DESCRIPTION
                 : viewMode === 'weekly' ? WEEKLY_DESCRIPTION
+                : viewMode === 'growth' ? GROWTH_DESCRIPTION
                 : indicator?.description}
             </p>
             {(chartMode === 'inflation' ? INFLATION_METHODOLOGY
               : viewMode === 'quarterly' ? QUARTERLY_METHODOLOGY
               : viewMode === 'annual' ? ANNUAL_METHODOLOGY
               : viewMode === 'weekly' ? WEEKLY_METHODOLOGY
+              : viewMode === 'growth' ? GROWTH_METHODOLOGY
               : indicator?.methodology) && (
               <p className="text-text-tertiary border-l-2 border-champagne/30 pl-4 my-4 font-mono text-[10px] uppercase tracking-wider">
                 {chartMode === 'inflation' ? INFLATION_METHODOLOGY
                   : viewMode === 'quarterly' ? QUARTERLY_METHODOLOGY
                   : viewMode === 'annual' ? ANNUAL_METHODOLOGY
                   : viewMode === 'weekly' ? WEEKLY_METHODOLOGY
+                  : viewMode === 'growth' ? GROWTH_METHODOLOGY
                   : indicator?.methodology}
               </p>
             )}
@@ -1135,7 +1180,7 @@ export default function IndicatorDetail() {
             </div>
           ) : forecastEnabled && showForecast && hasForecastData ? (
             <ForecastTable
-              mode={chartMode}
+              mode={chartMode === 'growth' ? 'cpi' : chartMode}
               inflation={inflationResp}
               forecastData={
                 chartMode === 'quarterly' ? quarterlyForecastResp
@@ -1146,6 +1191,7 @@ export default function IndicatorDetail() {
               dateFormat={
                 chartMode === 'quarterly' ? 'quarterly'
                 : chartMode === 'annual' ? 'annual'
+                : chartMode === 'growth' ? 'full'
                 : indicator?.frequency === 'quarterly' ? 'quarterly'
                 : indicator?.frequency === 'annual' ? 'annual'
                 : 'full'
@@ -1189,11 +1235,14 @@ export default function IndicatorDetail() {
                   ? 'Исторические данные — Годовая инфляция'
                   : chartMode === 'weekly'
                     ? 'Исторические данные — Недельный ИПЦ'
-                    : (isPriceCategory ? 'Исторические данные — ИПЦ' : `Исторические данные — ${indicator?.name || 'ряд'}`)
+                    : chartMode === 'growth'
+                      ? 'Исторические данные — Прирост цен (%, м/м)'
+                      : (isPriceCategory ? 'Исторические данные — ИПЦ' : `Исторические данные — ${indicator?.name || 'ряд'}`)
           }
           dateFormat={
             chartMode === 'quarterly' ? 'quarterly'
             : chartMode === 'annual' ? 'annual'
+            : chartMode === 'growth' ? 'full'
             : chartMode !== 'inflation' && indicator?.frequency === 'daily' ? 'day'
             : indicator?.frequency === 'quarterly' ? 'quarterly'
             : indicator?.frequency === 'annual' ? 'annual'
