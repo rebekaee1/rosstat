@@ -177,7 +177,7 @@ def _monthly_blend_weights(m: int) -> tuple[float, float, float]:
     return (0.7, 0.0, 0.3)
 
 
-_MONTHLY_PRIOR = 4.0 / 1200.0
+_MONTHLY_PRIOR = 4.0 / 12.0  # 4% annual prior in mom-pp units (data scale = series-100)
 
 
 def train_monthly_cpi(
