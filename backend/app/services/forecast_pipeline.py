@@ -160,19 +160,33 @@ async def _propagate_cpi_forecast_to_derived(
     annual_indicator = (await db.execute(
         select(Indicator).where(Indicator.code == "inflation-annual")
     )).scalar_one_or_none()
-    if annual_indicator is not None and inflation_result.points:
-        annual_result = ForecastResult(
-            model_name="Annual-From-12M-Rolling",
-            aic=None,
-            bic=None,
-            points=[
-                ForecastPoint(
-                    date=p.date,
-                    value=p.value,
-                    lower_bound=p.lower_bound,
-                    upper_bound=p.upper_bound,
-                )
-                for p in inflation_result.points
-            ],
-        )
-        await _save_forecast(db, annual_indicator, annual_result)
+    if annual_indicator is not None:
+        # The annual chart shows one point per calendar year (December cumulative).
+        # Keep only December points from the rolling 12-month forecast so the
+        # forecast granularity matches the historical series. With forecast_steps=12
+        # (e.g. apr-2026..mar-2027) this yields exactly one annual point (dec-2026).
+        december_points = [
+            ForecastPoint(
+                date=p.date,
+                value=p.value,
+                lower_bound=p.lower_bound,
+                upper_bound=p.upper_bound,
+            )
+            for p in inflation_result.points
+            if p.date.month == 12
+        ]
+        if december_points:
+            annual_result = ForecastResult(
+                model_name="Annual-From-12M-Rolling",
+                aic=None,
+                bic=None,
+                points=december_points,
+            )
+            await _save_forecast(db, annual_indicator, annual_result)
+        else:
+            removed = await clear_current_forecasts(db, annual_indicator)
+            logger.info(
+                "No December points in 12-month forecast horizon; cleared %d "
+                "stale annual forecast(s) for inflation-annual",
+                removed,
+            )
