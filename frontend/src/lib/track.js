@@ -1,3 +1,5 @@
+import { CATEGORIES } from './categories';
+
 const COUNTER_ID = 107136069;
 
 function ym(...args) {
@@ -6,8 +8,39 @@ function ym(...args) {
   }
 }
 
+/**
+ * Resolves a category slug from indicator's `category` field (apiCategory in CATEGORIES).
+ * Returns null if no match — caller must guard against null when adding to params.
+ */
+export function categorySlugFromApi(apiCategory) {
+  if (!apiCategory) return null;
+  const c = CATEGORIES.find((cat) => cat.apiCategory === apiCategory);
+  return c?.slug ?? null;
+}
+
+/**
+ * Augments tracked params with `category` slug based on indicator object.
+ * Used by call sites that have access to an indicator (or its api category).
+ * Caller passes `indicator?.category` as `apiCategory`.
+ */
+export function withCategory(params, apiCategory) {
+  const slug = categorySlugFromApi(apiCategory);
+  if (!slug) return params;
+  return { ...(params || {}), category: slug };
+}
+
+/**
+ * Track event. If `params.indicatorCategory` is provided, it is converted into
+ * a `category` slug via CATEGORIES lookup before sending to Yandex Metrika.
+ * This lets call sites pass a single field instead of computing the slug each time.
+ */
 export function track(event, params) {
-  ym(COUNTER_ID, 'reachGoal', event, params);
+  let payload = params;
+  if (params && typeof params === 'object' && 'indicatorCategory' in params) {
+    const { indicatorCategory, ...rest } = params;
+    payload = withCategory(rest, indicatorCategory);
+  }
+  ym(COUNTER_ID, 'reachGoal', event, payload);
 }
 
 export function trackFile(filename) {
@@ -62,6 +95,8 @@ export const events = {
 
   NAV_CATEGORY_OPEN: 'nav_category_open',
   NAV_MOBILE_TOGGLE: 'nav_mobile_toggle',
+
+  INDICATOR_VIEW: 'indicator_view',
 
   OUTBOUND_LINK: 'outbound_link',
   CONTACT_EMAIL: 'contact_email',
