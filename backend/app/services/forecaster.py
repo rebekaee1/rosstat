@@ -177,7 +177,7 @@ def _monthly_blend_weights(m: int) -> tuple[float, float, float]:
     return (0.7, 0.0, 0.3)
 
 
-_MONTHLY_PRIOR = 4.0 / 1200.0
+_MONTHLY_PRIOR = 4.0 / 12.0  # 4% annual prior in mom-pp units (data scale = series-100)
 
 
 def train_monthly_cpi(
@@ -296,7 +296,7 @@ def aggregate_quarterly_from_monthly(
         product = 1.0
         for f in factors:
             product *= f
-        value = round(product * 100 - 100, 4)
+        value = round(product * 100, 4)
         points.append(ForecastPoint(
             date=q_start,
             value=value,
