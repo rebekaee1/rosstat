@@ -1533,3 +1533,15 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 - **Не делал**: деплой на прод, коммиты в этой ветке (пользователь явно не просил коммитить — «оставь в ветке `edits-round2`» означает не пушить в main, не означает «не коммить»; для безопасности не коммитил).
 - **User intention**: «делай ВСЕ правки» — все 16 high+actionable + бэклог + точные тексты категорий. **Reaction**: ожидаем — каждая правка зафиксирована либо в коде, либо в документе с TODO; финальный отчёт с diff stats передан в чат.
 
+
+- **2026-04-27 — Обновление прогнозной модели по апрельскому ноутбуку Никиты:**
+  - `train_monthly_cpi` дополнен blend-весами (m∈[1..4]→1.0·OLS; m∈[5..9]→0.8·OLS+0.2·prior; m∈[10..12]→0.7·OLS+0.3·prior, prior=4/1200). Проверка на проде: первые 6 точек cpi-помесячно совпадают с output ноутбука Никиты (100.548 / 100.5182 / 100.4135 / 100.5301 / 100.1779 / 100.366).
+  - Новая функция `aggregate_quarterly_from_monthly` собирает квартальный прогноз произведением трёх месячных (либо факт+прогноз для незавершённого квартала). Сохраняется как side-effect retrain `cpi` под индикатором `inflation-quarterly`, model_name `CPI-Quarterly-Agg`.
+  - Прогноз 12-месячной скользящей инфляции (`Inflation-12M-MW`) дополнительно сохраняется под `inflation-annual` (`Annual-From-12M-Rolling`) — пользователь явно требовал «годовая инфляция = из прогноза скользящей 12 мес».
+  - `inflation-annual` в seed_data: `forecast_steps=0` (своя модель отключена, прогноз приходит как side-effect от cpi). Endpoint `/forecast` для `inflation-quarterly` и `inflation-annual` обходит проверку `forecast_steps<=0` через явный whitelist `DERIVED_CPI_FORECASTS`.
+  - Frontend: `forecastEnabled` блокирует только weekly; quarterly/annual читают `useForecast('inflation-quarterly')` / `useForecast('inflation-annual')` и прокидывают `quarterlyForecastResp`/`annualForecastResp` в `IndicatorChart` и `ForecastTable`. `ForecastTable` поддерживает `mode='quarterly'|'annual'` с человекочитаемыми лейблами модели.
+  - Деплой: `main` `aa6fbd2..a68c247`, прод обновлён, retrain прогнозов CPI прогнан вручную через `docker compose exec backend python -c "...retrain_indicator_forecast..."`, кэш Redis для `fe:*:forecast` ключей сброшен. Проверки:
+    - `/api/v1/indicators/inflation-quarterly/forecast` → 4 точки `CPI-Quarterly-Agg`: Q2-26 = 1.4870%, Q3-26 = 1.0775%, Q4-26 = 1.1715%, Q1-27 = 1.3988%.
+    - `/api/v1/indicators/inflation-annual/forecast` → 12 точек `Annual-From-12M-Rolling`, апр-26 = 6.0257% → мар-27 = 5.7351%.
+  - Тесты: backend pytest 93/94 passed (1 pre-existing fail в `test_rosstat_labor.py` от 17.04 — unemployment precision), frontend `npm run build` чистый (453.85 kB main bundle), 13/13 forecaster тестов зелёные.
+  - **User intention:** перенести алгоритм из ipynb в backend без потерь точности; обеспечить квартальный и годовой прогноз через агрегацию, не отдельную модель. **Результат:** месячный прогноз воспроизводится бит-в-бит с ноутбуком; квартальный и годовой прогнозы появились на проде и доступны через стандартный `/forecast` endpoint.
