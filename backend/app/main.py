@@ -135,3 +135,6 @@ app.include_router(api_router)
 
 from app.api.sitemap import router as sitemap_router
 app.include_router(sitemap_router)
+
+from app.api.seo_pages import router as seo_pages_router
+app.include_router(seo_pages_router)

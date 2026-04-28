@@ -1,10 +1,8 @@
 """OG/SEO endpoint coverage.
 
-These endpoints are served to bots via nginx user-agent routing
-(Yandex/Google/etc. + Telegram/FB) so each route gets a unique
-<title> and <meta name="description">. This kills the
-«дубли title/description» warnings in Yandex Webmaster without
-running a full SSR/prerender pipeline.
+The same renderer is used by universal SEO pages and by legacy OG endpoints,
+so humans, Yandex/Google, and social preview bots can receive the same
+route-specific HTML contract.
 """
 
 
@@ -17,7 +15,18 @@ def _has_meta(html: str, name: str, content_substr: str) -> bool:
     return end != -1 and content_substr in html[idx + len(needle) : end]
 
 
-def test_og_page_home(client):
+def test_og_page_home(client, monkeypatch):
+    from app.api import sitemap
+
+    async def fake_home(db):
+        return (
+            '<html><head><title>Forecast Economy — экономические данные</title>'
+            '<meta name="description" content="Бесплатная аналитическая платформа">'
+            '<link rel="canonical" href="https://forecasteconomy.com">'
+            '</head><body><h1>Forecast Economy</h1></body></html>'
+        )
+
+    monkeypatch.setattr(sitemap, "render_home_html", fake_home)
     r = client.get("/api/v1/og/page/home")
     assert r.status_code == 200
     body = r.text
@@ -34,7 +43,18 @@ def test_og_page_about(client):
     assert '<link rel="canonical" href="https://forecasteconomy.com/about"' in r.text
 
 
-def test_og_page_privacy_unique_title(client):
+def test_og_page_privacy_unique_title(client, monkeypatch):
+    from app.api import sitemap
+
+    async def fake_home(db):
+        return (
+            "<html><head><title>Forecast Economy — экономические данные</title>"
+            '<meta name="description" content="Бесплатная">'
+            '<link rel="canonical" href="https://forecasteconomy.com">'
+            "</head><body><h1>Home</h1></body></html>"
+        )
+
+    monkeypatch.setattr(sitemap, "render_home_html", fake_home)
     r_home = client.get("/api/v1/og/page/home").text
     r_priv = client.get("/api/v1/og/page/privacy").text
     # Different titles are the whole point of this endpoint.
@@ -52,16 +72,79 @@ def test_og_page_unknown_404(client):
     assert r.status_code == 404
 
 
-def test_og_category_prices(client):
+def test_og_category_prices(client, monkeypatch):
+    from app.api import sitemap
+
+    async def fake_category(slug, db):
+        assert slug == "prices"
+        return 200, (
+            '<html><head><title>Цены и инфляция в России — Forecast Economy</title>'
+            '<meta name="description" content="ИПЦ, инфляция, цены">'
+            '<link rel="canonical" href="https://forecasteconomy.com/category/prices">'
+            '</head><body><h1>Цены</h1></body></html>'
+        )
+
+    monkeypatch.setattr(sitemap, "render_category_html", fake_category)
     r = client.get("/api/v1/og/category/prices")
     assert r.status_code == 200
     assert "Цены" in r.text
     assert '<link rel="canonical" href="https://forecasteconomy.com/category/prices"' in r.text
 
 
-def test_og_category_unknown_404(client):
+def test_og_category_unknown_404(client, monkeypatch):
+    from app.api import sitemap
+
+    async def fake_category(slug, db):
+        assert slug == "no-such-slug"
+        return 404, "Not found"
+
+    monkeypatch.setattr(sitemap, "render_category_html", fake_category)
     r = client.get("/api/v1/og/category/no-such-slug")
     assert r.status_code == 404
+
+
+def test_universal_seo_page_home(client, monkeypatch):
+    from app.api import seo_pages
+
+    async def fake_home(db):
+        return (
+            '<html><head><title>Forecast Economy — экономические данные</title>'
+            '<meta name="description" content="Бесплатная аналитическая платформа">'
+            '<link rel="canonical" href="https://forecasteconomy.com">'
+            '<script type="application/ld+json">{"@type":"WebSite"}</script>'
+            '</head><body><div id="root"><h1>Forecast Economy</h1>'
+            '<a href="/category/prices">Цены</a><a href="/indicator/cpi">ИПЦ</a>'
+            '</div></body></html>'
+        )
+
+    monkeypatch.setattr(seo_pages, "render_home_html", fake_home)
+    r = client.get("/seo/page/home")
+    assert r.status_code == 200
+    assert "Forecast Economy" in r.text
+    assert '<div id="root">' in r.text
+    assert "application/ld+json" in r.text
+
+
+def test_universal_seo_indicator_contract(client, monkeypatch):
+    from app.api import seo_pages
+
+    async def fake_indicator(code, db):
+        assert code == "cpi"
+        return 200, (
+            '<html><head><title>ИПЦ — данные, график и прогноз</title>'
+            '<meta name="description" content="ИПЦ России: данные Росстата">'
+            '<link rel="canonical" href="https://forecasteconomy.com/indicator/cpi">'
+            '<script type="application/ld+json">{"@type":"Dataset"}</script>'
+            '</head><body><div id="root"><h1>ИПЦ</h1>'
+            '<a href="/category/prices">Цены</a><a href="/indicator/cpi-food">Продовольствие</a>'
+            '</div></body></html>'
+        )
+
+    monkeypatch.setattr(seo_pages, "render_indicator_html", fake_indicator)
+    r = client.get("/seo/indicator/cpi")
+    assert r.status_code == 200
+    assert "ИПЦ" in r.text
+    assert "application/ld+json" in r.text
 
 
 def test_sitemap_static_pages_constant():

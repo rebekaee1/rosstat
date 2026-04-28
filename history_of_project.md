@@ -1609,3 +1609,47 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
   - `GET /api/v1/indicators/inflation-quarterly/forecast` → 4 точки `CPI-Quarterly-Agg`, апр-2026 = 101.487.
   - Браузер (cursor-ide-browser, `forecasteconomy.com/indicator/cpi`): на «Годовая» — пунктир из одной точки 2026; на «Месячная» — заголовок «Прирост цен (%, к предыдущему месяцу)», ось Y в диапазоне примерно −2..6, фиолетовый прогноз 0.4–0.5%; вкладки «Прирост, %» в навигации нет; консоль чистая (только CursorBrowser-предупреждения).
 - **User intention:** учесть оба замечания Никиты — синхронизировать гранулярность годового прогноза с фактом и убрать смысловое дублирование «Месячная» vs «Прирост, %». **Результат:** на проде обе правки применены без регрессий по другим индикаторам, текст для отправки Никите подготовлен.
+
+## 2026-04-27 — Большой рабочий день по правкам из видео «НА правки 2» и «НА правки 3»
+
+**Транскрипция и разбор видео:**
+- Видео 2 (61 мин, 8 ГБ) и Видео 3 (44 мин, 4 ГБ) транскрибированы через Whisper-1 (verbose_json); видео 3 потребовало чанкинга 5 мин (loop-галлюцинация при single-shot). Материалы в `правки_v2/`.
+- gpt-4o выделил 24 базовых правки. Повторный проход нашёл ещё 30 пропущенных (итого 54). Для каждой: transcript, summary, ai_action, type, priority, target_area, actionable, кадры 3-10 JPEG (99 штук, 1600px).
+
+**Правки, выполненные в коде (все задеплоены на прод forecasteconomy.com):**
+- Описания 9 категорий на главной — переписаны по согласованным текстам Никиты (без «прогноз»/«данные Росстата»).
+- line-clamp-2 → line-clamp-3 на CategoryBlock (описания не обрывались).
+- Новый порядок вкладок инфляции: «Инфляция за год / Недельная / Месячная / Квартальная / Годовая».
+- Вкладка «Прирост, %» удалена, объединена с «Месячная» в шкале прироста.
+- Range-пресеты для годовых данных: 10y/25y/Все вместо 3y/5y/10y/Все.
+- Годовая вкладка: агрегация по годам (1 точка/год).
+- Квартальный прогноз: агрегация из месячных прогнозов.
+- Годовой прогноз: одна декабрьская точка на год (7.68% за 2026).
+- Forecast blend перенесён из ноутбука Никиты (апрель 2026): 4/12 вместо 4/1200.
+- Quarterly aggregate баг исправлен: шкала 101.x вместо дельты 1.x.
+- /compare возвращён в Navbar. «Калькулятор» → «Калькулятор инфляции».
+- Skeleton на странице демографии.
+- Watermark «forecasteconomy.com» на всех графиках.
+- 6 кредитных индикаторов от ЦБ (credit-rate-corp/ind × short/1to3y/over3y), 145-146 точек с 2014, seed+ETL прогнаны.
+- housing-yoy-primary / housing-yoy-secondary (derived), 40 точек.
+- Авто-категория в события Яндекс.Метрики.
+- llms.txt для AI-краулеров.
+- Backend-OG + nginx bot-routing: Яндекс/Google/Bing и AI-краулеры получают уникальные title/description.
+- 30 URL отправлены на переобход в Яндекс.Вебмастере.
+- Сообщения для Никиты подготовлены по каждому блоку правок.
+
+**Отложено в backlog (без кода):** мини-аналитика под графиками, footer ads, бенчмарк прогнозов, интерактив «угадай», /ru префикс, long-tail SEO, кредитные индикаторы по объёмам (нет в API ЦБ), ипотека льготная (нет в API, источник ДОМ.РФ).
+**Заблокировано:** v3/edit_001+002 (файл-эталон прогноза от Никиты); оба кода направлены Никите с вопросом про масштаб 4/1200.
+
+## 2026-04-28 — SEO-аудит по замечанию Никиты о SPA/static HTML
+
+- Проверены скриншоты, прод `5.129.204.194`, HTTP-ответы и Яндекс-интерфейсы. Обычный `view-source:/indicator/cpi` действительно видит общий SPA `index.html` с базовым title/description; это объясняет вывод внешних SEO-анализаторов. Для `YandexBot`/`Googlebot` прод уже отдаёт backend OG HTML через nginx bot-routing с уникальными title/description/canonical для `/`, `/indicator/cpi`, `/category/prices`, `/compare`; контейнеры healthy, nginx-блок задеплоен на `main` commit `94278a6`. В Яндекс.Вебмастере диагностика ещё показывает `13` дублей title/description (примеры: `/category/labor`, `/category/prices`, `/category/gdp`) — вероятно stale crawl до переобхода; сама страница Вебмастера указывает ждать нового обхода до недели. Метрика доступна: месяц 29 мар–28 апр — 13.3k просмотров, 5,409 визитов, 4,708 посетителей, поисковый трафик есть; Вебвизор открывается, но не нужен для диагностики server-rendering.
+- Решение по SEO-архитектуре: bot-routing через User-Agent годится как краткосрочный фикс, но не как «лучшее SEO» для заказчика. Целевой вариант — одинаковый для людей и ботов prerender/SSG HTML shell для всех индексируемых URL: уникальные title/description/canonical/H1/текст/JSON-LD/внутренние ссылки сразу в первом HTML, после чего React продолжает работать динамически. Полный React SSR дороже и рискованнее; оптимальный следующий шаг — универсальный prerender layer без User-Agent-ветвления.
+
+## 2026-04-28 — Universal SEO Pages внедрён и задеплоен
+
+- Реализован универсальный server-rendered SEO HTML для людей и ботов без User-Agent ветвления: `frontend/nginx.conf` теперь проксирует `/`, `/category/:slug`, `/indicator/:code`, статические/tool страницы в backend `/seo/...`; raw SPA shell доступен только как `/__spa-index.html` с `X-Robots-Tag: noindex, nofollow`. Backend: `seo_content.py` (global/category/indicator/page content registry), `seo_renderer.py` (app-shell asset extraction, rich HTML, JSON-LD, recent data table, internal links), `seo_pages.py`; legacy `/api/v1/og/...` переиспользует renderer.
+- Добавлен `scripts/seo-audit.py`: полный crawl sitemap, сравнение human vs `YandexBot`, проверки title/description/canonical/H1/JSON-LD/internal links/query pollution/orphan URLs. Первый прогон поймал orphan `/demographics`, `inflation-quarterly`, `inflation-weekly`; исправлено перелинковкой home/category SEO HTML. Прод `https://forecasteconomy.com`: `seo-audit` — **107/107 sitemap URLs, passed**, обнаружено 107 внутренних URL.
+- Прод-деплой выполнен без git commit (пользователь просил implement/deploy, но commit отдельно не просил): файлы скопированы на `5.129.204.194`, `docker compose build backend frontend && up -d`, затем backend rebuild после link-fix. Проверки: Chrome/YandexBot/Googlebot для `/`, `/indicator/cpi`, `/category/prices`, `/compare` получают одинаковый route-specific HTML; `/indicator/cpi` содержит table + JSON-LD + React assets; `/not-existing-seo-audit` — 404; `/api/v1/health` 200; `/sitemap.xml` 200; `/__spa-index.html` noindex. Браузерная проверка `/indicator/cpi` и `/category/prices`: React гидрируется, API 200, консоль без ошибок приложения (только CursorBrowser warning). Вебмастер baseline до/после остаётся stale: 13 дублей title/description до нового обхода.
+- Качество: `backend/tests/test_seo_og.py` — 10 passed; `frontend npm run build` ok; `vitest` 34 passed. Полный backend `pytest` всё ещё имеет pre-existing fail `test_rosstat_labor.py::TestParseLaborXlsx::test_basic` (2.6 vs 2.65), frontend `eslint` всё ещё падает на pre-existing React hook/memo issues в `DataTable.jsx`, `CategoryPage.jsx`, `IndicatorDetail.jsx`; SEO-аудит и целевые SEO-тесты зелёные.
+- **Yandex MCP / Метрика / Вебвизор:** официальный MCP-сервер Яндекса для Метрики или Вебвизора не найден. У Яндекса есть официальный Metrica API (Management, Reporting, Logs, Data Import) через OAuth; MCP-обвязки существуют только сторонние (`atomkraft/yandex-metrika-mcp`, каталоги Cursor/MCP Market). Вебвизор/Session Replay не имеет публичного API для выгрузки записей сессий; агенту можно дать агрегированную аналитику Метрики через API, но не полноценный просмотр Webvisor-записей через MCP.

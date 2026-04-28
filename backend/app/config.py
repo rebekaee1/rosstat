@@ -39,6 +39,9 @@ class Settings(BaseSettings):
     # Forecast defaults
     forecast_steps: int = 12
 
+    # SEO HTML rendering
+    seo_app_shell_url: str = "http://frontend/__spa-index.html"
+
     # Internal endpoints protection
     metrics_token: str = ""
 
