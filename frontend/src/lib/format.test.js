@@ -1,5 +1,15 @@
 import { describe, it, expect } from 'vitest';
-import { formatDate, formatValue, formatChange, formatValueWithUnit, unitSuffix, unitDigits, cn, adjustCpiDisplay } from './format';
+import {
+  formatDate,
+  formatValue,
+  formatChange,
+  formatValueWithUnit,
+  unitSuffix,
+  unitDigits,
+  cn,
+  adjustCpiDisplay,
+  adjustCpiForecastDisplay,
+} from './format';
 
 describe('format', () => {
   it('formatDate full month in Russian', () => {
@@ -84,6 +94,9 @@ describe('adjustCpiDisplay', () => {
   it('subtracts 100 for CPI code', () => {
     expect(adjustCpiDisplay(102.5, 'cpi')).toBe(2.5);
   });
+  it('subtracts 100 for quarterly CPI-derived code', () => {
+    expect(adjustCpiDisplay(101.75, 'inflation-quarterly')).toBe(1.75);
+  });
   it('returns value unchanged for non-CPI code', () => {
     expect(adjustCpiDisplay(102.5, 'gdp')).toBe(102.5);
   });
@@ -91,5 +104,44 @@ describe('adjustCpiDisplay', () => {
     expect(adjustCpiDisplay(null)).toBe(null);
     expect(adjustCpiDisplay(Infinity)).toBe(Infinity);
     expect(adjustCpiDisplay(NaN)).toBeNaN();
+  });
+});
+
+describe('adjustCpiForecastDisplay', () => {
+  it('normalizes CPI forecast values and bounds from index to display percent', () => {
+    const response = {
+      indicator: 'inflation-quarterly',
+      forecast: {
+        model_name: 'CPI-Quarterly-Agg',
+        values: [
+          {
+            date: '2026-06-01',
+            value: 101.42,
+            lower_bound: 100.9,
+            upper_bound: 101.9,
+          },
+        ],
+      },
+    };
+
+    expect(adjustCpiForecastDisplay(response, 'inflation-quarterly')).toEqual({
+      indicator: 'inflation-quarterly',
+      forecast: {
+        model_name: 'CPI-Quarterly-Agg',
+        values: [
+          {
+            date: '2026-06-01',
+            value: 1.42,
+            lower_bound: 0.9,
+            upper_bound: 1.9,
+          },
+        ],
+      },
+    });
+  });
+
+  it('does not clone non-CPI forecasts', () => {
+    const response = { forecast: { values: [{ date: '2026-01-01', value: 101.42 }] } };
+    expect(adjustCpiForecastDisplay(response, 'gdp-nominal')).toBe(response);
   });
 });

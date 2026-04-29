@@ -5,7 +5,7 @@ import { ArrowLeft, ExternalLink, Activity, Info, TrendingUp, TrendingDown, Data
 import {
   useIndicator, useIndicatorData, useIndicatorStats, useInflation, useForecast,
 } from '../lib/hooks';
-import { formatValue, formatDate, formatChange, unitSuffix, unitDigits, cn, isCpiIndex } from '../lib/format';
+import { formatValue, formatDate, formatChange, unitSuffix, unitDigits, cn, isCpiIndex, adjustCpiForecastDisplay } from '../lib/format';
 import { CATEGORIES } from '../lib/categories';
 import useDocumentMeta from '../lib/useMeta';
 import IndicatorChart from '../components/IndicatorChart';
@@ -640,7 +640,7 @@ export default function IndicatorDetail() {
 
   const rawDataPoints = useMemo(
     () => (Array.isArray(dataResp?.data) ? dataResp.data : []),
-    [dataResp?.data],
+    [dataResp],
   );
 
   const dataPoints = useMemo(() => {
@@ -649,18 +649,14 @@ export default function IndicatorDetail() {
   }, [rawDataPoints, shouldSubtract100]);
 
   const displayForecastData = useMemo(() => {
-    if (!shouldSubtract100 || !forecastResp?.forecast?.values?.length) return forecastResp;
-    return {
-      ...forecastResp,
-      forecast: {
-        ...forecastResp.forecast,
-        values: forecastResp.forecast.values.map(v => ({
-          ...v,
-          value: Number(v.value) - 100,
-        })),
-      },
-    };
-  }, [forecastResp, shouldSubtract100]);
+    if (!shouldSubtract100) return forecastResp;
+    return adjustCpiForecastDisplay(forecastResp, code);
+  }, [forecastResp, shouldSubtract100, code]);
+
+  const quarterlyForecastData = useMemo(
+    () => adjustCpiForecastDisplay(quarterlyForecastResp, 'inflation-quarterly'),
+    [quarterlyForecastResp],
+  );
 
   const adj = useCallback((v) => {
     if (v == null || !shouldSubtract100) return v;
@@ -690,7 +686,7 @@ export default function IndicatorDetail() {
     return weeklyResp.data.map(p => ({ ...p, value: Number(p.value) - 100 }));
   }, [weeklyResp]);
 
-  function computeDerivedStats(points, mode) {
+  function computeDerivedStats(points) {
     if (!points.length) return null;
     const a = points;
     const current = a[a.length - 1];
@@ -1058,7 +1054,7 @@ export default function IndicatorDetail() {
                 : chartMode === 'weekly' ? weeklyDataPoints
                 : dataPoints}
               forecastData={
-                chartMode === 'quarterly' ? quarterlyForecastResp
+                chartMode === 'quarterly' ? quarterlyForecastData
                   : chartMode === 'annual' ? annualForecastResp
                   : chartMode === 'weekly' ? null
                   : displayForecastData
@@ -1179,7 +1175,7 @@ export default function IndicatorDetail() {
               mode={chartMode}
               inflation={inflationResp}
               forecastData={
-                chartMode === 'quarterly' ? quarterlyForecastResp
+                chartMode === 'quarterly' ? quarterlyForecastData
                   : chartMode === 'annual' ? annualForecastResp
                   : displayForecastData
               }

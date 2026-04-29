@@ -1,6 +1,21 @@
 import { CATEGORIES } from './categories';
 
 const COUNTER_ID = 107136069;
+const EVENT_COLLECTOR_PATH = '/api/v1/analytics/events';
+
+function sessionId() {
+  const key = 'fe:analytics:session';
+  try {
+    let value = window.sessionStorage.getItem(key);
+    if (!value) {
+      value = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+      window.sessionStorage.setItem(key, value);
+    }
+    return value;
+  } catch {
+    return null;
+  }
+}
 
 function ym(...args) {
   if (typeof window.ym === 'function') {
@@ -41,6 +56,34 @@ export function track(event, params) {
     payload = withCategory(rest, indicatorCategory);
   }
   ym(COUNTER_ID, 'reachGoal', event, payload);
+  sendEvent(event, payload);
+}
+
+export function sendEvent(eventName, params) {
+  if (typeof window === 'undefined') return;
+  const body = JSON.stringify({
+    event_name: eventName,
+    session_id: sessionId(),
+    url: window.location.href,
+    referrer: document.referrer || null,
+    params: params || {},
+    occurred_at: new Date().toISOString(),
+  });
+  try {
+    if (navigator.sendBeacon) {
+      const blob = new Blob([body], { type: 'application/json' });
+      navigator.sendBeacon(EVENT_COLLECTOR_PATH, blob);
+      return;
+    }
+    fetch(EVENT_COLLECTOR_PATH, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body,
+      keepalive: true,
+    }).catch(() => {});
+  } catch {
+    // Analytics must never affect the product UX.
+  }
 }
 
 export function trackFile(filename) {
@@ -95,6 +138,16 @@ export const events = {
 
   NAV_CATEGORY_OPEN: 'nav_category_open',
   NAV_MOBILE_TOGGLE: 'nav_mobile_toggle',
+  NAV_LINK_CLICK: 'nav_link_click',
+  HOME_CATEGORY_CLICK: 'home_category_click',
+  HOME_INDICATOR_CLICK: 'home_indicator_click',
+  BREADCRUMB_CLICK: 'breadcrumb_click',
+  RELATED_LINK_CLICK: 'related_link_click',
+  SCROLL_DEPTH: 'scroll_depth',
+  API_LOAD_ERROR: 'api_load_error',
+  EMPTY_STATE: 'empty_state',
+  EMBED_RUNTIME_VIEW: 'embed_runtime_view',
+  EXPERIMENT_EXPOSURE: 'experiment_exposure',
 
   INDICATOR_VIEW: 'indicator_view',
 

@@ -94,6 +94,31 @@ async def lifespan(app: FastAPI):
             settings.scheduler_cron_hour,
             settings.scheduler_cron_minute,
         )
+        if settings.analytics_scheduler_enabled:
+            from app.tasks.analytics_scheduler import analytics_daily_job, analytics_hourly_job
+            scheduler.add_job(
+                analytics_hourly_job,
+                trigger=CronTrigger(minute=15, timezone="Europe/Moscow"),
+                id="analytics_hourly",
+                name="Forecast Analytics OS hourly reporting sync",
+                replace_existing=True,
+            )
+            scheduler.add_job(
+                analytics_daily_job,
+                trigger=CronTrigger(
+                    hour=settings.analytics_scheduler_cron_hour,
+                    minute=settings.analytics_scheduler_cron_minute,
+                    timezone="Europe/Moscow",
+                ),
+                id="analytics_daily",
+                name="Forecast Analytics OS daily management snapshot",
+                replace_existing=True,
+            )
+            logger.info(
+                "Analytics scheduler enabled: hourly at :15 and daily at %02d:%02d MSK",
+                settings.analytics_scheduler_cron_hour,
+                settings.analytics_scheduler_cron_minute,
+            )
 
     yield
 

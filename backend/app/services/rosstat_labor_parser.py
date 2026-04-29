@@ -119,7 +119,7 @@ def parse_labor_xlsx(content: bytes) -> dict[str, list[DataPoint]]:
                 if unemp_val is not None:
                     unemp_f = float(unemp_val)
                     if active_f > 0:
-                        rate = round(unemp_f / active_f * 100, 1)
+                        rate = round(unemp_f / active_f * 100, 2)
                         unemployment_rate.append(DataPoint(date=d, value=rate))
             except (ValueError, TypeError):
                 pass

@@ -138,7 +138,7 @@ export default function CalendarPage() {
   const { data: upcomingData } = useCalendarUpcoming({ limit: 1, importance_min: 3 });
   const nextImportant = upcomingData?.events?.[0] || null;
 
-  const allEvents = data?.events || [];
+  const allEvents = useMemo(() => data?.events || [], [data]);
 
   const todayStr = useMemo(() => {
     const d = new Date();

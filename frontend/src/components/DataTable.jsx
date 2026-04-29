@@ -23,14 +23,6 @@ export default function DataTable({ data, title = 'Исторические да
     return () => tween.kill();
   }, []);
 
-  const [prevData, setPrevData] = useState(data);
-  useEffect(() => {
-    if (data !== prevData) {
-      setPrevData(data);
-      setPage(0);
-    }
-  }, [data, prevData]);
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setSearch(searchInput);

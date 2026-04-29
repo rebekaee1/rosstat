@@ -45,6 +45,25 @@ class Settings(BaseSettings):
     # Internal endpoints protection
     metrics_token: str = ""
 
+    # Forecast Analytics OS
+    analytics_enabled: bool = False
+    analytics_scheduler_enabled: bool = False
+    analytics_scheduler_cron_hour: int = 7
+    analytics_scheduler_cron_minute: int = 20
+    analytics_api_token: str = ""
+    analytics_base_url: str = "https://forecasteconomy.com"
+    analytics_allowed_counter_ids: str = "107136069"
+    analytics_allowed_hosts: str = "forecasteconomy.com"
+    analytics_default_retention_days: int = 180
+    analytics_raw_log_retention_days: int = 90
+    analytics_backfill_days: int = 30
+    analytics_request_timeout: int = 30
+    analytics_live_writes_enabled: bool = False
+
+    yandex_metrika_read_token: str = ""
+    yandex_metrika_write_token: str = ""
+    yandex_webmaster_token: str = ""
+
     model_config = {"env_prefix": "RUSTATS_", "env_file": ".env", "extra": "ignore"}
 
 

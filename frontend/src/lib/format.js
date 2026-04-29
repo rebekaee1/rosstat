@@ -128,6 +128,22 @@ export function adjustCpiDisplay(value, code) {
   return +(Number(value) - 100).toFixed(2);
 }
 
+export function adjustCpiForecastDisplay(forecastResp, code) {
+  if (!isCpiIndex(code) || !forecastResp?.forecast?.values?.length) return forecastResp;
+  return {
+    ...forecastResp,
+    forecast: {
+      ...forecastResp.forecast,
+      values: forecastResp.forecast.values.map(v => ({
+        ...v,
+        value: adjustCpiDisplay(v.value, code),
+        lower_bound: v.lower_bound == null ? v.lower_bound : adjustCpiDisplay(v.lower_bound, code),
+        upper_bound: v.upper_bound == null ? v.upper_bound : adjustCpiDisplay(v.upper_bound, code),
+      })),
+    },
+  };
+}
+
 export function relativeTime(dateStr) {
   if (!dateStr) return null;
   const d = new Date(dateStr);
