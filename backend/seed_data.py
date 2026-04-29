@@ -17,13 +17,8 @@ from sqlalchemy.dialects.postgresql import insert as pg_insert
 sys.path.insert(0, str(Path(__file__).parent))
 
 from app.database import async_session
-from app.models import Indicator, IndicatorData, Forecast, ForecastValue
-from app.services.forecaster import (
-    train_and_forecast,
-    train_monthly_cpi,
-    train_inflation_12m,
-    CPI_INDICATOR_CODES,
-)
+from app.models import Indicator, IndicatorData
+from app.services.forecast_pipeline import retrain_indicator_forecast
 
 CPI_DESCRIPTION = (
     "Индекс потребительских цен (ИПЦ) измеряет изменение цен на товары и услуги, "
@@ -147,7 +142,7 @@ INDICATORS = [
         ),
         "parser_type": "cbr_fx_xml",
         "model_config_json": {
-            "forecast_steps": 6,
+            "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 1, "max": 500},
         },
@@ -165,7 +160,7 @@ INDICATORS = [
         "description": "Официальный курс евро к рублю, устанавливаемый Банком России.",
         "parser_type": "cbr_fx_xml",
         "model_config_json": {
-            "forecast_steps": 6,
+            "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 1, "max": 500},
         },
@@ -183,7 +178,7 @@ INDICATORS = [
         "description": "Официальный курс китайского юаня к рублю, устанавливаемый Банком России.",
         "parser_type": "cbr_fx_xml",
         "model_config_json": {
-            "forecast_steps": 6,
+            "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 0.1, "max": 100},
         },
@@ -239,7 +234,7 @@ INDICATORS = [
                 "date_offset_months": 0,
             },
             "backfill_from_year": 2010,
-            "forecast_steps": 6,
+            "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 0},
         },
@@ -268,7 +263,7 @@ INDICATORS = [
                 "date_offset_months": 0,
             },
             "backfill_from_year": 2010,
-            "forecast_steps": 6,
+            "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 0},
         },
@@ -301,7 +296,7 @@ INDICATORS = [
                 "element_id": 36,
             },
             "backfill_from_year": 2017,
-            "forecast_steps": 6,
+            "forecast_steps": 0,
             "forecast_transform": "percentage",
             "validation": {"min": 0, "max": 50},
         },
@@ -329,7 +324,7 @@ INDICATORS = [
                 "element_id": 7,
             },
             "backfill_from_year": 2014,
-            "forecast_steps": 6,
+            "forecast_steps": 0,
             "forecast_transform": "percentage",
             "validation": {"min": 0, "max": 50},
         },
@@ -357,7 +352,7 @@ INDICATORS = [
                 "element_id": 11,
             },
             "backfill_from_year": 2014,
-            "forecast_steps": 6,
+            "forecast_steps": 0,
             "forecast_transform": "percentage",
             "validation": {"min": 0, "max": 50},
         },
@@ -395,7 +390,7 @@ INDICATORS = [
                 "element_id": 7,
             },
             "backfill_from_year": 2014,
-            "forecast_steps": 6,
+            "forecast_steps": 0,
             "forecast_transform": "percentage",
             "validation": {"min": 0, "max": 50},
         },
@@ -427,7 +422,7 @@ INDICATORS = [
                 "element_id": 9,
             },
             "backfill_from_year": 2014,
-            "forecast_steps": 6,
+            "forecast_steps": 0,
             "forecast_transform": "percentage",
             "validation": {"min": 0, "max": 50},
         },
@@ -459,7 +454,7 @@ INDICATORS = [
                 "element_id": 10,
             },
             "backfill_from_year": 2014,
-            "forecast_steps": 6,
+            "forecast_steps": 0,
             "forecast_transform": "percentage",
             "validation": {"min": 0, "max": 50},
         },
@@ -491,7 +486,7 @@ INDICATORS = [
                 "element_id": 7,
             },
             "backfill_from_year": 2014,
-            "forecast_steps": 6,
+            "forecast_steps": 0,
             "forecast_transform": "percentage",
             "validation": {"min": 0, "max": 50},
         },
@@ -523,7 +518,7 @@ INDICATORS = [
                 "element_id": 9,
             },
             "backfill_from_year": 2014,
-            "forecast_steps": 6,
+            "forecast_steps": 0,
             "forecast_transform": "percentage",
             "validation": {"min": 0, "max": 50},
         },
@@ -555,7 +550,7 @@ INDICATORS = [
                 "element_id": 10,
             },
             "backfill_from_year": 2014,
-            "forecast_steps": 6,
+            "forecast_steps": 0,
             "forecast_transform": "percentage",
             "validation": {"min": 0, "max": 50},
         },
@@ -633,6 +628,13 @@ INDICATORS = [
         "parser_type": "rosstat_sdds_gdp",
         "model_config_json": {
             "forecast_steps": 4,
+            "forecast_model_name": "Approved-GDP-Nominal-Notebook",
+            "approved_forecast_values": [
+                {"date": "2026-03-01", "value": 52231.888190},
+                {"date": "2026-06-01", "value": 54123.118741},
+                {"date": "2026-09-01", "value": 57010.414402},
+                {"date": "2026-12-01", "value": 63675.196294},
+            ],
             "forecast_transform": "absolute",
             "validation": {"min": 0},
         },
@@ -659,7 +661,7 @@ INDICATORS = [
         "model_config_json": {
             "gdp_source": "official_quarterly",
             "gdp_sheet": "9",
-            "forecast_steps": 4,
+            "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 0},
         },
@@ -869,7 +871,7 @@ INDICATORS = [
                 "date_offset_months": 0,
             },
             "backfill_from_year": 2010,
-            "forecast_steps": 6,
+            "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 0},
         },
@@ -898,7 +900,7 @@ INDICATORS = [
                 "date_offset_months": 0,
             },
             "backfill_from_year": 2019,
-            "forecast_steps": 6,
+            "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 0},
             "value_divisor": 1000000,
@@ -928,7 +930,7 @@ INDICATORS = [
                 "date_offset_months": 0,
             },
             "backfill_from_year": 2019,
-            "forecast_steps": 6,
+            "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 0},
             "value_divisor": 1000000,
@@ -957,7 +959,7 @@ INDICATORS = [
                 {"publicationId": 5, "datasetId": 8, "element_id": 26, "date_offset_months": 0},
             ],
             "backfill_from_year": 2010,
-            "forecast_steps": 6,
+            "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 0},
         },
@@ -984,7 +986,7 @@ INDICATORS = [
                 {"publicationId": 5, "datasetId": 8, "element_id": 25, "date_offset_months": 0},
             ],
             "backfill_from_year": 2010,
-            "forecast_steps": 6,
+            "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 0},
         },
@@ -1010,7 +1012,7 @@ INDICATORS = [
         ),
         "parser_type": "minfin_budget_csv",
         "model_config_json": {
-            "forecast_steps": 6,
+            "forecast_steps": 0,
             "forecast_transform": "absolute",
         },
         "is_active": True,
@@ -1202,7 +1204,7 @@ INDICATORS = [
                 "date_offset_months": 0,
             },
             "backfill_from_year": 2000,
-            "forecast_steps": 4,
+            "forecast_steps": 0,
             "forecast_transform": "absolute",
         },
         "is_active": True,
@@ -1286,7 +1288,22 @@ INDICATORS = [
         ),
         "parser_type": "rosstat_sdds_ppi",
         "model_config_json": {
-            "forecast_steps": 6,
+            "forecast_steps": 12,
+            "forecast_model_name": "Approved-PPI-Notebook",
+            "approved_forecast_values": [
+                {"date": "2026-03-01", "value": 307.809703},
+                {"date": "2026-04-01", "value": 309.304368},
+                {"date": "2026-05-01", "value": 310.806289},
+                {"date": "2026-06-01", "value": 312.315504},
+                {"date": "2026-07-01", "value": 313.832048},
+                {"date": "2026-08-01", "value": 315.355955},
+                {"date": "2026-09-01", "value": 316.887262},
+                {"date": "2026-10-01", "value": 318.426005},
+                {"date": "2026-11-01", "value": 319.972220},
+                {"date": "2026-12-01", "value": 321.525943},
+                {"date": "2027-01-01", "value": 323.087210},
+                {"date": "2027-02-01", "value": 324.656059},
+            ],
             "forecast_transform": "absolute",
             "validation": {"min": 50, "max": 500},
         },
@@ -1309,7 +1326,7 @@ INDICATORS = [
         "parser_type": "cbr_bop_xlsx",
         "model_config_json": {
             "bop_target": "exports",
-            "forecast_steps": 4,
+            "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 0},
         },
@@ -1331,7 +1348,7 @@ INDICATORS = [
         "parser_type": "cbr_bop_xlsx",
         "model_config_json": {
             "bop_target": "imports",
-            "forecast_steps": 4,
+            "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 0},
         },
@@ -1353,7 +1370,7 @@ INDICATORS = [
         "parser_type": "cbr_bop_xlsx",
         "model_config_json": {
             "bop_target": "trade-balance",
-            "forecast_steps": 4,
+            "forecast_steps": 0,
             "forecast_transform": "absolute",
         },
         "is_active": True,
@@ -1611,7 +1628,7 @@ INDICATORS = [
         "parser_type": "minfin_budget_csv",
         "model_config_json": {
             "budget_target": "revenue",
-            "forecast_steps": 6,
+            "forecast_steps": 0,
             "forecast_transform": "absolute",
         },
         "is_active": True,
@@ -1632,7 +1649,7 @@ INDICATORS = [
         "parser_type": "minfin_budget_csv",
         "model_config_json": {
             "budget_target": "expenditure",
-            "forecast_steps": 6,
+            "forecast_steps": 0,
             "forecast_transform": "absolute",
         },
         "is_active": True,
@@ -2172,77 +2189,9 @@ async def generate_forecasts():
         indicators = ind_q.scalars().all()
 
         for indicator in indicators:
-            data_q = await db.execute(
-                select(IndicatorData)
-                .where(IndicatorData.indicator_id == indicator.id)
-                .order_by(IndicatorData.date)
-            )
-            all_data = data_q.scalars().all()
-
-            if len(all_data) < 36:
-                print(f"  {indicator.code}: not enough data ({len(all_data)} points), skipping forecast")
-                continue
-
-            print(f"  {indicator.code}: generating forecast from {len(all_data)} data points...")
-
-            dates = [d.date for d in all_data]
-            values = [float(d.value) for d in all_data]
-
-            cfg = indicator.model_config_json or {}
-            forecast_steps = int(cfg.get("forecast_steps", 0) or 0)
-            if forecast_steps <= 0:
-                print(f"  {indicator.code}: forecast_steps=0, skipping")
-                continue
-
-            if indicator.code in CPI_INDICATOR_CODES:
-                results = [
-                    train_monthly_cpi(dates, values, forecast_steps=forecast_steps),
-                    train_inflation_12m(dates, values, forecast_steps=forecast_steps),
-                ]
-            else:
-                forecast_transform = cfg.get("forecast_transform", "absolute")
-                results = [
-                    train_and_forecast(
-                        dates, values, forecast_steps=forecast_steps,
-                        forecast_transform=forecast_transform,
-                    )
-                ]
-
-            for result in results:
-                is_inflation = result.model_name.startswith("Inflation-12M")
-                old_q = await db.execute(
-                    select(Forecast).where(
-                        Forecast.indicator_id == indicator.id,
-                        Forecast.is_current.is_(True),
-                        Forecast.model_name.like("Inflation-12M%") if is_inflation
-                        else ~Forecast.model_name.like("Inflation-12M%"),
-                    )
-                )
-                for old_fc in old_q.scalars().all():
-                    old_fc.is_current = False
-
-                new_forecast = Forecast(
-                    indicator_id=indicator.id,
-                    model_name=result.model_name,
-                    model_params={"cumulative_12m": result.cumulative_12m},
-                    aic=result.aic,
-                    bic=result.bic,
-                    is_current=True,
-                )
-                db.add(new_forecast)
-                await db.flush()
-
-                for fp in result.points:
-                    db.add(ForecastValue(
-                        forecast_id=new_forecast.id,
-                        date=fp.date,
-                        value=fp.value,
-                        lower_bound=fp.lower_bound,
-                        upper_bound=fp.upper_bound,
-                    ))
-
-                await db.commit()
-                print(f"  {indicator.code}: forecast saved ({result.model_name})")
+            await retrain_indicator_forecast(db, indicator)
+            await db.commit()
+            print(f"  {indicator.code}: forecast state refreshed")
 
 
 if __name__ == "__main__":

@@ -143,8 +143,10 @@ export default function IndicatorChart({
       const merged = points.map(p => ({ date: p.date, actual: p.value }));
 
       if (showForecast && fcValues.length > 0 && merged.length > 0) {
-        const last = merged[merged.length - 1];
-        last.forecast = last.actual;
+        if (chartType !== 'bar') {
+          const last = merged[merged.length - 1];
+          last.forecast = last.actual;
+        }
         for (const fv of fcValues) {
           merged.push({ date: fv.date, forecast: fv.value });
         }
@@ -159,14 +161,16 @@ export default function IndicatorChart({
     const merged = actuals.map(a => ({ date: a.date, actual: a.value }));
 
     if (showForecast && forecasts.length > 0 && merged.length > 0) {
-      const last = merged[merged.length - 1];
-      last.forecast = last.actual;
+      if (chartType !== 'bar') {
+        const last = merged[merged.length - 1];
+        last.forecast = last.actual;
+      }
       for (const fp of forecasts) {
         merged.push({ date: fp.date, forecast: fp.value });
       }
     }
     return merged;
-  }, [inflation, cpiData, forecastData, showForecast, mode]);
+  }, [inflation, cpiData, forecastData, showForecast, mode, chartType]);
 
   const dataLen = chartData.length;
 
@@ -190,6 +194,11 @@ export default function IndicatorChart({
     if (!showForecast) return null;
     for (let i = 0; i < visibleData.length; i++) {
       if (visibleData[i].actual != null && visibleData[i].forecast != null) {
+        return visibleData[i].date;
+      }
+    }
+    for (let i = 0; i < visibleData.length; i++) {
+      if (visibleData[i].forecast != null) {
         return visibleData[i].date;
       }
     }

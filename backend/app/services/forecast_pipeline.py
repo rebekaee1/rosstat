@@ -87,6 +87,26 @@ async def retrain_indicator_forecast(db: AsyncSession, indicator: Indicator) -> 
         )
         return
 
+    approved_values = cfg.get("approved_forecast_values")
+    if approved_values:
+        result = ForecastResult(
+            model_name=str(cfg.get("forecast_model_name", "Approved-Forecast")),
+            aic=None,
+            bic=None,
+            points=[
+                ForecastPoint(
+                    date=date.fromisoformat(str(item["date"])),
+                    value=round(float(item["value"]), 4),
+                    lower_bound=None,
+                    upper_bound=None,
+                )
+                for item in approved_values
+            ],
+        )
+        await _save_forecast(db, indicator, result)
+        logger.info("Saved approved forecast for '%s'", indicator.code)
+        return
+
     data_q = await db.execute(
         select(IndicatorData)
         .where(IndicatorData.indicator_id == indicator.id)

@@ -38,15 +38,15 @@ const SEO_MAP = {
     description: 'Ключевая ставка Банка России: ежедневный ряд, визуализация и справка. Источник — cbr.ru.',
   },
   'usd-rub': {
-    title: 'Курс доллара к рублю (USD/RUB) — график и прогноз',
+    title: 'Курс доллара к рублю (USD/RUB) — график и данные',
     description: 'Официальный курс доллара к рублю ЦБ РФ: ежедневные данные, история.',
   },
   'eur-rub': {
-    title: 'Курс евро к рублю (EUR/RUB) — график и прогноз',
+    title: 'Курс евро к рублю (EUR/RUB) — график и данные',
     description: 'Официальный курс евро к рублю ЦБ РФ: ежедневные данные, история.',
   },
   'cny-rub': {
-    title: 'Курс юаня к рублю (CNY/RUB) — график и прогноз',
+    title: 'Курс юаня к рублю (CNY/RUB) — график и данные',
     description: 'Официальный курс юаня к рублю ЦБ РФ: ежедневные данные, история.',
   },
   ruonia: {
@@ -54,47 +54,47 @@ const SEO_MAP = {
     description: 'RUONIA: индикативная ставка однодневных рублёвых межбанковских кредитов. Данные Банка России.',
   },
   m0: {
-    title: 'Денежная масса М0 — график и прогноз',
+    title: 'Денежная масса М0 — график и данные',
     description: 'Наличные деньги в обращении (агрегат М0): данные Банка России, история.',
   },
   m2: {
-    title: 'Денежная масса М2 — график и прогноз',
+    title: 'Денежная масса М2 — график и данные',
     description: 'Широкая денежная масса (агрегат М2): данные Банка России, история.',
   },
   'mortgage-rate': {
-    title: 'Ставка по ипотеке — график и прогноз',
+    title: 'Ставка по ипотеке — график и данные',
     description: 'Средневзвешенная ставка по ипотечным жилищным кредитам в рублях. Данные Банка России.',
   },
   'deposit-rate': {
-    title: 'Ставка по вкладам — график и прогноз',
+    title: 'Ставка по вкладам — график и данные',
     description: 'Средневзвешенная ставка по вкладам физических лиц в рублях. Данные Банка России.',
   },
   'auto-loan-rate': {
-    title: 'Ставка по автокредитам — график и прогноз',
+    title: 'Ставка по автокредитам — график и данные',
     description: 'Средневзвешенная ставка по автокредитам физическим лицам в рублях. Данные Банка России.',
   },
   'credit-rate-corp-short': {
-    title: 'Ставка по кредитам юридическим лицам до 1 года — график и прогноз',
+    title: 'Ставка по кредитам юридическим лицам до 1 года — график и данные',
     description: 'Средневзвешенная ставка по кредитам нефинансовым организациям в рублях со сроком до 1 года. Данные Банка России с 2014 года.',
   },
   'credit-rate-corp-1to3y': {
-    title: 'Ставка по кредитам юридическим лицам от 1 до 3 лет — график и прогноз',
+    title: 'Ставка по кредитам юридическим лицам от 1 до 3 лет — график и данные',
     description: 'Средневзвешенная ставка по кредитам нефинансовым организациям в рублях со сроком от 1 года до 3 лет. Данные Банка России.',
   },
   'credit-rate-corp-over3y': {
-    title: 'Ставка по кредитам юридическим лицам свыше 3 лет — график и прогноз',
+    title: 'Ставка по кредитам юридическим лицам свыше 3 лет — график и данные',
     description: 'Средневзвешенная ставка по долгосрочным кредитам нефинансовым организациям в рублях со сроком свыше 3 лет. Данные Банка России.',
   },
   'credit-rate-ind-short': {
-    title: 'Ставка по кредитам физическим лицам до 1 года — график и прогноз',
+    title: 'Ставка по кредитам физическим лицам до 1 года — график и данные',
     description: 'Средневзвешенная ставка по потребительским кредитам физлицам в рублях со сроком до 1 года. Данные Банка России с 2014 года.',
   },
   'credit-rate-ind-1to3y': {
-    title: 'Ставка по кредитам физическим лицам от 1 до 3 лет — график и прогноз',
+    title: 'Ставка по кредитам физическим лицам от 1 до 3 лет — график и данные',
     description: 'Средневзвешенная ставка по потребительским кредитам физлицам в рублях со сроком от 1 года до 3 лет. Данные Банка России.',
   },
   'credit-rate-ind-over3y': {
-    title: 'Ставка по кредитам физическим лицам свыше 3 лет — график и прогноз',
+    title: 'Ставка по кредитам физическим лицам свыше 3 лет — график и данные',
     description: 'Средневзвешенная ставка по долгосрочным кредитам физлицам в рублях со сроком свыше 3 лет. Данные Банка России.',
   },
   'inflation-quarterly': {
@@ -134,27 +134,27 @@ const SEO_MAP = {
     description: 'Темп роста номинального ВВП к предыдущему кварталу. Расчёт на основе данных Росстата.',
   },
   m1: {
-    title: 'Денежная масса М1 — график и прогноз',
+    title: 'Денежная масса М1 — график и данные',
     description: 'Денежный агрегат М1 (наличные + переводные депозиты): данные Банка России, история.',
   },
   'consumer-credit': {
-    title: 'Кредиты физическим лицам — данные и прогноз',
-    description: 'Задолженность по кредитам физлицам (портфель): данные Банка России, динамика, прогноз.',
+    title: 'Кредиты физическим лицам — данные и график',
+    description: 'Задолженность по кредитам физлицам (портфель): данные Банка России, динамика.',
   },
   'business-credit': {
-    title: 'Кредиты бизнесу — данные и прогноз',
-    description: 'Задолженность по кредитам юрлицам и ИП (портфель): данные Банка России, динамика, прогноз.',
+    title: 'Кредиты бизнесу — данные и график',
+    description: 'Задолженность по кредитам юрлицам и ИП (портфель): данные Банка России, динамика.',
   },
   'deposits-individual': {
-    title: 'Вклады физических лиц — данные и прогноз',
+    title: 'Вклады физических лиц — данные и график',
     description: 'Суммарные вклады населения в банках РФ: данные Банка России, история.',
   },
   'deposits-business': {
-    title: 'Депозиты организаций — данные и прогноз',
-    description: 'Суммарные депозиты нефинансовых организаций: данные Банка России, история, прогноз.',
+    title: 'Депозиты организаций — данные и график',
+    description: 'Суммарные депозиты нефинансовых организаций: данные Банка России, история.',
   },
   'budget-deficit': {
-    title: 'Дефицит бюджета России — данные и прогноз',
+    title: 'Дефицит бюджета России — данные и график',
     description: 'Помесячный дефицит/профицит федерального бюджета РФ: данные Минфина, история с 2011 года.',
   },
   'inflation-weekly': {
@@ -210,7 +210,7 @@ const SEO_MAP = {
     description: 'Миграционный прирост населения: ежегодные данные с 1990 года. Данные Росстата.',
   },
   'current-account': {
-    title: 'Сальдо текущего счёта — данные и прогноз',
+    title: 'Сальдо текущего счёта — данные и график',
     description: 'Сальдо счёта текущих операций платёжного баланса РФ: квартальные данные Банка России с 2000 года.',
   },
   'current-account-yoy': {
@@ -226,15 +226,15 @@ const SEO_MAP = {
     description: 'Изменение индекса цен производителей к аналогичному месяцу предыдущего года.',
   },
   exports: {
-    title: 'Экспорт товаров из России — данные и прогноз',
+    title: 'Экспорт товаров из России — данные и график',
     description: 'Экспорт товаров по методологии платёжного баланса: квартальные данные с 1994 года. Банк России.',
   },
   imports: {
-    title: 'Импорт товаров в Россию — данные и прогноз',
+    title: 'Импорт товаров в Россию — данные и график',
     description: 'Импорт товаров по методологии платёжного баланса: квартальные данные с 1994 года. Банк России.',
   },
   'trade-balance': {
-    title: 'Торговый баланс России — данные и прогноз',
+    title: 'Торговый баланс России — данные и график',
     description: 'Торговый баланс (экспорт минус импорт товаров): квартальные данные. Банк России.',
   },
   'exports-yoy': {
@@ -278,11 +278,11 @@ const SEO_MAP = {
     description: 'Изменение средней номинальной зарплаты к аналогичному месяцу предыдущего года.',
   },
   'budget-revenue': {
-    title: 'Доходы федерального бюджета — данные и прогноз',
+    title: 'Доходы федерального бюджета — данные и график',
     description: 'Помесячные доходы федерального бюджета РФ: данные Минфина, история с 2011 года.',
   },
   'budget-expenditure': {
-    title: 'Расходы федерального бюджета — данные и прогноз',
+    title: 'Расходы федерального бюджета — данные и график',
     description: 'Помесячные расходы федерального бюджета РФ: данные Минфина, история с 2011 года.',
   },
   'services-exports': {
@@ -406,6 +406,14 @@ const CPI_DERIVED_CODES = {
   'cpi-nonfood': { quarterly: 'cpi-nonfood-quarterly', annual: 'cpi-nonfood-annual' },
   'cpi-services': { quarterly: 'cpi-services-quarterly', annual: 'cpi-services-annual' },
 };
+
+const CPI_VIEW_MODES = [
+  { mode: 'inflation', label: 'Инфляция за год', generalOnly: false },
+  { mode: 'weekly', label: 'Недельная', generalOnly: true },
+  { mode: 'cpi', label: 'Месячная', generalOnly: false },
+  { mode: 'quarterly', label: 'Квартальная', generalOnly: false },
+  { mode: 'annual', label: 'Годовая', generalOnly: false },
+];
 
 const VARIANT_GROUPS = [
   {
@@ -608,6 +616,9 @@ export default function IndicatorDetail() {
   } = useIndicator(code);
   const CPI_CODES = ['cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services'];
   const isPriceCategory = CPI_CODES.includes(code);
+  const safeViewMode = isPriceCategory && code !== 'cpi' && viewMode === 'weekly'
+    ? 'inflation'
+    : viewMode;
   const shouldSubtract100 = isCpiIndex(code);
   const cpiDerivedCodes = CPI_DERIVED_CODES[code] || {};
   const variantGroup = VARIANT_GROUPS.find(group => group.codes.some(item => item.code === code));
@@ -624,33 +635,36 @@ export default function IndicatorDetail() {
   });
   const { data: forecastResp, refetch: refetchForecast } = useForecast(code);
 
-  const hasCpiTabs = ['cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services'].includes(code);
+  const cpiViewModes = useMemo(
+    () => CPI_VIEW_MODES.filter(item => !item.generalOnly || code === 'cpi'),
+    [code]
+  );
   const { data: quarterlyForecastResp } = useForecast('inflation-quarterly', {
-    enabled: code === 'cpi' && viewMode === 'quarterly',
+    enabled: code === 'cpi' && safeViewMode === 'quarterly',
   });
   const { data: annualForecastResp } = useForecast('inflation-annual', {
-    enabled: code === 'cpi' && viewMode === 'annual',
+    enabled: code === 'cpi' && safeViewMode === 'annual',
   });
   const {
     data: quarterlyResp,
     isLoading: loadingQuarterly,
   } = useIndicatorData(cpiDerivedCodes.quarterly, undefined, {
-    enabled: !!cpiDerivedCodes.quarterly && viewMode === 'quarterly',
+    enabled: !!cpiDerivedCodes.quarterly && safeViewMode === 'quarterly',
   });
   const {
     data: annualResp,
     isLoading: loadingAnnual,
   } = useIndicatorData(cpiDerivedCodes.annual, undefined, {
-    enabled: !!cpiDerivedCodes.annual && viewMode === 'annual',
+    enabled: !!cpiDerivedCodes.annual && safeViewMode === 'annual',
   });
   const {
     data: weeklyResp,
     isLoading: loadingWeekly,
   } = useIndicatorData('inflation-weekly', undefined, {
-    enabled: code === 'cpi' && viewMode === 'weekly',
+    enabled: code === 'cpi' && safeViewMode === 'weekly',
   });
 
-  const chartMode = isPriceCategory ? viewMode : 'cpi';
+  const chartMode = isPriceCategory ? safeViewMode : 'cpi';
 
   const inflationStats = useMemo(() => {
     if (chartMode !== 'inflation' || !inflationResp?.actuals?.length) return null;
@@ -758,23 +772,23 @@ export default function IndicatorDetail() {
   }
 
   const quarterlyStats = useMemo(() => {
-    if (viewMode !== 'quarterly') return null;
+    if (safeViewMode !== 'quarterly') return null;
     return computeDerivedStats(quarterlyDataPoints);
-  }, [viewMode, quarterlyDataPoints]);
+  }, [safeViewMode, quarterlyDataPoints]);
 
   const annualStats = useMemo(() => {
-    if (viewMode !== 'annual') return null;
+    if (safeViewMode !== 'annual') return null;
     return computeDerivedStats(annualDataPoints);
-  }, [viewMode, annualDataPoints]);
+  }, [safeViewMode, annualDataPoints]);
 
   const weeklyStats = useMemo(() => {
-    if (viewMode !== 'weekly') return null;
+    if (safeViewMode !== 'weekly') return null;
     return computeDerivedStats(weeklyDataPoints);
-  }, [viewMode, weeklyDataPoints]);
+  }, [safeViewMode, weeklyDataPoints]);
 
-  const s = viewMode === 'quarterly' ? quarterlyStats
-    : viewMode === 'annual' ? annualStats
-    : viewMode === 'weekly' ? weeklyStats
+  const s = safeViewMode === 'quarterly' ? quarterlyStats
+    : safeViewMode === 'annual' ? annualStats
+    : safeViewMode === 'weekly' ? weeklyStats
     : inflationStats;
   const cpiPrevDate = dataPoints.length >= 2 ? dataPoints[dataPoints.length - 2].date : null;
 
@@ -818,15 +832,12 @@ export default function IndicatorDetail() {
         : chartMode === 'inflation'
           ? inflationResp?.forecast?.length > 0
           : displayForecastData?.forecast?.values?.length > 0;
-  const forecastCapable = viewMode !== 'weekly';
+  const forecastCapable = safeViewMode !== 'weekly';
   const forecastEnabled = forecastCapable && hasForecastData;
 
   const chartEmptyHint = useMemo(() => {
     if (dataError) {
       return 'Не удалось получить исторический ряд. Нажмите «Повторить» выше или проверьте backend / прокси Vite.';
-    }
-    if (hasCpiTabs && viewMode === 'weekly' && code !== 'cpi') {
-      return 'Недельный ИПЦ сейчас доступен только для общего индекса потребительских цен.';
     }
     if (!loadingData && (dataPoints?.length ?? 0) === 0) {
       return (
@@ -835,7 +846,7 @@ export default function IndicatorDetail() {
       );
     }
     return undefined;
-  }, [dataError, loadingData, dataPoints, hasCpiTabs, code, viewMode]);
+  }, [dataError, loadingData, dataPoints]);
 
   const refetchIndicatorPage = useCallback(() => {
     refetchInd();
@@ -949,6 +960,34 @@ export default function IndicatorDetail() {
         </section>
       )}
 
+      {isPriceCategory && (
+        <section className="mb-8 rounded-[1.5rem] border border-border-subtle bg-surface p-4 shadow-sm">
+          <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+            Режим инфляции
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {cpiViewModes.map(item => (
+              <button
+                key={item.mode}
+                type="button"
+                onClick={() => {
+                  setViewMode(item.mode);
+                  track(events.CHART_MODE_CHANGE, { mode: item.mode, indicator: code, indicatorCategory: indicator?.category });
+                }}
+                className={cn(
+                  'rounded-xl px-3 py-2 text-xs font-medium transition-colors',
+                  safeViewMode === item.mode
+                    ? 'bg-champagne/15 text-champagne'
+                    : 'bg-obsidian-lighter text-text-secondary hover:text-champagne'
+                )}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
+
       <section className="mb-12">
         {(loadingInd || (chartMode === 'inflation' && loadingInflation) || (chartMode === 'annual' && loadingAnnual) || (chartMode === 'weekly' && loadingWeekly) || (chartMode === 'quarterly' && loadingQuarterly)) ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -958,8 +997,8 @@ export default function IndicatorDetail() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <TelemetryCard
               label={
-                viewMode === 'weekly' ? 'Инфляция за неделю'
-                  : viewMode === 'cpi' && isPriceCategory ? 'Прирост за месяц'
+                safeViewMode === 'weekly' ? 'Инфляция за неделю'
+                  : safeViewMode === 'cpi' && isPriceCategory ? 'Прирост за месяц'
                   : 'Текущее значение'
               }
               value={s?.currentValue ?? adj(indicator?.current_value)}
@@ -972,24 +1011,24 @@ export default function IndicatorDetail() {
                   : undefined
               }
               meta={
-                viewMode === 'weekly' && Number(s?.currentValue) === 0
+                safeViewMode === 'weekly' && Number(s?.currentValue) === 0
                   ? `ДАТА: ${formatDate(s?.currentDate ?? indicator?.current_date, 'full')} · ЦЕНЫ БЕЗ ИЗМЕНЕНИЙ`
                   : `ДАТА: ${formatDate(s?.currentDate ?? indicator?.current_date, 'full')}`
               }
               delay={0}
               deltaSuffix={
-                viewMode === 'quarterly' ? 'к пред. кварталу'
-                  : viewMode === 'annual' ? 'к пред. значению'
-                  : viewMode === 'weekly' ? 'к пред. неделе'
+                safeViewMode === 'quarterly' ? 'к пред. кварталу'
+                  : safeViewMode === 'annual' ? 'к пред. значению'
+                  : safeViewMode === 'weekly' ? 'к пред. неделе'
                   : indicator?.frequency === 'quarterly' ? 'к пред. кварталу'
                   : isPriceCategory ? 'к пред. месяцу' : 'к пред. значению'
               }
             />
             <TelemetryCard
               label={
-                viewMode === 'weekly' ? 'Предыдущая неделя'
-                  : viewMode === 'quarterly' ? 'Предыдущий квартал'
-                  : viewMode === 'annual' ? 'Год назад'
+                safeViewMode === 'weekly' ? 'Предыдущая неделя'
+                  : safeViewMode === 'quarterly' ? 'Предыдущий квартал'
+                  : safeViewMode === 'annual' ? 'Год назад'
                   : isPriceCategory ? 'Предыдущий месяц' : 'Предыдущее значение'
               }
               value={s?.previousValue ?? adj(indicator?.previous_value)}
@@ -1023,40 +1062,9 @@ export default function IndicatorDetail() {
         <div className="flex items-center justify-between mb-6 border-b border-border-subtle pb-4 flex-wrap gap-3">
           <div className="flex items-center gap-4">
             <Terminal className="w-4 h-4 text-champagne" />
-            {isPriceCategory ? (
-              <div className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle flex-wrap">
-                {[
-                  { mode: 'inflation', label: 'Инфляция за год', always: true },
-                  { mode: 'weekly', label: 'Недельная', always: false },
-                  { mode: 'cpi', label: 'Месячная', always: true },
-                  { mode: 'quarterly', label: 'Квартальная', always: false },
-                  { mode: 'annual', label: 'Годовая', always: false },
-                ]
-                  .filter(t => t.always || hasCpiTabs)
-                  .map(t => (
-                    <button
-                      key={t.mode}
-                      type="button"
-                      onClick={() => {
-                        setViewMode(t.mode);
-                        track(events.CHART_MODE_CHANGE, { mode: t.mode, indicator: code, indicatorCategory: indicator?.category });
-                      }}
-                      className={cn(
-                        'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
-                        viewMode === t.mode
-                          ? 'bg-champagne/15 text-champagne'
-                          : 'text-text-tertiary hover:text-text-secondary'
-                      )}
-                    >
-                      {t.label}
-                    </button>
-                  ))}
-              </div>
-            ) : (
-              <span className="text-[11px] font-mono uppercase tracking-widest text-text-tertiary">
-                Динамика показателя
-              </span>
-            )}
+            <span className="text-[11px] font-mono uppercase tracking-widest text-text-tertiary">
+              {isPriceCategory ? 'График выбранного режима' : 'Динамика показателя'}
+            </span>
           </div>
 
           <div className="flex items-center gap-3">
@@ -1106,7 +1114,7 @@ export default function IndicatorDetail() {
               </label>
               {!forecastEnabled && (
                 <div className="absolute top-full right-0 mt-2 px-3 py-2 rounded-xl bg-obsidian border border-border-subtle text-xs text-text-secondary whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-xl z-50">
-                  {viewMode === 'weekly' ? 'Недельный прогноз не публикуется' : 'Прогноз для этого режима недоступен'}
+                  {safeViewMode === 'weekly' ? 'Недельный прогноз не публикуется' : 'Прогноз для этого режима недоступен'}
                 </div>
               )}
             </div>
@@ -1184,24 +1192,24 @@ export default function IndicatorDetail() {
           <div className="prose prose-sm max-w-none">
             <p className="text-text-secondary leading-relaxed">
               {chartMode === 'inflation' ? INFLATION_DESCRIPTION
-                : viewMode === 'quarterly' ? QUARTERLY_DESCRIPTION
-                : viewMode === 'annual' ? ANNUAL_DESCRIPTION
-                : viewMode === 'weekly' ? WEEKLY_DESCRIPTION
-                : viewMode === 'cpi' && isPriceCategory ? CPI_MONTHLY_DESCRIPTION
+                : safeViewMode === 'quarterly' ? QUARTERLY_DESCRIPTION
+                : safeViewMode === 'annual' ? ANNUAL_DESCRIPTION
+                : safeViewMode === 'weekly' ? WEEKLY_DESCRIPTION
+                : safeViewMode === 'cpi' && isPriceCategory ? CPI_MONTHLY_DESCRIPTION
                 : indicator?.description}
             </p>
             {(chartMode === 'inflation' ? INFLATION_METHODOLOGY
-              : viewMode === 'quarterly' ? QUARTERLY_METHODOLOGY
-              : viewMode === 'annual' ? ANNUAL_METHODOLOGY
-              : viewMode === 'weekly' ? WEEKLY_METHODOLOGY
-              : viewMode === 'cpi' && isPriceCategory ? CPI_MONTHLY_METHODOLOGY
+              : safeViewMode === 'quarterly' ? QUARTERLY_METHODOLOGY
+              : safeViewMode === 'annual' ? ANNUAL_METHODOLOGY
+              : safeViewMode === 'weekly' ? WEEKLY_METHODOLOGY
+              : safeViewMode === 'cpi' && isPriceCategory ? CPI_MONTHLY_METHODOLOGY
               : indicator?.methodology) && (
               <p className="text-text-tertiary border-l-2 border-champagne/30 pl-4 my-4 font-mono text-[10px] uppercase tracking-wider">
                 {chartMode === 'inflation' ? INFLATION_METHODOLOGY
-                  : viewMode === 'quarterly' ? QUARTERLY_METHODOLOGY
-                  : viewMode === 'annual' ? ANNUAL_METHODOLOGY
-                  : viewMode === 'weekly' ? WEEKLY_METHODOLOGY
-                  : viewMode === 'cpi' && isPriceCategory ? CPI_MONTHLY_METHODOLOGY
+                  : safeViewMode === 'quarterly' ? QUARTERLY_METHODOLOGY
+                  : safeViewMode === 'annual' ? ANNUAL_METHODOLOGY
+                  : safeViewMode === 'weekly' ? WEEKLY_METHODOLOGY
+                  : safeViewMode === 'cpi' && isPriceCategory ? CPI_MONTHLY_METHODOLOGY
                   : indicator?.methodology}
               </p>
             )}
@@ -1232,7 +1240,7 @@ export default function IndicatorDetail() {
         </section>
 
         <section className="lg:col-span-2">
-          {viewMode === 'weekly' ? (
+          {safeViewMode === 'weekly' ? (
             <div className="h-full min-h-[300px] rounded-[2rem] bg-surface border border-border-subtle border-dashed flex flex-col items-center justify-center gap-3 text-text-tertiary p-8">
               <Activity className="w-8 h-8 mb-1 opacity-20" />
               <p className="text-sm font-medium text-text-secondary text-center max-w-md">

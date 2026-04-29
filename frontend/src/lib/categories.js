@@ -122,7 +122,6 @@ export const HIDDEN_FROM_LISTING = new Set([
   'ppi-yoy',
   'housing-yoy-primary',
   'housing-yoy-secondary',
-  'gdp-real',
   'gdp-yoy',
   'gdp-qoq',
 ]);
