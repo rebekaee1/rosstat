@@ -549,9 +549,11 @@ export default function IndicatorChart({
         </ResponsiveContainer>
 
         {isHovering && !isDragging && (
-          <div className="absolute bottom-3 right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-obsidian/70 backdrop-blur-sm border border-border-subtle/50 pointer-events-none opacity-60 transition-opacity">
-            <ZoomIn className="w-3 h-3 text-text-tertiary" />
-            <span className="text-[10px] font-mono text-text-tertiary">Ctrl + scroll — зум · drag — сдвиг</span>
+          <div className="mt-1 flex justify-end pr-3">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-obsidian/70 backdrop-blur-sm border border-border-subtle/50 pointer-events-none opacity-60 transition-opacity">
+              <ZoomIn className="w-3 h-3 text-text-tertiary" />
+              <span className="text-[10px] font-mono text-text-tertiary">Ctrl + scroll — зум · drag — сдвиг</span>
+            </div>
           </div>
         )}
 
