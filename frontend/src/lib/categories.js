@@ -109,7 +109,23 @@ export function getCategoryBySlug(slug) {
   return CATEGORIES.find((c) => c.slug === slug);
 }
 
-export const HIDDEN_FROM_LISTING = new Set(['inflation-annual', 'inflation-quarterly', 'inflation-weekly']);
+export const HIDDEN_FROM_LISTING = new Set([
+  'inflation-annual',
+  'inflation-quarterly',
+  'inflation-weekly',
+  'cpi-food-quarterly',
+  'cpi-food-annual',
+  'cpi-nonfood-quarterly',
+  'cpi-nonfood-annual',
+  'cpi-services-quarterly',
+  'cpi-services-annual',
+  'ppi-yoy',
+  'housing-yoy-primary',
+  'housing-yoy-secondary',
+  'gdp-real',
+  'gdp-yoy',
+  'gdp-qoq',
+]);
 
 /** Подсчёт индикаторов по полю category в API (исключая скрытые карточки) */
 export function countInCategory(indicators, apiCategory) {

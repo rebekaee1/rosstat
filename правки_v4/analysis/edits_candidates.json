@@ -1,0 +1,904 @@
+{
+  "source": {
+    "transcript_segments": "/Users/iprofi/tradingeconomics/rosstat/правки_v4/transcripts/transcript_segments.json",
+    "transcript_full": "/Users/iprofi/tradingeconomics/rosstat/правки_v4/transcripts/transcript_full.md",
+    "metadata": "/Users/iprofi/tradingeconomics/rosstat/правки_v4/transcripts/metadata.json",
+    "model": "gpt-4o-transcribe-diarize",
+    "total_duration_sec": 2616.221063
+  },
+  "speaker_note": "В начале A=Женя, B=Никита Александрович. В основной части демонстрации diarization меняется: появляются C/D/E, а постановщик правок чаще размечен как A. Поэтому speaker хранит машинный label и осторожную роль по содержанию.",
+  "confirmed_edits": [
+    {
+      "id": "v4_edit_001",
+      "title": "Привести title/description главной и страниц к смыслу страницы",
+      "status": "actionable",
+      "priority": "high",
+      "type": "seo",
+      "target_area": "SEO HTML: главная, indicator/category pages, title/description",
+      "global_time_start": 281,
+      "global_time_end": 343,
+      "global_time_label": "04:41–05:43",
+      "video_part": "НА правки 4_1",
+      "local_time_start": 281,
+      "local_time_end": 309,
+      "local_time_label": "04:41–05:09 (+ НА правки 4_2 local 00:00–00:33)",
+      "speaker": "B/A (diarization inconsistent; по содержанию постановщик правки)",
+      "quote": "«посмотри обязательно чтобы у нас вот эти все дублирующиеся тайтлы»; «мне конечно бы надо ... поменять бы описание ... тайтл ... на главной странице ... Он у нас, типа, про инфляцию?»",
+      "context_before_after": [
+        "B: «главное чтобы у нас были ... вот эти вот описание»",
+        "B: «тайтл на главной странице ... Он у нас, типа, про инфляцию?»",
+        "A: «... вот это вот то что по идее должно быть в тайтле ... как будто он как-то не так»",
+        "A: «с этим немножко нужно бы что-то посмотреть»"
+      ],
+      "problem": "Title/description/заголовки выглядят не соответствующими странице: главная считывается как страница про инфляцию, а не как Forecast Economy/экономические данные. Отдельный ранний контрольный сигнал — не должно остаться дублирующихся title.",
+      "requested_change": "Перепроверить и переписать title/description/заголовки так, чтобы главная и страницы отдавали поисковикам и сниппетам корректный смысл страницы; отдельно проверить отсутствие дублирующихся title.",
+      "implementation_hint": "Проверять SEO renderer/meta registry: backend SEO pages/OG renderer, frontend meta config, sitemap/SEO content registry. Код не менялся в этом анализе.",
+      "confidence": "high",
+      "why_this_is_a_real_edit": "Есть прямое «поменять бы описание/тайтл» и «нужно бы что-то посмотреть», затем исполнитель подтверждает «заголовки».",
+      "frame_need": "5",
+      "frame_moments": [
+        {"video_part": "НА правки 4_1", "local_time_sec": 281, "global_time_sec": 281, "purpose": "показ title/description на главной"},
+        {"video_part": "НА правки 4_1", "local_time_sec": 297, "global_time_sec": 297, "purpose": "момент вопроса про title/description"},
+        {"video_part": "НА правки 4_1", "local_time_sec": 214, "global_time_sec": 214, "purpose": "контроль дублирующихся title"},
+        {"video_part": "НА правки 4_2", "local_time_sec": 15, "global_time_sec": 325, "purpose": "сравнение с тем, что должно быть в title"}
+      ],
+      "evidence_mentions": [
+        {"global_time_label": "03:34–03:42", "video_part": "НА правки 4_1", "quote": "«посмотри обязательно чтобы у нас вот эти все дублирующиеся тайтлы»"},
+        {"global_time_label": "04:41–04:54", "video_part": "НА правки 4_1", "quote": "«поменять бы описание ... тайтл ... на главной странице ... про инфляцию?»"},
+        {"global_time_label": "05:09–05:43", "video_part": "НА правки 4_2", "quote": "«то что по идее должно быть в тайтле ... с этим немножко нужно бы что-то посмотреть»"}
+      ]
+    },
+    {
+      "id": "v4_edit_002",
+      "title": "Согласовать тип прогноза с типом графика",
+      "status": "actionable",
+      "priority": "medium",
+      "type": "ui",
+      "target_area": "IndicatorChart: forecast rendering for bar/line modes",
+      "global_time_start": 604,
+      "global_time_end": 628,
+      "global_time_label": "10:04–10:28",
+      "video_part": "НА правки 4_2",
+      "local_time_start": 294,
+      "local_time_end": 317,
+      "local_time_label": "04:54–05:17 (+ НА правки 4_3 local 00:00)",
+      "speaker": "A/B (по содержанию постановщик + подтверждение исполнителя)",
+      "quote": "«когда меняется график, что прогноз тоже тогда столбиками ... несоответствие ... давай прогноз тоже ... синеньким»",
+      "context_before_after": [
+        "B: «я ... переписал графики и кнопочки, чтобы их оформить по смыслу»",
+        "A: «когда меняется график, что прогноз тоже тогда столбиками»",
+        "A: «тут у нас было линия-линия ... давай прогноз тоже ... синеньким»",
+        "B: «чтобы они были»"
+      ],
+      "problem": "При переключении основного графика в столбиковый режим прогноз остаётся визуально в другом типе/стиле, возникает несоответствие.",
+      "requested_change": "Если факт показывается столбиками, прогноз тоже показывать столбиками или визуально согласованным forecast-layer; цвет/затемнение согласовать с текущим дизайном.",
+      "implementation_hint": "Смотреть Recharts слой прогноза в `IndicatorChart` и условия выбора Bar/Line для forecastData.",
+      "confidence": "high",
+      "why_this_is_a_real_edit": "Формулировка «давай ... прогноз тоже» и исполнительская реплика подтверждают решение.",
+      "frame_need": "3",
+      "frame_moments": [
+        {"video_part": "НА правки 4_2", "local_time_sec": 294, "global_time_sec": 604, "purpose": "вид текущего графика до правки"},
+        {"video_part": "НА правки 4_2", "local_time_sec": 305, "global_time_sec": 615, "purpose": "показ несоответствия линии/столбиков"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 0, "global_time_sec": 628, "purpose": "подтверждение соответствующего стиля"}
+      ],
+      "evidence_mentions": [
+        {"global_time_label": "10:04–10:28", "video_part": "НА правки 4_2/4_3", "quote": "«прогноз тоже тогда столбиками ... сделаем там синеньким»"}
+      ]
+    },
+    {
+      "id": "v4_edit_003",
+      "title": "Починить квартальную инфляцию и масштаб прогноза",
+      "status": "actionable",
+      "priority": "high",
+      "type": "bug",
+      "target_area": "/indicator/cpi, quarterly inflation tab, forecast display",
+      "global_time_start": 526,
+      "global_time_end": 645,
+      "global_time_label": "08:46–10:45",
+      "video_part": "НА правки 4_2",
+      "local_time_start": 216,
+      "local_time_end": 317,
+      "local_time_label": "03:36–05:17 (+ НА правки 4_3 local 00:10)",
+      "speaker": "A (по содержанию постановщик), B (исполнитель)",
+      "quote": "«что-то сломалось с квартальной инфляцией»; «Ну вот квартальное надо поправить»",
+      "context_before_after": [
+        "A: «вот это что за хрень, что-то сломалось с квартальной инфляцией»",
+        "B: «я просто деплоил заново, он мог мой фикс не подтянуть»",
+        "A: «сломалось, сломалось»",
+        "A: «Ну вот квартальное надо поправить»"
+      ],
+      "problem": "Квартальная вкладка визуально/численно сломана после деплоя или не подтянутого фикса.",
+      "requested_change": "Вернуть корректный квартальный график и прогноз; проверить, что факт и forecast в одном масштабе и не выглядят как 100.x вместо процентов.",
+      "implementation_hint": "Проверять преобразование CPI index → display percent для `inflation-quarterly` и forecast path в `IndicatorDetail`/`format`.",
+      "confidence": "high",
+      "why_this_is_a_real_edit": "Баг явно замечен на экране, несколько раз назван сломанным и позже получает high-priority повтор.",
+      "frame_need": "10+",
+      "frame_moments": [
+        {"video_part": "НА правки 4_2", "local_time_sec": 224, "global_time_sec": 534, "purpose": "первый показ сломанной квартальной инфляции"},
+        {"video_part": "НА правки 4_2", "local_time_sec": 253, "global_time_sec": 563, "purpose": "обсуждение возможной причины после деплоя"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 10, "global_time_sec": 638, "purpose": "итоговое «квартальное надо поправить»"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 779, "global_time_sec": 1407, "purpose": "поздний повтор приоритета"}
+      ],
+      "evidence_mentions": [
+        {"global_time_label": "08:54–09:25", "video_part": "НА правки 4_2", "quote": "«что-то сломалось с квартальной инфляцией» / «сломалось, сломалось»"},
+        {"global_time_label": "10:38–10:40", "video_part": "НА правки 4_3", "quote": "«Ну вот квартальное надо поправить»"},
+        {"global_time_label": "23:27–23:38", "video_part": "НА правки 4_3", "quote": "«первоочередное ... поправить ... годовые и квартальные ... съехал прогноз»"},
+        {"global_time_label": "39:00–39:09", "video_part": "НА правки 4_3", "quote": "«надо разобраться с вот этим багом, с квартальной инфляцией годовой»"}
+      ]
+    },
+    {
+      "id": "v4_edit_004",
+      "title": "Переставить watermark Forecast Economy на графике",
+      "status": "actionable",
+      "priority": "medium",
+      "type": "ui",
+      "target_area": "IndicatorChart watermark",
+      "global_time_start": 654,
+      "global_time_end": 702,
+      "global_time_label": "10:54–11:42",
+      "video_part": "НА правки 4_3",
+      "local_time_start": 26,
+      "local_time_end": 75,
+      "local_time_label": "00:26–01:15",
+      "speaker": "A/B (постановщик + исполнитель)",
+      "quote": "«Ее надо поставить сверху ... чтобы ее трудно было вырезать»",
+      "context_before_after": [
+        "B: «я нам графику Forecast Economy подставил, чтобы ... если скринили»",
+        "A: «она почему-то закрыла. Ее надо поставить сверху ... чтобы ее трудно было вырезать»",
+        "A: «здесь можно просто принт-скрин и ... ее отрезать»",
+        "B: «могу ... сделать желтой под свет этого дизайна»"
+      ],
+      "problem": "Водяной знак расположен так, что его легко обрезать на скриншоте; при этом он может нарушать ось/подписи.",
+      "requested_change": "Переместить watermark выше/внутрь области графика так, чтобы его было сложнее вырезать и чтобы он не ломал ось; рассмотреть цвет в тон дизайна.",
+      "implementation_hint": "Проверять абсолютное позиционирование или кастомный слой watermark в `IndicatorChart`; обязательно визуально проверить на нескольких графиках.",
+      "confidence": "high",
+      "why_this_is_a_real_edit": "Есть прямое «надо поставить» и объяснение цели.",
+      "frame_need": "5",
+      "frame_moments": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 26, "global_time_sec": 654, "purpose": "текущий watermark"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 41, "global_time_sec": 669, "purpose": "показ, что watermark можно обрезать"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 59, "global_time_sec": 686, "purpose": "обсуждение цвета/оси"}
+      ],
+      "evidence_mentions": [
+        {"global_time_label": "11:00–11:42", "video_part": "НА правки 4_3", "quote": "«поставить сверху ... чтобы ее трудно было вырезать»"}
+      ]
+    },
+    {
+      "id": "v4_edit_005",
+      "title": "Разобраться с правыми осями и пропадающими датами на графике",
+      "status": "needs_review",
+      "priority": "medium",
+      "type": "ui",
+      "target_area": "IndicatorChart axes: right axis, XAxis ticks/date labels",
+      "global_time_start": 641,
+      "global_time_end": 723,
+      "global_time_label": "10:41–12:03",
+      "video_part": "НА правки 4_3",
+      "local_time_start": 13,
+      "local_time_end": 96,
+      "local_time_label": "00:13–01:36",
+      "speaker": "A/B",
+      "quote": "«что-то у нас ... с этими ...» / «А, с правыми»; «пропущены даты как будто бы ... даже если убираешь прогноз, то это не помогает»",
+      "context_before_after": [
+        "A: «И вот что-то у нас, видишь, с этими...»",
+        "B: «А, с правыми»",
+        "A: «может быть её вот сюда поставить, да, на ось»",
+        "A: «Ну, то есть пропущены даты как будто бы»",
+        "A: «даже если убираешь прогноз, то это не помогает»"
+      ],
+      "problem": "На графике, вероятно, есть проблема не только с датами снизу, но и с правой осью/правыми подписями. Транскрипция шумная («осветами»/«с правыми»), поэтому без кадра нельзя разделить это на точные баги.",
+      "requested_change": "После нарезки кадров определить: что именно не так с правой осью/подписями, почему пропадают даты, влияет ли watermark/forecast layer; затем поправить layout осей.",
+      "implementation_hint": "Проверить YAxis orientation='right', XAxis interval/minTickGap/margins, ResponsiveContainer width, кастомный watermark layer.",
+      "confidence": "medium",
+      "why_this_is_a_real_edit": "Обозначен конкретный визуальный дефект, но без кадра нельзя понять точное место и механизм.",
+      "frame_need": "5",
+      "frame_moments": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 13, "global_time_sec": 641, "purpose": "первое указание на проблему с правыми осями/подписями"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 78, "global_time_sec": 706, "purpose": "показ пропущенных дат"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 88, "global_time_sec": 716, "purpose": "проверка без прогноза"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 94, "global_time_sec": 722, "purpose": "нижняя ось/overlap"}
+      ],
+      "evidence_mentions": [
+        {"global_time_label": "10:41–10:47", "video_part": "НА правки 4_3", "quote": "«что-то у нас ... с этими...» / «А, с правыми»"},
+        {"global_time_label": "11:46–12:03", "video_part": "НА правки 4_3", "quote": "«пропущены даты ... прогноз ... не помогает»"}
+      ]
+    },
+    {
+      "id": "v4_edit_006",
+      "title": "Не плодить карточки: производные ряды показывать внутри одной карточки",
+      "status": "actionable",
+      "priority": "high",
+      "type": "ux",
+      "target_area": "Indicator cards/detail views for housing prices, PPI, GDP, CPI-family",
+      "global_time_start": 731,
+      "global_time_end": 1005,
+      "global_time_label": "12:11–16:45",
+      "video_part": "НА правки 4_3",
+      "local_time_start": 103,
+      "local_time_end": 377,
+      "local_time_label": "01:43–06:17",
+      "speaker": "A (постановщик)",
+      "quote": "«давай ... сделаем это все в одной карточке ... Только не в разных карточках ... будет дохренища карточек и тяжело будет ориентироваться»",
+      "context_before_after": [
+        "A: «по поводу цены на первичное жилье ... сделаем это все в одной карточке»",
+        "A: «добавить ... изменение год к году»",
+        "A: «Только не в разных карточках ... будет дохренища карточек»",
+        "A: «индекс цен-производитель, тоже изменение год-году, сделаем кнопочку внутри»"
+      ],
+      "problem": "Производные показатели создают слишком много отдельных карточек и усложняют навигацию.",
+      "requested_change": "Для близких рядов делать один индикатор/карточку с внутренними режимами: индекс, изменение год-к-году, квартал-к-кварталу и т.п.; явно применить к ценам на жильё и индексу цен производителей.",
+      "implementation_hint": "Смотреть архитектуру indicator detail view modes/tabs; не плодить отдельные tiles для derived variants, если это один экономический показатель.",
+      "confidence": "high",
+      "why_this_is_a_real_edit": "Есть несколько прямых формулировок «сделаем в одной карточке», «сделаем кнопочку внутри», с мотивом UX.",
+      "frame_need": "10+",
+      "frame_moments": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 103, "global_time_sec": 731, "purpose": "цены на жильё как пример одной карточки"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 210, "global_time_sec": 838, "purpose": "добавление индекса/YoY кнопкой"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 220, "global_time_sec": 848, "purpose": "аргумент против множества карточек"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 339, "global_time_sec": 967, "purpose": "PPI YoY кнопка внутри"}
+      ],
+      "evidence_mentions": [
+        {"global_time_label": "12:11–12:28", "video_part": "НА правки 4_3", "quote": "«цены на первичное жилье ... сделаем это все в одной карточке»"},
+        {"global_time_label": "13:56–14:19", "video_part": "НА правки 4_3", "quote": "«добавить ... изменение год к году ... Только не в разных карточках»"},
+        {"global_time_label": "16:07–16:28", "video_part": "НА правки 4_3", "quote": "«индекс цен-производитель ... изменение год-году ... кнопочку внутри»"}
+      ]
+    },
+    {
+      "id": "v4_edit_007",
+      "title": "Уточнить терминологию и режимы для ИПЦ",
+      "status": "actionable",
+      "priority": "medium",
+      "type": "content",
+      "target_area": "/indicator/cpi and CPI subcategory tabs/labels",
+      "global_time_start": 799,
+      "global_time_end": 869,
+      "global_time_label": "13:19–14:29",
+      "video_part": "НА правки 4_3",
+      "local_time_start": 172,
+      "local_time_end": 242,
+      "local_time_label": "02:52–04:02",
+      "speaker": "A",
+      "quote": "«написать ... индекс потребительских цен ... вместо ИПЦ ... и вот здесь еще добавить сам индекс ... еще одну кнопочку»",
+      "context_before_after": [
+        "A: «это же одно и то же, просто разные агрегаты»",
+        "A: «написать ... индекс потребительских цен ... вместо ИПЦ»",
+        "A: «добавить сам индекс ... еще одну кнопочку»",
+        "A: «добавить ... изменение год к году»"
+      ],
+      "problem": "Сокращение «ИПЦ» и разнесение агрегатов по разным сущностям ухудшает понятность; нужен явный режим индекса/изменения.",
+      "requested_change": "Писать полное «индекс потребительских цен» там, где это важно для пользователя/SEO; добавить режим/кнопку для самого индекса и YoY внутри той же карточки, не отдельными карточками.",
+      "implementation_hint": "Проверять labels/tabs/methodology в `IndicatorDetail` и SEO/content registry для CPI-family.",
+      "confidence": "medium",
+      "why_this_is_a_real_edit": "Формулировка конкретная, но часть зависит от того, какой именно экран показывали; нужны кадры для точного placement.",
+      "frame_need": "5",
+      "frame_moments": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 172, "global_time_sec": 799, "purpose": "место, где написано ИПЦ"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 196, "global_time_sec": 824, "purpose": "куда добавить кнопку индекса"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 209, "global_time_sec": 837, "purpose": "режим год-к-году"}
+      ],
+      "evidence_mentions": [
+        {"global_time_label": "13:19–14:06", "video_part": "НА правки 4_3", "quote": "«индекс потребительских цен ... вместо ИПЦ ... добавить сам индекс ... кнопочку»"}
+      ]
+    },
+    {
+      "id": "v4_edit_008",
+      "title": "Выключать прогноз там, где он заявлен, но не показывается",
+      "status": "actionable",
+      "priority": "medium",
+      "type": "bug",
+      "target_area": "Forecast availability toggle on newly added indicators",
+      "global_time_start": 767,
+      "global_time_end": 780,
+      "global_time_label": "12:47–13:00",
+      "video_part": "НА правки 4_3",
+      "local_time_start": 139,
+      "local_time_end": 153,
+      "local_time_label": "02:19–02:33",
+      "speaker": "A/B",
+      "quote": "«прогнозика, хотя он показан, что он типа есть, да, но его на самом деле он не показывает»",
+      "context_before_after": [
+        "A: «Мы ... из него же берем вот эти изменения год к году»",
+        "A: «прогнозика ... показан, что он типа есть ... но ... не показывает»",
+        "B: «из-за того, что ... добавил, к нему не применилась автоматическая ... выключение»",
+        "B: «Выключение»"
+      ],
+      "problem": "UI показывает доступность прогноза для нового/derived индикатора, но фактически прогноз не отображается.",
+      "requested_change": "Автоматически disabled/скрывать прогноз для индикаторов без forecast data; не вводить пользователя в заблуждение.",
+      "implementation_hint": "Проверить условия `canForecast`, `forecast_steps`, наличие forecast response и derived/new indicator flags.",
+      "confidence": "high",
+      "why_this_is_a_real_edit": "Баг назван и причина исполнителем сразу определена: не применилось автоматическое выключение.",
+      "frame_need": "3",
+      "frame_moments": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 139, "global_time_sec": 767, "purpose": "показ включенного прогноза без данных"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 145, "global_time_sec": 773, "purpose": "подтверждение причины"}
+      ],
+      "evidence_mentions": [
+        {"global_time_label": "12:47–13:00", "video_part": "НА правки 4_3", "quote": "«показан ... но ... не показывает» / «не применилась ... выключение»"}
+      ]
+    },
+    {
+      "id": "v4_edit_009",
+      "title": "Годовая/квартальная инфляция подкатегорий не должна брать общий ИПЦ",
+      "status": "actionable",
+      "priority": "high",
+      "type": "data",
+      "target_area": "CPI subcategories: services/food/nonfood annual and quarterly derived values",
+      "global_time_start": 1021,
+      "global_time_end": 1142,
+      "global_time_label": "17:01–19:02",
+      "video_part": "НА правки 4_3",
+      "local_time_start": 394,
+      "local_time_end": 514,
+      "local_time_label": "06:34–08:35",
+      "speaker": "A/B",
+      "quote": "«Открываем годовую, тут 9,5 ... что-то не совпадает ... она у тебя по факту годовая подтянулась из общей ИПЦ ... распространилась ... на все»",
+      "context_before_after": [
+        "A: «январь 25-го ... за год должно быть 11,5»",
+        "A: «Открываем годовую, тут 9,5, то есть что-то не совпадает»",
+        "A: «Она как будто всегда одна ... годовая подтянулась из общей ИПЦ»",
+        "A: «квартальная тоже ... посмотрев этот моментик»",
+        "A: «побыстрее исправить ... пользователь заходит явно видно»"
+      ],
+      "problem": "Для услуг/продовольствия/непродовольствия годовая, а вероятно и квартальная вкладки используют общий ряд ИПЦ, а не ряд конкретной подкатегории.",
+      "requested_change": "Пересчитать/подключить annual и quarterly derived views отдельно для каждой CPI subcategory; проверить совпадение с месячными значениями и декабрём соответствующего года.",
+      "implementation_hint": "Проверить CalculationEngine / forecast propagation / indicator code mapping для `cpi-food`, `cpi-nonfood`, `cpi-services`, annual/quarterly endpoints.",
+      "confidence": "high",
+      "why_this_is_a_real_edit": "Это явно диагностированный пользовательский баг с числовой сверкой и прямой просьбой исправить быстрее.",
+      "frame_need": "10+",
+      "frame_moments": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 400, "global_time_sec": 1028, "purpose": "показ значения услуг/подкатегории"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 437, "global_time_sec": 1065, "purpose": "сравнение годовой вкладки"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 482, "global_time_sec": 1110, "purpose": "вывод: подтянулась общая ИПЦ"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 502, "global_time_sec": 1130, "purpose": "просьба быстрее исправить"}
+      ],
+      "evidence_mentions": [
+        {"global_time_label": "17:35–17:49", "video_part": "НА правки 4_3", "quote": "«за год должно быть 11,5 ... годовая, тут 9,5 ... не совпадает»"},
+        {"global_time_label": "18:24–18:41", "video_part": "НА правки 4_3", "quote": "«Она как будто всегда одна ... подтянулась из общей ИПЦ ... на все»"},
+        {"global_time_label": "18:41–19:02", "video_part": "НА правки 4_3", "quote": "«квартальная тоже ... побыстрее исправить»"},
+        {"global_time_label": "23:27–23:38", "video_part": "НА правки 4_3", "quote": "«первоочередное ... инфляции ... годовые и квартальные»"},
+        {"global_time_label": "41:30–41:37", "video_part": "НА правки 4_3", "quote": "«постарайся, пожалуйста, быстрее ... баг поправить»"}
+      ]
+    },
+    {
+      "id": "v4_edit_010",
+      "title": "ВВП: объединить варианты и добавить реальный ВВП",
+      "status": "actionable",
+      "priority": "medium",
+      "type": "data",
+      "target_area": "GDP category and GDP indicator detail",
+      "global_time_start": 1184,
+      "global_time_end": 1230,
+      "global_time_label": "19:44–20:30",
+      "video_part": "НА правки 4_3",
+      "local_time_start": 556,
+      "local_time_end": 602,
+      "local_time_label": "09:16–10:02",
+      "speaker": "A/B",
+      "quote": "«ВВП номинальный ... рост квартал-квартал, год-году, все в одну карточку ... И добавить ВВП реальный, что важнее»",
+      "context_before_after": [
+        "A: «Следующий блок у нас ВВП»",
+        "A: «ВВП номинальный ... рост квартал-квартал, год-году, все в одну карточку надо»",
+        "A: «И добавить ВВП реальный, что важнее»",
+        "B: «Добавил, ой, написал»"
+      ],
+      "problem": "GDP представлен слишком узко номинальным значением; производные q/q и y/y не должны жить отдельными карточками, а real GDP важнее номинального для пользователя.",
+      "requested_change": "Собрать GDP nominal/qoq/yoy в одну карточку/детальную страницу и добавить real GDP как ключевой показатель/режим или отдельный индикатор по обоснованной модели.",
+      "implementation_hint": "Проверить seed/indicator taxonomy для GDP, source availability for real GDP, detail tabs for qoq/yoy.",
+      "confidence": "high",
+      "why_this_is_a_real_edit": "Есть прямое «добавить ВВП реальный» и «все в одну карточку».",
+      "frame_need": "5",
+      "frame_moments": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 556, "global_time_sec": 1184, "purpose": "показ текущего блока ВВП"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 583, "global_time_sec": 1211, "purpose": "номинальный vs реальный ВВП"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 595, "global_time_sec": 1223, "purpose": "фиксация исполнителем"}
+      ],
+      "evidence_mentions": [
+        {"global_time_label": "19:44–20:20", "video_part": "НА правки 4_3", "quote": "«рост квартал-квартал, год-году, все в одну карточку ... добавить ВВП реальный»"}
+      ]
+    },
+    {
+      "id": "v4_edit_011",
+      "title": "Удлинить исторический ряд численности населения",
+      "status": "actionable",
+      "priority": "medium",
+      "type": "data",
+      "target_area": "Population indicator source/history depth",
+      "global_time_start": 1258,
+      "global_time_end": 1297,
+      "global_time_label": "20:58–21:37",
+      "video_part": "НА правки 4_3",
+      "local_time_start": 630,
+      "local_time_end": 669,
+      "local_time_label": "10:30–11:06",
+      "speaker": "A/B",
+      "quote": "«численность населения, почему она с 2010 года? ... с 1897 года есть ... должно быть преимущество ... максимально длинные ряды ... с 1970-го хотя бы»",
+      "context_before_after": [
+        "A: «Демография как будто бы странно...»",
+        "A: «численность населения, почему она с 2010 года?»",
+        "A: «с 1897 года есть ... начиная с 70-го года»",
+        "A: «должны быть длинные, максимально длинные ряды»",
+        "B: «еще более исторические»"
+      ],
+      "problem": "История населения начинается только с 2010 года, хотя доступен более длинный ряд; это снижает ценность продукта.",
+      "requested_change": "Расширить ряд населения минимум до 1970 года, по возможности до 1897 с корректной частотой/качеством источника.",
+      "implementation_hint": "Использовать Росстат historical population XLSX; проверить annual frequency, gaps and source notes before ingest.",
+      "confidence": "high",
+      "why_this_is_a_real_edit": "Прямая постановка проблемы и требования к глубине ряда.",
+      "frame_need": "3",
+      "frame_moments": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 630, "global_time_sec": 1258, "purpose": "показ населения с 2010"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 643, "global_time_sec": 1270, "purpose": "аргумент про 1897/1970"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 657, "global_time_sec": 1285, "purpose": "требование максимально длинных рядов"}
+      ],
+      "evidence_mentions": [
+        {"global_time_label": "20:58–21:37", "video_part": "НА правки 4_3", "quote": "«с 2010 года ... с 1897 года есть ... с 1970-го хотя бы»"}
+      ]
+    },
+    {
+      "id": "v4_edit_012",
+      "title": "Убрать OLS и технические названия моделей из пользовательского UI",
+      "status": "actionable",
+      "priority": "medium",
+      "type": "content",
+      "target_area": "Forecast labels, methodology, SEO/user-facing copy",
+      "global_time_start": 2257,
+      "global_time_end": 2284,
+      "global_time_label": "37:37–38:04",
+      "video_part": "НА правки 4_3",
+      "local_time_start": 1629,
+      "local_time_end": 1656,
+      "local_time_label": "27:09–27:36",
+      "speaker": "A/E",
+      "quote": "«убери вот этот OLS ... везде ... чтобы вот этих всяких ОЛС ... многооконные там однооконные ... просто чтобы ничего не было написано»",
+      "context_before_after": [
+        "A: «сколько вот мы вносим правок...»",
+        "A: «А ещё убери ... OLS ... вообще ... везде»",
+        "A: «чтобы ... ОЛС ... многооконные ... однооконные ... ничего не было написано»",
+        "A: «Когда прогноз пока недоступен, хорошо»"
+      ],
+      "problem": "Пользовательский интерфейс показывает технические названия моделей/подходов, которые не нужны аудитории и вредят восприятию.",
+      "requested_change": "Удалить OLS и технические термины из UI/SEO/методологии; если прогноз недоступен, писать простое сообщение без внутренней кухни.",
+      "implementation_hint": "Поиск по user-facing строкам forecast model names, methodology text, SEO descriptions; заменить на продуктовые формулировки.",
+      "confidence": "high",
+      "why_this_is_a_real_edit": "Прямой императив «убери ... везде».",
+      "frame_need": "3",
+      "frame_moments": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 1629, "global_time_sec": 2257, "purpose": "место с OLS"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1640, "global_time_sec": 2268, "purpose": "требование убрать везде"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1653, "global_time_sec": 2281, "purpose": "пример правильного текста про недоступный прогноз"}
+      ],
+      "evidence_mentions": [
+        {"global_time_label": "37:37–38:04", "video_part": "НА правки 4_3", "quote": "«убери ... OLS ... везде»"}
+      ]
+    },
+    {
+      "id": "v4_edit_013",
+      "title": "Переименовать кредитные карточки в понятные SEO-названия",
+      "status": "actionable",
+      "priority": "low",
+      "type": "seo",
+      "target_area": "Credit-rate indicator cards/titles/SEO labels",
+      "global_time_start": 2287,
+      "global_time_end": 2331,
+      "global_time_label": "38:07–38:51",
+      "video_part": "НА правки 4_3",
+      "local_time_start": 1660,
+      "local_time_end": 1703,
+      "local_time_label": "27:40–28:23",
+      "speaker": "A/E",
+      "quote": "«кредиты ... давай так и оставим ... только давай не юри, там юрлицам ... для поисковика лучше»",
+      "context_before_after": [
+        "A: «кредиты, ты ... добавил кредиты»",
+        "A: «давай так и оставим»",
+        "A: «только давай не юри, там юрлицам ... физик...»",
+        "A: «для поисковика лучше»"
+      ],
+      "problem": "Сокращения/разговорные labels кредитных индикаторов менее понятны пользователю и поисковику.",
+      "requested_change": "Использовать явные формулировки вроде «кредиты юрлицам» / «кредиты физлицам» вместо неочевидных сокращений.",
+      "implementation_hint": "Проверить `name`, `description`, SEO title/description for credit-rate-* indicators.",
+      "confidence": "medium",
+      "why_this_is_a_real_edit": "Есть явное «только давай не...» и объяснение SEO-мотива.",
+      "frame_need": "3",
+      "frame_moments": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 1660, "global_time_sec": 2287, "purpose": "карточки кредитов"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1672, "global_time_sec": 2299, "purpose": "пример непонятного label"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1698, "global_time_sec": 2326, "purpose": "SEO-обоснование"}
+      ],
+      "evidence_mentions": [
+        {"global_time_label": "38:07–38:39", "video_part": "НА правки 4_3", "quote": "«не юри ... юрлицам ... для поисковика лучше»"}
+      ]
+    }
+  ],
+  "unclear_candidates": [
+    {
+      "id": "v4_edit_014",
+      "title": "Проверить аномалию Метрики/Вебвизора для прямых и поисковых визитов",
+      "status": "needs_review",
+      "priority": "medium",
+      "type": "analytics",
+      "target_area": "Yandex Metrika / Webvisor / tracking script",
+      "global_time_start": 343,
+      "global_time_end": 526,
+      "global_time_label": "05:43–08:46",
+      "video_part": "НА правки 4_2",
+      "local_time_start": 33,
+      "local_time_end": 216,
+      "local_time_label": "00:33–03:36",
+      "speaker": "A/B",
+      "quote": "«прямой заход ... 6 просмотров, 18 минут, но ... ничего не показывается ... поисковые системы ... ноль, пять секунд ... не может быть такого»",
+      "context_before_after": [
+        "A: «заходы идут по рекламе ... нормально отображаются»",
+        "A: «прямой заход ... ничего не показывается»",
+        "A: «то же самое ... с поисковых систем»",
+        "A: «все эти люди не посмотрели ... больше одной страницы, больше пяти секунд. Но это просто не может быть такого»",
+        "B: «Я посмотрю...»"
+      ],
+      "problem": "Метрика/Вебвизор по рекламе выглядит нормально, но по direct/search часто показывает 0 секунд или нет записи, что выглядит неправдоподобно.",
+      "requested_change": "Проверить, это реальная проблема трекинга/SPA/consent/webvisor или особенность Метрики/источников трафика; если баг, исправить сбор аналитики.",
+      "implementation_hint": "Сравнить Metrika counters settings, Webvisor settings, SPA page hit tracking, referrer/source attribution, CSP/adblock effects. Нужен просмотр интерфейса и данные.",
+      "confidence": "medium",
+      "why_this_is_a_real_edit": "Есть устойчивое наблюдение проблемы и «Я посмотрю», но без доступа к кадрам/Метрике нельзя доказать, что это кодовая правка.",
+      "frame_need": "10+",
+      "frame_moments": [
+        {"video_part": "НА правки 4_2", "local_time_sec": 75, "global_time_sec": 385, "purpose": "пример direct user"},
+        {"video_part": "НА правки 4_2", "local_time_sec": 98, "global_time_sec": 408, "purpose": "6 просмотров/18 минут без записи"},
+        {"video_part": "НА правки 4_2", "local_time_sec": 130, "global_time_sec": 440, "purpose": "поисковый трафик 0/5 секунд"},
+        {"video_part": "НА правки 4_2", "local_time_sec": 165, "global_time_sec": 475, "purpose": "месячный срез 102 пользователя"}
+      ],
+      "evidence_mentions": [
+        {"global_time_label": "06:29–07:55", "video_part": "НА правки 4_2", "quote": "«58 раз заходил ... 6 просмотров, 18 минут ... ничего не показывается ... поисковые системы»"},
+        {"global_time_label": "07:48–07:58", "video_part": "НА правки 4_2", "quote": "«не посмотрели ... больше одной страницы ... не может быть такого»"}
+      ]
+    },
+    {
+      "id": "v4_edit_015",
+      "title": "Разобраться, какие именно демографические индексы добавить",
+      "status": "needs_review",
+      "priority": "low",
+      "type": "unclear",
+      "target_area": "Demographics category",
+      "global_time_start": 1244,
+      "global_time_end": 1255,
+      "global_time_label": "20:44–20:55",
+      "video_part": "НА правки 4_3",
+      "local_time_start": 617,
+      "local_time_end": 627,
+      "local_time_label": "10:17–10:25",
+      "speaker": "A",
+      "quote": "«Демография как будто бы странно ... а не заводишь ли вот индексы добавить? Вот индексы эти написал, да?»",
+      "context_before_after": [
+        "A: «допустим, число рождения, расходы бюджета»",
+        "A: «Демография как будто бы странно...»",
+        "A: «индексы добавить?»",
+        "A: «численность населения, почему она с 2010 года?»"
+      ],
+      "problem": "Есть замечание про демографические «индексы», но по тексту не видно, какие именно элементы показывались на экране.",
+      "requested_change": "После просмотра кадров понять, какие индексы/режимы имелись в виду и являются ли они отдельной задачей или частью длинного ряда населения.",
+      "implementation_hint": "Нужен кадр category/demographics или compare selection в этот момент; без него не фиксировать как confirmed.",
+      "confidence": "low",
+      "why_this_is_a_real_edit": "Есть вопрос на добавление, но контекст зависит от экрана и не подтверждён дальнейшей конкретизацией.",
+      "frame_need": "5",
+      "frame_moments": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 617, "global_time_sec": 1244, "purpose": "экран демографии"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 625, "global_time_sec": 1252, "purpose": "слова про индексы"}
+      ],
+      "evidence_mentions": [
+        {"global_time_label": "20:44–20:55", "video_part": "НА правки 4_3", "quote": "«Демография ... индексы добавить?»"}
+      ]
+    },
+    {
+      "id": "v4_edit_016",
+      "title": "Проверить индексацию Яндекса после sitemap/title/description фиксов",
+      "status": "needs_review",
+      "priority": "high",
+      "type": "seo",
+      "target_area": "Yandex indexing, sitemap, rendered SEO HTML",
+      "global_time_start": 162,
+      "global_time_end": 1933,
+      "global_time_label": "02:42–32:13",
+      "video_part": "НА правки 4_1 / НА правки 4_3",
+      "local_time_start": 162,
+      "local_time_end": 309,
+      "local_time_label": "НА правки 4_1 local 02:42–05:09; НА правки 4_3 local 11:35–21:43",
+      "speaker": "A/B",
+      "quote": "«он добавляет, удаляет что-то»; «Google нас ... показывает ... А Яндекс ... вообще не хочет нас индексировать ... description, title ... это надо им передавать»; «в Яндексе ... 20-30, ничего не найдешь»",
+      "context_before_after": [
+        "B: «он добавляет, удаляет что-то»",
+        "A: «Google нас хотя показывает»",
+        "A: «А Яндекс ... вообще не хочет нас индексировать»",
+        "B: «я подключил напрямую API ... поставил в переобход»",
+        "A: «description, title ... это надо им передавать»",
+        "A: «нужно чтобы ... робот ... сайт мэп ... подгрузил новый»",
+        "A: «в Яндексе ... можно искать 20-30, ничего не найдешь»",
+        "A: «Яндекс индекс ... 8, индекс Google 62»"
+      ],
+      "problem": "Яндекс нестабилен: в начале обсуждают, что страницы то добавляются, то удаляются; позже Google видит десятки страниц, а Яндекс видит мало/почти не показывает сайт в поиске. Возможно, ещё не прошёл переобход, либо Яндекс не получает нужные SEO-сигналы.",
+      "requested_change": "После переобхода проверить Яндекс: индексируемые страницы, sitemap, title/description, наличие полноценного HTML. Исправлять только подтверждённые технические пробелы.",
+      "implementation_hint": "Использовать Yandex Webmaster, HTTP проверки с UA YandexBot, sitemap recrawl status, SEO audit. Важно не путать stale crawl с текущим кодом.",
+      "confidence": "medium",
+      "why_this_is_a_real_edit": "Есть SEO-риск и конкретные технические сигналы, но часть уже была поставлена на переобход и может требовать ожидания, а не кода.",
+      "frame_need": "10+",
+      "frame_moments": [
+        {"video_part": "НА правки 4_1", "local_time_sec": 162, "global_time_sec": 162, "purpose": "Yandex Webmaster: добавляет/удаляет страницы"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 700, "global_time_sec": 1328, "purpose": "Google Search Console/индексация"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 742, "global_time_sec": 1370, "purpose": "Яндекс не индексирует"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 900, "global_time_sec": 1528, "purpose": "title/description/keywords"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 965, "global_time_sec": 1593, "purpose": "sitemap/robot recrawl"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1248, "global_time_sec": 1876, "purpose": "Yandex search examples: сайт трудно найти"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1303, "global_time_sec": 1931, "purpose": "Yandex index 8 vs Google 62"}
+      ],
+      "evidence_mentions": [
+        {"global_time_label": "02:42–03:34", "video_part": "НА правки 4_1", "quote": "«он добавляет, удаляет что-то ... то добавляет, то потом удаляет»"},
+        {"global_time_label": "22:05–22:59", "video_part": "НА правки 4_3", "quote": "«Google ... показывает ... Яндекс ... не хочет нас индексировать»"},
+        {"global_time_label": "25:27–25:32", "video_part": "НА правки 4_3", "quote": "«description, title ... это надо им передавать»"},
+        {"global_time_label": "26:05–26:42", "video_part": "НА правки 4_3", "quote": "«Google индексация 62 ... Яндекс 3 ... сайт мэп ... подгрузил новый»"},
+        {"global_time_label": "31:15–32:13", "video_part": "НА правки 4_3", "quote": "«в Яндексе ... искать 20-30, ничего не найдешь» / «Яндекс индекс ... 8, индекс Google 62»"}
+      ]
+    },
+    {
+      "id": "v4_edit_023",
+      "title": "Уточнить сравнение первичного и вторичного жилья",
+      "status": "needs_review",
+      "priority": "low",
+      "type": "forecast",
+      "target_area": "Housing prices: primary/secondary indicators and forecasts",
+      "global_time_start": 923,
+      "global_time_end": 1176,
+      "global_time_label": "15:23–19:36",
+      "video_part": "НА правки 4_3",
+      "local_time_start": 296,
+      "local_time_end": 548,
+      "local_time_label": "04:56–09:08",
+      "speaker": "A/B",
+      "quote": "«цены на жилье я тебе присылал, надо будет их, кстати, посравнивать»; «на первичный и на вторичный у нас уже есть все ... прогноза»",
+      "context_before_after": [
+        "A: «вот цены на жилье я тебе присылал, надо будет их, кстати, посравнивать»",
+        "A: «индекс цен производителей ... я его сделал»",
+        "A: «На первичный и на вторичный у нас уже есть все»",
+        "B: «Хорошо, да»"
+      ],
+      "problem": "Есть отдельный намёк на сравнение первичного/вторичного жилья и их прогнозов, но по тексту не видно, это про ComparePage, внутренние режимы одной карточки или ручную сверку прогнозных файлов.",
+      "requested_change": "После кадров понять, что именно требуется: UI-сравнение primary vs secondary, проверка forecast consistency или добавление режима внутри housing-карточки.",
+      "implementation_hint": "Сверить с `v4_edit_006`: не создавать дубль карточек; если это UI, вероятно режим/compare внутри housing detail или ссылка в compare.",
+      "confidence": "medium",
+      "why_this_is_a_real_edit": "Фраза «надо будет ... посравнивать» звучит как задача, но объект действия неоднозначен без экрана.",
+      "frame_need": "3",
+      "frame_moments": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 296, "global_time_sec": 923, "purpose": "упоминание сравнения цен на жильё"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 541, "global_time_sec": 1169, "purpose": "первичный/вторичный уже есть"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 548, "global_time_sec": 1176, "purpose": "подтверждение/контекст"}
+      ],
+      "evidence_mentions": [
+        {"global_time_label": "15:23–15:28", "video_part": "НА правки 4_3", "quote": "«цены на жилье ... надо будет их ... посравнивать»"},
+        {"global_time_label": "19:22–19:36", "video_part": "НА правки 4_3", "quote": "«на первичный и на вторичный у нас уже есть все ... прогноза»"}
+      ]
+    }
+  ],
+  "backlog_items": [
+    {
+      "id": "v4_edit_017",
+      "title": "Кастомная прокрутка/выбор диапазона графика как у Investing",
+      "status": "backlog",
+      "priority": "low",
+      "type": "ux",
+      "target_area": "IndicatorChart range navigator / pan/zoom",
+      "global_time_start": 1677,
+      "global_time_end": 1875,
+      "global_time_label": "27:57–31:15",
+      "video_part": "НА правки 4_3",
+      "local_time_start": 1049,
+      "local_time_end": 1248,
+      "local_time_label": "17:29–20:48",
+      "speaker": "A/E",
+      "quote": "«добавить прокрутку графика влево-вправо ... как на инвестинге ... Короче, пока не надо ничего делать»",
+      "context_before_after": [
+        "A: «чтобы можно было менять кастомный ... три года ... хочется покрупнее»",
+        "A: «два бегунка ... смотреть кусок»",
+        "A: «добавить прокрутку графика влево-вправо»",
+        "A: «пока не надо ничего делать»"
+      ],
+      "problem": "Нужен более гибкий просмотр длинных рядов, но идея не дозрела и прямо отложена.",
+      "requested_change": "Не делать сейчас; сохранить как backlog: range navigator/brush/pan for charts.",
+      "implementation_hint": "В будущем оценить Recharts Brush или собственный range slider; проверить mobile UX.",
+      "confidence": "high",
+      "why_this_is_a_real_edit": "Это продуктовая идея, но фраза «пока не надо ничего делать» переводит её в backlog, не в текущую реализацию.",
+      "frame_need": "5",
+      "frame_moments": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 1090, "global_time_sec": 1718, "purpose": "пример Investing"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1135, "global_time_sec": 1763, "purpose": "движение диапазона"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1245, "global_time_sec": 1873, "purpose": "явное отложение"}
+      ],
+      "evidence_mentions": [
+        {"global_time_label": "28:51–29:30", "video_part": "НА правки 4_3", "quote": "«два бегунка ... прокрутку графика влево-вправо»"},
+        {"global_time_label": "31:13–31:15", "video_part": "НА правки 4_3", "quote": "«пока не надо ничего делать»"}
+      ]
+    },
+    {
+      "id": "v4_edit_018",
+      "title": "Пилот SEO-описания на странице индикатора",
+      "status": "backlog",
+      "priority": "medium",
+      "type": "seo",
+      "target_area": "Indicator detail pages: short analytical text block",
+      "global_time_start": 1939,
+      "global_time_end": 2236,
+      "global_time_label": "32:19–37:16",
+      "video_part": "НА правки 4_3",
+      "local_time_start": 1312,
+      "local_time_end": 1608,
+      "local_time_label": "21:52–26:48",
+      "speaker": "A/E",
+      "quote": "«ключевых слов нет это важно ... писать какое-нибудь короткое описание ... по всем индикаторам ... попробуем ... на инфляции ... четыре-пять строчек ... не надо сразу все деплоить»",
+      "context_before_after": [
+        "A: «ключевые слова ... очень плохо»",
+        "A: «короткое описание ... генерить ...»",
+        "A: «по всем индикаторам ... страницы текста нету»",
+        "A: «на инфляции попробуем ... четыре-пять строчек»",
+        "A: «не надо сразу все деплоить ... потихонечку масштабировать»"
+      ],
+      "problem": "Индикаторные страницы почти без текста и ключевых слов, поисковику сложно понять содержимое; это ухудшает SEO-доверие. В SEO-анализаторе также прозвучал слабый сигнал, что description может быть длинноват, но это названо менее критичным.",
+      "requested_change": "Сначала сделать/протестировать короткий аналитический блок на одном индикаторе, вероятно CPI/инфляция: 4–5 строк, обновление при обновлении индикатора, без массового деплоя до проверки. При пилоте отдельно проверить keywords coverage и длину/качество description.",
+      "implementation_hint": "Проектировать как content/SEO registry или generated insight block; учитывать freshness, anti-spam, ручную модерацию и дизайн placement над/под карточкой.",
+      "confidence": "high",
+      "why_this_is_a_real_edit": "Есть чёткая продуктовая гипотеза и пилотный процесс, но явный запрет на немедленный массовый rollout.",
+      "frame_need": "10+",
+      "frame_moments": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 1320, "global_time_sec": 1948, "purpose": "SEO analyzer: keywords not found"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1388, "global_time_sec": 2016, "purpose": "пример custom text"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1452, "global_time_sec": 2080, "purpose": "место на странице/4-5 строк"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1598, "global_time_sec": 2226, "purpose": "не деплоить сразу, масштабировать постепенно"}
+      ],
+      "evidence_mentions": [
+        {"global_time_label": "32:20–32:48", "video_part": "НА правки 4_3", "quote": "«ключевые слова ... не нашли ... важно» / «описание ... может быть поменьше надо сделать ... не так критично»"},
+        {"global_time_label": "33:08–34:15", "video_part": "НА правки 4_3", "quote": "«короткое описание ... по всем индикаторам ... страницы текста нету»"},
+        {"global_time_label": "34:40–35:23", "video_part": "НА правки 4_3", "quote": "«на инфляции попробуем ... четыре-пять строчек ... бустило SEO»"},
+        {"global_time_label": "37:07–37:16", "video_part": "НА правки 4_3", "quote": "«не надо сразу все деплоить ... масштабировать»"}
+      ]
+    },
+    {
+      "id": "v4_edit_019",
+      "title": "Дождаться/получить прогнозы по индексу цен производителей",
+      "status": "backlog",
+      "priority": "medium",
+      "type": "forecast",
+      "target_area": "PPI forecast data",
+      "global_time_start": 923,
+      "global_time_end": 2474,
+      "global_time_label": "15:23–41:52",
+      "video_part": "НА правки 4_3",
+      "local_time_start": 296,
+      "local_time_end": 1845,
+      "local_time_label": "04:56–31:25",
+      "speaker": "A/B",
+      "quote": "«индекс цен производителей ... я его сделал ... тебе еще не прислал»; «в ближайшее время тогда пришлю прогноз по индексам производителей»",
+      "context_before_after": [
+        "A: «индекс цен производителей ... я его сделал»",
+        "A: «но я тебе еще не прислал»",
+        "A: «сейчас закончим ... пришлю на индекс цен производителей»",
+        "A: «в ближайшее время ... пришлю прогноз по индексам производителей»"
+      ],
+      "problem": "Для PPI есть подготовленный прогноз у заказчика, но файл/данные ещё не переданы исполнителю.",
+      "requested_change": "Не реализовывать прогноз PPI без входного файла; после получения файла сверить формат, масштаб, горизонты и добавить по общей архитектуре прогнозов.",
+      "implementation_hint": "Зависимость от внешнего артефакта Никиты; добавить в next-agent summary как блокер/ожидаемый вход.",
+      "confidence": "high",
+      "why_this_is_a_real_edit": "Это не текущая правка без данных, но зафиксирован будущий forecast backlog с конкретной зависимостью.",
+      "frame_need": "1",
+      "frame_moments": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 296, "global_time_sec": 923, "purpose": "упоминание готового, но не отправленного PPI"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1840, "global_time_sec": 2468, "purpose": "финальное обещание прислать прогноз"}
+      ],
+      "evidence_mentions": [
+        {"global_time_label": "15:14–15:40", "video_part": "НА правки 4_3", "quote": "«индекс цен производителей ... сделал ... еще не прислал»"},
+        {"global_time_label": "41:46–41:52", "video_part": "НА правки 4_3", "quote": "«пришлю прогноз по индексам производителей»"}
+      ]
+    }
+  ],
+  "non_edits": [
+    {
+      "id": "v4_edit_020",
+      "title": "SEO source-code fix уже обсуждается как сделанный",
+      "status": "not_a_change",
+      "priority": "low",
+      "type": "seo",
+      "target_area": "SEO rendered source",
+      "global_time_start": 104,
+      "global_time_end": 265,
+      "global_time_label": "01:44–04:25",
+      "video_part": "НА правки 4_1",
+      "local_time_start": 104,
+      "local_time_end": 265,
+      "local_time_label": "01:44–04:25",
+      "speaker": "A/B",
+      "quote": "«я исправил, я полностью исправил SEO»; «Вот сейчас он отдает нормально»",
+      "context_before_after": [
+        "A: «полностью исправил SEO»",
+        "B: «когда заходишь на страницу ... source код ...»",
+        "B: «Вот сейчас он отдает нормально»",
+        "A: «сегодня исправил просто»"
+      ],
+      "problem": "Раньше source отдавал главную/неполный HTML, но в звонке проверяют, что сейчас нормализовалось.",
+      "requested_change": "Не считать самостоятельной новой правкой; использовать как контекст для SEO-проверок.",
+      "implementation_hint": "Если возникнут сомнения, проверять текущий HTTP HTML для human/YandexBot, но это не отдельный item из звонка.",
+      "confidence": "high",
+      "why_this_is_a_real_edit": "Не правка: участники говорят, что это уже исправлено и «сейчас хорошо».",
+      "frame_need": "1",
+      "frame_moments": [
+        {"video_part": "НА правки 4_1", "local_time_sec": 258, "global_time_sec": 258, "purpose": "проверка «отдает нормально»"}
+      ],
+      "evidence_mentions": [
+        {"global_time_label": "01:44–04:25", "video_part": "НА правки 4_1", "quote": "«полностью исправил SEO» / «сейчас он отдает нормально»"}
+      ]
+    },
+    {
+      "id": "v4_edit_021",
+      "title": "Цель роста органики и постоянных посетителей",
+      "status": "not_a_change",
+      "priority": "low",
+      "type": "analytics",
+      "target_area": "Product analytics / growth",
+      "global_time_start": 1434,
+      "global_time_end": 2370,
+      "global_time_label": "23:54–39:30",
+      "video_part": "НА правки 4_3",
+      "local_time_start": 806,
+      "local_time_end": 1742,
+      "local_time_label": "13:26–29:02",
+      "speaker": "A",
+      "quote": "«надо чтобы переходы по рекламе ... все меньше долю занимали ... костяк постоянных посетителей сформировался»",
+      "context_before_after": [
+        "A: «переходы с поисковых систем ... рекорд»",
+        "A: «переходы по рекламе ... меньше долю занимали»",
+        "A: «надо чтобы побольше таких было»",
+        "A: «костяк постоянных посетителей сформировался»"
+      ],
+      "problem": "Стратегическая цель роста retention/organic, но без конкретной UI/data правки в этом фрагменте.",
+      "requested_change": "Не превращать в кодовую задачу; учитывать как продуктовый критерий при SEO/content backlog.",
+      "implementation_hint": "Связать с аналитикой Метрики и SEO roadmap, не с немедленным PR.",
+      "confidence": "high",
+      "why_this_is_a_real_edit": "Это важный фон и критерий успеха, но не отдельное изменение сайта.",
+      "frame_need": "1",
+      "frame_moments": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 835, "global_time_sec": 1463, "purpose": "аналитика источников/retention"}
+      ],
+      "evidence_mentions": [
+        {"global_time_label": "23:54–25:06", "video_part": "НА правки 4_3", "quote": "«переходы по рекламе ... меньше ... возвращённые посетители»"},
+        {"global_time_label": "39:23–39:37", "video_part": "НА правки 4_3", "quote": "«костяк постоянных посетителей сформировался»"}
+      ]
+    },
+    {
+      "id": "v4_edit_022",
+      "title": "Организационная договорённость о следующей встрече",
+      "status": "not_a_change",
+      "priority": "low",
+      "type": "backlog",
+      "target_area": "Project coordination",
+      "global_time_start": 2388,
+      "global_time_end": 2610,
+      "global_time_label": "39:48–43:30",
+      "video_part": "НА правки 4_3",
+      "local_time_start": 1761,
+      "local_time_end": 1983,
+      "local_time_label": "29:21–33:02",
+      "speaker": "A/B/E",
+      "quote": "«давайте пятого ... в час-два»; «будем на связи»",
+      "context_before_after": [
+        "E: «когда у вас есть свободное время?»",
+        "A/B: «давайте пятого ... в час-два»",
+        "A: «будем ориентироваться»",
+        "A/B: «будем на связи»"
+      ],
+      "problem": "Не относится к сайту.",
+      "requested_change": "Не включать в implementation scope.",
+      "implementation_hint": "Можно учитывать как дедлайн/ритм следующего review, но не как правку.",
+      "confidence": "high",
+      "why_this_is_a_real_edit": "Это организационный разговор, не замечание по продукту.",
+      "frame_need": "1",
+      "frame_moments": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 1810, "global_time_sec": 2438, "purpose": "договорённость по встрече"}
+      ],
+      "evidence_mentions": [
+        {"global_time_label": "40:46–41:19", "video_part": "НА правки 4_3", "quote": "«давайте пятого ... час-два»"}
+      ]
+    }
+  ]
+}

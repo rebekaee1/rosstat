@@ -36,6 +36,8 @@ DATASET_URLS: dict[str, str] = {
 
 ROSSTAT_STATIC_URLS: dict[str, str] = {
     "popul_components": "https://rosstat.gov.ru/storage/mediabank/Popul%20components_1990+.xlsx",
+    "population_history": "https://rosstat.gov.ru/storage/mediabank/Popul_1897+.xlsx",
+    "gdp_quarterly": "https://rosstat.gov.ru/storage/mediabank/VVP_kvartal_s_1995-2025.xlsx",
     "age_groups": "https://rosstat.gov.ru/storage/mediabank/demo14.xlsx",
 }
 

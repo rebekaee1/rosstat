@@ -115,7 +115,14 @@ export function cn(...classes) {
  * MAINTENANCE: Update when adding new CPI-based indicators.
  */
 const CPI_INDEX_CODES = new Set([
-  'cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services', 'inflation-quarterly',
+  'cpi',
+  'cpi-food',
+  'cpi-nonfood',
+  'cpi-services',
+  'inflation-quarterly',
+  'cpi-food-quarterly',
+  'cpi-nonfood-quarterly',
+  'cpi-services-quarterly',
 ]);
 
 export function isCpiIndex(code) {

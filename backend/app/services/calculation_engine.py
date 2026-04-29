@@ -53,13 +53,13 @@ class CalculationEngine:
 calculation_engine = CalculationEngine()
 
 
-async def _compute_quarterly_inflation(db: AsyncSession) -> int:
-    """ИПЦ квартальный = произведение 3 месячных ИПЦ индексов → % к предыдущему кварталу."""
-    src_q = await db.execute(select(Indicator).where(Indicator.code == "cpi"))
+async def _compute_quarterly_cpi_index(db: AsyncSession, src_code: str, dst_code: str) -> int:
+    """Quarterly CPI index = product of 3 monthly CPI indices, stored as 100.x."""
+    src_q = await db.execute(select(Indicator).where(Indicator.code == src_code))
     src = src_q.scalar_one_or_none()
     if not src:
         return 0
-    dst_q = await db.execute(select(Indicator).where(Indicator.code == "inflation-quarterly"))
+    dst_q = await db.execute(select(Indicator).where(Indicator.code == dst_code))
     dst = dst_q.scalar_one_or_none()
     if not dst:
         return 0
@@ -101,13 +101,18 @@ async def _compute_quarterly_inflation(db: AsyncSession) -> int:
     return added
 
 
-async def _compute_annual_inflation(db: AsyncSession) -> int:
-    """Годовая инфляция = произведение 12 месячных ИПЦ → % к аналогичному месяцу прошлого года."""
-    src_q = await db.execute(select(Indicator).where(Indicator.code == "cpi"))
+async def _compute_quarterly_inflation(db: AsyncSession) -> int:
+    """ИПЦ квартальный = произведение 3 месячных ИПЦ индексов → индекс 100.x."""
+    return await _compute_quarterly_cpi_index(db, "cpi", "inflation-quarterly")
+
+
+async def _compute_annual_cpi_inflation(db: AsyncSession, src_code: str, dst_code: str) -> int:
+    """Annual CPI inflation = product of 12 monthly CPI indices → percent change."""
+    src_q = await db.execute(select(Indicator).where(Indicator.code == src_code))
     src = src_q.scalar_one_or_none()
     if not src:
         return 0
-    dst_q = await db.execute(select(Indicator).where(Indicator.code == "inflation-annual"))
+    dst_q = await db.execute(select(Indicator).where(Indicator.code == dst_code))
     dst = dst_q.scalar_one_or_none()
     if not dst:
         return 0
@@ -153,6 +158,35 @@ async def _compute_annual_inflation(db: AsyncSession) -> int:
     if added:
         await db.flush()
     return added
+
+
+async def _compute_annual_inflation(db: AsyncSession) -> int:
+    """Годовая инфляция = произведение 12 месячных ИПЦ → % к аналогичному месяцу прошлого года."""
+    return await _compute_annual_cpi_inflation(db, "cpi", "inflation-annual")
+
+
+async def _compute_cpi_food_quarterly(db: AsyncSession) -> int:
+    return await _compute_quarterly_cpi_index(db, "cpi-food", "cpi-food-quarterly")
+
+
+async def _compute_cpi_food_annual(db: AsyncSession) -> int:
+    return await _compute_annual_cpi_inflation(db, "cpi-food", "cpi-food-annual")
+
+
+async def _compute_cpi_nonfood_quarterly(db: AsyncSession) -> int:
+    return await _compute_quarterly_cpi_index(db, "cpi-nonfood", "cpi-nonfood-quarterly")
+
+
+async def _compute_cpi_nonfood_annual(db: AsyncSession) -> int:
+    return await _compute_annual_cpi_inflation(db, "cpi-nonfood", "cpi-nonfood-annual")
+
+
+async def _compute_cpi_services_quarterly(db: AsyncSession) -> int:
+    return await _compute_quarterly_cpi_index(db, "cpi-services", "cpi-services-quarterly")
+
+
+async def _compute_cpi_services_annual(db: AsyncSession) -> int:
+    return await _compute_annual_cpi_inflation(db, "cpi-services", "cpi-services-annual")
 
 
 async def _compute_wages_real(db: AsyncSession) -> int:
@@ -502,6 +536,12 @@ async def _compute_imports_qoq(db: AsyncSession) -> int:
 
 calculation_engine.register("inflation-quarterly", ["cpi"], _compute_quarterly_inflation)
 calculation_engine.register("inflation-annual", ["cpi"], _compute_annual_inflation)
+calculation_engine.register("cpi-food-quarterly", ["cpi-food"], _compute_cpi_food_quarterly)
+calculation_engine.register("cpi-food-annual", ["cpi-food"], _compute_cpi_food_annual)
+calculation_engine.register("cpi-nonfood-quarterly", ["cpi-nonfood"], _compute_cpi_nonfood_quarterly)
+calculation_engine.register("cpi-nonfood-annual", ["cpi-nonfood"], _compute_cpi_nonfood_annual)
+calculation_engine.register("cpi-services-quarterly", ["cpi-services"], _compute_cpi_services_quarterly)
+calculation_engine.register("cpi-services-annual", ["cpi-services"], _compute_cpi_services_annual)
 calculation_engine.register("wages-real", ["wages-nominal", "cpi"], _compute_wages_real)
 calculation_engine.register("gdp-yoy", ["gdp-nominal"], _compute_gdp_yoy)
 calculation_engine.register("gdp-qoq", ["gdp-nominal"], _compute_gdp_qoq)

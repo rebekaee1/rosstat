@@ -1,0 +1,585 @@
+{
+  "duration": null,
+  "segments": [
+    {
+      "id": "seg_0",
+      "end": 16.61,
+      "speaker": "A",
+      "start": 3.06,
+      "text": " Я вот думаю, может быть где-то на следующей неделе, потому что я уже уезжаю в Тулу, после той завтра у меня до вечера пара, после завтра уже в Тулу поеду на майские где-нибудь.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_1",
+      "end": 22.56,
+      "speaker": "A",
+      "start": 18.86,
+      "text": " Может быть как-то насчет, ты днем можешь днём?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_2",
+      "end": 25.16,
+      "speaker": "B",
+      "start": 22.56,
+      "text": " Да, могу.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_3",
+      "end": 27.46,
+      "speaker": "A",
+      "start": 25.16,
+      "text": " Вот я могу днём там допустим.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_4",
+      "end": 30.826,
+      "speaker": "A",
+      "start": 28.276,
+      "text": " 5 или 6 числа.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_5",
+      "end": 34.775999999999996,
+      "speaker": "A",
+      "start": 33.876,
+      "text": " Ты как?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_6",
+      "end": 36.025999999999996,
+      "speaker": "B",
+      "start": 35.025999999999996,
+      "text": " Да, давайте.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_7",
+      "end": 37.275999999999996,
+      "speaker": "B",
+      "start": 36.176,
+      "text": " Но давайте пятого.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_8",
+      "end": 47.576,
+      "speaker": "A",
+      "start": 39.426,
+      "text": " Давай, можно вот у РЭО где-нибудь часка, ну там в час-два вот так вот в обед.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_9",
+      "end": 49.376000000000005,
+      "speaker": "B",
+      "start": 48.775999999999996,
+      "text": " Хорошо,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_10",
+      "end": 49.726,
+      "speaker": "B",
+      "start": 49.426,
+      "text": " все,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_11",
+      "end": 51.626000000000005,
+      "speaker": "B",
+      "start": 49.776,
+      "text": " я себя тоже поставил в час-два.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_12",
+      "end": 55.57600000000001,
+      "speaker": "A",
+      "start": 53.026,
+      "text": " Вот меня сегодня издернули как бы.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_13",
+      "end": 59.12,
+      "speaker": "A",
+      "start": 56.82,
+      "text": " А, начать совещание.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_14",
+      "end": 61.37,
+      "speaker": "A",
+      "start": 59.72,
+      "text": " Все, я сейчас тоже пометил тогда,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_15",
+      "end": 62.72,
+      "speaker": "A",
+      "start": 61.52,
+      "text": " будем ориентироваться.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_16",
+      "end": 69.82,
+      "speaker": "A",
+      "start": 63.07,
+      "text": " Вот. Ну и как бы вот этот постарайся, пожалуйста, быстрее вот этот вот баг поправить, чтобы потом, видишь, мы же его как заметили,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_17",
+      "end": 70.22,
+      "speaker": "B",
+      "start": 69.82,
+      "text": " Да,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_18",
+      "end": 70.27,
+      "speaker": "A",
+      "start": 70.22,
+      "text": " то есть",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_19",
+      "end": 70.47,
+      "speaker": "B",
+      "start": 70.27,
+      "text": " да, да.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_20",
+      "end": 70.87,
+      "speaker": "A",
+      "start": 70.47,
+      "text": " вот сейчас посетитель",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_21",
+      "end": 71.32,
+      "speaker": "B",
+      "start": 70.87,
+      "text": " его бот должен",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_22",
+      "end": 71.67,
+      "speaker": "A",
+      "start": 71.32,
+      "text": " зашел.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_23",
+      "end": 73.82,
+      "speaker": "B",
+      "start": 71.67,
+      "text": " проиндексировать.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_24",
+      "end": 76.10000000000001,
+      "speaker": "A",
+      "start": 75.7,
+      "text": " Да,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_25",
+      "end": 78.4,
+      "speaker": "A",
+      "start": 76.15,
+      "text": " и посмотрим там, что село у нас.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_26",
+      "end": 85.30000000000001,
+      "speaker": "A",
+      "start": 78.65,
+      "text": " А я тебя в ближайшее время тогда пришлю прогноз по индексам производителей.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_27",
+      "end": 86.55000000000001,
+      "speaker": "B",
+      "start": 85.30000000000001,
+      "text": " Хорошо, хорошо.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_28",
+      "end": 91.60000000000001,
+      "speaker": "A",
+      "start": 88.15,
+      "text": " Все, тогда договорились, будем на связи.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_29",
+      "end": 93.5,
+      "speaker": "B",
+      "start": 92.25,
+      "text": " Все, хорошо.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_30",
+      "end": 94.45,
+      "speaker": "A",
+      "start": 93.95,
+      "text": " Давай,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_31",
+      "end": 94.65,
+      "speaker": "B",
+      "start": 94.45,
+      "text": " До",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_32",
+      "end": 94.8,
+      "speaker": "A",
+      "start": 94.65,
+      "text": " хорошего",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_33",
+      "end": 95.3,
+      "speaker": "B",
+      "start": 94.8,
+      "text": " свидания.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_34",
+      "end": 98.15,
+      "speaker": "A",
+      "start": 95.3,
+      "text": " вечера. Сегодня футбол будешь смотреть?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_35",
+      "end": 99.65,
+      "speaker": "B",
+      "start": 98.75,
+      "text": " Не, кстати,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_36",
+      "end": 100.75,
+      "speaker": "B",
+      "start": 99.75,
+      "text": " а кто сегодня играет?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_37",
+      "end": 104.306,
+      "speaker": "A",
+      "start": 102.356,
+      "text": " Сегодня полуфиналы Лиги чемпионов.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_38",
+      "end": 104.70599999999999,
+      "speaker": "B",
+      "start": 104.306,
+      "text": " А,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_39",
+      "end": 111.056,
+      "speaker": "A",
+      "start": 104.70599999999999,
+      "text": " По-моему, кто сегодня играет, сейчас скажу. Кто сегодня играет?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_40",
+      "end": 114.006,
+      "speaker": "A",
+      "start": 111.506,
+      "text": " Там вышли либо Бавария.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_41",
+      "end": 124.006,
+      "speaker": "A",
+      "start": 115.65599999999999,
+      "text": " Так, сегодня играют ПСЖ Бавария.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_42",
+      "end": 126.656,
+      "speaker": "A",
+      "start": 124.856,
+      "text": " Атлетика Арсенал играют завтра.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_43",
+      "end": 129.456,
+      "speaker": "B",
+      "start": 126.656,
+      "text": " Да, Атлетика, Атлетика Арсенал.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_44",
+      "end": 131.25,
+      "speaker": "B",
+      "start": 130.9,
+      "text": " Да,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_45",
+      "end": 131.3,
+      "speaker": "A",
+      "start": 131.25,
+      "text": " Они",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_46",
+      "end": 131.70000000000002,
+      "speaker": "B",
+      "start": 131.3,
+      "text": " видел я",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_47",
+      "end": 132.45000000000002,
+      "speaker": "A",
+      "start": 131.70000000000002,
+      "text": " завтра играют,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_48",
+      "end": 132.55,
+      "speaker": "B",
+      "start": 132.45000000000002,
+      "text": " уже",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_49",
+      "end": 132.95000000000002,
+      "speaker": "A",
+      "start": 132.55,
+      "text": " а сегодня после",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_50",
+      "end": 133.5,
+      "speaker": "B",
+      "start": 132.95000000000002,
+      "text": " играли.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_51",
+      "end": 134.25,
+      "speaker": "A",
+      "start": 133.5,
+      "text": " себя авария.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_52",
+      "end": 137.20000000000002,
+      "speaker": "B",
+      "start": 134.65,
+      "text": " А Тоттенхам уже сыграл все, да?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_53",
+      "end": 139.35,
+      "speaker": "B",
+      "start": 137.8,
+      "text": " Я смотрю. А, ну да.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_54",
+      "end": 141.85,
+      "speaker": "A",
+      "start": 139.35,
+      "text": " Но Тоттенхам, да, уже вылетел.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_55",
+      "end": 147.85,
+      "speaker": "B",
+      "start": 147.70000000000002,
+      "text": " Не,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_56",
+      "end": 148.1,
+      "speaker": "A",
+      "start": 147.85,
+      "text": " Ладно,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_57",
+      "end": 149.4,
+      "speaker": "B",
+      "start": 148.1,
+      "text": " а во сколько будет этот матч",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_58",
+      "end": 150.8,
+      "speaker": "A",
+      "start": 149.4,
+      "text": " тогда в",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_59",
+      "end": 151.6,
+      "speaker": "B",
+      "start": 150.8,
+      "text": " в 2?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_60",
+      "end": 154.15,
+      "speaker": "A",
+      "start": 152.55,
+      "text": " 10 вечера.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_61",
+      "end": 155.05,
+      "speaker": "B",
+      "start": 154.15,
+      "text": " А, в 10.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_62",
+      "end": 162.088,
+      "speaker": "B",
+      "start": 161.588,
+      "text": " Ладненько.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_63",
+      "end": 166.388,
+      "speaker": "A",
+      "start": 163.78799999999998,
+      "text": " Все, давай тогда договорились, будем на связи.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_64",
+      "end": 167.988,
+      "speaker": "B",
+      "start": 167.53799999999998,
+      "text": " Да.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_65",
+      "end": 170.988,
+      "speaker": "A",
+      "start": 167.988,
+      "text": " Вот я тебе буду сообщать тогда там по нашей индексации что-то.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_66",
+      "end": 176.088,
+      "speaker": "B",
+      "start": 170.988,
+      "text": " Да, да, да. А я параллельно тоже как бы буду там правки вносить и я буду писать.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_67",
+      "end": 179.338,
+      "speaker": "A",
+      "start": 176.988,
+      "text": " Все, супер, договорились тогда.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_68",
+      "end": 180.338,
+      "speaker": "B",
+      "start": 179.788,
+      "text": " До свидания.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_69",
+      "end": 182.788,
+      "speaker": "A",
+      "start": 180.338,
+      "text": " Давай все, хорошего вечера, пока-пока.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_70",
+      "end": 183.438,
+      "speaker": "B",
+      "start": 182.788,
+      "text": " До свидания.",
+      "type": "transcript.text.segment"
+    }
+  ],
+  "task": null,
+  "text": "Я вот думаю, может быть где -то на следующей неделе, потому что я уже уезжаю в Тулу, после той завтра у меня до вечера пара, после завтра уже в Тулу поеду на майские где-нибудь. Может быть как-то насчет, ты днем можешь днём? Да, могу. Вот я могу днём там допустим.\n5 или 6 числа. Ты как? Да, давайте. Но давайте пятого. Давай, можно вот у РЭО где-нибудь часка, ну там в час-два вот так вот в обед. Хорошо, все, я себя тоже поставил в час-два. Вот меня сегодня издернули как бы.\nА, начать совещание. Все, я сейчас тоже пометил тогда, будем ориентироваться. Вот. Ну и как бы вот этот постарайся, пожалуйста, быстрее вот этот вот баг поправить, чтобы потом, видишь, мы же его как заметили, Да, то есть да, да. вот сейчас посетитель его бот должен зашел. проиндексировать.\nДа, и посмотрим там, что село у нас. А я тебя в ближайшее время тогда пришлю прогноз по индексам производителей. Хорошо, хорошо. Все, тогда договорились, будем на связи. Все, хорошо. Давай, До хорошего свидания. вечера. Сегодня футбол будешь смотреть? Не, кстати, а кто сегодня играет?\nСегодня полуфиналы Лиги чемпионов. А, По-моему, кто сегодня играет, сейчас скажу. Кто сегодня играет? Там вышли либо Бавария. Так, сегодня играют ПСЖ Бавария. Атлетика Арсенал играют завтра. Да, Атлетика, Атлетика Арсенал.\nДа, Они видел я завтра играют, уже а сегодня после играли. себя авария. А Тоттенхам уже сыграл все, да? Я смотрю. А, ну да. Но Тоттенхам, да, уже вылетел. Не, Ладно, а во сколько будет этот матч тогда в в 2? 10 вечера. А, в 10.\nЛадненько. Все, давай тогда договорились, будем на связи. Да. Вот я тебе буду сообщать тогда там по нашей индексации что-то. Да, да, да. А я параллельно тоже как бы буду там правки вносить и я буду писать. Все, супер, договорились тогда. До свидания. Давай все, хорошего вечера, пока-пока. До свидания.",
+  "usage": {
+    "input_tokens": 2613,
+    "output_tokens": 5288,
+    "total_tokens": 7901,
+    "type": "tokens",
+    "input_token_details": {
+      "audio_tokens": 2463,
+      "text_tokens": 150
+    }
+  }
+}

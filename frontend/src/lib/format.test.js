@@ -97,6 +97,9 @@ describe('adjustCpiDisplay', () => {
   it('subtracts 100 for quarterly CPI-derived code', () => {
     expect(adjustCpiDisplay(101.75, 'inflation-quarterly')).toBe(1.75);
   });
+  it('subtracts 100 for CPI subcategory quarterly derived codes', () => {
+    expect(adjustCpiDisplay(102.1, 'cpi-services-quarterly')).toBe(2.1);
+  });
   it('returns value unchanged for non-CPI code', () => {
     expect(adjustCpiDisplay(102.5, 'gdp')).toBe(102.5);
   });

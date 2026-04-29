@@ -1,0 +1,254 @@
+{
+  "source_videos": {
+    "НА правки 4_1": "/Users/iprofi/проекты cursor/transcribe/НА правки 4_1.mov",
+    "НА правки 4_2": "/Users/iprofi/проекты cursor/transcribe/НА правки 4_2.mov",
+    "НА правки 4_3": "/Users/iprofi/проекты cursor/transcribe/НА правки 4_3.mov"
+  },
+  "note": "local_time_sec is the second inside the original video part, not inside audio chunks. For broad visual issues, cut 1 frame before the phrase, 1 at the phrase, and 1 after the UI state settles.",
+  "plans": [
+    {
+      "edit_id": "v4_edit_001",
+      "title": "Title/description главной и страниц",
+      "frame_need": "6",
+      "frames": [
+        {"video_part": "НА правки 4_1", "local_time_sec": 214, "global_time_sec": 214, "why": "контроль дублирующихся title"},
+        {"video_part": "НА правки 4_1", "local_time_sec": 281, "global_time_sec": 281, "why": "начало показа title/description главной"},
+        {"video_part": "НА правки 4_1", "local_time_sec": 297, "global_time_sec": 297, "why": "вопрос, почему title/description про инфляцию"},
+        {"video_part": "НА правки 4_2", "local_time_sec": 0, "global_time_sec": 310, "why": "продолжение на следующем видео"},
+        {"video_part": "НА правки 4_2", "local_time_sec": 15, "global_time_sec": 325, "why": "что должно быть в title"},
+        {"video_part": "НА правки 4_2", "local_time_sec": 33, "global_time_sec": 343, "why": "итог: нужно посмотреть заголовки"}
+      ]
+    },
+    {
+      "edit_id": "v4_edit_002",
+      "title": "Прогноз должен соответствовать типу графика",
+      "frame_need": "3",
+      "frames": [
+        {"video_part": "НА правки 4_2", "local_time_sec": 294, "global_time_sec": 604, "why": "момент постановки: forecast тоже столбиками"},
+        {"video_part": "НА правки 4_2", "local_time_sec": 305, "global_time_sec": 615, "why": "видно несоответствие линия/столбики"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1, "global_time_sec": 628, "why": "подтверждение соответствующего визуального стиля"}
+      ]
+    },
+    {
+      "edit_id": "v4_edit_003",
+      "title": "Квартальная инфляция и масштаб прогноза",
+      "frame_need": "10+",
+      "frames": [
+        {"video_part": "НА правки 4_2", "local_time_sec": 216, "global_time_sec": 526, "why": "переход к проблемному месту"},
+        {"video_part": "НА правки 4_2", "local_time_sec": 224, "global_time_sec": 534, "why": "первый вид сломанной квартальной инфляции"},
+        {"video_part": "НА правки 4_2", "local_time_sec": 240, "global_time_sec": 550, "why": "обсуждение времени/даты проблемы"},
+        {"video_part": "НА правки 4_2", "local_time_sec": 253, "global_time_sec": 563, "why": "возможный не подтянутый fix после deploy"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 10, "global_time_sec": 638, "why": "итоговая фраза «квартальное надо поправить»"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 390, "global_time_sec": 1018, "why": "переход к CPI subcategory checks"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 502, "global_time_sec": 1130, "why": "срочность исправления"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 779, "global_time_sec": 1407, "why": "повтор high-priority: годовые и квартальные"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1695, "global_time_sec": 2323, "why": "финальный повтор бага"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1863, "global_time_sec": 2491, "why": "просьба быстрее поправить перед завершением"}
+      ]
+    },
+    {
+      "edit_id": "v4_edit_004",
+      "title": "Watermark Forecast Economy",
+      "frame_need": "5",
+      "frames": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 26, "global_time_sec": 654, "why": "текущая позиция watermark"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 34, "global_time_sec": 662, "why": "почему его легко закрыть/обрезать"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 41, "global_time_sec": 669, "why": "демонстрация сценария printscreen/crop"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 59, "global_time_sec": 686, "why": "обсуждение yellow/design color"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 72, "global_time_sec": 700, "why": "вариант на оси/рядом с осью"}
+      ]
+    },
+    {
+      "edit_id": "v4_edit_005",
+      "title": "Правые оси и пропадающие даты",
+      "frame_need": "6",
+      "frames": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 13, "global_time_sec": 641, "why": "первое указание на проблему с правыми осями/подписями"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 78, "global_time_sec": 706, "why": "первое указание на пропущенные даты"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 84, "global_time_sec": 712, "why": "вид оси до отключения прогноза"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 88, "global_time_sec": 716, "why": "состояние без прогноза"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 92, "global_time_sec": 720, "why": "нижняя ось / possible overlap"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 96, "global_time_sec": 724, "why": "контекст перед следующим экраном"}
+      ]
+    },
+    {
+      "edit_id": "v4_edit_006",
+      "title": "Производные ряды внутри одной карточки",
+      "frame_need": "10+",
+      "frames": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 103, "global_time_sec": 731, "why": "housing prices: предложение одной карточки"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 121, "global_time_sec": 749, "why": "файл индекса цен на жильё"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 172, "global_time_sec": 799, "why": "логика разных агрегатов"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 196, "global_time_sec": 824, "why": "кнопка/режим индекса"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 209, "global_time_sec": 837, "why": "изменение год-к-году"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 220, "global_time_sec": 848, "why": "аргумент против множества карточек"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 235, "global_time_sec": 863, "why": "PPI как аналогичный кейс"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 296, "global_time_sec": 923, "why": "жильё надо посравнивать"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 339, "global_time_sec": 967, "why": "PPI YoY кнопка внутри"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 371, "global_time_sec": 999, "why": "не раздувать индикаторы дальше"}
+      ]
+    },
+    {
+      "edit_id": "v4_edit_007",
+      "title": "Терминология ИПЦ и режимы",
+      "frame_need": "5",
+      "frames": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 172, "global_time_sec": 799, "why": "текущее место с ИПЦ"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 180, "global_time_sec": 808, "why": "заменить на индекс потребительских цен"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 195, "global_time_sec": 823, "why": "добавить сам индекс"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 209, "global_time_sec": 837, "why": "режим изменения год-к-году"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 242, "global_time_sec": 870, "why": "пример другой карточки"}
+      ]
+    },
+    {
+      "edit_id": "v4_edit_008",
+      "title": "Forecast toggle показывается без прогноза",
+      "frame_need": "3",
+      "frames": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 139, "global_time_sec": 767, "why": "прогноз показан как доступный"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 145, "global_time_sec": 773, "why": "прогноз фактически не отображается"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 150, "global_time_sec": 778, "why": "причина: не применилось автоматическое выключение"}
+      ]
+    },
+    {
+      "edit_id": "v4_edit_009",
+      "title": "Годовая/квартальная инфляция подкатегорий",
+      "frame_need": "10+",
+      "frames": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 394, "global_time_sec": 1021, "why": "начало проверки значений услуг"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 412, "global_time_sec": 1040, "why": "ожидаемое значение 11.5"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 437, "global_time_sec": 1065, "why": "годовая показывает 9.5"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 461, "global_time_sec": 1089, "why": "сверка продовольствия"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 477, "global_time_sec": 1105, "why": "всегда одно и то же значение"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 482, "global_time_sec": 1110, "why": "вывод: подтянулась общая ИПЦ"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 493, "global_time_sec": 1121, "why": "распространилась на все"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 501, "global_time_sec": 1129, "why": "квартальная тоже возможно общая"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 510, "global_time_sec": 1138, "why": "быстрее исправить"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1863, "global_time_sec": 2491, "why": "финальный high-priority repeat"}
+      ]
+    },
+    {
+      "edit_id": "v4_edit_010",
+      "title": "ВВП: real GDP и режимы в одной карточке",
+      "frame_need": "5",
+      "frames": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 556, "global_time_sec": 1184, "why": "переход к блоку ВВП"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 565, "global_time_sec": 1193, "why": "текущий номинальный ВВП"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 583, "global_time_sec": 1211, "why": "qoq/yoy в одну карточку"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 595, "global_time_sec": 1223, "why": "добавить реальный ВВП"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 602, "global_time_sec": 1230, "why": "executor confirms/noted"}
+      ]
+    },
+    {
+      "edit_id": "v4_edit_011",
+      "title": "Исторический ряд населения",
+      "frame_need": "3",
+      "frames": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 630, "global_time_sec": 1258, "why": "население начинается с 2010"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 642, "global_time_sec": 1270, "why": "есть ряд с 1897/1970"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 657, "global_time_sec": 1285, "why": "требование максимально длинных рядов"}
+      ]
+    },
+    {
+      "edit_id": "v4_edit_012",
+      "title": "Убрать OLS и технические термины",
+      "frame_need": "3",
+      "frames": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 1629, "global_time_sec": 2257, "why": "виден OLS/technical copy"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1640, "global_time_sec": 2268, "why": "требование убрать везде"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1653, "global_time_sec": 2281, "why": "простое состояние forecast unavailable"}
+      ]
+    },
+    {
+      "edit_id": "v4_edit_013",
+      "title": "Кредитные labels для SEO",
+      "frame_need": "3",
+      "frames": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 1660, "global_time_sec": 2287, "why": "карточки кредитов"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1672, "global_time_sec": 2299, "why": "непонятные сокращения"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1698, "global_time_sec": 2326, "why": "SEO rationale"}
+      ]
+    },
+    {
+      "edit_id": "v4_edit_014",
+      "title": "Метрика/Вебвизор anomaly",
+      "frame_need": "10+",
+      "frames": [
+        {"video_part": "НА правки 4_2", "local_time_sec": 75, "global_time_sec": 385, "why": "пример фаната из Казани"},
+        {"video_part": "НА правки 4_2", "local_time_sec": 98, "global_time_sec": 408, "why": "6 просмотров / 18 минут"},
+        {"video_part": "НА правки 4_2", "local_time_sec": 110, "global_time_sec": 420, "why": "движение не записывается"},
+        {"video_part": "НА правки 4_2", "local_time_sec": 125, "global_time_sec": 435, "why": "search traffic issue"},
+        {"video_part": "НА правки 4_2", "local_time_sec": 165, "global_time_sec": 475, "why": "месячный срез 102 пользователя"},
+        {"video_part": "НА правки 4_2", "local_time_sec": 185, "global_time_sec": 495, "why": "вывод: не может быть такого"}
+      ]
+    },
+    {
+      "edit_id": "v4_edit_015",
+      "title": "Неясные демографические индексы",
+      "frame_need": "5",
+      "frames": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 617, "global_time_sec": 1244, "why": "экран демографии"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 625, "global_time_sec": 1252, "why": "слова про индексы"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 630, "global_time_sec": 1258, "why": "следующий конкретный population issue"}
+      ]
+    },
+    {
+      "edit_id": "v4_edit_016",
+      "title": "Яндекс индексация/title/description/sitemap",
+      "frame_need": "10+",
+      "frames": [
+        {"video_part": "НА правки 4_1", "local_time_sec": 162, "global_time_sec": 162, "why": "Yandex Webmaster: страницы добавляются/удаляются"},
+        {"video_part": "НА правки 4_1", "local_time_sec": 184, "global_time_sec": 184, "why": "детализация удалённых страниц"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 695, "global_time_sec": 1323, "why": "Google Search Console / метрика"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 742, "global_time_sec": 1370, "why": "Яндекс не индексирует"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 765, "global_time_sec": 1393, "why": "переобход через API"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 900, "global_time_sec": 1528, "why": "title/description/keywords"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 938, "global_time_sec": 1566, "why": "Google 62 vs Yandex 3"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 965, "global_time_sec": 1593, "why": "sitemap/robot recrawl"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1248, "global_time_sec": 1876, "why": "поиск в Яндексе: сайт трудно найти"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1303, "global_time_sec": 1931, "why": "Yandex index 8 vs Google 62"}
+      ]
+    },
+    {
+      "edit_id": "v4_edit_017",
+      "title": "Backlog: chart range navigator",
+      "frame_need": "5",
+      "frames": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 1090, "global_time_sec": 1718, "why": "пример Investing"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1135, "global_time_sec": 1763, "why": "ручной выбор диапазона"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1245, "global_time_sec": 1873, "why": "явное 'пока не надо ничего делать'"}
+      ]
+    },
+    {
+      "edit_id": "v4_edit_018",
+      "title": "Backlog: SEO text block pilot",
+      "frame_need": "10+",
+      "frames": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 1312, "global_time_sec": 1939, "why": "SEO analyzer: keywords"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1360, "global_time_sec": 1988, "why": "пример кастомного описания"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1452, "global_time_sec": 2080, "why": "пилот на инфляции / 4-5 строк"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1530, "global_time_sec": 2158, "why": "хороший дизайн/SEO example"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1598, "global_time_sec": 2226, "why": "не деплоить сразу, масштабировать постепенно"}
+      ]
+    },
+    {
+      "edit_id": "v4_edit_019",
+      "title": "Backlog/blocker: PPI forecast file",
+      "frame_need": "1",
+      "frames": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 296, "global_time_sec": 923, "why": "PPI forecast сделан, но не прислан"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 1840, "global_time_sec": 2468, "why": "обещание прислать прогноз PPI"}
+      ]
+    },
+    {
+      "edit_id": "v4_edit_023",
+      "title": "Needs review: primary/secondary housing comparison",
+      "frame_need": "3",
+      "frames": [
+        {"video_part": "НА правки 4_3", "local_time_sec": 296, "global_time_sec": 923, "why": "цены на жильё надо посравнивать"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 541, "global_time_sec": 1169, "why": "первичный и вторичный уже есть"},
+        {"video_part": "НА правки 4_3", "local_time_sec": 548, "global_time_sec": 1176, "why": "контекст прогноза/подтверждение"}
+      ]
+    }
+  ]
+}

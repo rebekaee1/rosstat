@@ -60,7 +60,7 @@ INDICATORS = [
     },
     {
         "code": "cpi-food",
-        "name": "ИПЦ на продовольственные товары",
+        "name": "Индекс потребительских цен на продовольственные товары",
         "name_en": "Food CPI",
         "unit": "%",
         "frequency": "monthly",
@@ -75,7 +75,7 @@ INDICATORS = [
     },
     {
         "code": "cpi-nonfood",
-        "name": "ИПЦ на непродовольственные товары",
+        "name": "Индекс потребительских цен на непродовольственные товары",
         "name_en": "Non-food CPI",
         "unit": "%",
         "frequency": "monthly",
@@ -90,7 +90,7 @@ INDICATORS = [
     },
     {
         "code": "cpi-services",
-        "name": "ИПЦ на услуги",
+        "name": "Индекс потребительских цен на услуги",
         "name_en": "Services CPI",
         "unit": "%",
         "frequency": "monthly",
@@ -371,7 +371,7 @@ INDICATORS = [
     # Ряды доступны с января 2014 г. ежемесячно (publicationId=14).
     {
         "code": "credit-rate-corp-short",
-        "name": "Ставка по кредитам ЮЛ до 1 года",
+        "name": "Ставка по кредитам юридическим лицам до 1 года",
         "name_en": "Corporate Loan Rate (up to 1 year)",
         "unit": "%",
         "frequency": "monthly",
@@ -404,7 +404,7 @@ INDICATORS = [
     },
     {
         "code": "credit-rate-corp-1to3y",
-        "name": "Ставка по кредитам ЮЛ от 1 до 3 лет",
+        "name": "Ставка по кредитам юридическим лицам от 1 до 3 лет",
         "name_en": "Corporate Loan Rate (1–3 years)",
         "unit": "%",
         "frequency": "monthly",
@@ -436,7 +436,7 @@ INDICATORS = [
     },
     {
         "code": "credit-rate-corp-over3y",
-        "name": "Ставка по кредитам ЮЛ свыше 3 лет",
+        "name": "Ставка по кредитам юридическим лицам свыше 3 лет",
         "name_en": "Corporate Loan Rate (over 3 years)",
         "unit": "%",
         "frequency": "monthly",
@@ -468,7 +468,7 @@ INDICATORS = [
     },
     {
         "code": "credit-rate-ind-short",
-        "name": "Ставка по кредитам ФЛ до 1 года",
+        "name": "Ставка по кредитам физическим лицам до 1 года",
         "name_en": "Individual Loan Rate (up to 1 year)",
         "unit": "%",
         "frequency": "monthly",
@@ -500,7 +500,7 @@ INDICATORS = [
     },
     {
         "code": "credit-rate-ind-1to3y",
-        "name": "Ставка по кредитам ФЛ от 1 до 3 лет",
+        "name": "Ставка по кредитам физическим лицам от 1 до 3 лет",
         "name_en": "Individual Loan Rate (1–3 years)",
         "unit": "%",
         "frequency": "monthly",
@@ -532,7 +532,7 @@ INDICATORS = [
     },
     {
         "code": "credit-rate-ind-over3y",
-        "name": "Ставка по кредитам ФЛ свыше 3 лет",
+        "name": "Ставка по кредитам физическим лицам свыше 3 лет",
         "name_en": "Individual Loan Rate (over 3 years)",
         "unit": "%",
         "frequency": "monthly",
@@ -639,6 +639,33 @@ INDICATORS = [
         "is_active": True,
         "category": "ВВП",
     },
+    {
+        "code": "gdp-real",
+        "name": "ВВП реальный",
+        "name_en": "Real GDP",
+        "unit": "млрд руб.",
+        "frequency": "quarterly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/statistics/accounts",
+        "description": (
+            "Валовой внутренний продукт в постоянных ценах 2021 года. "
+            "Квартальные данные официального файла Росстата «ВВП кварталы»."
+        ),
+        "methodology": (
+            "Источник — XLSX Росстата VVP_kvartal_s_1995-2025.xlsx, лист 9: "
+            "«Валовой внутренний продукт (в ценах 2021 г., млрд руб.)»."
+        ),
+        "parser_type": "rosstat_sdds_gdp",
+        "model_config_json": {
+            "gdp_source": "official_quarterly",
+            "gdp_sheet": "9",
+            "forecast_steps": 4,
+            "forecast_transform": "absolute",
+            "validation": {"min": 0},
+        },
+        "is_active": True,
+        "category": "ВВП",
+    },
     # ─── Производные (CalculationEngine) ───
     {
         "code": "wages-real",
@@ -720,6 +747,102 @@ INDICATORS = [
         "model_config_json": {
             "forecast_steps": 0,
         },
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "cpi-food-quarterly",
+        "name": "Квартальная инфляция продовольственных товаров",
+        "name_en": "Food CPI Quarterly Inflation",
+        "unit": "%",
+        "frequency": "quarterly",
+        "source": "Расчёт",
+        "description": (
+            "Квартальная инфляция продовольственных товаров: произведение трёх "
+            "месячных индексов потребительских цен на продовольственные товары."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {"forecast_steps": 0},
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "cpi-food-annual",
+        "name": "Годовая инфляция продовольственных товаров",
+        "name_en": "Food CPI Annual Inflation",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Расчёт",
+        "description": (
+            "Годовая инфляция продовольственных товаров: скользящее изменение за "
+            "12 месяцев по месячным индексам потребительских цен на продовольствие."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {"forecast_steps": 0},
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "cpi-nonfood-quarterly",
+        "name": "Квартальная инфляция непродовольственных товаров",
+        "name_en": "Non-food CPI Quarterly Inflation",
+        "unit": "%",
+        "frequency": "quarterly",
+        "source": "Расчёт",
+        "description": (
+            "Квартальная инфляция непродовольственных товаров: произведение трёх "
+            "месячных индексов потребительских цен на непродовольственные товары."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {"forecast_steps": 0},
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "cpi-nonfood-annual",
+        "name": "Годовая инфляция непродовольственных товаров",
+        "name_en": "Non-food CPI Annual Inflation",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Расчёт",
+        "description": (
+            "Годовая инфляция непродовольственных товаров: скользящее изменение за "
+            "12 месяцев по месячным индексам потребительских цен на непродовольственные товары."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {"forecast_steps": 0},
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "cpi-services-quarterly",
+        "name": "Квартальная инфляция услуг",
+        "name_en": "Services CPI Quarterly Inflation",
+        "unit": "%",
+        "frequency": "quarterly",
+        "source": "Расчёт",
+        "description": (
+            "Квартальная инфляция услуг: произведение трёх месячных индексов "
+            "потребительских цен на услуги."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {"forecast_steps": 0},
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "cpi-services-annual",
+        "name": "Годовая инфляция услуг",
+        "name_en": "Services CPI Annual Inflation",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Расчёт",
+        "description": (
+            "Годовая инфляция услуг: скользящее изменение за 12 месяцев по месячным "
+            "индексам потребительских цен на услуги."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {"forecast_steps": 0},
         "is_active": True,
         "category": "Цены",
     },
@@ -991,7 +1114,11 @@ INDICATORS = [
         "source_url": "https://rosstat.gov.ru/folder/12781",
         "description": (
             "Численность постоянного населения РФ на 1 января (млн чел.). "
-            "Данные SDDS Росстата."
+            "Исторический ряд Росстата с 1897 года, с ежегодными значениями с 1970 года."
+        ),
+        "methodology": (
+            "Источник — официальные XLSX Росстата Popul_1897+.xlsx и SDDS_population. "
+            "Для 1897 и 1914 годов используется строка «в современных границах»."
         ),
         "parser_type": "rosstat_population",
         "model_config_json": {

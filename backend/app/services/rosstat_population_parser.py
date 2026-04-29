@@ -1,9 +1,13 @@
-"""ETL: Росстат SDDS Population XLSX → IndicatorData.
+"""ETL: Росстат population XLSX → IndicatorData.
 
 Файл: SDDS_population_{year}.xlsx
 Лист: "Population"
 Row 1: заголовки — годы (2010, 2011, ...)
 Row 3: Population, Million people — значения
+
+Файл: Popul_1897+.xlsx (rosstat.gov.ru)
+Лист: "Лист1"
+Rows 7+: историческая численность населения, млн человек
 
 Файл: Popul components_1990+.xlsx (rosstat.gov.ru)
 Лист: "1"
@@ -50,12 +54,12 @@ def _extract_year(cell) -> int | None:
         return None
     if isinstance(cell, (int, float)) and not isinstance(cell, bool):
         y = int(cell)
-        return y if 1900 <= y <= 2100 else None
+        return y if 1800 <= y <= 2100 else None
     m = _YEAR_RE.match(str(cell).strip())
     if not m:
         return None
     y = int(m.group(1))
-    return y if 1900 <= y <= 2100 else None
+    return y if 1800 <= y <= 2100 else None
 
 
 def parse_sdds_population_xlsx(content: bytes) -> list[DataPoint]:
@@ -94,6 +98,61 @@ def parse_sdds_population_xlsx(content: bytes) -> list[DataPoint]:
                 pass
 
     return sorted(points, key=lambda p: p.date)
+
+
+def parse_population_history_xlsx(content: bytes) -> list[DataPoint]:
+    """Parse Popul_1897+.xlsx → annual population in millions.
+
+    For 1897 and 1914 Rosstat gives two rows; use the row in modern borders,
+    because the rest of the product is Russia in current/modern boundaries.
+    """
+    wb = openpyxl.load_workbook(io.BytesIO(content), data_only=True, read_only=True)
+    try:
+        ws = wb.worksheets[0]
+        rows_data: list[list] = []
+        for row in ws.iter_rows(values_only=True):
+            rows_data.append(list(row))
+    finally:
+        wb.close()
+
+    points: list[DataPoint] = []
+    pending_year: int | None = None
+    for row in rows_data[6:]:
+        if not row:
+            continue
+
+        first = row[0]
+        year = _extract_year(first)
+        if year is not None:
+            if len(row) > 1 and row[1] is not None:
+                try:
+                    points.append(DataPoint(date=date(year, 1, 1), value=round(float(row[1]), 2)))
+                except (ValueError, TypeError):
+                    pass
+                pending_year = None
+            else:
+                pending_year = year
+            continue
+
+        label = str(first or "").lower().replace("\xa0", " ").strip()
+        if pending_year and "современных границах" in label and len(row) > 1 and row[1] is not None:
+            try:
+                points.append(DataPoint(date=date(pending_year, 1, 1), value=round(float(row[1]), 2)))
+            except (ValueError, TypeError):
+                pass
+            pending_year = None
+
+    return sorted(points, key=lambda p: p.date)
+
+
+def merge_population_history_with_sdds(
+    history_points: list[DataPoint],
+    sdds_points: list[DataPoint],
+) -> list[DataPoint]:
+    """Merge two official Rosstat population files, preferring newer SDDS values on overlap."""
+    by_date = {p.date: p for p in history_points}
+    by_date.update({p.date: p for p in sdds_points})
+    return [by_date[d] for d in sorted(by_date)]
 
 
 def parse_popul_components_xlsx(content: bytes) -> dict[str, list[DataPoint]]:
@@ -164,7 +223,7 @@ def parse_popul_components_xlsx(content: bytes) -> dict[str, list[DataPoint]]:
 
 
 INDICATOR_SOURCE_MAP: dict[str, str] = {
-    "population": "sdds",
+    "population": "historical",
     "population-total-growth": "components",
     "population-natural-growth": "components",
     "population-migration": "components",
@@ -185,7 +244,16 @@ class RosstatPopulationParser(BaseParser):
         try:
             source = INDICATOR_SOURCE_MAP.get(code, "sdds")
 
-            if source == "sdds":
+            if source == "historical":
+                history_content, history_url = await asyncio.to_thread(
+                    fetch_rosstat_static_xlsx, "population_history"
+                )
+                sdds_content, sdds_url = await asyncio.to_thread(fetch_sdds_xlsx, "population")
+                fetch_log.source_url = f"{history_url}; {sdds_url}"[:500]
+                history_points = await asyncio.to_thread(parse_population_history_xlsx, history_content)
+                sdds_points = await asyncio.to_thread(parse_sdds_population_xlsx, sdds_content)
+                points = merge_population_history_with_sdds(history_points, sdds_points)
+            elif source == "sdds":
                 content, final_url = await asyncio.to_thread(fetch_sdds_xlsx, "population")
                 fetch_log.source_url = final_url[:500]
                 points = await asyncio.to_thread(parse_sdds_population_xlsx, content)

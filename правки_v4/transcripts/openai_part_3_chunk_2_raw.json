@@ -1,0 +1,1649 @@
+{
+  "duration": null,
+  "segments": [
+    {
+      "id": "seg_0",
+      "end": 1.7000000000000004,
+      "speaker": "A",
+      "start": 0.0,
+      "text": " И ключевые слова,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_1",
+      "end": 2.7,
+      "speaker": "A",
+      "start": 1.9000000000000006,
+      "text": " вот эти description,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_2",
+      "end": 3.2,
+      "speaker": "A",
+      "start": 2.95,
+      "text": " title,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_3",
+      "end": 5.4,
+      "speaker": "A",
+      "start": 3.4000000000000004,
+      "text": " то есть это надо им передавать,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_4",
+      "end": 5.9,
+      "speaker": "B",
+      "start": 5.4,
+      "text": " Mm-hmm.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_5",
+      "end": 8.150000000000002,
+      "speaker": "A",
+      "start": 5.9,
+      "text": " потому что иначе он нас одного индексирует.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_6",
+      "end": 14.300000000000002,
+      "speaker": "A",
+      "start": 9.050000000000002,
+      "text": " Есть сайты, которые делают аналитику, может быть тоже их посмотреть,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_7",
+      "end": 20.05,
+      "speaker": "A",
+      "start": 14.650000000000002,
+      "text": " то есть они тебе что-то там говорят, что что-то у тебя там есть, что-то у тебя там нет,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_8",
+      "end": 22.35,
+      "speaker": "A",
+      "start": 20.1,
+      "text": " я вот допустим на какой-то зашел тут,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_9",
+      "end": 25.450000000000003,
+      "speaker": "A",
+      "start": 22.450000000000003,
+      "text": " но он типа платный тоже.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_10",
+      "end": 35.682,
+      "speaker": "A",
+      "start": 26.332,
+      "text": " Ну, какие-то он может подсказать что-то там тебе.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_11",
+      "end": 37.382000000000005,
+      "speaker": "A",
+      "start": 36.282000000000004,
+      "text": " Вот посмотри,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_12",
+      "end": 37.682,
+      "speaker": "A",
+      "start": 37.432,
+      "text": " видишь,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_13",
+      "end": 42.082,
+      "speaker": "A",
+      "start": 37.782000000000004,
+      "text": " в Google индексация 62 страницы, в Яндекс индексация 3 страницы.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_14",
+      "end": 44.432,
+      "speaker": "C",
+      "start": 43.882000000000005,
+      "text": " Почему",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_15",
+      "end": 44.482,
+      "speaker": "A",
+      "start": 44.432,
+      "text": " То",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_16",
+      "end": 44.732,
+      "speaker": "C",
+      "start": 44.482,
+      "text": " он только",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_17",
+      "end": 44.932,
+      "speaker": "A",
+      "start": 44.732,
+      "text": " есть просто,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_18",
+      "end": 45.332,
+      "speaker": "C",
+      "start": 44.932,
+      "text": " три?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_19",
+      "end": 46.032,
+      "speaker": "A",
+      "start": 45.332,
+      "text": " ну это я вчера.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_20",
+      "end": 52.34,
+      "speaker": "A",
+      "start": 48.34,
+      "text": " Ну вот, ну да, может этот сайт тоже не совсем прям все,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_21",
+      "end": 58.39,
+      "speaker": "A",
+      "start": 52.440000000000005,
+      "text": " но суть в том, что он как будто Яндек джойстик, но не хочет,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_22",
+      "end": 61.290000000000006,
+      "speaker": "A",
+      "start": 58.64,
+      "text": " ну это было вчера, может быть сейчас он,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_23",
+      "end": 65.79,
+      "speaker": "A",
+      "start": 61.34,
+      "text": " ну ему надо какое-то время, чтобы пройти еще раз по сайту,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_24",
+      "end": 74.49000000000001,
+      "speaker": "A",
+      "start": 65.84,
+      "text": " нужно чтобы этот робот стоит там сайт мэп, ну он подгрузил новый.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_25",
+      "end": 76.84,
+      "speaker": "A",
+      "start": 76.34,
+      "text": " Вот.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_26",
+      "end": 78.94,
+      "speaker": "A",
+      "start": 77.24000000000001,
+      "text": " Ну, то есть посмотрим этот момент.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_27",
+      "end": 82.99000000000001,
+      "speaker": "A",
+      "start": 79.29,
+      "text": " Вот так что Google нас индексирует хорошо.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_28",
+      "end": 89.54,
+      "speaker": "A",
+      "start": 83.14,
+      "text": " То есть вот если, допустим, даже если не верить вот этим всем штукам,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_29",
+      "end": 96.24000000000001,
+      "speaker": "A",
+      "start": 89.59,
+      "text": " я, допустим, на Google зайду там и там курс евро к рублю график поставлю,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_30",
+      "end": 102.79,
+      "speaker": "A",
+      "start": 96.29,
+      "text": " то я могу, допустим, придя там на шестую, седьмую страницу.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_31",
+      "end": 108.044,
+      "speaker": "A",
+      "start": 104.244,
+      "text": " найти нас ищем",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_32",
+      "end": 108.694,
+      "speaker": "D",
+      "start": 108.044,
+      "text": " Mm-hmm.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_33",
+      "end": 128.494,
+      "speaker": "A",
+      "start": 108.694,
+      "text": " на сильной странице то есть вот это мы в поиске да понятно что хорошо бы было быть вот если открыть то он сразу выдает график евро вот да там конечно знаешь вот особенно для таких",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_34",
+      "end": 131.626,
+      "speaker": "A",
+      "start": 129.876,
+      "text": " Хорошо бы было, знаешь, как сделать?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_35",
+      "end": 138.026,
+      "speaker": "A",
+      "start": 132.226,
+      "text": " Вот как на инвестинге мне понравилось, потому что, допустим, какой",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_36",
+      "end": 139.82600000000002,
+      "speaker": "E",
+      "start": 138.026,
+      "text": " Для графиков именно вы имеете ввиду?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_37",
+      "end": 140.17600000000002,
+      "speaker": "A",
+      "start": 139.82600000000002,
+      "text": " пример.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_38",
+      "end": 156.42600000000002,
+      "speaker": "A",
+      "start": 141.226,
+      "text": " Не как трейдинг, смотря, допустим, график евро-доллар, и тут могли это время, где-то время.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_39",
+      "end": 158.946,
+      "speaker": "A",
+      "start": 158.196,
+      "text": " Чарт.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_40",
+      "end": 167.046,
+      "speaker": "A",
+      "start": 161.096,
+      "text": " Сейчас. Вот я покажу тебе какое-то имею в виду идею какую.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_41",
+      "end": 172.596,
+      "speaker": "A",
+      "start": 168.746,
+      "text": " Так, а чё-то она нихрена не это.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_42",
+      "end": 178.396,
+      "speaker": "A",
+      "start": 173.896,
+      "text": " Не работает украине Reactive Chart. Сейчас.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_43",
+      "end": 195.40800000000002,
+      "speaker": "A",
+      "start": 193.108,
+      "text": " Эта фишечка одна мне понравилась.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_44",
+      "end": 202.358,
+      "speaker": "A",
+      "start": 200.208,
+      "text": " Что-то он не хочет его подгружать.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_45",
+      "end": 211.808,
+      "speaker": "A",
+      "start": 203.558,
+      "text": " Типа, чтобы можно было менять кастомный мост. То есть, видишь, тут три года, допустим, мне три года, но мне хочется покрупнее, да?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_46",
+      "end": 214.90800000000002,
+      "speaker": "A",
+      "start": 211.90800000000002,
+      "text": " То есть, чтобы я мог, тут я могу просто двигать сюда,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_47",
+      "end": 217.608,
+      "speaker": "A",
+      "start": 215.208,
+      "text": " да? Может, мне хочется вот только вот этот кусок смотреть.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_48",
+      "end": 218.324,
+      "speaker": "A",
+      "start": 218.324,
+      "text": " Если",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_49",
+      "end": 218.62400000000002,
+      "speaker": "E",
+      "start": 218.324,
+      "text": " А может",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_50",
+      "end": 219.424,
+      "speaker": "A",
+      "start": 218.62400000000002,
+      "text": " бы можно хочется,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_51",
+      "end": 219.47400000000002,
+      "speaker": "E",
+      "start": 219.424,
+      "text": "",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_52",
+      "end": 226.37400000000002,
+      "speaker": "A",
+      "start": 219.47400000000002,
+      "text": " чтобы тут было может быть два бегунка каких-то, чтобы я мог там вверх-низ.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_53",
+      "end": 230.774,
+      "speaker": "A",
+      "start": 226.87400000000002,
+      "text": " Вот я бы хотел посмотреть на,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_54",
+      "end": 233.074,
+      "speaker": "A",
+      "start": 230.824,
+      "text": " но",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_55",
+      "end": 233.72400000000002,
+      "speaker": "E",
+      "start": 233.074,
+      "text": " оно и не",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_56",
+      "end": 233.774,
+      "speaker": "A",
+      "start": 233.72400000000002,
+      "text": " это",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_57",
+      "end": 233.97400000000002,
+      "speaker": "E",
+      "start": 233.774,
+      "text": " автоматизируется.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_58",
+      "end": 242.97400000000002,
+      "speaker": "A",
+      "start": 233.97400000000002,
+      "text": " как бы не обязательно так вот добавить прокрутку графика влево-вправо, это было. Так вот хочу.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_59",
+      "end": 249.972,
+      "speaker": "A",
+      "start": 243.572,
+      "text": " Посмотреть, где ты записывал, делать прокрутку графика,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_60",
+      "end": 257.572,
+      "speaker": "A",
+      "start": 250.022,
+      "text": " как на инвестирования. Ну-ка давай я попробую кому-нибудь из, допустим, голод.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_61",
+      "end": 260.972,
+      "speaker": "A",
+      "start": 258.722,
+      "text": " Может быть какой-то...",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_62",
+      "end": 264.172,
+      "speaker": "A",
+      "start": 262.522,
+      "text": " Нифига не эта.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_63",
+      "end": 269.522,
+      "speaker": "A",
+      "start": 268.072,
+      "text": " Пропала вот эта возможность,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_64",
+      "end": 270.922,
+      "speaker": "A",
+      "start": 269.622,
+      "text": " ну-ка технический чат.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_65",
+      "end": 277.058,
+      "speaker": "A",
+      "start": 276.308,
+      "text": " По-моему, они,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_66",
+      "end": 285.858,
+      "speaker": "A",
+      "start": 277.20799999999997,
+      "text": " видимо, обновили тоже, короче, но как будто бы сейчас.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_67",
+      "end": 295.608,
+      "speaker": "A",
+      "start": 294.058,
+      "text": " Давай загружающий код.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_68",
+      "end": 299.658,
+      "speaker": "A",
+      "start": 296.95799999999997,
+      "text": " Может быть из-за того, что у меня нет пи.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_69",
+      "end": 305.322,
+      "speaker": "A",
+      "start": 304.372,
+      "text": " Просто работает.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_70",
+      "end": 308.772,
+      "speaker": "A",
+      "start": 306.672,
+      "text": " Сейчас его пьяный, он тоже молчит.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_71",
+      "end": 310.97200000000004,
+      "speaker": "A",
+      "start": 309.772,
+      "text": " Алло, что он говорит?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_72",
+      "end": 317.322,
+      "speaker": "A",
+      "start": 316.372,
+      "text": " И что он хочет?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_73",
+      "end": 343.208,
+      "speaker": "A",
+      "start": 342.708,
+      "text": " Ну ладно,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_74",
+      "end": 345.108,
+      "speaker": "A",
+      "start": 343.25800000000004,
+      "text": " это я тебе потом покажу.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_75",
+      "end": 347.958,
+      "speaker": "A",
+      "start": 345.75800000000004,
+      "text": " Короче, пока не надо ничего делать,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_76",
+      "end": 362.80800000000005,
+      "speaker": "A",
+      "start": 348.00800000000004,
+      "text": " но суть в том, что видишь, он эту страницу индексирует. Но если ты попробуешь в Яндексе найти хоть по какому-нибудь запросу, там просто можно искать 20-30, ничего не найдешь.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_77",
+      "end": 367.908,
+      "speaker": "A",
+      "start": 363.75800000000004,
+      "text": " То есть он находит настоку по этому запросу.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_78",
+      "end": 393.21000000000004,
+      "speaker": "A",
+      "start": 368.66,
+      "text": " и то если слепым написать то есть вот видишь он находит сразу две страницы да именно которые он там заиндексировал то есть вот здесь он нас находит только нужно надо вот либо так прописать либо вот так прописать вот то есть вот есть еще видишь типа какой-то парсер",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_79",
+      "end": 397.94599999999997,
+      "speaker": "A",
+      "start": 395.796,
+      "text": " Ну, смотрите,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_80",
+      "end": 400.346,
+      "speaker": "A",
+      "start": 398.146,
+      "text": " есть то же самое, поисковая статистика.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_81",
+      "end": 403.746,
+      "speaker": "A",
+      "start": 400.846,
+      "text": " Яндекс индекс, видишь, 8,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_82",
+      "end": 406.246,
+      "speaker": "A",
+      "start": 403.94599999999997,
+      "text": " индекс Google 62.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_83",
+      "end": 410.546,
+      "speaker": "A",
+      "start": 407.046,
+      "text": " То есть, соответственно, Google нас хорошо проиндексировал, да,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_84",
+      "end": 413.046,
+      "speaker": "A",
+      "start": 410.646,
+      "text": " ну и вот, соответственно, здесь есть,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_85",
+      "end": 421.746,
+      "speaker": "A",
+      "start": 413.146,
+      "text": " вот есть ключевые слова, очень плохо, мы не нашли ключевые слова на веб-сайте. Вот, то есть...",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_86",
+      "end": 431.858,
+      "speaker": "A",
+      "start": 424.308,
+      "text": " Это описание, да, ну там может быть описание поменьше надо сделать,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_87",
+      "end": 436.158,
+      "speaker": "A",
+      "start": 432.058,
+      "text": " но это все не так как будто бы критично,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_88",
+      "end": 440.95799999999997,
+      "speaker": "A",
+      "start": 436.258,
+      "text": " но то что ключевых слов нет это важно.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_89",
+      "end": 450.158,
+      "speaker": "A",
+      "start": 445.258,
+      "text": " На такие платформы можно заходить но смотреть что...",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_90",
+      "end": 454.884,
+      "speaker": "A",
+      "start": 451.284,
+      "text": " Соответственно, какие-то может быть рекомендации.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_91",
+      "end": 460.084,
+      "speaker": "A",
+      "start": 455.284,
+      "text": " Вот для того, чтобы вот у меня какая идея есть.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_92",
+      "end": 471.284,
+      "speaker": "A",
+      "start": 461.284,
+      "text": " Возможно здесь писать какое-нибудь короткое описание. То есть возможно его генерить с помощью нишки, как было у вот этого.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_93",
+      "end": 473.93399999999997,
+      "speaker": "E",
+      "start": 473.584,
+      "text": " А",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_94",
+      "end": 474.18399999999997,
+      "speaker": "A",
+      "start": 473.93399999999997,
+      "text": " Так",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_95",
+      "end": 474.334,
+      "speaker": "E",
+      "start": 474.18399999999997,
+      "text": " вот...",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_96",
+      "end": 475.18399999999997,
+      "speaker": "A",
+      "start": 474.334,
+      "text": " вот здесь сейчас.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_97",
+      "end": 476.31,
+      "speaker": "E",
+      "start": 475.86,
+      "text": " Угу.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_98",
+      "end": 482.46000000000004,
+      "speaker": "A",
+      "start": 476.36,
+      "text": " Вот здесь сейчас написано более кастомное, что вот там типа Industrial,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_99",
+      "end": 483.86,
+      "speaker": "A",
+      "start": 483.21000000000004,
+      "text": " Consumer,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_100",
+      "end": 485.36,
+      "speaker": "A",
+      "start": 484.26,
+      "text": " туда-сюда,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_101",
+      "end": 504.51,
+      "speaker": "A",
+      "start": 485.56,
+      "text": " а раньше было просто написано, ну как-то просто описание вот этого графика, то есть оно было сгенерировано машинно, шаблонно что ли, то есть без какой-то аналитики и я думаю, что вот такая вот штукенция бы.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_102",
+      "end": 509.84200000000004,
+      "speaker": "A",
+      "start": 505.492,
+      "text": " просто какое-то словесное описание то есть можно",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_103",
+      "end": 510.142,
+      "speaker": "E",
+      "start": 509.84200000000004,
+      "text": " А",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_104",
+      "end": 510.192,
+      "speaker": "A",
+      "start": 510.142,
+      "text": " по",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_105",
+      "end": 510.34200000000004,
+      "speaker": "E",
+      "start": 510.192,
+      "text": " по всем",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_106",
+      "end": 527.942,
+      "speaker": "A",
+      "start": 510.34200000000004,
+      "text": " пробовать индикаторам. это как ну да да да то есть по всем индикаторам это бы нас существенно подбустило бы в плане потому что у нас по факту лишь страницы текста нету нифига то есть как бы он не может понять",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_107",
+      "end": 529.764,
+      "speaker": "A",
+      "start": 529.364,
+      "text": " что,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_108",
+      "end": 530.464,
+      "speaker": "A",
+      "start": 529.8140000000001,
+      "text": " ну то есть как",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_109",
+      "end": 530.864,
+      "speaker": "E",
+      "start": 530.464,
+      "text": " А",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_110",
+      "end": 530.914,
+      "speaker": "A",
+      "start": 530.864,
+      "text": " бы",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_111",
+      "end": 531.014,
+      "speaker": "E",
+      "start": 530.914,
+      "text": " раз",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_112",
+      "end": 531.0640000000001,
+      "speaker": "A",
+      "start": 531.014,
+      "text": " он",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_113",
+      "end": 531.164,
+      "speaker": "E",
+      "start": 531.0640000000001,
+      "text": " сколько",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_114",
+      "end": 531.364,
+      "speaker": "A",
+      "start": 531.164,
+      "text": " очень",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_115",
+      "end": 532.114,
+      "speaker": "E",
+      "start": 531.364,
+      "text": " день ему",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_116",
+      "end": 532.164,
+      "speaker": "A",
+      "start": 532.114,
+      "text": " подозрительно",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_117",
+      "end": 532.8140000000001,
+      "speaker": "E",
+      "start": 532.164,
+      "text": " менять?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_118",
+      "end": 533.164,
+      "speaker": "A",
+      "start": 532.8140000000001,
+      "text": " относится.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_119",
+      "end": 537.014,
+      "speaker": "E",
+      "start": 533.164,
+      "text": " А раз сколько в день ему менять этот текст? Раз в день или раз в неделю?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_120",
+      "end": 546.364,
+      "speaker": "A",
+      "start": 540.364,
+      "text": " Да, мне кажется по обновлению индикатора,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_121",
+      "end": 547.014,
+      "speaker": "A",
+      "start": 546.464,
+      "text": " А, то",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_122",
+      "end": 547.864,
+      "speaker": "E",
+      "start": 547.014,
+      "text": " по обновлению индикатора.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_123",
+      "end": 551.914,
+      "speaker": "A",
+      "start": 547.864,
+      "text": " есть какие-то у нас обновляют, то есть как будто как что-то новое вышло.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_124",
+      "end": 575.096,
+      "speaker": "A",
+      "start": 552.596,
+      "text": " вот можно добавлять но опять же давай давай этот момент сразу диплоить не будем попробуй как бы какой-то вот допустим на инфляции попробуем пропетировать вот и допустим ну чтобы вот здесь да там чего-нибудь он писал да и вот здесь вверху либо тут вот под картой то есть ну",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_125",
+      "end": 577.8779999999999,
+      "speaker": "A",
+      "start": 575.828,
+      "text": " Он крутит, собственно, наверху, собственно,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_126",
+      "end": 580.8779999999999,
+      "speaker": "A",
+      "start": 577.928,
+      "text": " что-то писал, но буквально четыре-пять строчек, чтобы",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_127",
+      "end": 581.3779999999999,
+      "speaker": "E",
+      "start": 580.8779999999999,
+      "text": " Хорошо.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_128",
+      "end": 585.778,
+      "speaker": "A",
+      "start": 581.3779999999999,
+      "text": " недолго было это читать, вот, потому что большой текст тоже никто не будет читать,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_129",
+      "end": 596.278,
+      "speaker": "A",
+      "start": 585.828,
+      "text": " но это бы существенно бустило нам этот SEO-шку, потому что иначе он видит, что у нас на странице только заголовки и все,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_130",
+      "end": 597.478,
+      "speaker": "A",
+      "start": 596.3779999999999,
+      "text": " и текста почти нет,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_131",
+      "end": 604.428,
+      "speaker": "A",
+      "start": 597.678,
+      "text": " и только вот здесь методология, и, соответственно, для поисковика как будто, что у нас какая-то...",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_132",
+      "end": 630.012,
+      "speaker": "A",
+      "start": 605.012,
+      "text": " в принципе какая-то фишинговая страница там и так далее вот то есть калькулятор инфляции вроде у нас хорошо сделан но во всяком случае очень ну как бы я вот других калькуляторов видел на и вот вот это вот кстати вот эта тема мне кажется",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_133",
+      "end": 632.568,
+      "speaker": "A",
+      "start": 631.668,
+      "text": " вот такую",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_134",
+      "end": 633.968,
+      "speaker": "E",
+      "start": 632.568,
+      "text": " Я еще могу такое к каждому",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_135",
+      "end": 634.368,
+      "speaker": "A",
+      "start": 633.968,
+      "text": " экстрим",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_136",
+      "end": 638.868,
+      "speaker": "E",
+      "start": 634.368,
+      "text": " блоку сделать, ну к каждому индикатору подробно.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_137",
+      "end": 659.968,
+      "speaker": "A",
+      "start": 640.568,
+      "text": " такую бы да какую-нибудь такую бы штуку но давай попробуем давай попробуем это по тестить начале на одном индикаторе каком-то близко даже упц то есть чтобы это то есть вот это конечно мне кажется",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_138",
+      "end": 678.6220000000001,
+      "speaker": "A",
+      "start": 661.172,
+      "text": " классная вещь то есть она тоже существенно то есть вот нам вот чуть-чуть побольше текста вот эта страница как мне кажется идеально вот это вот вот это мне очень нравится по дизайну по всему и вот по вот этим всяким штучкам",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_139",
+      "end": 679.812,
+      "speaker": "A",
+      "start": 679.412,
+      "text": " Вот,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_140",
+      "end": 681.812,
+      "speaker": "A",
+      "start": 679.8620000000001,
+      "text": " и по методологии то,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_141",
+      "end": 683.462,
+      "speaker": "A",
+      "start": 681.8620000000001,
+      "text": " что есть сейчас, все вопросы,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_142",
+      "end": 686.062,
+      "speaker": "A",
+      "start": 683.5120000000001,
+      "text": " то есть вот здесь просто какой-то, ну,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_143",
+      "end": 689.8620000000001,
+      "speaker": "A",
+      "start": 686.162,
+      "text": " как будто какой-то гений SEO работал, как мне кажется.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_144",
+      "end": 699.462,
+      "speaker": "A",
+      "start": 692.5120000000001,
+      "text": " Вот нам бы чего-то такое же лучше, да, потому что на вот этих вот штучках мало текста.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_145",
+      "end": 701.562,
+      "speaker": "A",
+      "start": 700.1120000000001,
+      "text": " То есть давай попробуем.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_146",
+      "end": 708.89,
+      "speaker": "A",
+      "start": 702.74,
+      "text": " что-нибудь суда запинвью, то есть не надо сразу все деплоид, давай будем потихонечку масштабировать изменения.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_147",
+      "end": 710.84,
+      "speaker": "E",
+      "start": 710.19,
+      "text": " Хорошо.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_148",
+      "end": 713.34,
+      "speaker": "A",
+      "start": 711.99,
+      "text": " Вот видишь, да,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_149",
+      "end": 714.24,
+      "speaker": "A",
+      "start": 713.44,
+      "text": " кстати говоря,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_150",
+      "end": 717.64,
+      "speaker": "A",
+      "start": 714.39,
+      "text": " то есть кажется и все делает за нас,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_151",
+      "end": 722.99,
+      "speaker": "A",
+      "start": 718.09,
+      "text": " однако сколько вот мы вносим правок и сколько мы еще будем носить.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_152",
+      "end": 727.24,
+      "speaker": "E",
+      "start": 722.99,
+      "text": " Да, да, да, вот это я еще на очень хорошей модели просто делаю.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_153",
+      "end": 729.572,
+      "speaker": "E",
+      "start": 728.6719999999999,
+      "text": " Там другие модели.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_154",
+      "end": 734.072,
+      "speaker": "A",
+      "start": 729.572,
+      "text": " А ещё убери вот убери вот этот OLS вот этот вот вообще",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_155",
+      "end": 734.6719999999999,
+      "speaker": "E",
+      "start": 734.072,
+      "text": " Блин,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_156",
+      "end": 734.822,
+      "speaker": "A",
+      "start": 734.6719999999999,
+      "text": " вот",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_157",
+      "end": 735.1719999999999,
+      "speaker": "E",
+      "start": 734.822,
+      "text": " ну",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_158",
+      "end": 735.222,
+      "speaker": "A",
+      "start": 735.1719999999999,
+      "text": " везде",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_159",
+      "end": 735.572,
+      "speaker": "E",
+      "start": 735.222,
+      "text": " я,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_160",
+      "end": 735.6719999999999,
+      "speaker": "A",
+      "start": 735.572,
+      "text": " проверю,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_161",
+      "end": 736.072,
+      "speaker": "E",
+      "start": 735.6719999999999,
+      "text": " да,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_162",
+      "end": 738.472,
+      "speaker": "A",
+      "start": 736.072,
+      "text": " чтобы вот этих всяких ОЛС чтобы",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_163",
+      "end": 740.5219999999999,
+      "speaker": "E",
+      "start": 740.072,
+      "text": " хорошо.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_164",
+      "end": 752.822,
+      "speaker": "A",
+      "start": 740.972,
+      "text": " не этот самый потому что то есть вообще тут ничего чтобы не надо чтобы многооконные там однооконные и так далее вот то есть просто чтобы ничего не было написано потому что тут",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_165",
+      "end": 757.096,
+      "speaker": "A",
+      "start": 753.396,
+      "text": " Когда прогноз пока недоступен, хорошо.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_166",
+      "end": 759.496,
+      "speaker": "E",
+      "start": 758.996,
+      "text": " Угу.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_167",
+      "end": 771.6959999999999,
+      "speaker": "A",
+      "start": 760.2959999999999,
+      "text": " А вот кредиты, ты я видел, ты тоже добавил кредиты, вот давай так и оставим, то есть карточки там юри, только давай не юри, там юрлицам.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_168",
+      "end": 774.13,
+      "speaker": "A",
+      "start": 772.18,
+      "text": " Я не так физик,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_169",
+      "end": 775.7299999999999,
+      "speaker": "A",
+      "start": 774.18,
+      "text": " то есть и LFL,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_170",
+      "end": 776.53,
+      "speaker": "E",
+      "start": 776.13,
+      "text": " Непонятно.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_171",
+      "end": 780.03,
+      "speaker": "A",
+      "start": 776.53,
+      "text": " потому что для поисковика лучше,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_172",
+      "end": 784.38,
+      "speaker": "A",
+      "start": 780.18,
+      "text": " чтобы он, потому что обычно люди пишут физик сами в LFL,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_173",
+      "end": 792.03,
+      "speaker": "A",
+      "start": 786.4799999999999,
+      "text": " но типа что это для SEO опять же лучше,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_174",
+      "end": 793.13,
+      "speaker": "A",
+      "start": 792.2299999999999,
+      "text": " как мне кажется.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_175",
+      "end": 797.8299999999999,
+      "speaker": "A",
+      "start": 793.5799999999999,
+      "text": " Вот, то есть тут все здорово, как мне кажется.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_176",
+      "end": 801.652,
+      "speaker": "A",
+      "start": 799.052,
+      "text": " То есть у ОНИЛ починилось у нас,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_177",
+      "end": 807.802,
+      "speaker": "A",
+      "start": 801.802,
+      "text": " у ТСНИЛС этой починилось, у старта по ипотеке, которая пошла от вверх.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_178",
+      "end": 808.102,
+      "speaker": "E",
+      "start": 807.952,
+      "text": " Mm",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_179",
+      "end": 808.302,
+      "speaker": "A",
+      "start": 808.102,
+      "text": " То",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_180",
+      "end": 808.452,
+      "speaker": "E",
+      "start": 808.302,
+      "text": "-hmm.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_181",
+      "end": 811.302,
+      "speaker": "A",
+      "start": 808.452,
+      "text": " есть тут в принципе все четенько у нас.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_182",
+      "end": 819.702,
+      "speaker": "A",
+      "start": 813.002,
+      "text": " Ну и давай вот этим вот как бы надо разобраться с вот этим багом,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_183",
+      "end": 822.152,
+      "speaker": "A",
+      "start": 820.352,
+      "text": " с квартальной инфляцией годовой.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_184",
+      "end": 824.992,
+      "speaker": "A",
+      "start": 823.092,
+      "text": " И по всем правилам,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_185",
+      "end": 827.692,
+      "speaker": "A",
+      "start": 825.042,
+      "text": " вот эти вот как бы кавки, которые,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_186",
+      "end": 829.542,
+      "speaker": "A",
+      "start": 827.792,
+      "text": " вот.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_187",
+      "end": 835.842,
+      "speaker": "A",
+      "start": 829.692,
+      "text": " А так я пока тоже буду изучать, как еще можно это продвигать, вот.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_188",
+      "end": 849.442,
+      "speaker": "A",
+      "start": 836.042,
+      "text": " Потому что пока я вот гоню трафик, вот, оно как бы так устаканилось, но наша задача как бы чтобы у нас какой-то костяк постоянных посетителей сформировался.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_189",
+      "end": 855.082,
+      "speaker": "A",
+      "start": 850.132,
+      "text": " Ну, то есть, которые бы сюда заходили, там что-то смотрели по мере выхода.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_190",
+      "end": 861.082,
+      "speaker": "A",
+      "start": 860.332,
+      "text": " Вот такие дела.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_191",
+      "end": 861.732,
+      "speaker": "E",
+      "start": 861.082,
+      "text": " Хорошо,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_192",
+      "end": 862.582,
+      "speaker": "E",
+      "start": 861.832,
+      "text": " все,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_193",
+      "end": 863.582,
+      "speaker": "E",
+      "start": 862.6819999999999,
+      "text": " я все отметил.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_194",
+      "end": 871.5319999999999,
+      "speaker": "E",
+      "start": 865.4319999999999,
+      "text": " А, Никит Александр, а когда у вас есть свободное время?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_195",
+      "end": 874.916,
+      "speaker": "E",
+      "start": 873.716,
+      "text": " Вот я думал по-моему",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_196",
+      "end": 878.416,
+      "speaker": "A",
+      "start": 874.916,
+      "text": " Сейчас я посмотрю, да, там встретятся.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_197",
+      "end": 882.666,
+      "speaker": "A",
+      "start": 880.666,
+      "text": " Давай, так,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_198",
+      "end": 883.066,
+      "speaker": "A",
+      "start": 882.766,
+      "text": " сейчас,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_199",
+      "end": 883.566,
+      "speaker": "A",
+      "start": 883.166,
+      "text": " сейчас, сейчас.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_200",
+      "end": 891.316,
+      "speaker": "A",
+      "start": 889.716,
+      "text": " Это какого в Москве?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_201",
+      "end": 895.766,
+      "speaker": "E",
+      "start": 893.516,
+      "text": " 16 мая, ну",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_202",
+      "end": 898.916,
+      "speaker": "E",
+      "start": 898.116,
+      "text": " и потом 18-го",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_203",
+      "end": 899.616,
+      "speaker": "A",
+      "start": 898.916,
+      "text": " 16 мая.",
+      "type": "transcript.text.segment"
+    }
+  ],
+  "task": null,
+  "text": "И ключевые слова, вот эти description, title, то есть это надо им передавать, Mm-hmm. потому что иначе он нас одного индексирует. Есть сайты, которые делают аналитику, может быть тоже их посмотреть, то есть они тебе что-то там говорят, что что-то у тебя там есть, что-то у тебя там нет, я вот допустим на какой-то зашел тут, но он типа платный тоже.\nНу, какие-то он может подсказать что -то там тебе. Вот посмотри, видишь, в Google индексация 62 страницы, в Яндекс индексация 3 страницы. Почему То он только есть просто, три? ну это я вчера.\nНу вот, ну да, может этот сайт тоже не совсем прям все, но суть в том, что он как будто Яндек джойстик, но не хочет, ну это было вчера, может быть сейчас он, ну ему надо какое-то время, чтобы пройти еще раз по сайту, нужно чтобы этот робот стоит там сайт мэп, ну он подгрузил новый.\nВот. Ну, то есть посмотрим этот момент. Вот так что Google нас индексирует хорошо. То есть вот если, допустим, даже если не верить вот этим всем штукам, я, допустим, на Google зайду там и там курс евро к рублю график поставлю, то я могу, допустим, придя там на шестую, седьмую страницу.\nнайти нас ищем Mm-hmm. на сильной странице то есть вот это мы в поиске да понятно что хорошо бы было быть вот если открыть то он сразу выдает график евро вот да там конечно знаешь вот особенно для таких\nХорошо бы было, знаешь, как сделать? Вот как на инвестинге мне понравилось, потому что, допустим, какой Для графиков именно вы имеете ввиду? пример. Не как трейдинг, смотря, допустим, график евро-доллар, и тут могли это время, где-то время.\nЧарт. Сейчас. Вот я покажу тебе какое -то имею в виду идею какую. Так, а чё-то она нихрена не это. Не работает украине Reactive Chart. Сейчас.\nЭта фишечка одна мне понравилась. Что-то он не хочет его подгружать. Типа, чтобы можно было менять кастомный мост. То есть, видишь, тут три года, допустим, мне три года, но мне хочется покрупнее, да? То есть, чтобы я мог, тут я могу просто двигать сюда, да? Может, мне хочется вот только вот этот кусок смотреть.\nЕсли А может бы можно хочется, чтобы тут было может быть два бегунка каких-то, чтобы я мог там вверх-низ. Вот я бы хотел посмотреть на, но оно и не это автоматизируется. как бы не обязательно так вот добавить прокрутку графика влево-вправо, это было. Так вот хочу.\nПосмотреть, где ты записывал, делать прокрутку графика, как на инвестирования. Ну-ка давай я попробую кому-нибудь из, допустим, голод. Может быть какой-то... Нифига не эта. Пропала вот эта возможность, ну-ка технический чат.\nПо-моему, они, видимо, обновили тоже, короче, но как будто бы сейчас. Давай загружающий код. Может быть из-за того, что у меня нет пи.\nПросто работает. Сейчас его пьяный, он тоже молчит. Алло, что он говорит? И что он хочет?\nНу ладно, это я тебе потом покажу. Короче, пока не надо ничего делать, но суть в том, что видишь, он эту страницу индексирует. Но если ты попробуешь в Яндексе найти хоть по какому -нибудь запросу, там просто можно искать 20-30, ничего не найдешь. То есть он находит настоку по этому запросу.\nи то если слепым написать то есть вот видишь он находит сразу две страницы да именно которые он там заиндексировал то есть вот здесь он нас находит только нужно надо вот либо так прописать либо вот так прописать вот то есть вот есть еще видишь типа какой -то парсер\nНу, смотрите, есть то же самое, поисковая статистика. Яндекс индекс, видишь, 8, индекс Google 62. То есть, соответственно, Google нас хорошо проиндексировал, да, ну и вот, соответственно, здесь есть, вот есть ключевые слова, очень плохо, мы не нашли ключевые слова на веб-сайте. Вот, то есть...\nЭто описание, да, ну там может быть описание поменьше надо сделать, но это все не так как будто бы критично, но то что ключевых слов нет это важно. На такие платформы можно заходить но смотреть что...\nСоответственно, какие-то может быть рекомендации. Вот для того, чтобы вот у меня какая идея есть. Возможно здесь писать какое -нибудь короткое описание. То есть возможно его генерить с помощью нишки, как было у вот этого. А Так вот... вот здесь сейчас.\nУгу. Вот здесь сейчас написано более кастомное, что вот там типа Industrial, Consumer, туда-сюда, а раньше было просто написано, ну как -то просто описание вот этого графика, то есть оно было сгенерировано машинно, шаблонно что ли, то есть без какой-то аналитики и я думаю, что вот такая вот штукенция бы.\nпросто какое-то словесное описание то есть можно А по по всем пробовать индикаторам. это как ну да да да то есть по всем индикаторам это бы нас существенно подбустило бы в плане потому что у нас по факту лишь страницы текста нету нифига то есть как бы он не может понять\nчто, ну то есть как А бы раз он сколько очень день ему подозрительно менять? относится. А раз сколько в день ему менять этот текст? Раз в день или раз в неделю? Да, мне кажется по обновлению индикатора, А, то по обновлению индикатора. есть какие-то у нас обновляют, то есть как будто как что-то новое вышло.\nвот можно добавлять но опять же давай давай этот момент сразу диплоить не будем попробуй как бы какой-то вот допустим на инфляции попробуем пропетировать вот и допустим ну чтобы вот здесь да там чего-нибудь он писал да и вот здесь вверху либо тут вот под картой то есть ну\nОн крутит, собственно, наверху, собственно, что-то писал, но буквально четыре-пять строчек, чтобы Хорошо. недолго было это читать, вот, потому что большой текст тоже никто не будет читать, но это бы существенно бустило нам этот SEO-шку, потому что иначе он видит, что у нас на странице только заголовки и все, и текста почти нет, и только вот здесь методология, и, соответственно, для поисковика как будто, что у нас какая-то...\nв принципе какая-то фишинговая страница там и так далее вот то есть калькулятор инфляции вроде у нас хорошо сделан но во всяком случае очень ну как бы я вот других калькуляторов видел на и вот вот это вот кстати вот эта тема мне кажется\nвот такую Я еще могу такое к каждому экстрим блоку сделать, ну к каждому индикатору подробно. такую бы да какую -нибудь такую бы штуку но давай попробуем давай попробуем это по тестить начале на одном индикаторе каком-то близко даже упц то есть чтобы это то есть вот это конечно мне кажется\nклассная вещь то есть она тоже существенно то есть вот нам вот чуть-чуть побольше текста вот эта страница как мне кажется идеально вот это вот вот это мне очень нравится по дизайну по всему и вот по вот этим всяким штучкам\nВот, и по методологии то, что есть сейчас, все вопросы, то есть вот здесь просто какой-то, ну, как будто какой-то гений SEO работал, как мне кажется. Вот нам бы чего-то такое же лучше, да, потому что на вот этих вот штучках мало текста. То есть давай попробуем.\nчто-нибудь суда запинвью, то есть не надо сразу все деплоид, давай будем потихонечку масштабировать изменения. Хорошо. Вот видишь, да, кстати говоря, то есть кажется и все делает за нас, однако сколько вот мы вносим правок и сколько мы еще будем носить. Да, да, да, вот это я еще на очень хорошей модели просто делаю.\nТам другие модели. А ещё убери вот убери вот этот OLS вот этот вот вообще Блин, вот ну везде я, проверю, да, чтобы вот этих всяких ОЛС чтобы хорошо. не этот самый потому что то есть вообще тут ничего чтобы не надо чтобы многооконные там однооконные и так далее вот то есть просто чтобы ничего не было написано потому что тут\nКогда прогноз пока недоступен, хорошо. Угу. А вот кредиты, ты я видел, ты тоже добавил кредиты, вот давай так и оставим, то есть карточки там юри, только давай не юри, там юрлицам.\nЯ не так физик, то есть и LFL, Непонятно. потому что для поисковика лучше, чтобы он, потому что обычно люди пишут физик сами в LFL, но типа что это для SEO опять же лучше, как мне кажется. Вот, то есть тут все здорово, как мне кажется.\nТо есть у ОНИЛ починилось у нас, у ТСНИЛС этой починилось, у старта по ипотеке, которая пошла от вверх. Mm То -hmm. есть тут в принципе все четенько у нас. Ну и давай вот этим вот как бы надо разобраться с вот этим багом, с квартальной инфляцией годовой.\nИ по всем правилам, вот эти вот как бы кавки, которые, вот. А так я пока тоже буду изучать, как еще можно это продвигать, вот. Потому что пока я вот гоню трафик, вот, оно как бы так устаканилось, но наша задача как бы чтобы у нас какой-то костяк постоянных посетителей сформировался.\nНу, то есть, которые бы сюда заходили, там что-то смотрели по мере выхода. Вот такие дела. Хорошо, все, я все отметил. А, Никит Александр, а когда у вас есть свободное время?\nВот я думал по-моему Сейчас я посмотрю, да, там встретятся. Давай, так, сейчас, сейчас, сейчас. Это какого в Москве? 16 мая, ну и потом 18-го 16 мая.",
+  "usage": {
+    "input_tokens": 11718,
+    "output_tokens": 25692,
+    "total_tokens": 37410,
+    "type": "tokens",
+    "input_token_details": {
+      "audio_tokens": 10930,
+      "text_tokens": 788
+    }
+  }
+}

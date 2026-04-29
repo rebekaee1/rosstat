@@ -19,17 +19,6 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
   const rows = usesForecastData
     ? (forecastData?.forecast?.values || [])
     : (inflation?.forecast || []);
-  const MODEL_LABELS = {
-    'CPI-Monthly-MW': 'Многооконная OLS',
-    'Inflation-12M-MW': 'Многооконная OLS',
-    'OLS-MultiWindow': 'Многооконная OLS',
-    'CPI-Quarterly-Agg': 'Агрегация месячных прогнозов',
-    'Annual-From-12M-Rolling': 'Скользящая 12-месячная',
-  };
-  const rawModelName = usesForecastData
-    ? forecastData?.forecast?.model_name
-    : inflation?.model_name;
-  const modelName = rawModelName ? (MODEL_LABELS[rawModelName] || rawModelName) : null;
 
   if (!rows.length) return null;
 
@@ -46,11 +35,6 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
         <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
           {title}
         </h3>
-        {modelName && (
-          <span className="text-xs font-mono text-text-tertiary px-2 py-1 rounded-md bg-obsidian-lighter border border-border-subtle">
-            {modelName}
-          </span>
-        )}
       </div>
 
       <div className="overflow-x-auto scrollbar-hide">

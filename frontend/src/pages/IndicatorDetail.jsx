@@ -22,15 +22,15 @@ const SEO_MAP = {
     description: 'ИПЦ России: исторические данные с 1991 года, скользящая 12-месячная инфляция, прогноз на 12 месяцев. Данные Росстата, обновление ежедневно.',
   },
   'cpi-food': {
-    title: 'ИПЦ на продовольственные товары — прогноз и данные',
+    title: 'Индекс потребительских цен на продовольственные товары — прогноз и данные',
     description: 'Индекс потребительских цен на продовольствие: динамика, инфляция продовольственных товаров, прогноз. Данные Росстата с 1991 года.',
   },
   'cpi-nonfood': {
-    title: 'ИПЦ на непродовольственные товары — прогноз и данные',
-    description: 'Индекс цен на непродовольственные товары: динамика, инфляция, прогноз на 12 месяцев. Данные Росстата с 1991 года.',
+    title: 'Индекс потребительских цен на непродовольственные товары — прогноз и данные',
+    description: 'Индекс потребительских цен на непродовольственные товары: динамика, инфляция, прогноз на 12 месяцев. Данные Росстата с 1991 года.',
   },
   'cpi-services': {
-    title: 'ИПЦ на услуги — прогноз и данные',
+    title: 'Индекс потребительских цен на услуги — прогноз и данные',
     description: 'Индекс потребительских цен на услуги: динамика цен, инфляция в сфере услуг, прогноз. Данные Росстата с 1991 года.',
   },
   'key-rate': {
@@ -74,27 +74,27 @@ const SEO_MAP = {
     description: 'Средневзвешенная ставка по автокредитам физическим лицам в рублях. Данные Банка России.',
   },
   'credit-rate-corp-short': {
-    title: 'Ставка по кредитам ЮЛ до 1 года — график и прогноз',
+    title: 'Ставка по кредитам юридическим лицам до 1 года — график и прогноз',
     description: 'Средневзвешенная ставка по кредитам нефинансовым организациям в рублях со сроком до 1 года. Данные Банка России с 2014 года.',
   },
   'credit-rate-corp-1to3y': {
-    title: 'Ставка по кредитам ЮЛ от 1 до 3 лет — график и прогноз',
+    title: 'Ставка по кредитам юридическим лицам от 1 до 3 лет — график и прогноз',
     description: 'Средневзвешенная ставка по кредитам нефинансовым организациям в рублях со сроком от 1 года до 3 лет. Данные Банка России.',
   },
   'credit-rate-corp-over3y': {
-    title: 'Ставка по кредитам ЮЛ свыше 3 лет — график и прогноз',
+    title: 'Ставка по кредитам юридическим лицам свыше 3 лет — график и прогноз',
     description: 'Средневзвешенная ставка по долгосрочным кредитам нефинансовым организациям в рублях со сроком свыше 3 лет. Данные Банка России.',
   },
   'credit-rate-ind-short': {
-    title: 'Ставка по кредитам ФЛ до 1 года — график и прогноз',
+    title: 'Ставка по кредитам физическим лицам до 1 года — график и прогноз',
     description: 'Средневзвешенная ставка по потребительским кредитам физлицам в рублях со сроком до 1 года. Данные Банка России с 2014 года.',
   },
   'credit-rate-ind-1to3y': {
-    title: 'Ставка по кредитам ФЛ от 1 до 3 лет — график и прогноз',
+    title: 'Ставка по кредитам физическим лицам от 1 до 3 лет — график и прогноз',
     description: 'Средневзвешенная ставка по потребительским кредитам физлицам в рублях со сроком от 1 года до 3 лет. Данные Банка России.',
   },
   'credit-rate-ind-over3y': {
-    title: 'Ставка по кредитам ФЛ свыше 3 лет — график и прогноз',
+    title: 'Ставка по кредитам физическим лицам свыше 3 лет — график и прогноз',
     description: 'Средневзвешенная ставка по долгосрочным кредитам физлицам в рублях со сроком свыше 3 лет. Данные Банка России.',
   },
   'inflation-quarterly': {
@@ -120,6 +120,10 @@ const SEO_MAP = {
   'gdp-nominal': {
     title: 'ВВП России — номинальный, квартальные данные',
     description: 'Валовой внутренний продукт России в текущих ценах: квартальные данные с 2011 года, прогноз. Данные Росстата.',
+  },
+  'gdp-real': {
+    title: 'Реальный ВВП России — квартальные данные Росстата',
+    description: 'Валовой внутренний продукт России в постоянных ценах 2021 года: официальные квартальные данные Росстата.',
   },
   'gdp-yoy': {
     title: 'Рост ВВП России (год к году) — данные',
@@ -191,7 +195,7 @@ const SEO_MAP = {
   },
   population: {
     title: 'Численность населения России — данные',
-    description: 'Численность постоянного населения РФ: ежегодные данные с 2010 года. Данные Росстата.',
+    description: 'Численность населения России: исторический ряд Росстата с 1897 года, ежегодные данные с 1970 года.',
   },
   'population-natural-growth': {
     title: 'Естественный прирост населения — данные',
@@ -396,6 +400,55 @@ const FREQ_MAP = {
   daily: 'По дням',
 };
 
+const CPI_DERIVED_CODES = {
+  cpi: { quarterly: 'inflation-quarterly', annual: 'inflation-annual' },
+  'cpi-food': { quarterly: 'cpi-food-quarterly', annual: 'cpi-food-annual' },
+  'cpi-nonfood': { quarterly: 'cpi-nonfood-quarterly', annual: 'cpi-nonfood-annual' },
+  'cpi-services': { quarterly: 'cpi-services-quarterly', annual: 'cpi-services-annual' },
+};
+
+const VARIANT_GROUPS = [
+  {
+    label: 'Состав индекса потребительских цен',
+    codes: [
+      { code: 'cpi', label: 'Все товары и услуги' },
+      { code: 'cpi-food', label: 'Продовольствие' },
+      { code: 'cpi-nonfood', label: 'Непродовольственные' },
+      { code: 'cpi-services', label: 'Услуги' },
+    ],
+  },
+  {
+    label: 'Режим ВВП',
+    codes: [
+      { code: 'gdp-nominal', label: 'Номинальный' },
+      { code: 'gdp-real', label: 'Реальный' },
+      { code: 'gdp-yoy', label: 'Год к году' },
+      { code: 'gdp-qoq', label: 'Квартал к кварталу' },
+    ],
+  },
+  {
+    label: 'Режим индекса цен производителей',
+    codes: [
+      { code: 'ppi', label: 'Индекс' },
+      { code: 'ppi-yoy', label: 'Год к году' },
+    ],
+  },
+  {
+    label: 'Первичное жильё',
+    codes: [
+      { code: 'housing-price-primary', label: 'Индекс' },
+      { code: 'housing-yoy-primary', label: 'Год к году' },
+    ],
+  },
+  {
+    label: 'Вторичное жильё',
+    codes: [
+      { code: 'housing-price-secondary', label: 'Индекс' },
+      { code: 'housing-yoy-secondary', label: 'Год к году' },
+    ],
+  },
+];
+
 const INFLATION_DESCRIPTION =
   'Накопленная инфляция за 12 месяцев показывает, на сколько процентов выросли ' +
   'потребительские цены за последний год. Рассчитывается как произведение 12 ' +
@@ -555,9 +608,9 @@ export default function IndicatorDetail() {
   } = useIndicator(code);
   const CPI_CODES = ['cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services'];
   const isPriceCategory = CPI_CODES.includes(code);
-  const canForecast = indicator?.category === 'Цены';
-  const forecastEnabled = canForecast && viewMode !== 'weekly';
   const shouldSubtract100 = isCpiIndex(code);
+  const cpiDerivedCodes = CPI_DERIVED_CODES[code] || {};
+  const variantGroup = VARIANT_GROUPS.find(group => group.codes.some(item => item.code === code));
   const {
     data: dataResp,
     isLoading: loadingData,
@@ -572,30 +625,29 @@ export default function IndicatorDetail() {
   const { data: forecastResp, refetch: refetchForecast } = useForecast(code);
 
   const hasCpiTabs = ['cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services'].includes(code);
-  const hasMainCpiDerived = code === 'cpi';
   const { data: quarterlyForecastResp } = useForecast('inflation-quarterly', {
-    enabled: hasMainCpiDerived && viewMode === 'quarterly',
+    enabled: code === 'cpi' && viewMode === 'quarterly',
   });
   const { data: annualForecastResp } = useForecast('inflation-annual', {
-    enabled: hasMainCpiDerived && viewMode === 'annual',
+    enabled: code === 'cpi' && viewMode === 'annual',
   });
   const {
     data: quarterlyResp,
     isLoading: loadingQuarterly,
-  } = useIndicatorData('inflation-quarterly', undefined, {
-    enabled: hasMainCpiDerived && viewMode === 'quarterly',
+  } = useIndicatorData(cpiDerivedCodes.quarterly, undefined, {
+    enabled: !!cpiDerivedCodes.quarterly && viewMode === 'quarterly',
   });
   const {
     data: annualResp,
     isLoading: loadingAnnual,
-  } = useIndicatorData('inflation-annual', undefined, {
-    enabled: hasMainCpiDerived && viewMode === 'annual',
+  } = useIndicatorData(cpiDerivedCodes.annual, undefined, {
+    enabled: !!cpiDerivedCodes.annual && viewMode === 'annual',
   });
   const {
     data: weeklyResp,
     isLoading: loadingWeekly,
   } = useIndicatorData('inflation-weekly', undefined, {
-    enabled: hasMainCpiDerived && viewMode === 'weekly',
+    enabled: code === 'cpi' && viewMode === 'weekly',
   });
 
   const chartMode = isPriceCategory ? viewMode : 'cpi';
@@ -654,8 +706,8 @@ export default function IndicatorDetail() {
   }, [forecastResp, shouldSubtract100, code]);
 
   const quarterlyForecastData = useMemo(
-    () => adjustCpiForecastDisplay(quarterlyForecastResp, 'inflation-quarterly'),
-    [quarterlyForecastResp],
+    () => adjustCpiForecastDisplay(quarterlyForecastResp, cpiDerivedCodes.quarterly),
+    [quarterlyForecastResp, cpiDerivedCodes.quarterly],
   );
 
   const adj = useCallback((v) => {
@@ -758,7 +810,7 @@ export default function IndicatorDetail() {
     : loadingData;
 
   const hasForecastData = chartMode === 'quarterly'
-    ? quarterlyForecastResp?.forecast?.values?.length > 0
+    ? quarterlyForecastData?.forecast?.values?.length > 0
     : chartMode === 'annual'
       ? annualForecastResp?.forecast?.values?.length > 0
       : chartMode === 'weekly'
@@ -766,19 +818,15 @@ export default function IndicatorDetail() {
         : chartMode === 'inflation'
           ? inflationResp?.forecast?.length > 0
           : displayForecastData?.forecast?.values?.length > 0;
+  const forecastCapable = viewMode !== 'weekly';
+  const forecastEnabled = forecastCapable && hasForecastData;
 
   const chartEmptyHint = useMemo(() => {
     if (dataError) {
       return 'Не удалось получить исторический ряд. Нажмите «Повторить» выше или проверьте backend / прокси Vite.';
     }
-    if (
-      hasCpiTabs && !hasMainCpiDerived
-      && ['quarterly', 'annual', 'weekly'].includes(viewMode)
-    ) {
-      return (
-        'Для подкатегорий ИПЦ (продовольствие, непродовольственные товары, услуги) квартальная, годовая и недельная агрегации '
-        + 'пока не рассчитываются. Используйте вкладку «Инфляция за год» или «Месячная».'
-      );
+    if (hasCpiTabs && viewMode === 'weekly' && code !== 'cpi') {
+      return 'Недельный ИПЦ сейчас доступен только для общего индекса потребительских цен.';
     }
     if (!loadingData && (dataPoints?.length ?? 0) === 0) {
       return (
@@ -787,7 +835,7 @@ export default function IndicatorDetail() {
       );
     }
     return undefined;
-  }, [dataError, loadingData, dataPoints, hasCpiTabs, hasMainCpiDerived, viewMode]);
+  }, [dataError, loadingData, dataPoints, hasCpiTabs, code, viewMode]);
 
   const refetchIndicatorPage = useCallback(() => {
     refetchInd();
@@ -876,6 +924,30 @@ export default function IndicatorDetail() {
           </>
         )}
       </div>
+
+      {variantGroup && (
+        <section className="mb-8 rounded-[1.5rem] border border-border-subtle bg-surface p-4 shadow-sm">
+          <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+            {variantGroup.label}
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {variantGroup.codes.map(item => (
+              <Link
+                key={item.code}
+                to={`/indicator/${item.code}`}
+                className={cn(
+                  'rounded-xl px-3 py-2 text-xs font-medium transition-colors',
+                  item.code === code
+                    ? 'bg-champagne/15 text-champagne'
+                    : 'bg-obsidian-lighter text-text-secondary hover:text-champagne'
+                )}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="mb-12">
         {(loadingInd || (chartMode === 'inflation' && loadingInflation) || (chartMode === 'annual' && loadingAnnual) || (chartMode === 'weekly' && loadingWeekly) || (chartMode === 'quarterly' && loadingQuarterly)) ? (
@@ -1034,7 +1106,7 @@ export default function IndicatorDetail() {
               </label>
               {!forecastEnabled && (
                 <div className="absolute top-full right-0 mt-2 px-3 py-2 rounded-xl bg-obsidian border border-border-subtle text-xs text-text-secondary whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-xl z-50">
-                  {viewMode === 'weekly' ? 'Недельный прогноз не публикуется' : 'Прогноз скоро будет доступен'}
+                  {viewMode === 'weekly' ? 'Недельный прогноз не публикуется' : 'Прогноз для этого режима недоступен'}
                 </div>
               )}
             </div>
@@ -1200,7 +1272,7 @@ export default function IndicatorDetail() {
                 Прогноз для этого показателя не рассчитан или недоступен
               </p>
               <p className="text-xs text-center max-w-lg leading-relaxed text-text-tertiary">
-                Для ступенчатых рядов (ключевая ставка) и показателей без модели прогноз может отсутствовать — это ожидаемо.
+                Некоторые режимы показывают только официальный исторический ряд. Если прогноз появится, переключатель станет активным автоматически.
               </p>
             </div>
           )}

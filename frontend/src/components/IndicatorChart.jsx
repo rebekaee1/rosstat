@@ -432,8 +432,15 @@ export default function IndicatorChart({
         )}
         style={{ touchAction: 'pan-y' }}
       >
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute left-1/2 top-[46%] z-10 -translate-x-1/2 -translate-y-1/2 -rotate-6 select-none whitespace-nowrap text-3xl font-display font-bold tracking-[0.18em] text-text-primary opacity-[0.055] md:text-5xl"
+        >
+          Forecast Economy
+        </div>
+
         <ResponsiveContainer width="100%" height={420}>
-          <ComposedChart data={visibleData} margin={{ top: 5, right: 10, bottom: 5, left: -5 }}>
+          <ComposedChart data={visibleData} margin={{ top: 12, right: 18, bottom: 16, left: 0 }}>
             <defs>
               <linearGradient id="inflGradActual" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#B8942F" stopOpacity={0.15} />
@@ -452,8 +459,11 @@ export default function IndicatorChart({
               stroke="rgba(0,0,0,0.1)"
               tick={{ fill: 'rgba(0,0,0,0.4)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
               tickLine={false}
-              interval="preserveStartEnd"
-              minTickGap={50}
+              interval="equidistantPreserveStart"
+              minTickGap={28}
+              tickMargin={10}
+              height={42}
+              padding={{ left: 8, right: 8 }}
             />
             <YAxis
               stroke="rgba(0,0,0,0.1)"
@@ -514,15 +524,26 @@ export default function IndicatorChart({
             )}
 
             {showForecast && (
-              <Line
-                dataKey="forecast"
-                stroke="#7C3AED"
-                strokeWidth={2.5}
-                strokeDasharray="8 4"
-                dot={false}
-                activeDot={isDragging ? false : { r: 5, fill: '#7C3AED', stroke: '#FFFFFF', strokeWidth: 2 }}
-                isAnimationActive={false}
-              />
+              chartType === 'bar' ? (
+                <Bar
+                  dataKey="forecast"
+                  fill="#7C3AED"
+                  fillOpacity={0.55}
+                  stroke="#7C3AED"
+                  isAnimationActive={false}
+                  maxBarSize={28}
+                />
+              ) : (
+                <Line
+                  dataKey="forecast"
+                  stroke="#7C3AED"
+                  strokeWidth={2.5}
+                  strokeDasharray="8 4"
+                  dot={false}
+                  activeDot={isDragging ? false : { r: 5, fill: '#7C3AED', stroke: '#FFFFFF', strokeWidth: 2 }}
+                  isAnimationActive={false}
+                />
+              )
             )}
           </ComposedChart>
         </ResponsiveContainer>
@@ -534,12 +555,6 @@ export default function IndicatorChart({
           </div>
         )}
 
-        <span
-          aria-hidden="true"
-          className="pointer-events-none select-none absolute bottom-2 right-3 text-[10px] font-mono text-text-tertiary opacity-40 tracking-tight"
-        >
-          forecasteconomy.com
-        </span>
       </div>
 
       {maxOffset > 0 && (

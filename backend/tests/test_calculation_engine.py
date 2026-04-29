@@ -7,6 +7,9 @@ def test_all_derived_registered():
     """Verify all expected derived indicators are registered."""
     expected = {
         "inflation-quarterly", "inflation-annual", "wages-real",
+        "cpi-food-quarterly", "cpi-food-annual",
+        "cpi-nonfood-quarterly", "cpi-nonfood-annual",
+        "cpi-services-quarterly", "cpi-services-annual",
         "gdp-yoy", "gdp-qoq",
         "unemployment-quarterly", "unemployment-annual",
         "current-account-yoy", "ipi-yoy",

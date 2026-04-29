@@ -210,6 +210,7 @@ async def build_document(
 {_metrika_script()}
 <title>{safe_title}</title>
 <meta name="description" content="{safe_desc}">
+<meta name="keywords" content="экономика России, макроэкономические данные, Росстат, Банк России, ВВП, инфляция, ставки, валюты">
 <meta name="author" content="Forecast Economy">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 <meta name="theme-color" content="#F8F9FC">
@@ -371,7 +372,7 @@ async def render_indicator_html(code: str, db: AsyncSession) -> tuple[int, str]:
     latest_rows = await _latest_rows(db, indicator.id, limit=8)
     count, first_dt, last_dt = await _indicator_stats(db, indicator.id)
     related = await _related_indicators(db, indicator)
-    title = f"{indicator.name} — данные, график и прогноз"
+    title = f"{indicator.name} — данные и график"
     desc = clean_text(indicator.description, f"{indicator.name}: динамика, источник, методология и последние значения.")
     body = _indicator_body(indicator, category, latest_rows, related, count, first_dt, last_dt)
     json_ld = [

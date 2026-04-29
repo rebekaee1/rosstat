@@ -52,6 +52,7 @@ ENV/
 правки/
 правки_v2/
 article_NA/
+правки_v4/audio/
 
 # Large media files outside the app
 *.mov

@@ -2,10 +2,10 @@ import { useEffect } from 'react';
 
 const BASE = 'https://forecasteconomy.com';
 const DEFAULTS = {
-  title: 'Forecast Economy | Бесплатная аналитика экономики России',
+  title: 'Forecast Economy | Экономические данные России',
   description:
     'Forecast Economy — бесплатная платформа макроэкономической аналитики России. ' +
-    '80+ индикаторов в 9 категориях: индекс потребительских цен (ИПЦ), ВВП, ставки, валюты, рынок труда, торговля. ' +
+    '100+ индикаторов в 9 категориях: ВВП, цены, ставки, валюты, рынок труда, население и торговля. ' +
     'Данные Росстата и ЦБ РФ, прогнозы. Без регистрации.',
 };
 
@@ -47,6 +47,7 @@ export default function useDocumentMeta({ title, description, path = '/' }) {
 
     document.title = fullTitle;
     setMeta('description', desc);
+    setMeta('keywords', 'экономика России, макроэкономические данные, Росстат, Банк России, ВВП, инфляция, ставки, валюты');
     setCanonical(url);
     setProperty('og:title', fullTitle);
     setProperty('og:description', desc);

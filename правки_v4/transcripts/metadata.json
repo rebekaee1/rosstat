@@ -1,0 +1,77 @@
+{
+  "model": "gpt-4o-transcribe-diarize",
+  "parts": [
+    {
+      "index": 1,
+      "label": "НА правки 4_1",
+      "duration_sec": 309.758688,
+      "global_start": 0.0,
+      "global_end": 309.758688,
+      "segments": 75,
+      "chunks": [
+        {
+          "index": 1,
+          "audio": "/Users/iprofi/tradingeconomics/rosstat/правки_v4/audio/na_pravki_4_1.mp3",
+          "duration_sec": 309.758688,
+          "local_start": 0.0,
+          "local_end": 309.758688,
+          "raw_response": "/Users/iprofi/tradingeconomics/rosstat/правки_v4/transcripts/openai_part_1_raw.json"
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "label": "НА правки 4_2",
+      "duration_sec": 317.844,
+      "global_start": 309.758688,
+      "global_end": 627.602688,
+      "segments": 73,
+      "chunks": [
+        {
+          "index": 1,
+          "audio": "/Users/iprofi/tradingeconomics/rosstat/правки_v4/audio/na_pravki_4_2.mp3",
+          "duration_sec": 317.844,
+          "local_start": 0.0,
+          "local_end": 317.844,
+          "raw_response": "/Users/iprofi/tradingeconomics/rosstat/правки_v4/transcripts/openai_part_2_raw.json"
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "label": "НА правки 4_3",
+      "duration_sec": 1988.618375,
+      "global_start": 627.602688,
+      "global_end": 2616.221063,
+      "segments": 511,
+      "chunks": [
+        {
+          "index": 1,
+          "audio": "/Users/iprofi/tradingeconomics/rosstat/правки_v4/audio/chunks/na_pravki_4_3_chunk_00.mp3",
+          "duration_sec": 899.964,
+          "local_start": 0.0,
+          "local_end": 899.964,
+          "raw_response": "/Users/iprofi/tradingeconomics/rosstat/правки_v4/transcripts/openai_part_3_chunk_1_raw.json"
+        },
+        {
+          "index": 2,
+          "audio": "/Users/iprofi/tradingeconomics/rosstat/правки_v4/audio/chunks/na_pravki_4_3_chunk_01.mp3",
+          "duration_sec": 900.0,
+          "local_start": 899.964,
+          "local_end": 1799.964,
+          "raw_response": "/Users/iprofi/tradingeconomics/rosstat/правки_v4/transcripts/openai_part_3_chunk_2_raw.json"
+        },
+        {
+          "index": 3,
+          "audio": "/Users/iprofi/tradingeconomics/rosstat/правки_v4/audio/chunks/na_pravki_4_3_chunk_02.mp3",
+          "duration_sec": 188.654375,
+          "local_start": 1799.964,
+          "local_end": 1988.618375,
+          "raw_response": "/Users/iprofi/tradingeconomics/rosstat/правки_v4/transcripts/openai_part_3_chunk_3_raw.json"
+        }
+      ]
+    }
+  ],
+  "total_duration_sec": 2616.221063,
+  "segments": 659
+}

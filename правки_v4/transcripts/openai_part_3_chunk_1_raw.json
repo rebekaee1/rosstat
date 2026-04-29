@@ -1,0 +1,1937 @@
+{
+  "duration": null,
+  "segments": [
+    {
+      "id": "seg_0",
+      "end": 1.2340000000000002,
+      "speaker": "A",
+      "start": 0.084,
+      "text": " Соответствующее.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_1",
+      "end": 2.584,
+      "speaker": "B",
+      "start": 1.2340000000000002,
+      "text": " Угу, в одной, ну да,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_2",
+      "end": 3.0340000000000003,
+      "speaker": "A",
+      "start": 2.584,
+      "text": " А",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_3",
+      "end": 3.384,
+      "speaker": "B",
+      "start": 3.0340000000000003,
+      "text": " чтобы они",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_4",
+      "end": 3.4839999999999995,
+      "speaker": "A",
+      "start": 3.384,
+      "text": " так,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_5",
+      "end": 3.6839999999999997,
+      "speaker": "B",
+      "start": 3.4839999999999995,
+      "text": " были.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_6",
+      "end": 4.183999999999999,
+      "speaker": "A",
+      "start": 3.6839999999999997,
+      "text": " в принципе,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_7",
+      "end": 6.183999999999999,
+      "speaker": "A",
+      "start": 4.233999999999999,
+      "text": " так,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_8",
+      "end": 10.233999999999998,
+      "speaker": "A",
+      "start": 6.283999999999999,
+      "text": " в принципе, тут нормально.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_9",
+      "end": 13.283999999999997,
+      "speaker": "A",
+      "start": 10.933999999999997,
+      "text": " Ну вот квартальное надо поправить.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_10",
+      "end": 18.933999999999994,
+      "speaker": "A",
+      "start": 13.483999999999996,
+      "text": " И вот что-то у нас, видишь, с этими, с осветами.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_11",
+      "end": 19.483999999999995,
+      "speaker": "B",
+      "start": 18.933999999999994,
+      "text": " А, с правыми.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_12",
+      "end": 20.283999999999995,
+      "speaker": "A",
+      "start": 19.483999999999995,
+      "text": " И что?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_13",
+      "end": 22.533999999999995,
+      "speaker": "A",
+      "start": 20.433999999999994,
+      "text": " Да, да, да, обычно.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_14",
+      "end": 24.352,
+      "speaker": "A",
+      "start": 23.252,
+      "text": " Но это даже",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_15",
+      "end": 24.552,
+      "speaker": "B",
+      "start": 24.352,
+      "text": " А",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_16",
+      "end": 24.752,
+      "speaker": "A",
+      "start": 24.552,
+      "text": " не",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_17",
+      "end": 25.102,
+      "speaker": "B",
+      "start": 24.752,
+      "text": " кстати,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_18",
+      "end": 25.152,
+      "speaker": "A",
+      "start": 25.102,
+      "text": "",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_19",
+      "end": 25.302,
+      "speaker": "B",
+      "start": 25.152,
+      "text": " вот видели,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_20",
+      "end": 25.652,
+      "speaker": "A",
+      "start": 25.302,
+      "text": " здесь,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_21",
+      "end": 25.852,
+      "speaker": "B",
+      "start": 25.652,
+      "text": " я туда нам,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_22",
+      "end": 26.402,
+      "speaker": "A",
+      "start": 25.852,
+      "text": " да,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_23",
+      "end": 32.952,
+      "speaker": "B",
+      "start": 26.402,
+      "text": " я нам графику Forex Economy подставил, чтобы этот, если скринили, да.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_24",
+      "end": 40.80200000000001,
+      "speaker": "A",
+      "start": 32.952,
+      "text": " поставила, она почему-то закрыла. Ее надо поставить сверху, вот сюда, чтобы ее трудно было вырезать.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_25",
+      "end": 46.152,
+      "speaker": "A",
+      "start": 41.102000000000004,
+      "text": " То есть, а здесь можно просто принт-скрин и вырезать ее, ее отрезать.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_26",
+      "end": 47.952000000000005,
+      "speaker": "A",
+      "start": 46.452000000000005,
+      "text": " Вот, то есть, как бы.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_27",
+      "end": 53.059999999999995,
+      "speaker": "A",
+      "start": 48.66,
+      "text": " Ээээ, когда её бы лучше вот сюда куда-нибудь там вставить.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_28",
+      "end": 54.709999999999994,
+      "speaker": "B",
+      "start": 53.309999999999995,
+      "text": " Я могу ее вообще на самом",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_29",
+      "end": 54.86,
+      "speaker": "A",
+      "start": 54.709999999999994,
+      "text": " Ну то есть",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_30",
+      "end": 59.16,
+      "speaker": "B",
+      "start": 54.86,
+      "text": " деле сделать желтой под свет этого дизайна.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_31",
+      "end": 67.16,
+      "speaker": "A",
+      "start": 59.959999999999994,
+      "text": " Ну можно, можно, можно, да, жёлтый. Но я к тому, что здесь нарушается эта... ось.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_32",
+      "end": 69.75999999999999,
+      "speaker": "A",
+      "start": 67.75999999999999,
+      "text": " Видишь, что, ну,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_33",
+      "end": 70.81,
+      "speaker": "A",
+      "start": 69.86,
+      "text": " как",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_34",
+      "end": 75.31,
+      "speaker": "A",
+      "start": 72.21,
+      "text": " бы, может быть её вот сюда поставить, Да, на ось.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_35",
+      "end": 75.96,
+      "speaker": "B",
+      "start": 75.31,
+      "text": " да, я понимаю.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_36",
+      "end": 77.11,
+      "speaker": "A",
+      "start": 75.96,
+      "text": " А вот здесь, ну...",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_37",
+      "end": 80.55199999999999,
+      "speaker": "A",
+      "start": 78.452,
+      "text": " Ну, то есть пропущены даты как будто бы,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_38",
+      "end": 80.902,
+      "speaker": "B",
+      "start": 80.55199999999999,
+      "text": " Да,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_39",
+      "end": 81.852,
+      "speaker": "A",
+      "start": 80.902,
+      "text": " видишь, да?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_40",
+      "end": 83.30199999999999,
+      "speaker": "A",
+      "start": 81.902,
+      "text": " То есть тут, при",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_41",
+      "end": 88.55199999999999,
+      "speaker": "A",
+      "start": 84.55199999999999,
+      "text": " том, что даже если убираешь прогноз, то это не помогает.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_42",
+      "end": 92.30199999999999,
+      "speaker": "A",
+      "start": 88.602,
+      "text": " То есть просто вот как бы эти даты просто пропуски вот здесь.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_43",
+      "end": 95.602,
+      "speaker": "B",
+      "start": 92.30199999999999,
+      "text": " Снизу, да, посмотреть, что перекрывают дата.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_44",
+      "end": 99.702,
+      "speaker": "A",
+      "start": 98.402,
+      "text": " Да, так,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_45",
+      "end": 102.002,
+      "speaker": "A",
+      "start": 99.952,
+      "text": " вот смотри.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_46",
+      "end": 121.276,
+      "speaker": "A",
+      "start": 103.476,
+      "text": " В целом, вот здесь по поводу цены на первичное жилье вот эти вот изменения, то есть как будто бы давай может быть мы сделаем это все в одной карточке, то же самое что индекс цен производителей, вот,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_47",
+      "end": 121.376,
+      "speaker": "B",
+      "start": 121.276,
+      "text": " Да,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_48",
+      "end": 125.276,
+      "speaker": "A",
+      "start": 121.376,
+      "text": " индекс цен на жилье, я тебе присылал индекс цен на жилье файл.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_49",
+      "end": 128.076,
+      "speaker": "B",
+      "start": 125.826,
+      "text": " да, я его уже подставил в прогноз.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_50",
+      "end": 130.768,
+      "speaker": "A",
+      "start": 129.268,
+      "text": " Это вот она же, да?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_51",
+      "end": 130.918,
+      "speaker": "B",
+      "start": 130.868,
+      "text": " Mm",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_52",
+      "end": 131.368,
+      "speaker": "A",
+      "start": 130.918,
+      "text": " Вот.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_53",
+      "end": 131.518,
+      "speaker": "B",
+      "start": 131.368,
+      "text": "-hmm",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_54",
+      "end": 135.618,
+      "speaker": "A",
+      "start": 131.718,
+      "text": " Мы, соответственно, из него же берем вот эти изменения код года.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_55",
+      "end": 145.312,
+      "speaker": "A",
+      "start": 139.412,
+      "text": " То, что ты его не отыщ прогнозика, хотя он показан, что он типа есть, да, но его на самом деле он не показывает",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_56",
+      "end": 152.162,
+      "speaker": "B",
+      "start": 145.312,
+      "text": " А, я его здесь. лишь из-за того, что навеи добавил, к нему не применилась автоматическая эта штука по выключению.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_57",
+      "end": 153.262,
+      "speaker": "B",
+      "start": 152.662,
+      "text": " Выключение.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_58",
+      "end": 153.912,
+      "speaker": "A",
+      "start": 153.262,
+      "text": " Да.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_59",
+      "end": 155.96200000000002,
+      "speaker": "A",
+      "start": 154.862,
+      "text": " А вот смотри,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_60",
+      "end": 163.312,
+      "speaker": "A",
+      "start": 156.062,
+      "text": " и может быть я вот думаю, что по факту это же одно и то же, просто разные агрегаты.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_61",
+      "end": 166.36200000000002,
+      "speaker": "A",
+      "start": 163.662,
+      "text": " Я думаю, что нам надо, знаешь, как сделать.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_62",
+      "end": 176.018,
+      "speaker": "A",
+      "start": 172.368,
+      "text": " написать в избежание потребительских цен вот здесь вот",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_63",
+      "end": 176.468,
+      "speaker": "B",
+      "start": 176.018,
+      "text": " Uh-huh.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_64",
+      "end": 192.768,
+      "speaker": "A",
+      "start": 176.468,
+      "text": " вместо ИПЦ потому что мы про это говорили по моему вот и вот здесь еще добавить сам индекс то есть по аналогии с тем то есть вот еще одну кнопочку вот сюда где-нибудь",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_65",
+      "end": 207.488,
+      "speaker": "A",
+      "start": 196.788,
+      "text": " индекс вот то есть вот так здесь видишь да что я могу посмотреть вот допустим как изменялись цены видишь",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_66",
+      "end": 218.488,
+      "speaker": "A",
+      "start": 209.138,
+      "text": " да и и вот здесь добавить то же самое допустим изменение год к году",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_67",
+      "end": 231.684,
+      "speaker": "A",
+      "start": 220.884,
+      "text": " Только не в разных карточках, потому что так получается, если мы надобавляем, то у нас будет дохренища карточек и тяжело будет ориентироваться. То есть мы сюда еще будем какие-то добавлять.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_68",
+      "end": 237.534,
+      "speaker": "A",
+      "start": 233.634,
+      "text": " То же самое с индексом цен производителей.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_69",
+      "end": 241.284,
+      "speaker": "A",
+      "start": 238.134,
+      "text": " То есть он индекс цен, допустим, хорошо он в виде индекса.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_70",
+      "end": 243.83399999999997,
+      "speaker": "A",
+      "start": 242.034,
+      "text": " Ты сюда заходишь.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_71",
+      "end": 246.046,
+      "speaker": "A",
+      "start": 244.596,
+      "text": " И здесь,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_72",
+      "end": 247.946,
+      "speaker": "A",
+      "start": 246.296,
+      "text": " а это я тебе тоже отправил?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_73",
+      "end": 255.796,
+      "speaker": "B",
+      "start": 248.096,
+      "text": " Но я все прогнозы, я в целом все прогнозы, которые вы присылали, я их перенес.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_74",
+      "end": 259.396,
+      "speaker": "A",
+      "start": 255.796,
+      "text": " И ПЦ помесячные я тебе отправил, да?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_75",
+      "end": 264.046,
+      "speaker": "A",
+      "start": 259.546,
+      "text": " Ой, не ПЦ, а эти программы.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_76",
+      "end": 269.546,
+      "speaker": "B",
+      "start": 266.296,
+      "text": " Ой, сейчас пропал звук. А, вот появился.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_77",
+      "end": 273.19599999999997,
+      "speaker": "A",
+      "start": 271.796,
+      "text": " Так, да,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_78",
+      "end": 274.346,
+      "speaker": "B",
+      "start": 273.19599999999997,
+      "text": " Что-то прерывается.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_79",
+      "end": 277.046,
+      "speaker": "A",
+      "start": 274.596,
+      "text": " вот цены на недвижимость я присылал, да?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_80",
+      "end": 279.646,
+      "speaker": "A",
+      "start": 278.896,
+      "text": " Слышно меня?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_81",
+      "end": 280.346,
+      "speaker": "B",
+      "start": 279.646,
+      "text": " Да-да-да.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_82",
+      "end": 283.046,
+      "speaker": "A",
+      "start": 280.346,
+      "text": " Сейчас, подожди, может быть надо отключить.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_83",
+      "end": 285.096,
+      "speaker": "A",
+      "start": 284.596,
+      "text": " Да,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_84",
+      "end": 286.396,
+      "speaker": "A",
+      "start": 285.19599999999997,
+      "text": " интернет чуть не очень.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_85",
+      "end": 293.44599999999997,
+      "speaker": "A",
+      "start": 286.646,
+      "text": " По-моему, я тебе не присылал этот на индекс цен производителей. Я его сделал.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_86",
+      "end": 294.74199999999996,
+      "speaker": "A",
+      "start": 294.292,
+      "text": " Вот.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_87",
+      "end": 296.19199999999995,
+      "speaker": "A",
+      "start": 295.49199999999996,
+      "text": " Ну,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_88",
+      "end": 300.99199999999996,
+      "speaker": "A",
+      "start": 296.392,
+      "text": " вот цены на жилье я тебе присылал, надо будет их, кстати, посравнивать.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_89",
+      "end": 302.24199999999996,
+      "speaker": "A",
+      "start": 301.642,
+      "text": " Вот.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_90",
+      "end": 307.94199999999995,
+      "speaker": "A",
+      "start": 302.342,
+      "text": " А индекс центразводитель я тебе, по-моему, не присылал, хотя я его сделал.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_91",
+      "end": 309.69199999999995,
+      "speaker": "A",
+      "start": 309.292,
+      "text": " Вот.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_92",
+      "end": 311.19199999999995,
+      "speaker": "A",
+      "start": 310.392,
+      "text": " Все его сделал,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_93",
+      "end": 311.542,
+      "speaker": "B",
+      "start": 311.19199999999995,
+      "text": " Я только",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_94",
+      "end": 311.792,
+      "speaker": "A",
+      "start": 311.542,
+      "text": " но я",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_95",
+      "end": 311.99199999999996,
+      "speaker": "B",
+      "start": 311.792,
+      "text": " прогнозы",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_96",
+      "end": 312.642,
+      "speaker": "A",
+      "start": 311.99199999999996,
+      "text": " тебе еще не",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_97",
+      "end": 312.74199999999996,
+      "speaker": "B",
+      "start": 312.642,
+      "text": " и",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_98",
+      "end": 312.792,
+      "speaker": "A",
+      "start": 312.74199999999996,
+      "text": " прислал.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_99",
+      "end": 316.392,
+      "speaker": "B",
+      "start": 312.792,
+      "text": " ПЦ по месячному присылали, которые.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_100",
+      "end": 322.248,
+      "speaker": "A",
+      "start": 317.748,
+      "text": " Да, вот я уже, кстати, сделал и этот ВВП номинальный.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_101",
+      "end": 329.14799999999997,
+      "speaker": "A",
+      "start": 323.14799999999997,
+      "text": " Вот тоже прогноз. Я тоже потихонечку делаю, буду теперь отправлять.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_102",
+      "end": 333.448,
+      "speaker": "A",
+      "start": 330.39799999999997,
+      "text": " Ты себя помечаешь вот эти вот аналитики?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_103",
+      "end": 336.698,
+      "speaker": "B",
+      "start": 333.448,
+      "text": " Да да да да да, да у меня уже 9 пунктов набралось.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_104",
+      "end": 338.44,
+      "speaker": "A",
+      "start": 337.94,
+      "text": " Ага,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_105",
+      "end": 339.09,
+      "speaker": "A",
+      "start": 338.49,
+      "text": " да,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_106",
+      "end": 339.59,
+      "speaker": "A",
+      "start": 339.19,
+      "text": " вот.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_107",
+      "end": 345.74,
+      "speaker": "A",
+      "start": 339.89,
+      "text": " Короче, давай вот индекс цен-производитель, тоже изменение год-году, сделаем кнопочку внутри.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_108",
+      "end": 347.69,
+      "speaker": "B",
+      "start": 346.29,
+      "text": " Угу, хорошо.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_109",
+      "end": 360.69,
+      "speaker": "A",
+      "start": 349.74,
+      "text": " Потому что это по факту один и тот же показатель, то есть то же самое, вот это год-году цены на первичном, на вторичной жилье, то есть тоже сделаем внутри вот этого вот.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_110",
+      "end": 365.24,
+      "speaker": "A",
+      "start": 361.34,
+      "text": " Потому что мы потом еще будем добавлять еще какие-нибудь там.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_111",
+      "end": 384.19,
+      "speaker": "A",
+      "start": 365.94,
+      "text": " индикаторы соответственно не хотелось бы раздувать это все вот ну и индекс потребительских цен написается там на услуги там продовольственные продовольственные вот то есть инфляция за год там недельная месячная ну",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_112",
+      "end": 384.74,
+      "speaker": "B",
+      "start": 384.19,
+      "text": " Угу.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_113",
+      "end": 388.89,
+      "speaker": "A",
+      "start": 384.74,
+      "text": " да в принципе что-то тут прогнать ну вот квартальное",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_114",
+      "end": 389.04,
+      "speaker": "B",
+      "start": 388.89,
+      "text": " На",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_115",
+      "end": 390.24,
+      "speaker": "A",
+      "start": 389.04,
+      "text": " у тебя квартальное, слетело везде",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_116",
+      "end": 391.14,
+      "speaker": "B",
+      "start": 390.24,
+      "text": " и я отметил.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_117",
+      "end": 392.09,
+      "speaker": "A",
+      "start": 391.14,
+      "text": " получается",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_118",
+      "end": 394.646,
+      "speaker": "A",
+      "start": 394.096,
+      "text": " Да,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_119",
+      "end": 400.146,
+      "speaker": "A",
+      "start": 394.796,
+      "text": " реально эти услуги просто фигачат, как не в себя.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_120",
+      "end": 403.646,
+      "speaker": "A",
+      "start": 400.946,
+      "text": " То есть какие-то вообще тут значения.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_121",
+      "end": 409.596,
+      "speaker": "A",
+      "start": 405.546,
+      "text": " 12% март, пока подожди, январь 13.9.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_122",
+      "end": 411.946,
+      "speaker": "A",
+      "start": 410.946,
+      "text": " Здесь чего?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_123",
+      "end": 414.046,
+      "speaker": "A",
+      "start": 413.24600000000004,
+      "text": " Слушай,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_124",
+      "end": 418.99600000000004,
+      "speaker": "A",
+      "start": 414.24600000000004,
+      "text": " что-то тут не того. Посмотри.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_125",
+      "end": 424.148,
+      "speaker": "A",
+      "start": 420.148,
+      "text": " Вот январь, вот смотри,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_126",
+      "end": 426.548,
+      "speaker": "A",
+      "start": 424.298,
+      "text": " январь 25-го года,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_127",
+      "end": 427.798,
+      "speaker": "A",
+      "start": 426.69800000000004,
+      "text": " значит,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_128",
+      "end": 433.148,
+      "speaker": "A",
+      "start": 427.94800000000004,
+      "text": " что за декабрь 24-го, значит, за год должно быть 11,5,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_129",
+      "end": 434.49800000000005,
+      "speaker": "A",
+      "start": 433.398,
+      "text": " за 24-й, правильно?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_130",
+      "end": 437.94800000000004,
+      "speaker": "A",
+      "start": 434.99800000000005,
+      "text": " Открываем годовую, тут 9,5,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_131",
+      "end": 441.74800000000005,
+      "speaker": "A",
+      "start": 438.098,
+      "text": " то есть что-то не совпадает у нас.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_132",
+      "end": 445.69800000000004,
+      "speaker": "B",
+      "start": 442.94800000000004,
+      "text": " Мне надо посмотреть какую я на год ставил.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_133",
+      "end": 448.06,
+      "speaker": "B",
+      "start": 447.86,
+      "text": " А,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_134",
+      "end": 452.66,
+      "speaker": "A",
+      "start": 448.06,
+      "text": " Ну, то есть надо посмотреть то же самое вот по этим.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_135",
+      "end": 453.16,
+      "speaker": "B",
+      "start": 452.66,
+      "text": " хорошо.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_136",
+      "end": 458.31,
+      "speaker": "A",
+      "start": 453.16,
+      "text": " То есть вот, допустим, у нас декабрь 24,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_137",
+      "end": 459.16,
+      "speaker": "A",
+      "start": 458.56,
+      "text": " 9,5,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_138",
+      "end": 460.31,
+      "speaker": "A",
+      "start": 459.36,
+      "text": " да,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_139",
+      "end": 468.76,
+      "speaker": "A",
+      "start": 460.36,
+      "text": " значит здесь, вот здесь совпадает. То есть вот это совпадает, а вот на услуги давай продовольствие, посмотрим тоже,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_140",
+      "end": 472.21000000000004,
+      "speaker": "A",
+      "start": 468.86,
+      "text": " допустим, 11,07.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_141",
+      "end": 473.458,
+      "speaker": "A",
+      "start": 473.108,
+      "text": " Да?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_142",
+      "end": 474.958,
+      "speaker": "B",
+      "start": 474.408,
+      "text": " Угу.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_143",
+      "end": 477.008,
+      "speaker": "A",
+      "start": 476.108,
+      "text": " Дети пять.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_144",
+      "end": 481.658,
+      "speaker": "A",
+      "start": 477.308,
+      "text": " Она как будто всегда один. Она у тебя от всего одна и та же.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_145",
+      "end": 488.108,
+      "speaker": "A",
+      "start": 482.508,
+      "text": " Вот здесь. Она у тебя по факту годовая подтянулась из общей и ЗПЦ.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_146",
+      "end": 489.358,
+      "speaker": "A",
+      "start": 488.508,
+      "text": " Вот из этой.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_147",
+      "end": 489.608,
+      "speaker": "B",
+      "start": 489.358,
+      "text": " Да.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_148",
+      "end": 492.108,
+      "speaker": "A",
+      "start": 489.608,
+      "text": " Она у тебя распространилась вот здесь вот на все.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_149",
+      "end": 493.508,
+      "speaker": "A",
+      "start": 492.808,
+      "text": " На все.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_150",
+      "end": 496.408,
+      "speaker": "A",
+      "start": 493.708,
+      "text": " Ну и соответственно квартальная тоже как будто бы она.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_151",
+      "end": 499.87600000000003,
+      "speaker": "A",
+      "start": 497.076,
+      "text": " скорее всего тоже да ну то есть посмотрев этот моментик потому",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_152",
+      "end": 500.576,
+      "speaker": "B",
+      "start": 499.87600000000003,
+      "text": " Хорошо,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_153",
+      "end": 500.67600000000004,
+      "speaker": "A",
+      "start": 500.576,
+      "text": "",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_154",
+      "end": 502.226,
+      "speaker": "B",
+      "start": 500.67600000000004,
+      "text": " я подметил это.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_155",
+      "end": 514.976,
+      "speaker": "A",
+      "start": 502.226,
+      "text": " что вот это но вот это вот это конечно побыстрее исправить потому что прям явно то есть пользователь заходит явно видно что как-то мы косякнули здесь мальца вот",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_156",
+      "end": 522.2760000000001,
+      "speaker": "A",
+      "start": 516.976,
+      "text": " тут вот видишь да писаться здесь еще более менее да",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_157",
+      "end": 523.438,
+      "speaker": "A",
+      "start": 523.188,
+      "text": " Вот.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_158",
+      "end": 527.2379999999999,
+      "speaker": "A",
+      "start": 526.288,
+      "text": " Это чего у нас?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_159",
+      "end": 529.438,
+      "speaker": "A",
+      "start": 527.788,
+      "text": " Ну, не прод, да, не прод,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_160",
+      "end": 529.788,
+      "speaker": "A",
+      "start": 529.4879999999999,
+      "text": " наверное.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_161",
+      "end": 531.288,
+      "speaker": "A",
+      "start": 530.888,
+      "text": " Вот.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_162",
+      "end": 532.4879999999999,
+      "speaker": "A",
+      "start": 531.388,
+      "text": " То там, конечно,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_163",
+      "end": 533.188,
+      "speaker": "A",
+      "start": 532.688,
+      "text": " это самое.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_164",
+      "end": 533.888,
+      "speaker": "A",
+      "start": 533.4879999999999,
+      "text": " Вот.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_165",
+      "end": 541.438,
+      "speaker": "A",
+      "start": 535.288,
+      "text": " Ну и смотри, вот сейчас закончим и будем переходить, я тебе пришлю на индекс цен производителей.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_166",
+      "end": 545.438,
+      "speaker": "A",
+      "start": 541.888,
+      "text": " На первичный и на вторичный у нас уже есть все,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_167",
+      "end": 548.438,
+      "speaker": "A",
+      "start": 545.538,
+      "text": " да, то есть прогноза, но тут добавим на",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_168",
+      "end": 548.9879999999999,
+      "speaker": "B",
+      "start": 548.438,
+      "text": " Хорошо,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_169",
+      "end": 549.138,
+      "speaker": "A",
+      "start": 548.9879999999999,
+      "text": "",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_170",
+      "end": 549.2379999999999,
+      "speaker": "B",
+      "start": 549.138,
+      "text": " да.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_171",
+      "end": 550.588,
+      "speaker": "A",
+      "start": 549.2379999999999,
+      "text": " этом мы с тобой уже говорили, да.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_172",
+      "end": 551.908,
+      "speaker": "A",
+      "start": 551.508,
+      "text": " Вот.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_173",
+      "end": 556.1080000000001,
+      "speaker": "A",
+      "start": 552.3580000000001,
+      "text": " И будем переходить к следующему блоку. Следующий блок у нас ВВП.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_174",
+      "end": 562.908,
+      "speaker": "A",
+      "start": 556.6080000000001,
+      "text": " Я бы тут сразу отметил, чтобы мы добавили у тебя здесь только ВВП номинальный.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_175",
+      "end": 563.508,
+      "speaker": "B",
+      "start": 563.008,
+      "text": " Mm-hmm.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_176",
+      "end": 569.828,
+      "speaker": "A",
+      "start": 563.828,
+      "text": " Да, тоже смотрю ВВП номинальный, да, вот этот вот рост квартал-квартал, год-году, все в одну карточку надо",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_177",
+      "end": 569.928,
+      "speaker": "B",
+      "start": 569.828,
+      "text": " Да,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_178",
+      "end": 570.278,
+      "speaker": "A",
+      "start": 569.928,
+      "text": " смотреть.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_179",
+      "end": 571.328,
+      "speaker": "B",
+      "start": 570.278,
+      "text": " их по сути нет.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_180",
+      "end": 578.428,
+      "speaker": "A",
+      "start": 571.328,
+      "text": " И добавить ВВП реальный, что важнее, потому что номинальный, ну тут,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_181",
+      "end": 584.078,
+      "speaker": "A",
+      "start": 578.478,
+      "text": " блин, просто за счет того, что цены растут, вот, у тебя он фигачит вверх, да,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_182",
+      "end": 589.678,
+      "speaker": "A",
+      "start": 584.228,
+      "text": " вот, а нам нужно, то есть, больше всего интересует как раз ВВП реальный.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_183",
+      "end": 592.826,
+      "speaker": "B",
+      "start": 590.676,
+      "text": " Добавил, ой, написал.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_184",
+      "end": 602.576,
+      "speaker": "A",
+      "start": 593.926,
+      "text": " Да, да, и я, соответственно, тебе буду уже присылать вот здесь вот прогнозы, то есть вот эта следующая карточка, по которой мы будем работать,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_185",
+      "end": 604.6260000000001,
+      "speaker": "A",
+      "start": 602.726,
+      "text": " сравнение, да,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_186",
+      "end": 607.676,
+      "speaker": "A",
+      "start": 604.676,
+      "text": " то есть сравнение, ой, у нас подчислилось, да,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_187",
+      "end": 609.1260000000001,
+      "speaker": "A",
+      "start": 607.7760000000001,
+      "text": " допустим, число рождения,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_188",
+      "end": 611.8760000000001,
+      "speaker": "A",
+      "start": 609.3760000000001,
+      "text": " расходы бюджета.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_189",
+      "end": 615.3760000000001,
+      "speaker": "A",
+      "start": 614.326,
+      "text": " А, и смотри,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_190",
+      "end": 616.0260000000001,
+      "speaker": "A",
+      "start": 615.476,
+      "text": " у нас вот это.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_191",
+      "end": 620.6579999999999,
+      "speaker": "A",
+      "start": 617.108,
+      "text": " Демография как будто бы странно, что она у нас,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_192",
+      "end": 625.208,
+      "speaker": "A",
+      "start": 620.708,
+      "text": " а не заводишь ли вот индексы добавить?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_193",
+      "end": 627.558,
+      "speaker": "A",
+      "start": 625.858,
+      "text": " Вот индексы эти написал, да?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_194",
+      "end": 635.308,
+      "speaker": "A",
+      "start": 630.608,
+      "text": " Ну, честность населения, почему она с 2010 года?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_195",
+      "end": 638.308,
+      "speaker": "A",
+      "start": 636.108,
+      "text": " Хотя она растать, я там скачал.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_196",
+      "end": 639.6700000000001,
+      "speaker": "A",
+      "start": 639.22,
+      "text": " Она,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_197",
+      "end": 642.87,
+      "speaker": "A",
+      "start": 639.82,
+      "text": " вон, с 1897 года есть.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_198",
+      "end": 650.47,
+      "speaker": "A",
+      "start": 643.02,
+      "text": " Правда, не погадан, но она погадан, начиная с 70-го года.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_199",
+      "end": 657.62,
+      "speaker": "A",
+      "start": 651.72,
+      "text": " Давай, ну, как бы у нас должно быть преимущество, потому что у нас должны быть длинные, максимально длинные ряды.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_200",
+      "end": 660.02,
+      "speaker": "B",
+      "start": 657.62,
+      "text": " Хорошо, да, еще более исторические.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_201",
+      "end": 664.52,
+      "speaker": "A",
+      "start": 660.02,
+      "text": " То есть та с 2010-го как-то маловато.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_202",
+      "end": 666.386,
+      "speaker": "B",
+      "start": 666.036,
+      "text": " Угу.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_203",
+      "end": 669.786,
+      "speaker": "A",
+      "start": 666.386,
+      "text": " По расписанию 1970-го хотя бы.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_204",
+      "end": 677.286,
+      "speaker": "A",
+      "start": 676.1859999999999,
+      "text": " Обновлялись данные.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_205",
+      "end": 679.8359999999999,
+      "speaker": "A",
+      "start": 679.536,
+      "text": " Вот.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_206",
+      "end": 686.786,
+      "speaker": "A",
+      "start": 682.286,
+      "text": " И что-то хотел сказать хорошего.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_207",
+      "end": 690.036,
+      "speaker": "A",
+      "start": 687.9359999999999,
+      "text": " Что-то хотел сказать. Что хотел сказать.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_208",
+      "end": 693.086,
+      "speaker": "A",
+      "start": 691.636,
+      "text": " Это хорошо, это хорошо.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_209",
+      "end": 697.336,
+      "speaker": "A",
+      "start": 695.6859999999999,
+      "text": " Ну вот по метрике посмотреть,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_210",
+      "end": 702.386,
+      "speaker": "A",
+      "start": 697.536,
+      "text": " наша задача, чтобы нас там, посмотри Google, да?",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_211",
+      "end": 706.236,
+      "speaker": "A",
+      "start": 703.236,
+      "text": " Вот Google нас хотя показывает.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_212",
+      "end": 710.6859999999999,
+      "speaker": "A",
+      "start": 707.036,
+      "text": " Видишь, да? Ну прям как мало кто кликает, но как бы мы...",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_213",
+      "end": 719.6899999999999,
+      "speaker": "A",
+      "start": 711.54,
+      "text": " на 30 позиции там в среднем 86 показов сделано в последнее время побольше существенно то",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_214",
+      "end": 720.39,
+      "speaker": "B",
+      "start": 719.6899999999999,
+      "text": " Угу,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_215",
+      "end": 736.3399999999999,
+      "speaker": "A",
+      "start": 720.39,
+      "text": " есть у нас как бы и если посмотреть страницы которые он индексирует то есть у нас как бы видишь он показывает страницы прям их как статистики он видит вот и тут как бы все нормально то есть он показывает",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_216",
+      "end": 739.672,
+      "speaker": "A",
+      "start": 737.172,
+      "text": " Я уже рублем заиндексировал хорошо.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_217",
+      "end": 741.572,
+      "speaker": "B",
+      "start": 740.322,
+      "text": " Да, но",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_218",
+      "end": 748.172,
+      "speaker": "A",
+      "start": 741.572,
+      "text": " А Яндекс, скотина, вообще не хочет нас индексировать.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_219",
+      "end": 752.222,
+      "speaker": "A",
+      "start": 748.222,
+      "text": " То есть вроде страницы добавляет, убавляет, и он просто нас не показывает.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_220",
+      "end": 755.722,
+      "speaker": "B",
+      "start": 752.222,
+      "text": " я я подключил напрямую API,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_221",
+      "end": 757.3720000000001,
+      "speaker": "B",
+      "start": 755.972,
+      "text": " я вот все,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_222",
+      "end": 760.172,
+      "speaker": "B",
+      "start": 757.422,
+      "text": " ну я исправил для того, чтобы я я просто",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_223",
+      "end": 773.956,
+      "speaker": "B",
+      "start": 760.756,
+      "text": " Поставил в переобход самый главный у нас сайт, ну вот этот файл по разметке страницы. И он должен вот сейчас обойти этот робот. Но я не знаю, может завтра уже обновится.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_224",
+      "end": 777.256,
+      "speaker": "B",
+      "start": 775.006,
+      "text": " Но по идее я там доделал все.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_225",
+      "end": 791.1560000000001,
+      "speaker": "A",
+      "start": 779.956,
+      "text": " Окей, ну вот как бы первоочередное, надо вот эти вот поправить, инфляции вот эти годовые и квартальные, то, что у нас там съехала этот прогноз, вот.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_226",
+      "end": 797.056,
+      "speaker": "A",
+      "start": 791.4060000000001,
+      "text": " Остальное можно так, ну потихонечку, вот, потому что надо,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_227",
+      "end": 804.6560000000001,
+      "speaker": "A",
+      "start": 797.206,
+      "text": " надо, видишь, как бы, то есть вот с одной стороны у нас переходы с поисков в систему, у нас сегодня вот рекорд.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_228",
+      "end": 806.118,
+      "speaker": "A",
+      "start": 805.268,
+      "text": " ради да но",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_229",
+      "end": 806.7180000000001,
+      "speaker": "B",
+      "start": 806.118,
+      "text": " Угу.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_230",
+      "end": 832.368,
+      "speaker": "A",
+      "start": 806.7180000000001,
+      "text": " они как-то плохо то есть максимум было 10 до этого сегодня 13 людей то есть ну потихонечку чтобы надо чтобы переходы по рекламе они ну все меньше меньше долю занимали вот в этом самом но плюс да вот вернувшись посетители должны как-то тоже то есть вот если посмотреть у нас есть",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_231",
+      "end": 835.86,
+      "speaker": "A",
+      "start": 833.46,
+      "text": " Так, а что-то я сейчас тебе покажу.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_232",
+      "end": 839.36,
+      "speaker": "A",
+      "start": 837.9100000000001,
+      "text": " Общее число визитов.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_233",
+      "end": 851.3100000000001,
+      "speaker": "A",
+      "start": 840.9100000000001,
+      "text": " То есть вот у нас есть некоторый костяк из 60 человек где-то, двое, вокруг мы сами,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_234",
+      "end": 854.8100000000001,
+      "speaker": "A",
+      "start": 851.46,
+      "text": " вот есть остальные, да, там, которые, ну.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_235",
+      "end": 879.364,
+      "speaker": "A",
+      "start": 855.764,
+      "text": " больше четырех раз заходили вот то есть там но во и там 10 20 раз так далее но надо чтобы побольше таких было то есть ну 2-3 захода там 345 человек в основном видишь вот один заход это 4 на 5 тысяч получается вот есть так посмотреть да то есть у нас всего",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_236",
+      "end": 885.6619999999999,
+      "speaker": "A",
+      "start": 881.012,
+      "text": " 5,5 тысяч визитов, да, там 13,5 тысяч просмотров.",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_237",
+      "end": 891.5619999999999,
+      "speaker": "A",
+      "start": 887.9119999999999,
+      "text": " Нужно нам попробовать вот как раз,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_238",
+      "end": 895.862,
+      "speaker": "A",
+      "start": 891.612,
+      "text": " как бы это сказать,",
+      "type": "transcript.text.segment"
+    },
+    {
+      "id": "seg_239",
+      "end": 899.9119999999999,
+      "speaker": "A",
+      "start": 897.112,
+      "text": " потому что вот не обнаруживают вот эти файлы.",
+      "type": "transcript.text.segment"
+    }
+  ],
+  "task": null,
+  "text": "Соответствующее. Угу, в одной, ну да, А чтобы они так, были. в принципе, так, в принципе, тут нормально. Ну вот квартальное надо поправить. И вот что-то у нас, видишь, с этими, с осветами. А, с правыми. И что? Да, да, да, обычно.\nНо это даже А не кстати, вот видели, здесь, я туда нам, да, я нам графику Forex Economy подставил, чтобы этот, если скринили, да. поставила, она почему-то закрыла. Ее надо поставить сверху, вот сюда, чтобы ее трудно было вырезать. То есть, а здесь можно просто принт -скрин и вырезать ее, ее отрезать. Вот, то есть, как бы.\nЭэээ, когда её бы лучше вот сюда куда-нибудь там вставить. Я могу ее вообще на самом Ну то есть деле сделать желтой под свет этого дизайна. Ну можно, можно, можно, да, жёлтый. Но я к тому, что здесь нарушается эта... ось. Видишь, что, ну, как бы, может быть её вот сюда поставить, Да, на ось. да, я понимаю. А вот здесь, ну...\nНу, то есть пропущены даты как будто бы, Да, видишь, да? То есть тут, при том, что даже если убираешь прогноз, то это не помогает. То есть просто вот как бы эти даты просто пропуски вот здесь. Снизу, да, посмотреть, что перекрывают дата. Да, так, вот смотри.\nВ целом, вот здесь по поводу цены на первичное жилье вот эти вот изменения, то есть как будто бы давай может быть мы сделаем это все в одной карточке, то же самое что индекс цен производителей, вот, Да, индекс цен на жилье, я тебе присылал индекс цен на жилье файл. да, я его уже подставил в прогноз.\nЭто вот она же, да? Mm Вот. -hmm Мы, соответственно, из него же берем вот эти изменения код года.\nТо, что ты его не отыщ прогнозика, хотя он показан, что он типа есть, да, но его на самом деле он не показывает А, я его здесь. лишь из-за того, что навеи добавил, к нему не применилась автоматическая эта штука по выключению. Выключение. Да. А вот смотри, и может быть я вот думаю, что по факту это же одно и то же, просто разные агрегаты. Я думаю, что нам надо, знаешь, как сделать.\nнаписать в избежание потребительских цен вот здесь вот Uh-huh. вместо ИПЦ потому что мы про это говорили по моему вот и вот здесь еще добавить сам индекс то есть по аналогии с тем то есть вот еще одну кнопочку вот сюда где -нибудь\nиндекс вот то есть вот так здесь видишь да что я могу посмотреть вот допустим как изменялись цены видишь да и и вот здесь добавить то же самое допустим изменение год к году\nТолько не в разных карточках, потому что так получается, если мы надобавляем, то у нас будет дохренища карточек и тяжело будет ориентироваться. То есть мы сюда еще будем какие-то добавлять. То же самое с индексом цен производителей. То есть он индекс цен, допустим, хорошо он в виде индекса. Ты сюда заходишь.\nИ здесь, а это я тебе тоже отправил? Но я все прогнозы, я в целом все прогнозы, которые вы присылали, я их перенес. И ПЦ помесячные я тебе отправил, да? Ой, не ПЦ, а эти программы. Ой, сейчас пропал звук. А, вот появился.\nТак, да, Что-то прерывается. вот цены на недвижимость я присылал, да? Слышно меня? Да-да-да. Сейчас, подожди, может быть надо отключить. Да, интернет чуть не очень. По-моему, я тебе не присылал этот на индекс цен производителей. Я его сделал.\nВот. Ну, вот цены на жилье я тебе присылал, надо будет их, кстати, посравнивать. Вот. А индекс центразводитель я тебе, по-моему, не присылал, хотя я его сделал. Вот. Все его сделал, Я только но я прогнозы тебе еще не и прислал. ПЦ по месячному присылали, которые.\nДа, вот я уже, кстати, сделал и этот ВВП номинальный. Вот тоже прогноз. Я тоже потихонечку делаю, буду теперь отправлять. Ты себя помечаешь вот эти вот аналитики? Да да да да да, да у меня уже 9 пунктов набралось.\nАга, да, вот. Короче, давай вот индекс цен -производитель, тоже изменение год-году, сделаем кнопочку внутри. Угу, хорошо. Потому что это по факту один и тот же показатель, то есть то же самое, вот это год-году цены на первичном, на вторичной жилье, то есть тоже сделаем внутри вот этого вот. Потому что мы потом еще будем добавлять еще какие-нибудь там.\nиндикаторы соответственно не хотелось бы раздувать это все вот ну и индекс потребительских цен написается там на услуги там продовольственные продовольственные вот то есть инфляция за год там недельная месячная ну Угу. да в принципе что-то тут прогнать ну вот квартальное На у тебя квартальное, слетело везде и я отметил. получается\nДа, реально эти услуги просто фигачат, как не в себя. То есть какие-то вообще тут значения. 12% март, пока подожди, январь 13.9. Здесь чего? Слушай, что-то тут не того. Посмотри.\nВот январь, вот смотри, январь 25-го года, значит, что за декабрь 24-го, значит, за год должно быть 11 ,5, за 24-й, правильно? Открываем годовую, тут 9 ,5, то есть что-то не совпадает у нас. Мне надо посмотреть какую я на год ставил.\nА, Ну, то есть надо посмотреть то же самое вот по этим. хорошо. То есть вот, допустим, у нас декабрь 24, 9,5, да, значит здесь, вот здесь совпадает. То есть вот это совпадает, а вот на услуги давай продовольствие, посмотрим тоже, допустим, 11 ,07.\nДа? Угу. Дети пять. Она как будто всегда один. Она у тебя от всего одна и та же. Вот здесь. Она у тебя по факту годовая подтянулась из общей и ЗПЦ. Вот из этой. Да. Она у тебя распространилась вот здесь вот на все. На все. Ну и соответственно квартальная тоже как будто бы она.\nскорее всего тоже да ну то есть посмотрев этот моментик потому Хорошо, я подметил это. что вот это но вот это вот это конечно побыстрее исправить потому что прям явно то есть пользователь заходит явно видно что как-то мы косякнули здесь мальца вот тут вот видишь да писаться здесь еще более менее да\nВот. Это чего у нас? Ну, не прод, да, не прод, наверное. Вот. То там, конечно, это самое. Вот. Ну и смотри, вот сейчас закончим и будем переходить, я тебе пришлю на индекс цен производителей. На первичный и на вторичный у нас уже есть все, да, то есть прогноза, но тут добавим на Хорошо, да. этом мы с тобой уже говорили, да.\nВот. И будем переходить к следующему блоку. Следующий блок у нас ВВП. Я бы тут сразу отметил, чтобы мы добавили у тебя здесь только ВВП номинальный. Mm-hmm.\nДа, тоже смотрю ВВП номинальный, да, вот этот вот рост квартал-квартал, год-году, все в одну карточку надо Да, смотреть. их по сути нет. И добавить ВВП реальный, что важнее, потому что номинальный, ну тут, блин, просто за счет того, что цены растут, вот, у тебя он фигачит вверх, да, вот, а нам нужно, то есть, больше всего интересует как раз ВВП реальный.\nДобавил, ой, написал. Да, да, и я, соответственно, тебе буду уже присылать вот здесь вот прогнозы, то есть вот эта следующая карточка, по которой мы будем работать, сравнение, да, то есть сравнение, ой, у нас подчислилось, да, допустим, число рождения, расходы бюджета. А, и смотри, у нас вот это.\nДемография как будто бы странно, что она у нас, а не заводишь ли вот индексы добавить? Вот индексы эти написал, да? Ну, честность населения, почему она с 2010 года? Хотя она растать, я там скачал.\nОна, вон, с 1897 года есть. Правда, не погадан, но она погадан, начиная с 70-го года. Давай, ну, как бы у нас должно быть преимущество, потому что у нас должны быть длинные, максимально длинные ряды. Хорошо, да, еще более исторические. То есть та с 2010 -го как-то маловато.\nУгу. По расписанию 1970-го хотя бы. Обновлялись данные. Вот. И что-то хотел сказать хорошего. Что-то хотел сказать. Что хотел сказать.\nЭто хорошо, это хорошо. Ну вот по метрике посмотреть, наша задача, чтобы нас там, посмотри Google, да? Вот Google нас хотя показывает. Видишь, да? Ну прям как мало кто кликает, но как бы мы...\nна 30 позиции там в среднем 86 показов сделано в последнее время побольше существенно то Угу, есть у нас как бы и если посмотреть страницы которые он индексирует то есть у нас как бы видишь он показывает страницы прям их как статистики он видит вот и тут как бы все нормально то есть он показывает\nЯ уже рублем заиндексировал хорошо. Да, но А Яндекс, скотина, вообще не хочет нас индексировать. То есть вроде страницы добавляет, убавляет, и он просто нас не показывает. я я подключил напрямую API, я вот все, ну я исправил для того, чтобы я я просто\nПоставил в переобход самый главный у нас сайт, ну вот этот файл по разметке страницы. И он должен вот сейчас обойти этот робот. Но я не знаю, может завтра уже обновится. Но по идее я там доделал все.\nОкей, ну вот как бы первоочередное, надо вот эти вот поправить, инфляции вот эти годовые и квартальные, то, что у нас там съехала этот прогноз, вот. Остальное можно так, ну потихонечку, вот, потому что надо, надо, видишь, как бы, то есть вот с одной стороны у нас переходы с поисков в систему, у нас сегодня вот рекорд.\nради да но Угу. они как-то плохо то есть максимум было 10 до этого сегодня 13 людей то есть ну потихонечку чтобы надо чтобы переходы по рекламе они ну все меньше меньше долю занимали вот в этом самом но плюс да вот вернувшись посетители должны как-то тоже то есть вот если посмотреть у нас есть\nТак, а что-то я сейчас тебе покажу. Общее число визитов. То есть вот у нас есть некоторый костяк из 60 человек где-то, двое, вокруг мы сами, вот есть остальные, да, там, которые, ну.\nбольше четырех раз заходили вот то есть там но во и там 10 20 раз так далее но надо чтобы побольше таких было то есть ну 2-3 захода там 345 человек в основном видишь вот один заход это 4 на 5 тысяч получается вот есть так посмотреть да то есть у нас всего\n5,5 тысяч визитов, да, там 13,5 тысяч просмотров. Нужно нам попробовать вот как раз, как бы это сказать, потому что вот не обнаруживают вот эти файлы.",
+  "usage": {
+    "input_tokens": 14359,
+    "output_tokens": 25722,
+    "total_tokens": 40081,
+    "type": "tokens",
+    "input_token_details": {
+      "audio_tokens": 13531,
+      "text_tokens": 828
+    }
+  }
+}

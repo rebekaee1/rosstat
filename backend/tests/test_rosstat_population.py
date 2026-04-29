@@ -6,6 +6,8 @@ from datetime import date
 import openpyxl
 
 from app.services.rosstat_population_parser import (
+    merge_population_history_with_sdds,
+    parse_population_history_xlsx,
     parse_sdds_population_xlsx,
     parse_popul_components_xlsx,
 )
@@ -43,6 +45,28 @@ def _make_popul_components_xlsx() -> bytes:
     return buf.getvalue()
 
 
+def _make_population_history_xlsx() -> bytes:
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Лист1"
+
+    for _ in range(6):
+        ws.append([None])
+    ws.append([1897, None, None])
+    ws.append(["в границах Российской империи", 128.2])
+    ws.append(["в современных границах", 67.5])
+    ws.append([1914, None, None])
+    ws.append(["в границах Российской империи", 165.7])
+    ws.append(["в современных границах", 89.9])
+    ws.append([1970, 129.9])
+    ws.append([1971, 130.6])
+    ws.append(["20242)", 146.1])
+
+    buf = io.BytesIO()
+    wb.save(buf)
+    return buf.getvalue()
+
+
 class TestParseSddsPopulation:
     def test_basic(self):
         content = _make_sdds_population_xlsx()
@@ -56,6 +80,28 @@ class TestParseSddsPopulation:
         result = parse_sdds_population_xlsx(content)
         dates = [p.date for p in result]
         assert dates == sorted(dates)
+
+
+class TestParsePopulationHistory:
+    def test_modern_borders_and_annual_rows(self):
+        content = _make_population_history_xlsx()
+        result = parse_population_history_xlsx(content)
+        assert [p.date for p in result] == [
+            date(1897, 1, 1),
+            date(1914, 1, 1),
+            date(1970, 1, 1),
+            date(1971, 1, 1),
+            date(2024, 1, 1),
+        ]
+        assert result[0].value == 67.5
+        assert result[1].value == 89.9
+        assert result[-1].value == 146.1
+
+    def test_merge_prefers_sdds_on_overlap(self):
+        history = [type("P", (), {"date": date(2024, 1, 1), "value": 146.1})()]
+        sdds = [type("P", (), {"date": date(2024, 1, 1), "value": 146.2})()]
+        result = merge_population_history_with_sdds(history, sdds)
+        assert result[0].value == 146.2
 
 
 class TestParsePopulComponents:
