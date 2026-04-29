@@ -1123,7 +1123,7 @@ INDICATORS = [
         "parser_type": "rosstat_population",
         "model_config_json": {
             "forecast_steps": 0,
-            "validation": {"min": 100, "max": 200},
+            "validation": {"min": 50, "max": 200},
         },
         "is_active": True,
         "category": "Население",
