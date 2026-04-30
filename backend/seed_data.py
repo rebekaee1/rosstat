@@ -576,7 +576,7 @@ INDICATORS = [
         ),
         "parser_type": "rosstat_sdds_labor",
         "model_config_json": {
-            "forecast_steps": 12,
+            "forecast_steps": 0,
             "forecast_transform": "percentage",
             "validation": {"min": 0, "max": 50},
         },
@@ -601,7 +601,7 @@ INDICATORS = [
         ),
         "parser_type": "rosstat_sdds_labor",
         "model_config_json": {
-            "forecast_steps": 6,
+            "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 0},
         },
@@ -682,7 +682,7 @@ INDICATORS = [
         ),
         "parser_type": "derived",
         "model_config_json": {
-            "forecast_steps": 6,
+            "forecast_steps": 0,
             "forecast_transform": "percentage",
         },
         "is_active": True,

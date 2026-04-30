@@ -22,8 +22,10 @@ from app.services.http_client import create_session
 logger = logging.getLogger(__name__)
 
 XLSX_MAGIC = b"PK\x03\x04"
+PDF_MAGIC = b"%PDF"
 
 _BASE = "https://eng.rosstat.gov.ru/storage/mediabank"
+_ROSSTAT_MEDIA = "https://rosstat.gov.ru/storage/mediabank"
 
 DATASET_URLS: dict[str, str] = {
     "labor": "SDDS_labor%20market_{year}.xlsx",
@@ -106,3 +108,40 @@ def fetch_rosstat_static_xlsx(key: str) -> tuple[bytes, str]:
         raise RuntimeError(f"Rosstat {key}: response is not XLSX")
     logger.info("Downloaded Rosstat %s: %d KB", key, len(resp.content) // 1024)
     return resp.content, url
+
+
+def fetch_latest_socioeconomic_report_pdf() -> tuple[bytes, str]:
+    """Download latest official Rosstat socioeconomic report PDF.
+
+    The public document page can lag behind current uploads, while direct
+    media files follow the stable osn-MM-YYYY.pdf naming pattern.
+    """
+    now = datetime.now()
+    session = _get_session()
+
+    attempts: list[tuple[int, int]] = []
+    for month in range(now.month, 0, -1):
+        attempts.append((now.year, month))
+    for month in range(12, 0, -1):
+        attempts.append((now.year - 1, month))
+
+    for year, month in attempts:
+        url = f"{_ROSSTAT_MEDIA}/osn-{month:02d}-{year}.pdf"
+        try:
+            resp = session.get(url, timeout=settings.rosstat_request_timeout)
+            if resp.status_code != 200:
+                logger.debug("Rosstat socioeconomic report %s: HTTP %d", url, resp.status_code)
+                continue
+            if resp.content[:4] != PDF_MAGIC:
+                logger.warning("Rosstat socioeconomic report %s: response is not PDF", url)
+                continue
+            logger.info(
+                "Downloaded Rosstat socioeconomic report %s: %d KB",
+                url,
+                len(resp.content) // 1024,
+            )
+            return resp.content, url
+        except requests.RequestException as e:
+            logger.warning("Rosstat socioeconomic report %s fetch error: %s", url, e)
+
+    raise RuntimeError("Rosstat socioeconomic report PDF not found")
