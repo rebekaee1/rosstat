@@ -18,6 +18,17 @@ router = APIRouter(prefix="/indicators", tags=["forecasts"])
 
 _CODE_RE = re.compile(r'^[a-z0-9-]+$')
 
+DERIVED_CPI_FORECASTS = {
+    "inflation-quarterly",
+    "inflation-annual",
+    "cpi-food-quarterly",
+    "cpi-food-annual",
+    "cpi-nonfood-quarterly",
+    "cpi-nonfood-annual",
+    "cpi-services-quarterly",
+    "cpi-services-annual",
+}
+
 
 def _validate_code(code: str) -> None:
     if not _CODE_RE.match(code):
@@ -37,7 +48,6 @@ async def get_forecast(code: str, db: AsyncSession = Depends(get_db)):
         raise HTTPException(status_code=404, detail=f"Indicator '{code}' not found")
 
     cfg = indicator.model_config_json or {}
-    DERIVED_CPI_FORECASTS = {"inflation-quarterly", "inflation-annual"}
     forecast_steps = int(cfg.get("forecast_steps", settings.forecast_steps) or 0)
     if forecast_steps <= 0 and code not in DERIVED_CPI_FORECASTS:
         response = ForecastResponse(indicator=code, forecast=None)

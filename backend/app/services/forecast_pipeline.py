@@ -21,6 +21,25 @@ from app.config import settings
 
 logger = logging.getLogger(__name__)
 
+CPI_DERIVED_FORECAST_CODES = {
+    "cpi": {
+        "quarterly": "inflation-quarterly",
+        "annual": "inflation-annual",
+    },
+    "cpi-food": {
+        "quarterly": "cpi-food-quarterly",
+        "annual": "cpi-food-annual",
+    },
+    "cpi-nonfood": {
+        "quarterly": "cpi-nonfood-quarterly",
+        "annual": "cpi-nonfood-annual",
+    },
+    "cpi-services": {
+        "quarterly": "cpi-services-quarterly",
+        "annual": "cpi-services-annual",
+    },
+}
+
 
 async def clear_current_forecasts(db: AsyncSession, indicator: Indicator) -> int:
     old_forecasts_q = await db.execute(
@@ -136,9 +155,9 @@ async def retrain_indicator_forecast(db: AsyncSession, indicator: Indicator) -> 
         )
         await _save_forecast(db, indicator, inflation_result, model_name_prefix="Inflation-12M")
 
-        if indicator.code == "cpi":
+        if indicator.code in CPI_DERIVED_FORECAST_CODES:
             await _propagate_cpi_forecast_to_derived(
-                db, dates, values, monthly_result, inflation_result,
+                db, indicator.code, dates, values, monthly_result, inflation_result,
             )
     else:
         forecast_transform = cfg.get("forecast_transform", "absolute")
@@ -155,6 +174,7 @@ async def retrain_indicator_forecast(db: AsyncSession, indicator: Indicator) -> 
 
 async def _propagate_cpi_forecast_to_derived(
     db: AsyncSession,
+    source_code: str,
     dates: list[date],
     values: list[float],
     monthly_result: ForecastResult,
@@ -163,22 +183,22 @@ async def _propagate_cpi_forecast_to_derived(
     """Save quarterly/annual aggregated forecasts under their dedicated indicators.
 
     Quarterly: aggregated from monthly CPI forecast (Никита's spec, April 2026).
-    Annual: identical to Inflation-12M-MW result — published as forecast for
-    `inflation-annual` indicator so the frontend can read it via the standard
-    /forecast endpoint.
+    Annual: filtered December points from Inflation-12M-MW result so the
+    forecast granularity matches the annual historical series.
     """
+    derived_codes = CPI_DERIVED_FORECAST_CODES[source_code]
     quarterly_result = await asyncio.to_thread(
         aggregate_quarterly_from_monthly,
         dates, values, monthly_result.points,
     )
     quarterly_indicator = (await db.execute(
-        select(Indicator).where(Indicator.code == "inflation-quarterly")
+        select(Indicator).where(Indicator.code == derived_codes["quarterly"])
     )).scalar_one_or_none()
     if quarterly_indicator is not None and quarterly_result.points:
         await _save_forecast(db, quarterly_indicator, quarterly_result)
 
     annual_indicator = (await db.execute(
-        select(Indicator).where(Indicator.code == "inflation-annual")
+        select(Indicator).where(Indicator.code == derived_codes["annual"])
     )).scalar_one_or_none()
     if annual_indicator is not None:
         # The annual chart shows one point per calendar year (December cumulative).
@@ -207,6 +227,7 @@ async def _propagate_cpi_forecast_to_derived(
             removed = await clear_current_forecasts(db, annual_indicator)
             logger.info(
                 "No December points in 12-month forecast horizon; cleared %d "
-                "stale annual forecast(s) for inflation-annual",
+                "stale annual forecast(s) for %s",
                 removed,
+                derived_codes["annual"],
             )

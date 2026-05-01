@@ -186,7 +186,7 @@ const SEO_MAP = {
     description: 'Изменение индекса цен на вторичном рынке жилья к аналогичному кварталу предыдущего года. Расчёт на основе данных Росстата.',
   },
   ipi: {
-    title: 'Индекс промышленного производства — данные и прогноз',
+    title: 'Индекс промышленного производства — данные и график',
     description: 'ИПП России (2023=100): ежемесячные данные с 2015 года, динамика. Данные Росстата.',
   },
   'ipi-yoy': {
@@ -334,7 +334,7 @@ const SEO_MAP = {
     description: 'Общая численность пенсионеров на 1 января: данные Росстата/СФР.',
   },
   'retail-trade': {
-    title: 'Оборот розничной торговли — данные и прогноз',
+    title: 'Оборот розничной торговли — данные и график',
     description: 'Оборот розничной торговли в текущих ценах: ежемесячные данные Росстата.',
   },
   'housing-commissioned': {
@@ -374,12 +374,12 @@ const SEO_MAP = {
     description: 'Удельный вес малых предприятий с инновационной деятельностью: данные Росстата.',
   },
   'construction-work': {
-    title: 'Объём строительных работ — данные и прогноз',
-    description: 'Объём строительных работ в России: ежемесячные данные Росстата, динамика и прогноз. Краткосрочные экономические показатели.',
+    title: 'Объём строительных работ — данные и график',
+    description: 'Объём строительных работ в России: ежемесячные данные Росстата и динамика. Краткосрочные экономические показатели.',
   },
   'capital-investment': {
-    title: 'Инвестиции в основной капитал — данные и прогноз',
-    description: 'Инвестиции в основной капитал России: ежемесячные данные Росстата, динамика и прогноз.',
+    title: 'Инвестиции в основной капитал — данные и график',
+    description: 'Инвестиции в основной капитал России: ежемесячные данные Росстата и динамика.',
   },
   'pop-under-working-age': {
     title: 'Население моложе трудоспособного возраста — данные',
@@ -639,11 +639,11 @@ export default function IndicatorDetail() {
     () => CPI_VIEW_MODES.filter(item => !item.generalOnly || code === 'cpi'),
     [code]
   );
-  const { data: quarterlyForecastResp } = useForecast('inflation-quarterly', {
-    enabled: code === 'cpi' && safeViewMode === 'quarterly',
+  const { data: quarterlyForecastResp } = useForecast(cpiDerivedCodes.quarterly, {
+    enabled: !!cpiDerivedCodes.quarterly && safeViewMode === 'quarterly',
   });
-  const { data: annualForecastResp } = useForecast('inflation-annual', {
-    enabled: code === 'cpi' && safeViewMode === 'annual',
+  const { data: annualForecastResp } = useForecast(cpiDerivedCodes.annual, {
+    enabled: !!cpiDerivedCodes.annual && safeViewMode === 'annual',
   });
   const {
     data: quarterlyResp,

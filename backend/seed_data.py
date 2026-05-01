@@ -1055,7 +1055,7 @@ INDICATORS = [
         ),
         "parser_type": "rosstat_sdds_housing",
         "model_config_json": {
-            "forecast_steps": 4,
+            "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 50, "max": 500},
         },
@@ -1076,7 +1076,7 @@ INDICATORS = [
         ),
         "parser_type": "rosstat_sdds_housing",
         "model_config_json": {
-            "forecast_steps": 4,
+            "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 50, "max": 500},
         },
@@ -1098,7 +1098,7 @@ INDICATORS = [
         ),
         "parser_type": "rosstat_sdds_ipi",
         "model_config_json": {
-            "forecast_steps": 6,
+            "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 30, "max": 200},
         },
@@ -1872,7 +1872,7 @@ INDICATORS = [
         "parser_type": "rosstat_ind_monthly",
         "model_config_json": {
             "ind_sheet": "1.12 ",
-            "forecast_steps": 6,
+            "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 0},
         },
