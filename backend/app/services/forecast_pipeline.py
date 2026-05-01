@@ -39,6 +39,11 @@ CPI_DERIVED_FORECAST_CODES = {
         "annual": "cpi-services-annual",
     },
 }
+CPI_DERIVED_FORECAST_TARGETS = {
+    code
+    for targets in CPI_DERIVED_FORECAST_CODES.values()
+    for code in targets.values()
+}
 
 
 async def clear_current_forecasts(db: AsyncSession, indicator: Indicator) -> int:
@@ -99,6 +104,12 @@ async def retrain_indicator_forecast(db: AsyncSession, indicator: Indicator) -> 
     forecast_steps = int(cfg.get("forecast_steps", settings.forecast_steps) or 0)
 
     if forecast_steps <= 0:
+        if indicator.code in CPI_DERIVED_FORECAST_TARGETS:
+            logger.info(
+                "'%s' is populated by CPI source retrain; skipping direct retrain",
+                indicator.code,
+            )
+            return
         removed = await clear_current_forecasts(db, indicator)
         logger.info(
             "forecast_steps<=0 for '%s', skipping retrain and removed %d stale forecast(s)",

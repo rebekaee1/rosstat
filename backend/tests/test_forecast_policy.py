@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from seed_data import INDICATORS
 from app.api.forecasts import DERIVED_CPI_FORECASTS
+from app.services.forecast_pipeline import CPI_DERIVED_FORECAST_TARGETS
 
 
 DIRECT_FORECAST_CODES = {
@@ -60,4 +61,5 @@ def test_approved_notebook_forecasts_are_explicit_values() -> None:
 
 def test_all_derived_cpi_forecasts_are_api_whitelisted() -> None:
     assert DERIVED_CPI_FORECASTS == EXPECTED_DERIVED_CPI_FORECASTS
+    assert CPI_DERIVED_FORECAST_TARGETS == EXPECTED_DERIVED_CPI_FORECASTS
 
