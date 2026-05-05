@@ -126,8 +126,21 @@ export const HIDDEN_FROM_LISTING = new Set([
   'gdp-qoq',
 ]);
 
+/**
+ * Признак «индикатор должен быть видим в листинге категорий».
+ *
+ * Источник правды: API-поле `indicator.is_listed` (живёт в БД, можно править
+ * без деплоя). На переходный период до полного выкатывания нового бэкенда
+ * также уважаем frontend-карту HIDDEN_FROM_LISTING как fallback.
+ */
+export function isIndicatorListed(indicator) {
+  if (!indicator) return false;
+  if (indicator.is_listed === false) return false;
+  return !HIDDEN_FROM_LISTING.has(indicator.code);
+}
+
 /** Подсчёт индикаторов по полю category в API (исключая скрытые карточки) */
 export function countInCategory(indicators, apiCategory) {
   if (!apiCategory || !indicators?.length) return 0;
-  return indicators.filter((i) => i.category === apiCategory && !HIDDEN_FROM_LISTING.has(i.code)).length;
+  return indicators.filter((i) => i.category === apiCategory && isIndicatorListed(i)).length;
 }

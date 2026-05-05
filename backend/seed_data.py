@@ -19,6 +19,11 @@ sys.path.insert(0, str(Path(__file__).parent))
 from app.database import async_session
 from app.models import Indicator, IndicatorData
 from app.services.forecast_pipeline import retrain_indicator_forecast
+from app.data.indicator_seo import (
+    INDICATOR_SEO,
+    INDICATOR_SEO_BLOCKS,
+    INDICATOR_HIDDEN_FROM_LISTING,
+)
 
 CPI_DESCRIPTION = (
     "Индекс потребительских цен (ИПЦ) измеряет изменение цен на товары и услуги, "
@@ -2156,6 +2161,41 @@ async def seed():
                 .values(is_active=True, parser_type="derived")
             )
         await db.commit()
+
+        # Backfill SEO metadata + listing visibility from data/indicator_seo.py
+        # (single source of truth — DB columns indicators.seo_title/.seo_description
+        # /.seo_blocks/.is_listed; this block makes the seed file authoritative).
+        seo_count = 0
+        for code, vals in INDICATOR_SEO.items():
+            await db.execute(
+                update(Indicator)
+                .where(Indicator.code == code)
+                .values(
+                    seo_title=vals["seo_title"],
+                    seo_description=vals["seo_description"],
+                )
+            )
+            seo_count += 1
+        for code, blocks in INDICATOR_SEO_BLOCKS.items():
+            await db.execute(
+                update(Indicator)
+                .where(Indicator.code == code)
+                .values(seo_blocks=blocks)
+            )
+        # Reset is_listed to true everywhere first, then mark hidden codes false.
+        await db.execute(update(Indicator).values(is_listed=True))
+        for code in INDICATOR_HIDDEN_FROM_LISTING:
+            await db.execute(
+                update(Indicator)
+                .where(Indicator.code == code)
+                .values(is_listed=False)
+            )
+        await db.commit()
+        print(
+            f"  SEO metadata applied: {seo_count} titles/descriptions, "
+            f"{len(INDICATOR_SEO_BLOCKS)} block sets, "
+            f"{len(INDICATOR_HIDDEN_FROM_LISTING)} hidden from listing"
+        )
 
         # Seed CPI data from CSV
         csv_candidates = [

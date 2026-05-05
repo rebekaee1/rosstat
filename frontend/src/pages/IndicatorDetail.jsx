@@ -599,13 +599,6 @@ export default function IndicatorDetail() {
   const [chartData, setChartData] = useState([]);
   const [currentRange, setCurrentRange] = useState('5y');
 
-  const seo = SEO_MAP[code] || {};
-  useDocumentMeta({
-    title: seo.title || `Индикатор ${code}`,
-    description: seo.description,
-    path: `/indicator/${code}`,
-  });
-
   const {
     data: indicator,
     isLoading: loadingInd,
@@ -614,6 +607,13 @@ export default function IndicatorDetail() {
     refetch: refetchInd,
     isFetching: fetchingInd,
   } = useIndicator(code);
+
+  const fallbackSeo = SEO_MAP[code] || {};
+  useDocumentMeta({
+    title: indicator?.seo_title || fallbackSeo.title || `Индикатор ${code}`,
+    description: indicator?.seo_description || fallbackSeo.description,
+    path: `/indicator/${code}`,
+  });
   const CPI_CODES = ['cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services'];
   const isPriceCategory = CPI_CODES.includes(code);
   const safeViewMode = isPriceCategory && code !== 'cpi' && viewMode === 'weekly'

@@ -247,6 +247,22 @@ def _blocks_html(blocks: Iterable[SeoBlock]) -> str:
     )
 
 
+def _indicator_blocks_from_db(indicator: Indicator) -> tuple[SeoBlock, ...]:
+    """Convert Indicator.seo_blocks (JSON list of dicts) → tuple[SeoBlock]."""
+    raw = indicator.seo_blocks
+    if not raw or not isinstance(raw, list):
+        return tuple()
+    out: list[SeoBlock] = []
+    for item in raw:
+        if not isinstance(item, dict):
+            continue
+        title = item.get("title") or ""
+        body = item.get("body") or ""
+        if title and body:
+            out.append(SeoBlock(title=title, body=body))
+    return tuple(out)
+
+
 def _page_body(page: PageSeo) -> str:
     return f"""<main class="seo-page">
 <nav aria-label="Хлебные крошки">{_link("/", "Главная")}</nav>
@@ -372,8 +388,11 @@ async def render_indicator_html(code: str, db: AsyncSession) -> tuple[int, str]:
     latest_rows = await _latest_rows(db, indicator.id, limit=8)
     count, first_dt, last_dt = await _indicator_stats(db, indicator.id)
     related = await _related_indicators(db, indicator)
-    title = f"{indicator.name} — данные и график"
-    desc = clean_text(indicator.description, f"{indicator.name}: динамика, источник, методология и последние значения.")
+    title = indicator.seo_title or f"{indicator.name} — данные и график"
+    desc = (
+        indicator.seo_description
+        or clean_text(indicator.description, f"{indicator.name}: динамика, источник, методология и последние значения.")
+    )
     body = _indicator_body(indicator, category, latest_rows, related, count, first_dt, last_dt)
     json_ld = [
         _site_json_ld(),
@@ -465,7 +484,9 @@ def _indicator_body(
     )
     source_link = _link(indicator.source_url, indicator.source) if indicator.source_url else escape(indicator.source)
     related_links = tuple((f"/indicator/{ind.code}", ind.name) for ind in related)
-    blocks = GLOBAL_INDICATOR_BLOCKS + INDICATOR_BLOCKS.get(indicator.code, tuple())
+    db_blocks = _indicator_blocks_from_db(indicator)
+    fallback_blocks = INDICATOR_BLOCKS.get(indicator.code, tuple())
+    blocks = GLOBAL_INDICATOR_BLOCKS + (db_blocks or fallback_blocks)
     return f"""<main class="seo-page">
 <nav aria-label="Хлебные крошки">{_link("/", "Главная")} / {category_link} / {escape(indicator.name)}</nav>
 <h1>{escape(indicator.name)}</h1>

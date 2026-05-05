@@ -11,6 +11,7 @@ class IndicatorSummary(BaseModel):
     unit: str
     category: str | None = None
     is_active: bool
+    is_listed: bool = True
     current_value: float | None = None
     current_date: date | None = None
     previous_value: float | None = None
@@ -25,6 +26,9 @@ class IndicatorDetail(IndicatorSummary):
     source_url: str | None = None
     description: str | None = None
     methodology: str | None = None
+    seo_title: str | None = None
+    seo_description: str | None = None
+    seo_blocks: list | None = None
     data_count: int = 0
     first_date: date | None = None
     last_date: date | None = None

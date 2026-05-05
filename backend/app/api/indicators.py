@@ -73,6 +73,7 @@ async def list_indicators(
         out.append(IndicatorSummary(
             code=ind.code, name=ind.name, name_en=ind.name_en,
             unit=ind.unit, category=ind.category, is_active=ind.is_active,
+            is_listed=ind.is_listed,
             current_value=float(current_val) if current_val is not None else None,
             current_date=current_dt, previous_value=float(prev_val) if prev_val is not None else None,
             change=change,
@@ -127,9 +128,13 @@ async def get_indicator(code: str, db: AsyncSession = Depends(get_db)):
     detail = IndicatorDetail(
         code=indicator.code, name=indicator.name, name_en=indicator.name_en,
         unit=indicator.unit, category=indicator.category, is_active=indicator.is_active,
+        is_listed=indicator.is_listed,
         frequency=indicator.frequency, source=indicator.source,
         source_url=indicator.source_url, description=indicator.description,
         methodology=indicator.methodology,
+        seo_title=indicator.seo_title,
+        seo_description=indicator.seo_description,
+        seo_blocks=indicator.seo_blocks,
         current_value=float(current_val) if current_val is not None else None,
         current_date=current_dt, previous_value=float(prev_val) if prev_val is not None else None,
         change=change, data_count=count, first_date=first_dt, last_date=last_dt,
