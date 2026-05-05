@@ -109,34 +109,15 @@ export function getCategoryBySlug(slug) {
   return CATEGORIES.find((c) => c.slug === slug);
 }
 
-export const HIDDEN_FROM_LISTING = new Set([
-  'inflation-annual',
-  'inflation-quarterly',
-  'inflation-weekly',
-  'cpi-food-quarterly',
-  'cpi-food-annual',
-  'cpi-nonfood-quarterly',
-  'cpi-nonfood-annual',
-  'cpi-services-quarterly',
-  'cpi-services-annual',
-  'ppi-yoy',
-  'housing-yoy-primary',
-  'housing-yoy-secondary',
-  'gdp-yoy',
-  'gdp-qoq',
-]);
-
 /**
  * Признак «индикатор должен быть видим в листинге категорий».
  *
- * Источник правды: API-поле `indicator.is_listed` (живёт в БД, можно править
- * без деплоя). На переходный период до полного выкатывания нового бэкенда
- * также уважаем frontend-карту HIDDEN_FROM_LISTING как fallback.
+ * Источник правды: API-поле `indicator.is_listed` (живёт в БД-колонке
+ * indicators.is_listed, редактируется без деплоя).
  */
 export function isIndicatorListed(indicator) {
   if (!indicator) return false;
-  if (indicator.is_listed === false) return false;
-  return !HIDDEN_FROM_LISTING.has(indicator.code);
+  return indicator.is_listed !== false;
 }
 
 /** Подсчёт индикаторов по полю category в API (исключая скрытые карточки) */

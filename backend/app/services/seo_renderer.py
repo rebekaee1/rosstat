@@ -23,7 +23,6 @@ from app.services.seo_content import (
     CATEGORY_META,
     DOMAIN,
     GLOBAL_INDICATOR_BLOCKS,
-    INDICATOR_BLOCKS,
     OG_IMAGE,
     PAGE_META,
     CategorySeo,
@@ -484,9 +483,7 @@ def _indicator_body(
     )
     source_link = _link(indicator.source_url, indicator.source) if indicator.source_url else escape(indicator.source)
     related_links = tuple((f"/indicator/{ind.code}", ind.name) for ind in related)
-    db_blocks = _indicator_blocks_from_db(indicator)
-    fallback_blocks = INDICATOR_BLOCKS.get(indicator.code, tuple())
-    blocks = GLOBAL_INDICATOR_BLOCKS + (db_blocks or fallback_blocks)
+    blocks = GLOBAL_INDICATOR_BLOCKS + _indicator_blocks_from_db(indicator)
     return f"""<main class="seo-page">
 <nav aria-label="Хлебные крошки">{_link("/", "Главная")} / {category_link} / {escape(indicator.name)}</nav>
 <h1>{escape(indicator.name)}</h1>
