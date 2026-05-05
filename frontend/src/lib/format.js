@@ -27,6 +27,7 @@ export function formatDate(dateStr, format = 'short') {
   const month = d.getUTCMonth();
   const day = d.getUTCDate();
   if (format === 'day') return `${day} ${monthsGenitive[month]} ${year}`;
+  if (format === 'weekly') return `${day} ${monthsGenitive[month]} ${year}`;
   if (format === 'full') return `${monthsFull[month]} ${year}`;
   return `${monthsShort[month]} ${year}`;
 }
@@ -123,6 +124,7 @@ const CPI_INDEX_CODES = new Set([
   'cpi-food-quarterly',
   'cpi-nonfood-quarterly',
   'cpi-services-quarterly',
+  'inflation-weekly',
 ]);
 
 export function isCpiIndex(code) {

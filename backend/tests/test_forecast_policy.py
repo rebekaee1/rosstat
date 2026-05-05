@@ -36,8 +36,17 @@ DERIVED_FROM_SOURCE_FORECAST_CODES = {
     "ppi-yoy",
 }
 
+# Generic OLS multi-window — fallback модель для индикаторов без
+# именованного блокнота Никиты. Используется только там, где данных
+# хватает (>=36 точек) и форма ряда совместима с cpi_index/percentage transform.
+GENERIC_OLS_FORECAST_CODES = {
+    "inflation-weekly",
+}
+
 ALL_FORECAST_CODES = (
-    APPROVED_DIRECT_FORECAST_CODES | DERIVED_FROM_SOURCE_FORECAST_CODES
+    APPROVED_DIRECT_FORECAST_CODES
+    | DERIVED_FROM_SOURCE_FORECAST_CODES
+    | GENERIC_OLS_FORECAST_CODES
 )
 
 APPROVED_NOTEBOOK_CODES = {

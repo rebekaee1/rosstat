@@ -15,19 +15,19 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
     return () => tween.kill();
   }, []);
 
-  const usesForecastData = mode === 'cpi' || mode === 'quarterly' || mode === 'annual';
+  const usesForecastData = mode === 'cpi' || mode === 'quarterly' || mode === 'annual' || mode === 'weekly';
   const rows = usesForecastData
     ? (forecastData?.forecast?.values || [])
     : (inflation?.forecast || []);
 
   if (!rows.length) return null;
 
-  const period = dateFormat === 'quarterly' ? 'ежеквартально' : dateFormat === 'annual' ? 'ежегодно' : 'помесячно';
+  const period = dateFormat === 'quarterly' ? 'ежеквартально' : dateFormat === 'annual' ? 'ежегодно' : dateFormat === 'weekly' ? 'еженедельно' : 'помесячно';
   const title = mode === 'inflation' ? 'Прогноз инфляции (12 мес.)' : `Прогноз (${period})`;
   const suffix = unitSuffix(unit);
   const valueLabel = mode === 'inflation'
     ? 'Инфляция (12 мес.)'
-    : (mode === 'quarterly' ? 'Квартальная (%)' : mode === 'annual' ? 'Годовая (%)' : (suffix ? `Значение (${suffix})` : 'Значение'));
+    : (mode === 'quarterly' ? 'Квартальная (%)' : mode === 'annual' ? 'Годовая (%)' : mode === 'weekly' ? 'Недельная (%)' : (suffix ? `Значение (${suffix})` : 'Значение'));
 
   return (
     <div ref={ref} className="rounded-[2rem] bg-surface border border-border-subtle overflow-hidden">

@@ -100,7 +100,6 @@ export default function IndicatorChartSection({
   code,
   indicator,
   chartMode,
-  safeViewMode,
   isPriceCategory,
   chartLoading,
 
@@ -113,6 +112,7 @@ export default function IndicatorChartSection({
   displayForecastData,
   quarterlyForecastData,
   annualForecastResp,
+  weeklyForecastData,
 
   forecastEnabled,
   showForecast,
@@ -132,7 +132,7 @@ export default function IndicatorChartSection({
 
   const forecastData = chartMode === 'quarterly' ? quarterlyForecastData
     : chartMode === 'annual' ? annualForecastResp
-      : chartMode === 'weekly' ? null
+      : chartMode === 'weekly' ? weeklyForecastData
         : displayForecastData;
 
   const handleForecastToggle = () => {
@@ -211,7 +211,7 @@ export default function IndicatorChartSection({
             </label>
             {!forecastEnabled && (
               <div className="absolute top-full right-0 mt-2 px-3 py-2 rounded-xl bg-obsidian border border-border-subtle text-xs text-text-secondary whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-xl z-50">
-                {safeViewMode === 'weekly' ? 'Недельный прогноз не публикуется' : 'Прогноз для этого режима недоступен'}
+                Прогноз для этого режима недоступен
               </div>
             )}
           </div>

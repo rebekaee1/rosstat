@@ -92,6 +92,9 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
   } = useIndicatorData('inflation-weekly', undefined, {
     enabled: code === 'cpi' && safeViewMode === 'weekly',
   });
+  const { data: weeklyForecastResp } = useForecast('inflation-weekly', {
+    enabled: code === 'cpi' && safeViewMode === 'weekly',
+  });
 
   const rawDataPoints = useMemo(
     () => (Array.isArray(dataResp?.data) ? dataResp.data : []),
@@ -139,6 +142,14 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
     return weeklyResp.data.map((p) => ({ ...p, value: Number(p.value) - 100 }));
   }, [weeklyResp]);
 
+  // Прогноз inflation-weekly приходит в формате CPI-индекса (значения вокруг 100),
+  // фронт же показывает delta (value - 100). Преобразуем чтобы прогноз был в той же
+  // системе координат, что и actual-точки выше.
+  const weeklyForecastData = useMemo(
+    () => adjustCpiForecastDisplay(weeklyForecastResp, 'inflation-weekly'),
+    [weeklyForecastResp],
+  );
+
   const inflationStats = useMemo(() => {
     if (chartMode !== 'inflation' || !inflationResp?.actuals?.length) return null;
     return statsFromPoints(inflationResp.actuals);
@@ -179,12 +190,12 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
     : chartMode === 'annual'
       ? annualForecastResp?.forecast?.values?.length > 0
       : chartMode === 'weekly'
-        ? false
+        ? weeklyForecastData?.forecast?.values?.length > 0
         : chartMode === 'inflation'
           ? inflationResp?.forecast?.length > 0
           : displayForecastData?.forecast?.values?.length > 0;
 
-  const forecastEnabled = safeViewMode !== 'weekly' && hasForecastData;
+  const forecastEnabled = hasForecastData;
 
   return {
     isPriceCategory,
@@ -201,6 +212,7 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
     displayForecastData,
     quarterlyForecastData,
     annualForecastResp,
+    weeklyForecastData,
 
     stats,
     cpiPrevDate,

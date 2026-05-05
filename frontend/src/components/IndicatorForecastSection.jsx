@@ -6,48 +6,34 @@ const EMPTY_BOX_CLS = 'h-full min-h-[300px] rounded-[2rem] bg-surface border bor
 function dateFormatFor(chartMode, indicator) {
   if (chartMode === 'quarterly') return 'quarterly';
   if (chartMode === 'annual') return 'annual';
+  if (chartMode === 'weekly') return 'weekly';
   if (indicator?.frequency === 'quarterly') return 'quarterly';
   if (indicator?.frequency === 'annual') return 'annual';
+  if (indicator?.frequency === 'weekly') return 'weekly';
   return 'full';
 }
 
 /**
- * Правая колонка под графиком: либо таблица прогноза, либо одно из трёх
- * пустых состояний (недельная — не публикуется, выключен переключатель,
- * прогноз вообще недоступен для индикатора).
+ * Правая колонка под графиком: таблица прогноза или пустое состояние
+ * (выключен переключатель / прогноз недоступен).
  */
 export default function IndicatorForecastSection({
   indicator,
   chartMode,
-  safeViewMode,
   inflationResp,
   displayForecastData,
   quarterlyForecastData,
   annualForecastResp,
+  weeklyForecastData,
   forecastEnabled,
   showForecast,
   hasForecastData,
 }) {
-  if (safeViewMode === 'weekly') {
-    return (
-      <section className="lg:col-span-2">
-        <div className={EMPTY_BOX_CLS}>
-          <Activity className="w-8 h-8 mb-1 opacity-20" />
-          <p className="text-sm font-medium text-text-secondary text-center max-w-md">
-            Недельный ИПЦ публикуется Росстатом еженедельно
-          </p>
-          <p className="text-xs text-center max-w-lg leading-relaxed text-text-tertiary">
-            Прогноз недоступен для недельной частоты — переключитесь на вкладку «Инфляция за год», «Месячная», «Квартальная» или «Годовая»
-          </p>
-        </div>
-      </section>
-    );
-  }
-
   if (forecastEnabled && showForecast && hasForecastData) {
     const forecastData = chartMode === 'quarterly' ? quarterlyForecastData
       : chartMode === 'annual' ? annualForecastResp
-        : displayForecastData;
+        : chartMode === 'weekly' ? weeklyForecastData
+          : displayForecastData;
 
     return (
       <section className="lg:col-span-2">

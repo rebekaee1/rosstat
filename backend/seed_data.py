@@ -1060,7 +1060,13 @@ INDICATORS = [
         ),
         "parser_type": "rosstat_weekly_cpi",
         "model_config_json": {
-            "forecast_steps": 0,
+            # Прогноз на 8 недель (~2 мес.). У Никиты нет блокнота для weekly,
+            # поэтому используем универсальный OLS multi-window с
+            # cpi_index-преобразованием — та же модель, что для других
+            # индикаторов без специализированного блокнота.
+            "forecast_steps": 8,
+            "forecast_strategy": "generic_ols",
+            "forecast_transform": "cpi_index",
             "validation": {"min": 99, "max": 102},
             "backfill_max_pages": 1,
         },

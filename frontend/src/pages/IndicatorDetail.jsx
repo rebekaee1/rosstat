@@ -55,7 +55,7 @@ export default function IndicatorDetail() {
     isPriceCategory, safeViewMode, chartMode, shouldSubtract100,
     dataPoints, inflationResp,
     quarterlyDataPoints, annualDataPoints, weeklyDataPoints,
-    displayForecastData, quarterlyForecastData, annualForecastResp,
+    displayForecastData, quarterlyForecastData, annualForecastResp, weeklyForecastData,
     stats: viewStats, cpiPrevDate,
     chartLoading, loadingData, loadingInflation,
     loadingAnnual, loadingWeekly, loadingQuarterly,
@@ -199,7 +199,6 @@ export default function IndicatorDetail() {
         code={code}
         indicator={indicator}
         chartMode={chartMode}
-        safeViewMode={safeViewMode}
         isPriceCategory={isPriceCategory}
         chartLoading={chartLoading}
         inflationResp={inflationResp}
@@ -210,6 +209,7 @@ export default function IndicatorDetail() {
         displayForecastData={displayForecastData}
         quarterlyForecastData={quarterlyForecastData}
         annualForecastResp={annualForecastResp}
+        weeklyForecastData={weeklyForecastData}
         forecastEnabled={forecastEnabled}
         showForecast={showForecast}
         onToggleForecast={() => setShowForecast((v) => !v)}
@@ -233,6 +233,7 @@ export default function IndicatorDetail() {
           displayForecastData={displayForecastData}
           quarterlyForecastData={quarterlyForecastData}
           annualForecastResp={annualForecastResp}
+          weeklyForecastData={weeklyForecastData}
           forecastEnabled={forecastEnabled}
           showForecast={showForecast}
           hasForecastData={hasForecastData}
