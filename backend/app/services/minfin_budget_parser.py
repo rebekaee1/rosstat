@@ -13,7 +13,7 @@ import io
 import logging
 import re
 from dataclasses import dataclass
-from datetime import date, datetime, timezone
+from datetime import date
 from typing import ClassVar
 
 from bs4 import BeautifulSoup
@@ -22,9 +22,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import FetchLog, Indicator
 from app.services.base_parser import BaseParser
 from app.services.http_client import create_session
-from app.services.upsert import bulk_upsert
-from app.services.forecast_pipeline import retrain_indicator_forecast
-from app.core.cache import cache_invalidate_indicator
 
 logger = logging.getLogger(__name__)
 
@@ -160,44 +157,13 @@ def fetch_and_parse_budget(target: str = "deficit") -> tuple[list[BudgetPoint], 
 class MinfinBudgetParser(BaseParser):
     parser_type: ClassVar[str] = "minfin_budget_csv"
 
-    async def run(self, db: AsyncSession, indicator: Indicator, fetch_log: FetchLog) -> None:
-        code = indicator.code
-        try:
-            cfg = indicator.model_config_json or {}
-            budget_target = cfg.get("budget_target", "deficit")
-            points, csv_url = await asyncio.to_thread(fetch_and_parse_budget, budget_target)
-            fetch_log.source_url = csv_url[:500]
-
-            if not points:
-                fetch_log.status = "no_new_data"
-                fetch_log.error_message = "CSV parsed but 0 budget points extracted"
-                fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-                await db.commit()
-                return
-
-            records_added, records_updated = await bulk_upsert(db, indicator.id, points)
-            logger.info(
-                "Upserted %d new, %d updated for '%s'",
-                records_added, records_updated, code,
-            )
-            fetch_log.records_added = records_added
-
-            steps = int(cfg.get("forecast_steps", 0) or 0)
-            if steps > 0 and (records_added > 0 or records_updated > 0):
-                await retrain_indicator_forecast(db, indicator)
-
-            if records_added > 0 or records_updated > 0:
-                await cache_invalidate_indicator(code)
-
-            fetch_log.status = "success" if (records_added > 0 or records_updated > 0) else "no_new_data"
-            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-            await db.commit()
-
-        except Exception as e:
-            logger.exception("ETL failed for '%s'", code)
-            await db.rollback()
-            fetch_log.status = "failed"
-            fetch_log.error_message = str(e)[:500]
-            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-            db.add(fetch_log)
-            await db.commit()
+    async def _fetch_and_parse(
+        self,
+        db: AsyncSession,
+        indicator: Indicator,
+        cfg: dict,
+        fetch_log: FetchLog,
+    ) -> tuple[list, str]:
+        budget_target = cfg.get("budget_target", "deficit")
+        points, csv_url = await asyncio.to_thread(fetch_and_parse_budget, budget_target)
+        return points, csv_url

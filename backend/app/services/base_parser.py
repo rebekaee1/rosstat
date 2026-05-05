@@ -33,6 +33,7 @@ Hook'и (опциональны):
 from __future__ import annotations
 
 import logging
+from abc import ABC, abstractmethod
 from datetime import datetime, timezone
 from typing import ClassVar
 
@@ -51,14 +52,11 @@ def _utcnow_naive() -> datetime:
     return datetime.now(timezone.utc).replace(tzinfo=None)
 
 
-class BaseParser:
+class BaseParser(ABC):
     """Парсер источника: fetch → parse → validate → store (в run).
 
-    `_fetch_and_parse` намеренно НЕ помечен `@abstractmethod`: пока часть
-    парсеров переопределяет старый монолитный `run()` целиком (для них этот
-    метод никогда не вызывается), а мигрированные парсеры реализуют только
-    `_fetch_and_parse`. После завершения миграции всех 24 парсеров можно
-    будет вернуть `ABC` + `@abstractmethod` отдельным коммитом.
+    Все 24 парсера мигрированы; `_fetch_and_parse` теперь обязательный
+    abstract method.
     """
 
     parser_type: ClassVar[str] = "abstract"
@@ -117,6 +115,7 @@ class BaseParser:
             db.add(fetch_log)
             await db.commit()
 
+    @abstractmethod
     async def _fetch_and_parse(
         self,
         db: AsyncSession,
@@ -124,9 +123,7 @@ class BaseParser:
         cfg: dict,
         fetch_log: FetchLog,
     ) -> tuple[list, str]:
-        """Override (обязательно для парсеров, использующих template-method `run`).
-
-        Вернуть `(points, source_url)`.
+        """Override (обязательно). Вернуть `(points, source_url)`.
 
         `points` — list объектов с атрибутами `.date`/`.value` ИЛИ кортежей
         `(date, value)` (см. `bulk_upsert._split_point`). Возврат пустого
@@ -139,10 +136,6 @@ class BaseParser:
         chunk'ов упал, но остальные собраны), парсер может записать
         ``fetch_log.error_message`` сам — базовый `run()` сохранит его.
         """
-        raise NotImplementedError(
-            f"{type(self).__name__}._fetch_and_parse() not implemented "
-            f"and run() not overridden"
-        )
 
     def _validate(self, points: list, cfg: dict) -> list:
         """Default: общий validator из `data_validator`. Override для кастомной нормализации."""
