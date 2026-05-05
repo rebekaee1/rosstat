@@ -37,6 +37,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import FetchLog, Indicator
 from app.services.base_parser import BaseParser
+from app.services.data_validator import validate_points
 from app.services.rosstat_sdds_fetcher import fetch_sdds_xlsx, fetch_rosstat_static_xlsx
 
 logger = logging.getLogger(__name__)
@@ -197,3 +198,6 @@ class RosstatGdpParser(BaseParser):
             row_index = int(cfg.get("gdp_row_index", 2))
             points = await asyncio.to_thread(parse_gdp_xlsx, content, row_index)
         return points, final_url
+
+    def _validate(self, points: list, cfg: dict) -> list:
+        return validate_points(points, cfg)

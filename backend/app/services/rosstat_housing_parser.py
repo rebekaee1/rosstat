@@ -23,6 +23,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import FetchLog, Indicator
 from app.services.base_parser import BaseParser
+from app.services.data_validator import validate_points
 from app.services.rosstat_sdds_fetcher import fetch_sdds_xlsx
 
 logger = logging.getLogger(__name__)
@@ -112,3 +113,6 @@ class RosstatHousingParser(BaseParser):
             raise ValueError(f"No series mapping for '{series_key}'")
 
         return all_series[series_key], final_url
+
+    def _validate(self, points: list, cfg: dict) -> list:
+        return validate_points(points, cfg)

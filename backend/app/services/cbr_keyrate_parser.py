@@ -25,6 +25,7 @@ from app.services.cbr_keyrate import (
     parse_keyrate_html,
     get_latest_keyrate_announcement,
 )
+from app.services.data_validator import validate_points
 from app.services.forecast_pipeline import clear_current_forecasts, retrain_indicator_forecast
 from app.services.upsert import bulk_upsert
 
@@ -62,6 +63,9 @@ class CbrKeyRateParser(BaseParser):
         html, final_url = await asyncio.to_thread(fetch_key_rate_html, date_from, date_to)
         points: list[DataPoint] = await asyncio.to_thread(parse_keyrate_html, html)
         return points, final_url
+
+    def _validate(self, points: list, cfg: dict) -> list:
+        return validate_points(points, cfg)
 
     async def _post_upsert(
         self,

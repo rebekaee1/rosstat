@@ -22,6 +22,7 @@ from app.services.cbr_monetary_parser import CbrMonetaryParser
 from app.services.cbr_dataservice_parser import CbrDataServiceParser
 from app.services.rosstat_labor_parser import RosstatLaborParser
 from app.services.rosstat_gdp_parser import RosstatGdpParser
+from app.services.data_validator import validate_points
 from app.services.fetcher import RosstatFetcher
 from app.services.parser import parse_cpi_sheet
 
@@ -55,6 +56,9 @@ class RosstatCpiParser(BaseParser):
                 logger.warning("Suspicious CPI value %.2f for %s at %s", p.value, indicator.code, p.date)
 
         return points, source_url
+
+    def _validate(self, points: list, cfg: dict) -> list:
+        return validate_points(points, cfg)
 
 
 from app.services.cbr_dataservice_sum_parser import CbrDataServiceSumParser

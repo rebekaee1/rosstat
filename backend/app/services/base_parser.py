@@ -41,7 +41,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.cache import cache_invalidate_indicator
 from app.models import FetchLog, Indicator
-from app.services.data_validator import validate_points
 from app.services.forecast_pipeline import retrain_indicator_forecast
 from app.services.upsert import bulk_upsert
 
@@ -138,8 +137,15 @@ class BaseParser(ABC):
         """
 
     def _validate(self, points: list, cfg: dict) -> list:
-        """Default: общий validator из `data_validator`. Override для кастомной нормализации."""
-        return validate_points(points, cfg)
+        """Default: точки идут в upsert как есть.
+
+        Override для кастомной нормализации/валидации. Например, парсеры
+        Rosstat XLSX и cbr_keyrate возвращают объекты `DataPoint` (с
+        `.value`) и применяют общий range-checker
+        `data_validator.validate_points`. Tuple-based парсеры (gold/fx/
+        ruonia/...) исторически валидатор не использовали.
+        """
+        return points
 
     async def _post_upsert(
         self,

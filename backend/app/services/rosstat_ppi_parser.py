@@ -22,6 +22,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import FetchLog, Indicator
 from app.services.base_parser import BaseParser
+from app.services.data_validator import validate_points
 from app.services.rosstat_sdds_fetcher import fetch_sdds_xlsx
 
 logger = logging.getLogger(__name__)
@@ -113,3 +114,6 @@ class RosstatPpiParser(BaseParser):
         content, final_url = await asyncio.to_thread(fetch_sdds_xlsx, "prices")
         points = await asyncio.to_thread(parse_ppi_xlsx, content)
         return points, final_url
+
+    def _validate(self, points: list, cfg: dict) -> list:
+        return validate_points(points, cfg)
