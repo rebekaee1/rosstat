@@ -666,7 +666,13 @@ INDICATORS = [
         "model_config_json": {
             "gdp_source": "official_quarterly",
             "gdp_sheet": "9",
-            "forecast_steps": 0,
+            "forecast_steps": 4,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "gdp-yoy",
+                "operation": "real_from_yoy",
+                "model_name": "GDP-Real-From-YoY-Derived",
+            },
             "forecast_transform": "absolute",
             "validation": {"min": 0},
         },
@@ -704,7 +710,15 @@ INDICATORS = [
             "Темп роста номинального ВВП к аналогичному кварталу предыдущего года."
         ),
         "parser_type": "derived",
-        "model_config_json": {"forecast_steps": 0},
+        "model_config_json": {
+            "forecast_steps": 4,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "gdp-nominal",
+                "operation": "yoy_quarterly",
+                "model_name": "GDP-YoY-Derived",
+            },
+        },
         "is_active": True,
         "category": "ВВП",
     },
@@ -719,7 +733,15 @@ INDICATORS = [
             "Темп роста номинального ВВП к предыдущему кварталу."
         ),
         "parser_type": "derived",
-        "model_config_json": {"forecast_steps": 0},
+        "model_config_json": {
+            "forecast_steps": 4,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "gdp-nominal",
+                "operation": "qoq",
+                "model_name": "GDP-QoQ-Derived",
+            },
+        },
         "is_active": True,
         "category": "ВВП",
     },
@@ -1477,7 +1499,15 @@ INDICATORS = [
         "source": "Расчёт",
         "description": "Изменение индекса цен производителей к аналогичному месяцу предыдущего года.",
         "parser_type": "derived",
-        "model_config_json": {"forecast_steps": 0},
+        "model_config_json": {
+            "forecast_steps": 12,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "ppi",
+                "operation": "yoy_monthly",
+                "model_name": "PPI-YoY-Derived",
+            },
+        },
         "is_active": True,
         "category": "Цены",
     },

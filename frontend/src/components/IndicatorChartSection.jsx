@@ -4,21 +4,64 @@ import { track, events } from '../lib/track';
 import IndicatorChart from './IndicatorChart';
 import { ChartSkeleton } from './Skeleton';
 
+/* ── Mode-зависимые подписи ──
+   chartMode принимает значения: 'cpi' (default для всех некоммодити-индикаторов),
+   'quarterly', 'annual', 'weekly', 'inflation' (только для CPI семьи).
+   Для не-CPI индикаторов важен `indicator.frequency` — он задаёт ритм ряда
+   (daily/weekly/monthly/quarterly/annual). Прогноз идёт в том же ритме —
+   подписи tooltip/легенды/заголовка отражают это. */
+
+const FREQUENCY_LABEL = {
+  daily: 'днев.',
+  weekly: 'нед.',
+  monthly: 'мес.',
+  quarterly: 'кв.',
+  annual: 'год.',
+};
+
+const FREQUENCY_LONG = {
+  daily: 'днев.',
+  weekly: 'недельная',
+  monthly: 'помесячно',
+  quarterly: 'квартально',
+  annual: 'годовая',
+};
+
+function freqLabel(indicator) {
+  return FREQUENCY_LABEL[indicator?.frequency] || '';
+}
+
+function freqLong(indicator) {
+  return FREQUENCY_LONG[indicator?.frequency] || '';
+}
+
 function chartTitle({ chartMode, isPriceCategory, indicator }) {
   if (chartMode === 'quarterly') return 'Квартальная инфляция (%)';
   if (chartMode === 'annual') return 'Годовая инфляция (%)';
   if (chartMode === 'weekly') return 'Недельная инфляция (%)';
   if (isPriceCategory) return 'Прирост цен (%, к предыдущему месяцу)';
   const suffix = unitSuffix(indicator?.unit);
-  return `${indicator?.name || 'Показатель'}${suffix ? ` (${suffix})` : ''}`;
+  const freq = freqLong(indicator);
+  const baseTitle = `${indicator?.name || 'Показатель'}${suffix ? ` (${suffix})` : ''}`;
+  return freq ? `${baseTitle} — ${freq}` : baseTitle;
 }
 
-function levelTooltipLabel(chartMode, isPriceCategory) {
+function levelTooltipLabel({ chartMode, isPriceCategory, indicator }) {
   if (chartMode === 'quarterly') return 'Кв. инфляция';
   if (chartMode === 'annual') return 'Год. инфляция';
   if (chartMode === 'weekly') return 'Нед. ИПЦ';
   if (isPriceCategory) return 'Прирост';
-  return 'Значение';
+  const freq = freqLabel(indicator);
+  return freq ? `Факт (${freq})` : 'Значение';
+}
+
+function forecastTooltipLabel({ chartMode, indicator }) {
+  if (chartMode === 'quarterly') return 'Прогноз (кв.)';
+  if (chartMode === 'annual') return 'Прогноз (год.)';
+  if (chartMode === 'weekly') return 'Прогноз (нед.)';
+  if (chartMode === 'inflation') return 'Прогноз (12 мес.)';
+  const freq = freqLabel(indicator);
+  return freq ? `Прогноз (${freq})` : 'Прогноз';
 }
 
 function dateFormatFor({ chartMode, indicator }) {
@@ -27,7 +70,22 @@ function dateFormatFor({ chartMode, indicator }) {
   if (chartMode !== 'inflation' && indicator?.frequency === 'daily') return 'day';
   if (indicator?.frequency === 'quarterly') return 'quarterly';
   if (indicator?.frequency === 'annual') return 'annual';
+  if (indicator?.frequency === 'weekly') return 'short';
   return 'full';
+}
+
+function rangePresetFor({ chartMode, indicator }) {
+  /* Mode-driven для CPI семьи (annual mode → 10y/25y/all). */
+  if (chartMode === 'annual') return 'annual';
+  if (chartMode === 'quarterly') return 'quarterly';
+  if (chartMode === 'weekly') return 'weekly';
+  /* Frequency-driven для остальных индикаторов. */
+  const freq = indicator?.frequency;
+  if (freq === 'quarterly') return 'quarterly';
+  if (freq === 'annual') return 'annual';
+  if (freq === 'weekly') return 'weekly';
+  if (freq === 'daily') return 'daily';
+  return 'default';
 }
 
 /**
@@ -175,13 +233,12 @@ export default function IndicatorChartSection({
             onRangeChange={onRangeChange}
             referenceLineY={isPriceCategory ? 0 : null}
             cpiChartTitle={chartTitle({ chartMode, isPriceCategory, indicator })}
-            levelTooltipLabel={levelTooltipLabel(chartMode, isPriceCategory)}
+            levelTooltipLabel={levelTooltipLabel({ chartMode, isPriceCategory, indicator })}
+            forecastTooltipLabel={forecastTooltipLabel({ chartMode, indicator })}
             emptyHint={emptyHint}
             dateFormat={dateFormatFor({ chartMode, indicator })}
             unit={indicator?.unit || '%'}
-            rangePreset={
-              chartMode === 'annual' || indicator?.frequency === 'annual' ? 'annual' : 'default'
-            }
+            rangePreset={rangePresetFor({ chartMode, indicator })}
             indicatorCode={code}
             indicatorCategory={indicator?.category}
           />
