@@ -12,6 +12,7 @@ from app.services.forecaster import (
     train_and_forecast,
     train_monthly_cpi,
     train_inflation_12m,
+    train_quarterly_housing,
     aggregate_quarterly_from_monthly,
     ForecastResult,
     ForecastPoint,
@@ -170,6 +171,11 @@ async def retrain_indicator_forecast(db: AsyncSession, indicator: Indicator) -> 
             await _propagate_cpi_forecast_to_derived(
                 db, indicator.code, dates, values, monthly_result, inflation_result,
             )
+    elif cfg.get("forecast_model") == "housing_quarterly":
+        result = await asyncio.to_thread(
+            train_quarterly_housing, dates, values, forecast_steps=forecast_steps,
+        )
+        await _save_forecast(db, indicator, result)
     else:
         forecast_transform = cfg.get("forecast_transform", "absolute")
         result = await asyncio.to_thread(
@@ -212,11 +218,12 @@ async def _propagate_cpi_forecast_to_derived(
         select(Indicator).where(Indicator.code == derived_codes["annual"])
     )).scalar_one_or_none()
     if annual_indicator is not None:
-        # The annual chart shows one point per calendar year (December cumulative).
-        # Keep only December points from the rolling 12-month forecast so the
-        # forecast granularity matches the historical series. With forecast_steps=12
-        # (e.g. apr-2026..mar-2027) this yields exactly one annual point (dec-2026).
-        december_points = [
+        # Save all 12 monthly points of the rolling-12m forecast under the
+        # annual indicator (matches Никита's `Прогноз_инфляции_12_мес.ipynb`,
+        # which outputs 12 monthly values apr-2026..mar-2027). The historical
+        # series for inflation-annual is itself a rolling-12m series, so monthly
+        # granularity is what the chart expects.
+        all_points = [
             ForecastPoint(
                 date=p.date,
                 value=p.value,
@@ -224,20 +231,19 @@ async def _propagate_cpi_forecast_to_derived(
                 upper_bound=p.upper_bound,
             )
             for p in inflation_result.points
-            if p.date.month == 12
         ]
-        if december_points:
+        if all_points:
             annual_result = ForecastResult(
                 model_name="Annual-From-12M-Rolling",
                 aic=None,
                 bic=None,
-                points=december_points,
+                points=all_points,
             )
             await _save_forecast(db, annual_indicator, annual_result)
         else:
             removed = await clear_current_forecasts(db, annual_indicator)
             logger.info(
-                "No December points in 12-month forecast horizon; cleared %d "
+                "No points in 12-month forecast horizon; cleared %d "
                 "stale annual forecast(s) for %s",
                 removed,
                 derived_codes["annual"],
