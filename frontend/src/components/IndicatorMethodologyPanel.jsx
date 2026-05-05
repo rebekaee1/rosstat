@@ -24,9 +24,9 @@ export default function IndicatorMethodologyPanel({ indicator, content }) {
           {content?.description}
         </p>
         {content?.methodology && (
-          <p className="text-text-tertiary border-l-2 border-champagne/30 pl-4 my-4 font-mono text-[10px] uppercase tracking-wider">
+          <div className="text-text-tertiary border-l-2 border-champagne/30 pl-4 my-4 font-mono text-[10px] uppercase tracking-wider">
             {content.methodology}
-          </p>
+          </div>
         )}
       </div>
 

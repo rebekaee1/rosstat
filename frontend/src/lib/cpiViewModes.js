@@ -8,6 +8,8 @@
  * - cpi:       месячный прирост к предыдущему месяцу
  * - quarterly: квартальная инфляция (произведение 3 месячных индексов)
  * - annual:    годовая инфляция (скользящее окно 12 месяцев)
+ * - index:     уровень индекса (значения вокруг 100, как у housing). Прогноз
+ *              на этом режиме приходит из того же CPI-Monthly (без вычитания 100).
  */
 export const CPI_VIEW_MODES = [
   { mode: 'inflation', label: 'Инфляция за год', generalOnly: false },
@@ -15,11 +17,12 @@ export const CPI_VIEW_MODES = [
   { mode: 'cpi', label: 'Месячная', generalOnly: false },
   { mode: 'quarterly', label: 'Квартальная', generalOnly: false },
   { mode: 'annual', label: 'Годовая', generalOnly: false },
+  { mode: 'index', label: 'Индекс', generalOnly: false },
 ];
 
 /**
  * Получить список режимов, доступных для конкретного кода:
- * для общего `cpi` — все 5; для подкатегорий — без `weekly`.
+ * для общего `cpi` — все режимы; для подкатегорий — без `weekly`.
  */
 export function visibleCpiViewModes(code) {
   return CPI_VIEW_MODES.filter((item) => !item.generalOnly || code === 'cpi');

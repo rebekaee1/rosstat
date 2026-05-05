@@ -42,11 +42,18 @@ function statsFromPoints(points) {
 export default function useIndicatorViewModeData({ code, viewMode }) {
   const isPriceCategory = CPI_CODES.includes(code);
 
-  const safeViewMode = isPriceCategory && code !== 'cpi' && viewMode === 'weekly'
+  // Защита от устаревших ?mode=... в URL: 'weekly' только у общего `cpi`,
+  // остальные режимы либо недоступны на текущем коде, либо валидны как `inflation`.
+  const ALLOWED_MODES = ['inflation', 'cpi', 'quarterly', 'annual', 'weekly', 'index'];
+  const fallbackMode = !ALLOWED_MODES.includes(viewMode) ? 'inflation' : viewMode;
+  const safeViewMode = isPriceCategory && code !== 'cpi' && fallbackMode === 'weekly'
     ? 'inflation'
-    : viewMode;
+    : fallbackMode;
 
-  const shouldSubtract100 = isCpiIndex(code);
+  // На режиме `index` показываем сырой индекс (значения вокруг 100) — не
+  // нужно вычитать 100. На остальных режимах CPI-семейства — стандартное
+  // преобразование к шкале «delta % от 100».
+  const shouldSubtract100 = isCpiIndex(code) && safeViewMode !== 'index';
   const cpiDerivedCodes = CPI_DERIVED_CODES[code] || {};
   const chartMode = isPriceCategory ? safeViewMode : 'cpi';
 

@@ -345,16 +345,20 @@ INDICATORS = [
         "source": "Банк России",
         "source_url": "https://www.cbr.ru/statistics/pdko/int_rat/",
         "description": (
-            "Средневзвешенная процентная ставка по автокредитам физическим лицам "
-            "в рублях, свыше 1 года."
+            "Средневзвешенная процентная ставка по автокредитам "
+            "физическим лицам в рублях, по всем срокам."
         ),
         "parser_type": "cbr_dataservice_json",
         "model_config_json": {
             "dataservice": {
+                # ЦБ в декабре 2025 переразложил dataset 28: исторические срезы
+                # по срочности (id 2/4/5/6/7/9/10/11) больше не публикуются,
+                # остался только агрегированный element_id=110 («По всем срокам»).
+                # Полная история (~146 точек, 2014→2026) перевыложена под id=110.
                 "publicationId": 14,
                 "datasetId": 28,
                 "measureId": 2,
-                "element_id": 11,
+                "element_id": 110,
             },
             "backfill_from_year": 2014,
             "forecast_steps": 0,
@@ -577,7 +581,7 @@ INDICATORS = [
         ),
         "methodology": (
             "Расчёт: число безработных / экономически активное население × 100. "
-            "Источник: SDDS XLSX Росстата (eng.rosstat.gov.ru). Обновляется ежемесячно."
+            "Источник — SDDS Росстата. Обновляется ежемесячно."
         ),
         "parser_type": "rosstat_sdds_labor",
         "model_config_json": {
@@ -602,7 +606,7 @@ INDICATORS = [
         ),
         "methodology": (
             "Фонд начисленной зарплаты / среднесписочная численность. "
-            "Источник: SDDS XLSX Росстата. Обновляется ежемесячно."
+            "Источник — SDDS Росстата. Обновляется ежемесячно."
         ),
         "parser_type": "rosstat_sdds_labor",
         "model_config_json": {
@@ -628,7 +632,7 @@ INDICATORS = [
         ),
         "methodology": (
             "Рассчитывается Росстатом по системе национальных счетов (СНС 2008). "
-            "Источник: SDDS XLSX национальных счетов. Обновляется поквартально."
+            "Источник — SDDS Росстата (национальные счета). Обновляется поквартально."
         ),
         "parser_type": "rosstat_sdds_gdp",
         "model_config_json": {
@@ -659,8 +663,8 @@ INDICATORS = [
             "Квартальные данные официального файла Росстата «ВВП кварталы»."
         ),
         "methodology": (
-            "Источник — XLSX Росстата VVP_kvartal_s_1995-2025.xlsx, лист 9: "
-            "«Валовой внутренний продукт (в ценах 2021 г., млрд руб.)»."
+            "Источник — Росстат, ряды квартального ВВП в постоянных ценах 2021 г. "
+            "(валовой внутренний продукт по методологии СНС-2008)."
         ),
         "parser_type": "rosstat_sdds_gdp",
         "model_config_json": {
@@ -686,7 +690,7 @@ INDICATORS = [
         "name_en": "Real Wages Index",
         "unit": "%",
         "frequency": "monthly",
-        "source": "Расчёт",
+        "source": "Росстат",
         "description": (
             "Индекс реальной заработной платы: отношение номинальной зарплаты "
             "к индексу потребительских цен. Показывает покупательную способность."
@@ -705,7 +709,7 @@ INDICATORS = [
         "name_en": "GDP Growth YoY",
         "unit": "%",
         "frequency": "quarterly",
-        "source": "Расчёт",
+        "source": "Росстат",
         "description": (
             "Темп роста номинального ВВП к аналогичному кварталу предыдущего года."
         ),
@@ -728,7 +732,7 @@ INDICATORS = [
         "name_en": "GDP Growth QoQ",
         "unit": "%",
         "frequency": "quarterly",
-        "source": "Расчёт",
+        "source": "Росстат",
         "description": (
             "Темп роста номинального ВВП к предыдущему кварталу."
         ),
@@ -751,7 +755,7 @@ INDICATORS = [
         "name_en": "Quarterly Inflation",
         "unit": "%",
         "frequency": "quarterly",
-        "source": "Расчёт",
+        "source": "Росстат",
         "description": (
             "Квартальный индекс инфляции: произведение трёх внутриквартальных "
             "месячных ИПЦ (цепной индекс за квартал)."
@@ -767,7 +771,7 @@ INDICATORS = [
         "name_en": "Annual Inflation",
         "unit": "%",
         "frequency": "monthly",
-        "source": "Расчёт",
+        "source": "Росстат",
         "description": (
             "Годовая инфляция: произведение 12 месячных ИПЦ — процент роста цен "
             "к аналогичному месяцу предыдущего года."
@@ -785,7 +789,7 @@ INDICATORS = [
         "name_en": "Food CPI Quarterly Inflation",
         "unit": "%",
         "frequency": "quarterly",
-        "source": "Расчёт",
+        "source": "Росстат",
         "description": (
             "Квартальная инфляция продовольственных товаров: произведение трёх "
             "месячных индексов потребительских цен на продовольственные товары."
@@ -801,7 +805,7 @@ INDICATORS = [
         "name_en": "Food CPI Annual Inflation",
         "unit": "%",
         "frequency": "monthly",
-        "source": "Расчёт",
+        "source": "Росстат",
         "description": (
             "Годовая инфляция продовольственных товаров: скользящее изменение за "
             "12 месяцев по месячным индексам потребительских цен на продовольствие."
@@ -817,7 +821,7 @@ INDICATORS = [
         "name_en": "Non-food CPI Quarterly Inflation",
         "unit": "%",
         "frequency": "quarterly",
-        "source": "Расчёт",
+        "source": "Росстат",
         "description": (
             "Квартальная инфляция непродовольственных товаров: произведение трёх "
             "месячных индексов потребительских цен на непродовольственные товары."
@@ -833,7 +837,7 @@ INDICATORS = [
         "name_en": "Non-food CPI Annual Inflation",
         "unit": "%",
         "frequency": "monthly",
-        "source": "Расчёт",
+        "source": "Росстат",
         "description": (
             "Годовая инфляция непродовольственных товаров: скользящее изменение за "
             "12 месяцев по месячным индексам потребительских цен на непродовольственные товары."
@@ -849,7 +853,7 @@ INDICATORS = [
         "name_en": "Services CPI Quarterly Inflation",
         "unit": "%",
         "frequency": "quarterly",
-        "source": "Расчёт",
+        "source": "Росстат",
         "description": (
             "Квартальная инфляция услуг: произведение трёх месячных индексов "
             "потребительских цен на услуги."
@@ -865,7 +869,7 @@ INDICATORS = [
         "name_en": "Services CPI Annual Inflation",
         "unit": "%",
         "frequency": "monthly",
-        "source": "Расчёт",
+        "source": "Росстат",
         "description": (
             "Годовая инфляция услуг: скользящее изменение за 12 месяцев по месячным "
             "индексам потребительских цен на услуги."
@@ -1165,8 +1169,8 @@ INDICATORS = [
             "Исторический ряд Росстата с 1897 года, с ежегодными значениями с 1970 года."
         ),
         "methodology": (
-            "Источник — официальные XLSX Росстата Popul_1897+.xlsx и SDDS_population. "
-            "Для 1897 и 1914 годов используется строка «в современных границах»."
+            "Источник — Росстат и SDDS Росстата. "
+            "Для 1897 и 1914 годов используется ряд «в современных границах»."
         ),
         "parser_type": "rosstat_population",
         "model_config_json": {
@@ -1263,7 +1267,7 @@ INDICATORS = [
         "name_en": "Quarterly Unemployment Rate",
         "unit": "%",
         "frequency": "quarterly",
-        "source": "Расчёт",
+        "source": "Росстат",
         "description": (
             "Среднее значение месячного уровня безработицы за квартал."
         ),
@@ -1278,7 +1282,7 @@ INDICATORS = [
         "name_en": "Annual Unemployment Rate",
         "unit": "%",
         "frequency": "monthly",
-        "source": "Расчёт",
+        "source": "Росстат",
         "description": (
             "Скользящее среднее уровня безработицы за последние 12 месяцев."
         ),
@@ -1294,7 +1298,7 @@ INDICATORS = [
         "name_en": "Current Account YoY Change",
         "unit": "%",
         "frequency": "quarterly",
-        "source": "Расчёт",
+        "source": "Банк России",
         "description": "Изменение сальдо текущего счёта к аналогичному кварталу предыдущего года.",
         "parser_type": "derived",
         "model_config_json": {"forecast_steps": 0},
@@ -1308,7 +1312,7 @@ INDICATORS = [
         "name_en": "Industrial Production YoY",
         "unit": "%",
         "frequency": "monthly",
-        "source": "Расчёт",
+        "source": "Росстат",
         "description": "Изменение индекса промышленного производства к аналогичному месяцу предыдущего года.",
         "parser_type": "derived",
         "model_config_json": {"forecast_steps": 0},
@@ -1330,7 +1334,7 @@ INDICATORS = [
         ),
         "methodology": (
             "Рассчитывается по ценам отгруженной продукции промышленных предприятий. "
-            "Источник: SDDS XLSX Росстата (Price Indices)."
+            "Источник — SDDS Росстата."
         ),
         "parser_type": "rosstat_sdds_ppi",
         "model_config_json": {
@@ -1429,7 +1433,7 @@ INDICATORS = [
         "name_en": "Exports YoY Change",
         "unit": "%",
         "frequency": "quarterly",
-        "source": "Расчёт",
+        "source": "Банк России",
         "description": "Изменение экспорта товаров к аналогичному кварталу предыдущего года.",
         "parser_type": "derived",
         "model_config_json": {"forecast_steps": 0},
@@ -1442,7 +1446,7 @@ INDICATORS = [
         "name_en": "Imports YoY Change",
         "unit": "%",
         "frequency": "quarterly",
-        "source": "Расчёт",
+        "source": "Банк России",
         "description": "Изменение импорта товаров к аналогичному кварталу предыдущего года.",
         "parser_type": "derived",
         "model_config_json": {"forecast_steps": 0},
@@ -1502,7 +1506,7 @@ INDICATORS = [
         "name_en": "Producer Price Index YoY",
         "unit": "%",
         "frequency": "monthly",
-        "source": "Расчёт",
+        "source": "Росстат",
         "description": "Изменение индекса цен производителей к аналогичному месяцу предыдущего года.",
         "parser_type": "derived",
         "model_config_json": {
@@ -1523,7 +1527,7 @@ INDICATORS = [
         "name_en": "Primary Housing Prices YoY",
         "unit": "%",
         "frequency": "quarterly",
-        "source": "Расчёт",
+        "source": "Росстат",
         "description": (
             "Изменение индекса цен на первичном рынке жилья к аналогичному кварталу "
             "предыдущего года. Расчёт на основе housing-price-primary."
@@ -1539,7 +1543,7 @@ INDICATORS = [
         "name_en": "Secondary Housing Prices YoY",
         "unit": "%",
         "frequency": "quarterly",
-        "source": "Расчёт",
+        "source": "Росстат",
         "description": (
             "Изменение индекса цен на вторичном рынке жилья к аналогичному кварталу "
             "предыдущего года. Расчёт на основе housing-price-secondary."
@@ -1659,7 +1663,7 @@ INDICATORS = [
         "name_en": "Wages YoY Change",
         "unit": "%",
         "frequency": "monthly",
-        "source": "Расчёт",
+        "source": "Росстат",
         "description": "Изменение средней номинальной зарплаты к аналогичному месяцу предыдущего года.",
         "parser_type": "derived",
         "model_config_json": {"forecast_steps": 0},
@@ -1777,7 +1781,7 @@ INDICATORS = [
         "name_en": "Exports QoQ Change",
         "unit": "%",
         "frequency": "quarterly",
-        "source": "Расчёт",
+        "source": "Банк России",
         "description": "Изменение экспорта товаров к предыдущему кварталу.",
         "parser_type": "derived",
         "model_config_json": {"forecast_steps": 0},
@@ -1790,7 +1794,7 @@ INDICATORS = [
         "name_en": "Imports QoQ Change",
         "unit": "%",
         "frequency": "quarterly",
-        "source": "Расчёт",
+        "source": "Банк России",
         "description": "Изменение импорта товаров к предыдущему кварталу.",
         "parser_type": "derived",
         "model_config_json": {"forecast_steps": 0},

@@ -39,6 +39,7 @@ function chartTitle({ chartMode, isPriceCategory, indicator }) {
   if (chartMode === 'quarterly') return 'Квартальная инфляция (%)';
   if (chartMode === 'annual') return 'Годовая инфляция (%)';
   if (chartMode === 'weekly') return 'Недельная инфляция (%)';
+  if (chartMode === 'index') return 'Индекс потребительских цен (уровень)';
   if (isPriceCategory) return 'Прирост цен (%, к предыдущему месяцу)';
   const suffix = unitSuffix(indicator?.unit);
   const freq = freqLong(indicator);
@@ -50,6 +51,7 @@ function levelTooltipLabel({ chartMode, isPriceCategory, indicator }) {
   if (chartMode === 'quarterly') return 'Кв. инфляция';
   if (chartMode === 'annual') return 'Год. инфляция';
   if (chartMode === 'weekly') return 'Нед. ИПЦ';
+  if (chartMode === 'index') return 'ИПЦ';
   if (isPriceCategory) return 'Прирост';
   const freq = freqLabel(indicator);
   return freq ? `Факт (${freq})` : 'Значение';
@@ -60,6 +62,7 @@ function forecastTooltipLabel({ chartMode, indicator }) {
   if (chartMode === 'annual') return 'Прогноз (год.)';
   if (chartMode === 'weekly') return 'Прогноз (нед.)';
   if (chartMode === 'inflation') return 'Прогноз (12 мес.)';
+  if (chartMode === 'index') return 'Прогноз (мес. ИПЦ)';
   const freq = freqLabel(indicator);
   return freq ? `Прогноз (${freq})` : 'Прогноз';
 }
@@ -224,14 +227,14 @@ export default function IndicatorChartSection({
         <div className="relative overflow-hidden rounded-[2rem]">
           <IndicatorChart
             key={`${indicator?.code}-${chartMode}`}
-            mode={['quarterly', 'annual', 'weekly'].includes(chartMode) ? 'cpi' : chartMode}
+            mode={['quarterly', 'annual', 'weekly', 'index'].includes(chartMode) ? 'cpi' : chartMode}
             inflation={inflationResp}
             cpiData={chartCpiData}
             forecastData={forecastData}
             showForecast={forecastEnabled && showForecast}
             onChartData={onChartData}
             onRangeChange={onRangeChange}
-            referenceLineY={isPriceCategory ? 0 : null}
+            referenceLineY={isPriceCategory && chartMode !== 'index' ? 0 : null}
             cpiChartTitle={chartTitle({ chartMode, isPriceCategory, indicator })}
             levelTooltipLabel={levelTooltipLabel({ chartMode, isPriceCategory, indicator })}
             forecastTooltipLabel={forecastTooltipLabel({ chartMode, indicator })}

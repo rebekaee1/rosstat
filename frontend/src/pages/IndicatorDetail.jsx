@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import gsap from 'gsap';
 import { useIndicator, useIndicatorStats } from '../lib/hooks';
 import useDocumentMeta from '../lib/useMeta';
@@ -23,7 +23,20 @@ export default function IndicatorDetail() {
   const { code } = useParams();
   const headerRef = useRef(null);
   const [showForecast, setShowForecast] = useState(true);
-  const [viewMode, setViewMode] = useState('inflation');
+  const [searchParams, setSearchParams] = useSearchParams();
+  // viewMode хранится в URL (?mode=monthly) — это позволяет сохранять режим
+  // при переключении между «продовольственные» / «непродовольственные» / «услуги»
+  // через VariantGroupPicker и при шаринге ссылок.
+  const urlMode = searchParams.get('mode');
+  const viewMode = urlMode || 'inflation';
+  const setViewMode = useCallback((mode) => {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      if (mode && mode !== 'inflation') next.set('mode', mode);
+      else next.delete('mode');
+      return next;
+    }, { replace: true });
+  }, [setSearchParams]);
   const [chartData, setChartData] = useState([]);
   const [currentRange, setCurrentRange] = useState('5y');
 
@@ -167,17 +180,6 @@ export default function IndicatorDetail() {
         headerRef={headerRef}
       />
 
-      <VariantGroupPicker group={variantGroup} currentCode={code} />
-
-      {isPriceCategory && (
-        <CpiViewModePicker
-          modes={cpiViewModes}
-          currentMode={safeViewMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
-      )}
-
       <IndicatorTelemetryGrid
         indicator={indicator}
         viewStats={s}
@@ -218,6 +220,23 @@ export default function IndicatorDetail() {
         emptyHint={chartEmptyHint}
         onDownloadCsv={handleDownloadCSV}
         onDownloadExcel={handleDownloadExcel}
+      />
+
+      {/* Переключатели режимов и состава — под графиком, чтобы при работе
+          с графиком не нужно было скроллить наверх (см. правки v5_edit_001). */}
+      {isPriceCategory && (
+        <CpiViewModePicker
+          modes={cpiViewModes}
+          currentMode={safeViewMode}
+          onChange={setViewMode}
+          trackContext={{ code, category: indicator?.category }}
+        />
+      )}
+
+      <VariantGroupPicker
+        group={variantGroup}
+        currentCode={code}
+        currentMode={isPriceCategory ? safeViewMode : null}
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
