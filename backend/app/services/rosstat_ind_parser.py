@@ -20,7 +20,7 @@ import logging
 import math
 import re
 from dataclasses import dataclass
-from datetime import date, datetime, timezone
+from datetime import date, datetime
 from typing import ClassVar
 
 import openpyxl
@@ -30,8 +30,6 @@ from app.config import settings
 from app.models import Indicator, FetchLog
 from app.services.http_client import create_session
 from app.services.base_parser import BaseParser
-from app.services.upsert import bulk_upsert
-from app.core.cache import cache_invalidate_indicator
 
 logger = logging.getLogger(__name__)
 
@@ -182,59 +180,32 @@ SHEET_MAP = {
 class RosstatIndParser(BaseParser):
     parser_type: ClassVar[str] = "rosstat_ind_monthly"
 
-    async def run(self, db: AsyncSession, indicator: Indicator, fetch_log: FetchLog) -> None:
+    async def _fetch_and_parse(
+        self,
+        db: AsyncSession,
+        indicator: Indicator,
+        cfg: dict,
+        fetch_log: FetchLog,
+    ) -> tuple[list, str]:
         code = indicator.code
+        sheet_name = cfg.get("ind_sheet", SHEET_MAP.get(code, ""))
+        if not sheet_name:
+            raise ValueError(f"No sheet mapping for indicator {code}")
+
+        session = create_session()
         try:
-            cfg = indicator.model_config_json or {}
-            sheet_name = cfg.get("ind_sheet", SHEET_MAP.get(code, ""))
+            session.verify = settings.rosstat_ca_cert
+            content, url = _fetch_latest_ind(session)
+        finally:
+            session.close()
 
-            if not sheet_name:
-                raise ValueError(f"No sheet mapping for indicator {code}")
+        return parse_ind_sheet(content, sheet_name), url
 
-            session = create_session()
-            try:
-                session.verify = settings.rosstat_ca_cert
-                content, url = _fetch_latest_ind(session)
-            finally:
-                session.close()
-
-            fetch_log.source_url = url
-            points = parse_ind_sheet(content, sheet_name)
-
-            if not points:
-                logger.warning("No points parsed for %s", code)
-                fetch_log.status = "no_new_data"
-                fetch_log.records_added = 0
-                fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-                await db.commit()
-                return
-
-            valid_points = [
-                p for p in points
-                if isinstance(p.value, (int, float)) and not math.isnan(p.value)
-            ]
-            if len(valid_points) < len(points):
-                logger.warning("%s: filtered out %d invalid values", code, len(points) - len(valid_points))
-            points = valid_points
-
-            records_added, records_updated = await bulk_upsert(db, indicator.id, points)
-            logger.info(
-                "Upserted %d new, %d updated for '%s'",
-                records_added, records_updated, code,
-            )
-            fetch_log.records_added = records_added
-
-            if records_added > 0 or records_updated > 0:
-                await cache_invalidate_indicator(code)
-
-            fetch_log.status = "success" if (records_added > 0 or records_updated > 0) else "no_new_data"
-            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-            await db.commit()
-        except Exception as exc:
-            await db.rollback()
-            fetch_log.status = "failed"
-            fetch_log.error_message = str(exc)[:500]
-            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-            db.add(fetch_log)
-            await db.commit()
-            raise
+    def _validate(self, points: list, cfg: dict) -> list:
+        valid = [
+            p for p in points
+            if isinstance(p.value, (int, float)) and not math.isnan(p.value)
+        ]
+        if len(valid) < len(points):
+            logger.warning("Filtered out %d invalid (NaN/non-numeric) ind values", len(points) - len(valid))
+        return valid

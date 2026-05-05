@@ -1,16 +1,19 @@
-"""ETL: Росстат CPI XLSX → IndicatorData (реализация BaseParser)."""
+"""ETL: Росстат CPI XLSX → IndicatorData (реализация BaseParser).
+
+Также служит модулем агрегатора PARSER_REGISTRY (исторический корень
+импортов). После полной миграции на Template Method можно вынести
+реестр в отдельный модуль.
+"""
 
 from __future__ import annotations
 
 import asyncio
 import logging
-from datetime import datetime, timezone
 from typing import ClassVar
 
-from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models import FetchLog, Indicator, IndicatorData
+from app.models import FetchLog, Indicator
 from app.services.base_parser import BaseParser
 from app.services.cbr_keyrate_parser import CbrKeyRateParser
 from app.services.cbr_fx_parser import CbrFxParser
@@ -21,10 +24,7 @@ from app.services.rosstat_labor_parser import RosstatLaborParser
 from app.services.rosstat_gdp_parser import RosstatGdpParser
 from app.services.data_validator import validate_points
 from app.services.fetcher import RosstatFetcher
-from app.services.upsert import bulk_upsert
-from app.services.forecast_pipeline import retrain_indicator_forecast
 from app.services.parser import parse_cpi_sheet
-from app.core.cache import cache_invalidate_indicator
 
 logger = logging.getLogger(__name__)
 
@@ -32,65 +32,33 @@ logger = logging.getLogger(__name__)
 class RosstatCpiParser(BaseParser):
     parser_type: ClassVar[str] = "rosstat_cpi_xlsx"
 
-    async def run(self, db: AsyncSession, indicator: Indicator, fetch_log: FetchLog) -> None:
-        indicator_code = indicator.code
+    async def _fetch_and_parse(
+        self,
+        db: AsyncSession,
+        indicator: Indicator,
+        cfg: dict,
+        fetch_log: FetchLog,
+    ) -> tuple[list, str]:
+        fetcher = RosstatFetcher()
         try:
-            fetcher = RosstatFetcher()
-            try:
-                content, source_url = await asyncio.to_thread(fetcher.fetch_latest)
-            finally:
-                fetcher.session.close()
+            content, source_url = await asyncio.to_thread(fetcher.fetch_latest)
+        finally:
+            fetcher.session.close()
 
-            if not content:
-                fetch_log.status = "failed"
-                fetch_log.error_message = "No file available on Rosstat"
-                fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-                await db.commit()
-                return
+        if not content:
+            raise ValueError("No file available on Rosstat")
 
-            fetch_log.source_url = source_url
+        sheet = indicator.excel_sheet or "01"
+        points = await asyncio.to_thread(parse_cpi_sheet, content, sheet)
 
-            sheet = indicator.excel_sheet or "01"
-            points = await asyncio.to_thread(parse_cpi_sheet, content, sheet)
-            cfg = indicator.model_config_json or {}
-            points = validate_points(points, cfg)
+        for p in points:
+            if p.value < 90 or p.value > 200:
+                logger.warning("Suspicious CPI value %.2f for %s at %s", p.value, indicator.code, p.date)
 
-            for p in points:
-                if p.value < 90 or p.value > 200:
-                    logger.warning("Suspicious CPI value %.2f for %s at %s", p.value, indicator_code, p.date)
+        return points, source_url
 
-            if not points:
-                fetch_log.status = "failed"
-                fetch_log.error_message = "Parser returned 0 data points"
-                fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-                await db.commit()
-                return
-
-            records_added, records_updated = await bulk_upsert(db, indicator.id, points)
-            logger.info(
-                "Upserted %d new, %d updated for '%s'",
-                records_added, records_updated, indicator_code,
-            )
-            fetch_log.records_added = records_added
-
-            if records_added > 0 or records_updated > 0:
-                await retrain_indicator_forecast(db, indicator)
-                await cache_invalidate_indicator(indicator_code)
-
-            fetch_log.status = "success" if (records_added > 0 or records_updated > 0) else "no_new_data"
-            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-            await db.commit()
-
-            logger.info("ETL complete for '%s': %d new, %d updated", indicator_code, records_added, records_updated)
-
-        except Exception as e:
-            logger.exception("ETL failed for '%s'", indicator_code)
-            await db.rollback()
-            fetch_log.status = "failed"
-            fetch_log.error_message = str(e)[:500]
-            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-            db.add(fetch_log)
-            await db.commit()
+    def _validate(self, points: list, cfg: dict) -> list:
+        return validate_points(points, cfg)
 
 
 from app.services.cbr_dataservice_sum_parser import CbrDataServiceSumParser

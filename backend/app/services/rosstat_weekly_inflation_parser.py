@@ -22,21 +22,18 @@ import asyncio
 import logging
 import re
 from dataclasses import dataclass
-from datetime import date, datetime, timezone
+from datetime import date
 from difflib import get_close_matches
 from io import BytesIO
 from typing import ClassVar
 
 import openpyxl
 import requests
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models import FetchLog, Indicator, IndicatorData
+from app.models import FetchLog, Indicator
 from app.services.base_parser import BaseParser
 from app.services.http_client import create_session
-from app.services.upsert import bulk_upsert
-from app.core.cache import cache_invalidate_indicator
 
 logger = logging.getLogger(__name__)
 
@@ -358,47 +355,12 @@ def fetch_weekly_cpi(existing_dates: set[date] | None = None) -> list[WeeklyPoin
 class RosstatWeeklyCpiParser(BaseParser):
     parser_type: ClassVar[str] = "rosstat_weekly_cpi"
 
-    async def run(self, db: AsyncSession, indicator: Indicator, fetch_log: FetchLog) -> None:
-        code = indicator.code
-        try:
-            existing_q = await db.execute(
-                select(IndicatorData.date)
-                .where(IndicatorData.indicator_id == indicator.id)
-            )
-            existing_dates = {row[0] for row in existing_q.fetchall()}
-
-            points = await asyncio.to_thread(
-                fetch_weekly_cpi,
-                existing_dates=None,
-            )
-            fetch_log.source_url = NEDEL_IPC_URL
-
-            if not points:
-                fetch_log.status = "no_new_data"
-                fetch_log.error_message = "No weekly CPI data parsed from Rosstat XLSX"
-                fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-                await db.commit()
-                return
-
-            records_added, records_updated = await bulk_upsert(db, indicator.id, points)
-            logger.info(
-                "Upserted %d new, %d updated for '%s'",
-                records_added, records_updated, code,
-            )
-            fetch_log.records_added = records_added
-
-            if records_added > 0 or records_updated > 0:
-                await cache_invalidate_indicator(code)
-
-            fetch_log.status = "success" if (records_added > 0 or records_updated > 0) else "no_new_data"
-            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-            await db.commit()
-
-        except Exception as e:
-            logger.exception("ETL failed for '%s'", code)
-            await db.rollback()
-            fetch_log.status = "failed"
-            fetch_log.error_message = str(e)[:500]
-            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-            db.add(fetch_log)
-            await db.commit()
+    async def _fetch_and_parse(
+        self,
+        db: AsyncSession,
+        indicator: Indicator,
+        cfg: dict,
+        fetch_log: FetchLog,
+    ) -> tuple[list, str]:
+        points = await asyncio.to_thread(fetch_weekly_cpi, existing_dates=None)
+        return points, NEDEL_IPC_URL

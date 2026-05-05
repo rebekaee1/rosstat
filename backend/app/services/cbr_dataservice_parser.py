@@ -21,7 +21,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from datetime import date, datetime, timezone
+from datetime import date, datetime
 from typing import ClassVar
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -29,10 +29,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import FetchLog, Indicator
 from app.services.base_parser import BaseParser
 from app.services.http_client import create_session
-from app.services.upsert import bulk_upsert
-from app.services.forecast_pipeline import retrain_indicator_forecast
 from app.config import settings as _settings
-from app.core.cache import cache_invalidate_indicator
 
 logger = logging.getLogger(__name__)
 
@@ -137,66 +134,31 @@ def fetch_dataservice(
 class CbrDataServiceParser(BaseParser):
     parser_type: ClassVar[str] = "cbr_dataservice_json"
 
-    async def run(self, db: AsyncSession, indicator: Indicator, fetch_log: FetchLog) -> None:
-        code = indicator.code
-        try:
-            cfg = indicator.model_config_json or {}
-            ds_cfg = cfg.get("dataservice")
-            if not ds_cfg:
-                fetch_log.status = "failed"
-                fetch_log.error_message = "Missing 'dataservice' in model_config_json"
-                fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-                await db.commit()
-                return
+    async def _fetch_and_parse(
+        self,
+        db: AsyncSession,
+        indicator: Indicator,
+        cfg: dict,
+        fetch_log: FetchLog,
+    ) -> tuple[list, str]:
+        ds_cfg = cfg.get("dataservice")
+        if not ds_cfg:
+            raise ValueError("Missing 'dataservice' in model_config_json")
 
-            pub_id = ds_cfg["publicationId"]
-            ds_id = ds_cfg["datasetId"]
-            measure_id = ds_cfg.get("measureId")
-            element_id = ds_cfg.get("element_id")
-            date_offset = int(ds_cfg.get("date_offset_months", -1))
-            year_from = int(cfg.get("backfill_from_year", 2017))
-            year_to = date.today().year
+        pub_id = ds_cfg["publicationId"]
+        ds_id = ds_cfg["datasetId"]
+        measure_id = ds_cfg.get("measureId")
+        element_id = ds_cfg.get("element_id")
+        date_offset = int(ds_cfg.get("date_offset_months", -1))
+        year_from = int(cfg.get("backfill_from_year", 2017))
+        year_to = date.today().year
 
-            points = await asyncio.to_thread(
-                fetch_dataservice, pub_id, ds_id, measure_id, element_id, year_from, year_to, date_offset,
-            )
-            fetch_log.source_url = f"cbr.ru/dataservice/data?pub={pub_id}&ds={ds_id}&el={element_id}"
+        points = await asyncio.to_thread(
+            fetch_dataservice, pub_id, ds_id, measure_id, element_id, year_from, year_to, date_offset,
+        )
 
-            if not points:
-                logger.warning("No data points parsed for %s", code)
-                fetch_log.status = "no_new_data"
-                fetch_log.error_message = "DataService returned 0 matching rows"
-                fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-                await db.commit()
-                return
+        value_divisor = float(cfg.get("value_divisor", 1))
+        if value_divisor != 1:
+            points = [(dt, round(val / value_divisor, 4)) for dt, val in points]
 
-            value_divisor = float(cfg.get("value_divisor", 1))
-            if value_divisor != 1:
-                points = [(dt, round(val / value_divisor, 4)) for dt, val in points]
-
-            records_added, records_updated = await bulk_upsert(db, indicator.id, points)
-            logger.info(
-                "Upserted %d new, %d updated for '%s'",
-                records_added, records_updated, code,
-            )
-            fetch_log.records_added = records_added
-
-            steps = int(cfg.get("forecast_steps", 0) or 0)
-            if steps > 0 and (records_added > 0 or records_updated > 0):
-                await retrain_indicator_forecast(db, indicator)
-
-            if records_added > 0 or records_updated > 0:
-                await cache_invalidate_indicator(code)
-
-            fetch_log.status = "success" if (records_added > 0 or records_updated > 0) else "no_new_data"
-            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-            await db.commit()
-
-        except Exception as e:
-            logger.exception("ETL failed for '%s'", code)
-            await db.rollback()
-            fetch_log.status = "failed"
-            fetch_log.error_message = str(e)[:500]
-            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-            db.add(fetch_log)
-            await db.commit()
+        return points, f"cbr.ru/dataservice/data?pub={pub_id}&ds={ds_id}&el={element_id}"

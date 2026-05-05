@@ -12,7 +12,7 @@ import logging
 import math
 import re
 from dataclasses import dataclass
-from datetime import date, datetime, timezone
+from datetime import date, datetime
 from typing import ClassVar
 
 import openpyxl
@@ -22,8 +22,6 @@ from app.config import settings
 from app.models import Indicator, FetchLog
 from app.services.http_client import create_session
 from app.services.base_parser import BaseParser
-from app.services.upsert import bulk_upsert
-from app.core.cache import cache_invalidate_indicator
 
 logger = logging.getLogger(__name__)
 
@@ -75,75 +73,49 @@ def parse_depreciation_xlsx(content: bytes) -> list[DataPoint]:
 class RosstatFixedAssetsParser(BaseParser):
     parser_type: ClassVar[str] = "rosstat_fixed_assets"
 
-    async def run(self, db: AsyncSession, indicator: Indicator, fetch_log: FetchLog) -> None:
-        code = indicator.code
+    async def _fetch_and_parse(
+        self,
+        db: AsyncSession,
+        indicator: Indicator,
+        cfg: dict,
+        fetch_log: FetchLog,
+    ) -> tuple[list, str]:
+        current_year = datetime.now().year
+
+        session = create_session()
         try:
-            current_year = datetime.now().year
-
-            session = create_session()
-            try:
-                session.verify = settings.rosstat_ca_cert
-                content = None
-                used_url = ""
-                for year in range(current_year + 1, current_year - 7, -1):
-                    fn = f"St_izn_of_{year}.xlsx"
-                    url = BASE_URL + fn
-                    try:
-                        resp = session.get(url, timeout=60)
-                        ct = resp.headers.get("content-type", "")
-                        if "html" in ct.lower() and resp.status_code == 200:
-                            logger.warning("Got HTML instead of XLSX from %s", url)
-                            continue
-                        if resp.status_code == 200 and resp.content[:4] == b"PK\x03\x04":
-                            content = resp.content
-                            used_url = url
-                            break
-                    except Exception as e:
-                        logger.debug("Download failed for %s: %s", url, e)
+            session.verify = settings.rosstat_ca_cert
+            content = None
+            used_url = ""
+            for year in range(current_year + 1, current_year - 7, -1):
+                fn = f"St_izn_of_{year}.xlsx"
+                url = BASE_URL + fn
+                try:
+                    resp = session.get(url, timeout=60)
+                    ct = resp.headers.get("content-type", "")
+                    if "html" in ct.lower() and resp.status_code == 200:
+                        logger.warning("Got HTML instead of XLSX from %s", url)
                         continue
-            finally:
-                session.close()
+                    if resp.status_code == 200 and resp.content[:4] == b"PK\x03\x04":
+                        content = resp.content
+                        used_url = url
+                        break
+                except Exception as e:
+                    logger.debug("Download failed for %s: %s", url, e)
+                    continue
+        finally:
+            session.close()
 
-            if not content:
-                raise ValueError("St_izn_of XLSX not found")
+        if not content:
+            raise ValueError("St_izn_of XLSX not found")
 
-            fetch_log.source_url = used_url
-            points = parse_depreciation_xlsx(content)
+        return parse_depreciation_xlsx(content), used_url
 
-            if not points:
-                logger.warning("No points parsed for %s", code)
-                fetch_log.status = "no_new_data"
-                fetch_log.records_added = 0
-                fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-                await db.commit()
-                return
-
-            valid_points = [
-                p for p in points
-                if isinstance(p.value, (int, float)) and not math.isnan(p.value)
-            ]
-            if len(valid_points) < len(points):
-                logger.warning("%s: filtered out %d invalid values", code, len(points) - len(valid_points))
-            points = valid_points
-
-            records_added, records_updated = await bulk_upsert(db, indicator.id, points)
-            logger.info(
-                "Upserted %d new, %d updated for '%s'",
-                records_added, records_updated, code,
-            )
-            fetch_log.records_added = records_added
-
-            if records_added > 0 or records_updated > 0:
-                await cache_invalidate_indicator(code)
-
-            fetch_log.status = "success" if (records_added > 0 or records_updated > 0) else "no_new_data"
-            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-            await db.commit()
-        except Exception as exc:
-            await db.rollback()
-            fetch_log.status = "failed"
-            fetch_log.error_message = str(exc)[:500]
-            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-            db.add(fetch_log)
-            await db.commit()
-            raise
+    def _validate(self, points: list, cfg: dict) -> list:
+        valid = [
+            p for p in points
+            if isinstance(p.value, (int, float)) and not math.isnan(p.value)
+        ]
+        if len(valid) < len(points):
+            logger.warning("Filtered out %d invalid (NaN/non-numeric) fixed-asset values", len(points) - len(valid))
+        return valid

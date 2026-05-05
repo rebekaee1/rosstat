@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, timedelta
 from typing import ClassVar
 from xml.etree import ElementTree
 
@@ -19,9 +19,6 @@ from app.config import settings
 from app.models import FetchLog, Indicator, IndicatorData
 from app.services.base_parser import BaseParser
 from app.services.http_client import create_session
-from app.services.upsert import bulk_upsert
-from app.services.forecast_pipeline import retrain_indicator_forecast
-from app.core.cache import cache_invalidate_indicator
 
 logger = logging.getLogger(__name__)
 
@@ -81,67 +78,32 @@ def parse_fx_xml(xml_text: str) -> list[tuple[date, float]]:
 class CbrFxParser(BaseParser):
     parser_type: ClassVar[str] = "cbr_fx_xml"
 
-    async def run(self, db: AsyncSession, indicator: Indicator, fetch_log: FetchLog) -> None:
+    async def _fetch_and_parse(
+        self,
+        db: AsyncSession,
+        indicator: Indicator,
+        cfg: dict,
+        fetch_log: FetchLog,
+    ) -> tuple[list, str]:
         code = indicator.code
-        try:
-            val_code = CURRENCY_MAP.get(code)
-            if not val_code:
-                fetch_log.status = "failed"
-                fetch_log.error_message = f"Unknown currency code '{code}'"
-                fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-                await db.commit()
-                return
+        val_code = CURRENCY_MAP.get(code)
+        if not val_code:
+            raise ValueError(f"Unknown currency code '{code}'")
 
-            cfg = indicator.model_config_json or {}
-            date_to = date.today()
+        date_to = date.today()
 
-            existing_n = (await db.execute(
-                select(func.count(IndicatorData.id)).where(IndicatorData.indicator_id == indicator.id)
-            )).scalar() or 0
+        existing_n = (await db.execute(
+            select(func.count(IndicatorData.id)).where(IndicatorData.indicator_id == indicator.id)
+        )).scalar() or 0
 
-            if cfg.get("backfill_from"):
-                date_from = date.fromisoformat(cfg["backfill_from"])
-            elif existing_n == 0:
-                date_from = DEFAULT_BACKFILL_FROM
-            else:
-                win = int(cfg.get("incremental_fetch_days", 60))
-                date_from = date_to - timedelta(days=win)
+        if cfg.get("backfill_from"):
+            date_from = date.fromisoformat(cfg["backfill_from"])
+        elif existing_n == 0:
+            date_from = DEFAULT_BACKFILL_FROM
+        else:
+            win = int(cfg.get("incremental_fetch_days", 60))
+            date_from = date_to - timedelta(days=win)
 
-            xml_text, final_url = await asyncio.to_thread(fetch_fx_xml, val_code, date_from, date_to)
-            fetch_log.source_url = final_url[:500]
-
-            points = await asyncio.to_thread(parse_fx_xml, xml_text)
-            if not points:
-                logger.warning("No data points parsed for %s", code)
-                fetch_log.status = "no_new_data"
-                fetch_log.error_message = "XML returned 0 records"
-                fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-                await db.commit()
-                return
-
-            records_added, records_updated = await bulk_upsert(db, indicator.id, points)
-            logger.info(
-                "Upserted %d new, %d updated for '%s'",
-                records_added, records_updated, code,
-            )
-            fetch_log.records_added = records_added
-
-            steps = int(cfg.get("forecast_steps", 0) or 0)
-            if steps > 0 and (records_added > 0 or records_updated > 0):
-                await retrain_indicator_forecast(db, indicator)
-
-            if records_added > 0 or records_updated > 0:
-                await cache_invalidate_indicator(code)
-
-            fetch_log.status = "success" if (records_added > 0 or records_updated > 0) else "no_new_data"
-            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-            await db.commit()
-
-        except Exception as e:
-            logger.exception("ETL failed for '%s'", code)
-            await db.rollback()
-            fetch_log.status = "failed"
-            fetch_log.error_message = str(e)[:500]
-            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-            db.add(fetch_log)
-            await db.commit()
+        xml_text, final_url = await asyncio.to_thread(fetch_fx_xml, val_code, date_from, date_to)
+        points = await asyncio.to_thread(parse_fx_xml, xml_text)
+        return points, final_url

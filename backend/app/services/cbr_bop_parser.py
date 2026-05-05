@@ -14,7 +14,7 @@ import io
 import logging
 import re
 from dataclasses import dataclass
-from datetime import date, datetime, timezone
+from datetime import date
 from typing import ClassVar
 
 import openpyxl
@@ -23,9 +23,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import FetchLog, Indicator
 from app.services.base_parser import BaseParser
 from app.services.http_client import create_session
-from app.services.upsert import bulk_upsert
-from app.services.forecast_pipeline import retrain_indicator_forecast
-from app.core.cache import cache_invalidate_indicator
 
 logger = logging.getLogger(__name__)
 
@@ -211,48 +208,14 @@ def parse_bop_xlsx(content: bytes, target: str) -> list[DataPoint]:
 class CbrBopParser(BaseParser):
     parser_type: ClassVar[str] = "cbr_bop_xlsx"
 
-    async def run(self, db: AsyncSession, indicator: Indicator, fetch_log: FetchLog) -> None:
-        code = indicator.code
-        try:
-            content, final_url = await asyncio.to_thread(fetch_bop_xlsx)
-            fetch_log.source_url = final_url[:500]
-
-            cfg = indicator.model_config_json or {}
-            target = cfg.get("bop_target", code)
-
-            points = await asyncio.to_thread(parse_bop_xlsx, content, target)
-
-            if not points:
-                logger.warning("No data points parsed for %s", code)
-                fetch_log.status = "no_new_data"
-                fetch_log.error_message = "BOP parser returned 0 data points"
-                fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-                await db.commit()
-                return
-
-            records_added, records_updated = await bulk_upsert(db, indicator.id, points)
-            logger.info(
-                "Upserted %d new, %d updated for '%s'",
-                records_added, records_updated, code,
-            )
-            fetch_log.records_added = records_added
-
-            steps = int(cfg.get("forecast_steps", 0) or 0)
-            if steps > 0 and (records_added > 0 or records_updated > 0):
-                await retrain_indicator_forecast(db, indicator)
-
-            if records_added > 0 or records_updated > 0:
-                await cache_invalidate_indicator(code)
-
-            fetch_log.status = "success" if (records_added > 0 or records_updated > 0) else "no_new_data"
-            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-            await db.commit()
-
-        except Exception as e:
-            logger.exception("ETL failed for '%s'", code)
-            await db.rollback()
-            fetch_log.status = "failed"
-            fetch_log.error_message = str(e)[:500]
-            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-            db.add(fetch_log)
-            await db.commit()
+    async def _fetch_and_parse(
+        self,
+        db: AsyncSession,
+        indicator: Indicator,
+        cfg: dict,
+        fetch_log: FetchLog,
+    ) -> tuple[list, str]:
+        content, final_url = await asyncio.to_thread(fetch_bop_xlsx)
+        target = cfg.get("bop_target", indicator.code)
+        points = await asyncio.to_thread(parse_bop_xlsx, content, target)
+        return points, final_url

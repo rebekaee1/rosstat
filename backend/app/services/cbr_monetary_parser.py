@@ -10,7 +10,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import re
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, timedelta
 from typing import ClassVar
 
 from sqlalchemy import func, select
@@ -20,9 +20,6 @@ from app.config import settings
 from app.models import FetchLog, Indicator, IndicatorData
 from app.services.base_parser import BaseParser
 from app.services.http_client import create_session
-from app.services.upsert import bulk_upsert
-from app.services.forecast_pipeline import retrain_indicator_forecast
-from app.core.cache import cache_invalidate_indicator
 
 logger = logging.getLogger(__name__)
 
@@ -78,61 +75,30 @@ class CbrMonetaryParser(BaseParser):
     """Парсер для денежной базы / M0 (наличные). monetary_column: 0=денежная база, 1=M0 (наличные)."""
     parser_type: ClassVar[str] = "cbr_monetary_html"
 
-    async def run(self, db: AsyncSession, indicator: Indicator, fetch_log: FetchLog) -> None:
-        code = indicator.code
-        try:
-            cfg = indicator.model_config_json or {}
-            col_index = int(cfg.get("monetary_column", 0))
-            date_to = date.today()
+    async def _fetch_and_parse(
+        self,
+        db: AsyncSession,
+        indicator: Indicator,
+        cfg: dict,
+        fetch_log: FetchLog,
+    ) -> tuple[list, str]:
+        col_index = int(cfg.get("monetary_column", 0))
+        date_to = date.today()
 
-            existing_n = (await db.execute(
-                select(func.count(IndicatorData.id)).where(IndicatorData.indicator_id == indicator.id)
-            )).scalar() or 0
+        existing_n = (await db.execute(
+            select(func.count(IndicatorData.id)).where(IndicatorData.indicator_id == indicator.id)
+        )).scalar() or 0
 
-            if cfg.get("backfill_from"):
-                date_from = date.fromisoformat(cfg["backfill_from"])
-            elif existing_n == 0:
-                date_from = DEFAULT_BACKFILL_FROM
-            else:
-                win = int(cfg.get("incremental_fetch_days", 90))
-                date_from = date_to - timedelta(days=win)
+        if cfg.get("backfill_from"):
+            date_from = date.fromisoformat(cfg["backfill_from"])
+        elif existing_n == 0:
+            date_from = DEFAULT_BACKFILL_FROM
+        else:
+            win = int(cfg.get("incremental_fetch_days", 90))
+            date_from = date_to - timedelta(days=win)
 
-            html, final_url = await asyncio.to_thread(fetch_mb_html, date_from, date_to)
-            fetch_log.source_url = final_url[:500]
+        html, final_url = await asyncio.to_thread(fetch_mb_html, date_from, date_to)
+        parsed = await asyncio.to_thread(parse_mb_html, html)
 
-            parsed = await asyncio.to_thread(parse_mb_html, html)
-            if not parsed:
-                logger.warning("No data points parsed for %s", code)
-                fetch_log.status = "no_new_data"
-                fetch_log.error_message = "No monetary data rows parsed"
-                fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-                await db.commit()
-                return
-
-            points = [(row[0], row[col_index + 1]) for row in parsed]
-            records_added, records_updated = await bulk_upsert(db, indicator.id, points)
-            logger.info(
-                "Upserted %d new, %d updated for '%s'",
-                records_added, records_updated, code,
-            )
-            fetch_log.records_added = records_added
-
-            steps = int(cfg.get("forecast_steps", 0) or 0)
-            if steps > 0 and (records_added > 0 or records_updated > 0):
-                await retrain_indicator_forecast(db, indicator)
-
-            if records_added > 0 or records_updated > 0:
-                await cache_invalidate_indicator(code)
-
-            fetch_log.status = "success" if (records_added > 0 or records_updated > 0) else "no_new_data"
-            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-            await db.commit()
-
-        except Exception as e:
-            logger.exception("ETL failed for '%s'", code)
-            await db.rollback()
-            fetch_log.status = "failed"
-            fetch_log.error_message = str(e)[:500]
-            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-            db.add(fetch_log)
-            await db.commit()
+        points = [(row[0], row[col_index + 1]) for row in parsed]
+        return points, final_url

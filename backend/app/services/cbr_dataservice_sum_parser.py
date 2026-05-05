@@ -19,17 +19,14 @@ from __future__ import annotations
 import asyncio
 import logging
 from collections import defaultdict
-from datetime import date, datetime, timezone
+from datetime import date
 from typing import ClassVar
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import FetchLog, Indicator
 from app.services.base_parser import BaseParser
-from app.services.upsert import bulk_upsert
 from app.services.cbr_dataservice_parser import fetch_dataservice
-from app.services.forecast_pipeline import retrain_indicator_forecast
-from app.core.cache import cache_invalidate_indicator
 
 logger = logging.getLogger(__name__)
 
@@ -37,71 +34,35 @@ logger = logging.getLogger(__name__)
 class CbrDataServiceSumParser(BaseParser):
     parser_type: ClassVar[str] = "cbr_dataservice_sum"
 
-    async def run(self, db: AsyncSession, indicator: Indicator, fetch_log: FetchLog) -> None:
-        code = indicator.code
-        try:
-            cfg = indicator.model_config_json or {}
-            components = cfg.get("dataservice_components")
-            if not components or not isinstance(components, list):
-                fetch_log.status = "failed"
-                fetch_log.error_message = "Missing 'dataservice_components' in model_config_json"
-                fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-                await db.commit()
-                return
+    async def _fetch_and_parse(
+        self,
+        db: AsyncSession,
+        indicator: Indicator,
+        cfg: dict,
+        fetch_log: FetchLog,
+    ) -> tuple[list, str]:
+        components = cfg.get("dataservice_components")
+        if not components or not isinstance(components, list):
+            raise ValueError("Missing 'dataservice_components' in model_config_json")
 
-            year_from = int(cfg.get("backfill_from_year", 2010))
-            year_to = date.today().year
+        year_from = int(cfg.get("backfill_from_year", 2010))
+        year_to = date.today().year
 
-            sums: dict[date, float] = defaultdict(float)
-            for comp in components:
-                date_offset = int(comp.get("date_offset_months", 0))
-                points = await asyncio.to_thread(
-                    fetch_dataservice,
-                    comp["publicationId"],
-                    comp["datasetId"],
-                    comp.get("measureId"),
-                    comp.get("element_id"),
-                    year_from,
-                    year_to,
-                    date_offset,
-                )
-                for dt, val in points:
-                    sums[dt] += val
-
-            fetch_log.source_url = f"cbr.ru/dataservice (sum of {len(components)} components)"
-
-            if not sums:
-                logger.warning("No data points parsed for %s", code)
-                fetch_log.status = "no_new_data"
-                fetch_log.error_message = "DataService returned 0 matching rows across components"
-                fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-                await db.commit()
-                return
-
-            points = [(dt, round(sums[dt], 2)) for dt in sorted(sums)]
-            records_added, records_updated = await bulk_upsert(db, indicator.id, points)
-            logger.info(
-                "Upserted %d new, %d updated for '%s'",
-                records_added, records_updated, code,
+        sums: dict[date, float] = defaultdict(float)
+        for comp in components:
+            date_offset = int(comp.get("date_offset_months", 0))
+            comp_points = await asyncio.to_thread(
+                fetch_dataservice,
+                comp["publicationId"],
+                comp["datasetId"],
+                comp.get("measureId"),
+                comp.get("element_id"),
+                year_from,
+                year_to,
+                date_offset,
             )
-            fetch_log.records_added = records_added
+            for dt, val in comp_points:
+                sums[dt] += val
 
-            steps = int(cfg.get("forecast_steps", 0) or 0)
-            if steps > 0 and (records_added > 0 or records_updated > 0):
-                await retrain_indicator_forecast(db, indicator)
-
-            if records_added > 0 or records_updated > 0:
-                await cache_invalidate_indicator(code)
-
-            fetch_log.status = "success" if (records_added > 0 or records_updated > 0) else "no_new_data"
-            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-            await db.commit()
-
-        except Exception as e:
-            logger.exception("ETL failed for '%s'", code)
-            await db.rollback()
-            fetch_log.status = "failed"
-            fetch_log.error_message = str(e)[:500]
-            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-            db.add(fetch_log)
-            await db.commit()
+        points = [(dt, round(sums[dt], 2)) for dt in sorted(sums)]
+        return points, f"cbr.ru/dataservice (sum of {len(components)} components)"
