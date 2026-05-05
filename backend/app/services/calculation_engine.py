@@ -1,559 +1,167 @@
 """
-Движок расчёта производных индикаторов.
+Derived-indicator engine.
 
-Регистрирует функции-калькуляторы (Callable[[AsyncSession], Awaitable[int]])
-и вызывается после ETL для пересчёта рядов, зависящих от обновлённых источников.
+Each derived indicator is described once as a `DerivedSpec` (destination code,
+source codes, pure operation from `derived_ops`). A generic executor loads the
+source series, calls the operation, and upserts the result via
+`bulk_upsert`. After ETL the engine dispatches recomputation only for derived
+indicators whose source list intersects the freshly-updated indicators, and
+invalidates their Redis cache when a value actually changed.
+
+This module owns the seam between **the formula** (pure, in `derived_ops`) and
+**the storage** (this file). To add a derived indicator:
+  1. add (or reuse) a pure op in `derived_ops.py`,
+  2. append a `DerivedSpec(...)` entry to `DERIVED_SPECS` below,
+  3. ensure both source and destination indicators are seeded.
 """
 
 from __future__ import annotations
 
 import logging
+from dataclasses import dataclass
 from datetime import date
+from functools import partial
 from typing import Awaitable, Callable
 
-from sqlalchemy import func, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models import Indicator, IndicatorData
 from app.core.cache import cache_invalidate_indicator
-from app.services.upsert import upsert_indicator_data
+from app.models import Indicator, IndicatorData
+from app.services import derived_ops as ops
+from app.services.upsert import bulk_upsert
 
 logger = logging.getLogger(__name__)
 
 DerivedFn = Callable[[AsyncSession], Awaitable[int]]
+DerivedOp = Callable[..., list[tuple[date, float]]]
+
+
+@dataclass(frozen=True)
+class DerivedSpec:
+    """Declarative description of one derived indicator.
+
+    `op` receives `len(src_codes)` lists of `(date, value)` tuples (each ordered
+    by date) and returns a list of `(date, value)` tuples to upsert into the
+    destination indicator.
+    """
+
+    dst_code: str
+    src_codes: tuple[str, ...]
+    op: DerivedOp
+
+
+DERIVED_SPECS: list[DerivedSpec] = [
+    # CPI family — quarterly and annual aggregates of monthly indices.
+    DerivedSpec("inflation-quarterly", ("cpi",), ops.quarterly_index),
+    DerivedSpec("inflation-annual", ("cpi",), ops.annual_inflation),
+    DerivedSpec("cpi-food-quarterly", ("cpi-food",), ops.quarterly_index),
+    DerivedSpec("cpi-food-annual", ("cpi-food",), ops.annual_inflation),
+    DerivedSpec("cpi-nonfood-quarterly", ("cpi-nonfood",), ops.quarterly_index),
+    DerivedSpec("cpi-nonfood-annual", ("cpi-nonfood",), ops.annual_inflation),
+    DerivedSpec("cpi-services-quarterly", ("cpi-services",), ops.quarterly_index),
+    DerivedSpec("cpi-services-annual", ("cpi-services",), ops.annual_inflation),
+
+    # Wages: nominal × CPI → real wage index.
+    DerivedSpec("wages-real", ("wages-nominal", "cpi"), ops.wages_real),
+
+    # GDP year-over-year and quarter-over-quarter growth.
+    DerivedSpec("gdp-yoy", ("gdp-nominal",), ops.yoy),
+    DerivedSpec("gdp-qoq", ("gdp-nominal",), ops.qoq),
+
+    # Unemployment monthly → quarterly mean and 12-month rolling mean.
+    DerivedSpec("unemployment-quarterly", ("unemployment",), ops.quarterly_avg),
+    DerivedSpec("unemployment-annual", ("unemployment",), partial(ops.rolling_avg, window=12)),
+
+    # YoY-only derivations (one per source).
+    DerivedSpec("current-account-yoy", ("current-account",), ops.yoy),
+    DerivedSpec("ipi-yoy", ("ipi",), ops.yoy),
+    DerivedSpec("exports-yoy", ("exports",), ops.yoy),
+    DerivedSpec("imports-yoy", ("imports",), ops.yoy),
+    DerivedSpec("ppi-yoy", ("ppi",), ops.yoy),
+    DerivedSpec("housing-yoy-primary", ("housing-price-primary",), ops.yoy),
+    DerivedSpec("housing-yoy-secondary", ("housing-price-secondary",), ops.yoy),
+    DerivedSpec("wages-yoy", ("wages-nominal",), ops.yoy),
+
+    # QoQ-only derivations.
+    DerivedSpec("exports-qoq", ("exports",), ops.qoq),
+    DerivedSpec("imports-qoq", ("imports",), ops.qoq),
+]
+
+
+async def _load_series(db: AsyncSession, code: str) -> tuple[int | None, list[tuple[date, float]]]:
+    """Return (indicator_id, ordered series) for `code`, or (None, []) if missing."""
+    ind = (await db.execute(select(Indicator).where(Indicator.code == code))).scalar_one_or_none()
+    if not ind:
+        return None, []
+    rows = (await db.execute(
+        select(IndicatorData)
+        .where(IndicatorData.indicator_id == ind.id)
+        .order_by(IndicatorData.date)
+    )).scalars().all()
+    return ind.id, [(r.date, float(r.value)) for r in rows]
+
+
+async def _execute(db: AsyncSession, spec: DerivedSpec) -> int:
+    """Compute one derived series and upsert it. Returns # of rows actually changed."""
+    dst_id, _ = await _load_series(db, spec.dst_code)
+    if dst_id is None:
+        return 0
+
+    inputs: list[list[tuple[date, float]]] = []
+    for code in spec.src_codes:
+        src_id, series = await _load_series(db, code)
+        if src_id is None:
+            return 0
+        inputs.append(series)
+
+    points = spec.op(*inputs)
+    if not points:
+        return 0
+
+    added, updated = await bulk_upsert(db, dst_id, points)
+    return added + updated
 
 
 class CalculationEngine:
-    """Реестр производных рядов и запуск пересчёта."""
+    """Registry of derived series + post-ETL dispatcher."""
 
     def __init__(self) -> None:
         self._derived: dict[str, tuple[list[str], DerivedFn]] = {}
 
+    def register_spec(self, spec: DerivedSpec) -> None:
+        """Register a declarative spec; the executor is generated automatically."""
+        async def fn(db: AsyncSession) -> int:
+            return await _execute(db, spec)
+        self._derived[spec.dst_code] = (list(spec.src_codes), fn)
+
     def register(self, code: str, sources: list[str], fn: DerivedFn) -> None:
+        """Escape hatch for ad-hoc derivations that don't fit a `DerivedSpec`."""
         self._derived[code] = (sources, fn)
 
     async def run_for_updated_sources(self, db: AsyncSession, source_codes: list[str]) -> list[str]:
-        """Пересчитать производные, зависящие от обновлённых источников. Возвращает коды обновлённых."""
+        """Recompute every derived whose source list intersects `source_codes`.
+
+        Returns the list of derived codes whose stored values changed (and thus
+        whose Redis cache was invalidated).
+        """
         if not source_codes:
             return []
         updated: list[str] = []
         for code, (sources, fn) in self._derived.items():
-            if any(s in source_codes for s in sources):
-                try:
-                    n = await fn(db)
-                    if n > 0:
-                        await cache_invalidate_indicator(code)
-                        updated.append(code)
-                    logger.info("CalculationEngine: %s → %d new points", code, n)
-                except Exception:
-                    logger.exception("CalculationEngine: failed to compute '%s'", code)
+            if not any(s in source_codes for s in sources):
+                continue
+            try:
+                n = await fn(db)
+                if n > 0:
+                    await cache_invalidate_indicator(code)
+                    updated.append(code)
+                logger.info("CalculationEngine: %s → %d changes", code, n)
+            except Exception:
+                logger.exception("CalculationEngine: failed to compute '%s'", code)
         return updated
 
 
 calculation_engine = CalculationEngine()
-
-
-async def _compute_quarterly_cpi_index(db: AsyncSession, src_code: str, dst_code: str) -> int:
-    """Quarterly CPI index = product of 3 monthly CPI indices, stored as 100.x."""
-    src_q = await db.execute(select(Indicator).where(Indicator.code == src_code))
-    src = src_q.scalar_one_or_none()
-    if not src:
-        return 0
-    dst_q = await db.execute(select(Indicator).where(Indicator.code == dst_code))
-    dst = dst_q.scalar_one_or_none()
-    if not dst:
-        return 0
-
-    data_q = await db.execute(
-        select(IndicatorData)
-        .where(IndicatorData.indicator_id == src.id)
-        .order_by(IndicatorData.date)
-    )
-    rows = data_q.scalars().all()
-    if len(rows) < 3:
-        return 0
-
-    by_ym: dict[tuple[int, int], float] = {}
-    for r in rows:
-        by_ym[(r.date.year, r.date.month)] = float(r.value)
-
-    points: list[tuple[date, float]] = []
-    quarter_ends = [3, 6, 9, 12]
-    years = sorted({y for y, _ in by_ym})
-    for y in years:
-        for qe in quarter_ends:
-            m1, m2, m3 = qe - 2, qe - 1, qe
-            v1 = by_ym.get((y, m1))
-            v2 = by_ym.get((y, m2))
-            v3 = by_ym.get((y, m3))
-            if v1 is not None and v2 is not None and v3 is not None:
-                quarterly = (v1 / 100) * (v2 / 100) * (v3 / 100) * 100
-                d = date(y, qe, 1)
-                points.append((d, round(quarterly, 4)))
-
-    added = 0
-    for d, v in points:
-        result = await db.execute(upsert_indicator_data(dst.id, d, v))
-        if result.fetchone() is not None:
-            added += 1
-    if added:
-        await db.flush()
-    return added
-
-
-async def _compute_quarterly_inflation(db: AsyncSession) -> int:
-    """ИПЦ квартальный = произведение 3 месячных ИПЦ индексов → индекс 100.x."""
-    return await _compute_quarterly_cpi_index(db, "cpi", "inflation-quarterly")
-
-
-async def _compute_annual_cpi_inflation(db: AsyncSession, src_code: str, dst_code: str) -> int:
-    """Annual CPI inflation = product of 12 monthly CPI indices → percent change."""
-    src_q = await db.execute(select(Indicator).where(Indicator.code == src_code))
-    src = src_q.scalar_one_or_none()
-    if not src:
-        return 0
-    dst_q = await db.execute(select(Indicator).where(Indicator.code == dst_code))
-    dst = dst_q.scalar_one_or_none()
-    if not dst:
-        return 0
-
-    data_q = await db.execute(
-        select(IndicatorData)
-        .where(IndicatorData.indicator_id == src.id)
-        .order_by(IndicatorData.date)
-    )
-    rows = data_q.scalars().all()
-    if len(rows) < 12:
-        return 0
-
-    by_ym: dict[tuple[int, int], float] = {}
-    for r in rows:
-        by_ym[(r.date.year, r.date.month)] = float(r.value)
-
-    sorted_keys = sorted(by_ym.keys())
-    points: list[tuple[date, float]] = []
-    for y, m in sorted_keys:
-        trailing = []
-        for offset in range(12):
-            mo = m - offset
-            yr = y
-            if mo <= 0:
-                mo += 12
-                yr -= 1
-            val = by_ym.get((yr, mo))
-            if val is not None:
-                trailing.append(val)
-        if len(trailing) == 12:
-            product = 1.0
-            for v in trailing:
-                product *= v / 100
-            annual = round(product * 100 - 100, 4)
-            points.append((date(y, m, 1), annual))
-
-    added = 0
-    for d, v in points:
-        result = await db.execute(upsert_indicator_data(dst.id, d, v))
-        if result.fetchone() is not None:
-            added += 1
-    if added:
-        await db.flush()
-    return added
-
-
-async def _compute_annual_inflation(db: AsyncSession) -> int:
-    """Годовая инфляция = произведение 12 месячных ИПЦ → % к аналогичному месяцу прошлого года."""
-    return await _compute_annual_cpi_inflation(db, "cpi", "inflation-annual")
-
-
-async def _compute_cpi_food_quarterly(db: AsyncSession) -> int:
-    return await _compute_quarterly_cpi_index(db, "cpi-food", "cpi-food-quarterly")
-
-
-async def _compute_cpi_food_annual(db: AsyncSession) -> int:
-    return await _compute_annual_cpi_inflation(db, "cpi-food", "cpi-food-annual")
-
-
-async def _compute_cpi_nonfood_quarterly(db: AsyncSession) -> int:
-    return await _compute_quarterly_cpi_index(db, "cpi-nonfood", "cpi-nonfood-quarterly")
-
-
-async def _compute_cpi_nonfood_annual(db: AsyncSession) -> int:
-    return await _compute_annual_cpi_inflation(db, "cpi-nonfood", "cpi-nonfood-annual")
-
-
-async def _compute_cpi_services_quarterly(db: AsyncSession) -> int:
-    return await _compute_quarterly_cpi_index(db, "cpi-services", "cpi-services-quarterly")
-
-
-async def _compute_cpi_services_annual(db: AsyncSession) -> int:
-    return await _compute_annual_cpi_inflation(db, "cpi-services", "cpi-services-annual")
-
-
-async def _compute_wages_real(db: AsyncSession) -> int:
-    """Реальная зарплата = (wages_t / wages_base) / (cpi_t / cpi_base) * 100.
-
-    Берём первый доступный месяц за базу. Результат — индекс в % (100 = базовый уровень).
-    """
-    wages_q = await db.execute(select(Indicator).where(Indicator.code == "wages-nominal"))
-    wages_ind = wages_q.scalar_one_or_none()
-    cpi_q = await db.execute(select(Indicator).where(Indicator.code == "cpi"))
-    cpi_ind = cpi_q.scalar_one_or_none()
-    dst_q = await db.execute(select(Indicator).where(Indicator.code == "wages-real"))
-    dst = dst_q.scalar_one_or_none()
-    if not wages_ind or not cpi_ind or not dst:
-        return 0
-
-    w_data = (await db.execute(
-        select(IndicatorData).where(IndicatorData.indicator_id == wages_ind.id).order_by(IndicatorData.date)
-    )).scalars().all()
-    c_data = (await db.execute(
-        select(IndicatorData).where(IndicatorData.indicator_id == cpi_ind.id).order_by(IndicatorData.date)
-    )).scalars().all()
-
-    if len(w_data) < 2 or len(c_data) < 12:
-        return 0
-
-    wages_by_ym = {(r.date.year, r.date.month): float(r.value) for r in w_data}
-    cpi_by_ym = {(r.date.year, r.date.month): float(r.value) for r in c_data}
-
-    cpi_index: dict[tuple[int, int], float] = {}
-    cumulative = 1.0
-    sorted_cpi = sorted(cpi_by_ym.items())
-    for (y, m), v in sorted_cpi:
-        cumulative *= v / 100.0
-        cpi_index[(y, m)] = cumulative
-
-    sorted_wages = sorted(wages_by_ym.items())
-    base_wage = sorted_wages[0][1]
-    base_ym = sorted_wages[0][0]
-    base_cpi = cpi_index.get(base_ym, 1.0)
-
-    if base_wage is None or base_wage == 0:
-        logger.warning("No base wage available for wages-real calculation (base_wage=%s)", base_wage)
-        return 0
-    if base_cpi is None or base_cpi == 0:
-        logger.warning("No base CPI available for wages-real calculation (base_cpi=%s)", base_cpi)
-        return 0
-
-    points: list[tuple[date, float]] = []
-    for (y, m), wage in sorted_wages:
-        ci = cpi_index.get((y, m))
-        if ci is None:
-            continue
-        real_idx = round((wage / base_wage) / (ci / base_cpi) * 100, 2)
-        points.append((date(y, m, 1), real_idx))
-
-    added = 0
-    for d, v in points:
-        result = await db.execute(upsert_indicator_data(dst.id, d, v))
-        if result.fetchone() is not None:
-            added += 1
-    if added:
-        await db.flush()
-    return added
-
-
-async def _compute_gdp_yoy(db: AsyncSession) -> int:
-    """Рост ВВП year-over-year: (GDP_q / GDP_{q-4} - 1) * 100."""
-    src_q = await db.execute(select(Indicator).where(Indicator.code == "gdp-nominal"))
-    src = src_q.scalar_one_or_none()
-    dst_q = await db.execute(select(Indicator).where(Indicator.code == "gdp-yoy"))
-    dst = dst_q.scalar_one_or_none()
-    if not src or not dst:
-        return 0
-
-    data = (await db.execute(
-        select(IndicatorData).where(IndicatorData.indicator_id == src.id).order_by(IndicatorData.date)
-    )).scalars().all()
-    if len(data) < 5:
-        return 0
-
-    by_date: dict[date, float] = {r.date: float(r.value) for r in data}
-    sorted_dates = sorted(by_date.keys())
-
-    date_to_prev: dict[date, date] = {}
-    for d in sorted_dates:
-        prev_y = d.year - 1
-        prev_d = date(prev_y, d.month, d.day)
-        if prev_d in by_date:
-            date_to_prev[d] = prev_d
-
-    points: list[tuple[date, float]] = []
-    for d, prev_d in sorted(date_to_prev.items()):
-        denom = by_date[prev_d]
-        if denom == 0:
-            continue
-        growth = round((by_date[d] / denom - 1) * 100, 2)
-        points.append((d, growth))
-
-    added = 0
-    for d, v in points:
-        result = await db.execute(upsert_indicator_data(dst.id, d, v))
-        if result.fetchone() is not None:
-            added += 1
-    if added:
-        await db.flush()
-    return added
-
-
-async def _compute_gdp_qoq(db: AsyncSession) -> int:
-    """Рост ВВП quarter-over-quarter: (GDP_q / GDP_{q-1} - 1) * 100."""
-    src_q = await db.execute(select(Indicator).where(Indicator.code == "gdp-nominal"))
-    src = src_q.scalar_one_or_none()
-    dst_q = await db.execute(select(Indicator).where(Indicator.code == "gdp-qoq"))
-    dst = dst_q.scalar_one_or_none()
-    if not src or not dst:
-        return 0
-
-    data = (await db.execute(
-        select(IndicatorData).where(IndicatorData.indicator_id == src.id).order_by(IndicatorData.date)
-    )).scalars().all()
-    if len(data) < 2:
-        return 0
-
-    sorted_data = sorted(data, key=lambda r: r.date)
-
-    points: list[tuple[date, float]] = []
-    for i in range(1, len(sorted_data)):
-        cur = float(sorted_data[i].value)
-        prev = float(sorted_data[i - 1].value)
-        if prev != 0:
-            growth = round((cur / prev - 1) * 100, 2)
-            points.append((sorted_data[i].date, growth))
-
-    added = 0
-    for d, v in points:
-        result = await db.execute(upsert_indicator_data(dst.id, d, v))
-        if result.fetchone() is not None:
-            added += 1
-    if added:
-        await db.flush()
-    return added
-
-
-async def _compute_unemployment_quarterly(db: AsyncSession) -> int:
-    """Безработица квартальная = среднее 3 месячных значений."""
-    src_q = await db.execute(select(Indicator).where(Indicator.code == "unemployment"))
-    src = src_q.scalar_one_or_none()
-    dst_q = await db.execute(select(Indicator).where(Indicator.code == "unemployment-quarterly"))
-    dst = dst_q.scalar_one_or_none()
-    if not src or not dst:
-        return 0
-
-    data_q = await db.execute(
-        select(IndicatorData)
-        .where(IndicatorData.indicator_id == src.id)
-        .order_by(IndicatorData.date)
-    )
-    rows = data_q.scalars().all()
-    if len(rows) < 3:
-        return 0
-
-    by_ym: dict[tuple[int, int], float] = {}
-    for r in rows:
-        by_ym[(r.date.year, r.date.month)] = float(r.value)
-
-    points: list[tuple[date, float]] = []
-    quarter_ends = [3, 6, 9, 12]
-    years = sorted({y for y, _ in by_ym})
-    for y in years:
-        for qe in quarter_ends:
-            m1, m2, m3 = qe - 2, qe - 1, qe
-            v1 = by_ym.get((y, m1))
-            v2 = by_ym.get((y, m2))
-            v3 = by_ym.get((y, m3))
-            if v1 is not None and v2 is not None and v3 is not None:
-                avg = round((v1 + v2 + v3) / 3, 1)
-                points.append((date(y, qe, 1), avg))
-
-    added = 0
-    for d, v in points:
-        result = await db.execute(upsert_indicator_data(dst.id, d, v))
-        if result.fetchone() is not None:
-            added += 1
-    if added:
-        await db.flush()
-    return added
-
-
-async def _compute_unemployment_annual(db: AsyncSession) -> int:
-    """Безработица среднегодовая = скользящее среднее 12 месяцев."""
-    src_q = await db.execute(select(Indicator).where(Indicator.code == "unemployment"))
-    src = src_q.scalar_one_or_none()
-    dst_q = await db.execute(select(Indicator).where(Indicator.code == "unemployment-annual"))
-    dst = dst_q.scalar_one_or_none()
-    if not src or not dst:
-        return 0
-
-    data_q = await db.execute(
-        select(IndicatorData)
-        .where(IndicatorData.indicator_id == src.id)
-        .order_by(IndicatorData.date)
-    )
-    rows = data_q.scalars().all()
-    if len(rows) < 12:
-        return 0
-
-    by_ym: dict[tuple[int, int], float] = {}
-    for r in rows:
-        by_ym[(r.date.year, r.date.month)] = float(r.value)
-
-    sorted_keys = sorted(by_ym.keys())
-    points: list[tuple[date, float]] = []
-    for y, m in sorted_keys:
-        trailing = []
-        for offset in range(12):
-            mo = m - offset
-            yr = y
-            if mo <= 0:
-                mo += 12
-                yr -= 1
-            val = by_ym.get((yr, mo))
-            if val is not None:
-                trailing.append(val)
-        if len(trailing) == 12:
-            avg = round(sum(trailing) / 12, 1)
-            points.append((date(y, m, 1), avg))
-
-    added = 0
-    for d, v in points:
-        result = await db.execute(upsert_indicator_data(dst.id, d, v))
-        if result.fetchone() is not None:
-            added += 1
-    if added:
-        await db.flush()
-    return added
-
-
-async def _compute_yoy_generic(db: AsyncSession, src_code: str, dst_code: str) -> int:
-    """Year-over-year: (val_t / val_{t-4quarters or t-12months} - 1) * 100."""
-    src_q = await db.execute(select(Indicator).where(Indicator.code == src_code))
-    src = src_q.scalar_one_or_none()
-    dst_q = await db.execute(select(Indicator).where(Indicator.code == dst_code))
-    dst = dst_q.scalar_one_or_none()
-    if not src or not dst:
-        return 0
-
-    data = (await db.execute(
-        select(IndicatorData).where(IndicatorData.indicator_id == src.id).order_by(IndicatorData.date)
-    )).scalars().all()
-    if len(data) < 5:
-        return 0
-
-    by_date: dict[date, float] = {r.date: float(r.value) for r in data}
-    sorted_dates = sorted(by_date.keys())
-
-    points: list[tuple[date, float]] = []
-    for d in sorted_dates:
-        prev_d = date(d.year - 1, d.month, d.day)
-        if prev_d in by_date and by_date[prev_d] != 0:
-            growth = round((by_date[d] / by_date[prev_d] - 1) * 100, 2)
-            points.append((d, growth))
-
-    added = 0
-    for d, v in points:
-        result = await db.execute(upsert_indicator_data(dst.id, d, v))
-        if result.fetchone() is not None:
-            added += 1
-    if added:
-        await db.flush()
-    return added
-
-
-async def _compute_current_account_yoy(db: AsyncSession) -> int:
-    return await _compute_yoy_generic(db, "current-account", "current-account-yoy")
-
-
-async def _compute_ipi_yoy(db: AsyncSession) -> int:
-    return await _compute_yoy_generic(db, "ipi", "ipi-yoy")
-
-
-async def _compute_exports_yoy(db: AsyncSession) -> int:
-    return await _compute_yoy_generic(db, "exports", "exports-yoy")
-
-
-async def _compute_imports_yoy(db: AsyncSession) -> int:
-    return await _compute_yoy_generic(db, "imports", "imports-yoy")
-
-
-async def _compute_ppi_yoy(db: AsyncSession) -> int:
-    return await _compute_yoy_generic(db, "ppi", "ppi-yoy")
-
-
-async def _compute_housing_yoy_primary(db: AsyncSession) -> int:
-    return await _compute_yoy_generic(db, "housing-price-primary", "housing-yoy-primary")
-
-
-async def _compute_housing_yoy_secondary(db: AsyncSession) -> int:
-    return await _compute_yoy_generic(db, "housing-price-secondary", "housing-yoy-secondary")
-
-
-async def _compute_wages_yoy(db: AsyncSession) -> int:
-    return await _compute_yoy_generic(db, "wages-nominal", "wages-yoy")
-
-
-async def _compute_qoq_generic(db: AsyncSession, src_code: str, dst_code: str) -> int:
-    """Quarter-over-quarter: (val_q / val_{q-1} - 1) * 100."""
-    src_q = await db.execute(select(Indicator).where(Indicator.code == src_code))
-    src = src_q.scalar_one_or_none()
-    dst_q = await db.execute(select(Indicator).where(Indicator.code == dst_code))
-    dst = dst_q.scalar_one_or_none()
-    if not src or not dst:
-        return 0
-
-    data = (await db.execute(
-        select(IndicatorData).where(IndicatorData.indicator_id == src.id).order_by(IndicatorData.date)
-    )).scalars().all()
-    if len(data) < 2:
-        return 0
-
-    sorted_data = sorted(data, key=lambda r: r.date)
-    points: list[tuple[date, float]] = []
-    for i in range(1, len(sorted_data)):
-        cur = float(sorted_data[i].value)
-        prev = float(sorted_data[i - 1].value)
-        if prev != 0:
-            growth = round((cur / prev - 1) * 100, 2)
-            points.append((sorted_data[i].date, growth))
-
-    added = 0
-    for d, v in points:
-        result = await db.execute(upsert_indicator_data(dst.id, d, v))
-        if result.fetchone() is not None:
-            added += 1
-    if added:
-        await db.flush()
-    return added
-
-
-async def _compute_exports_qoq(db: AsyncSession) -> int:
-    return await _compute_qoq_generic(db, "exports", "exports-qoq")
-
-
-async def _compute_imports_qoq(db: AsyncSession) -> int:
-    return await _compute_qoq_generic(db, "imports", "imports-qoq")
-
-
-calculation_engine.register("inflation-quarterly", ["cpi"], _compute_quarterly_inflation)
-calculation_engine.register("inflation-annual", ["cpi"], _compute_annual_inflation)
-calculation_engine.register("cpi-food-quarterly", ["cpi-food"], _compute_cpi_food_quarterly)
-calculation_engine.register("cpi-food-annual", ["cpi-food"], _compute_cpi_food_annual)
-calculation_engine.register("cpi-nonfood-quarterly", ["cpi-nonfood"], _compute_cpi_nonfood_quarterly)
-calculation_engine.register("cpi-nonfood-annual", ["cpi-nonfood"], _compute_cpi_nonfood_annual)
-calculation_engine.register("cpi-services-quarterly", ["cpi-services"], _compute_cpi_services_quarterly)
-calculation_engine.register("cpi-services-annual", ["cpi-services"], _compute_cpi_services_annual)
-calculation_engine.register("wages-real", ["wages-nominal", "cpi"], _compute_wages_real)
-calculation_engine.register("gdp-yoy", ["gdp-nominal"], _compute_gdp_yoy)
-calculation_engine.register("gdp-qoq", ["gdp-nominal"], _compute_gdp_qoq)
-calculation_engine.register("unemployment-quarterly", ["unemployment"], _compute_unemployment_quarterly)
-calculation_engine.register("unemployment-annual", ["unemployment"], _compute_unemployment_annual)
-calculation_engine.register("current-account-yoy", ["current-account"], _compute_current_account_yoy)
-calculation_engine.register("ipi-yoy", ["ipi"], _compute_ipi_yoy)
-calculation_engine.register("exports-yoy", ["exports"], _compute_exports_yoy)
-calculation_engine.register("imports-yoy", ["imports"], _compute_imports_yoy)
-calculation_engine.register("ppi-yoy", ["ppi"], _compute_ppi_yoy)
-calculation_engine.register("housing-yoy-primary", ["housing-price-primary"], _compute_housing_yoy_primary)
-calculation_engine.register("housing-yoy-secondary", ["housing-price-secondary"], _compute_housing_yoy_secondary)
-calculation_engine.register("wages-yoy", ["wages-nominal"], _compute_wages_yoy)
-calculation_engine.register("exports-qoq", ["exports"], _compute_exports_qoq)
-calculation_engine.register("imports-qoq", ["imports"], _compute_imports_qoq)
+for _spec in DERIVED_SPECS:
+    calculation_engine.register_spec(_spec)
