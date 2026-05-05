@@ -123,8 +123,8 @@ function CopyButton({ text, onCopy }) {
 
 export default function EmbedBuilder() {
   useDocumentMeta({
-    title: 'Конструктор виджетов — встраиваемые графики',
-    description: 'Создайте виджет с экономическими данными России и встройте его на ваш сайт. Бесплатно.',
+    title: 'Виджеты Forecast Economy',
+    description: 'Встраиваемые графики, карточки и тикеры для вашего сайта.',
     path: '/widgets',
   });
 

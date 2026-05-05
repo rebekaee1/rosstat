@@ -36,11 +36,15 @@ export default function IndicatorDetail() {
     isFetching: fetchingInd,
   } = useIndicator(code);
 
-  useDocumentMeta({
-    title: indicator?.seo_title || `Индикатор ${code}`,
-    description: indicator?.seo_description,
+  // Пока данные индикатора не пришли — не трогаем <head>: SSR-renderer
+  // (seo_renderer.py::render_indicator_html) уже положил правильный title из
+  // БД, плюс canonical/og:*. Любая клиентская перезапись на промежуточное
+  // значение (например, "Индикатор cpi") вызывала бы flap у поисковиков.
+  useDocumentMeta(indicator ? {
+    title: indicator.seo_title || indicator.name,
+    description: indicator.seo_description,
     path: `/indicator/${code}`,
-  });
+  } : null);
 
   const { data: stats } = useIndicatorStats(code);
   const variantGroup = findVariantGroup(code);

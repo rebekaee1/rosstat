@@ -321,8 +321,22 @@ async def render_home_html(db: AsyncSession) -> str:
     return html
 
 
-async def _active_indicators(db: AsyncSession, *, limit: int | None = None, category: str | None = None):
+async def _active_indicators(
+    db: AsyncSession,
+    *,
+    limit: int | None = None,
+    category: str | None = None,
+    listed_only: bool = False,
+):
+    """Active indicators for SEO output.
+
+    listed_only=True фильтрует «скрытые» derived (inflation-quarterly,
+    cpi-food-annual, …): они доступны по прямому URL и есть в sitemap, но
+    не попадают в листинги категорий — там же, что и UI.
+    """
     stmt = select(Indicator).where(Indicator.is_active.is_(True)).order_by(Indicator.code)
+    if listed_only:
+        stmt = stmt.where(Indicator.is_listed.is_(True))
     if category:
         stmt = stmt.where(Indicator.category == category)
     if limit:
@@ -335,7 +349,9 @@ async def render_category_html(slug: str, db: AsyncSession) -> tuple[int, str]:
     category = CATEGORY_META.get(slug)
     if not category:
         return 404, "Not found"
-    indicators = await _active_indicators(db, category=category.api_category)
+    indicators = await _active_indicators(
+        db, category=category.api_category, listed_only=True
+    )
     links = tuple((f"/indicator/{ind.code}", ind.name) for ind in indicators)
     body = f"""<main class="seo-page">
 <nav aria-label="Хлебные крошки">{_link("/", "Главная")} / {escape(category.name)}</nav>
@@ -351,7 +367,7 @@ async def render_category_html(slug: str, db: AsyncSession) -> tuple[int, str]:
         {
             "@context": "https://schema.org",
             "@type": "CollectionPage",
-            "name": f"{category.title} — Forecast Economy",
+            "name": category.title,
             "description": category.description,
             "url": _absolute(f"/category/{slug}"),
             "mainEntity": [
@@ -361,7 +377,7 @@ async def render_category_html(slug: str, db: AsyncSession) -> tuple[int, str]:
         },
     ]
     html = await build_document(
-        title=f"{category.title} — Forecast Economy",
+        title=category.title,
         description=category.description,
         canonical_path=f"/category/{slug}",
         body=body,

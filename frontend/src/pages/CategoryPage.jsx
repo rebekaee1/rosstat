@@ -27,11 +27,11 @@ export default function CategoryPage() {
     enabled: !!cat?.apiCategory,
   });
 
-  useDocumentMeta({
-    title: cat ? `${cat.name} — индикаторы и данные` : 'Категория',
-    description: cat ? `${cat.description} Бесплатно, официальные источники.` : '',
-    path: `/category/${slug || ''}`,
-  });
+  useDocumentMeta(cat ? {
+    title: cat.seoTitle,
+    description: cat.seoDescription,
+    path: `/category/${slug}`,
+  } : null);
 
   useEffect(() => {
     if (!cat) return;
