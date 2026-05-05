@@ -12,7 +12,13 @@ from app.api.forecasts import DERIVED_CPI_FORECASTS
 from app.services.forecast_pipeline import CPI_DERIVED_FORECAST_TARGETS
 
 
-DIRECT_FORECAST_CODES = {
+# Прогноз индикатора может быть включён двумя способами:
+#  (1) Approved-direct — точки прогноза заданы вручную в model_config
+#      из блокнота Никиты (полное соответствие «точь-в-точь»).
+#  (2) Derived-from-source — стратегия `derived_from_source` строит
+#      прогноз математически от прогноза индикатора-источника.
+#  (3) Live-models — CPI семья, где прогноз пересчитывается каждый раз.
+APPROVED_DIRECT_FORECAST_CODES = {
     "cpi",
     "cpi-food",
     "cpi-nonfood",
@@ -22,6 +28,17 @@ DIRECT_FORECAST_CODES = {
     "housing-price-primary",
     "housing-price-secondary",
 }
+
+DERIVED_FROM_SOURCE_FORECAST_CODES = {
+    "gdp-yoy",
+    "gdp-qoq",
+    "gdp-real",
+    "ppi-yoy",
+}
+
+ALL_FORECAST_CODES = (
+    APPROVED_DIRECT_FORECAST_CODES | DERIVED_FROM_SOURCE_FORECAST_CODES
+)
 
 APPROVED_NOTEBOOK_CODES = {
     "ppi": "Approved-PPI-Notebook",
@@ -41,7 +58,7 @@ EXPECTED_DERIVED_CPI_FORECASTS = {
 }
 
 
-def test_only_approved_direct_forecasts_are_enabled() -> None:
+def test_only_approved_or_derived_forecasts_are_enabled() -> None:
     enabled: set[str] = set()
     for ind in INDICATORS:
         if not ind.get("is_active"):
@@ -51,7 +68,18 @@ def test_only_approved_direct_forecasts_are_enabled() -> None:
         if forecast_steps > 0:
             enabled.add(ind["code"])
 
-    assert enabled == DIRECT_FORECAST_CODES
+    assert enabled == ALL_FORECAST_CODES
+
+
+def test_derived_forecasts_have_strategy_and_source() -> None:
+    by_code = {ind["code"]: ind for ind in INDICATORS}
+    for code in DERIVED_FROM_SOURCE_FORECAST_CODES:
+        cfg = by_code[code]["model_config_json"]
+        assert cfg.get("forecast_strategy") == "derived_from_source", \
+            f"{code} must have forecast_strategy=derived_from_source"
+        derived = cfg.get("derived_forecast") or {}
+        assert derived.get("source_code"), f"{code} must have derived_forecast.source_code"
+        assert derived.get("operation"), f"{code} must have derived_forecast.operation"
 
 
 def test_approved_notebook_forecasts_are_explicit_values() -> None:

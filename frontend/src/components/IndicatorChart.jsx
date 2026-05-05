@@ -2,7 +2,7 @@ import { useEffect, useRef, useMemo, useState, useCallback } from 'react';
 import gsap from 'gsap';
 import {
   ResponsiveContainer, ComposedChart, Area, Line, Bar, XAxis, YAxis,
-  Tooltip, CartesianGrid, ReferenceLine,
+  Tooltip, CartesianGrid, ReferenceLine, ReferenceArea,
 } from 'recharts';
 import { Activity, ZoomIn, AreaChart as AreaIcon, BarChart3, LineChart as LineIcon } from 'lucide-react';
 import { formatDate, formatAxisTick, formatValueWithUnit, unitDigits, cn } from '../lib/format';
@@ -20,11 +20,32 @@ const RANGE_PRESETS = {
     { key: '25y', label: '25 лет', months: 300 },
     { key: 'all', label: 'Все', months: null },
   ],
+  quarterly: [
+    { key: '5y', label: '5 лет', months: 60 },
+    { key: '10y', label: '10 лет', months: 120 },
+    { key: '25y', label: '25 лет', months: 300 },
+    { key: 'all', label: 'Все', months: null },
+  ],
+  weekly: [
+    { key: '6m', label: '6 мес', months: 6 },
+    { key: '1y', label: '1 год', months: 12 },
+    { key: '3y', label: '3 года', months: 36 },
+    { key: 'all', label: 'Все', months: null },
+  ],
+  daily: [
+    { key: '1y', label: '1 год', months: 12 },
+    { key: '3y', label: '3 года', months: 36 },
+    { key: '5y', label: '5 лет', months: 60 },
+    { key: 'all', label: 'Все', months: null },
+  ],
 };
 
 const RANGE_DEFAULTS = {
   default: '5y',
   annual: '10y',
+  quarterly: '10y',
+  weekly: '1y',
+  daily: '3y',
 };
 
 const MIN_WINDOW = 10;
@@ -42,7 +63,7 @@ function dateBasedWindowSize(data, months) {
   return data.length;
 }
 
-function CustomTooltip({ active, payload, label, mode, levelTooltipLabel, dateFormat = 'full', unit = '%', visible = true }) {
+function CustomTooltip({ active, payload, label, mode, levelTooltipLabel, forecastTooltipLabel, dateFormat = 'full', unit = '%', visible = true }) {
   if (!visible || !active || !payload?.length) return null;
 
   const actual = payload.find(p => p.dataKey === 'actual' && p.value != null && !isNaN(p.value));
@@ -51,7 +72,8 @@ function CustomTooltip({ active, payload, label, mode, levelTooltipLabel, dateFo
   const actualLabel = mode === 'cpi'
     ? (levelTooltipLabel || 'ИПЦ к пред. месяцу')
     : 'Инфляция (12 мес.)';
-  const forecastLabel = mode === 'cpi' ? 'Прогноз' : 'Прогноз (12 мес.)';
+  const forecastLabel = forecastTooltipLabel
+    || (mode === 'cpi' ? 'Прогноз' : 'Прогноз (12 мес.)');
 
   return (
     <div className="glass-surface rounded-xl border border-border-subtle px-4 py-3 shadow-2xl min-w-[200px]">
@@ -95,6 +117,7 @@ export default function IndicatorChart({
   referenceLineY,
   cpiChartTitle,
   levelTooltipLabel,
+  forecastTooltipLabel,
   emptyHint,
   dateFormat = 'full',
   unit = '%',
@@ -198,6 +221,16 @@ export default function IndicatorChart({
       }
     }
     for (let i = 0; i < visibleData.length; i++) {
+      if (visibleData[i].forecast != null) {
+        return visibleData[i].date;
+      }
+    }
+    return null;
+  }, [visibleData, showForecast]);
+
+  const forecastEndDate = useMemo(() => {
+    if (!showForecast) return null;
+    for (let i = visibleData.length - 1; i >= 0; i--) {
       if (visibleData[i].forecast != null) {
         return visibleData[i].date;
       }
@@ -485,7 +518,7 @@ export default function IndicatorChart({
               width={yWidth}
             />
             <Tooltip
-              content={<CustomTooltip mode={mode} levelTooltipLabel={levelTooltipLabel} dateFormat={dateFormat} unit={unit} visible={isHovering} />}
+              content={<CustomTooltip mode={mode} levelTooltipLabel={levelTooltipLabel} forecastTooltipLabel={forecastTooltipLabel} dateFormat={dateFormat} unit={unit} visible={isHovering} />}
               cursor={isDragging || !isHovering ? false : { stroke: 'rgba(0,0,0,0.15)', strokeWidth: 1 }}
               active={isHovering && !isDragging}
             />
@@ -493,10 +526,23 @@ export default function IndicatorChart({
               <ReferenceLine y={baselineY} stroke="rgba(0,0,0,0.12)" strokeDasharray="6 3" />
             )}
 
+            {/* Полоса прогноза: полупрозрачная фиолетовая заливка над диапазоном
+                будущих дат + тонкая вертикальная граница факт/прогноз. Делает
+                переход факт → прогноз визуально явным (см. Шаг 8 трек A2). */}
+            {forecastStartDate && forecastEndDate && showForecast && (
+              <ReferenceArea
+                x1={forecastStartDate}
+                x2={forecastEndDate}
+                fill="#7C3AED"
+                fillOpacity={0.06}
+                stroke="none"
+                ifOverflow="visible"
+              />
+            )}
             {forecastStartDate && showForecast && (
               <ReferenceLine
                 x={forecastStartDate}
-                stroke="rgba(124,58,237,0.35)"
+                stroke="rgba(124,58,237,0.45)"
                 strokeDasharray="4 4"
                 strokeWidth={1}
               />

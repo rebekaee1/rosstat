@@ -532,6 +532,138 @@ def train_quarterly_housing(
 
 
 # ---------------------------------------------------------------------------
+#  НА Models 4 & 5: log-difference multi-window without blend
+#  (PPI, nominal GDP — Никита's notebooks `Прогноз_ИЦП` / `Прогноз_номинальный_ВВП`)
+# ---------------------------------------------------------------------------
+
+def _log_diff_no_blend_forecast(
+    dates: List[date],
+    values: List[float],
+    forecast_steps: int,
+    lags_fn,
+    k_range: range,
+    step_freq: str,  # "monthly" or "quarterly"
+    model_name: str,
+) -> ForecastResult:
+    """Multi-window OLS on log-difference, NO blend with median or prior.
+
+    Replicates the structure of `train_sarima_model` from Никита's
+    `Прогноз_ИЦП.ipynb` and `Прогноз_номинальный_ВВП.ipynb`:
+
+        forecast[m] = first_value · exp( Σ all_log_diffs + Σ_{j≤m} forecasts_aux[j] )
+
+    The two notebooks differ only in `forecast_steps`, lag sets, k range,
+    and date stepping; the rest is identical. We share the implementation
+    and parametrise these axes.
+    """
+    series = pd.Series(values, index=pd.DatetimeIndex(dates), dtype=float, name='value')
+    if len(series) < 24:
+        return ForecastResult(model_name=model_name, aic=None, bic=None, points=[])
+
+    first_value = float(series.iloc[0])
+    log_diff = np.log(series).diff(1).dropna()
+    window_size = len(log_diff)
+    sum_all_log_diffs = float(np.sum(log_diff))
+
+    if step_freq == "quarterly":
+        future_dates = [
+            series.index[-1] + relativedelta(months=j * 3)
+            for j in range(1, forecast_steps + 1)
+        ]
+    else:
+        future_dates = [
+            series.index[-1] + relativedelta(months=j)
+            for j in range(1, forecast_steps + 1)
+        ]
+
+    forecasts_aux: list[float] = []
+    points: list[ForecastPoint] = []
+
+    for m in range(1, forecast_steps + 1):
+        lags = lags_fn(m)
+        pred = _multi_window_predict(
+            log_diff, window_size, m, lags,
+            apply_rolling=False,
+            k_range=k_range,
+            min_window=12,
+        )
+        if pred is None:
+            pred = float(np.median(log_diff.iloc[-12:]))
+        forecasts_aux.append(pred)
+
+        accumulated = sum_all_log_diffs + sum(forecasts_aux)
+        value = first_value * float(np.exp(accumulated))
+        points.append(ForecastPoint(
+            date=future_dates[m - 1].date(),
+            value=round(value, 4),
+            lower_bound=None,
+            upper_bound=None,
+        ))
+
+    logger.info("%s forecast: %d points, last=%.2f",
+                model_name, len(points), points[-1].value if points else 0)
+    return ForecastResult(model_name=model_name, aic=None, bic=None, points=points)
+
+
+def _ppi_lags(m: int) -> list[int]:
+    if m <= 9:
+        return [m, m + 1, m + 2, 12]
+    if m == 10:
+        return [m, m + 1, 12]
+    if m == 11:
+        return [m, 12]
+    return [12]
+
+
+def _gdp_quarterly_lags(m: int) -> list[int]:
+    if m < 2:
+        return [m, m + 1, m + 2, 4]
+    if m == 2:
+        return [m, m + 1, 4]
+    if m == 3:
+        return [m, 4]
+    return [4]
+
+
+def train_ppi_monthly(
+    dates: List[date],
+    values: List[float],
+    forecast_steps: int = 12,
+) -> ForecastResult:
+    """Port of Никита's `Прогноз_ИЦП.ipynb` (April 2026).
+
+    PPI index, monthly. Multi-window OLS on log-diff, k∈[1..4],
+    monthly lag set, no blend.
+    """
+    return _log_diff_no_blend_forecast(
+        dates, values, forecast_steps,
+        lags_fn=_ppi_lags,
+        k_range=range(1, 5),
+        step_freq="monthly",
+        model_name="PPI-Monthly-MW",
+    )
+
+
+def train_gdp_nominal_quarterly(
+    dates: List[date],
+    values: List[float],
+    forecast_steps: int = 4,
+) -> ForecastResult:
+    """Port of Никита's `Прогноз_номинальный_ВВП.ipynb` (April 2026).
+
+    Nominal GDP, quarterly. Multi-window OLS on log-diff, k∈[1..3],
+    quarterly lag set, no blend.
+    """
+    return _log_diff_no_blend_forecast(
+        dates, values, forecast_steps,
+        lags_fn=_gdp_quarterly_lags,
+        k_range=range(1, 4),
+        step_freq="quarterly",
+        model_name="GDP-Nominal-Quarterly-MW",
+    )
+
+
+# ---------------------------------------------------------------------------
 #  Original OLS model (for non-CPI indicators)
 # ---------------------------------------------------------------------------
 
