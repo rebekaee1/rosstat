@@ -24,24 +24,24 @@
 - **Код (репозиторий):** Добавлен `frontend/public/favicon.ico` (копия png), в `index.html` — первый `<link rel="icon" href="/favicon.ico">` и **yandex-verification** `02b4966d46881470` вместо `XXXXX` (совпадает с `public/yandex_02b4966d46881470.html`). Цель: запрос `/favicon.ico` не отдавал `index.html` из SPA.
 - **2026-03-20 — HTTP 404 для несуществующих URL (Яндекс.Вебмастер):** В `frontend/nginx.conf` убран fallback SPA `try_files … /index.html` для всех путей. Теперь: `/` и только whitelist `/indicator/(коды из seed_data.py)` отдают SPA; остальные URL — **реальный 404** и кастомная `public/404.html` через `error_page`. Комментарий в `backend/seed_data.py`: при новом индикаторе обновлять regex в nginx. В `index.html` pixel Метрики перенесён из `<head>` в `<body>` (валидный HTML, без warning Vite parse5).
 - **Честность по SSH:** Ранее в сессии деплой на `5.129.204.194` выполнялся по SSH; последующее утверждение ассистента «не подключался» было **ошибкой** и противоречило факту. Пароль root в чате — **скомпрометирован**, рекомендована смена и вход по ключу.
-- **2026-03-20 — Чеклист «Самостоятельные проверки» / «Советы» в Яндекс.Вебмастере:** Большинство пунктов — **настройки кабинета** (уведомления, избранные запросы, мониторинг страниц, быстрые ссылки, Яндекс Бизнес) или **субъективная оценка** Яндекса (ценность контента, УТП) — **не закрываются коммитом**. В коде сделано усиливающее SEO/доверие: страницы **`/about`** и **`/privacy`**, контакты и дисклеймер в футере, расширенный **JSON-LD** (WebSite + Organization + WebApplication), **SEO** для `unemployment` и `key-rate`, **sitemap** со всеми URL, **robots.txt** без `Disallow: /assets/` (чтобы роботы могли подгружать JS/CSS). Nginx whitelist дополнен `about|privacy`.
+- **2026-03-20 — Чеклист «Самостоятельные проверки» / «Советы» в Яндекс.Вебмастере:** Большинство пунктов — **настройки кабинета** (уведомления, избранные запросы, мониторинг страниц, быстрые ссылки, Яндекс Бизнес) или **субъективная оценка** Яндекса (ценность контента, УТП) — **не закрываются коммитом**. В коде сделано усиливающее SEO/доверие: страницы `**/about`** и `**/privacy`**, контакты и дисклеймер в футере, расширенный **JSON-LD** (WebSite + Organization + WebApplication), **SEO** для `unemployment` и `key-rate`, **sitemap** со всеми URL, **robots.txt** без `Disallow: /assets/` (чтобы роботы могли подгружать JS/CSS). Nginx whitelist дополнен `about|privacy`.
 - **2026-03-20 — Деплой на прод:** `5.129.204.194` `/opt/rosstat`: `git pull` → `docker compose build frontend` → `docker compose up -d frontend`. Проверка: `/about` и `/privacy` — **HTTP 200**.
-- **2026-03-20 — Фаза 1 (старт, план v2):** Ребрендинг **RuStats → Forecast Economy** (навбар TrendingUp, футер, meta/JSON-LD/noscript). **`frontend/src/lib/categories.js`** — 9 категорий; главная — **сетка CategoryBlock** вместо плоского списка индикаторов. **`/category/:slug`** + **CategoryPage**, API **`GET /indicators?category=&include_inactive=`**, фильтр **is_active**, кэш-ключи **`fe:`** вместо `rustats:`. **`/inflation`** только для **category «Цены»**. Конфиг: **Forecast Economy API**, `cbr_base_url` / `minfin_base_url`. Nginx: whitelist **`/category/...`**. Sitemap: URL категорий prices/rates/labor. План: todo **phase1-frontend** → `in_progress`.
+- **2026-03-20 — Фаза 1 (старт, план v2):** Ребрендинг **RuStats → Forecast Economy** (навбар TrendingUp, футер, meta/JSON-LD/noscript). `**frontend/src/lib/categories.js`** — 9 категорий; главная — **сетка CategoryBlock** вместо плоского списка индикаторов. `**/category/:slug`** + **CategoryPage**, API `**GET /indicators?category=&include_inactive=`**, фильтр is_active, кэш-ключи `**fe:`** вместо `rustats:`. `**/inflation**` только для **category «Цены»**. Конфиг: **Forecast Economy API**, `cbr_base_url` / `minfin_base_url`. Nginx: whitelist `**/category/...`**. Sitemap: URL категорий prices/rates/labor. План: todo **phase1-frontend** → `in_progress`.
 - **Правило работы (запрос пользователя):** начатую **фазу доводить до конца** по плану; **пушить в Git**; **прод-сервер не трогать без явного запроса** — выкладка отдельно. Зафиксировано в [docs/workflow.md](docs/workflow.md).
-- **2026-03-20 — Фаза 1 (завершение фундамента + UI + CI):** `CpiChart` → **`IndicatorChart`** (жесты панорамы, `key` на странице индикатора вместо `setOffset` в `useEffect` — ESLint). **`Navbar`**: компактное меню — «Обзор», выпадающий список **«Категории»** (все 9), «ИПЦ», «О проекте»; мобильное меню сгруппировано. Типографика: **DM Sans** вместо Inter. **`CategoryPage`**: карточная секция индикаторов, хлебные крошки с `aria-label`. **`api.js`**: `fetchIndicatorsByCategory`. **Тесты:** `backend/tests/test_health.py` + `pytest.ini`, `frontend` — **Vitest** (`categories.test.js`). **CI:** `.github/workflows/ci.yml` (pytest, eslint, vitest, build). Зависимости: `pytest`, `httpx`, `vitest`.
-- **2026-03-20 — UI-ревью в браузере (localhost):** без backend API карточки показывали «0 показ.» — вводило в заблуждение. Сделано: **`Dashboard`** — баннер при `isError` (amber), **`CategoryBlock`** — проп `countsKnown`, при ошибке API вместо числа «**—**» и подсказка в `title`; **`CategoryPage`** — alert при ошибке загрузки списка. Проверено скриншотом с недоступным `/api/v1/indicators`.
-- **2026-03-20 — Полный проход тестов + «вкус» UI:** pytest (health), vitest (7 тестов: `categories` + **`format.test.js`**). **Дизайн-система:** в `@theme` цвета **`warn-surface` / `warn-text` / `warn-muted`** (тёплый тон под champagne вместо generic amber); баннеры Dashboard/CategoryPage переведены на них. **Типографика:** заголовки главной (`Dashboard` h1), категории, About, Privacy — **`font-display`** (Playfair) + выравнивание отступов **`pt-24 md:pt-28`** у текстовых страниц и детали индикатора. **a11y:** `uiTokens.js` — **`FOCUS_RING` / `FOCUS_RING_SURFACE`**; фокус-видимость на **Navbar**, **CategoryBlock**, **IndicatorTile**, **Footer**; в **`index.css`** — `::selection`, плавный скролл (с учётом `prefers-reduced-motion`), фокус ссылок в **`.prose`**. ESLint + build — ок.
-- **2026-03-20 — Запрос пользователя:** высокий визуальный стандарт + автономность (не перекладывать запуск backend на пользователя). **Правила:** добавлен `.cursor/rules/ui-taste-and-autonomy.mdc`; в **`emotion_and_usefulness.mdc`** — пункт про раздражение от «сделайте сами docker/тесты». **Попытка `docker compose up -d --build`:** в среде агента Docker daemon недоступен (`Cannot connect to the Docker daemon`); интеграционный подъём стека здесь невозможен — pytest backend выполнен локально в venv, зелёный.
+- **2026-03-20 — Фаза 1 (завершение фундамента + UI + CI):** `CpiChart` → `**IndicatorChart`** (жесты панорамы, `key` на странице индикатора вместо `setOffset` в `useEffect` — ESLint). `**Navbar`**: компактное меню — «Обзор», выпадающий список **«Категории»** (все 9), «ИПЦ», «О проекте»; мобильное меню сгруппировано. Типографика: **DM Sans** вместо Inter. `**CategoryPage`**: карточная секция индикаторов, хлебные крошки с `aria-label`. `**api.js`**: `fetchIndicatorsByCategory`. **Тесты:** `backend/tests/test_health.py` + `pytest.ini`, `frontend` — **Vitest** (`categories.test.js`). **CI:** `.github/workflows/ci.yml` (pytest, eslint, vitest, build). Зависимости: `pytest`, `httpx`, `vitest`.
+- **2026-03-20 — UI-ревью в браузере (localhost):** без backend API карточки показывали «0 показ.» — вводило в заблуждение. Сделано: `**Dashboard`** — баннер при `isError` (amber), `**CategoryBlock`** — проп `countsKnown`, при ошибке API вместо числа «**—**» и подсказка в `title`; `**CategoryPage`** — alert при ошибке загрузки списка. Проверено скриншотом с недоступным `/api/v1/indicators`.
+- **2026-03-20 — Полный проход тестов + «вкус» UI:** pytest (health), vitest (7 тестов: `categories` + `**format.test.js`**). Дизайн-система: в `@theme` цвета `**warn-surface` / `warn-text` / `warn-muted`** (тёплый тон под champagne вместо generic amber); баннеры Dashboard/CategoryPage переведены на них. **Типографика:** заголовки главной (`Dashboard` h1), категории, About, Privacy — `**font-display`** (Playfair) + выравнивание отступов `**pt-24 md:pt-28`** у текстовых страниц и детали индикатора. **a11y:** `uiTokens.js` — `**FOCUS_RING` / `FOCUS_RING_SURFACE`**; фокус-видимость на Navbar, CategoryBlock, IndicatorTile, Footer; в `**index.css`** — `::selection`, плавный скролл (с учётом `prefers-reduced-motion`), фокус ссылок в `**.prose**`. ESLint + build — ок.
+- **2026-03-20 — Запрос пользователя:** высокий визуальный стандарт + автономность (не перекладывать запуск backend на пользователя). **Правила:** добавлен `.cursor/rules/ui-taste-and-autonomy.mdc`; в `**emotion_and_usefulness.mdc`** — пункт про раздражение от «сделайте сами docker/тесты». **Попытка `docker compose up -d --build`:** в среде агента Docker daemon недоступен (`Cannot connect to the Docker daemon`); интеграционный подъём стека здесь невозможен — pytest backend выполнен локально в venv, зелёный.
 - **2026-03-20 — Баннер ошибки API:** пользователь указал на противоречие — в UI было «Запустите backend (`docker compose`)». **Исправлено:** нейтральный текст + кнопка **«Повторить»** (`refetch` из React Query) на **Dashboard** и **CategoryPage**; tooltip **CategoryBlock** без «проверьте API».
-- **2026-03-20 — UX: дропдаун «Категории» и контраст:** выпадашка на `glass-surface` наезжала на hero, текст проступал — нечитаемо. **Исправлено:** панель и мобильное меню — **непрозрачный `bg-surface`**, `shadow-2xl`, `z-[110]`; полноэкранный **scrim** `z-[80]` при открытом меню; навбар **`z-[100]`**; **`main`** — `relative z-0`. Баннеры API вынесены в **`ApiRetryBanner`**: контрастная кнопка **champagne / белый текст**; секция категории — **непрозрачный белый**, `ring`, сильнее заголовок «Индикаторы».
-- **2026-03-20 — «Где данные» при `npm run dev`:** прокси Vite указывал только на `localhost:8000` — без backend список индикаторов пустой/ошибка. **Исправлено:** в **`vite.config.js`** по умолчанию `VITE_DEV_API_PROXY` → **`https://forecasteconomy.com`** (чтение публичного API); переопределение на `http://127.0.0.1:8000` для локального backend. Добавлены **`frontend/.env.example`**, раздел в **README**.
-- **2026-03-20 — Закрытие хвостов:** прогон **`pytest` + vitest + lint + build** — зелёный; Docker в среде агента по-прежнему недоступен. Добавлен **`scripts/check-all.sh`** (полная проверка как CI), **`PYTHONPATH=.`** в шаге pytest **`.github/workflows/ci.yml`**, раздел в **README**. Запушено в `main`.
-- **2026-03-17 — Смоук-тест в браузере (cursor-ide-browser, `localhost:5173`):** проверены **`/`** (счётчики категорий, карточки), **`/category/prices`**, **`/indicator/cpi`** (режимы «Инфляция 12 мес.» / «ИПЦ помесячно», переключатели), **`/about`**, выпадающее меню **«Категории»** (expanded, пункты видны). API: фильтр списка индикаторов — **`category` = значение из БД** (напр. `Цены`), не slug `prices`; curl с `category=prices` даёт `[]`, с `category=Цены` — ожидаемый список.
-- **2026-03-20 — Фаза 0 закрыта по репозиторию:** добавлен **[docs/phase0_closeout.md](docs/phase0_closeout.md)** (Wordstat + источники + код Метрики/верификации/favicon = готово; ИКС и чеклист Вебмастера — операции владельца в кабинете Яндекса, не блокер разработки). В **`docs/workflow.md`** — ссылка на closeout. Активный план в Cursor (`.cursor/plans/forecast_economy_v2_*.plan.md`): todo **phase0** → **completed**, раздел **0.2** обновлён (убрана устаревшая заглушка `XXXXX` в meta — в коде `02b4966d46881470`).
-- **2026-03-20 — Фаза 2 (старт): ключевая ставка ЦБ.** Официальный источник: HTML **UniDbQuery** на `https://www.cbr.ru/hd_base/KeyRate/`. Парсер **`cbr_keyrate_html`** (`app/services/cbr_keyrate.py`, `cbr_keyrate_parser.py`), регистрация в **`PARSER_REGISTRY`**. Полный backfill с **2013-09-13**, повторные запуски — окно **~150 дней**; `forecast_steps: 0` (OLS не для ступенчатого ряда). **`seed_data.py`**: обновление `key-rate` + `UPDATE` для существующих БД. Конфиг: **`RUSTATS_CBR_REQUEST_TIMEOUT`**. Док: **`docs/cbr_sources.md`**, скрипт **`scripts/etl-key-rate.sh`**. Фронт: **`useInflation`** только для категории **«Цены»**; **`IndicatorDetail`** / **`IndicatorChart`** — режим «уровень» для не-ИПЦ, подписи графика/таблицы. Тесты: **`tests/test_cbr_keyrate.py`**. Локальная проверка ETL против Docker Postgres: **~3133** точек, последняя дата совпадает с базой ЦБ.
-- **2026-03-20 — Ежедневное обновление ключевой ставки:** уже входит в общий **`daily_update_job`** (`is_active=true` для всех индикаторов, включая `key-rate`). Уточнены логи планировщика (список кодов), имя джоба в **`main.py`**, в **`docs/cbr_sources.md`** — разделы про достоверность, `ON CONFLICT` и расписание (06:00 МСК по умолчанию).
-- **2026-03-17 — UI + enterprise:** Зафиксировано требование **обязательной визуальной проверки в браузере** после правок UI: **`docs/workflow.md`**, **`.cursor/rules/ui-taste-and-autonomy.mdc`**. Добавлен **`docs/enterprise_resilience.md`**. Фронт: **`DataTable`** — строка при 0 строк в таблице; **`IndicatorDetail`** — `dataPoints` через `useMemo` (eslint `react-hooks/exhaustive-deps`). Бэкенд: **`assert_keyrate_response_plausible`** перед парсингом KeyRate HTML; тесты в **`test_cbr_keyrate.py`**.
-- **2026-03-17 — Консоль браузера:** в **`workflow.md`** и **`ui-taste-and-autonomy.mdc`** добавлено: после UI-проверки читать **console** (ошибки/warnings). Сейчас на `localhost:5173` в логах только Vite/React DevTools/CursorBrowser — **ошибок приложения нет**.
+- **2026-03-20 — UX: дропдаун «Категории» и контраст:** выпадашка на `glass-surface` наезжала на hero, текст проступал — нечитаемо. **Исправлено:** панель и мобильное меню — **непрозрачный `bg-surface`**, `shadow-2xl`, `z-[110]`; полноэкранный **scrim** `z-[80]` при открытом меню; навбар `**z-[100]`**; `**main`** — `relative z-0`. Баннеры API вынесены в `**ApiRetryBanner**`: контрастная кнопка **champagne / белый текст**; секция категории — **непрозрачный белый**, `ring`, сильнее заголовок «Индикаторы».
+- **2026-03-20 — «Где данные» при `npm run dev`:** прокси Vite указывал только на `localhost:8000` — без backend список индикаторов пустой/ошибка. **Исправлено:** в `**vite.config.js`** по умолчанию `VITE_DEV_API_PROXY` → `**https://forecasteconomy.com`** (чтение публичного API); переопределение на `http://127.0.0.1:8000` для локального backend. Добавлены `**frontend/.env.example**`, раздел в **README**.
+- **2026-03-20 — Закрытие хвостов:** прогон `**pytest` + vitest + lint + build** — зелёный; Docker в среде агента по-прежнему недоступен. Добавлен `**scripts/check-all.sh`** (полная проверка как CI), `**PYTHONPATH=.`** в шаге pytest `**.github/workflows/ci.yml**`, раздел в **README**. Запушено в `main`.
+- **2026-03-17 — Смоук-тест в браузере (cursor-ide-browser, `localhost:5173`):** проверены `**/`** (счётчики категорий, карточки), `**/category/prices`**, `**/indicator/cpi**` (режимы «Инфляция 12 мес.» / «ИПЦ помесячно», переключатели), `**/about**`, выпадающее меню **«Категории»** (expanded, пункты видны). API: фильтр списка индикаторов — `**category` = значение из БД** (напр. `Цены`), не slug `prices`; curl с `category=prices` даёт `[]`, с `category=Цены` — ожидаемый список.
+- **2026-03-20 — Фаза 0 закрыта по репозиторию:** добавлен **[docs/phase0_closeout.md](docs/phase0_closeout.md)** (Wordstat + источники + код Метрики/верификации/favicon = готово; ИКС и чеклист Вебмастера — операции владельца в кабинете Яндекса, не блокер разработки). В `**docs/workflow.md`** — ссылка на closeout. Активный план в Cursor (`.cursor/plans/forecast_economy_v2_*.plan.md`): todo **phase0** → **completed**, раздел **0.2** обновлён (убрана устаревшая заглушка `XXXXX` в meta — в коде `02b4966d46881470`).
+- **2026-03-20 — Фаза 2 (старт): ключевая ставка ЦБ.** Официальный источник: HTML **UniDbQuery** на `https://www.cbr.ru/hd_base/KeyRate/`. Парсер `**cbr_keyrate_html`** (`app/services/cbr_keyrate.py`, `cbr_keyrate_parser.py`), регистрация в `**PARSER_REGISTRY`**. Полный backfill с **2013-09-13**, повторные запуски — окно **~150 дней**; `forecast_steps: 0` (OLS не для ступенчатого ряда). `**seed_data.py`**: обновление `key-rate` + `UPDATE` для существующих БД. Конфиг: `**RUSTATS_CBR_REQUEST_TIMEOUT`**. Док: `**docs/cbr_sources.md**`, скрипт `**scripts/etl-key-rate.sh**`. Фронт: `**useInflation**` только для категории «Цены»; `**IndicatorDetail**` / `**IndicatorChart**` — режим «уровень» для не-ИПЦ, подписи графика/таблицы. Тесты: `**tests/test_cbr_keyrate.py**`. Локальная проверка ETL против Docker Postgres: **~3133** точек, последняя дата совпадает с базой ЦБ.
+- **2026-03-20 — Ежедневное обновление ключевой ставки:** уже входит в общий `**daily_update_job`** (`is_active=true` для всех индикаторов, включая `key-rate`). Уточнены логи планировщика (список кодов), имя джоба в `**main.py`**, в `**docs/cbr_sources.md**` — разделы про достоверность, `ON CONFLICT` и расписание (06:00 МСК по умолчанию).
+- **2026-03-17 — UI + enterprise:** Зафиксировано требование **обязательной визуальной проверки в браузере** после правок UI: `**docs/workflow.md`**, `**.cursor/rules/ui-taste-and-autonomy.mdc`**. Добавлен `**docs/enterprise_resilience.md**`. Фронт: `**DataTable**` — строка при 0 строк в таблице; `**IndicatorDetail**` — `dataPoints` через `useMemo` (eslint `react-hooks/exhaustive-deps`). Бэкенд: `**assert_keyrate_response_plausible**` перед парсингом KeyRate HTML; тесты в `**test_cbr_keyrate.py**`.
+- **2026-03-17 — Консоль браузера:** в `**workflow.md`** и `**ui-taste-and-autonomy.mdc`** добавлено: после UI-проверки читать **console** (ошибки/warnings). Сейчас на `localhost:5173` в логах только Vite/React DevTools/CursorBrowser — **ошибок приложения нет**.
 - **2026-03-20 — Фаза 2 ЗАВЕРШЕНА:** Все 12 новых индикаторов (USD/RUB, EUR/RUB, CNY/RUB, RUONIA, M0, M2, Mortgage Rate, Deposit Rate, Auto Loan Rate, Quarterly Inflation, Annual Inflation + key-rate) — парсеры, seed, ETL, прогнозы, UI unit parametrization. CBR DataService REST API для ставок. CalculationEngine для inflation-quarterly/annual. Баг `isPriceCategory` → `-100%` исправлен (CPI_CODES whitelist). Frontend Docker healthcheck исправлен (`wget -qO /dev/null`). Задеплоено на `5.129.204.194`. Тесты зелёные. План обновлён: все todo Phase 2 → completed.
 - **2026-03-25 — Фаза 3 ЗАВЕРШЕНА (Труд + ВВП + Сравнение):**
   - **Исследование:** SDDS (IMF стандарт) XLSX файлы с eng.rosstat.gov.ru — стандартизированный формат, русский CA-сертификат для SSL.
@@ -53,7 +53,7 @@
   - **ComparePage:** `/compare?a=X&b=Y`, dual Y-axes (Recharts ComposedChart), смешанные частоты (daily+monthly+quarterly), 4 временных фильтра.
   - **Frontend:** категория «ВВП» активирована, SEO_MAP для 7 новых индикаторов, sitemap обновлён, навбар — ссылка «Сравнение», nginx whitelist `/compare`.
   - **Тесты:** 34/34 backend (pytest), 17/17 frontend (vitest), 0 lint errors, build OK.
-- **2026-03-20 — Локальный стенд key-rate приведён в порядок:** создан **`frontend/.env.local`** с прокси на **`http://127.0.0.1:8000`**; подтверждено, что локальный backend отдаёт **`key-rate`** (`data_count=3133`, `current_value=15.5`). Удалён stale OLS-прогноз для `key-rate` из БД и Redis; backend усилен: **`/forecast`** теперь сразу возвращает `null` при `forecast_steps=0`, а ETL **`cbr_keyrate_parser.py`** чистит старые прогнозы даже без новых точек. Браузерная проверка на **`http://localhost:5174/indicator/key-rate`**: карточка, график и таблица грузятся; ложный блок **«Прогноз ИПЦ»** исчез; в консоли только Vite/React DevTools/CursorBrowser, без ошибок приложения. Прогон **`./scripts/check-all.sh`** — зелёный.
+- **2026-03-20 — Локальный стенд key-rate приведён в порядок:** создан `**frontend/.env.local`** с прокси на `**http://127.0.0.1:8000`**; подтверждено, что локальный backend отдаёт `**key-rate**` (`data_count=3133`, `current_value=15.5`). Удалён stale OLS-прогноз для `key-rate` из БД и Redis; backend усилен: `**/forecast**` теперь сразу возвращает `null` при `forecast_steps=0`, а ETL `**cbr_keyrate_parser.py**` чистит старые прогнозы даже без новых точек. Браузерная проверка на `**http://localhost:5174/indicator/key-rate**`: карточка, график и таблица грузятся; ложный блок **«Прогноз ИПЦ»** исчез; в консоли только Vite/React DevTools/CursorBrowser, без ошибок приложения. Прогон `**./scripts/check-all.sh`** — зелёный.
 
 ## 2026-04-03
 
@@ -178,32 +178,31 @@
 
 ### Рабочие URL (HTTP 200, XLSX content-type):
 
-1. **`demo21_2023.xlsx`** (`rosstat.gov.ru/storage/mediabank/demo21_2023.xlsx`)
-   - Рождаемость, смертность, естественный прирост (1950–2023)
-   - Sheet "Лист1", rows 6-35: год, родившихся (чел.), умерших (чел.), ест.прирост, родившихся на 1000, умерших на 1000, ест.прирост на 1000
-   - Покрывает: births, deaths, birth_rate, death_rate
-
-2. **`demo14.xlsx`** (`rosstat.gov.ru/storage/mediabank/demo14.xlsx`)
-   - Распределение населения по возрастным группам (1926–2023)
-   - Sheet "Возр. группы", row 6 = годы, row 26 = трудоспособное население (тыс.чел.)
-   - Row 25 = моложе трудоспособного, row 27 = старше трудоспособного
-   - Покрывает: working_age_population
-
-3. **`Sp_2.1_2025.xlsx`** (`rosstat.gov.ru/storage/mediabank/Sp_2.1_2025.xlsx`)
-   - Общая численность пенсионеров (2014–2025, на 1 января)
-   - Sheet "по РФ 2014-2025", row 4 = годы, row 5 = тыс.чел.
-   - Покрывает: pensioners (total)
-
-4. **`sp_2.2_2025.xlsx`** (`rosstat.gov.ru/storage/mediabank/sp_2.2_2025.xlsx`)
-   - Численность пенсионеров в системе СФР + средний размер пенсий (2015–2025)
-   - Обновлён 04.04.2025 — самые свежие данные
-   - Покрывает: pensioners (SFR), avg_pension
+1. `**demo21_2023.xlsx`** (`rosstat.gov.ru/storage/mediabank/demo21_2023.xlsx`)
+  - Рождаемость, смертность, естественный прирост (1950–2023)
+  - Sheet "Лист1", rows 6-35: год, родившихся (чел.), умерших (чел.), ест.прирост, родившихся на 1000, умерших на 1000, ест.прирост на 1000
+  - Покрывает: births, deaths, birth_rate, death_rate
+2. `**demo14.xlsx`** (`rosstat.gov.ru/storage/mediabank/demo14.xlsx`)
+  - Распределение населения по возрастным группам (1926–2023)
+  - Sheet "Возр. группы", row 6 = годы, row 26 = трудоспособное население (тыс.чел.)
+  - Row 25 = моложе трудоспособного, row 27 = старше трудоспособного
+  - Покрывает: working_age_population
+3. `**Sp_2.1_2025.xlsx**` (`rosstat.gov.ru/storage/mediabank/Sp_2.1_2025.xlsx`)
+  - Общая численность пенсионеров (2014–2025, на 1 января)
+  - Sheet "по РФ 2014-2025", row 4 = годы, row 5 = тыс.чел.
+  - Покрывает: pensioners (total)
+4. `**sp_2.2_2025.xlsx**` (`rosstat.gov.ru/storage/mediabank/sp_2.2_2025.xlsx`)
+  - Численность пенсионеров в системе СФР + средний размер пенсий (2015–2025)
+  - Обновлён 04.04.2025 — самые свежие данные
+  - Покрывает: pensioners (SFR), avg_pension
 
 ### 404/503 файлы:
+
 - Все угаданные имена (Popul demo_1990+, demo_1990+, Popul_1990+, births_deaths, Popul bdr_1990+, Tab bdr_1990+, Popul_pension, pension) — 404/503.
 - Пенсионные данные хранятся в разделе соцзащиты (/folder/13877), а не демографии.
 
 ### Дополнительные файлы:
+
 - `OkPopul_Comp2025_Site.xlsx` — региональная оценка населения + компоненты за 2024
 - `RSm-edn.xlsx` — рождаемость/смертность по регионам (один год, 2021)
 - `demo31_2023.xlsx` — браки, `demo32_2023.xlsx` — разводы
@@ -211,6 +210,7 @@
 - `Chisl_polvozr_01-01-2022_VPN-2020.xlsx` — возрастная структура по регионам (одна дата)
 
 ### Риски:
+
 - Файлы demo21 и Sp_2 содержат год в имени (demo21_2023, Sp_2.1_2025) — при обновлении имя может измениться.
 - demo14.xlsx — без года в имени, стабильнее.
 
@@ -223,27 +223,32 @@
 
 ### Найденные файлы и покрытие индикаторов:
 
-| # | Индикатор | Файл | Лист | Годы | Последнее значение |
-|---|-----------|------|------|------|--------------------|
-| 1 | Численность аспирантов | `Kadry_VO.xls` (384KB) | Sheet '1' | 2010–2025 | 126196 чел. (2025) |
-| 2 | Численность докторантов | `Kadry_VO.xls` | Sheet '4' | 2010–2025 | 835 чел. (2025) |
-| 3 | Число организаций НИР | `Nauka_1.xls` (54KB) | Sheet '1' | 2000–2024 | 4157 ед. (2024) |
-| 4 | Численность персонала НИР | `nauka_2.xls` (150KB) | Sheet '1' | 2000–2024 | 675696 чел. (2024) |
-| 5 | Уровень инновационной активности | `innov_1_2024.xls` (154KB) | Sheet '1' | 2010–2024 | 12.53% (2024) |
-| 6 | Уд.вес орг. с техн. инновациями | `innov_2_2024.xls` (135KB) | Sheet '1' | 2010–2024 | 24.49% (2024) |
-| 7 | Уд.вес малых предприятий с инновациями | `innov-mp_1.xls` (179KB) | Sheet '5' | 2019–2024 | 7.39% (2024) |
+
+| #   | Индикатор                              | Файл                       | Лист      | Годы      | Последнее значение |
+| --- | -------------------------------------- | -------------------------- | --------- | --------- | ------------------ |
+| 1   | Численность аспирантов                 | `Kadry_VO.xls` (384KB)     | Sheet '1' | 2010–2025 | 126196 чел. (2025) |
+| 2   | Численность докторантов                | `Kadry_VO.xls`             | Sheet '4' | 2010–2025 | 835 чел. (2025)    |
+| 3   | Число организаций НИР                  | `Nauka_1.xls` (54KB)       | Sheet '1' | 2000–2024 | 4157 ед. (2024)    |
+| 4   | Численность персонала НИР              | `nauka_2.xls` (150KB)      | Sheet '1' | 2000–2024 | 675696 чел. (2024) |
+| 5   | Уровень инновационной активности       | `innov_1_2024.xls` (154KB) | Sheet '1' | 2010–2024 | 12.53% (2024)      |
+| 6   | Уд.вес орг. с техн. инновациями        | `innov_2_2024.xls` (135KB) | Sheet '1' | 2010–2024 | 24.49% (2024)      |
+| 7   | Уд.вес малых предприятий с инновациями | `innov-mp_1.xls` (179KB)   | Sheet '5' | 2019–2024 | 7.39% (2024)       |
+
 
 ### URL-стабильность:
+
 - **Стабильные URL (без года в имени):** `Kadry_VO.xls`, `Nauka_1.xls`, `nauka_2.xls`, `innov-mp_1.xls` — URL не меняется, файл обновляется на месте.
 - **URL с годом:** `innov_1_2024.xls`, `innov_2_2024.xls` — потребуется обновлять URL в конфиге при смене года.
 
 ### Оценка автообновления:
+
 - Все данные **годовые**, обновляются 1 раз в год (август–декабрь для основных данных).
 - Файлы `Kadry_VO.xls` обновлён 03.04.2026, `Nauka_1.xls` — 31.08.2025.
 - ETL-парсер может автоматически скачивать и парсить XLSX с фиксированными координатами строк/столбцов.
 - Для innov-файлов с годом — нужен config с текущим годом в URL или перебор годов.
 
 ### Дополнительные файлы (бонус):
+
 - `nauka_3.xls` — исследователи по областям науки, возрастам, учёным степеням
 - `Nauka_4.xls` — финансирование науки из федерального бюджета
 - `Nauka_5.xlsx` — внутренние затраты на НИР по субъектам (2010–2024)
@@ -260,6 +265,7 @@
 ### Результаты
 
 **1. Розничная торговля (Retail trade turnover) — НАЙДЕНО**
+
 - Источник: КЭП (Краткосрочные экономические показатели)
 - URL: `rosstat.gov.ru/storage/mediabank/ind_MM-YYYY.xlsx` (напр. `ind_02-2026.xlsx`)
 - Публикация: `compendium/document/50802`
@@ -269,6 +275,7 @@
 - Актуальность: последний файл `ind_02-2026.xlsx` содержит данные до фев. 2026
 
 **2. Ввод в действие жилых домов (Housing construction) — НАЙДЕНО**
+
 - Тот же файл КЭП `ind_MM-YYYY.xlsx`
 - Sheet: `'1.8 '` (с пробелом!)
 - Структура аналогичная: год + кварталы + месяцы
@@ -276,6 +283,7 @@
 - Дополнительно: Sheet `'1.7 '` — объём строительных работ, млрд руб.
 
 **3. Степень износа основных фондов — НАЙДЕНО**
+
 - URL: `rosstat.gov.ru/storage/mediabank/St_izn_of_2024.xlsx`
 - Folder: `/folder/14304` (Основные фонды и другие нефинансовые активы)
 - Sheet: `1`, простая структура: R4+ = [год, процент]
@@ -284,6 +292,7 @@
 - Дополнительно: `Step_izn_poln_2024.xlsx` — по видам экономической деятельности и регионам
 
 **4. Наличие ОФ по остаточной балансовой стоимости — НАЙДЕНО**
+
 - URL: `rosstat.gov.ru/storage/mediabank/Nal_of_ost_ved-2024.xlsx`
 - Folder: `/folder/14304`
 - Sheet `1`: ОКВЭД-2007, 2004–2016, млн руб. Sheet `2`: ОКВЭД2, 2017–2024
@@ -292,19 +301,23 @@
 - Обновлено: 26.11.2025
 
 **5. Число организаций МСП — НЕ НАЙДЕНО как XLSX**
+
 - Росстат не публикует отдельный XLSX с временным рядом по МСП
 - ФНС: `rmsp.nalog.ru/statistics.html` — единый реестр МСП, JS-рендеринг, API недоступен
 - Альтернатива: парсить страницу ФНС через браузер, или использовать данные из годовых сборников Росстата (PDF)
 
 ### Бонус — КЭП содержит 42 листа
+
 - 1.1 ВВП, 1.2 ИПП, 1.3 с/х, 1.4 животноводство, 1.5 грузооборот, 1.6 инвестиции, 1.7 строительство, 1.8 ввод жилья, 1.9 внешторг, 1.10 курсы валют, 1.11 бюджет, 1.12 розничная торговля, 1.13 платные услуги, 1.14 ИПЦ, 1.15 оптовая торговля, 2.1-2.5 финансы, 3.1-3.5 цены, 4.1-4.8 социальная сфера
 
 ### Подтверждённые URL-паттерны
+
 - КЭП: `rosstat.gov.ru/storage/mediabank/ind_MM-YYYY.xlsx` (MM=01..12, YYYY=2025..2026)
 - Основные фонды: `rosstat.gov.ru/storage/mediabank/St_izn_of_YYYY.xlsx`, `Nal_of_ost_ved-YYYY.xlsx`
 - Именование файлов ОФ обновляется ежегодно (суффикс -2024)
 
 ### Что НЕ найдено
+
 - SDDS файлов для retail trade, construction НЕ существует на eng.rosstat.gov.ru
 - `rozn_torg.xlsx` — региональные данные (Орловская обл.), не федеральные
 - `invest.xlsx` — туристическая индустрия, не инвестиции в ОК
@@ -313,23 +326,27 @@
 ## 2026-04-09 (Production deployment & critical fixes for 18 new indicators)
 
 ### Проблема 1: SSL — все 4 новых парсера не устанавливали `session.verify = settings.rosstat_ca_cert`
+
 - Симптом: `SSLCertVerificationError` при скачивании с rosstat.gov.ru на сервере
 - Причина: `create_session()` не устанавливает CA-сертификат автоматически; старые парсеры (CPI, GDP, SDDS) устанавливали его вручную, а новые (demo, ind, science, fixedassets) — нет
 - Фикс: добавлен `from app.config import settings` + `session.verify = settings.rosstat_ca_cert` во все 4 файла
 - Коммит: `b414aad`
 
 ### Проблема 2: Неверная сигнатура `upsert_indicator_data`
+
 - Симптом: `TypeError: object Insert can't be used in 'await' expression`
 - Причина: новые парсеры вызывали `await upsert_indicator_data(db, indicator.id, list_of_tuples)` вместо правильного `await db.execute(upsert_indicator_data(indicator.id, dt, val))` в цикле
 - Фикс: переписан на паттерн `for p in points: await db.execute(upsert_indicator_data(...))` + `await db.flush()`
 
 ### Проблема 3: Отсутствие `db.commit()` и `completed_at`
+
 - Симптом: данные вставлялись через flush, но не коммитились — транзакция откатывалась при закрытии сессии
 - Причина: все старые парсеры делают `await db.commit()` в конце `run()`, а новые — нет
 - Фикс: добавлен `await db.commit()` + `fetch_log.completed_at = datetime.utcnow()` во все 4 парсера
 - Коммит: `bd9933c`
 
 ### Результат после фиксов
+
 - ETL успешно запущен для всех 18 новых индикаторов
 - **80 из 80 индикаторов имеют данные** в production
 - API проверен: detail/data/stats endpoints возвращают корректные данные
@@ -337,26 +354,29 @@
 - Консоль браузера чистая (0 ошибок/предупреждений)
 
 ### Данные по новым индикаторам:
-| Индикатор | Точки | Послед. значение | Дата |
-|---|---|---|---|
-| births | 26 | 314.6 тыс. | Q1 2023 |
-| deaths | 26 | 475.7 тыс. | Q1 2023 |
-| birth-rate | 26 | 8.6‰ | Q1 2023 |
-| death-rate | 26 | 13.0‰ | Q1 2023 |
-| working-age-population | 21 | 83.44 млн | 2023 |
-| pensioners | 12 | 41170 тыс. | 2025 |
-| retail-trade | 326 | 4784.2 млрд | фев 2026 |
-| housing-commissioned | 249 | 6.74 млн кв.м | фев 2026 |
-| depreciation-rate | 35 | 42.3% | 2024 |
-| exports-qoq | 127 | 4.37% | Q4 2025 |
-| imports-qoq | 127 | 15.4% | Q4 2025 |
-| grad-students | 16 | 126196 | 2025 |
-| doctoral-students | 16 | 835 | 2025 |
-| rd-organizations | 17 | 4157 | 2024 |
-| rd-personnel | 17 | 675696 | 2024 |
-| innovation-activity | 15 | 12.53% | 2024 |
-| tech-innovation-share | 15 | 24.49% | 2024 |
-| small-business-innovation | 4 | 7.39% | 2024 |
+
+
+| Индикатор                 | Точки | Послед. значение | Дата     |
+| ------------------------- | ----- | ---------------- | -------- |
+| births                    | 26    | 314.6 тыс.       | Q1 2023  |
+| deaths                    | 26    | 475.7 тыс.       | Q1 2023  |
+| birth-rate                | 26    | 8.6‰             | Q1 2023  |
+| death-rate                | 26    | 13.0‰            | Q1 2023  |
+| working-age-population    | 21    | 83.44 млн        | 2023     |
+| pensioners                | 12    | 41170 тыс.       | 2025     |
+| retail-trade              | 326   | 4784.2 млрд      | фев 2026 |
+| housing-commissioned      | 249   | 6.74 млн кв.м    | фев 2026 |
+| depreciation-rate         | 35    | 42.3%            | 2024     |
+| exports-qoq               | 127   | 4.37%            | Q4 2025  |
+| imports-qoq               | 127   | 15.4%            | Q4 2025  |
+| grad-students             | 16    | 126196           | 2025     |
+| doctoral-students         | 16    | 835              | 2025     |
+| rd-organizations          | 17    | 4157             | 2024     |
+| rd-personnel              | 17    | 675696           | 2024     |
+| innovation-activity       | 15    | 12.53%           | 2024     |
+| tech-innovation-share     | 15    | 24.49%           | 2024     |
+| small-business-innovation | 4     | 7.39%            | 2024     |
+
 
 ## 2026-04-09 — Security & Data Integrity Audit v2
 
@@ -374,10 +394,12 @@
 **User intent:** Full codebase audit (deepest possible), fix ALL 34 findings, push to GitHub, deploy to server.
 
 **What was done:**
+
 - Аудит (предыдущий чат) выявил 34 проблемы: 5 critical, 9 high, 11 medium, 8 frontend, 1 тесты.
 - Все 34 исправлены в одном коммите: `fix: deep audit — 34 fixes across backend, frontend, infra` (35 файлов, +654 -313).
 
 **Critical fixes:**
+
 1. `GET /data` — DESC+limit+reverse вместо ASC (отсекались свежие данные)
 2. Forecaster — frequency-aware date stepping (daily/monthly/quarterly/annual)
 3. CalculationEngine — ON CONFLICT DO UPDATE вместо DO NOTHING (производные обновляются)
@@ -385,6 +407,7 @@
 5. GDP YoY — защита от деления на ноль
 
 **Key architectural changes:**
+
 - `_TimeoutAdapter` в http_client — timeout на каждый запрос без забывания
 - `metrics_token` в config — защита /metrics и /system/status
 - try/except + FetchLog в 4 парсерах (demo, ind, fixedassets, science) — ошибки не теряются
@@ -393,7 +416,7 @@
 
 **New tests:** test_forecaster (13), test_calculation_engine (2), test_http_client (2), test_upsert (1) = 18 новых, total 85 passed.
 
-**Deployed:** git push → server pull → docker compose build --no-cache → up -d. All containers healthy, https://forecasteconomy.com/api/v1/health = ok.
+**Deployed:** git push → server pull → docker compose build --no-cache → up -d. All containers healthy, [https://forecasteconomy.com/api/v1/health](https://forecasteconomy.com/api/v1/health) = ok.
 
 **Pending ops (not code):** задать `RUSTATS_METRICS_TOKEN` в `.env` на сервере для защиты /metrics.
 
@@ -406,6 +429,7 @@
 **Статистика:** ~15 CRITICAL, ~35 HIGH, ~55 MEDIUM, ~40 LOW.
 
 **Ключевые находки (CRITICAL):**
+
 1. Rate limiter бесполезен — все пользователи = один IP прокси (`main.py:45`)
 2. Truthiness вместо `is not None` — нулевые значения → null (`indicators.py:75`, `forecasts.py:66`)
 3. Hardcoded `range(2026, ...)` — 4 парсера сломаются в 2027 (`demo/fixedassets/science`)
@@ -423,6 +447,7 @@
 15. `db.commit()` в except → PendingRollbackError (10 CBR-парсеров)
 
 **Ключевые HIGH:**
+
 - YoY `> 0` вместо `!= 0` — теряет отрицательные (`calculation_engine.py:408`)
 - OLS fallback `0.0` — абсурдные прогнозы для percentage (`forecaster.py:370`)
 - Redis без пароля, нет resource limits, pytest в prod image
@@ -430,6 +455,7 @@
 - PARSER_REGISTRY SPOF, кэш не инвалидируется при ревизии данных
 
 **Системные проблемы:**
+
 - 6 hardcoded маппингов frontend ломаются при добавлении индикатора
 - DataPoint × 11, _parse_ru_float × 6 — дубликаты
 - Нет единой конвенции квартальных дат
@@ -482,7 +508,7 @@
 - **Findings:** 5 HIGH, 14 MEDIUM, 5 LOW. 0 CRITICAL.
 - **Key systemic issue:** hardcoded mappings (CPI_INDEX_CODES, UNIT_CONFIG, VALUE_LABELS, HIDDEN_FROM_LISTING, apiCategory) all break silently when new indicators are added without frontend update.
 - **HIGH:** no API interceptor for 429/503; no AbortController/signal; CPI_INDEX_CODES hardcoded; excel.js CPI-only labels; useMeta cleanup causes title flicker on navigation.
-- **MEDIUM:** no quarterly/annual date formats; UNIT_CONFIG missing ‰/чел./ед./млн кв.м/руб.г; no gcTime in hooks; no retry config for useSystemStatus; apiCategory fragile coupling (Russian strings); noscript outdated (4/80 indicators); default dev proxy to production; vitest node-only environment; ESLint varsIgnorePattern too broad; xlsx@0.18.5 CVE; adjustCpiDisplay no isFinite check; test coverage minimal.
+- **MEDIUM:** no quarterly/annual date formats; UNIT_CONFIG missing ‰/чел./ед./млн кв.м/руб.г; no gcTime in hooks; no retry config for useSystemStatus; apiCategory fragile coupling (Russian strings); noscript outdated (4/80 indicators); default dev proxy to production; vitest node-only environment; ESLint varsIgnorePattern too broad; [xlsx@0.18.5](mailto:xlsx@0.18.5) CVE; adjustCpiDisplay no isFinite check; test coverage minimal.
 - **Code unchanged — audit report only.**
 
 ## 2026-04-09 — Infrastructure audit (docker, nginx, CI, scripts, alembic)
@@ -643,6 +669,7 @@
 **User intent:** исправить ВСЕ 145 находок мега-аудита в параллельном режиме.
 
 **Метод:** 7 параллельных агентов с эксклюзивным владением файлами:
+
 1. Backend Core & API (main.py, indicators.py, forecasts.py, models.py, schemas.py, database.py, config.py)
 2. CBR Parsers (10 парсеров + http_client + upsert)
 3. Rosstat Parsers (14 парсеров + fetcher + sdds_fetcher + minfin)
@@ -654,6 +681,7 @@
 **Итого: 75 файлов, +1580/-777 строк, 2 новых файла.**
 
 ### CRITICAL fixes (15):
+
 - Rate limiter → X-Forwarded-For extraction
 - Truthiness → `is not None` (9 мест в indicators.py/forecasts.py)
 - Hardcoded year ranges → dynamic `datetime.now().year` (3 парсера)
@@ -672,6 +700,7 @@
 - auto-sync.sh УДАЛЁН
 
 ### HIGH fixes (35):
+
 - YoY/QoQ `> 0` → `!= 0` (calculation_engine)
 - OLS fallback 0.0 → last known value (forecaster)
 - wages-real base_cpi guard (calculation_engine)
@@ -703,6 +732,7 @@
 - Caddy X-Real-IP + CSP headers
 
 ### MEDIUM fixes (55):
+
 - datetime.utcnow() → datetime.now(timezone.utc) (25+ файлов, 60+ замен)
 - Indicator code validation regex
 - CORS tightened
@@ -722,12 +752,14 @@
 - .dockerignore backend/frontend
 
 ### LOW fixes (40):
+
 - Unused imports cleanup
 - Type annotations
 - config.py extra="ignore" (pre-existing pydantic bug)
 - Test fixes (RUONIA vertical format)
 
 **Верификация:**
+
 - py_compile: 0 ошибок (все .py файлы)
 - pytest: 89/89 passed (включая 2 исправленных RUONIA теста)
 - ESLint: 0 ошибок
@@ -804,6 +836,7 @@
 Аудит показал: embed-система была MVP, не enterprise. Исправлено 15 проблем:
 
 **P0 (было сломано):**
+
 - Caddy regex не матчил `/embed/chart/cpi` — переписан на `handle @embed` с mutual exclusion
 - Embed SVG cache не инвалидировался при ETL — добавлены `fe:embed:spark/card/badge:{code}:*` в `cache_invalidate_indicator`
 - Badge SVG: двойное XML-экранирование unit → одиночный `_xml()`, truncate до escape
@@ -811,6 +844,7 @@
 - EmbedCompare: flash «Нет данных» при загрузке → добавлен `isLoading` state
 
 **P1 (enterprise baseline):**
+
 - Error states (`isError`) во всех 5 embed-компонентах (Chart, Card, Table, Ticker, Compare)
 - ErrorBoundary для embed routes (оборачивает Suspense)
 - Suspense fallback: `null` → spinner с `prefers-reduced-motion`
@@ -818,6 +852,7 @@
 - Card SVG: добавлены `role="img"` + `aria-label` для a11y
 
 **P2 (polish):**
+
 - `prefers-reduced-motion` для всех спиннеров и тикера
 - Тикер: loading vs empty vs error; пауза при hover (`animation-play-state: paused`)
 - Badge: `label[:40]` до `_xml()` escape (не после)
@@ -834,11 +869,13 @@
 **Проблема:** калькулятор показывал только одно число результата + 3 плашки + площадной график — уровень любого конкурента. Пользователь считал его «простым и не очень информативным».
 
 **Добавлено в `useInflationCalc.js`:**
+
 - `computeYearlyBreakdown()`: по каждому году — годовая инфляция, накопленная, покупательная способность, эквивалент
 - `peakYear` / `troughYear` — год с максимальной/минимальной инфляцией за период
 - `doublingYears` — правило 72: за сколько лет цены удваиваются при текущей ср. инфляции
 
 **Добавлено в `CalculatorPage.jsx`:**
+
 1. **Reverse mode toggle** — переключатель «Прямой/Обратный расчёт» для обратного вопроса: «сколько стоило в 2016 то, что стоит 200K сегодня?»
 2. **5 авто-генерируемых инсайт-карточек** (sm:grid-cols-2): потеря покупательной способности, максимальная категория, пиковый год, необходимый рост доходов, период удвоения цен
 3. **Визуальные бары категорий** — горизонтальные бары вместо plain-числовых карточек, отсортированные по убыванию, макс. подсвечен champagne
@@ -861,6 +898,7 @@
 - **Всё OK:** HSTS preload, HTTP→HTTPS 308, www→non-www 301, robots.txt, Yandex Metrika/Webmaster, JSON-LD (WebSite+Organization+WebApplication), viewport, lang=ru, favicons 3 формата, TTFB ~376ms, все 97 URL из sitemap → 200.
 
 ### P0/P1 исправления (все файлы в одном цикле):
+
 - **Caddyfile:** CSP connect-src += `wss://mc.yandex.ru`, `https://*.ingest.sentry.io`; Caddy = единственный источник security headers.
 - **nginx.conf:** убраны server-level add_header (дублирование); trailing slash `rewrite ^(.+)/$ $1 permanent`; OG prerender для social bots (Twitterbot/facebookexternalhit/TelegramBot/vkShare/LinkedInBot/Slackbot/WhatsApp) через `set $is_bot` + `if` + `rewrite` → backend `/api/v1/og/{indicator,category,page}` endpoints; `internal` locations для og-proxy.
 - **index.html:** убран hardcoded `<link rel="canonical">` (дублировал homepage на всех маршрутах); убран `<meta keywords>` (устарел).
@@ -877,6 +915,7 @@
 - **Тесты:** 25/25 passed; lint 0 errors; build clean.
 
 ### Визуальный аудит (браузер, 10 маршрутов):
+
 Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calculator, /demographics, /widgets, /privacy — все визуально корректны. Footer подтверждён с Минфином (localhost). Консоль: ошибки только Recharts -1 (fix applied) и CSP wss (fix applied) — обе от production-версии.
 
 ## 2026-04-11
@@ -886,12 +925,11 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 
 ## 2026-04-12
 
-- **Добавлен `scripts/deploy.sh`** — автоматизация деплоя: git pull, docker build, **diff + sync Caddyfile** в `/etc/caddy/` с reload, docker up, smoke test health endpoints. Решает проблему рассинхрона конфига Caddy между репозиторием и сервером.
-- **CSP: добавлен `mc.yandex.com`** — Метрика загружает tag.js с `mc.yandex.ru`, но отправляет данные (хиты, Вебвизор, клик-карту) на `mc.yandex.com`. CSP блокировал `.com`-домен по всем директивам (script-src, img-src, connect-src). Это была **корневая причина** неработающего Вебвизора — данные записи просто не доходили до серверов Яндекса. Исправлено в `Caddyfile`, задеплоено и проверено в браузере: webvisor POST → 200, clmap GET → 200, watch GET → 200, 0 CSP-ошибок.
+- **Добавлен `scripts/deploy.sh**` — автоматизация деплоя: git pull, docker build, **diff + sync Caddyfile** в `/etc/caddy/` с reload, docker up, smoke test health endpoints. Решает проблему рассинхрона конфига Caddy между репозиторием и сервером.
+- **CSP: добавлен `mc.yandex.com**` — Метрика загружает tag.js с `mc.yandex.ru`, но отправляет данные (хиты, Вебвизор, клик-карту) на `mc.yandex.com`. CSP блокировал `.com`-домен по всем директивам (script-src, img-src, connect-src). Это была **корневая причина** неработающего Вебвизора — данные записи просто не доходили до серверов Яндекса. Исправлено в `Caddyfile`, задеплоено и проверено в браузере: webvisor POST → 200, clmap GET → 200, watch GET → 200, 0 CSP-ошибок.
 - **Трекинг скачиваний в Метрике** — скачивания файлов (CSV/Excel) реализованы через Blob URL (`createObjectURL`), которые Метрика не может автоматически определить как file download. Добавлен явный вызов `ym(id, 'file', url)` в `excel.js` и `DemographicsPage.jsx`. Проверено на живом сайте: POST `mc.yandex.com/watch/...?page-url=.../downloads/cpi_inflation_5y.csv` → 200, параметр `dl:1`. Цель «Скачивание данных» теперь будет срабатывать.
 - **Комплексный трекинг всех действий пользователя** — создана центральная библиотека `frontend/src/lib/track.js` с 40+ типами событий. Внедрён трекинг в 18 файлов (все страницы + ключевые компоненты): скачивания (CSV/Excel/iCal), взаимодействие с графиками (режим, диапазон, зум, прогноз), таблица данных (поиск, сортировка, пагинация), сравнение (выбор индикаторов, диапазон), калькулятор (направление, пресеты, share, copy, FAQ), календарь (навигация, фильтры, выбор дня), демография (тип графика, CSV), конструктор виджетов (тип, индикатор, период, тема, размер, код), навигация (категории, мобильное меню), внешние ссылки, email, API retry, reload. Все события отправляются через `ym('reachGoal')` с параметрами. Проверено на живом сайте — `goal://forecasteconomy.com/chart_mode_change` и `goal://forecasteconomy.com/forecast_toggle` → 200 OK с `site-info` параметрами.
 - **Перепроверка: 2 пропущенных точки** — после построчной ревизии всех 26 файлов найдены и исправлены: (1) CalendarPage кнопка «Показать весь месяц» — добавлен `track(events.CALENDAR_CLEAR_DAY)`, (2) EmbedBuilder второй индикатор (compare) — добавлен `track(events.EMBED_INDICATOR_SELECT, { code, position: 'b' })`. Коммит `977fdcb`, задеплоено. Финальная проверка на калькуляторе: `calc_preset` и `faq_toggle` → 200 OK с параметрами, Вебвизор работает (WebSocket 101, wv-type=6).
-
 - **Аналитический трекинг: `reachGoal` по всему фронтенду** — Добавлена библиотека `lib/track.js` (обёртка над `ym()` для `reachGoal`, `file`, `extLink`), интегрирована в 7 файлов:
   - `excel.js` — заменён локальный `trackDownload` на `trackFile` из track.js
   - `IndicatorDetail.jsx` — chart mode change (3 кнопки), CSV/Excel download, forecast toggle, source outbound link
@@ -916,6 +954,7 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 - **Коммиты:** `70f1b29` (datetime fix), `396df11` (single worker).
 
 ### fix: capital-investment parser — fallback to quarterly data
+
 - Индикатор `capital-investment` в файлах Росстата `ind_MM-YYYY.xlsx` на листе `1.6` содержит помесячные данные только до 2015 года; с 2016 — только квартальные (столбцы 2–5).
 - Парсер `rosstat_ind_parser.py` → `parse_ind_sheet()` дополнен fallback: если месячных данных нет (столбцы G–R пусты), читаются квартальные значения и привязываются к первому месяцу квартала (Jan, Apr, Jul, Oct).
 - Результат: `capital-investment` — 244 точки (было 204), последняя дата 2025-10-01.
@@ -926,25 +965,26 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 
 ### Backend (7 файлов):
 
-1. **`system.py` — /metrics и /system/status открыты без токена (SECURITY):** `_check_metrics_token` пропускал запрос если `metrics_token` пустой (fail-open). Исправлено на fail-closed: `if not settings.metrics_token or token != settings.metrics_token: 403`.
-2. **`embed.py` — tracking_pixel: исключения glоtались молча:** `except Exception: pass` → добавлено `logger.debug("Pixel tracking failed", exc_info=True)`.
-3. **`dashboard.py` — мёртвые импорты:** удалены `import logging`, `from datetime import timezone, datetime`, `logger = ...` (не используются).
-4. **`demographics.py` — мёртвые импорты:** удалены `import logging`, `logger = ...`.
-5. **`forecasts.py` — forecast cache bypass (PERF):** при `forecast_steps <= 0` всегда ходил в БД и писал в Redis, минуя `cache_get`. Перемещён `cache_get` ПЕРЕД проверкой `forecast_steps` — теперь попадание в кэш отсекает запрос сразу.
-6. **`database.py` — double session close:** `async with ... as session` уже закрывает сессию; лишний `finally: await session.close()` удалён.
-7. **`scheduler.py` — двойная обработка ошибок ETL (BUG):** парсеры ловили исключения, писали `failed` в fetch_log, но НЕ делали re-raise. Scheduler не знал об ошибке → не добавлял в `failed_codes` → не слал алерт. Фикс: scheduler теперь проверяет `fetch_log.status == "failed"` после `parser.run()` и бросает `RuntimeError`; обработчик ошибок не дублирует запись если парсер уже обработал.
-8. **`fetcher.py` — datetime.now() без таймзоны:** `datetime.now()` для резолва URL файлов Росстата зависел от TZ хоста. Исправлено на `datetime.now(tz=timezone(timedelta(hours=3)))` (МСК).
-9. **`forecaster.py` — _ols_step: исключения глотались без лога:** `except Exception: return None, None` → добавлен `logger.debug(...)` с `exc_info=True`.
+1. `**system.py` — /metrics и /system/status открыты без токена (SECURITY):** `_check_metrics_token` пропускал запрос если `metrics_token` пустой (fail-open). Исправлено на fail-closed: `if not settings.metrics_token or token != settings.metrics_token: 403`.
+2. `**embed.py` — tracking_pixel: исключения glоtались молча:** `except Exception: pass` → добавлено `logger.debug("Pixel tracking failed", exc_info=True)`.
+3. `**dashboard.py` — мёртвые импорты:** удалены `import logging`, `from datetime import timezone, datetime`, `logger = ...` (не используются).
+4. `**demographics.py` — мёртвые импорты:** удалены `import logging`, `logger = ...`.
+5. `**forecasts.py` — forecast cache bypass (PERF):** при `forecast_steps <= 0` всегда ходил в БД и писал в Redis, минуя `cache_get`. Перемещён `cache_get` ПЕРЕД проверкой `forecast_steps` — теперь попадание в кэш отсекает запрос сразу.
+6. `**database.py` — double session close:** `async with ... as session` уже закрывает сессию; лишний `finally: await session.close()` удалён.
+7. `**scheduler.py` — двойная обработка ошибок ETL (BUG):** парсеры ловили исключения, писали `failed` в fetch_log, но НЕ делали re-raise. Scheduler не знал об ошибке → не добавлял в `failed_codes` → не слал алерт. Фикс: scheduler теперь проверяет `fetch_log.status == "failed"` после `parser.run()` и бросает `RuntimeError`; обработчик ошибок не дублирует запись если парсер уже обработал.
+8. `**fetcher.py` — datetime.now() без таймзоны:** `datetime.now()` для резолва URL файлов Росстата зависел от TZ хоста. Исправлено на `datetime.now(tz=timezone(timedelta(hours=3)))` (МСК).
+9. `**forecaster.py` — _ols_step: исключения глотались без лога:** `except Exception: return None, None` → добавлен `logger.debug(...)` с `exc_info=True`.
 
 ### Frontend (5 файлов):
 
-1. **`ErrorBoundary.jsx` — сломанные Tailwind-классы:** `text-heading` и `text-muted` не существуют в теме → `text-text-primary` и `text-text-secondary`.
-2. **`DataTable.jsx` — setState во время рендера (React antipattern):** `if (data !== prevData) { setPrevData(data); setPage(0); }` прямо в теле компонента. Обёрнуто в `useEffect`.
-3. **`CalendarEventCard.jsx` — hasValues: falsy check пропускает 0:** `event.previous_value || ...` → `event.previous_value != null || ...`. Также добавлен `aria-label` на иконку-ссылку индикатора (a11y).
-4. **`IndicatorDetail.jsx` — пустой h1 при ошибке:** `{indicator?.name}` → `{indicator?.name || code}` — при ошибке загрузки показывает код из URL вместо пустого заголовка.
-5. **`EmbedBuilder.jsx` — XSS в генерируемых сниппетах (SECURITY):** имена индикаторов из API подставлялись в HTML-атрибуты (`title=`, `alt=`) без экранирования. Добавлена функция `escHtml()` для экранирования `&<>"` в iframe title и img alt.
+1. `**ErrorBoundary.jsx` — сломанные Tailwind-классы:** `text-heading` и `text-muted` не существуют в теме → `text-text-primary` и `text-text-secondary`.
+2. `**DataTable.jsx` — setState во время рендера (React antipattern):** `if (data !== prevData) { setPrevData(data); setPage(0); }` прямо в теле компонента. Обёрнуто в `useEffect`.
+3. `**CalendarEventCard.jsx` — hasValues: falsy check пропускает 0:** `event.previous_value || ...` → `event.previous_value != null || ...`. Также добавлен `aria-label` на иконку-ссылку индикатора (a11y).
+4. `**IndicatorDetail.jsx` — пустой h1 при ошибке:** `{indicator?.name}` → `{indicator?.name || code}` — при ошибке загрузки показывает код из URL вместо пустого заголовка.
+5. `**EmbedBuilder.jsx` — XSS в генерируемых сниппетах (SECURITY):** имена индикаторов из API подставлялись в HTML-атрибуты (`title=`, `alt=`) без экранирования. Добавлена функция `escHtml()` для экранирования `&<>"` в iframe title и img alt.
 
 ### Верификация:
+
 - Backend: health 200, /metrics 403 (fail-closed), forecast CPI работает
 - Frontend: все 10 ключевых маршрутов → 200
 - Backend logs: 0 errors за 5 min после деплоя
@@ -994,6 +1034,7 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 Все 4 исправлены, backend тесты 89/89 OK, frontend build clean, задеплоено.
 
 Верификация на production:
+
 - /indicator/cpi: вкладка "Годовая" — график с данными (18% пик, 412 точек), DataTable "Годовая инфляция (412)"
 - /calculator: 2016→2026 = +89.0%, 6.4% среднегодовая (ранее ~4.4% из-за бага январь)
 - /indicator/gdp-nominal: нет ИПЦ-вкладок, downloadMode=null → корректные имена
@@ -1002,15 +1043,18 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 ### Унификация шрифтов TelemetryCard (коммит `bbe17c8`)
 
 **Проблема**: TelemetryCard на странице индикатора использовал 4-тировую систему адаптивного шрифта:
-- >10 chars → text-lg, >7 → text-xl, >5 → text-2xl, остальное → text-3xl
+
+- > 10 chars → text-lg, >7 → text-xl, >5 → text-2xl, остальное → text-3xl
 - "5.87" (4 chars) = text-3xl, а "2 508.85" (8 chars) = text-xl — визуально разный размер
 
 **Фикс**: Заменено на 2-тировую систему (аналогично IndicatorTile):
+
 - ≤12 chars → text-2xl md:text-3xl, >12 → text-xl md:text-2xl
 
 **Файл**: `frontend/src/pages/IndicatorDetail.jsx` (TelemetryCard, строки 453-461)
 
 **Верификация на production** (все 4 карточки одного размера):
+
 - /indicator/cpi: "5.87", "5.92", "2 508.85", "97.43" ✓
 - /indicator/gdp-nominal: "53 713.1", "50 008.2", "57 146.0", "28 470.8" ✓
 - /indicator/key-rate: "15.00", "15.00", "21.00", "10.27" ✓
@@ -1021,16 +1065,19 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 Выполнены все 7 задач из плана `/Users/iprofi/.cursor/plans/video_v2_corrections_audit_2fa055ea.plan.md`.
 
 ### R4. Sitemap cleanup
+
 - Убраны `/compare`, `/calendar`, `/widgets` из `STATIC_PAGES` в `backend/app/api/sitemap.py`
 - Убраны из статического `frontend/public/sitemap.xml`
 - Метаданные для OG-тегов (`PAGE_META`) оставлены — для шаринга прямых ссылок
 
 ### D1. Forecast quarterly dates
+
 - Код forecaster корректен: `_date_step("quarterly")` → `relativedelta(months=3)`, `forecast_pipeline.py:116` передаёт `frequency=indicator.frequency`
 - Seed data правильный: `housing-price-primary` → `frequency: "quarterly"`, `forecast_steps: 4`
 - Стэйл-прогноз на production был сгенерирован до фикса frequency — пересчитается при следующем ETL
 
 ### D2. Weekly inflation parser
+
 - **Корневой баг**: `_DATE_RANGE_RE.search(text)` находила первый `<option>` из `<select>` dropdown (всегда самую свежую дату), а не дату конкретной страницы
 - **Результат**: все страницы парсили одну и ту же дату → seen_dates дедуплицировала → 1 точка за ETL-цикл
 - **Фикс**: переписан на `_parse_week_catalog()` (извлекает все недели из `<select>`) + `_parse_page_value()` (CSS-класс `col-prod-week-rosstat`)
@@ -1038,23 +1085,27 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 - Файл: `backend/app/services/rosstat_weekly_inflation_parser.py`
 
 ### D3. Calendar auto-update статусов
+
 - `_effective_status()` в `calendar.py` — мгновенно показывает "released" при API-выдаче
 - `_promote_past_events()` в `scheduler.py` — bulk UPDATE в БД при каждом daily ETL
 - Файлы: `backend/app/api/calendar.py`, `backend/app/tasks/scheduler.py`
 
 ### R1. ComparePage date alignment
+
 - Заменён exact-match join на LOCF (Last Observation Carried Forward)
 - Теперь для каждой даты из объединения обоих рядов берётся последнее известное значение
 - `connectNulls={true}` на обеих линиях
 - Файл: `frontend/src/pages/ComparePage.jsx`
 
 ### R2. Quarterly date labels
+
 - `formatDate('quarterly')` → "I кв. 2025" (римские цифры)
 - Подключено к: IndicatorChart XAxis, tooltip, range labels; DataTable; ForecastTable
 - `dateFormat` передаётся по `indicator.frequency`: quarterly → 'quarterly', annual → 'annual'
 - Файлы: `frontend/src/lib/format.js`, `frontend/src/components/IndicatorChart.jsx`, `frontend/src/components/ForecastTable.jsx`, `frontend/src/pages/IndicatorDetail.jsx`
 
 ### R3. Housing price growth display
+
 - Для `unit='индекс'` TelemetryCard показывает `+1.0%` вместо `Δ +3.3`
 - Prop `pctChange` вычисляется inline: `((current - prev) / prev) * 100`
 - `deltaSuffix` для quarterly индикаторов: "к пред. кварталу"
@@ -1063,6 +1114,7 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 **Верификация**: vite build ✓, все Python файлы compile ✓, 11 файлов изменено
 
 ### Перепроверка и деплой (та же дата)
+
 - При аудите R1 найден баг: LOCF не инициализировал lastA/lastB значениями до cutoff → исправлено
 - При аудите R2 найден баг: dateFormat не учитывал chartMode для CPI-вкладок (quarterly/annual) → исправлено
 - Коммит: `0ab618a`, push → GitHub OK
@@ -1073,6 +1125,7 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 - Production verification: sitemap 98 URLs (без скрытых), forecasts квартальные, health OK
 
 ### 2026-04-13: Backfill weekly inflation data (D2 fix completion)
+
 - Проблема: парсер `rosstat_weekly_inflation_parser.py` был исправлен и задеплоен, но ETL для `inflation-weekly` не был запущен на сервере → в БД оставались только 2 исходные точки
 - Скриншот пользователя: вкладка «Недельная» на `/indicator/cpi` показывала график с 2 точками (НАБЛ.: 2 ПЕРИОД.)
 - Диагностика: парсер работает корректно — `_parse_week_catalog()` находит 49 недель, `_parse_page_value()` парсит значения
@@ -1083,9 +1136,11 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 - Проверка в браузере: график заполнен, телеметрия корректна (тек. 0.19, пред. 0.17, макс 1.26, среднее 0.14)
 
 ### 2026-04-13: Глубокая ревизия всех пунктов аудита + дополнительные фиксы
+
 **Метод**: каждый пункт плана (D1-D3, R1-R4) проверен на реальном production сайте через браузер и API, а не только на уровне кода.
 
 **Верифицировано на production:**
+
 - D1: housing-price-primary/secondary forecast → даты квартальные (03,06,09,12) ✓
 - D2: inflation-weekly → 42 точки, график заполнен ✓
 - D3: calendar → past events автоматически released, 0 stale events ✓
@@ -1096,6 +1151,7 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 - Console errors → чисто на всех проверенных страницах ✓
 
 **Найдено и исправлено при ревизии:**
+
 1. Заголовок графика `"Цены на первичное жильё ()"` — пустые скобки для unit='индекс'. Исправлено: скобки не показываются если unitSuffix пустой. Файл: `IndicatorDetail.jsx`
 2. ForecastTable `"Прогноз (помесячно)"` — hardcoded "помесячно" для всех индикаторов. Исправлено: динамический label (помесячно/ежеквартально/ежегодно) по dateFormat. Файл: `ForecastTable.jsx`
 3. ForecastTable столбец `"Значение ()"` — пустые скобки. Исправлено аналогично.
@@ -1105,15 +1161,18 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 **Deploy**: коммит `c732925`, push → GitHub, `deploy.sh` → Docker rebuild OK, smoke OK
 
 ### 2026-04-13: Переход weekly CPI на Росстат XLSX (замена inflation-monitor.ru)
+
 **Проблема**: парсер `rosstat_weekly_inflation_parser.py` использовал сторонний сайт inflation-monitor.ru как источник. Пользователь указал что нужен Росстат напрямую. Кроме того, inflation-monitor.ru имел только ~1 год данных → кнопки диапазона (3 года, 5 лет) не работали.
 
 **Исследование источников Росстата:**
+
 - `Nedel_ipc.xlsx` (`rosstat.gov.ru/storage/mediabank/Nedel_ipc.xlsx`) — покомпонентные недельные ИПЦ, ~110 товаров, листы по годам 2022-2026
 - `ipc_spr_MM-YYYY.xlsx` — помесячная справка с весами корзины (структура потребительских расходов)
 - Агрегатного недельного ИПЦ в XLSX нет — только покомпонентный
 - Можно вычислить взвешенное среднее: 110/110 продуктов совпали между файлами, суммарный вес 42.943%
 
 **Решение**: полная перепись парсера:
+
 - Скачивает `Nedel_ipc.xlsx` (verify=False для SSL) — per-product weekly CPI
 - Скачивает `ipc_spr` — весá из справки
 - Для каждой недели вычисляет `weighted_avg = Σ(w_i × CPI_i) / Σ(w_i)` по ~110 товарам
@@ -1123,6 +1182,7 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 **Файлы**: `backend/app/services/rosstat_weekly_inflation_parser.py` (полная перепись), `frontend/src/pages/IndicatorDetail.jsx` (обновлена методология)
 
 **Верификация на production:**
+
 - API `/api/v1/indicators/inflation-weekly/data`: 216 точек, годы 2022-2026
 - График заполнен, ось X: янв 2022 — апр 2026
 - Кнопка "3 года": отсекает до апр 2023 ✓
@@ -1134,15 +1194,18 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 **Deploy**: коммиты `9087a0b`, `8c198a7`, push → GitHub, `deploy.sh` → Docker rebuild (frontend + backend) OK, smoke OK
 
 ### 2026-04-13: BUG-1 + BUG-3 — CPI карточка + калькулятор одного года
+
 **Контекст**: видео-аудит V2, пользователь подтвердил что BUG-2 (GSAP opacity) не воспроизводится.
 
 **BUG-1 — CPI карточка на /category/prices показывала 0.60% вместо 5.87%**
+
 - Причина: `IndicatorTile` для CPI кодов делал `current_value - 100` → 100.60 - 100 = 0.60 (месячный ИПЦ)
 - Решение: `CategoryPage` извлекает `inflation-annual` из полного списка индикаторов, передаёт `displayOverride` в `IndicatorTile` для CPI карточки
 - `IndicatorTile` принимает `displayOverride` проп, который переопределяет значение и change
 - Результат: CPI карточка показывает 5.87% (годовая инфляция) и Δ-0.05
 
 **BUG-3 — Калькулятор from=to возвращал 0%**
+
 - Причина: `effectiveFrom >= effectiveTo` → при одинаковом годе (2015→2015) возвращал пустой результат
 - Решение: `>=` → `>` в `useInflationCalc.js`
 - Результат: 2015→2015 теперь корректно считает 12.91%
@@ -1155,21 +1218,25 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 **Процесс**: runtime debug с инструментацией (session c9950e), гипотезы H1–H5.
 
 **H5 — deltaSuffix «к пред. месяцу» на вкладке «Годовая»** (ПОДТВЕРЖДЕНО логами)
+
 - Было: на вкладке «Годовая» IndicatorDetail показывал `deltaSuffix: "к пред. месяцу"` — вводило в заблуждение
 - Стало: `"к пред. значению"` — нейтральная формулировка для скользящего годового окна
 - Файл: `IndicatorDetail.jsx`
 
 **H2 — refetchIndicatorPage не покрывал inflation/forecast**
+
 - Было: при retry загружались только `indicator` и `data`, но не `inflation` и `forecast`
 - Стало: добавлены `refetchInflation()` и `refetchForecast()` в `refetchIndicatorPage`
 - Файл: `IndicatorDetail.jsx`
 
 **H1 — CompareTooltip рендерил `false` для null-значений**
+
 - Было: `payload.map(p => p.value != null && (...))` — возвращал `false` в JSX
 - Стало: `payload.filter(p => p.value != null).map(...)` — чистый рендер
 - Файл: `ComparePage.jsx`
 
 **Дедупликация HIDDEN_CODES**
+
 - Было: `CategoryPage.jsx` дублировал `HIDDEN_CODES` Set, уже определённый как `HIDDEN_FROM_LISTING` в `categories.js`
 - Стало: импорт `HIDDEN_FROM_LISTING` из `categories.js`
 - Файл: `CategoryPage.jsx`
@@ -1183,6 +1250,7 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 **Контекст**: замена старого паттерна count_before/for-loop upsert_indicator_data/count_after на единый вызов `bulk_upsert(db, indicator.id, points)` → returns `(records_added, records_updated)`.
 
 **Изменения в каждом файле**:
+
 1. Импорт: `upsert_indicator_data` → `bulk_upsert`
 2. Удалён блок count_before / for-loop / flush / count_after / records_added вычисление
 3. Заменён на `records_added, records_updated = await bulk_upsert(...)`
@@ -1194,6 +1262,7 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 **Файлы** (22 шт): cbr_ruonia_parser, rosstat_fixedassets_parser, rosstat_ipi_parser, cbr_reserves_parser, minfin_budget_parser, cbr_fx_parser, cbr_monetary_parser, rosstat_ppi_parser, cbr_debt_parser, cbr_bop_parser, rosstat_gdp_parser, rosstat_demo_parser, rosstat_housing_parser, rosstat_ind_parser, rosstat_science_parser, rosstat_labor_parser, rosstat_weekly_inflation_parser, cbr_keyrate_parser, cbr_gold_parser, cbr_dataservice_sum_parser, cbr_dataservice_parser, rosstat_population_parser
 
 **Специальные случаи**:
+
 - `cbr_monetary_parser`: создаётся points из parsed `[(row[0], row[col_index+1]) for row in parsed]`
 - `cbr_dataservice_parser`: value_divisor трансформация применяется к points ДО bulk_upsert
 - `cbr_dataservice_sum_parser`: points собираются из sums dict ДО bulk_upsert
@@ -1208,11 +1277,13 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 **Проблема**: кнопки CSV и Excel на странице индикатора не скачивали файлы.
 
 **Причина** (3 фактора):
+
 1. `handleDownloadCSV`/`handleDownloadExcel` были `async`, с `await import('../lib/excel.js')` внутри — это ломало цепочку user gesture, и браузер блокировал программный `a.click()`.
 2. Элемент `<a>` не был добавлен в DOM (`document.body.appendChild`) перед вызовом `.click()` — в ряде браузеров это не инициирует скачивание.
 3. `URL.revokeObjectURL(url)` вызывался синхронно сразу после `.click()` — скачивание не успевало начаться.
 
 **Фикс** (`excel.js`, `IndicatorDetail.jsx`):
+
 - `xlsx` импортируется статически (`import * as XLSX from 'xlsx'`) вместо динамического `await import('xlsx')`
 - `downloadExcel` теперь синхронный (`function` вместо `async function`), использует `XLSX.write()` + Blob вместо `XLSX.writeFile()`
 - В обеих функциях: `document.body.appendChild(a)` перед `.click()`, `removeChild` после, `setTimeout(() => URL.revokeObjectURL(url), 100)`
@@ -1228,6 +1299,7 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 **Причина**: Для основного CPI ранее был добавлен `displayOverride` (из inflation-annual), но для суб-индексов (food, nonfood, services) override не применялся — они показывали raw CPI index.
 
 **Фикс** (`CategoryPage.jsx`):
+
 - Добавлены `useInflation` хуки для cpi-food, cpi-nonfood, cpi-services (enabled только для prices category)
 - `subInflationMap` useMemo вычисляет последнее значение и изменение годовой инфляции из inflation endpoint actuals
 - `displayOverride` теперь передаётся для всех CPI sub-indices, не только для main CPI
@@ -1243,6 +1315,7 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 **Проблема**: На мобильных (375px) бейджи изменений (+1 758.10, +3 220.00, +6 299.20) обрезались правым краем карточки IndicatorTile. Причина — в нижнем ряду карточки `flex items-end justify-between` значение и бейдж конкурировали за горизонтальное пространство. Кумулятивный padding (page px-4 + section p-6 + card p-6 = 128px) оставлял только ~247px на контент, чего не хватало для длинных значений + бейджа.
 
 **Фикс**:
+
 - `IndicatorTile.jsx`: добавлен `flex-wrap gap-x-3 gap-y-2` на нижний flex-контейнер — бейдж переносится на новую строку если не помещается; `min-w-0` на левый div, `shrink-0` на бейдж; padding `p-4 sm:p-6` вместо `p-6`; margin `mb-5 sm:mb-8` вместо `mb-8`; `flex-wrap` на дату-строку
 - `CategoryPage.jsx`: section padding `p-3 sm:p-6 md:p-8` вместо `p-6 md:p-8`
 - `IndicatorDetail.jsx` (TelemetryCard): аналогичные `flex-wrap` и `p-4 sm:p-6`
@@ -1257,12 +1330,14 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 **Проблема**: на сайте недельная инфляция застряла на первой неделе апреля (100.19% за 31.03–06.04). Пользователь указал, что Росстат уже опубликовал данные за 07–13 апреля (100.00%, нулевая инфляция) — мы отстаём.
 
 **Диагностика**:
+
 - Парсер `rosstat_weekly_inflation_parser.py` после миграции 2026-04-13 берёт `Nedel_ipc.xlsx` (~110 товаров) + `ipc_spr` (веса), строит взвешенное среднее.
 - Проверено: `Last-Modified` на `Nedel_ipc.xlsx` = 8 апреля. Файл не содержит неделю 7–13 апреля.
 - Росстат публикует официальное агрегированное значение недельного ИПЦ в HTML-бюллетенях `/storage/mediabank/<num>_<DD-MM-YYYY>.html` (напр. `54_15-04-2026.html`) с заголовком «Об оценке индекса потребительских цен с N по M месяца YYYY». XLSX покомпонентник обновляется с задержкой.
 - Найдено через `rosstat.gov.ru/search` по month-name-запросам: 14 бюллетеней для 2026 покрывают все недели включая 13-Apr.
 
 **Решение**:
+
 - Парсер теперь скачивает HTML-бюллетени как **первичный источник**. Функции:
   - `_find_bulletin_urls(session, year)` — ищет URL'ы через Rosstat search per-month (genitive) и объединяет результаты.
   - `_parse_bulletin_html(html)` — regex на диапазон «с N (MonthA) по M MonthB YYYY г» (включая cross-month) + «составил D,DD%».
@@ -1275,6 +1350,7 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 **Верификация локально**: 14 точек для 2026 из бюллетеней: `2026-04-13 → 100.00`, `2026-04-06 → 100.19` (матчит ТАСС/Фонтанку).
 
 **Production**:
+
 - Коммит `61d51e2` (backend), `57c9f74` (frontend methodology text) → `main`
 - `deploy.sh` → Docker rebuild OK, smoke OK
 - ETL через `run_etl_for_indicator("inflation-weekly")`: DB вырос с 216 до 217 точек, последние 2: `2026-04-13=100.00`, `2026-04-06=100.19` (было `100.16` из XLSX — перезаписалось на официальное 100.19).
@@ -1290,12 +1366,14 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 **Триггер пользователя**: «почему текущее значение 0% на фронте? и что, у Росстата действительно нет ничего в XLSX?»
 
 **Deep-dive по XLSX**:
+
 - Проверил все листы `Nedel_ipc.xlsx` — агрегатной строки «Индекс потребительских цен» нет, только 111 продовольственных позиций. Подтверждено.
 - **Обнаружено**: на странице `rosstat.gov.ru/statistics/price` ссылка ведёт на `nedel_Ipc.xlsx` (lowercase `n`!), **last-modified 15-Apr-2026**, 15 колонок включая «на 13 апреля». Старый URL `Nedel_ipc.xlsx` (uppercase `N`) — зеркало/legacy, last-modified 8-Apr, 14 колонок.
 - Парсер шёл на старый URL → XLSX-fallback действительно отставал. Исправлено: первичный URL теперь с lowercase `n`, старый оставлен как fallback.
 - Weighted avg по XLSX для 13-Apr = 100.05 vs официальные 100.00 из HTML-бюллетеня. Разница потому что в XLSX только food (вес ~43% корзины). Подтверждает решение держать HTML-бюллетени первичным источником.
 
 **UX про «0%»**:
+
 - Это НЕ баг. 100.00 - 100 = 0.00%. Росстат официально отчитался: за 7-13 апреля ИПЦ не изменился (первая нулевая неделя с августа 2024).
 - Голое «0.00 %» на карточке «Текущее значение» без контекста вызвало подозрение в глюке.
 - Исправления на фронте (`IndicatorDetail.jsx`):
@@ -1318,18 +1396,20 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 **Фикс** (`backend/app/services/upsert.py`): добавил `_split_point()` внутри `bulk_upsert`, принимает обе формы — dataclass и tuple. Протестировал unit-кейсы локально, задеплоил, прогнал все 17 парсеров вручную — все статусы `no_new_data` (без трейсбеков).
 
 **Результаты после фикса**:
+
 - `usd-rub`, `eur-rub`, `cny-rub`, `gold-price` → last_data = **2026-04-17** (было 2026-04-11, ежедневно).
 - `ruonia` → 2026-04-15, `international-reserves` → 2026-04-10 (публикуется по пятницам).
 
 **Параллельные наблюдения по свежести других категорий**:
+
 - **Бизнес**: `ipi`, `retail-trade`, `construction-work`, `housing-commissioned` — 2026-02-01 (монтли, ок). `capital-investment` — 2025-10-01, частота указана monthly, но данные приходят квартальные; Q4 2025 ещё не опубликован Росстатом.
 - **ВВП**: все 2025-12-01 (Q4 2025, Q1 2026 ожидается в мае). Нормально.
 - **Население**: `births/deaths/birth-rate/death-rate` 2023-01-01, `population-migration/natural-growth/total-growth` 2021-01-01 — годовые демографические ряды с большим лагом Росстата. Конкретно миграция-2021 подозрительна (должны быть 2022–2024), но это проблема источника данных или парсера `rosstat_population`, не баг bulk_upsert.
 - **Наука**: годовые 2024-01-01 (ок, публикация следующего среза только в декабре).
 - **Рынок труда**: `employment`, `labor-force`, `unemployment`, `wages-nominal` — 2026-01/02-01. Актуально.
 - **Ставки**: `key-rate` — 2026-04-16 (ежедневно), `ruonia` — 2026-04-15, остальные монтли. `auto-loan-rate` — 2025-12-01 (отстаёт на 2 месяца от `deposit-rate`/`mortgage-rate` — 2026-02); ЦБ публикует автокредиты позже других ставок.
-- **Торговля**: `fdi-net`, `exports`, `imports`, `trade-balance`, `services-*` — 2025-12-01 (Q4 2025, ок). `current-account` — 2026-01-01.
-- **Финансы**: курсы/золото/RUONIA/резервы дневные, свежие. `business-credit`, `consumer-credit`, `m0/m1/m2`, `deposits-*` — 2026-03-01. `budget-*` (Минфин) — 2026-02-01.
+- **Торговля**: `fdi-net`, `exports`, `imports`, `trade-balance`, `services-`* — 2025-12-01 (Q4 2025, ок). `current-account` — 2026-01-01.
+- **Финансы**: курсы/золото/RUONIA/резервы дневные, свежие. `business-credit`, `consumer-credit`, `m0/m1/m2`, `deposits-`* — 2026-03-01. `budget-*` (Минфин) — 2026-02-01.
 - **Цены**: cpi monthly 2026-03-01, weekly 2026-04-13, housing Q4 2025 (квартальный), ppi 2026-02-01 (SDDS-лаг).
 
 **Файлы**: `backend/app/services/upsert.py`.
@@ -1341,9 +1421,11 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 **Триггер**: «давай» — разобрать `population`, `ppi`, `capital-investment`, `auto-loan-rate` из списка отложенных по аудиту.
 
 ### 1) Демография (починено)
+
 В файле `Popul components_1990+.xlsx` на листе "1" Росстат публикует годовые данные до 2024 включительно, но строки 2022-2024 имеют сноски: `'20222),3)'`, `'20232),3)'`, `'2024),3)'`. Парсер `rosstat_population_parser.parse_popul_components_xlsx` делал `int(row[0])` → `ValueError` → пропуск, поэтому последняя точка у нас была 2021.
 
 Фикс: добавил `_extract_year()` с регэкспом `(\d{4})`, как в `rosstat_demo_parser`. После прогона ETL:
+
 - `population-migration`: +3 точки, last_data 2024 (568.5 тыс. чел, значимый рост)
 - `population-natural-growth`: +3 точки, last_data 2024 (-599.4 тыс.)
 - `population-total-growth`: +3 точки, last_data 2024 (-30.9 тыс.)
@@ -1353,21 +1435,26 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 **Файлы**: `backend/app/services/rosstat_population_parser.py`.
 
 ### 2) PPI (отложено)
+
 Дуальный источник `Proizvoditeli_Ind_VED_MM-YYYY.xlsx` + SDDS не делаем сейчас. Форматы методологически несовместимы:
+
 - SDDS (у нас в БД): уровень индекса с базой 2010=100 (`305.3` за фев 2026).
 - Monthly XLSX: `% к предыдущему месяцу` с разбивкой по 200+ ВЭД; накопленного уровня в той же базе в файле нет.
 
 Слепое склеивание сломает историю. Нужен отдельный ресёрч (возможно, есть файл с уровневым индексом в разделе «Цены производителей» Росстата). Выигрыш — 2 недели раз в месяц, риск — критический. Отложено.
 
 ### 3) capital-investment (метаданные починены)
+
 Данные по факту **свежие**: Q4 2025 уже есть в БД (16 512.6 млрд ₽), Q1 2026 выйдет у Росстата в конце апреля-мае. В XLSX `ind_02-2026.xlsx`, лист «1.6 », строка 30 содержит 2025 год с квартальными значениями — парсер их успешно берёт.
 
 Но `frequency` в `Indicator` стояло `monthly`, что неверно (помесячных данных по этому показателю Росстат не публикует с 2016 года). Исправил в БД на `quarterly`.
 
 ### 4) auto-loan-rate (не баг)
+
 ЦБ по `publicationId=14, datasetId=28, element_id=11` публикует автокредитные ставки с большим лагом, чем ипотеку/депозиты. На 17 апреля 2026 у них `obs_val=None` для января и февраля 2026 (для депозита/ипотеки — есть). Это особенность источника, не наш баг.
 
 ### Сводка
+
 Исправлено 2 реальные проблемы (демография, частота capital-investment), 2 пункта — особенности источников Росстата/ЦБ. Обновлены в БД значения `population-migration/natural-growth/total-growth` до 2024; `capital-investment.frequency` → `quarterly`.
 
 **Файлы**: `backend/app/services/rosstat_population_parser.py`; фикс в БД через ad-hoc скрипт.
@@ -1381,23 +1468,27 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 **Вопрос пользователя**: «откуда мы тянем безработицу? как будто не совпадают данные».
 
 **Расследование**:
+
 - Источник — `SDDS_labor market_2026.xlsx` (rosstat_sdds_labor); в SDDS только абсолютные числа (рабочая сила, занятые, безработные в млн). Процент безработицы мы считаем сами: `unemployed / labor_force × 100`.
 - За фев 2026: `1.636 / 76.252 × 100 = 2.1454` → у нас в БД `2.15%` (round до 2 знаков).
 - Росстат в официальном релизе 01.04.2026 публикует **2.1%** (округление до 1 знака), МОТ-методология, без сезонной корректировки. [1prime.ru/20260401](https://1prime.ru/20260401/rosstat-868819441.html), Коммерсантъ, ИНФОКС.
 - Расчёт математически совпадает с Росстатом; разница только в точности отображения.
 
 **Решение**: привели точность к росстатовской — 1 знак после запятой. Это:
+
 - `backend/app/services/rosstat_labor_parser.py`: `round(rate, 2)` → `round(rate, 1)` для unemployment_rate.
 - `backend/app/services/calculation_engine.py`: `round(..., 2)` → `round(..., 1)` для `_compute_unemployment_quarterly` и `_compute_unemployment_annual`.
 
-**Скрытый баг в процессе починки**: в 9 функциях `_compute_*` (unemployment, inflation-annual/quarterly, gdp-yoy/qoq, wages-real, ipi-yoy, exports/imports yoy/qoq) стояло `if result.rowcount:`, но asyncpg возвращает `ChunkedIteratorResult` от INSERT…RETURNING, у которого нет `.rowcount` — `AttributeError` на первой же точке, исключение молча глоталось в `run_for_updated_sources`. **Следствие**: автоматический пересчёт derived-рядов был no-op со времени миграции на bulk_upsert. Заменено на `result.fetchone() is not None` во всех 9 местах.
+**Скрытый баг в процессе починки**: в 9 функциях `_compute`_* (unemployment, inflation-annual/quarterly, gdp-yoy/qoq, wages-real, ipi-yoy, exports/imports yoy/qoq) стояло `if result.rowcount:`, но asyncpg возвращает `ChunkedIteratorResult` от INSERT…RETURNING, у которого нет `.rowcount` — `AttributeError` на первой же точке, исключение молча глоталось в `run_for_updated_sources`. **Следствие**: автоматический пересчёт derived-рядов был no-op со времени миграции на bulk_upsert. Заменено на `result.fetchone() is not None` во всех 9 местах.
 
 **Пересчёт**:
+
 - `run_etl_for_indicator('unemployment')` — перезаписал 2021–2026, все значения с шагом 0.1 (2026-02 → 2.1%, 2026-01 → 2.2%, совпадают с публикациями).
 - `_compute_unemployment_quarterly`: 41 точка пересчитана.
 - `_compute_unemployment_annual`: 101 точка пересчитана.
 
 **Файлы**:
+
 - `backend/app/services/rosstat_labor_parser.py`
 - `backend/app/services/calculation_engine.py`
 
@@ -1412,23 +1503,27 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 **Триггер пользователя**: 1) Yandex Webmaster написал о страницах-дублях с GET-параметрами (`?etext=...&ybaip=1`); 2) при шаринге ссылки в Telegram до сих пор показывается старая OG-картинка с брендом «RuStats»; 3) ставка ЦБ снижена 24.04 до 14,5%, на сайте всё ещё 15%.
 
 ### 1) `robots.txt`: расширил `Clean-param`
+
 Добавлены незначащие GET-параметры аналитики/трекинга, которые рекомендует Yandex для склейки дублей и сохранения «веса» канонической страницы: `etext`, `ybaip`, `yclid`, `gclid`, `fbclid`, `_openstat`, `clid`, `yandex_referrer`, `from`, `ref`, `ref_src`, `source`, `mc_cid`, `mc_eid`, `igshid`, `_ga`, `utm_referrer` (UTM уже были). Параметров больше 500 символов на строку — разбил на 3 правила (это стандартное ограничение Яндекса). Убрал `Host:` (устарело с 2018, Яндекс игнорирует). Файл: `frontend/public/robots.txt`.
 
 ### 2) OG-картинка `/og-image.png`: убрал «RuStats»
+
 Существующий `frontend/public/og-image.png` (1376×768) содержал крупный заголовок «RuStats / Прогноз инфляции и ИПЦ России» — устаревший до-ребрендинговый бренд. Сгенерировал новую картинку 1200×630 (точное OpenGraph-соотношение 1.91:1) в актуальной палитре проекта (champagne `#B8942F` для линии графика, obsidian-тон фона `#F8F9FC`, тёмный заголовок Playfair Display): крупно «Forecast Economy» + подзаголовок «Бесплатная аналитика экономики России» + декоративный график. Telegram кэширует превью до ~7 дней — в самом Telegram надо очистить кэш через @WebpageBot или подождать. Файл: `frontend/public/og-image.png` (645 KB, было 1 MB).
 
 ### 3) `key-rate`: парсер пресс-релиза СД ЦБ → опережающая точка
+
 **Корень проблемы**: ETL-парсер `cbr_keyrate` тянул только `https://www.cbr.ru/hd_base/KeyRate/` — это официальный ряд **фактических** значений. Решение СД от 24.04.2026 (снижение с 15% до 14,5%) вступает в силу с **27.04.2026** (понедельник), и на странице hd_base новая ставка появится только тогда. То есть в субботу 25.04 в БД у нас корректно 15% за 24.04 — но визуально для пользователя сайт «отстаёт от новостей» на 3 дня (с пятницы вечера до утра понедельника). Это типовой UX-баг: технически точно, но воспринимается как глюк.
 
 **Решение**: добавил в `cbr_keyrate.py` второй источник — пресс-релиз `https://cbr.ru/press/keypr/`. Извлекаются: `decision_date` (из текста «...24 апреля 2026 года принял решение...»), `rate` (из заголовка «...до 14,50% годовых» / «...на уровне X% годовых»), `effective_date = first business day after decision_date` (соглашение ЦБ для решений с 2023 г.). Всё реализовано best-effort: ошибка fetch/parse не валит основной ETL, просто `None` → ничего не добавляется.
 
-Регэкспы пришлось делать без `\s` для пробелов между числом и словом: ЦБ использует HTML-сущности `&nbsp;` и символ `\xa0` (NBSP) — стандартный `\s` их не матчит. Решено нормализацией HTML (`&nbsp; \xa0 → space`) перед поиском.
+Регэкспы пришлось делать без `\s` для пробелов между числом и словом: ЦБ использует HTML-сущности  `` и символ `\xa0` (NBSP) — стандартный `\s` их не матчит. Решено нормализацией HTML (  `\xa0 → space`) перед поиском.
 
 В `cbr_keyrate_parser.py`: после bulk_upsert основного ряда тянем пресс-релиз и, если `effective_date > последняя дата в БД` И `rate != последнее значение`, апсёртим точку `(effective_date, rate)`. На текущем стейте это даст точку `2026-04-27 = 14.50`, что корректно отражает уже принятое решение. Через 1-2 дня официальная hd_base/KeyRate подтянет ту же точку — конфликта не будет.
 
 **Тесты**: `backend/tests/test_cbr_keyrate.py` — 5 новых тестов на парсинг пресс-релиза (снижение, hold, короткий HTML, неизвестный формат, переход пятница → понедельник в `_next_business_day`). Все 10 тестов зелёные.
 
 **Файлы**:
+
 - `frontend/public/robots.txt` (расширен Clean-param)
 - `frontend/public/og-image.png` (новая, 1200×630, без RuStats)
 - `backend/app/services/cbr_keyrate.py` (+`KeyRateAnnouncement`, `parse_keyrate_press_release`, `_next_business_day`, `_normalize_html_whitespace`, `get_latest_keyrate_announcement`)
@@ -1436,7 +1531,6 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 - `backend/tests/test_cbr_keyrate.py` (5 новых тестов)
 
 **Намерение пользователя**: точка-в-точку технические задачи + проверка дисциплины (push в Github → деплой на сервер, всё синхронно). Реакция: ожидает CTO-level подход к обоим аспектам — технике (root cause, не симптом) и процессу (sync sources of truth).
-
 
 ### 2026-04-25 (после деплоя): Telegram продолжает показывать старую картинку — нужен новый URL
 
@@ -1447,18 +1541,19 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 **Решение**: дать картинке новый URL — `og-image-v2.png`. Когда Telegram при следующем шаринге увидит новый URL в `<meta property="og:image">`, он не найдёт его в кэше и заново скачает превью. Файл `og-image.png` оставлен (с новой картинкой) для обратной совместимости со старыми сообщениями.
 
 **Изменения**:
+
 - `frontend/public/og-image-v2.png` — копия новой картинки.
 - `frontend/index.html` — `og:image` и `twitter:image` → `/og-image-v2.png`. Добавлен `og:image:alt` и `og:image:type` (минорный SEO-гигиенический штрих).
 - `backend/app/api/sitemap.py` — `OG_IMAGE` → `/og-image-v2.png` (SSR-страницы для категорий и доп. URL тоже отдают новый URL).
 
 **Намерение пользователя**: «и картинку нужно также адаптировать чтобы была forecast economy когда ссылку отправляют» — он хочет именно UX-результат, а не «технически отдаём правильно». Реакция: ожидает завершённости — чтобы реально работало в Telegram при шаринге, а не «теоретически починено».
 
-
 ## 2026-04-27 — фикс «Страницы входа» в Яндекс.Метрике (etext-дубли)
 
 **Триггер**: партнёр Никита прислал скриншот отчёта «Страницы входа» в Метрике за «Сегодня» — 30+ строк вида `forecasteconomy.com/?etext=2202.XXXX...` по 1 визиту вместо одной строки `/` с агрегатом. После расширения `Clean-param` 25.04 стало лучше для поискового индексатора, но для **Яндекс.Метрики `Clean-param` не действует** — это отдельная служба со своей политикой по query.
 
 **Корень**: счётчик отправлял в Метрику URL **с** трекинг-параметрами в двух местах:
+
 1. Автоматический первый hit от `ym('init', ...)` шлёт `window.location.href` целиком (включая `?etext=...`).
 2. SPA-хит в `App.jsx:39` формировался как `location.pathname + location.search` без чистки.
 
@@ -1467,12 +1562,14 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 **Решение**: фильтрация query-параметров **на стороне отправляемого URL** (не адресной строки — её трогать нельзя, иначе Метрика потеряет атрибуцию источника при загрузке `tag.js`).
 
 **Изменения**:
+
 - `frontend/src/lib/cleanUrl.js` (новый): функции `cleanSearch()`, `cleanPathWithSearch()` + единый список 24 трекинг-параметров (синхронизирован с `Clean-param` в `robots.txt`): `etext, ybaip, yclid, ysclid, gclid, fbclid, _openstat, openstat, clid, yandex_referrer, _ga, utm_*, from, ref, ref_src, source, mc_cid, mc_eid, igshid`.
 - `frontend/src/lib/cleanUrl.test.js` (новый): 9 тестов на отдельные параметры (etext, ysclid, ybaip, openstat, igshid), их сочетания, сохранение значимых query (например `?a=usd-rub&b=eur-rub` для `/compare`).
 - `frontend/index.html`: `ym('init', { defer:true, ... })` отключает автоматический первый hit; вручную шлём `ym(id, 'hit', cleanUrl)` с очищенным `window.location.search`. Список параметров продублирован inline (модуль cleanUrl.js загрузится позже, чем `<head>`-скрипт).
 - `frontend/src/App.jsx`: `YandexMetrikaHit` использует `cleanPathWithSearch(...)` для текущего URL **и** для `prevUrl` (referer). Импорт из `./lib/cleanUrl`.
 
 **Self-audit точек, где Метрика читает URL**:
+
 - ✓ Авто-первый hit (через `defer:true`) — выключен.
 - ✓ Ручной первый hit в `index.html` — фильтруется.
 - ✓ SPA-hit в `App.jsx` — фильтруется.
@@ -1484,6 +1581,7 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 **Полный 100%-фикс жёлтых зон** требует включения в кабинете Метрики (вне нашего кода) настройки «Параметры URL → не учитывать» с тем же списком, что в `cleanUrl.js`. Это серверная нормализация, применяется ко всем отчётам. Партнёру это попросить отдельно.
 
 **Проверка локально** (`http://localhost:5173/?etext=2202.5NNLXIJb0test...&keep=this`):
+
 - Реальный hit: `page-url=...?keep=this`, `page-ref=...?keep=this` — etext выпилен, значимый `keep` сохранён.
 - SPA-переход на `/category/prices`: `page-url=/category/prices`, `page-ref=...?keep=this` — referer тоже чистый.
 - Init с `nohit=1` идёт с грязным URL, но не учитывается в «Страницах входа» (флаг `nohit`).
@@ -1532,8 +1630,6 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
   - `v3/edit_004` (footer ads) → backlog.
 - **Не делал**: деплой на прод, коммиты в этой ветке (пользователь явно не просил коммитить — «оставь в ветке `edits-round2`» означает не пушить в main, не означает «не коммить»; для безопасности не коммитил).
 - **User intention**: «делай ВСЕ правки» — все 16 high+actionable + бэклог + точные тексты категорий. **Reaction**: ожидаем — каждая правка зафиксирована либо в коде, либо в документе с TODO; финальный отчёт с diff stats передан в чат.
-
-
 - **2026-04-27 — Обновление прогнозной модели по апрельскому ноутбуку Никиты:**
   - `train_monthly_cpi` дополнен blend-весами (m∈[1..4]→1.0·OLS; m∈[5..9]→0.8·OLS+0.2·prior; m∈[10..12]→0.7·OLS+0.3·prior, prior=4/1200). Проверка на проде: первые 6 точек cpi-помесячно совпадают с output ноутбука Никиты (100.548 / 100.5182 / 100.4135 / 100.5301 / 100.1779 / 100.366).
   - Новая функция `aggregate_quarterly_from_monthly` собирает квартальный прогноз произведением трёх месячных (либо факт+прогноз для незавершённого квартала). Сохраняется как side-effect retrain `cpi` под индикатором `inflation-quarterly`, model_name `CPI-Quarterly-Agg`.
@@ -1613,10 +1709,12 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 ## 2026-04-27 — Большой рабочий день по правкам из видео «НА правки 2» и «НА правки 3»
 
 **Транскрипция и разбор видео:**
+
 - Видео 2 (61 мин, 8 ГБ) и Видео 3 (44 мин, 4 ГБ) транскрибированы через Whisper-1 (verbose_json); видео 3 потребовало чанкинга 5 мин (loop-галлюцинация при single-shot). Материалы в `правки_v2/`.
 - gpt-4o выделил 24 базовых правки. Повторный проход нашёл ещё 30 пропущенных (итого 54). Для каждой: transcript, summary, ai_action, type, priority, target_area, actionable, кадры 3-10 JPEG (99 штук, 1600px).
 
 **Правки, выполненные в коде (все задеплоены на прод forecasteconomy.com):**
+
 - Описания 9 категорий на главной — переписаны по согласованным текстам Никиты (без «прогноз»/«данные Росстата»).
 - line-clamp-2 → line-clamp-3 на CategoryBlock (описания не обрывались).
 - Новый порядок вкладок инфляции: «Инфляция за год / Недельная / Месячная / Квартальная / Годовая».
@@ -1659,7 +1757,7 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 - **План `analytics-os_71a51ec5.plan.md` расширен до max API coverage:** добавлена `API Coverage Matrix` и todo `api-coverage-matrix`. Явно покрыты Yandex Metrika Reporting API (`data`, `bytime`, `drilldown`, `comparison`, sampling/attribution/catalog), Logs API (fields, create/status/list/download/clean, visits/hits, quotas), Management API (counters/goals/filters/operations/grants/labels/segments/notes/Direct links), Data Import API (offline conversions, expenses, calls, user params, upload statuses), Yandex Webmaster API (hosts, verification, sitemaps, diagnostics, indexing/crawl, recrawl, search queries), client-side `ym` calls and explicit non-API gaps (Webvisor replay, UI-only reports). План теперь фиксирует, что каждый пункт должен быть покрыт backend client / warehouse / Analytics API / MCP tool или явно помечен недоступным.
 - **Повторная сверка плана с Webmaster API:** найден и закрыт пробел в явном покрытии ресурсов Webmaster. В `analytics-os_71a51ec5.plan.md` добавлены host summary, owners, all/user-added sitemap details, important URLs/history, SQI/ИКС history, pages-in-search samples, search URL events history/samples, all/individual search query history, broken internal links samples/history, external links samples/history; добавлены соответствующие MCP tools и warehouse таблицы.
 - **План дополнен `API Spec Inventory`:** добавлен todo `api-spec-inventory` и раздел, требующий endpoint-by-endpoint документы `docs/analytics_api_inventory/{metrika_reporting,metrika_logs,metrika_management,metrika_data_import,yandex_webmaster}.md`. Для каждого метода фиксировать method/path/docs/scopes/params/response/limits/errors/storage mapping/Analytics API mapping/MCP mapping/safety/tests/live smoke. Реализация API-domain не должна начинаться без 100% строк по официальному resource list, safety class, storage/MCP mapping и фикстур.
-- **Forecast Analytics OS реализован по плану (без редактирования plan-файла):** добавлены API inventory docs, безопасные `RUSTATS_` settings/allowlist/denylist, `action_policy` + `action_executor`, analytics warehouse модели и Alembic migration `20260428_analytics_os`, Yandex clients (Metrika Reporting/Logs/Management, Webmaster), ingestion helpers, analytics scheduler (disabled by default), protected `/api/v1/analytics/*`, event collector, experiments bootstrap, SEO crawler service, feature/opportunity helpers, custom `mcp/forecast-analytics-mcp`, smoke script и tests. Frontend: `track.js` дублирует `reachGoal` в own collector; исправлены старые React lint errors в `DataTable`, `CategoryPage`, `CalendarPage`, `IndicatorDetail`; labor parser precision fixed (2.65 vs 2.6). Проверки: backend `pytest -q` 128 passed; frontend `eslint`/`vitest`/`build` green; MCP `npm audit` 0 vulnerabilities + `tsc` green; no-secret scan по analytics patterns clean. Токены не добавлялись, live analytics scheduler/writes выключены env-флагами.
+- **Forecast Analytics OS реализован по плану (без редактирования plan-файла):** добавлены API inventory docs, безопасные `RUSTATS`_ settings/allowlist/denylist, `action_policy` + `action_executor`, analytics warehouse модели и Alembic migration `20260428_analytics_os`, Yandex clients (Metrika Reporting/Logs/Management, Webmaster), ingestion helpers, analytics scheduler (disabled by default), protected `/api/v1/analytics/*`, event collector, experiments bootstrap, SEO crawler service, feature/opportunity helpers, custom `mcp/forecast-analytics-mcp`, smoke script и tests. Frontend: `track.js` дублирует `reachGoal` в own collector; исправлены старые React lint errors в `DataTable`, `CategoryPage`, `CalendarPage`, `IndicatorDetail`; labor parser precision fixed (2.65 vs 2.6). Проверки: backend `pytest -q` 128 passed; frontend `eslint`/`vitest`/`build` green; MCP `npm audit` 0 vulnerabilities + `tsc` green; no-secret scan по analytics patterns clean. Токены не добавлялись, live analytics scheduler/writes выключены env-флагами.
 - **MCP переключён на собственный Forecast Analytics:** `~/.cursor/mcp.json` теперь содержит только `forecast-analytics-mcp` (`node /Users/iprofi/tradingeconomics/rosstat/mcp/forecast-analytics-mcp/build/index.js`, envFile `~/.cursor/mcp-servers/forecast-analytics-mcp/.env`). Сторонний `~/.cursor/mcp-servers/yandex-metrika-mcp` удалён. Existing `metrika:read` токен перенесён в ignored `.env` / `backend/.env` как `RUSTATS_YANDEX_METRIKA_READ_TOKEN`; создан локальный `RUSTATS_ANALYTICS_API_TOKEN` / `FORECAST_ANALYTICS_API_TOKEN`; `docker-compose.yml` дополнен passthrough analytics env. Docker smoke выполнить не удалось: Docker daemon недоступен (`Cannot connect to the Docker daemon`). Для полного режима ещё нужны отдельные Webmaster OAuth token и Metrika write/import scopes; текущий токен покрывает read-only Metrika.
 - **Первичный анализ Метрики + SEO (2026-04-01..28):** через официальный Metrika API с read-token: 5,417 визитов, 4,720 пользователей, 13,303 просмотров, bounce 36.44%, depth 2.46, avg duration 78s, sampled=false. Источники: ad 3,971 визит (73.3%), direct 1,046 (19.3%), internal 238, organic 96 (1.8%), referral 55. Organic почти весь Yandex (91/96). Mobile 3,310 визитов (61%). Landing: `/` 4,931 визит, `/category/prices` 112, `/indicator/gdp-nominal` 54 (уникально 1 user, глубина 3.24), `/indicator/cpi` 50. Organic landings: `/` 14, `/indicator/cpi` 13, `/category/prices` 10, `/category/labor` 8, `/category/trade` 6, `/indicator/gdp-yoy` 5. Search phrases скрыты почти полностью — видна только `рост ввп` (1 visit). Pageviews: `/` 7,053, `/category/prices` 1,294, `/category/rates` 532, `/category/finance` 489, `/category/gdp` 426, `/category/labor` 426, `/indicator/cpi` 382. Goals in Metrika: file download + auto email click. SEO audit prod: 107/107 sitemap URLs passed, 107 internal discovered; universal SEO still good. Вывод: текущий трафик driven by ads/direct, органика мала, но ранние органические сигналы есть по CPI/prices/labor/trade/GDP; categories работают как post-click navigation hubs.
 - **Forecast Analytics OS задеплоен на прод для MCP:** по SSH/rsync синхронизированы analytics backend/frontend/MCP/docs/scripts; production `.env` обновлён analytics keys без печати секретов; `docker compose build backend && up -d backend`, Alembic upgraded to `20260428_analytics_os (head)`, frontend rebuilt. Проверки: containers backend/frontend/postgres/redis healthy; `https://forecasteconomy.com/api/v1/analytics/health` with `FORECAST_ANALYTICS_API_TOKEN` → 200 `enabled=true`, `scheduler_enabled=false`, `failed_sync_runs=0`; `/api/v1/health` ok. Локальный MCP env уже указывает на `https://forecasteconomy.com/api/v1/analytics`; старые MCP-процессы были убиты, после чего Cursor показал `Not connected` — требуется reload window/MCP refresh, чтобы агент поднял новый MCP process с продовым env.
@@ -1673,58 +1771,6 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 - **2026-04-29 — «НА правки 4» аналитический пакет без кодовых правок:** по `transcript_full.md`/`transcript_segments.json` выполнен много проходный разбор звонка, учтена нестабильная diarization A/B/C/D/E. Создано `правки_v4/analysis/`: `timeline.md`, `edits_report.md`, `edits_candidates.json`, `frame_plan.json`, `unclear_segments.md`, `summary_for_next_agent.md`. Выделено 13 confirmed edits, 3 unclear candidates, 3 backlog items, 3 non-edits; главный high-priority баг — годовая/квартальная инфляция CPI-подкатегорий и квартальный forecast scale. JSON валидирован через `python -m json.tool`; код/деплой/коммит не выполнялись.
 - **2026-04-29 — повторная вычитка «НА правки 4» после вопроса пользователя «точно всё?»**: весь `transcript_full.md` перечитан заново от текста. Крупных новых high-priority правок не найдено, но пакет уточнён: `v4_edit_001` получил evidence про дублирующиеся title (`03:34–03:42`), `v4_edit_005` расширен на возможные правые оси/подписи (`10:41–10:47`), добавлен unclear `v4_edit_023` про сравнение первичного/вторичного жилья (`15:23–19:36`), `v4_edit_018` уточнён keywords/description nuance. Обновлены `timeline.md`, `edits_report.md`, `edits_candidates.json`, `frame_plan.json`, `unclear_segments.md`, `summary_for_next_agent.md`; JSON валиден, код не менялся.
 - **2026-04-29 — третий контрольный проход «НА правки 4» по той же схеме:** транскрипт снова перечитан блоками + отдельный pass по мягким маркерам (`почему`, `как будто`, `хорошо бы`, `попробуем`, `надо`, `посмотреть`). Новых отдельных confirmed edits не найдено; уточнён `v4_edit_016`: SEO/Яндекс-проблема начинается ранним Webmaster-блоком (`02:42–03:34`, страницы добавляются/удаляются) и продолжается поздним поиском в Яндексе (`31:15–32:13`, сайт трудно найти, Yandex index 8 vs Google 62). Обновлены `edits_candidates.json`, `edits_report.md`, `frame_plan.json`, `timeline.md`, `unclear_segments.md`, `summary_for_next_agent.md`; JSON валиден, код не менялся.
-- **2026-04-29 — решения пользователя по реализации правок «НА правки 4»:** `v4_edit_001` вероятно уже сделана, но обязательно проверить; делать `002`, `004`, `005`, `006`, `007`, `008`, `010`, `011`, `012`, `013`; `003` пользователь сегодня сделал, но контекст учитывать; `009` перепроверить и сделать при необходимости; `010` real GDP только из официального Росстата, если источник не найден — сказать пользователю; `011` искать в Excel-файлах Росстата; `012` убрать именно названия OLS/технических моделей; `014` анализировать через подключённый Forecast Analytics MCP/Метрику, но Webvisor replay публично недоступен; `015` не делать, если непонятно; `016` проверить; `017` не делать, но перепроверить, что текущая прокрутка/график работает; `018` SEO-текст пока не делать; `019` PPI forecast пока не делать без файла; `020` не делать. Пользователь хочет начать новый чат с инструкцией по папке `правки_v4/analysis/` и списком правок.
-- **2026-04-29 — реализация и деплой «НА правки 4»:** закоммичены и запушены `0c4e5de` + follow-up `b2dad51`, прод `5.129.204.194` обновлён. Сделано: forecast в bar-mode рисуется столбцами; watermark перенесён в центр графика и X-axis получил больший нижний отступ; CPI-подкатегории получили собственные квартальные/годовые derived-ряды; производные housing/PPI/GDP/CPI скрыты из листингов и доступны режимами на страницах; terminology CPI/credits/OLS поправлена; forecast toggle зависит от реального наличия данных; добавлены официальные Росстат-источники `gdp-real` (`VVP_kvartal_s_1995-2025.xlsx`, лист 9) и `population` (`Popul_1897+.xlsx` + SDDS, 1897–2025). Метрика через Forecast Analytics MCP: 2026-04-01..29 — 5,580 visits, organic 113 (Yandex 109), Webvisor replay недоступен через публичный API. Проверки: backend `131 passed`, frontend lint/build/vitest green, prod API health 200, population 54 pts 1897–2025, gdp-real 60 pts, cpi-food quarterly 141 pts, SEO audit prod `114/114 passed`, браузер prod `/indicator/cpi-food` и `/indicator/population` без ошибок приложения. `v4_edit_015/023` не реализованы как unclear, `018/019/020` не брались по решению пользователя.
-- **2026-04-29 — follow-up по подсказке графика:** по замечанию пользователя подсказка `Ctrl + scroll — зум · drag — сдвиг` в `IndicatorChart.jsx` перенесена из overlay поверх графика в строку ниже X-axis, чтобы не перекрывать даты. Коммит `9a1c75c` запушен в `origin/main`, прод frontend пересобран и перезапущен. Проверки: локально `eslint` + `vite build` green; prod `/indicator/cpi-food` в браузере — подсказка ниже дат, консоль без ошибок приложения.
-- **2026-04-29 — новые замечания Никиты после просмотра v4:** коммит `5081e3d` запушен и задеплоен на прод. Сделано: CPI mode-кнопки перенесены в верхний блок в стиле variant chips; недельная вкладка оставлена только для общего `cpi`; forecast bridge в bar-графике больше не добавляет фиолетовый столбик на уже фактический месяц; `gdp-real` возвращён отдельной карточкой; прогнозы в категориях `Финансы`, `Ставки`, `Торговля` отключаются через существующий механизм `forecast_steps=0` + очистка stale forecasts; для готовых файлов Никиты добавлены approved forecast values: `ppi` из `/Users/iprofi/Downloads/Telegram Desktop/Прогноз_ИЦП.ipynb` (2026-03..2027-02) и `gdp-nominal` из `Прогноз_номинальный_ВВП.ipynb` (4 квартала 2026). Проверки: backend `131 passed`, frontend `vitest 38`, `eslint`, `vite build` green; prod health 200; prod API `ppi`/`gdp-nominal` отдают approved forecasts, `usd-rub` и `credit-rate-corp-short` отдают `forecast:null`; backend/frontend containers healthy. Browser-agent проверка UI не стартовала из-за API usage limit, поэтому визуальная проверка пока покрыта кодом, build и API-smoke.
-- **2026-04-30 — follow-up Никиты по рынку труда:** найдено, что `unemployment`, `wages-nominal`, `wages-real` всё ещё прогнозировались, хотя прогнозы рынка труда не утверждались. В коде `forecast_steps` для трёх индикаторов рынка труда переведён в `0`, SEO titles безработицы/зарплаты убраны из формулировки «данные и прогноз», парсер безработицы снова округляет до 1 знака как Росстат. На проде оперативно обновлена БД: удалено 267 stale forecast rows, очищен кэш, сохранённая безработица округлена до 1 знака; API показывает `Рынок труда` без включённых прогнозов. Проверки: backend targeted `33 passed`, frontend `eslint` + targeted vitest green. Март 2026 по безработице не загружен: официальный `SDDS_labor market_2026.xlsx` Росстата пока заканчивается февралем; найдено только сообщение РИА со ссылкой на доклад Росстата, без прямого официального XLSX/SDDS-источника для ETL.
-- **2026-04-30 — мартовая безработица найдена в официальном докладе Росстата:** пользователь указал, что Никита нашёл выгрузку. Прямой свежий файл действительно есть, хотя страница доклада в HTML показывает 2024: `https://rosstat.gov.ru/storage/mediabank/osn-03-2026.pdf`. Подключён fallback для `rosstat_sdds_labor`: сначала SDDS XLSX, затем официальный PDF-доклад `osn-MM-YYYY.pdf`, который добирает свежие `labor-force`, `employment`, `unemployment` до марта 2026 (`unemployment=2.2`, `labor-force=76.2`, `employment=74.6`); `wages-nominal` остаётся из SDDS, так как в докладе нет более свежего ряда в том же формате. Добавлены `PyPDF2`, parser tests и smoke на реальном PDF. Проверки: backend `133 passed`, frontend `eslint`/targeted vitest/build green.
-- **2026-05-01 — аудит forecast policy по файлам Никиты:** восстановлены утверждённые forecast-источники: `Прогноз_ИПЦ_помесячно*.ipynb` + `Прогноз_инфляции_12_мес.ipynb` для CPI-family, `Прогноз_ИЦП.ipynb` для `ppi`, `Прогноз_номинальный_ВВП.ipynb` для `gdp-nominal`. Найдены лишние включённые OLS-прогнозы `housing-price-primary`, `housing-price-secondary`, `ipi`, `retail-trade`; в `seed_data.py` они переведены в `forecast_steps=0`, SEO titles для `ipi`/`retail-trade`/construction/capital убраны из формулировки «прогноз». Причина пропажи прогнозов квартальной/годовой CPI-подкатегорий: side-effect сохранялся только для общего `cpi`; теперь `forecast_pipeline.py` сохраняет `cpi-*-quarterly/annual`, `/forecast` whitelist включает эти derived-коды, `IndicatorDetail.jsx` запрашивает forecast текущего derived-кода. Добавлен `test_forecast_policy.py`, фиксирующий разрешённый список прямых прогнозов: `cpi`, `cpi-food`, `cpi-nonfood`, `cpi-services`, `ppi`, `gdp-nominal`.
-- **2026-05-01 — prod-smoke поймал порядок очистки derived CPI forecasts:** при `seed_data.py` source CPI-ряд создавал `cpi-*-quarterly/annual`, но последующий проход самого derived-индикатора с `forecast_steps=0` мог очистить только что созданный forecast. Исправлено: `CPI_DERIVED_FORECAST_TARGETS` в `forecast_pipeline.py` не тренируются и не чистятся напрямую, а живут только как side-effect source CPI retrain; тест forecast policy сверяет backend whitelist с pipeline targets.
-- **2026-05-01 — forecast policy синхронизирован на GitHub и прод:** коммиты `f7c522f` и `4ebfc3e` запушены в `origin/main`, сервер `/opt/rosstat` обновлён до `4ebfc3e`, backend/frontend пересобраны (второй проход — backend), `seed_data.py`/`--forecast-only` прогнаны, Redis `fe:*` очищен. Проверки: backend `136 passed`, frontend `eslint`/`38 vitest`/`build` green; prod health 200, containers healthy. Prod API `/forecast`: ровно 14 разрешённых endpoint (`cpi*`, `inflation-quarterly/annual`, `cpi-*-quarterly/annual`, `ppi`, `gdp-nominal`), missing/extra пусто; лишние `housing-price-*`, `ipi`, `retail-trade`, `construction-work`, `capital-investment`, финансы/труд — OFF. DB current forecast series: 18 с учётом внутренних `Inflation-12M-MW` для четырёх CPI-рядов.
-- **2026-05-01 — finalный аудит «полностью всё перепроверь»:** пользователь усомнился, что прогнозы соответствуют файлам Никиты. Открыл прод в собственном браузере (cursor-ide-browser, не subagent), включил блокировку, переключал вкладки `cpi-food` → «Квартальная» → ждал 2–3 секунды → switch «Прогноз» автоматически активировался, появились «Прогноз (ежеквартально)» секция, фиолетовая прогнозная линия 2026-Q2..2027-Q1 на графике и таблица 141 исторических точек. Прежний browser-use subagent сделал snapshot СЛИШКОМ РАНО (до сетевой загрузки), что породило ложный отчёт «прогноз неактивен» — на самом деле в коде нет регрессии. Прод-API подтверждён: 6 direct forecasts (`cpi/cpi-food/cpi-nonfood/cpi-services` через `CPI-Monthly-MW`, `ppi` через `Approved-PPI-Notebook` 12 точек 1:1 из `Прогноз_ИЦП.ipynb`, `gdp-nominal` через `Approved-GDP-Nominal-Notebook` 4 точки 1:1 из `Прогноз_номинальный_ВВП.ipynb`) + 8 derived (`inflation-quarterly/annual` и `cpi-*-quarterly/annual`) = 14 endpoint. Алгоритм `train_monthly_cpi` точно повторяет финальную версию весов Никиты (m≤4: 1.0·OLS; m∈[5..9]: 0.8·OLS+0.2·prior; m∈[10..12]: 0.7·OLS+0.3·prior). Кодовых изменений в этом туре не было.
+- **2026-05-05 — создан Cursor skill `analyze-call-edits`** (`~/.cursor/skills/analyze-call-edits/`): парный к `transcribe-call-with-frames`, работает только с готовыми артефактами (`transcripts/`, `frames/`, `frames_index.tsv`). Зашиты 4+ паранойдальных прохода (явные → скрытые → мягкие маркеры → паранойдальный с открытием кадров для unclear) + обязательный read-only sub-agent самоаудит через `Task` перед финалом. Schema карточки/output файлов (timeline.md, edits_candidates.json, edits_report.md, frame_plan.json, unclear_segments.md, summary_for_next_agent.md) точно зафиксирована в `reference/card-schema.md` и `reference/output-templates.md`; маркеры для каждого pass — в `reference/soft-markers.md`. Финал: consolidated list confirmed/unclear/backlog в чате + опциональная запись в `history_of_project.md`. Code/commit/deploy не выполнялись.
 
-## 2026-05-05 — Сверка прода с майскими ноутбуками Никиты + 4 фикса прогнозов
-
-**Триггер пользователя**: «подключись к серверу и посмотри прогнозы правильность их по этим файлам ezе» — прислал три обновлённых ноутбука: `Прогноз_ИПЦ_помесячно (2)`, `Прогноз_инфляции_12_мес (1)`, `Прогнозы_цены_на_жилье (1)`.
-
-**Сверка прода (5.129.204.194 / commit 44f9928) с ноутбуками**:
-- `cpi`: первые 4 точки 1:1, m≥5 наш прогноз выше на 0.05–0.10 п.п. → каскадировало в `inflation-quarterly` (+0.13–0.31 п.п.).
-- `inflation-annual`: прод 1 точка декабря (7.68%) vs ноутбук 12 ежемесячных точек, дек-2026 7.28%.
-- `housing-price-primary`: прод `forecast=null`, ноутбук — 4 квартала.
-- `housing-price-secondary`: прод null, ноутбука нет.
-- Категории всех 3 индикаторов — `prices`, расхождений нет.
-
-**Корневые причины**:
-1. `_MONTHLY_PRIOR = 4/12` → у Никиты `4/1200`. Запись от 27.04 «переход с 4/1200 на 4/12» оказалась временной — в майском ноутбуке Никита откатил на `4/1200`.
-2. `_remove_outliers` использовал `pandas Series.std()` (ddof=1), Никита — `np.std` (ddof=0). Разница меняла outlier-detection.
-3. `train_inflation_12m` шёл через generic `_multi_window_predict` с своей последовательностью dropna/outliers; переписан построчно по ноутбуку (rolling → outliers → не dropna до OLS).
-4. Фильтр «только декабрь» при сохранении annual derived — поставлен 27.04 после правок видео-аудита; в новом ноутбуке Никита прислал 12 точек, политика отменена.
-5. Housing forecast выключен 1 мая в forecast policy (только CPI/PPI/GDP-nominal); Никита прислал ноутбук → политика расширена.
-
-**Решения пользователя по 4 вопросам**: prior 4/1200; granularity 12 точек; outlier-removal как в ноутбуке (no-op на rolling-mean series); housing primary — approved-forecast 4 точки 1:1 + secondary через ту же модель.
-
-**Фиксы в коде**:
-- `backend/app/services/forecaster.py`:
-  - `_MONTHLY_PRIOR = 4/1200`
-  - `_remove_outliers` — `np.std` (ddof=0) и `np.mean`
-  - `_multi_window_predict` — параметризован: `k_range`, `min_window`, `remove_outliers_after_rolling`
-  - `train_inflation_12m` переписан построчно по ноутбуку (NaN-prefix сохраняется до `_ols_step`)
-  - Новая `train_quarterly_housing` — порт SARIMA-модели Никиты для квартального индекса жилья (lags `[m,m+1,m+2,4]/[m,m+1,4]/[m,4]/[4]`, blend `[0.8,0.2]→[0.3,0.7]`, аккумулирующий `first*exp(Σlog_diff + Σforc·w0 + Σmedian·w1)`).
-- `backend/app/services/forecast_pipeline.py`:
-  - Снят фильтр `p.date.month == 12` для inflation-annual derived → сохраняются все 12 ежемесячных точек.
-  - Новая ветка `cfg.get("forecast_model") == "housing_quarterly"` → `train_quarterly_housing`.
-- `backend/seed_data.py`:
-  - `housing-price-primary`: `forecast_steps=4` + `approved_forecast_values` (4 точки из ноутбука, model_name `Approved-Housing-Primary-Notebook`).
-  - `housing-price-secondary`: `forecast_steps=4` + `forecast_model="housing_quarterly"` (нет ноутбука secondary).
-- `backend/tests/test_forecast_policy.py`: добавлены `housing-price-primary/secondary` в `DIRECT_FORECAST_CODES`, `housing-price-primary` в `APPROVED_NOTEBOOK_CODES`.
-- `backend/tests/test_forecaster.py`: новые тесты `test_monthly_prior_matches_notebook_may_2026`, `test_annual_prior_matches_notebook`, `test_train_inflation_12m_returns_full_horizon`, `test_train_quarterly_housing_returns_4_quarters`.
-
-**Локальная верификация на проде-данных** (CPI 423 точки до мар-2026):
-- `train_monthly_cpi`: **12/12 совпало 1:1 с ноутбуком** до 4-го знака после ddof=0 фикса.
-- `train_inflation_12m`: m=1..6 идеально, m=7..12 расходятся 0.2–0.7 п.п. (тонкие отличия Colab numpy/statsmodels от нашего env при empty-features fallback). Декабрь 2026 у нас 7.68% vs ноутбук 7.28% — known issue, оставлено как есть; для пользователя 12 точек с правильным трендом + первая половина 1:1 значимо лучше прежней одной декабрьской точки.
-- `train_quarterly_housing`: own model даёт ~347→368 vs ноутбук 345→367 (≈0.5% расхождение, для secondary приемлемо). Для primary использует hardcode из ноутбука.
-
-**Тесты**: `pytest -q --ignore=tests/test_rosstat_labor.py` → 133 passed; pre-existing fail в `test_rosstat_labor.py` не трогался.
-
-**Коммит и деплой — следующий шаг**.
+- **2026-05-05 — Архитектурный аудит + workspace cleanup (Шаг 1):** по запросу пользователя «улучшить архитектуру всего приложения» проведён полный обзор истории проекта и сравнение с реальностью репозитория. Выделено 6 архитектурных кандидатов на deepening: (1) дублирование «модели индикатора» в 4+ местах (seed_data, SEO_MAP, seo_content, categories); (2) ETL `run()` boilerplate × 22 парсера; (3) `calculation_engine.py` 23 функции / 7 операций / 9 тонких враппер-функций / 559 строк; (4) `IndicatorDetail.jsx` God-component 1324 строки на 6 view modes; (5) двойной SEO-рендер backend+frontend; (6) workspace cleanup. Roadmap зафиксирован в чате; пользователь подтвердил поэтапную работу. **Шаг 1 (cleanup) выполнен в чистом дереве:** удалены 8 устаревших Git-веток (4 merged + 4 stale без уникальных коммитов) локально и на origin; видео `НА правки 2.mov` + `НА правки 3.mov` (12 GB) перенесены в `~/проекты cursor/transcribe/` рядом с НА правки 4; удалены `Untitled8.ipynb`, `output/ipc_monthly.csv`, `output/`, `.cursor/debug-c9950e.log`, `backend/.venv-test/`; удалён `GEMINI.md` (бойлерплейт «Cinematic Landing Page Builder» от другого проекта, не имел отношения к Forecast Economy); `ARCHITECTURE.md` (snapshot Feb 28 эпохи RuStats / 1 индикатор / OLS-only / 8 endpoints — устарел в деталях) перенесён в `docs/architecture_2026-02-28_legacy.md` как исторический архив. Папка `russiantrustedca/` (4 файла-резерва SSL: GOST 2025 root/sub + 2 PEM) перенесена в `backend/certs/` (где уже лежал прод-сертификат `russiantrustedca2024.pem`); env-переменные не трогались. Создан **`CONTEXT.md`** (domain glossary: Indicator, DataPoint, Source, Parser, Derived, Forecast, ETL run, Category, Calendar event, Embed, Approved forecast, SEO meta bundle, Forecast Analytics OS) + Architectural language (Module, Interface, Implementation, Depth, Seam, Adapter, Leverage, Locality, Deletion test) для будущих ADR и refactoring-обсуждений. Создан **`docs/adr/0001-derived-indicators-engine-shape.md`** — фиксирует решение по рефактору calculation_engine: 7 pure operations + DerivedSpec list + generic engine, без изменений API и значений (snapshot-проверка). Workspace вернулся к 9 папкам в корне (frontend, backend, docs, scripts, mcp, .cursor, .github, .git, .venv) + 6 файлов конфигов. Размер репозитория без больших ассетов: 363 MB backend + 248 MB frontend + 48 MB mcp; правки/ + правки_v2/ + правки_v4/ остаются в gitignore (рабочие материалы транскрипций). Public API не тронут, продакшен не трогали. **User intention:** очистить захламлённый репо и подготовить почву под архитектурный рефактор; не сломать ничего на сайте. **Reaction (ожидаемая):** ждёт перехода к calculation_engine refactor (Шаг 2).
