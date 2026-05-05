@@ -114,14 +114,14 @@ Daily ETL (06:00 МСК) запускает все `is_active=True` non-derived 
 
 ### SEO meta bundle
 
-Пакет meta-данных для индикатора/категории/страницы: `seo_title`, `seo_description`, `canonical`, JSON-LD, OG image, twitter card. Сейчас распределён по:
+Пакет meta-данных для индикатора/категории/страницы: `seo_title`, `seo_description`, `canonical`, JSON-LD, OG image, twitter card.
 
-- `frontend/src/pages/IndicatorDetail.jsx::SEO_MAP` — для frontend-routing useMeta.
-- `backend/app/services/seo_content.py` — для backend OG/SEO renderer.
-- `backend/seed_data.py` (description, methodology, source_url).
-- `frontend/src/lib/categories.js` (descriptions для категорий).
+**Принцип хранения (ADR-0003, в работе):** разделение по природе.
+- **Редакционный контент** живёт в БД (`Indicator.seo_title`, `seo_description`, `seo_blocks` как JSONB-массив `{title, body}`). Меняется людьми, без деплоя — через прямой UPDATE или будущий admin-UI.
+- **Шаблоны и fallback** живут в коде (`backend/app/services/indicator_meta.py`): правила генерации seo_title для индикаторов, у которых ручной override пуст; общие SEO-блоки для всех индикаторов; форматирование. Меняются через деплой.
+- **Frontend читает из API** — никаких локальных констант (`SEO_MAP` удаляется). Бэкенд — единственный источник правды по контенту.
 
-Это **дублирование**, отслеженное как кандидат №1 на refactor.
+До рефактора (исторически) дублировалось в 4 местах: `seed_data.py`, `SEO_MAP` (frontend), `INDICATOR_BLOCKS` (backend), `categories.js`.
 
 ### Forecast Analytics OS
 
