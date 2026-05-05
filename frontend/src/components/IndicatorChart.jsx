@@ -526,10 +526,9 @@ export default function IndicatorChart({
               <ReferenceLine y={baselineY} stroke="rgba(0,0,0,0.12)" strokeDasharray="6 3" />
             )}
 
-            {/* Полоса прогноза: полупрозрачная фиолетовая заливка над диапазоном
-                будущих дат + тонкая вертикальная граница факт/прогноз. Делает
-                переход факт → прогноз визуально явным (см. Шаг 8 трек A2). */}
-            {forecastStartDate && forecastEndDate && showForecast && (
+            {/* Полоса прогноза: только для area/line. Для bar её скрываем —
+                столбцы прогноза уже отдельным цветом, заливка дублирует. */}
+            {forecastStartDate && forecastEndDate && showForecast && chartType !== 'bar' && (
               <ReferenceArea
                 x1={forecastStartDate}
                 x2={forecastEndDate}
@@ -539,7 +538,7 @@ export default function IndicatorChart({
                 ifOverflow="visible"
               />
             )}
-            {forecastStartDate && showForecast && (
+            {forecastStartDate && showForecast && chartType !== 'bar' && (
               <ReferenceLine
                 x={forecastStartDate}
                 stroke="rgba(124,58,237,0.45)"

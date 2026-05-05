@@ -114,13 +114,17 @@ def _ols_step(df_aux: pd.Series, lags: list[int], horizon_m: int,
         model = sm.OLS(y, X).fit()
 
         X_feat = train.drop('value', axis=1)
-        while len(model.pvalues) > 1 and np.max(model.pvalues[1:]) > p_max:
-            worst = np.argmax(model.pvalues[1:])
+        while True:
+            pvalues_after_const = model.pvalues[1:]
+            if len(pvalues_after_const) == 0:
+                break
+            max_p = np.max(pvalues_after_const)
+            if not np.isfinite(max_p) or max_p <= p_max:
+                break
+            worst = int(np.argmax(pvalues_after_const))
             X_feat = X_feat.drop(X_feat.columns[worst], axis=1)
             X_p_list.pop(worst + 1)
-            if len(X_feat.columns) == 0:
-                break
-            model = sm.OLS(y, sm.add_constant(X_feat)).fit()
+            model = sm.OLS(y, sm.add_constant(X_feat, has_constant='add')).fit()
 
         pred = model.predict(X_p_list)[0]
         mse = model.mse_resid
@@ -366,7 +370,7 @@ def train_inflation_12m(
     """
     series = pd.Series(values, index=pd.DatetimeIndex(dates), dtype=float, name='value')
     log_cum = np.log((series / 100).cumprod())
-    data = log_cum.diff(1).dropna()  # 1-D Series of log-monthly increments
+    data = log_cum.diff(1)  # keep leading NaN to match notebook segment sizing (`window_size // k`).
     window_size = len(data)
 
     monthly_dates = [data.index[-1] + relativedelta(months=j + 1) for j in range(forecast_steps)]
