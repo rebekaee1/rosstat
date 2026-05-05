@@ -4,8 +4,7 @@ import { track, events } from '../lib/track';
 export default function Privacy() {
   useDocumentMeta({
     title: 'Политика конфиденциальности',
-    description:
-      'Как Forecast Economy обрабатывает данные посетителей: Яндекс.Метрика, cookies, контакты. Проект forecasteconomy.com.',
+    description: 'Как Forecast Economy обрабатывает данные посетителей.',
     path: '/privacy',
   });
 

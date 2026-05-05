@@ -32,11 +32,13 @@ import logging
 import sys
 from pathlib import Path
 
-# Allow running from project root: add backend/ to sys.path.
+# Allow running from project root and from inside Docker container.
 _HERE = Path(__file__).resolve().parent
-_BACKEND = _HERE.parent / "backend"
-if str(_BACKEND) not in sys.path:
-    sys.path.insert(0, str(_BACKEND))
+for _candidate in (_HERE.parent / "backend", Path("/app")):
+    if (_candidate / "app" / "database.py").exists():
+        if str(_candidate) not in sys.path:
+            sys.path.insert(0, str(_candidate))
+        break
 
 from app.core.cache import cache_invalidate_indicator  # noqa: E402
 from app.database import async_session  # noqa: E402

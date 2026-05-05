@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import { Check, Copy, Code2, Image, ChevronDown, Search, BarChart3, CreditCard, Table2, ScrollText, GitCompare, Shield } from 'lucide-react';
 import { useIndicators } from '../lib/hooks';
-import { CATEGORIES, HIDDEN_FROM_LISTING } from '../lib/categories';
+import { CATEGORIES, isIndicatorListed } from '../lib/categories';
 import { cn } from '../lib/format';
 import useDocumentMeta from '../lib/useMeta';
 import { PERIODS } from '../embed/useEmbedParams';
@@ -41,7 +41,7 @@ function IndicatorCombobox({ indicators, value, onChange }) {
   const grouped = useMemo(() => {
     const q = search.toLowerCase();
     const filtered = indicators?.filter(i =>
-      !HIDDEN_FROM_LISTING.has(i.code) &&
+      isIndicatorListed(i) &&
       (i.name.toLowerCase().includes(q) || i.code.includes(q) || (i.name_en || '').toLowerCase().includes(q))
     ) || [];
     return CATEGORIES
@@ -123,8 +123,8 @@ function CopyButton({ text, onCopy }) {
 
 export default function EmbedBuilder() {
   useDocumentMeta({
-    title: 'Конструктор виджетов — встраиваемые графики',
-    description: 'Создайте виджет с экономическими данными России и встройте его на ваш сайт. Бесплатно.',
+    title: 'Виджеты Forecast Economy',
+    description: 'Встраиваемые графики, карточки и тикеры для вашего сайта.',
     path: '/widgets',
   });
 

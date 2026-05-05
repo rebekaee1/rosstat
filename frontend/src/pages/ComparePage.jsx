@@ -72,7 +72,7 @@ export default function ComparePage() {
 
   useDocumentMeta({
     title: 'Сравнение индикаторов',
-    description: 'Сравните два экономических показателя на одном графике с двумя осями Y.',
+    description: 'Сравнивайте любые два макроэкономических индикатора России на одном графике.',
     path: '/compare',
   });
 

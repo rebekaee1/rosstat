@@ -3,9 +3,9 @@ import { track, trackOutbound, events } from '../lib/track';
 
 export default function About() {
   useDocumentMeta({
-    title: 'О проекте — открытые данные и прогноз',
+    title: 'О проекте Forecast Economy',
     description:
-      'Forecast Economy: бесплатная аналитика инфляции и индекса потребительских цен (ИПЦ) России на основе официальных данных Росстата и ЦБ РФ. Прогноз, исторические ряды с 1991 года.',
+      'Бесплатная аналитическая платформа макроэкономических данных России. 80+ индикаторов, данные Росстата и ЦБ РФ.',
     path: '/about',
   });
 

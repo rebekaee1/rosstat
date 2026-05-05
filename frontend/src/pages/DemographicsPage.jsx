@@ -159,8 +159,8 @@ export default function DemographicsPage() {
   const firstYear = series.length > 0 ? series[0].year : null;
 
   useDocumentMeta({
-    title: 'Возрастная структура населения России — данные Росстата',
-    description: `Возрастная структура населения России: трудоспособный возраст, дети, пожилые. Данные Росстата${firstYear ? ` с ${firstYear}` : ''} года.`,
+    title: 'Возрастная структура населения России',
+    description: 'Дети, трудоспособные, старше трудоспособного — данные Росстата с 1990 года.',
     path: '/demographics',
   });
 
