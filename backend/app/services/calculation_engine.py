@@ -140,17 +140,29 @@ class CalculationEngine:
         self._derived[code] = (sources, fn)
 
     async def run_for_updated_sources(self, db: AsyncSession, source_codes: list[str]) -> list[str]:
-        """Recompute every derived whose source list intersects `source_codes`.
+        """Recompute every derived series end-to-end after an ETL batch.
 
-        Returns the list of derived codes whose stored values changed (and thus
-        whose Redis cache was invalidated).
+        Semantic (ADR-0002, since 2026-05-05): derived[t] always reflects the
+        current state of source[t]. Whenever any source updated in this ETL
+        batch, every derived is recomputed across its full history — not just
+        the ones whose source code appears in `source_codes`. This matters
+        because parsers detect "new" by `records_added > 0` (incremental rows),
+        but Rosstat revises historical points in place (`records_updated > 0`).
+        Old code only touched derived whose source raised `records_added`,
+        leaving stale derived values for years after a silent revision.
+
+        `source_codes` is kept for short-circuit only: if the ETL batch did
+        nothing (`source_codes == []`), there's no point spending CPU to
+        re-derive identical numbers. Otherwise we recompute all 23 derived;
+        `bulk_upsert` is no-op for unchanged values, so cost is bounded.
+
+        Returns the list of derived codes whose stored values actually changed
+        (and thus whose Redis cache was invalidated).
         """
         if not source_codes:
             return []
         updated: list[str] = []
-        for code, (sources, fn) in self._derived.items():
-            if not any(s in source_codes for s in sources):
-                continue
+        for code, (_sources, fn) in self._derived.items():
             try:
                 n = await fn(db)
                 if n > 0:
