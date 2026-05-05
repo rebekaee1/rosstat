@@ -2,10 +2,8 @@ import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import gsap from 'gsap';
 import { ExternalLink, Activity, Info, Database, Terminal, Download } from 'lucide-react';
-import {
-  useIndicator, useIndicatorData, useIndicatorStats, useInflation, useForecast,
-} from '../lib/hooks';
-import { formatDate, unitSuffix, cn, isCpiIndex, adjustCpiForecastDisplay } from '../lib/format';
+import { useIndicator, useIndicatorStats } from '../lib/hooks';
+import { formatDate, unitSuffix, cn } from '../lib/format';
 import useDocumentMeta from '../lib/useMeta';
 import IndicatorChart from '../components/IndicatorChart';
 import ForecastTable from '../components/ForecastTable';
@@ -18,55 +16,10 @@ import VariantGroupPicker from '../components/VariantGroupPicker';
 import CpiViewModePicker from '../components/CpiViewModePicker';
 import { findVariantGroup } from '../lib/indicatorVariants';
 import { visibleCpiViewModes } from '../lib/cpiViewModes';
+import useIndicatorViewModeData from '../lib/useIndicatorViewModeData';
+import { getViewModeContent } from '../lib/cpiViewModeContent';
 import { downloadExcel, downloadCSV } from '../lib/excel';
 import { track, trackOutbound, events } from '../lib/track';
-
-const CPI_DERIVED_CODES = {
-  cpi: { quarterly: 'inflation-quarterly', annual: 'inflation-annual' },
-  'cpi-food': { quarterly: 'cpi-food-quarterly', annual: 'cpi-food-annual' },
-  'cpi-nonfood': { quarterly: 'cpi-nonfood-quarterly', annual: 'cpi-nonfood-annual' },
-  'cpi-services': { quarterly: 'cpi-services-quarterly', annual: 'cpi-services-annual' },
-};
-
-const INFLATION_DESCRIPTION =
-  'Накопленная инфляция за 12 месяцев показывает, на сколько процентов выросли ' +
-  'потребительские цены за последний год. Рассчитывается как произведение 12 ' +
-  'последовательных месячных индексов ИПЦ минус 100%.';
-
-const INFLATION_METHODOLOGY =
-  'Формула: (∏ᵢ₌₁¹² ИПЦᵢ / 100) × 100 − 100, где ИПЦᵢ — индекс потребительских ' +
-  'цен за i-й месяц в % к предыдущему месяцу.';
-
-const QUARTERLY_DESCRIPTION =
-  'Квартальная инфляция показывает, на сколько процентов выросли потребительские цены за квартал (3 месяца). ' +
-  'Рассчитывается как произведение 3 последовательных месячных индексов ИПЦ минус 100%.';
-
-const QUARTERLY_METHODOLOGY =
-  'Формула: (ИПЦ₁ / 100) × (ИПЦ₂ / 100) × (ИПЦ₃ / 100) × 100 − 100.';
-
-const ANNUAL_DESCRIPTION =
-  'Годовая инфляция — изменение цен за последние 12 месяцев. ' +
-  'Рассчитывается как произведение 12 последовательных месячных индексов ИПЦ минус 100%.';
-
-const ANNUAL_METHODOLOGY =
-  'Формула: (∏ᵢ₌₁¹² ИПЦᵢ / 100) × 100 − 100, скользящее окно 12 месяцев.';
-
-const WEEKLY_DESCRIPTION =
-  'Недельный ИПЦ — изменение потребительских цен за неделю по данным Росстата. ' +
-  'Публикуется еженедельно, является оперативным индикатором инфляционных процессов.';
-
-const WEEKLY_METHODOLOGY =
-  'Источник — еженедельные бюллетени Росстата «Об оценке индекса потребительских цен». ' +
-  'Официальный агрегированный недельный ИПЦ по всей потребительской корзине. Значение 100 = без изменений.';
-
-const CPI_MONTHLY_DESCRIPTION =
-  'Месячная инфляция — процентное изменение потребительских цен к предыдущему месяцу. ' +
-  'Положительное значение означает рост цен, отрицательное — снижение. ' +
-  'Шкала по оси Y центрирована на нуле.';
-
-const CPI_MONTHLY_METHODOLOGY =
-  'Формула: ИПЦᵢ − 100, где ИПЦᵢ — индекс потребительских цен за i-й месяц в % к предыдущему месяцу. ' +
-  'Источник — месячные индексы ИПЦ Росстата.';
 
 export default function IndicatorDetail() {
   const { code } = useParams();
@@ -90,73 +43,28 @@ export default function IndicatorDetail() {
     description: indicator?.seo_description,
     path: `/indicator/${code}`,
   });
-  const CPI_CODES = ['cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services'];
-  const isPriceCategory = CPI_CODES.includes(code);
-  const safeViewMode = isPriceCategory && code !== 'cpi' && viewMode === 'weekly'
-    ? 'inflation'
-    : viewMode;
-  const shouldSubtract100 = isCpiIndex(code);
-  const cpiDerivedCodes = CPI_DERIVED_CODES[code] || {};
-  const variantGroup = findVariantGroup(code);
-  const {
-    data: dataResp,
-    isLoading: loadingData,
-    isError: dataError,
-    refetch: refetchData,
-    isFetching: fetchingData,
-  } = useIndicatorData(code);
+
   const { data: stats } = useIndicatorStats(code);
-  const { data: inflationResp, isLoading: loadingInflation, refetch: refetchInflation } = useInflation(code, {
-    enabled: isPriceCategory,
-  });
-  const { data: forecastResp, refetch: refetchForecast } = useForecast(code);
-
+  const variantGroup = findVariantGroup(code);
   const cpiViewModes = useMemo(() => visibleCpiViewModes(code), [code]);
-  const { data: quarterlyForecastResp } = useForecast(cpiDerivedCodes.quarterly, {
-    enabled: !!cpiDerivedCodes.quarterly && safeViewMode === 'quarterly',
-  });
-  const { data: annualForecastResp } = useForecast(cpiDerivedCodes.annual, {
-    enabled: !!cpiDerivedCodes.annual && safeViewMode === 'annual',
-  });
-  const {
-    data: quarterlyResp,
-    isLoading: loadingQuarterly,
-  } = useIndicatorData(cpiDerivedCodes.quarterly, undefined, {
-    enabled: !!cpiDerivedCodes.quarterly && safeViewMode === 'quarterly',
-  });
-  const {
-    data: annualResp,
-    isLoading: loadingAnnual,
-  } = useIndicatorData(cpiDerivedCodes.annual, undefined, {
-    enabled: !!cpiDerivedCodes.annual && safeViewMode === 'annual',
-  });
-  const {
-    data: weeklyResp,
-    isLoading: loadingWeekly,
-  } = useIndicatorData('inflation-weekly', undefined, {
-    enabled: code === 'cpi' && safeViewMode === 'weekly',
-  });
 
-  const chartMode = isPriceCategory ? safeViewMode : 'cpi';
+  const view = useIndicatorViewModeData({ code, viewMode });
+  const {
+    isPriceCategory, safeViewMode, chartMode, shouldSubtract100,
+    dataPoints, inflationResp,
+    quarterlyDataPoints, annualDataPoints, weeklyDataPoints,
+    displayForecastData, quarterlyForecastData, annualForecastResp,
+    stats: viewStats, cpiPrevDate,
+    chartLoading, loadingData, loadingInflation,
+    loadingAnnual, loadingWeekly, loadingQuarterly,
+    dataError, fetchingData, hasForecastData, forecastEnabled,
+    refetchData, refetchInflation, refetchForecast,
+  } = view;
 
-  const inflationStats = useMemo(() => {
-    if (chartMode !== 'inflation' || !inflationResp?.actuals?.length) return null;
-    const a = inflationResp.actuals;
-    const current = a[a.length - 1];
-    const previous = a.length > 1 ? a[a.length - 2] : null;
-    const highest = a.reduce((max, p) => p.value > max.value ? p : max, a[0]);
-    const avg = a.reduce((s, p) => s + p.value, 0) / a.length;
-    return {
-      currentValue: current.value,
-      currentDate: current.date,
-      previousValue: previous?.value,
-      previousDate: previous?.date,
-      change: previous ? current.value - previous.value : null,
-      highest: { value: highest.value, date: highest.date },
-      average: avg,
-      dataCount: a.length,
-    };
-  }, [chartMode, inflationResp]);
+  const adj = useCallback((v) => {
+    if (v == null || !shouldSubtract100) return v;
+    return Number(v) - 100;
+  }, [shouldSubtract100]);
 
   useEffect(() => {
     const els = headerRef.current?.querySelectorAll('[data-animate]');
@@ -176,95 +84,6 @@ export default function IndicatorDetail() {
       indicatorCategory: indicator.category,
     });
   }, [indicator?.code, indicator?.category]);
-
-  const rawDataPoints = useMemo(
-    () => (Array.isArray(dataResp?.data) ? dataResp.data : []),
-    [dataResp],
-  );
-
-  const dataPoints = useMemo(() => {
-    if (!shouldSubtract100 || !rawDataPoints.length) return rawDataPoints;
-    return rawDataPoints.map(p => ({ ...p, value: Number(p.value) - 100 }));
-  }, [rawDataPoints, shouldSubtract100]);
-
-  const displayForecastData = useMemo(() => {
-    if (!shouldSubtract100) return forecastResp;
-    return adjustCpiForecastDisplay(forecastResp, code);
-  }, [forecastResp, shouldSubtract100, code]);
-
-  const quarterlyForecastData = useMemo(
-    () => adjustCpiForecastDisplay(quarterlyForecastResp, cpiDerivedCodes.quarterly),
-    [quarterlyForecastResp, cpiDerivedCodes.quarterly],
-  );
-
-  const adj = useCallback((v) => {
-    if (v == null || !shouldSubtract100) return v;
-    return Number(v) - 100;
-  }, [shouldSubtract100]);
-
-  const quarterlyDataPoints = useMemo(() => {
-    if (!quarterlyResp?.data?.length) return [];
-    return quarterlyResp.data.map(p => ({ ...p, value: Number(p.value) - 100 }));
-  }, [quarterlyResp]);
-
-  const annualDataPoints = useMemo(() => {
-    if (!annualResp?.data?.length) return [];
-    const byYear = new Map();
-    for (const p of annualResp.data) {
-      const year = String(p.date).slice(0, 4);
-      const existing = byYear.get(year);
-      if (!existing || String(p.date) > String(existing.date)) {
-        byYear.set(year, p);
-      }
-    }
-    return Array.from(byYear.values()).sort((a, b) => String(a.date).localeCompare(String(b.date)));
-  }, [annualResp]);
-
-  const weeklyDataPoints = useMemo(() => {
-    if (!weeklyResp?.data?.length) return [];
-    return weeklyResp.data.map(p => ({ ...p, value: Number(p.value) - 100 }));
-  }, [weeklyResp]);
-
-  function computeDerivedStats(points) {
-    if (!points.length) return null;
-    const a = points;
-    const current = a[a.length - 1];
-    const previous = a.length > 1 ? a[a.length - 2] : null;
-    const highest = a.reduce((max, p) => p.value > max.value ? p : max, a[0]);
-    const avg = a.reduce((sum, p) => sum + p.value, 0) / a.length;
-    return {
-      currentValue: current.value,
-      currentDate: current.date,
-      previousValue: previous?.value,
-      previousDate: previous?.date,
-      change: previous ? current.value - previous.value : null,
-      highest: { value: highest.value, date: highest.date },
-      average: avg,
-      dataCount: a.length,
-    };
-  }
-
-  const quarterlyStats = useMemo(() => {
-    if (safeViewMode !== 'quarterly') return null;
-    return computeDerivedStats(quarterlyDataPoints);
-  }, [safeViewMode, quarterlyDataPoints]);
-
-  const annualStats = useMemo(() => {
-    if (safeViewMode !== 'annual') return null;
-    return computeDerivedStats(annualDataPoints);
-  }, [safeViewMode, annualDataPoints]);
-
-  const weeklyStats = useMemo(() => {
-    if (safeViewMode !== 'weekly') return null;
-    return computeDerivedStats(weeklyDataPoints);
-  }, [safeViewMode, weeklyDataPoints]);
-
-  const s = safeViewMode === 'quarterly' ? quarterlyStats
-    : safeViewMode === 'annual' ? annualStats
-    : safeViewMode === 'weekly' ? weeklyStats
-    : inflationStats;
-  const cpiPrevDate = dataPoints.length >= 2 ? dataPoints[dataPoints.length - 2].date : null;
-
 
   const handleChartData = useCallback((data) => {
     setChartData(data);
@@ -290,24 +109,6 @@ export default function IndicatorDetail() {
     track(events.DOWNLOAD_CSV, { indicator: code, range: currentRange, indicatorCategory: indicator?.category });
   }, [chartData, downloadMode, code, currentRange, downloadMeta, indicator?.category]);
 
-  const chartLoading = chartMode === 'inflation' ? loadingInflation
-    : chartMode === 'quarterly' ? loadingQuarterly
-    : chartMode === 'annual' ? loadingAnnual
-    : chartMode === 'weekly' ? loadingWeekly
-    : loadingData;
-
-  const hasForecastData = chartMode === 'quarterly'
-    ? quarterlyForecastData?.forecast?.values?.length > 0
-    : chartMode === 'annual'
-      ? annualForecastResp?.forecast?.values?.length > 0
-      : chartMode === 'weekly'
-        ? false
-        : chartMode === 'inflation'
-          ? inflationResp?.forecast?.length > 0
-          : displayForecastData?.forecast?.values?.length > 0;
-  const forecastCapable = safeViewMode !== 'weekly';
-  const forecastEnabled = forecastCapable && hasForecastData;
-
   const chartEmptyHint = useMemo(() => {
     if (dataError) {
       return 'Не удалось получить исторический ряд. Нажмите «Повторить» выше или проверьте backend / прокси Vite.';
@@ -329,6 +130,10 @@ export default function IndicatorDetail() {
   }, [refetchInd, refetchData, refetchInflation, refetchForecast, isPriceCategory]);
 
   const apiBannerFetching = fetchingInd || fetchingData;
+  const viewModeContent = getViewModeContent({
+    chartMode, safeViewMode, isPriceCategory, indicator,
+  });
+  const s = viewStats;
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24 md:pb-28">
@@ -574,26 +379,11 @@ export default function IndicatorDetail() {
           
           <div className="prose prose-sm max-w-none">
             <p className="text-text-secondary leading-relaxed">
-              {chartMode === 'inflation' ? INFLATION_DESCRIPTION
-                : safeViewMode === 'quarterly' ? QUARTERLY_DESCRIPTION
-                : safeViewMode === 'annual' ? ANNUAL_DESCRIPTION
-                : safeViewMode === 'weekly' ? WEEKLY_DESCRIPTION
-                : safeViewMode === 'cpi' && isPriceCategory ? CPI_MONTHLY_DESCRIPTION
-                : indicator?.description}
+              {viewModeContent.description}
             </p>
-            {(chartMode === 'inflation' ? INFLATION_METHODOLOGY
-              : safeViewMode === 'quarterly' ? QUARTERLY_METHODOLOGY
-              : safeViewMode === 'annual' ? ANNUAL_METHODOLOGY
-              : safeViewMode === 'weekly' ? WEEKLY_METHODOLOGY
-              : safeViewMode === 'cpi' && isPriceCategory ? CPI_MONTHLY_METHODOLOGY
-              : indicator?.methodology) && (
+            {viewModeContent.methodology && (
               <p className="text-text-tertiary border-l-2 border-champagne/30 pl-4 my-4 font-mono text-[10px] uppercase tracking-wider">
-                {chartMode === 'inflation' ? INFLATION_METHODOLOGY
-                  : safeViewMode === 'quarterly' ? QUARTERLY_METHODOLOGY
-                  : safeViewMode === 'annual' ? ANNUAL_METHODOLOGY
-                  : safeViewMode === 'weekly' ? WEEKLY_METHODOLOGY
-                  : safeViewMode === 'cpi' && isPriceCategory ? CPI_MONTHLY_METHODOLOGY
-                  : indicator?.methodology}
+                {viewModeContent.methodology}
               </p>
             )}
           </div>
