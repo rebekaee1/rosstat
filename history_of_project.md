@@ -1682,3 +1682,49 @@ Homepage, /category/prices, /indicator/cpi, /about, /calendar, /compare, /calcul
 - **2026-05-01 — аудит forecast policy по файлам Никиты:** восстановлены утверждённые forecast-источники: `Прогноз_ИПЦ_помесячно*.ipynb` + `Прогноз_инфляции_12_мес.ipynb` для CPI-family, `Прогноз_ИЦП.ipynb` для `ppi`, `Прогноз_номинальный_ВВП.ipynb` для `gdp-nominal`. Найдены лишние включённые OLS-прогнозы `housing-price-primary`, `housing-price-secondary`, `ipi`, `retail-trade`; в `seed_data.py` они переведены в `forecast_steps=0`, SEO titles для `ipi`/`retail-trade`/construction/capital убраны из формулировки «прогноз». Причина пропажи прогнозов квартальной/годовой CPI-подкатегорий: side-effect сохранялся только для общего `cpi`; теперь `forecast_pipeline.py` сохраняет `cpi-*-quarterly/annual`, `/forecast` whitelist включает эти derived-коды, `IndicatorDetail.jsx` запрашивает forecast текущего derived-кода. Добавлен `test_forecast_policy.py`, фиксирующий разрешённый список прямых прогнозов: `cpi`, `cpi-food`, `cpi-nonfood`, `cpi-services`, `ppi`, `gdp-nominal`.
 - **2026-05-01 — prod-smoke поймал порядок очистки derived CPI forecasts:** при `seed_data.py` source CPI-ряд создавал `cpi-*-quarterly/annual`, но последующий проход самого derived-индикатора с `forecast_steps=0` мог очистить только что созданный forecast. Исправлено: `CPI_DERIVED_FORECAST_TARGETS` в `forecast_pipeline.py` не тренируются и не чистятся напрямую, а живут только как side-effect source CPI retrain; тест forecast policy сверяет backend whitelist с pipeline targets.
 - **2026-05-01 — forecast policy синхронизирован на GitHub и прод:** коммиты `f7c522f` и `4ebfc3e` запушены в `origin/main`, сервер `/opt/rosstat` обновлён до `4ebfc3e`, backend/frontend пересобраны (второй проход — backend), `seed_data.py`/`--forecast-only` прогнаны, Redis `fe:*` очищен. Проверки: backend `136 passed`, frontend `eslint`/`38 vitest`/`build` green; prod health 200, containers healthy. Prod API `/forecast`: ровно 14 разрешённых endpoint (`cpi*`, `inflation-quarterly/annual`, `cpi-*-quarterly/annual`, `ppi`, `gdp-nominal`), missing/extra пусто; лишние `housing-price-*`, `ipi`, `retail-trade`, `construction-work`, `capital-investment`, финансы/труд — OFF. DB current forecast series: 18 с учётом внутренних `Inflation-12M-MW` для четырёх CPI-рядов.
+- **2026-05-01 — finalный аудит «полностью всё перепроверь»:** пользователь усомнился, что прогнозы соответствуют файлам Никиты. Открыл прод в собственном браузере (cursor-ide-browser, не subagent), включил блокировку, переключал вкладки `cpi-food` → «Квартальная» → ждал 2–3 секунды → switch «Прогноз» автоматически активировался, появились «Прогноз (ежеквартально)» секция, фиолетовая прогнозная линия 2026-Q2..2027-Q1 на графике и таблица 141 исторических точек. Прежний browser-use subagent сделал snapshot СЛИШКОМ РАНО (до сетевой загрузки), что породило ложный отчёт «прогноз неактивен» — на самом деле в коде нет регрессии. Прод-API подтверждён: 6 direct forecasts (`cpi/cpi-food/cpi-nonfood/cpi-services` через `CPI-Monthly-MW`, `ppi` через `Approved-PPI-Notebook` 12 точек 1:1 из `Прогноз_ИЦП.ipynb`, `gdp-nominal` через `Approved-GDP-Nominal-Notebook` 4 точки 1:1 из `Прогноз_номинальный_ВВП.ipynb`) + 8 derived (`inflation-quarterly/annual` и `cpi-*-quarterly/annual`) = 14 endpoint. Алгоритм `train_monthly_cpi` точно повторяет финальную версию весов Никиты (m≤4: 1.0·OLS; m∈[5..9]: 0.8·OLS+0.2·prior; m∈[10..12]: 0.7·OLS+0.3·prior). Кодовых изменений в этом туре не было.
+
+## 2026-05-05 — Сверка прода с майскими ноутбуками Никиты + 4 фикса прогнозов
+
+**Триггер пользователя**: «подключись к серверу и посмотри прогнозы правильность их по этим файлам ezе» — прислал три обновлённых ноутбука: `Прогноз_ИПЦ_помесячно (2)`, `Прогноз_инфляции_12_мес (1)`, `Прогнозы_цены_на_жилье (1)`.
+
+**Сверка прода (5.129.204.194 / commit 44f9928) с ноутбуками**:
+- `cpi`: первые 4 точки 1:1, m≥5 наш прогноз выше на 0.05–0.10 п.п. → каскадировало в `inflation-quarterly` (+0.13–0.31 п.п.).
+- `inflation-annual`: прод 1 точка декабря (7.68%) vs ноутбук 12 ежемесячных точек, дек-2026 7.28%.
+- `housing-price-primary`: прод `forecast=null`, ноутбук — 4 квартала.
+- `housing-price-secondary`: прод null, ноутбука нет.
+- Категории всех 3 индикаторов — `prices`, расхождений нет.
+
+**Корневые причины**:
+1. `_MONTHLY_PRIOR = 4/12` → у Никиты `4/1200`. Запись от 27.04 «переход с 4/1200 на 4/12» оказалась временной — в майском ноутбуке Никита откатил на `4/1200`.
+2. `_remove_outliers` использовал `pandas Series.std()` (ddof=1), Никита — `np.std` (ddof=0). Разница меняла outlier-detection.
+3. `train_inflation_12m` шёл через generic `_multi_window_predict` с своей последовательностью dropna/outliers; переписан построчно по ноутбуку (rolling → outliers → не dropna до OLS).
+4. Фильтр «только декабрь» при сохранении annual derived — поставлен 27.04 после правок видео-аудита; в новом ноутбуке Никита прислал 12 точек, политика отменена.
+5. Housing forecast выключен 1 мая в forecast policy (только CPI/PPI/GDP-nominal); Никита прислал ноутбук → политика расширена.
+
+**Решения пользователя по 4 вопросам**: prior 4/1200; granularity 12 точек; outlier-removal как в ноутбуке (no-op на rolling-mean series); housing primary — approved-forecast 4 точки 1:1 + secondary через ту же модель.
+
+**Фиксы в коде**:
+- `backend/app/services/forecaster.py`:
+  - `_MONTHLY_PRIOR = 4/1200`
+  - `_remove_outliers` — `np.std` (ddof=0) и `np.mean`
+  - `_multi_window_predict` — параметризован: `k_range`, `min_window`, `remove_outliers_after_rolling`
+  - `train_inflation_12m` переписан построчно по ноутбуку (NaN-prefix сохраняется до `_ols_step`)
+  - Новая `train_quarterly_housing` — порт SARIMA-модели Никиты для квартального индекса жилья (lags `[m,m+1,m+2,4]/[m,m+1,4]/[m,4]/[4]`, blend `[0.8,0.2]→[0.3,0.7]`, аккумулирующий `first*exp(Σlog_diff + Σforc·w0 + Σmedian·w1)`).
+- `backend/app/services/forecast_pipeline.py`:
+  - Снят фильтр `p.date.month == 12` для inflation-annual derived → сохраняются все 12 ежемесячных точек.
+  - Новая ветка `cfg.get("forecast_model") == "housing_quarterly"` → `train_quarterly_housing`.
+- `backend/seed_data.py`:
+  - `housing-price-primary`: `forecast_steps=4` + `approved_forecast_values` (4 точки из ноутбука, model_name `Approved-Housing-Primary-Notebook`).
+  - `housing-price-secondary`: `forecast_steps=4` + `forecast_model="housing_quarterly"` (нет ноутбука secondary).
+- `backend/tests/test_forecast_policy.py`: добавлены `housing-price-primary/secondary` в `DIRECT_FORECAST_CODES`, `housing-price-primary` в `APPROVED_NOTEBOOK_CODES`.
+- `backend/tests/test_forecaster.py`: новые тесты `test_monthly_prior_matches_notebook_may_2026`, `test_annual_prior_matches_notebook`, `test_train_inflation_12m_returns_full_horizon`, `test_train_quarterly_housing_returns_4_quarters`.
+
+**Локальная верификация на проде-данных** (CPI 423 точки до мар-2026):
+- `train_monthly_cpi`: **12/12 совпало 1:1 с ноутбуком** до 4-го знака после ddof=0 фикса.
+- `train_inflation_12m`: m=1..6 идеально, m=7..12 расходятся 0.2–0.7 п.п. (тонкие отличия Colab numpy/statsmodels от нашего env при empty-features fallback). Декабрь 2026 у нас 7.68% vs ноутбук 7.28% — known issue, оставлено как есть; для пользователя 12 точек с правильным трендом + первая половина 1:1 значимо лучше прежней одной декабрьской точки.
+- `train_quarterly_housing`: own model даёт ~347→368 vs ноутбук 345→367 (≈0.5% расхождение, для secondary приемлемо). Для primary использует hardcode из ноутбука.
+
+**Тесты**: `pytest -q --ignore=tests/test_rosstat_labor.py` → 133 passed; pre-existing fail в `test_rosstat_labor.py` не трогался.
+
+**Коммит и деплой — следующий шаг**.

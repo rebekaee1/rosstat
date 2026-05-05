@@ -19,11 +19,14 @@ DIRECT_FORECAST_CODES = {
     "cpi-services",
     "ppi",
     "gdp-nominal",
+    "housing-price-primary",
+    "housing-price-secondary",
 }
 
 APPROVED_NOTEBOOK_CODES = {
     "ppi": "Approved-PPI-Notebook",
     "gdp-nominal": "Approved-GDP-Nominal-Notebook",
+    "housing-price-primary": "Approved-Housing-Primary-Notebook",
 }
 
 EXPECTED_DERIVED_CPI_FORECASTS = {

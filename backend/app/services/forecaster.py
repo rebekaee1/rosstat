@@ -43,9 +43,11 @@ class ForecastResult:
 # ---------------------------------------------------------------------------
 
 def _remove_outliers(series: pd.Series, sigma: float = 3.0) -> pd.Series:
+    """Outlier-clip identical to Никита's notebook (np.mean / np.std, ddof=0)."""
     s = series.copy()
     for _ in range(50):
-        mean, std = s.mean(), s.std()
+        mean = float(np.mean(s))
+        std = float(np.std(s))  # ddof=0 to match notebook (np.std default)
         if std == 0 or not np.isfinite(std):
             break
         mask_hi = (s - mean) / std > sigma
@@ -132,20 +134,39 @@ def _ols_step(df_aux: pd.Series, lags: list[int], horizon_m: int,
 
 def _multi_window_predict(data_col: pd.Series, window_size: int,
                           horizon_m: int, lags: list[int],
-                          apply_rolling: bool = False):
-    """Run OLS across 4 window sizes, return inverse-variance weighted prediction."""
+                          apply_rolling: bool = False,
+                          k_range: range = range(1, 5),
+                          min_window: int = 24,
+                          remove_outliers_after_rolling: bool = True):
+    """Run OLS across multiple window sizes, return inverse-variance weighted prediction.
+
+    Parameters mirror Никита's notebook variants:
+    - k_range: window divisors loop. Monthly CPI / inflation-12m use k∈[1..4],
+      quarterly housing uses k∈[1..3].
+    - min_window: minimum segment length safeguard. The notebook does not enforce
+      a minimum; we keep one to avoid degenerate OLS but it should be small enough
+      to never bind for typical series lengths.
+    - remove_outliers_after_rolling: if False, replicate notebook semantics for the
+      12-month inflation model — outliers are not stripped on the rolling-mean
+      transformed series (the notebook's while-loop becomes a no-op as soon as
+      rolling introduces NaNs that break np.std/np.mean).
+    """
     i = len(data_col)
     preds, varis = [], []
 
-    for k in range(1, 5):
-        seg_size = max(24, window_size // k)
+    for k in k_range:
+        seg_size = max(min_window, window_size // k)
         start = max(0, i - seg_size)
         df_aux = data_col.iloc[start:i].copy()
 
         if apply_rolling and horizon_m > 1:
             df_aux = df_aux.rolling(horizon_m).mean()
-
-        df_aux = _remove_outliers(df_aux.dropna())
+            if remove_outliers_after_rolling:
+                df_aux = _remove_outliers(df_aux.dropna())
+            else:
+                df_aux = df_aux.dropna()
+        else:
+            df_aux = _remove_outliers(df_aux.dropna())
 
         if len(df_aux) < 20:
             continue
@@ -177,7 +198,7 @@ def _monthly_blend_weights(m: int) -> tuple[float, float, float]:
     return (0.7, 0.0, 0.3)
 
 
-_MONTHLY_PRIOR = 4.0 / 12.0  # 4% annual prior in mom-pp units (data scale = series-100)
+_MONTHLY_PRIOR = 4.0 / 1200.0  # matches Никита's May 2026 notebook (`4 / 1200`)
 
 
 def train_monthly_cpi(
@@ -187,10 +208,11 @@ def train_monthly_cpi(
 ) -> ForecastResult:
     """Multi-window OLS for monthly CPI. Transform: df - 100.
 
-    Blend (per Никита's April 2026 update):
+    Blend (per Никита's May 2026 notebook `Прогноз_ИПЦ_помесячно (2)`):
         m∈[1..4]   → 1.0 * OLS
-        m∈[5..9]   → 0.8 * OLS + 0.2 * (4/1200)
-        m∈[10..12] → 0.7 * OLS + 0.3 * (4/1200)
+        m∈[5..9]   → 0.8 * OLS + 0.2 * prior
+        m∈[10..12] → 0.7 * OLS + 0.3 * prior
+        prior      = 4 / 1200 (≈0.00333 pp/month)
     Trivial-median weight is kept zero (computed for reference only).
     """
     series = pd.Series(values, index=pd.DatetimeIndex(dates), dtype=float, name='value')
@@ -332,37 +354,63 @@ def train_inflation_12m(
 ) -> ForecastResult:
     """Multi-window OLS for 12-month rolling inflation.
 
+    Direct port of Никита's `Прогноз_инфляции_12_мес (1).ipynb` (May 2026).
     Transform: np.log((df / 100).cumprod()).diff(1)
     Output: cumulative 12-month inflation % for each horizon.
+
+    The notebook's outlier-removal `while`-loop is a no-op once
+    `df_aux.rolling(m).mean()` introduces NaNs (NaN breaks np.std/mean,
+    the condition `np.sum(... > 3) > 0` evaluates to False and the loop
+    exits). We replicate that by skipping outlier removal entirely on the
+    transformed series — preserves notebook fidelity.
     """
     series = pd.Series(values, index=pd.DatetimeIndex(dates), dtype=float, name='value')
     log_cum = np.log((series / 100).cumprod())
-    log_diff = log_cum.diff(1).dropna()
-    data = pd.DataFrame(log_diff, columns=['value'])
+    data = log_cum.diff(1).dropna()  # 1-D Series of log-monthly increments
     window_size = len(data)
 
     monthly_dates = [data.index[-1] + relativedelta(months=j + 1) for j in range(forecast_steps)]
     i = len(data)
 
-    median_val = float(np.median(data.iloc[-12:, 0]))
-    residual_std = float(data.iloc[-24:, 0].std()) if len(data) > 1 else 0.0
+    median_val = float(np.median(data.iloc[-12:]))
+    residual_std = float(data.iloc[-24:].std()) if len(data) > 1 else 0.0
     z = 1.96
-    forecasts_aux = []
-    points = []
+
+    points: list[ForecastPoint] = []
 
     for m in range(1, forecast_steps + 1):
         lags = _get_horizon_lags(m)
-        pred = _multi_window_predict(data['value'], window_size, m, lags, apply_rolling=True)
 
-        if pred is None:
+        forc: list[float] = []
+        var: list[float] = []
+        for k in range(1, 5):
+            seg_size = window_size // k
+            if seg_size < 24:
+                continue
+            df_aux = data.iloc[i - seg_size:i].copy()
+            df_aux = df_aux.rolling(m).mean()
+            # Outlier-removal on rolling-transformed series — pandas mean/std
+            # skip NaN, so the loop is meaningful (matches notebook semantics).
+            df_aux = _remove_outliers(df_aux)
+            # IMPORTANT: do NOT dropna here — the notebook keeps NaN-prefix
+            # so that shift(j) inside _ols_step yields the same lag indices
+            # as `for j in lags: train['y_lag'+j] = df_aux.shift(j)`.
+            pred_k, mse_k = _ols_step(df_aux, lags, m)
+            if pred_k is not None:
+                forc.append(pred_k)
+                var.append(mse_k)
+
+        if forc:
+            forc_arr = np.array(forc)
+            var_arr = np.array(var)
+            pred = float(np.sum(forc_arr / var_arr) / np.sum(1.0 / var_arr))
+        else:
             pred = median_val
-
-        forecasts_aux.append(pred)
 
         w = _INFLATION_BLEND_WEIGHTS.get(m, _BLEND_M12 if m == 12 else _DEFAULT_BLEND)
         blend = pred * w[0] + median_val * w[1] + ANNUAL_PRIOR * w[2]
 
-        actual_sum = float(np.sum(data.iloc[i - (12 - m):i, 0])) if m < 12 else 0.0
+        actual_sum = float(np.sum(data.iloc[i - (12 - m):i])) if m < 12 else 0.0
         inflation_pct = float(np.exp(actual_sum + m * blend) * 100 - 100)
 
         ci_margin = z * residual_std * np.sqrt(m)
@@ -379,6 +427,108 @@ def train_inflation_12m(
     logger.info("Inflation-12M-MW forecast: %d points, last=%.2f%%", len(points),
                 points[-1].value if points else 0)
     return ForecastResult(model_name="Inflation-12M-MW", aic=None, bic=None, points=points)
+
+
+# ---------------------------------------------------------------------------
+#  НА Model 3: Quarterly housing-price index forecast (May 2026 notebook)
+# ---------------------------------------------------------------------------
+
+def _housing_horizon_lags(m: int) -> list[int]:
+    """Lag set used by `Прогнозы_цены_на_жилье (1)` for quarterly horizons."""
+    if m < 2:
+        return [m, m + 1, m + 2, 4]
+    if m == 2:
+        return [m, m + 1, 4]
+    if m == 3:
+        return [m, 4]
+    return [4]
+
+
+def _housing_blend_weights(m: int) -> list[float]:
+    return {
+        1: [0.8, 0.2],
+        2: [0.7, 0.3],
+        3: [0.5, 0.5],
+        4: [0.3, 0.7],
+    }.get(m, [0.5, 0.5])
+
+
+def train_quarterly_housing(
+    dates: List[date],
+    values: List[float],
+    forecast_steps: int = 4,
+) -> ForecastResult:
+    """Quarterly index forecast (housing-price-primary/secondary).
+
+    Reproduces Никита's `train_sarima_model` from
+    `Прогнозы_цены_на_жилье (1).ipynb` — multi-window OLS on log-difference
+    transform, then accumulates back into index level via
+        forecast[m] = first_index * exp( Σ all_log_diffs
+                                        + Σ_{j≤m} forecasts_aux[j] · w[0]
+                                        + Σ_{j≤m} median_aux[j]    · w[1] ).
+
+    Blend per-step (notebook):
+        m=1: [0.8, 0.2]   m=2: [0.7, 0.3]
+        m=3: [0.5, 0.5]   m=4: [0.3, 0.7]
+
+    Window divisors k∈[1..3], lag set:
+        m=1: [1,2,3,4]    m=2: [2,3,4]
+        m=3: [3,4]        m=4: [4]
+    """
+    series = pd.Series(values, index=pd.DatetimeIndex(dates), dtype=float, name='value')
+    if len(series) < 8:
+        return ForecastResult(
+            model_name="Quarterly-Housing-MW", aic=None, bic=None, points=[],
+        )
+
+    first_index = float(series.iloc[0])
+    log_diff = np.log(series).diff(1).dropna()
+    data_col = log_diff
+    window_size = len(data_col)
+    sum_all_log_diffs = float(np.sum(data_col))
+
+    quarterly_dates = [
+        series.index[-1] + relativedelta(months=j * 3)
+        for j in range(1, forecast_steps + 1)
+    ]
+
+    forecasts_aux: list[float] = []
+    median_aux: list[float] = []
+    points: list[ForecastPoint] = []
+
+    for m in range(1, forecast_steps + 1):
+        lags = _housing_horizon_lags(m)
+        pred = _multi_window_predict(
+            data_col, window_size, m, lags,
+            apply_rolling=False,
+            k_range=range(1, 4),
+            min_window=12,
+        )
+        if pred is None:
+            pred = float(np.median(data_col.iloc[-12:]))
+        forecasts_aux.append(pred)
+
+        median_aux.append(float(np.median(data_col.iloc[-12:])))
+
+        w = _housing_blend_weights(m)
+        accumulated = (
+            sum_all_log_diffs
+            + sum(forecasts_aux) * w[0]
+            + sum(median_aux) * w[1]
+        )
+        value = first_index * float(np.exp(accumulated))
+        points.append(ForecastPoint(
+            date=quarterly_dates[m - 1].date(),
+            value=round(value, 4),
+            lower_bound=None,
+            upper_bound=None,
+        ))
+
+    logger.info("Quarterly-Housing-MW forecast: %d points, last=%.2f",
+                len(points), points[-1].value if points else 0)
+    return ForecastResult(
+        model_name="Quarterly-Housing-MW", aic=None, bic=None, points=points,
+    )
 
 
 # ---------------------------------------------------------------------------

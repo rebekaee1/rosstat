@@ -1055,9 +1055,19 @@ INDICATORS = [
         ),
         "parser_type": "rosstat_sdds_housing",
         "model_config_json": {
-            "forecast_steps": 0,
+            "forecast_steps": 4,
             "forecast_transform": "absolute",
             "validation": {"min": 50, "max": 500},
+            # Approved values from Никита's notebook
+            # `Прогнозы_цены_на_жилье (1).ipynb` (May 2026), 4 quarters ahead.
+            # Re-import when notebook is updated.
+            "forecast_model_name": "Approved-Housing-Primary-Notebook",
+            "approved_forecast_values": [
+                {"date": "2026-03-01", "value": 345.357849},
+                {"date": "2026-06-01", "value": 354.540996},
+                {"date": "2026-09-01", "value": 361.433316},
+                {"date": "2026-12-01", "value": 366.718878},
+            ],
         },
         "is_active": True,
         "category": "Цены",
@@ -1076,8 +1086,11 @@ INDICATORS = [
         ),
         "parser_type": "rosstat_sdds_housing",
         "model_config_json": {
-            "forecast_steps": 0,
-            "forecast_transform": "absolute",
+            "forecast_steps": 4,
+            # Reproduces Никита's quarterly OLS multi-window model from the
+            # primary-housing notebook on our secondary series. When Никита
+            # provides a secondary notebook, switch to approved_forecast_values.
+            "forecast_model": "housing_quarterly",
             "validation": {"min": 50, "max": 500},
         },
         "is_active": True,

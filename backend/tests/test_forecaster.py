@@ -13,6 +13,10 @@ from app.services.forecaster import (
     _remove_outliers,
     train_and_forecast,
     train_monthly_cpi,
+    train_inflation_12m,
+    train_quarterly_housing,
+    _MONTHLY_PRIOR,
+    ANNUAL_PRIOR,
 )
 
 
@@ -130,3 +134,41 @@ def test_train_monthly_cpi_smoke():
     assert result.model_name == "CPI-Monthly-MW"
     for pt in result.points:
         assert 95 < pt.value < 110
+
+
+def test_monthly_prior_matches_notebook_may_2026():
+    """Никита's `Прогноз_ИПЦ_помесячно (2).ipynb`: prior = 4/1200."""
+    assert _MONTHLY_PRIOR == pytest.approx(4.0 / 1200.0, abs=1e-12)
+
+
+def test_annual_prior_matches_notebook():
+    """Никита's `Прогноз_инфляции_12_мес (1).ipynb`: prior = 4/1200."""
+    assert ANNUAL_PRIOR == pytest.approx(4.0 / 1200.0, abs=1e-12)
+
+
+def test_train_inflation_12m_returns_full_horizon():
+    """12-month inflation forecast must return a point per requested step."""
+    np.random.seed(42)
+    dates = [date(2018 + i // 12, (i % 12) + 1, 1) for i in range(120)]
+    values = list(100.4 + np.random.randn(120) * 0.4)
+
+    result = train_inflation_12m(dates, values, forecast_steps=12)
+    assert len(result.points) == 12
+    assert result.model_name == "Inflation-12M-MW"
+    for pt in result.points:
+        # Inflation in % yoy — sanity bounds for a synthetic random walk.
+        assert -5 < pt.value < 30
+
+
+def test_train_quarterly_housing_returns_4_quarters():
+    """Quarterly housing model forecasts 4 quarters ahead at 3-month steps."""
+    dates = [date(2015 + i // 4, (i % 4) * 3 + 3, 1) for i in range(40)]
+    values = [120.0 + i * 1.5 for i in range(40)]
+
+    result = train_quarterly_housing(dates, values, forecast_steps=4)
+    assert len(result.points) == 4
+    assert result.model_name == "Quarterly-Housing-MW"
+    # All quarterly steps are 3 months apart.
+    for prev, cur in zip(result.points, result.points[1:]):
+        delta_months = (cur.date.year - prev.date.year) * 12 + (cur.date.month - prev.date.month)
+        assert delta_months == 3
