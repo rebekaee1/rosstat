@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import gsap from 'gsap';
-import { ArrowLeft, ExternalLink, Activity, Info, Database, Terminal, Download } from 'lucide-react';
+import { ExternalLink, Activity, Info, Database, Terminal, Download } from 'lucide-react';
 import {
   useIndicator, useIndicatorData, useIndicatorStats, useInflation, useForecast,
 } from '../lib/hooks';
 import { formatDate, unitSuffix, cn, isCpiIndex, adjustCpiForecastDisplay } from '../lib/format';
-import { CATEGORIES } from '../lib/categories';
 import useDocumentMeta from '../lib/useMeta';
 import IndicatorChart from '../components/IndicatorChart';
 import ForecastTable from '../components/ForecastTable';
@@ -14,17 +13,13 @@ import DataTable from '../components/DataTable';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import { ChartSkeleton, SkeletonBox } from '../components/Skeleton';
 import TelemetryCard from '../components/TelemetryCard';
+import IndicatorDetailHeader from '../components/IndicatorDetailHeader';
+import VariantGroupPicker from '../components/VariantGroupPicker';
+import CpiViewModePicker from '../components/CpiViewModePicker';
+import { findVariantGroup } from '../lib/indicatorVariants';
+import { visibleCpiViewModes } from '../lib/cpiViewModes';
 import { downloadExcel, downloadCSV } from '../lib/excel';
 import { track, trackOutbound, events } from '../lib/track';
-
-const FREQ_MAP = {
-  monthly: 'Помесячно',
-  quarterly: 'Ежеквартально',
-  annual: 'Ежегодно',
-  weekly: 'Еженедельно',
-  irregular: 'Нерегулярно',
-  daily: 'По дням',
-};
 
 const CPI_DERIVED_CODES = {
   cpi: { quarterly: 'inflation-quarterly', annual: 'inflation-annual' },
@@ -32,56 +27,6 @@ const CPI_DERIVED_CODES = {
   'cpi-nonfood': { quarterly: 'cpi-nonfood-quarterly', annual: 'cpi-nonfood-annual' },
   'cpi-services': { quarterly: 'cpi-services-quarterly', annual: 'cpi-services-annual' },
 };
-
-const CPI_VIEW_MODES = [
-  { mode: 'inflation', label: 'Инфляция за год', generalOnly: false },
-  { mode: 'weekly', label: 'Недельная', generalOnly: true },
-  { mode: 'cpi', label: 'Месячная', generalOnly: false },
-  { mode: 'quarterly', label: 'Квартальная', generalOnly: false },
-  { mode: 'annual', label: 'Годовая', generalOnly: false },
-];
-
-const VARIANT_GROUPS = [
-  {
-    label: 'Состав индекса потребительских цен',
-    codes: [
-      { code: 'cpi', label: 'Все товары и услуги' },
-      { code: 'cpi-food', label: 'Продовольствие' },
-      { code: 'cpi-nonfood', label: 'Непродовольственные' },
-      { code: 'cpi-services', label: 'Услуги' },
-    ],
-  },
-  {
-    label: 'Режим ВВП',
-    codes: [
-      { code: 'gdp-nominal', label: 'Номинальный' },
-      { code: 'gdp-real', label: 'Реальный' },
-      { code: 'gdp-yoy', label: 'Год к году' },
-      { code: 'gdp-qoq', label: 'Квартал к кварталу' },
-    ],
-  },
-  {
-    label: 'Режим индекса цен производителей',
-    codes: [
-      { code: 'ppi', label: 'Индекс' },
-      { code: 'ppi-yoy', label: 'Год к году' },
-    ],
-  },
-  {
-    label: 'Первичное жильё',
-    codes: [
-      { code: 'housing-price-primary', label: 'Индекс' },
-      { code: 'housing-yoy-primary', label: 'Год к году' },
-    ],
-  },
-  {
-    label: 'Вторичное жильё',
-    codes: [
-      { code: 'housing-price-secondary', label: 'Индекс' },
-      { code: 'housing-yoy-secondary', label: 'Год к году' },
-    ],
-  },
-];
 
 const INFLATION_DESCRIPTION =
   'Накопленная инфляция за 12 месяцев показывает, на сколько процентов выросли ' +
@@ -152,7 +97,7 @@ export default function IndicatorDetail() {
     : viewMode;
   const shouldSubtract100 = isCpiIndex(code);
   const cpiDerivedCodes = CPI_DERIVED_CODES[code] || {};
-  const variantGroup = VARIANT_GROUPS.find(group => group.codes.some(item => item.code === code));
+  const variantGroup = findVariantGroup(code);
   const {
     data: dataResp,
     isLoading: loadingData,
@@ -166,10 +111,7 @@ export default function IndicatorDetail() {
   });
   const { data: forecastResp, refetch: refetchForecast } = useForecast(code);
 
-  const cpiViewModes = useMemo(
-    () => CPI_VIEW_MODES.filter(item => !item.generalOnly || code === 'cpi'),
-    [code]
-  );
+  const cpiViewModes = useMemo(() => visibleCpiViewModes(code), [code]);
   const { data: quarterlyForecastResp } = useForecast(cpiDerivedCodes.quarterly, {
     enabled: !!cpiDerivedCodes.quarterly && safeViewMode === 'quarterly',
   });
@@ -411,112 +353,22 @@ export default function IndicatorDetail() {
         </div>
       )}
 
-      <div ref={headerRef} className="mb-12 md:mb-16 max-w-4xl">
-        <nav data-animate className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-text-tertiary mb-8">
-          <Link
-            to="/"
-            className="hover:text-champagne transition-colors lift-hover inline-flex items-center gap-1.5 group"
-          >
-            <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
-            Главная
-          </Link>
-          {indicator?.category && (() => {
-            const cat = CATEGORIES.find(c => c.apiCategory === indicator.category);
-            if (!cat) return null;
-            return (
-              <>
-                <span className="text-text-tertiary/40">/</span>
-                <Link to={`/category/${cat.slug}`} className="hover:text-champagne transition-colors">
-                  {cat.name}
-                </Link>
-              </>
-            );
-          })()}
-        </nav>
+      <IndicatorDetailHeader
+        indicator={indicator}
+        code={code}
+        loading={loadingInd}
+        headerRef={headerRef}
+      />
 
-        {loadingInd ? (
-          <div className="space-y-4">
-            <SkeletonBox className="h-4 w-24" />
-            <SkeletonBox className="h-14 w-3/4" />
-            <SkeletonBox className="h-6 w-1/2" />
-          </div>
-        ) : (
-          <>
-            <div data-animate className="flex items-center gap-3 mb-4">
-              <span className="px-3 py-1 rounded-full border border-border-subtle bg-obsidian-light text-[10px] font-mono uppercase tracking-widest text-text-secondary flex items-center gap-2">
-                <Activity className="w-3 h-3 text-champagne" />
-                {FREQ_MAP[indicator?.frequency] || indicator?.frequency}
-              </span>
-              {indicator?.category && (
-                <span className="text-xs font-mono text-text-tertiary">
-                  {indicator.category}
-                </span>
-              )}
-            </div>
-
-            <h1 data-animate className="text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight mb-4 leading-tight">
-              {indicator?.name || code}
-            </h1>
-            
-            {indicator?.name_en && (
-              <p data-animate className="text-sm md:text-base font-mono text-text-tertiary">
-                {indicator.name_en}
-              </p>
-            )}
-          </>
-        )}
-      </div>
-
-      {variantGroup && (
-        <section className="mb-8 rounded-[1.5rem] border border-border-subtle bg-surface p-4 shadow-sm">
-          <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-            {variantGroup.label}
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {variantGroup.codes.map(item => (
-              <Link
-                key={item.code}
-                to={`/indicator/${item.code}`}
-                className={cn(
-                  'rounded-xl px-3 py-2 text-xs font-medium transition-colors',
-                  item.code === code
-                    ? 'bg-champagne/15 text-champagne'
-                    : 'bg-obsidian-lighter text-text-secondary hover:text-champagne'
-                )}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
+      <VariantGroupPicker group={variantGroup} currentCode={code} />
 
       {isPriceCategory && (
-        <section className="mb-8 rounded-[1.5rem] border border-border-subtle bg-surface p-4 shadow-sm">
-          <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-            Режим инфляции
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {cpiViewModes.map(item => (
-              <button
-                key={item.mode}
-                type="button"
-                onClick={() => {
-                  setViewMode(item.mode);
-                  track(events.CHART_MODE_CHANGE, { mode: item.mode, indicator: code, indicatorCategory: indicator?.category });
-                }}
-                className={cn(
-                  'rounded-xl px-3 py-2 text-xs font-medium transition-colors',
-                  safeViewMode === item.mode
-                    ? 'bg-champagne/15 text-champagne'
-                    : 'bg-obsidian-lighter text-text-secondary hover:text-champagne'
-                )}
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-        </section>
+        <CpiViewModePicker
+          modes={cpiViewModes}
+          currentMode={safeViewMode}
+          onChange={setViewMode}
+          trackContext={{ code, category: indicator?.category }}
+        />
       )}
 
       <section className="mb-12">
