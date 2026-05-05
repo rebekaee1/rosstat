@@ -14,7 +14,7 @@ import logging
 import math
 import re
 from dataclasses import dataclass
-from datetime import date, datetime, timezone
+from datetime import date, datetime
 from typing import ClassVar
 
 import openpyxl
@@ -24,8 +24,6 @@ from app.config import settings
 from app.models import Indicator, FetchLog
 from app.services.http_client import create_session
 from app.services.base_parser import BaseParser
-from app.services.upsert import bulk_upsert
-from app.core.cache import cache_invalidate_indicator
 
 logger = logging.getLogger(__name__)
 
@@ -226,95 +224,63 @@ def _try_download(session, filename: str) -> bytes | None:
 class RosstatDemoParser(BaseParser):
     parser_type: ClassVar[str] = "rosstat_demo"
 
-    async def run(self, db: AsyncSession, indicator: Indicator, fetch_log: FetchLog) -> None:
+    async def _fetch_and_parse(
+        self,
+        db: AsyncSession,
+        indicator: Indicator,
+        cfg: dict,
+        fetch_log: FetchLog,
+    ) -> tuple[list, str]:
         code = indicator.code
+        file_type = cfg.get("demo_file", "demo21")
+        current_year = datetime.now().year
+
+        session = create_session()
         try:
-            cfg = indicator.model_config_json or {}
-            file_type = cfg.get("demo_file", "demo21")
+            session.verify = settings.rosstat_ca_cert
 
-            current_year = datetime.now().year
+            if file_type == "demo21":
+                filenames = [f"demo21_{y}.xlsx" for y in range(current_year + 1, current_year - 7, -1)]
+                content = None
+                used_url = ""
+                for fn in filenames:
+                    content = _try_download(session, fn)
+                    if content:
+                        used_url = BASE_URL + fn
+                        break
+                if not content:
+                    raise ValueError(f"demo21 XLSX not found (tried {filenames})")
 
-            session = create_session()
-            try:
-                session.verify = settings.rosstat_ca_cert
+                result = parse_demo21_xlsx(content)
+                series_key = cfg.get("demo_series", code)
+                return result.get(series_key, []), used_url
 
-                if file_type == "demo21":
-                    filenames = [f"demo21_{y}.xlsx" for y in range(current_year + 1, current_year - 7, -1)]
-                    content = None
-                    used_url = ""
-                    for fn in filenames:
-                        content = _try_download(session, fn)
-                        if content:
-                            used_url = BASE_URL + fn
-                            break
-                    if not content:
-                        raise ValueError(f"demo21 XLSX not found (tried {filenames})")
+            if file_type == "demo14":
+                content = _try_download(session, "demo14.xlsx")
+                if not content:
+                    raise ValueError("demo14.xlsx not found")
+                result = parse_demo14_xlsx(content)
+                series_key = cfg.get("demo_series", code)
+                return result.get(series_key, []), BASE_URL + "demo14.xlsx"
 
-                    fetch_log.source_url = used_url
-                    result = parse_demo21_xlsx(content)
-                    series_key = cfg.get("demo_series", code)
-                    points = result.get(series_key, [])
+            if file_type == "pensioners":
+                filenames = [f"Sp_2.1_{y}.xlsx" for y in range(current_year + 1, current_year - 7, -1)]
+                for fn in filenames:
+                    content = _try_download(session, fn)
+                    if content:
+                        return parse_pensioners_xlsx(content), BASE_URL + fn
+                raise ValueError("Pensioners XLSX not found")
 
-                elif file_type == "demo14":
-                    content = _try_download(session, "demo14.xlsx")
-                    if not content:
-                        raise ValueError("demo14.xlsx not found")
-                    fetch_log.source_url = BASE_URL + "demo14.xlsx"
-                    result = parse_demo14_xlsx(content)
-                    series_key = cfg.get("demo_series", code)
-                    points = result.get(series_key, [])
+            raise ValueError(f"Unknown demo_file type: {file_type}")
+        finally:
+            session.close()
 
-                elif file_type == "pensioners":
-                    filenames = [f"Sp_2.1_{y}.xlsx" for y in range(current_year + 1, current_year - 7, -1)]
-                    content = None
-                    for fn in filenames:
-                        content = _try_download(session, fn)
-                        if content:
-                            fetch_log.source_url = BASE_URL + fn
-                            break
-                    if not content:
-                        raise ValueError("Pensioners XLSX not found")
-                    points = parse_pensioners_xlsx(content)
-
-                else:
-                    raise ValueError(f"Unknown demo_file type: {file_type}")
-            finally:
-                session.close()
-
-            if not points:
-                logger.warning("No points parsed for %s", code)
-                fetch_log.status = "no_new_data"
-                fetch_log.records_added = 0
-                fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-                await db.commit()
-                return
-
-            valid_points = [
-                p for p in points
-                if isinstance(p.value, (int, float)) and not math.isnan(p.value)
-            ]
-            if len(valid_points) < len(points):
-                logger.warning("%s: filtered out %d invalid values", code, len(points) - len(valid_points))
-            points = valid_points
-
-            records_added, records_updated = await bulk_upsert(db, indicator.id, points)
-            logger.info(
-                "Upserted %d new, %d updated for '%s'",
-                records_added, records_updated, code,
-            )
-            fetch_log.records_added = records_added
-
-            if records_added > 0 or records_updated > 0:
-                await cache_invalidate_indicator(code)
-
-            fetch_log.status = "success" if (records_added > 0 or records_updated > 0) else "no_new_data"
-            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-            await db.commit()
-        except Exception as exc:
-            await db.rollback()
-            fetch_log.status = "failed"
-            fetch_log.error_message = str(exc)[:500]
-            fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-            db.add(fetch_log)
-            await db.commit()
-            raise
+    def _validate(self, points: list, cfg: dict) -> list:
+        """demo-парсер исторически фильтровал NaN до bulk_upsert вместо validate_points()."""
+        valid = [
+            p for p in points
+            if isinstance(p.value, (int, float)) and not math.isnan(p.value)
+        ]
+        if len(valid) < len(points):
+            logger.warning("Filtered out %d invalid (NaN/non-numeric) demographic values", len(points) - len(valid))
+        return valid
