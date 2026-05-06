@@ -20,13 +20,9 @@ _CODE_RE = re.compile(r'^[a-z0-9-]+$')
 
 DERIVED_CPI_FORECASTS = {
     "inflation-quarterly",
-    "inflation-annual",
     "cpi-food-quarterly",
-    "cpi-food-annual",
     "cpi-nonfood-quarterly",
-    "cpi-nonfood-annual",
     "cpi-services-quarterly",
-    "cpi-services-annual",
 }
 
 

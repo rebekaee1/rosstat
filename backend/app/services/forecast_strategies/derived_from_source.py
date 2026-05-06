@@ -16,10 +16,16 @@ yoy от gdp-nominal), нет смысла отдельно обучать мо�
     }
 
 Поддерживаемые operation (соответствуют DerivedSpec ops в БД):
-    - yoy            : Y[t] = (X[t] / X[t-12 или t-4]) * 100 - 100
-    - qoq            : Y[t] = (X[t] / X[t-1]) * 100 - 100
-    - real_from_yoy  : Y[t] = Y[t-1] * (1 + yoy_source[t]/100)
-    - wages_real     : Y[t] = (wages_nominal[t] / wages_nominal_yoy_ago) * (cpi_yoy_ago / cpi[t]) * 100 - 100
+    - yoy_quarterly       : Y[t] = (X[t] / X[t-4]) * 100 - 100   (квартальный yoy)
+    - yoy_monthly         : Y[t] = (X[t] / X[t-12]) * 100 - 100  (месячный yoy)
+    - qoq                 : Y[t] = (X[t] / X[t-1]) * 100 - 100
+    - real_from_yoy       : Y[t] = Y[t-1y] * (1 + yoy_source[t]/100)
+    - december_to_december: Y[year] = (∏ X[m]/100 за m=Jan..Dec) * 100 - 100
+                            (1 точка/год, точка анкорится на date(year, 1, 1);
+                            годы с неполными 12 мес. пропускаются)
+    - annual_sum          : Y[year] = Σ X[q] за q ∈ year
+                            (1 точка/год, для квартальных рядов нужны 4 кв.;
+                            годы с неполным числом точек пропускаются)
 
 ВАЖНО: эта стратегия — RUNTIME-only. Она не пишет в БД, она лишь
 готовит точки прогноза, которые pipeline сохранит обычным образом.
@@ -35,6 +41,10 @@ from typing import Sequence
 
 from app.services.forecast_strategies.base import StrategyContext, StrategyOutput
 from app.services.forecaster import ForecastPoint, ForecastResult
+from app.services.derived_ops import (
+    annual_sum as ops_annual_sum,
+    december_to_december as ops_december_to_december,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -116,6 +126,16 @@ def derived_from_source_strategy(
             new_val = base * (1.0 + yoy_v / 100.0)
             running[d] = new_val
             derived_full.append((d, new_val))
+    elif operation == "december_to_december":
+        # 1 точка на год: годовая инфляция = ∏ месячных индексов / 100 - 1.
+        # Используем ту же чистую функцию, что и CalculationEngine для actuals,
+        # — гарантирует, что forecast и historic считаются одинаково.
+        derived_full = ops_december_to_december(list(source_data))
+    elif operation == "annual_sum":
+        # 1 точка на год: годовая сумма по календарному году. Для квартального
+        # источника нужны 4 кв., для месячного — 12 мес. Год с неполным числом
+        # точек игнорируется.
+        derived_full = ops_annual_sum(list(source_data))
     else:
         logger.error("derived_from_source: unknown operation '%s'", operation)
         return []

@@ -130,17 +130,11 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
 
   const annualDataPoints = useMemo(() => {
     if (!annualResp?.data?.length) return [];
-    // Один максимально поздний месяц на год, чтобы график «годовой инфляции»
-    // был ровным year-over-year рядом без дублей внутри одного года.
-    const byYear = new Map();
-    for (const p of annualResp.data) {
-      const year = String(p.date).slice(0, 4);
-      const existing = byYear.get(year);
-      if (!existing || String(p.date) > String(existing.date)) {
-        byYear.set(year, p);
-      }
-    }
-    return Array.from(byYear.values())
+    // Backend с 2026-05-06 отдаёт уже агрегированный «декабрь-к-декабрю» ряд:
+    // одна точка на 1 января каждого завершённого года, значение — годовая
+    // инфляция в %. Никаких клиентских преобразований не нужно.
+    return annualResp.data
+      .slice()
       .sort((a, b) => String(a.date).localeCompare(String(b.date)));
   }, [annualResp]);
 

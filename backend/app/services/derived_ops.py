@@ -95,6 +95,93 @@ def annual_inflation(monthly: Series) -> Series:
     return points
 
 
+def december_to_december(monthly: Series) -> Series:
+    """Calendar-year December-to-December annual inflation.
+
+    Auto-detects two source formats and uses the right formula for each:
+
+    - **Month-over-month index** (values cluster around 100, как у Росстат CPI):
+      chained product. ``inflation_Y = (∏_{m=Jan..Dec} p_m / 100) * 100 − 100``.
+      Requires all 12 months for year Y.
+    - **Price level index** (values 50…500+, как у Росстат PPI 2010=100):
+      December year-over-December ratio. ``inflation_Y = (p_Dec_Y / p_Dec_{Y−1}) * 100 − 100``.
+      Requires Dec_Y and Dec_{Y−1} present.
+
+    Detection: median of all input values. ``95 ≤ median ≤ 115`` → MoM% format,
+    иначе — level. В обоих случаях результат анкорится на ``date(Y, 1, 1)``,
+    одна точка на завершённый год, и матчит конвенцию ЦБ/Росстата по годовой
+    инфляции «декабрь к декабрю».
+    """
+    by_ym = {(d.year, d.month): float(v) for d, v in monthly}
+    if not by_ym:
+        return []
+
+    sorted_values = sorted(by_ym.values())
+    median = sorted_values[len(sorted_values) // 2]
+    is_mom_percent = 95.0 <= median <= 115.0
+
+    points: Series = []
+    if is_mom_percent:
+        for y in sorted({yr for yr, _ in by_ym}):
+            if not all((y, m) in by_ym for m in range(1, 13)):
+                continue
+            product = 1.0
+            for m in range(1, 13):
+                product *= by_ym[(y, m)] / 100.0
+            annual = product * 100.0 - 100.0
+            points.append((date(y, 1, 1), round(annual, 4)))
+    else:
+        for y in sorted({yr for yr, _ in by_ym}):
+            cur = by_ym.get((y, 12))
+            prev = by_ym.get((y - 1, 12))
+            if cur is None or prev is None or prev == 0:
+                continue
+            annual = (cur / prev) * 100.0 - 100.0
+            points.append((date(y, 1, 1), round(annual, 4)))
+    return points
+
+
+def annual_sum(series: Series) -> Series:
+    """Calendar-year sum of a quarterly or monthly series.
+
+    Group `series` by year. For each year `Y`, decide the "complete year"
+    threshold from the source rhythm:
+
+      - If any year has 12 unique months → expect 12 monthly points/year.
+      - Else if any year has 4 unique months → expect 4 quarterly points/year.
+      - Else expect ≥1 point (annual or sparse — emit what we have).
+
+    Only years matching the expected count emit a point. The result is
+    anchored at `date(Y, 1, 1)` — one point per complete calendar year.
+    Used for ВВП-real (sum of 4 quarters in constant prices) and similar
+    additive series. Rounded to 2 decimals.
+    """
+    by_year: dict[int, list[float]] = {}
+    months_per_year: dict[int, set[int]] = {}
+    for d, v in series:
+        by_year.setdefault(d.year, []).append(float(v))
+        months_per_year.setdefault(d.year, set()).add(d.month)
+
+    if not by_year:
+        return []
+
+    max_unique_months = max(len(months) for months in months_per_year.values())
+    if max_unique_months >= 12:
+        expected = 12
+    elif max_unique_months >= 4:
+        expected = 4
+    else:
+        expected = 1
+
+    points: Series = []
+    for y in sorted(by_year):
+        values = by_year[y]
+        if len(values) < expected:
+            continue
+        points.append((date(y, 1, 1), round(sum(values), 2)))
+    return points
+
+
 # --- Generic delta operations -----------------------------------------------
 
 

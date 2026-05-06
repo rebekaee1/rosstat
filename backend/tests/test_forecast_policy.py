@@ -33,7 +33,13 @@ DERIVED_FROM_SOURCE_FORECAST_CODES = {
     "gdp-yoy",
     "gdp-qoq",
     "gdp-real",
+    "gdp-real-annual",
     "ppi-yoy",
+    "ppi-annual",
+    "inflation-annual",
+    "cpi-food-annual",
+    "cpi-nonfood-annual",
+    "cpi-services-annual",
 }
 
 # Generic OLS multi-window — fallback модель для индикаторов без
@@ -57,13 +63,9 @@ APPROVED_NOTEBOOK_CODES = {
 
 EXPECTED_DERIVED_CPI_FORECASTS = {
     "inflation-quarterly",
-    "inflation-annual",
     "cpi-food-quarterly",
-    "cpi-food-annual",
     "cpi-nonfood-quarterly",
-    "cpi-nonfood-annual",
     "cpi-services-quarterly",
-    "cpi-services-annual",
 }
 
 

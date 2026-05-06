@@ -52,15 +52,23 @@ class DerivedSpec:
 
 
 DERIVED_SPECS: list[DerivedSpec] = [
-    # CPI family — quarterly and annual aggregates of monthly indices.
+    # CPI family — quarterly inflation (chained 3 monthly indices) and
+    # December-to-December annual inflation (one point per calendar year,
+    # matching ЦБ/Росстат convention). Annual is NOT rolling 12M anymore —
+    # rolling produced a 12-point-per-year series with a U-shape under
+    # forecasting and confused users; the new single-point-per-year series
+    # is the standard «inflation Y». See ADR-0003.
     DerivedSpec("inflation-quarterly", ("cpi",), ops.quarterly_index),
-    DerivedSpec("inflation-annual", ("cpi",), ops.annual_inflation),
+    DerivedSpec("inflation-annual", ("cpi",), ops.december_to_december),
     DerivedSpec("cpi-food-quarterly", ("cpi-food",), ops.quarterly_index),
-    DerivedSpec("cpi-food-annual", ("cpi-food",), ops.annual_inflation),
+    DerivedSpec("cpi-food-annual", ("cpi-food",), ops.december_to_december),
     DerivedSpec("cpi-nonfood-quarterly", ("cpi-nonfood",), ops.quarterly_index),
-    DerivedSpec("cpi-nonfood-annual", ("cpi-nonfood",), ops.annual_inflation),
+    DerivedSpec("cpi-nonfood-annual", ("cpi-nonfood",), ops.december_to_december),
     DerivedSpec("cpi-services-quarterly", ("cpi-services",), ops.quarterly_index),
-    DerivedSpec("cpi-services-annual", ("cpi-services",), ops.annual_inflation),
+    DerivedSpec("cpi-services-annual", ("cpi-services",), ops.december_to_december),
+
+    # PPI annual: same December-to-December logic on the producer price index.
+    DerivedSpec("ppi-annual", ("ppi",), ops.december_to_december),
 
     # Wages: nominal × CPI → real wage index.
     DerivedSpec("wages-real", ("wages-nominal", "cpi"), ops.wages_real),
@@ -68,6 +76,10 @@ DERIVED_SPECS: list[DerivedSpec] = [
     # GDP year-over-year and quarter-over-quarter growth.
     DerivedSpec("gdp-yoy", ("gdp-nominal",), ops.yoy),
     DerivedSpec("gdp-qoq", ("gdp-nominal",), ops.qoq),
+
+    # Annual real GDP: sum of 4 quarterly values in constant prices, one
+    # point per complete calendar year.
+    DerivedSpec("gdp-real-annual", ("gdp-real",), ops.annual_sum),
 
     # Unemployment monthly → quarterly mean and 12-month rolling mean.
     DerivedSpec("unemployment-quarterly", ("unemployment",), ops.quarterly_avg),

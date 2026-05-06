@@ -18,7 +18,8 @@ export const VARIANT_GROUPS = [
     label: 'Режим ВВП',
     codes: [
       { code: 'gdp-nominal', label: 'Номинальный' },
-      { code: 'gdp-real', label: 'Реальный' },
+      { code: 'gdp-real', label: 'Реальный (поквартально)' },
+      { code: 'gdp-real-annual', label: 'Реальный (годовая)' },
       { code: 'gdp-yoy', label: 'Год к году' },
       { code: 'gdp-qoq', label: 'Квартал к кварталу' },
     ],
@@ -26,8 +27,9 @@ export const VARIANT_GROUPS = [
   {
     label: 'Режим индекса цен производителей',
     codes: [
-      { code: 'ppi', label: 'Индекс' },
+      { code: 'ppi', label: 'Помесячно' },
       { code: 'ppi-yoy', label: 'Год к году' },
+      { code: 'ppi-annual', label: 'Годовая (декабрь к декабрю)' },
     ],
   },
   {

@@ -129,7 +129,15 @@ def _legacy_resolve_name(indicator: Indicator, cfg: dict) -> str:
 async def _load_indicator_full_series(
     db: AsyncSession, indicator_code: str,
 ) -> list[tuple[date, float]]:
-    """actuals + active forecast points для одного индикатора по коду."""
+    """actuals + active forecast points для одного индикатора по коду.
+
+    Когда у индикатора одновременно живут несколько активных моделей (CPI имеет
+    `CPI-Monthly-MW` + `Inflation-12M-MW`, оба is_current=true), мы должны
+    собрать прогноз ТОЛЬКО в той же системе единиц, что и actuals — иначе
+    derived-aggregator перемешает уровни цен с %-инфляцией. Простейшая
+    fix-эвристика: исключаем Inflation-12M* (та же логика, что в api/forecasts.py
+    при отдаче forecast endpoint'а).
+    """
     src_q = await db.execute(
         select(Indicator).where(Indicator.code == indicator_code)
     )
@@ -147,7 +155,11 @@ async def _load_indicator_full_series(
     fc_q = await db.execute(
         select(ForecastValue)
         .join(Forecast, Forecast.id == ForecastValue.forecast_id)
-        .where(Forecast.indicator_id == src.id, Forecast.is_current.is_(True))
+        .where(
+            Forecast.indicator_id == src.id,
+            Forecast.is_current.is_(True),
+            ~Forecast.model_name.like("Inflation-12M%"),
+        )
         .order_by(ForecastValue.date)
     )
     forecasts = [(fv.date, float(fv.value)) for fv in fc_q.scalars().all()]

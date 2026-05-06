@@ -12,6 +12,8 @@ from datetime import date
 
 from app.services.derived_ops import (
     annual_inflation,
+    annual_sum,
+    december_to_december,
     qoq,
     quarterly_avg,
     quarterly_index,
@@ -78,6 +80,108 @@ def test_annual_inflation_steady_one_percent_per_month():
 def test_annual_inflation_skips_when_short_history():
     monthly = [(date(2025, m, 1), 100.5) for m in range(1, 12)]  # only 11 months
     assert annual_inflation(monthly) == []
+
+
+# --- december_to_december ----------------------------------------------------
+
+
+def test_december_to_december_one_point_per_complete_year():
+    """Year 2024: 12 months @ 101 → ∏(1.01)¹² × 100 − 100 ≈ 12.6825%.
+    Year 2025: only 11 months → skipped (no point)."""
+    monthly = [(date(2024, m, 1), 101.0) for m in range(1, 13)]
+    monthly += [(date(2025, m, 1), 101.0) for m in range(1, 12)]
+    out = december_to_december(monthly)
+    assert len(out) == 1
+    d, v = out[0]
+    assert d == date(2024, 1, 1)
+    expected = (1.01 ** 12 - 1) * 100
+    assert abs(v - round(expected, 4)) < 0.0001
+
+
+def test_december_to_december_anchors_on_january_1():
+    """Anchor date is always Jan 1 of the year, regardless of input month order."""
+    # Mix months out of natural order (sometimes parsers drop them randomly).
+    monthly = [(date(2023, m, 1), 100.5) for m in (3, 1, 12, 5, 8, 2, 4, 6, 7, 9, 10, 11)]
+    out = december_to_december(monthly)
+    assert [d for d, _ in out] == [date(2023, 1, 1)]
+    expected = (1.005 ** 12 - 1) * 100
+    assert abs(out[0][1] - round(expected, 4)) < 0.0001
+
+
+def test_december_to_december_skips_year_with_missing_month():
+    """If even one month of the year is absent, the entire year is dropped."""
+    monthly = [(date(2024, m, 1), 100.5) for m in range(1, 13) if m != 7]  # July missing
+    monthly += [(date(2025, m, 1), 100.5) for m in range(1, 13)]  # 2025 is complete
+    out = december_to_december(monthly)
+    assert [d for d, _ in out] == [date(2025, 1, 1)]
+
+
+def test_december_to_december_empty_input():
+    assert december_to_december([]) == []
+
+
+def test_december_to_december_handles_level_format_via_dec_yoy():
+    """For PPI-style level series (median 200+), use Dec_Y / Dec_{Y-1} ratio.
+    Year 2024 ends at 318.9, 2023 at 304.9 → annual = (318.9/304.9 - 1)*100 ≈ 4.59%.
+    """
+    monthly = [(date(2023, m, 1), 300.0 + m * 0.4) for m in range(1, 13)]  # ends at 304.8
+    monthly += [(date(2024, m, 1), 314.0 + m * 0.4) for m in range(1, 13)]  # ends at 318.8
+    out = december_to_december(monthly)
+    assert len(out) == 1
+    d, v = out[0]
+    assert d == date(2024, 1, 1)
+    expected = (318.8 / 304.8 - 1) * 100
+    assert abs(v - round(expected, 4)) < 0.01
+
+
+def test_december_to_december_level_format_skips_first_year():
+    """Without the previous December, year 2023 has no anchor → skipped."""
+    monthly = [(date(2023, m, 1), 300.0 + m) for m in range(1, 13)]
+    out = december_to_december(monthly)
+    assert out == []
+
+
+# --- annual_sum --------------------------------------------------------------
+
+
+def test_annual_sum_quarterly_series_full_year():
+    """Standard ВВП-real case: sum of 4 quarterly values per year."""
+    series = [
+        (date(2024, 3, 1), 30000.0),
+        (date(2024, 6, 1), 31000.0),
+        (date(2024, 9, 1), 32000.0),
+        (date(2024, 12, 1), 35000.0),
+    ]
+    out = annual_sum(series)
+    assert out == [(date(2024, 1, 1), 128000.0)]
+
+
+def test_annual_sum_skips_incomplete_year():
+    """Year with only 3 of 4 quarters is dropped — we don't extrapolate."""
+    series = [
+        (date(2024, 3, 1), 30000.0),
+        (date(2024, 6, 1), 31000.0),
+        (date(2024, 9, 1), 32000.0),
+        # Q4 2024 missing → year 2024 dropped
+        (date(2025, 3, 1), 33000.0),
+        (date(2025, 6, 1), 34000.0),
+        (date(2025, 9, 1), 35000.0),
+        (date(2025, 12, 1), 36000.0),
+    ]
+    out = annual_sum(series)
+    assert out == [(date(2025, 1, 1), 138000.0)]
+
+
+def test_annual_sum_monthly_source_requires_12_months():
+    """For a monthly source the threshold is 12 unique months/year."""
+    series = [(date(2024, m, 1), 100.0) for m in range(1, 13)]
+    series += [(date(2025, m, 1), 50.0) for m in range(1, 8)]  # only 7 months
+    out = annual_sum(series)
+    assert out == [(date(2024, 1, 1), 1200.0)]
+
+
+def test_annual_sum_empty_input():
+    assert annual_sum([]) == []
 
 
 # --- yoy ---------------------------------------------------------------------

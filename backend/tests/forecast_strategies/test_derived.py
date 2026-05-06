@@ -169,3 +169,134 @@ def test_unknown_operation_returns_empty():
         [date(2024, 1, 1)], [100.0], ctx,
     )
     assert outputs == []
+
+
+def test_december_to_december_emits_only_future_complete_year():
+    """Source CPI: full 2024 monthly indices (actuals) + 12 monthly forecast for 2025.
+    Indicator's own actuals: only 2024 annual point. Strategy must emit 2025.
+    """
+    cpi_actuals_2024 = [(date(2024, m, 1), 101.0) for m in range(1, 13)]
+    cpi_actuals_2025_partial = [(date(2025, m, 1), 100.5) for m in range(1, 4)]  # Jan-Mar
+    cpi_forecast_2025_rest = [(date(2025, m, 1), 100.5) for m in range(4, 13)]  # Apr-Dec
+    full_source = cpi_actuals_2024 + cpi_actuals_2025_partial + cpi_forecast_2025_rest
+
+    own_dates = [date(2024, 1, 1)]
+    own_values = [(1.01 ** 12 - 1) * 100]
+
+    ctx = _make_ctx(
+        indicator_code="inflation-annual",
+        frequency="annual",
+        cfg={
+            "derived_forecast": {
+                "source_code": "cpi",
+                "operation": "december_to_december",
+                "model_name": "Annual-Dec2Dec-CPI",
+            },
+            "_source_data": full_source,
+        },
+    )
+
+    outputs = derived_from_source_strategy(own_dates, own_values, ctx)
+    assert len(outputs) == 1
+    points = outputs[0].result.points
+    assert [p.date for p in points] == [date(2025, 1, 1)]
+    expected_2025 = round((1.005 ** 12 - 1) * 100, 4)
+    assert abs(points[0].value - expected_2025) < 0.0001
+    assert outputs[0].result.model_name == "Annual-Dec2Dec-CPI"
+
+
+def test_december_to_december_no_complete_future_year_returns_empty():
+    """Source forecast covers only Q1 of next year → no annual point can be made."""
+    cpi_actuals = [(date(2024, m, 1), 101.0) for m in range(1, 13)]
+    cpi_actuals += [(date(2025, m, 1), 100.4) for m in range(1, 7)]  # Jan-Jun 2025
+    cpi_forecast = [(date(2025, m, 1), 100.4) for m in range(7, 13)]  # Jul-Dec 2025
+    cpi_forecast += [(date(2026, 1, 1), 100.4), (date(2026, 2, 1), 100.4)]  # only 2 months 2026
+
+    own_dates = [date(2024, 1, 1)]
+    own_values = [12.6825]
+
+    ctx = _make_ctx(
+        indicator_code="inflation-annual",
+        frequency="annual",
+        cfg={
+            "derived_forecast": {
+                "source_code": "cpi",
+                "operation": "december_to_december",
+                "model_name": "Annual-Dec2Dec-CPI",
+            },
+            "_source_data": cpi_actuals + cpi_forecast,
+        },
+    )
+
+    outputs = derived_from_source_strategy(own_dates, own_values, ctx)
+    points = outputs[0].result.points
+    assert [p.date for p in points] == [date(2025, 1, 1)]
+
+
+def test_annual_sum_quarterly_emits_complete_future_year():
+    """gdp-real-annual: 4 quarters of 2024 actuals + 4 quarters 2025 forecast → 1 future point."""
+    actuals_2023 = [
+        (date(2023, 3, 1), 8000.0), (date(2023, 6, 1), 9000.0),
+        (date(2023, 9, 1), 9500.0), (date(2023, 12, 1), 10000.0),
+    ]
+    actuals_2024 = [
+        (date(2024, 3, 1), 8500.0), (date(2024, 6, 1), 9300.0),
+        (date(2024, 9, 1), 9800.0), (date(2024, 12, 1), 10400.0),
+    ]
+    forecast_2025 = [
+        (date(2025, 3, 1), 8800.0), (date(2025, 6, 1), 9600.0),
+        (date(2025, 9, 1), 10100.0), (date(2025, 12, 1), 10700.0),
+    ]
+
+    own_dates = [date(2023, 1, 1), date(2024, 1, 1)]
+    own_values = [36500.0, 38000.0]
+
+    ctx = _make_ctx(
+        indicator_code="gdp-real-annual",
+        frequency="annual",
+        cfg={
+            "derived_forecast": {
+                "source_code": "gdp-real",
+                "operation": "annual_sum",
+                "model_name": "GDP-Real-Annual-Sum",
+            },
+            "_source_data": actuals_2023 + actuals_2024 + forecast_2025,
+        },
+    )
+
+    outputs = derived_from_source_strategy(own_dates, own_values, ctx)
+    points = outputs[0].result.points
+    assert len(points) == 1
+    assert points[0].date == date(2025, 1, 1)
+    assert abs(points[0].value - 39200.0) < 0.01  # sum of 2025 quarters
+
+
+def test_annual_sum_drops_incomplete_future_year():
+    """If forecast for 2026 covers only Q1+Q2, 2026 yearly point is NOT emitted."""
+    full_2024 = [
+        (date(2024, q, 1), 1000.0) for q in (3, 6, 9, 12)
+    ]
+    full_2025 = [
+        (date(2025, q, 1), 1100.0) for q in (3, 6, 9, 12)
+    ]
+    partial_2026 = [(date(2026, 3, 1), 1200.0), (date(2026, 6, 1), 1200.0)]
+
+    own_dates = [date(2024, 1, 1)]
+    own_values = [4000.0]
+
+    ctx = _make_ctx(
+        indicator_code="gdp-real-annual",
+        frequency="annual",
+        cfg={
+            "derived_forecast": {
+                "source_code": "gdp-real",
+                "operation": "annual_sum",
+                "model_name": "GDP-Real-Annual-Sum",
+            },
+            "_source_data": full_2024 + full_2025 + partial_2026,
+        },
+    )
+
+    outputs = derived_from_source_strategy(own_dates, own_values, ctx)
+    points = outputs[0].result.points
+    assert [p.date for p in points] == [date(2025, 1, 1)]

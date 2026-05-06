@@ -10,7 +10,7 @@ import sys
 from datetime import date, datetime
 from pathlib import Path
 
-from sqlalchemy import select, update
+from sqlalchemy import delete, select, update
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 
 # Add parent to path for imports
@@ -752,6 +752,36 @@ INDICATORS = [
         "category": "ВВП",
     },
     {
+        "code": "gdp-real-annual",
+        "name": "ВВП реальный годовой",
+        "name_en": "Real GDP Annual",
+        "unit": "млрд руб.",
+        "frequency": "annual",
+        "source": "Росстат",
+        "description": (
+            "Реальный ВВП, накопленный за календарный год — сумма четырёх квартальных "
+            "значений в постоянных ценах 2021 года. Одна точка на каждый завершённый год."
+        ),
+        "methodology": (
+            "Для каждого года Y: ВВП_real_Y = Σ ВВП_real_q за q ∈ Y "
+            "(четыре квартала в постоянных ценах). Прогноз — суммирование четырёх "
+            "квартальных прогнозных значений из gdp-real."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {
+            "forecast_steps": 2,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "gdp-real",
+                "operation": "annual_sum",
+                "model_name": "GDP-Real-Annual-Sum",
+            },
+            "validation": {"min": 0},
+        },
+        "is_active": True,
+        "category": "ВВП",
+    },
+    {
         "code": "inflation-quarterly",
         "name": "Инфляция квартальная",
         "name_en": "Quarterly Inflation",
@@ -772,15 +802,27 @@ INDICATORS = [
         "name": "Инфляция годовая",
         "name_en": "Annual Inflation",
         "unit": "%",
-        "frequency": "monthly",
+        "frequency": "annual",
         "source": "Росстат",
         "description": (
-            "Годовая инфляция: произведение 12 месячных ИПЦ — процент роста цен "
-            "к аналогичному месяцу предыдущего года."
+            "Годовая инфляция «декабрь к декабрю»: произведение 12 месячных индексов "
+            "потребительских цен внутри календарного года. Одна точка на каждый "
+            "завершённый год — стандарт ЦБ и Росстата."
+        ),
+        "methodology": (
+            "Для каждого года Y рассчитывается ∏(ИПЦ_m / 100) за m = январь…декабрь Y, "
+            "затем результат переводится в проценты (× 100 − 100). Прогноз — то же "
+            "произведение по 12 месячным значениям прогноза CPI-Monthly."
         ),
         "parser_type": "derived",
         "model_config_json": {
-            "forecast_steps": 0,
+            "forecast_steps": 2,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "cpi",
+                "operation": "december_to_december",
+                "model_name": "Annual-Dec2Dec-CPI",
+            },
         },
         "is_active": True,
         "category": "Цены",
@@ -806,14 +848,27 @@ INDICATORS = [
         "name": "Годовая инфляция продовольственных товаров",
         "name_en": "Food CPI Annual Inflation",
         "unit": "%",
-        "frequency": "monthly",
+        "frequency": "annual",
         "source": "Росстат",
         "description": (
-            "Годовая инфляция продовольственных товаров: скользящее изменение за "
-            "12 месяцев по месячным индексам потребительских цен на продовольствие."
+            "Годовая инфляция продовольствия «декабрь к декабрю»: произведение 12 "
+            "месячных индексов потребительских цен на продовольственные товары "
+            "внутри календарного года. Одна точка на каждый завершённый год."
+        ),
+        "methodology": (
+            "Для каждого года Y: ∏(ИПЦ продовольствие_m / 100) за m = январь…декабрь Y, "
+            "× 100 − 100. Прогноз — то же произведение по 12 месячным точкам прогноза CPI-food."
         ),
         "parser_type": "derived",
-        "model_config_json": {"forecast_steps": 0},
+        "model_config_json": {
+            "forecast_steps": 2,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "cpi-food",
+                "operation": "december_to_december",
+                "model_name": "Annual-Dec2Dec-CPI-Food",
+            },
+        },
         "is_active": True,
         "category": "Цены",
     },
@@ -838,14 +893,28 @@ INDICATORS = [
         "name": "Годовая инфляция непродовольственных товаров",
         "name_en": "Non-food CPI Annual Inflation",
         "unit": "%",
-        "frequency": "monthly",
+        "frequency": "annual",
         "source": "Росстат",
         "description": (
-            "Годовая инфляция непродовольственных товаров: скользящее изменение за "
-            "12 месяцев по месячным индексам потребительских цен на непродовольственные товары."
+            "Годовая инфляция непродовольственных товаров «декабрь к декабрю»: "
+            "произведение 12 месячных индексов потребительских цен на "
+            "непродовольственные товары внутри календарного года. Одна точка на год."
+        ),
+        "methodology": (
+            "Для каждого года Y: ∏(ИПЦ непродовольств._m / 100) за m = январь…декабрь Y, "
+            "× 100 − 100. Прогноз строится тем же произведением по месячным точкам "
+            "прогноза CPI-nonfood."
         ),
         "parser_type": "derived",
-        "model_config_json": {"forecast_steps": 0},
+        "model_config_json": {
+            "forecast_steps": 2,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "cpi-nonfood",
+                "operation": "december_to_december",
+                "model_name": "Annual-Dec2Dec-CPI-Nonfood",
+            },
+        },
         "is_active": True,
         "category": "Цены",
     },
@@ -870,14 +939,27 @@ INDICATORS = [
         "name": "Годовая инфляция услуг",
         "name_en": "Services CPI Annual Inflation",
         "unit": "%",
-        "frequency": "monthly",
+        "frequency": "annual",
         "source": "Росстат",
         "description": (
-            "Годовая инфляция услуг: скользящее изменение за 12 месяцев по месячным "
-            "индексам потребительских цен на услуги."
+            "Годовая инфляция услуг «декабрь к декабрю»: произведение 12 "
+            "месячных индексов потребительских цен на услуги населению внутри "
+            "календарного года. Одна точка на завершённый год."
+        ),
+        "methodology": (
+            "Для каждого года Y: ∏(ИПЦ услуги_m / 100) за m = январь…декабрь Y, "
+            "× 100 − 100. Прогноз — то же произведение по месячным точкам прогноза CPI-services."
         ),
         "parser_type": "derived",
-        "model_config_json": {"forecast_steps": 0},
+        "model_config_json": {
+            "forecast_steps": 2,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "cpi-services",
+                "operation": "december_to_december",
+                "model_name": "Annual-Dec2Dec-CPI-Services",
+            },
+        },
         "is_active": True,
         "category": "Цены",
     },
@@ -1518,6 +1600,35 @@ INDICATORS = [
                 "source_code": "ppi",
                 "operation": "yoy_monthly",
                 "model_name": "PPI-YoY-Derived",
+            },
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "ppi-annual",
+        "name": "ИЦП годовой (декабрь к декабрю)",
+        "name_en": "Producer Price Index Annual",
+        "unit": "%",
+        "frequency": "annual",
+        "source": "Росстат",
+        "description": (
+            "Годовая инфляция производителей «декабрь к декабрю»: произведение 12 "
+            "месячных индексов цен производителей (ИЦП) внутри календарного года. "
+            "Одна точка на каждый завершённый год."
+        ),
+        "methodology": (
+            "Для каждого года Y: ∏(ИЦП_m / 100) за m = январь…декабрь Y, × 100 − 100. "
+            "Прогноз — то же произведение по 12 месячным точкам прогноза PPI."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {
+            "forecast_steps": 2,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "ppi",
+                "operation": "december_to_december",
+                "model_name": "Annual-Dec2Dec-PPI",
             },
         },
         "is_active": True,
@@ -2204,6 +2315,31 @@ async def seed():
             )
         await db.commit()
 
+        # One-shot migration (2026-05-06): семантика 4-х CPI-годовых индикаторов
+        # сменилась с rolling-12M (monthly frequency, ~400 точек/индикатор) на
+        # December-to-December (annual frequency, 1 точка/год). Старые точки
+        # нужно полностью удалить до того, как CalculationEngine впишет ряд по
+        # новой формуле, — иначе stale 1-января рамки от старого расчёта (для
+        # неполных лет) переживут upsert. Идемпотентно: ниже CalculationEngine
+        # перезапишет таблицу с нуля.
+        ANNUAL_CPI_FAMILY = (
+            "inflation-annual",
+            "cpi-food-annual",
+            "cpi-nonfood-annual",
+            "cpi-services-annual",
+        )
+        for code in ANNUAL_CPI_FAMILY:
+            ind_q = await db.execute(select(Indicator.id).where(Indicator.code == code))
+            ind_id = ind_q.scalar_one_or_none()
+            if ind_id is None:
+                continue
+            res = await db.execute(
+                delete(IndicatorData).where(IndicatorData.indicator_id == ind_id)
+            )
+            if res.rowcount:
+                print(f"  Cleaned {res.rowcount} stale rolling-12M points for {code}")
+        await db.commit()
+
         # Backfill SEO metadata + listing visibility from data/indicator_seo.py
         # (single source of truth — DB columns indicators.seo_title/.seo_description
         # /.seo_keywords/.seo_blocks/.is_listed; this block makes the seed file
@@ -2292,8 +2428,25 @@ async def seed():
 
 
 async def generate_forecasts():
-    """Generate forecasts for all active indicators that have enough data."""
+    """Generate forecasts for all active indicators that have enough data.
+
+    Сперва прогоняем CalculationEngine: derived-индикаторы должны иметь
+    свежие actuals до retrain, иначе derived_from_source стратегия будет
+    смотреть на устаревший last_actual_date (актуально для свежих миграций
+    типа CPI-annual rolling12M → December-to-December).
+    """
+    from app.services.calculation_engine import calculation_engine, DERIVED_SPECS
+
     async with async_session() as db:
+        all_sources = sorted({c for spec in DERIVED_SPECS for c in spec.src_codes})
+        try:
+            await calculation_engine.run_for_updated_sources(db, all_sources)
+            await db.commit()
+            print(f"  CalculationEngine refreshed derived actuals from {len(all_sources)} sources")
+        except Exception:
+            await db.rollback()
+            raise
+
         ind_q = await db.execute(
             select(Indicator).where(Indicator.is_active.is_(True))
         )
