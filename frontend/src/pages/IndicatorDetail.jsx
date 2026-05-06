@@ -197,14 +197,28 @@ export default function IndicatorDetail() {
         }
       />
 
-      {/* «Состав» (категории-родственники: cpi → cpi-food / housing-primary →
-          housing-secondary и т.д.) — НАД графиком: переключение состава
-          меняет сам индикатор, а значит и весь набор данных под графиком. */}
+      {/* Оба переключателя — НАД графиком, сверху вниз:
+          1) «Состав» (категории-родственники: cpi → cpi-food / housing-primary →
+             housing-secondary и т.д.) — меняет сам индикатор и весь набор данных.
+          2) «Режим инфляции» (мес / кв / год / нед / индекс) — меняет представление
+             того же индикатора, должен стоять сразу над графиком.
+          3) График.
+          Под графиком — никаких переключателей (только range-пресеты внутри самого
+          IndicatorChart и форекаст-toggle в тулбаре). */}
       <VariantGroupPicker
         group={variantGroup}
         currentCode={code}
         currentMode={isPriceCategory ? safeViewMode : null}
       />
+
+      {isPriceCategory && (
+        <CpiViewModePicker
+          modes={cpiViewModes}
+          currentMode={safeViewMode}
+          onChange={setViewMode}
+          trackContext={{ code, category: indicator?.category }}
+        />
+      )}
 
       <IndicatorChartSection
         code={code}
@@ -230,18 +244,6 @@ export default function IndicatorDetail() {
         onDownloadCsv={handleDownloadCSV}
         onDownloadExcel={handleDownloadExcel}
       />
-
-      {/* «Режим инфляции» — ПОД графиком: переключение mode'а меняет
-          представление одного и того же индикатора, и логично читать
-          его рядом с уже видимым графиком, не скролля наверх. */}
-      {isPriceCategory && (
-        <CpiViewModePicker
-          modes={cpiViewModes}
-          currentMode={safeViewMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
-      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
         <IndicatorMethodologyPanel
