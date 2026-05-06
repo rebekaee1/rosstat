@@ -188,6 +188,12 @@ ym(107136069,'init',{{defer:true,webvisor:true,clickmap:true,accurateTrackBounce
 </script>"""
 
 
+DEFAULT_KEYWORDS = (
+    "экономика России, макроэкономические данные, Росстат, Банк России, "
+    "ВВП, инфляция, ставки, валюты"
+)
+
+
 async def build_document(
     *,
     title: str,
@@ -195,11 +201,13 @@ async def build_document(
     canonical_path: str,
     body: str,
     json_ld: list[dict] | None = None,
+    keywords: str | None = None,
 ) -> str:
     assets = await get_app_assets()
     url = _absolute(canonical_path)
     safe_title = escape(title)
     safe_desc = escape(clean_text(description)[:300])
+    safe_keywords = escape(clean_text(keywords or DEFAULT_KEYWORDS)[:400])
     structured = "\n".join(_json_script(item) for item in (json_ld or []))
     return f"""<!DOCTYPE html>
 <html lang="ru">
@@ -209,7 +217,7 @@ async def build_document(
 {_metrika_script()}
 <title>{safe_title}</title>
 <meta name="description" content="{safe_desc}">
-<meta name="keywords" content="экономика России, макроэкономические данные, Росстат, Банк России, ВВП, инфляция, ставки, валюты">
+<meta name="keywords" content="{safe_keywords}">
 <meta name="author" content="Forecast Economy">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 <meta name="theme-color" content="#F8F9FC">
@@ -295,6 +303,7 @@ async def render_page_html(page_slug: str) -> tuple[int, str]:
         canonical_path=page.path,
         body=_page_body(page),
         json_ld=json_ld,
+        keywords=page.keywords or None,
     )
     return 200, html
 
@@ -317,6 +326,7 @@ async def render_home_html(db: AsyncSession) -> str:
         canonical_path="/",
         body=body,
         json_ld=[_site_json_ld(), _breadcrumbs([("/", "Главная")])],
+        keywords=page.keywords or None,
     )
     return html
 
@@ -382,6 +392,7 @@ async def render_category_html(slug: str, db: AsyncSession) -> tuple[int, str]:
         canonical_path=f"/category/{slug}",
         body=body,
         json_ld=json_ld,
+        keywords=category.keywords or None,
     )
     return 200, html
 
@@ -434,6 +445,7 @@ async def render_indicator_html(code: str, db: AsyncSession) -> tuple[int, str]:
         canonical_path=f"/indicator/{indicator.code}",
         body=body,
         json_ld=json_ld,
+        keywords=indicator.seo_keywords or None,
     )
     return 200, html
 

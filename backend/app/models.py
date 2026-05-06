@@ -30,6 +30,7 @@ class Indicator(Base):
     excel_sheet: Mapped[str | None] = mapped_column(String(10))
     seo_title: Mapped[str | None] = mapped_column(String(300))
     seo_description: Mapped[str | None] = mapped_column(Text)
+    seo_keywords: Mapped[str | None] = mapped_column(Text)
     seo_blocks: Mapped[list | None] = mapped_column(JSON)
     is_listed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, server_default="true")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))

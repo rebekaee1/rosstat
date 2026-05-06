@@ -197,6 +197,15 @@ export default function IndicatorDetail() {
         }
       />
 
+      {/* «Состав» (категории-родственники: cpi → cpi-food / housing-primary →
+          housing-secondary и т.д.) — НАД графиком: переключение состава
+          меняет сам индикатор, а значит и весь набор данных под графиком. */}
+      <VariantGroupPicker
+        group={variantGroup}
+        currentCode={code}
+        currentMode={isPriceCategory ? safeViewMode : null}
+      />
+
       <IndicatorChartSection
         code={code}
         indicator={indicator}
@@ -222,8 +231,9 @@ export default function IndicatorDetail() {
         onDownloadExcel={handleDownloadExcel}
       />
 
-      {/* Переключатели режимов и состава — под графиком, чтобы при работе
-          с графиком не нужно было скроллить наверх (см. правки v5_edit_001). */}
+      {/* «Режим инфляции» — ПОД графиком: переключение mode'а меняет
+          представление одного и того же индикатора, и логично читать
+          его рядом с уже видимым графиком, не скролля наверх. */}
       {isPriceCategory && (
         <CpiViewModePicker
           modes={cpiViewModes}
@@ -232,12 +242,6 @@ export default function IndicatorDetail() {
           trackContext={{ code, category: indicator?.category }}
         />
       )}
-
-      <VariantGroupPicker
-        group={variantGroup}
-        currentCode={code}
-        currentMode={isPriceCategory ? safeViewMode : null}
-      />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
         <IndicatorMethodologyPanel

@@ -1,11 +1,105 @@
 """Auto-generated SEO metadata for indicators (backfill source).
 
-Single source of truth: DB column Indicator.seo_title / Indicator.seo_description.
-This module exists ONLY so that the one-time backfill in seed_data.py can populate
-every existing indicator row with the texts that previously lived in
-frontend/src/pages/IndicatorDetail.jsx::SEO_MAP. After all environments have run
-the upgraded seed, this file becomes a fallback for codes that have no value in DB.
+Single source of truth: DB columns Indicator.seo_title / .seo_description /
+.seo_keywords / .seo_blocks. This module is the one-time backfill registry for
+seed_data.py. After all environments run the upgraded seed, this file remains
+as a fallback / template for codes that have no value in DB yet.
+
+Three layers:
+  1. INDICATOR_SEO       — title + description per code (90+ entries).
+  2. INDICATOR_SEO_KEYWORDS — meta name="keywords" content per code. Curated
+     manually for top-priority indicators; rest fall back to
+     `default_keywords(name, category, source)` in seed_data.
+  3. INDICATOR_SEO_BLOCKS — extra "Что важно / Методология" body blocks.
 """
+
+CATEGORY_KEYWORDS_RU: dict[str, str] = {
+    "Цены": "инфляция, цены, ИПЦ, индекс потребительских цен",
+    "Ставки": "ключевая ставка, ставки ЦБ, ставки Банка России",
+    "Финансы": "курсы валют, рубль, валютный рынок, денежная масса",
+    "ВВП": "ВВП России, экономика России, ВВП, рост экономики",
+    "Рынок труда": "безработица, занятость, зарплата, рынок труда России",
+    "Население": "население России, демография, рождаемость, смертность",
+    "Торговля": "розничная торговля, экспорт, импорт, оборот торговли",
+    "Бизнес": "инвестиции, бизнес, основной капитал, строительство",
+    "Наука": "наука, исследования, инновации, R&D, образование",
+}
+
+
+def default_keywords(name: str, category: str | None, source: str | None) -> str:
+    """Compose meta-keywords из имени индикатора + категории + общих терминов.
+
+    Используется как fallback для индикаторов, у которых нет ручного override
+    в INDICATOR_SEO_KEYWORDS. Возвращает строку из 7-10 термов через запятую,
+    каждый — потенциальный поисковый запрос.
+    """
+    parts: list[str] = []
+    name_clean = (name or "").strip()
+    if name_clean:
+        parts.append(name_clean)
+        parts.append(f"{name_clean} Россия")
+        parts.append(f"{name_clean} прогноз")
+        parts.append(f"{name_clean} данные")
+        parts.append(f"{name_clean} график")
+    if category and category in CATEGORY_KEYWORDS_RU:
+        parts.append(CATEGORY_KEYWORDS_RU[category])
+    src_norm = (source or "").lower()
+    if "цб" in src_norm or "банк россии" in src_norm or "центральный банк" in src_norm:
+        parts.append("Банк России")
+    else:
+        parts.append("Росстат")
+    parts.append("макроэкономика России")
+    seen: set[str] = set()
+    out: list[str] = []
+    for p in parts:
+        key = p.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(p)
+    return ", ".join(out)
+
+
+INDICATOR_SEO_KEYWORDS: dict[str, str] = {
+    "cpi": "индекс потребительских цен, ИПЦ, инфляция в России, инфляция, прогноз инфляции, рост цен, потребительские цены, ИПЦ Росстат, инфляция Россия 2026, ИПЦ график",
+    "cpi-food": "продовольственная инфляция, ИПЦ продовольствие, цены на продукты, рост цен на еду, инфляция продуктов, продовольственные товары",
+    "cpi-nonfood": "непродовольственная инфляция, ИПЦ непродовольственные товары, цены на товары, рост цен на товары",
+    "cpi-services": "инфляция услуг, ИПЦ услуги, цены на услуги, рост цен на услуги, услуги в России",
+    "inflation-quarterly": "квартальная инфляция, инфляция за квартал, ИПЦ квартал, инфляция Россия квартал",
+    "inflation-annual": "годовая инфляция, инфляция за год, инфляция Россия, ИПЦ год",
+    "inflation-weekly": "недельная инфляция, инфляция за неделю, недельный ИПЦ, инфляция Росстат неделя",
+    "ppi": "индекс цен производителей, ИЦП, ППИ, цены производителей, ИЦП Россия, инфляция производителей",
+    "ppi-yoy": "ИЦП год к году, цены производителей рост, индекс цен производителей динамика",
+    "key-rate": "ключевая ставка ЦБ, ставка Банка России, ставка ЦБ РФ, прогноз ключевой ставки, ключевая ставка график, ставка рефинансирования",
+    "usd-rub": "курс доллара к рублю, USD RUB, курс доллара ЦБ, доллар сегодня, курс USD, курс доллара Банк России",
+    "eur-rub": "курс евро к рублю, EUR RUB, курс евро ЦБ, евро сегодня, курс EUR",
+    "cny-rub": "курс юаня к рублю, CNY RUB, курс юаня ЦБ, юань сегодня, курс CNY",
+    "ruonia": "RUONIA, ставка RUONIA, межбанковская ставка, рублёвая ставка овернайт",
+    "m0": "денежная масса М0, наличные деньги, агрегат M0, денежная база",
+    "m2": "денежная масса М2, агрегат M2, широкая денежная масса, денежная масса России",
+    "mortgage-rate": "ставка по ипотеке, ипотечная ставка, средневзвешенная ставка ипотека, ипотека ЦБ",
+    "deposit-rate": "ставка по вкладам, ставка депозита, депозитная ставка, доходность вкладов",
+    "gold-price": "цена золота ЦБ, учётная цена золота, цена грамма золота, золото Банк России",
+    "gdp-nominal": "номинальный ВВП, ВВП России, ВВП в текущих ценах, прогноз ВВП, динамика ВВП",
+    "gdp-real": "реальный ВВП, ВВП в постоянных ценах, рост экономики России, реальный ВВП Россия",
+    "gdp-yoy": "рост ВВП год к году, динамика ВВП, темпы роста ВВП, ВВП Россия год к году",
+    "gdp-qoq": "ВВП квартал к кварталу, рост ВВП квартал, динамика ВВП квартал",
+    "housing-price-primary": "цены на первичное жильё, цены на новостройки, ИЦПЖ первичный, рынок новостроек",
+    "housing-price-secondary": "цены на вторичное жильё, вторичный рынок жилья, ИЦПЖ вторичный, цены на квартиры вторичка",
+    "housing-yoy-primary": "первичное жильё год к году, цены на новостройки динамика",
+    "housing-yoy-secondary": "вторичное жильё год к году, цены на квартиры динамика",
+    "unemployment": "уровень безработицы, безработица в России, безработица Росстат, прогноз безработицы",
+    "labor-force": "рабочая сила, экономически активное население, занятость в России",
+    "wages": "средняя зарплата, заработная плата Россия, средняя зарплата Росстат",
+    "wages-real": "реальная заработная плата, реальные зарплаты, реальный доход",
+    "population": "численность населения России, население России, демография, население Росстат",
+    "births": "рождаемость в России, число рождений, рождения Росстат",
+    "deaths": "смертность в России, число смертей, смертность Росстат",
+    "retail-trade": "розничная торговля, оборот розничной торговли, розничные продажи Россия",
+    "construction-work": "объём строительных работ, строительство Россия, строительная отрасль",
+    "capital-investment": "инвестиции в основной капитал, капитальные вложения, инвестиции Россия",
+}
+
 
 INDICATOR_SEO: dict[str, dict[str, str]] = {
     "cpi": {

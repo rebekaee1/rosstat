@@ -28,6 +28,11 @@ frontend/dev.log
 
 # OS
 .DS_Store
+
+# Транскрипты звонков и артефакты анализа правок (не код, не для деплоя)
+правки_v*/
+transcripts/
+правки_*/
 Thumbs.db
 
 # Python

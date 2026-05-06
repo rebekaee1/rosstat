@@ -172,6 +172,50 @@ def test_sitemap_static_pages_constant():
     assert "home" in PAGE_META
 
 
+def test_meta_keywords_are_unique_per_page():
+    """Pre-Wednesday-2026 issue: <meta name="keywords"> was hardcoded в
+    seo_renderer и был одинаков для главной/категорий/индикаторов. После
+    этого теста любые две произвольно выбранные страницы должны иметь
+    различающиеся keywords (или хотя бы кастомные, отличные от дефолта).
+    """
+    from app.services.seo_content import PAGE_META, CATEGORY_META
+    from app.services.seo_renderer import DEFAULT_KEYWORDS
+
+    home_kw = PAGE_META["home"].keywords
+    about_kw = PAGE_META["about"].keywords
+    privacy_kw = PAGE_META["privacy"].keywords
+    prices_kw = CATEGORY_META["prices"].keywords
+    gdp_kw = CATEGORY_META["gdp"].keywords
+
+    assert home_kw and home_kw != DEFAULT_KEYWORDS, "home must have its own keywords"
+    assert about_kw and about_kw != home_kw
+    assert privacy_kw and privacy_kw != home_kw
+    assert prices_kw and prices_kw != home_kw
+    assert gdp_kw and gdp_kw != prices_kw, "categories must differ from each other"
+
+
+def test_indicator_keywords_default_generator_works():
+    """Если у индикатора нет ручного override в INDICATOR_SEO_KEYWORDS, он
+    должен получать keywords-строку через default_keywords(name, category, source).
+    Никакой индикатор не должен ехать в прод с пустыми keywords.
+    """
+    from app.data.indicator_seo import default_keywords, INDICATOR_SEO_KEYWORDS
+
+    kw = default_keywords("Индекс промышленного производства", "Бизнес", "Росстат")
+    assert "Индекс промышленного производства" in kw
+    assert "Россия" in kw
+    assert "прогноз" in kw
+    assert "Росстат" in kw
+
+    cbr_kw = default_keywords("Курс доллара", "Финансы", "Банк России")
+    assert "Банк России" in cbr_kw
+    assert "Росстат" not in cbr_kw
+
+    assert "cpi" in INDICATOR_SEO_KEYWORDS
+    assert "key-rate" in INDICATOR_SEO_KEYWORDS
+    assert len(INDICATOR_SEO_KEYWORDS) >= 30
+
+
 def _extract_title(html: str) -> str:
     start = html.find("<title>")
     end = html.find("</title>")

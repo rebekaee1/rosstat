@@ -22,7 +22,9 @@ from app.services.forecast_pipeline import retrain_indicator_forecast
 from app.data.indicator_seo import (
     INDICATOR_SEO,
     INDICATOR_SEO_BLOCKS,
+    INDICATOR_SEO_KEYWORDS,
     INDICATOR_HIDDEN_FROM_LISTING,
+    default_keywords,
 )
 
 CPI_DESCRIPTION = (
@@ -2204,7 +2206,8 @@ async def seed():
 
         # Backfill SEO metadata + listing visibility from data/indicator_seo.py
         # (single source of truth — DB columns indicators.seo_title/.seo_description
-        # /.seo_blocks/.is_listed; this block makes the seed file authoritative).
+        # /.seo_keywords/.seo_blocks/.is_listed; this block makes the seed file
+        # authoritative).
         seo_count = 0
         for code, vals in INDICATOR_SEO.items():
             await db.execute(
@@ -2216,6 +2219,20 @@ async def seed():
                 )
             )
             seo_count += 1
+        # seo_keywords: для каждого активного индикатора либо ручной override
+        # из INDICATOR_SEO_KEYWORDS, либо генерация из (name + category + source).
+        # Делаем после upsert, чтобы видеть актуальные name/category/source
+        # из только что записанных строк.
+        result = await db.execute(
+            select(Indicator.code, Indicator.name, Indicator.category, Indicator.source)
+        )
+        kw_count = 0
+        for code, name, category, source in result.all():
+            kw = INDICATOR_SEO_KEYWORDS.get(code) or default_keywords(name, category, source)
+            await db.execute(
+                update(Indicator).where(Indicator.code == code).values(seo_keywords=kw)
+            )
+            kw_count += 1
         for code, blocks in INDICATOR_SEO_BLOCKS.items():
             await db.execute(
                 update(Indicator)
@@ -2233,6 +2250,7 @@ async def seed():
         await db.commit()
         print(
             f"  SEO metadata applied: {seo_count} titles/descriptions, "
+            f"{kw_count} keywords sets, "
             f"{len(INDICATOR_SEO_BLOCKS)} block sets, "
             f"{len(INDICATOR_HIDDEN_FROM_LISTING)} hidden from listing"
         )
