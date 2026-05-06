@@ -5,6 +5,7 @@ function tableTitle({ chartMode, isPriceCategory, indicator }) {
   if (chartMode === 'quarterly') return 'Исторические данные — Квартальная инфляция';
   if (chartMode === 'annual') return 'Исторические данные — Годовая инфляция';
   if (chartMode === 'weekly') return 'Исторические данные — Недельный ИПЦ';
+  if (chartMode === 'index') return 'Исторические данные — Накопленный индекс ИПЦ (2000=100)';
   if (isPriceCategory) return 'Исторические данные — Прирост цен (%, м/м)';
   return `Исторические данные — ${indicator?.name || 'ряд'}`;
 }
@@ -46,7 +47,7 @@ export default function IndicatorDataTableSection({
         data={data}
         title={tableTitle({ chartMode, isPriceCategory, indicator })}
         dateFormat={dateFormatFor({ chartMode, indicator })}
-        unit={indicator?.unit || '%'}
+        unit={chartMode === 'index' ? 'индекс' : (indicator?.unit || '%')}
       />
     </section>
   );

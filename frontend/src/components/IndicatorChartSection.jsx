@@ -82,6 +82,8 @@ function rangePresetFor({ chartMode, indicator }) {
   if (chartMode === 'annual') return 'annual';
   if (chartMode === 'quarterly') return 'quarterly';
   if (chartMode === 'weekly') return 'weekly';
+  // Накопленный индекс CPI — длинная история (2000+), показываем 5y/10y/25y/all.
+  if (chartMode === 'index') return 'quarterly';
   /* Frequency-driven для остальных индикаторов. */
   const freq = indicator?.frequency;
   if (freq === 'quarterly') return 'quarterly';
@@ -240,7 +242,7 @@ export default function IndicatorChartSection({
             forecastTooltipLabel={forecastTooltipLabel({ chartMode, indicator })}
             emptyHint={emptyHint}
             dateFormat={dateFormatFor({ chartMode, indicator })}
-            unit={indicator?.unit || '%'}
+            unit={chartMode === 'index' ? 'индекс' : (indicator?.unit || '%')}
             rangePreset={rangePresetFor({ chartMode, indicator })}
             indicatorCode={code}
             indicatorCategory={indicator?.category}

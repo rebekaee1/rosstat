@@ -11,6 +11,54 @@ const CPI_DERIVED_CODES = {
 
 const CPI_CODES = ['cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services'];
 
+// Накопленный индекс CPI (режим «Индекс»): база 100 в январе 2000.
+// Историю 1991–1999 обрезаем — в 1992-м январский индекс доходил до 345%
+// за месяц, и за 9 лет цепного произведения шкала уезжает в сотни тысяч,
+// делая график нечитаемым (вся «история» сжимается в правый край).
+// 2000-01 — начало пост-кризисного периода стабильной денежной политики;
+// этот выбор даёт ~26 лет читаемой экспоненциальной кривой 100 → ~1000+,
+// что покрывает горизонт всех современных решений по ставке/инфляции.
+const CPI_INDEX_BASE_DATE = '2000-01-01';
+const CPI_INDEX_BASE_VALUE = 100;
+
+function buildCumulativeIndex(rawPoints) {
+  if (!Array.isArray(rawPoints) || !rawPoints.length) return [];
+  const trimmed = rawPoints.filter((p) => String(p.date) >= CPI_INDEX_BASE_DATE);
+  if (!trimmed.length) return [];
+  const out = [{ ...trimmed[0], value: CPI_INDEX_BASE_VALUE }];
+  let acc = CPI_INDEX_BASE_VALUE;
+  for (let i = 1; i < trimmed.length; i++) {
+    acc = acc * (Number(trimmed[i].value) / 100);
+    out.push({ ...trimmed[i], value: +acc.toFixed(2) });
+  }
+  return out;
+}
+
+function buildCumulativeIndexForecast(forecastResp, lastActualValue) {
+  const values = forecastResp?.forecast?.values;
+  if (!values?.length || lastActualValue == null) return forecastResp;
+  let acc = lastActualValue;
+  let accLow = lastActualValue;
+  let accUp = lastActualValue;
+  const out = values.map((v) => {
+    acc = acc * (Number(v.value) / 100);
+    const next = { ...v, value: +acc.toFixed(2) };
+    if (v.lower_bound != null) {
+      accLow = accLow * (Number(v.lower_bound) / 100);
+      next.lower_bound = +accLow.toFixed(2);
+    }
+    if (v.upper_bound != null) {
+      accUp = accUp * (Number(v.upper_bound) / 100);
+      next.upper_bound = +accUp.toFixed(2);
+    }
+    return next;
+  });
+  return {
+    ...forecastResp,
+    forecast: { ...forecastResp.forecast, values: out },
+  };
+}
+
 function statsFromPoints(points) {
   if (!points?.length) return null;
   const current = points[points.length - 1];
@@ -50,9 +98,10 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
     ? 'inflation'
     : fallbackMode;
 
-  // На режиме `index` показываем сырой индекс (значения вокруг 100) — не
-  // нужно вычитать 100. На остальных режимах CPI-семейства — стандартное
-  // преобразование к шкале «delta % от 100».
+  // На режиме `index` строим накопленный индекс (база 100 = первая точка
+  // ряда от 2000-01) — вычитать 100 не нужно. На остальных режимах
+  // CPI-семейства — стандартное преобразование к шкале «delta % от 100».
+  const isCumulativeIndex = isCpiIndex(code) && safeViewMode === 'index';
   const shouldSubtract100 = isCpiIndex(code) && safeViewMode !== 'index';
   const cpiDerivedCodes = CPI_DERIVED_CODES[code] || {};
   const chartMode = isPriceCategory ? safeViewMode : 'cpi';
@@ -109,14 +158,24 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
   );
 
   const dataPoints = useMemo(() => {
-    if (!shouldSubtract100 || !rawDataPoints.length) return rawDataPoints;
+    if (!rawDataPoints.length) return rawDataPoints;
+    if (isCumulativeIndex) return buildCumulativeIndex(rawDataPoints);
+    if (!shouldSubtract100) return rawDataPoints;
     return rawDataPoints.map((p) => ({ ...p, value: Number(p.value) - 100 }));
-  }, [rawDataPoints, shouldSubtract100]);
+  }, [rawDataPoints, shouldSubtract100, isCumulativeIndex]);
 
   const displayForecastData = useMemo(() => {
+    if (isCumulativeIndex) {
+      // Прогноз режима «Индекс» — продолжение накопленной кривой:
+      // последнее накопленное факт-значение × прогнозные месячные / 100.
+      const lastActual = dataPoints?.length
+        ? dataPoints[dataPoints.length - 1].value
+        : null;
+      return buildCumulativeIndexForecast(forecastResp, lastActual);
+    }
     if (!shouldSubtract100) return forecastResp;
     return adjustCpiForecastDisplay(forecastResp, code);
-  }, [forecastResp, shouldSubtract100, code]);
+  }, [forecastResp, shouldSubtract100, isCumulativeIndex, dataPoints, code]);
 
   const quarterlyForecastData = useMemo(
     () => adjustCpiForecastDisplay(quarterlyForecastResp, cpiDerivedCodes.quarterly),
@@ -171,10 +230,16 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
     [safeViewMode, weeklyDataPoints],
   );
 
+  const indexStats = useMemo(
+    () => (isCumulativeIndex ? statsFromPoints(dataPoints) : null),
+    [isCumulativeIndex, dataPoints],
+  );
+
   const stats = safeViewMode === 'quarterly' ? quarterlyStats
     : safeViewMode === 'annual' ? annualStats
       : safeViewMode === 'weekly' ? weeklyStats
-        : inflationStats;
+        : safeViewMode === 'index' && isCumulativeIndex ? indexStats
+          : inflationStats;
 
   const cpiPrevDate = dataPoints.length >= 2
     ? dataPoints[dataPoints.length - 2].date

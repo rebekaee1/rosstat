@@ -23,7 +23,12 @@ export default function IndicatorTelemetryGrid({
   adj,
   loading,
 }) {
-  const unit = indicator?.unit || '%';
+  // На режиме «Индекс» CPI-семьи показываем уровень накопленного индекса
+  // (значения 100…1000+) — без `%`. Для прочих режимов используем
+  // официальную единицу индикатора.
+  const unit = safeViewMode === 'index' && isPriceCategory
+    ? 'индекс'
+    : (indicator?.unit || '%');
 
   if (loading) {
     return (

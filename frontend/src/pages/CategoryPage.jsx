@@ -54,13 +54,21 @@ export default function CategoryPage() {
   }, [cat, slug]);
 
   const isPricesCategory = cat?.apiCategory === 'Цены';
+  // Карточки CPI-семьи (cpi / cpi-food / cpi-nonfood / cpi-services) показывают
+  // rolling-12M — тот же показатель, что страница индикатора в дефолтном
+  // режиме. До 2026-05-06 для общей `cpi` подставляли значение из
+  // `inflation-annual`, но после переделки в декабрь-к-декабрю оно даёт цифру
+  // за прошлый календарный год (~5.6%) с датой последней публикации
+  // (март 2026) — расхождение цифры и периода. Унифицируем все 4 карточки.
+  const { data: cpiInflResp } = useInflation('cpi', { enabled: isPricesCategory });
   const { data: foodInflResp } = useInflation('cpi-food', { enabled: isPricesCategory });
   const { data: nonfoodInflResp } = useInflation('cpi-nonfood', { enabled: isPricesCategory });
   const { data: servicesInflResp } = useInflation('cpi-services', { enabled: isPricesCategory });
 
-  const subInflationMap = useMemo(() => {
+  const cpiInflationMap = useMemo(() => {
     const map = {};
     const sources = {
+      cpi: cpiInflResp,
       'cpi-food': foodInflResp,
       'cpi-nonfood': nonfoodInflResp,
       'cpi-services': servicesInflResp,
@@ -74,7 +82,7 @@ export default function CategoryPage() {
       }
     }
     return map;
-  }, [foodInflResp, nonfoodInflResp, servicesInflResp]);
+  }, [cpiInflResp, foodInflResp, nonfoodInflResp, servicesInflResp]);
 
   if (!cat) {
     return (
@@ -100,7 +108,6 @@ export default function CategoryPage() {
   }
 
   const allIndicators = (indicators ?? []).filter((i) => i.category === cat.apiCategory);
-  const annualInflation = allIndicators.find((i) => i.code === 'inflation-annual');
   const filtered = allIndicators.filter(isIndicatorListed);
 
   return (
@@ -175,11 +182,7 @@ export default function CategoryPage() {
                 key={ind.code}
                 indicator={ind}
                 delay={i}
-                displayOverride={
-                  ind.code === 'cpi' && annualInflation
-                    ? { value: annualInflation.current_value, change: annualInflation.change }
-                    : subInflationMap[ind.code]
-                }
+                displayOverride={cpiInflationMap[ind.code]}
               />
             ))}
           </div>

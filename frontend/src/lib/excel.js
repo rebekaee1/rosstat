@@ -12,6 +12,7 @@ export function downloadExcel(chartData, mode, indicatorCode, range, meta = {}) 
     inflation: 'Инфляция 12 мес. (%)',
     annual: 'Годовая инфляция (%)',
     weekly: 'Недельный ИПЦ (изм. к пред. нед., %)',
+    index: 'Накопленный индекс ИПЦ (2000=100)',
   };
   const CPI_MODE_LABELS = {
     cpi: 'ипц_помесячно',
@@ -19,6 +20,7 @@ export function downloadExcel(chartData, mode, indicatorCode, range, meta = {}) 
     inflation: 'инфляция_12мес',
     annual: 'инфляция_годовая',
     weekly: 'ипц_недельный',
+    index: 'индекс_накопленный',
   };
   const genericLabel = meta.name
     ? `${meta.name}${meta.unit ? ` (${meta.unit})` : ''}`

@@ -194,6 +194,7 @@ export default function IndicatorDetail() {
           || (chartMode === 'annual' && loadingAnnual)
           || (chartMode === 'weekly' && loadingWeekly)
           || (chartMode === 'quarterly' && loadingQuarterly)
+          || (chartMode === 'index' && loadingData)
         }
       />
 

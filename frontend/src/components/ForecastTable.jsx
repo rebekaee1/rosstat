@@ -15,7 +15,7 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
     return () => tween.kill();
   }, []);
 
-  const usesForecastData = mode === 'cpi' || mode === 'quarterly' || mode === 'annual' || mode === 'weekly';
+  const usesForecastData = mode === 'cpi' || mode === 'quarterly' || mode === 'annual' || mode === 'weekly' || mode === 'index';
   const rows = usesForecastData
     ? (forecastData?.forecast?.values || [])
     : (inflation?.forecast || []);
@@ -27,7 +27,11 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
   const suffix = unitSuffix(unit);
   const valueLabel = mode === 'inflation'
     ? 'Инфляция (12 мес.)'
-    : (mode === 'quarterly' ? 'Квартальная (%)' : mode === 'annual' ? 'Годовая (%)' : mode === 'weekly' ? 'Недельная (%)' : (suffix ? `Значение (${suffix})` : 'Значение'));
+    : mode === 'quarterly' ? 'Квартальная (%)'
+      : mode === 'annual' ? 'Годовая (%)'
+        : mode === 'weekly' ? 'Недельная (%)'
+          : mode === 'index' ? 'Индекс ИПЦ'
+            : (suffix ? `Значение (${suffix})` : 'Значение');
 
   return (
     <div ref={ref} className="rounded-[2rem] bg-surface border border-border-subtle overflow-hidden">

@@ -41,7 +41,7 @@ export default function IndicatorForecastSection({
           mode={chartMode}
           inflation={inflationResp}
           forecastData={forecastData}
-          unit={indicator?.unit || '%'}
+          unit={chartMode === 'index' ? 'индекс' : (indicator?.unit || '%')}
           dateFormat={dateFormatFor(chartMode, indicator)}
         />
       </section>
