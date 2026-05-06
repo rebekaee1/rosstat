@@ -10,7 +10,7 @@ import sys
 from datetime import date, datetime
 from pathlib import Path
 
-from sqlalchemy import delete, select, update
+from sqlalchemy import delete, extract, select, update
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 
 # Add parent to path for imports
@@ -2315,13 +2315,15 @@ async def seed():
             )
         await db.commit()
 
-        # One-shot migration (2026-05-06): семантика 4-х CPI-годовых индикаторов
+        # Идемпотентная миграция (2026-05-06): семантика 4-х CPI-годовых индикаторов
         # сменилась с rolling-12M (monthly frequency, ~400 точек/индикатор) на
-        # December-to-December (annual frequency, 1 точка/год). Старые точки
-        # нужно полностью удалить до того, как CalculationEngine впишет ряд по
-        # новой формуле, — иначе stale 1-января рамки от старого расчёта (для
-        # неполных лет) переживут upsert. Идемпотентно: ниже CalculationEngine
-        # перезапишет таблицу с нуля.
+        # December-to-December (annual frequency, 1 точка/год). Удаляем старые
+        # не-январские точки rolling-12M; январские (1-го числа) уже соответствуют
+        # новой схеме «1 точка/год на 1 января» и будут перезаписаны
+        # `bulk_upsert`-ом из CalculationEngine значениями новой формулы.
+        # На повторных запусках seed_data не-январские точки уже удалены —
+        # rowcount==0, операция NO-OP. Это критично: entrypoint.sh запускает
+        # seed_data на каждом старте backend контейнера.
         ANNUAL_CPI_FAMILY = (
             "inflation-annual",
             "cpi-food-annual",
@@ -2334,7 +2336,9 @@ async def seed():
             if ind_id is None:
                 continue
             res = await db.execute(
-                delete(IndicatorData).where(IndicatorData.indicator_id == ind_id)
+                delete(IndicatorData)
+                .where(IndicatorData.indicator_id == ind_id)
+                .where(extract("month", IndicatorData.date) != 1)
             )
             if res.rowcount:
                 print(f"  Cleaned {res.rowcount} stale rolling-12M points for {code}")
@@ -2390,6 +2394,27 @@ async def seed():
             f"{len(INDICATOR_SEO_BLOCKS)} block sets, "
             f"{len(INDICATOR_HIDDEN_FROM_LISTING)} hidden from listing"
         )
+
+        # Re-run CalculationEngine to refresh ALL derived indicators after metadata
+        # upserts and the migration cleanup. Idempotent: bulk_upsert is no-op for
+        # unchanged values. Critical for the CPI-annual migration: after non-Jan
+        # rolling-12M points are wiped, CE writes fresh December-to-December points
+        # so the API serves the new shape immediately, without waiting for the
+        # next ETL run at 06:00 МСК.
+        try:
+            from app.services.calculation_engine import (
+                calculation_engine, DERIVED_SPECS,
+            )
+            all_sources = sorted({c for spec in DERIVED_SPECS for c in spec.src_codes})
+            updated = await calculation_engine.run_for_updated_sources(db, all_sources)
+            await db.commit()
+            print(
+                f"  CalculationEngine: refreshed derived from {len(all_sources)} "
+                f"sources ({len(updated)} indicators changed)"
+            )
+        except Exception as exc:
+            await db.rollback()
+            print(f"  CalculationEngine refresh skipped: {exc}")
 
         # Seed CPI data from CSV
         csv_candidates = [
