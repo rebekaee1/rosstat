@@ -1148,13 +1148,12 @@ INDICATORS = [
         ),
         "parser_type": "rosstat_weekly_cpi",
         "model_config_json": {
-            # Прогноз на 8 недель (~2 мес.). У Никиты нет блокнота для weekly,
-            # поэтому используем универсальный OLS multi-window с
-            # cpi_index-преобразованием — та же модель, что для других
-            # индикаторов без специализированного блокнота.
-            "forecast_steps": 8,
-            "forecast_strategy": "generic_ols",
-            "forecast_transform": "cpi_index",
+            # Прогноз для недельной инфляции выключен (решение НА от 2026-05-06):
+            # Росстат публикует только за прошедшую неделю с лагом, ранние дни
+            # новой недели дают слишком мало сигнала для обоснованного 8-недельного
+            # прогноза. forecast_steps=0 → retrain_indicator_forecast() очищает
+            # старые прогнозные ряды и API возвращает forecast=None.
+            "forecast_steps": 0,
             "validation": {"min": 99, "max": 102},
             "backfill_max_pages": 1,
         },
