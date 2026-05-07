@@ -666,19 +666,16 @@ INDICATORS = [
         ),
         "methodology": (
             "Источник — Росстат, ряды квартального ВВП в постоянных ценах 2021 г. "
-            "(валовой внутренний продукт по методологии СНС-2008)."
+            "(валовой внутренний продукт по методологии СНС-2008). Прогноз — "
+            "прямая SARIMA-модель (multi-window OLS на log-difference) на ряду "
+            "реального ВВП, идентичная нотбуку Никиты `train_sarima_model`."
         ),
         "parser_type": "rosstat_sdds_gdp",
         "model_config_json": {
             "gdp_source": "official_quarterly",
             "gdp_sheet": "9",
             "forecast_steps": 4,
-            "forecast_strategy": "derived_from_source",
-            "derived_forecast": {
-                "source_code": "gdp-yoy",
-                "operation": "real_from_yoy",
-                "model_name": "GDP-Real-From-YoY-Derived",
-            },
+            "forecast_strategy": "gdp_real_quarterly",
             "forecast_transform": "absolute",
             "validation": {"min": 0},
         },
@@ -707,13 +704,14 @@ INDICATORS = [
     },
     {
         "code": "gdp-yoy",
-        "name": "Рост ВВП (г/г)",
-        "name_en": "GDP Growth YoY",
+        "name": "Рост номинального ВВП (г/г)",
+        "name_en": "Nominal GDP Growth YoY",
         "unit": "%",
         "frequency": "quarterly",
         "source": "Росстат",
         "description": (
-            "Темп роста номинального ВВП к аналогичному кварталу предыдущего года."
+            "Темп роста номинального ВВП (в текущих ценах) к аналогичному "
+            "кварталу предыдущего года."
         ),
         "parser_type": "derived",
         "model_config_json": {
@@ -722,7 +720,7 @@ INDICATORS = [
             "derived_forecast": {
                 "source_code": "gdp-nominal",
                 "operation": "yoy_quarterly",
-                "model_name": "GDP-YoY-Derived",
+                "model_name": "GDP-Nominal-YoY-Derived",
             },
         },
         "is_active": True,
@@ -730,13 +728,13 @@ INDICATORS = [
     },
     {
         "code": "gdp-qoq",
-        "name": "Рост ВВП (кв/кв)",
-        "name_en": "GDP Growth QoQ",
+        "name": "Рост номинального ВВП (кв/кв)",
+        "name_en": "Nominal GDP Growth QoQ",
         "unit": "%",
         "frequency": "quarterly",
         "source": "Росстат",
         "description": (
-            "Темп роста номинального ВВП к предыдущему кварталу."
+            "Темп роста номинального ВВП (в текущих ценах) к предыдущему кварталу."
         ),
         "parser_type": "derived",
         "model_config_json": {
@@ -745,8 +743,87 @@ INDICATORS = [
             "derived_forecast": {
                 "source_code": "gdp-nominal",
                 "operation": "qoq",
-                "model_name": "GDP-QoQ-Derived",
+                "model_name": "GDP-Nominal-QoQ-Derived",
             },
+        },
+        "is_active": True,
+        "category": "ВВП",
+    },
+    {
+        "code": "gdp-real-yoy",
+        "name": "Рост реального ВВП (г/г)",
+        "name_en": "Real GDP Growth YoY",
+        "unit": "%",
+        "frequency": "quarterly",
+        "source": "Росстат",
+        "description": (
+            "Темп роста реального ВВП (в постоянных ценах 2021 г.) к аналогичному "
+            "кварталу предыдущего года."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {
+            "forecast_steps": 4,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "gdp-real",
+                "operation": "yoy_quarterly",
+                "model_name": "GDP-Real-YoY-Derived",
+            },
+        },
+        "is_active": True,
+        "category": "ВВП",
+    },
+    {
+        "code": "gdp-real-qoq",
+        "name": "Рост реального ВВП (кв/кв)",
+        "name_en": "Real GDP Growth QoQ",
+        "unit": "%",
+        "frequency": "quarterly",
+        "source": "Росстат",
+        "description": (
+            "Темп роста реального ВВП (в постоянных ценах 2021 г.) к предыдущему "
+            "кварталу."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {
+            "forecast_steps": 4,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "gdp-real",
+                "operation": "qoq",
+                "model_name": "GDP-Real-QoQ-Derived",
+            },
+        },
+        "is_active": True,
+        "category": "ВВП",
+    },
+    {
+        "code": "gdp-nominal-annual",
+        "name": "ВВП номинальный (годовой)",
+        "name_en": "Nominal GDP Annual",
+        "unit": "млрд руб.",
+        "frequency": "annual",
+        "source": "Росстат",
+        "description": (
+            "Номинальный ВВП, накопленный за календарный год — сумма четырёх "
+            "квартальных значений в текущих ценах. Одна точка на каждый "
+            "завершённый год."
+        ),
+        "methodology": (
+            "Для каждого года Y: ВВП_nominal_Y = Σ ВВП_nominal_q за q ∈ Y "
+            "(четыре квартала в текущих ценах). Прогноз — суммирование четырёх "
+            "квартальных прогнозных значений из gdp-nominal."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {
+            "forecast_steps": 2,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "gdp-nominal",
+                "operation": "annual_sum",
+                "model_name": "GDP-Nominal-Annual-Sum",
+            },
+            "validation": {"min": 0},
         },
         "is_active": True,
         "category": "ВВП",

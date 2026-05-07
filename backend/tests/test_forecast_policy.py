@@ -29,11 +29,20 @@ APPROVED_DIRECT_FORECAST_CODES = {
     "housing-price-secondary",
 }
 
+# Live SARIMA modeled on the indicator's own series (not derived from
+# another indicator's forecast). Same engine as gdp_nominal_quarterly /
+# ppi_monthly, just with the indicator's own data as input.
+LIVE_SARIMA_FORECAST_CODES = {
+    "gdp-real",
+}
+
 DERIVED_FROM_SOURCE_FORECAST_CODES = {
     "gdp-yoy",
     "gdp-qoq",
-    "gdp-real",
+    "gdp-real-yoy",
+    "gdp-real-qoq",
     "gdp-real-annual",
+    "gdp-nominal-annual",
     "ppi-yoy",
     "ppi-annual",
     "inflation-annual",
@@ -55,6 +64,7 @@ GENERIC_OLS_FORECAST_CODES: set[str] = set()
 
 ALL_FORECAST_CODES = (
     APPROVED_DIRECT_FORECAST_CODES
+    | LIVE_SARIMA_FORECAST_CODES
     | DERIVED_FROM_SOURCE_FORECAST_CODES
     | GENERIC_OLS_FORECAST_CODES
 )

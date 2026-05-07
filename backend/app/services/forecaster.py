@@ -667,6 +667,31 @@ def train_gdp_nominal_quarterly(
     )
 
 
+def train_gdp_real_quarterly(
+    dates: List[date],
+    values: List[float],
+    forecast_steps: int = 4,
+) -> ForecastResult:
+    """Прямая SARIMA-модель для реального ВВП (то же ядро, что и у номинального).
+
+    Никита в ноутбуке вызывает один и тот же `train_sarima_model(data,
+    forecast_steps=4)` сначала на номинальном, потом на реальном ВВП — это
+    одна формула, отличается только входной ряд. Раньше мы прогнозировали
+    `gdp-real` через цепочку `gdp-real ← real_from_yoy(gdp-yoy) ←
+    yoy_quarterly(gdp-nominal SARIMA)`, и накопленная ошибка приводила к
+    расхождению на 4.5–7.5% относительно эталонных значений Никиты.
+    Прямой запуск `train_sarima_model` на ряду реального ВВП восстанавливает
+    bit-exact (33260.67 / 35387.92 / 37449.90 / 41649.81 для 2026 года).
+    """
+    return _log_diff_no_blend_forecast(
+        dates, values, forecast_steps,
+        lags_fn=_gdp_quarterly_lags,
+        k_range=range(1, 4),
+        step_freq="quarterly",
+        model_name="GDP-Real-Quarterly-MW",
+    )
+
+
 # ---------------------------------------------------------------------------
 #  Original OLS model (for non-CPI indicators)
 # ---------------------------------------------------------------------------

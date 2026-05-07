@@ -15,13 +15,21 @@ export const VARIANT_GROUPS = [
     ],
   },
   {
-    label: 'Режим ВВП',
+    label: 'Номинальный ВВП',
     codes: [
-      { code: 'gdp-nominal', label: 'Номинальный' },
-      { code: 'gdp-real', label: 'Реальный (поквартально)' },
-      { code: 'gdp-real-annual', label: 'Реальный (годовая)' },
-      { code: 'gdp-yoy', label: 'Год к году' },
-      { code: 'gdp-qoq', label: 'Квартал к кварталу' },
+      { code: 'gdp-nominal', label: 'Поквартально' },
+      { code: 'gdp-qoq', label: 'Кв/кв' },
+      { code: 'gdp-yoy', label: 'Г/г' },
+      { code: 'gdp-nominal-annual', label: 'Годовой' },
+    ],
+  },
+  {
+    label: 'Реальный ВВП',
+    codes: [
+      { code: 'gdp-real', label: 'Поквартально' },
+      { code: 'gdp-real-qoq', label: 'Кв/кв' },
+      { code: 'gdp-real-yoy', label: 'Г/г' },
+      { code: 'gdp-real-annual', label: 'Годовой' },
     ],
   },
   {

@@ -73,12 +73,17 @@ DERIVED_SPECS: list[DerivedSpec] = [
     # Wages: nominal × CPI → real wage index.
     DerivedSpec("wages-real", ("wages-nominal", "cpi"), ops.wages_real),
 
-    # GDP year-over-year and quarter-over-quarter growth.
+    # GDP year-over-year and quarter-over-quarter growth (две раздельные
+    # семьи: nominal — в текущих ценах, real — в постоянных ценах 2021 г.).
     DerivedSpec("gdp-yoy", ("gdp-nominal",), ops.yoy),
     DerivedSpec("gdp-qoq", ("gdp-nominal",), ops.qoq),
+    DerivedSpec("gdp-real-yoy", ("gdp-real",), ops.yoy),
+    DerivedSpec("gdp-real-qoq", ("gdp-real",), ops.qoq),
 
-    # Annual real GDP: sum of 4 quarterly values in constant prices, one
-    # point per complete calendar year.
+    # Annual GDP (one point per complete calendar year):
+    #   - nominal: sum of 4 quarterly values in current prices.
+    #   - real:    sum of 4 quarterly values in constant 2021 prices.
+    DerivedSpec("gdp-nominal-annual", ("gdp-nominal",), ops.annual_sum),
     DerivedSpec("gdp-real-annual", ("gdp-real",), ops.annual_sum),
 
     # Unemployment monthly → quarterly mean and 12-month rolling mean.
