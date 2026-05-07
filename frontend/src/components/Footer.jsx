@@ -66,6 +66,29 @@ export default function Footer() {
 
           <div>
             <h4 className="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-medium">
+              Инструменты
+            </h4>
+            <ul className="space-y-2 text-sm text-text-secondary">
+              <li>
+                <Link to="/calendar" className={footLink}>
+                  Календарь публикаций
+                </Link>
+              </li>
+              <li>
+                <Link to="/compare" className={footLink}>
+                  Сравнение индикаторов
+                </Link>
+              </li>
+              <li>
+                <Link to="/calculator" className={footLink}>
+                  Калькулятор инфляции
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-medium">
               Информация
             </h4>
             <ul className="space-y-2 text-sm text-text-secondary">

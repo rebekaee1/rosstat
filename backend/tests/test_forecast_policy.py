@@ -119,3 +119,47 @@ def test_all_derived_cpi_forecasts_are_api_whitelisted() -> None:
     assert DERIVED_CPI_FORECASTS == EXPECTED_DERIVED_CPI_FORECASTS
     assert CPI_DERIVED_FORECAST_TARGETS == EXPECTED_DERIVED_CPI_FORECASTS
 
+
+# 8-индикатор контракт по семьям ВВП: оба «флагмана» (gdp-nominal, gdp-real)
+# и шесть производных (yoy/qoq/annual для каждой семьи) обязаны иметь
+# запитанный прогноз. Это контракт, защищающий от регрессий вида
+# «после деплоя у одной из вкладок на /indicator/gdp-nominal пропал прогноз».
+GDP_FAMILY_CODES = {
+    "gdp-nominal",
+    "gdp-yoy",
+    "gdp-qoq",
+    "gdp-nominal-annual",
+    "gdp-real",
+    "gdp-real-yoy",
+    "gdp-real-qoq",
+    "gdp-real-annual",
+}
+
+
+def test_all_gdp_family_indicators_have_active_forecast_config() -> None:
+    """Каждый из 8 индикаторов GDP должен попасть в одну из forecast-веток.
+
+    Это структурный тест: smoke API-проверка делается отдельно (см. README
+    раздел про деплой). Здесь мы фиксируем, что seed_data корректно
+    конфигурирует прогноз для всей семьи — иначе после `--forecast-only`
+    retrain какой-то индикатор окажется без прогноза, и UI-вкладка пуста.
+    """
+    by_code = {ind["code"]: ind for ind in INDICATORS}
+    for code in GDP_FAMILY_CODES:
+        assert code in by_code, f"{code} missing from seed_data.INDICATORS"
+        ind = by_code[code]
+        assert ind.get("is_active"), f"{code} must be is_active=True"
+        cfg = ind.get("model_config_json") or {}
+        in_any_track = (
+            code in APPROVED_DIRECT_FORECAST_CODES
+            or code in LIVE_SARIMA_FORECAST_CODES
+            or code in DERIVED_FROM_SOURCE_FORECAST_CODES
+            or code in GENERIC_OLS_FORECAST_CODES
+        )
+        assert in_any_track, (
+            f"{code} not registered in any forecast track "
+            "(approved/live-sarima/derived/generic-ols)"
+        )
+        steps = int(cfg.get("forecast_steps", 0) or 0)
+        assert steps > 0, f"{code} must have forecast_steps>0 (got {steps})"
+

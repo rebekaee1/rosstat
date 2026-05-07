@@ -190,6 +190,7 @@ STATIC_PAGES = [
     ("/privacy", "monthly", "0.3"),
     ("/calculator", "monthly", "0.6"),
     ("/compare", "monthly", "0.6"),
+    ("/calendar", "weekly", "0.7"),
     ("/demographics", "monthly", "0.7"),
 ]
 
