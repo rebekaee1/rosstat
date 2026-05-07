@@ -164,6 +164,9 @@ export default function Navbar() {
           )}
         </div>
 
+        <NavLink to="/calendar" className={linkClass} onClick={closeAll}>
+          Календарь
+        </NavLink>
         <NavLink to="/compare" className={linkClass} onClick={closeAll}>
           Сравнение
         </NavLink>
@@ -231,6 +234,9 @@ export default function Navbar() {
             <div className="mx-2 my-1 h-px bg-border-subtle" />
             <NavLink to="/demographics" className={linkClass} onClick={closeAll}>
               Возрастная структура
+            </NavLink>
+            <NavLink to="/calendar" className={linkClass} onClick={closeAll}>
+              Календарь
             </NavLink>
             <NavLink to="/compare" className={linkClass} onClick={closeAll}>
               Сравнение
