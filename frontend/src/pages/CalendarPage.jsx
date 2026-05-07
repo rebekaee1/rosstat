@@ -133,7 +133,7 @@ export default function CalendarPage() {
   }), [dates, source]);
 
   const { data, isLoading, isError, refetch, isFetching } = useCalendarEvents(apiParams);
-  const { data: upcomingData } = useCalendarUpcoming({ limit: 1, importance_min: 3 });
+  const { data: upcomingData } = useCalendarUpcoming({ limit: 1, importance_min: 2 });
   const nextImportant = upcomingData?.events?.[0] || null;
 
   const allEvents = useMemo(() => data?.events || [], [data]);
@@ -143,10 +143,13 @@ export default function CalendarPage() {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   }, []);
 
+  const isCurrentMonth = year === initYear && month === initMonth;
+
   const visibleEvents = useMemo(() => {
-    if (!selectedDate) return allEvents;
-    return allEvents.filter((e) => e.scheduled_date === selectedDate);
-  }, [allEvents, selectedDate]);
+    if (selectedDate) return allEvents.filter((e) => e.scheduled_date === selectedDate);
+    if (isCurrentMonth) return allEvents.filter((e) => e.scheduled_date >= todayStr);
+    return allEvents;
+  }, [allEvents, selectedDate, isCurrentMonth, todayStr]);
 
   const grouped = useMemo(() => {
     const map = new Map();
