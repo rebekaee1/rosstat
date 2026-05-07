@@ -88,9 +88,28 @@ async def lifespan(app: FastAPI):
             name="Daily ETL (all active indicators: Rosstat, CBR, …)",
             replace_existing=True,
         )
+        from app.services.calendar_seed import seed_calendar
+
+        async def _calendar_refresh_job():
+            try:
+                inserted = await seed_calendar(months_ahead=12)
+                logger.info("Calendar refresh job: %d new events", inserted)
+            except Exception:
+                logger.exception("Calendar refresh job failed")
+
+        scheduler.add_job(
+            _calendar_refresh_job,
+            trigger=CronTrigger(
+                day=1, hour=3, minute=0, timezone="Europe/Moscow",
+            ),
+            id="calendar_refresh",
+            name="Monthly calendar refresh (rolling 12-month window)",
+            replace_existing=True,
+        )
         scheduler.start()
         logger.info(
-            "Scheduler started: daily ETL at %02d:%02d MSK (Europe/Moscow), all is_active indicators",
+            "Scheduler started: daily ETL at %02d:%02d MSK (Europe/Moscow), all is_active indicators; "
+            "calendar refresh on day=1 03:00 MSK",
             settings.scheduler_cron_hour,
             settings.scheduler_cron_minute,
         )
