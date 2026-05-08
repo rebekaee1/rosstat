@@ -70,11 +70,6 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2 text-sm text-text-secondary">
               <li>
-                <Link to="/calendar" className={footLink}>
-                  Календарь публикаций
-                </Link>
-              </li>
-              <li>
                 <Link to="/compare" className={footLink}>
                   Сравнение индикаторов
                 </Link>
