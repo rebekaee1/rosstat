@@ -285,7 +285,7 @@ INDICATORS = [
         "unit": "%",
         "frequency": "monthly",
         "source": "Банк России",
-        "source_url": "https://www.cbr.ru/statistics/pdko/int_rat/",
+        "source_url": "https://www.cbr.ru/statistics/bank_sector/int_rat/",
         "description": (
             "Средневзвешенная процентная ставка по ипотечным жилищным кредитам "
             "физическим лицам-резидентам в рублях."
@@ -317,7 +317,7 @@ INDICATORS = [
         "unit": "%",
         "frequency": "monthly",
         "source": "Банк России",
-        "source_url": "https://www.cbr.ru/statistics/pdko/int_rat/",
+        "source_url": "https://www.cbr.ru/statistics/bank_sector/int_rat/",
         "description": (
             "Средневзвешенная процентная ставка по привлечённым вкладам (депозитам) "
             "физических лиц в рублях, до 1 года включая «до востребования»."
@@ -345,7 +345,7 @@ INDICATORS = [
         "unit": "%",
         "frequency": "monthly",
         "source": "Банк России",
-        "source_url": "https://www.cbr.ru/statistics/pdko/int_rat/",
+        "source_url": "https://www.cbr.ru/statistics/bank_sector/int_rat/",
         "description": (
             "Средневзвешенная процентная ставка по автокредитам "
             "физическим лицам в рублях, по всем срокам."
@@ -382,7 +382,7 @@ INDICATORS = [
         "unit": "%",
         "frequency": "monthly",
         "source": "Банк России",
-        "source_url": "https://www.cbr.ru/statistics/pdko/int_rat/",
+        "source_url": "https://www.cbr.ru/statistics/bank_sector/int_rat/",
         "description": (
             "Средневзвешенная процентная ставка по кредитам нефинансовым "
             "организациям в рублях со сроком погашения до 1 года, включая "
@@ -415,7 +415,7 @@ INDICATORS = [
         "unit": "%",
         "frequency": "monthly",
         "source": "Банк России",
-        "source_url": "https://www.cbr.ru/statistics/pdko/int_rat/",
+        "source_url": "https://www.cbr.ru/statistics/bank_sector/int_rat/",
         "description": (
             "Средневзвешенная процентная ставка по кредитам нефинансовым "
             "организациям в рублях со сроком погашения от 1 года до 3 лет."
@@ -447,7 +447,7 @@ INDICATORS = [
         "unit": "%",
         "frequency": "monthly",
         "source": "Банк России",
-        "source_url": "https://www.cbr.ru/statistics/pdko/int_rat/",
+        "source_url": "https://www.cbr.ru/statistics/bank_sector/int_rat/",
         "description": (
             "Средневзвешенная процентная ставка по кредитам нефинансовым "
             "организациям в рублях со сроком погашения свыше 3 лет."
@@ -479,7 +479,7 @@ INDICATORS = [
         "unit": "%",
         "frequency": "monthly",
         "source": "Банк России",
-        "source_url": "https://www.cbr.ru/statistics/pdko/int_rat/",
+        "source_url": "https://www.cbr.ru/statistics/bank_sector/int_rat/",
         "description": (
             "Средневзвешенная процентная ставка по кредитам физическим лицам "
             "в рублях со сроком погашения до 1 года, включая «до востребования»."
@@ -511,7 +511,7 @@ INDICATORS = [
         "unit": "%",
         "frequency": "monthly",
         "source": "Банк России",
-        "source_url": "https://www.cbr.ru/statistics/pdko/int_rat/",
+        "source_url": "https://www.cbr.ru/statistics/bank_sector/int_rat/",
         "description": (
             "Средневзвешенная процентная ставка по кредитам физическим лицам "
             "в рублях со сроком погашения от 1 года до 3 лет."
@@ -543,7 +543,7 @@ INDICATORS = [
         "unit": "%",
         "frequency": "monthly",
         "source": "Банк России",
-        "source_url": "https://www.cbr.ru/statistics/pdko/int_rat/",
+        "source_url": "https://www.cbr.ru/statistics/bank_sector/int_rat/",
         "description": (
             "Средневзвешенная процентная ставка по кредитам физическим лицам "
             "в рублях со сроком погашения свыше 3 лет."
