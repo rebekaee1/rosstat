@@ -1,4 +1,15 @@
-"""Shared upsert helper for IndicatorData — on_conflict_do_update ensures revisions are captured."""
+"""Shared upsert helper for IndicatorData — on_conflict_do_update ensures revisions are captured.
+
+This is the seam that enforces the ADR-0002 invariant: any source revision
+(value change for an existing date) is automatically picked up at the next ETL.
+The `where=(value != excluded.value)` guard makes repeated upserts of unchanged
+points a no-op — `records_added`/`records_updated` only increment on real change.
+
+See `docs/adr/0002-derived-always-reflects-source.md` for the full invariant
+and its boundaries (pure-revision day limitation).
+See `docs/cbr_sources.md::Идемпотентность вставки` for the same statement
+in source-side terms.
+"""
 
 from datetime import date as _date
 

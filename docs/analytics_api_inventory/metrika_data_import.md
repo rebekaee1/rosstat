@@ -1,5 +1,9 @@
 # Yandex Metrika Data Import API Inventory
 
+**Last verified:** 2026-05-07.
+**Implementation status:** `planned` — нет кода в `backend/app/services/`. Этот файл
+фиксирует целевой контракт; до создания клиента Data Import API на проде не используется.
+
 Base URL: `https://api-metrika.yandex.net`.
 
 Scopes:

@@ -1,4 +1,21 @@
-"""Universal server-rendered SEO HTML for public pages."""
+"""Universal server-rendered SEO HTML for public pages.
+
+This is the implementation of ADR-0003 (SEO single-source-of-truth):
+- Backend renders full HTML with `<title>`, `<meta>`, OG, JSON-LD, visible content.
+- Vite asset hashes are discovered at runtime via `__spa-index.html` (TTL 5 min).
+- Nginx ALWAYS proxies indexable routes (`/`, `/category/*`, `/indicator/*`,
+  `/about|privacy|...`) to backend `/seo/*` — for all User-Agents, not just bots.
+
+Single source of truth for texts: `app/services/seo_content.py`
+(`PAGE_META`, `CATEGORY_META`, `GLOBAL_INDICATOR_BLOCKS`) +
+`Indicator.seo_blocks` JSONB for per-indicator overrides.
+
+`frontend/src/lib/categories.js` duplicates category texts for in-app UI cards
+and MUST stay in sync — see the warning comment in that file and ADR-0003
+"Consequences" section.
+
+See `docs/adr/0003-seo-single-source-server-rendered.md`.
+"""
 
 from __future__ import annotations
 

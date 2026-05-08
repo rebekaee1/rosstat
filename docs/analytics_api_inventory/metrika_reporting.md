@@ -1,5 +1,13 @@
 # Yandex Metrika Reporting API Inventory
 
+**Last verified:** 2026-05-07.
+**Implementation status:** `implemented` — `app/services/yandex_metrika_reporting.py`.
+Все 5 JSON-эндпоинтов (`table`, `bytime`, `drilldown`, `comparison`,
+`comparison_drilldown`) обёрнуты в методы клиента. CSV-варианты (`*.csv`)
+доступны через тот же транспорт `YandexOAuthClient`, но отдельных методов-удобств
+сейчас нет — при необходимости вызов делается напрямую (`response_format='csv'`
+в параметрах). Snapshot-таблицы и аггрегаты в БД заполняются `analytics_ingestion.py`.
+
 Base URL: `https://api-metrika.yandex.net`.
 
 Scope: `metrika:read`.

@@ -1,14 +1,25 @@
 """Pure operations for derived indicators.
 
-These are the formulas behind the seven kinds of derived indicator we host:
+Each function here is **pure** (no I/O, no DB, no Redis): same input → same output.
+The storage seam lives in `calculation_engine.py` (`DerivedSpec` + executor).
+See `docs/adr/0001-derived-indicators-engine-shape.md` for why this split exists,
+and `CONTEXT.md::Derived indicator` for the canonical list of ops + counts.
+When adding a new op: register it in this file, then add a `DerivedSpec` row to
+`calculation_engine.DERIVED_SPECS`, then update CONTEXT.md ops count + ADR-0001
+"Subsequent additions" section.
 
-- quarterly_index   — multiplicative quarterly aggregate of monthly CPI-style indices.
-- annual_inflation  — rolling 12-month CPI inflation as a percent change.
-- yoy               — year-over-year growth in percent vs the same date one year prior.
-- qoq               — change vs the previous data point in the series, in percent.
-- quarterly_avg     — average of three monthly values per quarter (e.g. unemployment).
-- rolling_avg       — trailing N-window average over a monthly series (e.g. annual unemployment).
-- wages_real        — real wage index (2 sources: nominal wages × cumulative CPI).
+Currently there are 9 pure ops behind 28 derived indicators (1 op orphaned —
+`annual_inflation`, replaced by `december_to_december` and `annual_sum` in 2026-05).
+
+- quarterly_index      — multiplicative quarterly aggregate of monthly CPI-style indices.
+- annual_inflation     — rolling 12-month CPI inflation (orphaned in 2026-05, kept for reference).
+- yoy                  — year-over-year growth in percent vs the same date one year prior.
+- qoq                  — change vs the previous data point in the series, in percent.
+- quarterly_avg        — average of three monthly values per quarter (e.g. unemployment).
+- rolling_avg          — trailing N-window average over a monthly series (e.g. annual unemployment).
+- wages_real           — real wage index (2 sources: nominal wages × cumulative CPI).
+- december_to_december — Dec-to-Dec growth; replaces annual_inflation in CPI annual specs.
+- annual_sum           — sum of N quarterly/monthly values per year (gdp-nominal-annual).
 
 Each function takes lists of `(date, value)` tuples and returns a list of
 `(date, value)` tuples. They contain no async, no DB access, no upserts. All

@@ -1,5 +1,15 @@
 # Yandex Webmaster API Inventory
 
+**Last verified:** 2026-05-07.
+**Implementation status:** `partial` — `app/services/yandex_webmaster_client.py`.
+Реализовано: `user`, `hosts`, `host`, `summary`, `diagnostics`, `sitemaps` (read),
+`search_queries_popular`, `recrawl_queue` / `recrawl_quota` / `submit_recrawl`,
+`indexing_history`, `links_internal_broken_samples`. Не реализовано:
+important-urls (+ history), owners, verification (read+start), sqi_history,
+search-urls/in-search и search-urls/events (history+samples), links/external,
+sitemap add/delete (`POST/DELETE user-added-sitemaps`). Эти строки таблицы
+ниже — целевой контракт.
+
 Base URL: `https://api.webmaster.yandex.net`.
 
 Scope: Webmaster OAuth scope required by Yandex for verified site access.

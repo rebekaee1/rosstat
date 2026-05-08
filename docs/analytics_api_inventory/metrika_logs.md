@@ -1,5 +1,12 @@
 # Yandex Metrika Logs API Inventory
 
+**Last verified:** 2026-05-07.
+**Implementation status:** `partial` — `app/services/yandex_metrika_logs.py`.
+Реализовано: `list_requests`, `create_request`, `request_info`, `download_part`,
+`clean_request`. Не реализовано: fields catalog (`logs_fields_catalog`) и
+автоматическая нормализация скачанных TSV в `raw_metrika_visits/hits` —
+сейчас `download_part` возвращает сырой ответ, ingest-pipeline предстоит дописать.
+
 Base URL: `https://api-metrika.yandex.net`.
 
 Scope: `metrika:read`.
