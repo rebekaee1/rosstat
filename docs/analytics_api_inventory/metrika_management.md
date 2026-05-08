@@ -1,5 +1,13 @@
 # Yandex Metrika Management API Inventory
 
+**Last verified:** 2026-05-07.
+**Implementation status:** `partial` — `app/services/yandex_metrika_management.py`.
+Реализовано: `counters` (list/get), `goals` (list + create/update/delete с флагом
+`approved=true`), `filters` (list), `grants` (list). Не реализовано: counter
+create/edit (high_risk_write), filter create/update/delete, operations,
+labels, segments, notes, Yandex Direct links. Эти строки таблицы ниже —
+целевой контракт для будущих доработок.
+
 Base URL: `https://api-metrika.yandex.net`.
 
 Read scope: `metrika:read`.

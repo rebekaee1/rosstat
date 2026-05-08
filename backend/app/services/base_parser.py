@@ -27,7 +27,16 @@ Hook'и (опциональны):
 - `_validate(points, cfg)` — кастомная нормализация/проверка (по умолчанию
   вызывается `data_validator.validate_points`).
 
-См. ADR (TBD) — «ETL parser as a Template Method, not 22 repeated runs».
+Idempotency contract: `bulk_upsert` (ON CONFLICT DO UPDATE WHERE value differs)
+guarantees that re-running the same parser on the same day is a no-op for
+unchanged points and picks up source revisions automatically. This is the
+pre-condition for the ADR-0002 invariant.
+
+See:
+- `CONTEXT.md::Parser` — domain glossary entry.
+- `docs/cbr_sources.md` — inventory of all non-Rosstat parsers.
+- `docs/adr/0002-derived-always-reflects-source.md` — invariant tied to upsert behavior.
+- ADR (TBD) — «ETL parser as a Template Method, not 22 repeated runs».
 """
 
 from __future__ import annotations

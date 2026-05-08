@@ -13,6 +13,13 @@ This module owns the seam between **the formula** (pure, in `derived_ops`) and
   1. add (or reuse) a pure op in `derived_ops.py`,
   2. append a `DerivedSpec(...)` entry to `DERIVED_SPECS` below,
   3. ensure both source and destination indicators are seeded.
+
+Architectural decisions:
+- `docs/adr/0001-derived-indicators-engine-shape.md` — declarative DSL +
+  pure ops as the engine shape (28 specs, 9 ops as of 2026-05-07).
+- `docs/adr/0002-derived-always-reflects-source.md` — invariant that derived
+  always reflects current source state.
+- See also `CONTEXT.md::Derived indicator` for the domain glossary.
 """
 
 from __future__ import annotations

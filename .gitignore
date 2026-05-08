@@ -51,7 +51,8 @@ ENV/
 
 # Auto-sync
 .auto-sync.log
-.cursor/
+.cursor/*
+!.cursor/rules/
 
 # Local working folders (not part of the project)
 правки/
