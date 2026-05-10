@@ -1,6 +1,6 @@
 # Внешние не-Росстат источники: ЦБ РФ и Минфин
 
-**Last updated:** 2026-05-07.
+**Last updated:** 2026-05-10.
 **Part of:** [`../AGENTS.md`](../AGENTS.md), [`../CONTEXT.md`](../CONTEXT.md) (раздел `Parser` + `Source`).
 **See also:** [`adr/0002-derived-always-reflects-source.md`](adr/0002-derived-always-reflects-source.md) (инвариант `bulk_upsert`).
 **Code anchors:** `backend/app/services/cbr_*.py`, `backend/app/services/minfin_budget_parser.py`, `backend/app/services/upsert.py::bulk_upsert`, `backend/seed_data.py`.
@@ -126,6 +126,15 @@ RETURNING id
 ## Расписание
 
 Те же `daily_update_job` и `calendar_refresh` из `app/tasks/scheduler.py` (см. `enterprise_resilience.md` и `CONTEXT.md`). Daily ETL обходит **все** индикаторы с `is_active=true`, включая описанные выше CBR/Минфин — отдельных расписаний нет.
+
+Calendar publication dates are source-bound (ADR-0005):
+
+- CBR daily official-rule events use `cbr.ru/statistics/indcalendar/` + versioned Russian working calendar for `usd-rub`, `eur-rub`, `cny-rub`, `gold-price`, `ruonia`.
+- CBR monthly/quarterly/weekly publication dates use official `vCalendar.ics` from the same page for M0/M1/M2, reserves, credits/deposits, credit/deposit rates, mortgage, goods/services trade, current account, external debt, FDI.
+- CBR key-rate meeting/summary dates use official monetary-policy calendar `cbr.ru/dkp/cal_mp/`.
+- Minfin budget dates use official `minfin.gov.ru/ru/statistics/schedule`; revenue/expenditure/deficit share the 14th-working-day release.
+
+`auto-loan-rate` remains uncovered by calendar until an official calendar row/rule is found; estimated dates are not published.
 
 ## Ручной запуск отдельного индикатора
 

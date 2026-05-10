@@ -17,6 +17,29 @@ CACHE_TTL = 900  # 15 min
 PUBLIC_CONFIDENCES = ("official_explicit", "official_rule")
 
 
+def _public_calendar_conditions():
+    """Rows visible to users must be source-bound, not only confidence-tagged."""
+    return [
+        EconomicEvent.date_confidence.in_(PUBLIC_CONFIDENCES),
+        EconomicEvent.is_estimated.is_(False),
+        EconomicEvent.event_key.is_not(None),
+        EconomicEvent.source_url.is_not(None),
+        EconomicEvent.source_hash.is_not(None),
+        EconomicEvent.last_seen_at.is_not(None),
+    ]
+
+
+def _is_public_source_bound_event(ev: EconomicEvent) -> bool:
+    return (
+        ev.date_confidence in PUBLIC_CONFIDENCES
+        and ev.is_estimated is False
+        and bool(ev.event_key)
+        and bool(ev.source_url)
+        and bool(ev.source_hash)
+        and ev.last_seen_at is not None
+    )
+
+
 def _effective_status(ev: EconomicEvent) -> str:
     """Auto-promote 'scheduled' → 'released' when the date has passed."""
     if ev.status == "scheduled" and ev.scheduled_date < date.today():
@@ -67,7 +90,7 @@ async def list_events(
     if not to_date:
         to_date = from_date + timedelta(days=60)
 
-    cache_key = f"fe:calendar:official:{from_date}:{to_date}:{source}:{importance}:{event_type}:{limit}:{offset}"
+    cache_key = f"fe:calendar:sourcebound:{from_date}:{to_date}:{source}:{importance}:{event_type}:{limit}:{offset}"
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -75,7 +98,7 @@ async def list_events(
     conditions = [
         EconomicEvent.scheduled_date >= from_date,
         EconomicEvent.scheduled_date <= to_date,
-        EconomicEvent.date_confidence.in_(PUBLIC_CONFIDENCES),
+        *_public_calendar_conditions(),
     ]
     if source:
         sources = [s.strip() for s in source.split(",")]
@@ -116,7 +139,7 @@ async def upcoming_events(
     limit: int = Query(10, ge=1, le=50),
     importance_min: int = Query(1, ge=1, le=3),
 ):
-    cache_key = f"fe:calendar:upcoming:official:{limit}:{importance_min}"
+    cache_key = f"fe:calendar:upcoming:sourcebound:{limit}:{importance_min}"
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -128,7 +151,7 @@ async def upcoming_events(
         .where(
             EconomicEvent.scheduled_date >= today,
             EconomicEvent.importance >= importance_min,
-            EconomicEvent.date_confidence.in_(PUBLIC_CONFIDENCES),
+            *_public_calendar_conditions(),
         )
         .order_by(EconomicEvent.scheduled_date, EconomicEvent.importance.desc())
         .limit(limit)
@@ -147,7 +170,7 @@ async def get_event(event_id: int, db: AsyncSession = Depends(get_db)):
         .outerjoin(Indicator, EconomicEvent.indicator_id == Indicator.id)
         .where(
             EconomicEvent.id == event_id,
-            EconomicEvent.date_confidence.in_(PUBLIC_CONFIDENCES),
+            *_public_calendar_conditions(),
         )
     )
     row = (await db.execute(stmt)).first()
@@ -186,7 +209,7 @@ async def export_ical(
             EconomicEvent.scheduled_date >= from_date,
             EconomicEvent.scheduled_date <= to_date,
             EconomicEvent.importance >= importance_min,
-            EconomicEvent.date_confidence.in_(PUBLIC_CONFIDENCES),
+            *_public_calendar_conditions(),
         )
         .order_by(EconomicEvent.scheduled_date)
         .limit(500)

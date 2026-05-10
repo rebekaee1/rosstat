@@ -50,7 +50,7 @@
 - **FastAPI** + **Uvicorn** — async REST API.
 - **PostgreSQL 16** + **SQLAlchemy 2** (asyncpg) + **Alembic**.
 - **Redis 7** — кэш форкаст-результатов и rate limit.
-- **APScheduler** — ежедневный ETL (06:00 MSK), монтонный refresh календаря (1-е число 03:00 MSK), опциональный analytics scheduler (hourly :15 + daily).
+- **APScheduler** — ежедневный ETL (06:00 MSK), daily refresh official-source календаря (03:00 MSK), опциональный analytics scheduler (hourly :15 + daily).
 - **statsmodels** — 8 forecast strategies (`forecast_v2`, `arima`, `sarima`, `derived_forecast`, `derived_transform`, `weekly_yoy`, `approved`, `none`).
 - **pandas / openpyxl / xlrd / beautifulsoup4 / requests / httpx** — парсинг XLSX, HTML и API.
 - **Alerting** — JSON-логи в stdout + Telegram-канал для критических сбоев.

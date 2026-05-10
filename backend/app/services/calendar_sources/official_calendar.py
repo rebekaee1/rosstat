@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import re
+import hashlib
 from datetime import date, datetime, timedelta
 
 import requests
@@ -12,6 +13,7 @@ from app.database import async_session as async_session_factory
 from app.services.calendar_sources.common import CalendarCandidate, stable_key, upsert_calendar_candidates
 from app.services.calendar_sources.working_calendar import (
     calendar_source_url,
+    is_working_day,
     next_month,
     nth_working_day,
 )
@@ -20,6 +22,7 @@ logger = logging.getLogger(__name__)
 
 CBR_CALENDAR_PAGE = "https://www.cbr.ru/statistics/indcalendar/"
 CBR_ICS_URL = "https://www.cbr.ru/Queries/FileSource/105732/vCalendar.ics?inline=True"
+CBR_MONETARY_POLICY_CALENDAR_URL = "https://cbr.ru/dkp/cal_mp/"
 MINFIN_SCHEDULE_URL = "https://minfin.gov.ru/ru/statistics/schedule"
 ROSSTAT_CPI_RULE_URL = "https://rosstat.gov.ru/free_doc/new_site/prices/ipc.htm"
 ROSSTAT_PRICE_URL = "https://rosstat.gov.ru/statistics/price"
@@ -40,6 +43,33 @@ ROSSTAT_MONTHLY_RULES = [
         "title": "Индекс потребительских цен (ИПЦ)",
         "title_en": "Consumer Price Index (CPI)",
         "importance": 3,
+        "nth_workday": 9,
+        "source_url": ROSSTAT_CPI_RULE_URL,
+        "rule": "9-й рабочий день месяца, следующего за отчетным периодом",
+    },
+    {
+        "code": "cpi-food",
+        "title": "ИПЦ на продовольственные товары",
+        "title_en": "CPI Food",
+        "importance": 2,
+        "nth_workday": 9,
+        "source_url": ROSSTAT_CPI_RULE_URL,
+        "rule": "9-й рабочий день месяца, следующего за отчетным периодом",
+    },
+    {
+        "code": "cpi-nonfood",
+        "title": "ИПЦ на непродовольственные товары",
+        "title_en": "CPI Non-food",
+        "importance": 2,
+        "nth_workday": 9,
+        "source_url": ROSSTAT_CPI_RULE_URL,
+        "rule": "9-й рабочий день месяца, следующего за отчетным периодом",
+    },
+    {
+        "code": "cpi-services",
+        "title": "ИПЦ на услуги",
+        "title_en": "CPI Services",
+        "importance": 2,
         "nth_workday": 9,
         "source_url": ROSSTAT_CPI_RULE_URL,
         "rule": "9-й рабочий день месяца, следующего за отчетным периодом",
@@ -139,19 +169,124 @@ MINFIN_RULES = [
         "title_en": "Federal Budget Expenditure",
         "importance": 2,
     },
+    {
+        "code": "budget-deficit",
+        "title": "Дефицит/профицит федерального бюджета",
+        "title_en": "Federal Budget Deficit/Surplus",
+        "importance": 2,
+    },
 ]
 
-CBR_KEYWORDS = [
-    ("international-reserves", "Международные резервы РФ", "International Reserves", 2,
-     ("международн", "international reserves")),
-    ("m2", "Денежная масса М2", "Money Supply M2", 2,
-     ("денежная масса", "money supply")),
-    ("external-debt", "Внешний долг РФ", "External Debt of the Russian Federation", 1,
-     ("внешний долг", "external debt")),
-    ("current-account", "Текущий счёт платёжного баланса", "Current Account", 2,
-     ("текущ", "current account")),
-    ("key-rate", "Ключевая ставка Банка России", "Bank of Russia Key Rate", 3,
-     ("ключевая ставка", "key rate")),
+CBR_KEY_RATE_MEETINGS_2026 = [
+    {"date": date(2026, 2, 13), "has_forecast": True, "summary_date": date(2026, 2, 26)},
+    {"date": date(2026, 3, 20), "has_forecast": False, "summary_date": date(2026, 4, 1)},
+    {"date": date(2026, 4, 24), "has_forecast": True, "summary_date": date(2026, 5, 12)},
+    {"date": date(2026, 6, 19), "has_forecast": False, "summary_date": date(2026, 7, 1)},
+    {"date": date(2026, 7, 24), "has_forecast": True, "summary_date": date(2026, 8, 5)},
+    {"date": date(2026, 9, 11), "has_forecast": False, "summary_date": date(2026, 9, 23)},
+    {"date": date(2026, 10, 23), "has_forecast": True, "summary_date": date(2026, 11, 4)},
+    {"date": date(2026, 12, 18), "has_forecast": False, "summary_date": date(2026, 12, 29)},
+]
+
+CBR_DAILY_RULES = [
+    {
+        "code": "usd-rub",
+        "title": "Официальный курс доллара США",
+        "title_en": "Official USD/RUB Exchange Rate",
+        "scheduled_time": None,
+        "importance": 1,
+        "source_url": "https://www.cbr.ru/currency_base/",
+        "rule": "ежедневно по рабочим дням",
+    },
+    {
+        "code": "eur-rub",
+        "title": "Официальный курс евро",
+        "title_en": "Official EUR/RUB Exchange Rate",
+        "scheduled_time": None,
+        "importance": 1,
+        "source_url": "https://www.cbr.ru/currency_base/",
+        "rule": "ежедневно по рабочим дням",
+    },
+    {
+        "code": "cny-rub",
+        "title": "Официальный курс юаня",
+        "title_en": "Official CNY/RUB Exchange Rate",
+        "scheduled_time": None,
+        "importance": 1,
+        "source_url": "https://www.cbr.ru/currency_base/",
+        "rule": "ежедневно по рабочим дням",
+    },
+    {
+        "code": "gold-price",
+        "title": "Учётная цена на золото",
+        "title_en": "Official Gold Accounting Price",
+        "scheduled_time": None,
+        "importance": 1,
+        "source_url": "https://www.cbr.ru/hd_base/metall/metall_base_new/",
+        "rule": "ежедневно по рабочим дням",
+    },
+    {
+        "code": "ruonia",
+        "title": "Ставка RUONIA",
+        "title_en": "RUONIA Rate",
+        "scheduled_time": "15:00",
+        "importance": 2,
+        "source_url": "https://www.cbr.ru/hd_base/ruonia/",
+        "rule": "ежедневно по рабочим дням до 15:00",
+    },
+]
+
+CBR_EVENT_RULES = [
+    (("key-rate",), "Резюме обсуждения ключевой ставки", "Key Rate Discussion Summary", "report", 2,
+     (("резюме", "ключев"), ("summary", "key rate"))),
+    (("key-rate",), "Заседание ЦБ по ключевой ставке", "CBR Key Rate Decision", "rate_decision", 3,
+     (("заседание", "ключев"), ("совет директоров", "ключев"), ("key rate decision",))),
+    (("international-reserves",), "Международные резервы РФ", "International Reserves", "data_release", 2,
+     (("международн", "резерв"), ("international reserves",))),
+    (("m2",), "Денежная масса М2", "Money Supply M2", "data_release", 2,
+     (("денежная масса м2",), ("money supply",))),
+    (("m0", "m1"), "Денежные агрегаты", "Monetary Aggregates", "data_release", 1,
+     (("денежные агрегаты",),)),
+    (("business-credit",), "Кредиты юридическим лицам",
+     "Corporate Credit", "data_release", 1,
+     (("сведения о размещенных средствах", "юридическим лицам"),)),
+    (("consumer-credit",), "Кредиты физическим лицам",
+     "Household Credit", "data_release", 1,
+     (("сведения о размещенных средствах", "физическим лицам"),)),
+    (("deposits-business", "deposits-individual"), "Привлечённые средства организаций и физлиц",
+     "Deposits of Businesses and Households", "data_release", 1,
+     (("сведения о привлеченных средствах",),)),
+    ((
+        "credit-rate-corp-short",
+        "credit-rate-corp-1to3y",
+        "credit-rate-corp-over3y",
+        "credit-rate-ind-short",
+        "credit-rate-ind-1to3y",
+        "credit-rate-ind-over3y",
+        "deposit-rate",
+    ), "Средневзвешенные ставки по кредитам и депозитам",
+     "Weighted Average Credit and Deposit Rates", "data_release", 1,
+     (("средневзвешенные", "ставки", "кредитам", "депозитам"),)),
+    (("mortgage-rate",), "Показатели ипотечного жилищного кредитования",
+     "Mortgage Lending Market Indicators", "data_release", 1,
+     (("показатели рынка жилищного", "кредитования"),)),
+    (("auto-loan-rate",), "Показатели рынка автокредитования",
+     "Auto Loan Market Indicators", "data_release", 1,
+     (("автокредит",),)),
+    (("exports", "imports", "trade-balance"), "Внешняя торговля товарами",
+     "External Trade in Goods", "data_release", 2,
+     (("внешняя торговля", "товарами"),)),
+    (("services-exports", "services-imports"), "Внешняя торговля услугами",
+     "External Trade in Services", "data_release", 1,
+     (("внешняя торговля", "услугами по месяцам"),)),
+    (("current-account",), "Счёт текущих операций платёжного баланса", "Current Account", "data_release", 2,
+     (("счет текущих операций",), ("счёт текущих операций",), ("current account",))),
+    (("external-debt",), "Внешний долг РФ", "External Debt of the Russian Federation", "data_release", 1,
+     (("внешний долг российской федерации",), ("external debt",))),
+    (("fdi-net",), "Прямые инвестиции РФ", "Foreign Direct Investment", "data_release", 1,
+     (("прямые инвестиции", "российской федерации"),)),
+    (("key-rate",), "Ключевая ставка Банка России", "Bank of Russia Key Rate", "data_release", 3,
+     (("ключевая ставка",), ("key rate",))),
 ]
 
 
@@ -163,6 +298,8 @@ async def refresh_official_calendar(
 ) -> int:
     today = today or date.today()
     candidates = build_rule_candidates(today=today, months_ahead=months_ahead)
+    candidates.extend(build_cbr_daily_rule_candidates(today=today, months_ahead=months_ahead))
+    candidates.extend(build_cbr_monetary_policy_candidates(today=today, months_ahead=months_ahead))
     candidates.extend(fetch_cbr_calendar_candidates(today=today, months_ahead=months_ahead))
 
     if db is not None:
@@ -268,6 +405,93 @@ def build_minfin_rule_candidates(*, today: date, months_ahead: int) -> list[Cale
     return candidates
 
 
+def build_cbr_monetary_policy_candidates(*, today: date, months_ahead: int) -> list[CalendarCandidate]:
+    candidates: list[CalendarCandidate] = []
+    horizon = today + timedelta(days=months_ahead * 31)
+    cutoff = today - timedelta(days=14)
+    for meeting in CBR_KEY_RATE_MEETINGS_2026:
+        meeting_date = meeting["date"]
+        if cutoff <= meeting_date <= horizon:
+            label = "опорное" if meeting["has_forecast"] else "промежуточное"
+            candidates.append(CalendarCandidate(
+                event_key=stable_key("cbr", "key-rate-decision", meeting_date.isoformat()),
+                title=f"Заседание ЦБ по ключевой ставке ({label})",
+                title_en=f"CBR Key Rate Decision ({'core' if meeting['has_forecast'] else 'interim'})",
+                event_type="rate_decision",
+                source="cbr",
+                indicator_code="key-rate",
+                scheduled_date=meeting_date,
+                scheduled_time="13:30",
+                date_confidence="official_explicit",
+                importance=3,
+                source_url=CBR_MONETARY_POLICY_CALENDAR_URL,
+                source_event_uid=f"cbr-key-rate-decision-{meeting_date.isoformat()}",
+                description=(
+                    "Пресс-релиз в 13:30 МСК, пресс-конференция в 15:00 МСК."
+                    + (" С публикацией среднесрочного прогноза." if meeting["has_forecast"] else "")
+                ),
+                metadata={
+                    "calendar_url": CBR_MONETARY_POLICY_CALENDAR_URL,
+                    "has_forecast": meeting["has_forecast"],
+                    "schedule_year": 2026,
+                },
+            ))
+
+        summary_date = meeting["summary_date"]
+        if cutoff <= summary_date <= horizon:
+            candidates.append(CalendarCandidate(
+                event_key=stable_key("cbr", "key-rate-summary", summary_date.isoformat()),
+                title="Резюме обсуждения ключевой ставки",
+                title_en="Key Rate Discussion Summary",
+                event_type="report",
+                source="cbr",
+                indicator_code="key-rate",
+                scheduled_date=summary_date,
+                date_confidence="official_explicit",
+                importance=2,
+                source_url=CBR_MONETARY_POLICY_CALENDAR_URL,
+                source_event_uid=f"cbr-key-rate-summary-{summary_date.isoformat()}",
+                metadata={
+                    "calendar_url": CBR_MONETARY_POLICY_CALENDAR_URL,
+                    "schedule_year": 2026,
+                },
+            ))
+    return candidates
+
+
+def build_cbr_daily_rule_candidates(*, today: date, months_ahead: int) -> list[CalendarCandidate]:
+    candidates: list[CalendarCandidate] = []
+    horizon = today + timedelta(days=months_ahead * 31)
+    cutoff = today - timedelta(days=14)
+    cursor = cutoff
+    while cursor <= horizon:
+        source_url = calendar_source_url(cursor.year)
+        if source_url and is_working_day(cursor):
+            for rule in CBR_DAILY_RULES:
+                candidates.append(CalendarCandidate(
+                    event_key=stable_key("cbr", rule["code"], cursor.isoformat()),
+                    title=rule["title"],
+                    title_en=rule["title_en"],
+                    event_type="data_release",
+                    source="cbr",
+                    indicator_code=rule["code"],
+                    scheduled_date=cursor,
+                    scheduled_time=rule["scheduled_time"],
+                    date_confidence="official_rule",
+                    importance=rule["importance"],
+                    source_url=rule["source_url"],
+                    source_event_uid=f"cbr-{rule['code']}-{cursor.isoformat()}",
+                    description=f"Дата рассчитана по официальному календарю ЦБ: {rule['rule']}.",
+                    metadata={
+                        "rule": rule["rule"],
+                        "calendar_url": CBR_CALENDAR_PAGE,
+                        "working_calendar_source": source_url,
+                    },
+                ))
+        cursor += timedelta(days=1)
+    return candidates
+
+
 def fetch_cbr_calendar_candidates(*, today: date, months_ahead: int) -> list[CalendarCandidate]:
     try:
         page = requests.get(CBR_CALENDAR_PAGE, timeout=20)
@@ -275,6 +499,7 @@ def fetch_cbr_calendar_candidates(*, today: date, months_ahead: int) -> list[Cal
         ics_url = _extract_cbr_ics_url(page.text) or CBR_ICS_URL
         response = requests.get(ics_url, timeout=20)
         response.raise_for_status()
+        response.encoding = "utf-8"
         return parse_cbr_ics(response.text, source_url=ics_url, today=today, months_ahead=months_ahead)
     except Exception:
         logger.exception("Failed to fetch CBR official calendar")
@@ -300,29 +525,29 @@ def parse_cbr_ics(
             event.get("DESCRIPTION", ""),
             event.get("URL", ""),
         ]).lower()
-        matched = _match_cbr_indicator(blob)
-        if not matched:
+        matches = _match_cbr_events(blob)
+        if not matches:
             continue
-        code, title, title_en, importance = matched
-        uid = event.get("UID") or stable_key(code, event.get("SUMMARY", ""), scheduled.isoformat())
+        uid = _compact_source_uid(event.get("UID") or stable_key(event.get("SUMMARY", ""), scheduled.isoformat()))
         scheduled_time = _parse_ics_time(event.get("DTSTART"))
-        candidates.append(CalendarCandidate(
-            event_key=stable_key("cbr", code, uid),
-            title=title,
-            title_en=title_en,
-            event_type="data_release",
-            source="cbr",
-            indicator_code=code,
-            scheduled_date=scheduled,
-            scheduled_time=scheduled_time,
-            date_confidence="official_explicit",
-            reference_period=_reference_from_text(event.get("SUMMARY", "") + " " + event.get("DESCRIPTION", "")),
-            importance=importance,
-            source_url=event.get("URL") or source_url,
-            source_event_uid=uid,
-            description=event.get("SUMMARY"),
-            metadata={"calendar_url": source_url, "raw_summary": event.get("SUMMARY")},
-        ))
+        for code, title, title_en, event_type, importance in matches:
+            candidates.append(CalendarCandidate(
+                event_key=stable_key("cbr", code, uid, scheduled.isoformat()),
+                title=title,
+                title_en=title_en,
+                event_type=event_type,
+                source="cbr",
+                indicator_code=code,
+                scheduled_date=scheduled,
+                scheduled_time=scheduled_time,
+                date_confidence="official_explicit",
+                reference_period=_reference_from_text(event.get("SUMMARY", "") + " " + event.get("DESCRIPTION", "")),
+                importance=importance,
+                source_url=event.get("URL") or source_url,
+                source_event_uid=uid,
+                description=event.get("SUMMARY"),
+                metadata={"calendar_url": source_url, "raw_summary": event.get("SUMMARY")},
+            ))
     return candidates
 
 
@@ -393,11 +618,20 @@ def _parse_ics_time(value: str | None) -> str | None:
     return f"{part[:2]}:{part[2:4]}"
 
 
-def _match_cbr_indicator(blob: str) -> tuple[str, str, str, int] | None:
-    for code, title, title_en, importance, keywords in CBR_KEYWORDS:
-        if any(keyword in blob for keyword in keywords):
-            return code, title, title_en, importance
-    return None
+def _compact_source_uid(value: str) -> str:
+    cleaned = value.strip()
+    if len(cleaned) <= 120:
+        return cleaned
+    return "sha256:" + hashlib.sha256(cleaned.encode("utf-8")).hexdigest()
+
+
+def _match_cbr_events(blob: str) -> list[tuple[str, str, str, str, int]]:
+    matches: list[tuple[str, str, str, str, int]] = []
+    for codes, title, title_en, event_type, importance, keyword_groups in CBR_EVENT_RULES:
+        if any(all(keyword in blob for keyword in group) for group in keyword_groups):
+            for code in codes:
+                matches.append((code, title, title_en, event_type, importance))
+    return matches
 
 
 def _reference_from_text(text: str) -> str | None:

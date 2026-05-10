@@ -149,7 +149,7 @@
 
 Daily ETL (06:00 МСК, `RUSTATS_SCHEDULER_CRON_HOUR/MINUTE`) запускает все `is_active=True` non-derived индикаторы → `CalculationEngine.run_for_updated_sources` для derived (если хотя бы один parser добавил новые строки) → `_promote_past_events` для календаря.
 
-**Calendar refresh** (`calendar_refresh` job): отдельный daily cron 03:00 МСК прокатывает `seed_calendar(months_ahead=12)`, который теперь вызывает official calendar ingest (`calendar_sources.official_calendar`). Public API отдаёт только `date_confidence IN ('official_explicit', 'official_rule')`; estimated rows остаются внутренним fallback и скрыты (см. термин «Calendar event» и ADR-0005).
+**Calendar refresh** (`calendar_refresh` job): отдельный daily cron 03:00 МСК прокатывает `seed_calendar(months_ahead=12)`, который теперь вызывает official calendar ingest (`calendar_sources.official_calendar`). Public API отдаёт только source-bound rows: `date_confidence IN ('official_explicit', 'official_rule')`, `is_estimated = false`, заполнены `event_key`, `source_url`, `source_hash`, `last_seen_at`. Estimated rows и legacy backfill без provenance остаются внутренним fallback и скрыты (см. термин «Calendar event» и ADR-0005).
 
 **Analytics scheduler** (опционально): если `RUSTATS_ANALYTICS_SCHEDULER_ENABLED=true` — два дополнительных cron-а: hourly :15 (Yandex Metrika reporting sync) и daily (management snapshot). По умолчанию выключен.
 
@@ -161,7 +161,7 @@ Daily ETL (06:00 МСК, `RUSTATS_SCHEDULER_CRON_HOUR/MINUTE`) запускае�
 
 ### Calendar event
 
-Запись в `EconomicEvent` для расписания публикаций (релиз CPI Росстата, заседание совета директоров ЦБ, недельный ИПЦ Росстата, международные резервы РФ). После ADR-0005 public calendar **source-bound**: событие показывается пользователю только если `date_confidence = official_explicit` (официальная дата из календаря/ICS/страницы) или `official_rule` (дата рассчитана по опубликованному правилу + versioned `ru_working_calendar` с source_url). `estimated` rows скрыты из `/api/v1/calendar`, `/upcoming` и iCal. Переносы обновляются по stable `event_key`, старая дата хранится в `metadata_json.reschedule_audit`. Статус `scheduled` → `released` автоматически промотится по `scheduled_date < today`.
+Запись в `EconomicEvent` для расписания публикаций (релиз CPI Росстата, заседание совета директоров ЦБ, недельный ИПЦ Росстата, международные резервы РФ). После ADR-0005 public calendar **source-bound**: событие показывается пользователю только если `date_confidence = official_explicit` (официальная дата из календаря/ICS/страницы) или `official_rule` (дата рассчитана по опубликованному правилу + versioned `ru_working_calendar` с source_url), `is_estimated = false`, и заполнены `event_key`, `source_url`, `source_hash`, `last_seen_at`. `estimated` rows и миграционные legacy rows без provenance скрыты из `/api/v1/calendar`, `/upcoming` и iCal. Переносы обновляются по stable `event_key`, старая дата хранится в `metadata_json.reschedule_audit`. Статус `scheduled` → `released` автоматически промотится по `scheduled_date < today`.
 
 ### Embed widget
 
@@ -285,9 +285,9 @@ docker compose exec backend python -c \
 
 **GDP history extension до 1995 (2026-05-10)**: 5/5 GDP source-индикаторов продлены с 60 до **124 точек** (1995-Q1 → 2025-Q4) через **ratio-splice на overlap-году 2011** — pure-функция `splice_at_overlap(history, modern, overlap_year)` в `rosstat_gdp_parser.py`. Калибрует `ratio = mean(modern_2011) / mean(history_2011)`, scale'ит historical-точки (year < 2011) к base modern-методологии (для nominal: ОКВЭД2007 → ОКВЭД2, ratio ~1.074; для real: в ценах 2008 → в ценах 2021, ratio ~2.81). Standard economic-series splice техника (ОЭСР/МВФ practice). Конфиг per индикатор — `gdp_history_sheet` + `gdp_overlap_year` в `model_config_json`. Закрыта прямая жалоба руководителя 08.05.2026 «у Росстата с 1995, у нас почему-то с 2011». Trap, выловленная на data: Rosstat Excel хранит часть значений как СТРОКИ с Russian decimal + footnote suffix («1662,82)» = 1662,8 + footnote 2) → добавлен `_parse_ru_number` хелпер.
 
-### Calendar weekly events
+### Calendar source coverage
 
-Три `WeeklySpec` в `calendar_seed.py`: четверг 16:00 МСК — Международные резервы РФ (CBR, importance=2, по СCРД МВФ); пятница 11:00 — Денежная база узкая (CBR, importance=1); среда (без точного времени) — недельный ИПЦ (Росстат, importance=2). Реальные даты могут смещаться из-за длинных праздничных периодов (например, в мае 2026 reserves публикация смещена с четверга 7 мая на пятницу 8 мая) — генератор этого не учитывает и ставит на канонический weekday. Для точных дат в перспективе подключить парсер `cbr.ru/Queries/FileSource/96347/vCalendar.ics`.
+Legacy `WeeklySpec` / `typical_day` builders в `calendar_seed.py` оставлены только для debug/tests старой плотности календаря. Public ingest идёт через `calendar_sources.official_calendar`: CBR official daily rules (`indcalendar`) для FX/RUONIA/gold; CBR official ICS (`indcalendar` / `vCalendar.ics`) для резервов, M0/M1/M2, кредитов/депозитов, ставок, ипотеки, внешнего сектора, долга; CBR official monetary-policy schedule (`cbr.ru/dkp/cal_mp/`) для заседаний и резюме по ключевой ставке; Rosstat/Minfin rule-events только по опубликованным правилам и versioned working calendar. После добора 2026-05-10 local source-bound coverage: 46/76 source codes, 1208 public events, `bad_public_rows=0`. Если источника/правила нет — событие не показывается, пока не будет донабрано через official parser/rule.
 
 ---
 
