@@ -1,38 +1,28 @@
-"""Tests for Rosstat SDDS PPI (Producer Price Index) parser."""
+"""Tests for Rosstat PPI parser (canonical русский Rosstat PDF)."""
 
-import io
-from datetime import date
-
-import openpyxl
-
-from app.services.rosstat_ppi_parser import parse_ppi_xlsx
+from app.services.rosstat_ppi_parser import parse_ppi_mom_from_report
 
 
-def _make_ppi_xlsx() -> bytes:
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Price indices_2010"
+class TestParsePpiMomFromReport:
+    def test_extracts_first_value(self):
+        text = "Индекс цен производителей промышленных товаров   98,2 102,0  96,0 105,9  98,5 108,4"
+        assert parse_ppi_mom_from_report(text) == 98.2
 
-    ws.append(["SDDS", None, "01.2024", "02.2024", "03.2024"])
-    ws.append(["CPI", None, 100.73, 100.86, 100.39])
-    ws.append(["PPI", None, 185.2, 188.5, 190.1])
+    def test_handles_extra_whitespace(self):
+        text = "  Индекс  цен производителей  промышленных товаров     101,5    102,0"
+        assert parse_ppi_mom_from_report(text) == 101.5
 
-    buf = io.BytesIO()
-    wb.save(buf)
-    return buf.getvalue()
+    def test_no_match_returns_none(self):
+        assert parse_ppi_mom_from_report("nothing relevant here") is None
 
+    def test_value_out_of_range_filtered(self):
+        text = "Индекс цен производителей промышленных товаров   500,0 102,0"
+        assert parse_ppi_mom_from_report(text) is None
 
-class TestParsePpiXlsx:
-    def test_basic(self):
-        content = _make_ppi_xlsx()
-        result = parse_ppi_xlsx(content)
-        assert len(result) == 3
-        assert result[0].date == date(2024, 1, 1)
-        assert result[0].value == 185.2
-        assert result[2].value == 190.1
+    def test_decimal_with_comma(self):
+        text = "Индекс цен производителей промышленных товаров   99,8 100,1"
+        assert parse_ppi_mom_from_report(text) == 99.8
 
-    def test_sorted(self):
-        content = _make_ppi_xlsx()
-        result = parse_ppi_xlsx(content)
-        dates = [p.date for p in result]
-        assert dates == sorted(dates)
+    def test_decimal_with_dot(self):
+        text = "Индекс цен производителей промышленных товаров   99.8 100.1"
+        assert parse_ppi_mom_from_report(text) == 99.8

@@ -1,11 +1,20 @@
-"""ETL: Росстат SDDS Price Indices XLSX → IndicatorData (PPI).
+"""ETL: Росстат PPI → IndicatorData (canonical русский Rosstat, без SDDS).
 
-Файл: SDDS_price indices_{year}.xlsx
-Лист: "Price indices_2010"
-Строки:
-  Row 1: заголовки дат (MM.YYYY)
-  Row 2: Consumer Price Index (2010=100)
-  Row 3: Producer Price Index (2010=100)
+Источник — официальный ежемесячный бюллетень `osn-{MM}-{YYYY}.pdf` от Росстата
+(rosstat.gov.ru/folder/210), summary-блок (стр. 6) с строкой:
+
+  Индекс цен производителей промышленных товаров   <MoM>  <YoY>  <YTD>  ...
+
+Первое значение — индекс цен в % к предыдущему месяцу (MoM%) для
+reference-месяца PDF (обычно T-1).
+
+ADR-0004 path P (compat — DB хранит cumulative chained 2010=100 формат, frontend
+не меняется): парсер читает последнюю точку индикатора в DB, умножает её на
+свежий MoM% / 100, получает новую cumulative-точку для нового месяца.
+
+Trade-off: один новый datapoint per ETL run. Полный исторический ряд 2010+ не
+рефрешится автоматически — остаётся в DB от прошлой SDDS-этапы (idempotent
+bulk_upsert). Когда rosstat опубликует monthly PPI XLSX — расширим парсер.
 """
 
 from __future__ import annotations
@@ -13,17 +22,20 @@ from __future__ import annotations
 import asyncio
 import io
 import logging
+import re
 from dataclasses import dataclass
 from datetime import date
 from typing import ClassVar
 
-import openpyxl
+from PyPDF2 import PdfReader
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models import FetchLog, Indicator
+from app.models import FetchLog, Indicator, IndicatorData
 from app.services.base_parser import BaseParser
 from app.services.data_validator import validate_points
-from app.services.rosstat_sdds_fetcher import fetch_sdds_xlsx
+from app.services.rosstat_labor_parser import parse_report_month_from_url
+from app.services.rosstat_sdds_fetcher import fetch_latest_socioeconomic_report_pdf
 
 logger = logging.getLogger(__name__)
 
@@ -34,71 +46,37 @@ class DataPoint:
     value: float
 
 
-def _parse_header_date(header: str) -> date | None:
-    if not header or not isinstance(header, str):
-        return None
-    parts = header.strip().split(".")
-    if len(parts) != 2:
+_PPI_LINE_RE = re.compile(
+    r"Индекс\s+цен\s+производителей\s+промышленных\s+товаров[^0-9]+"
+    r"(\d+(?:[,.]\d+)?)\s+",
+    re.IGNORECASE,
+)
+
+
+def _parse_float_ru(value: str) -> float:
+    return float(value.replace("\u00a0", "").replace(" ", "").replace(",", "."))
+
+
+def parse_ppi_mom_from_report(text: str) -> float | None:
+    """Извлекает PPI MoM% (первое число в строке) из текста PDF socioeconomic
+    report. Возвращает None если строка не найдена или значение out-of-range.
+    """
+    m = _PPI_LINE_RE.search(text)
+    if not m:
         return None
     try:
-        month, year = int(parts[0]), int(parts[1])
-        if 1 <= month <= 12 and 1990 <= year <= 2100:
-            return date(year, month, 1)
-    except (ValueError, TypeError):
+        val = _parse_float_ru(m.group(1))
+        if 50 <= val <= 250:
+            return val
+    except ValueError:
         pass
     return None
 
 
-def parse_ppi_xlsx(content: bytes) -> list[DataPoint]:
-    wb = openpyxl.load_workbook(io.BytesIO(content), data_only=True, read_only=True)
-
-    ws = None
-    for name in wb.sheetnames:
-        if "price" in name.lower() and "2010" in name:
-            ws = wb[name]
-            break
-    if ws is None:
-        ws = wb.worksheets[0]
-
-    rows_data: list[list] = []
-    for row in ws.iter_rows(values_only=True):
-        rows_data.append(list(row))
-    wb.close()
-
-    if len(rows_data) < 3:
-        raise ValueError(f"PPI XLSX: expected >=3 rows, got {len(rows_data)}")
-
-    dates: list[tuple[int, date]] = []
-    for col_idx in range(2, len(rows_data[0])):
-        header = rows_data[0][col_idx]
-        d = _parse_header_date(str(header) if header else "")
-        if d:
-            dates.append((col_idx, d))
-
-    if not dates:
-        raise ValueError("PPI XLSX: no valid date headers found")
-
-    ppi_row_idx = None
-    for i, row in enumerate(rows_data):
-        label = str(row[0] or "").lower()
-        if "producer" in label and "price" in label:
-            ppi_row_idx = i
-            break
-    if ppi_row_idx is None:
-        ppi_row_idx = 2
-
-    ppi_row = rows_data[ppi_row_idx]
-    points: list[DataPoint] = []
-    for col_idx, d in dates:
-        val = ppi_row[col_idx] if col_idx < len(ppi_row) else None
-        if val is not None:
-            try:
-                points.append(DataPoint(date=d, value=round(float(val), 2)))
-            except (ValueError, TypeError):
-                pass
-
-    points.sort(key=lambda p: p.date)
-    return points
+def parse_ppi_report_pdf(content: bytes) -> float | None:
+    reader = PdfReader(io.BytesIO(content))
+    text = "\n".join(page.extract_text() or "" for page in reader.pages)
+    return parse_ppi_mom_from_report(text)
 
 
 class RosstatPpiParser(BaseParser):
@@ -111,9 +89,40 @@ class RosstatPpiParser(BaseParser):
         cfg: dict,
         fetch_log: FetchLog,
     ) -> tuple[list, str]:
-        content, final_url = await asyncio.to_thread(fetch_sdds_xlsx, "prices")
-        points = await asyncio.to_thread(parse_ppi_xlsx, content)
-        return points, final_url
+        report_content, report_url = await asyncio.to_thread(fetch_latest_socioeconomic_report_pdf)
+        mom_pct = await asyncio.to_thread(parse_ppi_report_pdf, report_content)
+
+        if mom_pct is None:
+            logger.warning("PPI: 'Индекс цен производителей' line not found in PDF")
+            return [], report_url
+
+        reference_month = parse_report_month_from_url(report_url)
+        if reference_month is None:
+            logger.warning("PPI: cannot determine reference month from URL %s", report_url)
+            return [], report_url
+
+        result = await db.execute(
+            select(IndicatorData)
+            .where(IndicatorData.indicator_id == indicator.id)
+            .where(IndicatorData.date < reference_month)
+            .order_by(IndicatorData.date.desc())
+            .limit(1)
+        )
+        last = result.scalar_one_or_none()
+        if last is None:
+            logger.warning(
+                "PPI: no existing DB data to chain from. Skipping (run a one-time "
+                "historical seed first).",
+            )
+            return [], report_url
+
+        new_cumulative = float(last.value) * mom_pct / 100.0
+        new_point = DataPoint(date=reference_month, value=round(new_cumulative, 2))
+        logger.info(
+            "PPI chain: %s=%.2f, MoM=%.1f%%, new %s=%.2f",
+            last.date, float(last.value), mom_pct, reference_month, new_cumulative,
+        )
+        return [new_point], report_url
 
     def _validate(self, points: list, cfg: dict) -> list:
         return validate_points(points, cfg)

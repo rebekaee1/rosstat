@@ -1501,14 +1501,19 @@ INDICATORS = [
         "unit": "индекс",
         "frequency": "monthly",
         "source": "Росстат",
-        "source_url": "https://rosstat.gov.ru/statistics/price",
+        "source_url": "https://rosstat.gov.ru/folder/210",
         "description": (
             "Индекс цен производителей промышленных товаров (2010=100). "
-            "Ежемесячные данные SDDS Росстата."
+            "Ежемесячные данные Росстата."
         ),
         "methodology": (
-            "Рассчитывается по ценам отгруженной продукции промышленных предприятий. "
-            "Источник — SDDS Росстата."
+            "Источник — summary-блок (стр. 6) ежемесячного бюллетеня "
+            "`osn-{MM}-{YYYY}.pdf` («Социально-экономическое положение России») "
+            "с rosstat.gov.ru/folder/210, строка «Индекс цен производителей "
+            "промышленных товаров»: первое значение — MoM%. Парсер chain'ит "
+            "MoM% к последней cumulative-точке в DB, добавляя один новый "
+            "datapoint per ETL run. Полный исторический ряд 2010+ остаётся "
+            "в DB от прошлой SDDS-этапы (path P / compat ADR-0004)."
         ),
         "parser_type": "rosstat_sdds_ppi",
         "model_config_json": {
