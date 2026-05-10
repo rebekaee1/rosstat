@@ -41,6 +41,7 @@
 | Yandex Metrika / Webmaster | [`docs/analytics_api_inventory/`](docs/analytics_api_inventory/) — каждый файл начинается со status block (`partial` / `implemented` / `planned`) |
 | Что менять при правке UI? | `frontend/src/...` + `docs/workflow.md::Браузерная проверка` (cursor-ide-browser + headless E2E) |
 | Какие traps подстерегают? | Раздел «Operational invariants and traps» в `CONTEXT.md` (12 пунктов) |
+| Что мы НЕ извлекаем из источников? | [`docs/missed_data_audit.md`](docs/missed_data_audit.md) — TOP-25 P0-индикаторов, доступных без новых источников |
 | Как делать прод-деплой? | `docs/workflow.md::Прод-деплой` + `enterprise_resilience.md` |
 
 ---
