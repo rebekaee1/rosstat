@@ -624,7 +624,7 @@ INDICATORS = [
         "is_active": True,
         "category": "Рынок труда",
     },
-    # ─── ВВП (Росстат SDDS) ───
+    # ─── ВВП (Росстат русский canonical, ADR-0004 + ratio-splice 1995+) ───
     {
         "code": "gdp-nominal",
         "name": "ВВП номинальный",
