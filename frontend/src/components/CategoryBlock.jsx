@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { cn } from '../lib/format';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
+import { track, events } from '../lib/track';
 
 const CATEGORY_ICONS = {
   TrendingUp,
@@ -49,7 +50,14 @@ export default function CategoryBlock({
     <Link
       to={category.apiCategory ? `/category/${category.slug}` : '#'}
       onClick={(e) => {
-        if (!category.apiCategory) e.preventDefault();
+        if (!category.apiCategory) {
+          e.preventDefault();
+          return;
+        }
+        track(events.HOME_CATEGORY_CLICK, {
+          category: category.slug,
+          indicatorCount,
+        });
       }}
       style={{ animationDelay: `${delay * 50}ms` }}
       className={cn(

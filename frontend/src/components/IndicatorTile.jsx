@@ -4,8 +4,16 @@ import gsap from 'gsap';
 import { TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
 import { formatValue, formatChange, formatDate, cn, isCpiIndex, relativeTime } from '../lib/format';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
+import { track, events } from '../lib/track';
 
-export default function IndicatorTile({ indicator, delay = 0, displayOverride }) {
+/**
+ * Listing-карточка индикатора. Используется и на главной (где это
+ * `home_indicator_click`), и на /category/:slug (где это `category_tile_click`).
+ * `surface` различает источник клика — нужен для funnel-анализа в Метрике
+ * (Webvisor показывает category→indicator как отдельную ось, без surface
+ * мы потеряем контекст).
+ */
+export default function IndicatorTile({ indicator, delay = 0, displayOverride, surface = 'home' }) {
   const ref = useRef(null);
   const glowRef = useRef(null);
 
@@ -39,10 +47,21 @@ export default function IndicatorTile({ indicator, delay = 0, displayOverride })
       ? (indicator.current_value != null ? Number(indicator.current_value) - 100 : null)
       : indicator.current_value;
 
+  const handleClick = () => {
+    if (!isActive) return;
+    const event = surface === 'category' ? events.CATEGORY_TILE_CLICK : events.HOME_INDICATOR_CLICK;
+    track(event, {
+      indicator: indicator.code,
+      indicatorCategory: indicator.category,
+      surface,
+    });
+  };
+
   return (
     <Link
       ref={ref}
       to={isActive ? `/indicator/${indicator.code}` : '#'}
+      onClick={handleClick}
       onMouseMove={handleMouseMove}
       className={cn(
         FOCUS_RING_SURFACE,

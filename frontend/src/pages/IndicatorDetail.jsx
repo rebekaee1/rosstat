@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams, Link } from 'react-router-dom';
+import { ArrowRight, GitCompare } from 'lucide-react';
 import gsap from 'gsap';
-import { useIndicator, useIndicatorStats } from '../lib/hooks';
+import { useIndicator, useIndicatorStats, useIndicators } from '../lib/hooks';
 import useDocumentMeta from '../lib/useMeta';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import IndicatorDetailHeader from '../components/IndicatorDetailHeader';
@@ -18,6 +19,8 @@ import useIndicatorViewModeData from '../lib/useIndicatorViewModeData';
 import { getViewModeContent } from '../lib/cpiViewModeContent';
 import { downloadExcel, downloadCSV } from '../lib/excel';
 import { track, events } from '../lib/track';
+import useScrollDepth from '../lib/useScrollDepth';
+import { isIndicatorListed } from '../lib/categories';
 
 export default function IndicatorDetail() {
   const { code } = useParams();
@@ -63,6 +66,23 @@ export default function IndicatorDetail() {
   const variantGroup = findVariantGroup(code);
   const cpiViewModes = useMemo(() => visibleCpiViewModes(code), [code]);
 
+  // Соседи по той же категории — нижний CTA-блок «Похожие индикаторы».
+  // Загружается лениво (после того как мы знаем category), потому что
+  // useIndicators({ category }) приходит из общего react-query-кэша и обычно
+  // уже прогрет на /category/:slug страницей-родителем.
+  const { data: siblings } = useIndicators({
+    category: indicator?.category,
+    includeInactive: false,
+    enabled: Boolean(indicator?.category),
+  });
+
+  const relatedIndicators = useMemo(() => {
+    if (!siblings?.length || !indicator) return [];
+    return siblings
+      .filter((s) => s.code !== indicator.code && isIndicatorListed(s) && s.is_active)
+      .slice(0, 6);
+  }, [siblings, indicator]);
+
   const view = useIndicatorViewModeData({ code, viewMode });
   const {
     isPriceCategory, safeViewMode, chartMode, shouldSubtract100,
@@ -99,6 +119,13 @@ export default function IndicatorDetail() {
       indicatorCategory: indicator.category,
     });
   }, [indicator?.code, indicator?.category]);
+
+  useScrollDepth({
+    key: code,
+    page: 'indicator',
+    indicator: code,
+    indicatorCategory: indicator?.category,
+  });
 
   const handleChartData = useCallback((data) => {
     setChartData(data);
@@ -276,6 +303,56 @@ export default function IndicatorDetail() {
         annualDataPoints={annualDataPoints}
         weeklyDataPoints={weeklyDataPoints}
       />
+
+      {relatedIndicators.length > 0 && (
+        <section className="mt-16">
+          <div className="flex items-center gap-4 mb-6 flex-wrap">
+            <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold">
+              Похожие индикаторы
+            </h2>
+            <div className="h-[1px] flex-1 bg-border-subtle" />
+            <Link
+              to={`/compare?a=${code}`}
+              onClick={() => track(events.RELATED_LINK_CLICK, {
+                from: code,
+                to: 'compare',
+                surface: 'indicator-cta',
+              })}
+              className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-champagne hover:text-champagne-muted transition-colors"
+            >
+              <GitCompare className="w-3.5 h-3.5" />
+              Сравнить
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {relatedIndicators.map((rel) => (
+              <Link
+                key={rel.code}
+                to={`/indicator/${rel.code}`}
+                onClick={() => track(events.RELATED_INDICATOR_CLICK, {
+                  from: code,
+                  to: rel.code,
+                  indicatorCategory: indicator?.category,
+                  surface: 'indicator-related',
+                })}
+                className="group flex items-center justify-between gap-4 p-4 rounded-2xl border border-border-subtle bg-surface hover:border-champagne/30 transition-colors"
+              >
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-text-primary mb-1 truncate group-hover:text-champagne transition-colors">
+                    {rel.name}
+                  </p>
+                  {rel.unit && (
+                    <p className="text-[10px] font-mono uppercase tracking-widest text-text-tertiary">
+                      {rel.unit}
+                    </p>
+                  )}
+                </div>
+                <ArrowRight className="w-4 h-4 text-text-tertiary shrink-0 group-hover:text-champagne group-hover:translate-x-0.5 transition-all" />
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

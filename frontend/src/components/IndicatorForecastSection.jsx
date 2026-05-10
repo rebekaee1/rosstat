@@ -1,7 +1,53 @@
+import { useEffect, useRef } from 'react';
 import { Activity } from 'lucide-react';
 import ForecastTable from './ForecastTable';
+import { track, events } from '../lib/track';
 
 const EMPTY_BOX_CLS = 'h-full min-h-[300px] rounded-[2rem] bg-surface border border-border-subtle border-dashed flex flex-col items-center justify-center gap-3 text-text-tertiary p-8';
+
+/**
+ * `forecast_view` — цель «пользователь действительно увидел блок прогноза».
+ * Срабатывает один раз на mount-видимость секции через IntersectionObserver
+ * (≥40% площади в viewport). На устройствах без IO падает в no-op — это
+ * совместимо со старыми WebView и Webvisor 2 не теряет основного goal.
+ */
+function useForecastView({ indicatorCode, indicatorCategory, chartMode, hasForecastData, showForecast }) {
+  const ref = useRef(null);
+  const firedRef = useRef(false);
+
+  useEffect(() => {
+    firedRef.current = false;
+  }, [indicatorCode]);
+
+  useEffect(() => {
+    if (firedRef.current) return undefined;
+    if (!hasForecastData || !showForecast) return undefined;
+    if (!indicatorCode) return undefined;
+    if (typeof window === 'undefined' || typeof window.IntersectionObserver !== 'function') return undefined;
+
+    const node = ref.current;
+    if (!node) return undefined;
+
+    const io = new window.IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.4 && !firedRef.current) {
+          firedRef.current = true;
+          track(events.FORECAST_VIEW, {
+            indicator: indicatorCode,
+            indicatorCategory,
+            chartMode,
+          });
+          io.disconnect();
+        }
+      }
+    }, { threshold: [0, 0.25, 0.4, 0.6, 1] });
+
+    io.observe(node);
+    return () => io.disconnect();
+  }, [indicatorCode, indicatorCategory, chartMode, hasForecastData, showForecast]);
+
+  return ref;
+}
 
 function dateFormatFor(chartMode, indicator) {
   if (chartMode === 'quarterly') return 'quarterly';
@@ -29,6 +75,14 @@ export default function IndicatorForecastSection({
   showForecast,
   hasForecastData,
 }) {
+  const viewRef = useForecastView({
+    indicatorCode: indicator?.code,
+    indicatorCategory: indicator?.category,
+    chartMode,
+    hasForecastData,
+    showForecast,
+  });
+
   if (forecastEnabled && showForecast && hasForecastData) {
     const forecastData = chartMode === 'quarterly' ? quarterlyForecastData
       : chartMode === 'annual' ? annualForecastResp
@@ -36,7 +90,7 @@ export default function IndicatorForecastSection({
           : displayForecastData;
 
     return (
-      <section className="lg:col-span-2">
+      <section ref={viewRef} className="lg:col-span-2">
         <ForecastTable
           mode={chartMode}
           inflation={inflationResp}

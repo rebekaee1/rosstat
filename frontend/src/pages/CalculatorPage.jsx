@@ -16,6 +16,8 @@ import { formatDate, formatAxisTick, cn } from '../lib/format';
 import { FOCUS_RING, FOCUS_RING_SURFACE } from '../lib/uiTokens';
 import { SkeletonBox } from '../components/Skeleton';
 import { track, events } from '../lib/track';
+import { buildShareUrl } from '../lib/utm';
+import useScrollDepth from '../lib/useScrollDepth';
 
 /* ─── Constants ─── */
 
@@ -350,6 +352,8 @@ export default function CalculatorPage() {
     path: '/calculator',
   });
 
+  useScrollDepth({ key: 'calculator', page: 'calculator' });
+
   useEffect(() => {
     if (!containerRef.current) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -376,8 +380,15 @@ export default function CalculatorPage() {
   const handleShare = useCallback(async () => {
     const params = new URLSearchParams({ amount: String(amount), from: String(fromYear), to: String(toYear) });
     setSearchParams(params, { replace: true });
-    const url = `${window.location.origin}/calculator?${params}`;
-    track(events.CALC_SHARE);
+    // share-ссылка всегда уходит наружу с UTM, чтобы возвратный трафик
+    // отделялся от Direct в Метрике (см. docs/utm_taxonomy.md::Internal share).
+    const url = buildShareUrl(`${window.location.origin}/calculator?${params}`, {
+      source: 'self',
+      medium: 'share-link',
+      campaign: 'calc-share',
+      content: `${fromYear}-${toYear}`,
+    });
+    track(events.CALC_SHARE, { from: fromYear, to: toYear, amount });
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);

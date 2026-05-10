@@ -108,6 +108,7 @@ export const events = {
   TABLE_SORT: 'table_sort',
   TABLE_PAGE: 'table_page',
 
+  COMPARE_OPEN: 'compare_open',
   COMPARE_CHANGE: 'compare_change',
   COMPARE_RANGE: 'compare_range',
 
@@ -141,9 +142,13 @@ export const events = {
   NAV_LINK_CLICK: 'nav_link_click',
   HOME_CATEGORY_CLICK: 'home_category_click',
   HOME_INDICATOR_CLICK: 'home_indicator_click',
+  CATEGORY_TILE_CLICK: 'category_tile_click',
+  RELATED_INDICATOR_CLICK: 'related_indicator_click',
   BREADCRUMB_CLICK: 'breadcrumb_click',
   RELATED_LINK_CLICK: 'related_link_click',
   SCROLL_DEPTH: 'scroll_depth',
+  FORECAST_VIEW: 'forecast_view',
+  SOURCE_LINK_CLICK: 'source_link_click',
   API_LOAD_ERROR: 'api_load_error',
   EMPTY_STATE: 'empty_state',
   EMBED_RUNTIME_VIEW: 'embed_runtime_view',

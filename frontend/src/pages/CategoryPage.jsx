@@ -5,8 +5,10 @@ import { useIndicators, useInflation } from '../lib/hooks';
 import useDocumentMeta from '../lib/useMeta';
 import IndicatorTile from '../components/IndicatorTile';
 import { TileSkeleton } from '../components/Skeleton';
-import { getCategoryBySlug, isIndicatorListed } from '../lib/categories';
+import { CATEGORIES, getCategoryBySlug, isIndicatorListed } from '../lib/categories';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+import { track, events } from '../lib/track';
+import useScrollDepth from '../lib/useScrollDepth';
 
 const CATEGORY_FEATURES = {
   population: {
@@ -32,6 +34,15 @@ export default function CategoryPage() {
     description: cat.seoDescription,
     path: `/category/${slug}`,
   } : null);
+
+  useScrollDepth({ key: `category:${slug}`, page: 'category', category: slug });
+
+  const relatedCategories = useMemo(() => {
+    if (!cat?.relatedSlugs?.length) return [];
+    return cat.relatedSlugs
+      .map((s) => CATEGORIES.find((c) => c.slug === s))
+      .filter((c) => c && c.apiCategory);
+  }, [cat]);
 
   useEffect(() => {
     if (!cat) return;
@@ -183,11 +194,47 @@ export default function CategoryPage() {
                 indicator={ind}
                 delay={i}
                 displayOverride={cpiInflationMap[ind.code]}
+                surface="category"
               />
             ))}
           </div>
         )}
       </section>
+
+      {relatedCategories.length > 0 && (
+        <section className="mt-12">
+          <div className="flex items-center gap-4 mb-6">
+            <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold">
+              Связанные категории
+            </h2>
+            <div className="h-[1px] flex-1 bg-border-subtle" />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {relatedCategories.map((rel) => (
+              <Link
+                key={rel.slug}
+                to={`/category/${rel.slug}`}
+                onClick={() => track(events.RELATED_LINK_CLICK, {
+                  from: slug,
+                  to: rel.slug,
+                  surface: 'category-related',
+                })}
+                className="group flex items-center justify-between gap-4 p-5 rounded-2xl border border-border-subtle bg-surface hover:border-champagne/30 transition-colors"
+              >
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-text-primary mb-1 truncate">
+                    {rel.name}
+                  </p>
+                  <p className="text-xs text-text-tertiary line-clamp-2 leading-relaxed">
+                    {rel.description}
+                  </p>
+                </div>
+                <ArrowRight className="w-4 h-4 text-text-tertiary shrink-0 group-hover:text-champagne group-hover:translate-x-0.5 transition-all" />
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

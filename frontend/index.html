@@ -16,11 +16,29 @@
         // defer:true отключает автоматический первый hit, который отправил бы
         // window.location.href со всеми трекинг-параметрами (etext, ybaip, yclid…).
         // Вручную шлём очищенный URL — без них «Страницы входа» в Метрике не дублируются.
-        ym(107136069, 'init', {defer:true, webvisor:true, clickmap:true, accurateTrackBounce:true, trackLinks:true});
+        // Webvisor 2 + form analytics: triggerEvent даёт хождение JS-событий
+        // (input/change/submit) в Webvisor; childIframe — записи внутри embed-виджета;
+        // trackHash — пригодится при будущих deeplink-якорях (#forecast, #table).
+        ym(107136069, 'init', {
+          defer: true,
+          webvisor: true,
+          clickmap: true,
+          accurateTrackBounce: true,
+          trackLinks: true,
+          trackHash: true,
+          triggerEvent: true,
+          childIframe: true
+        });
 
         (function () {
-          var TRACKING = ['etext','ybaip','yclid','ysclid','gclid','fbclid','_openstat','openstat','clid','yandex_referrer','_ga','utm_source','utm_medium','utm_campaign','utm_term','utm_content','utm_referrer','from','ref','ref_src','source','mc_cid','mc_eid','igshid'];
+          // utm_* НЕ удаляем из URL — они нужны Метрике для атрибуции source/
+          // medium/campaign. Удаляем только служебные tracking-метки Яндекса
+          // (ybaip/etext/ysclid/yclid) и пр., которые иначе раздували бы число
+          // уникальных «Страниц входа» (см. /Users/iprofi/.../canvases/
+          // metrika-webvisor-deep-2026-05-10.canvas.tsx — `/?ybaip=1` = 368 visits/мес).
+          var TRACKING = ['etext','ybaip','yclid','ysclid','gclid','fbclid','_openstat','openstat','clid','yandex_referrer','_ga','utm_referrer','from','ref','ref_src','source','mc_cid','mc_eid','igshid'];
           var search = window.location.search;
+          var cleanedSearch = search;
           if (search && search.length > 1) {
             var params = new URLSearchParams(search);
             var changed = false;
@@ -29,11 +47,18 @@
             }
             if (changed) {
               var rest = params.toString();
-              search = rest ? '?' + rest : '';
+              cleanedSearch = rest ? '?' + rest : '';
             }
           }
-          var cleanUrl = window.location.pathname + search + window.location.hash;
-          ym(107136069, 'hit', cleanUrl, { title: document.title, referer: document.referrer });
+          var cleanPath = window.location.pathname + cleanedSearch + window.location.hash;
+          // Подменяем адресную строку без перезагрузки. Это критично для
+          // Webvisor 2: иначе Метрика видит первый клик с URL=/?ybaip=1 и
+          // вся сессия пишется как новая landing-страница. После replaceState
+          // последующие SPA-переходы и Webvisor-records видят чистый /.
+          if (cleanedSearch !== search && typeof history !== 'undefined' && typeof history.replaceState === 'function') {
+            try { history.replaceState(history.state, '', cleanPath); } catch (_e) { /* ignore */ }
+          }
+          ym(107136069, 'hit', cleanPath, { title: document.title, referer: document.referrer });
         })();
     </script>
     <!-- /Yandex.Metrika counter — pixel noscript в &lt;body&gt; (валидный HTML) -->

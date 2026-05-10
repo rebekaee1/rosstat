@@ -1,6 +1,6 @@
 # Analytics API Inventory
 
-**Last verified:** 2026-05-07.
+**Last verified:** 2026-05-10.
 **Part of:** [`../../AGENTS.md`](../../AGENTS.md), [`../../CONTEXT.md`](../../CONTEXT.md) (раздел `Forecast Analytics OS`).
 **Code anchors:** `backend/app/services/yandex_*.py` (clients), `backend/app/services/analytics_*.py` (ingestion + features), `backend/app/api/analytics.py` (REST), `mcp/forecast-analytics-mcp/` (MCP server).
 
@@ -16,8 +16,9 @@ in `.env` (`YANDEX_METRIKA_TOKEN` / `YANDEX_METRIKA_WRITE_TOKEN` /
 non-`read_only` operation. Without tokens the analytics scheduler is a no-op
 and `analytics-smoke.py` exits with `enabled=false`.
 
-| File | Code module | Status (2026-05-07) |
+| File | Code module | Status (2026-05-10) |
 |------|-------------|---------------------|
+| `frontend_instrumentation.md` | `frontend/src/lib/track.js`, `utm.js`, `cleanUrl.js`, `useScrollDepth.js`, `index.html`; backend collector `app/api/analytics.py::events_collector` → `FrontendEvent` | `implemented` — Webvisor 2 + form analytics включены, ~60 целей в `events`, UTM helper + taxonomy. Канонический документ для frontend goals и share-ссылок. |
 | `metrika_data_import.md` | not implemented | `planned` — no code yet, inventory only |
 | `metrika_logs.md` | `app/services/yandex_metrika_logs.py` | `partial` — `list_requests`, `create_request`, `request_info`, `download_part`, `clean_request`. Missing: fields catalog. |
 | `metrika_management.md` | `app/services/yandex_metrika_management.py` | `partial` — read of counters/goals/filters/grants + goal create/update/delete behind approval. Missing: counter writes, filter writes, segments/labels/notes/direct-links. |

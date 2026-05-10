@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import {
   ResponsiveContainer, ComposedChart, Line, XAxis, YAxis,
@@ -10,6 +10,7 @@ import { formatDate, formatAxisTick, formatValueWithUnit, unitSuffix, unitDigits
 import useDocumentMeta from '../lib/useMeta';
 import { SkeletonBox, ChartSkeleton } from '../components/Skeleton';
 import { track, events } from '../lib/track';
+import useScrollDepth from '../lib/useScrollDepth';
 
 const RANGE_OPTIONS = [
   { key: '3y', label: '3 года', months: 36 },
@@ -75,6 +76,21 @@ export default function ComparePage() {
     description: 'Сравнивайте любые два макроэкономических индикатора России на одном графике.',
     path: '/compare',
   });
+
+  // compare_open срабатывает один раз на mount страницы /compare. Если у
+  // пользователя в URL уже есть выбранные коды (например, шаринг ссылки) —
+  // отправляем их в payload, чтобы в Метрике видеть, какие пары сравнивают
+  // чаще всего без waiting'а на CHANGE-event.
+  useEffect(() => {
+    track(events.COMPARE_OPEN, {
+      a: codeA || null,
+      b: codeB || null,
+      hasInitialPair: Boolean(codeA && codeB),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useScrollDepth({ key: 'compare', page: 'compare' });
 
   const { data: indicators, isLoading: loadingInd } = useIndicators();
 
