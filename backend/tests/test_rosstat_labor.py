@@ -1,83 +1,36 @@
-"""Tests for Rosstat SDDS labor market parser."""
+"""Tests for Rosstat labor parser (canonical русский Rosstat PDF, без SDDS)."""
 
-import io
 from datetime import date
-
-import openpyxl
-import pytest
 
 from app.services.rosstat_labor_parser import (
     DataPoint,
-    _parse_header_date,
-    _parse_labor_report_text,
-    parse_labor_xlsx,
-    merge_labor_series,
+    _parse_labor_force_table,
+    _parse_wages_summary,
+    parse_report_month_from_url,
 )
 
 
-def _make_sample_xlsx() -> bytes:
-    """Build minimal SDDS labor market XLSX for testing."""
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "labor market"
+class TestParseReportMonthFromUrl:
+    def test_basic_t_plus_1_lag(self):
+        """`osn-03-2026.pdf` (опубликован март) содержит данные за февраль 2026."""
+        url = "https://rosstat.gov.ru/storage/mediabank/osn-03-2026.pdf"
+        assert parse_report_month_from_url(url) == date(2026, 2, 1)
 
-    ws.append(["SDDS Data Category", "Unit", "01.2024", "02.2024", "03.2024"])
-    ws.append(["Economically active", "Mln", 75.5, 75.6, 75.7])
-    ws.append(["Employed", "Mln", 73.5, 73.6, 73.7])
-    ws.append(["Unemployed", "Mln", 2.0, 2.0, 2.0])
-    ws.append(["Unemployed registered", "Mln", 0.3, 0.3, 0.3])
-    ws.append(["Wages", "Rubles", 75000, 78000, 87000])
+    def test_january_publication_wraps_to_prev_year(self):
+        """`osn-01-2025.pdf` (опубликован январь 2025) → данные за декабрь 2024."""
+        url = "https://rosstat.gov.ru/storage/mediabank/osn-01-2025.pdf"
+        assert parse_report_month_from_url(url) == date(2024, 12, 1)
 
-    buf = io.BytesIO()
-    wb.save(buf)
-    return buf.getvalue()
+    def test_no_match(self):
+        assert parse_report_month_from_url("https://example.com/file.pdf") is None
 
-
-class TestParseHeaderDate:
-    def test_valid(self):
-        assert _parse_header_date("01.2024") == date(2024, 1, 1)
-        assert _parse_header_date("12.2025") == date(2025, 12, 1)
-
-    def test_invalid(self):
-        assert _parse_header_date("Q1-2024") is None
-        assert _parse_header_date("foo") is None
-        assert _parse_header_date("") is None
-        assert _parse_header_date(None) is None
-
-    def test_out_of_range(self):
-        assert _parse_header_date("13.2024") is None
-        assert _parse_header_date("00.2024") is None
+    def test_invalid_month(self):
+        url = "https://rosstat.gov.ru/storage/mediabank/osn-13-2026.pdf"
+        assert parse_report_month_from_url(url) is None
 
 
-class TestParseLaborXlsx:
-    def test_basic(self):
-        content = _make_sample_xlsx()
-        result = parse_labor_xlsx(content)
-
-        assert "unemployment_rate" in result
-        assert "wages_nominal" in result
-
-        rates = result["unemployment_rate"]
-        assert len(rates) == 3
-        assert rates[0].date == date(2024, 1, 1)
-        expected_rate = round(2.0 / 75.5 * 100, 1)
-        assert rates[0].value == expected_rate
-
-        wages = result["wages_nominal"]
-        assert len(wages) == 3
-        assert wages[0].value == 75000.0
-        assert wages[1].value == 78000.0
-        assert wages[2].value == 87000.0
-
-    def test_dates_sorted(self):
-        content = _make_sample_xlsx()
-        result = parse_labor_xlsx(content)
-        dates = [p.date for p in result["unemployment_rate"]]
-        assert dates == sorted(dates)
-
-
-class TestParseLaborReportText:
-    def test_supplements_sdds_lag_from_official_report(self):
+class TestParseLaborForceTable:
+    def test_extracts_three_series(self):
         text = """
         ДИНАМИКА ЧИСЛЕННОСТИ РАБОЧЕЙ СИЛЫ
         2026 г.
@@ -87,32 +40,51 @@ class TestParseLaborReportText:
         Занятость населения.
         """
 
-        result = _parse_labor_report_text(text)
+        result = _parse_labor_force_table(text)
 
         assert result["labor_force"][-1].date == date(2026, 3, 1)
         assert result["labor_force"][-1].value == 76.2
         assert result["employment"][-1].value == 74.6
         assert result["unemployment_rate"][-1].value == 2.2
 
-    def test_report_values_override_sdds_by_date(self):
-        base = {
-            "unemployment_rate": [
-                DataPoint(date=date(2026, 2, 1), value=2.15),
-            ],
-            "wages_nominal": [],
-            "labor_force": [],
-            "employment": [],
-        }
-        supplement = {
-            "unemployment_rate": [
-                DataPoint(date=date(2026, 2, 1), value=2.1),
-                DataPoint(date=date(2026, 3, 1), value=2.2),
-            ],
-            "wages_nominal": [],
-            "labor_force": [],
-            "employment": [],
-        }
+    def test_handles_multiple_years(self):
+        text = """
+        ДИНАМИКА ЧИСЛЕННОСТИ РАБОЧЕЙ СИЛЫ
+        2025 г.
+        Декабрь 76,5 100,5 74,8 100,5 1,7 95,8 2,2 0,3 105,3 0,4
+        2026 г.
+        Январь 76,2 101,2 74,5 101,4 1,7 91,8 2,2 0,3 103,3 0,4
+        Занятость населения.
+        """
+        result = _parse_labor_force_table(text)
+        assert len(result["labor_force"]) == 2
+        assert result["labor_force"][0].date == date(2025, 12, 1)
+        assert result["labor_force"][1].date == date(2026, 1, 1)
 
-        merged = merge_labor_series(base, supplement)
 
-        assert [p.value for p in merged["unemployment_rate"]] == [2.1, 2.2]
+class TestParseWagesSummary:
+    def test_extracts_current_month_wage(self):
+        text = """
+        Среднемесячная начисленная заработная плата
+         работников организаций:
+           номинальная, рублей  103 900  115,0  115,4  113,6  115,7
+           реальная   108,6  108,9  103,2  105,2
+        """
+        result = _parse_wages_summary(text, date(2026, 2, 1))
+        assert len(result) == 1
+        assert result[0].date == date(2026, 2, 1)
+        assert result[0].value == 103900.0
+
+    def test_no_reference_month_returns_empty(self):
+        text = "Среднемесячная начисленная ... номинальная, рублей  103 900  115"
+        assert _parse_wages_summary(text, None) == []
+
+    def test_section_not_found(self):
+        assert _parse_wages_summary("nothing here", date(2026, 2, 1)) == []
+
+    def test_value_outside_range_filtered(self):
+        text = """
+        Среднемесячная начисленная заработная плата
+           номинальная, рублей  5  115,0  115,4
+        """
+        assert _parse_wages_summary(text, date(2026, 2, 1)) == []

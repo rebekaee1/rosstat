@@ -576,14 +576,16 @@ INDICATORS = [
         "unit": "%",
         "frequency": "monthly",
         "source": "Росстат",
-        "source_url": "https://rosstat.gov.ru/labor_market_employment_salaries",
+        "source_url": "https://rosstat.gov.ru/folder/210",
         "description": (
             "Доля безработных в экономически активном населении по методологии МОТ. "
             "Данные Росстата из обследования рабочей силы."
         ),
         "methodology": (
-            "Расчёт: число безработных / экономически активное население × 100. "
-            "Источник — SDDS Росстата. Обновляется ежемесячно."
+            "Источник — официальный ежемесячный бюллетень `osn-{MM}-{YYYY}.pdf` "
+            "(«Социально-экономическое положение России») с rosstat.gov.ru/folder/210. "
+            "Парсер извлекает табличный блок «ДИНАМИКА ЧИСЛЕННОСТИ РАБОЧЕЙ СИЛЫ» "
+            "(колонка уровня безработицы)."
         ),
         "parser_type": "rosstat_sdds_labor",
         "model_config_json": {
@@ -601,14 +603,17 @@ INDICATORS = [
         "unit": "руб.",
         "frequency": "monthly",
         "source": "Росстат",
-        "source_url": "https://rosstat.gov.ru/labor_market_employment_salaries",
+        "source_url": "https://rosstat.gov.ru/folder/210",
         "description": (
             "Среднемесячная номинальная начисленная заработная плата "
             "работников организаций."
         ),
         "methodology": (
-            "Фонд начисленной зарплаты / среднесписочная численность. "
-            "Источник — SDDS Росстата. Обновляется ежемесячно."
+            "Источник — summary-блок (стр. 6-7) ежемесячного бюллетеня "
+            "`osn-{MM}-{YYYY}.pdf» с rosstat.gov.ru/folder/210 "
+            "(«Среднемесячная начисленная заработная плата работников "
+            "организаций: номинальная, рублей»). Один новый datapoint per "
+            "ETL run для месяца T-1; полная история накапливается в DB."
         ),
         "parser_type": "rosstat_sdds_labor",
         "model_config_json": {
@@ -1841,10 +1846,11 @@ INDICATORS = [
         "unit": "млн чел.",
         "frequency": "monthly",
         "source": "Росстат",
-        "source_url": "https://rosstat.gov.ru/labor_market_employment_salaries",
+        "source_url": "https://rosstat.gov.ru/folder/210",
         "description": (
             "Численность экономически активного населения (рабочая сила). "
-            "Данные обследования рабочей силы Росстата."
+            "Данные обследования рабочей силы Росстата (бюллетень "
+            "«Социально-экономическое положение России»)."
         ),
         "parser_type": "rosstat_sdds_labor",
         "model_config_json": {
@@ -1861,9 +1867,10 @@ INDICATORS = [
         "unit": "млн чел.",
         "frequency": "monthly",
         "source": "Росстат",
-        "source_url": "https://rosstat.gov.ru/labor_market_employment_salaries",
+        "source_url": "https://rosstat.gov.ru/folder/210",
         "description": (
-            "Численность занятого населения по данным обследования рабочей силы Росстата."
+            "Численность занятого населения по данным обследования рабочей силы "
+            "Росстата (бюллетень «Социально-экономическое положение России»)."
         ),
         "parser_type": "rosstat_sdds_labor",
         "model_config_json": {
