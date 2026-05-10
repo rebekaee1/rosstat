@@ -1244,7 +1244,7 @@ INDICATORS = [
         "is_active": True,
         "category": "Цены",
     },
-    # ─── Цены на жильё (Росстат SDDS Housing) ───
+    # ─── Цены на жильё (Росстат русский, socioeconomic PDF report, ADR-0004) ───
     {
         "code": "housing-price-primary",
         "name": "Цены на первичное жильё",
@@ -1252,10 +1252,17 @@ INDICATORS = [
         "unit": "индекс",
         "frequency": "quarterly",
         "source": "Росстат",
-        "source_url": "https://rosstat.gov.ru/folder/10705",
+        "source_url": "https://rosstat.gov.ru/folder/210",
         "description": (
-            "Индекс цен на первичном рынке жилья (2010=100). "
-            "Данные SDDS Росстата, квартальные."
+            "Индекс цен на первичном рынке жилья (chained, 2010=100). "
+            "Источник — ежеквартальный socioeconomic-report Росстата "
+            "(osn-{MM}-{YYYY}.pdf, раздел 4.2 «Рынок жилья»). Парсер "
+            "извлекает QoQ% к предыдущему кварталу из summary-строки "
+            "(«составили соответственно P% и S%»), после чего умножает "
+            "последнюю cumulative-точку из БД на P/100 → новый quarterly "
+            "datapoint. Исторический ряд 2014+ остаётся от прошлой SDDS-"
+            "стадии (ADR-0004 path P, compat). Один новый datapoint per "
+            "ETL run на индикатор."
         ),
         "parser_type": "rosstat_sdds_housing",
         "model_config_json": {
@@ -1283,10 +1290,14 @@ INDICATORS = [
         "unit": "индекс",
         "frequency": "quarterly",
         "source": "Росстат",
-        "source_url": "https://rosstat.gov.ru/folder/10705",
+        "source_url": "https://rosstat.gov.ru/folder/210",
         "description": (
-            "Индекс цен на вторичном рынке жилья (2010=100). "
-            "Данные SDDS Росстата, квартальные."
+            "Индекс цен на вторичном рынке жилья (chained, 2010=100). "
+            "Источник — socioeconomic-report Росстата (osn-{MM}-{YYYY}.pdf, "
+            "раздел 4.2). Парсер извлекает второй QoQ% из пары "
+            "«P% и S%» и chains к последней cumulative-точке БД "
+            "(ADR-0004 path P, compat). Исторический ряд 2014+ — от "
+            "прошлой SDDS-стадии."
         ),
         "parser_type": "rosstat_sdds_housing",
         "model_config_json": {

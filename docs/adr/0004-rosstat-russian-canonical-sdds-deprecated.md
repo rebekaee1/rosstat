@@ -1,8 +1,8 @@
 # ADR 0004 — Rosstat русский основной источник, SDDS English deprecated
 
 - **Date:** 2026-05-10
-- **Status:** Accepted (pilot verified for `gdp-nominal`; rollout for остальных SDDS-индикаторов pending)
-- **Last verified:** 2026-05-10 (gdp-nominal end-to-end migration on local stack: 60/60 точек переписаны, derived caskade пересчитан, forecast cascade retrain'нулся, точное совпадение с rosstat publication для Q4 2025).
+- **Status:** Accepted (pilot + rollout: GDP, Population, IPI, Labor, PPI, Housing migrated; cleanup pending)
+- **Last verified:** 2026-05-10 (all SDDS-source indicators в категориях ВВП/Цены/Демография/Промышленность/Труд мигрированы на canonical Russian Rosstat sources; housing pipeline test: Q1 2026 primary 346.82, secondary 228.44, match с rosstat publication ✓).
 - **Author:** аудит категорий «Цены» и «ВВП» 2026-05-08/2026-05-10 + конкретный жалобный случай руководителя на расхождение GDP Q4 2025 (60516.7 в нашей DB vs 62354.1 в rosstat publication).
 - **Part of:** [`../../CONTEXT.md`](../../CONTEXT.md) (раздел `Source` + trap «SDDS English vs Rosstat русский»).
 - **Related:** [ADR-0002](0002-derived-always-reflects-source.md) (идемпотентный bulk_upsert делает миграцию обратимой), [ADR-0001](0001-derived-indicators-engine-shape.md) (derived подхватятся через `scripts/rebuild-all-derived.py`).
@@ -105,11 +105,43 @@ Pilot выполнен для `gdp-nominal` 2026-05-10:
 - **Pipeline test** на локальном docker stack: 3/3 индикатора → `Upserted 0 new, 0 updated` для каждого. Это **best-case migration**: SDDS на момент миграции уже подтянул rosstat значения, так что bit-by-bit совпадение между rosstat XLS и текущей DB. Никаких изменений данных не произошло, derived recompute не нужен. Migration — **проактивная защита** от будущих SDDS-лагов и переключение на canonical source без disruption.
 - **Status**: Accepted. Категория «ВВП» полностью мигрирована — все 4 source-индикатора (`gdp-nominal` через `gdp_quarterly`, `gdp-real` через `gdp_quarterly` sheet 9, `gdp-consumption`/`gdp-government`/`gdp-investment` через `gdp_use_quarterly`) теперь читают из rosstat русского. SDDS branch (`fetch_sdds_xlsx("gdp")`) больше не используется ни одним active индикатором — остаётся в коде как escape hatch.
 
-### Open work для следующих категорий
+### 2026-05-10 — Rollout to Population (4 indicators)
 
-- **PPI / Housing** (категория «Цены», 3 индикатора в SDDS) — миграция требует **format change** (2010=100 chained → MoM monthly index). Frontend value formatter и forecast model должны меняться синхронно. Отдельная задача.
-- **Labor / IPI / Population partial** — другие SDDS-парсеры. Аналогичный аудит требуется per-category до миграции.
-- **History extension до 1995** для GDP-индикаторов — sheet 1 (ОКВЭД2007) + sheet 2 (ОКВЭД2) chain через methodology break. Не делается в рамках этого ADR — отдельный track с явной сшивкой коэффициентом или just отображать раздельно.
+`population` / `population-rural` / `population-urban` / `birth-rate-total` мигрированы на canonical Rosstat XLSX:
+- `Popul_1897+.xlsx` — annual history с 1897.
+- `Popul components_1990+.xlsx` — годовые компоненты (sex/urban/rural) с 1990.
+- `OkPopul_Comp{YYYY}_Site.xlsx` — последняя текущая публикация (динамическое year fallback на YYYY-1).
+
+Парсер `rosstat_population_parser.py` рефакторнут: `parse_sdds_population_xlsx` удалён, `merge_population_sources(*sources)` сшивает три ряда с `later precedence`. **Trap**: Rosstat файлы содержат смешанные кириллические/латинские символы в «Российская Федеpация» (Latin `p`!) — `parse_ok_popul_xlsx` использует `cell.startswith("российская")` для robust match. Regression test добавлен. Commit `cf08878`.
+
+### 2026-05-10 — Rollout to IPI (industrial production index)
+
+`ipi` мигрирован на 2 canonical XLSX от Rosstat (`rosstat.gov.ru/enterprise_industrial`):
+- `ind_baza_2018_12-2025.xlsx` — historical 2018-base MoM%.
+- `ind_baza_2023_{MM}-{YYYY}.xlsx` — current 2023-base MoM% (динамический fetcher tries last 6 месяцев).
+
+**Path P (compat) применён**: парсер извлекает MoM% из обоих файлов, merge'ит через `merge_mom_dicts` (current overrides historical при overlap), затем `chain_mom_to_index_2023_base` строит cumulative index с нормализацией так что 2023 annual mean = 100.0 (matchит существующий формат БД 2023=100). Bit-for-bit совпадение с DB после migration → zero-disruption. Commit `13a0251`.
+
+### 2026-05-10 — Rollout to Labor (4 indicators)
+
+`unemployment` / `wages-nominal` / `labor-force` / `employment` мигрированы на **socioeconomic PDF report** (`osn-{MM}-{YYYY}.pdf` с `rosstat.gov.ru/folder/210`). Comprehensive monthly XLSX по labor отсутствует на rosstat сайте → PDF (раньше supplementary) промотан до primary source.
+
+`rosstat_labor_parser.py` рефакторнут полностью: `parse_report_month_from_url` извлекает T-1 reference month из URL (publication lag, year wrap handled), `_parse_labor_force_table` тянет labor force / employment / unemployment rate из таблицы, `_parse_wages_summary` извлекает nominal wage из summary (один datapoint per PDF run). Один новый datapoint per ETL run на индикатор. Manual cleanup для `wages-nominal` (один stale point) выполнен. Commit `5317421`.
+
+### 2026-05-10 — Rollout to PPI (producer price index)
+
+`ppi` мигрирован на тот же socioeconomic PDF report. Dedicated PPI XLSX на rosstat сайте не нашёлся → **path P** через PDF: `parse_ppi_mom_from_report` извлекает MoM% из строки «Индекс цен производителей промышленных товаров», парсер queryит DB на last cumulative value, chains через `last × MoM/100` → новый monthly datapoint. Гладкая миграция: один новый datapoint per ETL run, исторический ряд остаётся от прошлой SDDS-стадии, divergence от старых SDDS значений ожидаема. Commit `0dc61b8`.
+
+### 2026-05-10 — Rollout to Housing (2 indicators)
+
+`housing-price-primary` / `housing-price-secondary` мигрированы на **тот же socioeconomic PDF report** (раздел 4.2 «РЫНОК ЖИЛЬЯ»). Quarterly XLSX отдельно не найден на сайте → path P через PDF.
+
+`rosstat_housing_parser.py` рефакторнут полностью: `parse_housing_qoq_pair` извлекает пару (primary, secondary) QoQ% из summary-строки «составили соответственно P% и S%»; `parse_housing_reference_quarter` парсит reference quarter из табличного заголовка «I квартал YYYY г. в % к IV кварталу YYYY-1 г.». Section-anchor `4.2. РЫНОК ЖИЛЬЯ` (case-sensitive uppercase) отсекает TOC-ложные совпадения. `_normalize_year_text` склеивает разорванный PDF-extract год («202 6» → «2026»). Парсер queryит DB на last cumulative value по индикатору, умножает на QoQ/100 → один новый quarterly datapoint per ETL run на каждый индикатор. Pipeline test (Q1 2026): primary 333.80 × 103.9% = **346.82**, secondary 224.40 × 101.8% = **228.44**. Match с rosstat publication ✓. 10 unit-тестов. Commit pending.
+
+### Open work
+
+- **History extension до 1995** для GDP — sheet 1 (ОКВЭД2007) + sheet 2 (ОКВЭД2) chain через methodology break. Не делается в рамках этого ADR — отдельный track с явной сшивкой коэффициентом или just отображать раздельно.
+- **Cleanup** — `fetch_sdds_xlsx`, `DATASET_URLS`, `parse_gdp_xlsx`, `parse_sdds_*` функции, переименование `parser_type rosstat_sdds_*` → `rosstat_*`. Alembic data migration. После сleanup category SDDS закрыта окончательно.
 
 ## Pilot evidence (2026-05-10)
 

@@ -1,40 +1,78 @@
-"""Tests for Rosstat SDDS Housing Price Indices parser."""
+"""Tests for Rosstat housing parser (canonical русский Rosstat PDF)."""
 
-import io
 from datetime import date
 
-import openpyxl
-
-from app.services.rosstat_housing_parser import parse_housing_xlsx
-
-
-def _make_housing_xlsx() -> bytes:
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Housing prices"
-
-    ws.append(["SDDS", None, "Q1-2024", "Q2-2024", "Q3-2024"])
-    ws.append(["Primary market", None, 245.0, 252.3, 258.1])
-    ws.append(["Secondary market", None, 198.5, 201.2, 204.7])
-
-    buf = io.BytesIO()
-    wb.save(buf)
-    return buf.getvalue()
+from app.services.rosstat_housing_parser import (
+    parse_housing_qoq_pair,
+    parse_housing_reference_quarter,
+)
 
 
-class TestParseHousingXlsx:
-    def test_primary(self):
-        content = _make_housing_xlsx()
-        result = parse_housing_xlsx(content)
-        primary = result["housing-price-primary"]
-        assert len(primary) == 3
-        assert primary[0].date == date(2024, 3, 1)
-        assert primary[0].value == 245.0
+class TestParseHousingQoqPair:
+    def test_extracts_pair(self):
+        text = (
+            "4.2. РЫНОК ЖИЛЬЯ\n"
+            "В I квартале 2026 г. индексы цен на первичном и вторичном "
+            "рынках жилья составили соответственно 103,9% и 101,8%."
+        )
+        result = parse_housing_qoq_pair(text)
+        assert result == (103.9, 101.8)
 
-    def test_secondary(self):
-        content = _make_housing_xlsx()
-        result = parse_housing_xlsx(content)
-        secondary = result["housing-price-secondary"]
-        assert len(secondary) == 3
-        assert secondary[0].date == date(2024, 3, 1)
-        assert secondary[0].value == 198.5
+    def test_handles_pdf_extraction_artefacts(self):
+        """PDF extraction вносит лишние пробелы в слова: 'перви чном'."""
+        text = (
+            "4.2. РЫНОК ЖИЛЬЯ\n"
+            "В I квартале 202 6 г. индексы цен на перви чном  и вторичном "
+            "рынках жилья,  составили соответственно 103,9%   \nи 101,8%."
+        )
+        assert parse_housing_qoq_pair(text) == (103.9, 101.8)
+
+    def test_skips_toc_match(self):
+        """Section regex must skip table-of-contents 'Рынок жилья ... 133'."""
+        text = (
+            "Рынок жилья ………………………………… 133\n"
+            "(other PDF content) "
+        )
+        assert parse_housing_qoq_pair(text) is None
+
+    def test_no_match_returns_none(self):
+        assert parse_housing_qoq_pair("nothing relevant") is None
+
+    def test_out_of_range_filtered(self):
+        text = "РЫНОК ЖИЛЬЯ ... составили соответственно 500,0% и 101,8%"
+        assert parse_housing_qoq_pair(text) is None
+
+    def test_other_section_does_not_leak(self):
+        """'составили соответственно' from other sections must not leak in."""
+        text = (
+            "Доля рынков и ярмарок составила 2,8% (в марте - 97,0% и 3,0% "
+            "соответственно)."
+        )
+        assert parse_housing_qoq_pair(text) is None
+
+
+class TestParseHousingReferenceQuarter:
+    def test_q1(self):
+        text = (
+            "ИНДЕКСЫ ЦЕН НА РЫНКЕ ЖИЛЬЯ\n"
+            "I квартал 2026 г. в % к IV кварталу 2025 г."
+        )
+        assert parse_housing_reference_quarter(text) == date(2026, 3, 1)
+
+    def test_q3(self):
+        text = (
+            "ИНДЕКСЫ ЦЕН НА РЫНКЕ ЖИЛЬЯ\n"
+            "III квартал 2025 г. в % к II кварталу 2025 г."
+        )
+        assert parse_housing_reference_quarter(text) == date(2025, 9, 1)
+
+    def test_handles_split_year(self):
+        """Rosstat PDF text extraction sometimes splits year: '202 6' → '2026'."""
+        text = (
+            "ИНДЕКСЫ ЦЕН НА РЫНКЕ ЖИЛЬЯ\n"
+            "I квартал 202 6 г. в % к IV кварталу 202 5 г."
+        )
+        assert parse_housing_reference_quarter(text) == date(2026, 3, 1)
+
+    def test_no_section(self):
+        assert parse_housing_reference_quarter("nothing here") is None
