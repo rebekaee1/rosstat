@@ -164,7 +164,7 @@ def merge_mom_dicts(*dicts: dict[date, float]) -> dict[date, float]:
 
 
 class RosstatIpiParser(BaseParser):
-    parser_type: ClassVar[str] = "rosstat_sdds_ipi"
+    parser_type: ClassVar[str] = "rosstat_ipi"
 
     async def _fetch_and_parse(
         self,

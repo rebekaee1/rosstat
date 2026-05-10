@@ -211,7 +211,7 @@ INDICATOR_SERIES_MAP: dict[str, str] = {
 
 
 class RosstatLaborParser(BaseParser):
-    parser_type: ClassVar[str] = "rosstat_sdds_labor"
+    parser_type: ClassVar[str] = "rosstat_labor"
 
     async def _fetch_and_parse(
         self,

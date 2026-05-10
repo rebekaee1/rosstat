@@ -142,7 +142,7 @@ _INDICATOR_TO_PAIR_INDEX = {
 
 
 class RosstatHousingParser(BaseParser):
-    parser_type: ClassVar[str] = "rosstat_sdds_housing"
+    parser_type: ClassVar[str] = "rosstat_housing"
 
     async def _fetch_and_parse(
         self,

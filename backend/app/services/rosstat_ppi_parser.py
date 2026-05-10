@@ -80,7 +80,7 @@ def parse_ppi_report_pdf(content: bytes) -> float | None:
 
 
 class RosstatPpiParser(BaseParser):
-    parser_type: ClassVar[str] = "rosstat_sdds_ppi"
+    parser_type: ClassVar[str] = "rosstat_ppi"
 
     async def _fetch_and_parse(
         self,

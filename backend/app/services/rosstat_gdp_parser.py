@@ -1,20 +1,19 @@
-"""ETL: Росстат National Accounts → IndicatorData.
+"""ETL: Росстат National Accounts → IndicatorData (canonical русский Rosstat).
 
-Три источника, выбираются через `model_config_json.gdp_source`:
+Два источника, выбираются через `model_config_json.gdp_source`:
 
-1. SDDS (default, deprecated по ADR-0004) — `gdp_source` отсутствует:
-   Файл `SDDS national accounts_{year}.xlsx`, лист "National Accounts".
-   row_index (0-based): 2 = GDP nominal, 4 = consumption, 5 = government, 8 = investment.
-
-2. `gdp_source: "official_quarterly"` — `VVP_kvartal_s_1995-2025.xlsx` (rosstat.gov.ru):
+1. `gdp_source: "official_quarterly"` — `VVP_kvartal_s_1995-2025.xlsx` (rosstat.gov.ru):
    Quarter-grid layout (years row 2, quarters row 3, single value row 4).
    `gdp_sheet`: "2" = nominal current prices ОКВЭД2 (2011+),
                 "9" = real в ценах 2021 г. (2011+).
 
-3. `gdp_source: "official_use"` — `GDP-quarters-of-use-1995-4kv-2025.xls` (rosstat.gov.ru):
+2. `gdp_source: "official_use"` — `GDP-quarters-of-use-1995-4kv-2025.xls` (rosstat.gov.ru):
    Quarter-grid layout, multi-row (стек индикаторов на одном sheet).
    `gdp_sheet`: "1" = ОКВЭД2007 (1995-2010), "2" = ОКВЭД2 (2011+).
    `gdp_row_index` (0-based): 4 = ВВП, 7 = домохозяйства, 8 = госуправление, 11 = GFCF.
+
+SDDS-английский `parse_gdp_xlsx` + `fetch_sdds_xlsx("gdp")` удалены 2026-05-10
+(ADR-0004 cleanup). Все 4 source-индикатора ВВП — через 1 или 2 выше.
 """
 
 from __future__ import annotations
@@ -34,7 +33,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import FetchLog, Indicator
 from app.services.base_parser import BaseParser
 from app.services.data_validator import validate_points
-from app.services.rosstat_sdds_fetcher import fetch_sdds_xlsx, fetch_rosstat_static_xlsx
+from app.services.rosstat_sdds_fetcher import fetch_rosstat_static_xlsx
 
 logger = logging.getLogger(__name__)
 
@@ -75,49 +74,6 @@ def _extract_year(cell) -> int | None:
             return None
         year = int(m.group(1))
     return year if 1990 <= year <= 2100 else None
-
-
-def parse_gdp_xlsx(content: bytes, row_index: int = 2) -> list[DataPoint]:
-    """Parse SDDS national accounts XLSX → list of data points.
-
-    row_index: 0-based index of the data row to extract.
-    Default 2 = Row 3 (GDP nominal).
-    """
-    wb = openpyxl.load_workbook(io.BytesIO(content), data_only=True, read_only=True)
-    try:
-        ws = wb.worksheets[0]
-        rows_data: list[list] = []
-        for row in ws.iter_rows(values_only=True):
-            rows_data.append(list(row))
-    finally:
-        wb.close()
-
-    if len(rows_data) <= row_index:
-        raise ValueError(f"GDP XLSX: expected >={row_index + 1} rows, got {len(rows_data)}")
-
-    dates: list[tuple[int, date]] = []
-    for col_idx in range(2, len(rows_data[0])):
-        header = rows_data[0][col_idx]
-        d = _parse_quarter_header(str(header) if header else "")
-        if d:
-            dates.append((col_idx, d))
-
-    if not dates:
-        raise ValueError("GDP XLSX: no valid quarter headers found")
-
-    data_row = rows_data[row_index]
-    points: list[DataPoint] = []
-
-    for col_idx, d in dates:
-        val = data_row[col_idx] if col_idx < len(data_row) else None
-        if val is not None:
-            try:
-                points.append(DataPoint(date=d, value=round(float(val), 1)))
-            except (ValueError, TypeError):
-                pass
-
-    points.sort(key=lambda p: p.date)
-    return points
 
 
 _QUARTER_NAME_TO_MONTH = {
@@ -230,7 +186,7 @@ def parse_rosstat_gdp_use_xls(
 
 
 class RosstatGdpParser(BaseParser):
-    parser_type: ClassVar[str] = "rosstat_sdds_gdp"
+    parser_type: ClassVar[str] = "rosstat_gdp"
 
     async def _fetch_and_parse(
         self,
@@ -250,9 +206,11 @@ class RosstatGdpParser(BaseParser):
             row_index = int(cfg.get("gdp_row_index", 4))
             points = await asyncio.to_thread(parse_rosstat_gdp_use_xls, content, sheet_name, row_index)
         else:
-            content, final_url = await asyncio.to_thread(fetch_sdds_xlsx, "gdp")
-            row_index = int(cfg.get("gdp_row_index", 2))
-            points = await asyncio.to_thread(parse_gdp_xlsx, content, row_index)
+            raise ValueError(
+                f"RosstatGdpParser: indicator {indicator.code!r} missing or invalid "
+                f"`gdp_source` in model_config_json (got {gdp_source!r}). "
+                f"Expected 'official_quarterly' or 'official_use'. SDDS branch removed (ADR-0004)."
+            )
         return points, final_url
 
     def _validate(self, points: list, cfg: dict) -> list:

@@ -1,12 +1,18 @@
 """
-Загрузчик SDDS XLSX-файлов с eng.rosstat.gov.ru.
+Загрузчик файлов с rosstat.gov.ru (canonical русский Rosstat).
 
-SDDS (Special Data Dissemination Standard) — стандарт МВФ.
-Файлы публикуются по паттерну:
-  https://eng.rosstat.gov.ru/storage/mediabank/SDDS_{dataset}_{year}.xlsx
+Поддерживаемые источники:
+  - Static XLSX/XLS bundles (`fetch_rosstat_static_xlsx`) — стабильные URL из
+    `ROSSTAT_STATIC_URLS`.
+  - Динамический IPI XLSX (`fetch_rosstat_ipi_current`) — `ind_baza_2023_*.xlsx`,
+    переиздаётся ежемесячно.
+  - Динамический OkPopul XLSX (`fetch_rosstat_okpopul`) — годовая публикация.
+  - Socioeconomic-report PDF (`fetch_latest_socioeconomic_report_pdf`) —
+    ежемесячный osn-{MM}-{YYYY}.pdf, источник для labor / PPI / housing
+    (см. ADR-0004 path P).
 
-Год в URL обычно = текущий - 1 (файл за 2025 год содержит данные до начала 2026).
-Пробуем сначала текущий год, потом год назад.
+SDDS-английский fetcher (`fetch_sdds_xlsx`) и `DATASET_URLS` удалены 2026-05-10
+(ADR-0004 cleanup). Все индикаторы переключены на canonical русские источники.
 """
 
 from __future__ import annotations
@@ -25,17 +31,7 @@ XLSX_MAGIC = b"PK\x03\x04"
 XLS_MAGIC = b"\xd0\xcf\x11\xe0"  # OLE2 compound (legacy .xls binary)
 PDF_MAGIC = b"%PDF"
 
-_BASE = "https://eng.rosstat.gov.ru/storage/mediabank"
 _ROSSTAT_MEDIA = "https://rosstat.gov.ru/storage/mediabank"
-
-DATASET_URLS: dict[str, str] = {
-    "labor": "SDDS_labor%20market_{year}.xlsx",
-    "gdp": "SDDS%20national%20accounts_{year}.xlsx",
-    "population": "SDDS_population_{year}.xlsx",
-    "ipi": "SDDS_industrial%20production%20index_{year}.xlsx",
-    "housing": "SDDS_housing%20market%20price%20indices_{year}_.xlsx",
-    "prices": "SDDS_price%20indices_{year}.xlsx",
-}
 
 ROSSTAT_STATIC_URLS: dict[str, str] = {
     "popul_components": "https://rosstat.gov.ru/storage/mediabank/Popul%20components_1990+.xlsx",
@@ -55,40 +51,6 @@ def _get_session() -> requests.Session:
         _session = create_session()
         _session.verify = settings.rosstat_ca_cert
     return _session
-
-
-def fetch_sdds_xlsx(dataset: str) -> tuple[bytes, str]:
-    """Download SDDS XLSX. Tries current year, then year - 1.
-
-    Returns (content_bytes, final_url).
-    Raises on total failure.
-    """
-    template = DATASET_URLS.get(dataset)
-    if not template:
-        raise ValueError(f"Unknown SDDS dataset: {dataset}")
-
-    now_year = datetime.now().year
-    session = _get_session()
-
-    for year in (now_year, now_year - 1):
-        url = f"{_BASE}/{template.format(year=year)}"
-        try:
-            resp = session.get(url, timeout=settings.rosstat_request_timeout)
-            if resp.status_code != 200:
-                logger.debug("SDDS %s %d: HTTP %d", dataset, year, resp.status_code)
-                continue
-            ct = resp.headers.get("content-type", "")
-            if "html" in ct.lower():
-                logger.warning("SDDS %s %d: got HTML content-type (error page?)", dataset, year)
-            if resp.content[:4] != XLSX_MAGIC:
-                logger.warning("SDDS %s %d: not XLSX (HTML error page?)", dataset, year)
-                continue
-            logger.info("Downloaded SDDS %s (%d): %d KB", dataset, year, len(resp.content) // 1024)
-            return resp.content, url
-        except requests.RequestException as e:
-            logger.warning("SDDS %s %d fetch error: %s", dataset, year, e)
-
-    raise RuntimeError(f"SDDS {dataset}: no file found for years {now_year} or {now_year - 1}")
 
 
 def fetch_rosstat_static_xlsx(key: str) -> tuple[bytes, str]:

@@ -587,7 +587,7 @@ INDICATORS = [
             "Парсер извлекает табличный блок «ДИНАМИКА ЧИСЛЕННОСТИ РАБОЧЕЙ СИЛЫ» "
             "(колонка уровня безработицы)."
         ),
-        "parser_type": "rosstat_sdds_labor",
+        "parser_type": "rosstat_labor",
         "model_config_json": {
             "forecast_steps": 0,
             "forecast_transform": "percentage",
@@ -615,7 +615,7 @@ INDICATORS = [
             "организаций: номинальная, рублей»). Один новый datapoint per "
             "ETL run для месяца T-1; полная история накапливается в DB."
         ),
-        "parser_type": "rosstat_sdds_labor",
+        "parser_type": "rosstat_labor",
         "model_config_json": {
             "forecast_steps": 0,
             "forecast_transform": "absolute",
@@ -643,7 +643,7 @@ INDICATORS = [
             "(раздел /statistics/accounts), лист 2 (текущие цены, ОКВЭД2, с 2011). "
             "Обновляется поквартально (T+45 дней prelim, T+90 final)."
         ),
-        "parser_type": "rosstat_sdds_gdp",
+        "parser_type": "rosstat_gdp",
         "model_config_json": {
             "gdp_source": "official_quarterly",
             "gdp_sheet": "2",
@@ -677,7 +677,7 @@ INDICATORS = [
             "Источник — Росстат, ряды квартального ВВП в постоянных ценах 2021 г. "
             "по методологии СНС-2008. Обновляется поквартально."
         ),
-        "parser_type": "rosstat_sdds_gdp",
+        "parser_type": "rosstat_gdp",
         "model_config_json": {
             "gdp_source": "official_quarterly",
             "gdp_sheet": "9",
@@ -1264,7 +1264,7 @@ INDICATORS = [
             "стадии (ADR-0004 path P, compat). Один новый datapoint per "
             "ETL run на индикатор."
         ),
-        "parser_type": "rosstat_sdds_housing",
+        "parser_type": "rosstat_housing",
         "model_config_json": {
             "forecast_steps": 4,
             "forecast_transform": "absolute",
@@ -1299,7 +1299,7 @@ INDICATORS = [
             "(ADR-0004 path P, compat). Исторический ряд 2014+ — от "
             "прошлой SDDS-стадии."
         ),
-        "parser_type": "rosstat_sdds_housing",
+        "parser_type": "rosstat_housing",
         "model_config_json": {
             "forecast_steps": 4,
             # Reproduces Никита's quarterly OLS multi-window model from the
@@ -1331,7 +1331,7 @@ INDICATORS = [
             "Парсер chain'ит MoM% в cumulative monthly index, нормализует к "
             "среднему за 2023 г. = 100 (path P / compat ADR-0004)."
         ),
-        "parser_type": "rosstat_sdds_ipi",
+        "parser_type": "rosstat_ipi",
         "model_config_json": {
             "forecast_steps": 0,
             "forecast_transform": "absolute",
@@ -1526,7 +1526,7 @@ INDICATORS = [
             "datapoint per ETL run. Полный исторический ряд 2010+ остаётся "
             "в DB от прошлой SDDS-этапы (path P / compat ADR-0004)."
         ),
-        "parser_type": "rosstat_sdds_ppi",
+        "parser_type": "rosstat_ppi",
         "model_config_json": {
             "forecast_steps": 12,
             "forecast_model_name": "Approved-PPI-Notebook",
@@ -1789,7 +1789,7 @@ INDICATORS = [
             "Источник — `GDP-quarters-of-use-1995-4kv-2025.xls`, лист 2 (ОКВЭД2, с 2011), "
             "строка 8 (домашних хозяйств). Раздел rosstat.gov.ru/statistics/accounts."
         ),
-        "parser_type": "rosstat_sdds_gdp",
+        "parser_type": "rosstat_gdp",
         "model_config_json": {
             "gdp_source": "official_use",
             "gdp_sheet": "2",
@@ -1816,7 +1816,7 @@ INDICATORS = [
             "Источник — `GDP-quarters-of-use-1995-4kv-2025.xls`, лист 2 (ОКВЭД2, с 2011), "
             "строка 9 (государственного управления). Раздел rosstat.gov.ru/statistics/accounts."
         ),
-        "parser_type": "rosstat_sdds_gdp",
+        "parser_type": "rosstat_gdp",
         "model_config_json": {
             "gdp_source": "official_use",
             "gdp_sheet": "2",
@@ -1843,7 +1843,7 @@ INDICATORS = [
             "Источник — `GDP-quarters-of-use-1995-4kv-2025.xls`, лист 2 (ОКВЭД2, с 2011), "
             "строка 12 (валовое накопление основного капитала). Раздел rosstat.gov.ru/statistics/accounts."
         ),
-        "parser_type": "rosstat_sdds_gdp",
+        "parser_type": "rosstat_gdp",
         "model_config_json": {
             "gdp_source": "official_use",
             "gdp_sheet": "2",
@@ -1868,7 +1868,7 @@ INDICATORS = [
             "Данные обследования рабочей силы Росстата (бюллетень "
             "«Социально-экономическое положение России»)."
         ),
-        "parser_type": "rosstat_sdds_labor",
+        "parser_type": "rosstat_labor",
         "model_config_json": {
             "forecast_steps": 0,
             "validation": {"min": 50, "max": 100},
@@ -1888,7 +1888,7 @@ INDICATORS = [
             "Численность занятого населения по данным обследования рабочей силы "
             "Росстата (бюллетень «Социально-экономическое положение России»)."
         ),
-        "parser_type": "rosstat_sdds_labor",
+        "parser_type": "rosstat_labor",
         "model_config_json": {
             "forecast_steps": 0,
             "validation": {"min": 50, "max": 100},
