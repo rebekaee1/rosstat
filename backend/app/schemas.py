@@ -115,6 +115,7 @@ class CalendarEventOut(BaseModel):
     scheduled_date: date
     scheduled_time: str | None = None
     is_estimated: bool = False
+    date_confidence: str = "official_explicit"
     reference_period: str | None = None
     importance: int = 2
     status: str = "scheduled"
@@ -123,6 +124,9 @@ class CalendarEventOut(BaseModel):
     actual_value: str | None = None
     description: str | None = None
     source_url: str | None = None
+    event_key: str | None = None
+    source_event_uid: str | None = None
+    source_hash: str | None = None
     indicator_code: str | None = None
     indicator_name: str | None = None
 

@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowUpRight, Clock, ExternalLink } from 'lucide-react';
+import { ArrowUpRight, ExternalLink } from 'lucide-react';
 import gsap from 'gsap';
 import { cn } from '../../lib/format';
 import { FOCUS_RING_SURFACE } from '../../lib/uiTokens';
@@ -165,12 +165,7 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0 })
               {src.label}
             </span>
             <ImportanceDots level={event.importance} />
-            {event.is_estimated && (
-              <span className="inline-flex items-center gap-1 text-[10px] text-text-tertiary">
-                <Clock className="w-3 h-3" />
-                Ожид.
-              </span>
-            )}
+            <span className="text-[10px] text-text-tertiary">официально</span>
           </div>
           {event.scheduled_time && (
             <span className="text-sm font-mono text-text-secondary shrink-0">

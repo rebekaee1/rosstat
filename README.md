@@ -244,7 +244,7 @@ rosstat/
 | Миграции БД | `entrypoint.sh` → `alembic upgrade head` при каждом старте |
 | Первичный seed | `entrypoint.sh` → идемпотентный `seed_data.py` |
 | Ежедневный ETL | APScheduler cron 06:00 MSK (все `is_active=true`, 76 source-парсеров) |
-| Calendar refresh | APScheduler cron 1-е число 03:00 MSK (rolling 12 мес) |
+| Calendar refresh | APScheduler daily 03:00 MSK: official-source ingest, rolling 12 мес, public official-only |
 | Forecast retrain | После каждого изменения данных (если `records_added>0`) |
 | Derived recompute | Каскадно после ETL (если хотя бы один source-индикатор обновился) |
 | Cache invalidation | После forecast retrain — Redis-ключи протухают |

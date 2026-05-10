@@ -32,6 +32,13 @@ from app.services.calendar_seed import (
     ROSSTAT_MONTHLY_RELEASES,
     ROSSTAT_QUARTERLY_RELEASES,
 )
+from app.api.calendar import PUBLIC_CONFIDENCES
+from app.services.calendar_sources.common import append_reschedule_audit
+from app.services.calendar_sources.official_calendar import (
+    build_minfin_rule_candidates,
+    build_rosstat_rule_candidates,
+    parse_cbr_ics,
+)
 
 
 @pytest.fixture
@@ -189,3 +196,72 @@ def test_quarterly_gdp_release_present_in_window(today: date):
     codes = {e["indicator_code"] for e in events}
     assert "gdp-nominal" in codes
     assert all(e["importance"] in (1, 2, 3) for e in events)
+
+
+# --- Official-source calendar pipeline --------------------------------------
+
+
+def test_rosstat_cpi_april_2026_uses_official_rule_date():
+    events = build_rosstat_rule_candidates(today=date(2026, 5, 10), months_ahead=1)
+    cpi = [
+        e for e in events
+        if e.indicator_code == "cpi" and e.reference_period == "апрель 2026"
+    ]
+    assert len(cpi) == 1
+    assert cpi[0].scheduled_date == date(2026, 5, 15)
+    assert cpi[0].date_confidence == "official_rule"
+    assert cpi[0].source_url
+
+
+def test_cbr_ics_parser_recognizes_official_reserves_event():
+    fixture = """BEGIN:VCALENDAR
+BEGIN:VEVENT
+UID:cbr-reserves-20260409
+DTSTART;VALUE=DATE:20260409
+SUMMARY:Международные резервы Российской Федерации
+DESCRIPTION:еженедельные значения
+URL:https://www.cbr.ru/hd_base/mrrf/mrrf_7d/
+END:VEVENT
+END:VCALENDAR
+"""
+    events = parse_cbr_ics(
+        fixture,
+        source_url="https://www.cbr.ru/Queries/FileSource/105732/vCalendar.ics?inline=True",
+        today=date(2026, 4, 1),
+        months_ahead=1,
+    )
+    assert len(events) == 1
+    assert events[0].indicator_code == "international-reserves"
+    assert events[0].scheduled_date == date(2026, 4, 9)
+    assert events[0].date_confidence == "official_explicit"
+    assert events[0].source_event_uid == "cbr-reserves-20260409"
+
+
+def test_minfin_budget_uses_14th_workday_rule():
+    events = build_minfin_rule_candidates(today=date(2026, 5, 10), months_ahead=1)
+    may_budget = [
+        e for e in events
+        if e.indicator_code == "budget-revenue" and e.reference_period == "апрель 2026"
+    ]
+    assert len(may_budget) == 1
+    assert may_budget[0].scheduled_date == date(2026, 5, 22)
+    assert may_budget[0].date_confidence == "official_rule"
+
+
+def test_reschedule_audit_records_previous_date():
+    metadata = append_reschedule_audit(
+        {},
+        old_date=date(2026, 5, 6),
+        new_date=date(2026, 5, 15),
+        fetched_at=date(2026, 5, 10),
+    )
+    assert metadata["reschedule_audit"] == [{
+        "previous_date": "2026-05-06",
+        "new_date": "2026-05-15",
+        "fetched_at": "2026-05-10",
+    }]
+
+
+def test_public_calendar_confidences_exclude_estimated():
+    assert "estimated" not in PUBLIC_CONFIDENCES
+    assert set(PUBLIC_CONFIDENCES) == {"official_explicit", "official_rule"}

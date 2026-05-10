@@ -1,5 +1,5 @@
 """
-Seed economic calendar events as a rolling 12-month window.
+Seed official economic calendar events as a rolling 12-month window.
 
 Sources synchronised with the official publication calendars:
   * CBR rate meetings — cbr.ru/dkp/cal_mp/ (8 regular meetings per year)
@@ -15,8 +15,9 @@ Sources synchronised with the official publication calendars:
       - Retail trade / housing commissioned: monthly (~15th)
   * Minfin federal budget: monthly (~25-30th)
 
-The seeder always populates a rolling [today, today + 12 months] window.
-On_conflict_do_nothing makes it idempotent: re-runs only fill gaps.
+Public calendar dates come from official source parsers or official rules.
+The legacy estimated builders below are kept for tests/debug only; public API
+filters estimated rows out.
 
 Run via:
   python -m app.services.calendar_seed
@@ -495,52 +496,14 @@ async def seed_calendar(
     today: date | None = None,
     db: AsyncSession | None = None,
 ) -> int:
-    """Idempotently fill the calendar with a rolling [today, +months_ahead] window.
+    """Idempotently ingest official calendar dates into [today, +months_ahead]."""
+    from app.services.calendar_sources.official_calendar import refresh_official_calendar
 
-    Returns the number of newly inserted rows. Existing rows are left untouched
-    via on_conflict_do_nothing on (source, event_type, scheduled_date, indicator_id).
-    """
-    today = today or date.today()
-
-    all_events: list[dict] = []
-    all_events.extend(_build_cbr_meeting_events(
-        CBR_MEETINGS_2026, is_estimated=False, today=today,
-    ))
-    all_events.extend(_build_cbr_meeting_events(
-        CBR_MEETINGS_2027_TENTATIVE, is_estimated=True, today=today,
-    ))
-    all_events.extend(_build_monthly_release_events(
-        ROSSTAT_MONTHLY_RELEASES, "rosstat",
-        today=today, months_ahead=months_ahead,
-    ))
-    all_events.extend(_build_monthly_release_events(
-        CBR_STAT_MONTHLY, "cbr",
-        today=today, months_ahead=months_ahead,
-    ))
-    all_events.extend(_build_monthly_release_events(
-        MINFIN_MONTHLY, "minfin",
-        today=today, months_ahead=months_ahead,
-    ))
-    all_events.extend(_build_quarterly_release_events(
-        ROSSTAT_QUARTERLY_RELEASES, "rosstat",
-        today=today, months_ahead=months_ahead,
-    ))
-    all_events.extend(_build_weekly_events(
-        today=today, months_ahead=months_ahead,
-    ))
-
-    horizon = today + timedelta(days=months_ahead * 31)
-    cutoff = today - timedelta(days=14)
-    all_events = [
-        e for e in all_events
-        if cutoff <= e["scheduled_date"] <= horizon
-    ]
-
-    if db is not None:
-        return await _persist_events(db, all_events)
-
-    async with async_session_factory() as session:
-        return await _persist_events(session, all_events)
+    return await refresh_official_calendar(
+        months_ahead=months_ahead,
+        today=today,
+        db=db,
+    )
 
 
 async def _cleanup_legacy_orphans(db: AsyncSession) -> int:

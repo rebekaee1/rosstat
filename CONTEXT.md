@@ -21,6 +21,7 @@
 | [`docs/adr/0002`](docs/adr/0002-derived-always-reflects-source.md) | Инвариант: derived всегда отражает source (`bulk_upsert` идемпотентен) |
 | [`docs/adr/0003`](docs/adr/0003-seo-single-source-server-rendered.md) | SEO single-source: backend SSR через `__spa-index.html` + Vite asset discovery |
 | [`docs/adr/0004`](docs/adr/0004-rosstat-russian-canonical-sdds-deprecated.md) | Rosstat русский canonical, SDDS English deprecated. Pilot: gdp-nominal end-to-end 2026-05-10 |
+| [`docs/adr/0005`](docs/adr/0005-official-calendar-source-bound.md) | Calendar source-bound: public dates only from official source/rule with provenance |
 
 ---
 
@@ -148,7 +149,7 @@
 
 Daily ETL (06:00 МСК, `RUSTATS_SCHEDULER_CRON_HOUR/MINUTE`) запускает все `is_active=True` non-derived индикаторы → `CalculationEngine.run_for_updated_sources` для derived (если хотя бы один parser добавил новые строки) → `_promote_past_events` для календаря.
 
-**Calendar refresh** (`calendar_refresh` job): отдельный cron 1-го числа каждого месяца 03:00 МСК прокатывает `seed_calendar(months_ahead=12)` — rolling 12-месячное окно событий ЦБ/Росстата/Минфина (см. термин «Calendar event»).
+**Calendar refresh** (`calendar_refresh` job): отдельный daily cron 03:00 МСК прокатывает `seed_calendar(months_ahead=12)`, который теперь вызывает official calendar ingest (`calendar_sources.official_calendar`). Public API отдаёт только `date_confidence IN ('official_explicit', 'official_rule')`; estimated rows остаются внутренним fallback и скрыты (см. термин «Calendar event» и ADR-0005).
 
 **Analytics scheduler** (опционально): если `RUSTATS_ANALYTICS_SCHEDULER_ENABLED=true` — два дополнительных cron-а: hourly :15 (Yandex Metrika reporting sync) и daily (management snapshot). По умолчанию выключен.
 
@@ -160,7 +161,7 @@ Daily ETL (06:00 МСК, `RUSTATS_SCHEDULER_CRON_HOUR/MINUTE`) запускае�
 
 ### Calendar event
 
-Запись в `EconomicEvent` для расписания публикаций (релиз CPI Росстата, заседание совета директоров ЦБ, недельный ИПЦ Росстата по средам, международные резервы РФ по четвергам). Статус `scheduled` → `released` (автоматически промотится по `scheduled_date < today` в `_promote_past_events`). Окно — rolling 12 месяцев; обновляется ежемесячно через `calendar_refresh` cron.
+Запись в `EconomicEvent` для расписания публикаций (релиз CPI Росстата, заседание совета директоров ЦБ, недельный ИПЦ Росстата, международные резервы РФ). После ADR-0005 public calendar **source-bound**: событие показывается пользователю только если `date_confidence = official_explicit` (официальная дата из календаря/ICS/страницы) или `official_rule` (дата рассчитана по опубликованному правилу + versioned `ru_working_calendar` с source_url). `estimated` rows скрыты из `/api/v1/calendar`, `/upcoming` и iCal. Переносы обновляются по stable `event_key`, старая дата хранится в `metadata_json.reschedule_audit`. Статус `scheduled` → `released` автоматически промотится по `scheduled_date < today`.
 
 ### Embed widget
 

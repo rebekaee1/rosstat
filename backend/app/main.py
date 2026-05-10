@@ -100,16 +100,16 @@ async def lifespan(app: FastAPI):
         scheduler.add_job(
             _calendar_refresh_job,
             trigger=CronTrigger(
-                day=1, hour=3, minute=0, timezone="Europe/Moscow",
+                hour=3, minute=0, timezone="Europe/Moscow",
             ),
             id="calendar_refresh",
-            name="Monthly calendar refresh (rolling 12-month window)",
+            name="Daily official calendar refresh (rolling 12-month window)",
             replace_existing=True,
         )
         scheduler.start()
         logger.info(
             "Scheduler started: daily ETL at %02d:%02d MSK (Europe/Moscow), all is_active indicators; "
-            "calendar refresh on day=1 03:00 MSK",
+            "official calendar refresh at 03:00 MSK",
             settings.scheduler_cron_hour,
             settings.scheduler_cron_minute,
         )

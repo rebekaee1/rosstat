@@ -23,7 +23,7 @@
 - **Пакетный seed** — `seed_data.py` идемпотентный: повторный запуск не создаёт дублей. `entrypoint.sh` гонит его при каждом старте.
 - **Бэкап перед деплоем** — `pg_dump | gzip > /opt/rosstat/backups/pre-deploy-<timestamp>.sql.gz` обязательно. См. `scripts/pg-backup.sh`. Хранение — последние 7 копий (TODO: автоматический ротатор).
 - **Rolling-window очистка** — старые `fetch_logs` (>90 дней) и старые `forecast_runs` без активных привязок чистит `scripts/cleanup-old-runs.py` (запуск ручной, периодичность — раз в квартал).
-- **Календарь** — APScheduler-job `calendar_refresh` пересоздаёт окно 12 мес. вперёд первого числа каждого месяца в 03:00 MSK. См. `seed_calendar(months_ahead=12)`.
+- **Календарь** — APScheduler-job `calendar_refresh` ежедневно в 03:00 MSK обновляет rolling 12 мес. через official-source ingest. Public API отдаёт только `official_explicit` / `official_rule`; `estimated` скрыты. См. ADR-0005 и `seed_calendar(months_ahead=12)`.
 
 ## Парсеры и источники
 

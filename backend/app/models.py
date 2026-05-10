@@ -91,9 +91,12 @@ class EconomicEvent(Base):
     __table_args__ = (
         UniqueConstraint("source", "event_type", "scheduled_date", "indicator_id",
                          name="uq_event_natural_key"),
+        UniqueConstraint("source", "event_type", "event_key",
+                         name="uq_event_stable_key"),
         Index("ix_event_scheduled", "scheduled_date"),
         Index("ix_event_source", "source"),
         Index("ix_event_upcoming", "scheduled_date", "importance"),
+        Index("ix_event_confidence", "date_confidence"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -116,6 +119,11 @@ class EconomicEvent(Base):
     status: Mapped[str] = mapped_column(String(20), default="scheduled")
     description: Mapped[str | None] = mapped_column(Text)
     source_url: Mapped[str | None] = mapped_column(String(500))
+    event_key: Mapped[str | None] = mapped_column(String(200))
+    date_confidence: Mapped[str] = mapped_column(String(30), default="estimated")
+    source_event_uid: Mapped[str | None] = mapped_column(String(300))
+    source_hash: Mapped[str | None] = mapped_column(String(64))
+    last_seen_at: Mapped[datetime | None] = mapped_column(DateTime)
     metadata_json: Mapped[dict | None] = mapped_column(JSON)
     created_at: Mapped[datetime | None] = mapped_column(DateTime)
     updated_at: Mapped[datetime | None] = mapped_column(DateTime)
