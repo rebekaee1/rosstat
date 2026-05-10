@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-05-10.
 **Part of:** [`AGENTS.md`](AGENTS.md) (точка входа для AI-агента).
-**See also:** [`README.md`](README.md), [`docs/workflow.md`](docs/workflow.md), [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md), [`docs/cbr_sources.md`](docs/cbr_sources.md), [`docs/analytics_api_inventory/`](docs/analytics_api_inventory/), [`docs/adr/`](docs/adr/).
+**See also:** [`README.md`](README.md), [`docs/workflow.md`](docs/workflow.md), [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md), [`docs/data_sources.md`](docs/data_sources.md), [`docs/cbr_sources.md`](docs/cbr_sources.md), [`docs/analytics_api_inventory/`](docs/analytics_api_inventory/), [`docs/adr/`](docs/adr/).
 
 > Domain glossary for the project. Every architectural discussion, ADR, and refactoring proposal should use the terms defined here. If a discussion needs a new term, add it to this file before finishing.
 
@@ -14,7 +14,8 @@
 | [`README.md`](README.md) | Высокоуровневая карта стека, API, indicators, deploy |
 | [`docs/workflow.md`](docs/workflow.md) | Модель работы, локальный dev, прод-деплой, smoke C |
 | [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md) | Rate-limit, CSP, asset-hash trap, бэкапы, чеклист канарейки |
-| [`docs/cbr_sources.md`](docs/cbr_sources.md) | Все не-Росстат источники: ЦБ РФ + Минфин (10 парсеров) |
+| [`docs/data_sources.md`](docs/data_sources.md) | Точная карта «индикатор → файл/endpoint» для всех 75 source-индикаторов. Single source of truth — обязательно обновлять при правке источника |
+| [`docs/cbr_sources.md`](docs/cbr_sources.md) | Все не-Росстат источники: ЦБ РФ + Минфин (10 парсеров, детальные парсер-разделы) |
 | [`docs/analytics_api_inventory/`](docs/analytics_api_inventory/) | Инвентарь Yandex API (Metrika, Webmaster) + статус реализации |
 | [`docs/adr/0001`](docs/adr/0001-derived-indicators-engine-shape.md) | Engine shape: 28 derived через `DERIVED_SPECS` + 9 чистых ops |
 | [`docs/adr/0002`](docs/adr/0002-derived-always-reflects-source.md) | Инвариант: derived всегда отражает source (`bulk_upsert` идемпотентен) |

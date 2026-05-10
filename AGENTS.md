@@ -14,9 +14,10 @@
 
 1. **[`CONTEXT.md`](CONTEXT.md)** — domain glossary и архитектурный язык. **Spine**, без неё нельзя обсуждать архитектуру. Читать целиком — он сжатый.
 2. **[`README.md`](README.md)** — карта стека, API, indicators, deploy. Высокоуровневый обзор.
-3. **[`docs/workflow.md`](docs/workflow.md)** — модель работы, локальный dev, прод-деплой, smoke C.
-4. **[`docs/enterprise_resilience.md`](docs/enterprise_resilience.md)** — операционные инварианты, чеклист канарейки 6/6.
-5. **`docs/adr/`** — архитектурные решения (нумерованные ADR, читать в порядке номеров):
+3. **[`docs/data_sources.md`](docs/data_sources.md)** — точная карта «индикатор → файл/endpoint» (75 source-индикаторов). Канонический справочник, откуда тянется каждый ряд.
+4. **[`docs/workflow.md`](docs/workflow.md)** — модель работы, локальный dev, прод-деплой, smoke C.
+5. **[`docs/enterprise_resilience.md`](docs/enterprise_resilience.md)** — операционные инварианты, чеклист канарейки 6/6.
+6. **`docs/adr/`** — архитектурные решения (нумерованные ADR, читать в порядке номеров):
    - `0001-derived-indicators-engine-shape.md` — engine shape derived (28 specs + 9 pure ops).
    - `0002-derived-always-reflects-source.md` — инвариант идемпотентности `bulk_upsert`.
    - `0003-seo-single-source-server-rendered.md` — SSR через backend, asset discovery от Vite shell.
@@ -31,7 +32,8 @@
 | Вопрос | Файл/папка |
 |--------|------------|
 | Как работает парсер X? | `backend/app/services/<X>_parser.py` + раздел в `CONTEXT.md::Parser` |
-| Какие источники, кроме Росстата? | [`docs/cbr_sources.md`](docs/cbr_sources.md) (CBR + Минфин, 10 парсеров) |
+| Откуда берётся индикатор X? | **[`docs/data_sources.md`](docs/data_sources.md)** — точный URL/файл по каждому из 75 source |
+| Какие источники, кроме Росстата? | [`docs/cbr_sources.md`](docs/cbr_sources.md) (CBR + Минфин, 10 парсеров — детально) |
 | Как считается derived-индикатор Y? | `DERIVED_SPECS` в `backend/app/services/calculation_engine.py` + ADR-0001 |
 | Какая стратегия forecast у индикатора Z? | `Indicator.model_config_json.forecast_strategy` в БД + реестр `backend/app/services/forecast_strategies/registry.py` + таблица в `CONTEXT.md::Forecast` |
 | Как собирается SEO/мета? | `backend/app/services/seo_renderer.py` + `seo_content.py` + ADR-0003 |
@@ -76,8 +78,9 @@
 
 | Изменение в коде | Куда писать |
 |------------------|-------------|
-| Новый source-парсер (CBR/Минфин/иной) | `docs/cbr_sources.md` (таблица + детальный раздел) + регистрация в `PARSER_REGISTRY` + строка в `seed_data.py` |
-| Новый Rosstat-парсер | `CONTEXT.md::Parser` + `PARSER_REGISTRY` + `seed_data.py` |
+| **Любое изменение источника данных** (URL, имя файла, sheet, dataservice блок, file template) | **`docs/data_sources.md`** — single source of truth «индикатор → актуальный файл/endpoint». ОБЯЗАТЕЛЬНО при любой правке парсера или `model_config_json` |
+| Новый source-парсер (CBR/Минфин/иной) | `docs/cbr_sources.md` (таблица + детальный раздел) + `docs/data_sources.md` + регистрация в `PARSER_REGISTRY` + строка в `seed_data.py` |
+| Новый Rosstat-парсер | `CONTEXT.md::Parser` + `docs/data_sources.md` + `PARSER_REGISTRY` + `seed_data.py` |
 | Новый derived-индикатор | `DERIVED_SPECS` в `calculation_engine.py` + `seed_data.py` + раздел в `CONTEXT.md::Derived indicator` (счётчики и категории) |
 | Новая чистая op в `derived_ops.py` | ADR-0001 (раздел «Subsequent additions») + `CONTEXT.md::Derived indicator` (список ops) |
 | Новая forecast-стратегия | `forecast_strategies/registry.py` + таблица в `CONTEXT.md::Forecast` + строка в `README.md::Прогнозы` |
@@ -124,7 +127,8 @@ rosstat/
 ├── docs/
 │   ├── adr/                        ← architectural decisions (нумерованные)
 │   ├── analytics_api_inventory/    ← Yandex API контракт + status
-│   ├── cbr_sources.md              ← CBR + Минфин parsers
+│   ├── data_sources.md             ← single source of truth: индикатор → файл/endpoint (75 source)
+│   ├── cbr_sources.md              ← CBR + Минфин parsers (детально)
 │   ├── workflow.md                 ← процесс, dev, deploy
 │   └── enterprise_resilience.md    ← операционные инварианты
 ├── backend/
