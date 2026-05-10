@@ -1,25 +1,20 @@
-"""ETL: Росстат National Accounts XLSX → IndicatorData.
+"""ETL: Росстат National Accounts → IndicatorData.
 
-Файл: SDDS national accounts_{year}.xlsx
-Лист: "National Accounts"
-Строки (0-indexed in code, 1-indexed in XLSX):
-  Row 1: заголовки кварталов (Qn-YYYY или Qn-YYYY**)
-  Row 3: GDP in current prices (billion rubles)
-  Row 4: Final consumption
-  Row 5: Household consumption expenditure
-  Row 6: Government consumption expenditure
-  Row 9: Gross fixed capital formation
-  Row 12: Exports of goods and services
-  Row 13: Imports of goods and services
+Три источника, выбираются через `model_config_json.gdp_source`:
 
-Индикаторы:
-  gdp-nominal        — row 3 (gdp_row_index=2)
-  gdp-consumption    — row 5 (gdp_row_index=4)
-  gdp-government     — row 6 (gdp_row_index=5)
-  gdp-investment     — row 9 (gdp_row_index=8)
+1. SDDS (default, deprecated по ADR-0004) — `gdp_source` отсутствует:
+   Файл `SDDS national accounts_{year}.xlsx`, лист "National Accounts".
+   row_index (0-based): 2 = GDP nominal, 4 = consumption, 5 = government, 8 = investment.
 
-Файл: VVP_kvartal_s_1995-2025.xlsx (rosstat.gov.ru)
-  gdp-real           — sheet 9, GDP at 2021 constant prices
+2. `gdp_source: "official_quarterly"` — `VVP_kvartal_s_1995-2025.xlsx` (rosstat.gov.ru):
+   Quarter-grid layout (years row 2, quarters row 3, single value row 4).
+   `gdp_sheet`: "2" = nominal current prices ОКВЭД2 (2011+),
+                "9" = real в ценах 2021 г. (2011+).
+
+3. `gdp_source: "official_use"` — `GDP-quarters-of-use-1995-4kv-2025.xls` (rosstat.gov.ru):
+   Quarter-grid layout, multi-row (стек индикаторов на одном sheet).
+   `gdp_sheet`: "1" = ОКВЭД2007 (1995-2010), "2" = ОКВЭД2 (2011+).
+   `gdp_row_index` (0-based): 4 = ВВП, 7 = домохозяйства, 8 = госуправление, 11 = GFCF.
 """
 
 from __future__ import annotations
@@ -33,6 +28,7 @@ from datetime import date
 from typing import ClassVar
 
 import openpyxl
+import xlrd
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import FetchLog, Indicator
@@ -179,6 +175,60 @@ def parse_rosstat_gdp_quarter_grid_xlsx(content: bytes, sheet_name: str = "9") -
     return points
 
 
+def parse_rosstat_gdp_use_xls(
+    content: bytes,
+    sheet_name: str = "2",
+    value_row_index: int = 4,
+) -> list[DataPoint]:
+    """Parse legacy .xls `GDP-quarters-of-use-*.xls` (rosstat.gov.ru/statistics/accounts).
+
+    Same year/quarter grid as `parse_rosstat_gdp_quarter_grid_xlsx` but the file is
+    OLE2 binary (xlrd, not openpyxl) and the sheet hosts multiple stacked indicators
+    (ВВП, конечное потребление, домохозяйства, госуправление, GFCF) — caller selects
+    via `value_row_index` (0-based).
+
+    Sheets: "1" = ОКВЭД2007 1995-2010 (methodology break vs sheet 2),
+            "2" = ОКВЭД2 2011+ (current canonical for our 2011-onwards series).
+    """
+    wb = xlrd.open_workbook(file_contents=content)
+    ws = wb.sheet_by_name(sheet_name)
+
+    if ws.nrows <= max(4, value_row_index):
+        raise ValueError(
+            f"GDP use XLS sheet {sheet_name}: expected >= {value_row_index + 1} rows, got {ws.nrows}"
+        )
+
+    year_row = ws.row_values(2)
+    quarter_row = ws.row_values(3)
+    value_row = ws.row_values(value_row_index)
+
+    points: list[DataPoint] = []
+    current_year: int | None = None
+    for idx, qcell in enumerate(quarter_row):
+        maybe_year = _extract_year(year_row[idx] if idx < len(year_row) else None)
+        if maybe_year is not None:
+            current_year = maybe_year
+
+        if current_year is None:
+            continue
+
+        quarter = str(qcell or "").strip().lower()
+        month = _QUARTER_NAME_TO_MONTH.get(quarter)
+        if month is None:
+            continue
+
+        val = value_row[idx] if idx < len(value_row) else None
+        if val in (None, ""):
+            continue
+        try:
+            points.append(DataPoint(date=date(current_year, month, 1), value=round(float(val), 1)))
+        except (ValueError, TypeError):
+            pass
+
+    points.sort(key=lambda p: p.date)
+    return points
+
+
 class RosstatGdpParser(BaseParser):
     parser_type: ClassVar[str] = "rosstat_sdds_gdp"
 
@@ -189,10 +239,16 @@ class RosstatGdpParser(BaseParser):
         cfg: dict,
         fetch_log: FetchLog,
     ) -> tuple[list, str]:
-        if cfg.get("gdp_source") == "official_quarterly":
+        gdp_source = cfg.get("gdp_source")
+        if gdp_source == "official_quarterly":
             content, final_url = await asyncio.to_thread(fetch_rosstat_static_xlsx, "gdp_quarterly")
             sheet_name = str(cfg.get("gdp_sheet", "9"))
             points = await asyncio.to_thread(parse_rosstat_gdp_quarter_grid_xlsx, content, sheet_name)
+        elif gdp_source == "official_use":
+            content, final_url = await asyncio.to_thread(fetch_rosstat_static_xlsx, "gdp_use_quarterly")
+            sheet_name = str(cfg.get("gdp_sheet", "2"))
+            row_index = int(cfg.get("gdp_row_index", 4))
+            points = await asyncio.to_thread(parse_rosstat_gdp_use_xls, content, sheet_name, row_index)
         else:
             content, final_url = await asyncio.to_thread(fetch_sdds_xlsx, "gdp")
             row_index = int(cfg.get("gdp_row_index", 2))

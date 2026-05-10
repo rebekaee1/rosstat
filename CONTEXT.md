@@ -1,6 +1,6 @@
 # Forecast Economy — Project Context
 
-**Last updated:** 2026-05-07.
+**Last updated:** 2026-05-10.
 **Part of:** [`AGENTS.md`](AGENTS.md) (точка входа для AI-агента).
 **See also:** [`README.md`](README.md), [`docs/workflow.md`](docs/workflow.md), [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md), [`docs/cbr_sources.md`](docs/cbr_sources.md), [`docs/analytics_api_inventory/`](docs/analytics_api_inventory/), [`docs/adr/`](docs/adr/).
 
@@ -19,6 +19,7 @@
 | [`docs/adr/0001`](docs/adr/0001-derived-indicators-engine-shape.md) | Engine shape: 28 derived через `DERIVED_SPECS` + 9 чистых ops |
 | [`docs/adr/0002`](docs/adr/0002-derived-always-reflects-source.md) | Инвариант: derived всегда отражает source (`bulk_upsert` идемпотентен) |
 | [`docs/adr/0003`](docs/adr/0003-seo-single-source-server-rendered.md) | SEO single-source: backend SSR через `__spa-index.html` + Vite asset discovery |
+| [`docs/adr/0004`](docs/adr/0004-rosstat-russian-canonical-sdds-deprecated.md) | Rosstat русский canonical, SDDS English deprecated. Pilot: gdp-nominal end-to-end 2026-05-10 |
 
 ---
 
@@ -68,6 +69,12 @@
 - **Минфин** (`minfin.gov.ru`). CSV для бюджета (revenue, expenditure, deficit).
 
 Каждый источник требует свой SSL/CA setup (Росстат — русские CA-сертификаты, `backend/certs/russiantrustedca2024.pem` через `RUSTATS_ROSSTAT_CA_CERT`).
+
+**Доступ к rosstat.gov.ru из tooling/curl/python**: всегда через `--cacert backend/certs/russiantrustedca2024.pem` (или `verify=` в requests). Без сертификата `rosstat.gov.ru` отдаёт SSL-handshake error / Chrome `chrome-error://chromewebdata/`. `eng.rosstat.gov.ru` работает по стандартному cert, но это SDDS-зеркало и лагает на год (см. trap «SDDS English vs Rosstat русский»).
+
+**Перечисление файлов раздела rosstat**: для категории `/statistics/<section>` (например `/statistics/price`) — `curl --cacert <cert> https://rosstat.gov.ru/statistics/price -o page.html && grep -oE 'href="[^"]*\.xlsx?"' page.html | sort -u` даёт полный список XLSX в разделе. Для `/statistics/price` (категория «Цены») — **94 XLSX** (audit 2026-05-08).
+
+**Политика канонического источника (2026-05-10)**: для индикаторов с источником в Росстате — **only** русский XLSX из `rosstat.gov.ru/statistics/<section>/`, **never** SDDS-английский (`eng.rosstat.gov.ru/storage/mediabank/SDDS_*.xlsx`). См. trap «SDDS English vs Rosstat русский» и план миграции.
 
 ### Parser
 
@@ -252,6 +259,25 @@ docker compose exec backend python -c \
 `inflation-weekly` ряд = **недельный прирост ИПЦ к предыдущей неделе** (`100.XX` означает «×1.00XX»), **не** накопленная с начала месяца. Парсер `rosstat_weekly_cpi` ходит за HTML-бюллетенями Росстата только за `today.year`; для 2022–2025 — XLSX-fallback (~110 продов × веса корзины). HTML перезаписывает XLSX при коллизии. В `indicator_data` нет колонки `data_source` — различить «из бюллетеня» vs «из приближения» можно только косвенно через `fetch_log`.
 
 Январский трёхнедельный «выпад» (одна точка с 23 декабря по 12 января ~100.45/101.26) — штатный новогодний бюллетень Росстата, а не баг.
+
+### SDDS English vs Rosstat русский
+
+**Trap**: SDDS-XLSX на `eng.rosstat.gov.ru` (`SDDS_*.xlsx`) — это IMF-зеркало в формате «2010 = 100 chained cumulative index», публикуется с лагом ~год (комментарий в `rosstat_sdds_fetcher.py:6-9`). Парсеры `rosstat_sdds_ppi`, `rosstat_sdds_housing`, `rosstat_sdds_gdp`, `rosstat_sdds_labor`, `rosstat_sdds_ipi`, `rosstat_population` (часть) тянут оттуда. Но **первичная публикация Росстата** — на `rosstat.gov.ru/statistics/<section>/` в формате MoM/QoQ % (100 = предыдущий период) и с историей с 1998+ (для PPI), 1991+ (для CPI), 1995+ (для ВВП).
+
+**Симптомы расхождения с rosstat**:
+1. **Format mismatch**: наша DB хранит cumulative index (PPI = 311.40), руководитель открывает rosstat и видит MoM (PPI = 100.6%) — разные числа, кажется баг.
+2. **Короткая история**: SDDS даёт PPI с 2011, Housing с 2016, ВВП с 2011 — потому что 2010=100 base. Русский Росстат — глубже.
+3. **Stale latest**: SDDS лагает на год. Текущий месяц/квартал в SDDS может отсутствовать или быть приближённым.
+
+**Audit категории «Цены и инфляция» (2026-05-10)** (см. также chat-уровень): CPI 4/4 индикаторов 100% совпадают с rosstat (парсер `rosstat_cpi_xlsx` → `ipc_mes_*.xlsx` правильный). PPI и Housing (3 индикатора) — все из SDDS, требуют миграции на русский Росстат.
+
+**Политика**: для всех новых индикаторов и при правке существующих SDDS-парсеров — переключение на русский Росстат. SDDS используется **только** как fallback, если русский эквивалент недоступен (на момент 2026-05-10 не известно ни одного такого случая в категории Цены). См. [ADR-0004](docs/adr/0004-rosstat-russian-canonical-sdds-deprecated.md) — содержит migration pattern и pilot evidence для `gdp-nominal`.
+
+**Migration trap для ETL/forecast**: при замене source формата (2010=100 → MoM%) одного и того же `code` все исторические точки переписываются через `bulk_upsert WHERE value <> excluded.value` (ADR-0002). Frontend value formatter / chart unit и forecast model обучены на старом формате — оба требуют обновления одновременно с парсером (см. trap «Forecast retrain после деплоя» — здесь применяется тот же mitigation). Для unit-preserving миграций (например, `gdp-nominal` млрд руб → млрд руб) frontend трогать не нужно, retrain прогноза идёт каскадно автоматически из `run_etl_for_indicator`.
+
+**Pilot подтверждение pattern (2026-05-10)**: `gdp-nominal` мигрирован end-to-end на локальном docker stack. Переключение `gdp_source: "official_quarterly", gdp_sheet: "2"` в `seed_data.py` → 60/60 точек переписаны (Q4 2025: 60516.7 → **62354.1** = rosstat publication ✓), derived gdp-yoy/qoq/annual пересчитаны через `rebuild-all-derived.py` (127 точечных изменений), forecast cascade retrain автоматически. Никаких изменений в коде парсера не потребовалось — `parse_rosstat_gdp_quarter_grid_xlsx` уже умеет произвольный sheet через config.
+
+**Категория «ВВП» полностью мигрирована (2026-05-10)**: pilot (`gdp-nominal`) + rollout (`gdp-consumption`, `gdp-government`, `gdp-investment`). Для use-компонентов потребовался новый источник `GDP-quarters-of-use-1995-4kv-2025.xls` (legacy .xls binary, OLE2) → расширен `fetch_rosstat_static_xlsx` (теперь принимает оба magic — XLSX `PK\x03\x04` и XLS `\xd0\xcf\x11\xe0`), новая ветка парсера `gdp_source: "official_use"` (xlrd, multi-row layout), 4 unit-теста через synthetic .xls fixture (`xlwt==1.3.0` в requirements). Rollout pipeline test: `0 new, 0 updated` для всех 3 индикаторов — best-case migration, SDDS уже подтянул rosstat, миграция проактивная (защита от будущих лагов + canonical source policy без disruption). SDDS-ветка `fetch_sdds_xlsx("gdp")` больше не используется ни одним active индикатором.
 
 ### Calendar weekly events
 

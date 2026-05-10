@@ -627,17 +627,21 @@ INDICATORS = [
         "unit": "млрд руб.",
         "frequency": "quarterly",
         "source": "Росстат",
-        "source_url": "https://rosstat.gov.ru/accounts",
+        "source_url": "https://rosstat.gov.ru/statistics/accounts",
         "description": (
             "Валовой внутренний продукт в текущих ценах (по расходному методу). "
             "Квартальные данные."
         ),
         "methodology": (
             "Рассчитывается Росстатом по системе национальных счетов (СНС 2008). "
-            "Источник — SDDS Росстата (национальные счета). Обновляется поквартально."
+            "Источник — основная публикация Росстата `VVP_kvartal_s_1995-2025.xlsx` "
+            "(раздел /statistics/accounts), лист 2 (текущие цены, ОКВЭД2, с 2011). "
+            "Обновляется поквартально (T+45 дней prelim, T+90 final)."
         ),
         "parser_type": "rosstat_sdds_gdp",
         "model_config_json": {
+            "gdp_source": "official_quarterly",
+            "gdp_sheet": "2",
             "forecast_steps": 4,
             "forecast_model_name": "Approved-GDP-Nominal-Notebook",
             "approved_forecast_values": [
@@ -1748,14 +1752,20 @@ INDICATORS = [
         "unit": "млрд руб.",
         "frequency": "quarterly",
         "source": "Росстат",
-        "source_url": "https://rosstat.gov.ru/accounts",
+        "source_url": "https://rosstat.gov.ru/statistics/accounts",
         "description": (
             "Расходы на конечное потребление домашних хозяйств в текущих ценах. "
             "Компонент ВВП по расходному методу. Квартальные данные."
         ),
+        "methodology": (
+            "Источник — `GDP-quarters-of-use-1995-4kv-2025.xls`, лист 2 (ОКВЭД2, с 2011), "
+            "строка 8 (домашних хозяйств). Раздел rosstat.gov.ru/statistics/accounts."
+        ),
         "parser_type": "rosstat_sdds_gdp",
         "model_config_json": {
-            "gdp_row_index": 4,
+            "gdp_source": "official_use",
+            "gdp_sheet": "2",
+            "gdp_row_index": 7,
             "forecast_steps": 0,
             "validation": {"min": 0},
         },
@@ -1769,14 +1779,20 @@ INDICATORS = [
         "unit": "млрд руб.",
         "frequency": "quarterly",
         "source": "Росстат",
-        "source_url": "https://rosstat.gov.ru/accounts",
+        "source_url": "https://rosstat.gov.ru/statistics/accounts",
         "description": (
             "Расходы на конечное потребление государственного управления в текущих ценах. "
             "Компонент ВВП по расходному методу."
         ),
+        "methodology": (
+            "Источник — `GDP-quarters-of-use-1995-4kv-2025.xls`, лист 2 (ОКВЭД2, с 2011), "
+            "строка 9 (государственного управления). Раздел rosstat.gov.ru/statistics/accounts."
+        ),
         "parser_type": "rosstat_sdds_gdp",
         "model_config_json": {
-            "gdp_row_index": 5,
+            "gdp_source": "official_use",
+            "gdp_sheet": "2",
+            "gdp_row_index": 8,
             "forecast_steps": 0,
             "validation": {"min": 0},
         },
@@ -1790,14 +1806,20 @@ INDICATORS = [
         "unit": "млрд руб.",
         "frequency": "quarterly",
         "source": "Росстат",
-        "source_url": "https://rosstat.gov.ru/accounts",
+        "source_url": "https://rosstat.gov.ru/statistics/accounts",
         "description": (
             "Валовое накопление основного капитала в текущих ценах. "
             "Включает строительство, оборудование, транспорт. Квартальные данные."
         ),
+        "methodology": (
+            "Источник — `GDP-quarters-of-use-1995-4kv-2025.xls`, лист 2 (ОКВЭД2, с 2011), "
+            "строка 12 (валовое накопление основного капитала). Раздел rosstat.gov.ru/statistics/accounts."
+        ),
         "parser_type": "rosstat_sdds_gdp",
         "model_config_json": {
-            "gdp_row_index": 8,
+            "gdp_source": "official_use",
+            "gdp_sheet": "2",
+            "gdp_row_index": 11,
             "forecast_steps": 0,
             "validation": {"min": 0},
         },

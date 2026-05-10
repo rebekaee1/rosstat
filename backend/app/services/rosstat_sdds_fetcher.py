@@ -22,6 +22,7 @@ from app.services.http_client import create_session
 logger = logging.getLogger(__name__)
 
 XLSX_MAGIC = b"PK\x03\x04"
+XLS_MAGIC = b"\xd0\xcf\x11\xe0"  # OLE2 compound (legacy .xls binary)
 PDF_MAGIC = b"%PDF"
 
 _BASE = "https://eng.rosstat.gov.ru/storage/mediabank"
@@ -40,6 +41,7 @@ ROSSTAT_STATIC_URLS: dict[str, str] = {
     "popul_components": "https://rosstat.gov.ru/storage/mediabank/Popul%20components_1990+.xlsx",
     "population_history": "https://rosstat.gov.ru/storage/mediabank/Popul_1897+.xlsx",
     "gdp_quarterly": "https://rosstat.gov.ru/storage/mediabank/VVP_kvartal_s_1995-2025.xlsx",
+    "gdp_use_quarterly": "https://rosstat.gov.ru/storage/mediabank/GDP-quarters-of-use-1995-4kv-2025.xls",
     "age_groups": "https://rosstat.gov.ru/storage/mediabank/demo14.xlsx",
 }
 
@@ -89,7 +91,9 @@ def fetch_sdds_xlsx(dataset: str) -> tuple[bytes, str]:
 
 
 def fetch_rosstat_static_xlsx(key: str) -> tuple[bytes, str]:
-    """Download a static XLSX file from rosstat.gov.ru (non-SDDS).
+    """Download a static XLSX/XLS file from rosstat.gov.ru (non-SDDS).
+
+    Accepts both .xlsx (PK zip magic) and legacy .xls (OLE2 compound magic).
 
     Returns (content_bytes, url).
     """
@@ -104,8 +108,8 @@ def fetch_rosstat_static_xlsx(key: str) -> tuple[bytes, str]:
     ct = resp.headers.get("content-type", "")
     if "html" in ct.lower():
         logger.warning("Rosstat %s: got HTML content-type", key)
-    if resp.content[:4] != XLSX_MAGIC:
-        raise RuntimeError(f"Rosstat {key}: response is not XLSX")
+    if resp.content[:4] not in (XLSX_MAGIC, XLS_MAGIC):
+        raise RuntimeError(f"Rosstat {key}: response is not XLSX/XLS")
     logger.info("Downloaded Rosstat %s: %d KB", key, len(resp.content) // 1024)
     return resp.content, url
 

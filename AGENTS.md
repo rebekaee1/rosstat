@@ -1,6 +1,6 @@
 # AGENTS.md — точка входа для AI-агента
 
-**Last updated:** 2026-05-07.
+**Last updated:** 2026-05-10.
 
 Этот файл — первое, что читает любой новый AI-агент (Cursor, Claude Code, Codex, Gemini, любой другой), подключённый к этому репозиторию. Здесь живёт **карта документации**, **режим работы** и **протокол актуализации** этих самых документов.
 
@@ -20,6 +20,7 @@
    - `0001-derived-indicators-engine-shape.md` — engine shape derived (28 specs + 9 pure ops).
    - `0002-derived-always-reflects-source.md` — инвариант идемпотентности `bulk_upsert`.
    - `0003-seo-single-source-server-rendered.md` — SSR через backend, asset discovery от Vite shell.
+ - `0004-rosstat-russian-canonical-sdds-deprecated.md` — Rosstat русский canonical, SDDS English deprecated. Migration pattern + pilot evidence (gdp-nominal, 2026-05-10).
 
 После этих файлов агент способен ответить на ~90% вопросов и делать осмысленные правки.
 
