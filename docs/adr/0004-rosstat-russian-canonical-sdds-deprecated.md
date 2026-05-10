@@ -1,8 +1,8 @@
 # ADR 0004 — Rosstat русский основной источник, SDDS English deprecated
 
 - **Date:** 2026-05-10
-- **Status:** Accepted (pilot + rollout: GDP, Population, IPI, Labor, PPI, Housing migrated; cleanup pending)
-- **Last verified:** 2026-05-10 (all SDDS-source indicators в категориях ВВП/Цены/Демография/Промышленность/Труд мигрированы на canonical Russian Rosstat sources; housing pipeline test: Q1 2026 primary 346.82, secondary 228.44, match с rosstat publication ✓).
+- **Status:** Accepted + complete (pilot, rollout, cleanup, GDP history extension до 1995 — все done)
+- **Last verified:** 2026-05-10 (GDP history extension через ratio-splice: 5/5 GDP индикаторов 60 → 124 точки, 1995-Q1 → 2025-Q4. Pipeline test gdp-nominal Q4 2025 = 62354.1 ✓ matchит rosstat publication; housing Q1 2026 primary 346.82 / secondary 228.44 ✓).
 - **Author:** аудит категорий «Цены» и «ВВП» 2026-05-08/2026-05-10 + конкретный жалобный случай руководителя на расхождение GDP Q4 2025 (60516.7 в нашей DB vs 62354.1 в rosstat publication).
 - **Part of:** [`../../CONTEXT.md`](../../CONTEXT.md) (раздел `Source` + trap «SDDS English vs Rosstat русский»).
 - **Related:** [ADR-0002](0002-derived-always-reflects-source.md) (идемпотентный bulk_upsert делает миграцию обратимой), [ADR-0001](0001-derived-indicators-engine-shape.md) (derived подхватятся через `scripts/rebuild-all-derived.py`).
@@ -138,10 +138,41 @@ Pilot выполнен для `gdp-nominal` 2026-05-10:
 
 `rosstat_housing_parser.py` рефакторнут полностью: `parse_housing_qoq_pair` извлекает пару (primary, secondary) QoQ% из summary-строки «составили соответственно P% и S%»; `parse_housing_reference_quarter` парсит reference quarter из табличного заголовка «I квартал YYYY г. в % к IV кварталу YYYY-1 г.». Section-anchor `4.2. РЫНОК ЖИЛЬЯ` (case-sensitive uppercase) отсекает TOC-ложные совпадения. `_normalize_year_text` склеивает разорванный PDF-extract год («202 6» → «2026»). Парсер queryит DB на last cumulative value по индикатору, умножает на QoQ/100 → один новый quarterly datapoint per ETL run на каждый индикатор. Pipeline test (Q1 2026): primary 333.80 × 103.9% = **346.82**, secondary 224.40 × 101.8% = **228.44**. Match с rosstat publication ✓. 10 unit-тестов. Commit pending.
 
+### 2026-05-10 — GDP history extension до 1995 (ratio-splice)
+
+Все 5 GDP source-индикаторов (`gdp-nominal`, `gdp-real`, `gdp-consumption`, `gdp-government`, `gdp-investment`) продлены с 60 точек (2011-Q1 → 2025-Q4) до **124 точек** (1995-Q1 → 2025-Q4). Закрыта прямая жалоба руководителя 08.05.2026 «у Росстата с 1995, у нас почему-то с 2011».
+
+**Стратегия — ratio-splice через overlap-год 2011** (стандартная economic-series splice техника, используется ОЭСР/МВФ при re-basing): pure-функция `splice_at_overlap(history, modern, overlap_year)` калибрует `ratio = mean(modern_2011) / mean(history_2011)`, умножает все historical-точки (year < 2011) на этот ratio. Получаем непрерывный ряд в base modern-методологии (ОКВЭД2 для nominal/use-components, в ценах 2021 для real). Modern-данные на overlap-году имеют приоритет.
+
+Конфиг per индикатор:
+```python
+"model_config_json": {
+    "gdp_source": "official_quarterly",  # или "official_use"
+    "gdp_sheet": "2",                    # modern (ОКВЭД2)
+    "gdp_history_sheet": "1",            # ОКВЭД2007 (или "3" для real)
+    "gdp_overlap_year": 2011,
+}
+```
+
+**Калибровочные ratios** (наблюдаемые на live данных):
+- nominal (sheet1 → sheet2): `1.0741` (~7.4% step) — совпадает с независимым ОКВЭД2007→ОКВЭД2 GDP rebasing
+- real в ценах 2008 (sheet3) → real в ценах 2021 (sheet9): `~2.81`
+- use-components: примерно те же ~1.07 порядка
+
+**Trap, которая выловилась только на real-данных**: Rosstat Excel хранит часть значений как СТРОКИ с Russian decimal + footnote suffix («1662,82)» = 1662,8 + footnote 2). Чистый `float()` падал → весь 2011-год для `gdp-investment` row 11 sheet 1 был null → `splice_at_overlap` падал на «history не содержит точек за overlap_year=2011». Добавлена pure-функция `_parse_ru_number` (handles `\d\)\s*$` footnote-strip + `,` → `.` + NBSP-strip). 8 unit-тестов на эту функцию + 8 на `splice_at_overlap`.
+
+Pipeline test (live Rosstat XLSX, local docker stack):
+- gdp-nominal Q1 1995 = **252.4** (= 234.98 × 1.074, expected 252.3 ✓)
+- gdp-nominal Q4 2010 = **14231.0** (= 13249.3 × 1.074, expected 14225 ✓)
+- gdp-nominal Q1 2011 = **13024.8** (modern verbatim ✓)
+- gdp-nominal Q4 2025 = **62354.1** (modern verbatim, matchит rosstat publication ✓)
+- 5/5 индикаторов: 60 → 124 точки. derived gdp-yoy/qoq/annual пересчитаны (288 точечных изменений). `gdp-nominal` / `gdp-real` forecasts retrain'нулись.
+
+Commit pending.
+
 ### Open work
 
-- **History extension до 1995** для GDP — sheet 1 (ОКВЭД2007) + sheet 2 (ОКВЭД2) chain через methodology break. Не делается в рамках этого ADR — отдельный track с явной сшивкой коэффициентом или just отображать раздельно.
-- **Cleanup** — `fetch_sdds_xlsx`, `DATASET_URLS`, `parse_gdp_xlsx`, `parse_sdds_*` функции, переименование `parser_type rosstat_sdds_*` → `rosstat_*`. Alembic data migration. После сleanup category SDDS закрыта окончательно.
+- **Cleanup** — был `b7117f7` 2026-05-10. SDDS код удалён, parser_types переименованы.
 
 ## Pilot evidence (2026-05-10)
 

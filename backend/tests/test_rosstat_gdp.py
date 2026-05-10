@@ -7,9 +7,12 @@ import openpyxl
 import pytest
 
 from app.services.rosstat_gdp_parser import (
+    DataPoint,
     _parse_quarter_header,
+    _parse_ru_number,
     parse_rosstat_gdp_quarter_grid_xlsx,
     parse_rosstat_gdp_use_xls,
+    splice_at_overlap,
 )
 
 
@@ -157,5 +160,149 @@ class TestParseRosstatGdpUseXls:
         except ImportError:
             pytest.skip("xlwt not installed")
         result = parse_rosstat_gdp_use_xls(content, sheet_name="2", value_row_index=4)
+        dates = [p.date for p in result]
+        assert dates == sorted(dates)
+
+
+class TestParseRuNumber:
+    """Russian Excel ловушки: запятая, footnote-suffix, NBSP, str/int/float mix."""
+
+    def test_int_float(self):
+        assert _parse_ru_number(123) == 123.0
+        assert _parse_ru_number(123.45) == 123.45
+
+    def test_russian_decimal(self):
+        assert _parse_ru_number("1662,8") == 1662.8
+
+    def test_footnote_suffix_after_value(self):
+        """Real Rosstat case: '1662,82)' = 1662.8 + footnote 2)."""
+        assert _parse_ru_number("1662,82)") == 1662.8
+
+    def test_footnote_strips_only_single_digit(self):
+        """Rosstat-конвенция: footnote nums начинаются с 1 (single digit). Multi-digit
+        footnotes не встречаются в rosstat, но даже если — strip только one digit."""
+        assert _parse_ru_number("100,510)") == 100.51
+
+    def test_nbsp_thousands(self):
+        assert _parse_ru_number("1\u00a0234,5") == 1234.5
+        assert _parse_ru_number("1 234,5") == 1234.5
+
+    def test_empty_and_none(self):
+        assert _parse_ru_number(None) is None
+        assert _parse_ru_number("") is None
+        assert _parse_ru_number("   ") is None
+
+    def test_garbage_returns_none(self):
+        assert _parse_ru_number("foo") is None
+        assert _parse_ru_number("abc,def") is None
+
+    def test_dot_decimal_kept(self):
+        """Англоязычная запись тоже работает."""
+        assert _parse_ru_number("1234.5") == 1234.5
+
+
+class TestSpliceAtOverlap:
+    """ratio-splice для GDP history extension до 1995 (ADR-0004)."""
+
+    def test_basic_ratio_calibration(self):
+        """ratio = mean(modern_2011) / mean(history_2011); historical scaled."""
+        history = [
+            DataPoint(date=date(2010, 12, 1), value=100.0),
+            DataPoint(date=date(2011, 3, 1), value=200.0),
+            DataPoint(date=date(2011, 6, 1), value=200.0),
+        ]
+        modern = [
+            DataPoint(date=date(2011, 3, 1), value=220.0),
+            DataPoint(date=date(2011, 6, 1), value=220.0),
+            DataPoint(date=date(2012, 3, 1), value=240.0),
+        ]
+        result = splice_at_overlap(history, modern, overlap_year=2011)
+        assert len(result) == 4
+        assert result[0].date == date(2010, 12, 1)
+        assert result[0].value == 110.0  # 100 * (220/200)
+        assert result[1].date == date(2011, 3, 1)
+        assert result[1].value == 220.0  # modern wins on overlap
+        assert result[3].date == date(2012, 3, 1)
+        assert result[3].value == 240.0
+
+    def test_real_gdp_2011_quarters(self):
+        """Real-world: nominal GDP 2011 sheet 1 vs sheet 2 → ratio ~1.074."""
+        sheet1_2011 = [11954.2, 13376.4, 14732.9, 15903.7]
+        sheet2_2011 = [13024.8, 14434.8, 15745.6, 16908.8]
+        history = [DataPoint(date=date(2010, q * 3, 1), value=v) for q, v in enumerate([1000.0, 1100.0, 1200.0, 1300.0], start=1)]
+        history += [DataPoint(date=date(2011, q * 3, 1), value=v) for q, v in enumerate(sheet1_2011, start=1)]
+        modern = [DataPoint(date=date(2011, q * 3, 1), value=v) for q, v in enumerate(sheet2_2011, start=1)]
+        result = splice_at_overlap(history, modern, overlap_year=2011)
+        ratio = (sum(sheet2_2011) / 4) / (sum(sheet1_2011) / 4)
+        assert abs(ratio - 1.074) < 0.001
+        scaled_2010_q1 = next(p for p in result if p.date == date(2010, 3, 1))
+        assert abs(scaled_2010_q1.value - 1000.0 * ratio) < 0.5
+
+    def test_modern_priority_on_overlap(self):
+        """Modern points в overlap_year полностью замещают history."""
+        history = [
+            DataPoint(date=date(2011, 3, 1), value=999.0),
+            DataPoint(date=date(2011, 6, 1), value=999.0),
+        ]
+        modern = [
+            DataPoint(date=date(2011, 3, 1), value=100.0),
+            DataPoint(date=date(2011, 6, 1), value=200.0),
+        ]
+        result = splice_at_overlap(history, modern, overlap_year=2011)
+        assert all(p.value in (100.0, 200.0) for p in result)
+        assert 999.0 not in [p.value for p in result]
+
+    def test_history_extension_only(self):
+        """Если history дальше overlap-года — те точки не берутся (modern wins)."""
+        history = [
+            DataPoint(date=date(2010, 3, 1), value=100.0),
+            DataPoint(date=date(2011, 3, 1), value=200.0),
+            DataPoint(date=date(2012, 3, 1), value=300.0),  # после overlap, modern должен победить
+        ]
+        modern = [
+            DataPoint(date=date(2011, 3, 1), value=220.0),
+            DataPoint(date=date(2012, 3, 1), value=320.0),
+        ]
+        result = splice_at_overlap(history, modern, overlap_year=2011)
+        assert len(result) == 3
+        years = sorted({p.date.year for p in result})
+        assert years == [2010, 2011, 2012]
+        assert next(p for p in result if p.date == date(2012, 3, 1)).value == 320.0
+
+    def test_raises_no_overlap_history(self):
+        with pytest.raises(ValueError, match="history не содержит точек"):
+            splice_at_overlap(
+                [DataPoint(date=date(2010, 3, 1), value=100.0)],
+                [DataPoint(date=date(2011, 3, 1), value=200.0)],
+                overlap_year=2011,
+            )
+
+    def test_raises_no_overlap_modern(self):
+        with pytest.raises(ValueError, match="modern не содержит точек"):
+            splice_at_overlap(
+                [DataPoint(date=date(2011, 3, 1), value=100.0)],
+                [DataPoint(date=date(2012, 3, 1), value=200.0)],
+                overlap_year=2011,
+            )
+
+    def test_raises_zero_history_mean(self):
+        with pytest.raises(ValueError, match="history mean == 0"):
+            splice_at_overlap(
+                [DataPoint(date=date(2011, 3, 1), value=0.0)],
+                [DataPoint(date=date(2011, 3, 1), value=100.0)],
+                overlap_year=2011,
+            )
+
+    def test_result_sorted_by_date(self):
+        history = [
+            DataPoint(date=date(2010, 6, 1), value=100.0),
+            DataPoint(date=date(2010, 3, 1), value=100.0),
+            DataPoint(date=date(2011, 3, 1), value=100.0),
+        ]
+        modern = [
+            DataPoint(date=date(2012, 3, 1), value=100.0),
+            DataPoint(date=date(2011, 3, 1), value=100.0),
+        ]
+        result = splice_at_overlap(history, modern, overlap_year=2011)
         dates = [p.date for p in result]
         assert dates == sorted(dates)

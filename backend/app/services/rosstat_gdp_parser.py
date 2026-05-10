@@ -4,16 +4,22 @@
 
 1. `gdp_source: "official_quarterly"` — `VVP_kvartal_s_1995-2025.xlsx` (rosstat.gov.ru):
    Quarter-grid layout (years row 2, quarters row 3, single value row 4).
-   `gdp_sheet`: "2" = nominal current prices ОКВЭД2 (2011+),
-                "9" = real в ценах 2021 г. (2011+).
+   `gdp_sheet`: "2" = nominal ОКВЭД2 2011+, "9" = real в ценах 2021 г. (2011+).
+   Опциональные `gdp_history_sheet` ("1" nominal ОКВЭД2007 1995-2011 / "3" real
+   в ценах 2008 1995-2011) + `gdp_overlap_year` (default 2011) — продлевают
+   историю до 1995 через **ratio-splice** на overlap-году (см. `splice_at_overlap`).
 
 2. `gdp_source: "official_use"` — `GDP-quarters-of-use-1995-4kv-2025.xls` (rosstat.gov.ru):
    Quarter-grid layout, multi-row (стек индикаторов на одном sheet).
-   `gdp_sheet`: "1" = ОКВЭД2007 (1995-2010), "2" = ОКВЭД2 (2011+).
+   `gdp_sheet`: "1" = ОКВЭД2007 (1995-2011), "2" = ОКВЭД2 (2011+).
    `gdp_row_index` (0-based): 4 = ВВП, 7 = домохозяйства, 8 = госуправление, 11 = GFCF.
+   Опциональные `gdp_history_sheet` + `gdp_overlap_year` — то же ratio-splice.
 
-SDDS-английский `parse_gdp_xlsx` + `fetch_sdds_xlsx("gdp")` удалены 2026-05-10
-(ADR-0004 cleanup). Все 4 source-индикатора ВВП — через 1 или 2 выше.
+Для **history extension** (1995-2010) `splice_at_overlap` калибрует ratio как
+`mean(modern points в overlap_year) / mean(history points в overlap_year)`,
+умножает все historical-точки (year < overlap_year) на этот ratio. Получаем
+непрерывный ряд в base modern-методологии. Стандартная economic-series splice
+техника. ADR-0004 «history extension до 1995» — closed.
 """
 
 from __future__ import annotations
@@ -61,6 +67,35 @@ def _parse_quarter_header(header: str) -> date | None:
     if 1 <= q <= 4 and 1990 <= y <= 2100:
         return date(y, QUARTER_MONTH[q], 1)
     return None
+
+
+_FOOTNOTE_SUFFIX_RE = re.compile(r"\d\)\s*$")
+
+
+def _parse_ru_number(cell) -> float | None:
+    """Parse Rosstat Excel cell to float, обрабатывая Russian decimals и footnotes.
+
+    Rosstat Excel-файлы регулярно содержат значения как СТРОКИ с:
+    - запятой как decimal separator («1662,8»)
+    - trailing footnote suffix («1662,82)» = 1662.8 + footnote 2)
+    - non-breaking spaces в качестве thousands separator
+    Чистый `float()` на этом падает. Этот хелпер устойчив к таким артефактам.
+
+    Возвращает None если cell пустая или нечисловая.
+    """
+    if cell is None or cell == "":
+        return None
+    if isinstance(cell, (int, float)) and not isinstance(cell, bool):
+        return float(cell)
+    s = str(cell).strip().replace("\u00a0", "").replace(" ", "")
+    s = _FOOTNOTE_SUFFIX_RE.sub("", s).rstrip()
+    if not s:
+        return None
+    s = s.replace(",", ".")
+    try:
+        return float(s)
+    except ValueError:
+        return None
 
 
 def _extract_year(cell) -> int | None:
@@ -120,12 +155,10 @@ def parse_rosstat_gdp_quarter_grid_xlsx(content: bytes, sheet_name: str = "9") -
             continue
 
         val = value_row[idx] if idx < len(value_row) else None
-        if val is None:
+        parsed = _parse_ru_number(val)
+        if parsed is None:
             continue
-        try:
-            points.append(DataPoint(date=date(current_year, month, 1), value=round(float(val), 1)))
-        except (ValueError, TypeError):
-            pass
+        points.append(DataPoint(date=date(current_year, month, 1), value=round(parsed, 1)))
 
     points.sort(key=lambda p: p.date)
     return points
@@ -174,15 +207,65 @@ def parse_rosstat_gdp_use_xls(
             continue
 
         val = value_row[idx] if idx < len(value_row) else None
-        if val in (None, ""):
+        parsed = _parse_ru_number(val)
+        if parsed is None:
             continue
-        try:
-            points.append(DataPoint(date=date(current_year, month, 1), value=round(float(val), 1)))
-        except (ValueError, TypeError):
-            pass
+        points.append(DataPoint(date=date(current_year, month, 1), value=round(parsed, 1)))
 
     points.sort(key=lambda p: p.date)
     return points
+
+
+def splice_at_overlap(
+    history: list[DataPoint],
+    modern: list[DataPoint],
+    overlap_year: int,
+) -> list[DataPoint]:
+    """Ratio-splice двух методологически разных рядов в один continuous ряд.
+
+    Стандартная economic-series splice техника (используется ОЭСР/МВФ при
+    re-basing GDP/IPI/CPI рядов). Калибруем ratio через overlap-год — берём
+    среднее модерн-значений и среднее historical-значений за этот год,
+    умножаем все historical-точки (year < overlap_year) на ratio = modern/history.
+
+    Возвращаем: scaled_history (year < overlap_year) + modern (year >= overlap_year),
+    отсортировано по дате. Modern имеет приоритет на overlap-году (без дублей).
+
+    Raises ValueError если overlap_year не покрыт обоими рядами или history-mean
+    нулевой (degenerate ratio).
+    """
+    history_overlap = [p.value for p in history if p.date.year == overlap_year]
+    modern_overlap = [p.value for p in modern if p.date.year == overlap_year]
+
+    if not history_overlap:
+        raise ValueError(
+            f"splice_at_overlap: history не содержит точек за overlap_year={overlap_year}"
+        )
+    if not modern_overlap:
+        raise ValueError(
+            f"splice_at_overlap: modern не содержит точек за overlap_year={overlap_year}"
+        )
+
+    history_mean = sum(history_overlap) / len(history_overlap)
+    modern_mean = sum(modern_overlap) / len(modern_overlap)
+
+    if history_mean == 0:
+        raise ValueError(
+            f"splice_at_overlap: history mean == 0 за overlap_year={overlap_year}, "
+            f"ratio undefined"
+        )
+
+    ratio = modern_mean / history_mean
+
+    scaled_history = [
+        DataPoint(date=p.date, value=round(p.value * ratio, 1))
+        for p in history if p.date.year < overlap_year
+    ]
+    modern_kept = [p for p in modern if p.date.year >= overlap_year]
+
+    combined = scaled_history + modern_kept
+    combined.sort(key=lambda p: p.date)
+    return combined
 
 
 class RosstatGdpParser(BaseParser):
@@ -196,15 +279,34 @@ class RosstatGdpParser(BaseParser):
         fetch_log: FetchLog,
     ) -> tuple[list, str]:
         gdp_source = cfg.get("gdp_source")
+        history_sheet = cfg.get("gdp_history_sheet")
+        overlap_year = int(cfg.get("gdp_overlap_year", 2011))
+
         if gdp_source == "official_quarterly":
             content, final_url = await asyncio.to_thread(fetch_rosstat_static_xlsx, "gdp_quarterly")
             sheet_name = str(cfg.get("gdp_sheet", "9"))
-            points = await asyncio.to_thread(parse_rosstat_gdp_quarter_grid_xlsx, content, sheet_name)
+            modern = await asyncio.to_thread(parse_rosstat_gdp_quarter_grid_xlsx, content, sheet_name)
+            if history_sheet:
+                history = await asyncio.to_thread(
+                    parse_rosstat_gdp_quarter_grid_xlsx, content, str(history_sheet)
+                )
+                points = splice_at_overlap(history, modern, overlap_year)
+            else:
+                points = modern
         elif gdp_source == "official_use":
             content, final_url = await asyncio.to_thread(fetch_rosstat_static_xlsx, "gdp_use_quarterly")
             sheet_name = str(cfg.get("gdp_sheet", "2"))
             row_index = int(cfg.get("gdp_row_index", 4))
-            points = await asyncio.to_thread(parse_rosstat_gdp_use_xls, content, sheet_name, row_index)
+            modern = await asyncio.to_thread(
+                parse_rosstat_gdp_use_xls, content, sheet_name, row_index
+            )
+            if history_sheet:
+                history = await asyncio.to_thread(
+                    parse_rosstat_gdp_use_xls, content, str(history_sheet), row_index
+                )
+                points = splice_at_overlap(history, modern, overlap_year)
+            else:
+                points = modern
         else:
             raise ValueError(
                 f"RosstatGdpParser: indicator {indicator.code!r} missing or invalid "

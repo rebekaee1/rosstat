@@ -640,13 +640,18 @@ INDICATORS = [
         "methodology": (
             "Рассчитывается Росстатом по системе национальных счетов (СНС 2008). "
             "Источник — основная публикация Росстата `VVP_kvartal_s_1995-2025.xlsx` "
-            "(раздел /statistics/accounts), лист 2 (текущие цены, ОКВЭД2, с 2011). "
+            "(раздел /statistics/accounts). Modern-период: лист 2 (текущие цены, "
+            "ОКВЭД2, 2011+). История 1995-2010: лист 1 (ОКВЭД2007), сшита через "
+            "ratio-splice на overlap-году 2011 (mean(sheet2_2011)/mean(sheet1_2011)≈"
+            "1.074), приведена к ОКВЭД2-методологии. Получаем непрерывный ряд 1995-Q1+. "
             "Обновляется поквартально (T+45 дней prelim, T+90 final)."
         ),
         "parser_type": "rosstat_gdp",
         "model_config_json": {
             "gdp_source": "official_quarterly",
             "gdp_sheet": "2",
+            "gdp_history_sheet": "1",
+            "gdp_overlap_year": 2011,
             "forecast_steps": 4,
             "forecast_model_name": "Approved-GDP-Nominal-Notebook",
             "approved_forecast_values": [
@@ -675,12 +680,17 @@ INDICATORS = [
         ),
         "methodology": (
             "Источник — Росстат, ряды квартального ВВП в постоянных ценах 2021 г. "
-            "по методологии СНС-2008. Обновляется поквартально."
+            "по методологии СНС-2008. Modern-период: лист 9 (2011+). История "
+            "1995-2010: лист 3 (в ценах 2008 г., ОКВЭД2007), сшита через "
+            "ratio-splice на overlap-году 2011 — приводит к base 2021 ценам. "
+            "Обновляется поквартально."
         ),
         "parser_type": "rosstat_gdp",
         "model_config_json": {
             "gdp_source": "official_quarterly",
             "gdp_sheet": "9",
+            "gdp_history_sheet": "3",
+            "gdp_overlap_year": 2011,
             "forecast_steps": 4,
             "forecast_strategy": "gdp_real_quarterly",
             "forecast_transform": "absolute",
@@ -1772,7 +1782,7 @@ INDICATORS = [
         "is_active": True,
         "category": "Цены",
     },
-    # ─── Компоненты ВВП (Росстат SDDS National Accounts) ───
+    # ─── Компоненты ВВП (Росстат русский, GDP-quarters-of-use, ADR-0004) ───
     {
         "code": "gdp-consumption",
         "name": "Расходы домохозяйств",
@@ -1786,13 +1796,17 @@ INDICATORS = [
             "Компонент ВВП по расходному методу. Квартальные данные."
         ),
         "methodology": (
-            "Источник — `GDP-quarters-of-use-1995-4kv-2025.xls`, лист 2 (ОКВЭД2, с 2011), "
-            "строка 8 (домашних хозяйств). Раздел rosstat.gov.ru/statistics/accounts."
+            "Источник — `GDP-quarters-of-use-1995-4kv-2025.xls`, лист 2 (ОКВЭД2, 2011+), "
+            "строка 8 (домашних хозяйств). История 1995-2010: лист 1 (ОКВЭД2007), "
+            "та же строка, сшита через ratio-splice на overlap-году 2011. "
+            "Раздел rosstat.gov.ru/statistics/accounts."
         ),
         "parser_type": "rosstat_gdp",
         "model_config_json": {
             "gdp_source": "official_use",
             "gdp_sheet": "2",
+            "gdp_history_sheet": "1",
+            "gdp_overlap_year": 2011,
             "gdp_row_index": 7,
             "forecast_steps": 0,
             "validation": {"min": 0},
@@ -1813,13 +1827,17 @@ INDICATORS = [
             "Компонент ВВП по расходному методу."
         ),
         "methodology": (
-            "Источник — `GDP-quarters-of-use-1995-4kv-2025.xls`, лист 2 (ОКВЭД2, с 2011), "
-            "строка 9 (государственного управления). Раздел rosstat.gov.ru/statistics/accounts."
+            "Источник — `GDP-quarters-of-use-1995-4kv-2025.xls`, лист 2 (ОКВЭД2, 2011+), "
+            "строка 9 (государственного управления). История 1995-2010: лист 1 "
+            "(ОКВЭД2007), та же строка, сшита через ratio-splice на overlap-году "
+            "2011. Раздел rosstat.gov.ru/statistics/accounts."
         ),
         "parser_type": "rosstat_gdp",
         "model_config_json": {
             "gdp_source": "official_use",
             "gdp_sheet": "2",
+            "gdp_history_sheet": "1",
+            "gdp_overlap_year": 2011,
             "gdp_row_index": 8,
             "forecast_steps": 0,
             "validation": {"min": 0},
@@ -1840,13 +1858,17 @@ INDICATORS = [
             "Включает строительство, оборудование, транспорт. Квартальные данные."
         ),
         "methodology": (
-            "Источник — `GDP-quarters-of-use-1995-4kv-2025.xls`, лист 2 (ОКВЭД2, с 2011), "
-            "строка 12 (валовое накопление основного капитала). Раздел rosstat.gov.ru/statistics/accounts."
+            "Источник — `GDP-quarters-of-use-1995-4kv-2025.xls`, лист 2 (ОКВЭД2, 2011+), "
+            "строка 12 (валовое накопление основного капитала). История 1995-2010: "
+            "лист 1 (ОКВЭД2007), та же строка, сшита через ratio-splice на overlap-"
+            "году 2011. Раздел rosstat.gov.ru/statistics/accounts."
         ),
         "parser_type": "rosstat_gdp",
         "model_config_json": {
             "gdp_source": "official_use",
             "gdp_sheet": "2",
+            "gdp_history_sheet": "1",
+            "gdp_overlap_year": 2011,
             "gdp_row_index": 11,
             "forecast_steps": 0,
             "validation": {"min": 0},
