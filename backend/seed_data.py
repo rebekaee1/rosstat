@@ -1303,10 +1303,17 @@ INDICATORS = [
         "unit": "индекс",
         "frequency": "monthly",
         "source": "Росстат",
-        "source_url": "https://rosstat.gov.ru/folder/10705",
+        "source_url": "https://rosstat.gov.ru/enterprise_industrial",
         "description": (
             "Индекс промышленного производства (2023=100): горнодобыча, "
-            "обработка, энергетика, водоснабжение. Ежемесячные данные SDDS Росстата."
+            "обработка, энергетика, водоснабжение. Ежемесячные данные Росстата."
+        ),
+        "methodology": (
+            "Источник — `ind_baza_2018_12-2025.xlsx` (база 2018, 2015-2025) + "
+            "`ind_baza_2023_{MM}-{YYYY}.xlsx` (база 2023, ежемесячное обновление). "
+            "Лист 1 (MoM%, ПРОМЫШЛЕННОЕ ПРОИЗВОДСТВО / BCDE). "
+            "Парсер chain'ит MoM% в cumulative monthly index, нормализует к "
+            "среднему за 2023 г. = 100 (path P / compat ADR-0004)."
         ),
         "parser_type": "rosstat_sdds_ipi",
         "model_config_json": {

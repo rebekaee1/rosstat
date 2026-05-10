@@ -42,6 +42,7 @@ ROSSTAT_STATIC_URLS: dict[str, str] = {
     "population_history": "https://rosstat.gov.ru/storage/mediabank/Popul_1897+.xlsx",
     "gdp_quarterly": "https://rosstat.gov.ru/storage/mediabank/VVP_kvartal_s_1995-2025.xlsx",
     "gdp_use_quarterly": "https://rosstat.gov.ru/storage/mediabank/GDP-quarters-of-use-1995-4kv-2025.xls",
+    "ipi_historical_2018": "https://rosstat.gov.ru/storage/mediabank/ind_baza_2018_12-2025.xlsx",
     "age_groups": "https://rosstat.gov.ru/storage/mediabank/demo14.xlsx",
 }
 
@@ -112,6 +113,44 @@ def fetch_rosstat_static_xlsx(key: str) -> tuple[bytes, str]:
         raise RuntimeError(f"Rosstat {key}: response is not XLSX/XLS")
     logger.info("Downloaded Rosstat %s: %d KB", key, len(resp.content) // 1024)
     return resp.content, url
+
+
+def fetch_rosstat_ipi_current() -> tuple[bytes, str]:
+    """Download current rosstat IPI XLSX `ind_baza_2023_{MM}-{YYYY}.xlsx`.
+
+    Файл переиздаётся ежемесячно с новой публикацией Росстата (~15-20 числа за
+    предыдущий месяц). URL содержит месяц и год последнего покрытого месяца.
+    Пробуем последние 6 месяцев, возвращаем самый свежий.
+
+    Когда rosstat переключится на следующую методологическую базу
+    (`ind_baza_2028_*` или подобное), этот fetcher будет ломаться — обновить
+    URL pattern в коде.
+    """
+    now = datetime.now()
+    session = _get_session()
+
+    for month_offset in range(6):
+        cur = now.month - month_offset
+        cur_year = now.year
+        while cur <= 0:
+            cur += 12
+            cur_year -= 1
+
+        url = f"{_ROSSTAT_MEDIA}/ind_baza_2023_{cur:02d}-{cur_year}.xlsx"
+        try:
+            resp = session.get(url, timeout=settings.rosstat_request_timeout)
+            if resp.status_code != 200:
+                logger.debug("Rosstat IPI %02d-%d: HTTP %d", cur, cur_year, resp.status_code)
+                continue
+            if resp.content[:4] != XLSX_MAGIC:
+                logger.warning("Rosstat IPI %02d-%d: not XLSX", cur, cur_year)
+                continue
+            logger.info("Downloaded Rosstat IPI %02d-%d: %d KB", cur, cur_year, len(resp.content) // 1024)
+            return resp.content, url
+        except requests.RequestException as e:
+            logger.warning("Rosstat IPI %02d-%d fetch error: %s", cur, cur_year, e)
+
+    raise RuntimeError("Rosstat IPI: no current ind_baza_2023_*.xlsx file found in last 6 months")
 
 
 def fetch_rosstat_okpopul() -> tuple[bytes, str]:
