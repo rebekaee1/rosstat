@@ -1,18 +1,18 @@
-"""ETL: Росстат population XLSX → IndicatorData.
+"""ETL: Росстат population XLSX → IndicatorData (canonical русский Rosstat, без SDDS).
 
-Файл: SDDS_population_{year}.xlsx
-Лист: "Population"
-Row 1: заголовки — годы (2010, 2011, ...)
-Row 3: Population, Million people — значения
+Три файла из rosstat.gov.ru/folder/12781:
 
-Файл: Popul_1897+.xlsx (rosstat.gov.ru)
-Лист: "Лист1"
-Rows 7+: историческая численность населения, млн человек
+1. `Popul_1897+.xlsx` — историческая годовая численность 1897-2024, млн человек.
+   Sheet "Лист1", rows 7+. Для 1897 и 1914 — две строки (имперские vs совр. границы),
+   берём «в современных границах».
 
-Файл: Popul components_1990+.xlsx (rosstat.gov.ru)
-Лист: "1"
-Row 5: headers (Годы, Числ.населения, общ.прирост, естеств.прирост, миграц.прирост, ...)
-Rows 8+: данные (год, население тыс., приросты тыс.)
+2. `Popul components_1990+.xlsx` — годовые компоненты прироста с 1990:
+   население на 1 января (тыс.), общий/естественный/миграционный прирост (тыс.).
+   Sheet "1", rows 8+. Дает 4 индикатора: population, total/natural/migration growth.
+
+3. `OkPopul_Comp{YYYY}_Site.xlsx` — ежегодная «оценка численности постоянного
+   населения на 1 января», sheet "Всего" row РФ. Один новый point per year =
+   население на 1 января текущего года (после обновления файла rosstat'ом).
 """
 
 from __future__ import annotations
@@ -31,7 +31,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import FetchLog, Indicator
 from app.services.base_parser import BaseParser
 from app.services.data_validator import validate_points
-from app.services.rosstat_sdds_fetcher import fetch_sdds_xlsx, fetch_rosstat_static_xlsx
+from app.services.rosstat_sdds_fetcher import (
+    fetch_rosstat_okpopul,
+    fetch_rosstat_static_xlsx,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -59,42 +62,59 @@ def _extract_year(cell) -> int | None:
     return y if 1800 <= y <= 2100 else None
 
 
-def parse_sdds_population_xlsx(content: bytes) -> list[DataPoint]:
-    """Parse SDDS population XLSX → annual population in millions."""
+def parse_ok_popul_xlsx(content: bytes) -> DataPoint:
+    """Parse rosstat русский `OkPopul_Comp{YYYY}_Site.xlsx` → одна точка
+    «население РФ на 1 января {YYYY}» в млн человек.
+
+    Sheet "Всего": ищем row начинающийся с «Российская Федерация», в этой строке
+    ищем колонку с числом 100M-200M (тех.значение РФ population) у которой выше
+    в шапке стоит "{YYYY} г.". Берём наибольший year (новый файл публикует значения
+    на 1 января нового года в правой части и предыдущего в левой).
+    """
     wb = openpyxl.load_workbook(io.BytesIO(content), data_only=True, read_only=True)
     try:
-        ws = wb.worksheets[0]
-        rows_data: list[list] = []
-        for row in ws.iter_rows(values_only=True):
-            rows_data.append(list(row))
+        if "Всего" not in wb.sheetnames:
+            raise ValueError("OkPopul: sheet 'Всего' not found")
+        ws = wb["Всего"]
+        rows_data = [list(r) for r in ws.iter_rows(values_only=True)]
     finally:
         wb.close()
 
-    if len(rows_data) < 3:
-        raise ValueError(f"Population XLSX: expected >=3 rows, got {len(rows_data)}")
+    rf_row_idx: int | None = None
+    for r_idx, row in enumerate(rows_data):
+        cell = str((row[0] if row else "") or "").strip().lower()
+        # Rosstat файлы регулярно мешают кириллицу с латиницей в "Федеpация"
+        # (латинская "p"); проверяем только устойчивый префикс.
+        if cell.startswith("российская"):
+            rf_row_idx = r_idx
+            break
+    if rf_row_idx is None:
+        raise ValueError("OkPopul: 'Российская …' row not found")
 
-    dates: list[tuple[int, int]] = []
-    for col_idx in range(2, len(rows_data[0])):
-        header = rows_data[0][col_idx]
-        if header is not None:
-            try:
-                year = int(header)
-                if 1990 <= year <= 2100:
-                    dates.append((col_idx, year))
-            except (ValueError, TypeError):
-                pass
+    candidates: list[tuple[date, float]] = []
+    rf_data = rows_data[rf_row_idx]
+    for c_idx, val in enumerate(rf_data):
+        if isinstance(val, bool) or not isinstance(val, (int, float)):
+            continue
+        v = float(val)
+        if not (100_000_000 < v < 200_000_000):
+            continue
+        for hr in range(max(0, rf_row_idx - 5), rf_row_idx):
+            if c_idx >= len(rows_data[hr]):
+                continue
+            cell_text = str(rows_data[hr][c_idx] or "")
+            m = re.search(r"(\d{4})\s*г\.", cell_text)
+            if m:
+                year = int(m.group(1))
+                if 2020 <= year <= 2100:
+                    candidates.append((date(year, 1, 1), round(v / 1_000_000, 2)))
+                    break
 
-    pop_row = rows_data[2]
-    points: list[DataPoint] = []
-    for col_idx, year in dates:
-        val = pop_row[col_idx] if col_idx < len(pop_row) else None
-        if val is not None:
-            try:
-                points.append(DataPoint(date=date(year, 1, 1), value=round(float(val), 2)))
-            except (ValueError, TypeError):
-                pass
+    if not candidates:
+        raise ValueError("OkPopul: no valid (year, pop) candidate found in РФ row")
 
-    return sorted(points, key=lambda p: p.date)
+    latest = max(candidates, key=lambda x: x[0])
+    return DataPoint(date=latest[0], value=latest[1])
 
 
 def parse_population_history_xlsx(content: bytes) -> list[DataPoint]:
@@ -142,13 +162,16 @@ def parse_population_history_xlsx(content: bytes) -> list[DataPoint]:
     return sorted(points, key=lambda p: p.date)
 
 
-def merge_population_history_with_sdds(
-    history_points: list[DataPoint],
-    sdds_points: list[DataPoint],
-) -> list[DataPoint]:
-    """Merge two official Rosstat population files, preferring newer SDDS values on overlap."""
-    by_date = {p.date: p for p in history_points}
-    by_date.update({p.date: p for p in sdds_points})
+def merge_population_sources(*sources: list[DataPoint]) -> list[DataPoint]:
+    """Merge ordered population series. Later args win on date overlap.
+
+    Use case: merge_population_sources(history, components, [latest_okpopul]) — components
+    overrides history on 1990+ overlap, OkPopul overrides components on the most-recent
+    январь.
+    """
+    by_date: dict[date, DataPoint] = {}
+    for src in sources:
+        by_date.update({p.date: p for p in src})
     return [by_date[d] for d in sorted(by_date)]
 
 
@@ -244,22 +267,33 @@ class RosstatPopulationParser(BaseParser):
         fetch_log: FetchLog,
     ) -> tuple[list, str]:
         code = indicator.code
-        source = INDICATOR_SOURCE_MAP.get(code, "sdds")
+        source = INDICATOR_SOURCE_MAP.get(code, "components")
 
         if source == "historical":
             history_content, history_url = await asyncio.to_thread(
                 fetch_rosstat_static_xlsx, "population_history"
             )
-            sdds_content, sdds_url = await asyncio.to_thread(fetch_sdds_xlsx, "population")
+            components_content, components_url = await asyncio.to_thread(
+                fetch_rosstat_static_xlsx, "popul_components"
+            )
             history_points = await asyncio.to_thread(parse_population_history_xlsx, history_content)
-            sdds_points = await asyncio.to_thread(parse_sdds_population_xlsx, sdds_content)
-            points = merge_population_history_with_sdds(history_points, sdds_points)
-            return points, f"{history_url}; {sdds_url}"
+            components_series = await asyncio.to_thread(parse_popul_components_xlsx, components_content)
+            components_pop = components_series["population"]
 
-        if source == "sdds":
-            content, final_url = await asyncio.to_thread(fetch_sdds_xlsx, "population")
-            points = await asyncio.to_thread(parse_sdds_population_xlsx, content)
-            return points, final_url
+            latest_points: list[DataPoint] = []
+            sources_url = f"{history_url}; {components_url}"
+            try:
+                ok_content, ok_url = await asyncio.to_thread(fetch_rosstat_okpopul)
+                latest_points = [await asyncio.to_thread(parse_ok_popul_xlsx, ok_content)]
+                sources_url = f"{history_url}; {components_url}; {ok_url}"
+            except Exception as e:
+                logger.warning(
+                    "OkPopul yearly fetch failed (latest year may lag until next OkPopul publish): %s",
+                    e,
+                )
+
+            points = merge_population_sources(history_points, components_pop, latest_points)
+            return points, sources_url
 
         content, final_url = await asyncio.to_thread(
             fetch_rosstat_static_xlsx, "popul_components"

@@ -1,4 +1,4 @@
-"""Tests for Rosstat Population parsers (SDDS + static XLSX)."""
+"""Tests for Rosstat Population parsers (canonical русский Rosstat, без SDDS)."""
 
 import io
 from datetime import date
@@ -6,21 +6,35 @@ from datetime import date
 import openpyxl
 
 from app.services.rosstat_population_parser import (
-    merge_population_history_with_sdds,
+    DataPoint,
+    merge_population_sources,
+    parse_ok_popul_xlsx,
     parse_population_history_xlsx,
-    parse_sdds_population_xlsx,
     parse_popul_components_xlsx,
 )
 
 
-def _make_sdds_population_xlsx() -> bytes:
+def _make_ok_popul_xlsx() -> bytes:
+    """Synthetic OkPopul_Comp{YYYY}_Site.xlsx mimicking real layout."""
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "Population"
+    ws.title = "Всего"
 
-    ws.append(["SDDS", None, 2020, 2021, 2022])
-    ws.append(["Label", None, None, None, None])
-    ws.append(["Population", None, 146748.6, 145478.1, 144236.9])
+    for _ in range(5):
+        ws.append([None])
+    ws.append([None, "населения", "общий", "в том числе:", None, "объем", "Численность населения", "в среднем"])
+    ws.append([None, "на 1 января ", "прирост", "естественный ", "миграционный", "МТП", " 2025 г.", "за 2024 г."])
+    ws.append([None, "2024 г."])
+    ws.append([
+        "Российская Федерация*",
+        146150789,
+        -30861,
+        -599454,
+        568593,
+        0,
+        146119928,
+        146135359,
+    ])
 
     buf = io.BytesIO()
     wb.save(buf)
@@ -67,19 +81,37 @@ def _make_population_history_xlsx() -> bytes:
     return buf.getvalue()
 
 
-class TestParseSddsPopulation:
-    def test_basic(self):
-        content = _make_sdds_population_xlsx()
-        result = parse_sdds_population_xlsx(content)
-        assert len(result) == 3
-        assert result[0].date == date(2020, 1, 1)
-        assert result[0].value == 146748.6
+class TestParseOkPopul:
+    def test_returns_latest_year(self):
+        content = _make_ok_popul_xlsx()
+        result = parse_ok_popul_xlsx(content)
+        assert result.date == date(2025, 1, 1)
+        assert result.value == 146.12
 
-    def test_sorted(self):
-        content = _make_sdds_population_xlsx()
-        result = parse_sdds_population_xlsx(content)
-        dates = [p.date for p in result]
-        assert dates == sorted(dates)
+    def test_value_in_millions(self):
+        content = _make_ok_popul_xlsx()
+        result = parse_ok_popul_xlsx(content)
+        assert 100 < result.value < 200
+
+    def test_handles_mixed_cyrillic_latin_label(self):
+        """Real rosstat file has 'Федеpация' с латинской 'p' — regression case."""
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = "Всего"
+        for _ in range(5):
+            ws.append([None])
+        ws.append([None, "n", "n", "n", "n", "n", "n", "n"])
+        ws.append([None, "n", "n", "n", "n", "n", " 2025 г.", "за 2024 г."])
+        ws.append([None, "2024 г."])
+        ws.append([
+            "Российская Федеpация*",  # 'p' латинская
+            146150789, -30861, -599454, 568593, 0, 146119928, 146135359,
+        ])
+        buf = io.BytesIO()
+        wb.save(buf)
+        result = parse_ok_popul_xlsx(buf.getvalue())
+        assert result.date == date(2025, 1, 1)
+        assert result.value == 146.12
 
 
 class TestParsePopulationHistory:
@@ -97,11 +129,28 @@ class TestParsePopulationHistory:
         assert result[1].value == 89.9
         assert result[-1].value == 146.1
 
-    def test_merge_prefers_sdds_on_overlap(self):
-        history = [type("P", (), {"date": date(2024, 1, 1), "value": 146.1})()]
-        sdds = [type("P", (), {"date": date(2024, 1, 1), "value": 146.2})()]
-        result = merge_population_history_with_sdds(history, sdds)
-        assert result[0].value == 146.2
+
+class TestMergePopulationSources:
+    def test_later_source_wins(self):
+        history = [DataPoint(date=date(2024, 1, 1), value=146.1)]
+        components = [DataPoint(date=date(2024, 1, 1), value=146.15)]
+        latest = [DataPoint(date=date(2025, 1, 1), value=146.12)]
+        result = merge_population_sources(history, components, latest)
+        assert len(result) == 2
+        assert result[0].value == 146.15
+        assert result[1].value == 146.12
+
+    def test_no_overlap_concatenates(self):
+        old = [DataPoint(date=date(1897, 1, 1), value=67.5)]
+        new = [DataPoint(date=date(2025, 1, 1), value=146.12)]
+        result = merge_population_sources(old, new)
+        assert len(result) == 2
+        assert result[0].date == date(1897, 1, 1)
+        assert result[1].date == date(2025, 1, 1)
+
+    def test_empty_sources_skipped(self):
+        result = merge_population_sources([], [DataPoint(date=date(2024, 1, 1), value=146.1)], [])
+        assert len(result) == 1
 
 
 class TestParsePopulComponents:

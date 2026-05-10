@@ -114,6 +114,34 @@ def fetch_rosstat_static_xlsx(key: str) -> tuple[bytes, str]:
     return resp.content, url
 
 
+def fetch_rosstat_okpopul() -> tuple[bytes, str]:
+    """Download OkPopul_Comp{YYYY}_Site.xlsx — annual «оценка численности постоянного
+    населения на 1 января» from rosstat русский. Tries current year, then year-1.
+
+    Released ~Q1-Q2 each year and contains population on 1 января {YYYY} for РФ
+    + components за предыдущий год.
+    """
+    now_year = datetime.now().year
+    session = _get_session()
+
+    for year in (now_year, now_year - 1):
+        url = f"{_ROSSTAT_MEDIA}/OkPopul_Comp{year}_Site.xlsx"
+        try:
+            resp = session.get(url, timeout=settings.rosstat_request_timeout)
+            if resp.status_code != 200:
+                logger.debug("OkPopul %d: HTTP %d", year, resp.status_code)
+                continue
+            if resp.content[:4] != XLSX_MAGIC:
+                logger.warning("OkPopul %d: not XLSX", year)
+                continue
+            logger.info("Downloaded OkPopul %d: %d KB", year, len(resp.content) // 1024)
+            return resp.content, url
+        except requests.RequestException as e:
+            logger.warning("OkPopul %d fetch error: %s", year, e)
+
+    raise RuntimeError(f"OkPopul: no file found for years {now_year} or {now_year - 1}")
+
+
 def fetch_latest_socioeconomic_report_pdf() -> tuple[bytes, str]:
     """Download latest official Rosstat socioeconomic report PDF.
 
