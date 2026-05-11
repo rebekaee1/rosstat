@@ -17,9 +17,10 @@ from datetime import date
 from typing import ClassVar
 
 from bs4 import BeautifulSoup
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models import FetchLog, Indicator
+from app.models import FetchLog, Indicator, IndicatorData
 from app.services.base_parser import BaseParser
 from app.services.http_client import create_session
 
@@ -41,19 +42,34 @@ class BudgetPoint:
 
 
 def _find_csv_url() -> str:
-    """Discover the latest data CSV URL from the Minfin open data catalog page."""
+    """Discover the latest data CSV URL from the Minfin open data catalog page.
+
+    Если на странице несколько кандидатов (исторически Минфин публикует версии
+    с разными timestamps), выбираем самый свежий по lexicographic max имени
+    (timestamps в формате YYYYMMDDTHHMM — корректно сравниваются как строки).
+    """
     session = create_session()
     try:
         resp = session.get(CATALOG_URL, timeout=30)
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, "html.parser")
+        candidates: list[str] = []
         for a in soup.find_all("a", href=True):
             href = a["href"]
             if _DATA_RE.search(href):
-                if href.startswith("http"):
-                    return href
-                return f"https://minfin.gov.ru{href}"
-        raise RuntimeError("Minfin: could not find data CSV link on catalog page")
+                if not href.startswith("http"):
+                    href = f"https://minfin.gov.ru{href}"
+                candidates.append(href)
+        if not candidates:
+            raise RuntimeError("Minfin: could not find data CSV link on catalog page")
+        candidates.sort(reverse=True)
+        if len(candidates) > 1:
+            logger.info(
+                "Minfin: %d CSV candidates, picking latest: %s",
+                len(candidates),
+                candidates[0].rsplit("/", 1)[-1],
+            )
+        return candidates[0]
     finally:
         session.close()
 
@@ -79,9 +95,6 @@ def _parse_budget_csv(content: str, target: str = "deficit") -> list[BudgetPoint
     col_idx = None
     if target == "deficit":
         col_idx = _find_col_index(header, "Дефицит")
-        if col_idx is None:
-            _find_col_index(header, "Доходы, всего")
-            _find_col_index(header, "Расходы, всего")
     elif target == "revenue":
         col_idx = _find_col_index(header, "Доходы, всего")
     elif target == "expenditure":
@@ -155,6 +168,21 @@ def fetch_and_parse_budget(target: str = "deficit") -> tuple[list[BudgetPoint], 
 
 
 class MinfinBudgetParser(BaseParser):
+    """ETL для Минфин CSV (deficit/revenue/expenditure).
+
+    Operational trap (см. enterprise_resilience.md): Минфин обновляет content
+    CSV-файла `data-YYYYMMDDTHHMM-structure-…csv` *in-place*, не меняя URL.
+    Timestamp в имени = дата создания паспорта, не snapshot content. Поэтому
+    `_find_csv_url` всегда вернёт стабильный URL, и при scheduled ETL утром
+    мы можем скачать ещё «вчерашнюю» версию content. Решение:
+    1. 2x daily запуск (см. scheduler) — утренний + обеденный pass.
+    2. Этот парсер логирует last_parsed_date + last_db_date — если
+       last_parsed > last_db но bulk_upsert вернёт (0,0), это означает что
+       upsert идемпотентен (значения совпали с БД) — но НЕ означает что
+       новые данные были (это лог уровня INFO). Реальная аномалия — если
+       last_parsed > last_db, но parser возвращает 0 точек.
+    """
+
     parser_type: ClassVar[str] = "minfin_budget_csv"
 
     async def _fetch_and_parse(
@@ -166,4 +194,30 @@ class MinfinBudgetParser(BaseParser):
     ) -> tuple[list, str]:
         budget_target = cfg.get("budget_target", "deficit")
         points, csv_url = await asyncio.to_thread(fetch_and_parse_budget, budget_target)
+
+        last_db = (
+            await db.execute(
+                select(func.max(IndicatorData.date)).where(
+                    IndicatorData.indicator_id == indicator.id
+                )
+            )
+        ).scalar()
+        last_parsed = max((p.date for p in points), default=None)
+        logger.info(
+            "Minfin budget '%s' (target=%s): parsed=%d points, last_parsed=%s, last_db=%s, csv=%s",
+            indicator.code,
+            budget_target,
+            len(points),
+            last_parsed,
+            last_db,
+            csv_url.rsplit("/", 1)[-1] if csv_url else "?",
+        )
+        if last_parsed and last_db and last_parsed > last_db:
+            logger.warning(
+                "Minfin budget '%s': source has newer data (%s) than DB (%s) — "
+                "expected bulk_upsert to add at least 1 row; will verify post-upsert.",
+                indicator.code,
+                last_parsed,
+                last_db,
+            )
         return points, csv_url

@@ -143,6 +143,81 @@ async def daily_update_job():
     logger.info("Daily ETL update complete in %.0fs.", duration)
 
 
+async def run_etl_for_parser_type(parser_type: str) -> dict[str, int]:
+    """Re-run ETL для всех активных индикаторов с конкретным `parser_type`.
+
+    Used by `late_minfin_etl_job` to catch in-place CSV content updates that
+    утренний `daily_update_job` пропустил (Minfin обновляет content того же
+    URL в течение дня — см. enterprise_resilience.md::Minfin in-place CSV).
+    """
+    async with async_session() as db:
+        ind_q = await db.execute(
+            select(Indicator).where(
+                Indicator.is_active.is_(True),
+                Indicator.parser_type == parser_type,
+            ).order_by(Indicator.code)
+        )
+        codes = [i.code for i in ind_q.scalars().all()]
+
+    if not codes:
+        logger.info("run_etl_for_parser_type(%r): no active indicators found", parser_type)
+        return {"total": 0, "updated": 0, "failed": 0}
+
+    logger.info("Late ETL pass for parser_type=%s: %d indicators", parser_type, len(codes))
+    updated_codes: list[str] = []
+    failed_codes: list[str] = []
+    for code in codes:
+        async with _lock:
+            if code in _running_locks:
+                logger.info("Skipping %s — already running", code)
+                continue
+            _running_locks.add(code)
+        try:
+            had_new = await asyncio.wait_for(
+                run_etl_for_indicator(code),
+                timeout=ETL_TIMEOUT_SECONDS,
+            )
+            if had_new:
+                updated_codes.append(code)
+        except Exception:
+            logger.exception("Late ETL failed for %s", code)
+            failed_codes.append(code)
+        finally:
+            async with _lock:
+                _running_locks.discard(code)
+
+    if updated_codes:
+        async with async_session() as db:
+            try:
+                derived = await calculation_engine.run_for_updated_sources(db, updated_codes)
+                await db.commit()
+                if derived:
+                    logger.info(
+                        "Late ETL pass updated derived indicators: %s", derived
+                    )
+            except Exception:
+                logger.exception("CalculationEngine failed in late pass")
+
+    logger.info(
+        "Late ETL pass for parser_type=%s done: %d updated, %d failed",
+        parser_type, len(updated_codes), len(failed_codes),
+    )
+    return {"total": len(codes), "updated": len(updated_codes), "failed": len(failed_codes)}
+
+
+async def late_minfin_etl_job():
+    """Polluc 15:00 MSK pass — ловит in-place content updates Минфин-каталога.
+
+    См. enterprise_resilience.md::Minfin in-place CSV update — URL CSV-файла
+    остаётся стабильным после первой публикации (`data-YYYYMMDDTHHMM-…csv`),
+    но Минфин дополняет content того же URL новыми месяцами в течение дня.
+    Утренний `daily_update_job` (03:00 MSK по умолчанию) может пропустить
+    обновление, если оно вышло позже утра. Этот second pass в 15:00 MSK —
+    insurance.
+    """
+    await run_etl_for_parser_type("minfin_budget_csv")
+
+
 async def _promote_past_events() -> None:
     """Bulk-update stale 'scheduled' events whose date has passed → 'released'."""
     today = datetime.now(timezone.utc).replace(tzinfo=None).date()

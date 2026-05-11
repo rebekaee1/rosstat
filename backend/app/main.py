@@ -106,10 +106,22 @@ async def lifespan(app: FastAPI):
             name="Daily official calendar refresh (rolling 12-month window)",
             replace_existing=True,
         )
+
+        from app.tasks.scheduler import late_minfin_etl_job
+
+        scheduler.add_job(
+            late_minfin_etl_job,
+            trigger=CronTrigger(
+                hour=15, minute=0, timezone="Europe/Moscow",
+            ),
+            id="late_minfin_etl",
+            name="Late Minfin ETL pass (catches in-place CSV content updates)",
+            replace_existing=True,
+        )
         scheduler.start()
         logger.info(
             "Scheduler started: daily ETL at %02d:%02d MSK (Europe/Moscow), all is_active indicators; "
-            "official calendar refresh at 03:00 MSK",
+            "official calendar refresh at 03:00 MSK; late Minfin pass at 15:00 MSK",
             settings.scheduler_cron_hour,
             settings.scheduler_cron_minute,
         )

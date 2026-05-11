@@ -1,6 +1,6 @@
 # Enterprise resilience — практики и инварианты
 
-**Last updated:** 2026-05-10.
+**Last updated:** 2026-05-11.
 **Part of:** [`../AGENTS.md`](../AGENTS.md), [`../CONTEXT.md`](../CONTEXT.md) (раздел «Operational invariants and traps»).
 **See also:** [`workflow.md`](workflow.md) (smoke C, прод-деплой), [`adr/0003-seo-single-source-server-rendered.md`](adr/0003-seo-single-source-server-rendered.md) (asset-hash trap).
 
@@ -31,6 +31,7 @@
 - **Ретраи** — Rosstat-парсеры используют `requests` + явный `try/except`; CBR-парсеры — то же. Backoff не реализован централизованно, ретраи делаются повторным прогоном daily-job на следующий день.
 - **`is_active=false`** — выключение парсера для индикатора без удаления данных. ETL job их пропускает.
 - **`is_listed=false`** — индикатор скрыт со списочных страниц (категории, поиск), но детальная страница `/indicator/<slug>` доступна. Используется для архивных серий или предрелизных черновиков.
+- **Minfin in-place CSV content update (trap)** — `minfin.gov.ru/opendata/7710168360-fedbud_month/` публикует CSV под стабильным URL `data-YYYYMMDDTHHMM-structure-...csv`. Timestamp в имени = **дата создания паспорта набора**, не snapshot content. Минфин **дополняет content того же URL** новыми месяцами в течение дня без смены URL. Симптом, который мы наблюдали 5-11 мая 2026: `daily_update_job` в 03:00 MSK скачивал CSV → `bulk_upsert` возвращал `(0, 0)` → status `no_new_data`; через 12-14 часов тот же CSV отдавал уже свежий контент с новым месяцем. **Контрмеры**: 1) `late_minfin_etl_job` (APScheduler, 15:00 MSK ежедневно) — second pass через `run_etl_for_parser_type("minfin_budget_csv")`; 2) `minfin_budget_parser` логирует `last_parsed_date` + `last_db_date` + `len(points)` (см. `MinfinBudgetParser._fetch_and_parse`) — для последующих аномалий легче ловить разрыв через `docker compose logs backend | grep "Minfin budget"`. См. `docs/data_sources.md::budget-*`.
 
 ## Frontend и кэш
 
