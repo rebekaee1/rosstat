@@ -1,6 +1,6 @@
 # Forecast Economy — Project Context
 
-**Last updated:** 2026-05-10 (frontend instrumentation: Webvisor 2 + form analytics on, новые goals/UTM/перелинковка).
+**Last updated:** 2026-05-12 (T3 frontend: FrequencySwitcher monthly ↔ quarterly для торговли, SSR alternate links, goal `frequency_switch`).
 **Part of:** [`AGENTS.md`](AGENTS.md) (точка входа для AI-агента).
 **See also:** [`README.md`](README.md), [`docs/workflow.md`](docs/workflow.md), [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md), [`docs/data_sources.md`](docs/data_sources.md), [`docs/cbr_sources.md`](docs/cbr_sources.md), [`docs/analytics_api_inventory/`](docs/analytics_api_inventory/), [`docs/adr/`](docs/adr/).
 
@@ -232,6 +232,24 @@ Daily ETL (06:00 МСК, `RUSTATS_SCHEDULER_CRON_HOUR/MINUTE`) запускае�
 ### `is_listed` vs VariantGroupPicker
 
 Скрытие индикатора через `is_listed=False` — это **только** про карточку в `/category/{slug}`. Сам индикатор по-прежнему доступен по `/indicator/{code}`, отдаётся API, индексируется поисковиками, попадает в sitemap. Если нужно полностью убрать индикатор — это другой механизм (`is_active=False` + ручная чистка sitemap-генератора).
+
+### Frequency switcher: пары индикаторов разной частоты
+
+T3 (2026-05-12): для индикаторов внешней торговли публикуем одновременно квартальные (history с 1994) и месячные (history с 1997 для goods, с 2018 для services) ряды. Чтобы UI/SEO не плодили дубли — единая модель:
+
+- **Primary** (родитель) = quarterly индикатор, `is_listed=True`, появляется в категориях и sitemap. В `model_config_json` ставится `alternate_frequencies = {"monthly": "<code>-monthly"}`.
+- **Secondary** (counterpart) = monthly индикатор `<code>-monthly`, `is_listed=False`, `forecast_steps=0`, скрыт из категорийного листинга через `INDICATOR_HIDDEN_FROM_LISTING`. В `model_config_json` ставится `primary_indicator_code = "<parent_code>"`.
+
+Backend контракт:
+- `IndicatorRead` отдаёт оба поля (`alternate_frequencies`, `primary_indicator_code`). См. `backend/app/schemas.py`.
+- `seo_renderer.render_indicator_html` рендерит `<link rel="alternate" hreflang="ru-RU">` на counterpart URL — поисковики видят семантическую пару `/indicator/exports` ↔ `/indicator/exports-monthly`.
+
+Frontend контракт:
+- Чистая логика — `frontend/src/lib/frequencySwitcher.js::buildFrequencyItems`. На неё опирается `FrequencySwitcher.jsx`, который рисует tabs «Квартальные / Месячные» над графиком (рядом с `VariantGroupPicker`/`CpiViewModePicker`).
+- Переключение URL-based: каждая частота — отдельная карточка с собственным SSR canonical (SEO-благоприятно). `IndicatorChart`, telemetry, datatable читают `indicator.frequency` → автоматически адаптируются под помесячный/поквартальный formatter без отдельной логики.
+- Yandex.Metrika goal `frequency_switch` (см. `track.js::events.FREQUENCY_SWITCH`) — каждый клик switcher логируется с `from/to/fromFrequency/toFrequency/indicatorCategory`.
+
+Trap для будущих расширений: если добавляешь третью частоту в пару (например `inflation-weekly` к существующим `cpi`/`cpi-monthly`) — поле `alternate_frequencies` это map `{[freqKey]: code}`, поддерживает любое количество ключей. UI отрисует столько tabs, сколько entries (тест `frequencySwitcher.test.js::handles 3-way switcher` — фиксирует контракт).
 
 ### CPI level «Индекс» режим (frontend)
 
