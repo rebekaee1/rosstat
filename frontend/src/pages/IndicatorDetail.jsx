@@ -7,6 +7,7 @@ import useDocumentMeta from '../lib/useMeta';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import IndicatorDetailHeader from '../components/IndicatorDetailHeader';
 import VariantGroupPicker from '../components/VariantGroupPicker';
+import FrequencySwitcher from '../components/FrequencySwitcher';
 import CpiViewModePicker from '../components/CpiViewModePicker';
 import IndicatorTelemetryGrid from '../components/IndicatorTelemetryGrid';
 import IndicatorChartSection from '../components/IndicatorChartSection';
@@ -237,6 +238,14 @@ export default function IndicatorDetail() {
         group={variantGroup}
         currentCode={code}
         currentMode={isPriceCategory ? safeViewMode : null}
+      />
+
+      <FrequencySwitcher
+        currentCode={code}
+        currentFrequency={indicator?.frequency}
+        alternateFrequencies={indicator?.alternate_frequencies}
+        primaryIndicatorCode={indicator?.primary_indicator_code}
+        indicatorCategory={indicator?.category}
       />
 
       {isPriceCategory && (

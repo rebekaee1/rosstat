@@ -219,6 +219,7 @@ async def build_document(
     body: str,
     json_ld: list[dict] | None = None,
     keywords: str | None = None,
+    extra_head: str | None = None,
 ) -> str:
     assets = await get_app_assets()
     url = _absolute(canonical_path)
@@ -226,6 +227,7 @@ async def build_document(
     safe_desc = escape(clean_text(description)[:300])
     safe_keywords = escape(clean_text(keywords or DEFAULT_KEYWORDS)[:400])
     structured = "\n".join(_json_script(item) for item in (json_ld or []))
+    extras = extra_head or ""
     return f"""<!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -240,6 +242,7 @@ async def build_document(
 <meta name="theme-color" content="#F8F9FC">
 <meta name="yandex-verification" content="02b4966d46881470">
 <link rel="canonical" href="{escape(url)}">
+{extras}
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Forecast Economy">
 <meta property="og:url" content="{escape(url)}">
@@ -456,6 +459,7 @@ async def render_indicator_html(code: str, db: AsyncSession) -> tuple[int, str]:
             "variableMeasured": indicator.name,
         },
     ]
+    extra_head = _indicator_alt_freq_links(indicator)
     html = await build_document(
         title=title,
         description=desc,
@@ -463,8 +467,33 @@ async def render_indicator_html(code: str, db: AsyncSession) -> tuple[int, str]:
         body=body,
         json_ld=json_ld,
         keywords=indicator.seo_keywords or None,
+        extra_head=extra_head or None,
     )
     return 200, html
+
+
+def _indicator_alt_freq_links(indicator: Indicator) -> str:
+    """Render `<link rel="alternate">` для frequency-counterpart индикатора.
+
+    Источник — `indicator.model_config.alternate_frequencies` или
+    `primary_indicator_code` (см. T3 plan, FrequencySwitcher на frontend).
+    Поисковики таким образом понимают семантическую связь между парой URLs
+    (`/indicator/exports` ↔ `/indicator/exports-monthly`).
+    """
+    cfg = indicator.model_config or {}
+    links: list[str] = []
+    alt_freqs = cfg.get("alternate_frequencies")
+    if isinstance(alt_freqs, dict):
+        for _freq_key, alt_code in alt_freqs.items():
+            if not alt_code:
+                continue
+            href = escape(_absolute(f"/indicator/{alt_code}"))
+            links.append(f'<link rel="alternate" hreflang="ru-RU" href="{href}">')
+    primary_code = cfg.get("primary_indicator_code")
+    if primary_code:
+        href = escape(_absolute(f"/indicator/{primary_code}"))
+        links.append(f'<link rel="alternate" hreflang="ru-RU" href="{href}">')
+    return "\n".join(links)
 
 
 def _category_for_api(api_category: str | None) -> CategorySeo | None:

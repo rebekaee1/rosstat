@@ -33,6 +33,12 @@ class IndicatorDetail(IndicatorSummary):
     first_date: date | None = None
     last_date: date | None = None
     updated_at: datetime | None = None
+    # Linkage на индикатор-counterpart другой частоты (T3 plan).
+    # Пример: для `exports` (quarterly) → {"monthly": "exports-monthly"}.
+    # Используется frontend frequency switcher на странице индикатора.
+    alternate_frequencies: dict[str, str] | None = None
+    # Обратная ссылка: monthly counterpart → primary quarterly. Для SSR canonical.
+    primary_indicator_code: str | None = None
 
 
 class IndicatorStats(BaseModel):

@@ -155,6 +155,7 @@ export const events = {
   EXPERIMENT_EXPOSURE: 'experiment_exposure',
 
   INDICATOR_VIEW: 'indicator_view',
+  FREQUENCY_SWITCH: 'frequency_switch',
 
   OUTBOUND_LINK: 'outbound_link',
   CONTACT_EMAIL: 'contact_email',
