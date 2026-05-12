@@ -1569,6 +1569,8 @@ INDICATORS = [
         "category": "Цены",
     },
     # ─── Внешняя торговля (ЦБ BOP XLSX) ───
+    # Quarterly source = bal_of_payments_standart.xlsx лист «Кварталы», глубина с 1994-Q1.
+    # alternate_frequencies → linkage на monthly counterpart (T3 plan, frequency switcher).
     {
         "code": "exports",
         "name": "Экспорт товаров",
@@ -1587,6 +1589,7 @@ INDICATORS = [
             "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 0},
+            "alternate_frequencies": {"monthly": "exports-monthly"},
         },
         "is_active": True,
         "category": "Торговля",
@@ -1609,6 +1612,7 @@ INDICATORS = [
             "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 0},
+            "alternate_frequencies": {"monthly": "imports-monthly"},
         },
         "is_active": True,
         "category": "Торговля",
@@ -1630,8 +1634,86 @@ INDICATORS = [
             "bop_target": "trade-balance",
             "forecast_steps": 0,
             "forecast_transform": "absolute",
+            "alternate_frequencies": {"monthly": "trade-balance-monthly"},
         },
         "is_active": True,
+        "category": "Торговля",
+    },
+    # ─── Внешняя торговля (ЦБ monthly, ETG/ETS, T3 plan) ───
+    # Источник: ЦБ trade/trade.xls лист «Ежемесячные» (товары, 1997-01+)
+    #          trade/trade_monthly.xlsx лист «месяцы» (услуги, 2018-01+).
+    # is_listed=False — карточки доступны через frequency switcher из родителя
+    # (exports/imports/...), не дублируем в листинге категории «Торговля».
+    {
+        "code": "exports-monthly",
+        "name": "Экспорт товаров (месячный ряд)",
+        "name_en": "Goods Exports (monthly)",
+        "unit": "млн $",
+        "frequency": "monthly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/macro_itm/external_sector/etg/",
+        "description": (
+            "Экспорт товаров (ФОБ) по методологии платёжного баланса, "
+            "месячный ряд с 1997 года. Источник: ЦБ РФ trade.xls лист «Ежемесячные»."
+        ),
+        "parser_type": "cbr_trade_goods_monthly",
+        "model_config_json": {
+            "bop_target": "exports-monthly",
+            "forecast_steps": 0,
+            "forecast_transform": "absolute",
+            "validation": {"min": 0},
+            "primary_indicator_code": "exports",
+        },
+        "is_active": True,
+        "is_listed": False,
+        "category": "Торговля",
+    },
+    {
+        "code": "imports-monthly",
+        "name": "Импорт товаров (месячный ряд)",
+        "name_en": "Goods Imports (monthly)",
+        "unit": "млн $",
+        "frequency": "monthly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/macro_itm/external_sector/etg/",
+        "description": (
+            "Импорт товаров (ФОБ) по методологии платёжного баланса, "
+            "месячный ряд с 1997 года. Источник: ЦБ РФ trade.xls лист «Ежемесячные»."
+        ),
+        "parser_type": "cbr_trade_goods_monthly",
+        "model_config_json": {
+            "bop_target": "imports-monthly",
+            "forecast_steps": 0,
+            "forecast_transform": "absolute",
+            "validation": {"min": 0},
+            "primary_indicator_code": "imports",
+        },
+        "is_active": True,
+        "is_listed": False,
+        "category": "Торговля",
+    },
+    {
+        "code": "trade-balance-monthly",
+        "name": "Торговый баланс (месячный ряд)",
+        "name_en": "Trade Balance (monthly)",
+        "unit": "млн $",
+        "frequency": "monthly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/macro_itm/external_sector/etg/",
+        "description": (
+            "Сальдо торгового баланса товарами (экспорт минус импорт ФОБ) "
+            "по методологии платёжного баланса, месячный ряд с 1997 года. "
+            "Источник: ЦБ РФ trade.xls лист «Ежемесячные», колонка «Сальдо»."
+        ),
+        "parser_type": "cbr_trade_goods_monthly",
+        "model_config_json": {
+            "bop_target": "trade-balance-monthly",
+            "forecast_steps": 0,
+            "forecast_transform": "absolute",
+            "primary_indicator_code": "trade-balance",
+        },
+        "is_active": True,
+        "is_listed": False,
         "category": "Торговля",
     },
     # ─── Производные: торговля г/г ───
@@ -1999,6 +2081,7 @@ INDICATORS = [
         "model_config_json": {
             "bop_target": "services-exports",
             "forecast_steps": 0,
+            "alternate_frequencies": {"monthly": "services-exports-monthly"},
         },
         "is_active": True,
         "category": "Торговля",
@@ -2019,8 +2102,56 @@ INDICATORS = [
         "model_config_json": {
             "bop_target": "services-imports",
             "forecast_steps": 0,
+            "alternate_frequencies": {"monthly": "services-imports-monthly"},
         },
         "is_active": True,
+        "category": "Торговля",
+    },
+    # ─── Услуги monthly (ЦБ trade_monthly.xlsx, T3 plan) ───
+    {
+        "code": "services-exports-monthly",
+        "name": "Экспорт услуг (месячный ряд)",
+        "name_en": "Services Exports (monthly)",
+        "unit": "млн $",
+        "frequency": "monthly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/macro_itm/external_sector/ets/",
+        "description": (
+            "Экспорт услуг по методологии платёжного баланса, месячный ряд "
+            "с 2018 года. Источник: ЦБ РФ trade_monthly.xlsx лист «месяцы»."
+        ),
+        "parser_type": "cbr_trade_services_monthly",
+        "model_config_json": {
+            "bop_target": "services-exports-monthly",
+            "forecast_steps": 0,
+            "forecast_transform": "absolute",
+            "primary_indicator_code": "services-exports",
+        },
+        "is_active": True,
+        "is_listed": False,
+        "category": "Торговля",
+    },
+    {
+        "code": "services-imports-monthly",
+        "name": "Импорт услуг (месячный ряд)",
+        "name_en": "Services Imports (monthly)",
+        "unit": "млн $",
+        "frequency": "monthly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/macro_itm/external_sector/ets/",
+        "description": (
+            "Импорт услуг по методологии платёжного баланса, месячный ряд "
+            "с 2018 года. Источник: ЦБ РФ trade_monthly.xlsx лист «месяцы»."
+        ),
+        "parser_type": "cbr_trade_services_monthly",
+        "model_config_json": {
+            "bop_target": "services-imports-monthly",
+            "forecast_steps": 0,
+            "forecast_transform": "absolute",
+            "primary_indicator_code": "services-imports",
+        },
+        "is_active": True,
+        "is_listed": False,
         "category": "Торговля",
     },
     {

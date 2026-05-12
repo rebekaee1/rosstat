@@ -538,6 +538,13 @@ INDICATOR_HIDDEN_FROM_LISTING: set[str] = {
     "housing-yoy-secondary",
     "gdp-yoy",
     "gdp-qoq",
+    # T3: monthly trade indicators доступны через frequency switcher
+    # из родителей (exports/imports/trade-balance/services-*) — не дублируем в листинге.
+    "exports-monthly",
+    "imports-monthly",
+    "trade-balance-monthly",
+    "services-exports-monthly",
+    "services-imports-monthly",
 }
 
 # Per-indicator extra SEO blocks (server-rendered SEO sections).

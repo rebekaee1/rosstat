@@ -1,6 +1,6 @@
 # Data sources — точная карта индикатор → файл/endpoint
 
-**Last updated:** 2026-05-12.
+**Last updated:** 2026-05-12 (T3: monthly trade — товары + услуги).
 **Part of:** [`AGENTS.md`](../AGENTS.md), [`CONTEXT.md`](../CONTEXT.md).
 **Related:** [`docs/cbr_sources.md`](cbr_sources.md) (детальные ЦБ + Минфин парсеры), [`docs/adr/0004`](adr/0004-rosstat-russian-canonical-sdds-deprecated.md) (Rosstat русский canonical).
 
@@ -22,7 +22,7 @@
 
 ## ЦБ РФ — платёжный баланс (CbrBopParser)
 
-Файл: `cbr.ru/vfs/statistics/credit_statistics/bop/bal_of_payments_standart.xlsx` (общий для 6 индикаторов, селектор `bop_target` в `model_config`).
+Файл: `cbr.ru/vfs/statistics/credit_statistics/bop/bal_of_payments_standart.xlsx` (общий для 6 индикаторов, селектор `bop_target` в `model_config`). Лист «Кварталы». Глубина с 1994-Q1.
 
 | Индикатор | bop_target |
 |-----------|------------|
@@ -32,6 +32,27 @@
 | `services-imports` | `services-imports` |
 | `trade-balance` | `trade-balance` |
 | `fdi-net` | `fdi-net` |
+
+## ЦБ РФ — внешняя торговля **товарами** monthly (CbrTradeGoodsMonthlyParser)
+
+Файл: `cbr.ru/vfs/statistics/credit_statistics/trade/trade.xls` (legacy XLS), лист «Ежемесячные», 17 columns. **Глубина с 1997-01**. Селектор `bop_target` в `model_config`.
+
+| Индикатор | bop_target | Источник колонка |
+|-----------|------------|------------------|
+| `exports-monthly` | `exports-monthly` | col 2 (Экспорт ФОБ Всего, млн $) |
+| `imports-monthly` | `imports-monthly` | col 8 (Импорт ФОБ Всего, млн $) |
+| `trade-balance-monthly` | `trade-balance-monthly` | col 14 (Сальдо торгового баланса, млн $) |
+
+Цель: монтлы-разбивка для frequency switcher на карточках `exports`/`imports`/`trade-balance` (`alternate_frequencies.monthly` в parent `model_config`). См. `docs/adr/0004` для аргументации canonical Russian sources. `is_listed=False` — карточки доступны через switcher из родителя, не дублируем в листинге категории «Торговля».
+
+## ЦБ РФ — внешняя торговля **услугами** monthly (CbrTradeServicesMonthlyParser)
+
+Файл: `cbr.ru/vfs/statistics/credit_statistics/trade/trade_monthly.xlsx`, лист «месяцы » (с trailing-пробелом). **Transposed layout**: row 4 — даты в headers (datetime cells + последние 1-2 cell = estimate strings типа «янв.26\n(оценка)»), col 1 — labels. **Глубина с 2018-01**.
+
+| Индикатор | bop_target | Источник row label |
+|-----------|------------|---------------------|
+| `services-exports-monthly` | `services-exports-monthly` | «Экспорт услуг» |
+| `services-imports-monthly` | `services-imports-monthly` | «Импорт услуг» |
 
 ## ЦБ РФ — внешний долг (CbrDebtParser)
 
