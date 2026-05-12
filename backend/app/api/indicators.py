@@ -125,7 +125,7 @@ async def get_indicator(code: str, db: AsyncSession = Depends(get_db)):
     prev_val = recent[1].value if len(recent) > 1 else None
     change = round(float(current_val - prev_val), 4) if current_val is not None and prev_val is not None else None
 
-    mcfg = indicator.model_config or {}
+    mcfg = indicator.model_config_json or {}
     alt_freq = mcfg.get("alternate_frequencies") or None
     primary_code = mcfg.get("primary_indicator_code") or None
 

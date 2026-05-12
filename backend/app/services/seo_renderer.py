@@ -480,7 +480,7 @@ def _indicator_alt_freq_links(indicator: Indicator) -> str:
     Поисковики таким образом понимают семантическую связь между парой URLs
     (`/indicator/exports` ↔ `/indicator/exports-monthly`).
     """
-    cfg = indicator.model_config or {}
+    cfg = indicator.model_config_json or {}
     links: list[str] = []
     alt_freqs = cfg.get("alternate_frequencies")
     if isinstance(alt_freqs, dict):
