@@ -5,12 +5,21 @@
 1. HTML-бюллетени «Об оценке индекса потребительских цен с N по M месяца YYYY г»
    на `rosstat.gov.ru/storage/mediabank/<num>_<DD-MM-YYYY>.html`.
    Публикуются каждую неделю (обычно в среду) и содержат официальный
-   агрегированный недельный ИПЦ. Это основной источник для актуальных недель.
+   агрегированный недельный ИПЦ. Это основной источник.
+
+   Discovery (union стратегий):
+   - `_find_bulletin_urls_central_news` — пагинированный crawl
+     `rosstat.gov.ru/central-news?page=1..N`. Архив с 2023-05-04 → today.
+   - `ROSSTAT_SEARCH_URL` — поиск по слову «оценке индекса потребительских цен
+     <месяц> <год>» (fallback / current-week edge cases).
 
 2. Фоллбэк — `Nedel_ipc.xlsx` (~110 товаров, листы по годам) + `ipc_spr_MM-YYYY.xlsx`
-   (веса). Используется для построения исторического ряда там, где HTML-бюллетени
-   ещё не найдены. Взвешенное среднее по продовольственной корзине — приближение,
-   но закрывает период 2022-01-10 .. сегодня.
+   (веса). Взвешенное среднее по продовольственной корзине — приближение, поэтому
+   используется только для дат **≥ `weekly_cutoff_date`** (config). Текущий
+   cutoff = 2023-01-09. До этой даты у Росстата нет доступного архива bulletins
+   ни на сайте, ни через search API, ни в Wayback — XLSX-approximation
+   расходилась с monthly CPI до 3 pp (март 2022); вместо misleading данных
+   просто не показываем (см. `docs/missed_data_audit.md::Nedel_ipc`).
 
 HTML-источник имеет приоритет: если одна и та же дата есть в обеих коллекциях —
 берётся значение из бюллетеня (оно совпадает с официальным Росстатом).
@@ -242,13 +251,98 @@ def _parse_bulletin_html(html: str) -> WeeklyPoint | None:
     return WeeklyPoint(date=d, value=round(v, 2))
 
 
-def _find_bulletin_urls(session: requests.Session, year: int) -> list[str]:
-    """Search Rosstat for weekly CPI bulletin URLs for a given year.
+CENTRAL_NEWS_URL = "https://rosstat.gov.ru/central-news"
+CENTRAL_NEWS_MAX_PAGES = 70
+_CPI_BULLETIN_TITLE_RE = re.compile(
+    r"оценке\s+индекса\s+потребительских\s+цен", re.IGNORECASE,
+)
 
-    Rosstat's search returns a limited page of results, so we query per-month
-    (genitive month names) and union the results.
+
+def _find_bulletin_urls_central_news(
+    session: requests.Session, year: int, max_pages: int = CENTRAL_NEWS_MAX_PAGES,
+) -> list[str]:
+    """Discover weekly CPI bulletin URLs via central-news pagination.
+
+    Альтернатива `_find_bulletin_urls` (через rosstat search) — central-news
+    crawl надёжнее: пагинированный список новостей с заголовками и стабильным
+    layout, нет лимитов поискового API. Архив доступен с **2023-05-04** до
+    последней публикации (на page=1). За пределы 2023-05 уходить нельзя:
+    page=66+ возвращают пустую ленту (Росстат очистил).
+
+    Останавливаемся когда:
+    1. На странице нашли bulletin с годом меньше `year` (мы прошли границу)
+    2. Страница пустая (mediabank-links нет)
+    3. Достигли `max_pages`.
     """
     found: set[str] = set()
+    for page in range(1, max_pages + 1):
+        try:
+            r = session.get(
+                CENTRAL_NEWS_URL,
+                params={"page": page},
+                timeout=20,
+                verify=False,
+            )
+            if r.status_code != 200:
+                logger.warning(
+                    "central-news page=%d HTTP %d", page, r.status_code,
+                )
+                continue
+            text = r.text
+            items = re.findall(
+                r'href="(/storage/mediabank/\d+_\d{2}-\d{2}-\d{4}\.html)"\s*[^>]*>\s*([^<]{15,300})',
+                text,
+            )
+            if not items:
+                logger.info("central-news page=%d empty — stopping", page)
+                break
+            page_year_min = 9999
+            page_year_max = 0
+            page_added = 0
+            for href, title in items:
+                ym = re.search(r"-(\d{4})\.html$", href)
+                if not ym:
+                    continue
+                bul_year = int(ym.group(1))
+                page_year_min = min(page_year_min, bul_year)
+                page_year_max = max(page_year_max, bul_year)
+                if bul_year != year:
+                    continue
+                if not _CPI_BULLETIN_TITLE_RE.search(title):
+                    continue
+                found.add("https://rosstat.gov.ru" + href)
+                page_added += 1
+            logger.debug(
+                "central-news page=%d: years=%d-%d, added=%d (cumulative=%d)",
+                page, page_year_min, page_year_max, page_added, len(found),
+            )
+            if page_year_max < year:
+                logger.info(
+                    "central-news page=%d max_year=%d < %d — stopping crawl",
+                    page, page_year_max, year,
+                )
+                break
+        except requests.RequestException as exc:
+            logger.warning(
+                "central-news page=%d request failed: %s", page, exc,
+            )
+    return sorted(found)
+
+
+def _find_bulletin_urls(session: requests.Session, year: int) -> list[str]:
+    """Find weekly CPI bulletin URLs for `year`.
+
+    Стратегия: central-news crawl (primary) + rosstat search (fallback).
+    Объединение — set union. central-news вернёт всё что есть в архиве за
+    год (2023-05-04 + → today), search закрывает edge cases когда новый
+    bulletin ещё не на page=1 central-news, но уже индексирован поиском.
+    """
+    via_central = _find_bulletin_urls_central_news(session, year)
+    logger.info(
+        "Bulletin discovery for year=%d: central-news=%d urls", year, len(via_central),
+    )
+
+    via_search: set[str] = set()
     today = date.today()
     month_range = range(1, 13) if year < today.year else range(1, today.month + 1)
     for month in month_range:
@@ -267,10 +361,15 @@ def _find_bulletin_urls(session: requests.Session, year: int) -> list[str]:
             for m in BULLETIN_URL_RE.finditer(r.text):
                 path = m.group(0)
                 if f"-{year}." in path:
-                    found.add("https://rosstat.gov.ru" + path)
+                    via_search.add("https://rosstat.gov.ru" + path)
         except requests.RequestException as exc:
             logger.warning("Rosstat search failed for %s %d: %s", month_name, year, exc)
-    return sorted(found)
+
+    logger.info(
+        "Bulletin discovery for year=%d: search=%d urls, union total=%d",
+        year, len(via_search), len(set(via_central) | via_search),
+    )
+    return sorted(set(via_central) | via_search)
 
 
 def fetch_bulletin_points(session: requests.Session, years: list[int]) -> list[WeeklyPoint]:
@@ -296,12 +395,24 @@ def fetch_bulletin_points(session: requests.Session, years: list[int]) -> list[W
     return points
 
 
-def fetch_weekly_cpi(existing_dates: set[date] | None = None) -> list[WeeklyPoint]:
+def fetch_weekly_cpi(
+    existing_dates: set[date] | None = None,
+    cutoff_date: date | None = None,
+) -> list[WeeklyPoint]:
     """Fetch weekly CPI: HTML bulletins (primary) + XLSX (fallback/history).
 
     HTML values take precedence for overlapping dates — они совпадают с
     официальными Росстата, XLSX-взвешенное среднее — лишь приближение
     по продовольственной корзине.
+
+    `cutoff_date`: если задано, отбрасываются точки **до** этой даты. Используется
+    чтобы не подмешивать XLSX-approximation за годы, когда Росстат уже публиковал
+    официальные HTML-бюллетени, но архив на rosstat.gov.ru не дотягивается
+    глубоко в прошлое (текущий cutoff = 2023-01-09: первый bulletin доступный
+    из central-news архива и rosstat search). Сверка XLSX-approximation 2022
+    с monthly CPI показала расхождения до 3 pp (март 2022 — взвешенный food
+    CPI занижает общий ИПЦ из-за скачка непродов/услуг). См.
+    `docs/missed_data_audit.md::Nedel_ipc`.
     """
     session = create_session()
     try:
@@ -343,6 +454,14 @@ def fetch_weekly_cpi(existing_dates: set[date] | None = None) -> list[WeeklyPoin
             len(points), len(bulletin_points), len(xlsx_points),
         )
 
+        if cutoff_date:
+            before = len(points)
+            points = [p for p in points if p.date >= cutoff_date]
+            logger.info(
+                "Weekly CPI: cutoff_date=%s — %d → %d points",
+                cutoff_date, before, len(points),
+            )
+
         if existing_dates:
             points = [p for p in points if p.date not in existing_dates]
             logger.info("Weekly CPI: %d new points after filtering existing", len(points))
@@ -362,5 +481,16 @@ class RosstatWeeklyCpiParser(BaseParser):
         cfg: dict,
         fetch_log: FetchLog,
     ) -> tuple[list, str]:
-        points = await asyncio.to_thread(fetch_weekly_cpi, existing_dates=None)
+        cutoff_raw = cfg.get("weekly_cutoff_date")
+        cutoff: date | None = None
+        if cutoff_raw:
+            try:
+                cutoff = date.fromisoformat(str(cutoff_raw))
+            except ValueError:
+                logger.warning(
+                    "Weekly CPI: invalid weekly_cutoff_date=%r, ignoring", cutoff_raw,
+                )
+        points = await asyncio.to_thread(
+            fetch_weekly_cpi, None, cutoff,
+        )
         return points, NEDEL_IPC_URL

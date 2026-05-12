@@ -1,6 +1,6 @@
 # Data sources — точная карта индикатор → файл/endpoint
 
-**Last updated:** 2026-05-11.
+**Last updated:** 2026-05-12.
 **Part of:** [`AGENTS.md`](../AGENTS.md), [`CONTEXT.md`](../CONTEXT.md).
 **Related:** [`docs/cbr_sources.md`](cbr_sources.md) (детальные ЦБ + Минфин парсеры), [`docs/adr/0004`](adr/0004-rosstat-russian-canonical-sdds-deprecated.md) (Rosstat русский canonical).
 
@@ -121,14 +121,16 @@ Endpoint: `cbr.ru/dataservice/data?publicationId={pub}&datasetId={ds}&measureId=
 
 Multi-source merge:
 
-1. **Primary**: HTML-бюллетени `mediabank/<num>_DD-MM-YYYY.html` (поиск через `rosstat.gov.ru/search?q=...`).
-2. **Fallback (XLSX продкорзина)**: `mediabank/Nedel_ipc.xlsx` + веса из `mediabank/ipc_spr_{MM}-{YYYY}.xlsx`.
+1. **Primary HTML-бюллетени** `mediabank/<num>_DD-MM-YYYY.html`. Discovery (union):
+   - **central-news crawler**: пагинированный список `rosstat.gov.ru/central-news?page=1..N` с заголовками. Архив 2023-05-04 → today (page=1). page=66+ возвращают пустую ленту.
+   - **search API fallback**: `rosstat.gov.ru/search?q=оценке индекса потребительских цен <месяц> <год>` для edge cases когда новый bulletin ещё не на page=1.
+2. **XLSX продкорзина** `mediabank/Nedel_ipc.xlsx` + веса из `mediabank/ipc_spr_{MM}-{YYYY}.xlsx` — applied только для дат **≥ `weekly_cutoff_date`** (current 2023-01-09).
 
 | Индикатор | Files |
 |-----------|-------|
 | `inflation-weekly` | `Nedel_ipc.xlsx` + `ipc_spr_{MM}-{YYYY}.xlsx` + bulletin HTMLs |
 
-**Глубина**: 2022-01-10 → present. Backfill 2003-2021 — **research track C**, не реализован (см. [последнюю сессию по C]).
+**Глубина**: 2023-01-09 → present. **Cutoff введён 2026-05-12**: до 2023-01-09 у Росстата нет публично доступных bulletins (rosstat.gov.ru 404 на старые номера, search API возвращает 0 results за 2022, Wayback CDX empty для `mediabank/*-2022.html`). XLSX-approximation за 2022 расходилась с monthly CPI до 3 pp (март 2022) — введение явно. См. `docs/missed_data_audit.md::Nedel_ipc` для развёрнутой research-сводки.
 
 ## Росстат — производственные цены (RosstatPpiParser)
 

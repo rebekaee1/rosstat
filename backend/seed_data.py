@@ -1227,7 +1227,7 @@ INDICATORS = [
         "is_active": True,
         "category": "Финансы",
     },
-    # ─── Недельная инфляция (Росстат HTML) ───
+    # ─── Недельная инфляция (Росстат HTML, бюллетени с 2023-01-09) ───
     {
         "code": "inflation-weekly",
         "name": "Инфляция недельная",
@@ -1238,7 +1238,9 @@ INDICATORS = [
         "source_url": "https://rosstat.gov.ru/statistics/price",
         "description": (
             "Индекс потребительских цен за неделю (к предыдущей неделе). "
-            "Публикуется Росстатом по средам."
+            "Публикуется Росстатом по средам в бюллетенях "
+            "«Об оценке индекса потребительских цен с … по …». Данные с 2023-01-09 "
+            "(первый бюллетень из современного архива rosstat.gov.ru)."
         ),
         "parser_type": "rosstat_weekly_cpi",
         "model_config_json": {
@@ -1250,6 +1252,12 @@ INDICATORS = [
             "forecast_steps": 0,
             "validation": {"min": 99, "max": 102},
             "backfill_max_pages": 1,
+            # Cutoff: до 2023-01-09 у Росстата нет доступного архива bulletins
+            # ни на rosstat.gov.ru (404 на старые номера), ни через search API,
+            # ни в Wayback memento (CDX empty). До этой даты у нас был
+            # XLSX-approximation по food basket → расхождения с monthly CPI
+            # до 3 pp (март 2022). docs/missed_data_audit.md::Nedel_ipc.
+            "weekly_cutoff_date": "2023-01-09",
         },
         "is_active": True,
         "category": "Цены",
