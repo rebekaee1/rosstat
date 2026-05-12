@@ -45,6 +45,8 @@
 
 Цель: монтлы-разбивка для frequency switcher на карточках `exports`/`imports`/`trade-balance` (`alternate_frequencies.monthly` в parent `model_config`). См. `docs/adr/0004` для аргументации canonical Russian sources. `is_listed=False` — карточки доступны через switcher из родителя, не дублируем в листинге категории «Торговля».
 
+**Cross-check c TradingEconomics (2026-05-12)**: последние точки сходятся 1:1 (Feb 2026: exports=30,123 / imports=24,770 / balance=5,353 — копия из ЦБ РФ). Исторические extremes: max exports Dec 2021 = 58,148, max imports Dec 2025 = 34,011 — также 1:1. **Единственная разница**: TE имеет историю с **1994-01** (3 года глубже нашего 1997-01). Это потому что `trade.xls` ЦБ сам начинается с 1997-01; ранее 1994-1996 ЦБ публиковал только через bulletin'ы платёжного баланса (другой формат, требует отдельного парсера). Backfill 1994-1996 = **P2 priority** (29 лет покрытия уже более чем достаточно).
+
 ## ЦБ РФ — внешняя торговля **услугами** monthly (CbrTradeServicesMonthlyParser)
 
 Файл: `cbr.ru/vfs/statistics/credit_statistics/trade/trade_monthly.xlsx`, лист «месяцы » (с trailing-пробелом). **Transposed layout**: row 4 — даты в headers (datetime cells + последние 1-2 cell = estimate strings типа «янв.26\n(оценка)»), col 1 — labels. **Глубина с 2018-01**.
@@ -152,6 +154,12 @@ Multi-source merge:
 | `inflation-weekly` | `Nedel_ipc.xlsx` + `ipc_spr_{MM}-{YYYY}.xlsx` + bulletin HTMLs |
 
 **Глубина**: 2023-01-09 → present. **Cutoff введён 2026-05-12**: до 2023-01-09 у Росстата нет публично доступных bulletins (rosstat.gov.ru 404 на старые номера, search API возвращает 0 results за 2022, Wayback CDX empty для `mediabank/*-2022.html`). XLSX-approximation за 2022 расходилась с monthly CPI до 3 pp (март 2022) — введение явно. См. `docs/missed_data_audit.md::Nedel_ipc` для развёрнутой research-сводки.
+
+**Deep dive 2026-05-12 — bulletin coverage увеличена до 169/170**:
+1. **Открытие**: Росстат начал публиковать **отдельные weekly bulletin'ы** только в **январе 2023 года**. До 2023 — только monthly «Об индексе потребительских цен в <месяц>». Утверждение «бюллетени с 2003 года» — заблуждение. Подтверждено через Wayback Machine CDX `rosstat.gov.ru/storage/mediabank/*.htm` за 2020-2023: 174 candidate URLs, 0 weekly bulletin'ов за 2020-2022, первый weekly bulletin за 2023-01-09.
+2. **Bug fix**: `bulletin_years = [today.year]` → `[2023..today.year]`. Раньше 135 точек 2023-2025 в БД были XLSX-агрегатом (расхождение с bulletin до 0.12pp). После backfill — все 153 точки 2023-05+ = bulletin.
+3. **Wayback backfill 2023-01..04**: для 16 недель до начала central-news архива (2023-05-04) восстановили bulletin через `web.archive.org/web/<ts>id_/<url>` + `_parse_bulletin_html`. Заменили XLSX → bulletin.
+4. **Итог**: 169/170 точек = подлинные значения Росстатовских bulletin'ов. Единственный gap — 2023-05-02 (XLSX-fallback, в Wayback нет snapshot bulletin'а за эту неделю).
 
 ## Росстат — производственные цены (RosstatPpiParser)
 
