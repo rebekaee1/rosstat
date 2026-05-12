@@ -7,19 +7,28 @@
    Публикуются каждую неделю (обычно в среду) и содержат официальный
    агрегированный недельный ИПЦ. Это основной источник.
 
-   Discovery (union стратегий):
+   **Важно**: Росстат начал публиковать **отдельные** еженедельные bulletin'ы
+   только в 2023 году. До 2023 публиковались monthly «Об индексе
+   потребительских цен в <месяц>» — других еженедельных документов нет
+   (verified 2026-05-12 deep dive Wayback Machine CDX: 174 candidate URLs
+   за 2021-2022-2023 → 0 weekly bulletin'ов за 2021, 0 за 2022, 1 за 2023-02-08).
+   См. `docs/audits/weekly_inflation_research_2026-05.md`.
+
+   Discovery (union стратегий, `_find_bulletin_urls`):
    - `_find_bulletin_urls_central_news` — пагинированный crawl
-     `rosstat.gov.ru/central-news?page=1..N`. Архив с 2023-05-04 → today.
+     `rosstat.gov.ru/central-news?page=1..N`. На сайте Росстата архив
+     ограничен **с 2023-05-04** до today (раньше — Росстат удалил из ленты).
    - `ROSSTAT_SEARCH_URL` — поиск по слову «оценке индекса потребительских цен
-     <месяц> <год>» (fallback / current-week edge cases).
+     <месяц> <год>» (fallback / current-week edge cases / 2023-01..04
+     не покрытые central-news).
 
 2. Фоллбэк — `Nedel_ipc.xlsx` (~110 товаров, листы по годам) + `ipc_spr_MM-YYYY.xlsx`
    (веса). Взвешенное среднее по продовольственной корзине — приближение, поэтому
    используется только для дат **≥ `weekly_cutoff_date`** (config). Текущий
-   cutoff = 2023-01-09. До этой даты у Росстата нет доступного архива bulletins
-   ни на сайте, ни через search API, ни в Wayback — XLSX-approximation
-   расходилась с monthly CPI до 3 pp (март 2022); вместо misleading данных
-   просто не показываем (см. `docs/missed_data_audit.md::Nedel_ipc`).
+   cutoff = 2023-01-09 (первая неделя где есть данные в XLSX за 2023).
+   До этой даты у Росстата вообще не было отдельных weekly публикаций;
+   XLSX-приближение расходилось с bulletin до 0.1pp на 2023 (good enough)
+   и до 3 pp на 2022 (заметные расхождения — bulletinов не было, не показываем).
 
 HTML-источник имеет приоритет: если одна и та же дата есть в обеих коллекциях —
 берётся значение из бюллетеня (оно совпадает с официальным Росстатом).
@@ -419,9 +428,22 @@ def fetch_weekly_cpi(
         session.verify = False
 
         today = date.today()
-        bulletin_years = [today.year]
-        if today.month <= 2:
-            bulletin_years.append(today.year - 1)
+        # 2023 — первый год, в котором Росстат начал публиковать недельные
+        # bulletin'ы «Об оценке индекса потребительских цен с N по M». До этого
+        # были только monthly публикации «Об индексе потребительских цен в
+        # <месяц> YYYY». Подтверждено deep dive 2026-05-12: Wayback Machine
+        # CDX search для `rosstat.gov.ru/storage/mediabank/*.htm` 2021-2023
+        # вернул 174 уникальных дат, 0 weekly-bulletin'ов за 2021, 0 за 2022,
+        # 1 за 2023-02-08. См. `docs/audits/weekly_inflation_research_2026-05.md`.
+        #
+        # Поэтому iterate по всем годам [2023..today.year] — это даёт ETL
+        # возможность сделать full backfill bulletin'ов после миграции и
+        # перезаписать XLSX-агрегат точными Росстатовскими числами. В steady
+        # state daily ETL обнаружит уже существующие точки и пропустит их
+        # (`existing_dates` фильтр чуть ниже), так что overhead = 1 запрос на
+        # один year search API за прогон.
+        BULLETIN_FIRST_YEAR = 2023
+        bulletin_years = list(range(BULLETIN_FIRST_YEAR, today.year + 1))
 
         logger.info("Fetching weekly CPI bulletins for years %s", bulletin_years)
         bulletin_points = fetch_bulletin_points(session, bulletin_years)
