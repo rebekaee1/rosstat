@@ -1,6 +1,6 @@
 # Forecast Economy — Project Context
 
-**Last updated:** 2026-05-12 (T3 frontend: FrequencySwitcher monthly ↔ quarterly для торговли, SSR alternate links, goal `frequency_switch`).
+**Last updated:** 2026-05-13 (T7-T9: chart-truncation fix; live-SARIMA для gdp-consumption/gdp-government; derived-forecast для housing-yoy-primary/secondary).
 **Part of:** [`AGENTS.md`](AGENTS.md) (точка входа для AI-агента).
 **See also:** [`README.md`](README.md), [`docs/workflow.md`](docs/workflow.md), [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md), [`docs/data_sources.md`](docs/data_sources.md), [`docs/cbr_sources.md`](docs/cbr_sources.md), [`docs/analytics_api_inventory/`](docs/analytics_api_inventory/), [`docs/adr/`](docs/adr/).
 
@@ -119,12 +119,14 @@
 | Имя | Когда применяется | Что делает |
 |---|---|---|
 | `cpi_combined` | `cpi`, `cpi-food`, `cpi-nonfood`, `cpi-services` | Гонит `train_monthly_cpi` (помесячный) + `train_inflation_12m` (12-мес скользящий) и каскадит результат на `*-quarterly` derived |
-| `housing_quarterly` | `housing-price-secondary` | `train_quarterly_housing` (multi-window OLS на квартальных уровнях) |
-| `gdp_nominal_quarterly` | `gdp-nominal` | `train_gdp_nominal_quarterly` (multi-window OLS на log-diff, без блендинга) |
-| `gdp_real_quarterly` | `gdp-real` | `train_gdp_real_quarterly` (то же ядро `_log_diff_no_blend_forecast`, что и nominal, но обучается на real-уровнях; bit-exact с блокнотом Никиты ±0.15%) |
+| `housing_quarterly` | `housing-price-primary`, `housing-price-secondary` | `train_quarterly_housing` — 1:1 port `Прогнозы_цены_на_жилье (1).ipynb` Никиты (multi-window OLS на log-diff + outlier-clip + corr-filter + iv-weighted blend + per-step median). Byte-exact с notebook'ом |
+| `gdp_nominal_quarterly` | `gdp-nominal` | `train_gdp_nominal_quarterly` (multi-window OLS на log-diff, без блендинга) — 1:1 port `Прогноз_номинальный_ВВП.ipynb` |
+| `gdp_real_quarterly` | `gdp-real` | `train_gdp_real_quarterly` — то же ядро `_train_gdp_quarterly_port` на ряду реального ВВП; byte-exact с notebook'ом |
+| `gdp_consumption_quarterly` | `gdp-consumption` | `train_gdp_consumption_quarterly` — то же ядро `_train_gdp_quarterly_port` на ряду расходов домохозяйств (методология семьи ВВП по просьбе Никиты; отдельного notebook'а нет) |
+| `gdp_government_quarterly` | `gdp-government` | `train_gdp_government_quarterly` — то же ядро `_train_gdp_quarterly_port` на ряду гос.потребления |
 | `ppi_monthly` | `ppi` | `train_ppi_monthly` (k=1..4, monthly lags log-diff) |
-| `approved` | `housing-price-primary` (Niktia), исторически: `gdp-nominal`, `ppi` | Использует ручные значения из `model_config_json.approved_forecast_values` (массив `{date, value}`) без переобучения |
-| `derived_from_source` | Все *-yoy, *-qoq, *-annual derived с `derived_forecast: {source_code, operation, model_name}` | Применяет ту же чистую op (yoy / qoq / december_to_december / annual_sum / real_from_yoy) к **прогнозу** source-индикатора. Каскадный retrain срабатывает после успеха source |
+| `approved` | исторически: `cpi-*`, `gdp-nominal`, `ppi`, `housing-price-*` | Использует ручные значения из `model_config_json.approved_forecast_values` (массив `{date, value}`) без переобучения. Сейчас в live-конфиге остался только `ppi` |
+| `derived_from_source` | Все *-yoy, *-qoq, *-annual derived с `derived_forecast: {source_code, operation, model_name}` (включая `housing-yoy-primary`, `housing-yoy-secondary`) | Применяет ту же чистую op (yoy / qoq / december_to_december / annual_sum / real_from_yoy) к **прогнозу** source-индикатора. Каскадный retrain срабатывает после успеха source |
 | `generic_ols` | `inflation-weekly`, fallback | `train_and_forecast` (multi-window OLS с inverse-variance weighting); универсальная модель |
 
 **Поля связки:**

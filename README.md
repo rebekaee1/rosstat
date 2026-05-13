@@ -165,15 +165,17 @@ Base URL: `/api/v1` (за исключением SSR-эндпоинтов `/seo/
 
 ## Прогнозы
 
-8 forecast strategies в реестре `backend/app/services/forecast_strategies/registry.py`:
+10 forecast strategies в реестре `backend/app/services/forecast_strategies/registry.py`:
 
 - `cpi_combined` — CPI семья: `train_monthly_cpi` + `train_inflation_12m` + cascade на `*-quarterly` derived.
-- `gdp_nominal_quarterly` — multi-window OLS на log-diff номинального ВВП.
-- `gdp_real_quarterly` — то же ядро на real-уровнях (bit-exact с эталонным notebook'ом ±0.15%).
-- `housing_quarterly` — multi-window OLS на квартальных уровнях для `housing-price-secondary`.
+- `gdp_nominal_quarterly` — multi-window OLS на log-diff номинального ВВП (1:1 port `Прогноз_номинальный_ВВП.ipynb`).
+- `gdp_real_quarterly` — то же ядро на real-уровнях (byte-exact с notebook'ом).
+- `gdp_consumption_quarterly` — то же ядро на `gdp-consumption` (методология семьи ВВП).
+- `gdp_government_quarterly` — то же ядро на `gdp-government`.
+- `housing_quarterly` — 1:1 port `Прогнозы_цены_на_жилье (1).ipynb` (multi-window OLS на log-diff + outlier-clip + iv-weighted blend + median). Применяется к `housing-price-primary` и `housing-price-secondary`.
 - `ppi_monthly` — `train_ppi_monthly` (k=1..4, monthly lags log-diff).
-- `approved` — захардкоженные значения из `model_config_json.approved_forecast_values` (например, `housing-price-primary`).
-- `derived_from_source` — все `*-yoy` / `*-qoq` / `*-annual` derived: применяет чистую op (yoy/qoq/december_to_december/annual_sum/real_from_yoy) к прогнозу source-индикатора. Каскадный retrain после источника.
+- `approved` — захардкоженные значения из `model_config_json.approved_forecast_values`. Сейчас в live-конфиге только `ppi`.
+- `derived_from_source` — все `*-yoy` / `*-qoq` / `*-annual` derived (включая `housing-yoy-primary`/`secondary`): применяет чистую op (yoy/qoq/december_to_december/annual_sum/real_from_yoy) к прогнозу source-индикатора. Каскадный retrain после источника.
 - `generic_ols` — fallback и `inflation-weekly`: multi-window OLS с inverse-variance weighting.
 
 Стратегия выбирается через `model_config_json.forecast_strategy` индикатора и применяется при каждом ETL, если источник принёс новые точки. См. CONTEXT.md для полной таблицы и `model_config_json` полей.
