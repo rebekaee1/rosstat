@@ -482,7 +482,7 @@ export default function IndicatorChart({
         </div>
 
         <ResponsiveContainer width="100%" height={420}>
-          <ComposedChart data={visibleData} margin={{ top: 12, right: 18, bottom: 16, left: 0 }}>
+          <ComposedChart data={visibleData} margin={{ top: 12, right: 36, bottom: 16, left: 0 }}>
             <defs>
               <linearGradient id="inflGradActual" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#B8942F" stopOpacity={0.15} />
@@ -501,11 +501,11 @@ export default function IndicatorChart({
               stroke="rgba(0,0,0,0.1)"
               tick={{ fill: 'rgba(0,0,0,0.4)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
               tickLine={false}
-              interval="equidistantPreserveStart"
+              interval="preserveStartEnd"
               minTickGap={28}
               tickMargin={10}
               height={42}
-              padding={{ left: 8, right: 8 }}
+              padding={{ left: 8, right: 24 }}
             />
             <YAxis
               stroke="rgba(0,0,0,0.1)"
