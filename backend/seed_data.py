@@ -1835,7 +1835,15 @@ INDICATORS = [
             "предыдущего года. Расчёт на основе housing-price-primary."
         ),
         "parser_type": "derived",
-        "model_config_json": {"forecast_steps": 0},
+        "model_config_json": {
+            "forecast_steps": 4,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "housing-price-primary",
+                "operation": "yoy_quarterly",
+                "model_name": "Housing-Primary-YoY-Derived",
+            },
+        },
         "is_active": True,
         "category": "Цены",
     },
@@ -1851,7 +1859,15 @@ INDICATORS = [
             "предыдущего года. Расчёт на основе housing-price-secondary."
         ),
         "parser_type": "derived",
-        "model_config_json": {"forecast_steps": 0},
+        "model_config_json": {
+            "forecast_steps": 4,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "housing-price-secondary",
+                "operation": "yoy_quarterly",
+                "model_name": "Housing-Secondary-YoY-Derived",
+            },
+        },
         "is_active": True,
         "category": "Цены",
     },
@@ -1881,7 +1897,8 @@ INDICATORS = [
             "gdp_history_sheet": "1",
             "gdp_overlap_year": 2011,
             "gdp_row_index": 7,
-            "forecast_steps": 0,
+            "forecast_steps": 4,
+            "forecast_strategy": "gdp_consumption_quarterly",
             "validation": {"min": 0},
         },
         "is_active": True,
@@ -1912,7 +1929,8 @@ INDICATORS = [
             "gdp_history_sheet": "1",
             "gdp_overlap_year": 2011,
             "gdp_row_index": 8,
-            "forecast_steps": 0,
+            "forecast_steps": 4,
+            "forecast_strategy": "gdp_government_quarterly",
             "validation": {"min": 0},
         },
         "is_active": True,

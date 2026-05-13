@@ -37,6 +37,8 @@ APPROVED_DIRECT_FORECAST_CODES = {
 LIVE_SARIMA_FORECAST_CODES = {
     "gdp-nominal",
     "gdp-real",
+    "gdp-consumption",
+    "gdp-government",
     "housing-price-primary",
     "housing-price-secondary",
 }
@@ -48,6 +50,8 @@ DERIVED_FROM_SOURCE_FORECAST_CODES = {
     "gdp-real-qoq",
     "gdp-real-annual",
     "gdp-nominal-annual",
+    "housing-yoy-primary",
+    "housing-yoy-secondary",
     "ppi-yoy",
     "ppi-annual",
     "inflation-annual",
@@ -83,6 +87,8 @@ APPROVED_NOTEBOOK_CODES = {
 LIVE_SARIMA_STRATEGY_NAMES = {
     "gdp-nominal": "gdp_nominal_quarterly",
     "gdp-real": "gdp_real_quarterly",
+    "gdp-consumption": "gdp_consumption_quarterly",
+    "gdp-government": "gdp_government_quarterly",
     "housing-price-primary": "housing_quarterly",
     "housing-price-secondary": "housing_quarterly",
 }

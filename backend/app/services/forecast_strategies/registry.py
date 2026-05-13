@@ -23,6 +23,8 @@ from app.services.forecast_strategies.base import ForecastStrategy
 from app.services.forecast_strategies.cpi_combined import cpi_combined_strategy
 from app.services.forecast_strategies.derived_from_source import derived_from_source_strategy
 from app.services.forecast_strategies.generic_ols import generic_ols_strategy
+from app.services.forecast_strategies.gdp_consumption_quarterly import gdp_consumption_quarterly_strategy
+from app.services.forecast_strategies.gdp_government_quarterly import gdp_government_quarterly_strategy
 from app.services.forecast_strategies.gdp_nominal_quarterly import gdp_nominal_quarterly_strategy
 from app.services.forecast_strategies.gdp_real_quarterly import gdp_real_quarterly_strategy
 from app.services.forecast_strategies.housing_quarterly import housing_quarterly_strategy
@@ -36,6 +38,8 @@ STRATEGIES: dict[str, ForecastStrategy] = {
     "cpi_combined": cpi_combined_strategy,
     "derived_from_source": derived_from_source_strategy,
     "generic_ols": generic_ols_strategy,
+    "gdp_consumption_quarterly": gdp_consumption_quarterly_strategy,
+    "gdp_government_quarterly": gdp_government_quarterly_strategy,
     "gdp_nominal_quarterly": gdp_nominal_quarterly_strategy,
     "gdp_real_quarterly": gdp_real_quarterly_strategy,
     "housing_quarterly": housing_quarterly_strategy,

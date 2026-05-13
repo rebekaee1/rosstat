@@ -839,6 +839,38 @@ def train_gdp_real_quarterly(
     )
 
 
+def train_gdp_consumption_quarterly(
+    dates: List[date],
+    values: List[float],
+    forecast_steps: int = 4,
+) -> ForecastResult:
+    """Quarterly forecast для `gdp-consumption` (расходы домохозяйств).
+
+    Использует ту же методологию multi-window OLS на log-diff, что и
+    `train_gdp_nominal_quarterly`. У этого ряда нет отдельного notebook'а
+    Никиты — применяем согласованный алгоритм семейства ВВП к собственному
+    ряду. Структурно зеркалит nominal/real.
+    """
+    return _train_gdp_quarterly_port(
+        dates, values, forecast_steps, model_name="GDP-Consumption-Quarterly-MW",
+    )
+
+
+def train_gdp_government_quarterly(
+    dates: List[date],
+    values: List[float],
+    forecast_steps: int = 4,
+) -> ForecastResult:
+    """Quarterly forecast для `gdp-government` (государственное потребление).
+
+    Та же методология семейства ВВП (multi-window OLS на log-diff,
+    без блендинга). См. `train_gdp_consumption_quarterly`.
+    """
+    return _train_gdp_quarterly_port(
+        dates, values, forecast_steps, model_name="GDP-Government-Quarterly-MW",
+    )
+
+
 # ---------------------------------------------------------------------------
 #  Original OLS model (for non-CPI indicators)
 # ---------------------------------------------------------------------------
