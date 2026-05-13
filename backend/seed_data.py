@@ -653,13 +653,7 @@ INDICATORS = [
             "gdp_history_sheet": "1",
             "gdp_overlap_year": 2011,
             "forecast_steps": 4,
-            "forecast_model_name": "Approved-GDP-Nominal-Notebook",
-            "approved_forecast_values": [
-                {"date": "2026-03-01", "value": 52231.888190},
-                {"date": "2026-06-01", "value": 54123.118741},
-                {"date": "2026-09-01", "value": 57010.414402},
-                {"date": "2026-12-01", "value": 63675.196294},
-            ],
+            "forecast_strategy": "gdp_nominal_quarterly",
             "forecast_transform": "absolute",
             "validation": {"min": 0},
         },
@@ -1285,18 +1279,9 @@ INDICATORS = [
         "parser_type": "rosstat_housing",
         "model_config_json": {
             "forecast_steps": 4,
+            "forecast_strategy": "housing_quarterly",
             "forecast_transform": "absolute",
             "validation": {"min": 50, "max": 500},
-            # Approved values from Никита's notebook
-            # `Прогнозы_цены_на_жилье (1).ipynb` (May 2026), 4 quarters ahead.
-            # Re-import when notebook is updated.
-            "forecast_model_name": "Approved-Housing-Primary-Notebook",
-            "approved_forecast_values": [
-                {"date": "2026-03-01", "value": 345.357849},
-                {"date": "2026-06-01", "value": 354.540996},
-                {"date": "2026-09-01", "value": 361.433316},
-                {"date": "2026-12-01", "value": 366.718878},
-            ],
         },
         "is_active": True,
         "category": "Цены",
@@ -1320,10 +1305,8 @@ INDICATORS = [
         "parser_type": "rosstat_housing",
         "model_config_json": {
             "forecast_steps": 4,
-            # Reproduces Никита's quarterly OLS multi-window model from the
-            # primary-housing notebook on our secondary series. When Никита
-            # provides a secondary notebook, switch to approved_forecast_values.
-            "forecast_model": "housing_quarterly",
+            "forecast_strategy": "housing_quarterly",
+            "forecast_transform": "absolute",
             "validation": {"min": 50, "max": 500},
         },
         "is_active": True,

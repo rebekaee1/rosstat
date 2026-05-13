@@ -12,28 +12,33 @@ from app.api.forecasts import DERIVED_CPI_FORECASTS
 from app.services.forecast_pipeline import CPI_DERIVED_FORECAST_TARGETS
 
 
-# Прогноз индикатора может быть включён двумя способами:
+# Прогноз индикатора может быть включён тремя способами:
 #  (1) Approved-direct — точки прогноза заданы вручную в model_config
-#      из блокнота Никиты (полное соответствие «точь-в-точь»).
-#  (2) Derived-from-source — стратегия `derived_from_source` строит
-#      прогноз математически от прогноза индикатора-источника.
-#  (3) Live-models — CPI семья, где прогноз пересчитывается каждый раз.
+#      из блокнота Никиты (полное соответствие «точь-в-точь»). Используется
+#      для CPI и PPI, где каноничные значения важнее автоматического пересчёта.
+#  (2) Live-SARIMA — стратегия пересчитывает прогноз byte-exact согласно
+#      ноутбуку Никиты на каждом ETL. Гарантирует, что после публикации
+#      новых фактов прогноз автоматически обновляется без правки notebook'а.
+#      Используется для ВВП (номинальный/реальный) и цен на жильё.
+#  (3) Derived-from-source — стратегия `derived_from_source` строит прогноз
+#      математически от прогноза индикатора-источника.
 APPROVED_DIRECT_FORECAST_CODES = {
     "cpi",
     "cpi-food",
     "cpi-nonfood",
     "cpi-services",
     "ppi",
-    "gdp-nominal",
-    "housing-price-primary",
-    "housing-price-secondary",
 }
 
-# Live SARIMA modeled on the indicator's own series (not derived from
-# another indicator's forecast). Same engine as gdp_nominal_quarterly /
-# ppi_monthly, just with the indicator's own data as input.
+# Live SARIMA modeled on the indicator's own series (1:1 port of Никита's
+# notebook). 2026-05: housing-price-* и gdp-nominal переведены сюда из
+# APPROVED_DIRECT, чтобы прогноз пересчитывался автоматически на свежих
+# данных, а не лежал хардкодом до следующего notebook-релиза.
 LIVE_SARIMA_FORECAST_CODES = {
+    "gdp-nominal",
     "gdp-real",
+    "housing-price-primary",
+    "housing-price-secondary",
 }
 
 DERIVED_FROM_SOURCE_FORECAST_CODES = {
@@ -71,8 +76,15 @@ ALL_FORECAST_CODES = (
 
 APPROVED_NOTEBOOK_CODES = {
     "ppi": "Approved-PPI-Notebook",
-    "gdp-nominal": "Approved-GDP-Nominal-Notebook",
-    "housing-price-primary": "Approved-Housing-Primary-Notebook",
+}
+
+# Live SARIMA индикаторы должны иметь forecast_strategy с именем
+# конкретной auto-стратегии (не approved). Это контракт seed_data.
+LIVE_SARIMA_STRATEGY_NAMES = {
+    "gdp-nominal": "gdp_nominal_quarterly",
+    "gdp-real": "gdp_real_quarterly",
+    "housing-price-primary": "housing_quarterly",
+    "housing-price-secondary": "housing_quarterly",
 }
 
 EXPECTED_DERIVED_CPI_FORECASTS = {
@@ -113,6 +125,23 @@ def test_approved_notebook_forecasts_are_explicit_values() -> None:
         cfg = by_code[code]["model_config_json"]
         assert cfg["forecast_model_name"] == model_name
         assert cfg["approved_forecast_values"]
+
+
+def test_live_sarima_forecasts_have_named_strategy() -> None:
+    """Live-SARIMA индикаторы обязаны указывать forecast_strategy с
+    именем конкретной auto-стратегии (не legacy approved/OLS fallback).
+    """
+    by_code = {ind["code"]: ind for ind in INDICATORS}
+    for code, strategy_name in LIVE_SARIMA_STRATEGY_NAMES.items():
+        cfg = by_code[code]["model_config_json"]
+        assert cfg.get("forecast_strategy") == strategy_name, (
+            f"{code}: expected forecast_strategy='{strategy_name}', "
+            f"got '{cfg.get('forecast_strategy')}'"
+        )
+        assert "approved_forecast_values" not in cfg, (
+            f"{code}: live-SARIMA must not have approved_forecast_values "
+            "(hardcode forbidden — model recomputes each ETL)"
+        )
 
 
 def test_all_derived_cpi_forecasts_are_api_whitelisted() -> None:

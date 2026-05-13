@@ -462,34 +462,45 @@ def train_quarterly_housing(
     values: List[float],
     forecast_steps: int = 4,
 ) -> ForecastResult:
-    """Quarterly index forecast (housing-price-primary/secondary).
+    """Quarterly housing-price index forecast — 1:1 port of Никита's notebook.
 
-    Reproduces Никита's `train_sarima_model` from
-    `Прогнозы_цены_на_жилье (1).ipynb` — multi-window OLS on log-difference
-    transform, then accumulates back into index level via
-        forecast[m] = first_index * exp( Σ all_log_diffs
-                                        + Σ_{j≤m} forecasts_aux[j] · w[0]
-                                        + Σ_{j≤m} median_aux[j]    · w[1] ).
+    Source: `Прогнозы_цены_на_жилье (1).ipynb` (May 2026).
 
-    Blend per-step (notebook):
-        m=1: [0.8, 0.2]   m=2: [0.7, 0.3]
-        m=3: [0.5, 0.5]   m=4: [0.3, 0.7]
+    Алгоритм воспроизводится строкой-в-строку (без `_multi_window_predict` /
+    `_ols_step` обобщений), чтобы numerics совпадали byte-exact. Шаги:
 
-    Window divisors k∈[1..3], lag set:
-        m=1: [1,2,3,4]    m=2: [2,3,4]
-        m=3: [3,4]        m=4: [4]
+    1. Transform: `data = np.log(series).diff(1).dropna()`.
+    2. Для каждого горизонта `m ∈ [1..forecast_steps]`:
+       a. По окнам `k ∈ [1..3]` (segment = `window_size // k`):
+          - outlier-clip (mean ± 3σ → mean ± 1.9σ) до сходимости,
+          - построить lag-features (`y_lag{j}` для `j ∈ lags(m)`),
+          - удалить мультиколлинеарные фичи (|corr| > 0.7), выбирая ту,
+            что слабее связана с таргетом,
+          - OLS с константой → дроп фич с p > 0.01 (одна за раз).
+          - сохранить `model.predict(X_p)` и `model.mse_resid`.
+       b. `forecasts_aux[m] = Σ(forc/var) / Σ(1/var)` (inverse-variance mean).
+       c. `trivial_aux[m] = median(data[-12:])`.
+       d. blend per step:
+          m=1: [0.8, 0.2]  m=2: [0.7, 0.3]  m=3: [0.5, 0.5]  m=4: [0.3, 0.7].
+       e. `forecast[m] = first_index · exp( Σ all_log_diffs
+                                          + Σ_{j≤m} forecasts_aux · w[0]
+                                          + Σ_{j≤m} trivial_aux  · w[1] )`.
+
+    Lag set (notebook): m=1 → [1,2,3,4], m=2 → [2,3,4], m=3 → [3,4], m=4 → [4].
+
+    Точно воспроизводит блокнот: тесты `tests/forecast_strategies/test_housing_quarterly.py`
+    проверяют byte-exact совпадение по фиксированному snapshot.
     """
-    series = pd.Series(values, index=pd.DatetimeIndex(dates), dtype=float, name='value')
+    target = 'value'
+    series = pd.Series(values, index=pd.DatetimeIndex(dates), dtype=float, name=target)
     if len(series) < 8:
         return ForecastResult(
             model_name="Quarterly-Housing-MW", aic=None, bic=None, points=[],
         )
 
     first_index = float(series.iloc[0])
-    log_diff = np.log(series).diff(1).dropna()
-    data_col = log_diff
-    window_size = len(data_col)
-    sum_all_log_diffs = float(np.sum(data_col))
+    data = np.log(series).diff(1).dropna()
+    window_size = len(data)
 
     quarterly_dates = [
         series.index[-1] + relativedelta(months=j * 3)
@@ -497,28 +508,72 @@ def train_quarterly_housing(
     ]
 
     forecasts_aux: list[float] = []
-    median_aux: list[float] = []
+    trivial_aux: list[float] = []
     points: list[ForecastPoint] = []
 
+    i = len(data)
     for m in range(1, forecast_steps + 1):
-        lags = _housing_horizon_lags(m)
-        pred = _multi_window_predict(
-            data_col, window_size, m, lags,
-            apply_rolling=False,
-            k_range=range(1, 4),
-            min_window=12,
-        )
-        if pred is None:
-            pred = float(np.median(data_col.iloc[-12:]))
-        forecasts_aux.append(pred)
+        forc: list[float] = []
+        var: list[float] = []
+        for k in range(1, 4):
+            p_max = 0.01
+            df_aux = data.iloc[i - window_size // k:i].copy()
+            while np.sum(np.abs(df_aux - np.mean(df_aux)) / np.std(df_aux) > 3) > 0:
+                m_, s_ = float(np.mean(df_aux)), float(np.std(df_aux))
+                df_aux[(df_aux - m_) / s_ > 3] = m_ + 1.9 * s_
+                df_aux[(df_aux - m_) / s_ < -3] = m_ - 1.9 * s_
+            train = pd.DataFrame(df_aux)
+            if m < 2:
+                lags = [m, m + 1, m + 2, 4]
+            elif m == 2:
+                lags = [m, m + 1, 4]
+            elif m == 3:
+                lags = [m, 4]
+            else:
+                lags = [4]
+            X_p = [1]
+            for j in lags:
+                train[f'y_lag{j}'] = df_aux.shift(j)
+                X_p.append(float(list(df_aux)[-j + m - 1]))
+            X_p = pd.DataFrame(np.array(X_p).reshape(1, -1), columns=train.columns)
 
-        median_aux.append(float(np.median(data_col.iloc[-12:])))
+            drop_cols: set[str] = set()
+            corr = train.corr()
+            cor_max = 0.7
+            for a in corr.columns:
+                for b in corr.index:
+                    if a != b and a != target and b != target:
+                        if abs(corr[a][b]) > cor_max:
+                            if abs(corr[target][b]) > abs(corr[target][a]):
+                                drop_cols.add(a)
+                            else:
+                                drop_cols.add(b)
+            train = train.drop(columns=drop_cols)
+            X_p = X_p.drop(columns=drop_cols)
+            X_p_list = list(X_p.iloc[0])
+            train = train.dropna()
+            model = sm.OLS(
+                train[target], sm.add_constant(train.drop(target, axis=1)),
+            ).fit()
+            X = train.drop(target, axis=1)
+            while len(model.pvalues) > 1 and np.max(model.pvalues[1:]) > p_max:
+                drop_idx = int(np.argmax(model.pvalues[1:]))
+                X = X.drop(X.columns[drop_idx], axis=1)
+                X_p_list.pop(drop_idx + 1)
+                model = sm.OLS(train[target], sm.add_constant(X)).fit()
+            forc.append(float(model.predict(X_p_list)[0]))
+            var.append(float(model.mse_resid))
+
+        forc_a = np.array(forc)
+        var_a = np.array(var)
+        forecasts_aux.append(float(np.sum(forc_a / var_a) / np.sum(1.0 / var_a)))
+        trivial_aux.append(float(np.median(data.iloc[i - 12:i])))
 
         w = _housing_blend_weights(m)
         accumulated = (
-            sum_all_log_diffs
-            + sum(forecasts_aux) * w[0]
-            + sum(median_aux) * w[1]
+            float(np.sum(data.iloc[:i]))
+            + float(np.sum(forecasts_aux)) * w[0]
+            + float(np.sum(trivial_aux)) * w[1]
         )
         value = first_index * float(np.exp(accumulated))
         points.append(ForecastPoint(
@@ -648,22 +703,121 @@ def train_ppi_monthly(
     )
 
 
+def _train_gdp_quarterly_port(
+    dates: List[date],
+    values: List[float],
+    forecast_steps: int,
+    model_name: str,
+) -> ForecastResult:
+    """1:1 port of Никита's `train_sarima_model` (`Прогноз_номинальный_ВВП.ipynb`).
+
+    Никита запускает один и тот же ноутбук на номинальном и на реальном
+    ВВП — `train_sarima_model(data, forecast_steps=4)`. Чтобы наши прогнозы
+    совпадали с блокнотом byte-exact, мы вызываем эту функцию из обеих
+    стратегий, передавая `model_name` для маркировки. Алгоритм идентичен
+    `train_quarterly_housing`, но БЕЗ блендинга с медианой:
+
+        forecast[m] = first_value · exp( Σ all_log_diffs + Σ_{j≤m} forecasts_aux )
+    """
+    target = 'value'
+    series = pd.Series(values, index=pd.DatetimeIndex(dates), dtype=float, name=target)
+    if len(series) < 24:
+        return ForecastResult(model_name=model_name, aic=None, bic=None, points=[])
+
+    first_value = float(series.iloc[0])
+    data = np.log(series).diff(1).dropna()
+    window_size = len(data)
+
+    future_dates = [
+        series.index[-1] + relativedelta(months=j * 3)
+        for j in range(1, forecast_steps + 1)
+    ]
+
+    forecasts_aux: list[float] = []
+    points: list[ForecastPoint] = []
+
+    i = len(data)
+    for m in range(1, forecast_steps + 1):
+        forc: list[float] = []
+        var: list[float] = []
+        for k in range(1, 4):
+            p_max = 0.01
+            df_aux = data.iloc[i - window_size // k:i].copy()
+            while np.sum(np.abs(df_aux - np.mean(df_aux)) / np.std(df_aux) > 3) > 0:
+                m_, s_ = float(np.mean(df_aux)), float(np.std(df_aux))
+                df_aux[(df_aux - m_) / s_ > 3] = m_ + 1.9 * s_
+                df_aux[(df_aux - m_) / s_ < -3] = m_ - 1.9 * s_
+            train = pd.DataFrame(df_aux)
+            if m < 2:
+                lags = [m, m + 1, m + 2, 4]
+            elif m == 2:
+                lags = [m, m + 1, 4]
+            elif m == 3:
+                lags = [m, 4]
+            else:
+                lags = [4]
+            X_p = [1]
+            for j in lags:
+                train[f'y_lag{j}'] = df_aux.shift(j)
+                X_p.append(float(list(df_aux)[-j + m - 1]))
+            X_p = pd.DataFrame(np.array(X_p).reshape(1, -1), columns=train.columns)
+
+            drop_cols: set[str] = set()
+            corr = train.corr()
+            cor_max = 0.7
+            for a in corr.columns:
+                for b in corr.index:
+                    if a != b and a != target and b != target:
+                        if abs(corr[a][b]) > cor_max:
+                            if abs(corr[target][b]) > abs(corr[target][a]):
+                                drop_cols.add(a)
+                            else:
+                                drop_cols.add(b)
+            train = train.drop(columns=drop_cols)
+            X_p = X_p.drop(columns=drop_cols)
+            X_p_list = list(X_p.iloc[0])
+            train = train.dropna()
+            model = sm.OLS(
+                train[target], sm.add_constant(train.drop(target, axis=1)),
+            ).fit()
+            X = train.drop(target, axis=1)
+            while len(model.pvalues) > 1 and np.max(model.pvalues[1:]) > p_max:
+                drop_idx = int(np.argmax(model.pvalues[1:]))
+                X = X.drop(X.columns[drop_idx], axis=1)
+                X_p_list.pop(drop_idx + 1)
+                model = sm.OLS(train[target], sm.add_constant(X)).fit()
+            forc.append(float(model.predict(X_p_list)[0]))
+            var.append(float(model.mse_resid))
+
+        forc_a = np.array(forc)
+        var_a = np.array(var)
+        forecasts_aux.append(float(np.sum(forc_a / var_a) / np.sum(1.0 / var_a)))
+
+        accumulated = (
+            float(np.sum(data.iloc[:i]))
+            + float(np.sum(forecasts_aux))
+        )
+        value = first_value * float(np.exp(accumulated))
+        points.append(ForecastPoint(
+            date=future_dates[m - 1].date(),
+            value=round(value, 4),
+            lower_bound=None,
+            upper_bound=None,
+        ))
+
+    logger.info("%s forecast: %d points, last=%.2f",
+                model_name, len(points), points[-1].value if points else 0)
+    return ForecastResult(model_name=model_name, aic=None, bic=None, points=points)
+
+
 def train_gdp_nominal_quarterly(
     dates: List[date],
     values: List[float],
     forecast_steps: int = 4,
 ) -> ForecastResult:
-    """Port of Никита's `Прогноз_номинальный_ВВП.ipynb` (April 2026).
-
-    Nominal GDP, quarterly. Multi-window OLS on log-diff, k∈[1..3],
-    quarterly lag set, no blend.
-    """
-    return _log_diff_no_blend_forecast(
-        dates, values, forecast_steps,
-        lags_fn=_gdp_quarterly_lags,
-        k_range=range(1, 4),
-        step_freq="quarterly",
-        model_name="GDP-Nominal-Quarterly-MW",
+    """Quarterly nominal GDP forecast — 1:1 port of `Прогноз_номинальный_ВВП.ipynb`."""
+    return _train_gdp_quarterly_port(
+        dates, values, forecast_steps, model_name="GDP-Nominal-Quarterly-MW",
     )
 
 
@@ -672,23 +826,16 @@ def train_gdp_real_quarterly(
     values: List[float],
     forecast_steps: int = 4,
 ) -> ForecastResult:
-    """Прямая SARIMA-модель для реального ВВП (то же ядро, что и у номинального).
+    """Quarterly real GDP forecast — 1:1 port of `Прогноз_номинальный_ВВП.ipynb`.
 
-    Никита в ноутбуке вызывает один и тот же `train_sarima_model(data,
-    forecast_steps=4)` сначала на номинальном, потом на реальном ВВП — это
-    одна формула, отличается только входной ряд. Раньше мы прогнозировали
-    `gdp-real` через цепочку `gdp-real ← real_from_yoy(gdp-yoy) ←
-    yoy_quarterly(gdp-nominal SARIMA)`, и накопленная ошибка приводила к
-    расхождению на 4.5–7.5% относительно эталонных значений Никиты.
-    Прямой запуск `train_sarima_model` на ряду реального ВВП восстанавливает
-    bit-exact (33260.67 / 35387.92 / 37449.90 / 41649.81 для 2026 года).
+    Никита запускает один и тот же `train_sarima_model(data, forecast_steps=4)`
+    сначала на номинальном, потом на реальном ВВП. Раньше мы прогнозировали
+    `gdp-real` через цепочку `gdp-real ← real_from_yoy(gdp-yoy)` с
+    накопленной ошибкой 4.5–7.5%. Прямой запуск алгоритма ноутбука на ряду
+    реального ВВП восстанавливает byte-exact совпадение с эталонными значениями.
     """
-    return _log_diff_no_blend_forecast(
-        dates, values, forecast_steps,
-        lags_fn=_gdp_quarterly_lags,
-        k_range=range(1, 4),
-        step_freq="quarterly",
-        model_name="GDP-Real-Quarterly-MW",
+    return _train_gdp_quarterly_port(
+        dates, values, forecast_steps, model_name="GDP-Real-Quarterly-MW",
     )
 
 

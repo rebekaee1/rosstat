@@ -1,5 +1,5 @@
 {
-  "_comment": "Snapshot of gdp-real series ending 2025-Q4 from prod (forecasteconomy.com /api/v1/indicators/gdp-real/data). Used by test_gdp_real_snapshot.py. The strategy stays in line with both this fixed input and with the values from Никита's notebook invoked on real GDP (train_sarima_model(data, forecast_steps=4)) within tolerance.",
+  "_comment": "Snapshot of gdp-real series ending 2025-Q4 from prod. After 2026-05 forecaster refactor (1:1 port of Никита's notebook), expected_forecast равен _notebook_expected до 0.005 (byte-exact). See test_gdp_real_snapshot.py.",
   "_notebook_expected": [
     {
       "date": "2026-03-01",
@@ -264,19 +264,19 @@
   "expected_forecast": [
     {
       "date": "2026-03-01",
-      "value": 33306.9174
+      "value": 33260.6662
     },
     {
       "date": "2026-06-01",
-      "value": 35441.7788
+      "value": 35387.9184
     },
     {
       "date": "2026-09-01",
-      "value": 37512.3589
+      "value": 37449.9007
     },
     {
       "date": "2026-12-01",
-      "value": 41719.8176
+      "value": 41649.8104
     }
   ]
 }
