@@ -1,6 +1,6 @@
 # Forecast Economy — Project Context
 
-**Last updated:** 2026-05-16 (T10: housing-price-{primary,secondary} backfill 1998-2014 из архива Росстата tab8/tab9.htm; T11: `ppi` переведён с approved на live-SARIMA `ppi_monthly`; T12: calendar group-by похожих событий).
+**Last updated:** 2026-05-16 (T10: housing-price-{primary,secondary} backfill 1998-2014 из архива Росстата tab8/tab9.htm; T11: `ppi` переведён с approved на live-SARIMA `ppi_monthly`; T12: calendar group-by похожих событий; T13: чистка публичного языка во всех `methodology` / `description` индикаторов — снос имён файлов, parser-жаргона, API-id, ADR-ссылок и Excel-координат, см. [`.cursor/rules/methodology-language.mdc`](.cursor/rules/methodology-language.mdc) и `scripts/audit-public-language.py`).
 **Part of:** [`AGENTS.md`](AGENTS.md) (точка входа для AI-агента).
 **See also:** [`README.md`](README.md), [`docs/workflow.md`](docs/workflow.md), [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md), [`docs/data_sources.md`](docs/data_sources.md), [`docs/cbr_sources.md`](docs/cbr_sources.md), [`docs/analytics_api_inventory/`](docs/analytics_api_inventory/), [`docs/adr/`](docs/adr/).
 

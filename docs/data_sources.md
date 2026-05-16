@@ -1,6 +1,6 @@
 # Data sources — точная карта индикатор → файл/endpoint
 
-**Last updated:** 2026-05-12 (T3: monthly trade — товары + услуги).
+**Last updated:** 2026-05-16 (T13: данный файл стал основным местом хранения технических деталей источников — имена файлов, листы, строки/колонки, API-id; публичные `methodology` полей индикаторов в `seed_data.py` теперь не выдают этих внутренностей, см. правило [`.cursor/rules/methodology-language.mdc`](../.cursor/rules/methodology-language.mdc)).
 **Part of:** [`AGENTS.md`](../AGENTS.md), [`CONTEXT.md`](../CONTEXT.md).
 **Related:** [`docs/cbr_sources.md`](cbr_sources.md) (детальные ЦБ + Минфин парсеры), [`docs/adr/0004`](adr/0004-rosstat-russian-canonical-sdds-deprecated.md) (Rosstat русский canonical).
 
