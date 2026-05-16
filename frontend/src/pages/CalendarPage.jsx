@@ -11,6 +11,7 @@ import CalendarEventCard from '../components/calendar/CalendarEventCard';
 import { SkeletonBox } from '../components/Skeleton';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import { track, events } from '../lib/track';
+import { groupSimilarEvents } from '../lib/calendarGrouping';
 
 const MONTHS_GENITIVE = [
   'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
@@ -146,9 +147,10 @@ export default function CalendarPage() {
   const isCurrentMonth = year === initYear && month === initMonth;
 
   const visibleEvents = useMemo(() => {
-    if (selectedDate) return allEvents.filter((e) => e.scheduled_date === selectedDate);
-    if (isCurrentMonth) return allEvents.filter((e) => e.scheduled_date >= todayStr);
-    return allEvents;
+    let filtered = allEvents;
+    if (selectedDate) filtered = allEvents.filter((e) => e.scheduled_date === selectedDate);
+    else if (isCurrentMonth) filtered = allEvents.filter((e) => e.scheduled_date >= todayStr);
+    return groupSimilarEvents(filtered);
   }, [allEvents, selectedDate, isCurrentMonth, todayStr]);
 
   const grouped = useMemo(() => {

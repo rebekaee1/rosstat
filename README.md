@@ -173,8 +173,8 @@ Base URL: `/api/v1` (за исключением SSR-эндпоинтов `/seo/
 - `gdp_consumption_quarterly` — то же ядро на `gdp-consumption` (методология семьи ВВП).
 - `gdp_government_quarterly` — то же ядро на `gdp-government`.
 - `housing_quarterly` — 1:1 port `Прогнозы_цены_на_жилье (1).ipynb` (multi-window OLS на log-diff + outlier-clip + iv-weighted blend + median). Применяется к `housing-price-primary` и `housing-price-secondary`.
-- `ppi_monthly` — `train_ppi_monthly` (k=1..4, monthly lags log-diff).
-- `approved` — захардкоженные значения из `model_config_json.approved_forecast_values`. Сейчас в live-конфиге только `ppi`.
+- `ppi_monthly` — `train_ppi_monthly` (k=1..4, monthly lags log-diff), 1:1 port `Прогноз_ИЦП.ipynb`.
+- `approved` — захардкоженные значения из `model_config_json.approved_forecast_values`. **В live-конфиге не используется** (все индикаторы на live-стратегиях, последний `ppi` переведён 2026-05-16). Сохраняется в registry для совместимости и тестов.
 - `derived_from_source` — все `*-yoy` / `*-qoq` / `*-annual` derived (включая `housing-yoy-primary`/`secondary`): применяет чистую op (yoy/qoq/december_to_december/annual_sum/real_from_yoy) к прогнозу source-индикатора. Каскадный retrain после источника.
 - `generic_ols` — fallback и `inflation-weekly`: multi-window OLS с inverse-variance weighting.
 

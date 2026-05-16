@@ -27,13 +27,15 @@ APPROVED_DIRECT_FORECAST_CODES = {
     "cpi-food",
     "cpi-nonfood",
     "cpi-services",
-    "ppi",
 }
 
 # Live SARIMA modeled on the indicator's own series (1:1 port of Никита's
-# notebook). 2026-05: housing-price-* и gdp-nominal переведены сюда из
-# APPROVED_DIRECT, чтобы прогноз пересчитывался автоматически на свежих
-# данных, а не лежал хардкодом до следующего notebook-релиза.
+# notebook). 2026-05: housing-price-*, gdp-nominal, gdp-real, gdp-consumption,
+# gdp-government, ppi переведены сюда из APPROVED_DIRECT — прогноз
+# пересчитывается автоматически на свежих данных, а не лежит хардкодом
+# до следующего notebook-релиза. APPROVED_DIRECT теперь остался только
+# для CPI семьи, где блокнот Никиты — единственный источник правды
+# по неавторегрессионной декомпозиции (food/nonfood/services).
 LIVE_SARIMA_FORECAST_CODES = {
     "gdp-nominal",
     "gdp-real",
@@ -41,6 +43,7 @@ LIVE_SARIMA_FORECAST_CODES = {
     "gdp-government",
     "housing-price-primary",
     "housing-price-secondary",
+    "ppi",
 }
 
 DERIVED_FROM_SOURCE_FORECAST_CODES = {
@@ -78,9 +81,7 @@ ALL_FORECAST_CODES = (
     | GENERIC_OLS_FORECAST_CODES
 )
 
-APPROVED_NOTEBOOK_CODES = {
-    "ppi": "Approved-PPI-Notebook",
-}
+APPROVED_NOTEBOOK_CODES: dict[str, str] = {}
 
 # Live SARIMA индикаторы должны иметь forecast_strategy с именем
 # конкретной auto-стратегии (не approved). Это контракт seed_data.
@@ -91,6 +92,7 @@ LIVE_SARIMA_STRATEGY_NAMES = {
     "gdp-government": "gdp_government_quarterly",
     "housing-price-primary": "housing_quarterly",
     "housing-price-secondary": "housing_quarterly",
+    "ppi": "ppi_monthly",
 }
 
 EXPECTED_DERIVED_CPI_FORECASTS = {

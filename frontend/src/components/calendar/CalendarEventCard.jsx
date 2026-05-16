@@ -109,6 +109,12 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0 })
     return () => tween.kill();
   }, [index]);
 
+  const linkedIndicators = Array.isArray(event.indicators) && event.indicators.length > 0
+    ? event.indicators
+    : (event.indicator_code
+      ? [{ code: event.indicator_code, name: event.indicator_name || event.indicator_code }]
+      : []);
+
   if (isLow && !isToday) {
     return (
       <div
@@ -129,15 +135,17 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0 })
           <span className="text-xs text-text-tertiary shrink-0 hidden sm:inline">{event.reference_period}</span>
         )}
         <ImportanceDots level={1} />
-        {event.indicator_code && (
+        {linkedIndicators.length === 1 ? (
           <Link
-            to={`/indicator/${event.indicator_code}`}
+            to={`/indicator/${linkedIndicators[0].code}`}
             className={cn(FOCUS_RING_SURFACE, 'text-champagne hover:text-champagne-muted rounded-md')}
-            title={event.indicator_name || event.indicator_code}
-            aria-label={`Перейти к ${event.indicator_name || event.indicator_code}`}
+            title={linkedIndicators[0].name}
+            aria-label={`Перейти к ${linkedIndicators[0].name}`}
           >
             <ArrowUpRight className="w-3.5 h-3.5" />
           </Link>
+        ) : (
+          <span className="text-xs text-text-tertiary shrink-0">{linkedIndicators.length} рядов</span>
         )}
       </div>
     );
@@ -210,26 +218,27 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0 })
           </div>
         )}
 
-        <div className="flex items-center gap-3 mt-3 pt-2">
-          {event.indicator_code && (
+        <div className="flex items-center gap-2 mt-3 pt-2 flex-wrap">
+          {linkedIndicators.map((ind) => (
             <Link
-              to={`/indicator/${event.indicator_code}`}
+              key={ind.code}
+              to={`/indicator/${ind.code}`}
               className={cn(
                 FOCUS_RING_SURFACE,
                 'inline-flex items-center gap-1.5 text-xs font-medium text-champagne hover:text-champagne-muted rounded-lg transition-colors',
               )}
             >
-              {event.indicator_name || event.indicator_code}
+              {ind.name}
               <ArrowUpRight className="w-3 h-3" />
             </Link>
-          )}
+          ))}
           {event.source_url && (
             <a
               href={event.source_url}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackOutbound(event.source_url)}
-              className="inline-flex items-center gap-1 text-xs text-text-tertiary hover:text-text-secondary transition-colors"
+              className="inline-flex items-center gap-1 text-xs text-text-tertiary hover:text-text-secondary transition-colors ml-auto"
             >
               Источник <ExternalLink className="w-3 h-3" />
             </a>

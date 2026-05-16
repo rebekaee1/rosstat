@@ -1,6 +1,6 @@
 # Forecast Economy — Project Context
 
-**Last updated:** 2026-05-13 (T7-T9: chart-truncation fix; live-SARIMA для gdp-consumption/gdp-government; derived-forecast для housing-yoy-primary/secondary).
+**Last updated:** 2026-05-16 (T11: `ppi` переведён с approved на live-SARIMA `ppi_monthly`; T12: calendar group-by похожих событий).
 **Part of:** [`AGENTS.md`](AGENTS.md) (точка входа для AI-агента).
 **See also:** [`README.md`](README.md), [`docs/workflow.md`](docs/workflow.md), [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md), [`docs/data_sources.md`](docs/data_sources.md), [`docs/cbr_sources.md`](docs/cbr_sources.md), [`docs/analytics_api_inventory/`](docs/analytics_api_inventory/), [`docs/adr/`](docs/adr/).
 
@@ -124,8 +124,8 @@
 | `gdp_real_quarterly` | `gdp-real` | `train_gdp_real_quarterly` — то же ядро `_train_gdp_quarterly_port` на ряду реального ВВП; byte-exact с notebook'ом |
 | `gdp_consumption_quarterly` | `gdp-consumption` | `train_gdp_consumption_quarterly` — то же ядро `_train_gdp_quarterly_port` на ряду расходов домохозяйств (методология семьи ВВП по просьбе Никиты; отдельного notebook'а нет) |
 | `gdp_government_quarterly` | `gdp-government` | `train_gdp_government_quarterly` — то же ядро `_train_gdp_quarterly_port` на ряду гос.потребления |
-| `ppi_monthly` | `ppi` | `train_ppi_monthly` (k=1..4, monthly lags log-diff) |
-| `approved` | исторически: `cpi-*`, `gdp-nominal`, `ppi`, `housing-price-*` | Использует ручные значения из `model_config_json.approved_forecast_values` (массив `{date, value}`) без переобучения. Сейчас в live-конфиге остался только `ppi` |
+| `ppi_monthly` | `ppi` | `train_ppi_monthly` (k=1..4, monthly lags log-diff) — 1:1 port `Прогноз_ИЦП.ipynb` |
+| `approved` | исторически: `cpi-*`, `gdp-nominal`, `ppi`, `housing-price-*` | Использует ручные значения из `model_config_json.approved_forecast_values` (массив `{date, value}`) без переобучения. **В live-конфиге не используется** — все индикаторы переведены на свои live-стратегии (`ppi → ppi_monthly`, 2026-05-16). Strategy сохраняется в registry для обратной совместимости и тестовых сценариев |
 | `derived_from_source` | Все *-yoy, *-qoq, *-annual derived с `derived_forecast: {source_code, operation, model_name}` (включая `housing-yoy-primary`, `housing-yoy-secondary`) | Применяет ту же чистую op (yoy / qoq / december_to_december / annual_sum / real_from_yoy) к **прогнозу** source-индикатора. Каскадный retrain срабатывает после успеха source |
 | `generic_ols` | `inflation-weekly`, fallback | `train_and_forecast` (multi-window OLS с inverse-variance weighting); универсальная модель |
 
