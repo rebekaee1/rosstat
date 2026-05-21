@@ -213,15 +213,6 @@ export default function IndicatorChart({
     [chartData, startIdx, endIdx]
   );
 
-  /** Daily ряды (RUONIA, курсы): равномерный шаг по точкам, без «дыр» по календарю. */
-  const xAxisPointScale = dateFormat === 'day';
-  const xAxisTickInterval = useMemo(() => {
-    if (!xAxisPointScale) return 'preserveStartEnd';
-    const n = visibleData.length;
-    if (n <= 36) return 0;
-    return Math.max(1, Math.floor(n / 10));
-  }, [xAxisPointScale, visibleData.length]);
-
   const forecastStartDate = useMemo(() => {
     if (!showForecast) return null;
     for (let i = 0; i < visibleData.length; i++) {
@@ -506,13 +497,12 @@ export default function IndicatorChart({
             />
             <XAxis
               dataKey="date"
-              scale={xAxisPointScale ? 'point' : 'auto'}
               tickFormatter={d => formatDate(d, dateFormat === 'full' ? 'short' : dateFormat)}
               stroke="rgba(0,0,0,0.1)"
               tick={{ fill: 'rgba(0,0,0,0.4)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
               tickLine={false}
-              interval={xAxisTickInterval}
-              minTickGap={xAxisPointScale ? 12 : 28}
+              interval="preserveStartEnd"
+              minTickGap={28}
               tickMargin={10}
               height={42}
               padding={{ left: 8, right: 24 }}
@@ -574,6 +564,7 @@ export default function IndicatorChart({
                 dot={false}
                 activeDot={isDragging ? false : { r: 4, fill: '#B8942F', stroke: '#FFFFFF', strokeWidth: 2 }}
                 isAnimationActive={false}
+                connectNulls
               />
             ) : (
               <Area
@@ -584,6 +575,7 @@ export default function IndicatorChart({
                 dot={false}
                 activeDot={isDragging ? false : { r: 4, fill: '#B8942F', stroke: '#FFFFFF', strokeWidth: 2 }}
                 isAnimationActive={false}
+                connectNulls
               />
             )}
 
@@ -602,6 +594,7 @@ export default function IndicatorChart({
                   dataKey="forecast"
                   stroke="#7C3AED"
                   strokeWidth={2.5}
+                  connectNulls
                   strokeDasharray="8 4"
                   dot={false}
                   activeDot={isDragging ? false : { r: 5, fill: '#7C3AED', stroke: '#FFFFFF', strokeWidth: 2 }}

@@ -15,13 +15,51 @@ from app.config import settings
 router = APIRouter(prefix="/indicators", tags=["indicators"])
 
 
+# Сколько точек назад брать за «год назад» по частоте — для расчёта hero YoY%.
+# Применяется только если у индикатора `model_config_json.hero_view == "yoy_pct"`.
+_YOY_STEPS = {"weekly": 52, "monthly": 12, "quarterly": 4, "annual": 1, "daily": 252}
+
+
+async def _hero_yoy_pct(db: AsyncSession, ind_id: int, frequency: str, current_val: float | None):
+    """Найти точку «год назад» по частоте индикатора и посчитать YoY% к current_val.
+    Возвращает (hero_value, hero_unit, hero_label) или (None, None, None), если данных мало."""
+    if current_val is None:
+        return None, None, None
+    steps = _YOY_STEPS.get(frequency)
+    if not steps:
+        return None, None, None
+    rows = (await db.execute(
+        select(IndicatorData.value)
+        .where(IndicatorData.indicator_id == ind_id)
+        .order_by(desc(IndicatorData.date))
+        .limit(steps + 1)
+    )).scalars().all()
+    if len(rows) <= steps:
+        return None, None, None
+    year_ago = float(rows[steps])
+    if year_ago == 0:
+        return None, None, None
+    pct = (float(current_val) - year_ago) / year_ago * 100.0
+    return round(pct, 2), "%", "Год к году"
+
+
+def _hero_view(indicator) -> str | None:
+    mcfg = indicator.model_config_json or {}
+    return mcfg.get("hero_view")
+
+
 @router.get("", response_model=list[IndicatorSummary])
 async def list_indicators(
     db: AsyncSession = Depends(get_db),
     category: Optional[str] = Query(None, description="Точное совпадение с полем category в БД"),
     include_inactive: bool = Query(False, description="Показать неактивные индикаторы"),
+    include_unlisted: bool = Query(False, description="Показать индикаторы со is_listed=False (counterpart-карточки разных частот)"),
 ):
-    cache_key = f"fe:indicators:list:{category or 'all'}:{'all' if include_inactive else 'active'}"
+    cache_key = (
+        f"fe:indicators:list:{category or 'all'}:"
+        f"{'all' if include_inactive else 'active'}:"
+        f"{'all' if include_unlisted else 'listed'}"
+    )
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -29,6 +67,10 @@ async def list_indicators(
     stmt = select(Indicator).order_by(Indicator.code)
     if not include_inactive:
         stmt = stmt.where(Indicator.is_active.is_(True))
+    if not include_unlisted:
+        # A3: child-индикаторы (`exports-monthly`, `gdp-real-yoy`, etc.) видны
+        # только через frequency/view switcher из primary-карточки, не дублируются в каталоге.
+        stmt = stmt.where(Indicator.is_listed.is_(True))
     if category:
         stmt = stmt.where(Indicator.category == category)
     result = await db.execute(stmt)
@@ -129,6 +171,12 @@ async def get_indicator(code: str, db: AsyncSession = Depends(get_db)):
     alt_freq = mcfg.get("alternate_frequencies") or None
     primary_code = mcfg.get("primary_indicator_code") or None
 
+    hero_value = hero_unit = hero_label = None
+    if mcfg.get("hero_view") == "yoy_pct":
+        hero_value, hero_unit, hero_label = await _hero_yoy_pct(
+            db, indicator.id, indicator.frequency, current_val,
+        )
+
     detail = IndicatorDetail(
         code=indicator.code, name=indicator.name, name_en=indicator.name_en,
         unit=indicator.unit, category=indicator.category, is_active=indicator.is_active,
@@ -145,6 +193,7 @@ async def get_indicator(code: str, db: AsyncSession = Depends(get_db)):
         updated_at=indicator.updated_at,
         alternate_frequencies=alt_freq,
         primary_indicator_code=primary_code,
+        hero_value=hero_value, hero_unit=hero_unit, hero_label=hero_label,
     )
 
     await cache_set(f"fe:{code}:detail", detail.model_dump(mode="json"), settings.cache_ttl_meta)

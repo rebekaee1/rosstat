@@ -131,6 +131,8 @@ INDICATORS = [
         "category": "Ставки",
     },
     # ─── Курсы валют ───
+    # D5: курсы валют выделены в отдельную категорию "Валюты" — это не общие
+    # «Финансы», а самостоятельный fx-блок (по модели TradingEconomics).
     {
         "code": "usd-rub",
         "name": "Курс доллара США",
@@ -154,7 +156,7 @@ INDICATORS = [
             "validation": {"min": 1, "max": 500},
         },
         "is_active": True,
-        "category": "Финансы",
+        "category": "Валюты",
     },
     {
         "code": "eur-rub",
@@ -172,7 +174,7 @@ INDICATORS = [
             "validation": {"min": 1, "max": 500},
         },
         "is_active": True,
-        "category": "Финансы",
+        "category": "Валюты",
     },
     {
         "code": "cny-rub",
@@ -190,7 +192,7 @@ INDICATORS = [
             "validation": {"min": 0.1, "max": 100},
         },
         "is_active": True,
-        "category": "Финансы",
+        "category": "Валюты",
     },
     # ─── RUONIA ───
     {
@@ -332,6 +334,78 @@ INDICATORS = [
                 "datasetId": 37,
                 "measureId": 2,
                 "element_id": 7,
+            },
+            "backfill_from_year": 2014,
+            "forecast_steps": 0,
+            "forecast_transform": "percentage",
+            "validation": {"min": 0, "max": 50},
+        },
+        "is_active": True,
+        "category": "Ставки",
+    },
+    # ─── Ставки по вкладам ФЛ по срокам (CBR DataService) ───
+    # Аналогично разбивке по кредитам — публикация publicationId=18, dataset=37
+    # содержит ставки в разрезе срока вклада. element_id=9 (1-3 года), 10 (>3 лет).
+    # Ряды доступны с января 2014 г. ежемесячно.
+    {
+        "code": "deposit-rate-medium",
+        "name": "Ставка по вкладам на 1-3 года",
+        "name_en": "Deposit Rate (1 to 3 years)",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/bank_sector/int_rat/",
+        "description": (
+            "Средневзвешенная процентная ставка по вкладам (депозитам) физических "
+            "лиц в рублях со сроком от 1 года до 3 лет."
+        ),
+        "methodology": (
+            "Средневзвешенная процентная ставка по среднесрочным вкладам в рублях, "
+            "привлечённым кредитными организациями от физических лиц (срок от 1 года "
+            "до 3 лет). Рассчитывается Банком России по форме отчётности 0409128. "
+            "Публикуется ежемесячно."
+        ),
+        "parser_type": "cbr_dataservice_json",
+        "model_config_json": {
+            "dataservice": {
+                "publicationId": 18,
+                "datasetId": 37,
+                "measureId": 2,
+                "element_id": 9,
+            },
+            "backfill_from_year": 2014,
+            "forecast_steps": 0,
+            "forecast_transform": "percentage",
+            "validation": {"min": 0, "max": 50},
+        },
+        "is_active": True,
+        "category": "Ставки",
+    },
+    {
+        "code": "deposit-rate-long",
+        "name": "Ставка по вкладам свыше 3 лет",
+        "name_en": "Deposit Rate (over 3 years)",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Банк России",
+        "source_url": "https://www.cbr.ru/statistics/bank_sector/int_rat/",
+        "description": (
+            "Средневзвешенная процентная ставка по вкладам (депозитам) физических "
+            "лиц в рублях со сроком свыше 3 лет."
+        ),
+        "methodology": (
+            "Средневзвешенная процентная ставка по долгосрочным вкладам в рублях, "
+            "привлечённым кредитными организациями от физических лиц (срок свыше "
+            "3 лет). Рассчитывается Банком России по форме отчётности 0409128. "
+            "Публикуется ежемесячно."
+        ),
+        "parser_type": "cbr_dataservice_json",
+        "model_config_json": {
+            "dataservice": {
+                "publicationId": 18,
+                "datasetId": 37,
+                "measureId": 2,
+                "element_id": 10,
             },
             "backfill_from_year": 2014,
             "forecast_steps": 0,
@@ -1314,6 +1388,7 @@ INDICATORS = [
             "forecast_steps": 4,
             "forecast_strategy": "housing_quarterly",
             "forecast_transform": "absolute",
+            "hero_view": "yoy_pct",
             "validation": {"min": 50, "max": 500},
         },
         "is_active": True,
@@ -1345,6 +1420,7 @@ INDICATORS = [
             "forecast_steps": 4,
             "forecast_strategy": "housing_quarterly",
             "forecast_transform": "absolute",
+            "hero_view": "yoy_pct",
             "validation": {"min": 50, "max": 500},
         },
         "is_active": True,
@@ -1376,6 +1452,7 @@ INDICATORS = [
         "model_config_json": {
             "forecast_steps": 0,
             "forecast_transform": "absolute",
+            "hero_view": "yoy_pct",
             "validation": {"min": 30, "max": 200},
         },
         "is_active": True,
@@ -1573,6 +1650,7 @@ INDICATORS = [
             "forecast_steps": 12,
             "forecast_strategy": "ppi_monthly",
             "forecast_transform": "absolute",
+            "hero_view": "yoy_pct",
             "validation": {"min": 50, "max": 500},
         },
         "is_active": True,

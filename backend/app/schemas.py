@@ -16,6 +16,13 @@ class IndicatorSummary(BaseModel):
     current_date: date | None = None
     previous_value: float | None = None
     change: float | None = None
+    # Hero block — то, что должно быть «первой цифрой» на карточке. Если у
+    # индикатора `model_config_json.hero_view = "yoy_pct"`, бэк подставляет
+    # сюда YoY% изменение (а не уровень). По умолчанию hero совпадает с
+    # current_value и unit индикатора.
+    hero_value: float | None = None
+    hero_unit: str | None = None
+    hero_label: str | None = None
 
     model_config = {"from_attributes": True}
 

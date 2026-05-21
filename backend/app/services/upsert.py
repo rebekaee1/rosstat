@@ -53,6 +53,11 @@ async def bulk_upsert(db: AsyncSession, indicator_id: int, points: list) -> tupl
     changed = 0
     for point in points:
         dt, val = _split_point(point)
+        # ADR-0002 boundary: never overwrite an existing value with NULL/None.
+        # An empty/None payload from a parser (e.g. source page changed shape, got 502)
+        # must NOT silently wipe what's already in the DB. Skip such points entirely.
+        if val is None:
+            continue
         result = await db.execute(upsert_indicator_data(indicator_id, dt, val))
         if result.fetchone() is not None:
             changed += 1

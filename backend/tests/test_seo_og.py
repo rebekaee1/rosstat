@@ -163,9 +163,13 @@ def test_sitemap_static_pages_constant():
     assert "/calculator" in paths
     assert "/demographics" in paths
 
-    # Nine categories × 1 indicator-grid page each.
-    assert len(CATEGORIES) == 9
-    for slug in ("prices", "rates", "labor", "gdp", "finance", "trade", "population", "business", "science"):
+    # Ten categories × 1 indicator-grid page each (D5: split «Финансы и валюты»
+    # → «Валюты» + «Деньги и бюджет»).
+    assert len(CATEGORIES) == 10
+    for slug in (
+        "prices", "rates", "labor", "gdp", "finance",
+        "trade", "population", "business", "science", "currencies",
+    ):
         assert slug in CATEGORIES
 
     # Home page in PAGE_META — needed for nginx bot routing /og-proxy/page/home.

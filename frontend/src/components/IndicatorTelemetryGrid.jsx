@@ -42,9 +42,15 @@ export default function IndicatorTelemetryGrid({
     );
   }
 
-  const currentLabel = safeViewMode === 'weekly' ? 'Инфляция за неделю'
-    : safeViewMode === 'cpi' && isPriceCategory ? 'Прирост за месяц'
-      : 'Текущее значение';
+  // Hero override: backend подставил YoY% (model_config_json.hero_view = "yoy_pct"),
+  // потому что для индексных индикаторов абсолютное значение (например IPP 112)
+  // не несёт смысловой нагрузки, а изменение г/г (+1.2%) — несёт.
+  const heroOverride = indicator?.hero_value != null && safeViewMode !== 'weekly' && safeViewMode !== 'cpi';
+
+  const currentLabel = heroOverride ? (indicator.hero_label || 'Изменение г/г')
+    : safeViewMode === 'weekly' ? 'Инфляция за неделю'
+      : safeViewMode === 'cpi' && isPriceCategory ? 'Прирост за месяц'
+        : 'Текущее значение';
 
   const previousLabel = safeViewMode === 'weekly' ? 'Предыдущая неделя'
     : safeViewMode === 'quarterly' ? 'Предыдущий квартал'
@@ -57,10 +63,12 @@ export default function IndicatorTelemetryGrid({
         : indicator?.frequency === 'quarterly' ? 'к пред. кварталу'
           : isPriceCategory ? 'к пред. месяцу' : 'к пред. значению';
 
-  const currentValue = s?.currentValue ?? adj(indicator?.current_value);
+  const currentValue = heroOverride ? indicator.hero_value
+    : (s?.currentValue ?? adj(indicator?.current_value));
+  const heroUnit = heroOverride ? (indicator.hero_unit || '%') : unit;
   const previousValue = s?.previousValue ?? indicator?.previous_value;
-  const pctChange = indicator?.unit === 'индекс' && previousValue
-    ? +(((currentValue) - previousValue) / previousValue * 100).toFixed(2)
+  const pctChange = indicator?.unit === 'индекс' && previousValue && !heroOverride
+    ? +(((s?.currentValue ?? adj(indicator?.current_value)) - previousValue) / previousValue * 100).toFixed(2)
     : undefined;
 
   const currentDate = s?.currentDate ?? indicator?.current_date;
@@ -74,9 +82,9 @@ export default function IndicatorTelemetryGrid({
         <TelemetryCard
           label={currentLabel}
           value={currentValue}
-          unit={unit}
-          change={s?.change ?? indicator?.change}
-          pctChange={pctChange}
+          unit={heroUnit}
+          change={heroOverride ? undefined : (s?.change ?? indicator?.change)}
+          pctChange={heroOverride ? undefined : pctChange}
           meta={currentMeta}
           delay={0}
           deltaSuffix={deltaSuffix}

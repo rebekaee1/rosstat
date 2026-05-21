@@ -7,8 +7,14 @@ import {
 } from './categories';
 
 describe('categories', () => {
-  it('has 9 categories', () => {
-    expect(CATEGORIES).toHaveLength(9);
+  it('has 10 categories (D5: «Валюты» отделены от «Деньги и бюджет»)', () => {
+    expect(CATEGORIES).toHaveLength(10);
+  });
+
+  it('currencies category exists and points to apiCategory="Валюты"', () => {
+    const cur = getCategoryBySlug('currencies');
+    expect(cur?.apiCategory).toBe('Валюты');
+    expect(cur?.status).toBe('active');
   });
 
   it('getCategoryBySlug finds prices', () => {

@@ -6,6 +6,7 @@ import { cn } from '../lib/format';
 import { CATEGORIES } from '../lib/categories';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { track, events } from '../lib/track';
+import IndicatorSearch from './IndicatorSearch';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -182,7 +183,8 @@ export default function Navbar() {
         </NavLink>
       </div>
 
-      <div className="hidden md:flex items-center shrink-0">
+      <div className="hidden md:flex items-center shrink-0 gap-3">
+        <IndicatorSearch />
         <div className="relative group flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-obsidian-lighter/50 border border-border-subtle cursor-default">
           <Activity className="w-3 h-3 text-positive pulse-dot" />
           <span className="text-xs font-mono text-text-secondary">Онлайн</span>
