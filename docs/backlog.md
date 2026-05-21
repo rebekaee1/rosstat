@@ -1,0 +1,533 @@
+# Backlog — текущие правки в работе
+
+**Last updated:** 2026-05-21.
+**Part of:** [`AGENTS.md`](../AGENTS.md), [`CONTEXT.md`](../CONTEXT.md).
+**Источник:** звонок с Никитой Александровичем 2026-05-21 (Сочи). Транскрипция и заметки пользователя сверены, добавлены упущения.
+
+> Живой бэклог планируемых работ. Каждая правка имеет ID, описание, затронутые файлы, риски, зависимости и приоритет. Когда правка сделана — переносится в раздел «История» внизу с датой и SHA коммита/деплоя.
+
+---
+
+## Сводка приоритетов
+
+| Приоритет | Идея |
+|-----------|------|
+| P0 (must-do, в первой итерации) | E1, E2, D6, D3, A3 (объединение), D5 (категории), D1 (поиск minimal) |
+| P1 (should-do, во второй итерации) | A1+A2 (time-agg expansion), B1 (key-rate splice), B2 (wages history), C3 (deposit rates), C1+C2 (affordability), D2 (long text SEO) |
+| P2 (nice-to-have, в третьей) | D4 (live ticker), B3 (full history audit), C4 (RUONIA-like research) |
+| Future (отложено явно Никитой) | F1 крипто, F2 регионы |
+
+---
+
+## Кластер A — Time aggregations & view modes
+
+> **A1 и A2 — это одна задача в двух частях:** A1 (движок переключателей, уже есть на CPI) + A2 (таблица «какие кнопки рисуем у каждого индикатора»). Без A2 движок не знает, что показывать. Без A1 таблица — мёртвая. Делаем вместе.
+
+### A1. Унифицировать UX time-aggregation (freq × view) для большинства индикаторов
+
+**Что меняем.** Эталон — текущая страница CPI: переключатель частоты (week/month/quarter/year) × переключатель режима (yoy / mom / cum / abs). Применить эту же пару (`FrequencySwitcher` + `CpiViewModePicker`) ко всем индикаторам, где исторически только один frequency. Конкретные пары — A2.
+
+**Ключевое уточнение Никиты.** Для индикаторов, которые могут уходить в отрицательную зону (`current-account`, `trade-balance`, `budget-deficit`, `population-natural-growth`, `population-migration` и т.п.) — **никаких процентных изменений**. Только абсолютные значения и абсолютная разница год-к-году (в тех же единицах, не в %).
+
+**Затронутые файлы.**
+- `backend/seed_data.py` — `model_config_json` каждого индикатора получает `views: [...]` и `aggregations: [...]`.
+- `backend/app/services/calculation_engine.py`, `backend/app/services/derived_ops.py` — возможно новые ops: `weekly_mean`, `quarterly_mean_from_daily`, `annual_mean_from_daily`, `mom_pct`, `rolling_12m_pct`, `yoy_absolute_diff` (для отрицательных).
+- `backend/app/api/indicators.py` — endpoint должен отдавать список доступных views/aggregations для UI.
+- `frontend/src/lib/useIndicatorViewModeData.js` — обобщить с CPI-only на любой индикатор.
+- `frontend/src/components/IndicatorChartSection.jsx` — рендер переключателей по конфигу.
+- `frontend/src/components/FrequencySwitcher.jsx`, `CpiViewModePicker.jsx` — переиспользуем, переименуем `CpiViewModePicker` → `ViewModePicker` для ясности.
+
+**Риски.**
+- Кэш forecast'ов под старые derived-коды (`exports-yoy`, etc.) — после объединения derived теперь живут как режимы внутри родителя. Нужен retrain или каскадная инвалидация (как в ADR-0001).
+- ADR-0002: `bulk_upsert` должен продолжать быть идемпотентным для пересчёта режимов.
+
+**Зависимости.** A2, A3.
+
+**Приоритет.** P1 (большая, делаем после P0 фундамента).
+
+---
+
+### A2. Per-indicator config: какие частоты и какие режимы
+
+**Зачем эта задача.** Движок переключателей (A1) — это шасси, A2 — это «какие кнопки рисуем на каждом индикаторе». Без A2 frontend либо рисует все возможные кнопки везде (и большинство нажатий дают невалидные данные), либо вообще ничего не рисует. Это контракт между backend и frontend: «вот этот индикатор поддерживает следующие комбинации».
+
+**Что меняем.** Для каждого из ~109 индикаторов прописать в `model_config_json` поля `views` и `aggregations`. Шаблоны:
+
+```text
+DAILY (key-rate, usd-rub, eur-rub, cny-rub, ruonia, gold-price):
+  aggregations: [daily, monthly, quarterly, annual]   # mean или close-of-period
+  views: [abs, mom_pct, yoy_pct]                       # MoM/YoY только для absolute (ставки могут падать — но не отрицательно)
+
+MONTHLY всегда положительные (wages, ipi, ppi, retail-trade, ставки, кредиты-объёмы):
+  aggregations: [monthly, quarterly, annual]
+  views: [abs, mom_pct, qoq_pct, yoy_pct, rolling_12m_pct]
+
+QUARTERLY (gdp-*, housing-price-*):
+  aggregations: [quarterly, annual]
+  views: [abs, qoq_pct, yoy_pct]
+
+NEGATIVE-CAPABLE (trade-balance, current-account, budget-deficit, *-migration, *-natural-growth):
+  aggregations: [по своей частоте]
+  views: [abs, yoy_abs_diff]   # только абсолютная разница, не %
+```
+
+**Затронутые файлы.** `backend/seed_data.py`.
+
+**Риски.** Низкие — это таблица конфигов.
+
+**Зависимости.** A1 (генерик инфраструктура).
+
+**Приоритет.** P1.
+
+---
+
+### A3. Объединение дублирующих карточек + 301-редирект
+
+**Что меняем.** Карточки-дубли убираем как отдельные индикаторы, оставляем как режимы родителя.
+
+| Родитель | Дочерние (объединяем) |
+|----------|----------------------|
+| `exports` | `exports-monthly`, `exports-yoy`, `exports-qoq` |
+| `imports` | `imports-monthly`, `imports-yoy`, `imports-qoq` |
+| `trade-balance` | `trade-balance-monthly` |
+| `services-exports` | `services-exports-monthly` |
+| `services-imports` | `services-imports-monthly` |
+| `current-account` | `current-account-yoy` |
+| `unemployment` | `unemployment-quarterly`, `unemployment-annual` |
+| `wages-nominal` | `wages-yoy` |
+| `ipi` | `ipi-yoy` |
+| `cpi-services` | `cpi-services-quarterly`, `cpi-services-annual` (audit аналогично для cpi-food, cpi-nonfood, ppi) |
+| `credit-rate-corp` (новый зонт) | `credit-rate-corp-short`, `-1to3y`, `-over3y` (объединяются в одну карточку с переключателем срока «До 1 года / 1-3 / Свыше 3») |
+| `credit-rate-ind` (новый зонт) | `credit-rate-ind-short`, `-1to3y`, `-over3y` |
+| `deposit-rate` | новые `deposit-rate-short`, `-1to3y`, `-over3y` (см. C3) |
+
+**Демография — НЕ объединяем** (Никита явно сказал): `population-total-growth`, `population-natural-growth`, `population-migration`, `births`, `deaths`, `birth-rate`, `death-rate` остаются отдельными.
+
+**SEO-механика 301.** Старые URL вида `/indicator/exports-yoy` 301-редиректят на `/indicator/exports?view=yoy`. Google передаёт ranking при 301. Сделаем:
+- `frontend/nginx.conf` — добавить `location ~ ^/indicator/(exports-yoy|exports-qoq|...)/?$` → `return 301 /indicator/<parent>?view=<mode>`.
+- `backend/seed_data.py` — у дочернего индикатора `is_active=False`, добавить поле `redirect_to_code` и `redirect_to_view`.
+- `backend/app/api/sitemap.py` — убрать дочерние из sitemap.
+- `frontend/src/pages/IndicatorDetail.jsx` — читать `?view=` из querystring, при загрузке выставлять mode.
+
+**Затронутые файлы.** `seed_data.py`, `nginx.conf`, `sitemap.py`, `IndicatorDetail.jsx`, `App.jsx` (если редиректить на SPA-уровне).
+
+**Риски.**
+- **Высокий риск SEO**, если редиректить неаккуратно: Google может временно понизить страницы. Нужно проверить, что в `robots.txt`/`sitemap.xml` дочерние URL убраны до 301.
+- Старые форкасты под дочерними кодами в `forecast` таблице → нужно cascade retrain после миграции.
+- Кэш Redis — обязательный FLUSHDB.
+
+**Зависимости.** Сначала A1 (генерик режимы), потом A3 (миграция).
+
+**Приоритет.** P0 (без объединения интерфейс перегружен — Никита flagged).
+
+---
+
+## Кластер B — Глубина истории
+
+### B1. Ключевая ставка ЦБ — склеить со ставкой рефинансирования (1992-2013)
+
+**Что меняем.** Сейчас `key-rate` начинается с 2013-09-13 (ввод ключевой ставки). До этого роль играла **ставка рефинансирования** (1992-2013). Никита: «надо как-то склеить, чтобы ряд был с максимальной историей».
+
+**Механика.** Ставка рефинансирования и ключевая ставка — формально разные ставки, но **на 2013-09-13 они были фактически приравнены** (Банк России явно сообщал, что ключевая ставка = ставке рефинансирования). Это даёт чистый splice-point без сцепления.
+
+**Данные.** Архив cbr.ru/hd_base/refinancing/ — список значений ставки рефинансирования с 01.01.1992 (~50 точек, ступенчатый ряд). Публичный источник, никаких внешних файлов не нужно.
+
+**Затронутые файлы.**
+- `backend/app/services/cbr_keyrate_html.py` (или новый `cbr_refinancing_html.py`) — fetcher для архивной ставки рефинансирования.
+- `backend/app/data/refinancing_rate_historical.py` (новый seed-файл, аналог `housing_historical.py`) — immutable seed точек 1992-2013.
+- `scripts/backfill_key_rate_historical.py` (новый, аналог `backfill_housing_historical.py`).
+- `backend/seed_data.py` — `key-rate.methodology` обновить (без раскрытия внутренностей, по правилу языка).
+- `docs/data_sources.md` — добавить запись.
+
+**Риски.**
+- Если ставка рефинансирования не точно равна ключевой ставке на 2013-09-13 — нужно явно отметить шов в данных (можно через `event` в forecast-таблице или просто в methodology упомянуть).
+- Forecast retrain после backfill: `key-rate` обычно без прогноза, но проверить.
+
+**Зависимости.** Нет.
+
+**Приоритет.** P1.
+
+---
+
+### B2. Зарплата с 90-х
+
+**Что меняем.** Текущий `wages-nominal` начинается с 2015. Никита: «наверняка зарплата есть раньше… с 90-х». Подтянуть исторический ряд средней номинальной заработной платы с 1991 (или сколько даст Росстат).
+
+**Данные.** Росстат публикует «Среднемесячная номинальная начисленная заработная плата работников по полному кругу организаций» с 1991 года. Архивные годовые точки 1991-2014 ищем в архивных HTML-таблицах Росстата (аналог `housing_historical.py` для жилья) — найдём при имплементации, публичный источник.
+
+**Затронутые файлы.**
+- `backend/app/data/wages_historical.py` (новый, immutable seed годовых точек 1991-2014).
+- `scripts/backfill_wages_historical.py` (новый).
+- `backend/app/services/rosstat_labor_parser.py` — без изменений (продолжает обновлять текущие).
+
+**Риски.**
+- Деноминация 1998 года: ряд до и после 1998 в разных деноминациях рубля. Нужно унифицировать.
+- Возможно, до 2000 года данные есть только годовые, не месячные.
+
+**Зависимости.** Нужно до C2 (wages index).
+
+**Приоритет.** P1.
+
+---
+
+### B3. Аудит максимальной истории по всем 109 индикаторам
+
+**Что меняем.** Скрипт, который для каждого индикатора показывает (а) текущую глубину истории, (б) теоретически доступную глубину из Росстат/ЦБ/Минфин, (в) GAP.
+
+**Затронутые файлы.**
+- `scripts/audit-history-depth.py` (новый).
+
+**Риски.** Низкие — read-only анализ.
+
+**Зависимости.** Нет.
+
+**Приоритет.** P2.
+
+---
+
+## Кластер C — Новые индикаторы
+
+### C1. Индекс доступности жилья
+
+**Что меняем.** Новый derived-индикатор `housing-affordability`. Формула (от Никиты): сколько квадратных метров жилья можно купить на месячную среднюю зарплату.
+
+```text
+housing-affordability[t] = wages-nominal[t] / housing-price-secondary[t]
+```
+
+Или, если используем индексы (что Никита и предложил):
+
+```text
+housing-affordability-index[t] = wages-index[t] / housing-price-index[t]   # база 2010 = 100
+```
+
+Чем больше — тем доступнее жильё.
+
+**Затронутые файлы.**
+- `backend/seed_data.py` — новый индикатор `housing-affordability` в категорию «Цены».
+- `backend/app/services/calculation_engine.py` — `DERIVED_SPECS` запись.
+- `backend/app/services/derived_ops.py` — новая op `ratio` (если нет) или специфичная `housing_affordability`.
+- `frontend/src/lib/categories.js` — обновить SEO-описание категории «Цены», если нужно упомянуть.
+
+**Риски.**
+- `housing-price-secondary` сейчас в индексе (2010=100), а `wages-nominal` в рублях. Прямое деление даст «сколько метров стоит один рубль зарплаты» × коэффициент — нужно явно нормировать к 2010 (зависимость от C2).
+- Альтернатива: считать в физических единицах — нужна цена квадратного метра в рублях, не индекс. Есть ли такие данные у Росстата? Возможно, есть «Стоимость 1 кв.м жилья» отдельно от индекса.
+
+**Зависимости.** C2 (wages-index должен быть готов).
+
+**Приоритет.** P1.
+
+---
+
+### C2. Зарплата в индексной форме (2010=100)
+
+**Что меняем.** Новый derived `wages-nominal-index` (или `wages-2010-index`) — `wages-nominal` нормированный к 2010 году = 100.
+
+**Затронутые файлы.**
+- `backend/seed_data.py` — новый индикатор в «Рынок труда».
+- `backend/app/services/derived_ops.py` — op `rebase_to_index(base_year=2010)`.
+- `backend/app/services/calculation_engine.py` — DERIVED_SPECS.
+
+**Риски.** Низкие — стандартная нормировка.
+
+**Зависимости.** B2 (история зарплаты с 90-х, чтобы 2010 был в середине ряда, а не в начале).
+
+**Приоритет.** P1.
+
+---
+
+### C3. Ставки по вкладам с разбивкой по сроку
+
+**Что меняем.** Сейчас один общий `deposit-rate`. Никита хочет симметрию с кредитами — разбивка по сроку. Добавить 3 новых:
+- `deposit-rate-short` (до 1 года)
+- `deposit-rate-1to3y`
+- `deposit-rate-over3y`
+
+После — объединить в одну карточку «Ставки по вкладам» с переключателем срока (см. A3).
+
+**Данные.** CBR DataService API уже даёт средневзвешенные ставки по вкладам с разбивкой по срокам (форма банковской отчётности 0409128). У ЦБ есть нужные element_id.
+
+**Затронутые файлы.**
+- `backend/app/services/cbr_dataservice_json.py` — переиспользуем existing parser, добавляем новые конфиги.
+- `backend/seed_data.py` — 3 новых индикатора + объединение зонтиком в A3.
+- `docs/data_sources.md` / `docs/cbr_sources.md` — добавить element_id.
+
+**Риски.** Низкие — переиспользуем рабочий parser.
+
+**Зависимости.** A3 (для объединения).
+
+**Приоритет.** P0 (Никита явно flagged, лёгкая правка с большой видимой ценностью).
+
+---
+
+### C4. Research: редкие показатели типа RUONIA
+
+**Что меняем.** Никита: «по руоне у нас растут показы… что ещё такого редкого можно добавить». Это **research-task**, не implementation.
+
+**Кандидаты для предварительного скана:**
+- MIACR (Moscow Interbank Actual Credit Rate).
+- ROISfix (Russian Overnight Index Swap fixing).
+- NFEA Swap Rate.
+- OIS-кривая по разным срокам.
+- ICOR (Incremental Capital-Output Ratio) — экзотический макропоказатель.
+- TSI (Transportation Services Index) — ж/д, авто, авиа грузооборот.
+- Real Effective Exchange Rate (REER) — у ЦБ есть.
+
+**Затронутые файлы.** Нет (это research-фаза). По итогам — отдельные парсеры.
+
+**Риски.** Нет.
+
+**Зависимости.** Нет.
+
+**Приоритет.** P2.
+
+---
+
+## Кластер D — UX / SEO
+
+### D1. Поиск по индикаторам
+
+**Что меняем.** Никита: «нам как будто поиска не хватает». Поиск по 109+ индикаторам по ключевой фразе (название, код, синонимы).
+
+**Где разместить.** В шапке сайта (везде доступно). Поверх на главной — крупный input. На других страницах — компактная иконка → раскрывающийся input.
+
+**Реализация.** Не нужен elastic — 109 индикаторов помещаются в один JSON ~30 КБ, ищем на frontend (substring match с подсветкой). Бэкенд может отдать готовый search-index файл.
+
+**Затронутые файлы.**
+- `frontend/src/components/SearchBar.jsx` (новый).
+- `frontend/src/components/Navbar.jsx` — встроить.
+- `frontend/src/pages/HomePage.jsx` — крупный input на главной.
+- `backend/app/api/indicators.py` — endpoint `/api/v1/search-index` (или статический файл).
+- `backend/app/data/indicator_seo.py` — добавить `synonyms: [...]` per indicator (для нахождения по альтернативным запросам, типа «инфляция» → cpi).
+
+**Риски.**
+- Если делать слишком умно (fuzzy match, морфология) — overhead. MVP: substring case-insensitive по name + name_en + synonyms.
+
+**Зависимости.** Нет.
+
+**Приоритет.** P0 (Никита flagged, ценность высокая).
+
+---
+
+### D2. Больше текста на странице индикатора (SEO)
+
+**Что меняем.** Никита: «у нас мало текста на странице, нам бы побольше». Привёл пример как на жилье. Но `methodology` у нас по правилу проекта НЕ выдаёт внутренности и держится короткой. Значит — **новый блок**: «Что это и зачем».
+
+**Структура нового блока (300-600 слов на индикатор):**
+- Что этот показатель экономически означает (бытовым языком).
+- Кто и для чего его использует (ЦБ для политики, аналитики для прогнозов, инвесторы для оценки).
+- Какие у него типичные сезонные/циклические паттерны.
+- Как читать график.
+- Связь с другими индикаторами (linked indicators — уже добавлены, дополним текстом).
+
+**Затронутые файлы.**
+- `backend/app/data/indicator_seo.py` — новое поле `long_description` per indicator.
+- `backend/seed_data.py` — возможно дублировать в model_config (зависит от архитектуры — лучше в seo_data).
+- `backend/app/schemas.py` — добавить `long_description` в IndicatorDetail.
+- `frontend/src/pages/IndicatorDetail.jsx` — новая секция под графиком, перед methodology.
+- `backend/app/services/seo_renderer.py` — SSR-рендер этой секции (для индексации без JS).
+
+**Риски.**
+- Объём контента: 109 индикаторов × 400 слов = 40000 слов. Не быстро. Можно итеративно — сначала топ-20 по показам Google.
+
+**Зависимости.** Нет.
+
+**Приоритет.** P1.
+
+---
+
+### D3. IPP — главное число (hero value) должно быть абсолютным, не индексом
+
+**Что меняем.** Никита: «на первую не вот этот 112, а вот это 663». Сейчас на карточке IPP в hero-числе индекс ~112. Никита хочет видеть **абсолютный объём промышленного производства** (~663 — это, видимо, индекс в каком-то другом разрезе или физический объём в млрд руб.). Аналогично подумать про другие индексы (PPI, housing-price-*).
+
+**Источник 663 — open question.** Пользователь не помнит, откуда Никита взял это число. Два возможных подхода:
+
+**Вариант A (default, без уточнений от Никиты — рекомендуется).** Hero-число у IPP меняем с индекса (112) на **YoY% изменение** (например, «+1.2% г/г»). Это в точности логика, которую Никита упомянул для инфляции: «как у инфляции». Бесплатно (никакого нового индикатора), просто меняем формулу hero. Применимо также к PPI, housing-price-*, любым «индексам».
+
+**Вариант B (если 663 — это конкретный показатель Росстата).** Скорее всего, это **физический объём промышленного производства в млрд руб.** (Росстат публикует отдельно от индекса). Тогда нужен новый source-индикатор `industrial-shipped-volume` (или подобный), и hero берётся из него. Это вариант с добавлением данных.
+
+**Что делать.** Имплементируем вариант A. После пуша — Никита посмотрит. Если скажет «не то» — переключаемся на B.
+
+**Затронутые файлы (для варианта A).**
+- `backend/app/api/indicators.py` или `backend/app/schemas.py` — добавить поле `hero_value` и `hero_subtitle` в IndicatorDetail (вычисляется на бэке).
+- `backend/seed_data.py` — `model_config_json.hero_view = "yoy_pct"` для IPP, PPI, housing-price-primary/secondary.
+- `frontend/src/pages/IndicatorDetail.jsx` — рендер hero из новых полей.
+
+**Риски.** Минимальные — это смена отображения, данные не трогаем.
+
+**Зависимости.** Нет.
+
+**Приоритет.** P0 (Никита flagged визуально, фикс быстрый).
+
+---
+
+### D4. Live ticker (моргающее табло) сверху
+
+**Что меняем.** Никита: «как у TradingEconomics, чтобы моргало». Сверху сайта — горизонтальная бегущая лента с курсами валют (USD/RUB, EUR/RUB, CNY/RUB), Brent oil, BTC. Каждое значение моргает при обновлении (раз в 30 сек — 1 мин). Можно автообновление через poll или WebSocket.
+
+**Источники цен в real-time (предложенные, без ключей и платных подписок):**
+- **Валюты intraday** — MOEX ISS API (`https://iss.moex.com/iss/engines/currency/markets/selt/securities/USD000UTSTOM.json` и аналоги для EUR, CNY). Публичный, без ключа, обновление ~1 сек, лимит ~10 req/sec.
+- **Brent oil** — MOEX-фьючерсы Brent (`https://iss.moex.com/iss/engines/futures/markets/forts/securities/BR-*` — текущий ближний контракт) или Yahoo Finance (`https://query1.finance.yahoo.com/v8/finance/chart/BZ=F`, без ключа).
+- **BTC, ETH** — CoinGecko (`https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=rub`), free tier 10-30 req/min, без ключа.
+
+**Затронутые файлы.**
+- `frontend/src/components/LiveTicker.jsx` (новый).
+- `frontend/src/App.jsx` — встроить ticker в верх.
+- `backend/app/api/ticker.py` (новый) — endpoint `/api/v1/ticker` с актуальными ценами.
+- `backend/app/services/ticker_fetcher.py` (новый) — fetcher из внешних API.
+- `backend/app/tasks/scheduler.py` — job `refresh_ticker` каждую минуту.
+- `docker-compose.yml` — возможно отдельный env var для API ключей.
+
+**Риски.**
+- Внешние API могут rate-limit'ить или требовать ключ. Нужно проверить лимиты CoinGecko (бесплатный 10-50 req/min) — для одного экземпляра должно хватить.
+- Поллинг с frontend каждые 30 сек — нагрузка на backend. Лучше WebSocket или Server-Sent Events.
+
+**Зависимости.** Нет.
+
+**Приоритет.** P2 (визуальный «бантик», полезен но не критичен).
+
+---
+
+### D5. Категория «Финансы» — разделить на Валюты / Фондовые / Товарные
+
+**Что меняем.** Сейчас в «Финансах» 16 разнотипных индикаторов. Никита: «надо точно в отдельный блок выделить валюты… крипторынок… фондовые… товарные».
+
+**Предложенное разбиение** (на основе текущих 16 индикаторов в «Финансах»):
+
+- **Валюты** (если не в Ставках): `usd-rub`, `eur-rub`, `cny-rub`.
+- **Драгметаллы / товарные**: `gold-price`, в будущем `oil-price`.
+- **Денежно-кредитная сфера**: `m2`, `international-reserves`, `gold-reserves` (если есть).
+- Кредиты/вклады/долг (см. C3): сейчас в Финансах — `consumer-credit`, `business-credit`, `deposits-individual`, `deposits-business`, `external-debt`, `mortgage-volume` — оставить в новой подкатегории «Кредиты и долг» или мигрировать в «Ставки».
+
+**Затронутые файлы.**
+- `frontend/src/lib/categories.js` — новые категории, slug'и, описания.
+- `backend/app/services/seo_content.py::CATEGORY_META` — синхронно (см. ADR-0003).
+- `backend/seed_data.py` — `category` для затронутых индикаторов.
+- `frontend/nginx.conf` — `location ~ ^/(currencies|commodities|monetary)` для новых SPA-маршрутов.
+- `backend/app/api/sitemap.py` — обновить sitemap.
+
+**Риски.**
+- **ADR-0003: `seo_content.py::CATEGORY_META` и `categories.js` должны быть синхронны.** При правке менять оба.
+- SEO: URL'ы категорий `/category/finance` → новые `/currencies`, `/commodities` — потеря SEO-веса старой категории. Нужны 301 для всех старых индикаторов.
+
+**Зависимости.** Нет.
+
+**Приоритет.** P0 (Никита flagged как часть переработки UX).
+
+---
+
+### D6. Разрывы на дневных графиках (RUONIA в первую очередь)
+
+**Что меняем.** Никита: «по ставке руоня сломано так вот немножко… разрыв получается». На дневных графиках есть визуальные дыры — выходные и праздники, когда нет торгов.
+
+**Возможные причины и фиксы.**
+- Recharts при `connectNulls={false}` рисует разрывы между точками с разной датой → выходные превращаются в визуальный «зигзаг».
+- Фикс 1 (cheap): `connectNulls={true}` в IndicatorChart для daily-индикаторов → сплошная линия через выходные.
+- Фикс 2 (better): на бизнес-дни не вставлять `null`, а либо переносить значение предыдущего дня (карри-форвард), либо просто пропускать пустые дни в X-оси.
+
+**Затронутые файлы.**
+- `frontend/src/components/IndicatorChart.jsx` — `connectNulls={true}` для daily.
+- Возможно `frontend/src/lib/useIndicatorViewModeData.js` — фильтрация nulls.
+
+**Риски.** Минимальные. Если карри-форвард — это уже семантика, может смутить аналитика (как будто «торги были в выходные»). Лучше connectNulls + tooltip с явной датой.
+
+**Зависимости.** Нет.
+
+**Приоритет.** P0 (Никита flagged, фикс на 1-2 строки кода).
+
+---
+
+## Кластер E — Integrity
+
+### E1. ADR-0002 audit: `bulk_upsert` не затирает данные пустотой
+
+**Что меняем.** Никита flagged: «допустим на Росстате пропало что-то… надо обеспечить, чтобы у нас это осталось». Это инвариант ADR-0002 (`bulk_upsert` идемпотентен `ON CONFLICT DO UPDATE WHERE value <> excluded.value`). Нужно подтвердить, что инвариант **не нарушен** ни одним парсером.
+
+**Что проверяем.**
+- ADR-0002 говорит: на конфликте по (`indicator_id`, `date`) обновляем `value` только если оно изменилось. **Но что если парсер вернул пустой список (источник пропал)?** Тогда `bulk_upsert([])` ничего не делает — данные в БД сохраняются. Это нужно подтвердить тестом.
+- Что если парсер вернул `{date: 2026-03-01, value: None}`? Может ли это записать NULL поверх существующего? Нужен явный фильтр перед upsert.
+- Что если парсер вернул короткий ряд (вместо 100 точек только 5)? `bulk_upsert` не удалит остальные 95 — это инвариант. Подтвердить тестом.
+
+**Затронутые файлы.**
+- `backend/app/services/upsert.py` — проверить логику, при необходимости добавить guard `if not data: return`.
+- `backend/tests/test_upsert.py` — добавить тест-кейс «empty source preserves DB».
+- `backend/tests/test_upsert.py` — добавить тест-кейс «None value не пишется».
+- `docs/adr/0002-derived-always-reflects-source.md` — обновить раздел «Subsequent additions» с явным подтверждением data preservation.
+
+**Риски.** Низкие — это audit с тестами.
+
+**Зависимости.** Нет.
+
+**Приоритет.** P0 (доверие к данным — фундамент).
+
+---
+
+### E2. Budget-deficit перепроверка
+
+**Что меняем.** Пользователь поставил пункт 11. В транскрипции явно не упомянуто, но это контекст предыдущей задачи T6 (preliminary parsing из пресс-релизов Минфина). На проде сейчас:
+
+- `budget-deficit` lag = 49 дней, последняя точка `2026-04-01`.
+- Сегодня 21 мая → за май публикации Минфина обычно в конце месяца или начале июня.
+- За апрель уже есть — значит **препарсер пресс-релизов работает корректно**.
+
+**Что проверить дополнительно.**
+- Логи backend на ошибки парсера Минфин за последний месяц.
+- Сравнить наше значение за апрель 2026 с публикацией Минфина — если совпадает, всё ок.
+
+**Затронутые файлы.** Нет правок кода — это проверка.
+
+**Риски.** Нет.
+
+**Зависимости.** Нет.
+
+**Приоритет.** P0 (быстрая проверка, 5 минут).
+
+---
+
+## Future (отложено Никитой явно)
+
+### F1. Криптовалюты в финансах
+
+**Что отложено.** «Биткоин, эфир — можно добавить, но потом». См. D4 (часть live ticker — биткоин туда попадёт раньше как ценовая точка). Полноценные карточки `bitcoin-rub`, `eth-rub` с историей — отдельная задача после D4 и D5.
+
+### F2. Региональные данные Росстата
+
+**Что отложено.** «Возможность добавить огромное количество индикаторов, по типу сельхозтоваров, по регионам». Никита явно сказал «давай пока вначале вот с этим [федеральные]». Большая отдельная задача, требует расширения модели данных (region-key) и UI (фильтр по региону).
+
+---
+
+## Карта файлов «что за что отвечает»
+
+Для удобства навигации при имплементации:
+
+| Слой | Файл | Ответственность |
+|------|------|----------------|
+| **Seed** | `backend/seed_data.py` | Все 109 индикаторов: метаданные, categories, derived configs, methodology |
+| **SEO seed** | `backend/app/data/indicator_seo.py` | Per-indicator seo_title, seo_description, synonyms (для поиска), long_description (D2) |
+| **Categories sync** | `frontend/src/lib/categories.js` ⟷ `backend/app/services/seo_content.py` | ADR-0003: должны быть синхронны |
+| **Historical seeds** | `backend/app/data/housing_historical.py`, `backend/app/data/refinancing_rate_historical.py` (новый), `backend/app/data/wages_historical.py` (новый) | Immutable архивные точки до начала автоматического парсинга |
+| **Models** | `backend/app/models.py` | SQLAlchemy: `Indicator`, `IndicatorData`, `ForecastValue`, `CalendarEvent`, etc |
+| **Schemas** | `backend/app/schemas.py` | Pydantic DTO для API |
+| **Upsert (ADR-0002)** | `backend/app/services/upsert.py` | Идемпотентный bulk_upsert. Не должен затирать данные пустотой |
+| **Calculation engine (ADR-0001)** | `backend/app/services/calculation_engine.py` + `derived_ops.py` | DERIVED_SPECS + чистые ops (yoy, qoq, annual_sum, etc) |
+| **Parsers (source per file)** | `backend/app/services/{rosstat,cbr,minfin}_*_parser.py` | Каждый файл — один источник. См. `docs/data_sources.md` для карты source → file → лист/строка/колонка |
+| **Forecast strategies** | `backend/app/services/forecast_strategies/registry.py` + конкретные стратегии | Live-SARIMA, derived-from-source, и др |
+| **API routes** | `backend/app/api/{indicators,calendar,dashboard,forecasts,sitemap,system}.py` | FastAPI endpoints |
+| **Scheduler** | `backend/app/tasks/scheduler.py` + `tasks/etl.py` | APScheduler: daily ETL 06:00 MSK, calendar refresh 03:00 MSK, late Minfin 15:00 MSK |
+| **SEO renderer (ADR-0003)** | `backend/app/services/seo_renderer.py` | SSR для категорий и индикаторов |
+| **Detail page** | `frontend/src/pages/IndicatorDetail.jsx` | Карточка индикатора: hero, график, view modes, методология, related |
+| **Category page** | `frontend/src/pages/CategoryPage.jsx` | Листинг индикаторов по категории |
+| **Chart core** | `frontend/src/components/IndicatorChart.jsx` | Recharts-обёртка. Свойства connectNulls, padding, intervals |
+| **View modes** | `frontend/src/components/CpiViewModePicker.jsx` (переименовать в `ViewModePicker`), `FrequencySwitcher.jsx`, `lib/useIndicatorViewModeData.js` | Переключатели частоты и режима. **Уже generic** |
+| **Edge / routing** | `frontend/nginx.conf` | SPA-роутинг, 301-редиректы (нужно для A3), location'ы для новых категорий (D5) |
+| **Language rule** | `.cursor/rules/methodology-language.mdc` + `scripts/audit-public-language.py` | Не выдавать внутренности в публичных полях (применимо к D2) |
+
+---
+
+## История (sealed правки)
+
+- 2026-05-16 T13: чистка публичного языка в `methodology`/`description` (26 полей). Коммит `9789982`. См. `.cursor/rules/methodology-language.mdc`.
+- 2026-05-16 T10: housing-price-* backfill 1998-2014. Коммит `840df17`.
+- 2026-05-16 T11: `ppi` переведён с approved на live-SARIMA `ppi_monthly`. Коммит `ace7905`.
+- 2026-05-16 T12: calendar group-by похожих событий (frontend). Коммит `ace7905`.
+- 2026-05-13 T9: прогнозы для housing-yoy-* и gdp-{consumption,government}. Коммит `f7d4f85`.
