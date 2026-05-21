@@ -1,6 +1,6 @@
 # Forecast Economy — Project Context
 
-**Last updated:** 2026-05-20 (backlog звонка 2026-05-17: 16 правок + сверка с транскриптом, см. раздел «Backlog: звонок 2026-05-17» ниже).
+**Last updated:** 2026-05-21 (фаза A backlog: №3 ось daily, №6 guard+тест, №11 budget-deficit до 2026-04).
 **Part of:** [`AGENTS.md`](AGENTS.md) (точка входа для AI-агента).
 **See also:** [`README.md`](README.md), [`docs/workflow.md`](docs/workflow.md), [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md), [`docs/data_sources.md`](docs/data_sources.md), [`docs/cbr_sources.md`](docs/cbr_sources.md), [`docs/analytics_api_inventory/`](docs/analytics_api_inventory/), [`docs/adr/`](docs/adr/).
 
@@ -231,6 +231,10 @@ Daily ETL (06:00 МСК, `RUSTATS_SCHEDULER_CRON_HOUR/MINUTE`) запускае�
 
 В `backend/app/main.py` lifespan регистрируются **два обязательных** APScheduler job'а: `daily_etl` (06:00 МСК) и `calendar_refresh` (1-го числа 03:00 МСК). Дополнительно — два опциональных под `RUSTATS_ANALYTICS_SCHEDULER_ENABLED=true`: `analytics_hourly` (:15) и `analytics_daily` (07:20). Если scheduler-флаг выключен — работает только `daily_etl` + `calendar_refresh`, прочие cron-ы не регистрируются.
 
+### Empty ETL must not wipe history
+
+`BaseParser.run()` при `len(points)==0` завершает fetch_log как `no_new_data` и **не вызывает** `bulk_upsert` (нет DELETE в `upsert.py`). Регрессия: `backend/tests/test_base_parser_empty_fetch.py`. Симптом «пустой график после сбоя» чаще означает, что локальная БД никогда не получала ETL для кода, а не затирание.
+
 ### `is_listed` vs VariantGroupPicker
 
 Скрытие индикатора через `is_listed=False` — это **только** про карточку в `/category/{slug}`. Сам индикатор по-прежнему доступен по `/indicator/{code}`, отдаётся API, индексируется поисковиками, попадает в sitemap. Если нужно полностью убрать индикатор — это другой механизм (`is_active=False` + ручная чистка sitemap-генератора).
@@ -314,7 +318,7 @@ Legacy `WeeklySpec` / `typical_day` builders в `calendar_seed.py` оставл�
 
 ## Backlog: звонок 2026-05-17 (16 правок)
 
-Сверка заметок Жени с транскриптом звонка с Никитой Александровичем. Статус: **правка №13 внедрена локально** (VariantGroup + `is_listed`); остальные — в очереди.
+Сверка заметок Жени с транскриптом звонка с Никитой Александровичем. Статус: **№13** — коммит `08b4ebe` (локально, без push); **фаза A (№3, №6, №11)** — 2026-05-21.
 
 **Эталон UX (правка №1):** страница `cpi` — три слоя переключателей:
 1. **Частота** — `FrequencySwitcher` (`frontend/src/lib/frequencySwitcher.js`, `alternate_frequencies` / `primary_indicator_code` в `seed_data.py`).
@@ -329,15 +333,15 @@ Legacy `WeeklySpec` / `typical_day` builders в `calendar_seed.py` оставл�
 |----|------|----------------------|----------------|--------------|
 | **1** | Унифицировать временные срезы и %‑изменения по сайту: неделя/месяц/квартал/год + м/м, к/к, г/г, скользящая 12м (где уместно). Для **категории «Ставки»** — только уровни (мес/кв/год), **без** приростов. | ВВП, курсы валют (юань и др.), денежная масса, кредиты, розница, ИПП — «как у ВВП и ИПЦ». Текущий счёт — **без** % (может быть отрицательным). | `derived_ops.py`, `calculation_engine.py`, `seed_data.py`, `indicatorVariants.js`, `frequencySwitcher.js`, `useIndicatorViewModeData.js` (обобщить CPI‑паттерн) | Средний: много derived + скрытие карточек |
 | **2** | Ключевая ставка: удлинить историю — склеить с **ставкой рефинансирования** до 2013; плюс мес/кв/год агрегаты. | «С 2013, а надо раньше»; та же логика для всех ставок ЦБ. | `cbr_keyrate.py`, `cbr_keyrate_parser.py`, новый источник/скрипт splice, `docs/cbr_sources.md` | Средний: верификация splice |
-| **3** | Разрывы на оси X графика (RUONIA и др. daily): подписи дат «прыгают», нечитаемо. | «Ставки по вкладам» ок (monthly); daily ломается. | `IndicatorChart.jsx` (interval, tickFormatter, possible `scale="point"` для sparse daily) | Низкий |
+| **3** | Разрывы на оси X графика (RUONIA и др. daily): подписи дат «прыгают», нечитаемо. | «Ставки по вкладам» ок (monthly); daily ломается. | `IndicatorChart.jsx` — **`scale="point"`** для `dateFormat=day` + адаптивный `interval` | **Сделано 2026-05-21** |
 | **4** | Research: редкие показатели «как RUONIA» (SEO‑трафик). Пройти `docs/missed_data_audit.md` + уже скачанные Excel Росстата. | «Поднабрать редкие»; региональный блок — **потом**. | `docs/missed_data_audit.md`, `docs/data_sources.md`, `PARSER_REGISTRY` | Низкий (только research) |
 | **5** | **Индекс доступности жилья** в категории «Цены»: метры жилья на месячную зарплату (или аналог из транскрипта). | Временно в «Цены», не отдельная категория; формула уточнить по записи. | Новый derived в `DERIVED_SPECS`, `seed_data.py`, `indicatorVariants.js`, `categories.js` + `seo_content.py` | Средний |
-| **6** | **Не терять историю** при сбое источника: ETL не должен затирать БД нулями/пустотой. | «Даже если на Росстате пропало — у нас архив остаётся». | `upsert.py` (уже только upsert, без delete), `base_parser.py` — аудит: нет ли full-replace; опционально guard «0 points → skip» | Низкий |
+| **6** | **Не терять историю** при сбое источника: ETL не должен затирать БД нулями/пустотой. | «Даже если на Росстате пропало — у нас архив остаётся». | `base_parser.py` early return при 0 points; `upsert` без delete; тест `test_base_parser_empty_fetch.py` | **Подтверждено 2026-05-21** (guard уже был) |
 | **7** | Средняя зарплата → **индекс** (база 2010=100), плюс удлинение истории (цель — с 90‑х). | Связано с №5; отдельный индекс зарплаты перед делением. | `rosstat_labor_parser.py`, новый derived `wages-index`, `seed_data.py` | Средний |
 | **8** | Аудит **максимальной глубины** всех рядов; добить splice/backfill где есть файлы. | «Чем раньше, тем лучше» по всему сайту. | `docs/data_sources.md`, парсеры GDP/housing/labor как референс; скрипт отчёта `MIN(date)` per code | Низкий→высокий по объёму |
 | **9** | Уточнить формулу **индекса доступности** (дубликат №5 для детализации). | Переслушать: «стоимость метра / зарплата», квартальные ряды жилья. | То же №5 | — |
 | **10** | **Ставка по вкладам**: разбивка по срокам (до 1 г / 1–3 / 3+) в **одной карточке** (как кредиты corp/ind). | Объединить «один показатель — много сроков», не 3 отдельные карточки в листинге. | CBR DataService (сейчас один `deposit-rate`), `indicatorVariants.js`, возможно несколько element_id | Средний |
-| **11** | **Дефицит бюджета**: перепроверить парсер после правок press+CSV. | «За апрель должно быть» (из прошлых правок). | `minfin_budget_parser.py`, prod SQL latest_date | Низкий |
+| **11** | **Дефицит бюджета**: перепроверить парсер после правок press+CSV. | «За апрель должно быть» (из прошлых правок). | `minfin_budget_parser.py` | **OK локально 2026-05-21**: `budget-deficit` max_date **2026-04-01**, 184 точки (revenue/expenditure синхронно) |
 | **12** | **Поиск по индикаторам** (~100+ карточек): главная или глобально в Navbar. | «Как TE»; индикаторов уже >80 с агрегациями. | Новый `IndicatorSearch.jsx`, `useIndicators` / API filter, `Navbar.jsx` | Низкий |
 | **13** | **Склейка дублей карточек** в VariantGroup + `is_listed=False`. | Экспорт/импорт/услуги/баланс; безработица (3 карточки); зарплата YoY; ИПП+ИПП YoY; **current-account + current-account-yoy** в одну; демографию **не** склеивать (прирост отдельно). | `indicatorVariants.js`, `INDICATOR_HIDDEN_FROM_LISTING`, `seed` | **Сделано 2026-05-20** (локально, без push): +6 групп, +10 hidden codes; `wages-real` и услуги без YoY — отдельные карточки |
 | **14** | Больше **публичного текста** на страницах (SEO), не в `methodology`. | «Как на жилье»; расширить блоки вроде `INDICATOR_SEO_BLOCKS`. | `indicator_seo.py`, `seo_renderer.py`, синхронно `categories.js` | Низкий |
