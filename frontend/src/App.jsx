@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useParams, useLocation, Link } 
 import Navbar from './components/Navbar';
 import NoiseOverlay from './components/NoiseOverlay';
 import Footer from './components/Footer';
+import LiveTicker from './components/LiveTicker';
 import ErrorBoundary from './components/ErrorBoundary';
 import { SkeletonBox } from './components/Skeleton';
 import useDocumentMeta from './lib/useMeta';
@@ -120,6 +121,9 @@ function AppRoutes() {
       <YandexMetrikaHit />
       <NoiseOverlay />
       <Navbar />
+      <div className="pt-20 md:pt-24">
+        <LiveTicker />
+      </div>
       <main className="relative z-0 flex-1">
         <ErrorBoundary>
         <Suspense fallback={
