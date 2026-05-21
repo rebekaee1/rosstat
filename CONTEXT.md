@@ -346,7 +346,7 @@ Legacy `WeeklySpec` / `typical_day` builders в `calendar_seed.py` оставл�
 | **13** | **Склейка дублей карточек** в VariantGroup + `is_listed=False`. | Экспорт/импорт/услуги/баланс; безработица (3 карточки); зарплата YoY; ИПП+ИПП YoY; **current-account + current-account-yoy** в одну; демографию **не** склеивать (прирост отдельно). | `indicatorVariants.js`, `INDICATOR_HIDDEN_FROM_LISTING`, `seed` | **Сделано 2026-05-20** (локально, без push): +6 групп, +10 hidden codes; `wages-real` и услуги без YoY — отдельные карточки |
 | **14** | Больше **публичного текста** на страницах (SEO), не в `methodology`. | «Как на жилье»; расширить блоки вроде `INDICATOR_SEO_BLOCKS`. | `indicator_seo.py`, `seo_renderer.py`, синхронно `categories.js` | Низкий |
 | **15** | **Live‑табло** на главной: валюты + нефть + bitcoin, «как TE». | Валюты вынести в отдельный блок категорий — **потом**; крипта — позже. | `Dashboard.jsx` / home, новые парсеры или внешний API, WebSocket/polling | Высокий (scope) |
-| **16** | *(из транскрипта, не в списке 16)* ИПП на графике выводить **YoY%** (663), а не уровень индекса (112) — как у инфляции. | «Первое число на карточке — процент изменения». | `IndicatorDetailHeader` / telemetry / default view mode для index‑like indicators | Низкий |
+| **16** | ИПП: по умолчанию **г/г %**, уровень индекса — через VariantGroup «Помесячно». | «Первое число на карточке — процент изменения». | `IndicatorDetail.jsx` redirect `ipi`→`ipi-yoy`, `categories.js` flagship | **Сделано 2026-05-21** |
 
 ### Правила склейки (из звонка, для №13)
 

@@ -46,8 +46,8 @@ export const VARIANT_GROUPS = [
   {
     label: 'Индекс промышленного производства',
     codes: [
-      { code: 'ipi', label: 'Помесячно' },
       { code: 'ipi-yoy', label: 'Год к году' },
+      { code: 'ipi', label: 'Помесячно' },
     ],
   },
   {

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import { useParams, useSearchParams, Link } from 'react-router-dom';
+import { useParams, useSearchParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { ArrowRight, GitCompare } from 'lucide-react';
 import gsap from 'gsap';
 import { useIndicator, useIndicatorStats, useIndicators } from '../lib/hooks';
@@ -23,8 +23,13 @@ import { track, events } from '../lib/track';
 import useScrollDepth from '../lib/useScrollDepth';
 import { isIndicatorListed } from '../lib/categories';
 
+/** Правка №16: на карточке ИПП по умолчанию показываем г/г %, не уровень индекса. */
+const IPI_DEFAULT_CODE = 'ipi-yoy';
+
 export default function IndicatorDetail() {
   const { code } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
   const headerRef = useRef(null);
   const [showForecast, setShowForecast] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -43,6 +48,15 @@ export default function IndicatorDetail() {
   }, [setSearchParams]);
   const [chartData, setChartData] = useState([]);
   const [currentRange, setCurrentRange] = useState('5y');
+
+  useEffect(() => {
+    if (code === 'ipi') {
+      navigate(
+        { pathname: `/indicator/${IPI_DEFAULT_CODE}`, search: location.search, hash: location.hash },
+        { replace: true },
+      );
+    }
+  }, [code, navigate, location.search, location.hash]);
 
   const {
     data: indicator,
