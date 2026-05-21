@@ -110,6 +110,20 @@ DERIVED_SPECS: list[DerivedSpec] = [
     # QoQ-only derivations.
     DerivedSpec("exports-qoq", ("exports",), ops.qoq),
     DerivedSpec("imports-qoq", ("imports",), ops.qoq),
+
+    # C2 (звонок 2026-05-21): зарплата в индексной форме, средняя 2010 года = 100.
+    # Сопоставимый формат с housing-price-primary/secondary (тоже индекс).
+    DerivedSpec("wages-index", ("wages-nominal",), partial(ops.rebase_to_index, base_year=2010)),
+
+    # C1 (звонок 2026-05-21): индекс доступности жилья = wages-index / housing-price-secondary × 100.
+    # Значения >100 — за период с 2010 года зарплаты росли быстрее цен на жильё (доступность ↑),
+    # <100 — цены на жильё обогнали зарплаты (доступность ↓). Берём вторичный рынок
+    # как более широкий и менее зависимый от госипотечных программ.
+    DerivedSpec(
+        "housing-affordability",
+        ("housing-price-secondary", "wages-index"),
+        ops.affordability_index,
+    ),
 ]
 
 

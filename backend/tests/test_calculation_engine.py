@@ -22,6 +22,7 @@ def test_all_derived_registered():
         "exports-yoy", "imports-yoy", "ppi-yoy", "wages-yoy",
         "exports-qoq", "imports-qoq",
         "housing-yoy-primary", "housing-yoy-secondary",
+        "wages-index", "housing-affordability",
     }
     assert set(calculation_engine._derived.keys()) == expected
 

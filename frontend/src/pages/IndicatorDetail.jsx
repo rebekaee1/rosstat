@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import { useParams, useSearchParams, Link, useNavigate, useLocation } from 'react-router-dom';
+import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { ArrowRight, GitCompare } from 'lucide-react';
 import gsap from 'gsap';
 import { useIndicator, useIndicatorStats, useIndicators } from '../lib/hooks';
@@ -14,6 +14,7 @@ import IndicatorChartSection from '../components/IndicatorChartSection';
 import IndicatorMethodologyPanel from '../components/IndicatorMethodologyPanel';
 import IndicatorForecastSection from '../components/IndicatorForecastSection';
 import IndicatorDataTableSection from '../components/IndicatorDataTableSection';
+import IndicatorSeoBlocks from '../components/IndicatorSeoBlocks';
 import { findVariantGroup } from '../lib/indicatorVariants';
 import { visibleCpiViewModes } from '../lib/cpiViewModes';
 import useIndicatorViewModeData from '../lib/useIndicatorViewModeData';
@@ -23,13 +24,8 @@ import { track, events } from '../lib/track';
 import useScrollDepth from '../lib/useScrollDepth';
 import { isIndicatorListed } from '../lib/categories';
 
-/** Правка №16: на карточке ИПП по умолчанию показываем г/г %, не уровень индекса. */
-const IPI_DEFAULT_CODE = 'ipi-yoy';
-
 export default function IndicatorDetail() {
   const { code } = useParams();
-  const navigate = useNavigate();
-  const location = useLocation();
   const headerRef = useRef(null);
   const [showForecast, setShowForecast] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -48,15 +44,6 @@ export default function IndicatorDetail() {
   }, [setSearchParams]);
   const [chartData, setChartData] = useState([]);
   const [currentRange, setCurrentRange] = useState('5y');
-
-  useEffect(() => {
-    if (code === 'ipi') {
-      navigate(
-        { pathname: `/indicator/${IPI_DEFAULT_CODE}`, search: location.search, hash: location.hash },
-        { replace: true },
-      );
-    }
-  }, [code, navigate, location.search, location.hash]);
 
   const {
     data: indicator,
@@ -326,6 +313,8 @@ export default function IndicatorDetail() {
         annualDataPoints={annualDataPoints}
         weeklyDataPoints={weeklyDataPoints}
       />
+
+      <IndicatorSeoBlocks blocks={indicator?.seo_blocks} />
 
       {relatedIndicators.length > 0 && (
         <section className="mt-16">

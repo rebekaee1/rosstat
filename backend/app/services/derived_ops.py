@@ -338,3 +338,70 @@ def wages_real(wages_nominal: Series, cpi_monthly: Series) -> Series:
         real = (wage / base_wage) / (ci / base_cpi) * 100.0
         points.append((date(y, m, 1), round(real, 2)))
     return points
+
+
+# --- Rebase to index (base year average = 100) -------------------------------
+
+
+def rebase_to_index(series: Series, base_year: int) -> Series:
+    """Convert an absolute-level series (e.g. wages in rubles, prices in $)
+    into an index where the average value of `base_year` equals 100.
+
+    Method::
+
+        base = mean(values in base_year)
+        out[t] = value[t] / base * 100
+
+    Used by C2: «зарплата в индексной форме (2010=100)» — превращает
+    номинальные рубли в безразмерный индекс, удобный для сопоставления с
+    индексом цен на жильё и расчёта доступности (C1).
+
+    Returns empty list if base year has no data or base is zero.
+    """
+    if not series:
+        return []
+    base_values = [float(v) for d, v in series if d.year == base_year]
+    if not base_values:
+        return []
+    base = sum(base_values) / len(base_values)
+    if base == 0:
+        return []
+    return [(d, round(float(v) / base * 100.0, 2)) for d, v in series]
+
+
+# --- Affordability index (special: 2 sources) -------------------------------
+
+
+def affordability_index(price_index: Series, wage_index: Series) -> Series:
+    """Housing affordability index: how much wage growth lags or outpaces
+    housing-price growth, expressed as an index with the same base as the
+    inputs (typically 100 = base year average).
+
+    Method::
+
+        affordability[t] = wage_index[t] / price_index[t] * 100
+
+    Interpretation: values above 100 mean wages grew faster than housing
+    prices since the base year — relative affordability improved. Values
+    below 100 mean housing prices outpaced wages — affordability worsened.
+
+    Both inputs must be rebased to the same base year (use
+    `rebase_to_index` first, or feed an already-rebased Rosstat index like
+    `housing-price-primary` whose base = 1994).
+
+    Returns empty list if no overlapping dates or zero-divider.
+    """
+    if not price_index or not wage_index:
+        return []
+    price_by_ym = {(d.year, d.month): float(v) for d, v in price_index}
+    wage_by_ym = {(d.year, d.month): float(v) for d, v in wage_index}
+
+    points: Series = []
+    for ym, p in sorted(price_by_ym.items()):
+        if p == 0:
+            continue
+        w = wage_by_ym.get(ym)
+        if w is None:
+            continue
+        points.append((date(ym[0], ym[1], 1), round(w / p * 100.0, 2)))
+    return points
