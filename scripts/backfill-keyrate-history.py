@@ -30,12 +30,20 @@ import asyncio
 import logging
 from datetime import date
 
+import os
 import sys
 from pathlib import Path
 
-# Скрипт запускается из /opt/rosstat (где docker-compose), но `app` живёт в
-# /app/ внутри контейнера backend. Здесь добавляем backend/ в PYTHONPATH.
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "backend"))
+# Скрипт запускается двумя способами:
+# 1. Локально из repo root: `python scripts/backfill-keyrate-history.py`
+#    → нужно добавить backend/ в PYTHONPATH.
+# 2. В docker-контейнере backend: `docker compose exec backend python /tmp/backfill.py`
+#    → модуль `app` уже на корне рабочей директории /app, dir manipulation
+#    не нужна. Чтобы не сломать, добавляем оба пути в sys.path.
+_here = Path(__file__).resolve().parent
+for cand in (_here.parent / "backend", Path("/app"), Path(os.getcwd())):
+    if cand.exists() and str(cand) not in sys.path:
+        sys.path.insert(0, str(cand))
 
 from sqlalchemy import select  # noqa: E402
 

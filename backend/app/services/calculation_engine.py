@@ -111,9 +111,11 @@ DERIVED_SPECS: list[DerivedSpec] = [
     DerivedSpec("exports-qoq", ("exports",), ops.qoq),
     DerivedSpec("imports-qoq", ("imports",), ops.qoq),
 
-    # C2 (звонок 2026-05-21): зарплата в индексной форме, средняя 2010 года = 100.
-    # Сопоставимый формат с housing-price-primary/secondary (тоже индекс).
-    DerivedSpec("wages-index", ("wages-nominal",), partial(ops.rebase_to_index, base_year=2010)),
+    # C2 (звонок 2026-05-21): зарплата в индексной форме, среднее значение 2015 года = 100.
+    # Сопоставимый формат с housing-price-primary/secondary (тоже индекс). База 2015,
+    # потому что Росстат публикует помесячный ряд `wages-nominal` именно с 2015-01-01;
+    # для базы 2010 годовых данных в БД пока нет.
+    DerivedSpec("wages-index", ("wages-nominal",), partial(ops.rebase_to_index, base_year=2015)),
 
     # C1 (звонок 2026-05-21): индекс доступности жилья = wages-index / housing-price-secondary × 100.
     # Значения >100 — за период с 2010 года зарплаты росли быстрее цен на жильё (доступность ↑),
