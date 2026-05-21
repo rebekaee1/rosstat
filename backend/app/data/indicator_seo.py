@@ -538,16 +538,6 @@ INDICATOR_HIDDEN_FROM_LISTING: set[str] = {
     "housing-yoy-secondary",
     "gdp-yoy",
     "gdp-qoq",
-    # VariantGroupPicker: вторичные ряды одного показателя (звонок 2026-05-17, правка №13).
-    "ipi-yoy",
-    "unemployment-quarterly",
-    "unemployment-annual",
-    "wages-yoy",
-    "exports-yoy",
-    "exports-qoq",
-    "imports-yoy",
-    "imports-qoq",
-    "current-account-yoy",
     # T3: monthly trade indicators доступны через frequency switcher
     # из родителей (exports/imports/trade-balance/services-*) — не дублируем в листинге.
     "exports-monthly",
@@ -555,6 +545,16 @@ INDICATOR_HIDDEN_FROM_LISTING: set[str] = {
     "trade-balance-monthly",
     "services-exports-monthly",
     "services-imports-monthly",
+    # Звонок 2026-05-21 (правка №2): кредиты по сроку и вклады по сроку — единая
+    # карточка для каждого семейства (corp / ind / deposit) с VariantGroupPicker
+    # «До 1 года / 1-3 / >3 лет». В каталоге показываем только primary (короткий
+    # срок); medium/long доступны через pill-переключатель из карточки primary.
+    "credit-rate-corp-1to3y",
+    "credit-rate-corp-over3y",
+    "credit-rate-ind-1to3y",
+    "credit-rate-ind-over3y",
+    "deposit-rate-medium",
+    "deposit-rate-long",
 }
 
 # Per-indicator extra SEO blocks (server-rendered SEO sections).

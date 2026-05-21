@@ -1,33 +1,41 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { useIndicators } from '../lib/hooks';
 import { CATEGORIES, isIndicatorListed } from '../lib/categories';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 
-const MAX_RESULTS = 8;
+const MAX_RESULTS = 12;
 
 /**
- * Минимальный поиск по индикаторам (D1).
+ * Поиск по индикаторам (правка №1 из звонка 2026-05-21).
+ *
+ * UX — command-palette: маленькая кнопка с лупой в Navbar открывает modal
+ * по центру экрана. Внутри modal — большой инпут + до 12 результатов +
+ * клавиатурная навигация (стрелки, Enter, Esc). Хоткеи Cmd+K / Ctrl+K
+ * открывают modal из любой точки приложения. На мобильных — full-screen
+ * sheet (тот же компонент, breakpoint в стилях).
  *
  * Источник данных — React-Query `useIndicators()`. Фильтр — substring без
- * учёта регистра по name + name_en + category. Скрытые карточки
- * (`is_listed=false`) в выдаче не показываются — это counterpart'ы,
- * доступные только через FrequencySwitcher из primary.
- *
- * Кнопка Enter переходит к первому результату; Escape очищает.
+ * учёта регистра по name + name_en + category + code. Скрытые карточки
+ * (`is_listed=false`) в выдаче не показываются (это counterpart'ы,
+ * доступные только через VariantGroupPicker из primary).
  */
 export default function IndicatorSearch({ className }) {
   const navigate = useNavigate();
   const { data: indicators = [] } = useIndicators();
-  const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
-  const wrapRef = useRef(null);
+  const [query, setQuery] = useState('');
+  const [hi, setHi] = useState(0); // highlighted result index
+  const inputRef = useRef(null);
+  const listRef = useRef(null);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q || q.length < 2) return [];
+    if (!q) {
+      return indicators.filter(isIndicatorListed).slice(0, MAX_RESULTS);
+    }
     return indicators
       .filter(isIndicatorListed)
       .filter((ind) => {
@@ -37,82 +45,184 @@ export default function IndicatorSearch({ className }) {
       .slice(0, MAX_RESULTS);
   }, [query, indicators]);
 
-  useEffect(() => {
-    if (!open) return;
-    const onDoc = (e) => {
-      if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false);
-    };
-    document.addEventListener('mousedown', onDoc);
-    return () => document.removeEventListener('mousedown', onDoc);
-  }, [open]);
-
-  const go = (code) => {
+  const close = useCallback(() => {
     setOpen(false);
     setQuery('');
+    setHi(0);
+  }, []);
+
+  const go = useCallback((code) => {
+    close();
     navigate(`/indicator/${code}`);
+  }, [close, navigate]);
+
+  // Cmd+K / Ctrl+K — открыть; Escape — закрыть; '/' — открыть (если не в инпуте)
+  useEffect(() => {
+    const onKey = (e) => {
+      const isMod = e.metaKey || e.ctrlKey;
+      if (isMod && (e.key === 'k' || e.key === 'K')) {
+        e.preventDefault();
+        setOpen((o) => !o);
+        return;
+      }
+      if (e.key === '/' && !open) {
+        const tag = document.activeElement?.tagName;
+        if (tag !== 'INPUT' && tag !== 'TEXTAREA') {
+          e.preventDefault();
+          setOpen(true);
+        }
+        return;
+      }
+      if (e.key === 'Escape' && open) {
+        e.preventDefault();
+        close();
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [open, close]);
+
+  // фокус при открытии
+  useEffect(() => {
+    if (!open) return;
+    const t = setTimeout(() => inputRef.current?.focus(), 30);
+    return () => clearTimeout(t);
+  }, [open]);
+
+  const onQueryChange = (v) => {
+    setQuery(v);
+    setHi(0);
   };
 
-  const handleKey = (e) => {
-    if (e.key === 'Escape') { setQuery(''); setOpen(false); return; }
-    if (e.key === 'Enter' && results.length > 0) {
+  // прокрутка к выделенному элементу
+  useEffect(() => {
+    if (!open || !listRef.current) return;
+    const el = listRef.current.querySelector(`[data-row="${hi}"]`);
+    el?.scrollIntoView({ block: 'nearest' });
+  }, [hi, open]);
+
+  const handleListKey = (e) => {
+    if (e.key === 'ArrowDown') {
       e.preventDefault();
-      go(results[0].code);
+      setHi((i) => Math.min(i + 1, results.length - 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setHi((i) => Math.max(i - 1, 0));
+    } else if (e.key === 'Enter' && results[hi]) {
+      e.preventDefault();
+      go(results[hi].code);
     }
   };
 
+  const isMac = typeof navigator !== 'undefined' && /Mac/i.test(navigator.platform || '');
+
   return (
-    <div ref={wrapRef} className={cn('relative', className)}>
-      <div className="relative">
-        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-tertiary pointer-events-none" />
-        <input
-          type="search"
-          placeholder="Поиск индикатора…"
-          value={query}
-          onChange={(e) => { setQuery(e.target.value); setOpen(true); }}
-          onFocus={() => setOpen(true)}
-          onKeyDown={handleKey}
-          aria-label="Поиск индикатора"
-          className={cn(
-            FOCUS_RING,
-            'rounded-xl bg-obsidian-lighter/60 border border-border-subtle px-8 py-1.5 text-sm w-44 lg:w-56',
-            'placeholder:text-text-tertiary focus:bg-surface focus:w-56 lg:focus:w-72 transition-all',
-          )}
-        />
-      </div>
-      {open && results.length > 0 && (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className={cn(
+          FOCUS_RING,
+          'rounded-xl flex items-center gap-2 px-3 py-1.5 text-sm bg-obsidian-lighter/50 border border-border-subtle text-text-secondary hover:text-text-primary hover:bg-obsidian-lighter/80 transition-colors',
+          className,
+        )}
+        aria-label="Открыть поиск индикаторов"
+      >
+        <Search className="w-3.5 h-3.5" aria-hidden="true" />
+        <span className="hidden lg:inline">Поиск</span>
+        <kbd className="hidden lg:inline-flex items-center gap-0.5 ml-1 px-1.5 py-0.5 text-[10px] font-mono rounded border border-border-subtle text-text-tertiary">
+          {isMac ? '⌘' : 'Ctrl'} K
+        </kbd>
+      </button>
+
+      {open && (
         <div
-          className="absolute right-0 top-full z-[120] mt-2 w-72 max-h-[min(60vh,360px)] overflow-y-auto rounded-2xl border border-border-subtle bg-surface py-2 shadow-2xl ring-1 ring-black/[0.08]"
-          role="listbox"
+          className="fixed inset-0 z-[200] flex items-start justify-center pt-[10vh] px-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Поиск индикаторов"
         >
-          {results.map((ind) => {
-            const cat = CATEGORIES.find((c) => c.apiCategory === ind.category);
-            return (
+          <button
+            type="button"
+            aria-label="Закрыть"
+            className="absolute inset-0 bg-text-primary/30 backdrop-blur-[2px]"
+            onClick={close}
+          />
+          <div className="relative w-full max-w-2xl rounded-2xl border border-border-subtle bg-surface shadow-2xl ring-1 ring-black/[0.08] overflow-hidden">
+            <div className="flex items-center gap-3 px-4 py-3 border-b border-border-subtle">
+              <Search className="w-4 h-4 text-text-tertiary shrink-0" aria-hidden="true" />
+              <input
+                ref={inputRef}
+                type="search"
+                value={query}
+                onChange={(e) => onQueryChange(e.target.value)}
+                onKeyDown={handleListKey}
+                placeholder="Поиск индикатора по названию или категории…"
+                className="flex-1 bg-transparent outline-none text-base text-text-primary placeholder:text-text-tertiary"
+                aria-label="Поисковый запрос"
+              />
               <button
-                key={ind.code}
                 type="button"
-                onClick={() => go(ind.code)}
-                className={cn(
-                  FOCUS_RING,
-                  'w-full text-left px-3 py-2 text-sm hover:bg-obsidian-lighter/80 flex flex-col gap-0.5 rounded-lg',
-                )}
-                role="option"
+                onClick={close}
+                className={cn(FOCUS_RING, 'rounded-lg p-1 text-text-tertiary hover:text-text-primary')}
+                aria-label="Закрыть"
               >
-                <span className="text-text-primary">{ind.name}</span>
-                {cat && (
-                  <span className="text-[10px] uppercase tracking-wider font-mono text-text-tertiary">
-                    {cat.name}
-                  </span>
-                )}
+                <X className="w-4 h-4" />
               </button>
-            );
-          })}
+            </div>
+
+            <div ref={listRef} className="max-h-[60vh] overflow-y-auto py-2" role="listbox">
+              {results.length === 0 ? (
+                <div className="px-4 py-6 text-sm text-text-tertiary">
+                  {query.trim()
+                    ? `Ничего не нашли по запросу «${query.trim()}».`
+                    : 'Начните вводить название индикатора.'}
+                </div>
+              ) : (
+                results.map((ind, i) => {
+                  const cat = CATEGORIES.find((c) => c.apiCategory === ind.category);
+                  const active = i === hi;
+                  return (
+                    <button
+                      key={ind.code}
+                      type="button"
+                      data-row={i}
+                      onMouseEnter={() => setHi(i)}
+                      onClick={() => go(ind.code)}
+                      className={cn(
+                        'w-full text-left px-4 py-2.5 flex items-center gap-3 transition-colors',
+                        active ? 'bg-champagne/10' : 'hover:bg-obsidian-lighter/60',
+                      )}
+                      role="option"
+                      aria-selected={active}
+                    >
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm text-text-primary truncate">{ind.name}</div>
+                        {ind.name_en && (
+                          <div className="text-[11px] font-mono text-text-tertiary truncate">
+                            {ind.name_en}
+                          </div>
+                        )}
+                      </div>
+                      {cat && (
+                        <span className="text-[10px] uppercase tracking-wider font-mono text-text-tertiary shrink-0">
+                          {cat.name}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })
+              )}
+            </div>
+
+            <div className="px-4 py-2 border-t border-border-subtle flex items-center gap-4 text-[11px] font-mono text-text-tertiary">
+              <span><kbd className="px-1 py-0.5 rounded border border-border-subtle">↑</kbd> <kbd className="px-1 py-0.5 rounded border border-border-subtle">↓</kbd> навигация</span>
+              <span><kbd className="px-1 py-0.5 rounded border border-border-subtle">Enter</kbd> открыть</span>
+              <span><kbd className="px-1 py-0.5 rounded border border-border-subtle">Esc</kbd> закрыть</span>
+            </div>
+          </div>
         </div>
       )}
-      {open && query.trim().length >= 2 && results.length === 0 && (
-        <div className="absolute right-0 top-full z-[120] mt-2 w-72 rounded-2xl border border-border-subtle bg-surface px-4 py-3 text-sm text-text-tertiary shadow-2xl ring-1 ring-black/[0.08]">
-          Ничего не нашли по запросу «{query.trim()}».
-        </div>
-      )}
-    </div>
+    </>
   );
 }

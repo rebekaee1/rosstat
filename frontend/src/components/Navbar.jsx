@@ -194,18 +194,21 @@ export default function Navbar() {
         </div>
       </div>
 
-      <button
-        type="button"
-        onClick={() => { setMobileOpen(!mobileOpen); track(events.NAV_MOBILE_TOGGLE); }}
-        className={cn(
-          FOCUS_RING,
-          'md:hidden ml-auto rounded-xl text-text-secondary hover:text-text-primary transition-colors p-1.5'
-        )}
-        aria-expanded={mobileOpen}
-        aria-label={mobileOpen ? 'Закрыть меню' : 'Открыть меню'}
-      >
-        {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-      </button>
+      <div className="md:hidden ml-auto flex items-center gap-1">
+        <IndicatorSearch className="!px-2 !py-1.5" />
+        <button
+          type="button"
+          onClick={() => { setMobileOpen(!mobileOpen); track(events.NAV_MOBILE_TOGGLE); }}
+          className={cn(
+            FOCUS_RING,
+            'rounded-xl text-text-secondary hover:text-text-primary transition-colors p-1.5'
+          )}
+          aria-expanded={mobileOpen}
+          aria-label={mobileOpen ? 'Закрыть меню' : 'Открыть меню'}
+        >
+          {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
+      </div>
 
       {mobileOpen && (
         <div className="absolute left-0 right-0 top-full z-[110] mt-2 max-h-[min(80vh,520px)] overflow-y-auto rounded-2xl border border-border-subtle bg-surface p-4 shadow-2xl ring-1 ring-black/[0.08] md:hidden">

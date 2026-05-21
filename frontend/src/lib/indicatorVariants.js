@@ -102,6 +102,30 @@ export const VARIANT_GROUPS = [
       { code: 'housing-yoy-secondary', label: 'Год к году' },
     ],
   },
+  {
+    label: 'Ставки по кредитам юридическим лицам',
+    codes: [
+      { code: 'credit-rate-corp-short', label: 'До 1 года' },
+      { code: 'credit-rate-corp-1to3y', label: 'От 1 до 3 лет' },
+      { code: 'credit-rate-corp-over3y', label: 'Свыше 3 лет' },
+    ],
+  },
+  {
+    label: 'Ставки по кредитам физическим лицам',
+    codes: [
+      { code: 'credit-rate-ind-short', label: 'До 1 года' },
+      { code: 'credit-rate-ind-1to3y', label: 'От 1 до 3 лет' },
+      { code: 'credit-rate-ind-over3y', label: 'Свыше 3 лет' },
+    ],
+  },
+  {
+    label: 'Ставки по вкладам физических лиц',
+    codes: [
+      { code: 'deposit-rate', label: 'До 1 года' },
+      { code: 'deposit-rate-medium', label: 'От 1 до 3 лет' },
+      { code: 'deposit-rate-long', label: 'Свыше 3 лет' },
+    ],
+  },
 ];
 
 export function findVariantGroup(code) {
