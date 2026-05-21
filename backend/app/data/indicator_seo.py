@@ -538,6 +538,16 @@ INDICATOR_HIDDEN_FROM_LISTING: set[str] = {
     "housing-yoy-secondary",
     "gdp-yoy",
     "gdp-qoq",
+    # VariantGroupPicker: вторичные ряды одного показателя (звонок 2026-05-17, правка №13).
+    "ipi-yoy",
+    "unemployment-quarterly",
+    "unemployment-annual",
+    "wages-yoy",
+    "exports-yoy",
+    "exports-qoq",
+    "imports-yoy",
+    "imports-qoq",
+    "current-account-yoy",
     # T3: monthly trade indicators доступны через frequency switcher
     # из родителей (exports/imports/trade-balance/services-*) — не дублируем в листинге.
     "exports-monthly",

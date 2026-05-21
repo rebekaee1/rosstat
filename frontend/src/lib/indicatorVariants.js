@@ -3,6 +3,9 @@
  * переключаться pill-ссылками («Состав ИПЦ», «Режим ВВП», варианты ППИ,
  * первичное/вторичное жильё). Один индикатор принадлежит максимум одной
  * группе. Если код не входит ни в одну — pill-блок не показывается.
+ *
+ * Вторичные коды (YoY, QoQ, квартальные агрегаты) скрыты из листинга категории
+ * через INDICATOR_HIDDEN_FROM_LISTING в backend/app/data/indicator_seo.py.
  */
 export const VARIANT_GROUPS = [
   {
@@ -41,6 +44,51 @@ export const VARIANT_GROUPS = [
     ],
   },
   {
+    label: 'Индекс промышленного производства',
+    codes: [
+      { code: 'ipi', label: 'Помесячно' },
+      { code: 'ipi-yoy', label: 'Год к году' },
+    ],
+  },
+  {
+    label: 'Уровень безработицы',
+    codes: [
+      { code: 'unemployment', label: 'Помесячно' },
+      { code: 'unemployment-quarterly', label: 'Среднее за квартал' },
+      { code: 'unemployment-annual', label: 'Скользящее 12 мес.' },
+    ],
+  },
+  {
+    label: 'Средняя заработная плата',
+    codes: [
+      { code: 'wages-nominal', label: 'Номинальная' },
+      { code: 'wages-yoy', label: 'Год к году' },
+    ],
+  },
+  {
+    label: 'Экспорт товаров',
+    codes: [
+      { code: 'exports', label: 'Уровень' },
+      { code: 'exports-yoy', label: 'Год к году' },
+      { code: 'exports-qoq', label: 'Квартал к кварталу' },
+    ],
+  },
+  {
+    label: 'Импорт товаров',
+    codes: [
+      { code: 'imports', label: 'Уровень' },
+      { code: 'imports-yoy', label: 'Год к году' },
+      { code: 'imports-qoq', label: 'Квартал к кварталу' },
+    ],
+  },
+  {
+    label: 'Сальдо текущего счёта',
+    codes: [
+      { code: 'current-account', label: 'Уровень' },
+      { code: 'current-account-yoy', label: 'Год к году' },
+    ],
+  },
+  {
     label: 'Первичное жильё',
     codes: [
       { code: 'housing-price-primary', label: 'Индекс' },
@@ -58,4 +106,9 @@ export const VARIANT_GROUPS = [
 
 export function findVariantGroup(code) {
   return VARIANT_GROUPS.find((group) => group.codes.some((item) => item.code === code));
+}
+
+/** Все коды, входящие в variant-группы (для тестов и аудита). */
+export function allVariantMemberCodes() {
+  return VARIANT_GROUPS.flatMap((g) => g.codes.map((c) => c.code));
 }
