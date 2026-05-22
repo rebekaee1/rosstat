@@ -1,6 +1,6 @@
 # Forecast Economy — Project Context
 
-**Last updated:** 2026-05-22 (звонок «всё доделать»: Phase 2 labour (wages-nominal + unemployment унифицированы в view-mode families), Phase 3 housing (housing-price-{primary,secondary} с YoY % режимом), Phase 4 rates rename (credit-rate-{corp,ind}-short и deposit-rate переименованы на общие имена, term split через VariantGroupPicker), Phase 5 daily-aggregation (виртуальные week/month/quarter/year avg для key-rate, ruonia, cbr-fx-*, gold-price, brent, btc-usd через `applyAggregateTransform` на фронте). `tradeViewModes.js` → `viewModeFamilies.js` (общий реестр для всех семей).
+**Last updated:** 2026-05-22 (звонок «всё доделать»: Phase 2 labour (wages-nominal + unemployment унифицированы в view-mode families), Phase 3 housing (housing-price-{primary,secondary} с YoY % режимом), Phase 4 rates rename (credit-rate-{corp,ind}-short и deposit-rate переименованы на общие имена, term split через VariantGroupPicker), Phase 5 daily-aggregation (виртуальные week/month/quarter/year avg для key-rate, ruonia, cbr-fx-*, gold-price, brent, btc-usd через `applyAggregateTransform` на фронте). `tradeViewModes.js` → `viewModeFamilies.js` (общий реестр для всех семей). +2 trap'ы: `Source-depth trap` + `Browser-cache trap при rebuild frontend`. См. ADR-0004 «Indicator card unification».
 **Part of:** [`AGENTS.md`](AGENTS.md) (точка входа для AI-агента).
 **See also:** [`README.md`](README.md), [`docs/workflow.md`](docs/workflow.md), [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md), [`docs/data_sources.md`](docs/data_sources.md), [`docs/cbr_sources.md`](docs/cbr_sources.md), [`docs/analytics_api_inventory/`](docs/analytics_api_inventory/), [`docs/adr/`](docs/adr/).
 
@@ -22,6 +22,7 @@
 | [`docs/adr/0003`](docs/adr/0003-seo-single-source-server-rendered.md) | SEO single-source: backend SSR через `__spa-index.html` + Vite asset discovery |
 | [`docs/adr/0004`](docs/adr/0004-rosstat-russian-canonical-sdds-deprecated.md) | Rosstat русский canonical, SDDS English deprecated. Pilot: gdp-nominal end-to-end 2026-05-10 |
 | [`docs/adr/0005`](docs/adr/0005-official-calendar-source-bound.md) | Calendar source-bound: public dates only from official source/rule with provenance |
+| [`docs/adr/0006`](docs/adr/0006-indicator-card-unification.md) | Indicator card unification: ось «карточка vs derived vs variant vs frequency» (звонок 2026-05-22) |
 
 ---
 
@@ -331,6 +332,27 @@ docker compose exec backend python -c \
 **Категории «Демография», «Промышленность», «Труд», «Цены» полностью мигрированы (2026-05-10)**: 11 индикаторов переведены на canonical русские источники (commits cf08878 / 13a0251 / 5317421 / 0dc61b8 + housing pending). Pattern «path P (compat)» закрепился: для индикаторов где canonical Rosstat публикует только MoM/QoQ% (без cumulative index), парсер читает последнюю DB-точку и chains новый relative change → один новый datapoint per ETL run, исторический ряд от прошлой SDDS-стадии остаётся, gradual migration, frontend/forecast model не требуют изменений. Применён в `rosstat_ipi_parser` (chain monthly, нормализация 2023=100), `rosstat_ppi_parser` (chain monthly из PDF), `rosstat_housing_parser` (chain quarterly из PDF, primary+secondary). Для labor (4 индикатора) — sociomonomic PDF report повышен из supplementary до primary source (нет comprehensive monthly XLSX по labor на rosstat сайте). Подробности по каждой категории — в [ADR-0004 «Subsequent additions»](docs/adr/0004-rosstat-russian-canonical-sdds-deprecated.md).
 
 **GDP history extension до 1995 (2026-05-10)**: 5/5 GDP source-индикаторов продлены с 60 до **124 точек** (1995-Q1 → 2025-Q4) через **ratio-splice на overlap-году 2011** — pure-функция `splice_at_overlap(history, modern, overlap_year)` в `rosstat_gdp_parser.py`. Калибрует `ratio = mean(modern_2011) / mean(history_2011)`, scale'ит historical-точки (year < 2011) к base modern-методологии (для nominal: ОКВЭД2007 → ОКВЭД2, ratio ~1.074; для real: в ценах 2008 → в ценах 2021, ratio ~2.81). Standard economic-series splice техника (ОЭСР/МВФ practice). Конфиг per индикатор — `gdp_history_sheet` + `gdp_overlap_year` в `model_config_json`. Закрыта прямая жалоба руководителя 08.05.2026 «у Росстата с 1995, у нас почему-то с 2011». Trap, выловленная на data: Rosstat Excel хранит часть значений как СТРОКИ с Russian decimal + footnote suffix («1662,82)» = 1662,8 + footnote 2) → добавлен `_parse_ru_number` хелпер.
+
+### Source-depth trap (новый индикатор)
+
+Парсер фетчит N лет, БД хранит M < N. Симптом — `/indicator/<code>` начинается с 2020 (или 2015), хотя источник публикует с 1991/1995. Это видно только пользователю, который сравнивает с публикацией Росстата/ЦБ; внутренний мониторинг молчит.
+
+**Примеры обнаруженных пробелов** (звонок 2026-05-22):
+- `wages-nominal` начинался с 2015 → Росстат публикует с 1991. Закрыто через `wages_historical.py` (immutable seed годовых точек 1991-2014).
+- `key-rate` начинался с 2013-09 → ставка рефинансирования ЦБ с 1992. Закрыто через splice на overlap-точке 2013-09-13 (`refinancing_rate_historical.py`).
+- `gdp-*` начиналось с 2011 → Росстат публикует с 1995 (ОКВЭД2007). Закрыто через ratio-splice на overlap-year 2011.
+- `housing-price-{primary,secondary}` — backfill 1998-2014 через `housing_historical.py`.
+- `inflation-weekly` начинается с 2022-01-10 → Росстат публикует с 2003, но **архив до 2022 утерян** (gks.ru не работает, Wayback не имеет нужных URL); это технический предел, не наша недоработка.
+
+**Правило:** при добавлении любого нового парсера / индикатора — **обязательная проверка по чеклисту в `AGENTS.md::Шаг 4`** (`Source-depth invariant`). Если источник даёт глубже чем в seed — заводим `<name>_historical.py` immutable seed.
+
+### Browser-cache trap при rebuild frontend
+
+После `docker compose build frontend && up -d frontend` пользователь в обычном окне Chrome может видеть **unstyled HTML** (чёрный фон, синие подчёркнутые ссылки). Причина — браузер держит старый HTML в **disk cache** и пытается загрузить ассеты со старыми hashes, которые в новом контейнере отсутствуют → 404 → React shell не загрузился → unstyled.
+
+Это **не** asset-hash trap (см. выше) — backend и frontend синхронизированы, ассеты на свежих hashes отдаются 200. Проблема в кеше **самого браузера** пользователя.
+
+**Правило:** после rebuild frontend для демонстрации — открывать в **incognito** или делать **Cmd+Shift+R** (hard reload, минует disk cache). В DevTools → Network → Disable cache на время тестирования.
 
 ### Calendar source coverage
 

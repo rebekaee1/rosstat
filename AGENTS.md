@@ -1,6 +1,6 @@
 # AGENTS.md — точка входа для AI-агента
 
-**Last updated:** 2026-05-10.
+**Last updated:** 2026-05-22 (звонок «всё доделать»: добавлен чеклист «новый индикатор» с 6 проверками, ссылка на ADR-0004).
 
 Этот файл — первое, что читает любой новый AI-агент (Cursor, Claude Code, Codex, Gemini, любой другой), подключённый к этому репозиторию. Здесь живёт **карта документации**, **режим работы** и **протокол актуализации** этих самых документов.
 
@@ -18,9 +18,12 @@
 4. **[`docs/workflow.md`](docs/workflow.md)** — модель работы, локальный dev, прод-деплой, smoke C.
 5. **[`docs/enterprise_resilience.md`](docs/enterprise_resilience.md)** — операционные инварианты, чеклист канарейки 6/6.
 6. **`docs/adr/`** — архитектурные решения (нумерованные ADR, читать в порядке номеров):
-   - `0001-derived-indicators-engine-shape.md` — engine shape derived (28 specs + 9 pure ops).
-   - `0002-derived-always-reflects-source.md` — инвариант идемпотентности `bulk_upsert`.
-   - `0003-seo-single-source-server-rendered.md` — SSR через backend, asset discovery от Vite shell.
+ - `0001-derived-indicators-engine-shape.md` — engine shape derived (29 specs + 10 pure ops + 2 client-side transforms).
+ - `0002-derived-always-reflects-source.md` — инвариант идемпотентности `bulk_upsert`.
+ - `0003-seo-single-source-server-rendered.md` — SSR через backend, asset discovery от Vite shell.
+ - `0004-rosstat-russian-canonical-sdds-deprecated.md` — переход с SDDS-XLSX на русские источники Росстата.
+ - `0005-official-calendar-source-bound.md` — публичный календарь только из official source rules.
+ - `0006-indicator-card-unification.md` — ось декомпозиции «карточка vs derived vs variant vs frequency» + 6-проверочный чеклист «новый индикатор» (звонок 2026-05-22).
    - `0004-rosstat-russian-canonical-sdds-deprecated.md` — Rosstat русский canonical, SDDS English deprecated. Migration pattern + pilot evidence (gdp-nominal, 2026-05-10).
    - `0005-official-calendar-source-bound.md` — public calendar только official dates с provenance; estimated скрыты.
 
@@ -93,6 +96,7 @@
 | Изменение rate-limit / CORS / CSP | `enterprise_resilience.md::API и backend` + `enterprise_resilience.md::Frontend и кэш` |
 | Новая операционная trap, обнаруженная в проде | `CONTEXT.md::Operational invariants and traps` |
 | Новое архитектурное решение | **Создать новый ADR** `docs/adr/<NNNN>-<kebab-name>.md` (следующий свободный номер); добавить ссылку в шапку `CONTEXT.md::Документы рядом` и в `AGENTS.md::Шаг 1` |
+| Новый view-mode family / variant / virtual transform | `frontend/src/lib/viewModeFamilies.js` (реестр семей) **или** `lib/indicatorVariants.js` (variants). Тест в `viewModeFamilies.test.js`. ADR-0006 «Subsequent additions» если добавляется новый паттерн (не просто новый member существующего паттерна) |
 | Изменение существующего ADR | Не редактировать body «как если бы решение было таким». Добавить раздел «Subsequent additions (after acceptance)» с датой и описанием. Status в шапке менять только при формальной депрекации |
 | Новый Yandex API client | `docs/analytics_api_inventory/<service>.md` (если файл уже есть — обновить status block) или новый файл при новом сервисе + строка в `analytics_api_inventory/README.md::Implementation status` |
 
@@ -118,6 +122,21 @@
 - [ ] `Last updated` / `Last verified` дата обновлена в каждом изменённом .md.
 - [ ] Cross-links целы: новые ADR упомянуты в `CONTEXT.md::Документы рядом` и в `AGENTS.md::Шаг 1`.
 - [ ] Браузер-snapshot, если правка задела UI.
+
+### Чеклист «новый индикатор» (КРИТИЧНО)
+
+Перед добавлением **любого** нового индикатора (source-парсер, derived, manual seed) пройти все 6 проверок. Без них вероятен один из задокументированных trap'ов из `CONTEXT.md::Operational invariants and traps`. См. ADR-0004 «Indicator card unification».
+
+| # | Проверка | Что делаем |
+|---|----------|------------|
+| 1 | **Source-depth invariant** | Какую максимальную глубину истории даёт источник? Если в seed_data залит **меньший** ряд — заводим `<name>_historical.py` immutable seed (как `housing_historical.py`, `refinancing_rate_historical.py`, `wages_historical.py`). НЕ оставляем огрызок. |
+| 2 | **View-mode family оценка** | Если ряд > 100 точек и есть осмысленные derived'ы (YoY/QoQ/MoM/aggregation) — заводим через `frontend/src/lib/viewModeFamilies.js::VIEW_MODE_FAMILIES`, **не** отдельную карточку в каталоге. Derived'ы скрываем через `INDICATOR_HIDDEN_FROM_LISTING`. |
+| 3 | **Variant decomposition** | Если индикатор имеет варианты по срезу (срок, регион, подгруппа, тип) — это **разные индикаторы со своими рядами** → `VariantGroupPicker` (см. `lib/indicatorVariants.js`). Не путать с view-mode (один ряд, разные представления). |
+| 4 | **Negative-capable check** | Если значения могут быть отрицательными (`trade-balance`, `current-account`, `budget-deficit`, `*-migration`) — использовать `yoy_abs` (разница в единицах источника), **не** `yoy_pct` (% от базы с переходом через ноль = визуальный мусор и тысячи процентов). |
+| 5 | **Frequency strategy** | Daily-индикатор: aggregation (week/month/quarter/year avg) — `applyAggregateTransform` на фронте, **backend derived не заводим**. Monthly counterpart существующего quarterly — отдельный индикатор с MoM%-режимом через виртуальный `transform: 'mom'`. |
+| 6 | **Listing visibility ≠ searchability** | Если индикатор скрыт из каталога (`is_listed=false` через `INDICATOR_HIDDEN_FROM_LISTING`) — он всё равно ищется через `?include_unlisted=true` в `IndicatorSearch.jsx`. Скрытие из листинга не = скрытие из поиска. |
+
+**После прохождения чеклиста** — обновить `seed_data.py` + соответствующие mappings (variant/view-mode), прогнать `./scripts/check-all.sh`, обновить `CONTEXT.md::Operational invariants and traps` если открыли новую trap.
 
 ---
 

@@ -1,21 +1,31 @@
 # Backlog — текущие правки в работе
 
-**Last updated:** 2026-05-21 (после полного пакета P0+P1+P2 из звонка 2026-05-21).
-**Part of:** [`AGENTS.md`](../AGENTS.md), [`CONTEXT.md`](../CONTEXT.md).
-**Источник:** звонок с Никитой Александровичем 2026-05-21 (Сочи). Транскрипция и заметки пользователя сверены, добавлены упущения.
+**Last updated:** 2026-05-22 (звонок «всё доделать»: Phase 1-5 закрыты, B2 поднят в P0).
+**Part of:** [`AGENTS.md`](../AGENTS.md), [`CONTEXT.md`](../CONTEXT.md), [`docs/adr/0006-indicator-card-unification.md`](adr/0006-indicator-card-unification.md).
+**Источник:** звонки с Никитой Александровичем 2026-05-21 (Сочи) и 2026-05-22 («всё доделать»).
 
 > Живой бэклог планируемых работ. Каждая правка имеет ID, описание, затронутые файлы, риски, зависимости и приоритет. Когда правка сделана — переносится в раздел «История» внизу с датой и SHA коммита/деплоя.
 
 ---
 
-## Сводка приоритетов
+## Сводка приоритетов (актуальная — 2026-05-22)
 
-| Приоритет | Идея |
-|-----------|------|
-| P0 (must-do, в первой итерации) | E1, E2, D6, D3, A3 (объединение), D5 (категории), D1 (поиск minimal) |
-| P1 (should-do, во второй итерации) | A1+A2 (time-agg expansion), B1 (key-rate splice), B2 (wages history), C3 (deposit rates), C1+C2 (affordability), D2 (long text SEO) |
-| P2 (nice-to-have, в третьей) | D4 (live ticker), B3 (full history audit), C4 (RUONIA-like research) |
-| Future (отложено явно Никитой) | F1 крипто, F2 регионы |
+| Приоритет | Активно сейчас |
+|-----------|----------------|
+| **P0** | **B2** (wages с 90-х; единственный реально неделанный пункт из всех правок) |
+| **P1** | Расширение view-mode families на остальные индикаторы (GDP, PPI, retail, banking volumes — см. ADR-0006 «Что НЕ покрыто») |
+| **P2** | C4 (research редких показателей — см. список в конце документа), B3 (полный audit глубины) |
+| Future (отложено) | F1 крипто (частично закрыто через BTC/USD как полный indicator), F2 регионы |
+
+**Закрытые в звонке 2026-05-22 (после полного пакета Phase 1-5):**
+- A1+A2+A3 — унификация view-modes через `viewModeFamilies.js`, объединение дублирующих карточек (29 индикаторов в `INDICATOR_HIDDEN_FROM_LISTING`).
+- D1 — full directory search через `?include_unlisted=true`.
+- D3, D4, D5, D6 — закрыты commit'ами `91c3f9c`, `876b3c7`, `d4f57ae`.
+- E1, E2 — закрыты раньше (audit bulk_upsert + budget-deficit smoke).
+- B1, B3 — key-rate splice (1992-), audit-script (`scripts/audit-indicators-history.py`).
+- C1, C2, C3 — housing-affordability, wages-index, deposit-rate term split.
+- D2 — long SEO blocks на 12 индикаторов (на оставшиеся ~80 — по мере роста показов в Метрике).
+- Phase 1-5 (новые) — trade + labour + housing + rates rename + daily aggregation.
 
 ---
 
@@ -149,7 +159,7 @@ NEGATIVE-CAPABLE (trade-balance, current-account, budget-deficit, *-migration, *
 
 ---
 
-### B2. Зарплата с 90-х
+### B2. Зарплата с 90-х (приоритет повышен до P0 — 2026-05-22)
 
 **Что меняем.** Текущий `wages-nominal` начинается с 2015. Никита: «наверняка зарплата есть раньше… с 90-х». Подтянуть исторический ряд средней номинальной заработной платы с 1991 (или сколько даст Росстат).
 
@@ -157,7 +167,7 @@ NEGATIVE-CAPABLE (trade-balance, current-account, budget-deficit, *-migration, *
 
 **Затронутые файлы.**
 - `backend/app/data/wages_historical.py` (новый, immutable seed годовых точек 1991-2014).
-- `scripts/backfill_wages_historical.py` (новый).
+- `scripts/backfill-wages-history.py` (новый).
 - `backend/app/services/rosstat_labor_parser.py` — без изменений (продолжает обновлять текущие).
 
 **Риски.**
@@ -166,7 +176,7 @@ NEGATIVE-CAPABLE (trade-balance, current-account, budget-deficit, *-migration, *
 
 **Зависимости.** Нужно до C2 (wages index).
 
-**Приоритет.** P1.
+**Приоритет.** **P0** (поднят с P1 на звонке 2026-05-22 — единственный реально неделанный пункт из всех правок).
 
 ---
 
@@ -525,6 +535,19 @@ housing-affordability-index[t] = wages-index[t] / housing-price-index[t]   # б�
 ---
 
 ## История (sealed правки)
+
+### 2026-05-22 — звонок «всё доделать» (5 phases + grill-me ticker + search)
+
+- **Phase 5** daily-aggregation: `applyAggregateTransform` для 8 daily-индикаторов (key-rate, ruonia, usd-rub, eur-rub, cny-rub, gold-price, brent, btc-usd), client-side bucket-avg [week/month/quarter/year]. Коммит `d4f57ae`.
+- **Phase 4** rates rename: `credit-rate-corp-short`, `credit-rate-ind-short`, `deposit-rate` → общие имена («Ставка по кредитам юридическим лицам» / «физическим лицам» / «по вкладам физических лиц»); term split (До 1 года / 1-3 / >3 лет) через VariantGroupPicker. Коммит `d4f57ae`.
+- **Phase 3** housing: `housing-price-{primary,secondary}` с view-mode picker [Индекс / YoY %]. `housing-yoy-*` стали режимами. Коммит `d4f57ae`.
+- **Phase 2** labour: `wages-nominal` единая карточка с 4 режимами [Номинальная / Реальная / YoY % / Индекс 2015=100]; `unemployment` с 3 режимами [Месячно / Квартально / 12М avg]. 5 derived'ов скрыты из listing. Коммит `d4f57ae`.
+- **Phase 1** trade unification: 8 view-mode семей (exports / imports / trade-balance / current-account + 4 monthly counterparts с MoM%). Новая 10-я op `yoy_abs` для negative-capable. Коммит `876b3c7`.
+- **Live ticker grill-me**: USD/RUB / EUR/RUB / CNY/RUB / BTC/USD / Brent с MOEX-приоритет + CBR XML_daily fallback (для FX когда MOEX отдаёт `LAST=None` — особенно EUR/RUB после санкций) + Binance public API для BTC + Yahoo Finance для Brent historical. Backend APScheduler `ticker_live_pull` каждые 5s в Redis. Коммит `876b3c7`.
+- **Search full directory**: `IndicatorSearch.jsx` показывает все индикаторы (включая скрытые из listing) через `?include_unlisted=true`. Коммит `876b3c7`.
+- **Frontend rename**: `tradeViewModes.js` → `viewModeFamilies.js` (общий реестр), `tradeFamily/tradeMode` → `viewFamily/familyMode`. ADR-0006 (новый) фиксирует ось «карточка vs derived vs variant vs frequency». Чеклист «новый индикатор» в `AGENTS.md::Шаг 4`. CONTEXT.md: +2 trap'ы (source-depth + browser-cache). Коммит `d4f57ae`.
+
+### 2026-05-21 — большой пакет P0+P1+P2
 
 - 2026-05-21 P2 D4: live ticker (USD/EUR/CNY/key-rate/RUONIA/gold) над навбаром. Коммит на стадии деплоя.
 - 2026-05-21 P2 B3: скрипт `scripts/audit-indicators-history.py` — markdown-таблица + список кандидатов на backfill. Коммит на стадии деплоя.
