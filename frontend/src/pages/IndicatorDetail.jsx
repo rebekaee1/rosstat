@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import { useParams, useSearchParams, Link } from 'react-router-dom';
+import { useParams, useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowRight, GitCompare } from 'lucide-react';
 import gsap from 'gsap';
 import { useIndicator, useIndicatorData, useIndicatorStats, useIndicators } from '../lib/hooks';
@@ -30,11 +30,26 @@ import { track, events } from '../lib/track';
 import useScrollDepth from '../lib/useScrollDepth';
 import { isIndicatorListed } from '../lib/categories';
 
+// Правка №16 (звонок 2026-05-21): на карточке ИПП по умолчанию показываем
+// г/г %, не уровень индекса 2018=100 (raw 105.2 без контекста бессмыслен).
+// Редирект был стёрт при Phase 1 refactor 22-05, восстановлен после ревизии.
+const DEFAULT_REDIRECTS = {
+  ipi: 'ipi-yoy',
+};
+
 export default function IndicatorDetail() {
   const { code } = useParams();
+  const navigate = useNavigate();
   const headerRef = useRef(null);
   const [showForecast, setShowForecast] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    const target = DEFAULT_REDIRECTS[code];
+    if (target) {
+      navigate(`/indicator/${target}`, { replace: true });
+    }
+  }, [code, navigate]);
   // viewMode хранится в URL (?mode=monthly) — это позволяет сохранять режим
   // при переключении между «продовольственные» / «непродовольственные» / «услуги»
   // через VariantGroupPicker и при шаринге ссылок.

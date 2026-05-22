@@ -354,6 +354,23 @@ docker compose exec backend python -c \
 
 **Правило:** после rebuild frontend для демонстрации — открывать в **incognito** или делать **Cmd+Shift+R** (hard reload, минует disk cache). В DevTools → Network → Disable cache на время тестирования.
 
+### New indicator initial ETL trap
+
+После `seed_data.upsert_indicators()` создаёт новый indicator с `parser_type != "derived"` и `is_active=true`, **первый ETL** по нему **не запускается** автоматически. Daily ETL job ходит в 06:00 МСК (`apscheduler`), late Minfin pass в 15:00 МСК — между ними новый индикатор стоит пустой в БД, frontend показывает «нет данных».
+
+Симптом — карточка в каталоге без current_value, hero пустой, график пустой. На variant-pill в VariantGroupPicker — клик ведёт на страницу-пустышку.
+
+**Случай 2026-05-22:** `deposit-rate-medium` и `deposit-rate-long` (звонок 21-05, правка C3) — оба добавлены в seed_data 21-05, но за сутки daily-job не успел отработать (на стейдже не в окне 06:00 МСК), и при ревизии 22-05 у обоих было 0 точек. Фикс — ручной trigger:
+
+```python
+from app.tasks.scheduler import run_etl_for_indicator
+await run_etl_for_indicator("deposit-rate-medium")
+```
+
+Результат: 147 точек 2014-2026 у обоих, derived `bulk_upsert` подхватил.
+
+**Правило:** после deploy с новым source-индикатором — обязательно ручной `run_etl_for_indicator(<code>)` через `docker compose exec backend python3 -c "..."`. В чеклист `AGENTS.md::Шаг 4` добавлен пункт «Frequency consistency» — туда же дописать «Initial ETL trigger после seed».
+
 ### Annual-in-monthly mixing trap (backfill в чужую частоту)
 
 Парсер добавляет в indicator с `frequency=monthly` годовые точки (1 января каждого года). Frontend chart label остаётся «помесячно» (из `frequency`), а на графике рывок: 24 точки за 24 года выглядят как 24 month-точки с гэпами. Пользователь видит ложную динамику, фигуры месяц-к-месяцу несравнимы с годом.
