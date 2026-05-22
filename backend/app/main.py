@@ -1,3 +1,4 @@
+import asyncio
 import json
 import logging
 import time
@@ -69,6 +70,53 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         return await call_next(request)
 
 scheduler = AsyncIOScheduler()
+
+
+async def _catch_up_empty_indicators() -> None:
+    """Подтянуть данные для is_active source-индикаторов с 0 точек.
+
+    Закрывает «New indicator initial ETL trap»: после deploy с новым
+    индикатором в seed_data он стоит пустой, пока daily-job не отработает
+    (06:00 МСК). Эта функция запускается **один раз при startup** и тригерит
+    `run_etl_for_indicator` только для тех, у кого `data_count = 0` и
+    `parser_type != 'derived'`. Derived подхватятся cascade'ом после source.
+
+    Чтобы не задержать uvicorn ready на 30-90 секунд (10+ парсеров × 1-5с),
+    запускаем как background task. ETL_TIMEOUT_SECONDS защищает от
+    зависших источников.
+    """
+    try:
+        from sqlalchemy import select, func
+        from app.database import async_session
+        from app.models import Indicator, IndicatorData
+        from app.tasks.scheduler import run_etl_for_indicator
+
+        async with async_session() as db:
+            q = await db.execute(
+                select(Indicator.code, Indicator.parser_type)
+                .outerjoin(IndicatorData, IndicatorData.indicator_id == Indicator.id)
+                .where(Indicator.is_active.is_(True))
+                .group_by(Indicator.id)
+                .having(func.count(IndicatorData.id) == 0)
+            )
+            empty = [(code, ptype) for code, ptype in q.all() if ptype != "derived"]
+
+        if not empty:
+            logger.info("Startup catch-up: no empty source indicators, all good")
+            return
+
+        logger.info(
+            "Startup catch-up: %d source indicator(s) with 0 points, triggering ETL: %s",
+            len(empty), ", ".join(c for c, _ in empty),
+        )
+        for code, _ in empty:
+            try:
+                updated = await run_etl_for_indicator(code)
+                logger.info("Startup catch-up: %s — updated=%s", code, updated)
+            except Exception as e:
+                logger.warning("Startup catch-up: %s failed: %s", code, e)
+    except Exception as e:
+        logger.warning("Startup catch-up aborted: %s", e)
 
 
 @asynccontextmanager
@@ -165,6 +213,13 @@ async def lifespan(app: FastAPI):
                 settings.analytics_scheduler_cron_hour,
                 settings.analytics_scheduler_cron_minute,
             )
+
+        # «New indicator initial ETL trap» — закрытие. После seed_data
+        # любые новые source-индикаторы могут стоять с 0 точек, пока
+        # daily-job не отработает (06:00 МСК). Триггерим catch-up для них
+        # сразу при startup — в фоновой задаче, чтобы не блокировать
+        # uvicorn ready. См. CONTEXT.md::Operational invariants.
+        asyncio.create_task(_catch_up_empty_indicators())
 
     yield
 
