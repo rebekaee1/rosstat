@@ -123,16 +123,13 @@ export default function IndicatorSearch({ className }) {
         onClick={() => setOpen(true)}
         className={cn(
           FOCUS_RING,
-          'rounded-xl flex items-center gap-2 px-3 py-1.5 text-sm bg-obsidian-lighter/50 border border-border-subtle text-text-secondary hover:text-text-primary hover:bg-obsidian-lighter/80 transition-colors',
+          'rounded-xl flex items-center justify-center p-1.5 bg-obsidian-lighter/50 border border-border-subtle text-text-secondary hover:text-text-primary hover:bg-obsidian-lighter/80 transition-colors',
           className,
         )}
-        aria-label="Открыть поиск индикаторов"
+        aria-label={`Открыть поиск индикаторов (${isMac ? '⌘' : 'Ctrl'}+K)`}
+        title={`Поиск индикаторов (${isMac ? '⌘' : 'Ctrl'}+K)`}
       >
         <Search className="w-3.5 h-3.5" aria-hidden="true" />
-        <span className="hidden lg:inline">Поиск</span>
-        <kbd className="hidden lg:inline-flex items-center gap-0.5 ml-1 px-1.5 py-0.5 text-[10px] font-mono rounded border border-border-subtle text-text-tertiary">
-          {isMac ? '⌘' : 'Ctrl'} K
-        </kbd>
       </button>
 
       {open && (

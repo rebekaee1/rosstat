@@ -102,7 +102,7 @@ export default function Navbar() {
         </span>
       </Link>
 
-      <div className="hidden md:flex items-center gap-2 flex-1 justify-end flex-wrap">
+      <div className="hidden md:flex items-center gap-2 flex-1 justify-end">
         <NavLink to="/" end className={linkClass} onClick={closeAll}>
           Главная
         </NavLink>
