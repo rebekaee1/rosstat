@@ -26,6 +26,12 @@
  *   - code      — backend-код, чьи точки рендерятся (или родительский,
  *                 если transform виртуальный)
  *   - unit      — переопределение единицы parent'а (только если режим её меняет)
+ *   - frequency — переопределение частоты parent'а: подменяется в pill под
+ *                 breadcrumbs и заголовке графика. Обязательно для каждого
+ *                 не-`level` mode, у которого target sibling имеет частоту,
+ *                 отличную от родителя (см. trap «View-mode family metadata
+ *                 leak» в CONTEXT.md). Для virtual transforms `mom` явно
+ *                 указывать не нужно — frequency остаётся родительская.
  *   - transform — виртуальный transform (`'mom'`) — точки считаются на фронте,
  *                 backend не дёргается
  *
@@ -54,30 +60,30 @@ export const VIEW_MODE_FAMILIES = {
     label: 'Экспорт товаров',
     modes: [
       { mode: 'level', label: 'Уровень',  code: 'exports' },
-      { mode: 'yoy',   label: 'YoY %',    code: 'exports-yoy', unit: '%' },
-      { mode: 'qoq',   label: 'QoQ %',    code: 'exports-qoq', unit: '%' },
+      { mode: 'yoy',   label: 'YoY %',    code: 'exports-yoy', unit: '%', frequency: 'quarterly' },
+      { mode: 'qoq',   label: 'QoQ %',    code: 'exports-qoq', unit: '%', frequency: 'quarterly' },
     ],
   },
   imports: {
     label: 'Импорт товаров',
     modes: [
       { mode: 'level', label: 'Уровень',  code: 'imports' },
-      { mode: 'yoy',   label: 'YoY %',    code: 'imports-yoy', unit: '%' },
-      { mode: 'qoq',   label: 'QoQ %',    code: 'imports-qoq', unit: '%' },
+      { mode: 'yoy',   label: 'YoY %',    code: 'imports-yoy', unit: '%', frequency: 'quarterly' },
+      { mode: 'qoq',   label: 'QoQ %',    code: 'imports-qoq', unit: '%', frequency: 'quarterly' },
     ],
   },
   'trade-balance': {
     label: 'Торговый баланс',
     modes: [
       { mode: 'level',   label: 'Уровень',   code: 'trade-balance' },
-      { mode: 'yoy_abs', label: 'YoY, абс.', code: 'trade-balance-yoy-abs' },
+      { mode: 'yoy_abs', label: 'YoY, абс.', code: 'trade-balance-yoy-abs', frequency: 'quarterly' },
     ],
   },
   'current-account': {
     label: 'Сальдо текущего счёта',
     modes: [
       { mode: 'level',   label: 'Уровень',   code: 'current-account' },
-      { mode: 'yoy_abs', label: 'YoY, абс.', code: 'current-account-yoy-abs' },
+      { mode: 'yoy_abs', label: 'YoY, абс.', code: 'current-account-yoy-abs', frequency: 'quarterly' },
     ],
   },
 
@@ -121,23 +127,26 @@ export const VIEW_MODE_FAMILIES = {
     label: 'Средняя заработная плата',
     modes: [
       { mode: 'level',  label: 'Номинальная',         code: 'wages-nominal' },
-      { mode: 'real',   label: 'Реальная',            code: 'wages-real', unit: '%' },
-      { mode: 'yoy',    label: 'YoY %',               code: 'wages-yoy',  unit: '%' },
-      { mode: 'index',  label: 'Индекс 2015=100',     code: 'wages-index', unit: 'индекс' },
+      { mode: 'real',   label: 'Реальная',            code: 'wages-real',           unit: '%',      frequency: 'monthly' },
+      { mode: 'yoy',    label: 'YoY %',               code: 'wages-yoy',            unit: '%',      frequency: 'monthly' },
+      { mode: 'index',  label: 'Индекс 2015=100',     code: 'wages-index',          unit: 'индекс', frequency: 'monthly' },
       // Annual sibling с историей 1991-2014 — отдельный indicator с
       // frequency=annual, чтобы chart label корректно показывал
       // «годовое» (а не «помесячно»). См. trap «annual-in-monthly mixing».
-      { mode: 'annual', label: 'Годовое (с 1991)',    code: 'wages-nominal-annual' },
+      { mode: 'annual', label: 'Годовое (с 1991)',    code: 'wages-nominal-annual',                 frequency: 'annual' },
     ],
   },
   // Unemployment: одинаковые единицы (%), но разные frequencies — это
   // также режимы (level/quarterly/annual). Используем тот же mechanism.
+  // `unemployment-annual` хранится в БД с frequency=monthly (rolling-12M
+  // считается на каждый месяц), pill отражает фактический ритм публикации
+  // (помесячно), а не семантику «12М среднее».
   unemployment: {
     label: 'Уровень безработицы',
     modes: [
       { mode: 'level',     label: 'Месячно',      code: 'unemployment' },
-      { mode: 'quarterly', label: 'Квартально',   code: 'unemployment-quarterly' },
-      { mode: 'annual',    label: '12М среднее',  code: 'unemployment-annual' },
+      { mode: 'quarterly', label: 'Квартально',   code: 'unemployment-quarterly', frequency: 'quarterly' },
+      { mode: 'annual',    label: '12М среднее',  code: 'unemployment-annual',    frequency: 'monthly' },
     ],
   },
 
@@ -151,16 +160,28 @@ export const VIEW_MODE_FAMILIES = {
     label: 'Цена м² на первичном рынке',
     modes: [
       { mode: 'level', label: 'Индекс', code: 'housing-price-primary' },
-      { mode: 'yoy',   label: 'YoY %',  code: 'housing-yoy-primary', unit: '%' },
+      { mode: 'yoy',   label: 'YoY %',  code: 'housing-yoy-primary', unit: '%', frequency: 'quarterly' },
     ],
   },
   'housing-price-secondary': {
     label: 'Цена м² на вторичном рынке',
     modes: [
       { mode: 'level', label: 'Индекс', code: 'housing-price-secondary' },
-      { mode: 'yoy',   label: 'YoY %',  code: 'housing-yoy-secondary', unit: '%' },
+      { mode: 'yoy',   label: 'YoY %',  code: 'housing-yoy-secondary', unit: '%', frequency: 'quarterly' },
     ],
   },
+};
+
+/**
+ * Mapping daily-aggregation `granularity` → `frequency` для эффективного
+ * indicator'а. Используется в `IndicatorDetail.jsx`, чтобы pill/title
+ * отражали фактическую агрегированную частоту daily-индикаторов (Phase 5).
+ */
+export const DAILY_AGG_FREQUENCY = {
+  week: 'weekly',
+  month: 'monthly',
+  quarter: 'quarterly',
+  year: 'annual',
 };
 
 // ----------------------------------------------------------------------

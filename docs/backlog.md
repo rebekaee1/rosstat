@@ -1,6 +1,6 @@
 # Backlog — текущие правки в работе
 
-**Last updated:** 2026-05-22 (звонок «всё доделать»: Phase 1-5 закрыты, B2 поднят в P0).
+**Last updated:** 2026-05-22 (после-ревизия + view-mode family downstream completion: B2 расширен annual-continuation 2015-2025, B3 итог зафиксирован, methodology cross-mode leak и frequency metadata leak закрыты — см. История).
 **Part of:** [`AGENTS.md`](../AGENTS.md), [`CONTEXT.md`](../CONTEXT.md), [`docs/adr/0006-indicator-card-unification.md`](adr/0006-indicator-card-unification.md).
 **Источник:** звонки с Никитой Александровичем 2026-05-21 (Сочи) и 2026-05-22 («всё доделать»).
 
@@ -8,21 +8,23 @@
 
 ---
 
-## Сводка приоритетов (актуальная — 2026-05-22)
+## Сводка приоритетов (актуальная — 2026-05-22, после-ревизия)
 
 | Приоритет | Активно сейчас |
 |-----------|----------------|
-| **P0** | **B2** (wages с 90-х; единственный реально неделанный пункт из всех правок) |
-| **P1** | Расширение view-mode families на остальные индикаторы (GDP, PPI, retail, banking volumes — см. ADR-0006 «Что НЕ покрыто») |
-| **P2** | C4 (research редких показателей — см. список в конце документа), B3 (полный audit глубины) |
+| **P0** | — (пусто; все P0 из звонков закрыты) |
+| **P1** | Расширение view-mode families на остальные индикаторы (GDP / PPI / CPI legacy / retail / banking volumes — см. ADR-0006 §«Что НЕ покрыто»). Длинные SEO-блоки D2 на оставшиеся ~80 индикаторов — итеративно по росту показов в Метрике. |
+| **P2** | C4 (research редких показателей — см. список в конце документа). Wages-2022-12 hole (одна точка пропущена в monthly, заметная как gap на годовом графике) — отдельный микрофикс при следующем wages ETL. Автоматизация `wages-nominal-annual` continuation через derived spec `annual_mean` (сейчас one-shot script). |
 | Future (отложено) | F1 крипто (частично закрыто через BTC/USD как полный indicator), F2 регионы |
 
-**Закрытые в звонке 2026-05-22 (после полного пакета Phase 1-5):**
+**Закрытые в звонке 2026-05-22 + после-ревизия:**
 - A1+A2+A3 — унификация view-modes через `viewModeFamilies.js`, объединение дублирующих карточек (29 индикаторов в `INDICATOR_HIDDEN_FROM_LISTING`).
-- D1 — full directory search через `?include_unlisted=true`.
+- D1 — full directory search через `?include_unlisted=true` + synonyms via `seo_keywords` (commit `cf4a679`).
 - D3, D4, D5, D6 — закрыты commit'ами `91c3f9c`, `876b3c7`, `d4f57ae`.
 - E1, E2 — закрыты раньше (audit bulk_upsert + budget-deficit smoke).
-- B1, B3 — key-rate splice (1992-), audit-script (`scripts/audit-indicators-history.py`).
+- B1 — key-rate splice со ставкой рефинансирования (1992-), коммит `75013ab`.
+- **B2 — wages-nominal-annual с 1991 + autocontinuation 2015-2025**: коммит `3897cc6` залил исторические 24 точки 1991-2014, после-ревизия 2026-05-22 расширила `scripts/backfill-wages-history.py` авто-агрегацией monthly→annual_mean (10 новых точек 2015-2021, 2023-2025; 2022 пропущен из-за hole в monthly). Итог: 34 точки в `wages-nominal-annual`, ряд тянется до 2025-01.
+- **B3 — audit-history-depth**: реализован как `scripts/audit-indicators-history.py` (markdown-таблица «текущая глубина / теоретически доступная / GAP» по всем 109 индикаторам + кандидаты на backfill). Использовался для приоритизации B1 (key-rate), B2 (wages) и C2 (wages-index). Коммит на стадии деплоя.
 - C1, C2, C3 — housing-affordability, wages-index, deposit-rate term split.
 - D2 — long SEO blocks на 12 индикаторов (на оставшиеся ~80 — по мере роста показов в Метрике).
 - Phase 1-5 (новые) — trade + labour + housing + rates rename + daily aggregation.
@@ -159,39 +161,15 @@ NEGATIVE-CAPABLE (trade-balance, current-account, budget-deficit, *-migration, *
 
 ---
 
-### B2. Зарплата с 90-х (приоритет повышен до P0 — 2026-05-22)
+### B2. Зарплата с 90-х — ✅ **CLOSED 2026-05-22** (см. История)
 
-**Что меняем.** Текущий `wages-nominal` начинается с 2015. Никита: «наверняка зарплата есть раньше… с 90-х». Подтянуть исторический ряд средней номинальной заработной платы с 1991 (или сколько даст Росстат).
-
-**Данные.** Росстат публикует «Среднемесячная номинальная начисленная заработная плата работников по полному кругу организаций» с 1991 года. Архивные годовые точки 1991-2014 ищем в архивных HTML-таблицах Росстата (аналог `housing_historical.py` для жилья) — найдём при имплементации, публичный источник.
-
-**Затронутые файлы.**
-- `backend/app/data/wages_historical.py` (новый, immutable seed годовых точек 1991-2014).
-- `scripts/backfill-wages-history.py` (новый).
-- `backend/app/services/rosstat_labor_parser.py` — без изменений (продолжает обновлять текущие).
-
-**Риски.**
-- Деноминация 1998 года: ряд до и после 1998 в разных деноминациях рубля. Нужно унифицировать.
-- Возможно, до 2000 года данные есть только годовые, не месячные.
-
-**Зависимости.** Нужно до C2 (wages index).
-
-**Приоритет.** **P0** (поднят с P1 на звонке 2026-05-22 — единственный реально неделанный пункт из всех правок).
+Залит `backend/app/data/wages_historical.py` (24 immutable точки 1991-2014, деноминация 1998 учтена). После-ревизия 2026-05-22 расширила `scripts/backfill-wages-history.py` авто-агрегацией monthly→annual_mean: 10 новых точек 2015-2025 (2022 пропущен — hole в monthly декабре 2022, занесён в P2). Итоговый ряд `wages-nominal-annual` 34 точки 1991-01..2025-01, доступен как режим «Годовое (с 1991)» через `viewModeFamilies`.
 
 ---
 
-### B3. Аудит максимальной истории по всем 109 индикаторам
+### B3. Аудит максимальной истории — ✅ **CLOSED 2026-05-21** (см. История)
 
-**Что меняем.** Скрипт, который для каждого индикатора показывает (а) текущую глубину истории, (б) теоретически доступную глубину из Росстат/ЦБ/Минфин, (в) GAP.
-
-**Затронутые файлы.**
-- `scripts/audit-history-depth.py` (новый).
-
-**Риски.** Низкие — read-only анализ.
-
-**Зависимости.** Нет.
-
-**Приоритет.** P2.
+Реализован как `scripts/audit-indicators-history.py` (а не `audit-history-depth.py`, как планировалось). Отдаёт markdown-таблицу по всем 109 индикаторам: «текущая глубина / теоретически доступная / GAP». Использовался для приоритизации B1 (key-rate), B2 (wages), C2 (wages-index). Регрессионный re-run — после любого нового backfill.
 
 ---
 
@@ -535,6 +513,31 @@ housing-affordability-index[t] = wages-index[t] / housing-price-index[t]   # б�
 ---
 
 ## История (sealed правки)
+
+### 2026-05-22 — view-mode family downstream completion (methodology + frequency leak)
+
+После Phase 1-5 (звонок «всё доделать») остались два downstream-протекания, замеченные на `/indicator/wages-nominal?mode=annual` при верификации B2:
+
+- **Methodology cross-mode leak**. `cpiViewModeContent.jsx::getViewModeContent()` отдавал CPI-блок `ANNUAL` («годовая инфляция декабрь к декабрю») для любого `safeViewMode === 'annual'`, без проверки `isPriceCategory`. На странице wages пользователь видел чужой текст. Аналогично для `quarterly` и `weekly`.
+- **Frequency metadata leak**. `effectiveIndicator` в `IndicatorDetail.jsx` подменял `unit` и `name`, но **не** `frequency`. Pill под breadcrumbs и заголовок графика читали `indicator.frequency` родителя (monthly у wages-nominal), хотя active sibling имел другой ритм (annual у wages-nominal-annual). Пользователь видел «ПОМЕСЯЧНО» в режиме «Годовое (с 1991)».
+
+**Фикс (4 файла кода + 2 файла тестов + vitest.config):**
+- `frontend/src/lib/cpiViewModeContent.jsx`: все CPI-specific ветки обёрнуты в `if (isPriceCategory)`. Не-CPI индикаторы падают в fallback на `indicator.{description, methodology}` из БД.
+- `frontend/src/lib/viewModeFamilies.js`: у каждого не-`level` mode (real sibling) задан `frequency`. Добавлен `DAILY_AGG_FREQUENCY` mapping для Phase 5 daily-aggregation.
+- `frontend/src/pages/IndicatorDetail.jsx`: `effectiveIndicator` подменяет `frequency` из `familyModeMeta.frequency` или `DAILY_AGG_FREQUENCY[granularity]`. Header принимает отдельный prop `displayFrequency`.
+- `frontend/src/components/IndicatorDetailHeader.jsx`: новый prop `displayFrequency` (override `indicator.frequency` для pill, при сохранении родительского `name`/`category` для H1/breadcrumbs).
+- `frontend/src/lib/cpiViewModeContent.test.js` (новый, 9 тестов): для `isPriceCategory=false` функция возвращает fallback; для `isPriceCategory=true` — CPI-блоки.
+- `frontend/src/lib/viewModeFamilies.test.js`: инвариант «каждый не-level mode имеет `frequency` или `transform`» + проверка `DAILY_AGG_FREQUENCY`.
+- `frontend/vitest.config.js`: добавлен `@vitejs/plugin-react` (нужен для JSX в импортируемых модулях).
+
+**Verification.** `/indicator/wages-nominal?mode=annual` → заголовок графика «(...)  — годовая», методология «Среднемесячная номинальная начисленная заработная плата работников...» (свой текст wages). `/indicator/unemployment?mode=quarterly` → заголовок «(...) — квартально», методология «Доля безработных в экономически активном населении по методологии МОТ» (свой текст unemployment). 29/29 тестов зелёные.
+
+ADR-0006 «Subsequent additions» дополнен описанием решения. CONTEXT.md: 4-я trap «View-mode family metadata leak» с правилами для новых семей и новых mode-specific блоков.
+
+### 2026-05-22 — после-ревизия: B2 wages annual continuation + B3 итог зафиксирован
+
+- **B2 (closure)**. Расширил `scripts/backfill-wages-history.py`: помимо immutable 1991-2014 из `wages_historical.py` теперь скрипт подтягивает monthly точки `wages-nominal` из БД, группирует по году, для **полных** лет (12 месяцев) считает annual mean, аппендит к историческому хвосту, всё одним идемпотентным `bulk_upsert` в `wages-nominal-annual`. Прогон на локальной БД: 24 hist + 10 auto = 34 точки, диапазон 1991-01..2025-01. Год 2022 пропущен — обнаружен hole в monthly (нет декабря 2022), перенесён в P2 как отдельный микрофикс. Год 2026 пропущен корректно (только 2 месяца, неполный). Trap «annual continuation требует ручного re-run после закрытия года или derived spec `annual_mean`» зафиксирован в docstring скрипта.
+- **B3 (закрытие)**. Подтверждено: задача реализована как `scripts/audit-indicators-history.py` (имя отличается от planned `audit-history-depth.py`, функционально эквивалентно). Markdown-таблица «текущая / теоретическая / GAP» по всем 109 индикаторам, плюс список кандидатов на backfill. Скрипт переиспользуется при добавлении любого нового indicator (см. checklist «новый индикатор» в `AGENTS.md::Шаг 4`, пункт 1 «Source-depth invariant»).
 
 ### 2026-05-22 — звонок «всё доделать» (5 phases + grill-me ticker + search)
 

@@ -2,7 +2,7 @@
 
 - **Status:** Accepted
 - **Date:** 2026-05-22
-- **Last verified:** 2026-05-22 (звонок «всё доделать»).
+- **Last verified:** 2026-05-22 (звонок «всё доделать» + downstream completion: methodology guard + frequency override).
 - **Part of:** [`AGENTS.md`](../../AGENTS.md), [`CONTEXT.md`](../../CONTEXT.md), [`ADR-0001`](0001-derived-indicators-engine-shape.md), [`ADR-0003`](0003-seo-single-source-server-rendered.md).
 - **Контекст:** правки 2026-05-21 (кластер A: «time aggregations & view modes», объединение дублирующих карточек) + звонок 2026-05-22 («всё доделать»).
 
@@ -142,4 +142,34 @@ Variant ≠ режим:
 
 ## Subsequent additions
 
-(Раздел резервируется для эволюционных дополнений к этому решению. Не редактировать body «как если бы решение было таким».)
+### 2026-05-22 — view-mode family downstream completion
+
+Pilot Phase 1-5 ввёл `viewModeFamilies.js` как реестр семей режимов отображения, но не дотянул правки до всех downstream-компонентов `IndicatorDetail.jsx`. Это привело к двум багам, замеченным на `/indicator/wages-nominal?mode=annual`:
+
+1. **Methodology cross-mode leak.** Функция `getViewModeContent()` в `lib/cpiViewModeContent.jsx` отдавала блок `ANNUAL` (текст про «годовую инфляцию декабрь к декабрю» — стандарт CPI-семейства) для любого `safeViewMode === 'annual'`, без проверки `isPriceCategory`. На странице зарплат пользователь видел чужой текст про инфляцию вместо собственной методологии wages. Аналогично затрагивало `quarterly` и `weekly` ветки.
+
+2. **Frequency metadata leak.** `effectiveIndicator` в `IndicatorDetail.jsx` подменял `unit` и `name` под активный mode, но не `frequency`. Из-за этого pill под breadcrumbs (`IndicatorDetailHeader`) и заголовок графика (`IndicatorChartSection`) читали родительский `frequency` (monthly у wages-nominal), хотя target sibling имел другой ритм (annual у wages-nominal-annual). Пользователь видел «ПОМЕСЯЧНО» в режиме «Годовое (с 1991)».
+
+**Решение:**
+
+- `cpiViewModeContent.jsx::getViewModeContent` — обернуть все CPI-specific ветки в `if (isPriceCategory)`. Не-CPI индикаторы падают в fallback `{ description: indicator.description, methodology: indicator.methodology }`.
+- `viewModeFamilies.js` — у каждого не-`level` mode (real sibling) задан явный `frequency`. Виртуальные transforms (`transform: 'mom'`) сохраняют родительскую частоту.
+- `viewModeFamilies.js` — добавлен `DAILY_AGG_FREQUENCY` mapping (`week → weekly`, …, `year → annual`) для Phase 5 daily-aggregation.
+- `IndicatorDetail.jsx::effectiveIndicator` — подменяет `frequency` из `familyModeMeta.frequency` (для real siblings) или `DAILY_AGG_FREQUENCY[granularity]` (для daily).
+- `IndicatorDetailHeader.jsx` — принимает отдельный prop `displayFrequency` (override родительского `indicator.frequency` для пилла, при сохранении родительского `name`/`category` для H1/breadcrumbs).
+- `IndicatorDetail.jsx` — передаёт `displayFrequency={effectiveIndicator?.frequency}` в Header.
+
+**Тесты:**
+- Новый `frontend/src/lib/cpiViewModeContent.test.js` (9 тестов): для `isPriceCategory=false` функция возвращает fallback на indicator-поля; для `isPriceCategory=true` — CPI-блоки.
+- Расширен `viewModeFamilies.test.js`: инвариант «каждый не-level mode имеет `frequency` или `transform`» (anti-leak guard) + проверка `DAILY_AGG_FREQUENCY` mapping.
+
+**Затронутые файлы:**
+- `frontend/src/lib/cpiViewModeContent.jsx`
+- `frontend/src/lib/viewModeFamilies.js`
+- `frontend/src/pages/IndicatorDetail.jsx`
+- `frontend/src/components/IndicatorDetailHeader.jsx`
+- `frontend/src/lib/cpiViewModeContent.test.js` (новый)
+- `frontend/src/lib/viewModeFamilies.test.js`
+- `frontend/vitest.config.js` (добавлен `@vitejs/plugin-react` — для JSX в импортируемых модулях).
+
+См. также trap «View-mode family metadata leak» в `CONTEXT.md::Operational invariants and traps`.

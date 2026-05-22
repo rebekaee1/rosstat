@@ -105,16 +105,23 @@ const INDEX = {
 
 /**
  * Вернуть пару (description, methodology) для текущего режима графика.
- * Если индикатор не из CPI-семейства — возвращает description/methodology
- * из самого indicator (fallback на DB-описание).
+ *
+ * Все CPI-specific блоки (INFLATION/QUARTERLY/ANNUAL/WEEKLY/INDEX/CPI_MONTHLY)
+ * включаются **только** при `isPriceCategory === true`. Не-CPI индикаторы,
+ * у которых тоже есть режим `annual` / `quarterly` через viewModeFamilies
+ * (wages-nominal, unemployment), падают в fallback на `indicator.{description,
+ * methodology}` — общий текст индикатора из БД. См. ADR-0006 «Subsequent
+ * additions» и trap «View-mode family metadata leak» в CONTEXT.md.
  */
 export function getViewModeContent({ chartMode, safeViewMode, isPriceCategory, indicator }) {
-  if (chartMode === 'inflation') return INFLATION;
-  if (safeViewMode === 'quarterly') return QUARTERLY;
-  if (safeViewMode === 'annual') return ANNUAL;
-  if (safeViewMode === 'weekly') return WEEKLY;
-  if (safeViewMode === 'index' && isPriceCategory) return INDEX;
-  if (safeViewMode === 'cpi' && isPriceCategory) return CPI_MONTHLY;
+  if (isPriceCategory) {
+    if (chartMode === 'inflation') return INFLATION;
+    if (safeViewMode === 'quarterly') return QUARTERLY;
+    if (safeViewMode === 'annual') return ANNUAL;
+    if (safeViewMode === 'weekly') return WEEKLY;
+    if (safeViewMode === 'index') return INDEX;
+    if (safeViewMode === 'cpi') return CPI_MONTHLY;
+  }
   return {
     description: indicator?.description ?? '',
     methodology: indicator?.methodology ?? '',

@@ -23,6 +23,7 @@ import {
   findViewModeFamily,
   applyMoMTransform,
   applyAggregateTransform,
+  DAILY_AGG_FREQUENCY,
 } from '../lib/viewModeFamilies';
 import { getViewModeContent } from '../lib/cpiViewModeContent';
 import { downloadExcel, downloadCSV } from '../lib/excel';
@@ -212,12 +213,18 @@ export default function IndicatorDetail() {
     ? false : baseForecastEnabled;
 
   // Подменяем `indicator` для downstream-компонентов (телеметрия, график,
-  // download, таблица) — даёт правильный unit и расширенное имя
+  // download, таблица) — даёт правильный unit, frequency и расширенное имя
   // («Экспорт товаров (YoY %)» или «Безработица (Квартально)»).
   // Unit берётся из режима: если `modeMeta.unit` задан — используем его;
   // если не задан — сохраняем родительскую единицу.
+  // Frequency берётся из `modeMeta.frequency` для real siblings (например,
+  // wages-nominal-annual → annual) и из `DAILY_AGG_FREQUENCY[granularity]`
+  // для daily-aggregation (Phase 5). Для virtual `mom`-transform или
+  // `level`-режима frequency остаётся родительская. См. trap «View-mode
+  // family metadata leak» в CONTEXT.md.
   // Хедер страницы остаётся оригинальным (`indicator.name`), чтобы
-  // breadcrumbs и H1 не дёргались при смене mode.
+  // breadcrumbs и H1 не дёргались при смене mode — frequency-pill в Header
+  // подменяется через отдельный prop `displayFrequency`.
   const effectiveIndicator = useMemo(() => {
     if (!indicator) return indicator;
     if (isFamily && familyMode !== 'level') {
@@ -225,6 +232,7 @@ export default function IndicatorDetail() {
       return {
         ...indicator,
         unit: familyModeMeta?.unit ?? indicator.unit,
+        frequency: familyModeMeta?.frequency ?? indicator.frequency,
         name: `${indicator.name} (${suffix})`,
       };
     }
@@ -232,7 +240,11 @@ export default function IndicatorDetail() {
       const aggLabel = viewMode === 'weekly' ? 'Недельно'
         : viewMode === 'monthly' ? 'Месячно'
         : viewMode === 'quarterly' ? 'Квартально' : 'Годово';
-      return { ...indicator, name: `${indicator.name} (${aggLabel}, avg)` };
+      return {
+        ...indicator,
+        frequency: DAILY_AGG_FREQUENCY[dailyAggGranularity] ?? indicator.frequency,
+        name: `${indicator.name} (${aggLabel}, avg)`,
+      };
     }
     return indicator;
   }, [indicator, isFamily, familyMode, familyModeMeta, dailyAggGranularity, viewMode]);
@@ -346,6 +358,7 @@ export default function IndicatorDetail() {
         code={code}
         loading={loadingInd}
         headerRef={headerRef}
+        displayFrequency={effectiveIndicator?.frequency}
       />
 
       <IndicatorTelemetryGrid

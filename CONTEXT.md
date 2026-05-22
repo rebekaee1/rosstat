@@ -1,6 +1,6 @@
 # Forecast Economy — Project Context
 
-**Last updated:** 2026-05-22 (звонок «всё доделать» + ревизия «ты уверен в данных?»: Phase 2 labour (wages-nominal + unemployment унифицированы в view-mode families), Phase 3 housing (housing-price-{primary,secondary} с YoY % режимом), Phase 4 rates rename (credit-rate-{corp,ind}-short и deposit-rate переименованы на общие имена, term split через VariantGroupPicker), Phase 5 daily-aggregation (виртуальные week/month/quarter/year avg для key-rate, ruonia, cbr-fx-*, gold-price, brent, btc-usd через `applyAggregateTransform` на фронте). `tradeViewModes.js` → `viewModeFamilies.js` (общий реестр для всех семей). `wages-nominal-annual` — annual sibling с историей 1991-2014, доступен как режим «Годовое (с 1991)» (фикс annual-in-monthly trap). Search haystack расширен на `seo_keywords` (поддержка корней/синонимов: «зарпл» → wages-nominal, wages-real, wages-yoy, wages-index). +3 trap'ы: `Source-depth trap` + `Browser-cache trap при rebuild frontend` + `Annual-in-monthly mixing trap`. См. ADR-0006 «Indicator card unification».
+**Last updated:** 2026-05-22 (звонок «всё доделать» + ревизия «ты уверен в данных?» + view-mode family downstream completion: Phase 2 labour (wages-nominal + unemployment унифицированы в view-mode families), Phase 3 housing (housing-price-{primary,secondary} с YoY % режимом), Phase 4 rates rename (credit-rate-{corp,ind}-short и deposit-rate переименованы на общие имена, term split через VariantGroupPicker), Phase 5 daily-aggregation (виртуальные week/month/quarter/year avg для key-rate, ruonia, cbr-fx-*, gold-price, brent, btc-usd через `applyAggregateTransform` на фронте). `tradeViewModes.js` → `viewModeFamilies.js` (общий реестр для всех семей). `wages-nominal-annual` — annual sibling с историей 1991-2014, доступен как режим «Годовое (с 1991)» (фикс annual-in-monthly trap); backfill дотянут до 2025 через annual mean из monthly. Pill/title подменяются через `displayFrequency` + `effectiveIndicator.frequency` override; CPI-only блоки в `getViewModeContent()` обёрнуты в `isPriceCategory` guard (фикс methodology cross-mode leak). Search haystack расширен на `seo_keywords` (поддержка корней/синонимов: «зарпл» → wages-nominal, wages-real, wages-yoy, wages-index). +4 trap'ы: `Source-depth trap` + `Browser-cache trap при rebuild frontend` + `Annual-in-monthly mixing trap` + `View-mode family metadata leak`. См. ADR-0006 «Indicator card unification».
 **Part of:** [`AGENTS.md`](AGENTS.md) (точка входа для AI-агента).
 **See also:** [`README.md`](README.md), [`docs/workflow.md`](docs/workflow.md), [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md), [`docs/data_sources.md`](docs/data_sources.md), [`docs/cbr_sources.md`](docs/cbr_sources.md), [`docs/analytics_api_inventory/`](docs/analytics_api_inventory/), [`docs/adr/`](docs/adr/).
 
@@ -373,6 +373,23 @@ docker compose exec backend python -c \
 **Правило:** **никогда** не лить точки чужой частоты в существующий indicator. Если source даёт annual до 1998 и monthly с 2015 — это **два разных indicator'а** с одним visual entry (через view-mode family). Аналогично quarterly история + monthly свежак, weekly прошлое + daily настоящее, и т.п.
 
 **Проверка при backfill:** перед `bulk_upsert` сверить `target.frequency` с фактической частотой добавляемых точек. Если расхождение — заводим sibling indicator + добавляем режим в `viewModeFamilies`. См. чеклист в `AGENTS.md::Шаг 4` (новый пункт «Frequency consistency»).
+
+### View-mode family metadata leak (downstream-протекание родительских полей)
+
+При добавлении нового члена в семью `viewModeFamilies.js` (real sibling с другой частотой или единицей) недостаточно прописать `code` — нужно протянуть **все** поля, от которых зависят downstream-компоненты `IndicatorDetail.jsx`. Иначе родительские метаданные «протекают»: pill и заголовок графика читают `indicator.frequency` родителя, секция «Методология» читает обобщённый CPI-блок из `cpiViewModeContent.jsx`, и пользователь видит чужой смысл.
+
+**Случай 2026-05-22:** `/indicator/wages-nominal?mode=annual` (target = `wages-nominal-annual` с `frequency=annual`):
+- Pill показывал «ПОМЕСЯЧНО», заголовок графика — «— помесячно» (frequency leak — `effectiveIndicator` подменял `unit`/`name`, но не `frequency`).
+- Секция «Методология» отдавала текст CPI: «Годовая инфляция декабрь к декабрю» (methodology leak — `getViewModeContent()` отдавал блок `ANNUAL` для любого `safeViewMode === 'annual'` без проверки `isPriceCategory`).
+
+**Фикс:**
+1. `effectiveIndicator` в `IndicatorDetail.jsx` дополнительно подменяет `frequency` из `familyModeMeta.frequency` (для real siblings) или `DAILY_AGG_FREQUENCY[granularity]` (для daily-aggregation Phase 5).
+2. `IndicatorDetailHeader.jsx` принимает отдельный prop `displayFrequency`, чтобы pill отражал actual frequency, при сохранении родительского `name`/`category` для H1/breadcrumbs.
+3. `getViewModeContent()` в `cpiViewModeContent.jsx` обёрнут в `if (isPriceCategory)`. Не-CPI индикаторы падают в fallback `{ description: indicator.description, methodology: indicator.methodology }`.
+
+**Правило для новых семей в `viewModeFamilies.js`:** у каждого **не-`level`** mode (real sibling) задаём явный `frequency` ИЛИ `transform`. Виртуальные transforms (`mom`) сохраняют родительскую частоту — `frequency` опускаем. Инвариант покрыт тестом `viewModeFamilies.test.js::каждый не-level mode имеет frequency или transform`.
+
+**Правило для новых mode-specific блоков в `cpiViewModeContent.jsx`:** если блок применим только к CPI-семейству (Index, Annual, Weekly, Quarterly, CPI-monthly, Inflation), его условие должно быть **внутри** `if (isPriceCategory)`. Для не-CPI индикаторов с теми же режимами (`wages-nominal?mode=annual`, `unemployment?mode=quarterly`) функция должна падать в fallback на `indicator.{description, methodology}` из БД.
 
 ### Calendar source coverage
 

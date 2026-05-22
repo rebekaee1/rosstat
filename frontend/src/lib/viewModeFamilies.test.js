@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   VIEW_MODE_FAMILIES,
+  DAILY_AGG_FREQUENCY,
   findViewModeFamily,
   viewModeCode,
   applyMoMTransform,
@@ -59,6 +60,33 @@ describe('VIEW_MODE_FAMILIES — schema', () => {
       expect(yoy.unit).toBe('%');
       expect(yoy.code).toMatch(/^housing-yoy-/);
     }
+  });
+
+  // Инвариант ADR-0006 «Subsequent additions» (downstream metadata leak fix):
+  // у каждого не-level mode должен быть задан либо `frequency` (для real
+  // siblings), либо `transform` (для virtual transforms — frequency
+  // остаётся родительская). Без этого pill/title протекают от родителя.
+  it('каждый не-level mode имеет frequency или transform (anti-leak invariant)', () => {
+    for (const [parent, family] of Object.entries(VIEW_MODE_FAMILIES)) {
+      for (const m of family.modes) {
+        if (m.mode === 'level') continue;
+        const hasFreq = typeof m.frequency === 'string' && m.frequency.length > 0;
+        const hasTransform = typeof m.transform === 'string' && m.transform.length > 0;
+        expect(
+          hasFreq || hasTransform,
+          `Family "${parent}" mode "${m.mode}" должен иметь frequency или transform`,
+        ).toBe(true);
+      }
+    }
+  });
+
+  it('DAILY_AGG_FREQUENCY покрывает 4 granularity (Phase 5)', () => {
+    expect(DAILY_AGG_FREQUENCY).toEqual({
+      week: 'weekly',
+      month: 'monthly',
+      quarter: 'quarterly',
+      year: 'annual',
+    });
   });
 });
 

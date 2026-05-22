@@ -19,13 +19,22 @@ const FREQ_MAP = {
  *
  * `headerRef` пробрасывается из родителя для GSAP-анимации появления
  * (родитель ищет внутри элементы с `data-animate`).
+ *
+ * `displayFrequency` — override родительской `indicator.frequency`
+ * для пиллки. Используется в view-mode family режимах, когда активный
+ * sibling имеет другую частоту (например, wages-nominal?mode=annual →
+ * wages-nominal-annual с frequency=annual). `indicator.name` остаётся
+ * родительским, чтобы H1/breadcrumbs не дёргались. Если override не
+ * задан — fallback на `indicator.frequency`.
  */
 export default function IndicatorDetailHeader({
   indicator,
   code,
   loading,
   headerRef,
+  displayFrequency,
 }) {
+  const effectiveFrequency = displayFrequency ?? indicator?.frequency;
   const category = indicator?.category
     ? CATEGORIES.find((c) => c.apiCategory === indicator.category)
     : null;
@@ -61,7 +70,7 @@ export default function IndicatorDetailHeader({
           <div data-animate className="flex items-center gap-3 mb-4">
             <span className="px-3 py-1 rounded-full border border-border-subtle bg-obsidian-light text-[10px] font-mono uppercase tracking-widest text-text-secondary flex items-center gap-2">
               <Activity className="w-3 h-3 text-champagne" />
-              {FREQ_MAP[indicator?.frequency] || indicator?.frequency}
+              {FREQ_MAP[effectiveFrequency] || effectiveFrequency}
             </span>
             {indicator?.category && (
               <span className="text-xs font-mono text-text-tertiary">
