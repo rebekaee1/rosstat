@@ -2,7 +2,7 @@
 
 - **Date:** 2026-05-10
 - **Status:** Accepted
-- **Last verified:** 2026-05-10 (`backend/tests/test_calendar_seed.py`: CPI April 2026 -> 2026-05-15, CPI family same official release, CBR daily working-day rules, CBR ICS fixture/multi-indicator mapping, CBR key-rate meeting/summary, Minfin 14th working day incl. deficit, reschedule audit, public source-bound guard).
+- **Last verified:** 2026-05-22 (документация-ревизия: invariant в коде стабилен — `app/api/calendar.py` фильтрует public events по `event_key`/`source_url`/`source_hash`/`last_seen_at` IS NOT NULL; backend/tests/test_calendar_seed.py покрывает CPI April 2026 → 2026-05-15, CPI family same official release, CBR daily working-day rules, CBR ICS fixture/multi-indicator mapping, CBR key-rate meeting/summary, Minfin 14th working day incl. deficit, reschedule audit, public source-bound guard).
 - **Part of:** [`../../CONTEXT.md`](../../CONTEXT.md) (термин `Calendar event`).
 - **Related:** [ADR-0004](0004-rosstat-russian-canonical-sdds-deprecated.md) (official Russian source policy), [ADR-0002](0002-derived-always-reflects-source.md) (idempotent upsert principle).
 - **Code anchors:** `backend/app/services/calendar_sources/`, `backend/app/services/calendar_seed.py`, `backend/app/api/calendar.py`, `backend/app/models.py::EconomicEvent`.

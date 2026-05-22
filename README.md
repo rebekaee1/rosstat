@@ -1,11 +1,13 @@
 # Forecast Economy — Аналитическая платформа экономических индикаторов России
 
-Платформа для сбора, прогнозирования и публикации **104 экономических индикаторов** России (Росстат, ЦБ РФ, Минфин). Прогнозы по 8 стратегиям, ежедневный ETL, SSR + SEO, embed-виджеты, календарь публикаций, аналитический MCP. Доступна публично на [forecasteconomy.com](https://forecasteconomy.com).
+Платформа для сбора, прогнозирования и публикации 100+ экономических индикаторов России (Росстат, ЦБ РФ, Минфин). Прогнозы по 10 стратегиям, ежедневный ETL, SSR + SEO, embed-виджеты, календарь публикаций, live ticker (USD/EUR/CNY/BTC/Brent), аналитический MCP. Доступна публично на [forecasteconomy.com](https://forecasteconomy.com).
 
-**Точка входа в документацию:** [`CONTEXT.md`](CONTEXT.md) — глоссарий и архитектурный язык.
-**Рабочий процесс, деплой:** [`docs/workflow.md`](docs/workflow.md).
-**Источники данных:** [`docs/cbr_sources.md`](docs/cbr_sources.md) (CBR + Минфин); Rosstat-парсеры — в `CONTEXT.md`.
-**Архитектурные решения:** [`docs/adr/`](docs/adr/) (нумерованные ADR).
+**Точка входа в документацию (для AI-агентов и людей):** [`AGENTS.md`](AGENTS.md) — карта документации, режим работы, протокол актуализации.
+**Domain glossary и инварианты:** [`CONTEXT.md`](CONTEXT.md).
+**Рабочий процесс, локальный dev, прод-деплой:** [`docs/workflow.md`](docs/workflow.md).
+**Источники данных:** [`docs/data_sources.md`](docs/data_sources.md) (per-indicator карта `URL/endpoint/sheet/row`); parser internals — в docstrings `backend/app/services/*_parser.py`.
+**Архитектурные решения:** [`docs/adr/`](docs/adr/) (ADR-0001..0006).
+**Backlog работ:** [`docs/backlog.md`](docs/backlog.md).
 
 ## Архитектура
 
@@ -40,6 +42,12 @@
                        ┌─────────────────────────┐
                        │  Forecast Analytics MCP │  Yandex.Metrika /
                        │  (Yandex.* + warehouse) │  Webmaster → DB
+                       └─────────────────────────┘
+
+                       ┌─────────────────────────┐
+                       │     Live Ticker         │  USD/EUR/CNY/BTC/Brent
+                       │  MOEX ISS + Binance +   │  → Redis (TTL 30s)
+                       │  CBR XML fallback       │  → /api/v1/ticker/live
                        └─────────────────────────┘
 ```
 
@@ -116,70 +124,45 @@ VITE_DEV_API_PROXY=http://127.0.0.1:8000
 
 Base URL: `/api/v1` (за исключением SSR-эндпоинтов `/seo/*` и `/sitemap.xml`).
 
-| Группа | Endpoint | Описание |
-|--------|----------|----------|
-| **Indicators** | `GET /indicators` | Список всех индикаторов (с фильтрами, сортировкой). |
-| | `GET /indicators/{code}` | Детали (метаданные, единицы, источник, SEO-блоки). |
-| | `GET /indicators/{code}/data` | Исторические точки (с пагинацией по диапазону). |
-| | `GET /indicators/{code}/stats` | min/max/avg/yoy за период. |
-| **Forecasts** | `GET /indicators/{code}/forecast` | Прогноз (по `forecast_strategy` индикатора). |
-| | `GET /indicators/{code}/inflation` | Накопленная 12-мес. инфляция + прогноз (только для CPI). |
-| **Calendar** | `GET /calendar` | Список календарных публикаций в диапазоне. |
-| | `GET /calendar/upcoming` | Ближайшие публикации. |
-| | `GET /calendar/{event_id}` | Детали события. |
-| | `GET /calendar/export/ical` | iCal-фид для подписки. |
-| **Live ticker** | `GET /ticker/live` | Последние снапшоты USD/EUR/CNY/BTC/Brent из Redis (MOEX + Binance + CBR-fallback, обновление 5с). |
-| **Embed** | `GET /embed/spark/{code}.svg` | Sparkline-виджет. |
-| | `GET /embed/card/{code}.svg` | Карточка с метрикой. |
-| | `GET /embed/badge/{code}.svg` | Inline-бейдж. |
-| | `POST /embed/impression`, `GET /embed/pixel.gif` | Учёт показов. |
-| **Dashboard** | `GET /dashboard/sparklines` | Бандл sparkline'ов главной. |
-| **Demographics** | `GET /demographics/structure` | Половозрастная структура. |
-| **Analytics (MCP)** | `GET /analytics/health` | Состояние Forecast Analytics OS (требует токен). |
-| | `POST /analytics/query/metrika`, `GET /pages`, `GET /search-phrases`, `GET /anomalies`, `GET /deploy-impact`, `POST /actions/propose`, `POST /actions/{id}/apply`, `POST /events` | Сценарии аналитики. |
-| **System** | `GET /health` | Liveness probe (DB ping). |
-| | `GET /system/status` | Сводка по индикаторам, последним ETL-запускам, расписанию. |
-| | `GET /metrics` (hidden) | Прометей-совместимые метрики. |
-| **SEO / SSR** | `GET /seo/page/{page}`, `/seo/category/{slug}`, `/seo/indicator/{code}` | SSR-meta-bundle для ботов. |
-| | `GET /sitemap.xml` | Полная карта сайта. |
-| | `GET /api/v1/og/{indicator,category,page}/{key}` | OpenGraph-картинки. |
+**Полная и всегда актуальная документация** — Swagger при `DEBUG=true`: `http://localhost:8000/api/docs`. На проде Swagger физически отключён.
 
-Полную, всегда актуальную документацию смотрите в Swagger (`/api/docs`) при запущенном backend в `DEBUG=true`. На проде Swagger физически отключён.
+Ключевые группы endpoint'ов:
+
+| Группа | Что отдаёт |
+|--------|------------|
+| `/indicators/*` | список / детали / точки / статистика / прогноз / накопленная инфляция (CPI) |
+| `/calendar/*` | публикации в диапазоне, ближайшие, iCal-фид (источник: ADR-0005) |
+| `/ticker/live` | live снимок USD/EUR/CNY/BTC/Brent из Redis (TTL 30с, MOEX + Binance + CBR fallback) |
+| `/embed/*` | spark/card/badge SVG-виджеты + impression-pixel |
+| `/dashboard/sparklines` | bundle sparkline'ов главной |
+| `/analytics/*` | Forecast Analytics OS (Yandex.* через MCP, требует токен) |
+| `/seo/*`, `/sitemap.xml`, `/og/*` | SSR-meta-bundle, sitemap, OpenGraph-картинки (источник: ADR-0003) |
+| `/health`, `/system/status` | liveness + сводка по ETL и расписанию |
 
 ## Индикаторы
 
-104 активных индикатора в 9 категориях:
+100+ активных индикаторов, разнесённые по 10 категориям (счётчики не фиксируем — растут постоянно; актуальное число в `seed_data.py` и в `/api/v1/system/status`).
 
 | Категория (slug) | DB category | Покрытие |
 |------------------|-------------|----------|
 | `prices` | Цены | ИПЦ (общий, food/non-food/services), ИЦП, недельная инфляция |
-| `rates` | Ставки | Ключевая ставка ЦБ, RUONIA, ставки по кредитам и депозитам |
-| `finance` | Финансы | USD/EUR/CNY, M0/M1/M2, золото, резервы, внешний долг, бюджет |
-| `labor` | Рынок труда | Безработица, реальные/номинальные зарплаты, рабочая сила |
-| `gdp` | ВВП | ВВП номинальный/реальный, госрасходы, потребление, инвестиции |
-| `population` | Население | Численность, рождаемость, смертность, пенсионеры, трудоспособное |
-| `trade` | Торговля | Экспорт/импорт товаров и услуг, торговый баланс, current account, FDI |
-| `business` | Бизнес | ИПП, розничная торговля, ввод жилья, основные фонды |
-| `science` | Наука | Аспиранты, докторанты, организации НИР, инновационная активность |
+| `rates` | Ставки | Ключевая ставка ЦБ (с 1992), RUONIA, ставки по кредитам и депозитам (с term split) |
+| `currencies` | Валюты | USD/RUB, EUR/RUB, CNY/RUB, BTC/USD, Brent |
+| `finance` | Деньги и бюджет | M0/M1/M2, золото, резервы, внешний долг, бюджет (доходы/расходы/дефицит) |
+| `labor` | Рынок труда | Безработица, номинальная (с 1991) / реальная / индекс / YoY зарплата |
+| `gdp` | ВВП | ВВП номинальный/реальный/потребление/госрасходы (+ annual/QoQ/YoY) |
+| `population` | Население | Численность, рождаемость, смертность, миграция, пенсионеры, трудоспособное |
+| `trade` | Торговля | Экспорт/импорт товаров и услуг (quarterly + monthly), trade-balance, current account, FDI |
+| `business` | Бизнес | ИПП (default YoY), розница, ввод жилья, индекс доступности жилья, основные фонды |
+| `science` | Наука | Аспиранты, докторанты, организации НИР, инновационная активность, R&D |
 
-Из 104 индикаторов: **76 source-индикаторов** (через 23 типа парсеров) и **28 derived-индикаторов** (рассчитываются через `DERIVED_SPECS` + `derived_ops`, см. ADR-0001 и ADR-0002).
+Source-индикаторы извлекаются через 27 парсер-типов в `PARSER_REGISTRY` (`backend/app/services/*_parser.py`); derived рассчитываются движком `calculation_engine` через `DERIVED_SPECS` (31 entries) + 12 чистых ops из `derived_ops.py` (см. ADR-0001 и ADR-0002). Дублирующие карточки в каталоге объединены через view-mode families (ADR-0006).
 
 ## Прогнозы
 
-10 forecast strategies в реестре `backend/app/services/forecast_strategies/registry.py`:
+10 forecast strategies в реестре `backend/app/services/forecast_strategies/registry.py`: `cpi_combined`, `gdp_{nominal,real,consumption,government}_quarterly`, `housing_quarterly`, `ppi_monthly`, `approved`, `derived_from_source`, `generic_ols`. Стратегия выбирается через `model_config_json.forecast_strategy` индикатора и применяется при каждом ETL, если источник принёс новые точки.
 
-- `cpi_combined` — CPI семья: `train_monthly_cpi` + `train_inflation_12m` + cascade на `*-quarterly` derived.
-- `gdp_nominal_quarterly` — multi-window OLS на log-diff номинального ВВП (1:1 port `Прогноз_номинальный_ВВП.ipynb`).
-- `gdp_real_quarterly` — то же ядро на real-уровнях (byte-exact с notebook'ом).
-- `gdp_consumption_quarterly` — то же ядро на `gdp-consumption` (методология семьи ВВП).
-- `gdp_government_quarterly` — то же ядро на `gdp-government`.
-- `housing_quarterly` — 1:1 port `Прогнозы_цены_на_жилье (1).ipynb` (multi-window OLS на log-diff + outlier-clip + iv-weighted blend + median). Применяется к `housing-price-primary` и `housing-price-secondary`.
-- `ppi_monthly` — `train_ppi_monthly` (k=1..4, monthly lags log-diff), 1:1 port `Прогноз_ИЦП.ipynb`.
-- `approved` — захардкоженные значения из `model_config_json.approved_forecast_values`. **В live-конфиге не используется** (все индикаторы на live-стратегиях, последний `ppi` переведён 2026-05-16). Сохраняется в registry для совместимости и тестов.
-- `derived_from_source` — все `*-yoy` / `*-qoq` / `*-annual` derived (включая `housing-yoy-primary`/`secondary`): применяет чистую op (yoy/qoq/december_to_december/annual_sum/real_from_yoy) к прогнозу source-индикатора. Каскадный retrain после источника.
-- `generic_ols` — fallback и `inflation-weekly`: multi-window OLS с inverse-variance weighting.
-
-Стратегия выбирается через `model_config_json.forecast_strategy` индикатора и применяется при каждом ETL, если источник принёс новые точки. См. CONTEXT.md для полной таблицы и `model_config_json` полей.
+Полная таблица «стратегия → индикаторы → notebook» и поля `model_config_json` — в [`CONTEXT.md::Forecast`](CONTEXT.md). Pure formulas стратегий — `backend/app/services/forecast_strategies/*.py`; derived chain — в `derived_ops.py` (ADR-0001).
 
 ## Структура проекта
 
@@ -218,12 +201,13 @@ rosstat/
 │   ├── seo-audit.py
 │   └── analytics-smoke.py
 ├── docs/
-│   ├── adr/                # архитектурные решения (нумерованные)
+│   ├── adr/                # архитектурные решения (нумерованные ADR-0001..0006)
 │   ├── analytics_api_inventory/  # инвентарь Yandex API (Metrika, Webmaster, …)
-│   ├── workflow.md
-│   ├── cbr_sources.md
-│   ├── enterprise_resilience.md
-│   └── embed_widgets_research.md
+│   ├── data_sources.md     # карта «индикатор → файл/endpoint» (75 source)
+│   ├── missed_data_audit.md  # reference: ещё не извлечённые поля в source-файлах
+│   ├── workflow.md         # dev процесс, smoke C, прод-деплой
+│   ├── enterprise_resilience.md  # rate limit / CSP / asset-hash trap / канарейка
+│   └── backlog.md          # живой бэклог (приоритеты + история)
 ├── mcp/                    # Forecast Analytics MCP server (отдельный контейнер)
 ├── Caddyfile
 ├── docker-compose.yml
@@ -233,12 +217,12 @@ rosstat/
 
 ## Деплой
 
-См. полную процедуру в [`docs/workflow.md`](docs/workflow.md). Ключевые моменты:
+См. полную процедуру в [`docs/workflow.md::Прод-деплой`](docs/workflow.md). Ключевые моменты:
 
 1. `pg_dump | gzip > /opt/rosstat/backups/pre-deploy-<timestamp>.sql.gz` — обязательно перед каждым релизом.
-2. `git pull && docker compose build backend frontend && docker compose up -d backend frontend` — backend и frontend пересобирать и поднимать **вместе** (asset-hash mismatch trap, см. `enterprise_resilience.md`).
+2. `git pull && docker compose build backend frontend && docker compose up -d backend frontend` — backend и frontend пересобирать и поднимать **вместе** (asset-hash mismatch trap, см. `enterprise_resilience.md`). Backend на старте сам прогонит `_catch_up_empty_indicators` для новых indicators с 0 точек.
 3. Alembic-миграции применяются автоматически из `entrypoint.sh`.
-4. Smoke C — health-чеки + headless E2E (см. `scripts/e2e/smoke.mjs`).
+4. Smoke C — health-чеки (`/api/v1/health`, `/api/v1/analytics/health`), SSR-сверка через `User-Agent: YandexBot/3.0`, `scripts/seo-audit.py`. Детали — в `docs/workflow.md::Smoke C`.
 
 ## Что автоматизировано
 
@@ -246,7 +230,8 @@ rosstat/
 |---------|-----|
 | Миграции БД | `entrypoint.sh` → `alembic upgrade head` при каждом старте |
 | Первичный seed | `entrypoint.sh` → идемпотентный `seed_data.py` |
-| Ежедневный ETL | APScheduler cron 06:00 MSK (все `is_active=true`, 76 source-парсеров) |
+| Startup catch-up | `app/main.py::_catch_up_empty_indicators()` — после lifespan startup догоняет ETL для всех `is_active=true` индикаторов с 0 точками (новые индикаторы дотягиваются без ручного `run_etl_for_indicator`) |
+| Ежедневный ETL | APScheduler cron 06:00 MSK (все `is_active=true` source-индикаторы; 75+ через 27 типов в `PARSER_REGISTRY`) |
 | Calendar refresh | APScheduler daily 03:00 MSK: official-source ingest, rolling 12 мес, public official-only |
 | Forecast retrain | После каждого изменения данных (если `records_added>0`) |
 | Derived recompute | Каскадно после ETL (если хотя бы один source-индикатор обновился) |

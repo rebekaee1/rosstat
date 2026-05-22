@@ -1,13 +1,13 @@
 # Analytics API Inventory
 
-**Last verified:** 2026-05-10.
+**Last verified:** 2026-05-22 (sanity-check: `metrika_data_import.md` удалён — был `planned, no code`; остальные 6 файлов актуальны по статусу).
 **Part of:** [`../../AGENTS.md`](../../AGENTS.md), [`../../CONTEXT.md`](../../CONTEXT.md) (раздел `Forecast Analytics OS`).
 **Code anchors:** `backend/app/services/yandex_*.py` (clients), `backend/app/services/analytics_*.py` (ingestion + features), `backend/app/api/analytics.py` (REST), `mcp/forecast-analytics-mcp/` (MCP server).
 
 This directory is the implementation checklist for Forecast Analytics OS.
 Every Yandex API client must be mapped here before code is allowed to call it.
 
-## Implementation status as of 2026-05-07
+## Implementation status as of 2026-05-22
 
 The inventory is the **long-term contract** of which Yandex APIs the platform may
 touch. Actual implementation is partial; live integrations require an OAuth token
@@ -16,10 +16,9 @@ in `.env` (`YANDEX_METRIKA_TOKEN` / `YANDEX_METRIKA_WRITE_TOKEN` /
 non-`read_only` operation. Without tokens the analytics scheduler is a no-op
 and `analytics-smoke.py` exits with `enabled=false`.
 
-| File | Code module | Status (2026-05-10) |
+| File | Code module | Status (2026-05-22) |
 |------|-------------|---------------------|
 | `frontend_instrumentation.md` | `frontend/src/lib/track.js`, `utm.js`, `cleanUrl.js`, `useScrollDepth.js`, `index.html`; backend collector `app/api/analytics.py::events_collector` → `FrontendEvent` | `implemented` — Webvisor 2 + form analytics включены, ~60 целей в `events`, UTM helper + taxonomy. Канонический документ для frontend goals и share-ссылок. |
-| `metrika_data_import.md` | not implemented | `planned` — no code yet, inventory only |
 | `metrika_logs.md` | `app/services/yandex_metrika_logs.py` | `partial` — `list_requests`, `create_request`, `request_info`, `download_part`, `clean_request`. Missing: fields catalog. |
 | `metrika_management.md` | `app/services/yandex_metrika_management.py` | `partial` — read of counters/goals/filters/grants + goal create/update/delete behind approval. Missing: counter writes, filter writes, segments/labels/notes/direct-links. |
 | `metrika_reporting.md` | `app/services/yandex_metrika_reporting.py` | `implemented` — все JSON-варианты `table` / `bytime` / `drilldown` / `comparison` / `comparison_drilldown`. CSV-варианты пока только через ручной HTTP. |

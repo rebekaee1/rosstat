@@ -2,7 +2,7 @@
 
 - **Date:** 2026-05-05
 - **Status:** Accepted
-- **Last verified:** 2026-05-22 (29 derived в `DERIVED_SPECS`, 10 ops в `derived_ops.py`, +2 виртуальных frontend-transform'а: `applyMoMTransform` для monthly trade и `applyAggregateTransform` для daily-индикаторов).
+- **Last verified:** 2026-05-22 (документация-ревизия: 31 derived в `DERIVED_SPECS`, 12 ops в `derived_ops.py` (11 активных + 1 deprecated `annual_inflation` сохранён в файле, в `DERIVED_SPECS` не используется), +2 виртуальных frontend-transform'а: `applyMoMTransform` для monthly trade и `applyAggregateTransform` для daily-индикаторов).
 - **Author:** architecture audit (улучшение архитектуры по запросу пользователя).
 - **Part of:** [`../../CONTEXT.md`](../../CONTEXT.md) (раздел `Derived indicator`).
 - **Related:** [ADR-0002](0002-derived-always-reflects-source.md) (инвариант идемпотентности).

@@ -1,8 +1,8 @@
 # Enterprise resilience — практики и инварианты
 
-**Last updated:** 2026-05-11.
+**Last updated:** 2026-05-22 (документация-ревизия: добавлен nginx no-cache always фикс на SSR routes, дополнено cross-link на 7/7 чеклист «новый индикатор» в AGENTS).
 **Part of:** [`../AGENTS.md`](../AGENTS.md), [`../CONTEXT.md`](../CONTEXT.md) (раздел «Operational invariants and traps»).
-**See also:** [`workflow.md`](workflow.md) (smoke C, прод-деплой), [`adr/0003-seo-single-source-server-rendered.md`](adr/0003-seo-single-source-server-rendered.md) (asset-hash trap).
+**See also:** [`workflow.md`](workflow.md) (smoke C, прод-деплой), [`adr/0003-seo-single-source-server-rendered.md`](adr/0003-seo-single-source-server-rendered.md) (asset-hash trap), [`../AGENTS.md::Шаг 4 — чеклист «новый индикатор»`](../AGENTS.md) (другая ось: 7/7 при добавлении indicator, против 6/6 канарейки ниже).
 
 Чеклист для каждой доработки API/парсера/UI/деплоя — по уровням системы.
 
@@ -36,6 +36,7 @@
 ## Frontend и кэш
 
 - **Asset-hash mismatch trap** — Vite строит файлы вида `index-<hash>.js`. Если backend и frontend пересобраны не вместе, новый `__spa-index.html` будет ссылаться на ассеты, которых уже нет на nginx-сервинге (или наоборот). **Правило:** `docker compose build backend frontend` всегда вместе перед `up -d`. См. `Caddyfile` для текущего fallback на `/__spa-index.html`.
+- **nginx no-cache always на SSR HTML** — без флага `always` в `add_header Cache-Control` сам заголовок не применялся к 4xx/5xx и переопределялся upstream-заголовком. Браузер кэшировал stale HTML на часы. Фикс 2026-05-22: `proxy_hide_header Cache-Control` + `add_header Cache-Control "no-cache, no-store, must-revalidate" always` на всех SSR-routes (`/`, `/about`, `/privacy`, `/compare`, `/calculator`, `/calendar`, `/demographics`, `/widgets`, `/category/*`, `/indicator/*`, `/__spa-index.html`, `/embed/*`). Ассеты в `/assets/` остаются `max-age=31536000, immutable`. См. `frontend/nginx.conf`. Закрывает Browser-cache trap из `CONTEXT.md::Operational invariants and traps`.
 - **CSP в Caddyfile** — белые списки прописаны для Yandex.Metrika (`mc.yandex.ru`, `mc.yandex.com`), Sentry frontend (`sentry.io`, `*.ingest.sentry.io`), Yandex.Webmaster, шрифтов Google. Любой новый внешний скрипт — добавить в CSP, иначе он будет заблокирован.
 - **Frontend Sentry** — `@sentry/react` подключён в `frontend/src/main.jsx`. DSN — env-переменная `VITE_SENTRY_DSN`. Backend Sentry — отдельная задача (см. выше).
 - **SEO single-source** — `__spa-index.html` собирается на каждый запрос: SSR-meta в `<head>` для ботов и людей; legacy локальные `seo.js` константы удалены. См. ADR-0003.

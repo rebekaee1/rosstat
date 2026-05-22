@@ -2,11 +2,11 @@
 
 - **Date:** 2026-05-05
 - **Status:** Accepted
-- **Last verified:** 2026-05-07 (28 derived in `DERIVED_SPECS`).
+- **Last verified:** 2026-05-22 (документация-ревизия: 31 derived в `DERIVED_SPECS`; инвариант `bulk_upsert` — `INSERT … ON CONFLICT DO UPDATE WHERE data_points.value <> excluded.value` — стабилен в `backend/app/services/upsert.py::bulk_upsert`; тестами покрыто в `backend/tests/test_upsert.py` через empty list / None value / partial / mixed cases (закрытие E1 из звонка 2026-05-21)).
 - **Author:** architecture grilling session (улучшение архитектуры по запросу пользователя).
 - **Supersedes:** ad-hoc behaviour of `CalculationEngine.run_for_updated_sources` prior to this change.
 - **Part of:** [`../../CONTEXT.md`](../../CONTEXT.md) (раздел `Derived indicator` + «Pure-revision day» trap).
-- **Related:** [ADR-0001](0001-derived-indicators-engine-shape.md) (engine shape), [`../cbr_sources.md`](../cbr_sources.md) (идемпотентность парсеров).
+- **Related:** [ADR-0001](0001-derived-indicators-engine-shape.md) (engine shape). Идемпотентность реальных парсеров (CBR / Минфин / Rosstat) — в их docstrings, см. `backend/app/services/*_parser.py`.
 - **Code anchors:** `backend/app/services/upsert.py::bulk_upsert`, `backend/app/tasks/scheduler.py::_indicator_had_new`.
 
 ## Context

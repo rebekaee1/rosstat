@@ -2,7 +2,7 @@
 
 **Status:** Accepted (в production на forecasteconomy.com).
 **Date:** 2026-05-07.
-**Last verified:** 2026-05-07.
+**Last verified:** 2026-05-22 (документация-ревизия: SSR через `__spa-index.html` + Vite shell discovery работает; 7 SSR-routes в `frontend/nginx.conf`: `/`, `/{about,privacy,compare,calculator,calendar,demographics,widgets}`, `/category/<slug>`, `/indicator/<code>`; добавлен `no-cache always` фикс 2026-05-22 для всех SSR routes — закрывает Browser-cache trap, см. `enterprise_resilience.md::Frontend и кэш`).
 **Part of:** [`../../CONTEXT.md`](../../CONTEXT.md) (раздел `SEO meta bundle` + «Asset-hash mismatch trap»).
 **Related:** [ADR-0002](0002-derived-always-reflects-source.md) (паттерн single-source-of-truth), [`../enterprise_resilience.md`](../enterprise_resilience.md) (asset-hash trap, CSP).
 **Code anchors:** `backend/app/services/seo_renderer.py`, `backend/app/services/seo_content.py`, `backend/app/api/seo_pages.py`, `frontend/nginx.conf` (location-блоки `/seo/*` и `/__spa-index.html`).

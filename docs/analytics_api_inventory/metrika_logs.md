@@ -1,6 +1,6 @@
 # Yandex Metrika Logs API Inventory
 
-**Last verified:** 2026-05-07.
+**Last verified:** 2026-05-22 (sanity-check, статус без изменений).
 **Implementation status:** `partial` — `app/services/yandex_metrika_logs.py`.
 Реализовано: `list_requests`, `create_request`, `request_info`, `download_part`,
 `clean_request`. Не реализовано: fields catalog (`logs_fields_catalog`) и

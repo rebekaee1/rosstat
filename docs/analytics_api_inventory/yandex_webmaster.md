@@ -1,6 +1,6 @@
 # Yandex Webmaster API Inventory
 
-**Last verified:** 2026-05-07.
+**Last verified:** 2026-05-22 (sanity-check, статус без изменений).
 **Implementation status:** `partial` — `app/services/yandex_webmaster_client.py`.
 Реализовано: `user`, `hosts`, `host`, `summary`, `diagnostics`, `sitemaps` (read),
 `search_queries_popular`, `recrawl_queue` / `recrawl_quota` / `submit_recrawl`,

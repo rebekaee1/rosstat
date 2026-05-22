@@ -1,6 +1,6 @@
 # Yandex Metrika Management API Inventory
 
-**Last verified:** 2026-05-07.
+**Last verified:** 2026-05-22 (sanity-check, статус без изменений).
 **Implementation status:** `partial` — `app/services/yandex_metrika_management.py`.
 Реализовано: `counters` (list/get), `goals` (list + create/update/delete с флагом
 `approved=true`), `filters` (list), `grants` (list). Не реализовано: counter

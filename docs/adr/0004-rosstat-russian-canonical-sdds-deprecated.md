@@ -2,7 +2,7 @@
 
 - **Date:** 2026-05-10
 - **Status:** Accepted + complete (pilot, rollout, cleanup, GDP history extension до 1995 — все done)
-- **Last verified:** 2026-05-10 (GDP history extension через ratio-splice: 5/5 GDP индикаторов 60 → 124 точки, 1995-Q1 → 2025-Q4. Pipeline test gdp-nominal Q4 2025 = 62354.1 ✓ matchит rosstat publication; housing Q1 2026 primary 346.82 / secondary 228.44 ✓).
+- **Last verified:** 2026-05-22 (документация-ревизия: SDDS English depricated подтверждена — `parser_type='rosstat_sdds_*'` ни в `seed_data.py`, ни в model_config_json не используется. Все Rosstat-парсеры (`rosstat_gdp_parser.py`, `rosstat_housing_parser.py`, `rosstat_ipi_parser.py`, `rosstat_ppi_parser.py`, `rosstat_labor_parser.py`, `rosstat_population_parser.py`) работают с русскими canonical-источниками. GDP history extension через ratio-splice: 5/5 GDP индикаторов 60 → 124 точки, 1995-Q1 → 2025-Q4; housing Q1 2026 primary 346.82 / secondary 228.44 ✓).
 - **Author:** аудит категорий «Цены» и «ВВП» 2026-05-08/2026-05-10 + конкретный жалобный случай руководителя на расхождение GDP Q4 2025 (60516.7 в нашей DB vs 62354.1 в rosstat publication).
 - **Part of:** [`../../CONTEXT.md`](../../CONTEXT.md) (раздел `Source` + trap «SDDS English vs Rosstat русский»).
 - **Related:** [ADR-0002](0002-derived-always-reflects-source.md) (идемпотентный bulk_upsert делает миграцию обратимой), [ADR-0001](0001-derived-indicators-engine-shape.md) (derived подхватятся через `scripts/rebuild-all-derived.py`).

@@ -34,9 +34,10 @@ pre-condition for the ADR-0002 invariant.
 
 See:
 - `CONTEXT.md::Parser` — domain glossary entry.
-- `docs/cbr_sources.md` — inventory of all non-Rosstat parsers.
+- `docs/data_sources.md` — per-indicator URL/file/sheet/row mapping for all 75 sources.
+- Sibling docstrings `cbr_*_parser.py`, `minfin_*_parser.py`, `rosstat_*_parser.py` —
+  per-parser internals (source URL, layout, model_config schema, traps).
 - `docs/adr/0002-derived-always-reflects-source.md` — invariant tied to upsert behavior.
-- ADR (TBD) — «ETL parser as a Template Method, not 22 repeated runs».
 """
 
 from __future__ import annotations

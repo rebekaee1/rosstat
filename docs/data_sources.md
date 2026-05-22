@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-05-16 (T13: данный файл стал основным местом хранения технических деталей источников — имена файлов, листы, строки/колонки, API-id; публичные `methodology` полей индикаторов в `seed_data.py` теперь не выдают этих внутренностей, см. правило [`.cursor/rules/methodology-language.mdc`](../.cursor/rules/methodology-language.mdc)).
 **Part of:** [`AGENTS.md`](../AGENTS.md), [`CONTEXT.md`](../CONTEXT.md).
-**Related:** [`docs/cbr_sources.md`](cbr_sources.md) (детальные ЦБ + Минфин парсеры), [`docs/adr/0004`](adr/0004-rosstat-russian-canonical-sdds-deprecated.md) (Rosstat русский canonical).
+**Related:** docstrings парсеров `backend/app/services/{cbr_*,minfin_*,rosstat_*}_parser.py` (per-parser internals: traps, схема `model_config_json`, особенности формата), [`docs/adr/0004`](adr/0004-rosstat-russian-canonical-sdds-deprecated.md) (Rosstat русский canonical).
 
 > **Single source of truth** для актуальных URL/файлов, откуда тянется каждый из 75 source-индикаторов. Если меняется источник в коде парсера или `seed_data.py` — **обязательно** актуализировать этот файл (см. [`AGENTS.md::Шаг 4`](../AGENTS.md#шаг-4--протокол-актуализации-документации-критично)).
 >
@@ -296,5 +296,5 @@ Multi-source merge: история (1897+) + components (1990+) + latest акт�
 
 **После обновления:**
 1. `Last updated` сверху → актуальная дата.
-2. Если правка касается ЦБ/Минфин — синхронно обновить детальный раздел в [`docs/cbr_sources.md`](cbr_sources.md).
+2. Синхронно обновить docstring соответствующего парсера в `backend/app/services/*_parser.py` (parser internals: source URL, лист, row/col, model_config schema, traps).
 3. Если правка архитектурная (новый паттерн merge/chain) — добавить в ADR-0004 «Subsequent additions» или создать новый ADR.

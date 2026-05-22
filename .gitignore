@@ -44,6 +44,11 @@ __pycache__/
 venv/
 .venv/
 ENV/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
 
 # Temp files
 *.tmp

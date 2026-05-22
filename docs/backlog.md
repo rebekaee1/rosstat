@@ -1,6 +1,6 @@
 # Backlog — текущие правки в работе
 
-**Last updated:** 2026-05-22 (после-ревизия + view-mode family downstream completion: B2 расширен annual-continuation 2015-2025, B3 итог зафиксирован, methodology cross-mode leak и frequency metadata leak закрыты — см. История).
+**Last updated:** 2026-05-22 (документация-ревизия: plan.md мигрирован в backlog (Telegram-бот / embed UI / календарь UI / search keywords / annual-in-monthly audit), recap-2026-05-22.md удалён, cbr_sources.md мигрирован в docstrings парсеров — см. История).
 **Part of:** [`AGENTS.md`](../AGENTS.md), [`CONTEXT.md`](../CONTEXT.md), [`docs/adr/0006-indicator-card-unification.md`](adr/0006-indicator-card-unification.md).
 **Источник:** звонки с Никитой Александровичем 2026-05-21 (Сочи) и 2026-05-22 («всё доделать»).
 
@@ -14,8 +14,8 @@
 |-----------|----------------|
 | **P0** | — (пусто; все P0 из звонков закрыты) |
 | **P1** | Расширение view-mode families на остальные индикаторы (GDP / PPI / CPI legacy / retail / banking volumes — см. ADR-0006 §«Что НЕ покрыто»). Длинные SEO-блоки D2 на оставшиеся ~80 индикаторов — итеративно по росту показов в Метрике. |
-| **P2** | C4 (research редких показателей — см. список в конце документа). Wages-2022-12 hole (одна точка пропущена в monthly, заметная как gap на годовом графике) — отдельный микрофикс при следующем wages ETL. Автоматизация `wages-nominal-annual` continuation через derived spec `annual_mean` (сейчас one-shot script). |
-| Future (отложено) | F1 крипто (частично закрыто через BTC/USD как полный indicator), F2 регионы |
+| **P2** | C4 (research редких показателей — см. список в конце документа). Wages-2022-12 hole (одна точка пропущена в monthly, заметная как gap на годовом графике) — отдельный микрофикс при следующем wages ETL. Автоматизация `wages-nominal-annual` continuation через derived spec `annual_mean` (сейчас one-shot script). **G1 Search keywords ревизия** на всех 109 индикаторах — где-то полный список синонимов, где-то пустые SEO-шаблоны (см. ниже). **G2 Annual-in-monthly SQL-audit** на остальных backfilled индикаторах (wages фикснут; key-rate/gdp-real/housing на глаз согласованы, но явная проверка не сделана). |
+| Future (отложено) | F1 крипто (частично закрыто через BTC/USD как полный indicator), F2 регионы, **F3 Telegram-бот** (подписка на indicator, daily push, custom alerts), **F4 Embed-виджеты UI** (дизайн + копи-кнопка кода + CSP), **F5 Календарь публикаций UI** (backend готов 1208 events) — см. раздел Roadmap. |
 
 **Закрытые в звонке 2026-05-22 + после-ревизия:**
 - A1+A2+A3 — унификация view-modes через `viewModeFamilies.js`, объединение дублирующих карточек (29 индикаторов в `INDICATOR_HIDDEN_FROM_LISTING`).
@@ -238,7 +238,7 @@ housing-affordability-index[t] = wages-index[t] / housing-price-index[t]   # б�
 **Затронутые файлы.**
 - `backend/app/services/cbr_dataservice_json.py` — переиспользуем existing parser, добавляем новые конфиги.
 - `backend/seed_data.py` — 3 новых индикатора + объединение зонтиком в A3.
-- `docs/data_sources.md` / `docs/cbr_sources.md` — добавить element_id.
+- `docs/data_sources.md` — добавить новый `element_id` в таблицу DataService; docstring `cbr_dataservice_parser.py` обновить если открыта новая trap.
 
 **Риски.** Низкие — переиспользуем рабочий parser.
 
@@ -509,6 +509,30 @@ housing-affordability-index[t] = wages-index[t] / housing-price-index[t]   # б�
 | **View modes** | `frontend/src/components/CpiViewModePicker.jsx` (переименовать в `ViewModePicker`), `FrequencySwitcher.jsx`, `lib/useIndicatorViewModeData.js` | Переключатели частоты и режима. **Уже generic** |
 | **Edge / routing** | `frontend/nginx.conf` | SPA-роутинг, 301-редиректы (нужно для A3), location'ы для новых категорий (D5) |
 | **Language rule** | `.cursor/rules/methodology-language.mdc` + `scripts/audit-public-language.py` | Не выдавать внутренности в публичных полях (применимо к D2) |
+
+---
+
+## Roadmap-задачи (мигрированы из бывшего `docs/plan.md` 2026-05-22)
+
+### G1 — Search keywords ревизия (P2)
+
+Сейчас `seo_keywords` заполнены неравномерно: у части индикаторов полный список синонимов (`cpi`: «инфляция, ИПЦ, рост цен»), у остальных — generic-шаблоны («Зарплаты (изм. г/г) Россия, Зарплаты (изм. г/г) прогноз»). После звонка 2026-05-22 поиск стал ходить по `seo_keywords` (haystack в `IndicatorSearch.jsx`) — качество корней теперь влияет на находимость. Пройтись по всем 109 индикаторам, добавить осмысленные корни на русском и английском. После — посмотреть в Yandex.Metrika метрику «пустых поисков» (категория Cmd+K без открытия результата). Затронутый файл: `backend/app/data/indicator_seo.py`.
+
+### G2 — Annual-in-monthly SQL-audit (P2)
+
+Wages фикснут (24 годовые точки переехали в `wages-nominal-annual`). Возможно тот же trap есть на других индикаторах с историческим backfill'ом: `key-rate` (event-based, не monthly — проверить как frontend label), `housing-price-{primary,secondary}` (quarterly — должны быть OK), `gdp-real` (quarterly с Q1-Q4 — должно быть OK). Скорее всего trap только на wages, но нужна явная проверка: `SELECT code, frequency, COUNT(*), MIN(date), MAX(date), date_part('month', date) FROM data_points JOIN indicators ON … WHERE indicators.code IN (…backfilled list…) GROUP BY 1,2,6` с поиском annual-only месяцев в monthly-объявленных рядах. См. trap `Annual-in-monthly mixing` в `CONTEXT.md`.
+
+### F3 — Telegram-бот (Future)
+
+Подписка на индикатор, daily push с изменениями, custom alerts (пороги, отклонения от прогноза). Инфраструктура: webhook URL, доступ к API через `TELEGRAM_BOT_TOKEN`, отдельная таблица в БД для подписок. Архитектурно — отдельный сервис в `docker-compose.yml`, не часть backend. `TELEGRAM_BOT_TOKEN` уже используется для `alerting.py` (критические алёрты ETL/forecast); subscriber-token будет отдельный канал.
+
+### F4 — Embed-виджеты UI (Future)
+
+Backend часть готова: `/embed/spark/{code}.svg`, `/embed/card/{code}.svg`, `/embed/badge/{code}.svg` + impression-pixel (`/embed/impression`, `/embed/pixel.gif`). UI часть: дизайн виджета на странице индикатора, **копи-кнопка** кода вставки (`<iframe>`), список allowed-origins в CSP. Текущая CSP в `Caddyfile` уже разрешает sentry/metrika — нужна явная политика для embed-host'ов.
+
+### F5 — Календарь публикаций UI (Future)
+
+Backend часть готова: 1208 событий, 46/76 source codes, `bad_public_rows=0` (ADR-0005). Текущая UI-страница `/calendar` либо отсутствует, либо плоская. Цель: цветная разметка по категориям, фильтр по источнику, push «через 24 часа выйдет ключевая ставка», iCal-фид (`/api/v1/calendar/export/ical` уже есть). См. `frontend/src/pages/CalendarPage.jsx` — стартовая точка.
 
 ---
 

@@ -1,20 +1,37 @@
 """ETL: универсальный парсер REST API CBR DataService → IndicatorData.
 
+Endpoint:
+    https://www.cbr.ru/dataservice/data?publicationId={pub}&datasetId={ds}&measureId={measure}&y1={from}&y2={to}
+Фильтрация по конкретному ряду — через `element_id` в коде после fetch'а.
+
 Подходит для:
 - Ипотечные ставки (publicationId=14, datasetId=29, element_id=36)
-- Автокредиты (publicationId=14, datasetId=28, measureId=2, element_id=11)
+- Автокредиты (publicationId=14, datasetId=28, measureId=2, element_id=110)
 - Ставки по депозитам ФЛ (publicationId=18, datasetId=37, measureId=2, element_id=7)
+- Денежные агрегаты M0/M1/M2, портфельные задолженности по кредитам физ./юр.,
+  средневзвешенные ставки по кредитам/депозитам разных сегментов и сроков,
+  current account / portfolio investment / financial account из BoP.
+- Всего ~16 индикаторов через единственный парсер.
 
-Конфигурация хранится в indicator.model_config_json:
-{
-  "dataservice": {
-    "publicationId": 14,
-    "datasetId": 29,
-    "measureId": null,
-    "element_id": 36
-  },
-  "backfill_from_year": 2017
-}
+Конфигурация хранится в `indicator.model_config_json`:
+    {
+      "dataservice": {
+        "publicationId": 14,
+        "datasetId": 29,
+        "measureId": null,
+        "element_id": 36
+      },
+      "backfill_from_year": 2017
+    }
+
+Trap (зафиксирован 2026-05): `element_id` критичен и не самообъясняющий —
+он идентифицирует конкретный ряд внутри datasetId. На auto-loan-rate в начале
+мая 2026 поле `element_id` было `6` вместо корректного `110` (другая length
+автокредита), индикатор показывал ставку чужого продукта. Любая правка
+`element_id` в seed_data.py требует прогона `daily_update_job` и
+проверки 5-10 последних точек глазами на ожидаемый порядок величины.
+Точный маппинг (pub/ds/measure/element) на каждый индикатор — см.
+`docs/data_sources.md::ЦБ РФ — DataService JSON`.
 """
 
 from __future__ import annotations

@@ -1,10 +1,10 @@
 # AGENTS.md — точка входа для AI-агента
 
-**Last updated:** 2026-05-22 (ревизия «ты уверен в данных?»: чеклист расширен до 7 пунктов — добавлен `Frequency consistency` (annual-in-monthly trap фиксанут на wages); ссылка обновлена на ADR-0006).
+**Last updated:** 2026-05-22 (документация-ревизия: `cbr_sources.md` мигрирован в docstrings парсеров и удалён; `plan.md`/`recap.md` мигрированы и удалены; синхронизированы дубли записей про ADR-0004/0005; чеклист «новый индикатор» = 7 пунктов; `_catch_up_empty_indicators` упомянут в Шаге 4).
 
 Этот файл — первое, что читает любой новый AI-агент (Cursor, Claude Code, Codex, Gemini, любой другой), подключённый к этому репозиторию. Здесь живёт **карта документации**, **режим работы** и **протокол актуализации** этих самых документов.
 
-Задача проекта в одну строку: публичная аналитическая платформа `forecasteconomy.com` — собирает 104 экономических индикатора России (Росстат, ЦБ РФ, Минфин), считает derived-ряды и forecast'ы, отдаёт фронтенду + ботам + embed-виджетам.
+Задача проекта в одну строку: публичная аналитическая платформа `forecasteconomy.com` — собирает 100+ экономических индикаторов России (Росстат, ЦБ РФ, Минфин), считает derived-ряды и forecast'ы, отдаёт фронтенду + ботам + embed-виджетам.
 
 ---
 
@@ -13,19 +13,17 @@
 В этом порядке (5–10 минут):
 
 1. **[`CONTEXT.md`](CONTEXT.md)** — domain glossary и архитектурный язык. **Spine**, без неё нельзя обсуждать архитектуру. Читать целиком — он сжатый.
-2. **[`README.md`](README.md)** — карта стека, API, indicators, deploy. Высокоуровневый обзор.
-3. **[`docs/data_sources.md`](docs/data_sources.md)** — точная карта «индикатор → файл/endpoint» (75 source-индикаторов). Канонический справочник, откуда тянется каждый ряд.
-4. **[`docs/workflow.md`](docs/workflow.md)** — модель работы, локальный dev, прод-деплой, smoke C.
-5. **[`docs/enterprise_resilience.md`](docs/enterprise_resilience.md)** — операционные инварианты, чеклист канарейки 6/6.
+2. **[`README.md`](README.md)** — карта стека, ключевые группы endpoint'ов, индикаторы, deploy. Высокоуровневый обзор.
+3. **[`docs/data_sources.md`](docs/data_sources.md)** — точная карта «индикатор → файл/endpoint» (75 source-индикаторов). Канонический справочник, откуда тянется каждый ряд. Parser internals — в docstrings соответствующего `backend/app/services/*_parser.py`.
+4. **[`docs/workflow.md`](docs/workflow.md)** — модель работы, локальный dev, ручной ETL recipe, прод-деплой, smoke C.
+5. **[`docs/enterprise_resilience.md`](docs/enterprise_resilience.md)** — операционные инварианты, чеклист канарейки 6/6 (другой от чеклиста «новый индикатор» 7/7 ниже).
 6. **`docs/adr/`** — архитектурные решения (нумерованные ADR, читать в порядке номеров):
- - `0001-derived-indicators-engine-shape.md` — engine shape derived (29 specs + 10 pure ops + 2 client-side transforms).
- - `0002-derived-always-reflects-source.md` — инвариант идемпотентности `bulk_upsert`.
- - `0003-seo-single-source-server-rendered.md` — SSR через backend, asset discovery от Vite shell.
- - `0004-rosstat-russian-canonical-sdds-deprecated.md` — переход с SDDS-XLSX на русские источники Росстата.
- - `0005-official-calendar-source-bound.md` — публичный календарь только из official source rules.
- - `0006-indicator-card-unification.md` — ось декомпозиции «карточка vs derived vs variant vs frequency» + 6-проверочный чеклист «новый индикатор» (звонок 2026-05-22).
+   - `0001-derived-indicators-engine-shape.md` — engine shape derived (29 specs + 10 pure ops + 2 client-side transforms).
+   - `0002-derived-always-reflects-source.md` — инвариант идемпотентности `bulk_upsert`.
+   - `0003-seo-single-source-server-rendered.md` — SSR через backend, asset discovery от Vite shell.
    - `0004-rosstat-russian-canonical-sdds-deprecated.md` — Rosstat русский canonical, SDDS English deprecated. Migration pattern + pilot evidence (gdp-nominal, 2026-05-10).
    - `0005-official-calendar-source-bound.md` — public calendar только official dates с provenance; estimated скрыты.
+   - `0006-indicator-card-unification.md` — ось декомпозиции «карточка vs derived vs variant vs frequency» + 7-проверочный чеклист «новый индикатор» (звонок 2026-05-22 + ревизия).
 
 После этих файлов агент способен ответить на ~90% вопросов и делать осмысленные правки.
 
@@ -35,13 +33,13 @@
 
 | Вопрос | Файл/папка |
 |--------|------------|
-| Как работает парсер X? | `backend/app/services/<X>_parser.py` + раздел в `CONTEXT.md::Parser` |
-| Откуда берётся индикатор X? | **[`docs/data_sources.md`](docs/data_sources.md)** — точный URL/файл по каждому из 75 source |
-| Какие источники, кроме Росстата? | [`docs/cbr_sources.md`](docs/cbr_sources.md) (CBR + Минфин, 10 парсеров — детально) |
+| Как работает парсер X? | **docstring** `backend/app/services/<X>_parser.py` (canonical: source URL, лист, row/col mapping, `model_config_json` schema, traps) + `CONTEXT.md::Parser` (template-method обзор `BaseParser`) |
+| Откуда берётся индикатор X? | **[`docs/data_sources.md`](docs/data_sources.md)** — точный URL/файл/endpoint по каждому из 75 source |
+| Какие источники, кроме Росстата? | [`docs/data_sources.md`](docs/data_sources.md) (полная карта для всех 75 sources, включая CBR + Минфин) + docstrings парсеров `backend/app/services/{cbr_*,minfin_*}_parser.py` |
 | Как считается derived-индикатор Y? | `DERIVED_SPECS` в `backend/app/services/calculation_engine.py` + ADR-0001 |
 | Какая стратегия forecast у индикатора Z? | `Indicator.model_config_json.forecast_strategy` в БД + реестр `backend/app/services/forecast_strategies/registry.py` + таблица в `CONTEXT.md::Forecast` |
 | Как собирается SEO/мета? | `backend/app/services/seo_renderer.py` + `seo_content.py` + ADR-0003 |
-| Какие endpoints есть в API? | Таблица в `README.md::API` + Swagger `/api/docs` (только при `RUSTATS_DEBUG=true`) |
+| Какие endpoints есть в API? | Swagger `/api/docs` (только при `DEBUG=true`, на проде отключён) + краткая сводка групп в `README.md::API` |
 | Yandex Metrika / Webmaster | [`docs/analytics_api_inventory/`](docs/analytics_api_inventory/) — каждый файл начинается со status block (`partial` / `implemented` / `planned`) |
 | Что менять при правке UI? | `frontend/src/...` + `docs/workflow.md::Браузерная проверка` (cursor-ide-browser + headless E2E) |
 | Какие traps подстерегают? | Раздел «Operational invariants and traps» в `CONTEXT.md` (12 пунктов) |
@@ -85,20 +83,20 @@
 
 | Изменение в коде | Куда писать |
 |------------------|-------------|
-| **Любое изменение источника данных** (URL, имя файла, sheet, dataservice блок, file template) | **`docs/data_sources.md`** — single source of truth «индикатор → актуальный файл/endpoint». ОБЯЗАТЕЛЬНО при любой правке парсера или `model_config_json` |
-| Новый source-парсер (CBR/Минфин/иной) | `docs/cbr_sources.md` (таблица + детальный раздел) + `docs/data_sources.md` + регистрация в `PARSER_REGISTRY` + строка в `seed_data.py` |
-| Новый Rosstat-парсер | `CONTEXT.md::Parser` + `docs/data_sources.md` + `PARSER_REGISTRY` + `seed_data.py` |
+| **Любое изменение источника данных** (URL, имя файла, sheet, dataservice блок, file template) | **`docs/data_sources.md`** — single source of truth «индикатор → актуальный файл/endpoint» + **docstring** парсера `backend/app/services/<name>_parser.py` (parser-internals: source URL, layout, schema конфигурации, traps). ОБЯЗАТЕЛЬНО при любой правке парсера или `model_config_json` |
+| Новый source-парсер (Rosstat/CBR/Минфин/иной) | `docs/data_sources.md` (per-indicator маппинг) + docstring парсера в `backend/app/services/<name>_parser.py` (canonical parser-internals) + регистрация в `PARSER_REGISTRY` + строка в `seed_data.py`. `CONTEXT.md::Parser` обновлять только если меняется обзорное число парсеров. |
 | Новый derived-индикатор | `DERIVED_SPECS` в `calculation_engine.py` + `seed_data.py` + раздел в `CONTEXT.md::Derived indicator` (счётчики и категории) |
 | Новая чистая op в `derived_ops.py` | ADR-0001 (раздел «Subsequent additions») + `CONTEXT.md::Derived indicator` (список ops) |
 | Новая forecast-стратегия | `forecast_strategies/registry.py` + таблица в `CONTEXT.md::Forecast` + строка в `README.md::Прогнозы` |
-| Новый API endpoint | Таблица `README.md::API` + Swagger (автоматически из FastAPI route) |
+| Новый API endpoint | Swagger (автоматически из FastAPI route); если новая группа endpoint'ов — обновить сводку в `README.md::API` |
 | Новый категория или slug | `frontend/src/lib/categories.js` **и** `seo_content.py::CATEGORY_META` (синхронно — см. ADR-0003) + строка в `README.md::Индикаторы` |
 | Изменение rate-limit / CORS / CSP | `enterprise_resilience.md::API и backend` + `enterprise_resilience.md::Frontend и кэш` |
-| Новая операционная trap, обнаруженная в проде | `CONTEXT.md::Operational invariants and traps` |
+| Новая операционная trap, обнаруженная в проде | `CONTEXT.md::Operational invariants and traps` (раздел traps) |
 | Новое архитектурное решение | **Создать новый ADR** `docs/adr/<NNNN>-<kebab-name>.md` (следующий свободный номер); добавить ссылку в шапку `CONTEXT.md::Документы рядом` и в `AGENTS.md::Шаг 1` |
 | Новый view-mode family / variant / virtual transform | `frontend/src/lib/viewModeFamilies.js` (реестр семей) **или** `lib/indicatorVariants.js` (variants). Тест в `viewModeFamilies.test.js`. ADR-0006 «Subsequent additions» если добавляется новый паттерн (не просто новый member существующего паттерна) |
 | Изменение существующего ADR | Не редактировать body «как если бы решение было таким». Добавить раздел «Subsequent additions (after acceptance)» с датой и описанием. Status в шапке менять только при формальной депрекации |
 | Новый Yandex API client | `docs/analytics_api_inventory/<service>.md` (если файл уже есть — обновить status block) или новый файл при новом сервисе + строка в `analytics_api_inventory/README.md::Implementation status` |
+| Новая roadmap-задача / правка от пользователя | `docs/backlog.md` (приоритеты + ID + затронутые файлы + риски). Когда закрыто — переносим в раздел «История» с SHA коммита. Никаких параллельных `plan.md` — всё в одном backlog. |
 
 ### Когда создавать новый ADR vs обновлять старый
 
@@ -150,22 +148,24 @@ rosstat/
 ├── CONTEXT.md                      ← spine: glossary + invariants
 ├── README.md                       ← high-level overview
 ├── docs/
-│   ├── adr/                        ← architectural decisions (нумерованные)
-│   ├── analytics_api_inventory/    ← Yandex API контракт + status
+│   ├── adr/                        ← architectural decisions (ADR-0001..0006)
+│   ├── analytics_api_inventory/    ← Yandex API контракт + status (6 файлов)
 │   ├── data_sources.md             ← single source of truth: индикатор → файл/endpoint (75 source)
-│   ├── cbr_sources.md              ← CBR + Минфин parsers (детально)
-│   ├── workflow.md                 ← процесс, dev, deploy
-│   └── enterprise_resilience.md    ← операционные инварианты
+│   ├── missed_data_audit.md        ← reference: ещё не извлечённые поля в source files (TOP-25 P0)
+│   ├── backlog.md                  ← живой бэклог (приоритеты + roadmap + история)
+│   ├── workflow.md                 ← процесс, dev, ручной ETL, deploy
+│   └── enterprise_resilience.md    ← операционные инварианты + канарейка 6/6
 ├── backend/
 │   ├── app/
-│   │   ├── api/                    ← FastAPI routes
-│   │   ├── services/               ← parsers, forecaster, engine, SEO renderer
+│   │   ├── api/                    ← FastAPI routes (indicators, forecasts, calendar, embed, ticker, analytics, …)
+│   │   ├── services/               ← parsers (24 типа), forecaster, calculation_engine, derived_ops, seo_renderer
+│   │   │                           ←   parser internals в docstrings *_parser.py (canonical)
 │   │   ├── tasks/                  ← APScheduler jobs
 │   │   ├── analytics/              ← Yandex clients + warehouse
 │   │   ├── models.py, config.py, main.py, database.py
 │   │   └── data/indicator_seo.py   ← per-indicator SEO defaults
 │   ├── alembic/                    ← миграции
-│   ├── seed_data.py                ← idempotent seeder, 104 indicators
+│   ├── seed_data.py                ← idempotent seeder (100+ индикаторов)
 │   └── tests/                      ← pytest, snapshot-тесты forecast'ов
 ├── frontend/
 │   ├── src/

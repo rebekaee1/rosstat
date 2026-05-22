@@ -16,7 +16,8 @@ This module owns the seam between **the formula** (pure, in `derived_ops`) and
 
 Architectural decisions:
 - `docs/adr/0001-derived-indicators-engine-shape.md` — declarative DSL +
-  pure ops as the engine shape (28 specs, 9 ops as of 2026-05-07).
+  pure ops as the engine shape (31 specs, 12 ops as of 2026-05-22 — one op,
+  `annual_inflation`, retained but unused; 11 active).
 - `docs/adr/0002-derived-always-reflects-source.md` — invariant that derived
   always reflects current source state.
 - See also `CONTEXT.md::Derived indicator` for the domain glossary.

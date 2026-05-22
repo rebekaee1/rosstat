@@ -10,10 +10,12 @@ alwaysApply: true
 ## Документация-spine (читать в этом порядке)
 
 1. **[`CONTEXT.md`](mdc:CONTEXT.md)** — domain glossary, операционные инварианты и traps.
-2. **[`README.md`](mdc:README.md)** — стек, API, indicators.
-3. **[`docs/workflow.md`](mdc:docs/workflow.md)** — модель работы, dev, deploy.
-4. **[`docs/enterprise_resilience.md`](mdc:docs/enterprise_resilience.md)** — чеклист канарейки.
-5. **[`docs/adr/`](mdc:docs/adr)** — архитектурные решения (0001 derived engine, 0002 invariant, 0003 SEO).
+2. **[`README.md`](mdc:README.md)** — стек, ключевые группы endpoint'ов, indicators.
+3. **[`docs/workflow.md`](mdc:docs/workflow.md)** — модель работы, dev, ручной ETL, deploy.
+4. **[`docs/enterprise_resilience.md`](mdc:docs/enterprise_resilience.md)** — runtime invariants, канарейка 6/6.
+5. **[`docs/data_sources.md`](mdc:docs/data_sources.md)** — per-indicator карта `URL/endpoint/sheet/row`. Parser internals — в docstrings `backend/app/services/*_parser.py`.
+6. **[`docs/backlog.md`](mdc:docs/backlog.md)** — живой бэклог: приоритеты + roadmap + история коммитов.
+7. **[`docs/adr/`](mdc:docs/adr)** — архитектурные решения ADR-0001..0006: 0001 derived engine, 0002 idempotency invariant, 0003 SEO single-source SSR, 0004 Rosstat русский canonical (SDDS deprecated), 0005 calendar source-bound, 0006 indicator card unification + 7-пунктный чеклист «новый индикатор».
 
 ## Жёсткие запреты
 
@@ -22,16 +24,22 @@ alwaysApply: true
 - **Не редактировать `git config`**.
 - **Не делать `git push --force`** к `main`.
 - **Не амендить коммиты**, которые уже на remote.
-- **Не создавать новые .md файлы**, если можно обновить существующий. Документация консолидирована.
+- **Не создавать новые .md файлы**, если можно обновить существующий. Документация консолидирована — фрактальная сеть выстроена. Roadmap-задачи живут в одном `docs/backlog.md`, не в параллельных `plan.md`/`recap.md`.
 - **Не коммитить** без явной команды пользователя.
+- **Не выдавать «внутренности» в публичных текстах** (`methodology`, `description`, `seo_*`, `categories.js`). См. `.cursor/rules/methodology-language.mdc`.
 
 ## Архитектурные инварианты
 
-- **ADR-0002**: `bulk_upsert` идемпотентен — `ON CONFLICT DO UPDATE WHERE value <> excluded.value`. Не менять на `DO NOTHING`. См. `backend/app/services/upsert.py`.
-- **ADR-0001**: derived = `DerivedSpec(dst, sources, op)` где `op` чистая. Хранить чистые формулы в `derived_ops.py`, оркестрацию в `calculation_engine.py`. Не возвращать ad-hoc функции в engine.
-- **ADR-0003**: SEO тексты — single source в `seo_content.py`. Категории дублируются в `frontend/src/lib/categories.js` для UI-карточек; **должны быть синхронны**. При правке текстов категорий — менять оба места одновременно.
-- **Asset-hash trap**: backend и frontend пересобирать и поднимать вместе (`docker compose build backend frontend && up -d backend frontend`). Иначе `__spa-index.html` будет ссылаться на устаревшие hash'и.
+- **ADR-0002**: `bulk_upsert` идемпотентен — `INSERT … ON CONFLICT DO UPDATE WHERE data_points.value <> excluded.value`. Не менять на `DO NOTHING`. См. `backend/app/services/upsert.py`.
+- **ADR-0001**: derived = `DerivedSpec(dst, sources, op)` где `op` чистая. Хранить чистые формулы в `derived_ops.py`, оркестрацию в `calculation_engine.py`. Не возвращать ad-hoc функции в engine. На сегодня: 31 spec, 12 ops (11 active).
+- **ADR-0003**: SEO тексты — single source в `seo_content.py`, SSR через backend `/seo/*` + `__spa-index.html`. Категории дублируются в `frontend/src/lib/categories.js` для UI-карточек; **должны быть синхронны** при правке.
+- **ADR-0004**: Rosstat-русский canonical, SDDS English deprecated. `rosstat_sdds_fetcher.py` файл сохранён, в `PARSER_REGISTRY` не зарегистрирован.
+- **ADR-0005**: Public calendar — только официальные даты с provenance (`event_key`/`source_url`/`source_hash`); estimated скрыты.
+- **ADR-0006**: Индикатор-как-карточка vs derived (view-mode) vs variant (срез) vs frequency — 4 разных оси. Перед добавлением нового indicator пройти 7-пунктный чеклист в `AGENTS.md::Шаг 4`.
+- **Asset-hash trap**: backend и frontend пересобирать и поднимать вместе (`docker compose build backend frontend && up -d backend frontend`). При rebuild только frontend — `--no-cache` обязательно.
+- **Browser-cache trap**: SSR HTML отдаётся с `Cache-Control: no-cache, no-store, must-revalidate` **always** (фикс 2026-05-22 в `frontend/nginx.conf`). Ассеты `/assets/` — `max-age=31536000, immutable`.
 - **Forecast retrain trap**: после деплоя, добавляющего derived, ручной `retrain_indicator_forecast(<source_code>)` + `redis-cli FLUSHDB`. Daily ETL не подхватит автоматически.
+- **Annual-in-monthly mixing trap**: перед `bulk_upsert` сверить `target.frequency` с фактической частотой добавляемых точек. См. CONTEXT.md::Operational invariants and traps.
 
 ## После любой архитектурной правки
 

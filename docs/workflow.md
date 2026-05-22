@@ -1,8 +1,8 @@
 # Рабочий процесс — Forecast Economy
 
-**Last updated:** 2026-05-07.
+**Last updated:** 2026-05-22 (документация-ревизия: добавлен ручной ETL recipe, обновлён прод-деплой чек с `_catch_up_empty_indicators` + `redis-cli FLUSHDB`).
 **Part of:** [`../AGENTS.md`](../AGENTS.md), [`../CONTEXT.md`](../CONTEXT.md).
-**See also:** [`enterprise_resilience.md`](enterprise_resilience.md) (чеклист канарейки), [`adr/`](adr/) (архитектурные решения).
+**See also:** [`enterprise_resilience.md`](enterprise_resilience.md) (чеклист канарейки 6/6), [`../AGENTS.md::Шаг 4`](../AGENTS.md) (чеклист «новый индикатор» 7/7 — другая ось), [`adr/`](adr/) (архитектурные решения).
 
 ## Модель работы
 
@@ -50,6 +50,18 @@ docker compose exec backend python /app/scripts/rebuild-all-derived.py
 
 Прогон без guard'а (без проверки `source_codes`); first run выводит non-zero changes для stale серий, second run — все нули (idempotency check).
 
+### Ручной прогон ETL одного индикатора
+
+Для дебага парсера или ручного pull данных под конкретный `code` (например после правки `model_config_json.element_id` в CBR DataService — см. trap в docstring `cbr_dataservice_parser.py`):
+
+```bash
+docker compose exec backend python -c \
+  "import asyncio; from app.tasks.scheduler import run_etl_for_indicator; \
+   asyncio.run(run_etl_for_indicator('key-rate'))"
+```
+
+Заменить `'key-rate'` на любой `code`. Логи в JSON через `JsonFormatter` (`docker compose logs backend | grep -i <code>`). Для полной перезаливки истории — установить `model_config_json.full_refresh = true` через SQL (`UPDATE indicators SET model_config_json = jsonb_set(...)`) и прогнать; не все парсеры поддерживают `full_refresh` (CBR DataService/BOP — да; для остальных проще пересоздать через `seed_data.py` + локальная очистка `data_points`).
+
 ## Проверки перед коммитом
 
 Локально одной командой (эквивалент CI):
@@ -72,15 +84,15 @@ docker compose exec backend python /app/scripts/rebuild-all-derived.py
 
 Для итеративной разработки — `browser_navigate` → `browser_snapshot` → `browser_console_messages`. На любые правки UI: открыть локальный маршрут (например, `http://localhost:3000/indicator/cpi`), снять snapshot, проверить, что console чистая (только Vite/React/CursorBrowser служебные сообщения; ошибок приложения нет). При изменениях, которые меняют шапку/SEO/layout — обязательно проверить и SSR через user-agent `YandexBot/3.0` или `Googlebot/2.1`.
 
-### Headless E2E (puppeteer-core + system Chrome)
+### Headless проверки через curl + SSR user-agent
 
-Для регрессионных smoke-чеков (особенно после прод-деплоя):
+Для регрессионных smoke-чеков после прод-деплоя — `scripts/seo-audit.py` проходит по списку ключевых indicator-страниц и проверяет, что SSR через `User-Agent: YandexBot/3.0` возвращает осмысленные `<title>`, `<meta description>`, `og:*`, JSON-LD. Запуск:
 
 ```bash
-node scripts/e2e/smoke.mjs --target=https://forecasteconomy.com  # пример
+python scripts/seo-audit.py --target=https://forecasteconomy.com
 ```
 
-Проверяет 6+ ключевых страниц на **0 console errors, 0 page errors, 0 4xx/5xx**. Скриншоты в `/tmp/e2e-prod/screens/`. Этот формат используется как «Smoke C» после прод-деплоя — см. ниже.
+Для in-session браузер-чеков используется техника выше (`cursor-ide-browser`). Полноценный E2E-runner (`scripts/e2e/smoke.mjs`) пока не реализован — задача в `docs/backlog.md`.
 
 Если dev-сервер недоступен в среде — явно записать что проверено альтернативно (только unit-тесты / только snapshot-тесты / только curl-сверка SSR).
 
@@ -91,10 +103,11 @@ node scripts/e2e/smoke.mjs --target=https://forecasteconomy.com  # пример
 1. `git push origin main` — закатить ветку.
 2. `pg_dump | gzip > backups/pre-deploy-$(date +%Y%m%d-%H%M%S).sql.gz` — на проде.
 3. `git pull --ff-only` на `5.129.204.194:/opt/rosstat`.
-4. `docker compose build backend frontend` — **оба образа всегда вместе** (см. «Asset-hash mismatch trap» в `enterprise_resilience.md`).
-5. `docker compose up -d backend frontend` — **одновременно** (страховка от asset-hash mismatch).
+4. `docker compose build backend frontend` — **оба образа всегда вместе** (см. «Asset-hash mismatch trap» в `enterprise_resilience.md`). Если меняли frontend и переподнимаете отдельно — `docker compose build --no-cache frontend` для гарантии новых assets (см. «Browser-cache trap при rebuild frontend» в `CONTEXT.md`).
+5. `docker compose up -d backend frontend` — **одновременно** (страховка от asset-hash mismatch). Backend на старте автоматически прогоняет `_catch_up_empty_indicators()` — ETL для всех `is_active=true` индикаторов с 0 точками (новые индикаторы дотягиваются без ручного `run_etl_for_indicator`). См. `app/main.py`.
 6. Alembic миграции применяются автоматически из `entrypoint.sh`.
-7. `redis-cli FLUSHDB` — если правки касались форматирования/SSR.
+7. `redis-cli FLUSHDB` — обязательно, если правки касались форматирования/SSR, добавлены derived (forecast retrain trap), или изменилось мето `seo_renderer.py`.
+8. Если деплой добавляет новые derived (`DERIVED_SPECS` пополнен): `docker compose exec backend python -c "import asyncio; from app.services.forecaster import retrain_indicator_forecast; asyncio.run(retrain_indicator_forecast('<source_code>'))"` для каждого изменённого источника. Daily ETL не подхватит автоматически (см. `enterprise_resilience.md::forecast retrain trap`).
 
 ### Smoke C — проверки после деплоя
 

@@ -1,6 +1,6 @@
 # Frontend Instrumentation Inventory
 
-**Last verified:** 2026-05-10.
+**Last verified:** 2026-05-22 (sanity-check, статус без изменений).
 **Implementation status:** `implemented` — `frontend/src/lib/track.js`, `frontend/src/lib/utm.js`, `frontend/src/lib/cleanUrl.js`, `frontend/src/lib/useScrollDepth.js`, `frontend/index.html`, backend collector — `app/api/analytics.py::POST /api/v1/analytics/events` → `FrontendEvent`.
 
 Этот файл описывает, как фронтенд платит дань Яндекс.Метрике и собственному `frontend_events` warehouse. В нём — единый источник правды для:

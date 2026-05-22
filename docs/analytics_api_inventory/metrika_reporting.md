@@ -1,6 +1,6 @@
 # Yandex Metrika Reporting API Inventory
 
-**Last verified:** 2026-05-07.
+**Last verified:** 2026-05-22 (sanity-check, статус без изменений).
 **Implementation status:** `implemented` — `app/services/yandex_metrika_reporting.py`.
 Все 5 JSON-эндпоинтов (`table`, `bytime`, `drilldown`, `comparison`,
 `comparison_drilldown`) обёрнуты в методы клиента. CSV-варианты (`*.csv`)

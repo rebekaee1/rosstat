@@ -1,8 +1,8 @@
 # Forecast Economy — Project Context
 
-**Last updated:** 2026-05-22 (звонок «всё доделать» + ревизия «ты уверен в данных?» + view-mode family downstream completion: Phase 2 labour (wages-nominal + unemployment унифицированы в view-mode families), Phase 3 housing (housing-price-{primary,secondary} с YoY % режимом), Phase 4 rates rename (credit-rate-{corp,ind}-short и deposit-rate переименованы на общие имена, term split через VariantGroupPicker), Phase 5 daily-aggregation (виртуальные week/month/quarter/year avg для key-rate, ruonia, cbr-fx-*, gold-price, brent, btc-usd через `applyAggregateTransform` на фронте). `tradeViewModes.js` → `viewModeFamilies.js` (общий реестр для всех семей). `wages-nominal-annual` — annual sibling с историей 1991-2014, доступен как режим «Годовое (с 1991)» (фикс annual-in-monthly trap); backfill дотянут до 2025 через annual mean из monthly. Pill/title подменяются через `displayFrequency` + `effectiveIndicator.frequency` override; CPI-only блоки в `getViewModeContent()` обёрнуты в `isPriceCategory` guard (фикс methodology cross-mode leak). Search haystack расширен на `seo_keywords` (поддержка корней/синонимов: «зарпл» → wages-nominal, wages-real, wages-yoy, wages-index). +4 trap'ы: `Source-depth trap` + `Browser-cache trap при rebuild frontend` + `Annual-in-monthly mixing trap` + `View-mode family metadata leak`. См. ADR-0006 «Indicator card unification».
+**Last updated:** 2026-05-22 (документация-ревизия: counts синхронизированы (31 DERIVED_SPECS, 12 derived_ops, 27 PARSER_REGISTRY); `docs/cbr_sources.md` мигрирован в docstrings парсеров и удалён (parser internals теперь живут в `backend/app/services/*_parser.py`); `docs/plan.md` и `docs/recap-2026-05-22.md` мигрированы в backlog и удалены; ADR-0002/0003/0004/0005 ревалидированы и Last verified подняты на 2026-05-22; broken refs в README удалены; `_catch_up_empty_indicators` + nginx no-cache always дотянуты в workflow/enterprise_resilience. Содержательная история звонков 21-22 мая — в `docs/backlog.md::История`.
 **Part of:** [`AGENTS.md`](AGENTS.md) (точка входа для AI-агента).
-**See also:** [`README.md`](README.md), [`docs/workflow.md`](docs/workflow.md), [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md), [`docs/data_sources.md`](docs/data_sources.md), [`docs/cbr_sources.md`](docs/cbr_sources.md), [`docs/analytics_api_inventory/`](docs/analytics_api_inventory/), [`docs/adr/`](docs/adr/).
+**See also:** [`README.md`](README.md), [`docs/workflow.md`](docs/workflow.md), [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md), [`docs/data_sources.md`](docs/data_sources.md), [`docs/analytics_api_inventory/`](docs/analytics_api_inventory/), [`docs/adr/`](docs/adr/). Parser internals (CBR/Минфин/Rosstat) живут в docstrings `backend/app/services/*_parser.py`.
 
 > Domain glossary for the project. Every architectural discussion, ADR, and refactoring proposal should use the terms defined here. If a discussion needs a new term, add it to this file before finishing.
 
@@ -15,9 +15,9 @@
 | [`docs/workflow.md`](docs/workflow.md) | Модель работы, локальный dev, прод-деплой, smoke C |
 | [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md) | Rate-limit, CSP, asset-hash trap, бэкапы, чеклист канарейки |
 | [`docs/data_sources.md`](docs/data_sources.md) | Точная карта «индикатор → файл/endpoint» для всех 75 source-индикаторов. Single source of truth — обязательно обновлять при правке источника |
-| [`docs/cbr_sources.md`](docs/cbr_sources.md) | Все не-Росстат источники: ЦБ РФ + Минфин (10 парсеров, детальные парсер-разделы) |
+| `backend/app/services/*_parser.py` docstrings | Parser internals (CBR / Минфин / Rosstat): source URL, лист, row/col mapping, `model_config_json` schema, traps. Канонично живёт рядом с кодом |
 | [`docs/analytics_api_inventory/`](docs/analytics_api_inventory/) | Инвентарь Yandex API (Metrika, Webmaster) + статус реализации |
-| [`docs/adr/0001`](docs/adr/0001-derived-indicators-engine-shape.md) | Engine shape: 28 derived через `DERIVED_SPECS` + 9 чистых ops |
+| [`docs/adr/0001`](docs/adr/0001-derived-indicators-engine-shape.md) | Engine shape: 31 derived через `DERIVED_SPECS` + 12 чистых ops (11 активных) |
 | [`docs/adr/0002`](docs/adr/0002-derived-always-reflects-source.md) | Инвариант: derived всегда отражает source (`bulk_upsert` идемпотентен) |
 | [`docs/adr/0003`](docs/adr/0003-seo-single-source-server-rendered.md) | SEO single-source: backend SSR через `__spa-index.html` + Vite asset discovery |
 | [`docs/adr/0004`](docs/adr/0004-rosstat-russian-canonical-sdds-deprecated.md) | Rosstat русский canonical, SDDS English deprecated. Pilot: gdp-nominal end-to-end 2026-05-10 |
@@ -57,7 +57,7 @@
   - `seo_blocks` — JSON-массив `{title, body}` дополнительных секций под графиком.
   - `is_listed` — boolean: показывать ли карточку индикатора в листинге категории. По умолчанию `true`. `false` — индикатор доступен только через `VariantGroupPicker` внутри родительского индикатора (например, `cpi-food-quarterly` скрыт, виден только при выборе «Состав индекса → продовольственные → квартально» на странице `cpi`).
 
-Хранится в таблице `Indicator`. **Текущее количество:** 104 индикатора (76 source-индикаторов + 28 derived).
+Хранится в таблице `Indicator`. **Текущее количество (2026-05-22):** 100+ индикаторов; точное число — в `seed_data.py` и `/api/v1/system/status`. Из них 75+ source-индикаторов (через 24 парсера) и 31 derived (через `DERIVED_SPECS`).
 
 ### DataPoint
 
@@ -83,17 +83,17 @@
 
 Конкретная реализация ETL для одного формата источника. Базовый класс `BaseParser` (`backend/app/services/base_parser.py`) — **template-method**: финальный `run()` оркеструет fetch → parse → validate → upsert → forecast retrain → cache invalidate в одном месте. Дочерние классы реализуют `_fetch_and_parse(db, indicator, cfg, fetch_log) -> (points, source_url)` (обязательно) + опциональные hooks `_validate(points, cfg)`, `_post_upsert(...)`, `_handle_forecasts(...)`. Это устранило ~1100 строк boilerplate, унифицировало статусы `fetch_log` и каскад retrain'а.
 
-**Текущее количество:** 23 парсер-типа в `PARSER_REGISTRY` (см. `rosstat_cpi_parser.py`, регистрируется как singleton-импорт из исторических соображений — артефакт). Парсер-файлов 24 (включая `base_parser.py`). Один парсер обычно обслуживает несколько индикаторов одного источника (CbrFxParser → 3 валюты; RosstatCpiParser → 4 листа CPI; CbrDataServiceParser → много ставок ЦБ).
+**Текущее количество (2026-05-22):** 27 парсер-типов в `PARSER_REGISTRY` (см. `rosstat_cpi_parser.py`, регистрируется как singleton-импорт из исторических соображений — артефакт). Включают 14 Rosstat-парсеров (`rosstat_*_parser.py`), 11 CBR (`cbr_*_parser.py` + `cbr_keyrate.py` helper), 1 Минфин (`minfin_budget_parser.py`), 1 Binance (`BinanceBtcUsdtParser`) и 1 FRED Brent (`BrentDailyFredParser`). Файл `rosstat_sdds_fetcher.py` существует, но в PARSER_REGISTRY не зарегистрирован — deprecated (ADR-0004). Один парсер обычно обслуживает несколько индикаторов одного источника: CbrFxParser → 3 валюты; RosstatCpiParser → 4 листа CPI; CbrDataServiceParser → 16+ ставок и агрегатов ЦБ.
 
 ### Derived indicator
 
 Индикатор без собственного источника. Считается чистой функцией от других индикаторов. `parser_type = "derived"`. Запускается из `CalculationEngine.run_for_updated_sources` после daily ETL.
 
-**Инвариант (ADR-0002):** *derived[t] всегда выводимо из текущего state source-рядов на момент последнего ETL-батча с новыми строками* (`records_added > 0`). При любом таком ETL прогоне CalculationEngine полностью пересчитывает все 28 derived-рядов от первой до последней точки (idempotent — `bulk_upsert` записывает только реально изменившиеся значения). Не «инкрементальный накопительный снимок», а чистая функция source. Если source ревизуется задним числом — derived перетягиваются автоматически на следующий же день с новыми строками (см. ADR-0002 «Limit of the invariant — pure-revision day»).
+**Инвариант (ADR-0002):** *derived[t] всегда выводимо из текущего state source-рядов на момент последнего ETL-батча с новыми строками* (`records_added > 0`). При любом таком ETL прогоне CalculationEngine полностью пересчитывает все 31 derived-рядов от первой до последней точки (idempotent — `bulk_upsert` записывает только реально изменившиеся значения). Не «инкрементальный накопительный снимок», а чистая функция source. Если source ревизуется задним числом — derived перетягиваются автоматически на следующий же день с новыми строками (см. ADR-0002 «Limit of the invariant — pure-revision day»).
 
 **Граница инварианта.** Инвариант односторонний: `bulk_upsert`-only. Если source-точка **удаляется** вручную (DELETE из IndicatorData), соответствующая derived-точка остаётся в БД как осиротевшая — engine не знает, что нужно её удалить. Это явный compromise (см. ADR-0002): автоматическое удаление derived создавало бы риск массовой потери данных при ошибке pure op. Ручные коррекции source требуют ручной чистки derived или прогона `scripts/rebuild-all-derived.py`.
 
-Реестр операций (`backend/app/services/derived_ops.py`) — **10 чистых функций** без `db`/`async`:
+Реестр операций (`backend/app/services/derived_ops.py`) — **12 чистых функций** без `db`/`async` (11 активных + 1 deprecated `annual_inflation` сохранён, но в `DERIVED_SPECS` не используется):
 - `quarterly_index` — chained product 3 месячных индексов CPI (для `*-quarterly`).
 - `december_to_december` — годовая инфляция «Dec_Y / Dec_{Y-1} − 1» (для CPI-семьи и PPI `*-annual`; пришла на смену rolling-12M в 2026-05-06, см. ADR-0001 «Subsequent additions»).
 - `annual_sum` — сумма квартальных или 12 месячных значений (для `gdp-{nominal,real}-annual`).
@@ -103,7 +103,7 @@
 - `wages_real` — особая, 2 источника (`wages-nominal`, `cpi`).
 - `annual_inflation` — устаревшая op (rolling-12M product), сохранена в файле, но **не используется** в `DERIVED_SPECS`. Кандидат на удаление при следующей чистке.
 
-Реестр спецификаций (`calculation_engine.DERIVED_SPECS`) — **29 entries**:
+Реестр спецификаций (`calculation_engine.DERIVED_SPECS`) — **31 entries**:
 
 - **CPI семейство:** `inflation-quarterly` ← `cpi`, `inflation-annual` ← `cpi`, и аналоги для `cpi-food/nonfood/services` (8 spec'ов).
 - **PPI:** `ppi-yoy`, `ppi-annual`.

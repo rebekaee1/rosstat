@@ -1,6 +1,6 @@
 # Audit пропущенных данных в исходных файлах
 
-**Last updated:** 2026-05-12 (weekly inflation deep dive: 169/170 точек = подлинные bulletin Росстата).
+**Last updated:** 2026-05-22 (sanity-check после Phase 1-5 + ревизии: за период 2026-05-12 → 2026-05-22 ни один P0 из TOP-25 ниже не извлечён из source files этой карты. Backfill `key-rate`-1992 / `wages-nominal-annual`-1991 — это immutable seeds из публичных Rosstat sборников, не из текущих source-парсеров. Derived `housing-affordability` / `wages-index` — пересчёт из уже извлечённых рядов. Расширение `deposit-rate`-term — новый element_id в существующем парсере DataService, не покрывается этой картой, см. `docs/data_sources.md::ЦБ РФ — DataService JSON`).
 **Part of:** `[AGENTS.md](../AGENTS.md)`, `[docs/data_sources.md](data_sources.md)`.
 
 > Систематический проход по всем 27 Excel/PDF-файлам, из которых тянет данные платформа. Цель — выявить рядом-лежащие данные, которые **уже есть в скачиваемых файлах**, но пока **не извлекаются** парсерами. Кандидаты на дешёвые новые индикаторы (parser уже знает, как качать файл — нужно только добавить sheet/row).

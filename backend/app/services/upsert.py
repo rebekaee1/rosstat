@@ -6,9 +6,9 @@ The `where=(value != excluded.value)` guard makes repeated upserts of unchanged
 points a no-op — `records_added`/`records_updated` only increment on real change.
 
 See `docs/adr/0002-derived-always-reflects-source.md` for the full invariant
-and its boundaries (pure-revision day limitation).
-See `docs/cbr_sources.md::Идемпотентность вставки` for the same statement
-in source-side terms.
+and its boundaries (pure-revision day limitation). The same idempotency holds
+for every concrete parser (CBR / Минфин / Rosstat) — see parser docstrings
+in `backend/app/services/*_parser.py`.
 """
 
 from datetime import date as _date

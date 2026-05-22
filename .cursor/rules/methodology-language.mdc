@@ -40,7 +40,7 @@ alwaysApply: true
 Технические детали (имена файлов, листы, регексы, API-ID, ADR-ссылки) остаются:
 
 1. В **docstrings** соответствующих парсеров в `backend/app/services/*_parser.py` — для разработчика, который читает код.
-2. В **`docs/data_sources.md`** и **`docs/cbr_sources.md`** — централизованный технический реестр источников.
+2. В **`docs/data_sources.md`** (per-indicator карта `индикатор → URL/файл/sheet/row/element_id`) и в **docstrings парсеров** `backend/app/services/*_parser.py` (per-parser internals: traps, schema конфигурации, особенности формата).
 3. В **`CONTEXT.md`** и **ADR-папке** — архитектурные инварианты и решения.
 
 Эти три места — для разработчика. `methodology` индикатора — для пользователя.
