@@ -67,7 +67,7 @@ export const VARIANT_GROUPS = [
   },
   // Phase 1 (звонок 2026-05-22): trade-семьи (exports / imports / current-account)
   // переехали с VariantGroupPicker (отдельные URL'ы для каждого режима) на
-  // ViewModePicker (in-page ?mode=yoy|qoq). См. `lib/tradeViewModes.js` и
+  // ViewModePicker (in-page ?mode=yoy|qoq). См. `lib/viewModeFamilies.js` и
   // `pages/IndicatorDetail.jsx::isTrade`. Эти записи удалены сознательно —
   // дублирующие pills'ы над FrequencySwitcher.
   {

@@ -1,6 +1,6 @@
 # Forecast Economy — Project Context
 
-**Last updated:** 2026-05-22 (звонок Phase 1: trade unification через `ViewModePicker` (level / YoY % / QoQ % / YoY-абс / MoM% on-the-fly); +10-я op `yoy_abs` в `derived_ops.py`; +2 derived `*-yoy-abs` для balances со знаком; `current-account-yoy` % депрекейтнут как is_active=false; LiveTicker над Navbar с MOEX/CBR-fallback/Binance/Yahoo источниками — см. ADR-0001 «Subsequent additions 2026-05-22»).
+**Last updated:** 2026-05-22 (звонок «всё доделать»: Phase 2 labour (wages-nominal + unemployment унифицированы в view-mode families), Phase 3 housing (housing-price-{primary,secondary} с YoY % режимом), Phase 4 rates rename (credit-rate-{corp,ind}-short и deposit-rate переименованы на общие имена, term split через VariantGroupPicker), Phase 5 daily-aggregation (виртуальные week/month/quarter/year avg для key-rate, ruonia, cbr-fx-*, gold-price, brent, btc-usd через `applyAggregateTransform` на фронте). `tradeViewModes.js` → `viewModeFamilies.js` (общий реестр для всех семей).
 **Part of:** [`AGENTS.md`](AGENTS.md) (точка входа для AI-агента).
 **See also:** [`README.md`](README.md), [`docs/workflow.md`](docs/workflow.md), [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md), [`docs/data_sources.md`](docs/data_sources.md), [`docs/cbr_sources.md`](docs/cbr_sources.md), [`docs/analytics_api_inventory/`](docs/analytics_api_inventory/), [`docs/adr/`](docs/adr/).
 
@@ -111,7 +111,19 @@
 - **Trade/External:** `exports-{yoy,qoq}`, `imports-{yoy,qoq}`, `trade-balance-yoy-abs`, `current-account-yoy-abs`. Старый `current-account-yoy` (%) **депрекейтнут** в seed_data как `is_active=false`, в DERIVED_SPECS убран — для balances со знаком процент YoY бессмыслен.
 - **Other:** `ipi-yoy`, `housing-yoy-{primary,secondary}`.
 
-**Frontend-only режимы (звонок 2026-05-22, A1+A2).** Поверх backend-derived'ов есть **виртуальные** view modes для in-page переключения без перезагрузки страницы — `frontend/src/lib/tradeViewModes.js::TRADE_VIEW_MODE_FAMILIES`. Для monthly counterparts (`exports-monthly`, `imports-monthly`, `services-{exports,imports}-monthly`) добавлен виртуальный режим `mom` (`transform: 'mom'`): функция `applyMoMTransform(points)` на клиенте превращает `[{date, value}]` в ряд `(val_t / val_{t-1} − 1) * 100`. Backend spec для MoM% сознательно не заводится — пересчёт O(n) на клиенте дешевле round-trip'а, изоляция от forecast-пайплайна. `IndicatorDetail.jsx::tradeModeMeta.transform` маршрутизирует ветку «virtual transform vs backend derived».
+**Frontend-only режимы (звонок 2026-05-22).** Поверх backend-derived'ов есть единый реестр view-mode families: `frontend/src/lib/viewModeFamilies.js::VIEW_MODE_FAMILIES`. Каждая семья (`exports`, `imports`, `trade-balance`, `current-account`, `*-monthly`, `wages-nominal`, `unemployment`, `housing-price-{primary,secondary}`) маппит parent → массив `modes[]`: `{mode, label, code, unit?, transform?}`. Routing в `IndicatorDetail.jsx`: `findViewModeFamily(code)` → `?mode=…` подменяет dataPoints, телеметрию и заголовок без перехода на другой URL.
+
+Frontend-only трансформации:
+- `applyMoMTransform(points)` — MoM% для `*-monthly` (Phase 1): `(val_t/val_{t-1} − 1) * 100`, backend spec сознательно не заводится.
+- `applyAggregateTransform(points, granularity)` — bucket-avg для daily-индикаторов (Phase 5): `granularity ∈ {week, month, quarter, year}` → среднее по bucket'у с датой = конец bucket'а. Применяется к любому `indicator.frequency === 'daily'` (`key-rate`, `ruonia`, `cbr-fx-*`, `gold-price`, `brent`, `btc-usd`) без новых backend-derived.
+
+Phases:
+- Phase 1 — trade (4 quarterly + 4 monthly семьи).
+- Phase 2 — labour: `wages-nominal` (4 режима: Номинальная / Реальная / YoY / Индекс), `unemployment` (3 режима: Месячно / Квартально / 12М avg).
+- Phase 3 — housing prices (Уровень индекса / YoY %).
+- Phase 5 — daily aggregation (виртуальные week/month/quarter/year avg).
+
+Phase 4 (ставки) НЕ использует viewModeFamilies: `credit-rate-corp-short`, `credit-rate-ind-short`, `deposit-rate` — единые карточки с **VariantGroupPicker** (срок: До 1 года / 1-3 года / Свыше 3 лет). Это не «режим отображения», а отдельные индикаторы по сроку.
 
 ### Forecast
 

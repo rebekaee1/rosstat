@@ -319,8 +319,8 @@ INDICATORS = [
     },
     {
         "code": "deposit-rate",
-        "name": "Ставка по вкладам",
-        "name_en": "Deposit Interest Rate",
+        "name": "Ставка по вкладам физических лиц",
+        "name_en": "Household Deposit Interest Rate",
         "unit": "%",
         "frequency": "monthly",
         "source": "Банк России",
@@ -456,8 +456,8 @@ INDICATORS = [
     # Ряды доступны с января 2014 г. ежемесячно (publicationId=14).
     {
         "code": "credit-rate-corp-short",
-        "name": "Ставка по кредитам юридическим лицам до 1 года",
-        "name_en": "Corporate Loan Rate (up to 1 year)",
+        "name": "Ставка по кредитам юридическим лицам",
+        "name_en": "Corporate Loan Rate",
         "unit": "%",
         "frequency": "monthly",
         "source": "Банк России",
@@ -559,8 +559,8 @@ INDICATORS = [
     },
     {
         "code": "credit-rate-ind-short",
-        "name": "Ставка по кредитам физическим лицам до 1 года",
-        "name_en": "Individual Loan Rate (up to 1 year)",
+        "name": "Ставка по кредитам физическим лицам",
+        "name_en": "Individual Loan Rate",
         "unit": "%",
         "frequency": "monthly",
         "source": "Банк России",

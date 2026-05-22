@@ -19,7 +19,11 @@ import IndicatorSeoBlocks from '../components/IndicatorSeoBlocks';
 import { findVariantGroup } from '../lib/indicatorVariants';
 import { visibleCpiViewModes } from '../lib/cpiViewModes';
 import useIndicatorViewModeData from '../lib/useIndicatorViewModeData';
-import { findTradeViewModeFamily, applyMoMTransform } from '../lib/tradeViewModes';
+import {
+  findViewModeFamily,
+  applyMoMTransform,
+  applyAggregateTransform,
+} from '../lib/viewModeFamilies';
 import { getViewModeContent } from '../lib/cpiViewModeContent';
 import { downloadExcel, downloadCSV } from '../lib/excel';
 import { track, events } from '../lib/track';
@@ -101,56 +105,76 @@ export default function IndicatorDetail() {
   } = view;
 
   // ============================================================
-  // Phase 1 (A1+A2): in-page view modes for trade indicators.
+  // View-mode families (Phase 1+2+3): in-page переключение
+  // «режим отображения» вместо отдельных карточек в каталоге.
   //
-  // Если текущий код — корень trade-семейства (exports / imports / ...),
-  // и URL содержит ?mode=yoy|qoq — подгружаем derived-код и подменяем
-  // dataPoints в downstream-компоненты. Решение принято на звонке
-  // 2026-05-22 («по твоей рекомендации»): унификация 11 trade-карточек
-  // → 6 родительских, derived'ы — это **режимы**, не самостоятельные
-  // листинги. См. lib/tradeViewModes.js + ADR-0001.
+  // Если текущий код — корень family (exports / wages-nominal / unemployment
+  // / housing-price-* и т.д.) и URL содержит ?mode=… — подгружаем derived
+  // и подменяем dataPoints. Виртуальные transforms (MoM, agg) считаются
+  // на фронте без backend-дёргания. См. lib/viewModeFamilies.js.
+  //
+  // Daily aggregation (Phase 5, daily-индикаторы вроде key-rate, ruonia,
+  // cbr-fx-*, gold-price) обрабатывается отдельно ниже (dailyAggregation).
   // ============================================================
-  const tradeFamily = findTradeViewModeFamily(code);
-  const isTrade = !!tradeFamily;
-  const tradeAllowedModes = useMemo(
-    () => (tradeFamily ? tradeFamily.modes.map((m) => m.mode) : []),
-    [tradeFamily],
+  const viewFamily = findViewModeFamily(code);
+  const isFamily = !!viewFamily;
+  const familyAllowedModes = useMemo(
+    () => (viewFamily ? viewFamily.modes.map((m) => m.mode) : []),
+    [viewFamily],
   );
-  const tradeMode = isTrade
-    ? (tradeAllowedModes.includes(viewMode) ? viewMode : 'level')
+  const familyMode = isFamily
+    ? (familyAllowedModes.includes(viewMode) ? viewMode : 'level')
     : null;
-  const tradeModeMeta = useMemo(
-    () => (tradeFamily && tradeMode ? tradeFamily.modes.find((m) => m.mode === tradeMode) : null),
-    [tradeFamily, tradeMode],
+  const familyModeMeta = useMemo(
+    () => (viewFamily && familyMode ? viewFamily.modes.find((m) => m.mode === familyMode) : null),
+    [viewFamily, familyMode],
   );
-  // Виртуальный режим (transform === 'mom') не идёт в backend — пересчёт
-  // делается на фронте поверх baseDataPoints. tradeDerivedCode остаётся
-  // null, чтобы useIndicatorData не дёргался лишний раз.
-  const isVirtualTransform = isTrade && tradeMode !== 'level' && !!tradeModeMeta?.transform;
-  const tradeDerivedCode = isTrade && tradeMode !== 'level' && !isVirtualTransform
-    ? tradeModeMeta?.code ?? null
+  const isVirtualTransform = isFamily && familyMode !== 'level' && !!familyModeMeta?.transform;
+  const familyDerivedCode = isFamily && familyMode !== 'level' && !isVirtualTransform
+    ? familyModeMeta?.code ?? null
     : null;
 
-  const { data: tradeDerivedResp, isLoading: loadingTradeDerived } = useIndicatorData(
-    tradeDerivedCode,
+  const { data: familyDerivedResp, isLoading: loadingFamilyDerived } = useIndicatorData(
+    familyDerivedCode,
     undefined,
-    { enabled: !!tradeDerivedCode },
+    { enabled: !!familyDerivedCode },
   );
 
-  const tradeDataPoints = useMemo(() => {
-    if (isVirtualTransform && tradeModeMeta?.transform === 'mom') {
+  // ============================================================
+  // Phase 5 — daily aggregation transforms (weekly/monthly/quarterly/annual).
+  // Применяется к ЛЮБОМУ daily-индикатору, который ещё не принадлежит
+  // family (чтобы не конфликтовало). Режимы:
+  //   ?mode=weekly | monthly | quarterly | annual  → avg по bucket'ам.
+  // ============================================================
+  const dailyAggGranularity = useMemo(() => {
+    if (isFamily) return null;
+    if (indicator?.frequency !== 'daily') return null;
+    const mapping = { weekly: 'week', monthly: 'month', quarterly: 'quarter', annual: 'year' };
+    return mapping[viewMode] || null;
+  }, [isFamily, indicator?.frequency, viewMode]);
+
+  const familyDataPoints = useMemo(() => {
+    if (isVirtualTransform && familyModeMeta?.transform === 'mom') {
       return applyMoMTransform(baseDataPoints || []);
     }
-    if (!tradeDerivedCode || !tradeDerivedResp?.data?.length) return null;
-    return tradeDerivedResp.data;
-  }, [isVirtualTransform, tradeModeMeta, tradeDerivedCode, tradeDerivedResp, baseDataPoints]);
+    if (familyDerivedCode && familyDerivedResp?.data?.length) {
+      return familyDerivedResp.data;
+    }
+    if (dailyAggGranularity) {
+      return applyAggregateTransform(baseDataPoints || [], dailyAggGranularity);
+    }
+    return null;
+  }, [
+    isVirtualTransform, familyModeMeta, familyDerivedCode, familyDerivedResp,
+    baseDataPoints, dailyAggGranularity,
+  ]);
 
-  const dataPoints = tradeDataPoints || baseDataPoints;
+  const dataPoints = familyDataPoints || baseDataPoints;
 
-  // Telemetry-cards для trade-режима — пересчёт по подменённому ряду.
-  const tradeViewStats = useMemo(() => {
-    if (!tradeDataPoints?.length) return null;
-    const pts = tradeDataPoints;
+  // Telemetry-cards — пересчёт по подменённому ряду (если он есть).
+  const familyViewStats = useMemo(() => {
+    if (!familyDataPoints?.length) return null;
+    const pts = familyDataPoints;
     const current = pts[pts.length - 1];
     const previous = pts.length > 1 ? pts[pts.length - 2] : null;
     const highest = pts.reduce((max, p) => (p.value > max.value ? p : max), pts[0]);
@@ -165,29 +189,38 @@ export default function IndicatorDetail() {
       average: avg,
       dataCount: pts.length,
     };
-  }, [tradeDataPoints]);
+  }, [familyDataPoints]);
 
-  const viewStats = tradeViewStats || baseViewStats;
-  const chartLoading = baseChartLoading || (isTrade && tradeDerivedCode && loadingTradeDerived);
-  const forecastEnabled = isTrade && tradeMode !== 'level' ? false : baseForecastEnabled;
+  const viewStats = familyViewStats || baseViewStats;
+  const chartLoading = baseChartLoading || (isFamily && familyDerivedCode && loadingFamilyDerived);
+  const forecastEnabled = (isFamily && familyMode !== 'level') || !!dailyAggGranularity
+    ? false : baseForecastEnabled;
 
   // Подменяем `indicator` для downstream-компонентов (телеметрия, график,
   // download, таблица) — даёт правильный unit и расширенное имя
-  // («Экспорт товаров (YoY %)» или «Торговый баланс (YoY, абс.)»).
-  // Unit берётся из режима: если `modeMeta.unit` задан — используем его
-  // (для процентных режимов '%'); если не задан — сохраняем родительскую
-  // единицу (для yoy_abs значения остаются «млн $»).
+  // («Экспорт товаров (YoY %)» или «Безработица (Квартально)»).
+  // Unit берётся из режима: если `modeMeta.unit` задан — используем его;
+  // если не задан — сохраняем родительскую единицу.
   // Хедер страницы остаётся оригинальным (`indicator.name`), чтобы
   // breadcrumbs и H1 не дёргались при смене mode.
   const effectiveIndicator = useMemo(() => {
-    if (!isTrade || !indicator || tradeMode === 'level') return indicator;
-    const suffix = tradeModeMeta ? tradeModeMeta.label : tradeMode;
-    return {
-      ...indicator,
-      unit: tradeModeMeta?.unit ?? indicator.unit,
-      name: `${indicator.name} (${suffix})`,
-    };
-  }, [indicator, isTrade, tradeMode, tradeModeMeta]);
+    if (!indicator) return indicator;
+    if (isFamily && familyMode !== 'level') {
+      const suffix = familyModeMeta ? familyModeMeta.label : familyMode;
+      return {
+        ...indicator,
+        unit: familyModeMeta?.unit ?? indicator.unit,
+        name: `${indicator.name} (${suffix})`,
+      };
+    }
+    if (dailyAggGranularity) {
+      const aggLabel = viewMode === 'weekly' ? 'Недельно'
+        : viewMode === 'monthly' ? 'Месячно'
+        : viewMode === 'quarterly' ? 'Квартально' : 'Годово';
+      return { ...indicator, name: `${indicator.name} (${aggLabel}, avg)` };
+    }
+    return indicator;
+  }, [indicator, isFamily, familyMode, familyModeMeta, dailyAggGranularity, viewMode]);
 
   const adj = useCallback((v) => {
     if (v == null || !shouldSubtract100) return v;
@@ -349,11 +382,28 @@ export default function IndicatorDetail() {
         />
       )}
 
-      {isTrade && (
+      {isFamily && (
         <ViewModePicker
           title="Режим отображения"
-          modes={tradeFamily.modes.map((m) => ({ mode: m.mode, label: m.label }))}
-          currentMode={tradeMode}
+          modes={viewFamily.modes.map((m) => ({ mode: m.mode, label: m.label }))}
+          currentMode={familyMode}
+          onChange={setViewMode}
+          trackContext={{ code, category: indicator?.category }}
+        />
+      )}
+
+      {/* Phase 5: для daily-индикаторов добавляем агрегации (без backend-derived) */}
+      {!isFamily && indicator?.frequency === 'daily' && (
+        <ViewModePicker
+          title="Частота отображения"
+          modes={[
+            { mode: 'level', label: 'Ежедневно' },
+            { mode: 'weekly', label: 'Понедельно' },
+            { mode: 'monthly', label: 'Помесячно' },
+            { mode: 'quarterly', label: 'Поквартально' },
+            { mode: 'annual', label: 'Годово' },
+          ]}
+          currentMode={dailyAggGranularity ? viewMode : 'level'}
           onChange={setViewMode}
           trackContext={{ code, category: indicator?.category }}
         />
