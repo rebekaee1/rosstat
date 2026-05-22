@@ -1,6 +1,7 @@
 import { useEffect, useRef, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useParams, useLocation, Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import LiveTicker from './components/LiveTicker';
 import NoiseOverlay from './components/NoiseOverlay';
 import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -119,8 +120,9 @@ function AppRoutes() {
       <ScrollToTop />
       <YandexMetrikaHit />
       <NoiseOverlay />
+      <LiveTicker />
       <Navbar />
-      <main className="relative z-0 flex-1">
+      <main className="relative z-0 flex-1 pt-9">
         <ErrorBoundary>
         <Suspense fallback={
           <div className="min-h-screen flex items-center justify-center">

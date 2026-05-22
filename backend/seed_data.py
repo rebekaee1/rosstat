@@ -2719,6 +2719,62 @@ INDICATORS = [
         "is_active": True,
         "category": "Финансы",
     },
+    {
+        "code": "btc-usd",
+        "name": "Биткоин (BTC/USD)",
+        "name_en": "Bitcoin (BTC/USD)",
+        "unit": "USD",
+        "frequency": "daily",
+        "source": "Binance",
+        "source_url": "https://www.binance.com/en/trade/BTC_USDT",
+        "description": (
+            "Курс биткоина к доллару США по данным крупнейшей криптовалютной "
+            "биржи Binance. Биткоин — первая и самая капитализированная "
+            "криптовалюта; для российской аудитории он стал альтернативным "
+            "активом наряду с золотом и иностранной валютой."
+        ),
+        "methodology": (
+            "Используется дневной close спотовой пары BTCUSDT на Binance "
+            "(UTC-сутки). Live-котировка в тикере — текущая lastPrice. "
+            "Биржа работает 24/7."
+        ),
+        "parser_type": "binance_btcusdt_daily",
+        "model_config_json": {
+            "forecast_steps": 0,
+            "forecast_transform": "absolute",
+            "validation": {"min": 100, "max": 1_000_000},
+        },
+        "is_active": True,
+        "category": "Валюты",
+    },
+    {
+        "code": "brent",
+        "name": "Нефть Brent",
+        "name_en": "Brent Crude Oil",
+        "unit": "USD/баррель",
+        "frequency": "daily",
+        "source": "MOEX FORTS",
+        "source_url": "https://www.moex.com/ru/derivatives/contract.aspx?code=BR",
+        "description": (
+            "Котировки ближайшего фьючерса на нефть марки Brent на срочной "
+            "секции Московской биржи (FORTS). Brent — ключевой эталон "
+            "мирового нефтяного рынка; для России цена нефти определяет "
+            "бюджетные поступления, курс рубля и платёжный баланс."
+        ),
+        "methodology": (
+            "Ежедневный close ближайшего по экспирации контракта BR-X.Y. "
+            "Контракт ротируется ежемесячно; live-котировка автоматически "
+            "переключается на новый месяц после экспирации текущего."
+        ),
+        "parser_type": "moex_brent_daily",
+        "model_config_json": {
+            "forecast_steps": 0,
+            "forecast_transform": "absolute",
+            "validation": {"min": 5, "max": 300},
+        },
+        "is_active": True,
+        "category": "Финансы",
+    },
 ]
 
 

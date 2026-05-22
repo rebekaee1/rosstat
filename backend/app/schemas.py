@@ -23,6 +23,9 @@ class IndicatorSummary(BaseModel):
     hero_value: float | None = None
     hero_unit: str | None = None
     hero_label: str | None = None
+    # seo_keywords здесь только для search-haystack (фронт ищет по нему).
+    # Не для UI-отображения. Содержит синонимы/корни на русском и en.
+    seo_keywords: str | None = None
 
     model_config = {"from_attributes": True}
 

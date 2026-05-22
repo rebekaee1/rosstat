@@ -78,6 +78,8 @@ from app.services.rosstat_demo_parser import RosstatDemoParser
 from app.services.rosstat_ind_parser import RosstatIndParser
 from app.services.rosstat_science_parser import RosstatScienceParser
 from app.services.rosstat_fixedassets_parser import RosstatFixedAssetsParser
+from app.services.binance_btcusdt_parser import BinanceBtcUsdtParser
+from app.services.brent_fred_parser import BrentDailyFredParser
 
 PARSER_REGISTRY: dict[str, type[BaseParser]] = {
     RosstatCpiParser.parser_type: RosstatCpiParser,
@@ -105,6 +107,8 @@ PARSER_REGISTRY: dict[str, type[BaseParser]] = {
     RosstatIndParser.parser_type: RosstatIndParser,
     RosstatScienceParser.parser_type: RosstatScienceParser,
     RosstatFixedAssetsParser.parser_type: RosstatFixedAssetsParser,
+    BinanceBtcUsdtParser.parser_type: BinanceBtcUsdtParser,
+    BrentDailyFredParser.parser_type: BrentDailyFredParser,
 }
 
 

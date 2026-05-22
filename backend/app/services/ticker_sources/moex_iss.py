@@ -1,0 +1,247 @@
+"""Live FX/Brent source: MOEX ISS, с fallback на CBR XML_daily для FX.
+
+API documentation: https://iss.moex.com/iss/reference/
+Public, не требует ключа. Лимит обращений — ~30 req/sec по IP,
+наш ticker_worker делает 2 запроса каждые 5 секунд, с запасом.
+
+FX-инструменты — SELT market валютной секции (CETS), тикеры:
+    USD000UTSTOM — USD/RUB tomorrow
+    EUR_RUB__TOM — EUR/RUB tomorrow
+    CNYRUB_TOM   — CNY/RUB tomorrow
+
+Brent — forts market в futures section. SECID меняется каждый месяц
+(BRM6 для июня, BRN6 для июля и т.д.); для тикера выбираем
+ближайший контракт по `LASTTRADEDATE`.
+
+Поле LAST в `marketdata` — last traded price; LASTCHANGEPRCNT —
+% к PREVPRICE. UPDATETIME = '10:00:00' с LAST=None означает, что
+торги ещё не начались — обрабатываем как market_open=False.
+
+ISS отдаёт несколько строк marketdata (по борду: CETS, AUCB, CNGD,
+LICU). Реальные сделки идут на CETS — она ОБЯЗАТЕЛЬНО выбирается
+первой, прежде чем падать в fallback.
+
+CBR fallback (звонок 2026-05-22): после санкций ЕС март-2024 EUR/RUB
+на MOEX **фактически мёртв** — LAST=None все сессии. USD на CETS-борде
+ещё ходит, но редко. Если MOEX не отдал цену — берём официальный
+курс ЦБ из XML_daily.asp (обновляется до 14:00 МСК). Это даёт
+ежедневное значение с пометкой `market_open=False` и source='CBR'.
+"""
+from __future__ import annotations
+
+import logging
+
+import httpx
+
+from . import TickerSnapshot, utcnow
+
+logger = logging.getLogger(__name__)
+
+
+_FX_INSTRUMENTS = [
+    # (our ticker code, MOEX SECID, CBR Valute ID for fallback)
+    ("usd-rub-live", "USD000UTSTOM", "R01235"),
+    ("eur-rub-live", "EUR_RUB__TOM", "R01239"),
+    ("cny-rub-live", "CNYRUB_TOM",  "R01375"),
+]
+
+_FX_URL = (
+    "https://iss.moex.com/iss/engines/currency/markets/selt/securities/{secid}.json"
+    "?iss.meta=off"
+    "&securities.columns=SECID"
+    "&marketdata.columns=SECID,BOARDID,LAST,LASTCHANGEPRCNT,UPDATETIME"
+)
+
+_CBR_DAILY_URL = "https://www.cbr.ru/scripts/XML_daily.asp"
+
+_BRENT_URL = (
+    "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json"
+    "?iss.meta=off"
+    "&securities.columns=SECID,SHORTNAME,LASTTRADEDATE"
+    "&marketdata.columns=SECID,LAST,LASTCHANGEPRCNT"
+)
+
+
+async def _fetch_fx_one(client: httpx.AsyncClient, our_code: str, secid: str) -> tuple[float | None, float | None]:
+    """Pull last price + change% for one FX pair from MOEX SELT.
+
+    ISS возвращает 4 строки marketdata (борды AUCB / CETS / CNGD / LICU).
+    Реальные сделки идут на **CETS** — она первой проверяется. Если CETS
+    отдал None, проходим по остальным. Если на всех — None: возвращаем
+    (None, None), вызывающий пойдёт в CBR fallback.
+    """
+    try:
+        r = await client.get(_FX_URL.format(secid=secid), timeout=10.0)
+        r.raise_for_status()
+        d = r.json()
+    except (httpx.HTTPError, ValueError) as e:
+        logger.warning("MOEX FX %s: fetch failed: %s", secid, e)
+        return None, None
+
+    rows = d.get("marketdata", {}).get("data", [])
+    if not rows:
+        return None, None
+    cols = d["marketdata"]["columns"]
+    last_idx = cols.index("LAST")
+    chg_idx = cols.index("LASTCHANGEPRCNT")
+    board_idx = cols.index("BOARDID") if "BOARDID" in cols else None
+
+    # Сначала CETS — основной борд CBR-fixing-style сделок.
+    if board_idx is not None:
+        cets = [row for row in rows if row[board_idx] == "CETS"]
+        for row in cets:
+            if row[last_idx] is not None:
+                chg = float(row[chg_idx]) if row[chg_idx] is not None else None
+                return float(row[last_idx]), chg
+
+    # Остальные борды — резерв.
+    for row in rows:
+        if row[last_idx] is not None:
+            chg = float(row[chg_idx]) if row[chg_idx] is not None else None
+            return float(row[last_idx]), chg
+
+    return None, None
+
+
+async def _fetch_cbr_daily(client: httpx.AsyncClient) -> dict[str, tuple[float, float | None]]:
+    """Fetch ЦБ XML_daily and return {ValuteID: (price_rub, change_pct_vs_prev)}.
+
+    XML отдаёт <Valute ID='R01235'><Value>78.4123</Value><VunitRate>78.4123</VunitRate>...
+    Сегодняшний курс — `VunitRate` (значение за 1 единицу с учётом nominal).
+    Для % изменения тянем вчерашний курс отдельным запросом — на старте
+    ETL дешевле, чем строить дельту на каждом тике.
+    """
+    from xml.etree import ElementTree
+    from datetime import datetime, timedelta
+
+    out: dict[str, tuple[float, float | None]] = {}
+
+    try:
+        today = await client.get(_CBR_DAILY_URL, timeout=10.0)
+        today.raise_for_status()
+        today_root = ElementTree.fromstring(today.content)
+    except Exception as e:
+        logger.warning("CBR XML_daily today: %s", e)
+        return out
+
+    # Yesterday's snapshot — отдельный запрос с date_req.
+    yest = (datetime.utcnow() - timedelta(days=1)).strftime("%d/%m/%Y")
+    try:
+        yest_resp = await client.get(_CBR_DAILY_URL, params={"date_req": yest}, timeout=10.0)
+        yest_resp.raise_for_status()
+        yest_root = ElementTree.fromstring(yest_resp.content)
+    except Exception:
+        yest_root = None
+
+    def _val(root, vid: str) -> float | None:
+        node = root.find(f".//Valute[@ID='{vid}']")
+        if node is None:
+            return None
+        txt = (node.findtext("VunitRate") or node.findtext("Value") or "").replace(",", ".")
+        try:
+            return float(txt)
+        except ValueError:
+            return None
+
+    for _our_code, _secid, vid in _FX_INSTRUMENTS:
+        v_today = _val(today_root, vid)
+        if v_today is None:
+            continue
+        v_yest = _val(yest_root, vid) if yest_root is not None else None
+        chg = None
+        if v_yest and v_yest > 0:
+            chg = round((v_today - v_yest) / v_yest * 100, 2)
+        out[vid] = (v_today, chg)
+    return out
+
+
+async def _fetch_brent(client: httpx.AsyncClient) -> TickerSnapshot | None:
+    """Pull nearest Brent futures from MOEX FORTS.
+
+    Тикер контракта меняется ежемесячно (BR-6.26, BR-7.26 ...). Выбираем
+    запись с минимальной `LASTTRADEDATE`, ещё не истекшим.
+    """
+    try:
+        r = await client.get(_BRENT_URL, timeout=10.0)
+        r.raise_for_status()
+        d = r.json()
+    except (httpx.HTTPError, ValueError) as e:
+        logger.warning("MOEX Brent: fetch failed: %s", e)
+        return None
+
+    sec_cols = d.get("securities", {}).get("columns", [])
+    if not sec_cols:
+        return None
+    sec_data = d["securities"]["data"]
+    sn_idx = sec_cols.index("SHORTNAME")
+    sid_idx = sec_cols.index("SECID")
+    ltd_idx = sec_cols.index("LASTTRADEDATE")
+
+    brent_rows = [r for r in sec_data if (r[sn_idx] or "").startswith("BR-")]
+    if not brent_rows:
+        return None
+    brent_rows.sort(key=lambda r: r[ltd_idx] or "9999-12-31")
+    nearest = brent_rows[0]
+    nearest_secid = nearest[sid_idx]
+
+    md_cols = d.get("marketdata", {}).get("columns", [])
+    md_data = d.get("marketdata", {}).get("data", [])
+    md_map = {row[md_cols.index("SECID")]: row for row in md_data}
+    md_row = md_map.get(nearest_secid)
+    if not md_row:
+        return None
+    last = md_row[md_cols.index("LAST")]
+    chgp = md_row[md_cols.index("LASTCHANGEPRCNT")]
+
+    market_open = last is not None
+    return TickerSnapshot(
+        code="brent",
+        price=float(last) if last is not None else 0.0,
+        change_pct=float(chgp) if chgp is not None else None,
+        market_open=market_open,
+        fetched_at=utcnow(),
+        source="MOEX",
+    )
+
+
+async def fetch_all() -> list[TickerSnapshot]:
+    """Pull 3 FX pairs + Brent. MOEX first, CBR XML_daily as FX fallback.
+
+    Контракт: всегда возвращаем 4 снапшота для FX+Brent если хотя бы один
+    источник ответил. Если MOEX не дал цены ни на один борд — для FX
+    подмешиваем CBR (источник 'CBR', market_open=False).
+    """
+    async with httpx.AsyncClient(headers={"User-Agent": "ForecastEconomy/1.0 (+ticker)"}) as client:
+        snaps: list[TickerSnapshot] = []
+
+        moex_results: list[tuple[str, str, str, float | None, float | None]] = []
+        for code, secid, cbr_id in _FX_INSTRUMENTS:
+            price, chg = await _fetch_fx_one(client, code, secid)
+            moex_results.append((code, secid, cbr_id, price, chg))
+
+        # Если хоть один FX без цены — тянем CBR один раз и подмешиваем.
+        need_cbr = any(p is None for _c, _s, _v, p, _ch in moex_results)
+        cbr_map: dict[str, tuple[float, float | None]] = {}
+        if need_cbr:
+            cbr_map = await _fetch_cbr_daily(client)
+
+        for code, secid, cbr_id, price, chg in moex_results:
+            if price is not None:
+                snaps.append(TickerSnapshot(
+                    code=code, price=price, change_pct=chg,
+                    market_open=True, fetched_at=utcnow(), source="MOEX",
+                ))
+                continue
+            cbr = cbr_map.get(cbr_id)
+            if cbr is None:
+                continue
+            cbr_price, cbr_chg = cbr
+            snaps.append(TickerSnapshot(
+                code=code, price=cbr_price, change_pct=cbr_chg,
+                market_open=False, fetched_at=utcnow(), source="ЦБ РФ",
+            ))
+
+        b = await _fetch_brent(client)
+        if b is not None:
+            snaps.append(b)
+        return snaps
