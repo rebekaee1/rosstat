@@ -1,6 +1,6 @@
 # AGENTS.md — точка входа для AI-агента
 
-**Last updated:** 2026-05-22 (звонок «всё доделать»: добавлен чеклист «новый индикатор» с 6 проверками, ссылка на ADR-0004).
+**Last updated:** 2026-05-22 (ревизия «ты уверен в данных?»: чеклист расширен до 7 пунктов — добавлен `Frequency consistency` (annual-in-monthly trap фиксанут на wages); ссылка обновлена на ADR-0006).
 
 Этот файл — первое, что читает любой новый AI-агент (Cursor, Claude Code, Codex, Gemini, любой другой), подключённый к этому репозиторию. Здесь живёт **карта документации**, **режим работы** и **протокол актуализации** этих самых документов.
 
@@ -125,16 +125,17 @@
 
 ### Чеклист «новый индикатор» (КРИТИЧНО)
 
-Перед добавлением **любого** нового индикатора (source-парсер, derived, manual seed) пройти все 6 проверок. Без них вероятен один из задокументированных trap'ов из `CONTEXT.md::Operational invariants and traps`. См. ADR-0004 «Indicator card unification».
+Перед добавлением **любого** нового индикатора (source-парсер, derived, manual seed) пройти все 7 проверок. Без них вероятен один из задокументированных trap'ов из `CONTEXT.md::Operational invariants and traps`. См. ADR-0006 «Indicator card unification».
 
 | # | Проверка | Что делаем |
 |---|----------|------------|
 | 1 | **Source-depth invariant** | Какую максимальную глубину истории даёт источник? Если в seed_data залит **меньший** ряд — заводим `<name>_historical.py` immutable seed (как `housing_historical.py`, `refinancing_rate_historical.py`, `wages_historical.py`). НЕ оставляем огрызок. |
-| 2 | **View-mode family оценка** | Если ряд > 100 точек и есть осмысленные derived'ы (YoY/QoQ/MoM/aggregation) — заводим через `frontend/src/lib/viewModeFamilies.js::VIEW_MODE_FAMILIES`, **не** отдельную карточку в каталоге. Derived'ы скрываем через `INDICATOR_HIDDEN_FROM_LISTING`. |
-| 3 | **Variant decomposition** | Если индикатор имеет варианты по срезу (срок, регион, подгруппа, тип) — это **разные индикаторы со своими рядами** → `VariantGroupPicker` (см. `lib/indicatorVariants.js`). Не путать с view-mode (один ряд, разные представления). |
-| 4 | **Negative-capable check** | Если значения могут быть отрицательными (`trade-balance`, `current-account`, `budget-deficit`, `*-migration`) — использовать `yoy_abs` (разница в единицах источника), **не** `yoy_pct` (% от базы с переходом через ноль = визуальный мусор и тысячи процентов). |
-| 5 | **Frequency strategy** | Daily-индикатор: aggregation (week/month/quarter/year avg) — `applyAggregateTransform` на фронте, **backend derived не заводим**. Monthly counterpart существующего quarterly — отдельный индикатор с MoM%-режимом через виртуальный `transform: 'mom'`. |
-| 6 | **Listing visibility ≠ searchability** | Если индикатор скрыт из каталога (`is_listed=false` через `INDICATOR_HIDDEN_FROM_LISTING`) — он всё равно ищется через `?include_unlisted=true` в `IndicatorSearch.jsx`. Скрытие из листинга не = скрытие из поиска. |
+| 2 | **Frequency consistency** (КРИТИЧНО) | Перед `bulk_upsert` сверить `target.frequency` с фактической частотой добавляемых точек. Если расхождение (annual → monthly indicator) — заводим **отдельный sibling indicator** с правильной `frequency` и `is_listed=false`, добавляем режим в `viewModeFamilies`. См. trap `Annual-in-monthly mixing` в `CONTEXT.md`. |
+| 3 | **View-mode family оценка** | Если ряд > 100 точек и есть осмысленные derived'ы (YoY/QoQ/MoM/aggregation) — заводим через `frontend/src/lib/viewModeFamilies.js::VIEW_MODE_FAMILIES`, **не** отдельную карточку в каталоге. Derived'ы скрываем через `INDICATOR_HIDDEN_FROM_LISTING`. |
+| 4 | **Variant decomposition** | Если индикатор имеет варианты по срезу (срок, регион, подгруппа, тип) — это **разные индикаторы со своими рядами** → `VariantGroupPicker` (см. `lib/indicatorVariants.js`). Не путать с view-mode (один ряд, разные представления). |
+| 5 | **Negative-capable check** | Если значения могут быть отрицательными (`trade-balance`, `current-account`, `budget-deficit`, `*-migration`) — использовать `yoy_abs` (разница в единицах источника), **не** `yoy_pct` (% от базы с переходом через ноль = визуальный мусор и тысячи процентов). |
+| 6 | **Frequency strategy** | Daily-индикатор: aggregation (week/month/quarter/year avg) — `applyAggregateTransform` на фронте, **backend derived не заводим**. Monthly counterpart существующего quarterly — отдельный индикатор с MoM%-режимом через виртуальный `transform: 'mom'`. |
+| 7 | **Listing visibility ≠ searchability** | Если индикатор скрыт из каталога (`is_listed=false` через `INDICATOR_HIDDEN_FROM_LISTING`) — он всё равно ищется через `?include_unlisted=true` в `IndicatorSearch.jsx`. Search haystack включает `seo_keywords` — в новом индикаторе всегда задаём osmysленные ключевые корни на русском (зарпл/инфля/безраб и т.п.). |
 
 **После прохождения чеклиста** — обновить `seed_data.py` + соответствующие mappings (variant/view-mode), прогнать `./scripts/check-all.sh`, обновить `CONTEXT.md::Operational invariants and traps` если открыли новую trap.
 

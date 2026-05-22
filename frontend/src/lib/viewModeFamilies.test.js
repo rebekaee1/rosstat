@@ -36,11 +36,13 @@ describe('VIEW_MODE_FAMILIES — schema', () => {
     }
   });
 
-  it('Phase 2 wages — 4 режима с правильными кодами', () => {
+  it('Phase 2 wages — 5 режимов с правильными кодами (incl. annual sibling)', () => {
     const wages = VIEW_MODE_FAMILIES['wages-nominal'];
-    expect(wages.modes.map((m) => m.mode)).toEqual(['level', 'real', 'yoy', 'index']);
+    expect(wages.modes.map((m) => m.mode)).toEqual([
+      'level', 'real', 'yoy', 'index', 'annual',
+    ]);
     expect(wages.modes.map((m) => m.code)).toEqual([
-      'wages-nominal', 'wages-real', 'wages-yoy', 'wages-index',
+      'wages-nominal', 'wages-real', 'wages-yoy', 'wages-index', 'wages-nominal-annual',
     ]);
   });
 

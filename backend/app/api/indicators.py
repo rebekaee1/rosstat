@@ -119,6 +119,7 @@ async def list_indicators(
             current_value=float(current_val) if current_val is not None else None,
             current_date=current_dt, previous_value=float(prev_val) if prev_val is not None else None,
             change=change,
+            seo_keywords=ind.seo_keywords,
         ))
 
     serialized = [s.model_dump(mode="json") for s in out]

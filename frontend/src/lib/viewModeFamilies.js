@@ -120,10 +120,14 @@ export const VIEW_MODE_FAMILIES = {
   'wages-nominal': {
     label: 'Средняя заработная плата',
     modes: [
-      { mode: 'level', label: 'Номинальная', code: 'wages-nominal' },
-      { mode: 'real',  label: 'Реальная',    code: 'wages-real', unit: '%' },
-      { mode: 'yoy',   label: 'YoY %',       code: 'wages-yoy',  unit: '%' },
-      { mode: 'index', label: 'Индекс 2015=100', code: 'wages-index', unit: 'индекс' },
+      { mode: 'level',  label: 'Номинальная',         code: 'wages-nominal' },
+      { mode: 'real',   label: 'Реальная',            code: 'wages-real', unit: '%' },
+      { mode: 'yoy',    label: 'YoY %',               code: 'wages-yoy',  unit: '%' },
+      { mode: 'index',  label: 'Индекс 2015=100',     code: 'wages-index', unit: 'индекс' },
+      // Annual sibling с историей 1991-2014 — отдельный indicator с
+      // frequency=annual, чтобы chart label корректно показывал
+      // «годовое» (а не «помесячно»). См. trap «annual-in-monthly mixing».
+      { mode: 'annual', label: 'Годовое (с 1991)',    code: 'wages-nominal-annual' },
     ],
   },
   // Unemployment: одинаковые единицы (%), но разные frequencies — это

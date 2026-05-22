@@ -42,7 +42,11 @@ export default function IndicatorSearch({ className }) {
     }
     return indicators
       .filter((ind) => {
-        const haystack = `${ind.name || ''} ${ind.name_en || ''} ${ind.category || ''} ${ind.code || ''}`.toLowerCase();
+        // seo_keywords содержит синонимы/корни («зарплата», «оплата труда»,
+        // «инфляция», «ИПЦ» и т.д.) — критично для substring-поиска,
+        // потому что name «Средняя заработная плата» не содержит подстроку
+        // «зарпл» (нужны keywords с разными формами слова).
+        const haystack = `${ind.name || ''} ${ind.name_en || ''} ${ind.category || ''} ${ind.code || ''} ${ind.seo_keywords || ''}`.toLowerCase();
         return haystack.includes(q);
       })
       .slice(0, MAX_RESULTS);

@@ -1,6 +1,6 @@
 # Forecast Economy — Project Context
 
-**Last updated:** 2026-05-22 (звонок «всё доделать»: Phase 2 labour (wages-nominal + unemployment унифицированы в view-mode families), Phase 3 housing (housing-price-{primary,secondary} с YoY % режимом), Phase 4 rates rename (credit-rate-{corp,ind}-short и deposit-rate переименованы на общие имена, term split через VariantGroupPicker), Phase 5 daily-aggregation (виртуальные week/month/quarter/year avg для key-rate, ruonia, cbr-fx-*, gold-price, brent, btc-usd через `applyAggregateTransform` на фронте). `tradeViewModes.js` → `viewModeFamilies.js` (общий реестр для всех семей). +2 trap'ы: `Source-depth trap` + `Browser-cache trap при rebuild frontend`. См. ADR-0004 «Indicator card unification».
+**Last updated:** 2026-05-22 (звонок «всё доделать» + ревизия «ты уверен в данных?»: Phase 2 labour (wages-nominal + unemployment унифицированы в view-mode families), Phase 3 housing (housing-price-{primary,secondary} с YoY % режимом), Phase 4 rates rename (credit-rate-{corp,ind}-short и deposit-rate переименованы на общие имена, term split через VariantGroupPicker), Phase 5 daily-aggregation (виртуальные week/month/quarter/year avg для key-rate, ruonia, cbr-fx-*, gold-price, brent, btc-usd через `applyAggregateTransform` на фронте). `tradeViewModes.js` → `viewModeFamilies.js` (общий реестр для всех семей). `wages-nominal-annual` — annual sibling с историей 1991-2014, доступен как режим «Годовое (с 1991)» (фикс annual-in-monthly trap). Search haystack расширен на `seo_keywords` (поддержка корней/синонимов: «зарпл» → wages-nominal, wages-real, wages-yoy, wages-index). +3 trap'ы: `Source-depth trap` + `Browser-cache trap при rebuild frontend` + `Annual-in-monthly mixing trap`. См. ADR-0006 «Indicator card unification».
 **Part of:** [`AGENTS.md`](AGENTS.md) (точка входа для AI-агента).
 **See also:** [`README.md`](README.md), [`docs/workflow.md`](docs/workflow.md), [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md), [`docs/data_sources.md`](docs/data_sources.md), [`docs/cbr_sources.md`](docs/cbr_sources.md), [`docs/analytics_api_inventory/`](docs/analytics_api_inventory/), [`docs/adr/`](docs/adr/).
 
@@ -353,6 +353,16 @@ docker compose exec backend python -c \
 Это **не** asset-hash trap (см. выше) — backend и frontend синхронизированы, ассеты на свежих hashes отдаются 200. Проблема в кеше **самого браузера** пользователя.
 
 **Правило:** после rebuild frontend для демонстрации — открывать в **incognito** или делать **Cmd+Shift+R** (hard reload, минует disk cache). В DevTools → Network → Disable cache на время тестирования.
+
+### Annual-in-monthly mixing trap (backfill в чужую частоту)
+
+Парсер добавляет в indicator с `frequency=monthly` годовые точки (1 января каждого года). Frontend chart label остаётся «помесячно» (из `frequency`), а на графике рывок: 24 точки за 24 года выглядят как 24 month-точки с гэпами. Пользователь видит ложную динамику, фигуры месяц-к-месяцу несравнимы с годом.
+
+**Случай 2026-05-22:** `wages-nominal` (frequency=monthly с 2015) → backfill 24 годовых точек 1991-2014. График показывал «ПОМЕСЯЧНО» + рваный ряд. **Фикс:** годовая история вынесена в отдельный `wages-nominal-annual` (`frequency=annual`, `is_listed=false`), доступна как режим «Годовое (с 1991)» через `viewModeFamilies`. Monthly indicator теперь содержит только monthly-точки.
+
+**Правило:** **никогда** не лить точки чужой частоты в существующий indicator. Если source даёт annual до 1998 и monthly с 2015 — это **два разных indicator'а** с одним visual entry (через view-mode family). Аналогично quarterly история + monthly свежак, weekly прошлое + daily настоящее, и т.п.
+
+**Проверка при backfill:** перед `bulk_upsert` сверить `target.frequency` с фактической частотой добавляемых точек. Если расхождение — заводим sibling indicator + добавляем режим в `viewModeFamilies`. См. чеклист в `AGENTS.md::Шаг 4` (новый пункт «Frequency consistency»).
 
 ### Calendar source coverage
 

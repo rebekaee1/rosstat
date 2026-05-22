@@ -571,11 +571,14 @@ INDICATOR_HIDDEN_FROM_LISTING: set[str] = {
     "current-account-yoy-abs",
     # Phase 2 (звонок 2026-05-22, «всё доделать»): wages — единая карточка
     # «Средняя заработная плата» с in-page ViewModePicker
-    # [Номинальная ₽, Реальная (индекс), YoY %, Индекс 2015=100].
+    # [Номинальная ₽, Реальная (индекс), YoY %, Индекс 2015=100, Годовое (с 1991)].
     # Производные wages-real / wages-index / wages-yoy теперь только режимы.
+    # wages-nominal-annual — annual sibling с историей 1991-2014 (не listed,
+    # доступен как режим из wages-nominal — см. trap «annual-in-monthly mixing»).
     "wages-real",
     "wages-index",
     "wages-yoy",
+    "wages-nominal-annual",
     # Phase 2 (звонок 2026-05-22): unemployment — единая карточка с режимами
     # «Месячно / Квартально (avg) / Годовое (12М avg)». unemployment-quarterly
     # и unemployment-annual — режимы родителя `unemployment`.

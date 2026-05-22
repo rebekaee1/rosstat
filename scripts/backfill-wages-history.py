@@ -47,24 +47,29 @@ from sqlalchemy import select  # noqa: E402
 from app.data.wages_historical import SPEC  # noqa: E402
 from app.database import async_session  # noqa: E402
 from app.models import Indicator  # noqa: E402
-from app.services.forecast_pipeline import retrain_indicator_forecast  # noqa: E402
 from app.services.upsert import bulk_upsert  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger("backfill_wages")
 
-DERIVED_TO_RETRAIN = ("wages-yoy", "wages-index", "wages-real")
+# Pишем в отдельный annual-индикатор, не в `wages-nominal` (monthly).
+# Mixing annual точек в monthly-ряд ломает frontend chart label
+# («помесячно» + рывки), см. trap "annual-in-monthly mixing" в CONTEXT.md.
+TARGET_CODE = "wages-nominal-annual"
 
 
 async def main() -> None:
     async with async_session() as session:
         ind = (
             await session.execute(
-                select(Indicator).where(Indicator.code == SPEC.indicator_code)
+                select(Indicator).where(Indicator.code == TARGET_CODE)
             )
         ).scalar_one_or_none()
         if ind is None:
-            log.error("Indicator %s not found in DB", SPEC.indicator_code)
+            log.error(
+                "Indicator %s not found in DB — ensure seed_data has the annual sibling",
+                TARGET_CODE,
+            )
             return
 
         rows = [
@@ -73,33 +78,19 @@ async def main() -> None:
         ]
         log.info(
             "%s: prepared %d historical annual points (%s..%s)",
-            SPEC.indicator_code, len(rows), rows[0][0], rows[-1][0],
+            TARGET_CODE, len(rows), rows[0][0], rows[-1][0],
         )
 
         stats = await bulk_upsert(session, ind.id, rows)
         await session.commit()
         log.info(
             "%s: bulk_upsert (new, updated)=%s",
-            SPEC.indicator_code, stats,
+            TARGET_CODE, stats,
         )
-
-        for derived_code in DERIVED_TO_RETRAIN:
-            derived_ind = (
-                await session.execute(
-                    select(Indicator).where(Indicator.code == derived_code)
-                )
-            ).scalar_one_or_none()
-            if derived_ind is not None:
-                log.info(
-                    "%s: retrain %s (derived cascade)",
-                    SPEC.indicator_code, derived_code,
-                )
-                await retrain_indicator_forecast(session, derived_ind)
-                await session.commit()
 
         log.info(
             "DONE: backfilled %d historical points for %s",
-            len(rows), SPEC.indicator_code,
+            len(rows), TARGET_CODE,
         )
 
 

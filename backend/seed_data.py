@@ -785,6 +785,33 @@ INDICATORS = [
         "is_active": True,
         "category": "ВВП",
     },
+    # Annual sibling для wages-nominal — содержит исторические годовые
+    # точки 1991-2014 (immutable seed, Росстат архивы). Не показывается
+    # в каталоге; доступен как режим «Годовое (с 1991)» через viewModeFamilies.
+    # См. trap «annual-in-monthly mixing» в CONTEXT.md.
+    {
+        "code": "wages-nominal-annual",
+        "name": "Средняя зарплата (годовая)",
+        "name_en": "Average Wages (Annual)",
+        "unit": "руб.",
+        "frequency": "annual",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/labour_costs",
+        "description": (
+            "Среднемесячная номинальная начисленная зарплата работников по полному "
+            "кругу организаций, годовое значение. 1991-1997 в новых деноминированных "
+            "рублях (исходные ×0,001 по факту деноминации 1998 г.), с 1998 — в рублях "
+            "нынешней шкалы."
+        ),
+        "parser_type": "manual_historical",
+        "model_config_json": {
+            "forecast_steps": 0,
+            "primary_indicator_code": "wages-nominal",
+        },
+        "is_active": True,
+        "is_listed": False,
+        "category": "Рынок труда",
+    },
     # ─── Производные (CalculationEngine) ───
     {
         "code": "wages-real",
