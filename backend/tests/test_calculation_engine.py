@@ -7,7 +7,13 @@ from app.services.calculation_engine import CalculationEngine, calculation_engin
 
 
 def test_all_derived_registered():
-    """Verify all expected derived indicators are registered."""
+    """Verify all expected derived indicators are registered.
+
+    Last bump: 2026-05-22 (Phase 1 balance-yoy-abs). Старый `current-account-yoy` %
+    убран — для balances со знаком процент бессмыслен (см. ADR-0001
+    «Subsequent additions 2026-05-22»). Вместо него — `current-account-yoy-abs`
+    и `trade-balance-yoy-abs` через op `yoy_abs`.
+    """
     expected = {
         "inflation-quarterly", "inflation-annual", "wages-real",
         "cpi-food-quarterly", "cpi-food-annual",
@@ -18,9 +24,10 @@ def test_all_derived_registered():
         "gdp-real-yoy", "gdp-real-qoq",
         "gdp-nominal-annual", "gdp-real-annual",
         "unemployment-quarterly", "unemployment-annual",
-        "current-account-yoy", "ipi-yoy",
+        "ipi-yoy",
         "exports-yoy", "imports-yoy", "ppi-yoy", "wages-yoy",
         "exports-qoq", "imports-qoq",
+        "current-account-yoy-abs", "trade-balance-yoy-abs",
         "housing-yoy-primary", "housing-yoy-secondary",
         "wages-index", "housing-affordability",
     }

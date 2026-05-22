@@ -8,12 +8,13 @@ When adding a new op: register it in this file, then add a `DerivedSpec` row to
 `calculation_engine.DERIVED_SPECS`, then update CONTEXT.md ops count + ADR-0001
 "Subsequent additions" section.
 
-Currently there are 9 pure ops behind 28 derived indicators (1 op orphaned —
+Currently there are 10 pure ops behind 29 derived indicators (1 op orphaned —
 `annual_inflation`, replaced by `december_to_december` and `annual_sum` in 2026-05).
 
 - quarterly_index      — multiplicative quarterly aggregate of monthly CPI-style indices.
 - annual_inflation     — rolling 12-month CPI inflation (orphaned in 2026-05, kept for reference).
 - yoy                  — year-over-year growth in percent vs the same date one year prior.
+- yoy_abs              — year-over-year absolute change in source units (для balances со знаком).
 - qoq                  — change vs the previous data point in the series, in percent.
 - quarterly_avg        — average of three monthly values per quarter (e.g. unemployment).
 - rolling_avg          — trailing N-window average over a monthly series (e.g. annual unemployment).
@@ -235,6 +236,35 @@ def qoq(series: Series) -> Series:
             continue
         growth = (v_cur / v_prev - 1.0) * 100.0
         points.append((d_cur, round(growth, 2)))
+    return points
+
+
+def yoy_abs(series: Series) -> Series:
+    """Year-over-year ABSOLUTE change: val_t − val_{t−1y}, in source units.
+
+    Назначение — рядов, где **процент YoY бессмыслен**, потому что база может
+    быть нулём или менять знак (trade-balance, current-account-balance).
+    `yoy()` для таких индикаторов даёт визуально дикий ряд: деление на
+    маленькое или отрицательное знаменатель плюёт в график тысячи процентов.
+
+    Единица сохраняется (млн $, млн ₽, etc.) — это **разница** в тех же
+    единицах. Округление 2 знака, как у `yoy()`.
+
+    Алгоритм — тот же date(year-1, month, day) лукап, что и у yoy(), чтобы
+    в одном году разные ряды могли матчиться.
+    """
+    by_date = {d: float(v) for d, v in series}
+    points: Series = []
+    for d in sorted(by_date.keys()):
+        try:
+            prev_d = date(d.year - 1, d.month, d.day)
+        except ValueError:
+            continue
+        prev = by_date.get(prev_d)
+        if prev is None:
+            continue
+        delta = by_date[d] - prev
+        points.append((d, round(delta, 2)))
     return points
 
 

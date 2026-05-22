@@ -31,6 +31,7 @@ class Settings(BaseSettings):
     scheduler_enabled: bool = True
     scheduler_cron_hour: int = 6
     scheduler_cron_minute: int = 0
+    ticker_pull_interval_seconds: int = 5
 
     # Alerting
     telegram_bot_token: str = ""

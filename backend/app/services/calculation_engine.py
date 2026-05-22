@@ -98,7 +98,6 @@ DERIVED_SPECS: list[DerivedSpec] = [
     DerivedSpec("unemployment-annual", ("unemployment",), partial(ops.rolling_avg, window=12)),
 
     # YoY-only derivations (one per source).
-    DerivedSpec("current-account-yoy", ("current-account",), ops.yoy),
     DerivedSpec("ipi-yoy", ("ipi",), ops.yoy),
     DerivedSpec("exports-yoy", ("exports",), ops.yoy),
     DerivedSpec("imports-yoy", ("imports",), ops.yoy),
@@ -106,6 +105,15 @@ DERIVED_SPECS: list[DerivedSpec] = [
     DerivedSpec("housing-yoy-primary", ("housing-price-primary",), ops.yoy),
     DerivedSpec("housing-yoy-secondary", ("housing-price-secondary",), ops.yoy),
     DerivedSpec("wages-yoy", ("wages-nominal",), ops.yoy),
+
+    # YoY-абсолют (звонок 2026-05-22): для balances со знаком процент YoY
+    # бессмыслен (база может быть нулём или отрицательной). Считаем разницу
+    # в единицах источника — пользователь видит «сальдо выросло на N млн $».
+    # Заменяет старый current-account-yoy %, который оставлен депрекейтнутым
+    # в seed_data (is_active=false), но НЕ числится в DERIVED_SPECS — поэтому
+    # CalculationEngine его больше не пересчитывает.
+    DerivedSpec("current-account-yoy-abs", ("current-account",), ops.yoy_abs),
+    DerivedSpec("trade-balance-yoy-abs", ("trade-balance",), ops.yoy_abs),
 
     # QoQ-only derivations.
     DerivedSpec("exports-qoq", ("exports",), ops.qoq),

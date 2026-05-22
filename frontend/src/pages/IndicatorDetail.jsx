@@ -2,13 +2,14 @@ import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { ArrowRight, GitCompare } from 'lucide-react';
 import gsap from 'gsap';
-import { useIndicator, useIndicatorStats, useIndicators } from '../lib/hooks';
+import { useIndicator, useIndicatorData, useIndicatorStats, useIndicators } from '../lib/hooks';
 import useDocumentMeta from '../lib/useMeta';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import IndicatorDetailHeader from '../components/IndicatorDetailHeader';
 import VariantGroupPicker from '../components/VariantGroupPicker';
 import FrequencySwitcher from '../components/FrequencySwitcher';
 import CpiViewModePicker from '../components/CpiViewModePicker';
+import ViewModePicker from '../components/ViewModePicker';
 import IndicatorTelemetryGrid from '../components/IndicatorTelemetryGrid';
 import IndicatorChartSection from '../components/IndicatorChartSection';
 import IndicatorMethodologyPanel from '../components/IndicatorMethodologyPanel';
@@ -18,6 +19,7 @@ import IndicatorSeoBlocks from '../components/IndicatorSeoBlocks';
 import { findVariantGroup } from '../lib/indicatorVariants';
 import { visibleCpiViewModes } from '../lib/cpiViewModes';
 import useIndicatorViewModeData from '../lib/useIndicatorViewModeData';
+import { findTradeViewModeFamily, applyMoMTransform } from '../lib/tradeViewModes';
 import { getViewModeContent } from '../lib/cpiViewModeContent';
 import { downloadExcel, downloadCSV } from '../lib/excel';
 import { track, events } from '../lib/track';
@@ -88,15 +90,104 @@ export default function IndicatorDetail() {
   const view = useIndicatorViewModeData({ code, viewMode });
   const {
     isPriceCategory, safeViewMode, chartMode, shouldSubtract100,
-    dataPoints, inflationResp,
+    dataPoints: baseDataPoints, inflationResp,
     quarterlyDataPoints, annualDataPoints, weeklyDataPoints,
     displayForecastData, quarterlyForecastData, annualForecastResp, weeklyForecastData,
-    stats: viewStats, cpiPrevDate,
-    chartLoading, loadingData, loadingInflation,
+    stats: baseViewStats, cpiPrevDate,
+    chartLoading: baseChartLoading, loadingData, loadingInflation,
     loadingAnnual, loadingWeekly, loadingQuarterly,
-    dataError, fetchingData, hasForecastData, forecastEnabled,
+    dataError, fetchingData, hasForecastData, forecastEnabled: baseForecastEnabled,
     refetchData, refetchInflation, refetchForecast,
   } = view;
+
+  // ============================================================
+  // Phase 1 (A1+A2): in-page view modes for trade indicators.
+  //
+  // Если текущий код — корень trade-семейства (exports / imports / ...),
+  // и URL содержит ?mode=yoy|qoq — подгружаем derived-код и подменяем
+  // dataPoints в downstream-компоненты. Решение принято на звонке
+  // 2026-05-22 («по твоей рекомендации»): унификация 11 trade-карточек
+  // → 6 родительских, derived'ы — это **режимы**, не самостоятельные
+  // листинги. См. lib/tradeViewModes.js + ADR-0001.
+  // ============================================================
+  const tradeFamily = findTradeViewModeFamily(code);
+  const isTrade = !!tradeFamily;
+  const tradeAllowedModes = useMemo(
+    () => (tradeFamily ? tradeFamily.modes.map((m) => m.mode) : []),
+    [tradeFamily],
+  );
+  const tradeMode = isTrade
+    ? (tradeAllowedModes.includes(viewMode) ? viewMode : 'level')
+    : null;
+  const tradeModeMeta = useMemo(
+    () => (tradeFamily && tradeMode ? tradeFamily.modes.find((m) => m.mode === tradeMode) : null),
+    [tradeFamily, tradeMode],
+  );
+  // Виртуальный режим (transform === 'mom') не идёт в backend — пересчёт
+  // делается на фронте поверх baseDataPoints. tradeDerivedCode остаётся
+  // null, чтобы useIndicatorData не дёргался лишний раз.
+  const isVirtualTransform = isTrade && tradeMode !== 'level' && !!tradeModeMeta?.transform;
+  const tradeDerivedCode = isTrade && tradeMode !== 'level' && !isVirtualTransform
+    ? tradeModeMeta?.code ?? null
+    : null;
+
+  const { data: tradeDerivedResp, isLoading: loadingTradeDerived } = useIndicatorData(
+    tradeDerivedCode,
+    undefined,
+    { enabled: !!tradeDerivedCode },
+  );
+
+  const tradeDataPoints = useMemo(() => {
+    if (isVirtualTransform && tradeModeMeta?.transform === 'mom') {
+      return applyMoMTransform(baseDataPoints || []);
+    }
+    if (!tradeDerivedCode || !tradeDerivedResp?.data?.length) return null;
+    return tradeDerivedResp.data;
+  }, [isVirtualTransform, tradeModeMeta, tradeDerivedCode, tradeDerivedResp, baseDataPoints]);
+
+  const dataPoints = tradeDataPoints || baseDataPoints;
+
+  // Telemetry-cards для trade-режима — пересчёт по подменённому ряду.
+  const tradeViewStats = useMemo(() => {
+    if (!tradeDataPoints?.length) return null;
+    const pts = tradeDataPoints;
+    const current = pts[pts.length - 1];
+    const previous = pts.length > 1 ? pts[pts.length - 2] : null;
+    const highest = pts.reduce((max, p) => (p.value > max.value ? p : max), pts[0]);
+    const avg = pts.reduce((sum, p) => sum + p.value, 0) / pts.length;
+    return {
+      currentValue: current.value,
+      currentDate: current.date,
+      previousValue: previous?.value,
+      previousDate: previous?.date,
+      change: previous ? current.value - previous.value : null,
+      highest: { value: highest.value, date: highest.date },
+      average: avg,
+      dataCount: pts.length,
+    };
+  }, [tradeDataPoints]);
+
+  const viewStats = tradeViewStats || baseViewStats;
+  const chartLoading = baseChartLoading || (isTrade && tradeDerivedCode && loadingTradeDerived);
+  const forecastEnabled = isTrade && tradeMode !== 'level' ? false : baseForecastEnabled;
+
+  // Подменяем `indicator` для downstream-компонентов (телеметрия, график,
+  // download, таблица) — даёт правильный unit и расширенное имя
+  // («Экспорт товаров (YoY %)» или «Торговый баланс (YoY, абс.)»).
+  // Unit берётся из режима: если `modeMeta.unit` задан — используем его
+  // (для процентных режимов '%'); если не задан — сохраняем родительскую
+  // единицу (для yoy_abs значения остаются «млн $»).
+  // Хедер страницы остаётся оригинальным (`indicator.name`), чтобы
+  // breadcrumbs и H1 не дёргались при смене mode.
+  const effectiveIndicator = useMemo(() => {
+    if (!isTrade || !indicator || tradeMode === 'level') return indicator;
+    const suffix = tradeModeMeta ? tradeModeMeta.label : tradeMode;
+    return {
+      ...indicator,
+      unit: tradeModeMeta?.unit ?? indicator.unit,
+      name: `${indicator.name} (${suffix})`,
+    };
+  }, [indicator, isTrade, tradeMode, tradeModeMeta]);
 
   const adj = useCallback((v) => {
     if (v == null || !shouldSubtract100) return v;
@@ -131,15 +222,15 @@ export default function IndicatorDetail() {
 
   const handleChartData = useCallback((data) => {
     setChartData(data);
-  }, []);
+  }, [setChartData]);
 
   const handleRangeChange = useCallback((range) => {
     setCurrentRange(range);
-  }, []);
+  }, [setCurrentRange]);
 
   const downloadMeta = useMemo(() => ({
-    name: indicator?.name, unit: indicator?.unit,
-  }), [indicator?.name, indicator?.unit]);
+    name: effectiveIndicator?.name, unit: effectiveIndicator?.unit,
+  }), [effectiveIndicator?.name, effectiveIndicator?.unit]);
 
   const downloadMode = isPriceCategory ? chartMode : null;
 
@@ -210,7 +301,7 @@ export default function IndicatorDetail() {
       />
 
       <IndicatorTelemetryGrid
-        indicator={indicator}
+        indicator={effectiveIndicator}
         viewStats={s}
         stats={stats}
         isPriceCategory={isPriceCategory}
@@ -258,9 +349,19 @@ export default function IndicatorDetail() {
         />
       )}
 
+      {isTrade && (
+        <ViewModePicker
+          title="Режим отображения"
+          modes={tradeFamily.modes.map((m) => ({ mode: m.mode, label: m.label }))}
+          currentMode={tradeMode}
+          onChange={setViewMode}
+          trackContext={{ code, category: indicator?.category }}
+        />
+      )}
+
       <IndicatorChartSection
         code={code}
-        indicator={indicator}
+        indicator={effectiveIndicator}
         chartMode={chartMode}
         isPriceCategory={isPriceCategory}
         chartLoading={chartLoading}
@@ -304,7 +405,7 @@ export default function IndicatorDetail() {
       </div>
 
       <IndicatorDataTableSection
-        indicator={indicator}
+        indicator={effectiveIndicator}
         chartMode={chartMode}
         isPriceCategory={isPriceCategory}
         inflationResp={inflationResp}

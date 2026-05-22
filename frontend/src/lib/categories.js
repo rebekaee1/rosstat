@@ -47,7 +47,7 @@ export const CATEGORIES = [
     slug: 'currencies',
     name: 'Валюты',
     nameEn: 'Currencies',
-    icon: 'Banknote',
+    icon: 'CircleDollarSign',
     apiCategory: 'Валюты',
     status: 'active',
     flagshipCode: 'usd-rub',

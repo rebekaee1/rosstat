@@ -555,6 +555,20 @@ INDICATOR_HIDDEN_FROM_LISTING: set[str] = {
     "credit-rate-ind-over3y",
     "deposit-rate-medium",
     "deposit-rate-long",
+    # Phase 1 A1+A2 (звонок 2026-05-22, «по твоей рекомендации»):
+    # trade-derived'ы (YoY %, QoQ %) теперь доступны через in-page
+    # ViewModePicker на странице родителя (exports / imports). В каталоге
+    # их прячем — это **режимы отображения**, а не отдельные карточки.
+    "exports-yoy",
+    "exports-qoq",
+    "imports-yoy",
+    "imports-qoq",
+    "current-account-yoy",
+    # Phase 1 balance-yoy-abs (звонок 2026-05-22): YoY в АБСОЛЮТНЫХ значениях
+    # для balances со знаком — это режим отображения родительских карточек
+    # trade-balance / current-account (% YoY бессмыслен — база меняет знак).
+    "trade-balance-yoy-abs",
+    "current-account-yoy-abs",
 }
 
 # Per-indicator extra SEO blocks (server-rendered SEO sections).

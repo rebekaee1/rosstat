@@ -128,6 +128,7 @@ Base URL: `/api/v1` (за исключением SSR-эндпоинтов `/seo/
 | | `GET /calendar/upcoming` | Ближайшие публикации. |
 | | `GET /calendar/{event_id}` | Детали события. |
 | | `GET /calendar/export/ical` | iCal-фид для подписки. |
+| **Live ticker** | `GET /ticker/live` | Последние снапшоты USD/EUR/CNY/BTC/Brent из Redis (MOEX + Binance + CBR-fallback, обновление 5с). |
 | **Embed** | `GET /embed/spark/{code}.svg` | Sparkline-виджет. |
 | | `GET /embed/card/{code}.svg` | Карточка с метрикой. |
 | | `GET /embed/badge/{code}.svg` | Inline-бейдж. |

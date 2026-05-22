@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, X } from 'lucide-react';
 import { useIndicators } from '../lib/hooks';
-import { CATEGORIES, isIndicatorListed } from '../lib/categories';
+import { CATEGORIES } from '../lib/categories';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 
@@ -18,13 +18,17 @@ const MAX_RESULTS = 12;
  * sheet (тот же компонент, breakpoint в стилях).
  *
  * Источник данных — React-Query `useIndicators()`. Фильтр — substring без
- * учёта регистра по name + name_en + category + code. Скрытые карточки
- * (`is_listed=false`) в выдаче не показываются (это counterpart'ы,
- * доступные только через VariantGroupPicker из primary).
+ * учёта регистра по name + name_en + category + code.
+ *
+ * Звонок 2026-05-22: показываем ВСЕ active-индикаторы, включая скрытые
+ * из листинга каталога (exports-monthly, exports-yoy, services-*-monthly,
+ * deposit-rate-medium, и т.д.). Логика: каталог — это **витрина**, поиск —
+ * **директория**. Пользователь набирает «экспорт» и ожидает увидеть все
+ * варианты: помесячно, квартально, к г/г, к кварталу.
  */
 export default function IndicatorSearch({ className }) {
   const navigate = useNavigate();
-  const { data: indicators = [] } = useIndicators();
+  const { data: indicators = [] } = useIndicators({ includeUnlisted: true });
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [hi, setHi] = useState(0); // highlighted result index
@@ -34,10 +38,9 @@ export default function IndicatorSearch({ className }) {
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) {
-      return indicators.filter(isIndicatorListed).slice(0, MAX_RESULTS);
+      return indicators.slice(0, MAX_RESULTS);
     }
     return indicators
-      .filter(isIndicatorListed)
       .filter((ind) => {
         const haystack = `${ind.name || ''} ${ind.name_en || ''} ${ind.category || ''} ${ind.code || ''}`.toLowerCase();
         return haystack.includes(q);

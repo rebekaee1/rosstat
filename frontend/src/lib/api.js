@@ -26,10 +26,11 @@ api.interceptors.response.use(
 );
 
 export const fetchIndicators = (params = {}, { signal } = {}) => {
-  const { category, includeInactive } = params;
+  const { category, includeInactive, includeUnlisted } = params;
   const search = new URLSearchParams();
   if (category) search.set('category', category);
   if (includeInactive) search.set('include_inactive', 'true');
+  if (includeUnlisted) search.set('include_unlisted', 'true');
   const q = search.toString();
   return api.get(`/indicators${q ? `?${q}` : ''}`, { signal }).then((r) => r.data);
 };

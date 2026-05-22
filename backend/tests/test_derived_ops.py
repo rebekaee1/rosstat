@@ -20,6 +20,7 @@ from app.services.derived_ops import (
     rolling_avg,
     wages_real,
     yoy,
+    yoy_abs,
 )
 
 
@@ -219,6 +220,54 @@ def test_yoy_skips_zero_denominator():
         (date(2026, 3, 1), 100.0),
     ]
     assert yoy(series) == []
+
+
+# --- yoy_abs (звонок 2026-05-22, для balances со знаком) --------------------
+
+
+def test_yoy_abs_positive_growth():
+    """Trade-balance вырос с 30 000 до 50 000 млн $ — YoY-абсолют = +20 000."""
+    series = [
+        (date(2025, 3, 1), 30_000.0),
+        (date(2026, 3, 1), 50_000.0),
+    ]
+    out = yoy_abs(series)
+    assert out == [(date(2026, 3, 1), 20_000.0)]
+
+
+def test_yoy_abs_sign_crossover_keeps_units():
+    """Сальдо текущего счёта перешло с +3 594 до −4 356: разница = −7 950 млн $.
+
+    Это и есть смысл yoy_abs: процент тут бессмыслен (база разнознаковая),
+    единица сохраняется. Регрессия — фиксирует, что op возвращает дельту в
+    единицах источника, а не падает на знаке.
+    """
+    series = [
+        (date(2025, 3, 1), 3_594.0),
+        (date(2026, 3, 1), -4_356.0),
+    ]
+    out = yoy_abs(series)
+    assert out == [(date(2026, 3, 1), -7_950.0)]
+
+
+def test_yoy_abs_skips_missing_prior_year():
+    """Если t-1y нет в ряду — точка пропускается."""
+    series = [
+        (date(2025, 6, 1), 100.0),
+        (date(2026, 3, 1), 50.0),  # нет (2025-03-01) — пропустим
+        (date(2026, 6, 1), 80.0),
+    ]
+    out = yoy_abs(series)
+    assert out == [(date(2026, 6, 1), -20.0)]
+
+
+def test_yoy_abs_allows_zero_denominator():
+    """В отличие от yoy() — нулевая база не приводит к division: просто 0 → val_t."""
+    series = [
+        (date(2025, 3, 1), 0.0),
+        (date(2026, 3, 1), 42.0),
+    ]
+    assert yoy_abs(series) == [(date(2026, 3, 1), 42.0)]
 
 
 # --- qoq ---------------------------------------------------------------------

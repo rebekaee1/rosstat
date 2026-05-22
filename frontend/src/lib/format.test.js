@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import {
   formatDate,
+  formatChartAxisDate,
+  pickChartAxisTicks,
   formatValue,
   formatChange,
   formatValueWithUnit,
@@ -31,6 +33,22 @@ describe('format', () => {
     expect(formatDate('2024-04-15', 'quarterly')).toBe('II кв. 2024');
     expect(formatDate('2024-07-15', 'quarterly')).toBe('III кв. 2024');
     expect(formatDate('2024-10-15', 'quarterly')).toBe('IV кв. 2024');
+  });
+
+  it('formatChartAxisDate shortens daily labels for dense charts', () => {
+    expect(formatChartAxisDate('2024-01-15', 'day', { multiYear: false })).toBe('15 янв');
+    expect(formatChartAxisDate('2024-01-15', 'day', { multiYear: true })).toBe("15 янв '24");
+  });
+
+  it('pickChartAxisTicks returns at most maxTicks evenly spaced', () => {
+    const points = Array.from({ length: 200 }, (_, i) => ({
+      date: `2024-${String((i % 12) + 1).padStart(2, '0')}-01`,
+    }));
+    const ticks = pickChartAxisTicks(points, 7);
+    expect(ticks.length).toBeGreaterThanOrEqual(5);
+    expect(ticks.length).toBeLessThanOrEqual(7);
+    expect(ticks[0]).toBe(points[0].date);
+    expect(ticks[ticks.length - 1]).toBe(points[points.length - 1].date);
   });
 
   it('formatValue handles null', () => {

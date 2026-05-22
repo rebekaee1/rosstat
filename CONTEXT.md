@@ -1,6 +1,6 @@
 # Forecast Economy — Project Context
 
-**Last updated:** 2026-05-21 (фаза A backlog: №3 ось daily, №6 guard+тест, №11 budget-deficit до 2026-04).
+**Last updated:** 2026-05-22 (звонок Phase 1: trade unification через `ViewModePicker` (level / YoY % / QoQ % / YoY-абс / MoM% on-the-fly); +10-я op `yoy_abs` в `derived_ops.py`; +2 derived `*-yoy-abs` для balances со знаком; `current-account-yoy` % депрекейтнут как is_active=false; LiveTicker над Navbar с MOEX/CBR-fallback/Binance/Yahoo источниками — см. ADR-0001 «Subsequent additions 2026-05-22»).
 **Part of:** [`AGENTS.md`](AGENTS.md) (точка входа для AI-агента).
 **See also:** [`README.md`](README.md), [`docs/workflow.md`](docs/workflow.md), [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md), [`docs/data_sources.md`](docs/data_sources.md), [`docs/cbr_sources.md`](docs/cbr_sources.md), [`docs/analytics_api_inventory/`](docs/analytics_api_inventory/), [`docs/adr/`](docs/adr/).
 
@@ -92,23 +92,26 @@
 
 **Граница инварианта.** Инвариант односторонний: `bulk_upsert`-only. Если source-точка **удаляется** вручную (DELETE из IndicatorData), соответствующая derived-точка остаётся в БД как осиротевшая — engine не знает, что нужно её удалить. Это явный compromise (см. ADR-0002): автоматическое удаление derived создавало бы риск массовой потери данных при ошибке pure op. Ручные коррекции source требуют ручной чистки derived или прогона `scripts/rebuild-all-derived.py`.
 
-Реестр операций (`backend/app/services/derived_ops.py`) — 9 чистых функций без `db`/`async`:
+Реестр операций (`backend/app/services/derived_ops.py`) — **10 чистых функций** без `db`/`async`:
 - `quarterly_index` — chained product 3 месячных индексов CPI (для `*-quarterly`).
 - `december_to_december` — годовая инфляция «Dec_Y / Dec_{Y-1} − 1» (для CPI-семьи и PPI `*-annual`; пришла на смену rolling-12M в 2026-05-06, см. ADR-0001 «Subsequent additions»).
 - `annual_sum` — сумма квартальных или 12 месячных значений (для `gdp-{nominal,real}-annual`).
-- `yoy`, `qoq` — рост к 12 мес назад / к предыдущему кварталу.
+- `yoy`, `qoq` — рост к 12 мес назад / к предыдущему кварталу (в %).
+- `yoy_abs` — **абсолютная** разница к 12 мес назад в единицах источника (звонок 2026-05-22, для balances со знаком, где % бессмыслен).
 - `quarterly_avg`, `rolling_avg` — для unemployment.
 - `wages_real` — особая, 2 источника (`wages-nominal`, `cpi`).
 - `annual_inflation` — устаревшая op (rolling-12M product), сохранена в файле, но **не используется** в `DERIVED_SPECS`. Кандидат на удаление при следующей чистке.
 
-Реестр спецификаций (`calculation_engine.DERIVED_SPECS`) — **28 entries**:
+Реестр спецификаций (`calculation_engine.DERIVED_SPECS`) — **29 entries**:
 
 - **CPI семейство:** `inflation-quarterly` ← `cpi`, `inflation-annual` ← `cpi`, и аналоги для `cpi-food/nonfood/services` (8 spec'ов).
 - **PPI:** `ppi-yoy`, `ppi-annual`.
 - **GDP:** `gdp-{yoy,qoq}` ← `gdp-nominal`, `gdp-real-{yoy,qoq}` ← `gdp-real`, `gdp-{nominal,real}-annual` (annual_sum).
 - **Wages/Unemployment:** `wages-real`, `wages-yoy`, `unemployment-{quarterly,annual}`.
-- **Trade/External:** `current-account-yoy`, `exports-{yoy,qoq}`, `imports-{yoy,qoq}`.
+- **Trade/External:** `exports-{yoy,qoq}`, `imports-{yoy,qoq}`, `trade-balance-yoy-abs`, `current-account-yoy-abs`. Старый `current-account-yoy` (%) **депрекейтнут** в seed_data как `is_active=false`, в DERIVED_SPECS убран — для balances со знаком процент YoY бессмыслен.
 - **Other:** `ipi-yoy`, `housing-yoy-{primary,secondary}`.
+
+**Frontend-only режимы (звонок 2026-05-22, A1+A2).** Поверх backend-derived'ов есть **виртуальные** view modes для in-page переключения без перезагрузки страницы — `frontend/src/lib/tradeViewModes.js::TRADE_VIEW_MODE_FAMILIES`. Для monthly counterparts (`exports-monthly`, `imports-monthly`, `services-{exports,imports}-monthly`) добавлен виртуальный режим `mom` (`transform: 'mom'`): функция `applyMoMTransform(points)` на клиенте превращает `[{date, value}]` в ряд `(val_t / val_{t-1} − 1) * 100`. Backend spec для MoM% сознательно не заводится — пересчёт O(n) на клиенте дешевле round-trip'а, изоляция от forecast-пайплайна. `IndicatorDetail.jsx::tradeModeMeta.transform` маршрутизирует ветку «virtual transform vs backend derived».
 
 ### Forecast
 
@@ -229,11 +232,18 @@ Daily ETL (06:00 МСК, `RUSTATS_SCHEDULER_CRON_HOUR/MINUTE`) запускае�
 
 ### Scheduler dual jobs + analytics-scheduler флаг
 
-В `backend/app/main.py` lifespan регистрируются **два обязательных** APScheduler job'а: `daily_etl` (06:00 МСК) и `calendar_refresh` (1-го числа 03:00 МСК). Дополнительно — два опциональных под `RUSTATS_ANALYTICS_SCHEDULER_ENABLED=true`: `analytics_hourly` (:15) и `analytics_daily` (07:20). Если scheduler-флаг выключен — работает только `daily_etl` + `calendar_refresh`, прочие cron-ы не регистрируются.
+В `backend/app/main.py` lifespan регистрируются **два обязательных** APScheduler job'а: `daily_etl` (06:00 МСК) и `calendar_refresh` (1-го числа 03:00 МСК). Дополнительно — два опциональных под `RUSTATS_ANALYTICS_SCHEDULER_ENABLED=true`: `analytics_hourly` (:15) и `analytics_daily` (07:20). С 2026-05-22 добавлен `ticker_live_pull` (interval 5s, `coalesce=True`, `max_instances=1`) — fetch MOEX/Binance/CBR-fallback в Redis для LiveTicker. Если scheduler-флаг выключен — работает только `daily_etl` + `calendar_refresh` + `ticker_live_pull`, analytics cron-ы не регистрируются.
 
-### Empty ETL must not wipe history
+### Live ticker: MOEX-приоритет с CBR-fallback для FX
 
-`BaseParser.run()` при `len(points)==0` завершает fetch_log как `no_new_data` и **не вызывает** `bulk_upsert` (нет DELETE в `upsert.py`). Регрессия: `backend/tests/test_base_parser_empty_fetch.py`. Симптом «пустой график после сбоя» чаще означает, что локальная БД никогда не получала ETL для кода, а не затирание.
+Источники (`backend/app/services/ticker_sources/`):
+- **MOEX ISS** — USD/RUB (`USD000UTSTOM`), CNY/RUB (`CNYRUB_TOM`), Brent (ближайший фьючерс `BR-X.Y` на FORTS, динамически определяется по `LASTTRADEDATE`). ISS возвращает 4 строки marketdata по бордам — реальные сделки на **CETS**, остальные пустые.
+- **Binance public** — BTC/USDT (`/api/v3/ticker/24hr`).
+- **ЦБ XML_daily fallback** (звонок 2026-05-22) — для FX когда MOEX отдал `LAST=None` на всех бордах. EUR/RUB на MOEX после санкций ЕС март-2024 **фактически мёртв** — у `EUR_RUB__TOM` LAST всегда null. Fallback тянет `https://www.cbr.ru/scripts/XML_daily.asp` (сегодня + вчера для % change) и подмешивает с пометкой `market_open=False, source="ЦБ РФ"`.
+
+Frontend (`frontend/src/components/LiveTicker.jsx`): `useQuery` polling 4с, sticky-bar над Navbar (`fixed top-0 z-[110]`). Типографика **единая** для всех пяти snapshot'ов — `text-text-primary font-semibold` независимо от `market_open` и `source` (различие источника живёт в `title`-тултипе). Цена показывается всегда если `price > 0`, чтобы CBR-fallback не визуально ломал ряд.
+
+Эндпоинт `/api/v1/ticker/live` (`backend/app/api/ticker.py`) читает Redis-снапшоты с TTL 30s. APScheduler job `ticker_pull_job` пишет их каждые 5s — клиент видит лаг ≤ 9s в худшем случае.
 
 ### `is_listed` vs VariantGroupPicker
 
@@ -313,68 +323,6 @@ docker compose exec backend python -c \
 ### Calendar source coverage
 
 Legacy `WeeklySpec` / `typical_day` builders в `calendar_seed.py` оставлены только для debug/tests старой плотности календаря. Public ingest идёт через `calendar_sources.official_calendar`: CBR official daily rules (`indcalendar`) для FX/RUONIA/gold; CBR official ICS (`indcalendar` / `vCalendar.ics`) для резервов, M0/M1/M2, кредитов/депозитов, ставок, ипотеки, внешнего сектора, долга; CBR official monetary-policy schedule (`cbr.ru/dkp/cal_mp/`) для заседаний и резюме по ключевой ставке; Rosstat/Minfin rule-events только по опубликованным правилам и versioned working calendar. После добора 2026-05-10 local source-bound coverage: 46/76 source codes, 1208 public events, `bad_public_rows=0`. Если источника/правила нет — событие не показывается, пока не будет донабрано через official parser/rule.
-
----
-
-## Backlog: звонок 2026-05-17 (16 правок)
-
-Сверка заметок Жени с транскриптом звонка с Никитой Александровичем. Статус: **№13** — коммит `08b4ebe` (локально, без push); **фаза A (№3, №6, №11)** — 2026-05-21.
-
-**Эталон UX (правка №1):** страница `cpi` — три слоя переключателей:
-1. **Частота** — `FrequencySwitcher` (`frontend/src/lib/frequencySwitcher.js`, `alternate_frequencies` / `primary_indicator_code` в `seed_data.py`).
-2. **Семейство** — `VariantGroupPicker` (`frontend/src/lib/indicatorVariants.js`, `INDICATOR_HIDDEN_FROM_LISTING` в `backend/app/data/indicator_seo.py`).
-3. **Режим отображения** (только CPI) — `CpiViewModePicker` + `useIndicatorViewModeData.js` (неделя / месяц / квартал / год / индекс / инфляция / скользящая 12м).
-
-**Ядро derived:** `backend/app/services/calculation_engine.py::DERIVED_SPECS` + чистые ops в `derived_ops.py` (yoy, qoq, quarterly_avg, annual_sum, december_to_december, rolling_avg, …).
-
-### Таблица правок
-
-| ID | Суть | Из транскрипта (доп.) | Ключевые файлы | Риск поломки |
-|----|------|----------------------|----------------|--------------|
-| **1** | Унифицировать временные срезы и %‑изменения по сайту: неделя/месяц/квартал/год + м/м, к/к, г/г, скользящая 12м (где уместно). Для **категории «Ставки»** — только уровни (мес/кв/год), **без** приростов. | ВВП, курсы валют (юань и др.), денежная масса, кредиты, розница, ИПП — «как у ВВП и ИПЦ». Текущий счёт — **без** % (может быть отрицательным). | `derived_ops.py`, `calculation_engine.py`, `seed_data.py`, `indicatorVariants.js`, `frequencySwitcher.js`, `useIndicatorViewModeData.js` (обобщить CPI‑паттерн) | Средний: много derived + скрытие карточек |
-| **2** | Ключевая ставка: удлинить историю — склеить с **ставкой рефинансирования** до 2013; плюс мес/кв/год агрегаты. | «С 2013, а надо раньше»; та же логика для всех ставок ЦБ. | `cbr_keyrate.py`, `cbr_keyrate_parser.py`, новый источник/скрипт splice, `docs/cbr_sources.md` | Средний: верификация splice |
-| **3** | Разрывы на оси X графика (RUONIA и др. daily): подписи дат «прыгают», нечитаемо. | «Ставки по вкладам» ок (monthly); daily ломается. | `IndicatorChart.jsx` — **`scale="point"`** для `dateFormat=day` + адаптивный `interval` | **Сделано 2026-05-21** |
-| **4** | Research: редкие показатели «как RUONIA» (SEO‑трафик). Пройти `docs/missed_data_audit.md` + уже скачанные Excel Росстата. | «Поднабрать редкие»; региональный блок — **потом**. | `docs/missed_data_audit.md`, `docs/data_sources.md`, `PARSER_REGISTRY` | Низкий (только research) |
-| **5** | **Индекс доступности жилья** в категории «Цены»: метры жилья на месячную зарплату (или аналог из транскрипта). | Временно в «Цены», не отдельная категория; формула уточнить по записи. | Новый derived в `DERIVED_SPECS`, `seed_data.py`, `indicatorVariants.js`, `categories.js` + `seo_content.py` | Средний |
-| **6** | **Не терять историю** при сбое источника: ETL не должен затирать БД нулями/пустотой. | «Даже если на Росстате пропало — у нас архив остаётся». | `base_parser.py` early return при 0 points; `upsert` без delete; тест `test_base_parser_empty_fetch.py` | **Подтверждено 2026-05-21** (guard уже был) |
-| **7** | Средняя зарплата → **индекс** (база 2010=100), плюс удлинение истории (цель — с 90‑х). | Связано с №5; отдельный индекс зарплаты перед делением. | `rosstat_labor_parser.py`, новый derived `wages-index`, `seed_data.py` | Средний |
-| **8** | Аудит **максимальной глубины** всех рядов; добить splice/backfill где есть файлы. | «Чем раньше, тем лучше» по всему сайту. | `docs/data_sources.md`, парсеры GDP/housing/labor как референс; скрипт отчёта `MIN(date)` per code | Низкий→высокий по объёму |
-| **9** | Уточнить формулу **индекса доступности** (дубликат №5 для детализации). | Переслушать: «стоимость метра / зарплата», квартальные ряды жилья. | То же №5 | — |
-| **10** | **Ставка по вкладам**: разбивка по срокам (до 1 г / 1–3 / 3+) в **одной карточке** (как кредиты corp/ind). | Объединить «один показатель — много сроков», не 3 отдельные карточки в листинге. | CBR DataService (сейчас один `deposit-rate`), `indicatorVariants.js`, возможно несколько element_id | Средний |
-| **11** | **Дефицит бюджета**: перепроверить парсер после правок press+CSV. | «За апрель должно быть» (из прошлых правок). | `minfin_budget_parser.py` | **OK локально 2026-05-21**: `budget-deficit` max_date **2026-04-01**, 184 точки (revenue/expenditure синхронно) |
-| **12** | **Поиск по индикаторам** (~100+ карточек): главная или глобально в Navbar. | «Как TE»; индикаторов уже >80 с агрегациями. | Новый `IndicatorSearch.jsx`, `useIndicators` / API filter, `Navbar.jsx` | Низкий |
-| **13** | **Склейка дублей карточек** в VariantGroup + `is_listed=False`. | Экспорт/импорт/услуги/баланс; безработица (3 карточки); зарплата YoY; ИПП+ИПП YoY; **current-account + current-account-yoy** в одну; демографию **не** склеивать (прирост отдельно). | `indicatorVariants.js`, `INDICATOR_HIDDEN_FROM_LISTING`, `seed` | **Сделано 2026-05-20** (локально, без push): +6 групп, +10 hidden codes; `wages-real` и услуги без YoY — отдельные карточки |
-| **14** | Больше **публичного текста** на страницах (SEO), не в `methodology`. | «Как на жилье»; расширить блоки вроде `INDICATOR_SEO_BLOCKS`. | `indicator_seo.py`, `seo_renderer.py`, синхронно `categories.js` | Низкий |
-| **15** | **Live‑табло** на главной: валюты + нефть + bitcoin, «как TE». | Валюты вынести в отдельный блок категорий — **потом**; крипта — позже. | `Dashboard.jsx` / home, новые парсеры или внешний API, WebSocket/polling | Высокий (scope) |
-| **16** | ИПП: по умолчанию **г/г %**, уровень индекса — через VariantGroup «Помесячно». | «Первое число на карточке — процент изменения». | `IndicatorDetail.jsx` redirect `ipi`→`ipi-yoy`, `categories.js` flagship | **Сделано 2026-05-21** |
-
-### Правила склейки (из звонка, для №13)
-
-- **Объединять:** один экономический показатель × разные агрегации (уровень / YoY / QoQ / annual / monthly counterpart).
-- **Не объединять:** `population` vs `population-growth` (разная семантика).
-- **Торговля:** exports, imports, services-*, trade-balance — каждый свой variant group; monthly уже через FrequencySwitcher (T3).
-- **Текущий счёт:** только квартальный уровень + годовой уровень; YoY‑карточку убрать из листинга, в group.
-- **Сальдо/балансы в %:** не делать YoY/QoQ в процентах — только абсолют.
-
-### Фазы внедрения (рекомендация)
-
-| Фаза | Правки | Почему сначала |
-|------|--------|----------------|
-| **A** | 6, 11, 3 | Быстрые проверки/фиксы, без новых индикаторов |
-| **B** | 13, 1 (инфра), 10 | Снижаем «100 карточек» → UX; переиспользуем CPI‑паттерн |
-| **C** | 2, 7, 8, 5/9 | Длинные ряды + новый derived (ценность для SEO) |
-| **D** | 12, 14, 16 | Поиск + SEO‑текст + дефолт YoY на карточке |
-| **E** | 4, 15 | Research и live‑табло — отдельные эпики |
-
-### Чеклист «ничего не сломать» перед merge
-
-1. `./scripts/check-all.sh` зелёный.
-2. `seed_data.py` → `python seed_data.py` на стенде; `redis-cli FLUSHDB`.
-3. `rebuild-all-derived.py` после правок `DERIVED_SPECS` / `derived_ops.py`.
-4. Для forecast‑затронутых: cascade retrain + snapshot‑тесты (`backend/tests/forecast_strategies/`).
-5. Browser snapshot: `cpi`, `key-rate`, `ruonia`, `exports` (frequency switcher), `housing-price-secondary`.
-6. `scripts/audit-public-language.py` — methodology без внутренностей.
-7. Prod: `docker compose build backend frontend` **вместе** (asset-hash trap).
 
 ---
 

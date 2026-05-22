@@ -1654,18 +1654,51 @@ INDICATORS = [
         "is_active": True,
         "category": "Рынок труда",
     },
-    # ─── Производные: текущий счёт г/г ───
+    # ─── Производные: текущий счёт YoY ABS (звонок 2026-05-22) ───
+    # Заменяет старый current-account-yoy %, который оставлен депрекейтнутым
+    # ниже (is_active=false): для balances со знаком процент бессмыслен,
+    # считаем разницу в млн $.
     {
-        "code": "current-account-yoy",
-        "name": "Текущий счёт (изм. г/г)",
-        "name_en": "Current Account YoY Change",
-        "unit": "%",
+        "code": "current-account-yoy-abs",
+        "name": "Текущий счёт (изм. г/г, абс.)",
+        "name_en": "Current Account YoY Change (abs.)",
+        "unit": "млн $",
         "frequency": "quarterly",
         "source": "Банк России",
-        "description": "Изменение сальдо текущего счёта к аналогичному кварталу предыдущего года.",
+        "description": "Изменение сальдо текущего счёта к аналогичному кварталу предыдущего года в миллионах долларов США.",
         "parser_type": "derived",
         "model_config_json": {"forecast_steps": 0},
         "is_active": True,
+        "category": "Торговля",
+    },
+    {
+        "code": "trade-balance-yoy-abs",
+        "name": "Торговый баланс (изм. г/г, абс.)",
+        "name_en": "Trade Balance YoY Change (abs.)",
+        "unit": "млн $",
+        "frequency": "quarterly",
+        "source": "Банк России",
+        "description": "Изменение торгового баланса к аналогичному кварталу предыдущего года в миллионах долларов США.",
+        "parser_type": "derived",
+        "model_config_json": {"forecast_steps": 0},
+        "is_active": True,
+        "category": "Торговля",
+    },
+    # ─── Депрекейтнут (звонок 2026-05-22): процент YoY для current-account
+    # бессмыслен (база меняет знак). Оставлен в БД для исторических ссылок,
+    # но is_active=false и из DERIVED_SPECS убран. Используйте
+    # current-account-yoy-abs.
+    {
+        "code": "current-account-yoy",
+        "name": "Текущий счёт (изм. г/г, % — депрекейт)",
+        "name_en": "Current Account YoY Change (deprecated)",
+        "unit": "%",
+        "frequency": "quarterly",
+        "source": "Банк России",
+        "description": "Депрекейтнут: процент изменения от balance со знаком даёт мусор. См. current-account-yoy-abs.",
+        "parser_type": "derived",
+        "model_config_json": {"forecast_steps": 0},
+        "is_active": False,
         "category": "Торговля",
     },
     # ─── Производные: ИПП год к году ───
@@ -2715,6 +2748,62 @@ INDICATORS = [
             "metal": "gold",
             "forecast_steps": 0,
             "validation": {"min": 100},
+        },
+        "is_active": True,
+        "category": "Финансы",
+    },
+    {
+        "code": "btc-usd",
+        "name": "Биткоин (BTC/USD)",
+        "name_en": "Bitcoin (BTC/USD)",
+        "unit": "USD",
+        "frequency": "daily",
+        "source": "Binance",
+        "source_url": "https://www.binance.com/en/trade/BTC_USDT",
+        "description": (
+            "Курс биткоина к доллару США по данным крупнейшей криптовалютной "
+            "биржи Binance. Биткоин — первая и самая капитализированная "
+            "криптовалюта; для российской аудитории он стал альтернативным "
+            "активом наряду с золотом и иностранной валютой."
+        ),
+        "methodology": (
+            "Используется дневной close спотовой пары BTCUSDT на Binance "
+            "(UTC-сутки). Live-котировка в тикере — текущая lastPrice. "
+            "Биржа работает 24/7."
+        ),
+        "parser_type": "binance_btcusdt_daily",
+        "model_config_json": {
+            "forecast_steps": 0,
+            "forecast_transform": "absolute",
+            "validation": {"min": 100, "max": 1_000_000},
+        },
+        "is_active": True,
+        "category": "Валюты",
+    },
+    {
+        "code": "brent",
+        "name": "Нефть Brent",
+        "name_en": "Brent Crude Oil",
+        "unit": "USD/баррель",
+        "frequency": "daily",
+        "source": "MOEX FORTS",
+        "source_url": "https://www.moex.com/ru/derivatives/contract.aspx?code=BR",
+        "description": (
+            "Котировки ближайшего фьючерса на нефть марки Brent на срочной "
+            "секции Московской биржи (FORTS). Brent — ключевой эталон "
+            "мирового нефтяного рынка; для России цена нефти определяет "
+            "бюджетные поступления, курс рубля и платёжный баланс."
+        ),
+        "methodology": (
+            "Ежедневный close ближайшего по экспирации контракта BR-X.Y. "
+            "Контракт ротируется ежемесячно; live-котировка автоматически "
+            "переключается на новый месяц после экспирации текущего."
+        ),
+        "parser_type": "moex_brent_daily",
+        "model_config_json": {
+            "forecast_steps": 0,
+            "forecast_transform": "absolute",
+            "validation": {"min": 5, "max": 300},
         },
         "is_active": True,
         "category": "Финансы",

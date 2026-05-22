@@ -9,6 +9,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.middleware.gzip import GZipMiddleware
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
+from apscheduler.triggers.interval import IntervalTrigger
 
 from app.api.router import api_router
 from app.config import settings
@@ -118,12 +119,26 @@ async def lifespan(app: FastAPI):
             name="Late Minfin ETL pass (catches in-place CSV content updates)",
             replace_existing=True,
         )
+        from app.tasks.ticker_worker import ticker_pull_job
+
+        scheduler.add_job(
+            ticker_pull_job,
+            trigger=IntervalTrigger(seconds=settings.ticker_pull_interval_seconds),
+            id="ticker_live_pull",
+            name="Live ticker pull (MOEX ISS + Binance) → Redis",
+            replace_existing=True,
+            coalesce=True,
+            max_instances=1,
+        )
+
         scheduler.start()
         logger.info(
             "Scheduler started: daily ETL at %02d:%02d MSK (Europe/Moscow), all is_active indicators; "
-            "official calendar refresh at 03:00 MSK; late Minfin pass at 15:00 MSK",
+            "official calendar refresh at 03:00 MSK; late Minfin pass at 15:00 MSK; "
+            "live ticker every %ds",
             settings.scheduler_cron_hour,
             settings.scheduler_cron_minute,
+            settings.ticker_pull_interval_seconds,
         )
         if settings.analytics_scheduler_enabled:
             from app.tasks.analytics_scheduler import analytics_daily_job, analytics_hourly_job

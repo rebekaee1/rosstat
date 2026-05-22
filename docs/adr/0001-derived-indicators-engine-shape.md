@@ -2,7 +2,7 @@
 
 - **Date:** 2026-05-05
 - **Status:** Accepted
-- **Last verified:** 2026-05-07 (28 derived in `DERIVED_SPECS`, 9 ops in `derived_ops.py`).
+- **Last verified:** 2026-05-22 (29 derived in `DERIVED_SPECS`, 10 ops in `derived_ops.py`, +1 виртуальный frontend-transform `mom`).
 - **Author:** architecture audit (улучшение архитектуры по запросу пользователя).
 - **Part of:** [`../../CONTEXT.md`](../../CONTEXT.md) (раздел `Derived indicator`).
 - **Related:** [ADR-0002](0002-derived-always-reflects-source.md) (инвариант идемпотентности).
@@ -97,7 +97,14 @@ backend/app/services/calculation_engine.py
   - `gdp-real-yoy`, `gdp-real-qoq` — те же `yoy`/`qoq` ops, но src=`gdp-real` (раньше real-производные считались через `derived_from_source.real_from_yoy` от `gdp-yoy`, что давало накопленную ошибку).
   - `gdp-nominal-annual`, `gdp-real-annual` — `annual_sum`.
 
-**Текущие числа (2026-05-07):** 9 операций в `derived_ops.py` (одна — `annual_inflation` — orphaned, не используется в spec'ах); 28 `DerivedSpec` в `DERIVED_SPECS`. Backwards-compat этих изменений: добавление spec'а или нового op'а — однострочное; никаких миграций БД.
+- **2026-05-22 — Trade view modes + YoY-абсолют для balances со знаком.** Звонок 2026-05-22, унификация trade-карточек (Phase 1 A1+A2).
+  - Добавлена 10-я чистая операция `yoy_abs(series)` — разница `val_t − val_{t−1y}` в единицах источника. Назначение: balances со знаком (`trade-balance`, `current-account`), где процент YoY от базы, переходящей через ноль, даёт визуальный мусор.
+  - Добавлены 2 `DerivedSpec`: `trade-balance-yoy-abs` и `current-account-yoy-abs` (оба от соответствующих parent-кодов). Старый `current-account-yoy` (%) **депрекейтнут** в `seed_data.py` через `is_active=false` и удалён из `DERIVED_SPECS`; запись остаётся в БД для исторических ссылок, но не пересчитывается и не отдаётся API (active-only фильтр).
+  - **Виртуальный transform на frontend.** В `frontend/src/lib/tradeViewModes.js` добавлена утилита `applyMoMTransform(points)` — MoM%-режим для monthly counterparts (`exports-monthly`, `imports-monthly`, `services-exports-monthly`, `services-imports-monthly`). Это **не** новый backend-derived: ряд преобразуется на клиенте поверх `baseDataPoints` родительского monthly indicator. Спецификации в БД для этих режимов не существует и **сознательно** не создаётся — `*-monthly` ряды коротки (≤350 точек), пересчёт O(n) на клиенте дешевле сетевого round-trip и второго bulk_upsert. Сигнал в схеме режима — поле `transform: 'mom'`.
+  - Решение симметрично ADR-0003 (frontend = режим отображения, backend = форма данных): yoy/qoq/yoy_abs живут как derived (нужны для прогноза и для downloads), MoM% живёт как client-side transform (изолированный от forecast-пайплайна, нужен только для UI).
+  - Engine shape не менялась: добавление spec'а и op'а — однострочное, виртуальный transform — frontend-only и не трогает `DerivedSpec`.
+
+**Текущие числа (2026-05-22):** 10 операций в `derived_ops.py` (одна — `annual_inflation` — orphaned); 29 `DerivedSpec` в `DERIVED_SPECS` (минус один депрекейтнутый `current-account-yoy` %, плюс два `*-yoy-abs`). Один frontend-only transform (`applyMoMTransform`). Backwards-compat: добавление spec'а — однострочное, виртуальный transform — изолирован на frontend.
 
 ### Out of scope (future ADRs)
 

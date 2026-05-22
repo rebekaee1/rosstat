@@ -13,6 +13,45 @@ const monthsGenitive = [
   'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря',
 ];
 
+/**
+ * Короткая подпись даты на оси графика (не tooltip/таблица).
+ * multiYear: при окне >1 года добавляем двузначный год, иначе только день+месяц.
+ */
+export function formatChartAxisDate(dateStr, format = 'short', { multiYear = false } = {}) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return '';
+  const day = d.getUTCDate();
+  const month = monthsShort[d.getUTCMonth()];
+  const year = d.getUTCFullYear();
+
+  if (format === 'day' || format === 'weekly') {
+    return multiYear ? `${day} ${month} '${String(year).slice(-2)}` : `${day} ${month}`;
+  }
+  if (format === 'quarterly' || format === 'annual') {
+    return formatDate(dateStr, format);
+  }
+  return formatDate(dateStr, format === 'full' ? 'short' : format);
+}
+
+/** Равномерно N подписей по видимому окну (daily/weekly не заливают ось). */
+export function pickChartAxisTicks(points, maxTicks = 7) {
+  if (!points?.length) return [];
+  if (points.length <= maxTicks) {
+    return points.map((p) => p.date);
+  }
+  const ticks = [points[0].date];
+  const step = (points.length - 1) / (maxTicks - 1);
+  for (let i = 1; i < maxTicks - 1; i += 1) {
+    const idx = Math.round(i * step);
+    const date = points[idx].date;
+    if (ticks[ticks.length - 1] !== date) ticks.push(date);
+  }
+  const last = points[points.length - 1].date;
+  if (ticks[ticks.length - 1] !== last) ticks.push(last);
+  return ticks;
+}
+
 export function formatDate(dateStr, format = 'short') {
   if (!dateStr) return '—';
   const d = new Date(dateStr);

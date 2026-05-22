@@ -65,29 +65,11 @@ export const VARIANT_GROUPS = [
       { code: 'wages-yoy', label: 'Год к году' },
     ],
   },
-  {
-    label: 'Экспорт товаров',
-    codes: [
-      { code: 'exports', label: 'Уровень' },
-      { code: 'exports-yoy', label: 'Год к году' },
-      { code: 'exports-qoq', label: 'Квартал к кварталу' },
-    ],
-  },
-  {
-    label: 'Импорт товаров',
-    codes: [
-      { code: 'imports', label: 'Уровень' },
-      { code: 'imports-yoy', label: 'Год к году' },
-      { code: 'imports-qoq', label: 'Квартал к кварталу' },
-    ],
-  },
-  {
-    label: 'Сальдо текущего счёта',
-    codes: [
-      { code: 'current-account', label: 'Уровень' },
-      { code: 'current-account-yoy', label: 'Год к году' },
-    ],
-  },
+  // Phase 1 (звонок 2026-05-22): trade-семьи (exports / imports / current-account)
+  // переехали с VariantGroupPicker (отдельные URL'ы для каждого режима) на
+  // ViewModePicker (in-page ?mode=yoy|qoq). См. `lib/tradeViewModes.js` и
+  // `pages/IndicatorDetail.jsx::isTrade`. Эти записи удалены сознательно —
+  // дублирующие pills'ы над FrequencySwitcher.
   {
     label: 'Первичное жильё',
     codes: [

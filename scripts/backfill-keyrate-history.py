@@ -155,6 +155,36 @@ REFINANCING_HISTORY: list[tuple[date, float]] = [
 CUTOFF = date(2013, 9, 13)
 
 
+def _expand_to_daily(events: list[tuple[date, float]], cutoff: date) -> list[tuple[date, float]]:
+    """Forward-fill ставка-эвенты в daily-ряд.
+
+    Звонок 2026-05-22, замечание Никиты: «очень мало данных по тому
+    периоду и не как у нас в ключевой ставке». Ставка рефинансирования
+    публиковалась эвентами (84 точки на 21 год), а current key-rate —
+    daily. На графике это создаёт «обрыв плотности»: исторический хвост
+    выглядит сильно реже, чем правая часть.
+
+    Метод: для каждой пары соседних эвентов (d_i, v_i) → (d_{i+1}, v_{i+1})
+    генерируем по точке на каждый день в [d_i, d_{i+1}). Перед cutoff
+    остановка — после неё за дело берётся cbr_keyrate_html парсер.
+    """
+    if not events:
+        return []
+    events = sorted(events)
+    points: list[tuple[date, float]] = []
+    from datetime import timedelta
+    for i, (start_d, value) in enumerate(events):
+        if start_d >= cutoff:
+            break
+        end_d = events[i + 1][0] if i + 1 < len(events) else cutoff
+        end_d = min(end_d, cutoff)
+        d = start_d
+        while d < end_d:
+            points.append((d, value))
+            d = d + timedelta(days=1)
+    return points
+
+
 async def main():
     async with async_session() as db:
         ind = (await db.execute(
@@ -177,10 +207,10 @@ async def main():
         else:
             logger.warning("key-rate has no data yet, will still insert refinancing history.")
 
-        # Берём только точки рефинансирования до cutoff. После cutoff —
-        # ключевая ставка из существующего парсера, мы её не трогаем.
-        to_insert = [(d, v) for d, v in REFINANCING_HISTORY if d < CUTOFF]
-        logger.info("Inserting %d refinancing-rate history points (1992-01-01 → %s).",
+        # Forward-fill эвентов рефинансирования в daily ряд до CUTOFF.
+        # После CUTOFF — реальные daily-точки cbr_keyrate_html, не трогаем.
+        to_insert = _expand_to_daily(REFINANCING_HISTORY, CUTOFF)
+        logger.info("Inserting %d daily refinancing-rate points (1992-01-01 → %s).",
                     len(to_insert), CUTOFF.isoformat())
 
         added, updated = await bulk_upsert(db, ind.id, to_insert)

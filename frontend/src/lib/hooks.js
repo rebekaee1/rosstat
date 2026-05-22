@@ -14,10 +14,15 @@ import {
 } from './api';
 
 export function useIndicators(options = {}) {
-  const { category, includeInactive, enabled = true } = options;
+  const { category, includeInactive, includeUnlisted, enabled = true } = options;
   return useQuery({
-    queryKey: ['indicators', category ?? 'all', includeInactive ? 'with_inactive' : 'active_only'],
-    queryFn: ({ signal }) => fetchIndicators({ category, includeInactive }, { signal }),
+    queryKey: [
+      'indicators',
+      category ?? 'all',
+      includeInactive ? 'with_inactive' : 'active_only',
+      includeUnlisted ? 'with_unlisted' : 'listed_only',
+    ],
+    queryFn: ({ signal }) => fetchIndicators({ category, includeInactive, includeUnlisted }, { signal }),
     staleTime: 5 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
     enabled,

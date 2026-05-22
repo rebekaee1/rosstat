@@ -14,6 +14,8 @@ import {
   ShoppingCart,
   Briefcase,
   BarChart3,
+  CircleDollarSign,
+  Banknote,
 } from 'lucide-react';
 import { cn } from '../lib/format';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
@@ -32,6 +34,8 @@ const CATEGORY_ICONS = {
   ShoppingCart,
   Briefcase,
   BarChart3,
+  CircleDollarSign,
+  Banknote,
 };
 
 export default function CategoryBlock({
