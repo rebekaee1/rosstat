@@ -13,6 +13,7 @@ from app.schemas import (
 )
 from app.core.cache import cache_get, cache_set
 from app.config import settings
+from app.api.indicators import _resolve_hero_indicator
 
 router = APIRouter(prefix="/indicators", tags=["forecasts"])
 
@@ -43,6 +44,14 @@ async def get_forecast(code: str, db: AsyncSession = Depends(get_db)):
     if not indicator:
         raise HTTPException(status_code=404, detail=f"Indicator '{code}' not found")
 
+    # Hero-counterpart switch (см. indicators.py:_resolve_hero_indicator).
+    # Для housing-price-*, ipi, ppi forecast тянем из YoY-counterpart
+    # derived. Иначе график mix: actuals в YoY% (~0-10), а прогноз в
+    # индексе (300-400). Шкала Y разваливается. См. правка 2026-05-23
+    # (Никита: «опять сломалось — сейчас ты сделал в индексе приросты»).
+    hero_indicator = await _resolve_hero_indicator(db, indicator)
+    forecast_source = hero_indicator if hero_indicator is not None else indicator
+
     cfg = indicator.model_config_json or {}
     forecast_steps = int(cfg.get("forecast_steps", settings.forecast_steps) or 0)
     if forecast_steps <= 0 and code not in DERIVED_CPI_FORECASTS:
@@ -53,7 +62,7 @@ async def get_forecast(code: str, db: AsyncSession = Depends(get_db)):
     fc = await db.execute(
         select(Forecast)
         .where(
-            Forecast.indicator_id == indicator.id,
+            Forecast.indicator_id == forecast_source.id,
             Forecast.is_current.is_(True),
             ~Forecast.model_name.like("Inflation-12M%"),
         )
