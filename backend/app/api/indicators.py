@@ -48,6 +48,37 @@ def _hero_view(indicator) -> str | None:
     return mcfg.get("hero_view")
 
 
+# Маппинг родительского индекс-индикатора → его YoY-counterpart derived.
+# Используется, когда `hero_view == "yoy_pct"` — все метрики (current,
+# previous, change, highest, lowest, average) переключаются на YoY-ряд
+# чтобы пользователь видел согласованные единицы (% во всех блоках,
+# а не «10.77% / 333.8 / 346.8»). См. правка 2026-05-23 (звонок Никиты:
+# «На индексе текущее в %, а остальное в индексе — сломались цены на жильё»).
+_HERO_YOY_COUNTERPART = {
+    "housing-price-primary":   "housing-yoy-primary",
+    "housing-price-secondary": "housing-yoy-secondary",
+    "ipi": "ipi-yoy",
+    "ppi": "ppi-yoy",
+}
+
+
+async def _resolve_hero_indicator(db: AsyncSession, indicator) -> Indicator | None:
+    """Найти YoY-counterpart derived для индикатора с `hero_view: yoy_pct`.
+
+    Returns Indicator или None. None означает «нет counterpart» — backend
+    откатывается к старой логике (current/previous в исходных единицах,
+    hero как процент сверху). Это не должно случаться для known indicators
+    в _HERO_YOY_COUNTERPART, но мы безопасны.
+    """
+    if _hero_view(indicator) != "yoy_pct":
+        return None
+    target_code = _HERO_YOY_COUNTERPART.get(indicator.code)
+    if not target_code:
+        return None
+    q = await db.execute(select(Indicator).where(Indicator.code == target_code))
+    return q.scalar_one_or_none()
+
+
 @router.get("", response_model=list[IndicatorSummary])
 async def list_indicators(
     db: AsyncSession = Depends(get_db),
@@ -147,18 +178,28 @@ async def get_indicator(code: str, db: AsyncSession = Depends(get_db)):
     if not indicator:
         raise HTTPException(status_code=404, detail=f"Indicator '{code}' not found")
 
+    # «Hero-counterpart switch»: для индексных индикаторов с
+    # `hero_view: yoy_pct` (housing-price-*, ipi, ppi) переключаем источник
+    # current/previous/change/count/dates на YoY-counterpart derived. Это
+    # фиксит несогласованность когда hero=10.77% а previous_value=333.8
+    # (индекс) — пользователь видел разные единицы в одной карточке.
+    # См. правка 2026-05-23 (Никита: «сломались цены на жильё»).
+    mcfg = indicator.model_config_json or {}
+    hero_indicator = await _resolve_hero_indicator(db, indicator)
+    data_source_id = hero_indicator.id if hero_indicator else indicator.id
+
     stats = await db.execute(
         select(
             func.count(IndicatorData.id),
             func.min(IndicatorData.date),
             func.max(IndicatorData.date),
-        ).where(IndicatorData.indicator_id == indicator.id)
+        ).where(IndicatorData.indicator_id == data_source_id)
     )
     count, first_dt, last_dt = stats.one()
 
     latest = await db.execute(
         select(IndicatorData)
-        .where(IndicatorData.indicator_id == indicator.id)
+        .where(IndicatorData.indicator_id == data_source_id)
         .order_by(desc(IndicatorData.date))
         .limit(2)
     )
@@ -168,19 +209,30 @@ async def get_indicator(code: str, db: AsyncSession = Depends(get_db)):
     prev_val = recent[1].value if len(recent) > 1 else None
     change = round(float(current_val - prev_val), 4) if current_val is not None and prev_val is not None else None
 
-    mcfg = indicator.model_config_json or {}
     alt_freq = mcfg.get("alternate_frequencies") or None
     primary_code = mcfg.get("primary_indicator_code") or None
 
+    # Hero-блок (большая цифра наверху). При активном hero-counterpart
+    # current_val уже хранится в YoY% → hero = current с unit '%'. Иначе
+    # старый путь: посчитать YoY% поверх исходного ряда (back-compat).
     hero_value = hero_unit = hero_label = None
-    if mcfg.get("hero_view") == "yoy_pct":
+    if hero_indicator is not None:
+        hero_value = round(float(current_val), 2) if current_val is not None else None
+        hero_unit = "%"
+        hero_label = "Год к году"
+    elif mcfg.get("hero_view") == "yoy_pct":
         hero_value, hero_unit, hero_label = await _hero_yoy_pct(
             db, indicator.id, indicator.frequency, current_val,
         )
 
+    # При hero-counterpart переопределяем `unit` детали на «%», чтобы фронт
+    # отрендерил и previous_value, и highest/lowest в той же единице, что
+    # и hero. Имя индикатора, methodology, описание — остаются от родителя.
+    detail_unit = "%" if hero_indicator is not None else indicator.unit
+
     detail = IndicatorDetail(
         code=indicator.code, name=indicator.name, name_en=indicator.name_en,
-        unit=indicator.unit, category=indicator.category, is_active=indicator.is_active,
+        unit=detail_unit, category=indicator.category, is_active=indicator.is_active,
         is_listed=indicator.is_listed,
         frequency=indicator.frequency, source=indicator.source,
         source_url=indicator.source_url, description=indicator.description,
@@ -220,9 +272,15 @@ async def get_indicator_data(
     if not indicator:
         raise HTTPException(status_code=404, detail=f"Indicator '{code}' not found")
 
+    # Hero-counterpart switch (см. get_indicator/get_indicator_stats).
+    # График тоже рисуется из YoY-ряда, иначе hero=%, max=%, а линия
+    # рисуется в индексе — третья форма несогласованности.
+    hero_indicator = await _resolve_hero_indicator(db, indicator)
+    data_source_id = hero_indicator.id if hero_indicator else indicator.id
+
     stmt = (
         select(IndicatorData)
-        .where(IndicatorData.indicator_id == indicator.id)
+        .where(IndicatorData.indicator_id == data_source_id)
     )
     if from_date:
         stmt = stmt.where(IndicatorData.date >= from_date)
@@ -256,18 +314,24 @@ async def get_indicator_stats(code: str, db: AsyncSession = Depends(get_db)):
     if not indicator:
         raise HTTPException(status_code=404, detail=f"Indicator '{code}' not found")
 
+    # Hero-counterpart switch (см. get_indicator). highest/lowest/average
+    # тоже должны считаться по YoY-ряду, иначе пользователь видит «hero
+    # 10.77%, max 346.8 индекс» — несогласовано.
+    hero_indicator = await _resolve_hero_indicator(db, indicator)
+    data_source_id = hero_indicator.id if hero_indicator else indicator.id
+
     stats_q = await db.execute(
         select(
             func.count(IndicatorData.id),
             func.avg(IndicatorData.value),
             func.stddev(IndicatorData.value),
-        ).where(IndicatorData.indicator_id == indicator.id)
+        ).where(IndicatorData.indicator_id == data_source_id)
     )
     count, avg_val, std_val = stats_q.one()
 
     highest_q = await db.execute(
         select(IndicatorData)
-        .where(IndicatorData.indicator_id == indicator.id)
+        .where(IndicatorData.indicator_id == data_source_id)
         .order_by(desc(IndicatorData.value))
         .limit(1)
     )
@@ -275,7 +339,7 @@ async def get_indicator_stats(code: str, db: AsyncSession = Depends(get_db)):
 
     lowest_q = await db.execute(
         select(IndicatorData)
-        .where(IndicatorData.indicator_id == indicator.id)
+        .where(IndicatorData.indicator_id == data_source_id)
         .order_by(IndicatorData.value)
         .limit(1)
     )
