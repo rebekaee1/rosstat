@@ -250,11 +250,15 @@ Daily ETL (06:00 МСК, `RUSTATS_SCHEDULER_CRON_HOUR/MINUTE`) запускае�
 - `style-src https://yastatic.net`, `font-src https://yastatic.net` — стили блока.
 
 Точка инициализации:
-1. **Loader** (`window.yaContextCb` + `context.js?async`) живёт **в двух местах**: `frontend/index.html` (для dev) и `backend/app/services/seo_renderer.py::_yandex_rsy_loader()` (для прод-SSR — ADR-0003, single source). Если поменяешь блок ID — оба места.
-2. **Рендер блоков** — фронт-компонент `frontend/src/components/YandexRSY.jsx`, монтируется в `App.jsx::AppRoutes`. Embed-routes (`/embed/*`) **не** включают РСЯ.
-3. **Guard от двойного рендера** — `window.__rsyFloorAdRendered = true` на первом mount. SPA-навигация (React Router) не вызывает повторный `Ya.Context.AdvManager.render()`.
+1. **Loader** (`window.yaContextCb` + `context.js?async`) живёт **в двух местах**: `frontend/index.html` (для dev) и `backend/app/services/seo_renderer.py::_yandex_rsy_loader()` (для прод-SSR — ADR-0003, single source). Loader один на документ, независимо от количества блоков.
+2. **Рендер блоков** — фронт-компонент `frontend/src/components/YandexRSY.jsx`, массив `RSY_BLOCKS` (туда добавлять новые конфигурации). Монтируется в `App.jsx::AppRoutes`. Embed-routes (`/embed/*`) **не** включают РСЯ.
+3. **Guard от двойного рендера** — `window.__rsyFloorAdRendered = true` на первом mount. SPA-навигация (React Router) не вызывает повторный `Ya.Context.AdvManager.render()`; без этого счётчики показов в кабинете РСЯ завышались бы на каждом route-переходе.
 
-Активный блок (2026-05-25): `R-A-19133345-1` тип `floorAd` платформа `touch` (только мобильные). Yandex сам не рендерит блок на десктопе — лишних запросов нет.
+Активные блоки (2026-05-25):
+- `R-A-19133345-1` тип `floorAd` платформа `touch` (мобильные).
+- `R-A-19133345-2` тип `floorAd` платформа `desktop` (десктоп).
+
+Оба блока рендерятся одним push в `yaContextCb`. Yandex AdvManager определяет class устройства и показывает только соответствующий — лишних креативов не подгружается.
 
 Trap-симптомы при ломанной CSP:
 - Консоль: `Refused to load the script 'https://yandex.ru/ads/system/context.js' because it violates the following Content Security Policy directive: ...` → не хватает `yandex.ru` в `script-src`.
