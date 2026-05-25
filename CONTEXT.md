@@ -219,6 +219,19 @@ Daily ETL (06:00 МСК, `RUSTATS_SCHEDULER_CRON_HOUR/MINUTE`) запускае�
 
 Декабрь 2025: ЦБ переразложил dataset 28 (auto-loan-rate). Исторические `element_id 2/4/5/6/7/9/10/11` больше не публикуются, остался только агрегированный `element_id=110` («По всем срокам»). Парсер с `element_id=11` тихо возвращал 0 точек 5 месяцев. Текущий `seed_data.py` хранит `"element_id": 110`. Если ЦБ снова переразложит другой dataset — симптом тот же: ETL `success` + `records_added=0` несколько недель подряд.
 
+### CBR DataService date semantics + 1-month lag за XLSX (M0/M1/M2/deposits)
+
+ЦБ DataService API (`/dataservice/data?publicationId=5&datasetId=*`) для денежных агрегатов имеет **две независимые ловушки**:
+
+1. **Date offset**: ЦБ записывает «остаток на 1-е число» (т.е. dt=`2026-04-01` = состояние **конца марта**). Без `date_offset_months: -1` в конфиге индикатора последняя точка отображается на месяц вперёд («март как апрель»). Правка 2026-05-25 (Никита: «данные за март выдаются как данные за апрель»).
+2. **Lag за XLSX**: DataService отстаёт на 2–4 недели от файла `https://www.cbr.ru/vfs/statistics/credit_statistics/monetary_agg.xlsx`. На 25 мая 2026 DataService отдавал последнюю точку 2026-04-01 (=март), а XLSX уже содержал 2026-05-01 (=апрель, M2=131989.8). Trading Economics берёт из XLSX → у нас был «отстающий» индикатор на 1 публикацию. Правка 2026-05-25 (Никита: «теперь стало за март, но апреля все ещё нет, а на trading economics уже есть»).
+
+**Решение**: для `m0`/`m1`/`m2`/`deposits-individual`/`deposits-business` переключены на парсер `cbr_monetary_agg_xlsx` (`backend/app/services/cbr_monetary_agg_parser.py`) — читает XLSX напрямую, мапит rows (M0=row2, M1=row9, M2=row14, deposits-individual=row6+13+18, deposits-business=row5+12+17), применяет `date_offset_months: -1`. Один XLSX покрывает 5 индикаторов одной HTTP-выгрузкой.
+
+**Что осталось на DataService**: `consumer-credit`/`business-credit` (publicationId=20/22) — другие публикации, не в `monetary_agg.xlsx`. Если у них всплывёт аналогичный лаг — нужен XLSX или альтернативная страница ЦБ.
+
+**Регрессионный признак**: симптом «у trading economics уже опубликовано, у нас нет» для денежных индикаторов = вероятно ЦБ обновил `monetary_agg.xlsx`, а DataService ещё нет. Проверка: `curl -sI https://www.cbr.ru/vfs/statistics/credit_statistics/monetary_agg.xlsx | grep last-modified`.
+
 ### Rate limit policy
 
 `RateLimitMiddleware` в `backend/app/main.py`: 120 req/min на обычные `/api/...` пути, **600 req/min** на `/api/v1/embed/*`, окно 60s, ключ — `X-Forwarded-For` (Caddy/Nginx добавляют). При превышении — `429 Retry-After: 60`. Если Redis недоступен — middleware пропускает запросы (graceful degradation).

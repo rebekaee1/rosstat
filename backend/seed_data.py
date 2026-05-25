@@ -235,16 +235,13 @@ INDICATORS = [
             "Наличные деньги в обращении вне банковской системы (агрегат М0). "
             "Публикуется ежемесячно на 1-е число."
         ),
-        "parser_type": "cbr_dataservice_json",
+        "parser_type": "cbr_monetary_agg_xlsx",
         "model_config_json": {
-            "dataservice": {
-                "publicationId": 5,
-                "datasetId": 5,
-                "measureId": None,
-                "element_id": None,
+            "monetary_agg": {
+                "indicator": "M0",
                 "date_offset_months": -1,
             },
-            "backfill_from_year": 2010,
+            "backfill_from_year": 1993,
             "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 0},
@@ -264,16 +261,13 @@ INDICATORS = [
             "Широкая денежная масса (агрегат М2): наличные + безналичные средства "
             "на счетах резидентов. Публикуется ежемесячно на 1-е число."
         ),
-        "parser_type": "cbr_dataservice_json",
+        "parser_type": "cbr_monetary_agg_xlsx",
         "model_config_json": {
-            "dataservice": {
-                "publicationId": 5,
-                "datasetId": 7,
-                "measureId": None,
-                "element_id": 12,
+            "monetary_agg": {
+                "indicator": "M2",
                 "date_offset_months": -1,
             },
-            "backfill_from_year": 2010,
+            "backfill_from_year": 1995,
             "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 0},
@@ -1222,16 +1216,13 @@ INDICATORS = [
             "Денежный агрегат М1: наличные деньги (М0) плюс переводные депозиты. "
             "Публикуется ежемесячно на 1-е число."
         ),
-        "parser_type": "cbr_dataservice_json",
+        "parser_type": "cbr_monetary_agg_xlsx",
         "model_config_json": {
-            "dataservice": {
-                "publicationId": 5,
-                "datasetId": 6,
-                "measureId": None,
-                "element_id": 12,
+            "monetary_agg": {
+                "indicator": "M1",
                 "date_offset_months": -1,
             },
-            "backfill_from_year": 2010,
+            "backfill_from_year": 1995,
             "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 0},
@@ -1312,14 +1303,13 @@ INDICATORS = [
             "Суммарные вклады физических лиц: переводные, срочные "
             "и валютные депозиты домашних хозяйств."
         ),
-        "parser_type": "cbr_dataservice_sum",
+        "parser_type": "cbr_monetary_agg_xlsx",
         "model_config_json": {
-            "dataservice_components": [
-                {"publicationId": 5, "datasetId": 6, "element_id": 16, "date_offset_months": -1},
-                {"publicationId": 5, "datasetId": 7, "element_id": 22, "date_offset_months": -1},
-                {"publicationId": 5, "datasetId": 8, "element_id": 26, "date_offset_months": -1},
-            ],
-            "backfill_from_year": 2010,
+            "monetary_agg": {
+                "indicator": "deposits-individual",
+                "date_offset_months": -1,
+            },
+            "backfill_from_year": 2000,
             "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 0},
@@ -1339,14 +1329,13 @@ INDICATORS = [
             "Суммарные депозиты нефинансовых организаций: переводные, "
             "срочные и валютные."
         ),
-        "parser_type": "cbr_dataservice_sum",
+        "parser_type": "cbr_monetary_agg_xlsx",
         "model_config_json": {
-            "dataservice_components": [
-                {"publicationId": 5, "datasetId": 6, "element_id": 15, "date_offset_months": -1},
-                {"publicationId": 5, "datasetId": 7, "element_id": 21, "date_offset_months": -1},
-                {"publicationId": 5, "datasetId": 8, "element_id": 25, "date_offset_months": -1},
-            ],
-            "backfill_from_year": 2010,
+            "monetary_agg": {
+                "indicator": "deposits-business",
+                "date_offset_months": -1,
+            },
+            "backfill_from_year": 2000,
             "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 0},
