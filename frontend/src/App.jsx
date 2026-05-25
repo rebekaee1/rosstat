@@ -2,6 +2,7 @@ import { useEffect, useRef, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useParams, useLocation, Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import LiveTicker from './components/LiveTicker';
+import YandexRSY from './components/YandexRSY';
 import NoiseOverlay from './components/NoiseOverlay';
 import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -119,6 +120,7 @@ function AppRoutes() {
     <>
       <ScrollToTop />
       <YandexMetrikaHit />
+      <YandexRSY />
       <NoiseOverlay />
       <LiveTicker />
       <Navbar />

@@ -240,6 +240,29 @@ Daily ETL (06:00 МСК, `RUSTATS_SCHEDULER_CRON_HOUR/MINUTE`) запускае�
 
 `Caddyfile` явно перечисляет десятки доменов `mc.yandex.{ru,by,...}`, `mc.webvisor.com`, `*.ingest.sentry.io` в `script-src` / `connect-src` / `child-src`. Любой новый Yandex-домен (например, `mc.yandex.kz` для Казахстана) — в whitelist через PR в Caddyfile, без него браузеры блокируют скрипт счётчика.
 
+### Yandex.RSY (РСЯ floor-ad) — отдельный CSP-набор доменов
+
+Контекстная реклама РСЯ — **независимый от Метрики** домен-граф:
+- `script-src https://yandex.ru https://an.yandex.ru https://yastatic.net` — `context.js` и runtime AdvManager (`yandex.ru/ads/system/context.js`).
+- `img-src https://yandex.ru https://an.yandex.ru https://avatars.mds.yandex.net https://yastatic.net https://*.yandex.net` — креативы.
+- `connect-src https://yandex.ru https://an.yandex.ru` — телеметрия показов/кликов.
+- `frame-src` + `child-src` для `https://yandex.ru https://an.yandex.ru https://*.yandex.net` — рекламный iframe.
+- `style-src https://yastatic.net`, `font-src https://yastatic.net` — стили блока.
+
+Точка инициализации:
+1. **Loader** (`window.yaContextCb` + `context.js?async`) живёт **в двух местах**: `frontend/index.html` (для dev) и `backend/app/services/seo_renderer.py::_yandex_rsy_loader()` (для прод-SSR — ADR-0003, single source). Если поменяешь блок ID — оба места.
+2. **Рендер блоков** — фронт-компонент `frontend/src/components/YandexRSY.jsx`, монтируется в `App.jsx::AppRoutes`. Embed-routes (`/embed/*`) **не** включают РСЯ.
+3. **Guard от двойного рендера** — `window.__rsyFloorAdRendered = true` на первом mount. SPA-навигация (React Router) не вызывает повторный `Ya.Context.AdvManager.render()`.
+
+Активный блок (2026-05-25): `R-A-19133345-1` тип `floorAd` платформа `touch` (только мобильные). Yandex сам не рендерит блок на десктопе — лишних запросов нет.
+
+Trap-симптомы при ломанной CSP:
+- Консоль: `Refused to load the script 'https://yandex.ru/ads/system/context.js' because it violates the following Content Security Policy directive: ...` → не хватает `yandex.ru` в `script-src`.
+- Объявление загружается, но iframe пустой → `frame-src` / `child-src` режут `*.yandex.net`.
+- Креативы битые → `img-src` режет `avatars.mds.yandex.net`.
+
+Goal в Метрике: `rsy_floor_render` (см. `frontend/src/components/YandexRSY.jsx`) — фиксирует момент успешного render, можно сверять с показами в кабинете РСЯ.
+
 ### Scheduler dual jobs + analytics-scheduler флаг
 
 В `backend/app/main.py` lifespan регистрируются **два обязательных** APScheduler job'а: `daily_etl` (06:00 МСК) и `calendar_refresh` (1-го числа 03:00 МСК). Дополнительно — два опциональных под `RUSTATS_ANALYTICS_SCHEDULER_ENABLED=true`: `analytics_hourly` (:15) и `analytics_daily` (07:20). Если scheduler-флаг выключен — работает только `daily_etl` + `calendar_refresh`, прочие cron-ы не регистрируются.
