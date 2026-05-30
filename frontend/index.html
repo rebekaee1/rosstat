@@ -63,6 +63,12 @@
     </script>
     <!-- /Yandex.Metrika counter — pixel noscript в &lt;body&gt; (валидный HTML) -->
 
+    <!-- Yandex.RTB loader (РСЯ) — один раз на документ, вызывает рендер блоков через
+         window.yaContextCb. Конкретные блоки рендерятся из компонента YandexRSY.jsx.
+         См. CONTEXT.md::Yandex.RSY domains CSP (новый CSP-whitelist в Caddyfile). -->
+    <script>window.yaContextCb=window.yaContextCb||[]</script>
+    <script src="https://yandex.ru/ads/system/context.js" async></script>
+
     <title>Forecast Economy | Бесплатная аналитика экономики России</title>
     <meta name="description" content="Forecast Economy — бесплатная платформа макроэкономической аналитики России. 80+ индикаторов в 9 категориях: ИПЦ, ВВП, ставки, валюты, рынок труда, торговля. Данные Росстата и ЦБ РФ, прогнозы. Без регистрации." />
     <meta name="author" content="Forecast Economy" />

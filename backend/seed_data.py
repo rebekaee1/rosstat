@@ -235,16 +235,13 @@ INDICATORS = [
             "Наличные деньги в обращении вне банковской системы (агрегат М0). "
             "Публикуется ежемесячно на 1-е число."
         ),
-        "parser_type": "cbr_dataservice_json",
+        "parser_type": "cbr_monetary_agg_xlsx",
         "model_config_json": {
-            "dataservice": {
-                "publicationId": 5,
-                "datasetId": 5,
-                "measureId": None,
-                "element_id": None,
-                "date_offset_months": 0,
+            "monetary_agg": {
+                "indicator": "M0",
+                "date_offset_months": -1,
             },
-            "backfill_from_year": 2010,
+            "backfill_from_year": 1993,
             "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 0},
@@ -264,16 +261,13 @@ INDICATORS = [
             "Широкая денежная масса (агрегат М2): наличные + безналичные средства "
             "на счетах резидентов. Публикуется ежемесячно на 1-е число."
         ),
-        "parser_type": "cbr_dataservice_json",
+        "parser_type": "cbr_monetary_agg_xlsx",
         "model_config_json": {
-            "dataservice": {
-                "publicationId": 5,
-                "datasetId": 7,
-                "measureId": None,
-                "element_id": 12,
-                "date_offset_months": 0,
+            "monetary_agg": {
+                "indicator": "M2",
+                "date_offset_months": -1,
             },
-            "backfill_from_year": 2010,
+            "backfill_from_year": 1995,
             "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 0},
@@ -1249,16 +1243,13 @@ INDICATORS = [
             "Денежный агрегат М1: наличные деньги (М0) плюс переводные депозиты. "
             "Публикуется ежемесячно на 1-е число."
         ),
-        "parser_type": "cbr_dataservice_json",
+        "parser_type": "cbr_monetary_agg_xlsx",
         "model_config_json": {
-            "dataservice": {
-                "publicationId": 5,
-                "datasetId": 6,
-                "measureId": None,
-                "element_id": 12,
-                "date_offset_months": 0,
+            "monetary_agg": {
+                "indicator": "M1",
+                "date_offset_months": -1,
             },
-            "backfill_from_year": 2010,
+            "backfill_from_year": 1995,
             "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 0},
@@ -1285,7 +1276,7 @@ INDICATORS = [
                 "datasetId": 42,
                 "measureId": 22,
                 "element_id": 35,
-                "date_offset_months": 0,
+                "date_offset_months": -1,
             },
             "backfill_from_year": 2019,
             "forecast_steps": 0,
@@ -1315,7 +1306,7 @@ INDICATORS = [
                 "datasetId": 50,
                 "measureId": 22,
                 "element_id": 35,
-                "date_offset_months": 0,
+                "date_offset_months": -1,
             },
             "backfill_from_year": 2019,
             "forecast_steps": 0,
@@ -1339,14 +1330,13 @@ INDICATORS = [
             "Суммарные вклады физических лиц: переводные, срочные "
             "и валютные депозиты домашних хозяйств."
         ),
-        "parser_type": "cbr_dataservice_sum",
+        "parser_type": "cbr_monetary_agg_xlsx",
         "model_config_json": {
-            "dataservice_components": [
-                {"publicationId": 5, "datasetId": 6, "element_id": 16, "date_offset_months": 0},
-                {"publicationId": 5, "datasetId": 7, "element_id": 22, "date_offset_months": 0},
-                {"publicationId": 5, "datasetId": 8, "element_id": 26, "date_offset_months": 0},
-            ],
-            "backfill_from_year": 2010,
+            "monetary_agg": {
+                "indicator": "deposits-individual",
+                "date_offset_months": -1,
+            },
+            "backfill_from_year": 2000,
             "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 0},
@@ -1366,14 +1356,13 @@ INDICATORS = [
             "Суммарные депозиты нефинансовых организаций: переводные, "
             "срочные и валютные."
         ),
-        "parser_type": "cbr_dataservice_sum",
+        "parser_type": "cbr_monetary_agg_xlsx",
         "model_config_json": {
-            "dataservice_components": [
-                {"publicationId": 5, "datasetId": 6, "element_id": 15, "date_offset_months": 0},
-                {"publicationId": 5, "datasetId": 7, "element_id": 21, "date_offset_months": 0},
-                {"publicationId": 5, "datasetId": 8, "element_id": 25, "date_offset_months": 0},
-            ],
-            "backfill_from_year": 2010,
+            "monetary_agg": {
+                "indicator": "deposits-business",
+                "date_offset_months": -1,
+            },
+            "backfill_from_year": 2000,
             "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 0},
@@ -1473,7 +1462,6 @@ INDICATORS = [
             "forecast_steps": 4,
             "forecast_strategy": "housing_quarterly",
             "forecast_transform": "absolute",
-            "hero_view": "yoy_pct",
             "validation": {"min": 50, "max": 500},
         },
         "is_active": True,
@@ -1505,7 +1493,6 @@ INDICATORS = [
             "forecast_steps": 4,
             "forecast_strategy": "housing_quarterly",
             "forecast_transform": "absolute",
-            "hero_view": "yoy_pct",
             "validation": {"min": 50, "max": 500},
         },
         "is_active": True,
@@ -1537,7 +1524,6 @@ INDICATORS = [
         "model_config_json": {
             "forecast_steps": 0,
             "forecast_transform": "absolute",
-            "hero_view": "yoy_pct",
             "validation": {"min": 30, "max": 200},
         },
         "is_active": True,
@@ -1768,7 +1754,6 @@ INDICATORS = [
             "forecast_steps": 12,
             "forecast_strategy": "ppi_monthly",
             "forecast_transform": "absolute",
-            "hero_view": "yoy_pct",
             "validation": {"min": 50, "max": 500},
         },
         "is_active": True,
@@ -2395,10 +2380,15 @@ INDICATORS = [
         "unit": "млн $",
         "frequency": "quarterly",
         "source": "Банк России",
-        "source_url": "https://www.cbr.ru/statistics/macro_itm/svs/",
+        "source_url": "https://www.cbr.ru/statistics/macro_itm/external_sector/di/",
         "description": (
-            "Чистый приток прямых иностранных инвестиций по финансовому счёту. "
-            "Квартальные данные платёжного баланса ЦБ."
+            "Чистый приток прямых иностранных инвестиций по финансовому счёту "
+            "платёжного баланса (квартальные потоки в млн долл. США). Включает "
+            "приобретение нерезидентами долей в уставном капитале и долговых "
+            "обязательств российских компаний за вычетом изъятий. Не путать "
+            "с накопленными остатками прямых инвестиций (stocks/IIP) — это разный "
+            "индикатор. Источник — сводный платёжный баланс ЦБ, обновляется раз "
+            "в квартал с лагом ~2 месяца после конца квартала."
         ),
         "parser_type": "cbr_bop_xlsx",
         "model_config_json": {
@@ -2599,16 +2589,22 @@ INDICATORS = [
         "name": "Инвестиции в основной капитал",
         "name_en": "Fixed Capital Investment",
         "unit": "млрд руб.",
-        "frequency": "monthly",
+        "frequency": "quarterly",
         "source": "Росстат",
         "source_url": "https://rosstat.gov.ru/compendium/document/50802",
-        "description": "Инвестиции в основной капитал — затраты на создание и воспроизводство основных средств: строительство, приобретение оборудования, транспорта, IT-инфраструктуры.",
+        "description": (
+            "Инвестиции в основной капитал — затраты на создание и воспроизводство "
+            "основных средств: строительство, приобретение оборудования, транспорта, "
+            "IT-инфраструктуры. Публикуются Росстатом поквартально."
+        ),
         "methodology": (
             "Объём инвестиций в основной капитал в текущих ценах. Включает "
             "затраты на приобретение, создание и модернизацию основных фондов "
             "(здания, сооружения, машины, оборудование) предприятиями и "
-            "организациями всех форм собственности. Месячные данные публикуются "
-            "Росстатом в составе сборника «Краткосрочные экономические показатели»."
+            "организациями всех форм собственности. Квартальные данные публикуются "
+            "Росстатом в составе сборника «Краткосрочные экономические показатели» "
+            "(лист 1.6). Помесячная разбивка по этому показателю Росстатом не "
+            "публикуется. Публикация — с лагом ~2 месяца после конца квартала."
         ),
         "parser_type": "rosstat_ind_monthly",
         "model_config_json": {"forecast_steps": 0, "ind_sheet": "1.6 "},

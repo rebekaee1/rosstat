@@ -235,6 +235,19 @@ Daily ETL (06:00 МСК, `RUSTATS_SCHEDULER_CRON_HOUR/MINUTE`) запускае�
 
 Декабрь 2025: ЦБ переразложил dataset 28 (auto-loan-rate). Исторические `element_id 2/4/5/6/7/9/10/11` больше не публикуются, остался только агрегированный `element_id=110` («По всем срокам»). Парсер с `element_id=11` тихо возвращал 0 точек 5 месяцев. Текущий `seed_data.py` хранит `"element_id": 110`. Если ЦБ снова переразложит другой dataset — симптом тот же: ETL `success` + `records_added=0` несколько недель подряд.
 
+### CBR DataService date semantics + 1-month lag за XLSX (M0/M1/M2/deposits)
+
+ЦБ DataService API (`/dataservice/data?publicationId=5&datasetId=*`) для денежных агрегатов имеет **две независимые ловушки**:
+
+1. **Date offset**: ЦБ записывает «остаток на 1-е число» (т.е. dt=`2026-04-01` = состояние **конца марта**). Без `date_offset_months: -1` в конфиге индикатора последняя точка отображается на месяц вперёд («март как апрель»). Правка 2026-05-25 (Никита: «данные за март выдаются как данные за апрель»).
+2. **Lag за XLSX**: DataService отстаёт на 2–4 недели от файла `https://www.cbr.ru/vfs/statistics/credit_statistics/monetary_agg.xlsx`. На 25 мая 2026 DataService отдавал последнюю точку 2026-04-01 (=март), а XLSX уже содержал 2026-05-01 (=апрель, M2=131989.8). Trading Economics берёт из XLSX → у нас был «отстающий» индикатор на 1 публикацию. Правка 2026-05-25 (Никита: «теперь стало за март, но апреля все ещё нет, а на trading economics уже есть»).
+
+**Решение**: для `m0`/`m1`/`m2`/`deposits-individual`/`deposits-business` переключены на парсер `cbr_monetary_agg_xlsx` (`backend/app/services/cbr_monetary_agg_parser.py`) — читает XLSX напрямую, мапит rows (M0=row2, M1=row9, M2=row14, deposits-individual=row6+13+18, deposits-business=row5+12+17), применяет `date_offset_months: -1`. Один XLSX покрывает 5 индикаторов одной HTTP-выгрузкой.
+
+**Что осталось на DataService**: `consumer-credit`/`business-credit` (publicationId=20/22) — другие публикации, не в `monetary_agg.xlsx`. Если у них всплывёт аналогичный лаг — нужен XLSX или альтернативная страница ЦБ.
+
+**Регрессионный признак**: симптом «у trading economics уже опубликовано, у нас нет» для денежных индикаторов = вероятно ЦБ обновил `monetary_agg.xlsx`, а DataService ещё нет. Проверка: `curl -sI https://www.cbr.ru/vfs/statistics/credit_statistics/monetary_agg.xlsx | grep last-modified`.
+
 ### Rate limit policy
 
 `RateLimitMiddleware` в `backend/app/main.py`: 120 req/min на обычные `/api/...` пути, **600 req/min** на `/api/v1/embed/*`, окно 60s, ключ — `X-Forwarded-For` (Caddy/Nginx добавляют). При превышении — `429 Retry-After: 60`. Если Redis недоступен — middleware пропускает запросы (graceful degradation).
@@ -242,6 +255,33 @@ Daily ETL (06:00 МСК, `RUSTATS_SCHEDULER_CRON_HOUR/MINUTE`) запускае�
 ### CSP whitelist для Yandex.Metrika
 
 `Caddyfile` явно перечисляет десятки доменов `mc.yandex.{ru,by,...}`, `mc.webvisor.com`, `*.ingest.sentry.io` в `script-src` / `connect-src` / `child-src`. Любой новый Yandex-домен (например, `mc.yandex.kz` для Казахстана) — в whitelist через PR в Caddyfile, без него браузеры блокируют скрипт счётчика.
+
+### Yandex.RSY (РСЯ floor-ad) — отдельный CSP-набор доменов
+
+Контекстная реклама РСЯ — **независимый от Метрики** домен-граф:
+- `script-src https://yandex.ru https://an.yandex.ru https://yastatic.net` — `context.js` и runtime AdvManager (`yandex.ru/ads/system/context.js`).
+- `img-src https://yandex.ru https://an.yandex.ru https://avatars.mds.yandex.net https://yastatic.net https://*.yandex.net` — креативы.
+- `connect-src https://yandex.ru https://an.yandex.ru` — телеметрия показов/кликов.
+- `frame-src` + `child-src` для `https://yandex.ru https://an.yandex.ru https://*.yandex.net` — рекламный iframe.
+- `style-src https://yastatic.net`, `font-src https://yastatic.net` — стили блока.
+
+Точка инициализации:
+1. **Loader** (`window.yaContextCb` + `context.js?async`) живёт **в двух местах**: `frontend/index.html` (для dev) и `backend/app/services/seo_renderer.py::_yandex_rsy_loader()` (для прод-SSR — ADR-0003, single source). Loader один на документ, независимо от количества блоков.
+2. **Рендер блоков** — фронт-компонент `frontend/src/components/YandexRSY.jsx`, массив `RSY_BLOCKS` (туда добавлять новые конфигурации). Монтируется в `App.jsx::AppRoutes`. Embed-routes (`/embed/*`) **не** включают РСЯ.
+3. **Guard от двойного рендера** — `window.__rsyFloorAdRendered = true` на первом mount. SPA-навигация (React Router) не вызывает повторный `Ya.Context.AdvManager.render()`; без этого счётчики показов в кабинете РСЯ завышались бы на каждом route-переходе.
+
+Активные блоки (2026-05-25):
+- `R-A-19133345-1` тип `floorAd` платформа `touch` (мобильные).
+- `R-A-19133345-2` тип `floorAd` платформа `desktop` (десктоп).
+
+Оба блока рендерятся одним push в `yaContextCb`. Yandex AdvManager определяет class устройства и показывает только соответствующий — лишних креативов не подгружается.
+
+Trap-симптомы при ломанной CSP:
+- Консоль: `Refused to load the script 'https://yandex.ru/ads/system/context.js' because it violates the following Content Security Policy directive: ...` → не хватает `yandex.ru` в `script-src`.
+- Объявление загружается, но iframe пустой → `frame-src` / `child-src` режут `*.yandex.net`.
+- Креативы битые → `img-src` режет `avatars.mds.yandex.net`.
+
+Goal в Метрике: `rsy_floor_render` (см. `frontend/src/components/YandexRSY.jsx`) — фиксирует момент успешного render, можно сверять с показами в кабинете РСЯ.
 
 ### Scheduler dual jobs + analytics-scheduler флаг
 

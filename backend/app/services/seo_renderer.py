@@ -205,6 +205,20 @@ ym(107136069,'init',{{defer:true,webvisor:true,clickmap:true,accurateTrackBounce
 </script>"""
 
 
+def _yandex_rsy_loader() -> str:
+    """Yandex.RTB (РСЯ) loader — `window.yaContextCb` + async context.js.
+
+    Загружается один раз на документ. Конкретные блоки рендерятся
+    из фронта (см. frontend/src/components/YandexRSY.jsx).
+    Без CSP-whitelist для yandex.ru/an.yandex.ru/yastatic.net браузер
+    блокирует context.js и iframe объявлений (см. CONTEXT.md::Yandex.RSY).
+    """
+    return (
+        '<script>window.yaContextCb=window.yaContextCb||[]</script>'
+        '<script src="https://yandex.ru/ads/system/context.js" async></script>'
+    )
+
+
 DEFAULT_KEYWORDS = (
     "экономика России, макроэкономические данные, Росстат, Банк России, "
     "ВВП, инфляция, ставки, валюты"
@@ -234,6 +248,7 @@ async def build_document(
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {_metrika_script()}
+{_yandex_rsy_loader()}
 <title>{safe_title}</title>
 <meta name="description" content="{safe_desc}">
 <meta name="keywords" content="{safe_keywords}">

@@ -113,8 +113,8 @@ export default function LiveTicker() {
 
   return (
     <div className="fixed top-0 inset-x-0 z-[110] h-9 bg-[#faf7f0] border-b border-champagne/15 shadow-sm">
-      <div className="max-w-7xl mx-auto h-full px-4 flex items-center overflow-x-auto scrollbar-hide">
-        <div className="flex items-center gap-1 w-full justify-between md:justify-start md:gap-3">
+      <div className="max-w-7xl mx-auto h-full px-4 flex items-center justify-center overflow-x-auto scrollbar-hide">
+        <div className="flex items-center gap-1 w-full justify-between md:w-auto md:gap-6">
           {snapshots.map((s) => (
             <TickerCell key={s.code} snapshot={s} />
           ))}
