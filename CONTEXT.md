@@ -1,6 +1,6 @@
 # Forecast Economy — Project Context
 
-**Last updated:** 2026-05-22 (документация-ревизия: counts синхронизированы (31 DERIVED_SPECS, 12 derived_ops, 27 PARSER_REGISTRY); `docs/cbr_sources.md` мигрирован в docstrings парсеров и удалён (parser internals теперь живут в `backend/app/services/*_parser.py`); `docs/plan.md` и `docs/recap-2026-05-22.md` мигрированы в backlog и удалены; ADR-0002/0003/0004/0005 ревалидированы и Last verified подняты на 2026-05-22; broken refs в README удалены; `_catch_up_empty_indicators` + nginx no-cache always дотянуты в workflow/enterprise_resilience. Содержательная история звонков 21-22 мая — в `docs/backlog.md::История`.
+**Last updated:** 2026-05-30 (integrate: deploy/ticker-and-search в main + WIP weekly inflation steady-state; monetary agg XLSX trap из deploy; inflation-weekly ETL timeout trap).
 **Part of:** [`AGENTS.md`](AGENTS.md) (точка входа для AI-агента).
 **See also:** [`README.md`](README.md), [`docs/workflow.md`](docs/workflow.md), [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md), [`docs/data_sources.md`](docs/data_sources.md), [`docs/analytics_api_inventory/`](docs/analytics_api_inventory/), [`docs/adr/`](docs/adr/). Parser internals (CBR/Минфин/Rosstat) живут в docstrings `backend/app/services/*_parser.py`.
 
@@ -247,6 +247,22 @@ Daily ETL (06:00 МСК, `RUSTATS_SCHEDULER_CRON_HOUR/MINUTE`) запускае�
 **Что осталось на DataService**: `consumer-credit`/`business-credit` (publicationId=20/22) — другие публикации, не в `monetary_agg.xlsx`. Если у них всплывёт аналогичный лаг — нужен XLSX или альтернативная страница ЦБ.
 
 **Регрессионный признак**: симптом «у trading economics уже опубликовано, у нас нет» для денежных индикаторов = вероятно ЦБ обновил `monetary_agg.xlsx`, а DataService ещё нет. Проверка: `curl -sI https://www.cbr.ru/vfs/statistics/credit_statistics/monetary_agg.xlsx | grep last-modified`.
+
+### inflation-weekly: ETL_TIMEOUT_SECONDS vs полный crawl Rosstat-архива
+
+`scheduler.run_etl_for_indicator` использует жёсткий per-indicator timeout = `ETL_TIMEOUT_SECONDS = 300` (`backend/app/tasks/scheduler.py`). Парсер `rosstat_weekly_cpi` исторически делал «толстый» прогон каждый день: crawl до 70 страниц `central-news`, `search` × 12 месяцев × все годы [2023..today.year], full GET каждого найденного bulletin (~150 на момент 2026-05), плюс XLSX (~110 продов + `ipc_spr_MM-YYYY.xlsx`). По мере накопления bulletin'ов общий wall-time приближался к лимиту: 24 мая 2026 ещё успел, 25-27 мая — `status=timeout` 4 дня подряд, точка 2026-05-25 (bulletin 77 от 27-05) не подхватилась. Никита: «недельная инфляция не обновилась, вчера вышла вечером, а у нас старые данные» (2026-05-28).
+
+**Решение** (`backend/app/services/rosstat_weekly_inflation_parser.py`):
+
+1. **Steady-state guard**: `_fetch_and_parse` выбирает `IndicatorData.date` для своего indicator → `existing_dates: set[date]`. Если есть хотя бы одна точка за прошлый год — backfill точно сделан, парсер качает **только `today.year`** (1 год вместо 4-х).
+2. **Skip bulletin GETs**: для каждого URL вытаскиваем pub_date через regex `_BULLETIN_PUB_DATE_RE`. Если `pub_date < max(existing_dates) - 14d`, week-end такого bulletin'а заведомо в БД — `continue` без GET'a.
+3. **XLSX-fallback только при cold-start**: в steady-state XLSX-приближение покрывает только историю до `weekly_cutoff_date`, которая уже в БД. Качать `nedel_Ipc.xlsx` + `ipc_spr` смысла нет.
+
+Эффект: cold-start ≈ 5+ минут (мог не уложиться в 300с), steady-state — **~28 секунд**.
+
+**Регрессионный признак**: `fetch_log.status='timeout'` несколько дней подряд для `inflation-weekly` при том, что bulletin на `rosstat.gov.ru/central-news?page=1` уже есть. Проверка: `curl -sk https://rosstat.gov.ru/central-news?page=1 | grep -oE 'storage/mediabank/\d+_\d{2}-\d{2}-\d{4}\.html' | head -5` — должен быть bulletin за позавчера-вчера.
+
+**Что делать если опять отвалится**: запустить ETL вручную мимо scheduler-таймаута: `docker compose exec backend python -c "import asyncio; from app.tasks.scheduler import run_etl_for_indicator; asyncio.run(run_etl_for_indicator('inflation-weekly'))"`. Если внутри парсера за 5+ минут не приходит свежий bulletin — значит изменился layout `rosstat.gov.ru/central-news` или `/search`, нужна правка discovery (см. `_find_bulletin_urls_central_news` / `_find_bulletin_urls`).
 
 ### Rate limit policy
 

@@ -40,16 +40,17 @@ import asyncio
 import logging
 import re
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, timedelta
 from difflib import get_close_matches
 from io import BytesIO
 from typing import ClassVar
 
 import openpyxl
 import requests
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models import FetchLog, Indicator
+from app.models import FetchLog, Indicator, IndicatorData
 from app.services.base_parser import BaseParser
 from app.services.http_client import create_session
 
@@ -381,14 +382,53 @@ def _find_bulletin_urls(session: requests.Session, year: int) -> list[str]:
     return sorted(set(via_central) | via_search)
 
 
-def fetch_bulletin_points(session: requests.Session, years: list[int]) -> list[WeeklyPoint]:
-    """Fetch weekly CPI from Rosstat HTML bulletins for the given years."""
+_BULLETIN_PUB_DATE_RE = re.compile(r"/(\d+)_(\d{2})-(\d{2})-(\d{4})\.html$")
+
+
+def _bulletin_pub_date(url: str) -> date | None:
+    """Extract publication date from a bulletin URL.
+
+    The publication date in the URL is **not** the same as the week-end date
+    inside the bulletin (publication is typically Wed; week-end is Sun/Mon
+    of the prior week). But it's close enough — week-end is within 7-10 days
+    before publication. We use that for skip-heuristics in steady-state.
+    """
+    m = _BULLETIN_PUB_DATE_RE.search(url)
+    if not m:
+        return None
+    try:
+        return date(int(m.group(4)), int(m.group(3)), int(m.group(2)))
+    except ValueError:
+        return None
+
+
+def fetch_bulletin_points(
+    session: requests.Session,
+    years: list[int],
+    existing_dates: set[date] | None = None,
+) -> list[WeeklyPoint]:
+    """Fetch weekly CPI from Rosstat HTML bulletins for the given years.
+
+    `existing_dates`: если задано, GET'ы для bulletin'ов с publication-датой
+    `>= 14 days ранее max(existing_dates)` будут пропущены — их week-end
+    точно уже в БД. Это снижает steady-state GET'ов от сотен до 1-3.
+    """
     points: list[WeeklyPoint] = []
     seen_dates: set[date] = set()
+    skip_pub_before: date | None = None
+    if existing_dates:
+        max_known = max(existing_dates)
+        skip_pub_before = max_known - timedelta(days=14)
+    skipped = 0
     for year in years:
         urls = _find_bulletin_urls(session, year)
         logger.info("Weekly CPI bulletins for %d: %d URLs", year, len(urls))
         for url in urls:
+            if skip_pub_before is not None:
+                pub = _bulletin_pub_date(url)
+                if pub is not None and pub < skip_pub_before:
+                    skipped += 1
+                    continue
             try:
                 r = session.get(url, timeout=30, verify=False)
                 if r.status_code != 200:
@@ -400,6 +440,11 @@ def fetch_bulletin_points(session: requests.Session, years: list[int]) -> list[W
                     points.append(pt)
             except requests.RequestException as exc:
                 logger.warning("Failed to fetch bulletin %s: %s", url, exc)
+    if skipped:
+        logger.info(
+            "Weekly CPI: skipped %d bulletin GETs (pub_date < %s, week-end already in DB)",
+            skipped, skip_pub_before,
+        )
     points.sort(key=lambda p: p.date)
     return points
 
@@ -436,36 +481,56 @@ def fetch_weekly_cpi(
         # вернул 174 уникальных дат, 0 weekly-bulletin'ов за 2021, 0 за 2022,
         # 1 за 2023-02-08. См. `docs/audits/weekly_inflation_research_2026-05.md`.
         #
-        # Поэтому iterate по всем годам [2023..today.year] — это даёт ETL
-        # возможность сделать full backfill bulletin'ов после миграции и
-        # перезаписать XLSX-агрегат точными Росстатовскими числами. В steady
-        # state daily ETL обнаружит уже существующие точки и пропустит их
-        # (`existing_dates` фильтр чуть ниже), так что overhead = 1 запрос на
-        # один year search API за прогон.
+        # Steady-state оптимизация (2026-05-28): если в `existing_dates` уже
+        # есть точка за прошлый год — backfill bulletin'ов 2023..(today.year-1)
+        # точно сделан, повторять не нужно. Качаем только current year.
+        # Это снижает 4-летний crawl × 12 search-запросов до 1-летнего ×
+        # current_month-запросов в steady-state, ETL укладывается в <60с
+        # вместо 5+ минут.
         BULLETIN_FIRST_YEAR = 2023
-        bulletin_years = list(range(BULLETIN_FIRST_YEAR, today.year + 1))
+        last_year = today.year - 1
+        steady_state = bool(
+            existing_dates and any(d.year <= last_year for d in existing_dates)
+        )
+        if steady_state:
+            bulletin_years = [today.year]
+            logger.info(
+                "Weekly CPI steady-state: %d existing points incl. %d-%d, "
+                "fetching only current year %d",
+                len(existing_dates or ()), BULLETIN_FIRST_YEAR, last_year, today.year,
+            )
+        else:
+            bulletin_years = list(range(BULLETIN_FIRST_YEAR, today.year + 1))
+            logger.info(
+                "Weekly CPI cold-start: fetching backfill for years %s", bulletin_years,
+            )
 
-        logger.info("Fetching weekly CPI bulletins for years %s", bulletin_years)
-        bulletin_points = fetch_bulletin_points(session, bulletin_years)
+        bulletin_points = fetch_bulletin_points(session, bulletin_years, existing_dates)
         logger.info("Weekly CPI: parsed %d points from HTML bulletins", len(bulletin_points))
 
+        # XLSX fallback нужен только при cold-start (нет данных в БД) — он
+        # покрывает недели до cutoff_date, где HTML-бюллетеней не было.
+        # В steady-state весь этот диапазон уже в БД, XLSX качать смысла нет.
         xlsx_points: list[WeeklyPoint] = []
-        for xlsx_url in (NEDEL_IPC_URL, NEDEL_IPC_URL_FALLBACK):
-            logger.info("Downloading weekly XLSX: %s", xlsx_url)
-            try:
-                r = session.get(xlsx_url, timeout=60)
-                if r.status_code != 200:
-                    logger.warning("HTTP %d for %s", r.status_code, xlsx_url)
-                    continue
-                weights = _load_weights(session)
-                if not weights:
-                    logger.warning("No weights available — XLSX fallback skipped")
+        if steady_state:
+            logger.info("Weekly CPI: skipping XLSX fallback in steady-state")
+        else:
+            for xlsx_url in (NEDEL_IPC_URL, NEDEL_IPC_URL_FALLBACK):
+                logger.info("Downloading weekly XLSX: %s", xlsx_url)
+                try:
+                    r = session.get(xlsx_url, timeout=60)
+                    if r.status_code != 200:
+                        logger.warning("HTTP %d for %s", r.status_code, xlsx_url)
+                        continue
+                    weights = _load_weights(session)
+                    if not weights:
+                        logger.warning("No weights available — XLSX fallback skipped")
+                        break
+                    xlsx_points = _parse_weekly_xlsx(r.content, weights)
+                    logger.info("Weekly CPI: parsed %d points from %s", len(xlsx_points), xlsx_url)
                     break
-                xlsx_points = _parse_weekly_xlsx(r.content, weights)
-                logger.info("Weekly CPI: parsed %d points from %s", len(xlsx_points), xlsx_url)
-                break
-            except requests.RequestException as exc:
-                logger.warning("XLSX fetch failed for %s: %s", xlsx_url, exc)
+                except requests.RequestException as exc:
+                    logger.warning("XLSX fetch failed for %s: %s", xlsx_url, exc)
 
         merged: dict[date, float] = {p.date: p.value for p in xlsx_points}
         for p in bulletin_points:
@@ -512,7 +577,17 @@ class RosstatWeeklyCpiParser(BaseParser):
                 logger.warning(
                     "Weekly CPI: invalid weekly_cutoff_date=%r, ignoring", cutoff_raw,
                 )
+
+        # Steady-state guard: проброс existing_dates позволяет парсеру пропускать
+        # GET-запросы за bulletin'ы, week-end которых заведомо уже в БД, и
+        # не качать XLSX-fallback / backfill за прошлые годы (см. fetch_weekly_cpi).
+        existing_q = await db.execute(
+            select(IndicatorData.date).where(IndicatorData.indicator_id == indicator.id)
+        )
+        existing_dates: set[date] = {row[0] for row in existing_q.all()}
+        logger.info("Weekly CPI: %d existing points in DB", len(existing_dates))
+
         points = await asyncio.to_thread(
-            fetch_weekly_cpi, None, cutoff,
+            fetch_weekly_cpi, existing_dates, cutoff,
         )
         return points, NEDEL_IPC_URL
