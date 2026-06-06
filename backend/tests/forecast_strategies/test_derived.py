@@ -300,3 +300,65 @@ def test_annual_sum_drops_incomplete_future_year():
     outputs = derived_from_source_strategy(own_dates, own_values, ctx)
     points = outputs[0].result.points
     assert [p.date for p in points] == [date(2025, 1, 1)]
+
+
+def test_cpi_mom_yoy_emits_only_future_months():
+    """cpi-yoy: прогноз строится на цепочке уровней из месячных ИПЦ (~100)."""
+    actuals = [(date(2024, m, 1), 100.5) for m in range(1, 13)]
+    forecast = [(date(2025, m, 1), 100.4) for m in range(1, 4)]
+    full_source = actuals + forecast
+    own_dates = [d for d, _ in actuals]
+    own_values = [8.0] * 12
+
+    ctx = _make_ctx(
+        indicator_code="cpi-yoy",
+        frequency="monthly",
+        cfg={
+            "derived_forecast": {
+                "operation": "cpi_mom_yoy",
+                "model_name": "CPI-YoY-Derived",
+            },
+            "_source_data": full_source,
+        },
+    )
+    outputs = derived_from_source_strategy(own_dates, own_values, ctx)
+    assert len(outputs) == 1
+    points = outputs[0].result.points
+    assert all(p.date > date(2024, 12, 1) for p in points)
+    assert len(points) == 3
+
+
+def test_weekly_inflation_by_calendar_month_forecast():
+    """cpi-period-monthly: агрегация недельного прогноза в месячные точки."""
+    actuals = [
+        (date(2025, 1, 6), 100.2),
+        (date(2025, 1, 13), 100.1),
+        (date(2025, 1, 20), 100.3),
+        (date(2025, 1, 27), 100.2),
+        (date(2025, 2, 3), 100.4),
+        (date(2025, 2, 10), 100.3),
+    ]
+    forecast = [
+        (date(2025, 2, 17), 100.2),
+        (date(2025, 2, 24), 100.1),
+        (date(2025, 3, 3), 100.3),
+    ]
+    full_source = actuals + forecast
+    own_dates = [date(2025, 1, 27), date(2025, 2, 10)]
+    own_values = [0.8, 0.7]
+
+    ctx = _make_ctx(
+        indicator_code="cpi-period-monthly",
+        frequency="monthly",
+        cfg={
+            "derived_forecast": {
+                "operation": "weekly_inflation_by_calendar_month",
+                "model_name": "CPI-Period-Monthly-Derived",
+            },
+            "_source_data": full_source,
+        },
+    )
+    outputs = derived_from_source_strategy(own_dates, own_values, ctx)
+    points = outputs[0].result.points
+    assert len(points) >= 1
+    assert all(p.date > date(2025, 2, 10) for p in points)

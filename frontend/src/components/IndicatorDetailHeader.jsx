@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Activity } from 'lucide-react';
 import { CATEGORIES } from '../lib/categories';
+import { indicatorDetailHeaderMobileLines } from '../lib/indicatorVariants';
 import { SkeletonBox } from './Skeleton';
 
 const FREQ_MAP = {
@@ -11,6 +12,22 @@ const FREQ_MAP = {
   irregular: 'Нерегулярно',
   daily: 'По дням',
 };
+
+function MobileTitle({ title }) {
+  const lines = indicatorDetailHeaderMobileLines(title);
+  if (!lines) {
+    return <span className="md:hidden text-pretty">{title}</span>;
+  }
+  return (
+    <span className="md:hidden flex flex-col gap-0.5">
+      {lines.map((line) => (
+        <span key={line} className="block">
+          {line}
+        </span>
+      ))}
+    </span>
+  );
+}
 
 /**
  * Хедер страницы карточки индикатора:
@@ -38,10 +55,11 @@ export default function IndicatorDetailHeader({
   const category = indicator?.category
     ? CATEGORIES.find((c) => c.apiCategory === indicator.category)
     : null;
+  const title = indicator?.name || code;
 
   return (
-    <div ref={headerRef} className="mb-12 md:mb-16 max-w-4xl">
-      <nav data-animate className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-text-tertiary mb-8">
+    <div ref={headerRef} className="mb-5 md:mb-16 max-w-4xl">
+      <nav data-animate className="flex items-center gap-2 text-[11px] md:text-xs font-mono uppercase tracking-widest text-text-tertiary mb-3 md:mb-8">
         <Link
           to="/"
           className="hover:text-champagne transition-colors lift-hover inline-flex items-center gap-1.5 group"
@@ -52,7 +70,7 @@ export default function IndicatorDetailHeader({
         {category && (
           <>
             <span className="text-text-tertiary/40">/</span>
-            <Link to={`/category/${category.slug}`} className="hover:text-champagne transition-colors">
+            <Link to={`/category/${category.slug}`} className="hover:text-champagne transition-colors line-clamp-1">
               {category.name}
             </Link>
           </>
@@ -67,24 +85,31 @@ export default function IndicatorDetailHeader({
         </div>
       ) : (
         <>
-          <div data-animate className="flex items-center gap-3 mb-4">
-            <span className="px-3 py-1 rounded-full border border-border-subtle bg-obsidian-light text-[10px] font-mono uppercase tracking-widest text-text-secondary flex items-center gap-2">
+          <div data-animate className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2.5 md:mb-4">
+            <span className="px-2.5 sm:px-3 py-1 rounded-full border border-border-subtle bg-obsidian-light text-[10px] font-mono uppercase tracking-widest text-text-secondary flex items-center gap-2">
               <Activity className="w-3 h-3 text-champagne" />
               {FREQ_MAP[effectiveFrequency] || effectiveFrequency}
             </span>
             {indicator?.category && (
-              <span className="text-xs font-mono text-text-tertiary">
+              <span className="hidden sm:inline text-xs font-mono text-text-tertiary">
                 {indicator.category}
               </span>
             )}
           </div>
 
-          <h1 data-animate className="text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight mb-4 leading-tight">
-            {indicator?.name || code}
+          <h1
+            data-animate
+            className="text-[1.3rem] leading-[1.28] text-pretty sm:text-3xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight mb-1.5 md:mb-4 md:leading-tight"
+          >
+            <MobileTitle title={title} />
+            <span className="hidden md:inline">{title}</span>
           </h1>
 
           {indicator?.name_en && (
-            <p data-animate className="text-sm md:text-base font-mono text-text-tertiary">
+            <p
+              data-animate
+              className="text-[11px] sm:text-sm font-mono uppercase tracking-[0.12em] text-text-tertiary md:text-base md:normal-case md:tracking-normal"
+            >
               {indicator.name_en}
             </p>
           )}

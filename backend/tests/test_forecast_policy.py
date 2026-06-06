@@ -61,18 +61,36 @@ DERIVED_FROM_SOURCE_FORECAST_CODES = {
     "cpi-food-annual",
     "cpi-nonfood-annual",
     "cpi-services-annual",
+    "cpi-yoy",
+    "cpi-food-yoy",
+    "cpi-nonfood-yoy",
+    "cpi-services-yoy",
+    "cpi-qoq",
+    "cpi-food-qoq",
+    "cpi-nonfood-qoq",
+    "cpi-services-qoq",
+    "cpi-period-weekly",
+    "cpi-food-period-weekly",
+    "cpi-nonfood-period-weekly",
+    "cpi-services-period-weekly",
+    "cpi-period-monthly",
+    "cpi-food-period-monthly",
+    "cpi-nonfood-period-monthly",
+    "cpi-services-period-monthly",
 }
 
 # Generic OLS multi-window — fallback модель для индикаторов без
 # именованного блокнота Никиты. Используется только там, где данных
 # хватает (>=36 точек) и форма ряда совместима с cpi_index/percentage transform.
 #
-# 2026-05-06: `inflation-weekly` исключён из списка по решению НА — Росстат
-# публикует только за прошлую неделю с лагом, ранние дни новой недели не
-# дают достаточного сигнала для обоснованного 8-недельного прогноза.
-# В seed_data forecast_steps=0 → retrain очищает старые ряды,
-# API возвращает forecast=None.
-GENERIC_OLS_FORECAST_CODES: set[str] = set()
+# Недельная инфляция: короткий OLS-горизонт (8 нед.) для UI «Рост за период /
+# Недельная» и каскада «Месячная» через derived_from_source.
+GENERIC_OLS_FORECAST_CODES: set[str] = {
+    "inflation-weekly",
+    "inflation-weekly-food",
+    "inflation-weekly-nonfood",
+    "inflation-weekly-services",
+}
 
 ALL_FORECAST_CODES = (
     APPROVED_DIRECT_FORECAST_CODES

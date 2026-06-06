@@ -9,6 +9,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import { SkeletonBox } from './components/Skeleton';
 import useDocumentMeta from './lib/useMeta';
 import { cleanPathWithSearch } from './lib/cleanUrl';
+import { isVariantSiblingNavigation } from './lib/indicatorVariants';
 import Dashboard from './pages/Dashboard';
 
 const IndicatorDetail = lazy(() => import('./pages/IndicatorDetail'));
@@ -29,7 +30,13 @@ const EmbedCompare = lazy(() => import('./embed/EmbedCompare'));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
-  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  const prevPathname = useRef(pathname);
+  useEffect(() => {
+    const prev = prevPathname.current;
+    prevPathname.current = pathname;
+    if (isVariantSiblingNavigation(prev, pathname)) return;
+    window.scrollTo(0, 0);
+  }, [pathname]);
   return null;
 }
 
@@ -124,7 +131,7 @@ function AppRoutes() {
       <NoiseOverlay />
       <LiveTicker />
       <Navbar />
-      <main className="relative z-0 flex-1 pt-9">
+      <main className="relative z-0 flex-1 pt-0 md:pt-9">
         <ErrorBoundary>
         <Suspense fallback={
           <div className="min-h-screen flex items-center justify-center">

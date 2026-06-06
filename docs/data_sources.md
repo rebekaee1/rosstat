@@ -1,6 +1,6 @@
 # Data sources — точная карта индикатор → файл/endpoint
 
-**Last updated:** 2026-05-16 (T13: данный файл стал основным местом хранения технических деталей источников — имена файлов, листы, строки/колонки, API-id; публичные `methodology` полей индикаторов в `seed_data.py` теперь не выдают этих внутренностей, см. правило [`.cursor/rules/methodology-language.mdc`](../.cursor/rules/methodology-language.mdc)).
+**Last updated:** 2026-05-31 (T13: данный файл стал основным местом хранения технических деталей источников — имена файлов, листы, строки/колонки, API-id; публичные `methodology` полей индикаторов в `seed_data.py` теперь не выдают этих внутренностей, см. правило [`.cursor/rules/methodology-language.mdc`](../.cursor/rules/methodology-language.mdc)).
 **Part of:** [`AGENTS.md`](../AGENTS.md), [`CONTEXT.md`](../CONTEXT.md).
 **Related:** docstrings парсеров `backend/app/services/{cbr_*,minfin_*,rosstat_*}_parser.py` (per-parser internals: traps, схема `model_config_json`, особенности формата), [`docs/adr/0004`](adr/0004-rosstat-russian-canonical-sdds-deprecated.md) (Rosstat русский canonical).
 
@@ -78,6 +78,18 @@ Endpoint: `cbr.ru/scripts/XML_dynamic.asp?date_req1={from}&date_req2={to}&VAL_NM
 |-----------|----------|
 | `gold-price` | `cbr.ru/scripts/xml_metall.asp?date_req1={from}&date_req2={to}` |
 
+## Binance — BTC/USD daily (BinanceBtcUsdtParser)
+
+| Индикатор | Endpoint |
+|-----------|----------|
+| `btc-usd` | `api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d` — поле `close`, дата = календарный торговый день (UTC). Backfill ~1500 дней. Live-тикер — отдельно `ticker_sources/binance.py`. |
+
+## Brent — daily (BrentDailyFredParser, `parser_type=moex_brent_daily`)
+
+| Индикатор | Endpoint |
+|-----------|----------|
+| `brent` | `query1.finance.yahoo.com/v8/finance/chart/BZ=F?interval=1d` — поле `close`, дневные бары. Backfill с 2020. Live-тикер — MOEX FORTS `BR-*` через `ticker_sources/moex_iss.py`. |
+
 ## ЦБ РФ — HTML-таблицы (CbrKeyRateParser, CbrReservesParser, CbrRuoniaParser)
 
 | Индикатор | URL |
@@ -152,6 +164,9 @@ Multi-source merge:
 | Индикатор | Files |
 |-----------|-------|
 | `inflation-weekly` | `Nedel_ipc.xlsx` + `ipc_spr_{MM}-{YYYY}.xlsx` + bulletin HTMLs |
+| `inflation-weekly-food` | тот же `Nedel_ipc` + `ipc_spr` (сегмент продовольствие, local code 10–4099); ETL пишет primary `inflation-weekly` |
+| `inflation-weekly-nonfood` | то же (сегмент непродовольствие, code ≥4100 &lt;9000) |
+| `inflation-weekly-services` | то же (сегмент услуги, code ≥9000) |
 
 **Глубина**: 2023-01-09 → present. **Cutoff введён 2026-05-12**: до 2023-01-09 у Росстата нет публично доступных bulletins (rosstat.gov.ru 404 на старые номера, search API возвращает 0 results за 2022, Wayback CDX empty для `mediabank/*-2022.html`). XLSX-approximation за 2022 расходилась с monthly CPI до 3 pp (март 2022) — введение явно. См. `docs/missed_data_audit.md::Nedel_ipc` для развёрнутой research-сводки.
 

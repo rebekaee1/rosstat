@@ -101,14 +101,46 @@ describe('getViewModeContent', () => {
     expect(out.description).toMatch(/Накопленная инфляция/);
   });
 
-  it('weekly mode на CPI → WEEKLY block', () => {
+  it('step-weekly на CPI → недельный блок', () => {
+    const out = getViewModeContent({
+      chartMode: 'weekly',
+      safeViewMode: 'step-weekly',
+      isPriceCategory: true,
+      indicator: { ...cpiIndicator, code: 'cpi' },
+    });
+    expect(out.description).toMatch(/неделя к неделе/);
+  });
+
+  it('step-monthly на CPI → м/м блок', () => {
     const out = getViewModeContent({
       chartMode: 'cpi',
-      safeViewMode: 'weekly',
+      safeViewMode: 'step-monthly',
       isPriceCategory: true,
       indicator: cpiIndicator,
     });
-    expect(out.description).toMatch(/Недельный ИПЦ/);
+    expect(out.description).toMatch(/предыдущим месяцем/);
+  });
+
+  it('step-weekly на cpi-food → food-specific block', () => {
+    const out = getViewModeContent({
+      chartMode: 'weekly',
+      safeViewMode: 'step-weekly',
+      isPriceCategory: true,
+      indicator: { ...cpiIndicator, code: 'cpi-food' },
+    });
+    expect(out.description).toMatch(/продовольственные/);
+  });
+
+  it('inflation на cpi-food → текст про продовольствие, не общую корзину', () => {
+    const out = getViewModeContent({
+      chartMode: 'inflation',
+      safeViewMode: 'inflation',
+      isPriceCategory: true,
+      indicator: { ...cpiIndicator, code: 'cpi-food' },
+    });
+    expect(out.description).toMatch(/продовольственные товары/);
+    expect(out.description).toMatch(/скользящие 12 месяцев/);
+    expect(out.description).not.toMatch(/потребительские цены за последний год/);
   });
 
   // ============================================================

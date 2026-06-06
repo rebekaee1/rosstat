@@ -572,7 +572,10 @@ def _indicator_body(
     )
     source_link = _link(indicator.source_url, indicator.source) if indicator.source_url else escape(indicator.source)
     related_links = tuple((f"/indicator/{ind.code}", ind.name) for ind in related)
-    blocks = GLOBAL_INDICATOR_BLOCKS + _indicator_blocks_from_db(indicator)
+    custom_blocks = _indicator_blocks_from_db(indicator)
+    # Индикаторы с собственными seo_blocks — без GLOBAL (иначе два блока
+    # «Источник и обновление» в SSR: generic + предметный).
+    blocks = custom_blocks if custom_blocks else GLOBAL_INDICATOR_BLOCKS
     return f"""<main class="seo-page">
 <nav aria-label="Хлебные крошки">{_link("/", "Главная")} / {category_link} / {escape(indicator.name)}</nav>
 <h1>{escape(indicator.name)}</h1>

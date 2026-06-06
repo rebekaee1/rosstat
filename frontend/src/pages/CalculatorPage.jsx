@@ -6,18 +6,19 @@ import {
   Tooltip, CartesianGrid, ReferenceLine,
 } from 'recharts';
 import {
-  ArrowLeft, Share2, Copy, Check, ChevronDown, Calculator,
+  ArrowLeft, Share2, Copy, Check, Calculator,
   TrendingDown, ShoppingCart, Package, Wrench,
   ArrowUpDown, Flame, Target, Clock, BarChart3, ChevronRight,
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import useInflationCalc from '../lib/useInflationCalc';
 import { formatDate, formatAxisTick, cn } from '../lib/format';
-import { FOCUS_RING, FOCUS_RING_SURFACE } from '../lib/uiTokens';
+import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
 import { SkeletonBox } from '../components/Skeleton';
 import { track, events } from '../lib/track';
 import { buildShareUrl } from '../lib/utm';
 import useScrollDepth from '../lib/useScrollDepth';
+import FaqAccordion from '../components/FaqAccordion';
 
 /* ─── Constants ─── */
 
@@ -285,30 +286,6 @@ function YearlyBreakdownTable({ breakdown }) {
           {expanded ? 'Свернуть' : `Показать все ${breakdown.length} лет`}
         </button>
       )}
-    </div>
-  );
-}
-
-function FAQAccordion() {
-  const [open, setOpen] = useState(null);
-  return (
-    <div className="divide-y divide-border-subtle border-t border-b border-border-subtle">
-      {FAQ_ITEMS.map((item, i) => (
-        <div key={i}>
-          <button
-            type="button"
-            onClick={() => { setOpen(open === i ? null : i); track(events.FAQ_TOGGLE, { question: item.q }); }}
-            className={cn(FOCUS_RING, 'w-full flex items-center justify-between gap-4 py-5 text-left rounded-sm')}
-            aria-expanded={open === i}
-          >
-            <span className="text-sm font-medium text-text-primary">{item.q}</span>
-            <ChevronDown className={cn('w-4 h-4 text-text-tertiary shrink-0 transition-transform duration-200', open === i && 'rotate-180')} />
-          </button>
-          {open === i && (
-            <p className="pb-5 text-sm text-text-secondary leading-relaxed -mt-1">{item.a}</p>
-          )}
-        </div>
-      ))}
     </div>
   );
 }
@@ -850,7 +827,12 @@ export default function CalculatorPage() {
       {/* ── FAQ ── */}
       <section data-animate className="mb-8">
         <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-6">Частые вопросы</h2>
-        <FAQAccordion />
+        <FaqAccordion
+          items={FAQ_ITEMS}
+          onToggle={({ title, open }) => {
+            if (open) track(events.FAQ_TOGGLE, { question: title });
+          }}
+        />
       </section>
     </div>
   );

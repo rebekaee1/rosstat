@@ -75,6 +75,52 @@ DERIVED_SPECS: list[DerivedSpec] = [
     DerivedSpec("cpi-services-quarterly", ("cpi-services",), ops.quarterly_index),
     DerivedSpec("cpi-services-annual", ("cpi-services",), ops.december_to_december),
 
+    # CPI «К прошлому периоду»: г/г и к/к на накопленном уровне (с 2000-01).
+    DerivedSpec("cpi-yoy", ("cpi",), ops.cpi_mom_yoy),
+    DerivedSpec("cpi-food-yoy", ("cpi-food",), ops.cpi_mom_yoy),
+    DerivedSpec("cpi-nonfood-yoy", ("cpi-nonfood",), ops.cpi_mom_yoy),
+    DerivedSpec("cpi-services-yoy", ("cpi-services",), ops.cpi_mom_yoy),
+    DerivedSpec("cpi-qoq", ("cpi",), ops.cpi_mom_qoq),
+    DerivedSpec("cpi-food-qoq", ("cpi-food",), ops.cpi_mom_qoq),
+    DerivedSpec("cpi-nonfood-qoq", ("cpi-nonfood",), ops.cpi_mom_qoq),
+    DerivedSpec("cpi-services-qoq", ("cpi-services",), ops.cpi_mom_qoq),
+
+    # CPI «Рост за период / Недельная»: накопление с 1-й недели месяца по текущую.
+    DerivedSpec("cpi-period-weekly", ("inflation-weekly",), ops.weekly_mtd_in_calendar_month),
+    DerivedSpec(
+        "cpi-food-period-weekly",
+        ("inflation-weekly-food",),
+        ops.weekly_mtd_in_calendar_month,
+    ),
+    DerivedSpec(
+        "cpi-nonfood-period-weekly",
+        ("inflation-weekly-nonfood",),
+        ops.weekly_mtd_in_calendar_month,
+    ),
+    DerivedSpec(
+        "cpi-services-period-weekly",
+        ("inflation-weekly-services",),
+        ops.weekly_mtd_in_calendar_month,
+    ),
+
+    # CPI «Рост за период / Месячная»: произведение недель внутри календарного месяца.
+    DerivedSpec("cpi-period-monthly", ("inflation-weekly",), ops.weekly_inflation_by_calendar_month),
+    DerivedSpec(
+        "cpi-food-period-monthly",
+        ("inflation-weekly-food",),
+        ops.weekly_inflation_by_calendar_month,
+    ),
+    DerivedSpec(
+        "cpi-nonfood-period-monthly",
+        ("inflation-weekly-nonfood",),
+        ops.weekly_inflation_by_calendar_month,
+    ),
+    DerivedSpec(
+        "cpi-services-period-monthly",
+        ("inflation-weekly-services",),
+        ops.weekly_inflation_by_calendar_month,
+    ),
+
     # PPI annual: same December-to-December logic on the producer price index.
     DerivedSpec("ppi-annual", ("ppi",), ops.december_to_december),
 
@@ -105,6 +151,8 @@ DERIVED_SPECS: list[DerivedSpec] = [
     DerivedSpec("ppi-yoy", ("ppi",), ops.yoy),
     DerivedSpec("housing-yoy-primary", ("housing-price-primary",), ops.yoy),
     DerivedSpec("housing-yoy-secondary", ("housing-price-secondary",), ops.yoy),
+    DerivedSpec("housing-qoq-primary", ("housing-price-primary",), ops.qoq),
+    DerivedSpec("housing-qoq-secondary", ("housing-price-secondary",), ops.qoq),
     DerivedSpec("wages-yoy", ("wages-nominal",), ops.yoy),
 
     # YoY-абсолют (звонок 2026-05-22): для balances со знаком процент YoY

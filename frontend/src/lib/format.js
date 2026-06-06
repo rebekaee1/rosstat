@@ -164,6 +164,9 @@ const CPI_INDEX_CODES = new Set([
   'cpi-nonfood-quarterly',
   'cpi-services-quarterly',
   'inflation-weekly',
+  'inflation-weekly-food',
+  'inflation-weekly-nonfood',
+  'inflation-weekly-services',
 ]);
 
 export function isCpiIndex(code) {

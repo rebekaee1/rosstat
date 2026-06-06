@@ -134,7 +134,7 @@ export const CATEGORIES = [
     icon: 'Factory',
     apiCategory: 'Бизнес',
     status: 'active',
-    flagshipCode: 'ipi-yoy',
+    flagshipCode: 'ipi',
     sentiment: 'positive',
     description: 'Индекс промышленного производства, розничная торговля, износ основных фондов, инвестиции.',
     seoTitle: 'Бизнес и инвестиции в России',

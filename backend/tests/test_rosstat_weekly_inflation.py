@@ -5,6 +5,7 @@ from unittest.mock import MagicMock, patch
 
 from app.services.rosstat_weekly_inflation_parser import (
     WeeklyPoint,
+    _classify_local_code,
     _find_bulletin_urls_central_news,
     fetch_weekly_cpi,
 )
@@ -100,12 +101,21 @@ class TestCentralNewsCrawler:
         assert urls == []
 
 
+class TestClassifyLocalCode:
+    def test_food_nonfood_services(self):
+        assert _classify_local_code(111) == "food"
+        assert _classify_local_code(4100) == "nonfood"
+        assert _classify_local_code(9000) == "services"
+        assert _classify_local_code("940.АГ") == "services"
+        assert _classify_local_code(3) is None
+
+
 class TestFetchWeeklyCpiCutoff:
     """Cutoff_date filters out XLSX-approximation для дат до bulletin cutoff."""
 
     @patch("app.services.rosstat_weekly_inflation_parser.fetch_bulletin_points")
-    @patch("app.services.rosstat_weekly_inflation_parser._parse_weekly_xlsx")
-    @patch("app.services.rosstat_weekly_inflation_parser._load_weights")
+    @patch("app.services.rosstat_weekly_inflation_parser._parse_weekly_xlsx_multi")
+    @patch("app.services.rosstat_weekly_inflation_parser._load_product_weights")
     @patch("app.services.rosstat_weekly_inflation_parser.create_session")
     def test_cutoff_filters_xlsx_history(
         self, mock_session, mock_weights, mock_parse_xlsx, mock_bulletins,
@@ -115,12 +125,18 @@ class TestFetchWeeklyCpiCutoff:
             WeeklyPoint(date=date(2023, 1, 9), value=100.5),
             WeeklyPoint(date=date(2023, 1, 16), value=100.3),
         ]
-        mock_parse_xlsx.return_value = [
+        xlsx_all = [
             WeeklyPoint(date=date(2022, 1, 10), value=100.8),  # XLSX, before cutoff
             WeeklyPoint(date=date(2022, 6, 1), value=99.9),    # XLSX, before cutoff
             WeeklyPoint(date=date(2023, 2, 1), value=100.2),   # XLSX, after cutoff
         ]
-        mock_weights.return_value = {"A": 0.5, "B": 0.5}
+        mock_parse_xlsx.return_value = {
+            "all": xlsx_all,
+            "food": [],
+            "nonfood": [],
+            "services": [],
+        }
+        mock_weights.return_value = {"A": (0.5, "food"), "B": (0.5, "nonfood")}
         sess = MagicMock()
         sess.get = MagicMock(return_value=MagicMock(status_code=200, content=b"PK..."))
         mock_session.return_value = sess
@@ -135,18 +151,23 @@ class TestFetchWeeklyCpiCutoff:
         assert date(2023, 2, 1) in dates
 
     @patch("app.services.rosstat_weekly_inflation_parser.fetch_bulletin_points")
-    @patch("app.services.rosstat_weekly_inflation_parser._parse_weekly_xlsx")
-    @patch("app.services.rosstat_weekly_inflation_parser._load_weights")
+    @patch("app.services.rosstat_weekly_inflation_parser._parse_weekly_xlsx_multi")
+    @patch("app.services.rosstat_weekly_inflation_parser._load_product_weights")
     @patch("app.services.rosstat_weekly_inflation_parser.create_session")
     def test_no_cutoff_retains_all(
         self, mock_session, mock_weights, mock_parse_xlsx, mock_bulletins,
     ):
         mock_bulletins.return_value = [WeeklyPoint(date=date(2024, 1, 1), value=100.1)]
-        mock_parse_xlsx.return_value = [
-            WeeklyPoint(date=date(2022, 1, 10), value=100.8),
-            WeeklyPoint(date=date(2023, 2, 1), value=100.2),
-        ]
-        mock_weights.return_value = {"A": 0.5}
+        mock_parse_xlsx.return_value = {
+            "all": [
+                WeeklyPoint(date=date(2022, 1, 10), value=100.8),
+                WeeklyPoint(date=date(2023, 2, 1), value=100.2),
+            ],
+            "food": [],
+            "nonfood": [],
+            "services": [],
+        }
+        mock_weights.return_value = {"A": (0.5, "food")}
         sess = MagicMock()
         sess.get = MagicMock(return_value=MagicMock(status_code=200, content=b"PK..."))
         mock_session.return_value = sess

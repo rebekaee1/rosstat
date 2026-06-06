@@ -26,6 +26,10 @@ yoy от gdp-nominal), нет смысла отдельно обучать мо�
     - annual_sum          : Y[year] = Σ X[q] за q ∈ year
                             (1 точка/год, для квартальных рядов нужны 4 кв.;
                             годы с неполным числом точек пропускаются)
+    - cpi_mom_yoy           : YoY % на накопленном уровне из месячных ИПЦ (~100)
+    - cpi_mom_qoq           : QoQ % на концах кварталов из месячных ИПЦ
+    - weekly_inflation_by_calendar_month : ∏ недель в календарном месяце − 100
+    - weekly_mtd_in_calendar_month      : накопление с 1-й недели месяца по каждую неделю
 
 ВАЖНО: эта стратегия — RUNTIME-only. Она не пишет в БД, она лишь
 готовит точки прогноза, которые pipeline сохранит обычным образом.
@@ -43,7 +47,11 @@ from app.services.forecast_strategies.base import StrategyContext, StrategyOutpu
 from app.services.forecaster import ForecastPoint, ForecastResult
 from app.services.derived_ops import (
     annual_sum as ops_annual_sum,
+    cpi_mom_qoq as ops_cpi_mom_qoq,
+    cpi_mom_yoy as ops_cpi_mom_yoy,
     december_to_december as ops_december_to_december,
+    weekly_inflation_by_calendar_month as ops_weekly_inflation_by_calendar_month,
+    weekly_mtd_in_calendar_month as ops_weekly_mtd_in_calendar_month,
 )
 
 logger = logging.getLogger(__name__)
@@ -136,6 +144,14 @@ def derived_from_source_strategy(
         # источника нужны 4 кв., для месячного — 12 мес. Год с неполным числом
         # точек игнорируется.
         derived_full = ops_annual_sum(list(source_data))
+    elif operation == "cpi_mom_yoy":
+        derived_full = ops_cpi_mom_yoy(list(source_data))
+    elif operation == "cpi_mom_qoq":
+        derived_full = ops_cpi_mom_qoq(list(source_data))
+    elif operation == "weekly_inflation_by_calendar_month":
+        derived_full = ops_weekly_inflation_by_calendar_month(list(source_data))
+    elif operation == "weekly_mtd_in_calendar_month":
+        derived_full = ops_weekly_mtd_in_calendar_month(list(source_data))
     else:
         logger.error("derived_from_source: unknown operation '%s'", operation)
         return []

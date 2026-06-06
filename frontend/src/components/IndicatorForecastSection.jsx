@@ -71,6 +71,10 @@ export default function IndicatorForecastSection({
   quarterlyForecastData,
   annualForecastResp,
   weeklyForecastData,
+  yoyForecastData,
+  qoqForecastData,
+  periodMonthlyForecastData,
+  periodWeeklyForecastData,
   forecastEnabled,
   showForecast,
   hasForecastData,
@@ -87,7 +91,11 @@ export default function IndicatorForecastSection({
     const forecastData = chartMode === 'quarterly' ? quarterlyForecastData
       : chartMode === 'annual' ? annualForecastResp
         : chartMode === 'weekly' ? weeklyForecastData
-          : displayForecastData;
+          : chartMode === 'yoy' ? yoyForecastData
+            : chartMode === 'qoq' ? qoqForecastData
+              : chartMode === 'period-weekly' ? periodWeeklyForecastData
+                : chartMode === 'period-monthly' ? periodMonthlyForecastData
+                  : displayForecastData;
 
     return (
       <section ref={viewRef} className="lg:col-span-2">

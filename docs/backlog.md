@@ -1,6 +1,6 @@
 # Backlog — текущие правки в работе
 
-**Last updated:** 2026-05-22 (документация-ревизия: plan.md мигрирован в backlog (Telegram-бот / embed UI / календарь UI / search keywords / annual-in-monthly audit), recap-2026-05-22.md удалён, cbr_sources.md мигрирован в docstrings парсеров — см. История).
+**Last updated:** 2026-06-01 (playbook семейства: [`indicator-family-playbook.md`](indicator-family-playbook.md); эталон ИПЦ закрыт в playbook §9).
 **Part of:** [`AGENTS.md`](../AGENTS.md), [`CONTEXT.md`](../CONTEXT.md), [`docs/adr/0006-indicator-card-unification.md`](adr/0006-indicator-card-unification.md).
 **Источник:** звонки с Никитой Александровичем 2026-05-21 (Сочи) и 2026-05-22 («всё доделать»).
 
@@ -13,7 +13,7 @@
 | Приоритет | Активно сейчас |
 |-----------|----------------|
 | **P0** | — (пусто; все P0 из звонков закрыты) |
-| **P1** | Расширение view-mode families на остальные индикаторы (GDP / PPI / CPI legacy / retail / banking volumes — см. ADR-0006 §«Что НЕ покрыто»). Длинные SEO-блоки D2 на оставшиеся ~80 индикаторов — итеративно по росту показов в Метрике. |
+| **P1** | Расширение view-mode families на остальные индикаторы (GDP / PPI / retail / banking volumes — см. ADR-0006 §«Что НЕ покрыто»). **ИПЦ** — эталон в [`indicator-family-playbook.md`](indicator-family-playbook.md) (не мигрировать на generic `viewModeFamilies` без отдельного решения). Длинные SEO-блоки D2 на оставшиеся ~80 индикаторов — итеративно по росту показов в Метрике. |
 | **P2** | C4 (research редких показателей — см. список в конце документа). Wages-2022-12 hole (одна точка пропущена в monthly, заметная как gap на годовом графике) — отдельный микрофикс при следующем wages ETL. Автоматизация `wages-nominal-annual` continuation через derived spec `annual_mean` (сейчас one-shot script). **G1 Search keywords ревизия** на всех 109 индикаторах — где-то полный список синонимов, где-то пустые SEO-шаблоны (см. ниже). **G2 Annual-in-monthly SQL-audit** на остальных backfilled индикаторах (wages фикснут; key-rate/gdp-real/housing на глаз согласованы, но явная проверка не сделана). |
 | Future (отложено) | F1 крипто (частично закрыто через BTC/USD как полный indicator), F2 регионы, **F3 Telegram-бот** (подписка на indicator, daily push, custom alerts), **F4 Embed-виджеты UI** (дизайн + копи-кнопка кода + CSP), **F5 Календарь публикаций UI** (backend готов 1208 events) — см. раздел Roadmap. |
 

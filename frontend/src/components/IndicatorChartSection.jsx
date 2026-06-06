@@ -3,6 +3,33 @@ import { unitSuffix, cn } from '../lib/format';
 import { track, events } from '../lib/track';
 import IndicatorChart from './IndicatorChart';
 import { ChartSkeleton } from './Skeleton';
+import { getCpiChartTitle } from '../lib/cpiViewModeContent';
+import { getHousingChartTitle } from '../lib/housingViewModeContent';
+import { getPpiChartTitle } from '../lib/ppiViewModeContent';
+import { getAutoLoanChartTitle } from '../lib/autoLoanViewModeContent';
+import { getMortgageChartTitle } from '../lib/mortgageRateViewModeContent';
+import { getCbrTermSliceChartTitle } from '../lib/cbrTermSliceRateContent';
+import { getKeyRateChartTitle } from '../lib/keyRateViewModeContent';
+import { getRuoniaChartTitle } from '../lib/ruoniaViewModeContent';
+import { getBtcUsdChartTitle } from '../lib/btcUsdViewModeContent';
+import { getBrentChartTitle } from '../lib/brentViewModeContent';
+import { getCnyRubChartTitle } from '../lib/cnyRubViewModeContent';
+import { getEurRubChartTitle } from '../lib/eurRubViewModeContent';
+import { getUsdRubChartTitle } from '../lib/usdRubViewModeContent';
+import { getBudgetChartTitle } from '../lib/budgetViewModeContent';
+import { getBankCreditChartTitle } from '../lib/bankCreditViewModeContent';
+import { getHouseholdFinanceChartTitle } from '../lib/householdFinanceViewModeContent';
+import { getMonetaryMassChartTitle } from '../lib/monetaryMassViewModeContent';
+import { getLaborMarketChartTitle } from '../lib/laborMarketViewModeContent';
+import { getUnemploymentChartTitle } from '../lib/unemploymentViewModeContent';
+import { getWagesNominalChartTitle } from '../lib/wagesNominalViewModeContent';
+import { getGdpNominalChartTitle } from '../lib/gdpNominalViewModeContent';
+import { getGdpRealChartTitle } from '../lib/gdpRealViewModeContent';
+import { getExternalDebtChartTitle } from '../lib/externalDebtViewModeContent';
+import { getGdpUseChartTitle } from '../lib/gdpUseViewModeContent';
+import { getInternationalReservesChartTitle } from '../lib/internationalReservesViewModeContent';
+import { getGoldPriceChartTitle } from '../lib/goldPriceViewModeContent';
+import { chartSeriesForViewMode } from '../lib/chartSeriesForViewMode';
 
 /* ── Mode-зависимые подписи ──
    chartMode принимает значения: 'cpi' (default для всех некоммодити-индикаторов),
@@ -35,22 +62,161 @@ function freqLong(indicator) {
   return FREQUENCY_LONG[indicator?.frequency] || '';
 }
 
-function chartTitle({ chartMode, isPriceCategory, indicator }) {
-  if (chartMode === 'quarterly') return 'Квартальная инфляция (%)';
-  if (chartMode === 'annual') return 'Годовая инфляция (%)';
-  if (chartMode === 'weekly') return 'Недельная инфляция (%)';
-  if (chartMode === 'index') return 'Индекс потребительских цен (уровень)';
-  if (isPriceCategory) return 'Прирост цен (%, к предыдущему месяцу)';
+function chartTitle({
+  chartMode, isPriceCategory, isHousingFamily, isPpiFamily, isAutoLoanFamily, isMortgageFamily,
+  isCbrTermSliceFamily, isKeyRateFamily, isRuoniaFamily, isBtcUsdFamily, isBrentFamily,
+  isGoldPriceFamily,
+  isUsdRubFamily,
+  isEurRubFamily,
+  isCnyRubFamily,
+  isBudgetFamily,
+  isBankCreditFamily,
+  isHouseholdFinanceFamily,
+  isLaborMarketFamily,
+  isUnemploymentFamily,
+  isWagesNominalFamily,
+  isGdpNominalFamily,
+  isGdpRealFamily,
+  isMonetaryMassFamily,
+  isInternationalReservesFamily,
+  isExternalDebtFamily,
+  isGdpUseFamily,
+  indicator, safeViewMode,
+}) {
+  if (isWagesNominalFamily) {
+    return getWagesNominalChartTitle(chartMode);
+  }
+  if (isGdpNominalFamily) {
+    return getGdpNominalChartTitle(chartMode);
+  }
+  if (isGdpRealFamily) {
+    return getGdpRealChartTitle(chartMode);
+  }
+  if (isUnemploymentFamily) {
+    return getUnemploymentChartTitle(chartMode);
+  }
+  if (isPpiFamily) {
+    return getPpiChartTitle(chartMode, safeViewMode);
+  }
+  if (isGdpUseFamily) {
+    return getGdpUseChartTitle(chartMode, indicator?.code);
+  }
+  if (isExternalDebtFamily) {
+    return getExternalDebtChartTitle(chartMode);
+  }
+  if (isInternationalReservesFamily) {
+    return getInternationalReservesChartTitle(chartMode);
+  }
+  if (isLaborMarketFamily && indicator?.code) {
+    return getLaborMarketChartTitle(chartMode, indicator.code);
+  }
+  if (isMonetaryMassFamily && indicator?.code) {
+    return getMonetaryMassChartTitle(chartMode, indicator.code);
+  }
+  if (isGoldPriceFamily) {
+    return getGoldPriceChartTitle(chartMode);
+  }
+  if (isBudgetFamily && indicator?.code) {
+    return getBudgetChartTitle(chartMode, indicator.code);
+  }
+  if (isHouseholdFinanceFamily && indicator?.code) {
+    return getHouseholdFinanceChartTitle(chartMode, indicator.code);
+  }
+  if (isBankCreditFamily) {
+    return getBankCreditChartTitle(chartMode);
+  }
+  if (isBrentFamily) {
+    return getBrentChartTitle(chartMode);
+  }
+  if (isUsdRubFamily) {
+    return getUsdRubChartTitle(chartMode);
+  }
+  if (isEurRubFamily) {
+    return getEurRubChartTitle(chartMode);
+  }
+  if (isCnyRubFamily) {
+    return getCnyRubChartTitle(chartMode);
+  }
+  if (isBtcUsdFamily) {
+    return getBtcUsdChartTitle(chartMode);
+  }
+  if (isRuoniaFamily) {
+    return getRuoniaChartTitle(chartMode);
+  }
+  if (isKeyRateFamily) {
+    return getKeyRateChartTitle(chartMode);
+  }
+  if (isMortgageFamily) {
+    return getMortgageChartTitle(chartMode);
+  }
+  if (isAutoLoanFamily) {
+    return getAutoLoanChartTitle(chartMode);
+  }
+  if (isCbrTermSliceFamily) {
+    return getCbrTermSliceChartTitle(chartMode, indicator?.code);
+  }
+  if (isHousingFamily && indicator?.code) {
+    return getHousingChartTitle(chartMode, indicator.code);
+  }
+  if (isPriceCategory && indicator?.code) {
+    return getCpiChartTitle(chartMode, indicator.code, safeViewMode);
+  }
   const suffix = unitSuffix(indicator?.unit);
   const freq = freqLong(indicator);
   const baseTitle = `${indicator?.name || 'Показатель'}${suffix ? ` (${suffix})` : ''}`;
   return freq ? `${baseTitle} — ${freq}` : baseTitle;
 }
 
-function levelTooltipLabel({ chartMode, isPriceCategory, indicator }) {
+function levelTooltipLabel({
+  chartMode, isPriceCategory, isHousingFamily, isPpiFamily, isAutoLoanFamily, isMortgageFamily,
+  isCbrTermSliceFamily, isKeyRateFamily, isRuoniaFamily, isBtcUsdFamily, isBrentFamily,
+  isGoldPriceFamily,
+  isUsdRubFamily,
+  isEurRubFamily,
+  isCnyRubFamily,
+  isBudgetFamily,
+  isBankCreditFamily,
+  isHouseholdFinanceFamily,
+  isLaborMarketFamily,
+  isWagesNominalFamily,
+  isGdpNominalFamily,
+  isGdpRealFamily,
+  isMonetaryMassFamily,
+  isInternationalReservesFamily,
+  isExternalDebtFamily,
+  isGdpUseFamily,
+  indicator,
+}) {
+  const isFxRub = isUsdRubFamily || isEurRubFamily || isCnyRubFamily;
+  const isCommodityPrice = isBtcUsdFamily || isBrentFamily || isGoldPriceFamily;
+  const isMonthlyAgg = isBudgetFamily || isBankCreditFamily || isHouseholdFinanceFamily
+    || isLaborMarketFamily || isMonetaryMassFamily;
+  const isQuarterlyAgg = isExternalDebtFamily || isGdpUseFamily;
+  const isWeeklyStockAgg = isInternationalReservesFamily;
+  const isStockAgg = isMonthlyAgg || isQuarterlyAgg || isWeeklyStockAgg;
+  const isDailyAgg = isKeyRateFamily || isRuoniaFamily || isCommodityPrice || isFxRub
+    || isStockAgg;
+  if (isStockAgg && chartMode === 'level') return 'Значение';
+  if (isStockAgg && chartMode !== 'level') return 'Среднее';
+  if (isCommodityPrice && chartMode === 'level') return 'Цена';
+  if (isCommodityPrice && chartMode !== 'level') return 'Среднее';
+  if (isFxRub && chartMode === 'level') return 'Курс';
+  if (isFxRub && chartMode !== 'level') return 'Среднее';
+  if ((isAutoLoanFamily || isMortgageFamily || isCbrTermSliceFamily
+    || isKeyRateFamily || isRuoniaFamily) && chartMode === 'level') {
+    return 'Ставка';
+  }
+  if (isDailyAgg && chartMode !== 'level') return 'Среднее';
+  if ((isHousingFamily || isPpiFamily) && chartMode === 'index') return 'Индекс';
+  if (isPpiFamily && chartMode === 'mom') return 'М/м';
   if (chartMode === 'quarterly') return 'Кв. инфляция';
   if (chartMode === 'annual') return 'Год. инфляция';
   if (chartMode === 'weekly') return 'Нед. ИПЦ';
+  if (chartMode === 'yoy') return 'Г/г';
+  if (chartMode === 'qoq') return 'К/к';
+  if (chartMode === 'period-weekly') return 'С нач. мес.';
+  if (chartMode === 'period-monthly') return 'За месяц';
+  if (isWagesNominalFamily && chartMode === 'index') return 'Индекс';
   if (chartMode === 'index') return 'ИПЦ';
   if (isPriceCategory) return 'Прирост';
   const freq = freqLabel(indicator);
@@ -67,9 +233,12 @@ function forecastTooltipLabel({ chartMode, indicator }) {
   return freq ? `Прогноз (${freq})` : 'Прогноз';
 }
 
-function dateFormatFor({ chartMode, indicator }) {
-  if (chartMode === 'quarterly') return 'quarterly';
+function dateFormatFor({ chartMode, indicator, safeViewMode }) {
+  if (safeViewMode === 'index-quarterly') return 'quarterly';
+  if (safeViewMode === 'index-annual') return 'annual';
+  if (chartMode === 'quarterly' || chartMode === 'qoq') return 'quarterly';
   if (chartMode === 'annual') return 'annual';
+  if (chartMode === 'yoy' || chartMode === 'period-weekly' || chartMode === 'period-monthly') return 'full';
   if (chartMode !== 'inflation' && indicator?.frequency === 'daily') return 'day';
   if (indicator?.frequency === 'quarterly') return 'quarterly';
   if (indicator?.frequency === 'annual') return 'annual';
@@ -77,11 +246,45 @@ function dateFormatFor({ chartMode, indicator }) {
   return 'full';
 }
 
-function rangePresetFor({ chartMode, indicator }) {
+function rangePresetFor({
+  chartMode, indicator, isKeyRateFamily, isRuoniaFamily, isBtcUsdFamily, isBrentFamily,
+  isGoldPriceFamily,
+  isUsdRubFamily,
+  isEurRubFamily,
+  isCnyRubFamily,
+  isBudgetFamily,
+  isBankCreditFamily,
+  isHouseholdFinanceFamily,
+  isLaborMarketFamily,
+  isMonetaryMassFamily,
+  isInternationalReservesFamily,
+  isExternalDebtFamily,
+  isGdpUseFamily,
+}) {
+  const isFxRub = isUsdRubFamily || isEurRubFamily || isCnyRubFamily;
+  const isCommodityPrice = isBtcUsdFamily || isBrentFamily || isGoldPriceFamily;
+  const isMonthlyStockAgg = isBudgetFamily || isBankCreditFamily || isHouseholdFinanceFamily
+    || isLaborMarketFamily || isMonetaryMassFamily;
+  const isDailyAgg = isKeyRateFamily || isRuoniaFamily || isCommodityPrice || isFxRub
+    || isMonthlyStockAgg;
+  if (isInternationalReservesFamily && chartMode === 'level') return 'weekly';
+  if (isInternationalReservesFamily && chartMode === 'monthly') return 'default';
+  if (isInternationalReservesFamily && chartMode === 'quarterly') return 'quarterly';
+  if (isInternationalReservesFamily && chartMode === 'annual') return 'annual';
+  if (isExternalDebtFamily && chartMode === 'level') return 'quarterly';
+  if (isExternalDebtFamily && chartMode === 'annual') return 'annual';
+  if (isGdpUseFamily && chartMode === 'level') return 'quarterly';
+  if (isGdpUseFamily && chartMode === 'annual') return 'annual';
+  if (isDailyAgg && chartMode === 'level') return 'daily';
+  if (isDailyAgg && chartMode === 'weekly') return 'weekly';
+  if (isDailyAgg && chartMode === 'monthly') return 'default';
+  if (isDailyAgg && chartMode === 'quarterly') return 'quarterly';
+  if (isDailyAgg && chartMode === 'annual') return 'annual';
   /* Mode-driven для CPI семьи (annual mode → 10y/25y/all). */
   if (chartMode === 'annual') return 'annual';
-  if (chartMode === 'quarterly') return 'quarterly';
+  if (chartMode === 'quarterly' || chartMode === 'qoq') return 'quarterly';
   if (chartMode === 'weekly') return 'weekly';
+  if (chartMode === 'yoy' || chartMode === 'period-weekly' || chartMode === 'period-monthly') return 'default';
   // Накопленный индекс CPI — длинная история (2000+), показываем 5y/10y/25y/all.
   if (chartMode === 'index') return 'quarterly';
   /* Frequency-driven для остальных индикаторов. */
@@ -105,19 +308,54 @@ export default function IndicatorChartSection({
   code,
   indicator,
   chartMode,
+  safeViewMode,
   isPriceCategory,
+  isHousingFamily,
+  isPpiFamily,
+  isAutoLoanFamily,
+  isMortgageFamily,
+  isCbrTermSliceFamily,
+  isKeyRateFamily,
+  isRuoniaFamily,
+  isBtcUsdFamily,
+  isBrentFamily,
+  isGoldPriceFamily,
+  isUsdRubFamily,
+  isEurRubFamily,
+  isCnyRubFamily,
+  isBudgetFamily,
+  isBankCreditFamily,
+  isHouseholdFinanceFamily,
+  isLaborMarketFamily,
+  isUnemploymentFamily,
+  isWagesNominalFamily,
+  isGdpNominalFamily,
+  isGdpRealFamily,
+  isMonetaryMassFamily,
+  isInternationalReservesFamily,
+  isExternalDebtFamily,
+  isGdpUseFamily,
   chartLoading,
 
   inflationResp,
   dataPoints,
+  momDataPoints,
   quarterlyDataPoints,
   annualDataPoints,
   weeklyDataPoints,
+  yoyDataPoints,
+  qoqDataPoints,
+  periodMonthlyDataPoints,
+  periodWeeklyDataPoints,
 
   displayForecastData,
   quarterlyForecastData,
   annualForecastResp,
   weeklyForecastData,
+  yoyForecastData,
+  qoqForecastData,
+  periodMonthlyForecastData,
+  periodWeeklyForecastData,
 
   forecastEnabled,
   showForecast,
@@ -130,15 +368,47 @@ export default function IndicatorChartSection({
   onDownloadCsv,
   onDownloadExcel,
 }) {
-  const chartCpiData = chartMode === 'quarterly' ? quarterlyDataPoints
-    : chartMode === 'annual' ? annualDataPoints
-      : chartMode === 'weekly' ? weeklyDataPoints
-        : dataPoints;
+  const chartCpiData = chartSeriesForViewMode({
+    chartMode,
+    isKeyRateFamily,
+    isRuoniaFamily,
+    isBtcUsdFamily,
+    isBrentFamily,
+    isGoldPriceFamily,
+    isUsdRubFamily,
+    isEurRubFamily,
+    isCnyRubFamily,
+    isBudgetFamily,
+    isBankCreditFamily,
+    isHouseholdFinanceFamily,
+    isLaborMarketFamily,
+    isUnemploymentFamily,
+    isWagesNominalFamily,
+    isGdpNominalFamily,
+    isGdpRealFamily,
+    isMonetaryMassFamily,
+    isInternationalReservesFamily,
+    isExternalDebtFamily,
+    isGdpUseFamily,
+    dataPoints,
+    momDataPoints,
+    quarterlyDataPoints,
+    annualDataPoints,
+    weeklyDataPoints,
+    yoyDataPoints,
+    qoqDataPoints,
+    periodWeeklyDataPoints,
+    periodMonthlyDataPoints,
+  });
 
   const forecastData = chartMode === 'quarterly' ? quarterlyForecastData
     : chartMode === 'annual' ? annualForecastResp
       : chartMode === 'weekly' ? weeklyForecastData
-        : displayForecastData;
+        : chartMode === 'yoy' ? yoyForecastData
+          : chartMode === 'qoq' ? qoqForecastData
+            : chartMode === 'period-weekly' ? periodWeeklyForecastData
+              : chartMode === 'period-monthly' ? periodMonthlyForecastData
+                : displayForecastData;
 
   const handleForecastToggle = () => {
     if (!forecastEnabled) return;
@@ -163,7 +433,18 @@ export default function IndicatorChartSection({
         <div className="flex items-center gap-4">
           <Terminal className="w-4 h-4 text-champagne" />
           <span className="text-[11px] font-mono uppercase tracking-widest text-text-tertiary">
-            {isPriceCategory ? 'График выбранного режима' : 'Динамика показателя'}
+            {(isPriceCategory || isHousingFamily || isPpiFamily || isAutoLoanFamily
+              || isMortgageFamily || isCbrTermSliceFamily || isKeyRateFamily || isRuoniaFamily
+              || isBtcUsdFamily || isBrentFamily || isGoldPriceFamily || isUsdRubFamily
+              || isEurRubFamily
+              || isCnyRubFamily || isBudgetFamily || isBankCreditFamily
+              || isHouseholdFinanceFamily || isLaborMarketFamily || isUnemploymentFamily
+              || isWagesNominalFamily || isGdpNominalFamily || isGdpRealFamily
+              || isMonetaryMassFamily
+              || isInternationalReservesFamily
+              || isExternalDebtFamily || isGdpUseFamily)
+              ? 'График выбранного режима'
+              : 'Динамика показателя'}
           </span>
         </div>
 
@@ -229,21 +510,86 @@ export default function IndicatorChartSection({
         <div className="relative overflow-hidden rounded-[2rem]">
           <IndicatorChart
             key={`${indicator?.code}-${chartMode}`}
-            mode={['quarterly', 'annual', 'weekly', 'index'].includes(chartMode) ? 'cpi' : chartMode}
+            mode={
+              isKeyRateFamily || isRuoniaFamily || isBtcUsdFamily || isBrentFamily
+              || isGoldPriceFamily || isUsdRubFamily || isEurRubFamily || isCnyRubFamily
+              || isBudgetFamily || isBankCreditFamily || isHouseholdFinanceFamily
+              || isLaborMarketFamily || isUnemploymentFamily || isWagesNominalFamily
+              || isGdpNominalFamily || isGdpRealFamily
+              || isMonetaryMassFamily || isInternationalReservesFamily || isExternalDebtFamily
+              || isGdpUseFamily
+              || ['quarterly', 'annual', 'weekly', 'index', 'yoy', 'qoq', 'mom', 'real',
+                'period-weekly', 'period-monthly'].includes(chartMode)
+              || ((isAutoLoanFamily || isMortgageFamily || isCbrTermSliceFamily) && chartMode === 'level')
+                ? 'cpi'
+                : chartMode
+            }
             inflation={inflationResp}
             cpiData={chartCpiData}
             forecastData={forecastData}
             showForecast={forecastEnabled && showForecast}
             onChartData={onChartData}
             onRangeChange={onRangeChange}
-            referenceLineY={isPriceCategory && chartMode !== 'index' ? 0 : null}
-            cpiChartTitle={chartTitle({ chartMode, isPriceCategory, indicator })}
-            levelTooltipLabel={levelTooltipLabel({ chartMode, isPriceCategory, indicator })}
+            referenceLineY={(isPriceCategory || isHousingFamily || isPpiFamily) && chartMode !== 'index' ? 0 : null}
+            cpiChartTitle={chartTitle({
+              chartMode, isPriceCategory, isHousingFamily, isPpiFamily, isAutoLoanFamily,
+              isMortgageFamily, isCbrTermSliceFamily, isKeyRateFamily, isRuoniaFamily,
+              isBtcUsdFamily, isBrentFamily, isGoldPriceFamily, isUsdRubFamily, isEurRubFamily,
+              isCnyRubFamily,
+              isBudgetFamily,
+              isBankCreditFamily,
+              isHouseholdFinanceFamily,
+              isLaborMarketFamily,
+              isUnemploymentFamily,
+              isWagesNominalFamily,
+              isGdpNominalFamily,
+              isGdpRealFamily,
+              isMonetaryMassFamily,
+              isInternationalReservesFamily,
+              isExternalDebtFamily,
+              isGdpUseFamily,
+              indicator, safeViewMode,
+            })}
+            levelTooltipLabel={levelTooltipLabel({
+              chartMode, isPriceCategory, isHousingFamily, isPpiFamily, isAutoLoanFamily,
+              isMortgageFamily, isCbrTermSliceFamily, isKeyRateFamily, isRuoniaFamily,
+              isBtcUsdFamily, isBrentFamily, isGoldPriceFamily, isUsdRubFamily, isEurRubFamily,
+              isCnyRubFamily,
+              isBudgetFamily,
+              isBankCreditFamily,
+              isHouseholdFinanceFamily,
+              isLaborMarketFamily,
+              isUnemploymentFamily,
+              isWagesNominalFamily,
+              isGdpNominalFamily,
+              isGdpRealFamily,
+              isMonetaryMassFamily,
+              isInternationalReservesFamily,
+              isExternalDebtFamily,
+              isGdpUseFamily,
+              indicator,
+            })}
             forecastTooltipLabel={forecastTooltipLabel({ chartMode, indicator })}
             emptyHint={emptyHint}
-            dateFormat={dateFormatFor({ chartMode, indicator })}
-            unit={chartMode === 'index' ? 'индекс' : (indicator?.unit || '%')}
-            rangePreset={rangePresetFor({ chartMode, indicator })}
+            dateFormat={dateFormatFor({ chartMode, indicator, safeViewMode })}
+            unit={chartMode === 'index' ? 'индекс' : ((isPpiFamily || isHousingFamily) && chartMode !== 'index' ? '%' : (indicator?.unit || '%'))}
+            rangePreset={rangePresetFor({
+              chartMode, indicator, isKeyRateFamily, isRuoniaFamily, isBtcUsdFamily,
+              isBrentFamily,
+              isGoldPriceFamily,
+              isUsdRubFamily,
+              isEurRubFamily,
+              isCnyRubFamily,
+              isBudgetFamily,
+              isBankCreditFamily,
+              isHouseholdFinanceFamily,
+              isLaborMarketFamily,
+              isUnemploymentFamily,
+              isMonetaryMassFamily,
+              isInternationalReservesFamily,
+              isExternalDebtFamily,
+              isGdpUseFamily,
+            })}
             indicatorCode={code}
             indicatorCategory={indicator?.category}
           />

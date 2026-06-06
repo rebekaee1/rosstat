@@ -1,20 +1,20 @@
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { cn } from '../lib/format';
 
 /**
  * Внутрисемейный переключатель карточек («Все товары»/«Продовольственные»/...).
  *
- * Если задан `currentMode` — он подхватывается в `?mode=...` query-string на
- * целевые ссылки, чтобы пользователь, выбравший «Месячная» на /indicator/cpi,
- * остался в режиме «Месячная» при переходе на /indicator/cpi-food. Если на
- * целевом коде такой режим недоступен (например `weekly` есть только у
- * головного `cpi`) — IndicatorDetail сам сделает fallback на дефолт.
+ * `?mode=` берём из текущего URL (источник правды), чтобы при переходе на sibling
+ * сохранялся выбранный «Режим инфляции» (месячная, недельная, …).
  */
-export default function VariantGroupPicker({ group, currentCode, currentMode }) {
+export default function VariantGroupPicker({ group, currentCode, embedded = false }) {
+  const [searchParams] = useSearchParams();
   if (!group) return null;
-  const suffix = currentMode && currentMode !== 'inflation' ? `?mode=${currentMode}` : '';
-  return (
-    <section className="mb-8 rounded-[1.5rem] border border-border-subtle bg-surface p-4 shadow-sm">
+  const modeParam = searchParams.get('mode');
+  const suffix = modeParam ? `?mode=${encodeURIComponent(modeParam)}` : '';
+
+  const body = (
+    <>
       <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
         {group.label}
       </p>
@@ -23,17 +23,26 @@ export default function VariantGroupPicker({ group, currentCode, currentMode }) 
           <Link
             key={item.code}
             to={`/indicator/${item.code}${suffix}`}
+            preventScrollReset
             className={cn(
               'rounded-xl px-3 py-2 text-xs font-medium transition-colors',
               item.code === currentCode
                 ? 'bg-champagne/15 text-champagne'
-                : 'bg-obsidian-lighter text-text-secondary hover:text-champagne'
+                : 'bg-obsidian-lighter text-text-secondary hover:text-champagne',
             )}
           >
             {item.label}
           </Link>
         ))}
       </div>
+    </>
+  );
+
+  if (embedded) return body;
+
+  return (
+    <section className="mb-8 rounded-[1.5rem] border border-border-subtle bg-surface p-4 shadow-sm">
+      {body}
     </section>
   );
 }

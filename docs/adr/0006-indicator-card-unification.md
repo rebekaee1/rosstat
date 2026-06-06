@@ -123,12 +123,12 @@ Variant ≠ режим:
 На момент 2026-05-22 этот ADR покрывает 5 кластеров (trade, labour, housing, rates rename, daily). **Не покрыты пока**:
 
 1. **GDP family** — `gdp-nominal`, `gdp-real`, `gdp-real-yoy`, `gdp-real-qoq`, `gdp-real-annual`, `gdp-nominal-annual`, `gdp-consumption`, `gdp-government`, `gdp-investment`. Сейчас все 8 в листинге. Кандидаты на унификацию: `gdp-real` → семья с режимами [Уровень, YoY%, QoQ%, Annual], `gdp-nominal` → семья с режимами [Уровень, Annual]. Use-компоненты (`gdp-consumption`, `-government`, `-investment`) — это **варианты** по компоненту, нужен `VariantGroupPicker`.
-2. **PPI family** — `ppi`, `ppi-yoy`, `ppi-annual`. Кандидат на семью [Индекс, YoY%, Annual] аналогично housing.
-3. **CPI family** — частично уже unified через legacy `CpiViewModePicker.jsx` (внутри отдельная логика mom/qoq/annual/weekly/index). Стоит переехать на `viewModeFamilies` для консистентности, но это пересекается с inflation-weekly спецификой.
+2. **PPI family** — **закрыто (2026-05-30):** `ppi` + `ppiViewMode*` (инфляция за год / к прошлому м/м+г/г / индекс); `ppi-yoy`, `ppi-annual` скрыты, canonical `?mode=`.
+3. **CPI family** — **завершённый эталон** (2026-06): variant × двухуровневый `cpiViewMode*` (10 URL-режимов, отдельные derived на режим). Не мигрировать слепо на `viewModeFamilies` — см. [`indicator-family-playbook.md`](../indicator-family-playbook.md).
 4. **Retail trade / consumption** — `retail-trade`, `retail-trade-yoy`, `retail-trade-monthly` — кандидаты на семью.
 5. **Banking volumes** — `consumer-credit`, `business-credit`, `deposits-individual`, `deposits-business`, `external-debt`, `mortgage-volume` — может потребоваться рефакторинг категорий + view-modes.
 
-Следующий agent, когда возьмётся за расширение — должен использовать чеклист из `AGENTS.md::Шаг 4` и регистрировать новые семьи в `viewModeFamilies.js`.
+Следующий agent, когда возьмётся за расширение — должен использовать чеклист из `AGENTS.md::Шаг 4`, playbook [`indicator-family-playbook.md`](../indicator-family-playbook.md) (фазы A–G) и регистрировать новые семьи в `viewModeFamilies.js` (или CPI-подобный стек, если две оси UI).
 
 ---
 
@@ -173,3 +173,9 @@ Pilot Phase 1-5 ввёл `viewModeFamilies.js` как реестр семей р
 - `frontend/vitest.config.js` (добавлен `@vitejs/plugin-react` — для JSX в импортируемых модулях).
 
 См. также trap «View-mode family metadata leak» в `CONTEXT.md::Operational invariants and traps`.
+
+### 2026-06-01 — CPI family playbook (reference implementation)
+
+Семейство ИПЦ (`cpi`, `cpi-food`, `cpi-nonfood`, `cpi-services`) доведено до эталона: variant по составу + 10 режимов с **отдельными рядами** (в т.ч. разведение `period-weekly` MTD vs `step-weekly` WoW), контент 40 комбинаций, прогнозы по режимам, SEO без дублирования URL.
+
+Операционный и продуктовый чеклист вынесен в **[`docs/indicator-family-playbook.md`](../indicator-family-playbook.md)** — использовать при работе над GDP/PPI и любыми семьями с variant + view-mode. Для одного нового кода по-прежнему достаточно `AGENTS.md::Шаг 4` (7 пунктов).

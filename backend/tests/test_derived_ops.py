@@ -13,12 +13,17 @@ from datetime import date
 from app.services.derived_ops import (
     annual_inflation,
     annual_sum,
+    cpi_mom_qoq,
+    cpi_mom_yoy,
+    cumulative_level_from_mom,
     december_to_december,
     qoq,
     quarterly_avg,
     quarterly_index,
     rolling_avg,
     wages_real,
+    weekly_inflation_by_calendar_month,
+    weekly_mtd_in_calendar_month,
     yoy,
     yoy_abs,
 )
@@ -360,3 +365,61 @@ def test_wages_real_zero_base_returns_empty():
     wages = [(date(2025, 1, 1), 0.0), (date(2025, 2, 1), 100.0)]
     cpi = [(date(2025, m, 1), 101.0) for m in range(1, 13)]
     assert wages_real(wages, cpi) == []
+
+
+# --- CPI view-mode ops -------------------------------------------------------
+
+
+def test_cumulative_level_from_mom_starts_at_2000():
+    monthly = [
+        (date(1999, 12, 1), 110.0),
+        (date(2000, 1, 1), 101.0),
+        (date(2000, 2, 1), 101.0),
+    ]
+    out = cumulative_level_from_mom(monthly)
+    assert out[0] == (date(2000, 1, 1), 100.0)
+    assert out[1][0] == date(2000, 2, 1)
+    assert out[1][1] == 101.0
+
+
+def test_cpi_mom_yoy_needs_year_gap():
+    monthly = [(date(2025, m, 1), 101.0) for m in range(1, 13)]
+    monthly += [(date(2026, 1, 1), 101.0)]
+    out = cpi_mom_yoy(monthly)
+    assert len(out) >= 1
+    assert out[0][0] == date(2026, 1, 1)
+
+
+def test_weekly_inflation_by_calendar_month_products_weeks():
+    weekly = [
+        (date(2026, 1, 5), 100.5),
+        (date(2026, 1, 12), 100.3),
+        (date(2026, 2, 2), 100.2),
+    ]
+    out = weekly_inflation_by_calendar_month(weekly)
+    assert len(out) == 2
+    jan = next(v for d, v in out if d.month == 1)
+    expected_jan = (100.5 / 100) * (100.3 / 100) * 100 - 100
+    assert abs(jan - round(expected_jan, 4)) < 0.0001
+
+
+def test_weekly_mtd_emits_point_per_week_and_differs_from_wow():
+    weekly = [
+        (date(2026, 1, 5), 100.5),
+        (date(2026, 1, 12), 100.3),
+        (date(2026, 2, 2), 100.2),
+    ]
+    mtd = weekly_mtd_in_calendar_month(weekly)
+    assert len(mtd) == 3
+    assert mtd[0][1] == round(100.5 - 100, 4)
+    expected_w2 = (100.5 / 100) * (100.3 / 100) * 100 - 100
+    assert abs(mtd[1][1] - round(expected_w2, 4)) < 0.0001
+    assert mtd[1][1] != round(100.3 - 100, 4)
+
+
+def test_cpi_mom_qoq_on_quarter_ends():
+    monthly = [(date(2025, m, 1), 101.0) for m in range(1, 13)]
+    monthly += [(date(2026, m, 1), 101.0) for m in range(1, 4)]
+    out = cpi_mom_qoq(monthly)
+    assert len(out) >= 1
+    assert out[0][0].month in (3, 6, 9, 12)

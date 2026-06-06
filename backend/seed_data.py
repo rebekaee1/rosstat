@@ -98,7 +98,7 @@ INDICATORS = [
         "frequency": "monthly",
         "source": "Росстат",
         "source_url": "https://rosstat.gov.ru/statistics/price",
-        "description": "Индекс потребительских цен на услуги населению.",
+        "description": "Индекс потребительских цен на услуги.",
         "parser_type": "rosstat_cpi_xlsx",
         "model_config_json": {"forecast_steps": 12},
         "is_active": True,
@@ -119,10 +119,12 @@ INDICATORS = [
             "рефинансирования, которая выполняла ту же функцию до запуска ключевой ставки."
         ),
         "methodology": (
-            "С 13 сентября 2013 года — ключевая ставка, устанавливаемая советом директоров "
-            "Банка России. До этой даты — ставка рефинансирования (с 1992 года). С 1 января "
-            "2016 года ставка рефинансирования официально приравнена к ключевой ставке. "
-            "Значение указывается в % годовых на каждую дату изменения."
+            "Официальный уровень ключевой ставки Банка России в процентах годовых: "
+            "каждая точка — действующая ставка с даты её изменения; между заседаниями "
+            "совета директоров значение не меняется. До 13 сентября 2013 года в ряде "
+            "исторически указана ставка рефинансирования; с 2016 года она приравнена "
+            "ключевой. На карточке также доступны средние по неделе, месяцу, кварталу "
+            "и году — они рассчитываются из того же официального ряда."
         ),
         "parser_type": "cbr_keyrate_html",
         "model_config_json": {
@@ -145,11 +147,15 @@ INDICATORS = [
         "source_url": "https://www.cbr.ru/currency_base/daily/",
         "description": (
             "Официальный курс доллара США к рублю, устанавливаемый Банком России. "
-            "Обновляется ежедневно."
+            "Курс выражается в рублях за один доллар и обновляется ежедневно."
         ),
         "methodology": (
-            "Курс устанавливается на основе результатов биржевых торгов. "
-            "Источник: XML-канал ЦБ РФ (XML_dynamic.asp)."
+            "Официальный курс доллара к рублю, который Банк России устанавливает "
+            "ежедневно на основе итогов валютного рынка. Каждая точка — курс "
+            "на соответствующую дату в рублях за один доллар США. На карточке "
+            "доступны ежедневное значение и средние по неделе, месяцу, "
+            "кварталу и году — последние считаются из того же ряда для "
+            "удобства сравнения тренда."
         ),
         "parser_type": "cbr_fx_xml",
         "model_config_json": {
@@ -168,7 +174,18 @@ INDICATORS = [
         "frequency": "daily",
         "source": "Банк России",
         "source_url": "https://www.cbr.ru/currency_base/daily/",
-        "description": "Официальный курс евро к рублю, устанавливаемый Банком России.",
+        "description": (
+            "Официальный курс евро к рублю, устанавливаемый Банком России. "
+            "Курс выражается в рублях за один евро и обновляется ежедневно."
+        ),
+        "methodology": (
+            "Официальный курс евро к рублю, который Банк России устанавливает "
+            "ежедневно на основе итогов валютного рынка. Каждая точка — курс "
+            "на соответствующую дату в рублях за один евро. На карточке "
+            "доступны ежедневное значение и средние по неделе, месяцу, "
+            "кварталу и году — последние считаются из того же ряда для "
+            "удобства сравнения тренда."
+        ),
         "parser_type": "cbr_fx_xml",
         "model_config_json": {
             "forecast_steps": 0,
@@ -186,7 +203,18 @@ INDICATORS = [
         "frequency": "daily",
         "source": "Банк России",
         "source_url": "https://www.cbr.ru/currency_base/daily/",
-        "description": "Официальный курс китайского юаня к рублю, устанавливаемый Банком России.",
+        "description": (
+            "Официальный курс китайского юаня к рублю, устанавливаемый Банком России. "
+            "Курс выражается в рублях за один юань и обновляется ежедневно."
+        ),
+        "methodology": (
+            "Официальный курс юаня к рублю, который Банк России устанавливает "
+            "ежедневно на основе итогов валютного рынка. Каждая точка — курс "
+            "на соответствующую дату в рублях за один юань. На карточке "
+            "доступны ежедневное значение и средние по неделе, месяцу, "
+            "кварталу и году — последние считаются из того же ряда для "
+            "удобства сравнения тренда."
+        ),
         "parser_type": "cbr_fx_xml",
         "model_config_json": {
             "forecast_steps": 0,
@@ -211,8 +239,12 @@ INDICATORS = [
             "на межбанковском рынке."
         ),
         "methodology": (
-            "Рассчитывается Банком России по данным о необеспеченных сделках банков-участников. "
-            "Источник: HTML-таблица cbr.ru/hd_base/ruonia/."
+            "Индикативная взвешенная ставка однодневных рублёвых межбанковских "
+            "кредитов и депозитов на условиях «овернайт»; рассчитывается Банком "
+            "России по сделкам банков-участников. Публикуется по рабочим дням. "
+            "На карточке доступны ежедневный уровень и средние по неделе, месяцу, "
+            "кварталу и году — последние считаются из того же ряда для удобства "
+            "сравнения."
         ),
         "parser_type": "cbr_ruonia_html",
         "model_config_json": {
@@ -234,6 +266,13 @@ INDICATORS = [
         "description": (
             "Наличные деньги в обращении вне банковской системы (агрегат М0). "
             "Публикуется ежемесячно на 1-е число."
+        ),
+        "methodology": (
+            "Денежная масса М0 — наличные в обращении вне банков в млрд рублей "
+            "на конец месяца по оценке Банка России. На карточке — помесячный "
+            "ряд и средние по кварталу и году из того же источника; прогноз "
+            "не строится. Семья «Денежные агрегаты» связывает М0 с узкой "
+            "М1 и широкой М2 без сброса режима графика."
         ),
         "parser_type": "cbr_monetary_agg_xlsx",
         "model_config_json": {
@@ -260,6 +299,13 @@ INDICATORS = [
         "description": (
             "Широкая денежная масса (агрегат М2): наличные + безналичные средства "
             "на счетах резидентов. Публикуется ежемесячно на 1-е число."
+        ),
+        "methodology": (
+            "Широкая денежная масса М2 в млрд рублей на конец месяца — основной "
+            "показатель ликвидности в определении Банка России. Помесячный "
+            "ряд и средние по кварталу и году на карточке; прогноз не "
+            "строится. В семье «Денежные агрегаты» рядом — наличные М0 и "
+            "агрегат М1 для сопоставления на одних датах."
         ),
         "parser_type": "cbr_monetary_agg_xlsx",
         "model_config_json": {
@@ -289,11 +335,12 @@ INDICATORS = [
             "физическим лицам-резидентам в рублях."
         ),
         "methodology": (
-            "Средневзвешенная процентная ставка по ипотечным жилищным кредитам "
-            "в рублях, выданным кредитными организациями физическим лицам. "
-            "Рассчитывается Банком России по форме банковской отчётности 0409128 "
-            "«Данные о средневзвешенных процентных ставках». Публикуется "
-            "ежемесячно с одно-двухмесячным лагом."
+            "Средневзвешенная годовая ставка по ипотечным жилищным кредитам "
+            "физических лиц-резидентов в рублях: в расчёт входят новые договоры "
+            "и действующие сделки, веса — по объёмам выдач за месяц по отчётности "
+            "банков. Публикуется Банком России ежемесячно, обычно с лагом "
+            "один–два месяца. На карточке один режим — уровень ставки в процентах "
+            "годовых, без отдельной разбивки по сроку."
         ),
         "parser_type": "cbr_dataservice_json",
         "model_config_json": {
@@ -422,6 +469,14 @@ INDICATORS = [
         "description": (
             "Средневзвешенная процентная ставка по автокредитам "
             "физическим лицам в рублях, по всем срокам."
+        ),
+        "methodology": (
+            "Средневзвешенная процентная ставка по новым и пролонгированным "
+            "автокредитам в рублях, выданным кредитными организациями физическим "
+            "лицам. Агрегат «по всем срокам» отражает взвешенную структуру "
+            "выдач без разбивки по длительности договора. Рассчитывается Банком "
+            "России по форме банковской отчётности о средневзвешенных ставках. "
+            "Публикуется ежемесячно с лагом около одного месяца."
         ),
         "parser_type": "cbr_dataservice_json",
         "model_config_json": {
@@ -667,11 +722,12 @@ INDICATORS = [
             "Данные Росстата из обследования рабочей силы."
         ),
         "methodology": (
-            "Уровень безработицы по методологии Международной организации труда "
-            "(МОТ): отношение числа безработных к численности рабочей силы в "
-            "возрасте 15 лет и старше. Рассчитывается Росстатом по результатам "
-            "ежемесячного выборочного обследования рабочей силы и публикуется "
-            "в составе официальных макроэкономических обзоров."
+            "Уровень безработицы — доля безработных в рабочей силе в процентах "
+            "на конец месяца по методологии Международной организации труда. "
+            "Источник: обследование рабочей силы Росстата. На карточке — "
+            "помесячный ряд, среднее по кварталам и скользящее 12-месячное "
+            "среднее; переключатель «Сглаживание» выбирает отдельный ряд. "
+            "Сопоставляйте с занятостью и рабочей силой в категории «Рынок труда»."
         ),
         "parser_type": "rosstat_labor",
         "model_config_json": {
@@ -696,10 +752,14 @@ INDICATORS = [
         ),
         "methodology": (
             "Среднемесячная номинальная начисленная заработная плата работников "
-            "организаций (включая выплаты социального характера, без вычета "
-            "налога на доходы физических лиц). Рассчитывается Росстатом по "
-            "данным форм статистического наблюдения и публикуется в составе "
-            "ежемесячных макроэкономических обзоров с лагом около двух месяцев."
+            "организаций: сумма начислений до удержания налога на доходы, "
+            "включая социальные выплаты по правилам Росстата. Охват — крупные "
+            "и средние организации; индивидуальные предприниматели и малый "
+            "бизнес в показатель не входят. На карточке доступны помесячный "
+            "ряд с 2015 года, годовая серия с 1991 года, а также реальная "
+            "зарплата, темп год к году и индекс с базой 2015=100 — каждый "
+            "режим отражает отдельный официальный или согласованный ряд. "
+            "Публикация обычно с лагом около двух месяцев от отчётного периода."
         ),
         "parser_type": "rosstat_labor",
         "model_config_json": {
@@ -724,12 +784,11 @@ INDICATORS = [
             "Квартальные данные."
         ),
         "methodology": (
-            "Рассчитывается Росстатом по системе национальных счетов СНС-2008 "
-            "(производственный метод, в текущих рыночных ценах). Квартальные "
-            "данные публикуются с лагом около 75 дней после окончания квартала. "
-            "Исторический ряд начинается с 1995 года и приведён к единой "
-            "методологии через сопоставление в переходном периоде между "
-            "классификаторами ОКВЭД2007 и ОКВЭД2."
+            "Валовой внутренний продукт России в текущих рыночных ценах "
+            "по квартальным оценкам Росстата в системе национальных счетов. "
+            "Каждая точка — объём за квартал в млрд рублей; история с 1995 года. "
+            "Темпы год к году и квартал к кварталу, а также сумма за календарный "
+            "год доступны переключателем режимов на карточке."
         ),
         "parser_type": "rosstat_gdp",
         "model_config_json": {
@@ -758,12 +817,11 @@ INDICATORS = [
             "Квартальные данные официального файла Росстата «ВВП кварталы»."
         ),
         "methodology": (
-            "Реальный ВВП в постоянных ценах 2021 года по методологии системы "
-            "национальных счетов СНС-2008. Очищен от ценового фактора, что "
-            "позволяет напрямую сопоставлять физический объём выпуска разных "
-            "периодов. Публикуется Росстатом ежеквартально с лагом около 75 дней; "
-            "исторический ряд с 1995 года приведён к единой ценовой базе и "
-            "к классификатору ОКВЭД2."
+            "Валовой внутренний продукт России в постоянных ценах 2021 года "
+            "по квартальным оценкам Росстата в системе национальных счетов. "
+            "Ряд отражает объём выпуска без влияния текущих цен; история с 1995 года. "
+            "Темпы год к году и квартал к кварталу, а также сумма за календарный год "
+            "доступны переключателем режимов на карточке."
         ),
         "parser_type": "rosstat_gdp",
         "model_config_json": {
@@ -781,7 +839,7 @@ INDICATORS = [
     },
     # Annual sibling для wages-nominal — содержит исторические годовые
     # точки 1991-2014 (immutable seed, Росстат архивы). Не показывается
-    # в каталоге; доступен как режим «Годовое (с 1991)» через viewModeFamilies.
+    # в каталоге; доступен как режим «С 1991 года» на карточке wages-nominal.
     # См. trap «annual-in-monthly mixing» в CONTEXT.md.
     {
         "code": "wages-nominal-annual",
@@ -1230,6 +1288,370 @@ INDICATORS = [
         "is_active": True,
         "category": "Цены",
     },
+    {
+        "code": "cpi-yoy",
+        "name": "ИПЦ год к году",
+        "name_en": "CPI YoY",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/statistics/price",
+        "description": "Изменение потребительских цен к тому же месяцу прошлого года.",
+        "parser_type": "derived",
+        "model_config_json": {
+            "forecast_steps": 12,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "cpi",
+                "operation": "cpi_mom_yoy",
+                "model_name": "CPI-YoY-Derived",
+            },
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "cpi-food-yoy",
+        "name": "ИПЦ на продовольствие — год к году",
+        "name_en": "Food CPI YoY",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/statistics/price",
+        "description": "Изменение цен на продовольственные товары к тому же месяцу прошлого года.",
+        "parser_type": "derived",
+        "model_config_json": {
+            "forecast_steps": 12,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "cpi-food",
+                "operation": "cpi_mom_yoy",
+                "model_name": "CPI-Food-YoY-Derived",
+            },
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "cpi-nonfood-yoy",
+        "name": "ИПЦ на непродовольствие — год к году",
+        "name_en": "Non-food CPI YoY",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/statistics/price",
+        "description": "Изменение цен на непродовольственные товары к тому же месяцу прошлого года.",
+        "parser_type": "derived",
+        "model_config_json": {
+            "forecast_steps": 12,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "cpi-nonfood",
+                "operation": "cpi_mom_yoy",
+                "model_name": "CPI-Nonfood-YoY-Derived",
+            },
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "cpi-services-yoy",
+        "name": "ИПЦ на услуги — год к году",
+        "name_en": "Services CPI YoY",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/statistics/price",
+        "description": "Изменение цен на услуги к тому же месяцу прошлого года.",
+        "parser_type": "derived",
+        "model_config_json": {
+            "forecast_steps": 12,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "cpi-services",
+                "operation": "cpi_mom_yoy",
+                "model_name": "CPI-Services-YoY-Derived",
+            },
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "cpi-qoq",
+        "name": "ИПЦ квартал к кварталу",
+        "name_en": "CPI QoQ",
+        "unit": "%",
+        "frequency": "quarterly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/statistics/price",
+        "description": "Изменение уровня цен к концу предыдущего квартала.",
+        "parser_type": "derived",
+        "model_config_json": {
+            "forecast_steps": 4,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "cpi",
+                "operation": "cpi_mom_qoq",
+                "model_name": "CPI-QoQ-Derived",
+            },
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "cpi-food-qoq",
+        "name": "ИПЦ на продовольствие — квартал к кварталу",
+        "name_en": "Food CPI QoQ",
+        "unit": "%",
+        "frequency": "quarterly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/statistics/price",
+        "description": "Изменение цен на продовольствие к концу предыдущего квартала.",
+        "parser_type": "derived",
+        "model_config_json": {
+            "forecast_steps": 4,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "cpi-food",
+                "operation": "cpi_mom_qoq",
+                "model_name": "CPI-Food-QoQ-Derived",
+            },
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "cpi-nonfood-qoq",
+        "name": "ИПЦ на непродовольствие — квартал к кварталу",
+        "name_en": "Non-food CPI QoQ",
+        "unit": "%",
+        "frequency": "quarterly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/statistics/price",
+        "description": "Изменение цен на непродовольственные товары к концу предыдущего квартала.",
+        "parser_type": "derived",
+        "model_config_json": {
+            "forecast_steps": 4,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "cpi-nonfood",
+                "operation": "cpi_mom_qoq",
+                "model_name": "CPI-Nonfood-QoQ-Derived",
+            },
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "cpi-services-qoq",
+        "name": "ИПЦ на услуги — квартал к кварталу",
+        "name_en": "Services CPI QoQ",
+        "unit": "%",
+        "frequency": "quarterly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/statistics/price",
+        "description": "Изменение цен на услуги к концу предыдущего квартала.",
+        "parser_type": "derived",
+        "model_config_json": {
+            "forecast_steps": 4,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "cpi-services",
+                "operation": "cpi_mom_qoq",
+                "model_name": "CPI-Services-QoQ-Derived",
+            },
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "cpi-period-weekly",
+        "name": "Недельный рост ИПЦ с начала месяца",
+        "name_en": "CPI Weekly MTD from Weekly",
+        "unit": "%",
+        "frequency": "weekly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/statistics/price",
+        "description": (
+            "Накопленный прирост цен с начала календарного месяца по состоянию "
+            "на каждую отчётную неделю."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {
+            "forecast_steps": 8,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "inflation-weekly",
+                "operation": "weekly_mtd_in_calendar_month",
+                "model_name": "CPI-Period-Weekly-Derived",
+            },
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "cpi-food-period-weekly",
+        "name": "Недельный рост цен на продовольствие с начала месяца",
+        "name_en": "Food CPI Weekly MTD",
+        "unit": "%",
+        "frequency": "weekly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/statistics/price",
+        "description": (
+            "Накопленный прирост цен на продовольствие с начала месяца "
+            "по еженедельным оценкам."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {
+            "forecast_steps": 8,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "inflation-weekly-food",
+                "operation": "weekly_mtd_in_calendar_month",
+                "model_name": "CPI-Food-Period-Weekly-Derived",
+            },
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "cpi-nonfood-period-weekly",
+        "name": "Недельный рост цен на непродовольствие с начала месяца",
+        "name_en": "Non-food CPI Weekly MTD",
+        "unit": "%",
+        "frequency": "weekly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/statistics/price",
+        "description": (
+            "Накопленный прирост цен на непродовольственные товары с начала месяца "
+            "по еженедельным оценкам."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {
+            "forecast_steps": 8,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "inflation-weekly-nonfood",
+                "operation": "weekly_mtd_in_calendar_month",
+                "model_name": "CPI-Nonfood-Period-Weekly-Derived",
+            },
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "cpi-services-period-weekly",
+        "name": "Недельный рост цен на услуги с начала месяца",
+        "name_en": "Services CPI Weekly MTD",
+        "unit": "%",
+        "frequency": "weekly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/statistics/price",
+        "description": (
+            "Накопленный прирост цен на услуги с начала месяца "
+            "по еженедельным оценкам."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {
+            "forecast_steps": 8,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "inflation-weekly-services",
+                "operation": "weekly_mtd_in_calendar_month",
+                "model_name": "CPI-Services-Period-Weekly-Derived",
+            },
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "cpi-period-monthly",
+        "name": "Месячный рост ИПЦ по недельным оценкам",
+        "name_en": "CPI Monthly from Weekly",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/statistics/price",
+        "description": "Накопленный прирост цен за календарный месяц по еженедельным оценкам.",
+        "parser_type": "derived",
+        "model_config_json": {
+            "forecast_steps": 3,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "inflation-weekly",
+                "operation": "weekly_inflation_by_calendar_month",
+                "model_name": "CPI-Period-Monthly-Derived",
+            },
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "cpi-food-period-monthly",
+        "name": "Месячный рост цен на продовольствие по неделям",
+        "name_en": "Food CPI Monthly from Weekly",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/statistics/price",
+        "description": "Накопленный прирост цен на продовольствие за месяц по недельным оценкам.",
+        "parser_type": "derived",
+        "model_config_json": {
+            "forecast_steps": 3,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "inflation-weekly-food",
+                "operation": "weekly_inflation_by_calendar_month",
+                "model_name": "CPI-Food-Period-Monthly-Derived",
+            },
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "cpi-nonfood-period-monthly",
+        "name": "Месячный рост цен на непродовольствие по неделям",
+        "name_en": "Non-food CPI Monthly from Weekly",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/statistics/price",
+        "description": "Накопленный прирост цен на непродовольственные товары за месяц по недельным оценкам.",
+        "parser_type": "derived",
+        "model_config_json": {
+            "forecast_steps": 3,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "inflation-weekly-nonfood",
+                "operation": "weekly_inflation_by_calendar_month",
+                "model_name": "CPI-Nonfood-Period-Monthly-Derived",
+            },
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "cpi-services-period-monthly",
+        "name": "Месячный рост цен на услуги по неделям",
+        "name_en": "Services CPI Monthly from Weekly",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/statistics/price",
+        "description": "Накопленный прирост цен на услуги за календарный месяц по недельным оценкам.",
+        "parser_type": "derived",
+        "model_config_json": {
+            "forecast_steps": 3,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "inflation-weekly-services",
+                "operation": "weekly_inflation_by_calendar_month",
+                "model_name": "CPI-Services-Period-Monthly-Derived",
+            },
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
     # ─── Дополнительные финансы (CBR DataService) ───
     {
         "code": "m1",
@@ -1242,6 +1664,13 @@ INDICATORS = [
         "description": (
             "Денежный агрегат М1: наличные деньги (М0) плюс переводные депозиты. "
             "Публикуется ежемесячно на 1-е число."
+        ),
+        "methodology": (
+            "Денежный агрегат М1 в млрд рублей: наличные (М0) и переводные "
+            "депозиты до востребования на конец месяца по оценке Банка России. "
+            "На карточке — помесячный ряд и средние по кварталу и году; "
+            "прогноз не строится. Семья «Денежные агрегаты» позволяет "
+            "переключаться на М0 и М2 с сохранением режима графика."
         ),
         "parser_type": "cbr_monetary_agg_xlsx",
         "model_config_json": {
@@ -1268,6 +1697,15 @@ INDICATORS = [
         "description": (
             "Задолженность по кредитам физическим лицам (портфель). "
             "Данные Банка России по банковскому сектору."
+        ),
+        "methodology": (
+            "Совокупный остаток кредитов физическим лицам в трлн рублей на конец "
+            "месяца — ипотека, потребительские и прочие рублёвые ссуды в одном "
+            "портфеле банковского сектора. Источник: Банк России. На карточке "
+            "доступны помесячные остатки и средние по кварталам или годам; "
+            "в семье «Кредиты и вклады населения» — согласованный ряд вкладов "
+            "физлиц в млрд рублей за те же даты. Это уровень задолженности, "
+            "а не выдачи за месяц и не ставки по новым договорам."
         ),
         "parser_type": "cbr_dataservice_json",
         "model_config_json": {
@@ -1299,6 +1737,14 @@ INDICATORS = [
             "Задолженность по кредитам юридическим лицам и ИП (портфель). "
             "Данные Банка России."
         ),
+        "methodology": (
+            "Совокупный остаток кредитов нефинансовым организациям и "
+            "индивидуальным предпринимателям в трлн рублей на конец месяца — "
+            "оборотное и инвестиционное кредитование в одном рублёвом портфеле. "
+            "Источник: Банк России. Помесячный ряд и средние по кварталам или "
+            "годам на карточке. Показатель отражает остаток портфеля, "
+            "а не объём новых выдач."
+        ),
         "parser_type": "cbr_dataservice_json",
         "model_config_json": {
             "dataservice": {
@@ -1329,6 +1775,15 @@ INDICATORS = [
         "description": (
             "Суммарные вклады физических лиц: переводные, срочные "
             "и валютные депозиты домашних хозяйств."
+        ),
+        "methodology": (
+            "Совокупный остаток вкладов физических лиц в банках в млрд рублей "
+            "на конец месяца — переводные, срочные и валютные депозиты "
+            "домохозяйств в одном агрегате. Источник: Банк России. "
+            "На карточке — помесячные остатки и средние по кварталам или "
+            "годам; в семье «Кредиты и вклады населения» — ряд кредитов "
+            "физлицам в трлн рублей за те же даты. Это уровень привлечённых "
+            "средств, а не приток вкладов за месяц и не средняя ставка."
         ),
         "parser_type": "cbr_monetary_agg_xlsx",
         "model_config_json": {
@@ -1384,12 +1839,11 @@ INDICATORS = [
             "Рассчитывается как разница доходов и расходов."
         ),
         "methodology": (
-            "Дефицит (или профицит) федерального бюджета — превышение расходов "
-            "над доходами за месяц. Источник: Минфин России. Помесячные значения "
-            "рассчитываются из ежемесячно публикуемого нарастающего итога с "
-            "начала года. Предварительная оценка свежего месяца подтягивается из "
-            "ежемесячных пресс-релизов Минфина, итоговое значение — из обновлённых "
-            "открытых данных."
+            "Дефицит (или профицит) федерального бюджета — разница между доходами "
+            "и расходами за календарный месяц в млрд рублей: отрицательное значение "
+            "означает дефицит, положительное — профицит. Источник: Минфин России. "
+            "На карточке — помесячный ряд и среднее за квартал или год; переключатель "
+            "семьи ведёт к доходам и расходам того же бюджета."
         ),
         "parser_type": "minfin_budget_csv",
         "model_config_json": {
@@ -1416,12 +1870,8 @@ INDICATORS = [
         ),
         "parser_type": "rosstat_weekly_cpi",
         "model_config_json": {
-            # Прогноз для недельной инфляции выключен (решение НА от 2026-05-06):
-            # Росстат публикует только за прошедшую неделю с лагом, ранние дни
-            # новой недели дают слишком мало сигнала для обоснованного 8-недельного
-            # прогноза. forecast_steps=0 → retrain_indicator_forecast() очищает
-            # старые прогнозные ряды и API возвращает forecast=None.
-            "forecast_steps": 0,
+            "forecast_steps": 8,
+            "forecast_strategy": "generic_ols",
             "validation": {"min": 99, "max": 102},
             "backfill_max_pages": 1,
             # Cutoff: до 2023-01-09 у Росстата нет доступного архива bulletins
@@ -1430,6 +1880,71 @@ INDICATORS = [
             # XLSX-approximation по food basket → расхождения с monthly CPI
             # до 3 pp (март 2022). docs/missed_data_audit.md::Nedel_ipc.
             "weekly_cutoff_date": "2023-01-09",
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "inflation-weekly-food",
+        "name": "Недельная инфляция — продовольствие",
+        "name_en": "Weekly CPI Food",
+        "unit": "%",
+        "frequency": "weekly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/statistics/price",
+        "description": (
+            "Недельное изменение цен на продовольственные товары: взвешенное среднее "
+            "по еженедельной товарной корзине Росстата (структура расходов — по "
+            "справочнику потребительских цен). Официальный недельный бюллетень "
+            "публикуется только по полной корзине."
+        ),
+        "parser_type": "rosstat_weekly_cpi",
+        "model_config_json": {
+            "weekly_segment": "food",
+            "forecast_steps": 8,
+            "forecast_strategy": "generic_ols",
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "inflation-weekly-nonfood",
+        "name": "Недельная инфляция — непродовольственные товары",
+        "name_en": "Weekly CPI Non-food",
+        "unit": "%",
+        "frequency": "weekly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/statistics/price",
+        "description": (
+            "Недельное изменение цен на непродовольственные товары: взвешенное среднее "
+            "по еженедельной корзине Росстата."
+        ),
+        "parser_type": "rosstat_weekly_cpi",
+        "model_config_json": {
+            "weekly_segment": "nonfood",
+            "forecast_steps": 8,
+            "forecast_strategy": "generic_ols",
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "inflation-weekly-services",
+        "name": "Недельная инфляция — услуги",
+        "name_en": "Weekly CPI Services",
+        "unit": "%",
+        "frequency": "weekly",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/statistics/price",
+        "description": (
+            "Недельное изменение цен на услуги: взвешенное среднее по еженедельной "
+            "корзине Росстата."
+        ),
+        "parser_type": "rosstat_weekly_cpi",
+        "model_config_json": {
+            "weekly_segment": "services",
+            "forecast_steps": 8,
+            "forecast_strategy": "generic_ols",
         },
         "is_active": True,
         "category": "Цены",
@@ -1444,18 +1959,14 @@ INDICATORS = [
         "source": "Росстат",
         "source_url": "https://rosstat.gov.ru/folder/210",
         "description": (
-            "Индекс цен на первичном рынке жилья — изменение средневзвешенных "
-            "цен на квартиры в новостройках по России в целом. Один из ключевых "
-            "показателей жилищного рынка."
+            "Квартальные цены на квартиры в новостройках: индекс с базой 2010 = 100, "
+            "прирост к/к и г/г. Один из главных индикаторов рынка первичного жилья."
         ),
         "methodology": (
-            "Рассчитывается Росстатом по выборочному наблюдению организаций, "
-            "реализующих жильё на первичном рынке, с учётом качественных "
-            "характеристик квартир (типовые, улучшенного качества, элитные) "
-            "и весов, основанных на структуре продаж предыдущего года. "
-            "Публикуется ежеквартально в составе официальных макроэкономических "
-            "обзоров. Индекс приведён к базе 2010 = 100; исторический ряд "
-            "начинается с 1998 года по архивным таблицам Росстата."
+            "Росстат публикует квартальный индекс цен на первичном рынке в "
+            "макроэкономическом обзоре. На странице доступны уровень индекса, "
+            "изменение к предыдущему кварталу и к тому же кварталу год назад. "
+            "История с 1998 года; прогноз на четыре квартала вперёд."
         ),
         "parser_type": "rosstat_housing",
         "model_config_json": {
@@ -1476,17 +1987,14 @@ INDICATORS = [
         "source": "Росстат",
         "source_url": "https://rosstat.gov.ru/folder/210",
         "description": (
-            "Индекс цен на вторичном рынке жилья — изменение средневзвешенных "
-            "цен квартир, продаваемых вторичными собственниками. Отражает "
-            "конъюнктуру обращающегося жилищного фонда."
+            "Квартальные цены на вторичном рынке: индекс 2010 = 100, к/к и г/г. "
+            "Отражает сделки с квартирами в обращающемся жилищном фонде."
         ),
         "methodology": (
-            "Рассчитывается Росстатом по выборочному наблюдению сделок на "
-            "вторичном рынке с учётом качественных характеристик квартир и "
-            "весов, основанных на структуре продаж предыдущего года. "
-            "Публикуется ежеквартально в составе официальных макроэкономических "
-            "обзоров. Индекс приведён к базе 2010 = 100; исторический ряд "
-            "начинается с 1998 года по архивным таблицам Росстата."
+            "Отдельный квартальный индекс Росстата по сделкам на вторичном рынке. "
+            "На графике — уровень индекса, квартальный прирост и год к году; "
+            "переключатель «Рынок жилья» ведёт на первичные новостройки. "
+            "История с 1998 года; прогноз на четыре квартала."
         ),
         "parser_type": "rosstat_housing",
         "model_config_json": {
@@ -1494,6 +2002,35 @@ INDICATORS = [
             "forecast_strategy": "housing_quarterly",
             "forecast_transform": "absolute",
             "validation": {"min": 50, "max": 500},
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "housing-qoq-secondary",
+        "name": "Цены на вторичное жильё (изм. к/к)",
+        "name_en": "Secondary Housing Prices QoQ",
+        "unit": "%",
+        "frequency": "quarterly",
+        "source": "Росстат",
+        "description": (
+            "Изменение индекса цен на вторичном рынке жилья к предыдущему кварталу, "
+            "в процентах."
+        ),
+        "methodology": (
+            "Рассчитывается как отношение индекса цен на вторичное жильё в текущем "
+            "квартале к значению за непосредственно предшествующий квартал, "
+            "выраженное в процентах."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {
+            "forecast_steps": 4,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "housing-price-secondary",
+                "operation": "qoq",
+                "model_name": "Housing-Secondary-QoQ-Derived",
+            },
         },
         "is_active": True,
         "category": "Цены",
@@ -1948,8 +2485,12 @@ INDICATORS = [
             "Еженедельные данные Банка России в млрд долларов."
         ),
         "methodology": (
-            "Публикуются ЦБ РФ еженедельно на основе учётных данных. "
-            "Включают валютные резервы, СДР, позицию в МВФ и монетарное золото."
+            "Международные резервы Российской Федерации в млрд долларов США "
+            "на дату публикации Банка России: валютные активы, СДР, позиция "
+            "в МВФ и монетарное золото в одном агрегате. На карточке — "
+            "еженедельный ряд и средние по месяцу, кварталу и году из того же "
+            "источника; прогноз не строится. Рост или снижение отражает "
+            "накопление, использование резервов и переоценку активов."
         ),
         "parser_type": "cbr_reserves_html",
         "model_config_json": {
@@ -1969,8 +2510,16 @@ INDICATORS = [
         "source": "Банк России",
         "source_url": "https://www.cbr.ru/statistics/macro_itm/svs/",
         "description": (
-            "Внешний долг Российской Федерации (всего). "
-            "Квартальные данные в млн долларов с 2003 года. Источник: ЦБ РФ."
+            "Совокупный внешний долг Российской Федерации в млн долларов США. "
+            "Квартальные остатки с 2003 года. Банк России."
+        ),
+        "methodology": (
+            "Совокупные внешние обязательства резидентов Российской Федерации "
+            "перед нерезидентами в млн долларов США на конец квартала — "
+            "агрегат «всего» по оценке Банка России. Источник: Банк России. "
+            "На карточке — поквартальный ряд и среднее по кварталам внутри "
+            "года; прогноз не строится. Это остаток долга на дату, а не "
+            "новые заимствования за квартал."
         ),
         "parser_type": "cbr_debt_xlsx",
         "model_config_json": {
@@ -2043,7 +2592,13 @@ INDICATORS = [
         "source": "Росстат",
         "description": (
             "Изменение индекса цен на первичном рынке жилья к аналогичному кварталу "
-            "предыдущего года. Расчёт на основе housing-price-primary."
+            "предыдущего года, в процентах."
+        ),
+        "methodology": (
+            "Рассчитывается как отношение индекса цен на первичное жильё в текущем "
+            "квартале к значению за тот же квартал прошлого года, выраженное в процентах. "
+            "Исходный квартальный индекс публикуется Росстатом в составе официальных "
+            "макроэкономических обзоров."
         ),
         "parser_type": "derived",
         "model_config_json": {
@@ -2059,6 +2614,35 @@ INDICATORS = [
         "category": "Цены",
     },
     {
+        "code": "housing-qoq-primary",
+        "name": "Цены на первичное жильё (изм. к/к)",
+        "name_en": "Primary Housing Prices QoQ",
+        "unit": "%",
+        "frequency": "quarterly",
+        "source": "Росстат",
+        "description": (
+            "Изменение индекса цен на первичном рынке жилья к предыдущему кварталу, "
+            "в процентах."
+        ),
+        "methodology": (
+            "Рассчитывается как отношение индекса цен на первичное жильё в текущем "
+            "квартале к значению за непосредственно предшествующий квартал, "
+            "выраженное в процентах."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {
+            "forecast_steps": 4,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "housing-price-primary",
+                "operation": "qoq",
+                "model_name": "Housing-Primary-QoQ-Derived",
+            },
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
         "code": "housing-yoy-secondary",
         "name": "Цены на вторичное жильё (изм. г/г)",
         "name_en": "Secondary Housing Prices YoY",
@@ -2067,7 +2651,13 @@ INDICATORS = [
         "source": "Росстат",
         "description": (
             "Изменение индекса цен на вторичном рынке жилья к аналогичному кварталу "
-            "предыдущего года. Расчёт на основе housing-price-secondary."
+            "предыдущего года, в процентах."
+        ),
+        "methodology": (
+            "Рассчитывается как отношение индекса цен на вторичное жильё в текущем "
+            "квартале к значению за тот же квартал прошлого года, выраженное в процентах. "
+            "Исходный квартальный индекс публикуется Росстатом в составе официальных "
+            "макроэкономических обзоров."
         ),
         "parser_type": "derived",
         "model_config_json": {
@@ -2096,12 +2686,14 @@ INDICATORS = [
             "Компонент ВВП по расходному методу. Квартальные данные."
         ),
         "methodology": (
-            "Расходы домашних хозяйств на конечное потребление — компонент ВВП "
-            "по методу использования (включает потребление товаров и услуг "
-            "населением, в том числе условно исчисленные жилищные услуги "
-            "собственников). Рассчитывается Росстатом по методологии системы "
-            "национальных счетов СНС-2008 и публикуется ежеквартально. "
-            "Исторический ряд с 1995 года приведён к единому классификатору ОКВЭД2."
+            "Расходы домашних хозяйств на конечное потребление — компонент "
+            "валового внутреннего продукта по методу использования в текущих "
+            "ценах, млрд рублей. Включает покупки товаров и услуг населением, "
+            "в том числе условно исчисленные жилищные услуги собственников жилья. "
+            "Рассчитывается Росстатом по системе национальных счетов и "
+            "публикуется ежеквартально; история на Forecast Economy — с 1995 года. "
+            "На карточке доступны поквартальный ряд и среднее по годам; прогноз "
+            "относится к поквартальному режиму."
         ),
         "parser_type": "rosstat_gdp",
         "model_config_json": {
@@ -2131,11 +2723,14 @@ INDICATORS = [
         ),
         "methodology": (
             "Расходы сектора государственного управления на конечное потребление — "
-            "компонент ВВП по методу использования (включает оплату труда "
-            "бюджетников, закупки товаров и услуг, потребление основного капитала "
-            "учреждениями госсектора). Рассчитывается Росстатом по методологии "
-            "системы национальных счетов СНС-2008 и публикуется ежеквартально. "
-            "Исторический ряд с 1995 года приведён к единому классификатору ОКВЭД2."
+            "компонент валового внутреннего продукта по методу использования "
+            "в текущих ценах, млрд рублей. Включают оплату труда бюджетников, "
+            "государственные закупки товаров и услуг и потребление основного "
+            "капитала учреждений госсектора. Рассчитывается Росстатом по системе "
+            "национальных счетов и публикуется ежеквартально; история с 1995 года. "
+            "На карточке — поквартальный ряд, среднее по годам и прогноз на "
+            "поквартальном режиме. Не совпадает с исполнением федерального бюджета "
+            "помесячно."
         ),
         "parser_type": "rosstat_gdp",
         "model_config_json": {
@@ -2199,6 +2794,14 @@ INDICATORS = [
             "Данные обследования рабочей силы Росстата (бюллетень "
             "«Социально-экономическое положение России»)."
         ),
+        "methodology": (
+            "Рабочая сила — экономически активное население в млн человек на конец "
+            "месяца: занятые и безработные по методологии Международной организации "
+            "труда. Источник: обследование рабочей силы Росстата. На карточке — "
+            "помесячный ряд и средние по кварталам и годам; переключение с «Занятое "
+            "население» в группе «Рынок труда: занятость» сохраняет выбранный режим "
+            "графика. Прогноз не строится."
+        ),
         "parser_type": "rosstat_labor",
         "model_config_json": {
             "forecast_steps": 0,
@@ -2218,6 +2821,14 @@ INDICATORS = [
         "description": (
             "Численность занятого населения по данным обследования рабочей силы "
             "Росстата (бюллетень «Социально-экономическое положение России»)."
+        ),
+        "methodology": (
+            "Занятое население — лица с оплачиваемой работой и временно "
+            "отсутствующие на рабочем месте, в млн человек на конец месяца по "
+            "обследованию рабочей силы Росстата. На карточке — помесячный ряд "
+            "и средние по кварталам и годам; вкладка «Рабочая сила» в той же "
+            "группе показывает более широкий агрегат на тех же датах. Прогноз "
+            "не строится."
         ),
         "parser_type": "rosstat_labor",
         "model_config_json": {
@@ -2253,6 +2864,14 @@ INDICATORS = [
             "Доходы федерального бюджета помесячно. "
             "Рассчитываются из нарастающего итога открытых данных Минфина."
         ),
+        "methodology": (
+            "Доходы федерального бюджета — налоговые и неналоговые поступления "
+            "за календарный месяц в млрд рублей. Источник: Минфин России. "
+            "Помесячные значения восстанавливаются из официальной статистики "
+            "исполнения бюджета; на карточке доступны режимы «помесячно» и "
+            "среднее за квартал или год. Ряд согласован с карточками расходов "
+            "и дефицита/профицита в группе «Федеральный бюджет»."
+        ),
         "parser_type": "minfin_budget_csv",
         "model_config_json": {
             "budget_target": "revenue",
@@ -2273,6 +2892,13 @@ INDICATORS = [
         "description": (
             "Расходы федерального бюджета помесячно. "
             "Рассчитываются из нарастающего итога открытых данных Минфина."
+        ),
+        "methodology": (
+            "Расходы федерального бюджета — исполненные обязательства за "
+            "календарный месяц в млрд рублей. Источник: Минфин России. "
+            "Помесячный ряд публикуется в открытой статистике исполнения; "
+            "на карточке можно выбрать помесячный вид или среднее за квартал "
+            "или год. Согласован с доходами и сальдо в группе «Федеральный бюджет»."
         ),
         "parser_type": "minfin_budget_csv",
         "model_config_json": {
@@ -2766,6 +3392,14 @@ INDICATORS = [
             "Учётная цена на золото, устанавливаемая Банком России. "
             "Ежедневные данные в рублях за грамм."
         ),
+        "methodology": (
+            "Учётная цена золота Банка России в рублях за грамм на дату "
+            "публикации — официальный ориентир регулятора, не биржевая "
+            "котировка в долларах. Источник: Банк России. На карточке — "
+            "ежедневный ряд и средние по неделе, месяцу, кварталу и году "
+            "из того же ряда; прогноз не строится. Рост цены в рублях "
+            "отражает и мировую динамику металла, и курс рубля."
+        ),
         "parser_type": "cbr_gold_html",
         "model_config_json": {
             "metal": "gold",
@@ -2790,9 +3424,11 @@ INDICATORS = [
             "активом наряду с золотом и иностранной валютой."
         ),
         "methodology": (
-            "Используется дневной close спотовой пары BTCUSDT на Binance "
-            "(UTC-сутки). Live-котировка в тикере — текущая lastPrice. "
-            "Биржа работает 24/7."
+            "Дневная цена биткоина в долларах США по спотовому рынку на бирже "
+            "Binance: каждая точка — цена закрытия календарного дня. Рынок "
+            "работает круглосуточно без выходных. На карточке доступны "
+            "ежедневный курс и средние по неделе, месяцу, кварталу и году — "
+            "последние считаются из того же ряда для удобства сравнения."
         ),
         "parser_type": "binance_btcusdt_daily",
         "model_config_json": {
@@ -2809,18 +3445,20 @@ INDICATORS = [
         "name_en": "Brent Crude Oil",
         "unit": "USD/баррель",
         "frequency": "daily",
-        "source": "MOEX FORTS",
+        "source": "Рыночные котировки",
         "source_url": "https://www.moex.com/ru/derivatives/contract.aspx?code=BR",
         "description": (
-            "Котировки ближайшего фьючерса на нефть марки Brent на срочной "
-            "секции Московской биржи (FORTS). Brent — ключевой эталон "
-            "мирового нефтяного рынка; для России цена нефти определяет "
-            "бюджетные поступления, курс рубля и платёжный баланс."
+            "Цена нефти марки Brent в долларах США за баррель по итогам "
+            "каждого торгового дня. Brent — ключевой эталон мирового "
+            "нефтяного рынка; для России динамика цены связана с "
+            "бюджетными поступлениями, курсом рубля и платёжным балансом."
         ),
         "methodology": (
-            "Ежедневный close ближайшего по экспирации контракта BR-X.Y. "
-            "Контракт ротируется ежемесячно; live-котировка автоматически "
-            "переключается на новый месяц после экспирации текущего."
+            "Дневная цена Brent в долларах за баррель по рыночным "
+            "котировкам: каждая точка — цена закрытия календарного дня. "
+            "На карточке доступны ежедневное значение и средние по неделе, "
+            "месяцу, кварталу и году — последние считаются из того же ряда "
+            "для удобства сравнения тренда."
         ),
         "parser_type": "moex_brent_daily",
         "model_config_json": {
@@ -2869,10 +3507,6 @@ async def seed():
                 source="Банк России",
                 source_url="https://www.cbr.ru/hd_base/KeyRate/",
                 category="Ставки",
-                methodology=(
-                    "Ряд подгружается из публичной страницы «Ключевая ставка Банка России» "
-                    "(единая база данных). Значение указывается в % годовых."
-                ),
                 model_config_json={"forecast_steps": 0, "validation": {"min": 0, "max": 60}},
             )
         )

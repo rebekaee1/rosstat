@@ -64,29 +64,29 @@ export default function TelemetryCard({
   const isDown = changeNum != null && changeNum < 0;
 
   return (
-    <div ref={ref} className="group relative p-4 sm:p-6 rounded-[2rem] bg-surface border border-border-subtle hover:border-champagne/30 transition-colors duration-500 overflow-hidden lift-hover">
+    <div ref={ref} className="group relative p-3 sm:p-6 rounded-2xl sm:rounded-[2rem] bg-surface border border-border-subtle hover:border-champagne/30 transition-colors duration-500 overflow-hidden lift-hover">
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-champagne/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
-      <p className="text-[10px] uppercase tracking-widest text-text-tertiary font-medium mb-4">
+      <p className="text-[9px] sm:text-[10px] uppercase tracking-widest text-text-tertiary font-medium mb-2 sm:mb-4 line-clamp-2 leading-tight">
         {label}
       </p>
 
-      <div className="flex items-baseline gap-2 mb-2 flex-wrap">
+      <div className="flex items-baseline gap-1 sm:gap-2 mb-1 sm:mb-2 flex-wrap">
         <span ref={valRef} className={cn(
           'font-mono font-bold tracking-tight text-text-primary whitespace-nowrap',
           String(formatValue(value, unitDigits(unit))).length > 12
-            ? 'text-xl md:text-2xl'
-            : 'text-2xl md:text-3xl'
+            ? 'text-lg sm:text-xl md:text-2xl'
+            : 'text-xl sm:text-2xl md:text-3xl'
         )}>
           {formatValue(value, unitDigits(unit))}
         </span>
         <span className="text-xs font-medium text-text-tertiary shrink-0 whitespace-nowrap">{unitSuffix(unit)}</span>
       </div>
 
-      <div className="flex flex-col gap-1.5 mt-4 pt-4 border-t border-border-subtle/50">
+      <div className="flex flex-col gap-1 sm:gap-1.5 mt-2 sm:mt-4 pt-2 sm:pt-4 border-t border-border-subtle/50">
         {changeNum != null && (
           <div className={cn(
-            'flex items-center gap-1.5 text-xs font-mono font-medium flex-wrap',
+            'flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs font-mono font-medium flex-wrap',
             isUp ? 'text-positive' : '',
             isDown ? 'text-negative' : '',
             !isUp && !isDown ? 'text-text-tertiary' : ''
@@ -94,13 +94,13 @@ export default function TelemetryCard({
             {isUp && <TrendingUp className="w-3.5 h-3.5 shrink-0" />}
             {isDown && <TrendingDown className="w-3.5 h-3.5 shrink-0" />}
             <span>{pctChange != null ? `${formatChange(pctChange)}%` : `Δ ${formatChange(changeNum)}`}</span>
-            <span className="text-text-tertiary text-[10px] uppercase tracking-wider ml-1">
+            <span className="text-text-tertiary text-[9px] sm:text-[10px] uppercase tracking-wider ml-0.5 sm:ml-1">
               {deltaSuffix}
             </span>
           </div>
         )}
         {meta && (
-          <div className="text-[10px] font-mono uppercase tracking-widest text-text-tertiary">
+          <div className="text-[9px] sm:text-[10px] font-mono uppercase tracking-widest text-text-tertiary leading-snug">
             {meta}
           </div>
         )}

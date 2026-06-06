@@ -45,6 +45,7 @@
 | Какие traps подстерегают? | Раздел «Operational invariants and traps» в `CONTEXT.md` (12 пунктов) |
 | Что мы НЕ извлекаем из источников? | [`docs/missed_data_audit.md`](docs/missed_data_audit.md) — TOP-25 P0-индикаторов, доступных без новых источников |
 | Какие правки в работе прямо сейчас? | [`docs/backlog.md`](docs/backlog.md) — живой бэклог: ID/затронутые файлы/риски/приоритет. Источник — звонки с Никитой |
+| Как довести **семейство** индикаторов (не один код)? | **[`docs/indicator-family-playbook.md`](docs/indicator-family-playbook.md)** — продуктовая модель + фазы A–G; эталоны **ИПЦ** (макс.) и **жильё** (variant + custom view-mode); ADR-0006 + `AGENTS.md::Шаг 4` для отдельных кодов |
 | Как делать прод-деплой? | `docs/workflow.md::Прод-деплой` + `enterprise_resilience.md` |
 
 ---
@@ -93,7 +94,7 @@
 | Изменение rate-limit / CORS / CSP | `enterprise_resilience.md::API и backend` + `enterprise_resilience.md::Frontend и кэш` |
 | Новая операционная trap, обнаруженная в проде | `CONTEXT.md::Operational invariants and traps` (раздел traps) |
 | Новое архитектурное решение | **Создать новый ADR** `docs/adr/<NNNN>-<kebab-name>.md` (следующий свободный номер); добавить ссылку в шапку `CONTEXT.md::Документы рядом` и в `AGENTS.md::Шаг 1` |
-| Новый view-mode family / variant / virtual transform | `frontend/src/lib/viewModeFamilies.js` (реестр семей) **или** `lib/indicatorVariants.js` (variants). Тест в `viewModeFamilies.test.js`. ADR-0006 «Subsequent additions» если добавляется новый паттерн (не просто новый member существующего паттерна) |
+| Новый view-mode family / variant / virtual transform | `frontend/src/lib/viewModeFamilies.js` (реестр семей) **или** `lib/indicatorVariants.js` (variants). Тест в `viewModeFamilies.test.js`. ADR-0006 «Subsequent additions» если добавляется новый паттерн (не просто новый member существующего паттерна). Крупное семейство (несколько фаз) — чеклист в [`docs/indicator-family-playbook.md`](docs/indicator-family-playbook.md) |
 | Изменение существующего ADR | Не редактировать body «как если бы решение было таким». Добавить раздел «Subsequent additions (after acceptance)» с датой и описанием. Status в шапке менять только при формальной депрекации |
 | Новый Yandex API client | `docs/analytics_api_inventory/<service>.md` (если файл уже есть — обновить status block) или новый файл при новом сервисе + строка в `analytics_api_inventory/README.md::Implementation status` |
 | Новая roadmap-задача / правка от пользователя | `docs/backlog.md` (приоритеты + ID + затронутые файлы + риски). Когда закрыто — переносим в раздел «История» с SHA коммита. Никаких параллельных `plan.md` — всё в одном backlog. |

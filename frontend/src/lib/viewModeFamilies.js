@@ -42,7 +42,7 @@
  * Семьи (по фазам грамотной унификации):
  *   - Phase 1 — внешняя торговля (exports/imports/balance/current-account
  *               quarterly + monthly с MoM)
- *   - Phase 2 — рынок труда (wages-nominal, unemployment)
+ *   - Phase 2 — рынок труда (unemployment; wages-nominal → wagesNominalViewMode*)
  *   - Phase 3 — недвижимость (housing-price-primary/secondary)
  *
  * Phase 4 (ставки) и Phase 5 (daily) держим вне этого реестра:
@@ -121,55 +121,13 @@ export const VIEW_MODE_FAMILIES = {
   // Phase 2 — Labour market
   // ============================================================
   //
-  // Wages: разные единицы и derived'ы → единая карточка
-  // «Средняя заработная плата».
-  'wages-nominal': {
-    label: 'Средняя заработная плата',
-    modes: [
-      { mode: 'level',  label: 'Номинальная',         code: 'wages-nominal' },
-      { mode: 'real',   label: 'Реальная',            code: 'wages-real',           unit: '%',      frequency: 'monthly' },
-      { mode: 'yoy',    label: 'YoY %',               code: 'wages-yoy',            unit: '%',      frequency: 'monthly' },
-      { mode: 'index',  label: 'Индекс 2015=100',     code: 'wages-index',          unit: 'индекс', frequency: 'monthly' },
-      // Annual sibling с историей 1991-2014 — отдельный indicator с
-      // frequency=annual, чтобы chart label корректно показывал
-      // «годовое» (а не «помесячно»). См. trap «annual-in-monthly mixing».
-      { mode: 'annual', label: 'Годовое (с 1991)',    code: 'wages-nominal-annual',                 frequency: 'annual' },
-    ],
-  },
-  // Unemployment: одинаковые единицы (%), но разные frequencies — это
-  // также режимы (level/quarterly/annual). Используем тот же mechanism.
-  // `unemployment-annual` хранится в БД с frequency=monthly (rolling-12M
-  // считается на каждый месяц), pill отражает фактический ритм публикации
-  // (помесячно), а не семантику «12М среднее».
-  unemployment: {
-    label: 'Уровень безработицы',
-    modes: [
-      { mode: 'level',     label: 'Месячно',      code: 'unemployment' },
-      { mode: 'quarterly', label: 'Квартально',   code: 'unemployment-quarterly', frequency: 'quarterly' },
-      { mode: 'annual',    label: '12М среднее',  code: 'unemployment-annual',    frequency: 'monthly' },
-    ],
-  },
+  // wages-nominal — wagesNominalViewMode* (уровень C), см. WagesNominalIndicatorControls.
+  // gdp-nominal — gdpNominalViewMode* (уровень C), см. GdpNominalIndicatorControls.
+  // gdp-real — gdpRealViewMode* (уровень C), см. GdpRealIndicatorControls.
+  // unemployment — unemploymentViewMode* (уровень C), см. UnemploymentIndicatorControls.
 
-  // ============================================================
-  // Phase 3 — Housing prices
-  // ============================================================
-  //
-  // Цена квадратного метра — quarterly index. Derived `housing-yoy-*` —
-  // в backend (% YoY), доступен как режим.
-  'housing-price-primary': {
-    label: 'Цена м² на первичном рынке',
-    modes: [
-      { mode: 'level', label: 'Индекс', code: 'housing-price-primary' },
-      { mode: 'yoy',   label: 'YoY %',  code: 'housing-yoy-primary', unit: '%', frequency: 'quarterly' },
-    ],
-  },
-  'housing-price-secondary': {
-    label: 'Цена м² на вторичном рынке',
-    modes: [
-      { mode: 'level', label: 'Индекс', code: 'housing-price-secondary' },
-      { mode: 'yoy',   label: 'YoY %',  code: 'housing-yoy-secondary', unit: '%', frequency: 'quarterly' },
-    ],
-  },
+  // Phase 3 housing — housingViewMode* (как ИПЦ), см. HousingIndicatorControls.
+  // ИЦП (ppi) — ppiViewMode*, см. PpiIndicatorControls.
 };
 
 /**
@@ -286,7 +244,22 @@ export function applyAggregateTransform(points, granularity) {
 
 /** Resolve family by parent code, or null if code is not a family root. */
 export function findViewModeFamily(code) {
-  return VIEW_MODE_FAMILIES[code] || null;
+  if (VIEW_MODE_FAMILIES[code]) return VIEW_MODE_FAMILIES[code];
+  for (const family of Object.values(VIEW_MODE_FAMILIES)) {
+    if (family.modes.some((m) => m.code === code)) return family;
+  }
+  return null;
+}
+
+/** Родительская карточка и mode для derived-URL (housing-yoy-* → parent?mode=yoy). */
+export function viewModeCanonicalTarget(code) {
+  for (const [parentCode, family] of Object.entries(VIEW_MODE_FAMILIES)) {
+    const modeMeta = family.modes.find((m) => m.code === code);
+    if (modeMeta && modeMeta.mode !== 'level') {
+      return { parentCode, mode: modeMeta.mode };
+    }
+  }
+  return null;
 }
 
 /** Find the derived code for a (parent, mode) pair. */

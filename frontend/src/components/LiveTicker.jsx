@@ -1,5 +1,21 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+
+const DESKTOP_TICKER_MQ = '(min-width: 768px)';
+
+function useDesktopTickerVisible() {
+  const [visible, setVisible] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia(DESKTOP_TICKER_MQ).matches,
+  );
+  useEffect(() => {
+    const mq = window.matchMedia(DESKTOP_TICKER_MQ);
+    const sync = () => setVisible(mq.matches);
+    sync();
+    mq.addEventListener('change', sync);
+    return () => mq.removeEventListener('change', sync);
+  }, []);
+  return visible;
+}
 import { Link } from 'react-router-dom';
 import { cn } from '../lib/format';
 
@@ -63,7 +79,7 @@ function TickerCell({ snapshot }) {
     <Link
       to={meta.linkTo}
       className={cn(
-        'flex items-center gap-2 px-3 py-1 rounded-md shrink-0 whitespace-nowrap',
+        'flex min-w-0 flex-1 items-center justify-center gap-1 px-1 py-1 rounded-md sm:min-w-max sm:flex-none sm:gap-2 sm:px-3 sm:shrink-0 sm:whitespace-nowrap',
         'transition-colors duration-200 hover:bg-champagne/10',
         'border border-transparent',
         flash === 'up' && 'bg-positive/10 border-positive/30',
@@ -71,14 +87,14 @@ function TickerCell({ snapshot }) {
       )}
       title={snapshot.market_open ? `Источник: ${snapshot.source}` : `Источник: ${snapshot.source} (торги закрыты)`}
     >
-      <span className="text-[11px] uppercase tracking-wide text-text-secondary font-medium">
+      <span className="text-[9px] uppercase tracking-wide text-text-secondary font-medium sm:text-[11px]">
         {meta.label}
       </span>
-      <span className="text-sm font-semibold tabular-nums text-text-primary">
+      <span className="text-xs font-semibold tabular-nums text-text-primary sm:text-sm">
         {hasPrice ? formatPrice(snapshot.price, meta.decimals) : '—'}
       </span>
       <span className={cn(
-        'text-[11px] font-medium tabular-nums',
+        'hidden text-[11px] font-medium tabular-nums sm:inline',
         positive && 'text-positive',
         negative && 'text-negative',
         !positive && !negative && 'text-text-secondary'
@@ -96,13 +112,17 @@ async function fetchLiveTicker() {
 }
 
 export default function LiveTicker() {
+  const desktopVisible = useDesktopTickerVisible();
   const { data } = useQuery({
     queryKey: ['ticker', 'live'],
     queryFn: fetchLiveTicker,
     refetchInterval: POLL_INTERVAL_MS,
     refetchOnWindowFocus: false,
     staleTime: 0,
+    enabled: desktopVisible,
   });
+
+  if (!desktopVisible) return null;
 
   const snapshots = data?.snapshots || [];
   if (snapshots.length === 0) {
@@ -113,8 +133,11 @@ export default function LiveTicker() {
 
   return (
     <div className="fixed top-0 inset-x-0 z-[110] h-9 bg-[#faf7f0] border-b border-champagne/15 shadow-sm">
-      <div className="max-w-7xl mx-auto h-full px-4 flex items-center justify-center overflow-x-auto scrollbar-hide">
-        <div className="flex items-center gap-1 w-full justify-between md:w-auto md:gap-6">
+      <div className="max-w-7xl mx-auto h-full px-1 sm:px-4">
+        <div
+          className="flex h-full w-full items-center justify-between gap-0 sm:justify-center sm:gap-4 md:overflow-x-auto md:scrollbar-hide"
+          aria-label="Котировки"
+        >
           {snapshots.map((s) => (
             <TickerCell key={s.code} snapshot={s} />
           ))}

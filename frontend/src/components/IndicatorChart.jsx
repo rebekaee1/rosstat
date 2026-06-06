@@ -360,9 +360,10 @@ export default function IndicatorChart({
     return { yDomain: [niceMin, niceMax], yWidth: w, yTicks: ticks };
   }, [visibleData, unit]);
 
-  const title = mode === 'cpi'
-    ? (cpiChartTitle || 'ИПЦ (к предыдущему месяцу, %)')
-    : 'Инфляция (скользящие 12 месяцев)';
+  const title = cpiChartTitle
+    ?? (mode === 'cpi'
+      ? 'ИПЦ (к предыдущему месяцу, %)'
+      : 'Инфляция (скользящие 12 месяцев)');
 
   const baselineY = referenceLineY !== undefined
     ? referenceLineY

@@ -1,0 +1,53 @@
+---
+description: После изменений индикаторов/парсеров/режимов карточки — автоматически довести данные и проверить UI
+alwaysApply: true
+---
+
+# Доставка данных индикатора до UI (обязательный финиш задачи)
+
+Класс работ: новый или изменённый **source/derived индикатор**, **парсер**, **seed_data**, **режим карточки** (view mode / CPI weekly), **связка фронт ↔ API-код ряда**. Задача **не завершена**, пока пользователь не увидел живые точки на графике.
+
+## Делать автоматически (без отдельной просьбы пользователя)
+
+После merge-ready правок в коде, если затронуты `seed_data.py`, `*_parser.py`, `indicator_seo.py`, CPI/view-mode реестры или API-маппинг рядов:
+
+1. **Seed** — прогнать идемпотентный seeder (новые/обновлённые строки `indicators`):
+   ```bash
+   docker compose exec backend python seed_data.py
+   ```
+   Если Docker недоступен — явно написать, что шаг пропущен, и дать команду пользователю.
+
+2. **ETL** — для каждого затронутого **source**-индикатора (и primary, если один прогон пишет sibling-ряды, как `inflation-weekly` → сегменты):
+   ```bash
+   docker compose exec backend python -c \
+     "import asyncio; from app.tasks.scheduler import run_etl_for_indicator; \
+      asyncio.run(run_etl_for_indicator('<code>'))"
+   ```
+   Проверить логи: `docker compose logs backend --tail=100 | grep -i <code>`. При 0 точек — не закрывать задачу, чинить парсер/источник.
+
+3. **Derived** (если меняли `DERIVED_SPECS` / `derived_ops.py`, а не только source):
+   ```bash
+   docker compose exec backend python /app/scripts/rebuild-all-derived.py
+   ```
+
+4. **Пересборка и подъём** (если меняли frontend и/или backend):
+   ```bash
+   docker compose build backend frontend && docker compose up -d backend frontend
+   ```
+   Только frontend после смены asset-hash — `docker compose build --no-cache frontend`.
+
+5. **Smoke API + UI** — убедиться, что ряд не пустой:
+   - `curl -s http://localhost:8000/api/v1/indicators/<code>/data | head` (или эквивалент через прокси Vite).
+   - Для правок карточки: открыть целевой URL (например `/indicator/cpi-food?mode=weekly`), snapshot/график не «пустой ряд».
+
+6. **Кэш** — после смены derived/forecast на проде может понадобиться `redis-cli FLUSHDB`; локально — при странных stale-ответах перезапуск backend.
+
+## Не останавливаться на
+
+- «Добавил код в seed/парсер — пользователь сам прогонит ETL».
+- Списке шагов в ответе **без выполнения**, если в среде агента есть Docker и сеть.
+
+## Исключения
+
+- Пользователь явно просит **только** дизайн/ревью/план без прогона данных.
+- Прод-сервер (`5.129.204.194`) — без явной команды не трогать (см. `docs/workflow.md`).

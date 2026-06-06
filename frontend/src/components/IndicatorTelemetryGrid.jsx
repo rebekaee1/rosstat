@@ -1,4 +1,7 @@
 import { formatDate } from '../lib/format';
+import { dataModeForUrlMode } from '../lib/cpiViewModeResolve';
+import { dataModeForHousingUrlMode } from '../lib/housingViewModeResolve';
+import { dataModeForPpiUrlMode } from '../lib/ppiViewModeResolve';
 import TelemetryCard from './TelemetryCard';
 import { SkeletonBox } from './Skeleton';
 
@@ -18,6 +21,8 @@ export default function IndicatorTelemetryGrid({
   viewStats: s,
   stats,
   isPriceCategory,
+  isHousingFamily,
+  isPpiFamily,
   safeViewMode,
   cpiPrevDate,
   adj,
@@ -26,16 +31,25 @@ export default function IndicatorTelemetryGrid({
   // На режиме «Индекс» CPI-семьи показываем уровень накопленного индекса
   // (значения 100…1000+) — без `%`. Для прочих режимов используем
   // официальную единицу индикатора.
-  const unit = safeViewMode === 'index' && isPriceCategory
+  const dataMode = isPriceCategory
+    ? dataModeForUrlMode(safeViewMode)
+    : isHousingFamily
+      ? dataModeForHousingUrlMode(safeViewMode)
+      : isPpiFamily
+        ? dataModeForPpiUrlMode(safeViewMode)
+        : safeViewMode;
+
+  const unit = String(safeViewMode).startsWith('index')
+    && (isPriceCategory || isHousingFamily || isPpiFamily)
     ? 'индекс'
     : (indicator?.unit || '%');
 
   if (loading) {
     return (
-      <section className="mb-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <section className="mb-6 md:mb-12">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
           {[...Array(4)].map((_, i) => (
-            <SkeletonBox key={i} className="h-48 rounded-[2rem]" />
+            <SkeletonBox key={i} className="h-28 md:h-48 rounded-2xl md:rounded-[2rem]" />
           ))}
         </div>
       </section>
@@ -45,23 +59,41 @@ export default function IndicatorTelemetryGrid({
   // Hero override: backend подставил YoY% (model_config_json.hero_view = "yoy_pct"),
   // потому что для индексных индикаторов абсолютное значение (например IPP 112)
   // не несёт смысловой нагрузки, а изменение г/г (+1.2%) — несёт.
-  const heroOverride = indicator?.hero_value != null && safeViewMode !== 'weekly' && safeViewMode !== 'cpi';
+  const heroOverride = indicator?.hero_value != null
+    && dataMode !== 'weekly' && dataMode !== 'cpi';
 
   const currentLabel = heroOverride ? (indicator.hero_label || 'Изменение г/г')
-    : safeViewMode === 'weekly' ? 'Инфляция за неделю'
-      : safeViewMode === 'cpi' && isPriceCategory ? 'Прирост за месяц'
-        : 'Текущее значение';
+    : safeViewMode === 'yoy' ? 'Год к году'
+      : safeViewMode === 'mom' ? 'Месяц к месяцу'
+        : safeViewMode === 'qoq' ? 'Квартал к кварталу'
+        : safeViewMode === 'period-monthly' ? 'Рост за месяц'
+          : safeViewMode === 'period-weekly' ? 'С начала месяца'
+            : safeViewMode === 'step-monthly' ? 'Изменение м/м'
+              : safeViewMode === 'step-weekly' ? 'Изменение н/н'
+                : dataMode === 'weekly' ? 'Инфляция за неделю'
+                  : dataMode === 'cpi' && isPriceCategory ? 'Прирост за месяц'
+                    : 'Текущее значение';
 
-  const previousLabel = safeViewMode === 'weekly' ? 'Предыдущая неделя'
-    : safeViewMode === 'quarterly' ? 'Предыдущий квартал'
-      : safeViewMode === 'annual' ? 'Год назад'
-        : isPriceCategory ? 'Предыдущий месяц' : 'Предыдущее значение';
+  const previousLabel = dataMode === 'weekly' || safeViewMode === 'step-weekly'
+    || safeViewMode === 'period-weekly'
+    ? 'Предыдущая неделя'
+    : safeViewMode === 'qoq' ? 'Предыдущий квартал'
+      : safeViewMode === 'mom' ? 'Предыдущий месяц'
+        : safeViewMode === 'yoy' ? (isHousingFamily ? 'Тот же квартал год назад' : 'Тот же месяц год назад')
+        : safeViewMode === 'quarterly' ? 'Предыдущий квартал'
+          : safeViewMode === 'annual' ? 'Год назад'
+            : isHousingFamily ? 'Предыдущий квартал'
+              : isPriceCategory ? 'Предыдущий месяц' : 'Предыдущее значение';
 
-  const deltaSuffix = safeViewMode === 'quarterly' ? 'к пред. кварталу'
-    : safeViewMode === 'annual' ? 'к пред. значению'
-      : safeViewMode === 'weekly' ? 'к пред. неделе'
-        : indicator?.frequency === 'quarterly' ? 'к пред. кварталу'
-          : isPriceCategory ? 'к пред. месяцу' : 'к пред. значению';
+  const deltaSuffix = safeViewMode === 'qoq' ? 'к пред. кварталу'
+    : safeViewMode === 'mom' ? 'к пред. месяцу'
+      : safeViewMode === 'yoy' ? 'к пред. году'
+      : safeViewMode === 'quarterly' ? 'к пред. кварталу'
+        : safeViewMode === 'annual' ? 'к пред. значению'
+          : dataMode === 'weekly' || safeViewMode === 'step-weekly' ? 'к пред. неделе'
+            : safeViewMode === 'period-weekly' ? 'к прошлому отчёту'
+            : indicator?.frequency === 'quarterly' ? 'к пред. кварталу'
+              : isPriceCategory ? 'к пред. месяцу' : 'к пред. значению';
 
   const currentValue = heroOverride ? indicator.hero_value
     : (s?.currentValue ?? adj(indicator?.current_value));
@@ -72,13 +104,13 @@ export default function IndicatorTelemetryGrid({
     : undefined;
 
   const currentDate = s?.currentDate ?? indicator?.current_date;
-  const currentMeta = safeViewMode === 'weekly' && Number(s?.currentValue) === 0
+  const currentMeta = dataMode === 'weekly' && Number(s?.currentValue) === 0
     ? `ДАТА: ${formatDate(currentDate, 'full')} · ЦЕНЫ БЕЗ ИЗМЕНЕНИЙ`
     : `ДАТА: ${formatDate(currentDate, 'full')}`;
 
   return (
-    <section className="mb-12">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <section className="mb-6 md:mb-12">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
         <TelemetryCard
           label={currentLabel}
           value={currentValue}

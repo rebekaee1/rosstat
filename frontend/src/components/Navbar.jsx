@@ -81,7 +81,7 @@ export default function Navbar() {
       <nav
         ref={navRef}
         className={cn(
-          'fixed top-12 inset-x-0 mx-auto z-[100] transition-all duration-500 ease-out',
+          'fixed top-4 md:top-12 inset-x-0 mx-auto z-[100] transition-all duration-500 ease-out',
           'rounded-[2rem] px-6 py-3 flex items-center gap-4 md:gap-6',
           'max-w-5xl w-[calc(100%-2rem)]',
           scrolled

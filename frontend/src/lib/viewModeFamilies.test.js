@@ -4,6 +4,7 @@ import {
   DAILY_AGG_FREQUENCY,
   findViewModeFamily,
   viewModeCode,
+  viewModeCanonicalTarget,
   applyMoMTransform,
   applyAggregateTransform,
 } from './viewModeFamilies';
@@ -34,31 +35,6 @@ describe('VIEW_MODE_FAMILIES — schema', () => {
         expect(m.transform).toBe('mom');
         expect(m.unit).toBe('%');
       }
-    }
-  });
-
-  it('Phase 2 wages — 5 режимов с правильными кодами (incl. annual sibling)', () => {
-    const wages = VIEW_MODE_FAMILIES['wages-nominal'];
-    expect(wages.modes.map((m) => m.mode)).toEqual([
-      'level', 'real', 'yoy', 'index', 'annual',
-    ]);
-    expect(wages.modes.map((m) => m.code)).toEqual([
-      'wages-nominal', 'wages-real', 'wages-yoy', 'wages-index', 'wages-nominal-annual',
-    ]);
-  });
-
-  it('Phase 2 unemployment — 3 режима с разной granularity', () => {
-    const u = VIEW_MODE_FAMILIES.unemployment;
-    expect(u.modes.map((m) => m.mode)).toEqual(['level', 'quarterly', 'annual']);
-  });
-
-  it('Phase 3 housing — yoy режим использует derived с unit "%"', () => {
-    for (const code of ['housing-price-primary', 'housing-price-secondary']) {
-      const family = VIEW_MODE_FAMILIES[code];
-      const yoy = family.modes.find((m) => m.mode === 'yoy');
-      expect(yoy).toBeTruthy();
-      expect(yoy.unit).toBe('%');
-      expect(yoy.code).toMatch(/^housing-yoy-/);
     }
   });
 
@@ -93,9 +69,8 @@ describe('VIEW_MODE_FAMILIES — schema', () => {
 describe('findViewModeFamily / viewModeCode', () => {
   it('возвращает семью для родительского кода', () => {
     expect(findViewModeFamily('exports')).toBeTruthy();
-    expect(findViewModeFamily('wages-nominal')).toBeTruthy();
-    expect(findViewModeFamily('unemployment')).toBeTruthy();
-    expect(findViewModeFamily('housing-price-primary')).toBeTruthy();
+    expect(findViewModeFamily('wages-nominal')).toBeNull();
+    expect(findViewModeFamily('housing-price-primary')).toBeNull();
   });
 
   it('возвращает null для несвязанного кода', () => {
@@ -105,8 +80,6 @@ describe('findViewModeFamily / viewModeCode', () => {
 
   it('viewModeCode маппит (parent, mode) → derived code', () => {
     expect(viewModeCode('exports', 'yoy')).toBe('exports-yoy');
-    expect(viewModeCode('wages-nominal', 'real')).toBe('wages-real');
-    expect(viewModeCode('unemployment', 'annual')).toBe('unemployment-annual');
     expect(viewModeCode('exports', 'unknown')).toBe('exports'); // fallback
   });
 });

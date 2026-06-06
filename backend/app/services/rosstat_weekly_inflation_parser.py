@@ -50,9 +50,11 @@ import requests
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.cache import cache_invalidate_indicator
 from app.models import FetchLog, Indicator, IndicatorData
-from app.services.base_parser import BaseParser
+from app.services.base_parser import BaseParser, _utcnow_naive
 from app.services.http_client import create_session
+from app.services.upsert import bulk_upsert
 
 logger = logging.getLogger(__name__)
 
@@ -89,6 +91,37 @@ class WeeklyPoint:
     value: float
 
 
+WEEKLY_SEGMENT_CODES = {
+    "food": "inflation-weekly-food",
+    "nonfood": "inflation-weekly-nonfood",
+    "services": "inflation-weekly-services",
+}
+
+
+def _classify_local_code(code) -> str | None:
+    """Классификация позиции справочника ipc_spr → food | nonfood | services."""
+    if code is None:
+        return None
+    if isinstance(code, str):
+        raw = code.strip().replace(",", ".")
+        try:
+            num = float(raw)
+        except ValueError:
+            return "services"
+    else:
+        try:
+            num = float(code)
+        except (TypeError, ValueError):
+            return None
+    if num >= 9000:
+        return "services"
+    if num >= 4100:
+        return "nonfood"
+    if num >= 10:
+        return "food"
+    return None
+
+
 def _parse_column_date(header: str, year: int) -> date | None:
     """Parse 'на 10 января **' → date(year, 1, 10)."""
     m = _HEADER_RE.search(header)
@@ -104,11 +137,11 @@ def _parse_column_date(header: str, year: int) -> date | None:
         return None
 
 
-def _load_weights(session: requests.Session) -> dict[str, float]:
-    """Download ipc_spr and extract per-product weights.
+def _load_product_weights(session: requests.Session) -> dict[str, tuple[float, str]]:
+    """Download ipc_spr and extract per-product weights with CPI segment.
 
     Tries recent months (descending) to find the latest available file.
-    Returns {product_name: weight}.
+    Returns {product_name: (weight, segment)} where segment ∈ food|nonfood|services.
     """
     today = date.today()
     for month_offset in range(0, 6):
@@ -138,44 +171,57 @@ def _load_weights(session: requests.Session) -> dict[str, float]:
         return {}
 
     ws = wb[sheet_name]
-    weights: dict[str, float] = {}
+    weights: dict[str, tuple[float, str]] = {}
     for ri in range(7, ws.max_row + 1):
         name = str(ws.cell(ri, 1).value or "").strip()
         w_raw = ws.cell(ri, 3).value
+        local_code = ws.cell(ri, 2).value
         if not name or w_raw is None:
             continue
         try:
             w = float(w_raw)
         except (ValueError, TypeError):
             continue
-        if w > 0:
-            weights[name] = w
+        segment = _classify_local_code(local_code)
+        if w > 0 and segment:
+            weights[name] = (w, segment)
     return weights
 
 
-def _match_weight(name: str, weights: dict[str, float],
-                  cache: dict[str, float | None]) -> float | None:
-    """Find the weight for a weekly product name, caching fuzzy results."""
+def _match_product(
+    name: str,
+    weights: dict[str, tuple[float, str]],
+    cache: dict[str, tuple[float, str] | None],
+) -> tuple[float, str] | None:
+    """Find (weight, segment) for a weekly product name, caching fuzzy results."""
     if name in cache:
         return cache[name]
-    w = weights.get(name)
-    if w is not None:
-        cache[name] = w
-        return w
+    hit = weights.get(name)
+    if hit is not None:
+        cache[name] = hit
+        return hit
     close = get_close_matches(name, weights.keys(), n=1, cutoff=0.75)
     if close:
-        w = weights[close[0]]
-        cache[name] = w
-        return w
+        hit = weights[close[0]]
+        cache[name] = hit
+        return hit
     cache[name] = None
     return None
 
 
-def _parse_weekly_xlsx(weekly_content: bytes, weights: dict[str, float]) -> list[WeeklyPoint]:
-    """Parse Nedel_ipc.xlsx and compute weighted-average weekly CPI."""
+def _parse_weekly_xlsx_multi(
+    weekly_content: bytes,
+    weights: dict[str, tuple[float, str]],
+) -> dict[str, list[WeeklyPoint]]:
+    """Parse Nedel_ipc.xlsx → weighted weekly CPI for all + per segment."""
     wb = openpyxl.load_workbook(BytesIO(weekly_content), data_only=True)
-    points: list[WeeklyPoint] = []
-    match_cache: dict[str, float | None] = {}
+    buckets: dict[str, list[WeeklyPoint]] = {
+        "all": [],
+        "food": [],
+        "nonfood": [],
+        "services": [],
+    }
+    match_cache: dict[str, tuple[float, str] | None] = {}
 
     for sheet_name in wb.sheetnames:
         if sheet_name == "Содержание":
@@ -198,20 +244,22 @@ def _parse_weekly_xlsx(weekly_content: bytes, weights: dict[str, float]) -> list
         if not col_dates:
             continue
 
-        products: list[tuple[int, str, float]] = []
+        products: list[tuple[int, str, float, str]] = []
         for ri in range(5, ws.max_row + 1):
             name = str(ws.cell(ri, 1).value or "").strip()
             if not name or name.startswith("*") or name.startswith("…"):
                 continue
-            w = _match_weight(name, weights, match_cache)
-            if w is None:
+            matched = _match_product(name, weights, match_cache)
+            if matched is None:
                 continue
-            products.append((ri, name, w))
+            w, segment = matched
+            products.append((ri, name, w, segment))
 
         for ci, d in col_dates:
-            weighted_sum = 0.0
-            weight_sum = 0.0
-            for ri, name, w in products:
+            sums: dict[str, tuple[float, float]] = {
+                key: (0.0, 0.0) for key in buckets
+            }
+            for ri, _name, w, segment in products:
                 raw = ws.cell(ri, ci).value
                 if raw is None or raw == "…" or raw == "":
                     continue
@@ -219,16 +267,28 @@ def _parse_weekly_xlsx(weekly_content: bytes, weights: dict[str, float]) -> list
                     val = float(str(raw).replace(",", ".").replace("\u2212", "-"))
                 except (ValueError, TypeError):
                     continue
-                if 95 < val < 110:
-                    weighted_sum += w * val
-                    weight_sum += w
+                if not (95 < val < 110):
+                    continue
+                for key in ("all", segment):
+                    ws_sum, w_sum = sums[key]
+                    sums[key] = (ws_sum + w * val, w_sum + w)
 
-            if weight_sum > 0:
-                aggregate = weighted_sum / weight_sum
-                points.append(WeeklyPoint(date=d, value=round(aggregate, 2)))
+            for key, (weighted_sum, weight_sum) in sums.items():
+                if weight_sum > 0:
+                    aggregate = weighted_sum / weight_sum
+                    buckets[key].append(WeeklyPoint(date=d, value=round(aggregate, 2)))
 
-    points.sort(key=lambda p: p.date)
-    return points
+    for key in buckets:
+        buckets[key].sort(key=lambda p: p.date)
+    return buckets
+
+
+def _parse_weekly_xlsx(
+    weekly_content: bytes,
+    weights: dict[str, tuple[float, str]],
+) -> list[WeeklyPoint]:
+    """Backward-compatible: full-basket weekly CPI from XLSX."""
+    return _parse_weekly_xlsx_multi(weekly_content, weights)["all"]
 
 
 def _strip_html(html: str) -> str:
@@ -449,44 +509,31 @@ def fetch_bulletin_points(
     return points
 
 
-def fetch_weekly_cpi(
+def fetch_weekly_cpi_multi(
     existing_dates: set[date] | None = None,
     cutoff_date: date | None = None,
-) -> list[WeeklyPoint]:
-    """Fetch weekly CPI: HTML bulletins (primary) + XLSX (fallback/history).
+) -> dict[str, list[WeeklyPoint]]:
+    """Fetch weekly CPI: all basket + food / nonfood / services segments.
 
-    HTML values take precedence for overlapping dates — они совпадают с
-    официальными Росстата, XLSX-взвешенное среднее — лишь приближение
-    по продовольственной корзине.
-
-    `cutoff_date`: если задано, отбрасываются точки **до** этой даты. Используется
-    чтобы не подмешивать XLSX-approximation за годы, когда Росстат уже публиковал
-    официальные HTML-бюллетени, но архив на rosstat.gov.ru не дотягивается
-    глубоко в прошлое (текущий cutoff = 2023-01-09: первый bulletin доступный
-    из central-news архива и rosstat search). Сверка XLSX-approximation 2022
-    с monthly CPI показала расхождения до 3 pp (март 2022 — взвешенный food
-    CPI занижает общий ИПЦ из-за скачка непродов/услуг). См.
-    `docs/missed_data_audit.md::Nedel_ipc`.
+    Ключ ``all`` — HTML-бюллетени (primary) + XLSX (fallback). Сегменты —
+    только взвешенное среднее по Nedel_ipc с весами ipc_spr (без bulletin,
+    т.к. Росстат публикует официальный недельный агрегат только по полной корзине).
     """
+    def _apply_cutoff(points: list[WeeklyPoint]) -> list[WeeklyPoint]:
+        if not cutoff_date:
+            return points
+        return [p for p in points if p.date >= cutoff_date]
+
+    def _filter_new(points: list[WeeklyPoint]) -> list[WeeklyPoint]:
+        if not existing_dates:
+            return points
+        return [p for p in points if p.date not in existing_dates]
+
     session = create_session()
     try:
         session.verify = False
 
         today = date.today()
-        # 2023 — первый год, в котором Росстат начал публиковать недельные
-        # bulletin'ы «Об оценке индекса потребительских цен с N по M». До этого
-        # были только monthly публикации «Об индексе потребительских цен в
-        # <месяц> YYYY». Подтверждено deep dive 2026-05-12: Wayback Machine
-        # CDX search для `rosstat.gov.ru/storage/mediabank/*.htm` 2021-2023
-        # вернул 174 уникальных дат, 0 weekly-bulletin'ов за 2021, 0 за 2022,
-        # 1 за 2023-02-08. См. `docs/audits/weekly_inflation_research_2026-05.md`.
-        #
-        # Steady-state оптимизация (2026-05-28): если в `existing_dates` уже
-        # есть точка за прошлый год — backfill bulletin'ов 2023..(today.year-1)
-        # точно сделан, повторять не нужно. Качаем только current year.
-        # Это снижает 4-летний crawl × 12 search-запросов до 1-летнего ×
-        # current_month-запросов в steady-state, ETL укладывается в <60с
-        # вместо 5+ минут.
         BULLETIN_FIRST_YEAR = 2023
         last_year = today.year - 1
         steady_state = bool(
@@ -508,58 +555,152 @@ def fetch_weekly_cpi(
         bulletin_points = fetch_bulletin_points(session, bulletin_years, existing_dates)
         logger.info("Weekly CPI: parsed %d points from HTML bulletins", len(bulletin_points))
 
-        # XLSX fallback нужен только при cold-start (нет данных в БД) — он
-        # покрывает недели до cutoff_date, где HTML-бюллетеней не было.
-        # В steady-state весь этот диапазон уже в БД, XLSX качать смысла нет.
-        xlsx_points: list[WeeklyPoint] = []
-        if steady_state:
-            logger.info("Weekly CPI: skipping XLSX fallback in steady-state")
-        else:
-            for xlsx_url in (NEDEL_IPC_URL, NEDEL_IPC_URL_FALLBACK):
-                logger.info("Downloading weekly XLSX: %s", xlsx_url)
-                try:
-                    r = session.get(xlsx_url, timeout=60)
-                    if r.status_code != 200:
-                        logger.warning("HTTP %d for %s", r.status_code, xlsx_url)
-                        continue
-                    weights = _load_weights(session)
-                    if not weights:
-                        logger.warning("No weights available — XLSX fallback skipped")
-                        break
-                    xlsx_points = _parse_weekly_xlsx(r.content, weights)
-                    logger.info("Weekly CPI: parsed %d points from %s", len(xlsx_points), xlsx_url)
+        xlsx_by_segment: dict[str, list[WeeklyPoint]] = {
+            "all": [], "food": [], "nonfood": [], "services": [],
+        }
+        for xlsx_url in (NEDEL_IPC_URL, NEDEL_IPC_URL_FALLBACK):
+            logger.info("Downloading weekly XLSX: %s", xlsx_url)
+            try:
+                r = session.get(xlsx_url, timeout=60)
+                if r.status_code != 200:
+                    logger.warning("HTTP %d for %s", r.status_code, xlsx_url)
+                    continue
+                product_weights = _load_product_weights(session)
+                if not product_weights:
+                    logger.warning("No weights available — XLSX fallback skipped")
                     break
-                except requests.RequestException as exc:
-                    logger.warning("XLSX fetch failed for %s: %s", xlsx_url, exc)
+                parsed = _parse_weekly_xlsx_multi(r.content, product_weights)
+                if steady_state:
+                    # В steady-state для полной корзины достаточно bulletin'ов;
+                    # XLSX нужен каждую неделю для сегментов food/nonfood/services.
+                    xlsx_by_segment["food"] = parsed["food"]
+                    xlsx_by_segment["nonfood"] = parsed["nonfood"]
+                    xlsx_by_segment["services"] = parsed["services"]
+                    logger.info(
+                        "Weekly CPI steady-state XLSX segments: food=%d nonfood=%d services=%d",
+                        len(parsed["food"]), len(parsed["nonfood"]), len(parsed["services"]),
+                    )
+                else:
+                    xlsx_by_segment = parsed
+                    logger.info(
+                        "Weekly CPI: parsed XLSX segments — all=%d food=%d nonfood=%d services=%d",
+                        len(parsed["all"]),
+                        len(parsed["food"]),
+                        len(parsed["nonfood"]),
+                        len(parsed["services"]),
+                    )
+                break
+            except requests.RequestException as exc:
+                logger.warning("XLSX fetch failed for %s: %s", xlsx_url, exc)
 
-        merged: dict[date, float] = {p.date: p.value for p in xlsx_points}
-        for p in bulletin_points:
-            merged[p.date] = p.value
-        points = [WeeklyPoint(date=d, value=v) for d, v in sorted(merged.items())]
-        logger.info(
-            "Weekly CPI: merged %d points (HTML: %d, XLSX: %d)",
-            len(points), len(bulletin_points), len(xlsx_points),
+        merged_all: dict[date, float] = (
+            {} if steady_state else {p.date: p.value for p in xlsx_by_segment["all"]}
         )
+        for p in bulletin_points:
+            merged_all[p.date] = p.value
+        all_points = [
+            WeeklyPoint(date=d, value=v) for d, v in sorted(merged_all.items())
+        ]
 
-        if cutoff_date:
-            before = len(points)
-            points = [p for p in points if p.date >= cutoff_date]
+        result: dict[str, list[WeeklyPoint]] = {
+            "all": all_points,
+            "food": list(xlsx_by_segment["food"]),
+            "nonfood": list(xlsx_by_segment["nonfood"]),
+            "services": list(xlsx_by_segment["services"]),
+        }
+        for key in result:
+            before = len(result[key])
+            result[key] = _apply_cutoff(result[key])
+            if key == "all":
+                result[key] = _filter_new(result[key])
             logger.info(
-                "Weekly CPI: cutoff_date=%s — %d → %d points",
-                cutoff_date, before, len(points),
+                "Weekly CPI segment %s: %d → %d points after cutoff/filter",
+                key, before, len(result[key]),
             )
-
-        if existing_dates:
-            points = [p for p in points if p.date not in existing_dates]
-            logger.info("Weekly CPI: %d new points after filtering existing", len(points))
-
-        return points
+        return result
     finally:
         session.close()
 
 
+def fetch_weekly_cpi(
+    existing_dates: set[date] | None = None,
+    cutoff_date: date | None = None,
+) -> list[WeeklyPoint]:
+    """Fetch weekly CPI for the full basket (HTML bulletins + XLSX fallback)."""
+    return fetch_weekly_cpi_multi(existing_dates, cutoff_date)["all"]
+
+
 class RosstatWeeklyCpiParser(BaseParser):
     parser_type: ClassVar[str] = "rosstat_weekly_cpi"
+
+    def __init__(self) -> None:
+        self._segment_points: dict[str, list[WeeklyPoint]] | None = None
+
+    async def run(self, db: AsyncSession, indicator: Indicator, fetch_log: FetchLog) -> None:
+        """Primary `inflation-weekly` must upsert segment siblings even when `all` has 0 new points."""
+        seg_role = (indicator.model_config_json or {}).get("weekly_segment", "all")
+        if seg_role not in (None, "all"):
+            return await super().run(db, indicator, fetch_log)
+
+        code = indicator.code
+        try:
+            cfg = indicator.model_config_json or {}
+            points, source_url = await self._fetch_and_parse(db, indicator, cfg, fetch_log)
+            if source_url:
+                fetch_log.source_url = source_url[:500]
+
+            segment_snapshot = self._segment_points
+            self._segment_points = None
+
+            points = self._validate(points, cfg)
+            records_added = records_updated = 0
+            if points:
+                records_added, records_updated = await bulk_upsert(db, indicator.id, points)
+                logger.info(
+                    "Upserted %d new, %d updated for '%s'",
+                    records_added, records_updated, code,
+                )
+                fetch_log.records_added = records_added
+            elif not any(segment_snapshot.get(s) for s in WEEKLY_SEGMENT_CODES):
+                logger.warning("No data points parsed for %s", code)
+                fetch_log.status = "no_new_data"
+                if not fetch_log.error_message:
+                    fetch_log.error_message = "Parser returned 0 data points"
+                fetch_log.completed_at = _utcnow_naive()
+                await db.commit()
+                return
+
+            if segment_snapshot:
+                self._segment_points = segment_snapshot
+                extra_added, extra_updated = await self._post_upsert(
+                    db, indicator, cfg, fetch_log, points, records_added, records_updated,
+                )
+                if extra_added or extra_updated:
+                    records_added += extra_added
+                    records_updated += extra_updated
+                    fetch_log.records_added = records_added
+
+            await self._handle_forecasts(db, indicator, cfg, records_added, records_updated)
+
+            if records_added > 0 or records_updated > 0:
+                await cache_invalidate_indicator(code)
+                for seg_code in WEEKLY_SEGMENT_CODES.values():
+                    await cache_invalidate_indicator(seg_code)
+
+            fetch_log.status = (
+                "success" if (records_added > 0 or records_updated > 0) else "no_new_data"
+            )
+            fetch_log.completed_at = _utcnow_naive()
+            await db.commit()
+
+        except Exception as exc:
+            logger.exception("ETL failed for '%s'", code)
+            await db.rollback()
+            fetch_log.status = "failed"
+            fetch_log.error_message = str(exc)[:500]
+            fetch_log.completed_at = _utcnow_naive()
+            db.add(fetch_log)
+            await db.commit()
 
     async def _fetch_and_parse(
         self,
@@ -568,6 +709,10 @@ class RosstatWeeklyCpiParser(BaseParser):
         cfg: dict,
         fetch_log: FetchLog,
     ) -> tuple[list, str]:
+        if cfg.get("weekly_segment") not in (None, "all"):
+            # Сегментные ряды пишет primary `inflation-weekly` в _post_upsert.
+            return [], NEDEL_IPC_URL
+
         cutoff_raw = cfg.get("weekly_cutoff_date")
         cutoff: date | None = None
         if cutoff_raw:
@@ -578,16 +723,56 @@ class RosstatWeeklyCpiParser(BaseParser):
                     "Weekly CPI: invalid weekly_cutoff_date=%r, ignoring", cutoff_raw,
                 )
 
-        # Steady-state guard: проброс existing_dates позволяет парсеру пропускать
-        # GET-запросы за bulletin'ы, week-end которых заведомо уже в БД, и
-        # не качать XLSX-fallback / backfill за прошлые годы (см. fetch_weekly_cpi).
         existing_q = await db.execute(
             select(IndicatorData.date).where(IndicatorData.indicator_id == indicator.id)
         )
         existing_dates: set[date] = {row[0] for row in existing_q.all()}
         logger.info("Weekly CPI: %d existing points in DB", len(existing_dates))
 
-        points = await asyncio.to_thread(
-            fetch_weekly_cpi, existing_dates, cutoff,
+        multi = await asyncio.to_thread(
+            fetch_weekly_cpi_multi, existing_dates, cutoff,
         )
-        return points, NEDEL_IPC_URL
+        self._segment_points = multi
+        return multi.get("all", []), NEDEL_IPC_URL
+
+    async def _post_upsert(
+        self,
+        db: AsyncSession,
+        indicator: Indicator,
+        cfg: dict,
+        fetch_log: FetchLog,
+        points: list,
+        records_added: int,
+        records_updated: int,
+    ) -> tuple[int, int]:
+        if indicator.code != "inflation-weekly" or not self._segment_points:
+            return 0, 0
+
+        extra_added = 0
+        extra_updated = 0
+        for segment, seg_code in WEEKLY_SEGMENT_CODES.items():
+            seg_points = self._segment_points.get(segment) or []
+            if not seg_points:
+                continue
+            q = await db.execute(
+                select(Indicator).where(
+                    Indicator.code == seg_code,
+                    Indicator.is_active.is_(True),
+                )
+            )
+            target = q.scalar_one_or_none()
+            if not target:
+                logger.warning("Weekly CPI segment indicator %s not found", seg_code)
+                continue
+            added, updated = await bulk_upsert(db, target.id, seg_points)
+            extra_added += added
+            extra_updated += updated
+            if added or updated:
+                await cache_invalidate_indicator(seg_code)
+            logger.info(
+                "Weekly CPI segment %s → %s: %d new, %d updated",
+                segment, seg_code, added, updated,
+            )
+
+        self._segment_points = None
+        return extra_added, extra_updated

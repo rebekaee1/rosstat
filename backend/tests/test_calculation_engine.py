@@ -19,6 +19,12 @@ def test_all_derived_registered():
         "cpi-food-quarterly", "cpi-food-annual",
         "cpi-nonfood-quarterly", "cpi-nonfood-annual",
         "cpi-services-quarterly", "cpi-services-annual",
+        "cpi-yoy", "cpi-food-yoy", "cpi-nonfood-yoy", "cpi-services-yoy",
+        "cpi-qoq", "cpi-food-qoq", "cpi-nonfood-qoq", "cpi-services-qoq",
+        "cpi-period-weekly", "cpi-food-period-weekly",
+        "cpi-nonfood-period-weekly", "cpi-services-period-weekly",
+        "cpi-period-monthly", "cpi-food-period-monthly",
+        "cpi-nonfood-period-monthly", "cpi-services-period-monthly",
         "ppi-annual",
         "gdp-yoy", "gdp-qoq",
         "gdp-real-yoy", "gdp-real-qoq",
@@ -29,6 +35,7 @@ def test_all_derived_registered():
         "exports-qoq", "imports-qoq",
         "current-account-yoy-abs", "trade-balance-yoy-abs",
         "housing-yoy-primary", "housing-yoy-secondary",
+        "housing-qoq-primary", "housing-qoq-secondary",
         "wages-index", "housing-affordability",
     }
     assert set(calculation_engine._derived.keys()) == expected

@@ -6,6 +6,7 @@
   - backend/seed_data.py — поля description / methodology / seo_title / seo_description / name
   - backend/app/services/seo_content.py — CATEGORY_META, любые user-visible тексты
   - frontend/src/lib/categories.js — UI карточки категорий
+  - frontend/src/lib/cpiViewModeContent.jsx — режимные тексты ИПЦ (состав × режим)
 
 Правило закреплено в .cursor/rules/methodology-language.mdc.
 
@@ -85,7 +86,11 @@ def main() -> int:
             print(f'  {code} | {field}')
             print(f'    {preview}')
 
-    for rel in ('backend/app/services/seo_content.py', 'frontend/src/lib/categories.js'):
+    for rel in (
+        'backend/app/services/seo_content.py',
+        'frontend/src/lib/categories.js',
+        'frontend/src/lib/cpiViewModeContent.jsx',
+    ):
         p = ROOT / rel
         if not p.exists():
             continue

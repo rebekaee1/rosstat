@@ -435,3 +435,85 @@ def affordability_index(price_index: Series, wage_index: Series) -> Series:
             continue
         points.append((date(ym[0], ym[1], 1), round(w / p * 100.0, 2)))
     return points
+
+
+# --- CPI view modes (composition × URL mode) ---------------------------------
+
+CPI_CUMULATIVE_BASE = date(2000, 1, 1)
+
+
+def cumulative_level_from_mom(
+    monthly: Series,
+    *,
+    base_date: date = CPI_CUMULATIVE_BASE,
+) -> Series:
+    """Chain monthly MoM CPI indices (~100) to a level index (base month = 100).
+
+    Matches frontend ``buildCumulativeIndex`` in useIndicatorViewModeData.js
+    (trim from 2000-01, first point anchored at 100).
+    """
+    trimmed = sorted(
+        ((d, float(v)) for d, v in monthly if d >= base_date),
+        key=lambda p: p[0],
+    )
+    if not trimmed:
+        return []
+    points: Series = [(trimmed[0][0], 100.0)]
+    acc = 100.0
+    for i in range(1, len(trimmed)):
+        acc *= trimmed[i][1] / 100.0
+        points.append((trimmed[i][0], round(acc, 2)))
+    return points
+
+
+def cpi_mom_yoy(monthly: Series) -> Series:
+    """YoY % vs the same month one year ago on chained CPI levels (from 2000-01)."""
+    return yoy(cumulative_level_from_mom(monthly))
+
+
+def cpi_mom_qoq(monthly: Series) -> Series:
+    """QoQ %: end-of-quarter level vs previous quarter-end (chained from monthly MoM)."""
+    levels = cumulative_level_from_mom(monthly)
+    quarter_ends = [(d, v) for d, v in levels if d.month in _QUARTER_END_MONTHS]
+    return qoq(quarter_ends)
+
+
+def weekly_inflation_by_calendar_month(weekly: Series) -> Series:
+    """Compound weekly CPI indices within each calendar month → one % growth point.
+
+    Anchored to the last weekly observation in the month. Used for «Рост за период /
+    Месячная» (distinct from official monthly м/м).
+    """
+    by_month: dict[tuple[int, int], list[tuple[date, float]]] = {}
+    for d, v in weekly:
+        by_month.setdefault((d.year, d.month), []).append((d, float(v)))
+    points: Series = []
+    for ym in sorted(by_month):
+        weeks = sorted(by_month[ym], key=lambda p: p[0])
+        product = 1.0
+        for _, wv in weeks:
+            product *= wv / 100.0
+        growth = product * 100.0 - 100.0
+        points.append((weeks[-1][0], round(growth, 4)))
+    return points
+
+
+def weekly_mtd_in_calendar_month(weekly: Series) -> Series:
+    """Running MTD % within each calendar month at every weekly date.
+
+    For week t in month M: (∏ weekly_indexᵢ/100 for all weeks in M up to t) × 100 − 100.
+    Distinct from step-weekly (н/н = only vs previous week). Used for «Рост за период /
+    Недельная».
+    """
+    by_month: dict[tuple[int, int], list[tuple[date, float]]] = {}
+    for d, v in weekly:
+        by_month.setdefault((d.year, d.month), []).append((d, float(v)))
+    points: Series = []
+    for ym in sorted(by_month):
+        weeks = sorted(by_month[ym], key=lambda p: p[0])
+        product = 1.0
+        for d, wv in weeks:
+            product *= wv / 100.0
+            growth = product * 100.0 - 100.0
+            points.append((d, round(growth, 4)))
+    return points
