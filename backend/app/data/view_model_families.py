@@ -172,12 +172,14 @@ def _level_modes(
             mode=token, group=group_id, label=GRAN_LABEL[g],
             code=_code(base, token, overrides),
             pipeline=(("period_last", {"granularity": g}),),
-            unit=unit, frequency=GRAN_FREQUENCY[g], forecastable=False,
+            unit=unit, frequency=GRAN_FREQUENCY[g], forecastable=forecastable,
         ))
     return modes
 
 
-def _avg_modes(base: str, freq: str, unit: str, overrides: dict[str, str]) -> list[Mode]:
+def _avg_modes(
+    base: str, freq: str, unit: str, overrides: dict[str, str], *, forecastable: bool = False,
+) -> list[Mode]:
     """Группа «Средняя за период»: только гранулярности крупнее нативной
     (на нативной среднее = уровню → дубль-линия, запрещено)."""
     native = NATIVE_GRAN[freq]
@@ -188,7 +190,7 @@ def _avg_modes(base: str, freq: str, unit: str, overrides: dict[str, str]) -> li
             mode=token, group="avg", label=GRAN_LABEL[g],
             code=_code(base, token, overrides),
             pipeline=(("period_avg", {"granularity": g}),),
-            unit=unit, frequency=GRAN_FREQUENCY[g], forecastable=False,
+            unit=unit, frequency=GRAN_FREQUENCY[g], forecastable=forecastable,
         ))
     return out
 
@@ -207,7 +209,7 @@ def _sum_modes(base: str, freq: str, unit: str, overrides: dict[str, str], *, fo
             mode=token, group="flow", label=GRAN_LABEL[g],
             code=_code(base, token, overrides),
             pipeline=(("period_sum", {"granularity": g}),),
-            unit=unit, frequency=GRAN_FREQUENCY[g], forecastable=False,
+            unit=unit, frequency=GRAN_FREQUENCY[g], forecastable=forecastable,
         ))
     return modes
 
@@ -322,7 +324,7 @@ def _build_rate_daily(f: "FamilyDef") -> Family:
     )
     modes = (
         _level_modes(f.base, "daily", f.unit, f.overrides, group_id="level", forecastable=True)
-        + _avg_modes(f.base, "daily", f.unit, f.overrides)
+        + _avg_modes(f.base, "daily", f.unit, f.overrides, forecastable=True)
         + _pop_modes_gen(f.base, "daily", f.overrides, abs_delta=abs_delta, abs_unit=yoy_unit)
         + [yoy_mode]
     )
@@ -334,7 +336,7 @@ def _build_rate_monthly(f: "FamilyDef") -> Family:
     """T2 — месячные ставки: На конец периода [default] + Средняя."""
     modes = (
         _level_modes(f.base, "monthly", f.unit, f.overrides, group_id="level", forecastable=True)
-        + _avg_modes(f.base, "monthly", f.unit, f.overrides)
+        + _avg_modes(f.base, "monthly", f.unit, f.overrides, forecastable=True)
     )
     return Family(f.base, f.name, "T2", f.unit, f.category, "level", [_G_EOP, _G_AVG], modes)
 
@@ -344,7 +346,7 @@ def _build_stock(f: "FamilyDef") -> Family:
     freq = f.frequency
     modes = (
         _level_modes(f.base, freq, f.unit, f.overrides, group_id="level", forecastable=True)
-        + _avg_modes(f.base, freq, f.unit, f.overrides)
+        + _avg_modes(f.base, freq, f.unit, f.overrides, forecastable=True)
         + _pop_modes(f.base, freq, f.overrides, flow=False)
         + [_yoy_mode(f.base, freq, f.overrides)]
     )
@@ -405,7 +407,7 @@ def _build_avg_level(f: "FamilyDef") -> Family:
             mode=token, group="avg", label=GRAN_LABEL[g],
             code=_code(base, token, ov),
             pipeline=(("period_avg", {"granularity": g}),),
-            unit=unit, frequency=GRAN_FREQUENCY[g], forecastable=False,
+            unit=unit, frequency=GRAN_FREQUENCY[g], forecastable=True,
         ))
     modes.append(Mode(
         mode="mom", group="pop", label="М/м",
