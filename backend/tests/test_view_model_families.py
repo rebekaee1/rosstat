@@ -121,5 +121,24 @@ def test_frontend_mirror_serializable():
     assert blob["budget-deficit"]["template"] == "T7"
 
 
+def test_resolve_view_mode_defaults_to_family_default():
+    resolved = vmf.resolve_view_mode("budget-revenue", None)
+    assert resolved is not None
+    assert resolved.mode == vmf.FAMILY_BY_BASE["budget-revenue"].default_mode
+
+
+def test_data_indicator_code_sum_quarter_sibling():
+    assert vmf.data_indicator_code("budget-revenue", "sum-quarter") == "budget-revenue-sum-quarter"
+    assert vmf.data_indicator_code("budget-revenue", "level") == "budget-revenue"
+
+
+def test_mode_display_suffix_for_sum_quarter():
+    fam = vmf.FAMILY_BY_BASE["budget-revenue"]
+    mode = next(m for m in fam.modes if m.mode == "sum-quarter")
+    suffix = vmf.mode_display_suffix(fam, mode)
+    assert suffix is not None
+    assert "квартал" in suffix.lower()
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

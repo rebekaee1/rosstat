@@ -465,38 +465,88 @@ def _related_categories(current_slug: str) -> tuple[tuple[str, str], ...]:
     )[:6]
 
 
-async def render_indicator_html(code: str, db: AsyncSession) -> tuple[int, str]:
+async def render_indicator_html(
+    code: str,
+    db: AsyncSession,
+    *,
+    mode: str | None = None,
+) -> tuple[int, str]:
+    from app.data.view_model_families import (
+        FAMILY_BY_BASE,
+        data_indicator_code,
+        mode_display_suffix,
+        resolve_view_mode,
+    )
+
     q = await db.execute(select(Indicator).where(Indicator.code == code, Indicator.is_active.is_(True)))
     indicator = q.scalar_one_or_none()
     if not indicator:
         return 404, "Not found"
+
+    family = FAMILY_BY_BASE.get(code)
+    resolved_mode = resolve_view_mode(code, mode) if family else None
+    data_code = data_indicator_code(code, mode) if family else code
+    data_indicator = indicator
+    if data_code != code:
+        dq = await db.execute(
+            select(Indicator).where(Indicator.code == data_code, Indicator.is_active.is_(True))
+        )
+        data_indicator = dq.scalar_one_or_none() or indicator
+
+    display_name = indicator.name
+    display_unit = indicator.unit
+    display_frequency = indicator.frequency
+    if family and resolved_mode:
+        suffix = mode_display_suffix(family, resolved_mode)
+        if suffix:
+            display_name = f"{indicator.name} — {suffix}"
+        display_unit = resolved_mode.unit or display_unit
+        display_frequency = resolved_mode.frequency or display_frequency
+
     category = _category_for_api(indicator.category)
-    latest_rows = await _latest_rows(db, indicator.id, limit=8)
-    count, first_dt, last_dt = await _indicator_stats(db, indicator.id)
+    latest_rows = await _latest_rows(db, data_indicator.id, limit=8)
+    count, first_dt, last_dt = await _indicator_stats(db, data_indicator.id)
     related = await _related_indicators(db, indicator)
-    title = indicator.seo_title or f"{indicator.name} — данные и график"
+    title = indicator.seo_title or f"{display_name} — данные и график"
     desc = (
         indicator.seo_description
-        or clean_text(indicator.description, f"{indicator.name}: динамика, источник, методология и последние значения.")
+        or clean_text(
+            indicator.description,
+            f"{display_name}: динамика, источник, методология и последние значения.",
+        )
     )
-    body = _indicator_body(indicator, category, latest_rows, related, count, first_dt, last_dt)
+    body = _indicator_body(
+        indicator,
+        category,
+        latest_rows,
+        related,
+        count,
+        first_dt,
+        last_dt,
+        display_name=display_name,
+        display_unit=display_unit,
+        display_frequency=display_frequency,
+    )
+    canonical_path = f"/indicator/{indicator.code}"
+    if resolved_mode and resolved_mode.mode != family.default_mode:
+        canonical_path = f"{canonical_path}?mode={resolved_mode.mode}"
     json_ld = [
         _site_json_ld(),
         _breadcrumbs([
             ("/", "Главная"),
             (f"/category/{category.slug}", category.name) if category else ("/", "Индикаторы"),
-            (f"/indicator/{indicator.code}", indicator.name),
+            (canonical_path, display_name),
         ]),
         {
             "@context": "https://schema.org",
             "@type": "Dataset",
-            "name": indicator.name,
+            "name": display_name,
             "description": desc,
-            "url": _absolute(f"/indicator/{indicator.code}"),
+            "url": _absolute(canonical_path),
             "inLanguage": "ru-RU",
             "creator": {"@type": "Organization", "name": indicator.source},
             "temporalCoverage": f"{_format_date(first_dt)}/{_format_date(last_dt)}",
-            "variableMeasured": indicator.name,
+            "variableMeasured": display_name,
         },
     ]
     faq_ld = _faq_json_ld(_indicator_blocks_from_db(indicator))
@@ -506,7 +556,7 @@ async def render_indicator_html(code: str, db: AsyncSession) -> tuple[int, str]:
     html = await build_document(
         title=title,
         description=desc,
-        canonical_path=f"/indicator/{indicator.code}",
+        canonical_path=canonical_path,
         body=body,
         json_ld=json_ld,
         keywords=indicator.seo_keywords or None,
@@ -591,7 +641,14 @@ def _indicator_body(
     count: int,
     first_dt: date | None,
     last_dt: date | None,
+    *,
+    display_name: str | None = None,
+    display_unit: str | None = None,
+    display_frequency: str | None = None,
 ) -> str:
+    name = display_name or indicator.name
+    unit = display_unit or indicator.unit
+    frequency = display_frequency or indicator.frequency
     current = latest_rows[0] if latest_rows else None
     category_link = _link(f"/category/{category.slug}", category.name) if category else "Индикаторы"
     data_rows = "".join(
@@ -605,14 +662,14 @@ def _indicator_body(
     # «Источник и обновление» в SSR: generic + предметный).
     blocks = custom_blocks if custom_blocks else GLOBAL_INDICATOR_BLOCKS
     return f"""<main class="seo-page">
-<nav aria-label="Хлебные крошки">{_link("/", "Главная")} / {category_link} / {escape(indicator.name)}</nav>
-<h1>{escape(indicator.name)}</h1>
-<p>{escape(clean_text(indicator.description, f"{indicator.name}: официальный экономический индикатор с историей значений и графиком."))}</p>
+<nav aria-label="Хлебные крошки">{_link("/", "Главная")} / {category_link} / {escape(name)}</nav>
+<h1>{escape(name)}</h1>
+<p>{escape(clean_text(indicator.description, f"{name}: официальный экономический индикатор с историей значений и графиком."))}</p>
 <section><h2>Текущее значение</h2>
 <ul>
-<li>Последнее значение: {escape(_format_number(current.value if current else None))} {escape(indicator.unit)}</li>
+<li>Последнее значение: {escape(_format_number(current.value if current else None))} {escape(unit)}</li>
 <li>Дата последнего значения: {escape(_format_date(current.date if current else None))}</li>
-<li>Периодичность: {escape(indicator.frequency)}</li>
+<li>Периодичность: {escape(frequency)}</li>
 <li>Источник: {source_link}</li>
 <li>Количество точек: {int(count)}</li>
 <li>Период данных: {escape(_format_date(first_dt))} — {escape(_format_date(last_dt))}</li>

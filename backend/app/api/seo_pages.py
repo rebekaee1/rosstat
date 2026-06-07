@@ -46,6 +46,10 @@ async def seo_category(slug: str, db: AsyncSession = Depends(get_db)):
 
 
 @router.get("/seo/indicator/{code}", include_in_schema=False)
-async def seo_indicator(code: str, db: AsyncSession = Depends(get_db)):
-    status, html = await render_indicator_html(code, db)
+async def seo_indicator(
+    code: str,
+    mode: str | None = None,
+    db: AsyncSession = Depends(get_db),
+):
+    status, html = await render_indicator_html(code, db, mode=mode)
     return _html_response(status, html)

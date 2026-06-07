@@ -838,6 +838,36 @@ def iter_sibling_indicators():
             }
 
 
+def resolve_view_mode(base: str, url_mode: str | None) -> Mode | None:
+    """Разрешить (base, ?mode=) в режим generic-семьи (зеркало frontend resolveViewMode)."""
+    fam = FAMILY_BY_BASE.get(base)
+    if not fam:
+        return None
+    if url_mode and any(m.mode == url_mode for m in fam.modes):
+        mode_token = url_mode
+    else:
+        mode_token = fam.default_mode
+    return next((m for m in fam.modes if m.mode == mode_token), None)
+
+
+def data_indicator_code(base: str, url_mode: str | None) -> str:
+    """Backend-код ряда для SSR/API при выбранном режиме карточки."""
+    resolved = resolve_view_mode(base, url_mode)
+    return resolved.code if resolved else base
+
+
+def mode_display_suffix(fam: Family, mode: Mode) -> str | None:
+    """Человеческий суффикс режима для заголовка (как modeSuffix на frontend)."""
+    if mode.mode == fam.default_mode:
+        return None
+    group = next((g for g in fam.groups if g.id == mode.group), None)
+    if not group:
+        return mode.label
+    if group.leaf:
+        return group.label
+    return f"{group.label}, {mode.label.lower()}"
+
+
 def to_frontend_families() -> dict:
     """JSON-сериализуемое зеркало конфига для frontend generic-движка."""
     out: dict = {}

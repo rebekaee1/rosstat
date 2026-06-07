@@ -128,8 +128,9 @@ def test_universal_seo_page_home(client, monkeypatch):
 def test_universal_seo_indicator_contract(client, monkeypatch):
     from app.api import seo_pages
 
-    async def fake_indicator(code, db):
+    async def fake_indicator(code, db, *, mode=None):
         assert code == "cpi"
+        assert mode is None
         return 200, (
             '<html><head><title>ИПЦ — данные, график и прогноз</title>'
             '<meta name="description" content="ИПЦ России: данные Росстата">'
@@ -145,6 +146,20 @@ def test_universal_seo_indicator_contract(client, monkeypatch):
     assert r.status_code == 200
     assert "ИПЦ" in r.text
     assert "application/ld+json" in r.text
+
+
+def test_universal_seo_indicator_forwards_mode_query(client, monkeypatch):
+    from app.api import seo_pages
+
+    async def fake_indicator(code, db, *, mode=None):
+        assert code == "budget-revenue"
+        assert mode == "sum-quarter"
+        return 200, "<html><body><div id='root'>ok</div></body></html>"
+
+    monkeypatch.setattr(seo_pages, "render_indicator_html", fake_indicator)
+    r = client.get("/seo/indicator/budget-revenue", params={"mode": "sum-quarter"})
+    assert r.status_code == 200
+    assert "ok" in r.text
 
 
 def test_sitemap_static_pages_constant():
