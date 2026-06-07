@@ -38,7 +38,7 @@ from app.core.cache import cache_invalidate_indicator
 from app.data.view_model_families import iter_derived_specs as _iter_vmf_specs
 from app.models import Indicator, IndicatorData
 from app.services import derived_ops as ops
-from app.services.upsert import bulk_upsert
+from app.services.upsert import bulk_upsert, prune_indicator_dates_not_in
 
 logger = logging.getLogger(__name__)
 
@@ -265,8 +265,14 @@ async def _execute(db: AsyncSession, spec: DerivedSpec) -> int:
     if not points:
         return 0
 
+    pruned = await prune_indicator_dates_not_in(db, dst_id, points)
     added, updated = await bulk_upsert(db, dst_id, points)
-    return added + updated
+    if pruned:
+        logger.info(
+            "CalculationEngine: pruned %d stale date(s) for '%s'",
+            pruned, spec.dst_code,
+        )
+    return added + updated + pruned
 
 
 class CalculationEngine:
@@ -284,6 +290,34 @@ class CalculationEngine:
     def register(self, code: str, sources: list[str], fn: DerivedFn) -> None:
         """Escape hatch for ad-hoc derivations that don't fit a `DerivedSpec`."""
         self._derived[code] = (sources, fn)
+
+    async def run_for_direct_dependents(
+        self, db: AsyncSession, source_codes: list[str],
+    ) -> list[str]:
+        """Пересчитать только derived, напрямую зависящие от `source_codes`.
+
+        Используется после ETL одного source (напр. бюджет Минфина), когда
+        source-ряд укоротился (`replace_series`) и sibling-режимы должны
+        потерять устаревшие даты без полного прогона всех derived.
+        """
+        if not source_codes:
+            return []
+        source_set = set(source_codes)
+        updated: list[str] = []
+        for code, (sources, fn) in self._derived.items():
+            if not source_set.intersection(sources):
+                continue
+            try:
+                n = await fn(db)
+                if n > 0:
+                    await cache_invalidate_indicator(code)
+                    updated.append(code)
+                logger.info("CalculationEngine (direct): %s → %d changes", code, n)
+            except Exception:
+                logger.exception(
+                    "CalculationEngine (direct): failed to compute '%s'", code,
+                )
+        return updated
 
     async def run_for_updated_sources(self, db: AsyncSession, source_codes: list[str]) -> list[str]:
         """Recompute every derived series end-to-end after an ETL batch.

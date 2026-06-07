@@ -119,6 +119,10 @@ class BaseParser(ABC):
 
             await self._handle_forecasts(db, indicator, cfg, records_added, records_updated)
 
+            await self._after_storage(
+                db, indicator, cfg, fetch_log, pruned, records_added, records_updated,
+            )
+
             if records_added > 0 or records_updated > 0 or pruned > 0:
                 await cache_invalidate_indicator(code)
 
@@ -184,6 +188,18 @@ class BaseParser(ABC):
     ) -> tuple[int, int]:
         """Default: ничего лишнего. Override для специальных вставок (cbr_keyrate press-release)."""
         return 0, 0
+
+    async def _after_storage(
+        self,
+        db: AsyncSession,
+        indicator: Indicator,
+        cfg: dict,
+        fetch_log: FetchLog,
+        pruned: int,
+        records_added: int,
+        records_updated: int,
+    ) -> None:
+        """Hook после upsert/forecast, до commit. Override для каскада derived и т.п."""
 
     async def _handle_forecasts(
         self,

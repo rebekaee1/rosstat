@@ -22,6 +22,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import FetchLog, Indicator, IndicatorData
 from app.services.base_parser import BaseParser
+from app.services.calculation_engine import calculation_engine
 from app.services.http_client import create_session
 
 logger = logging.getLogger(__name__)
@@ -410,6 +411,27 @@ class MinfinBudgetParser(BaseParser):
 
     parser_type: ClassVar[str] = "minfin_budget_csv"
     replace_series: ClassVar[bool] = True
+
+    async def _after_storage(
+        self,
+        db: AsyncSession,
+        indicator: Indicator,
+        cfg: dict,
+        fetch_log: FetchLog,
+        pruned: int,
+        records_added: int,
+        records_updated: int,
+    ) -> None:
+        if not (pruned or records_added or records_updated):
+            return
+        derived = await calculation_engine.run_for_direct_dependents(
+            db, [indicator.code],
+        )
+        if derived:
+            logger.info(
+                "Minfin budget '%s': refreshed %d view-mode sibling(s): %s",
+                indicator.code, len(derived), ", ".join(derived[:8]),
+            )
 
     async def _fetch_and_parse(
         self,

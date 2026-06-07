@@ -587,10 +587,11 @@ ADR-0006 «Subsequent additions» дополнен описанием решен
 - **Search full directory**: `IndicatorSearch.jsx` показывает все индикаторы (включая скрытые из listing) через `?include_unlisted=true`. Коммит `876b3c7`.
 - **Frontend rename**: `tradeViewModes.js` → `viewModeFamilies.js` (общий реестр), `tradeFamily/tradeMode` → `viewFamily/familyMode`. ADR-0006 (новый) фиксирует ось «карточка vs derived vs variant vs frequency». Чеклист «новый индикатор» в `AGENTS.md::Шаг 4`. CONTEXT.md: +2 trap'ы (source-depth + browser-cache). Коммит `d4f57ae`.
 
-### 2026-06-07 — Бюджет Минфин: снять артефакты ~10 трлн (replace_series)
+### 2026-06-07 — Бюджет Минфин: снять артефакты ~10 трлн (source + все режимы)
 
-- **Симптом:** `budget-revenue` / `budget-expenditure` / `budget-deficit` на проде — май 2026 ~10–12 трлн (пресс-fallback при отстающем CSV).
-- **Правки:** парсер уже CSV-only; добавлен `replace_series` + `prune_indicator_dates_not_in` — ETL удаляет даты, которых нет в свежем parse-output. Файлы: `minfin_budget_parser.py`, `upsert.py`, `base_parser.py`.
+- **Симптом:** на проде май 2026 ~10–12 трлн на доходах/расходах; режимы М/м, Кв/Кв, За период (квартал/год), Г/г оставались кривыми после чистки source.
+- **Причина:** `replace_series` почистил только source-ряды; derived sibling'и (`*-mom`, `*-sum-quarter`, `*-yoy`) не пересчитывались и не удаляли stale-даты.
+- **Правки:** `prune` в `calculation_engine._execute`; `run_for_direct_dependents` + каскад из `MinfinBudgetParser._after_storage` на все view-mode ряды T6/T7.
 
 ### 2026-06-07 — Weekly CPI ETL: steady-state без лишних GET/upsert + timeout 600s
 

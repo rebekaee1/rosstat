@@ -148,6 +148,41 @@ def test_run_for_updated_sources_returns_only_codes_with_actual_changes(monkeypa
     invalidate.assert_awaited_once_with("changed")
 
 
+def test_run_for_direct_dependents_only_touches_matching_sources(monkeypatch):
+    """Каскад после одного source — только прямые dependent-derived."""
+    engine = CalculationEngine()
+    calls: dict[str, int] = {"a": 0, "b": 0, "c": 0}
+
+    async def fn_a(_db):
+        calls["a"] += 1
+        return 2
+
+    async def fn_b(_db):
+        calls["b"] += 1
+        return 0
+
+    async def fn_c(_db):
+        calls["c"] += 1
+        return 0
+
+    engine.register("a", ["budget-revenue"], fn_a)
+    engine.register("b", ["budget-revenue", "other"], fn_b)
+    engine.register("c", ["gdp-nominal"], fn_c)
+
+    invalidate = AsyncMock()
+    monkeypatch.setattr(
+        "app.services.calculation_engine.cache_invalidate_indicator",
+        invalidate,
+    )
+
+    result = asyncio.run(
+        engine.run_for_direct_dependents(db=None, source_codes=["budget-revenue"])
+    )
+
+    assert calls == {"a": 1, "b": 1, "c": 0}
+    assert result == ["a"]
+
+
 def test_run_for_updated_sources_isolates_failures(monkeypatch):
     """One failing derived must not stop the rest from being computed."""
     engine = CalculationEngine()
