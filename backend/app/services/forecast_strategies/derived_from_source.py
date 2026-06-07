@@ -129,6 +129,65 @@ def _run_pipeline(
     return series
 
 
+_BUCKET_MONTHS = {"quarter": 3, "year": 12}
+
+
+def _pipeline_bucket_spec(pipeline: list) -> tuple[str, str] | None:
+    """Метод агрегации и гранулярность для квартала/года в pipeline-режиме."""
+    for op, kwargs in pipeline:
+        gran = kwargs.get("granularity")
+        if gran not in ("quarter", "year"):
+            continue
+        if op == "period_sum":
+            return "sum", gran
+        if op == "period_last":
+            return "last", gran
+        if op == "period_avg":
+            return "avg", gran
+    return None
+
+
+def _forecast_from_monthly_tail(
+    source_data: list[tuple[date, float]],
+    source_actual_dates: set[date],
+    granularity: str,
+    method: str,
+) -> list[tuple[date, float]]:
+    """Прогноз квартала/года из хвоста месячного прогноза.
+
+    В каждом bucket'е берём **последний** месяц прогноза и переводим значение:
+    - поток (sum): ×3 за квартал, ×12 за год;
+    - уровень/ставка (last, avg): как есть на последнем месяце bucket'а.
+    """
+    forecast_months = [
+        (d, float(v)) for d, v in source_data if d not in source_actual_dates
+    ]
+    if not forecast_months:
+        return []
+
+    buckets: dict[date, list[tuple[date, float]]] = {}
+    for d, v in forecast_months:
+        _key, anchor = ops_module._bucket_anchor(d, granularity)
+        if anchor is None:
+            continue
+        buckets.setdefault(anchor, []).append((d, v))
+
+    mult = _BUCKET_MONTHS.get(granularity, 1)
+    out: list[tuple[date, float]] = []
+    for anchor in sorted(buckets):
+        pairs = buckets[anchor]
+        _last_d, last_v = max(pairs, key=lambda p: p[0])
+        if method == "sum":
+            val = round(last_v * mult, 4)
+        elif method == "avg":
+            vals = [v for _, v in pairs]
+            val = round(sum(vals) / len(vals), 4)
+        else:
+            val = round(last_v, 4)
+        out.append((anchor, val))
+    return out
+
+
 def _allows_period_sum_anchor_revision(derived_cfg: dict, operation: str | None) -> bool:
     """period_sum на квартал/год якорится на конец bucket'а.
 
@@ -136,6 +195,8 @@ def _allows_period_sum_anchor_revision(derived_cfg: dict, operation: str | None)
     (partial YTD). Прогноз источника пересчитывает полный bucket — точку нужно
     обновить, иначе `d > last_actual` отфильтрует единственный годовой прогноз.
     """
+    if derived_cfg.get("monthly_tail_extrapolate"):
+        return True
     if operation != "pipeline":
         return False
     return any(op == "period_sum" for op, _ in (derived_cfg.get("pipeline") or []))
@@ -237,7 +298,16 @@ def derived_from_source_strategy(
     elif operation == "weekly_mtd_in_calendar_month":
         derived_full = ops_weekly_mtd_in_calendar_month(list(source_data))
     elif operation == "pipeline":
-        derived_full = _run_pipeline(list(source_data), derived_cfg)
+        pipeline_steps = derived_cfg.get("pipeline") or []
+        bucket_spec = _pipeline_bucket_spec(pipeline_steps)
+        if derived_cfg.get("monthly_tail_extrapolate") and bucket_spec:
+            method, gran = bucket_spec
+            actual_src = set(ctx.cfg.get("_source_actual_dates") or ())
+            derived_full = _forecast_from_monthly_tail(
+                list(source_data), actual_src, gran, method,
+            )
+        else:
+            derived_full = _run_pipeline(list(source_data), derived_cfg)
     else:
         logger.error("derived_from_source: unknown operation '%s'", operation)
         return []

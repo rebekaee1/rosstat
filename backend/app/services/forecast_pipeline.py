@@ -143,7 +143,7 @@ async def _load_indicator_full_series(
     )
     src = src_q.scalar_one_or_none()
     if src is None:
-        return []
+        return [], set()
 
     actual_q = await db.execute(
         select(IndicatorData)
@@ -151,6 +151,7 @@ async def _load_indicator_full_series(
         .order_by(IndicatorData.date)
     )
     actuals = [(d.date, float(d.value)) for d in actual_q.scalars().all()]
+    actual_dates = {d for d, _ in actuals}
 
     fc_q = await db.execute(
         select(ForecastValue)
@@ -168,7 +169,7 @@ async def _load_indicator_full_series(
     for d, v in forecasts:
         if d not in actuals_dict:
             actuals_dict[d] = v
-    return sorted(actuals_dict.items())
+    return sorted(actuals_dict.items()), actual_dates
 
 
 async def _maybe_inject_source_for_derived(
@@ -179,9 +180,10 @@ async def _maybe_inject_source_for_derived(
     source_code = derived_cfg.get("source_code")
     if not source_code:
         return ctx_cfg
-    series = await _load_indicator_full_series(db, source_code)
+    series, actual_dates = await _load_indicator_full_series(db, source_code)
     new_cfg = dict(ctx_cfg)
     new_cfg["_source_data"] = series
+    new_cfg["_source_actual_dates"] = sorted(actual_dates)
     return new_cfg
 
 

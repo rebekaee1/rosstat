@@ -328,6 +328,64 @@ def test_cpi_mom_yoy_emits_only_future_months():
     assert len(points) == 3
 
 
+def test_monthly_tail_extrapolate_eop_year_from_last_forecast_month():
+    """Ставка/уровень: последний месяц прогноза → годовой прогноз тем же значением."""
+    actuals = [(date(2026, m, 1), 16.0 + m * 0.1) for m in range(1, 3)]
+    forecast = [(date(2026, m, 1), 17.5) for m in range(3, 7)]
+    full_source = actuals + forecast
+    own_dates = [date(2026, 1, 1)]
+    own_values = [16.1]
+
+    ctx = _make_ctx(
+        indicator_code="auto-loan-rate-eop-year",
+        frequency="annual",
+        cfg={
+            "derived_forecast": {
+                "operation": "pipeline",
+                "pipeline": [["period_last", {"granularity": "year"}]],
+                "monthly_tail_extrapolate": True,
+                "model_name": "auto-loan-rate-eop-year-derived",
+            },
+            "_source_data": full_source,
+            "_source_actual_dates": [d for d, _ in actuals],
+        },
+    )
+    outputs = derived_from_source_strategy(own_dates, own_values, ctx)
+    points = outputs[0].result.points
+    assert len(points) == 1
+    assert points[0].date == date(2026, 1, 1)
+    assert points[0].value == 17.5
+
+
+def test_monthly_tail_extrapolate_sum_quarter_times_three():
+    """Поток: последний месяц прогноза в квартале × 3."""
+    actuals = [(date(2026, 1, 1), 100.0), (date(2026, 2, 1), 110.0)]
+    forecast = [(date(2026, 3, 1), 200.0), (date(2026, 4, 1), 250.0)]
+    full_source = actuals + forecast
+    own_dates = [date(2026, 3, 1)]
+    own_values = [210.0]
+
+    ctx = _make_ctx(
+        indicator_code="retail-trade-sum-quarter",
+        frequency="quarterly",
+        cfg={
+            "derived_forecast": {
+                "operation": "pipeline",
+                "pipeline": [["period_sum", {"granularity": "quarter"}]],
+                "monthly_tail_extrapolate": True,
+                "model_name": "retail-trade-sum-quarter-derived",
+            },
+            "_source_data": full_source,
+            "_source_actual_dates": [d for d, _ in actuals],
+        },
+    )
+    outputs = derived_from_source_strategy(own_dates, own_values, ctx)
+    points = outputs[0].result.points
+    assert points[0].date == date(2026, 3, 1)
+    assert points[0].value == 600.0  # 200 * 3
+    assert len(points) >= 2
+
+
 def test_period_sum_year_revises_partial_ytd_anchor():
     """sum-year: partial YTD на 01-01 пересчитывается в полный годовой прогноз."""
     actuals = [(date(2026, 1, 1), 100.0), (date(2026, 2, 1), 200.0)]

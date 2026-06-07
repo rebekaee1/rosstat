@@ -3108,6 +3108,93 @@
     "unit": "млн $",
     "variantAxis": null
   },
+  "exports-monthly": {
+    "base": "exports-monthly",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "exports-monthly",
+        "forecastable": true,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "млн $"
+      },
+      {
+        "code": "exports-monthly-sum-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "млн $"
+      },
+      {
+        "code": "exports-monthly-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "млн $"
+      },
+      {
+        "code": "exports-monthly-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "exports-monthly-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "exports-monthly-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      }
+    ],
+    "name": "Экспорт товаров (месячный ряд)",
+    "template": "T6",
+    "unit": "млн $",
+    "variantAxis": null
+  },
   "external-debt": {
     "base": "external-debt",
     "defaultMode": "level",
@@ -4156,6 +4243,93 @@
     ],
     "name": "Импорт товаров",
     "template": "T9",
+    "unit": "млн $",
+    "variantAxis": null
+  },
+  "imports-monthly": {
+    "base": "imports-monthly",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "imports-monthly",
+        "forecastable": true,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "млн $"
+      },
+      {
+        "code": "imports-monthly-sum-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "млн $"
+      },
+      {
+        "code": "imports-monthly-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "млн $"
+      },
+      {
+        "code": "imports-monthly-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "imports-monthly-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "imports-monthly-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      }
+    ],
+    "name": "Импорт товаров (месячный ряд)",
+    "template": "T6",
     "unit": "млн $",
     "variantAxis": null
   },
@@ -5896,6 +6070,93 @@
     "unit": "млн $",
     "variantAxis": null
   },
+  "services-exports-monthly": {
+    "base": "services-exports-monthly",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "services-exports-monthly",
+        "forecastable": true,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "млн $"
+      },
+      {
+        "code": "services-exports-monthly-sum-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "млн $"
+      },
+      {
+        "code": "services-exports-monthly-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "млн $"
+      },
+      {
+        "code": "services-exports-monthly-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "services-exports-monthly-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "services-exports-monthly-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      }
+    ],
+    "name": "Экспорт услуг (месячный ряд)",
+    "template": "T6",
+    "unit": "млн $",
+    "variantAxis": null
+  },
   "services-imports": {
     "base": "services-imports",
     "defaultMode": "level",
@@ -5960,6 +6221,93 @@
     ],
     "name": "Импорт услуг",
     "template": "T9",
+    "unit": "млн $",
+    "variantAxis": null
+  },
+  "services-imports-monthly": {
+    "base": "services-imports-monthly",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "services-imports-monthly",
+        "forecastable": true,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "млн $"
+      },
+      {
+        "code": "services-imports-monthly-sum-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "млн $"
+      },
+      {
+        "code": "services-imports-monthly-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "млн $"
+      },
+      {
+        "code": "services-imports-monthly-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "services-imports-monthly-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "services-imports-monthly-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      }
+    ],
+    "name": "Импорт услуг (месячный ряд)",
+    "template": "T6",
     "unit": "млн $",
     "variantAxis": null
   },
@@ -6111,6 +6459,93 @@
     ],
     "name": "Торговый баланс",
     "template": "T9s",
+    "unit": "млн $",
+    "variantAxis": null
+  },
+  "trade-balance-monthly": {
+    "base": "trade-balance-monthly",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "trade-balance-monthly",
+        "forecastable": true,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "млн $"
+      },
+      {
+        "code": "trade-balance-monthly-sum-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "млн $"
+      },
+      {
+        "code": "trade-balance-monthly-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "млн $"
+      },
+      {
+        "code": "trade-balance-monthly-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "trade-balance-monthly-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "trade-balance-monthly-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      }
+    ],
+    "name": "Торговый баланс (месячный ряд)",
+    "template": "T6",
     "unit": "млн $",
     "variantAxis": null
   },

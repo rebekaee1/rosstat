@@ -655,6 +655,12 @@ _FAMILY_DEFS: list[FamilyDef] = [
     FamilyDef("construction-work", "Объём строительных работ", "T6", "млрд руб.", "Бизнес", "monthly"),
     FamilyDef("housing-commissioned", "Ввод в действие жилых домов", "T6", "млн кв.м", "Бизнес", "monthly"),
     FamilyDef("retail-trade", "Оборот розничной торговли", "T6", "млрд руб.", "Бизнес", "monthly"),
+    # T6 — месячные потоки внешней торговли (alternate frequency, is_listed=false)
+    FamilyDef("exports-monthly", "Экспорт товаров (месячный ряд)", "T6", "млн $", "Торговля", "monthly"),
+    FamilyDef("imports-monthly", "Импорт товаров (месячный ряд)", "T6", "млн $", "Торговля", "monthly"),
+    FamilyDef("services-exports-monthly", "Экспорт услуг (месячный ряд)", "T6", "млн $", "Торговля", "monthly"),
+    FamilyDef("services-imports-monthly", "Импорт услуг (месячный ряд)", "T6", "млн $", "Торговля", "monthly"),
+    FamilyDef("trade-balance-monthly", "Торговый баланс (месячный ряд)", "T6", "млн $", "Торговля", "monthly"),
     # T7 — баланс бюджета
     FamilyDef("budget-deficit", "Дефицит/профицит бюджета", "T7", "млрд руб.", "Бюджет", "monthly"),
     # T8 — зарплата (real/index не режимы: остаются wages-real/wages-index)
@@ -775,16 +781,21 @@ def _mode_forecast_meta(fam: "Family", m: "Mode", base_freq: str) -> dict | None
         if g in ("quarter", "year"):
             if agg_gran is None or GRAN_ORDER.index(g) > GRAN_ORDER.index(agg_gran):
                 agg_gran = g
-    min_periods = _BUCKET_MIN_PERIODS.get((base_freq, agg_gran)) if agg_gran else None
     cfg = {
         "source_code": fam.base,
         "operation": "pipeline",
         "pipeline": [[op, dict(kwargs)] for op, kwargs in m.pipeline],
         "model_name": f"{m.code}-derived",
     }
-    if min_periods and min_periods > 1:
-        cfg["complete_bucket"] = agg_gran
-        cfg["min_periods"] = min_periods
+    # Квартал/год из месячного прогноза: последний месяц bucket'а → агрегат
+    # (поток ×3/×12, уровень/ставка — как есть). Не ждём 12 полных месяцев.
+    if agg_gran in ("quarter", "year"):
+        cfg["monthly_tail_extrapolate"] = True
+    else:
+        min_periods = _BUCKET_MIN_PERIODS.get((base_freq, agg_gran)) if agg_gran else None
+        if min_periods and min_periods > 1:
+            cfg["complete_bucket"] = agg_gran
+            cfg["min_periods"] = min_periods
     return cfg
 
 
