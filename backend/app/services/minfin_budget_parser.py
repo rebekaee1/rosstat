@@ -392,6 +392,9 @@ def fetch_and_parse_budget(target: str = "deficit") -> tuple[list[BudgetPoint], 
 class MinfinBudgetParser(BaseParser):
     """ETL для Минфин CSV (deficit/revenue/expenditure).
 
+    `replace_series=True`: БД = точный снимок CSV; preliminary-точки из старого
+    пресс-fallback (артефакты ~10 трлн) удаляются при следующем ETL.
+
     Operational trap (см. enterprise_resilience.md): Минфин обновляет content
     CSV-файла `data-YYYYMMDDTHHMM-structure-…csv` *in-place*, не меняя URL.
     Timestamp в имени = дата создания паспорта, не snapshot content. Поэтому
@@ -406,6 +409,7 @@ class MinfinBudgetParser(BaseParser):
     """
 
     parser_type: ClassVar[str] = "minfin_budget_csv"
+    replace_series: ClassVar[bool] = True
 
     async def _fetch_and_parse(
         self,

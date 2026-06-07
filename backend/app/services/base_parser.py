@@ -52,7 +52,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.cache import cache_invalidate_indicator
 from app.models import FetchLog, Indicator
 from app.services.forecast_pipeline import retrain_indicator_forecast
-from app.services.upsert import bulk_upsert
+from app.services.upsert import bulk_upsert, prune_indicator_dates_not_in
 
 logger = logging.getLogger(__name__)
 
@@ -69,6 +69,8 @@ class BaseParser(ABC):
     """
 
     parser_type: ClassVar[str] = "abstract"
+    # Полный снимок ряда из источника: удалять даты, которых нет в parse-output.
+    replace_series: ClassVar[bool] = False
 
     async def run(self, db: AsyncSession, indicator: Indicator, fetch_log: FetchLog) -> None:
         """Полный цикл ETL для одного индикатора. Не переопределяй — переопределяй `_fetch_and_parse`."""
@@ -91,12 +93,21 @@ class BaseParser(ABC):
                 await db.commit()
                 return
 
+            pruned = 0
+            if self.replace_series:
+                pruned = await prune_indicator_dates_not_in(db, indicator.id, points)
+                if pruned:
+                    logger.info(
+                        "Pruned %d stale date(s) for '%s' (replace_series)",
+                        pruned, code,
+                    )
+
             records_added, records_updated = await bulk_upsert(db, indicator.id, points)
             logger.info(
                 "Upserted %d new, %d updated for '%s'",
                 records_added, records_updated, code,
             )
-            fetch_log.records_added = records_added
+            fetch_log.records_added = records_added + pruned
 
             extra_added, extra_updated = await self._post_upsert(
                 db, indicator, cfg, fetch_log, points, records_added, records_updated,
@@ -108,10 +119,14 @@ class BaseParser(ABC):
 
             await self._handle_forecasts(db, indicator, cfg, records_added, records_updated)
 
-            if records_added > 0 or records_updated > 0:
+            if records_added > 0 or records_updated > 0 or pruned > 0:
                 await cache_invalidate_indicator(code)
 
-            fetch_log.status = "success" if (records_added > 0 or records_updated > 0) else "no_new_data"
+            fetch_log.status = (
+                "success"
+                if (records_added > 0 or records_updated > 0 or pruned > 0)
+                else "no_new_data"
+            )
             fetch_log.completed_at = _utcnow_naive()
             await db.commit()
 

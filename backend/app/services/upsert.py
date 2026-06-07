@@ -13,7 +13,7 @@ in `backend/app/services/*_parser.py`.
 
 from datetime import date as _date
 
-from sqlalchemy import select, func
+from sqlalchemy import delete, select, func
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -40,6 +40,32 @@ def _split_point(point):
     if isinstance(point, (tuple, list)) and len(point) >= 2:
         return point[0], point[1]
     raise TypeError(f"Unsupported point shape for bulk_upsert: {type(point).__name__}")
+
+
+async def prune_indicator_dates_not_in(
+    db: AsyncSession,
+    indicator_id: int,
+    points: list,
+) -> int:
+    """Удалить точки индикатора, которых нет в свежем parse-output.
+
+    Для источников с полным снимком ряда (Минфин OpenData CSV) — убирает
+    устаревшие preliminary-точки из пресс-релизов, если парсер их больше
+    не отдаёт.
+    """
+    parsed_dates = {_split_point(p)[0] for p in points}
+    if not parsed_dates:
+        return 0
+    result = await db.execute(
+        delete(IndicatorData).where(
+            IndicatorData.indicator_id == indicator_id,
+            IndicatorData.date.not_in(parsed_dates),
+        )
+    )
+    deleted = result.rowcount or 0
+    if deleted:
+        await db.flush()
+    return deleted
 
 
 async def bulk_upsert(db: AsyncSession, indicator_id: int, points: list) -> tuple[int, int]:

@@ -1,6 +1,10 @@
 """Tests for MinfinBudgetParser CSV parsing."""
 
-from app.services.minfin_budget_parser import _parse_budget_csv
+from app.services.minfin_budget_parser import (
+    MinfinBudgetParser,
+    _parse_budget_csv,
+    fetch_and_parse_budget,
+)
 
 
 SAMPLE_CSV = """\
@@ -67,3 +71,29 @@ def test_parse_budget_csv_fallback_columns():
     assert len(points) == 2
     assert points[0].value == -500.0
     assert points[1].value == -100.0
+
+
+def test_fetch_and_parse_budget_does_not_augment_from_press():
+    """OpenData CSV-only: май после пропуска мар–апр не попадает в ряд."""
+    points, _ = fetch_and_parse_budget("revenue")
+    for p in points:
+        assert p.value < 9000.0, (
+            f"подозрительно большое помесячное значение {p.value} на {p.date}"
+        )
+
+
+def test_minfin_parser_replace_series_flag():
+    assert MinfinBudgetParser.replace_series is True
+
+
+def test_parse_budget_csv_revenue_target():
+    csv = """\
+\ufeffГод,Месяц,"Доходы, всего","Расходы, всего","Дефицит (-)/Профицит (+)"
+2026,январь,2364.3,3993.3,-1628.9
+2026,февраль,4767.4,8216.2,-3448.8
+"""
+    points = _parse_budget_csv(csv, target="revenue")
+    assert [(p.date.month, p.value) for p in points] == [
+        (1, 2364.3),
+        (2, 2403.1),
+    ]

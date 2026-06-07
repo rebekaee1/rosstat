@@ -587,6 +587,11 @@ ADR-0006 «Subsequent additions» дополнен описанием решен
 - **Search full directory**: `IndicatorSearch.jsx` показывает все индикаторы (включая скрытые из listing) через `?include_unlisted=true`. Коммит `876b3c7`.
 - **Frontend rename**: `tradeViewModes.js` → `viewModeFamilies.js` (общий реестр), `tradeFamily/tradeMode` → `viewFamily/familyMode`. ADR-0006 (новый) фиксирует ось «карточка vs derived vs variant vs frequency». Чеклист «новый индикатор» в `AGENTS.md::Шаг 4`. CONTEXT.md: +2 trap'ы (source-depth + browser-cache). Коммит `d4f57ae`.
 
+### 2026-06-07 — Бюджет Минфин: снять артефакты ~10 трлн (replace_series)
+
+- **Симптом:** `budget-revenue` / `budget-expenditure` / `budget-deficit` на проде — май 2026 ~10–12 трлн (пресс-fallback при отстающем CSV).
+- **Правки:** парсер уже CSV-only; добавлен `replace_series` + `prune_indicator_dates_not_in` — ETL удаляет даты, которых нет в свежем parse-output. Файлы: `minfin_budget_parser.py`, `upsert.py`, `base_parser.py`.
+
 ### 2026-06-07 — Weekly CPI ETL: steady-state без лишних GET/upsert + timeout 600s
 
 - **Симптом на проде:** `inflation-weekly` daily ETL 1–7 июня — `fetch_log.status=timeout` на 300с, июньская точка не попала в БД до ручного прогона.
