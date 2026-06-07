@@ -263,7 +263,9 @@ Daily ETL (06:00 МСК, `RUSTATS_SCHEDULER_CRON_HOUR/MINUTE`) запускае�
 
 **Регрессионный признак**: `fetch_log.status='timeout'` несколько дней подряд для `inflation-weekly` при том, что bulletin на `rosstat.gov.ru/central-news?page=1` уже есть. Проверка: `curl -sk https://rosstat.gov.ru/central-news?page=1 | grep -oE 'storage/mediabank/\d+_\d{2}-\d{2}-\d{4}\.html' | head -5` — должен быть bulletin за позавчера-вчера.
 
-**Что делать если опять отвалится**: запустить ETL вручную мимо scheduler-таймаута: `docker compose exec backend python -c "import asyncio; from app.tasks.scheduler import run_etl_for_indicator; asyncio.run(run_etl_for_indicator('inflation-weekly'))"`. Если внутри парсера за 5+ минут не приходит свежий bulletin — значит изменился layout `rosstat.gov.ru/central-news` или `/search`, нужна правка discovery (см. `_find_bulletin_urls_central_news` / `_find_bulletin_urls`).
+**Что делать если опять отвалится**: запустить ETL вручную: `docker compose exec backend python -c "import asyncio; from app.tasks.scheduler import run_etl_for_indicator; asyncio.run(run_etl_for_indicator('inflation-weekly'))"`. Если внутри парсера за 10+ минут не приходит свежий bulletin — значит изменился layout `rosstat.gov.ru/central-news` или `/search`, нужна правка discovery (см. `_find_bulletin_urls_central_news` / `_find_bulletin_urls`).
+
+**Subsequent (2026-06-07)**: на проде daily ETL 1–7 июня давал `timeout` ровно на 300с — парсер до steady-state деплоя укладывался в 295–328с. Доработки: (1) сегменты food/nonfood/services фильтруются по своим `existing_dates`, не upsert всей истории XLSX; (2) steady-state central-news max 12 страниц, search — 2 месяца; (3) XLSX парсится только за текущий (±январь) год; (4) `ETL_TIMEOUT_BY_PARSER['rosstat_weekly_cpi']=600` в `scheduler.py`.
 
 ### Rate limit policy
 

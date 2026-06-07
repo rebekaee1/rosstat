@@ -20,8 +20,16 @@ from app.services.calculation_engine import calculation_engine
 from app.services.alerting import alert_etl_failure, alert_etl_summary
 
 ETL_TIMEOUT_SECONDS = 300
+# Тяжёлые парсеры: cold-start может идти минуты; steady-state weekly — секунды.
+ETL_TIMEOUT_BY_PARSER: dict[str, int] = {
+    "rosstat_weekly_cpi": 600,
+}
 
 logger = logging.getLogger(__name__)
+
+
+def etl_timeout_for(parser_type: str) -> int:
+    return ETL_TIMEOUT_BY_PARSER.get(parser_type, ETL_TIMEOUT_SECONDS)
 
 _running_locks: set[str] = set()
 _lock = asyncio.Lock()
@@ -105,15 +113,17 @@ async def daily_update_job():
                 logger.info("Skipping %s — already running", code)
                 continue
             _running_locks.add(code)
+        parser_type = task["parser_type"]
+        timeout = etl_timeout_for(parser_type)
         try:
             had_new = await asyncio.wait_for(
                 run_etl_for_indicator(code),
-                timeout=ETL_TIMEOUT_SECONDS,
+                timeout=timeout,
             )
             if had_new:
                 updated_codes.append(code)
         except asyncio.TimeoutError:
-            msg = f"ETL timed out after {ETL_TIMEOUT_SECONDS}s"
+            msg = f"ETL timed out after {timeout}s"
             logger.error("Timeout for indicator '%s': %s", code, msg)
             failed_codes.append(code)
             await alert_etl_failure(code, msg)
@@ -166,16 +176,23 @@ async def run_etl_for_parser_type(parser_type: str) -> dict[str, int]:
     logger.info("Late ETL pass for parser_type=%s: %d indicators", parser_type, len(codes))
     updated_codes: list[str] = []
     failed_codes: list[str] = []
+    async with async_session() as db:
+        type_q = await db.execute(
+            select(Indicator.code, Indicator.parser_type).where(Indicator.code.in_(codes))
+        )
+        parser_by_code = dict(type_q.all())
+
     for code in codes:
         async with _lock:
             if code in _running_locks:
                 logger.info("Skipping %s — already running", code)
                 continue
             _running_locks.add(code)
+        timeout = etl_timeout_for(parser_by_code.get(code, ""))
         try:
             had_new = await asyncio.wait_for(
                 run_etl_for_indicator(code),
-                timeout=ETL_TIMEOUT_SECONDS,
+                timeout=timeout,
             )
             if had_new:
                 updated_codes.append(code)

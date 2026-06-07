@@ -212,8 +212,13 @@ def _match_product(
 def _parse_weekly_xlsx_multi(
     weekly_content: bytes,
     weights: dict[str, tuple[float, str]],
+    *,
+    years: set[int] | None = None,
 ) -> dict[str, list[WeeklyPoint]]:
-    """Parse Nedel_ipc.xlsx → weighted weekly CPI for all + per segment."""
+    """Parse Nedel_ipc.xlsx → weighted weekly CPI for all + per segment.
+
+    `years`: если задано — парсим только листы с этими годами (steady-state).
+    """
     wb = openpyxl.load_workbook(BytesIO(weekly_content), data_only=True)
     buckets: dict[str, list[WeeklyPoint]] = {
         "all": [],
@@ -229,6 +234,8 @@ def _parse_weekly_xlsx_multi(
         try:
             year = int(sheet_name)
         except ValueError:
+            continue
+        if years is not None and year not in years:
             continue
 
         ws = wb[sheet_name]
@@ -323,6 +330,8 @@ def _parse_bulletin_html(html: str) -> WeeklyPoint | None:
 
 CENTRAL_NEWS_URL = "https://rosstat.gov.ru/central-news"
 CENTRAL_NEWS_MAX_PAGES = 70
+CENTRAL_NEWS_STEADY_MAX_PAGES = 12
+STEADY_SEARCH_MONTHS_BACK = 2
 _CPI_BULLETIN_TITLE_RE = re.compile(
     r"оценке\s+индекса\s+потребительских\s+цен", re.IGNORECASE,
 )
@@ -399,22 +408,48 @@ def _find_bulletin_urls_central_news(
     return sorted(found)
 
 
-def _find_bulletin_urls(session: requests.Session, year: int) -> list[str]:
+def _steady_xlsx_years(today: date) -> set[int]:
+    """Годы листов Nedel_ipc для steady-state (январь — ещё недели прошлого года)."""
+    years = {today.year}
+    if today.month <= 2:
+        years.add(today.year - 1)
+    return years
+
+
+def _find_bulletin_urls(
+    session: requests.Session,
+    year: int,
+    *,
+    steady_state: bool = False,
+) -> list[str]:
     """Find weekly CPI bulletin URLs for `year`.
 
     Стратегия: central-news crawl (primary) + rosstat search (fallback).
     Объединение — set union. central-news вернёт всё что есть в архиве за
     год (2023-05-04 + → today), search закрывает edge cases когда новый
     bulletin ещё не на page=1 central-news, но уже индексирован поиском.
+
+    В steady-state: central-news ограничен `CENTRAL_NEWS_STEADY_MAX_PAGES`,
+    search — только последние `STEADY_SEARCH_MONTHS_BACK` месяца.
     """
-    via_central = _find_bulletin_urls_central_news(session, year)
+    max_pages = CENTRAL_NEWS_STEADY_MAX_PAGES if steady_state else CENTRAL_NEWS_MAX_PAGES
+    via_central = _find_bulletin_urls_central_news(session, year, max_pages=max_pages)
     logger.info(
-        "Bulletin discovery for year=%d: central-news=%d urls", year, len(via_central),
+        "Bulletin discovery for year=%d: central-news=%d urls (steady=%s, max_pages=%d)",
+        year, len(via_central), steady_state, max_pages,
     )
 
     via_search: set[str] = set()
     today = date.today()
-    month_range = range(1, 13) if year < today.year else range(1, today.month + 1)
+    if steady_state:
+        month_range = range(
+            max(1, today.month - STEADY_SEARCH_MONTHS_BACK + 1),
+            today.month + 1,
+        )
+    elif year < today.year:
+        month_range = range(1, 13)
+    else:
+        month_range = range(1, today.month + 1)
     for month in month_range:
         month_name = next(
             (name for name, num in _MONTH_MAP.items() if num == month), None,
@@ -466,6 +501,8 @@ def fetch_bulletin_points(
     session: requests.Session,
     years: list[int],
     existing_dates: set[date] | None = None,
+    *,
+    steady_state: bool = False,
 ) -> list[WeeklyPoint]:
     """Fetch weekly CPI from Rosstat HTML bulletins for the given years.
 
@@ -481,7 +518,7 @@ def fetch_bulletin_points(
         skip_pub_before = max_known - timedelta(days=14)
     skipped = 0
     for year in years:
-        urls = _find_bulletin_urls(session, year)
+        urls = _find_bulletin_urls(session, year, steady_state=steady_state)
         logger.info("Weekly CPI bulletins for %d: %d URLs", year, len(urls))
         for url in urls:
             if skip_pub_before is not None:
@@ -509,9 +546,20 @@ def fetch_bulletin_points(
     return points
 
 
+def _filter_new_points(
+    points: list[WeeklyPoint],
+    known_dates: set[date] | None,
+) -> list[WeeklyPoint]:
+    if not known_dates:
+        return points
+    return [p for p in points if p.date not in known_dates]
+
+
 def fetch_weekly_cpi_multi(
     existing_dates: set[date] | None = None,
     cutoff_date: date | None = None,
+    *,
+    segment_existing: dict[str, set[date]] | None = None,
 ) -> dict[str, list[WeeklyPoint]]:
     """Fetch weekly CPI: all basket + food / nonfood / services segments.
 
@@ -523,11 +571,6 @@ def fetch_weekly_cpi_multi(
         if not cutoff_date:
             return points
         return [p for p in points if p.date >= cutoff_date]
-
-    def _filter_new(points: list[WeeklyPoint]) -> list[WeeklyPoint]:
-        if not existing_dates:
-            return points
-        return [p for p in points if p.date not in existing_dates]
 
     session = create_session()
     try:
@@ -552,7 +595,9 @@ def fetch_weekly_cpi_multi(
                 "Weekly CPI cold-start: fetching backfill for years %s", bulletin_years,
             )
 
-        bulletin_points = fetch_bulletin_points(session, bulletin_years, existing_dates)
+        bulletin_points = fetch_bulletin_points(
+            session, bulletin_years, existing_dates, steady_state=steady_state,
+        )
         logger.info("Weekly CPI: parsed %d points from HTML bulletins", len(bulletin_points))
 
         xlsx_by_segment: dict[str, list[WeeklyPoint]] = {
@@ -569,7 +614,10 @@ def fetch_weekly_cpi_multi(
                 if not product_weights:
                     logger.warning("No weights available — XLSX fallback skipped")
                     break
-                parsed = _parse_weekly_xlsx_multi(r.content, product_weights)
+                xlsx_years = _steady_xlsx_years(today) if steady_state else None
+                parsed = _parse_weekly_xlsx_multi(
+                    r.content, product_weights, years=xlsx_years,
+                )
                 if steady_state:
                     # В steady-state для полной корзины достаточно bulletin'ов;
                     # XLSX нужен каждую неделю для сегментов food/nonfood/services.
@@ -608,11 +656,16 @@ def fetch_weekly_cpi_multi(
             "nonfood": list(xlsx_by_segment["nonfood"]),
             "services": list(xlsx_by_segment["services"]),
         }
+        known_by_key: dict[str, set[date] | None] = {
+            "all": existing_dates,
+            "food": (segment_existing or {}).get("food"),
+            "nonfood": (segment_existing or {}).get("nonfood"),
+            "services": (segment_existing or {}).get("services"),
+        }
         for key in result:
             before = len(result[key])
             result[key] = _apply_cutoff(result[key])
-            if key == "all":
-                result[key] = _filter_new(result[key])
+            result[key] = _filter_new_points(result[key], known_by_key.get(key))
             logger.info(
                 "Weekly CPI segment %s: %d → %d points after cutoff/filter",
                 key, before, len(result[key]),
@@ -723,17 +776,49 @@ class RosstatWeeklyCpiParser(BaseParser):
                     "Weekly CPI: invalid weekly_cutoff_date=%r, ignoring", cutoff_raw,
                 )
 
-        existing_q = await db.execute(
-            select(IndicatorData.date).where(IndicatorData.indicator_id == indicator.id)
+        existing_dates, segment_existing = await self._load_existing_dates(db, indicator.id)
+        logger.info(
+            "Weekly CPI: %d existing primary points; segments in DB: %s",
+            len(existing_dates),
+            {k: len(v) for k, v in segment_existing.items()},
         )
-        existing_dates: set[date] = {row[0] for row in existing_q.all()}
-        logger.info("Weekly CPI: %d existing points in DB", len(existing_dates))
 
         multi = await asyncio.to_thread(
-            fetch_weekly_cpi_multi, existing_dates, cutoff,
+            fetch_weekly_cpi_multi,
+            existing_dates,
+            cutoff,
+            segment_existing=segment_existing,
         )
         self._segment_points = multi
         return multi.get("all", []), NEDEL_IPC_URL
+
+    async def _load_existing_dates(
+        self,
+        db: AsyncSession,
+        primary_indicator_id: int,
+    ) -> tuple[set[date], dict[str, set[date]]]:
+        primary_q = await db.execute(
+            select(IndicatorData.date).where(IndicatorData.indicator_id == primary_indicator_id)
+        )
+        existing_dates = {row[0] for row in primary_q.all()}
+
+        segment_existing: dict[str, set[date]] = {}
+        for segment, seg_code in WEEKLY_SEGMENT_CODES.items():
+            ind_q = await db.execute(
+                select(Indicator.id).where(
+                    Indicator.code == seg_code,
+                    Indicator.is_active.is_(True),
+                )
+            )
+            seg_id = ind_q.scalar_one_or_none()
+            if seg_id is None:
+                segment_existing[segment] = set()
+                continue
+            dates_q = await db.execute(
+                select(IndicatorData.date).where(IndicatorData.indicator_id == seg_id)
+            )
+            segment_existing[segment] = {row[0] for row in dates_q.all()}
+        return existing_dates, segment_existing
 
     async def _post_upsert(
         self,
@@ -748,10 +833,13 @@ class RosstatWeeklyCpiParser(BaseParser):
         if indicator.code != "inflation-weekly" or not self._segment_points:
             return 0, 0
 
+        _, segment_existing = await self._load_existing_dates(db, indicator.id)
+
         extra_added = 0
         extra_updated = 0
         for segment, seg_code in WEEKLY_SEGMENT_CODES.items():
             seg_points = self._segment_points.get(segment) or []
+            seg_points = _filter_new_points(seg_points, segment_existing.get(segment))
             if not seg_points:
                 continue
             q = await db.execute(

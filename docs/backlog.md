@@ -1,6 +1,6 @@
 # Backlog — текущие правки в работе
 
-**Last updated:** 2026-06-07 (базовая цифра listing-карточки = значение при первом входе через hero_value в list-endpoint + персист последнего режима в localStorage; даты телеметрии по частоте ряда — квартал вместо месяца; rename «Индекс доступности жилья». Ранее в этот день: пересчёт доступности жилья v7 + фикс ИПП. См. История 2026-06-07).
+**Last updated:** 2026-06-07 (weekly CPI ETL: steady-state не тянет имеющееся, timeout 600s; ранее в этот день: hero listing, телеметрия, доступность жилья v7. См. История 2026-06-07).
 **Part of:** [`AGENTS.md`](../AGENTS.md), [`CONTEXT.md`](../CONTEXT.md), [`docs/adr/0006-indicator-card-unification.md`](adr/0006-indicator-card-unification.md).
 **Источник:** звонки с Никитой Александровичем 2026-05-21 (Сочи) и 2026-05-22 («всё доделать»).
 
@@ -586,6 +586,11 @@ ADR-0006 «Subsequent additions» дополнен описанием решен
 - **Live ticker grill-me**: USD/RUB / EUR/RUB / CNY/RUB / BTC/USD / Brent с MOEX-приоритет + CBR XML_daily fallback (для FX когда MOEX отдаёт `LAST=None` — особенно EUR/RUB после санкций) + Binance public API для BTC + Yahoo Finance для Brent historical. Backend APScheduler `ticker_live_pull` каждые 5s в Redis. Коммит `876b3c7`.
 - **Search full directory**: `IndicatorSearch.jsx` показывает все индикаторы (включая скрытые из listing) через `?include_unlisted=true`. Коммит `876b3c7`.
 - **Frontend rename**: `tradeViewModes.js` → `viewModeFamilies.js` (общий реестр), `tradeFamily/tradeMode` → `viewFamily/familyMode`. ADR-0006 (новый) фиксирует ось «карточка vs derived vs variant vs frequency». Чеклист «новый индикатор» в `AGENTS.md::Шаг 4`. CONTEXT.md: +2 trap'ы (source-depth + browser-cache). Коммит `d4f57ae`.
+
+### 2026-06-07 — Weekly CPI ETL: steady-state без лишних GET/upsert + timeout 600s
+
+- **Симптом на проде:** `inflation-weekly` daily ETL 1–7 июня — `fetch_log.status=timeout` на 300с, июньская точка не попала в БД до ручного прогона.
+- **Правки:** сегменты food/nonfood/services фильтруются по своим датам в БД (не upsert всей истории XLSX); steady-state central-news max 12 стр., search 2 мес., XLSX только текущий год; `ETL_TIMEOUT_BY_PARSER['rosstat_weekly_cpi']=600`. Файлы: `rosstat_weekly_inflation_parser.py`, `scheduler.py`, `CONTEXT.md` trap.
 
 ### 2026-06-07 — Базовая цифра карточки = первый вход + даты по частоте (звонок minskaya-ulitsa-2)
 

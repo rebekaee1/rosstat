@@ -4,10 +4,14 @@ from datetime import date
 from unittest.mock import MagicMock, patch
 
 from app.services.rosstat_weekly_inflation_parser import (
+    CENTRAL_NEWS_STEADY_MAX_PAGES,
     WeeklyPoint,
     _classify_local_code,
+    _filter_new_points,
+    _find_bulletin_urls,
     _find_bulletin_urls_central_news,
     fetch_weekly_cpi,
+    fetch_weekly_cpi_multi,
 )
 
 
@@ -101,6 +105,39 @@ class TestCentralNewsCrawler:
         assert urls == []
 
 
+class TestFilterNewPoints:
+    def test_skips_known_dates(self):
+        known = {date(2026, 5, 25), date(2026, 6, 1)}
+        points = [
+            WeeklyPoint(date=date(2026, 5, 25), value=100.1),
+            WeeklyPoint(date=date(2026, 6, 8), value=100.2),
+        ]
+        assert _filter_new_points(points, known) == [
+            WeeklyPoint(date=date(2026, 6, 8), value=100.2),
+        ]
+
+
+class TestSteadyBulletinDiscovery:
+    def test_steady_state_limits_central_news_pages(self):
+        session = _build_session_mock({i: EMPTY_PAGE for i in range(1, 20)})
+        session.get = MagicMock(side_effect=session.get.side_effect)
+        calls: list[int] = []
+
+        def track_get(url, params=None, timeout=None, verify=None):
+            if "central-news" in str(url):
+                page = (params or {}).get("page", 1)
+                calls.append(page)
+            resp = MagicMock()
+            resp.status_code = 200
+            resp.text = EMPTY_PAGE
+            return resp
+
+        session.get = MagicMock(side_effect=track_get)
+        _find_bulletin_urls(session, year=2026, steady_state=True)
+        assert calls
+        assert max(calls) <= CENTRAL_NEWS_STEADY_MAX_PAGES
+
+
 class TestClassifyLocalCode:
     def test_food_nonfood_services(self):
         assert _classify_local_code(111) == "food"
@@ -177,3 +214,39 @@ class TestFetchWeeklyCpiCutoff:
         assert date(2022, 1, 10) in dates
         assert date(2023, 2, 1) in dates
         assert date(2024, 1, 1) in dates
+
+    @patch("app.services.rosstat_weekly_inflation_parser.fetch_bulletin_points")
+    @patch("app.services.rosstat_weekly_inflation_parser._parse_weekly_xlsx_multi")
+    @patch("app.services.rosstat_weekly_inflation_parser._load_product_weights")
+    @patch("app.services.rosstat_weekly_inflation_parser.create_session")
+    def test_segment_existing_filters_food_only(
+        self, mock_session, mock_weights, mock_parse_xlsx, mock_bulletins,
+    ):
+        mock_bulletins.return_value = []
+        mock_parse_xlsx.return_value = {
+            "all": [],
+            "food": [
+                WeeklyPoint(date=date(2026, 5, 25), value=100.1),
+                WeeklyPoint(date=date(2026, 6, 1), value=100.2),
+            ],
+            "nonfood": [
+                WeeklyPoint(date=date(2026, 5, 25), value=99.9),
+                WeeklyPoint(date=date(2026, 6, 1), value=100.0),
+            ],
+            "services": [],
+        }
+        mock_weights.return_value = {"A": (1.0, "food")}
+        sess = MagicMock()
+        sess.get = MagicMock(return_value=MagicMock(status_code=200, content=b"PK..."))
+        mock_session.return_value = sess
+
+        result = fetch_weekly_cpi_multi(
+            existing_dates={date(2026, 5, 25), date(2026, 6, 1)},
+            segment_existing={
+                "food": {date(2026, 5, 25)},
+                "nonfood": set(),
+                "services": set(),
+            },
+        )
+        assert result["food"] == [WeeklyPoint(date=date(2026, 6, 1), value=100.2)]
+        assert len(result["nonfood"]) == 2
