@@ -6,6 +6,7 @@ import {
 } from 'recharts';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import { useIndicator, useIndicatorData, useForecast } from '../lib/hooks';
+import { mergeActualForecastChartSeries } from '../lib/chartForecastMerge';
 import { formatDate, formatAxisTick, formatValueWithUnit, formatChange, unitDigits, isCpiIndex } from '../lib/format';
 import { useEmbedParams, useEmbedImpression, useEmbedAutoHeight, PERIODS, THEME_COLORS } from './useEmbedParams';
 import Attribution from './Attribution';
@@ -65,14 +66,11 @@ export default function EmbedChart() {
       filtered = points.filter(p => p.date >= cutStr);
     }
 
-    const merged = filtered.map(p => ({ date: p.date, actual: p.value }));
-
-    if (showForecast && forecastResp?.forecast?.values?.length && merged.length) {
-      const fcVals = forecastResp.forecast.values;
-      merged[merged.length - 1].forecast = merged[merged.length - 1].actual;
-      for (const fv of fcVals) merged.push({ date: fv.date, forecast: fv.value });
-    }
-    return merged;
+    return mergeActualForecastChartSeries(
+      filtered,
+      forecastResp?.forecast?.values,
+      { showForecast, bridgeLine: true },
+    );
   }, [dataResp, forecastResp, period, showForecast]);
 
   const forecastStartDate = useMemo(() => {

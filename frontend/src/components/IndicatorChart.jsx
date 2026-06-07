@@ -10,6 +10,7 @@ import {
   chartValueDigits, unitSuffix, cn,
 } from '../lib/format';
 import { track, events } from '../lib/track';
+import { mergeActualForecastChartSeries } from '../lib/chartForecastMerge';
 
 const RANGE_PRESETS = {
   default: [
@@ -85,19 +86,7 @@ function CustomTooltip({
     <div className="glass-surface rounded-xl border border-border-subtle px-4 py-3 shadow-2xl min-w-[200px]">
       <p className="text-xs font-mono text-text-tertiary mb-2">{formatDate(label, dateFormat)}</p>
 
-      {actual && (
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-champagne" />
-            <span className="text-xs text-text-tertiary">{actualLabel}</span>
-          </div>
-          <span className="text-sm font-mono font-semibold text-champagne">
-            {`${formatValue(actual.value, valueDigits)}${unitSuffix(unit)}`}
-          </span>
-        </div>
-      )}
-
-      {forecast && !actual && (
+      {forecast && (
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full" style={{ background: '#7C3AED' }} />
@@ -105,6 +94,18 @@ function CustomTooltip({
           </div>
           <span className="text-sm font-mono font-semibold text-[#7C3AED]">
             {`${formatValue(forecast.value, valueDigits)}${unitSuffix(unit)}`}
+          </span>
+        </div>
+      )}
+
+      {actual && !forecast && (
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-champagne" />
+            <span className="text-xs text-text-tertiary">{actualLabel}</span>
+          </div>
+          <span className="text-sm font-mono font-semibold text-champagne">
+            {`${formatValue(actual.value, valueDigits)}${unitSuffix(unit)}`}
           </span>
         </div>
       )}
@@ -174,36 +175,20 @@ export default function IndicatorChart({
     if (mode === 'cpi') {
       const points = cpiData || [];
       const fcValues = forecastData?.forecast?.values || [];
-      const merged = points.map(p => ({ date: p.date, actual: p.value }));
-
-      if (showForecast && fcValues.length > 0 && merged.length > 0) {
-        if (chartType !== 'bar') {
-          const last = merged[merged.length - 1];
-          last.forecast = last.actual;
-        }
-        for (const fv of fcValues) {
-          merged.push({ date: fv.date, forecast: fv.value });
-        }
-      }
-      return merged;
+      return mergeActualForecastChartSeries(points, fcValues, {
+        showForecast,
+        bridgeLine: chartType !== 'bar',
+      });
     }
 
     if (!inflation) return [];
 
     const actuals = inflation.actuals || [];
     const forecasts = inflation.forecast || [];
-    const merged = actuals.map(a => ({ date: a.date, actual: a.value }));
-
-    if (showForecast && forecasts.length > 0 && merged.length > 0) {
-      if (chartType !== 'bar') {
-        const last = merged[merged.length - 1];
-        last.forecast = last.actual;
-      }
-      for (const fp of forecasts) {
-        merged.push({ date: fp.date, forecast: fp.value });
-      }
-    }
-    return merged;
+    return mergeActualForecastChartSeries(actuals, forecasts, {
+      showForecast,
+      bridgeLine: chartType !== 'bar',
+    });
   }, [inflation, cpiData, forecastData, showForecast, mode, chartType]);
 
   const dataLen = chartData.length;
