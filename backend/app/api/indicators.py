@@ -112,13 +112,26 @@ async def list_indicators(
         prev_val = rows[1].value if len(rows) > 1 else None
         change = round(float(current_val - prev_val), 4) if current_val is not None and prev_val is not None else None
 
+        # Hero для listing-карточки: если у индекс-индикатора hero_view=yoy_pct,
+        # «первая цифра» на карточке каталога = изменение г/г %, а не уровень
+        # индекса (раньше карточка показывала 346, а страница по умолчанию — г/г,
+        # что путало). Так карточка совпадает со значением при первом входе.
+        hero_value = hero_unit = hero_label = None
+        if _hero_view(ind) == "yoy_pct":
+            hero_value, hero_unit, hero_label = await _hero_yoy_pct(
+                db, ind.id, ind.frequency,
+                float(current_val) if current_val is not None else None,
+            )
+
         out.append(IndicatorSummary(
             code=ind.code, name=ind.name, name_en=ind.name_en,
-            unit=ind.unit, category=ind.category, is_active=ind.is_active,
+            unit=ind.unit, category=ind.category, frequency=ind.frequency,
+            is_active=ind.is_active,
             is_listed=ind.is_listed,
             current_value=float(current_val) if current_val is not None else None,
             current_date=current_dt, previous_value=float(prev_val) if prev_val is not None else None,
             change=change,
+            hero_value=hero_value, hero_unit=hero_unit, hero_label=hero_label,
             seo_keywords=ind.seo_keywords,
         ))
 

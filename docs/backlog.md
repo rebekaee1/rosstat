@@ -1,6 +1,6 @@
 # Backlog — текущие правки в работе
 
-**Last updated:** 2026-06-07 (индекс доступности жилья пересчитан: помесячно, общая база 2010, +карточка первичного рынка, шаблон T12; фикс «вакханалии» ИПП — удалена дублирующая variant-группа. См. История 2026-06-07 и ADR-0001 §2026-06-07).
+**Last updated:** 2026-06-07 (базовая цифра listing-карточки = значение при первом входе через hero_value в list-endpoint + персист последнего режима в localStorage; даты телеметрии по частоте ряда — квартал вместо месяца; rename «Индекс доступности жилья». Ранее в этот день: пересчёт доступности жилья v7 + фикс ИПП. См. История 2026-06-07).
 **Part of:** [`AGENTS.md`](../AGENTS.md), [`CONTEXT.md`](../CONTEXT.md), [`docs/adr/0006-indicator-card-unification.md`](adr/0006-indicator-card-unification.md).
 **Источник:** звонки с Никитой Александровичем 2026-05-21 (Сочи) и 2026-05-22 («всё доделать»).
 
@@ -586,6 +586,13 @@ ADR-0006 «Subsequent additions» дополнен описанием решен
 - **Live ticker grill-me**: USD/RUB / EUR/RUB / CNY/RUB / BTC/USD / Brent с MOEX-приоритет + CBR XML_daily fallback (для FX когда MOEX отдаёт `LAST=None` — особенно EUR/RUB после санкций) + Binance public API для BTC + Yahoo Finance для Brent historical. Backend APScheduler `ticker_live_pull` каждые 5s в Redis. Коммит `876b3c7`.
 - **Search full directory**: `IndicatorSearch.jsx` показывает все индикаторы (включая скрытые из listing) через `?include_unlisted=true`. Коммит `876b3c7`.
 - **Frontend rename**: `tradeViewModes.js` → `viewModeFamilies.js` (общий реестр), `tradeFamily/tradeMode` → `viewFamily/familyMode`. ADR-0006 (новый) фиксирует ось «карточка vs derived vs variant vs frequency». Чеклист «новый индикатор» в `AGENTS.md::Шаг 4`. CONTEXT.md: +2 trap'ы (source-depth + browser-cache). Коммит `d4f57ae`.
+
+### 2026-06-07 — Базовая цифра карточки = первый вход + даты по частоте (звонок minskaya-ulitsa-2)
+
+- **Hero на listing-карточке (задача «базовая цифра»):** list-endpoint теперь считает `hero_value` (YoY %) для индекс-индикаторов с `model_config_json.hero_view="yoy_pct"` (ИПП, ИЦП, цены на первичное/вторичное жильё). `IndicatorSummary` получил поле `frequency`. `IndicatorTile` показывает hero (10.8 % · г/г) вместо уровня индекса (346) — число на карточке каталога совпадает с тем, что видно при первом входе (там по умолчанию режим г/г). Файлы: `backend/app/api/indicators.py`, `backend/app/schemas.py`, `backend/seed_data.py`, `frontend/src/components/IndicatorTile.jsx`.
+- **Персист последнего режима:** последний выбранный view-mode пишется в `localStorage` (`fe:viewmode:<code>`) и восстанавливается при заходе без `?mode` (в т.ч. из каталога). Для ИПП восстановление встроено в дефолт-редирект. Файл: `frontend/src/pages/IndicatorDetail.jsx`.
+- **Даты телеметрии по частоте (задача «март/декабрь вместо квартала»):** `resolveDateFormat` теперь ставит частоту ряда выше режима — точка г/г на квартальном ряду датируется кварталом («I кв. 2026»), а не месяцем. Карточка «предыдущий» в режиме г/г переименована в «Предыдущий квартал/месяц» (совпадает с реальной датой), верхняя цифра г/г чистая (без двойного `%`-дельты), единица «%». Файлы: `frontend/src/lib/format.js`, `frontend/src/components/IndicatorTelemetryGrid.jsx`.
+- **Чистка:** `housing-affordability` переименован в «Индекс доступности жилья» (без «вторичное жильё» в заголовке; переключатель первичное/вторичное оставлен). Устаревший осиротевший sibling `housing-affordability-eop-year` (эпоха T4) скрыт из листинга. Файлы: `backend/seed_data.py`, `backend/app/data/indicator_seo.py`.
 
 ### 2026-06-07 — Индекс доступности жилья (пересчёт v7) + фикс ИПП
 

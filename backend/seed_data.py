@@ -919,8 +919,8 @@ INDICATORS = [
     # >100 → с 2010 зарплаты росли быстрее цен (доступность ↑), <100 → наоборот.
     {
         "code": "housing-affordability",
-        "name": "Индекс доступности жилья (вторичное жильё)",
-        "name_en": "Housing Affordability Index (Secondary)",
+        "name": "Индекс доступности жилья",
+        "name_en": "Housing Affordability Index",
         "unit": "индекс",
         "frequency": "monthly",
         "source": "Росстат",
@@ -1906,6 +1906,10 @@ INDICATORS = [
         "model_config_json": {
             "forecast_steps": 8,
             "forecast_strategy": "generic_ols",
+            # Ряд хранится как индекс ~100 (недельный прирост = value−100). OLS
+            # на «absolute» сходится к среднему уровню (~100.15) → на графике
+            # плоская линия 0.15%. cpi_index обучается на приростах.
+            "forecast_transform": "cpi_index",
             "validation": {"min": 99, "max": 102},
             "backfill_max_pages": 1,
             # Cutoff: до 2023-01-09 у Росстата нет доступного архива bulletins
@@ -1937,6 +1941,7 @@ INDICATORS = [
             "weekly_segment": "food",
             "forecast_steps": 8,
             "forecast_strategy": "generic_ols",
+            "forecast_transform": "cpi_index",
         },
         "is_active": True,
         "category": "Цены",
@@ -1958,6 +1963,7 @@ INDICATORS = [
             "weekly_segment": "nonfood",
             "forecast_steps": 8,
             "forecast_strategy": "generic_ols",
+            "forecast_transform": "cpi_index",
         },
         "is_active": True,
         "category": "Цены",
@@ -1979,6 +1985,7 @@ INDICATORS = [
             "weekly_segment": "services",
             "forecast_steps": 8,
             "forecast_strategy": "generic_ols",
+            "forecast_transform": "cpi_index",
         },
         "is_active": True,
         "category": "Цены",
@@ -2008,6 +2015,7 @@ INDICATORS = [
             "forecast_strategy": "housing_quarterly",
             "forecast_transform": "absolute",
             "validation": {"min": 50, "max": 500},
+            "hero_view": "yoy_pct",
         },
         "is_active": True,
         "category": "Цены",
@@ -2036,6 +2044,7 @@ INDICATORS = [
             "forecast_strategy": "housing_quarterly",
             "forecast_transform": "absolute",
             "validation": {"min": 50, "max": 500},
+            "hero_view": "yoy_pct",
         },
         "is_active": True,
         "category": "Цены",
@@ -2096,6 +2105,7 @@ INDICATORS = [
             "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 30, "max": 200},
+            "hero_view": "yoy_pct",
         },
         "is_active": True,
         "category": "Бизнес",
@@ -2326,6 +2336,7 @@ INDICATORS = [
             "forecast_strategy": "ppi_monthly",
             "forecast_transform": "absolute",
             "validation": {"min": 50, "max": 500},
+            "hero_view": "yoy_pct",
         },
         "is_active": True,
         "category": "Цены",

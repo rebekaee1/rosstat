@@ -6,7 +6,10 @@ import {
 } from 'recharts';
 import { ArrowLeft, Activity, GitCompare } from 'lucide-react';
 import { useIndicators, useIndicatorData } from '../lib/hooks';
-import { formatDate, formatAxisTick, formatValueWithUnit, unitSuffix, unitDigits, cn, isCpiIndex } from '../lib/format';
+import {
+  formatDate, formatChartAxisDate, formatAxisTick, formatValueWithUnit,
+  unitSuffix, unitDigits, cn, isCpiIndex,
+} from '../lib/format';
 import useDocumentMeta from '../lib/useMeta';
 import { SkeletonBox, ChartSkeleton } from '../components/Skeleton';
 import { track, events } from '../lib/track';
@@ -40,6 +43,16 @@ function freqLabel(freq) {
   return FREQ_LABEL[freq] || freq || '';
 }
 
+/** Формат подписи даты на оси/в тултипе — по более «мелкой» частоте пары. */
+function compareDateFormat(indA, indB) {
+  const freqs = [indA?.frequency, indB?.frequency].filter(Boolean);
+  if (freqs.includes('weekly') || freqs.includes('daily')) return 'weekly';
+  if (freqs.includes('monthly')) return 'short';
+  if (freqs.includes('quarterly')) return 'quarterly';
+  if (freqs.includes('annual') || freqs.includes('yearly')) return 'annual';
+  return 'short';
+}
+
 function IndicatorSelector({ value, onChange, indicators, label, disabled }) {
   return (
     <div className="flex flex-col gap-1.5">
@@ -61,13 +74,12 @@ function IndicatorSelector({ value, onChange, indicators, label, disabled }) {
   );
 }
 
-function CompareTooltip({ active, payload, label }) {
+function CompareTooltip({ active, payload, label, dateFormat = 'short' }) {
   if (!active || !payload?.length) return null;
-
 
   return (
     <div className="glass-surface rounded-xl border border-border-subtle px-4 py-3 shadow-2xl min-w-[220px]">
-      <p className="text-xs font-mono text-text-tertiary mb-2">{formatDate(label, 'full')}</p>
+      <p className="text-xs font-mono text-text-tertiary mb-2">{formatDate(label, dateFormat)}</p>
       {payload.filter((p) => p.value != null).map((p) => (
           <div key={p.dataKey} className="flex items-center justify-between gap-4 mb-1">
             <div className="flex items-center gap-2">
@@ -209,6 +221,7 @@ export default function ComparePage() {
   // в режиме значений у каждого показателя своя ось со своей единицей.
   const axisIdA = 'left';
   const axisIdB = indexed ? 'left' : (codeA ? 'right' : 'left');
+  const compareDateFmt = compareDateFormat(indA, indB);
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24 md:pb-28">
@@ -355,7 +368,7 @@ export default function ComparePage() {
               )}
             </div>
 
-            <div className="relative overflow-hidden rounded-2xl">
+            <div className="relative rounded-2xl">
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 -rotate-6 select-none whitespace-nowrap text-3xl font-display font-bold tracking-[0.18em] text-text-primary opacity-[0.055] md:text-5xl"
@@ -363,7 +376,7 @@ export default function ComparePage() {
                 Forecast Economy
               </div>
               <ResponsiveContainer width="100%" height={480}>
-                <ComposedChart data={chartData} margin={{ top: 10, right: 20, bottom: 24, left: 0 }}>
+                <ComposedChart data={chartData} margin={{ top: 10, right: 20, bottom: 44, left: 0 }}>
                   <CartesianGrid
                     strokeDasharray="3 3"
                     stroke="rgba(255,255,255,0.04)"
@@ -371,16 +384,19 @@ export default function ComparePage() {
                   />
                   <XAxis
                     dataKey="date"
-                    tickFormatter={(d) => formatDate(d, 'short')}
-                    tick={{ fill: 'rgba(255,255,255,0.35)', fontSize: 10, fontFamily: 'monospace' }}
-                    axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
+                    tickFormatter={(d) => formatChartAxisDate(d, compareDateFmt, { multiYear: true })}
+                    tick={{ fill: 'rgba(0,0,0,0.45)', fontSize: 10, fontFamily: 'monospace' }}
+                    axisLine={{ stroke: 'rgba(0,0,0,0.12)' }}
                     tickLine={false}
-                    minTickGap={40}
+                    interval="preserveStartEnd"
+                    minTickGap={48}
+                    tickMargin={8}
+                    height={36}
                     label={{
-                      value: 'Период (время)',
+                      value: 'Период',
                       position: 'insideBottom',
-                      offset: -8,
-                      fill: 'rgba(255,255,255,0.45)',
+                      offset: -2,
+                      fill: 'rgba(0,0,0,0.5)',
                       fontSize: 11,
                       fontFamily: 'monospace',
                     }}
@@ -388,7 +404,7 @@ export default function ComparePage() {
                   {(codeA || indexed) && (
                     <YAxis
                       yAxisId="left"
-                      tick={{ fill: indexed ? 'rgba(255,255,255,0.45)' : COLOR_A, fontSize: 10, fontFamily: 'monospace' }}
+                      tick={{ fill: indexed ? 'rgba(0,0,0,0.45)' : COLOR_A, fontSize: 10, fontFamily: 'monospace' }}
                       axisLine={false}
                       tickLine={false}
                       width={60}
@@ -407,8 +423,8 @@ export default function ComparePage() {
                     />
                   )}
                   <Tooltip
-                    content={<CompareTooltip />}
-                    cursor={{ stroke: 'rgba(255,255,255,0.15)' }}
+                    content={<CompareTooltip dateFormat={compareDateFmt} />}
+                    cursor={{ stroke: 'rgba(0,0,0,0.12)' }}
                   />
                   {codeA && (
                     <Line

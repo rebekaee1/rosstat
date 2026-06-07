@@ -1,4 +1,4 @@
-import { formatDate, resolveDateFormat } from '../lib/format';
+import { formatDate, resolveDateFormat, chartValueDigits } from '../lib/format';
 import { dataModeForUrlMode } from '../lib/cpiViewModeResolve';
 import { dataModeForHousingUrlMode } from '../lib/housingViewModeResolve';
 import { dataModeForPpiUrlMode } from '../lib/ppiViewModeResolve';
@@ -51,7 +51,11 @@ export default function IndicatorTelemetryGrid({
   const unit = String(safeViewMode).startsWith('index')
     && (isPriceCategory || isHousingFamily || isPpiFamily)
     ? 'индекс'
-    : (indicator?.unit || '%');
+    // Режим «год к году» у индекс-индикаторов (ИПП/ИЦП/жильё) — это проценты,
+    // а не уровень индекса: единица «%», иначе значения 10.8 / 8.7 шли без знака.
+    : (safeViewMode === 'yoy' && indicator?.hero_value != null)
+      ? '%'
+      : (indicator?.unit || '%');
 
   if (loading) {
     return (
@@ -67,9 +71,11 @@ export default function IndicatorTelemetryGrid({
 
   // Hero override: backend подставил YoY% (model_config_json.hero_view = "yoy_pct"),
   // потому что для индексных индикаторов абсолютное значение (например IPP 112)
-  // не несёт смысловой нагрузки, а изменение г/г (+1.2%) — несёт.
-  const heroOverride = indicator?.hero_value != null
-    && dataMode !== 'weekly' && dataMode !== 'cpi';
+  // не несёт смысловой нагрузки, а изменение г/г (+1.2%) — несёт. Применяем
+  // только в режиме «год к году» (это режим по умолчанию у этих карточек):
+  // в режимах «индекс»/«м/м»/«к/к» hero не подменяем, иначе верхняя цифра
+  // не совпадала бы с графиком.
+  const heroOverride = indicator?.hero_value != null && safeViewMode === 'yoy';
 
   const currentLabel = heroOverride ? (indicator.hero_label || 'Изменение г/г')
     : safeViewMode === 'yoy' ? 'Год к году'
@@ -88,7 +94,13 @@ export default function IndicatorTelemetryGrid({
     ? 'Предыдущая неделя'
     : safeViewMode === 'qoq' ? 'Предыдущий квартал'
       : safeViewMode === 'mom' ? 'Предыдущий месяц'
-        : safeViewMode === 'yoy' ? (isHousingFamily ? 'Тот же квартал год назад' : 'Тот же месяц год назад')
+        // В режиме г/г вторая карточка — это предыдущая точка того же (г/г) ряда,
+        // т.е. предыдущий период, а не «тот же период год назад» (последнее
+        // путало: подпись говорила «год назад», а дата была прошлого квартала).
+        : safeViewMode === 'yoy'
+          ? (indicator?.frequency === 'quarterly' ? 'Предыдущий квартал'
+            : indicator?.frequency === 'annual' ? 'Предыдущий год'
+              : 'Предыдущий месяц')
         : safeViewMode === 'quarterly' ? 'Предыдущий квартал'
           : safeViewMode === 'annual' ? 'Год назад'
             : isHousingFamily ? 'Предыдущий квартал'
@@ -107,6 +119,7 @@ export default function IndicatorTelemetryGrid({
   const currentValue = heroOverride ? indicator.hero_value
     : (s?.currentValue ?? adj(indicator?.current_value));
   const heroUnit = heroOverride ? (indicator.hero_unit || '%') : unit;
+  const valueDigits = chartValueDigits(unit, safeViewMode === 'step-weekly' ? 'step-weekly' : dataMode);
   const previousValue = s?.previousValue ?? indicator?.previous_value;
   const pctChange = indicator?.unit === 'индекс' && previousValue && !heroOverride
     ? +(((s?.currentValue ?? adj(indicator?.current_value)) - previousValue) / previousValue * 100).toFixed(2)
@@ -124,6 +137,7 @@ export default function IndicatorTelemetryGrid({
           label={currentLabel}
           value={currentValue}
           unit={heroUnit}
+          valueDigits={valueDigits}
           change={heroOverride ? undefined : (s?.change ?? indicator?.change)}
           pctChange={heroOverride ? undefined : pctChange}
           meta={currentMeta}
@@ -134,6 +148,7 @@ export default function IndicatorTelemetryGrid({
           label={previousLabel}
           value={s?.previousValue ?? adj(indicator?.previous_value)}
           unit={unit}
+          valueDigits={valueDigits}
           meta={`ДАТА: ${formatDate(s?.previousDate ?? cpiPrevDate, dateFmt)}`}
           delay={1}
         />
@@ -142,6 +157,7 @@ export default function IndicatorTelemetryGrid({
             label="Абсолютный максимум"
             value={s?.highest?.value ?? adj(stats?.highest?.value)}
             unit={unit}
+            valueDigits={valueDigits}
             meta={`ПИК: ${formatDate(s?.highest?.date ?? stats?.highest?.date, dateFmt)}`}
             delay={2}
           />
@@ -151,6 +167,7 @@ export default function IndicatorTelemetryGrid({
             label="Среднее значение"
             value={s?.average ?? adj(stats?.average)}
             unit={unit}
+            valueDigits={valueDigits}
             meta={`НАБЛ.: ${s?.dataCount ?? stats?.data_count} ПЕРИОД.`}
             delay={3}
           />

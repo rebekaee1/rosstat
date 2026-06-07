@@ -9,6 +9,7 @@ const TICKER_META = {
   'cny-rub-live':  { label: 'CNY/RUB', linkTo: '/indicator/cny-rub', decimals: 4 },
   'btc-usd':       { label: 'BTC/USD', linkTo: '/indicator/btc-usd', decimals: 0 },
   'brent':         { label: 'Brent',   linkTo: '/indicator/brent',   decimals: 2 },
+  'gold-rub-live': { label: 'Золото',  linkTo: '/indicator/gold-price', decimals: 2 },
 };
 
 const POLL_INTERVAL_MS = 4000;

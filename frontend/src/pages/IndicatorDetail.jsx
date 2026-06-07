@@ -60,6 +60,27 @@ const DEFAULT_REDIRECTS = {
   ipi: 'ipi-yoy',
 };
 
+// Запоминаем последний выбранный режим карточки (per-indicator), чтобы при
+// повторном заходе показать то, что человек смотрел в прошлый раз, а не сбрасывать
+// на дефолт. Хранится в localStorage; ключ — код индикатора. SSR-safe (try/catch).
+const VIEWMODE_STORE_PREFIX = 'fe:viewmode:';
+function readSavedViewMode(code) {
+  if (!code) return null;
+  try {
+    return window.localStorage.getItem(VIEWMODE_STORE_PREFIX + code) || null;
+  } catch {
+    return null;
+  }
+}
+function writeSavedViewMode(code, mode) {
+  if (!code || !mode) return;
+  try {
+    window.localStorage.setItem(VIEWMODE_STORE_PREFIX + code, mode);
+  } catch {
+    /* приватный режим / отключённый storage — просто не сохраняем */
+  }
+}
+
 // Единый config-driven движок (lib/viewModeEngine): все 31 семьи из
 // canonical-конфига (ставки/валюты/сырьё/деньги/кредиты/бюджет/ВВП/рынок
 // труда/население) рендерятся через GenericIndicatorView с backend-derived
@@ -85,8 +106,12 @@ export default function IndicatorDetail() {
       const targetCanon = engineViewModeCanonicalTarget(target);
       if (targetCanon && isViewModeFamily(targetCanon.base)) {
         if (!searchParams.get('mode')) {
+          // Восстанавливаем сохранённый режим (последний выбор пользователя),
+          // иначе — дефолтный режим карточки (для ИПП это «год к году»).
+          const savedMode = readSavedViewMode(targetCanon.base);
+          const mode = savedMode || targetCanon.mode;
           navigate(
-            `/indicator/${targetCanon.base}?mode=${encodeURIComponent(targetCanon.mode)}`,
+            `/indicator/${targetCanon.base}?mode=${encodeURIComponent(mode)}`,
             { replace: true },
           );
         }
@@ -136,18 +161,35 @@ export default function IndicatorDetail() {
       : 'inflation';
   const viewMode = urlMode || defaultViewMode;
   const setViewMode = useCallback((mode) => {
+    const baseline = levelRateDefault
+      ? 'level'
+      : PPI_CODES.includes(code) || HOUSING_CODES.includes(code)
+        ? 'yoy'
+        : 'inflation';
+    writeSavedViewMode(code, mode || baseline);
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
-      const baseline = levelRateDefault
-        ? 'level'
-        : PPI_CODES.includes(code) || HOUSING_CODES.includes(code)
-          ? 'yoy'
-          : 'inflation';
       if (mode && mode !== baseline) next.set('mode', mode);
       else next.delete('mode');
       return next;
     }, { replace: true });
   }, [setSearchParams, code, levelRateDefault]);
+
+  // Восстановление последнего выбранного режима при заходе без явного ?mode
+  // (например, переход из каталога). Для семей с DEFAULT_REDIRECTS (ИПП)
+  // восстановление уже сделано в редирект-эффекте выше. Здесь — все остальные
+  // (жильё, ИЦП, generic-семьи), у которых дефолт выражается чистым URL.
+  useEffect(() => {
+    if (urlMode) return;
+    if (DEFAULT_REDIRECTS[code]) return;
+    const saved = readSavedViewMode(code);
+    if (saved && saved !== defaultViewMode) {
+      setViewMode(saved);
+    }
+    // namerenно зависим только от code: эффект — разовое восстановление на
+    // карточку, не должен реагировать на последующую ручную смену режима.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [code]);
   const [fullChartData, setFullChartData] = useState([]);
 
   const {

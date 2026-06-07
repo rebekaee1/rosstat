@@ -54,6 +54,12 @@ _FX_URL = (
 
 _CBR_DAILY_URL = "https://www.cbr.ru/scripts/XML_daily.asp"
 
+# Spot gold on MOEX SELT (рубли за грамм), тот же CETS-борд, что и FX.
+# Совпадает по единице с учётной ценой ЦБ РФ (руб/грамм) — поэтому при
+# неликвиде на MOEX подмешиваем дневную учётную цену из xml_metall.asp.
+_GOLD_SECID = "GLDRUB_TOM"
+_CBR_METAL_URL = "https://www.cbr.ru/scripts/xml_metall.asp"
+
 _BRENT_URL = (
     "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json"
     "?iss.meta=off"
@@ -204,8 +210,72 @@ async def _fetch_brent(client: httpx.AsyncClient) -> TickerSnapshot | None:
     )
 
 
+async def _fetch_cbr_gold(client: httpx.AsyncClient) -> tuple[float | None, float | None]:
+    """Fallback: учётная цена золота ЦБ РФ (руб/грамм, Buy) + % к пред. дню.
+
+    Тянем небольшой диапазон последних дней из xml_metall.asp, берём
+    последнюю запись по золоту (Code=1) и предыдущую для дельты.
+    """
+    from datetime import date as _date, datetime, timedelta
+    from xml.etree import ElementTree
+
+    now = datetime.utcnow()
+    params = {
+        "date_req1": (now - timedelta(days=10)).strftime("%d/%m/%Y"),
+        "date_req2": now.strftime("%d/%m/%Y"),
+    }
+    try:
+        r = await client.get(_CBR_METAL_URL, params=params, timeout=10.0)
+        r.raise_for_status()
+        root = ElementTree.fromstring(r.content)
+    except Exception as e:  # noqa: BLE001 — fallback, любое падение → нет цены
+        logger.warning("CBR xml_metall gold: %s", e)
+        return None, None
+
+    vals: list[tuple[_date, float]] = []
+    for rec in root.findall("Record"):
+        if rec.get("Code") != "1":  # 1 = gold
+            continue
+        buy = rec.find("Buy")
+        ds = rec.get("Date", "")
+        if buy is None or buy.text is None:
+            continue
+        try:
+            dd, mm, yy = (int(x) for x in ds.split("."))
+            v = float(buy.text.strip().replace("\xa0", "").replace(" ", "").replace(",", "."))
+            vals.append((_date(yy, mm, dd), v))
+        except (ValueError, TypeError):
+            continue
+
+    if not vals:
+        return None, None
+    vals.sort(key=lambda x: x[0])
+    last = vals[-1][1]
+    chg = None
+    if len(vals) >= 2 and vals[-2][1]:
+        chg = round((last - vals[-2][1]) / vals[-2][1] * 100, 2)
+    return last, chg
+
+
+async def _fetch_gold(client: httpx.AsyncClient) -> TickerSnapshot | None:
+    """Pull spot gold (руб/грамм): MOEX SELT first, CBR учётная цена fallback."""
+    price, chg = await _fetch_fx_one(client, "gold-rub-live", _GOLD_SECID)
+    if price is not None:
+        return TickerSnapshot(
+            code="gold-rub-live", price=price, change_pct=chg,
+            market_open=True, fetched_at=utcnow(), source="MOEX",
+        )
+    cbr_price, cbr_chg = await _fetch_cbr_gold(client)
+    if cbr_price is None:
+        return None
+    return TickerSnapshot(
+        code="gold-rub-live", price=cbr_price, change_pct=cbr_chg,
+        market_open=False, fetched_at=utcnow(), source="ЦБ РФ",
+    )
+
+
 async def fetch_all() -> list[TickerSnapshot]:
-    """Pull 3 FX pairs + Brent. MOEX first, CBR XML_daily as FX fallback.
+    """Pull 3 FX pairs + Brent + gold. MOEX first, CBR fallback.
 
     Контракт: всегда возвращаем 4 снапшота для FX+Brent если хотя бы один
     источник ответил. Если MOEX не дал цены ни на один борд — для FX
@@ -244,4 +314,8 @@ async def fetch_all() -> list[TickerSnapshot]:
         b = await _fetch_brent(client)
         if b is not None:
             snaps.append(b)
+
+        g = await _fetch_gold(client)
+        if g is not None:
+            snaps.append(g)
         return snaps

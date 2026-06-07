@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import { formatDate, formatValueWithUnit, unitSuffix } from '../lib/format';
+import { formatDate, formatValueWithUnit, unitSuffix, chartValueDigits } from '../lib/format';
 
 export default function ForecastTable({ mode = 'inflation', inflation, forecastData, unit = '%', dateFormat = 'full' }) {
   const ref = useRef(null);
@@ -25,6 +25,7 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
   const period = dateFormat === 'quarterly' ? 'ежеквартально' : dateFormat === 'annual' ? 'ежегодно' : dateFormat === 'weekly' ? 'еженедельно' : 'помесячно';
   const title = mode === 'inflation' ? 'Прогноз инфляции (12 мес.)' : `Прогноз (${period})`;
   const suffix = unitSuffix(unit);
+  const valueDigits = chartValueDigits(unit, mode);
   const valueLabel = mode === 'inflation'
     ? 'Инфляция (12 мес.)'
     : mode === 'quarterly' ? 'Квартальная (%)'
@@ -60,7 +61,7 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
                   {formatDate(row.date, dateFormat)}
                 </td>
                 <td className="px-5 py-2.5 text-right font-mono font-medium text-champagne">
-                  {formatValueWithUnit(row.value, unit)}
+                  {formatValueWithUnit(row.value, unit, valueDigits)}
                 </td>
               </tr>
             ))}

@@ -18,6 +18,7 @@ import { formatValue, formatChange, unitSuffix, unitDigits, cn } from '../lib/fo
 export default function TelemetryCard({
   label, value, unit, change, pctChange, meta, delay = 0,
   deltaSuffix = 'к пред. месяцу',
+  valueDigits,
 }) {
   const ref = useRef(null);
   const valRef = useRef(null);
@@ -34,7 +35,7 @@ export default function TelemetryCard({
     return () => tween.kill();
   }, [delay]);
 
-  const digits = unitDigits(unit);
+  const digits = valueDigits ?? unitDigits(unit);
   useEffect(() => {
     if (value == null || !valRef.current) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {

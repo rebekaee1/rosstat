@@ -6,7 +6,9 @@ import { track, events } from '../lib/track';
 
 const PAGE_SIZE = 20;
 
-export default function DataTable({ data, title = 'Исторические данные', dateFormat = 'full', unit = '%' }) {
+export default function DataTable({
+  data, title = 'Исторические данные', dateFormat = 'full', unit = '%', valueDigits,
+}) {
   const ref = useRef(null);
   const [page, setPage] = useState(0);
   const [sortAsc, setSortAsc] = useState(false);
@@ -113,7 +115,7 @@ export default function DataTable({ data, title = 'Исторические да
                     {formatDate(row.date, dateFormat)}
                   </td>
                   <td className="px-5 py-2.5 text-right font-mono text-sm font-medium text-text-primary">
-                    {formatValueWithUnit(row.value, unit)}
+                    {formatValueWithUnit(row.value, unit, valueDigits)}
                   </td>
                 </tr>
               ))

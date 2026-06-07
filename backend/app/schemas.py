@@ -10,6 +10,9 @@ class IndicatorSummary(BaseModel):
     name_en: str | None = None
     unit: str
     category: str | None = None
+    # Частота нужна listing-карточке для формата даты (квартальный ряд → «I кв.
+    # 2026», годовой → «2026», а не всегда месяц).
+    frequency: str | None = None
     is_active: bool
     is_listed: bool = True
     current_value: float | None = None

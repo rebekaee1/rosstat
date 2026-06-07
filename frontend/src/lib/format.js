@@ -67,10 +67,17 @@ export function resolveDateFormat({ chartMode, frequency, safeViewMode } = {}) {
   if (safeViewMode === 'index-annual') return 'annual';
   if (chartMode === 'quarterly' || chartMode === 'qoq') return 'quarterly';
   if (chartMode === 'annual') return 'annual';
-  if (chartMode === 'yoy' || chartMode === 'period-weekly' || chartMode === 'period-monthly') return 'full';
-  if (chartMode !== 'inflation' && frequency === 'daily') return 'day';
+  // Частота ряда важнее режима: точка «год к году» на квартальных данных всё
+  // равно датируется кварталом, а не месяцем. Иначе на карточках квартального
+  // индикатора в режиме г/г выводилось «март 2026» вместо «I кв. 2026».
   if (frequency === 'quarterly') return 'quarterly';
   if (frequency === 'annual') return 'annual';
+  // Недельные ряды (ИПЦ «Недельная», inflation-weekly): дата = конкретный день,
+  // иначе ось и тултип показывают только «май 2026» без номера недели.
+  if (chartMode === 'weekly' || frequency === 'weekly') return 'weekly';
+  if (chartMode === 'yoy' || chartMode === 'period-monthly') return 'full';
+  if (chartMode === 'period-weekly') return 'weekly';
+  if (chartMode !== 'inflation' && frequency === 'daily') return 'day';
   return 'full';
 }
 
@@ -130,12 +137,13 @@ export function formatValue(val, digits = 2) {
   return formatFixed(num, digits);
 }
 
-export function formatValueWithUnit(val, unit = '%') {
+export function formatValueWithUnit(val, unit = '%', digits) {
   if (val == null) return '—';
   const num = Number(val);
   if (!Number.isFinite(num)) return '—';
   const cfg = UNIT_CONFIG[unit] || { digits: 2, suffix: ` ${unit}`, space: false };
-  return `${formatFixed(num, cfg.digits)}${cfg.suffix}`;
+  const d = digits ?? cfg.digits;
+  return `${formatFixed(num, d)}${cfg.suffix}`;
 }
 
 export function unitSuffix(unit = '%') {
@@ -145,6 +153,14 @@ export function unitSuffix(unit = '%') {
 
 export function unitDigits(unit = '%') {
   return (UNIT_CONFIG[unit] || { digits: 2 }).digits;
+}
+
+/** Точность числа на графике/в карточках — недельный ИПЦ требует 3 знака (0.07 vs 0.15). */
+export function chartValueDigits(unit = '%', chartMode) {
+  if (chartMode === 'weekly' || chartMode === 'period-weekly' || chartMode === 'step-weekly') {
+    return 3;
+  }
+  return unitDigits(unit);
 }
 
 export function formatAxisTick(val, digits = 2) {
@@ -195,10 +211,17 @@ export function isCpiIndex(code) {
   return CPI_INDEX_CODES.has(code);
 }
 
+function cpiIndexDisplayDigits(code) {
+  // Недельный ИПЦ: прирост 0.05–0.20% — при округлении до 2 знаков прогноз
+  // схлопывается в «плоскую» линию 0.15 на графике и в таблице.
+  if (code && String(code).includes('weekly')) return 3;
+  return 2;
+}
+
 export function adjustCpiDisplay(value, code) {
   if (value == null || !isFinite(value)) return value;
   if (code !== undefined && !isCpiIndex(code)) return value;
-  return +(Number(value) - 100).toFixed(2);
+  return +(Number(value) - 100).toFixed(cpiIndexDisplayDigits(code));
 }
 
 export function adjustCpiForecastDisplay(forecastResp, code) {

@@ -1,6 +1,6 @@
 import DataTable from './DataTable';
 
-import { resolveDateFormat } from '../lib/format';
+import { resolveDateFormat, chartValueDigits } from '../lib/format';
 import { getCpiTableTitle } from '../lib/cpiViewModeContent';
 import { getHousingTableTitle } from '../lib/housingViewModeContent';
 import { getPpiTableTitle } from '../lib/ppiViewModeContent';
@@ -84,6 +84,10 @@ export default function IndicatorDataTableSection({
         })}
         dateFormat={resolveDateFormat({ chartMode, frequency: indicator?.frequency, safeViewMode })}
         unit={chartMode === 'index' ? 'индекс' : ((isPpiFamily || isHousingFamily) && chartMode !== 'index' ? '%' : (indicator?.unit || '%'))}
+        valueDigits={chartValueDigits(
+          chartMode === 'index' ? 'индекс' : (indicator?.unit || '%'),
+          safeViewMode || chartMode,
+        )}
       />
     </section>
   );

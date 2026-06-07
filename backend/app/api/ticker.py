@@ -20,8 +20,8 @@ Response shape:
   "server_time": "2026-05-22T08:42:11+00:00"
 }
 
-`snapshots` is filtered to the 5 codes the UI currently uses (in fixed
-order) so the client doesn't need to re-sort.
+`snapshots` is filtered to the fixed set of codes the UI currently uses
+(in fixed order) so the client doesn't need to re-sort.
 """
 from __future__ import annotations
 
@@ -42,6 +42,7 @@ TICKER_CODES = [
     "cny-rub-live",
     "btc-usd",
     "brent",
+    "gold-rub-live",
 ]
 
 

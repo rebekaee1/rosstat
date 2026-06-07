@@ -115,6 +115,8 @@ describe('adjustCpiDisplay', () => {
   });
   it('subtracts 100 for quarterly CPI-derived code', () => {
     expect(adjustCpiDisplay(101.75, 'inflation-quarterly')).toBe(1.75);
+    expect(adjustCpiDisplay(100.1451, 'inflation-weekly')).toBe(0.145);
+    expect(adjustCpiDisplay(100.1525, 'inflation-weekly-food')).toBe(0.153);
   });
   it('subtracts 100 for CPI subcategory quarterly derived codes', () => {
     expect(adjustCpiDisplay(102.1, 'cpi-services-quarterly')).toBe(2.1);
@@ -174,7 +176,7 @@ describe('resolveDateFormat', () => {
     expect(resolveDateFormat({ chartMode: 'cpi', frequency: 'annual' })).toBe('annual');
     expect(resolveDateFormat({ chartMode: 'cpi', frequency: 'daily' })).toBe('day');
     expect(resolveDateFormat({ chartMode: 'cpi', frequency: 'monthly' })).toBe('full');
-    expect(resolveDateFormat({ chartMode: 'cpi', frequency: 'weekly' })).toBe('full');
+    expect(resolveDateFormat({ chartMode: 'cpi', frequency: 'weekly' })).toBe('weekly');
   });
 
   it('legacy CPI: mode drives granularity over frequency', () => {
@@ -184,6 +186,19 @@ describe('resolveDateFormat', () => {
     expect(resolveDateFormat({ chartMode: 'yoy', frequency: 'monthly' })).toBe('full');
     expect(resolveDateFormat({ safeViewMode: 'index-quarterly', chartMode: 'index' })).toBe('quarterly');
     expect(resolveDateFormat({ safeViewMode: 'index-annual', chartMode: 'index' })).toBe('annual');
+  });
+
+  it('quarterly/annual frequency wins over yoy/period modes', () => {
+    // Точка г/г на квартальном ряду датируется кварталом, а не месяцем.
+    expect(resolveDateFormat({ chartMode: 'yoy', frequency: 'quarterly' })).toBe('quarterly');
+    expect(resolveDateFormat({ chartMode: 'yoy', frequency: 'annual' })).toBe('annual');
+    expect(resolveDateFormat({ chartMode: 'period-monthly', frequency: 'quarterly' })).toBe('quarterly');
+  });
+
+  it('weekly mode and weekly frequency use day-level labels', () => {
+    expect(resolveDateFormat({ chartMode: 'weekly', frequency: 'monthly' })).toBe('weekly');
+    expect(resolveDateFormat({ chartMode: 'cpi', frequency: 'weekly' })).toBe('weekly');
+    expect(resolveDateFormat({ chartMode: 'period-weekly' })).toBe('weekly');
   });
 
   it('inflation mode never reads daily branch', () => {

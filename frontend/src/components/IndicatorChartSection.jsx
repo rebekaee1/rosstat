@@ -314,6 +314,7 @@ export default function IndicatorChartSection({
             dateFormat={resolveDateFormat({ chartMode, frequency: indicator?.frequency, safeViewMode })}
             unit={chartMode === 'index' ? 'индекс' : ((isPpiFamily || isHousingFamily) && chartMode !== 'index' ? '%' : (indicator?.unit || '%'))}
             rangePreset={rangePresetFor({ chartMode, indicator })}
+            chartMode={chartMode}
             indicatorCode={code}
             indicatorCategory={indicator?.category}
           />

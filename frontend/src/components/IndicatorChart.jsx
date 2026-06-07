@@ -5,7 +5,10 @@ import {
   Tooltip, CartesianGrid, ReferenceLine, ReferenceArea,
 } from 'recharts';
 import { Activity, ZoomIn, AreaChart as AreaIcon, BarChart3, LineChart as LineIcon } from 'lucide-react';
-import { formatDate, formatAxisTick, formatValueWithUnit, unitDigits, cn } from '../lib/format';
+import {
+  formatDate, formatAxisTick, formatValue,
+  chartValueDigits, unitSuffix, cn,
+} from '../lib/format';
 import { track, events } from '../lib/track';
 
 const RANGE_PRESETS = {
@@ -63,7 +66,10 @@ function dateBasedWindowSize(data, months) {
   return data.length;
 }
 
-function CustomTooltip({ active, payload, label, mode, levelTooltipLabel, forecastTooltipLabel, dateFormat = 'full', unit = '%', visible = true }) {
+function CustomTooltip({
+  active, payload, label, mode, levelTooltipLabel, forecastTooltipLabel,
+  dateFormat = 'full', unit = '%', valueDigits = 2, visible = true,
+}) {
   if (!visible || !active || !payload?.length) return null;
 
   const actual = payload.find(p => p.dataKey === 'actual' && p.value != null && !isNaN(p.value));
@@ -86,7 +92,7 @@ function CustomTooltip({ active, payload, label, mode, levelTooltipLabel, foreca
             <span className="text-xs text-text-tertiary">{actualLabel}</span>
           </div>
           <span className="text-sm font-mono font-semibold text-champagne">
-            {formatValueWithUnit(actual.value, unit)}
+            {`${formatValue(actual.value, valueDigits)}${unitSuffix(unit)}`}
           </span>
         </div>
       )}
@@ -98,7 +104,7 @@ function CustomTooltip({ active, payload, label, mode, levelTooltipLabel, foreca
             <span className="text-xs text-text-tertiary">{forecastLabel}</span>
           </div>
           <span className="text-sm font-mono font-semibold text-[#7C3AED]">
-            {formatValueWithUnit(forecast.value, unit)}
+            {`${formatValue(forecast.value, valueDigits)}${unitSuffix(unit)}`}
           </span>
         </div>
       )}
@@ -123,10 +129,12 @@ export default function IndicatorChart({
   dateFormat = 'full',
   unit = '%',
   rangePreset = 'default',
+  chartMode,
   indicatorCode,
   indicatorCategory,
   defaultChartType = 'area',
 }) {
+  const digits = chartValueDigits(unit, chartMode ?? mode);
   const ref = useRef(null);
   const chartAreaRef = useRef(null);
   const rangeOptions = RANGE_PRESETS[rangePreset] || RANGE_PRESETS.default;
@@ -257,7 +265,7 @@ export default function IndicatorChart({
 
   const handleSlider = useCallback((e) => {
     setOffset(maxOffset - Number(e.target.value));
-  }, [maxOffset]);
+  }, [maxOffset, setOffset]);
 
   /* ── Wheel zoom (TradingView-style) ── */
   const handleWheel = useCallback((e) => {
@@ -280,7 +288,7 @@ export default function IndicatorChart({
     }
 
     setWindowOverride(next);
-  }, [windowOverride, presetWindow, dataLen]);
+  }, [windowOverride, presetWindow, dataLen, setOffset, setWindowOverride]);
 
   useEffect(() => {
     const el = chartAreaRef.current;
@@ -328,7 +336,7 @@ export default function IndicatorChart({
     const shift = Math.round(deltaX / pixelsPerPoint);
     const newOffset = Math.max(0, Math.min(d.initOffset + shift, maxOffset));
     setOffset(newOffset);
-  }, [windowSize, maxOffset]);
+  }, [windowSize, maxOffset, setOffset]);
 
   const handlePointerUp = useCallback((e) => {
     const d = dragRef.current;
@@ -362,10 +370,10 @@ export default function IndicatorChart({
     }
 
     const absMax = Math.max(Math.abs(niceMin), Math.abs(niceMax));
-    const sampleLabel = formatAxisTick(niceMin < 0 ? niceMin : absMax, unitDigits(unit));
+    const sampleLabel = formatAxisTick(niceMin < 0 ? niceMin : absMax, digits);
     const w = Math.max(45, Math.min(120, sampleLabel.length * 7.5 + 12));
     return { yDomain: [niceMin, niceMax], yWidth: w, yTicks: ticks };
-  }, [visibleData, unit]);
+  }, [visibleData, unit, digits]);
 
   const title = cpiChartTitle
     ?? (mode === 'cpi'
@@ -522,11 +530,21 @@ export default function IndicatorChart({
               axisLine={false}
               domain={yDomain}
               ticks={yTicks}
-              tickFormatter={v => formatAxisTick(v, unitDigits(unit))}
+              tickFormatter={v => formatAxisTick(v, digits)}
               width={yWidth}
             />
             <Tooltip
-              content={<CustomTooltip mode={mode} levelTooltipLabel={levelTooltipLabel} forecastTooltipLabel={forecastTooltipLabel} dateFormat={dateFormat} unit={unit} visible={isHovering} />}
+              content={(
+                <CustomTooltip
+                  mode={mode}
+                  levelTooltipLabel={levelTooltipLabel}
+                  forecastTooltipLabel={forecastTooltipLabel}
+                  dateFormat={dateFormat}
+                  unit={unit}
+                  valueDigits={digits}
+                  visible={isHovering}
+                />
+              )}
               cursor={isDragging || !isHovering ? false : { stroke: 'rgba(0,0,0,0.15)', strokeWidth: 1 }}
               active={isHovering && !isDragging}
             />

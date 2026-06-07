@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
-import { formatValue, formatChange, formatDate, cn, isCpiIndex, relativeTime } from '../lib/format';
+import { formatValue, formatChange, formatDate, resolveDateFormat, cn, isCpiIndex, relativeTime } from '../lib/format';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
 import { track, events } from '../lib/track';
 
@@ -36,16 +36,27 @@ export default function IndicatorTile({ indicator, delay = 0, displayOverride, s
     glowRef.current.style.setProperty('--mouse-y', `${y}px`);
   };
 
-  const rawChange = displayOverride ? displayOverride.change : indicator.change;
+  // Hero override от бэка: для индекс-индикаторов (ИПП, ИЦП, цены на жильё)
+  // «первая цифра» карточки = изменение г/г %, а не уровень индекса. Так число
+  // на карточке каталога совпадает с тем, что пользователь видит при первом
+  // входе на страницу (там по умолчанию режим «год к году»).
+  const hasHero = !displayOverride && indicator.hero_value != null;
+  const rawChange = displayOverride ? displayOverride.change
+    : hasHero ? null
+      : indicator.change;
   const changeNum = rawChange != null ? Number(rawChange) : null;
   const isUp = changeNum != null && changeNum > 0;
   const isDown = changeNum != null && changeNum < 0;
   const isActive = indicator.is_active;
   const displayVal = displayOverride
     ? displayOverride.value
-    : isCpiIndex(indicator.code)
-      ? (indicator.current_value != null ? Number(indicator.current_value) - 100 : null)
-      : indicator.current_value;
+    : hasHero
+      ? indicator.hero_value
+      : isCpiIndex(indicator.code)
+        ? (indicator.current_value != null ? Number(indicator.current_value) - 100 : null)
+        : indicator.current_value;
+  const displayUnit = hasHero ? (indicator.hero_unit || '%') : indicator.unit;
+  const dateFmt = resolveDateFormat({ frequency: indicator.frequency });
 
   const handleClick = () => {
     if (!isActive) return;
@@ -117,13 +128,14 @@ export default function IndicatorTile({ indicator, delay = 0, displayOverride, s
                 )}>
                   {formatValue(displayVal)}
                 </span>
-                <span className="text-xs font-medium text-text-tertiary whitespace-nowrap">{indicator.unit}</span>
+                <span className="text-xs font-medium text-text-tertiary whitespace-nowrap">{displayUnit}</span>
               </div>
               
               {indicator.current_date && (
                 <div className="flex items-center gap-2 flex-wrap">
                   <p className="text-[10px] uppercase tracking-widest text-text-tertiary font-mono">
-                    {formatDate(indicator.current_date, 'full')}
+                    {formatDate(indicator.current_date, dateFmt)}
+                    {hasHero ? ' · Г/Г' : ''}
                   </p>
                   {relativeTime(indicator.current_date) && (
                     <span className="text-[9px] text-text-tertiary/60 font-mono">
