@@ -5,7 +5,7 @@ import {
   topGroupForMode,
   expandedGroupForMode,
 } from './housingViewModeGroups';
-import { housingCanonicalTarget } from './housingViewModeResolve';
+import { housingCanonicalTarget, housingIndexGranularity, dataModeForHousingUrlMode } from './housingViewModeResolve';
 import { getHousingViewModeContent } from './housingViewModeContent';
 
 describe('housingViewModeGroups', () => {
@@ -13,6 +13,17 @@ describe('housingViewModeGroups', () => {
     expect(HOUSING_TOP_GROUPS.map((g) => g.id)).toEqual(['step', 'index']);
     const step = HOUSING_TOP_GROUPS.find((g) => g.id === 'step');
     expect(step.modes.map((m) => m.mode)).toEqual(['qoq', 'yoy']);
+    const index = HOUSING_TOP_GROUPS.find((g) => g.id === 'index');
+    expect(index.modes.map((m) => m.mode)).toEqual(['index', 'index-annual']);
+  });
+
+  it('индекс — раскрывающаяся группа: по кварталам (база) + по годам', () => {
+    expect(topGroupForMode('index')).toBe('index');
+    expect(topGroupForMode('index-annual')).toBe('index');
+    expect(expandedGroupForMode('index-annual')).toBe('index');
+    expect(housingIndexGranularity('index-annual')).toBe('year');
+    expect(housingIndexGranularity('index')).toBe(null);
+    expect(dataModeForHousingUrlMode('index-annual')).toBe('index');
   });
 
   it('дефолтный режим — год к году', () => {
@@ -20,10 +31,16 @@ describe('housingViewModeGroups', () => {
     expect(normalizeHousingViewMode('level')).toBe('index');
   });
 
-  it('г/г и к/к — одна группа «К прошлому периоду»', () => {
+  it('г/г и кв/кв — одна группа «К прошлому периоду»', () => {
     expect(topGroupForMode('qoq')).toBe('step');
     expect(topGroupForMode('yoy')).toBe('step');
     expect(expandedGroupForMode('yoy')).toBe('step');
+  });
+
+  it('лейбл «к прошлому периоду» унифицирован: Кв/Кв (не К/к)', () => {
+    const step = HOUSING_TOP_GROUPS.find((g) => g.id === 'step');
+    const qoq = step.modes.find((m) => m.mode === 'qoq');
+    expect(qoq.label).toBe('Кв/Кв');
   });
 
   it('canonical redirect derived URL', () => {

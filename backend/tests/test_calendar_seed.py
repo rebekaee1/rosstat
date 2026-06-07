@@ -36,6 +36,7 @@ from app.api.calendar import PUBLIC_CONFIDENCES, _is_public_source_bound_event
 from app.models import EconomicEvent
 from app.services.calendar_sources.common import append_reschedule_audit
 from app.services.calendar_sources.official_calendar import (
+    ROSSTAT_CPI_RULE_URL,
     build_cbr_daily_rule_candidates,
     build_cbr_monetary_policy_candidates,
     build_minfin_rule_candidates,
@@ -217,7 +218,7 @@ def test_rosstat_cpi_april_2026_uses_official_rule_date():
 
     cpi_family = {
         e.indicator_code for e in events
-        if e.reference_period == "апрель 2026" and e.source_url.endswith("/ipc.htm")
+        if e.reference_period == "апрель 2026" and e.source_url == ROSSTAT_CPI_RULE_URL
     }
     assert {"cpi", "cpi-food", "cpi-nonfood", "cpi-services"} <= cpi_family
 
@@ -394,3 +395,48 @@ def test_cbr_monetary_policy_schedule_is_source_bound():
     assert meeting[0].event_key == "cbr:key-rate-decision:2026-06-19"
     assert meeting[0].date_confidence == "official_explicit"
     assert meeting[0].source_event_uid == "cbr-key-rate-decision-2026-06-19"
+
+
+# --- Per-indicator context enriches the bare scheduling note ----------------
+
+
+def test_rosstat_event_description_carries_indicator_context():
+    events = build_rosstat_rule_candidates(today=date(2026, 5, 10), months_ahead=1)
+    cpi = next(e for e in events if e.indicator_code == "cpi" and e.reference_period == "апрель 2026")
+    assert cpi.description is not None
+    # Context sentence about what CPI measures must precede the schedule note.
+    assert "индекс потребительских цен" in cpi.description.lower()
+    assert "Плановая дата публикации Росстата" in cpi.description
+
+
+def test_retail_and_construction_source_links_are_not_industrial():
+    events = build_rosstat_rule_candidates(today=date(2026, 5, 10), months_ahead=2)
+    by_code = {e.indicator_code: e for e in events}
+    # Retail/housing/construction must not point to the industrial section.
+    for code in ("retail-trade", "housing-commissioned", "construction-work"):
+        assert code in by_code, code
+        assert not by_code[code].source_url.endswith("/enterprise_industrial"), code
+
+
+def test_cbr_ics_description_is_clean_context_not_raw_summary():
+    fixture = """BEGIN:VCALENDAR
+BEGIN:VEVENT
+UID:cbr-reserves-20260409
+DTSTART;VALUE=DATE:20260409
+SUMMARY:Международные резервы Российской Федерации
+DESCRIPTION:еженедельные значения
+URL:https://www.cbr.ru/hd_base/mrrf/mrrf_7d/
+END:VEVENT
+END:VCALENDAR
+"""
+    events = parse_cbr_ics(
+        fixture,
+        source_url="https://www.cbr.ru/Queries/FileSource/105732/vCalendar.ics?inline=True",
+        today=date(2026, 4, 1),
+        months_ahead=1,
+    )
+    reserves = next(e for e in events if e.indicator_code == "international-reserves")
+    # Description is the per-indicator context, not a duplicate of the raw SUMMARY/title.
+    assert reserves.description != reserves.title
+    assert "резерв" in reserves.description.lower()
+    assert reserves.metadata.get("raw_summary") == "Международные резервы Российской Федерации"

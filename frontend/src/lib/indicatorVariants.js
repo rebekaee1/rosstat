@@ -28,13 +28,11 @@ export const VARIANT_GROUPS = [
     ],
   },
   // ИЦП: режимы на /indicator/ppi?mode=… (ppiViewMode*), не variant-URL.
-  {
-    label: 'Индекс промышленного производства',
-    codes: [
-      { code: 'ipi-yoy', label: 'Год к году' },
-      { code: 'ipi', label: 'Помесячно' },
-    ],
-  },
+  // ИПП (ipi) — generic-семья с собственным ViewModePicker (Помесячно / М/м /
+  // Кв/Кв / Г/г / средние). Старая variant-группа (ipi-yoy + ipi) дублировала
+  // эти режимы фейковыми pill'ами и конфликтовала с дефолт-редиректом
+  // ipi→?mode=yoy: при заходе из категории давала «вакханалию» переключений.
+  // Удалена по тому же принципу, что trade/wages/unemployment выше.
   // unemployment — режимы на /indicator/unemployment?mode=… (unemploymentViewMode*).
   // wages-nominal — режимы на /indicator/wages-nominal?mode=… (wagesNominalViewMode*).
   // Phase 1 (звонок 2026-05-22): trade-семьи (exports / imports / current-account)
@@ -48,8 +46,18 @@ export const VARIANT_GROUPS = [
   {
     label: 'Рынок жилья',
     codes: [
-      { code: 'housing-price-primary', label: 'Первичное' },
-      { code: 'housing-price-secondary', label: 'Вторичное' },
+      { code: 'housing-price-primary', label: 'Первичное жильё' },
+      { code: 'housing-price-secondary', label: 'Вторичное жильё' },
+    ],
+  },
+  // Индекс доступности жилья: первичный/вторичный рынок — разные ряды (variant),
+  // одинаковый набор режимов (T12). В каталоге показываем вторичный; первичный
+  // скрыт из листинга (housing-affordability-primary), доступен через pill.
+  {
+    label: 'Доступность жилья',
+    codes: [
+      { code: 'housing-affordability', label: 'Вторичное жильё' },
+      { code: 'housing-affordability-primary', label: 'Первичное жильё' },
     ],
   },
   {

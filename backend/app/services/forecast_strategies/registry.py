@@ -28,6 +28,7 @@ from app.services.forecast_strategies.gdp_government_quarterly import gdp_govern
 from app.services.forecast_strategies.gdp_nominal_quarterly import gdp_nominal_quarterly_strategy
 from app.services.forecast_strategies.gdp_real_quarterly import gdp_real_quarterly_strategy
 from app.services.forecast_strategies.housing_quarterly import housing_quarterly_strategy
+from app.services.forecast_strategies.monthly_auto import monthly_auto_strategy
 from app.services.forecast_strategies.ppi_monthly import ppi_monthly_strategy
 
 logger = logging.getLogger(__name__)
@@ -43,6 +44,7 @@ STRATEGIES: dict[str, ForecastStrategy] = {
     "gdp_nominal_quarterly": gdp_nominal_quarterly_strategy,
     "gdp_real_quarterly": gdp_real_quarterly_strategy,
     "housing_quarterly": housing_quarterly_strategy,
+    "monthly_auto": monthly_auto_strategy,
     "ppi_monthly": ppi_monthly_strategy,
 }
 

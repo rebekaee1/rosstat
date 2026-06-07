@@ -2,7 +2,7 @@
 
 Два источника, выбираются через `model_config_json.gdp_source`:
 
-1. `gdp_source: "official_quarterly"` — `VVP_kvartal_s_1995-2025.xlsx` (rosstat.gov.ru):
+1. `gdp_source: "official_quarterly"` — `VVP_kvartal_s_1995-2026.xlsx` (rosstat.gov.ru):
    Quarter-grid layout (years row 2, quarters row 3, single value row 4).
    `gdp_sheet`: "2" = nominal ОКВЭД2 2011+, "9" = real в ценах 2021 г. (2011+).
    Опциональные `gdp_history_sheet` ("1" nominal ОКВЭД2007 1995-2011 / "3" real

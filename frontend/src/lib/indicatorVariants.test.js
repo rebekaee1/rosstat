@@ -58,7 +58,7 @@ describe('relatedIndicatorCardCopy', () => {
       'Цены на первичное жильё',
       'индекс',
     );
-    expect(card.title).toBe('Первичное');
+    expect(card.title).toBe('Первичное жильё');
     expect(card.subtitle).toBe('Рынок жилья');
   });
 

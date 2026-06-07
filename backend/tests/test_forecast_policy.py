@@ -7,7 +7,11 @@ must stay off until a forecast file/spec is approved.
 
 from __future__ import annotations
 
-from seed_data import INDICATORS
+from seed_data import (
+    INDICATORS,
+    MONTHLY_AUTO_FORECAST_CODES,
+    _generated_sibling_codes,
+)
 from app.api.forecasts import DERIVED_CPI_FORECASTS
 from app.services.forecast_pipeline import CPI_DERIVED_FORECAST_TARGETS
 
@@ -55,6 +59,8 @@ DERIVED_FROM_SOURCE_FORECAST_CODES = {
     "gdp-nominal-annual",
     "housing-yoy-primary",
     "housing-yoy-secondary",
+    "housing-qoq-primary",
+    "housing-qoq-secondary",
     "ppi-yoy",
     "ppi-annual",
     "inflation-annual",
@@ -92,11 +98,30 @@ GENERIC_OLS_FORECAST_CODES: set[str] = {
     "inflation-weekly-services",
 }
 
+# Monthly-Auto — единый алгоритм месячного прогноза руководителя
+# (Прогноз_месячных_данных.ipynb, июнь 2026): ADF-автотрансформ +
+# multi-window OLS. Включён для всех месячных source-рядов, ранее
+# стоявших с forecast_steps=0. Источник списка — seed_data.
+MONTHLY_AUTO_CODES = set(MONTHLY_AUTO_FORECAST_CODES)
+
+# Generic-propagated — view-mode sibling-агрегаты (квартал/год/приросты/индекс),
+# сгенерированные из конфига view_model_families, чей базовый ряд forecastable:
+# прогноз протягивается через generic-pipeline (derived_from_source,
+# operation="pipeline"). Берём фактически сгенерированные siblings из seed
+# (legacy-коды вроде exports-yoy сидятся отдельно и сюда не попадают).
+_BY_CODE_ALL = {ind["code"]: ind for ind in INDICATORS}
+GENERIC_PROPAGATED_FORECAST_CODES = {
+    code for code in _generated_sibling_codes
+    if int((_BY_CODE_ALL[code].get("model_config_json") or {}).get("forecast_steps", 0) or 0) > 0
+}
+
 ALL_FORECAST_CODES = (
     APPROVED_DIRECT_FORECAST_CODES
     | LIVE_SARIMA_FORECAST_CODES
     | DERIVED_FROM_SOURCE_FORECAST_CODES
     | GENERIC_OLS_FORECAST_CODES
+    | MONTHLY_AUTO_CODES
+    | GENERIC_PROPAGATED_FORECAST_CODES
 )
 
 APPROVED_NOTEBOOK_CODES: dict[str, str] = {}
@@ -143,6 +168,22 @@ def test_derived_forecasts_have_strategy_and_source() -> None:
         derived = cfg.get("derived_forecast") or {}
         assert derived.get("source_code"), f"{code} must have derived_forecast.source_code"
         assert derived.get("operation"), f"{code} must have derived_forecast.operation"
+
+
+def test_monthly_auto_forecasts_have_named_strategy() -> None:
+    """Месячные показатели руководителя обязаны указывать
+    forecast_strategy='monthly_auto' и forecast_steps>0 (контракт seed_data).
+    """
+    by_code = {ind["code"]: ind for ind in INDICATORS}
+    for code in MONTHLY_AUTO_CODES:
+        assert code in by_code, f"{code} missing from seed_data.INDICATORS"
+        cfg = by_code[code]["model_config_json"]
+        assert cfg.get("forecast_strategy") == "monthly_auto", (
+            f"{code}: expected forecast_strategy='monthly_auto', "
+            f"got '{cfg.get('forecast_strategy')}'"
+        )
+        assert int(cfg.get("forecast_steps", 0) or 0) > 0, \
+            f"{code} must have forecast_steps>0"
 
 
 def test_approved_notebook_forecasts_are_explicit_values() -> None:

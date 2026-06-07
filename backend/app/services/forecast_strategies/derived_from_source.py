@@ -30,6 +30,12 @@ yoy от gdp-nominal), нет смысла отдельно обучать мо�
     - cpi_mom_qoq           : QoQ % на концах кварталов из месячных ИПЦ
     - weekly_inflation_by_calendar_month : ∏ недель в календарном месяце − 100
     - weekly_mtd_in_calendar_month      : накопление с 1-й недели месяца по каждую неделю
+    - pipeline            : generic-цепочка ops из `derived_ops` (для унифи-
+                            цированных view-mode siblings: period_sum/avg/last,
+                            period_over_period[_abs], mom[_abs], yoy[_abs],
+                            rebase_to_first). Конфиг: `pipeline` = список
+                            [op_name, kwargs]; опц. `complete_bucket`+`min_periods`
+                            отбрасывают неполные будущие кварталы/годы.
 
 ВАЖНО: эта стратегия — RUNTIME-only. Она не пишет в БД, она лишь
 готовит точки прогноза, которые pipeline сохранит обычным образом.
@@ -45,6 +51,7 @@ from typing import Sequence
 
 from app.services.forecast_strategies.base import StrategyContext, StrategyOutput
 from app.services.forecaster import ForecastPoint, ForecastResult
+from app.services import derived_ops as ops_module
 from app.services.derived_ops import (
     annual_sum as ops_annual_sum,
     cpi_mom_qoq as ops_cpi_mom_qoq,
@@ -82,6 +89,44 @@ def _qoq(values_with_dates: list[tuple[date, float]]) -> list[tuple[date, float]
             continue
         out.append((d, v / prev_v * 100.0 - 100.0))
     return out
+
+
+def _run_pipeline(
+    source_data: list[tuple[date, float]],
+    derived_cfg: dict,
+) -> list[tuple[date, float]]:
+    """Прогон generic-pipeline (op_name, kwargs) на (история+прогноз) источника.
+
+    Те же чистые ops из `derived_ops`, что считают actuals в CalculationEngine,
+    применяются к объединённому ряду источника — прогноз derived-режима
+    считается ровно так же, как его факт.
+
+    Guard полноты: для агрегаций крупнее нативной (квартал/год из месяцев)
+    `_aggregate` выдаёт точку даже по неполному bucket'у → в будущем это даёт
+    «частичный» квартал/год (напр. сумма 1 месяца как годовая). Поэтому при
+    заданных `complete_bucket` + `min_periods` оставляем только те bucket'ы,
+    где в объединённом источнике набралось ≥ `min_periods` суб-периодов.
+    """
+    steps = derived_cfg.get("pipeline") or []
+    series: list[tuple[date, float]] = list(source_data)
+    for name, kwargs in steps:
+        fn = getattr(ops_module, name, None)
+        if fn is None:
+            logger.error("derived_from_source pipeline: unknown op '%s'", name)
+            return []
+        series = fn(series, **dict(kwargs))
+
+    complete_bucket = derived_cfg.get("complete_bucket")
+    min_periods = int(derived_cfg.get("min_periods", 0) or 0)
+    if complete_bucket and min_periods > 1:
+        counts: dict[date, int] = {}
+        for d, _v in source_data:
+            _key, anchor = ops_module._bucket_anchor(d, complete_bucket)
+            if anchor is None:
+                continue
+            counts[anchor] = counts.get(anchor, 0) + 1
+        series = [(d, v) for d, v in series if counts.get(d, 0) >= min_periods]
+    return series
 
 
 def derived_from_source_strategy(
@@ -152,6 +197,8 @@ def derived_from_source_strategy(
         derived_full = ops_weekly_inflation_by_calendar_month(list(source_data))
     elif operation == "weekly_mtd_in_calendar_month":
         derived_full = ops_weekly_mtd_in_calendar_month(list(source_data))
+    elif operation == "pipeline":
+        derived_full = _run_pipeline(list(source_data), derived_cfg)
     else:
         logger.error("derived_from_source: unknown operation '%s'", operation)
         return []

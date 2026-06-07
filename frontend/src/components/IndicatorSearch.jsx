@@ -28,8 +28,15 @@ const MAX_RESULTS = 12;
  */
 export default function IndicatorSearch({ className }) {
   const navigate = useNavigate();
-  const { data: indicators = [] } = useIndicators({ includeUnlisted: true });
+  // Каталог нужен только при открытии палитры. Раньше полный список
+  // (include_unlisted, ~290 мс) тянулся на КАЖДОЙ странице, т.к. компонент
+  // всегда смонтирован в Navbar — это утяжеляло первый рендер любой карточки.
+  // Грузим лениво: при hover/focus кнопки или первом открытии. React-Query
+  // кэширует на 5 мин, поэтому повторные открытия мгновенны.
+  const [shouldLoad, setShouldLoad] = useState(false);
+  const { data: indicators = [] } = useIndicators({ includeUnlisted: true, enabled: shouldLoad });
   const [open, setOpen] = useState(false);
+  const arm = useCallback(() => setShouldLoad(true), []);
   const [query, setQuery] = useState('');
   const [hi, setHi] = useState(0); // highlighted result index
   const inputRef = useRef(null);
@@ -69,6 +76,7 @@ export default function IndicatorSearch({ className }) {
       const isMod = e.metaKey || e.ctrlKey;
       if (isMod && (e.key === 'k' || e.key === 'K')) {
         e.preventDefault();
+        arm();
         setOpen((o) => !o);
         return;
       }
@@ -76,6 +84,7 @@ export default function IndicatorSearch({ className }) {
         const tag = document.activeElement?.tagName;
         if (tag !== 'INPUT' && tag !== 'TEXTAREA') {
           e.preventDefault();
+          arm();
           setOpen(true);
         }
         return;
@@ -87,7 +96,7 @@ export default function IndicatorSearch({ className }) {
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [open, close]);
+  }, [open, close, arm]);
 
   // фокус при открытии
   useEffect(() => {
@@ -127,7 +136,9 @@ export default function IndicatorSearch({ className }) {
     <>
       <button
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={() => { arm(); setOpen(true); }}
+        onMouseEnter={arm}
+        onFocus={arm}
         className={cn(
           FOCUS_RING,
           'rounded-xl flex items-center justify-center p-1.5 bg-obsidian-lighter/50 border border-border-subtle text-text-secondary hover:text-text-primary hover:bg-obsidian-lighter/80 transition-colors',

@@ -17,7 +17,10 @@ export const PPI_TOP_GROUPS = [
   {
     id: 'step',
     label: 'К прошлому периоду',
-    leafMode: 'mom',
+    modes: [
+      { mode: 'mom', label: 'М/м' },
+      { mode: 'qoq', label: 'Кв/Кв' },
+    ],
   },
   {
     id: 'index',
@@ -41,6 +44,7 @@ export {
 export const PPI_VIEW_MODES_FLAT = [
   { mode: 'yoy', label: 'Инфляция за год' },
   { mode: 'mom', label: 'К прошлому периоду (м/м)' },
+  { mode: 'qoq', label: 'К прошлому периоду (кв/кв)' },
   { mode: 'index', label: 'Индекс — по месяцам' },
   { mode: 'index-quarterly', label: 'Индекс — по кварталам' },
   { mode: 'index-annual', label: 'Индекс — по годам' },

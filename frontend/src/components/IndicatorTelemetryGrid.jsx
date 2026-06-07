@@ -1,4 +1,4 @@
-import { formatDate } from '../lib/format';
+import { formatDate, resolveDateFormat } from '../lib/format';
 import { dataModeForUrlMode } from '../lib/cpiViewModeResolve';
 import { dataModeForHousingUrlMode } from '../lib/housingViewModeResolve';
 import { dataModeForPpiUrlMode } from '../lib/ppiViewModeResolve';
@@ -23,11 +23,20 @@ export default function IndicatorTelemetryGrid({
   isPriceCategory,
   isHousingFamily,
   isPpiFamily,
+  chartMode,
   safeViewMode,
   cpiPrevDate,
   adj,
   loading,
 }) {
+  // Формат даты в карточках = гранулярность отображаемого ряда (тот же
+  // резолвер, что у оси графика и таблицы). Квартальный ряд → «I кв. 2026»,
+  // годовой → «2026», дневной → «12 марта 2026», месячный → «март 2026».
+  const dateFmt = resolveDateFormat({
+    chartMode,
+    frequency: indicator?.frequency,
+    safeViewMode,
+  });
   // На режиме «Индекс» CPI-семьи показываем уровень накопленного индекса
   // (значения 100…1000+) — без `%`. Для прочих режимов используем
   // официальную единицу индикатора.
@@ -105,8 +114,8 @@ export default function IndicatorTelemetryGrid({
 
   const currentDate = s?.currentDate ?? indicator?.current_date;
   const currentMeta = dataMode === 'weekly' && Number(s?.currentValue) === 0
-    ? `ДАТА: ${formatDate(currentDate, 'full')} · ЦЕНЫ БЕЗ ИЗМЕНЕНИЙ`
-    : `ДАТА: ${formatDate(currentDate, 'full')}`;
+    ? `ДАТА: ${formatDate(currentDate, dateFmt)} · ЦЕНЫ БЕЗ ИЗМЕНЕНИЙ`
+    : `ДАТА: ${formatDate(currentDate, dateFmt)}`;
 
   return (
     <section className="mb-6 md:mb-12">
@@ -125,7 +134,7 @@ export default function IndicatorTelemetryGrid({
           label={previousLabel}
           value={s?.previousValue ?? adj(indicator?.previous_value)}
           unit={unit}
-          meta={`ДАТА: ${formatDate(s?.previousDate ?? cpiPrevDate, 'full')}`}
+          meta={`ДАТА: ${formatDate(s?.previousDate ?? cpiPrevDate, dateFmt)}`}
           delay={1}
         />
         {(s?.highest || stats?.highest) && (
@@ -133,7 +142,7 @@ export default function IndicatorTelemetryGrid({
             label="Абсолютный максимум"
             value={s?.highest?.value ?? adj(stats?.highest?.value)}
             unit={unit}
-            meta={`ПИК: ${formatDate(s?.highest?.date ?? stats?.highest?.date, 'full')}`}
+            meta={`ПИК: ${formatDate(s?.highest?.date ?? stats?.highest?.date, dateFmt)}`}
             delay={2}
           />
         )}

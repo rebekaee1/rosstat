@@ -1,6 +1,6 @@
 # Backlog — текущие правки в работе
 
-**Last updated:** 2026-06-01 (playbook семейства: [`indicator-family-playbook.md`](indicator-family-playbook.md); эталон ИПЦ закрыт в playbook §9).
+**Last updated:** 2026-06-07 (индекс доступности жилья пересчитан: помесячно, общая база 2010, +карточка первичного рынка, шаблон T12; фикс «вакханалии» ИПП — удалена дублирующая variant-группа. См. История 2026-06-07 и ADR-0001 §2026-06-07).
 **Part of:** [`AGENTS.md`](../AGENTS.md), [`CONTEXT.md`](../CONTEXT.md), [`docs/adr/0006-indicator-card-unification.md`](adr/0006-indicator-card-unification.md).
 **Источник:** звонки с Никитой Александровичем 2026-05-21 (Сочи) и 2026-05-22 («всё доделать»).
 
@@ -13,7 +13,7 @@
 | Приоритет | Активно сейчас |
 |-----------|----------------|
 | **P0** | — (пусто; все P0 из звонков закрыты) |
-| **P1** | Расширение view-mode families на остальные индикаторы (GDP / PPI / retail / banking volumes — см. ADR-0006 §«Что НЕ покрыто»). **ИПЦ** — эталон в [`indicator-family-playbook.md`](indicator-family-playbook.md) (не мигрировать на generic `viewModeFamilies` без отдельного решения). Длинные SEO-блоки D2 на оставшиеся ~80 индикаторов — итеративно по росту показов в Метрике. |
+| **P1** | ~~Расширение view-mode families на остальные индикаторы~~ — **закрыто 2026-06-06**: весь каталог (74 карточки) имеет режимы, mode-gaps=0 (ADR-0006 §2026-06-06). Осталось: SEO-наполнение (задача 2 — генератор блоков/FAQ есть, проверить покрытие и нестыковки), раздел сравнения (watermark + подписи), календарь (дубли + ссылки на источники), аудит индексации. **ИПЦ/ИЦП/housing-price** — эталоны bespoke, не мигрировать на generic без отдельного решения. |
 | **P2** | C4 (research редких показателей — см. список в конце документа). Wages-2022-12 hole (одна точка пропущена в monthly, заметная как gap на годовом графике) — отдельный микрофикс при следующем wages ETL. Автоматизация `wages-nominal-annual` continuation через derived spec `annual_mean` (сейчас one-shot script). **G1 Search keywords ревизия** на всех 109 индикаторах — где-то полный список синонимов, где-то пустые SEO-шаблоны (см. ниже). **G2 Annual-in-monthly SQL-audit** на остальных backfilled индикаторах (wages фикснут; key-rate/gdp-real/housing на глаз согласованы, но явная проверка не сделана). |
 | Future (отложено) | F1 крипто (частично закрыто через BTC/USD как полный indicator), F2 регионы, **F3 Telegram-бот** (подписка на indicator, daily push, custom alerts), **F4 Embed-виджеты UI** (дизайн + копи-кнопка кода + CSP), **F5 Календарь публикаций UI** (backend готов 1208 events) — см. раздел Roadmap. |
 
@@ -538,6 +538,19 @@ Backend часть готова: 1208 событий, 46/76 source codes, `bad_p
 
 ## История (sealed правки)
 
+### 2026-06-06 — истинность представления + полная выгрузка + мобильные тикеры + GDP vintage
+
+Завершающий проход по «не-режимным» правкам созвона (после унификации view-mode семей):
+
+- **Истинность дат (truth-visual + телеметрия).** Введён единый `resolveDateFormat({chartMode, frequency, safeViewMode})` в `frontend/src/lib/format.js` — один источник правды для формата периода на оси графика, в таблице и в телеметрии. Удалён дубль `dateFormatFor` из `IndicatorChartSection.jsx` и `IndicatorDataTableSection.jsx`. В `IndicatorTelemetryGrid.jsx` даты значения/предыдущего/максимума раньше были захардкожены `'full'` («месяц ГГГГ») — теперь по гранулярности ряда: квартальный → «I кв. 2026», годовой → «2026», дневной → «12 марта 2026». `chartMode` прокинут в телеметрию из `IndicatorDetail` и `GenericIndicatorView`. +30 format-тестов. Браузер-smoke: deaths (год → «2023»), gdp-investment (кв → «IV кв. 2025», ось X — кварталы), m2 (мес → «апрель 2026»).
+- **Полная выгрузка CSV/Excel.** `IndicatorChart` получил колбэк `onFullData` — эмитит полный `chartData` (факт+прогноз) до нарезки видимого окна. Оба вью экспортируют всю историю (`range='all'`), снят 5-летний cap. Удалён мёртвый `chartData`/`currentRange`/`handleRangeChange` в `IndicatorDetail` и `GenericIndicatorView`.
+- **Мобильные тикеры.** Снят desktop-only gate в `LiveTicker.jsx` — статичная компактная полоса котировок теперь рендерится и на мобиле. Синхронизированы отступы: `App.jsx main` → `pt-9` (было `pt-0 md:pt-9`), `Navbar.jsx` → `top-11 md:top-12`, чтобы тикер не перекрывался шапкой.
+- **Variant-лейблы жилья.** `indicatorVariants.js`: «Первичное»/«Вторичное» → «Первичное жильё»/«Вторичное жильё» (полные названия, `flex-wrap` переносит). Золото/биткоин подтверждены в каталоге (is_listed=True, категории «Финансы»/«Валюты»).
+- **Режим-консистентность прогноза.** `housing-qoq-primary`/`housing-qoq-secondary` имеют `derived_from_source`-прогноз (qoq от `housing-price-*`) — добавлены в контракт `test_forecast_policy.py::DERIVED_FROM_SOURCE_FORECAST_CODES`. Включение прогнозов остальных derived-siblings — под рубильником `forecast_steps:0`, ждёт curated-файл руководителя.
+- **GDP vintage.** `ROSSTAT_STATIC_URLS['gdp_quarterly']` → `VVP_kvartal_s_1995-2026.xlsx` (текущая публикационная версия; +docstring парсера +`data_sources.md`). Структурная сетка уровней в файле заканчивается Q4 2025; Q1 2026 опубликован Росстатом 15.05.2026 только как предварительный индекс физобъёма 99.8% (−0.2% г/г) в пресс-релизе, не как уровень в млрд руб. Пайплайн авто-подхватит уровень при следующей публикации. Вставка расчётного уровня из пресс-% — открытая продуктовая развилка (оценка vs официальный уровень).
+
+**Verification.** `./scripts/check-all.sh` зелёный: backend 431 passed / 8 skipped, frontend lint=0, vitest 200 passed, vite build чистый. Браузер-smoke (desktop deaths/gdp-investment/m2 + mobile homepage) — 4/4 PASS.
+
 ### 2026-05-22 — view-mode family downstream completion (methodology + frequency leak)
 
 После Phase 1-5 (звонок «всё доделать») остались два downstream-протекания, замеченные на `/indicator/wages-nominal?mode=annual` при верификации B2:
@@ -573,6 +586,11 @@ ADR-0006 «Subsequent additions» дополнен описанием решен
 - **Live ticker grill-me**: USD/RUB / EUR/RUB / CNY/RUB / BTC/USD / Brent с MOEX-приоритет + CBR XML_daily fallback (для FX когда MOEX отдаёт `LAST=None` — особенно EUR/RUB после санкций) + Binance public API для BTC + Yahoo Finance для Brent historical. Backend APScheduler `ticker_live_pull` каждые 5s в Redis. Коммит `876b3c7`.
 - **Search full directory**: `IndicatorSearch.jsx` показывает все индикаторы (включая скрытые из listing) через `?include_unlisted=true`. Коммит `876b3c7`.
 - **Frontend rename**: `tradeViewModes.js` → `viewModeFamilies.js` (общий реестр), `tradeFamily/tradeMode` → `viewFamily/familyMode`. ADR-0006 (новый) фиксирует ось «карточка vs derived vs variant vs frequency». Чеклист «новый индикатор» в `AGENTS.md::Шаг 4`. CONTEXT.md: +2 trap'ы (source-depth + browser-cache). Коммит `d4f57ae`.
+
+### 2026-06-07 — Индекс доступности жилья (пересчёт v7) + фикс ИПП
+
+- **Housing-affordability rework (C1/C2 доработка):** `wages-index` переведён с базы 2015 на базу 2010 (новая op `rebase_to_index_with_base`, базовое среднее из годового ряда зарплаты). `housing-affordability` стал помесячным (новая op `affordability_index_monthly`, forward-fill квартального индекса цен). Добавлена вторая карточка `housing-affordability-primary` (первичный рынок) как variant-группа «Доступность жилья». Новый generic-шаблон T12 (уровень: мес/ср.квартал/ср.год · М/м·Кв/Кв · Г/г · скользящая 12 мес.). Тексты приведены к единой базе 2010 (seed + indicator_seo). Прогноз не строится. ADR-0001 «Subsequent additions» 2026-06-07. Решение по развилке: помесячно с forward-fill цен (ряд начинается 2015, где есть помесячная зарплата; паритет базы 2010 проверяется на op-уровне).
+- **Задача 2 — ИПП «вакханалия» при заходе из категории:** удалена устаревшая variant-группа `ipi` (`ipi-yoy` + `ipi`), дублировавшая режимы generic-семьи ИПП и конфликтовавшая с дефолт-редиректом `ipi→?mode=yoy`. Теперь карточка ИПП рендерит только ViewModePicker, редирект стабилен (11 API-запросов на загрузку вместо storm'а). Аудит остальных variant-групп: других mode-дублирований нет.
 
 ### 2026-05-21 — большой пакет P0+P1+P2
 

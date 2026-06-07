@@ -1,14 +1,22 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { cn } from '../lib/format';
 import { track, events } from '../lib/track';
 import {
-  PPI_TOP_GROUPS,
+  buildViewModeGroups,
   defaultSubModeForGroup,
   expandedGroupForMode,
-  getTopGroup,
   highlightedTopGroup,
-} from '../lib/ppiViewModeGroups';
+} from '../lib/viewModeEngine';
 
+/**
+ * Config-driven двухуровневый переключатель режимов.
+ *
+ * Заменяет ~20 рукописных `*ViewModePicker` — структура групп/подрежимов
+ * целиком берётся из canonical-конфига (`viewModeEngine.buildViewModeGroups`).
+ * Верхний ряд — семантические группы («На конец периода» / «Средняя» /
+ * «К прошлому периоду» / «Год к году»); нижний ряд — гранулярности внутри
+ * группы (по кварталам / по годам). Leaf-группа (Г/г) — одиночная кнопка.
+ */
 const btnCls = (active) => cn(
   'rounded-xl px-3 py-2 text-xs font-medium transition-colors',
   active
@@ -16,27 +24,27 @@ const btnCls = (active) => cn(
     : 'bg-obsidian-lighter text-text-secondary hover:text-champagne',
 );
 
-/**
- * ИЦП: двухуровневый переключатель (как CpiViewModePicker / HousingViewModePicker).
- */
-export default function PpiViewModePicker({
+export default function GenericViewModePicker({
+  family,
   currentMode,
   onChange,
   trackContext,
+  title = 'Режим показателя',
   compact = false,
 }) {
+  const groups = useMemo(() => buildViewModeGroups(family), [family]);
   const [expandedGroup, setExpandedGroup] = useState(
-    () => expandedGroupForMode(currentMode),
+    () => expandedGroupForMode(family, currentMode),
   );
 
   useEffect(() => {
-    setExpandedGroup(expandedGroupForMode(currentMode));
-  }, [currentMode]);
+    setExpandedGroup(expandedGroupForMode(family, currentMode));
+  }, [family, currentMode]);
 
   const trackMode = useCallback((mode, groupId) => {
     track(events.CHART_MODE_CHANGE, {
       mode,
-      ppiViewGroup: groupId,
+      viewGroup: groupId,
       indicator: trackContext?.code,
       indicatorCategory: trackContext?.category,
     });
@@ -53,7 +61,7 @@ export default function PpiViewModePicker({
     const subModes = group.modes ?? [];
     const currentInGroup = subModes.some((m) => m.mode === currentMode);
     if (!currentInGroup) {
-      const next = defaultSubModeForGroup(group.id);
+      const next = defaultSubModeForGroup(family, group.id);
       if (next) {
         onChange(next);
         trackMode(next, group.id);
@@ -66,31 +74,30 @@ export default function PpiViewModePicker({
     trackMode(item.mode, groupId);
   };
 
-  const expanded = expandedGroup ? getTopGroup(expandedGroup) : null;
+  const activeTopGroup = highlightedTopGroup(family, expandedGroup, currentMode);
+  const expanded = groups.find((g) => g.id === expandedGroup && !g.leafMode);
   const subModes = expanded?.modes ?? [];
-  const activeTopGroup = highlightedTopGroup(expandedGroup, currentMode);
+
+  if (groups.length <= 1 && (groups[0]?.modes?.length ?? 0) <= 1) return null;
 
   const body = (
     <>
       <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-        Режим индекса цен производителей
+        {title}
       </p>
       <div className="flex flex-wrap gap-2">
-        {PPI_TOP_GROUPS.map((group) => {
-          const active = group.id === activeTopGroup;
-          return (
-            <button
-              key={group.id}
-              type="button"
-              onClick={() => onTopClick(group)}
-              className={btnCls(active)}
-            >
-              {group.label}
-            </button>
-          );
-        })}
+        {groups.map((group) => (
+          <button
+            key={group.id}
+            type="button"
+            onClick={() => onTopClick(group)}
+            className={btnCls(group.id === activeTopGroup)}
+          >
+            {group.label}
+          </button>
+        ))}
       </div>
-      {subModes.length > 0 && (
+      {subModes.length > 1 && (
         <div className="mt-3 flex flex-wrap gap-2 border-t border-border-subtle pt-3">
           {subModes.map((item) => (
             <button

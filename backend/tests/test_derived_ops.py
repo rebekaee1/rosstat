@@ -17,6 +17,11 @@ from app.services.derived_ops import (
     cpi_mom_yoy,
     cumulative_level_from_mom,
     december_to_december,
+    mom,
+    period_avg,
+    period_last,
+    period_over_period,
+    period_sum,
     qoq,
     quarterly_avg,
     quarterly_index,
@@ -423,3 +428,73 @@ def test_cpi_mom_qoq_on_quarter_ends():
     out = cpi_mom_qoq(monthly)
     assert len(out) >= 1
     assert out[0][0].month in (3, 6, 9, 12)
+
+
+# --- generic bucketing: period_last / period_avg / period_sum ----------------
+
+
+def test_period_last_quarter_takes_end_of_quarter_value():
+    monthly = [(date(2025, m, 1), float(m)) for m in range(1, 13)]
+    out = period_last(monthly, "quarter")
+    # 4 quarters anchored on the third month, value = last month of quarter.
+    assert out == [
+        (date(2025, 3, 1), 3.0),
+        (date(2025, 6, 1), 6.0),
+        (date(2025, 9, 1), 9.0),
+        (date(2025, 12, 1), 12.0),
+    ]
+
+
+def test_period_last_year_takes_december():
+    monthly = [(date(2024, m, 1), 10.0) for m in range(1, 13)]
+    monthly += [(date(2025, m, 1), 20.0) for m in range(1, 13)]
+    out = period_last(monthly, "year")
+    assert out == [(date(2024, 1, 1), 10.0), (date(2025, 1, 1), 20.0)]
+
+
+def test_period_avg_quarter_mean():
+    monthly = [(date(2025, m, 1), float(m)) for m in range(1, 7)]
+    out = period_avg(monthly, "quarter")
+    assert out == [(date(2025, 3, 1), 2.0), (date(2025, 6, 1), 5.0)]
+
+
+def test_period_sum_year_adds_flow():
+    monthly = [(date(2025, m, 1), 100.0) for m in range(1, 13)]
+    out = period_sum(monthly, "year")
+    assert out == [(date(2025, 1, 1), 1200.0)]
+
+
+def test_period_last_week_uses_last_observation_date():
+    # ISO week of 2025-01-06..2025-01-12 — Mon..Sun; last obs is the 12th.
+    daily = [(date(2025, 1, 6), 1.0), (date(2025, 1, 8), 2.0), (date(2025, 1, 12), 3.0)]
+    out = period_last(daily, "week")
+    assert out == [(date(2025, 1, 12), 3.0)]
+
+
+def test_aggregate_rejects_unknown_granularity():
+    import pytest
+
+    with pytest.raises(ValueError):
+        period_last([(date(2025, 1, 1), 1.0)], "decade")
+
+
+# --- mom / period_over_period ------------------------------------------------
+
+
+def test_mom_percent_vs_previous_month():
+    monthly = [(date(2025, 1, 1), 100.0), (date(2025, 2, 1), 110.0), (date(2025, 3, 1), 99.0)]
+    out = mom(monthly)
+    assert out == [(date(2025, 2, 1), 10.0), (date(2025, 3, 1), -10.0)]
+
+
+def test_mom_skips_gap_across_missing_month():
+    monthly = [(date(2025, 1, 1), 100.0), (date(2025, 3, 1), 120.0)]
+    # February missing -> March has no immediate prior month, skipped.
+    assert mom(monthly) == []
+
+
+def test_period_over_period_quarter_on_monthly_stock():
+    # Monthly stock; quarter-end levels 3,6 -> QoQ = +100%.
+    monthly = [(date(2025, m, 1), float(m)) for m in range(1, 7)]
+    out = period_over_period(monthly, "quarter", method="last")
+    assert out == [(date(2025, 6, 1), 100.0)]

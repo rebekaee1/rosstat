@@ -1,59 +1,8 @@
 import { Formula, ProdLimits } from '../components/MathFormula';
 import { getHousingViewModeContent } from './housingViewModeContent';
 import { getPpiViewModeContent } from './ppiViewModeContent';
-import { getAutoLoanViewModeContent, isAutoLoanFamily } from './autoLoanViewModeContent';
-import { getMortgageViewModeContent, isMortgageFamily } from './mortgageRateViewModeContent';
-import { getCbrTermSliceViewModeContent, isCbrTermSliceFamily } from './cbrTermSliceRateContent';
-import { getKeyRateViewModeContent, isKeyRateFamily } from './keyRateViewModeContent';
-import { getRuoniaViewModeContent, isRuoniaFamily } from './ruoniaViewModeContent';
-import { getBtcUsdViewModeContent, isBtcUsdFamily } from './btcUsdViewModeContent';
-import { getBrentViewModeContent, isBrentFamily } from './brentViewModeContent';
-import { getGoldPriceViewModeContent, isGoldPriceFamily } from './goldPriceViewModeContent';
-import { getCnyRubViewModeContent, isCnyRubFamily } from './cnyRubViewModeContent';
-import { getBudgetViewModeContent, isBudgetFamily } from './budgetViewModeContent';
-import { getBankCreditViewModeContent, isBankCreditFamily } from './bankCreditViewModeContent';
-import {
-  getHouseholdFinanceViewModeContent,
-  isHouseholdFinanceFamily,
-} from './householdFinanceViewModeContent';
-import {
-  getExternalDebtViewModeContent,
-  isExternalDebtFamily,
-} from './externalDebtViewModeContent';
-import {
-  getInternationalReservesViewModeContent,
-  isInternationalReservesFamily,
-} from './internationalReservesViewModeContent';
-import {
-  getMonetaryMassViewModeContent,
-  isMonetaryMassFamily,
-} from './monetaryMassViewModeContent';
-import {
-  getLaborMarketViewModeContent,
-  isLaborMarketFamily,
-} from './laborMarketViewModeContent';
-import {
-  getUnemploymentViewModeContent,
-  isUnemploymentFamily,
-} from './unemploymentViewModeContent';
-import {
-  getWagesNominalViewModeContent,
-  isWagesNominalFamily,
-} from './wagesNominalViewModeContent';
-import {
-  getGdpNominalViewModeContent,
-  isGdpNominalFamily,
-} from './gdpNominalViewModeContent';
-import {
-  getGdpRealViewModeContent,
-  isGdpRealFamily,
-} from './gdpRealViewModeContent';
-import {
-  getGdpUseViewModeContent,
-  isGdpUseFamily,
-} from './gdpUseViewModeContent';
-import { getEurRubViewModeContent, isEurRubFamily } from './eurRubViewModeContent';
-import { getUsdRubViewModeContent, isUsdRubFamily } from './usdRubViewModeContent';
+import { getCbrTermSliceViewModeContent } from './cbrTermSliceRateContent';
+import { getUnemploymentViewModeContent } from './unemploymentViewModeContent';
 
 /**
  * Описание + методология для каждого режима CPI-графика.
@@ -252,7 +201,7 @@ function buildAnnual(code) {
       + 'Одна точка на каждый завершённый календарный год: рассчитывается как '
       + `произведение 12 ${s.ipcMonthly} внутри года (январь–декабрь), `
       + 'делённых на 100, минус 100%. Прогноз — то же произведение по 12 точкам '
-      + `месячного прогноза ${s.ipcMonthlyNom}.`,
+      + `месячного прогноза ${s.ipcMonthly}.`,
     methodology: (
       <>
         <span className="block mb-1">Формула (за календарный год Y, январь–декабрь):</span>
@@ -386,7 +335,7 @@ function buildQoq(code) {
   const s = cpiSlice(code);
   return {
     description:
-      `Изменение ${s.pricesGen} к концу предыдущего квартала (к/к). `
+      `Изменение ${s.pricesGen} к концу предыдущего квартала (кв/кв). `
       + 'Отличается от «квартальной инфляции», которая показывает рост '
       + 'внутри квартала (произведение трёх месяцев).',
     methodology:
@@ -428,7 +377,7 @@ function buildIndex(code, bucket = null) {
       `Формула: ИНДЕКСₜ = 100 × (ИПЦ₁/100) × (ИПЦ₂/100) × … × (ИПЦₜ/100), где `
       + `ИПЦᵢ — месячный ${s.ipcFoot} к предыдущему месяцу. История 1991–1999 не `
       + 'включена: гиперинфляция первой половины 90-х искажает шкалу. Прогноз — '
-      + `продолжение накопленной кривой по 12-месячному прогнозу ${s.ipcMonthlyNom}.`,
+      + `продолжение накопленной кривой по 12-месячному прогнозу ${s.ipcMonthly}.`,
   };
 }
 
@@ -441,96 +390,21 @@ function buildIndex(code, bucket = null) {
  */
 export function getViewModeContent({
   chartMode, safeViewMode, isPriceCategory, isHousingFamily, isPpiFamily,
-  isAutoLoanFamily, isMortgageFamily, isCbrTermSliceFamily, isKeyRateFamily, isRuoniaFamily,
-  isBtcUsdFamily, isBrentFamily, isGoldPriceFamily, isUsdRubFamily, isEurRubFamily, isCnyRubFamily,
-  isBudgetFamily,
-  isBankCreditFamily,
-  isHouseholdFinanceFamily,
-  isMonetaryMassFamily,
-  isLaborMarketFamily,
+  isCbrTermSliceFamily,
   isUnemploymentFamily,
-  isWagesNominalFamily,
-  isGdpNominalFamily,
-  isGdpRealFamily,
-  isGdpUseFamily,
-  isInternationalReservesFamily,
-  isExternalDebtFamily,
   indicator,
 }) {
-  if (isGdpUseFamily) {
-    return getGdpUseViewModeContent({ chartMode, indicatorCode: indicator?.code });
-  }
-  if (isGdpNominalFamily) {
-    return getGdpNominalViewModeContent({ chartMode });
-  }
-  if (isGdpRealFamily) {
-    return getGdpRealViewModeContent({ chartMode });
-  }
-  if (isWagesNominalFamily) {
-    return getWagesNominalViewModeContent({ chartMode });
-  }
   if (isUnemploymentFamily) {
     return getUnemploymentViewModeContent({ chartMode });
   }
-  if (isLaborMarketFamily) {
-    return getLaborMarketViewModeContent({ chartMode, indicatorCode: indicator?.code });
-  }
-  if (isExternalDebtFamily) {
-    return getExternalDebtViewModeContent({ chartMode });
-  }
-  if (isInternationalReservesFamily) {
-    return getInternationalReservesViewModeContent({ chartMode });
-  }
-  if (isMonetaryMassFamily) {
-    return getMonetaryMassViewModeContent({ chartMode, indicatorCode: indicator?.code });
-  }
-  if (isHouseholdFinanceFamily) {
-    return getHouseholdFinanceViewModeContent({ chartMode, indicatorCode: indicator?.code });
-  }
-  if (isBankCreditFamily) {
-    return getBankCreditViewModeContent({ chartMode });
-  }
-  if (isBudgetFamily) {
-    return getBudgetViewModeContent({ chartMode, indicatorCode: indicator?.code });
-  }
-  if (isUsdRubFamily) {
-    return getUsdRubViewModeContent({ chartMode });
-  }
-  if (isEurRubFamily) {
-    return getEurRubViewModeContent({ chartMode });
-  }
-  if (isCnyRubFamily) {
-    return getCnyRubViewModeContent({ chartMode });
-  }
-  if (isBrentFamily) {
-    return getBrentViewModeContent({ chartMode });
-  }
-  if (isGoldPriceFamily) {
-    return getGoldPriceViewModeContent({ chartMode });
-  }
-  if (isBtcUsdFamily) {
-    return getBtcUsdViewModeContent({ chartMode });
-  }
-  if (isRuoniaFamily) {
-    return getRuoniaViewModeContent({ chartMode });
-  }
-  if (isKeyRateFamily) {
-    return getKeyRateViewModeContent({ chartMode });
-  }
-  if (isMortgageFamily) {
-    return getMortgageViewModeContent({ chartMode, indicator });
-  }
   if (isPpiFamily) {
     return getPpiViewModeContent({ chartMode, safeViewMode, indicator });
-  }
-  if (isAutoLoanFamily) {
-    return getAutoLoanViewModeContent({ chartMode, indicator });
   }
   if (isCbrTermSliceFamily) {
     return getCbrTermSliceViewModeContent({ chartMode, indicator });
   }
   if (isHousingFamily) {
-    return getHousingViewModeContent({ chartMode, indicator });
+    return getHousingViewModeContent({ chartMode, safeViewMode, indicator });
   }
   if (isPriceCategory) {
     const code = indicator?.code ?? 'cpi';
@@ -546,7 +420,7 @@ export function getViewModeContent({
     if (safeViewMode === 'index') return buildIndex(code);
     if (safeViewMode === 'index-quarterly') return buildIndex(code, 'quarter');
     if (safeViewMode === 'index-annual') return buildIndex(code, 'year');
-    // legacy dataMode без url-режима
+    // совместимость со старым dataMode без url-режима
     if (chartMode === 'weekly') return WEEKLY_BY_CODE[code] ?? WEEKLY;
     if (chartMode === 'cpi') return buildStepMonthly(code);
   }

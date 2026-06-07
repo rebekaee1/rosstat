@@ -13,6 +13,8 @@ describe('ppiViewModeGroups', () => {
     expect(PPI_TOP_GROUPS.map((g) => g.id)).toEqual(['inflation', 'step', 'index']);
     const index = PPI_TOP_GROUPS.find((g) => g.id === 'index');
     expect(index.modes.map((m) => m.mode)).toEqual(['index', 'index-quarterly', 'index-annual']);
+    const step = PPI_TOP_GROUPS.find((g) => g.id === 'step');
+    expect(step.modes.map((m) => m.mode)).toEqual(['mom', 'qoq']);
   });
 
   it('дефолтный режим — инфляция за год (помесячный г/г)', () => {
@@ -22,11 +24,14 @@ describe('ppiViewModeGroups', () => {
     expect(normalizePpiViewMode('annual')).toBe('yoy');
   });
 
-  it('инфляция за год и к прошлому периоду — верхние leaf без раскрытия', () => {
+  it('инфляция за год — leaf; «к прошлому периоду» раскрывается в м/м и кв/кв', () => {
     expect(topGroupForMode('yoy')).toBe('inflation');
     expect(topGroupForMode('mom')).toBe('step');
+    expect(topGroupForMode('qoq')).toBe('step');
     expect(expandedGroupForMode('yoy')).toBe(null);
-    expect(expandedGroupForMode('mom')).toBe(null);
+    expect(expandedGroupForMode('mom')).toBe('step');
+    expect(expandedGroupForMode('qoq')).toBe('step');
+    expect(dataModeForPpiUrlMode('qoq')).toBe('qoq');
   });
 
   it('индекс — раскрывающаяся группа с гранулярностью', () => {

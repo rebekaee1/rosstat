@@ -36,7 +36,7 @@ _ROSSTAT_MEDIA = "https://rosstat.gov.ru/storage/mediabank"
 ROSSTAT_STATIC_URLS: dict[str, str] = {
     "popul_components": "https://rosstat.gov.ru/storage/mediabank/Popul%20components_1990+.xlsx",
     "population_history": "https://rosstat.gov.ru/storage/mediabank/Popul_1897+.xlsx",
-    "gdp_quarterly": "https://rosstat.gov.ru/storage/mediabank/VVP_kvartal_s_1995-2025.xlsx",
+    "gdp_quarterly": "https://rosstat.gov.ru/storage/mediabank/VVP_kvartal_s_1995-2026.xlsx",
     "gdp_use_quarterly": "https://rosstat.gov.ru/storage/mediabank/GDP-quarters-of-use-1995-4kv-2025.xls",
     "ipi_historical_2018": "https://rosstat.gov.ru/storage/mediabank/ind_baza_2018_12-2025.xlsx",
     "age_groups": "https://rosstat.gov.ru/storage/mediabank/demo14.xlsx",

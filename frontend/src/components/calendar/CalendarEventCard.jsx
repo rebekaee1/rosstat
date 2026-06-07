@@ -195,7 +195,7 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0 })
           </p>
         )}
 
-        {event.description && isHigh && (
+        {event.description && (
           <p className="text-xs text-text-tertiary leading-relaxed mb-3 max-w-lg">
             {event.description}
           </p>

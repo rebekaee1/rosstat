@@ -113,6 +113,7 @@ export default function IndicatorChart({
   cpiData,
   forecastData,
   onChartData,
+  onFullData,
   onRangeChange,
   referenceLineY,
   cpiChartTitle,
@@ -139,8 +140,10 @@ export default function IndicatorChart({
   const [chartType, setChartType] = useState(defaultChartType);
   const dragRef = useRef(null);
   const onChartDataRef = useRef(onChartData);
+  const onFullDataRef = useRef(onFullData);
 
   useEffect(() => { onChartDataRef.current = onChartData; }, [onChartData]);
+  useEffect(() => { onFullDataRef.current = onFullData; }, [onFullData]);
 
   if (prevPreset !== rangePreset) {
     setPrevPreset(rangePreset);
@@ -196,6 +199,10 @@ export default function IndicatorChart({
   }, [inflation, cpiData, forecastData, showForecast, mode, chartType]);
 
   const dataLen = chartData.length;
+
+  // Полный ряд (факт + прогноз) для выгрузки CSV/Excel — независимо от
+  // видимого окна графика. Экспорт обязан отдавать всю историю, не 5-летний срез.
+  useEffect(() => { onFullDataRef.current?.(chartData); }, [chartData]);
 
   const presetWindow = useMemo(() => {
     const opt = rangeOptions.find(r => r.key === range);

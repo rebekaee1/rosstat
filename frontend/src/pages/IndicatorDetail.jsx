@@ -13,29 +13,8 @@ import FrequencySwitcher from '../components/FrequencySwitcher';
 import CpiIndicatorControls from '../components/CpiIndicatorControls';
 import HousingIndicatorControls from '../components/HousingIndicatorControls';
 import PpiIndicatorControls from '../components/PpiIndicatorControls';
-import AutoLoanIndicatorControls from '../components/AutoLoanIndicatorControls';
 import CbrTermSliceRateIndicatorControls from '../components/CbrTermSliceRateIndicatorControls';
-import KeyRateIndicatorControls from '../components/KeyRateIndicatorControls';
-import RuoniaIndicatorControls from '../components/RuoniaIndicatorControls';
-import BtcUsdIndicatorControls from '../components/BtcUsdIndicatorControls';
-import BrentIndicatorControls from '../components/BrentIndicatorControls';
-import CnyRubIndicatorControls from '../components/CnyRubIndicatorControls';
-import BudgetIndicatorControls from '../components/BudgetIndicatorControls';
-import BankCreditIndicatorControls from '../components/BankCreditIndicatorControls';
-import HouseholdFinanceIndicatorControls from '../components/HouseholdFinanceIndicatorControls';
-import ExternalDebtIndicatorControls from '../components/ExternalDebtIndicatorControls';
-import GdpUseIndicatorControls from '../components/GdpUseIndicatorControls';
-import GdpNominalIndicatorControls from '../components/GdpNominalIndicatorControls';
-import GdpRealIndicatorControls from '../components/GdpRealIndicatorControls';
-import InternationalReservesIndicatorControls from '../components/InternationalReservesIndicatorControls';
-import MonetaryMassIndicatorControls from '../components/MonetaryMassIndicatorControls';
-import LaborMarketIndicatorControls from '../components/LaborMarketIndicatorControls';
 import UnemploymentIndicatorControls from '../components/UnemploymentIndicatorControls';
-import WagesNominalIndicatorControls from '../components/WagesNominalIndicatorControls';
-import GoldPriceIndicatorControls from '../components/GoldPriceIndicatorControls';
-import EurRubIndicatorControls from '../components/EurRubIndicatorControls';
-import UsdRubIndicatorControls from '../components/UsdRubIndicatorControls';
-import MortgageRateIndicatorControls from '../components/MortgageRateIndicatorControls';
 import ViewModePicker from '../components/ViewModePicker';
 import IndicatorTelemetryGrid from '../components/IndicatorTelemetryGrid';
 import IndicatorChartSection from '../components/IndicatorChartSection';
@@ -52,43 +31,16 @@ import {
   applyAggregateTransform,
   DAILY_AGG_FREQUENCY,
 } from '../lib/viewModeFamilies';
+import {
+  getViewModeFamily,
+  isViewModeFamily,
+  viewModeCanonicalTarget as engineViewModeCanonicalTarget,
+} from '../lib/viewModeEngine';
+import GenericIndicatorView from '../components/GenericIndicatorView';
 import { getViewModeContent } from '../lib/cpiViewModeContent';
 import { HOUSING_CODES, housingCanonicalTarget } from '../lib/housingViewModeResolve';
 import { PPI_CODES, ppiCanonicalTarget } from '../lib/ppiViewModeResolve';
-import { AUTO_LOAN_CODES } from '../lib/autoLoanViewModeResolve';
 import { CBR_TERM_SLICE_CODES } from '../lib/cbrTermSliceRateResolve';
-import { KEY_RATE_CODES, keyRateAggGranularity } from '../lib/keyRateViewModeResolve';
-import { RUONIA_CODES, ruoniaAggGranularity } from '../lib/ruoniaViewModeResolve';
-import { BTC_USD_CODES, btcUsdAggGranularity } from '../lib/btcUsdViewModeResolve';
-import { BRENT_CODES, brentAggGranularity } from '../lib/brentViewModeResolve';
-import { GOLD_PRICE_CODES, goldPriceAggGranularity } from '../lib/goldPriceViewModeResolve';
-import { CNY_RUB_CODES, cnyRubAggGranularity } from '../lib/cnyRubViewModeResolve';
-import { BUDGET_CODES, budgetAggGranularity } from '../lib/budgetViewModeResolve';
-import { BANK_CREDIT_CODES, bankCreditAggGranularity } from '../lib/bankCreditViewModeResolve';
-import {
-  HOUSEHOLD_FINANCE_CODES,
-  householdFinanceAggGranularity,
-} from '../lib/householdFinanceViewModeResolve';
-import {
-  EXTERNAL_DEBT_CODES,
-  externalDebtAggGranularity,
-} from '../lib/externalDebtViewModeResolve';
-import {
-  GDP_USE_CODES,
-  gdpUseAggGranularity,
-} from '../lib/gdpUseViewModeResolve';
-import {
-  INTERNATIONAL_RESERVES_CODES,
-  internationalReservesAggGranularity,
-} from '../lib/internationalReservesViewModeResolve';
-import {
-  MONETARY_MASS_CODES,
-  monetaryMassAggGranularity,
-} from '../lib/monetaryMassViewModeResolve';
-import {
-  LABOR_MARKET_CODES,
-  laborMarketAggGranularity,
-} from '../lib/laborMarketViewModeResolve';
 import {
   UNEMPLOYMENT_ROOT,
   unemploymentCanonicalTarget,
@@ -96,30 +48,6 @@ import {
   unemploymentModeMeta,
   normalizeUnemploymentViewMode,
 } from '../lib/unemploymentViewModeResolve';
-import {
-  WAGES_NOMINAL_ROOT,
-  wagesNominalCanonicalTarget,
-  wagesNominalDataCodeForMode,
-  wagesNominalModeMeta,
-  normalizeWagesNominalViewMode,
-} from '../lib/wagesNominalViewModeResolve';
-import {
-  GDP_NOMINAL_ROOT,
-  gdpNominalCanonicalTarget,
-  gdpNominalDataCodeForMode,
-  gdpNominalModeMeta,
-  normalizeGdpNominalViewMode,
-} from '../lib/gdpNominalViewModeResolve';
-import {
-  GDP_REAL_ROOT,
-  gdpRealCanonicalTarget,
-  gdpRealDataCodeForMode,
-  gdpRealModeMeta,
-  normalizeGdpRealViewMode,
-} from '../lib/gdpRealViewModeResolve';
-import { EUR_RUB_CODES, eurRubAggGranularity } from '../lib/eurRubViewModeResolve';
-import { USD_RUB_CODES, usdRubAggGranularity } from '../lib/usdRubViewModeResolve';
-import { MORTGAGE_RATE_CODES } from '../lib/mortgageRateViewModeResolve';
 import { downloadExcel, downloadCSV } from '../lib/excel';
 import { track, events } from '../lib/track';
 import useScrollDepth from '../lib/useScrollDepth';
@@ -132,6 +60,12 @@ const DEFAULT_REDIRECTS = {
   ipi: 'ipi-yoy',
 };
 
+// Единый config-driven движок (lib/viewModeEngine): все 31 семьи из
+// canonical-конфига (ставки/валюты/сырьё/деньги/кредиты/бюджет/ВВП/рынок
+// труда/население) рендерятся через GenericIndicatorView с backend-derived
+// рядами. Price/index-семьи (ИПЦ/ИЦП/жильё) в конфиг НЕ входят и остаются на
+// специализированных ветках ниже (отдельная миграция index-бакетов).
+
 export default function IndicatorDetail() {
   const { code } = useParams();
   const navigate = useNavigate();
@@ -142,14 +76,36 @@ export default function IndicatorDetail() {
   useEffect(() => {
     const target = DEFAULT_REDIRECTS[code];
     if (target) {
+      // Если дефолтный таргет — sibling generic-семьи (ipi-yoy), НЕ прыгаем на
+      // его код: движок тут же канонизирует его обратно в `base?mode=yoy`, а
+      // эта ветка снова сработает на `base` (mode игнорируется) → бесконечный
+      // редирект-цикл и шторм перезапросов (лаг/подвисание карточки ИПП).
+      // Выражаем дефолт через `?mode=` прямо на base и ставим guard: если mode
+      // уже выставлен — ничего не делаем.
+      const targetCanon = engineViewModeCanonicalTarget(target);
+      if (targetCanon && isViewModeFamily(targetCanon.base)) {
+        if (!searchParams.get('mode')) {
+          navigate(
+            `/indicator/${targetCanon.base}?mode=${encodeURIComponent(targetCanon.mode)}`,
+            { replace: true },
+          );
+        }
+        return;
+      }
       navigate(`/indicator/${target}`, { replace: true });
+      return;
+    }
+    // Config-driven канонизация: derived sibling (m2-yoy) → base?mode=yoy.
+    const engineCanon = engineViewModeCanonicalTarget(code);
+    if (engineCanon) {
+      const fam = getViewModeFamily(engineCanon.base);
+      const isDefault = engineCanon.mode === fam?.defaultMode;
+      const suffix = isDefault ? '' : `?mode=${encodeURIComponent(engineCanon.mode)}`;
+      navigate(`/indicator/${engineCanon.base}${suffix}`, { replace: true });
       return;
     }
     const canon = viewModeCanonicalTarget(code)
       ?? unemploymentCanonicalTarget(code)
-      ?? wagesNominalCanonicalTarget(code)
-      ?? gdpNominalCanonicalTarget(code)
-      ?? gdpRealCanonicalTarget(code)
       ?? housingCanonicalTarget(code)
       ?? ppiCanonicalTarget(code);
     if (canon) {
@@ -161,31 +117,18 @@ export default function IndicatorDetail() {
       const suffix = omitMode ? '' : `?mode=${encodeURIComponent(canon.mode)}`;
       navigate(`/indicator/${canon.parentCode}${suffix}`, { replace: true });
     }
-  }, [code, navigate]);
+  }, [code, navigate, searchParams]);
   // viewMode хранится в URL (?mode=…) — сохраняется при смене состава/среза.
   const urlMode = searchParams.get('mode');
-  const levelRateDefault = AUTO_LOAN_CODES.includes(code)
-    || MORTGAGE_RATE_CODES.includes(code)
+  // Generic config-driven семьи всегда дефолтят в level (defaultMode='level'),
+  // поэтому baseline для setViewMode/defaultViewMode = 'level'.
+  const isGenericFamilyCode = isViewModeFamily(code);
+  // Config-движок (31 семья) уже даёт defaultMode='level'; здесь остаются
+  // только легаси-семьи вне движка, дефолтящие в level: срезы ставок CBR и
+  // корень безработицы.
+  const levelRateDefault = isGenericFamilyCode
     || CBR_TERM_SLICE_CODES.includes(code)
-    || KEY_RATE_CODES.includes(code)
-    || RUONIA_CODES.includes(code)
-    || BTC_USD_CODES.includes(code)
-    || BRENT_CODES.includes(code)
-    || GOLD_PRICE_CODES.includes(code)
-    || USD_RUB_CODES.includes(code)
-    || EUR_RUB_CODES.includes(code)
-    || CNY_RUB_CODES.includes(code)
-    || BUDGET_CODES.includes(code)
-    || BANK_CREDIT_CODES.includes(code)
-    || HOUSEHOLD_FINANCE_CODES.includes(code)
-    || MONETARY_MASS_CODES.includes(code)
-    || INTERNATIONAL_RESERVES_CODES.includes(code)
-    || EXTERNAL_DEBT_CODES.includes(code)
-    || GDP_USE_CODES.includes(code)
-    || code === UNEMPLOYMENT_ROOT
-    || code === WAGES_NOMINAL_ROOT
-    || code === GDP_NOMINAL_ROOT
-    || code === GDP_REAL_ROOT;
+    || code === UNEMPLOYMENT_ROOT;
   const defaultViewMode = levelRateDefault
     ? 'level'
     : PPI_CODES.includes(code) || HOUSING_CODES.includes(code)
@@ -205,8 +148,7 @@ export default function IndicatorDetail() {
       return next;
     }, { replace: true });
   }, [setSearchParams, code, levelRateDefault]);
-  const [chartData, setChartData] = useState([]);
-  const [currentRange, setCurrentRange] = useState('5y');
+  const [fullChartData, setFullChartData] = useState([]);
 
   const {
     data: indicator,
@@ -248,28 +190,10 @@ export default function IndicatorDetail() {
 
   const view = useIndicatorViewModeData({ code, viewMode });
   const {
-    isPriceCategory, isHousingFamily, isPpiFamily, isAutoLoanFamily, isMortgageFamily,
-    isCbrTermSliceFamily, isKeyRateFamily, isRuoniaFamily, isBtcUsdFamily, isBrentFamily,
-    isGoldPriceFamily,
-    isUsdRubFamily,
-    isEurRubFamily,
-    isCnyRubFamily,
-    isBudgetFamily,
-    isBankCreditFamily,
-    isHouseholdFinanceFamily,
-    isMonetaryMassFamily,
-    isLaborMarketFamily,
+    isPriceCategory, isHousingFamily, isPpiFamily,
+    isCbrTermSliceFamily,
     isUnemploymentFamily,
     isUnemploymentCanonical,
-    isWagesNominalFamily,
-    isWagesNominalCanonical,
-    isGdpNominalFamily,
-    isGdpNominalCanonical,
-    isGdpRealFamily,
-    isGdpRealCanonical,
-    isInternationalReservesFamily,
-    isExternalDebtFamily,
-    isGdpUseFamily,
     safeViewMode, chartMode, shouldSubtract100,
     dataPoints: baseDataPoints, momDataPoints, inflationResp,
     quarterlyDataPoints, annualDataPoints, weeklyDataPoints,
@@ -317,32 +241,10 @@ export default function IndicatorDetail() {
     ? unemploymentDataCodeForMode(unemploymentSafeMode)
     : null;
 
-  const wagesSafeMode = isWagesNominalCanonical
-    ? normalizeWagesNominalViewMode(viewMode)
-    : null;
-  const wagesDerivedCode = isWagesNominalCanonical && wagesSafeMode !== 'level'
-    ? wagesNominalDataCodeForMode(wagesSafeMode)
-    : null;
-
-  const gdpNominalSafeMode = isGdpNominalCanonical
-    ? normalizeGdpNominalViewMode(viewMode)
-    : null;
-  const gdpNominalDerivedCode = isGdpNominalCanonical && gdpNominalSafeMode !== 'level'
-    ? gdpNominalDataCodeForMode(gdpNominalSafeMode)
-    : null;
-
-  const gdpRealSafeMode = isGdpRealCanonical
-    ? normalizeGdpRealViewMode(viewMode)
-    : null;
-  const gdpRealDerivedCode = isGdpRealCanonical && gdpRealSafeMode !== 'level'
-    ? gdpRealDataCodeForMode(gdpRealSafeMode)
-    : null;
-
   const familyDerivedCode = isFamily && familyMode !== 'level' && !isVirtualTransform
     ? familyModeMeta?.code ?? null
     : null;
-  const modeSubstituteCode = familyDerivedCode || unemploymentDerivedCode
-    || wagesDerivedCode || gdpNominalDerivedCode || gdpRealDerivedCode;
+  const modeSubstituteCode = familyDerivedCode || unemploymentDerivedCode;
 
   const { data: familyDerivedResp, isLoading: loadingFamilyDerived } = useIndicatorData(
     modeSubstituteCode,
@@ -361,26 +263,10 @@ export default function IndicatorDetail() {
   // ============================================================
   const dailyAggGranularity = useMemo(() => {
     if (isFamily) return null;
-    if (isKeyRateFamily) return keyRateAggGranularity(viewMode);
-    if (isRuoniaFamily) return ruoniaAggGranularity(viewMode);
-    if (isBtcUsdFamily) return btcUsdAggGranularity(viewMode);
-    if (isBrentFamily) return brentAggGranularity(viewMode);
-    if (isGoldPriceFamily) return goldPriceAggGranularity(viewMode);
-    if (isUsdRubFamily) return usdRubAggGranularity(viewMode);
-    if (isEurRubFamily) return eurRubAggGranularity(viewMode);
-    if (isCnyRubFamily) return cnyRubAggGranularity(viewMode);
-    if (isBudgetFamily) return budgetAggGranularity(viewMode);
-    if (isBankCreditFamily) return bankCreditAggGranularity(viewMode);
-    if (isHouseholdFinanceFamily) return householdFinanceAggGranularity(viewMode);
-    if (isMonetaryMassFamily) return monetaryMassAggGranularity(viewMode);
-    if (isLaborMarketFamily) return laborMarketAggGranularity(viewMode);
-    if (isInternationalReservesFamily) return internationalReservesAggGranularity(viewMode);
-    if (isExternalDebtFamily) return externalDebtAggGranularity(viewMode);
-    if (isGdpUseFamily) return gdpUseAggGranularity(viewMode);
     if (indicator?.frequency !== 'daily') return null;
     const mapping = { weekly: 'week', monthly: 'month', quarterly: 'quarter', annual: 'year' };
     return mapping[viewMode] || null;
-  }, [isFamily, isKeyRateFamily, isRuoniaFamily, isBtcUsdFamily, isBrentFamily, isGoldPriceFamily, isUsdRubFamily, isEurRubFamily, isCnyRubFamily, isBudgetFamily, isBankCreditFamily, isHouseholdFinanceFamily, isMonetaryMassFamily, isLaborMarketFamily, isInternationalReservesFamily, isExternalDebtFamily, isGdpUseFamily, indicator?.frequency, viewMode]);
+  }, [isFamily, indicator?.frequency, viewMode]);
 
   const familyDataPoints = useMemo(() => {
     if (isVirtualTransform && familyModeMeta?.transform === 'mom') {
@@ -471,33 +357,6 @@ export default function IndicatorDetail() {
         name: `${indicator.name} (${uMeta.label})`,
       };
     }
-    if (isWagesNominalCanonical && wagesSafeMode !== 'level') {
-      const wMeta = wagesNominalModeMeta(wagesSafeMode);
-      return {
-        ...indicator,
-        unit: wMeta.unit,
-        frequency: wMeta.frequency,
-        name: `${indicator.name} (${wMeta.label})`,
-      };
-    }
-    if (isGdpNominalCanonical && gdpNominalSafeMode !== 'level') {
-      const gMeta = gdpNominalModeMeta(gdpNominalSafeMode);
-      return {
-        ...indicator,
-        unit: gMeta.unit,
-        frequency: gMeta.frequency,
-        name: `${indicator.name} (${gMeta.label})`,
-      };
-    }
-    if (isGdpRealCanonical && gdpRealSafeMode !== 'level') {
-      const rMeta = gdpRealModeMeta(gdpRealSafeMode);
-      return {
-        ...indicator,
-        unit: rMeta.unit,
-        frequency: rMeta.frequency,
-        name: `${indicator.name} (${rMeta.label})`,
-      };
-    }
     if (dailyAggGranularity) {
       const aggLabel = viewMode === 'weekly' ? 'среднее по неделям'
         : viewMode === 'monthly' ? 'среднее по месяцам'
@@ -506,17 +365,11 @@ export default function IndicatorDetail() {
       return {
         ...indicator,
         frequency: DAILY_AGG_FREQUENCY[dailyAggGranularity] ?? indicator.frequency,
-        name: (isKeyRateFamily || isRuoniaFamily || isBtcUsdFamily || isBrentFamily
-          || isGoldPriceFamily || isUsdRubFamily || isEurRubFamily || isCnyRubFamily || isBudgetFamily
-          || isBankCreditFamily || isHouseholdFinanceFamily || isMonetaryMassFamily
-          || isLaborMarketFamily || isInternationalReservesFamily || isExternalDebtFamily
-          || isGdpUseFamily)
-          ? `${indicator.name} (${aggLabel})`
-          : `${indicator.name} (${aggLabel}, avg)`,
+        name: `${indicator.name} (${aggLabel})`,
       };
     }
     return indicator;
-  }, [indicator, isFamily, familyMode, familyModeMeta, isUnemploymentCanonical, unemploymentSafeMode, isWagesNominalCanonical, wagesSafeMode, isGdpNominalCanonical, gdpNominalSafeMode, isGdpRealCanonical, gdpRealSafeMode, dailyAggGranularity, viewMode, isKeyRateFamily, isRuoniaFamily, isBtcUsdFamily, isBrentFamily, isGoldPriceFamily, isUsdRubFamily, isEurRubFamily, isCnyRubFamily, isBudgetFamily, isBankCreditFamily, isHouseholdFinanceFamily, isMonetaryMassFamily, isLaborMarketFamily, isInternationalReservesFamily, isExternalDebtFamily, isGdpUseFamily]);
+  }, [indicator, isFamily, familyMode, familyModeMeta, isUnemploymentCanonical, unemploymentSafeMode, dailyAggGranularity, viewMode]);
 
   const adj = useCallback((v) => {
     if (v == null || !shouldSubtract100) return v;
@@ -549,13 +402,9 @@ export default function IndicatorDetail() {
     indicatorCategory: indicator?.category,
   });
 
-  const handleChartData = useCallback((data) => {
-    setChartData(data);
-  }, [setChartData]);
-
-  const handleRangeChange = useCallback((range) => {
-    setCurrentRange(range);
-  }, [setCurrentRange]);
+  const handleFullData = useCallback((data) => {
+    setFullChartData(data);
+  }, [setFullChartData]);
 
   const downloadMeta = useMemo(() => ({
     name: effectiveIndicator?.name, unit: effectiveIndicator?.unit,
@@ -563,15 +412,16 @@ export default function IndicatorDetail() {
 
   const downloadMode = isPriceCategory ? chartMode : null;
 
+  // Выгрузка — всегда полный ряд (вся история), а не видимое окно графика.
   const handleDownloadExcel = useCallback(() => {
-    downloadExcel(chartData, downloadMode, code, currentRange, downloadMeta);
-    track(events.DOWNLOAD_EXCEL, { indicator: code, range: currentRange, indicatorCategory: indicator?.category });
-  }, [chartData, downloadMode, code, currentRange, downloadMeta, indicator?.category]);
+    downloadExcel(fullChartData, downloadMode, code, 'all', downloadMeta);
+    track(events.DOWNLOAD_EXCEL, { indicator: code, range: 'all', indicatorCategory: indicator?.category });
+  }, [fullChartData, downloadMode, code, downloadMeta, indicator?.category]);
 
   const handleDownloadCSV = useCallback(() => {
-    downloadCSV(chartData, downloadMode, code, currentRange, downloadMeta);
-    track(events.DOWNLOAD_CSV, { indicator: code, range: currentRange, indicatorCategory: indicator?.category });
-  }, [chartData, downloadMode, code, currentRange, downloadMeta, indicator?.category]);
+    downloadCSV(fullChartData, downloadMode, code, 'all', downloadMeta);
+    track(events.DOWNLOAD_CSV, { indicator: code, range: 'all', indicatorCategory: indicator?.category });
+  }, [fullChartData, downloadMode, code, downloadMeta, indicator?.category]);
 
   const chartEmptyHint = useMemo(() => {
     if (dataError) {
@@ -600,20 +450,32 @@ export default function IndicatorDetail() {
   const apiBannerFetching = fetchingInd || fetchingData;
   const viewModeContent = getViewModeContent({
     chartMode, safeViewMode, isPriceCategory, isHousingFamily, isPpiFamily,
-    isAutoLoanFamily, isMortgageFamily, isCbrTermSliceFamily, isKeyRateFamily, isRuoniaFamily,
-    isBtcUsdFamily, isBrentFamily, isGoldPriceFamily, isUsdRubFamily, isEurRubFamily, isCnyRubFamily,
-    isBudgetFamily, isBankCreditFamily, isHouseholdFinanceFamily, isMonetaryMassFamily,
-    isLaborMarketFamily,
+    isCbrTermSliceFamily,
     isUnemploymentFamily,
-    isWagesNominalFamily,
-    isGdpNominalFamily,
-    isGdpRealFamily,
-    isInternationalReservesFamily,
-    isExternalDebtFamily,
-    isGdpUseFamily,
     indicator,
   });
   const s = viewStats;
+
+  const genericFamily = getViewModeFamily(code);
+  const useGeneric = !!genericFamily;
+  if (useGeneric) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24 md:pb-28">
+        <GenericIndicatorView
+          code={code}
+          indicator={indicator}
+          family={genericFamily}
+          viewMode={viewMode}
+          setViewMode={setViewMode}
+          stats={stats}
+          variantGroup={variantGroup}
+          relatedIndicators={relatedIndicators}
+          loadingInd={loadingInd}
+          headerRef={headerRef}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24 md:pb-28">
@@ -653,9 +515,7 @@ export default function IndicatorDetail() {
         isPriceCategory={isPriceCategory}
         isHousingFamily={isHousingFamily}
         isPpiFamily={isPpiFamily}
-        isAutoLoanFamily={isAutoLoanFamily}
-        isCbrTermSliceFamily={isCbrTermSliceFamily}
-        isKeyRateFamily={isKeyRateFamily}
+        chartMode={chartMode}
         safeViewMode={safeViewMode}
         cpiPrevDate={cpiPrevDate}
         adj={adj}
@@ -690,6 +550,10 @@ export default function IndicatorDetail() {
         indicatorCategory={indicator?.category}
       />
 
+      {/* Generic config-driven семьи (31 шт.) рендерятся через
+          GenericIndicatorView (early-return выше) — здесь остаются только
+          специализированные ценовые/индексные карточки и срезы ставок CBR,
+          не входящие в canonical-конфиг движка. */}
       {isPriceCategory ? (
         <CpiIndicatorControls
           variantGroup={variantGroup}
@@ -712,132 +576,10 @@ export default function IndicatorDetail() {
           onChange={setViewMode}
           trackContext={{ code, category: indicator?.category }}
         />
-      ) : isAutoLoanFamily ? (
-        <AutoLoanIndicatorControls
-          currentMode={safeViewMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
-      ) : isMortgageFamily ? (
-        <MortgageRateIndicatorControls
-          currentMode={safeViewMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
       ) : isCbrTermSliceFamily ? (
         <CbrTermSliceRateIndicatorControls
           variantGroup={variantGroup}
           currentCode={code}
-          currentMode={safeViewMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
-      ) : isKeyRateFamily ? (
-        <KeyRateIndicatorControls
-          currentMode={safeViewMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
-      ) : isRuoniaFamily ? (
-        <RuoniaIndicatorControls
-          currentMode={safeViewMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
-      ) : isBtcUsdFamily ? (
-        <BtcUsdIndicatorControls
-          currentMode={safeViewMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
-      ) : isGoldPriceFamily ? (
-        <GoldPriceIndicatorControls
-          currentMode={safeViewMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
-      ) : isBrentFamily ? (
-        <BrentIndicatorControls
-          currentMode={safeViewMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
-      ) : isUsdRubFamily ? (
-        <UsdRubIndicatorControls
-          currentMode={safeViewMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
-      ) : isEurRubFamily ? (
-        <EurRubIndicatorControls
-          currentMode={safeViewMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
-      ) : isCnyRubFamily ? (
-        <CnyRubIndicatorControls
-          currentMode={safeViewMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
-      ) : isBudgetFamily ? (
-        <BudgetIndicatorControls
-          variantGroup={variantGroup}
-          currentCode={code}
-          currentMode={safeViewMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
-      ) : isInternationalReservesFamily ? (
-        <InternationalReservesIndicatorControls
-          currentMode={safeViewMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
-      ) : isExternalDebtFamily ? (
-        <ExternalDebtIndicatorControls
-          currentMode={safeViewMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
-      ) : isGdpUseFamily ? (
-        <GdpUseIndicatorControls
-          variantGroup={variantGroup}
-          currentCode={code}
-          currentMode={safeViewMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
-      ) : isHouseholdFinanceFamily ? (
-        <HouseholdFinanceIndicatorControls
-          variantGroup={variantGroup}
-          currentCode={code}
-          currentMode={safeViewMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
-      ) : isMonetaryMassFamily ? (
-        <MonetaryMassIndicatorControls
-          variantGroup={variantGroup}
-          currentCode={code}
-          currentMode={safeViewMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
-      ) : isGdpRealFamily && isGdpRealCanonical ? (
-        <GdpRealIndicatorControls
-          currentMode={safeViewMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
-      ) : isGdpNominalFamily && isGdpNominalCanonical ? (
-        <GdpNominalIndicatorControls
-          currentMode={safeViewMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
-      ) : isWagesNominalFamily && isWagesNominalCanonical ? (
-        <WagesNominalIndicatorControls
           currentMode={safeViewMode}
           onChange={setViewMode}
           trackContext={{ code, category: indicator?.category }}
@@ -848,34 +590,12 @@ export default function IndicatorDetail() {
           onChange={setViewMode}
           trackContext={{ code, category: indicator?.category }}
         />
-      ) : isLaborMarketFamily ? (
-        <LaborMarketIndicatorControls
-          variantGroup={variantGroup}
-          currentCode={code}
-          currentMode={safeViewMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
-      ) : isBankCreditFamily ? (
-        <BankCreditIndicatorControls
-          variantGroup={variantGroup}
-          currentCode={code}
-          currentMode={safeViewMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
       ) : (
         <VariantGroupPicker group={variantGroup} currentCode={code} />
       )}
 
-      {isFamily && !isHousingFamily && !isPpiFamily && !isAutoLoanFamily && !isMortgageFamily
-        && !isCbrTermSliceFamily && !isKeyRateFamily && !isRuoniaFamily && !isBtcUsdFamily
-        && !isBrentFamily && !isGoldPriceFamily && !isUsdRubFamily && !isEurRubFamily
-        && !isCnyRubFamily && !isBudgetFamily && !isBankCreditFamily && !isHouseholdFinanceFamily
-        && !isMonetaryMassFamily && !isLaborMarketFamily && !isUnemploymentFamily
-        && !isWagesNominalFamily && !isGdpNominalFamily && !isGdpRealFamily
-        && !isInternationalReservesFamily
-        && !isExternalDebtFamily && !isGdpUseFamily && (
+      {isFamily && !isHousingFamily && !isPpiFamily
+        && !isCbrTermSliceFamily && !isUnemploymentFamily && (
         <ViewModePicker
           title="Режим отображения"
           modes={viewFamily.modes.map((m) => ({ mode: m.mode, label: m.label }))}
@@ -885,14 +605,8 @@ export default function IndicatorDetail() {
         />
       )}
 
-      {/* Phase 5: daily-агрегации для прочих daily (не key-rate — свой picker) */}
-      {!isFamily && !isKeyRateFamily && !isRuoniaFamily && !isBtcUsdFamily && !isBrentFamily
-        && !isGoldPriceFamily && !isUsdRubFamily && !isEurRubFamily && !isCnyRubFamily && !isBudgetFamily
-        && !isBankCreditFamily && !isHouseholdFinanceFamily && !isMonetaryMassFamily
-        && !isLaborMarketFamily && !isUnemploymentFamily && !isWagesNominalFamily
-        && !isGdpNominalFamily && !isGdpRealFamily
-        && !isInternationalReservesFamily && !isExternalDebtFamily
-        && !isGdpUseFamily
+      {/* Phase 5: daily-агрегации для прочих daily-индикаторов вне family/движка */}
+      {!isFamily && !isUnemploymentFamily
         && indicator?.frequency === 'daily' && (
         <ViewModePicker
           title="Частота отображения"
@@ -917,29 +631,8 @@ export default function IndicatorDetail() {
         isPriceCategory={isPriceCategory}
         isHousingFamily={isHousingFamily}
         isPpiFamily={isPpiFamily}
-        isAutoLoanFamily={isAutoLoanFamily}
         isCbrTermSliceFamily={isCbrTermSliceFamily}
-        isKeyRateFamily={isKeyRateFamily}
-        isRuoniaFamily={isRuoniaFamily}
-        isBtcUsdFamily={isBtcUsdFamily}
-        isBrentFamily={isBrentFamily}
-        isGoldPriceFamily={isGoldPriceFamily}
-        isUsdRubFamily={isUsdRubFamily}
-        isEurRubFamily={isEurRubFamily}
-        isCnyRubFamily={isCnyRubFamily}
-        isBudgetFamily={isBudgetFamily}
-        isBankCreditFamily={isBankCreditFamily}
-        isHouseholdFinanceFamily={isHouseholdFinanceFamily}
-        isMonetaryMassFamily={isMonetaryMassFamily}
-        isLaborMarketFamily={isLaborMarketFamily}
         isUnemploymentFamily={isUnemploymentFamily}
-        isWagesNominalFamily={isWagesNominalFamily}
-        isGdpNominalFamily={isGdpNominalFamily}
-        isGdpRealFamily={isGdpRealFamily}
-        isInternationalReservesFamily={isInternationalReservesFamily}
-        isExternalDebtFamily={isExternalDebtFamily}
-        isGdpUseFamily={isGdpUseFamily}
-        isMortgageFamily={isMortgageFamily}
         chartLoading={chartLoading}
         inflationResp={inflationResp}
         dataPoints={dataPoints}
@@ -962,8 +655,7 @@ export default function IndicatorDetail() {
         forecastEnabled={forecastEnabled}
         showForecast={showForecast}
         onToggleForecast={() => setShowForecast((v) => !v)}
-        onChartData={handleChartData}
-        onRangeChange={handleRangeChange}
+        onFullData={handleFullData}
         emptyHint={chartEmptyHint}
         onDownloadCsv={handleDownloadCSV}
         onDownloadExcel={handleDownloadExcel}
@@ -1000,28 +692,8 @@ export default function IndicatorDetail() {
         isPriceCategory={isPriceCategory}
         isHousingFamily={isHousingFamily}
         isPpiFamily={isPpiFamily}
-        isAutoLoanFamily={isAutoLoanFamily}
-        isMortgageFamily={isMortgageFamily}
         isCbrTermSliceFamily={isCbrTermSliceFamily}
-        isKeyRateFamily={isKeyRateFamily}
-        isRuoniaFamily={isRuoniaFamily}
-        isBtcUsdFamily={isBtcUsdFamily}
-        isBrentFamily={isBrentFamily}
-        isGoldPriceFamily={isGoldPriceFamily}
-        isUsdRubFamily={isUsdRubFamily}
-        isEurRubFamily={isEurRubFamily}
-        isCnyRubFamily={isCnyRubFamily}
-        isBudgetFamily={isBudgetFamily}
-        isBankCreditFamily={isBankCreditFamily}
-        isHouseholdFinanceFamily={isHouseholdFinanceFamily}
-        isMonetaryMassFamily={isMonetaryMassFamily}
-        isLaborMarketFamily={isLaborMarketFamily}
         isUnemploymentFamily={isUnemploymentFamily}
-        isWagesNominalFamily={isWagesNominalFamily}
-        isGdpNominalFamily={isGdpNominalFamily}
-        isGdpRealFamily={isGdpRealFamily}
-        isInternationalReservesFamily={isInternationalReservesFamily}
-        isExternalDebtFamily={isExternalDebtFamily}
         inflationResp={inflationResp}
         dataPoints={dataPoints}
         momDataPoints={momDataPoints}

@@ -58,11 +58,6 @@ export default function UnemploymentViewModePicker({
     }
   };
 
-  const onSubClick = (groupId, item) => {
-    onChange(item.mode);
-    trackMode(item.mode, groupId);
-  };
-
   const expanded = expandedGroup ? getTopGroup(expandedGroup) : null;
   const subModes = expanded?.modes ?? [];
   const activeTopGroup = highlightedTopGroup(expandedGroup, currentMode);
@@ -73,19 +68,16 @@ export default function UnemploymentViewModePicker({
         Режим показателя
       </p>
       <div className="flex flex-wrap gap-2">
-        {UNEMPLOYMENT_TOP_GROUPS.map((group) => {
-          const active = group.id === activeTopGroup;
-          return (
-            <button
-              key={group.id}
-              type="button"
-              onClick={() => onTopClick(group)}
-              className={btnCls(active)}
-            >
-              {group.label}
-            </button>
-          );
-        })}
+        {UNEMPLOYMENT_TOP_GROUPS.map((group) => (
+          <button
+            key={group.id}
+            type="button"
+            onClick={() => onTopClick(group)}
+            className={btnCls(group.id === activeTopGroup)}
+          >
+            {group.label}
+          </button>
+        ))}
       </div>
       {subModes.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-2 border-t border-border-subtle pt-3">
@@ -93,7 +85,10 @@ export default function UnemploymentViewModePicker({
             <button
               key={item.mode}
               type="button"
-              onClick={() => onSubClick(expanded.id, item)}
+              onClick={() => {
+                onChange(item.mode);
+                trackMode(item.mode, expandedGroup);
+              }}
               className={btnCls(item.mode === currentMode)}
             >
               {item.label}
@@ -104,12 +99,10 @@ export default function UnemploymentViewModePicker({
     </>
   );
 
-  if (compact) {
-    return <div className="space-y-2">{body}</div>;
-  }
+  if (compact) return body;
 
   return (
-    <section className="mb-6 rounded-[1.5rem] border border-border-subtle bg-surface p-4 shadow-sm">
+    <section className="mb-8 rounded-[1.5rem] border border-border-subtle bg-surface p-4 shadow-sm">
       {body}
     </section>
   );

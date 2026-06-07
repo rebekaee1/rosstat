@@ -53,6 +53,8 @@ htmlcov/
 # Temp files
 *.tmp
 *.temp
+*.temp.txt
+*-temp.test.js
 
 # Auto-sync
 .auto-sync.log
@@ -69,3 +71,6 @@ article_NA/
 *.mov
 *.mp4
 RID_listing.*
+
+# Presentation slides (not code)
+фото/

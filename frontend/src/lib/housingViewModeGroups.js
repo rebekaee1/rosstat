@@ -13,14 +13,17 @@ export const HOUSING_TOP_GROUPS = [
     id: 'step',
     label: 'К прошлому периоду',
     modes: [
-      { mode: 'qoq', label: 'К/к' },
+      { mode: 'qoq', label: 'Кв/Кв' },
       { mode: 'yoy', label: 'Г/г' },
     ],
   },
   {
     id: 'index',
     label: 'Индекс',
-    leafMode: 'index',
+    modes: [
+      { mode: 'index', label: 'По кварталам' },
+      { mode: 'index-annual', label: 'По годам' },
+    ],
   },
 ];
 
@@ -33,16 +36,17 @@ export {
 } from './housingViewModeResolve.js';
 
 export const HOUSING_VIEW_MODES_FLAT = [
-  { mode: 'qoq', label: 'К/к' },
+  { mode: 'qoq', label: 'Кв/Кв' },
   { mode: 'yoy', label: 'Г/г' },
-  { mode: 'index', label: 'Индекс' },
+  { mode: 'index', label: 'Индекс — по кварталам' },
+  { mode: 'index-annual', label: 'Индекс — по годам' },
 ];
 
 export function getTopGroup(id) {
   return HOUSING_TOP_GROUPS.find((g) => g.id === id);
 }
 
-/** При раскрытии «К прошлому периоду» — к/к (как в бюллетене Росстата). */
+/** При раскрытии «К прошлому периоду» — кв/кв (как в бюллетене Росстата). */
 export function defaultSubModeForGroup(groupId) {
   const group = getTopGroup(groupId);
   if (!group?.modes) return null;

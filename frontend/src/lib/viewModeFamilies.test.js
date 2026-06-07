@@ -4,7 +4,6 @@ import {
   DAILY_AGG_FREQUENCY,
   findViewModeFamily,
   viewModeCode,
-  viewModeCanonicalTarget,
   applyMoMTransform,
   applyAggregateTransform,
 } from './viewModeFamilies';

@@ -11,6 +11,7 @@ import {
   cn,
   adjustCpiDisplay,
   adjustCpiForecastDisplay,
+  resolveDateFormat,
 } from './format';
 
 describe('format', () => {
@@ -164,5 +165,32 @@ describe('adjustCpiForecastDisplay', () => {
   it('does not clone non-CPI forecasts', () => {
     const response = { forecast: { values: [{ date: '2026-01-01', value: 101.42 }] } };
     expect(adjustCpiForecastDisplay(response, 'gdp-nominal')).toBe(response);
+  });
+});
+
+describe('resolveDateFormat', () => {
+  it('generic family: frequency drives format (chartMode=cpi)', () => {
+    expect(resolveDateFormat({ chartMode: 'cpi', frequency: 'quarterly' })).toBe('quarterly');
+    expect(resolveDateFormat({ chartMode: 'cpi', frequency: 'annual' })).toBe('annual');
+    expect(resolveDateFormat({ chartMode: 'cpi', frequency: 'daily' })).toBe('day');
+    expect(resolveDateFormat({ chartMode: 'cpi', frequency: 'monthly' })).toBe('full');
+    expect(resolveDateFormat({ chartMode: 'cpi', frequency: 'weekly' })).toBe('full');
+  });
+
+  it('legacy CPI: mode drives granularity over frequency', () => {
+    expect(resolveDateFormat({ chartMode: 'quarterly', frequency: 'monthly' })).toBe('quarterly');
+    expect(resolveDateFormat({ chartMode: 'qoq', frequency: 'monthly' })).toBe('quarterly');
+    expect(resolveDateFormat({ chartMode: 'annual', frequency: 'monthly' })).toBe('annual');
+    expect(resolveDateFormat({ chartMode: 'yoy', frequency: 'monthly' })).toBe('full');
+    expect(resolveDateFormat({ safeViewMode: 'index-quarterly', chartMode: 'index' })).toBe('quarterly');
+    expect(resolveDateFormat({ safeViewMode: 'index-annual', chartMode: 'index' })).toBe('annual');
+  });
+
+  it('inflation mode never reads daily branch', () => {
+    expect(resolveDateFormat({ chartMode: 'inflation', frequency: 'daily' })).toBe('full');
+  });
+
+  it('empty input defaults to full', () => {
+    expect(resolveDateFormat()).toBe('full');
   });
 });

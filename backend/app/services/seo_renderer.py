@@ -289,6 +289,31 @@ def _blocks_html(blocks: Iterable[SeoBlock]) -> str:
     )
 
 
+def _faq_json_ld(blocks: Iterable[SeoBlock]) -> dict | None:
+    """FAQPage structured data из seo-блоков индикатора.
+
+    Заголовок блока трактуется как вопрос, тело — как ответ. Позволяет
+    поисковикам распознать Q&A-секцию «О показателе» как структурированные
+    вопросы-ответы (rich result), а не просто текст.
+    """
+    entities = [
+        {
+            "@type": "Question",
+            "name": block.title,
+            "acceptedAnswer": {"@type": "Answer", "text": block.body},
+        }
+        for block in blocks
+        if block.title and block.body
+    ]
+    if len(entities) < 2:
+        return None
+    return {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": entities,
+    }
+
+
 def _indicator_blocks_from_db(indicator: Indicator) -> tuple[SeoBlock, ...]:
     """Convert Indicator.seo_blocks (JSON list of dicts) → tuple[SeoBlock]."""
     raw = indicator.seo_blocks
@@ -474,6 +499,9 @@ async def render_indicator_html(code: str, db: AsyncSession) -> tuple[int, str]:
             "variableMeasured": indicator.name,
         },
     ]
+    faq_ld = _faq_json_ld(_indicator_blocks_from_db(indicator))
+    if faq_ld:
+        json_ld.append(faq_ld)
     extra_head = _indicator_alt_freq_links(indicator)
     html = await build_document(
         title=title,

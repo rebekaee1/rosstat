@@ -431,6 +431,14 @@ docker compose exec backend python -c \
 
 **Проверка при backfill:** перед `bulk_upsert` сверить `target.frequency` с фактической частотой добавляемых точек. Если расхождение — заводим sibling indicator + добавляем режим в `viewModeFamilies`. См. чеклист в `AGENTS.md::Шаг 4` (новый пункт «Frequency consistency»).
 
+### View-mode template change orphans (сироты при смене шаблона)
+
+При смене view-mode шаблона индикатора, при которой **исчезают режимы** (T3→T8 убрал «на конец периода» у зарплаты/labor-force/employment; Tidx→Tidxq убрал «М/м» у `housing-affordability`), sibling-коды старых режимов (`*-eop-quarter`, `*-mom`, …) перестают генерироваться конфигом, но **остаются в БД** с прошлого seed. Seed не удаляет строки и сбрасывает `is_listed=True` для всех, пряча обратно только коды из `INDICATOR_HIDDEN_FROM_LISTING`. Сироты в этот набор не попадают → **всплывают карточками в каталоге**.
+
+**Случай 2026-06-06:** перевод зарплаты/labor-force/employment на T8 оставил 6 сирот `*-eop-quarter/-year` → «Рынок труда» показал 10 карточек вместо 4.
+
+**Правило:** после reseed, изменившего шаблоны, удалять коды, которых нет в текущем `seed_data.INDICATORS` (`IndicatorData` + `Forecast` + `Indicator`). Идемпотентно; чистит и каталог, и пересчёт derived. Не полагаться на то, что seed «сам уберёт» — он только upsert.
+
 ### View-mode family metadata leak (downstream-протекание родительских полей)
 
 При добавлении нового члена в семью `viewModeFamilies.js` (real sibling с другой частотой или единицей) недостаточно прописать `code` — нужно протянуть **все** поля, от которых зависят downstream-компоненты `IndicatorDetail.jsx`. Иначе родительские метаданные «протекают»: pill и заголовок графика читают `indicator.frequency` родителя, секция «Методология» читает обобщённый CPI-блок из `cpiViewModeContent.jsx`, и пользователь видит чужой смысл.

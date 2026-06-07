@@ -7,7 +7,6 @@ import {
   expandedGroupForMode,
   getTopGroup,
   highlightedTopGroup,
-  topGroupForMode,
 } from '../lib/cpiViewModeGroups';
 
 const btnCls = (active) => cn(
@@ -149,5 +148,3 @@ export default function CpiViewModePicker({
     </section>
   );
 }
-
-export { topGroupForMode, expandedGroupForMode };

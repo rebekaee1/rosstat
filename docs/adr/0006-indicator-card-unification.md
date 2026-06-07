@@ -2,7 +2,7 @@
 
 - **Status:** Accepted
 - **Date:** 2026-05-22
-- **Last verified:** 2026-05-22 (звонок «всё доделать» + downstream completion: methodology guard + frequency override).
+- **Last verified:** 2026-06-06 (единый `resolveDateFormat` — формат периода ось/таблица/телеметрия из одного источника; полная выгрузка; мобильные тикеры).
 - **Part of:** [`AGENTS.md`](../../AGENTS.md), [`CONTEXT.md`](../../CONTEXT.md), [`ADR-0001`](0001-derived-indicators-engine-shape.md), [`ADR-0003`](0003-seo-single-source-server-rendered.md).
 - **Контекст:** правки 2026-05-21 (кластер A: «time aggregations & view modes», объединение дублирующих карточек) + звонок 2026-05-22 («всё доделать»).
 
@@ -142,6 +142,14 @@ Variant ≠ режим:
 
 ## Subsequent additions
 
+### 2026-06-06 — единый резолвер формата периода (view-layer single source)
+
+Истинность представления: формат периода (месяц / квартал / год / день) на оси графика, в таблице данных и в телеметрии должен быть согласован и соответствовать гранулярности отображаемого ряда. До этой правки логика дублировалась: `dateFormatFor` жил отдельными копиями в `IndicatorChartSection.jsx` и `IndicatorDataTableSection.jsx`, а `IndicatorTelemetryGrid.jsx` вообще хардкодил `'full'` («месяц ГГГГ») — из-за чего квартальный/годовой/дневной ряд в карточках телеметрии показывал неверную дату («декабрь 2025» вместо «IV кв. 2025», «май 2024» вместо «2024»).
+
+**Решение:** один `resolveDateFormat({ chartMode, frequency, safeViewMode })` в `frontend/src/lib/format.js` — единственный источник правды. Для generic-семей `chartMode === 'cpi'` (нейтрально) и формат диктует `frequency` resolved-sibling'а (тот же single-source принцип, что и `effectiveIndicator` для unit/name); для legacy CPI/housing/ppi гранулярность диктует режим. Ось графика дополнительно ужимает `'full' → 'short'` на уровне тиков, поэтому общий резолвер для оси безопасен. Это развитие frequency-override решения 2026-05-22 (тот закрыл pill/заголовок, этот — даты во всех трёх местах). +30 format-тестов. Браузер-smoke подтвердил deaths (год), gdp-investment (кв), m2 (мес).
+
+Сопутствующие view-layer правки того же прохода (не меняют ось декомпозиции ADR-0006, поэтому без отдельного ADR): полная выгрузка CSV/Excel через `onFullData` (вся история, не видимое окно); статичные тикеры на мобиле (`LiveTicker` без desktop-gate + синхронизация отступов `App`/`Navbar`); полные variant-лейблы жилья. См. `docs/backlog.md::История::2026-06-06`.
+
 ### 2026-05-22 — view-mode family downstream completion
 
 Pilot Phase 1-5 ввёл `viewModeFamilies.js` как реестр семей режимов отображения, но не дотянул правки до всех downstream-компонентов `IndicatorDetail.jsx`. Это привело к двум багам, замеченным на `/indicator/wages-nominal?mode=annual`:
@@ -179,3 +187,30 @@ Pilot Phase 1-5 ввёл `viewModeFamilies.js` как реестр семей р
 Семейство ИПЦ (`cpi`, `cpi-food`, `cpi-nonfood`, `cpi-services`) доведено до эталона: variant по составу + 10 режимов с **отдельными рядами** (в т.ч. разведение `period-weekly` MTD vs `step-weekly` WoW), контент 40 комбинаций, прогнозы по режимам, SEO без дублирования URL.
 
 Операционный и продуктовый чеклист вынесен в **[`docs/indicator-family-playbook.md`](../indicator-family-playbook.md)** — использовать при работе над GDP/PPI и любыми семьями с variant + view-mode. Для одного нового кода по-прежнему достаточно `AGENTS.md::Шаг 4` (7 пунктов).
+
+### 2026-06-06 — view-mode families на весь каталог (config-driven, mode-gaps=0)
+
+Аудит (`scripts/audit-indicator-unification.py` → `indicator-unification-audit.temp.txt`) показал, что из 75 карточек каталога **37 не имели ни одного временного режима** (только нативный уровень): вся годовая демография и наука, квартальная торговля, часть бизнеса и месячных ставок. Унификация прошлого pilot'а покрывала не весь каталог.
+
+**Решение** — довести единый config-driven движок (`backend/app/data/view_model_families.py`, зеркало `frontend/src/lib/viewModelFamilies.generated.json`) до **каждой** карточки, добавив строки `FamilyDef` и недостающие шаблоны. Новые шаблоны:
+
+- **T2y** — месячные ставки/доли: «На конец периода» + «Средняя» + «Г/г в п.п.» (`yoy_abs`). Унифицирует ставочные карточки с запасами. Коды: mortgage-rate, auto-loan-rate, deposit-rate, credit-rate-corp/ind-short, unemployment.
+- **T9s** — квартальный ряд со знаком (сальдо/баланс/нетто): «Уровень» (кв + годовая сумма) + «Г/г в единицах источника». Без Кв/Кв и %-Г/г (база меняет знак). Коды: trade-balance, current-account, fdi-net.
+- **T10** — годовые счётные ряды: «Уровень» + «Г/г %». Коды: births, population, working-age-population, pop-over/under-working-age, pensioners, doctoral-students, grad-students, rd-organizations, rd-personnel (+ deaths из прошлого прохода).
+- **T10a** — годовые коэффициенты/доли/приросты со знаком: «Уровень» + «Г/г абс.» (‰ / п.п. / тыс. чел.). Коды: birth-rate, death-rate, depreciation-rate, innovation-activity, small-business-innovation, tech-innovation-share, population-natural/total-growth, population-migration.
+- **Tidx** — месячный индекс: «Уровень» + «М/м» + «Г/г %». Код: ipi.
+- **Tidxq** — квартальный индекс: «Уровень» + «Кв/Кв» + «Г/г %». Код: housing-affordability.
+
+Прежние T6/T9 расширены на месячные потоки бизнеса (construction-work, housing-commissioned, retail-trade) и квартальные положительные потоки (capital-investment, exports, imports, services-exports, services-imports).
+
+**Negative-capable invariant (ADR-0006 чеклист п.5) реализован движком:** для рядов со знаком и ставок/долей режим «Г/г» использует `yoy_abs` (разница в единицах источника / пунктах), а не `yoy_pct`. Единица режима задаётся полем `FamilyDef.yoy_unit`; `seed_data._sibling_texts` для `-yoy` с unit≠«%» печатает абсолютную формулировку.
+
+**Folding (меньше карточек, ось «derived vs карточка»):** официальный `ipi-yoy` (hand-written `DerivedSpec("ipi-yoy", ("ipi",), ops.yoy)`) свёрнут в режим «Г/г» карточки ИПП через `overrides={"yoy":"ipi-yoy"}` + добавление `ipi-yoy` в `INDICATOR_HIDDEN_FROM_LISTING`. Каталог: 75 → 74.
+
+**Frequency-trap фикс:** `housing-affordability` имел `frequency="monthly"` при фактически квартальном ряде (Mar/Jun/Sep/Dec) — исправлено на `quarterly` + шаблон Tidxq.
+
+**Orphan-cleanup discipline (новая trap):** смена шаблона, при которой исчезают режимы (T3→T8 убрал eop у зарплаты/labor-force/employment; Tidx→Tidxq убрал mom у affordability), оставляет sibling-коды старых режимов сиротами в БД. Seed не удаляет строки, а `is_listed` сбрасывается в True для всех → сироты всплывают карточками в каталоге (регрессия «Рынок труда 4→10», 2026-06-06). Лечение: после reseed удалять коды, которых нет в текущем `seed_data.INDICATORS` (data + forecast + indicator). См. trap «View-mode template change orphans» в `CONTEXT.md`.
+
+**Прогнозы (1.1):** новые годовые/квартальные карточки прогнозов НЕ получили (`forecast_steps=0`); месячные ряды сохранили `monthly_auto` из allow-list `MONTHLY_AUTO_FORECAST_CODES`; CPI/ИЦП/ВВП/жильё со своими стратегиями не тронуты. Проверено: population/exports/trade-balance/birth-rate — 0 точек прогноза; m2/ipi — 12.
+
+**Итог:** `mode-gaps=0` по всему каталогу (74 карточки), `check-all.sh` зелёный (40+ конфиг-тестов, vitest, build). Эталоны CPI/ИЦП/housing-price остаются bespoke (T11 + `cpiViewMode*`/`housingViewMode*`).

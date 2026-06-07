@@ -1,21 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-
-const DESKTOP_TICKER_MQ = '(min-width: 768px)';
-
-function useDesktopTickerVisible() {
-  const [visible, setVisible] = useState(
-    () => typeof window !== 'undefined' && window.matchMedia(DESKTOP_TICKER_MQ).matches,
-  );
-  useEffect(() => {
-    const mq = window.matchMedia(DESKTOP_TICKER_MQ);
-    const sync = () => setVisible(mq.matches);
-    sync();
-    mq.addEventListener('change', sync);
-    return () => mq.removeEventListener('change', sync);
-  }, []);
-  return visible;
-}
 import { Link } from 'react-router-dom';
 import { cn } from '../lib/format';
 
@@ -112,17 +96,15 @@ async function fetchLiveTicker() {
 }
 
 export default function LiveTicker() {
-  const desktopVisible = useDesktopTickerVisible();
+  // Тикер показываем на всех ширинах: на мобиле — статичный компактный ряд
+  // (без анимации/карусели, чтобы не отвлекал), на десктопе — полная строка.
   const { data } = useQuery({
     queryKey: ['ticker', 'live'],
     queryFn: fetchLiveTicker,
     refetchInterval: POLL_INTERVAL_MS,
     refetchOnWindowFocus: false,
     staleTime: 0,
-    enabled: desktopVisible,
   });
-
-  if (!desktopVisible) return null;
 
   const snapshots = data?.snapshots || [];
   if (snapshots.length === 0) {

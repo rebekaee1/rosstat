@@ -1,29 +1,13 @@
 /**
  * Выбор ряда для графика/таблицы по chartMode.
- * key-rate / ruonia / btc-usd / usd|eur|cny-rub: агрегаты уже в dataPoints.
+ * Безработица кладёт свой derived-ряд прямо в dataPoints (chartMode может быть
+ * 'quarterly'/'annual' для сглаживания), поэтому для неё всегда отдаём dataPoints.
+ * Generic config-движок (ставки/валюты/деньги/ВВП/…) рендерится через
+ * GenericIndicatorView с chartMode='cpi' — попадает в дефолтную ветку (dataPoints).
  */
 export function chartSeriesForViewMode({
   chartMode,
-  isKeyRateFamily,
-  isRuoniaFamily,
-  isBtcUsdFamily,
-  isBrentFamily,
-  isGoldPriceFamily,
-  isUsdRubFamily,
-  isEurRubFamily,
-  isCnyRubFamily,
-  isBudgetFamily,
-  isBankCreditFamily,
-  isHouseholdFinanceFamily,
-  isMonetaryMassFamily,
-  isLaborMarketFamily,
   isUnemploymentFamily,
-  isWagesNominalFamily,
-  isGdpNominalFamily,
-  isGdpRealFamily,
-  isInternationalReservesFamily,
-  isExternalDebtFamily,
-  isGdpUseFamily,
   dataPoints,
   momDataPoints,
   quarterlyDataPoints,
@@ -34,14 +18,7 @@ export function chartSeriesForViewMode({
   periodWeeklyDataPoints,
   periodMonthlyDataPoints,
 }) {
-  if (isKeyRateFamily || isRuoniaFamily || isBtcUsdFamily || isBrentFamily
-    || isGoldPriceFamily || isUsdRubFamily || isEurRubFamily || isCnyRubFamily || isBudgetFamily
-    || isBankCreditFamily || isHouseholdFinanceFamily || isMonetaryMassFamily
-    || isLaborMarketFamily || isUnemploymentFamily || isWagesNominalFamily
-    || isGdpNominalFamily
-    || isGdpRealFamily
-    || isInternationalReservesFamily
-    || isExternalDebtFamily || isGdpUseFamily) {
+  if (isUnemploymentFamily) {
     return dataPoints;
   }
   if (chartMode === 'quarterly') return quarterlyDataPoints;

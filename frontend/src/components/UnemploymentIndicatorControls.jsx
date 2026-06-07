@@ -1,6 +1,6 @@
 import UnemploymentViewModePicker from './UnemploymentViewModePicker';
 
-/** Уровень безработицы — помесячно / квартальное среднее / 12М среднее. */
+/** Безработица — только режимы (без variant-среза). */
 export default function UnemploymentIndicatorControls({
   currentMode,
   onChange,

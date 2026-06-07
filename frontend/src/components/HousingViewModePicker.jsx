@@ -7,7 +7,6 @@ import {
   expandedGroupForMode,
   getTopGroup,
   highlightedTopGroup,
-  topGroupForMode,
 } from '../lib/housingViewModeGroups';
 
 const btnCls = (active) => cn(

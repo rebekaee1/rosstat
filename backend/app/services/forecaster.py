@@ -14,6 +14,7 @@ import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 from dateutil.relativedelta import relativedelta
+from statsmodels.tsa.stattools import adfuller
 
 logger = logging.getLogger(__name__)
 
@@ -999,6 +1000,106 @@ def _date_step(frequency: str) -> relativedelta:
     if frequency == "annual":
         return relativedelta(years=1)
     return relativedelta(months=1)
+
+
+# ---------------------------------------------------------------------------
+#  Руководитель's `Прогноз_месячных_данных.ipynb` (June 2026):
+#  generic monthly forecaster with ADF-driven transform selection.
+# ---------------------------------------------------------------------------
+
+def _adf_transform(level: pd.Series) -> tuple[pd.Series, str]:
+    """ADF-driven transform selection (1:1 с ноутбуком `train_model`).
+
+    Уровень стационарен (ADF p<=0.05) → 'stationary' (ряд как есть).
+    Иначе первая разность; если стационарна → 'dif'.
+    Иначе лог-разность → 'log' (только если ряд строго положителен;
+    для знаковых рядов лог неприменим — остаёмся на 'dif').
+    """
+    try:
+        p = adfuller(level, regression="c")[1]
+    except Exception:
+        p = 1.0
+    if p <= 0.05:
+        return level, "stationary"
+
+    diffed = level.diff().dropna()
+    try:
+        p2 = adfuller(diffed, regression="c")[1] if len(diffed) > 3 else 1.0
+    except Exception:
+        p2 = 1.0
+    if p2 <= 0.05:
+        return diffed, "dif"
+
+    if bool((level > 0).all()):
+        return np.log(level).diff(1).dropna(), "log"
+    return diffed, "dif"
+
+
+def train_monthly_auto(
+    dates: List[date],
+    values: List[float],
+    forecast_steps: int = 12,
+) -> ForecastResult:
+    """Generic monthly forecast — порт `Прогноз_месячных_данных.ipynb`.
+
+    Алгоритм (для любого месячного ряда):
+      1. ADF выбирает трансформ: уровень / первая разность / лог-разность.
+      2. На трансформированном ряду — multi-window OLS по лагам
+         `[m, m+1, m+2, 12]` (с убыванием к горизонту), отсев
+         мультиколлинеарности (|corr|>0.7) и backward-elimination по
+         p-value (<0.01); прогнозы окон взвешиваются обратно дисперсии.
+      3. Уровень восстанавливается согласно маркеру трансформа.
+
+    Переиспользует те же чистые блоки (`_ols_step`, `_multi_window_predict`,
+    `_remove_outliers`, `_get_horizon_lags`), что и ранее портированные
+    ноутбуки Никиты — отличие только в ADF-автовыборе трансформа.
+    """
+    model_name = "Monthly-Auto-MW"
+    level = pd.Series(values, index=pd.DatetimeIndex(dates), dtype=float, name="value")
+    if len(level) < 36:
+        logger.info("%s: %d obs < 36, skipping", model_name, len(level))
+        return ForecastResult(model_name=model_name, aic=None, bic=None, points=[])
+
+    data, marker = _adf_transform(level)
+    window_size = len(data)
+    k_max = max(window_size // 60, 2)
+    k_range = range(1, k_max)
+
+    first_value = float(level.iloc[0])
+    sum_transformed = float(np.sum(data))
+    future_dates = [
+        level.index[-1] + relativedelta(months=j) for j in range(1, forecast_steps + 1)
+    ]
+
+    forecasts_aux: list[float] = []
+    points: list[ForecastPoint] = []
+    for m in range(1, forecast_steps + 1):
+        lags = _get_horizon_lags(m)
+        pred = _multi_window_predict(
+            data, window_size, m, lags,
+            apply_rolling=False, k_range=k_range, min_window=12,
+        )
+        if pred is None:
+            pred = float(np.median(data.iloc[-12:]))
+        forecasts_aux.append(pred)
+
+        if marker == "stationary":
+            value = forecasts_aux[-1]
+        elif marker == "dif":
+            value = first_value + sum_transformed + float(np.sum(forecasts_aux))
+        else:  # log
+            value = first_value * float(np.exp(sum_transformed + float(np.sum(forecasts_aux))))
+
+        if not np.isfinite(value):
+            continue
+        points.append(ForecastPoint(
+            date=future_dates[m - 1].date(), value=round(value, 4),
+            lower_bound=None, upper_bound=None,
+        ))
+
+    logger.info("%s forecast (marker=%s): %d points, last=%.2f",
+                model_name, marker, len(points), points[-1].value if points else 0)
+    return ForecastResult(model_name=model_name, aic=None, bic=None, points=points)
 
 
 def train_and_forecast(

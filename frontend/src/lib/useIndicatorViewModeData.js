@@ -10,6 +10,7 @@ import {
 import {
   dataModeForHousingUrlMode,
   HOUSING_CODES,
+  housingIndexGranularity,
   isActiveHousingUrlMode,
   normalizeHousingViewMode,
 } from './housingViewModeResolve';
@@ -21,125 +22,16 @@ import {
   ppiIndexGranularity,
 } from './ppiViewModeResolve';
 import {
-  AUTO_LOAN_CODES,
-  dataModeForAutoLoanUrlMode,
-  isActiveAutoLoanUrlMode,
-  normalizeAutoLoanViewMode,
-} from './autoLoanViewModeResolve';
-import {
   CBR_TERM_SLICE_CODES,
   dataModeForCbrTermSliceUrlMode,
   normalizeCbrTermSliceViewMode,
 } from './cbrTermSliceRateResolve';
-import {
-  KEY_RATE_CODES,
-  dataModeForKeyRateUrlMode,
-  normalizeKeyRateViewMode,
-} from './keyRateViewModeResolve';
-import {
-  MORTGAGE_RATE_CODES,
-  dataModeForMortgageUrlMode,
-  normalizeMortgageViewMode,
-} from './mortgageRateViewModeResolve';
-import {
-  RUONIA_CODES,
-  dataModeForRuoniaUrlMode,
-  normalizeRuoniaViewMode,
-} from './ruoniaViewModeResolve';
-import {
-  BTC_USD_CODES,
-  dataModeForBtcUsdUrlMode,
-  normalizeBtcUsdViewMode,
-} from './btcUsdViewModeResolve';
-import {
-  BRENT_CODES,
-  dataModeForBrentUrlMode,
-  normalizeBrentViewMode,
-} from './brentViewModeResolve';
-import {
-  GOLD_PRICE_CODES,
-  dataModeForGoldPriceUrlMode,
-  normalizeGoldPriceViewMode,
-} from './goldPriceViewModeResolve';
-import {
-  CNY_RUB_CODES,
-  dataModeForCnyRubUrlMode,
-  normalizeCnyRubViewMode,
-} from './cnyRubViewModeResolve';
-import {
-  EUR_RUB_CODES,
-  dataModeForEurRubUrlMode,
-  normalizeEurRubViewMode,
-} from './eurRubViewModeResolve';
-import {
-  USD_RUB_CODES,
-  dataModeForUsdRubUrlMode,
-  normalizeUsdRubViewMode,
-} from './usdRubViewModeResolve';
-import {
-  BUDGET_CODES,
-  dataModeForBudgetUrlMode,
-  normalizeBudgetViewMode,
-} from './budgetViewModeResolve';
-import {
-  BANK_CREDIT_CODES,
-  dataModeForBankCreditUrlMode,
-  normalizeBankCreditViewMode,
-} from './bankCreditViewModeResolve';
-import {
-  HOUSEHOLD_FINANCE_CODES,
-  dataModeForHouseholdFinanceUrlMode,
-  normalizeHouseholdFinanceViewMode,
-} from './householdFinanceViewModeResolve';
-import {
-  EXTERNAL_DEBT_CODES,
-  dataModeForExternalDebtUrlMode,
-  normalizeExternalDebtViewMode,
-} from './externalDebtViewModeResolve';
-import {
-  GDP_USE_CODES,
-  dataModeForGdpUseUrlMode,
-  normalizeGdpUseViewMode,
-} from './gdpUseViewModeResolve';
-import {
-  INTERNATIONAL_RESERVES_CODES,
-  dataModeForInternationalReservesUrlMode,
-  normalizeInternationalReservesViewMode,
-} from './internationalReservesViewModeResolve';
-import {
-  MONETARY_MASS_CODES,
-  dataModeForMonetaryMassUrlMode,
-  normalizeMonetaryMassViewMode,
-} from './monetaryMassViewModeResolve';
-import {
-  LABOR_MARKET_CODES,
-  dataModeForLaborMarketUrlMode,
-  normalizeLaborMarketViewMode,
-} from './laborMarketViewModeResolve';
 import {
   UNEMPLOYMENT_ROOT,
   dataModeForUnemploymentUrlMode,
   isUnemploymentFamily,
   normalizeUnemploymentViewMode,
 } from './unemploymentViewModeResolve';
-import {
-  WAGES_NOMINAL_ROOT,
-  dataModeForWagesNominalUrlMode,
-  isWagesNominalFamily,
-  normalizeWagesNominalViewMode,
-} from './wagesNominalViewModeResolve';
-import {
-  GDP_NOMINAL_ROOT,
-  dataModeForGdpNominalUrlMode,
-  isGdpNominalFamily,
-  normalizeGdpNominalViewMode,
-} from './gdpNominalViewModeResolve';
-import {
-  GDP_REAL_ROOT,
-  dataModeForGdpRealUrlMode,
-  isGdpRealFamily,
-  normalizeGdpRealViewMode,
-} from './gdpRealViewModeResolve';
 import { applyMoMTransform } from './viewModeFamilies';
 
 const CPI_DERIVED_CODES = {
@@ -202,6 +94,7 @@ const HOUSING_DERIVED_CODES = {
 const PPI_DERIVED_CODES = {
   ppi: {
     yoy: 'ppi-yoy',
+    qoq: 'ppi-qoq',
   },
 };
 
@@ -212,6 +105,16 @@ const PPI_DERIVED_CODES = {
 // 2000-01 — начало пост-кризисного периода стабильной денежной политики;
 // этот выбор даёт ~26 лет читаемой экспоненциальной кривой 100 → ~1000+,
 // что покрывает горизонт всех современных решений по ставке/инфляции.
+//
+// Архитектурное решение (cpi-ppi-migrate): накопленный индекс и его
+// квартально-/годовые бакеты остаются client-side display-transform, а НЕ
+// backend-derived рядом. Это детерминированное преобразование уже имеющегося
+// месячного %-ряда с фиксированной базой — тот же класс, что daily-aggregation
+// (ADR-0006: такие трансформации backend derived не заводим). Backend-ряд
+// уровня дал бы SARIMA на экспоненте (некорректный прогноз) и не убрал бы
+// клиентскую chain-логику прогноза (buildCumulativeIndexForecast всё равно
+// продолжает кривую месячным %-прогнозом). Перенос = риск регрессии прогноза
+// и десятки sibling-строк при нулевом видимом выигрыше.
 const CPI_INDEX_BASE_DATE = '2000-01-01';
 const CPI_INDEX_BASE_VALUE = 100;
 
@@ -304,35 +207,9 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
   const isPriceCategory = CPI_CODES.includes(code);
   const isHousingFamily = HOUSING_CODES.includes(code);
   const isPpiFamily = PPI_CODES.includes(code);
-  const isAutoLoanFamily = AUTO_LOAN_CODES.includes(code);
-  const isMortgageFamily = MORTGAGE_RATE_CODES.includes(code);
   const isCbrTermSliceFamily = CBR_TERM_SLICE_CODES.includes(code);
-  const isKeyRateFamily = KEY_RATE_CODES.includes(code);
-  const isRuoniaFamily = RUONIA_CODES.includes(code);
-  const isBtcUsdFamily = BTC_USD_CODES.includes(code);
-  const isBrentFamily = BRENT_CODES.includes(code);
-  const isGoldPriceFamily = GOLD_PRICE_CODES.includes(code);
-  const isCnyRubFamily = CNY_RUB_CODES.includes(code);
-  const isUsdRubFamily = USD_RUB_CODES.includes(code);
-  const isEurRubFamily = EUR_RUB_CODES.includes(code);
-  const isBudgetFamily = BUDGET_CODES.includes(code);
-  const isBankCreditFamily = BANK_CREDIT_CODES.includes(code);
-  const isHouseholdFinanceFamily = HOUSEHOLD_FINANCE_CODES.includes(code);
-  const   isExternalDebtFamily = EXTERNAL_DEBT_CODES.includes(code);
-  const isGdpUseFamily = GDP_USE_CODES.includes(code);
-  const isInternationalReservesFamily = INTERNATIONAL_RESERVES_CODES.includes(code);
-  const isMonetaryMassFamily = MONETARY_MASS_CODES.includes(code);
-  const isLaborMarketFamily = LABOR_MARKET_CODES.includes(code);
   const isUnemploymentCanonical = code === UNEMPLOYMENT_ROOT;
-  const isWagesNominalCanonical = code === WAGES_NOMINAL_ROOT;
-  const isGdpNominalCanonical = code === GDP_NOMINAL_ROOT;
-  const isGdpRealCanonical = code === GDP_REAL_ROOT;
-  const isDailyAggRateFamily = isKeyRateFamily || isRuoniaFamily || isBtcUsdFamily
-    || isBrentFamily || isGoldPriceFamily || isUsdRubFamily || isEurRubFamily || isCnyRubFamily
-    || isBudgetFamily || isBankCreditFamily || isHouseholdFinanceFamily
-    || isMonetaryMassFamily || isLaborMarketFamily || isInternationalReservesFamily
-    || isExternalDebtFamily || isGdpUseFamily;
-  const isLevelRateFamily = isAutoLoanFamily || isMortgageFamily || isCbrTermSliceFamily;
+  const isLevelRateFamily = isCbrTermSliceFamily;
 
   const safeViewMode = isPriceCategory
     ? (isActiveCpiUrlMode(viewMode) ? normalizeCpiViewMode(viewMode) : 'inflation')
@@ -340,105 +217,21 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
       ? (isActiveHousingUrlMode(viewMode) ? normalizeHousingViewMode(viewMode) : 'yoy')
       : isPpiFamily
         ? (isActivePpiUrlMode(viewMode) ? normalizePpiViewMode(viewMode) : 'yoy')
-        : isAutoLoanFamily
-          ? normalizeAutoLoanViewMode(viewMode)
-          : isMortgageFamily
-            ? normalizeMortgageViewMode(viewMode)
-            : isCbrTermSliceFamily
-            ? normalizeCbrTermSliceViewMode(viewMode)
-            : isKeyRateFamily
-              ? normalizeKeyRateViewMode(viewMode)
-              : isRuoniaFamily
-                ? normalizeRuoniaViewMode(viewMode)
-                : isBtcUsdFamily
-                  ? normalizeBtcUsdViewMode(viewMode)
-                  : isBrentFamily
-                    ? normalizeBrentViewMode(viewMode)
-                    : isGoldPriceFamily
-                      ? normalizeGoldPriceViewMode(viewMode)
-                      : isUsdRubFamily
-                        ? normalizeUsdRubViewMode(viewMode)
-                        : isEurRubFamily
-                      ? normalizeEurRubViewMode(viewMode)
-                      : isCnyRubFamily
-                        ? normalizeCnyRubViewMode(viewMode)
-                        : isBudgetFamily
-                          ? normalizeBudgetViewMode(viewMode)
-                          : isBankCreditFamily
-                            ? normalizeBankCreditViewMode(viewMode)
-                            : isHouseholdFinanceFamily
-                              ? normalizeHouseholdFinanceViewMode(viewMode)
-                              : isMonetaryMassFamily
-                                ? normalizeMonetaryMassViewMode(viewMode)
-                                : isLaborMarketFamily
-                                  ? normalizeLaborMarketViewMode(viewMode)
-                                  : isUnemploymentCanonical
-                                    ? normalizeUnemploymentViewMode(viewMode)
-                                    : isWagesNominalCanonical
-                                      ? normalizeWagesNominalViewMode(viewMode)
-                                      : isGdpNominalCanonical
-                                        ? normalizeGdpNominalViewMode(viewMode)
-                                        : isGdpRealCanonical
-                                          ? normalizeGdpRealViewMode(viewMode)
-                                          : isInternationalReservesFamily
-                                  ? normalizeInternationalReservesViewMode(viewMode)
-                                  : isExternalDebtFamily
-                                    ? normalizeExternalDebtViewMode(viewMode)
-                                    : isGdpUseFamily
-                                      ? normalizeGdpUseViewMode(viewMode)
-                                      : viewMode;
+        : isCbrTermSliceFamily
+          ? normalizeCbrTermSliceViewMode(viewMode)
+          : isUnemploymentCanonical
+            ? normalizeUnemploymentViewMode(viewMode)
+            : viewMode;
   const chartMode = isPriceCategory
     ? dataModeForUrlMode(safeViewMode)
     : isHousingFamily
       ? dataModeForHousingUrlMode(safeViewMode)
       : isPpiFamily
         ? dataModeForPpiUrlMode(safeViewMode)
-        : isKeyRateFamily
-          ? dataModeForKeyRateUrlMode(safeViewMode)
-          : isRuoniaFamily
-            ? dataModeForRuoniaUrlMode(safeViewMode)
-            : isBtcUsdFamily
-              ? dataModeForBtcUsdUrlMode(safeViewMode)
-              : isBrentFamily
-                ? dataModeForBrentUrlMode(safeViewMode)
-                : isGoldPriceFamily
-                  ? dataModeForGoldPriceUrlMode(safeViewMode)
-                  : isUsdRubFamily
-                    ? dataModeForUsdRubUrlMode(safeViewMode)
-                    : isEurRubFamily
-                  ? dataModeForEurRubUrlMode(safeViewMode)
-                  : isCnyRubFamily
-                    ? dataModeForCnyRubUrlMode(safeViewMode)
-                    : isBudgetFamily
-                      ? dataModeForBudgetUrlMode(safeViewMode)
-                      : isBankCreditFamily
-                        ? dataModeForBankCreditUrlMode(safeViewMode)
-                        : isHouseholdFinanceFamily
-                          ? dataModeForHouseholdFinanceUrlMode(safeViewMode)
-                          : isMonetaryMassFamily
-                            ? dataModeForMonetaryMassUrlMode(safeViewMode)
-                            : isLaborMarketFamily
-                              ? dataModeForLaborMarketUrlMode(safeViewMode)
-                              : isUnemploymentCanonical
-                                ? dataModeForUnemploymentUrlMode(safeViewMode)
-                                : isWagesNominalCanonical
-                                  ? dataModeForWagesNominalUrlMode(safeViewMode)
-                                  : isGdpNominalCanonical
-                                    ? dataModeForGdpNominalUrlMode(safeViewMode)
-                                    : isGdpRealCanonical
-                                      ? dataModeForGdpRealUrlMode(safeViewMode)
-                                      : isInternationalReservesFamily
-                              ? dataModeForInternationalReservesUrlMode(safeViewMode)
-                              : isExternalDebtFamily
-                                ? dataModeForExternalDebtUrlMode(safeViewMode)
-                                : isGdpUseFamily
-                                  ? dataModeForGdpUseUrlMode(safeViewMode)
-                                  : isLevelRateFamily
-            ? (isAutoLoanFamily
-              ? dataModeForAutoLoanUrlMode(safeViewMode)
-              : isMortgageFamily
-                ? dataModeForMortgageUrlMode(safeViewMode)
-                : dataModeForCbrTermSliceUrlMode(safeViewMode))
+        : isUnemploymentCanonical
+          ? dataModeForUnemploymentUrlMode(safeViewMode)
+          : isCbrTermSliceFamily
+            ? dataModeForCbrTermSliceUrlMode(safeViewMode)
             : 'cpi';
 
   // На режиме `index` строим накопленный индекс (база 100 = первая точка
@@ -447,6 +240,7 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
   const isCumulativeIndex = isCpiIndex(code) && String(safeViewMode).startsWith('index');
   const cpiIndexBucket = isPriceCategory ? cpiIndexGranularity(safeViewMode) : null;
   const ppiIndexBucket = isPpiFamily ? ppiIndexGranularity(safeViewMode) : null;
+  const housingIndexBucket = isHousingFamily ? housingIndexGranularity(safeViewMode) : null;
   const shouldSubtract100 = isCpiIndex(code)
     && !CPI_PERCENT_GROWTH_MODES.has(chartMode)
     && !String(safeViewMode).startsWith('index');
@@ -560,11 +354,16 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
     if (isPpiFamily && chartMode === 'index' && ppiIndexBucket) {
       return lastOfBucket(rawDataPoints, ppiIndexBucket);
     }
+    // Жильё «Индекс» — квартальный ряд индекса; по годам берём уровень на
+    // конец года (последний квартал).
+    if (isHousingFamily && chartMode === 'index' && housingIndexBucket) {
+      return lastOfBucket(rawDataPoints, housingIndexBucket);
+    }
     if (!shouldSubtract100) return rawDataPoints;
     return rawDataPoints.map((p) => ({ ...p, value: Number(p.value) - 100 }));
   }, [
     rawDataPoints, shouldSubtract100, isCumulativeIndex, cpiIndexBucket,
-    isPpiFamily, chartMode, ppiIndexBucket,
+    isPpiFamily, chartMode, ppiIndexBucket, isHousingFamily, housingIndexBucket,
   ]);
 
   const momDataPoints = useMemo(() => {
@@ -586,11 +385,13 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
     }
     // ИЦП по кварталам/годам — прогноз не строим (концы периодов не сводятся).
     if (isPpiFamily && chartMode === 'index' && ppiIndexBucket) return null;
+    // Жильё «Индекс по годам» — прогноз не строим (агрегированные концы лет).
+    if (isHousingFamily && chartMode === 'index' && housingIndexBucket) return null;
     if (!shouldSubtract100) return forecastResp;
     return adjustCpiForecastDisplay(forecastResp, code);
   }, [
     forecastResp, shouldSubtract100, isCumulativeIndex, cpiIndexBucket, dataPoints, code,
-    isPpiFamily, chartMode, ppiIndexBucket,
+    isPpiFamily, chartMode, ppiIndexBucket, isHousingFamily, housingIndexBucket,
   ]);
 
   const quarterlyForecastData = useMemo(
@@ -695,10 +496,10 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
   );
 
   const levelStats = useMemo(
-    () => ((isLevelRateFamily || isDailyAggRateFamily) && chartMode === 'level'
+    () => (isLevelRateFamily && chartMode === 'level'
       ? statsFromPoints(dataPoints)
       : null),
-    [isLevelRateFamily, isDailyAggRateFamily, chartMode, dataPoints],
+    [isLevelRateFamily, chartMode, dataPoints],
   );
 
   const yoyStats = useMemo(
@@ -729,7 +530,7 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
             : chartMode === 'period-weekly' ? periodWeeklyStats
               : chartMode === 'period-monthly' ? periodMonthlyStats
               : chartMode === 'mom' ? momStats
-                : chartMode === 'level' && (isLevelRateFamily || isDailyAggRateFamily) ? levelStats
+                : chartMode === 'level' && isLevelRateFamily ? levelStats
                   : chartMode === 'cpi' ? monthlyStats
                     : chartMode === 'index' && (isCumulativeIndex || isHousingFamily || isPpiFamily)
                       ? indexStats
@@ -739,8 +540,7 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
     ? dataPoints[dataPoints.length - 2].date
     : null;
 
-  const chartLoading = isDailyAggRateFamily ? loadingData
-    : chartMode === 'inflation' ? loadingInflation
+  const chartLoading = chartMode === 'inflation' ? loadingInflation
     : chartMode === 'quarterly' ? loadingQuarterly
       : chartMode === 'annual' ? loadingAnnual
         : chartMode === 'weekly' ? loadingWeekly
@@ -778,34 +578,9 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
     isPriceCategory,
     isHousingFamily,
     isPpiFamily,
-    isAutoLoanFamily,
-    isMortgageFamily,
     isCbrTermSliceFamily,
-    isKeyRateFamily,
-    isRuoniaFamily,
-    isBtcUsdFamily,
-    isBrentFamily,
-    isGoldPriceFamily,
-    isCnyRubFamily,
-    isUsdRubFamily,
-    isEurRubFamily,
-    isBudgetFamily,
-    isBankCreditFamily,
-    isHouseholdFinanceFamily,
-    isMonetaryMassFamily,
-    isLaborMarketFamily,
     isUnemploymentFamily: isUnemploymentFamily(code),
     isUnemploymentCanonical,
-    isWagesNominalFamily: isWagesNominalFamily(code),
-    isWagesNominalCanonical,
-    isGdpNominalFamily: isGdpNominalFamily(code),
-    isGdpNominalCanonical,
-    isGdpRealFamily: isGdpRealFamily(code),
-    isGdpRealCanonical,
-    isInternationalReservesFamily,
-    isExternalDebtFamily,
-    isGdpUseFamily,
-    isDailyAggRateFamily,
     momDataPoints,
     safeViewMode,
     chartMode,

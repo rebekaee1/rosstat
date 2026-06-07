@@ -52,6 +52,28 @@ export function pickChartAxisTicks(points, maxTicks = 7) {
   return ticks;
 }
 
+/**
+ * Единый резолвер формата даты для оси графика, таблицы и телеметрии —
+ * чтобы период-лейблы везде совпадали по гранулярности отображаемого ряда.
+ *
+ * Для generic-семей `chartMode === 'cpi'` (нейтрально) и формат диктует
+ * `frequency` самого ряда (квартальный sibling → 'quarterly' и т.д.).
+ * Для legacy CPI/housing/ppi гранулярность диктует режим (chartMode/safeViewMode).
+ * Ось графика дополнительно ужимает 'full' → 'short' на уровне тиков
+ * (см. IndicatorChart tickFormatter), поэтому здесь 'full' безопасен.
+ */
+export function resolveDateFormat({ chartMode, frequency, safeViewMode } = {}) {
+  if (safeViewMode === 'index-quarterly') return 'quarterly';
+  if (safeViewMode === 'index-annual') return 'annual';
+  if (chartMode === 'quarterly' || chartMode === 'qoq') return 'quarterly';
+  if (chartMode === 'annual') return 'annual';
+  if (chartMode === 'yoy' || chartMode === 'period-weekly' || chartMode === 'period-monthly') return 'full';
+  if (chartMode !== 'inflation' && frequency === 'daily') return 'day';
+  if (frequency === 'quarterly') return 'quarterly';
+  if (frequency === 'annual') return 'annual';
+  return 'full';
+}
+
 export function formatDate(dateStr, format = 'short') {
   if (!dateStr) return '—';
   const d = new Date(dateStr);

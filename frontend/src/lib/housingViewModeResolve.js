@@ -5,7 +5,7 @@
 
 export const HOUSING_CODES = ['housing-price-primary', 'housing-price-secondary'];
 
-export const HOUSING_URL_MODES = ['yoy', 'qoq', 'index'];
+export const HOUSING_URL_MODES = ['yoy', 'qoq', 'index', 'index-annual'];
 
 const LEGACY_TO_CANONICAL = {
   level: 'index',
@@ -27,14 +27,21 @@ export function isActiveHousingUrlMode(viewMode) {
 
 export function topGroupForMode(viewMode) {
   const mode = normalizeHousingViewMode(viewMode);
-  if (mode === 'index') return 'index';
+  if (mode.startsWith('index')) return 'index';
   return 'step';
 }
 
 export function expandedGroupForMode(viewMode) {
   const mode = normalizeHousingViewMode(viewMode);
-  if (mode === 'index') return null;
+  if (mode.startsWith('index')) return 'index';
   return 'step';
+}
+
+/** Подрежимы группы «Индекс» → гранулярность последней точки периода. */
+export function housingIndexGranularity(viewMode) {
+  const mode = normalizeHousingViewMode(viewMode);
+  if (mode === 'index-annual') return 'year';
+  return null;
 }
 
 export function highlightedTopGroup(expandedGroupId, currentMode) {
@@ -44,7 +51,7 @@ export function highlightedTopGroup(expandedGroupId, currentMode) {
 /** Какой ряд грузить (совместим с chartMode в useIndicatorViewModeData). */
 export function dataModeForHousingUrlMode(viewMode) {
   const mode = normalizeHousingViewMode(viewMode);
-  if (mode === 'index') return 'index';
+  if (mode.startsWith('index')) return 'index';
   if (mode === 'qoq') return 'qoq';
   return 'yoy';
 }

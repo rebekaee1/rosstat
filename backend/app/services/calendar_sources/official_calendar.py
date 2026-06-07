@@ -24,17 +24,86 @@ CBR_CALENDAR_PAGE = "https://www.cbr.ru/statistics/indcalendar/"
 CBR_ICS_URL = "https://www.cbr.ru/Queries/FileSource/105732/vCalendar.ics?inline=True"
 CBR_MONETARY_POLICY_CALENDAR_URL = "https://cbr.ru/dkp/cal_mp/"
 MINFIN_SCHEDULE_URL = "https://minfin.gov.ru/ru/statistics/schedule"
-ROSSTAT_CPI_RULE_URL = "https://rosstat.gov.ru/free_doc/new_site/prices/ipc.htm"
+ROSSTAT_CPI_RULE_URL = "https://rosstat.gov.ru/statistics/price"
 ROSSTAT_PRICE_URL = "https://rosstat.gov.ru/statistics/price"
 ROSSTAT_GDP_URL = "https://rosstat.gov.ru/statistics/accounts"
 ROSSTAT_LABOR_URL = "https://rosstat.gov.ru/labor_market_employment_salaries"
 ROSSTAT_BUSINESS_URL = "https://rosstat.gov.ru/enterprise_industrial"
+ROSSTAT_TRADE_URL = "https://rosstat.gov.ru/folder/10705"
+ROSSTAT_CONSTRUCTION_URL = "https://rosstat.gov.ru/compendium/document/50802"
 
 
 MONTH_NAMES_RU = [
     "", "январь", "февраль", "март", "апрель", "май", "июнь",
     "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь",
 ]
+
+
+# Per-indicator context shown on the calendar card. One human sentence about
+# what the indicator measures, so the event description carries meaning beyond
+# the bare scheduling note. Public text: no source filenames, no parser jargon.
+INDICATOR_CALENDAR_CONTEXT = {
+    "cpi": "Индекс потребительских цен измеряет среднее изменение стоимости фиксированного набора товаров и услуг и служит основной мерой инфляции для населения.",
+    "cpi-food": "Изменение розничных цен на продовольственные товары — продуктовая составляющая потребительской инфляции.",
+    "cpi-nonfood": "Изменение розничных цен на непродовольственные товары — одна из составляющих потребительской инфляции.",
+    "cpi-services": "Изменение цен на платные услуги для населения — сервисная составляющая потребительской инфляции.",
+    "ipi": "Индекс промышленного производства отражает динамику выпуска в добыче, обработке, энергетике и водоснабжении относительно базового периода.",
+    "unemployment": "Доля рабочей силы, не имеющей работы, но активно ищущей её, по методологии Международной организации труда.",
+    "wages-nominal": "Среднемесячная начисленная заработная плата работников организаций до вычета налогов.",
+    "retail-trade": "Стоимость товаров, проданных населению через розничную сеть, — индикатор потребительского спроса.",
+    "housing-commissioned": "Площадь введённых в эксплуатацию жилых домов — индикатор активности в жилищном строительстве.",
+    "ppi": "Индекс цен производителей отражает изменение отпускных цен промышленных предприятий и обычно опережает потребительскую инфляцию.",
+    "construction-work": "Объём работ, выполненных по виду деятельности «Строительство», в стоимостном выражении.",
+    "gdp-nominal": "Совокупная рыночная стоимость всех конечных товаров и услуг, произведённых в стране за квартал, в текущих ценах.",
+    "gdp-real": "Объём произведённых товаров и услуг в сопоставимых ценах, очищенный от влияния инфляции.",
+    "budget-revenue": "Поступления в федеральный бюджет: налоговые и неналоговые доходы за отчётный период.",
+    "budget-expenditure": "Кассовые расходы федерального бюджета за отчётный период.",
+    "budget-deficit": "Разница между доходами и расходами федерального бюджета: профицит при превышении доходов, дефицит при их нехватке.",
+    "usd-rub": "Официальный курс доллара США к рублю, устанавливаемый Банком России.",
+    "eur-rub": "Официальный курс евро к рублю, устанавливаемый Банком России.",
+    "cny-rub": "Официальный курс китайского юаня к рублю, устанавливаемый Банком России.",
+    "gold-price": "Учётная цена на золото, устанавливаемая Банком России на основе мировых котировок.",
+    "ruonia": "Индикативная взвешенная ставка однодневных рублёвых межбанковских кредитов крупнейших банков.",
+    "key-rate": "Ключевая ставка — основной инструмент денежно-кредитной политики Банка России, определяющий стоимость денег в экономике.",
+    "international-reserves": "Высоколиквидные иностранные активы государства: валюта, золото и резервная позиция в международных финансовых институтах.",
+    "m2": "Денежный агрегат М2 — наличные деньги и средства на рублёвых счетах организаций и населения.",
+    "m1": "Денежный агрегат М1 — наличные деньги и средства на текущих счетах до востребования.",
+    "m0": "Денежный агрегат М0 — наличные деньги в обращении вне банковской системы.",
+    "business-credit": "Объём кредитов, выданных банками юридическим лицам.",
+    "consumer-credit": "Объём кредитов, выданных банками физическим лицам.",
+    "deposits-business": "Средства организаций, привлечённые банками на счета и депозиты.",
+    "deposits-individual": "Средства физических лиц, размещённые на банковских счетах и вкладах.",
+    "deposit-rate": "Средневзвешенная ставка по банковским депозитам.",
+    "credit-rate-corp-short": "Средневзвешенная ставка по краткосрочным кредитам организациям (до 1 года).",
+    "credit-rate-corp-1to3y": "Средневзвешенная ставка по кредитам организациям на срок от 1 до 3 лет.",
+    "credit-rate-corp-over3y": "Средневзвешенная ставка по кредитам организациям на срок свыше 3 лет.",
+    "credit-rate-ind-short": "Средневзвешенная ставка по краткосрочным кредитам населению (до 1 года).",
+    "credit-rate-ind-1to3y": "Средневзвешенная ставка по кредитам населению на срок от 1 до 3 лет.",
+    "credit-rate-ind-over3y": "Средневзвешенная ставка по кредитам населению на срок свыше 3 лет.",
+    "mortgage-rate": "Средневзвешенная ставка по жилищным (ипотечным) кредитам.",
+    "auto-loan-rate": "Средневзвешенная ставка по автокредитам.",
+    "exports": "Стоимость вывезенных из России товаров за период.",
+    "imports": "Стоимость ввезённых в Россию товаров за период.",
+    "trade-balance": "Сальдо торговли товарами: разница между экспортом и импортом.",
+    "services-exports": "Стоимость услуг, оказанных резидентами России нерезидентам.",
+    "services-imports": "Стоимость услуг, полученных резидентами России от нерезидентов.",
+    "current-account": "Сальдо счёта текущих операций платёжного баланса: торговля товарами и услугами, первичные и вторичные доходы.",
+    "external-debt": "Совокупная задолженность государства, банков и компаний России перед нерезидентами.",
+    "fdi-net": "Чистый приток прямых иностранных инвестиций в небанковский сектор.",
+}
+
+
+def _event_description(code: str | None, schedule_note: str | None = None) -> str | None:
+    """Combine the per-indicator context with a clean scheduling note.
+
+    Keeps the card text meaningful (what the indicator is) and avoids the
+    bare "дата рассчитана по правилу" phrasing that carried no information.
+    """
+    context = INDICATOR_CALENDAR_CONTEXT.get(code or "")
+    parts = [p.strip() for p in (context, schedule_note) if p and p.strip()]
+    if not parts:
+        return None
+    return " ".join(parts)
 
 
 ROSSTAT_MONTHLY_RULES = [
@@ -107,7 +176,7 @@ ROSSTAT_MONTHLY_RULES = [
         "title_en": "Retail Trade Turnover",
         "importance": 2,
         "nth_workday": 15,
-        "source_url": ROSSTAT_BUSINESS_URL,
+        "source_url": ROSSTAT_TRADE_URL,
         "rule": "15-й рабочий день месяца, следующего за отчетным периодом",
     },
     {
@@ -116,7 +185,7 @@ ROSSTAT_MONTHLY_RULES = [
         "title_en": "Housing Commissioned",
         "importance": 1,
         "nth_workday": 15,
-        "source_url": ROSSTAT_BUSINESS_URL,
+        "source_url": ROSSTAT_TRADE_URL,
         "rule": "15-й рабочий день месяца, следующего за отчетным периодом",
     },
     {
@@ -134,7 +203,7 @@ ROSSTAT_MONTHLY_RULES = [
         "title_en": "Construction Work Volume",
         "importance": 1,
         "nth_workday": 15,
-        "source_url": ROSSTAT_BUSINESS_URL,
+        "source_url": ROSSTAT_CONSTRUCTION_URL,
         "rule": "15-й рабочий день месяца, следующего за отчетным периодом",
     },
 ]
@@ -340,7 +409,7 @@ def build_rosstat_rule_candidates(*, today: date, months_ahead: int) -> list[Cal
                 reference_period=_month_ref(ref_month, ref_year),
                 importance=rule["importance"],
                 source_url=rule["source_url"],
-                description=f"Дата рассчитана по официальному правилу: {rule['rule']}.",
+                description=_event_description(rule["code"], f"Плановая дата публикации Росстата: {rule['rule']}."),
                 metadata={
                     "rule": rule["rule"],
                     "working_calendar_source": calendar_source_url(release_year),
@@ -365,7 +434,10 @@ def build_rosstat_rule_candidates(*, today: date, months_ahead: int) -> list[Cal
                 reference_period=f"Q{q} {q_end.year}",
                 importance=rule["importance"],
                 source_url=ROSSTAT_GDP_URL,
-                description=f"Дата рассчитана по официальному лагу: Q+{rule['lag_days']} дней.",
+                description=_event_description(
+                    rule["code"],
+                    f"Оценка Росстата, публикуется ориентировочно через {rule['lag_days']} дней после окончания квартала.",
+                ),
                 metadata={"rule": f"quarter_end + {rule['lag_days']} days"},
             ))
 
@@ -396,7 +468,10 @@ def build_minfin_rule_candidates(*, today: date, months_ahead: int) -> list[Cale
                 reference_period=_month_ref(ref_month, ref_year),
                 importance=rule["importance"],
                 source_url=MINFIN_SCHEDULE_URL,
-                description="Дата рассчитана по графику Минфина: 14-й рабочий день месяца.",
+                description=_event_description(
+                    rule["code"],
+                    "Оперативные данные Минфина России об исполнении федерального бюджета; плановая дата — 14-й рабочий день месяца.",
+                ),
                 metadata={
                     "rule": "14-й рабочий день месяца, следующего за отчетным",
                     "working_calendar_source": calendar_source_url(release_year),
@@ -426,9 +501,10 @@ def build_cbr_monetary_policy_candidates(*, today: date, months_ahead: int) -> l
                 importance=3,
                 source_url=CBR_MONETARY_POLICY_CALENDAR_URL,
                 source_event_uid=f"cbr-key-rate-decision-{meeting_date.isoformat()}",
-                description=(
+                description=_event_description(
+                    "key-rate",
                     "Пресс-релиз в 13:30 МСК, пресс-конференция в 15:00 МСК."
-                    + (" С публикацией среднесрочного прогноза." if meeting["has_forecast"] else "")
+                    + (" С публикацией среднесрочного прогноза." if meeting["has_forecast"] else ""),
                 ),
                 metadata={
                     "calendar_url": CBR_MONETARY_POLICY_CALENDAR_URL,
@@ -451,6 +527,10 @@ def build_cbr_monetary_policy_candidates(*, today: date, months_ahead: int) -> l
                 importance=2,
                 source_url=CBR_MONETARY_POLICY_CALENDAR_URL,
                 source_event_uid=f"cbr-key-rate-summary-{summary_date.isoformat()}",
+                description=_event_description(
+                    "key-rate",
+                    "Публикация резюме обсуждения ключевой ставки Советом директоров Банка России.",
+                ),
                 metadata={
                     "calendar_url": CBR_MONETARY_POLICY_CALENDAR_URL,
                     "schedule_year": 2026,
@@ -481,7 +561,7 @@ def build_cbr_daily_rule_candidates(*, today: date, months_ahead: int) -> list[C
                     importance=rule["importance"],
                     source_url=rule["source_url"],
                     source_event_uid=f"cbr-{rule['code']}-{cursor.isoformat()}",
-                    description=f"Дата рассчитана по официальному календарю ЦБ: {rule['rule']}.",
+                    description=_event_description(rule["code"], "Публикуется по рабочим дням."),
                     metadata={
                         "rule": rule["rule"],
                         "calendar_url": CBR_CALENDAR_PAGE,
@@ -545,7 +625,7 @@ def parse_cbr_ics(
                 importance=importance,
                 source_url=event.get("URL") or source_url,
                 source_event_uid=uid,
-                description=event.get("SUMMARY"),
+                description=_event_description(code) or event.get("SUMMARY"),
                 metadata={"calendar_url": source_url, "raw_summary": event.get("SUMMARY")},
             ))
     return candidates

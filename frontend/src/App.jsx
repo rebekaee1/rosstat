@@ -131,7 +131,7 @@ function AppRoutes() {
       <NoiseOverlay />
       <LiveTicker />
       <Navbar />
-      <main className="relative z-0 flex-1 pt-0 md:pt-9">
+      <main className="relative z-0 flex-1 pt-9">
         <ErrorBoundary>
         <Suspense fallback={
           <div className="min-h-screen flex items-center justify-center">

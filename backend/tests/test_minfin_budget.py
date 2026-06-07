@@ -38,6 +38,25 @@ def test_parse_budget_csv_empty():
     assert len(points) == 0
 
 
+def test_parse_budget_csv_skips_gap_months():
+    """Пропуск месяца в накопленном CSV не должен списываться в один «месяц».
+
+    Mar+Apr отсутствуют, есть Jan, Feb и May. May нельзя разложить в помесячное
+    (cum[May]−cum[Feb] = Mar+Apr+May), поэтому точка May пропускается, а не
+    превращается в ложный трёхмесячный «месяц».
+    """
+    csv_with_gap = """\
+\ufeffГод,Месяц,"Доходы, всего",Нефтегазовые доходы,"Расходы, всего","Дефицит (-)/Профицит (+)"
+2026,январь,2500.0,800.0,3000.0,-500.0
+2026,февраль,5200.0,1700.0,5800.0,-600.0
+2026,май,12000.0,3000.0,18000.0,-6000.0
+"""
+    points = _parse_budget_csv(csv_with_gap)
+    months = [(p.date.month, p.value) for p in points]
+    assert months == [(1, -500.0), (2, -100.0)]
+    assert all(p.date.month != 5 for p in points), "месяц после пропуска не должен попадать в ряд"
+
+
 def test_parse_budget_csv_fallback_columns():
     csv_no_deficit = """\
 \ufeffГод,Месяц,"Доходы, всего","Расходы, всего"

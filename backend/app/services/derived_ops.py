@@ -16,6 +16,10 @@ Currently there are 10 pure ops behind 29 derived indicators (1 op orphaned —
 - yoy                  — year-over-year growth in percent vs the same date one year prior.
 - yoy_abs              — year-over-year absolute change in source units (для balances со знаком).
 - qoq                  — change vs the previous data point in the series, in percent.
+- qoq_abs              — change vs the previous data point in source units (ставки/сальдо со знаком).
+- mom_abs              — month-over-month absolute change (п.п. для ставок/долей).
+- period_over_period_abs — «к прошлому периоду» в абс. выражении на агрег. bucket'е.
+- rebase_to_first      — индекс «первая точка = 100» (годовые счётные уровни).
 - quarterly_avg        — average of three monthly values per quarter (e.g. unemployment).
 - rolling_avg          — trailing N-window average over a monthly series (e.g. annual unemployment).
 - wages_real           — real wage index (2 sources: nominal wages × cumulative CPI).
@@ -268,6 +272,162 @@ def yoy_abs(series: Series) -> Series:
     return points
 
 
+# --- Generic period bucketing (avg / last / sum) -----------------------------
+#
+# Эти ops — backend-эквивалент фронтового `applyAggregateTransform` (среднее)
+# и `lastOfBucket` (на конец периода). Каждый разночастотный результат заводится
+# отдельным sibling-индикатором с верной `frequency` (ADR-0006). Ось «гранулярность»
+# (неделя/месяц/квартал/год) выражается параметром `granularity`; ось «метод»
+# (last / avg / sum) — параметром `method`.
+#
+# Якорь даты для каждого bucket выбран так, чтобы фронтовый formatDate корректно
+# вычислял подпись: month -> date(Y, M, 1); quarter -> date(Y, {3,6,9,12}, 1);
+# year -> date(Y, 1, 1); week -> фактическая дата последнего наблюдения недели
+# (ISO-неделя). Это совпадает с конвенцией существующих ops (quarterly_index,
+# annual_sum) и с тем, как фронт читает квартал/год из даты точки.
+
+_GRANULARITIES: tuple[str, ...] = ("week", "month", "quarter", "year")
+
+
+def _bucket_anchor(d: date, granularity: str) -> tuple[tuple, date | None]:
+    """Return (bucket_key, anchor_date | None). None anchor => use last obs date."""
+    if granularity == "week":
+        iso = d.isocalendar()
+        return (iso[0], iso[1]), None
+    if granularity == "month":
+        return (d.year, d.month), date(d.year, d.month, 1)
+    if granularity == "quarter":
+        q = (d.month - 1) // 3 + 1
+        return (d.year, q), date(d.year, q * 3, 1)
+    if granularity == "year":
+        return (d.year,), date(d.year, 1, 1)
+    raise ValueError(f"unknown granularity: {granularity!r}")
+
+
+def _aggregate(series: Series, granularity: str, method: str) -> Series:
+    """Bucket `series` by `granularity` and reduce each bucket with `method`.
+
+    method ∈ {"last", "avg", "sum"}. Buckets keep source order; the result is
+    one point per bucket, rounded to 4 decimals.
+    """
+    if granularity not in _GRANULARITIES:
+        raise ValueError(f"unknown granularity: {granularity!r}")
+    if method not in ("last", "avg", "sum"):
+        raise ValueError(f"unknown method: {method!r}")
+
+    buckets: dict[tuple, dict] = {}
+    order: list[tuple] = []
+    for d, v in sorted(series, key=lambda p: p[0]):
+        key, anchor = _bucket_anchor(d, granularity)
+        fv = float(v)
+        if key not in buckets:
+            buckets[key] = {"anchor": anchor, "last_date": d, "last": fv, "vals": [fv]}
+            order.append(key)
+        else:
+            b = buckets[key]
+            b["vals"].append(fv)
+            if d >= b["last_date"]:
+                b["last_date"] = d
+                b["last"] = fv
+
+    out: Series = []
+    for key in order:
+        b = buckets[key]
+        anchor = b["anchor"] if b["anchor"] is not None else b["last_date"]
+        if method == "last":
+            val = b["last"]
+        elif method == "avg":
+            val = sum(b["vals"]) / len(b["vals"])
+        else:  # sum
+            val = sum(b["vals"])
+        out.append((anchor, round(val, 4)))
+    return out
+
+
+def period_last(series: Series, granularity: str) -> Series:
+    """Level on the end of each period (last observation in the bucket)."""
+    return _aggregate(series, granularity, "last")
+
+
+def period_avg(series: Series, granularity: str) -> Series:
+    """Arithmetic mean of each period's observations (Средняя за период)."""
+    return _aggregate(series, granularity, "avg")
+
+
+def period_sum(series: Series, granularity: str) -> Series:
+    """Sum of each period's observations (За период — для потоков, напр. бюджет)."""
+    return _aggregate(series, granularity, "sum")
+
+
+def mom(monthly: Series) -> Series:
+    """Month-over-month change in percent vs the immediately preceding calendar
+    month: (val_m / val_{m-1} - 1) * 100, rounded to 2 decimals.
+
+    Explicit (year, month-1) lookup (not just "previous point") so a gap in the
+    monthly series never silently compares across a missing month.
+    """
+    by_ym = {(d.year, d.month): float(v) for d, v in monthly}
+    points: Series = []
+    for (y, m) in sorted(by_ym):
+        py, pm = (y, m - 1) if m > 1 else (y - 1, 12)
+        prev = by_ym.get((py, pm))
+        if prev is None or prev == 0:
+            continue
+        points.append((date(y, m, 1), round((by_ym[(y, m)] / prev - 1.0) * 100.0, 2)))
+    return points
+
+
+def period_over_period(series: Series, granularity: str, method: str = "last") -> Series:
+    """«К прошлому периоду» on an aggregated bucket: aggregate `series` to
+    `granularity` (last for stocks/levels, sum for flows), then take percent
+    change vs the previous bucket. Used e.g. for quarter-over-quarter of a
+    monthly stock (Кв/Кв).
+    """
+    return qoq(_aggregate(series, granularity, method))
+
+
+def mom_abs(monthly: Series) -> Series:
+    """Month-over-month ABSOLUTE change vs the preceding calendar month:
+    val_m − val_{m−1}, in source units (п.п. для ставок/долей).
+
+    Аналог `mom()`, но разница, а не процент: для ставок/долей «изменение на
+    X п.п. за месяц» осмысленнее, чем «процент от процента». Тот же явный
+    (year, month−1) лукап, что и `mom()`, чтобы пропуск месяца не сравнивался
+    через дыру. Округление 2 знака.
+    """
+    by_ym = {(d.year, d.month): float(v) for d, v in monthly}
+    points: Series = []
+    for (y, m) in sorted(by_ym):
+        py, pm = (y, m - 1) if m > 1 else (y - 1, 12)
+        prev = by_ym.get((py, pm))
+        if prev is None:
+            continue
+        points.append((date(y, m, 1), round(by_ym[(y, m)] - prev, 2)))
+    return points
+
+
+def qoq_abs(series: Series) -> Series:
+    """Change vs previous data point in ABSOLUTE terms: val_t − val_{t−1},
+    in source units. Версия `qoq()` для рядов со знаком (сальдо/баланс), где
+    процент к предыдущему кварталу бессмыслен из-за смены знака базы.
+    """
+    sorted_pts = sorted(((d, float(v)) for d, v in series), key=lambda p: p[0])
+    points: Series = []
+    for i in range(1, len(sorted_pts)):
+        d_cur, v_cur = sorted_pts[i]
+        _, v_prev = sorted_pts[i - 1]
+        points.append((d_cur, round(v_cur - v_prev, 2)))
+    return points
+
+
+def period_over_period_abs(series: Series, granularity: str, method: str = "last") -> Series:
+    """«К прошлому периоду» в АБСОЛЮТНОМ выражении: агрегируем `series` к
+    `granularity` (last для уровней/ставок), затем разница к предыдущему
+    bucket'у. Для дневных/месячных ставок Кв/Кв в п.п. вместо процента.
+    """
+    return qoq_abs(_aggregate(series, granularity, method))
+
+
 # --- Monthly rolling aggregates ----------------------------------------------
 
 
@@ -399,6 +559,47 @@ def rebase_to_index(series: Series, base_year: int) -> Series:
     return [(d, round(float(v) / base * 100.0, 2)) for d, v in series]
 
 
+def rebase_to_index_with_base(
+    series: Series, base_series: Series, base_year: int,
+) -> Series:
+    """Index a level series to `base_year=100`, but read the base value from a
+    SECOND series.
+
+    Нужно, когда сам ряд не содержит точек базового года (помесячная зарплата
+    начинается позже базового года), а базовое среднее доступно в смежном
+    годовом ряде того же показателя. Метод::
+
+        base = mean(value in base_series where year == base_year)
+        out[t] = series[t] / base * 100        для всех t в `series`
+
+    Возвращает [] если базовый год отсутствует в `base_series` или база = 0.
+    """
+    if not series or not base_series:
+        return []
+    base_values = [float(v) for d, v in base_series if d.year == base_year]
+    if not base_values:
+        return []
+    base = sum(base_values) / len(base_values)
+    if base == 0:
+        return []
+    return [(d, round(float(v) / base * 100.0, 2)) for d, v in series]
+
+
+def rebase_to_first(series: Series) -> Series:
+    """Index where the FIRST available observation = 100: out[t] = v[t]/v0*100.
+
+    Для годовых счётных рядов (население, число рождений/смертей, персонал
+    НИР), у которых нет более мелкой гранулярности: «индекс» показывает
+    относительную динамику от первой доступной точки — единственная осмысленная
+    дополнительная ось для годовых уровней. Безразмерный (база = 100).
+    """
+    pts = sorted(((d, float(v)) for d, v in series), key=lambda p: p[0])
+    if not pts or pts[0][1] == 0:
+        return []
+    base = pts[0][1]
+    return [(d, round(v / base * 100.0, 2)) for d, v in pts]
+
+
 # --- Affordability index (special: 2 sources) -------------------------------
 
 
@@ -434,6 +635,43 @@ def affordability_index(price_index: Series, wage_index: Series) -> Series:
         if w is None:
             continue
         points.append((date(ym[0], ym[1], 1), round(w / p * 100.0, 2)))
+    return points
+
+
+def affordability_index_monthly(price_index: Series, wage_index: Series) -> Series:
+    """Monthly housing affordability index with quarterly-price forward-fill.
+
+    `wage_index` — помесячный индекс зарплаты; `price_index` — квартальный
+    индекс цен на жильё (обе серии в одной базе, обычно базовый год = 100).
+    Для каждого месяца зарплаты берём индекс цен последнего известного квартала
+    (forward-fill квартального уровня на месяцы внутри квартала)::
+
+        affordability[m] = wage_index[m] / price_index_ffill[m] * 100
+
+    Ряд получается помесячным (по датам зарплаты), начиная с первого месяца,
+    для которого уже известен хотя бы один квартал цен. Значения выше 100
+    означают, что с базового года зарплаты росли быстрее цен на жильё
+    (доступность улучшилась), ниже 100 — наоборот.
+
+    Возвращает [] при пустых входах или отсутствии перекрытия (нет квартала
+    цен раньше первого месяца зарплаты).
+    """
+    if not price_index or not wage_index:
+        return []
+    prices = sorted(((d, float(v)) for d, v in price_index), key=lambda p: p[0])
+    wages = sorted(((d, float(v)) for d, v in wage_index), key=lambda p: p[0])
+
+    points: Series = []
+    pi = 0
+    cur_price: float | None = None
+    for wd, w in wages:
+        # Сдвигаем указатель цен до последнего квартала с датой <= месяца зарплаты.
+        while pi < len(prices) and prices[pi][0] <= wd:
+            cur_price = prices[pi][1]
+            pi += 1
+        if cur_price is None or cur_price == 0:
+            continue
+        points.append((date(wd.year, wd.month, 1), round(w / cur_price * 100.0, 2)))
     return points
 
 

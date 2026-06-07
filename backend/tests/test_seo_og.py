@@ -220,6 +220,31 @@ def test_indicator_keywords_default_generator_works():
     assert len(INDICATOR_SEO_KEYWORDS) >= 30
 
 
+def test_faq_json_ld_from_seo_blocks():
+    """seo_blocks индикатора превращаются в FAQPage structured data: каждый
+    блок — Question + acceptedAnswer. Это делает Q&A-секцию «О показателе»
+    индексируемой как rich result, а не просто текстом."""
+    from app.services.seo_renderer import _faq_json_ld, SeoBlock
+
+    blocks = (
+        SeoBlock(title="Что такое показатель", body="Развёрнутое описание показателя."),
+        SeoBlock(title="Как читать график", body="Развёрнутое описание режимов."),
+    )
+    faq = _faq_json_ld(blocks)
+    assert faq is not None
+    assert faq["@type"] == "FAQPage"
+    assert len(faq["mainEntity"]) == 2
+    first = faq["mainEntity"][0]
+    assert first["@type"] == "Question"
+    assert first["name"] == "Что такое показатель"
+    assert first["acceptedAnswer"]["@type"] == "Answer"
+    assert first["acceptedAnswer"]["text"] == "Развёрнутое описание показателя."
+
+    # Меньше двух валидных блоков — FAQPage не строим (single Q бессмысленен).
+    assert _faq_json_ld((SeoBlock(title="X", body="Y"),)) is None
+    assert _faq_json_ld(()) is None
+
+
 def _extract_title(html: str) -> str:
     start = html.find("<title>")
     end = html.find("</title>")

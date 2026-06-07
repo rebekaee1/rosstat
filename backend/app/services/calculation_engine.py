@@ -35,6 +35,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.cache import cache_invalidate_indicator
+from app.data.view_model_families import iter_derived_specs as _iter_vmf_specs
 from app.models import Indicator, IndicatorData
 from app.services import derived_ops as ops
 from app.services.upsert import bulk_upsert
@@ -149,6 +150,12 @@ DERIVED_SPECS: list[DerivedSpec] = [
     DerivedSpec("exports-yoy", ("exports",), ops.yoy),
     DerivedSpec("imports-yoy", ("imports",), ops.yoy),
     DerivedSpec("ppi-yoy", ("ppi",), ops.yoy),
+    # PPI quarter-over-quarter: индекс сводим к концу квартала, затем % к
+    # предыдущему кварталу (группа «К прошлому периоду» на карточке ИЦП).
+    DerivedSpec(
+        "ppi-qoq", ("ppi",),
+        partial(ops.period_over_period, granularity="quarter", method="last"),
+    ),
     DerivedSpec("housing-yoy-primary", ("housing-price-primary",), ops.yoy),
     DerivedSpec("housing-yoy-secondary", ("housing-price-secondary",), ops.yoy),
     DerivedSpec("housing-qoq-primary", ("housing-price-primary",), ops.qoq),
@@ -168,22 +175,64 @@ DERIVED_SPECS: list[DerivedSpec] = [
     DerivedSpec("exports-qoq", ("exports",), ops.qoq),
     DerivedSpec("imports-qoq", ("imports",), ops.qoq),
 
-    # C2 (звонок 2026-05-21): зарплата в индексной форме, среднее значение 2015 года = 100.
-    # Сопоставимый формат с housing-price-primary/secondary (тоже индекс). База 2015,
-    # потому что Росстат публикует помесячный ряд `wages-nominal` именно с 2015-01-01;
-    # для базы 2010 годовых данных в БД пока нет.
-    DerivedSpec("wages-index", ("wages-nominal",), partial(ops.rebase_to_index, base_year=2015)),
+    # C2 (звонок 2026-05-21): зарплата в индексной форме, базовый год = 2010 (= 100).
+    # Сопоставимый формат с индексами цен на жильё (их база тоже ≈2010), что нужно
+    # для корректного индекса доступности: оба индекса в одной базе → паритет в
+    # окрестности 2010 ≈ 100. Базовое среднее берём из годового ряда зарплаты
+    # (`wages-nominal-annual`, 2010 присутствует), потому что помесячный ряд
+    # `wages-nominal` начинается позже базового года.
+    DerivedSpec(
+        "wages-index", ("wages-nominal", "wages-nominal-annual"),
+        partial(ops.rebase_to_index_with_base, base_year=2010),
+    ),
 
-    # C1 (звонок 2026-05-21): индекс доступности жилья = wages-index / housing-price-secondary × 100.
-    # Значения >100 — за период с 2010 года зарплаты росли быстрее цен на жильё (доступность ↑),
-    # <100 — цены на жильё обогнали зарплаты (доступность ↓). Берём вторичный рынок
-    # как более широкий и менее зависимый от госипотечных программ.
+    # C1 (звонок 2026-05-21, уточнено v7): индекс доступности жилья =
+    # wages-index / housing-price-secondary × 100, ПОМЕСЯЧНО. Цена квартальная →
+    # forward-fill квартального индекса на месяцы внутри квартала. Значения >100 —
+    # с базового года (2010) зарплаты росли быстрее цен на жильё (доступность ↑),
+    # <100 — наоборот. Вторичный рынок (более широкий, менее зависим от госипотеки).
     DerivedSpec(
         "housing-affordability",
         ("housing-price-secondary", "wages-index"),
-        ops.affordability_index,
+        ops.affordability_index_monthly,
+    ),
+    # Первичный рынок — та же формула, второй вариант карточки (variant-picker).
+    DerivedSpec(
+        "housing-affordability-primary",
+        ("housing-price-primary", "wages-index"),
+        ops.affordability_index_monthly,
     ),
 ]
+
+
+# --- Config-driven derived specs (canonical view-mode families) --------------
+#
+# Каждый НЕ-нативный режим карточки из `app.data.view_model_families` становится
+# derived sibling-рядом. Op'ы заданы пайплайном (op_name, kwargs); композиция
+# единообразно выражает «кв/кв на суммах» и «г/г на месячных уровнях недельного
+# ряда». Коды, уже объявленные выше вручную (легаси gdp-*/wages-yoy), оставляем
+# как есть и здесь пропускаем — чтобы не регистрировать дважды. См. ADR-0001.
+
+
+def _make_pipeline_op(pipeline: tuple[tuple[str, dict], ...]) -> DerivedOp:
+    """Скомпоновать пайплайн (op_name, kwargs) в одну чистую Series->Series fn."""
+    steps = [(getattr(ops, name), dict(kwargs)) for name, kwargs in pipeline]
+
+    def _run(series: list[tuple[date, float]]) -> list[tuple[date, float]]:
+        out = series
+        for fn, kwargs in steps:
+            out = fn(out, **kwargs)
+        return out
+
+    return _run
+
+
+_existing_dst = {s.dst_code for s in DERIVED_SPECS}
+for _dst, _src, _pipeline in _iter_vmf_specs():
+    if _dst in _existing_dst:
+        continue
+    DERIVED_SPECS.append(DerivedSpec(_dst, (_src,), _make_pipeline_op(_pipeline)))
+    _existing_dst.add(_dst)
 
 
 async def _load_series(db: AsyncSession, code: str) -> tuple[int | None, list[tuple[date, float]]]:

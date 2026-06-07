@@ -65,7 +65,10 @@ def test_credit_indicator_dataservice_config(code: str) -> None:
     assert ds["measureId"] == 2, f"{code}: measureId must be 2 (rubles)"
     assert ds["element_id"] in ALLOWED_ELEMENT_IDS, code
     assert cfg["backfill_from_year"] == 2014
-    assert cfg["forecast_steps"] == 0
+    # Месячный прогноз руководителя (monthly_auto) включён для всех месячных
+    # ставок, включая кредитные (Прогноз_месячных_данных.ipynb, 2026-06).
+    assert cfg["forecast_steps"] == 12
+    assert cfg["forecast_strategy"] == "monthly_auto"
     assert cfg["forecast_transform"] == "percentage"
     val = cfg["validation"]
     assert val["min"] == 0 and val["max"] == 50

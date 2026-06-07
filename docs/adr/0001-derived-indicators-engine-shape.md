@@ -109,7 +109,15 @@ backend/app/services/calculation_engine.py
   - View-mode families расширены на 4 phases (Phase 1 — trade, Phase 2 — labour: wages-nominal + unemployment, Phase 3 — housing prices, Phase 5 — daily-aggregation). Phase 4 (ставки) намеренно использует **VariantGroupPicker**, не view-modes, потому что срок (1y / 1-3y / >3y) — это отдельные индикаторы со своими рядами, а не режим отображения одного ряда.
   - Engine shape не менялась: добавление spec'а и op'а — однострочное, виртуальные transforms — frontend-only и не трогают `DerivedSpec`.
 
-**Текущие числа (2026-05-22):** 10 операций в `derived_ops.py` (одна — `annual_inflation` — orphaned); 29 `DerivedSpec` в `DERIVED_SPECS` (минус один депрекейтнутый `current-account-yoy` %, плюс два `*-yoy-abs`). Один frontend-only transform (`applyMoMTransform`). Backwards-compat: добавление spec'а — однострочное, виртуальный transform — изолирован на frontend.
+- **2026-06-07 — Индекс доступности жилья: помесячный ряд + общая база 2010.** Задача владельца v7 (пересчёт `housing-affordability`).
+  - Добавлены 2 чистые операции в `derived_ops.py`:
+    - `rebase_to_index_with_base(series, base_series, base_year)` — индексирует ряд к `base_year=100`, но базовое среднее читает из ВТОРОГО ряда. Нужно, т.к. помесячная зарплата (`wages-nominal`) начинается в 2015, а базовый год 2010 присутствует только в годовом ряде (`wages-nominal-annual`). `wages-index` переведён с базы 2015 на базу 2010 через этот op.
+    - `affordability_index_monthly(price_index, wage_index)` — помесячный индекс доступности с forward-fill квартального индекса цен на жильё на месяцы внутри квартала: `affordability[m] = wage_index[m] / price_index_ffill[m] * 100`. Заменяет квартальный `affordability_index` (итерировал по кварталам цен → ~4 точки/год).
+  - `DerivedSpec`: `housing-affordability` переведён на месячный op (src `housing-price-secondary` + `wages-index`); добавлен `housing-affordability-primary` (src `housing-price-primary` + `wages-index`). Обе карточки — variant-группа «Доступность жилья» (как цены на жильё), первичная скрыта из листинга.
+  - **Новый generic-шаблон T12** (`_build_ratio_index` в `view_model_families.py`): индекс-отношение без группы «на конец периода». Группы: Уровень (по месяцам / средняя за квартал / средняя за год) · К прошлому периоду (М/м, Кв/Кв на средних) · Г/г · Скользящая 12 мес. Прогноз не строим. Sibling-ряды (`-avg-quarter/-avg-year/-mom/-qoq/-yoy/-rolling-12m` × 2 рынка) генерируются движком как обычно.
+  - Решение о помесячности: ряд начинается там, где есть помесячная зарплата (2015), цены на жильё forward-fill'ятся внутри квартала. Паритет базы 2010 (оба индекса = 100 в окрестности 2010) проверяется на op-уровне в `test_calculation_engine.py`.
+
+**Текущие числа (2026-06-07):** 12 операций в `derived_ops.py` (одна — `annual_inflation` — orphaned); ручных `DerivedSpec` стало 31 (плюс `housing-affordability-primary`, helper-семья T12). Один frontend-only transform (`applyMoMTransform`). Backwards-compat: добавление spec'а / op'а — однострочное.
 
 ### Out of scope (future ADRs)
 

@@ -1,141 +1,58 @@
 import { describe, it, expect } from 'vitest';
 import { chartSeriesForViewMode } from './chartSeriesForViewMode';
-import { applyAggregateTransform } from './viewModeFamilies';
 
 describe('chartSeriesForViewMode', () => {
-  const agg = applyAggregateTransform(
-    [{ date: '2024-01-15', value: 16 }, { date: '2024-06-10', value: 18 }],
-    'year',
-  );
-  const emptyWeekly = [];
+  const dataPoints = [{ date: '2024-12-01', value: 16 }];
+  const quarterlyDataPoints = [{ date: '2024-12-31', value: 17 }];
+  const annualDataPoints = [{ date: '2024-01-01', value: 8 }];
+  const weeklyDataPoints = [{ date: '2024-01-07', value: 1 }];
 
-  it('key-rate uses parent dataPoints for weekly chartMode', () => {
-    const series = chartSeriesForViewMode({
-      chartMode: 'weekly',
-      isKeyRateFamily: true,
-      isRuoniaFamily: false,
-      isBtcUsdFamily: false,
-      isBrentFamily: false,
-      isUsdRubFamily: false,
-      isEurRubFamily: false,
-      isCnyRubFamily: false,
-      dataPoints: agg,
-      weeklyDataPoints: emptyWeekly,
-    });
-    expect(series).toBe(agg);
-    expect(series.length).toBeGreaterThan(0);
-  });
-
-  it('ruonia uses parent dataPoints for quarterly chartMode', () => {
+  it('unemployment short-circuits to dataPoints even for quarterly chartMode', () => {
+    // Безработица кладёт свой derived-ряд в dataPoints, но chartMode для
+    // сглаживания может быть 'quarterly' — ряд всё равно берём из dataPoints.
     const series = chartSeriesForViewMode({
       chartMode: 'quarterly',
-      isKeyRateFamily: false,
-      isRuoniaFamily: true,
-      isBtcUsdFamily: false,
-      isBrentFamily: false,
-      isUsdRubFamily: false,
-      isEurRubFamily: false,
-      isCnyRubFamily: false,
-      dataPoints: agg,
-      quarterlyDataPoints: [],
+      isUnemploymentFamily: true,
+      dataPoints,
+      quarterlyDataPoints,
     });
-    expect(series).toBe(agg);
+    expect(series).toBe(dataPoints);
   });
 
-  it('btc-usd uses parent dataPoints for monthly chartMode', () => {
+  it('routes quarterly chartMode to quarterlyDataPoints (CPI/PPI/housing)', () => {
     const series = chartSeriesForViewMode({
-      chartMode: 'monthly',
-      isKeyRateFamily: false,
-      isRuoniaFamily: false,
-      isBtcUsdFamily: true,
-      isBrentFamily: false,
-      isUsdRubFamily: false,
-      isEurRubFamily: false,
-      isCnyRubFamily: false,
-      dataPoints: agg,
-      periodMonthlyDataPoints: [],
+      chartMode: 'quarterly',
+      isUnemploymentFamily: false,
+      dataPoints,
+      quarterlyDataPoints,
     });
-    expect(series).toBe(agg);
+    expect(series).toBe(quarterlyDataPoints);
   });
 
-  it('brent uses parent dataPoints for monthly chartMode', () => {
+  it('routes annual chartMode to annualDataPoints', () => {
     const series = chartSeriesForViewMode({
-      chartMode: 'monthly',
-      isKeyRateFamily: false,
-      isRuoniaFamily: false,
-      isBtcUsdFamily: false,
-      isBrentFamily: true,
-      isUsdRubFamily: false,
-      isEurRubFamily: false,
-      isCnyRubFamily: false,
-      dataPoints: agg,
-      periodMonthlyDataPoints: [],
+      chartMode: 'annual',
+      dataPoints,
+      annualDataPoints,
     });
-    expect(series).toBe(agg);
+    expect(series).toBe(annualDataPoints);
   });
 
-  it('usd-rub uses parent dataPoints for monthly chartMode', () => {
-    const series = chartSeriesForViewMode({
-      chartMode: 'monthly',
-      isKeyRateFamily: false,
-      isRuoniaFamily: false,
-      isBtcUsdFamily: false,
-      isBrentFamily: false,
-      isUsdRubFamily: true,
-      isEurRubFamily: false,
-      isCnyRubFamily: false,
-      dataPoints: agg,
-      periodMonthlyDataPoints: [],
-    });
-    expect(series).toBe(agg);
-  });
-
-  it('eur-rub uses parent dataPoints for monthly chartMode', () => {
-    const series = chartSeriesForViewMode({
-      chartMode: 'monthly',
-      isKeyRateFamily: false,
-      isRuoniaFamily: false,
-      isBtcUsdFamily: false,
-      isBrentFamily: false,
-      isUsdRubFamily: false,
-      isEurRubFamily: true,
-      isCnyRubFamily: false,
-      dataPoints: agg,
-      periodMonthlyDataPoints: [],
-    });
-    expect(series).toBe(agg);
-  });
-
-  it('cny-rub uses parent dataPoints for monthly chartMode', () => {
-    const series = chartSeriesForViewMode({
-      chartMode: 'monthly',
-      isKeyRateFamily: false,
-      isRuoniaFamily: false,
-      isBtcUsdFamily: false,
-      isBrentFamily: false,
-      isUsdRubFamily: false,
-      isEurRubFamily: false,
-      isCnyRubFamily: true,
-      dataPoints: agg,
-      periodMonthlyDataPoints: [],
-    });
-    expect(series).toBe(agg);
-  });
-
-  it('non-key-rate weekly still uses weeklyDataPoints', () => {
-    const weekly = [{ date: '2024-01-07', value: 1 }];
+  it('routes weekly chartMode to weeklyDataPoints', () => {
     const series = chartSeriesForViewMode({
       chartMode: 'weekly',
-      isKeyRateFamily: false,
-      isRuoniaFamily: false,
-      isBtcUsdFamily: false,
-      isBrentFamily: false,
-      isUsdRubFamily: false,
-      isEurRubFamily: false,
-      isCnyRubFamily: false,
-      dataPoints: agg,
-      weeklyDataPoints: weekly,
+      dataPoints,
+      weeklyDataPoints,
     });
-    expect(series).toBe(weekly);
+    expect(series).toBe(weeklyDataPoints);
+  });
+
+  it('falls back to dataPoints for generic chartMode (cpi)', () => {
+    // Config-движок рендерит generic-семьи с chartMode='cpi' → default-ветка.
+    const series = chartSeriesForViewMode({
+      chartMode: 'cpi',
+      dataPoints,
+    });
+    expect(series).toBe(dataPoints);
   });
 });

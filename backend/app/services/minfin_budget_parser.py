@@ -155,14 +155,26 @@ def _parse_budget_csv(content: str, target: str = "deficit") -> list[BudgetPoint
 
     points: list[BudgetPoint] = []
     for year, month_data in sorted(rows_by_year.items()):
-        month_data.sort()
-        prev_cumulative = 0.0
-        for month, cumulative in month_data:
+        # Накопленный с начала года → помесячный: monthly[M] = cum[M] − cum[M−1].
+        # При ПРОПУСКЕ месяца предыдущий накопленный неизвестен, поэтому
+        # cum[M] − cum[last<M] = сумма за все пропущенные месяцы, списанная в
+        # один — артефакт (ложный «месяц» в 2-3 раза больше реального). Считаем
+        # помесячное значение только когда непосредственно предыдущий месяц есть
+        # в данных (или это январь — старт года). Иначе точку пропускаем.
+        cum_by_month = {m: c for m, c in month_data}
+        for month in sorted(cum_by_month):
+            cumulative = cum_by_month[month]
             if month == 1:
                 monthly = cumulative
+            elif (month - 1) in cum_by_month:
+                monthly = cumulative - cum_by_month[month - 1]
             else:
-                monthly = cumulative - prev_cumulative
-            prev_cumulative = cumulative
+                logger.warning(
+                    "Minfin budget CSV (%s): месяц %d-%02d без предыдущего месяца "
+                    "в данных — пропускаем (нельзя выделить помесячное из накопленного)",
+                    target, year, month,
+                )
+                continue
             points.append(BudgetPoint(date=date(year, month, 1), value=round(monthly, 1)))
 
     return points
@@ -352,14 +364,17 @@ def _augment_with_press_preliminary(
 
 
 def fetch_and_parse_budget(target: str = "deficit") -> tuple[list[BudgetPoint], str]:
-    """Download and parse budget CSV; augment with press-release preliminary.
+    """Download and parse the Minfin OpenData budget CSV (CSV-only).
 
-    Когда OpenData CSV Минфина отстаёт (типичный лаг 2-3 недели после конца
-    месяца), пресс-центр Минфина обычно публикует «Предварительную оценку
-    исполнения федерального бюджета» через 7-10 дней. Эта функция комбинирует
-    оба источника: CSV — финальные monthly, press-release — preliminary
-    monthly для последнего пропущенного месяца. Idempotent upsert переписывает
-    preliminary на final, когда CSV догонит.
+    Только официальный OpenData CSV (финальные накопленные значения).
+    Пресс-релиз «Предварительная оценка исполнения федерального бюджета»
+    БОЛЬШЕ НЕ подмешивается: его накопленное за «янв-MM» при отстающем CSV
+    давало ложный «месяц» = сумма нескольких пропущенных месяцев (артефакт
+    ~10 трлн / дефицит −2,5 трлн). Когда OpenData CSV догоняет, ряд
+    дозаполняется корректными помесячными значениями автоматически (daily ETL).
+    Helpers `_find_latest_preliminary_press_url` / `_parse_press_release_cumulative`
+    / `_augment_with_press_preliminary` оставлены для возможного будущего
+    использования, но в пайплайне не вызываются.
     """
     csv_url = _find_csv_url()
     session = create_session()
@@ -371,9 +386,7 @@ def fetch_and_parse_budget(target: str = "deficit") -> tuple[list[BudgetPoint], 
     finally:
         session.close()
 
-    augmented, press_url = _augment_with_press_preliminary(points, target)
-    source_url = press_url if press_url else csv_url
-    return augmented, source_url
+    return points, csv_url
 
 
 class MinfinBudgetParser(BaseParser):

@@ -11,7 +11,7 @@
 
 export const PPI_CODES = ['ppi'];
 
-export const PPI_URL_MODES = ['yoy', 'mom', 'index', 'index-quarterly', 'index-annual'];
+export const PPI_URL_MODES = ['yoy', 'mom', 'qoq', 'index', 'index-quarterly', 'index-annual'];
 
 const LEGACY_TO_CANONICAL = {
   level: 'index',
@@ -52,7 +52,7 @@ export function topGroupForMode(viewMode) {
 export function expandedGroupForMode(viewMode) {
   const mode = normalizePpiViewMode(viewMode);
   if (mode === 'yoy') return null;
-  if (mode === 'mom') return null;
+  if (mode === 'mom' || mode === 'qoq') return 'step';
   return 'index';
 }
 

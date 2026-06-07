@@ -15,6 +15,8 @@ export function getPpiChartTitle(chartMode, safeViewMode) {
       return 'Инфляция за год — индекс цен производителей (%)';
     case 'mom':
       return 'К прошлому месяцу — индекс цен производителей (%)';
+    case 'qoq':
+      return 'К прошлому кварталу — индекс цен производителей (%)';
     case 'index':
       return `Индекс цен производителей (2010 = 100)${indexPeriodSuffix(safeViewMode)}`;
     default:
@@ -28,6 +30,8 @@ export function getPpiTableTitle(chartMode, safeViewMode) {
       return 'Исторические данные — инфляция за год (%)';
     case 'mom':
       return 'Исторические данные — к прошлому месяцу (%)';
+    case 'qoq':
+      return 'Исторические данные — к прошлому кварталу (%)';
     case 'index': {
       if (safeViewMode === 'index-quarterly') return 'Исторические данные — индекс на конец квартала';
       if (safeViewMode === 'index-annual') return 'Исторические данные — индекс на конец года';
@@ -64,6 +68,19 @@ function contentMom() {
       'Прирост оптовых цен промышленной продукции к непосредственно '
       + 'предшествующему месяцу, в процентах. Ряд ежемесячный. Источник — Росстат. '
       + 'Из месячных приростов складывается накопленный индекс цен производителей.',
+  };
+}
+
+function contentQoq() {
+  return {
+    description:
+      'Изменение цен производителей по сравнению с предыдущим кварталом, в процентах. '
+      + 'Режим сглаживает месячные колебания и показывает квартальный шаг динамики '
+      + 'оптовых цен промышленной продукции.',
+    methodology:
+      'Уровень цен производителей приводится к значению на конец квартала, '
+      + 'после чего рассчитывается процентное изменение к предыдущему кварталу. '
+      + 'Источник — Росстат.',
   };
 }
 
@@ -108,6 +125,7 @@ function contentIndex(safeViewMode) {
 export function getPpiViewModeContent({ chartMode, safeViewMode, indicator }) {
   if (chartMode === 'yoy') return contentYoy();
   if (chartMode === 'mom') return contentMom();
+  if (chartMode === 'qoq') return contentQoq();
   if (chartMode === 'index') return contentIndex(safeViewMode);
   return {
     description: indicator?.description ?? '',

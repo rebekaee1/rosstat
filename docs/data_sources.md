@@ -195,8 +195,8 @@ Multi-source merge:
 
 | Индикатор | gdp_source | File | Modern sheet | History sheet | Row |
 |-----------|------------|------|--------------|---------------|-----|
-| `gdp-nominal` | official_quarterly | `mediabank/VVP_kvartal_s_1995-2025.xlsx` | `2` | `1` | — |
-| `gdp-real` | official_quarterly | `mediabank/VVP_kvartal_s_1995-2025.xlsx` | `9` | `3` | — |
+| `gdp-nominal` | official_quarterly | `mediabank/VVP_kvartal_s_1995-2026.xlsx` | `2` | `1` | — |
+| `gdp-real` | official_quarterly | `mediabank/VVP_kvartal_s_1995-2026.xlsx` | `9` | `3` | — |
 | `gdp-consumption` | official_use | `mediabank/GDP-quarters-of-use-1995-4kv-2025.xls` | `2` | `1` | 7 |
 | `gdp-government` | official_use | `mediabank/GDP-quarters-of-use-1995-4kv-2025.xls` | `2` | `1` | 8 |
 | `gdp-investment` | official_use | `mediabank/GDP-quarters-of-use-1995-4kv-2025.xls` | `2` | `1` | 11 |

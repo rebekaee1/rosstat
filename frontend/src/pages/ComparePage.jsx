@@ -22,6 +22,24 @@ const RANGE_OPTIONS = [
 const COLOR_A = '#d4a574';
 const COLOR_B = '#7dd3fc';
 
+const SCALE_OPTIONS = [
+  { key: 'values', label: 'Значения' },
+  { key: 'index', label: 'Индекс (старт 100)' },
+];
+
+const FREQ_LABEL = {
+  daily: 'ежедневно',
+  weekly: 'еженедельно',
+  monthly: 'ежемесячно',
+  quarterly: 'ежеквартально',
+  annual: 'ежегодно',
+  yearly: 'ежегодно',
+};
+
+function freqLabel(freq) {
+  return FREQ_LABEL[freq] || freq || '';
+}
+
 function IndicatorSelector({ value, onChange, indicators, label, disabled }) {
   return (
     <div className="flex flex-col gap-1.5">
@@ -70,6 +88,7 @@ export default function ComparePage() {
   const codeA = searchParams.get('a') || '';
   const codeB = searchParams.get('b') || '';
   const [range, setRange] = useState('5y');
+  const [scale, setScale] = useState('values');
 
   useDocumentMeta({
     title: 'Сравнение индикаторов',
@@ -107,12 +126,16 @@ export default function ComparePage() {
   const indA = useMemo(() => indicators?.find((i) => i.code === codeA), [indicators, codeA]);
   const indB = useMemo(() => indicators?.find((i) => i.code === codeB), [indicators, codeB]);
 
+  const indexed = scale === 'index';
+
   const chartData = useMemo(() => {
     const pointsA = Array.isArray(dataA?.data) ? dataA.data : [];
     const pointsB = Array.isArray(dataB?.data) ? dataB.data : [];
 
-    const adjA = isCpiIndex(codeA);
-    const adjB = isCpiIndex(codeB);
+    // В режиме «Индекс» нормируем сырое значение к старту = 100, поэтому
+    // CPI-сдвиг (value − 100) не применяем: важна относительная динамика.
+    const adjA = !indexed && isCpiIndex(codeA);
+    const adjB = !indexed && isCpiIndex(codeB);
 
     const mapA = new Map(pointsA.map((p) => [p.date, adjA ? p.value - 100 : p.value]));
     const mapB = new Map(pointsB.map((p) => [p.date, adjB ? p.value - 100 : p.value]));
@@ -143,19 +166,49 @@ export default function ComparePage() {
     const unitA = indA?.unit || '%';
     const unitB = indB?.unit || '%';
 
+    // База нормирования — первое значение, реально попавшее в окно периода
+    // (с учётом forward-fill из истории до cutoff).
+    let baseA = lastA;
+    let baseB = lastB;
+    if (indexed) {
+      for (const d of dates) {
+        if (baseA == null && mapA.has(d)) baseA = mapA.get(d);
+        if (baseB == null && mapB.has(d)) baseB = mapB.get(d);
+        if (baseA != null && baseB != null) break;
+      }
+    }
+
+    const idxUnit = 'пунктов (старт = 100)';
+
     return dates.map((d) => {
       if (mapA.has(d)) lastA = mapA.get(d);
       if (mapB.has(d)) lastB = mapB.get(d);
       const row = { date: d };
-      if (lastA != null) { row.valA = lastA; row.valA_unit = unitA; }
-      if (lastB != null) { row.valB = lastB; row.valB_unit = unitB; }
+      if (lastA != null) {
+        if (indexed) {
+          if (baseA) { row.valA = (lastA / baseA) * 100; row.valA_unit = idxUnit; }
+        } else { row.valA = lastA; row.valA_unit = unitA; }
+      }
+      if (lastB != null) {
+        if (indexed) {
+          if (baseB) { row.valB = (lastB / baseB) * 100; row.valB_unit = idxUnit; }
+        } else { row.valB = lastB; row.valB_unit = unitB; }
+      }
       return row;
     });
-  }, [dataA, dataB, indA, indB, range, codeA, codeB]);
+  }, [dataA, dataB, indA, indB, range, codeA, codeB, indexed]);
 
   const hasData = chartData.length > 0 && (codeA || codeB);
   const loading = loadA || loadB;
   const hasError = (codeA && errorA) || (codeB && errorB);
+
+  const unitsDiffer = Boolean(
+    codeA && codeB && indA && indB && unitSuffix(indA.unit) !== unitSuffix(indB.unit),
+  );
+  // Подписи оси: в режиме индекса обе серии на одной шкале (старт = 100);
+  // в режиме значений у каждого показателя своя ось со своей единицей.
+  const axisIdA = 'left';
+  const axisIdB = indexed ? 'left' : (codeA ? 'right' : 'left');
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24 md:pb-28">
@@ -179,8 +232,11 @@ export default function ComparePage() {
           Сравнение показателей
         </h1>
         <p className="text-sm md:text-base text-text-tertiary max-w-2xl">
-          Выберите два индикатора для визуального сопоставления на одном графике.
-          Каждый показатель получает свою ось Y.
+          Выберите два индикатора для сопоставления на одном графике. В режиме
+          «Значения» каждый показатель сохраняет свои единицы и собственную ось.
+          В режиме «Индекс» оба ряда приводятся к общей базе — 100 в начале
+          периода, — чтобы сравнить относительную динамику показателей с разными
+          единицами измерения.
         </p>
       </div>
 
@@ -238,6 +294,24 @@ export default function ComparePage() {
               </button>
             ))}
           </div>
+
+          <span className="text-[11px] font-mono uppercase tracking-widest text-text-tertiary md:ml-4">Шкала</span>
+          <div className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle">
+            {SCALE_OPTIONS.map((opt) => (
+              <button
+                key={opt.key}
+                onClick={() => { setScale(opt.key); track(events.COMPARE_RANGE, { scale: opt.key }); }}
+                className={cn(
+                  'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
+                  scale === opt.key
+                    ? 'bg-champagne/15 text-champagne'
+                    : 'text-text-tertiary hover:text-text-secondary'
+                )}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {loading ? (
@@ -253,86 +327,136 @@ export default function ComparePage() {
           </div>
         ) : (
           <div className="rounded-[2rem] bg-surface border border-border-subtle p-4 md:p-6">
-            <ResponsiveContainer width="100%" height={480}>
-              <ComposedChart data={chartData} margin={{ top: 10, right: 20, bottom: 0, left: 0 }}>
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  stroke="rgba(255,255,255,0.04)"
-                  vertical={false}
-                />
-                <XAxis
-                  dataKey="date"
-                  tickFormatter={(d) => formatDate(d, 'short')}
-                  tick={{ fill: 'rgba(255,255,255,0.35)', fontSize: 10, fontFamily: 'monospace' }}
-                  axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
-                  tickLine={false}
-                  minTickGap={40}
-                />
-                {codeA && (
-                  <YAxis
-                    yAxisId="left"
-                    tick={{ fill: COLOR_A, fontSize: 10, fontFamily: 'monospace' }}
-                    axisLine={false}
-                    tickLine={false}
-                    width={60}
-                    tickFormatter={(v) => formatAxisTick(v, unitDigits(indA?.unit))}
-                  />
+            <div className="mb-4 flex flex-col gap-2 text-xs text-text-tertiary border-b border-border-subtle pb-4">
+              <p className="text-text-secondary">
+                <span className="text-text-tertiary">Что сравнивается:</span>{' '}
+                {codeA && indA && (
+                  <span style={{ color: COLOR_A }}>
+                    {indA.name} ({unitSuffix(indA.unit)}{indA.frequency ? `, ${freqLabel(indA.frequency)}` : ''})
+                  </span>
                 )}
-                {codeB && (
-                  <YAxis
-                    yAxisId="right"
-                    orientation="right"
-                    tick={{ fill: COLOR_B, fontSize: 10, fontFamily: 'monospace' }}
-                    axisLine={false}
-                    tickLine={false}
-                    width={60}
-                    tickFormatter={(v) => formatAxisTick(v, unitDigits(indB?.unit))}
-                  />
+                {codeA && codeB && <span className="text-text-tertiary"> и </span>}
+                {codeB && indB && (
+                  <span style={{ color: COLOR_B }}>
+                    {indB.name} ({unitSuffix(indB.unit)}{indB.frequency ? `, ${freqLabel(indB.frequency)}` : ''})
+                  </span>
                 )}
-                <Tooltip
-                  content={<CompareTooltip />}
-                  cursor={{ stroke: 'rgba(255,255,255,0.15)' }}
-                />
-                {codeA && (
-                  <Line
-                    yAxisId="left"
-                    type="monotone"
-                    dataKey="valA"
-                    name={indA?.name || codeA}
-                    stroke={COLOR_A}
-                    strokeWidth={2}
-                    dot={false}
-                    connectNulls
-                    isAnimationActive={false}
-                  />
-                )}
-                {codeB && (
-                  <Line
-                    yAxisId={codeA ? 'right' : 'left'}
-                    type="monotone"
-                    dataKey="valB"
-                    name={indB?.name || codeB}
-                    stroke={COLOR_B}
-                    strokeWidth={2}
-                    dot={false}
-                    connectNulls
-                    isAnimationActive={false}
-                  />
-                )}
-              </ComposedChart>
-            </ResponsiveContainer>
+              </p>
+              <p>
+                Режим: {indexed
+                  ? 'индекс относительной динамики — 100 в начале периода, общая шкала.'
+                  : 'значения в исходных единицах, у каждого показателя своя ось.'}
+              </p>
+              {unitsDiffer && !indexed && (
+                <p className="text-champagne/80">
+                  Единицы различаются — оси не совпадают по масштабу. Для корректного
+                  сравнения динамики переключите шкалу на «Индекс (старт 100)».
+                </p>
+              )}
+            </div>
 
-            <div className="flex items-center justify-center gap-8 mt-4 text-xs font-mono">
+            <div className="relative overflow-hidden rounded-2xl">
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 -rotate-6 select-none whitespace-nowrap text-3xl font-display font-bold tracking-[0.18em] text-text-primary opacity-[0.055] md:text-5xl"
+              >
+                Forecast Economy
+              </div>
+              <ResponsiveContainer width="100%" height={480}>
+                <ComposedChart data={chartData} margin={{ top: 10, right: 20, bottom: 24, left: 0 }}>
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    stroke="rgba(255,255,255,0.04)"
+                    vertical={false}
+                  />
+                  <XAxis
+                    dataKey="date"
+                    tickFormatter={(d) => formatDate(d, 'short')}
+                    tick={{ fill: 'rgba(255,255,255,0.35)', fontSize: 10, fontFamily: 'monospace' }}
+                    axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
+                    tickLine={false}
+                    minTickGap={40}
+                    label={{
+                      value: 'Период (время)',
+                      position: 'insideBottom',
+                      offset: -8,
+                      fill: 'rgba(255,255,255,0.45)',
+                      fontSize: 11,
+                      fontFamily: 'monospace',
+                    }}
+                  />
+                  {(codeA || indexed) && (
+                    <YAxis
+                      yAxisId="left"
+                      tick={{ fill: indexed ? 'rgba(255,255,255,0.45)' : COLOR_A, fontSize: 10, fontFamily: 'monospace' }}
+                      axisLine={false}
+                      tickLine={false}
+                      width={60}
+                      tickFormatter={(v) => indexed ? formatAxisTick(v, 0) : formatAxisTick(v, unitDigits(indA?.unit))}
+                    />
+                  )}
+                  {!indexed && codeB && (
+                    <YAxis
+                      yAxisId="right"
+                      orientation="right"
+                      tick={{ fill: COLOR_B, fontSize: 10, fontFamily: 'monospace' }}
+                      axisLine={false}
+                      tickLine={false}
+                      width={60}
+                      tickFormatter={(v) => formatAxisTick(v, unitDigits(indB?.unit))}
+                    />
+                  )}
+                  <Tooltip
+                    content={<CompareTooltip />}
+                    cursor={{ stroke: 'rgba(255,255,255,0.15)' }}
+                  />
+                  {codeA && (
+                    <Line
+                      yAxisId={axisIdA}
+                      type="monotone"
+                      dataKey="valA"
+                      name={indA?.name || codeA}
+                      stroke={COLOR_A}
+                      strokeWidth={2}
+                      dot={false}
+                      connectNulls
+                      isAnimationActive={false}
+                    />
+                  )}
+                  {codeB && (
+                    <Line
+                      yAxisId={axisIdB}
+                      type="monotone"
+                      dataKey="valB"
+                      name={indB?.name || codeB}
+                      stroke={COLOR_B}
+                      strokeWidth={2}
+                      dot={false}
+                      connectNulls
+                      isAnimationActive={false}
+                    />
+                  )}
+                </ComposedChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="flex items-center justify-center gap-6 md:gap-8 mt-4 text-xs font-mono flex-wrap">
               {codeA && indA && (
                 <div className="flex items-center gap-2">
                   <span className="w-3 h-0.5 rounded-full" style={{ backgroundColor: COLOR_A }} />
                   <span style={{ color: COLOR_A }}>{indA.name}</span>
+                  <span className="text-text-tertiary">
+                    · {indexed ? 'старт = 100' : `${unitSuffix(indA.unit)} · левая ось`}
+                  </span>
                 </div>
               )}
               {codeB && indB && (
                 <div className="flex items-center gap-2">
                   <span className="w-3 h-0.5 rounded-full" style={{ backgroundColor: COLOR_B }} />
                   <span style={{ color: COLOR_B }}>{indB.name}</span>
+                  <span className="text-text-tertiary">
+                    · {indexed ? 'старт = 100' : `${unitSuffix(indB.unit)} · ${codeA ? 'правая ось' : 'левая ось'}`}
+                  </span>
                 </div>
               )}
             </div>
