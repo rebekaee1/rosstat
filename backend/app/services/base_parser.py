@@ -117,7 +117,9 @@ class BaseParser(ABC):
                 records_updated += extra_updated
                 fetch_log.records_added = records_added
 
-            await self._handle_forecasts(db, indicator, cfg, records_added, records_updated)
+            await self._handle_forecasts(
+                db, indicator, cfg, records_added, records_updated, pruned,
+            )
 
             await self._after_storage(
                 db, indicator, cfg, fetch_log, pruned, records_added, records_updated,
@@ -208,11 +210,12 @@ class BaseParser(ABC):
         cfg: dict,
         records_added: int,
         records_updated: int,
+        pruned: int = 0,
     ) -> None:
         """Default: retrain прогноз только если есть forecast_steps > 0 И что-то изменилось.
 
         Override в cbr_keyrate (там steps==0 → clear_current_forecasts).
         """
         steps = int(cfg.get("forecast_steps", 0) or 0)
-        if steps > 0 and (records_added > 0 or records_updated > 0):
+        if steps > 0 and (records_added > 0 or records_updated > 0 or pruned > 0):
             await retrain_indicator_forecast(db, indicator)

@@ -64,7 +64,8 @@ function TickerCell({ snapshot }) {
     <Link
       to={meta.linkTo}
       className={cn(
-        'flex min-w-0 flex-1 items-center justify-center gap-1 px-1 py-1 rounded-md sm:min-w-max sm:flex-none sm:gap-2 sm:px-3 sm:shrink-0 sm:whitespace-nowrap',
+        'flex shrink-0 items-center gap-1.5 px-2 py-1 rounded-md whitespace-nowrap',
+        'sm:gap-2 sm:px-3',
         'transition-colors duration-200 hover:bg-champagne/10',
         'border border-transparent',
         flash === 'up' && 'bg-positive/10 border-positive/30',
@@ -118,7 +119,7 @@ export default function LiveTicker() {
     <div className="fixed top-0 inset-x-0 z-[110] h-9 bg-[#faf7f0] border-b border-champagne/15 shadow-sm">
       <div className="max-w-7xl mx-auto h-full px-1 sm:px-4">
         <div
-          className="flex h-full w-full items-center justify-between gap-0 sm:justify-center sm:gap-4 md:overflow-x-auto md:scrollbar-hide"
+          className="flex h-full w-full items-center gap-2 overflow-x-auto scrollbar-hide sm:justify-center sm:gap-4"
           aria-label="Котировки"
         >
           {snapshots.map((s) => (

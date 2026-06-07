@@ -129,6 +129,45 @@ def _run_pipeline(
     return series
 
 
+def _allows_period_sum_anchor_revision(derived_cfg: dict, operation: str | None) -> bool:
+    """period_sum на квартал/год якорится на конец bucket'а.
+
+    Для текущего незавершённого квартала/года факт уже лежит на том же якоре
+    (partial YTD). Прогноз источника пересчитывает полный bucket — точку нужно
+    обновить, иначе `d > last_actual` отфильтрует единственный годовой прогноз.
+    """
+    if operation != "pipeline":
+        return False
+    return any(op == "period_sum" for op, _ in (derived_cfg.get("pipeline") or []))
+
+
+def _select_forecast_points(
+    derived_full: list[tuple[date, float]],
+    dates: Sequence[date],
+    values: Sequence[float],
+    *,
+    operation: str | None,
+    derived_cfg: dict,
+) -> list[tuple[date, float]]:
+    if not dates:
+        return derived_full
+
+    last_actual_date = max(dates)
+    actual_by_date = {
+        d: float(v) for d, v in zip(dates, values) if v is not None
+    }
+    revise_anchors = _allows_period_sum_anchor_revision(derived_cfg, operation)
+
+    selected: list[tuple[date, float]] = []
+    for d, v in derived_full:
+        if d > last_actual_date:
+            selected.append((d, v))
+        elif revise_anchors and d in actual_by_date:
+            if abs(float(v) - actual_by_date[d]) > 1e-4:
+                selected.append((d, v))
+    return selected
+
+
 def derived_from_source_strategy(
     dates: Sequence[date],
     values: Sequence[float],
@@ -203,10 +242,13 @@ def derived_from_source_strategy(
         logger.error("derived_from_source: unknown operation '%s'", operation)
         return []
 
-    if last_actual_date is None:
-        future_only = derived_full
-    else:
-        future_only = [(d, v) for d, v in derived_full if d > last_actual_date]
+    future_only = _select_forecast_points(
+        derived_full,
+        dates,
+        values,
+        operation=operation,
+        derived_cfg=derived_cfg,
+    )
 
     if not future_only:
         logger.info(

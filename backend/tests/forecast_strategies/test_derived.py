@@ -328,6 +328,69 @@ def test_cpi_mom_yoy_emits_only_future_months():
     assert len(points) == 3
 
 
+def test_period_sum_year_revises_partial_ytd_anchor():
+    """sum-year: partial YTD на 01-01 пересчитывается в полный годовой прогноз."""
+    actuals = [(date(2026, 1, 1), 100.0), (date(2026, 2, 1), 200.0)]
+    forecast = [(date(2026, m, 1), 300.0) for m in range(3, 13)]
+    forecast += [(date(2027, 1, 1), 250.0), (date(2027, 2, 1), 250.0)]
+    full_source = actuals + forecast
+
+    own_dates = [date(2026, 1, 1)]
+    own_values = [300.0]  # partial Jan+Feb actual
+
+    ctx = _make_ctx(
+        indicator_code="budget-revenue-sum-year",
+        frequency="annual",
+        cfg={
+            "derived_forecast": {
+                "operation": "pipeline",
+                "pipeline": [["period_sum", {"granularity": "year"}]],
+                "complete_bucket": "year",
+                "min_periods": 12,
+                "model_name": "budget-revenue-sum-year-derived",
+            },
+            "_source_data": full_source,
+        },
+    )
+    outputs = derived_from_source_strategy(own_dates, own_values, ctx)
+    points = outputs[0].result.points
+    assert len(points) == 1
+    assert points[0].date == date(2026, 1, 1)
+    assert points[0].value == round(100.0 + 200.0 + 300.0 * 10, 4)
+
+
+def test_period_sum_quarter_revises_partial_quarter_anchor():
+    """sum-quarter: неполный квартал на якоре пересчитывается с прогнозом месяцев."""
+    actuals = [(date(2026, 1, 1), 100.0), (date(2026, 2, 1), 150.0)]
+    forecast = [(date(2026, 3, 1), 200.0)] + [
+        (date(2026, m, 1), 250.0) for m in range(4, 13)
+    ]
+    full_source = actuals + forecast
+
+    own_dates = [date(2026, 3, 1)]
+    own_values = [250.0]  # partial Q1 (Jan+Feb only)
+
+    ctx = _make_ctx(
+        indicator_code="budget-revenue-sum-quarter",
+        frequency="quarterly",
+        cfg={
+            "derived_forecast": {
+                "operation": "pipeline",
+                "pipeline": [["period_sum", {"granularity": "quarter"}]],
+                "complete_bucket": "quarter",
+                "min_periods": 3,
+                "model_name": "budget-revenue-sum-quarter-derived",
+            },
+            "_source_data": full_source,
+        },
+    )
+    outputs = derived_from_source_strategy(own_dates, own_values, ctx)
+    points = outputs[0].result.points
+    assert points[0].date == date(2026, 3, 1)
+    assert points[0].value == 450.0
+    assert len(points) >= 2  # Q1 revision + future quarters
+
+
 def test_weekly_inflation_by_calendar_month_forecast():
     """cpi-period-monthly: агрегация недельного прогноза в месячные точки."""
     actuals = [
