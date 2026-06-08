@@ -30,6 +30,8 @@ from app.config import settings
 from app.models import Indicator, FetchLog
 from app.services.http_client import create_session
 from app.services.base_parser import BaseParser
+from app.services.calculation_engine import calculation_engine
+from app.services.upsert import prune_indicator_dates_not_in
 
 logger = logging.getLogger(__name__)
 
@@ -139,6 +141,32 @@ def parse_ind_sheet(content: bytes, sheet_name: str) -> list[DataPoint]:
     return sorted(points, key=lambda p: p.date)
 
 
+_QUARTER_START_MONTH = {0: 1, 1: 4, 2: 7, 3: 10}
+
+
+def collapse_flow_to_quarterly(points: list[DataPoint]) -> list[DataPoint]:
+    """Свернуть помесячные потоки в квартальные суммы на якорях квартала.
+
+    Лист 1.6 (инвестиции в ОК) до ~2016 отдаёт помесячные потоки; с 2016 — только
+    квартальные колонки. Без свёртки YoY сравнивает Q1 с одним месяцем прошлого
+    года и даёт ложный всплеск (~300% в 2016).
+    """
+    buckets: dict[tuple[int, int], float] = {}
+    for p in points:
+        q = (p.date.month - 1) // 3
+        key = (p.date.year, q)
+        buckets[key] = buckets.get(key, 0.0) + p.value
+
+    collapsed = [
+        DataPoint(
+            date=date(year, _QUARTER_START_MONTH[q], 1),
+            value=round(total, 2),
+        )
+        for (year, q), total in sorted(buckets.items())
+    ]
+    return collapsed
+
+
 def _fetch_latest_ind(session) -> tuple[bytes, str]:
     """Try to download the latest ind_MM-YYYY.xlsx by trying recent months."""
     now = datetime.now()
@@ -208,4 +236,47 @@ class RosstatIndParser(BaseParser):
         ]
         if len(valid) < len(points):
             logger.warning("Filtered out %d invalid (NaN/non-numeric) ind values", len(points) - len(valid))
+        if cfg.get("quarterly_flow"):
+            return collapse_flow_to_quarterly(valid)
         return valid
+
+    async def _post_upsert(
+        self,
+        db: AsyncSession,
+        indicator: Indicator,
+        cfg: dict,
+        fetch_log: FetchLog,
+        points: list,
+        records_added: int,
+        records_updated: int,
+    ) -> tuple[int, int]:
+        if not cfg.get("quarterly_flow"):
+            return 0, 0
+        pruned = await prune_indicator_dates_not_in(db, indicator.id, points)
+        if pruned:
+            logger.info(
+                "Pruned %d stale monthly date(s) for '%s' (quarterly_flow)",
+                pruned, indicator.code,
+            )
+        return pruned, 0
+
+    async def _after_storage(
+        self,
+        db: AsyncSession,
+        indicator: Indicator,
+        cfg: dict,
+        fetch_log: FetchLog,
+        pruned: int,
+        records_added: int,
+        records_updated: int,
+    ) -> None:
+        if not cfg.get("quarterly_flow"):
+            return
+        if records_added <= 0 and records_updated <= 0:
+            return
+        derived = await calculation_engine.run_for_direct_dependents(db, [indicator.code])
+        if derived:
+            logger.info(
+                "CalculationEngine (quarterly_flow): %s → %s",
+                indicator.code, derived,
+            )

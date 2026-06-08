@@ -3294,7 +3294,11 @@ INDICATORS = [
             "помесячная разбивка по этому показателю не публикуется."
         ),
         "parser_type": "rosstat_ind_monthly",
-        "model_config_json": {"forecast_steps": 0, "ind_sheet": "1.6 "},
+        "model_config_json": {
+            "forecast_steps": 0,
+            "ind_sheet": "1.6 ",
+            "quarterly_flow": True,
+        },
         "is_active": True,
         "category": "Бизнес",
     },
@@ -3677,15 +3681,17 @@ INDICATOR_HIDDEN_FROM_LISTING.update(_generated_sibling_codes)
 # (CPI/ИЦП/ВВП/жильё, derived) не трогаем — оставляем как были.
 MONTHLY_AUTO_FORECAST_CODES = {
     "auto-loan-rate", "budget-deficit", "budget-expenditure", "budget-revenue",
-    "business-credit", "construction-work", "consumer-credit",
+    "business-credit", "consumer-credit",
     "credit-rate-corp-1to3y", "credit-rate-corp-over3y", "credit-rate-corp-short",
     "credit-rate-ind-1to3y", "credit-rate-ind-over3y", "credit-rate-ind-short",
     "deposit-rate", "deposit-rate-long", "deposit-rate-medium",
     "deposits-business", "deposits-individual", "employment",
-    "exports-monthly", "housing-commissioned", "imports-monthly", "ipi",
-    "labor-force", "m0", "m1", "m2", "mortgage-rate", "retail-trade",
+    "exports-monthly", "housing-commissioned", "imports-monthly",
+    "labor-force", "m0", "m1", "m2", "mortgage-rate",
     "services-exports-monthly", "services-imports-monthly",
     "trade-balance-monthly", "unemployment", "wages-nominal",
+    # Временно без прогноза (июнь 2026): construction-work, retail-trade, ipi —
+    # см. FamilyDef.forecastable=False в view_model_families.py.
 }
 
 for _ind in INDICATORS:

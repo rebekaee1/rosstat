@@ -1129,7 +1129,7 @@
     "modes": [
       {
         "code": "construction-work",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "monthly",
         "group": "flow",
         "isNative": true,
@@ -1139,7 +1139,7 @@
       },
       {
         "code": "construction-work-sum-quarter",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "quarterly",
         "group": "flow",
         "isNative": false,
@@ -1149,7 +1149,7 @@
       },
       {
         "code": "construction-work-sum-year",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "annual",
         "group": "flow",
         "isNative": false,
@@ -4525,7 +4525,7 @@
     "modes": [
       {
         "code": "ipi",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "monthly",
         "group": "level",
         "isNative": true,
@@ -4535,7 +4535,7 @@
       },
       {
         "code": "ipi-eop-quarter",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "quarterly",
         "group": "level",
         "isNative": false,
@@ -4545,7 +4545,7 @@
       },
       {
         "code": "ipi-eop-year",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "annual",
         "group": "level",
         "isNative": false,
@@ -4555,7 +4555,7 @@
       },
       {
         "code": "ipi-avg-quarter",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "quarterly",
         "group": "avg",
         "isNative": false,
@@ -4565,7 +4565,7 @@
       },
       {
         "code": "ipi-avg-year",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "annual",
         "group": "avg",
         "isNative": false,
@@ -5787,7 +5787,7 @@
     "modes": [
       {
         "code": "retail-trade",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "monthly",
         "group": "flow",
         "isNative": true,
@@ -5797,7 +5797,7 @@
       },
       {
         "code": "retail-trade-sum-quarter",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "quarterly",
         "group": "flow",
         "isNative": false,
@@ -5807,7 +5807,7 @@
       },
       {
         "code": "retail-trade-sum-year",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "annual",
         "group": "flow",
         "isNative": false,

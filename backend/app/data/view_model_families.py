@@ -344,9 +344,10 @@ def _build_rate_monthly(f: "FamilyDef") -> Family:
 def _build_stock(f: "FamilyDef") -> Family:
     """T3/T4/T5 — запасы (monthly/quarterly/weekly): 4 группы."""
     freq = f.frequency
+    fc = f.forecastable
     modes = (
-        _level_modes(f.base, freq, f.unit, f.overrides, group_id="level", forecastable=True)
-        + _avg_modes(f.base, freq, f.unit, f.overrides, forecastable=True)
+        _level_modes(f.base, freq, f.unit, f.overrides, group_id="level", forecastable=fc)
+        + _avg_modes(f.base, freq, f.unit, f.overrides, forecastable=fc)
         + _pop_modes(f.base, freq, f.overrides, flow=False)
         + [_yoy_mode(f.base, freq, f.overrides)]
     )
@@ -358,7 +359,7 @@ def _build_stock(f: "FamilyDef") -> Family:
 def _build_flow_sum(f: "FamilyDef") -> Family:
     """T6 — потоки бюджета (доходы/расходы): За период [default] + приросты."""
     modes = (
-        _sum_modes(f.base, "monthly", f.unit, f.overrides, forecastable=True)
+        _sum_modes(f.base, "monthly", f.unit, f.overrides, forecastable=f.forecastable)
         + _pop_modes(f.base, "monthly", f.overrides, flow=True)
         + [_yoy_mode(f.base, "monthly", f.overrides)]
     )
@@ -599,6 +600,8 @@ class FamilyDef:
     # Приросты (М/м, Кв/Кв, Г/г) в абсолютном выражении вместо процентов —
     # для ставочных дневных рядов (ключевая ставка, RUONIA): изменение в п.п.
     abs_delta: bool = False
+    # Прогноз базового ряда и протяжка в sibling-режимы (monthly_auto + derived).
+    forecastable: bool = True
 
 
 # --- Каталог семейств --------------------------------------------------------
@@ -654,9 +657,11 @@ _FAMILY_DEFS: list[FamilyDef] = [
     FamilyDef("budget-revenue", "Доходы бюджета", "T6", "млрд руб.", "Бюджет", "monthly"),
     FamilyDef("budget-expenditure", "Расходы бюджета", "T6", "млрд руб.", "Бюджет", "monthly"),
     # T6 — месячные потоки бизнеса (объём за период суммируется по кварталам/годам)
-    FamilyDef("construction-work", "Объём строительных работ", "T6", "млрд руб.", "Бизнес", "monthly"),
+    FamilyDef("construction-work", "Объём строительных работ", "T6", "млрд руб.", "Бизнес", "monthly",
+              forecastable=False),
     FamilyDef("housing-commissioned", "Ввод в действие жилых домов", "T6", "млн кв.м", "Бизнес", "monthly"),
-    FamilyDef("retail-trade", "Оборот розничной торговли", "T6", "млрд руб.", "Бизнес", "monthly"),
+    FamilyDef("retail-trade", "Оборот розничной торговли", "T6", "млрд руб.", "Бизнес", "monthly",
+              forecastable=False),
     # T6 — месячные потоки внешней торговли (alternate frequency, is_listed=false)
     FamilyDef("exports-monthly", "Экспорт товаров (месячный ряд)", "T6", "млн $", "Торговля", "monthly"),
     FamilyDef("imports-monthly", "Импорт товаров (месячный ряд)", "T6", "млн $", "Торговля", "monthly"),
@@ -712,7 +717,7 @@ _FAMILY_DEFS: list[FamilyDef] = [
     # приросты в процентах (индекс уже относительный). ИПП переиспользует
     # существующий derived ipi-yoy как режим «Г/г» (отдельная карточка скрыта).
     FamilyDef("ipi", "Индекс промышленного производства", "T3", "индекс", "Бизнес", "monthly",
-              overrides={"yoy": "ipi-yoy"}),
+              overrides={"yoy": "ipi-yoy"}, forecastable=False),
     # T12 — индекс доступности жилья (отношение индекса зарплаты к индексу цен на
     # жильё, общая база 2010). Помесячный; квартал/год = среднее. Два варианта
     # рынка (первичный/вторичный) — variant-группа, как у цен на жильё.

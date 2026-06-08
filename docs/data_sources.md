@@ -228,7 +228,7 @@ Chain MoM% из двух XLSX (база 2018 + база 2023).
 
 | Индикатор | Sheet |
 |-----------|-------|
-| `capital-investment` | `1.6 ` |
+| `capital-investment` | `1.6 ` — `quarterly_flow`: лист до ~2016 с помесячными потоками, с 2016 только кварталы; парсер сворачивает в квартальные суммы и `prune` старых месячных дат |
 | `construction-work` | `1.7 ` |
 | `housing-commissioned` | `1.8 ` |
 | `retail-trade` | `1.12 ` |
