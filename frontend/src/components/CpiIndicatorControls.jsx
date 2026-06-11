@@ -17,6 +17,7 @@ export default function CpiIndicatorControls({
       currentMode={currentMode}
       onChange={onChange}
       trackContext={trackContext}
+      code={currentCode}
       compact
     />
   );
@@ -37,6 +38,7 @@ export default function CpiIndicatorControls({
           currentMode={currentMode}
           onChange={onChange}
           trackContext={trackContext}
+          code={currentCode}
         />
       </div>
     </>

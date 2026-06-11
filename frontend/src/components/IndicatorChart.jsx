@@ -86,19 +86,10 @@ function CustomTooltip({
     <div className="glass-surface rounded-xl border border-border-subtle px-4 py-3 shadow-2xl min-w-[200px]">
       <p className="text-xs font-mono text-text-tertiary mb-2">{formatDate(label, dateFormat)}</p>
 
-      {forecast && (
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full" style={{ background: '#7C3AED' }} />
-            <span className="text-xs text-text-tertiary">{forecastLabel}</span>
-          </div>
-          <span className="text-sm font-mono font-semibold text-[#7C3AED]">
-            {`${formatValue(forecast.value, valueDigits)}${unitSuffix(unit)}`}
-          </span>
-        </div>
-      )}
-
-      {actual && !forecast && (
+      {/* Bridge-точка (последний факт, от которого тянется прогнозная линия)
+          несёт оба значения — приоритет у факта, иначе последняя фактическая
+          точка ошибочно подписывалась «Прогноз». */}
+      {actual && (
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-champagne" />
@@ -106,6 +97,18 @@ function CustomTooltip({
           </div>
           <span className="text-sm font-mono font-semibold text-champagne">
             {`${formatValue(actual.value, valueDigits)}${unitSuffix(unit)}`}
+          </span>
+        </div>
+      )}
+
+      {forecast && !actual && (
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full" style={{ background: '#7C3AED' }} />
+            <span className="text-xs text-text-tertiary">{forecastLabel}</span>
+          </div>
+          <span className="text-sm font-mono font-semibold text-[#7C3AED]">
+            {`${formatValue(forecast.value, valueDigits)}${unitSuffix(unit)}`}
           </span>
         </div>
       )}

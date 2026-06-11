@@ -1,13 +1,20 @@
 /**
  * Канонические URL-режимы ИПЦ и их разрешение в ряд данных / группу UI.
  *
- * «Рост за период» и «К прошлому периоду» не делят один ?mode= — у каждой
- * кнопки свой идентификатор.
+ * Правки созвона 2026-06-11:
+ *   - «Инфляция за год» переименована в «К соответствующему периоду
+ *     предыдущего года» (режим `inflation`, остаётся дефолтом);
+ *   - Г/г (`yoy`) считается по годам — декабрь к декабрю, одна точка на год
+ *     (ряд `*-annual`), а не по месяцам;
+ *   - легаси-режимы «Рост за период» `quarterly`/`annual` канонизируются в
+ *     `qoq`/`yoy` (математически это те же ряды);
+ *   - недельные режимы доступны только на общем ИПЦ: по срезам корзины
+ *     официальной недельной статистики нет.
  */
 
-/** @typedef {'inflation'|'index'|'quarterly'|'annual'|'period-weekly'|'period-monthly'|'step-weekly'|'step-monthly'|'qoq'|'yoy'} CpiUrlMode */
+/** @typedef {'inflation'|'index'|'index-quarterly'|'index-annual'|'period-weekly'|'period-monthly'|'step-weekly'|'step-monthly'|'qoq'|'yoy'} CpiUrlMode */
 
-/** @typedef {'inflation'|'index'|'quarterly'|'annual'|'weekly'|'cpi'|'yoy'|'qoq'|'period-weekly'|'period-monthly'} CpiDataMode */
+/** @typedef {'inflation'|'index'|'annual'|'weekly'|'cpi'|'qoq'|'period-weekly'|'period-monthly'} CpiDataMode */
 
 export const CPI_URL_MODES = [
   'inflation',
@@ -16,13 +23,14 @@ export const CPI_URL_MODES = [
   'index-annual',
   'period-weekly',
   'period-monthly',
-  'quarterly',
-  'annual',
   'step-weekly',
   'step-monthly',
   'qoq',
   'yoy',
 ];
+
+/** Режимы, требующие недельного ряда — есть только у общего ИПЦ. */
+const WEEKLY_URL_MODES = new Set(['step-weekly', 'period-weekly', 'period-monthly']);
 
 /** Подрежимы группы «Индекс» → гранулярность последней точки периода. */
 export function cpiIndexGranularity(viewMode) {
@@ -40,6 +48,9 @@ export const CPI_ACTIVE_URL_MODES = [...CPI_URL_MODES];
 const LEGACY_TO_CANONICAL = {
   weekly: 'step-weekly',
   cpi: 'step-monthly',
+  // «Рост за период»: квартальная = кв/кв, годовая = г/г (декабрь к декабрю).
+  quarterly: 'qoq',
+  annual: 'yoy',
 };
 
 export function normalizeCpiViewMode(viewMode) {
@@ -48,6 +59,12 @@ export function normalizeCpiViewMode(viewMode) {
     ?? (CPI_URL_MODES.includes(viewMode) ? viewMode : null);
   if (!canonical) return 'inflation';
   return canonical;
+}
+
+/** Доступен ли режим для данного кода состава корзины (срезы — без недельных). */
+export function isCpiModeAvailableForCode(viewMode, code) {
+  if (!code || code === 'cpi') return true;
+  return !WEEKLY_URL_MODES.has(normalizeCpiViewMode(viewMode));
 }
 
 export function isCpiModeDisabled(viewMode) {
@@ -60,9 +77,7 @@ export function topGroupForMode(viewMode) {
   const mode = normalizeCpiViewMode(viewMode);
   if (mode === 'inflation') return 'inflation';
   if (mode.startsWith('index')) return 'index';
-  if (mode.startsWith('period-') || mode === 'quarterly' || mode === 'annual') {
-    return 'period';
-  }
+  if (mode.startsWith('period-')) return 'period';
   if (mode.startsWith('step-') || mode === 'qoq' || mode === 'yoy') {
     return 'step';
   }
@@ -89,10 +104,6 @@ export function dataModeForUrlMode(viewMode) {
     case 'index-quarterly':
     case 'index-annual':
       return 'index';
-    case 'quarterly':
-      return 'quarterly';
-    case 'annual':
-      return 'annual';
     case 'period-weekly':
       return 'period-weekly';
     case 'step-weekly':
@@ -102,7 +113,8 @@ export function dataModeForUrlMode(viewMode) {
     case 'step-monthly':
       return 'cpi';
     case 'yoy':
-      return 'yoy';
+      // Г/г по годам: ряд годовой инфляции «декабрь к декабрю» (одна точка/год).
+      return 'annual';
     case 'qoq':
       return 'qoq';
     default:

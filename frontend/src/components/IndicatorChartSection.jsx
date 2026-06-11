@@ -149,7 +149,6 @@ export default function IndicatorChartSection({
   displayForecastData,
   quarterlyForecastData,
   annualForecastResp,
-  weeklyForecastData,
   yoyForecastData,
   qoqForecastData,
   periodMonthlyForecastData,
@@ -181,9 +180,10 @@ export default function IndicatorChartSection({
     periodMonthlyDataPoints,
   });
 
+  // Недельный режим — без прогноза (созвон 2026-06-11).
   const forecastData = chartMode === 'quarterly' ? quarterlyForecastData
     : chartMode === 'annual' ? annualForecastResp
-      : chartMode === 'weekly' ? weeklyForecastData
+      : chartMode === 'weekly' ? null
         : chartMode === 'yoy' ? yoyForecastData
           : chartMode === 'qoq' ? qoqForecastData
             : chartMode === 'period-weekly' ? periodWeeklyForecastData

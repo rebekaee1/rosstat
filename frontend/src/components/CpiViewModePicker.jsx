@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { cn } from '../lib/format';
 import { track, events } from '../lib/track';
 import {
-  CPI_TOP_GROUPS,
+  cpiTopGroupsForCode,
   defaultSubModeForGroup,
   expandedGroupForMode,
   getTopGroup,
@@ -26,6 +26,7 @@ export default function CpiViewModePicker({
   currentMode,
   onChange,
   trackContext,
+  code = null,
   compact = false,
 }) {
   const [expandedGroup, setExpandedGroup] = useState(
@@ -58,7 +59,7 @@ export default function CpiViewModePicker({
       (m) => !m.disabled && m.mode === currentMode,
     );
     if (!currentInGroup) {
-      const next = defaultSubModeForGroup(group.id);
+      const next = defaultSubModeForGroup(group.id, code);
       if (next) {
         onChange(next);
         trackMode(next, group.id);
@@ -72,7 +73,8 @@ export default function CpiViewModePicker({
     trackMode(item.mode, groupId);
   };
 
-  const expanded = expandedGroup ? getTopGroup(expandedGroup) : null;
+  const topGroups = cpiTopGroupsForCode(code);
+  const expanded = expandedGroup ? getTopGroup(expandedGroup, code) : null;
   const subModes = expanded?.modes ?? [];
   const activeTopGroup = highlightedTopGroup(expandedGroup, currentMode);
 
@@ -82,7 +84,7 @@ export default function CpiViewModePicker({
         Режим инфляции
       </p>
       <div className="flex flex-wrap gap-2">
-        {CPI_TOP_GROUPS.map((group) => {
+        {topGroups.map((group) => {
           const active = group.id === activeTopGroup;
           return (
             <button

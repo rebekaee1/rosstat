@@ -677,35 +677,29 @@ def affordability_index_monthly(price_index: Series, wage_index: Series) -> Seri
 
 # --- CPI view modes (composition × URL mode) ---------------------------------
 
-CPI_CUMULATIVE_BASE = date(2000, 1, 1)
 
+def cumulative_level_from_mom(monthly: Series) -> Series:
+    """Chain monthly MoM CPI indices (~100) to a level index (first month = 100).
 
-def cumulative_level_from_mom(
-    monthly: Series,
-    *,
-    base_date: date = CPI_CUMULATIVE_BASE,
-) -> Series:
-    """Chain monthly MoM CPI indices (~100) to a level index (base month = 100).
-
-    Matches frontend ``buildCumulativeIndex`` in useIndicatorViewModeData.js
-    (trim from 2000-01, first point anchored at 100).
+    История не обрезается: ряд начинается с первой доступной месячной точки
+    (для ИПЦ Росстата — 1991 год; правка созвона 2026-06-11). Выбор базы не
+    влияет на производные отношения (yoy/qoq) — они инвариантны к масштабу.
+    Округление здесь не применяется: уровни 90-х << 1, и round(…, 2) схлопнул
+    бы их в 0.0, ломая последующие qoq/yoy. Потребители округляют сами.
     """
-    trimmed = sorted(
-        ((d, float(v)) for d, v in monthly if d >= base_date),
-        key=lambda p: p[0],
-    )
-    if not trimmed:
+    pts = sorted(((d, float(v)) for d, v in monthly), key=lambda p: p[0])
+    if not pts:
         return []
-    points: Series = [(trimmed[0][0], 100.0)]
+    points: Series = [(pts[0][0], 100.0)]
     acc = 100.0
-    for i in range(1, len(trimmed)):
-        acc *= trimmed[i][1] / 100.0
-        points.append((trimmed[i][0], round(acc, 2)))
+    for i in range(1, len(pts)):
+        acc *= pts[i][1] / 100.0
+        points.append((pts[i][0], acc))
     return points
 
 
 def cpi_mom_yoy(monthly: Series) -> Series:
-    """YoY % vs the same month one year ago on chained CPI levels (from 2000-01)."""
+    """YoY % vs the same month one year ago on chained CPI levels (full history)."""
     return yoy(cumulative_level_from_mom(monthly))
 
 

@@ -240,7 +240,7 @@ export default function IndicatorDetail() {
     dataPoints: baseDataPoints, momDataPoints, inflationResp,
     quarterlyDataPoints, annualDataPoints, weeklyDataPoints,
     yoyDataPoints, qoqDataPoints, periodMonthlyDataPoints, periodWeeklyDataPoints,
-    displayForecastData, quarterlyForecastData, annualForecastResp, weeklyForecastData,
+    displayForecastData, quarterlyForecastData, annualForecastResp,
     yoyForecastData, qoqForecastData, periodMonthlyForecastData, periodWeeklyForecastData,
     stats: baseViewStats, cpiPrevDate,
     chartLoading: baseChartLoading, loadingData, loadingInflation,
@@ -689,7 +689,6 @@ export default function IndicatorDetail() {
         displayForecastData={chartForecastData}
         quarterlyForecastData={quarterlyForecastData}
         annualForecastResp={annualForecastResp}
-        weeklyForecastData={weeklyForecastData}
         yoyForecastData={yoyForecastData}
         qoqForecastData={qoqForecastData}
         periodMonthlyForecastData={periodMonthlyForecastData}
@@ -716,7 +715,6 @@ export default function IndicatorDetail() {
           displayForecastData={chartForecastData}
           quarterlyForecastData={quarterlyForecastData}
           annualForecastResp={annualForecastResp}
-          weeklyForecastData={weeklyForecastData}
           yoyForecastData={yoyForecastData}
           qoqForecastData={qoqForecastData}
           periodMonthlyForecastData={periodMonthlyForecastData}

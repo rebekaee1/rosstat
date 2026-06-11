@@ -4,6 +4,7 @@ import { isCpiIndex, adjustCpiForecastDisplay } from './format';
 import {
   dataModeForUrlMode,
   isActiveCpiUrlMode,
+  isCpiModeAvailableForCode,
   normalizeCpiViewMode,
   cpiIndexGranularity,
 } from './cpiViewModeResolve';
@@ -34,12 +35,16 @@ import {
 } from './unemploymentViewModeResolve';
 import { applyMoMTransform } from './viewModeFamilies';
 
+// Режим Г/г («yoy» в URL) разрешается в `annual` — годовую инфляцию
+// «декабрь к декабрю» (одна точка/год); помесячные ряды `cpi-*-yoy` с
+// карточки сняты (созвон 2026-06-11), их коды остаются только как
+// legacy-редиректы. Недельные режимы есть только у общего ИПЦ — по срезам
+// корзины официальной недельной статистики нет.
 const CPI_DERIVED_CODES = {
   cpi: {
     quarterly: 'inflation-quarterly',
     annual: 'inflation-annual',
     weekly: 'inflation-weekly',
-    yoy: 'cpi-yoy',
     qoq: 'cpi-qoq',
     periodMonthly: 'cpi-period-monthly',
     periodWeekly: 'cpi-period-weekly',
@@ -47,29 +52,17 @@ const CPI_DERIVED_CODES = {
   'cpi-food': {
     quarterly: 'cpi-food-quarterly',
     annual: 'cpi-food-annual',
-    weekly: 'inflation-weekly-food',
-    yoy: 'cpi-food-yoy',
     qoq: 'cpi-food-qoq',
-    periodMonthly: 'cpi-food-period-monthly',
-    periodWeekly: 'cpi-food-period-weekly',
   },
   'cpi-nonfood': {
     quarterly: 'cpi-nonfood-quarterly',
     annual: 'cpi-nonfood-annual',
-    weekly: 'inflation-weekly-nonfood',
-    yoy: 'cpi-nonfood-yoy',
     qoq: 'cpi-nonfood-qoq',
-    periodMonthly: 'cpi-nonfood-period-monthly',
-    periodWeekly: 'cpi-nonfood-period-weekly',
   },
   'cpi-services': {
     quarterly: 'cpi-services-quarterly',
     annual: 'cpi-services-annual',
-    weekly: 'inflation-weekly-services',
-    yoy: 'cpi-services-yoy',
     qoq: 'cpi-services-qoq',
-    periodMonthly: 'cpi-services-period-monthly',
-    periodWeekly: 'cpi-services-period-weekly',
   },
 };
 
@@ -95,16 +88,16 @@ const PPI_DERIVED_CODES = {
   ppi: {
     yoy: 'ppi-yoy',
     qoq: 'ppi-qoq',
+    annual: 'ppi-annual',
   },
 };
 
-// Накопленный индекс CPI (режим «Индекс»): база 100 в январе 2000.
-// Историю 1991–1999 обрезаем — в 1992-м январский индекс доходил до 345%
-// за месяц, и за 9 лет цепного произведения шкала уезжает в сотни тысяч,
-// делая график нечитаемым (вся «история» сжимается в правый край).
-// 2000-01 — начало пост-кризисного периода стабильной денежной политики;
-// этот выбор даёт ~26 лет читаемой экспоненциальной кривой 100 → ~1000+,
-// что покрывает горизонт всех современных решений по ставке/инфляции.
+// Накопленный индекс CPI (режим «Индекс»): база 100 в январе 2000, история
+// тянется от первой доступной месячной точки (с 1991 года; правка созвона
+// 2026-06-11). Точки до базы достраиваются обратным цепным делением, поэтому
+// значения 90-х микроскопические на фоне 100 — это ожидаемо: гиперинфляция
+// первой половины 90-х означает, что уровень цен тогда был в тысячи раз ниже
+// уровня января 2000 года.
 //
 // Архитектурное решение (cpi-ppi-migrate): накопленный индекс и его
 // квартально-/годовые бакеты остаются client-side display-transform, а НЕ
@@ -118,36 +111,62 @@ const PPI_DERIVED_CODES = {
 const CPI_INDEX_BASE_DATE = '2000-01-01';
 const CPI_INDEX_BASE_VALUE = 100;
 
+// До базы значения уровня << 1 — два знака после запятой схлопнули бы их в
+// 0.00, поэтому для малых значений сохраняем 4 значащие цифры.
+function roundIndexLevel(v) {
+  return Math.abs(v) >= 1 ? +v.toFixed(2) : +v.toPrecision(4);
+}
+
 function buildCumulativeIndex(rawPoints) {
   if (!Array.isArray(rawPoints) || !rawPoints.length) return [];
-  const trimmed = rawPoints.filter((p) => String(p.date) >= CPI_INDEX_BASE_DATE);
-  if (!trimmed.length) return [];
-  const out = [{ ...trimmed[0], value: CPI_INDEX_BASE_VALUE }];
+  const pts = rawPoints
+    .slice()
+    .sort((a, b) => String(a.date).localeCompare(String(b.date)));
+  let baseIdx = pts.findIndex((p) => String(p.date) >= CPI_INDEX_BASE_DATE);
+  if (baseIdx === -1) baseIdx = pts.length - 1;
+  const out = new Array(pts.length);
+  out[baseIdx] = { ...pts[baseIdx], value: CPI_INDEX_BASE_VALUE };
   let acc = CPI_INDEX_BASE_VALUE;
-  for (let i = 1; i < trimmed.length; i++) {
-    acc = acc * (Number(trimmed[i].value) / 100);
-    out.push({ ...trimmed[i], value: +acc.toFixed(2) });
+  for (let i = baseIdx + 1; i < pts.length; i++) {
+    acc *= Number(pts[i].value) / 100;
+    out[i] = { ...pts[i], value: roundIndexLevel(acc) };
+  }
+  acc = CPI_INDEX_BASE_VALUE;
+  for (let i = baseIdx - 1; i >= 0; i--) {
+    // value точки i+1 — это м/м-прирост к месяцу i: уровень(i) = уровень(i+1) / (м/м / 100).
+    acc /= Number(pts[i + 1].value) / 100;
+    out[i] = { ...pts[i], value: roundIndexLevel(acc) };
   }
   return out;
 }
 
+const BUCKET_END_MONTHS = {
+  quarter: [3, 6, 9, 12],
+  year: [12],
+};
+
 /**
- * Последняя точка каждого периода (квартал/год) для индекса-уровня.
- * Вход — накопленный месячный индекс (по возрастанию даты).
+ * Точки на конец периода (квартал/год) для индекса-уровня: оставляем только
+ * наблюдения завершающего месяца bucket'а. Незавершённый текущий период
+ * на график не попадает — «на конец квартала/года» означает именно конец.
  */
-function lastOfBucket(points, granularity) {
-  if (!Array.isArray(points) || !points.length) return points;
-  const keyOf = (date) => {
-    const d = String(date);
-    const y = d.slice(0, 4);
-    if (granularity === 'year') return y;
-    const m = Number(d.slice(5, 7));
-    const q = Math.floor((m - 1) / 3) + 1;
-    return `${y}-Q${q}`;
+function bucketEndPoints(points, granularity) {
+  const ends = BUCKET_END_MONTHS[granularity];
+  if (!ends || !Array.isArray(points)) return points;
+  return points.filter((p) => ends.includes(Number(String(p.date).slice(5, 7))));
+}
+
+/** Прогноз для bucket-режимов индекса: только точки на конец квартала/года. */
+function filterForecastToBucketEnds(forecastResp, granularity) {
+  const values = forecastResp?.forecast?.values;
+  if (!values?.length) return forecastResp;
+  const ends = BUCKET_END_MONTHS[granularity] ?? [];
+  const filtered = values.filter((v) => ends.includes(Number(String(v.date).slice(5, 7))));
+  if (!filtered.length) return null;
+  return {
+    ...forecastResp,
+    forecast: { ...forecastResp.forecast, values: filtered },
   };
-  const map = new Map();
-  for (const p of points) map.set(keyOf(p.date), p);
-  return Array.from(map.values());
 }
 
 function buildCumulativeIndexForecast(forecastResp, lastActualValue) {
@@ -212,7 +231,9 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
   const isLevelRateFamily = isCbrTermSliceFamily;
 
   const safeViewMode = isPriceCategory
-    ? (isActiveCpiUrlMode(viewMode) ? normalizeCpiViewMode(viewMode) : 'inflation')
+    ? (isActiveCpiUrlMode(viewMode) && isCpiModeAvailableForCode(viewMode, code)
+      ? normalizeCpiViewMode(viewMode)
+      : 'inflation')
     : isHousingFamily
       ? (isActiveHousingUrlMode(viewMode) ? normalizeHousingViewMode(viewMode) : 'yoy')
       : isPpiFamily
@@ -298,9 +319,8 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
   } = useIndicatorData(weeklyDerivedCode, undefined, {
     enabled: !!weeklyDerivedCode && chartMode === 'weekly',
   });
-  const { data: weeklyForecastResp } = useForecast(weeklyDerivedCode, {
-    enabled: !!weeklyDerivedCode && chartMode === 'weekly',
-  });
+  // Недельный режим — без прогноза (созвон 2026-06-11): показываем только
+  // официальный оперативный ряд, прогноз на нём не строим и не запрашиваем.
   const { data: yoyForecastResp } = useForecast(modeDerivedCodes.yoy, {
     enabled: !!modeDerivedCodes.yoy && chartMode === 'yoy',
   });
@@ -343,26 +363,37 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
     [dataResp],
   );
 
+  // Месячный накопленный индекс (полный) — нужен и для графика, и как база
+  // продолжения прогнозной кривой в bucket-режимах.
+  const cumulativeIndexPoints = useMemo(
+    () => (isCumulativeIndex && rawDataPoints.length
+      ? buildCumulativeIndex(rawDataPoints)
+      : null),
+    [isCumulativeIndex, rawDataPoints],
+  );
+
   const dataPoints = useMemo(() => {
     if (!rawDataPoints.length) return rawDataPoints;
     if (isCumulativeIndex) {
-      const idx = buildCumulativeIndex(rawDataPoints);
-      return cpiIndexBucket ? lastOfBucket(idx, cpiIndexBucket) : idx;
+      return cpiIndexBucket
+        ? bucketEndPoints(cumulativeIndexPoints, cpiIndexBucket)
+        : cumulativeIndexPoints;
     }
     // ИЦП «Индекс» — ряд уже накопленный (2010=100); по кварталам/годам берём
     // уровень на конец периода.
     if (isPpiFamily && chartMode === 'index' && ppiIndexBucket) {
-      return lastOfBucket(rawDataPoints, ppiIndexBucket);
+      return bucketEndPoints(rawDataPoints, ppiIndexBucket);
     }
     // Жильё «Индекс» — квартальный ряд индекса; по годам берём уровень на
     // конец года (последний квартал).
     if (isHousingFamily && chartMode === 'index' && housingIndexBucket) {
-      return lastOfBucket(rawDataPoints, housingIndexBucket);
+      return bucketEndPoints(rawDataPoints, housingIndexBucket);
     }
     if (!shouldSubtract100) return rawDataPoints;
     return rawDataPoints.map((p) => ({ ...p, value: Number(p.value) - 100 }));
   }, [
-    rawDataPoints, shouldSubtract100, isCumulativeIndex, cpiIndexBucket,
+    rawDataPoints, shouldSubtract100, isCumulativeIndex, cumulativeIndexPoints,
+    cpiIndexBucket,
     isPpiFamily, chartMode, ppiIndexBucket, isHousingFamily, housingIndexBucket,
   ]);
 
@@ -373,24 +404,29 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
 
   const displayForecastData = useMemo(() => {
     if (isCumulativeIndex) {
-      // На агрегированном индексе (по кварталам/годам) прогноз не строим —
-      // накопленная месячная кривая прогноза не сводится к концам периодов.
-      if (cpiIndexBucket) return null;
       // Прогноз режима «Индекс» — продолжение накопленной кривой:
-      // последнее накопленное факт-значение × прогнозные месячные / 100.
-      const lastActual = dataPoints?.length
-        ? dataPoints[dataPoints.length - 1].value
+      // последнее накопленное месячное факт-значение × прогнозные месячные / 100.
+      const lastActual = cumulativeIndexPoints?.length
+        ? cumulativeIndexPoints[cumulativeIndexPoints.length - 1].value
         : null;
-      return buildCumulativeIndexForecast(forecastResp, lastActual);
+      const continued = buildCumulativeIndexForecast(forecastResp, lastActual);
+      // По кварталам/годам — только точки на конец завершённых периодов
+      // прогнозного горизонта (полные кварталы/годы, без «огрызков»).
+      return cpiIndexBucket
+        ? filterForecastToBucketEnds(continued, cpiIndexBucket)
+        : continued;
     }
-    // ИЦП по кварталам/годам — прогноз не строим (концы периодов не сводятся).
-    if (isPpiFamily && chartMode === 'index' && ppiIndexBucket) return null;
-    // Жильё «Индекс по годам» — прогноз не строим (агрегированные концы лет).
+    // ИЦП по кварталам/годам — прогноз уровня на конец завершённых периодов.
+    if (isPpiFamily && chartMode === 'index' && ppiIndexBucket) {
+      return filterForecastToBucketEnds(forecastResp, ppiIndexBucket);
+    }
+    // Жильё «Индекс по годам» — прогноз не строим (семейство пока не трогаем).
     if (isHousingFamily && chartMode === 'index' && housingIndexBucket) return null;
     if (!shouldSubtract100) return forecastResp;
     return adjustCpiForecastDisplay(forecastResp, code);
   }, [
-    forecastResp, shouldSubtract100, isCumulativeIndex, cpiIndexBucket, dataPoints, code,
+    forecastResp, shouldSubtract100, isCumulativeIndex, cumulativeIndexPoints,
+    cpiIndexBucket, code,
     isPpiFamily, chartMode, ppiIndexBucket, isHousingFamily, housingIndexBucket,
   ]);
 
@@ -438,14 +474,6 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
     if (!periodWeeklyResp?.data?.length) return [];
     return periodWeeklyResp.data.map((p) => ({ ...p, value: Number(p.value) }));
   }, [periodWeeklyResp]);
-
-  // Прогноз inflation-weekly приходит в формате CPI-индекса (значения вокруг 100),
-  // фронт же показывает delta (value - 100). Преобразуем чтобы прогноз был в той же
-  // системе координат, что и actual-точки выше.
-  const weeklyForecastData = useMemo(
-    () => adjustCpiForecastDisplay(weeklyForecastResp, weeklyDerivedCode),
-    [weeklyForecastResp, weeklyDerivedCode],
-  );
 
   const yoyForecastData = useMemo(() => yoyForecastResp, [yoyForecastResp]);
   const qoqForecastData = useMemo(() => qoqForecastResp, [qoqForecastResp]);
@@ -554,12 +582,13 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
 
   const hasForecastData = chartMode === 'mom' && isPpiFamily
     ? false
-    : chartMode === 'quarterly'
-      ? quarterlyForecastData?.forecast?.values?.length > 0
-      : chartMode === 'annual'
-        ? annualForecastResp?.forecast?.values?.length > 0
-        : chartMode === 'weekly'
-          ? weeklyForecastData?.forecast?.values?.length > 0
+    // Недельный режим — официальный оперативный ряд без прогноза.
+    : chartMode === 'weekly'
+      ? false
+      : chartMode === 'quarterly'
+        ? quarterlyForecastData?.forecast?.values?.length > 0
+        : chartMode === 'annual'
+          ? annualForecastResp?.forecast?.values?.length > 0
           : chartMode === 'yoy'
             ? yoyForecastData?.forecast?.values?.length > 0
             : chartMode === 'qoq'
@@ -599,7 +628,6 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
     displayForecastData,
     quarterlyForecastData,
     annualForecastResp,
-    weeklyForecastData,
     yoyForecastData,
     qoqForecastData,
     periodMonthlyForecastData,

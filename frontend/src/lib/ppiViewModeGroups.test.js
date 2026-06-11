@@ -9,19 +9,22 @@ import { ppiCanonicalTarget, ppiIndexGranularity, dataModeForPpiUrlMode } from '
 import { getPpiViewModeContent } from './ppiViewModeContent';
 
 describe('ppiViewModeGroups', () => {
-  it('три верхние группы как у ИПЦ (инфляция за год / к прошлому периоду / индекс)', () => {
+  it('три верхние группы как у ИПЦ (к соотв. периоду пред. года / к прошлому периоду / индекс)', () => {
     expect(PPI_TOP_GROUPS.map((g) => g.id)).toEqual(['inflation', 'step', 'index']);
+    const inflation = PPI_TOP_GROUPS.find((g) => g.id === 'inflation');
+    expect(inflation.label).toBe('К соотв. периоду пред. года');
     const index = PPI_TOP_GROUPS.find((g) => g.id === 'index');
     expect(index.modes.map((m) => m.mode)).toEqual(['index', 'index-quarterly', 'index-annual']);
     const step = PPI_TOP_GROUPS.find((g) => g.id === 'step');
-    expect(step.modes.map((m) => m.mode)).toEqual(['mom', 'qoq']);
+    expect(step.modes.map((m) => m.mode)).toEqual(['mom', 'qoq', 'annual']);
   });
 
-  it('дефолтный режим — инфляция за год (помесячный г/г)', () => {
+  it('дефолтный режим — к соотв. периоду пред. года (помесячный г/г)', () => {
     expect(normalizePpiViewMode(null)).toBe('yoy');
     expect(normalizePpiViewMode('level')).toBe('index');
-    // старая годовая (дек-к-дек) редиректит на помесячную инфляцию за год
-    expect(normalizePpiViewMode('annual')).toBe('yoy');
+    // годовая «декабрь к декабрю» — собственный режим Г/г в «К прошлому периоду»
+    expect(normalizePpiViewMode('annual')).toBe('annual');
+    expect(expandedGroupForMode('annual')).toBe('step');
   });
 
   it('инфляция за год — leaf; «к прошлому периоду» раскрывается в м/м и кв/кв', () => {
@@ -46,9 +49,9 @@ describe('ppiViewModeGroups', () => {
     expect(dataModeForPpiUrlMode('index-annual')).toBe('index');
   });
 
-  it('canonical redirect derived URL → инфляция за год помесячно', () => {
+  it('canonical redirect derived URL → карточка ppi с режимом', () => {
     expect(ppiCanonicalTarget('ppi-yoy')).toEqual({ parentCode: 'ppi', mode: 'yoy' });
-    expect(ppiCanonicalTarget('ppi-annual')).toEqual({ parentCode: 'ppi', mode: 'yoy' });
+    expect(ppiCanonicalTarget('ppi-annual')).toEqual({ parentCode: 'ppi', mode: 'annual' });
   });
 
   it('контент инфляции за год про производителей, не про жильё', () => {

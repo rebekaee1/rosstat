@@ -1,23 +1,23 @@
 /**
  * URL-режимы семейства ИЦП (ежемесячные ряды Росстата).
- * Семантика групп — как у ИПЦ (cpiViewModeResolve): «Инфляция за год»
- * (помесячный ряд rolling 12m), «К прошлому периоду» (м/м) и «Индекс»
- * с подрежимами по месяцам / кварталам / годам.
+ * Семантика групп — как у ИПЦ (cpiViewModeResolve): «К соответствующему
+ * периоду предыдущего года» (помесячный ряд г/г), «К прошлому периоду»
+ * (м/м, кв/кв, г/г по годам) и «Индекс» с подрежимами по месяцам /
+ * кварталам / годам.
  *
- * Правки созвона 2026-06-06: «Инфляция за год» = помесячный г/г (не «декабрь
- * к декабрю»); «Индекс» стал раскрывающейся группой; «декабрь-к-декабрю»
- * (annual) с карточки убран.
+ * Правки созвона 2026-06-06: «Индекс» стал раскрывающейся группой.
+ * Правки созвона 2026-06-11 («под копирку» с ИПЦ): «Инфляция за год»
+ * переименована в «К соответствующему периоду предыдущего года»;
+ * в «К прошлому периоду» добавлен годовой шаг Г/г (декабрь к декабрю,
+ * режим `annual`, одна точка на год).
  */
 
 export const PPI_CODES = ['ppi'];
 
-export const PPI_URL_MODES = ['yoy', 'mom', 'qoq', 'index', 'index-quarterly', 'index-annual'];
+export const PPI_URL_MODES = ['yoy', 'mom', 'qoq', 'annual', 'index', 'index-quarterly', 'index-annual'];
 
 const LEGACY_TO_CANONICAL = {
   level: 'index',
-  // старая «годовая» (декабрь к декабрю) больше не показывается отдельно —
-  // редиректим на помесячную инфляцию за год.
-  annual: 'yoy',
 };
 
 export function normalizePpiViewMode(viewMode) {
@@ -52,7 +52,7 @@ export function topGroupForMode(viewMode) {
 export function expandedGroupForMode(viewMode) {
   const mode = normalizePpiViewMode(viewMode);
   if (mode === 'yoy') return null;
-  if (mode === 'mom' || mode === 'qoq') return 'step';
+  if (mode === 'mom' || mode === 'qoq' || mode === 'annual') return 'step';
   return 'index';
 }
 
@@ -70,7 +70,7 @@ export function dataModeForPpiUrlMode(viewMode) {
 export function ppiCanonicalTarget(code) {
   const map = {
     'ppi-yoy': { parentCode: 'ppi', mode: 'yoy' },
-    'ppi-annual': { parentCode: 'ppi', mode: 'yoy' },
+    'ppi-annual': { parentCode: 'ppi', mode: 'annual' },
   };
   return map[code] ?? null;
 }

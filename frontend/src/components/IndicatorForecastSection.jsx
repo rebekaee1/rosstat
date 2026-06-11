@@ -49,10 +49,16 @@ function useForecastView({ indicatorCode, indicatorCategory, chartMode, hasForec
   return ref;
 }
 
-function dateFormatFor(chartMode, indicator) {
-  if (chartMode === 'quarterly') return 'quarterly';
+function dateFormatFor(chartMode, indicator, safeViewMode) {
+  if (chartMode === 'quarterly' || chartMode === 'qoq') return 'quarterly';
   if (chartMode === 'annual') return 'annual';
   if (chartMode === 'weekly') return 'weekly';
+  // Индексные подрежимы фильтруют прогноз до концов кварталов/годов —
+  // подписи дат должны соответствовать гранулярности.
+  if (chartMode === 'index') {
+    if (safeViewMode === 'index-quarterly') return 'quarterly';
+    if (safeViewMode === 'index-annual') return 'annual';
+  }
   if (indicator?.frequency === 'quarterly') return 'quarterly';
   if (indicator?.frequency === 'annual') return 'annual';
   if (indicator?.frequency === 'weekly') return 'weekly';
@@ -66,11 +72,11 @@ function dateFormatFor(chartMode, indicator) {
 export default function IndicatorForecastSection({
   indicator,
   chartMode,
+  safeViewMode,
   inflationResp,
   displayForecastData,
   quarterlyForecastData,
   annualForecastResp,
-  weeklyForecastData,
   yoyForecastData,
   qoqForecastData,
   periodMonthlyForecastData,
@@ -90,12 +96,11 @@ export default function IndicatorForecastSection({
   if (forecastEnabled && showForecast && hasForecastData) {
     const forecastData = chartMode === 'quarterly' ? quarterlyForecastData
       : chartMode === 'annual' ? annualForecastResp
-        : chartMode === 'weekly' ? weeklyForecastData
-          : chartMode === 'yoy' ? yoyForecastData
-            : chartMode === 'qoq' ? qoqForecastData
-              : chartMode === 'period-weekly' ? periodWeeklyForecastData
-                : chartMode === 'period-monthly' ? periodMonthlyForecastData
-                  : displayForecastData;
+        : chartMode === 'yoy' ? yoyForecastData
+          : chartMode === 'qoq' ? qoqForecastData
+            : chartMode === 'period-weekly' ? periodWeeklyForecastData
+              : chartMode === 'period-monthly' ? periodMonthlyForecastData
+                : displayForecastData;
 
     return (
       <section ref={viewRef} className="lg:col-span-2">
@@ -104,7 +109,7 @@ export default function IndicatorForecastSection({
           inflation={inflationResp}
           forecastData={forecastData}
           unit={chartMode === 'index' ? 'индекс' : (indicator?.unit || '%')}
-          dateFormat={dateFormatFor(chartMode, indicator)}
+          dateFormat={dateFormatFor(chartMode, indicator, safeViewMode)}
         />
       </section>
     );

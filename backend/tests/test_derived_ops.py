@@ -375,16 +375,19 @@ def test_wages_real_zero_base_returns_empty():
 # --- CPI view-mode ops -------------------------------------------------------
 
 
-def test_cumulative_level_from_mom_starts_at_2000():
+def test_cumulative_level_from_mom_full_history():
+    # История не обрезается: база 100 — первая доступная точка (1999-12),
+    # дальше цепное произведение м/м-индексов (созвон 2026-06-11).
     monthly = [
         (date(1999, 12, 1), 110.0),
         (date(2000, 1, 1), 101.0),
         (date(2000, 2, 1), 101.0),
     ]
     out = cumulative_level_from_mom(monthly)
-    assert out[0] == (date(2000, 1, 1), 100.0)
-    assert out[1][0] == date(2000, 2, 1)
-    assert out[1][1] == 101.0
+    assert out[0] == (date(1999, 12, 1), 100.0)
+    assert out[1][0] == date(2000, 1, 1)
+    assert abs(out[1][1] - 101.0) < 1e-9
+    assert abs(out[2][1] - 101.0 * 1.01) < 1e-9
 
 
 def test_cpi_mom_yoy_needs_year_gap():

@@ -80,14 +80,15 @@ describe('getViewModeContent', () => {
     methodology: 'fallback methodology',
   };
 
-  it('annual mode на CPI → CPI ANNUAL block, не fallback', () => {
+  it('yoy mode на CPI → годовое изменение (декабрь к декабрю), не fallback', () => {
     const out = getViewModeContent({
-      chartMode: 'cpi',
-      safeViewMode: 'annual',
+      chartMode: 'annual',
+      safeViewMode: 'yoy',
       isPriceCategory: true,
       indicator: cpiIndicator,
     });
-    expect(out.description).toMatch(/Годовая инфляция/);
+    expect(out.description).toMatch(/Годовое изменение \(г\/г\)/);
+    expect(out.description).toMatch(/декабрь к декабрю/);
     expect(out.description).not.toBe(cpiIndicator.description);
   });
 
@@ -98,7 +99,7 @@ describe('getViewModeContent', () => {
       isPriceCategory: true,
       indicator: cpiIndicator,
     });
-    expect(out.description).toMatch(/Накопленная инфляция/);
+    expect(out.description).toMatch(/соответствующему периоду предыдущего года/);
   });
 
   it('step-weekly на CPI → недельный блок', () => {
@@ -108,7 +109,7 @@ describe('getViewModeContent', () => {
       isPriceCategory: true,
       indicator: { ...cpiIndicator, code: 'cpi' },
     });
-    expect(out.description).toMatch(/неделя к неделе/);
+    expect(out.description).toMatch(/Недельное изменение \(н\/н\)/);
   });
 
   it('step-monthly на CPI → м/м блок', () => {
@@ -139,7 +140,7 @@ describe('getViewModeContent', () => {
       indicator: { ...cpiIndicator, code: 'cpi-food' },
     });
     expect(out.description).toMatch(/продовольственные товары/);
-    expect(out.description).toMatch(/скользящие 12 месяцев/);
+    expect(out.description).toMatch(/соответствующему периоду предыдущего года/);
     expect(out.description).not.toMatch(/потребительские цены за последний год/);
   });
 

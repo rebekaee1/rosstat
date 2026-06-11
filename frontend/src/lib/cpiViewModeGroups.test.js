@@ -52,12 +52,15 @@ describe('cpiViewModeGroups', () => {
   });
 
   it('dataMode для новых режимов', () => {
-    expect(dataModeForUrlMode('yoy')).toBe('yoy');
+    // Г/г считается по годам — декабрь к декабрю (ряд *-annual).
+    expect(dataModeForUrlMode('yoy')).toBe('annual');
     expect(dataModeForUrlMode('qoq')).toBe('qoq');
     expect(dataModeForUrlMode('period-monthly')).toBe('period-monthly');
     expect(dataModeForUrlMode('period-weekly')).toBe('period-weekly');
     expect(dataModeForUrlMode('step-weekly')).toBe('weekly');
-    expect(dataModeForUrlMode('quarterly')).toBe('quarterly');
+    // legacy «Рост за период»: квартальная = кв/кв, годовая = г/г.
+    expect(dataModeForUrlMode('quarterly')).toBe('qoq');
+    expect(dataModeForUrlMode('annual')).toBe('annual');
     expect(dataModeForUrlMode('step-monthly')).toBe('cpi');
     expect(topGroupForMode('yoy')).toBe('step');
     expect(topGroupForMode('period-monthly')).toBe('period');

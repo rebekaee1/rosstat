@@ -9,7 +9,7 @@ import {
   getCpiTableTitle,
 } from './cpiViewModeContent.jsx';
 import { dataModeForUrlMode } from './cpiViewModeResolve';
-import { CPI_VIEW_MODES_FLAT } from './cpiViewModeGroups';
+import { visibleCpiViewModes } from './cpiViewModeGroups';
 
 /** Фразы чужого среза (не матчим «не»+продовольственные). */
 const FOOD_ONLY = /на продовольственные товары|ИПЦ на продовольственные/i;
@@ -39,11 +39,14 @@ const COMPOSITIONS = [
   },
 ];
 
-const MODES = CPI_VIEW_MODES_FLAT.map((m) => ({
-  urlMode: m.mode,
-  chartMode: dataModeForUrlMode(m.mode),
-  label: m.label,
-}));
+/** Режимы аудита — только видимые для данного состава (срезы — без недельных). */
+function modesForCode(code) {
+  return visibleCpiViewModes(code).map((m) => ({
+    urlMode: m.mode,
+    chartMode: dataModeForUrlMode(m.mode),
+    label: m.label,
+  }));
+}
 
 function bundle(code, urlMode, chartMode) {
   const indicator = { code };
@@ -59,7 +62,7 @@ function bundle(code, urlMode, chartMode) {
 
 describe('CPI состав × режим — аудит текстов', () => {
   for (const comp of COMPOSITIONS) {
-    for (const mode of MODES) {
+    for (const mode of modesForCode(comp.code)) {
       const id = `${comp.code} × ${mode.urlMode}`;
       it(id, () => {
         const { content, text, chartTitle } = bundle(comp.code, mode.urlMode, mode.chartMode);
@@ -73,15 +76,8 @@ describe('CPI состав × режим — аудит текстов', () => {
         }
 
         if (mode.chartMode === 'inflation') {
-          expect(content.description, id).toMatch(/12 месяц|скользящ/i);
-          expect(chartTitle, id).toMatch(/12 мес/i);
-        }
-        if (mode.urlMode === 'quarterly') {
-          expect(content.description, id).toMatch(/квартал/i);
-          expect(chartTitle, id).toMatch(/Квартальн/i);
-        }
-        if (mode.urlMode === 'annual') {
-          expect(content.description, id).toMatch(/декабрь|календарн/i);
+          expect(content.description, id).toMatch(/соответствующ.+периоду предыдущего года/i);
+          expect(chartTitle, id).toMatch(/предыдущего года/i);
         }
         if (mode.urlMode === 'step-weekly') {
           expect(content.description, id).toMatch(/недел/i);
@@ -96,7 +92,8 @@ describe('CPI состав × режим — аудит текстов', () => {
           expect(content.description, id).toMatch(/недел/i);
         }
         if (mode.urlMode === 'yoy') {
-          expect(content.description, id).toMatch(/год|12 месяц/i);
+          expect(content.description, id).toMatch(/Годовое изменение/i);
+          expect(content.description, id).toMatch(/декабрь к декабрю/i);
         }
         if (mode.urlMode === 'qoq') {
           expect(content.description, id).toMatch(/квартал/i);

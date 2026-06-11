@@ -2609,7 +2609,20 @@ INDICATORS = [
             "затем считается процентное изменение к предыдущему кварталу."
         ),
         "parser_type": "derived",
-        "model_config_json": {"forecast_steps": 0},
+        "model_config_json": {
+            "forecast_steps": 4,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "ppi",
+                "operation": "pipeline",
+                "pipeline": [
+                    ["period_over_period", {"granularity": "quarter", "method": "last"}],
+                ],
+                "complete_bucket": "quarter",
+                "min_periods": 3,
+                "model_name": "PPI-QoQ-Derived",
+            },
+        },
         "is_active": True,
         "category": "Цены",
     },

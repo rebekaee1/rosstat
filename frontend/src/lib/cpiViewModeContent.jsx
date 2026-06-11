@@ -64,12 +64,12 @@ export function getCpiChartTitle(chartMode, code, urlMode = null) {
   switch (chartMode) {
     case 'inflation':
       return code === 'cpi'
-        ? 'Инфляция за 12 мес. (все товары и услуги, %)'
-        : `Инфляция за 12 мес. (${s.prices}, %)`;
+        ? 'Инфляция к соответствующему периоду предыдущего года (все товары и услуги, %)'
+        : `Инфляция к соответствующему периоду предыдущего года (${s.prices}, %)`;
     case 'quarterly':
       return `Квартальная инфляция — ${s.prices} (%)`;
     case 'annual':
-      return `Годовая инфляция — ${s.prices} (%)`;
+      return `Годовое изменение (г/г) — ${s.prices} (%)`;
     case 'period-monthly':
       return `Рост за месяц (по неделям) — ${s.prices} (%)`;
     case 'yoy':
@@ -104,12 +104,12 @@ export function getCpiTableTitle(chartMode, code, urlMode = null) {
   switch (chartMode) {
     case 'inflation':
       return code === 'cpi'
-        ? 'Исторические данные — инфляция 12 мес. (все товары и услуги)'
-        : `Исторические данные — инфляция 12 мес. (${s.prices})`;
+        ? 'Исторические данные — инфляция к соотв. периоду предыдущего года (все товары и услуги)'
+        : `Исторические данные — инфляция к соотв. периоду предыдущего года (${s.prices})`;
     case 'quarterly':
       return `Исторические данные — квартальная инфляция (${s.prices})`;
     case 'annual':
-      return `Исторические данные — годовая инфляция (${s.prices})`;
+      return `Исторические данные — годовое изменение г/г (${s.prices})`;
     case 'period-monthly':
       return `Исторические данные — рост за месяц по неделям (${s.prices})`;
     case 'yoy':
@@ -143,12 +143,6 @@ const ANNUAL_INFLATION_FORMULA = (
   </Formula>
 );
 
-const QUARTERLY_INFLATION_FORMULA = (
-  <Formula>
-    {'(ИПЦ'}<sub>1</sub>{' / 100) × (ИПЦ'}<sub>2</sub>{' / 100) × (ИПЦ'}<sub>3</sub>{' / 100) × 100 − 100'}
-  </Formula>
-);
-
 function inflationFootnote(ipcFoot) {
   return (
     <span className="block mt-2 text-text-tertiary normal-case tracking-normal text-[10px]">
@@ -163,54 +157,14 @@ function buildInflation(code) {
   const s = cpiSlice(code);
   return {
     description:
-      'Накопленная инфляция за скользящие 12 месяцев показывает, на сколько процентов '
-      + `выросли ${s.prices} за этот период. Рассчитывается как произведение 12 `
+      `Инфляция к соответствующему периоду предыдущего года: на сколько процентов ${s.prices} `
+      + 'изменились по сравнению с тем же месяцем прошлого года. Рассчитывается как произведение 12 '
       + `последовательных ${s.ipcMonthly}, делённых на 100, минус 100%.`,
     methodology: (
       <>
         <span className="block mb-1">Формула:</span>
         {ANNUAL_INFLATION_FORMULA}
         {inflationFootnote(s.ipcFoot)}
-      </>
-    ),
-  };
-}
-
-function buildQuarterly(code) {
-  const s = cpiSlice(code);
-  return {
-    description:
-      'Квартальная инфляция показывает, на сколько процентов выросли '
-      + `${s.prices} за квартал (3 месяца). Рассчитывается как произведение 3 последовательных `
-      + `${s.ipcMonthly}, делённых на 100, минус 100%.`,
-    methodology: (
-      <>
-        <span className="block mb-1">Формула:</span>
-        {QUARTERLY_INFLATION_FORMULA}
-        {inflationFootnote(s.ipcFoot)}
-      </>
-    ),
-  };
-}
-
-function buildAnnual(code) {
-  const s = cpiSlice(code);
-  return {
-    description:
-      'Годовая инфляция «декабрь к декабрю» — стандарт ЦБ и Росстата. '
-      + 'Одна точка на каждый завершённый календарный год: рассчитывается как '
-      + `произведение 12 ${s.ipcMonthly} внутри года (январь–декабрь), `
-      + 'делённых на 100, минус 100%. Прогноз — то же произведение по 12 точкам '
-      + `месячного прогноза ${s.ipcMonthly}.`,
-    methodology: (
-      <>
-        <span className="block mb-1">Формула (за календарный год Y, январь–декабрь):</span>
-        {ANNUAL_INFLATION_FORMULA}
-        <span className="block mt-2 text-text-tertiary normal-case tracking-normal text-[10px]">
-          ИПЦ
-          <sub>i</sub>
-          {` — ${s.ipcFoot} за i-й месяц года Y (% к предыдущему месяцу).`}
-        </span>
       </>
     ),
   };
@@ -282,8 +236,9 @@ function buildStepWeekly(code) {
   const weekly = WEEKLY_BY_CODE[code] ?? WEEKLY;
   return {
     description:
-      `Изменение ${s.pricesGen} неделя к неделе (н/н) по оперативному `
-      + 'еженедельному ряду Росстата.',
+      `Недельное изменение (н/н) — на сколько процентов ${s.prices} изменились `
+      + 'по сравнению с предыдущей неделей. Положительное значение — рост, '
+      + 'отрицательное — снижение.',
     methodology: weekly.methodology,
   };
 }
@@ -321,13 +276,22 @@ function buildYoy(code) {
   const s = cpiSlice(code);
   return {
     description:
-      `Изменение ${s.pricesGen} по сравнению с тем же месяцем прошлого года (г/г). `
-      + 'Не совпадает со скользящей инфляцией за 12 месяцев и с годовой '
-      + 'инфляцией «декабрь к декабрю».',
-    methodology:
-      'Формула: (УРОВЕНЬₜ / УРОВЕНЬₜ₋₁₂ − 1) × 100, где УРОВЕНЬ — накопленный '
-      + `индекс цен с января 2000 года (база 100), построенный из ${s.ipcMonthly} `
-      + 'к предыдущему месяцу.',
+      `Годовое изменение (г/г) — на сколько процентов ${s.prices} изменились `
+      + 'по сравнению с предыдущим годом. Положительное значение — рост, '
+      + 'отрицательное — снижение. Считается по календарным годам — '
+      + 'декабрь к декабрю, одна точка на каждый завершённый год.',
+    methodology: (
+      <>
+        <span className="block mb-1">Формула (за календарный год, январь–декабрь):</span>
+        {ANNUAL_INFLATION_FORMULA}
+        <span className="block mt-2 text-text-tertiary normal-case tracking-normal text-[10px]">
+          ИПЦ
+          <sub>i</sub>
+          {` — ${s.ipcFoot} за i-й месяц года (% к предыдущему месяцу). `}
+          Прогноз — то же произведение по точкам месячного прогноза.
+        </span>
+      </>
+    ),
   };
 }
 
@@ -335,12 +299,12 @@ function buildQoq(code) {
   const s = cpiSlice(code);
   return {
     description:
-      `Изменение ${s.pricesGen} к концу предыдущего квартала (кв/кв). `
-      + 'Отличается от «квартальной инфляции», которая показывает рост '
-      + 'внутри квартала (произведение трёх месяцев).',
+      `Квартальное изменение (кв/кв) — на сколько процентов ${s.prices} изменились `
+      + 'по сравнению с предыдущим кварталом. Положительное значение — рост, '
+      + 'отрицательное — снижение.',
     methodology:
-      'Формула на концах кварталов: (УРОВЕНЬконец Q / УРОВЕНЬконец Q−1 − 1) × 100, '
-      + 'где УРОВЕНЬ — накопленный индекс с января 2000 года из '
+      'Формула на концах кварталов: (УРОВЕНЬ конец Q / УРОВЕНЬ конец Q−1 − 1) × 100, '
+      + 'где УРОВЕНЬ — накопленный индекс цен, построенный из '
       + `${s.ipcMonthly}.`,
   };
 }
@@ -356,27 +320,31 @@ function buildIndex(code, bucket = null) {
     return {
       description:
         `${intro} Показана ${periodAdj} версия: одна точка — значение `
-        + `накопленного индекса на конец каждого ${periodWord}. За базу принят `
+        + `накопленного индекса на конец каждого завершённого ${periodWord}. За базу принят `
         + 'январь 2000 года (100 = уровень цен в январе 2000). Удобно сравнивать '
         + `уровень ${s.pricesGen} по ${bucket === 'year' ? 'годам' : 'кварталам'} `
         + 'без помесячного шума.',
       methodology:
         `Сначала строится месячный накопленный индекс ИНДЕКСₜ = 100 × (ИПЦ₁/100) × `
         + `… × (ИПЦₜ/100), где ИПЦᵢ — месячный ${s.ipcFoot} к предыдущему месяцу. `
-        + `Затем берётся последнее значение каждого ${periodWord}. История 1991–1999 `
-        + 'не включена. На этом режиме прогноз не отображается.',
+        + `Затем берётся последнее значение каждого завершённого ${periodWord}. История `
+        + 'охватывает весь доступный ряд с 1991 года; значения до января 2000 года '
+        + 'заметно меньше 100 — уровень цен тогда был во много раз ниже базы. '
+        + 'Прогноз — продолжение накопленной кривой по месячному прогнозу, точки '
+        + `на конец каждого завершённого ${periodWord} горизонта.`,
     };
   }
   return {
     description:
       `${intro} За базу принят январь 2000 года `
       + '(100 = уровень цен в январе 2000). Каждое значение получено цепным произведением '
-      + `${s.ipcMonthly} к этой базе. Кривая показывает, как с 2000 года изменились `
+      + `${s.ipcMonthly} к этой базе. Кривая показывает, как с 1991 года изменились `
       + `${s.prices}.`,
     methodology:
       `Формула: ИНДЕКСₜ = 100 × (ИПЦ₁/100) × (ИПЦ₂/100) × … × (ИПЦₜ/100), где `
-      + `ИПЦᵢ — месячный ${s.ipcFoot} к предыдущему месяцу. История 1991–1999 не `
-      + 'включена: гиперинфляция первой половины 90-х искажает шкалу. Прогноз — '
+      + `ИПЦᵢ — месячный ${s.ipcFoot} к предыдущему месяцу. История охватывает весь `
+      + 'доступный ряд с 1991 года; значения до января 2000 года заметно меньше 100 — '
+      + 'уровень цен тогда был во много раз ниже базы. Прогноз — '
       + `продолжение накопленной кривой по 12-месячному прогнозу ${s.ipcMonthly}.`,
   };
 }
@@ -409,8 +377,6 @@ export function getViewModeContent({
   if (isPriceCategory) {
     const code = indicator?.code ?? 'cpi';
     if (chartMode === 'inflation') return buildInflation(code);
-    if (safeViewMode === 'quarterly') return buildQuarterly(code);
-    if (safeViewMode === 'annual') return buildAnnual(code);
     if (safeViewMode === 'period-weekly') return buildPeriodWeekly(code);
     if (safeViewMode === 'period-monthly') return buildPeriodMonthly(code);
     if (safeViewMode === 'step-weekly') return buildStepWeekly(code);

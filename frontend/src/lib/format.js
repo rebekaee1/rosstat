@@ -110,7 +110,7 @@ const UNIT_CONFIG = {
   'тыс. чел.': { digits: 1, suffix: ' тыс.',   space: false },
   'млрд $':    { digits: 1, suffix: ' млрд $',  space: false },
   'млн $':     { digits: 0, suffix: ' млн $',   space: false },
-  'индекс':    { digits: 1, suffix: '',          space: false },
+  'индекс':    { digits: 2, suffix: '',          space: false },
   '‰':         { digits: 2, suffix: '‰',         space: false },
   'чел.':      { digits: 0, suffix: ' чел.',     space: false },
   'ед.':       { digits: 0, suffix: ' ед.',      space: false },
@@ -155,11 +155,12 @@ export function unitDigits(unit = '%') {
   return (UNIT_CONFIG[unit] || { digits: 2 }).digits;
 }
 
-/** Точность числа на графике/в карточках — недельный ИПЦ требует 3 знака (0.07 vs 0.15). */
-export function chartValueDigits(unit = '%', chartMode) {
-  if (chartMode === 'weekly' || chartMode === 'period-weekly' || chartMode === 'step-weekly') {
-    return 3;
-  }
+/**
+ * Точность числа на графике/в карточках. Единый стандарт — два знака после
+ * запятой (правка созвона 2026-06-11): прежние 3-знаковые исключения для
+ * недельного ИПЦ убраны вместе с недельным прогнозом.
+ */
+export function chartValueDigits(unit = '%') {
   return unitDigits(unit);
 }
 
@@ -211,17 +212,10 @@ export function isCpiIndex(code) {
   return CPI_INDEX_CODES.has(code);
 }
 
-function cpiIndexDisplayDigits(code) {
-  // Недельный ИПЦ: прирост 0.05–0.20% — при округлении до 2 знаков прогноз
-  // схлопывается в «плоскую» линию 0.15 на графике и в таблице.
-  if (code && String(code).includes('weekly')) return 3;
-  return 2;
-}
-
 export function adjustCpiDisplay(value, code) {
   if (value == null || !isFinite(value)) return value;
   if (code !== undefined && !isCpiIndex(code)) return value;
-  return +(Number(value) - 100).toFixed(cpiIndexDisplayDigits(code));
+  return +(Number(value) - 100).toFixed(2);
 }
 
 export function adjustCpiForecastDisplay(forecastResp, code) {

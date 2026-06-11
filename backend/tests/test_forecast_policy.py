@@ -62,6 +62,7 @@ DERIVED_FROM_SOURCE_FORECAST_CODES = {
     "housing-qoq-primary",
     "housing-qoq-secondary",
     "ppi-yoy",
+    "ppi-qoq",
     "ppi-annual",
     "inflation-annual",
     "cpi-food-annual",

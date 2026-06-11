@@ -48,14 +48,21 @@ export default function IndicatorTelemetryGrid({
         ? dataModeForPpiUrlMode(safeViewMode)
         : safeViewMode;
 
+  // Режимы, чей отображаемый ряд — процент изменения, а не уровень индекса.
+  const PCT_VIEW_MODES = new Set([
+    'yoy', 'annual', 'qoq', 'mom', 'quarterly', 'inflation',
+    'step-monthly', 'step-weekly', 'period-monthly', 'period-weekly',
+  ]);
   const unit = String(safeViewMode).startsWith('index')
     && (isPriceCategory || isHousingFamily || isPpiFamily)
     ? 'индекс'
-    // Режим «год к году» у индекс-индикаторов (ИПП/ИЦП/жильё) — это проценты,
+    // Процентные режимы у индекс-индикаторов (ИПЦ/ИЦП/жильё) — это проценты,
     // а не уровень индекса: единица «%», иначе значения 10.8 / 8.7 шли без знака.
-    : (safeViewMode === 'yoy' && indicator?.hero_value != null)
+    : PCT_VIEW_MODES.has(safeViewMode) && (isPriceCategory || isHousingFamily || isPpiFamily)
       ? '%'
-      : (indicator?.unit || '%');
+      : (safeViewMode === 'yoy' && indicator?.hero_value != null)
+        ? '%'
+        : (indicator?.unit || '%');
 
   if (loading) {
     return (
@@ -78,7 +85,7 @@ export default function IndicatorTelemetryGrid({
   const heroOverride = indicator?.hero_value != null && safeViewMode === 'yoy';
 
   const currentLabel = heroOverride ? (indicator.hero_label || 'Изменение г/г')
-    : safeViewMode === 'yoy' ? 'Год к году'
+    : safeViewMode === 'yoy' || safeViewMode === 'annual' ? 'Год к году'
       : safeViewMode === 'mom' ? 'Месяц к месяцу'
         : safeViewMode === 'qoq' ? 'Квартал к кварталу'
         : safeViewMode === 'period-monthly' ? 'Рост за месяц'
@@ -94,15 +101,15 @@ export default function IndicatorTelemetryGrid({
     ? 'Предыдущая неделя'
     : safeViewMode === 'qoq' ? 'Предыдущий квартал'
       : safeViewMode === 'mom' ? 'Предыдущий месяц'
-        // В режиме г/г вторая карточка — это предыдущая точка того же (г/г) ряда,
-        // т.е. предыдущий период, а не «тот же период год назад» (последнее
-        // путало: подпись говорила «год назад», а дата была прошлого квартала).
+        // В режиме г/г вторая карточка — это предыдущая точка того же (г/г) ряда.
+        // У ИПЦ/ИЦП Г/г разрешается в годовой ряд «декабрь к декабрю»
+        // (chartMode === 'annual') — предыдущая точка там всегда предыдущий год.
         : safeViewMode === 'yoy'
-          ? (indicator?.frequency === 'quarterly' ? 'Предыдущий квартал'
-            : indicator?.frequency === 'annual' ? 'Предыдущий год'
+          ? (chartMode === 'annual' || indicator?.frequency === 'annual' ? 'Предыдущий год'
+            : indicator?.frequency === 'quarterly' ? 'Предыдущий квартал'
               : 'Предыдущий месяц')
         : safeViewMode === 'quarterly' ? 'Предыдущий квартал'
-          : safeViewMode === 'annual' ? 'Год назад'
+          : safeViewMode === 'annual' ? 'Предыдущий год'
             : isHousingFamily ? 'Предыдущий квартал'
               : isPriceCategory ? 'Предыдущий месяц' : 'Предыдущее значение';
 
@@ -110,7 +117,7 @@ export default function IndicatorTelemetryGrid({
     : safeViewMode === 'mom' ? 'к пред. месяцу'
       : safeViewMode === 'yoy' ? 'к пред. году'
       : safeViewMode === 'quarterly' ? 'к пред. кварталу'
-        : safeViewMode === 'annual' ? 'к пред. значению'
+        : safeViewMode === 'annual' ? 'к пред. году'
           : dataMode === 'weekly' || safeViewMode === 'step-weekly' ? 'к пред. неделе'
             : safeViewMode === 'period-weekly' ? 'к прошлому отчёту'
             : indicator?.frequency === 'quarterly' ? 'к пред. кварталу'
@@ -121,7 +128,9 @@ export default function IndicatorTelemetryGrid({
   const heroUnit = heroOverride ? (indicator.hero_unit || '%') : unit;
   const valueDigits = chartValueDigits(unit, safeViewMode === 'step-weekly' ? 'step-weekly' : dataMode);
   const previousValue = s?.previousValue ?? indicator?.previous_value;
-  const pctChange = indicator?.unit === 'индекс' && previousValue && !heroOverride
+  // Относительная дельта в % уместна только для уровня индекса; для
+  // %-рядов (г/г, кв/кв и т.п.) показываем абсолютную разницу (п.п.).
+  const pctChange = unit === 'индекс' && previousValue && !heroOverride
     ? +(((s?.currentValue ?? adj(indicator?.current_value)) - previousValue) / previousValue * 100).toFixed(2)
     : undefined;
 

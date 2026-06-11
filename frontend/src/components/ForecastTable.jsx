@@ -15,7 +15,9 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
     return () => tween.kill();
   }, []);
 
-  const usesForecastData = mode === 'cpi' || mode === 'quarterly' || mode === 'annual' || mode === 'weekly' || mode === 'index';
+  // Все режимы, кроме скользящей 12-месячной инфляции, получают прогноз
+  // готовым рядом (forecastData); inflation — отдельный сводный endpoint.
+  const usesForecastData = mode !== 'inflation';
   const rows = usesForecastData
     ? (forecastData?.forecast?.values || [])
     : (inflation?.forecast || []);

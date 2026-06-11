@@ -115,8 +115,9 @@ describe('adjustCpiDisplay', () => {
   });
   it('subtracts 100 for quarterly CPI-derived code', () => {
     expect(adjustCpiDisplay(101.75, 'inflation-quarterly')).toBe(1.75);
-    expect(adjustCpiDisplay(100.1451, 'inflation-weekly')).toBe(0.145);
-    expect(adjustCpiDisplay(100.1525, 'inflation-weekly-food')).toBe(0.153);
+    // Единый стандарт точности — два знака (созвон 2026-06-11).
+    expect(adjustCpiDisplay(100.1451, 'inflation-weekly')).toBe(0.15);
+    expect(adjustCpiDisplay(100.1525, 'inflation-weekly-food')).toBe(0.15);
   });
   it('subtracts 100 for CPI subcategory quarterly derived codes', () => {
     expect(adjustCpiDisplay(102.1, 'cpi-services-quarterly')).toBe(2.1);
