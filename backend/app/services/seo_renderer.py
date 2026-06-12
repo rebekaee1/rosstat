@@ -169,6 +169,49 @@ def _sort_head_links(links: list[str]) -> list[str]:
     return stylesheets + icons + preloads
 
 
+def _css_preload(head_links: str) -> str:
+    match = re.search(r'href="(/assets/[^"]+\.css)"', head_links)
+    if not match:
+        return ""
+    href = escape(match.group(1))
+    return f'<link rel="preload" href="{href}" as="style">'
+
+
+def _format_frequency(value: str | None) -> str:
+    if not value:
+        return "не указана"
+    return FREQUENCY_LABELS_RU.get(value.lower(), value)
+
+
+def _sort_indicators_for_seo(
+    indicators: list[Indicator],
+    category: CategorySeo | None,
+) -> list[Indicator]:
+    """Flagship категории первым — для SSR-листингов и internal linking."""
+    flagship = category.flagship_code if category else None
+
+    def sort_key(ind: Indicator) -> tuple[int, str]:
+        if flagship and ind.code == flagship:
+            return (0, ind.name)
+        return (1, ind.name)
+
+    return sorted(indicators, key=sort_key)
+
+
+def _enrich_description(desc: str, current, unit: str) -> str:
+    """Добавляет актуальное значение в meta description (CTR в выдаче)."""
+    if not current:
+        return desc
+    unit_suffix = f" {unit.strip()}" if unit and unit.strip() else ""
+    snippet = (
+        f"Актуальное значение — {_format_number(current.value)}{unit_suffix} "
+        f"на {_format_date(current.date)}."
+    )
+    if snippet.lower()[:20] in desc.lower():
+        return desc
+    return f"{snippet} {desc}"
+
+
 def _json_script(data: dict) -> str:
     return (
         '<script type="application/ld+json">'
@@ -202,6 +245,10 @@ def _site_json_ld() -> dict:
                 "@id": f"{DOMAIN}/#website",
                 "url": DOMAIN,
                 "name": "Forecast Economy",
+                "description": (
+                    "Бесплатная аналитическая платформа макроэкономических данных России: "
+                    "ИПЦ, ключевая ставка, курсы валют, ВВП, безработица и 100+ показателей."
+                ),
                 "inLanguage": "ru-RU",
                 "publisher": {"@id": f"{DOMAIN}/#organization"},
             },
@@ -249,9 +296,23 @@ body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:"DM Sans",system-ui,s
 .seo-page a:hover{color:#B8942F}
 .seo-section{margin:1.5rem 0}
 .seo-page nav{font-size:.875rem;margin-bottom:1.5rem;color:rgba(26,26,46,.65)}
+.seo-page table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.875rem}
+.seo-page th,.seo-page td{border:1px solid rgba(0,0,0,.08);padding:.5rem .75rem;text-align:left}
+.seo-page th{background:#F0F1F5;font-weight:600;color:#1A1A2E}
+.seo-page tbody tr:nth-child(even){background:rgba(255,255,255,.6)}
 </style>"""
 
+FREQUENCY_LABELS_RU = {
+    "daily": "ежедневно",
+    "weekly": "еженедельно",
+    "monthly": "ежемесячно",
+    "quarterly": "ежеквартально",
+    "annual": "ежегодно",
+    "yearly": "ежегодно",
+}
+
 FLAGSHIP_CODES = tuple(meta.flagship_code for meta in CATEGORY_META.values())
+SSR_LATEST_ROWS = 12
 
 
 async def build_document(
@@ -271,12 +332,14 @@ async def build_document(
     safe_keywords = escape(clean_text(keywords or DEFAULT_KEYWORDS)[:400])
     structured = "\n".join(_json_script(item) for item in (json_ld or []))
     extras = extra_head or ""
+    css_preload = _css_preload(assets.head_links)
     return f"""<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {SEO_CRITICAL_CSS}
+{css_preload}
 {_consent_bootstrap()}
 <title>{safe_title}</title>
 <meta name="description" content="{safe_desc}">
@@ -509,6 +572,7 @@ async def render_category_html(slug: str, db: AsyncSession) -> tuple[int, str]:
     indicators = await _active_indicators(
         db, category=category.api_category, listed_only=True
     )
+    indicators = _sort_indicators_for_seo(indicators, category)
     links = tuple((f"/indicator/{ind.code}", ind.name) for ind in indicators)
     body = f"""<main class="seo-page">
 <nav aria-label="Хлебные крошки">{_link("/", "Главная")} / {escape(category.name)}</nav>
@@ -591,7 +655,7 @@ async def render_indicator_html(
         display_frequency = resolved_mode.frequency or display_frequency
 
     category = _category_for_api(indicator.category)
-    latest_rows = await _latest_rows(db, data_indicator.id, limit=8)
+    latest_rows = await _latest_rows(db, data_indicator.id, limit=SSR_LATEST_ROWS)
     count, first_dt, last_dt = await _indicator_stats(db, data_indicator.id)
     related = await _related_indicators(db, indicator)
     title = indicator.seo_title or f"{display_name} — данные и график"
@@ -602,6 +666,8 @@ async def render_indicator_html(
             f"{display_name}: динамика, источник, методология и последние значения.",
         )
     )
+    current = latest_rows[0] if latest_rows else None
+    desc = _enrich_description(desc, current, display_unit or indicator.unit)
     body = _indicator_body(
         indicator,
         category,
@@ -634,6 +700,8 @@ async def render_indicator_html(
             "creator": {"@type": "Organization", "name": indicator.source},
             "temporalCoverage": f"{_format_date(first_dt)}/{_format_date(last_dt)}",
             "variableMeasured": display_name,
+            "dateModified": _format_date(last_dt),
+            "keywords": clean_text(indicator.seo_keywords or "", display_name),
         },
     ]
     faq_ld = _faq_json_ld(_indicator_blocks_from_db(indicator))
@@ -707,17 +775,17 @@ async def _indicator_stats(db: AsyncSession, indicator_id: int):
 async def _related_indicators(db: AsyncSession, indicator: Indicator):
     if not indicator.category:
         return []
+    category = _category_for_api(indicator.category)
     result = await db.execute(
         select(Indicator)
         .where(
             Indicator.is_active.is_(True),
+            Indicator.is_listed.is_(True),
             Indicator.category == indicator.category,
             Indicator.code != indicator.code,
         )
-        .order_by(Indicator.code)
-        .limit(8)
     )
-    return list(result.scalars().all())
+    return _sort_indicators_for_seo(list(result.scalars().all()), category)[:8]
 
 
 def _indicator_body(
@@ -756,7 +824,7 @@ def _indicator_body(
 <ul>
 <li>Последнее значение: {escape(_format_number(current.value if current else None))} {escape(unit)}</li>
 <li>Дата последнего значения: {escape(_format_date(current.date if current else None))}</li>
-<li>Периодичность: {escape(frequency)}</li>
+<li>Периодичность: {escape(_format_frequency(frequency))}</li>
 <li>Источник: {source_link}</li>
 <li>Количество точек: {int(count)}</li>
 <li>Период данных: {escape(_format_date(first_dt))} — {escape(_format_date(last_dt))}</li>

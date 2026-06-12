@@ -1,10 +1,10 @@
 # Forecast Economy
 
-> Forecast Economy (forecasteconomy.com) — публичная аналитическая платформа с официальными макроэкономическими данными России: индекс потребительских цен, ключевая ставка ЦБ, курсы валют, ВВП, безработица, демография и ещё 80+ индикаторов. Источники: Росстат, Банк России, Минфин РФ. Обновление ежедневно в 06:00 МСК.
+> Forecast Economy (forecasteconomy.com) — публичная аналитическая платформа с официальными макроэкономическими данными России: индекс потребительских цен, ключевая ставка ЦБ, RUONIA, курсы валют, ВВП, безработица, демография и ещё 100+ индикаторов. Источники: Росстат, Банк России, Минфин РФ. Обновление ежедневно в 06:00 МСК.
 
 ## Что есть на сайте
 
-- **84+ индикатора** в 9 категориях: цены, процентные ставки, финансы и валюты, рынок труда, ВВП и рост, население, внешняя торговля, бизнес и инвестиции, наука и образование.
+- **100+ индикаторов** в 10 категориях: цены, процентные ставки, валюты, деньги и бюджет, рынок труда, ВВП и рост, население, внешняя торговля, бизнес и инвестиции, наука и образование.
 - **Прогнозы** по ключевым показателям (ИПЦ, USD/RUB, ключевая ставка, безработица) — собственные расчёты, пересчёт после каждого релиза источника.
 - **Калькулятор инфляции** — пересчёт суммы между двумя датами через накопленный ИПЦ; обратный режим (сколько было в N лет назад).
 - **Сравнение индикаторов** — попарное сравнение временных рядов с двойной осью Y и LOCF-выравниванием по датам.
@@ -18,7 +18,8 @@
 - Главная: https://forecasteconomy.com/
 - Цены и инфляция: https://forecasteconomy.com/category/prices
 - Процентные ставки: https://forecasteconomy.com/category/rates
-- Финансы и валюты: https://forecasteconomy.com/category/finance
+- Валюты: https://forecasteconomy.com/category/currencies
+- Деньги и бюджет: https://forecasteconomy.com/category/finance
 - Рынок труда: https://forecasteconomy.com/category/labor
 - ВВП и рост: https://forecasteconomy.com/category/gdp
 - Население: https://forecasteconomy.com/category/population
@@ -30,6 +31,7 @@
 
 - Индекс потребительских цен (ИПЦ): https://forecasteconomy.com/indicator/cpi
 - Ключевая ставка ЦБ РФ: https://forecasteconomy.com/indicator/key-rate
+- Ставка RUONIA: https://forecasteconomy.com/indicator/ruonia
 - Курс доллара к рублю (USD/RUB): https://forecasteconomy.com/indicator/usd-rub
 - Курс евро к рублю (EUR/RUB): https://forecasteconomy.com/indicator/eur-rub
 - Курс юаня к рублю (CNY/RUB): https://forecasteconomy.com/indicator/cny-rub
@@ -45,21 +47,18 @@
 - Калькулятор инфляции: https://forecasteconomy.com/calculator
 - Сравнение индикаторов: https://forecasteconomy.com/compare
 - Возрастная структура населения: https://forecasteconomy.com/demographics
-- Конфиденциальность: https://forecasteconomy.com/privacy
+- Политика конфиденциальности: https://forecasteconomy.com/privacy
+- Пользовательское соглашение: https://forecasteconomy.com/terms
 - Sitemap: https://forecasteconomy.com/sitemap.xml
 
 ## Источники данных
 
-- **Росстат:** SDDS XLSX, КЭП (`ind_MM-YYYY.xlsx`), demo*.xlsx, Sp_*.xlsx, недельные бюллетени по ИПЦ, Kadry_VO.xls, Nauka_*.xls, innov_*.xls.
-- **Банк России (cbr.ru):** XML/JSON DataService (FX, key rate), hd_base, XLSX BoP/debt/reserves, пресс-релизы Совета Директоров.
-- **Минфин РФ:** CSV доходы/расходы федерального бюджета.
+- **Росстат** — официальная статистика по ценам, ВВП, рынку труда, населению, торговле, бизнесу и науке.
+- **Банк России** — ключевая ставка, RUONIA, курсы валют, денежная масса, резервы, платёжный баланс.
+- **Минфин РФ** — доходы и расходы федерального бюджета.
 
-Все данные публичные, точные ссылки на источник указаны на странице каждого индикатора в блоке «Методология». Лицензия — общественное достояние / открытые данные госорганов РФ.
-
-## Технологии
-
-Frontend: React 18 + Vite + Tailwind + Recharts. Backend: FastAPI + PostgreSQL + Redis. Размещение: VDS, deploy через docker compose.
+Все данные публичные; точные ссылки на источник указаны на странице каждого индикатора в блоке «Методология».
 
 ## Контакт
 
-Email: hello@forecasteconomy.com
+Email: contact@forecasteconomy.com

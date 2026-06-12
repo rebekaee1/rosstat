@@ -301,6 +301,43 @@ def test_category_rich_list_includes_descriptions():
     assert "ИПЦ" in html
 
 
+def test_sitemap_priority_listed_vs_unlisted():
+    from app.api.sitemap import _sitemap_priority
+
+    assert _sitemap_priority(listed=True, is_indicator=True) == "0.8"
+    assert _sitemap_priority(listed=False, is_indicator=True) == "0.5"
+
+
+def test_sort_indicators_for_seo_puts_flagship_first():
+    from app.services.seo_content import CATEGORY_META
+    from app.services.seo_renderer import _sort_indicators_for_seo
+
+    class _Fake:
+        def __init__(self, code: str, name: str):
+            self.code = code
+            self.name = name
+
+    indicators = [
+        _Fake("auto-loan-rate", "Автокредиты"),
+        _Fake("key-rate", "Ключевая ставка"),
+        _Fake("ruonia", "RUONIA"),
+    ]
+    ordered = _sort_indicators_for_seo(indicators, CATEGORY_META["rates"])
+    assert ordered[0].code == "key-rate"
+
+
+def test_enrich_description_adds_latest_value():
+    from datetime import date
+    from types import SimpleNamespace
+
+    from app.services.seo_renderer import _enrich_description
+
+    current = SimpleNamespace(value=13.96, date=date(2026, 6, 10))
+    out = _enrich_description("RUONIA: ставка овернайт.", current, "%")
+    assert "13.96" in out
+    assert "2026-06-10" in out
+
+
 def _extract_title(html: str) -> str:
     start = html.find("<title>")
     end = html.find("</title>")
