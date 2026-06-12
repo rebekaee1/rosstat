@@ -66,9 +66,7 @@ _APP_ASSETS_TTL = 300
 def _fallback_assets() -> AppAssets:
     return AppAssets(
         head_links=(
-            '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
-            '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
-            '<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Playfair+Display:ital,wght@0,700;1,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">\n'
+            '<link href="/fonts/fonts.css" rel="stylesheet">\n'
             '<link rel="icon" href="/favicon.ico" sizes="any">\n'
             '<link rel="icon" type="image/svg+xml" href="/favicon.svg">\n'
             '<link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">'
@@ -182,8 +180,6 @@ def _site_json_ld() -> dict:
                 "@type": "Organization",
                 "@id": f"{DOMAIN}/#organization",
                 "name": "Forecast Economy",
-                "legalName": "ООО «ИИМПАКТ ПЛЮС»",
-                "taxID": "9705243471",
                 "url": DOMAIN,
                 "email": "contact@forecasteconomy.com",
             },

@@ -61,8 +61,6 @@
           "@type": "Organization",
           "@id": "https://forecasteconomy.com/#organization",
           "name": "Forecast Economy",
-          "legalName": "ООО «ИИМПАКТ ПЛЮС»",
-          "taxID": "9705243471",
           "url": "https://forecasteconomy.com",
           "email": "contact@forecasteconomy.com",
           "description": "Информационный проект forecasteconomy.com: макроэкономические индикаторы России на основе открытых данных."
@@ -87,9 +85,10 @@
     }
     </script>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Playfair+Display:ital,wght@0,700;1,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Шрифты self-hosted (public/fonts): тот же состав, что раньше отдавал
+         Google Fonts (DM Sans, Playfair Display, JetBrains Mono) — без
+         внешних запросов. -->
+    <link href="/fonts/fonts.css" rel="stylesheet">
   </head>
   <body>
     <div id="root"></div>
