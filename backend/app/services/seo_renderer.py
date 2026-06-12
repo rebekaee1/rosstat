@@ -92,6 +92,7 @@ async def get_app_assets() -> AppAssets:
             rel = {r.lower() for r in (link.get("rel") or [])}
             if rel & {"stylesheet", "modulepreload", "preconnect", "icon", "shortcut icon"}:
                 head_links.append(str(link))
+        head_links = _sort_head_links(head_links)
         body_scripts = []
         for script in soup.find_all("script"):
             if script.get("src") and script.get("type") == "module":
@@ -138,6 +139,34 @@ def _link(path: str, label: str) -> str:
 def _links_list(links: Iterable[tuple[str, str]]) -> str:
     items = [f"<li>{_link(path, label)}</li>" for path, label in links]
     return "<ul>" + "".join(items) + "</ul>" if items else ""
+
+
+def _category_rich_list(categories: dict[str, CategorySeo]) -> str:
+    """Категории с кратким описанием — для SSR главной и индексации."""
+    items = []
+    for slug, meta in categories.items():
+        desc = escape(clean_text(meta.description))
+        items.append(
+            f'<li>{_link(f"/category/{slug}", meta.name)}'
+            f'<span class="seo-cat-desc"> — {desc}</span></li>'
+        )
+    return "<ul>" + "".join(items) + "</ul>"
+
+
+def _sort_head_links(links: list[str]) -> list[str]:
+    """Stylesheets первыми — меньше FOUC до загрузки Tailwind bundle."""
+    stylesheets: list[str] = []
+    icons: list[str] = []
+    preloads: list[str] = []
+    for link in links:
+        lowered = link.lower()
+        if "stylesheet" in lowered:
+            stylesheets.append(link)
+        elif "modulepreload" in lowered:
+            preloads.append(link)
+        else:
+            icons.append(link)
+    return stylesheets + icons + preloads
 
 
 def _json_script(data: dict) -> str:
@@ -204,6 +233,26 @@ DEFAULT_KEYWORDS = (
     "ВВП, инфляция, ставки, валюты"
 )
 
+# Inline critical CSS для SSR-контента (.seo-page): без него при hard refresh
+# виден «голый» HTML до гидратации React — Tailwind bundle не стилизует .seo-page.
+SEO_CRITICAL_CSS = """<style id="seo-critical">
+body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:"DM Sans",system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+.seo-page{max-width:56rem;margin:0 auto;padding:5rem 1rem 3rem}
+.seo-eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:.3em;color:#B8942F;font-weight:600;margin:0 0 .75rem}
+.seo-page h1{font-size:1.25rem;font-weight:600;line-height:1.375;margin:0 0 1rem;max-width:48rem;color:#1A1A2E}
+@media(min-width:768px){.seo-page h1{font-size:1.5rem}}
+.seo-page h2{font-size:.75rem;text-transform:uppercase;letter-spacing:.2em;color:rgba(26,26,46,.65);font-weight:600;margin:2rem 0 .75rem;padding-top:.5rem;border-top:1px solid rgba(0,0,0,.08)}
+.seo-page p,.seo-cat-desc{margin:0 0 1rem;color:rgba(26,26,46,.65)}
+.seo-page ul{margin:0 0 1rem;padding-left:1.25rem}
+.seo-page li{margin:.35rem 0}
+.seo-page a{color:#1A1A2E;text-decoration:underline;text-underline-offset:2px}
+.seo-page a:hover{color:#B8942F}
+.seo-section{margin:1.5rem 0}
+.seo-page nav{font-size:.875rem;margin-bottom:1.5rem;color:rgba(26,26,46,.65)}
+</style>"""
+
+FLAGSHIP_CODES = tuple(meta.flagship_code for meta in CATEGORY_META.values())
+
 
 async def build_document(
     *,
@@ -227,6 +276,7 @@ async def build_document(
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{SEO_CRITICAL_CSS}
 {_consent_bootstrap()}
 <title>{safe_title}</title>
 <meta name="description" content="{safe_desc}">
@@ -347,26 +397,85 @@ async def render_page_html(page_slug: str) -> tuple[int, str]:
 
 
 async def render_home_html(db: AsyncSession) -> str:
-    indicators = await _active_indicators(db, limit=12)
-    category_links = tuple((f"/category/{slug}", meta.name) for slug, meta in CATEGORY_META.items())
-    indicator_links = tuple((f"/indicator/{ind.code}", ind.name) for ind in indicators[:8])
+    flagships = await _indicators_by_codes(db, FLAGSHIP_CODES)
+    flagship_links = tuple((f"/indicator/{ind.code}", ind.name) for ind in flagships)
     page = PAGE_META["home"]
     body = f"""<main class="seo-page">
+<p class="seo-eyebrow">Бесплатная аналитическая платформа экономических данных России</p>
 <h1>{escape(page.h1)}</h1>
 <p>{escape(page.intro)}</p>
-<section><h2>Категории</h2>{_links_list(category_links)}</section>
-<section><h2>Популярные индикаторы</h2>{_links_list(indicator_links)}</section>
-<section><h2>Инструменты</h2>{_links_list(page.links)}</section>
+{_blocks_html(page.blocks)}
+<section><h2>Категории показателей</h2>{_category_rich_list(CATEGORY_META)}</section>
+<section><h2>Ключевые индикаторы</h2>{_links_list(flagship_links)}</section>
+<section><h2>Инструменты и разделы</h2>{_links_list(page.links)}</section>
 </main>"""
+    category_items = [
+        {
+            "@type": "ListItem",
+            "position": index + 1,
+            "name": meta.name,
+            "url": _absolute(f"/category/{slug}"),
+        }
+        for index, (slug, meta) in enumerate(CATEGORY_META.items())
+    ]
+    json_ld = [
+        _site_json_ld(),
+        _breadcrumbs([("/", "Главная")]),
+        {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": page.title,
+            "description": page.description,
+            "url": _absolute("/"),
+            "inLanguage": "ru-RU",
+            "isPartOf": {"@id": f"{DOMAIN}/#website"},
+        },
+        {
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "name": "Категории макроэкономических показателей России",
+            "itemListElement": category_items,
+        },
+        {
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "name": "Ключевые макроэкономические индикаторы",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": index + 1,
+                    "name": ind.name,
+                    "url": _absolute(f"/indicator/{ind.code}"),
+                }
+                for index, ind in enumerate(flagships)
+            ],
+        },
+    ]
     html = await build_document(
         title=page.title,
         description=page.description,
         canonical_path="/",
         body=body,
-        json_ld=[_site_json_ld(), _breadcrumbs([("/", "Главная")])],
+        json_ld=json_ld,
         keywords=page.keywords or None,
     )
     return html
+
+
+async def _indicators_by_codes(
+    db: AsyncSession,
+    codes: tuple[str, ...],
+) -> list[Indicator]:
+    """Индикаторы в заданном порядке (flagship-ряды для главной и JSON-LD)."""
+    if not codes:
+        return []
+    stmt = select(Indicator).where(
+        Indicator.code.in_(codes),
+        Indicator.is_active.is_(True),
+    )
+    result = await db.execute(stmt)
+    by_code = {ind.code: ind for ind in result.scalars().all()}
+    return [by_code[code] for code in codes if code in by_code]
 
 
 async def _active_indicators(

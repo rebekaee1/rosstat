@@ -260,6 +260,47 @@ def test_faq_json_ld_from_seo_blocks():
     assert _faq_json_ld(()) is None
 
 
+def test_seo_critical_css_in_build_document():
+    import asyncio
+
+    from app.services.seo_renderer import SEO_CRITICAL_CSS, build_document
+
+    html = asyncio.run(
+        build_document(
+            title="Test",
+            description="Desc",
+            canonical_path="/",
+            body='<main class="seo-page"><h1>Test</h1></main>',
+        )
+    )
+    assert SEO_CRITICAL_CSS in html
+    assert 'id="seo-critical"' in html
+    assert ".seo-page" in html
+
+
+def test_sort_head_links_stylesheets_first():
+    from app.services.seo_renderer import _sort_head_links
+
+    links = [
+        '<link href="/assets/index.css" rel="stylesheet"/>',
+        '<link href="/assets/app.js" rel="modulepreload"/>',
+        '<link href="/favicon.ico" rel="icon"/>',
+    ]
+    sorted_links = _sort_head_links(links)
+    assert "stylesheet" in sorted_links[0]
+    assert "modulepreload" in sorted_links[-1]
+
+
+def test_category_rich_list_includes_descriptions():
+    from app.services.seo_content import CATEGORY_META
+    from app.services.seo_renderer import _category_rich_list
+
+    html = _category_rich_list(CATEGORY_META)
+    assert 'href="/category/prices"' in html
+    assert "seo-cat-desc" in html
+    assert "ИПЦ" in html
+
+
 def _extract_title(html: str) -> str:
     start = html.find("<title>")
     end = html.find("</title>")
