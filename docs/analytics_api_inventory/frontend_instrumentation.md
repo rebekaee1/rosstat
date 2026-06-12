@@ -1,7 +1,9 @@
 # Frontend Instrumentation Inventory
 
-**Last verified:** 2026-05-22 (sanity-check, статус без изменений).
-**Implementation status:** `implemented` — `frontend/src/lib/track.js`, `frontend/src/lib/utm.js`, `frontend/src/lib/cleanUrl.js`, `frontend/src/lib/useScrollDepth.js`, `frontend/index.html`, backend collector — `app/api/analytics.py::POST /api/v1/analytics/events` → `FrontendEvent`.
+**Last verified:** 2026-06-12 (consent gating: init Метрики/РСЯ перенесён в `frontend/public/consent.js`, запуск только после согласия — 152-ФЗ opt-in).
+**Implementation status:** `implemented` — `frontend/public/consent.js` (consent-bootstrap, загрузка трекеров), `frontend/src/lib/consent.js` + `frontend/src/components/CookieConsent.jsx` (баннер согласия), `frontend/src/lib/track.js`, `frontend/src/lib/utm.js`, `frontend/src/lib/cleanUrl.js`, `frontend/src/lib/useScrollDepth.js`, backend collector — `app/api/analytics.py::POST /api/v1/analytics/events` → `FrontendEvent`.
+
+**Consent gating (2026-06-12):** Метрика и РСЯ грузятся ТОЛЬКО после активного согласия пользователя (cookie-баннер, выбор хранится в `localStorage['fe:consent:v1']`, версия согласия = дата редакции политики в `lib/consent.js::CONSENT_VERSION`). До согласия `window.ym` не существует — все `ym()`-хелперы в `track.js` guard'ятся. Факт согласия логируется событием `consent_update` в собственный collector. Первый hit с очищенным URL шлётся из `consent.js` в момент загрузки счётчика.
 
 Этот файл описывает, как фронтенд платит дань Яндекс.Метрике и собственному `frontend_events` warehouse. В нём — единый источник правды для:
 
@@ -12,9 +14,9 @@
 
 Любая правка соответствующего фронт-кода обязана обновить этот документ — иначе следующий агент будет работать со stale-картой.
 
-## Counter init (frontend/index.html)
+## Counter init (frontend/public/consent.js)
 
-Counter ID: `107136069`. Инициализация:
+Counter ID: `107136069`. Инициализация — в `loadMetrika()` внутри consent-bootstrap, вызывается после согласия на категорию «Аналитические»:
 
 ```js
 ym(107136069, 'init', {
@@ -148,13 +150,13 @@ Endpoint защищён origin-валидацией `app/api/analytics.py::event
 
 ## URL cleanup и атрибуция
 
-Источники: `frontend/index.html` (first-hit) и `frontend/src/lib/cleanUrl.js` (SPA-hits).
+Источники: `frontend/public/consent.js` (first-hit; очистка URL выполняется всегда, hit — только при согласии) и `frontend/src/lib/cleanUrl.js` (SPA-hits).
 
 ### TRACKING параметры, удаляемые перед `ym('hit')`
 
 `etext`, `ybaip`, `yclid`, `ysclid`, `gclid`, `fbclid`, `_openstat`, `openstat`, `clid`, `yandex_referrer`, `_ga`, `utm_source`, `utm_medium`, `utm_campaign`, `utm_term`, `utm_content`, `utm_referrer`, `from`, `ref`, `ref_src`, `source`, `mc_cid`, `mc_eid`, `igshid`.
 
-### Особенность first-hit (index.html)
+### Особенность first-hit (public/consent.js)
 
 В первом hit мы НЕ удаляем `utm_*` — они нужны Метрике для атрибуции source/medium/campaign на сессии. Удаляются только tracking-метки Яндекса (`ybaip`, `etext`, `ysclid`, `yclid`) и сторонние (`gclid`, `fbclid` и пр.).
 

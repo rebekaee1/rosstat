@@ -4,70 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Yandex.Metrika counter -->
-    <script type="text/javascript">
-        (function(m,e,t,r,i,k,a){
-            m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-            m[i].l=1*new Date();
-            for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-            k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-        })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=107136069', 'ym');
-
-        // defer:true отключает автоматический первый hit, который отправил бы
-        // window.location.href со всеми трекинг-параметрами (etext, ybaip, yclid…).
-        // Вручную шлём очищенный URL — без них «Страницы входа» в Метрике не дублируются.
-        // Webvisor 2 + form analytics: triggerEvent даёт хождение JS-событий
-        // (input/change/submit) в Webvisor; childIframe — записи внутри embed-виджета;
-        // trackHash — пригодится при будущих deeplink-якорях (#forecast, #table).
-        ym(107136069, 'init', {
-          defer: true,
-          webvisor: true,
-          clickmap: true,
-          accurateTrackBounce: true,
-          trackLinks: true,
-          trackHash: true,
-          triggerEvent: true,
-          childIframe: true
-        });
-
-        (function () {
-          // utm_* НЕ удаляем из URL — они нужны Метрике для атрибуции source/
-          // medium/campaign. Удаляем только служебные tracking-метки Яндекса
-          // (ybaip/etext/ysclid/yclid) и пр., которые иначе раздували бы число
-          // уникальных «Страниц входа» (см. /Users/iprofi/.../canvases/
-          // metrika-webvisor-deep-2026-05-10.canvas.tsx — `/?ybaip=1` = 368 visits/мес).
-          var TRACKING = ['etext','ybaip','yclid','ysclid','gclid','fbclid','_openstat','openstat','clid','yandex_referrer','_ga','utm_referrer','from','ref','ref_src','source','mc_cid','mc_eid','igshid'];
-          var search = window.location.search;
-          var cleanedSearch = search;
-          if (search && search.length > 1) {
-            var params = new URLSearchParams(search);
-            var changed = false;
-            for (var i = 0; i < TRACKING.length; i++) {
-              if (params.has(TRACKING[i])) { params.delete(TRACKING[i]); changed = true; }
-            }
-            if (changed) {
-              var rest = params.toString();
-              cleanedSearch = rest ? '?' + rest : '';
-            }
-          }
-          var cleanPath = window.location.pathname + cleanedSearch + window.location.hash;
-          // Подменяем адресную строку без перезагрузки. Это критично для
-          // Webvisor 2: иначе Метрика видит первый клик с URL=/?ybaip=1 и
-          // вся сессия пишется как новая landing-страница. После replaceState
-          // последующие SPA-переходы и Webvisor-records видят чистый /.
-          if (cleanedSearch !== search && typeof history !== 'undefined' && typeof history.replaceState === 'function') {
-            try { history.replaceState(history.state, '', cleanPath); } catch (_e) { /* ignore */ }
-          }
-          ym(107136069, 'hit', cleanPath, { title: document.title, referer: document.referrer });
-        })();
-    </script>
-    <!-- /Yandex.Metrika counter — pixel noscript в &lt;body&gt; (валидный HTML) -->
-
-    <!-- Yandex.RTB loader (РСЯ) — один раз на документ, вызывает рендер блоков через
-         window.yaContextCb. Конкретные блоки рендерятся из компонента YandexRSY.jsx.
-         См. CONTEXT.md::Yandex.RSY domains CSP (новый CSP-whitelist в Caddyfile). -->
-    <script>window.yaContextCb=window.yaContextCb||[]</script>
-    <script src="https://yandex.ru/ads/system/context.js" async></script>
+    <!-- Consent-bootstrap (152-ФЗ, opt-in): Яндекс.Метрика и РСЯ загружаются
+         только после согласия пользователя — см. public/consent.js +
+         components/CookieConsent.jsx. Зеркально подключается в SSR
+         (backend/app/services/seo_renderer.py). -->
+    <script src="/consent.js" defer></script>
 
     <title>Forecast Economy | Бесплатная аналитика экономики России</title>
     <meta name="description" content="Forecast Economy — бесплатная платформа макроэкономической аналитики России. 80+ индикаторов в 9 категориях: ИПЦ, ВВП, ставки, валюты, рынок труда, торговля. Данные Росстата и ЦБ РФ, прогнозы. Без регистрации." />
@@ -120,6 +61,8 @@
           "@type": "Organization",
           "@id": "https://forecasteconomy.com/#organization",
           "name": "Forecast Economy",
+          "legalName": "ООО «ИИМПАКТ ПЛЮС»",
+          "taxID": "9705243471",
           "url": "https://forecasteconomy.com",
           "email": "contact@forecasteconomy.com",
           "description": "Информационный проект forecasteconomy.com: макроэкономические индикаторы России на основе открытых данных."
@@ -149,7 +92,6 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Playfair+Display:ital,wght@0,700;1,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   </head>
   <body>
-    <noscript><div><img src="https://mc.yandex.ru/watch/107136069" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
     <div id="root"></div>
     <noscript>
       <div style="max-width:800px;margin:40px auto;padding:20px;font-family:sans-serif">

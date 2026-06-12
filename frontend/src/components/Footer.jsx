@@ -4,6 +4,7 @@ import { CATEGORIES } from '../lib/categories';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { track, trackOutbound, events } from '../lib/track';
+import { openConsentSettings } from '../lib/consent';
 
 const footLink = cn(
   FOCUS_RING,
@@ -103,8 +104,23 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link to="/terms" className={footLink}>
+                  Пользовательское соглашение
+                </Link>
+              </li>
+              <li>
+                <button type="button" onClick={openConsentSettings} className={cn(footLink, 'text-left')}>
+                  Настройки cookie
+                </button>
+              </li>
+              <li>
                 <a href="mailto:contact@forecasteconomy.com" className={footLink} onClick={() => track(events.CONTACT_EMAIL)}>
                   contact@forecasteconomy.com
+                </a>
+              </li>
+              <li>
+                <a href="mailto:rebeka.ee@aimpact.ru" className={footLink} onClick={() => track(events.CONTACT_EMAIL)}>
+                  rebeka.ee@aimpact.ru
                 </a>
               </li>
             </ul>
@@ -119,9 +135,14 @@ export default function Footer() {
             </span>
           </div>
 
-          <p className="text-xs text-text-tertiary text-center md:text-right max-w-md">
-            &copy; {new Date().getFullYear()} Forecast Economy. Материалы носят информационный характер и не являются инвестиционной рекомендацией.
-          </p>
+          <div className="text-xs text-text-tertiary text-center md:text-right max-w-lg space-y-1">
+            <p>
+              &copy; {new Date().getFullYear()} Forecast Economy. Материалы носят информационный характер и не являются инвестиционной рекомендацией.
+            </p>
+            <p>
+              ООО «ИИМПАКТ ПЛЮС» · ИНН 9705243471 · ОГРН 1257700255196 · 123557, г. Москва, ул. Пресненский Вал, д. 21, помещ. 172
+            </p>
+          </div>
         </div>
       </div>
     </footer>

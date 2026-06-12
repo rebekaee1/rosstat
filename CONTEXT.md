@@ -285,7 +285,7 @@ Daily ETL (06:00 МСК, `RUSTATS_SCHEDULER_CRON_HOUR/MINUTE`) запускае�
 - `style-src https://yastatic.net`, `font-src https://yastatic.net` — стили блока.
 
 Точка инициализации:
-1. **Loader** (`window.yaContextCb` + `context.js?async`) живёт **в двух местах**: `frontend/index.html` (для dev) и `backend/app/services/seo_renderer.py::_yandex_rsy_loader()` (для прод-SSR — ADR-0003, single source). Loader один на документ, независимо от количества блоков.
+1. **Loader** (`context.js`) грузится из consent-bootstrap `frontend/public/consent.js::loadAds()` **только после согласия** пользователя на категорию «Рекламные» (152-ФЗ opt-in, баннер `CookieConsent.jsx`, выбор в `localStorage['fe:consent:v1']`). И SPA shell (`index.html`), и SSR (`seo_renderer.py::_consent_bootstrap()`) подключают один и тот же `/consent.js` (nginx отдаёт с no-cache). Loader один на документ, независимо от количества блоков.
 2. **Рендер блоков** — фронт-компонент `frontend/src/components/YandexRSY.jsx`, массив `RSY_BLOCKS` (туда добавлять новые конфигурации). Монтируется в `App.jsx::AppRoutes`. Embed-routes (`/embed/*`) **не** включают РСЯ.
 3. **Guard от двойного рендера** — `window.__rsyFloorAdRendered = true` на первом mount. SPA-навигация (React Router) не вызывает повторный `Ya.Context.AdvManager.render()`; без этого счётчики показов в кабинете РСЯ завышались бы на каждом route-переходе.
 

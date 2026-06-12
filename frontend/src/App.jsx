@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useParams, useLocation, Link } 
 import Navbar from './components/Navbar';
 import LiveTicker from './components/LiveTicker';
 import YandexRSY from './components/YandexRSY';
+import CookieConsent from './components/CookieConsent';
 import NoiseOverlay from './components/NoiseOverlay';
 import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -15,6 +16,7 @@ import Dashboard from './pages/Dashboard';
 const IndicatorDetail = lazy(() => import('./pages/IndicatorDetail'));
 const About = lazy(() => import('./pages/About'));
 const Privacy = lazy(() => import('./pages/Privacy'));
+const Terms = lazy(() => import('./pages/Terms'));
 const CategoryPage = lazy(() => import('./pages/CategoryPage'));
 const ComparePage = lazy(() => import('./pages/ComparePage'));
 const CalendarPage = lazy(() => import('./pages/CalendarPage'));
@@ -128,6 +130,8 @@ function AppRoutes() {
       <ScrollToTop />
       <YandexMetrikaHit />
       <YandexRSY />
+      {/* Cookie-баннер не монтируется на /embed/* — iframe на чужих сайтах */}
+      <CookieConsent />
       <NoiseOverlay />
       <LiveTicker />
       <Navbar />
@@ -142,6 +146,7 @@ function AppRoutes() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/about" element={<About />} />
             <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
             <Route path="/category/:slug" element={<CategoryPage />} />
             <Route path="/compare" element={<ComparePage />} />
             <Route path="/calendar" element={<CalendarPage />} />

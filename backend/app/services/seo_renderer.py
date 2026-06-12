@@ -49,13 +49,6 @@ from app.services.seo_content import (
 
 logger = logging.getLogger(__name__)
 
-TRACKING_PARAMS = [
-    "etext", "ybaip", "yclid", "ysclid", "gclid", "fbclid", "_openstat",
-    "openstat", "clid", "yandex_referrer", "_ga", "utm_source", "utm_medium",
-    "utm_campaign", "utm_term", "utm_content", "utm_referrer", "from", "ref",
-    "ref_src", "source", "mc_cid", "mc_eid", "igshid",
-]
-
 HIDDEN_FROM_LISTING = {"inflation-annual", "inflation-quarterly", "inflation-weekly"}
 
 
@@ -189,6 +182,8 @@ def _site_json_ld() -> dict:
                 "@type": "Organization",
                 "@id": f"{DOMAIN}/#organization",
                 "name": "Forecast Economy",
+                "legalName": "ООО «ИИМПАКТ ПЛЮС»",
+                "taxID": "9705243471",
                 "url": DOMAIN,
                 "email": "contact@forecasteconomy.com",
             },
@@ -196,27 +191,16 @@ def _site_json_ld() -> dict:
     }
 
 
-def _metrika_script() -> str:
-    tracking_json = json.dumps(TRACKING_PARAMS, ensure_ascii=False)
-    return f"""<script>
-(function(m,e,t,r,i,k,a){{m[i]=m[i]||function(){{(m[i].a=m[i].a||[]).push(arguments)}};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){{if(document.scripts[j].src===r){{return;}}}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)}})(window,document,'script','https://mc.yandex.ru/metrika/tag.js?id=107136069','ym');
-ym(107136069,'init',{{defer:true,webvisor:true,clickmap:true,accurateTrackBounce:true,trackLinks:true}});
-(function(){{var TRACKING={tracking_json};var search=window.location.search;if(search&&search.length>1){{var params=new URLSearchParams(search);var changed=false;for(var i=0;i<TRACKING.length;i++){{if(params.has(TRACKING[i])){{params.delete(TRACKING[i]);changed=true;}}}}if(changed){{var rest=params.toString();search=rest?'?'+rest:'';}}}}var cleanUrl=window.location.pathname+search+window.location.hash;ym(107136069,'hit',cleanUrl,{{title:document.title,referer:document.referrer}});}})();
-</script>"""
+def _consent_bootstrap() -> str:
+    """Consent-bootstrap (152-ФЗ, opt-in) — единая точка загрузки трекеров.
 
-
-def _yandex_rsy_loader() -> str:
-    """Yandex.RTB (РСЯ) loader — `window.yaContextCb` + async context.js.
-
-    Загружается один раз на документ. Конкретные блоки рендерятся
-    из фронта (см. frontend/src/components/YandexRSY.jsx).
-    Без CSP-whitelist для yandex.ru/an.yandex.ru/yastatic.net браузер
-    блокирует context.js и iframe объявлений (см. CONTEXT.md::Yandex.RSY).
+    Яндекс.Метрика и РСЯ загружаются ТОЛЬКО после согласия пользователя.
+    Логика (включая очистку URL от tracking-меток) живёт в одном файле
+    `frontend/public/consent.js`, который nginx раздаёт как /consent.js
+    с no-cache. SPA shell (frontend/index.html) подключает его так же.
+    Управление согласием — frontend/src/components/CookieConsent.jsx.
     """
-    return (
-        '<script>window.yaContextCb=window.yaContextCb||[]</script>'
-        '<script src="https://yandex.ru/ads/system/context.js" async></script>'
-    )
+    return '<script src="/consent.js" defer></script>'
 
 
 DEFAULT_KEYWORDS = (
@@ -247,8 +231,7 @@ async def build_document(
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-{_metrika_script()}
-{_yandex_rsy_loader()}
+{_consent_bootstrap()}
 <title>{safe_title}</title>
 <meta name="description" content="{safe_desc}">
 <meta name="keywords" content="{safe_keywords}">
@@ -275,7 +258,6 @@ async def build_document(
 {structured}
 </head>
 <body>
-<noscript><div><img src="https://mc.yandex.ru/watch/107136069" style="position:absolute; left:-9999px;" alt=""></div></noscript>
 <div id="root">{body}</div>
 {assets.body_scripts}
 </body>
