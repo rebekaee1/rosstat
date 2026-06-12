@@ -136,14 +136,24 @@ async def daily_update_job():
                 _running_locks.discard(code)
 
     if updated_codes:
+        ping_codes = list(updated_codes)
         async with async_session() as db:
             try:
                 derived = await calculation_engine.run_for_updated_sources(db, updated_codes)
                 await db.commit()
                 if derived:
                     logger.info("CalculationEngine updated derived indicators: %s", derived)
+                    ping_codes.extend(derived)
             except Exception:
                 logger.exception("CalculationEngine failed")
+        # IndexNow: сообщаем поисковикам об обновлённых карточках (source +
+        # derived) сразу после ETL — робот узнаёт о свежих данных за минуты.
+        try:
+            from app.services.indexnow import ping_updated_indicators
+
+            await ping_updated_indicators(ping_codes)
+        except Exception:
+            logger.exception("IndexNow ping failed (non-fatal)")
 
     await _promote_past_events()
 
@@ -204,6 +214,7 @@ async def run_etl_for_parser_type(parser_type: str) -> dict[str, int]:
                 _running_locks.discard(code)
 
     if updated_codes:
+        ping_codes = list(updated_codes)
         async with async_session() as db:
             try:
                 derived = await calculation_engine.run_for_updated_sources(db, updated_codes)
@@ -212,8 +223,15 @@ async def run_etl_for_parser_type(parser_type: str) -> dict[str, int]:
                     logger.info(
                         "Late ETL pass updated derived indicators: %s", derived
                     )
+                    ping_codes.extend(derived)
             except Exception:
                 logger.exception("CalculationEngine failed in late pass")
+        try:
+            from app.services.indexnow import ping_updated_indicators
+
+            await ping_updated_indicators(ping_codes)
+        except Exception:
+            logger.exception("IndexNow ping failed (non-fatal)")
 
     logger.info(
         "Late ETL pass for parser_type=%s done: %d updated, %d failed",

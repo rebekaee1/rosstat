@@ -338,6 +338,162 @@ def test_enrich_description_adds_latest_value():
     assert "2026-06-10" in out
 
 
+def test_autolink_terms_in_seo_blocks():
+    """Перелинковка: первое вхождение термина → ссылка, self-ссылки пропущены."""
+    from html import escape
+
+    from app.services.seo_renderer import _autolink
+
+    text = escape("Обычно RUONIA торгуется в коридоре вокруг ключевой ставки. RUONIA — рыночная.")
+    out = _autolink(text, current_code="ruonia")
+    # self-ссылка на ruonia не ставится
+    assert 'href="/indicator/ruonia"' not in out
+    assert '<a href="/indicator/key-rate">ключевой ставки</a>' in out
+    # второе вхождение RUONIA тоже не линкуется (без current_code линкуется только первое)
+    out2 = _autolink(text, current_code=None)
+    assert out2.count('href="/indicator/ruonia"') == 1
+
+
+def test_autolink_does_not_double_link():
+    from html import escape
+
+    from app.services.seo_renderer import _autolink
+
+    text = escape("ИПЦ растёт, индекс потребительских цен — основной измеритель.")
+    out = _autolink(text)
+    # оба паттерна ведут на cpi — линкуется только один
+    assert out.count('href="/indicator/cpi"') == 1
+
+
+def test_og_image_renders_png():
+    from app.services.og_image import render_indicator_og
+
+    png = render_indicator_og(
+        code="cpi",
+        name="Индекс потребительских цен на товары и услуги",
+        value_text="0.21 %",
+        date_text="на 2026-05-01",
+        values=[0.5, 0.3, 0.4, 0.2, 0.25, 0.21],
+    )
+    assert png[:4] == b"\x89PNG"
+    assert len(png) > 5000
+
+
+def test_og_image_cache_roundtrip():
+    from app.services import og_image
+
+    og_image.store_og("test-code", b"fakepng")
+    assert og_image.cached_og("test-code") == b"fakepng"
+    assert og_image.cached_og("missing") is None
+
+
+def test_indexnow_payload(monkeypatch):
+    import asyncio
+
+    from app.services import indexnow
+
+    captured = {}
+
+    class _FakeResponse:
+        status_code = 200
+        text = "ok"
+
+    class _FakeClient:
+        def __init__(self, **kwargs):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            return False
+
+        async def post(self, url, json=None):
+            captured["url"] = url
+            captured["payload"] = json
+            return _FakeResponse()
+
+    monkeypatch.setattr(indexnow.httpx, "AsyncClient", _FakeClient)
+    ok = asyncio.run(indexnow.ping_updated_indicators(["cpi", "key-rate", "cpi"]))
+    assert ok
+    urls = captured["payload"]["urlList"]
+    assert "https://forecasteconomy.com/" in urls
+    assert "https://forecasteconomy.com/indicator/cpi" in urls
+    # дубликаты схлопнуты
+    assert len(urls) == len(set(urls))
+    assert captured["payload"]["key"] == indexnow.settings.indexnow_key
+
+
+def test_universal_seo_indicator_year_route(client, monkeypatch):
+    from app.api import seo_pages
+
+    async def fake_year(code, year, db):
+        assert code == "cpi"
+        assert year == 2024
+        return 200, "<html><body><div id='root'><h1>ИПЦ в 2024 году</h1></div></body></html>"
+
+    monkeypatch.setattr(seo_pages, "render_indicator_year_html", fake_year)
+    r = client.get("/seo/indicator-year/cpi/2024")
+    assert r.status_code == 200
+    assert "2024" in r.text
+    # ETag присутствует
+    assert r.headers.get("etag")
+    # повторный запрос с If-None-Match → 304
+    r2 = client.get("/seo/indicator-year/cpi/2024", headers={"If-None-Match": r.headers["etag"]})
+    assert r2.status_code == 304
+
+
+def test_seo_etag_304(client, monkeypatch):
+    from app.api import seo_pages
+
+    async def fake_home(db):
+        return "<html><body><div id='root'>home</div></body></html>"
+
+    monkeypatch.setattr(seo_pages, "render_home_html", fake_home)
+    r1 = client.get("/seo/page/home")
+    etag = r1.headers.get("etag")
+    assert etag
+    r2 = client.get("/seo/page/home", headers={"If-None-Match": etag})
+    assert r2.status_code == 304
+
+
+def test_build_document_year_page_excludes_app(client):
+    """include_app=False: без React-bundle и без modulepreload (404 после гидратации)."""
+    import asyncio
+
+    from app.services.seo_renderer import build_document
+
+    html = asyncio.run(
+        build_document(
+            title="ИПЦ в 2024 году",
+            description="Тест",
+            canonical_path="/indicator/cpi/2024",
+            body='<main class="seo-page"><h1>ИПЦ в 2024 году</h1></main>',
+            include_app=False,
+        )
+    )
+    assert "module" not in html.split("<body>")[1]
+    assert "modulepreload" not in html
+
+
+def test_build_document_og_image_override():
+    import asyncio
+
+    from app.services.seo_renderer import build_document
+
+    html = asyncio.run(
+        build_document(
+            title="Тест",
+            description="Тест",
+            canonical_path="/indicator/cpi",
+            body="<main><h1>x</h1></main>",
+            og_image="https://forecasteconomy.com/og/cpi.png",
+        )
+    )
+    assert 'og:image" content="https://forecasteconomy.com/og/cpi.png"' in html
+    assert "og-image-v2.png" not in html
+
+
 def _extract_title(html: str) -> str:
     start = html.find("<title>")
     end = html.find("</title>")

@@ -1,7 +1,9 @@
 import { trackFile } from './track';
-import * as XLSX from 'xlsx';
 
-export function downloadExcel(chartData, mode, indicatorCode, range, meta = {}) {
+// xlsx (~400 КБ min) подгружается динамически в момент экспорта — статический
+// import раздувал чанк IndicatorDetail и тормозил LCP карточки (Core Web Vitals).
+export async function downloadExcel(chartData, mode, indicatorCode, range, meta = {}) {
+  const XLSX = await import('xlsx');
 
   const actuals = chartData.filter(d => d.actual != null);
   const forecasts = chartData.filter(d => d.forecast != null && d.actual == null);

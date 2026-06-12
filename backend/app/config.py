@@ -43,6 +43,12 @@ class Settings(BaseSettings):
     # SEO HTML rendering
     seo_app_shell_url: str = "http://frontend/__spa-index.html"
 
+    # IndexNow — мгновенное уведомление поисковиков (Яндекс/Bing) об
+    # обновлённых URL после ETL. Key-файл: frontend/public/{key}.txt.
+    indexnow_enabled: bool = True
+    indexnow_key: str = "a7c41d92e85f4b06b3d8f17c29e6a504"
+    indexnow_endpoint: str = "https://yandex.com/indexnow"
+
     # Internal endpoints protection
     metrics_token: str = ""
 

@@ -538,6 +538,19 @@ Backend часть готова: 1208 событий, 46/76 source codes, `bad_p
 
 ## История (sealed правки)
 
+### 2026-06-12 — SEO-усиление: IndexNow, OG-превью, годовые landing'и, RSS, ETag, code-split
+
+Один проход по «high + medium effect» SEO-улучшениям (детали — ADR-0003 «Subsequent additions», инвариант для новых индикаторов — `CONTEXT.md::SEO meta bundle` и `AGENTS.md` чеклист «новый индикатор» п. 8):
+
+- **IndexNow** (`backend/app/services/indexnow.py`): после daily/late ETL батч-пинг Яндексу с обновлёнными URL (source + derived + главная). Ключ в `config.py::indexnow_key`, key-файл `frontend/public/{key}.txt`.
+- **OG-превью per-indicator** (`backend/app/services/og_image.py`, Pillow + Inter TTF с кириллицей в `app/assets/fonts/`): `/og/{code}.png` (nginx `^~ /og/` → backend), PNG 1200×630 со спарклайном и актуальным значением, in-memory кэш 1 ч. Подключено в `build_document(og_image=...)`.
+- **Годовые landing-страницы** `/indicator/{code}/{year}` (`render_indicator_year_html`): чистый SSR без React-bundle (`include_app=False`), data-driven итоги года + таблица + навигация по годам; в sitemap listed-индикаторы с ≥ 2 точками за год (priority 0.4). Nginx-regex в кавычках (`{2}` иначе ломает парсер конфига).
+- **RSS** `/feed.xml` + `<link rel="alternate">` во всех SSR-документах.
+- **ETag/304 на SSR** (`seo_pages.py`) + методы GET+HEAD (роботы шлют HEAD — был 405).
+- **Dataset JSON-LD**: `distribution` (DataDownload → `/api/v1/indicators/{code}/data`), `isAccessibleForFree`, `license`.
+- **Autolink** терминов в seo_blocks (curated `AUTOLINK_TERMS` в `seo_renderer.py`), self-ссылки пропускаются.
+- **Code-split**: `xlsx` (~430 КБ) из статического импорта `lib/excel.js` → динамический `await import('xlsx')` при экспорте; чанк IndicatorDetail похудел на ~60%.
+
 ### 2026-06-06 — истинность представления + полная выгрузка + мобильные тикеры + GDP vintage
 
 Завершающий проход по «не-режимным» правкам созвона (после унификации view-mode семей):

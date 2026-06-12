@@ -19,3 +19,4 @@ scipy==1.14.1
 numpy==1.26.4
 python-dateutil==2.9.0.post0
 httpx==0.28.1
+Pillow==11.1.0

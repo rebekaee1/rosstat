@@ -324,7 +324,15 @@ async def build_document(
     json_ld: list[dict] | None = None,
     keywords: str | None = None,
     extra_head: str | None = None,
+    og_image: str | None = None,
+    include_app: bool = True,
 ) -> str:
+    """Полный SSR HTML-документ.
+
+    og_image — per-page превью (индикаторы получают /og/{code}.png);
+    include_app=False — чистая HTML-страница без React-bundle (годовые
+    landing'и: у SPA-роутера нет такого маршрута, гидратация показала бы 404).
+    """
     assets = await get_app_assets()
     url = _absolute(canonical_path)
     safe_title = escape(title)
@@ -333,6 +341,9 @@ async def build_document(
     structured = "\n".join(_json_script(item) for item in (json_ld or []))
     extras = extra_head or ""
     css_preload = _css_preload(assets.head_links)
+    og_url = escape(og_image or OG_IMAGE)
+    body_scripts = assets.body_scripts if include_app else ""
+    head_links = assets.head_links if include_app else _strip_preloads(assets.head_links)
     return f"""<!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -349,6 +360,7 @@ async def build_document(
 <meta name="theme-color" content="#F8F9FC">
 <meta name="yandex-verification" content="02b4966d46881470">
 <link rel="canonical" href="{escape(url)}">
+<link rel="alternate" type="application/rss+xml" title="Forecast Economy — обновления данных" href="{DOMAIN}/feed.xml">
 {extras}
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Forecast Economy">
@@ -356,26 +368,67 @@ async def build_document(
 <meta property="og:title" content="{safe_title}">
 <meta property="og:description" content="{safe_desc}">
 <meta property="og:locale" content="ru_RU">
-<meta property="og:image" content="{OG_IMAGE}">
+<meta property="og:image" content="{og_url}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{safe_title}">
 <meta name="twitter:description" content="{safe_desc}">
-<meta name="twitter:image" content="{OG_IMAGE}">
-{assets.head_links}
+<meta name="twitter:image" content="{og_url}">
+{head_links}
 {structured}
 </head>
 <body>
 <div id="root">{body}</div>
-{assets.body_scripts}
+{body_scripts}
 </body>
 </html>"""
 
 
-def _blocks_html(blocks: Iterable[SeoBlock]) -> str:
+def _strip_preloads(head_links: str) -> str:
+    """Для страниц без React-bundle modulepreload'ы — мёртвый вес."""
+    return "\n".join(
+        line for line in head_links.splitlines() if "modulepreload" not in line
+    )
+
+
+# Перелинковка терминов в seo-блоках (SSR): консервативный curated-список,
+# только однозначные термины. Морфология — через стемы в regex. Первое
+# вхождение на блок, self-ссылки пропускаются.
+AUTOLINK_TERMS: tuple[tuple[str, str], ...] = (
+    (r"ключев(?:ая|ой|ую) ставк[а-яё]+", "key-rate"),
+    (r"RUONIA", "ruonia"),
+    (r"ИПЦ", "cpi"),
+    (r"индекс[а-яё]* потребительских цен", "cpi"),
+    (r"денежн(?:ая|ой|ую) масс[а-яё]+", "m2"),
+    (r"курс[а-яё]* доллара", "usd-rub"),
+    (r"курс[а-яё]* евро", "eur-rub"),
+    (r"уров(?:ень|ня|ню) безработицы", "unemployment"),
+    (r"ВВП", "gdp-nominal"),
+)
+
+
+def _autolink(text_escaped: str, *, current_code: str | None = None) -> str:
+    """Превращает первое вхождение известного термина в ссылку на индикатор."""
+    linked_codes: set[str] = set()
+    for pattern, code in AUTOLINK_TERMS:
+        if code == current_code or code in linked_codes:
+            continue
+
+        def _wrap(match: re.Match) -> str:
+            linked_codes.add(code)
+            return f'<a href="/indicator/{code}">{match.group(0)}</a>'
+
+        new_text, n = re.subn(pattern, _wrap, text_escaped, count=1)
+        if n:
+            text_escaped = new_text
+    return text_escaped
+
+
+def _blocks_html(blocks: Iterable[SeoBlock], *, current_code: str | None = None) -> str:
     return "".join(
-        f'<section class="seo-section"><h2>{escape(block.title)}</h2><p>{escape(block.body)}</p></section>'
+        f'<section class="seo-section"><h2>{escape(block.title)}</h2>'
+        f"<p>{_autolink(escape(block.body), current_code=current_code)}</p></section>"
         for block in blocks
     )
 
@@ -702,6 +755,15 @@ async def render_indicator_html(
             "variableMeasured": display_name,
             "dateModified": _format_date(last_dt),
             "keywords": clean_text(indicator.seo_keywords or "", display_name),
+            "isAccessibleForFree": True,
+            "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "distribution": [
+                {
+                    "@type": "DataDownload",
+                    "encodingFormat": "application/json",
+                    "contentUrl": _absolute(f"/api/v1/indicators/{data_indicator.code}/data"),
+                }
+            ],
         },
     ]
     faq_ld = _faq_json_ld(_indicator_blocks_from_db(indicator))
@@ -716,6 +778,125 @@ async def render_indicator_html(
         json_ld=json_ld,
         keywords=indicator.seo_keywords or None,
         extra_head=extra_head or None,
+        og_image=f"{DOMAIN}/og/{indicator.code}.png",
+    )
+    return 200, html
+
+
+async def indicator_data_years(db: AsyncSession, indicator_id: int) -> list[int]:
+    """Годы, за которые у индикатора есть >= 2 точек (для landing-страниц)."""
+    year_expr = func.extract("year", IndicatorData.date)
+    result = await db.execute(
+        select(year_expr.label("y"), func.count(IndicatorData.id))
+        .where(IndicatorData.indicator_id == indicator_id)
+        .group_by(year_expr)
+        .having(func.count(IndicatorData.id) >= 2)
+        .order_by(year_expr)
+    )
+    return [int(y) for y, _cnt in result.all()]
+
+
+async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> tuple[int, str]:
+    """Годовая landing-страница `/indicator/{code}/{year}`.
+
+    Чистый SSR без React-bundle (include_app=False): у SPA-роутера нет такого
+    маршрута. Контент полностью data-driven: точки за год, итоги, навигация
+    по соседним годам, ссылка на живую карточку. Под long-tail запросы вида
+    «инфляция в 2024 году», «курс доллара 2023».
+    """
+    q = await db.execute(
+        select(Indicator).where(Indicator.code == code, Indicator.is_active.is_(True))
+    )
+    indicator = q.scalar_one_or_none()
+    if not indicator:
+        return 404, "Not found"
+
+    rows_q = await db.execute(
+        select(IndicatorData)
+        .where(
+            IndicatorData.indicator_id == indicator.id,
+            func.extract("year", IndicatorData.date) == year,
+        )
+        .order_by(IndicatorData.date)
+    )
+    rows = list(rows_q.scalars().all())
+    if len(rows) < 2:
+        return 404, "Not found"
+
+    years = await indicator_data_years(db, indicator.id)
+    values = [float(r.value) for r in rows]
+    first, last = rows[0], rows[-1]
+    vmin, vmax = min(values), max(values)
+    avg = sum(values) / len(values)
+    unit = indicator.unit or ""
+    category = _category_for_api(indicator.category)
+    category_link = _link(f"/category/{category.slug}", category.name) if category else "Индикаторы"
+
+    name = indicator.name
+    title = f"{name} в {year} году — данные по месяцам и итоги"
+    desc = (
+        f"{name} в {year} году: {len(rows)} значений, "
+        f"от {_format_number(vmin)} до {_format_number(vmax)} {unit}, "
+        f"среднее {_format_number(avg)} {unit}. Официальные данные — {indicator.source}."
+    )
+
+    data_rows = "".join(
+        f"<tr><td>{escape(_format_date(r.date))}</td><td>{escape(_format_number(r.value))}</td></tr>"
+        for r in rows
+    )
+    year_links = _links_list(
+        tuple(
+            (f"/indicator/{code}/{y}", f"{name} в {y} году")
+            for y in years
+            if y != year
+        )[-12:]
+    )
+    canonical_path = f"/indicator/{code}/{year}"
+    body = f"""<main class="seo-page">
+<nav aria-label="Хлебные крошки">{_link("/", "Главная")} / {category_link} / {_link(f"/indicator/{code}", name)} / {year}</nav>
+<h1>{escape(title.split(" — ")[0])}</h1>
+<p>{escape(desc)}</p>
+<section><h2>Итоги {year} года</h2>
+<ul>
+<li>Значение на начало года: {escape(_format_number(first.value))} {escape(unit)} ({escape(_format_date(first.date))})</li>
+<li>Значение на конец года: {escape(_format_number(last.value))} {escape(unit)} ({escape(_format_date(last.date))})</li>
+<li>Минимум: {escape(_format_number(vmin))} {escape(unit)} · Максимум: {escape(_format_number(vmax))} {escape(unit)}</li>
+<li>Среднее за год: {escape(_format_number(avg))} {escape(unit)}</li>
+<li>Количество наблюдений: {len(rows)}</li>
+<li>Источник: {escape(indicator.source)}</li>
+</ul></section>
+<section><h2>Все значения за {year} год</h2><table><thead><tr><th>Дата</th><th>Значение, {escape(unit)}</th></tr></thead><tbody>{data_rows}</tbody></table></section>
+<section><h2>График и прогноз</h2><p>Полная история, интерактивный график и прогноз — на странице {_link(f"/indicator/{code}", name)}.</p></section>
+<section><h2>Другие годы</h2>{year_links}</section>
+</main>"""
+    json_ld = [
+        _site_json_ld(),
+        _breadcrumbs([
+            ("/", "Главная"),
+            (f"/indicator/{code}", name),
+            (canonical_path, f"{name} в {year} году"),
+        ]),
+        {
+            "@context": "https://schema.org",
+            "@type": "Dataset",
+            "name": f"{name} — {year} год",
+            "description": desc,
+            "url": _absolute(canonical_path),
+            "inLanguage": "ru-RU",
+            "creator": {"@type": "Organization", "name": indicator.source},
+            "temporalCoverage": f"{year}-01-01/{year}-12-31",
+            "variableMeasured": name,
+        },
+    ]
+    html = await build_document(
+        title=title,
+        description=desc,
+        canonical_path=canonical_path,
+        body=body,
+        json_ld=json_ld,
+        keywords=f"{name} {year}, {name} {year} год, {indicator.seo_keywords or name}",
+        og_image=f"{DOMAIN}/og/{indicator.code}.png",
+        include_app=False,
     )
     return 200, html
 
@@ -829,7 +1010,7 @@ def _indicator_body(
 <li>Количество точек: {int(count)}</li>
 <li>Период данных: {escape(_format_date(first_dt))} — {escape(_format_date(last_dt))}</li>
 </ul></section>
-{_blocks_html(blocks)}
+{_blocks_html(blocks, current_code=indicator.code)}
 <section><h2>Методология</h2><p>{escape(clean_text(indicator.methodology, "Методология показателя указана по данным официального источника и используется для интерпретации ряда."))}</p></section>
 <section><h2>Последние данные</h2><table><thead><tr><th>Дата</th><th>Значение</th></tr></thead><tbody>{data_rows}</tbody></table></section>
 <section><h2>Связанные индикаторы</h2>{_links_list(related_links or ((f"/category/{category.slug}", category.name),) if category else tuple())}</section>

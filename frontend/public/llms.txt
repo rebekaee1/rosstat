@@ -50,6 +50,8 @@
 - Политика конфиденциальности: https://forecasteconomy.com/privacy
 - Пользовательское соглашение: https://forecasteconomy.com/terms
 - Sitemap: https://forecasteconomy.com/sitemap.xml
+- RSS обновлений данных: https://forecasteconomy.com/feed.xml
+- Годовые сводки: https://forecasteconomy.com/indicator/{code}/{year} (например, /indicator/cpi/2024)
 
 ## Источники данных
 

@@ -138,6 +138,23 @@ Backend в `seo_renderer.get_app_assets()` ходит на
 - **PR-чеклист.** Если PR трогает `seo_content.py` или `frontend/src/lib/categories.js` —
   ревью обязано подтвердить синхрон обоих файлов.
 
+## Subsequent additions (after acceptance)
+
+**2026-06-12 — SEO-усиление (Fable, один проход).** Расширение в рамках принятого решения:
+
+1. **Critical CSS inline** (`SEO_CRITICAL_CSS` в `seo_renderer.py`): `.seo-page`-разметка стилизована до загрузки Tailwind-bundle — устранён FOUC при hard refresh. При смене дизайн-токенов (цвета/шрифты в `frontend/src/index.css::@theme`) синхронизировать эту константу.
+2. **IndexNow** (`app/services/indexnow.py`): после daily ETL scheduler пингует Яндекс batch-ом обновлённых URL (source + derived + главная). Key-файл `frontend/public/{indexnow_key}.txt`, ключ в `config.py::indexnow_key`.
+3. **Per-indicator OG-изображения** (`app/services/og_image.py`, Pillow + DM Sans TTF в `app/assets/fonts/`): `/og/{code}.png` → nginx → `/api/v1/og-image/indicator/{code}.png`. PNG 1200×630 со спарклайном и актуальным значением, in-memory кэш 1 ч.
+4. **Годовые landing-страницы** `/indicator/{code}/{year}` (`render_indicator_year_html`): чистый SSR **без React-bundle** (`build_document(include_app=False)` — у SPA-роутера нет маршрута, гидратация показала бы 404). Контент data-driven: итоги года, таблица значений, навигация по годам. В sitemap — только listed-индикаторы с ≥ 2 точками за год, priority 0.4.
+5. **ETag/304 на SSR** (`seo_pages._html_response`): content-hash, If-None-Match → 304 — экономия crawl budget.
+6. **RSS-фид** `/feed.xml`: последние обновления данных listed-индикаторов; `<link rel="alternate" type="application/rss+xml">` во всех SSR-документах.
+7. **Sitemap**: `lastmod` = дата последней точки данных, priority 0.8 listed / 0.5 derived-sibling / 0.4 годовые.
+8. **Autolink в seo_blocks** (`_autolink`, curated `AUTOLINK_TERMS`): первое вхождение термина (ИПЦ, RUONIA, ключевая ставка, …) — ссылка на индикатор; self-ссылки пропускаются. SSR-only.
+9. **Dataset JSON-LD**: `distribution` (DataDownload → API), `isAccessibleForFree`, `license`, `dateModified` — кандидат в Google Dataset Search.
+10. **Meta description с актуальным значением** (`_enrich_description`) — CTR-сниппеты «Актуальное значение — N на дату».
+
+**Инвариант для новых индикаторов:** вся SEO-автоматика (sitemap, related, годовые страницы, OG-превью, RSS, IndexNow) подтягивает новый индикатор сама — из БД. Руками ничего добавлять не нужно; обязательны только осмысленные `seo_keywords` (см. чеклист «новый индикатор» в `AGENTS.md`).
+
 ## Out of scope (future work)
 
 - Migrate `frontend/src/lib/categories.js` тексты в API — вытащить через
