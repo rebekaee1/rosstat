@@ -375,13 +375,19 @@ def _aggregate(series: Series, granularity: str, method: str) -> Series:
                 b["last"] = fv
 
     out: Series = []
-    for key in order:
+    last_idx = len(order) - 1
+    for idx, key in enumerate(order):
         b = buckets[key]
-        # Полнота bucket'а считается по числу уникальных под-периодов (месяцев),
-        # а не сырых точек: для дневных источников «сырых» точек в году ~250, и
-        # сравнение с ожидаемыми 12 месяцами было бы всегда истинным. См.
-        # `_expected_subperiods` — он тоже оперирует уникальными месяцами.
-        if expected is not None and len(b["months"]) < expected:
+        # Незавершённым «огрызком» может быть только ТЕКУЩИЙ (последний по времени)
+        # период — он ещё наполняется. Прошлые/частичный первый bucket (начало
+        # короткой истории источника, напр. international-reserves с ~март 2025)
+        # сохраняем: иначе весь годовой ряд схлопывается в пустой, а движок
+        # `calculation_engine._execute` не прунит до пустого (safety guard), и
+        # устаревшая точка-огрызок навсегда остаётся в БД.
+        # Полнота считается по числу уникальных под-периодов (месяцев), а не сырых
+        # точек: у дневного источника «сырых» точек в году ~250, сравнение с 12 было
+        # бы всегда истинным. См. `_expected_subperiods` — он тоже по месяцам.
+        if idx == last_idx and expected is not None and len(b["months"]) < expected:
             continue
         anchor = b["anchor"] if b["anchor"] is not None else b["last_date"]
         if method == "last":

@@ -507,6 +507,23 @@ def test_period_avg_year_drops_incomplete_weekly_source():
     assert out == [(date(2025, 1, 1), 100.0)]  # 2026 отброшен как неполный
 
 
+def test_period_avg_year_keeps_partial_first_year_drops_current():
+    # Реальный сценарий international-reserves: короткая история без единого
+    # полного календарного года (2025 Mar-Dec = 10 мес, 2026 Jan-Jun = 6 мес).
+    # «Огрызком» считается только ТЕКУЩИЙ (последний) год → 2026 отброшен,
+    # частичный первый 2025 сохранён. Иначе ряд схлопнулся бы в пустой, а движок
+    # не прунит до пустого (safety guard) и устаревшая точка 2026 застряла бы.
+    weekly: list = []
+    for m in range(3, 13):  # 2025: март–декабрь (10 месяцев)
+        for day in (7, 14, 21, 28):
+            weekly.append((date(2025, m, day), 100.0))
+    for m in range(1, 7):  # 2026: январь–июнь (6 месяцев)
+        for day in (7, 14, 21, 28):
+            weekly.append((date(2026, m, day), 200.0))
+    out = period_avg(weekly, "year")
+    assert out == [(date(2025, 1, 1), 100.0)]  # 2025 сохранён, 2026 (текущий) отброшен
+
+
 def test_expected_subperiods_classifies_by_cadence():
     from app.services.derived_ops import _expected_subperiods
 

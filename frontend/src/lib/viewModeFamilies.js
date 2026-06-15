@@ -236,10 +236,17 @@ export function applyAggregateTransform(points, granularity) {
   // «годовая» точка (созвон 2026-06-15: «год же ещё не закончился»). Симметрично
   // backend `_aggregate` / `_expected_subperiods` (derived_ops.py).
   const expectedMonths = granularity === 'year' ? 12 : granularity === 'quarter' ? 3 : null;
+  // Незавершённым «огрызком» может быть только ТЕКУЩИЙ (последний по времени)
+  // период. Частичный первый bucket (начало короткой истории источника) сохраняем
+  // — симметрично backend `_aggregate` (derived_ops.py).
+  let latestKey = null;
+  for (const key of groups.keys()) {
+    if (latestKey == null || new Date(key).getTime() > new Date(latestKey).getTime()) latestKey = key;
+  }
   const out = [];
   for (const [key, g] of groups) {
     if (!g.vals.length) continue;
-    if (expectedMonths != null && g.months.size < expectedMonths) continue;
+    if (expectedMonths != null && key === latestKey && g.months.size < expectedMonths) continue;
     const avg = g.vals.reduce((a, b) => a + b, 0) / g.vals.length;
     out.push({ date: key, value: Math.round(avg * 10000) / 10000 });
   }
