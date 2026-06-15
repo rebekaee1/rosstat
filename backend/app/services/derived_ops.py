@@ -305,7 +305,7 @@ def _bucket_anchor(d: date, granularity: str) -> tuple[tuple, date | None]:
 
 
 def _expected_subperiods(series: Series, granularity: str) -> int | None:
-    """Сколько суб-периодов в ПОЛНОМ bucket'е, исходя из ритма источника.
+    """Сколько уникальных месяцев в ПОЛНОМ bucket'е, исходя из ритма источника.
 
     Нужно, чтобы не показывать незавершённый текущий год/квартал: напр.
     «Инвестиции за 2026» из одного квартала рисуются обвалом, годовая сумма
@@ -313,34 +313,29 @@ def _expected_subperiods(series: Series, granularity: str) -> int | None:
     число суб-периодов — это не точка факта, а «огрызок», и её надо отбросить
     (на её месте показывается прогнозная точка, см. derived_from_source).
 
-    year:    месячный источник → 12, квартальный → 4, иначе (годовой/редкий) → None.
-    quarter: месячный источник → 3, иначе → None.
-    month/week полноты не проверяют → None.
+    Частота источника определяется по МЕДИАННОМУ интервалу между соседними
+    точками, а не по «макс. числу месяцев в каком-то году». Иначе weekly-ряд с
+    короткой историей (самый полный год < 12 месяцев) ошибочно принимался за
+    квартальный и пропускал неполный текущий год (баг international-reserves,
+    2026-06). Медиана устойчива к длине истории и пропускам.
+
+    Ритм → ожидаемое число уникальных месяцев:
+    - суб-месячный/месячный (медиана ≤ 45 дн): year → 12, quarter → 3;
+    - квартальный (≤ 100 дн): year → 4, quarter → None (квартал не дробится);
+    - годовой/редкий (> 100 дн): None (полноту не проверяем).
     """
-    if granularity == "year":
-        months_per_year: dict[int, set[int]] = {}
-        for d, _ in series:
-            months_per_year.setdefault(d.year, set()).add(d.month)
-        if not months_per_year:
-            return None
-        mx = max(len(s) for s in months_per_year.values())
-        if mx >= 12:
-            return 12
-        if mx >= 4:
-            return 4
+    if granularity not in ("year", "quarter"):
         return None
-    if granularity == "quarter":
-        months_per_q: dict[tuple[int, int], set[int]] = {}
-        for d, _ in series:
-            q = (d.month - 1) // 3 + 1
-            months_per_q.setdefault((d.year, q), set()).add(d.month)
-        if not months_per_q:
-            return None
-        mx = max(len(s) for s in months_per_q.values())
-        if mx >= 3:
-            return 3
+    dates = sorted({d for d, _ in series})
+    if len(dates) < 2:
         return None
-    return None
+    gaps = sorted((dates[i + 1] - dates[i]).days for i in range(len(dates) - 1))
+    median_gap = gaps[len(gaps) // 2]
+    if median_gap <= 45:  # daily/weekly/monthly
+        return 12 if granularity == "year" else 3
+    if median_gap <= 100:  # quarterly
+        return 4 if granularity == "year" else None
+    return None  # annual/sparse — без фильтра полноты
 
 
 def _aggregate(series: Series, granularity: str, method: str) -> Series:

@@ -8,7 +8,7 @@ bit-for-bit.
 
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, timedelta
 
 from app.services.derived_ops import (
     annual_inflation,
@@ -488,6 +488,39 @@ def test_period_sum_year_drops_incomplete_quarterly_source():
     quarterly += [(date(2026, 1, 1), 1000.0)]
     out = period_sum(quarterly, "year")
     assert out == [(date(2025, 1, 1), 4000.0)]  # 2026 (1 квартал из 4) отброшен
+
+
+def test_period_avg_year_drops_incomplete_weekly_source():
+    # Регрессия international-reserves (2026-06): weekly-источник. Старая
+    # эвристика «макс. месяцев в году» у короткой истории давала mx<12 → ожидала
+    # 4 (как квартальный) → неполный текущий год (6 мес ≥ 4) ошибочно проходил.
+    # Частоту определяем по медианному интервалу (~7 дн) → year ожидает 12 →
+    # полный 2025 остаётся, неполный 2026 (Jan-Jun) отбрасывается.
+    weekly: list = []
+    for m in range(1, 13):  # 2025: полный год (12 месяцев)
+        for day in (7, 14, 21, 28):
+            weekly.append((date(2025, m, day), 100.0))
+    for m in range(1, 7):  # 2026: январь–июнь (6 месяцев)
+        for day in (7, 14, 21, 28):
+            weekly.append((date(2026, m, day), 200.0))
+    out = period_avg(weekly, "year")
+    assert out == [(date(2025, 1, 1), 100.0)]  # 2026 отброшен как неполный
+
+
+def test_expected_subperiods_classifies_by_cadence():
+    from app.services.derived_ops import _expected_subperiods
+
+    weekly = [(date(2025, 3, 1) + timedelta(days=7 * i), 1.0) for i in range(40)]
+    assert _expected_subperiods(weekly, "year") == 12
+    assert _expected_subperiods(weekly, "quarter") == 3
+
+    quarterly = [(date(y, mo, 1), 1.0)
+                 for y in (2020, 2021, 2022) for mo in (1, 4, 7, 10)]
+    assert _expected_subperiods(quarterly, "year") == 4
+    assert _expected_subperiods(quarterly, "quarter") is None
+
+    annual = [(date(2010 + i, 1, 1), 1.0) for i in range(8)]
+    assert _expected_subperiods(annual, "year") is None
 
 
 def test_period_last_week_uses_last_observation_date():

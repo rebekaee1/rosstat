@@ -329,9 +329,13 @@ def test_cpi_mom_yoy_emits_only_future_months():
 
 
 def test_monthly_tail_extrapolate_eop_year_from_last_forecast_month():
-    """Ставка/уровень: последний месяц прогноза → годовой прогноз тем же значением."""
+    """Ставка/уровень: последний месяц прогноза → годовой прогноз тем же значением.
+
+    Источник покрывает год целиком (факт Jan-Feb + прогноз Mar-Dec): только тогда
+    отдаём годовую точку (guard полноты bucket'а = 12 месяцев по ритму источника).
+    """
     actuals = [(date(2026, m, 1), 16.0 + m * 0.1) for m in range(1, 3)]
-    forecast = [(date(2026, m, 1), 17.5) for m in range(3, 7)]
+    forecast = [(date(2026, m, 1), 17.5) for m in range(3, 13)]
     full_source = actuals + forecast
     own_dates = [date(2026, 1, 1)]
     own_values = [16.1]
