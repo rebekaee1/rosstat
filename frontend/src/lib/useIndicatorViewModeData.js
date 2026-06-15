@@ -420,8 +420,13 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
     if (isPpiFamily && chartMode === 'index' && ppiIndexBucket) {
       return filterForecastToBucketEnds(forecastResp, ppiIndexBucket);
     }
-    // Жильё «Индекс по годам» — прогноз не строим (семейство пока не трогаем).
-    if (isHousingFamily && chartMode === 'index' && housingIndexBucket) return null;
+    // Жильё «Индекс по годам» — прогноз уровня на конец завершённых годов.
+    // filterForecastToBucketEnds оставляет только точку декабря, поэтому в
+    // годовом виде показываем одну прогнозную точку текущего года (без «огрызка»
+    // следующего года из квартального хвоста прогноза). Симметрично ИЦП/ИЦП.
+    if (isHousingFamily && chartMode === 'index' && housingIndexBucket) {
+      return filterForecastToBucketEnds(forecastResp, housingIndexBucket);
+    }
     if (!shouldSubtract100) return forecastResp;
     return adjustCpiForecastDisplay(forecastResp, code);
   }, [

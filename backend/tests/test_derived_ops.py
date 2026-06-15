@@ -467,6 +467,29 @@ def test_period_sum_year_adds_flow():
     assert out == [(date(2025, 1, 1), 1200.0)]
 
 
+def test_period_avg_year_drops_incomplete_current_year_daily_source():
+    # Дневной источник: полный 2025 (данные во всех 12 месяцах) + неполный 2026
+    # (только Jan-Jun). Полнота года считается по уникальным месяцам, а не по
+    # числу дневных точек — иначе ~250 точек 2026 всегда «проходили» порог 12.
+    daily = []
+    for m in range(1, 13):
+        daily.append((date(2025, m, 15), 100.0))
+        daily.append((date(2025, m, 28), 100.0))
+    for m in range(1, 7):  # 2026 Jan-Jun, по 20 точек/мес — много сырых, но 6 месяцев
+        for day in range(1, 21):
+            daily.append((date(2026, m, day), 200.0))
+    out = period_avg(daily, "year")
+    assert out == [(date(2025, 1, 1), 100.0)]  # 2026 отброшен как неполный
+
+
+def test_period_sum_year_drops_incomplete_quarterly_source():
+    # Квартальный поток: полный 2025 (4 квартала) + неполный 2026 (1 квартал).
+    quarterly = [(date(2025, m, 1), 1000.0) for m in (1, 4, 7, 10)]
+    quarterly += [(date(2026, 1, 1), 1000.0)]
+    out = period_sum(quarterly, "year")
+    assert out == [(date(2025, 1, 1), 4000.0)]  # 2026 (1 квартал из 4) отброшен
+
+
 def test_period_last_week_uses_last_observation_date():
     # ISO week of 2025-01-06..2025-01-12 — Mon..Sun; last obs is the 12th.
     daily = [(date(2025, 1, 6), 1.0), (date(2025, 1, 8), 2.0), (date(2025, 1, 12), 3.0)]

@@ -357,10 +357,20 @@ def test_monthly_tail_extrapolate_eop_year_from_last_forecast_month():
     assert points[0].value == 17.5
 
 
-def test_monthly_tail_extrapolate_sum_quarter_times_three():
-    """Поток: последний месяц прогноза в квартале × 3."""
+def test_monthly_tail_extrapolate_sum_quarter_ytd_plus_remainder():
+    """Поток sum-quarter: незавершённый квартал = факт месяцев + прогноз остатка;
+    будущий полный квартал = сумма прогнозных месяцев; частичный квартал на конце
+    горизонта не отдаём."""
     actuals = [(date(2026, 1, 1), 100.0), (date(2026, 2, 1), 110.0)]
-    forecast = [(date(2026, 3, 1), 200.0), (date(2026, 4, 1), 250.0)]
+    # Q1: факт Jan+Feb + прогноз Mar; Q2: полный прогноз Apr-Jun; Jul — частичный
+    # хвост (Q3 неполный) → не должен попасть в прогноз.
+    forecast = [
+        (date(2026, 3, 1), 200.0),
+        (date(2026, 4, 1), 250.0),
+        (date(2026, 5, 1), 250.0),
+        (date(2026, 6, 1), 250.0),
+        (date(2026, 7, 1), 250.0),
+    ]
     full_source = actuals + forecast
     own_dates = [date(2026, 3, 1)]
     own_values = [210.0]
@@ -380,10 +390,13 @@ def test_monthly_tail_extrapolate_sum_quarter_times_three():
         },
     )
     outputs = derived_from_source_strategy(own_dates, own_values, ctx)
-    points = outputs[0].result.points
-    assert points[0].date == date(2026, 3, 1)
-    assert points[0].value == 600.0  # 200 * 3
-    assert len(points) >= 2
+    points = {p.date: p.value for p in outputs[0].result.points}
+    # Q1 = 100 + 110 + 200 (YTD факт + прогноз остатка квартала)
+    assert points[date(2026, 3, 1)] == 410.0
+    # Q2 = 250 * 3 (полный прогнозный квартал)
+    assert points[date(2026, 6, 1)] == 750.0
+    # Q3 неполный (только Jul) → не отдаём
+    assert date(2026, 9, 1) not in points
 
 
 def test_period_sum_year_revises_partial_ytd_anchor():

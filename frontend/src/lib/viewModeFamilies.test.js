@@ -150,30 +150,38 @@ describe('applyAggregateTransform', () => {
     ]);
   });
 
-  it('quarterly aggregation: 3 месяца → одно среднее', () => {
+  it('quarterly aggregation: полный квартал (3 месяца) → одно среднее, неполный отбрасывается', () => {
     const out = applyAggregateTransform([
       { date: '2026-01-15', value: 10 },
       { date: '2026-02-15', value: 20 },
       { date: '2026-03-15', value: 30 },
-      { date: '2026-04-15', value: 100 },
+      { date: '2026-04-15', value: 100 }, // Q2 неполный (1 месяц) → отбрасывается
     ], 'quarter');
-    expect(out.length).toBe(2);
+    expect(out.length).toBe(1);
     expect(out[0].value).toBe(20); // (10+20+30)/3
-    expect(out[1].value).toBe(100);
     expect(out[0].date).toBe('2026-03-31');
-    expect(out[1].date).toBe('2026-06-30');
   });
 
-  it('annual aggregation: точки в один год → одно среднее на 31 декабря', () => {
+  it('annual aggregation: полный год (12 месяцев) показываем, неполный текущий — нет', () => {
+    const full2026 = Array.from({ length: 12 }, (_, i) => ({
+      date: `2026-${String(i + 1).padStart(2, '0')}-15`,
+      value: 100,
+    }));
+    const out = applyAggregateTransform([
+      ...full2026,
+      { date: '2027-03-01', value: 300 }, // 2027 неполный → отбрасывается
+    ], 'year');
+    expect(out).toEqual([
+      { date: '2026-12-31', value: 100 },
+    ]);
+  });
+
+  it('annual aggregation: неполный год не попадает на график', () => {
     const out = applyAggregateTransform([
       { date: '2026-01-01', value: 100 },
       { date: '2026-07-01', value: 200 },
-      { date: '2027-03-01', value: 300 },
     ], 'year');
-    expect(out).toEqual([
-      { date: '2026-12-31', value: 150 },
-      { date: '2027-12-31', value: 300 },
-    ]);
+    expect(out).toEqual([]);
   });
 
   it('null-value точки игнорируются', () => {

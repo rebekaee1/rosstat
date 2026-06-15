@@ -1,6 +1,6 @@
 """Tests for RosstatWeeklyCpiParser — bulletin discovery + cutoff_date filter."""
 
-from datetime import date
+from datetime import date, timedelta
 from unittest.mock import MagicMock, patch
 
 from app.services.rosstat_weekly_inflation_parser import (
@@ -106,15 +106,24 @@ class TestCentralNewsCrawler:
 
 
 class TestFilterNewPoints:
-    def test_skips_known_dates(self):
-        known = {date(2026, 5, 25), date(2026, 6, 1)}
+    def test_keeps_new_and_refresh_window_drops_old_known(self):
+        # Старое известное (вне окна обновления) — не перезаписываем; свежее
+        # известное (в окне) — перечитываем заново (ревизии Росстата); новое —
+        # добавляем.
+        today = date.today()
+        old_known = today - timedelta(days=200)
+        recent_known = today - timedelta(days=10)
+        new_date = today - timedelta(days=3)
+        known = {old_known, recent_known}
         points = [
-            WeeklyPoint(date=date(2026, 5, 25), value=100.1),
-            WeeklyPoint(date=date(2026, 6, 8), value=100.2),
+            WeeklyPoint(date=old_known, value=100.1),
+            WeeklyPoint(date=recent_known, value=100.2),
+            WeeklyPoint(date=new_date, value=100.3),
         ]
-        assert _filter_new_points(points, known) == [
-            WeeklyPoint(date=date(2026, 6, 8), value=100.2),
-        ]
+        out = {p.date for p in _filter_new_points(points, known)}
+        assert old_known not in out
+        assert recent_known in out
+        assert new_date in out
 
 
 class TestSteadyBulletinDiscovery:
@@ -222,16 +231,21 @@ class TestFetchWeeklyCpiCutoff:
     def test_segment_existing_filters_food_only(
         self, mock_session, mock_weights, mock_parse_xlsx, mock_bulletins,
     ):
+        # Старая дата (вне окна обновления) и свежая (в окне). Известная старая
+        # food-дата отфильтровывается; nonfood без known-набора — обе остаются.
+        today = date.today()
+        old = today - timedelta(days=200)
+        recent = today - timedelta(days=10)
         mock_bulletins.return_value = []
         mock_parse_xlsx.return_value = {
             "all": [],
             "food": [
-                WeeklyPoint(date=date(2026, 5, 25), value=100.1),
-                WeeklyPoint(date=date(2026, 6, 1), value=100.2),
+                WeeklyPoint(date=old, value=100.1),
+                WeeklyPoint(date=recent, value=100.2),
             ],
             "nonfood": [
-                WeeklyPoint(date=date(2026, 5, 25), value=99.9),
-                WeeklyPoint(date=date(2026, 6, 1), value=100.0),
+                WeeklyPoint(date=old, value=99.9),
+                WeeklyPoint(date=recent, value=100.0),
             ],
             "services": [],
         }
@@ -241,12 +255,14 @@ class TestFetchWeeklyCpiCutoff:
         mock_session.return_value = sess
 
         result = fetch_weekly_cpi_multi(
-            existing_dates={date(2026, 5, 25), date(2026, 6, 1)},
+            existing_dates={old, recent},
             segment_existing={
-                "food": {date(2026, 5, 25)},
+                "food": {old},
                 "nonfood": set(),
                 "services": set(),
             },
         )
-        assert result["food"] == [WeeklyPoint(date=date(2026, 6, 1), value=100.2)]
+        # food: старая известная (вне окна) ушла, свежая осталась.
+        assert {p.date for p in result["food"]} == {recent}
+        # nonfood: known-набор пуст → обе точки остаются.
         assert len(result["nonfood"]) == 2

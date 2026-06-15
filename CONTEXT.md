@@ -287,7 +287,7 @@ Daily ETL (06:00 МСК, `RUSTATS_SCHEDULER_CRON_HOUR/MINUTE`) запускае�
 - `style-src https://yastatic.net`, `font-src https://yastatic.net` — стили блока.
 
 Точка инициализации:
-1. **Loader** (`context.js`) грузится из consent-bootstrap `frontend/public/consent.js::loadAds()` **только после согласия** пользователя на категорию «Рекламные» (152-ФЗ opt-in, баннер `CookieConsent.jsx`, выбор в `localStorage['fe:consent:v1']`). И SPA shell (`index.html`), и SSR (`seo_renderer.py::_consent_bootstrap()`) подключают один и тот же `/consent.js` (nginx отдаёт с no-cache). Loader один на документ, независимо от количества блоков.
+1. **Loader** (`context.js`) грузится из consent-bootstrap `frontend/public/consent.js::loadAds()`. С 2026-06-16 модель — **подразумеваемое согласие** (152-ФЗ, ст. 9 ч. 1: согласие действием): Метрика и реклама грузятся **всем по умолчанию** при первом заходе, если в `localStorage['fe:consent:v1']` нет явного opt-out текущей версии. Баннер `CookieConsent.jsx` стал информационным («Продолжая пользоваться сайтом, вы соглашаетесь…»), отзыв/настройка — кнопка «Настройки cookie» в подвале; Политика и Соглашение переписаны под это (фикс падения статистики Метрики и дохода РСЯ после прежнего opt-in). И SPA shell (`index.html`), и SSR (`seo_renderer.py::_consent_bootstrap()`) подключают один и тот же `/consent.js` (nginx отдаёт с no-cache). Loader один на документ, независимо от количества блоков.
 2. **Рендер блоков** — фронт-компонент `frontend/src/components/YandexRSY.jsx`, массив `RSY_BLOCKS` (туда добавлять новые конфигурации). Монтируется в `App.jsx::AppRoutes`. Embed-routes (`/embed/*`) **не** включают РСЯ.
 3. **Guard от двойного рендера** — `window.__rsyFloorAdRendered = true` на первом mount. SPA-навигация (React Router) не вызывает повторный `Ya.Context.AdvManager.render()`; без этого счётчики показов в кабинете РСЯ завышались бы на каждом route-переходе.
 
@@ -434,6 +434,16 @@ docker compose exec backend python -c \
 **Правило:** **никогда** не лить точки чужой частоты в существующий indicator. Если source даёт annual до 1998 и monthly с 2015 — это **два разных indicator'а** с одним visual entry (через view-mode family). Аналогично quarterly история + monthly свежак, weekly прошлое + daily настоящее, и т.п.
 
 **Проверка при backfill:** перед `bulk_upsert` сверить `target.frequency` с фактической частотой добавляемых точек. Если расхождение — заводим sibling indicator + добавляем режим в `viewModeFamilies`. См. чеклист в `AGENTS.md::Шаг 4` (новый пункт «Frequency consistency»).
+
+### Incomplete-period aggregation trap (неполный текущий год/квартал)
+
+Годовой/квартальный режим строится агрегацией под-периодов: backend `derived_ops._aggregate` (`period_sum`/`period_avg`/`period_last` для семей `viewModeFamilies`), `annual_sum` (ВВП), и client-side `viewModeFamilies.applyAggregateTransform` (daily-индикаторы Phase 5). Если текущий год не завершён, агрегат неполного года рисуется точкой факта: сумма (инвестиции за 1 квартал 2026) обваливается вниз, среднее за полгода занижено, «на конец года» подменяется YTD-значением.
+
+**Случай 2026-06-15** (созвон: «инвестиции за 2026 не показывать — год же не закончился, проверь все индикаторы»): `capital-investment-sum-year` показывал обвал 2026 из одного квартала. Фикс — `_aggregate` отбрасывает bucket, в котором уникальных под-периодов меньше ожидаемого (`_expected_subperiods`: месячный источник → 12, квартальный → 4; quarter → 3). **Полнота считается по уникальным месяцам, а не по числу сырых точек** — иначе у дневного источника ~250 точек в году всегда «проходили» порог 12, и неполный год дневных агрегаций (ключевая ставка, валюты, золото, Brent, резервы) не отсекался. Тот же месяц-based порог продублирован на фронте в `applyAggregateTransform` (year→12, quarter→3 уникальных месяцев).
+
+**Trap внутри trap (idempotent upsert не удаляет):** пересчёт через `_aggregate` отдаёт меньше точек, но `bulk_upsert` — INSERT…ON CONFLICT, он **не** удаляет устаревшую точку 2026. Чистит её `_execute` через `prune_indicator_dates_not_in` (даты, которых нет в свежем ряду). Поэтому после правки агрегации обязателен полный `scripts/rebuild-all-derived.py` (он зовёт `_execute`), а не только проверка значений — иначе обвальная точка остаётся в БД.
+
+**Правило:** любую новую годовую/квартальную агрегацию (backend op или client transform) проверять на неполный текущий период; порог полноты — в уникальных под-периодах (месяцах), не в сырых точках.
 
 ### View-mode template change orphans (сироты при смене шаблона)
 

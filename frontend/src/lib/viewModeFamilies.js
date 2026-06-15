@@ -225,13 +225,22 @@ export function applyAggregateTransform(points, granularity) {
   for (const p of points) {
     if (p?.date == null || p.value == null) continue;
     const key = bucketEndDate(p.date, granularity);
-    if (!groups.has(key)) groups.set(key, []);
-    groups.get(key).push(Number(p.value));
+    if (!groups.has(key)) groups.set(key, { vals: [], months: new Set() });
+    const g = groups.get(key);
+    g.vals.push(Number(p.value));
+    g.months.add(new Date(p.date).getUTCMonth() + 1);
   }
+  // Незавершённый текущий год/квартал не показываем как точку факта: для
+  // дневного источника полный год содержит данные всех 12 месяцев (квартал — 3).
+  // Текущий неполный период отсекаем — иначе средняя за полгода рисуется как
+  // «годовая» точка (созвон 2026-06-15: «год же ещё не закончился»). Симметрично
+  // backend `_aggregate` / `_expected_subperiods` (derived_ops.py).
+  const expectedMonths = granularity === 'year' ? 12 : granularity === 'quarter' ? 3 : null;
   const out = [];
-  for (const [key, vals] of groups) {
-    if (!vals.length) continue;
-    const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
+  for (const [key, g] of groups) {
+    if (!g.vals.length) continue;
+    if (expectedMonths != null && g.months.size < expectedMonths) continue;
+    const avg = g.vals.reduce((a, b) => a + b, 0) / g.vals.length;
     out.push({ date: key, value: Math.round(avg * 10000) / 10000 });
   }
   out.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());

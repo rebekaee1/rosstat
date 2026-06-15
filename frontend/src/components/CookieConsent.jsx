@@ -13,10 +13,11 @@ import {
 } from '../lib/consent';
 
 /**
- * Cookie-баннер (152-ФЗ, ст. 9): активный opt-in на аналитические (Метрика)
- * и рекламные (РСЯ) cookie. До выбора пользователя трекеры не загружаются —
- * см. public/consent.js. Выбор логируется в собственный event-collector
- * (дата + версия политики) как фиксация факта согласия.
+ * Cookie-баннер (152-ФЗ): информирование о подразумеваемом согласии.
+ * Продолжая пользоваться сайтом, посетитель соглашается на использование
+ * cookie, включая аналитические (Яндекс Метрика) и рекламные (РСЯ). По
+ * умолчанию трекеры загружаются сразу (см. public/consent.js), баннер лишь
+ * информирует и фиксирует факт согласия. Отказаться можно через «Настроить».
  *
  * Повторное открытие — событие CONSENT_OPEN_EVENT («Настройки cookie»
  * в футере и на странице политики). Смена CONSENT_VERSION (новая редакция
@@ -50,14 +51,21 @@ const btnBase = cn(
 export default function CookieConsent() {
   const [visible, setVisible] = useState(() => !isConsentCurrent(getConsent()));
   const [expanded, setExpanded] = useState(false);
-  const [choices, setChoices] = useState({ analytics: false, ads: false });
+  // Подразумеваемое согласие: по умолчанию всё включено (трекеры уже загружены).
+  const [choices, setChoices] = useState(() => {
+    const current = getConsent();
+    return {
+      analytics: current ? Boolean(current.analytics) : true,
+      ads: current ? Boolean(current.ads) : true,
+    };
+  });
 
   useEffect(() => {
     const reopen = () => {
       const current = getConsent();
       setChoices({
-        analytics: Boolean(current?.analytics),
-        ads: Boolean(current?.ads),
+        analytics: current ? Boolean(current.analytics) : true,
+        ads: current ? Boolean(current.ads) : true,
       });
       setExpanded(true);
       setVisible(true);
@@ -93,9 +101,10 @@ export default function CookieConsent() {
           <div className="flex-1">
             <p className="text-sm font-semibold text-text-primary mb-1">Cookie на сайте</p>
             <p className="text-xs text-text-secondary leading-relaxed">
-              Мы используем необходимые cookie для работы сайта. Аналитические (Яндекс Метрика)
-              и рекламные (Рекламная сеть Яндекса) cookie включаются только с вашего согласия.
-              Подробнее — в{' '}
+              Продолжая пользоваться сайтом, вы соглашаетесь на использование cookie, включая
+              аналитические (Яндекс Метрика) и рекламные (Рекламная сеть Яндекса). Это помогает
+              нам вести статистику и поддерживать сайт. Отказаться или настроить можно в любой
+              момент. Подробнее — в{' '}
               <Link to="/privacy" className="text-champagne hover:underline">
                 политике конфиденциальности
               </Link>
@@ -104,8 +113,8 @@ export default function CookieConsent() {
           </div>
           <button
             type="button"
-            aria-label="Закрыть без согласия"
-            onClick={() => commit(false, false, 'dismiss')}
+            aria-label="Закрыть"
+            onClick={() => commit(true, true, 'dismiss')}
             className={cn(FOCUS_RING, 'rounded-md p-1 text-text-tertiary hover:text-text-primary transition-colors')}
           >
             <X className="w-4 h-4" aria-hidden="true" />
@@ -177,19 +186,12 @@ export default function CookieConsent() {
                 onClick={() => commit(true, true, 'accept_all')}
                 className={cn(btnBase, 'flex-1 bg-champagne text-white hover:bg-champagne-muted')}
               >
-                Принять все
-              </button>
-              <button
-                type="button"
-                onClick={() => commit(false, false, 'necessary_only')}
-                className={cn(btnBase, 'flex-1 border border-border-subtle text-text-secondary hover:text-text-primary hover:border-border-champagne')}
-              >
-                Только необходимые
+                Хорошо
               </button>
               <button
                 type="button"
                 onClick={() => setExpanded(true)}
-                className={cn(btnBase, 'sm:flex-none text-text-tertiary hover:text-text-primary')}
+                className={cn(btnBase, 'sm:flex-none border border-border-subtle text-text-secondary hover:text-text-primary hover:border-border-champagne')}
               >
                 Настроить
               </button>

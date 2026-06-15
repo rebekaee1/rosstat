@@ -304,16 +304,61 @@ def _bucket_anchor(d: date, granularity: str) -> tuple[tuple, date | None]:
     raise ValueError(f"unknown granularity: {granularity!r}")
 
 
+def _expected_subperiods(series: Series, granularity: str) -> int | None:
+    """Сколько суб-периодов в ПОЛНОМ bucket'е, исходя из ритма источника.
+
+    Нужно, чтобы не показывать незавершённый текущий год/квартал: напр.
+    «Инвестиции за 2026» из одного квартала рисуются обвалом, годовая сумма
+    бюджета из 4 месяцев выглядит как профицит. Пока период не набрал ожидаемое
+    число суб-периодов — это не точка факта, а «огрызок», и её надо отбросить
+    (на её месте показывается прогнозная точка, см. derived_from_source).
+
+    year:    месячный источник → 12, квартальный → 4, иначе (годовой/редкий) → None.
+    quarter: месячный источник → 3, иначе → None.
+    month/week полноты не проверяют → None.
+    """
+    if granularity == "year":
+        months_per_year: dict[int, set[int]] = {}
+        for d, _ in series:
+            months_per_year.setdefault(d.year, set()).add(d.month)
+        if not months_per_year:
+            return None
+        mx = max(len(s) for s in months_per_year.values())
+        if mx >= 12:
+            return 12
+        if mx >= 4:
+            return 4
+        return None
+    if granularity == "quarter":
+        months_per_q: dict[tuple[int, int], set[int]] = {}
+        for d, _ in series:
+            q = (d.month - 1) // 3 + 1
+            months_per_q.setdefault((d.year, q), set()).add(d.month)
+        if not months_per_q:
+            return None
+        mx = max(len(s) for s in months_per_q.values())
+        if mx >= 3:
+            return 3
+        return None
+    return None
+
+
 def _aggregate(series: Series, granularity: str, method: str) -> Series:
     """Bucket `series` by `granularity` and reduce each bucket with `method`.
 
     method ∈ {"last", "avg", "sum"}. Buckets keep source order; the result is
     one point per bucket, rounded to 4 decimals.
+
+    Незавершённые year/quarter bucket'ы (меньше ожидаемого числа суб-периодов,
+    см. `_expected_subperiods`) отбрасываются — не показываем «огрызок» текущего
+    периода как точку факта.
     """
     if granularity not in _GRANULARITIES:
         raise ValueError(f"unknown granularity: {granularity!r}")
     if method not in ("last", "avg", "sum"):
         raise ValueError(f"unknown method: {method!r}")
+
+    expected = _expected_subperiods(series, granularity)
 
     buckets: dict[tuple, dict] = {}
     order: list[tuple] = []
@@ -321,11 +366,15 @@ def _aggregate(series: Series, granularity: str, method: str) -> Series:
         key, anchor = _bucket_anchor(d, granularity)
         fv = float(v)
         if key not in buckets:
-            buckets[key] = {"anchor": anchor, "last_date": d, "last": fv, "vals": [fv]}
+            buckets[key] = {
+                "anchor": anchor, "last_date": d, "last": fv,
+                "vals": [fv], "months": {d.month},
+            }
             order.append(key)
         else:
             b = buckets[key]
             b["vals"].append(fv)
+            b["months"].add(d.month)
             if d >= b["last_date"]:
                 b["last_date"] = d
                 b["last"] = fv
@@ -333,6 +382,12 @@ def _aggregate(series: Series, granularity: str, method: str) -> Series:
     out: Series = []
     for key in order:
         b = buckets[key]
+        # Полнота bucket'а считается по числу уникальных под-периодов (месяцев),
+        # а не сырых точек: для дневных источников «сырых» точек в году ~250, и
+        # сравнение с ожидаемыми 12 месяцами было бы всегда истинным. См.
+        # `_expected_subperiods` — он тоже оперирует уникальными месяцами.
+        if expected is not None and len(b["months"]) < expected:
+            continue
         anchor = b["anchor"] if b["anchor"] is not None else b["last_date"]
         if method == "last":
             val = b["last"]
@@ -653,10 +708,20 @@ def affordability_index_monthly(price_index: Series, wage_index: Series) -> Seri
     означают, что с базового года зарплаты росли быстрее цен на жильё
     (доступность улучшилась), ниже 100 — наоборот.
 
+    Зарплата предварительно сглаживается скользящей средней за 12 месяцев:
+    помесячный индекс зарплаты скачет от сезонных премий (декабрь), из-за чего
+    сырой индекс доступности «дёргался» — разовая премия на один месяц делала
+    жильё резко «доступнее». Содержательно квартиру покупают не на разовую
+    премию, а на устойчивый годовой доход, поэтому берём среднюю зарплату за
+    последние 12 месяцев. Квартальный индекс цен уже гладкий — его не сглаживаем.
+
     Возвращает [] при пустых входах или отсутствии перекрытия (нет квартала
     цен раньше первого месяца зарплаты).
     """
     if not price_index or not wage_index:
+        return []
+    wage_index = rolling_avg(wage_index, window=12)
+    if not wage_index:
         return []
     prices = sorted(((d, float(v)) for d, v in price_index), key=lambda p: p[0])
     wages = sorted(((d, float(v)) for d, v in wage_index), key=lambda p: p[0])

@@ -129,9 +129,6 @@ def _run_pipeline(
     return series
 
 
-_BUCKET_MONTHS = {"quarter": 3, "year": 12}
-
-
 def _pipeline_bucket_spec(pipeline: list) -> tuple[str, str] | None:
     """Метод агрегации и гранулярность для квартала/года в pipeline-режиме."""
     for op, kwargs in pipeline:
@@ -153,36 +150,56 @@ def _forecast_from_monthly_tail(
     granularity: str,
     method: str,
 ) -> list[tuple[date, float]]:
-    """Прогноз квартала/года из хвоста месячного прогноза.
+    """Прогноз квартала/года из месячного ряда источника (факт + прогноз).
 
-    В каждом bucket'е берём **последний** месяц прогноза и переводим значение:
-    - поток (sum): ×3 за квартал, ×12 за год;
-    - уровень/ставка (last, avg): как есть на последнем месяце bucket'а.
+    Для каждого bucket'а, в котором есть хотя бы один прогнозный месяц, значение
+    считается по ВСЕМ месяцам bucket'а — факт за прошедшие месяцы плюс прогноз
+    на оставшиеся:
+    - поток (sum): сумма всех месяцев периода (YTD факт + прогноз остатка);
+    - уровень/ставка (last): последний месяц периода;
+    - среднее (avg): среднее по месяцам периода.
+
+    Так текущий незавершённый год = факт с начала года + прогноз до декабря,
+    а не «последний месяц × 12» (что давало нереалистичные −18 трлн на бюджете).
+
+    Для гранулярности `year` отдаётся РОВНО ОДНА точка — первый незавершённый
+    год (тот, по которому ещё нет полных данных). Никаких +1 года вперёд (2027).
     """
-    forecast_months = [
-        (d, float(v)) for d, v in source_data if d not in source_actual_dates
-    ]
-    if not forecast_months:
-        return []
+    expected = ops_module._expected_subperiods(source_data, granularity)
 
     buckets: dict[date, list[tuple[date, float]]] = {}
-    for d, v in forecast_months:
+    has_forecast: dict[date, bool] = {}
+    for d, v in source_data:
         _key, anchor = ops_module._bucket_anchor(d, granularity)
         if anchor is None:
             continue
-        buckets.setdefault(anchor, []).append((d, v))
+        buckets.setdefault(anchor, []).append((d, float(v)))
+        if d not in source_actual_dates:
+            has_forecast[anchor] = True
 
-    mult = _BUCKET_MONTHS.get(granularity, 1)
+    # Прогнозируем только bucket'ы с прогнозными месяцами и полным составом
+    # суб-периодов (текущий год добирается фактом+прогнозом до 12 мес.). Так не
+    # отдаём «частичный» будущий квартал/год на конце горизонта (визуальный обвал).
+    fc_anchors = sorted(
+        a for a in buckets
+        if has_forecast.get(a) and (expected is None or len(buckets[a]) >= expected)
+    )
+    if not fc_anchors:
+        return []
+    if granularity == "year":
+        # Одна годовая точка: только первый незавершённый год.
+        fc_anchors = fc_anchors[:1]
+
     out: list[tuple[date, float]] = []
-    for anchor in sorted(buckets):
+    for anchor in fc_anchors:
         pairs = buckets[anchor]
-        _last_d, last_v = max(pairs, key=lambda p: p[0])
+        vals = [v for _, v in pairs]
         if method == "sum":
-            val = round(last_v * mult, 4)
+            val = round(sum(vals), 4)
         elif method == "avg":
-            vals = [v for _, v in pairs]
             val = round(sum(vals) / len(vals), 4)
         else:
+            _last_d, last_v = max(pairs, key=lambda p: p[0])
             val = round(last_v, 4)
         out.append((anchor, val))
     return out

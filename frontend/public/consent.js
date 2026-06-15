@@ -1,10 +1,12 @@
 /**
  * Consent-bootstrap — единственная точка загрузки Яндекс.Метрики и РСЯ.
  *
- * Требование 152-ФЗ (позиция РКН с 2024): аналитические и рекламные cookie —
- * персональные данные, трекеры запускаются ТОЛЬКО после активного согласия
- * (opt-in). Согласие хранится в localStorage (`fe:consent:v1`) и управляется
- * баннером CookieConsent.jsx (запись/отзыв) через window.__feApplyConsent.
+ * Модель согласия (152-ФЗ, подразумеваемое согласие): продолжая пользоваться
+ * сайтом, посетитель соглашается на cookie. По умолчанию трекеры (Метрика +
+ * РСЯ) грузятся сразу — баннер CookieConsent.jsx лишь информирует. Явный
+ * отказ текущей редакции политики (analytics/ads=false при v==CURRENT_V)
+ * уважаем: трекеры не грузим. Запись хранится в localStorage (`fe:consent:v1`).
+ * CURRENT_V обязан совпадать с CONSENT_VERSION в frontend/src/lib/consent.js.
  *
  * Файл подключается одинаково из двух мест (single source of truth):
  *   - frontend/index.html (SPA shell)
@@ -19,6 +21,7 @@
  */
 (function () {
   var KEY = 'fe:consent:v1';
+  var CURRENT_V = '2026-06-16';
   var COUNTER = 107136069;
 
   // --- URL hygiene: выполняется всегда, до любых хитов ---
@@ -85,8 +88,15 @@
     if (consent.ads) loadAds();
   };
 
+  // Подразумеваемое согласие: грузим трекеры по умолчанию. Уважаем только
+  // явный отказ в рамках ТЕКУЩЕЙ редакции политики (rec.v === CURRENT_V).
+  var IMPLIED = { analytics: true, ads: true };
+  var rec = null;
   try {
     var raw = window.localStorage.getItem(KEY);
-    if (raw) window.__feApplyConsent(JSON.parse(raw));
-  } catch { /* приватный режим/запрет storage — трекеры не грузим */ }
+    if (raw) rec = JSON.parse(raw);
+  } catch { rec = null; }
+  try {
+    window.__feApplyConsent(rec && rec.v === CURRENT_V ? rec : IMPLIED);
+  } catch { window.__feApplyConsent(IMPLIED); }
 })();

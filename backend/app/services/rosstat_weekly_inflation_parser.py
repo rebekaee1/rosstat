@@ -331,7 +331,11 @@ def _parse_bulletin_html(html: str) -> WeeklyPoint | None:
 CENTRAL_NEWS_URL = "https://rosstat.gov.ru/central-news"
 CENTRAL_NEWS_MAX_PAGES = 70
 CENTRAL_NEWS_STEADY_MAX_PAGES = 12
-STEADY_SEARCH_MONTHS_BACK = 2
+STEADY_SEARCH_MONTHS_BACK = 4
+# Окно «перечитываем недели заново»: последние N дней всегда повторно
+# скачиваются и передаются в идемпотентный upsert (восстановление пропусков +
+# ревизии Росстата). Старее окна известные week-end не трогаем.
+WEEKLY_REFRESH_WINDOW_DAYS = 120
 _CPI_BULLETIN_TITLE_RE = re.compile(
     r"оценке\s+индекса\s+потребительских\s+цен", re.IGNORECASE,
 )
@@ -514,8 +518,13 @@ def fetch_bulletin_points(
     seen_dates: set[date] = set()
     skip_pub_before: date | None = None
     if existing_dates:
+        # Всегда перечитываем последние WEEKLY_REFRESH_WINDOW_DAYS заново
+        # (восстанавливаем возможные пропуски недель и подхватываем ревизии
+        # Росстата), даже если самая свежая известная точка отстала. Старее окна
+        # пропускаем — те week-end уже стабильны в БД.
+        refresh_floor = date.today() - timedelta(days=WEEKLY_REFRESH_WINDOW_DAYS)
         max_known = max(existing_dates)
-        skip_pub_before = max_known - timedelta(days=14)
+        skip_pub_before = min(max_known - timedelta(days=14), refresh_floor)
     skipped = 0
     for year in years:
         urls = _find_bulletin_urls(session, year, steady_state=steady_state)
@@ -550,9 +559,21 @@ def _filter_new_points(
     points: list[WeeklyPoint],
     known_dates: set[date] | None,
 ) -> list[WeeklyPoint]:
+    """Оставить точки для записи: все новые + свежее окна обновления.
+
+    Точки за последние `WEEKLY_REFRESH_WINDOW_DAYS` дней пропускаем к upsert,
+    даже если дата уже есть в БД — идемпотентный upsert обновит только реально
+    изменившиеся значения (ревизии Росстата). Это и есть «проходим последние
+    недели заново, а не оставляем как есть». Старее окна известные даты не
+    перезаписываем — они стабильны.
+    """
     if not known_dates:
         return points
-    return [p for p in points if p.date not in known_dates]
+    refresh_floor = date.today() - timedelta(days=WEEKLY_REFRESH_WINDOW_DAYS)
+    return [
+        p for p in points
+        if p.date not in known_dates or p.date >= refresh_floor
+    ]
 
 
 def fetch_weekly_cpi_multi(
