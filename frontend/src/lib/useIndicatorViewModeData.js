@@ -77,10 +77,12 @@ const HOUSING_DERIVED_CODES = {
   'housing-price-primary': {
     yoy: 'housing-yoy-primary',
     qoq: 'housing-qoq-primary',
+    annual: 'housing-annual-primary',
   },
   'housing-price-secondary': {
     yoy: 'housing-yoy-secondary',
     qoq: 'housing-qoq-secondary',
+    annual: 'housing-annual-secondary',
   },
 };
 

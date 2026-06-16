@@ -401,7 +401,9 @@ export default function IndicatorChart({
         <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
           {title}
         </h3>
-        <div className="flex items-center gap-2 flex-wrap">
+        {/* ml-auto: при длинном заголовке контролы переносятся на новую строку,
+            но всегда прижаты вправо (а не уезжают влево). Созвон 2026-06-16. */}
+        <div className="flex items-center gap-2 flex-wrap ml-auto">
           <div
             className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle"
             role="radiogroup"

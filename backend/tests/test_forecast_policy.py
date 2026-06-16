@@ -61,6 +61,8 @@ DERIVED_FROM_SOURCE_FORECAST_CODES = {
     "housing-yoy-secondary",
     "housing-qoq-primary",
     "housing-qoq-secondary",
+    "housing-annual-primary",
+    "housing-annual-secondary",
     "ppi-yoy",
     "ppi-qoq",
     "ppi-annual",

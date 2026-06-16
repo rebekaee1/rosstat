@@ -9,10 +9,13 @@ import { housingCanonicalTarget, housingIndexGranularity, dataModeForHousingUrlM
 import { getHousingViewModeContent } from './housingViewModeContent';
 
 describe('housingViewModeGroups', () => {
-  it('две верхние группы: к прошлому периоду + индекс (как у ИПЦ, без 12 мес.)', () => {
-    expect(HOUSING_TOP_GROUPS.map((g) => g.id)).toEqual(['step', 'index']);
+  it('три верхние группы как у ИПЦ: к соотв. периоду + к прошлому периоду + индекс', () => {
+    expect(HOUSING_TOP_GROUPS.map((g) => g.id)).toEqual(['inflation', 'step', 'index']);
+    const inflation = HOUSING_TOP_GROUPS.find((g) => g.id === 'inflation');
+    expect(inflation.leafMode).toBe('yoy');
+    expect(inflation.label).toBe('К соотв. периоду пред. года');
     const step = HOUSING_TOP_GROUPS.find((g) => g.id === 'step');
-    expect(step.modes.map((m) => m.mode)).toEqual(['qoq', 'yoy']);
+    expect(step.modes.map((m) => m.mode)).toEqual(['qoq', 'yoy-annual']);
     const index = HOUSING_TOP_GROUPS.find((g) => g.id === 'index');
     expect(index.modes.map((m) => m.mode)).toEqual(['index', 'index-annual']);
   });
@@ -26,15 +29,20 @@ describe('housingViewModeGroups', () => {
     expect(dataModeForHousingUrlMode('index-annual')).toBe('index');
   });
 
-  it('дефолтный режим — год к году', () => {
+  it('дефолтный режим — к соотв. периоду пред. года (квартальная YoY)', () => {
     expect(normalizeHousingViewMode(null)).toBe('yoy');
     expect(normalizeHousingViewMode('level')).toBe('index');
+    expect(topGroupForMode('yoy')).toBe('inflation');
+    // yoy — лист дефолтной группы, не раскрываем подрежимы
+    expect(expandedGroupForMode('yoy')).toBe(null);
+    expect(dataModeForHousingUrlMode('yoy')).toBe('yoy');
   });
 
-  it('г/г и кв/кв — одна группа «К прошлому периоду»', () => {
+  it('Г/г «по годам» (yoy-annual) — годовой ряд в группе «К прошлому периоду»', () => {
     expect(topGroupForMode('qoq')).toBe('step');
-    expect(topGroupForMode('yoy')).toBe('step');
-    expect(expandedGroupForMode('yoy')).toBe('step');
+    expect(topGroupForMode('yoy-annual')).toBe('step');
+    expect(expandedGroupForMode('yoy-annual')).toBe('step');
+    expect(dataModeForHousingUrlMode('yoy-annual')).toBe('annual');
   });
 
   it('лейбл «к прошлому периоду» унифицирован: Кв/Кв (не К/к)', () => {
@@ -50,12 +58,17 @@ describe('housingViewModeGroups', () => {
     });
   });
 
-  it('контент г/г не про ИПЦ', () => {
-    const { description } = getHousingViewModeContent({
+  it('контент к соотв. периоду — не про ИПЦ, годовой Г/г — отдельный', () => {
+    const yoy = getHousingViewModeContent({
       chartMode: 'yoy',
       indicator: { code: 'housing-price-primary' },
     });
-    expect(description).toMatch(/новостро|первичн/i);
-    expect(description).not.toMatch(/потребительск/i);
+    expect(yoy.description).toMatch(/новостро|первичн/i);
+    expect(yoy.description).not.toMatch(/потребительск/i);
+    const annual = getHousingViewModeContent({
+      chartMode: 'annual',
+      indicator: { code: 'housing-price-primary' },
+    });
+    expect(annual.description).toMatch(/год к году|на конец года/i);
   });
 });

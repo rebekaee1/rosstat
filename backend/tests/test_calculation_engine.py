@@ -31,6 +31,7 @@ LEGACY_DERIVED = {
     "current-account-yoy-abs", "trade-balance-yoy-abs",
     "housing-yoy-primary", "housing-yoy-secondary",
     "housing-qoq-primary", "housing-qoq-secondary",
+    "housing-annual-primary", "housing-annual-secondary",
     "wages-index", "housing-affordability", "housing-affordability-primary",
 }
 

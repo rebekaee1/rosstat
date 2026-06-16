@@ -5,7 +5,13 @@
 
 export const HOUSING_CODES = ['housing-price-primary', 'housing-price-secondary'];
 
-export const HOUSING_URL_MODES = ['yoy', 'qoq', 'index', 'index-annual'];
+// Ось как у ИПЦ (созвон 2026-06-16):
+//   - `yoy` — квартальная YoY (каждый квартал к тому же кварталу год назад),
+//     группа «К соответствующему периоду предыдущего года» (дефолт);
+//   - `yoy-annual` — Г/г «по годам» (декабрь к декабрю, одна точка/год),
+//     подрежим группы «К прошлому периоду»;
+//   - `qoq` — Кв/Кв; `index`/`index-annual` — накопленный уровень.
+export const HOUSING_URL_MODES = ['yoy', 'yoy-annual', 'qoq', 'index', 'index-annual'];
 
 const LEGACY_TO_CANONICAL = {
   level: 'index',
@@ -27,12 +33,15 @@ export function isActiveHousingUrlMode(viewMode) {
 
 export function topGroupForMode(viewMode) {
   const mode = normalizeHousingViewMode(viewMode);
+  if (mode === 'yoy') return 'inflation';
   if (mode.startsWith('index')) return 'index';
   return 'step';
 }
 
 export function expandedGroupForMode(viewMode) {
   const mode = normalizeHousingViewMode(viewMode);
+  // `yoy` — лист дефолтной группы «К соотв. периоду пред. года»: не раскрываем.
+  if (mode === 'yoy') return null;
   if (mode.startsWith('index')) return 'index';
   return 'step';
 }
@@ -53,6 +62,8 @@ export function dataModeForHousingUrlMode(viewMode) {
   const mode = normalizeHousingViewMode(viewMode);
   if (mode.startsWith('index')) return 'index';
   if (mode === 'qoq') return 'qoq';
+  // Г/г «по годам» — годовой ряд декабрь-к-декабрю (одна точка/год).
+  if (mode === 'yoy-annual') return 'annual';
   return 'yoy';
 }
 

@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import { getHousingViewModeContent } from './housingViewModeContent';
 
-const MODES = ['yoy', 'qoq', 'index'];
+const MODES = ['yoy', 'annual', 'qoq', 'index'];
 const CODES = ['housing-price-primary', 'housing-price-secondary'];
 
 describe('getHousingViewModeContent', () => {
-  it('шесть комбинаций дают непустые уникальные пары description+methodology', () => {
+  it('восемь комбинаций дают непустые уникальные пары description+methodology', () => {
     const seen = new Set();
     for (const code of CODES) {
       for (const chartMode of MODES) {
@@ -20,7 +20,7 @@ describe('getHousingViewModeContent', () => {
         seen.add(key);
       }
     }
-    expect(seen.size).toBe(6);
+    expect(seen.size).toBe(8);
   });
 
   it('первичка и вторичка на г/г — разные тексты', () => {

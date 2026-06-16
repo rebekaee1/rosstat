@@ -75,6 +75,7 @@ function levelTooltipLabel({
   if (isCbrTermSliceFamily && chartMode === 'level') return 'Ставка';
   if ((isHousingFamily || isPpiFamily) && chartMode === 'index') return 'Индекс';
   if (isPpiFamily && chartMode === 'mom') return 'М/м';
+  if (isHousingFamily && chartMode === 'annual') return 'Г/г';
   if (chartMode === 'quarterly') return 'Кв. инфляция';
   if (chartMode === 'annual') return 'Год. инфляция';
   if (chartMode === 'weekly') return 'Нед. ИПЦ';

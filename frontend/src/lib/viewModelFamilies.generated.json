@@ -3906,11 +3906,6 @@
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
         "leaf": true
-      },
-      {
-        "id": "rolling",
-        "label": "Скользящая 12 мес.",
-        "leaf": true
       }
     ],
     "modes": [
@@ -3973,16 +3968,6 @@
         "label": "Г/г",
         "mode": "yoy",
         "unit": "%"
-      },
-      {
-        "code": "housing-affordability-rolling-12m",
-        "forecastable": false,
-        "frequency": "monthly",
-        "group": "rolling",
-        "isNative": false,
-        "label": "Скользящая 12 мес.",
-        "mode": "rolling-12m",
-        "unit": "индекс"
       }
     ],
     "name": "Индекс доступности жилья (вторичное жильё)",
@@ -4007,11 +3992,6 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
-      },
-      {
-        "id": "rolling",
-        "label": "Скользящая 12 мес.",
         "leaf": true
       }
     ],
@@ -4075,16 +4055,6 @@
         "label": "Г/г",
         "mode": "yoy",
         "unit": "%"
-      },
-      {
-        "code": "housing-affordability-primary-rolling-12m",
-        "forecastable": false,
-        "frequency": "monthly",
-        "group": "rolling",
-        "isNative": false,
-        "label": "Скользящая 12 мес.",
-        "mode": "rolling-12m",
-        "unit": "индекс"
       }
     ],
     "name": "Индекс доступности жилья (первичное жильё)",

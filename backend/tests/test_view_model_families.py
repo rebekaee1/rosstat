@@ -96,6 +96,16 @@ def test_budget_deficit_flow_plus_abs_deltas():
         assert any(op.endswith("_abs") for op in op_names), f"{tok}: ожидается *_abs op"
 
 
+def test_affordability_no_rolling_12m_mode():
+    """Созвон 2026-06-16: режим «Скользящая 12 мес.» убран у доступности жилья."""
+    for base in ("housing-affordability", "housing-affordability-primary"):
+        fam = vmf.FAMILY_BY_BASE[base]
+        tokens = {m.mode for m in fam.modes}
+        assert "rolling-12m" not in tokens, f"{base}: rolling-12m должен быть убран"
+        group_ids = {g.id for g in fam.groups}
+        assert "rolling" not in group_ids, f"{base}: группа rolling должна быть убрана"
+
+
 def test_weekly_yoy_aggregates_to_monthly_first():
     fam = vmf.FAMILY_BY_BASE["international-reserves"]
     yoy = next(m for m in fam.modes if m.mode == "yoy")

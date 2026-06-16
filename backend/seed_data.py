@@ -2747,6 +2747,72 @@ INDICATORS = [
         "is_active": True,
         "category": "Цены",
     },
+    {
+        "code": "housing-annual-primary",
+        "name": "Цены на первичное жильё (г/г, по годам)",
+        "name_en": "Primary Housing Prices Annual",
+        "unit": "%",
+        "frequency": "annual",
+        "source": "Росстат",
+        "description": (
+            "Годовое изменение цен на первичное жильё «год к году»: уровень цен "
+            "на конец года к уровню на конец предыдущего года, в процентах. "
+            "Одна точка на каждый завершённый год."
+        ),
+        "methodology": (
+            "Рассчитывается как отношение индекса цен на первичное жильё на конец "
+            "года к значению на конец предыдущего года, выраженное в процентах. "
+            "В отличие от режима «к соответствующему периоду предыдущего года» "
+            "(где сравнивается каждый квартал с тем же кварталом год назад), здесь "
+            "одна точка на год. Прогноз продолжает ряд по прогнозу квартального "
+            "индекса."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {
+            "forecast_steps": 2,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "housing-price-primary",
+                "operation": "december_to_december",
+                "model_name": "Housing-Primary-Annual-Derived",
+            },
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
+        "code": "housing-annual-secondary",
+        "name": "Цены на вторичное жильё (г/г, по годам)",
+        "name_en": "Secondary Housing Prices Annual",
+        "unit": "%",
+        "frequency": "annual",
+        "source": "Росстат",
+        "description": (
+            "Годовое изменение цен на вторичное жильё «год к году»: уровень цен "
+            "на конец года к уровню на конец предыдущего года, в процентах. "
+            "Одна точка на каждый завершённый год."
+        ),
+        "methodology": (
+            "Рассчитывается как отношение индекса цен на вторичное жильё на конец "
+            "года к значению на конец предыдущего года, выраженное в процентах. "
+            "В отличие от режима «к соответствующему периоду предыдущего года» "
+            "(где сравнивается каждый квартал с тем же кварталом год назад), здесь "
+            "одна точка на год. Прогноз продолжает ряд по прогнозу квартального "
+            "индекса."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {
+            "forecast_steps": 2,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "housing-price-secondary",
+                "operation": "december_to_december",
+                "model_name": "Housing-Secondary-Annual-Derived",
+            },
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
     # ─── Компоненты ВВП (Росстат русский, GDP-quarters-of-use, ADR-0004) ───
     {
         "code": "gdp-consumption",

@@ -16,8 +16,9 @@ This module owns the seam between **the formula** (pure, in `derived_ops`) and
 
 Architectural decisions:
 - `docs/adr/0001-derived-indicators-engine-shape.md` — declarative DSL +
-  pure ops as the engine shape (31 specs, 12 ops as of 2026-05-22 — one op,
-  `annual_inflation`, retained but unused; 11 active).
+  pure ops as the engine shape (33 hand-written specs, 12 ops as of 2026-06-16
+  — +housing-annual-{primary,secondary} via december_to_december, созвон
+  «ПРАВКИ ПЕРЕДЕЛ-2»; one op, `annual_inflation`, retained but unused; 11 active).
 - `docs/adr/0002-derived-always-reflects-source.md` — invariant that derived
   always reflects current source state.
 - See also `CONTEXT.md::Derived indicator` for the domain glossary.
@@ -160,6 +161,12 @@ DERIVED_SPECS: list[DerivedSpec] = [
     DerivedSpec("housing-yoy-secondary", ("housing-price-secondary",), ops.yoy),
     DerivedSpec("housing-qoq-primary", ("housing-price-primary",), ops.qoq),
     DerivedSpec("housing-qoq-secondary", ("housing-price-secondary",), ops.qoq),
+    # Г/г «по годам» (декабрь-к-декабрю на квартальном индексе уровня): одна
+    # точка/год, режим «К прошлому периоду → Г/г» жилья — как inflation-annual
+    # у ИПЦ. Квартальный yoy (housing-yoy-*) остаётся отдельным режимом
+    # «К соответствующему периоду предыдущего года».
+    DerivedSpec("housing-annual-primary", ("housing-price-primary",), ops.december_to_december),
+    DerivedSpec("housing-annual-secondary", ("housing-price-secondary",), ops.december_to_december),
     DerivedSpec("wages-yoy", ("wages-nominal",), ops.yoy),
 
     # YoY-абсолют (звонок 2026-05-22): для balances со знаком процент YoY

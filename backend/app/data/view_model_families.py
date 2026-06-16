@@ -539,8 +539,12 @@ def _build_ratio_index(f: "FamilyDef") -> Family:
     Уровень такого ряда — само значение месяца (не «на конец периода» и не
     сумма): по кварталам и годам берём СРЕДНЕЕ за период (решение владельца v7).
     Группы: Уровень (по месяцам / средняя за квартал / средняя за год) ·
-    К прошлому периоду (М/м, Кв/Кв на средних) · Г/г · Скользящая 12 мес.
+    К прошлому периоду (М/м, Кв/Кв на средних) · Г/г.
     Прогноз не строим (forecastable=False везде).
+
+    Режим «Скользящая 12 мес.» убран (созвон 2026-06-16): дублировал «средняя
+    за год» и засорял переключатель — индекс отношения не нуждается в
+    сглаживании на карточке.
     """
     base, unit, ov = f.base, f.unit, f.overrides
     modes: list[Mode] = [
@@ -555,14 +559,11 @@ def _build_ratio_index(f: "FamilyDef") -> Family:
              (("period_over_period", {"granularity": "quarter", "method": "avg"}),),
              "%", "quarterly", False),
         _yoy_mode(base, "monthly", ov),
-        Mode("rolling-12m", "rolling", "Скользящая 12 мес.", _code(base, "rolling-12m", ov),
-             (("rolling_avg", {"window": 12}),), unit, "monthly", False),
     ]
     groups = [
         Group("level", "Уровень"),
         _G_POP,
         _G_YOY,
-        Group("rolling", "Скользящая 12 мес.", leaf=True),
     ]
     return Family(base, f.name, "T12", unit, f.category, "level", groups, modes)
 

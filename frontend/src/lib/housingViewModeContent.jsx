@@ -32,6 +32,8 @@ export function getHousingChartTitle(chartMode, code, safeViewMode) {
   const s = slice(code);
   switch (chartMode) {
     case 'yoy':
+      return `К соотв. периоду пред. года — ${s.marketShort} (%)`;
+    case 'annual':
       return `Г/г — ${s.marketShort} (%)`;
     case 'qoq':
       return `Кв/Кв — ${s.marketShort} (%)`;
@@ -46,7 +48,9 @@ export function getHousingTableTitle(chartMode, code, safeViewMode) {
   const s = slice(code);
   switch (chartMode) {
     case 'yoy':
-      return `Исторические данные — г/г (${s.marketGen})`;
+      return `Исторические данные — к соотв. периоду пред. года (${s.marketGen})`;
+    case 'annual':
+      return `Исторические данные — г/г по годам (${s.marketGen})`;
     case 'qoq':
       return `Исторические данные — кв/кв (${s.marketGen})`;
     case 'index':
@@ -62,15 +66,31 @@ function contentYoy(code) {
   const s = slice(code);
   return {
     description:
-      `Темп изменения цен на ${s.marketWhat} в сравнении с тем же кварталом `
-      + 'годом ранее, в процентах.',
+      `Темп изменения цен на ${s.marketWhat} по сравнению с тем же кварталом `
+      + 'предыдущего года, в процентах. Четыре точки в год — каждый квартал '
+      + 'сопоставляется с аналогичным кварталом годом ранее.',
     methodology:
-      'Режим «к прошлому периоду — г/г»: показывает, насколько изменился квартальный '
-      + `индекс цен на ${s.marketGen} относительно аналогичного квартала прошлого года. `
-      + 'Ряд строится по накопленному индексу с базой 2010 = 100, который Росстат '
-      + 'обновляет ежеквартально; в тексте ежемесячного обзора отдельно печатаются '
-      + 'приросты кв/кв, а г/г на графике — удобное производное представление для '
-      + 'сравнения с макропоказателями и доходами.',
+      'Режим «к соответствующему периоду предыдущего года»: показывает, насколько '
+      + `изменился квартальный индекс цен на ${s.marketGen} относительно того же `
+      + 'квартала прошлого года. Ряд строится по накопленному индексу с базой '
+      + '2010 = 100, который Росстат обновляет ежеквартально. Положительное '
+      + 'значение — рост цен, отрицательное — снижение.',
+  };
+}
+
+function contentAnnual(code) {
+  const s = slice(code);
+  return {
+    description:
+      `Годовое изменение цен на ${s.marketWhat} «год к году»: уровень цен на конец `
+      + 'года к уровню на конец предыдущего года, в процентах. Одна точка на каждый '
+      + 'завершённый год.',
+    methodology:
+      'Режим «к прошлому периоду — г/г»: годовой прирост цен на '
+      + `${s.marketGen}, рассчитанный как отношение индекса на конец года к значению `
+      + 'на конец предыдущего года. В отличие от режима «к соответствующему периоду '
+      + 'предыдущего года» (поквартальное сравнение, четыре точки в год), здесь — '
+      + 'одна точка на год. Положительное значение — рост цен, отрицательное — снижение.',
   };
 }
 
@@ -122,6 +142,7 @@ function contentIndex(code, safeViewMode) {
 export function getHousingViewModeContent({ chartMode, safeViewMode, indicator }) {
   const code = indicator?.code ?? 'housing-price-primary';
   if (chartMode === 'yoy') return contentYoy(code);
+  if (chartMode === 'annual') return contentAnnual(code);
   if (chartMode === 'qoq') return contentQoq(code);
   if (chartMode === 'index') return contentIndex(code, safeViewMode);
   return {
