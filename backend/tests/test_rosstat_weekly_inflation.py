@@ -10,6 +10,7 @@ from app.services.rosstat_weekly_inflation_parser import (
     _filter_new_points,
     _find_bulletin_urls,
     _find_bulletin_urls_central_news,
+    _parse_bulletin_html,
     fetch_weekly_cpi,
     fetch_weekly_cpi_multi,
 )
@@ -103,6 +104,34 @@ class TestCentralNewsCrawler:
         session = _build_session_mock({1: page})
         urls = _find_bulletin_urls_central_news(session, year=2024, max_pages=2)
         assert urls == []
+
+
+class TestParseBulletinHtml:
+    """Парсинг HTML-бюллетеня: значение + дата конца периода, оба предлога с/со."""
+
+    def test_preposition_s(self):
+        html = (
+            "<p>Об оценке индекса потребительских цен с 26 мая по 1 июня 2026 года</p>"
+            "<p>За период с 26 мая по 1 июня 2026 г. индекс потребительских цен, "
+            "по оценке Росстата, составил 100,15%, с начала месяца ...</p>"
+        )
+        pt = _parse_bulletin_html(html)
+        assert pt is not None
+        assert pt.date == date(2026, 6, 1)
+        assert pt.value == 100.15
+
+    def test_preposition_so(self):
+        # Регрессия: «со 2 по 8 июня» (со второго) ранее не матчился —
+        # bulletin терялся, ETL возвращал 0 точек. Реальный текст за 2026-06-08.
+        html = (
+            "<p>ОБ ОЦЕНКЕ ИНДЕКСА ПОТРЕБИТЕЛЬСКИХ ЦЕН СО 2 ПО 8 ИЮНЯ 2026 ГОДА</p>"
+            "<p>За период со 2 по 8 июня 2026 г. индекс потребительских цен, "
+            "по оценке Росстата, составил 100,20%, с начала месяца – 100,23% ...</p>"
+        )
+        pt = _parse_bulletin_html(html)
+        assert pt is not None
+        assert pt.date == date(2026, 6, 8)
+        assert pt.value == 100.2
 
 
 class TestFilterNewPoints:
