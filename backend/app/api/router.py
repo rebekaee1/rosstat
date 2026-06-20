@@ -9,6 +9,9 @@ from app.api.dashboard import router as dashboard_router
 from app.api.demographics import router as demographics_router
 from app.api.analytics import router as analytics_router
 from app.api.ticker import router as ticker_router
+from app.api.auth import router as auth_router
+from app.api.oauth import router as oauth_router
+from app.api.export import router as export_router
 
 api_router = APIRouter(prefix="/api/v1")
 api_router.include_router(indicators_router)
@@ -20,3 +23,6 @@ api_router.include_router(dashboard_router)
 api_router.include_router(demographics_router)
 api_router.include_router(analytics_router)
 api_router.include_router(ticker_router)
+api_router.include_router(auth_router)
+api_router.include_router(oauth_router)
+api_router.include_router(export_router)

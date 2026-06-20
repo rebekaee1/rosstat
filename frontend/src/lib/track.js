@@ -162,4 +162,34 @@ export const events = {
   CONSENT_UPDATE: 'consent_update',
   API_RETRY: 'api_retry',
   ERROR_RELOAD: 'error_reload',
+
+  // Личный кабинет / конверсия (ADR-0007 Phase 2). Каждое CTA — цель Метрики,
+  // попадает в ежедневный Telegram-дайджест (бэкенд тянет все цели счётчика).
+  // Чтобы достижения считались как цель, одноимённый goal должен существовать
+  // в счётчике Метрики (id = это значение, тип «JavaScript-событие»).
+  AUTH_SIGNUP: 'signup',
+  AUTH_LOGIN: 'login_success',
+  OAUTH_START: 'oauth_start',
+  NEWSLETTER_OPT_IN: 'newsletter_opt_in',
+  NEWSLETTER_OPT_OUT: 'newsletter_opt_out',
+  DOWNLOAD_LIMIT_HIT: 'download_limit',
+  REGISTER_NUDGE_VIEW: 'register_nudge_view',
+  REGISTER_NUDGE_EXPAND: 'register_nudge_expand',
+  REGISTER_NUDGE_CTA: 'register_nudge_cta',
+  HEADER_LOGIN_CLICK: 'header_login_click',
+  HEADER_REGISTER_CLICK: 'header_register_click',
+
+  // Обратная связь (ADR-0007 Phase 2): плавающее окно для авторизованных +
+  // форма в кабинете. Отправка уходит в Telegram-бот мгновенно.
+  FEEDBACK_NUDGE_VIEW: 'feedback_nudge_view',
+  FEEDBACK_NUDGE_EXPAND: 'feedback_nudge_expand',
+  FEEDBACK_NUDGE_CTA: 'feedback_nudge_cta',
+  FEEDBACK_SUBMIT: 'feedback_submit',
+
+  // Спрос-аналитика поиска: что пользователи ищут — введённое (debounce),
+  // выбранное и брошенное. Агрегируется в ежедневный Telegram-дайджест,
+  // запросы с 0 результатов = карта пробелов в каталоге индикаторов.
+  SEARCH_QUERY: 'search_query',
+  SEARCH_SELECT: 'search_select',
+  SEARCH_ABANDON: 'search_abandon',
 };

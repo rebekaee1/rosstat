@@ -1,6 +1,7 @@
-import { Terminal, Download } from 'lucide-react';
+import { Terminal, Download, Lock } from 'lucide-react';
 import { unitSuffix, resolveDateFormat, cn } from '../lib/format';
 import { track, events } from '../lib/track';
+import { useDownloadAccess } from '../lib/useDownloadAccess';
 import IndicatorChart from './IndicatorChart';
 import { ChartSkeleton } from './Skeleton';
 import { getCpiChartTitle } from '../lib/cpiViewModeContent';
@@ -117,6 +118,54 @@ function rangePresetFor({ chartMode, indicator }) {
 }
 
 /**
+ * Кнопка выгрузки (CSV/Excel) с гейтом лимита (ADR-0007 Phase 2).
+ * Гость до лимита и любой авторизованный — активна. Гость после лимита —
+ * тускнеет, на hover подсказка зовёт войти, клик ведёт на регистрацию.
+ */
+function ruYears(n) {
+  const mod100 = Math.abs(n) % 100;
+  const mod10 = n % 10;
+  if (mod100 > 10 && mod100 < 20) return `${n} лет`;
+  if (mod10 === 1) return `${n} год`;
+  if (mod10 >= 2 && mod10 <= 4) return `${n} года`;
+  return `${n} лет`;
+}
+
+function DownloadButton({ label, onDownload, blocked, hint }) {
+  const handleClick = () => {
+    if (blocked) {
+      window.dispatchEvent(new CustomEvent('fe:download-limit'));
+      return;
+    }
+    onDownload?.();
+  };
+  const tooltip = blocked ? 'Войдите, чтобы скачивать данные без ограничений' : hint;
+  return (
+    <div className="relative group/dl">
+      <button
+        onClick={handleClick}
+        aria-disabled={blocked}
+        className={cn(
+          'flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-colors text-xs font-mono uppercase tracking-wider',
+          blocked
+            ? 'border-border-subtle/60 text-text-tertiary/50 cursor-pointer'
+            : 'border-border-subtle text-text-tertiary hover:text-champagne hover:border-champagne/30 magnetic-btn',
+        )}
+        title={blocked ? 'Войдите, чтобы скачивать данные без ограничений' : `Скачать ${label}`}
+      >
+        {blocked ? <Lock className="w-3.5 h-3.5" /> : <Download className="w-3.5 h-3.5" />}
+        {label}
+      </button>
+      {tooltip && (
+        <div className="absolute top-full right-0 mt-2 px-3 py-2 rounded-xl bg-obsidian border border-border-subtle text-[11px] normal-case tracking-normal text-text-secondary whitespace-nowrap opacity-0 group-hover/dl:opacity-100 transition-opacity duration-200 pointer-events-none shadow-xl z-50">
+          {tooltip}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/**
  * Секция «График» страницы индикатора:
  *   тулбар (заголовок + кнопки CSV/Excel + переключатель прогноза) +
  *   сам IndicatorChart с правильными режим-зависимыми пропсами.
@@ -167,6 +216,10 @@ export default function IndicatorChartSection({
   onDownloadCsv,
   onDownloadExcel,
 }) {
+  const { blocked: downloadBlocked, isAuthed: downloadAuthed, historyYears } = useDownloadAccess();
+  const guestHistoryHint = !downloadAuthed && !downloadBlocked && historyYears > 0
+    ? `Гостям — последние ${ruYears(historyYears)}. Весь период истории — после входа`
+    : null;
   const chartCpiData = chartSeriesForViewMode({
     chartMode,
     isUnemploymentFamily,
@@ -223,22 +276,8 @@ export default function IndicatorChartSection({
         </div>
 
         <div className="flex items-center gap-3">
-          <button
-            onClick={onDownloadCsv}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-text-tertiary hover:text-champagne hover:border-champagne/30 transition-colors text-xs font-mono uppercase tracking-wider magnetic-btn"
-            title="Скачать CSV"
-          >
-            <Download className="w-3.5 h-3.5" />
-            CSV
-          </button>
-          <button
-            onClick={onDownloadExcel}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-text-tertiary hover:text-champagne hover:border-champagne/30 transition-colors text-xs font-mono uppercase tracking-wider magnetic-btn"
-            title="Скачать Excel"
-          >
-            <Download className="w-3.5 h-3.5" />
-            Excel
-          </button>
+          <DownloadButton label="CSV" onDownload={onDownloadCsv} blocked={downloadBlocked} hint={guestHistoryHint} />
+          <DownloadButton label="Excel" onDownload={onDownloadExcel} blocked={downloadBlocked} hint={guestHistoryHint} />
 
           <div className="relative group">
             <label className={cn(

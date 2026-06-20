@@ -28,6 +28,16 @@ alwaysApply: true
 - **Не коммитить** без явной команды пользователя.
 - **Не выдавать «внутренности» в публичных текстах** (`methodology`, `description`, `seo_*`, `categories.js`). См. `.cursor/rules/methodology-language.mdc`.
 
+### Сохранность БД пользователей (потеря данных = критический инцидент)
+
+База пользователей живёт в именованном docker-томе `postgres_data` (см. `docker-compose.yml`). Том переживает `build`/`up -d`/`restart`/пересоздание контейнеров. Потерять данные можно только так — и это **запрещено**:
+
+- **Никогда `docker compose down -v`** (флаг `-v` сносит тома вместе с БД). Деплой и перезапуск — только `docker compose build … && docker compose up -d …`, без `down -v`. Если нужен `down` — без `-v`.
+- **Никогда не заливать локальную БД на прод.** Синк только в одну сторону: прод → локаль (`scripts/sync-local-from-prod.py`, read-only на проде). Обратное направление затрёт прод-пользователей.
+- **Не менять** `POSTGRES_USER` / `POSTGRES_DB` / имя тома `postgres_data` — иначе Postgres поднимет новый пустой том.
+- **Перед каждым прод-деплоем** — ручной бэкап `./scripts/pg-backup.sh` (или убедиться, что ночной cron `0 4 * * *` отработал). Полный `pg_dump` + отдельный data-only дамп identity-таблиц (`users/email_credentials/oauth_identities/consents/auth_audit`), ротация 14 дней.
+- Миграции держать **аддитивными** (alembic `upgrade head` на старте контейнера); `seed_data.py` идемпотентен и identity-таблицы не трогает — так и оставлять.
+
 ## Архитектурные инварианты
 
 - **ADR-0002**: `bulk_upsert` идемпотентен — `INSERT … ON CONFLICT DO UPDATE WHERE data_points.value <> excluded.value`. Не менять на `DO NOTHING`. См. `backend/app/services/upsert.py`.

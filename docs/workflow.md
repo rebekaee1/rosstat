@@ -18,6 +18,9 @@
 - **GitHub (`git push origin main`)** — основной способ фиксировать прогресс; коммиты должны быть **согласованы** с тем, что реально сделано.
 - **Прод-сервер** (`5.129.204.194`, `/opt/rosstat`) — **не деплоить автоматически** и **не без явного запроса**. Разработка и проверка — локально (Docker Compose) и через CI; выкладка на сервер — отдельным шагом по команде.
 - **Перед каждым прод-деплоем** — обязательный `pg_dump | gzip > /opt/rosstat/backups/pre-deploy-$(date +%Y%m%d-%H%M%S).sql.gz`. См. `scripts/pg-backup.sh` и стандарт ниже.
+- **Персистентность данных пользователей (ADR-0007).** БД хранится в docker volume `postgres_data` — переживает `docker compose up -d --build`. Дополнительно `scripts/pg-backup.sh` (cron `0 4 * * *` на проде) делает (1) полный `pg_dump -Fc` и (2) отдельный data-only SQL identity-таблиц (`users/email_credentials/oauth_identities/consents/auth_audit`) — гарантия, что зарегистрированные пользователи не теряются. Восстановление:
+  - полностью: `docker compose exec -T postgres pg_restore -U rustats -d rustats --clean --if-exists < backups/<file>.dump`;
+  - только пользователи: `gunzip -c backups/<file>.identity.sql.gz | docker compose exec -T postgres psql -U rustats -d rustats`.
 
 ## Локальная разработка
 

@@ -7,6 +7,7 @@ import IndicatorTile from '../components/IndicatorTile';
 import { TileSkeleton } from '../components/Skeleton';
 import { CATEGORIES, getCategoryBySlug, isIndicatorListed } from '../lib/categories';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+import IndicatorSearch from '../components/IndicatorSearch';
 import { track, events } from '../lib/track';
 import useScrollDepth from '../lib/useScrollDepth';
 
@@ -163,6 +164,10 @@ export default function CategoryPage() {
           </Link>
         );
       })()}
+
+      <div className="mb-8">
+        <IndicatorSearch variant="inline" inlinePlaceholder="Искать индикатор по всем категориям — например, инфляция или ВВП" />
+      </div>
 
       <section className="rounded-[2rem] border border-border-subtle bg-surface p-3 shadow-md ring-1 ring-black/[0.06] sm:p-6 md:p-8">
         <h2 className="mb-6 text-xs font-semibold uppercase tracking-[0.2em] text-text-primary/70">

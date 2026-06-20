@@ -55,6 +55,7 @@ export default function useDocumentMeta(options) {
   const title = options?.title;
   const description = options?.description;
   const path = options?.path ?? '/';
+  const robots = options?.robots; // напр. 'noindex, nofollow' для /account, /login
 
   useEffect(() => {
     if (skip) return;
@@ -70,5 +71,8 @@ export default function useDocumentMeta(options) {
     setProperty('og:title', fullTitle);
     setProperty('og:description', desc);
     setProperty('og:url', url);
-  }, [skip, title, description, path]);
+    if (robots) {
+      setMeta('robots', robots);
+    }
+  }, [skip, title, description, path, robots]);
 }

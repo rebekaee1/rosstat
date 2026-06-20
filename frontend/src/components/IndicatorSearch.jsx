@@ -5,8 +5,11 @@ import { useIndicators } from '../lib/hooks';
 import { CATEGORIES } from '../lib/categories';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
+import { track, events } from '../lib/track';
 
 const MAX_RESULTS = 12;
+const SEARCH_TRACK_DEBOUNCE_MS = 900;
+const SEARCH_MIN_LEN = 2;
 
 /**
  * Поиск по индикаторам (правка №1 из звонка 2026-05-21).
@@ -26,7 +29,7 @@ const MAX_RESULTS = 12;
  * **директория**. Пользователь набирает «экспорт» и ожидает увидеть все
  * варианты: помесячно, квартально, к г/г, к кварталу.
  */
-export default function IndicatorSearch({ className }) {
+export default function IndicatorSearch({ className, variant = 'icon', inlinePlaceholder }) {
   const navigate = useNavigate();
   // Каталог нужен только при открытии палитры. Раньше полный список
   // (include_unlisted, ~290 мс) тянулся на КАЖДОЙ странице, т.к. компонент
@@ -41,6 +44,13 @@ export default function IndicatorSearch({ className }) {
   const [hi, setHi] = useState(0); // highlighted result index
   const inputRef = useRef(null);
   const listRef = useRef(null);
+  // Спрос-аналитика поиска (звонок 2026-06-19): refs, чтобы читать актуальный
+  // запрос/число результатов в обработчиках без раздувания deps и записи ref
+  // во время рендера.
+  const lastSentRef = useRef('');     // дедуп debounce-события search_query
+  const queryRef = useRef('');        // последний введённый запрос
+  const resultsCountRef = useRef(0);  // число результатов для него
+  const selectedRef = useRef(false);  // был ли выбран результат (иначе abandon)
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -60,12 +70,20 @@ export default function IndicatorSearch({ className }) {
   }, [query, indicators]);
 
   const close = useCallback(() => {
+    // Брошенный запрос (закрыли без выбора) — сигнал спроса не хуже выбранного.
+    const q = (queryRef.current || '').trim();
+    if (q.length >= SEARCH_MIN_LEN && !selectedRef.current) {
+      track(events.SEARCH_ABANDON, { q: q.slice(0, 120), results: resultsCountRef.current });
+    }
     setOpen(false);
     setQuery('');
     setHi(0);
   }, []);
 
   const go = useCallback((code) => {
+    const q = (queryRef.current || '').trim();
+    selectedRef.current = true;
+    track(events.SEARCH_SELECT, { q: q.slice(0, 120), code });
     close();
     navigate(`/indicator/${code}`);
   }, [close, navigate]);
@@ -98,12 +116,35 @@ export default function IndicatorSearch({ className }) {
     return () => document.removeEventListener('keydown', onKey);
   }, [open, close, arm]);
 
-  // фокус при открытии
+  // фокус при открытии + сброс состояния спрос-аналитики на новую сессию поиска
   useEffect(() => {
     if (!open) return;
+    selectedRef.current = false;
+    lastSentRef.current = '';
     const t = setTimeout(() => inputRef.current?.focus(), 30);
     return () => clearTimeout(t);
   }, [open]);
+
+  // Актуальные запрос/число результатов — в refs (для обработчиков close/go).
+  useEffect(() => {
+    queryRef.current = query;
+    resultsCountRef.current = results.length;
+  });
+
+  // Debounce-трекинг введённого запроса (введённое, но ещё не отправленное).
+  // results.length в момент срабатывания соответствует текущему query.
+  useEffect(() => {
+    if (!open) return undefined;
+    const q = query.trim();
+    if (q.length < SEARCH_MIN_LEN) return undefined;
+    const count = results.length;
+    const t = setTimeout(() => {
+      if (q === lastSentRef.current) return;
+      lastSentRef.current = q;
+      track(events.SEARCH_QUERY, { q: q.slice(0, 120), results: count });
+    }, SEARCH_TRACK_DEBOUNCE_MS);
+    return () => clearTimeout(t);
+  }, [query, open, results.length]);
 
   const onQueryChange = (v) => {
     setQuery(v);
@@ -132,23 +173,66 @@ export default function IndicatorSearch({ className }) {
 
   const isMac = typeof navigator !== 'undefined' && /Mac/i.test(navigator.platform || '');
 
+  const placeholder = inlinePlaceholder || 'Найдите индикатор — например, инфляция, ВВП или ключевая ставка';
+
   return (
     <>
-      <button
-        type="button"
-        onClick={() => { arm(); setOpen(true); }}
-        onMouseEnter={arm}
-        onFocus={arm}
-        className={cn(
-          FOCUS_RING,
-          'rounded-xl flex items-center justify-center p-1.5 bg-obsidian-lighter/50 border border-border-subtle text-text-secondary hover:text-text-primary hover:bg-obsidian-lighter/80 transition-colors',
-          className,
-        )}
-        aria-label={`Открыть поиск индикаторов (${isMac ? '⌘' : 'Ctrl'}+K)`}
-        title={`Поиск индикаторов (${isMac ? '⌘' : 'Ctrl'}+K)`}
-      >
-        <Search className="w-3.5 h-3.5" aria-hidden="true" />
-      </button>
+      {variant === 'pill' ? (
+        // Хедер-десктоп (звонок 2026-06-19): лупа + подпись «Поиск», чуть шире
+        // прежней иконки — поиск был малозаметен.
+        <button
+          type="button"
+          onClick={() => { arm(); setOpen(true); }}
+          onMouseEnter={arm}
+          onFocus={arm}
+          className={cn(
+            FOCUS_RING,
+            'flex items-center gap-2 rounded-full pl-3 pr-3.5 py-1.5 bg-obsidian-lighter/50 border border-border-subtle text-text-secondary hover:text-text-primary hover:border-champagne/30 transition-colors',
+            className,
+          )}
+          aria-label={`Открыть поиск индикаторов (${isMac ? '⌘' : 'Ctrl'}+K)`}
+          title={`Поиск индикаторов (${isMac ? '⌘' : 'Ctrl'}+K)`}
+        >
+          <Search className="w-4 h-4 shrink-0" aria-hidden="true" />
+          <span className="text-sm font-medium">Поиск</span>
+        </button>
+      ) : variant === 'inline' ? (
+        <button
+          type="button"
+          onClick={() => { arm(); setOpen(true); }}
+          onMouseEnter={arm}
+          onFocus={arm}
+          className={cn(
+            FOCUS_RING,
+            'group w-full flex items-center gap-3 rounded-2xl border border-border-subtle bg-surface px-4 py-3.5 text-left',
+            'shadow-sm hover:border-champagne/40 transition-colors',
+            className,
+          )}
+          aria-label="Открыть поиск индикаторов"
+        >
+          <Search className="w-4 h-4 text-text-tertiary shrink-0 group-hover:text-champagne transition-colors" aria-hidden="true" />
+          <span className="flex-1 text-sm text-text-tertiary truncate">{placeholder}</span>
+          <kbd className="hidden sm:inline text-[10px] font-mono text-text-tertiary border border-border-subtle rounded px-1.5 py-0.5">
+            {isMac ? '⌘K' : 'Ctrl+K'}
+          </kbd>
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={() => { arm(); setOpen(true); }}
+          onMouseEnter={arm}
+          onFocus={arm}
+          className={cn(
+            FOCUS_RING,
+            'rounded-xl flex items-center justify-center p-1.5 bg-obsidian-lighter/50 border border-border-subtle text-text-secondary hover:text-text-primary hover:bg-obsidian-lighter/80 transition-colors',
+            className,
+          )}
+          aria-label={`Открыть поиск индикаторов (${isMac ? '⌘' : 'Ctrl'}+K)`}
+          title={`Поиск индикаторов (${isMac ? '⌘' : 'Ctrl'}+K)`}
+        >
+          <Search className="w-3.5 h-3.5" aria-hidden="true" />
+        </button>
+      )}
 
       {open && (
         <div

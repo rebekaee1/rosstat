@@ -18,18 +18,34 @@ from . import TickerSnapshot, utcnow
 
 logger = logging.getLogger(__name__)
 
-_URL = "https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT"
+_PATH = "/api/v3/ticker/24hr?symbol=BTCUSDT"
+# api.binance.com отдаёт 451 (Unavailable For Legal Reasons) с российских IP.
+# data-api.binance.vision — публичный market-data домен Binance с тем же
+# payload, без гео-ограничений; держим его первым. Дальше — зеркала на случай
+# точечной недоступности конкретного хоста.
+_HOSTS = [
+    "https://data-api.binance.vision",
+    "https://api-gcp.binance.com",
+    "https://api.binance.com",
+]
 
 
 async def fetch_all() -> list[TickerSnapshot]:
-    """Pull BTC/USD live snapshot."""
-    try:
-        async with httpx.AsyncClient(headers={"User-Agent": "ForecastEconomy/1.0 (+ticker)"}) as client:
-            r = await client.get(_URL, timeout=10.0)
-            r.raise_for_status()
-            d = r.json()
-    except (httpx.HTTPError, ValueError) as e:
-        logger.warning("Binance BTC: fetch failed: %s", e)
+    """Pull BTC/USD live snapshot (перебор зеркал до первого успешного)."""
+    d = None
+    last_err: Exception | None = None
+    async with httpx.AsyncClient(headers={"User-Agent": "ForecastEconomy/1.0 (+ticker)"}) as client:
+        for host in _HOSTS:
+            try:
+                r = await client.get(f"{host}{_PATH}", timeout=10.0)
+                r.raise_for_status()
+                d = r.json()
+                break
+            except (httpx.HTTPError, ValueError) as e:
+                last_err = e
+                continue
+    if d is None:
+        logger.warning("Binance BTC: all mirrors failed: %s", last_err)
         return []
 
     try:

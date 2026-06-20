@@ -1,59 +1,44 @@
-import { trackFile } from './track';
+import { trackFile, track, events } from './track';
+import { exportTable } from './api';
 
-// xlsx (~400 КБ min) подгружается динамически в момент экспорта — статический
-// import раздувал чанк IndicatorDetail и тормозил LCP карточки (Core Web Vitals).
-export async function downloadExcel(chartData, mode, indicatorCode, range, meta = {}) {
-  const XLSX = await import('xlsx');
+// Генерация файла перенесена на бэкенд (гейт лимита + минус ~430 КБ xlsx из
+// бандла). Здесь — только подготовка точек/подписи и сохранение ответа-blob.
 
-  const actuals = chartData.filter(d => d.actual != null);
-  const forecasts = chartData.filter(d => d.forecast != null && d.actual == null);
+const CPI_VALUE_LABELS = {
+  cpi: 'ИПЦ (изм. к пред. мес., %)',
+  quarterly: 'ИПЦ квартальный (%)',
+  inflation: 'Инфляция 12 мес. (%)',
+  annual: 'Годовая инфляция (%)',
+  weekly: 'Недельный ИПЦ (изм. к пред. нед., %)',
+  index: 'Накопленный индекс ИПЦ (2000=100)',
+};
+const CPI_MODE_LABELS = {
+  cpi: 'ипц_помесячно',
+  quarterly: 'ипц_квартальный',
+  inflation: 'инфляция_12мес',
+  annual: 'инфляция_годовая',
+  weekly: 'ипц_недельный',
+  index: 'индекс_накопленный',
+};
 
-  const CPI_VALUE_LABELS = {
-    cpi: 'ИПЦ (изм. к пред. мес., %)',
-    quarterly: 'ИПЦ квартальный (%)',
-    inflation: 'Инфляция 12 мес. (%)',
-    annual: 'Годовая инфляция (%)',
-    weekly: 'Недельный ИПЦ (изм. к пред. нед., %)',
-    index: 'Накопленный индекс ИПЦ (2000=100)',
-  };
-  const CPI_MODE_LABELS = {
-    cpi: 'ипц_помесячно',
-    quarterly: 'ипц_квартальный',
-    inflation: 'инфляция_12мес',
-    annual: 'инфляция_годовая',
-    weekly: 'ипц_недельный',
-    index: 'индекс_накопленный',
-  };
-  const genericLabel = meta.name
+function valueLabel(mode, meta) {
+  const generic = meta.name
     ? `${meta.name}${meta.unit ? ` (${meta.unit})` : ''}`
     : 'Значение';
-  const valueLabel = CPI_VALUE_LABELS[mode] || genericLabel;
+  return CPI_VALUE_LABELS[mode] || generic;
+}
 
-  const factsSheet = actuals.map(d => ({
-    'Дата': d.date,
-    [valueLabel]: Number(d.actual?.toFixed(4)),
-  }));
+function toPoints(chartData) {
+  return chartData
+    .filter((d) => d.actual != null || d.forecast != null)
+    .map((d) => ({
+      date: d.date,
+      actual: d.actual != null ? d.actual : null,
+      forecast: d.forecast != null && d.actual == null ? d.forecast : null,
+    }));
+}
 
-  const forecastSheet = forecasts.map(d => ({
-    'Дата': d.date,
-    [`Прогноз ${valueLabel}`]: Number(d.forecast?.toFixed(4)),
-  }));
-
-  const wb = XLSX.utils.book_new();
-
-  const ws1 = XLSX.utils.json_to_sheet(factsSheet);
-  XLSX.utils.book_append_sheet(wb, ws1, 'Факт');
-
-  if (forecastSheet.length > 0) {
-    const ws2 = XLSX.utils.json_to_sheet(forecastSheet);
-    XLSX.utils.book_append_sheet(wb, ws2, 'Прогноз');
-  }
-
-  const modeLabel = CPI_MODE_LABELS[mode] || mode || 'data';
-  const filename = `${indicatorCode}_${modeLabel}_${range}.xlsx`;
-
-  const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-  const blob = new Blob([wbout], { type: 'application/octet-stream' });
+function saveBlob(blob, filename) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -65,29 +50,54 @@ export async function downloadExcel(chartData, mode, indicatorCode, range, meta 
   trackFile(filename);
 }
 
-export function downloadCSV(chartData, mode, indicatorCode, range, meta = {}) {
-  const rows = chartData.filter(d => d.actual != null || d.forecast != null);
-  if (!rows.length) return;
+// После успешной выгрузки сообщаем UI остаток гостевого лимита (для кнопок).
+function emitDownloaded(remaining) {
+  window.dispatchEvent(new CustomEvent('fe:download-done', { detail: { remaining } }));
+}
 
-  const header = ['Дата', meta.name || 'Значение', 'Тип'];
-  const csvRows = [header.join(';')];
-
-  for (const d of rows) {
-    const val = d.actual != null ? d.actual : d.forecast;
-    const type = d.actual != null ? 'факт' : 'прогноз';
-    csvRows.push([d.date, val?.toFixed(4) ?? '', type].join(';'));
+// Лимит гостевых скачиваний: глобальное событие подхватывает модалка регистрации.
+function handleLimit(err, indicatorCode) {
+  if (err?.code === 'download_limit') {
+    track(events.DOWNLOAD_LIMIT_HIT, { indicator: indicatorCode });
+    window.dispatchEvent(new CustomEvent('fe:download-limit'));
+    return true;
   }
+  return false;
+}
 
-  const bom = '\uFEFF';
-  const blob = new Blob([bom + csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
+export async function downloadExcel(chartData, mode, indicatorCode, range, meta = {}) {
+  const modeLabel = CPI_MODE_LABELS[mode] || mode || 'data';
+  const filename = `${indicatorCode}_${modeLabel}_${range}.xlsx`;
+  try {
+    const { blob, remaining } = await exportTable({
+      format: 'xlsx',
+      filename,
+      valueLabel: valueLabel(mode, meta),
+      points: toPoints(chartData),
+    });
+    saveBlob(blob, filename);
+    emitDownloaded(remaining);
+    return true;
+  } catch (err) {
+    if (handleLimit(err, indicatorCode)) return false;
+    throw err;
+  }
+}
+
+export async function downloadCSV(chartData, mode, indicatorCode, range, meta = {}) {
   const filename = `${indicatorCode}_${mode || 'data'}_${range}.csv`;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(url), 100);
-  trackFile(filename);
+  try {
+    const { blob, remaining } = await exportTable({
+      format: 'csv',
+      filename,
+      valueLabel: meta.name || 'Значение',
+      points: toPoints(chartData),
+    });
+    saveBlob(blob, filename);
+    emitDownloaded(remaining);
+    return true;
+  } catch (err) {
+    if (handleLimit(err, indicatorCode)) return false;
+    throw err;
+  }
 }

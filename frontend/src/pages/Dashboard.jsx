@@ -5,6 +5,7 @@ import { CATEGORIES, countInCategory } from '../lib/categories';
 import CategoryBlock from '../components/CategoryBlock';
 import { TileSkeleton } from '../components/Skeleton';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+import IndicatorSearch from '../components/IndicatorSearch';
 
 export default function Dashboard() {
   const { data: indicators, isLoading, isError, refetch, isFetching } = useIndicators();
@@ -41,6 +42,10 @@ export default function Dashboard() {
             Категории
           </h2>
           <div className="h-[1px] flex-1 bg-border-subtle" />
+        </div>
+
+        <div className="mb-8">
+          <IndicatorSearch variant="inline" />
         </div>
 
         {isError && (

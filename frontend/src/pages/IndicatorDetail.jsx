@@ -455,15 +455,19 @@ export default function IndicatorDetail() {
   const downloadMode = isPriceCategory ? chartMode : null;
 
   // Выгрузка — всегда полный ряд (вся история), а не видимое окно графика.
-  const handleDownloadExcel = useCallback(() => {
-    downloadExcel(fullChartData, downloadMode, code, 'all', downloadMeta);
-    track(events.DOWNLOAD_EXCEL, { indicator: code, range: 'all', indicatorCategory: indicator?.category });
-  }, [fullChartData, downloadMode, code, downloadMeta, indicator?.category]);
+  const handleDownloadExcel = useCallback(async () => {
+    try {
+      const ok = await downloadExcel(fullChartData, downloadMode, code, 'all', downloadMeta);
+      if (ok) track(events.DOWNLOAD_EXCEL, { indicator: code, range: 'all', indicatorCategory: indicator?.category });
+    } catch { /* сеть/сервер — молча, UI не ломаем */ }
+  }, [fullChartData, downloadMode, code, downloadMeta, indicator]);
 
-  const handleDownloadCSV = useCallback(() => {
-    downloadCSV(fullChartData, downloadMode, code, 'all', downloadMeta);
-    track(events.DOWNLOAD_CSV, { indicator: code, range: 'all', indicatorCategory: indicator?.category });
-  }, [fullChartData, downloadMode, code, downloadMeta, indicator?.category]);
+  const handleDownloadCSV = useCallback(async () => {
+    try {
+      const ok = await downloadCSV(fullChartData, downloadMode, code, 'all', downloadMeta);
+      if (ok) track(events.DOWNLOAD_CSV, { indicator: code, range: 'all', indicatorCategory: indicator?.category });
+    } catch { /* сеть/сервер — молча, UI не ломаем */ }
+  }, [fullChartData, downloadMode, code, downloadMeta, indicator]);
 
   const chartEmptyHint = useMemo(() => {
     if (dataError) {

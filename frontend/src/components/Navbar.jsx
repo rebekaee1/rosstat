@@ -1,12 +1,68 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { TrendingUp, Activity, Menu, X, ChevronDown } from 'lucide-react';
+import { TrendingUp, Menu, X, ChevronDown } from 'lucide-react';
 import gsap from 'gsap';
 import { cn } from '../lib/format';
 import { CATEGORIES } from '../lib/categories';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { track, events } from '../lib/track';
 import IndicatorSearch from './IndicatorSearch';
+import { useAuth } from '../context/authContext';
+
+function AuthCluster({ mobile = false, onNavigate }) {
+  const { isAuthed, isLoading } = useAuth();
+  // Анти-фликер: пока первый /me грузится — нейтральный плейсхолдер фикс. ширины,
+  // чтобы кнопки не прыгали и не было layout shift (ADR-0007).
+  if (isLoading) {
+    return (
+      <span
+        aria-hidden
+        className={cn('inline-block h-8 rounded-full bg-obsidian-lighter/40', mobile ? 'w-full' : 'w-[150px]')}
+      />
+    );
+  }
+  if (isAuthed) {
+    return (
+      <Link
+        to="/account"
+        onClick={onNavigate}
+        className={cn(
+          FOCUS_RING,
+          'rounded-full px-4 py-1.5 text-sm font-semibold bg-champagne text-white hover:bg-champagne-muted transition-colors',
+          mobile && 'w-full text-center',
+        )}
+      >
+        Кабинет
+      </Link>
+    );
+  }
+  return (
+    <div className={cn('flex items-center gap-2', mobile && 'w-full')}>
+      <Link
+        to="/login"
+        onClick={() => { track(events.HEADER_LOGIN_CLICK); onNavigate?.(); }}
+        className={cn(
+          FOCUS_RING,
+          'rounded-full px-3.5 py-1.5 text-sm font-medium text-text-secondary hover:text-text-primary transition-colors',
+          mobile && 'flex-1 text-center border border-border-subtle',
+        )}
+      >
+        Войти
+      </Link>
+      <Link
+        to="/register"
+        onClick={() => { track(events.HEADER_REGISTER_CLICK); onNavigate?.(); }}
+        className={cn(
+          FOCUS_RING,
+          'rounded-full px-4 py-1.5 text-sm font-semibold bg-champagne text-white hover:bg-champagne-muted transition-colors',
+          mobile ? 'flex-1 text-center' : 'whitespace-nowrap',
+        )}
+      >
+        Регистрация
+      </Link>
+    </div>
+  );
+}
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -56,7 +112,7 @@ export default function Navbar() {
 
   const linkClass = ({ isActive }) => cn(
     FOCUS_RING,
-    'rounded-lg text-sm font-medium transition-colors duration-200 px-0.5 py-0.5 -mx-0.5',
+    'rounded-lg text-sm font-medium transition-colors duration-200 px-0.5 py-0.5 -mx-0.5 whitespace-nowrap',
     isActive
       ? 'text-champagne'
       : 'text-text-secondary hover:text-text-primary'
@@ -82,8 +138,8 @@ export default function Navbar() {
         ref={navRef}
         className={cn(
           'fixed top-11 md:top-12 inset-x-0 mx-auto z-[100] transition-all duration-500 ease-out',
-          'rounded-[2rem] px-6 py-3 flex items-center gap-4 md:gap-6',
-          'max-w-5xl w-[calc(100%-2rem)]',
+          'rounded-[2rem] px-5 lg:px-6 py-3 flex items-center gap-3',
+          'max-w-6xl w-[calc(100%-2rem)]',
           scrolled
             ? 'glass-surface border border-border-subtle shadow-lg shadow-black/5'
             : 'bg-white/60 backdrop-blur-sm border border-black/[0.04]'
@@ -102,7 +158,7 @@ export default function Navbar() {
         </span>
       </Link>
 
-      <div className="hidden md:flex items-center gap-2 flex-1 justify-end">
+      <div className="hidden lg:flex items-center gap-1.5 xl:gap-2 flex-1 justify-end">
         <NavLink to="/" end className={linkClass} onClick={closeAll}>
           Главная
         </NavLink>
@@ -173,28 +229,24 @@ export default function Navbar() {
         </NavLink>
         <NavLink
           to="/calculator"
-          className={({ isActive }) => cn(linkClass({ isActive }), 'ml-1.5')}
+          className={linkClass}
           onClick={closeAll}
         >
-          Калькулятор инфляции
+          <span className="xl:hidden">Калькулятор</span>
+          <span className="hidden xl:inline">Калькулятор инфляции</span>
         </NavLink>
         <NavLink to="/about" className={linkClass} onClick={closeAll}>
           О проекте
         </NavLink>
       </div>
 
-      <div className="hidden md:flex items-center shrink-0 gap-3">
-        <IndicatorSearch />
-        <div className="relative group flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-obsidian-lighter/50 border border-border-subtle cursor-default">
-          <Activity className="w-3 h-3 text-positive pulse-dot" />
-          <span className="text-xs font-mono text-text-secondary">Онлайн</span>
-          <div className="absolute top-full right-0 mt-2 px-3 py-2 rounded-xl bg-obsidian border border-border-subtle text-xs text-text-secondary whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-xl z-50">
-            Все данные актуальны. Обновление ежедневно в 06:00 МСК
-          </div>
-        </div>
+      <div className="hidden lg:flex items-center shrink-0 gap-2 xl:gap-3">
+        <IndicatorSearch variant="pill" />
+        <div className="h-5 w-px bg-border-subtle" aria-hidden />
+        <AuthCluster />
       </div>
 
-      <div className="md:hidden ml-auto flex items-center gap-1">
+      <div className="lg:hidden ml-auto flex items-center gap-1">
         <IndicatorSearch className="!px-2 !py-1.5" />
         <button
           type="button"
@@ -211,7 +263,7 @@ export default function Navbar() {
       </div>
 
       {mobileOpen && (
-        <div className="absolute left-0 right-0 top-full z-[110] mt-2 max-h-[min(80vh,520px)] overflow-y-auto rounded-2xl border border-border-subtle bg-surface p-4 shadow-2xl ring-1 ring-black/[0.08] md:hidden">
+        <div className="absolute left-0 right-0 top-full z-[110] mt-2 max-h-[min(80vh,520px)] overflow-y-auto rounded-2xl border border-border-subtle bg-surface p-4 shadow-2xl ring-1 ring-black/[0.08] lg:hidden">
           <div className="flex flex-col gap-1">
             <NavLink to="/" end className={linkClass} onClick={closeAll}>
               Главная
@@ -252,6 +304,10 @@ export default function Navbar() {
             <NavLink to="/about" className={linkClass} onClick={closeAll}>
               О проекте
             </NavLink>
+            <div className="mx-2 my-1 h-px bg-border-subtle" />
+            <div className="px-2 pt-2">
+              <AuthCluster mobile onNavigate={closeAll} />
+            </div>
           </div>
         </div>
       )}

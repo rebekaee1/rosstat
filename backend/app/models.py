@@ -1,9 +1,15 @@
+import uuid
 from datetime import date, datetime, timezone
 from sqlalchemy import (
     String, Text, Boolean, Integer, Numeric, Date, DateTime,
-    ForeignKey, UniqueConstraint, Index, JSON,
+    ForeignKey, UniqueConstraint, Index, JSON, Uuid,
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+
+
+def _utcnow_naive() -> datetime:
+    """Наивный UTC — единая конвенция времени в схеме (см. остальные модели)."""
+    return datetime.now(timezone.utc).replace(tzinfo=None)
 
 
 class Base(DeclarativeBase):
@@ -464,3 +470,111 @@ class Experiment(Base):
     started_at: Mapped[datetime | None] = mapped_column(DateTime)
     ended_at: Mapped[datetime | None] = mapped_column(DateTime)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+
+
+# --- Identity / личный кабинет (Phase 1, ADR-0007) ---
+# Конвенции под существующую схему: наивный UTC DateTime; user.id = UUID
+# (не enumerable) с Python-side default (без pgcrypto/gen_random_uuid()).
+# Email не на User: он атрибут способа входа (OAuthIdentity / EmailCredential).
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid(), primary_key=True, default=uuid.uuid4)
+    status: Mapped[str] = mapped_column(String(20), nullable=False, default="active", server_default="active")
+    display_name: Mapped[str | None] = mapped_column(String(200))
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+
+    oauth_identities: Mapped[list["OAuthIdentity"]] = relationship(
+        back_populates="user", cascade="all, delete-orphan"
+    )
+    email_credential: Mapped["EmailCredential | None"] = relationship(
+        back_populates="user", cascade="all, delete-orphan", uselist=False
+    )
+    consents: Mapped[list["Consent"]] = relationship(
+        back_populates="user", cascade="all, delete-orphan"
+    )
+
+
+class OAuthIdentity(Base):
+    __tablename__ = "oauth_identities"
+    __table_args__ = (
+        UniqueConstraint("provider", "provider_user_id", name="uq_oauth_provider_subject"),
+        Index("ix_oauth_identity_user", "user_id"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+    )
+    provider: Mapped[str] = mapped_column(String(30), nullable=False)
+    provider_user_id: Mapped[str] = mapped_column(String(200), nullable=False)
+    email: Mapped[str | None] = mapped_column(String(320))
+    email_verified: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    # Телефон из профиля провайдера (Яндекс default_phone / VK phone) — если выдан
+    # scope'ом. Нужен для рассылки по SMS наравне с email (канал на выбор).
+    phone: Mapped[str | None] = mapped_column(String(32))
+    display_name: Mapped[str | None] = mapped_column(String(200))
+    avatar_url: Mapped[str | None] = mapped_column(String(500))
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+    last_login_at: Mapped[datetime | None] = mapped_column(DateTime)
+
+    user: Mapped["User"] = relationship(back_populates="oauth_identities")
+
+
+class EmailCredential(Base):
+    __tablename__ = "email_credentials"
+    __table_args__ = (
+        UniqueConstraint("email", name="uq_email_credential_email"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True
+    )
+    email: Mapped[str] = mapped_column(String(320), nullable=False)
+    password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
+    email_verified: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+
+    user: Mapped["User"] = relationship(back_populates="email_credential")
+
+
+class Consent(Base):
+    __tablename__ = "consents"
+    __table_args__ = (
+        Index("ix_consent_user", "user_id"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+    )
+    kind: Mapped[str] = mapped_column(String(30), nullable=False)  # pd / tos / privacy
+    version: Mapped[str] = mapped_column(String(20), nullable=False)
+    granted_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+    ip: Mapped[str | None] = mapped_column(String(64))
+    user_agent: Mapped[str | None] = mapped_column(String(500))
+
+    user: Mapped["User"] = relationship(back_populates="consents")
+
+
+class AuthAudit(Base):
+    __tablename__ = "auth_audit"
+    __table_args__ = (
+        Index("ix_auth_audit_user", "user_id", "ts"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    # ondelete CASCADE: при удалении аккаунта строки аудита (ip/ua = ПДн) уходят
+    # вместе с user (152-ФЗ). Факт удаления пишем отдельной строкой user_id=NULL
+    # без PII в обработчике DELETE /account. nullable — ради такого маркера.
+    user_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), nullable=True
+    )
+    event: Mapped[str] = mapped_column(String(30), nullable=False)
+    ip: Mapped[str | None] = mapped_column(String(64))
+    user_agent: Mapped[str | None] = mapped_column(String(500))
+    detail: Mapped[str | None] = mapped_column(String(200))
+    ts: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)

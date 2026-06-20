@@ -1,2 +1,5 @@
 -r requirements.txt
 pytest==8.3.4
+# Identity Phase 1: герметичные auth-тесты без внешних postgres/redis
+fakeredis==2.26.2
+aiosqlite==0.20.0

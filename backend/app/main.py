@@ -124,6 +124,13 @@ async def lifespan(app: FastAPI):
     # Startup
     logger.info("Starting %s...", settings.app_name)
 
+    # Инвариант ADR-0007: fake OAuth-провайдер допустим только не в проде.
+    # «Прод» = debug выключен. В тестах/деве fake включают вместе с debug.
+    if settings.auth_fake_provider_enabled and not settings.debug:
+        raise RuntimeError(
+            "auth_fake_provider_enabled must be false in production (RUSTATS_DEBUG=false)"
+        )
+
     if settings.scheduler_enabled:
         from app.tasks.scheduler import daily_update_job
         scheduler.add_job(
@@ -214,6 +221,25 @@ async def lifespan(app: FastAPI):
                 settings.analytics_scheduler_cron_minute,
             )
 
+        if settings.telegram_digest_enabled:
+            from app.tasks.analytics_scheduler import telegram_daily_digest_job
+            scheduler.add_job(
+                telegram_daily_digest_job,
+                trigger=CronTrigger(
+                    hour=settings.telegram_digest_cron_hour,
+                    minute=settings.telegram_digest_cron_minute,
+                    timezone="Europe/Moscow",
+                ),
+                id="telegram_daily_digest",
+                name="Telegram daily digest (users + Metrika goals)",
+                replace_existing=True,
+            )
+            logger.info(
+                "Telegram digest enabled: daily at %02d:%02d MSK",
+                settings.telegram_digest_cron_hour,
+                settings.telegram_digest_cron_minute,
+            )
+
         # «New indicator initial ETL trap» — закрытие. После seed_data
         # любые новые source-индикаторы могут стоять с 0 точек, пока
         # daily-job не отработает (06:00 МСК). Триггерим catch-up для них
@@ -258,6 +284,9 @@ app.add_middleware(
 )
 
 app.include_router(api_router)
+
+from app.api.oauth import compat_router as oauth_compat_router
+app.include_router(oauth_compat_router)
 
 from app.api.sitemap import router as sitemap_router
 app.include_router(sitemap_router)

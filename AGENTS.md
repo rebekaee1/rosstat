@@ -24,6 +24,7 @@
    - `0004-rosstat-russian-canonical-sdds-deprecated.md` — Rosstat русский canonical, SDDS English deprecated. Migration pattern + pilot evidence (gdp-nominal, 2026-05-10).
    - `0005-official-calendar-source-bound.md` — public calendar только official dates с provenance; estimated скрыты.
    - `0006-indicator-card-unification.md` — ось декомпозиции «карточка vs derived vs variant vs frequency» + 7-проверочный чеклист «новый индикатор» (звонок 2026-05-22 + ревизия).
+ - `0007-identity-user-accounts.md` — личный кабинет Phase 1: идентичность (User/OAuthIdentity/EmailCredential), сессии в Redis, OAuth (Яндекс/VK/email, без Authlib), резолв против pre-hijack, 152-ФЗ. Alembic-ревизия `20260619_identity`. Boevые OAuth-креды — pre-prod чеклист в ADR.
 
 После этих файлов агент способен ответить на ~90% вопросов и делать осмысленные правки.
 

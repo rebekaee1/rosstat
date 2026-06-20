@@ -71,6 +71,48 @@ class Settings(BaseSettings):
     yandex_metrika_write_token: str = ""
     yandex_webmaster_token: str = ""
 
+    # Identity / личный кабинет (Phase 1)
+    auth_session_ttl_seconds: int = 60 * 60 * 24 * 30  # 30 дней sliding
+    auth_cookie_secure: bool = False  # на проде → true (HTTPS)
+    auth_cookie_domain: str = ""      # пусто = host-only cookie
+    auth_oauth_state_ttl_seconds: int = 600  # 10 мин на завершение OAuth
+    auth_login_max_fails: int = 8     # порог lockout по (email,ip)
+    auth_login_lockout_seconds: int = 900  # 15 мин блокировки
+    # Fake-провайдер только для dev/test (на проде ОБЯЗАН быть false — assert на старте)
+    auth_fake_provider_enabled: bool = False
+    # Базовый внешний URL для построения OAuth redirect_uri (callback).
+    auth_public_base_url: str = "http://localhost:5173"
+
+    # OAuth — Яндекс ID
+    oauth_yandex_client_id: str = ""
+    oauth_yandex_client_secret: str = ""
+    oauth_yandex_scope: str = ""  # пусто = дефолт провайдера (login:email login:info login:avatar)
+    # OAuth — VK ID (public client + PKCE, секрет в обмене не участвует)
+    oauth_vk_client_id: str = ""
+    oauth_vk_client_secret: str = ""   # классический VK; для VK ID PKCE не требуется
+    oauth_vk_service_key: str = ""      # сервисный ключ VK (server-to-server), опц.
+    oauth_vk_scope: str = ""            # пусто = дефолт провайдера (email)
+    # Полный override redirect_uri (если в кабинете провайдера зарегистрирован
+    # нестандартный путь/порт). Пусто = строим из auth_public_base_url.
+    oauth_yandex_redirect_uri: str = ""
+    oauth_vk_redirect_uri: str = ""
+
+    # Лимит скачиваний для гостей (без сессии). Авторизованные — безлимит.
+    download_anon_limit: int = 5
+    download_anon_window_seconds: int = 60 * 60 * 24  # окно сессии скачиваний
+    # Глубина истории в гостевой выгрузке (лет от последней точки). Полный период
+    # истории — бонус за регистрацию. 0 = без ограничения глубины. Авторизованные
+    # всегда получают весь ряд.
+    download_anon_history_years: int = 3
+
+    # Telegram-дайджест (ежедневная агрегированная статистика Метрики + регистрации)
+    telegram_digest_enabled: bool = False
+    telegram_digest_cron_hour: int = 9
+    telegram_digest_cron_minute: int = 0
+    # Мгновенные уведомления (регистрации + обратная связь). false = тишина,
+    # всё уходит только в ежедневный дайджест. ETL-алерты не затрагивает.
+    telegram_realtime_alerts_enabled: bool = True
+
     model_config = {"env_prefix": "RUSTATS_", "env_file": ".env", "extra": "ignore"}
 
 

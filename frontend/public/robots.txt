@@ -6,12 +6,18 @@ Allow: /
 Disallow: /api/
 Disallow: /embed/
 Disallow: /__spa-index.html
+Disallow: /login
+Disallow: /register
+Disallow: /account
 
 User-agent: Yandex
 Allow: /
 Disallow: /api/
 Disallow: /embed/
 Disallow: /__spa-index.html
+Disallow: /login
+Disallow: /register
+Disallow: /account
 Host: https://forecasteconomy.com
 
 User-agent: Googlebot
@@ -19,6 +25,9 @@ Allow: /
 Disallow: /api/
 Disallow: /embed/
 Disallow: /__spa-index.html
+Disallow: /login
+Disallow: /register
+Disallow: /account
 
 # Clean-param — межсекционная директива Яндекса (Yandex.Webmaster → «Найдены страницы-дубли с GET-параметрами»).
 # Сообщает роботу, какие GET-параметры считать незначащими, чтобы не индексировать дубли и склеить сигналы на канонической странице.

@@ -36,6 +36,53 @@ async def send_telegram(message: str) -> bool:
         return False
 
 
+async def notify_new_user(info: dict) -> None:
+    """Мгновенное уведомление администратора о новой регистрации (ADR-0007 Phase 2).
+
+    Никогда не роняет регистрацию: вызывать через try/except или fire-and-forget.
+    Молчит, если realtime-алерты выключены (`telegram_realtime_alerts_enabled`) —
+    данные всё равно есть в ежедневном дайджесте.
+    """
+    if not settings.telegram_realtime_alerts_enabled:
+        return
+    def esc(v) -> str:
+        return escape(str(v)) if v not in (None, "") else "—"
+
+    lines = [
+        "🆕 <b>Новый пользователь</b>",
+        f"Способ входа: {esc(info.get('method'))}",
+        f"Email: {esc(info.get('email'))}",
+        f"Телефон: {esc(info.get('phone'))}",
+        f"Имя: {esc(info.get('display_name'))}",
+        f"Рассылка: {'да' if info.get('newsletter') else 'нет'}",
+        f"IP: {esc(info.get('ip'))}",
+        f"User-Agent: {esc((info.get('user_agent') or '')[:120])}",
+        f"ID: <code>{esc(info.get('user_id'))}</code>",
+    ]
+    await send_telegram("\n".join(lines))
+
+
+async def notify_feedback(info: dict) -> None:
+    """Мгновенная отправка обратной связи от авторизованного пользователя (ADR-0007 Phase 2)."""
+    if not settings.telegram_realtime_alerts_enabled:
+        return
+    def esc(v) -> str:
+        return escape(str(v)) if v not in (None, "") else "—"
+
+    lines = [
+        "💬 <b>Обратная связь</b>",
+        f"Email: {esc(info.get('email'))}",
+        f"Имя: {esc(info.get('display_name'))}",
+        f"ID: <code>{esc(info.get('user_id'))}</code>",
+        "",
+        esc(info.get("message")),
+    ]
+    contact = info.get("contact")
+    if contact:
+        lines.insert(4, f"Контакт для ответа: {esc(contact)}")
+    await send_telegram("\n".join(lines))
+
+
 async def alert_etl_failure(indicator_code: str, error: str) -> None:
     msg = (
         f"🔴 <b>ETL Failed</b>\n"

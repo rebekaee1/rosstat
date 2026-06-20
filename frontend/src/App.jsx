@@ -7,10 +7,13 @@ import CookieConsent from './components/CookieConsent';
 import NoiseOverlay from './components/NoiseOverlay';
 import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
+import RegisterNudge from './components/RegisterNudge';
+import DownloadLimitModal from './components/DownloadLimitModal';
 import { SkeletonBox } from './components/Skeleton';
 import useDocumentMeta from './lib/useMeta';
 import { cleanPathWithSearch } from './lib/cleanUrl';
 import { isVariantSiblingNavigation } from './lib/indicatorVariants';
+import { AuthProvider } from './context/AuthProvider';
 import Dashboard from './pages/Dashboard';
 
 const IndicatorDetail = lazy(() => import('./pages/IndicatorDetail'));
@@ -23,6 +26,9 @@ const CalendarPage = lazy(() => import('./pages/CalendarPage'));
 const EmbedBuilder = lazy(() => import('./pages/EmbedBuilder'));
 const CalculatorPage = lazy(() => import('./pages/CalculatorPage'));
 const DemographicsPage = lazy(() => import('./pages/DemographicsPage'));
+const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
+const Account = lazy(() => import('./pages/Account'));
 
 const EmbedChart = lazy(() => import('./embed/EmbedChart'));
 const EmbedCard = lazy(() => import('./embed/EmbedCard'));
@@ -126,7 +132,7 @@ function AppRoutes() {
   }
 
   return (
-    <>
+    <AuthProvider>
       <ScrollToTop />
       <YandexMetrikaHit />
       <YandexRSY />
@@ -153,6 +159,9 @@ function AppRoutes() {
             <Route path="/widgets" element={<EmbedBuilder />} />
             <Route path="/calculator" element={<CalculatorPage />} />
             <Route path="/demographics" element={<DemographicsPage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/account" element={<Account />} />
             <Route path="/indicator/:code" element={<IndicatorDetailKeyed />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
@@ -160,7 +169,9 @@ function AppRoutes() {
         </ErrorBoundary>
       </main>
       <Footer />
-    </>
+      <RegisterNudge />
+      <DownloadLimitModal />
+    </AuthProvider>
   );
 }
 

@@ -100,15 +100,19 @@ export default function GenericIndicatorView({
   const handleFullData = useCallback((d) => setFullChartData(d), []);
 
   // Выгрузка — всегда полный ряд (вся история), а не видимое окно графика.
-  const handleDownloadExcel = useCallback(() => {
-    downloadExcel(fullChartData, null, resolved?.code ?? code, 'all', downloadMeta);
-    track(events.DOWNLOAD_EXCEL, { indicator: code, range: 'all', indicatorCategory: indicator?.category });
-  }, [fullChartData, resolved?.code, code, downloadMeta, indicator?.category]);
+  const handleDownloadExcel = useCallback(async () => {
+    try {
+      const ok = await downloadExcel(fullChartData, null, resolved?.code ?? code, 'all', downloadMeta);
+      if (ok) track(events.DOWNLOAD_EXCEL, { indicator: code, range: 'all', indicatorCategory: indicator?.category });
+    } catch { /* сеть/сервер — молча */ }
+  }, [fullChartData, resolved, code, downloadMeta, indicator]);
 
-  const handleDownloadCSV = useCallback(() => {
-    downloadCSV(fullChartData, null, resolved?.code ?? code, 'all', downloadMeta);
-    track(events.DOWNLOAD_CSV, { indicator: code, range: 'all', indicatorCategory: indicator?.category });
-  }, [fullChartData, resolved?.code, code, downloadMeta, indicator?.category]);
+  const handleDownloadCSV = useCallback(async () => {
+    try {
+      const ok = await downloadCSV(fullChartData, null, resolved?.code ?? code, 'all', downloadMeta);
+      if (ok) track(events.DOWNLOAD_CSV, { indicator: code, range: 'all', indicatorCategory: indicator?.category });
+    } catch { /* сеть/сервер — молча */ }
+  }, [fullChartData, resolved, code, downloadMeta, indicator]);
 
   const chartEmptyHint = !isLoading && (dataPoints?.length ?? 0) === 0
     ? 'В API пока нет точек для этого режима — ряд появится после ближайшего пересчёта.'

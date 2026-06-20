@@ -1,10 +1,16 @@
 from __future__ import annotations
 
 import logging
-from datetime import date, timedelta
+from collections import Counter
+from datetime import date, datetime, time, timedelta, timezone
+from html import escape
+
+from sqlalchemy import func, select
 
 from app.config import settings
 from app.database import async_session
+from app.models import Consent, FrontendEvent, User
+from app.services.alerting import send_telegram
 from app.services.analytics_ingestion import (
     finish_sync_run,
     start_sync_run,
@@ -64,6 +70,127 @@ async def analytics_hourly_job() -> None:
             await db.rollback()
             await finish_sync_run(db, run, status="failed", error_message=str(exc)[:500])
             await db.commit()
+
+
+async def _user_stats_lines() -> list[str]:
+    async with async_session() as db:
+        total = await db.scalar(select(func.count(User.id))) or 0
+        since = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=1)
+        new_24h = await db.scalar(
+            select(func.count(User.id)).where(User.created_at >= since)
+        ) or 0
+        newsletter = await db.scalar(
+            select(func.count(func.distinct(Consent.user_id))).where(Consent.kind == "newsletter")
+        ) or 0
+    return [f"👤 Пользователи: всего {total}, +{new_24h} за сутки, подписка на рассылку {newsletter}"]
+
+
+async def _search_demand_lines(report_date: date) -> list[str]:
+    """Спрос-аналитика поиска за день из FrontendEvent: что искали (введённое,
+    выбранное, брошенное) + запросы с 0 результатов = пробелы в каталоге."""
+    start = datetime.combine(report_date, time.min)
+    end = start + timedelta(days=1)
+    async with async_session() as db:
+        rows = (await db.execute(
+            select(FrontendEvent.event_name, FrontendEvent.params_json).where(
+                FrontendEvent.event_name.in_(["search_query", "search_select", "search_abandon"]),
+                FrontendEvent.occurred_at >= start,
+                FrontendEvent.occurred_at < end,
+            )
+        )).all()
+
+    queries: Counter[str] = Counter()
+    no_results: Counter[str] = Counter()
+    n_query = n_select = n_abandon = 0
+    for name, params in rows:
+        params = params or {}
+        q = str(params.get("q") or "").strip().lower()
+        if name == "search_select":
+            n_select += 1
+        elif name == "search_abandon":
+            n_abandon += 1
+        elif name == "search_query":
+            n_query += 1
+            if not q:
+                continue
+            queries[q] += 1
+            try:
+                if int(params.get("results", 0)) == 0:
+                    no_results[q] += 1
+            except (TypeError, ValueError):
+                pass
+
+    if not (n_query or n_select or n_abandon):
+        return ["🔎 Поиск: запросов за день нет"]
+
+    def _fmt(counter: Counter[str], limit: int = 10) -> str:
+        return ", ".join(f"«{escape(q[:40])}» ×{c}" for q, c in counter.most_common(limit))
+
+    lines = [f"🔎 <b>Поиск:</b> ввод {n_query}, выбрано {n_select}, брошено {n_abandon}"]
+    if queries:
+        lines.append("🔝 Топ запросов: " + _fmt(queries))
+    if no_results:
+        lines.append("🕳 Без результатов: " + _fmt(no_results))
+    return lines
+
+
+async def _metrika_goal_lines(report_date: date) -> list[str]:
+    """Достижения всех целей счётчика за указанный день (для дайджеста CTA)."""
+    counter_id = _primary_counter_id()
+    mgmt = MetrikaManagementClient()
+    goals_resp = await mgmt.goals(counter_id)
+    goals = ((goals_resp.data or {}).get("goals") or [])[:25]
+    metrics = ["ym:s:visits", "ym:s:users"] + [f"ym:s:goal{g['id']}reaches" for g in goals]
+    rep = MetrikaReportingClient()
+    r = await rep.table(
+        counter_id=counter_id, metrics=metrics,
+        date_from=report_date, date_to=report_date, limit=1,
+    )
+    totals = (r.data or {}).get("totals") or [[]]
+    tvals = totals[0] if totals else []
+
+    def _at(i: int) -> int:
+        return int(tvals[i]) if len(tvals) > i and tvals[i] is not None else 0
+
+    lines = [f"🌐 Визиты {_at(0)}, посетители {_at(1)}"]
+    goal_lines = []
+    for i, g in enumerate(goals):
+        reaches = _at(2 + i)
+        if reaches:
+            goal_lines.append(f"• {escape(str(g.get('name') or g['id']))}: {reaches}")
+    if goal_lines:
+        lines.append("🎯 <b>Цели (достижения за день):</b>")
+        lines.extend(goal_lines)
+    else:
+        lines.append("🎯 Достижений целей за день нет")
+    return lines
+
+
+async def telegram_daily_digest_job() -> None:
+    """Ежедневный Telegram-дайджест: пользователи БД + агрегированная статистика
+    Метрики (визиты/посетители + достижения всех целей-CTA). ADR-0007 Phase 2."""
+    if not (settings.telegram_bot_token and settings.telegram_chat_id):
+        logger.info("Telegram digest skipped: bot token/chat not configured")
+        return
+    yesterday = date.today() - timedelta(days=1)
+    parts = [f"📊 <b>Forecast Economy — дайджест за {yesterday.isoformat()}</b>"]
+    try:
+        parts += await _user_stats_lines()
+    except Exception:
+        logger.warning("Telegram digest: user stats failed", exc_info=True)
+    try:
+        parts += await _search_demand_lines(yesterday)
+    except Exception:
+        logger.warning("Telegram digest: search demand failed", exc_info=True)
+    if settings.analytics_enabled and settings.yandex_metrika_read_token:
+        try:
+            parts += await _metrika_goal_lines(yesterday)
+        except Exception:
+            logger.warning("Telegram digest: Metrika part failed", exc_info=True)
+            parts.append("⚠️ Статистика Метрики недоступна")
+    else:
+        parts.append("ℹ️ Метрика отключена (нет токена) — только статистика БД")
+    await send_telegram("\n".join(parts))
 
 
 async def analytics_daily_job() -> None:

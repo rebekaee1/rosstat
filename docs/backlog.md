@@ -1,7 +1,7 @@
 # Backlog — текущие правки в работе
 
-**Last updated:** 2026-06-16 (созвон «ПРАВКИ ПЕРЕДЕЛ-2»: жильё-цены под ось ИПЦ — топ-группа «К соотв. периоду пред. года» + годовой Г/г `housing-annual-*`; доступность жилья без режима «Скользящая 12 мес.»; кнопки диапазона графика всегда справа. См. История 2026-06-16. Предыдущий — 2026-06-15).
-**Part of:** [`AGENTS.md`](../AGENTS.md), [`CONTEXT.md`](../CONTEXT.md), [`docs/adr/0006-indicator-card-unification.md`](adr/0006-indicator-card-unification.md).
+**Last updated:** 2026-06-19 (Личный кабинет Phase 2 — ADR-0007 «Subsequent additions»: download-gate, телефоны OAuth, согласие на рассылку, брендовые кнопки + providers-endpoint, Telegram-бот (регистрации + дайджест), хедер-блок авторизации, инлайн-поиск, RegisterNudge, автобэкап identity-таблиц. Phase 2.1: обратная связь авторизованных (форма в кабинете + nudge → Telegram мгновенно), quota-aware кнопки скачивания, спрос-аналитика поиска (`search_query`/`search_select`/`search_abandon` в `FrontendEvent` → секция дайджеста: топ-запросы + «без результатов» = пробелы каталога), гейт глубины истории в гостевой выгрузке (`download_anon_history_years=3`, полный период — за регистрацию; обрезка в `export_table`, подсказка на кнопках), хедер-брейкпоинт `md→lg` + адаптивная подпись «Калькулятор» (фикс переполнения pill). См. История 2026-06-19. Предыдущий — Phase 1 2026-06-19 / 2026-06-16).
+**Part of:** [`AGENTS.md`](../AGENTS.md), [`CONTEXT.md`](../CONTEXT.md), [`docs/adr/0006-indicator-card-unification.md`](adr/0006-indicator-card-unification.md), [`docs/adr/0007-identity-user-accounts.md`](adr/0007-identity-user-accounts.md).
 **Источник:** звонки с Никитой Александровичем 2026-05-21 (Сочи) и 2026-05-22 («всё доделать»).
 
 > Живой бэклог планируемых работ. Каждая правка имеет ID, описание, затронутые файлы, риски, зависимости и приоритет. Когда правка сделана — переносится в раздел «История» внизу с датой и SHA коммита/деплоя.
@@ -537,6 +537,48 @@ Backend часть готова: 1208 событий, 46/76 source codes, `bad_p
 ---
 
 ## История (sealed правки)
+
+### 2026-06-20 — Правки руководителя «на правки 11» (ADR-0007 Phase 2.2)
+
+Транскрипт созвона (gpt-4o-transcribe) + кадры → 10 правок. Индикаторы (прогнозы режимов «к прошлому периоду / год к году», расширение истории) — отложены как второй приоритет по слову пользователя.
+
+1. **OAuth-согласие.** Всплывающее окно перед Яндекс/VK с чекбоксами: политика (обязателен) + рассылка (по умолчанию вкл). Проброс `newsletter=1`; на callback при `created` пишем `Consent(pd)` + опц. `Consent(newsletter)`. `OAuthButtons.jsx`, `app/api/oauth.py`.
+2. **Тоггл рассылки в кабинете.** `POST /auth/account/newsletter`; журнал append-only (`newsletter`/`newsletter_revoked`), последняя запись побеждает. `Account.jsx`, `app/api/auth.py`, `service.py`.
+3. **Кабинет упрощён.** Убраны блоки «Вход в аккаунт» и «Пароль для входа по почте»; текст обратной связи переписан без негатива.
+4. **«Скачать мои данные» убрана** (152-ФЗ ст. 14 = доступ по запросу, не self-service экспорт; GDPR-портируемость неприменима). Эндпоинт сохранён, политика уточнена. `Account.jsx`, `Privacy.jsx`.
+5. **Хедер.** Убрана плашка «Онлайн»; десктоп-поиск pill «🔍 Поиск» (`IndicatorSearch variant="pill"`); мобильный без изменений. `Navbar.jsx`.
+6. **Лимит выгрузок 2 → 5** (`download_anon_limit`, compose default `:-5`).
+7. **Маркировка рекламы.** Пометка «Реклама» над РСЯ floor-баннером, только при фактической отрисовке. `YandexRSY.jsx`.
+
+### 2026-06-19 — Личный кабинет Phase 2 (ADR-0007 «Subsequent additions»): UX, download-gate, телефоны, аналитика-бот
+
+Доводка кабинета по правкам руководителя (10 пунктов) + Telegram-бот.
+
+1. **Хедер.** Отдельный блок Войти/Регистрация (гость) / Кабинет (авторизован) с разделителем, desktop + mobile. `frontend/src/components/Navbar.jsx` (`AuthCluster`).
+2. **Брендовые OAuth-кнопки.** Яндекс ID (#FC3F1D) / VK ID (#0077FF) с лого; редизайн карточек Login/Register (карточка, центрирование). Динамический список через `GET /auth/oauth/providers` — несконфигурированные скрыты. `OAuthButtons.jsx`, `Login.jsx`, `Register.jsx`.
+3. **Чистка кабинета.** `Account.jsx` без техжаргона: профиль (имя/email/телефон), «Вход в аккаунт» с иконками, отвязка/добавление способов, опасное действие отделено.
+4. **Согласия.** Чекбокс рассылки (email/телефон) при регистрации → `Consent kind="newsletter"`. `Register.jsx`, `app/api/auth.py` (`RegisterIn.newsletter`), `Privacy.jsx`.
+5. **Download-gate.** Генерация Excel/CSV перенесена на backend (`app/api/export.py`, `POST /export/table`): минус ~430 КБ `xlsx` из бандла + жёсткий гейт. Гость — 2 выгрузки/сессия (cookie `fe_dl` + Redis `fe:dl:*`), авторизованный — безлимит. 403 `download_limit` → модалка регистрации. `excel.js` переписан, `xlsx` удалён из `package.json`. `app/security/download_quota.py`.
+6. **OAuth под ключ.** Реальные креды Яндекс/VK в `backend/.env`; redirect-override (`oauth_*_redirect_uri`) + compat-роутер `/api/auth/{provider}/{start,callback}`; scope конфигурируем; authorize-URL проверен локально. Телефон в `OAuthIdentity.phone` (Alembic `20260619_oauth_phone`).
+7. **Аналитика + Telegram.** CTA-цели в `track.js` (signup/login/oauth/download_limit/nudge/header). `notify_new_user` — мгновенное уведомление о регистрации (email/телефон/IP/UA/способ). `telegram_daily_digest_job` — ежедневный дайджест: пользователи БД + визиты/посетители + достижения всех целей Метрики. Конфиг `telegram_*`, бот/чат в env. `app/services/alerting.py`, `app/tasks/analytics_scheduler.py`, `app/main.py`.
+8. **Инлайн-поиск.** `IndicatorSearch variant="inline"` на Dashboard и CategoryPage (не на IndicatorDetail), открывает существующую палитру. 
+9. **RegisterNudge.** Плавающая пилюля → раскрытие с бенефитами; «не показывать больше» в `localStorage`; скрыто для авторизованных и на /login,/register,/account. `RegisterNudge.jsx`, `DownloadLimitModal.jsx`, mount в `App.jsx`.
+10. **Персистентность/бэкап.** Тома `postgres_data`/`redis_data` (compose). `scripts/pg-backup.sh` + отдельный data-only dump identity-таблиц; восстановление в шапке скрипта и `docs/workflow.md`.
+
+### 2026-06-19 — Личный кабинет Phase 1 (ADR-0007): идентичность, OAuth, сессии, 152-ФЗ
+
+Фундамент идентичности (lead-gen-стратегия). Phase 1 локально, всё E2E; почты нет (без подтверждения email/сброса пароля/рассылок — Phase 2).
+
+1. **Доменная модель + миграция.** `User` (UUID PK, без email) + `OAuthIdentity` + `EmailCredential` + `Consent` + `AuthAudit`. Email — атрибут способа входа, не `User`. Alembic `20260619_identity` (down_revision `20260510_calendar_official`), upgrade/downgrade проверены на докер-postgres. `backend/app/models.py`.
+2. **Email+пароль.** argon2id, нормализация email (lower+trim), регистрация с явным согласием 152-ФЗ. `app/services/identity/{passwords,service}.py`, `app/api/auth.py` (`/register /login /logout /me`).
+3. **Сессии в Redis.** Opaque id в httpOnly+Secure+SameSite=Lax `fe_sess`, значение (user_id, csrf) в `fe:sess:{id}`, индекс `fe:user_sessions:{uid}` для logout-all/purge, sliding TTL, ротация на входе. `app/services/session.py`. Double-submit CSRF (`XSRF-TOKEN` cookie + `X-XSRF-TOKEN` header). `app/security/auth.py`.
+4. **OAuth без Authlib.** Authorization-code + PKCE(S256) вручную на httpx; реестр провайдеров `fake`/`yandex`/`vk`; state в Redis (TTL 10 мин) + `fe_oauth` Lax-cookie (login-CSRF); чистый 302-callback (требование VK ID). Резолв идентичности по `(provider, sub)`, автосвязывание только по равному верифицированному email — pre-hijack закрыт. Ветка User без email (VK). `app/services/oauth/*`, `app/services/identity/resolve.py`, `app/api/oauth.py`. Боевые Яндекс/VK требуют реальных app-кредов (pre-prod чеклист в ADR-0007).
+5. **Управление аккаунтом.** set-password (для OAuth-only + доввод email), unlink (запрет снять последний способ), logout-all (текущее устройство перевыпускается). 
+6. **152-ФЗ.** `Consent` при регистрации; `GET /auth/account/export` (JSON-выгрузка ПДн); `DELETE /auth/account` (явное удаление всех таблиц + purge Redis-сессий + анонимный маркер). Privacy/Terms обновлены (редакция 19 июня): состав данных учётной записи, цели, сроки, право на удаление/экспорт.
+7. **Хардненинг.** lockout по (email, ip) → **423 Locked** (не 429, чтобы axios не ретраил креды); open-redirect guard на `next`; fake-провайдер запрещён в проде (startup-assert + реестр). `app/security/lockout.py`.
+8. **Frontend.** `AuthProvider` (анти-фликер навбара), страницы Login/Register/Account (guard, noindex), `OAuthButtons`, кнопка «Войти/Кабинет» в навбаре, `api.js` (withCredentials + CSRF-интерсептор, без ретрая `/auth`). nginx: SPA-блок `/login|/register|/account` + `X-Robots-Tag noindex`; robots.txt Disallow. SSR/публичный кэш не трогаются — сессию читают только `/auth/*` (инвариант ADR-0003/0007).
+
+Затронуты: `config.py`, `requirements*.txt` (argon2-cffi runtime; fakeredis+aiosqlite dev), `docker-compose.yml` (env auth/OAuth, fake+debug off по умолчанию). Тесты: 25 новых pytest (email/oauth-матрица/account/152-ФЗ/lockout/prod-assert) на герметичном SQLite+fakeredis — `check-all` зелёный без внешних сервисов. ADR-0007 создан, `CONTEXT.md::User/Identity` обновлён.
 
 ### 2026-06-16 — Созвон «ПРАВКИ ПЕРЕДЕЛ-2»: жильё-цены под ось ИПЦ, доступность без 12 мес., кнопки графика
 
