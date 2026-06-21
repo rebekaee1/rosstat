@@ -109,6 +109,9 @@ class Settings(BaseSettings):
     telegram_digest_enabled: bool = False
     telegram_digest_cron_hour: int = 9
     telegram_digest_cron_minute: int = 0
+    # Доп. получатели дайджеста сверх primary (comma-separated chat_id). Realtime
+    # сюда НЕ дублируется — только ежедневный дайджест в 9:00.
+    telegram_digest_chat_ids: str = ""
     # Мгновенные уведомления (регистрации + обратная связь). false = тишина,
     # всё уходит только в ежедневный дайджест. ETL-алерты не затрагивает.
     telegram_realtime_alerts_enabled: bool = True

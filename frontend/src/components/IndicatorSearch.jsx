@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { Search, X } from 'lucide-react';
 import { useIndicators } from '../lib/hooks';
@@ -234,7 +235,7 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
         </button>
       )}
 
-      {open && (
+      {open && typeof document !== 'undefined' && createPortal(
         <div
           className="fixed inset-0 z-[200] flex items-start justify-center pt-[10vh] px-4"
           role="dialog"
@@ -320,7 +321,8 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
               <span><kbd className="px-1 py-0.5 rounded border border-border-subtle">Esc</kbd> закрыть</span>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </>
   );

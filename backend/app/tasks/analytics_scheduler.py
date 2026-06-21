@@ -10,7 +10,7 @@ from sqlalchemy import func, select
 from app.config import settings
 from app.database import async_session
 from app.models import Consent, EmailCredential, FrontendEvent, OAuthIdentity, User
-from app.services.alerting import send_telegram
+from app.services.alerting import send_telegram_digest
 from app.services.analytics_ingestion import (
     finish_sync_run,
     start_sync_run,
@@ -236,7 +236,8 @@ async def telegram_daily_digest_job() -> None:
             parts.append("⚠️ Статистика Метрики недоступна")
     else:
         parts.append("ℹ️ Метрика отключена (нет токена) — только статистика БД")
-    await send_telegram("\n".join(parts))
+    results = await send_telegram_digest("\n".join(parts))
+    logger.info("Telegram digest delivered: %s", results)
 
 
 async def analytics_daily_job() -> None:
