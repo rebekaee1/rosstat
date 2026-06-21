@@ -9,7 +9,7 @@ from sqlalchemy import func, select
 
 from app.config import settings
 from app.database import async_session
-from app.models import Consent, FrontendEvent, User
+from app.models import Consent, EmailCredential, FrontendEvent, OAuthIdentity, User
 from app.services.alerting import send_telegram
 from app.services.analytics_ingestion import (
     finish_sync_run,
@@ -76,13 +76,44 @@ async def _user_stats_lines() -> list[str]:
     async with async_session() as db:
         total = await db.scalar(select(func.count(User.id))) or 0
         since = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=1)
-        new_24h = await db.scalar(
-            select(func.count(User.id)).where(User.created_at >= since)
-        ) or 0
+        new_users = (await db.execute(
+            select(User).where(User.created_at >= since).order_by(User.created_at.desc())
+        )).scalars().all()
         newsletter = await db.scalar(
             select(func.count(func.distinct(Consent.user_id))).where(Consent.kind == "newsletter")
         ) or 0
-    return [f"👤 Пользователи: всего {total}, +{new_24h} за сутки, подписка на рассылку {newsletter}"]
+
+        lines = [
+            f"👤 Пользователи: всего {total}, +{len(new_users)} за сутки, "
+            f"подписка на рассылку {newsletter}"
+        ]
+        if not new_users:
+            return lines
+
+        ids = [u.id for u in new_users]
+        emails = dict((await db.execute(
+            select(EmailCredential.user_id, EmailCredential.email)
+            .where(EmailCredential.user_id.in_(ids))
+        )).all())
+        oauth_by_user: dict = {}
+        for uid, provider, phone, oemail in (await db.execute(
+            select(OAuthIdentity.user_id, OAuthIdentity.provider, OAuthIdentity.phone, OAuthIdentity.email)
+            .where(OAuthIdentity.user_id.in_(ids))
+        )).all():
+            oauth_by_user.setdefault(uid, []).append((provider, phone, oemail))
+
+    lines.append("🆕 <b>Новые за сутки:</b>")
+    for u in new_users[:20]:
+        oa = oauth_by_user.get(u.id) or []
+        phone = next((ph for _, ph, _ in oa if ph), None)
+        oemail = next((em for _, _, em in oa if em), None)
+        providers = [p for p, _, _ in oa]
+        contact = emails.get(u.id) or oemail or phone or "—"
+        methods = (["почта"] if u.id in emails else []) + providers
+        method = "/".join(methods) if methods else "—"
+        name = u.display_name or "—"
+        lines.append(f"• {escape(name)} · {escape(str(contact)[:48])} · {escape(method)}")
+    return lines
 
 
 async def _search_demand_lines(report_date: date) -> list[str]:
@@ -135,29 +166,40 @@ async def _search_demand_lines(report_date: date) -> list[str]:
 
 
 async def _metrika_goal_lines(report_date: date) -> list[str]:
-    """Достижения всех целей счётчика за указанный день (для дайджеста CTA)."""
+    """Достижения всех целей счётчика за указанный день (для дайджеста CTA).
+
+    Метрика /stat/v1/data принимает максимум 20 метрик на запрос, а целей у нас
+    уже под 30 — поэтому цели запрашиваем батчами по 20 (иначе HTTP 400).
+    """
     counter_id = _primary_counter_id()
     mgmt = MetrikaManagementClient()
     goals_resp = await mgmt.goals(counter_id)
-    goals = ((goals_resp.data or {}).get("goals") or [])[:25]
-    metrics = ["ym:s:visits", "ym:s:users"] + [f"ym:s:goal{g['id']}reaches" for g in goals]
+    goals = (goals_resp.data or {}).get("goals") or []
     rep = MetrikaReportingClient()
-    r = await rep.table(
-        counter_id=counter_id, metrics=metrics,
-        date_from=report_date, date_to=report_date, limit=1,
-    )
-    totals = (r.data or {}).get("totals") or [[]]
-    tvals = totals[0] if totals else []
 
-    def _at(i: int) -> int:
-        return int(tvals[i]) if len(tvals) > i and tvals[i] is not None else 0
+    async def _totals(metrics: list[str]) -> list:
+        r = await rep.table(
+            counter_id=counter_id, metrics=metrics,
+            date_from=report_date, date_to=report_date, limit=1,
+        )
+        totals = (r.data or {}).get("totals") or [[]]
+        return totals[0] if totals else []
 
-    lines = [f"🌐 Визиты {_at(0)}, посетители {_at(1)}"]
-    goal_lines = []
-    for i, g in enumerate(goals):
-        reaches = _at(2 + i)
-        if reaches:
-            goal_lines.append(f"• {escape(str(g.get('name') or g['id']))}: {reaches}")
+    def _int(vals: list, i: int) -> int:
+        return int(vals[i]) if len(vals) > i and vals[i] is not None else 0
+
+    base = await _totals(["ym:s:visits", "ym:s:users"])
+    lines = [f"🌐 Визиты {_int(base, 0)}, посетители {_int(base, 1)}"]
+
+    goal_lines: list[str] = []
+    CHUNK = 20  # лимит метрик Метрики на один запрос
+    for start in range(0, len(goals), CHUNK):
+        chunk = goals[start:start + CHUNK]
+        tvals = await _totals([f"ym:s:goal{g['id']}reaches" for g in chunk])
+        for i, g in enumerate(chunk):
+            reaches = _int(tvals, i)
+            if reaches:
+                goal_lines.append(f"• {escape(str(g.get('name') or g['id']))}: {reaches}")
     if goal_lines:
         lines.append("🎯 <b>Цели (достижения за день):</b>")
         lines.extend(goal_lines)

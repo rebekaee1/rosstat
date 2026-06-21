@@ -13,6 +13,21 @@ import pytest
 from fastapi.testclient import TestClient
 
 
+@pytest.fixture(autouse=True)
+def _mute_telegram(monkeypatch: pytest.MonkeyPatch):
+    """Тесты герметичны: Telegram не дёргаем НИКОГДА.
+
+    Без этого `check-all` слал бы реальные уведомления админу — тесты создают
+    десятки пользователей (register/oauth), каждый зовёт `notify_new_user` →
+    `send_telegram`. Пустой токен → `send_telegram()` выходит ДО сетевого вызова
+    (см. alerting.py). Runtime (реальные регистрации) не затрагивается.
+    """
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "telegram_bot_token", "", raising=False)
+    monkeypatch.setattr(settings, "telegram_chat_id", "", raising=False)
+
+
 @pytest.fixture
 def client(monkeypatch: pytest.MonkeyPatch):
     from app.config import settings
