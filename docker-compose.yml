@@ -42,6 +42,12 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    # Прод-сервер резолвит api.telegram.org только в IPv6, а IPv6-маршрут до
+    # Telegram у хостера мёртвый (ConnectTimeout) → уведомления и дайджест тихо
+    # падали. Прибиваем имя к рабочему IPv4 Telegram API DC (стабильный годами).
+    # Override через TELEGRAM_API_IP, если Telegram сменит IP. См. CONTEXT.md trap.
+    extra_hosts:
+      - "api.telegram.org:${TELEGRAM_API_IP:-149.154.167.220}"
     ports:
       - "127.0.0.1:8000:8000"
     logging:
