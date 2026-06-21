@@ -182,8 +182,12 @@ async def _metrika_goal_lines(report_date: date) -> list[str]:
             counter_id=counter_id, metrics=metrics,
             date_from=report_date, date_to=report_date, limit=1,
         )
-        totals = (r.data or {}).get("totals") or [[]]
-        return totals[0] if totals else []
+        # Метрика отдаёт totals плоским списком [m1, m2, ...] (одно число на метрику);
+        # на всякий случай разворачиваем и вариант [[...]].
+        totals = (r.data or {}).get("totals") or []
+        if totals and isinstance(totals[0], list):
+            totals = totals[0]
+        return totals
 
     def _int(vals: list, i: int) -> int:
         return int(vals[i]) if len(vals) > i and vals[i] is not None else 0
