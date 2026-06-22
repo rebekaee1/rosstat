@@ -658,11 +658,9 @@ _FAMILY_DEFS: list[FamilyDef] = [
     FamilyDef("budget-revenue", "Доходы бюджета", "T6", "млрд руб.", "Бюджет", "monthly"),
     FamilyDef("budget-expenditure", "Расходы бюджета", "T6", "млрд руб.", "Бюджет", "monthly"),
     # T6 — месячные потоки бизнеса (объём за период суммируется по кварталам/годам)
-    FamilyDef("construction-work", "Объём строительных работ", "T6", "млрд руб.", "Бизнес", "monthly",
-              forecastable=False),
+    FamilyDef("construction-work", "Объём строительных работ", "T6", "млрд руб.", "Бизнес", "monthly"),
     FamilyDef("housing-commissioned", "Ввод в действие жилых домов", "T6", "млн кв.м", "Бизнес", "monthly"),
-    FamilyDef("retail-trade", "Оборот розничной торговли", "T6", "млрд руб.", "Бизнес", "monthly",
-              forecastable=False),
+    FamilyDef("retail-trade", "Оборот розничной торговли", "T6", "млрд руб.", "Бизнес", "monthly"),
     # T6 — месячные потоки внешней торговли (alternate frequency, is_listed=false)
     FamilyDef("exports-monthly", "Экспорт товаров (месячный ряд)", "T6", "млн $", "Торговля", "monthly"),
     FamilyDef("imports-monthly", "Импорт товаров (месячный ряд)", "T6", "млн $", "Торговля", "monthly"),
@@ -718,7 +716,7 @@ _FAMILY_DEFS: list[FamilyDef] = [
     # приросты в процентах (индекс уже относительный). ИПП переиспользует
     # существующий derived ipi-yoy как режим «Г/г» (отдельная карточка скрыта).
     FamilyDef("ipi", "Индекс промышленного производства", "T3", "индекс", "Бизнес", "monthly",
-              overrides={"yoy": "ipi-yoy"}, forecastable=False),
+              overrides={"yoy": "ipi-yoy"}),
     # T12 — индекс доступности жилья (отношение индекса зарплаты к индексу цен на
     # жильё, общая база 2010). Помесячный; квартал/год = среднее. Два варианта
     # рынка (первичный/вторичный) — variant-группа, как у цен на жильё.

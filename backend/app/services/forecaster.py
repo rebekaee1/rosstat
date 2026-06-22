@@ -1044,15 +1044,21 @@ def train_monthly_auto(
 
     Алгоритм (для любого месячного ряда):
       1. ADF выбирает трансформ: уровень / первая разность / лог-разность.
-      2. На трансформированном ряду — multi-window OLS по лагам
-         `[m, m+1, m+2, 12]` (с убыванием к горизонту), отсев
-         мультиколлинеарности (|corr|>0.7) и backward-elimination по
-         p-value (<0.01); прогнозы окон взвешиваются обратно дисперсии.
-      3. Уровень восстанавливается согласно маркеру трансформа.
+      2. Для нестационарных рядов OLS строится на m-скользящем среднем
+         изменений (`rolling(m).mean()`); для стационарных — на ряде как есть.
+      3. multi-window OLS по лагам `[m, m+1, m+2, 12]` (с убыванием к
+         горизонту), отсев мультиколлинеарности (|corr|>0.7) и
+         backward-elimination по p-value (<0.01); окна взвешиваются обратно
+         дисперсии.
+      4. Уровень восстанавливается по маркеру: каждый горизонт m независимо
+         как `последнее + m·aux[m]` (для log — мультипликативно).
 
+    Порт обновлённого `Прогноз_месячных_данных.ipynb` (руководитель, июнь 2026):
+    относительно прежней версии добавлены rolling-сглаживание для нестационарных
+    рядов и пер-горизонтная реконструкция `m·aux[m]` вместо кумулятивной суммы —
+    меньше накопления ошибки, годится в т.ч. для строительства/розницы/ИПП.
     Переиспользует те же чистые блоки (`_ols_step`, `_multi_window_predict`,
-    `_remove_outliers`, `_get_horizon_lags`), что и ранее портированные
-    ноутбуки Никиты — отличие только в ADF-автовыборе трансформа.
+    `_remove_outliers`, `_get_horizon_lags`).
     """
     model_name = "Monthly-Auto-MW"
     level = pd.Series(values, index=pd.DatetimeIndex(dates), dtype=float, name="value")
@@ -1071,24 +1077,33 @@ def train_monthly_auto(
         level.index[-1] + relativedelta(months=j) for j in range(1, forecast_steps + 1)
     ]
 
+    # Нестационарные ряды (dif/log): OLS на m-скользящем среднем изменений
+    # (`rolling(m).mean()`), как в обновлённом ноутбуке. Выбросы на сглаженном
+    # ряде не стрипим (rolling вводит NaN → while-loop ноутбука становится no-op);
+    # для m=1 rolling(1)=identity → выбросы отсекаются как на стационарном ряде.
+    apply_rolling = marker != "stationary"
     forecasts_aux: list[float] = []
     points: list[ForecastPoint] = []
     for m in range(1, forecast_steps + 1):
         lags = _get_horizon_lags(m)
         pred = _multi_window_predict(
             data, window_size, m, lags,
-            apply_rolling=False, k_range=k_range, min_window=12,
+            apply_rolling=apply_rolling, remove_outliers_after_rolling=False,
+            k_range=k_range, min_window=12,
         )
         if pred is None:
             pred = float(np.median(data.iloc[-12:]))
         forecasts_aux.append(pred)
 
+        # Реконструкция уровня (обновлённый ноутбук): каждый горизонт m
+        # независимо — `последнее + m·aux[m]` (aux[m] = прогноз m-скользящего
+        # среднего изменений), а не кумулятивная сумma пошаговых.
         if marker == "stationary":
             value = forecasts_aux[-1]
         elif marker == "dif":
-            value = first_value + sum_transformed + float(np.sum(forecasts_aux))
+            value = first_value + sum_transformed + m * forecasts_aux[-1]
         else:  # log
-            value = first_value * float(np.exp(sum_transformed + float(np.sum(forecasts_aux))))
+            value = first_value * float(np.exp(sum_transformed + m * forecasts_aux[-1]))
 
         if not np.isfinite(value):
             continue

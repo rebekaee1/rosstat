@@ -2305,7 +2305,16 @@ INDICATORS = [
         "source": "Росстат",
         "description": "Изменение индекса промышленного производства к аналогичному месяцу предыдущего года.",
         "parser_type": "derived",
-        "model_config_json": {"forecast_steps": 0},
+        "model_config_json": {
+            "forecast_steps": 12,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "ipi",
+                "operation": "pipeline",
+                "pipeline": [["yoy", {}]],
+                "model_name": "ipi-yoy-derived",
+            },
+        },
         "is_active": True,
         "category": "Бизнес",
     },
@@ -3769,8 +3778,9 @@ MONTHLY_AUTO_FORECAST_CODES = {
     "labor-force", "m0", "m1", "m2", "mortgage-rate",
     "services-exports-monthly", "services-imports-monthly",
     "trade-balance-monthly", "unemployment", "wages-nominal",
-    # Временно без прогноза (июнь 2026): construction-work, retail-trade, ipi —
-    # см. FamilyDef.forecastable=False в view_model_families.py.
+    # Включены обновлённым алгоритмом (июнь 2026): rolling+пер-горизонтная
+    # реконструкция чинят строительство/розницу/ИПП — раньше прогноз был выключен.
+    "construction-work", "retail-trade", "ipi",
 }
 
 for _ind in INDICATORS:
