@@ -88,6 +88,57 @@ def test_me_unauthenticated(auth_client):
     assert auth_client.get("/api/v1/auth/me").status_code == 401
 
 
+def test_update_display_name_persists(auth_client):
+    auth_client.post("/api/v1/auth/register", json={
+        "email": "named@example.com", "password": "supersecret1", "consent": True,
+    })
+    assert auth_client.get("/api/v1/auth/me").json()["user"]["display_name"] is None
+    r = auth_client.patch(
+        "/api/v1/auth/account/profile",
+        json={"display_name": "  Никита Александрович  "},
+        headers=csrf_headers(auth_client),
+    )
+    assert r.status_code == 200, r.text
+    assert r.json()["user"]["display_name"] == "Никита Александрович"
+    # Перечитываем профиль — значение сохранилось в БД.
+    assert auth_client.get("/api/v1/auth/me").json()["user"]["display_name"] == "Никита Александрович"
+
+
+def test_update_display_name_empty_clears(auth_client):
+    auth_client.post("/api/v1/auth/register", json={
+        "email": "clear@example.com", "password": "supersecret1", "consent": True,
+    })
+    auth_client.patch("/api/v1/auth/account/profile", json={"display_name": "Имя"}, headers=csrf_headers(auth_client))
+    r = auth_client.patch("/api/v1/auth/account/profile", json={"display_name": "   "}, headers=csrf_headers(auth_client))
+    assert r.status_code == 200
+    assert r.json()["user"]["display_name"] is None
+
+
+def test_update_display_name_requires_csrf(auth_client):
+    auth_client.post("/api/v1/auth/register", json={
+        "email": "csrf@example.com", "password": "supersecret1", "consent": True,
+    })
+    r = auth_client.patch("/api/v1/auth/account/profile", json={"display_name": "X"})
+    assert r.status_code == 403
+
+
+def test_update_display_name_too_long_rejected(auth_client):
+    auth_client.post("/api/v1/auth/register", json={
+        "email": "long@example.com", "password": "supersecret1", "consent": True,
+    })
+    r = auth_client.patch(
+        "/api/v1/auth/account/profile",
+        json={"display_name": "x" * 121},
+        headers=csrf_headers(auth_client),
+    )
+    assert r.status_code == 422
+
+
+def test_update_display_name_unauthenticated(auth_client):
+    r = auth_client.patch("/api/v1/auth/account/profile", json={"display_name": "X"})
+    assert r.status_code in (401, 403)
+
+
 def test_logout_requires_csrf(auth_client):
     auth_client.post("/api/v1/auth/register", json={
         "email": "erin@example.com", "password": "supersecret1", "consent": True,

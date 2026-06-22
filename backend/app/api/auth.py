@@ -271,6 +271,27 @@ async def submit_feedback(body: FeedbackIn, request: Request, user: User = Depen
     return {"ok": True}
 
 
+class ProfileIn(BaseModel):
+    display_name: str | None = None
+
+    @field_validator("display_name")
+    @classmethod
+    def _name_ok(cls, v: str | None) -> str | None:
+        v = (v or "").strip()
+        if len(v) > 120:
+            raise ValueError("Имя не длиннее 120 символов")
+        return v or None
+
+
+@router.patch("/account/profile", dependencies=[Depends(require_csrf)])
+async def update_profile(body: ProfileIn, request: Request, user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
+    """Смена отображаемого имени из кабинета. Пустое значение очищает поле."""
+    user.display_name = body.display_name
+    await audit(db, user.id, "profile_update", request, detail=(body.display_name or "")[:120])
+    await db.commit()
+    return {"user": await serialize_user(db, user)}
+
+
 class NewsletterIn(BaseModel):
     subscribe: bool
 

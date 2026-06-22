@@ -135,6 +135,9 @@ export const submitFeedback = (payload) =>
 export const updateNewsletter = (subscribe) =>
   api.post('/auth/account/newsletter', { subscribe }).then((r) => r.data.user);
 
+export const updateProfile = (displayName) =>
+  api.patch('/auth/account/profile', { display_name: displayName }).then((r) => r.data.user);
+
 /** Остаток гостевых выгрузок для состояния кнопок (без инкремента). */
 export const fetchDownloadQuota = ({ signal } = {}) =>
   api.get('/export/quota', { signal }).then((r) => r.data);
