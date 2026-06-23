@@ -310,9 +310,9 @@ Daily ETL (06:00 МСК, `RUSTATS_SCHEDULER_CRON_HOUR/MINUTE`) запускае�
 2. **Рендер блоков** — фронт-компонент `frontend/src/components/YandexRSY.jsx`, массив `RSY_BLOCKS` (туда добавлять новые конфигурации). Монтируется в `App.jsx::AppRoutes`. Embed-routes (`/embed/*`) **не** включают РСЯ.
 3. **Guard от двойного рендера** — `window.__rsyFloorAdRendered = true` на первом mount. SPA-навигация (React Router) не вызывает повторный `Ya.Context.AdvManager.render()`; без этого счётчики показов в кабинете РСЯ завышались бы на каждом route-переходе.
 
-Активные блоки (2026-05-25):
-- `R-A-19133345-1` тип `floorAd` платформа `touch` (мобильные).
-- `R-A-19133345-2` тип `floorAd` платформа `desktop` (десктоп).
+Активные блоки (2026-06-23):
+- `R-A-19489903-2` тип `floorAd` платформа `touch` (мобильные).
+- `R-A-19489903-1` тип `floorAd` платформа `desktop` (десктоп).
 
 Оба блока рендерятся одним push в `yaContextCb`. Yandex AdvManager определяет class устройства и показывает только соответствующий — лишних креативов не подгружается.
 

@@ -19,16 +19,16 @@ import { useEffect, useState } from 'react';
  *   подключение происходит в `AppRoutes`, не в `EmbedRoutes`.
  *
  * Активные блоки (см. также CONTEXT.md::Yandex.RSY):
- *   R-A-19133345-1 floorAd touch    — мобильные устройства
- *   R-A-19133345-2 floorAd desktop  — десктоп
+ *   R-A-19489903-2 floorAd touch    — мобильные устройства
+ *   R-A-19489903-1 floorAd desktop  — десктоп
  *
  * Trap (CONTEXT.md::Yandex.RSY domains CSP): без yandex.ru/an.yandex.ru/
  * *.yandex.net/yastatic.net в CSP (Caddyfile) браузер блокирует context.js
  * + iframe объявлений → реклама молча не загружается.
  */
 const RSY_BLOCKS = [
-  { blockId: 'R-A-19133345-1', type: 'floorAd', platform: 'touch' },
-  { blockId: 'R-A-19133345-2', type: 'floorAd', platform: 'desktop' },
+  { blockId: 'R-A-19489903-2', type: 'floorAd', platform: 'touch' },
+  { blockId: 'R-A-19489903-1', type: 'floorAd', platform: 'desktop' },
 ];
 
 export default function YandexRSY() {
