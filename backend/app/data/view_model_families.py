@@ -540,7 +540,9 @@ def _build_ratio_index(f: "FamilyDef") -> Family:
     сумма): по кварталам и годам берём СРЕДНЕЕ за период (решение владельца v7).
     Группы: Уровень (по месяцам / средняя за квартал / средняя за год) ·
     К прошлому периоду (М/м, Кв/Кв на средних) · Г/г.
-    Прогноз не строим (forecastable=False везде).
+    Прогноз: нативный уровень через monthly_auto на расчётном ряде отношения
+    (если `f.forecastable`), агрегаты/приросты — derived-протяжкой. Флаг режима
+    вычисляется централизованно `_mode_forecastable`.
 
     Режим «Скользящая 12 мес.» убран (созвон 2026-06-16): дублировал «средняя
     за год» и засорял переключатель — индекс отношения не нуждается в
@@ -548,7 +550,7 @@ def _build_ratio_index(f: "FamilyDef") -> Family:
     """
     base, unit, ov = f.base, f.unit, f.overrides
     modes: list[Mode] = [
-        Mode("level", "level", GRAN_LABEL["month"], base, (), unit, "monthly", False),
+        Mode("level", "level", GRAN_LABEL["month"], base, (), unit, "monthly", f.forecastable),
         Mode("avg-quarter", "level", "Средняя за квартал", _code(base, "avg-quarter", ov),
              (("period_avg", {"granularity": "quarter"}),), unit, "quarterly", False),
         Mode("avg-year", "level", "Средняя за год", _code(base, "avg-year", ov),
@@ -772,6 +774,25 @@ _BUCKET_MIN_PERIODS: dict[tuple[str, str], int] = {
 }
 
 
+def _mode_forecastable(m: "Mode", base_freq: str | None, base_forecastable: bool) -> bool:
+    """Единый источник истины: показывает ли режим прогноз на карточке.
+
+    Режим прогнозируем, если база прогнозируема И (это нативный уровень ИЛИ
+    частота базы протягивает прогноз в агрегаты — `_FORECAST_PROPAGATE_FREQ`).
+    Ровно при том же условии `_mode_forecast_meta` цепляет sibling'у
+    derived-прогноз, поэтому фронт-флаг строго совпадает с наличием данных.
+
+    Заменяет per-mode хардкод `forecastable=` в билдерах для НЕ-нативных
+    режимов (он раньше всюду стоял False — из-за чего прогнозы yoy/mom/qoq не
+    появлялись при переключении периода, хотя backend их считал).
+    """
+    if not base_forecastable:
+        return False
+    if m.is_native:
+        return True
+    return base_freq in _FORECAST_PROPAGATE_FREQ
+
+
 def _mode_forecast_meta(fam: "Family", m: "Mode", base_freq: str) -> dict | None:
     """Конфиг `derived_forecast` для протяжки прогноза базы в режим-sibling.
 
@@ -837,7 +858,7 @@ def iter_sibling_indicators():
                 "parent": fam.base,
                 "category": fam.category,
                 "is_percent": m.unit == "%",
-                "forecastable": m.forecastable,
+                "forecastable": _mode_forecastable(m, base_freq, base_forecastable),
                 "forecast": forecast,
             }
 
@@ -876,6 +897,8 @@ def to_frontend_families() -> dict:
     """JSON-сериализуемое зеркало конфига для frontend generic-движка."""
     out: dict = {}
     for fam in FAMILIES:
+        base_freq = next((m.frequency for m in fam.modes if m.is_native), None)
+        base_forecastable = any(m.is_native and m.forecastable for m in fam.modes)
         out[fam.base] = {
             "base": fam.base,
             "name": fam.name,
@@ -892,7 +915,7 @@ def to_frontend_families() -> dict:
                     "code": m.code,
                     "unit": m.unit,
                     "frequency": m.frequency,
-                    "forecastable": m.forecastable,
+                    "forecastable": _mode_forecastable(m, base_freq, base_forecastable),
                     "isNative": m.is_native,
                 }
                 for m in fam.modes

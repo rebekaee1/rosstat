@@ -26,6 +26,9 @@ class IndicatorSummary(BaseModel):
     hero_value: float | None = None
     hero_unit: str | None = None
     hero_label: str | None = None
+    # Изменение hero-значения: для индекс-карточек (hero_view=yoy_pct) — ускорение
+    # Г/г в п.п. (текущий YoY% минус предыдущий). Бейдж изменения на карточке.
+    hero_change: float | None = None
     # seo_keywords здесь только для search-haystack (фронт ищет по нему).
     # Не для UI-отображения. Содержит синонимы/корни на русском и en.
     seo_keywords: str | None = None

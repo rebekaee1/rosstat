@@ -57,7 +57,7 @@
       },
       {
         "code": "auto-loan-rate-avg-quarter",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "avg",
         "isNative": false,
@@ -67,7 +67,7 @@
       },
       {
         "code": "auto-loan-rate-avg-year",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "avg",
         "isNative": false,
@@ -77,7 +77,7 @@
       },
       {
         "code": "auto-loan-rate-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -87,7 +87,7 @@
       },
       {
         "code": "auto-loan-rate-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -97,7 +97,7 @@
       },
       {
         "code": "auto-loan-rate-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -139,7 +139,7 @@
       },
       {
         "code": "birth-rate-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "yoy",
         "isNative": false,
@@ -186,7 +186,7 @@
       },
       {
         "code": "births-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "yoy",
         "isNative": false,
@@ -196,7 +196,7 @@
       },
       {
         "code": "births-index",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "index",
         "isNative": false,
@@ -248,7 +248,7 @@
       },
       {
         "code": "brent-eop-week",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "weekly",
         "group": "level",
         "isNative": false,
@@ -258,7 +258,7 @@
       },
       {
         "code": "brent-eop-month",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "monthly",
         "group": "level",
         "isNative": false,
@@ -268,7 +268,7 @@
       },
       {
         "code": "brent-eop-quarter",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "quarterly",
         "group": "level",
         "isNative": false,
@@ -278,7 +278,7 @@
       },
       {
         "code": "brent-eop-year",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "annual",
         "group": "level",
         "isNative": false,
@@ -288,7 +288,7 @@
       },
       {
         "code": "brent-avg-week",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "weekly",
         "group": "avg",
         "isNative": false,
@@ -298,7 +298,7 @@
       },
       {
         "code": "brent-avg-month",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "monthly",
         "group": "avg",
         "isNative": false,
@@ -308,7 +308,7 @@
       },
       {
         "code": "brent-avg-quarter",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "quarterly",
         "group": "avg",
         "isNative": false,
@@ -318,7 +318,7 @@
       },
       {
         "code": "brent-avg-year",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "annual",
         "group": "avg",
         "isNative": false,
@@ -400,7 +400,7 @@
       },
       {
         "code": "btc-usd-eop-week",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "weekly",
         "group": "level",
         "isNative": false,
@@ -410,7 +410,7 @@
       },
       {
         "code": "btc-usd-eop-month",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "monthly",
         "group": "level",
         "isNative": false,
@@ -420,7 +420,7 @@
       },
       {
         "code": "btc-usd-eop-quarter",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "quarterly",
         "group": "level",
         "isNative": false,
@@ -430,7 +430,7 @@
       },
       {
         "code": "btc-usd-eop-year",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "annual",
         "group": "level",
         "isNative": false,
@@ -440,7 +440,7 @@
       },
       {
         "code": "btc-usd-avg-week",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "weekly",
         "group": "avg",
         "isNative": false,
@@ -450,7 +450,7 @@
       },
       {
         "code": "btc-usd-avg-month",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "monthly",
         "group": "avg",
         "isNative": false,
@@ -460,7 +460,7 @@
       },
       {
         "code": "btc-usd-avg-quarter",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "quarterly",
         "group": "avg",
         "isNative": false,
@@ -470,7 +470,7 @@
       },
       {
         "code": "btc-usd-avg-year",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "annual",
         "group": "avg",
         "isNative": false,
@@ -567,7 +567,7 @@
       },
       {
         "code": "budget-deficit-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -577,7 +577,7 @@
       },
       {
         "code": "budget-deficit-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -587,7 +587,7 @@
       },
       {
         "code": "budget-deficit-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -654,7 +654,7 @@
       },
       {
         "code": "budget-expenditure-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -664,7 +664,7 @@
       },
       {
         "code": "budget-expenditure-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -674,7 +674,7 @@
       },
       {
         "code": "budget-expenditure-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -741,7 +741,7 @@
       },
       {
         "code": "budget-revenue-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -751,7 +751,7 @@
       },
       {
         "code": "budget-revenue-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -761,7 +761,7 @@
       },
       {
         "code": "budget-revenue-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -853,7 +853,7 @@
       },
       {
         "code": "business-credit-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -863,7 +863,7 @@
       },
       {
         "code": "business-credit-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -873,7 +873,7 @@
       },
       {
         "code": "business-credit-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -920,7 +920,7 @@
       },
       {
         "code": "capital-investment-sum-year",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "level",
         "isNative": false,
@@ -930,7 +930,7 @@
       },
       {
         "code": "capital-investment-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -940,7 +940,7 @@
       },
       {
         "code": "capital-investment-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "yoy",
         "isNative": false,
@@ -992,7 +992,7 @@
       },
       {
         "code": "cny-rub-eop-week",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "weekly",
         "group": "level",
         "isNative": false,
@@ -1002,7 +1002,7 @@
       },
       {
         "code": "cny-rub-eop-month",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "monthly",
         "group": "level",
         "isNative": false,
@@ -1012,7 +1012,7 @@
       },
       {
         "code": "cny-rub-eop-quarter",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "quarterly",
         "group": "level",
         "isNative": false,
@@ -1022,7 +1022,7 @@
       },
       {
         "code": "cny-rub-eop-year",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "annual",
         "group": "level",
         "isNative": false,
@@ -1032,7 +1032,7 @@
       },
       {
         "code": "cny-rub-avg-week",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "weekly",
         "group": "avg",
         "isNative": false,
@@ -1042,7 +1042,7 @@
       },
       {
         "code": "cny-rub-avg-month",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "monthly",
         "group": "avg",
         "isNative": false,
@@ -1052,7 +1052,7 @@
       },
       {
         "code": "cny-rub-avg-quarter",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "quarterly",
         "group": "avg",
         "isNative": false,
@@ -1062,7 +1062,7 @@
       },
       {
         "code": "cny-rub-avg-year",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "annual",
         "group": "avg",
         "isNative": false,
@@ -1159,7 +1159,7 @@
       },
       {
         "code": "construction-work-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -1169,7 +1169,7 @@
       },
       {
         "code": "construction-work-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -1179,7 +1179,7 @@
       },
       {
         "code": "construction-work-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -1271,7 +1271,7 @@
       },
       {
         "code": "consumer-credit-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -1281,7 +1281,7 @@
       },
       {
         "code": "consumer-credit-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -1291,7 +1291,7 @@
       },
       {
         "code": "consumer-credit-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -1363,7 +1363,7 @@
       },
       {
         "code": "credit-rate-corp-1to3y-avg-quarter",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "avg",
         "isNative": false,
@@ -1373,7 +1373,7 @@
       },
       {
         "code": "credit-rate-corp-1to3y-avg-year",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "avg",
         "isNative": false,
@@ -1383,7 +1383,7 @@
       },
       {
         "code": "credit-rate-corp-1to3y-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -1393,7 +1393,7 @@
       },
       {
         "code": "credit-rate-corp-1to3y-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -1403,7 +1403,7 @@
       },
       {
         "code": "credit-rate-corp-1to3y-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -1475,7 +1475,7 @@
       },
       {
         "code": "credit-rate-corp-over3y-avg-quarter",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "avg",
         "isNative": false,
@@ -1485,7 +1485,7 @@
       },
       {
         "code": "credit-rate-corp-over3y-avg-year",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "avg",
         "isNative": false,
@@ -1495,7 +1495,7 @@
       },
       {
         "code": "credit-rate-corp-over3y-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -1505,7 +1505,7 @@
       },
       {
         "code": "credit-rate-corp-over3y-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -1515,7 +1515,7 @@
       },
       {
         "code": "credit-rate-corp-over3y-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -1587,7 +1587,7 @@
       },
       {
         "code": "credit-rate-corp-short-avg-quarter",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "avg",
         "isNative": false,
@@ -1597,7 +1597,7 @@
       },
       {
         "code": "credit-rate-corp-short-avg-year",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "avg",
         "isNative": false,
@@ -1607,7 +1607,7 @@
       },
       {
         "code": "credit-rate-corp-short-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -1617,7 +1617,7 @@
       },
       {
         "code": "credit-rate-corp-short-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -1627,7 +1627,7 @@
       },
       {
         "code": "credit-rate-corp-short-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -1699,7 +1699,7 @@
       },
       {
         "code": "credit-rate-ind-1to3y-avg-quarter",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "avg",
         "isNative": false,
@@ -1709,7 +1709,7 @@
       },
       {
         "code": "credit-rate-ind-1to3y-avg-year",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "avg",
         "isNative": false,
@@ -1719,7 +1719,7 @@
       },
       {
         "code": "credit-rate-ind-1to3y-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -1729,7 +1729,7 @@
       },
       {
         "code": "credit-rate-ind-1to3y-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -1739,7 +1739,7 @@
       },
       {
         "code": "credit-rate-ind-1to3y-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -1811,7 +1811,7 @@
       },
       {
         "code": "credit-rate-ind-over3y-avg-quarter",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "avg",
         "isNative": false,
@@ -1821,7 +1821,7 @@
       },
       {
         "code": "credit-rate-ind-over3y-avg-year",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "avg",
         "isNative": false,
@@ -1831,7 +1831,7 @@
       },
       {
         "code": "credit-rate-ind-over3y-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -1841,7 +1841,7 @@
       },
       {
         "code": "credit-rate-ind-over3y-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -1851,7 +1851,7 @@
       },
       {
         "code": "credit-rate-ind-over3y-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -1923,7 +1923,7 @@
       },
       {
         "code": "credit-rate-ind-short-avg-quarter",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "avg",
         "isNative": false,
@@ -1933,7 +1933,7 @@
       },
       {
         "code": "credit-rate-ind-short-avg-year",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "avg",
         "isNative": false,
@@ -1943,7 +1943,7 @@
       },
       {
         "code": "credit-rate-ind-short-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -1953,7 +1953,7 @@
       },
       {
         "code": "credit-rate-ind-short-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -1963,7 +1963,7 @@
       },
       {
         "code": "credit-rate-ind-short-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -2010,7 +2010,7 @@
       },
       {
         "code": "current-account-sum-year",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "level",
         "isNative": false,
@@ -2020,7 +2020,7 @@
       },
       {
         "code": "current-account-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -2030,7 +2030,7 @@
       },
       {
         "code": "current-account-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "yoy",
         "isNative": false,
@@ -2072,7 +2072,7 @@
       },
       {
         "code": "death-rate-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "yoy",
         "isNative": false,
@@ -2119,7 +2119,7 @@
       },
       {
         "code": "deaths-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "yoy",
         "isNative": false,
@@ -2129,7 +2129,7 @@
       },
       {
         "code": "deaths-index",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "index",
         "isNative": false,
@@ -2201,7 +2201,7 @@
       },
       {
         "code": "deposit-rate-avg-quarter",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "avg",
         "isNative": false,
@@ -2211,7 +2211,7 @@
       },
       {
         "code": "deposit-rate-avg-year",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "avg",
         "isNative": false,
@@ -2221,7 +2221,7 @@
       },
       {
         "code": "deposit-rate-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -2231,7 +2231,7 @@
       },
       {
         "code": "deposit-rate-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -2241,7 +2241,7 @@
       },
       {
         "code": "deposit-rate-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -2313,7 +2313,7 @@
       },
       {
         "code": "deposit-rate-long-avg-quarter",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "avg",
         "isNative": false,
@@ -2323,7 +2323,7 @@
       },
       {
         "code": "deposit-rate-long-avg-year",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "avg",
         "isNative": false,
@@ -2333,7 +2333,7 @@
       },
       {
         "code": "deposit-rate-long-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -2343,7 +2343,7 @@
       },
       {
         "code": "deposit-rate-long-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -2353,7 +2353,7 @@
       },
       {
         "code": "deposit-rate-long-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -2425,7 +2425,7 @@
       },
       {
         "code": "deposit-rate-medium-avg-quarter",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "avg",
         "isNative": false,
@@ -2435,7 +2435,7 @@
       },
       {
         "code": "deposit-rate-medium-avg-year",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "avg",
         "isNative": false,
@@ -2445,7 +2445,7 @@
       },
       {
         "code": "deposit-rate-medium-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -2455,7 +2455,7 @@
       },
       {
         "code": "deposit-rate-medium-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -2465,7 +2465,7 @@
       },
       {
         "code": "deposit-rate-medium-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -2557,7 +2557,7 @@
       },
       {
         "code": "deposits-business-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -2567,7 +2567,7 @@
       },
       {
         "code": "deposits-business-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -2577,7 +2577,7 @@
       },
       {
         "code": "deposits-business-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -2669,7 +2669,7 @@
       },
       {
         "code": "deposits-individual-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -2679,7 +2679,7 @@
       },
       {
         "code": "deposits-individual-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -2689,7 +2689,7 @@
       },
       {
         "code": "deposits-individual-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -2731,7 +2731,7 @@
       },
       {
         "code": "depreciation-rate-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "yoy",
         "isNative": false,
@@ -2778,7 +2778,7 @@
       },
       {
         "code": "doctoral-students-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "yoy",
         "isNative": false,
@@ -2788,7 +2788,7 @@
       },
       {
         "code": "doctoral-students-index",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "index",
         "isNative": false,
@@ -2855,7 +2855,7 @@
       },
       {
         "code": "employment-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -2865,7 +2865,7 @@
       },
       {
         "code": "employment-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -2875,7 +2875,7 @@
       },
       {
         "code": "employment-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -2927,7 +2927,7 @@
       },
       {
         "code": "eur-rub-eop-week",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "weekly",
         "group": "level",
         "isNative": false,
@@ -2937,7 +2937,7 @@
       },
       {
         "code": "eur-rub-eop-month",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "monthly",
         "group": "level",
         "isNative": false,
@@ -2947,7 +2947,7 @@
       },
       {
         "code": "eur-rub-eop-quarter",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "quarterly",
         "group": "level",
         "isNative": false,
@@ -2957,7 +2957,7 @@
       },
       {
         "code": "eur-rub-eop-year",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "annual",
         "group": "level",
         "isNative": false,
@@ -2967,7 +2967,7 @@
       },
       {
         "code": "eur-rub-avg-week",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "weekly",
         "group": "avg",
         "isNative": false,
@@ -2977,7 +2977,7 @@
       },
       {
         "code": "eur-rub-avg-month",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "monthly",
         "group": "avg",
         "isNative": false,
@@ -2987,7 +2987,7 @@
       },
       {
         "code": "eur-rub-avg-quarter",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "quarterly",
         "group": "avg",
         "isNative": false,
@@ -2997,7 +2997,7 @@
       },
       {
         "code": "eur-rub-avg-year",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "annual",
         "group": "avg",
         "isNative": false,
@@ -3074,7 +3074,7 @@
       },
       {
         "code": "exports-sum-year",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "level",
         "isNative": false,
@@ -3084,7 +3084,7 @@
       },
       {
         "code": "exports-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -3094,7 +3094,7 @@
       },
       {
         "code": "exports-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "yoy",
         "isNative": false,
@@ -3161,7 +3161,7 @@
       },
       {
         "code": "exports-monthly-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -3171,7 +3171,7 @@
       },
       {
         "code": "exports-monthly-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -3181,7 +3181,7 @@
       },
       {
         "code": "exports-monthly-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -3253,7 +3253,7 @@
       },
       {
         "code": "external-debt-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -3263,7 +3263,7 @@
       },
       {
         "code": "external-debt-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "yoy",
         "isNative": false,
@@ -3310,7 +3310,7 @@
       },
       {
         "code": "fdi-net-sum-year",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "level",
         "isNative": false,
@@ -3320,7 +3320,7 @@
       },
       {
         "code": "fdi-net-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -3330,7 +3330,7 @@
       },
       {
         "code": "fdi-net-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "yoy",
         "isNative": false,
@@ -3377,7 +3377,7 @@
       },
       {
         "code": "gdp-consumption-sum-year",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "level",
         "isNative": false,
@@ -3387,7 +3387,7 @@
       },
       {
         "code": "gdp-consumption-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -3397,7 +3397,7 @@
       },
       {
         "code": "gdp-consumption-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "yoy",
         "isNative": false,
@@ -3444,7 +3444,7 @@
       },
       {
         "code": "gdp-government-sum-year",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "level",
         "isNative": false,
@@ -3454,7 +3454,7 @@
       },
       {
         "code": "gdp-government-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -3464,7 +3464,7 @@
       },
       {
         "code": "gdp-government-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "yoy",
         "isNative": false,
@@ -3511,7 +3511,7 @@
       },
       {
         "code": "gdp-investment-sum-year",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "level",
         "isNative": false,
@@ -3521,7 +3521,7 @@
       },
       {
         "code": "gdp-investment-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -3531,7 +3531,7 @@
       },
       {
         "code": "gdp-investment-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "yoy",
         "isNative": false,
@@ -3578,7 +3578,7 @@
       },
       {
         "code": "gdp-nominal-annual",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "level",
         "isNative": false,
@@ -3588,7 +3588,7 @@
       },
       {
         "code": "gdp-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -3598,7 +3598,7 @@
       },
       {
         "code": "gdp-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "yoy",
         "isNative": false,
@@ -3645,7 +3645,7 @@
       },
       {
         "code": "gdp-real-annual",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "level",
         "isNative": false,
@@ -3655,7 +3655,7 @@
       },
       {
         "code": "gdp-real-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -3665,7 +3665,7 @@
       },
       {
         "code": "gdp-real-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "yoy",
         "isNative": false,
@@ -3717,7 +3717,7 @@
       },
       {
         "code": "gold-price-eop-week",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "weekly",
         "group": "level",
         "isNative": false,
@@ -3727,7 +3727,7 @@
       },
       {
         "code": "gold-price-eop-month",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "monthly",
         "group": "level",
         "isNative": false,
@@ -3737,7 +3737,7 @@
       },
       {
         "code": "gold-price-eop-quarter",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "quarterly",
         "group": "level",
         "isNative": false,
@@ -3747,7 +3747,7 @@
       },
       {
         "code": "gold-price-eop-year",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "annual",
         "group": "level",
         "isNative": false,
@@ -3757,7 +3757,7 @@
       },
       {
         "code": "gold-price-avg-week",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "weekly",
         "group": "avg",
         "isNative": false,
@@ -3767,7 +3767,7 @@
       },
       {
         "code": "gold-price-avg-month",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "monthly",
         "group": "avg",
         "isNative": false,
@@ -3777,7 +3777,7 @@
       },
       {
         "code": "gold-price-avg-quarter",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "quarterly",
         "group": "avg",
         "isNative": false,
@@ -3787,7 +3787,7 @@
       },
       {
         "code": "gold-price-avg-year",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "annual",
         "group": "avg",
         "isNative": false,
@@ -3864,7 +3864,7 @@
       },
       {
         "code": "grad-students-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "yoy",
         "isNative": false,
@@ -3874,7 +3874,7 @@
       },
       {
         "code": "grad-students-index",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "index",
         "isNative": false,
@@ -3911,7 +3911,7 @@
     "modes": [
       {
         "code": "housing-affordability",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "level",
         "isNative": true,
@@ -3921,7 +3921,7 @@
       },
       {
         "code": "housing-affordability-avg-quarter",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "level",
         "isNative": false,
@@ -3931,7 +3931,7 @@
       },
       {
         "code": "housing-affordability-avg-year",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "level",
         "isNative": false,
@@ -3941,7 +3941,7 @@
       },
       {
         "code": "housing-affordability-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -3951,7 +3951,7 @@
       },
       {
         "code": "housing-affordability-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -3961,7 +3961,7 @@
       },
       {
         "code": "housing-affordability-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -3998,7 +3998,7 @@
     "modes": [
       {
         "code": "housing-affordability-primary",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "level",
         "isNative": true,
@@ -4008,7 +4008,7 @@
       },
       {
         "code": "housing-affordability-primary-avg-quarter",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "level",
         "isNative": false,
@@ -4018,7 +4018,7 @@
       },
       {
         "code": "housing-affordability-primary-avg-year",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "level",
         "isNative": false,
@@ -4028,7 +4028,7 @@
       },
       {
         "code": "housing-affordability-primary-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -4038,7 +4038,7 @@
       },
       {
         "code": "housing-affordability-primary-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -4048,7 +4048,7 @@
       },
       {
         "code": "housing-affordability-primary-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -4115,7 +4115,7 @@
       },
       {
         "code": "housing-commissioned-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -4125,7 +4125,7 @@
       },
       {
         "code": "housing-commissioned-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -4135,7 +4135,7 @@
       },
       {
         "code": "housing-commissioned-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -4182,7 +4182,7 @@
       },
       {
         "code": "imports-sum-year",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "level",
         "isNative": false,
@@ -4192,7 +4192,7 @@
       },
       {
         "code": "imports-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -4202,7 +4202,7 @@
       },
       {
         "code": "imports-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "yoy",
         "isNative": false,
@@ -4269,7 +4269,7 @@
       },
       {
         "code": "imports-monthly-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -4279,7 +4279,7 @@
       },
       {
         "code": "imports-monthly-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -4289,7 +4289,7 @@
       },
       {
         "code": "imports-monthly-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -4331,7 +4331,7 @@
       },
       {
         "code": "innovation-activity-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "yoy",
         "isNative": false,
@@ -4383,7 +4383,7 @@
       },
       {
         "code": "international-reserves-eop-month",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "monthly",
         "group": "level",
         "isNative": false,
@@ -4393,7 +4393,7 @@
       },
       {
         "code": "international-reserves-eop-quarter",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "quarterly",
         "group": "level",
         "isNative": false,
@@ -4403,7 +4403,7 @@
       },
       {
         "code": "international-reserves-eop-year",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "annual",
         "group": "level",
         "isNative": false,
@@ -4413,7 +4413,7 @@
       },
       {
         "code": "international-reserves-avg-month",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "monthly",
         "group": "avg",
         "isNative": false,
@@ -4423,7 +4423,7 @@
       },
       {
         "code": "international-reserves-avg-quarter",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "quarterly",
         "group": "avg",
         "isNative": false,
@@ -4433,7 +4433,7 @@
       },
       {
         "code": "international-reserves-avg-year",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "annual",
         "group": "avg",
         "isNative": false,
@@ -4545,7 +4545,7 @@
       },
       {
         "code": "ipi-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -4555,7 +4555,7 @@
       },
       {
         "code": "ipi-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -4565,7 +4565,7 @@
       },
       {
         "code": "ipi-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -4617,7 +4617,7 @@
       },
       {
         "code": "key-rate-eop-week",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "weekly",
         "group": "level",
         "isNative": false,
@@ -4627,7 +4627,7 @@
       },
       {
         "code": "key-rate-eop-month",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "monthly",
         "group": "level",
         "isNative": false,
@@ -4637,7 +4637,7 @@
       },
       {
         "code": "key-rate-eop-quarter",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "quarterly",
         "group": "level",
         "isNative": false,
@@ -4647,7 +4647,7 @@
       },
       {
         "code": "key-rate-eop-year",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "annual",
         "group": "level",
         "isNative": false,
@@ -4657,7 +4657,7 @@
       },
       {
         "code": "key-rate-avg-week",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "weekly",
         "group": "avg",
         "isNative": false,
@@ -4667,7 +4667,7 @@
       },
       {
         "code": "key-rate-avg-month",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "monthly",
         "group": "avg",
         "isNative": false,
@@ -4677,7 +4677,7 @@
       },
       {
         "code": "key-rate-avg-quarter",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "quarterly",
         "group": "avg",
         "isNative": false,
@@ -4687,7 +4687,7 @@
       },
       {
         "code": "key-rate-avg-year",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "annual",
         "group": "avg",
         "isNative": false,
@@ -4784,7 +4784,7 @@
       },
       {
         "code": "labor-force-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -4794,7 +4794,7 @@
       },
       {
         "code": "labor-force-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -4804,7 +4804,7 @@
       },
       {
         "code": "labor-force-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -4896,7 +4896,7 @@
       },
       {
         "code": "m0-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -4906,7 +4906,7 @@
       },
       {
         "code": "m0-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -4916,7 +4916,7 @@
       },
       {
         "code": "m0-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -5008,7 +5008,7 @@
       },
       {
         "code": "m1-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -5018,7 +5018,7 @@
       },
       {
         "code": "m1-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -5028,7 +5028,7 @@
       },
       {
         "code": "m1-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -5120,7 +5120,7 @@
       },
       {
         "code": "m2-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -5130,7 +5130,7 @@
       },
       {
         "code": "m2-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -5140,7 +5140,7 @@
       },
       {
         "code": "m2-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -5212,7 +5212,7 @@
       },
       {
         "code": "mortgage-rate-avg-quarter",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "avg",
         "isNative": false,
@@ -5222,7 +5222,7 @@
       },
       {
         "code": "mortgage-rate-avg-year",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "avg",
         "isNative": false,
@@ -5232,7 +5232,7 @@
       },
       {
         "code": "mortgage-rate-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -5242,7 +5242,7 @@
       },
       {
         "code": "mortgage-rate-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -5252,7 +5252,7 @@
       },
       {
         "code": "mortgage-rate-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -5299,7 +5299,7 @@
       },
       {
         "code": "pensioners-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "yoy",
         "isNative": false,
@@ -5309,7 +5309,7 @@
       },
       {
         "code": "pensioners-index",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "index",
         "isNative": false,
@@ -5356,7 +5356,7 @@
       },
       {
         "code": "pop-over-working-age-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "yoy",
         "isNative": false,
@@ -5366,7 +5366,7 @@
       },
       {
         "code": "pop-over-working-age-index",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "index",
         "isNative": false,
@@ -5413,7 +5413,7 @@
       },
       {
         "code": "pop-under-working-age-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "yoy",
         "isNative": false,
@@ -5423,7 +5423,7 @@
       },
       {
         "code": "pop-under-working-age-index",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "index",
         "isNative": false,
@@ -5470,7 +5470,7 @@
       },
       {
         "code": "population-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "yoy",
         "isNative": false,
@@ -5480,7 +5480,7 @@
       },
       {
         "code": "population-index",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "index",
         "isNative": false,
@@ -5522,7 +5522,7 @@
       },
       {
         "code": "population-migration-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "yoy",
         "isNative": false,
@@ -5564,7 +5564,7 @@
       },
       {
         "code": "population-natural-growth-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "yoy",
         "isNative": false,
@@ -5606,7 +5606,7 @@
       },
       {
         "code": "population-total-growth-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "yoy",
         "isNative": false,
@@ -5653,7 +5653,7 @@
       },
       {
         "code": "rd-organizations-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "yoy",
         "isNative": false,
@@ -5663,7 +5663,7 @@
       },
       {
         "code": "rd-organizations-index",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "index",
         "isNative": false,
@@ -5710,7 +5710,7 @@
       },
       {
         "code": "rd-personnel-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "yoy",
         "isNative": false,
@@ -5720,7 +5720,7 @@
       },
       {
         "code": "rd-personnel-index",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "index",
         "isNative": false,
@@ -5787,7 +5787,7 @@
       },
       {
         "code": "retail-trade-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -5797,7 +5797,7 @@
       },
       {
         "code": "retail-trade-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -5807,7 +5807,7 @@
       },
       {
         "code": "retail-trade-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -5859,7 +5859,7 @@
       },
       {
         "code": "ruonia-eop-week",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "weekly",
         "group": "level",
         "isNative": false,
@@ -5869,7 +5869,7 @@
       },
       {
         "code": "ruonia-eop-month",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "monthly",
         "group": "level",
         "isNative": false,
@@ -5879,7 +5879,7 @@
       },
       {
         "code": "ruonia-eop-quarter",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "quarterly",
         "group": "level",
         "isNative": false,
@@ -5889,7 +5889,7 @@
       },
       {
         "code": "ruonia-eop-year",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "annual",
         "group": "level",
         "isNative": false,
@@ -5899,7 +5899,7 @@
       },
       {
         "code": "ruonia-avg-week",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "weekly",
         "group": "avg",
         "isNative": false,
@@ -5909,7 +5909,7 @@
       },
       {
         "code": "ruonia-avg-month",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "monthly",
         "group": "avg",
         "isNative": false,
@@ -5919,7 +5919,7 @@
       },
       {
         "code": "ruonia-avg-quarter",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "quarterly",
         "group": "avg",
         "isNative": false,
@@ -5929,7 +5929,7 @@
       },
       {
         "code": "ruonia-avg-year",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "annual",
         "group": "avg",
         "isNative": false,
@@ -6006,7 +6006,7 @@
       },
       {
         "code": "services-exports-sum-year",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "level",
         "isNative": false,
@@ -6016,7 +6016,7 @@
       },
       {
         "code": "services-exports-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -6026,7 +6026,7 @@
       },
       {
         "code": "services-exports-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "yoy",
         "isNative": false,
@@ -6093,7 +6093,7 @@
       },
       {
         "code": "services-exports-monthly-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -6103,7 +6103,7 @@
       },
       {
         "code": "services-exports-monthly-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -6113,7 +6113,7 @@
       },
       {
         "code": "services-exports-monthly-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -6160,7 +6160,7 @@
       },
       {
         "code": "services-imports-sum-year",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "level",
         "isNative": false,
@@ -6170,7 +6170,7 @@
       },
       {
         "code": "services-imports-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -6180,7 +6180,7 @@
       },
       {
         "code": "services-imports-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "yoy",
         "isNative": false,
@@ -6247,7 +6247,7 @@
       },
       {
         "code": "services-imports-monthly-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -6257,7 +6257,7 @@
       },
       {
         "code": "services-imports-monthly-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -6267,7 +6267,7 @@
       },
       {
         "code": "services-imports-monthly-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -6309,7 +6309,7 @@
       },
       {
         "code": "small-business-innovation-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "yoy",
         "isNative": false,
@@ -6351,7 +6351,7 @@
       },
       {
         "code": "tech-innovation-share-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "yoy",
         "isNative": false,
@@ -6398,7 +6398,7 @@
       },
       {
         "code": "trade-balance-sum-year",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "level",
         "isNative": false,
@@ -6408,7 +6408,7 @@
       },
       {
         "code": "trade-balance-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -6418,7 +6418,7 @@
       },
       {
         "code": "trade-balance-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "yoy",
         "isNative": false,
@@ -6485,7 +6485,7 @@
       },
       {
         "code": "trade-balance-monthly-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -6495,7 +6495,7 @@
       },
       {
         "code": "trade-balance-monthly-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -6505,7 +6505,7 @@
       },
       {
         "code": "trade-balance-monthly-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -6577,7 +6577,7 @@
       },
       {
         "code": "unemployment-avg-quarter",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "avg",
         "isNative": false,
@@ -6587,7 +6587,7 @@
       },
       {
         "code": "unemployment-avg-year",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "avg",
         "isNative": false,
@@ -6597,7 +6597,7 @@
       },
       {
         "code": "unemployment-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -6607,7 +6607,7 @@
       },
       {
         "code": "unemployment-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -6617,7 +6617,7 @@
       },
       {
         "code": "unemployment-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -6669,7 +6669,7 @@
       },
       {
         "code": "usd-rub-eop-week",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "weekly",
         "group": "level",
         "isNative": false,
@@ -6679,7 +6679,7 @@
       },
       {
         "code": "usd-rub-eop-month",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "monthly",
         "group": "level",
         "isNative": false,
@@ -6689,7 +6689,7 @@
       },
       {
         "code": "usd-rub-eop-quarter",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "quarterly",
         "group": "level",
         "isNative": false,
@@ -6699,7 +6699,7 @@
       },
       {
         "code": "usd-rub-eop-year",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "annual",
         "group": "level",
         "isNative": false,
@@ -6709,7 +6709,7 @@
       },
       {
         "code": "usd-rub-avg-week",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "weekly",
         "group": "avg",
         "isNative": false,
@@ -6719,7 +6719,7 @@
       },
       {
         "code": "usd-rub-avg-month",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "monthly",
         "group": "avg",
         "isNative": false,
@@ -6729,7 +6729,7 @@
       },
       {
         "code": "usd-rub-avg-quarter",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "quarterly",
         "group": "avg",
         "isNative": false,
@@ -6739,7 +6739,7 @@
       },
       {
         "code": "usd-rub-avg-year",
-        "forecastable": true,
+        "forecastable": false,
         "frequency": "annual",
         "group": "avg",
         "isNative": false,
@@ -6836,7 +6836,7 @@
       },
       {
         "code": "wages-nominal-mom",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "pop",
         "isNative": false,
@@ -6846,7 +6846,7 @@
       },
       {
         "code": "wages-nominal-qoq",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "quarterly",
         "group": "pop",
         "isNative": false,
@@ -6856,7 +6856,7 @@
       },
       {
         "code": "wages-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
@@ -6903,7 +6903,7 @@
       },
       {
         "code": "working-age-population-yoy",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "yoy",
         "isNative": false,
@@ -6913,7 +6913,7 @@
       },
       {
         "code": "working-age-population-index",
-        "forecastable": false,
+        "forecastable": true,
         "frequency": "annual",
         "group": "index",
         "isNative": false,

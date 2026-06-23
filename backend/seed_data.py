@@ -2997,7 +2997,16 @@ INDICATORS = [
         "source": "Росстат",
         "description": "Изменение средней номинальной зарплаты к аналогичному месяцу предыдущего года.",
         "parser_type": "derived",
-        "model_config_json": {"forecast_steps": 0},
+        "model_config_json": {
+            "forecast_steps": 12,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "wages-nominal",
+                "operation": "pipeline",
+                "pipeline": [["yoy", {}]],
+                "model_name": "wages-yoy-derived",
+            },
+        },
         "is_active": True,
         "category": "Рынок труда",
     },
@@ -3781,6 +3790,11 @@ MONTHLY_AUTO_FORECAST_CODES = {
     # Включены обновлённым алгоритмом (июнь 2026): rolling+пер-горизонтная
     # реконструкция чинят строительство/розницу/ИПП — раньше прогноз был выключен.
     "construction-work", "retail-trade", "ipi",
+    # Индекс доступности жилья — расчётный (derived) ряд, но прогнозируется
+    # собственной моделью monthly_auto на самом ряде отношения (запрос
+    # руководителя 2026-06-22 «почему по доступности нет прогноза»). Ретрейн
+    # после пересчёта движком — в scheduler (источниковый каскад его не покрывает).
+    "housing-affordability", "housing-affordability-primary",
 }
 
 for _ind in INDICATORS:

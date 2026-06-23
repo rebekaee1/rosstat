@@ -21,26 +21,37 @@ _YOY_STEPS = {"weekly": 52, "monthly": 12, "quarterly": 4, "annual": 1, "daily":
 
 
 async def _hero_yoy_pct(db: AsyncSession, ind_id: int, frequency: str, current_val: float | None):
-    """Найти точку «год назад» по частоте индикатора и посчитать YoY% к current_val.
-    Возвращает (hero_value, hero_unit, hero_label) или (None, None, None), если данных мало."""
+    """Найти точку «год назад» по частоте и посчитать YoY% к current_val.
+
+    Возвращает `(hero_value, hero_unit, hero_label, hero_change)` или
+    `(None, …)`, если данных мало. `hero_change` — ускорение/замедление в п.п.:
+    разница между текущим YoY% и YoY% предыдущего периода (бейдж изменения на
+    карточке-индексе, где «первая цифра» сама по себе уже Г/г). Без этого
+    индекс-карточки (ИПП/ИЦП/цены жилья) шли без бейджа изменения."""
     if current_val is None:
-        return None, None, None
+        return None, None, None, None
     steps = _YOY_STEPS.get(frequency)
     if not steps:
-        return None, None, None
+        return None, None, None, None
     rows = (await db.execute(
         select(IndicatorData.value)
         .where(IndicatorData.indicator_id == ind_id)
         .order_by(desc(IndicatorData.date))
-        .limit(steps + 1)
+        .limit(steps + 2)
     )).scalars().all()
     if len(rows) <= steps:
-        return None, None, None
+        return None, None, None, None
     year_ago = float(rows[steps])
     if year_ago == 0:
-        return None, None, None
+        return None, None, None, None
     pct = (float(current_val) - year_ago) / year_ago * 100.0
-    return round(pct, 2), "%", "Год к году"
+    hero_change = None
+    if len(rows) > steps + 1:
+        prev_year_ago = float(rows[steps + 1])
+        if prev_year_ago != 0:
+            prev_pct = (float(rows[1]) - prev_year_ago) / prev_year_ago * 100.0
+            hero_change = round(pct - prev_pct, 2)
+    return round(pct, 2), "%", "Год к году", hero_change
 
 
 def _hero_view(indicator) -> str | None:
@@ -116,9 +127,9 @@ async def list_indicators(
         # «первая цифра» на карточке каталога = изменение г/г %, а не уровень
         # индекса (раньше карточка показывала 346, а страница по умолчанию — г/г,
         # что путало). Так карточка совпадает со значением при первом входе.
-        hero_value = hero_unit = hero_label = None
+        hero_value = hero_unit = hero_label = hero_change = None
         if _hero_view(ind) == "yoy_pct":
-            hero_value, hero_unit, hero_label = await _hero_yoy_pct(
+            hero_value, hero_unit, hero_label, hero_change = await _hero_yoy_pct(
                 db, ind.id, ind.frequency,
                 float(current_val) if current_val is not None else None,
             )
@@ -132,6 +143,7 @@ async def list_indicators(
             current_date=current_dt, previous_value=float(prev_val) if prev_val is not None else None,
             change=change,
             hero_value=hero_value, hero_unit=hero_unit, hero_label=hero_label,
+            hero_change=hero_change,
             seo_keywords=ind.seo_keywords,
         ))
 
@@ -185,9 +197,9 @@ async def get_indicator(code: str, db: AsyncSession = Depends(get_db)):
     alt_freq = mcfg.get("alternate_frequencies") or None
     primary_code = mcfg.get("primary_indicator_code") or None
 
-    hero_value = hero_unit = hero_label = None
+    hero_value = hero_unit = hero_label = hero_change = None
     if mcfg.get("hero_view") == "yoy_pct":
-        hero_value, hero_unit, hero_label = await _hero_yoy_pct(
+        hero_value, hero_unit, hero_label, hero_change = await _hero_yoy_pct(
             db, indicator.id, indicator.frequency, current_val,
         )
 
@@ -208,6 +220,7 @@ async def get_indicator(code: str, db: AsyncSession = Depends(get_db)):
         alternate_frequencies=alt_freq,
         primary_indicator_code=primary_code,
         hero_value=hero_value, hero_unit=hero_unit, hero_label=hero_label,
+        hero_change=hero_change,
     )
 
     await cache_set(f"fe:{code}:detail", detail.model_dump(mode="json"), settings.cache_ttl_meta)

@@ -67,6 +67,7 @@ DERIVED_FROM_SOURCE_FORECAST_CODES = {
     "ppi-qoq",
     "ppi-annual",
     "ipi-yoy",
+    "wages-yoy",
     "inflation-annual",
     "cpi-food-annual",
     "cpi-nonfood-annual",

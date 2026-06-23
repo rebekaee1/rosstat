@@ -132,13 +132,14 @@ class CbrKeyRateParser(BaseParser):
         cfg: dict,
         records_added: int,
         records_updated: int,
+        pruned: int = 0,
     ) -> None:
         """Особое поведение: при steps==0 чистим текущие прогнозы (key-rate
         не прогнозируется — мы публикуем только реакцию на решения СД ЦБ).
         """
         steps = int(cfg.get("forecast_steps", 12) or 0)
         if steps > 0:
-            if records_added > 0 or records_updated > 0:
+            if records_added > 0 or records_updated > 0 or pruned > 0:
                 await retrain_indicator_forecast(db, indicator)
             return
 

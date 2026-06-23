@@ -41,8 +41,10 @@ export default function IndicatorTile({ indicator, delay = 0, displayOverride, s
   // на карточке каталога совпадает с тем, что пользователь видит при первом
   // входе на страницу (там по умолчанию режим «год к году»).
   const hasHero = !displayOverride && indicator.hero_value != null;
+  // Для индекс-карточек (hero = Г/г %) бейдж изменения = ускорение Г/г в п.п.
+  // (hero_change), а не дельта уровня индекса.
   const rawChange = displayOverride ? displayOverride.change
-    : hasHero ? null
+    : hasHero ? indicator.hero_change
       : indicator.change;
   const changeNum = rawChange != null ? Number(rawChange) : null;
   const isUp = changeNum != null && changeNum > 0;

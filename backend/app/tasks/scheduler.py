@@ -17,6 +17,7 @@ from app.database import async_session
 from app.models import Indicator, FetchLog, EconomicEvent
 from app.services.rosstat_cpi_parser import get_parser
 from app.services.calculation_engine import calculation_engine
+from app.services.forecast_pipeline import retrain_indicator_forecast
 from app.services.alerting import alert_etl_failure, alert_etl_summary
 
 ETL_TIMEOUT_SECONDS = 300
@@ -144,6 +145,7 @@ async def daily_update_job():
                 if derived:
                     logger.info("CalculationEngine updated derived indicators: %s", derived)
                     ping_codes.extend(derived)
+                    await _retrain_self_modeled_derived(db, derived)
             except Exception:
                 logger.exception("CalculationEngine failed")
         # IndexNow: сообщаем поисковикам об обновлённых карточках (source +
@@ -161,6 +163,35 @@ async def daily_update_job():
     total_non_derived = sum(1 for t in indicator_tasks if t["parser_type"] != "derived")
     await alert_etl_summary(total_non_derived, len(updated_codes), failed_codes, duration)
     logger.info("Daily ETL update complete in %.0fs.", duration)
+
+
+async def _retrain_self_modeled_derived(db, derived_codes: list[str]) -> None:
+    """Ретрейн прогноза для derived-индикаторов с собственной моделью.
+
+    Source-каскад (`retrain_indicator_forecast` после ETL источника) покрывает
+    только `derived_from_source` siblings. Расчётные ряды с собственной моделью
+    (`monthly_auto` на самом ряде, напр. индекс доступности жилья) пересчитывает
+    движок, но их прогноз без этого шага останется stale. Ретрейним те из
+    пересчитанных, у кого стратегия не derived_from_source; каскад внутри
+    подтянет их собственные агрегаты/приросты.
+    """
+    if not derived_codes:
+        return
+    res = await db.execute(
+        select(Indicator).where(Indicator.code.in_(derived_codes))
+    )
+    for ind in res.scalars().all():
+        cfg = ind.model_config_json or {}
+        strategy = cfg.get("forecast_strategy")
+        steps = int(cfg.get("forecast_steps", 0) or 0)
+        if steps > 0 and strategy and strategy != "derived_from_source":
+            try:
+                await retrain_indicator_forecast(db, ind)
+                await db.commit()
+                logger.info("Retrained self-modeled derived forecast: %s", ind.code)
+            except Exception:
+                await db.rollback()
+                logger.exception("Self-modeled derived retrain failed: %s", ind.code)
 
 
 async def run_etl_for_parser_type(parser_type: str) -> dict[str, int]:
