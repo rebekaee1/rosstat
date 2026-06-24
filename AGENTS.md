@@ -1,3 +1,49 @@
+<!-- ============================================================ -->
+<!-- FAST-PATH (feature/indicator-index, 2026-06-24)              -->
+<!-- ============================================================ -->
+
+## Слои индикатора (актуальный механизм каждого)
+
+Индикатор «прошивает» все слои; у каждого один канонический механизм. Перед
+правкой найди слой, правь его механизм:
+
+| Слой | Актуальный механизм (правится тут) |
+|------|-------------------------------------|
+| данные/парсер | `PARSER_REGISTRY` + `backend/app/services/*_parser.py` (internals — в docstring парсера) |
+| derived | `DERIVED_SPECS` (`calculation_engine.py`) + чистые ops в `derived_ops.py` |
+| прогноз | `forecast_strategies/registry.py` (`model_config_json.forecast_strategy` в БД) |
+| отрисовка/view-mode | **generic** config-движок: `view_model_families.py` → `viewModelFamilies.generated.json` → `viewModeEngine.js` → `GenericIndicatorView`. Bespoke (`cpi`/`housing`/`ppi`) — только эти 3 семьи |
+| seo | `app/data/indicator_seo.py` (curated) + `seo_content.py` (категории) + `seo_renderer.py` (SSR); остальное (sitemap/og/rss) — авто из БД |
+| листинг | `INDICATOR_HIDDEN_FROM_LISTING` в `indicator_seo.py` → `seed_data.py` (флаг `is_listed`) |
+
+## FAST-PATH — задача про индикатор X?
+
+1. **Где код встречается:** `python scripts/locate-indicator.py X`
+   (seed / parser / derived / family / seo / variants / tests).
+2. **Запись `X` в [`docs/indicator-index.json`](docs/indicator-index.json)** —
+   `ui_stack`, `parser_type`, `forecast_strategy`, `derived_siblings`, `is_listed`,
+   `flags`. Человекочитаемо — [`docs/indicator-index.md`](docs/indicator-index.md).
+3. **Правь механизм нужного слоя** (таблица выше) / для UI — стек из `ui_stack`:
+   `generic` → `view_model_families.py` (+ regen) / `cpi|housing|ppi` → bespoke
+   `frontend/src/lib/{cpi,housing,ppi}ViewMode*` / `variant` → `indicatorVariants.js`.
+4. **Доведи данные до UI** — [`.cursor/rules/indicator-data-delivery.mdc`](.cursor/rules/indicator-data-delivery.mdc).
+5. `./scripts/check-all.sh` (регенерирует карту + guard `--check`).
+
+> **`flags.shadowed_legacy` / `in_both_viewmode_systems` — НЕ «можно удалять».**
+> Флаг значит лишь, что standalone-ветка рендера в `IndicatorDetail.jsx` перекрыта
+> generic. Сам легаси-файл обычно ЖИВОЙ: его content/resolve переиспользуются
+> общими секциями (chart/table title, picker, data-resolve) и держат
+> canonical-редиректы старых индексируемых URL (`*-yoy-abs`,
+> `unemployment-quarterly/-annual` — движком не покрыты). Расследование и почему
+> это НЕ delete-list — [`docs/dead-code-report.md`](docs/dead-code-report.md).
+> Удаление редиректа = тихая просадка SEO, тесты не ловят → ЭСКАЛАЦИЯ.
+
+Карта детерминированная, регенерируется в `check-all.sh`
+(`scripts/build-indicator-index.py`, guard `--check`). Объективный список файлов —
+[`docs/repo-inventory.md`](docs/repo-inventory.md).
+
+---
+
 # AGENTS.md — точка входа для AI-агента
 
 **Last updated:** 2026-05-22 (документация-ревизия: `cbr_sources.md` мигрирован в docstrings парсеров и удалён; `plan.md`/`recap.md` мигрированы и удалены; синхронизированы дубли записей про ADR-0004/0005; чеклист «новый индикатор» = 7 пунктов; `_catch_up_empty_indicators` упомянут в Шаге 4).
