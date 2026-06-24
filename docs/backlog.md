@@ -132,6 +132,8 @@ NEGATIVE-CAPABLE (trade-balance, current-account, budget-deficit, *-migration, *
 
 **Приоритет.** P0 (без объединения интерфейс перегружен — Никита flagged).
 
+**Текущее состояние (2026-06-24, расследование чистки).** Реализовано частично и иначе, чем план выше: объединение дочерних в режимы идёт через generic config-движок (`view_model_families.py` → `viewModelFamilies.generated.json`), а редирект старых URL — **клиентский** (SPA `navigate(..., {replace:true})` в `IndicatorDetail.jsx`), не nginx-301. Покрыты движком и редиректят корректно: `*-yoy`/`*-qoq`/`*-monthly` (exports/imports/trade-balance/current-account/unemployment). **НЕ покрыты** движком и держатся ТОЛЬКО на легаси canonical-редиректе (`viewModeFamilies.js::viewModeCanonicalTarget`, `unemploymentViewModeResolve`): `trade-balance-yoy-abs`, `current-account-yoy-abs`, `unemployment-quarterly`, `unemployment-annual` (старые ряды, в sitemap). Поэтому это легаси пока **нельзя удалять** — см. trap «View-mode shadowed_legacy ≠ мёртвый код» в `CONTEXT.md`. Закрытие A3 = консолидировать эти ряды в движок + явная 301/redirect-карта, затем снять легаси-отрисовку.
+
 ---
 
 ## Кластер B — Глубина истории

@@ -2,16 +2,16 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Файлов:** 444  ·  **Строк:** 79 720  ·  **Токенов (≈):** 804 416
+**Файлов:** 444  ·  **Строк:** 79 731  ·  **Токенов (≈):** 805 112
 
 ## По верхним папкам
 
 | Папка | Файлов | Строк | Токенов (≈) |
 |-------|-------:|------:|------------:|
-| `(root)` | 7 | 1 263 | 28 334 |
+| `(root)` | 7 | 1 272 | 28 786 |
 | `.github` | 1 | 56 | 334 |
 | `backend` | 234 | 43 605 | 435 839 |
-| `docs` | 19 | 3 818 | 70 734 |
+| `docs` | 19 | 3 820 | 70 978 |
 | `frontend` | 158 | 27 848 | 239 144 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 22 | 2 972 | 28 911 |
@@ -23,8 +23,8 @@
 | `backend/app/data/indicator_seo.py` | 7 443 | 98 357 |
 | `backend/seed_data.py` | 4 053 | 40 460 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 6 930 | 40 161 |
-| `docs/backlog.md` | 776 | 17 744 |
-| `CONTEXT.md` | 527 | 17 409 |
+| `docs/backlog.md` | 778 | 17 988 |
+| `CONTEXT.md` | 536 | 17 861 |
 | `backend/app/services/forecaster.py` | 1 193 | 10 950 |
 | `backend/app/data/view_model_families.py` | 924 | 10 644 |
 | `frontend/src/pages/CalculatorPage.jsx` | 839 | 9 375 |
