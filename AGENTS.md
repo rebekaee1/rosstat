@@ -1,3 +1,32 @@
+<!-- ============================================================ -->
+<!-- FAST-PATH (добавлено feature/indicator-index, 2026-06-24)    -->
+<!-- ============================================================ -->
+
+## FAST-PATH — задача про индикатор X?
+
+Не угадывай, где править. Действуй по карте:
+
+1. **Где код вообще встречается:** `python scripts/locate-indicator.py X`
+   (группирует по seed / parser / derived / family / seo / variants / tests).
+2. **Открой запись `X` в [`docs/indicator-index.json`](docs/indicator-index.json)** —
+   там `ui_stack`, `source`/`parser_type`, `forecast_strategy`, `derived_siblings`,
+   `is_listed`, `flags`. Человекочитаемый срез — [`docs/indicator-index.md`](docs/indicator-index.md).
+3. **Правь ТОЛЬКО тот стек, что указан в `ui_stack`:**
+   `generic` → `backend/app/data/view_model_families.py` (+ regen
+   `viewModelFamilies.generated.json`) / `cpi|housing|ppi` → bespoke
+   `frontend/src/lib/{cpi,housing,ppi}ViewMode*` / `variant` → `indicatorVariants.js`.
+   Если стоит **`flags.shadowed_legacy: true`** — легаси-ветка МЁРТВАЯ
+   (перекрыта generic early-return в `IndicatorDetail.jsx`), правка там **ни на что
+   не влияет**; список мёртвого — [`docs/dead-code-report.md`](docs/dead-code-report.md).
+4. **Доведи данные до UI** по рецепту [`.cursor/rules/indicator-data-delivery.mdc`](.cursor/rules/indicator-data-delivery.mdc).
+
+Карта детерминированная (парсинг `seed_data.py` / `view_model_families.py` /
+`calculation_engine` / легаси JS-конфигов), регенерируется в `check-all.sh`
+(`scripts/build-indicator-index.py`, guard `--check`). Объективный список всех
+файлов — [`docs/repo-inventory.md`](docs/repo-inventory.md).
+
+---
+
 # AGENTS.md — точка входа для AI-агента
 
 **Last updated:** 2026-05-22 (документация-ревизия: `cbr_sources.md` мигрирован в docstrings парсеров и удалён; `plan.md`/`recap.md` мигрированы и удалены; синхронизированы дубли записей про ADR-0004/0005; чеклист «новый индикатор» = 7 пунктов; `_catch_up_empty_indicators` упомянут в Шаге 4).
