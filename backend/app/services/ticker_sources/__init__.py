@@ -2,7 +2,7 @@
 
 Все источники — HTTP-pull (без WSS), синхронные запросы из APScheduler-worker
 раз в 5 секунд. Результат — dict {ticker_code: TickerSnapshot}, кладётся в
-Redis с TTL 30 секунд под ключом `ticker:<code>`. Endpoint `/api/v1/ticker/live`
+Redis с TTL 90 секунд под ключом `ticker:<code>`. Endpoint `/api/v1/ticker/live`
 читает из Redis и отдаёт JSON клиенту.
 
 Поставка обновлений в frontend — через polling (React Query), а не WebSocket

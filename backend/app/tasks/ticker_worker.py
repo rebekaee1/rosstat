@@ -12,9 +12,12 @@ Design notes:
   - Failures of one source don't kill the other. If MOEX is down, BTC still
     updates; the missing snapshots in Redis simply expire (TTL = 30s), and
     the API endpoint silently omits them from the response.
-  - The TTL is deliberately longer (30s) than the polling interval (5s) so
-    that a one-off pull failure doesn't black out the ticker — the previous
-    snapshot stays until the next successful pull replaces it.
+  - The TTL is deliberately much longer (90s) than the polling interval so
+    that several consecutive pull failures (flaky MOEX, a slow tick) don't
+    black out the ticker — the previous snapshot stays until the next
+    successful pull replaces it. Sources are fetched concurrently with a 5s
+    per-request timeout (see moex_iss._TIMEOUT), so a healthy tick finishes
+    well under the TTL; raising the TTL only widens the safety margin.
 """
 from __future__ import annotations
 
@@ -28,7 +31,7 @@ from app.services.ticker_sources.moex_iss import fetch_all as moex_fetch_all
 logger = logging.getLogger(__name__)
 
 REDIS_KEY_PREFIX = "ticker:"
-REDIS_TTL_SECONDS = 30
+REDIS_TTL_SECONDS = 90
 
 
 async def ticker_pull_job() -> None:

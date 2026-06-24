@@ -29,6 +29,7 @@ CBR fallback (звонок 2026-05-22): после санкций ЕС март-
 """
 from __future__ import annotations
 
+import asyncio
 import logging
 
 import httpx
@@ -36,6 +37,12 @@ import httpx
 from . import TickerSnapshot, utcnow
 
 logger = logging.getLogger(__name__)
+
+# Жёсткий таймаут на один HTTP-запрос к источнику. Раньше был 10с и запросы
+# шли последовательно — при тормозящем MOEX один тик растягивался на 30-90с,
+# превышая TTL ключей в Redis, и тикер «мигал». Держим коротким: тик должен
+# укладываться в TTL даже при недоступном MOEX.
+_TIMEOUT = 5.0
 
 
 _FX_INSTRUMENTS = [
@@ -77,7 +84,7 @@ async def _fetch_fx_one(client: httpx.AsyncClient, our_code: str, secid: str) ->
     (None, None), вызывающий пойдёт в CBR fallback.
     """
     try:
-        r = await client.get(_FX_URL.format(secid=secid), timeout=10.0)
+        r = await client.get(_FX_URL.format(secid=secid), timeout=_TIMEOUT)
         r.raise_for_status()
         d = r.json()
     except (httpx.HTTPError, ValueError) as e:
@@ -122,18 +129,26 @@ async def _fetch_cbr_daily(client: httpx.AsyncClient) -> dict[str, tuple[float, 
 
     out: dict[str, tuple[float, float | None]] = {}
 
+    # Today + yesterday конкурентно — fallback не должен растягивать тик.
+    yest = (datetime.utcnow() - timedelta(days=1)).strftime("%d/%m/%Y")
+    today_resp, yest_resp = await asyncio.gather(
+        client.get(_CBR_DAILY_URL, timeout=_TIMEOUT),
+        client.get(_CBR_DAILY_URL, params={"date_req": yest}, timeout=_TIMEOUT),
+        return_exceptions=True,
+    )
+
     try:
-        today = await client.get(_CBR_DAILY_URL, timeout=10.0)
-        today.raise_for_status()
-        today_root = ElementTree.fromstring(today.content)
+        if isinstance(today_resp, BaseException):
+            raise today_resp
+        today_resp.raise_for_status()
+        today_root = ElementTree.fromstring(today_resp.content)
     except Exception as e:
         logger.warning("CBR XML_daily today: %s", e)
         return out
 
-    # Yesterday's snapshot — отдельный запрос с date_req.
-    yest = (datetime.utcnow() - timedelta(days=1)).strftime("%d/%m/%Y")
     try:
-        yest_resp = await client.get(_CBR_DAILY_URL, params={"date_req": yest}, timeout=10.0)
+        if isinstance(yest_resp, BaseException):
+            raise yest_resp
         yest_resp.raise_for_status()
         yest_root = ElementTree.fromstring(yest_resp.content)
     except Exception:
@@ -168,7 +183,7 @@ async def _fetch_brent(client: httpx.AsyncClient) -> TickerSnapshot | None:
     запись с минимальной `LASTTRADEDATE`, ещё не истекшим.
     """
     try:
-        r = await client.get(_BRENT_URL, timeout=10.0)
+        r = await client.get(_BRENT_URL, timeout=_TIMEOUT)
         r.raise_for_status()
         d = r.json()
     except (httpx.HTTPError, ValueError) as e:
@@ -225,7 +240,7 @@ async def _fetch_cbr_gold(client: httpx.AsyncClient) -> tuple[float | None, floa
         "date_req2": now.strftime("%d/%m/%Y"),
     }
     try:
-        r = await client.get(_CBR_METAL_URL, params=params, timeout=10.0)
+        r = await client.get(_CBR_METAL_URL, params=params, timeout=_TIMEOUT)
         r.raise_for_status()
         root = ElementTree.fromstring(r.content)
     except Exception as e:  # noqa: BLE001 — fallback, любое падение → нет цены
@@ -284,10 +299,24 @@ async def fetch_all() -> list[TickerSnapshot]:
     async with httpx.AsyncClient(headers={"User-Agent": "ForecastEconomy/1.0 (+ticker)"}) as client:
         snaps: list[TickerSnapshot] = []
 
-        moex_results: list[tuple[str, str, str, float | None, float | None]] = []
-        for code, secid, cbr_id in _FX_INSTRUMENTS:
-            price, chg = await _fetch_fx_one(client, code, secid)
-            moex_results.append((code, secid, cbr_id, price, chg))
+        # Все источники тянем конкурентно: критический путь тика ≈ один таймаут,
+        # а не сумма по всем запросам. Иначе медленный MOEX растягивал тик
+        # дольше TTL ключей и тикер «мигал» (см. ticker_worker docstring).
+        fx_results, brent, gold = await asyncio.gather(
+            asyncio.gather(*[_fetch_fx_one(client, code, secid) for code, secid, _ in _FX_INSTRUMENTS]),
+            _fetch_brent(client),
+            _fetch_gold(client),
+            return_exceptions=True,
+        )
+
+        if isinstance(fx_results, BaseException):
+            logger.warning("ticker fetch_all: FX gather failed: %s", fx_results)
+            fx_results = [(None, None)] * len(_FX_INSTRUMENTS)
+
+        moex_results: list[tuple[str, str, str, float | None, float | None]] = [
+            (code, secid, cbr_id, pair[0], pair[1])
+            for (code, secid, cbr_id), pair in zip(_FX_INSTRUMENTS, fx_results)
+        ]
 
         # Если хоть один FX без цены — тянем CBR один раз и подмешиваем.
         need_cbr = any(p is None for _c, _s, _v, p, _ch in moex_results)
@@ -311,11 +340,14 @@ async def fetch_all() -> list[TickerSnapshot]:
                 market_open=False, fetched_at=utcnow(), source="ЦБ РФ",
             ))
 
-        b = await _fetch_brent(client)
-        if b is not None:
-            snaps.append(b)
+        if isinstance(brent, BaseException):
+            logger.warning("ticker fetch_all: brent failed: %s", brent)
+        elif brent is not None:
+            snaps.append(brent)
 
-        g = await _fetch_gold(client)
-        if g is not None:
-            snaps.append(g)
+        if isinstance(gold, BaseException):
+            logger.warning("ticker fetch_all: gold failed: %s", gold)
+        elif gold is not None:
+            snaps.append(gold)
+
         return snaps
