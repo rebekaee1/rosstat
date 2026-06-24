@@ -2,7 +2,7 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Файлов:** 444  ·  **Строк:** 79 681  ·  **Токенов (≈):** 803 691
+**Файлов:** 444  ·  **Строк:** 79 720  ·  **Токенов (≈):** 804 416
 
 ## По верхним папкам
 
@@ -14,7 +14,7 @@
 | `docs` | 19 | 3 818 | 70 734 |
 | `frontend` | 158 | 27 848 | 239 144 |
 | `mcp` | 3 | 158 | 1 120 |
-| `scripts` | 22 | 2 933 | 28 186 |
+| `scripts` | 22 | 2 972 | 28 911 |
 
 ## Все файлы (по убыванию токенов)
 
@@ -34,9 +34,9 @@
 | `backend/app/services/calendar_sources/official_calendar.py` | 752 | 8 287 |
 | `backend/app/services/derived_ops.py` | 817 | 8 192 |
 | `backend/app/models.py` | 580 | 7 305 |
+| `scripts/build-indicator-index.py` | 666 | 7 299 |
 | `docs/missed_data_audit.md` | 447 | 6 795 |
 | `frontend/src/pages/EmbedBuilder.jsx` | 512 | 6 644 |
-| `scripts/build-indicator-index.py` | 627 | 6 574 |
 | `frontend/src/components/IndicatorChart.jsx` | 674 | 6 358 |
 | `docs/indicator-family-playbook.md` | 579 | 6 192 |
 | `frontend/src/lib/useIndicatorViewModeData.js` | 665 | 6 161 |

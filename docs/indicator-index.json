@@ -5648,42 +5648,42 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 92,
+          "line": 95,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 132,
+          "line": 135,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 224,
+          "line": 227,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 258,
+          "line": 261,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 310,
+          "line": 313,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 321,
+          "line": 324,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 345,
+          "line": 348,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 462,
+          "line": 467,
           "kind": "other"
         },
         {
@@ -6024,12 +6024,12 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 224,
+          "line": 227,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 258,
+          "line": 261,
           "kind": "other"
         }
       ]
@@ -6681,7 +6681,7 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 258,
+          "line": 261,
           "kind": "other"
         }
       ]
@@ -7481,7 +7481,7 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 258,
+          "line": 261,
           "kind": "other"
         }
       ]
@@ -10327,11 +10327,6 @@
           "file": "frontend/src/lib/viewModelFamilies.generated.json",
           "line": 2002,
           "kind": "other"
-        },
-        {
-          "file": "scripts/build-indicator-index.py",
-          "line": 575,
-          "kind": "other"
         }
       ]
     },
@@ -10566,6 +10561,16 @@
           "file": "frontend/src/lib/viewModeFamilies.js",
           "line": 86,
           "kind": "family"
+        },
+        {
+          "file": "scripts/build-indicator-index.py",
+          "line": 543,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/build-indicator-index.py",
+          "line": 611,
+          "kind": "other"
         }
       ]
     },
@@ -14240,12 +14245,7 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 113,
-          "kind": "other"
-        },
-        {
-          "file": "scripts/build-indicator-index.py",
-          "line": 575,
+          "line": 116,
           "kind": "other"
         }
       ]
@@ -20244,11 +20244,6 @@
           "file": "frontend/src/lib/viewModelFamilies.generated.json",
           "line": 4174,
           "kind": "other"
-        },
-        {
-          "file": "scripts/build-indicator-index.py",
-          "line": 575,
-          "kind": "other"
         }
       ]
     },
@@ -21158,7 +21153,7 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 344,
+          "line": 347,
           "kind": "other"
         }
       ]
@@ -26714,27 +26709,27 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 94,
+          "line": 97,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 134,
+          "line": 137,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 310,
+          "line": 313,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 325,
+          "line": 328,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 464,
+          "line": 469,
           "kind": "other"
         }
       ]
@@ -29734,12 +29729,7 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 113,
-          "kind": "other"
-        },
-        {
-          "file": "scripts/build-indicator-index.py",
-          "line": 575,
+          "line": 116,
           "kind": "other"
         }
       ]
@@ -30157,6 +30147,16 @@
           "file": "frontend/src/lib/viewModeFamilies.js",
           "line": 79,
           "kind": "family"
+        },
+        {
+          "file": "scripts/build-indicator-index.py",
+          "line": 543,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/build-indicator-index.py",
+          "line": 611,
+          "kind": "other"
         }
       ]
     },
@@ -30476,22 +30476,22 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 102,
+          "line": 105,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 329,
+          "line": 332,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 466,
+          "line": 471,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 559,
+          "line": 591,
           "kind": "other"
         }
       ]
@@ -30589,6 +30589,16 @@
           "file": "frontend/src/lib/unemploymentViewModeResolve.js",
           "line": 37,
           "kind": "family"
+        },
+        {
+          "file": "scripts/build-indicator-index.py",
+          "line": 544,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/build-indicator-index.py",
+          "line": 612,
+          "kind": "other"
         }
       ]
     },
@@ -30876,6 +30886,21 @@
           "file": "frontend/src/lib/unemploymentViewModeResolve.js",
           "line": 30,
           "kind": "family"
+        },
+        {
+          "file": "scripts/build-indicator-index.py",
+          "line": 544,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/build-indicator-index.py",
+          "line": 596,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/build-indicator-index.py",
+          "line": 612,
+          "kind": "other"
         }
       ]
     },
