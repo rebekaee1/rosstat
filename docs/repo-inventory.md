@@ -2,7 +2,7 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Файлов:** 444  ·  **Строк:** 79 681  ·  **Токенов (≈):** 803 691
+**Файлов:** 444  ·  **Строк:** 79 679  ·  **Токенов (≈):** 803 669
 
 ## По верхним папкам
 
@@ -10,7 +10,7 @@
 |-------|-------:|------:|------------:|
 | `(root)` | 7 | 1 263 | 28 334 |
 | `.github` | 1 | 56 | 334 |
-| `backend` | 234 | 43 605 | 435 839 |
+| `backend` | 234 | 43 603 | 435 817 |
 | `docs` | 19 | 3 818 | 70 734 |
 | `frontend` | 158 | 27 848 | 239 144 |
 | `mcp` | 3 | 158 | 1 120 |
@@ -28,7 +28,7 @@
 | `backend/app/services/forecaster.py` | 1 193 | 10 950 |
 | `backend/app/data/view_model_families.py` | 924 | 10 644 |
 | `frontend/src/pages/CalculatorPage.jsx` | 839 | 9 375 |
-| `backend/app/services/seo_renderer.py` | 1 017 | 9 339 |
+| `backend/app/services/seo_renderer.py` | 1 015 | 9 317 |
 | `frontend/src/pages/IndicatorDetail.jsx` | 809 | 8 466 |
 | `backend/app/services/rosstat_weekly_inflation_parser.py` | 890 | 8 334 |
 | `backend/app/services/calendar_sources/official_calendar.py` | 752 | 8 287 |

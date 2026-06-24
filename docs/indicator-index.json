@@ -4763,12 +4763,12 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 401,
+          "line": 399,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 402,
+          "line": 400,
           "kind": "seo"
         },
         {
@@ -6080,7 +6080,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 607,
+          "line": 605,
           "kind": "seo"
         },
         {
@@ -13404,7 +13404,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 405,
+          "line": 403,
           "kind": "seo"
         },
         {
@@ -13975,7 +13975,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 910,
+          "line": 908,
           "kind": "seo"
         },
         {
@@ -14322,7 +14322,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 910,
+          "line": 908,
           "kind": "seo"
         },
         {
@@ -16217,7 +16217,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 407,
+          "line": 405,
           "kind": "seo"
         },
         {
@@ -20777,11 +20777,6 @@
           "kind": "derived"
         },
         {
-          "file": "backend/app/services/seo_renderer.py",
-          "line": 52,
-          "kind": "seo"
-        },
-        {
           "file": "backend/seed_data.py",
           "line": 1151,
           "kind": "seed"
@@ -20899,12 +20894,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 52,
-          "kind": "seo"
-        },
-        {
-          "file": "backend/app/services/seo_renderer.py",
-          "line": 606,
+          "line": 604,
           "kind": "seo"
         },
         {
@@ -21080,11 +21070,6 @@
           "file": "backend/app/services/rosstat_weekly_inflation_parser.py",
           "line": 857,
           "kind": "parser"
-        },
-        {
-          "file": "backend/app/services/seo_renderer.py",
-          "line": 52,
-          "kind": "seo"
         },
         {
           "file": "backend/seed_data.py",
@@ -22691,7 +22676,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 399,
+          "line": 397,
           "kind": "seo"
         },
         {
@@ -24465,7 +24450,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 403,
+          "line": 401,
           "kind": "seo"
         },
         {
@@ -27744,7 +27729,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 400,
+          "line": 398,
           "kind": "seo"
         },
         {
@@ -30306,7 +30291,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 406,
+          "line": 404,
           "kind": "seo"
         },
         {
@@ -31003,7 +30988,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 404,
+          "line": 402,
           "kind": "seo"
         },
         {
