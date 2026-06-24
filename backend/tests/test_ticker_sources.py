@@ -109,6 +109,55 @@ def test_fetch_all_survives_source_exceptions(monkeypatch):
     assert "gold-rub-live" not in by_code
 
 
+def test_pull_job_uses_brent_db_fallback_when_moex_brent_missing(monkeypatch):
+    """Когда MOEX не отдал Brent, воркер должен подставить его из БД."""
+    from app.tasks import ticker_worker
+
+    usd = moex_iss.TickerSnapshot(
+        code="usd-rub-live", price=78.0, change_pct=0.1,
+        market_open=False, fetched_at=moex_iss.utcnow(), source="ЦБ РФ",
+    )
+    brent_fb = moex_iss.TickerSnapshot(
+        code="brent", price=76.25, change_pct=-0.5,
+        market_open=False, fetched_at=moex_iss.utcnow(), source="Рыночные котировки",
+    )
+
+    async def fake_moex():
+        return [usd]  # без brent
+
+    async def fake_binance():
+        return []
+
+    async def fake_brent_fb():
+        return brent_fb
+
+    written: dict[str, str] = {}
+
+    class _FakePipe:
+        def set(self, key, val, ex=None):
+            written[key] = val
+
+        async def execute(self):
+            return None
+
+    class _FakeRedis:
+        def pipeline(self):
+            return _FakePipe()
+
+    async def fake_get_redis():
+        return _FakeRedis()
+
+    monkeypatch.setattr(ticker_worker, "moex_fetch_all", fake_moex)
+    monkeypatch.setattr(ticker_worker, "binance_fetch_all", fake_binance)
+    monkeypatch.setattr(ticker_worker, "_brent_db_fallback", fake_brent_fb)
+    monkeypatch.setattr(ticker_worker, "get_redis", fake_get_redis)
+
+    _run(ticker_worker.ticker_pull_job())
+
+    assert "ticker:brent" in written
+    assert "ticker:usd-rub-live" in written
+
+
 def test_fetch_all_survives_fx_gather_failure(monkeypatch):
     """Если весь FX-gather упал — brent/gold всё равно отдаются."""
     async def boom_fx(client, code, secid):
