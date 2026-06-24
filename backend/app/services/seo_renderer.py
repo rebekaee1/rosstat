@@ -49,8 +49,6 @@ from app.services.seo_content import (
 
 logger = logging.getLogger(__name__)
 
-HIDDEN_FROM_LISTING = {"inflation-annual", "inflation-quarterly", "inflation-weekly"}
-
 
 @dataclass(frozen=True)
 class AppAssets:
