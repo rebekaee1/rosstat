@@ -323,6 +323,8 @@ Trap-симптомы при ломанной CSP:
 
 Goal в Метрике: `rsy_floor_render` (см. `frontend/src/components/YandexRSY.jsx`) — фиксирует момент успешного render, можно сверять с показами в кабинете РСЯ.
 
+Маркировку «Реклама» (+ домен/erid рекламодателя) несёт сам креатив РСЯ — отдельный оверлей-ярлык мы не рисуем (убран 2026-06-24: floorAd переменной высоты, фиксированный ярлык попадал в середину объявления).
+
 ### Scheduler dual jobs + analytics-scheduler флаг
 
 В `backend/app/main.py` lifespan регистрируются **два обязательных** APScheduler job'а: `daily_etl` (06:00 МСК) и `calendar_refresh` (1-го числа 03:00 МСК). Дополнительно — два опциональных под `RUSTATS_ANALYTICS_SCHEDULER_ENABLED=true`: `analytics_hourly` (:15) и `analytics_daily` (07:20). С 2026-05-22 добавлен `ticker_live_pull` (interval 5s, `coalesce=True`, `max_instances=1`) — fetch MOEX/Binance/CBR-fallback в Redis для LiveTicker. Если scheduler-флаг выключен — работает только `daily_etl` + `calendar_refresh` + `ticker_live_pull`, analytics cron-ы не регистрируются.

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 /**
  * Yandex.RTB (РСЯ) floor-ad: touch + desktop.
@@ -18,6 +18,13 @@ import { useEffect, useState } from 'react';
  * - Embed-routes (`/embed/*`) монтируют свой ErrorBoundary без YandexRSY —
  *   подключение происходит в `AppRoutes`, не в `EmbedRoutes`.
  *
+ * Маркировка «Реклама»: её несёт сам креатив РСЯ (Yandex как рекламная
+ * система ставит метку «Реклама» + домен/erid рекламодателя — это её зона
+ * ответственности в RTB). Свой оверлей-ярлык мы НЕ рисуем: floorAd имеет
+ * переменную высоту (картинка + текст + кнопка закрытия), и отдельный
+ * фиксированный элемент с захардкоженным `bottom` попадал в середину
+ * объявления (баг 2026-06-24). Дубль был и избыточен, и ломал вёрстку.
+ *
  * Активные блоки (см. также CONTEXT.md::Yandex.RSY):
  *   R-A-19489903-2 floorAd touch    — мобильные устройства
  *   R-A-19489903-1 floorAd desktop  — десктоп
@@ -32,11 +39,6 @@ const RSY_BLOCKS = [
 ];
 
 export default function YandexRSY() {
-  // Пометка «Реклама» над floor-баннером (звонок 2026-06-19): показываем только
-  // когда РСЯ реально отрисовалась. Если AdBlock/CSP/сеть блокируют рекламу —
-  // блок не рендерится и пометки тоже нет (не висит пустой ярлык).
-  const [adShown, setAdShown] = useState(false);
-
   useEffect(() => {
     if (typeof window === 'undefined') return;
     if (window.__rsyFloorAdRendered) return;
@@ -49,7 +51,6 @@ export default function YandexRSY() {
           for (const cfg of RSY_BLOCKS) {
             window.Ya.Context.AdvManager.render(cfg);
           }
-          setAdShown(true);
           if (typeof window.ym === 'function') {
             window.ym(107136069, 'reachGoal', 'rsy_floor_render');
           }
@@ -60,15 +61,5 @@ export default function YandexRSY() {
     });
   }, []);
 
-  if (!adShown) return null;
-
-  return (
-    <div
-      aria-hidden="true"
-      className="fixed left-1/2 -translate-x-1/2 bottom-[54px] sm:bottom-[96px] pointer-events-none px-2.5 py-0.5 rounded-t-md bg-obsidian/80 backdrop-blur-sm border border-b-0 border-border-subtle text-[10px] font-mono uppercase tracking-[0.18em] text-text-tertiary"
-      style={{ zIndex: 2147483646 }}
-    >
-      Реклама
-    </div>
-  );
+  return null;
 }
