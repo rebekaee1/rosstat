@@ -2,7 +2,7 @@
 
 - **Date:** 2026-05-05
 - **Status:** Accepted
-- **Last verified:** 2026-05-22 (документация-ревизия: 31 derived в `DERIVED_SPECS`, 12 ops в `derived_ops.py` (11 активных + 1 deprecated `annual_inflation` сохранён в файле, в `DERIVED_SPECS` не используется), +2 виртуальных frontend-transform'а: `applyMoMTransform` для monthly trade и `applyAggregateTransform` для daily-индикаторов).
+- **Last verified:** 2026-06-24 (чистка orphaned ops: 31 derived в `DERIVED_SPECS`, все ops в `derived_ops.py` активны — `annual_inflation` / `affordability_index` / `rebase_to_index` удалены, см. «Subsequent additions»; +2 виртуальных frontend-transform'а: `applyMoMTransform` для monthly trade и `applyAggregateTransform` для daily-индикаторов).
 - **Author:** architecture audit (улучшение архитектуры по запросу пользователя).
 - **Part of:** [`../../CONTEXT.md`](../../CONTEXT.md) (раздел `Derived indicator`).
 - **Related:** [ADR-0002](0002-derived-always-reflects-source.md) (инвариант идемпотентности).
@@ -117,13 +117,13 @@ backend/app/services/calculation_engine.py
   - **Новый generic-шаблон T12** (`_build_ratio_index` в `view_model_families.py`): индекс-отношение без группы «на конец периода». Группы: Уровень (по месяцам / средняя за квартал / средняя за год) · К прошлому периоду (М/м, Кв/Кв на средних) · Г/г · Скользящая 12 мес. Прогноз не строим. Sibling-ряды (`-avg-quarter/-avg-year/-mom/-qoq/-yoy/-rolling-12m` × 2 рынка) генерируются движком как обычно.
   - Решение о помесячности: ряд начинается там, где есть помесячная зарплата (2015), цены на жильё forward-fill'ятся внутри квартала. Паритет базы 2010 (оба индекса = 100 в окрестности 2010) проверяется на op-уровне в `test_calculation_engine.py`.
 
-**Текущие числа (2026-06-07):** 12 операций в `derived_ops.py` (одна — `annual_inflation` — orphaned); ручных `DerivedSpec` стало 31 (плюс `housing-affordability-primary`, helper-семья T12). Один frontend-only transform (`applyMoMTransform`). Backwards-compat: добавление spec'а / op'а — однострочное.
+**Текущие числа (2026-06-24):** все операции в `derived_ops.py` активны (orphaned `annual_inflation` / `affordability_index` / `rebase_to_index` удалены в чистке 2026-06-24, см. ниже); ручных `DerivedSpec` стало 31 (плюс `housing-affordability-primary`, helper-семья T12). Один frontend-only transform (`applyMoMTransform`). Backwards-compat: добавление spec'а / op'а — однострочное.
 
 ### Out of scope (future ADRs)
 
 - **CPI forecast propagation** to derived (`forecast_pipeline._propagate_cpi_forecast_to_derived`): пишет ForecastValue, не IndicatorData. Это другой слой; формульное дублирование с `quarterly_index` оставлено намеренно — не ходим в форекастер из calc_engine. После 2026-05-05 кросс-зависимости в forecast-слое унесены в реестр `forecast_strategies/`; см. отдельный ADR (TBD).
 - **Persistence layer extraction**: общий `bulk_upsert` уже есть. ADR не вводит нового.
-- **Cleanup of orphaned `annual_inflation` op**: безопасно удалить вместе со следующим релизом, т.к. ни один spec её не вызывает.
+- **Cleanup of orphaned ops (выполнено 2026-06-24)**: `annual_inflation` (вытеснена `december_to_december`), квартальный `affordability_index` (вытеснен `affordability_index_monthly`) и `rebase_to_index(base_year)` (вытеснен `rebase_to_index_with_base`) удалены из `derived_ops.py` вместе с их тестами — ни один `DerivedSpec` их не вызывал. Исторический нарратив выше (op-список, ASCII-схема) намеренно не переписан.
 
 ## Implementation checklist (исторический)
 

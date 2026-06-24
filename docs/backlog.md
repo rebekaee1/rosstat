@@ -213,7 +213,7 @@ housing-affordability-index[t] = wages-index[t] / housing-price-index[t]   # б�
 
 **Затронутые файлы.**
 - `backend/seed_data.py` — новый индикатор в «Рынок труда».
-- `backend/app/services/derived_ops.py` — op `rebase_to_index(base_year=2010)`.
+- `backend/app/services/derived_ops.py` — op `rebase_to_index_with_base` (база читается из смежного годового ряда; реализовано для `wages-index`).
 - `backend/app/services/calculation_engine.py` — DERIVED_SPECS.
 
 **Риски.** Низкие — стандартная нормировка.
