@@ -94,7 +94,7 @@
 
 **Граница инварианта.** Инвариант односторонний: `bulk_upsert`-only. Если source-точка **удаляется** вручную (DELETE из IndicatorData), соответствующая derived-точка остаётся в БД как осиротевшая — engine не знает, что нужно её удалить. Это явный compromise (см. ADR-0002): автоматическое удаление derived создавало бы риск массовой потери данных при ошибке pure op. Ручные коррекции source требуют ручной чистки derived или прогона `scripts/rebuild-all-derived.py`.
 
-Реестр операций (`backend/app/services/derived_ops.py`) — **12 чистых функций** без `db`/`async` (11 активных + 1 deprecated `annual_inflation` сохранён, но в `DERIVED_SPECS` не используется):
+Реестр операций (`backend/app/services/derived_ops.py`) — **11 активных чистых функций** без `db`/`async` (orphaned `annual_inflation` / `affordability_index` / `rebase_to_index` удалены в чистке 2026-06-24):
 - `quarterly_index` — chained product 3 месячных индексов CPI (для `*-quarterly`).
 - `december_to_december` — годовая инфляция «Dec_Y / Dec_{Y-1} − 1» (для CPI-семьи и PPI `*-annual`; пришла на смену rolling-12M в 2026-05-06, см. ADR-0001 «Subsequent additions»).
 - `annual_sum` — сумма квартальных или 12 месячных значений (для `gdp-{nominal,real}-annual`).
@@ -102,7 +102,6 @@
 - `yoy_abs` — **абсолютная** разница к 12 мес назад в единицах источника (звонок 2026-05-22, для balances со знаком, где % бессмыслен).
 - `quarterly_avg`, `rolling_avg` — для unemployment.
 - `wages_real` — особая, 2 источника (`wages-nominal`, `cpi`).
-- `annual_inflation` — устаревшая op (rolling-12M product), сохранена в файле, но **не используется** в `DERIVED_SPECS`. Кандидат на удаление при следующей чистке.
 
 Реестр спецификаций (`calculation_engine.DERIVED_SPECS`) — **31 entries**:
 

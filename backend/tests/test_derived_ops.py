@@ -11,7 +11,6 @@ from __future__ import annotations
 from datetime import date, timedelta
 
 from app.services.derived_ops import (
-    annual_inflation,
     annual_sum,
     cpi_mom_qoq,
     cpi_mom_yoy,
@@ -70,27 +69,6 @@ def test_quarterly_index_skips_incomplete_quarter():
 
 def test_quarterly_index_empty_input():
     assert quarterly_index([]) == []
-
-
-# --- annual_inflation --------------------------------------------------------
-
-
-def test_annual_inflation_steady_one_percent_per_month():
-    """If every month is exactly 101 (1% mom), trailing 12-month inflation
-    converges to (1.01)**12 - 1 = ~12.6825%."""
-    monthly = [(date(2025, m, 1), 101.0) for m in range(1, 13)]
-    monthly += [(date(2026, 1, 1), 101.0)]
-    out = annual_inflation(monthly)
-    assert len(out) == 2  # Dec 2025 and Jan 2026 both have 12 trailing months
-    last_d, last_v = out[-1]
-    assert last_d == date(2026, 1, 1)
-    expected = (1.01 ** 12 - 1) * 100
-    assert abs(last_v - round(expected, 4)) < 0.0001
-
-
-def test_annual_inflation_skips_when_short_history():
-    monthly = [(date(2025, m, 1), 100.5) for m in range(1, 12)]  # only 11 months
-    assert annual_inflation(monthly) == []
 
 
 # --- december_to_december ----------------------------------------------------
