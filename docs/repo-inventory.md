@@ -2,16 +2,16 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Файлов:** 444  ·  **Строк:** 79 731  ·  **Токенов (≈):** 805 112
+**Файлов:** 444  ·  **Строк:** 79 625  ·  **Токенов (≈):** 804 373
 
 ## По верхним папкам
 
 | Папка | Файлов | Строк | Токенов (≈) |
 |-------|-------:|------:|------------:|
-| `(root)` | 7 | 1 272 | 28 786 |
+| `(root)` | 7 | 1 288 | 29 052 |
 | `.github` | 1 | 56 | 334 |
-| `backend` | 234 | 43 605 | 435 839 |
-| `docs` | 19 | 3 820 | 70 978 |
+| `backend` | 234 | 43 483 | 434 722 |
+| `docs` | 19 | 3 820 | 71 090 |
 | `frontend` | 158 | 27 848 | 239 144 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 22 | 2 972 | 28 911 |
@@ -23,18 +23,18 @@
 | `backend/app/data/indicator_seo.py` | 7 443 | 98 357 |
 | `backend/seed_data.py` | 4 053 | 40 460 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 6 930 | 40 161 |
-| `docs/backlog.md` | 778 | 17 988 |
-| `CONTEXT.md` | 536 | 17 861 |
+| `docs/backlog.md` | 778 | 18 005 |
+| `CONTEXT.md` | 535 | 17 824 |
 | `backend/app/services/forecaster.py` | 1 193 | 10 950 |
 | `backend/app/data/view_model_families.py` | 924 | 10 644 |
 | `frontend/src/pages/CalculatorPage.jsx` | 839 | 9 375 |
-| `backend/app/services/seo_renderer.py` | 1 017 | 9 339 |
+| `backend/app/services/seo_renderer.py` | 1 015 | 9 317 |
 | `frontend/src/pages/IndicatorDetail.jsx` | 809 | 8 466 |
 | `backend/app/services/rosstat_weekly_inflation_parser.py` | 890 | 8 334 |
 | `backend/app/services/calendar_sources/official_calendar.py` | 752 | 8 287 |
-| `backend/app/services/derived_ops.py` | 817 | 8 192 |
 | `backend/app/models.py` | 580 | 7 305 |
 | `scripts/build-indicator-index.py` | 666 | 7 299 |
+| `backend/app/services/derived_ops.py` | 718 | 7 294 |
 | `docs/missed_data_audit.md` | 447 | 6 795 |
 | `frontend/src/pages/EmbedBuilder.jsx` | 512 | 6 644 |
 | `frontend/src/components/IndicatorChart.jsx` | 674 | 6 358 |
@@ -42,9 +42,9 @@
 | `frontend/src/lib/useIndicatorViewModeData.js` | 665 | 6 161 |
 | `backend/app/services/calendar_seed.py` | 614 | 5 495 |
 | `docs/adr/0006-indicator-card-unification.md` | 227 | 5 311 |
+| `AGENTS.md` | 236 | 5 193 |
 | `frontend/src/pages/ComparePage.jsx` | 484 | 5 037 |
-| `backend/tests/test_derived_ops.py` | 576 | 5 026 |
-| `AGENTS.md` | 219 | 4 890 |
+| `backend/tests/test_derived_ops.py` | 554 | 4 814 |
 | `docs/data_sources.md` | 324 | 4 514 |
 | `backend/tests/forecast_strategies/test_derived.py` | 502 | 4 460 |
 | `backend/app/services/minfin_budget_parser.py` | 471 | 4 420 |
@@ -53,7 +53,7 @@
 | `backend/alembic/versions/20260428_add_analytics_os_tables.py` | 327 | 4 373 |
 | `frontend/public/sitemap.xml` | 573 | 4 353 |
 | `backend/app/services/seo_content.py` | 379 | 4 102 |
-| `backend/app/services/calculation_engine.py` | 366 | 4 079 |
+| `backend/app/services/calculation_engine.py` | 367 | 4 094 |
 | `backend/tests/test_calendar_seed.py` | 442 | 4 079 |
 | `frontend/src/lib/cpiViewModeContent.jsx` | 397 | 3 973 |
 | `frontend/src/pages/DemographicsPage.jsx` | 357 | 3 848 |
@@ -62,8 +62,8 @@
 | `backend/app/api/embed.py` | 428 | 3 585 |
 | `backend/app/api/auth.py` | 356 | 3 531 |
 | `frontend/src/components/IndicatorChartSection.jsx` | 365 | 3 474 |
+| `docs/adr/0001-derived-indicators-engine-shape.md` | 134 | 3 466 |
 | `frontend/src/components/IndicatorSearch.jsx` | 329 | 3 434 |
-| `docs/adr/0001-derived-indicators-engine-shape.md` | 134 | 3 371 |
 | `README.md` | 240 | 3 353 |
 | `backend/app/services/ticker_sources/moex_iss.py` | 353 | 3 339 |
 | `backend/tests/forecast_strategies/fixtures/construction_work_series.json` | 1 | 3 279 |

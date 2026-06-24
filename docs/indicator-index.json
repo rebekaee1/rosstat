@@ -54,12 +54,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 256,
+          "line": 255,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 258,
+          "line": 257,
           "kind": "other"
         },
         {
@@ -764,7 +764,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 120,
+          "line": 119,
           "kind": "other"
         },
         {
@@ -1398,7 +1398,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 120,
+          "line": 119,
           "kind": "other"
         },
         {
@@ -1886,7 +1886,7 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 166,
+          "line": 183,
           "kind": "other"
         },
         {
@@ -2894,7 +2894,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 269,
+          "line": 268,
           "kind": "other"
         },
         {
@@ -3353,7 +3353,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 463,
+          "line": 462,
           "kind": "other"
         },
         {
@@ -3945,7 +3945,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 145,
+          "line": 144,
           "kind": "other"
         },
         {
@@ -4234,7 +4234,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 269,
+          "line": 268,
           "kind": "other"
         },
         {
@@ -4593,12 +4593,17 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 16,
+          "line": 15,
           "kind": "other"
         },
         {
           "file": "AGENTS.md",
-          "line": 17,
+          "line": 27,
+          "kind": "other"
+        },
+        {
+          "file": "AGENTS.md",
+          "line": 28,
           "kind": "other"
         },
         {
@@ -4618,22 +4623,22 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 109,
+          "line": 108,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 138,
+          "line": 137,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 158,
+          "line": 157,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 363,
+          "line": 362,
           "kind": "other"
         },
         {
@@ -4668,27 +4673,27 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 71,
-          "kind": "derived"
-        },
-        {
-          "file": "backend/app/services/calculation_engine.py",
           "line": 72,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 81,
+          "line": 73,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 85,
+          "line": 82,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 130,
+          "line": 86,
+          "kind": "derived"
+        },
+        {
+          "file": "backend/app/services/calculation_engine.py",
+          "line": 131,
           "kind": "derived"
         },
         {
@@ -4713,7 +4718,7 @@
         },
         {
           "file": "backend/app/services/derived_ops.py",
-          "line": 545,
+          "line": 507,
           "kind": "derived"
         },
         {
@@ -4763,12 +4768,12 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 401,
+          "line": 399,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 402,
+          "line": 400,
           "kind": "seo"
         },
         {
@@ -4888,22 +4893,22 @@
         },
         {
           "file": "backend/tests/test_derived_ops.py",
-          "line": 353,
+          "line": 331,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_derived_ops.py",
-          "line": 354,
+          "line": 332,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_derived_ops.py",
-          "line": 371,
+          "line": 349,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_derived_ops.py",
-          "line": 372,
+          "line": 350,
           "kind": "tests"
         },
         {
@@ -5724,12 +5729,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 109,
+          "line": 108,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 138,
+          "line": 137,
           "kind": "other"
         },
         {
@@ -5759,22 +5764,22 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 73,
-          "kind": "derived"
-        },
-        {
-          "file": "backend/app/services/calculation_engine.py",
           "line": 74,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 82,
+          "line": 75,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 86,
+          "line": 83,
+          "kind": "derived"
+        },
+        {
+          "file": "backend/app/services/calculation_engine.py",
+          "line": 87,
           "kind": "derived"
         },
         {
@@ -6075,12 +6080,12 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 74,
+          "line": 75,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 607,
+          "line": 605,
           "kind": "seo"
         },
         {
@@ -6146,7 +6151,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 111,
+          "line": 112,
           "kind": "derived"
         },
         {
@@ -6197,7 +6202,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 93,
+          "line": 94,
           "kind": "derived"
         },
         {
@@ -6248,7 +6253,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 86,
+          "line": 87,
           "kind": "derived"
         },
         {
@@ -6314,7 +6319,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 73,
+          "line": 74,
           "kind": "derived"
         },
         {
@@ -6395,7 +6400,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 82,
+          "line": 83,
           "kind": "derived"
         },
         {
@@ -6446,7 +6451,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 138,
+          "line": 137,
           "kind": "other"
         },
         {
@@ -6476,22 +6481,22 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 75,
-          "kind": "derived"
-        },
-        {
-          "file": "backend/app/services/calculation_engine.py",
           "line": 76,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 83,
+          "line": 77,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 87,
+          "line": 84,
+          "kind": "derived"
+        },
+        {
+          "file": "backend/app/services/calculation_engine.py",
+          "line": 88,
           "kind": "derived"
         },
         {
@@ -6727,7 +6732,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 76,
+          "line": 77,
           "kind": "derived"
         },
         {
@@ -6788,7 +6793,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 116,
+          "line": 117,
           "kind": "derived"
         },
         {
@@ -6839,7 +6844,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 98,
+          "line": 99,
           "kind": "derived"
         },
         {
@@ -6890,7 +6895,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 87,
+          "line": 88,
           "kind": "derived"
         },
         {
@@ -6951,7 +6956,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 75,
+          "line": 76,
           "kind": "derived"
         },
         {
@@ -7017,7 +7022,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 83,
+          "line": 84,
           "kind": "derived"
         },
         {
@@ -7068,7 +7073,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 109,
+          "line": 110,
           "kind": "derived"
         },
         {
@@ -7134,7 +7139,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 91,
+          "line": 92,
           "kind": "derived"
         },
         {
@@ -7190,7 +7195,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 85,
+          "line": 86,
           "kind": "derived"
         },
         {
@@ -7246,7 +7251,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 138,
+          "line": 137,
           "kind": "other"
         },
         {
@@ -7276,22 +7281,22 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 77,
-          "kind": "derived"
-        },
-        {
-          "file": "backend/app/services/calculation_engine.py",
           "line": 78,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 84,
+          "line": 79,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 88,
+          "line": 85,
+          "kind": "derived"
+        },
+        {
+          "file": "backend/app/services/calculation_engine.py",
+          "line": 89,
           "kind": "derived"
         },
         {
@@ -7527,7 +7532,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 78,
+          "line": 79,
           "kind": "derived"
         },
         {
@@ -7593,7 +7598,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 121,
+          "line": 122,
           "kind": "derived"
         },
         {
@@ -7644,7 +7649,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 103,
+          "line": 104,
           "kind": "derived"
         },
         {
@@ -7695,7 +7700,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 88,
+          "line": 89,
           "kind": "derived"
         },
         {
@@ -7756,7 +7761,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 77,
+          "line": 78,
           "kind": "derived"
         },
         {
@@ -7837,7 +7842,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 84,
+          "line": 85,
           "kind": "derived"
         },
         {
@@ -7888,7 +7893,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 81,
+          "line": 82,
           "kind": "derived"
         },
         {
@@ -8679,7 +8684,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 128,
+          "line": 127,
           "kind": "other"
         },
         {
@@ -9777,7 +9782,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 128,
+          "line": 127,
           "kind": "other"
         },
         {
@@ -10150,12 +10155,12 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 166,
+          "line": 183,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 116,
+          "line": 115,
           "kind": "other"
         },
         {
@@ -10185,7 +10190,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 178,
+          "line": 179,
           "kind": "derived"
         },
         {
@@ -10423,7 +10428,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 113,
+          "line": 112,
           "kind": "other"
         },
         {
@@ -10438,7 +10443,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 175,
+          "line": 176,
           "kind": "derived"
         },
         {
@@ -10453,7 +10458,7 @@
         },
         {
           "file": "backend/tests/test_derived_ops.py",
-          "line": 217,
+          "line": 195,
           "kind": "tests"
         },
         {
@@ -10524,12 +10529,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 113,
+          "line": 112,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 516,
+          "line": 515,
           "kind": "other"
         },
         {
@@ -10539,7 +10544,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 178,
+          "line": 179,
           "kind": "derived"
         },
         {
@@ -10963,7 +10968,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 128,
+          "line": 127,
           "kind": "other"
         },
         {
@@ -11286,7 +11291,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 443,
+          "line": 442,
           "kind": "other"
         },
         {
@@ -11627,7 +11632,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 443,
+          "line": 442,
           "kind": "other"
         },
         {
@@ -12066,7 +12071,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 267,
+          "line": 266,
           "kind": "other"
         },
         {
@@ -12412,7 +12417,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 267,
+          "line": 266,
           "kind": "other"
         },
         {
@@ -13041,12 +13046,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 473,
+          "line": 472,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 475,
+          "line": 474,
           "kind": "other"
         },
         {
@@ -13424,7 +13429,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 405,
+          "line": 403,
           "kind": "seo"
         },
         {
@@ -13920,12 +13925,12 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 116,
+          "line": 115,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 356,
+          "line": 355,
           "kind": "other"
         },
         {
@@ -13960,12 +13965,12 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 151,
+          "line": 152,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 182,
+          "line": 183,
           "kind": "derived"
         },
         {
@@ -13995,7 +14000,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 910,
+          "line": 908,
           "kind": "seo"
         },
         {
@@ -14302,7 +14307,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 356,
+          "line": 355,
           "kind": "other"
         },
         {
@@ -14342,7 +14347,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 910,
+          "line": 908,
           "kind": "seo"
         },
         {
@@ -14673,7 +14678,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 182,
+          "line": 183,
           "kind": "derived"
         },
         {
@@ -14795,7 +14800,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 151,
+          "line": 152,
           "kind": "derived"
         },
         {
@@ -15363,12 +15368,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 142,
+          "line": 141,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 412,
+          "line": 411,
           "kind": "other"
         },
         {
@@ -15621,12 +15626,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 143,
+          "line": 142,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 412,
+          "line": 411,
           "kind": "other"
         },
         {
@@ -15874,7 +15879,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 412,
+          "line": 411,
           "kind": "other"
         },
         {
@@ -16102,7 +16107,7 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 53,
+          "line": 70,
           "kind": "other"
         },
         {
@@ -16117,37 +16122,37 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 111,
+          "line": 110,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 140,
+          "line": 139,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 146,
+          "line": 145,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 406,
+          "line": 405,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 408,
+          "line": 407,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 410,
+          "line": 409,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 412,
+          "line": 411,
           "kind": "other"
         },
         {
@@ -16177,17 +16182,17 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 134,
-          "kind": "derived"
-        },
-        {
-          "file": "backend/app/services/calculation_engine.py",
           "line": 135,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 142,
+          "line": 136,
+          "kind": "derived"
+        },
+        {
+          "file": "backend/app/services/calculation_engine.py",
+          "line": 143,
           "kind": "derived"
         },
         {
@@ -16237,7 +16242,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 407,
+          "line": 405,
           "kind": "seo"
         },
         {
@@ -16533,12 +16538,12 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 142,
+          "line": 143,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/derived_ops.py",
-          "line": 27,
+          "line": 25,
           "kind": "derived"
         },
         {
@@ -16654,7 +16659,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 135,
+          "line": 136,
           "kind": "derived"
         },
         {
@@ -16754,12 +16759,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 111,
+          "line": 110,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 141,
+          "line": 140,
           "kind": "other"
         },
         {
@@ -16784,17 +16789,17 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 136,
-          "kind": "derived"
-        },
-        {
-          "file": "backend/app/services/calculation_engine.py",
           "line": 137,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 143,
+          "line": 138,
+          "kind": "derived"
+        },
+        {
+          "file": "backend/app/services/calculation_engine.py",
+          "line": 144,
           "kind": "derived"
         },
         {
@@ -17075,7 +17080,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 143,
+          "line": 144,
           "kind": "derived"
         },
         {
@@ -17201,7 +17206,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 137,
+          "line": 138,
           "kind": "derived"
         },
         {
@@ -17302,7 +17307,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 136,
+          "line": 137,
           "kind": "derived"
         },
         {
@@ -17378,7 +17383,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 410,
+          "line": 409,
           "kind": "other"
         },
         {
@@ -17403,7 +17408,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 134,
+          "line": 135,
           "kind": "derived"
         },
         {
@@ -17576,12 +17581,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 120,
+          "line": 119,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 254,
+          "line": 253,
           "kind": "other"
         },
         {
@@ -18240,12 +18245,12 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 145,
+          "line": 144,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 473,
+          "line": 472,
           "kind": "other"
         },
         {
@@ -18260,7 +18265,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 202,
+          "line": 203,
           "kind": "derived"
         },
         {
@@ -18515,7 +18520,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 208,
+          "line": 209,
           "kind": "derived"
         },
         {
@@ -18838,7 +18843,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 168,
+          "line": 169,
           "kind": "derived"
         },
         {
@@ -18904,7 +18909,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 169,
+          "line": 170,
           "kind": "derived"
         },
         {
@@ -19232,7 +19237,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 139,
+          "line": 138,
           "kind": "other"
         },
         {
@@ -19262,27 +19267,22 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 160,
+          "line": 161,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 162,
+          "line": 163,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 168,
+          "line": 169,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 209,
-          "kind": "derived"
-        },
-        {
-          "file": "backend/app/services/derived_ops.py",
-          "line": 677,
+          "line": 210,
           "kind": "derived"
         },
         {
@@ -19523,7 +19523,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 139,
+          "line": 138,
           "kind": "other"
         },
         {
@@ -19548,27 +19548,27 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 161,
+          "line": 162,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 163,
+          "line": 164,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 169,
+          "line": 170,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 197,
+          "line": 198,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 203,
+          "line": 204,
           "kind": "derived"
         },
         {
@@ -19754,7 +19754,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 162,
+          "line": 163,
           "kind": "derived"
         },
         {
@@ -19825,7 +19825,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 163,
+          "line": 164,
           "kind": "derived"
         },
         {
@@ -19886,7 +19886,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 147,
+          "line": 146,
           "kind": "other"
         },
         {
@@ -19906,7 +19906,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 160,
+          "line": 161,
           "kind": "derived"
         },
         {
@@ -19967,7 +19967,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 147,
+          "line": 146,
           "kind": "other"
         },
         {
@@ -19987,7 +19987,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 161,
+          "line": 162,
           "kind": "derived"
         },
         {
@@ -20057,7 +20057,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 116,
+          "line": 115,
           "kind": "other"
         },
         {
@@ -20092,12 +20092,12 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 152,
+          "line": 153,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 183,
+          "line": 184,
           "kind": "derived"
         },
         {
@@ -20590,7 +20590,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 183,
+          "line": 184,
           "kind": "derived"
         },
         {
@@ -20697,7 +20697,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 152,
+          "line": 153,
           "kind": "derived"
         },
         {
@@ -20768,7 +20768,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 109,
+          "line": 108,
           "kind": "other"
         },
         {
@@ -20788,18 +20788,13 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 72,
+          "line": 73,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 165,
+          "line": 166,
           "kind": "derived"
-        },
-        {
-          "file": "backend/app/services/seo_renderer.py",
-          "line": 52,
-          "kind": "seo"
         },
         {
           "file": "backend/seed_data.py",
@@ -20884,7 +20879,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 109,
+          "line": 108,
           "kind": "other"
         },
         {
@@ -20909,7 +20904,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 71,
+          "line": 72,
           "kind": "derived"
         },
         {
@@ -20919,12 +20914,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 52,
-          "kind": "seo"
-        },
-        {
-          "file": "backend/app/services/seo_renderer.py",
-          "line": 606,
+          "line": 604,
           "kind": "seo"
         },
         {
@@ -21023,42 +21013,42 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 148,
+          "line": 147,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 154,
+          "line": 153,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 273,
+          "line": 272,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 285,
+          "line": 284,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 287,
+          "line": 286,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 363,
+          "line": 362,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 391,
+          "line": 390,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 427,
+          "line": 426,
           "kind": "other"
         },
         {
@@ -21078,12 +21068,12 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 91,
+          "line": 92,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 109,
+          "line": 110,
           "kind": "derived"
         },
         {
@@ -21100,11 +21090,6 @@
           "file": "backend/app/services/rosstat_weekly_inflation_parser.py",
           "line": 857,
           "kind": "parser"
-        },
-        {
-          "file": "backend/app/services/seo_renderer.py",
-          "line": 52,
-          "kind": "seo"
         },
         {
           "file": "backend/seed_data.py",
@@ -21227,12 +21212,12 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 94,
+          "line": 95,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 112,
+          "line": 113,
           "kind": "derived"
         },
         {
@@ -21326,12 +21311,12 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 99,
+          "line": 100,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 117,
+          "line": 118,
           "kind": "derived"
         },
         {
@@ -21420,12 +21405,12 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 104,
+          "line": 105,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 122,
+          "line": 123,
           "kind": "derived"
         },
         {
@@ -21629,7 +21614,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 467,
+          "line": 466,
           "kind": "other"
         },
         {
@@ -21669,12 +21654,12 @@
         },
         {
           "file": "backend/app/services/derived_ops.py",
-          "line": 319,
+          "line": 281,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/derived_ops.py",
-          "line": 383,
+          "line": 345,
           "kind": "derived"
         },
         {
@@ -21694,12 +21679,12 @@
         },
         {
           "file": "backend/tests/test_derived_ops.py",
-          "line": 494,
+          "line": 472,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_derived_ops.py",
-          "line": 511,
+          "line": 489,
           "kind": "tests"
         },
         {
@@ -22036,7 +22021,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 145,
+          "line": 144,
           "kind": "other"
         },
         {
@@ -22061,7 +22046,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 150,
+          "line": 151,
           "kind": "derived"
         },
         {
@@ -22428,7 +22413,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 114,
+          "line": 113,
           "kind": "other"
         },
         {
@@ -22453,7 +22438,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 150,
+          "line": 151,
           "kind": "derived"
         },
         {
@@ -22596,17 +22581,17 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 120,
+          "line": 119,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 254,
+          "line": 253,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 424,
+          "line": 423,
           "kind": "other"
         },
         {
@@ -22711,7 +22696,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 399,
+          "line": 397,
           "kind": "seo"
         },
         {
@@ -23404,12 +23389,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 473,
+          "line": 472,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 475,
+          "line": 474,
           "kind": "other"
         },
         {
@@ -23713,7 +23698,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 267,
+          "line": 266,
           "kind": "other"
         },
         {
@@ -24064,7 +24049,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 267,
+          "line": 266,
           "kind": "other"
         },
         {
@@ -24099,12 +24084,12 @@
         },
         {
           "file": "backend/app/services/derived_ops.py",
-          "line": 56,
+          "line": 54,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/derived_ops.py",
-          "line": 60,
+          "line": 58,
           "kind": "derived"
         },
         {
@@ -24425,7 +24410,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 267,
+          "line": 266,
           "kind": "other"
         },
         {
@@ -24470,12 +24455,12 @@
         },
         {
           "file": "backend/app/services/derived_ops.py",
-          "line": 56,
+          "line": 54,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/derived_ops.py",
-          "line": 60,
+          "line": 58,
           "kind": "derived"
         },
         {
@@ -24485,7 +24470,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 403,
+          "line": 401,
           "kind": "seo"
         },
         {
@@ -26464,22 +26449,27 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 16,
+          "line": 15,
           "kind": "other"
         },
         {
           "file": "AGENTS.md",
-          "line": 17,
+          "line": 27,
+          "kind": "other"
+        },
+        {
+          "file": "AGENTS.md",
+          "line": 28,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 144,
+          "line": 143,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 146,
+          "line": 145,
           "kind": "other"
         },
         {
@@ -26499,17 +26489,17 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 127,
+          "line": 128,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 153,
+          "line": 154,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 157,
+          "line": 158,
           "kind": "derived"
         },
         {
@@ -26785,7 +26775,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 110,
+          "line": 109,
           "kind": "other"
         },
         {
@@ -26805,7 +26795,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 127,
+          "line": 128,
           "kind": "derived"
         },
         {
@@ -26896,7 +26886,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 157,
+          "line": 158,
           "kind": "derived"
         },
         {
@@ -26947,7 +26937,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 110,
+          "line": 109,
           "kind": "other"
         },
         {
@@ -26967,7 +26957,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 153,
+          "line": 154,
           "kind": "derived"
         },
         {
@@ -27381,7 +27371,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 145,
+          "line": 144,
           "kind": "other"
         },
         {
@@ -27704,7 +27694,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 120,
+          "line": 119,
           "kind": "other"
         },
         {
@@ -27764,7 +27754,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 400,
+          "line": 398,
           "kind": "seo"
         },
         {
@@ -29534,12 +29524,12 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 166,
+          "line": 183,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 116,
+          "line": 115,
           "kind": "other"
         },
         {
@@ -29574,7 +29564,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 179,
+          "line": 180,
           "kind": "derived"
         },
         {
@@ -29604,7 +29594,7 @@
         },
         {
           "file": "backend/app/services/derived_ops.py",
-          "line": 250,
+          "line": 212,
           "kind": "derived"
         },
         {
@@ -30145,12 +30135,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 113,
+          "line": 112,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 516,
+          "line": 515,
           "kind": "other"
         },
         {
@@ -30160,7 +30150,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 179,
+          "line": 180,
           "kind": "derived"
         },
         {
@@ -30241,27 +30231,27 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 116,
+          "line": 115,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 124,
+          "line": 123,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 145,
+          "line": 144,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 494,
+          "line": 493,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 514,
+          "line": 513,
           "kind": "other"
         },
         {
@@ -30301,12 +30291,12 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 146,
+          "line": 147,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 147,
+          "line": 148,
           "kind": "derived"
         },
         {
@@ -30331,12 +30321,12 @@
         },
         {
           "file": "backend/app/services/derived_ops.py",
-          "line": 23,
+          "line": 21,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/derived_ops.py",
-          "line": 24,
+          "line": 22,
           "kind": "derived"
         },
         {
@@ -30351,7 +30341,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 406,
+          "line": 404,
           "kind": "seo"
         },
         {
@@ -30572,7 +30562,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 516,
+          "line": 515,
           "kind": "other"
         },
         {
@@ -30592,7 +30582,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 147,
+          "line": 148,
           "kind": "derived"
         },
         {
@@ -30873,8 +30863,13 @@
       },
       "files": [
         {
+          "file": "AGENTS.md",
+          "line": 37,
+          "kind": "other"
+        },
+        {
           "file": "CONTEXT.md",
-          "line": 516,
+          "line": 515,
           "kind": "other"
         },
         {
@@ -30894,7 +30889,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 146,
+          "line": 147,
           "kind": "derived"
         },
         {
@@ -31098,7 +31093,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 404,
+          "line": 402,
           "kind": "seo"
         },
         {
@@ -31613,22 +31608,22 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 192,
+          "line": 193,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 197,
+          "line": 198,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 203,
+          "line": 204,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 209,
+          "line": 210,
           "kind": "derived"
         },
         {
@@ -31684,6 +31679,11 @@
         {
           "file": "docs/backlog.md",
           "line": 206,
+          "kind": "other"
+        },
+        {
+          "file": "docs/backlog.md",
+          "line": 218,
           "kind": "other"
         },
         {
@@ -31747,32 +31747,32 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 116,
+          "line": 115,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 124,
+          "line": 123,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 423,
+          "line": 422,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 453,
+          "line": 452,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 483,
+          "line": 482,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 494,
+          "line": 493,
           "kind": "other"
         },
         {
@@ -31812,22 +31812,22 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 130,
+          "line": 131,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 170,
+          "line": 171,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 190,
+          "line": 191,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 192,
+          "line": 193,
           "kind": "derived"
         },
         {
@@ -32120,12 +32120,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 453,
+          "line": 452,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 483,
+          "line": 482,
           "kind": "other"
         },
         {
@@ -32140,12 +32140,12 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 189,
+          "line": 190,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 192,
+          "line": 193,
           "kind": "derived"
         },
         {
@@ -32390,7 +32390,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 112,
+          "line": 111,
           "kind": "other"
         },
         {
@@ -32420,7 +32420,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 130,
+          "line": 131,
           "kind": "derived"
         },
         {
@@ -32486,7 +32486,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 112,
+          "line": 111,
           "kind": "other"
         },
         {
@@ -32511,12 +32511,12 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 170,
+          "line": 171,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 220,
+          "line": 221,
           "kind": "derived"
         },
         {
