@@ -4,7 +4,15 @@ FROM node:22-alpine AS builder
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci
+# Устойчивость к флапающей сети сервера до npm-реестра (наблюдалось 2026-06-24:
+# периодические обрывы → "npm error Exit handler never called"). Больше попыток
+# и длиннее таймауты, чтобы поймать рабочее окно.
+RUN npm ci --no-audit --no-fund \
+    --fetch-retries=6 \
+    --fetch-retry-factor=2 \
+    --fetch-retry-mintimeout=15000 \
+    --fetch-retry-maxtimeout=120000 \
+    --fetch-timeout=300000
 COPY . .
 RUN npm run build
 
