@@ -2,19 +2,19 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Файлов:** 444  ·  **Строк:** 79 679  ·  **Токенов (≈):** 803 669
+**Файлов:** 444  ·  **Строк:** 79 731  ·  **Токенов (≈):** 805 112
 
 ## По верхним папкам
 
 | Папка | Файлов | Строк | Токенов (≈) |
 |-------|-------:|------:|------------:|
-| `(root)` | 7 | 1 263 | 28 334 |
+| `(root)` | 7 | 1 272 | 28 786 |
 | `.github` | 1 | 56 | 334 |
-| `backend` | 234 | 43 603 | 435 817 |
-| `docs` | 19 | 3 818 | 70 734 |
+| `backend` | 234 | 43 605 | 435 839 |
+| `docs` | 19 | 3 820 | 70 978 |
 | `frontend` | 158 | 27 848 | 239 144 |
 | `mcp` | 3 | 158 | 1 120 |
-| `scripts` | 22 | 2 933 | 28 186 |
+| `scripts` | 22 | 2 972 | 28 911 |
 
 ## Все файлы (по убыванию токенов)
 
@@ -23,20 +23,20 @@
 | `backend/app/data/indicator_seo.py` | 7 443 | 98 357 |
 | `backend/seed_data.py` | 4 053 | 40 460 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 6 930 | 40 161 |
-| `docs/backlog.md` | 776 | 17 744 |
-| `CONTEXT.md` | 527 | 17 409 |
+| `docs/backlog.md` | 778 | 17 988 |
+| `CONTEXT.md` | 536 | 17 861 |
 | `backend/app/services/forecaster.py` | 1 193 | 10 950 |
 | `backend/app/data/view_model_families.py` | 924 | 10 644 |
 | `frontend/src/pages/CalculatorPage.jsx` | 839 | 9 375 |
-| `backend/app/services/seo_renderer.py` | 1 015 | 9 317 |
+| `backend/app/services/seo_renderer.py` | 1 017 | 9 339 |
 | `frontend/src/pages/IndicatorDetail.jsx` | 809 | 8 466 |
 | `backend/app/services/rosstat_weekly_inflation_parser.py` | 890 | 8 334 |
 | `backend/app/services/calendar_sources/official_calendar.py` | 752 | 8 287 |
 | `backend/app/services/derived_ops.py` | 817 | 8 192 |
 | `backend/app/models.py` | 580 | 7 305 |
+| `scripts/build-indicator-index.py` | 666 | 7 299 |
 | `docs/missed_data_audit.md` | 447 | 6 795 |
 | `frontend/src/pages/EmbedBuilder.jsx` | 512 | 6 644 |
-| `scripts/build-indicator-index.py` | 627 | 6 574 |
 | `frontend/src/components/IndicatorChart.jsx` | 674 | 6 358 |
 | `docs/indicator-family-playbook.md` | 579 | 6 192 |
 | `frontend/src/lib/useIndicatorViewModeData.js` | 665 | 6 161 |

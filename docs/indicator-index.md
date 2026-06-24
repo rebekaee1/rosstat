@@ -6,7 +6,7 @@
 
 1. `python scripts/locate-indicator.py <code>` — где код вообще встречается.
 2. Найди запись `<code>` в `docs/indicator-index.json`.
-3. Правь ТОЛЬКО стек из `ui_stack`. Если `flags.shadowed_legacy=true` — легаси-ветка МЁРТВАЯ (перекрыта generic early-return), правка там ни на что не влияет.
+3. Правь стек из `ui_stack`. `flags.shadowed_legacy=true` — standalone-ветка рендера в `IndicatorDetail.jsx` перекрыта generic, НО bespoke content/resolve часто переиспользуются общими секциями + держат старые URL-редиректы → НЕ удалять вслепую (см. `dead-code-report.md`).
 
 **ui_stack** определяется как реальный каскад `IndicatorDetail.jsx` (generic early-return проверяется первым):
 
@@ -16,8 +16,8 @@
 | `cpi` | `frontend/src/lib/cpiViewMode*` + `CpiIndicatorControls` |
 | `housing` | `frontend/src/lib/housingViewMode*` + `HousingIndicatorControls` |
 | `ppi` | `frontend/src/lib/ppiViewMode*` + `PpiIndicatorControls` |
-| `cbr-term` | `cbrTermSliceRate*` (ВНИМАНИЕ: shadowed_legacy — реально рендерится generic) |
-| `unemployment` | `unemploymentViewMode*` (ВНИМАНИЕ: shadowed_legacy — реально generic) |
+| `cbr-term` | `cbrTermSliceRate*` — рендер через generic + общие секции; content/resolve ЖИВЫЕ (chart/table title, picker) |
+| `unemployment` | `unemploymentViewMode*` — рендер через generic + общие секции; canonical-редирект старых URL ЖИВОЙ |
 | `variant` | `frontend/src/lib/indicatorVariants.js` + `VariantGroupPicker` |
 
 ## Сводка

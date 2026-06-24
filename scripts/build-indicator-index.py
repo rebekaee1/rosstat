@@ -18,8 +18,11 @@
 
 UI-СТЕК определяется ТОЧНО как каскад в IndicatorDetail.jsx: generic
 (getViewModeFamily early-return) проверяется ПЕРВЫМ, поэтому коды, попавшие в
-config-driven движок, рендерятся generic даже если у них есть легаси-ветка
-(она «мёртвая» → флаг shadowed_legacy).
+config-driven движок, рендерятся generic, даже если у них есть легаси-ветка
+(её standalone-рендер недостижим → флаг shadowed_legacy). ВНИМАНИЕ: флаг НЕ
+значит «легаси-файл мёртв» — content/resolve часто переиспользуются общими
+секциями (chart/table) и держат canonical-редиректы старых URL. Детали и
+почему это НЕ delete-list — в docs/dead-code-report.md.
 
 Запуск:
     python scripts/build-indicator-index.py           # пишет docs/indicator-index.{json,md}
@@ -450,8 +453,10 @@ def render_md(index: dict) -> str:
     out.append("")
     out.append("1. `python scripts/locate-indicator.py <code>` — где код вообще встречается.")
     out.append("2. Найди запись `<code>` в `docs/indicator-index.json`.")
-    out.append("3. Правь ТОЛЬКО стек из `ui_stack`. Если `flags.shadowed_legacy=true` — "
-               "легаси-ветка МЁРТВАЯ (перекрыта generic early-return), правка там ни на что не влияет.")
+    out.append("3. Правь стек из `ui_stack`. `flags.shadowed_legacy=true` — standalone-ветка "
+               "рендера в `IndicatorDetail.jsx` перекрыта generic, НО bespoke content/resolve "
+               "часто переиспользуются общими секциями + держат старые URL-редиректы → НЕ "
+               "удалять вслепую (см. `dead-code-report.md`).")
     out.append("")
     out.append("**ui_stack** определяется как реальный каскад `IndicatorDetail.jsx` "
                "(generic early-return проверяется первым):")
@@ -462,8 +467,8 @@ def render_md(index: dict) -> str:
     out.append("| `cpi` | `frontend/src/lib/cpiViewMode*` + `CpiIndicatorControls` |")
     out.append("| `housing` | `frontend/src/lib/housingViewMode*` + `HousingIndicatorControls` |")
     out.append("| `ppi` | `frontend/src/lib/ppiViewMode*` + `PpiIndicatorControls` |")
-    out.append("| `cbr-term` | `cbrTermSliceRate*` (ВНИМАНИЕ: shadowed_legacy — реально рендерится generic) |")
-    out.append("| `unemployment` | `unemploymentViewMode*` (ВНИМАНИЕ: shadowed_legacy — реально generic) |")
+    out.append("| `cbr-term` | `cbrTermSliceRate*` — рендер через generic + общие секции; content/resolve ЖИВЫЕ (chart/table title, picker) |")
+    out.append("| `unemployment` | `unemploymentViewMode*` — рендер через generic + общие секции; canonical-редирект старых URL ЖИВОЙ |")
     out.append("| `variant` | `frontend/src/lib/indicatorVariants.js` + `VariantGroupPicker` |")
     out.append("")
     out.append("## Сводка")
@@ -520,27 +525,54 @@ def render_dead_code(index: dict) -> str:
     out.append("")
     out.append(
         "> Генерируется `scripts/build-indicator-index.py` из флагов карты. "
-        "НЕ редактировать руками. В ЭТОЙ итерации НИЧЕГО не удалялось — это "
-        "список-кандидат на будущую вычистку. Источник флагов — "
+        "НЕ редактировать руками. Это **список на расследование, НЕ слепой "
+        "delete-list**. Флаги ловят shadowing standalone-ветки рендера в "
+        "`IndicatorDetail.jsx`, но НЕ доказывают, что легаси-код мёртв: см. "
+        "раздел «Почему это НЕ delete-list» ниже. Источник флагов — "
         "`docs/indicator-index.json`."
     )
+    out.append("")
+    out.append("## Почему это НЕ delete-list (расследование 2026-06-24)")
+    out.append("")
+    out.append("Попытка чистки view-mode показала, что помеченное флагами легаси "
+               "**живое** по двум независимым причинам — удалять нельзя без эскалации:")
+    out.append("")
+    out.append("1. **Живые canonical-редиректы старых URL.** `IndicatorDetail.jsx` "
+               "редиректит старые derived-URL на родительскую карточку через легаси "
+               "`viewModeCanonicalTarget` / `unemploymentCanonicalTarget`. Коды "
+               "`trade-balance-yoy-abs`, `current-account-yoy-abs`, "
+               "`unemployment-quarterly`, `unemployment-annual` **отсутствуют** в "
+               "generated-конфиге → их редирект держится ТОЛЬКО на легаси. Эти URL "
+               "в sitemap (индексируются) — удаление тихо ломает SEO, тесты не ловят. "
+               "ЭСКАЛАЦИЯ.")
+    out.append("2. **bespoke content переиспользуется живыми секциями.** "
+               "`cbrTermSliceRate*` / `unemploymentViewMode*` импортируются в "
+               "`IndicatorChartSection.jsx`, `IndicatorDataTableSection.jsx`, "
+               "`cpiViewModeContent.jsx`, `useIndicatorViewModeData.js`, picker-groups — "
+               "т.е. заголовки графика/таблицы и резолв режимов живут через общие "
+               "секции, а не только через standalone-ветку. Файлы НЕ мёртвые.")
+    out.append("")
+    out.append("Вывод: `shadowed_legacy`/`in_both` = «standalone-ветка рендера "
+               "перекрыта», НЕ «файл можно удалить». Перед любым удалением — проверить "
+               "(а) покрывает ли generated-движок старый URL, (б) импорты экспортов.")
     out.append("")
     out.append("## Что значат флаги")
     out.append("")
     out.append("- **in_both_viewmode_systems** — код объявлен И в легаси "
                "`frontend/src/lib/viewModeFamilies.js`, И в config-driven движке "
                "(`view_model_families.py` → `viewModelFamilies.generated.json`).")
-    out.append("- **shadowed_legacy** — реально рендерится generic-движком, потому что "
-               "`IndicatorDetail.jsx` делает `getViewModeFamily(code)` early-return ПЕРВЫМ. "
-               "Легаси-ветка для кода недостижима — правка там ни на что не влияет.")
+    out.append("- **shadowed_legacy** — standalone-ветка рендера в `IndicatorDetail.jsx` "
+               "недостижима (generic early-return ПЕРВЫМ). НЕ значит, что легаси-файл "
+               "мёртв — см. раздел выше (живые редиректы + переиспользование секциями).")
     out.append("")
     out.append(f"Итог: in_both={s['in_both_viewmode_systems']}, shadowed_legacy={s['shadowed_legacy']}.")
     out.append("")
-    out.append("## in_both_viewmode_systems — дубли легаси-trade vs generated")
+    out.append("## in_both_viewmode_systems — легаси-trade vs generated")
     out.append("")
-    out.append("Все эти коды есть и в `viewModeFamilies.js`, и в generated-конфиге; "
-               "из-за early-return generic легаси-запись мёртвая. Кандидат на удаление — "
-               "соответствующая запись в `frontend/src/lib/viewModeFamilies.js`.")
+    out.append("Коды есть и в `viewModeFamilies.js`, и в generated-конфиге. Для "
+               "`*-yoy`/`*-qoq`/`*-mom`, покрытых движком, легаси-запись мёртвая. Но "
+               "`*-yoy-abs` движок НЕ покрывает → их легаси canonical-редирект живой "
+               "(см. раздел выше). Удаление — только после эскалации по старым URL.")
     out.append("")
     if both:
         out.append("| Код | ui_stack | Легаси-запись (файл:строка) | Перекрыто (generated) |")
@@ -554,13 +586,15 @@ def render_dead_code(index: dict) -> str:
     else:
         out.append("_нет_")
     out.append("")
-    out.append("## shadowed_legacy — мёртвые легаси-ветки (полный список)")
+    out.append("## shadowed_legacy — standalone-ветка перекрыта (НЕ значит «удалить»)")
     out.append("")
-    out.append("Bespoke-стеки `cbr-term` (ставки по сроку) и `unemployment` целиком "
-               "перекрыты generic-движком (`view_model_families.py` содержит эти базы как "
-               "T2y-семьи). Легаси-файлы `cbrTermSliceRate*` и `unemploymentViewMode*` + их "
-               "ветки в `IndicatorDetail.jsx` — мёртвые для рендера (могут оставаться "
-               "только canonical-редиректы).")
+    out.append("Bespoke-стеки `cbr-term` (ставки по сроку) и `unemployment`: их "
+               "standalone-ветка рендера в `IndicatorDetail.jsx` перекрыта generic-движком "
+               "(`view_model_families.py` содержит эти базы как T2y-семьи). НО файлы "
+               "`cbrTermSliceRate*` / `unemploymentViewMode*` **живые** — их content/resolve "
+               "переиспользуются общими секциями (chart/table title, режимы, picker), а "
+               "canonical-редиректы держат старые URL `unemployment-quarterly/-annual`. "
+               "Удалять нельзя (см. раздел «Почему это НЕ delete-list»).")
     out.append("")
     out.append("| Код | ui_stack | Легаси-файлы (file:line) |")
     out.append("|-----|----------|--------------------------|")
@@ -569,16 +603,21 @@ def render_dead_code(index: dict) -> str:
         legacy_str = "; ".join(f"`{f['file']}:{f['line']}`" for f in legacy) or "— (см. files в JSON)"
         out.append(f"| `{r['code']}` | `{r['ui_stack']}` | {legacy_str} |")
     out.append("")
-    out.append("## Рекомендации (на будущую отдельную задачу, НЕ сейчас)")
+    out.append("## Рекомендации (требуют продуктового решения — ЭСКАЛАЦИЯ)")
     out.append("")
-    out.append("1. Удалить из `frontend/src/lib/viewModeFamilies.js` записи trade-кодов "
-               "(`exports/imports/trade-balance/current-account` + `*-monthly`), "
-               "перекрытые generated-конфигом, и связанную ветку `findViewModeFamily` "
-               "в `IndicatorDetail.jsx`.")
-    out.append("2. Свернуть bespoke `cbrTermSliceRate*` и `unemploymentViewMode*`, оставив "
-               "только canonical-редиректы старых URL (если нужны для SEO).")
-    out.append("3. После любой такой правки — `python scripts/build-indicator-index.py` "
-               "и сверить, что shadowed_legacy уменьшился.")
+    out.append("Чистка этого слоя НЕ автономна: упирается в старые индексируемые URL. "
+               "Прежде чем резать — решить с владельцем:")
+    out.append("")
+    out.append("1. **Старые derived-URL** `trade-balance-yoy-abs`, `current-account-yoy-abs`, "
+               "`unemployment-quarterly`, `unemployment-annual` (в sitemap, движком НЕ "
+               "покрыты): держим легаси-редирект как есть, или консолидируем ряды в движок "
+               "(`*-yoy-abs` → `*-yoy`) с 301-картой? Второе — отдельная задача с правкой "
+               "seed/derived/sitemap.")
+    out.append("2. Только ПОСЛЕ решения по (1): живые редиректы вынести в явную redirect-карту, "
+               "затем убрать мёртвую standalone-ветку рендера. content/resolve, "
+               "переиспользуемые секциями, НЕ трогать.")
+    out.append("3. После любой правки — `python scripts/build-indicator-index.py` и "
+               "`./scripts/check-all.sh`.")
     out.append("")
     return "\n".join(out)
 

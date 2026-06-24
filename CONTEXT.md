@@ -508,6 +508,15 @@ Legacy `WeeklySpec` / `typical_day` builders в `calendar_seed.py` оставл�
 
 **Trap 4 — прод не достаёт Telegram по IPv6 (главная причина «с сайта не шлётся»).** На прод-сервере `api.telegram.org` резолвится **только в IPv6**, а IPv6-маршрут до Telegram у хостера мёртвый → `httpx.ConnectTimeout` (15s), который глушится в `_notify_*_safe`/`send_telegram` (warning в логах). Симптом: тест из dev-окружения приходит, а **с прода и дайджест — нет**. Диагностика: `docker compose exec backend python -c "import socket; socket.create_connection(('149.154.167.220',443),5)"` — рабочий IPv4 Telegram DC. Фикс — `extra_hosts: api.telegram.org:${TELEGRAM_API_IP:-149.154.167.220}` у backend в `docker-compose.yml` (пишет `/etc/hosts` контейнера на уровне C-резолвера; Python-monkeypatch `socket.getaddrinfo` НЕ помогает — httpx/anyio резолвит мимо него). Проверка из контейнера: `docker compose exec backend curl --resolve api.telegram.org:443:149.154.167.220 -s ".../getMe"` → `{"ok":true}`.
 
+### View-mode `shadowed_legacy` ≠ мёртвый код (расследование 2026-06-24)
+
+Карта (`docs/indicator-index.json`) ставит `shadowed_legacy` / `in_both_viewmode_systems` для кодов, чья **standalone-ветка рендера** в `IndicatorDetail.jsx` перекрыта generic-движком (early-return `getViewModeFamily` ПЕРВЫМ). Флаг ловит только shadowing рендера и **НЕ доказывает**, что легаси-файл можно удалить. Подтверждено на cbr-term / unemployment / trade двумя независимыми причинами:
+
+- **Живые canonical-редиректы старых URL.** Старые derived-коды `trade-balance-yoy-abs`, `current-account-yoy-abs`, `unemployment-quarterly`, `unemployment-annual` **отсутствуют** в `viewModelFamilies.generated.json` → их редирект на родительскую карточку держится ТОЛЬКО на легаси `viewModeCanonicalTarget` / `unemploymentCanonicalTarget` (каскад в `IndicatorDetail.jsx`). Эти URL в sitemap и **индексируются** — удаление редиректа = тихий 404 со старых ссылок и просадка SEO, чего `check-all`/тесты НЕ ловят.
+- **bespoke content переиспользуется живыми секциями.** `cbrTermSliceRate*` / `unemploymentViewMode*` импортируются в `IndicatorChartSection`, `IndicatorDataTableSection`, `cpiViewModeContent`, `useIndicatorViewModeData`, picker-groups — заголовки графика/таблицы и резолв режимов живут через общие секции, а не только через standalone-ветку.
+
+**Mitigation:** перед удалением любого view-mode-легаси — (1) `grep` по `viewModelFamilies.generated.json`: покрывает ли движок старый URL; (2) проверить импорты экспортов по `frontend/src`. Если редирект живой — сперва вынести его в явную redirect-карту, и только потом чистить рендер. `docs/dead-code-report.md` переписан под это (список на расследование, НЕ delete-list). Сама консолидация старых `*-yoy-abs` URL в движок — backlog A3 (требует продуктового решения по 301-карте).
+
 ---
 
 ## Architectural language (from improve-codebase-architecture skill)
