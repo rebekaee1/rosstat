@@ -2,13 +2,13 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Файлов:** 444  ·  **Строк:** 79 681  ·  **Токенов (≈):** 803 691
+**Файлов:** 444  ·  **Строк:** 79 698  ·  **Токенов (≈):** 803 994
 
 ## По верхним папкам
 
 | Папка | Файлов | Строк | Токенов (≈) |
 |-------|-------:|------:|------------:|
-| `(root)` | 7 | 1 263 | 28 334 |
+| `(root)` | 7 | 1 280 | 28 637 |
 | `.github` | 1 | 56 | 334 |
 | `backend` | 234 | 43 605 | 435 839 |
 | `docs` | 19 | 3 818 | 70 734 |
@@ -42,9 +42,9 @@
 | `frontend/src/lib/useIndicatorViewModeData.js` | 665 | 6 161 |
 | `backend/app/services/calendar_seed.py` | 614 | 5 495 |
 | `docs/adr/0006-indicator-card-unification.md` | 227 | 5 311 |
+| `AGENTS.md` | 236 | 5 193 |
 | `frontend/src/pages/ComparePage.jsx` | 484 | 5 037 |
 | `backend/tests/test_derived_ops.py` | 576 | 5 026 |
-| `AGENTS.md` | 219 | 4 890 |
 | `docs/data_sources.md` | 324 | 4 514 |
 | `backend/tests/forecast_strategies/test_derived.py` | 502 | 4 460 |
 | `backend/app/services/minfin_budget_parser.py` | 471 | 4 420 |

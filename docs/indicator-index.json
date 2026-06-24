@@ -1886,7 +1886,7 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 166,
+          "line": 183,
           "kind": "other"
         },
         {
@@ -4593,12 +4593,17 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 16,
+          "line": 15,
           "kind": "other"
         },
         {
           "file": "AGENTS.md",
-          "line": 17,
+          "line": 27,
+          "kind": "other"
+        },
+        {
+          "file": "AGENTS.md",
+          "line": 28,
           "kind": "other"
         },
         {
@@ -10150,7 +10155,7 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 166,
+          "line": 183,
           "kind": "other"
         },
         {
@@ -16082,7 +16087,7 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 53,
+          "line": 70,
           "kind": "other"
         },
         {
@@ -26444,12 +26449,17 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 16,
+          "line": 15,
           "kind": "other"
         },
         {
           "file": "AGENTS.md",
-          "line": 17,
+          "line": 27,
+          "kind": "other"
+        },
+        {
+          "file": "AGENTS.md",
+          "line": 28,
           "kind": "other"
         },
         {
@@ -29514,7 +29524,7 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 166,
+          "line": 183,
           "kind": "other"
         },
         {
@@ -30802,6 +30812,11 @@
         "in_seed_no_ui_stack": false
       },
       "files": [
+        {
+          "file": "AGENTS.md",
+          "line": 37,
+          "kind": "other"
+        },
         {
           "file": "backend/app/data/indicator_seo.py",
           "line": 457,

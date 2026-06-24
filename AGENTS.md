@@ -1,29 +1,46 @@
 <!-- ============================================================ -->
-<!-- FAST-PATH (добавлено feature/indicator-index, 2026-06-24)    -->
+<!-- FAST-PATH (feature/indicator-index, 2026-06-24)              -->
 <!-- ============================================================ -->
+
+## Слои индикатора (актуальный механизм каждого)
+
+Индикатор «прошивает» все слои; у каждого один канонический механизм. Перед
+правкой найди слой, правь его механизм:
+
+| Слой | Актуальный механизм (правится тут) |
+|------|-------------------------------------|
+| данные/парсер | `PARSER_REGISTRY` + `backend/app/services/*_parser.py` (internals — в docstring парсера) |
+| derived | `DERIVED_SPECS` (`calculation_engine.py`) + чистые ops в `derived_ops.py` |
+| прогноз | `forecast_strategies/registry.py` (`model_config_json.forecast_strategy` в БД) |
+| отрисовка/view-mode | **generic** config-движок: `view_model_families.py` → `viewModelFamilies.generated.json` → `viewModeEngine.js` → `GenericIndicatorView`. Bespoke (`cpi`/`housing`/`ppi`) — только эти 3 семьи |
+| seo | `app/data/indicator_seo.py` (curated) + `seo_content.py` (категории) + `seo_renderer.py` (SSR); остальное (sitemap/og/rss) — авто из БД |
+| листинг | `INDICATOR_HIDDEN_FROM_LISTING` в `indicator_seo.py` → `seed_data.py` (флаг `is_listed`) |
 
 ## FAST-PATH — задача про индикатор X?
 
-Не угадывай, где править. Действуй по карте:
-
-1. **Где код вообще встречается:** `python scripts/locate-indicator.py X`
-   (группирует по seed / parser / derived / family / seo / variants / tests).
-2. **Открой запись `X` в [`docs/indicator-index.json`](docs/indicator-index.json)** —
-   там `ui_stack`, `source`/`parser_type`, `forecast_strategy`, `derived_siblings`,
-   `is_listed`, `flags`. Человекочитаемый срез — [`docs/indicator-index.md`](docs/indicator-index.md).
-3. **Правь ТОЛЬКО тот стек, что указан в `ui_stack`:**
-   `generic` → `backend/app/data/view_model_families.py` (+ regen
-   `viewModelFamilies.generated.json`) / `cpi|housing|ppi` → bespoke
+1. **Где код встречается:** `python scripts/locate-indicator.py X`
+   (seed / parser / derived / family / seo / variants / tests).
+2. **Запись `X` в [`docs/indicator-index.json`](docs/indicator-index.json)** —
+   `ui_stack`, `parser_type`, `forecast_strategy`, `derived_siblings`, `is_listed`,
+   `flags`. Человекочитаемо — [`docs/indicator-index.md`](docs/indicator-index.md).
+3. **Правь механизм нужного слоя** (таблица выше) / для UI — стек из `ui_stack`:
+   `generic` → `view_model_families.py` (+ regen) / `cpi|housing|ppi` → bespoke
    `frontend/src/lib/{cpi,housing,ppi}ViewMode*` / `variant` → `indicatorVariants.js`.
-   Если стоит **`flags.shadowed_legacy: true`** — легаси-ветка МЁРТВАЯ
-   (перекрыта generic early-return в `IndicatorDetail.jsx`), правка там **ни на что
-   не влияет**; список мёртвого — [`docs/dead-code-report.md`](docs/dead-code-report.md).
-4. **Доведи данные до UI** по рецепту [`.cursor/rules/indicator-data-delivery.mdc`](.cursor/rules/indicator-data-delivery.mdc).
+4. **Доведи данные до UI** — [`.cursor/rules/indicator-data-delivery.mdc`](.cursor/rules/indicator-data-delivery.mdc).
+5. `./scripts/check-all.sh` (регенерирует карту + guard `--check`).
 
-Карта детерминированная (парсинг `seed_data.py` / `view_model_families.py` /
-`calculation_engine` / легаси JS-конфигов), регенерируется в `check-all.sh`
-(`scripts/build-indicator-index.py`, guard `--check`). Объективный список всех
-файлов — [`docs/repo-inventory.md`](docs/repo-inventory.md).
+> **`flags.shadowed_legacy` / `in_both_viewmode_systems` — НЕ «можно удалять».**
+> Флаг значит лишь, что standalone-ветка рендера в `IndicatorDetail.jsx` перекрыта
+> generic. Сам легаси-файл обычно ЖИВОЙ: его content/resolve переиспользуются
+> общими секциями (chart/table title, picker, data-resolve) и держат
+> canonical-редиректы старых индексируемых URL (`*-yoy-abs`,
+> `unemployment-quarterly/-annual` — движком не покрыты). Расследование и почему
+> это НЕ delete-list — [`docs/dead-code-report.md`](docs/dead-code-report.md).
+> Удаление редиректа = тихая просадка SEO, тесты не ловят → ЭСКАЛАЦИЯ.
+
+Карта детерминированная, регенерируется в `check-all.sh`
+(`scripts/build-indicator-index.py`, guard `--check`). Объективный список файлов —
+[`docs/repo-inventory.md`](docs/repo-inventory.md).
 
 ---
 
