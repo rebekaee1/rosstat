@@ -271,9 +271,18 @@ Multi-source merge: история (1897+) + components (1990+) + latest акт�
 | `doctoral-students` | `mediabank/Kadry_VO.xls` | sheet 4 |
 | `rd-organizations` | `mediabank/Nauka_1.xls` | sheet 1, "всего" row |
 | `rd-personnel` | `mediabank/nauka_2.xls` | sheet 1, "всего" row |
-| `innovation-activity` | `mediabank/innov_1_{YYYY}.xls` | sheet 1, RF row |
-| `tech-innovation-share` | `mediabank/innov_2_{YYYY}.xls` | sheet 1, RF row |
+| `innovation-activity` | `mediabank/innov_1_{YYYY}.xls` | sheet 1, RF row; `min_year=2018` |
+| `tech-innovation-share` | `mediabank/innov_2_{YYYY}.xls` | sheet 1, RF row; `min_year=2018` |
 | `small-business-innovation` | `mediabank/innov-mp_1.xls` | sheet 5, RF row |
+
+> **Методологический разрыв (Осло 3→4, приказ Росстата № 788).** С перерасчёта
+> за 2017 показатели инноваций считаются по 4-й редакции Руководства Осло и
+> несопоставимы со старым рядом (`tech-innovation-share` ≤2017 ~7-9% → ≥2018
+> ~20-24%; `innovation-activity` аналогично, мягче). У нас значения за ≤2017
+> остались по старой методике → ложный вертикальный «обрыв» на графике. Лечится
+> `min_year=2018` в `SCIENCE_CONFIG` (`rosstat_science_parser.py`): парсер
+> отдаёт только новый ряд. Существующие старые точки на проде вычищены разово
+> (DELETE date < 2018). `small-business-innovation` уже идёт с 2019 — не затронут.
 
 ---
 

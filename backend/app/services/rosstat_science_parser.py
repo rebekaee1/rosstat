@@ -237,13 +237,21 @@ SCIENCE_CONFIG = {
         "files": ["nauka_2.xls"],
         "parser": "nauka_total",
     },
+    # Методологический разрыв Росстата (Руководство Осло 3-я → 4-я редакция,
+    # приказ № 788): с перерасчёта за 2017 показатели инноваций считаются по
+    # новой методике и НЕсопоставимы со старым рядом (≤2016/2017 ~7-10%, новый
+    # ~20-24% у tech-innovation). Старые значения за 2017 у нас остались по
+    # 3-й редакции — обрезаем ряд до первого полного года новой методики (2018),
+    # чтобы график не показывал ложный вертикальный «обрыв». См. data_sources.md.
     "innovation-activity": {
         "files_template": "innov_1_{y}.xls",
         "parser": "innov_russia",
+        "min_year": 2018,
     },
     "tech-innovation-share": {
         "files_template": "innov_2_{y}.xls",
         "parser": "innov_russia",
+        "min_year": 2018,
     },
     "small-business-innovation": {
         "files": ["innov-mp_1.xls"],
@@ -299,6 +307,11 @@ class RosstatScienceParser(BaseParser):
             points = parse_innov_russia_xls(content, sci_cfg.get("sheet", "1"))
         else:
             raise ValueError(f"Unknown science parser: {parser_kind}")
+
+        # Обрезка методологически несопоставимой истории (Осло 3→4, см. SCIENCE_CONFIG).
+        min_year = sci_cfg.get("min_year")
+        if min_year:
+            points = [p for p in points if p.date.year >= min_year]
 
         return points, BASE_URL + used_file
 
