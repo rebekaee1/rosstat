@@ -4226,7 +4226,7 @@ INDICATORS = [
     },
     {
         "code": "fuel-ai92",
-        "name": "Бензин АИ-92",
+        "name": "Цены на бензин АИ-92",
         "name_en": "Gasoline AI-92",
         "unit": "руб./л",
         "frequency": "weekly",
@@ -4241,15 +4241,16 @@ INDICATORS = [
             "марки АИ-92 на конец недели, рублей за литр. Цена усредняется "
             "Росстатом по выборке регионов и автозаправочных станций и "
             "публикуется еженедельно. На карточке — недельный ряд и средние "
-            "по месяцу, кварталу и году из того же ряда; прогноз — короткий "
-            "трендовый на ближайшие недели."
+            "по месяцу, кварталу и году; прогноз строится по месячным средним, "
+            "а квартальная и годовая оценки выводятся из месячного прогноза."
         ),
         "parser_type": "rosstat_weekly_price",
         "model_config_json": {
             "product_label": "Бензин автомобильный марки АИ-92, л",
-            "forecast_steps": 8,
-            "forecast_strategy": "generic_ols",
-            "forecast_transform": "absolute",
+            # Недельный прогноз отключён (профанация < месяца). Прогноз — на
+            # месячной средней (fuel-ai92-avg-month, monthly_auto) с протяжкой
+            # в квартал/год. См. view_model_families.monthly_forecast.
+            "forecast_steps": 0,
             "validation": {"min": 20, "max": 300},
         },
         "is_active": True,
@@ -4257,7 +4258,7 @@ INDICATORS = [
     },
     {
         "code": "fuel-ai95",
-        "name": "Бензин АИ-95",
+        "name": "Цены на бензин АИ-95",
         "name_en": "Gasoline AI-95",
         "unit": "руб./л",
         "frequency": "weekly",
@@ -4272,15 +4273,13 @@ INDICATORS = [
             "марки АИ-95 на конец недели, рублей за литр. Цена усредняется "
             "Росстатом по выборке регионов и автозаправочных станций и "
             "публикуется еженедельно. На карточке — недельный ряд и средние "
-            "по месяцу, кварталу и году из того же ряда; прогноз — короткий "
-            "трендовый на ближайшие недели."
+            "по месяцу, кварталу и году; прогноз строится по месячным средним, "
+            "а квартальная и годовая оценки выводятся из месячного прогноза."
         ),
         "parser_type": "rosstat_weekly_price",
         "model_config_json": {
             "product_label": "Бензин автомобильный марки АИ-95, л",
-            "forecast_steps": 8,
-            "forecast_strategy": "generic_ols",
-            "forecast_transform": "absolute",
+            "forecast_steps": 0,
             "validation": {"min": 20, "max": 300},
         },
         "is_active": True,
@@ -4288,7 +4287,7 @@ INDICATORS = [
     },
     {
         "code": "fuel-diesel",
-        "name": "Дизельное топливо",
+        "name": "Цена дизельного топлива",
         "name_en": "Diesel Fuel",
         "unit": "руб./л",
         "frequency": "weekly",
@@ -4303,15 +4302,13 @@ INDICATORS = [
             "конец недели, рублей за литр. Цена усредняется Росстатом по "
             "выборке регионов и автозаправочных станций и публикуется "
             "еженедельно. На карточке — недельный ряд и средние по месяцу, "
-            "кварталу и году из того же ряда; прогноз — короткий трендовый на "
-            "ближайшие недели."
+            "кварталу и году; прогноз строится по месячным средним, а "
+            "квартальная и годовая оценки выводятся из месячного прогноза."
         ),
         "parser_type": "rosstat_weekly_price",
         "model_config_json": {
             "product_label": "Дизельное топливо, л",
-            "forecast_steps": 8,
-            "forecast_strategy": "generic_ols",
-            "forecast_transform": "absolute",
+            "forecast_steps": 0,
             "validation": {"min": 20, "max": 300},
         },
         "is_active": True,
@@ -4445,9 +4442,18 @@ for _meta in _iter_vmf_siblings():
     _parent = _PARENT_META[_meta["parent"]]
     _desc, _method = _sibling_texts(_meta)
     _fcast = _meta.get("forecast")
-    if _fcast:
+    _strategy = _meta.get("forecast_strategy")
+    if _strategy == "monthly_auto":
+        # avg-month недельной семьи (топливо): собственный monthly_auto по
+        # месячной средней. Квартал/год протягиваются из неё (derived ниже).
         _model_cfg = {
-            "forecast_steps": _FCAST_STEPS_BY_FREQ.get(_meta["frequency"], 4),
+            "forecast_steps": _meta.get("forecast_steps") or 12,
+            "forecast_strategy": "monthly_auto",
+        }
+    elif _fcast:
+        _model_cfg = {
+            "forecast_steps": _meta.get("forecast_steps")
+            or _FCAST_STEPS_BY_FREQ.get(_meta["frequency"], 4),
             "forecast_strategy": "derived_from_source",
             "derived_forecast": _fcast,
         }

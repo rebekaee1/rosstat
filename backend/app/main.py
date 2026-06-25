@@ -144,6 +144,21 @@ async def lifespan(app: FastAPI):
             name="Daily ETL (all active indicators: Rosstat, CBR, …)",
             replace_existing=True,
         )
+        # Вечерний полный прогон — данные, опубликованные источниками в течение
+        # дня (после утреннего 06:00). Тот же job (ETL + IndexNow-пинг по
+        # изменившимся карточкам), идемпотентный upsert — повторный прогон без
+        # изменений не трогает БД.
+        scheduler.add_job(
+            daily_update_job,
+            trigger=CronTrigger(
+                hour=settings.scheduler_evening_hour,
+                minute=settings.scheduler_evening_minute,
+                timezone="Europe/Moscow",
+            ),
+            id="evening_etl",
+            name="Evening ETL pass (intraday source updates)",
+            replace_existing=True,
+        )
         from app.services.calendar_seed import seed_calendar
 
         async def _calendar_refresh_job():

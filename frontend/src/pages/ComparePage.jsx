@@ -375,7 +375,7 @@ export default function ComparePage() {
   const atCap = codes.length >= cap;
   const capHint = isAuthed
     ? `Максимум ${USER_MAX} показателей`
-    : `Гость — до ${GUEST_MAX}. Войдите для сравнения до ${USER_MAX}`;
+    : 'Хотите сравнить больше двух индикаторов — зарегистрируйтесь';
   const title = series.length
     ? `Сравнение: ${series.map((s) => s.ind?.name || s.code).join(' · ')}`
     : 'Сравнение показателей';
@@ -425,7 +425,7 @@ export default function ComparePage() {
               : `Выбрано ${codes.length} из ${GUEST_MAX} (гость). `}
             {!isAuthed && (
               <button type="button" onClick={() => { setUpsellOpen(true); track(events.REGISTER_NUDGE_EXPAND, { from: 'compare' }); }} className="ml-1 text-champagne hover:underline">
-                Сравнивать до 10 →
+                Хотите больше двух — зарегистрируйтесь →
               </button>
             )}
           </div>

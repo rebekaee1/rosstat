@@ -76,12 +76,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1857,
+          "line": 1855,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 703,
+          "line": 710,
           "kind": "derived"
         },
         {
@@ -106,7 +106,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4485,
+          "line": 4491,
           "kind": "seed"
         },
         {
@@ -331,9 +331,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "auto-loan-rate",
       "variant_group": null,
@@ -362,9 +362,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "auto-loan-rate",
       "variant_group": null,
@@ -513,12 +513,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5697,
+          "line": 5695,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 794,
+          "line": 808,
           "kind": "derived"
         },
         {
@@ -658,12 +658,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5535,
+          "line": 5533,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 783,
+          "line": 797,
           "kind": "derived"
         },
         {
@@ -875,12 +875,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2099,
+          "line": 2097,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 684,
+          "line": 691,
           "kind": "derived"
         },
         {
@@ -1598,12 +1598,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2189,
+          "line": 2187,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 693,
+          "line": 700,
           "kind": "derived"
         },
         {
@@ -2150,12 +2150,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3902,
+          "line": 3900,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 754,
+          "line": 768,
           "kind": "derived"
         },
         {
@@ -2180,7 +2180,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4485,
+          "line": 4491,
           "kind": "seed"
         },
         {
@@ -2301,9 +2301,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "budget-deficit",
       "variant_group": null,
@@ -2332,9 +2332,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "budget-deficit",
       "variant_group": null,
@@ -2571,12 +2571,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4073,
+          "line": 4071,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 742,
+          "line": 756,
           "kind": "derived"
         },
         {
@@ -2601,7 +2601,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4485,
+          "line": 4491,
           "kind": "seed"
         },
         {
@@ -2677,9 +2677,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "budget-expenditure",
       "variant_group": null,
@@ -2708,9 +2708,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "budget-expenditure",
       "variant_group": null,
@@ -2932,12 +2932,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3988,
+          "line": 3986,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 741,
+          "line": 755,
           "kind": "derived"
         },
         {
@@ -2967,7 +2967,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4485,
+          "line": 4491,
           "kind": "seed"
         },
         {
@@ -3118,9 +3118,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "budget-revenue",
       "variant_group": null,
@@ -3149,9 +3149,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "budget-revenue",
       "variant_group": null,
@@ -3410,12 +3410,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4156,
+          "line": 4154,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 721,
+          "line": 728,
           "kind": "derived"
         },
         {
@@ -3440,7 +3440,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4486,
+          "line": 4492,
           "kind": "seed"
         },
         {
@@ -3640,9 +3640,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "business-credit",
       "variant_group": null,
@@ -3671,9 +3671,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "business-credit",
       "variant_group": null,
@@ -3830,12 +3830,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7343,
+          "line": 7341,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 772,
+          "line": 786,
           "kind": "derived"
         },
         {
@@ -3896,9 +3896,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "capital-investment",
       "variant_group": null,
@@ -4074,12 +4074,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3244,
+          "line": 3242,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 683,
+          "line": 690,
           "kind": "derived"
         },
         {
@@ -4672,12 +4672,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8181,
+          "line": 8179,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 691,
+          "line": 698,
           "kind": "derived"
         },
         {
@@ -5169,12 +5169,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7657,
+          "line": 7655,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 744,
+          "line": 758,
           "kind": "derived"
         },
         {
@@ -5204,7 +5204,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4497,
+          "line": 4503,
           "kind": "seed"
         },
         {
@@ -5265,9 +5265,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "construction-work",
       "variant_group": null,
@@ -5296,9 +5296,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "construction-work",
       "variant_group": null,
@@ -5527,12 +5527,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4715,
+          "line": 4713,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 722,
+          "line": 729,
           "kind": "derived"
         },
         {
@@ -5557,7 +5557,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4486,
+          "line": 4492,
           "kind": "seed"
         },
         {
@@ -5772,9 +5772,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "consumer-credit",
       "variant_group": null,
@@ -5803,9 +5803,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "consumer-credit",
       "variant_group": null,
@@ -5971,12 +5971,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8104,
+          "line": 8102,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 686,
+          "line": 693,
           "kind": "derived"
         },
         {
@@ -6474,12 +6474,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2599,
+          "line": 2597,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 700,
+          "line": 707,
           "kind": "derived"
         },
         {
@@ -7044,7 +7044,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1450,
+          "line": 1448,
           "kind": "seo"
         },
         {
@@ -7124,22 +7124,22 @@
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 266,
+          "line": 272,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 351,
+          "line": 357,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 365,
+          "line": 371,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 405,
+          "line": 411,
           "kind": "seo"
         },
         {
@@ -7179,22 +7179,22 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4692,
+          "line": 4698,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4693,
+          "line": 4699,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4694,
+          "line": 4700,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4705,
+          "line": 4711,
           "kind": "seed"
         },
         {
@@ -8175,7 +8175,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1517,
+          "line": 1515,
           "kind": "seo"
         },
         {
@@ -8516,7 +8516,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4592,
+          "line": 4598,
           "kind": "seed"
         },
         {
@@ -8902,7 +8902,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1601,
+          "line": 1599,
           "kind": "seo"
         },
         {
@@ -9173,7 +9173,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4593,
+          "line": 4599,
           "kind": "seed"
         },
         {
@@ -9707,7 +9707,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1680,
+          "line": 1678,
           "kind": "seo"
         },
         {
@@ -9978,7 +9978,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4594,
+          "line": 4600,
           "kind": "seed"
         },
         {
@@ -10410,17 +10410,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1048,
+          "line": 1046,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1965,
+          "line": 1963,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 710,
+          "line": 717,
           "kind": "derived"
         },
         {
@@ -10445,7 +10445,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4487,
+          "line": 4493,
           "kind": "seed"
         },
         {
@@ -10645,9 +10645,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-corp-1to3y",
       "variant_group": null,
@@ -10676,9 +10676,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-corp-1to3y",
       "variant_group": null,
@@ -10840,17 +10840,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1049,
+          "line": 1047,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1969,
+          "line": 1967,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 711,
+          "line": 718,
           "kind": "derived"
         },
         {
@@ -10875,7 +10875,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4487,
+          "line": 4493,
           "kind": "seed"
         },
         {
@@ -11075,9 +11075,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-corp-over3y",
       "variant_group": null,
@@ -11106,9 +11106,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-corp-over3y",
       "variant_group": null,
@@ -11275,12 +11275,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1961,
+          "line": 1959,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 705,
+          "line": 712,
           "kind": "derived"
         },
         {
@@ -11300,7 +11300,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4487,
+          "line": 4493,
           "kind": "seed"
         },
         {
@@ -11520,9 +11520,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-corp-short",
       "variant_group": null,
@@ -11551,9 +11551,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-corp-short",
       "variant_group": null,
@@ -11715,17 +11715,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1050,
+          "line": 1048,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1977,
+          "line": 1975,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 712,
+          "line": 719,
           "kind": "derived"
         },
         {
@@ -11750,7 +11750,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4488,
+          "line": 4494,
           "kind": "seed"
         },
         {
@@ -11950,9 +11950,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-ind-1to3y",
       "variant_group": null,
@@ -11981,9 +11981,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-ind-1to3y",
       "variant_group": null,
@@ -12145,17 +12145,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1051,
+          "line": 1049,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1981,
+          "line": 1979,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 713,
+          "line": 720,
           "kind": "derived"
         },
         {
@@ -12180,7 +12180,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4488,
+          "line": 4494,
           "kind": "seed"
         },
         {
@@ -12380,9 +12380,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-ind-over3y",
       "variant_group": null,
@@ -12411,9 +12411,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-ind-over3y",
       "variant_group": null,
@@ -12580,12 +12580,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1973,
+          "line": 1971,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 706,
+          "line": 713,
           "kind": "derived"
         },
         {
@@ -12605,7 +12605,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4488,
+          "line": 4494,
           "kind": "seed"
         },
         {
@@ -12825,9 +12825,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-ind-short",
       "variant_group": null,
@@ -12856,9 +12856,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-ind-short",
       "variant_group": null,
@@ -13041,17 +13041,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1065,
+          "line": 1063,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7111,
+          "line": 7109,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 779,
+          "line": 793,
           "kind": "derived"
         },
         {
@@ -13272,9 +13272,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "current-account",
       "variant_group": null,
@@ -13359,7 +13359,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1062,
+          "line": 1060,
           "kind": "seo"
         },
         {
@@ -13460,7 +13460,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1067,
+          "line": 1065,
           "kind": "seo"
         },
         {
@@ -13589,12 +13589,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5778,
+          "line": 5776,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 795,
+          "line": 809,
           "kind": "derived"
         },
         {
@@ -13729,12 +13729,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5618,
+          "line": 5616,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 782,
+          "line": 796,
           "kind": "derived"
         },
         {
@@ -13952,17 +13952,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1985,
+          "line": 1983,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 704,
+          "line": 711,
           "kind": "derived"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 707,
+          "line": 714,
           "kind": "derived"
         },
         {
@@ -13987,7 +13987,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4489,
+          "line": 4495,
           "kind": "seed"
         },
         {
@@ -14287,17 +14287,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1053,
+          "line": 1051,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1993,
+          "line": 1991,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 715,
+          "line": 722,
           "kind": "derived"
         },
         {
@@ -14312,7 +14312,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4489,
+          "line": 4495,
           "kind": "seed"
         },
         {
@@ -14502,9 +14502,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "deposit-rate-long",
       "variant_group": null,
@@ -14533,9 +14533,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "deposit-rate-long",
       "variant_group": null,
@@ -14697,17 +14697,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1052,
+          "line": 1050,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1989,
+          "line": 1987,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 714,
+          "line": 721,
           "kind": "derived"
         },
         {
@@ -14722,7 +14722,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4489,
+          "line": 4495,
           "kind": "seed"
         },
         {
@@ -14917,9 +14917,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "deposit-rate-medium",
       "variant_group": null,
@@ -14948,9 +14948,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "deposit-rate-medium",
       "variant_group": null,
@@ -15077,9 +15077,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "deposit-rate",
       "variant_group": null,
@@ -15108,9 +15108,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "deposit-rate",
       "variant_group": null,
@@ -15272,12 +15272,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7888,
+          "line": 7886,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 724,
+          "line": 731,
           "kind": "derived"
         },
         {
@@ -15317,7 +15317,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4490,
+          "line": 4496,
           "kind": "seed"
         },
         {
@@ -15492,9 +15492,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "deposits-business",
       "variant_group": null,
@@ -15523,9 +15523,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "deposits-business",
       "variant_group": null,
@@ -15692,12 +15692,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4823,
+          "line": 4821,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 723,
+          "line": 730,
           "kind": "derived"
         },
         {
@@ -15737,7 +15737,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4490,
+          "line": 4496,
           "kind": "seed"
         },
         {
@@ -15937,9 +15937,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "deposits-individual",
       "variant_group": null,
@@ -15968,9 +15968,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "deposits-individual",
       "variant_group": null,
@@ -16119,12 +16119,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7811,
+          "line": 7809,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 799,
+          "line": 813,
           "kind": "derived"
         },
         {
@@ -16234,12 +16234,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6482,
+          "line": 6480,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 789,
+          "line": 803,
           "kind": "derived"
         },
         {
@@ -16405,12 +16405,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4550,
+          "line": 4548,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 728,
+          "line": 735,
           "kind": "derived"
         },
         {
@@ -16450,7 +16450,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4490,
+          "line": 4496,
           "kind": "seed"
         },
         {
@@ -16618,9 +16618,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "employment",
       "variant_group": null,
@@ -16649,9 +16649,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "employment",
       "variant_group": null,
@@ -16817,12 +16817,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2278,
+          "line": 2276,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 694,
+          "line": 701,
           "kind": "derived"
         },
         {
@@ -17315,12 +17315,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3153,
+          "line": 3151,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 682,
+          "line": 689,
           "kind": "derived"
         },
         {
@@ -17950,22 +17950,22 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1038,
+          "line": 1036,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1056,
+          "line": 1054,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5356,
+          "line": 5354,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 773,
+          "line": 787,
           "kind": "derived"
         },
         {
@@ -18075,7 +18075,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4559,
+          "line": 4565,
           "kind": "seed"
         },
         {
@@ -18414,12 +18414,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1039,
+          "line": 1037,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 748,
+          "line": 762,
           "kind": "derived"
         },
         {
@@ -18464,7 +18464,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4491,
+          "line": 4497,
           "kind": "seed"
         },
         {
@@ -18595,9 +18595,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "exports-monthly",
       "variant_group": null,
@@ -18626,9 +18626,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "exports-monthly",
       "variant_group": null,
@@ -18837,7 +18837,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1059,
+          "line": 1057,
           "kind": "seo"
         },
         {
@@ -18959,7 +18959,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1058,
+          "line": 1056,
           "kind": "seo"
         },
         {
@@ -18974,7 +18974,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4573,
+          "line": 4579,
           "kind": "seed"
         },
         {
@@ -19157,12 +19157,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5253,
+          "line": 5251,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 730,
+          "line": 737,
           "kind": "derived"
         },
         {
@@ -19340,9 +19340,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "external-debt",
       "variant_group": null,
@@ -19463,12 +19463,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7501,
+          "line": 7499,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 780,
+          "line": 794,
           "kind": "derived"
         },
         {
@@ -19549,9 +19549,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "fdi-net",
       "variant_group": null,
@@ -19670,7 +19670,7 @@
     {
       "code": "fuel-ai92",
       "title": "Цена бензина АИ-92 — график и прогноз (руб./л)",
-      "name": "Бензин АИ-92",
+      "name": "Цены на бензин АИ-92",
       "category": "Цены",
       "frequency": "weekly",
       "source": "Росстат",
@@ -19678,12 +19678,12 @@
       "is_listed": true,
       "is_derived": false,
       "monthly_auto": false,
-      "forecast_strategy": "generic_ols",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 8,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": null,
-      "variant_group": "Автомобильное топливо",
+      "variant_group": "Цены на топливо",
       "derived_siblings": [
         "fuel-ai92-avg-month",
         "fuel-ai92-avg-quarter",
@@ -19715,12 +19715,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8392,
+          "line": 8390,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 737,
+          "line": 748,
           "kind": "derived"
         },
         {
@@ -19735,7 +19735,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 130,
+          "line": 129,
           "kind": "tests"
         },
         {
@@ -19776,19 +19776,27 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": null,
-      "forecast_strategy_source": "none",
-      "forecast_steps": 0,
+      "forecast_strategy": "monthly_auto",
+      "forecast_strategy_source": "explicit",
+      "forecast_steps": 12,
       "ui_stack": "generic",
       "redirect_parent": "fuel-ai92",
       "variant_group": null,
-      "derived_siblings": [],
+      "derived_siblings": [
+        "fuel-ai92-avg-quarter",
+        "fuel-ai92-avg-year"
+      ],
       "flags": {
         "in_both_viewmode_systems": false,
         "shadowed_legacy": false,
         "in_seed_no_ui_stack": false
       },
       "files": [
+        {
+          "file": "backend/seed_data.py",
+          "line": 4251,
+          "kind": "seed"
+        },
         {
           "file": "frontend/src/lib/viewModelFamilies.generated.json",
           "line": 4962,
@@ -19807,9 +19815,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": null,
-      "forecast_strategy_source": "none",
-      "forecast_steps": 0,
+      "forecast_strategy": "derived_from_source",
+      "forecast_strategy_source": "explicit",
+      "forecast_steps": 4,
       "ui_stack": "generic",
       "redirect_parent": "fuel-ai92",
       "variant_group": null,
@@ -19838,9 +19846,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": null,
-      "forecast_strategy_source": "none",
-      "forecast_steps": 0,
+      "forecast_strategy": "derived_from_source",
+      "forecast_strategy_source": "explicit",
+      "forecast_steps": 2,
       "ui_stack": "generic",
       "redirect_parent": "fuel-ai92",
       "variant_group": null,
@@ -20114,7 +20122,7 @@
     {
       "code": "fuel-ai95",
       "title": "Цена бензина АИ-95 — график и прогноз (руб./л)",
-      "name": "Бензин АИ-95",
+      "name": "Цены на бензин АИ-95",
       "category": "Цены",
       "frequency": "weekly",
       "source": "Росстат",
@@ -20122,12 +20130,12 @@
       "is_listed": false,
       "is_derived": false,
       "monthly_auto": false,
-      "forecast_strategy": "generic_ols",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 8,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": null,
-      "variant_group": "Автомобильное топливо",
+      "variant_group": "Цены на топливо",
       "derived_siblings": [
         "fuel-ai95-avg-month",
         "fuel-ai95-avg-quarter",
@@ -20159,17 +20167,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1035,
+          "line": 1033,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8393,
+          "line": 8391,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 738,
+          "line": 750,
           "kind": "derived"
         },
         {
@@ -20179,13 +20187,8 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4259,
+          "line": 4260,
           "kind": "seed"
-        },
-        {
-          "file": "backend/tests/test_forecast_policy.py",
-          "line": 131,
-          "kind": "tests"
         },
         {
           "file": "docs/data_sources.md",
@@ -20225,13 +20228,16 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": null,
-      "forecast_strategy_source": "none",
-      "forecast_steps": 0,
+      "forecast_strategy": "monthly_auto",
+      "forecast_strategy_source": "explicit",
+      "forecast_steps": 12,
       "ui_stack": "generic",
       "redirect_parent": "fuel-ai95",
       "variant_group": null,
-      "derived_siblings": [],
+      "derived_siblings": [
+        "fuel-ai95-avg-quarter",
+        "fuel-ai95-avg-year"
+      ],
       "flags": {
         "in_both_viewmode_systems": false,
         "shadowed_legacy": false,
@@ -20256,9 +20262,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": null,
-      "forecast_strategy_source": "none",
-      "forecast_steps": 0,
+      "forecast_strategy": "derived_from_source",
+      "forecast_strategy_source": "explicit",
+      "forecast_steps": 4,
       "ui_stack": "generic",
       "redirect_parent": "fuel-ai95",
       "variant_group": null,
@@ -20287,9 +20293,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": null,
-      "forecast_strategy_source": "none",
-      "forecast_steps": 0,
+      "forecast_strategy": "derived_from_source",
+      "forecast_strategy_source": "explicit",
+      "forecast_steps": 2,
       "ui_stack": "generic",
       "redirect_parent": "fuel-ai95",
       "variant_group": null,
@@ -20563,7 +20569,7 @@
     {
       "code": "fuel-diesel",
       "title": "Цена дизельного топлива — график и прогноз (руб./л)",
-      "name": "Дизельное топливо",
+      "name": "Цена дизельного топлива",
       "category": "Цены",
       "frequency": "weekly",
       "source": "Росстат",
@@ -20571,12 +20577,12 @@
       "is_listed": false,
       "is_derived": false,
       "monthly_auto": false,
-      "forecast_strategy": "generic_ols",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 8,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": null,
-      "variant_group": "Автомобильное топливо",
+      "variant_group": "Цены на топливо",
       "derived_siblings": [
         "fuel-diesel-avg-month",
         "fuel-diesel-avg-quarter",
@@ -20608,17 +20614,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1036,
+          "line": 1034,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8394,
+          "line": 8392,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 739,
+          "line": 752,
           "kind": "derived"
         },
         {
@@ -20628,13 +20634,8 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4290,
+          "line": 4289,
           "kind": "seed"
-        },
-        {
-          "file": "backend/tests/test_forecast_policy.py",
-          "line": 132,
-          "kind": "tests"
         },
         {
           "file": "docs/data_sources.md",
@@ -20674,13 +20675,16 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": null,
-      "forecast_strategy_source": "none",
-      "forecast_steps": 0,
+      "forecast_strategy": "monthly_auto",
+      "forecast_strategy_source": "explicit",
+      "forecast_steps": 12,
       "ui_stack": "generic",
       "redirect_parent": "fuel-diesel",
       "variant_group": null,
-      "derived_siblings": [],
+      "derived_siblings": [
+        "fuel-diesel-avg-quarter",
+        "fuel-diesel-avg-year"
+      ],
       "flags": {
         "in_both_viewmode_systems": false,
         "shadowed_legacy": false,
@@ -20705,9 +20709,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": null,
-      "forecast_strategy_source": "none",
-      "forecast_steps": 0,
+      "forecast_strategy": "derived_from_source",
+      "forecast_strategy_source": "explicit",
+      "forecast_steps": 4,
       "ui_stack": "generic",
       "redirect_parent": "fuel-diesel",
       "variant_group": null,
@@ -20736,9 +20740,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": null,
-      "forecast_strategy_source": "none",
-      "forecast_steps": 0,
+      "forecast_strategy": "derived_from_source",
+      "forecast_strategy_source": "explicit",
+      "forecast_steps": 2,
       "ui_stack": "generic",
       "redirect_parent": "fuel-diesel",
       "variant_group": null,
@@ -21060,12 +21064,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5041,
+          "line": 5039,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 768,
+          "line": 782,
           "kind": "derived"
         },
         {
@@ -21186,9 +21190,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "gdp-consumption",
       "variant_group": null,
@@ -21355,12 +21359,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5147,
+          "line": 5145,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 769,
+          "line": 783,
           "kind": "derived"
         },
         {
@@ -21476,9 +21480,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "gdp-government",
       "variant_group": null,
@@ -21635,12 +21639,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7422,
+          "line": 7420,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 770,
+          "line": 784,
           "kind": "derived"
         },
         {
@@ -21746,9 +21750,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "gdp-investment",
       "variant_group": null,
@@ -21960,12 +21964,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2847,
+          "line": 2845,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 764,
+          "line": 778,
           "kind": "derived"
         },
         {
@@ -22326,7 +22330,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 765,
+          "line": 779,
           "kind": "derived"
         },
         {
@@ -22488,7 +22492,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 765,
+          "line": 779,
           "kind": "derived"
         },
         {
@@ -22614,12 +22618,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2952,
+          "line": 2950,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 766,
+          "line": 780,
           "kind": "derived"
         },
         {
@@ -22915,7 +22919,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 767,
+          "line": 781,
           "kind": "derived"
         },
         {
@@ -23041,7 +23045,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 767,
+          "line": 781,
           "kind": "derived"
         },
         {
@@ -23142,7 +23146,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 767,
+          "line": 781,
           "kind": "derived"
         },
         {
@@ -23279,7 +23283,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 765,
+          "line": 779,
           "kind": "derived"
         },
         {
@@ -23484,12 +23488,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1997,
+          "line": 1995,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 685,
+          "line": 692,
           "kind": "derived"
         },
         {
@@ -24051,12 +24055,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6404,
+          "line": 6402,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 790,
+          "line": 804,
           "kind": "derived"
         },
         {
@@ -24219,12 +24223,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7968,
+          "line": 7966,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 821,
+          "line": 835,
           "kind": "derived"
         },
         {
@@ -24239,12 +24243,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4505,
+          "line": 4511,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4507,
+          "line": 4513,
           "kind": "seed"
         },
         {
@@ -24478,7 +24482,7 @@
       "files": [
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1087,
+          "line": 1085,
           "kind": "seo"
         },
         {
@@ -24504,9 +24508,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "housing-affordability",
       "variant_group": null,
@@ -24560,17 +24564,17 @@
       "files": [
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1083,
+          "line": 1081,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8048,
+          "line": 8046,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 823,
+          "line": 837,
           "kind": "derived"
         },
         {
@@ -24585,7 +24589,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4505,
+          "line": 4511,
           "kind": "seed"
         },
         {
@@ -24775,9 +24779,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "housing-affordability-primary",
       "variant_group": null,
@@ -24806,9 +24810,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "housing-affordability-primary",
       "variant_group": null,
@@ -24935,9 +24939,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "housing-affordability",
       "variant_group": null,
@@ -25224,12 +25228,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7734,
+          "line": 7732,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 745,
+          "line": 759,
           "kind": "derived"
         },
         {
@@ -25259,7 +25263,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4491,
+          "line": 4497,
           "kind": "seed"
         },
         {
@@ -25315,9 +25319,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "housing-commissioned",
       "variant_group": null,
@@ -25346,9 +25350,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "housing-commissioned",
       "variant_group": null,
@@ -25582,7 +25586,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3497,
+          "line": 3495,
           "kind": "seo"
         },
         {
@@ -25868,7 +25872,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3579,
+          "line": 3577,
           "kind": "seo"
         },
         {
@@ -26402,12 +26406,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2452,
+          "line": 2450,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 696,
+          "line": 703,
           "kind": "derived"
         },
         {
@@ -26926,22 +26930,22 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1038,
+          "line": 1036,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1056,
+          "line": 1054,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6954,
+          "line": 6952,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 774,
+          "line": 788,
           "kind": "derived"
         },
         {
@@ -27046,7 +27050,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4560,
+          "line": 4566,
           "kind": "seed"
         },
         {
@@ -27250,12 +27254,12 @@
       "files": [
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1040,
+          "line": 1038,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 749,
+          "line": 763,
           "kind": "derived"
         },
         {
@@ -27290,7 +27294,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4491,
+          "line": 4497,
           "kind": "seed"
         },
         {
@@ -27356,9 +27360,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "imports-monthly",
       "variant_group": null,
@@ -27387,9 +27391,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "imports-monthly",
       "variant_group": null,
@@ -27598,7 +27602,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1061,
+          "line": 1059,
           "kind": "seo"
         },
         {
@@ -27705,7 +27709,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1060,
+          "line": 1058,
           "kind": "seo"
         },
         {
@@ -27720,7 +27724,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4573,
+          "line": 4579,
           "kind": "seed"
         },
         {
@@ -27852,7 +27856,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4591,
+          "line": 4597,
           "kind": "seed"
         },
         {
@@ -28552,12 +28556,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6716,
+          "line": 6714,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 800,
+          "line": 814,
           "kind": "derived"
         },
         {
@@ -28696,17 +28700,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4927,
+          "line": 4925,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 405,
+          "line": 406,
           "kind": "derived"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 732,
+          "line": 739,
           "kind": "derived"
         },
         {
@@ -29238,17 +29242,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1027,
-          "kind": "seo"
-        },
-        {
-          "file": "backend/app/data/indicator_seo.py",
-          "line": 3663,
+          "line": 3661,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 806,
+          "line": 820,
           "kind": "derived"
         },
         {
@@ -29273,7 +29272,7 @@
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 210,
+          "line": 216,
           "kind": "seo"
         },
         {
@@ -29288,7 +29287,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4497,
+          "line": 4503,
           "kind": "seed"
         },
         {
@@ -29498,7 +29497,7 @@
       "frequency": "monthly",
       "source": "Росстат",
       "parser_type": "rosstat_ipi",
-      "is_listed": false,
+      "is_listed": true,
       "is_derived": false,
       "monthly_auto": true,
       "forecast_strategy": "monthly_auto",
@@ -29536,17 +29535,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1031,
-          "kind": "seo"
-        },
-        {
-          "file": "backend/app/data/indicator_seo.py",
-          "line": 8303,
+          "line": 8301,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 814,
+          "line": 828,
           "kind": "derived"
         },
         {
@@ -29556,7 +29550,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4500,
+          "line": 4506,
           "kind": "seed"
         },
         {
@@ -29721,9 +29715,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "ipi-energy",
       "variant_group": null,
@@ -29752,9 +29746,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "ipi-energy",
       "variant_group": null,
@@ -29940,7 +29934,7 @@
       "frequency": "monthly",
       "source": "Росстат",
       "parser_type": "rosstat_ipi",
-      "is_listed": false,
+      "is_listed": true,
       "is_derived": false,
       "monthly_auto": true,
       "forecast_strategy": "monthly_auto",
@@ -29978,17 +29972,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1030,
-          "kind": "seo"
-        },
-        {
-          "file": "backend/app/data/indicator_seo.py",
-          "line": 8294,
+          "line": 8292,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 812,
+          "line": 826,
           "kind": "derived"
         },
         {
@@ -29998,7 +29987,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4500,
+          "line": 4506,
           "kind": "seed"
         },
         {
@@ -30163,9 +30152,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "ipi-manufacturing",
       "variant_group": null,
@@ -30194,9 +30183,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "ipi-manufacturing",
       "variant_group": null,
@@ -30320,7 +30309,7 @@
       "frequency": "monthly",
       "source": "Росстат",
       "parser_type": "rosstat_ipi",
-      "is_listed": false,
+      "is_listed": true,
       "is_derived": false,
       "monthly_auto": true,
       "forecast_strategy": "monthly_auto",
@@ -30358,17 +30347,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1029,
-          "kind": "seo"
-        },
-        {
-          "file": "backend/app/data/indicator_seo.py",
-          "line": 8285,
+          "line": 8283,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 810,
+          "line": 824,
           "kind": "derived"
         },
         {
@@ -30378,7 +30362,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4500,
+          "line": 4506,
           "kind": "seed"
         },
         {
@@ -30543,9 +30527,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "ipi-mining",
       "variant_group": null,
@@ -30574,9 +30558,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "ipi-mining",
       "variant_group": null,
@@ -30703,9 +30687,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "ipi",
       "variant_group": null,
@@ -30734,9 +30718,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "ipi",
       "variant_group": null,
@@ -30762,7 +30746,7 @@
       "frequency": "monthly",
       "source": "Росстат",
       "parser_type": "rosstat_ipi",
-      "is_listed": false,
+      "is_listed": true,
       "is_derived": false,
       "monthly_auto": true,
       "forecast_strategy": "monthly_auto",
@@ -30800,17 +30784,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1032,
-          "kind": "seo"
-        },
-        {
-          "file": "backend/app/data/indicator_seo.py",
-          "line": 8312,
+          "line": 8310,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 816,
+          "line": 830,
           "kind": "derived"
         },
         {
@@ -30820,7 +30799,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4500,
+          "line": 4506,
           "kind": "seed"
         },
         {
@@ -30985,9 +30964,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "ipi-water",
       "variant_group": null,
@@ -31016,9 +30995,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "ipi-water",
       "variant_group": null,
@@ -31175,12 +31154,12 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 805,
+          "line": 819,
           "kind": "derived"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 807,
+          "line": 821,
           "kind": "derived"
         },
         {
@@ -31432,12 +31411,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2730,
+          "line": 2728,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 677,
+          "line": 684,
           "kind": "derived"
         },
         {
@@ -31507,7 +31486,7 @@
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 351,
+          "line": 357,
           "kind": "seo"
         },
         {
@@ -31522,12 +31501,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4543,
+          "line": 4549,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4546,
+          "line": 4552,
           "kind": "seed"
         },
         {
@@ -32304,12 +32283,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4600,
+          "line": 4598,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 727,
+          "line": 734,
           "kind": "derived"
         },
         {
@@ -32334,7 +32313,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4492,
+          "line": 4498,
           "kind": "seed"
         },
         {
@@ -32487,9 +32466,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "labor-force",
       "variant_group": null,
@@ -32518,9 +32497,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "labor-force",
       "variant_group": null,
@@ -32687,12 +32666,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4258,
+          "line": 4256,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 718,
+          "line": 725,
           "kind": "derived"
         },
         {
@@ -32717,7 +32696,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4492,
+          "line": 4498,
           "kind": "seed"
         },
         {
@@ -32917,9 +32896,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "m0",
       "variant_group": null,
@@ -32948,9 +32927,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "m0",
       "variant_group": null,
@@ -33112,12 +33091,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4356,
+          "line": 4354,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 719,
+          "line": 726,
           "kind": "derived"
         },
         {
@@ -33157,7 +33136,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4492,
+          "line": 4498,
           "kind": "seed"
         },
         {
@@ -33357,9 +33336,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "m1",
       "variant_group": null,
@@ -33388,9 +33367,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "m1",
       "variant_group": null,
@@ -33562,12 +33541,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4452,
+          "line": 4450,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 720,
+          "line": 727,
           "kind": "derived"
         },
         {
@@ -33622,7 +33601,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4492,
+          "line": 4498,
           "kind": "seed"
         },
         {
@@ -33942,9 +33921,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "m2",
       "variant_group": null,
@@ -33973,9 +33952,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "m2",
       "variant_group": null,
@@ -34181,12 +34160,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2491,
+          "line": 2489,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 697,
+          "line": 704,
           "kind": "derived"
         },
         {
@@ -34670,12 +34649,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1759,
+          "line": 1757,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 702,
+          "line": 709,
           "kind": "derived"
         },
         {
@@ -34695,7 +34674,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4492,
+          "line": 4498,
           "kind": "seed"
         },
         {
@@ -34910,9 +34889,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "mortgage-rate",
       "variant_group": null,
@@ -34941,9 +34920,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "mortgage-rate",
       "variant_group": null,
@@ -35109,12 +35088,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8136,
+          "line": 8134,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 688,
+          "line": 695,
           "kind": "derived"
         },
         {
@@ -35596,12 +35575,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6325,
+          "line": 6323,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 788,
+          "line": 802,
           "kind": "derived"
         },
         {
@@ -35772,12 +35751,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6247,
+          "line": 6245,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 786,
+          "line": 800,
           "kind": "derived"
         },
         {
@@ -35938,12 +35917,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6172,
+          "line": 6170,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 787,
+          "line": 801,
           "kind": "derived"
         },
         {
@@ -36114,12 +36093,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5443,
+          "line": 5441,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 784,
+          "line": 798,
           "kind": "derived"
         },
         {
@@ -36214,7 +36193,7 @@
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 392,
+          "line": 398,
           "kind": "seo"
         },
         {
@@ -36398,12 +36377,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5935,
+          "line": 5933,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 797,
+          "line": 811,
           "kind": "derived"
         },
         {
@@ -36527,12 +36506,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5858,
+          "line": 5856,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 796,
+          "line": 810,
           "kind": "derived"
         },
         {
@@ -36651,12 +36630,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6015,
+          "line": 6013,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 798,
+          "line": 812,
           "kind": "derived"
         },
         {
@@ -36848,7 +36827,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3426,
+          "line": 3424,
           "kind": "seo"
         },
         {
@@ -37465,12 +37444,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6560,
+          "line": 6558,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 791,
+          "line": 805,
           "kind": "derived"
         },
         {
@@ -37621,12 +37600,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6637,
+          "line": 6635,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 792,
+          "line": 806,
           "kind": "derived"
         },
         {
@@ -37636,7 +37615,7 @@
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 224,
+          "line": 230,
           "kind": "seo"
         },
         {
@@ -37797,12 +37776,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7580,
+          "line": 7578,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 746,
+          "line": 760,
           "kind": "derived"
         },
         {
@@ -37837,7 +37816,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4497,
+          "line": 4503,
           "kind": "seed"
         },
         {
@@ -37913,9 +37892,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "retail-trade",
       "variant_group": null,
@@ -37944,9 +37923,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "retail-trade",
       "variant_group": null,
@@ -38184,12 +38163,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2564,
+          "line": 2562,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 699,
+          "line": 706,
           "kind": "derived"
         },
         {
@@ -38677,12 +38656,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2528,
+          "line": 2526,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 698,
+          "line": 705,
           "kind": "derived"
         },
         {
@@ -39175,12 +39154,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2635,
+          "line": 2633,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 679,
+          "line": 686,
           "kind": "derived"
         },
         {
@@ -39809,12 +39788,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7189,
+          "line": 7187,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 775,
+          "line": 789,
           "kind": "derived"
         },
         {
@@ -39938,12 +39917,12 @@
       "files": [
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1042,
+          "line": 1040,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 750,
+          "line": 764,
           "kind": "derived"
         },
         {
@@ -39978,7 +39957,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4493,
+          "line": 4499,
           "kind": "seed"
         },
         {
@@ -40049,9 +40028,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "services-exports-monthly",
       "variant_group": null,
@@ -40080,9 +40059,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "services-exports-monthly",
       "variant_group": null,
@@ -40271,9 +40250,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "services-exports",
       "variant_group": null,
@@ -40425,12 +40404,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7267,
+          "line": 7265,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 776,
+          "line": 790,
           "kind": "derived"
         },
         {
@@ -40554,12 +40533,12 @@
       "files": [
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1043,
+          "line": 1041,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 751,
+          "line": 765,
           "kind": "derived"
         },
         {
@@ -40594,7 +40573,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4493,
+          "line": 4499,
           "kind": "seed"
         },
         {
@@ -40660,9 +40639,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "services-imports-monthly",
       "variant_group": null,
@@ -40691,9 +40670,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "services-imports-monthly",
       "variant_group": null,
@@ -40882,9 +40861,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "services-imports",
       "variant_group": null,
@@ -41050,12 +41029,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8120,
+          "line": 8118,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 687,
+          "line": 694,
           "kind": "derived"
         },
         {
@@ -41546,12 +41525,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6876,
+          "line": 6874,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 801,
+          "line": 815,
           "kind": "derived"
         },
         {
@@ -41692,12 +41671,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2365,
+          "line": 2363,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 695,
+          "line": 702,
           "kind": "derived"
         },
         {
@@ -42185,12 +42164,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8166,
+          "line": 8164,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 690,
+          "line": 697,
           "kind": "derived"
         },
         {
@@ -42688,12 +42667,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8196,
+          "line": 8194,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 692,
+          "line": 699,
           "kind": "derived"
         },
         {
@@ -43169,12 +43148,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6797,
+          "line": 6795,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 802,
+          "line": 816,
           "kind": "derived"
         },
         {
@@ -43337,22 +43316,22 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1038,
+          "line": 1036,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1065,
+          "line": 1063,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7033,
+          "line": 7031,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 778,
+          "line": 792,
           "kind": "derived"
         },
         {
@@ -43437,7 +43416,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4561,
+          "line": 4567,
           "kind": "seed"
         },
         {
@@ -43666,12 +43645,12 @@
       "files": [
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1041,
+          "line": 1039,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 752,
+          "line": 766,
           "kind": "derived"
         },
         {
@@ -43706,7 +43685,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4494,
+          "line": 4500,
           "kind": "seed"
         },
         {
@@ -43752,9 +43731,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "trade-balance-monthly",
       "variant_group": null,
@@ -43783,9 +43762,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "trade-balance-monthly",
       "variant_group": null,
@@ -43974,9 +43953,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "trade-balance",
       "variant_group": null,
@@ -44092,7 +44071,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1066,
+          "line": 1064,
           "kind": "seo"
         },
         {
@@ -44261,22 +44240,22 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
+          "line": 1086,
+          "kind": "seo"
+        },
+        {
+          "file": "backend/app/data/indicator_seo.py",
           "line": 1088,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1090,
-          "kind": "seo"
-        },
-        {
-          "file": "backend/app/data/indicator_seo.py",
-          "line": 3052,
+          "line": 3050,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 716,
+          "line": 723,
           "kind": "derived"
         },
         {
@@ -44341,7 +44320,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4494,
+          "line": 4500,
           "kind": "seed"
         },
         {
@@ -44567,12 +44546,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1090,
+          "line": 1088,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1092,
+          "line": 1090,
           "kind": "seo"
         },
         {
@@ -44782,9 +44761,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "unemployment",
       "variant_group": null,
@@ -44813,9 +44792,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "unemployment",
       "variant_group": null,
@@ -44874,12 +44853,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1089,
+          "line": 1087,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1091,
+          "line": 1089,
           "kind": "seo"
         },
         {
@@ -45127,12 +45106,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3336,
+          "line": 3334,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 681,
+          "line": 688,
           "kind": "derived"
         },
         {
@@ -45749,17 +45728,17 @@
       "files": [
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1075,
+          "line": 1073,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1078,
+          "line": 1076,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 757,
+          "line": 771,
           "kind": "derived"
         },
         {
@@ -45940,12 +45919,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3750,
+          "line": 3748,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 760,
+          "line": 774,
           "kind": "derived"
         },
         {
@@ -46045,7 +46024,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4494,
+          "line": 4500,
           "kind": "seed"
         },
         {
@@ -46303,12 +46282,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1077,
+          "line": 1075,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1080,
+          "line": 1078,
           "kind": "seo"
         },
         {
@@ -46501,9 +46480,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "wages-nominal",
       "variant_group": null,
@@ -46532,9 +46511,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "wages-nominal",
       "variant_group": null,
@@ -46673,17 +46652,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1073,
+          "line": 1071,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3854,
+          "line": 3852,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 762,
+          "line": 776,
           "kind": "derived"
         },
         {
@@ -46698,7 +46677,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4509,
+          "line": 4515,
           "kind": "seed"
         },
         {
@@ -46826,9 +46805,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 12,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "wages-real",
       "variant_group": null,
@@ -46857,9 +46836,9 @@
       "is_listed": false,
       "is_derived": true,
       "monthly_auto": false,
-      "forecast_strategy": "derived_from_source",
-      "forecast_strategy_source": "explicit",
-      "forecast_steps": 4,
+      "forecast_strategy": null,
+      "forecast_strategy_source": "none",
+      "forecast_steps": 0,
       "ui_stack": "generic",
       "redirect_parent": "wages-real",
       "variant_group": null,
@@ -47011,17 +46990,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1075,
+          "line": 1073,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1079,
+          "line": 1077,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 761,
+          "line": 775,
           "kind": "derived"
         },
         {
@@ -47041,7 +47020,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4329,
+          "line": 4326,
           "kind": "seed"
         },
         {
@@ -47141,12 +47120,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8151,
+          "line": 8149,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 689,
+          "line": 696,
           "kind": "derived"
         },
         {
@@ -47633,12 +47612,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6093,
+          "line": 6091,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 785,
+          "line": 799,
           "kind": "derived"
         },
         {
@@ -47828,6 +47807,9 @@
         "working-age-population"
       ],
       "no_forecast": [
+        "fuel-ai92",
+        "fuel-ai95",
+        "fuel-diesel",
         "wages-nominal-annual"
       ],
       "seo_not_curated": [
@@ -49875,8 +49857,8 @@
         "matrix_score": 1.0,
         "dims": {
           "texts": "full",
-          "forecast": "yes",
-          "grouping": "variant: Автомобильное топливо",
+          "forecast": "no",
+          "grouping": "variant: Цены на топливо",
           "seo": "curated",
           "is_listed": true
         }
@@ -49917,8 +49899,8 @@
         "matrix_score": 1.0,
         "dims": {
           "texts": "full",
-          "forecast": "yes",
-          "grouping": "variant: Автомобильное топливо",
+          "forecast": "no",
+          "grouping": "variant: Цены на топливо",
           "seo": "curated",
           "is_listed": false
         }
@@ -49959,8 +49941,8 @@
         "matrix_score": 1.0,
         "dims": {
           "texts": "full",
-          "forecast": "yes",
-          "grouping": "variant: Автомобильное топливо",
+          "forecast": "no",
+          "grouping": "variant: Цены на топливо",
           "seo": "curated",
           "is_listed": false
         }
@@ -50856,7 +50838,7 @@
           "forecast": "yes",
           "grouping": "variant: Состав промышленного производства",
           "seo": "curated",
-          "is_listed": false
+          "is_listed": true
         }
       },
       "ipi-manufacturing": {
@@ -50902,7 +50884,7 @@
           "forecast": "yes",
           "grouping": "variant: Состав промышленного производства",
           "seo": "curated",
-          "is_listed": false
+          "is_listed": true
         }
       },
       "ipi-mining": {
@@ -50948,7 +50930,7 @@
           "forecast": "yes",
           "grouping": "variant: Состав промышленного производства",
           "seo": "curated",
-          "is_listed": false
+          "is_listed": true
         }
       },
       "ipi-water": {
@@ -50994,7 +50976,7 @@
           "forecast": "yes",
           "grouping": "variant: Состав промышленного производства",
           "seo": "curated",
-          "is_listed": false
+          "is_listed": true
         }
       },
       "key-rate": {

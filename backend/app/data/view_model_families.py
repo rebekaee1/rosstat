@@ -118,6 +118,7 @@ class Family:
     groups: list[Group]
     modes: list[Mode]
     variant_axis: str | None = None  # код variant-группы, если есть
+    monthly_forecast: bool = False   # прогноз на месячной средней (weekly base)
 
 
 # --- Человеческие суффиксы для имён sibling-индикаторов -----------------------
@@ -409,7 +410,8 @@ def _build_stock(f: "FamilyDef") -> Family:
     )
     tmpl = {"monthly": "T3", "quarterly": "T4", "weekly": "T5"}[freq]
     return Family(f.base, f.name, tmpl, f.unit, f.category, "level",
-                  [_G_EOP, _G_AVG, _G_POP, _G_YOY_MULTI], modes)
+                  [_G_EOP, _G_AVG, _G_POP, _G_YOY_MULTI], modes,
+                  monthly_forecast=f.monthly_forecast)
 
 
 def _build_flow_sum(f: "FamilyDef") -> Family:
@@ -665,6 +667,11 @@ class FamilyDef:
     abs_delta: bool = False
     # Прогноз базового ряда и протяжка в sibling-режимы (monthly_auto + derived).
     forecastable: bool = True
+    # Недельный ряд без прогноза на нативной частоте (forecastable=False), но с
+    # прогнозом на месячной средней: avg-month прогнозируется monthly_auto по
+    # своему ряду, avg-quarter/avg-year протягиваются из месячного прогноза.
+    # Для частот < месяца, где прогноз на нативной частоте — профанация (топливо).
+    monthly_forecast: bool = False
 
 
 # --- Каталог семейств --------------------------------------------------------
@@ -734,9 +741,16 @@ _FAMILY_DEFS: list[FamilyDef] = [
     # Топливо — еженедельные средние потребительские цены (Росстат), руб./л.
     # Уровень «на конец периода» (как резервы), средние по мес/кв/год, Г/г.
     # Прогноз — собственный generic_ols (короткий недельный тренд), задан в seed.
-    FamilyDef("fuel-ai92", "Бензин АИ-92", "T5", "руб./л", "Цены", "weekly"),
-    FamilyDef("fuel-ai95", "Бензин АИ-95", "T5", "руб./л", "Цены", "weekly"),
-    FamilyDef("fuel-diesel", "Дизельное топливо", "T5", "руб./л", "Цены", "weekly"),
+    # Топливо: недельная розничная цена. Прогноз на недельной частоте —
+    # профанация (политика проекта: не прогнозируем < месяца). Базовый
+    # forecastable=False гасит недельный прогноз; месячный прогноз протягивается
+    # в агрегаты через `monthly_forecast` (weekly→monthly_auto, см. T5-билдер).
+    FamilyDef("fuel-ai92", "Бензин АИ-92", "T5", "руб./л", "Цены", "weekly",
+              forecastable=False, monthly_forecast=True),
+    FamilyDef("fuel-ai95", "Бензин АИ-95", "T5", "руб./л", "Цены", "weekly",
+              forecastable=False, monthly_forecast=True),
+    FamilyDef("fuel-diesel", "Дизельное топливо", "T5", "руб./л", "Цены", "weekly",
+              forecastable=False, monthly_forecast=True),
     # T6 — потоки бюджета
     FamilyDef("budget-revenue", "Доходы бюджета", "T6", "млрд руб.", "Бюджет", "monthly"),
     FamilyDef("budget-expenditure", "Расходы бюджета", "T6", "млрд руб.", "Бюджет", "monthly"),
@@ -897,7 +911,10 @@ _BUCKET_MIN_PERIODS: dict[tuple[str, str], int] = {
 }
 
 
-def _mode_forecastable(m: "Mode", base_freq: str | None, base_forecastable: bool) -> bool:
+def _mode_forecastable(
+    m: "Mode", base_freq: str | None, base_forecastable: bool,
+    monthly_forecast: bool = False,
+) -> bool:
     """Единый источник истины: показывает ли режим прогноз на карточке.
 
     Режим прогнозируем, если база прогнозируема И (это нативный уровень ИЛИ
@@ -910,9 +927,20 @@ def _mode_forecastable(m: "Mode", base_freq: str | None, base_forecastable: bool
     появлялись при переключении периода, хотя backend их считал).
     """
     if not base_forecastable:
+        # Недельный ряд без нативного прогноза: прогноз только на средних
+        # помесячной/квартальной/годовой частоты (avg-month → monthly_auto,
+        # крупнее — протяжка из месячного). Топливо: см. `monthly_forecast`.
+        if monthly_forecast and m.group == "avg" and m.frequency in _FORECAST_PROPAGATE_FREQ:
+            return True
         return False
     if m.is_native:
         return True
+    # «К прошлому периоду» (М/м, Кв/Кв) — это разность соседних точек сезонного
+    # ряда: прогноз такой разности визуально «рваный» (напр. дек +17 % → янв −21 %)
+    # и не несёт смысла. Прогноз показываем только на уровне и Г/г, не на mom/qoq.
+    # (pop-gg — алиас yoy-year в группе pop — прогнозируется как Г/г.)
+    if m.mode in ("mom", "qoq"):
+        return False
     return base_freq in _FORECAST_PROPAGATE_FREQ
 
 
@@ -923,6 +951,9 @@ def _mode_forecast_meta(fam: "Family", m: "Mode", base_freq: str) -> dict | None
     база не forecastable). Иначе — generic-pipeline op + guard полноты bucket'а.
     """
     if base_freq not in _FORECAST_PROPAGATE_FREQ:
+        return None
+    # mom/qoq прогноз не получают — см. `_mode_forecastable` (pop-gg = yoy-year).
+    if m.mode in ("mom", "qoq"):
         return None
     # Гранулярность агрегации в пайплайне (если есть) — для guard'а полноты.
     agg_gran: str | None = None
@@ -949,6 +980,34 @@ def _mode_forecast_meta(fam: "Family", m: "Mode", base_freq: str) -> dict | None
     return cfg
 
 
+def _monthly_forecast_meta(fam: "Family", m: "Mode") -> dict | None:
+    """Конфиг прогноза для avg-режимов недельной семьи с `monthly_forecast`.
+
+    avg-month — собственный monthly_auto по месячной средней; avg-quarter/
+    avg-year протягиваются из месячной средней (как агрегат месячного прогноза).
+    Возвращает dict со `strategy` + (для derived) `derived_forecast`.
+    """
+    avg_month_code = next(
+        (mm.code for mm in fam.modes if mm.mode == "avg-month"), None
+    )
+    if m.frequency == "monthly":
+        return {"strategy": "monthly_auto", "steps": 12}
+    if avg_month_code is None:
+        return None
+    gran = "quarter" if m.frequency == "quarterly" else "year"
+    return {
+        "strategy": "derived_from_source",
+        "steps": 4 if gran == "quarter" else 2,
+        "derived_forecast": {
+            "source_code": avg_month_code,
+            "operation": "pipeline",
+            "pipeline": [["period_avg", {"granularity": gran}]],
+            "model_name": f"{m.code}-derived",
+            "monthly_tail_extrapolate": True,
+        },
+    }
+
+
 def iter_sibling_indicators():
     """Yield метаданные seed-строки для каждого НЕ-нативного режима-sibling.
 
@@ -969,10 +1028,20 @@ def iter_sibling_indicators():
             seen.add(m.code)
             token = m.mode
             suffix = _SUFFIX_NAME.get(token, m.label)
-            forecast = (
-                _mode_forecast_meta(fam, m, base_freq)
-                if (base_forecastable and base_freq) else None
-            )
+            fc_able = _mode_forecastable(m, base_freq, base_forecastable, fam.monthly_forecast)
+            forecast = None
+            forecast_strategy = None
+            forecast_steps = 0
+            if base_forecastable and base_freq:
+                forecast = _mode_forecast_meta(fam, m, base_freq)
+                if forecast:
+                    forecast_strategy = "derived_from_source"
+            elif fam.monthly_forecast and fc_able:
+                meta = _monthly_forecast_meta(fam, m)
+                if meta:
+                    forecast_strategy = meta["strategy"]
+                    forecast = meta.get("derived_forecast")
+                    forecast_steps = meta["steps"]
             yield {
                 "code": m.code,
                 "name": f"{fam.name} — {suffix}",
@@ -981,8 +1050,10 @@ def iter_sibling_indicators():
                 "parent": fam.base,
                 "category": fam.category,
                 "is_percent": m.unit == "%",
-                "forecastable": _mode_forecastable(m, base_freq, base_forecastable),
+                "forecastable": fc_able,
                 "forecast": forecast,
+                "forecast_strategy": forecast_strategy,
+                "forecast_steps": forecast_steps,
             }
 
 
@@ -1038,7 +1109,7 @@ def to_frontend_families() -> dict:
                     "code": m.code,
                     "unit": m.unit,
                     "frequency": m.frequency,
-                    "forecastable": _mode_forecastable(m, base_freq, base_forecastable),
+                    "forecastable": _mode_forecastable(m, base_freq, base_forecastable, fam.monthly_forecast),
                     "isNative": m.is_native,
                 }
                 for m in fam.modes

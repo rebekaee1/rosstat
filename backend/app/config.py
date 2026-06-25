@@ -31,6 +31,10 @@ class Settings(BaseSettings):
     scheduler_enabled: bool = True
     scheduler_cron_hour: int = 6
     scheduler_cron_minute: int = 0
+    # Второй полный прогон ETL вечером: многие источники (Росстат, ЦБ, биржи)
+    # публикуют данные в течение дня — утренний прогон их не застаёт.
+    scheduler_evening_hour: int = 20
+    scheduler_evening_minute: int = 0
     ticker_pull_interval_seconds: int = 8
 
     # Alerting

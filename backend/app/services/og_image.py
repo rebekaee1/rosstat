@@ -23,9 +23,13 @@ WIDTH, HEIGHT = 1200, 630
 BG = (248, 249, 252)          # --color-obsidian
 TEXT_PRIMARY = (26, 26, 46)   # --color-ivory
 TEXT_SECONDARY = (26, 26, 46, 166)
+TEXT_TERTIARY = (26, 26, 46, 120)
 CHAMPAGNE = (184, 148, 47)    # --color-champagne
 LINE = (184, 148, 47)
-GRID = (0, 0, 0, 20)
+AREA_FILL = (184, 148, 47, 38)   # полупрозрачная заливка под линией
+GRID = (0, 0, 0, 22)
+AXIS = (0, 0, 0, 60)
+WATERMARK = (26, 26, 46, 34)
 
 _FONT_PATH = Path(__file__).parent.parent / "assets" / "fonts" / "Inter-Variable.ttf"
 
@@ -74,50 +78,65 @@ def _fmt_axis(v: float) -> str:
     return s.replace(".", ",")
 
 
-def _sparkline(
+def _area_chart(
     draw: ImageDraw.ImageDraw,
     values: list[float],
     box: tuple[int, int, int, int],
     *,
     x_labels: tuple[str, str] | None = None,
 ) -> None:
-    """Линейный график с осевыми подписями (min/max по Y, крайние метки по X).
+    """Area-график «как скачанный PNG»: заливка под линией, горизонтальная сетка
+    с подписями значений в левом гаттере и метки периода под осью X.
 
-    Подписи делают картинку самодостаточным «графиком», а не абстрактным
-    спарклайном: Алиса/Нейро берут её со страницы и показывают в ответе, где
-    она должна объяснять себя сама (значения, период, бренд).
+    Подписи осей рисуются ВНЕ области графика (в гаттерах слева и снизу), поэтому
+    не накладываются на линию, сетку и футер. Картинка самодостаточна: Алиса/Нейро
+    берут её со страницы и показывают в ответе, где она должна объяснять себя сама
+    (значения по оси, период, бренд).
     """
     x0, y0, x1, y1 = box
     if len(values) < 2:
         return
     vmin, vmax = min(values), max(values)
     spread = (vmax - vmin) or 1.0
+    # Небольшой запас сверху/снизу, чтобы линия не липла к границам.
+    pad = spread * 0.08
+    lo, hi = vmin - pad, vmax + pad
+    rng = (hi - lo) or 1.0
     n = len(values)
     points = [
-        (
-            x0 + (x1 - x0) * i / (n - 1),
-            y1 - (y1 - y0) * (v - vmin) / spread,
-        )
+        (x0 + (x1 - x0) * i / (n - 1), y1 - (y1 - y0) * (v - lo) / rng)
         for i, v in enumerate(values)
     ]
-    # лёгкая сетка
-    for frac in (0.0, 0.5, 1.0):
-        y = y0 + (y1 - y0) * frac
+
+    axis_font = _font(24)
+    # Горизонтальная сетка + подписи значений (4 уровня), label справа в гаттере.
+    for frac in (0.0, 1 / 3, 2 / 3, 1.0):
+        y = y1 - (y1 - y0) * frac
         draw.line([(x0, y), (x1, y)], fill=GRID, width=1)
+        tick_val = lo + rng * frac
+        label = _fmt_axis(tick_val)
+        lw = draw.textlength(label, font=axis_font)
+        draw.text((x0 - 14 - lw, y - 13), label, font=axis_font, fill=TEXT_SECONDARY)
+
+    # Ось Y и X — тонкие линии.
+    draw.line([(x0, y0), (x0, y1)], fill=AXIS, width=2)
+    draw.line([(x0, y1), (x1, y1)], fill=AXIS, width=2)
+
+    # Заливка под линией (area).
+    polygon = points + [(points[-1][0], y1), (points[0][0], y1)]
+    draw.polygon(polygon, fill=AREA_FILL)
+
+    # Линия + точка последнего значения.
     draw.line(points, fill=LINE, width=5, joint="curve")
-    # точка последнего значения
     px, py = points[-1]
     draw.ellipse([px - 9, py - 9, px + 9, py + 9], fill=CHAMPAGNE)
 
-    # Осевые подписи: max сверху-слева, min снизу-слева над линией оси.
-    axis_font = _font(24)
-    draw.text((x0 + 6, y0 - 30), _fmt_axis(vmax), font=axis_font, fill=TEXT_SECONDARY)
-    draw.text((x0 + 6, y1 + 8), _fmt_axis(vmin), font=axis_font, fill=TEXT_SECONDARY)
+    # Метки периода под осью X (крайние даты), в нижнем гаттере.
     if x_labels:
         left, right = x_labels
-        draw.text((x0 + 6, y1 + 36), left, font=axis_font, fill=TEXT_SECONDARY)
+        draw.text((x0, y1 + 12), left, font=axis_font, fill=TEXT_SECONDARY)
         rw = draw.textlength(right, font=axis_font)
-        draw.text((x1 - rw - 6, y1 + 36), right, font=axis_font, fill=TEXT_SECONDARY)
+        draw.text((x1 - rw, y1 + 12), right, font=axis_font, fill=TEXT_SECONDARY)
 
 
 def render_indicator_og(
@@ -139,33 +158,48 @@ def render_indicator_og(
     img = Image.new("RGB", (WIDTH, HEIGHT), BG)
     draw = ImageDraw.Draw(img, "RGBA")
 
-    margin = 72
+    margin = 64
     # бренд-полоска
     draw.rectangle([0, 0, WIDTH, 8], fill=CHAMPAGNE)
 
     eyebrow_font = _font(26, bold=True)
     eyebrow = "FORECAST ECONOMY"
-    draw.text((margin, 56), eyebrow, font=eyebrow_font, fill=CHAMPAGNE)
+    draw.text((margin, 44), eyebrow, font=eyebrow_font, fill=CHAMPAGNE)
     if period_text:
         ew = draw.textlength(eyebrow, font=eyebrow_font)
-        draw.text((margin + ew + 18, 56), f"· {period_text}", font=eyebrow_font, fill=TEXT_SECONDARY)
+        draw.text((margin + ew + 18, 44), f"· {period_text}", font=eyebrow_font, fill=TEXT_SECONDARY)
 
-    name_font = _font(54, bold=True)
+    name_font = _font(50, bold=True)
     lines = _wrap_text(draw, name, name_font, WIDTH - margin * 2)
-    y = 110
+    y = 90
     for line in lines:
         draw.text((margin, y), line, font=name_font, fill=TEXT_PRIMARY)
-        y += 66
+        y += 60
 
-    value_font = _font(88, bold=True)
-    draw.text((margin, y + 18), value_text, font=value_font, fill=TEXT_PRIMARY)
-    date_font = _font(30)
-    draw.text((margin, y + 128), date_text, font=date_font, fill=TEXT_SECONDARY)
+    # Компактная строка: последнее значение · дата (вместо гигантского числа,
+    # чтобы график занимал основную площадь — вид «скачанного PNG»).
+    value_font = _font(46, bold=True)
+    draw.text((margin, 212), value_text, font=value_font, fill=TEXT_PRIMARY)
+    vw = draw.textlength(value_text, font=value_font)
+    date_font = _font(28)
+    draw.text((margin + vw + 18, 226), f"· {date_text}", font=date_font, fill=TEXT_SECONDARY)
 
-    _sparkline(draw, values, (margin, 400, WIDTH - margin, 526), x_labels=x_labels)
+    # Большой area-график. Левый гаттер (margin..px0) — под подписи значений,
+    # нижний гаттер (py1..) — под даты. Так подписи не пересекаются с линией.
+    chart_box = (margin + 92, 300, WIDTH - margin, 540)
+
+    # Водяной знак: бренд по центру графика, едва заметный.
+    wm_font = _font(58, bold=True)
+    wm = "forecasteconomy.com"
+    ww = draw.textlength(wm, font=wm_font)
+    cx = (chart_box[0] + chart_box[2]) / 2 - ww / 2
+    cy = (chart_box[1] + chart_box[3]) / 2 - 36
+    draw.text((cx, cy), wm, font=wm_font, fill=WATERMARK)
+
+    _area_chart(draw, values, chart_box, x_labels=x_labels)
 
     footer_font = _font(26)
-    draw.text((margin, HEIGHT - 48), "forecasteconomy.com", font=footer_font, fill=TEXT_SECONDARY)
+    draw.text((margin, HEIGHT - 42), "forecasteconomy.com", font=footer_font, fill=TEXT_TERTIARY)
 
     buf = io.BytesIO()
     img.save(buf, format="PNG", optimize=True)

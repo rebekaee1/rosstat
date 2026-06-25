@@ -5,7 +5,7 @@ export default function About() {
   useDocumentMeta({
     title: 'О проекте Forecast Economy',
     description:
-      'Бесплатная аналитическая платформа макроэкономических данных России. 80+ индикаторов, данные Росстата и ЦБ РФ.',
+      'Бесплатная аналитическая платформа экономической статистики России: 100+ индикаторов, данные Росстата, Банка России и Минфина. Исторические ряды и прогнозы.',
     path: '/about',
   });
 
@@ -20,17 +20,22 @@ export default function About() {
         </h1>
         <p className="text-text-secondary leading-relaxed mb-6">
           <strong className="text-text-primary">Forecast Economy</strong> — веб-платформа для работы с официальной
-          статистикой по инфляции и смежным индикаторам. Мы агрегируем данные из открытых источников
-          (прежде всего <a href="https://rosstat.gov.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer" onClick={() => trackOutbound('https://rosstat.gov.ru')}>Росстат</a>
-          {' '}и <a href="https://cbr.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer" onClick={() => trackOutbound('https://cbr.ru')}>Банк России</a>),
-          показываем исторические ряды и строим{' '}
-          <strong className="text-text-primary">прогноз</strong> на горизонт до 12 месяцев вперёд.
+          экономической статистикой России: инфляция и цены, ключевая ставка и ставки рынка, ВВП и
+          промышленное производство, рынок труда и зарплаты, внешняя торговля и платёжный баланс,
+          бюджет, биржевые индексы и товарные рынки. Мы собираем данные из первичных источников —
+          {' '}<a href="https://rosstat.gov.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer" onClick={() => trackOutbound('https://rosstat.gov.ru')}>Росстат</a>,
+          {' '}<a href="https://cbr.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer" onClick={() => trackOutbound('https://cbr.ru')}>Банк России</a>
+          {' '}и <a href="https://minfin.gov.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer" onClick={() => trackOutbound('https://minfin.gov.ru')}>Минфин России</a>,
+          {' '}— показываем длинные исторические ряды по более чем 100 индикаторам и строим{' '}
+          <strong className="text-text-primary">прогноз</strong> там, где это оправдано характером ряда.
         </p>
 
         <h2 className="text-xl font-semibold text-text-primary mt-10 mb-3">Для кого этот сервис</h2>
         <ul className="list-disc pl-5 text-text-secondary space-y-2 mb-6">
-          <li>аналитикам и исследователям, которым нужны ряды и прогноз в одном месте;</li>
-          <li>журналистам и редакторам — быстрые графики и контекст по индексу потребительских цен (ИПЦ);</li>
+          <li>аналитикам и экономистам, которым нужны ряды, сравнения и прогноз в одном месте;</li>
+          <li>инвесторам и финансистам — отслеживать инфляцию, ставки, валюту, биржевые индексы и сырьё;</li>
+          <li>предпринимателям — следить за спросом, ценами и промышленной активностью;</li>
+          <li>журналистам, преподавателям и студентам — готовые графики и контекст по экономике России;</li>
           <li>всем, кто хочет видеть <strong className="text-text-primary">официальные данные</strong>, а не только заголовки новостей.</li>
         </ul>
 
@@ -38,7 +43,7 @@ export default function About() {
         <ul className="list-disc pl-5 text-text-secondary space-y-2 mb-6">
           <li>
             <strong className="text-text-primary">Первичные данные.</strong> Источники указаны на каждой
-            странице; вы можете свериться с оригиналом на сайте Росстата или ЦБ.
+            странице; вы можете свериться с оригиналом на сайте Росстата, Банка России или Минфина.
           </li>
           <li>
             <strong className="text-text-primary">Прогноз с методологией.</strong> Модель и окна
