@@ -737,7 +737,7 @@ _FAMILY_DEFS: list[FamilyDef] = [
               overrides={"yoy": "gdp-real-yoy", "qoq": "gdp-real-qoq", "sum-year": "gdp-real-annual"}),
     FamilyDef("gdp-consumption", "ВВП: расходы домохозяйств", "T9", "млрд руб.", "ВВП", "quarterly"),
     FamilyDef("gdp-government", "ВВП: госрасходы", "T9", "млрд руб.", "ВВП", "quarterly"),
-    FamilyDef("gdp-investment", "ВВП: инвестиции", "T9", "млрд руб.", "ВВП", "quarterly"),
+    FamilyDef("gdp-investment", "Валовое накопление капитала", "T9", "млрд руб.", "ВВП", "quarterly"),
     # T9 — квартальные положительные потоки (уровень кв + годовая сумма + Кв/Кв + Г/г)
     FamilyDef("capital-investment", "Инвестиции в основной капитал", "T9", "млрд руб.", "Бизнес", "quarterly"),
     FamilyDef("exports", "Экспорт товаров", "T9", "млн $", "Торговля", "quarterly"),

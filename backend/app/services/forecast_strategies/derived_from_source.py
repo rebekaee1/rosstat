@@ -205,6 +205,76 @@ def _forecast_from_monthly_tail(
     return out
 
 
+def _forecast_from_monthly_tail_pipeline(
+    source_data: list[tuple[date, float]],
+    source_actual_dates: set[date],
+    granularity: str,
+    method: str,
+    pipeline_steps: list,
+) -> list[tuple[date, float]]:
+    """Прогноз агрегата (квартал/год) из месячного хвоста С пост-агрегацией.
+
+    `_forecast_from_monthly_tail` даёт только УРОВНИ будущих полных bucket'ов
+    (period_last/avg/sum). Если в pipeline после агрегационного шага есть ещё
+    операции (yoy/yoy_abs/mom/period_over_period — режимы «Г/г по кварталам/
+    годам»), их нужно применить к ПОЛНОМУ уровневому ряду: исторические
+    bucket'ы из факта источника (база для yoy[t−1y]) + будущие bucket'ы из
+    хвоста. Иначе пост-шаг молча терялся и режим «Г/г по кварталам» возвращал
+    уровень (ставку ~16 %, индекс ~220) вместо процента (−3 % yoy) — баг,
+    из-за которого прогноз «К соотв. периоду пред. года» по кварталам/годам
+    выглядел сломанным, хотя по месяцам (нативная частота, без агрегации) был
+    верным.
+    """
+    agg_idx: int | None = None
+    for i, (op, kw) in enumerate(pipeline_steps):
+        if op in ("period_sum", "period_last", "period_avg") and kw.get("granularity") == granularity:
+            agg_idx = i
+            break
+    if agg_idx is None:
+        return _forecast_from_monthly_tail(source_data, source_actual_dates, granularity, method)
+
+    pre_steps = pipeline_steps[:agg_idx]
+    agg_name, agg_kwargs = pipeline_steps[agg_idx]
+    post_steps = pipeline_steps[agg_idx + 1:]
+
+    # Пре-агрегационные шаги (на практике пусты для monthly/quarterly/annual
+    # базы — единственных, кому протягивается прогноз). Применяем к источнику.
+    pre_series = list(source_data)
+    for name, kwargs in pre_steps:
+        fn = getattr(ops_module, name, None)
+        if fn is None:
+            logger.error("derived_from_source pipeline: unknown pre-op '%s'", name)
+            return []
+        pre_series = fn(pre_series, **dict(kwargs))
+
+    future_levels = _forecast_from_monthly_tail(pre_series, source_actual_dates, granularity, method)
+    if not post_steps:
+        return future_levels
+    if not future_levels:
+        return []
+
+    # Исторические уровни bucket'ов из ФАКТА источника — база для yoy/yoy_abs.
+    actual_only = [(d, v) for d, v in pre_series if d in source_actual_dates]
+    agg_fn = getattr(ops_module, agg_name, None)
+    if agg_fn is None:
+        logger.error("derived_from_source pipeline: unknown agg-op '%s'", agg_name)
+        return []
+    hist_levels = agg_fn(actual_only, **dict(agg_kwargs))
+
+    merged: dict[date, float] = {d: float(v) for d, v in hist_levels}
+    for d, v in future_levels:
+        merged[d] = float(v)  # будущий полный bucket переопределяет частичный факт
+    level_series: list[tuple[date, float]] = sorted(merged.items())
+
+    for name, kwargs in post_steps:
+        fn = getattr(ops_module, name, None)
+        if fn is None:
+            logger.error("derived_from_source pipeline: unknown post-op '%s'", name)
+            return []
+        level_series = fn(level_series, **dict(kwargs))
+    return level_series
+
+
 def _allows_period_sum_anchor_revision(derived_cfg: dict, operation: str | None) -> bool:
     """period_sum на квартал/год якорится на конец bucket'а.
 
@@ -329,8 +399,8 @@ def derived_from_source_strategy(
         if derived_cfg.get("monthly_tail_extrapolate") and bucket_spec:
             method, gran = bucket_spec
             actual_src = set(ctx.cfg.get("_source_actual_dates") or ())
-            derived_full = _forecast_from_monthly_tail(
-                list(source_data), actual_src, gran, method,
+            derived_full = _forecast_from_monthly_tail_pipeline(
+                list(source_data), actual_src, gran, method, pipeline_steps,
             )
         else:
             derived_full = _run_pipeline(list(source_data), derived_cfg)

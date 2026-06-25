@@ -2925,7 +2925,7 @@ INDICATORS = [
     },
     {
         "code": "gdp-investment",
-        "name": "Инвестиции в основной капитал",
+        "name": "Валовое накопление капитала",
         "name_en": "Gross Fixed Capital Formation",
         "unit": "млрд руб.",
         "frequency": "quarterly",
@@ -2955,7 +2955,7 @@ INDICATORS = [
             "validation": {"min": 0},
         },
         "is_active": True,
-        "category": "Бизнес",
+        "category": "ВВП",
     },
     # ─── Рынок труда: рабочая сила и занятость ───
     {

@@ -360,7 +360,7 @@
 | `gdp-government-sum-year` | ВВП | annual | `generic` | derived_from_source | — | — |
 | `gdp-government-yoy` | ВВП | quarterly | `generic` | derived_from_source | — | — |
 | `gdp-government-yoy-year` | ВВП | annual | `generic` | derived_from_source | — | — |
-| `gdp-investment` | Бизнес | quarterly | `generic` | — | ✓ | — |
+| `gdp-investment` | ВВП | quarterly | `generic` | — | ✓ | — |
 | `gdp-investment-qoq` | ВВП | quarterly | `generic` | derived_from_source | — | — |
 | `gdp-investment-sum-year` | ВВП | annual | `generic` | derived_from_source | — | — |
 | `gdp-investment-yoy` | ВВП | quarterly | `generic` | derived_from_source | — | — |

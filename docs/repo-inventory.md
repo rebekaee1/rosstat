@@ -2,17 +2,17 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Файлов:** 447  ·  **Строк:** 81 604  ·  **Токенов (≈):** 824 685
+**Файлов:** 447  ·  **Строк:** 81 711  ·  **Токенов (≈):** 827 313
 
 ## По верхним папкам
 
 | Папка | Файлов | Строк | Токенов (≈) |
 |-------|-------:|------:|------------:|
-| `(root)` | 7 | 1 313 | 30 295 |
+| `(root)` | 7 | 1 314 | 30 643 |
 | `.github` | 1 | 56 | 334 |
-| `backend` | 236 | 43 858 | 439 086 |
-| `docs` | 19 | 3 885 | 73 821 |
-| `frontend` | 158 | 28 899 | 246 022 |
+| `backend` | 236 | 43 928 | 439 863 |
+| `docs` | 19 | 3 921 | 75 321 |
+| `frontend` | 158 | 28 899 | 246 025 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 23 | 3 435 | 34 007 |
 
@@ -21,12 +21,12 @@
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
 | `backend/app/data/indicator_seo.py` | 7 443 | 98 357 |
-| `frontend/src/lib/viewModelFamilies.generated.json` | 7 980 | 47 004 |
-| `backend/seed_data.py` | 4 103 | 41 184 |
-| `docs/backlog.md` | 801 | 19 367 |
-| `CONTEXT.md` | 553 | 18 841 |
+| `frontend/src/lib/viewModelFamilies.generated.json` | 7 980 | 47 007 |
+| `backend/seed_data.py` | 4 103 | 41 182 |
+| `docs/backlog.md` | 833 | 20 532 |
+| `CONTEXT.md` | 554 | 19 110 |
 | `backend/app/services/forecaster.py` | 1 252 | 11 552 |
-| `backend/app/data/view_model_families.py` | 980 | 11 413 |
+| `backend/app/data/view_model_families.py` | 980 | 11 416 |
 | `frontend/src/pages/CalculatorPage.jsx` | 839 | 9 375 |
 | `backend/app/services/seo_renderer.py` | 1 015 | 9 317 |
 | `frontend/src/pages/IndicatorDetail.jsx` | 809 | 8 466 |
@@ -45,8 +45,9 @@
 | `docs/adr/0006-indicator-card-unification.md` | 227 | 5 311 |
 | `frontend/src/pages/ComparePage.jsx` | 484 | 5 037 |
 | `scripts/completeness.py` | 453 | 4 971 |
+| `docs/data_sources.md` | 328 | 4 849 |
 | `backend/tests/test_derived_ops.py` | 554 | 4 814 |
-| `docs/data_sources.md` | 324 | 4 514 |
+| `backend/app/services/forecast_strategies/derived_from_source.py` | 435 | 4 593 |
 | `backend/tests/forecast_strategies/test_derived.py` | 502 | 4 460 |
 | `backend/app/services/minfin_budget_parser.py` | 471 | 4 420 |
 | `backend/tests/test_seo_og.py` | 502 | 4 419 |
@@ -58,7 +59,6 @@
 | `backend/tests/test_calendar_seed.py` | 442 | 4 079 |
 | `frontend/src/lib/cpiViewModeContent.jsx` | 397 | 3 973 |
 | `frontend/src/pages/DemographicsPage.jsx` | 357 | 3 848 |
-| `backend/app/services/forecast_strategies/derived_from_source.py` | 365 | 3 817 |
 | `scripts/audit-indicator-unification.py` | 307 | 3 654 |
 | `backend/tests/test_forecast_policy.py` | 358 | 3 631 |
 | `backend/app/api/embed.py` | 428 | 3 585 |
@@ -66,7 +66,7 @@
 | `frontend/src/components/IndicatorChartSection.jsx` | 365 | 3 474 |
 | `docs/adr/0001-derived-indicators-engine-shape.md` | 134 | 3 466 |
 | `frontend/src/components/IndicatorSearch.jsx` | 329 | 3 434 |
-| `README.md` | 240 | 3 353 |
+| `README.md` | 240 | 3 432 |
 | `backend/app/services/ticker_sources/moex_iss.py` | 353 | 3 339 |
 | `backend/tests/forecast_strategies/fixtures/construction_work_series.json` | 1 | 3 279 |
 | `frontend/src/pages/Privacy.jsx` | 258 | 3 279 |
