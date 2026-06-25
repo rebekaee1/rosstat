@@ -22,13 +22,13 @@
 
 ## Сводка
 
-- Всего кодов: **629**
+- Всего кодов: **657**
 - in_both_viewmode_systems (дубль легаси+generic): **14**
 - shadowed_legacy (мёртвая легаси-ветка): **24**
 - unresolved (нет ui_stack): **1**
 - derived_not_seeded: **0**
 
-По стекам: `cpi`=32, `generic`=584, `housing`=8, `null`=1, `ppi`=4
+По стекам: `cpi`=32, `generic`=612, `housing`=8, `null`=1, `ppi`=4
 
 ### Unresolved (ui_stack=null)
 
@@ -312,6 +312,20 @@
 | `employment-yoy` | Рынок труда | monthly | `generic` | derived_from_source | — | — |
 | `employment-yoy-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `employment-yoy-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
+| `eth-usd` | Валюты | daily | `generic` | — | ✓ | — |
+| `eth-usd-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `eth-usd-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `eth-usd-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `eth-usd-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `eth-usd-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `eth-usd-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `eth-usd-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `eth-usd-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `eth-usd-mom` | Валюты | monthly | `generic` | — | — | — |
+| `eth-usd-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `eth-usd-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `eth-usd-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `eth-usd-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `eur-rub` | Валюты | daily | `generic` | — | ✓ | — |
 | `eur-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
 | `eur-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
@@ -611,6 +625,20 @@
 | `services-imports-yoy-year` | Торговля | annual | `generic` | derived_from_source | — | — |
 | `small-business-innovation` | Наука | annual | `generic` | — | ✓ | — |
 | `small-business-innovation-yoy` | Наука | annual | `generic` | derived_from_source | — | — |
+| `sol-usd` | Валюты | daily | `generic` | — | ✓ | — |
+| `sol-usd-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `sol-usd-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `sol-usd-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `sol-usd-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `sol-usd-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `sol-usd-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `sol-usd-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `sol-usd-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `sol-usd-mom` | Валюты | monthly | `generic` | — | — | — |
+| `sol-usd-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `sol-usd-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `sol-usd-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `sol-usd-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `tech-innovation-share` | Наука | annual | `generic` | — | ✓ | — |
 | `tech-innovation-share-yoy` | Наука | annual | `generic` | derived_from_source | — | — |
 | `trade-balance` | Торговля | quarterly | `generic` | derived_from_source | ✓ | both, shadowed |
@@ -678,7 +706,7 @@
 - **Тип** (верх, эталон — переключатель ИПЦ): `value` Уровень/значение · `pop` К прошлому периоду · `yoy` К соотв. периоду пред. года · `index` Индекс
 - **Частота** (низ): `day` дн · `week` нед · `month` мес · `quarter` кв · `year` год
 
-Корней-семейств: **91** · с полной матрицей: **79** · с пробелами: **12**. Покрытие: {'bespoke': 7, 'bespoke-data': 4, 'generic': 79, 'orphan': 1}.
+Корней-семейств: **93** · с полной матрицей: **81** · с пробелами: **12**. Покрытие: {'bespoke': 7, 'bespoke-data': 4, 'generic': 81, 'orphan': 1}.
 
 ## Систематические пробелы по типам
 
@@ -690,7 +718,7 @@
 | bespoke/CPI | index | month | 4 | `yoy:quarter`, `yoy:year` |
 | bespoke/HOUSING | index | quarter | 2 | `pop:year` |
 | bespoke/PPI | index | month | 1 | `yoy:quarter`, `yoy:year` |
-| generic/T1 | rate | day | 8 | — |
+| generic/T1 | rate | day | 10 | — |
 | generic/T10 | annual-count | year | 11 | — |
 | generic/T10a | annual-signed | year | 9 | — |
 | generic/T12 | ratio-index | month | 2 | — |

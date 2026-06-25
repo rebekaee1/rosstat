@@ -684,6 +684,8 @@ _FAMILY_DEFS: list[FamilyDef] = [
     FamilyDef("brent", "Нефть Brent", "T1", "USD/баррель", "Сырьё", "daily"),
     FamilyDef("gold-price", "Цена золота (ЦБ)", "T1", "руб./г", "Сырьё", "daily"),
     FamilyDef("btc-usd", "Биткоин (BTC/USD)", "T1", "USD", "Сырьё", "daily"),
+    FamilyDef("eth-usd", "Эфириум (ETH/USD)", "T1", "USD", "Валюты", "daily"),
+    FamilyDef("sol-usd", "Солана (SOL/USD)", "T1", "USD", "Валюты", "daily"),
     # T2y — месячные ставки/доли: На конец периода + Средняя + Г/г (п.п.)
     FamilyDef("mortgage-rate", "Ставка по ипотеке", "T2y", "%", "Финансы", "monthly", yoy_unit="п.п."),
     FamilyDef("auto-loan-rate", "Ставка по автокредитам", "T2y", "%", "Финансы", "monthly", yoy_unit="п.п."),

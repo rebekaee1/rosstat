@@ -3635,7 +3635,70 @@ INDICATORS = [
         "model_config_json": {
             "forecast_steps": 0,
             "forecast_transform": "absolute",
+            "binance_symbol": "BTCUSDT",
             "validation": {"min": 100, "max": 1_000_000},
+        },
+        "is_active": True,
+        "category": "Валюты",
+    },
+    {
+        "code": "eth-usd",
+        "name": "Эфириум (ETH/USD)",
+        "name_en": "Ethereum (ETH/USD)",
+        "unit": "USD",
+        "frequency": "daily",
+        "source": "Binance",
+        "source_url": "https://www.binance.com/en/trade/ETH_USDT",
+        "description": (
+            "Курс эфириума к доллару США по данным крупнейшей криптовалютной "
+            "биржи Binance. Эфириум — вторая по капитализации криптовалюта и "
+            "основная платформа для смарт-контрактов; для российской аудитории "
+            "он входит в число альтернативных активов наряду с биткоином."
+        ),
+        "methodology": (
+            "Дневная цена эфириума в долларах США по спотовому рынку на бирже "
+            "Binance: каждая точка — цена закрытия календарного дня. Рынок "
+            "работает круглосуточно без выходных. На карточке доступны "
+            "ежедневный курс и средние по неделе, месяцу, кварталу и году — "
+            "последние считаются из того же ряда для удобства сравнения."
+        ),
+        "parser_type": "binance_btcusdt_daily",
+        "model_config_json": {
+            "forecast_steps": 0,
+            "forecast_transform": "absolute",
+            "binance_symbol": "ETHUSDT",
+            "validation": {"min": 10, "max": 100_000},
+        },
+        "is_active": True,
+        "category": "Валюты",
+    },
+    {
+        "code": "sol-usd",
+        "name": "Солана (SOL/USD)",
+        "name_en": "Solana (SOL/USD)",
+        "unit": "USD",
+        "frequency": "daily",
+        "source": "Binance",
+        "source_url": "https://www.binance.com/en/trade/SOL_USDT",
+        "description": (
+            "Курс монеты Solana к доллару США по данным крупнейшей "
+            "криптовалютной биржи Binance. Solana — одна из крупнейших "
+            "высокопроизводительных блокчейн-платформ; её курс отражает спрос "
+            "на альтернативные криптоактивы помимо биткоина и эфириума."
+        ),
+        "methodology": (
+            "Дневная цена монеты Solana в долларах США по спотовому рынку на "
+            "бирже Binance: каждая точка — цена закрытия календарного дня. "
+            "Рынок работает круглосуточно без выходных. На карточке доступны "
+            "ежедневный курс и средние по неделе, месяцу, кварталу и году — "
+            "последние считаются из того же ряда для удобства сравнения."
+        ),
+        "parser_type": "binance_btcusdt_daily",
+        "model_config_json": {
+            "forecast_steps": 0,
+            "forecast_transform": "absolute",
+            "binance_symbol": "SOLUSDT",
+            "validation": {"min": 1, "max": 10_000},
         },
         "is_active": True,
         "category": "Валюты",

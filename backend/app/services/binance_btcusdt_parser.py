@@ -30,8 +30,8 @@ _DEFAULT_BACKFILL_DAYS = 1500  # ~4 years
 _LIMIT = 1000
 
 
-def _fetch_klines(start_ms: int | None, limit: int) -> list[list]:
-    params = {"symbol": "BTCUSDT", "interval": "1d", "limit": limit}
+def _fetch_klines(start_ms: int | None, limit: int, symbol: str = "BTCUSDT") -> list[list]:
+    params = {"symbol": symbol, "interval": "1d", "limit": limit}
     if start_ms is not None:
         params["startTime"] = start_ms
     with httpx.Client(timeout=30.0, headers={"User-Agent": "ForecastEconomy/1.0"}) as c:
@@ -69,6 +69,7 @@ class BinanceBtcUsdtParser(BaseParser):
         cfg: dict,
         fetch_log: FetchLog,
     ) -> tuple[list, str]:
+        symbol = str(cfg.get("binance_symbol") or "BTCUSDT").upper()
         existing_n = (await db.execute(
             select(func.count(IndicatorData.id)).where(IndicatorData.indicator_id == indicator.id)
         )).scalar() or 0
@@ -83,7 +84,7 @@ class BinanceBtcUsdtParser(BaseParser):
 
         # Binance limit=1000 daily candles per request; paginate forward.
         for _ in range(20):
-            kl = await asyncio.to_thread(_fetch_klines, cursor_ms, _LIMIT)
+            kl = await asyncio.to_thread(_fetch_klines, cursor_ms, _LIMIT, symbol)
             if not kl:
                 break
             pts = _klines_to_points(kl)
