@@ -203,11 +203,13 @@ async def lifespan(app: FastAPI):
 
         scheduler.start()
         logger.info(
-            "Scheduler started: daily ETL at %02d:%02d MSK (Europe/Moscow), all is_active indicators; "
+            "Scheduler started: daily ETL at %02d:%02d and %02d:%02d MSK (Europe/Moscow), all is_active indicators; "
             "official calendar refresh at 03:00 MSK; late Minfin pass at 15:00 MSK; "
             "live ticker every %ds",
             settings.scheduler_cron_hour,
             settings.scheduler_cron_minute,
+            settings.scheduler_evening_hour,
+            settings.scheduler_evening_minute,
             settings.ticker_pull_interval_seconds,
         )
         if settings.analytics_scheduler_enabled:

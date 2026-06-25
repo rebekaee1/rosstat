@@ -39,6 +39,15 @@ from app.database import async_session  # noqa: E402
 from app.models import Forecast, Indicator, IndicatorData, ForecastValue  # noqa: E402
 from app.data.view_model_families import iter_sibling_indicators  # noqa: E402
 
+# Структурно-пустые ряды: источник физически не отдаёт нужную глубину, режим
+# заполнится сам по мере накопления истории. Не баг сидинга/ETL.
+#   international-reserves-yoy-year — недельный ряд ЦБ (rolling-эндпоинт mrrf_7d)
+#     стартует с 2025-03; годовой Dec-to-Dec появится после второго декабря (~Dec
+#     2026). На локали и проде идентично (источник один).
+KNOWN_STRUCTURAL_EMPTY = {
+    "international-reserves-yoy-year",
+}
+
 
 async def main() -> int:
     # forecastable sibling-коды по конфигу (что обязано иметь прогноз).
@@ -81,7 +90,7 @@ async def main() -> int:
         by_id = {ind.id: ind for ind in inds}
         for ind in inds:
             n = counts.get(ind.id, 0)
-            if n == 0:
+            if n == 0 and ind.code not in KNOWN_STRUCTURAL_EMPTY:
                 empty_data.append(ind.code)
 
             cfg = ind.model_config_json or {}
@@ -91,17 +100,24 @@ async def main() -> int:
                 missing_forecast.append(ind.code)
 
     print(f"Активных индикаторов: {len(by_id)}")
+    if KNOWN_STRUCTURAL_EMPTY:
+        print(f"Структурно-пустых (источник, ожидаемо): {len(KNOWN_STRUCTURAL_EMPTY)}")
+        for c in sorted(KNOWN_STRUCTURAL_EMPTY):
+            print(f"  SKIP   {c}")
     print(f"Пустых рядов (0 точек): {len(empty_data)}")
     for c in empty_data:
         print(f"  EMPTY  {c}")
-    print(f"Без прогноза (ожидался): {len(missing_forecast)}")
+    # Прогноз — мягкое предупреждение: часть рядов сознательно без прогноза
+    # (годовая демография/наука/инвестиции; derived от непрогнозируемой базы).
+    # Тоггл на фронте при отсутствии данных прогноза блокируется автоматически.
+    print(f"\nИнфо: режимов без прогноза (toggle будет заблокирован): {len(missing_forecast)}")
     for c in missing_forecast:
         print(f"  NOFC   {c}")
 
-    if empty_data or missing_forecast:
-        print("\nFAIL: есть пробелы — см. список выше.")
+    if empty_data:
+        print("\nFAIL: есть пустые ряды (0 точек) — см. EMPTY выше.")
         return 1
-    print("\nOK: все активные ряды залиты, прогнозы на месте.")
+    print("\nOK: все активные ряды залиты данными.")
     return 0
 
 

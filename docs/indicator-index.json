@@ -29183,6 +29183,16 @@
           "file": "frontend/src/lib/viewModelFamilies.generated.json",
           "line": 7031,
           "kind": "other"
+        },
+        {
+          "file": "scripts/verify-data-loaded.py",
+          "line": 44,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/verify-data-loaded.py",
+          "line": 48,
+          "kind": "other"
         }
       ]
     },

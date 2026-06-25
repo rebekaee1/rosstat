@@ -2,19 +2,19 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Файлов:** 451  ·  **Строк:** 89 358  ·  **Токенов (≈):** 891 132
+**Файлов:** 451  ·  **Строк:** 89 376  ·  **Токенов (≈):** 891 600
 
 ## По верхним папкам
 
 | Папка | Файлов | Строк | Токенов (≈) |
 |-------|-------:|------:|------------:|
-| `(root)` | 7 | 1 454 | 33 186 |
+| `(root)` | 7 | 1 454 | 33 396 |
 | `.github` | 1 | 56 | 334 |
-| `backend` | 238 | 46 291 | 465 331 |
+| `backend` | 238 | 46 293 | 465 357 |
 | `docs` | 19 | 4 011 | 77 537 |
 | `frontend` | 159 | 33 844 | 278 671 |
 | `mcp` | 3 | 158 | 1 120 |
-| `scripts` | 24 | 3 544 | 34 953 |
+| `scripts` | 24 | 3 560 | 35 185 |
 
 ## Все файлы (по убыванию токенов)
 
@@ -32,7 +32,7 @@
 | `frontend/src/pages/IndicatorDetail.jsx` | 800 | 8 378 |
 | `backend/app/services/rosstat_weekly_inflation_parser.py` | 890 | 8 334 |
 | `backend/app/services/calendar_sources/official_calendar.py` | 752 | 8 287 |
-| `AGENTS.md` | 383 | 7 962 |
+| `AGENTS.md` | 383 | 8 172 |
 | `docs/indicator-family-playbook.md` | 621 | 7 561 |
 | `scripts/build-indicator-index.py` | 676 | 7 424 |
 | `backend/app/models.py` | 580 | 7 305 |
@@ -80,7 +80,7 @@
 | `backend/app/tasks/scheduler.py` | 305 | 3 041 |
 | `backend/app/services/forecast_pipeline.py` | 338 | 3 037 |
 | `frontend/src/lib/viewModeFamilies.js` | 287 | 3 029 |
-| `backend/app/main.py` | 310 | 2 965 |
+| `backend/app/main.py` | 312 | 2 991 |
 | `backend/app/services/rosstat_gdp_parser.py` | 319 | 2 859 |
 | `frontend/src/components/Navbar.jsx` | 317 | 2 822 |
 | `backend/app/services/rosstat_population_parser.py` | 306 | 2 760 |
@@ -177,6 +177,7 @@
 | `docs/adr/0005-official-calendar-source-bound.md` | 62 | 1 220 |
 | `backend/app/tasks/ticker_worker.py` | 129 | 1 206 |
 | `backend/tests/forecast_strategies/snapshots/gdp_real_2025_12.json` | 282 | 1 178 |
+| `scripts/verify-data-loaded.py` | 125 | 1 178 |
 | `frontend/src/pages/About.jsx` | 75 | 1 173 |
 | `frontend/src/pages/Register.jsx` | 99 | 1 171 |
 | `backend/app/services/alerting.py` | 136 | 1 166 |
@@ -214,7 +215,6 @@
 | `frontend/src/embed/EmbedTicker.jsx` | 88 | 957 |
 | `Caddyfile` | 32 | 951 |
 | `scripts/audit-public-language.py` | 111 | 949 |
-| `scripts/verify-data-loaded.py` | 109 | 946 |
 | `backend/app/api/dashboard.py` | 122 | 944 |
 | `backend/tests/test_cbr_keyrate.py` | 109 | 944 |
 | `docs/analytics_api_inventory/metrika_management.md` | 49 | 942 |
