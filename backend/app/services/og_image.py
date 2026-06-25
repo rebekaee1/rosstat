@@ -91,8 +91,14 @@ def render_indicator_og(
     value_text: str,
     date_text: str,
     values: list[float],
+    period_text: str | None = None,
 ) -> bytes:
-    """Собрать PNG. Чистая функция от данных — кэширование на вызывающей стороне."""
+    """Собрать PNG. Чистая функция от данных — кэширование на вызывающей стороне.
+
+    `period_text` — необязательная метка периода (например «2024 год») для
+    годовых landing-страниц: показывается рядом с брендом, чтобы у каждой
+    годовой картинки был свой контекст в выдаче и ответах Алисы.
+    """
     img = Image.new("RGB", (WIDTH, HEIGHT), BG)
     draw = ImageDraw.Draw(img, "RGBA")
 
@@ -101,7 +107,11 @@ def render_indicator_og(
     draw.rectangle([0, 0, WIDTH, 8], fill=CHAMPAGNE)
 
     eyebrow_font = _font(26, bold=True)
-    draw.text((margin, 56), "FORECAST ECONOMY", font=eyebrow_font, fill=CHAMPAGNE)
+    eyebrow = "FORECAST ECONOMY"
+    draw.text((margin, 56), eyebrow, font=eyebrow_font, fill=CHAMPAGNE)
+    if period_text:
+        ew = draw.textlength(eyebrow, font=eyebrow_font)
+        draw.text((margin + ew + 18, 56), f"· {period_text}", font=eyebrow_font, fill=TEXT_SECONDARY)
 
     name_font = _font(54, bold=True)
     lines = _wrap_text(draw, name, name_font, WIDTH - margin * 2)

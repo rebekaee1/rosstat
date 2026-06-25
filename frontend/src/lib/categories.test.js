@@ -7,14 +7,19 @@ import {
 } from './categories';
 
 describe('categories', () => {
-  it('has 10 categories (D5: «Валюты» отделены от «Деньги и бюджет»)', () => {
-    expect(CATEGORIES).toHaveLength(10);
+  it('has 12 categories (+«Индексы» MOEX, +«Товарные рынки» сырьё)', () => {
+    expect(CATEGORIES).toHaveLength(12);
   });
 
   it('currencies category exists and points to apiCategory="Валюты"', () => {
     const cur = getCategoryBySlug('currencies');
     expect(cur?.apiCategory).toBe('Валюты');
     expect(cur?.status).toBe('active');
+  });
+
+  it('indices + commodities categories exist with right apiCategory', () => {
+    expect(getCategoryBySlug('indices')?.apiCategory).toBe('Индексы');
+    expect(getCategoryBySlug('commodities')?.apiCategory).toBe('Товарные рынки');
   });
 
   it('getCategoryBySlug finds prices', () => {

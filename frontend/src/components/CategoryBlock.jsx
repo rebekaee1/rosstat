@@ -16,6 +16,8 @@ import {
   BarChart3,
   CircleDollarSign,
   Banknote,
+  LineChart,
+  Boxes,
 } from 'lucide-react';
 import { cn } from '../lib/format';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
@@ -36,6 +38,8 @@ const CATEGORY_ICONS = {
   BarChart3,
   CircleDollarSign,
   Banknote,
+  LineChart,
+  Boxes,
 };
 
 export default function CategoryBlock({

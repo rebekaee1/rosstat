@@ -884,6 +884,17 @@ async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> 
             "creator": {"@type": "Organization", "name": indicator.source},
             "temporalCoverage": f"{year}-01-01/{year}-12-31",
             "variableMeasured": name,
+            "image": f"{DOMAIN}/og/{code}/{year}.png",
+        },
+        {
+            "@context": "https://schema.org",
+            "@type": "ImageObject",
+            "contentUrl": f"{DOMAIN}/og/{code}/{year}.png",
+            "url": f"{DOMAIN}/og/{code}/{year}.png",
+            "caption": f"{name} в {year} году — график и итоги",
+            "width": 1200,
+            "height": 630,
+            "representativeOfPage": True,
         },
     ]
     html = await build_document(
@@ -893,7 +904,7 @@ async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> 
         body=body,
         json_ld=json_ld,
         keywords=f"{name} {year}, {name} {year} год, {indicator.seo_keywords or name}",
-        og_image=f"{DOMAIN}/og/{indicator.code}.png",
+        og_image=f"{DOMAIN}/og/{code}/{year}.png",
         include_app=False,
     )
     return 200, html

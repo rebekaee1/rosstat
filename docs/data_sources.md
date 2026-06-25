@@ -80,17 +80,42 @@ Endpoint: `cbr.ru/scripts/XML_dynamic.asp?date_req1={from}&date_req2={to}&VAL_NM
 |-----------|----------|-------------|
 | `gold-price` | `cbr.ru/scripts/xml_metall.asp?date_req1={from}&date_req2={to}` | `1998-01-01` (`backfill_from`; `validation.min` 100→40 — ранний-1998 ≈ 52 руб/г до девальвации) |
 
-## Binance — BTC/USD daily (BinanceBtcUsdtParser)
+## Binance — crypto daily (BinanceBtcUsdtParser)
+
+Тикер config-driven через `model_config_json.binance_symbol`. Прогноз не строится (`forecast_steps=0`), категория «Валюты».
 
 | Индикатор | Endpoint |
 |-----------|----------|
 | `btc-usd` | `api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d` — поле `close`, дата = календарный торговый день (UTC). Backfill ~1500 дней. Live-тикер — отдельно `ticker_sources/binance.py`. |
+| `eth-usd` | то же, `symbol=ETHUSDT`. |
+| `sol-usd` | то же, `symbol=SOLUSDT`. |
 
-## Brent — daily (BrentDailyFredParser, `parser_type=moex_brent_daily`)
+## Yahoo chart — commodities daily (BrentDailyFredParser, `parser_type=moex_brent_daily`)
 
-| Индикатор | Endpoint |
-|-----------|----------|
-| `brent` | `query1.finance.yahoo.com/v8/finance/chart/BZ=F?interval=1d` — поле `close`, дневные бары. Backfill с 2020. Live-тикер — MOEX FORTS `BR-*` через `ticker_sources/moex_iss.py`. |
+Один парсер на весь товарный desk: тикер config-driven через `model_config_json.yahoo_symbol` (дефолт `BZ=F`), старт бэкфилла — `backfill_from` (дефолт `2015-01-01`). Прогноз не строится, категория «Товарные рынки». Endpoint: `query1.finance.yahoo.com/v8/finance/chart/<symbol>?interval=1d`, поле `close`.
+
+| Индикатор | yahoo_symbol | Заметки |
+|-----------|--------------|---------|
+| `brent` | `BZ=F` | Brent front-month (ICE). Live-тикер — MOEX FORTS `BR-*` через `ticker_sources/moex_iss.py`. |
+| `copper` | `HG=F` | COMEX, USD/lb. |
+| `silver` | `SI=F` | COMEX, USD/oz. |
+| `natural-gas` | `NG=F` | NYMEX Henry Hub, USD/MMBtu. |
+| `wheat` | `ZW=F` | CBOT, US¢/bushel. |
+| `soybean` | `ZS=F` | CBOT, US¢/bushel. |
+| `coal` | `MTF=F` | ICE Rotterdam, USD/t. **Источник стоит ≈ с 2025-12-26** (контракт на Yahoo перестал обновляться); фронт-месяц-замены на Yahoo нет — это лимит источника, история до конца 2025 полная (~2721 точки). |
+| `steel` | `HRC=F` | CME US Midwest HRC, USD/short ton. |
+
+## MOEX ISS — биржевые индексы daily (MoexIndexParser, `parser_type=moex_index_daily`)
+
+Тикер config-driven через `model_config_json.moex_secid`. Прогноз не строится, категория «Индексы». Endpoint: `iss.moex.com/iss/history/engines/stock/markets/index/securities/<SECID>.json` с пагинацией по `start` (страница 100 строк). **Пагинация по сырому числу строк страницы, не по отфильтрованным точкам** — ранняя история индексов (напр. RGBI) содержит строки с `CLOSE=null`, и остановка по короткому отфильтрованному списку обрезала бы ряд.
+
+| Индикатор | moex_secid | Заметки |
+|-----------|-----------|---------|
+| `imoex` | `IMOEX` | Индекс МосБиржи. |
+| `mcftr` | `MCFTR` | Индекс полной доходности. |
+| `rtsi` | `RTSI` | Индекс РТС (в долларах). |
+| `rgbi` | `RGBI` | Индекс гособлигаций (ОФЗ), история с 2003. |
+| `corp-bond-index` | `RUCBTRNS` | Индекс корпоративных облигаций. |
 
 ## ЦБ РФ — HTML-таблицы (CbrKeyRateParser, CbrReservesParser, CbrRuoniaParser)
 
@@ -211,9 +236,27 @@ Multi-source merge:
 
 Chain MoM% из двух XLSX (база 2018 + база 2023).
 
-| Индикатор | Files |
-|-----------|-------|
-| `ipi` | `mediabank/ind_baza_2018_12-2025.xlsx` (history) + `mediabank/ind_baza_2023_{MM}-{YYYY}.xlsx` (current) |
+Раздел ОКВЭД2 config-driven через `model_config_json.okved_section` (точный код в колонке «Код ОКВЭД2», лист «1»): `BCDE` агрегат (default), `B`/`C`/`D`/`E` — составляющие. Chain/anchor (2023 avg=100) общий. Прогноз — `monthly_auto` (12 мес), generic-семья T3 разворачивает уровень/средние/приросты/Г-г.
+
+| Индикатор | okved_section | Files |
+|-----------|---------------|-------|
+| `ipi` | `BCDE` | `mediabank/ind_baza_2018_12-2025.xlsx` (history) + `mediabank/ind_baza_2023_{MM}-{YYYY}.xlsx` (current) |
+| `ipi-mining` | `B` | те же файлы |
+| `ipi-manufacturing` | `C` | те же файлы |
+| `ipi-energy` | `D` | те же файлы |
+| `ipi-water` | `E` | те же файлы |
+
+## Росстат — еженедельные средние цены на топливо (RosstatWeeklyPriceParser)
+
+Источник: `mediabank/nedel_sred_cen.xlsx` — «Еженедельные средние потребительские цены (на конец периода)», листы по годам (2022→текущий), абсолютная цена в руб./единицу. Целевая строка config-driven через `model_config_json.product_label` (точное совпадение col 0 → подстрока). Частота weekly, категория «Цены», прогноз `generic_ols` (8 недель, transform absolute). Generic-семья T5 (как резервы): уровень на конец периода + средние мес/кв/год + Г/г.
+
+| Индикатор | product_label |
+|-----------|---------------|
+| `fuel-ai92` | «Бензин автомобильный марки АИ-92, л» |
+| `fuel-ai95` | «Бензин автомобильный марки АИ-95, л» |
+| `fuel-diesel` | «Дизельное топливо, л» |
+
+> Тот же файл содержит ещё ~110 товаров (продовольствие, лекарства, стройматериалы) — при необходимости любой расширяется одной seed-строкой с нужным `product_label`, без правки парсера.
 
 ## Росстат — труд (RosstatLaborParser)
 

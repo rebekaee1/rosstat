@@ -54,14 +54,21 @@ _YEAR_RE = re.compile(r"(\d{4})")
 _MONTH_PREFIX_RE = re.compile(r"([а-я]+)")
 
 
-def parse_rosstat_ipi_mom_xlsx(content: bytes) -> dict[date, float]:
-    """Parse rosstat ind_baza_*.xlsx sheet "1" → {date: MoM_percent} for ПРОМЫШЛЕННОЕ
-    ПРОИЗВОДСТВО (BCDE) row.
+def parse_rosstat_ipi_mom_xlsx(content: bytes, section: str = "BCDE") -> dict[date, float]:
+    """Parse rosstat ind_baza_*.xlsx sheet "1" → {date: MoM_percent} for the
+    requested OKVED2 section row.
+
+    `section` — точный код в колонке «Код ОКВЭД2» (индекс 1):
+      "BCDE" — ПРОМЫШЛЕННОЕ ПРОИЗВОДСТВО (агрегат, default),
+      "B"    — ДОБЫЧА ПОЛЕЗНЫХ ИСКОПАЕМЫХ,
+      "C"    — ОБРАБАТЫВАЮЩИЕ ПРОИЗВОДСТВА,
+      "D"    — ОБЕСПЕЧЕНИЕ ЭЛЕКТРОЭНЕРГИЕЙ/ГАЗОМ/ПАРОМ,
+      "E"    — ВОДОСНАБЖЕНИЕ; ВОДООТВЕДЕНИЕ.
 
     Layout:
       row 4: year headers (sparse — only at first month of each year)
       row 5: month names (январь/февраль/...) — могут иметь footnote markers (январь1)
-      row 6 (or detected dynamically): BCDE row with monthly MoM% values starting col 3
+      section row: detected by exact match col[1] == section, MoM% значения с col 2.
     """
     wb = openpyxl.load_workbook(io.BytesIO(content), data_only=True, read_only=True)
     try:
@@ -74,11 +81,11 @@ def parse_rosstat_ipi_mom_xlsx(content: bytes) -> dict[date, float]:
 
     bcde_row_idx: int | None = None
     for r_idx, row in enumerate(rows):
-        if len(row) > 1 and row[1] and "BCDE" in str(row[1]):
+        if len(row) > 1 and row[1] is not None and str(row[1]).strip() == section:
             bcde_row_idx = r_idx
             break
     if bcde_row_idx is None:
-        raise ValueError("Rosstat IPI: BCDE (ПРОМЫШЛЕННОЕ ПРОИЗВОДСТВО) row not found")
+        raise ValueError(f"Rosstat IPI: OKVED2 section '{section}' row not found")
 
     if len(rows) < 5:
         raise ValueError(f"Rosstat IPI: too few rows ({len(rows)})")
@@ -173,16 +180,17 @@ class RosstatIpiParser(BaseParser):
         cfg: dict,
         fetch_log: FetchLog,
     ) -> tuple[list, str]:
+        section = str(cfg.get("okved_section") or "BCDE")
         hist_content, hist_url = await asyncio.to_thread(
             fetch_rosstat_static_xlsx, "ipi_historical_2018"
         )
-        hist_mom = await asyncio.to_thread(parse_rosstat_ipi_mom_xlsx, hist_content)
+        hist_mom = await asyncio.to_thread(parse_rosstat_ipi_mom_xlsx, hist_content, section)
 
         sources_url = hist_url
         cur_mom: dict[date, float] = {}
         try:
             cur_content, cur_url = await asyncio.to_thread(fetch_rosstat_ipi_current)
-            cur_mom = await asyncio.to_thread(parse_rosstat_ipi_mom_xlsx, cur_content)
+            cur_mom = await asyncio.to_thread(parse_rosstat_ipi_mom_xlsx, cur_content, section)
             sources_url = f"{hist_url}; {cur_url}"
         except Exception as e:
             logger.warning(

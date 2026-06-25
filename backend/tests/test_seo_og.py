@@ -178,12 +178,14 @@ def test_sitemap_static_pages_constant():
     assert "/calculator" in paths
     assert "/demographics" in paths
 
-    # Ten categories × 1 indicator-grid page each (D5: split «Финансы и валюты»
-    # → «Валюты» + «Деньги и бюджет»).
-    assert len(CATEGORIES) == 10
+    # Twelve categories × 1 indicator-grid page each (D5: split «Финансы и
+    # валюты» → «Валюты» + «Деньги и бюджет»; +«Индексы» (MOEX); +«Товарные
+    # рынки» (сырьё, нефть/золото перенесены из «Финансы»)).
+    assert len(CATEGORIES) == 12
     for slug in (
         "prices", "rates", "labor", "gdp", "finance",
         "trade", "population", "business", "science", "currencies",
+        "indices", "commodities",
     ):
         assert slug in CATEGORIES
 

@@ -126,6 +126,10 @@ GENERIC_OLS_FORECAST_CODES: set[str] = {
     "inflation-weekly-food",
     "inflation-weekly-nonfood",
     "inflation-weekly-services",
+    # Недельные средние цены на топливо (Росстат): короткий трендовый OLS.
+    "fuel-ai92",
+    "fuel-ai95",
+    "fuel-diesel",
 }
 
 # Monthly-Auto — единый алгоритм месячного прогноза руководителя

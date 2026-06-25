@@ -141,7 +141,7 @@ function DownloadButton({ label, onDownload, blocked, hint }) {
     }
     onDownload?.();
   };
-  const tooltip = blocked ? 'Войдите, чтобы скачивать данные без ограничений' : hint;
+  const tooltip = blocked ? 'Скачивание данных — после бесплатной регистрации' : hint;
   return (
     <div className="relative group/dl">
       <button
@@ -153,7 +153,7 @@ function DownloadButton({ label, onDownload, blocked, hint }) {
             ? 'border-border-subtle/60 text-text-tertiary/50 cursor-pointer'
             : 'border-border-subtle text-text-tertiary hover:text-champagne hover:border-champagne/30 magnetic-btn',
         )}
-        title={blocked ? 'Войдите, чтобы скачивать данные без ограничений' : `Скачать ${label}`}
+        title={blocked ? 'Скачивание данных — после бесплатной регистрации' : `Скачать ${label}`}
       >
         {blocked ? <Lock className="w-3.5 h-3.5" /> : <Download className="w-3.5 h-3.5" />}
         {label}
@@ -170,12 +170,12 @@ function DownloadButton({ label, onDownload, blocked, hint }) {
 /**
  * Кнопка «скачать график картинкой». Гость видит замок и подсказку, клик ведёт
  * на регистрацию (через onDownload, который сам решает гейт). Авторизованный —
- * скачивает PNG текущего вида (с watermark).
+ * скачивает чистый PNG текущего вида (без водяного знака).
  */
 function ImageButton({ onDownload, authed }) {
   const tooltip = authed
     ? 'Скачать график картинкой (PNG)'
-    : 'Войдите, чтобы скачивать график картинкой';
+    : 'Скачивание графика — после бесплатной регистрации';
   return (
     <div className="relative group/img" data-no-export="true">
       <button
@@ -257,9 +257,12 @@ export default function IndicatorChartSection({
     : null;
   const chartRef = useRef(null);
 
-  // Скачивание графика картинкой. Гость (или исчерпавший лимит) → гейт
-  // регистрации; авторизованный → PNG с watermark текущего вида (режим +
-  // прогноз как показаны на экране).
+  // Скачивание графика картинкой. Единое правило по всему сайту:
+  // гость → гейт регистрации (скачать нельзя вообще); зарегистрированный →
+  // чистый PNG текущего вида (режим + прогноз как на экране), без водяного
+  // знака. Водяной знак остаётся только на гостевом тизере в сравнении (≤2
+  // ряда) — там его рисует ComparePage. Так «зарегистрирован ⇒ без знака»
+  // работает одинаково и на карточке, и в сравнении.
   const handleDownloadImage = async () => {
     if (!downloadAuthed) {
       track(events.CHART_IMAGE_BLOCKED, { indicator: code, indicatorCategory: indicator?.category });
@@ -268,7 +271,7 @@ export default function IndicatorChartSection({
     }
     const ok = await exportNodeToPng(chartRef.current, {
       filename: `${code}_${safeViewMode || chartMode || 'chart'}.png`,
-      watermark: true,
+      watermark: false,
     }).catch(() => false);
     if (ok) {
       track(events.CHART_IMAGE_DOWNLOAD, {

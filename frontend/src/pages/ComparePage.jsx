@@ -78,15 +78,33 @@ function parseCodes(searchParams) {
 function AddIndicator({ indicators, selected, onAdd, atCap, capHint }) {
   const [query, setQuery] = useState('');
   const [openList, setOpenList] = useState(false);
+  // Директория сравнения: показываем ВСЕ показатели (минус уже выбранные),
+  // список скроллится (`max-h-80 overflow-auto`). Жёсткого «топ-8» нет —
+  // листать можно весь каталог (звонок 2026-06-25). Любой новый индикатор
+  // приходит из API и попадает сюда автоматически. Поиск идёт и по
+  // seo_keywords (синонимы/корни), как в основном поиске.
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
     const pool = (indicators || []).filter((i) => !selected.includes(i.code));
-    if (!q) return pool.slice(0, 8);
-    return pool
-      .filter((i) => (i.name || '').toLowerCase().includes(q)
-        || (i.code || '').toLowerCase().includes(q))
-      .slice(0, 8);
+    if (!q) return pool;
+    return pool.filter((i) => {
+      const hay = `${i.name || ''} ${i.name_en || ''} ${i.category || ''} ${i.code || ''} ${i.seo_keywords || ''}`.toLowerCase();
+      return hay.includes(q);
+    });
   }, [indicators, selected, query]);
+
+  // Спрос-аналитика поиска сравнения (как в основном поиске): фиксируем
+  // введённый запрос с числом результатов через debounce. Запрос с 0
+  // результатов = карта пробелов каталога. Сырые keystroke'и не шлём.
+  const resultsCount = results.length;
+  useEffect(() => {
+    const q = query.trim();
+    if (q.length < 2) return undefined;
+    const t = setTimeout(() => {
+      track(events.COMPARE_SEARCH, { q: q.slice(0, 40), results: resultsCount });
+    }, 900);
+    return () => clearTimeout(t);
+  }, [query, resultsCount]);
 
   return (
     <div className="relative">
@@ -99,7 +117,7 @@ function AddIndicator({ indicators, selected, onAdd, atCap, capHint }) {
           type="text"
           value={query}
           disabled={atCap}
-          onChange={(e) => { setQuery(e.target.value); if (e.target.value) track(events.COMPARE_SEARCH, { q: e.target.value.slice(0, 40) }); }}
+          onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setOpenList(true)}
           onBlur={() => setTimeout(() => setOpenList(false), 150)}
           placeholder={atCap ? capHint : 'Найти показатель и добавить…'}
@@ -536,13 +554,18 @@ export default function ComparePage() {
             </div>
 
             <div className="relative rounded-2xl">
-              <div
-                aria-hidden="true"
-                data-no-export="true"
-                className="pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 -rotate-6 select-none whitespace-nowrap text-3xl font-display font-bold tracking-[0.18em] text-text-primary opacity-[0.055] md:text-5xl"
-              >
-                Forecast Economy
-              </div>
+              {/* Водяной знак — гостевой тизер: показываем на экране только гостю
+                  (его же экспорт получает тайловый знак из canvas). У
+                  зарегистрированного и экран, и выгрузка чистые. */}
+              {!isAuthed && (
+                <div
+                  aria-hidden="true"
+                  data-no-export="true"
+                  className="pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 -rotate-6 select-none whitespace-nowrap text-3xl font-display font-bold tracking-[0.18em] text-text-primary opacity-[0.055] md:text-5xl"
+                >
+                  Forecast Economy
+                </div>
+              )}
               <ResponsiveContainer width="100%" height={480}>
                 <ComposedChart data={chartData} margin={{ top: 10, right: 20, bottom: 44, left: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />

@@ -1,5 +1,5 @@
 /**
- * 9 категорий платформы.
+ * Категории платформы (карточки меню/главной).
  *
  * apiCategory — точное значение Indicator.category в БД.
  *
@@ -70,6 +70,34 @@ export const CATEGORIES = [
     seoTitle: 'Деньги и бюджет России',
     seoDescription: 'Денежная масса, резервы, кредиты, депозиты, бюджет — данные ЦБ РФ и Минфина.',
     relatedSlugs: ['currencies', 'rates', 'trade'],
+  },
+  {
+    slug: 'indices',
+    name: 'Индексы',
+    nameEn: 'Market Indices',
+    icon: 'LineChart',
+    apiCategory: 'Индексы',
+    status: 'active',
+    flagshipCode: 'imoex',
+    sentiment: 'positive',
+    description: 'Индекс МосБиржи и РТС, индекс полной доходности, индексы государственных и корпоративных облигаций.',
+    seoTitle: 'Биржевые индексы России',
+    seoDescription: 'Индекс МосБиржи, РТС, RGBI, индексы облигаций — ежедневные данные Московской биржи.',
+    relatedSlugs: ['currencies', 'finance', 'rates'],
+  },
+  {
+    slug: 'commodities',
+    name: 'Товарные рынки',
+    nameEn: 'Commodities',
+    icon: 'Boxes',
+    apiCategory: 'Товарные рынки',
+    status: 'active',
+    flagshipCode: 'brent',
+    sentiment: 'neutral',
+    description: 'Нефть, золото, серебро, медь, природный газ, уголь, сталь, пшеница и соя — мировые цены на сырьё.',
+    seoTitle: 'Цены на сырьё и товарные рынки',
+    seoDescription: 'Нефть Brent, золото, медь, газ, пшеница — ежедневные мировые цены на сырьевые товары.',
+    relatedSlugs: ['indices', 'currencies', 'trade'],
   },
   {
     slug: 'labor',

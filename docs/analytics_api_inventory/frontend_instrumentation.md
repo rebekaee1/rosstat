@@ -125,6 +125,37 @@ ym(107136069, 'init', {
 | `scroll_depth` | `useScrollDepth` (Indicator/Compare/Calculator/Category) | пороги 25/50/75/100 | `percent`, `page`, `indicator`, `category` |
 | `indicator_view` | `IndicatorDetail` | mount страницы | `indicator`, `category` |
 
+### Конверсия, лимиты и спрос-поиск (создать в Метрике вручную)
+
+Цели ниже отправляются `reachGoal`, но не считаются, пока в счётчике Метрики
+не создан одноимённый goal (тип «JavaScript-событие», идентификатор = значение
+из колонки Goal). Это новые цели вокруг регистрационной стены, скачиваний
+картинок и спрос-аналитики поиска (звонки 2026-06-25).
+
+| Goal | Site | Surface | Параметры |
+|---|---|---|---|
+| `compare_add` | `ComparePage` | добавление индикатора в сравнение | `code`, `count` |
+| `compare_search` | `ComparePage` | поиск в сравнении (debounce) | `q`, `results` (0 = пробел каталога) |
+| `compare_image_download` | `ComparePage` | скачивание картинки сравнения | `count`, `scale` |
+| `compare_image_blocked` | `ComparePage` | гость уперся в гейт картинки | `count` |
+| `compare_limit_hit` | `ComparePage` | гость уперся в лимит 2 рядов | `cap` |
+| `chart_image_download` | `IndicatorChartSection` | скачивание графика картинкой | `indicator`, `mode`, `withForecast` |
+| `chart_image_blocked` | `IndicatorChartSection` | гость уперся в гейт картинки | `indicator` |
+| `download_limit` | `excel.js`/`IndicatorChartSection` | гость уперся в стену выгрузки данных | `indicator` |
+| `search_query` | `IndicatorSearch` | основной поиск ⌘K (debounce) | `q`, `results` (0 = пробел каталога) |
+| `search_select` | `IndicatorSearch` | выбор индикатора из поиска | `q`, `code` |
+| `search_abandon` | `IndicatorSearch` | закрыли поиск без выбора | `q`, `results` |
+| `register_nudge_view` / `register_nudge_expand` / `register_nudge_cta` | глобально | плашка «регистрация» | — |
+| `feedback_nudge_view` / `feedback_nudge_expand` / `feedback_nudge_cta` / `feedback_submit` | глобально | обратная связь | — |
+| `header_login_click` / `header_register_click` | `Navbar` | CTA в шапке | — |
+| `signup` / `login_success` / `oauth_start` | auth-флоу (ADR-0007) | регистрация/вход | `method` |
+| `newsletter_opt_in` / `newsletter_opt_out` | кабинет | подписка на рассылку | — |
+
+> Конверсионная воронка картинок/выгрузок: `*_blocked` / `download_limit`
+> (гость уперся в стену) → `register_nudge_cta` / `header_register_click` →
+> `signup` → `chart_image_download` / `compare_image_download` (уже как юзер).
+> Соотношение `*_blocked` к `signup` — основная метрика регистрационной стены.
+
 ### Внешние интеграции
 
 | Goal | Site | Surface | Параметры |

@@ -681,11 +681,23 @@ _FAMILY_DEFS: list[FamilyDef] = [
     FamilyDef("usd-rub", "Курс доллара США", "T1", "руб.", "Валюты", "daily"),
     FamilyDef("eur-rub", "Курс евро", "T1", "руб.", "Валюты", "daily"),
     FamilyDef("cny-rub", "Курс юаня", "T1", "руб.", "Валюты", "daily"),
-    FamilyDef("brent", "Нефть Brent", "T1", "USD/баррель", "Сырьё", "daily"),
-    FamilyDef("gold-price", "Цена золота (ЦБ)", "T1", "руб./г", "Сырьё", "daily"),
-    FamilyDef("btc-usd", "Биткоин (BTC/USD)", "T1", "USD", "Сырьё", "daily"),
+    FamilyDef("brent", "Нефть Brent", "T1", "USD/баррель", "Товарные рынки", "daily"),
+    FamilyDef("gold-price", "Цена золота (ЦБ)", "T1", "руб./г", "Товарные рынки", "daily"),
+    FamilyDef("copper", "Медь", "T1", "USD/фунт", "Товарные рынки", "daily"),
+    FamilyDef("silver", "Серебро", "T1", "USD/унция", "Товарные рынки", "daily"),
+    FamilyDef("natural-gas", "Природный газ", "T1", "USD/MMBtu", "Товарные рынки", "daily"),
+    FamilyDef("wheat", "Пшеница", "T1", "US¢/бушель", "Товарные рынки", "daily"),
+    FamilyDef("soybean", "Соевые бобы", "T1", "US¢/бушель", "Товарные рынки", "daily"),
+    FamilyDef("coal", "Уголь", "T1", "USD/т", "Товарные рынки", "daily"),
+    FamilyDef("steel", "Сталь", "T1", "USD/т", "Товарные рынки", "daily"),
+    FamilyDef("btc-usd", "Биткоин (BTC/USD)", "T1", "USD", "Валюты", "daily"),
     FamilyDef("eth-usd", "Эфириум (ETH/USD)", "T1", "USD", "Валюты", "daily"),
     FamilyDef("sol-usd", "Солана (SOL/USD)", "T1", "USD", "Валюты", "daily"),
+    FamilyDef("imoex", "Индекс МосБиржи", "T1", "пунктов", "Индексы", "daily"),
+    FamilyDef("mcftr", "Индекс МосБиржи полной доходности", "T1", "пунктов", "Индексы", "daily"),
+    FamilyDef("rtsi", "Индекс РТС", "T1", "пунктов", "Индексы", "daily"),
+    FamilyDef("rgbi", "Индекс гособлигаций (RGBI)", "T1", "пунктов", "Индексы", "daily"),
+    FamilyDef("corp-bond-index", "Индекс корпоративных облигаций МосБиржи", "T1", "пунктов", "Индексы", "daily"),
     # T2y — месячные ставки/доли: На конец периода + Средняя + Г/г (п.п.)
     FamilyDef("mortgage-rate", "Ставка по ипотеке", "T2y", "%", "Финансы", "monthly", yoy_unit="п.п."),
     FamilyDef("auto-loan-rate", "Ставка по автокредитам", "T2y", "%", "Финансы", "monthly", yoy_unit="п.п."),
@@ -718,6 +730,13 @@ _FAMILY_DEFS: list[FamilyDef] = [
     FamilyDef("external-debt", "Внешний долг", "T4", "млн $", "Финансы", "quarterly"),
     # T5 — недельный запас
     FamilyDef("international-reserves", "Международные резервы", "T5", "млрд $", "Финансы", "weekly"),
+
+    # Топливо — еженедельные средние потребительские цены (Росстат), руб./л.
+    # Уровень «на конец периода» (как резервы), средние по мес/кв/год, Г/г.
+    # Прогноз — собственный generic_ols (короткий недельный тренд), задан в seed.
+    FamilyDef("fuel-ai92", "Бензин АИ-92", "T5", "руб./л", "Цены", "weekly"),
+    FamilyDef("fuel-ai95", "Бензин АИ-95", "T5", "руб./л", "Цены", "weekly"),
+    FamilyDef("fuel-diesel", "Дизельное топливо", "T5", "руб./л", "Цены", "weekly"),
     # T6 — потоки бюджета
     FamilyDef("budget-revenue", "Доходы бюджета", "T6", "млрд руб.", "Бюджет", "monthly"),
     FamilyDef("budget-expenditure", "Расходы бюджета", "T6", "млрд руб.", "Бюджет", "monthly"),
@@ -733,9 +752,14 @@ _FAMILY_DEFS: list[FamilyDef] = [
     FamilyDef("trade-balance-monthly", "Торговый баланс (месячный ряд)", "T6", "млн $", "Торговля", "monthly"),
     # T7 — баланс бюджета
     FamilyDef("budget-deficit", "Дефицит/профицит бюджета", "T7", "млрд руб.", "Бюджет", "monthly"),
-    # T8 — зарплата (real/index не режимы: остаются wages-real/wages-index)
+    # T8 — зарплата. Номинальная (₽) и реальная (индекс покупательной способности,
+    # 2015=100) — отдельные ряды, объединены в variant-группу «Заработная плата»
+    # (звонок 2026-06-25). У каждого свой полный набор режимов T8. wages-index
+    # (номинальный индекс 2010=100) остаётся служебным рядом для сопоставления с
+    # ценами на жильё — не карточка.
     FamilyDef("wages-nominal", "Средняя заработная плата", "T8", "руб.", "Рынок труда", "monthly",
               overrides={"yoy": "wages-yoy"}),
+    FamilyDef("wages-real", "Реальная заработная плата", "T8", "индекс", "Рынок труда", "monthly"),
     # T9 — ВВП (reuse легаси-кодов derived)
     FamilyDef("gdp-nominal", "Номинальный ВВП", "T9", "млрд руб.", "ВВП", "quarterly",
               overrides={"yoy": "gdp-yoy", "qoq": "gdp-qoq", "sum-year": "gdp-nominal-annual"}),
@@ -781,6 +805,16 @@ _FAMILY_DEFS: list[FamilyDef] = [
     # существующий derived ipi-yoy как режим «Г/г» (отдельная карточка скрыта).
     FamilyDef("ipi", "Индекс промышленного производства", "T3", "индекс", "Бизнес", "monthly",
               overrides={"yoy": "ipi-yoy"}),
+    # ИПП по разделам ОКВЭД2 — те же месячные индексы, generic-семья сама
+    # развернёт уровень/средние/приросты/Г-г и заведёт скрытые derived-siblings.
+    FamilyDef("ipi-mining", "Индекс производства: добыча полезных ископаемых",
+              "T3", "индекс", "Бизнес", "monthly"),
+    FamilyDef("ipi-manufacturing", "Индекс производства: обрабатывающие производства",
+              "T3", "индекс", "Бизнес", "monthly"),
+    FamilyDef("ipi-energy", "Индекс производства: электроэнергия, газ и пар",
+              "T3", "индекс", "Бизнес", "monthly"),
+    FamilyDef("ipi-water", "Индекс производства: водоснабжение и водоотведение",
+              "T3", "индекс", "Бизнес", "monthly"),
     # T12 — индекс доступности жилья (отношение индекса зарплаты к индексу цен на
     # жильё, общая база 2010). Помесячный; квартал/год = среднее. Два варианта
     # рынка (первичный/вторичный) — variant-группа, как у цен на жильё.

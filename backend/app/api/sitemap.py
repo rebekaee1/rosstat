@@ -225,6 +225,59 @@ async def og_image_indicator(code: str, db: AsyncSession = Depends(get_db)):
     )
 
 
+@router.get("/api/v1/og-image/indicator/{code}/{year}.png", include_in_schema=False)
+async def og_image_indicator_year(code: str, year: int, db: AsyncSession = Depends(get_db)):
+    """PNG-превью индикатора за конкретный год для годовой landing-страницы.
+
+    Спарклайн строится по точкам именно этого года, в шапке — метка «{year} год».
+    Это «полезный материал» для Алисы/Нейро: на запрос «инфляция в 2024» поиск
+    Яндекса может показать карточку с графиком за нужный год.
+    """
+    from app.services.og_image import cached_og, render_indicator_og, store_og
+    from app.services.seo_renderer import _format_number
+
+    cache_key = f"{code}:{year}"
+    png = cached_og(cache_key)
+    if png is None:
+        q = await db.execute(
+            select(Indicator).where(Indicator.code == code, Indicator.is_active.is_(True))
+        )
+        indicator = q.scalar_one_or_none()
+        if not indicator:
+            return Response(status_code=404)
+        rows_q = await db.execute(
+            select(IndicatorData.value, IndicatorData.date)
+            .where(
+                IndicatorData.indicator_id == indicator.id,
+                func.extract("year", IndicatorData.date) == year,
+            )
+            .order_by(IndicatorData.date)
+        )
+        rows = rows_q.all()
+        if len(rows) < 2:
+            return Response(status_code=404)
+        values = [float(v) for v, _ in rows]
+        last_value, last_date = rows[-1]
+        unit = (indicator.unit or "").strip()
+        avg = sum(values) / len(values)
+        value_text = f"{_format_number(last_value)} {unit}".strip()
+        date_text = f"в среднем {_format_number(avg)} {unit}".strip()
+        png = render_indicator_og(
+            code=code,
+            name=indicator.name,
+            value_text=value_text,
+            date_text=date_text,
+            values=values,
+            period_text=f"{year} год",
+        )
+        store_og(cache_key, png)
+    return Response(
+        content=png,
+        media_type="image/png",
+        headers={"Cache-Control": "public, max-age=3600"},
+    )
+
+
 def _html_response(status_code: int, html: str) -> Response:
     return Response(content=html, status_code=status_code, media_type="text/html; charset=utf-8")
 

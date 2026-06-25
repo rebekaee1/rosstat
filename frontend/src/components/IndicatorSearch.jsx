@@ -8,7 +8,21 @@ import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { track, events } from '../lib/track';
 
-const MAX_RESULTS = 12;
+// Поиск — это директория: список скроллится (`max-h-[60vh] overflow-y-auto`) и
+// поддерживает клавиатурную навигацию. Жёсткого «топ-12» больше нет (звонок
+// 2026-06-25: «главное, чтобы можно было листать»).
+//
+// Две стадии (чтобы пустой запрос не вываливал ~900 авто-сиблингов режимов вида
+// `cpi-food-yoy`, `corp-bond-index-mom` — это выглядело бы как «сделано
+// студентом»):
+//   • пустой запрос → чистая витрина: только листинговые индикаторы (is_listed),
+//     листается целиком;
+//   • введён запрос → ищем по ВСЕМУ каталогу (включая скрытые срезы и режимы),
+//     чтобы «экспорт квартал», «ИПЦ г/г» находили нужный sibling.
+// Бэкенд отдаёт все active-индикаторы (include_unlisted), поэтому любой новый
+// индикатор попадает в поиск автоматически — без правок здесь.
+// MAX_RESULTS — только страховка от патологического рендера на коротком запросе.
+const MAX_RESULTS = 600;
 const SEARCH_TRACK_DEBOUNCE_MS = 900;
 const SEARCH_MIN_LEN = 2;
 
@@ -16,8 +30,8 @@ const SEARCH_MIN_LEN = 2;
  * Поиск по индикаторам (правка №1 из звонка 2026-05-21).
  *
  * UX — command-palette: маленькая кнопка с лупой в Navbar открывает modal
- * по центру экрана. Внутри modal — большой инпут + до 12 результатов +
- * клавиатурная навигация (стрелки, Enter, Esc). Хоткеи Cmd+K / Ctrl+K
+ * по центру экрана. Внутри modal — большой инпут + полный список совпадений
+ * (скроллится) + клавиатурная навигация (стрелки, Enter, Esc). Хоткеи Cmd+K / Ctrl+K
  * открывают modal из любой точки приложения. На мобильных — full-screen
  * sheet (тот же компонент, breakpoint в стилях).
  *
@@ -56,7 +70,8 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) {
-      return indicators.slice(0, MAX_RESULTS);
+      // Витрина: только листинговые индикаторы (чистый каталог), листается целиком.
+      return indicators.filter((ind) => ind.is_listed !== false);
     }
     return indicators
       .filter((ind) => {

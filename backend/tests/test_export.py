@@ -14,7 +14,8 @@ BODY = {
 
 
 def test_anon_limited_to_quota(auth_client, monkeypatch):
-    # Пинним лимит на 2, чтобы тест не зависел от дефолта (сейчас 5).
+    # Пинним лимит на 2, чтобы тест не зависел от дефолта (сейчас 0 —
+    # жёсткая стена регистрации: гость не качает вовсе).
     monkeypatch.setattr(settings, "download_anon_limit", 2)
 
     r1 = auth_client.post("/api/v1/export/table", json=BODY)
@@ -30,7 +31,10 @@ def test_anon_limited_to_quota(auth_client, monkeypatch):
     assert r3.json()["detail"]["code"] == "download_limit"
 
 
-def test_xlsx_format(auth_client):
+def test_xlsx_format(auth_client, monkeypatch):
+    # Дефолтный анонимный лимит = 0 (стена регистрации); этот тест проверяет
+    # сам XLSX-формат, поэтому временно разрешаем одну гостевую выгрузку.
+    monkeypatch.setattr(settings, "download_anon_limit", 1)
     body = {**BODY, "format": "xlsx", "filename": "ряд.xlsx"}
     r = auth_client.post("/api/v1/export/table", json=body)
     assert r.status_code == 200

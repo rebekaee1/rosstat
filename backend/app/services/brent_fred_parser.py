@@ -1,9 +1,22 @@
-"""ETL parser for Brent daily history.
+"""ETL parser for daily commodity / market history (Yahoo Finance chart API).
 
-Source: Yahoo Finance unofficial API, ticker BZ=F (Brent Crude Oil Futures
-front-month, ICE Europe). Public, no API key, no rate limit issues we've
-hit so far. Returns daily OHLC for the rolled-forward front contract,
-which is the standard reference series used by financial press.
+Source: Yahoo Finance unofficial API. The upstream ticker is config-driven
+via ``model_config_json.yahoo_symbol`` (default ``BZ=F`` for Brent), so the
+same parser serves the whole commodities desk:
+
+  brent        BZ=F   Brent Crude front-month (ICE Europe), USD/bbl
+  copper       HG=F   COMEX copper, USD/lb
+  silver       SI=F   COMEX silver, USD/troy oz
+  wheat        ZW=F   CBOT wheat, US¢/bushel
+  natural-gas  NG=F   NYMEX Henry Hub, USD/MMBtu
+  coal         MTF=F  ICE Rotterdam coal, USD/t
+  steel        HRC=F  CME US Midwest HRC steel, USD/short ton
+  soybean      ZS=F   CBOT soybeans, US¢/bushel
+
+Public, no API key. Returns daily OHLC for the rolled-forward front
+contract, which is the standard reference series used by financial press.
+Backfill start is config-driven via ``model_config_json.backfill_from``
+(ISO date, default 2015-01-01).
 
 Endpoint format:
   GET https://query1.finance.yahoo.com/v8/finance/chart/BZ=F
@@ -47,11 +60,12 @@ from app.services.base_parser import BaseParser
 
 logger = logging.getLogger(__name__)
 
-_URL = "https://query1.finance.yahoo.com/v8/finance/chart/BZ=F"
+_BASE_URL = "https://query1.finance.yahoo.com/v8/finance/chart/"
+_DEFAULT_SYMBOL = "BZ=F"
 _DEFAULT_BACKFILL_FROM = date(2015, 1, 1)
 
 
-def _fetch_yahoo(from_date: date, to_date: date) -> dict:
+def _fetch_yahoo(symbol: str, from_date: date, to_date: date) -> dict:
     period1 = int(datetime(from_date.year, from_date.month, from_date.day, tzinfo=timezone.utc).timestamp())
     period2 = int(datetime(to_date.year, to_date.month, to_date.day, tzinfo=timezone.utc).timestamp()) + 86400
     params = {"period1": period1, "period2": period2, "interval": "1d"}
@@ -59,7 +73,7 @@ def _fetch_yahoo(from_date: date, to_date: date) -> dict:
         timeout=30.0,
         headers={"User-Agent": "Mozilla/5.0 (compatible; ForecastEconomy/1.0)"},
     ) as c:
-        r = c.get(_URL, params=params)
+        r = c.get(_BASE_URL + symbol, params=params)
         r.raise_for_status()
         return r.json()
 
@@ -94,20 +108,30 @@ class BrentDailyFredParser(BaseParser):
         cfg: dict,
         fetch_log: FetchLog,
     ) -> tuple[list, str]:
+        symbol = str(cfg.get("yahoo_symbol") or _DEFAULT_SYMBOL)
+        backfill_from = _DEFAULT_BACKFILL_FROM
+        raw_from = cfg.get("backfill_from")
+        if raw_from:
+            try:
+                backfill_from = date.fromisoformat(str(raw_from))
+            except ValueError:
+                pass
+
         existing_n = (await db.execute(
             select(func.count(IndicatorData.id)).where(IndicatorData.indicator_id == indicator.id)
         )).scalar() or 0
         today = date.today()
-        date_from = _DEFAULT_BACKFILL_FROM if existing_n == 0 else today - timedelta(days=30)
+        date_from = backfill_from if existing_n == 0 else today - timedelta(days=30)
+        url = _BASE_URL + symbol
 
         try:
-            payload = await asyncio.to_thread(_fetch_yahoo, date_from, today)
+            payload = await asyncio.to_thread(_fetch_yahoo, symbol, date_from, today)
             points = _parse_yahoo(payload)
         except Exception as e:
-            fetch_log.error_message = f"Yahoo BZ=F fetch failed: {e}"[:500]
-            return [], _URL
+            fetch_log.error_message = f"Yahoo {symbol} fetch failed: {e}"[:500]
+            return [], url
 
         by_date: dict[date, float] = {}
         for d, v in points:
             by_date[d] = v
-        return sorted(by_date.items()), _URL
+        return sorted(by_date.items()), url
