@@ -98,7 +98,7 @@ class Settings(BaseSettings):
     oauth_vk_redirect_uri: str = ""
 
     # Лимит скачиваний для гостей (без сессии). Авторизованные — безлимит.
-    download_anon_limit: int = 5
+    download_anon_limit: int = 0
     download_anon_window_seconds: int = 60 * 60 * 24  # окно сессии скачиваний
     # Глубина истории в гостевой выгрузке (лет от последней точки). Полный период
     # истории — бонус за регистрацию. 0 = без ограничения глубины. Авторизованные

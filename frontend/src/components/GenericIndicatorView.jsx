@@ -6,7 +6,6 @@ import useGenericViewModeData from '../lib/useGenericViewModeData';
 import { resolveViewMode } from '../lib/viewModeEngine';
 import IndicatorDetailHeader from './IndicatorDetailHeader';
 import VariantGroupPicker from './VariantGroupPicker';
-import FrequencySwitcher from './FrequencySwitcher';
 import GenericViewModePicker from './GenericViewModePicker';
 import IndicatorTelemetryGrid from './IndicatorTelemetryGrid';
 import IndicatorChartSection from './IndicatorChartSection';
@@ -138,14 +137,6 @@ export default function GenericIndicatorView({
         cpiPrevDate={null}
         adj={IDENTITY}
         loading={loadingInd || isLoading}
-      />
-
-      <FrequencySwitcher
-        currentCode={code}
-        currentFrequency={indicator?.frequency}
-        alternateFrequencies={indicator?.alternate_frequencies}
-        primaryIndicatorCode={indicator?.primary_indicator_code}
-        indicatorCategory={indicator?.category}
       />
 
       {variantGroup ? (

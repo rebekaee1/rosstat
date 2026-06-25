@@ -9,7 +9,6 @@ import useDocumentMeta from '../lib/useMeta';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import IndicatorDetailHeader from '../components/IndicatorDetailHeader';
 import VariantGroupPicker from '../components/VariantGroupPicker';
-import FrequencySwitcher from '../components/FrequencySwitcher';
 import CpiIndicatorControls from '../components/CpiIndicatorControls';
 import HousingIndicatorControls from '../components/HousingIndicatorControls';
 import PpiIndicatorControls from '../components/PpiIndicatorControls';
@@ -588,14 +587,6 @@ export default function IndicatorDetail() {
           3) График.
           Под графиком — никаких переключателей (только range-пресеты внутри самого
           IndicatorChart и форекаст-toggle в тулбаре). */}
-      <FrequencySwitcher
-        currentCode={code}
-        currentFrequency={indicator?.frequency}
-        alternateFrequencies={indicator?.alternate_frequencies}
-        primaryIndicatorCode={indicator?.primary_indicator_code}
-        indicatorCategory={indicator?.category}
-      />
-
       {/* Generic config-driven семьи (31 шт.) рендерятся через
           GenericIndicatorView (early-return выше) — здесь остаются только
           специализированные ценовые/индексные карточки и срезы ставок CBR,
