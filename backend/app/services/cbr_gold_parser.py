@@ -95,7 +95,13 @@ class CbrGoldParser(BaseParser):
             select(func.count(IndicatorData.id)).where(IndicatorData.indicator_id == indicator.id)
         )).scalar() or 0
 
-        date_from = DEFAULT_BACKFILL_FROM if existing_n == 0 else date_to - timedelta(days=90)
+        if cfg.get("backfill_from"):
+            # Явный исторический бэкфилл (полная история, идемпотентный upsert).
+            date_from = date.fromisoformat(cfg["backfill_from"])
+        elif existing_n == 0:
+            date_from = DEFAULT_BACKFILL_FROM
+        else:
+            date_from = date_to - timedelta(days=90)
 
         all_points: list[tuple[date, float]] = []
         chunk_errors: list[str] = []

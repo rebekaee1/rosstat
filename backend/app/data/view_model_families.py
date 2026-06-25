@@ -137,6 +137,8 @@ _SUFFIX_NAME: dict[str, str] = {
     "mom": "к предыдущему месяцу",
     "qoq": "к предыдущему кварталу",
     "yoy": "к соответствующему периоду прошлого года",
+    "yoy-quarter": "к соответствующему кварталу прошлого года",
+    "yoy-year": "к соответствующему году прошлого года",
     "index": "индекс (первый период = 100)",
     "rolling-12m": "скользящая средняя за 12 месяцев",
 }
@@ -297,12 +299,67 @@ def _yoy_mode(base: str, freq: str, overrides: dict[str, str], *, forecastable: 
     )
 
 
+def _yoy_modes(
+    base: str, freq: str, overrides: dict[str, str],
+    *, method: str = "last", abs_delta: bool = False, abs_unit: str = "п.п.",
+) -> list[Mode]:
+    """Многоуровневая группа «К соотв. периоду пред. года»: Г/г на нативной
+    частоте + по кварталам/годам.
+
+    Каждый суб-период сворачивается в квартал/год методом `method`, затем yoy:
+    - last — запасы/ставки (на конец периода, точка-во-времени);
+    - avg  — среднемесячные уровни (зарплата, ставка «в среднем за период»);
+    - sum  — потоки (доходы/расходы бюджета, экспорт/импорт).
+    abs_delta=True → yoy_abs (разница в единицах источника / п.п.) вместо
+    процента — для рядов со знаком (сальдо) и ставочных приростов, где %-YoY
+    бессмыслен (база может менять знак / делает «процент от процента»).
+
+    `forecastable` намеренно не параметр: для НЕ-нативных режимов он
+    пересчитывается в `_mode_forecastable`/`_mode_forecast_meta` из частоты базы
+    (прогноз протягивается в агрегат только для monthly/quarterly/annual базы,
+    с guard'ом полноты bucket'а).
+    """
+    native = NATIVE_GRAN[freq]
+    yoy_op = "yoy_abs" if abs_delta else "yoy"
+    unit = abs_unit if abs_delta else "%"
+    out: list[Mode] = []
+
+    # Нативный Г/г: недельный/дневной сначала к месячным уровням (точные даты
+    # год-назад у суб-месячных рядов не совпадают), иначе на нативной частоте.
+    if native in ("week", "day"):
+        nat_pipe: Pipeline = (("period_last", {"granularity": "month"}), (yoy_op, {}))
+        nat_freq, nat_gran = "monthly", "month"
+    else:
+        nat_pipe = ((yoy_op, {}),)
+        nat_freq, nat_gran = freq, native
+    out.append(Mode(
+        mode="yoy", group="yoy", label=GRAN_LABEL[nat_gran],
+        code=_code(base, "yoy", overrides), pipeline=nat_pipe,
+        unit=unit, frequency=nat_freq, forecastable=False,
+    ))
+
+    # Г/г по крупным гранулярностям (квартал/год): агрегат суб-периодов → yoy.
+    for g in _coarser_than(nat_gran):
+        token = f"yoy-{g}"
+        out.append(Mode(
+            mode=token, group="yoy", label=GRAN_LABEL[g],
+            code=_code(base, token, overrides),
+            pipeline=(("period_" + method, {"granularity": g}), (yoy_op, {})),
+            unit=unit, frequency=GRAN_FREQUENCY[g], forecastable=False,
+        ))
+    return out
+
+
 # --- Группы-пресеты -----------------------------------------------------------
 
 _G_EOP = Group("level", "На конец периода")
 _G_AVG = Group("avg", "Средняя за период")
 _G_POP = Group("pop", "К прошлому периоду")
 _G_YOY = Group("yoy", "К соотв. периоду пред. года", leaf=True)
+# Многоуровневая «Г/г» (по месяцам/кварталам/годам) — для sub-annual семей, где
+# `_yoy_modes` отдаёт несколько гранулярностей. Годовые семьи (T10/T10a) держат
+# одиночный `_G_YOY` (leaf): у годового ряда крупнее года ничего нет.
+_G_YOY_MULTI = Group("yoy", "К соотв. периоду пред. года")
 _G_FLOW = Group("flow", "За период")
 _G_GDP_LEVEL = Group("level", "Уровень")
 _G_POP_LEVEL = Group("pop", "К прошлому периоду")
@@ -318,18 +375,14 @@ def _build_rate_daily(f: "FamilyDef") -> Family:
     """
     abs_delta = f.abs_delta
     yoy_unit = f.yoy_unit or "п.п."
-    yoy_mode = (
-        _yoy_abs_mode(f.base, "daily", yoy_unit, f.overrides)
-        if abs_delta else _yoy_mode(f.base, "daily", f.overrides)
-    )
     modes = (
         _level_modes(f.base, "daily", f.unit, f.overrides, group_id="level", forecastable=True)
         + _avg_modes(f.base, "daily", f.unit, f.overrides, forecastable=True)
         + _pop_modes_gen(f.base, "daily", f.overrides, abs_delta=abs_delta, abs_unit=yoy_unit)
-        + [yoy_mode]
+        + _yoy_modes(f.base, "daily", f.overrides, method="last", abs_delta=abs_delta, abs_unit=yoy_unit)
     )
     return Family(f.base, f.name, "T1", f.unit, f.category, "level",
-                  [_G_EOP, _G_AVG, _G_POP, _G_YOY], modes)
+                  [_G_EOP, _G_AVG, _G_POP, _G_YOY_MULTI], modes)
 
 
 def _build_rate_monthly(f: "FamilyDef") -> Family:
@@ -348,12 +401,15 @@ def _build_stock(f: "FamilyDef") -> Family:
     modes = (
         _level_modes(f.base, freq, f.unit, f.overrides, group_id="level", forecastable=fc)
         + _avg_modes(f.base, freq, f.unit, f.overrides, forecastable=fc)
-        + _pop_modes(f.base, freq, f.overrides, flow=False)
-        + [_yoy_mode(f.base, freq, f.overrides)]
+        # _pop_modes_gen (а не _pop_modes): для недельного запаса (T5,
+        # international-reserves) добавляет «К прошлому месяцу» (period_last→mom).
+        # Для monthly/quarterly результат идентичен прежнему _pop_modes.
+        + _pop_modes_gen(f.base, freq, f.overrides)
+        + _yoy_modes(f.base, freq, f.overrides, method="last")
     )
     tmpl = {"monthly": "T3", "quarterly": "T4", "weekly": "T5"}[freq]
     return Family(f.base, f.name, tmpl, f.unit, f.category, "level",
-                  [_G_EOP, _G_AVG, _G_POP, _G_YOY], modes)
+                  [_G_EOP, _G_AVG, _G_POP, _G_YOY_MULTI], modes)
 
 
 def _build_flow_sum(f: "FamilyDef") -> Family:
@@ -361,10 +417,10 @@ def _build_flow_sum(f: "FamilyDef") -> Family:
     modes = (
         _sum_modes(f.base, "monthly", f.unit, f.overrides, forecastable=f.forecastable)
         + _pop_modes(f.base, "monthly", f.overrides, flow=True)
-        + [_yoy_mode(f.base, "monthly", f.overrides)]
+        + _yoy_modes(f.base, "monthly", f.overrides, method="sum")
     )
     return Family(f.base, f.name, "T6", f.unit, f.category, "level",
-                  [_G_FLOW, _G_POP, _G_YOY], modes)
+                  [_G_FLOW, _G_POP, _G_YOY_MULTI], modes)
 
 
 def _build_flow_balance(f: "FamilyDef") -> Family:
@@ -379,10 +435,10 @@ def _build_flow_balance(f: "FamilyDef") -> Family:
     modes = (
         _sum_modes(f.base, "monthly", f.unit, f.overrides, forecastable=True)
         + _pop_modes_gen(f.base, "monthly", f.overrides, flow=True, abs_delta=True, abs_unit=yoy_unit)
-        + [_yoy_abs_mode(f.base, "monthly", yoy_unit, f.overrides)]
+        + _yoy_modes(f.base, "monthly", f.overrides, method="sum", abs_delta=True, abs_unit=yoy_unit)
     )
     return Family(f.base, f.name, "T7", f.unit, f.category, "level",
-                  [_G_FLOW, _G_POP, _G_YOY], modes)
+                  [_G_FLOW, _G_POP, _G_YOY_MULTI], modes)
 
 
 def _build_avg_level(f: "FamilyDef") -> Family:
@@ -422,9 +478,9 @@ def _build_avg_level(f: "FamilyDef") -> Family:
         pipeline=(("period_over_period", {"granularity": "quarter", "method": "avg"}),),
         unit="%", frequency="quarterly", forecastable=False,
     ))
-    modes.append(_yoy_mode(base, "monthly", ov))
+    modes.extend(_yoy_modes(base, "monthly", ov, method="avg"))
     return Family(base, f.name, "T8", unit, f.category, "level",
-                  [_G_AVG, _G_POP, _G_YOY], modes)
+                  [_G_AVG, _G_POP, _G_YOY_MULTI], modes)
 
 
 def _build_gdp(f: "FamilyDef") -> Family:
@@ -436,10 +492,10 @@ def _build_gdp(f: "FamilyDef") -> Family:
         Mode("sum-year", "level", GRAN_LABEL["year"], _code(base, "sum-year", ov),
              (("period_sum", {"granularity": "year"}),), unit, "annual", False),
         Mode("qoq", "pop", "Кв/Кв", _code(base, "qoq", ov), (("qoq", {}),), "%", "quarterly", False),
-        _yoy_mode(base, "quarterly", ov),
+        *_yoy_modes(base, "quarterly", ov, method="sum"),
     ]
     return Family(base, f.name, "T9", unit, f.category, "level",
-                  [_G_GDP_LEVEL, _G_POP_LEVEL, _G_YOY], modes)
+                  [_G_GDP_LEVEL, _G_POP_LEVEL, _G_YOY_MULTI], modes)
 
 
 def _build_demography_annual(f: "FamilyDef") -> Family:
@@ -493,10 +549,10 @@ def _build_rate_monthly_yoy(f: "FamilyDef") -> Family:
         _level_modes(f.base, "monthly", f.unit, f.overrides, group_id="level", forecastable=True)
         + _avg_modes(f.base, "monthly", f.unit, f.overrides)
         + _pop_modes_gen(f.base, "monthly", f.overrides, abs_delta=True, abs_unit=yoy_unit)
-        + [_yoy_abs_mode(f.base, "monthly", yoy_unit, f.overrides)]
+        + _yoy_modes(f.base, "monthly", f.overrides, method="last", abs_delta=True, abs_unit=yoy_unit)
     )
     return Family(f.base, f.name, "T2y", f.unit, f.category, "level",
-                  [_G_EOP, _G_AVG, _G_POP, _G_YOY], modes)
+                  [_G_EOP, _G_AVG, _G_POP, _G_YOY_MULTI], modes)
 
 
 def _build_signed_quarterly(f: "FamilyDef") -> Family:
@@ -510,10 +566,10 @@ def _build_signed_quarterly(f: "FamilyDef") -> Family:
              (("period_sum", {"granularity": "year"}),), unit, "annual", False),
         Mode("qoq", "pop", "Кв/Кв", _code(base, "qoq", ov), (("qoq_abs", {}),),
              unit, "quarterly", False),
-        _yoy_abs_mode(base, "quarterly", yoy_unit, ov),
+        *_yoy_modes(base, "quarterly", ov, method="sum", abs_delta=True, abs_unit=yoy_unit),
     ]
     return Family(base, f.name, "T9s", unit, f.category, "level",
-                  [_G_GDP_LEVEL, _G_POP_LEVEL, _G_YOY], modes)
+                  [_G_GDP_LEVEL, _G_POP_LEVEL, _G_YOY_MULTI], modes)
 
 
 def _build_annual_abs(f: "FamilyDef") -> Family:
@@ -560,12 +616,12 @@ def _build_ratio_index(f: "FamilyDef") -> Family:
         Mode("qoq", "pop", "Кв/Кв", _code(base, "qoq", ov),
              (("period_over_period", {"granularity": "quarter", "method": "avg"}),),
              "%", "quarterly", False),
-        _yoy_mode(base, "monthly", ov),
+        *_yoy_modes(base, "monthly", ov, method="avg"),
     ]
     groups = [
         Group("level", "Уровень"),
         _G_POP,
-        _G_YOY,
+        _G_YOY_MULTI,
     ]
     return Family(base, f.name, "T12", unit, f.category, "level", groups, modes)
 

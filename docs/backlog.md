@@ -1,6 +1,6 @@
 # Backlog — текущие правки в работе
 
-**Last updated:** 2026-06-19 (Личный кабинет Phase 2 — ADR-0007 «Subsequent additions»: download-gate, телефоны OAuth, согласие на рассылку, брендовые кнопки + providers-endpoint, Telegram-бот (регистрации + дайджест), хедер-блок авторизации, инлайн-поиск, RegisterNudge, автобэкап identity-таблиц. Phase 2.1: обратная связь авторизованных (форма в кабинете + nudge → Telegram мгновенно), quota-aware кнопки скачивания, спрос-аналитика поиска (`search_query`/`search_select`/`search_abandon` в `FrontendEvent` → секция дайджеста: топ-запросы + «без результатов» = пробелы каталога), гейт глубины истории в гостевой выгрузке (`download_anon_history_years=3`, полный период — за регистрацию; обрезка в `export_table`, подсказка на кнопках), хедер-брейкпоинт `md→lg` + адаптивная подпись «Калькулятор» (фикс переполнения pill). См. История 2026-06-19. Предыдущий — Phase 1 2026-06-19 / 2026-06-16).
+**Last updated:** 2026-06-24 (Кластер A — добавлены A0.3 «Фаза 3: углубление истории source-рядов до пола источника» — usd/eur/cny-rub→1998/1999, gold→1998, m2→1992, current-account→1998, каскад на все уровни матрицы + skip-лист рядов на полу источника (CBR ставки/external-debt/Минфин/ЕМИСС-labor); и A0.4 «знаковые квартальные прогнозы» — trade-balance через тождество exports−imports, current-account через signed_quarterly (level-diff). Ранее — A0: детерминированный аудит полноты семейств `completeness` в indicator-index + системный вывод про `yoy:quarter/year`-пробел; модель — `CONTEXT.md::Матрица представлений`. Предыдущий — Личный кабинет Phase 2 — ADR-0007 «Subsequent additions»: download-gate, телефоны OAuth, согласие на рассылку, брендовые кнопки + providers-endpoint, Telegram-бот (регистрации + дайджест), хедер-блок авторизации, инлайн-поиск, RegisterNudge, автобэкап identity-таблиц. Phase 2.1: обратная связь авторизованных (форма в кабинете + nudge → Telegram мгновенно), quota-aware кнопки скачивания, спрос-аналитика поиска (`search_query`/`search_select`/`search_abandon` в `FrontendEvent` → секция дайджеста: топ-запросы + «без результатов» = пробелы каталога), гейт глубины истории в гостевой выгрузке (`download_anon_history_years=3`, полный период — за регистрацию; обрезка в `export_table`, подсказка на кнопках), хедер-брейкпоинт `md→lg` + адаптивная подпись «Калькулятор» (фикс переполнения pill). См. История 2026-06-19. Предыдущий — Phase 1 2026-06-19 / 2026-06-16).
 **Part of:** [`AGENTS.md`](../AGENTS.md), [`CONTEXT.md`](../CONTEXT.md), [`docs/adr/0006-indicator-card-unification.md`](adr/0006-indicator-card-unification.md), [`docs/adr/0007-identity-user-accounts.md`](adr/0007-identity-user-accounts.md).
 **Источник:** звонки с Никитой Александровичем 2026-05-21 (Сочи) и 2026-05-22 («всё доделать»).
 
@@ -34,6 +34,61 @@
 ## Кластер A — Time aggregations & view modes
 
 > **A1 и A2 — это одна задача в двух частях:** A1 (движок переключателей, уже есть на CPI) + A2 (таблица «какие кнопки рисуем у каждого индикатора»). Без A2 движок не знает, что показывать. Без A1 таблица — мёртвая. Делаем вместе.
+
+### A0 (инструмент, готово 2026-06-24). Аудит полноты семейств — паспорт полноты
+
+**Что есть.** Детерминированный read-only аудит матрицы представлений {тип × частота} по всем 91 корню-семейству: блок `completeness` в `docs/indicator-index.json` + срез в `docs/indicator-index.md` (модуль `scripts/completeness.py`, под guard `--check`). На корень: `present`/`expected`/`missing`-ячейки, `matrix_score`, 4 измерения (тексты/прогноз/группировка/seo). Доменная модель — `CONTEXT.md::Матрица представлений`. Это фундамент под перегруппировку / прогнозы / агрегацию.
+
+**Системный вывод первого прогона (кандидаты, требуют продуктового решения):**
+- **Доминирующий пробел — `yoy:quarter` / `yoy:year` почти у всех sub-annual семей** (T1/T2y/T3/T6/T7/T8/ИПЦ/ИЦП): rolling «к соотв. периоду пред. года» есть только на нативной частоте, квартального/годового среза нет. Квартальные (T9/T9s) — нет `yoy:year`.
+- `housing-price-*` — нет `pop:year` (календарный Г/г-шаг); `international-reserves` (недельный запас) — нет `pop:month`; `ipi` — обёрнут value-билдером, нет index-группы как у ИПЦ/ИЦП.
+- **Тексты:** 43 корня без полной пары description+methodology в seed (у ИПЦ-семьи методология в `cpiViewModeContent.jsx` — там `partial` ожидаем). `wages-nominal-annual` — единственный без прогноза; SEO не curated у 10 (alt-частотные торговые ряды, housing-affordability, срезы вкладов).
+
+### A0.1 (готово 2026-06-24). Заполнение матрицы — многоуровневая «Г/г» во всех generic-семьях
+
+**Что сделано.** Доминирующий пробел A0 закрыт. Группа «Г/г» из leaf-кнопки превращена в **многоуровневую** (по месяцам/кварталам/годам) во всех 11 generic-билдерах (`view_model_families.py::_yoy_modes`). Свод суб-периодов к кварталу/году — методом по природе: `last` (ставки/запасы/индекс T1/T2y/T3/T4/T5), `avg` (зарплата/занятость/индекс-отношение T8/T12), `sum` (потоки/ВВП/сальдо T6/T7/T9/T9s; знаковые → `yoy_abs`). +105 sibling-рядов (104 yoy-кв/год + `international-reserves-mom`), авто-seed + авто-скрыты, period-aware тексты (`seed_data._sibling_texts`). Правдивость сверена независимо (`budget-revenue-yoy-year` = ручная годовая сумма; `m2-yoy-quarter` = same-quarter eop; неполный 2026 отброшен). Браузер-smoke `budget-revenue?mode=yoy-quarter` ОК. `check-all` зелёный; аудит: **78/91 корней complete** (было ~14 с пробелом). Подсказка будущему агенту — playbook §«Generic-семья: природа ряда → билдер-шаблон».
+
+**Остаток (13 корней, осознанно не трогаем):** bespoke-канон CPI/ИЦП/жильё (`yoy:quarter/year`, `pop:year` — свои тексты/реестры `*ViewMode*`, отдельное продуктовое решение), `inflation-weekly*` (недельные, вне view-mode), `ipi`/housing `pop:year` ≈ `yoy:year` (by-design), `wages-nominal-annual` (историч. режим карточки, не каталог). Прогнозный хвост новых кварт/год sibling'ов — кластер прогнозов (retrain).
+
+### A0.2 (готово 2026-06-24). Прогнозы — каскад в новые sibling'ы + квартальные для положительных рядов
+
+**Что сделано.** (1) Пере-retrain всех 36 месячных источников + 6 квартальных родителей (gdp-*, housing-*) — каскад `retrain_indicator_forecast` заполнил прогноз во **всех новых yoy-кв/год sibling'ах** A0.1 (например `budget-revenue-yoy-quarter`=4 точки, `m2-yoy-quarter`=4, `gdp-nominal-yoy-year`=1). (2) Закрыт запрос созвона «у квартальных тоже должны быть прогнозы»: новая стратегия `generic_quarterly` (`forecast_strategies/generic_quarterly.py` + `forecaster.train_generic_quarterly`) переиспользует методологию семейства ВВП (multi-window OLS на log-diff) для **положительных трендовых** квартальных рядов — `exports`, `imports`, `external-debt` (`forecast_steps=4`). Каскад протянул прогноз в их derived (`*-yoy`/`*-qoq`). Правдивость: значения положительные, продолжают ряд с квартальной сезонностью (exports Q1↓→рост, imports Q4-пик, external-debt стабильный остаток). Браузер-smoke `/indicator/exports` — пунктирный прогноз-хвост 2026 на графике, секция «Прогноз (ежеквартально)». Контракт: добавлен сет `GENERIC_QUARTERLY_FORECAST_CODES` + тест `test_generic_quarterly_forecasts_have_named_strategy` в `test_forecast_policy.py` (whitelist `ALL_FORECAST_CODES` синхронен). external-debt: убрано «прогноз не строится» из methodology. `check-all` зелёный.
+
+**Правило прогнозов (созвон + код):** прогноз строится для monthly (`monthly_auto`), quarterly положительных (`generic_quarterly` / bespoke gdp/housing), CPI/ИЦП (approved/cpi_combined/ppi), и derived от forecastable базы (`derived_from_source`). **НЕ строится** для крипты, биржевых котировок и любой периодичности < месяца (созвон: «предсказывать курс биткоина — профанация»). На фронте дневные/недельные агрегаты не прогнозируются (`_FORECAST_PROPAGATE_FREQ` = monthly/quarterly/annual).
+
+**Остаток (знаковые квартальные) — ЗАКРЫТО в A0.4** (см. ниже).
+
+### A0.3 (готово 2026-06-24). Фаза 3 — углубление истории source-рядов до пола источника
+
+**Что сделано.** Инвентарь глубины всех 75 source-индикаторов (текущий min-date vs реальный пол источника, live-probe через контейнер с CA-сертами). Найдены и закрыты «config-ограниченные» пробелы — там, где источник отдаёт больше, чем грузили:
+
+| Индикатор | Было | Стало | Источник/механизм |
+|-----------|------|-------|-------------------|
+| `usd-rub` | 2015 | **1998-01** | CBR `XML_dynamic`, `backfill_from` в конфиге; пол = деноминация 1000:1 (до 1998 курс в старых рублях, сплайс дал бы разрыв ×1000) |
+| `eur-rub` | 2015 | **1999-01** | то же; евро у ЦБ с 1999 |
+| `cny-rub` | 2015 | **1998-01** | то же |
+| `gold-price` | 2015 | **1998-01** | CBR `xml_metall.asp`; в парсер добавлен `backfill_from`; `validation.min` 100→40 (ранний-1998 ≈ 52 руб/г до девальвации) |
+| `m2` | 1994 | **1992-12** | CBR monetary xlsx содержал M2 с 1992-12, грузили с 1995 — понижен `backfill_from_year` |
+| `current-account` | 2000 | **1998-04** | CBR DataService, понижен `backfill_from_year` (реальный API-пол) |
+
+Каскад derived (53 ряда обновлены) автоматически протянул глубину **на все уровни матрицы** (`usd-rub-avg-year` 1998–2025, `m2-avg-year` 1992+, `current-account-yoy-abs` 1999+ и т.д.) — требование «история на все уровни показа». Правдивость сверена по первым точкам (usd 1998-01=5.96 пост-деноминация; m2 1992-12=6.5 млрд; CA 1998-04=−3005 кризис). Браузер-smoke `usd-rub`: макс 120.38 (2022), среднее 45.80 по 7062 точкам — разрыва ×1000 нет.
+
+**Пропущено (источник на реальном полу — глубже только методологически разнородный сплайс = профанация, не делаем):**
+- CBR ставки/кредиты/депозиты/ипотека (`credit-rate-*`, `deposit-rate*`, `auto-loan-rate`, `business-credit`, `consumer-credit`, `mortgage-rate`) — датасет CBR DataService по этой методологии стартует 2014/2017/2019 (API-floor = текущему). Пред-2014 ставки — другой ряд/методология.
+- `external-debt` — файл CBR `debt_new.xlsx` лист «2003-2026» (квартальный пол 2003); пред-2003 у ЦБ только годовой ряд (смешивать с квартальным нельзя).
+- `budget-revenue/expenditure/deficit` — Минфин OpenData `fedbud_month` сам стартует 2011; пред-2011 — Казначейство (другой источник/методология).
+- `m0`/`m1`/`deposits-*` — на полу xlsx ЦБ (1992-12 / 2000-12).
+- BoP (`exports`/`imports`/`trade-balance`/`fdi-net`/services) — 1994; `gdp-*` — 1995 (квартальный старт Росстата); демография — 1990+/1897.
+- **Rosstat labor (`wages-nominal`/`unemployment`/`employment`/`labor-force`), `ipi`, `ppi` monthly pre-2015** — источник = месячный PDF «Соц-эк положение» со скользящей историей ~2-3 года. Глубже — только ЕМИСС (fedstat.ru) `data.do?format=sdmx&id=NNNNN`. **Механизм проверен (SDMX парсится, fedstat доступен по обычному CA, НЕ rosstat-CA)**, но это отдельный парсер-проект: многомерный SDMX (регион OKATO × группа × показатель × единица × период=год+месяц-словом), нужен правильный indicatorId + валидация непрерывности на стыке 2015 (методологические ребейзы). Делать наивно = риск профанации (молча неверный регион/измерение). Вынесено в follow-up (ЕМИСС-парсер как indicator-family задача).
+
+### A0.4 (готово 2026-06-24). Знаковые квартальные прогнозы — trade-balance (тождество) + current-account (signed)
+
+**Что сделано.** Закрыта развилка из A0.2. Руководитель (транскрипт, стр. 51–77): «у квартальных тоже должны быть прогнозы» — явно про `сальдо`, `текущий счёт`, `торговый баланс`. Профанация — только крипта/биржа/частота < месяца (стр. 318–320), не квартальные сальдо.
+
+- **`trade-balance` = тождество `exports − imports`.** `_train_gdp_quarterly_port` параметризован трансформом; добавлена операция `subtract` в `derived_from_source` + инъекция второго источника (`source_code_2`) в pipeline + каскад по обоим источникам. Прогноз TB сверен байт-в-байт: `33933.8 = 110343.7 − 76409.9` и т.д. Согласован с прогнозами компонент, пересчитывается каскадом при retrain exports/imports. Модель `Trade-Balance-Identity`.
+- **`current-account` — `signed_quarterly`.** Новая стратегия (`forecast_strategies/signed_quarterly.py` + `forecaster.train_signed_quarterly`): та же multi-window OLS машинерия семейства ВВП, но на **первой разности уровня** (`transform="level"`, аддитивная реконструкция) — знако-устойчива, log не требуется. 4 квартала: ~8–10 млрд $ (в духе текущего профицита РФ). Модель `current-account-Quarterly-MW`.
+
+Контракт: `SIGNED_QUARTERLY_FORECAST_CODES` + `test_signed_quarterly_forecasts_have_named_strategy` + `test_trade_balance_forecast_is_identity`; trade-balance в `DERIVED_FROM_SOURCE_FORECAST_CODES`. Браузер-smoke `/indicator/trade-balance` — фиолетовый прогноз-хвост 2026, легенда «Факт/Прогноз», секция «Прогноз (ежеквартально)». `check-all` зелёный (534 backend + frontend + карта).
 
 ### A1. Унифицировать UX time-aggregation (freq × view) для большинства индикаторов
 

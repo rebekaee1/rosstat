@@ -42,6 +42,13 @@
 (`scripts/build-indicator-index.py`, guard `--check`). Объективный список файлов —
 [`docs/repo-inventory.md`](docs/repo-inventory.md).
 
+> **Полнота индикатора = матрица {тип × частота}** (эталон — переключатель ИПЦ).
+> Какие представления у `X` есть/чего не хватает — блок `completeness` в
+> [`docs/indicator-index.json`](docs/indicator-index.json) + срез в
+> [`docs/indicator-index.md`](docs/indicator-index.md) (модуль
+> `scripts/completeness.py`). Доменная модель — `CONTEXT.md::Матрица представлений`.
+> Это аудит-карта (read-only): пробел = кандидат на режим, не дефект.
+
 ---
 
 # AGENTS.md — точка входа для AI-агента
@@ -178,7 +185,7 @@
 | 1 | **Source-depth invariant** | Какую максимальную глубину истории даёт источник? Если в seed_data залит **меньший** ряд — заводим `<name>_historical.py` immutable seed (как `housing_historical.py`, `refinancing_rate_historical.py`, `wages_historical.py`). НЕ оставляем огрызок. |
 | 2 | **Frequency consistency** (КРИТИЧНО) | Перед `bulk_upsert` сверить `target.frequency` с фактической частотой добавляемых точек. Если расхождение (annual → monthly indicator) — заводим **отдельный sibling indicator** с правильной `frequency` и `is_listed=false`, добавляем режим в `viewModeFamilies`. См. trap `Annual-in-monthly mixing` в `CONTEXT.md`. |
 | 2b | **Initial ETL trigger** | Закрыто автоматикой в `app/main.py::_catch_up_empty_indicators()` — при startup backend сам триггерит ETL для всех source-индикаторов с 0 точек. После deploy с новым indicator достаточно `docker compose up -d backend` — данные подтянутся в фоне. Если в логах `Startup catch-up: <code> failed: ...` — источник битый, чинить парсер. См. trap `New indicator initial ETL trap` в `CONTEXT.md`. |
-| 3 | **View-mode family оценка** | Если ряд > 100 точек и есть осмысленные derived'ы (YoY/QoQ/MoM/aggregation) — заводим через `frontend/src/lib/viewModeFamilies.js::VIEW_MODE_FAMILIES`, **не** отдельную карточку в каталоге. Derived'ы скрываем через `INDICATOR_HIDDEN_FROM_LISTING`. |
+| 3 | **View-mode family оценка** | Если ряд > 100 точек и есть осмысленные derived'ы (YoY/QoQ/MoM/aggregation) — заводим **одной строкой `FamilyDef`** в config-driven источнике `backend/app/data/view_model_families.py::_FAMILY_DEFS` (билдер по природе ряда сам развернёт полную матрицу {тип × частота}, включая многоуровневую Г/г через `_yoy_modes`; sibling-ряды авто-seed + авто-скрыты, тексты авто, прогноз авто-протягивается). Выбор шаблона по природе — таблица в [`docs/indicator-family-playbook.md`](docs/indicator-family-playbook.md)::«Generic-семья: природа ряда → билдер-шаблон». **Не** отдельная карточка каталога; derived скрыты автоматически. Легаси `frontend/src/lib/viewModeFamilies.js` — только для немигрированных bespoke-остатков. |
 | 4 | **Variant decomposition** | Если индикатор имеет варианты по срезу (срок, регион, подгруппа, тип) — это **разные индикаторы со своими рядами** → `VariantGroupPicker` (см. `lib/indicatorVariants.js`). Не путать с view-mode (один ряд, разные представления). |
 | 5 | **Negative-capable check** | Если значения могут быть отрицательными (`trade-balance`, `current-account`, `budget-deficit`, `*-migration`) — использовать `yoy_abs` (разница в единицах источника), **не** `yoy_pct` (% от базы с переходом через ноль = визуальный мусор и тысячи процентов). |
 | 6 | **Frequency strategy** | Daily-индикатор: aggregation (week/month/quarter/year avg) — `applyAggregateTransform` на фронте, **backend derived не заводим**. Monthly counterpart существующего quarterly — отдельный индикатор с MoM%-режимом через виртуальный `transform: 'mom'`. |

@@ -84,13 +84,20 @@ def test_gdp_reuses_legacy_codes():
 
 
 def test_budget_deficit_flow_plus_abs_deltas():
-    """Дефицит (поток со знаком): За период (сумма) + приросты в АБСОЛЮТЕ."""
+    """Дефицит (поток со знаком): За период (сумма) + приросты в АБСОЛЮТЕ.
+
+    Группа «Г/г» — многоуровневая (по месяцам/кварталам/годам): дефицит — поток,
+    свод суб-периодов к кварталу/году = сумма, прирост к году назад в абсолюте.
+    """
     fam = vmf.FAMILY_BY_BASE["budget-deficit"]
     assert {g.id for g in fam.groups} == {"flow", "pop", "yoy"}
     by_mode = {m.mode: m for m in fam.modes}
-    assert set(by_mode) == {"level", "sum-quarter", "sum-year", "mom", "qoq", "yoy"}
+    assert set(by_mode) == {
+        "level", "sum-quarter", "sum-year", "mom", "qoq",
+        "yoy", "yoy-quarter", "yoy-year",
+    }
     # Приросты — абсолютные (млрд руб.), не проценты: база меняет знак.
-    for tok in ("mom", "qoq", "yoy"):
+    for tok in ("mom", "qoq", "yoy", "yoy-quarter", "yoy-year"):
         assert by_mode[tok].unit != "%", f"{tok}: должен быть абсолютным"
         op_names = [op for op, _ in by_mode[tok].pipeline]
         assert any(op.endswith("_abs") for op in op_names), f"{tok}: ожидается *_abs op"

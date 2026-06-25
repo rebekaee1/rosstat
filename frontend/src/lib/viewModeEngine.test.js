@@ -45,21 +45,22 @@ describe('viewModeEngine — generic resolver', () => {
     expect(viewModeCanonicalTarget('m2')).toBeNull();
   });
 
-  it('builds two-level groups with a leaf yoy button', () => {
+  it('builds two-level groups with a multi-level yoy group', () => {
     const groups = buildViewModeGroups(getViewModeFamily('m2'));
     const byId = Object.fromEntries(groups.map((g) => [g.id, g]));
     expect(byId.level.modes.map((m) => m.mode)).toEqual(['level', 'eop-quarter', 'eop-year']);
     // правило «без дубль-линий»: средняя без месячной гранулярности
     expect(byId.avg.modes.map((m) => m.mode)).toEqual(['avg-quarter', 'avg-year']);
     expect(byId.pop.modes.map((m) => m.mode)).toEqual(['mom', 'qoq']);
-    expect(byId.yoy.leafMode).toBe('yoy');
+    // Г/г теперь многоуровневая: по месяцам / кварталам / годам
+    expect(byId.yoy.modes.map((m) => m.mode)).toEqual(['yoy', 'yoy-quarter', 'yoy-year']);
   });
 
   it('computes top group / expansion for a mode', () => {
     const fam = getViewModeFamily('m2');
     expect(topGroupForMode(fam, 'avg-quarter')).toBe('avg');
     expect(expandedGroupForMode(fam, 'avg-quarter')).toBe('avg');
-    expect(expandedGroupForMode(fam, 'yoy')).toBeNull(); // leaf
+    expect(expandedGroupForMode(fam, 'yoy')).toBe('yoy'); // многоуровневая группа
     expect(defaultSubModeForGroup(fam, 'pop')).toBe('mom');
   });
 

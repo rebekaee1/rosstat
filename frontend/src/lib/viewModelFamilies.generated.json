@@ -21,7 +21,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -101,8 +101,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "п.п."
+      },
+      {
+        "code": "auto-loan-rate-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "п.п."
+      },
+      {
+        "code": "auto-loan-rate-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "п.п."
       }
     ],
@@ -232,7 +252,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -352,8 +372,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "brent-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "brent-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -384,7 +424,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -504,8 +544,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "btc-usd-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "btc-usd-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -531,7 +591,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -591,8 +651,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "млрд руб."
+      },
+      {
+        "code": "budget-deficit-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "млрд руб."
+      },
+      {
+        "code": "budget-deficit-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "млрд руб."
       }
     ],
@@ -618,7 +698,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -678,8 +758,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "budget-expenditure-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "budget-expenditure-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -705,7 +805,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -765,8 +865,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "budget-revenue-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "budget-revenue-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -797,7 +917,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -877,8 +997,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "business-credit-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "business-credit-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -904,7 +1044,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -944,8 +1084,18 @@
         "frequency": "quarterly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По кварталам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "capital-investment-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -976,7 +1126,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -1096,8 +1246,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "cny-rub-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "cny-rub-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -1123,7 +1293,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -1183,8 +1353,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "construction-work-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "construction-work-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -1215,7 +1405,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -1295,8 +1485,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "consumer-credit-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "consumer-credit-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -1327,7 +1537,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -1407,8 +1617,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "п.п."
+      },
+      {
+        "code": "credit-rate-corp-1to3y-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "п.п."
+      },
+      {
+        "code": "credit-rate-corp-1to3y-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "п.п."
       }
     ],
@@ -1439,7 +1669,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -1519,8 +1749,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "п.п."
+      },
+      {
+        "code": "credit-rate-corp-over3y-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "п.п."
+      },
+      {
+        "code": "credit-rate-corp-over3y-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "п.п."
       }
     ],
@@ -1551,7 +1801,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -1631,8 +1881,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "п.п."
+      },
+      {
+        "code": "credit-rate-corp-short-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "п.п."
+      },
+      {
+        "code": "credit-rate-corp-short-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "п.п."
       }
     ],
@@ -1663,7 +1933,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -1743,8 +2013,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "п.п."
+      },
+      {
+        "code": "credit-rate-ind-1to3y-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "п.п."
+      },
+      {
+        "code": "credit-rate-ind-1to3y-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "п.п."
       }
     ],
@@ -1775,7 +2065,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -1855,8 +2145,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "п.п."
+      },
+      {
+        "code": "credit-rate-ind-over3y-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "п.п."
+      },
+      {
+        "code": "credit-rate-ind-over3y-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "п.п."
       }
     ],
@@ -1887,7 +2197,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -1967,8 +2277,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "п.п."
+      },
+      {
+        "code": "credit-rate-ind-short-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "п.п."
+      },
+      {
+        "code": "credit-rate-ind-short-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "п.п."
       }
     ],
@@ -1994,7 +2324,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -2034,8 +2364,18 @@
         "frequency": "quarterly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По кварталам",
         "mode": "yoy",
+        "unit": "млн $"
+      },
+      {
+        "code": "current-account-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "млн $"
       }
     ],
@@ -2165,7 +2505,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -2245,8 +2585,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "п.п."
+      },
+      {
+        "code": "deposit-rate-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "п.п."
+      },
+      {
+        "code": "deposit-rate-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "п.п."
       }
     ],
@@ -2277,7 +2637,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -2357,8 +2717,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "п.п."
+      },
+      {
+        "code": "deposit-rate-long-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "п.п."
+      },
+      {
+        "code": "deposit-rate-long-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "п.п."
       }
     ],
@@ -2389,7 +2769,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -2469,8 +2849,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "п.п."
+      },
+      {
+        "code": "deposit-rate-medium-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "п.п."
+      },
+      {
+        "code": "deposit-rate-medium-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "п.п."
       }
     ],
@@ -2501,7 +2901,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -2581,8 +2981,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "deposits-business-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "deposits-business-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -2613,7 +3033,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -2693,8 +3113,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "deposits-individual-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "deposits-individual-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -2819,7 +3259,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -2879,8 +3319,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "employment-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "employment-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -2911,7 +3371,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -3031,8 +3491,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "eur-rub-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "eur-rub-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -3058,7 +3538,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -3098,8 +3578,18 @@
         "frequency": "quarterly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По кварталам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "exports-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -3125,7 +3615,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -3185,8 +3675,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "exports-monthly-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "exports-monthly-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -3217,7 +3727,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -3267,8 +3777,18 @@
         "frequency": "quarterly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По кварталам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "external-debt-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -3294,7 +3814,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -3334,8 +3854,18 @@
         "frequency": "quarterly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По кварталам",
         "mode": "yoy",
+        "unit": "млн $"
+      },
+      {
+        "code": "fdi-net-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "млн $"
       }
     ],
@@ -3361,7 +3891,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -3401,8 +3931,18 @@
         "frequency": "quarterly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По кварталам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "gdp-consumption-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -3428,7 +3968,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -3468,8 +4008,18 @@
         "frequency": "quarterly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По кварталам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "gdp-government-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -3495,7 +4045,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -3535,8 +4085,18 @@
         "frequency": "quarterly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По кварталам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "gdp-investment-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -3562,7 +4122,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -3602,8 +4162,18 @@
         "frequency": "quarterly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По кварталам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "gdp-nominal-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -3629,7 +4199,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -3669,8 +4239,18 @@
         "frequency": "quarterly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По кварталам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "gdp-real-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -3701,7 +4281,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -3821,8 +4401,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "gold-price-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "gold-price-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -3905,7 +4505,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -3965,8 +4565,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "housing-affordability-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "housing-affordability-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -3992,7 +4612,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -4052,8 +4672,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "housing-affordability-primary-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "housing-affordability-primary-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -4079,7 +4719,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -4139,8 +4779,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "housing-commissioned-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "housing-commissioned-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -4166,7 +4826,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -4206,8 +4866,18 @@
         "frequency": "quarterly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По кварталам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "imports-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -4233,7 +4903,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -4293,8 +4963,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "imports-monthly-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "imports-monthly-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -4367,7 +5057,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -4442,6 +5132,16 @@
         "unit": "млрд $"
       },
       {
+        "code": "international-reserves-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
         "code": "international-reserves-qoq",
         "forecastable": false,
         "frequency": "quarterly",
@@ -4457,8 +5157,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "international-reserves-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "international-reserves-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -4489,7 +5209,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -4569,8 +5289,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "ipi-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "ipi-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -4601,7 +5341,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -4721,8 +5461,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "п.п."
+      },
+      {
+        "code": "key-rate-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "п.п."
+      },
+      {
+        "code": "key-rate-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "п.п."
       }
     ],
@@ -4748,7 +5508,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -4808,8 +5568,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "labor-force-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "labor-force-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -4840,7 +5620,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -4920,8 +5700,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "m0-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "m0-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -4952,7 +5752,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -5032,8 +5832,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "m1-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "m1-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -5064,7 +5884,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -5144,8 +5964,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "m2-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "m2-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -5176,7 +6016,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -5256,8 +6096,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "п.п."
+      },
+      {
+        "code": "mortgage-rate-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "п.п."
+      },
+      {
+        "code": "mortgage-rate-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "п.п."
       }
     ],
@@ -5751,7 +6611,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -5811,8 +6671,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "retail-trade-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "retail-trade-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -5843,7 +6723,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -5963,8 +6843,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "п.п."
+      },
+      {
+        "code": "ruonia-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "п.п."
+      },
+      {
+        "code": "ruonia-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "п.п."
       }
     ],
@@ -5990,7 +6890,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -6030,8 +6930,18 @@
         "frequency": "quarterly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По кварталам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "services-exports-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -6057,7 +6967,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -6117,8 +7027,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "services-exports-monthly-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "services-exports-monthly-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -6144,7 +7074,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -6184,8 +7114,18 @@
         "frequency": "quarterly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По кварталам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "services-imports-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -6211,7 +7151,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -6271,8 +7211,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "services-imports-monthly-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "services-imports-monthly-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -6382,7 +7342,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -6422,8 +7382,18 @@
         "frequency": "quarterly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По кварталам",
         "mode": "yoy",
+        "unit": "млн $"
+      },
+      {
+        "code": "trade-balance-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "млн $"
       }
     ],
@@ -6449,7 +7419,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -6509,8 +7479,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "trade-balance-monthly-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "trade-balance-monthly-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -6541,7 +7531,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -6621,8 +7611,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "п.п."
+      },
+      {
+        "code": "unemployment-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "п.п."
+      },
+      {
+        "code": "unemployment-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "п.п."
       }
     ],
@@ -6653,7 +7663,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -6773,8 +7783,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "usd-rub-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "usd-rub-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],
@@ -6800,7 +7830,7 @@
       {
         "id": "yoy",
         "label": "К соотв. периоду пред. года",
-        "leaf": true
+        "leaf": false
       }
     ],
     "modes": [
@@ -6860,8 +7890,28 @@
         "frequency": "monthly",
         "group": "yoy",
         "isNative": false,
-        "label": "Г/г",
+        "label": "По месяцам",
         "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "wages-nominal-yoy-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "wages-nominal-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
         "unit": "%"
       }
     ],

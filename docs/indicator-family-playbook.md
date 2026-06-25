@@ -1,6 +1,6 @@
 # Playbook — семейство индикаторов (продуктовая модель + фазы A–G)
 
-**Last updated:** 2026-05-30  
+**Last updated:** 2026-06-24 (добавлен §«Generic-семья: природа ряда → билдер-шаблон» — как завести новый индикатор под config-driven матрицу с авто-Г/г; матрица yoy:quarter/year заполнена `_yoy_modes`)  
 **Part of:** [`AGENTS.md`](../AGENTS.md), [`docs/adr/0006-indicator-card-unification.md`](adr/0006-indicator-card-unification.md), [`.cursor/rules/methodology-language.mdc`](../.cursor/rules/methodology-language.mdc).  
 **Эталоны (закрыты):** **ИПЦ** — максимальная сложность (4 среза × 10 режимов). **Жильё** (`housing-price-primary` / `housing-price-secondary`) — эталон «variant + кастомный view-mode» на квартальных данных.
 
@@ -104,6 +104,47 @@
 | Срез × богатые режимы? | Да | **Variant + уровень C** | ИПЦ, жильё |
 | Отрицательные значения? | Да | **`yoy_abs`** | `trade-balance` |
 
+### Generic-семья: природа ряда → билдер-шаблон (авто-матрица)
+
+Для **generic**-семьи (уровень B/C-lite через config-driven движок) НЕ пишут режимы руками — добавляют одну строку `FamilyDef` в `backend/app/data/view_model_families.py::_FAMILY_DEFS`. Билдер по `template` сам разворачивает полную матрицу {тип × частота}, включая **многоуровневую «Г/г»** (по месяцам/кварталам/годам через `_yoy_modes`). Sibling-ряды авто-seed + авто-скрыты из листинга, тексты авто-генерятся (`seed_data._sibling_texts`), прогноз авто-протягивается для базы monthly/quarterly/annual. Выбор шаблона — по **природе ряда**:
+
+| Природа ряда | Шаблон | Частота | Г/г метод свода | Параметры `FamilyDef` | Примеры |
+|---|---|---|---|---|---|
+| Ставка/курс/сырьё, дневной | **T1** | daily | last | `abs_delta=True, yoy_unit="п.п."` (ставка) / без abs (курс/сырьё, %) | key-rate, usd-rub, brent |
+| Ставка/доля, месячный | **T2y** | monthly | last | `yoy_unit="п.п."` | unemployment, mortgage-rate, deposit-rate |
+| Запас (баланс на конец периода) | **T3**/**T4**/**T5** | monthly/quarterly/weekly | last | — (Г/г в %) | m2, external-debt, international-reserves |
+| Среднемесячный уровень (обследование) | **T8** | monthly | **avg** | — | wages-nominal, labor-force, employment |
+| Поток «за период» | **T6** | monthly | **sum** | — (Г/г в %) | budget-revenue, budget-expenditure |
+| Поток со знаком (сальдо/дефицит) | **T7**/**T9s** | monthly/quarterly | **sum** | `yoy_unit=<ед.>` → `yoy_abs` | budget-deficit, current-account |
+| ВВП (уровень кв + годовая сумма) | **T9** | quarterly | sum | `overrides=` для легаси-кодов | gdp-nominal, gdp-real |
+| Годовой счётный ряд | **T10** | annual | — (Г/г leaf + Индекс) | — | population-total |
+| Годовой со знаком/долей | **T10a** | annual | — (Г/г abs leaf) | `yoy_unit="‰"/"%"` | natural-increase-rate |
+| Индекс-отношение (безразмерный) | **T12** | monthly | **avg** | — | housing-affordability |
+
+**Правила выбора (критично для правдивости):**
+- **Среднее vs на конец**: если «уровень» ряда — это *средняя за период* (зарплата, занятость, индекс-отношение) → **T8/T12** (`avg`), НЕ T3 (`last`): квартальная зарплата = средняя за 3 месяца, а не последний месяц.
+- **Поток vs запас**: поток за период суммируется (T6/T7, `sum`); запас берётся на конец (T3–T5, `last`). Г/г наследует тот же метод.
+- **Знак**: ряд может быть отрицательным/менять знак (сальдо, дефицит, миграция) → `yoy_abs` (T7/T9s/T10a, `yoy_unit` = единица/п.п.), НЕ `yoy_pct` (база через ноль = тысячи %).
+- **Индекс-природа** (ИПЦ/ИЦП/ИПП): если ряд уже индекс (`unit=индекс`) и нужны bespoke-тексты/группы — это **уровень C** (`*ViewMode*`), не generic FamilyDef.
+- Прогноз: для дневной/недельной базы агрегаты НЕ прогнозируются (`_FORECAST_PROPAGATE_FREQ` = monthly/quarterly/annual) — это и правило созвона «периодичность < месяца → без прогноза».
+
+После добавления `FamilyDef`: `python3 scripts/export-view-models.py` (зеркало фронта) → пересборка backend → `docker compose exec backend python seed_data.py` → `scripts/build-indicator-index.py` → `./scripts/check-all.sh`. Матрица проверяется в `docs/indicator-index.json::completeness`.
+
+### Прогноз нового source-индикатора: выбор стратегии по природе
+
+Прогноз включается заданием `model_config_json.forecast_strategy` + `forecast_steps>0` в `seed_data.py` И регистрацией кода в соответствующем сете `backend/tests/test_forecast_policy.py` (whitelist `ALL_FORECAST_CODES` — иначе тест `test_only_approved_or_derived_forecasts_are_enabled` падает). После seed — retrain (`scripts/retrain-all-monthly-auto.py --codes <code>`), он каскадно протянет прогноз в derived sibling'ы (`derived_forecast.source_code==base`).
+
+| Природа базового ряда | Стратегия | Когда |
+|---|---|---|
+| Месячный source (любой) | `monthly_auto` | ADF-автотрансформ + multi-window OLS. Дефолт для всех месячных. |
+| Квартальный **положительный** трендовый (поток/запас в деньгах) | `generic_quarterly` | exports, imports, external-debt. Переиспользует log-diff методологию семейства ВВП. **Только ряды без смены знака** (log требует >0). |
+| Квартальный с собственным notebook'ом руководителя | bespoke (`gdp_*_quarterly`, `housing_quarterly`, `ppi_monthly`) | ВВП, жильё, ИЦП. |
+| Индекс цен (CPI-семья) | `cpi_combined` / `approved` | bespoke декомпозиция food/nonfood/services. |
+| Недельная инфляция | `generic_ols` | короткий OLS-горизонт. |
+| Derived от forecastable базы | `derived_from_source` | yoy/qoq/mom/агрегаты — прогноз протягивается из базы через pipeline. |
+| **Крипта / биржевые котировки / периодичность < месяца** | **нет прогноза** (`forecast_steps=0`) | Правило созвона: «предсказывать курс биткоина — профанация». |
+| **Квартальный знаковый** (сальдо/счёт/дефицит) | **пока нет generic-стратегии** | log-diff неопределён. `trade-balance` → тождество `exports_fc − imports_fc` (нужна 2-source инфра); прочие → level-diff модель. Не подключать наивную модель. |
+
 ### Антипаттерны (не делать)
 
 | Ошибка | Почему плохо | Правильно |
@@ -133,6 +174,7 @@
 
 **Цель:** таблица режимов; gaps зафиксированы.
 
+- [ ] **Стартуй с готового аудита:** блок `completeness` в `docs/indicator-index.json` (+ срез в `docs/indicator-index.md`) — для корня уже посчитана матрица `present`/`expected`/`missing` {тип × частота} и 4 измерения паспорта (тексты/прогноз/группировка/seo). Это детерминированная замена ручной таблице ниже. Модель — `CONTEXT.md::Матрица представлений`, генератор — `scripts/completeness.py`.
 - [ ] `frontend/src/pages/IndicatorDetail.jsx` — `VariantGroupPicker`, `ViewModePicker`, `CpiIndicatorControls`, `HousingIndicatorControls`.
 - [ ] Таблица: **режим UI → code БД → частота → derived? → прогноз?**
 - [ ] `INDICATOR_HIDDEN_FROM_LISTING` в `indicator_seo.py` — витрина vs режимы.

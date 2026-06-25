@@ -2,48 +2,49 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Файлов:** 444  ·  **Строк:** 79 625  ·  **Токенов (≈):** 804 373
+**Файлов:** 447  ·  **Строк:** 81 604  ·  **Токенов (≈):** 824 685
 
 ## По верхним папкам
 
 | Папка | Файлов | Строк | Токенов (≈) |
 |-------|-------:|------:|------------:|
-| `(root)` | 7 | 1 288 | 29 052 |
+| `(root)` | 7 | 1 313 | 30 295 |
 | `.github` | 1 | 56 | 334 |
-| `backend` | 234 | 43 483 | 434 722 |
-| `docs` | 19 | 3 820 | 71 090 |
-| `frontend` | 158 | 27 848 | 239 144 |
+| `backend` | 236 | 43 858 | 439 086 |
+| `docs` | 19 | 3 885 | 73 821 |
+| `frontend` | 158 | 28 899 | 246 022 |
 | `mcp` | 3 | 158 | 1 120 |
-| `scripts` | 22 | 2 972 | 28 911 |
+| `scripts` | 23 | 3 435 | 34 007 |
 
 ## Все файлы (по убыванию токенов)
 
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
 | `backend/app/data/indicator_seo.py` | 7 443 | 98 357 |
-| `backend/seed_data.py` | 4 053 | 40 460 |
-| `frontend/src/lib/viewModelFamilies.generated.json` | 6 930 | 40 161 |
-| `docs/backlog.md` | 778 | 18 005 |
-| `CONTEXT.md` | 535 | 17 824 |
-| `backend/app/services/forecaster.py` | 1 193 | 10 950 |
-| `backend/app/data/view_model_families.py` | 924 | 10 644 |
+| `frontend/src/lib/viewModelFamilies.generated.json` | 7 980 | 47 004 |
+| `backend/seed_data.py` | 4 103 | 41 184 |
+| `docs/backlog.md` | 801 | 19 367 |
+| `CONTEXT.md` | 553 | 18 841 |
+| `backend/app/services/forecaster.py` | 1 252 | 11 552 |
+| `backend/app/data/view_model_families.py` | 980 | 11 413 |
 | `frontend/src/pages/CalculatorPage.jsx` | 839 | 9 375 |
 | `backend/app/services/seo_renderer.py` | 1 015 | 9 317 |
 | `frontend/src/pages/IndicatorDetail.jsx` | 809 | 8 466 |
 | `backend/app/services/rosstat_weekly_inflation_parser.py` | 890 | 8 334 |
 | `backend/app/services/calendar_sources/official_calendar.py` | 752 | 8 287 |
+| `docs/indicator-family-playbook.md` | 621 | 7 561 |
+| `scripts/build-indicator-index.py` | 676 | 7 424 |
 | `backend/app/models.py` | 580 | 7 305 |
-| `scripts/build-indicator-index.py` | 666 | 7 299 |
 | `backend/app/services/derived_ops.py` | 718 | 7 294 |
 | `docs/missed_data_audit.md` | 447 | 6 795 |
 | `frontend/src/pages/EmbedBuilder.jsx` | 512 | 6 644 |
 | `frontend/src/components/IndicatorChart.jsx` | 674 | 6 358 |
-| `docs/indicator-family-playbook.md` | 579 | 6 192 |
 | `frontend/src/lib/useIndicatorViewModeData.js` | 665 | 6 161 |
 | `backend/app/services/calendar_seed.py` | 614 | 5 495 |
+| `AGENTS.md` | 243 | 5 419 |
 | `docs/adr/0006-indicator-card-unification.md` | 227 | 5 311 |
-| `AGENTS.md` | 236 | 5 193 |
 | `frontend/src/pages/ComparePage.jsx` | 484 | 5 037 |
+| `scripts/completeness.py` | 453 | 4 971 |
 | `backend/tests/test_derived_ops.py` | 554 | 4 814 |
 | `docs/data_sources.md` | 324 | 4 514 |
 | `backend/tests/forecast_strategies/test_derived.py` | 502 | 4 460 |
@@ -57,8 +58,9 @@
 | `backend/tests/test_calendar_seed.py` | 442 | 4 079 |
 | `frontend/src/lib/cpiViewModeContent.jsx` | 397 | 3 973 |
 | `frontend/src/pages/DemographicsPage.jsx` | 357 | 3 848 |
-| `backend/app/services/forecast_strategies/derived_from_source.py` | 356 | 3 704 |
+| `backend/app/services/forecast_strategies/derived_from_source.py` | 365 | 3 817 |
 | `scripts/audit-indicator-unification.py` | 307 | 3 654 |
+| `backend/tests/test_forecast_policy.py` | 358 | 3 631 |
 | `backend/app/api/embed.py` | 428 | 3 585 |
 | `backend/app/api/auth.py` | 356 | 3 531 |
 | `frontend/src/components/IndicatorChartSection.jsx` | 365 | 3 474 |
@@ -75,8 +77,8 @@
 | `frontend/public/fonts/fonts.css` | 273 | 3 070 |
 | `backend/tests/test_rosstat_weekly_inflation.py` | 297 | 3 056 |
 | `backend/app/tasks/scheduler.py` | 305 | 3 041 |
+| `backend/app/services/forecast_pipeline.py` | 338 | 3 037 |
 | `frontend/src/lib/viewModeFamilies.js` | 287 | 3 029 |
-| `backend/app/services/forecast_pipeline.py` | 328 | 2 882 |
 | `backend/app/services/rosstat_gdp_parser.py` | 319 | 2 859 |
 | `frontend/src/components/Navbar.jsx` | 317 | 2 822 |
 | `backend/app/main.py` | 295 | 2 798 |
@@ -88,7 +90,6 @@
 | `docs/adr/0007-identity-user-accounts.md` | 97 | 2 679 |
 | `docs/adr/0002-derived-always-reflects-source.md` | 105 | 2 644 |
 | `frontend/src/embed/EmbedChart.jsx` | 209 | 2 585 |
-| `backend/tests/test_forecast_policy.py` | 266 | 2 525 |
 | `frontend/src/pages/CategoryPage.jsx` | 245 | 2 512 |
 | `backend/app/api/sitemap.py` | 252 | 2 454 |
 | `backend/tests/test_calculation_engine.py` | 276 | 2 450 |
@@ -141,13 +142,13 @@
 | `frontend/src/lib/track.js` | 195 | 1 621 |
 | `frontend/src/components/RegisterNudge.jsx` | 166 | 1 589 |
 | `backend/app/services/cbr_dataservice_parser.py` | 181 | 1 585 |
+| `backend/tests/test_view_model_families.py` | 161 | 1 573 |
 | `frontend/src/lib/housingViewModeContent.jsx` | 152 | 1 566 |
 | `backend/app/services/cbr_trade_services_monthly_parser.py` | 203 | 1 553 |
 | `backend/tests/test_auth_email.py` | 150 | 1 545 |
 | `frontend/src/components/DataTable.jsx` | 150 | 1 539 |
 | `scripts/repo-inventory.py` | 171 | 1 519 |
 | `backend/tests/test_ticker_sources.py` | 185 | 1 513 |
-| `backend/tests/test_view_model_families.py` | 154 | 1 512 |
 | `scripts/backfill-wages-history.py` | 158 | 1 510 |
 | `backend/app/services/seo_crawler.py` | 171 | 1 504 |
 | `scripts/locate-indicator.py` | 167 | 1 498 |
@@ -177,11 +178,11 @@
 | `backend/app/services/alerting.py` | 136 | 1 166 |
 | `backend/alembic/versions/8524e35ba1ee_init_schema.py` | 98 | 1 156 |
 | `frontend/src/components/TelemetryCard.jsx` | 111 | 1 151 |
+| `backend/app/services/cbr_gold_parser.py` | 131 | 1 149 |
 | `backend/tests/test_rosstat_ipi.py` | 120 | 1 141 |
 | `backend/app/services/action_policy.py` | 138 | 1 138 |
 | `backend/app/services/cbr_ruonia_parser.py` | 128 | 1 094 |
 | `frontend/public/consent.js` | 102 | 1 094 |
-| `backend/app/services/cbr_gold_parser.py` | 125 | 1 091 |
 | `frontend/src/embed/EmbedTable.jsx` | 99 | 1 089 |
 | `frontend/src/components/CpiViewModePicker.jsx` | 152 | 1 087 |
 | `backend/app/services/og_image.py` | 139 | 1 084 |
@@ -227,13 +228,13 @@
 | `backend/tests/conftest.py` | 110 | 890 |
 | `backend/app/data/housing_historical.py` | 92 | 884 |
 | `backend/tests/forecast_strategies/test_monthly_auto.py` | 100 | 881 |
+| `frontend/src/lib/viewModeEngine.test.js` | 82 | 881 |
 | `backend/tests/test_cbr_bop.py` | 109 | 876 |
 | `frontend/src/lib/calendarGrouping.js` | 93 | 869 |
 | `scripts/insert-gdp-q1-2026-estimate.py` | 84 | 869 |
 | `frontend/src/components/CategoryBlock.jsx` | 117 | 868 |
 | `frontend/src/lib/frequencySwitcher.test.js` | 108 | 868 |
 | `backend/tests/test_upsert.py` | 98 | 860 |
-| `frontend/src/lib/viewModeEngine.test.js` | 81 | 846 |
 | `backend/tests/test_rosstat_labor.py` | 90 | 845 |
 | `backend/app/services/fetcher.py` | 90 | 843 |
 | `frontend/src/components/calendar/CalendarFilters.jsx` | 113 | 843 |
@@ -252,6 +253,7 @@
 | `backend/app/data/wages_historical.py` | 85 | 779 |
 | `frontend/src/lib/cpiViewModeGroups.js` | 93 | 778 |
 | `frontend/src/components/ForecastTable.jsx` | 75 | 777 |
+| `backend/app/services/forecast_strategies/registry.py` | 68 | 774 |
 | `backend/app/services/oauth/vk.py` | 80 | 767 |
 | `frontend/src/components/UnemploymentViewModePicker.jsx` | 109 | 766 |
 | `frontend/src/pages/Dashboard.jsx` | 84 | 764 |
@@ -266,7 +268,6 @@
 | `frontend/src/lib/useMeta.js` | 78 | 718 |
 | `backend/app/security/auth.py` | 83 | 707 |
 | `backend/app/services/yandex_webmaster_client.py` | 55 | 704 |
-| `backend/app/services/forecast_strategies/registry.py` | 64 | 703 |
 | `frontend/src/embed/useEmbedParams.js` | 91 | 695 |
 | `backend/app/services/yandex_metrika_reporting.py` | 82 | 693 |
 | `backend/tests/test_analytics_api.py` | 102 | 692 |
@@ -344,6 +345,8 @@
 | `backend/tests/test_cbr_ruonia.py` | 51 | 367 |
 | `frontend/src/lib/cbrTermSliceRateContent.test.js` | 42 | 361 |
 | `frontend/src/components/ErrorBoundary.jsx` | 46 | 356 |
+| `backend/app/services/forecast_strategies/generic_quarterly.py` | 41 | 354 |
+| `backend/app/services/forecast_strategies/signed_quarterly.py` | 41 | 351 |
 | `frontend/src/lib/cpiViewModes.test.js` | 30 | 342 |
 | `frontend/src/lib/chartForecastMerge.test.js` | 36 | 340 |
 | `.github/workflows/ci.yml` | 56 | 334 |

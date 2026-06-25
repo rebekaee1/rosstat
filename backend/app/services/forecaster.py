@@ -709,6 +709,7 @@ def _train_gdp_quarterly_port(
     values: List[float],
     forecast_steps: int,
     model_name: str,
+    transform: str = "log",
 ) -> ForecastResult:
     """1:1 port of Никита's `train_sarima_model` (`Прогноз_номинальный_ВВП.ipynb`).
 
@@ -719,6 +720,14 @@ def _train_gdp_quarterly_port(
     `train_quarterly_housing`, но БЕЗ блендинга с медианой:
 
         forecast[m] = first_value · exp( Σ all_log_diffs + Σ_{j≤m} forecasts_aux )
+
+    `transform`:
+      - "log"   — multi-window OLS на лог-разности; реконструкция
+        мультипликативная (`first · exp(Σ)`). Требует строго положительный
+        ряд. Используется семейством ВВП и `generic_quarterly`.
+      - "level" — та же машинерия на ПЕРВОЙ РАЗНОСТИ уровня; реконструкция
+        аддитивная (`first + Σ`). Знако-устойчива — для сальдо/счетов со
+        сменой знака (trade-balance, current-account), где log неопределён.
     """
     target = 'value'
     series = pd.Series(values, index=pd.DatetimeIndex(dates), dtype=float, name=target)
@@ -726,7 +735,8 @@ def _train_gdp_quarterly_port(
         return ForecastResult(model_name=model_name, aic=None, bic=None, points=[])
 
     first_value = float(series.iloc[0])
-    data = np.log(series).diff(1).dropna()
+    use_log = transform == "log"
+    data = (np.log(series) if use_log else series).diff(1).dropna()
     window_size = len(data)
 
     future_dates = [
@@ -798,7 +808,10 @@ def _train_gdp_quarterly_port(
             float(np.sum(data.iloc[:i]))
             + float(np.sum(forecasts_aux))
         )
-        value = first_value * float(np.exp(accumulated))
+        value = (
+            first_value * float(np.exp(accumulated)) if use_log
+            else first_value + accumulated
+        )
         points.append(ForecastPoint(
             date=future_dates[m - 1].date(),
             value=round(value, 4),
@@ -869,6 +882,52 @@ def train_gdp_government_quarterly(
     """
     return _train_gdp_quarterly_port(
         dates, values, forecast_steps, model_name="GDP-Government-Quarterly-MW",
+    )
+
+
+def train_generic_quarterly(
+    dates: List[date],
+    values: List[float],
+    forecast_steps: int = 4,
+    *,
+    model_name: str = "Generic-Quarterly-MW",
+) -> ForecastResult:
+    """Квартальный прогноз для положительных трендовых рядов без своего
+    notebook'а (экспорт, импорт, внешний долг и т.п.).
+
+    Переиспользует методологию семейства ВВП (`_train_gdp_quarterly_port`):
+    multi-window OLS на log-diff с отсевом мультиколлинеарности и
+    backward-elimination, квартальный лаг-набор `[m, m+1, m+2, 4]`, без
+    блендинга. Логарифм требует строго положительный ряд — поэтому
+    стратегия применима только к неотрицательным потокам/запасам
+    (экспорт/импорт/внешний долг), но НЕ к сальдо/счетам со сменой знака
+    (для них log-diff неопределён).
+    """
+    return _train_gdp_quarterly_port(
+        dates, values, forecast_steps, model_name=model_name,
+    )
+
+
+def train_signed_quarterly(
+    dates: List[date],
+    values: List[float],
+    forecast_steps: int = 4,
+    *,
+    model_name: str = "Signed-Quarterly-MW",
+) -> ForecastResult:
+    """Квартальный прогноз для ЗНАКОВЫХ рядов (сальдо, счета со сменой знака).
+
+    Та же multi-window OLS машинерия семейства ВВП, но на ПЕРВОЙ РАЗНОСТИ
+    уровня вместо лог-разности (`transform="level"`): реконструкция
+    аддитивная, поэтому ряд может свободно пересекать ноль. Применяется к
+    `current-account` и любому квартальному сальдо, для которого нет более
+    точного тождества из компонент. Для `trade-balance` предпочтительнее
+    тождество exports − imports (см. derived_from_source `subtract`) —
+    оно согласовано с прогнозами компонент; прямой signed-модель оставлен
+    как fallback.
+    """
+    return _train_gdp_quarterly_port(
+        dates, values, forecast_steps, model_name=model_name, transform="level",
     )
 
 

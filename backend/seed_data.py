@@ -163,6 +163,10 @@ INDICATORS = [
             "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 1, "max": 500},
+            # Пол истории — 1998-01-01 (деноминация рубля 1000:1). Раньше курс
+            # выражался в «старых» рублях (1997-12 ≈ 5960), сплайс с новыми дал
+            # бы разрыв ×1000 и не прошёл бы validation.max — поэтому floor 1998.
+            "backfill_from": "1998-01-01",
         },
         "is_active": True,
         "category": "Валюты",
@@ -192,6 +196,8 @@ INDICATORS = [
             "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 1, "max": 500},
+            # Евро у ЦБ — с 1999-01-01 (введение валюты), уже «новые» рубли.
+            "backfill_from": "1999-01-01",
         },
         "is_active": True,
         "category": "Валюты",
@@ -221,6 +227,8 @@ INDICATORS = [
             "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 0.1, "max": 100},
+            # Юань у ЦБ котируется давно; floor 1998-01-01 (новые рубли).
+            "backfill_from": "1998-01-01",
         },
         "is_active": True,
         "category": "Валюты",
@@ -314,7 +322,9 @@ INDICATORS = [
                 "indicator": "M2",
                 "date_offset_months": -1,
             },
-            "backfill_from_year": 1995,
+            # XLSX ЦБ содержит M2 с 1992-12 — берём с самого начала (раньше
+            # отсекали 1995, теряя ~2 года ранней истории).
+            "backfill_from_year": 1992,
             "forecast_steps": 0,
             "forecast_transform": "absolute",
             "validation": {"min": 0},
@@ -2210,8 +2220,11 @@ INDICATORS = [
                 "element_id": None,
                 "date_offset_months": 0,
             },
-            "backfill_from_year": 2000,
-            "forecast_steps": 0,
+            "backfill_from_year": 1998,
+            # Квартальное сальдо — знаковый ряд (меняет знак). Прогноз на 4
+            # квартала по level-diff методологии (см. signed_quarterly).
+            "forecast_steps": 4,
+            "forecast_strategy": "signed_quarterly",
             "forecast_transform": "absolute",
         },
         "is_active": True,
@@ -2368,7 +2381,8 @@ INDICATORS = [
         "parser_type": "cbr_bop_xlsx",
         "model_config_json": {
             "bop_target": "exports",
-            "forecast_steps": 0,
+            "forecast_steps": 4,
+            "forecast_strategy": "generic_quarterly",
             "forecast_transform": "absolute",
             "validation": {"min": 0},
             "alternate_frequencies": {"monthly": "exports-monthly"},
@@ -2391,7 +2405,8 @@ INDICATORS = [
         "parser_type": "cbr_bop_xlsx",
         "model_config_json": {
             "bop_target": "imports",
-            "forecast_steps": 0,
+            "forecast_steps": 4,
+            "forecast_strategy": "generic_quarterly",
             "forecast_transform": "absolute",
             "validation": {"min": 0},
             "alternate_frequencies": {"monthly": "imports-monthly"},
@@ -2414,7 +2429,18 @@ INDICATORS = [
         "parser_type": "cbr_bop_xlsx",
         "model_config_json": {
             "bop_target": "trade-balance",
-            "forecast_steps": 0,
+            # Знаковый ряд: прогноз — тождество exports − imports (оба имеют
+            # квартальный прогноз), а не прямая модель на сальдо. Согласовано
+            # с прогнозами компонент; пересчитывается каскадом при retrain
+            # exports/imports. См. derived_from_source operation="subtract".
+            "forecast_steps": 4,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "exports",
+                "source_code_2": "imports",
+                "operation": "subtract",
+                "model_name": "Trade-Balance-Identity",
+            },
             "forecast_transform": "absolute",
             "alternate_frequencies": {"monthly": "trade-balance-monthly"},
         },
@@ -2572,12 +2598,13 @@ INDICATORS = [
             "перед нерезидентами в млн долларов США на конец квартала — "
             "агрегат «всего» по оценке Банка России. Источник: Банк России. "
             "На карточке — поквартальный ряд и среднее по кварталам внутри "
-            "года; прогноз не строится. Это остаток долга на дату, а не "
-            "новые заимствования за квартал."
+            "года, с прогнозом на ближайшие кварталы. Это остаток долга на "
+            "дату, а не новые заимствования за квартал."
         ),
         "parser_type": "cbr_debt_xlsx",
         "model_config_json": {
-            "forecast_steps": 0,
+            "forecast_steps": 4,
+            "forecast_strategy": "generic_quarterly",
             "validation": {"min": 0},
         },
         "is_active": True,
@@ -3574,7 +3601,11 @@ INDICATORS = [
         "model_config_json": {
             "metal": "gold",
             "forecast_steps": 0,
-            "validation": {"min": 100},
+            # Учётная цена золота ЦБ доступна с 1998-01 (новые рубли, после
+            # деноминации); ранний-1998 ≈ 52 руб/г до девальвации, поэтому
+            # порог validation.min понижен с 100 до 40.
+            "validation": {"min": 40},
+            "backfill_from": "1998-01-01",
         },
         "is_active": True,
         "category": "Финансы",
@@ -3700,22 +3731,41 @@ def _sibling_texts(meta: dict) -> tuple[str, str]:
             "значение делится на первое и умножается на 100. Показывает относительную "
             "динамику ряда нарастающим итогом.",
         )
-    if code.endswith("-yoy"):
-        if meta.get("unit") == "%":
+    # Г/г на нативной частоте (-yoy) и его агрегаты по кварталам/годам
+    # (-yoy-quarter / -yoy-year). Проверяем сначала более длинные суффиксы.
+    _yoy_target = {
+        "-yoy": "соответствующему периоду предыдущего года",
+        "-yoy-quarter": "соответствующему кварталу предыдущего года",
+        "-yoy-year": "предыдущему году",
+    }
+    _yoy_method_pct = {
+        "-yoy": "Отношение значения к значению годом ранее, выраженное в процентах.",
+        "-yoy-quarter": "Значения сводятся к квартальной частоте, затем берётся "
+                        "отношение к тому же кварталу прошлого года, в процентах.",
+        "-yoy-year": "Значения сводятся к годовой частоте, затем берётся отношение "
+                     "к значению предыдущего года, в процентах.",
+    }
+    _yoy_method_abs = {
+        "-yoy": "Абсолютное изменение к значению годом ранее",
+        "-yoy-quarter": "Значения сводятся к квартальной частоте, затем берётся "
+                        "абсолютное изменение к тому же кварталу прошлого года",
+        "-yoy-year": "Значения сводятся к годовой частоте, затем берётся абсолютное "
+                     "изменение к значению предыдущего года",
+    }
+    for _sfx in ("-yoy-quarter", "-yoy-year", "-yoy"):
+        if code.endswith(_sfx):
+            target = _yoy_target[_sfx]
+            if is_pct:
+                return (
+                    f"Изменение показателя «{pname}» к {target}, в процентах.",
+                    _yoy_method_pct[_sfx],
+                )
             return (
-                f"Изменение показателя «{pname}» к соответствующему периоду "
-                "предыдущего года, в процентах.",
-                "Прирост к соответствующему периоду прошлого года: отношение "
-                "значения к значению годом ранее, выраженное в процентах.",
+                f"Изменение показателя «{pname}» к {target}, в {unit}.",
+                f"{_yoy_method_abs[_sfx]}, в тех же единицах, что и исходный ряд. "
+                "Подходит для рядов со знаком и для ставок, где процентное "
+                "изменение вводит в заблуждение.",
             )
-        unit = meta.get("unit", "единицах источника")
-        return (
-            f"Изменение показателя «{pname}» к соответствующему периоду "
-            f"предыдущего года, в {unit}.",
-            "Абсолютное изменение к значению годом ранее, в тех же единицах, "
-            "что и исходный ряд. Подходит для рядов со знаком и для ставок, "
-            "где процентное изменение вводит в заблуждение.",
-        )
     kind, _, gran = code[len(meta["parent"]) + 1:].partition("-")
     period = _GRAN_PERIOD.get(gran, "за период")
     eop = _GRAN_EOP.get(gran, "на конец периода")

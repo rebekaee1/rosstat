@@ -184,6 +184,13 @@ async def _maybe_inject_source_for_derived(
     new_cfg = dict(ctx_cfg)
     new_cfg["_source_data"] = series
     new_cfg["_source_actual_dates"] = sorted(actual_dates)
+    # Второй источник — для тождеств из двух рядов (subtract): trade-balance
+    # = exports − imports. Грузим его факт+прогноз отдельным ключом.
+    source_code_2 = derived_cfg.get("source_code_2")
+    if source_code_2:
+        series2, actual_dates2 = await _load_indicator_full_series(db, source_code_2)
+        new_cfg["_source_data_2"] = series2
+        new_cfg["_source_actual_dates_2"] = sorted(actual_dates2)
     return new_cfg
 
 
@@ -319,7 +326,10 @@ async def _retrain_dependents(
             continue
         cfg = cand.model_config_json or {}
         derived_cfg = cfg.get("derived_forecast") or {}
-        if derived_cfg.get("source_code") != source.code:
+        # Зависит ли кандидат от source: основной источник или второй
+        # (для тождеств вида trade-balance = exports − imports).
+        src_codes = {derived_cfg.get("source_code"), derived_cfg.get("source_code_2")}
+        if source.code not in src_codes:
             continue
         logger.info("Cascading retrain: %s → %s", source.code, cand.code)
         try:

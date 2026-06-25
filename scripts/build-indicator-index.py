@@ -51,6 +51,9 @@ _LEGACY_FILE_MARKERS = (
 )
 
 sys.path.insert(0, str(BACKEND))
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # для import completeness
+
+import completeness  # noqa: E402  (паспорт полноты семейств — отдельный модуль)
 
 
 # ---------------------------------------------------------------------------
@@ -624,10 +627,12 @@ def render_dead_code(index: dict) -> str:
 
 def main() -> int:
     index = build_index()
+    index["completeness"] = completeness.build_completeness()
     md = render_md(index)
+    comp_md = completeness.render_md(index["completeness"])
     dead = render_dead_code(index)
     json_text = json.dumps(index, ensure_ascii=False, indent=2, sort_keys=False) + "\n"
-    md_text = md + "\n"
+    md_text = md + "\n\n" + comp_md + "\n"
     dead_text = dead + "\n"
 
     targets = [(OUT_JSON, json_text), (OUT_MD, md_text), (OUT_DEAD, dead_text)]
@@ -658,6 +663,11 @@ def main() -> int:
     print(
         f"  codes={s['total_codes']} unresolved={s['unresolved']} "
         f"in_both={s['in_both_viewmode_systems']} shadowed={s['shadowed_legacy']}"
+    )
+    cs = index["completeness"]["summary"]
+    print(
+        f"  completeness: roots={cs['roots_total']} "
+        f"complete={cs['roots_complete_matrix']} gaps={cs['roots_with_gaps']}"
     )
     return 0
 

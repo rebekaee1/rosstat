@@ -314,6 +314,15 @@ def derived_from_source_strategy(
         derived_full = ops_weekly_inflation_by_calendar_month(list(source_data))
     elif operation == "weekly_mtd_in_calendar_month":
         derived_full = ops_weekly_mtd_in_calendar_month(list(source_data))
+    elif operation == "subtract":
+        # Тождество из двух источников: Y[t] = source1[t] − source2[t].
+        # Для trade-balance = exports − imports. Источники переданы как
+        # (факт+прогноз) обоих рядов; считаем по пересечению дат.
+        source_data_2 = ctx.cfg.get("_source_data_2") or []
+        s2 = {d: v for d, v in source_data_2}
+        derived_full = [
+            (d, v - s2[d]) for d, v in sorted(source_data) if d in s2
+        ]
     elif operation == "pipeline":
         pipeline_steps = derived_cfg.get("pipeline") or []
         bucket_spec = _pipeline_bucket_spec(pipeline_steps)

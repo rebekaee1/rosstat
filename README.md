@@ -1,6 +1,6 @@
 # Forecast Economy — Аналитическая платформа экономических индикаторов России
 
-Платформа для сбора, прогнозирования и публикации 100+ экономических индикаторов России (Росстат, ЦБ РФ, Минфин). Прогнозы по 10 стратегиям, ежедневный ETL, SSR + SEO, embed-виджеты, календарь публикаций, live ticker (USD/EUR/CNY/BTC/Brent), аналитический MCP. Доступна публично на [forecasteconomy.com](https://forecasteconomy.com).
+Платформа для сбора, прогнозирования и публикации 100+ экономических индикаторов России (Росстат, ЦБ РФ, Минфин). Прогнозы по 13 стратегиям, ежедневный ETL, SSR + SEO, embed-виджеты, календарь публикаций, live ticker (USD/EUR/CNY/BTC/Brent), аналитический MCP. Доступна публично на [forecasteconomy.com](https://forecasteconomy.com).
 
 **Точка входа в документацию (для AI-агентов и людей):** [`AGENTS.md`](AGENTS.md) — карта документации, режим работы, протокол актуализации.
 **Domain glossary и инварианты:** [`CONTEXT.md`](CONTEXT.md).
@@ -160,7 +160,7 @@ Source-индикаторы извлекаются через 27 парсер-т
 
 ## Прогнозы
 
-10 forecast strategies в реестре `backend/app/services/forecast_strategies/registry.py`: `cpi_combined`, `gdp_{nominal,real,consumption,government}_quarterly`, `housing_quarterly`, `ppi_monthly`, `approved`, `derived_from_source`, `generic_ols`. Стратегия выбирается через `model_config_json.forecast_strategy` индикатора и применяется при каждом ETL, если источник принёс новые точки.
+13 forecast strategies в реестре `backend/app/services/forecast_strategies/registry.py`: `cpi_combined`, `gdp_{nominal,real,consumption,government}_quarterly`, `housing_quarterly`, `ppi_monthly`, `monthly_auto`, `generic_quarterly` (положительные квартальные: exports/imports/external-debt), `signed_quarterly` (знаковые квартальные сальдо: current-account), `approved`, `derived_from_source` (включая op=`subtract` — тождество trade-balance = exports − imports), `generic_ols`. Стратегия выбирается через `model_config_json.forecast_strategy` индикатора и применяется при каждом ETL, если источник принёс новые точки. Прогнозы НЕ строятся для крипты/биржевых котировок/частоты < месяца (профанация).
 
 Полная таблица «стратегия → индикаторы → notebook» и поля `model_config_json` — в [`CONTEXT.md::Forecast`](CONTEXT.md). Pure formulas стратегий — `backend/app/services/forecast_strategies/*.py`; derived chain — в `derived_ops.py` (ADR-0001).
 

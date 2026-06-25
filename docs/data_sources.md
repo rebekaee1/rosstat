@@ -66,17 +66,19 @@
 
 Endpoint: `cbr.ru/scripts/XML_dynamic.asp?date_req1={from}&date_req2={to}&VAL_NM_RQ={code}`.
 
-| Индикатор | VAL_NM_RQ |
-|-----------|-----------|
-| `usd-rub` | `R01235` |
-| `eur-rub` | `R01239` |
-| `cny-rub` | `R01375` |
+| Индикатор | VAL_NM_RQ | Пол истории (`backfill_from`) |
+|-----------|-----------|-------------------------------|
+| `usd-rub` | `R01235` | `1998-01-01` |
+| `eur-rub` | `R01239` | `1999-01-01` (евро у ЦБ с 1999) |
+| `cny-rub` | `R01375` | `1998-01-01` |
+
+> **Пол истории = деноминация рубля 1000:1 (1998-01-01).** XML_dynamic отдаёт курсы с 1992-07, но до 1998 они в «старых» рублях (1997-12-30 USD = 5960). Сплайс со «новыми» дал бы разрыв ×1000 и не прошёл бы `validation.max=500`. Поэтому floor = 1998-01-01 (`backfill_from` в `model_config_json`); ряд непрерывен и захватывает кризисы 1998/2008/2014/2022. Среднее/агрегаты по периодам (avg-week/month/quarter/year) автоматически тянутся с 1998.
 
 ## ЦБ РФ — драгметаллы (CbrGoldParser)
 
-| Индикатор | Endpoint |
-|-----------|----------|
-| `gold-price` | `cbr.ru/scripts/xml_metall.asp?date_req1={from}&date_req2={to}` |
+| Индикатор | Endpoint | Пол истории |
+|-----------|----------|-------------|
+| `gold-price` | `cbr.ru/scripts/xml_metall.asp?date_req1={from}&date_req2={to}` | `1998-01-01` (`backfill_from`; `validation.min` 100→40 — ранний-1998 ≈ 52 руб/г до девальвации) |
 
 ## Binance — BTC/USD daily (BinanceBtcUsdtParser)
 
@@ -119,6 +121,8 @@ Endpoint: `cbr.ru/dataservice/data?publicationId={pub}&datasetId={ds}&measureId=
 | `m0` | 5 / 5 / — / — | 0 |
 | `m1` | 5 / 6 / — / 12 | 0 |
 | `m2` | 5 / 7 / — / 12 | 0 |
+
+> **Глубина истории (Фаза 3, 2026-06-24).** `current-account` — `backfill_from_year=1998` (API-пол ряда 1998-04, понижено с 2000). Ставки/кредиты/ипотека (`credit-rate-*`, `deposit-rate*`, `auto-loan-rate`, `consumer-credit`, `business-credit`, `mortgage-rate`) — API-floor = текущему `backfill` (2014/2017/2019): это начало датасета CBR по данной методологии, глубже официально нет (пред-2014 ставки — иной ряд, сплайс = методологический разрыв). `m0/m1/m2` денежные агрегаты с 2026-05 живут в `cbr_monetary_agg_xlsx` (отдельный парсер, см. ниже), не в DataService; `m2` понижен до `backfill_from_year=1992` (xlsx содержит M2 с 1992-12).
 
 **Сумма-композит** (CbrDataServiceSumParser, `dataservice_components` массив):
 

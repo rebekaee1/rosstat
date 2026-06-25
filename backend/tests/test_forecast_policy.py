@@ -50,7 +50,32 @@ LIVE_SARIMA_FORECAST_CODES = {
     "ppi",
 }
 
+# Generic-quarterly — та же методология семейства ВВП (multi-window OLS на
+# log-diff), применённая к положительным трендовым квартальным source-рядам
+# без своего notebook'а: экспорт, импорт, внешний долг. Закрывает запрос
+# руководителя «у квартальных тоже должны быть прогнозы» (созвон 2026-06).
+# Знаковые квартальные ряды (сальдо торгового баланса, счёт текущих операций)
+# СЮДА НЕ ВХОДЯТ: log-diff для них неопределён — у них своя level-diff
+# стратегия (см. SIGNED_QUARTERLY_FORECAST_CODES / тождество ниже).
+GENERIC_QUARTERLY_FORECAST_CODES = {
+    "exports",
+    "imports",
+    "external-debt",
+}
+
+# Signed-quarterly — level-diff вариант той же multi-window OLS методологии
+# для квартальных ЗНАКОВЫХ рядов (счёт текущих операций), у которых нет
+# точного тождества из компонент. current-account прогнозируется напрямую
+# по первой разности уровня. trade-balance прогнозируется иначе — как
+# тождество exports − imports (derived_from_source, operation="subtract"),
+# поэтому он в DERIVED_FROM_SOURCE_FORECAST_CODES, а не здесь.
+SIGNED_QUARTERLY_FORECAST_CODES = {
+    "current-account",
+}
+
 DERIVED_FROM_SOURCE_FORECAST_CODES = {
+    # Торговый баланс: прогноз = тождество exports − imports (subtract).
+    "trade-balance",
     "gdp-yoy",
     "gdp-qoq",
     "gdp-real-yoy",
@@ -123,6 +148,8 @@ GENERIC_PROPAGATED_FORECAST_CODES = {
 ALL_FORECAST_CODES = (
     APPROVED_DIRECT_FORECAST_CODES
     | LIVE_SARIMA_FORECAST_CODES
+    | GENERIC_QUARTERLY_FORECAST_CODES
+    | SIGNED_QUARTERLY_FORECAST_CODES
     | DERIVED_FROM_SOURCE_FORECAST_CODES
     | GENERIC_OLS_FORECAST_CODES
     | MONTHLY_AUTO_CODES
@@ -141,6 +168,18 @@ LIVE_SARIMA_STRATEGY_NAMES = {
     "housing-price-primary": "housing_quarterly",
     "housing-price-secondary": "housing_quarterly",
     "ppi": "ppi_monthly",
+}
+
+# Generic-quarterly индикаторы обязаны указывать forecast_strategy=
+# 'generic_quarterly' и forecast_steps>0 (контракт seed_data).
+GENERIC_QUARTERLY_STRATEGY_NAMES = {
+    code: "generic_quarterly" for code in GENERIC_QUARTERLY_FORECAST_CODES
+}
+
+# Signed-quarterly индикаторы обязаны указывать forecast_strategy=
+# 'signed_quarterly' и forecast_steps>0 (контракт seed_data).
+SIGNED_QUARTERLY_STRATEGY_NAMES = {
+    code: "signed_quarterly" for code in SIGNED_QUARTERLY_FORECAST_CODES
 }
 
 EXPECTED_DERIVED_CPI_FORECASTS = {
@@ -214,6 +253,59 @@ def test_live_sarima_forecasts_have_named_strategy() -> None:
             f"{code}: live-SARIMA must not have approved_forecast_values "
             "(hardcode forbidden — model recomputes each ETL)"
         )
+
+
+def test_generic_quarterly_forecasts_have_named_strategy() -> None:
+    """Квартальные положительные ряды (экспорт/импорт/внешний долг) обязаны
+    указывать forecast_strategy='generic_quarterly', forecast_steps>0 и быть
+    квартальными. Знаковые ряды (сальдо/счета) сюда попасть не должны.
+    """
+    by_code = {ind["code"]: ind for ind in INDICATORS}
+    for code, strategy_name in GENERIC_QUARTERLY_STRATEGY_NAMES.items():
+        assert code in by_code, f"{code} missing from seed_data.INDICATORS"
+        ind = by_code[code]
+        assert ind.get("frequency") == "quarterly", f"{code} must be quarterly"
+        cfg = ind["model_config_json"]
+        assert cfg.get("forecast_strategy") == strategy_name, (
+            f"{code}: expected forecast_strategy='{strategy_name}', "
+            f"got '{cfg.get('forecast_strategy')}'"
+        )
+        assert int(cfg.get("forecast_steps", 0) or 0) > 0, \
+            f"{code} must have forecast_steps>0"
+        assert "approved_forecast_values" not in cfg, \
+            f"{code}: generic_quarterly recomputes each ETL, no hardcode"
+
+
+def test_signed_quarterly_forecasts_have_named_strategy() -> None:
+    """Квартальные ЗНАКОВЫЕ ряды (счёт текущих операций) обязаны указывать
+    forecast_strategy='signed_quarterly', forecast_steps>0 и быть квартальными.
+    """
+    by_code = {ind["code"]: ind for ind in INDICATORS}
+    for code, strategy_name in SIGNED_QUARTERLY_STRATEGY_NAMES.items():
+        assert code in by_code, f"{code} missing from seed_data.INDICATORS"
+        ind = by_code[code]
+        assert ind.get("frequency") == "quarterly", f"{code} must be quarterly"
+        cfg = ind["model_config_json"]
+        assert cfg.get("forecast_strategy") == strategy_name, (
+            f"{code}: expected forecast_strategy='{strategy_name}', "
+            f"got '{cfg.get('forecast_strategy')}'"
+        )
+        assert int(cfg.get("forecast_steps", 0) or 0) > 0, \
+            f"{code} must have forecast_steps>0"
+        assert "approved_forecast_values" not in cfg, \
+            f"{code}: signed_quarterly recomputes each ETL, no hardcode"
+
+
+def test_trade_balance_forecast_is_identity() -> None:
+    """trade-balance прогнозируется как тождество exports − imports."""
+    by_code = {ind["code"]: ind for ind in INDICATORS}
+    cfg = by_code["trade-balance"]["model_config_json"]
+    assert cfg.get("forecast_strategy") == "derived_from_source"
+    derived = cfg.get("derived_forecast") or {}
+    assert derived.get("operation") == "subtract"
+    assert derived.get("source_code") == "exports"
+    assert derived.get("source_code_2") == "imports"
+    assert int(cfg.get("forecast_steps", 0) or 0) > 0
 
 
 def test_all_derived_cpi_forecasts_are_api_whitelisted() -> None:

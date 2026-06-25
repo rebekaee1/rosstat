@@ -23,6 +23,7 @@ from app.services.forecast_strategies.base import ForecastStrategy
 from app.services.forecast_strategies.cpi_combined import cpi_combined_strategy
 from app.services.forecast_strategies.derived_from_source import derived_from_source_strategy
 from app.services.forecast_strategies.generic_ols import generic_ols_strategy
+from app.services.forecast_strategies.generic_quarterly import generic_quarterly_strategy
 from app.services.forecast_strategies.gdp_consumption_quarterly import gdp_consumption_quarterly_strategy
 from app.services.forecast_strategies.gdp_government_quarterly import gdp_government_quarterly_strategy
 from app.services.forecast_strategies.gdp_nominal_quarterly import gdp_nominal_quarterly_strategy
@@ -30,6 +31,7 @@ from app.services.forecast_strategies.gdp_real_quarterly import gdp_real_quarter
 from app.services.forecast_strategies.housing_quarterly import housing_quarterly_strategy
 from app.services.forecast_strategies.monthly_auto import monthly_auto_strategy
 from app.services.forecast_strategies.ppi_monthly import ppi_monthly_strategy
+from app.services.forecast_strategies.signed_quarterly import signed_quarterly_strategy
 
 logger = logging.getLogger(__name__)
 
@@ -39,6 +41,7 @@ STRATEGIES: dict[str, ForecastStrategy] = {
     "cpi_combined": cpi_combined_strategy,
     "derived_from_source": derived_from_source_strategy,
     "generic_ols": generic_ols_strategy,
+    "generic_quarterly": generic_quarterly_strategy,
     "gdp_consumption_quarterly": gdp_consumption_quarterly_strategy,
     "gdp_government_quarterly": gdp_government_quarterly_strategy,
     "gdp_nominal_quarterly": gdp_nominal_quarterly_strategy,
@@ -46,6 +49,7 @@ STRATEGIES: dict[str, ForecastStrategy] = {
     "housing_quarterly": housing_quarterly_strategy,
     "monthly_auto": monthly_auto_strategy,
     "ppi_monthly": ppi_monthly_strategy,
+    "signed_quarterly": signed_quarterly_strategy,
 }
 
 
