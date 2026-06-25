@@ -2,7 +2,7 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Файлов:** 451  ·  **Строк:** 89 376  ·  **Токенов (≈):** 891 600
+**Файлов:** 451  ·  **Строк:** 89 388  ·  **Токенов (≈):** 891 789
 
 ## По верхним папкам
 
@@ -10,7 +10,7 @@
 |-------|-------:|------:|------------:|
 | `(root)` | 7 | 1 454 | 33 396 |
 | `.github` | 1 | 56 | 334 |
-| `backend` | 238 | 46 293 | 465 357 |
+| `backend` | 238 | 46 305 | 465 546 |
 | `docs` | 19 | 4 011 | 77 537 |
 | `frontend` | 159 | 33 844 | 278 671 |
 | `mcp` | 3 | 158 | 1 120 |
@@ -71,11 +71,11 @@
 | `backend/app/services/ticker_sources/moex_iss.py` | 353 | 3 339 |
 | `backend/tests/forecast_strategies/fixtures/construction_work_series.json` | 1 | 3 279 |
 | `frontend/src/pages/Privacy.jsx` | 258 | 3 279 |
+| `backend/app/api/sitemap.py` | 326 | 3 249 |
 | `frontend/src/pages/CalendarPage.jsx` | 318 | 3 127 |
 | `backend/tests/test_rosstat_gdp.py` | 308 | 3 121 |
 | `backend/app/api/indicators.py` | 317 | 3 110 |
 | `frontend/public/fonts/fonts.css` | 273 | 3 070 |
-| `backend/app/api/sitemap.py` | 314 | 3 060 |
 | `backend/tests/test_rosstat_weekly_inflation.py` | 297 | 3 056 |
 | `backend/app/tasks/scheduler.py` | 305 | 3 041 |
 | `backend/app/services/forecast_pipeline.py` | 338 | 3 037 |

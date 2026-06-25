@@ -197,13 +197,20 @@ async def og_image_indicator(code: str, db: AsyncSession = Depends(get_db)):
         rows_q = await db.execute(
             select(IndicatorData.value, IndicatorData.date)
             .where(IndicatorData.indicator_id == indicator.id)
-            .order_by(desc(IndicatorData.date))
-            .limit(120)
+            .order_by(IndicatorData.date)  # старое → новое, вся история
         )
         rows = rows_q.all()
-        ordered = list(reversed(rows))  # старое → новое
+        # Превью «representativeOfPage»: вся история, прореженная до ~180 точек
+        # (для дневных индексов last-120 показывало бы лишь ~4 месяца и дублировало
+        # бы год на обеих X-метках). Форма ряда сохраняется, последняя точка — всегда.
+        ordered = rows
+        _MAXP = 180
+        if len(ordered) > _MAXP:
+            step = len(ordered) / _MAXP
+            idx = sorted({int(i * step) for i in range(_MAXP)} | {len(ordered) - 1})
+            ordered = [ordered[i] for i in idx]
         values = [float(v) for v, _ in ordered]
-        current_value, current_date = (rows[0] if rows else (None, None))
+        current_value, current_date = (rows[-1] if rows else (None, None))
         unit = (indicator.unit or "").strip()
         value_text = (
             f"{_format_number(current_value)} {unit}".strip()
@@ -211,11 +218,14 @@ async def og_image_indicator(code: str, db: AsyncSession = Depends(get_db)):
             else "нет данных"
         )
         date_text = f"на {current_date.isoformat()}" if current_date else ""
-        x_labels = (
-            (str(ordered[0][1].year), str(ordered[-1][1].year))
-            if len(ordered) >= 2
-            else None
-        )
+        x_labels = None
+        if len(ordered) >= 2:
+            first_d, last_d = ordered[0][1], ordered[-1][1]
+            x_labels = (
+                (str(first_d.year), str(last_d.year))
+                if first_d.year != last_d.year
+                else (first_d.strftime("%m.%Y"), last_d.strftime("%m.%Y"))
+            )
         png = render_indicator_og(
             code=code,
             name=indicator.name,
@@ -269,7 +279,9 @@ async def og_image_indicator_year(code: str, year: int, db: AsyncSession = Depen
         unit = (indicator.unit or "").strip()
         avg = sum(values) / len(values)
         value_text = f"{_format_number(last_value)} {unit}".strip()
-        date_text = f"в среднем {_format_number(avg)} {unit}".strip()
+        # Среднее — сырой float (102.4667…); округляем до 2 знаков, чтобы подпись
+        # не тащила шум после запятой.
+        date_text = f"в среднем {_format_number(round(avg, 2))} {unit}".strip()
         png = render_indicator_og(
             code=code,
             name=indicator.name,
