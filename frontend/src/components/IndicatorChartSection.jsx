@@ -1,7 +1,9 @@
-import { Terminal, Download, Lock } from 'lucide-react';
+import { useRef } from 'react';
+import { Terminal, Download, Lock, Image as ImageIcon } from 'lucide-react';
 import { unitSuffix, resolveDateFormat, cn } from '../lib/format';
 import { track, events } from '../lib/track';
 import { useDownloadAccess } from '../lib/useDownloadAccess';
+import { exportNodeToPng } from '../lib/chartImage';
 import IndicatorChart from './IndicatorChart';
 import { ChartSkeleton } from './Skeleton';
 import { getCpiChartTitle } from '../lib/cpiViewModeContent';
@@ -166,6 +168,39 @@ function DownloadButton({ label, onDownload, blocked, hint }) {
 }
 
 /**
+ * Кнопка «скачать график картинкой». Гость видит замок и подсказку, клик ведёт
+ * на регистрацию (через onDownload, который сам решает гейт). Авторизованный —
+ * скачивает PNG текущего вида (с watermark).
+ */
+function ImageButton({ onDownload, authed }) {
+  const tooltip = authed
+    ? 'Скачать график картинкой (PNG)'
+    : 'Войдите, чтобы скачивать график картинкой';
+  return (
+    <div className="relative group/img" data-no-export="true">
+      <button
+        type="button"
+        onClick={onDownload}
+        aria-disabled={!authed}
+        className={cn(
+          'flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-colors text-xs font-mono uppercase tracking-wider',
+          authed
+            ? 'border-border-subtle text-text-tertiary hover:text-champagne hover:border-champagne/30 magnetic-btn'
+            : 'border-border-subtle/60 text-text-tertiary/50 cursor-pointer',
+        )}
+        title={tooltip}
+      >
+        {authed ? <ImageIcon className="w-3.5 h-3.5" /> : <Lock className="w-3.5 h-3.5" />}
+        PNG
+      </button>
+      <div className="absolute top-full right-0 mt-2 px-3 py-2 rounded-xl bg-obsidian border border-border-subtle text-[11px] normal-case tracking-normal text-text-secondary whitespace-nowrap opacity-0 group-hover/img:opacity-100 transition-opacity duration-200 pointer-events-none shadow-xl z-50">
+        {tooltip}
+      </div>
+    </div>
+  );
+}
+
+/**
  * Секция «График» страницы индикатора:
  *   тулбар (заголовок + кнопки CSV/Excel + переключатель прогноза) +
  *   сам IndicatorChart с правильными режим-зависимыми пропсами.
@@ -220,6 +255,30 @@ export default function IndicatorChartSection({
   const guestHistoryHint = !downloadAuthed && !downloadBlocked && historyYears > 0
     ? `Гостям — последние ${ruYears(historyYears)}. Весь период истории — после входа`
     : null;
+  const chartRef = useRef(null);
+
+  // Скачивание графика картинкой. Гость (или исчерпавший лимит) → гейт
+  // регистрации; авторизованный → PNG с watermark текущего вида (режим +
+  // прогноз как показаны на экране).
+  const handleDownloadImage = async () => {
+    if (!downloadAuthed) {
+      track(events.CHART_IMAGE_BLOCKED, { indicator: code, indicatorCategory: indicator?.category });
+      window.dispatchEvent(new CustomEvent('fe:download-limit'));
+      return;
+    }
+    const ok = await exportNodeToPng(chartRef.current, {
+      filename: `${code}_${safeViewMode || chartMode || 'chart'}.png`,
+      watermark: true,
+    }).catch(() => false);
+    if (ok) {
+      track(events.CHART_IMAGE_DOWNLOAD, {
+        indicator: code,
+        indicatorCategory: indicator?.category,
+        mode: safeViewMode || chartMode,
+        forecast: forecastEnabled && showForecast,
+      });
+    }
+  };
   const chartCpiData = chartSeriesForViewMode({
     chartMode,
     isUnemploymentFamily,
@@ -278,6 +337,7 @@ export default function IndicatorChartSection({
         <div className="flex items-center gap-3">
           <DownloadButton label="CSV" onDownload={onDownloadCsv} blocked={downloadBlocked} hint={guestHistoryHint} />
           <DownloadButton label="Excel" onDownload={onDownloadExcel} blocked={downloadBlocked} hint={guestHistoryHint} />
+          <ImageButton onDownload={handleDownloadImage} authed={downloadAuthed} />
 
           <div className="relative group">
             <label className={cn(
@@ -320,7 +380,7 @@ export default function IndicatorChartSection({
       {chartLoading ? (
         <ChartSkeleton />
       ) : (
-        <div className="relative overflow-hidden rounded-[2rem]">
+        <div ref={chartRef} className="relative overflow-hidden rounded-[2rem]">
           <IndicatorChart
             key={`${indicator?.code}-${chartMode}`}
             mode={

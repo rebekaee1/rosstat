@@ -111,6 +111,16 @@ export const events = {
   COMPARE_OPEN: 'compare_open',
   COMPARE_CHANGE: 'compare_change',
   COMPARE_RANGE: 'compare_range',
+  COMPARE_ADD: 'compare_add',
+  COMPARE_SEARCH: 'compare_search',
+  COMPARE_IMAGE_DOWNLOAD: 'compare_image_download',
+  COMPARE_IMAGE_BLOCKED: 'compare_image_blocked',
+  COMPARE_LIMIT_HIT: 'compare_limit_hit',
+
+  // Скачивание графика картинкой (per-indicator). Гость → гейт регистрации,
+  // авторизованный → PNG с watermark. Каждое — цель Метрики.
+  CHART_IMAGE_DOWNLOAD: 'chart_image_download',
+  CHART_IMAGE_BLOCKED: 'chart_image_blocked',
 
   CALC_DIRECTION: 'calc_direction',
   CALC_PRESET: 'calc_preset',
