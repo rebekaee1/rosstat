@@ -93,7 +93,9 @@ describe('cpiViewModeGroups', () => {
   it('highlightedTopGroup однозначен', () => {
     expect(highlightedTopGroup(null, 'yoy')).toBe('step');
     expect(highlightedTopGroup(null, 'index-quarterly')).toBe('index');
-    expect(expandedGroupForMode('inflation')).toBe(null);
+    // «К соотв. периоду пред. года» теперь раскрывающаяся группа (мес/кв/год)
+    expect(expandedGroupForMode('inflation')).toBe('inflation');
+    expect(expandedGroupForMode('inflation-quarter')).toBe('inflation');
     expect(expandedGroupForMode('index-annual')).toBe('index');
   });
 });

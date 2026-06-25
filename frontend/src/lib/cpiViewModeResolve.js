@@ -18,6 +18,8 @@
 
 export const CPI_URL_MODES = [
   'inflation',
+  'inflation-quarter',
+  'inflation-year',
   'index',
   'index-quarterly',
   'index-annual',
@@ -37,6 +39,14 @@ export function cpiIndexGranularity(viewMode) {
   const mode = normalizeCpiViewMode(viewMode);
   if (mode === 'index-quarterly') return 'quarter';
   if (mode === 'index-annual') return 'year';
+  return null;
+}
+
+/** Подрежимы группы «К соотв. периоду пред. года» → гранулярность точки. */
+export function cpiInflationGranularity(viewMode) {
+  const mode = normalizeCpiViewMode(viewMode);
+  if (mode === 'inflation-quarter') return 'quarter';
+  if (mode === 'inflation-year') return 'year';
   return null;
 }
 
@@ -75,7 +85,7 @@ export function isCpiModeDisabled(viewMode) {
 
 export function topGroupForMode(viewMode) {
   const mode = normalizeCpiViewMode(viewMode);
-  if (mode === 'inflation') return 'inflation';
+  if (mode.startsWith('inflation')) return 'inflation';
   if (mode.startsWith('index')) return 'index';
   if (mode.startsWith('period-')) return 'period';
   if (mode.startsWith('step-') || mode === 'qoq' || mode === 'yoy') {
@@ -85,9 +95,7 @@ export function topGroupForMode(viewMode) {
 }
 
 export function expandedGroupForMode(viewMode) {
-  const mode = normalizeCpiViewMode(viewMode);
-  if (mode === 'inflation') return null;
-  return topGroupForMode(mode);
+  return topGroupForMode(viewMode);
 }
 
 export function highlightedTopGroup(expandedGroupId, currentMode) {
@@ -99,6 +107,8 @@ export function dataModeForUrlMode(viewMode) {
   const mode = normalizeCpiViewMode(viewMode);
   switch (mode) {
     case 'inflation':
+    case 'inflation-quarter':
+    case 'inflation-year':
       return 'inflation';
     case 'index':
     case 'index-quarterly':

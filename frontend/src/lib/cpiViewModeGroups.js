@@ -21,7 +21,11 @@ export const CPI_TOP_GROUPS = [
   {
     id: 'inflation',
     label: 'К соотв. периоду пред. года',
-    leafMode: 'inflation',
+    modes: [
+      { mode: 'inflation', label: 'По месяцам' },
+      { mode: 'inflation-quarter', label: 'По кварталам' },
+      { mode: 'inflation-year', label: 'По годам' },
+    ],
   },
   {
     id: 'step',
@@ -65,7 +69,9 @@ export function cpiTopGroupsForCode(code) {
 /** Плоский список (legacy / поиск). */
 /** Только активные режимы (дамп методологий, поиск). */
 export const CPI_VIEW_MODES_FLAT = [
-  { mode: 'inflation', label: 'К соотв. периоду пред. года' },
+  { mode: 'inflation', label: 'К соотв. периоду пред. года — по месяцам' },
+  { mode: 'inflation-quarter', label: 'К соотв. периоду пред. года — по кварталам' },
+  { mode: 'inflation-year', label: 'К соотв. периоду пред. года — по годам' },
   { mode: 'step-weekly', label: 'Н/н', cpiOnly: true },
   { mode: 'step-monthly', label: 'М/м' },
   { mode: 'qoq', label: 'Кв/Кв' },

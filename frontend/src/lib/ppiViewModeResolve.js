@@ -14,7 +14,7 @@
 
 export const PPI_CODES = ['ppi'];
 
-export const PPI_URL_MODES = ['yoy', 'mom', 'qoq', 'annual', 'index', 'index-quarterly', 'index-annual'];
+export const PPI_URL_MODES = ['yoy', 'yoy-quarter', 'yoy-year', 'mom', 'qoq', 'annual', 'index', 'index-quarterly', 'index-annual'];
 
 const LEGACY_TO_CANONICAL = {
   level: 'index',
@@ -42,16 +42,24 @@ export function ppiIndexGranularity(viewMode) {
   return null;
 }
 
+/** Подрежимы группы «К соотв. периоду пред. года» → гранулярность точки г/г. */
+export function ppiYoyGranularity(viewMode) {
+  const mode = normalizePpiViewMode(viewMode);
+  if (mode === 'yoy-quarter') return 'quarter';
+  if (mode === 'yoy-year') return 'year';
+  return null;
+}
+
 export function topGroupForMode(viewMode) {
   const mode = normalizePpiViewMode(viewMode);
-  if (mode === 'yoy') return 'inflation';
+  if (mode === 'yoy' || mode === 'yoy-quarter' || mode === 'yoy-year') return 'inflation';
   if (mode.startsWith('index')) return 'index';
   return 'step';
 }
 
 export function expandedGroupForMode(viewMode) {
   const mode = normalizePpiViewMode(viewMode);
-  if (mode === 'yoy') return null;
+  if (mode === 'yoy' || mode === 'yoy-quarter' || mode === 'yoy-year') return 'inflation';
   if (mode === 'mom' || mode === 'qoq' || mode === 'annual') return 'step';
   return 'index';
 }
@@ -63,6 +71,7 @@ export function highlightedTopGroup(expandedGroupId, currentMode) {
 export function dataModeForPpiUrlMode(viewMode) {
   const mode = normalizePpiViewMode(viewMode);
   if (mode === 'index-quarterly' || mode === 'index-annual') return 'index';
+  if (mode === 'yoy-quarter' || mode === 'yoy-year') return 'yoy';
   return mode;
 }
 

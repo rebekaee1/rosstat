@@ -62,10 +62,13 @@ export function getCpiChartTitle(chartMode, code, urlMode = null) {
     return `Рост с начала месяца — ${s.prices} (%)`;
   }
   switch (chartMode) {
-    case 'inflation':
+    case 'inflation': {
+      const period = mode === 'inflation-quarter' ? ' (по кварталам)'
+        : mode === 'inflation-year' ? ' (по годам)' : '';
       return code === 'cpi'
-        ? 'Инфляция к соответствующему периоду предыдущего года (все товары и услуги, %)'
-        : `Инфляция к соответствующему периоду предыдущего года (${s.prices}, %)`;
+        ? `Инфляция к соответствующему периоду предыдущего года (все товары и услуги, %)${period}`
+        : `Инфляция к соответствующему периоду предыдущего года (${s.prices}, %)${period}`;
+    }
     case 'quarterly':
       return `Квартальная инфляция — ${s.prices} (%)`;
     case 'annual':
@@ -102,10 +105,13 @@ export function getCpiTableTitle(chartMode, code, urlMode = null) {
     return `Исторические данные — рост с начала месяца (${s.pricesGen})`;
   }
   switch (chartMode) {
-    case 'inflation':
+    case 'inflation': {
+      const period = mode === 'inflation-quarter' ? ' (по кварталам)'
+        : mode === 'inflation-year' ? ' (по годам)' : '';
       return code === 'cpi'
-        ? 'Исторические данные — инфляция к соотв. периоду предыдущего года (все товары и услуги)'
-        : `Исторические данные — инфляция к соотв. периоду предыдущего года (${s.prices})`;
+        ? `Исторические данные — инфляция к соотв. периоду предыдущего года (все товары и услуги)${period}`
+        : `Исторические данные — инфляция к соотв. периоду предыдущего года (${s.prices})${period}`;
+    }
     case 'quarterly':
       return `Исторические данные — квартальная инфляция (${s.prices})`;
     case 'annual':
@@ -153,8 +159,37 @@ function inflationFootnote(ipcFoot) {
   );
 }
 
-function buildInflation(code) {
+function buildInflation(code, period = null) {
   const s = cpiSlice(code);
+  if (period === 'quarter') {
+    return {
+      description:
+        `Инфляция к соответствующему кварталу предыдущего года: на сколько процентов ${s.prices} `
+        + 'изменились по сравнению с тем же кварталом год назад. Помесячный годовой ряд укрупнён '
+        + 'до квартальной частоты — показывается значение на конец каждого квартала.',
+      methodology: (
+        <>
+          <span className="block mb-1">Формула (на конец квартала):</span>
+          {ANNUAL_INFLATION_FORMULA}
+          {inflationFootnote(s.ipcFoot)}
+        </>
+      ),
+    };
+  }
+  if (period === 'year') {
+    return {
+      description:
+        `Инфляция за год: на сколько процентов ${s.prices} изменились к концу года по сравнению `
+        + 'с концом предыдущего года (декабрь к декабрю). Одна точка на каждый завершённый год.',
+      methodology: (
+        <>
+          <span className="block mb-1">Формула (декабрь к декабрю):</span>
+          {ANNUAL_INFLATION_FORMULA}
+          {inflationFootnote(s.ipcFoot)}
+        </>
+      ),
+    };
+  }
   return {
     description:
       `Инфляция к соответствующему периоду предыдущего года: на сколько процентов ${s.prices} `
@@ -376,7 +411,11 @@ export function getViewModeContent({
   }
   if (isPriceCategory) {
     const code = indicator?.code ?? 'cpi';
-    if (chartMode === 'inflation') return buildInflation(code);
+    if (chartMode === 'inflation') {
+      if (safeViewMode === 'inflation-quarter') return buildInflation(code, 'quarter');
+      if (safeViewMode === 'inflation-year') return buildInflation(code, 'year');
+      return buildInflation(code);
+    }
     if (safeViewMode === 'period-weekly') return buildPeriodWeekly(code);
     if (safeViewMode === 'period-monthly') return buildPeriodMonthly(code);
     if (safeViewMode === 'step-weekly') return buildStepWeekly(code);

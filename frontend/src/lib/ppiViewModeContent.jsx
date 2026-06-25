@@ -9,10 +9,16 @@ function indexPeriodSuffix(safeViewMode) {
   return '';
 }
 
+function yoyPeriodSuffix(safeViewMode) {
+  if (safeViewMode === 'yoy-quarter') return ' (по кварталам)';
+  if (safeViewMode === 'yoy-year') return ' (по годам)';
+  return '';
+}
+
 export function getPpiChartTitle(chartMode, safeViewMode) {
   switch (chartMode) {
     case 'yoy':
-      return 'Инфляция к соответствующему периоду предыдущего года — цены производителей (%)';
+      return `Инфляция к соответствующему периоду предыдущего года — цены производителей (%)${yoyPeriodSuffix(safeViewMode)}`;
     case 'mom':
       return 'К прошлому месяцу — индекс цен производителей (%)';
     case 'qoq':
@@ -29,7 +35,7 @@ export function getPpiChartTitle(chartMode, safeViewMode) {
 export function getPpiTableTitle(chartMode, safeViewMode) {
   switch (chartMode) {
     case 'yoy':
-      return 'Исторические данные — инфляция к соотв. периоду предыдущего года (%)';
+      return `Исторические данные — инфляция к соотв. периоду предыдущего года (%)${yoyPeriodSuffix(safeViewMode)}`;
     case 'mom':
       return 'Исторические данные — к прошлому месяцу (%)';
     case 'qoq':
@@ -60,6 +66,35 @@ function contentYoy() {
       + 'каждая точка — отношение текущего уровня цен к уровню двенадцать месяцев '
       + 'назад. Источник — Росстат. Охватывает добычу полезных ископаемых, '
       + 'обрабатывающие производства, энергетику и водоснабжение.',
+  };
+}
+
+function contentYoyQuarter() {
+  return {
+    description:
+      'Инфляция в ценах производителей к соответствующему кварталу предыдущего '
+      + 'года: на сколько процентов изменились оптовые цены по сравнению с тем же '
+      + 'кварталом год назад. Помесячный годовой ряд укрупнён до квартальной '
+      + 'частоты — показывается значение на конец каждого квартала.',
+    methodology:
+      'Изменение цен производителей промышленных товаров к аналогичному кварталу '
+      + 'предыдущего года, в процентах. Из помесячного годового ряда берётся '
+      + 'значение последнего месяца каждого завершённого квартала; прогноз — на '
+      + 'конец каждого завершённого квартала горизонта. Источник — Росстат.',
+  };
+}
+
+function contentYoyYear() {
+  return {
+    description:
+      'Инфляция в ценах производителей за год: на сколько процентов изменились '
+      + 'оптовые цены к концу года по сравнению с концом предыдущего года '
+      + '(декабрь к декабрю). Одна точка на каждый завершённый год.',
+    methodology:
+      'Отношение уровня цен производителей в декабре отчётного года к уровню '
+      + 'декабря предыдущего года, в процентах. Одна точка на каждый завершённый '
+      + 'календарный год; прогноз — на конец каждого завершённого года горизонта. '
+      + 'Источник — Росстат.',
   };
 }
 
@@ -145,7 +180,11 @@ function contentIndex(safeViewMode) {
 }
 
 export function getPpiViewModeContent({ chartMode, safeViewMode, indicator }) {
-  if (chartMode === 'yoy') return contentYoy();
+  if (chartMode === 'yoy') {
+    if (safeViewMode === 'yoy-quarter') return contentYoyQuarter();
+    if (safeViewMode === 'yoy-year') return contentYoyYear();
+    return contentYoy();
+  }
   if (chartMode === 'mom') return contentMom();
   if (chartMode === 'qoq') return contentQoq();
   if (chartMode === 'annual') return contentAnnual();

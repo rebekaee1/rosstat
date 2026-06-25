@@ -5,7 +5,9 @@ import {
   topGroupForMode,
   expandedGroupForMode,
 } from './ppiViewModeGroups';
-import { ppiCanonicalTarget, ppiIndexGranularity, dataModeForPpiUrlMode } from './ppiViewModeResolve';
+import {
+  ppiCanonicalTarget, ppiIndexGranularity, ppiYoyGranularity, dataModeForPpiUrlMode,
+} from './ppiViewModeResolve';
 import { getPpiViewModeContent } from './ppiViewModeContent';
 
 describe('ppiViewModeGroups', () => {
@@ -13,6 +15,7 @@ describe('ppiViewModeGroups', () => {
     expect(PPI_TOP_GROUPS.map((g) => g.id)).toEqual(['inflation', 'step', 'index']);
     const inflation = PPI_TOP_GROUPS.find((g) => g.id === 'inflation');
     expect(inflation.label).toBe('К соотв. периоду пред. года');
+    expect(inflation.modes.map((m) => m.mode)).toEqual(['yoy', 'yoy-quarter', 'yoy-year']);
     const index = PPI_TOP_GROUPS.find((g) => g.id === 'index');
     expect(index.modes.map((m) => m.mode)).toEqual(['index', 'index-quarterly', 'index-annual']);
     const step = PPI_TOP_GROUPS.find((g) => g.id === 'step');
@@ -27,14 +30,23 @@ describe('ppiViewModeGroups', () => {
     expect(expandedGroupForMode('annual')).toBe('step');
   });
 
-  it('инфляция за год — leaf; «к прошлому периоду» раскрывается в м/м и кв/кв', () => {
+  it('«к соотв. периоду пред. года» — многоуровневая (мес/кв/год); «к прошлому периоду» — м/м·кв/кв·г/г', () => {
     expect(topGroupForMode('yoy')).toBe('inflation');
+    expect(topGroupForMode('yoy-quarter')).toBe('inflation');
+    expect(topGroupForMode('yoy-year')).toBe('inflation');
     expect(topGroupForMode('mom')).toBe('step');
     expect(topGroupForMode('qoq')).toBe('step');
-    expect(expandedGroupForMode('yoy')).toBe(null);
+    expect(expandedGroupForMode('yoy')).toBe('inflation');
+    expect(expandedGroupForMode('yoy-quarter')).toBe('inflation');
     expect(expandedGroupForMode('mom')).toBe('step');
     expect(expandedGroupForMode('qoq')).toBe('step');
     expect(dataModeForPpiUrlMode('qoq')).toBe('qoq');
+    // подрежимы г/г грузят тот же помесячный ряд, прорежённый по периоду
+    expect(dataModeForPpiUrlMode('yoy-quarter')).toBe('yoy');
+    expect(dataModeForPpiUrlMode('yoy-year')).toBe('yoy');
+    expect(ppiYoyGranularity('yoy-quarter')).toBe('quarter');
+    expect(ppiYoyGranularity('yoy-year')).toBe('year');
+    expect(ppiYoyGranularity('yoy')).toBe(null);
   });
 
   it('индекс — раскрывающаяся группа с гранулярностью', () => {

@@ -183,7 +183,7 @@ function formatCombination(composition, modeItem, index) {
 describe('dump CPI methodology combinations', () => {
   it('writes cpi-methodology-combinations.temp.txt', () => {
     const modes = CPI_VIEW_MODES_FLAT;
-    expect(modes.length).toBe(8);
+    expect(modes.length).toBe(10);
     expect(COMPOSITIONS.length).toBe(4);
 
     const seoBlocks = loadCpiSeoBlocks();

@@ -75,9 +75,16 @@ describe('CPI состав × режим — аудит текстов', () => {
           expect(text, `${id}: чужой состав (${re})`).not.toMatch(re);
         }
 
-        if (mode.chartMode === 'inflation') {
+        if (mode.urlMode === 'inflation') {
           expect(content.description, id).toMatch(/соответствующ.+периоду предыдущего года/i);
           expect(chartTitle, id).toMatch(/предыдущего года/i);
+        }
+        if (mode.urlMode === 'inflation-quarter') {
+          expect(content.description, id).toMatch(/квартал/i);
+          expect(content.description, id).toMatch(/предыдущего года|год назад/i);
+        }
+        if (mode.urlMode === 'inflation-year') {
+          expect(content.description, id).toMatch(/декабрь к декабрю/i);
         }
         if (mode.urlMode === 'step-weekly') {
           expect(content.description, id).toMatch(/недел/i);

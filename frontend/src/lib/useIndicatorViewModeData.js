@@ -7,6 +7,7 @@ import {
   isCpiModeAvailableForCode,
   normalizeCpiViewMode,
   cpiIndexGranularity,
+  cpiInflationGranularity,
 } from './cpiViewModeResolve';
 import {
   dataModeForHousingUrlMode,
@@ -21,6 +22,7 @@ import {
   isActivePpiUrlMode,
   normalizePpiViewMode,
   ppiIndexGranularity,
+  ppiYoyGranularity,
 } from './ppiViewModeResolve';
 import {
   CBR_TERM_SLICE_CODES,
@@ -262,7 +264,9 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
   // CPI-семейства — стандартное преобразование к шкале «delta % от 100».
   const isCumulativeIndex = isCpiIndex(code) && String(safeViewMode).startsWith('index');
   const cpiIndexBucket = isPriceCategory ? cpiIndexGranularity(safeViewMode) : null;
+  const cpiInflationBucket = isPriceCategory ? cpiInflationGranularity(safeViewMode) : null;
   const ppiIndexBucket = isPpiFamily ? ppiIndexGranularity(safeViewMode) : null;
+  const ppiYoyBucket = isPpiFamily ? ppiYoyGranularity(safeViewMode) : null;
   const housingIndexBucket = isHousingFamily ? housingIndexGranularity(safeViewMode) : null;
   const shouldSubtract100 = isCpiIndex(code)
     && !CPI_PERCENT_GROWTH_MODES.has(chartMode)
@@ -464,8 +468,11 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
 
   const yoyDataPoints = useMemo(() => {
     if (!yoyResp?.data?.length) return [];
-    return yoyResp.data.map((p) => ({ ...p, value: Number(p.value) }));
-  }, [yoyResp]);
+    const pts = yoyResp.data.map((p) => ({ ...p, value: Number(p.value) }));
+    // ИЦП «К соотв. периоду пред. года» по кварталам/годам — тот же помесячный
+    // г/г-ряд, прорежённый до значения на конец квартала/года (как «Индекс»).
+    return ppiYoyBucket ? bucketEndPoints(pts, ppiYoyBucket) : pts;
+  }, [yoyResp, ppiYoyBucket]);
 
   const qoqDataPoints = useMemo(() => {
     if (!qoqResp?.data?.length) return [];
@@ -482,7 +489,10 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
     return periodWeeklyResp.data.map((p) => ({ ...p, value: Number(p.value) }));
   }, [periodWeeklyResp]);
 
-  const yoyForecastData = useMemo(() => yoyForecastResp, [yoyForecastResp]);
+  const yoyForecastData = useMemo(
+    () => (ppiYoyBucket ? filterForecastToBucketEnds(yoyForecastResp, ppiYoyBucket) : yoyForecastResp),
+    [yoyForecastResp, ppiYoyBucket],
+  );
   const qoqForecastData = useMemo(() => qoqForecastResp, [qoqForecastResp]);
   const periodMonthlyForecastData = useMemo(
     () => periodMonthlyForecastResp,
@@ -493,10 +503,21 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
     [periodWeeklyForecastResp],
   );
 
+  // «К соотв. периоду пред. года» по кварталам/годам — тот же помесячный ряд
+  // годовой инфляции, прорежённый до точки на конец квартала/года (как «Индекс»).
+  const inflationRespView = useMemo(() => {
+    if (!cpiInflationBucket || !inflationResp) return inflationResp;
+    return {
+      ...inflationResp,
+      actuals: bucketEndPoints(inflationResp.actuals ?? [], cpiInflationBucket),
+      forecast: bucketEndPoints(inflationResp.forecast ?? [], cpiInflationBucket),
+    };
+  }, [inflationResp, cpiInflationBucket]);
+
   const inflationStats = useMemo(() => {
-    if (chartMode !== 'inflation' || !inflationResp?.actuals?.length) return null;
-    return statsFromPoints(inflationResp.actuals);
-  }, [chartMode, inflationResp]);
+    if (chartMode !== 'inflation' || !inflationRespView?.actuals?.length) return null;
+    return statsFromPoints(inflationRespView.actuals);
+  }, [chartMode, inflationRespView]);
 
   const quarterlyStats = useMemo(
     () => (chartMode === 'quarterly' ? statsFromPoints(quarterlyDataPoints) : null),
@@ -605,7 +626,7 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
                 : chartMode === 'period-monthly'
                   ? periodMonthlyForecastData?.forecast?.values?.length > 0
                   : chartMode === 'inflation'
-                    ? inflationResp?.forecast?.length > 0
+                    ? inflationRespView?.forecast?.length > 0
                     : displayForecastData?.forecast?.values?.length > 0;
 
   const forecastEnabled = hasForecastData;
@@ -623,7 +644,7 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
     shouldSubtract100,
 
     dataPoints,
-    inflationResp,
+    inflationResp: inflationRespView,
     quarterlyDataPoints,
     annualDataPoints,
     weeklyDataPoints,
