@@ -2,7 +2,7 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Файлов:** 447  ·  **Строк:** 81 711  ·  **Токенов (≈):** 827 313
+**Файлов:** 447  ·  **Строк:** 82 411  ·  **Токенов (≈):** 832 036
 
 ## По верхним папкам
 
@@ -10,9 +10,9 @@
 |-------|-------:|------:|------------:|
 | `(root)` | 7 | 1 314 | 30 643 |
 | `.github` | 1 | 56 | 334 |
-| `backend` | 236 | 43 928 | 439 863 |
-| `docs` | 19 | 3 921 | 75 321 |
-| `frontend` | 158 | 28 899 | 246 025 |
+| `backend` | 236 | 43 962 | 440 236 |
+| `docs` | 19 | 3 921 | 75 534 |
+| `frontend` | 158 | 29 565 | 250 162 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 23 | 3 435 | 34 007 |
 
@@ -21,12 +21,12 @@
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
 | `backend/app/data/indicator_seo.py` | 7 443 | 98 357 |
-| `frontend/src/lib/viewModelFamilies.generated.json` | 7 980 | 47 007 |
+| `frontend/src/lib/viewModelFamilies.generated.json` | 8 620 | 50 908 |
 | `backend/seed_data.py` | 4 103 | 41 182 |
-| `docs/backlog.md` | 833 | 20 532 |
+| `docs/backlog.md` | 833 | 20 745 |
 | `CONTEXT.md` | 554 | 19 110 |
+| `backend/app/data/view_model_families.py` | 1 011 | 11 740 |
 | `backend/app/services/forecaster.py` | 1 252 | 11 552 |
-| `backend/app/data/view_model_families.py` | 980 | 11 416 |
 | `frontend/src/pages/CalculatorPage.jsx` | 839 | 9 375 |
 | `backend/app/services/seo_renderer.py` | 1 015 | 9 317 |
 | `frontend/src/pages/IndicatorDetail.jsx` | 809 | 8 466 |
@@ -112,6 +112,7 @@
 | `frontend/src/pages/Terms.jsx` | 160 | 2 023 |
 | `scripts/backfill-keyrate-history.py` | 222 | 2 007 |
 | `backend/app/services/analytics_backfill.py` | 224 | 1 996 |
+| `frontend/src/lib/indicatorVariants.js` | 226 | 1 964 |
 | `scripts/seo-audit.py` | 198 | 1 962 |
 | `backend/app/services/calendar_sources/common.py` | 213 | 1 959 |
 | `docs/analytics_api_inventory/yandex_webmaster.md` | 60 | 1 932 |
@@ -126,7 +127,6 @@
 | `backend/scripts/audit-groups-submodes.py` | 173 | 1 859 |
 | `frontend/src/components/IndicatorTile.jsx` | 168 | 1 850 |
 | `backend/app/services/cbr_keyrate.py` | 205 | 1 846 |
-| `frontend/src/lib/indicatorVariants.js` | 205 | 1 830 |
 | `backend/app/services/rosstat_sdds_fetcher.py` | 180 | 1 798 |
 | `backend/tests/test_auth_oauth.py` | 158 | 1 780 |
 | `frontend/src/components/OAuthButtons.jsx` | 184 | 1 778 |
@@ -139,10 +139,10 @@
 | `frontend/src/lib/categories.js` | 179 | 1 641 |
 | `frontend/src/lib/ppiViewModeContent.jsx` | 157 | 1 638 |
 | `frontend/src/lib/useInflationCalc.js` | 201 | 1 625 |
+| `backend/tests/test_view_model_families.py` | 164 | 1 622 |
 | `frontend/src/lib/track.js` | 195 | 1 621 |
 | `frontend/src/components/RegisterNudge.jsx` | 166 | 1 589 |
 | `backend/app/services/cbr_dataservice_parser.py` | 181 | 1 585 |
-| `backend/tests/test_view_model_families.py` | 161 | 1 573 |
 | `frontend/src/lib/housingViewModeContent.jsx` | 152 | 1 566 |
 | `backend/app/services/cbr_trade_services_monthly_parser.py` | 203 | 1 553 |
 | `backend/tests/test_auth_email.py` | 150 | 1 545 |
@@ -190,12 +190,12 @@
 | `backend/app/services/brent_fred_parser.py` | 113 | 1 080 |
 | `scripts/sync-local-from-prod.py` | 134 | 1 075 |
 | `backend/app/services/cbr_reserves_parser.py` | 126 | 1 073 |
+| `frontend/src/lib/viewModeEngine.js` | 119 | 1 068 |
 | `frontend/src/components/calendar/CalendarHero.jsx` | 114 | 1 063 |
 | `frontend/src/components/IndicatorDetailHeader.jsx` | 120 | 1 060 |
 | `backend/app/services/analytics_ingestion.py` | 135 | 1 047 |
 | `frontend/src/lib/cbrTermSliceRateContent.jsx` | 136 | 1 023 |
 | `frontend/src/lib/cpiViewModeResolve.js` | 128 | 1 013 |
-| `frontend/src/lib/viewModeEngine.js` | 116 | 1 011 |
 | `frontend/public/llms.txt` | 66 | 1 009 |
 | `frontend/src/pages/About.jsx` | 70 | 994 |
 | `backend/tests/test_credit_indicators.py` | 104 | 993 |
@@ -219,6 +219,7 @@
 | `backend/app/services/identity/service.py` | 109 | 934 |
 | `frontend/src/components/GenericViewModePicker.jsx` | 124 | 927 |
 | `frontend/src/lib/cpiViewModeContent.audit.test.js` | 108 | 926 |
+| `frontend/src/lib/viewModeEngine.test.js` | 84 | 925 |
 | `backend/app/services/cbr_fx_parser.py` | 109 | 920 |
 | `backend/tests/forecast_strategies/snapshots/housing_primary_2026_q1.json` | 222 | 915 |
 | `backend/app/services/binance_btcusdt_parser.py` | 100 | 904 |
@@ -228,7 +229,6 @@
 | `backend/tests/conftest.py` | 110 | 890 |
 | `backend/app/data/housing_historical.py` | 92 | 884 |
 | `backend/tests/forecast_strategies/test_monthly_auto.py` | 100 | 881 |
-| `frontend/src/lib/viewModeEngine.test.js` | 82 | 881 |
 | `backend/tests/test_cbr_bop.py` | 109 | 876 |
 | `frontend/src/lib/calendarGrouping.js` | 93 | 869 |
 | `scripts/insert-gdp-q1-2026-estimate.py` | 84 | 869 |
@@ -292,7 +292,7 @@
 | `scripts/retrain-all-monthly-auto.py` | 71 | 582 |
 | `backend/scripts/retrain-all-monthly-auto.py` | 71 | 579 |
 | `backend/app/services/forecast_strategies/base.py` | 70 | 576 |
-| `frontend/src/components/FrequencySwitcher.jsx` | 68 | 574 |
+| `frontend/src/components/FrequencySwitcher.jsx` | 68 | 575 |
 | `frontend/src/lib/indicatorVariants.test.js` | 72 | 571 |
 | `backend/app/services/cbr_dataservice_sum_parser.py` | 68 | 568 |
 | `backend/app/services/indexnow.py` | 62 | 559 |

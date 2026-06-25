@@ -35,11 +35,32 @@ export const VARIANT_GROUPS = [
   // Удалена по тому же принципу, что trade/wages/unemployment выше.
   // unemployment — режимы на /indicator/unemployment?mode=… (unemploymentViewMode*).
   // wages-nominal — режимы на /indicator/wages-nominal?mode=… (wagesNominalViewMode*).
-  // Phase 1 (звонок 2026-05-22): trade-семьи (exports / imports / current-account)
-  // переехали с VariantGroupPicker (отдельные URL'ы для каждого режима) на
-  // ViewModePicker (in-page ?mode=yoy|qoq). См. `lib/viewModeFamilies.js` и
-  // `pages/IndicatorDetail.jsx::isTrade`. Эти записи удалены сознательно —
-  // дублирующие pills'ы над FrequencySwitcher.
+  // Внешняя торговля (созвон B_diarized): объединяем парные ряды в variant-группы
+  // (экспорт↔импорт товаров, экспорт↔импорт услуг, торговый баланс↔сальдо
+  // текущего счёта). Каждый — самостоятельный индикатор со своим рядом и полной
+  // матрицей режимов (ViewModePicker остаётся). Частоту (квартал/месяц) держит
+  // отдельный FrequencySwitcher.
+  {
+    label: 'Внешняя торговля товарами',
+    codes: [
+      { code: 'exports', label: 'Экспорт товаров' },
+      { code: 'imports', label: 'Импорт товаров' },
+    ],
+  },
+  {
+    label: 'Внешняя торговля услугами',
+    codes: [
+      { code: 'services-exports', label: 'Экспорт услуг' },
+      { code: 'services-imports', label: 'Импорт услуг' },
+    ],
+  },
+  {
+    label: 'Внешний баланс',
+    codes: [
+      { code: 'trade-balance', label: 'Торговый баланс' },
+      { code: 'current-account', label: 'Сальдо текущего счёта' },
+    ],
+  },
   // Phase 3 (ADR-0006): первичное/вторичное — разные ряды (variant).
   // Режимы «Индекс / г/г» — ViewModePicker на карточке parent (?mode=yoy),
   // не отдельные URL (housing-yoy-* скрыты из листинга).

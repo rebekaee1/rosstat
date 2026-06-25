@@ -124,6 +124,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "п.п."
+      },
+      {
+        "code": "auto-loan-rate-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "п.п."
       }
     ],
     "name": "Ставка по автокредитам",
@@ -395,6 +405,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "%"
+      },
+      {
+        "code": "brent-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
       }
     ],
     "name": "Нефть Brent",
@@ -567,6 +587,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "%"
+      },
+      {
+        "code": "btc-usd-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
       }
     ],
     "name": "Биткоин (BTC/USD)",
@@ -673,6 +703,16 @@
         "isNative": false,
         "label": "По годам",
         "mode": "yoy-year",
+        "unit": "млрд руб."
+      },
+      {
+        "code": "budget-deficit-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
         "unit": "млрд руб."
       }
     ],
@@ -781,6 +821,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "%"
+      },
+      {
+        "code": "budget-expenditure-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
       }
     ],
     "name": "Расходы бюджета",
@@ -887,6 +937,16 @@
         "isNative": false,
         "label": "По годам",
         "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "budget-revenue-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
         "unit": "%"
       }
     ],
@@ -1020,6 +1080,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "%"
+      },
+      {
+        "code": "business-credit-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
       }
     ],
     "name": "Кредиты бизнесу",
@@ -1096,6 +1166,16 @@
         "isNative": false,
         "label": "По годам",
         "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "capital-investment-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
         "unit": "%"
       }
     ],
@@ -1269,6 +1349,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "%"
+      },
+      {
+        "code": "cny-rub-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
       }
     ],
     "name": "Курс юаня",
@@ -1375,6 +1465,16 @@
         "isNative": false,
         "label": "По годам",
         "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "construction-work-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
         "unit": "%"
       }
     ],
@@ -1508,6 +1608,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "%"
+      },
+      {
+        "code": "consumer-credit-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
       }
     ],
     "name": "Кредиты физическим лицам",
@@ -1639,6 +1749,16 @@
         "isNative": false,
         "label": "По годам",
         "mode": "yoy-year",
+        "unit": "п.п."
+      },
+      {
+        "code": "credit-rate-corp-1to3y-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
         "unit": "п.п."
       }
     ],
@@ -1772,6 +1892,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "п.п."
+      },
+      {
+        "code": "credit-rate-corp-over3y-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "п.п."
       }
     ],
     "name": "Ставка по кредитам юридическим лицам свыше 3 лет",
@@ -1903,6 +2033,16 @@
         "isNative": false,
         "label": "По годам",
         "mode": "yoy-year",
+        "unit": "п.п."
+      },
+      {
+        "code": "credit-rate-corp-short-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
         "unit": "п.п."
       }
     ],
@@ -2036,6 +2176,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "п.п."
+      },
+      {
+        "code": "credit-rate-ind-1to3y-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "п.п."
       }
     ],
     "name": "Ставка по кредитам физическим лицам от 1 до 3 лет",
@@ -2167,6 +2317,16 @@
         "isNative": false,
         "label": "По годам",
         "mode": "yoy-year",
+        "unit": "п.п."
+      },
+      {
+        "code": "credit-rate-ind-over3y-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
         "unit": "п.п."
       }
     ],
@@ -2300,6 +2460,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "п.п."
+      },
+      {
+        "code": "credit-rate-ind-short-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "п.п."
       }
     ],
     "name": "Ставка по кредитам физическим лицам",
@@ -2376,6 +2546,16 @@
         "isNative": false,
         "label": "По годам",
         "mode": "yoy-year",
+        "unit": "млн $"
+      },
+      {
+        "code": "current-account-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
         "unit": "млн $"
       }
     ],
@@ -2608,6 +2788,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "п.п."
+      },
+      {
+        "code": "deposit-rate-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "п.п."
       }
     ],
     "name": "Ставка по вкладам физических лиц",
@@ -2739,6 +2929,16 @@
         "isNative": false,
         "label": "По годам",
         "mode": "yoy-year",
+        "unit": "п.п."
+      },
+      {
+        "code": "deposit-rate-long-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
         "unit": "п.п."
       }
     ],
@@ -2872,6 +3072,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "п.п."
+      },
+      {
+        "code": "deposit-rate-medium-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "п.п."
       }
     ],
     "name": "Ставка по вкладам на 1-3 года",
@@ -3004,6 +3214,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "%"
+      },
+      {
+        "code": "deposits-business-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
       }
     ],
     "name": "Депозиты организаций",
@@ -3135,6 +3355,16 @@
         "isNative": false,
         "label": "По годам",
         "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "deposits-individual-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
         "unit": "%"
       }
     ],
@@ -3342,6 +3572,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "%"
+      },
+      {
+        "code": "employment-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
       }
     ],
     "name": "Занятое население",
@@ -3514,6 +3754,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "%"
+      },
+      {
+        "code": "eur-rub-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
       }
     ],
     "name": "Курс евро",
@@ -3590,6 +3840,16 @@
         "isNative": false,
         "label": "По годам",
         "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "exports-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
         "unit": "%"
       }
     ],
@@ -3698,6 +3958,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "%"
+      },
+      {
+        "code": "exports-monthly-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
       }
     ],
     "name": "Экспорт товаров (месячный ряд)",
@@ -3790,6 +4060,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "%"
+      },
+      {
+        "code": "external-debt-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
       }
     ],
     "name": "Внешний долг",
@@ -3866,6 +4146,16 @@
         "isNative": false,
         "label": "По годам",
         "mode": "yoy-year",
+        "unit": "млн $"
+      },
+      {
+        "code": "fdi-net-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
         "unit": "млн $"
       }
     ],
@@ -3944,6 +4234,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "%"
+      },
+      {
+        "code": "gdp-consumption-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
       }
     ],
     "name": "ВВП: расходы домохозяйств",
@@ -4020,6 +4320,16 @@
         "isNative": false,
         "label": "По годам",
         "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "gdp-government-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
         "unit": "%"
       }
     ],
@@ -4098,6 +4408,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "%"
+      },
+      {
+        "code": "gdp-investment-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
       }
     ],
     "name": "Валовое накопление капитала",
@@ -4175,6 +4495,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "%"
+      },
+      {
+        "code": "gdp-nominal-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
       }
     ],
     "name": "Номинальный ВВП",
@@ -4251,6 +4581,16 @@
         "isNative": false,
         "label": "По годам",
         "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "gdp-real-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
         "unit": "%"
       }
     ],
@@ -4424,6 +4764,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "%"
+      },
+      {
+        "code": "gold-price-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
       }
     ],
     "name": "Цена золота (ЦБ)",
@@ -4494,7 +4844,12 @@
     "groups": [
       {
         "id": "level",
-        "label": "Уровень",
+        "label": "Индекс",
+        "leaf": false
+      },
+      {
+        "id": "avg",
+        "label": "Средняя за период",
         "leaf": false
       },
       {
@@ -4520,12 +4875,32 @@
         "unit": "индекс"
       },
       {
-        "code": "housing-affordability-avg-quarter",
+        "code": "housing-affordability-eop-quarter",
         "forecastable": true,
         "frequency": "quarterly",
         "group": "level",
         "isNative": false,
-        "label": "Средняя за квартал",
+        "label": "По кварталам",
+        "mode": "eop-quarter",
+        "unit": "индекс"
+      },
+      {
+        "code": "housing-affordability-eop-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "eop-year",
+        "unit": "индекс"
+      },
+      {
+        "code": "housing-affordability-avg-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "avg",
+        "isNative": false,
+        "label": "По кварталам",
         "mode": "avg-quarter",
         "unit": "индекс"
       },
@@ -4533,9 +4908,9 @@
         "code": "housing-affordability-avg-year",
         "forecastable": true,
         "frequency": "annual",
-        "group": "level",
+        "group": "avg",
         "isNative": false,
-        "label": "Средняя за год",
+        "label": "По годам",
         "mode": "avg-year",
         "unit": "индекс"
       },
@@ -4588,6 +4963,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "%"
+      },
+      {
+        "code": "housing-affordability-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
       }
     ],
     "name": "Индекс доступности жилья (вторичное жильё)",
@@ -4601,7 +4986,12 @@
     "groups": [
       {
         "id": "level",
-        "label": "Уровень",
+        "label": "Индекс",
+        "leaf": false
+      },
+      {
+        "id": "avg",
+        "label": "Средняя за период",
         "leaf": false
       },
       {
@@ -4627,12 +5017,32 @@
         "unit": "индекс"
       },
       {
-        "code": "housing-affordability-primary-avg-quarter",
+        "code": "housing-affordability-primary-eop-quarter",
         "forecastable": true,
         "frequency": "quarterly",
         "group": "level",
         "isNative": false,
-        "label": "Средняя за квартал",
+        "label": "По кварталам",
+        "mode": "eop-quarter",
+        "unit": "индекс"
+      },
+      {
+        "code": "housing-affordability-primary-eop-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "eop-year",
+        "unit": "индекс"
+      },
+      {
+        "code": "housing-affordability-primary-avg-quarter",
+        "forecastable": true,
+        "frequency": "quarterly",
+        "group": "avg",
+        "isNative": false,
+        "label": "По кварталам",
         "mode": "avg-quarter",
         "unit": "индекс"
       },
@@ -4640,9 +5050,9 @@
         "code": "housing-affordability-primary-avg-year",
         "forecastable": true,
         "frequency": "annual",
-        "group": "level",
+        "group": "avg",
         "isNative": false,
-        "label": "Средняя за год",
+        "label": "По годам",
         "mode": "avg-year",
         "unit": "индекс"
       },
@@ -4694,6 +5104,16 @@
         "isNative": false,
         "label": "По годам",
         "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "housing-affordability-primary-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
         "unit": "%"
       }
     ],
@@ -4802,6 +5222,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "%"
+      },
+      {
+        "code": "housing-commissioned-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
       }
     ],
     "name": "Ввод в действие жилых домов",
@@ -4878,6 +5308,16 @@
         "isNative": false,
         "label": "По годам",
         "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "imports-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
         "unit": "%"
       }
     ],
@@ -4985,6 +5425,16 @@
         "isNative": false,
         "label": "По годам",
         "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "imports-monthly-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
         "unit": "%"
       }
     ],
@@ -5180,6 +5630,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "%"
+      },
+      {
+        "code": "international-reserves-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
       }
     ],
     "name": "Международные резервы",
@@ -5311,6 +5771,16 @@
         "isNative": false,
         "label": "По годам",
         "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "ipi-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
         "unit": "%"
       }
     ],
@@ -5484,6 +5954,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "п.п."
+      },
+      {
+        "code": "key-rate-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "п.п."
       }
     ],
     "name": "Ключевая ставка ЦБ РФ",
@@ -5590,6 +6070,16 @@
         "isNative": false,
         "label": "По годам",
         "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "labor-force-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
         "unit": "%"
       }
     ],
@@ -5723,6 +6213,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "%"
+      },
+      {
+        "code": "m0-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
       }
     ],
     "name": "Денежная масса М0",
@@ -5854,6 +6354,16 @@
         "isNative": false,
         "label": "По годам",
         "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "m1-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
         "unit": "%"
       }
     ],
@@ -5987,6 +6497,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "%"
+      },
+      {
+        "code": "m2-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
       }
     ],
     "name": "Денежная масса М2",
@@ -6118,6 +6638,16 @@
         "isNative": false,
         "label": "По годам",
         "mode": "yoy-year",
+        "unit": "п.п."
+      },
+      {
+        "code": "mortgage-rate-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
         "unit": "п.п."
       }
     ],
@@ -6694,6 +7224,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "%"
+      },
+      {
+        "code": "retail-trade-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
       }
     ],
     "name": "Оборот розничной торговли",
@@ -6866,6 +7406,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "п.п."
+      },
+      {
+        "code": "ruonia-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "п.п."
       }
     ],
     "name": "Ставка RUONIA",
@@ -6942,6 +7492,16 @@
         "isNative": false,
         "label": "По годам",
         "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "services-exports-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
         "unit": "%"
       }
     ],
@@ -7050,6 +7610,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "%"
+      },
+      {
+        "code": "services-exports-monthly-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
       }
     ],
     "name": "Экспорт услуг (месячный ряд)",
@@ -7126,6 +7696,16 @@
         "isNative": false,
         "label": "По годам",
         "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "services-imports-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
         "unit": "%"
       }
     ],
@@ -7233,6 +7813,16 @@
         "isNative": false,
         "label": "По годам",
         "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "services-imports-monthly-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
         "unit": "%"
       }
     ],
@@ -7395,6 +7985,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "млн $"
+      },
+      {
+        "code": "trade-balance-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "млн $"
       }
     ],
     "name": "Торговый баланс",
@@ -7501,6 +8101,16 @@
         "isNative": false,
         "label": "По годам",
         "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "trade-balance-monthly-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
         "unit": "%"
       }
     ],
@@ -7633,6 +8243,16 @@
         "isNative": false,
         "label": "По годам",
         "mode": "yoy-year",
+        "unit": "п.п."
+      },
+      {
+        "code": "unemployment-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
         "unit": "п.п."
       }
     ],
@@ -7806,6 +8426,16 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "%"
+      },
+      {
+        "code": "usd-rub-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
       }
     ],
     "name": "Курс доллара США",
@@ -7912,6 +8542,16 @@
         "isNative": false,
         "label": "По годам",
         "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "wages-nominal-yoy-year",
+        "forecastable": true,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
         "unit": "%"
       }
     ],

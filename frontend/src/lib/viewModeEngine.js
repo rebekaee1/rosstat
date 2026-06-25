@@ -22,7 +22,10 @@ const CHILD_INDEX = (() => {
   const idx = {};
   for (const fam of Object.values(FAMILIES)) {
     for (const m of fam.modes) {
-      if (!m.isNative) idx[m.code] = { base: fam.base, mode: m.mode };
+      // first-write-wins: алиас pop-gg переиспользует code yoy-year, но
+      // канонический редирект derived-URL должен указывать на основной режим
+      // (yoy-year), а не на алиас в «К прошлому периоду».
+      if (!m.isNative && !idx[m.code]) idx[m.code] = { base: fam.base, mode: m.mode };
     }
   }
   return idx;

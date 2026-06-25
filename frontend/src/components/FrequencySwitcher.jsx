@@ -32,7 +32,7 @@ export default function FrequencySwitcher({
   return (
     <section className="mb-8 rounded-[1.5rem] border border-border-subtle bg-surface p-4 shadow-sm">
       <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-        Частота
+        Периодичность
       </p>
       <div className="flex flex-wrap gap-2">
         {items.map((item) => {

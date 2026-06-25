@@ -47,9 +47,9 @@ describe('relatedIndicatorCardCopy', () => {
   });
 
   it('falls back to full name outside variant groups', () => {
-    const card = relatedIndicatorCardCopy('exports', 'Экспорт товаров', 'млн USD');
-    expect(card.title).toBe('Экспорт товаров');
-    expect(card.subtitle).toBe('млн USD');
+    const card = relatedIndicatorCardCopy('key-rate', 'Ключевая ставка ЦБ РФ', '%');
+    expect(card.title).toBe('Ключевая ставка ЦБ РФ');
+    expect(card.subtitle).toBe('%');
   });
 
   it('housing variant: market slice as title', () => {

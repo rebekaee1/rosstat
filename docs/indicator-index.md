@@ -22,13 +22,13 @@
 
 ## Сводка
 
-- Всего кодов: **625**
+- Всего кодов: **629**
 - in_both_viewmode_systems (дубль легаси+generic): **14**
 - shadowed_legacy (мёртвая легаси-ветка): **24**
 - unresolved (нет ui_stack): **1**
 - derived_not_seeded: **0**
 
-По стекам: `cpi`=32, `generic`=580, `housing`=8, `null`=1, `ppi`=4
+По стекам: `cpi`=32, `generic`=584, `housing`=8, `null`=1, `ppi`=4
 
 ### Unresolved (ui_stack=null)
 
@@ -395,10 +395,14 @@
 | `housing-affordability` | Цены | monthly | `generic` | monthly_auto | ✓ | — |
 | `housing-affordability-avg-quarter` | Цены | quarterly | `generic` | derived_from_source | — | — |
 | `housing-affordability-avg-year` | Цены | annual | `generic` | derived_from_source | — | — |
+| `housing-affordability-eop-quarter` | Цены | quarterly | `generic` | derived_from_source | — | — |
+| `housing-affordability-eop-year` | Цены | annual | `generic` | derived_from_source | — | — |
 | `housing-affordability-mom` | Цены | monthly | `generic` | derived_from_source | — | — |
 | `housing-affordability-primary` | Цены | monthly | `generic` | monthly_auto | — | — |
 | `housing-affordability-primary-avg-quarter` | Цены | quarterly | `generic` | derived_from_source | — | — |
 | `housing-affordability-primary-avg-year` | Цены | annual | `generic` | derived_from_source | — | — |
+| `housing-affordability-primary-eop-quarter` | Цены | quarterly | `generic` | derived_from_source | — | — |
+| `housing-affordability-primary-eop-year` | Цены | annual | `generic` | derived_from_source | — | — |
 | `housing-affordability-primary-mom` | Цены | monthly | `generic` | derived_from_source | — | — |
 | `housing-affordability-primary-qoq` | Цены | quarterly | `generic` | derived_from_source | — | — |
 | `housing-affordability-primary-yoy` | Цены | monthly | `generic` | derived_from_source | — | — |
@@ -674,7 +678,7 @@
 - **Тип** (верх, эталон — переключатель ИПЦ): `value` Уровень/значение · `pop` К прошлому периоду · `yoy` К соотв. периоду пред. года · `index` Индекс
 - **Частота** (низ): `day` дн · `week` нед · `month` мес · `quarter` кв · `year` год
 
-Корней-семейств: **91** · с полной матрицей: **78** · с пробелами: **13**. Покрытие: {'bespoke': 7, 'bespoke-data': 4, 'generic': 79, 'orphan': 1}.
+Корней-семейств: **91** · с полной матрицей: **79** · с пробелами: **12**. Покрытие: {'bespoke': 7, 'bespoke-data': 4, 'generic': 79, 'orphan': 1}.
 
 ## Систематические пробелы по типам
 
@@ -691,7 +695,7 @@
 | generic/T10a | annual-signed | year | 9 | — |
 | generic/T12 | ratio-index | month | 2 | — |
 | generic/T2y | rate | month | 12 | — |
-| generic/T3 | index | month | 1 | `pop:year` |
+| generic/T3 | index | month | 1 | — |
 | generic/T3 | stock | month | 7 | — |
 | generic/T4 | stock | quarter | 1 | — |
 | generic/T5 | stock | week | 1 | — |
@@ -718,7 +722,6 @@
 | `wages-nominal-annual` | orphan/- | annual-count | year | 0.333 | `yoy:year`, `index:year` | partial | no | generic |
 | `housing-price-primary` | bespoke/HOUSING | index | quarter | 0.857 | `pop:year` | full | yes | curated |
 | `housing-price-secondary` | bespoke/HOUSING | index | quarter | 0.857 | `pop:year` | full | yes | curated |
-| `ipi` | generic/T3 | index | month | 0.9 | `pop:year` | full | yes | curated |
 
 ## Измерения паспорта (агрегат)
 

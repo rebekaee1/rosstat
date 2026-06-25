@@ -51,7 +51,9 @@ describe('viewModeEngine — generic resolver', () => {
     expect(byId.level.modes.map((m) => m.mode)).toEqual(['level', 'eop-quarter', 'eop-year']);
     // правило «без дубль-линий»: средняя без месячной гранулярности
     expect(byId.avg.modes.map((m) => m.mode)).toEqual(['avg-quarter', 'avg-year']);
-    expect(byId.pop.modes.map((m) => m.mode)).toEqual(['mom', 'qoq']);
+    // «К прошлому периоду» = М/м · Кв/кв · Г/г (алиас на yoy-year, тот же ряд)
+    expect(byId.pop.modes.map((m) => m.mode)).toEqual(['mom', 'qoq', 'pop-gg']);
+    expect(resolveViewMode(getViewModeFamily('m2'), 'pop-gg').code).toBe('m2-yoy-year');
     // Г/г теперь многоуровневая: по месяцам / кварталам / годам
     expect(byId.yoy.modes.map((m) => m.mode)).toEqual(['yoy', 'yoy-quarter', 'yoy-year']);
   });

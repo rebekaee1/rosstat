@@ -605,21 +605,25 @@ def _build_ratio_index(f: "FamilyDef") -> Family:
     сглаживании на карточке.
     """
     base, unit, ov = f.base, f.unit, f.overrides
-    modes: list[Mode] = [
-        Mode("level", "level", GRAN_LABEL["month"], base, (), unit, "monthly", f.forecastable),
-        Mode("avg-quarter", "level", "Средняя за квартал", _code(base, "avg-quarter", ov),
-             (("period_avg", {"granularity": "quarter"}),), unit, "quarterly", False),
-        Mode("avg-year", "level", "Средняя за год", _code(base, "avg-year", ov),
-             (("period_avg", {"granularity": "year"}),), unit, "annual", False),
-        Mode("mom", "pop", "М/м", _code(base, "mom", ov), (("mom", {}),),
-             "%", "monthly", False),
-        Mode("qoq", "pop", "Кв/Кв", _code(base, "qoq", ov),
-             (("period_over_period", {"granularity": "quarter", "method": "avg"}),),
-             "%", "quarterly", False),
-        *_yoy_modes(base, "monthly", ov, method="avg"),
-    ]
+    # «Индекс» (на конец периода): месяц = сам индекс, квартал/год = значение на
+    # конец квартала/года (решение владельца: унификация с ценами на жильё).
+    # «Средняя за период» — отдельная группа (среднее за квартал/год). Приросты
+    # М/м·Кв/кв на средних (индекс волатилен помесячно → среднее устойчивее).
+    modes: list[Mode] = (
+        _level_modes(base, "monthly", unit, ov, group_id="level", forecastable=f.forecastable)
+        + _avg_modes(base, "monthly", unit, ov)
+        + [
+            Mode("mom", "pop", "М/м", _code(base, "mom", ov), (("mom", {}),),
+                 "%", "monthly", False),
+            Mode("qoq", "pop", "Кв/Кв", _code(base, "qoq", ov),
+                 (("period_over_period", {"granularity": "quarter", "method": "avg"}),),
+                 "%", "quarterly", False),
+        ]
+        + _yoy_modes(base, "monthly", ov, method="avg")
+    )
     groups = [
-        Group("level", "Уровень"),
+        Group("level", "Индекс"),
+        _G_AVG,
         _G_POP,
         _G_YOY_MULTI,
     ]
@@ -785,10 +789,37 @@ _FAMILY_DEFS: list[FamilyDef] = [
 ]
 
 
+def _add_pop_yoy_alias(fam: Family) -> None:
+    """Г/г (год к предыдущему году) в группе «К прошлому периоду».
+
+    Решение созвона (B_diarized: «много где не хватает год к году… к прошлому
+    периоду»): блок «К прошлому периоду» = М/м · Кв/кв · Г/г во всех семьях.
+    Годовой шаг численно совпадает с «К соотв. периоду пред. года → По годам»
+    (для годовой агрегации «прошлый период» == «тот же период год назад»),
+    поэтому НЕ заводим дубль-ряд: алиас переиспользует уже построенный sibling
+    `*-yoy-year` (тот же code / pipeline / прогноз) — меняется только группа и
+    подпись кнопки. Семьи без pop-группы (годовые T10/T10a) и без yoy-year
+    (нативно-годовые) пропускаются.
+    """
+    if not any(g.id == "pop" for g in fam.groups):
+        return
+    yoy_year = next((m for m in fam.modes if m.mode == "yoy-year"), None)
+    if yoy_year is None or any(m.mode == "pop-gg" for m in fam.modes):
+        return
+    fam.modes.append(Mode(
+        mode="pop-gg", group="pop", label="Г/г",
+        code=yoy_year.code, pipeline=yoy_year.pipeline,
+        unit=yoy_year.unit, frequency=yoy_year.frequency,
+        forecastable=yoy_year.forecastable,
+    ))
+
+
 def _build_all() -> list[Family]:
     families: list[Family] = []
     for fdef in _FAMILY_DEFS:
-        families.append(_BUILDERS[fdef.template](fdef))
+        fam = _BUILDERS[fdef.template](fdef)
+        _add_pop_yoy_alias(fam)
+        families.append(fam)
     return families
 
 

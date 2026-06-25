@@ -94,8 +94,11 @@ def test_budget_deficit_flow_plus_abs_deltas():
     by_mode = {m.mode: m for m in fam.modes}
     assert set(by_mode) == {
         "level", "sum-quarter", "sum-year", "mom", "qoq",
-        "yoy", "yoy-quarter", "yoy-year",
+        "yoy", "yoy-quarter", "yoy-year", "pop-gg",
     }
+    # Г/г в «К прошлому периоду» — алиас на yoy-year (тот же ряд), группа pop.
+    assert by_mode["pop-gg"].group == "pop"
+    assert by_mode["pop-gg"].code == by_mode["yoy-year"].code
     # Приросты — абсолютные (млрд руб.), не проценты: база меняет знак.
     for tok in ("mom", "qoq", "yoy", "yoy-quarter", "yoy-year"):
         assert by_mode[tok].unit != "%", f"{tok}: должен быть абсолютным"
