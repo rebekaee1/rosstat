@@ -12,7 +12,10 @@ export const HOUSING_TOP_GROUPS = [
   {
     id: 'inflation',
     label: 'К соотв. периоду пред. года',
-    leafMode: 'yoy',
+    modes: [
+      { mode: 'yoy', label: 'По кварталам' },
+      { mode: 'yoy-year', label: 'По годам' },
+    ],
   },
   {
     id: 'step',
@@ -41,7 +44,8 @@ export {
 } from './housingViewModeResolve.js';
 
 export const HOUSING_VIEW_MODES_FLAT = [
-  { mode: 'yoy', label: 'К соотв. периоду пред. года' },
+  { mode: 'yoy', label: 'К соотв. периоду пред. года — по кварталам' },
+  { mode: 'yoy-year', label: 'К соотв. периоду пред. года — по годам' },
   { mode: 'qoq', label: 'Кв/Кв' },
   { mode: 'yoy-annual', label: 'Г/г' },
   { mode: 'index', label: 'Индекс — по кварталам' },

@@ -12,7 +12,7 @@ describe('housingViewModeGroups', () => {
   it('три верхние группы как у ИПЦ: к соотв. периоду + к прошлому периоду + индекс', () => {
     expect(HOUSING_TOP_GROUPS.map((g) => g.id)).toEqual(['inflation', 'step', 'index']);
     const inflation = HOUSING_TOP_GROUPS.find((g) => g.id === 'inflation');
-    expect(inflation.leafMode).toBe('yoy');
+    expect(inflation.modes.map((m) => m.mode)).toEqual(['yoy', 'yoy-year']);
     expect(inflation.label).toBe('К соотв. периоду пред. года');
     const step = HOUSING_TOP_GROUPS.find((g) => g.id === 'step');
     expect(step.modes.map((m) => m.mode)).toEqual(['qoq', 'yoy-annual']);
@@ -29,13 +29,16 @@ describe('housingViewModeGroups', () => {
     expect(dataModeForHousingUrlMode('index-annual')).toBe('index');
   });
 
-  it('дефолтный режим — к соотв. периоду пред. года (квартальная YoY)', () => {
+  it('дефолтный режим — к соотв. периоду пред. года (квартальная YoY); группа раскрывается по кв/год', () => {
     expect(normalizeHousingViewMode(null)).toBe('yoy');
     expect(normalizeHousingViewMode('level')).toBe('index');
     expect(topGroupForMode('yoy')).toBe('inflation');
-    // yoy — лист дефолтной группы, не раскрываем подрежимы
-    expect(expandedGroupForMode('yoy')).toBe(null);
+    expect(topGroupForMode('yoy-year')).toBe('inflation');
+    expect(expandedGroupForMode('yoy')).toBe('inflation');
+    expect(expandedGroupForMode('yoy-year')).toBe('inflation');
     expect(dataModeForHousingUrlMode('yoy')).toBe('yoy');
+    // «По годам» — тот же годовой ряд декабрь-к-декабрю, что и Г/г в «К прошлому периоду»
+    expect(dataModeForHousingUrlMode('yoy-year')).toBe('annual');
   });
 
   it('Г/г «по годам» (yoy-annual) — годовой ряд в группе «К прошлому периоду»', () => {
