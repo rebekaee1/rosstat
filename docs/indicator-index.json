@@ -76,7 +76,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1855,
+          "line": 1857,
           "kind": "seo"
         },
         {
@@ -513,7 +513,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5695,
+          "line": 5697,
           "kind": "seo"
         },
         {
@@ -658,7 +658,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5533,
+          "line": 5535,
           "kind": "seo"
         },
         {
@@ -875,7 +875,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2097,
+          "line": 2099,
           "kind": "seo"
         },
         {
@@ -1598,7 +1598,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2187,
+          "line": 2189,
           "kind": "seo"
         },
         {
@@ -2135,7 +2135,7 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 322,
+          "line": 330,
           "kind": "other"
         },
         {
@@ -2150,7 +2150,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3900,
+          "line": 3902,
           "kind": "seo"
         },
         {
@@ -2571,7 +2571,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4071,
+          "line": 4073,
           "kind": "seo"
         },
         {
@@ -2932,7 +2932,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3986,
+          "line": 3988,
           "kind": "seo"
         },
         {
@@ -3410,7 +3410,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4154,
+          "line": 4156,
           "kind": "seo"
         },
         {
@@ -3830,7 +3830,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7341,
+          "line": 7343,
           "kind": "seo"
         },
         {
@@ -4074,7 +4074,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3242,
+          "line": 3244,
           "kind": "seo"
         },
         {
@@ -4672,7 +4672,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8179,
+          "line": 8181,
           "kind": "seo"
         },
         {
@@ -5169,7 +5169,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7655,
+          "line": 7657,
           "kind": "seo"
         },
         {
@@ -5527,7 +5527,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4713,
+          "line": 4715,
           "kind": "seo"
         },
         {
@@ -5971,7 +5971,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8102,
+          "line": 8104,
           "kind": "seo"
         },
         {
@@ -6474,7 +6474,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2597,
+          "line": 2599,
           "kind": "seo"
         },
         {
@@ -7044,7 +7044,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1448,
+          "line": 1450,
           "kind": "seo"
         },
         {
@@ -7144,12 +7144,12 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 399,
+          "line": 402,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 400,
+          "line": 403,
           "kind": "seo"
         },
         {
@@ -7864,7 +7864,7 @@
         },
         {
           "file": "frontend/src/lib/indicatorVariants.js",
-          "line": 233,
+          "line": 235,
           "kind": "variants"
         },
         {
@@ -8175,7 +8175,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1515,
+          "line": 1517,
           "kind": "seo"
         },
         {
@@ -8375,7 +8375,7 @@
         },
         {
           "file": "frontend/src/lib/indicatorVariants.js",
-          "line": 233,
+          "line": 235,
           "kind": "variants"
         },
         {
@@ -8506,7 +8506,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 605,
+          "line": 608,
           "kind": "seo"
         },
         {
@@ -8902,7 +8902,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1599,
+          "line": 1601,
           "kind": "seo"
         },
         {
@@ -9707,7 +9707,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1678,
+          "line": 1680,
           "kind": "seo"
         },
         {
@@ -10415,7 +10415,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1963,
+          "line": 1965,
           "kind": "seo"
         },
         {
@@ -10845,7 +10845,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1967,
+          "line": 1969,
           "kind": "seo"
         },
         {
@@ -11275,7 +11275,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1959,
+          "line": 1961,
           "kind": "seo"
         },
         {
@@ -11720,7 +11720,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1975,
+          "line": 1977,
           "kind": "seo"
         },
         {
@@ -12150,7 +12150,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1979,
+          "line": 1981,
           "kind": "seo"
         },
         {
@@ -12580,7 +12580,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1971,
+          "line": 1973,
           "kind": "seo"
         },
         {
@@ -13006,7 +13006,7 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 322,
+          "line": 330,
           "kind": "other"
         },
         {
@@ -13046,7 +13046,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7109,
+          "line": 7111,
           "kind": "seo"
         },
         {
@@ -13589,7 +13589,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5776,
+          "line": 5778,
           "kind": "seo"
         },
         {
@@ -13729,7 +13729,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5616,
+          "line": 5618,
           "kind": "seo"
         },
         {
@@ -13952,7 +13952,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1983,
+          "line": 1985,
           "kind": "seo"
         },
         {
@@ -14292,7 +14292,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1991,
+          "line": 1993,
           "kind": "seo"
         },
         {
@@ -14702,7 +14702,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1987,
+          "line": 1989,
           "kind": "seo"
         },
         {
@@ -15272,7 +15272,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7886,
+          "line": 7888,
           "kind": "seo"
         },
         {
@@ -15692,7 +15692,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4821,
+          "line": 4823,
           "kind": "seo"
         },
         {
@@ -16119,7 +16119,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7809,
+          "line": 7811,
           "kind": "seo"
         },
         {
@@ -16234,7 +16234,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6480,
+          "line": 6482,
           "kind": "seo"
         },
         {
@@ -16405,7 +16405,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4548,
+          "line": 4550,
           "kind": "seo"
         },
         {
@@ -16817,7 +16817,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2276,
+          "line": 2278,
           "kind": "seo"
         },
         {
@@ -17315,7 +17315,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3151,
+          "line": 3153,
           "kind": "seo"
         },
         {
@@ -17345,7 +17345,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 403,
+          "line": 406,
           "kind": "seo"
         },
         {
@@ -17960,7 +17960,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5354,
+          "line": 5356,
           "kind": "seo"
         },
         {
@@ -18035,7 +18035,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 919,
+          "line": 937,
           "kind": "seo"
         },
         {
@@ -18444,7 +18444,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 919,
+          "line": 937,
           "kind": "seo"
         },
         {
@@ -19157,7 +19157,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5251,
+          "line": 5253,
           "kind": "seo"
         },
         {
@@ -19463,7 +19463,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7499,
+          "line": 7501,
           "kind": "seo"
         },
         {
@@ -19715,7 +19715,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8390,
+          "line": 8392,
           "kind": "seo"
         },
         {
@@ -20164,7 +20164,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8391,
+          "line": 8393,
           "kind": "seo"
         },
         {
@@ -20613,7 +20613,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8392,
+          "line": 8394,
           "kind": "seo"
         },
         {
@@ -21060,7 +21060,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5039,
+          "line": 5041,
           "kind": "seo"
         },
         {
@@ -21355,7 +21355,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5145,
+          "line": 5147,
           "kind": "seo"
         },
         {
@@ -21635,7 +21635,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7420,
+          "line": 7422,
           "kind": "seo"
         },
         {
@@ -21895,7 +21895,7 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 209,
+          "line": 217,
           "kind": "other"
         },
         {
@@ -21960,7 +21960,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2845,
+          "line": 2847,
           "kind": "seo"
         },
         {
@@ -22030,7 +22030,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 405,
+          "line": 408,
           "kind": "seo"
         },
         {
@@ -22250,7 +22250,7 @@
         },
         {
           "file": "frontend/src/lib/indicatorVariants.js",
-          "line": 233,
+          "line": 235,
           "kind": "variants"
         },
         {
@@ -22614,7 +22614,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2950,
+          "line": 2952,
           "kind": "seo"
         },
         {
@@ -23399,7 +23399,7 @@
         },
         {
           "file": "frontend/src/lib/indicatorVariants.js",
-          "line": 233,
+          "line": 235,
           "kind": "variants"
         },
         {
@@ -23484,7 +23484,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1995,
+          "line": 1997,
           "kind": "seo"
         },
         {
@@ -24051,7 +24051,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6402,
+          "line": 6404,
           "kind": "seo"
         },
         {
@@ -24219,7 +24219,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7966,
+          "line": 7968,
           "kind": "seo"
         },
         {
@@ -24478,7 +24478,7 @@
       "files": [
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1085,
+          "line": 1087,
           "kind": "seo"
         },
         {
@@ -24560,12 +24560,12 @@
       "files": [
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1081,
+          "line": 1083,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8046,
+          "line": 8048,
           "kind": "seo"
         },
         {
@@ -25224,7 +25224,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7732,
+          "line": 7734,
           "kind": "seo"
         },
         {
@@ -25582,7 +25582,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3495,
+          "line": 3497,
           "kind": "seo"
         },
         {
@@ -25868,7 +25868,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3577,
+          "line": 3579,
           "kind": "seo"
         },
         {
@@ -26402,7 +26402,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2450,
+          "line": 2452,
           "kind": "seo"
         },
         {
@@ -26936,7 +26936,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6952,
+          "line": 6954,
           "kind": "seo"
         },
         {
@@ -27963,7 +27963,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 604,
+          "line": 607,
           "kind": "seo"
         },
         {
@@ -28552,7 +28552,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6714,
+          "line": 6716,
           "kind": "seo"
         },
         {
@@ -28696,7 +28696,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4925,
+          "line": 4927,
           "kind": "seo"
         },
         {
@@ -29243,7 +29243,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3661,
+          "line": 3663,
           "kind": "seo"
         },
         {
@@ -29541,7 +29541,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8301,
+          "line": 8303,
           "kind": "seo"
         },
         {
@@ -29983,7 +29983,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8292,
+          "line": 8294,
           "kind": "seo"
         },
         {
@@ -30363,7 +30363,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8283,
+          "line": 8285,
           "kind": "seo"
         },
         {
@@ -30805,7 +30805,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8310,
+          "line": 8312,
           "kind": "seo"
         },
         {
@@ -31432,7 +31432,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2728,
+          "line": 2730,
           "kind": "seo"
         },
         {
@@ -31512,7 +31512,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 397,
+          "line": 400,
           "kind": "seo"
         },
         {
@@ -32304,7 +32304,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4598,
+          "line": 4600,
           "kind": "seo"
         },
         {
@@ -32687,7 +32687,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4256,
+          "line": 4258,
           "kind": "seo"
         },
         {
@@ -33112,7 +33112,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4354,
+          "line": 4356,
           "kind": "seo"
         },
         {
@@ -33562,7 +33562,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4450,
+          "line": 4452,
           "kind": "seo"
         },
         {
@@ -33607,7 +33607,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 401,
+          "line": 404,
           "kind": "seo"
         },
         {
@@ -34181,7 +34181,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2489,
+          "line": 2491,
           "kind": "seo"
         },
         {
@@ -34670,7 +34670,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1757,
+          "line": 1759,
           "kind": "seo"
         },
         {
@@ -35109,7 +35109,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8134,
+          "line": 8136,
           "kind": "seo"
         },
         {
@@ -35596,7 +35596,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6323,
+          "line": 6325,
           "kind": "seo"
         },
         {
@@ -35772,7 +35772,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6245,
+          "line": 6247,
           "kind": "seo"
         },
         {
@@ -35938,7 +35938,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6170,
+          "line": 6172,
           "kind": "seo"
         },
         {
@@ -36114,7 +36114,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5441,
+          "line": 5443,
           "kind": "seo"
         },
         {
@@ -36398,7 +36398,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5933,
+          "line": 5935,
           "kind": "seo"
         },
         {
@@ -36527,7 +36527,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5856,
+          "line": 5858,
           "kind": "seo"
         },
         {
@@ -36651,7 +36651,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6013,
+          "line": 6015,
           "kind": "seo"
         },
         {
@@ -36848,7 +36848,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3424,
+          "line": 3426,
           "kind": "seo"
         },
         {
@@ -37465,7 +37465,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6558,
+          "line": 6560,
           "kind": "seo"
         },
         {
@@ -37621,7 +37621,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6635,
+          "line": 6637,
           "kind": "seo"
         },
         {
@@ -37797,7 +37797,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7578,
+          "line": 7580,
           "kind": "seo"
         },
         {
@@ -38184,7 +38184,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2562,
+          "line": 2564,
           "kind": "seo"
         },
         {
@@ -38677,7 +38677,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2526,
+          "line": 2528,
           "kind": "seo"
         },
         {
@@ -39175,7 +39175,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2633,
+          "line": 2635,
           "kind": "seo"
         },
         {
@@ -39220,7 +39220,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 398,
+          "line": 401,
           "kind": "seo"
         },
         {
@@ -39809,7 +39809,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7187,
+          "line": 7189,
           "kind": "seo"
         },
         {
@@ -40425,7 +40425,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7265,
+          "line": 7267,
           "kind": "seo"
         },
         {
@@ -41050,7 +41050,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8118,
+          "line": 8120,
           "kind": "seo"
         },
         {
@@ -41546,7 +41546,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6874,
+          "line": 6876,
           "kind": "seo"
         },
         {
@@ -41692,7 +41692,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2363,
+          "line": 2365,
           "kind": "seo"
         },
         {
@@ -42185,7 +42185,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8164,
+          "line": 8166,
           "kind": "seo"
         },
         {
@@ -42688,7 +42688,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8194,
+          "line": 8196,
           "kind": "seo"
         },
         {
@@ -43169,7 +43169,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6795,
+          "line": 6797,
           "kind": "seo"
         },
         {
@@ -43297,7 +43297,7 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 322,
+          "line": 330,
           "kind": "other"
         },
         {
@@ -43347,7 +43347,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7031,
+          "line": 7033,
           "kind": "seo"
         },
         {
@@ -44261,17 +44261,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1086,
-          "kind": "seo"
-        },
-        {
-          "file": "backend/app/data/indicator_seo.py",
           "line": 1088,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3050,
+          "line": 1090,
+          "kind": "seo"
+        },
+        {
+          "file": "backend/app/data/indicator_seo.py",
+          "line": 3052,
           "kind": "seo"
         },
         {
@@ -44331,7 +44331,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 404,
+          "line": 407,
           "kind": "seo"
         },
         {
@@ -44567,12 +44567,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1088,
+          "line": 1090,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1090,
+          "line": 1092,
           "kind": "seo"
         },
         {
@@ -44874,12 +44874,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1087,
+          "line": 1089,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1089,
+          "line": 1091,
           "kind": "seo"
         },
         {
@@ -45127,7 +45127,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3334,
+          "line": 3336,
           "kind": "seo"
         },
         {
@@ -45162,7 +45162,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 402,
+          "line": 405,
           "kind": "seo"
         },
         {
@@ -45749,12 +45749,12 @@
       "files": [
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1072,
+          "line": 1075,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1076,
+          "line": 1078,
           "kind": "seo"
         },
         {
@@ -45940,7 +45940,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3748,
+          "line": 3750,
           "kind": "seo"
         },
         {
@@ -46195,7 +46195,7 @@
         },
         {
           "file": "frontend/src/lib/indicatorVariants.js",
-          "line": 170,
+          "line": 172,
           "kind": "variants"
         },
         {
@@ -46303,12 +46303,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1074,
+          "line": 1077,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1078,
+          "line": 1080,
           "kind": "seo"
         },
         {
@@ -46627,7 +46627,7 @@
       "frequency": "monthly",
       "source": "Росстат",
       "parser_type": "derived",
-      "is_listed": false,
+      "is_listed": true,
       "is_derived": true,
       "monthly_auto": true,
       "forecast_strategy": "monthly_auto",
@@ -46652,6 +46652,11 @@
       },
       "files": [
         {
+          "file": "AGENTS.md",
+          "line": 196,
+          "kind": "other"
+        },
+        {
           "file": "CONTEXT.md",
           "line": 111,
           "kind": "other"
@@ -46668,12 +46673,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1075,
+          "line": 1073,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3852,
+          "line": 3854,
           "kind": "seo"
         },
         {
@@ -46723,7 +46728,7 @@
         },
         {
           "file": "frontend/src/lib/indicatorVariants.js",
-          "line": 171,
+          "line": 173,
           "kind": "variants"
         },
         {
@@ -47006,12 +47011,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1072,
+          "line": 1075,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1077,
+          "line": 1079,
           "kind": "seo"
         },
         {
@@ -47136,7 +47141,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8149,
+          "line": 8151,
           "kind": "seo"
         },
         {
@@ -47628,7 +47633,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6091,
+          "line": 6093,
           "kind": "seo"
         },
         {
@@ -52419,7 +52424,7 @@
           "forecast": "yes",
           "grouping": "variant: Заработная плата",
           "seo": "curated",
-          "is_listed": false
+          "is_listed": true
         }
       },
       "wheat": {

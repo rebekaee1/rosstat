@@ -298,6 +298,9 @@ body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:"DM Sans",system-ui,s
 .seo-page th,.seo-page td{border:1px solid rgba(0,0,0,.08);padding:.5rem .75rem;text-align:left}
 .seo-page th{background:#F0F1F5;font-weight:600;color:#1A1A2E}
 .seo-page tbody tr:nth-child(even){background:rgba(255,255,255,.6)}
+.seo-chart{margin:1.25rem 0 1.5rem;border:1px solid rgba(0,0,0,.08);border-radius:.75rem;overflow:hidden;background:#fff}
+.seo-chart img{display:block;width:100%;height:auto}
+.seo-chart figcaption{font-size:.8125rem;color:rgba(26,26,46,.6);padding:.5rem .75rem;border-top:1px solid rgba(0,0,0,.06)}
 </style>"""
 
 FREQUENCY_LABELS_RU = {
@@ -762,6 +765,20 @@ async def render_indicator_html(
                     "contentUrl": _absolute(f"/api/v1/indicators/{data_indicator.code}/data"),
                 }
             ],
+            "image": f"{DOMAIN}/og/{indicator.code}.png",
+        },
+        {
+            "@context": "https://schema.org",
+            "@type": "ImageObject",
+            "contentUrl": f"{DOMAIN}/og/{indicator.code}.png",
+            "url": f"{DOMAIN}/og/{indicator.code}.png",
+            "caption": f"{display_name} — график динамики ({indicator.source})",
+            "description": desc,
+            "width": 1200,
+            "height": 630,
+            "representativeOfPage": True,
+            "creditText": "Forecast Economy",
+            "author": {"@type": "Organization", "name": "Forecast Economy"},
         },
     ]
     faq_ld = _faq_json_ld(_indicator_blocks_from_db(indicator))
@@ -854,6 +871,7 @@ async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> 
 <nav aria-label="Хлебные крошки">{_link("/", "Главная")} / {category_link} / {_link(f"/indicator/{code}", name)} / {year}</nav>
 <h1>{escape(title.split(" — ")[0])}</h1>
 <p>{escape(desc)}</p>
+<figure class="seo-chart"><img src="{DOMAIN}/og/{escape(code)}/{year}.png" width="1200" height="630" alt="{escape(name)} в {year} году — график по месяцам, среднее {escape(_format_number(avg))} {escape(unit)}, источник {escape(indicator.source)}" loading="lazy"><figcaption>{escape(name)} в {year} году — график динамики. Источник: {escape(indicator.source)} · forecasteconomy.com</figcaption></figure>
 <section><h2>Итоги {year} года</h2>
 <ul>
 <li>Значение на начало года: {escape(_format_number(first.value))} {escape(unit)} ({escape(_format_date(first.date))})</li>
@@ -1006,10 +1024,15 @@ def _indicator_body(
     # Индикаторы с собственными seo_blocks — без GLOBAL (иначе два блока
     # «Источник и обновление» в SSR: generic + предметный).
     blocks = custom_blocks if custom_blocks else GLOBAL_INDICATOR_BLOCKS
+    chart_alt = (
+        f"{name} — график динамики, последнее значение "
+        f"{_format_number(current.value if current else None)} {unit}, источник {indicator.source}"
+    )
     return f"""<main class="seo-page">
 <nav aria-label="Хлебные крошки">{_link("/", "Главная")} / {category_link} / {escape(name)}</nav>
 <h1>{escape(name)}</h1>
 <p>{escape(clean_text(indicator.description, f"{name}: официальный экономический индикатор с историей значений и графиком."))}</p>
+<figure class="seo-chart"><img src="{DOMAIN}/og/{escape(indicator.code)}.png" width="1200" height="630" alt="{escape(chart_alt)}" loading="lazy"><figcaption>{escape(name)} — график динамики по данным {escape(indicator.source)}. Источник: forecasteconomy.com</figcaption></figure>
 <section><h2>Текущее значение</h2>
 <ul>
 <li>Последнее значение: {escape(_format_number(current.value if current else None))} {escape(unit)}</li>

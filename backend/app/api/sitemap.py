@@ -201,7 +201,8 @@ async def og_image_indicator(code: str, db: AsyncSession = Depends(get_db)):
             .limit(120)
         )
         rows = rows_q.all()
-        values = [float(v) for v, _ in reversed(rows)]
+        ordered = list(reversed(rows))  # старое → новое
+        values = [float(v) for v, _ in ordered]
         current_value, current_date = (rows[0] if rows else (None, None))
         unit = (indicator.unit or "").strip()
         value_text = (
@@ -210,12 +211,18 @@ async def og_image_indicator(code: str, db: AsyncSession = Depends(get_db)):
             else "нет данных"
         )
         date_text = f"на {current_date.isoformat()}" if current_date else ""
+        x_labels = (
+            (str(ordered[0][1].year), str(ordered[-1][1].year))
+            if len(ordered) >= 2
+            else None
+        )
         png = render_indicator_og(
             code=code,
             name=indicator.name,
             value_text=value_text,
             date_text=date_text,
             values=values,
+            x_labels=x_labels,
         )
         store_og(code, png)
     return Response(
@@ -257,6 +264,7 @@ async def og_image_indicator_year(code: str, year: int, db: AsyncSession = Depen
         if len(rows) < 2:
             return Response(status_code=404)
         values = [float(v) for v, _ in rows]
+        first_date = rows[0][1]
         last_value, last_date = rows[-1]
         unit = (indicator.unit or "").strip()
         avg = sum(values) / len(values)
@@ -269,6 +277,7 @@ async def og_image_indicator_year(code: str, year: int, db: AsyncSession = Depen
             date_text=date_text,
             values=values,
             period_text=f"{year} год",
+            x_labels=(first_date.strftime("%d.%m"), last_date.strftime("%d.%m")),
         )
         store_og(cache_key, png)
     return Response(

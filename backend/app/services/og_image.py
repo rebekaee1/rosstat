@@ -60,7 +60,33 @@ def _wrap_text(draw: ImageDraw.ImageDraw, text: str, font: ImageFont.FreeTypeFon
     return lines[:2]
 
 
-def _sparkline(draw: ImageDraw.ImageDraw, values: list[float], box: tuple[int, int, int, int]) -> None:
+def _fmt_axis(v: float) -> str:
+    """Компактная подпись значения для оси (1 234,5 / 12,3 / 1,2 млн)."""
+    av = abs(v)
+    if av >= 1_000_000:
+        s = f"{v / 1_000_000:.1f} млн"
+    elif av >= 1_000:
+        s = f"{v:,.0f}".replace(",", " ")
+    elif av >= 10:
+        s = f"{v:.0f}"
+    else:
+        s = f"{v:.2f}"
+    return s.replace(".", ",")
+
+
+def _sparkline(
+    draw: ImageDraw.ImageDraw,
+    values: list[float],
+    box: tuple[int, int, int, int],
+    *,
+    x_labels: tuple[str, str] | None = None,
+) -> None:
+    """Линейный график с осевыми подписями (min/max по Y, крайние метки по X).
+
+    Подписи делают картинку самодостаточным «графиком», а не абстрактным
+    спарклайном: Алиса/Нейро берут её со страницы и показывают в ответе, где
+    она должна объяснять себя сама (значения, период, бренд).
+    """
     x0, y0, x1, y1 = box
     if len(values) < 2:
         return
@@ -83,6 +109,16 @@ def _sparkline(draw: ImageDraw.ImageDraw, values: list[float], box: tuple[int, i
     px, py = points[-1]
     draw.ellipse([px - 9, py - 9, px + 9, py + 9], fill=CHAMPAGNE)
 
+    # Осевые подписи: max сверху-слева, min снизу-слева над линией оси.
+    axis_font = _font(24)
+    draw.text((x0 + 6, y0 - 30), _fmt_axis(vmax), font=axis_font, fill=TEXT_SECONDARY)
+    draw.text((x0 + 6, y1 + 8), _fmt_axis(vmin), font=axis_font, fill=TEXT_SECONDARY)
+    if x_labels:
+        left, right = x_labels
+        draw.text((x0 + 6, y1 + 36), left, font=axis_font, fill=TEXT_SECONDARY)
+        rw = draw.textlength(right, font=axis_font)
+        draw.text((x1 - rw - 6, y1 + 36), right, font=axis_font, fill=TEXT_SECONDARY)
+
 
 def render_indicator_og(
     *,
@@ -92,6 +128,7 @@ def render_indicator_og(
     date_text: str,
     values: list[float],
     period_text: str | None = None,
+    x_labels: tuple[str, str] | None = None,
 ) -> bytes:
     """Собрать PNG. Чистая функция от данных — кэширование на вызывающей стороне.
 
@@ -125,7 +162,7 @@ def render_indicator_og(
     date_font = _font(30)
     draw.text((margin, y + 128), date_text, font=date_font, fill=TEXT_SECONDARY)
 
-    _sparkline(draw, values, (margin, 420, WIDTH - margin, 560))
+    _sparkline(draw, values, (margin, 400, WIDTH - margin, 526), x_labels=x_labels)
 
     footer_font = _font(26)
     draw.text((margin, HEIGHT - 48), "forecasteconomy.com", font=footer_font, fill=TEXT_SECONDARY)
