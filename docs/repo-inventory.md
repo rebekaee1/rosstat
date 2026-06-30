@@ -2,17 +2,17 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Файлов:** 451  ·  **Строк:** 89 388  ·  **Токенов (≈):** 891 789
+**Файлов:** 451  ·  **Строк:** 89 391  ·  **Токенов (≈):** 891 984
 
 ## По верхним папкам
 
 | Папка | Файлов | Строк | Токенов (≈) |
 |-------|-------:|------:|------------:|
-| `(root)` | 7 | 1 454 | 33 396 |
+| `(root)` | 7 | 1 454 | 33 513 |
 | `.github` | 1 | 56 | 334 |
-| `backend` | 238 | 46 305 | 465 546 |
+| `backend` | 238 | 46 308 | 465 648 |
 | `docs` | 19 | 4 011 | 77 537 |
-| `frontend` | 159 | 33 844 | 278 671 |
+| `frontend` | 159 | 33 844 | 278 647 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 24 | 3 560 | 35 185 |
 
@@ -21,18 +21,18 @@
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
 | `backend/app/data/indicator_seo.py` | 8 456 | 109 274 |
-| `frontend/src/lib/viewModelFamilies.generated.json` | 12 339 | 73 006 |
+| `frontend/src/lib/viewModelFamilies.generated.json` | 12 339 | 72 982 |
 | `backend/seed_data.py` | 4 763 | 48 227 |
 | `docs/backlog.md` | 849 | 21 352 |
 | `CONTEXT.md` | 554 | 19 110 |
-| `backend/app/data/view_model_families.py` | 1 118 | 13 318 |
+| `backend/app/data/view_model_families.py` | 1 121 | 13 420 |
 | `backend/app/services/forecaster.py` | 1 252 | 11 552 |
 | `backend/app/services/seo_renderer.py` | 1 049 | 9 869 |
 | `frontend/src/pages/CalculatorPage.jsx` | 839 | 9 375 |
 | `frontend/src/pages/IndicatorDetail.jsx` | 800 | 8 378 |
 | `backend/app/services/rosstat_weekly_inflation_parser.py` | 890 | 8 334 |
+| `AGENTS.md` | 383 | 8 289 |
 | `backend/app/services/calendar_sources/official_calendar.py` | 752 | 8 287 |
-| `AGENTS.md` | 383 | 8 172 |
 | `docs/indicator-family-playbook.md` | 621 | 7 561 |
 | `scripts/build-indicator-index.py` | 676 | 7 424 |
 | `backend/app/models.py` | 580 | 7 305 |

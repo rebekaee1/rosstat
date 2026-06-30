@@ -43,8 +43,8 @@
 | `auto-loan-rate-avg-year` | Финансы | annual | `generic` | derived_from_source | — | — |
 | `auto-loan-rate-eop-quarter` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `auto-loan-rate-eop-year` | Финансы | annual | `generic` | derived_from_source | — | — |
-| `auto-loan-rate-mom` | Финансы | monthly | `generic` | — | — | — |
-| `auto-loan-rate-qoq` | Финансы | quarterly | `generic` | — | — | — |
+| `auto-loan-rate-mom` | Финансы | monthly | `generic` | derived_from_source | — | — |
+| `auto-loan-rate-qoq` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `auto-loan-rate-yoy` | Финансы | monthly | `generic` | derived_from_source | — | — |
 | `auto-loan-rate-yoy-quarter` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `auto-loan-rate-yoy-year` | Финансы | annual | `generic` | derived_from_source | — | — |
@@ -82,24 +82,24 @@
 | `btc-usd-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
 | `btc-usd-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `budget-deficit` | Финансы | monthly | `generic` | monthly_auto | ✓ | — |
-| `budget-deficit-mom` | Бюджет | monthly | `generic` | — | — | — |
-| `budget-deficit-qoq` | Бюджет | quarterly | `generic` | — | — | — |
+| `budget-deficit-mom` | Бюджет | monthly | `generic` | derived_from_source | — | — |
+| `budget-deficit-qoq` | Бюджет | quarterly | `generic` | derived_from_source | — | — |
 | `budget-deficit-sum-quarter` | Бюджет | quarterly | `generic` | derived_from_source | — | — |
 | `budget-deficit-sum-year` | Бюджет | annual | `generic` | derived_from_source | — | — |
 | `budget-deficit-yoy` | Бюджет | monthly | `generic` | derived_from_source | — | — |
 | `budget-deficit-yoy-quarter` | Бюджет | quarterly | `generic` | derived_from_source | — | — |
 | `budget-deficit-yoy-year` | Бюджет | annual | `generic` | derived_from_source | — | — |
 | `budget-expenditure` | Финансы | monthly | `generic` | monthly_auto | ✓ | — |
-| `budget-expenditure-mom` | Бюджет | monthly | `generic` | — | — | — |
-| `budget-expenditure-qoq` | Бюджет | quarterly | `generic` | — | — | — |
+| `budget-expenditure-mom` | Бюджет | monthly | `generic` | derived_from_source | — | — |
+| `budget-expenditure-qoq` | Бюджет | quarterly | `generic` | derived_from_source | — | — |
 | `budget-expenditure-sum-quarter` | Бюджет | quarterly | `generic` | derived_from_source | — | — |
 | `budget-expenditure-sum-year` | Бюджет | annual | `generic` | derived_from_source | — | — |
 | `budget-expenditure-yoy` | Бюджет | monthly | `generic` | derived_from_source | — | — |
 | `budget-expenditure-yoy-quarter` | Бюджет | quarterly | `generic` | derived_from_source | — | — |
 | `budget-expenditure-yoy-year` | Бюджет | annual | `generic` | derived_from_source | — | — |
 | `budget-revenue` | Финансы | monthly | `generic` | monthly_auto | ✓ | — |
-| `budget-revenue-mom` | Бюджет | monthly | `generic` | — | — | — |
-| `budget-revenue-qoq` | Бюджет | quarterly | `generic` | — | — | — |
+| `budget-revenue-mom` | Бюджет | monthly | `generic` | derived_from_source | — | — |
+| `budget-revenue-qoq` | Бюджет | quarterly | `generic` | derived_from_source | — | — |
 | `budget-revenue-sum-quarter` | Бюджет | quarterly | `generic` | derived_from_source | — | — |
 | `budget-revenue-sum-year` | Бюджет | annual | `generic` | derived_from_source | — | — |
 | `budget-revenue-yoy` | Бюджет | monthly | `generic` | derived_from_source | — | — |
@@ -110,13 +110,13 @@
 | `business-credit-avg-year` | Финансы | annual | `generic` | derived_from_source | — | — |
 | `business-credit-eop-quarter` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `business-credit-eop-year` | Финансы | annual | `generic` | derived_from_source | — | — |
-| `business-credit-mom` | Финансы | monthly | `generic` | — | — | — |
-| `business-credit-qoq` | Финансы | quarterly | `generic` | — | — | — |
+| `business-credit-mom` | Финансы | monthly | `generic` | derived_from_source | — | — |
+| `business-credit-qoq` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `business-credit-yoy` | Финансы | monthly | `generic` | derived_from_source | — | — |
 | `business-credit-yoy-quarter` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `business-credit-yoy-year` | Финансы | annual | `generic` | derived_from_source | — | — |
 | `capital-investment` | Бизнес | quarterly | `generic` | — | ✓ | — |
-| `capital-investment-qoq` | Бизнес | quarterly | `generic` | — | — | — |
+| `capital-investment-qoq` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `capital-investment-sum-year` | Бизнес | annual | `generic` | derived_from_source | — | — |
 | `capital-investment-yoy` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `capital-investment-yoy-year` | Бизнес | annual | `generic` | derived_from_source | — | — |
@@ -149,8 +149,8 @@
 | `coal-yoy-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
 | `coal-yoy-year` | Товарные рынки | annual | `generic` | — | — | — |
 | `construction-work` | Бизнес | monthly | `generic` | monthly_auto | ✓ | — |
-| `construction-work-mom` | Бизнес | monthly | `generic` | — | — | — |
-| `construction-work-qoq` | Бизнес | quarterly | `generic` | — | — | — |
+| `construction-work-mom` | Бизнес | monthly | `generic` | derived_from_source | — | — |
+| `construction-work-qoq` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `construction-work-sum-quarter` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `construction-work-sum-year` | Бизнес | annual | `generic` | derived_from_source | — | — |
 | `construction-work-yoy` | Бизнес | monthly | `generic` | derived_from_source | — | — |
@@ -161,8 +161,8 @@
 | `consumer-credit-avg-year` | Финансы | annual | `generic` | derived_from_source | — | — |
 | `consumer-credit-eop-quarter` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `consumer-credit-eop-year` | Финансы | annual | `generic` | derived_from_source | — | — |
-| `consumer-credit-mom` | Финансы | monthly | `generic` | — | — | — |
-| `consumer-credit-qoq` | Финансы | quarterly | `generic` | — | — | — |
+| `consumer-credit-mom` | Финансы | monthly | `generic` | derived_from_source | — | — |
+| `consumer-credit-qoq` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `consumer-credit-yoy` | Финансы | monthly | `generic` | derived_from_source | — | — |
 | `consumer-credit-yoy-quarter` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `consumer-credit-yoy-year` | Финансы | annual | `generic` | derived_from_source | — | — |
@@ -225,8 +225,8 @@
 | `credit-rate-corp-1to3y-avg-year` | Ставки | annual | `generic` | derived_from_source | — | — |
 | `credit-rate-corp-1to3y-eop-quarter` | Ставки | quarterly | `generic` | derived_from_source | — | — |
 | `credit-rate-corp-1to3y-eop-year` | Ставки | annual | `generic` | derived_from_source | — | — |
-| `credit-rate-corp-1to3y-mom` | Ставки | monthly | `generic` | — | — | — |
-| `credit-rate-corp-1to3y-qoq` | Ставки | quarterly | `generic` | — | — | — |
+| `credit-rate-corp-1to3y-mom` | Ставки | monthly | `generic` | derived_from_source | — | — |
+| `credit-rate-corp-1to3y-qoq` | Ставки | quarterly | `generic` | derived_from_source | — | — |
 | `credit-rate-corp-1to3y-yoy` | Ставки | monthly | `generic` | derived_from_source | — | — |
 | `credit-rate-corp-1to3y-yoy-quarter` | Ставки | quarterly | `generic` | derived_from_source | — | — |
 | `credit-rate-corp-1to3y-yoy-year` | Ставки | annual | `generic` | derived_from_source | — | — |
@@ -235,8 +235,8 @@
 | `credit-rate-corp-over3y-avg-year` | Ставки | annual | `generic` | derived_from_source | — | — |
 | `credit-rate-corp-over3y-eop-quarter` | Ставки | quarterly | `generic` | derived_from_source | — | — |
 | `credit-rate-corp-over3y-eop-year` | Ставки | annual | `generic` | derived_from_source | — | — |
-| `credit-rate-corp-over3y-mom` | Ставки | monthly | `generic` | — | — | — |
-| `credit-rate-corp-over3y-qoq` | Ставки | quarterly | `generic` | — | — | — |
+| `credit-rate-corp-over3y-mom` | Ставки | monthly | `generic` | derived_from_source | — | — |
+| `credit-rate-corp-over3y-qoq` | Ставки | quarterly | `generic` | derived_from_source | — | — |
 | `credit-rate-corp-over3y-yoy` | Ставки | monthly | `generic` | derived_from_source | — | — |
 | `credit-rate-corp-over3y-yoy-quarter` | Ставки | quarterly | `generic` | derived_from_source | — | — |
 | `credit-rate-corp-over3y-yoy-year` | Ставки | annual | `generic` | derived_from_source | — | — |
@@ -245,8 +245,8 @@
 | `credit-rate-corp-short-avg-year` | Ставки | annual | `generic` | derived_from_source | — | — |
 | `credit-rate-corp-short-eop-quarter` | Ставки | quarterly | `generic` | derived_from_source | — | — |
 | `credit-rate-corp-short-eop-year` | Ставки | annual | `generic` | derived_from_source | — | — |
-| `credit-rate-corp-short-mom` | Ставки | monthly | `generic` | — | — | — |
-| `credit-rate-corp-short-qoq` | Ставки | quarterly | `generic` | — | — | — |
+| `credit-rate-corp-short-mom` | Ставки | monthly | `generic` | derived_from_source | — | — |
+| `credit-rate-corp-short-qoq` | Ставки | quarterly | `generic` | derived_from_source | — | — |
 | `credit-rate-corp-short-yoy` | Ставки | monthly | `generic` | derived_from_source | — | — |
 | `credit-rate-corp-short-yoy-quarter` | Ставки | quarterly | `generic` | derived_from_source | — | — |
 | `credit-rate-corp-short-yoy-year` | Ставки | annual | `generic` | derived_from_source | — | — |
@@ -255,8 +255,8 @@
 | `credit-rate-ind-1to3y-avg-year` | Ставки | annual | `generic` | derived_from_source | — | — |
 | `credit-rate-ind-1to3y-eop-quarter` | Ставки | quarterly | `generic` | derived_from_source | — | — |
 | `credit-rate-ind-1to3y-eop-year` | Ставки | annual | `generic` | derived_from_source | — | — |
-| `credit-rate-ind-1to3y-mom` | Ставки | monthly | `generic` | — | — | — |
-| `credit-rate-ind-1to3y-qoq` | Ставки | quarterly | `generic` | — | — | — |
+| `credit-rate-ind-1to3y-mom` | Ставки | monthly | `generic` | derived_from_source | — | — |
+| `credit-rate-ind-1to3y-qoq` | Ставки | quarterly | `generic` | derived_from_source | — | — |
 | `credit-rate-ind-1to3y-yoy` | Ставки | monthly | `generic` | derived_from_source | — | — |
 | `credit-rate-ind-1to3y-yoy-quarter` | Ставки | quarterly | `generic` | derived_from_source | — | — |
 | `credit-rate-ind-1to3y-yoy-year` | Ставки | annual | `generic` | derived_from_source | — | — |
@@ -265,8 +265,8 @@
 | `credit-rate-ind-over3y-avg-year` | Ставки | annual | `generic` | derived_from_source | — | — |
 | `credit-rate-ind-over3y-eop-quarter` | Ставки | quarterly | `generic` | derived_from_source | — | — |
 | `credit-rate-ind-over3y-eop-year` | Ставки | annual | `generic` | derived_from_source | — | — |
-| `credit-rate-ind-over3y-mom` | Ставки | monthly | `generic` | — | — | — |
-| `credit-rate-ind-over3y-qoq` | Ставки | quarterly | `generic` | — | — | — |
+| `credit-rate-ind-over3y-mom` | Ставки | monthly | `generic` | derived_from_source | — | — |
+| `credit-rate-ind-over3y-qoq` | Ставки | quarterly | `generic` | derived_from_source | — | — |
 | `credit-rate-ind-over3y-yoy` | Ставки | monthly | `generic` | derived_from_source | — | — |
 | `credit-rate-ind-over3y-yoy-quarter` | Ставки | quarterly | `generic` | derived_from_source | — | — |
 | `credit-rate-ind-over3y-yoy-year` | Ставки | annual | `generic` | derived_from_source | — | — |
@@ -275,13 +275,13 @@
 | `credit-rate-ind-short-avg-year` | Ставки | annual | `generic` | derived_from_source | — | — |
 | `credit-rate-ind-short-eop-quarter` | Ставки | quarterly | `generic` | derived_from_source | — | — |
 | `credit-rate-ind-short-eop-year` | Ставки | annual | `generic` | derived_from_source | — | — |
-| `credit-rate-ind-short-mom` | Ставки | monthly | `generic` | — | — | — |
-| `credit-rate-ind-short-qoq` | Ставки | quarterly | `generic` | — | — | — |
+| `credit-rate-ind-short-mom` | Ставки | monthly | `generic` | derived_from_source | — | — |
+| `credit-rate-ind-short-qoq` | Ставки | quarterly | `generic` | derived_from_source | — | — |
 | `credit-rate-ind-short-yoy` | Ставки | monthly | `generic` | derived_from_source | — | — |
 | `credit-rate-ind-short-yoy-quarter` | Ставки | quarterly | `generic` | derived_from_source | — | — |
 | `credit-rate-ind-short-yoy-year` | Ставки | annual | `generic` | derived_from_source | — | — |
 | `current-account` | Торговля | quarterly | `generic` | signed_quarterly | ✓ | both, shadowed |
-| `current-account-qoq` | Торговля | quarterly | `generic` | — | — | — |
+| `current-account-qoq` | Торговля | quarterly | `generic` | derived_from_source | — | — |
 | `current-account-sum-year` | Торговля | annual | `generic` | derived_from_source | — | — |
 | `current-account-yoy` | Торговля | quarterly | `generic` | — | — | — |
 | `current-account-yoy-abs` | Торговля | quarterly | `generic` | — | — | both, shadowed |
@@ -301,8 +301,8 @@
 | `deposit-rate-long-avg-year` | Ставки | annual | `generic` | derived_from_source | — | — |
 | `deposit-rate-long-eop-quarter` | Ставки | quarterly | `generic` | derived_from_source | — | — |
 | `deposit-rate-long-eop-year` | Ставки | annual | `generic` | derived_from_source | — | — |
-| `deposit-rate-long-mom` | Ставки | monthly | `generic` | — | — | — |
-| `deposit-rate-long-qoq` | Ставки | quarterly | `generic` | — | — | — |
+| `deposit-rate-long-mom` | Ставки | monthly | `generic` | derived_from_source | — | — |
+| `deposit-rate-long-qoq` | Ставки | quarterly | `generic` | derived_from_source | — | — |
 | `deposit-rate-long-yoy` | Ставки | monthly | `generic` | derived_from_source | — | — |
 | `deposit-rate-long-yoy-quarter` | Ставки | quarterly | `generic` | derived_from_source | — | — |
 | `deposit-rate-long-yoy-year` | Ставки | annual | `generic` | derived_from_source | — | — |
@@ -311,13 +311,13 @@
 | `deposit-rate-medium-avg-year` | Ставки | annual | `generic` | derived_from_source | — | — |
 | `deposit-rate-medium-eop-quarter` | Ставки | quarterly | `generic` | derived_from_source | — | — |
 | `deposit-rate-medium-eop-year` | Ставки | annual | `generic` | derived_from_source | — | — |
-| `deposit-rate-medium-mom` | Ставки | monthly | `generic` | — | — | — |
-| `deposit-rate-medium-qoq` | Ставки | quarterly | `generic` | — | — | — |
+| `deposit-rate-medium-mom` | Ставки | monthly | `generic` | derived_from_source | — | — |
+| `deposit-rate-medium-qoq` | Ставки | quarterly | `generic` | derived_from_source | — | — |
 | `deposit-rate-medium-yoy` | Ставки | monthly | `generic` | derived_from_source | — | — |
 | `deposit-rate-medium-yoy-quarter` | Ставки | quarterly | `generic` | derived_from_source | — | — |
 | `deposit-rate-medium-yoy-year` | Ставки | annual | `generic` | derived_from_source | — | — |
-| `deposit-rate-mom` | Ставки | monthly | `generic` | — | — | — |
-| `deposit-rate-qoq` | Ставки | quarterly | `generic` | — | — | — |
+| `deposit-rate-mom` | Ставки | monthly | `generic` | derived_from_source | — | — |
+| `deposit-rate-qoq` | Ставки | quarterly | `generic` | derived_from_source | — | — |
 | `deposit-rate-yoy` | Ставки | monthly | `generic` | derived_from_source | — | — |
 | `deposit-rate-yoy-quarter` | Ставки | quarterly | `generic` | derived_from_source | — | — |
 | `deposit-rate-yoy-year` | Ставки | annual | `generic` | derived_from_source | — | — |
@@ -326,8 +326,8 @@
 | `deposits-business-avg-year` | Финансы | annual | `generic` | derived_from_source | — | — |
 | `deposits-business-eop-quarter` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `deposits-business-eop-year` | Финансы | annual | `generic` | derived_from_source | — | — |
-| `deposits-business-mom` | Финансы | monthly | `generic` | — | — | — |
-| `deposits-business-qoq` | Финансы | quarterly | `generic` | — | — | — |
+| `deposits-business-mom` | Финансы | monthly | `generic` | derived_from_source | — | — |
+| `deposits-business-qoq` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `deposits-business-yoy` | Финансы | monthly | `generic` | derived_from_source | — | — |
 | `deposits-business-yoy-quarter` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `deposits-business-yoy-year` | Финансы | annual | `generic` | derived_from_source | — | — |
@@ -336,8 +336,8 @@
 | `deposits-individual-avg-year` | Финансы | annual | `generic` | derived_from_source | — | — |
 | `deposits-individual-eop-quarter` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `deposits-individual-eop-year` | Финансы | annual | `generic` | derived_from_source | — | — |
-| `deposits-individual-mom` | Финансы | monthly | `generic` | — | — | — |
-| `deposits-individual-qoq` | Финансы | quarterly | `generic` | — | — | — |
+| `deposits-individual-mom` | Финансы | monthly | `generic` | derived_from_source | — | — |
+| `deposits-individual-qoq` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `deposits-individual-yoy` | Финансы | monthly | `generic` | derived_from_source | — | — |
 | `deposits-individual-yoy-quarter` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `deposits-individual-yoy-year` | Финансы | annual | `generic` | derived_from_source | — | — |
@@ -349,8 +349,8 @@
 | `employment` | Рынок труда | monthly | `generic` | monthly_auto | ✓ | — |
 | `employment-avg-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `employment-avg-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
-| `employment-mom` | Рынок труда | monthly | `generic` | — | — | — |
-| `employment-qoq` | Рынок труда | quarterly | `generic` | — | — | — |
+| `employment-mom` | Рынок труда | monthly | `generic` | derived_from_source | — | — |
+| `employment-qoq` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `employment-yoy` | Рынок труда | monthly | `generic` | derived_from_source | — | — |
 | `employment-yoy-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `employment-yoy-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
@@ -384,8 +384,8 @@
 | `eur-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `exports` | Торговля | quarterly | `generic` | generic_quarterly | ✓ | both, shadowed |
 | `exports-monthly` | Торговля | monthly | `generic` | monthly_auto | — | both, shadowed |
-| `exports-monthly-mom` | Торговля | monthly | `generic` | — | — | — |
-| `exports-monthly-qoq` | Торговля | quarterly | `generic` | — | — | — |
+| `exports-monthly-mom` | Торговля | monthly | `generic` | derived_from_source | — | — |
+| `exports-monthly-qoq` | Торговля | quarterly | `generic` | derived_from_source | — | — |
 | `exports-monthly-sum-quarter` | Торговля | quarterly | `generic` | derived_from_source | — | — |
 | `exports-monthly-sum-year` | Торговля | annual | `generic` | derived_from_source | — | — |
 | `exports-monthly-yoy` | Торговля | monthly | `generic` | derived_from_source | — | — |
@@ -398,11 +398,11 @@
 | `external-debt` | Финансы | quarterly | `generic` | generic_quarterly | ✓ | — |
 | `external-debt-avg-year` | Финансы | annual | `generic` | derived_from_source | — | — |
 | `external-debt-eop-year` | Финансы | annual | `generic` | derived_from_source | — | — |
-| `external-debt-qoq` | Финансы | quarterly | `generic` | — | — | — |
+| `external-debt-qoq` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `external-debt-yoy` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `external-debt-yoy-year` | Финансы | annual | `generic` | derived_from_source | — | — |
 | `fdi-net` | Бизнес | quarterly | `generic` | — | ✓ | — |
-| `fdi-net-qoq` | Бизнес | quarterly | `generic` | — | — | — |
+| `fdi-net-qoq` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `fdi-net-sum-year` | Бизнес | annual | `generic` | derived_from_source | — | — |
 | `fdi-net-yoy` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `fdi-net-yoy-year` | Бизнес | annual | `generic` | derived_from_source | — | — |
@@ -443,17 +443,17 @@
 | `fuel-diesel-yoy-quarter` | Цены | quarterly | `generic` | — | — | — |
 | `fuel-diesel-yoy-year` | Цены | annual | `generic` | — | — | — |
 | `gdp-consumption` | ВВП | quarterly | `generic` | gdp_consumption_quarterly | ✓ | — |
-| `gdp-consumption-qoq` | ВВП | quarterly | `generic` | — | — | — |
+| `gdp-consumption-qoq` | ВВП | quarterly | `generic` | derived_from_source | — | — |
 | `gdp-consumption-sum-year` | ВВП | annual | `generic` | derived_from_source | — | — |
 | `gdp-consumption-yoy` | ВВП | quarterly | `generic` | derived_from_source | — | — |
 | `gdp-consumption-yoy-year` | ВВП | annual | `generic` | derived_from_source | — | — |
 | `gdp-government` | ВВП | quarterly | `generic` | gdp_government_quarterly | ✓ | — |
-| `gdp-government-qoq` | ВВП | quarterly | `generic` | — | — | — |
+| `gdp-government-qoq` | ВВП | quarterly | `generic` | derived_from_source | — | — |
 | `gdp-government-sum-year` | ВВП | annual | `generic` | derived_from_source | — | — |
 | `gdp-government-yoy` | ВВП | quarterly | `generic` | derived_from_source | — | — |
 | `gdp-government-yoy-year` | ВВП | annual | `generic` | derived_from_source | — | — |
 | `gdp-investment` | ВВП | quarterly | `generic` | — | ✓ | — |
-| `gdp-investment-qoq` | ВВП | quarterly | `generic` | — | — | — |
+| `gdp-investment-qoq` | ВВП | quarterly | `generic` | derived_from_source | — | — |
 | `gdp-investment-sum-year` | ВВП | annual | `generic` | derived_from_source | — | — |
 | `gdp-investment-yoy` | ВВП | quarterly | `generic` | derived_from_source | — | — |
 | `gdp-investment-yoy-year` | ВВП | annual | `generic` | derived_from_source | — | — |
@@ -489,26 +489,26 @@
 | `housing-affordability-avg-year` | Цены | annual | `generic` | derived_from_source | — | — |
 | `housing-affordability-eop-quarter` | Цены | quarterly | `generic` | derived_from_source | — | — |
 | `housing-affordability-eop-year` | Цены | annual | `generic` | derived_from_source | — | — |
-| `housing-affordability-mom` | Цены | monthly | `generic` | — | — | — |
+| `housing-affordability-mom` | Цены | monthly | `generic` | derived_from_source | — | — |
 | `housing-affordability-primary` | Цены | monthly | `generic` | monthly_auto | — | — |
 | `housing-affordability-primary-avg-quarter` | Цены | quarterly | `generic` | derived_from_source | — | — |
 | `housing-affordability-primary-avg-year` | Цены | annual | `generic` | derived_from_source | — | — |
 | `housing-affordability-primary-eop-quarter` | Цены | quarterly | `generic` | derived_from_source | — | — |
 | `housing-affordability-primary-eop-year` | Цены | annual | `generic` | derived_from_source | — | — |
-| `housing-affordability-primary-mom` | Цены | monthly | `generic` | — | — | — |
-| `housing-affordability-primary-qoq` | Цены | quarterly | `generic` | — | — | — |
+| `housing-affordability-primary-mom` | Цены | monthly | `generic` | derived_from_source | — | — |
+| `housing-affordability-primary-qoq` | Цены | quarterly | `generic` | derived_from_source | — | — |
 | `housing-affordability-primary-yoy` | Цены | monthly | `generic` | derived_from_source | — | — |
 | `housing-affordability-primary-yoy-quarter` | Цены | quarterly | `generic` | derived_from_source | — | — |
 | `housing-affordability-primary-yoy-year` | Цены | annual | `generic` | derived_from_source | — | — |
-| `housing-affordability-qoq` | Цены | quarterly | `generic` | — | — | — |
+| `housing-affordability-qoq` | Цены | quarterly | `generic` | derived_from_source | — | — |
 | `housing-affordability-yoy` | Цены | monthly | `generic` | derived_from_source | — | — |
 | `housing-affordability-yoy-quarter` | Цены | quarterly | `generic` | derived_from_source | — | — |
 | `housing-affordability-yoy-year` | Цены | annual | `generic` | derived_from_source | — | — |
 | `housing-annual-primary` | Цены | annual | `housing` | derived_from_source | — | — |
 | `housing-annual-secondary` | Цены | annual | `housing` | derived_from_source | — | — |
 | `housing-commissioned` | Бизнес | monthly | `generic` | monthly_auto | ✓ | — |
-| `housing-commissioned-mom` | Бизнес | monthly | `generic` | — | — | — |
-| `housing-commissioned-qoq` | Бизнес | quarterly | `generic` | — | — | — |
+| `housing-commissioned-mom` | Бизнес | monthly | `generic` | derived_from_source | — | — |
+| `housing-commissioned-qoq` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `housing-commissioned-sum-quarter` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `housing-commissioned-sum-year` | Бизнес | annual | `generic` | derived_from_source | — | — |
 | `housing-commissioned-yoy` | Бизнес | monthly | `generic` | derived_from_source | — | — |
@@ -536,8 +536,8 @@
 | `imoex-yoy-year` | Индексы | annual | `generic` | — | — | — |
 | `imports` | Торговля | quarterly | `generic` | generic_quarterly | ✓ | both, shadowed |
 | `imports-monthly` | Торговля | monthly | `generic` | monthly_auto | — | both, shadowed |
-| `imports-monthly-mom` | Торговля | monthly | `generic` | — | — | — |
-| `imports-monthly-qoq` | Торговля | quarterly | `generic` | — | — | — |
+| `imports-monthly-mom` | Торговля | monthly | `generic` | derived_from_source | — | — |
+| `imports-monthly-qoq` | Торговля | quarterly | `generic` | derived_from_source | — | — |
 | `imports-monthly-sum-quarter` | Торговля | quarterly | `generic` | derived_from_source | — | — |
 | `imports-monthly-sum-year` | Торговля | annual | `generic` | derived_from_source | — | — |
 | `imports-monthly-yoy` | Торговля | monthly | `generic` | derived_from_source | — | — |
@@ -575,8 +575,8 @@
 | `ipi-energy-avg-year` | Бизнес | annual | `generic` | derived_from_source | — | — |
 | `ipi-energy-eop-quarter` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `ipi-energy-eop-year` | Бизнес | annual | `generic` | derived_from_source | — | — |
-| `ipi-energy-mom` | Бизнес | monthly | `generic` | — | — | — |
-| `ipi-energy-qoq` | Бизнес | quarterly | `generic` | — | — | — |
+| `ipi-energy-mom` | Бизнес | monthly | `generic` | derived_from_source | — | — |
+| `ipi-energy-qoq` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `ipi-energy-yoy` | Бизнес | monthly | `generic` | derived_from_source | — | — |
 | `ipi-energy-yoy-quarter` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `ipi-energy-yoy-year` | Бизнес | annual | `generic` | derived_from_source | — | — |
@@ -587,8 +587,8 @@
 | `ipi-manufacturing-avg-year` | Бизнес | annual | `generic` | derived_from_source | — | — |
 | `ipi-manufacturing-eop-quarter` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `ipi-manufacturing-eop-year` | Бизнес | annual | `generic` | derived_from_source | — | — |
-| `ipi-manufacturing-mom` | Бизнес | monthly | `generic` | — | — | — |
-| `ipi-manufacturing-qoq` | Бизнес | quarterly | `generic` | — | — | — |
+| `ipi-manufacturing-mom` | Бизнес | monthly | `generic` | derived_from_source | — | — |
+| `ipi-manufacturing-qoq` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `ipi-manufacturing-yoy` | Бизнес | monthly | `generic` | derived_from_source | — | — |
 | `ipi-manufacturing-yoy-quarter` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `ipi-manufacturing-yoy-year` | Бизнес | annual | `generic` | derived_from_source | — | — |
@@ -597,20 +597,20 @@
 | `ipi-mining-avg-year` | Бизнес | annual | `generic` | derived_from_source | — | — |
 | `ipi-mining-eop-quarter` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `ipi-mining-eop-year` | Бизнес | annual | `generic` | derived_from_source | — | — |
-| `ipi-mining-mom` | Бизнес | monthly | `generic` | — | — | — |
-| `ipi-mining-qoq` | Бизнес | quarterly | `generic` | — | — | — |
+| `ipi-mining-mom` | Бизнес | monthly | `generic` | derived_from_source | — | — |
+| `ipi-mining-qoq` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `ipi-mining-yoy` | Бизнес | monthly | `generic` | derived_from_source | — | — |
 | `ipi-mining-yoy-quarter` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `ipi-mining-yoy-year` | Бизнес | annual | `generic` | derived_from_source | — | — |
-| `ipi-mom` | Бизнес | monthly | `generic` | — | — | — |
-| `ipi-qoq` | Бизнес | quarterly | `generic` | — | — | — |
+| `ipi-mom` | Бизнес | monthly | `generic` | derived_from_source | — | — |
+| `ipi-qoq` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `ipi-water` | Бизнес | monthly | `generic` | monthly_auto | ✓ | — |
 | `ipi-water-avg-quarter` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `ipi-water-avg-year` | Бизнес | annual | `generic` | derived_from_source | — | — |
 | `ipi-water-eop-quarter` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `ipi-water-eop-year` | Бизнес | annual | `generic` | derived_from_source | — | — |
-| `ipi-water-mom` | Бизнес | monthly | `generic` | — | — | — |
-| `ipi-water-qoq` | Бизнес | quarterly | `generic` | — | — | — |
+| `ipi-water-mom` | Бизнес | monthly | `generic` | derived_from_source | — | — |
+| `ipi-water-qoq` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `ipi-water-yoy` | Бизнес | monthly | `generic` | derived_from_source | — | — |
 | `ipi-water-yoy-quarter` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `ipi-water-yoy-year` | Бизнес | annual | `generic` | derived_from_source | — | — |
@@ -634,8 +634,8 @@
 | `labor-force` | Рынок труда | monthly | `generic` | monthly_auto | ✓ | — |
 | `labor-force-avg-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `labor-force-avg-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
-| `labor-force-mom` | Рынок труда | monthly | `generic` | — | — | — |
-| `labor-force-qoq` | Рынок труда | quarterly | `generic` | — | — | — |
+| `labor-force-mom` | Рынок труда | monthly | `generic` | derived_from_source | — | — |
+| `labor-force-qoq` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `labor-force-yoy` | Рынок труда | monthly | `generic` | derived_from_source | — | — |
 | `labor-force-yoy-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `labor-force-yoy-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
@@ -644,8 +644,8 @@
 | `m0-avg-year` | Финансы | annual | `generic` | derived_from_source | — | — |
 | `m0-eop-quarter` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `m0-eop-year` | Финансы | annual | `generic` | derived_from_source | — | — |
-| `m0-mom` | Финансы | monthly | `generic` | — | — | — |
-| `m0-qoq` | Финансы | quarterly | `generic` | — | — | — |
+| `m0-mom` | Финансы | monthly | `generic` | derived_from_source | — | — |
+| `m0-qoq` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `m0-yoy` | Финансы | monthly | `generic` | derived_from_source | — | — |
 | `m0-yoy-quarter` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `m0-yoy-year` | Финансы | annual | `generic` | derived_from_source | — | — |
@@ -654,8 +654,8 @@
 | `m1-avg-year` | Финансы | annual | `generic` | derived_from_source | — | — |
 | `m1-eop-quarter` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `m1-eop-year` | Финансы | annual | `generic` | derived_from_source | — | — |
-| `m1-mom` | Финансы | monthly | `generic` | — | — | — |
-| `m1-qoq` | Финансы | quarterly | `generic` | — | — | — |
+| `m1-mom` | Финансы | monthly | `generic` | derived_from_source | — | — |
+| `m1-qoq` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `m1-yoy` | Финансы | monthly | `generic` | derived_from_source | — | — |
 | `m1-yoy-quarter` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `m1-yoy-year` | Финансы | annual | `generic` | derived_from_source | — | — |
@@ -664,8 +664,8 @@
 | `m2-avg-year` | Финансы | annual | `generic` | derived_from_source | — | — |
 | `m2-eop-quarter` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `m2-eop-year` | Финансы | annual | `generic` | derived_from_source | — | — |
-| `m2-mom` | Финансы | monthly | `generic` | — | — | — |
-| `m2-qoq` | Финансы | quarterly | `generic` | — | — | — |
+| `m2-mom` | Финансы | monthly | `generic` | derived_from_source | — | — |
+| `m2-qoq` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `m2-yoy` | Финансы | monthly | `generic` | derived_from_source | — | — |
 | `m2-yoy-quarter` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `m2-yoy-year` | Финансы | annual | `generic` | derived_from_source | — | — |
@@ -688,8 +688,8 @@
 | `mortgage-rate-avg-year` | Финансы | annual | `generic` | derived_from_source | — | — |
 | `mortgage-rate-eop-quarter` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `mortgage-rate-eop-year` | Финансы | annual | `generic` | derived_from_source | — | — |
-| `mortgage-rate-mom` | Финансы | monthly | `generic` | — | — | — |
-| `mortgage-rate-qoq` | Финансы | quarterly | `generic` | — | — | — |
+| `mortgage-rate-mom` | Финансы | monthly | `generic` | derived_from_source | — | — |
+| `mortgage-rate-qoq` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `mortgage-rate-yoy` | Финансы | monthly | `generic` | derived_from_source | — | — |
 | `mortgage-rate-yoy-quarter` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `mortgage-rate-yoy-year` | Финансы | annual | `generic` | derived_from_source | — | — |
@@ -736,8 +736,8 @@
 | `rd-personnel-index` | Наука | annual | `generic` | derived_from_source | — | — |
 | `rd-personnel-yoy` | Наука | annual | `generic` | derived_from_source | — | — |
 | `retail-trade` | Бизнес | monthly | `generic` | monthly_auto | ✓ | — |
-| `retail-trade-mom` | Бизнес | monthly | `generic` | — | — | — |
-| `retail-trade-qoq` | Бизнес | quarterly | `generic` | — | — | — |
+| `retail-trade-mom` | Бизнес | monthly | `generic` | derived_from_source | — | — |
+| `retail-trade-qoq` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `retail-trade-sum-quarter` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `retail-trade-sum-year` | Бизнес | annual | `generic` | derived_from_source | — | — |
 | `retail-trade-yoy` | Бизнес | monthly | `generic` | derived_from_source | — | — |
@@ -787,27 +787,27 @@
 | `ruonia-yoy-year` | Финансы | annual | `generic` | — | — | — |
 | `services-exports` | Торговля | quarterly | `generic` | — | ✓ | — |
 | `services-exports-monthly` | Торговля | monthly | `generic` | monthly_auto | — | both, shadowed |
-| `services-exports-monthly-mom` | Торговля | monthly | `generic` | — | — | — |
-| `services-exports-monthly-qoq` | Торговля | quarterly | `generic` | — | — | — |
+| `services-exports-monthly-mom` | Торговля | monthly | `generic` | derived_from_source | — | — |
+| `services-exports-monthly-qoq` | Торговля | quarterly | `generic` | derived_from_source | — | — |
 | `services-exports-monthly-sum-quarter` | Торговля | quarterly | `generic` | derived_from_source | — | — |
 | `services-exports-monthly-sum-year` | Торговля | annual | `generic` | derived_from_source | — | — |
 | `services-exports-monthly-yoy` | Торговля | monthly | `generic` | derived_from_source | — | — |
 | `services-exports-monthly-yoy-quarter` | Торговля | quarterly | `generic` | derived_from_source | — | — |
 | `services-exports-monthly-yoy-year` | Торговля | annual | `generic` | derived_from_source | — | — |
-| `services-exports-qoq` | Торговля | quarterly | `generic` | — | — | — |
+| `services-exports-qoq` | Торговля | quarterly | `generic` | derived_from_source | — | — |
 | `services-exports-sum-year` | Торговля | annual | `generic` | derived_from_source | — | — |
 | `services-exports-yoy` | Торговля | quarterly | `generic` | derived_from_source | — | — |
 | `services-exports-yoy-year` | Торговля | annual | `generic` | derived_from_source | — | — |
 | `services-imports` | Торговля | quarterly | `generic` | — | ✓ | — |
 | `services-imports-monthly` | Торговля | monthly | `generic` | monthly_auto | — | both, shadowed |
-| `services-imports-monthly-mom` | Торговля | monthly | `generic` | — | — | — |
-| `services-imports-monthly-qoq` | Торговля | quarterly | `generic` | — | — | — |
+| `services-imports-monthly-mom` | Торговля | monthly | `generic` | derived_from_source | — | — |
+| `services-imports-monthly-qoq` | Торговля | quarterly | `generic` | derived_from_source | — | — |
 | `services-imports-monthly-sum-quarter` | Торговля | quarterly | `generic` | derived_from_source | — | — |
 | `services-imports-monthly-sum-year` | Торговля | annual | `generic` | derived_from_source | — | — |
 | `services-imports-monthly-yoy` | Торговля | monthly | `generic` | derived_from_source | — | — |
 | `services-imports-monthly-yoy-quarter` | Торговля | quarterly | `generic` | derived_from_source | — | — |
 | `services-imports-monthly-yoy-year` | Торговля | annual | `generic` | derived_from_source | — | — |
-| `services-imports-qoq` | Торговля | quarterly | `generic` | — | — | — |
+| `services-imports-qoq` | Торговля | quarterly | `generic` | derived_from_source | — | — |
 | `services-imports-sum-year` | Торговля | annual | `generic` | derived_from_source | — | — |
 | `services-imports-yoy` | Торговля | quarterly | `generic` | derived_from_source | — | — |
 | `services-imports-yoy-year` | Торговля | annual | `generic` | derived_from_source | — | — |
@@ -873,14 +873,14 @@
 | `tech-innovation-share-yoy` | Наука | annual | `generic` | derived_from_source | — | — |
 | `trade-balance` | Торговля | quarterly | `generic` | derived_from_source | ✓ | both, shadowed |
 | `trade-balance-monthly` | Торговля | monthly | `generic` | monthly_auto | — | — |
-| `trade-balance-monthly-mom` | Торговля | monthly | `generic` | — | — | — |
-| `trade-balance-monthly-qoq` | Торговля | quarterly | `generic` | — | — | — |
+| `trade-balance-monthly-mom` | Торговля | monthly | `generic` | derived_from_source | — | — |
+| `trade-balance-monthly-qoq` | Торговля | quarterly | `generic` | derived_from_source | — | — |
 | `trade-balance-monthly-sum-quarter` | Торговля | quarterly | `generic` | derived_from_source | — | — |
 | `trade-balance-monthly-sum-year` | Торговля | annual | `generic` | derived_from_source | — | — |
 | `trade-balance-monthly-yoy` | Торговля | monthly | `generic` | derived_from_source | — | — |
 | `trade-balance-monthly-yoy-quarter` | Торговля | quarterly | `generic` | derived_from_source | — | — |
 | `trade-balance-monthly-yoy-year` | Торговля | annual | `generic` | derived_from_source | — | — |
-| `trade-balance-qoq` | Торговля | quarterly | `generic` | — | — | — |
+| `trade-balance-qoq` | Торговля | quarterly | `generic` | derived_from_source | — | — |
 | `trade-balance-sum-year` | Торговля | annual | `generic` | derived_from_source | — | — |
 | `trade-balance-yoy` | Торговля | quarterly | `generic` | derived_from_source | — | — |
 | `trade-balance-yoy-abs` | Торговля | quarterly | `generic` | — | — | both, shadowed |
@@ -891,8 +891,8 @@
 | `unemployment-avg-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
 | `unemployment-eop-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `unemployment-eop-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
-| `unemployment-mom` | Рынок труда | monthly | `generic` | — | — | — |
-| `unemployment-qoq` | Рынок труда | quarterly | `generic` | — | — | — |
+| `unemployment-mom` | Рынок труда | monthly | `generic` | derived_from_source | — | — |
+| `unemployment-qoq` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `unemployment-quarterly` | Рынок труда | quarterly | `generic` | — | — | — |
 | `unemployment-yoy` | Рынок труда | monthly | `generic` | derived_from_source | — | — |
 | `unemployment-yoy-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
@@ -916,15 +916,15 @@
 | `wages-nominal-annual` | Рынок труда | annual | `null` | — | — | no-stack |
 | `wages-nominal-avg-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `wages-nominal-avg-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
-| `wages-nominal-mom` | Рынок труда | monthly | `generic` | — | — | — |
-| `wages-nominal-qoq` | Рынок труда | quarterly | `generic` | — | — | — |
+| `wages-nominal-mom` | Рынок труда | monthly | `generic` | derived_from_source | — | — |
+| `wages-nominal-qoq` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `wages-nominal-yoy-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `wages-nominal-yoy-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
 | `wages-real` | Рынок труда | monthly | `generic` | monthly_auto | ✓ | — |
 | `wages-real-avg-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `wages-real-avg-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
-| `wages-real-mom` | Рынок труда | monthly | `generic` | — | — | — |
-| `wages-real-qoq` | Рынок труда | quarterly | `generic` | — | — | — |
+| `wages-real-mom` | Рынок труда | monthly | `generic` | derived_from_source | — | — |
+| `wages-real-qoq` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `wages-real-yoy` | Рынок труда | monthly | `generic` | derived_from_source | — | — |
 | `wages-real-yoy-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `wages-real-yoy-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
