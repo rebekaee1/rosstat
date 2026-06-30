@@ -466,6 +466,38 @@ def test_period_sum_quarter_revises_partial_quarter_anchor():
     assert len(points) >= 2  # Q1 revision + future quarters
 
 
+def test_empty_target_actuals_cuts_by_source_last_actual():
+    """Регрессия (ИПП-компоненты, 2026-06-30): если у derived-ряда ещё нет
+    собственного факта (own_dates=[]), стратегия не должна выдавать ВСЮ историю
+    как прогноз. Прогноз = только точки за пределами факта источника
+    (_source_actual_dates), а не 148 точек = вся история + хвост.
+    """
+    actuals = [(date(2024, m, 1), 100.0 + m) for m in range(1, 13)]  # факт источника
+    forecast = [(date(2025, m, 1), 113.0 + m) for m in range(1, 4)]  # прогноз источника
+    full_source = actuals + forecast
+
+    ctx = _make_ctx(
+        indicator_code="ipi-energy-mom",
+        frequency="monthly",
+        cfg={
+            "derived_forecast": {
+                "operation": "pipeline",
+                "pipeline": [["mom", {}]],
+                "model_name": "ipi-energy-mom-derived",
+            },
+            "_source_data": full_source,
+            "_source_actual_dates": [d for d, _ in actuals],
+        },
+    )
+    # own_dates пуст — derived-актуалы ещё не посчитаны.
+    outputs = derived_from_source_strategy([], [], ctx)
+    assert len(outputs) == 1
+    points = outputs[0].result.points
+    # Только 3 будущих mom-точки (Jan-Mar 2025), не вся история.
+    assert all(p.date > date(2024, 12, 1) for p in points)
+    assert len(points) == 3
+
+
 def test_weekly_inflation_by_calendar_month_forecast():
     """cpi-period-monthly: агрегация недельного прогноза в месячные точки."""
     actuals = [

@@ -296,8 +296,16 @@ def _select_forecast_points(
     *,
     operation: str | None,
     derived_cfg: dict,
+    source_last_actual: date | None = None,
 ) -> list[tuple[date, float]]:
     if not dates:
+        # У derived-ряда ещё нет собственного факта (актуалы не посчитаны —
+        # напр. новый sibling до первого CalculationEngine-прогона). Нельзя
+        # отдавать ВСЮ историю derived_full как «прогноз» (баг: компоненты ИПП
+        # получили 148 точек = вся история + хвост). Отрезаем по последней
+        # фактической дате ИСТОЧНИКА: прогноз = только точки за пределами факта.
+        if source_last_actual is not None:
+            return [(d, v) for d, v in derived_full if d > source_last_actual]
         return derived_full
 
     last_actual_date = max(dates)
@@ -408,12 +416,15 @@ def derived_from_source_strategy(
         logger.error("derived_from_source: unknown operation '%s'", operation)
         return []
 
+    src_actual_dates = ctx.cfg.get("_source_actual_dates") or ()
+    source_last_actual = max(src_actual_dates) if src_actual_dates else None
     future_only = _select_forecast_points(
         derived_full,
         dates,
         values,
         operation=operation,
         derived_cfg=derived_cfg,
+        source_last_actual=source_last_actual,
     )
 
     if not future_only:

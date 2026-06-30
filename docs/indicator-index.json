@@ -9514,12 +9514,12 @@
         },
         {
           "file": "backend/tests/forecast_strategies/test_derived.py",
-          "line": 470,
+          "line": 502,
           "kind": "tests"
         },
         {
           "file": "backend/tests/forecast_strategies/test_derived.py",
-          "line": 489,
+          "line": 521,
           "kind": "tests"
         },
         {
@@ -18020,7 +18020,7 @@
         },
         {
           "file": "backend/app/services/forecast_strategies/derived_from_source.py",
-          "line": 389,
+          "line": 397,
           "kind": "other"
         },
         {
@@ -22658,7 +22658,7 @@
         },
         {
           "file": "backend/app/services/forecast_strategies/derived_from_source.py",
-          "line": 351,
+          "line": 359,
           "kind": "other"
         },
         {
@@ -23298,7 +23298,7 @@
         },
         {
           "file": "backend/app/services/forecast_strategies/derived_from_source.py",
-          "line": 351,
+          "line": 359,
           "kind": "other"
         },
         {
@@ -26995,7 +26995,7 @@
         },
         {
           "file": "backend/app/services/forecast_strategies/derived_from_source.py",
-          "line": 389,
+          "line": 397,
           "kind": "other"
         },
         {
@@ -29743,6 +29743,11 @@
         "in_seed_no_ui_stack": false
       },
       "files": [
+        {
+          "file": "backend/tests/forecast_strategies/test_derived.py",
+          "line": 480,
+          "kind": "tests"
+        },
         {
           "file": "frontend/src/lib/viewModelFamilies.generated.json",
           "line": 7265,
@@ -43396,7 +43401,7 @@
         },
         {
           "file": "backend/app/services/forecast_strategies/derived_from_source.py",
-          "line": 389,
+          "line": 397,
           "kind": "other"
         },
         {

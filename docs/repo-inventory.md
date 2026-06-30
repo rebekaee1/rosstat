@@ -2,7 +2,7 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Файлов:** 451  ·  **Строк:** 89 391  ·  **Токенов (≈):** 891 984
+**Файлов:** 451  ·  **Строк:** 89 434  ·  **Токенов (≈):** 892 499
 
 ## По верхним папкам
 
@@ -10,7 +10,7 @@
 |-------|-------:|------:|------------:|
 | `(root)` | 7 | 1 454 | 33 513 |
 | `.github` | 1 | 56 | 334 |
-| `backend` | 238 | 46 308 | 465 648 |
+| `backend` | 238 | 46 351 | 466 163 |
 | `docs` | 19 | 4 011 | 77 537 |
 | `frontend` | 159 | 33 844 | 278 647 |
 | `mcp` | 3 | 158 | 1 120 |
@@ -47,9 +47,9 @@
 | `docs/adr/0006-indicator-card-unification.md` | 227 | 5 311 |
 | `scripts/completeness.py` | 453 | 4 971 |
 | `backend/tests/test_derived_ops.py` | 554 | 4 814 |
-| `backend/app/services/forecast_strategies/derived_from_source.py` | 435 | 4 593 |
+| `backend/tests/forecast_strategies/test_derived.py` | 534 | 4 789 |
+| `backend/app/services/forecast_strategies/derived_from_source.py` | 446 | 4 779 |
 | `backend/app/services/seo_content.py` | 420 | 4 555 |
-| `backend/tests/forecast_strategies/test_derived.py` | 502 | 4 460 |
 | `backend/tests/test_seo_og.py` | 504 | 4 451 |
 | `backend/app/services/minfin_budget_parser.py` | 471 | 4 420 |
 | `docs/adr/0004-rosstat-russian-canonical-sdds-deprecated.md` | 190 | 4 403 |
