@@ -2,7 +2,7 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Файлов:** 455  ·  **Строк:** 90 590  ·  **Токенов (≈):** 907 907
+**Файлов:** 455  ·  **Строк:** 90 590  ·  **Токенов (≈):** 907 926
 
 ## По верхним папкам
 
@@ -12,7 +12,7 @@
 | `.github` | 1 | 56 | 334 |
 | `backend` | 238 | 46 761 | 471 270 |
 | `docs` | 19 | 4 017 | 78 645 |
-| `frontend` | 163 | 34 590 | 287 250 |
+| `frontend` | 163 | 34 590 | 287 269 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 24 | 3 544 | 34 901 |
 
@@ -58,8 +58,8 @@
 | `frontend/src/lib/cpiViewModeContent.jsx` | 436 | 4 359 |
 | `frontend/public/sitemap.xml` | 573 | 4 353 |
 | `backend/app/services/calculation_engine.py` | 383 | 4 347 |
+| `frontend/src/pages/Methodology.jsx` | 317 | 4 096 |
 | `backend/tests/test_calendar_seed.py` | 442 | 4 079 |
-| `frontend/src/pages/Methodology.jsx` | 317 | 4 077 |
 | `docs/adr/0001-derived-indicators-engine-shape.md` | 140 | 3 873 |
 | `frontend/src/pages/DemographicsPage.jsx` | 357 | 3 848 |
 | `backend/tests/test_forecast_policy.py` | 372 | 3 814 |
