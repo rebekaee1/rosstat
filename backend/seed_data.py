@@ -849,9 +849,11 @@ INDICATORS = [
         "is_active": True,
         "category": "ВВП",
     },
-    # Annual sibling для wages-nominal — содержит исторические годовые
-    # точки 1991-2014 (immutable seed, Росстат архивы). Не показывается
-    # в каталоге; доступен как режим «С 1991 года» на карточке wages-nominal.
+    # Annual sibling для wages-nominal: единый годовой ряд 1991+. Ранние годы
+    # 1991-2014 — immutable Росстат-архив (`wages_historical.py`), 2015+ —
+    # annual mean месячного ряда, продолжается движком автоматически (derived
+    # spec `annual_mean_with_prefix`, calculation_engine). Не в каталоге;
+    # доступен как режим «С 1991 года» на карточке wages-nominal.
     # См. trap «annual-in-monthly mixing» в CONTEXT.md.
     {
         "code": "wages-nominal-annual",
@@ -867,7 +869,7 @@ INDICATORS = [
             "рублях (исходные ×0,001 по факту деноминации 1998 г.), с 1998 — в рублях "
             "нынешней шкалы."
         ),
-        "parser_type": "manual_historical",
+        "parser_type": "derived",
         "model_config_json": {
             "forecast_steps": 0,
             "primary_indicator_code": "wages-nominal",
@@ -3079,7 +3081,9 @@ INDICATORS = [
             "gdp_history_sheet": "1",
             "gdp_overlap_year": 2011,
             "gdp_row_index": 11,
-            "forecast_steps": 0,
+            "forecast_steps": 4,
+            "forecast_strategy": "generic_quarterly",
+            "forecast_transform": "absolute",
             "validation": {"min": 0},
         },
         "is_active": True,
@@ -3239,7 +3243,10 @@ INDICATORS = [
         "parser_type": "cbr_bop_xlsx",
         "model_config_json": {
             "bop_target": "services-exports",
-            "forecast_steps": 0,
+            "forecast_steps": 4,
+            "forecast_strategy": "generic_quarterly",
+            "forecast_transform": "absolute",
+            "validation": {"min": 0},
             "alternate_frequencies": {"monthly": "services-exports-monthly"},
         },
         "is_active": True,
@@ -3260,7 +3267,10 @@ INDICATORS = [
         "parser_type": "cbr_bop_xlsx",
         "model_config_json": {
             "bop_target": "services-imports",
-            "forecast_steps": 0,
+            "forecast_steps": 4,
+            "forecast_strategy": "generic_quarterly",
+            "forecast_transform": "absolute",
+            "validation": {"min": 0},
             "alternate_frequencies": {"monthly": "services-imports-monthly"},
         },
         "is_active": True,
@@ -3333,7 +3343,12 @@ INDICATORS = [
         "parser_type": "cbr_bop_xlsx",
         "model_config_json": {
             "bop_target": "fdi-net",
-            "forecast_steps": 0,
+            # Знаковый ряд (нетто-приток может менять знак) → level-diff прогноз
+            # на 4 квартала (см. signed_quarterly), как у сальдо счёта текущих
+            # операций. Без validation.min — отрицательные значения легальны.
+            "forecast_steps": 4,
+            "forecast_strategy": "signed_quarterly",
+            "forecast_transform": "absolute",
         },
         "is_active": True,
         "category": "Бизнес",
@@ -3547,7 +3562,10 @@ INDICATORS = [
         ),
         "parser_type": "rosstat_ind_monthly",
         "model_config_json": {
-            "forecast_steps": 0,
+            "forecast_steps": 4,
+            "forecast_strategy": "generic_quarterly",
+            "forecast_transform": "absolute",
+            "validation": {"min": 0},
             "ind_sheet": "1.6 ",
             "quarterly_flow": True,
         },
@@ -4663,6 +4681,29 @@ async def seed():
             f"{len(INDICATOR_SEO_BLOCKS)} block sets, "
             f"{len(INDICATOR_HIDDEN_FROM_LISTING)} hidden from listing"
         )
+
+        # Точечная заливка известных дыр месячных source-рядов (напр. декабрь
+        # 2022 у зарплаты — monthly ряд загружен разово, парсер исторические
+        # пропуски не восстанавливает). on_conflict_do_nothing: никогда не
+        # перетираем данные парсера, только заполняем отсутствующие даты.
+        # ДО CalculationEngine, чтобы annual mean увидел полный год.
+        from app.data.wages_historical import MONTHLY_GAP_FILL
+        gap_count = 0
+        for src_code, points in MONTHLY_GAP_FILL.items():
+            ind_q = await db.execute(select(Indicator.id).where(Indicator.code == src_code))
+            ind_id = ind_q.scalar_one_or_none()
+            if ind_id is None:
+                continue
+            for pt_date, pt_value in points.items():
+                stmt = pg_insert(IndicatorData).values(
+                    indicator_id=ind_id, date=pt_date, value=pt_value,
+                ).on_conflict_do_nothing(constraint="uq_indicator_date")
+                res = await db.execute(stmt)
+                if res.rowcount > 0:
+                    gap_count += 1
+        if gap_count:
+            await db.commit()
+            print(f"  Gap-fill: inserted {gap_count} missing monthly source point(s)")
 
         # Re-run CalculationEngine to refresh ALL derived indicators after metadata
         # upserts and the migration cleanup. Idempotent: bulk_upsert is no-op for

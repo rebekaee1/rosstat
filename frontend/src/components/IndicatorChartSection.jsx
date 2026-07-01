@@ -1,5 +1,6 @@
 import { useRef } from 'react';
-import { Terminal, Download, Lock, Image as ImageIcon } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Terminal, Download, Lock, Image as ImageIcon, HelpCircle } from 'lucide-react';
 import { unitSuffix, resolveDateFormat, cn } from '../lib/format';
 import { track, events } from '../lib/track';
 import { useDownloadAccess } from '../lib/useDownloadAccess';
@@ -341,6 +342,20 @@ export default function IndicatorChartSection({
           <DownloadButton label="CSV" onDownload={onDownloadCsv} blocked={downloadBlocked} hint={guestHistoryHint} />
           <DownloadButton label="Excel" onDownload={onDownloadExcel} blocked={downloadBlocked} hint={guestHistoryHint} />
           <ImageButton onDownload={handleDownloadImage} authed={downloadAuthed} />
+
+          <div className="relative group/help">
+            <Link
+              to="/methodology"
+              aria-label="Как рассчитывается прогноз"
+              onClick={() => track(events.METHODOLOGY_CLICK, { indicator: code, indicatorCategory: indicator?.category })}
+              className="text-text-tertiary hover:text-champagne transition-colors"
+            >
+              <HelpCircle className="w-4 h-4" />
+            </Link>
+            <div className="absolute top-full right-0 mt-2 px-3 py-2 rounded-xl bg-obsidian border border-border-subtle text-xs text-text-secondary whitespace-nowrap opacity-0 group-hover/help:opacity-100 transition-opacity duration-200 pointer-events-none shadow-xl z-50">
+              Хотите узнать, как рассчитывается прогноз?
+            </div>
+          </div>
 
           <div className="relative group">
             <label className={cn(

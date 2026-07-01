@@ -35,6 +35,7 @@ Frequency = годовая (точка 1 января — стандарт Ро�
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import date
 
 
 # Годовые значения, в современных деноминированных рублях (значения до
@@ -73,6 +74,24 @@ ANNUAL_NOMINAL_WAGES_RUB: dict[int, float] = {
 # Год, с которого в БД уже есть свежий monthly ряд от parsera rosstat_labor.
 # 2015-01 = первая точка `wages-nominal` после миграции 2026-05-10.
 ANCHOR_YEAR = 2015
+
+
+# Точечная заливка известных дыр месячного ряда `wages-nominal`.
+# Причина: monthly-ряд 2015+ загружен разово (SDDS-этап); текущий парсер
+# rosstat_labor добавляет только одну свежую точку за прогон (reference-месяц
+# последнего PDF) и исторические пропуски не восстанавливает. Значения —
+# официальный Росстат «в целом по экономике РФ» (та же таблица, что и весь
+# ряд; сверено с публикацией, значения Jan-Nov совпадают 1:1).
+#
+#   2022-12 = 88 468 руб — декабрьский пик (годовые премии, 13-я зарплата).
+#   Отсутствие декабря также исключало 2022 из годового ряда
+#   `wages-nominal-annual` (annual mean требует 12 месяцев) и занижало
+#   среднее 2022 в `wages-nominal-avg-year`.
+MONTHLY_GAP_FILL: dict[str, dict[date, float]] = {
+    "wages-nominal": {
+        date(2022, 12, 1): 88468.0,
+    },
+}
 
 
 @dataclass(frozen=True)

@@ -11,6 +11,7 @@ from __future__ import annotations
 from datetime import date, timedelta
 
 from app.services.derived_ops import (
+    annual_mean_with_prefix,
     annual_sum,
     cpi_mom_qoq,
     cpi_mom_yoy,
@@ -22,6 +23,7 @@ from app.services.derived_ops import (
     period_over_period,
     period_sum,
     qoq,
+    qoq_adjacent,
     quarterly_avg,
     quarterly_index,
     rolling_avg,
@@ -552,3 +554,50 @@ def test_period_over_period_quarter_on_monthly_stock():
     monthly = [(date(2025, m, 1), float(m)) for m in range(1, 7)]
     out = period_over_period(monthly, "quarter", method="last")
     assert out == [(date(2025, 6, 1), 100.0)]
+
+
+# --- qoq_adjacent (cadence-aware, housing annual→quarterly) -------------------
+
+
+def test_qoq_adjacent_drops_annual_era_keeps_quarterly():
+    # Годовые точки 2013-2014 (365 дн apart) + квартальные с 2015.
+    series = [
+        (date(2013, 12, 1), 100.0),
+        (date(2014, 12, 1), 120.0),   # +20% но это ГОД (365 дн) → отброс
+        (date(2015, 3, 1), 121.2),    # 2014-12→2015-03 = 90 дн (валидный квартал) → +1%
+        (date(2015, 6, 1), 123.624),  # +2% к 2015-03 (92 дн) → оставляем
+    ]
+    out = qoq_adjacent(series)
+    assert out == [(date(2015, 3, 1), 1.0), (date(2015, 6, 1), 2.0)]
+
+
+def test_qoq_adjacent_pure_quarterly_unaffected():
+    # Чисто квартальный ряд — ведёт себя как обычный qoq.
+    series = [(date(2025, 3, 1), 100.0), (date(2025, 6, 1), 110.0), (date(2025, 9, 1), 99.0)]
+    assert qoq_adjacent(series) == [(date(2025, 6, 1), 10.0), (date(2025, 9, 1), -10.0)]
+
+
+# --- annual_mean_with_prefix (wages-nominal-annual) --------------------------
+
+
+def test_annual_mean_with_prefix_merges_history_and_means():
+    # Месячный ряд 2015 (полный год, среднее=150) + 2016 неполный (отбросится
+    # как текущий/последний неполный).
+    monthly = [(date(2015, m, 1), 100.0 + m * (100.0 / 12) * 0) for m in range(1, 13)]
+    monthly = [(date(2015, m, 1), 150.0) for m in range(1, 13)]
+    prefix = {2013: 90.0, 2014: 120.0, 2015: 999.0}  # 2015 в префиксе игнор — покрыт месячными
+    out = annual_mean_with_prefix(monthly, prefix=prefix)
+    assert out == [
+        (date(2013, 1, 1), 90.0),
+        (date(2014, 1, 1), 120.0),
+        (date(2015, 1, 1), 150.0),
+    ]
+
+
+def test_annual_mean_with_prefix_drops_incomplete_trailing_year():
+    monthly = (
+        [(date(2015, m, 1), 100.0) for m in range(1, 13)]
+        + [(date(2016, m, 1), 200.0) for m in range(1, 4)]  # неполный 2016 → отброс
+    )
+    out = annual_mean_with_prefix(monthly, prefix={2014: 50.0})
+    assert out == [(date(2014, 1, 1), 50.0), (date(2015, 1, 1), 100.0)]

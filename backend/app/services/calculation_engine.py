@@ -38,6 +38,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.cache import cache_invalidate_indicator
 from app.data.view_model_families import iter_derived_specs as _iter_vmf_specs
+from app.data.wages_historical import ANNUAL_NOMINAL_WAGES_RUB as _ANNUAL_NOMINAL_WAGES_RUB
 from app.models import Indicator, IndicatorData
 from app.services import derived_ops as ops
 from app.services.upsert import bulk_upsert, prune_indicator_dates_not_in
@@ -130,6 +131,17 @@ DERIVED_SPECS: list[DerivedSpec] = [
     # Wages: nominal × CPI → real wage index.
     DerivedSpec("wages-real", ("wages-nominal", "cpi"), ops.wages_real),
 
+    # Годовой ряд зарплаты 1991+ = immutable исторический хвост (1991-2014,
+    # Росстат-архив в `wages_historical.py`) + annual mean месячного ряда
+    # (2015+). Заменяет ручной one-shot backfill-скрипт: движок продолжает
+    # ряд сам при закрытии каждого года. ВАЖНО: объявлен ДО `wages-index`,
+    # который читает 2010-базу из `wages-nominal-annual` (derived→derived;
+    # движок исполняет specs по порядку списка, без топосорта).
+    DerivedSpec(
+        "wages-nominal-annual", ("wages-nominal",),
+        partial(ops.annual_mean_with_prefix, prefix=_ANNUAL_NOMINAL_WAGES_RUB),
+    ),
+
     # GDP year-over-year and quarter-over-quarter growth (две раздельные
     # семьи: nominal — в текущих ценах, real — в постоянных ценах 2021 г.).
     DerivedSpec("gdp-yoy", ("gdp-nominal",), ops.yoy),
@@ -160,8 +172,12 @@ DERIVED_SPECS: list[DerivedSpec] = [
     ),
     DerivedSpec("housing-yoy-primary", ("housing-price-primary",), ops.yoy),
     DerivedSpec("housing-yoy-secondary", ("housing-price-secondary",), ops.yoy),
-    DerivedSpec("housing-qoq-primary", ("housing-price-primary",), ops.qoq),
-    DerivedSpec("housing-qoq-secondary", ("housing-price-secondary",), ops.qoq),
+    # QoQ жилья — cadence-aware: ранняя история индекса цен годовая (1998-2014),
+    # с 2015 квартальная. Обычный qoq() выдал бы «кв/кв» между годовыми точками
+    # (годовой прирост под видом квартального, обрыв в 2015). qoq_adjacent
+    # считает % только между соседними кварталами (G2-аудит 2026-07).
+    DerivedSpec("housing-qoq-primary", ("housing-price-primary",), ops.qoq_adjacent),
+    DerivedSpec("housing-qoq-secondary", ("housing-price-secondary",), ops.qoq_adjacent),
     # Г/г «по годам» (декабрь-к-декабрю на квартальном индексе уровня): одна
     # точка/год, режим «К прошлому периоду → Г/г» жилья — как inflation-annual
     # у ИПЦ. Квартальный yoy (housing-yoy-*) остаётся отдельным режимом

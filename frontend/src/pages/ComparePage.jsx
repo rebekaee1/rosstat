@@ -13,13 +13,17 @@ import { fetchIndicatorData } from '../lib/api';
 import { useAuth } from '../context/authContext';
 import {
   formatDate, formatChartAxisDate, formatAxisTick, formatValueWithUnit,
-  unitSuffix, unitDigits, cn, isCpiIndex,
+  unitSuffix, unitDigits, cn,
 } from '../lib/format';
 import useDocumentMeta from '../lib/useMeta';
 import { ChartSkeleton } from '../components/Skeleton';
 import { track, events } from '../lib/track';
 import { exportNodeToPng } from '../lib/chartImage';
 import useScrollDepth from '../lib/useScrollDepth';
+import {
+  REP_LEVEL, REP_ORDER, compareRepresentationsFor, resolveCompareSeries,
+  applyCompareTransform, isIndexableBase, rebaseToHundred,
+} from '../lib/compareRepresentation';
 
 const RANGE_OPTIONS = [
   { key: '3y', label: '3 года', months: 36 },
@@ -34,9 +38,11 @@ const PALETTE = [
   '#fcd34d', '#a5b4fc', '#5eead4', '#fdba74', '#cbd5e1',
 ];
 
+// «Общая база» вместо «Индекс», чтобы не путать со ЗНАЧЕНИЕМ представления
+// «Индекс» (уровень индекса цен ИПЦ/ИЦП) у отдельного ряда — это разные вещи.
 const SCALE_OPTIONS = [
-  { key: 'values', label: 'Значения' },
-  { key: 'index', label: 'Индекс (старт 100)' },
+  { key: 'values', label: 'Исходные значения' },
+  { key: 'index', label: 'Общая база (=100)' },
 ];
 
 const GUEST_MAX = 2;
@@ -73,6 +79,21 @@ function parseCodes(searchParams) {
   }
   const legacy = [searchParams.get('a'), searchParams.get('b')].filter(Boolean);
   return legacy.slice(0, USER_MAX);
+}
+
+/**
+ * Представления рядов из URL: `rep=code:pop,code2:yoy`. Ключ — код индикатора,
+ * значение — id представления (level|pop|yoy). Уровень (default) в URL не пишем.
+ */
+function parseReps(searchParams) {
+  const raw = searchParams.get('rep');
+  const out = {};
+  if (!raw) return out;
+  raw.split(',').forEach((pair) => {
+    const [code, rep] = pair.split(':');
+    if (code && rep && REP_ORDER.includes(rep.trim())) out[code.trim()] = rep.trim();
+  });
+  return out;
 }
 
 function AddIndicator({ indicators, selected, onAdd, atCap, capHint }) {
@@ -240,14 +261,33 @@ export default function ComparePage() {
 
   const { data: indicators } = useIndicators();
 
+  const repByCode = useMemo(() => parseReps(searchParams), [searchParams]);
+
   const writeCodes = useCallback((next) => {
     const params = new URLSearchParams(searchParams);
     params.delete('a');
     params.delete('b');
     if (next.length) params.set('codes', next.join(','));
     else params.delete('codes');
+    // Убираем rep-записи удалённых кодов, чтобы URL не тащил мусор.
+    const rawRep = params.get('rep');
+    if (rawRep) {
+      const kept = rawRep.split(',').filter((pair) => next.includes(pair.split(':')[0]));
+      if (kept.length) params.set('rep', kept.join(','));
+      else params.delete('rep');
+    }
     setSearchParams(params, { replace: true });
   }, [searchParams, setSearchParams]);
+
+  const setRep = useCallback((code, rep) => {
+    const params = new URLSearchParams(searchParams);
+    const nextMap = { ...repByCode, [code]: rep };
+    const entries = Object.entries(nextMap).filter(([, r]) => r && r !== REP_LEVEL);
+    if (entries.length) params.set('rep', entries.map(([c, r]) => `${c}:${r}`).join(','));
+    else params.delete('rep');
+    setSearchParams(params, { replace: true });
+    track(events.COMPARE_CHANGE, { code, rep });
+  }, [searchParams, setSearchParams, repByCode]);
 
   const addCode = useCallback((code) => {
     if (codes.includes(code)) return;
@@ -268,41 +308,65 @@ export default function ComparePage() {
     track(events.COMPARE_CHANGE, { removed: code });
   }, [codes, writeCodes]);
 
+  // Резолв (индикатор, представление) → {код ряда для загрузки, transform, unit}.
+  // Так каждый ряд грузится в выбранном виде (уровень/к пред./к году), а не в
+  // нативном. Резолвер (compareRepresentation.js) знает generic-семьи и bespoke.
+  const resolved = useMemo(() => codes.map((code) => {
+    const ind = indicators?.find((x) => x.code === code);
+    const repId = repByCode[code] || REP_LEVEL;
+    const spec = resolveCompareSeries(ind || { code }, repId)
+      || { code, transform: null, unit: ind?.unit, repId: REP_LEVEL, label: 'Значение' };
+    return {
+      code, ind, repId: spec.repId, repLabel: spec.label,
+      fetchCode: spec.code, transform: spec.transform, unit: spec.unit,
+    };
+  }), [codes, indicators, repByCode]);
+
   const results = useQueries({
-    queries: codes.map((code) => ({
-      queryKey: ['indicator-data', code, undefined],
-      queryFn: ({ signal }) => fetchIndicatorData(code, undefined, { signal }),
-      enabled: !!code,
+    queries: resolved.map((r) => ({
+      queryKey: ['indicator-data', r.fetchCode, undefined],
+      queryFn: ({ signal }) => fetchIndicatorData(r.fetchCode, undefined, { signal }),
+      enabled: !!r.fetchCode,
       staleTime: 60 * 60 * 1000,
       gcTime: 30 * 60 * 1000,
     })),
   });
 
-  const series = useMemo(() => codes.map((code, i) => ({
-    code,
+  const series = useMemo(() => resolved.map((r, i) => ({
+    code: r.code,
     key: `v${i}`,
     color: PALETTE[i % PALETTE.length],
-    ind: indicators?.find((x) => x.code === code),
+    ind: r.ind,
+    rep: r.repId,
+    repLabel: r.repLabel,
+    unit: r.unit,
+    transform: r.transform,
     data: results[i]?.data,
     loading: results[i]?.isLoading,
     error: results[i]?.isError,
-  })), [codes, indicators, results]);
+  })), [resolved, results]);
 
-  // >2 рядов невозможно корректно показать в исходных единицах (две оси максимум) —
-  // принудительно индекс-режим.
-  const forceIndex = codes.length > 2;
+  // Разные единицы измерения рядов (после резолва представления). Максимум две
+  // оси — при 3+ различных единицах корректно показать нельзя, форсим индекс.
+  const distinctUnits = useMemo(() => {
+    const seen = [];
+    series.forEach((s) => { const u = s.unit || '%'; if (!seen.includes(u)) seen.push(u); });
+    return seen;
+  }, [series]);
+  const forceIndex = distinctUnits.length > 2;
   const indexed = forceIndex || scale === 'index';
 
   const chartData = useMemo(() => {
-    if (!series.length) return [];
+    const EMPTY = { rows: [], nonIndexableNames: [], nonIndexableKeys: new Set() };
+    if (!series.length) return EMPTY;
     const maps = series.map((s) => {
-      const points = Array.isArray(s.data?.data) ? s.data.data : [];
-      const adj = !indexed && isCpiIndex(s.code);
-      return new Map(points.map((p) => [p.date, adj ? p.value - 100 : p.value]));
+      const raw = Array.isArray(s.data?.data) ? s.data.data : [];
+      const pts = applyCompareTransform(raw, s.transform);
+      return new Map(pts.map((p) => [p.date, p.value]));
     });
 
     const allDates = [...new Set(maps.flatMap((m) => [...m.keys()]))].sort();
-    if (!allDates.length) return [];
+    if (!allDates.length) return EMPTY;
 
     const rangeOpt = RANGE_OPTIONS.find((r) => r.key === range);
     let dates = allDates;
@@ -320,43 +384,67 @@ export default function ComparePage() {
       dates = allDates.filter((d) => d >= cutoffStr);
     }
 
+    // База приведения: последнее значение до окна, иначе первое значение в окне.
     const base = series.map((_, i) => last[i]);
-    if (indexed) {
-      for (const d of dates) {
-        let allSet = true;
-        maps.forEach((m, i) => {
-          if (base[i] == null && m.has(d)) base[i] = m.get(d);
-          if (base[i] == null) allSet = false;
-        });
-        if (allSet) break;
-      }
+    for (const d of dates) {
+      let allSet = true;
+      maps.forEach((m, i) => {
+        if (base[i] == null && m.has(d)) base[i] = m.get(d);
+        if (base[i] == null) allSet = false;
+      });
+      if (allSet) break;
     }
+
+    // К общей базе (=100) приводится ТОЛЬКО положительный уровень. Знакопеременные
+    // ряды (сальдо, счёт текущих операций, дефицит) и %-приросты (могут пересекать
+    // ноль) к базе-100 не приводятся: деление на ~0 → выброс, отрицательная база →
+    // переворот знака. Такие ряды в режиме общей базы исключаем и подписываем, а не
+    // рисуем мусором.
+    const indexable = series.map((_, i) => isIndexableBase(base[i]));
+    const nonIndexableNames = indexed
+      ? series.filter((_, i) => !indexable[i]).map((s) => s.ind?.name || s.code)
+      : [];
+    const nonIndexableKeys = new Set(
+      indexed ? series.filter((_, i) => !indexable[i]).map((s) => s.key) : [],
+    );
     const idxUnit = 'пунктов (старт = 100)';
 
-    return dates.map((d) => {
+    const rows = dates.map((d) => {
       const row = { date: d };
       maps.forEach((m, i) => {
         if (m.has(d)) last[i] = m.get(d);
         if (last[i] == null) return;
         const s = series[i];
         if (indexed) {
-          if (base[i]) { row[s.key] = (last[i] / base[i]) * 100; row[`${s.key}_unit`] = idxUnit; }
+          if (indexable[i]) { row[s.key] = rebaseToHundred(last[i], base[i]); row[`${s.key}_unit`] = idxUnit; }
         } else {
           row[s.key] = last[i];
-          row[`${s.key}_unit`] = s.ind?.unit || '%';
+          row[`${s.key}_unit`] = s.unit || '%';
         }
       });
       return row;
     });
+    return { rows, nonIndexableNames, nonIndexableKeys };
   }, [series, range, indexed]);
 
-  const hasData = chartData.length > 0;
+  const chartRows = chartData.rows;
+  const { nonIndexableNames, nonIndexableKeys } = chartData;
+  const hasData = chartRows.length > 0;
   const loading = series.some((s) => s.loading);
   const hasError = series.some((s) => s.error);
   const compareDateFmt = compareDateFormat(series.map((s) => s.ind));
 
-  // Оси: индекс → одна левая; значения с 1 рядом → левая; с 2 → левая+правая.
-  const axisFor = (i) => (indexed ? 'left' : (i === 0 ? 'left' : 'right'));
+  // Оси: индекс → одна левая. Значения → группировка по единице: первая
+  // единица слева, вторая справа (ряды одной единицы делят общую ось).
+  const axisFor = (i) => {
+    if (indexed) return 'left';
+    const u = series[i]?.unit || '%';
+    return distinctUnits[0] === u ? 'left' : 'right';
+  };
+  const leftUnit = distinctUnits[0];
+  const rightUnit = distinctUnits[1];
+  const leftColor = series.find((s) => (s.unit || '%') === leftUnit)?.color;
+  const rightColor = series.find((s) => (s.unit || '%') === rightUnit)?.color;
 
   const handleExport = async () => {
     if (!hasData) return;
@@ -404,9 +492,10 @@ export default function ComparePage() {
           Сравнение показателей
         </h1>
         <p className="text-sm md:text-base text-text-tertiary max-w-2xl">
-          Найдите показатели по названию и добавьте их на один график. Режим «Индекс»
-          приводит ряды к общей базе (100 в начале периода) — так сравнивают динамику
-          показателей с разными единицами измерения.
+          Найдите показатели по названию и добавьте их на один график. У каждого ряда
+          выберите представление (значение, к прошлому периоду, к году). Режим «Общая
+          база» приводит ряды к единой точке отсчёта (100 в начале периода) — так
+          сравнивают динамику показателей с разными единицами измерения.
         </p>
       </div>
 
@@ -432,20 +521,41 @@ export default function ComparePage() {
         </div>
 
         {codes.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-2">
-            {series.map((s) => (
-              <span
-                key={s.code}
-                className="inline-flex items-center gap-2 rounded-full border border-border-subtle bg-obsidian-light px-3 py-1.5 text-xs"
-                style={{ color: s.color }}
-              >
-                <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: s.color }} />
-                <span className="text-text-primary">{s.ind?.name || s.code}</span>
-                <button type="button" onClick={() => removeCode(s.code)} className="text-text-tertiary hover:text-text-primary" aria-label="Убрать">
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              </span>
-            ))}
+          <div className="mt-4 flex flex-col gap-2">
+            {series.map((s) => {
+              const reps = compareRepresentationsFor(s.ind || { code: s.code });
+              return (
+                <div
+                  key={s.code}
+                  className="flex flex-wrap items-center gap-2 rounded-xl border border-border-subtle bg-obsidian-light px-3 py-2"
+                >
+                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: s.color }} />
+                  <span className="text-sm text-text-primary mr-1">{s.ind?.name || s.code}</span>
+                  {reps.length > 1 && (
+                    <div className="flex gap-0.5 p-0.5 rounded-lg bg-obsidian-lighter border border-border-subtle">
+                      {reps.map((o) => (
+                        <button
+                          key={o.id}
+                          type="button"
+                          onClick={() => setRep(s.code, o.id)}
+                          className={cn(
+                            'px-2 py-1 text-[11px] rounded-md transition-colors',
+                            s.rep === o.id
+                              ? 'bg-champagne/15 text-champagne'
+                              : 'text-text-tertiary hover:text-text-secondary',
+                          )}
+                        >
+                          {o.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  <button type="button" onClick={() => removeCode(s.code)} className="ml-auto text-text-tertiary hover:text-text-primary" aria-label="Убрать">
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              );
+            })}
           </div>
         )}
       </section>
@@ -487,7 +597,7 @@ export default function ComparePage() {
                   key={opt.key}
                   disabled={disabled}
                   onClick={() => { setScale(opt.key); track(events.COMPARE_RANGE, { scale: opt.key }); }}
-                  title={disabled ? 'При 3+ показателях доступен только индекс' : undefined}
+                  title={disabled ? 'При 3+ разных единицах доступна только общая база' : undefined}
                   className={cn(
                     'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
                     (indexed ? opt.key === 'index' : range && scale === opt.key && !forceIndex)
@@ -516,6 +626,15 @@ export default function ComparePage() {
           </button>
         </div>
 
+        {forceIndex && (
+          <p className="-mt-3 mb-6 text-xs text-text-tertiary">
+            Выбрано 3+ разных единиц измерения — график доступен только в режиме
+            «Общая база». Чтобы вернуть исходные значения на общую ось, приведите
+            ряды к одному представлению (например, «К году» — тогда все они станут
+            процентами).
+          </p>
+        )}
+
         {loading ? (
           <ChartSkeleton />
         ) : !hasData ? (
@@ -534,24 +653,37 @@ export default function ComparePage() {
             </h2>
             <p className="text-center text-xs text-text-tertiary mb-4">
               {indexed
-                ? 'Индекс относительной динамики — 100 в начале периода, общая шкала'
-                : 'Значения в исходных единицах, у каждого ряда своя ось'}
+                ? 'Приведение к общей базе — 100 в начале периода, единая шкала'
+                : 'Значения в исходных единицах, ось — по единице измерения'}
               {` · период: ${RANGE_OPTIONS.find((r) => r.key === range)?.label}`}
             </p>
 
             <div className="mb-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-mono border-b border-border-subtle pb-4">
-              {series.map((s, i) => (
-                <span key={s.code} className="flex items-center gap-2">
-                  <span className="w-3 h-0.5 rounded-full" style={{ backgroundColor: s.color }} />
-                  <span style={{ color: s.color }}>{s.ind?.name || s.code}</span>
-                  <span className="text-text-tertiary">
-                    · {indexed
-                      ? 'старт = 100'
-                      : `${unitSuffix(s.ind?.unit)}${s.ind?.frequency ? `, ${freqLabel(s.ind.frequency)}` : ''} · ${axisFor(i) === 'left' ? 'левая ось' : 'правая ось'}`}
+              {series.map((s, i) => {
+                const dropped = nonIndexableKeys.has(s.key);
+                return (
+                  <span key={s.code} className={cn('flex items-center gap-2', dropped && 'opacity-40')}>
+                    <span className="w-3 h-0.5 rounded-full" style={{ backgroundColor: s.color }} />
+                    <span style={{ color: s.color }}>{s.ind?.name || s.code}</span>
+                    <span className="text-text-tertiary">
+                      · {s.repLabel}{dropped
+                        ? ' · не приводится к базе'
+                        : indexed
+                          ? ' · старт = 100'
+                          : ` · ${unitSuffix(s.unit)}${s.ind?.frequency ? `, ${freqLabel(s.ind.frequency)}` : ''} · ${axisFor(i) === 'left' ? 'левая ось' : 'правая ось'}`}
+                    </span>
                   </span>
-                </span>
-              ))}
+                );
+              })}
             </div>
+
+            {nonIndexableNames.length > 0 && (
+              <p className="mb-4 -mt-1 text-center text-[11px] text-text-tertiary">
+                К общей базе не приводятся знакопеременные и процентные ряды
+                ({nonIndexableNames.join(', ')}). Выберите для них представление
+                «Значение» либо переключите шкалу на «Исходные значения».
+              </p>
+            )}
 
             <div className="relative rounded-2xl">
               {/* Водяной знак — гостевой тизер: показываем на экране только гостю
@@ -567,7 +699,7 @@ export default function ComparePage() {
                 </div>
               )}
               <ResponsiveContainer width="100%" height={480}>
-                <ComposedChart data={chartData} margin={{ top: 10, right: 20, bottom: 44, left: 0 }}>
+                <ComposedChart data={chartRows} margin={{ top: 10, right: 20, bottom: 44, left: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
                   <XAxis
                     dataKey="date"
@@ -583,21 +715,21 @@ export default function ComparePage() {
                   />
                   <YAxis
                     yAxisId="left"
-                    tick={{ fill: indexed ? 'rgba(0,0,0,0.45)' : series[0]?.color, fontSize: 10, fontFamily: 'monospace' }}
+                    tick={{ fill: indexed ? 'rgba(0,0,0,0.45)' : leftColor, fontSize: 10, fontFamily: 'monospace' }}
                     axisLine={false}
                     tickLine={false}
                     width={60}
-                    tickFormatter={(v) => (indexed ? formatAxisTick(v, 0) : formatAxisTick(v, unitDigits(series[0]?.ind?.unit)))}
+                    tickFormatter={(v) => (indexed ? formatAxisTick(v, 0) : formatAxisTick(v, unitDigits(leftUnit)))}
                   />
-                  {!indexed && series.length > 1 && (
+                  {!indexed && distinctUnits.length > 1 && (
                     <YAxis
                       yAxisId="right"
                       orientation="right"
-                      tick={{ fill: series[1]?.color, fontSize: 10, fontFamily: 'monospace' }}
+                      tick={{ fill: rightColor, fontSize: 10, fontFamily: 'monospace' }}
                       axisLine={false}
                       tickLine={false}
                       width={60}
-                      tickFormatter={(v) => formatAxisTick(v, unitDigits(series[1]?.ind?.unit))}
+                      tickFormatter={(v) => formatAxisTick(v, unitDigits(rightUnit))}
                     />
                   )}
                   <Tooltip content={<CompareTooltip dateFormat={compareDateFmt} />} cursor={{ stroke: 'rgba(0,0,0,0.12)' }} />

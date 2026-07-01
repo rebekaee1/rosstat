@@ -43,6 +43,17 @@ def test_og_page_about(client):
     assert '<link rel="canonical" href="https://forecasteconomy.com/about"' in r.text
 
 
+def test_og_page_methodology(client):
+    r = client.get("/api/v1/og/page/methodology")
+    assert r.status_code == 200
+    body = r.text
+    assert "Методология прогнозирования" in body
+    assert '<link rel="canonical" href="https://forecasteconomy.com/methodology"' in body
+    # Публичный язык: без кодовых идентификаторов стратегий/парсеров.
+    for leak in ("monthly_auto", "generic_quarterly", "derived_from_source", "seed_data", "_parser"):
+        assert leak not in body
+
+
 def test_og_page_privacy_unique_title(client, monkeypatch):
     from app.api import sitemap
 
@@ -177,6 +188,7 @@ def test_sitemap_static_pages_constant():
     assert "/compare" in paths
     assert "/calculator" in paths
     assert "/demographics" in paths
+    assert "/methodology" in paths
 
     # Twelve categories × 1 indicator-grid page each (D5: split «Финансы и
     # валюты» → «Валюты» + «Деньги и бюджет»; +«Индексы» (MOEX); +«Товарные

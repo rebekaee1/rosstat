@@ -18,6 +18,7 @@ import Dashboard from './pages/Dashboard';
 
 const IndicatorDetail = lazy(() => import('./pages/IndicatorDetail'));
 const About = lazy(() => import('./pages/About'));
+const Methodology = lazy(() => import('./pages/Methodology'));
 const Privacy = lazy(() => import('./pages/Privacy'));
 const Terms = lazy(() => import('./pages/Terms'));
 const CategoryPage = lazy(() => import('./pages/CategoryPage'));
@@ -151,6 +152,7 @@ function AppRoutes() {
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/about" element={<About />} />
+            <Route path="/methodology" element={<Methodology />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/category/:slug" element={<CategoryPage />} />

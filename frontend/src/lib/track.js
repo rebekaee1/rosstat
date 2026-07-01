@@ -202,4 +202,8 @@ export const events = {
   SEARCH_QUERY: 'search_query',
   SEARCH_SELECT: 'search_select',
   SEARCH_ABANDON: 'search_abandon',
+
+  // Методология прогнозирования: переход с карточки индикатора (подсказка у
+  // переключателя «Прогноз») на объясняющую страницу /methodology.
+  METHODOLOGY_CLICK: 'methodology_click',
 };

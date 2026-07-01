@@ -61,6 +61,13 @@ GENERIC_QUARTERLY_FORECAST_CODES = {
     "exports",
     "imports",
     "external-debt",
+    # Второй заход руководителя (2026-07): квартальные положительные трендовые
+    # source-ряды, ранее стоявшие с forecast_steps=0. Та же multi-window OLS на
+    # log-diff, что и у ВВП-семьи.
+    "capital-investment",
+    "services-exports",
+    "services-imports",
+    "gdp-investment",
 }
 
 # Signed-quarterly — level-diff вариант той же multi-window OLS методологии
@@ -71,6 +78,9 @@ GENERIC_QUARTERLY_FORECAST_CODES = {
 # поэтому он в DERIVED_FROM_SOURCE_FORECAST_CODES, а не здесь.
 SIGNED_QUARTERLY_FORECAST_CODES = {
     "current-account",
+    # Чистые прямые иностранные инвестиции — знаковый квартальный ряд (может
+    # быть отрицательным при оттоке), log-diff неопределён → level-diff OLS.
+    "fdi-net",
 }
 
 DERIVED_FROM_SOURCE_FORECAST_CODES = {

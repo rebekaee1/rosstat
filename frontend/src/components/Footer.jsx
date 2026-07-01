@@ -99,6 +99,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link to="/methodology" className={footLink}>
+                  Методология прогнозов
+                </Link>
+              </li>
+              <li>
                 <Link to="/privacy" className={footLink}>
                   Политика конфиденциальности
                 </Link>

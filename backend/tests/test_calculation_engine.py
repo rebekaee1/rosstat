@@ -33,6 +33,10 @@ LEGACY_DERIVED = {
     "housing-qoq-primary", "housing-qoq-secondary",
     "housing-annual-primary", "housing-annual-secondary",
     "wages-index", "housing-affordability", "housing-affordability-primary",
+    # Годовой ряд зарплаты 1991+ = immutable исторический хвост + annual mean
+    # месячного (annual_mean_with_prefix). Ранее заливался one-shot скриптом,
+    # теперь движок продолжает ряд сам при закрытии года (2026-07).
+    "wages-nominal-annual",
 }
 
 

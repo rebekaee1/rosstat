@@ -25,14 +25,10 @@
 - Всего кодов: **908**
 - in_both_viewmode_systems (дубль легаси+generic): **14**
 - shadowed_legacy (мёртвая легаси-ветка): **24**
-- unresolved (нет ui_stack): **1**
+- unresolved (нет ui_stack): **0**
 - derived_not_seeded: **0**
 
-По стекам: `cpi`=32, `generic`=863, `housing`=8, `null`=1, `ppi`=4
-
-### Unresolved (ui_stack=null)
-
-`wages-nominal-annual`
+По стекам: `cpi`=32, `generic`=864, `housing`=8, `ppi`=4
 
 ## Все индикаторы
 
@@ -115,7 +111,7 @@
 | `business-credit-yoy` | Финансы | monthly | `generic` | derived_from_source | — | — |
 | `business-credit-yoy-quarter` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `business-credit-yoy-year` | Финансы | annual | `generic` | derived_from_source | — | — |
-| `capital-investment` | Бизнес | quarterly | `generic` | — | ✓ | — |
+| `capital-investment` | Бизнес | quarterly | `generic` | generic_quarterly | ✓ | — |
 | `capital-investment-qoq` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `capital-investment-sum-year` | Бизнес | annual | `generic` | derived_from_source | — | — |
 | `capital-investment-yoy` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
@@ -401,7 +397,7 @@
 | `external-debt-qoq` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `external-debt-yoy` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `external-debt-yoy-year` | Финансы | annual | `generic` | derived_from_source | — | — |
-| `fdi-net` | Бизнес | quarterly | `generic` | — | ✓ | — |
+| `fdi-net` | Бизнес | quarterly | `generic` | signed_quarterly | ✓ | — |
 | `fdi-net-qoq` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `fdi-net-sum-year` | Бизнес | annual | `generic` | derived_from_source | — | — |
 | `fdi-net-yoy` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
@@ -452,7 +448,7 @@
 | `gdp-government-sum-year` | ВВП | annual | `generic` | derived_from_source | — | — |
 | `gdp-government-yoy` | ВВП | quarterly | `generic` | derived_from_source | — | — |
 | `gdp-government-yoy-year` | ВВП | annual | `generic` | derived_from_source | — | — |
-| `gdp-investment` | ВВП | quarterly | `generic` | — | ✓ | — |
+| `gdp-investment` | ВВП | quarterly | `generic` | generic_quarterly | ✓ | — |
 | `gdp-investment-qoq` | ВВП | quarterly | `generic` | derived_from_source | — | — |
 | `gdp-investment-sum-year` | ВВП | annual | `generic` | derived_from_source | — | — |
 | `gdp-investment-yoy` | ВВП | quarterly | `generic` | derived_from_source | — | — |
@@ -785,7 +781,7 @@
 | `ruonia-yoy` | Финансы | monthly | `generic` | — | — | — |
 | `ruonia-yoy-quarter` | Финансы | quarterly | `generic` | — | — | — |
 | `ruonia-yoy-year` | Финансы | annual | `generic` | — | — | — |
-| `services-exports` | Торговля | quarterly | `generic` | — | ✓ | — |
+| `services-exports` | Торговля | quarterly | `generic` | generic_quarterly | ✓ | — |
 | `services-exports-monthly` | Торговля | monthly | `generic` | monthly_auto | — | both, shadowed |
 | `services-exports-monthly-mom` | Торговля | monthly | `generic` | derived_from_source | — | — |
 | `services-exports-monthly-qoq` | Торговля | quarterly | `generic` | derived_from_source | — | — |
@@ -798,7 +794,7 @@
 | `services-exports-sum-year` | Торговля | annual | `generic` | derived_from_source | — | — |
 | `services-exports-yoy` | Торговля | quarterly | `generic` | derived_from_source | — | — |
 | `services-exports-yoy-year` | Торговля | annual | `generic` | derived_from_source | — | — |
-| `services-imports` | Торговля | quarterly | `generic` | — | ✓ | — |
+| `services-imports` | Торговля | quarterly | `generic` | generic_quarterly | ✓ | — |
 | `services-imports-monthly` | Торговля | monthly | `generic` | monthly_auto | — | both, shadowed |
 | `services-imports-monthly-mom` | Торговля | monthly | `generic` | derived_from_source | — | — |
 | `services-imports-monthly-qoq` | Торговля | quarterly | `generic` | derived_from_source | — | — |
@@ -913,7 +909,7 @@
 | `usd-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `wages-index` | Рынок труда | monthly | `generic` | — | — | — |
 | `wages-nominal` | Рынок труда | monthly | `generic` | monthly_auto | ✓ | — |
-| `wages-nominal-annual` | Рынок труда | annual | `null` | — | — | no-stack |
+| `wages-nominal-annual` | Рынок труда | annual | `generic` | — | — | — |
 | `wages-nominal-avg-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `wages-nominal-avg-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
 | `wages-nominal-mom` | Рынок труда | monthly | `generic` | derived_from_source | — | — |
@@ -957,7 +953,7 @@
 - **Тип** (верх, эталон — переключатель ИПЦ): `value` Уровень/значение · `pop` К прошлому периоду · `yoy` К соотв. периоду пред. года · `index` Индекс
 - **Частота** (низ): `day` дн · `week` нед · `month` мес · `quarter` кв · `year` год
 
-Корней-семейств: **113** · с полной матрицей: **101** · с пробелами: **12**. Покрытие: {'bespoke': 7, 'bespoke-data': 4, 'generic': 101, 'orphan': 1}.
+Корней-семейств: **112** · с полной матрицей: **101** · с пробелами: **11**. Покрытие: {'bespoke': 7, 'bespoke-data': 4, 'generic': 101}.
 
 ## Систематические пробелы по типам
 
@@ -984,7 +980,6 @@
 | generic/T8 | index | month | 1 | — |
 | generic/T9 | gdp | quarter | 10 | — |
 | generic/T9s | signed-flow | quarter | 3 | — |
-| orphan/- | annual-count | year | 1 | `index:year`, `yoy:year` |
 
 ## Корни с пробелами матрицы
 
@@ -999,13 +994,12 @@
 | `cpi-nonfood` | bespoke/CPI | index | month | 0.8 | `yoy:quarter`, `yoy:year` | partial | yes | curated |
 | `cpi-services` | bespoke/CPI | index | month | 0.8 | `yoy:quarter`, `yoy:year` | partial | yes | curated |
 | `ppi` | bespoke/PPI | index | month | 0.8 | `yoy:quarter`, `yoy:year` | full | yes | curated |
-| `wages-nominal-annual` | orphan/- | annual-count | year | 0.333 | `yoy:year`, `index:year` | partial | no | generic |
 | `housing-price-primary` | bespoke/HOUSING | index | quarter | 0.857 | `pop:year` | full | yes | curated |
 | `housing-price-secondary` | bespoke/HOUSING | index | quarter | 0.857 | `pop:year` | full | yes | curated |
 
 ## Измерения паспорта (агрегат)
 
-- **Без полных текстов** (43): `birth-rate`, `births`, `cpi-food`, `cpi-nonfood`, `cpi-services`, `current-account`, `death-rate`, `deaths`, `deposit-rate`, `deposits-business`, `depreciation-rate`, `doctoral-students`, `exports`, `exports-monthly`, `fdi-net`, `grad-students`, `housing-commissioned`, `imports`, `imports-monthly`, `inflation-weekly`, `inflation-weekly-food`, `inflation-weekly-nonfood`, `inflation-weekly-services`, `innovation-activity`, `pensioners`, `pop-over-working-age`, `pop-under-working-age`, `population-migration`, `population-natural-growth`, `population-total-growth`, `rd-organizations`, `rd-personnel`, `retail-trade`, `services-exports`, `services-exports-monthly`, `services-imports`, `services-imports-monthly`, `small-business-innovation`, `tech-innovation-share`, `trade-balance`, `trade-balance-monthly`, `wages-nominal-annual`, `working-age-population`
-- **Без прогноза** (4): `fuel-ai92`, `fuel-ai95`, `fuel-diesel`, `wages-nominal-annual`
-- **SEO не curated** (10): `deposit-rate-long`, `deposit-rate-medium`, `exports-monthly`, `housing-affordability`, `housing-affordability-primary`, `imports-monthly`, `services-exports-monthly`, `services-imports-monthly`, `trade-balance-monthly`, `wages-nominal-annual`
+- **Без полных текстов** (42): `birth-rate`, `births`, `cpi-food`, `cpi-nonfood`, `cpi-services`, `current-account`, `death-rate`, `deaths`, `deposit-rate`, `deposits-business`, `depreciation-rate`, `doctoral-students`, `exports`, `exports-monthly`, `fdi-net`, `grad-students`, `housing-commissioned`, `imports`, `imports-monthly`, `inflation-weekly`, `inflation-weekly-food`, `inflation-weekly-nonfood`, `inflation-weekly-services`, `innovation-activity`, `pensioners`, `pop-over-working-age`, `pop-under-working-age`, `population-migration`, `population-natural-growth`, `population-total-growth`, `rd-organizations`, `rd-personnel`, `retail-trade`, `services-exports`, `services-exports-monthly`, `services-imports`, `services-imports-monthly`, `small-business-innovation`, `tech-innovation-share`, `trade-balance`, `trade-balance-monthly`, `working-age-population`
+- **Без прогноза** (3): `fuel-ai92`, `fuel-ai95`, `fuel-diesel`
+- **SEO не curated** (9): `deposit-rate-long`, `deposit-rate-medium`, `exports-monthly`, `housing-affordability`, `housing-affordability-primary`, `imports-monthly`, `services-exports-monthly`, `services-imports-monthly`, `trade-balance-monthly`
 

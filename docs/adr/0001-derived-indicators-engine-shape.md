@@ -2,7 +2,7 @@
 
 - **Date:** 2026-05-05
 - **Status:** Accepted
-- **Last verified:** 2026-06-24 (чистка orphaned ops: 31 derived в `DERIVED_SPECS`, все ops в `derived_ops.py` активны — `annual_inflation` / `affordability_index` / `rebase_to_index` удалены, см. «Subsequent additions»; +2 виртуальных frontend-transform'а: `applyMoMTransform` для monthly trade и `applyAggregateTransform` для daily-индикаторов).
+- **Last verified:** 2026-07-01 (32 derived в `DERIVED_SPECS` — +`wages-nominal-annual`; +2 чистые op'ы `qoq_adjacent` / `annual_mean_with_prefix`, см. «Subsequent additions»; +3-й client-transform — резолвер представлений сравнения `compareRepresentation.js`). Ранее 2026-06-24: чистка orphaned ops (31 derived).
 - **Author:** architecture audit (улучшение архитектуры по запросу пользователя).
 - **Part of:** [`../../CONTEXT.md`](../../CONTEXT.md) (раздел `Derived indicator`).
 - **Related:** [ADR-0002](0002-derived-always-reflects-source.md) (инвариант идемпотентности).
@@ -118,6 +118,12 @@ backend/app/services/calculation_engine.py
   - Решение о помесячности: ряд начинается там, где есть помесячная зарплата (2015), цены на жильё forward-fill'ятся внутри квартала. Паритет базы 2010 (оба индекса = 100 в окрестности 2010) проверяется на op-уровне в `test_calculation_engine.py`.
 
 **Текущие числа (2026-06-24):** все операции в `derived_ops.py` активны (orphaned `annual_inflation` / `affordability_index` / `rebase_to_index` удалены в чистке 2026-06-24, см. ниже); ручных `DerivedSpec` стало 31 (плюс `housing-affordability-primary`, helper-семья T12). Один frontend-only transform (`applyMoMTransform`). Backwards-compat: добавление spec'а / op'а — однострочное.
+
+- **+2 чистые op'ы (2026-07-01, ветка `feat/compare-view-modes`)**:
+  - `qoq_adjacent(series, max_gap_days=110)` — QoQ только между точками, разнесёнными не более чем на квартал. В отличие от `qoq()` (считает % к предыдущей точке любой ценой), пропускает кросс-каденс переходы: для рядов, смешивающих годовую историю и квартальный современный сегмент (`housing-price-*`: годовые точки 1998-2014, квартальные с 2015), обычный QoQ давал ГОДОВОЙ прирост под видом квартального (46 %, 25 %… с обрывом до ±1 % в 2015 — «annual-in-quarterly» trap, G2-аудит). Заменил `qoq` в `housing-qoq-primary/secondary`.
+  - `annual_mean_with_prefix(monthly, prefix={year: value})` — годовое среднее месячного ряда (полные годы) + immutable исторический годовой префикс для лет ДО начала месячных данных. Заменил ручной one-shot `scripts/backfill-wages-history.py`: движок продолжает `wages-nominal-annual` сам при закрытии каждого года (immutable хвост 1991-2014 из `wages_historical.py` + annual mean 2015+). Годы, покрытые месячными данными, из префикса исключаются (живые средние отражают ревизии источника). `DerivedSpec` объявлен ДО `wages-index` (derived→derived, движок исполняет specs по порядку списка без топосорта).
+
+**Числа (2026-07-01):** `DERIVED_SPECS` = 32 (добавлен `wages-nominal-annual`, ранее manual_historical seed); две новые op'ы выше активны. Отдельно — client-side `compareRepresentation.js`: резолвер представлений в режиме сравнения (level/pop/yoy) переиспользует sibling-коды семей и bespoke %-коды + минимальные трансформы (`sub100`/`mom`/`cpiCumulative`), backend-derived не заводит (тот же класс, что `applyMoMTransform`/`applyAggregateTransform`).
 
 ### Out of scope (future ADRs)
 

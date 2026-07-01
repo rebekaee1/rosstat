@@ -23,6 +23,7 @@ Currently there are 10 pure ops behind 29 derived indicators.
 - wages_real           — real wage index (2 sources: nominal wages × cumulative CPI).
 - december_to_december — Dec-to-Dec growth for CPI annual specs.
 - annual_sum           — sum of N quarterly/monthly values per year (gdp-nominal-annual).
+- annual_mean_with_prefix — годовое среднее месячного ряда + immutable исторический префикс (wages-nominal-annual).
 
 Each function takes lists of `(date, value)` tuples and returns a list of
 `(date, value)` tuples. They contain no async, no DB access, no upserts. All
@@ -205,6 +206,31 @@ def qoq(series: Series) -> Series:
     return points
 
 
+def qoq_adjacent(series: Series, *, max_gap_days: int = 110) -> Series:
+    """QoQ, но только между точками, разнесёнными не более чем на квартал.
+
+    В отличие от `qoq()` (считает % к предыдущей точке «любой ценой»), здесь
+    пропускаются кросс-каденс переходы: если ряд смешивает годовую историю и
+    квартальный современный сегмент (напр. цены на жильё — годовые точки
+    1998-2014, квартальные с 2015), то «кв/кв» между двумя годовыми точками
+    математически даёт ГОДОВОЙ прирост, ошибочно подписанный как квартальный
+    (46%, 25%… с обрывом до ±1% в 2015 — «annual-in-quarterly» trap, G2-аудит
+    2026-07). Отбрасываем такие точки: quarter-over-quarter определён только
+    между соседними кварталами. `max_gap_days=110` покрывает нормальный
+    квартал (~92 дня) с запасом, но отсекает годовой интервал (~365).
+    """
+    sorted_pts = sorted(((d, float(v)) for d, v in series), key=lambda p: p[0])
+    points: Series = []
+    for i in range(1, len(sorted_pts)):
+        d_cur, v_cur = sorted_pts[i]
+        d_prev, v_prev = sorted_pts[i - 1]
+        if v_prev == 0 or (d_cur - d_prev).days > max_gap_days:
+            continue
+        growth = (v_cur / v_prev - 1.0) * 100.0
+        points.append((d_cur, round(growth, 2)))
+    return points
+
+
 def yoy_abs(series: Series) -> Series:
     """Year-over-year ABSOLUTE change: val_t − val_{t−1y}, in source units.
 
@@ -375,6 +401,36 @@ def period_avg(series: Series, granularity: str) -> Series:
 def period_sum(series: Series, granularity: str) -> Series:
     """Sum of each period's observations (За период — для потоков, напр. бюджет)."""
     return _aggregate(series, granularity, "sum")
+
+
+def annual_mean_with_prefix(monthly: Series, *, prefix: dict[int, float]) -> Series:
+    """Годовое среднее месячного ряда (полные годы) + immutable исторический
+    годовой префикс для лет ДО начала месячных данных.
+
+    Назначение: единый годовой ряд, где ранние годы (напр. 1991-2014 для
+    зарплаты) заданы вручную снимком Росстатовского архива и не выводятся из
+    месячного ряда, а поздние годы (2015+) считаются как annual mean месячных
+    точек. Заменяет ручной one-shot backfill-скрипт: движок продолжает ряд сам
+    при закрытии каждого нового года (см. calculation_engine, ADR-0001/0002).
+
+    `prefix` — {год: значение} в тех же единицах, что месячный ряд. Годы,
+    покрытые месячными данными (`period_avg`), из префикса исключаются: живые
+    средние «свежее» и отражают ревизии источника. Анкер точки — 1 января
+    (совпадает с period_avg(year) и с историческим seed).
+
+    Полнота года наследуется от `period_avg`: незавершённый текущий год
+    отбрасывается. Внутренние дыры месячного ряда должны быть закрыты
+    (gap-fill в seed), иначе среднее года с пропуском будет занижено — то же
+    ограничение, что у любого annual-mean sibling'а.
+    """
+    means = period_avg(monthly, "year")
+    covered = {d.year for d, _ in means}
+    prefix_pts = [
+        (date(int(year), 1, 1), float(value))
+        for year, value in prefix.items()
+        if int(year) not in covered
+    ]
+    return sorted(prefix_pts + list(means), key=lambda p: p[0])
 
 
 def mom(monthly: Series) -> Series:

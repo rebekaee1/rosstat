@@ -36,6 +36,7 @@ import {
   normalizeUnemploymentViewMode,
 } from './unemploymentViewModeResolve';
 import { applyMoMTransform } from './viewModeFamilies';
+import { buildCumulativeIndex } from './cpiCumulativeIndex';
 
 // Режим Г/г («yoy» в URL) разрешается в `annual` — годовую инфляцию
 // «декабрь к декабрю» (одна точка/год); помесячные ряды `cpi-*-yoy` с
@@ -96,53 +97,11 @@ const PPI_DERIVED_CODES = {
   },
 };
 
-// Накопленный индекс CPI (режим «Индекс»): база 100 в январе 2000, история
-// тянется от первой доступной месячной точки (с 1991 года; правка созвона
-// 2026-06-11). Точки до базы достраиваются обратным цепным делением, поэтому
-// значения 90-х микроскопические на фоне 100 — это ожидаемо: гиперинфляция
-// первой половины 90-х означает, что уровень цен тогда был в тысячи раз ниже
-// уровня января 2000 года.
-//
-// Архитектурное решение (cpi-ppi-migrate): накопленный индекс и его
-// квартально-/годовые бакеты остаются client-side display-transform, а НЕ
-// backend-derived рядом. Это детерминированное преобразование уже имеющегося
-// месячного %-ряда с фиксированной базой — тот же класс, что daily-aggregation
-// (ADR-0006: такие трансформации backend derived не заводим). Backend-ряд
-// уровня дал бы SARIMA на экспоненте (некорректный прогноз) и не убрал бы
-// клиентскую chain-логику прогноза (buildCumulativeIndexForecast всё равно
-// продолжает кривую месячным %-прогнозом). Перенос = риск регрессии прогноза
-// и десятки sibling-строк при нулевом видимом выигрыше.
-const CPI_INDEX_BASE_DATE = '2000-01-01';
-const CPI_INDEX_BASE_VALUE = 100;
-
-// До базы значения уровня << 1 — два знака после запятой схлопнули бы их в
-// 0.00, поэтому для малых значений сохраняем 4 значащие цифры.
-function roundIndexLevel(v) {
-  return Math.abs(v) >= 1 ? +v.toFixed(2) : +v.toPrecision(4);
-}
-
-function buildCumulativeIndex(rawPoints) {
-  if (!Array.isArray(rawPoints) || !rawPoints.length) return [];
-  const pts = rawPoints
-    .slice()
-    .sort((a, b) => String(a.date).localeCompare(String(b.date)));
-  let baseIdx = pts.findIndex((p) => String(p.date) >= CPI_INDEX_BASE_DATE);
-  if (baseIdx === -1) baseIdx = pts.length - 1;
-  const out = new Array(pts.length);
-  out[baseIdx] = { ...pts[baseIdx], value: CPI_INDEX_BASE_VALUE };
-  let acc = CPI_INDEX_BASE_VALUE;
-  for (let i = baseIdx + 1; i < pts.length; i++) {
-    acc *= Number(pts[i].value) / 100;
-    out[i] = { ...pts[i], value: roundIndexLevel(acc) };
-  }
-  acc = CPI_INDEX_BASE_VALUE;
-  for (let i = baseIdx - 1; i >= 0; i--) {
-    // value точки i+1 — это м/м-прирост к месяцу i: уровень(i) = уровень(i+1) / (м/м / 100).
-    acc /= Number(pts[i + 1].value) / 100;
-    out[i] = { ...pts[i], value: roundIndexLevel(acc) };
-  }
-  return out;
-}
+// Накопленный индекс CPI (режим «Индекс»): база 100 = январь 2000. Пруф-логика
+// и обоснование client-side-трансформа — в общем модуле `cpiCumulativeIndex.js`
+// (переиспользуется и режимом сравнения). Backend-ряд уровня дал бы SARIMA на
+// экспоненте (некорректный прогноз) и не убрал бы клиентскую chain-логику
+// прогноза — перенос = риск регрессии при нулевом выигрыше (ADR-0006).
 
 const BUCKET_END_MONTHS = {
   quarter: [3, 6, 9, 12],
