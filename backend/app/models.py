@@ -516,6 +516,11 @@ class FrontendEvent(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     event_name: Mapped[str] = mapped_column(String(120), nullable=False)
     session_id_hash: Mapped[str | None] = mapped_column(String(80))
+    # Атрибуция аудитории: сервер резолвит сессию (кука fe_sess) на приёме
+    # события. authed=false + user_id=NULL → гость; иначе зарегистрированный.
+    # Даёт разрез «гость vs зарегистрированный» в «Пульсе» без похода в Метрику.
+    user_id: Mapped[str | None] = mapped_column(String(36), index=True)
+    authed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, server_default="false")
     url: Mapped[str | None] = mapped_column(String(1000))
     referrer: Mapped[str | None] = mapped_column(String(1000))
     params_json: Mapped[dict | None] = mapped_column(JSON)

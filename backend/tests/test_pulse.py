@@ -13,6 +13,8 @@ SNAP = {
     "events": {
         "total": 150,
         "by_name": {"indicator_view": 60, "scroll_depth": 40},
+        "by_audience": {"authed": 40, "guest": 110},
+        "downloads_by_audience": {"authed": 3, "guest": 1},
         "top_indicators": {"cpi": 20, "gdp-real": 10},
         "top_regions": {"moskva": 7},
         "downloads": {"download_csv": 3, "chart_image_download": 1},
@@ -20,6 +22,7 @@ SNAP = {
         "search_top": {"инфляция": 5},
         "search_zero_results": {"биткоин к рублю": 2},
     },
+    "audience": {"authed_active": 6, "guest_sessions": 44},
     "etl": {"by_status": {"success": {"runs": 100, "records": 40}}, "failed_indicator_ids": [3]},
     "data": {"new_points": 40},
 }
@@ -33,6 +36,10 @@ def test_memory_core_is_compact():
         "users_new": 2,
         "events": 150,
         "downloads": 4,
+        "downloads_authed": 3,
+        "downloads_guest": 1,
+        "authed_active": 6,
+        "guest_sessions": 44,
         "errors": 2,
         "etl_failed": 1,
         "new_points": 40,
@@ -42,6 +49,19 @@ def test_memory_core_is_compact():
 def test_fallback_summary_mentions_key_numbers():
     text = _fallback_summary(SNAP)
     assert "12" in text and "Скачиваний: 4" in text and "Ошибок фронта: 2" in text
+
+
+def test_fallback_summary_splits_audience():
+    """Отчёт обязан разделять зарегистрированных и гостей (ключевое требование)."""
+    text = _fallback_summary(SNAP)
+    assert "зарег. 40" in text and "гости 110" in text  # события
+    assert "зарег. 6" in text and "гостей 44" in text    # активная аудитория
+
+
+def test_raw_digits_reports_audience():
+    block = _raw_digits_block(SNAP)
+    assert "Аудитория:" in block
+    assert "зарег/гость 40/110" in block
 
 
 def test_raw_digits_uses_expandable_blockquote():

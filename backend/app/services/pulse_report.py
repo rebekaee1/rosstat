@@ -33,6 +33,7 @@ _SYSTEM_PROMPT = """Ты — аналитик платформы forecasteconomy
 Напиши сводку для владельца в Telegram на русском. Требования:
 - 6–12 коротких строк, без воды и без маркетинга;
 - сначала главное: что изменилось против прошлых дней (рост/спад, новые пользователи, аномалии);
+- обязательно раздели аудиторию: зарегистрированные vs гости (поля audience, events.by_audience, events.downloads_by_audience) — сколько активных, чем отличается их поведение;
 - обязательно отметь: ошибки фронта, упавшие ETL, запросы поиска без результатов (это пробелы каталога);
 - если скачиваний нет — скажи прямо и напомни, что гостям скачивание закрыто (лимит 0), скачивают только зарегистрированные;
 - числа пиши точно из данных, ничего не выдумывай;
@@ -87,10 +88,17 @@ def _fallback_summary(snapshot: dict) -> str:
     u = snapshot.get("users", {})
     ev = snapshot.get("events", {})
     etl = snapshot.get("etl", {})
+    aud = snapshot.get("audience", {})
+    by_aud = ev.get("by_audience", {})
+    dl_aud = ev.get("downloads_by_audience", {})
     lines = [
         f"👤 Пользователи: всего {u.get('total', 0)}, новых {u.get('new', 0)}",
-        f"⚡ Событий за день: {ev.get('total', 0)}",
-        f"📥 Скачиваний: {sum(ev.get('downloads', {}).values())}",
+        f"🫂 Активны за день: зарег. {aud.get('authed_active', 0)}, "
+        f"гостей {aud.get('guest_sessions', 0)}",
+        f"⚡ Событий: {ev.get('total', 0)} "
+        f"(зарег. {by_aud.get('authed', 0)} / гости {by_aud.get('guest', 0)})",
+        f"📥 Скачиваний: {sum(ev.get('downloads', {}).values())} "
+        f"(зарег. {dl_aud.get('authed', 0)} / гости {dl_aud.get('guest', 0)})",
         f"🛑 Ошибок фронта: {sum(ev.get('errors', {}).values())}",
         f"🏭 Упавших ETL-индикаторов: {len(etl.get('failed_indicator_ids', []))}",
         f"➕ Новых точек данных: {snapshot.get('data', {}).get('new_points', 0)}",
@@ -102,6 +110,15 @@ def _raw_digits_block(snapshot: dict) -> str:
     """Сырые цифры дня в expandable blockquote (новое оформление Bot API 7.10)."""
     ev = snapshot.get("events", {})
     parts: list[str] = []
+    aud = snapshot.get("audience", {})
+    by_aud = ev.get("by_audience", {})
+    dl_aud = ev.get("downloads_by_audience", {})
+    parts.append(
+        "Аудитория: зарег. активных "
+        f"{aud.get('authed_active', 0)}, гостевых сессий {aud.get('guest_sessions', 0)}; "
+        f"события зарег/гость {by_aud.get('authed', 0)}/{by_aud.get('guest', 0)}; "
+        f"скачивания зарег/гость {dl_aud.get('authed', 0)}/{dl_aud.get('guest', 0)}"
+    )
     if ev.get("by_name"):
         top = ", ".join(f"{k}: {v}" for k, v in list(ev["by_name"].items())[:15])
         parts.append(f"События: {escape(top)}")

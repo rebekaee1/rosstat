@@ -1,6 +1,7 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchMe } from '../lib/api';
+import { setTrackedIdentity } from '../lib/track';
 import { AuthContext } from './authContext';
 
 const AUTH_KEY = ['auth', 'me'];
@@ -25,6 +26,14 @@ export function AuthProvider({ children }) {
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
+
+  // Пробрасываем идентичность в аналитику: authed + userId уходят в Метрику
+  // (userParams/setUserID) и в каждое first-party событие. Ждём отрезолвленный
+  // /me (isFetched), чтобы не пометить гостем ещё не проверенную сессию.
+  useEffect(() => {
+    if (!isFetched) return;
+    setTrackedIdentity({ authed: Boolean(user), userId: user?.id ?? null });
+  }, [user, isFetched]);
 
   const setUser = useCallback((u) => qc.setQueryData(AUTH_KEY, u ?? null), [qc]);
   const refetch = useCallback(() => qc.invalidateQueries({ queryKey: AUTH_KEY }), [qc]);

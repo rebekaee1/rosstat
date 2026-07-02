@@ -60,6 +60,13 @@ class Settings(BaseSettings):
     # Internal endpoints protection
     metrics_token: str = ""
 
+    # First-party приём событий фронта (/analytics/events → frontend_events).
+    # РАЗВЯЗАН с analytics_enabled (та — про интеграцию с API Метрики). Наша
+    # собственная телеметрия, питающая «Пульс», должна писаться всегда, даже
+    # если внешняя Метрика-интеграция выключена. Иначе на проде «ничего не
+    # собирается» при analytics_enabled=false.
+    frontend_events_enabled: bool = True
+
     # Forecast Analytics OS
     analytics_enabled: bool = False
     analytics_scheduler_enabled: bool = False

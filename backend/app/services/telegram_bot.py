@@ -28,10 +28,12 @@ from html import escape
 import httpx
 from sqlalchemy import func, select
 
+from collections import Counter
+
 from app.config import settings
 from app.core.cache import get_state_redis
 from app.database import async_session
-from app.models import AuthAudit, Consent, EmailCredential, OAuthIdentity, User
+from app.models import AuthAudit, Consent, EmailCredential, FrontendEvent, OAuthIdentity, User
 
 logger = logging.getLogger(__name__)
 
@@ -158,6 +160,25 @@ async def _user_card(user_id: str) -> str:
             select(func.count(AuthAudit.id))
             .where(AuthAudit.user_id == user.id, AuthAudit.event == "login")
         ) or 0
+        # First-party активность пользователя (по user_id в frontend_events).
+        fe_rows = (await db.execute(
+            select(FrontendEvent.event_name, FrontendEvent.params_json, FrontendEvent.occurred_at)
+            .where(FrontendEvent.user_id == str(user.id))
+            .order_by(FrontendEvent.occurred_at.desc())
+            .limit(2000)
+        )).all()
+
+    ev_names: Counter = Counter()
+    ev_indicators: Counter = Counter()
+    ev_downloads = 0
+    last_active = fe_rows[0][2] if fe_rows else None
+    _dl = {"download_csv", "download_excel", "chart_image_download", "compare_image_download"}
+    for name, params, _ts in fe_rows:
+        ev_names[name] += 1
+        if name in _dl:
+            ev_downloads += 1
+        if name == "indicator_view" and (params or {}).get("indicator"):
+            ev_indicators[str(params["indicator"])] += 1
 
     lines = [
         f"👤 <b>{escape(user.display_name or 'Без имени')}</b>",
@@ -174,12 +195,27 @@ async def _user_card(user_id: str) -> str:
     if consents:
         cs = ", ".join(f"{k}: {'да' if g else 'нет'}" for k, g in consents)
         lines.append(f"Согласия: {escape(cs)}")
+    # Активность на сайте (first-party телеметрия по user_id).
+    if fe_rows:
+        la = last_active.strftime("%d.%m.%Y %H:%M") if last_active else "—"
+        lines.append(
+            f"📊 Активность: {len(fe_rows)} событий, {ev_downloads} скачиваний, "
+            f"последняя {la} UTC"
+        )
+        if ev_indicators:
+            top = ", ".join(f"{k} ×{v}" for k, v in ev_indicators.most_common(5))
+            lines.append(f"Топ индикаторов: {escape(top)}")
+        if ev_names:
+            top = ", ".join(f"{k}: {v}" for k, v in ev_names.most_common(10))
+            lines.append(f"<blockquote expandable>Действия: {escape(top)}</blockquote>")
+    else:
+        lines.append("📊 Активность на сайте: событий не зафиксировано")
     if audit:
         rows = [
             f"{ts.strftime('%d.%m %H:%M')} {escape(ev)} ({escape(ip or '—')})"
             for ev, ip, ts in audit
         ]
-        lines.append(f"<blockquote expandable>Последние события:\n{chr(10).join(rows)}</blockquote>")
+        lines.append(f"<blockquote expandable>Последние входы:\n{chr(10).join(rows)}</blockquote>")
     return "\n".join(lines)
 
 
@@ -230,11 +266,18 @@ async def _handle_callback(cq: dict) -> None:
         from app.services import pulse  # локальный импорт против цикла
         snap = await pulse.build_snapshot(date.today())
         ev = snap.get("events", {})
+        aud = snap.get("audience", {})
+        by_aud = ev.get("by_audience", {})
+        dl_aud = ev.get("downloads_by_audience", {})
         text = (
             f"🛰 <b>Пульс на сейчас ({snap['date']})</b>\n"
-            f"Событий: {ev.get('total', 0)}, "
-            f"скачиваний: {sum(ev.get('downloads', {}).values())}, "
-            f"ошибок: {sum(ev.get('errors', {}).values())}\n"
+            f"Событий: {ev.get('total', 0)} "
+            f"(зарег. {by_aud.get('authed', 0)} / гости {by_aud.get('guest', 0)})\n"
+            f"Скачиваний: {sum(ev.get('downloads', {}).values())} "
+            f"(зарег. {dl_aud.get('authed', 0)} / гости {dl_aud.get('guest', 0)})\n"
+            f"Активны сегодня: зарег. {aud.get('authed_active', 0)}, "
+            f"гостей {aud.get('guest_sessions', 0)}\n"
+            f"Ошибок: {sum(ev.get('errors', {}).values())}\n"
             f"Пользователей всего: {snap.get('users', {}).get('total', 0)} "
             f"(+{snap.get('users', {}).get('new', 0)} сегодня)\n"
             f"<blockquote expandable>{escape(json.dumps(ev.get('by_name', {}), ensure_ascii=False))}</blockquote>"

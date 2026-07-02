@@ -105,7 +105,14 @@ async def build_snapshot(d: date) -> dict[str, Any]:
 
         # --- События фронта -----------------------------------------------
         ev_rows = (await db.execute(
-            select(FrontendEvent.event_name, FrontendEvent.params_json, FrontendEvent.url)
+            select(
+                FrontendEvent.event_name,
+                FrontendEvent.params_json,
+                FrontendEvent.url,
+                FrontendEvent.authed,
+                FrontendEvent.user_id,
+                FrontendEvent.session_id_hash,
+            )
             .where(FrontendEvent.occurred_at >= start, FrontendEvent.occurred_at < end)
         )).all()
 
@@ -116,13 +123,25 @@ async def build_snapshot(d: date) -> dict[str, Any]:
         zero_search: Counter[str] = Counter()
         downloads: Counter[str] = Counter()
         errors: Counter[str] = Counter()
-        for name, params, url in ev_rows:
+        # Разрез «гость vs зарегистрированный»: события, скачивания, аудитория.
+        events_by_audience = {"guest": 0, "authed": 0}
+        downloads_by_audience = {"guest": 0, "authed": 0}
+        authed_user_ids: set[str] = set()
+        guest_sessions: set[str] = set()
+        for name, params, url, authed, user_id, sess_hash in ev_rows:
             by_name[name] += 1
+            bucket = "authed" if authed else "guest"
+            events_by_audience[bucket] += 1
+            if authed and user_id:
+                authed_user_ids.add(str(user_id))
+            elif sess_hash:
+                guest_sessions.add(str(sess_hash))
             params = params or {}
-            if name == "indicator_view" and params.get("indicator"):
+            if name in ("indicator_view", "region_indicator_view") and params.get("indicator"):
                 indicators[str(params["indicator"])] += 1
             if name in _DOWNLOAD_EVENTS:
                 downloads[name] += 1
+                downloads_by_audience[bucket] += 1
             if name in _ERROR_EVENTS:
                 errors[name] += 1
             if name == "search_query":
@@ -134,20 +153,36 @@ async def build_snapshot(d: date) -> dict[str, Any]:
                             zero_search[q] += 1
                     except (TypeError, ValueError):
                         pass
-            if url and "/regions/" in str(url):
-                slug = str(url).split("/regions/", 1)[1].split("/")[0].split("?")[0]
-                if slug:
-                    regions[slug] += 1
+            # Регион: сначала из параметра события (region_indicator_view,
+            # region_compare_add и т.п.), иначе из URL (/region/{slug}/... или
+            # /regions/{slug}). Детальная карточка живёт на /region/ (ед. число).
+            slug = params.get("region")
+            if not slug and url:
+                u = str(url)
+                for marker in ("/region/", "/regions/"):
+                    if marker in u:
+                        slug = u.split(marker, 1)[1].split("/")[0].split("?")[0]
+                        break
+            if slug:
+                regions[str(slug)] += 1
 
         snap["events"] = {
             "total": sum(by_name.values()),
             "by_name": dict(by_name.most_common(40)),
+            "by_audience": events_by_audience,
+            "downloads_by_audience": downloads_by_audience,
             "top_indicators": dict(indicators.most_common(10)),
             "top_regions": dict(regions.most_common(10)),
             "downloads": dict(downloads),
             "errors": dict(errors),
             "search_top": dict(searches.most_common(10)),
             "search_zero_results": dict(zero_search.most_common(10)),
+        }
+        # Активная аудитория дня: уникальные зарегистрированные (по user_id) и
+        # гости (по хэшу сессии). Даёт «сколько живых людей», а не только хиты.
+        snap["audience"] = {
+            "authed_active": len(authed_user_ids),
+            "guest_sessions": len(guest_sessions),
         }
 
         # --- ETL ------------------------------------------------------------
@@ -198,12 +233,18 @@ async def get_or_build_snapshot(d: date) -> dict[str, Any]:
 def memory_core(snap: dict[str, Any]) -> dict[str, Any]:
     """Компактное числовое ядро дня для памяти (десятки байт, не килобайты)."""
     ev = snap.get("events", {})
+    aud = snap.get("audience", {})
+    dl_aud = ev.get("downloads_by_audience", {})
     return {
         "date": snap["date"],
         "users_total": snap.get("users", {}).get("total", 0),
         "users_new": snap.get("users", {}).get("new", 0),
         "events": ev.get("total", 0),
         "downloads": sum(ev.get("downloads", {}).values()),
+        "downloads_authed": dl_aud.get("authed", 0),
+        "downloads_guest": dl_aud.get("guest", 0),
+        "authed_active": aud.get("authed_active", 0),
+        "guest_sessions": aud.get("guest_sessions", 0),
         "errors": sum(ev.get("errors", {}).values()),
         "etl_failed": len(snap.get("etl", {}).get("failed_indicator_ids", [])),
         "new_points": snap.get("data", {}).get("new_points", 0),
