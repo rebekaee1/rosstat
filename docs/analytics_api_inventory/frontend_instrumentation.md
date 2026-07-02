@@ -1,6 +1,14 @@
 # Frontend Instrumentation Inventory
 
-**Last verified:** 2026-06-12 (consent gating: init Метрики/РСЯ перенесён в `frontend/public/consent.js`, запуск только после согласия — 152-ФЗ opt-in).
+**Last verified:** 2026-07-02 (атрибуция аудитории: `authed`/`user_id` в `frontend_events` + `ym userParams/setUserID`; приём событий развязан с `analytics_enabled`).
+
+## Атрибуция аудитории (2026-07-02)
+
+Разрез «гость vs зарегистрированный» — на двух уровнях:
+
+- **First-party (`frontend_events`).** `POST /analytics/events` резолвит куку `fe_sess` и пишет `user_id` + `authed` (миграция `20260702_fe_audience`). Эндпоинт POST, не кэшируется — чтение куки не нарушает инвариант ADR-0003. Гость → `authed=false, user_id=NULL`. Гейт сбора — собственный флаг `frontend_events_enabled` (default on), НЕ `analytics_enabled`: телеметрия пишется всегда.
+- **Метрика.** `track.js` добавляет `authed` (0/1) в params каждого `reachGoal`; при резолве `/me` вызывает `ym(id,'setUserID',userId)` и `ym(id,'userParams',{authed,audience})`. Сегмент «зарегистрированные» в интерфейсе = визиты с `userParam authed=1`.
+- **Цели.** `scripts/metrika-goals-audit.py` сверяет события фронта с целями счётчика; `--create` заводит недостающие JS-цели (нужен write-token). На 2026-07-02 без цели — 64 события (см. вывод скрипта).
 **Implementation status:** `implemented` — `frontend/public/consent.js` (consent-bootstrap, загрузка трекеров), `frontend/src/lib/consent.js` + `frontend/src/components/CookieConsent.jsx` (баннер согласия), `frontend/src/lib/track.js`, `frontend/src/lib/utm.js`, `frontend/src/lib/cleanUrl.js`, `frontend/src/lib/useScrollDepth.js`, backend collector — `app/api/analytics.py::POST /api/v1/analytics/events` → `FrontendEvent`.
 
 **Consent gating (2026-06-12):** Метрика и РСЯ грузятся ТОЛЬКО после активного согласия пользователя (cookie-баннер, выбор хранится в `localStorage['fe:consent:v1']`, версия согласия = дата редакции политики в `lib/consent.js::CONSENT_VERSION`). До согласия `window.ym` не существует — все `ym()`-хелперы в `track.js` guard'ятся. Факт согласия логируется событием `consent_update` в собственный collector. Первый hit с очищенным URL шлётся из `consent.js` в момент загрузки счётчика.

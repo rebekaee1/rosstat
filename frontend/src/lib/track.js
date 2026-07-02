@@ -23,6 +23,35 @@ function ym(...args) {
   }
 }
 
+// Идентичность пользователя для аналитики. Заполняется AuthProvider'ом при
+// резолве /me: гость → { authed:false }, зарегистрированный → { authed:true,
+// userId }. Признак authed уходит В КАЖДОЕ событие (ym + first-party collector),
+// поэтому в Метрике сегментируем «гость vs зарегистрированный» по параметру
+// визита, а на бэкенде — по authed/user_id в frontend_events. userId (хэш из
+// /me) дополнительно уходит в ym setUserID для кросс-девайс склейки.
+let _identity = { authed: false, userId: null };
+let _ymIdentityApplied = null;
+
+function applyYmIdentity() {
+  const key = `${_identity.authed ? 1 : 0}:${_identity.userId || ''}`;
+  if (key === _ymIdentityApplied) return;
+  _ymIdentityApplied = key;
+  if (_identity.userId) ym(COUNTER_ID, 'setUserID', String(_identity.userId));
+  ym(COUNTER_ID, 'userParams', {
+    authed: _identity.authed ? 1 : 0,
+    audience: _identity.authed ? 'registered' : 'guest',
+  });
+}
+
+/**
+ * Устанавливает идентичность для аналитики. Вызывается из AuthProvider при
+ * каждом изменении состояния авторизации. Идемпотентно для Метрики.
+ */
+export function setTrackedIdentity({ authed, userId } = {}) {
+  _identity = { authed: !!authed, userId: userId || null };
+  applyYmIdentity();
+}
+
 /**
  * Resolves a category slug from indicator's `category` field (apiCategory in CATEGORIES).
  * Returns null if no match — caller must guard against null when adding to params.
@@ -55,6 +84,9 @@ export function track(event, params) {
     const { indicatorCategory, ...rest } = params;
     payload = withCategory(rest, indicatorCategory);
   }
+  // Признак аудитории — в каждое событие. authed уже мог прийти в params
+  // (напр. compare_image_download), но здесь гарантируем его всегда.
+  payload = { ...(payload || {}), authed: _identity.authed ? 1 : 0 };
   ym(COUNTER_ID, 'reachGoal', event, payload);
   sendEvent(event, payload);
 }
@@ -213,4 +245,8 @@ export const events = {
   REGIONS_MAP_SELECT: 'regions_map_select',
   REGION_COMPARE_ADD: 'region_compare_add',
   REGION_CROSSLINK_CLICK: 'region_crosslink_click',
+  // Просмотр карточки регионального показателя — first-party аналог
+  // indicator_view, чтобы просмотры регионов попадали в «Пульс», а не только
+  // в хиты Метрики.
+  REGION_INDICATOR_VIEW: 'region_indicator_view',
 };

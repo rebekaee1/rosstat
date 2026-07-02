@@ -98,6 +98,21 @@ export default function RegionIndicatorPage() {
     if (ok) track(events.CHART_IMAGE_DOWNLOAD, { indicator: `region:${slug}:${code}`, region: slug });
   };
 
+  // First-party просмотр карточки: один раз на связку регион+показатель,
+  // чтобы просмотры регионов попадали в «Пульс».
+  const viewedRef = useRef('');
+  useEffect(() => {
+    if (!data?.indicator) return;
+    const key = `${slug}:${code}`;
+    if (viewedRef.current === key) return;
+    viewedRef.current = key;
+    track(events.REGION_INDICATOR_VIEW, {
+      indicator: `region:${slug}:${code}`,
+      region: slug,
+      code,
+    });
+  }, [data?.indicator, slug, code]);
+
   const regionName = data?.region?.name;
   const indName = data?.indicator?.name;
   const last = data?.series?.[data.series.length - 1];

@@ -12,6 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.config import settings
 from app.database import get_db
 from app.models import AgentActionAudit, AnalyticsSyncRun, Experiment, FrontendEvent
+from app.security.auth import current_session
 from app.services.action_policy import evaluate_action
 from app.services.action_executor import execute_approved_action
 from app.services.analytics_features import detect_page_opportunities, sync_run_impact, top_pages, top_search_phrases
@@ -214,12 +215,21 @@ async def apply_action(action_id: int, approval_token: str, db: AsyncSession = D
 
 @router.post("/events")
 async def collect_event(request: Request, payload: FrontendEventIn, db: AsyncSession = Depends(get_db)):
-    if not settings.analytics_enabled:
-        return {"accepted": False, "reason": "analytics disabled"}
+    # First-party телеметрия развязана с внешней Метрика-интеграцией: пишем
+    # события всегда (питает «Пульс»), даже если analytics_enabled=false.
+    if not settings.frontend_events_enabled:
+        return {"accepted": False, "reason": "frontend events disabled"}
     session_hash = hashlib.sha256(payload.session_id.encode("utf-8")).hexdigest() if payload.session_id else None
+    # Атрибуция аудитории. Эндпоинт — POST (не кэшируется), поэтому чтение
+    # сессионной куки безопасно и не нарушает инвариант «не варьировать кэш по
+    # куке». Резолв через state-Redis, без похода в БД: сессия несёт user_id.
+    sess = await current_session(request)
+    user_id = sess.get("user_id") if sess else None
     event = FrontendEvent(
         event_name=payload.event_name,
         session_id_hash=session_hash,
+        user_id=str(user_id) if user_id else None,
+        authed=bool(user_id),
         url=payload.url,
         referrer=payload.referrer or request.headers.get("referer"),
         params_json=payload.params,
@@ -228,4 +238,4 @@ async def collect_event(request: Request, payload: FrontendEventIn, db: AsyncSes
     )
     db.add(event)
     await db.commit()
-    return {"accepted": True}
+    return {"accepted": True, "authed": bool(user_id)}

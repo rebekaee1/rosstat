@@ -7280,6 +7280,16 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_analytics_api.py",
+          "line": 97,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_analytics_api.py",
+          "line": 118,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_calendar_seed.py",
           "line": 210,
           "kind": "tests"
@@ -7366,7 +7376,7 @@
         },
         {
           "file": "backend/tests/test_pulse.py",
-          "line": 16,
+          "line": 18,
           "kind": "tests"
         },
         {
@@ -23020,7 +23030,7 @@
         },
         {
           "file": "backend/tests/test_pulse.py",
-          "line": 16,
+          "line": 18,
           "kind": "tests"
         },
         {
