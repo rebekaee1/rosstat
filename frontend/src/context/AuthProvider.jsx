@@ -18,7 +18,10 @@ export function AuthProvider({ children }) {
         throw e;
       }
     },
-    retry: false,
+    // 401 = аноним, не ретраим; транзиентные сбои (deploy, сеть) — до 2 ретраев,
+    // иначе живая сессия на секунду недоступного бэка выглядела бы как разлогин.
+    retry: (failureCount, error) =>
+      error?.response?.status !== 401 && failureCount < 2,
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
   });

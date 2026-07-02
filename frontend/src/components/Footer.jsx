@@ -119,13 +119,8 @@ export default function Footer() {
                 </button>
               </li>
               <li>
-                <a href="mailto:contact@forecasteconomy.com" className={footLink} onClick={() => track(events.CONTACT_EMAIL)}>
-                  contact@forecasteconomy.com
-                </a>
-              </li>
-              <li>
-                <a href="mailto:rebeka.ee@aimpact.ru" className={footLink} onClick={() => track(events.CONTACT_EMAIL)}>
-                  rebeka.ee@aimpact.ru
+                <a href="mailto:rebeka.ee@yandex.ru" className={footLink} onClick={() => track(events.CONTACT_EMAIL)}>
+                  rebeka.ee@yandex.ru
                 </a>
               </li>
             </ul>
@@ -145,7 +140,7 @@ export default function Footer() {
               &copy; {new Date().getFullYear()} Forecast Economy. Материалы носят информационный характер и не являются инвестиционной рекомендацией.
             </p>
             <p>
-              Оператор персональных данных: ООО «ИИМПАКТ ПЛЮС» · ИНН 9705243471 · ОГРН 1257700255196 · 123557, г. Москва, ул. Пресненский Вал, д. 21, помещ. 172
+              Оператор персональных данных: ООО «ИИМПАКТ ПЛЮС», ИНН 9705243471, ОГРН 1257700255196. 123557, г. Москва, ул. Пресненский Вал, д. 21, помещ. 172
             </p>
           </div>
         </div>

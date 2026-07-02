@@ -15,6 +15,11 @@ from fastapi import APIRouter, Depends, Request, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
+from app.services.seo_regional import (
+    render_region_html,
+    render_region_indicator_html,
+    render_regions_home_html,
+)
 from app.services.seo_renderer import (
     render_category_html,
     render_home_html,
@@ -68,6 +73,26 @@ async def seo_indicator(
     db: AsyncSession = Depends(get_db),
 ):
     status, html = await render_indicator_html(code, db, mode=mode)
+    return _html_response(status, html, request)
+
+
+@router.api_route("/seo/regions", methods=["GET", "HEAD"], include_in_schema=False)
+async def seo_regions(request: Request, db: AsyncSession = Depends(get_db)):
+    status, html = await render_regions_home_html(db)
+    return _html_response(status, html, request)
+
+
+@router.api_route("/seo/region/{slug}", methods=["GET", "HEAD"], include_in_schema=False)
+async def seo_region(slug: str, request: Request, db: AsyncSession = Depends(get_db)):
+    status, html = await render_region_html(slug, db)
+    return _html_response(status, html, request)
+
+
+@router.api_route("/seo/region/{slug}/{code}", methods=["GET", "HEAD"], include_in_schema=False)
+async def seo_region_indicator(
+    slug: str, code: str, request: Request, db: AsyncSession = Depends(get_db)
+):
+    status, html = await render_region_indicator_html(slug, code, db)
     return _html_response(status, html, request)
 
 

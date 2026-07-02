@@ -30,6 +30,9 @@ const DemographicsPage = lazy(() => import('./pages/DemographicsPage'));
 const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
 const Account = lazy(() => import('./pages/Account'));
+const RegionsHome = lazy(() => import('./pages/RegionsHome'));
+const RegionProfile = lazy(() => import('./pages/RegionProfile'));
+const RegionIndicatorPage = lazy(() => import('./pages/RegionIndicatorPage'));
 
 const EmbedChart = lazy(() => import('./embed/EmbedChart'));
 const EmbedCard = lazy(() => import('./embed/EmbedCard'));
@@ -165,6 +168,9 @@ function AppRoutes() {
             <Route path="/register" element={<Register />} />
             <Route path="/account" element={<Account />} />
             <Route path="/indicator/:code" element={<IndicatorDetailKeyed />} />
+            <Route path="/regions" element={<RegionsHome />} />
+            <Route path="/region/:slug" element={<RegionProfile />} />
+            <Route path="/region/:slug/:code" element={<RegionIndicatorPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>

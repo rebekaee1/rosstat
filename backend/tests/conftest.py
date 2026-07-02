@@ -74,13 +74,17 @@ def auth_env(monkeypatch: pytest.MonkeyPatch):
     app.dependency_overrides[get_db] = _override_get_db
 
     fake = fakeredis.aioredis.FakeRedis(decode_responses=True)
+    fake_state = fakeredis.aioredis.FakeRedis(decode_responses=True)
     prev_redis = cache_mod._redis
+    prev_state = cache_mod._state_redis
     cache_mod._redis = fake
+    cache_mod._state_redis = fake_state
 
-    yield {"app": app, "session_maker": TestSession, "redis": fake}
+    yield {"app": app, "session_maker": TestSession, "redis": fake, "state_redis": fake_state}
 
     app.dependency_overrides.pop(get_db, None)
     cache_mod._redis = prev_redis
+    cache_mod._state_redis = prev_state
     try:
         os.unlink(db_path)
     except OSError:

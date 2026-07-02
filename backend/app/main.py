@@ -257,6 +257,45 @@ async def lifespan(app: FastAPI):
                 settings.telegram_digest_cron_minute,
             )
 
+        if settings.pulse_enabled:
+            from app.services.pulse_report import pulse_report_job, pulse_snapshot_job
+            scheduler.add_job(
+                pulse_snapshot_job,
+                trigger=CronTrigger(hour=23, minute=57, timezone="Europe/Moscow"),
+                id="pulse_snapshot",
+                name="Pulse daily snapshot (users/events/etl/data)",
+                replace_existing=True,
+            )
+            scheduler.add_job(
+                pulse_report_job,
+                trigger=CronTrigger(
+                    hour=settings.pulse_report_cron_hour,
+                    minute=settings.pulse_report_cron_minute,
+                    timezone="Europe/Moscow",
+                ),
+                id="pulse_report",
+                name="Pulse LLM report to owner (OpenRouter → Telegram)",
+                replace_existing=True,
+            )
+            logger.info(
+                "Pulse enabled: snapshot 23:57, report %02d:%02d MSK",
+                settings.pulse_report_cron_hour,
+                settings.pulse_report_cron_minute,
+            )
+
+        if settings.telegram_poller_enabled:
+            from app.services.telegram_bot import telegram_poll_job
+            scheduler.add_job(
+                telegram_poll_job,
+                trigger=IntervalTrigger(seconds=30),
+                id="telegram_poll",
+                name="Telegram bot getUpdates poller (owner buttons)",
+                replace_existing=True,
+                coalesce=True,
+                max_instances=1,
+            )
+            logger.info("Telegram poller enabled: every 30s")
+
         # «New indicator initial ETL trap» — закрытие. После seed_data
         # любые новые source-индикаторы могут стоять с 0 точек, пока
         # daily-job не отработает (06:00 МСК). Триггерим catch-up для них

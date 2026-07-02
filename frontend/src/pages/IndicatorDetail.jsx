@@ -21,6 +21,7 @@ import IndicatorMethodologyPanel from '../components/IndicatorMethodologyPanel';
 import IndicatorForecastSection from '../components/IndicatorForecastSection';
 import IndicatorDataTableSection from '../components/IndicatorDataTableSection';
 import IndicatorSeoBlocks from '../components/IndicatorSeoBlocks';
+import RegionCrossLink from '../components/RegionCrossLink';
 import { findVariantGroup, relatedIndicatorCardCopy } from '../lib/indicatorVariants';
 import useIndicatorViewModeData from '../lib/useIndicatorViewModeData';
 import {
@@ -742,6 +743,8 @@ export default function IndicatorDetail() {
       />
 
       <IndicatorSeoBlocks blocks={indicator?.seo_blocks} indicatorCode={code} />
+
+      <RegionCrossLink macroCode={code} />
 
       {relatedIndicators.length > 0 && (
         <section className="mt-16">

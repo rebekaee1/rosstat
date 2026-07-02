@@ -138,11 +138,11 @@ export default function Terms() {
           К настоящему соглашению применяется право Российской Федерации. Вопросы по работе
           Сайта направляйте на{' '}
           <a
-            href="mailto:contact@forecasteconomy.com"
+            href="mailto:rebeka.ee@yandex.ru"
             className="text-champagne hover:underline"
             onClick={() => track(events.CONTACT_EMAIL)}
           >
-            contact@forecasteconomy.com
+            rebeka.ee@yandex.ru
           </a>{' '}
           или{' '}
           <a

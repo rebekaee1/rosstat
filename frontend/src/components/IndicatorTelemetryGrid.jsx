@@ -136,7 +136,7 @@ export default function IndicatorTelemetryGrid({
 
   const currentDate = s?.currentDate ?? indicator?.current_date;
   const currentMeta = dataMode === 'weekly' && Number(s?.currentValue) === 0
-    ? `ДАТА: ${formatDate(currentDate, dateFmt)} · ЦЕНЫ БЕЗ ИЗМЕНЕНИЙ`
+    ? `ДАТА: ${formatDate(currentDate, dateFmt)} — ЦЕНЫ БЕЗ ИЗМЕНЕНИЙ`
     : `ДАТА: ${formatDate(currentDate, dateFmt)}`;
 
   return (

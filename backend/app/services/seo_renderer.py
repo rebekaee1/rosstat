@@ -255,7 +255,7 @@ def _site_json_ld() -> dict:
                 "@id": f"{DOMAIN}/#organization",
                 "name": "Forecast Economy",
                 "url": DOMAIN,
-                "email": "contact@forecasteconomy.com",
+                "email": "rebeka.ee@yandex.ru",
             },
         ],
     }
@@ -871,12 +871,12 @@ async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> 
 <nav aria-label="Хлебные крошки">{_link("/", "Главная")} / {category_link} / {_link(f"/indicator/{code}", name)} / {year}</nav>
 <h1>{escape(title.split(" — ")[0])}</h1>
 <p>{escape(desc)}</p>
-<figure class="seo-chart"><img src="{DOMAIN}/og/{escape(code)}/{year}.png" width="1200" height="630" alt="{escape(name)} в {year} году — график по месяцам, среднее {escape(_format_number(avg))} {escape(unit)}, источник {escape(indicator.source)}" loading="lazy"><figcaption>{escape(name)} в {year} году — график динамики. Источник: {escape(indicator.source)} · forecasteconomy.com</figcaption></figure>
+<figure class="seo-chart"><img src="{DOMAIN}/og/{escape(code)}/{year}.png" width="1200" height="630" alt="{escape(name)} в {year} году — график по месяцам, среднее {escape(_format_number(avg))} {escape(unit)}, источник {escape(indicator.source)}" loading="lazy"><figcaption>{escape(name)} в {year} году — график динамики. Источник: {escape(indicator.source)}. forecasteconomy.com</figcaption></figure>
 <section><h2>Итоги {year} года</h2>
 <ul>
 <li>Значение на начало года: {escape(_format_number(first.value))} {escape(unit)} ({escape(_format_date(first.date))})</li>
 <li>Значение на конец года: {escape(_format_number(last.value))} {escape(unit)} ({escape(_format_date(last.date))})</li>
-<li>Минимум: {escape(_format_number(vmin))} {escape(unit)} · Максимум: {escape(_format_number(vmax))} {escape(unit)}</li>
+<li>Минимум: {escape(_format_number(vmin))} {escape(unit)}, максимум: {escape(_format_number(vmax))} {escape(unit)}</li>
 <li>Среднее за год: {escape(_format_number(avg))} {escape(unit)}</li>
 <li>Количество наблюдений: {len(rows)}</li>
 <li>Источник: {escape(indicator.source)}</li>

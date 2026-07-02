@@ -48,7 +48,7 @@ alwaysApply: true
 - **ADR-0006**: Индикатор-как-карточка vs derived (view-mode) vs variant (срез) vs frequency — 4 разных оси. Перед добавлением нового indicator пройти 7-пунктный чеклист в `AGENTS.md::Шаг 4`.
 - **Asset-hash trap**: backend и frontend пересобирать и поднимать вместе (`docker compose build backend frontend && up -d backend frontend`). При rebuild только frontend — `--no-cache` обязательно.
 - **Browser-cache trap**: SSR HTML отдаётся с `Cache-Control: no-cache, no-store, must-revalidate` **always** (фикс 2026-05-22 в `frontend/nginx.conf`). Ассеты `/assets/` — `max-age=31536000, immutable`.
-- **Forecast retrain trap**: после деплоя, добавляющего derived, ручной `retrain_indicator_forecast(<source_code>)` + `redis-cli FLUSHDB`. Daily ETL не подхватит автоматически.
+- **Forecast retrain trap**: после деплоя, добавляющего derived, ручной `retrain_indicator_forecast(<source_code>)` + `redis-cli -n 0 FLUSHDB` (только DB 0 — кэш; DB 1 = сессии, не трогать). Daily ETL не подхватит автоматически.
 - **Annual-in-monthly mixing trap**: перед `bulk_upsert` сверить `target.frequency` с фактической частотой добавляемых точек. См. CONTEXT.md::Operational invariants and traps.
 
 ## После любой архитектурной правки

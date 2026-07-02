@@ -12,6 +12,10 @@ class Settings(BaseSettings):
 
     # Redis
     redis_url: str = "redis://localhost:6379/0"
+    # Долгоживущее состояние (сессии/lockout/гостевые квоты) — отдельный DB,
+    # чтобы деплойный FLUSHDB кэша не разлогинивал пользователей.
+    # Пусто = redis_url c номером DB + 1.
+    state_redis_url: str = ""
     cache_ttl_data: int = 3600      # 1 hour for historical data
     cache_ttl_meta: int = 300       # 5 min for metadata/indicators list
 
@@ -119,6 +123,18 @@ class Settings(BaseSettings):
     # Мгновенные уведомления (регистрации + обратная связь). false = тишина,
     # всё уходит только в ежедневный дайджест. ETL-алерты не затрагивает.
     telegram_realtime_alerts_enabled: bool = True
+
+    # «Пульс» — дневные снапшоты активности + LLM-отчёт владельцу (П9б).
+    # Получатель ТОЛЬКО владелец (pulse_chat_id), не digest-рассылка.
+    pulse_enabled: bool = False
+    pulse_chat_id: str = ""
+    pulse_report_cron_hour: int = 9
+    pulse_report_cron_minute: int = 5
+    # LLM-фильтр отчёта через OpenRouter; пустой ключ = детерминированный fallback.
+    openrouter_api_key: str = ""
+    openrouter_model: str = "anthropic/claude-sonnet-5"
+    # Интерактивные кнопки бота (getUpdates-поллер каждые 30 с)
+    telegram_poller_enabled: bool = False
 
     model_config = {"env_prefix": "RUSTATS_", "env_file": ".env", "extra": "ignore"}
 

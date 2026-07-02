@@ -63,6 +63,73 @@ class IndicatorData(Base):
     indicator: Mapped["Indicator"] = relationship(back_populates="data_points")
 
 
+# ---------------------------------------------------------------------------
+# Региональный bounded context (ADR-0008): отдельные таблицы, годовые ряды
+# «Регионы России. Социально-экономические показатели» (Росстат).
+# Не смешивать с федеральной парой Indicator/IndicatorData: другая ось
+# (регион × показатель × год), нет forecast/derived-контуров.
+# ---------------------------------------------------------------------------
+
+
+class Region(Base):
+    __tablename__ = "regions"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    slug: Mapped[str] = mapped_column(String(80), unique=True, nullable=False, index=True)
+    name: Mapped[str] = mapped_column(String(150), nullable=False)
+    # kind: country | district | region | remainder
+    kind: Mapped[str] = mapped_column(String(20), nullable=False, default="region")
+    district_slug: Mapped[str | None] = mapped_column(String(80), index=True)
+    sort_order: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+
+    data_points: Mapped[list["RegionDataPoint"]] = relationship(
+        back_populates="region", cascade="all, delete-orphan", passive_deletes=True
+    )
+
+
+class RegionIndicator(Base):
+    __tablename__ = "region_indicators"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    code: Mapped[str] = mapped_column(String(120), unique=True, nullable=False, index=True)
+    table_code: Mapped[str] = mapped_column(String(20), nullable=False)  # «1.1», «8.4.2»
+    section_num: Mapped[int] = mapped_column(Integer, nullable=False, index=True)
+    section_name: Mapped[str] = mapped_column(String(150), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    unit: Mapped[str] = mapped_column(String(120), nullable=False, default="")
+    note: Mapped[str | None] = mapped_column(Text)
+    source_note: Mapped[str | None] = mapped_column(String(200))  # файл/лист источника
+    year_min: Mapped[int | None] = mapped_column(Integer)
+    year_max: Mapped[int | None] = mapped_column(Integer)
+    is_listed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, server_default="true")
+
+    data_points: Mapped[list["RegionDataPoint"]] = relationship(
+        back_populates="indicator", cascade="all, delete-orphan", passive_deletes=True
+    )
+
+
+class RegionDataPoint(Base):
+    __tablename__ = "region_data"
+    __table_args__ = (
+        UniqueConstraint("indicator_id", "region_id", "year", name="uq_region_data_point"),
+        Index("ix_region_data_indicator_year", "indicator_id", "year"),
+        Index("ix_region_data_region", "region_id"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    indicator_id: Mapped[int] = mapped_column(
+        ForeignKey("region_indicators.id", ondelete="CASCADE"), nullable=False
+    )
+    region_id: Mapped[int] = mapped_column(
+        ForeignKey("regions.id", ondelete="CASCADE"), nullable=False
+    )
+    year: Mapped[int] = mapped_column(Integer, nullable=False)
+    value: Mapped[float] = mapped_column(Numeric(18, 4), nullable=False)
+
+    indicator: Mapped["RegionIndicator"] = relationship(back_populates="data_points")
+    region: Mapped["Region"] = relationship(back_populates="data_points")
+
+
 class Forecast(Base):
     __tablename__ = "forecasts"
 

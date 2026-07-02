@@ -152,7 +152,18 @@ async def logout(request: Request, response: Response):
 
 
 @router.get("/me")
-async def me(user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
+async def me(
+    request: Request,
+    response: Response,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    # Sliding cookie: Redis-TTL продлевается на каждом запросе, а вот max_age
+    # куки был заморожен датой логина — активный пользователь «слетал» через
+    # 30 дней. /me дёргается при каждой загрузке SPA — переустанавливаем куки.
+    sess = getattr(request.state, "session", None)
+    if sess:
+        set_session_cookies(response, sess["sid"], sess["csrf"])
     return {"user": await serialize_user(db, user)}
 
 

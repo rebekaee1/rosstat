@@ -206,4 +206,11 @@ export const events = {
   // Методология прогнозирования: переход с карточки индикатора (подсказка у
   // переключателя «Прогноз») на объясняющую страницу /methodology.
   METHODOLOGY_CLICK: 'methodology_click',
+
+  // Региональный блок: карта, сравнение регионов, переходы макро ↔ регионы.
+  REGIONS_VIEW_TOGGLE: 'regions_view_toggle',
+  REGIONS_MAP_METRIC: 'regions_map_metric',
+  REGIONS_MAP_SELECT: 'regions_map_select',
+  REGION_COMPARE_ADD: 'region_compare_add',
+  REGION_CROSSLINK_CLICK: 'region_crosslink_click',
 };
