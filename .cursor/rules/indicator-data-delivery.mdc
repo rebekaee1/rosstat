@@ -40,7 +40,7 @@ alwaysApply: true
    - `curl -s http://localhost:8000/api/v1/indicators/<code>/data | head` (или эквивалент через прокси Vite).
    - Для правок карточки: открыть целевой URL (например `/indicator/cpi-food?mode=weekly`), snapshot/график не «пустой ряд».
 
-6. **Кэш** — после смены derived/forecast на проде может понадобиться `redis-cli FLUSHDB`; локально — при странных stale-ответах перезапуск backend.
+6. **Кэш** — после смены derived/forecast на проде может понадобиться `redis-cli -n 0 FLUSHDB` (только DB 0 — кэш; DB 1 = сессии); локально — при странных stale-ответах перезапуск backend.
 
 ## Не останавливаться на
 

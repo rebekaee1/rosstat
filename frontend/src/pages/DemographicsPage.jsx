@@ -117,7 +117,7 @@ function StructureBar({ latest }) {
               <p className="text-2xl font-display font-bold text-text-primary tracking-tight">
                 {val.toFixed(1)}
               </p>
-              <p className="text-xs text-text-tertiary font-mono mt-0.5">млн чел. · {pct}%</p>
+              <p className="text-xs text-text-tertiary font-mono mt-0.5">млн чел., {pct}%</p>
             </Link>
           );
         })}

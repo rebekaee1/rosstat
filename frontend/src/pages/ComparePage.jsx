@@ -10,6 +10,8 @@ import {
 } from 'lucide-react';
 import { useIndicators } from '../lib/hooks';
 import { fetchIndicatorData } from '../lib/api';
+import api from '../lib/api';
+import { useRegionsLanding, useRegionsCatalog } from '../lib/regionsApi';
 import { useAuth } from '../context/authContext';
 import {
   formatDate, formatChartAxisDate, formatAxisTick, formatValueWithUnit,
@@ -73,6 +75,97 @@ function parseCodes(searchParams) {
   }
   const legacy = [searchParams.get('a'), searchParams.get('b')].filter(Boolean);
   return legacy.slice(0, USER_MAX);
+}
+
+// --- Региональные ряды в сравнении --------------------------------------
+// Код регионального ряда в URL: `r:{регион}:{показатель}`. Данные приходят
+// из регионального API и нормализуются в макро-форму (год → 1 января),
+// поэтому вся остальная механика графика (индекс, оси, экспорт) общая.
+
+function isRegionCode(code) {
+  return code.startsWith('r:');
+}
+
+async function fetchRegionSeries(code, { signal }) {
+  const [, slug, indCode] = code.split(':');
+  const resp = await api.get(`/regions/${slug}/i/${indCode}`, { signal });
+  const d = resp.data;
+  return {
+    data: d.series.map((p) => ({ date: `${p.year}-01-01`, value: p.value })),
+    __regionMeta: {
+      code,
+      name: `${d.indicator.name} — ${d.region.name}`,
+      unit: d.indicator.unit,
+      frequency: 'annual',
+      category: 'Регионы',
+    },
+  };
+}
+
+/** Выбор регионального ряда: регион + показатель → кнопка «Добавить». */
+function AddRegionSeries({ selected, onAdd, atCap }) {
+  const landing = useRegionsLanding();
+  const catalog = useRegionsCatalog();
+  const [regionSlug, setRegionSlug] = useState('');
+  const [indCode, setIndCode] = useState('');
+
+  const regions = useMemo(() => {
+    if (!landing.data) return [];
+    return landing.data.districts
+      .flatMap((d) => d.regions.map((r) => ({ slug: r.slug, name: r.name })))
+      .sort((a, b) => a.name.localeCompare(b.name, 'ru'));
+  }, [landing.data]);
+
+  const sections = catalog.data?.sections || [];
+  const code = regionSlug && indCode ? `r:${regionSlug}:${indCode}` : null;
+  const canAdd = code && !selected.includes(code) && !atCap;
+
+  return (
+    <div className="rounded-xl border border-border-subtle bg-surface px-3 py-2.5">
+      <div className="text-[11px] font-mono uppercase tracking-widest text-text-tertiary mb-2">
+        Добавить региональный ряд
+      </div>
+      <div className="flex flex-col sm:flex-row gap-2">
+        <select
+          value={regionSlug}
+          onChange={(e) => setRegionSlug(e.target.value)}
+          aria-label="Регион"
+          className="flex-1 min-w-0 bg-transparent border border-border-subtle rounded-lg px-2 py-1.5 text-sm text-text-primary focus:outline-none focus:border-champagne/40"
+        >
+          <option value="">Регион…</option>
+          {regions.map((r) => <option key={r.slug} value={r.slug}>{r.name}</option>)}
+        </select>
+        <select
+          value={indCode}
+          onChange={(e) => setIndCode(e.target.value)}
+          aria-label="Показатель региона"
+          className="flex-1 min-w-0 bg-transparent border border-border-subtle rounded-lg px-2 py-1.5 text-sm text-text-primary focus:outline-none focus:border-champagne/40"
+        >
+          <option value="">Показатель…</option>
+          {sections.map((s) => (
+            <optgroup key={s.num} label={s.name}>
+              {s.indicators.map((i) => (
+                <option key={i.code} value={i.code}>{i.name}</option>
+              ))}
+            </optgroup>
+          ))}
+        </select>
+        <button
+          type="button"
+          disabled={!canAdd}
+          onClick={() => { onAdd(code); track(events.REGION_COMPARE_ADD, { code }); }}
+          className={cn(
+            'shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
+            canAdd
+              ? 'bg-champagne/15 text-champagne hover:bg-champagne/25'
+              : 'bg-obsidian-lighter text-text-tertiary cursor-not-allowed',
+          )}
+        >
+          <Plus className="w-3.5 h-3.5" /> Добавить
+        </button>
+      </div>
+    </div>
+  );
 }
 
 function AddIndicator({ indicators, selected, onAdd, atCap, capHint }) {
@@ -171,9 +264,9 @@ function UpsellModal({ open, onClose }) {
           </button>
         </div>
         <p className="text-sm text-text-secondary leading-relaxed mb-5">
-          Гость может сравнить до двух показателей и скачать картинку с водяным знаком.
-          Зарегистрируйтесь бесплатно — добавляйте до 10 показателей на один график
-          и скачивайте изображение без водяного знака.
+          Гость может сравнить до двух показателей. Зарегистрируйтесь бесплатно —
+          добавляйте до 10 рядов на один график, включая региональные, и скачивайте
+          данные и изображения без ограничений.
         </p>
         <div className="flex items-center gap-3">
           <Link to="/register" onClick={onClose} className="flex-1 text-center rounded-xl bg-champagne text-white text-sm font-semibold py-2.5 hover:bg-champagne-muted transition-colors">
@@ -271,7 +364,9 @@ export default function ComparePage() {
   const results = useQueries({
     queries: codes.map((code) => ({
       queryKey: ['indicator-data', code, undefined],
-      queryFn: ({ signal }) => fetchIndicatorData(code, undefined, { signal }),
+      queryFn: ({ signal }) => (isRegionCode(code)
+        ? fetchRegionSeries(code, { signal })
+        : fetchIndicatorData(code, undefined, { signal })),
       enabled: !!code,
       staleTime: 60 * 60 * 1000,
       gcTime: 30 * 60 * 1000,
@@ -282,7 +377,9 @@ export default function ComparePage() {
     code,
     key: `v${i}`,
     color: PALETTE[i % PALETTE.length],
-    ind: indicators?.find((x) => x.code === code),
+    ind: isRegionCode(code)
+      ? results[i]?.data?.__regionMeta
+      : indicators?.find((x) => x.code === code),
     data: results[i]?.data,
     loading: results[i]?.isLoading,
     error: results[i]?.isError,
@@ -360,13 +457,14 @@ export default function ComparePage() {
 
   const handleExport = async () => {
     if (!hasData) return;
-    const watermark = !isAuthed; // гость — с watermark, зарегистрированный — без.
+    // Водяной знак «forecasteconomy.com» — на всех выгрузках, для гостей и
+    // зарегистрированных (решение владельца 2026-07-02).
     const ok = await exportNodeToPng(exportRef.current, {
-      filename: `compare_${codes.join('-') || 'chart'}.png`,
-      watermark,
+      filename: `compare_${codes.join('-').replace(/:/g, '_') || 'chart'}.png`,
+      watermark: true,
     }).catch(() => false);
     if (ok) {
-      track(events.COMPARE_IMAGE_DOWNLOAD, { count: codes.length, watermark, authed: isAuthed });
+      track(events.COMPARE_IMAGE_DOWNLOAD, { count: codes.length, watermark: true, authed: isAuthed });
     } else {
       track(events.COMPARE_IMAGE_BLOCKED, { count: codes.length });
     }
@@ -377,7 +475,7 @@ export default function ComparePage() {
     ? `Максимум ${USER_MAX} показателей`
     : 'Хотите сравнить больше двух индикаторов — зарегистрируйтесь';
   const title = series.length
-    ? `Сравнение: ${series.map((s) => s.ind?.name || s.code).join(' · ')}`
+    ? `Сравнение: ${series.map((s) => s.ind?.name || s.code).join(' — ')}`
     : 'Сравнение показателей';
 
   return (
@@ -404,9 +502,11 @@ export default function ComparePage() {
           Сравнение показателей
         </h1>
         <p className="text-sm md:text-base text-text-tertiary max-w-2xl">
-          Найдите показатели по названию и добавьте их на один график. Режим «Индекс»
-          приводит ряды к общей базе (100 в начале периода) — так сравнивают динамику
-          показателей с разными единицами измерения.
+          На один график можно вывести и макроэкономические индикаторы страны, и
+          показатели отдельных регионов — например, сопоставить зарплату в своём
+          регионе с инфляцией по России. Если единицы измерения различаются,
+          переключитесь на шкалу «Индекс»: все ряды стартуют со 100, и на графике
+          остаётся только сама динамика.
         </p>
       </div>
 
@@ -429,6 +529,10 @@ export default function ComparePage() {
               </button>
             )}
           </div>
+        </div>
+
+        <div className="mt-3">
+          <AddRegionSeries selected={codes} onAdd={addCode} atCap={atCap} />
         </div>
 
         {codes.length > 0 && (
@@ -509,7 +613,7 @@ export default function ComparePage() {
               'ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-mono uppercase tracking-wider transition-colors',
               hasData ? 'border-border-subtle text-text-tertiary hover:text-champagne hover:border-champagne/30' : 'border-border-subtle/50 text-text-tertiary/40 cursor-not-allowed',
             )}
-            title={isAuthed ? 'Скачать картинку без водяного знака' : 'Скачать картинку (с водяным знаком). Без знака — после входа'}
+            title="Скачать график картинкой"
           >
             <ImageDown className="w-3.5 h-3.5" />
             Картинка
@@ -534,9 +638,9 @@ export default function ComparePage() {
             </h2>
             <p className="text-center text-xs text-text-tertiary mb-4">
               {indexed
-                ? 'Индекс относительной динамики — 100 в начале периода, общая шкала'
-                : 'Значения в исходных единицах, у каждого ряда своя ось'}
-              {` · период: ${RANGE_OPTIONS.find((r) => r.key === range)?.label}`}
+                ? 'Индекс относительной динамики — 100 в начале периода, общая шкала.'
+                : 'Значения в исходных единицах, у каждого ряда своя ось.'}
+              {` Период: ${RANGE_OPTIONS.find((r) => r.key === range)?.label.toLowerCase()}`}
             </p>
 
             <div className="mb-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-mono border-b border-border-subtle pb-4">
@@ -545,25 +649,25 @@ export default function ComparePage() {
                   <span className="w-3 h-0.5 rounded-full" style={{ backgroundColor: s.color }} />
                   <span style={{ color: s.color }}>{s.ind?.name || s.code}</span>
                   <span className="text-text-tertiary">
-                    · {indexed
-                      ? 'старт = 100'
-                      : `${unitSuffix(s.ind?.unit)}${s.ind?.frequency ? `, ${freqLabel(s.ind.frequency)}` : ''} · ${axisFor(i) === 'left' ? 'левая ось' : 'правая ось'}`}
+                    {indexed
+                      ? '(старт = 100)'
+                      : `(${unitSuffix(s.ind?.unit)}${s.ind?.frequency ? `, ${freqLabel(s.ind.frequency)}` : ''}, ${axisFor(i) === 'left' ? 'левая ось' : 'правая ось'})`}
                   </span>
                 </span>
               ))}
             </div>
 
             <div className="relative rounded-2xl">
-              {/* Водяной знак — гостевой тизер: показываем на экране только гостю
-                  (его же экспорт получает тайловый знак из canvas). У
-                  зарегистрированного и экран, и выгрузка чистые. */}
+              {/* Водяной знак — гостевой тизер на экране (его экспорт получает
+                  тайловый знак из canvas; выгрузка зарегистрированного тоже
+                  с watermark — см. handleExport). */}
               {!isAuthed && (
                 <div
                   aria-hidden="true"
                   data-no-export="true"
                   className="pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 -rotate-6 select-none whitespace-nowrap text-3xl font-display font-bold tracking-[0.18em] text-text-primary opacity-[0.055] md:text-5xl"
                 >
-                  Forecast Economy
+                  forecasteconomy.com
                 </div>
               )}
               <ResponsiveContainer width="100%" height={480}>

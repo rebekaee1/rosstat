@@ -97,6 +97,14 @@ services:
       RUSTATS_TELEGRAM_DIGEST_ENABLED: ${RUSTATS_TELEGRAM_DIGEST_ENABLED:-false}
       RUSTATS_TELEGRAM_DIGEST_CHAT_IDS: ${RUSTATS_TELEGRAM_DIGEST_CHAT_IDS:-}
       RUSTATS_TELEGRAM_REALTIME_ALERTS_ENABLED: ${RUSTATS_TELEGRAM_REALTIME_ALERTS_ENABLED:-true}
+      # «Пульс»: дневные снапшоты + LLM-отчёт владельцу + кнопки бота (П9б)
+      RUSTATS_PULSE_ENABLED: ${RUSTATS_PULSE_ENABLED:-false}
+      RUSTATS_PULSE_CHAT_ID: ${RUSTATS_PULSE_CHAT_ID:-}
+      RUSTATS_OPENROUTER_API_KEY: ${RUSTATS_OPENROUTER_API_KEY:-}
+      RUSTATS_OPENROUTER_MODEL: ${RUSTATS_OPENROUTER_MODEL:-anthropic/claude-sonnet-5}
+      RUSTATS_TELEGRAM_POLLER_ENABLED: ${RUSTATS_TELEGRAM_POLLER_ENABLED:-false}
+      # Состояние (сессии/квоты) — отдельный Redis DB /1: FLUSHDB кэша не трогает
+      RUSTATS_STATE_REDIS_URL: redis://:${REDIS_PASSWORD:-changeme}@redis:6379/1
       TZ: Europe/Moscow
     volumes:
       - ./output:/app/data:ro

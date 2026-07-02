@@ -1,4 +1,6 @@
 import { useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import { MapPin, ArrowRight } from 'lucide-react';
 import { useIndicators } from '../lib/hooks';
 import useDocumentMeta from '../lib/useMeta';
 import { CATEGORIES, countInCategory } from '../lib/categories';
@@ -35,6 +37,27 @@ export default function Dashboard() {
           Анализируйте и скачивайте прогнозы и фактические данные по 100+ макроэкономическим индикаторам Российской Федерации
         </h1>
       </header>
+
+      {/* Вход в региональный блок — отдельное представление платформы */}
+      <Link
+        to="/regions"
+        className="group flex items-center justify-between gap-4 mb-10 md:mb-12 rounded-2xl border border-border-champagne bg-gradient-to-r from-champagne/8 to-transparent px-5 py-4 md:px-6 md:py-5 hover:from-champagne/14 transition-all"
+      >
+        <div className="flex items-start gap-3.5 min-w-0">
+          <div className="shrink-0 mt-0.5 w-9 h-9 rounded-xl bg-champagne/15 flex items-center justify-center">
+            <MapPin size={17} className="text-champagne" />
+          </div>
+          <div className="min-w-0">
+            <div className="font-semibold text-text-primary text-[15px] md:text-base group-hover:text-champagne transition-colors">
+              Регионы России
+            </div>
+            <div className="mt-0.5 text-[13px] text-text-secondary leading-snug">
+              Статистика всех 85 субъектов РФ: население, зарплаты, ВРП, цены — 450+ показателей с 1990 года
+            </div>
+          </div>
+        </div>
+        <ArrowRight size={18} className="shrink-0 text-text-tertiary group-hover:text-champagne group-hover:translate-x-0.5 transition-all" />
+      </Link>
 
       <section>
         <div className="flex items-center gap-4 mb-6">

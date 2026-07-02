@@ -64,8 +64,8 @@ export default function About() {
         </p>
         <p className="text-text-secondary leading-relaxed">
           По вопросам сотрудничества и замечаний по данным:{' '}
-          <a href="mailto:contact@forecasteconomy.com" className="text-champagne hover:underline" onClick={() => track(events.CONTACT_EMAIL)}>
-            contact@forecasteconomy.com
+          <a href="mailto:rebeka.ee@yandex.ru" className="text-champagne hover:underline" onClick={() => track(events.CONTACT_EMAIL)}>
+            rebeka.ee@yandex.ru
           </a>
           .
         </p>

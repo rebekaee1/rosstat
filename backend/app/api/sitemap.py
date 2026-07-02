@@ -30,6 +30,13 @@ def _sitemap_lastmod(last_data: date | None, fallback: date) -> str:
 
 @router.api_route("/sitemap.xml", methods=["GET", "HEAD"], include_in_schema=False)
 async def sitemap_xml(db: AsyncSession = Depends(get_db)):
+    from app.core.cache import cache_get, cache_set
+
+    # ~42 тыс. URL (макро + региональный блок) — кэш готового XML на 6 часов.
+    cached = await cache_get("fe:sitemap:xml")
+    if cached:
+        return Response(content=cached, media_type="application/xml")
+
     today = date.today()
 
     urls = []
@@ -102,6 +109,48 @@ async def sitemap_xml(db: AsyncSession = Depends(get_db)):
             f"  </url>"
         )
 
+    # --- Региональный блок: /regions, /region/{slug}, /region/{slug}/{code} ---
+    from app.models import Region, RegionDataPoint, RegionIndicator
+
+    urls.append(
+        f"  <url>\n"
+        f"    <loc>{DOMAIN}/regions</loc>\n"
+        f"    <lastmod>{today.isoformat()}</lastmod>\n"
+        f"    <changefreq>weekly</changefreq>\n"
+        f"    <priority>0.9</priority>\n"
+        f"  </url>"
+    )
+    region_rows = (await db.execute(
+        select(Region.slug).where(Region.kind == "region").order_by(Region.sort_order)
+    )).scalars().all()
+    for rslug in region_rows:
+        urls.append(
+            f"  <url>\n"
+            f"    <loc>{DOMAIN}/region/{rslug}</loc>\n"
+            f"    <lastmod>{today.isoformat()}</lastmod>\n"
+            f"    <changefreq>weekly</changefreq>\n"
+            f"    <priority>0.8</priority>\n"
+            f"  </url>"
+        )
+    pair_stmt = (
+        select(Region.slug, RegionIndicator.code, func.max(RegionDataPoint.year))
+        .join(Region, Region.id == RegionDataPoint.region_id)
+        .join(RegionIndicator, RegionIndicator.id == RegionDataPoint.indicator_id)
+        .where(Region.kind == "region", RegionIndicator.is_listed.is_(True))
+        .group_by(Region.slug, RegionIndicator.code)
+        .order_by(Region.slug, RegionIndicator.code)
+    )
+    for rslug, icode, last_year in (await db.execute(pair_stmt)).all():
+        lastmod = f"{int(last_year)}-12-31" if last_year else today.isoformat()
+        urls.append(
+            f"  <url>\n"
+            f"    <loc>{DOMAIN}/region/{rslug}/{icode}</loc>\n"
+            f"    <lastmod>{lastmod}</lastmod>\n"
+            f"    <changefreq>monthly</changefreq>\n"
+            f"    <priority>0.5</priority>\n"
+            f"  </url>"
+        )
+
     xml = (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
@@ -109,6 +158,7 @@ async def sitemap_xml(db: AsyncSession = Depends(get_db)):
         + "\n</urlset>"
     )
 
+    await cache_set("fe:sitemap:xml", xml, 6 * 3600)
     return Response(content=xml, media_type="application/xml")
 
 
@@ -290,6 +340,51 @@ async def og_image_indicator_year(code: str, year: int, db: AsyncSession = Depen
             values=values,
             period_text=f"{year} год",
             x_labels=(first_date.strftime("%d.%m"), last_date.strftime("%d.%m")),
+        )
+        store_og(cache_key, png)
+    return Response(
+        content=png,
+        media_type="image/png",
+        headers={"Cache-Control": "public, max-age=3600"},
+    )
+
+
+@router.get("/api/v1/og-image/region/{slug}/{code}.png", include_in_schema=False)
+async def og_image_region_indicator(slug: str, code: str, db: AsyncSession = Depends(get_db)):
+    """PNG-график регионального показателя: og:image + видимый <img> SSR-страницы."""
+    from app.models import Region, RegionDataPoint, RegionIndicator
+    from app.services.og_image import cached_og, render_indicator_og, store_og
+    from app.services.seo_regional import _fmt as _fmt_ru
+
+    cache_key = f"region:{slug}:{code}"
+    png = cached_og(cache_key)
+    if png is None:
+        region = (await db.execute(
+            select(Region).where(Region.slug == slug)
+        )).scalar_one_or_none()
+        indicator = (await db.execute(
+            select(RegionIndicator).where(RegionIndicator.code == code)
+        )).scalar_one_or_none()
+        if not region or not indicator:
+            return Response(status_code=404)
+        rows = (await db.execute(
+            select(RegionDataPoint.year, RegionDataPoint.value)
+            .where(RegionDataPoint.indicator_id == indicator.id,
+                   RegionDataPoint.region_id == region.id)
+            .order_by(RegionDataPoint.year)
+        )).all()
+        if len(rows) < 2:
+            return Response(status_code=404)
+        values = [float(v) for _y, v in rows]
+        unit = (indicator.unit or "").strip()
+        value_text = f"{_fmt_ru(values[-1])} {unit}".strip()
+        png = render_indicator_og(
+            code=cache_key,
+            name=f"{indicator.name} — {region.name}",
+            value_text=value_text,
+            date_text=f"{rows[-1][0]} год",
+            values=values,
+            x_labels=(str(rows[0][0]), str(rows[-1][0])),
         )
         store_og(cache_key, png)
     return Response(

@@ -202,4 +202,11 @@ export const events = {
   SEARCH_QUERY: 'search_query',
   SEARCH_SELECT: 'search_select',
   SEARCH_ABANDON: 'search_abandon',
+
+  // Региональный блок: карта, сравнение регионов, переходы макро ↔ регионы.
+  REGIONS_VIEW_TOGGLE: 'regions_view_toggle',
+  REGIONS_MAP_METRIC: 'regions_map_metric',
+  REGIONS_MAP_SELECT: 'regions_map_select',
+  REGION_COMPARE_ADD: 'region_compare_add',
+  REGION_CROSSLINK_CLICK: 'region_crosslink_click',
 };

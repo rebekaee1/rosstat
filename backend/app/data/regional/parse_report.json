@@ -1,0 +1,24 @@
+{
+ "files": 20,
+ "sheets_total": 461,
+ "sheets_parsed": 461,
+ "points": 909701,
+ "unresolved_rows": {
+  "Межрегиональное управление": 1
+ },
+ "unparsed_values": [],
+ "skipped_sheets": [],
+ "duplicate_year_cols": [
+  [
+   "Раздел 3 - Уровень жизни населения.xlsx",
+   "3.1.3.",
+   2024
+  ],
+  [
+   "Раздел 3 - Уровень жизни населения.xlsx",
+   "3.6.",
+   2024
+  ]
+ ],
+ "indicators": 461
+}

@@ -23,6 +23,7 @@
 | [`docs/adr/0004`](docs/adr/0004-rosstat-russian-canonical-sdds-deprecated.md) | Rosstat русский canonical, SDDS English deprecated. Pilot: gdp-nominal end-to-end 2026-05-10 |
 | [`docs/adr/0005`](docs/adr/0005-official-calendar-source-bound.md) | Calendar source-bound: public dates only from official source/rule with provenance |
 | [`docs/adr/0006`](docs/adr/0006-indicator-card-unification.md) | Indicator card unification: ось «карточка vs derived vs variant vs frequency» (звонок 2026-05-22) |
+| [`docs/adr/0008`](docs/adr/0008-regional-bounded-context.md) | Региональный блок: bounded context `регион × показатель × год`, артефакт вместо ETL, дособор из архивных редакций |
 | [`docs/indicator-family-playbook.md`](docs/indicator-family-playbook.md) | Семейство до продакшена: продуктовая модель, уровни UI A/B/C; эталоны **ИПЦ** (4×10) и **жильё** (2×3); фазы A–G |
 
 ---
@@ -255,6 +256,17 @@ Daily ETL (06:00 МСК, `RUSTATS_SCHEDULER_CRON_HOUR/MINUTE`) запускае�
 
 Цель кабинета — **lead-gen**: вход через OAuth открывает полную выгрузку рядов (gate только на download, см. домен Export) и собирает согласие на рассылки о выходе данных (домен Notifications). Не монетизация, не платный wall. Детали — ADR-0007 (в работе).
 
+### Региональный блок (ADR-0008, реализован локально 2026-07-02)
+
+Отдельный bounded context с осью `регион × показатель × год` — НЕ часть макро-каталога. Источник — годовой сборник Росстата «Регионы России. Социально-экономические показатели» (Excel-приложение с 2024, ранее Word).
+
+- **Region** — территория: РФ, 8 федеральных округов, 85 субъектов, 2 агрегата-остатка (Архангельская/Тюменская без АО). Канонический реестр + нормализация имён строк Росстата — `scripts/regional/regions_registry.py`.
+- **RegionIndicator** — показатель сборника (489 штук, 22 раздела; разделы 21 «Внешняя торговля» и 22 «Правонарушения» дособраны из архивных редакций). Кода макро-`Indicator` не касается.
+- **RegionDataPoint** — годовая точка `(indicator, region, year)`; 960 926 точек, 1990–2024.
+- **Артефакт вместо ETL**: `scripts/regional/parse_pril_2025.py` → `backfill_pril_2022_2023.py` → `backfill_word.py` пишут `backend/app/data/regional/` (коммитится); `seed_regional.py` идемпотентно заливает из entrypoint. Планировщик региональные данные не трогает; обновление — раз в год руками по новому архиву.
+- **Прогнозов и derived нет** намеренно: годовая частота, полный пересмотр издания. Динамика Г/г считается на лету.
+- UI: `/regions` → `/region/{slug}` → `/region/{slug}/{code}`; SSR/sitemap/OG — по ADR-0003 (`seo_regional.py`).
+
 ---
 
 ## Operational invariants and traps
@@ -265,7 +277,7 @@ Daily ETL (06:00 МСК, `RUSTATS_SCHEDULER_CRON_HOUR/MINUTE`) запускае�
 
 После `docker compose build frontend` без перезапуска backend — backend SEO renderer возвращает HTML со ссылками на удалённые `/assets/*-OLD-HASH.js`. Причина: `seo_renderer._APP_ASSETS` кэширует discover'ные имена файлов в памяти процесса.
 
-**Правило:** при rebuild фронта всегда делать `docker compose up -d backend frontend` одновременно (backend перезапустится, кэш сбросится). Альтернатива: `docker compose restart backend && redis-cli FLUSHDB`.
+**Правило:** при rebuild фронта всегда делать `docker compose up -d backend frontend` одновременно (backend перезапустится, кэш сбросится). Альтернатива: `docker compose restart backend && redis-cli -n 0 FLUSHDB` (только DB 0 — кэш; в DB 1 живут сессии/квоты, их не трогать).
 
 ### Pure-revision day
 
@@ -402,7 +414,7 @@ docker compose exec backend python -c \
    asyncio.run(retrain_indicator_forecast('<source_code>'))"
 ```
 
-Каскадный retrain `derived_from_source` стратегии подхватит зависимые индикаторы. После — `redis-cli FLUSHDB` для сброса `fe:*:forecast` ключей.
+Каскадный retrain `derived_from_source` стратегии подхватит зависимые индикаторы. После — `redis-cli -n 0 FLUSHDB` для сброса `fe:*:forecast` ключей (только DB 0: DB 1 хранит сессии пользователей — с 2026-07-02 они изолированы от кэша, FLUSHDB кэша больше никого не разлогинивает).
 
 ### Inflation-weekly: семантика и источник
 

@@ -137,11 +137,11 @@ export default function IndicatorTile({ indicator, delay = 0, displayOverride, s
                 <div className="flex items-center gap-2 flex-wrap">
                   <p className="text-[10px] uppercase tracking-widest text-text-tertiary font-mono">
                     {formatDate(indicator.current_date, dateFmt)}
-                    {hasHero ? ' · Г/Г' : ''}
+                    {hasHero ? ' (Г/Г)' : ''}
                   </p>
                   {relativeTime(indicator.current_date) && (
                     <span className="text-[9px] text-text-tertiary/60 font-mono">
-                      · {relativeTime(indicator.current_date)}
+                      {relativeTime(indicator.current_date)}
                     </span>
                   )}
                 </div>

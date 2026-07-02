@@ -295,3 +295,61 @@ class TestFetchWeeklyCpiCutoff:
         assert {p.date for p in result["food"]} == {recent}
         # nonfood: known-набор пуст → обе точки остаются.
         assert len(result["nonfood"]) == 2
+
+
+# --- Fuel bulletin (rosstat_weekly_price_parser) ---------------------------
+
+FUEL_BULLETIN_HTML = """
+<html><body>
+<p>О ПОТРЕБИТЕЛЬСКИХ ЦЕНАХ НА НЕФТЕПРОДУКТЫ С 23 ПО 29 ИЮНЯ 2026 ГОДА</p>
+<p>Средние потребительские цены на бензин автомобильный
+и дизельное топливо по Российской Федерации</p>
+<table>
+<tr><td>На дату регистрации</td></tr>
+<tr><td>22 июня&#160;2026 г.</td><td>29 июня&#160;2026 г.</td></tr>
+<tr><td>Бензин автомобильный</td><td>71,20</td><td>72,38</td></tr>
+<tr><td>в том числе: марки АИ-92</td><td>67,54</td><td>68,76</td></tr>
+<tr><td>марки АИ-95</td><td>73,20</td><td>74,38</td></tr>
+<tr><td>марки АИ-98 и выше</td><td>96,51</td><td>97,15</td></tr>
+<tr><td>Дизельное топливо</td><td>82,93</td><td>84,84</td></tr>
+</table>
+</body></html>
+"""
+
+
+class TestFuelBulletinParse:
+    """HTML-бюллетень «О потребительских ценах на нефтепродукты» → PricePoint'ы."""
+
+    def test_parses_ai92_two_dates(self):
+        from app.services.rosstat_weekly_price_parser import _parse_fuel_bulletin_html
+
+        pts = _parse_fuel_bulletin_html(FUEL_BULLETIN_HTML, "аи-92")
+        assert [(p.date, p.value) for p in pts] == [
+            (date(2026, 6, 22), 67.54),
+            (date(2026, 6, 29), 68.76),
+        ]
+
+    def test_parses_diesel(self):
+        from app.services.rosstat_weekly_price_parser import _parse_fuel_bulletin_html
+
+        pts = _parse_fuel_bulletin_html(FUEL_BULLETIN_HTML, "дизельное топливо")
+        assert pts[-1].value == 84.84
+
+    def test_no_table_returns_empty(self):
+        from app.services.rosstat_weekly_price_parser import _parse_fuel_bulletin_html
+
+        assert _parse_fuel_bulletin_html("<html><body>пусто</body></html>", "аи-92") == []
+
+    def test_bulletin_overrides_xlsx_on_merge(self):
+        """union: бюллетень первичен на совпадающих датах."""
+        from app.services.rosstat_weekly_price_parser import PricePoint
+
+        xlsx = {date(2026, 6, 22): 67.50}
+        bulletin = [
+            PricePoint(date=date(2026, 6, 22), value=67.54),
+            PricePoint(date=date(2026, 6, 29), value=68.76),
+        ]
+        merged = dict(xlsx)
+        merged.update({p.date: p.value for p in bulletin})
+        assert merged[date(2026, 6, 22)] == 67.54
+        assert merged[date(2026, 6, 29)] == 68.76

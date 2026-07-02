@@ -1,0 +1,578 @@
+[
+ {
+  "slug": "russia",
+  "name": "Российская Федерация",
+  "kind": "country",
+  "district": null
+ },
+ {
+  "slug": "cfo",
+  "name": "Центральный федеральный округ",
+  "kind": "district",
+  "district": null
+ },
+ {
+  "slug": "szfo",
+  "name": "Северо-Западный федеральный округ",
+  "kind": "district",
+  "district": null
+ },
+ {
+  "slug": "ufo-south",
+  "name": "Южный федеральный округ",
+  "kind": "district",
+  "district": null
+ },
+ {
+  "slug": "skfo",
+  "name": "Северо-Кавказский федеральный округ",
+  "kind": "district",
+  "district": null
+ },
+ {
+  "slug": "pfo",
+  "name": "Приволжский федеральный округ",
+  "kind": "district",
+  "district": null
+ },
+ {
+  "slug": "urfo",
+  "name": "Уральский федеральный округ",
+  "kind": "district",
+  "district": null
+ },
+ {
+  "slug": "sfo",
+  "name": "Сибирский федеральный округ",
+  "kind": "district",
+  "district": null
+ },
+ {
+  "slug": "dfo",
+  "name": "Дальневосточный федеральный округ",
+  "kind": "district",
+  "district": null
+ },
+ {
+  "slug": "belgorodskaya-oblast",
+  "name": "Белгородская область",
+  "kind": "region",
+  "district": "cfo"
+ },
+ {
+  "slug": "bryanskaya-oblast",
+  "name": "Брянская область",
+  "kind": "region",
+  "district": "cfo"
+ },
+ {
+  "slug": "vladimirskaya-oblast",
+  "name": "Владимирская область",
+  "kind": "region",
+  "district": "cfo"
+ },
+ {
+  "slug": "voronezhskaya-oblast",
+  "name": "Воронежская область",
+  "kind": "region",
+  "district": "cfo"
+ },
+ {
+  "slug": "ivanovskaya-oblast",
+  "name": "Ивановская область",
+  "kind": "region",
+  "district": "cfo"
+ },
+ {
+  "slug": "kaluzhskaya-oblast",
+  "name": "Калужская область",
+  "kind": "region",
+  "district": "cfo"
+ },
+ {
+  "slug": "kostromskaya-oblast",
+  "name": "Костромская область",
+  "kind": "region",
+  "district": "cfo"
+ },
+ {
+  "slug": "kurskaya-oblast",
+  "name": "Курская область",
+  "kind": "region",
+  "district": "cfo"
+ },
+ {
+  "slug": "lipetskaya-oblast",
+  "name": "Липецкая область",
+  "kind": "region",
+  "district": "cfo"
+ },
+ {
+  "slug": "moskovskaya-oblast",
+  "name": "Московская область",
+  "kind": "region",
+  "district": "cfo"
+ },
+ {
+  "slug": "orlovskaya-oblast",
+  "name": "Орловская область",
+  "kind": "region",
+  "district": "cfo"
+ },
+ {
+  "slug": "ryazanskaya-oblast",
+  "name": "Рязанская область",
+  "kind": "region",
+  "district": "cfo"
+ },
+ {
+  "slug": "smolenskaya-oblast",
+  "name": "Смоленская область",
+  "kind": "region",
+  "district": "cfo"
+ },
+ {
+  "slug": "tambovskaya-oblast",
+  "name": "Тамбовская область",
+  "kind": "region",
+  "district": "cfo"
+ },
+ {
+  "slug": "tverskaya-oblast",
+  "name": "Тверская область",
+  "kind": "region",
+  "district": "cfo"
+ },
+ {
+  "slug": "tulskaya-oblast",
+  "name": "Тульская область",
+  "kind": "region",
+  "district": "cfo"
+ },
+ {
+  "slug": "yaroslavskaya-oblast",
+  "name": "Ярославская область",
+  "kind": "region",
+  "district": "cfo"
+ },
+ {
+  "slug": "moskva",
+  "name": "г. Москва",
+  "kind": "region",
+  "district": "cfo"
+ },
+ {
+  "slug": "respublika-kareliya",
+  "name": "Республика Карелия",
+  "kind": "region",
+  "district": "szfo"
+ },
+ {
+  "slug": "respublika-komi",
+  "name": "Республика Коми",
+  "kind": "region",
+  "district": "szfo"
+ },
+ {
+  "slug": "arhangelskaya-oblast",
+  "name": "Архангельская область",
+  "kind": "region",
+  "district": "szfo"
+ },
+ {
+  "slug": "nenetskiy-ao",
+  "name": "Ненецкий автономный округ",
+  "kind": "region",
+  "district": "szfo"
+ },
+ {
+  "slug": "vologodskaya-oblast",
+  "name": "Вологодская область",
+  "kind": "region",
+  "district": "szfo"
+ },
+ {
+  "slug": "kaliningradskaya-oblast",
+  "name": "Калининградская область",
+  "kind": "region",
+  "district": "szfo"
+ },
+ {
+  "slug": "leningradskaya-oblast",
+  "name": "Ленинградская область",
+  "kind": "region",
+  "district": "szfo"
+ },
+ {
+  "slug": "murmanskaya-oblast",
+  "name": "Мурманская область",
+  "kind": "region",
+  "district": "szfo"
+ },
+ {
+  "slug": "novgorodskaya-oblast",
+  "name": "Новгородская область",
+  "kind": "region",
+  "district": "szfo"
+ },
+ {
+  "slug": "pskovskaya-oblast",
+  "name": "Псковская область",
+  "kind": "region",
+  "district": "szfo"
+ },
+ {
+  "slug": "sankt-peterburg",
+  "name": "г. Санкт-Петербург",
+  "kind": "region",
+  "district": "szfo"
+ },
+ {
+  "slug": "respublika-adygeya",
+  "name": "Республика Адыгея",
+  "kind": "region",
+  "district": "ufo-south"
+ },
+ {
+  "slug": "respublika-kalmykiya",
+  "name": "Республика Калмыкия",
+  "kind": "region",
+  "district": "ufo-south"
+ },
+ {
+  "slug": "respublika-krym",
+  "name": "Республика Крым",
+  "kind": "region",
+  "district": "ufo-south"
+ },
+ {
+  "slug": "krasnodarskiy-kray",
+  "name": "Краснодарский край",
+  "kind": "region",
+  "district": "ufo-south"
+ },
+ {
+  "slug": "astrahanskaya-oblast",
+  "name": "Астраханская область",
+  "kind": "region",
+  "district": "ufo-south"
+ },
+ {
+  "slug": "volgogradskaya-oblast",
+  "name": "Волгоградская область",
+  "kind": "region",
+  "district": "ufo-south"
+ },
+ {
+  "slug": "rostovskaya-oblast",
+  "name": "Ростовская область",
+  "kind": "region",
+  "district": "ufo-south"
+ },
+ {
+  "slug": "sevastopol",
+  "name": "г. Севастополь",
+  "kind": "region",
+  "district": "ufo-south"
+ },
+ {
+  "slug": "respublika-dagestan",
+  "name": "Республика Дагестан",
+  "kind": "region",
+  "district": "skfo"
+ },
+ {
+  "slug": "respublika-ingushetiya",
+  "name": "Республика Ингушетия",
+  "kind": "region",
+  "district": "skfo"
+ },
+ {
+  "slug": "kabardino-balkarskaya-respublika",
+  "name": "Кабардино-Балкарская Республика",
+  "kind": "region",
+  "district": "skfo"
+ },
+ {
+  "slug": "karachaevo-cherkesskaya-respublika",
+  "name": "Карачаево-Черкесская Республика",
+  "kind": "region",
+  "district": "skfo"
+ },
+ {
+  "slug": "respublika-severnaya-osetiya",
+  "name": "Республика Северная Осетия — Алания",
+  "kind": "region",
+  "district": "skfo"
+ },
+ {
+  "slug": "chechenskaya-respublika",
+  "name": "Чеченская Республика",
+  "kind": "region",
+  "district": "skfo"
+ },
+ {
+  "slug": "stavropolskiy-kray",
+  "name": "Ставропольский край",
+  "kind": "region",
+  "district": "skfo"
+ },
+ {
+  "slug": "respublika-bashkortostan",
+  "name": "Республика Башкортостан",
+  "kind": "region",
+  "district": "pfo"
+ },
+ {
+  "slug": "respublika-mariy-el",
+  "name": "Республика Марий Эл",
+  "kind": "region",
+  "district": "pfo"
+ },
+ {
+  "slug": "respublika-mordoviya",
+  "name": "Республика Мордовия",
+  "kind": "region",
+  "district": "pfo"
+ },
+ {
+  "slug": "respublika-tatarstan",
+  "name": "Республика Татарстан",
+  "kind": "region",
+  "district": "pfo"
+ },
+ {
+  "slug": "udmurtskaya-respublika",
+  "name": "Удмуртская Республика",
+  "kind": "region",
+  "district": "pfo"
+ },
+ {
+  "slug": "chuvashskaya-respublika",
+  "name": "Чувашская Республика",
+  "kind": "region",
+  "district": "pfo"
+ },
+ {
+  "slug": "permskiy-kray",
+  "name": "Пермский край",
+  "kind": "region",
+  "district": "pfo"
+ },
+ {
+  "slug": "kirovskaya-oblast",
+  "name": "Кировская область",
+  "kind": "region",
+  "district": "pfo"
+ },
+ {
+  "slug": "nizhegorodskaya-oblast",
+  "name": "Нижегородская область",
+  "kind": "region",
+  "district": "pfo"
+ },
+ {
+  "slug": "orenburgskaya-oblast",
+  "name": "Оренбургская область",
+  "kind": "region",
+  "district": "pfo"
+ },
+ {
+  "slug": "penzenskaya-oblast",
+  "name": "Пензенская область",
+  "kind": "region",
+  "district": "pfo"
+ },
+ {
+  "slug": "samarskaya-oblast",
+  "name": "Самарская область",
+  "kind": "region",
+  "district": "pfo"
+ },
+ {
+  "slug": "saratovskaya-oblast",
+  "name": "Саратовская область",
+  "kind": "region",
+  "district": "pfo"
+ },
+ {
+  "slug": "ulyanovskaya-oblast",
+  "name": "Ульяновская область",
+  "kind": "region",
+  "district": "pfo"
+ },
+ {
+  "slug": "kurganskaya-oblast",
+  "name": "Курганская область",
+  "kind": "region",
+  "district": "urfo"
+ },
+ {
+  "slug": "sverdlovskaya-oblast",
+  "name": "Свердловская область",
+  "kind": "region",
+  "district": "urfo"
+ },
+ {
+  "slug": "tyumenskaya-oblast",
+  "name": "Тюменская область",
+  "kind": "region",
+  "district": "urfo"
+ },
+ {
+  "slug": "hanty-mansiyskiy-ao",
+  "name": "Ханты-Мансийский автономный округ — Югра",
+  "kind": "region",
+  "district": "urfo"
+ },
+ {
+  "slug": "yamalo-nenetskiy-ao",
+  "name": "Ямало-Ненецкий автономный округ",
+  "kind": "region",
+  "district": "urfo"
+ },
+ {
+  "slug": "chelyabinskaya-oblast",
+  "name": "Челябинская область",
+  "kind": "region",
+  "district": "urfo"
+ },
+ {
+  "slug": "respublika-altay",
+  "name": "Республика Алтай",
+  "kind": "region",
+  "district": "sfo"
+ },
+ {
+  "slug": "respublika-tyva",
+  "name": "Республика Тыва",
+  "kind": "region",
+  "district": "sfo"
+ },
+ {
+  "slug": "respublika-hakasiya",
+  "name": "Республика Хакасия",
+  "kind": "region",
+  "district": "sfo"
+ },
+ {
+  "slug": "altayskiy-kray",
+  "name": "Алтайский край",
+  "kind": "region",
+  "district": "sfo"
+ },
+ {
+  "slug": "krasnoyarskiy-kray",
+  "name": "Красноярский край",
+  "kind": "region",
+  "district": "sfo"
+ },
+ {
+  "slug": "irkutskaya-oblast",
+  "name": "Иркутская область",
+  "kind": "region",
+  "district": "sfo"
+ },
+ {
+  "slug": "kemerovskaya-oblast",
+  "name": "Кемеровская область — Кузбасс",
+  "kind": "region",
+  "district": "sfo"
+ },
+ {
+  "slug": "novosibirskaya-oblast",
+  "name": "Новосибирская область",
+  "kind": "region",
+  "district": "sfo"
+ },
+ {
+  "slug": "omskaya-oblast",
+  "name": "Омская область",
+  "kind": "region",
+  "district": "sfo"
+ },
+ {
+  "slug": "tomskaya-oblast",
+  "name": "Томская область",
+  "kind": "region",
+  "district": "sfo"
+ },
+ {
+  "slug": "respublika-buryatiya",
+  "name": "Республика Бурятия",
+  "kind": "region",
+  "district": "dfo"
+ },
+ {
+  "slug": "respublika-saha",
+  "name": "Республика Саха (Якутия)",
+  "kind": "region",
+  "district": "dfo"
+ },
+ {
+  "slug": "zabaykalskiy-kray",
+  "name": "Забайкальский край",
+  "kind": "region",
+  "district": "dfo"
+ },
+ {
+  "slug": "kamchatskiy-kray",
+  "name": "Камчатский край",
+  "kind": "region",
+  "district": "dfo"
+ },
+ {
+  "slug": "primorskiy-kray",
+  "name": "Приморский край",
+  "kind": "region",
+  "district": "dfo"
+ },
+ {
+  "slug": "habarovskiy-kray",
+  "name": "Хабаровский край",
+  "kind": "region",
+  "district": "dfo"
+ },
+ {
+  "slug": "amurskaya-oblast",
+  "name": "Амурская область",
+  "kind": "region",
+  "district": "dfo"
+ },
+ {
+  "slug": "magadanskaya-oblast",
+  "name": "Магаданская область",
+  "kind": "region",
+  "district": "dfo"
+ },
+ {
+  "slug": "sahalinskaya-oblast",
+  "name": "Сахалинская область",
+  "kind": "region",
+  "district": "dfo"
+ },
+ {
+  "slug": "evreyskaya-ao",
+  "name": "Еврейская автономная область",
+  "kind": "region",
+  "district": "dfo"
+ },
+ {
+  "slug": "chukotskiy-ao",
+  "name": "Чукотский автономный округ",
+  "kind": "region",
+  "district": "dfo"
+ },
+ {
+  "slug": "arhangelskaya-oblast-bez-ao",
+  "name": "Архангельская область (без автономного округа)",
+  "kind": "remainder",
+  "district": "szfo"
+ },
+ {
+  "slug": "tyumenskaya-oblast-bez-ao",
+  "name": "Тюменская область (без автономных округов)",
+  "kind": "remainder",
+  "district": "urfo"
+ }
+]

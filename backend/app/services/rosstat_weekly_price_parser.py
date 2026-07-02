@@ -1,30 +1,49 @@
 """ETL: Росстат еженедельные средние потребительские цены (абсолютные, руб.).
 
-Источник: `rosstat.gov.ru/storage/mediabank/nedel_sred_cen.xlsx` — официальный
-файл «Еженедельные средние потребительские цены (на конец периода)». Листы по
-годам (2022, 2023, …, текущий). На каждом листе:
+Источники (по приоритету свежести):
 
-  row 0: «К содержанию»
-  row 3: заголовки дат «на 12 января», «на 19 января», … (с col 1)
-  row 4+: строки товаров, col 0 — наименование, далее значения по неделям.
+1. `rosstat.gov.ru/storage/mediabank/nedel_sred_cen.xlsx` — официальный файл
+   «Еженедельные средние потребительские цены (на конец периода)». Листы по
+   годам (2022, 2023, …, текущий). На каждом листе:
+
+     row 0: «К содержанию»
+     row 3: заголовки дат «на 12 января», «на 19 января», … (с col 1)
+     row 4+: строки товаров, col 0 — наименование, далее значения по неделям.
+
+   **Trap (2026-07-01):** Росстат обновляет xlsx с лагом — свежая неделя
+   выходит сначала ТОЛЬКО в HTML-бюллетене (п. 2), а xlsx догоняет позже.
+
+2. HTML-бюллетень «О потребительских ценах на нефтепродукты с N по M …»
+   (`/storage/mediabank/<num>_<DD-MM-YYYY>.html`, публикуется по средам,
+   discovery через central-news — переиспользуем механизм
+   `rosstat_weekly_inflation_parser._find_bulletin_urls_central_news`).
+   В бюллетене таблица «Средние потребительские цены на бензин автомобильный
+   и дизельное топливо по Российской Федерации» (рублей за литр) с колонками
+   двух дат регистрации. `_parse_fuel_bulletin_html` вытаскивает строки
+   «марки АИ-92» / «марки АИ-95» / «Дизельное топливо». Только для
+   fuel-меток; для прочих товаров источник один — xlsx.
+
+Результат — union (бюллетень поверх xlsx на совпадающих датах: бюллетень
+первичен, xlsx повторяет его же значения).
 
 В отличие от `rosstat_weekly_inflation_parser` (недельный ИПЦ, % к пред. неделе),
-этот файл хранит **абсолютную цену** в рублях за единицу (л, кг, шт.). Тот же
-parser обслуживает любую строку файла — целевая строка config-driven через
-`model_config_json.product_label` (точное совпадение col 0, иначе подстрока).
+здесь **абсолютная цена** в рублях за единицу (л, кг, шт.). Целевая строка
+config-driven через `model_config_json.product_label` (точное совпадение col 0,
+иначе подстрока).
 
 Используется для топлива:
   fuel-ai92   «Бензин автомобильный марки АИ-92, л»
   fuel-ai95   «Бензин автомобильный марки АИ-95, л»
   fuel-diesel «Дизельное топливо, л»
 
-Прогноз — `generic_ols` (короткий недельный тренд), как у `inflation-weekly`.
+Прогноз — месячный (avg-month → monthly_auto), см. view_model_families.
 """
 
 from __future__ import annotations
 
 import asyncio
 import logging
+import re
 from dataclasses import dataclass
 from datetime import date
 from typing import ClassVar
@@ -37,12 +56,34 @@ from app.models import FetchLog, Indicator
 from app.services.base_parser import BaseParser
 from app.services.data_validator import validate_points
 from app.services.http_client import create_session
-from app.services.rosstat_weekly_inflation_parser import _parse_column_date
+from app.services.rosstat_weekly_inflation_parser import (
+    _MONTH_MAP,
+    _parse_column_date,
+)
 
 logger = logging.getLogger(__name__)
 
 WEEKLY_SRED_CEN_URL = "https://rosstat.gov.ru/storage/mediabank/nedel_sred_cen.xlsx"
 _HEADER_ROW = 3  # 0-based: строка «на 12 января …»
+
+# --- HTML-бюллетень «О потребительских ценах на нефтепродукты» -------------
+CENTRAL_NEWS_URL = "https://rosstat.gov.ru/central-news"
+_FUEL_BULLETIN_TITLE_RE = re.compile(
+    r"потребительских\s+ценах\s+на\s+нефтепродукты", re.IGNORECASE,
+)
+_BULLETIN_HREF_RE = re.compile(
+    r'href="(/storage/mediabank/\d+_\d{2}-\d{2}-\d{4}\.html)"\s*[^>]*>\s*([^<]{15,300})',
+)
+_REG_DATE_RE = re.compile(
+    r"(\d{1,2})\s*(" + "|".join(_MONTH_MAP.keys()) + r")\s*(\d{4})", re.IGNORECASE,
+)
+
+# product_label (как в model_config) -> подпись строки в таблице бюллетеня
+_BULLETIN_ROW_BY_LABEL = {
+    "бензин автомобильный марки аи-92, л": "аи-92",
+    "бензин автомобильный марки аи-95, л": "аи-95",
+    "дизельное топливо, л": "дизельное топливо",
+}
 
 
 @dataclass
@@ -124,6 +165,110 @@ def io_bytes(content: bytes):
     return BytesIO(content)
 
 
+def _parse_fuel_bulletin_html(html: str, row_label: str) -> list[PricePoint]:
+    """Средние цены (руб/л) из бюллетеня «О потребительских ценах на нефтепродукты».
+
+    Ищем таблицу под заголовком «Средние потребительские цены … по Российской
+    Федерации»: шапка — две даты регистрации («22 июня 2026 г.», «29 июня
+    2026 г.»), строки — «марки АИ-92» / «марки АИ-95» / «Дизельное топливо».
+    """
+    anchor = html.find("по Российской Федерации")
+    if anchor < 0:
+        return []
+    frag = html[anchor:]
+    tstart = frag.find("<table")
+    tend = frag.find("</table>")
+    if tstart < 0 or tend < 0:
+        return []
+    table = frag[tstart:tend]
+
+    import html as html_mod
+
+    rows: list[list[str]] = []
+    for tr in re.findall(r"<tr[^>]*>(.*?)</tr>", table, re.S):
+        cells = [
+            re.sub(r"\s+", " ", html_mod.unescape(re.sub(r"<[^>]+>", "", c)))
+            .replace("\xa0", " ").strip()
+            for c in re.findall(r"<t[dh][^>]*>(.*?)</t[dh]>", tr, re.S)
+        ]
+        cells = [c for c in cells if c]
+        if cells:
+            rows.append(cells)
+
+    reg_dates: list[date] = []
+    for cells in rows:
+        found = []
+        for c in cells:
+            m = _REG_DATE_RE.search(c)
+            if m:
+                month = _MONTH_MAP.get(m.group(2).lower())
+                if month:
+                    try:
+                        found.append(date(int(m.group(3)), month, int(m.group(1))))
+                    except ValueError:
+                        pass
+        if len(found) >= 2:
+            reg_dates = found
+            break
+    if not reg_dates:
+        return []
+
+    target = row_label.lower()
+    for cells in rows:
+        name = cells[0].lower()
+        if target not in name:
+            continue
+        vals: list[float] = []
+        for c in cells[1:]:
+            try:
+                vals.append(float(c.replace(",", ".").replace(" ", "")))
+            except ValueError:
+                continue
+        if len(vals) < len(reg_dates):
+            continue
+        return [
+            PricePoint(date=d, value=round(v, 2))
+            for d, v in zip(reg_dates, vals)
+            if 1 < v < 1000
+        ]
+    return []
+
+
+def fetch_fuel_bulletin_points(
+    session: requests.Session, product_label: str, max_pages: int = 3,
+) -> list[PricePoint]:
+    """Свежие цены топлива из HTML-бюллетеней ленты central-news.
+
+    Смотрим только первые страницы ленты (бюллетень выходит еженедельно,
+    steady-state — page=1); xlsx закрывает всю историю, бюллетень нужен
+    ради 1-2 недель, которые в xlsx ещё не доехали.
+    """
+    row_label = _BULLETIN_ROW_BY_LABEL.get(product_label.strip().lower())
+    if not row_label:
+        return []
+    out: dict[date, float] = {}
+    for page in range(1, max_pages + 1):
+        try:
+            r = session.get(CENTRAL_NEWS_URL, params={"page": page}, timeout=20)
+            if r.status_code != 200:
+                continue
+            for href, title in _BULLETIN_HREF_RE.findall(r.text):
+                if not _FUEL_BULLETIN_TITLE_RE.search(title):
+                    continue
+                try:
+                    br = session.get("https://rosstat.gov.ru" + href, timeout=30)
+                    if br.status_code != 200:
+                        continue
+                    html = br.content.decode("utf-8", errors="replace")
+                    for pt in _parse_fuel_bulletin_html(html, row_label):
+                        out.setdefault(pt.date, pt.value)
+                except requests.RequestException as exc:
+                    logger.warning("fuel bulletin %s fetch failed: %s", href, exc)
+        except requests.RequestException as exc:
+            logger.warning("central-news page=%d failed: %s", page, exc)
+    return [PricePoint(date=d, value=v) for d, v in sorted(out.items())]
+
+
 def fetch_weekly_price(product_label: str) -> tuple[list[PricePoint], str]:
     session = create_session()
     try:
@@ -131,6 +276,23 @@ def fetch_weekly_price(product_label: str) -> tuple[list[PricePoint], str]:
         r = session.get(WEEKLY_SRED_CEN_URL, timeout=60)
         r.raise_for_status()
         points = parse_weekly_price_xlsx(r.content, product_label)
+
+        # Свежая неделя выходит в HTML-бюллетене раньше, чем догоняет xlsx.
+        # Бюллетень первичен: на совпадающих датах его значение затирает xlsx.
+        try:
+            bulletin = fetch_fuel_bulletin_points(session, product_label)
+        except Exception as exc:  # noqa: BLE001 — bulletin best-effort
+            logger.warning("fuel bulletin discovery failed: %s", exc)
+            bulletin = []
+        if bulletin:
+            merged = {p.date: p.value for p in points}
+            merged.update({p.date: p.value for p in bulletin})
+            points = [PricePoint(date=d, value=v) for d, v in sorted(merged.items())]
+            logger.info(
+                "weekly price %s: xlsx=%d, bulletin=%d, merged=%d (last=%s)",
+                product_label, len(merged) - len(bulletin), len(bulletin),
+                len(points), points[-1].date if points else None,
+            )
         return points, WEEKLY_SRED_CEN_URL
     finally:
         session.close()

@@ -112,7 +112,7 @@ async def _user_stats_lines() -> list[str]:
         methods = (["почта"] if u.id in emails else []) + providers
         method = "/".join(methods) if methods else "—"
         name = u.display_name or "—"
-        lines.append(f"• {escape(name)} · {escape(str(contact)[:48])} · {escape(method)}")
+        lines.append(f"• {escape(name)} — {escape(str(contact)[:48])} ({escape(method)})")
     return lines
 
 

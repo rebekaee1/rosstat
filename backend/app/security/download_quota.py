@@ -8,7 +8,7 @@
 import secrets
 
 from app.config import settings
-from app.core.cache import get_redis
+from app.core.cache import get_state_redis
 
 DL_COOKIE = "fe_dl"
 _PREFIX = "fe:dl:"
@@ -20,7 +20,7 @@ def new_download_id() -> str:
 
 async def consume_anon_download(dl_id: str) -> bool:
     """INCR счётчик гостевых скачиваний. True — в пределах лимита, False — превышен."""
-    r = await get_redis()
+    r = await get_state_redis()
     key = f"{_PREFIX}{dl_id}"
     count = await r.incr(key)
     if count == 1:
@@ -33,7 +33,7 @@ async def remaining_anon_downloads(dl_id: str | None) -> int:
     limit = settings.download_anon_limit
     if not dl_id:
         return limit
-    r = await get_redis()
+    r = await get_state_redis()
     raw = await r.get(f"{_PREFIX}{dl_id}")
     used = int(raw) if raw else 0
     return max(0, limit - used)

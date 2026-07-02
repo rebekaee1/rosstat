@@ -1,0 +1,127 @@
+"""Региональный bounded context: артефакт данных, реестр территорий, SEO-текст.
+
+Тесты герметичны: живая БД не нужна. Проверяются инварианты, на которых стоит
+весь блок: целостность артефакта app/data/regional/ (сидер зальёт его as-is),
+согласованность реестра регионов и русская типографика SSR-текстов.
+"""
+
+import csv
+import gzip
+import json
+import math
+from pathlib import Path
+
+import pytest
+
+from app.services.seo_regional import _fmt, _pct, _rank_phrase, _times_word
+
+DATA_DIR = Path(__file__).parent.parent / "app" / "data" / "regional"
+
+
+@pytest.fixture(scope="module")
+def artifact():
+    regions = json.loads((DATA_DIR / "regions.json").read_text())
+    indicators = json.loads((DATA_DIR / "indicators.json").read_text())
+    points = []
+    with gzip.open(DATA_DIR / "data.csv.gz", "rt", encoding="utf-8") as fh:
+        reader = csv.reader(fh, delimiter=";")
+        next(reader)
+        for code, rslug, year, value in reader:
+            points.append((code, rslug, int(year), float(value)))
+    return regions, indicators, points
+
+
+class TestRegistry:
+    def test_territory_composition(self, artifact):
+        regions, _, _ = artifact
+        kinds = {}
+        for r in regions:
+            kinds[r["kind"]] = kinds.get(r["kind"], 0) + 1
+        # 85 субъектов (без новых территорий 2022), РФ, 8 ФО, 2 остатка-агрегата
+        assert kinds["region"] == 85
+        assert kinds["country"] == 1
+        assert kinds["district"] == 8
+        assert kinds.get("remainder", 0) == 2
+
+    def test_slugs_unique_and_districts_resolve(self, artifact):
+        regions, _, _ = artifact
+        slugs = [r["slug"] for r in regions]
+        assert len(slugs) == len(set(slugs))
+        known = set(slugs)
+        for r in regions:
+            if r["kind"] == "region":
+                assert r["district"] in known, r["slug"]
+
+
+class TestArtifact:
+    def test_indicator_codes_unique(self, artifact):
+        _, indicators, _ = artifact
+        codes = [i["code"] for i in indicators]
+        assert len(codes) == len(set(codes))
+
+    def test_points_reference_known_metadata(self, artifact):
+        regions, indicators, points = artifact
+        known_codes = {i["code"] for i in indicators}
+        known_slugs = {r["slug"] for r in regions}
+        bad = [p for p in points if p[0] not in known_codes or p[1] not in known_slugs]
+        assert not bad, bad[:5]
+
+    def test_years_and_values_sane(self, artifact):
+        _, _, points = artifact
+        for code, rslug, year, value in points:
+            assert 1990 <= year <= 2026, (code, year)
+            assert math.isfinite(value), (code, rslug, year)
+
+    def test_no_duplicate_points(self, artifact):
+        _, _, points = artifact
+        keys = {(p[0], p[1], p[2]) for p in points}
+        assert len(keys) == len(points)
+
+    def test_scale_of_backfilled_sections(self, artifact):
+        """Дособранные ряды: РФ-строка не должна остаться в «тыс.» при регионах в единицах."""
+        _, indicators, points = artifact
+        by_code = {i["code"]: i for i in indicators}
+        crime = "chislo-prestupleniy-nesovershennoletnih"
+        assert crime in by_code
+        vals = {(p[1], p[2]): p[3] for p in points if p[0] == crime}
+        # РФ 2017 = 45,3 тыс. случаев -> в артефакте абсолют
+        assert vals[("russia", 2017)] == pytest.approx(45300)
+        # регион строго меньше страны
+        assert vals[("moskva", 2017)] < vals[("russia", 2017)]
+
+    def test_history_extended_into_nineties(self, artifact):
+        _, indicators, _ = artifact
+        by_table = {i["table_code"]: i for i in indicators}
+        assert by_table["1.9"]["year_min"] == 1990   # рождаемость
+        assert by_table["22.1"]["year_min"] == 1990  # преступность на 100 000
+
+    def test_external_trade_present(self, artifact):
+        _, indicators, _ = artifact
+        trade = [i for i in indicators if i["section_num"] == 21]
+        assert len(trade) == 4
+        assert all("(2023)" in i["source_sheet"] for i in trade)
+
+
+class TestSeoTypography:
+    def test_fmt_russian(self):
+        assert _fmt(146980.061) == "146\u202f980"
+        assert _fmt(45.34) == "45,3"
+        assert _fmt(0.567) == "0,57"
+        assert _fmt(None) == "—"
+        assert _fmt(1000.0) == "1\u202f000"
+
+    def test_times_word_agreement(self):
+        assert _times_word(2.5) == "в 2,5 раза"
+        assert _times_word(4) == "в 4 раза"
+        assert _times_word(45) == "в 45 раз"
+
+    def test_pct_phrases(self):
+        assert _pct(122.2, 100) == "вырос на 22,2%"
+        assert _pct(50, 100) == "снизился на 50%"
+        assert _pct(4460, 100) == "вырос в 44,6 раза"
+        assert _pct(100.001, 100) == "практически не изменился"
+        assert _pct(5, 0) is None
+
+    def test_rank_phrase(self):
+        assert "лидер" in _rank_phrase(1, 85)
+        assert "85" in _rank_phrase(85, 85)

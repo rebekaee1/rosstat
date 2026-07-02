@@ -194,7 +194,7 @@ async def oauth_callback(provider: str, request: Request, db: AsyncSession = Dep
 
     if created:
         await _notify_new_user_safe({
-            "method": f"OAuth · {provider}",
+            "method": f"OAuth ({provider})",
             "email": profile.email,
             "phone": profile.phone,
             "display_name": profile.display_name,

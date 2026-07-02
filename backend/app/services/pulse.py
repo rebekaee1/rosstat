@@ -1,0 +1,233 @@
+"""«Пульс» — дневной снапшот всей активности платформы (П9б, 2026-07-02).
+
+Каждый день собираем в один JSON всё, что произошло: пользователи, входы,
+события фронта (просмотры, скачивания, поиск, ошибки), ETL-прогоны, приток
+точек данных. Снапшоты живут в state-Redis (`fe:pulse:{date}`, TTL 8 дней —
+самоочистка «недельного» окна), компактная память по дням — `fe:pulse:memory:*`
+(TTL 30 дней). Память — это однострочные LLM-сводки + ядро чисел: именно её,
+а не полные снапшоты, подаём модели за прошлые дни, чтобы не раздувать
+контекстное окно.
+
+Потребитель — `pulse_report.py` (LLM-отчёт в Telegram).
+"""
+from __future__ import annotations
+
+import json
+import logging
+from collections import Counter
+from datetime import date, datetime, time, timedelta
+from typing import Any
+
+from sqlalchemy import func, select
+
+from app.core.cache import get_state_redis
+from app.database import async_session
+from app.models import (
+    AuthAudit,
+    Consent,
+    EmailCredential,
+    FetchLog,
+    FrontendEvent,
+    IndicatorData,
+    OAuthIdentity,
+    User,
+)
+
+logger = logging.getLogger(__name__)
+
+SNAPSHOT_TTL = 8 * 86400   # полный снапшот — неделя + буфер
+MEMORY_TTL = 30 * 86400    # компактная память — месяц
+
+_SNAP_KEY = "fe:pulse:snap:{d}"
+_MEM_KEY = "fe:pulse:memory:{d}"
+
+_DOWNLOAD_EVENTS = {
+    "download_csv", "download_excel", "chart_image_download",
+    "compare_image_download", "compare_csv_download", "download_limit",
+}
+_ERROR_EVENTS = {"error_reload", "api_retry", "api_error"}
+
+
+def _day_bounds(d: date) -> tuple[datetime, datetime]:
+    start = datetime.combine(d, time.min)
+    return start, start + timedelta(days=1)
+
+
+async def build_snapshot(d: date) -> dict[str, Any]:
+    """Собрать снапшот дня из БД. Чистое чтение, без побочных эффектов."""
+    start, end = _day_bounds(d)
+    snap: dict[str, Any] = {"date": d.isoformat()}
+
+    async with async_session() as db:
+        # --- Пользователи -------------------------------------------------
+        total_users = await db.scalar(select(func.count(User.id))) or 0
+        new_users = (await db.execute(
+            select(User).where(User.created_at >= start, User.created_at < end)
+        )).scalars().all()
+        newsletter = await db.scalar(
+            select(func.count(func.distinct(Consent.user_id))).where(Consent.kind == "newsletter")
+        ) or 0
+
+        new_list = []
+        if new_users:
+            ids = [u.id for u in new_users]
+            emails = dict((await db.execute(
+                select(EmailCredential.user_id, EmailCredential.email)
+                .where(EmailCredential.user_id.in_(ids))
+            )).all())
+            oauth = {}
+            for uid, provider in (await db.execute(
+                select(OAuthIdentity.user_id, OAuthIdentity.provider)
+                .where(OAuthIdentity.user_id.in_(ids))
+            )).all():
+                oauth.setdefault(uid, []).append(provider)
+            for u in new_users:
+                methods = (["email"] if u.id in emails else []) + oauth.get(u.id, [])
+                new_list.append({
+                    "name": u.display_name or "—",
+                    "contact": emails.get(u.id) or "—",
+                    "method": "/".join(methods) or "—",
+                })
+        snap["users"] = {
+            "total": total_users,
+            "new": len(new_users),
+            "new_list": new_list[:20],
+            "newsletter": newsletter,
+        }
+
+        # --- Аутентификация -----------------------------------------------
+        auth_rows = (await db.execute(
+            select(AuthAudit.event, func.count())
+            .where(AuthAudit.ts >= start, AuthAudit.ts < end)
+            .group_by(AuthAudit.event)
+        )).all()
+        snap["auth"] = {ev: n for ev, n in auth_rows}
+
+        # --- События фронта -----------------------------------------------
+        ev_rows = (await db.execute(
+            select(FrontendEvent.event_name, FrontendEvent.params_json, FrontendEvent.url)
+            .where(FrontendEvent.occurred_at >= start, FrontendEvent.occurred_at < end)
+        )).all()
+
+        by_name: Counter[str] = Counter()
+        indicators: Counter[str] = Counter()
+        regions: Counter[str] = Counter()
+        searches: Counter[str] = Counter()
+        zero_search: Counter[str] = Counter()
+        downloads: Counter[str] = Counter()
+        errors: Counter[str] = Counter()
+        for name, params, url in ev_rows:
+            by_name[name] += 1
+            params = params or {}
+            if name == "indicator_view" and params.get("indicator"):
+                indicators[str(params["indicator"])] += 1
+            if name in _DOWNLOAD_EVENTS:
+                downloads[name] += 1
+            if name in _ERROR_EVENTS:
+                errors[name] += 1
+            if name == "search_query":
+                q = str(params.get("q") or "").strip().lower()
+                if q:
+                    searches[q] += 1
+                    try:
+                        if int(params.get("results", -1)) == 0:
+                            zero_search[q] += 1
+                    except (TypeError, ValueError):
+                        pass
+            if url and "/regions/" in str(url):
+                slug = str(url).split("/regions/", 1)[1].split("/")[0].split("?")[0]
+                if slug:
+                    regions[slug] += 1
+
+        snap["events"] = {
+            "total": sum(by_name.values()),
+            "by_name": dict(by_name.most_common(40)),
+            "top_indicators": dict(indicators.most_common(10)),
+            "top_regions": dict(regions.most_common(10)),
+            "downloads": dict(downloads),
+            "errors": dict(errors),
+            "search_top": dict(searches.most_common(10)),
+            "search_zero_results": dict(zero_search.most_common(10)),
+        }
+
+        # --- ETL ------------------------------------------------------------
+        etl_rows = (await db.execute(
+            select(FetchLog.status, func.count(), func.coalesce(func.sum(FetchLog.records_added), 0))
+            .where(FetchLog.started_at >= start, FetchLog.started_at < end)
+            .group_by(FetchLog.status)
+        )).all()
+        failed_codes = (await db.execute(
+            select(func.distinct(FetchLog.indicator_id))
+            .where(FetchLog.started_at >= start, FetchLog.started_at < end, FetchLog.status == "error")
+        )).scalars().all()
+        snap["etl"] = {
+            "by_status": {s: {"runs": n, "records": int(r)} for s, n, r in etl_rows},
+            "failed_indicator_ids": [int(i) for i in failed_codes][:20],
+        }
+
+        # --- Приток данных ---------------------------------------------------
+        # (у region_data нет created_at — региональный приток пришёл бы из ETL-логов)
+        new_points = await db.scalar(
+            select(func.count(IndicatorData.id))
+            .where(IndicatorData.created_at >= start, IndicatorData.created_at < end)
+        ) or 0
+        snap["data"] = {"new_points": new_points}
+
+    return snap
+
+
+async def store_snapshot(snap: dict[str, Any]) -> None:
+    r = await get_state_redis()
+    await r.set(_SNAP_KEY.format(d=snap["date"]), json.dumps(snap, ensure_ascii=False), ex=SNAPSHOT_TTL)
+
+
+async def load_snapshot(d: date) -> dict[str, Any] | None:
+    r = await get_state_redis()
+    raw = await r.get(_SNAP_KEY.format(d=d.isoformat()))
+    return json.loads(raw) if raw else None
+
+
+async def get_or_build_snapshot(d: date) -> dict[str, Any]:
+    snap = await load_snapshot(d)
+    if snap is None:
+        snap = await build_snapshot(d)
+        await store_snapshot(snap)
+    return snap
+
+
+def memory_core(snap: dict[str, Any]) -> dict[str, Any]:
+    """Компактное числовое ядро дня для памяти (десятки байт, не килобайты)."""
+    ev = snap.get("events", {})
+    return {
+        "date": snap["date"],
+        "users_total": snap.get("users", {}).get("total", 0),
+        "users_new": snap.get("users", {}).get("new", 0),
+        "events": ev.get("total", 0),
+        "downloads": sum(ev.get("downloads", {}).values()),
+        "errors": sum(ev.get("errors", {}).values()),
+        "etl_failed": len(snap.get("etl", {}).get("failed_indicator_ids", [])),
+        "new_points": snap.get("data", {}).get("new_points", 0),
+    }
+
+
+async def store_memory(d: date, core: dict[str, Any], summary: str) -> None:
+    """Память дня: ядро чисел + однострочная LLM-сводка."""
+    r = await get_state_redis()
+    entry = {**core, "summary": summary[:400]}
+    await r.set(_MEM_KEY.format(d=d.isoformat()), json.dumps(entry, ensure_ascii=False), ex=MEMORY_TTL)
+
+
+async def load_memory(days: int = 7, before: date | None = None) -> list[dict[str, Any]]:
+    """Память за последние `days` дней (до `before` исключительно), старые → новые."""
+    before = before or date.today()
+    r = await get_state_redis()
+    out: list[dict[str, Any]] = []
+    for i in range(days, 0, -1):
+        d = before - timedelta(days=i)
+        raw = await r.get(_MEM_KEY.format(d=d.isoformat()))
+        if raw:
+            try:
+                out.append(json.loads(raw))
+            except ValueError:
+                continue
+    return out
