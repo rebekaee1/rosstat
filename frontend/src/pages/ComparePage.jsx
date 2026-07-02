@@ -7,6 +7,7 @@ import {
 } from 'recharts';
 import {
   ArrowLeft, Activity, GitCompare, Search, X, Plus, ImageDown, Sparkles,
+  Landmark, MapPin, Check, ChevronDown,
 } from 'lucide-react';
 import { useIndicators } from '../lib/hooks';
 import { fetchIndicatorData } from '../lib/api';
@@ -123,66 +124,207 @@ async function fetchRegionSeries(code, { signal }) {
   };
 }
 
-/** Выбор регионального ряда: регион + показатель → кнопка «Добавить». */
-function AddRegionSeries({ selected, onAdd, atCap }) {
+// Единый стиль «поля-поиска» для макро- и регионального выбора — чтобы они
+// выглядели одинаково (требование: макро и регион не должны расходиться).
+const FIELD_CLS =
+  'flex items-center gap-2 rounded-lg border bg-obsidian-light px-3 py-2 transition-colors';
+
+/** Шапка карточки добавления: иконка + заголовок + подсказка. */
+function AddCardHeader({ icon, title, hint }) {
+  const Icon = icon;
+  return (
+    <div className="mb-2.5 flex items-center gap-2">
+      <span className="flex h-6 w-6 items-center justify-center rounded-md bg-champagne/12">
+        <Icon className="h-3.5 w-3.5 text-champagne" />
+      </span>
+      <div className="min-w-0">
+        <div className="text-[11px] font-mono uppercase tracking-widest text-text-secondary leading-none">
+          {title}
+        </div>
+        {hint && <div className="mt-1 text-[11px] text-text-tertiary leading-tight">{hint}</div>}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Searchable single-select combobox: открывается по клику (весь список,
+ * скроллится), фильтруется вводом. Поддерживает группы (секции показателей).
+ * Один визуальный язык с макро-поиском (`AddIndicator`).
+ */
+function ComboSelect({ groups, value, onChange, placeholder, searchPlaceholder, ariaLabel, disabled }) {
+  const [query, setQuery] = useState('');
+  const [open, setOpen] = useState(false);
+  const boxRef = useRef(null);
+
+  const selectedLabel = useMemo(() => {
+    for (const g of groups) {
+      const hit = g.items.find((it) => it.value === value);
+      if (hit) return hit.label;
+    }
+    return '';
+  }, [groups, value]);
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return groups
+      .map((g) => ({
+        label: g.label,
+        items: q ? g.items.filter((it) => it.label.toLowerCase().includes(q)) : g.items,
+      }))
+      .filter((g) => g.items.length);
+  }, [groups, query]);
+
+  const total = filtered.reduce((n, g) => n + g.items.length, 0);
+
+  return (
+    <div className="relative" ref={boxRef}>
+      <div
+        className={cn(
+          FIELD_CLS,
+          disabled ? 'border-border-subtle/50 opacity-60' : 'border-border-subtle focus-within:border-champagne/40',
+          value && !open && 'border-champagne/30',
+        )}
+      >
+        <Search className="h-4 w-4 shrink-0 text-text-tertiary" />
+        <input
+          type="text"
+          aria-label={ariaLabel}
+          disabled={disabled}
+          value={open ? query : selectedLabel}
+          placeholder={value && !open ? selectedLabel : (open ? searchPlaceholder : placeholder)}
+          onFocus={() => { setOpen(true); setQuery(''); }}
+          onBlur={() => setTimeout(() => setOpen(false), 150)}
+          onChange={(e) => setQuery(e.target.value)}
+          className="min-w-0 flex-1 bg-transparent text-sm text-text-primary outline-none placeholder:text-text-tertiary disabled:cursor-not-allowed"
+        />
+        {value && !open ? (
+          <button
+            type="button"
+            aria-label="Очистить"
+            onMouseDown={(e) => { e.preventDefault(); onChange(''); setQuery(''); }}
+            className="shrink-0 text-text-tertiary hover:text-text-primary"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        ) : (
+          <ChevronDown className={cn('h-4 w-4 shrink-0 text-text-tertiary transition-transform', open && 'rotate-180')} />
+        )}
+      </div>
+
+      {open && !disabled && (
+        <div className="absolute z-40 mt-2 max-h-72 w-full overflow-auto rounded-xl border border-border-subtle bg-surface shadow-2xl">
+          {total === 0 ? (
+            <div className="px-4 py-3 text-sm text-text-tertiary">Ничего не найдено</div>
+          ) : (
+            filtered.map((g) => (
+              <div key={g.label || '_'}>
+                {g.label && (
+                  <div className="sticky top-0 bg-obsidian-light px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider text-text-tertiary">
+                    {g.label}
+                  </div>
+                )}
+                {g.items.map((it) => (
+                  <button
+                    key={it.value}
+                    type="button"
+                    onMouseDown={(e) => { e.preventDefault(); onChange(it.value); setQuery(''); setOpen(false); }}
+                    className="flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left hover:bg-obsidian-lighter transition-colors"
+                  >
+                    <span className="truncate text-sm text-text-primary">{it.label}</span>
+                    {it.value === value
+                      ? <Check className="h-3.5 w-3.5 shrink-0 text-champagne" />
+                      : it.hint && <span className="shrink-0 font-mono text-[11px] text-text-tertiary">{it.hint}</span>}
+                  </button>
+                ))}
+              </div>
+            ))
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/**
+ * Добавление регионального ряда: тот же язык, что и макро-поиск, но разбит на
+ * два searchable-combobox'а — «Регион» и «Показатель» — и кнопку «Добавить».
+ * Оба поля можно листать целиком или искать вводом (85 регионов × десятки
+ * показателей).
+ */
+function AddRegionSeries({ selected, onAdd, atCap, capHint }) {
   const landing = useRegionsLanding();
   const catalog = useRegionsCatalog();
   const [regionSlug, setRegionSlug] = useState('');
   const [indCode, setIndCode] = useState('');
 
-  const regions = useMemo(() => {
-    if (!landing.data) return [];
-    return landing.data.districts
-      .flatMap((d) => d.regions.map((r) => ({ slug: r.slug, name: r.name })))
-      .sort((a, b) => a.name.localeCompare(b.name, 'ru'));
+  const regionGroups = useMemo(() => {
+    if (!landing.data) return [{ label: '', items: [] }];
+    const items = landing.data.districts
+      .flatMap((d) => d.regions.map((r) => ({ value: r.slug, label: r.name })))
+      .sort((a, b) => a.label.localeCompare(b.label, 'ru'));
+    return [{ label: '', items }];
   }, [landing.data]);
 
-  const sections = catalog.data?.sections || [];
+  const indicatorGroups = useMemo(() => {
+    const sections = catalog.data?.sections || [];
+    return sections.map((s) => ({
+      label: s.name,
+      items: s.indicators.map((i) => ({ value: i.code, label: i.name })),
+    }));
+  }, [catalog.data]);
+
   const code = regionSlug && indCode ? `r:${regionSlug}:${indCode}` : null;
-  const canAdd = code && !selected.includes(code) && !atCap;
+  const already = code && selected.includes(code);
+  const canAdd = code && !already && !atCap;
+
+  const handleAdd = () => {
+    if (!canAdd) return;
+    onAdd(code);
+    track(events.REGION_COMPARE_ADD, { code });
+    setIndCode(''); // регион оставляем — удобно добавить второй показатель того же региона
+  };
 
   return (
-    <div className="rounded-xl border border-border-subtle bg-surface px-3 py-2.5">
-      <div className="text-[11px] font-mono uppercase tracking-widest text-text-tertiary mb-2">
-        Добавить региональный ряд
-      </div>
-      <div className="flex flex-col sm:flex-row gap-2">
-        <select
+    <div className="rounded-xl border border-border-subtle bg-surface p-3">
+      <AddCardHeader
+        icon={MapPin}
+        title="Добавить региональный индикатор"
+        hint="Регион + показатель — например, зарплата в вашем регионе"
+      />
+      <div className="flex flex-col gap-2">
+        <ComboSelect
+          groups={regionGroups}
           value={regionSlug}
-          onChange={(e) => setRegionSlug(e.target.value)}
-          aria-label="Регион"
-          className="flex-1 min-w-0 bg-transparent border border-border-subtle rounded-lg px-2 py-1.5 text-sm text-text-primary focus:outline-none focus:border-champagne/40"
-        >
-          <option value="">Регион…</option>
-          {regions.map((r) => <option key={r.slug} value={r.slug}>{r.name}</option>)}
-        </select>
-        <select
+          onChange={setRegionSlug}
+          ariaLabel="Регион"
+          placeholder="Выберите или найдите регион…"
+          searchPlaceholder="Название региона…"
+          disabled={atCap}
+        />
+        <ComboSelect
+          groups={indicatorGroups}
           value={indCode}
-          onChange={(e) => setIndCode(e.target.value)}
-          aria-label="Показатель региона"
-          className="flex-1 min-w-0 bg-transparent border border-border-subtle rounded-lg px-2 py-1.5 text-sm text-text-primary focus:outline-none focus:border-champagne/40"
-        >
-          <option value="">Показатель…</option>
-          {sections.map((s) => (
-            <optgroup key={s.num} label={s.name}>
-              {s.indicators.map((i) => (
-                <option key={i.code} value={i.code}>{i.name}</option>
-              ))}
-            </optgroup>
-          ))}
-        </select>
+          onChange={setIndCode}
+          ariaLabel="Показатель региона"
+          placeholder="Выберите или найдите показатель…"
+          searchPlaceholder="Название показателя…"
+          disabled={atCap || !regionSlug}
+        />
         <button
           type="button"
           disabled={!canAdd}
-          onClick={() => { onAdd(code); track(events.REGION_COMPARE_ADD, { code }); }}
+          onClick={handleAdd}
+          title={atCap ? capHint : (already ? 'Этот ряд уже добавлен' : undefined)}
           className={cn(
-            'shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
+            'inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
             canAdd
               ? 'bg-champagne/15 text-champagne hover:bg-champagne/25'
               : 'bg-obsidian-lighter text-text-tertiary cursor-not-allowed',
           )}
         >
-          <Plus className="w-3.5 h-3.5" /> Добавить
+          <Plus className="h-3.5 w-3.5" />
+          {already ? 'Уже добавлен' : 'Добавить региональный ряд'}
         </button>
       </div>
     </div>
@@ -223,7 +365,7 @@ function AddIndicator({ indicators, selected, onAdd, atCap, capHint }) {
   return (
     <div className="relative">
       <div className={cn(
-        'flex items-center gap-2 rounded-xl border bg-surface px-3 py-2.5 transition-colors',
+        FIELD_CLS,
         atCap ? 'border-border-subtle/50 opacity-60' : 'border-border-subtle focus-within:border-champagne/40',
       )}>
         <Search className="w-4 h-4 text-text-tertiary shrink-0" />
@@ -234,12 +376,13 @@ function AddIndicator({ indicators, selected, onAdd, atCap, capHint }) {
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setOpenList(true)}
           onBlur={() => setTimeout(() => setOpenList(false), 150)}
-          placeholder={atCap ? capHint : 'Найти показатель и добавить…'}
+          placeholder={atCap ? capHint : 'Найдите или выберите макроиндикатор…'}
           className="flex-1 bg-transparent text-sm text-text-primary outline-none placeholder:text-text-tertiary disabled:cursor-not-allowed"
         />
+        <ChevronDown className="w-4 h-4 shrink-0 text-text-tertiary" />
       </div>
       {openList && !atCap && results.length > 0 && (
-        <div className="absolute z-30 mt-2 w-full max-h-80 overflow-auto rounded-xl border border-border-subtle bg-surface shadow-2xl">
+        <div className="absolute z-40 mt-2 w-full max-h-80 overflow-auto rounded-xl border border-border-subtle bg-surface shadow-2xl">
           {results.map((ind) => (
             <button
               key={ind.code}
@@ -606,28 +749,36 @@ export default function ComparePage() {
       </div>
 
       <section className="mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <AddIndicator
-            indicators={indicators}
-            selected={codes}
-            onAdd={addCode}
-            atCap={atCap}
-            capHint={capHint}
-          />
-          <div className="flex items-center text-xs text-text-tertiary">
-            {isAuthed
-              ? `Выбрано ${codes.length} из ${USER_MAX}.`
-              : `Выбрано ${codes.length} из ${GUEST_MAX} (гость). `}
-            {!isAuthed && (
-              <button type="button" onClick={() => { setUpsellOpen(true); track(events.REGISTER_NUDGE_EXPAND, { from: 'compare' }); }} className="ml-1 text-champagne hover:underline">
-                Хотите больше двух — зарегистрируйтесь →
-              </button>
-            )}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+          {/* Макроиндикатор: поиск-по-всей-стране, добавление по клику. */}
+          <div className="rounded-xl border border-border-subtle bg-surface p-3">
+            <AddCardHeader
+              icon={Landmark}
+              title="Добавить макроиндикатор"
+              hint="По стране — инфляция, ВВП, ключевая ставка, безработица…"
+            />
+            <AddIndicator
+              indicators={indicators}
+              selected={codes}
+              onAdd={addCode}
+              atCap={atCap}
+              capHint={capHint}
+            />
           </div>
+
+          {/* Региональный индикатор: регион + показатель. Тот же визуальный язык. */}
+          <AddRegionSeries selected={codes} onAdd={addCode} atCap={atCap} capHint={capHint} />
         </div>
 
-        <div className="mt-3">
-          <AddRegionSeries selected={codes} onAdd={addCode} atCap={atCap} />
+        <div className="mt-3 flex items-center text-xs text-text-tertiary">
+          {isAuthed
+            ? `Выбрано ${codes.length} из ${USER_MAX}.`
+            : `Выбрано ${codes.length} из ${GUEST_MAX} (гость). `}
+          {!isAuthed && (
+            <button type="button" onClick={() => { setUpsellOpen(true); track(events.REGISTER_NUDGE_EXPAND, { from: 'compare' }); }} className="ml-1 text-champagne hover:underline">
+              Хотите больше двух — зарегистрируйтесь →
+            </button>
+          )}
         </div>
 
         {codes.length > 0 && (

@@ -2,7 +2,7 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Файлов:** 484  ·  **Строк:** 103 960  ·  **Токенов (≈):** 1 056 922
+**Файлов:** 484  ·  **Строк:** 104 111  ·  **Токенов (≈):** 1 058 349
 
 ## По верхним папкам
 
@@ -12,7 +12,7 @@
 | `.github` | 1 | 56 | 334 |
 | `backend` | 251 | 56 489 | 559 615 |
 | `docs` | 20 | 4 189 | 82 786 |
-| `frontend` | 172 | 36 432 | 323 773 |
+| `frontend` | 172 | 36 583 | 325 200 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 30 | 5 146 | 52 981 |
 
@@ -29,10 +29,10 @@
 | `frontend/src/lib/regionsMap.json` | 1 | 16 837 |
 | `backend/app/data/view_model_families.py` | 1 121 | 13 420 |
 | `backend/app/services/forecaster.py` | 1 252 | 11 552 |
+| `frontend/src/pages/ComparePage.jsx` | 1 019 | 10 757 |
 | `AGENTS.md` | 386 | 9 938 |
 | `backend/app/services/seo_renderer.py` | 1 049 | 9 866 |
 | `frontend/src/pages/CalculatorPage.jsx` | 839 | 9 375 |
-| `frontend/src/pages/ComparePage.jsx` | 868 | 9 330 |
 | `frontend/src/pages/IndicatorDetail.jsx` | 803 | 8 404 |
 | `backend/app/services/rosstat_weekly_inflation_parser.py` | 890 | 8 334 |
 | `backend/app/services/calendar_sources/official_calendar.py` | 752 | 8 287 |
