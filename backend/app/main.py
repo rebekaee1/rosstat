@@ -283,6 +283,16 @@ async def lifespan(app: FastAPI):
                 settings.pulse_report_cron_minute,
             )
 
+        if settings.behavior_events_enabled:
+            from app.tasks.analytics_scheduler import behavior_retention_job
+            scheduler.add_job(
+                behavior_retention_job,
+                trigger=CronTrigger(hour=4, minute=30, timezone="Europe/Moscow"),
+                id="behavior_retention",
+                name="Behavior raw stream retention cleanup",
+                replace_existing=True,
+            )
+
         if settings.telegram_poller_enabled:
             from app.services.telegram_bot import telegram_poll_job
             scheduler.add_job(

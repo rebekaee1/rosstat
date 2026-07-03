@@ -50,6 +50,9 @@ function applyYmIdentity() {
 export function setTrackedIdentity({ authed, userId } = {}) {
   _identity = { authed: !!authed, userId: userId || null };
   applyYmIdentity();
+  // Поведенческий слой (behavior.js) получает ту же идентичность: батчи
+  // сырых событий несут authed-флаг для разреза гость/зарегистрированный.
+  import('./behavior').then((m) => m.behaviorSetIdentity(_identity)).catch(() => {});
 }
 
 /**

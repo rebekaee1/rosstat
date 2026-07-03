@@ -5,11 +5,11 @@ from collections import Counter
 from datetime import date, datetime, time, timedelta, timezone
 from html import escape
 
-from sqlalchemy import func, select
+from sqlalchemy import delete, func, select
 
 from app.config import settings
 from app.database import async_session
-from app.models import Consent, EmailCredential, FrontendEvent, OAuthIdentity, User
+from app.models import BehaviorEvent, Consent, EmailCredential, FrontendEvent, OAuthIdentity, User
 from app.services.alerting import send_telegram_digest
 from app.services.analytics_ingestion import (
     finish_sync_run,
@@ -210,6 +210,23 @@ async def _metrika_goal_lines(report_date: date) -> list[str]:
     else:
         lines.append("🎯 Достижений целей за день нет")
     return lines
+
+
+async def behavior_retention_job() -> None:
+    """Чистка сырого поведенческого потока старше retention-окна (04:30 МСК).
+
+    Сырые move-полилинии тяжёлые; долгосрочная ценность — в дневных агрегатах
+    Пульса и в свежем окне для data science. Настройка:
+    `behavior_raw_retention_days` (0 = хранить вечно).
+    """
+    days = settings.behavior_raw_retention_days
+    if not days:
+        return
+    cutoff = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=days)
+    async with async_session() as db:
+        res = await db.execute(delete(BehaviorEvent).where(BehaviorEvent.occurred_at < cutoff))
+        await db.commit()
+    logger.info("Behavior retention: deleted %s rows older than %s days", res.rowcount, days)
 
 
 async def telegram_daily_digest_job() -> None:

@@ -25,6 +25,15 @@ SNAP = {
     "audience": {"authed_active": 6, "guest_sessions": 44},
     "etl": {"by_status": {"success": {"runs": 100, "records": 40}}, "failed_indicator_ids": [3]},
     "data": {"new_points": 40},
+    "behavior": {
+        "by_type": {"pageview": 200, "click": 90, "dwell": 180, "move": 60, "copy": 4},
+        "pageviews_top": {"/indicator/cpi": 50},
+        "clicks_top": [{"element": "main > button[Прогноз]", "text": "Прогноз", "n": 30}],
+        "dead_clicks_top": [{"element": "div.chart", "text": None, "n": 7}],
+        "rage_clicks_top": [{"page": "/compare", "element": "button.add", "n": 5}],
+        "dwell_by_page": {"/indicator/cpi": {"visits": 40, "avg_seconds": 65.0, "avg_scroll_pct": 72}},
+        "copied_top": {"8.4%": 3},
+    },
 }
 
 
@@ -43,6 +52,9 @@ def test_memory_core_is_compact():
         "errors": 2,
         "etl_failed": 1,
         "new_points": 40,
+        "behavior_clicks": 90,
+        "behavior_dead": 7,
+        "behavior_rage": 5,
     }
 
 

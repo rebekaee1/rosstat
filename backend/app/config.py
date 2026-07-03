@@ -67,6 +67,13 @@ class Settings(BaseSettings):
     # собирается» при analytics_enabled=false.
     frontend_events_enabled: bool = True
 
+    # Поведенческий поток (behavior.js): pageview/click/move/dwell/copy батчами
+    # на /analytics/behavior. Отдельный ryбильник и retention сырых данных
+    # (полилинии мыши тяжёлые; агрегаты живут в Пульс-снапшотах).
+    behavior_events_enabled: bool = True
+    behavior_batch_max_events: int = 500
+    behavior_raw_retention_days: int = 90
+
     # Forecast Analytics OS
     analytics_enabled: bool = False
     analytics_scheduler_enabled: bool = False

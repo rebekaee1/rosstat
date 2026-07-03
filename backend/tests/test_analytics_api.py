@@ -121,6 +121,53 @@ def test_event_collector_attributes_authed_user(auth_client, monkeypatch):
     assert r.json()["authed"] is True
 
 
+def test_behavior_batch_gated_by_flag(client, monkeypatch):
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "behavior_events_enabled", False)
+    r = client.post("/api/v1/analytics/behavior", json={"session_id": "s", "events": [{"t": "click", "ts": 1}]})
+    assert r.status_code == 200
+    assert r.json()["accepted"] is False
+
+
+def test_behavior_batch_stores_known_types_only(auth_client, monkeypatch):
+    """Батч: пишутся только известные типы, мусор отбрасывается молча."""
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "behavior_events_enabled", True)
+    r = auth_client.post("/api/v1/analytics/behavior", json={
+        "session_id": "beh-sess",
+        "authed": 0,
+        "events": [
+            {"t": "pageview", "ts": 1751500000000, "url": "/indicator/cpi", "pl": "abc", "vw": 1440, "vh": 900},
+            {"t": "click", "ts": 1751500001000, "url": "/indicator/cpi", "pl": "abc",
+             "path": "main > div.chart > button[Прогноз]", "text": "Прогноз",
+             "x": 300, "y": 500, "dead": 0, "rage": 0},
+            {"t": "move", "ts": 1751500002000, "url": "/indicator/cpi", "pl": "abc",
+             "pts": [[10, 20, 0], [40, 60, 130]], "n": 2},
+            {"t": "dwell", "ts": 1751500003000, "url": "/indicator/cpi", "pl": "abc",
+             "ms": 42000, "scroll_pct": 80, "clicks": 3, "move_px": 1200},
+            {"t": "copy", "ts": 1751500004000, "url": "/indicator/cpi", "pl": "abc", "text": "8.4%"},
+            {"t": "hack_type", "ts": 1751500005000},
+        ],
+    })
+    assert r.status_code == 200
+    body = r.json()
+    assert body["accepted"] is True
+    assert body["stored"] == 5  # hack_type отброшен
+
+
+def test_behavior_batch_caps_events(auth_client, monkeypatch):
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "behavior_events_enabled", True)
+    monkeypatch.setattr(settings, "behavior_batch_max_events", 3)
+    events = [{"t": "click", "ts": 1751500000000 + i, "url": "/", "x": i, "y": i} for i in range(10)]
+    r = auth_client.post("/api/v1/analytics/behavior", json={"session_id": "s2", "events": events})
+    assert r.status_code == 200
+    assert r.json()["stored"] == 3
+
+
 def test_action_proposal_is_audited(client, monkeypatch, fake_db):
     from app.config import settings
 

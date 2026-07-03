@@ -12,6 +12,7 @@ import DownloadLimitModal from './components/DownloadLimitModal';
 import { SkeletonBox } from './components/Skeleton';
 import useDocumentMeta from './lib/useMeta';
 import { cleanPathWithSearch } from './lib/cleanUrl';
+import { behaviorInit, behaviorRouteChange } from './lib/behavior';
 import { isVariantSiblingNavigation } from './lib/indicatorVariants';
 import { AuthProvider } from './context/AuthProvider';
 import Dashboard from './pages/Dashboard';
@@ -56,9 +57,11 @@ function YandexMetrikaHit() {
   const location = useLocation();
   const isFirst = useRef(true);
   const prevUrl = useRef(cleanPathWithSearch(window.location.pathname, window.location.search));
+  useEffect(() => { behaviorInit(); }, []);
   useEffect(() => {
     if (isFirst.current) { isFirst.current = false; return; }
     const url = cleanPathWithSearch(location.pathname, location.search);
+    behaviorRouteChange(url);
     const referer = prevUrl.current;
     prevUrl.current = url;
     // Delay to let page component update document.title via useDocumentMeta

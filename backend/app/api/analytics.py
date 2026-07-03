@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.database import get_db
-from app.models import AgentActionAudit, AnalyticsSyncRun, Experiment, FrontendEvent
+from app.models import AgentActionAudit, AnalyticsSyncRun, BehaviorEvent, Experiment, FrontendEvent
 from app.security.auth import current_session
 from app.services.action_policy import evaluate_action
 from app.services.action_executor import execute_approved_action
@@ -53,6 +53,13 @@ class FrontendEventIn(BaseModel):
     referrer: str | None = None
     params: dict[str, Any] = Field(default_factory=dict)
     occurred_at: datetime | None = None
+
+
+class BehaviorBatchIn(BaseModel):
+    """Батч сырых поведенческих событий от behavior.js (буфер → sendBeacon)."""
+    session_id: str | None = None
+    authed: int = 0
+    events: list[dict[str, Any]] = Field(default_factory=list)
 
 
 @router.get("/health", dependencies=[Depends(_require_analytics_token)])
@@ -239,3 +246,62 @@ async def collect_event(request: Request, payload: FrontendEventIn, db: AsyncSes
     db.add(event)
     await db.commit()
     return {"accepted": True, "authed": bool(user_id)}
+
+
+# Горячие поля батч-события, выносимые в колонки behavior_events; остальное
+# уходит в params_json. Ключи совпадают с полями, которые шлёт behavior.js.
+_BEHAVIOR_COLUMN_KEYS = {"t", "ts", "url", "pl", "path", "text", "x", "y", "dead", "rage"}
+_BEHAVIOR_TYPES = {"pageview", "click", "move", "dwell", "copy"}
+
+
+@router.post("/behavior")
+async def collect_behavior_batch(
+    request: Request, payload: BehaviorBatchIn, db: AsyncSession = Depends(get_db)
+):
+    """Приём батча поведенческого потока (behavior.js). Bulk-insert одним
+    executemany — при 100k посетителей/день вставка остаётся дешёвой."""
+    if not settings.behavior_events_enabled:
+        return {"accepted": False, "reason": "behavior events disabled"}
+    events = payload.events[: settings.behavior_batch_max_events]
+    if not events:
+        return {"accepted": True, "stored": 0}
+
+    session_hash = (
+        hashlib.sha256(payload.session_id.encode("utf-8")).hexdigest()
+        if payload.session_id else None
+    )
+    sess = await current_session(request)
+    user_id = sess.get("user_id") if sess else None
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
+
+    rows = []
+    for ev in events:
+        etype = str(ev.get("t") or "")[:20]
+        if etype not in _BEHAVIOR_TYPES:
+            continue
+        try:
+            occurred = datetime.fromtimestamp(int(ev["ts"]) / 1000, tz=timezone.utc).replace(tzinfo=None)
+        except (KeyError, TypeError, ValueError, OSError):
+            occurred = now
+        extra = {k: v for k, v in ev.items() if k not in _BEHAVIOR_COLUMN_KEYS}
+        rows.append({
+            "event_type": etype,
+            "session_id_hash": session_hash,
+            "page_load_id": (str(ev.get("pl") or "") or None) and str(ev.get("pl"))[:40],
+            "user_id": str(user_id) if user_id else None,
+            "authed": bool(user_id) or bool(payload.authed),
+            "page": (str(ev.get("url") or "") or None) and str(ev.get("url"))[:500],
+            "element_path": (str(ev.get("path") or "") or None) and str(ev.get("path"))[:400],
+            "element_text": (str(ev.get("text") or "") or None) and str(ev.get("text"))[:120],
+            "x": ev.get("x") if isinstance(ev.get("x"), int) else None,
+            "y": ev.get("y") if isinstance(ev.get("y"), int) else None,
+            "is_dead": bool(ev.get("dead")),
+            "is_rage": bool(ev.get("rage")),
+            "params_json": extra or None,
+            "occurred_at": occurred,
+            "ingested_at": now,
+        })
+    if rows:
+        await db.execute(BehaviorEvent.__table__.insert(), rows)
+        await db.commit()
+    return {"accepted": True, "stored": len(rows)}

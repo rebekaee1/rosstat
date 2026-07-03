@@ -1,7 +1,7 @@
 import uuid
 from datetime import date, datetime, timezone
 from sqlalchemy import (
-    String, Text, Boolean, Integer, Numeric, Date, DateTime,
+    String, Text, Boolean, Integer, BigInteger, Numeric, Date, DateTime,
     ForeignKey, UniqueConstraint, Index, JSON, Uuid,
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
@@ -523,6 +523,42 @@ class FrontendEvent(Base):
     authed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, server_default="false")
     url: Mapped[str | None] = mapped_column(String(1000))
     referrer: Mapped[str | None] = mapped_column(String(1000))
+    params_json: Mapped[dict | None] = mapped_column(JSON)
+    occurred_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+    ingested_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+
+
+class BehaviorEvent(Base):
+    """Сырой поведенческий поток (behavior.js): pageview / click / move /
+    dwell / copy. Отдельная таблица от frontend_events: объёмы на порядки
+    больше (каждый клик и полилинии мыши), свой retention
+    (`behavior_raw_retention_days`), никогда не мешаем с бизнес-событиями.
+    Схема «широкая»: горячие поля кликов вынесены в колонки (path/x/y/dead/
+    rage) для дешёвых агрегаций; всё остальное — в params_json.
+    """
+    __tablename__ = "behavior_events"
+    __table_args__ = (
+        Index("ix_behavior_type_time", "event_type", "occurred_at"),
+        Index("ix_behavior_page_time", "page", "occurred_at"),
+    )
+
+    # BigInteger на проде (поток большой), Integer-variant для sqlite-тестов
+    # (иначе PK не автоинкрементится).
+    id: Mapped[int] = mapped_column(
+        BigInteger().with_variant(Integer, "sqlite"), primary_key=True
+    )
+    event_type: Mapped[str] = mapped_column(String(20), nullable=False)
+    session_id_hash: Mapped[str | None] = mapped_column(String(80))
+    page_load_id: Mapped[str | None] = mapped_column(String(40))
+    user_id: Mapped[str | None] = mapped_column(String(36))
+    authed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, server_default="false")
+    page: Mapped[str | None] = mapped_column(String(500))
+    element_path: Mapped[str | None] = mapped_column(String(400))
+    element_text: Mapped[str | None] = mapped_column(String(120))
+    x: Mapped[int | None] = mapped_column(Integer)
+    y: Mapped[int | None] = mapped_column(Integer)
+    is_dead: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, server_default="false")
+    is_rage: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, server_default="false")
     params_json: Mapped[dict | None] = mapped_column(JSON)
     occurred_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
     ingested_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
