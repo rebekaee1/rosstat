@@ -2,7 +2,7 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Файлов:** 484  ·  **Строк:** 104 111  ·  **Токенов (≈):** 1 058 349
+**Файлов:** 484  ·  **Строк:** 104 149  ·  **Токенов (≈):** 1 058 878
 
 ## По верхним папкам
 
@@ -10,11 +10,11 @@
 |-------|-------:|------:|------------:|
 | `(root)` | 7 | 1 490 | 36 313 |
 | `.github` | 1 | 56 | 334 |
-| `backend` | 251 | 56 489 | 559 615 |
+| `backend` | 251 | 56 527 | 560 140 |
 | `docs` | 20 | 4 189 | 82 786 |
 | `frontend` | 172 | 36 583 | 325 200 |
 | `mcp` | 3 | 158 | 1 120 |
-| `scripts` | 30 | 5 146 | 52 981 |
+| `scripts` | 30 | 5 146 | 52 985 |
 
 ## Все файлы (по убыванию токенов)
 
@@ -79,8 +79,8 @@
 | `docs/adr/0007-identity-user-accounts.md` | 151 | 3 594 |
 | `backend/app/api/embed.py` | 428 | 3 585 |
 | `backend/app/api/regions.py` | 387 | 3 564 |
+| `backend/app/services/telegram_bot.py` | 329 | 3 483 |
 | `scripts/regional/parse_pril_2025.py` | 352 | 3 468 |
-| `backend/app/services/telegram_bot.py` | 327 | 3 435 |
 | `README.md` | 240 | 3 432 |
 | `backend/app/main.py` | 351 | 3 394 |
 | `backend/app/services/ticker_sources/moex_iss.py` | 353 | 3 339 |
@@ -100,9 +100,9 @@
 | `backend/app/services/rosstat_population_parser.py` | 306 | 2 760 |
 | `docs/adr/0003-seo-single-source-server-rendered.md` | 166 | 2 758 |
 | `backend/app/services/rosstat_science_parser.py` | 325 | 2 752 |
+| `backend/app/tasks/analytics_scheduler.py` | 267 | 2 735 |
 | `backend/app/data/regional/regions.json` | 578 | 2 731 |
 | `frontend/src/pages/Account.jsx` | 252 | 2 727 |
-| `backend/app/tasks/analytics_scheduler.py` | 266 | 2 711 |
 | `docs/adr/0002-derived-always-reflects-source.md` | 105 | 2 644 |
 | `frontend/src/pages/RegionProfile.jsx` | 239 | 2 590 |
 | `frontend/src/embed/EmbedChart.jsx` | 209 | 2 585 |
@@ -135,8 +135,8 @@
 | `backend/app/services/analytics_backfill.py` | 224 | 1 996 |
 | `scripts/seo-audit.py` | 198 | 1 962 |
 | `backend/app/services/calendar_sources/common.py` | 213 | 1 959 |
+| `scripts/metrika-goals-audit.py` | 188 | 1 955 |
 | `frontend/src/lib/categories.js` | 207 | 1 953 |
-| `scripts/metrika-goals-audit.py` | 188 | 1 951 |
 | `docs/analytics_api_inventory/yandex_webmaster.md` | 60 | 1 932 |
 | `frontend/src/lib/api.js` | 190 | 1 913 |
 | `backend/app/services/og_image.py` | 220 | 1 912 |
@@ -181,6 +181,7 @@
 | `frontend/src/lib/compareRepresentation.js` | 148 | 1 433 |
 | `backend/tests/test_forecaster.py` | 174 | 1 431 |
 | `scripts/build-rid-listing.py` | 172 | 1 428 |
+| `backend/app/services/alerting.py` | 160 | 1 427 |
 | `frontend/src/lib/cpiViewModeContent.test.js` | 161 | 1 426 |
 | `backend/tests/test_auth_account.py` | 124 | 1 412 |
 | `frontend/src/embed/EmbedCard.jsx` | 126 | 1 410 |
@@ -205,7 +206,6 @@
 | `scripts/verify-data-loaded.py` | 125 | 1 178 |
 | `frontend/src/pages/Register.jsx` | 99 | 1 171 |
 | `frontend/src/pages/About.jsx` | 75 | 1 169 |
-| `backend/app/services/alerting.py` | 136 | 1 166 |
 | `backend/alembic/versions/8524e35ba1ee_init_schema.py` | 98 | 1 156 |
 | `frontend/src/components/TelemetryCard.jsx` | 111 | 1 151 |
 | `backend/app/services/cbr_gold_parser.py` | 131 | 1 149 |
@@ -298,6 +298,7 @@
 | `frontend/src/components/UnemploymentViewModePicker.jsx` | 109 | 766 |
 | `frontend/src/lib/utm.js` | 74 | 758 |
 | `frontend/src/lib/ppiViewModeResolve.js` | 85 | 752 |
+| `backend/tests/test_alerting.py` | 68 | 751 |
 | `frontend/src/components/IndicatorDataTableSection.jsx` | 94 | 739 |
 | `backend/tests/test_housing_historical_backfill.py` | 80 | 736 |
 | `backend/tests/forecast_strategies/test_housing_quarterly_snapshot.py` | 79 | 720 |
@@ -331,7 +332,6 @@
 | `frontend/src/lib/indicatorVariants.test.js` | 72 | 571 |
 | `backend/app/services/cbr_dataservice_sum_parser.py` | 68 | 568 |
 | `backend/app/services/indexnow.py` | 62 | 559 |
-| `backend/tests/test_alerting.py` | 57 | 559 |
 | `frontend/src/components/FaqAccordion.jsx` | 62 | 554 |
 | `backend/app/services/ticker_sources/binance.py` | 65 | 548 |
 | `backend/app/api/demographics.py` | 67 | 539 |
