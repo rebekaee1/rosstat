@@ -30,7 +30,10 @@ from app.models import (
     FetchLog,
     FrontendEvent,
     IndicatorData,
+    MetrikaReportSnapshot,
+    MetrikaSearchPhrase,
     OAuthIdentity,
+    RawMetrikaVisit,
     User,
 )
 
@@ -52,6 +55,59 @@ _ERROR_EVENTS = {"error_reload", "api_retry", "api_error"}
 def _day_bounds(d: date) -> tuple[datetime, datetime]:
     start = datetime.combine(d, time.min)
     return start, start + timedelta(days=1)
+
+
+async def _acquisition_from_warehouse(db, d: date) -> dict[str, Any]:
+    """Привлечение за день из Метрика-хранилища: источники трафика, поисковики,
+    фразы, рефереры, рекламные кампании, повизитное сырьё. Пусто = синк ещё
+    не отработал (наполняется `metrika_acquisition.sync_acquisition_for_day`,
+    08:20 МСК за вчера)."""
+    def _snapshot_rows(response_json: dict | None) -> dict[str, dict[str, Any]]:
+        out: dict[str, dict[str, Any]] = {}
+        for row in (response_json or {}).get("data", []):
+            dims = row.get("dimensions") or []
+            metrics = row.get("metrics") or []
+            name = str(dims[0].get("name")) if dims else "?"
+            out[name] = {
+                "id": dims[0].get("id") if dims else None,
+                "visits": int(metrics[0] or 0) if len(metrics) > 0 else 0,
+                "users": int(metrics[1] or 0) if len(metrics) > 1 else 0,
+            }
+        return out
+
+    acq: dict[str, Any] = {}
+    snap_rows = (await db.execute(
+        select(MetrikaReportSnapshot.report_type, MetrikaReportSnapshot.response_json)
+        .where(MetrikaReportSnapshot.date_from == d, MetrikaReportSnapshot.date_to == d,
+               MetrikaReportSnapshot.report_type.in_(
+                   ["traffic_sources", "search_engines", "referrers", "ad_campaigns"]))
+        .order_by(MetrikaReportSnapshot.captured_at)
+    )).all()
+    for report_type, response_json in snap_rows:  # последний снапшот дня побеждает
+        acq[report_type] = _snapshot_rows(response_json)
+
+    phrases = (await db.execute(
+        select(MetrikaSearchPhrase.phrase, MetrikaSearchPhrase.search_engine,
+               MetrikaSearchPhrase.visits)
+        .where(MetrikaSearchPhrase.date == d)
+        .order_by(MetrikaSearchPhrase.visits.desc()).limit(25)
+    )).all()
+    if phrases:
+        acq["search_phrases_top"] = [
+            {"phrase": p, "engine": e, "visits": v} for p, e, v in phrases
+        ]
+
+    visits_total = await db.scalar(
+        select(func.count(RawMetrikaVisit.id)).where(RawMetrikaVisit.visit_date == d)
+    ) or 0
+    if visits_total:
+        by_source = dict((await db.execute(
+            select(RawMetrikaVisit.traffic_source, func.count())
+            .where(RawMetrikaVisit.visit_date == d)
+            .group_by(RawMetrikaVisit.traffic_source)
+        )).all())
+        acq["raw_visits"] = {"total": visits_total, "by_source": by_source}
+    return acq
 
 
 async def build_snapshot(d: date) -> dict[str, Any]:
@@ -269,6 +325,11 @@ async def build_snapshot(d: date) -> dict[str, Any]:
             "copied_top": dict(copy_counter.most_common(10)),
         }
 
+        # --- Привлечение (Метрика-хранилище) --------------------------------
+        # Читаем из СВОЕЙ БД (metrika_acquisition.py наполняет её по утрам),
+        # не из живого API — детерминированно и работает при сбоях Яндекса.
+        snap["acquisition"] = await _acquisition_from_warehouse(db, d)
+
         # --- ETL ------------------------------------------------------------
         etl_rows = (await db.execute(
             select(FetchLog.status, func.count(), func.coalesce(func.sum(FetchLog.records_added), 0))
@@ -293,6 +354,13 @@ async def build_snapshot(d: date) -> dict[str, Any]:
         snap["data"] = {"new_points": new_points}
 
     return snap
+
+
+async def build_acquisition(d: date) -> dict[str, Any]:
+    """Свежий срез привлечения из хранилища (для обновления снапшота,
+    зафиксированного в 23:57, — утренний синк Метрики приходит позже)."""
+    async with async_session() as db:
+        return await _acquisition_from_warehouse(db, d)
 
 
 async def store_snapshot(snap: dict[str, Any]) -> None:
@@ -335,6 +403,17 @@ def memory_core(snap: dict[str, Any]) -> dict[str, Any]:
         "behavior_clicks": snap.get("behavior", {}).get("by_type", {}).get("click", 0),
         "behavior_dead": sum(d.get("n", 0) for d in snap.get("behavior", {}).get("dead_clicks_top", [])),
         "behavior_rage": sum(d.get("n", 0) for d in snap.get("behavior", {}).get("rage_clicks_top", [])),
+        # Привлечение: суммарные визиты дня по Метрике и сколько из них реклама —
+        # главный KPI владельца (трафик и его состав) в трендовой памяти.
+        "metrika_visits": sum(
+            v.get("visits", 0)
+            for v in snap.get("acquisition", {}).get("traffic_sources", {}).values()
+        ),
+        "metrika_ad_visits": sum(
+            v.get("visits", 0)
+            for v in snap.get("acquisition", {}).get("traffic_sources", {}).values()
+            if v.get("id") == "ad"
+        ),
     }
 
 

@@ -15,12 +15,16 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import date, timedelta
+import re
+from datetime import date, datetime, timedelta, timezone
 from html import escape
 
 import httpx
+from sqlalchemy import select
 
 from app.config import settings
+from app.database import async_session
+from app.models import Hypothesis
 from app.services import pulse
 from app.services.telegram_bot import main_menu_keyboard, send_message
 
@@ -46,21 +50,108 @@ _SYSTEM_PROMPT = """Ты — аналитик forecasteconomy.com (эконом�
 реакции — её нет), rage-клики — злая серия кликов в одну точку; и то и другое —
 прямые сигналы UX-проблем, называй конкретный элемент и страницу.
 
+Блок acquisition — привлечение из Яндекс.Метрики: источники трафика
+(реклама/органика/прямые/переходы с сайтов), поисковики, поисковые фразы,
+рекламные кампании. Фразы — самое ценное: по ним видно, что люди ищут и чего
+сайту не хватает. Если по фразам виден спрос, который мы не закрываем, —
+скажи об этом прямо, это кандидат на новый раздел или текст.
+
+Блок hypotheses в конце входа — булев слой знаний: открытые гипотезы о
+пользователях и сайте. Твоя обязанность — вести его: пересматривай открытые
+гипотезы по свежим данным (подтверждай/опровергай, если оснований достаточно)
+и добавляй новые проверяемые гипотезы, когда данные их подсказывают. Гипотеза —
+конкретное проверяемое утверждение («фразы про X дают визиты, но раздела X
+нет — трафик уходит»), не банальность.
+
 Цифры — только из данных, ничего не выдумывай и не округляй заметно.
 
 Формат — Telegram HTML: <b>, <i>, <code>, <blockquote>. Markdown и списки через
 "-"/"*" не рендерятся Telegram, не используй их.
 
-Ответ — только текст сообщения, без преамбул."""
+В конце ответа, после строки ---HYPOTHESES---, выведи JSON-массив изменений
+гипотез (может быть пустым []): [{"id": число или null для новой, "statement":
+"утверждение", "verdict": true|false|null, "confidence": 0.0-1.0, "rationale":
+"на чём основано"}]. Не более 5 изменений за день. Всё до разделителя — текст
+сообщения владельцу, без преамбул."""
+
+
+_HYP_SEPARATOR = "---HYPOTHESES---"
+
+
+async def _open_hypotheses() -> list[dict]:
+    """Открытые гипотезы для контекста модели (id нужен для пересмотра)."""
+    async with async_session() as db:
+        rows = (await db.execute(
+            select(Hypothesis).where(Hypothesis.verdict.is_(None))
+            .order_by(Hypothesis.created_at).limit(30)
+        )).scalars().all()
+    return [
+        {"id": h.id, "statement": h.statement, "rationale": h.rationale}
+        for h in rows
+    ]
+
+
+async def _apply_hypothesis_updates(updates: list[dict]) -> int:
+    """Изменения гипотез от LLM → таблица hypotheses. Возвращает число применённых."""
+    applied = 0
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
+    async with async_session() as db:
+        for upd in updates[:5]:
+            if not isinstance(upd, dict) or not str(upd.get("statement") or "").strip():
+                continue
+            verdict = upd.get("verdict")
+            if verdict is not None and not isinstance(verdict, bool):
+                verdict = None
+            confidence = upd.get("confidence")
+            try:
+                confidence = max(0.0, min(1.0, float(confidence))) if confidence is not None else None
+            except (TypeError, ValueError):
+                confidence = None
+            h = None
+            if upd.get("id") is not None:
+                try:
+                    h = await db.get(Hypothesis, int(upd["id"]))
+                except (TypeError, ValueError):
+                    h = None
+            if h is None:
+                h = Hypothesis(created_at=now)
+                db.add(h)
+            h.statement = str(upd["statement"])[:500]
+            h.rationale = str(upd.get("rationale") or "")[:2000] or None
+            h.verdict = verdict
+            h.confidence = confidence
+            h.updated_at = now
+            applied += 1
+        await db.commit()
+    return applied
+
+
+def _split_llm_output(content: str) -> tuple[str, list[dict]]:
+    """Ответ модели → (текст владельцу, изменения гипотез)."""
+    if _HYP_SEPARATOR not in content:
+        return content.strip(), []
+    text, _, tail = content.partition(_HYP_SEPARATOR)
+    updates: list[dict] = []
+    match = re.search(r"\[.*\]", tail, flags=re.DOTALL)
+    if match:
+        try:
+            parsed = json.loads(match.group(0))
+            if isinstance(parsed, list):
+                updates = [u for u in parsed if isinstance(u, dict)]
+        except ValueError:
+            logger.warning("Pulse hypotheses JSON parse failed: %s", tail[:200])
+    return text.strip(), updates
 
 
 async def _llm_summary(snapshot: dict, memory: list[dict]) -> str | None:
-    """Сводка дня через OpenRouter. None при любом сбое — отчёт уйдёт без LLM."""
+    """Сводка дня через OpenRouter (+ ведение гипотез). None при сбое —
+    отчёт уйдёт без LLM."""
     if not settings.openrouter_api_key:
         return None
+    hypotheses = await _open_hypotheses()
     payload = {
         "model": settings.openrouter_model,
-        "max_tokens": 900,
+        "max_tokens": 1400,
         "messages": [
             {"role": "system", "content": _SYSTEM_PROMPT},
             {
@@ -70,6 +161,8 @@ async def _llm_summary(snapshot: dict, memory: list[dict]) -> str | None:
                     + json.dumps(memory, ensure_ascii=False)
                     + "\n\nСнапшот за отчётный день:\n"
                     + json.dumps(snapshot, ensure_ascii=False)
+                    + "\n\nОткрытые гипотезы (hypotheses):\n"
+                    + json.dumps(hypotheses, ensure_ascii=False)
                 ),
             },
         ],
@@ -89,7 +182,16 @@ async def _llm_summary(snapshot: dict, memory: list[dict]) -> str | None:
             logger.warning("OpenRouter HTTP %d: %s", resp.status_code, resp.text[:300])
             return None
         content = resp.json()["choices"][0]["message"]["content"].strip()
-        return content or None
+        if not content:
+            return None
+        text, updates = _split_llm_output(content)
+        if updates:
+            try:
+                n = await _apply_hypothesis_updates(updates)
+                logger.info("Pulse hypotheses: %s updates applied", n)
+            except Exception:
+                logger.warning("Pulse hypotheses apply failed", exc_info=True)
+        return text or None
     except Exception:
         logger.warning("OpenRouter call failed", exc_info=True)
         return None
@@ -149,6 +251,19 @@ def _raw_digits_block(snapshot: dict) -> str:
     auth = snapshot.get("auth", {})
     if auth:
         parts.append("Auth: " + escape(", ".join(f"{k}: {v}" for k, v in auth.items())))
+    acq = snapshot.get("acquisition", {})
+    if acq.get("traffic_sources"):
+        top = ", ".join(
+            f"{name}: {row.get('visits', 0)}"
+            for name, row in sorted(acq["traffic_sources"].items(),
+                                    key=lambda kv: -kv[1].get("visits", 0))
+        )
+        parts.append(f"Источники (Метрика): {escape(top)}")
+    if acq.get("search_phrases_top"):
+        top = ", ".join(
+            f"«{p['phrase'][:40]}» ×{p['visits']}" for p in acq["search_phrases_top"][:10]
+        )
+        parts.append(f"Фразы из поиска: {escape(top)}")
     if not parts:
         return ""
     return "<blockquote expandable>" + "\n".join(parts) + "</blockquote>"
@@ -162,6 +277,15 @@ async def send_pulse_report(report_date: date | None = None) -> bool:
 
     d = report_date or (date.today() - timedelta(days=1))
     snapshot = await pulse.get_or_build_snapshot(d)
+    # Привлечение обновляем на момент отчёта: снапшот фиксируется в 23:57,
+    # а синк Метрики за этот день отрабатывает только утром (08:20).
+    try:
+        acquisition = await pulse.build_acquisition(d)
+        if acquisition:
+            snapshot["acquisition"] = acquisition
+            await pulse.store_snapshot(snapshot)
+    except Exception:
+        logger.warning("Pulse acquisition refresh failed", exc_info=True)
     memory = await pulse.load_memory(days=7, before=d)
 
     summary = await _llm_summary(snapshot, memory)

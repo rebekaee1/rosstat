@@ -3,8 +3,10 @@ from __future__ import annotations
 from datetime import date
 from typing import Any, Literal
 
+import httpx
+
 from app.config import settings
-from app.services.yandex_client import YandexOAuthClient, YandexResponse
+from app.services.yandex_client import YandexApiError, YandexOAuthClient, YandexResponse, stable_hash
 
 
 LogSource = Literal["visits", "hits"]
@@ -43,10 +45,27 @@ class MetrikaLogsClient:
         return await self.client.request("GET", f"/management/v1/counter/{counter_id}/logrequest/{request_id}")
 
     async def download_part(self, counter_id: str, request_id: str, part_number: int) -> YandexResponse:
-        return await self.client.request(
-            "GET",
-            f"/management/v1/counter/{counter_id}/logrequest/{request_id}/part/{part_number}/download",
-            headers={"Accept": "text/tab-separated-values"},
+        """Скачивание части выгрузки. Отдаётся сырой TSV (content-type может
+        приходить как application/json — не доверяем ему), поэтому мимо
+        json-парсинга `YandexOAuthClient.request`: читаем text напрямую."""
+        path = f"/management/v1/counter/{counter_id}/logrequest/{request_id}/part/{part_number}/download"
+        url = f"{self.client.base_url}{path}"
+        async with httpx.AsyncClient(timeout=self.client.timeout) as http:
+            response = await http.get(
+                url,
+                headers={"Authorization": f"OAuth {self.client.token}",
+                         "Accept": "text/tab-separated-values"},
+            )
+        if response.status_code >= 400:
+            raise YandexApiError(
+                f"Yandex Logs API returned HTTP {response.status_code} for download part {part_number}",
+                status_code=response.status_code,
+                payload=response.text[:500],
+            )
+        return YandexResponse(
+            data=response.text,
+            status_code=response.status_code,
+            request_hash=stable_hash({"url": url}),
         )
 
     async def clean_request(self, counter_id: str, request_id: str) -> YandexResponse:

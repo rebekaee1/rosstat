@@ -212,12 +212,28 @@ async def _metrika_goal_lines(report_date: date) -> list[str]:
     return lines
 
 
-async def behavior_retention_job() -> None:
-    """Чистка сырого поведенческого потока старше retention-окна (04:30 МСК).
+async def acquisition_daily_job() -> None:
+    """Ежедневный сбор привлечения за вчера (08:20 МСК): агрегаты Reporting API
+    (источники/поисковики/рефереры/кампании/фразы/страницы) + повизитная
+    выгрузка Logs API в raw_metrika_visits. До Пульс-отчёта 09:05 — свежие
+    данные привлечения уже в хранилище."""
+    if not (settings.analytics_enabled and settings.yandex_metrika_read_token):
+        logger.info("Acquisition sync skipped: analytics disabled or no token")
+        return
+    from app.services.metrika_acquisition import sync_acquisition_for_day
+    yesterday = date.today() - timedelta(days=1)
+    async with async_session() as db:
+        out = await sync_acquisition_for_day(db, yesterday)
+    logger.info("Acquisition sync %s: %s", yesterday, out)
 
-    Сырые move-полилинии тяжёлые; долгосрочная ценность — в дневных агрегатах
-    Пульса и в свежем окне для data science. Настройка:
-    `behavior_raw_retention_days` (0 = хранить вечно).
+
+async def behavior_retention_job() -> None:
+    """Аварийный клапан по диску для сырого поведенческого потока (04:30 МСК).
+
+    Стратегия владельца (2026-07-03): датасет накопительный, по умолчанию
+    `behavior_raw_retention_days = 0` — НИЧЕГО не удаляем, копим под Big
+    Data/ML. Ненулевое значение включает чистку только если диск начнёт
+    заканчиваться (осознанное решение, не дефолт).
     """
     days = settings.behavior_raw_retention_days
     if not days:
@@ -253,6 +269,13 @@ async def telegram_daily_digest_job() -> None:
             parts.append("⚠️ Статистика Метрики недоступна")
     else:
         parts.append("ℹ️ Метрика отключена (нет токена) — только статистика БД")
+    try:
+        from app.services.dataset_inventory import build_inventory, format_inventory_html
+        async with async_session() as db:
+            inv = await build_inventory(db)
+        parts.append(format_inventory_html(inv))
+    except Exception:
+        logger.warning("Telegram digest: dataset inventory failed", exc_info=True)
     from app.services.telegram_bot import main_menu_keyboard
     results = await send_telegram_digest("\n".join(parts), reply_markup=main_menu_keyboard())
     logger.info("Telegram digest delivered: %s", results)

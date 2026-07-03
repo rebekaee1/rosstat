@@ -34,6 +34,19 @@ SNAP = {
         "dwell_by_page": {"/indicator/cpi": {"visits": 40, "avg_seconds": 65.0, "avg_scroll_pct": 72}},
         "copied_top": {"8.4%": 3},
     },
+    "acquisition": {
+        "traffic_sources": {
+            "Переходы по рекламе": {"id": "ad", "visits": 130, "users": 110},
+            "Переходы из поисковых систем": {"id": "organic", "visits": 120, "users": 100},
+            "Прямые заходы": {"id": "direct", "visits": 30, "users": 25},
+        },
+        "search_engines": {"Яндекс": {"id": "yandex", "visits": 110, "users": 95}},
+        "search_phrases_top": [
+            {"phrase": "инфляция в россии 2026", "engine": "Яндекс", "visits": 12},
+            {"phrase": "курс доллара прогноз", "engine": "Яндекс", "visits": 8},
+        ],
+        "raw_visits": {"total": 280, "by_source": {"ad": 130, "organic": 120, "direct": 30}},
+    },
 }
 
 
@@ -55,6 +68,8 @@ def test_memory_core_is_compact():
         "behavior_clicks": 90,
         "behavior_dead": 7,
         "behavior_rage": 5,
+        "metrika_visits": 280,
+        "metrika_ad_visits": 130,
     }
 
 
@@ -84,10 +99,54 @@ def test_raw_digits_uses_expandable_blockquote():
     assert "биткоин к рублю" in block  # zero-result запросы = пробелы каталога
 
 
+def test_raw_digits_reports_acquisition():
+    """Блок сырых цифр обязан показывать источники Метрики и поисковые фразы."""
+    block = _raw_digits_block(SNAP)
+    assert "Источники (Метрика):" in block
+    assert "Переходы по рекламе: 130" in block
+    assert "инфляция в россии 2026" in block
+
+
 def test_main_menu_has_users_and_pulse_buttons():
     kb = main_menu_keyboard()
     datas = [b["callback_data"] for row in kb["inline_keyboard"] for b in row]
-    assert {"users", "users_csv", "pulse_today"} <= set(datas)
+    assert {"users", "users_csv", "pulse_today", "dataset", "hypotheses"} <= set(datas)
+
+
+def test_split_llm_output_extracts_hypotheses():
+    from app.services.pulse_report import _split_llm_output
+
+    content = (
+        "День обычный, трафик стабильный.\n---HYPOTHESES---\n"
+        '[{"id": null, "statement": "Фразы про НДФЛ дают визиты без раздела", '
+        '"verdict": null, "confidence": 0.6, "rationale": "12 визитов по фразе"}]'
+    )
+    text, updates = _split_llm_output(content)
+    assert text == "День обычный, трафик стабильный."
+    assert len(updates) == 1
+    assert updates[0]["statement"].startswith("Фразы про НДФЛ")
+
+
+def test_split_llm_output_without_separator_is_plain_text():
+    from app.services.pulse_report import _split_llm_output
+
+    text, updates = _split_llm_output("Просто текст отчёта.")
+    assert text == "Просто текст отчёта." and updates == []
+
+
+def test_parse_visits_tsv():
+    from app.services.metrika_acquisition import parse_visits_tsv
+
+    tsv = (
+        "ym:s:visitID\tym:s:date\tym:s:lastTrafficSource\n"
+        "123\t2026-07-02\tad\n"
+        "456\t2026-07-02\torganic\n"
+        "битая строка без табов\n"
+    )
+    rows = parse_visits_tsv(tsv)
+    assert len(rows) == 2
+    assert rows[0]["ym:s:visitID"] == "123"
+    assert rows[1]["ym:s:lastTrafficSource"] == "organic"
 
 
 def test_poller_ignores_foreign_chat(monkeypatch):

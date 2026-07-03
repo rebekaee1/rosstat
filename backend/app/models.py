@@ -564,6 +564,32 @@ class BehaviorEvent(Base):
     ingested_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
 
 
+class Hypothesis(Base):
+    """Булев слой знаний поверх собранных данных (стратегия владельца 2026-07-03).
+
+    Гипотеза = проверяемое утверждение о пользователях/сайте («трафик из
+    Директа конвертируется хуже органики»), выведенное из анализа данных.
+    verdict: True = подтверждена, False = опровергнута, NULL = открыта
+    (данных пока мало). Пишет LLM-аналитик «Пульса» ежедневно: новые гипотезы
+    добавляет, старые открытые пересматривает по свежим данным. Читается
+    кнопкой бота «Гипотезы» и подаётся модели в контекст следующего дня.
+    """
+    __tablename__ = "hypotheses"
+    __table_args__ = (
+        Index("ix_hypothesis_verdict", "verdict", "updated_at"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    statement: Mapped[str] = mapped_column(String(500), nullable=False)
+    rationale: Mapped[str | None] = mapped_column(Text)
+    verdict: Mapped[bool | None] = mapped_column(Boolean)
+    confidence: Mapped[float | None] = mapped_column(Numeric(4, 3))
+    source: Mapped[str] = mapped_column(String(40), nullable=False, default="pulse_llm")
+    evidence_json: Mapped[dict | None] = mapped_column(JSON)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None), onupdate=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+
+
 class Experiment(Base):
     __tablename__ = "experiments"
     __table_args__ = (

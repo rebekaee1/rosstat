@@ -68,11 +68,12 @@ class Settings(BaseSettings):
     frontend_events_enabled: bool = True
 
     # Поведенческий поток (behavior.js): pageview/click/move/dwell/copy батчами
-    # на /analytics/behavior. Отдельный ryбильник и retention сырых данных
-    # (полилинии мыши тяжёлые; агрегаты живут в Пульс-снапшотах).
+    # на /analytics/behavior. Стратегия владельца (2026-07-03): сырьё НЕ удаляем,
+    # копим накопительно под Big Data/ML (0 = хранить вечно). Ненулевое значение —
+    # аварийный клапан, если диск начнёт заканчиваться.
     behavior_events_enabled: bool = True
     behavior_batch_max_events: int = 500
-    behavior_raw_retention_days: int = 90
+    behavior_raw_retention_days: int = 0
 
     # Forecast Analytics OS
     analytics_enabled: bool = False

@@ -238,6 +238,20 @@ async def lifespan(app: FastAPI):
                 settings.analytics_scheduler_cron_minute,
             )
 
+        # Слой привлечения (фразы/источники/рефереры/повизитное сырьё Метрики).
+        # Привязан к analytics_enabled + read-token, НЕ к analytics_scheduler_enabled:
+        # это часть накопительного DS-датасета, а не экспериментальный OS-синк.
+        if settings.analytics_enabled and settings.yandex_metrika_read_token:
+            from app.tasks.analytics_scheduler import acquisition_daily_job
+            scheduler.add_job(
+                acquisition_daily_job,
+                trigger=CronTrigger(hour=8, minute=20, timezone="Europe/Moscow"),
+                id="acquisition_daily",
+                name="Metrika acquisition sync (phrases/sources/visits log)",
+                replace_existing=True,
+            )
+            logger.info("Acquisition sync enabled: daily at 08:20 MSK")
+
         if settings.telegram_digest_enabled:
             from app.tasks.analytics_scheduler import telegram_daily_digest_job
             scheduler.add_job(

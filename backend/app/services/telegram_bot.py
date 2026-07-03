@@ -54,7 +54,11 @@ def main_menu_keyboard() -> dict:
                 {"text": "👥 Пользователи", "callback_data": "users"},
                 {"text": "📄 CSV пользователей", "callback_data": "users_csv"},
             ],
-            [{"text": "🛰 Пульс сегодня", "callback_data": "pulse_today"}],
+            [
+                {"text": "🛰 Пульс сегодня", "callback_data": "pulse_today"},
+                {"text": "📦 Датасет", "callback_data": "dataset"},
+            ],
+            [{"text": "🧠 Гипотезы", "callback_data": "hypotheses"}],
         ]
     }
 
@@ -245,6 +249,26 @@ async def _users_csv() -> bytes:
     return ("\ufeff" + out.getvalue()).encode("utf-8")
 
 
+async def _hypotheses_overview() -> str:
+    """Булев слой знаний: открытые и решённые гипотезы Пульс-аналитика."""
+    from app.models import Hypothesis
+    async with async_session() as db:
+        rows = (await db.execute(
+            select(Hypothesis).order_by(Hypothesis.updated_at.desc()).limit(40)
+        )).scalars().all()
+    if not rows:
+        return ("🧠 Гипотез пока нет — Пульс-аналитик добавит их по мере "
+                "накопления данных (ежедневный отчёт 09:05).")
+    mark = {True: "✅", False: "❌", None: "❓"}
+    lines = ["🧠 <b>Гипотезы (булев слой датасета)</b>"]
+    for h in rows:
+        conf = f" ({float(h.confidence):.0%})" if h.confidence is not None else ""
+        lines.append(f"{mark[h.verdict]} {escape(h.statement)}{conf}")
+        if h.rationale:
+            lines.append(f"<blockquote expandable>{escape(h.rationale)}</blockquote>")
+    return "\n".join(lines)
+
+
 # ---------------------------------------------------------------------------
 # Поллер
 # ---------------------------------------------------------------------------
@@ -284,6 +308,26 @@ async def _handle_callback(cq: dict) -> None:
             f"(+{snap.get('users', {}).get('new', 0)} сегодня)\n"
             f"<blockquote expandable>{escape(json.dumps(ev.get('by_name', {}), ensure_ascii=False))}</blockquote>"
         )
+        await send_message(chat_id, text, reply_markup=main_menu_keyboard())
+    elif data == "dataset":
+        from app.services.dataset_inventory import build_inventory, format_inventory_html
+        async with async_session() as db:
+            inv = await build_inventory(db)
+        text = format_inventory_html(inv)
+        # Полная раскладка JSON-ключей — в expandable, чтобы видно было
+        # весь словарь собираемых параметров.
+        b_keys = inv["sections"]["behavior_events"]["json_keys"]
+        v_keys = inv["sections"]["raw_metrika_visits"]["json_keys"]
+        f_keys = inv["sections"]["frontend_events"]["json_keys"]
+        detail = (
+            f"Поведение ({len(b_keys)}): {', '.join(b_keys)}\n"
+            f"Бизнес-события ({len(f_keys)}): {', '.join(f_keys)}\n"
+            f"Визиты Метрики ({len(v_keys)}): {', '.join(v_keys)}"
+        )
+        text += f"\n<blockquote expandable>{escape(detail)}</blockquote>"
+        await send_message(chat_id, text, reply_markup=main_menu_keyboard())
+    elif data == "hypotheses":
+        text = await _hypotheses_overview()
         await send_message(chat_id, text, reply_markup=main_menu_keyboard())
     elif data.startswith("user:"):
         text = await _user_card(data.split(":", 1)[1])
