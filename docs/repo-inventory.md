@@ -2,7 +2,7 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Файлов:** 484  ·  **Строк:** 104 149  ·  **Токенов (≈):** 1 058 878
+**Файлов:** 484  ·  **Строк:** 104 155  ·  **Токенов (≈):** 1 058 860
 
 ## По верхним папкам
 
@@ -10,7 +10,7 @@
 |-------|-------:|------:|------------:|
 | `(root)` | 7 | 1 490 | 36 313 |
 | `.github` | 1 | 56 | 334 |
-| `backend` | 251 | 56 527 | 560 140 |
+| `backend` | 251 | 56 533 | 560 122 |
 | `docs` | 20 | 4 189 | 82 786 |
 | `frontend` | 172 | 36 583 | 325 200 |
 | `mcp` | 3 | 158 | 1 120 |
@@ -130,9 +130,9 @@
 | `frontend/src/components/IndicatorTelemetryGrid.jsx` | 187 | 2 056 |
 | `frontend/src/embed/EmbedCompare.jsx` | 153 | 2 026 |
 | `frontend/src/pages/Terms.jsx` | 160 | 2 019 |
-| `backend/app/services/pulse_report.py` | 187 | 2 012 |
 | `scripts/backfill-keyrate-history.py` | 222 | 2 007 |
 | `backend/app/services/analytics_backfill.py` | 224 | 1 996 |
+| `backend/app/services/pulse_report.py` | 193 | 1 994 |
 | `scripts/seo-audit.py` | 198 | 1 962 |
 | `backend/app/services/calendar_sources/common.py` | 213 | 1 959 |
 | `scripts/metrika-goals-audit.py` | 188 | 1 955 |
