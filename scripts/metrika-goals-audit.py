@@ -131,7 +131,7 @@ async def main() -> int:
     existing: set[str] = set()
     for g in goals:
         for cond in g.get("conditions") or []:
-            gid = cond.get("goal_id") or cond.get("url")
+            gid = cond.get("value") or cond.get("goal_id") or cond.get("url")
             if gid:
                 existing.add(str(gid))
 
@@ -167,7 +167,7 @@ async def main() -> int:
             "name": name[:255],
             "type": "action",
             "is_retargeting": 0,
-            "conditions": [{"type": "exact", "goal_id": ev}],
+            "conditions": [{"type": "exact", "url": ev}],
         }
         try:
             r = await client.create_goal(args.counter, goal, approved=True)

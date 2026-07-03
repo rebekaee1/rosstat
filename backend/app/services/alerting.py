@@ -13,10 +13,13 @@ logger = logging.getLogger(__name__)
 _TELEGRAM_API = "https://api.telegram.org/bot{token}/sendMessage"
 
 
-async def send_telegram(message: str, chat_id: Optional[str] = None) -> bool:
+async def send_telegram(
+    message: str, chat_id: Optional[str] = None, reply_markup: Optional[dict] = None
+) -> bool:
     """Send alert to Telegram (async, non-blocking). Returns True on success.
 
     `chat_id` переопределяет получателя; без него — primary `settings.telegram_chat_id`.
+    `reply_markup` — inline-клавиатура (напр. меню бота под дайджестом).
     """
     token = settings.telegram_bot_token
     cid = chat_id or settings.telegram_chat_id
@@ -25,11 +28,11 @@ async def send_telegram(message: str, chat_id: Optional[str] = None) -> bool:
 
     try:
         url = _TELEGRAM_API.format(token=token)
+        payload: dict = {"chat_id": cid, "text": message, "parse_mode": "HTML"}
+        if reply_markup:
+            payload["reply_markup"] = reply_markup
         async with httpx.AsyncClient(timeout=10) as client:
-            resp = await client.post(
-                url,
-                json={"chat_id": cid, "text": message, "parse_mode": "HTML"},
-            )
+            resp = await client.post(url, json=payload)
         if resp.status_code != 200:
             logger.warning("Telegram alert failed: HTTP %d", resp.status_code)
             return False
@@ -57,9 +60,30 @@ def digest_recipients() -> list[str]:
     return out
 
 
-async def send_telegram_digest(message: str) -> dict[str, bool]:
-    """Рассылка дайджеста всем получателям. Возвращает {chat_id: ok}."""
-    return {cid: await send_telegram(message, chat_id=cid) for cid in digest_recipients()}
+async def send_telegram_digest(message: str, reply_markup: Optional[dict] = None) -> dict[str, bool]:
+    """Рассылка дайджеста всем получателям. Возвращает {chat_id: ok}.
+
+    `reply_markup` — общее меню бота под отчётом, чтобы получатели (владелец +
+    skrakan) могли сразу выгрузить CSV/раскрыть пользователей той же кнопкой.
+    """
+    return {
+        cid: await send_telegram(message, chat_id=cid, reply_markup=reply_markup)
+        for cid in digest_recipients()
+    }
+
+
+def interactive_authorized_ids() -> set[str]:
+    """Кто вправе жать кнопки бота (меню, карточки, выгрузка CSV пользователей).
+
+    Владелец (`telegram_chat_id`) + получатели отчёта (`telegram_digest_chat_ids`,
+    напр. skrakan) + `pulse_chat_id`. Realtime-алерты (регистрации/обратная связь)
+    сюда НЕ относятся — они только у владельца. Так skrakan получает отчёт и может
+    сам выгрузить CSV, но не завален мгновенными уведомлениями (звонок 2026-07-03).
+    """
+    ids = set(digest_recipients())
+    if settings.pulse_chat_id:
+        ids.add(str(settings.pulse_chat_id))
+    return {str(i) for i in ids if i}
 
 
 async def notify_new_user(info: dict) -> None:

@@ -236,7 +236,8 @@ async def telegram_daily_digest_job() -> None:
             parts.append("⚠️ Статистика Метрики недоступна")
     else:
         parts.append("ℹ️ Метрика отключена (нет токена) — только статистика БД")
-    results = await send_telegram_digest("\n".join(parts))
+    from app.services.telegram_bot import main_menu_keyboard
+    results = await send_telegram_digest("\n".join(parts), reply_markup=main_menu_keyboard())
     logger.info("Telegram digest delivered: %s", results)
 
 

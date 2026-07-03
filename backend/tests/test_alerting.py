@@ -14,7 +14,7 @@ import app.services.alerting as alerting
 def _capture_send(monkeypatch):
     calls: list = []
 
-    async def fake_send(message, chat_id=None):
+    async def fake_send(message, chat_id=None, reply_markup=None):
         calls.append(chat_id)
         return True
 
@@ -55,3 +55,14 @@ def test_digest_recipients_dedup_and_order(monkeypatch):
         alerting.settings, "telegram_digest_chat_ids", "111, 222 ,222,333", raising=False
     )
     assert alerting.digest_recipients() == ["111", "222", "333"]
+
+
+def test_interactive_authorized_includes_owner_and_report_recipients(monkeypatch):
+    """Кнопки/CSV — владельцу + получателям отчёта (skrakan), не только владельцу."""
+    monkeypatch.setattr(alerting.settings, "telegram_chat_id", "433221767", raising=False)
+    monkeypatch.setattr(alerting.settings, "telegram_digest_chat_ids", "703822898", raising=False)
+    monkeypatch.setattr(alerting.settings, "pulse_chat_id", "", raising=False)
+    assert alerting.interactive_authorized_ids() == {"433221767", "703822898"}
+    # pulse_chat_id тоже допускается (LLM-отчёт владельцу)
+    monkeypatch.setattr(alerting.settings, "pulse_chat_id", "999", raising=False)
+    assert alerting.interactive_authorized_ids() == {"433221767", "703822898", "999"}

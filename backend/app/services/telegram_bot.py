@@ -4,8 +4,9 @@
 1. Отправка сообщений с inline-кнопками (`send_message`, `send_document`) —
    современное оформление Bot API: HTML + <blockquote expandable>.
 2. Поллер `telegram_poll_job` (APScheduler, каждые 30 с): getUpdates с offset
-   в state-Redis (`fe:tg:offset`). Обрабатывает ТОЛЬКО чат владельца
-   (`settings.pulse_chat_id`) — чужие апдейты подтверждаются и игнорируются.
+   в state-Redis (`fe:tg:offset`). Обрабатывает чаты из `interactive_authorized_ids()`
+   (владелец + получатели отчёта, напр. skrakan) — чужие апдейты подтверждаются
+   и игнорируются. Realtime-алерты сюда не входят: они только у владельца.
 
 Кнопки главного меню:
 - «Пользователи» — таблица всех пользователей (expandable blockquote);
@@ -31,6 +32,7 @@ from sqlalchemy import func, select
 from collections import Counter
 
 from app.config import settings
+from app.services.alerting import interactive_authorized_ids
 from app.core.cache import get_state_redis
 from app.database import async_session
 from app.models import AuthAudit, Consent, EmailCredential, FrontendEvent, OAuthIdentity, User
@@ -248,10 +250,10 @@ async def _users_csv() -> bytes:
 # ---------------------------------------------------------------------------
 
 async def _handle_callback(cq: dict) -> None:
-    """Обработка нажатия кнопки. Только чат владельца."""
+    """Обработка нажатия кнопки. Владелец + получатели отчёта (skrakan)."""
     await _api("answerCallbackQuery", {"callback_query_id": cq["id"]})
     chat_id = str(cq.get("message", {}).get("chat", {}).get("id", ""))
-    if chat_id != str(settings.pulse_chat_id):
+    if chat_id not in interactive_authorized_ids():
         return
     data = cq.get("data", "")
 
@@ -292,7 +294,7 @@ async def _handle_callback(cq: dict) -> None:
 
 async def _handle_message(msg: dict) -> None:
     chat_id = str(msg.get("chat", {}).get("id", ""))
-    if chat_id != str(settings.pulse_chat_id):
+    if chat_id not in interactive_authorized_ids():
         return
     text = (msg.get("text") or "").strip().lower()
     if text in ("/start", "/menu", "меню"):
@@ -304,7 +306,7 @@ async def _handle_message(msg: dict) -> None:
 
 async def telegram_poll_job() -> None:
     """Разовый цикл getUpdates (запускается APScheduler'ом каждые 30 с)."""
-    if not (settings.telegram_bot_token and settings.pulse_chat_id):
+    if not (settings.telegram_bot_token and interactive_authorized_ids()):
         return
     r = await get_state_redis()
     offset = await r.get(_OFFSET_KEY)
