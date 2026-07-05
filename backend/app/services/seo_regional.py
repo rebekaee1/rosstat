@@ -409,11 +409,22 @@ async def render_region_rating_html(code: str, db: AsyncSession) -> tuple[int, s
 <div class="seo-tile"><span>Данные за</span><b>{last_year} год</b></div>
 </div>"""
 
+    og_path = f"/og/region-rating/{code}.png"
+    rating_alt = (f"{indicator.name} по регионам России — рейтинг {last_year} года, "
+                  f"лидер {top[0][1]} ({_vu(top[0][2])})")
+    figure_html = (
+        f'<figure class="seo-chart"><img src="{escape(og_path)}" alt="{escape(rating_alt)}" '
+        f'width="1200" height="630" loading="eager">'
+        f"<figcaption>{escape(indicator.name)}: лидирующие регионы, {last_year} год. "
+        f"Источник: Росстат. forecasteconomy.com</figcaption></figure>"
+    )
+
     body = f"""<div class="seo-page">
 <nav><a href="/">Главная</a> → <a href="/regions">Регионы</a> → Рейтинг: {escape(indicator.name)}</nav>
 <p class="seo-eyebrow">{escape(indicator.section_name)} — рейтинг регионов</p>
 <h1>{escape(indicator.name)}: рейтинг регионов России, {last_year} год</h1>
 <p>{escape(intro)}</p>
+{figure_html}
 {tiles_html}
 <section class="seo-section"><h2>Полный рейтинг ({total} регионов)</h2>{table_html}</section>
 {faq_html}
@@ -425,6 +436,17 @@ async def render_region_rating_html(code: str, db: AsyncSession) -> tuple[int, s
 По каждому региону доступна страница с полной динамикой показателя с 1990 года.</p></section>
 </div>"""
 
+    json_ld.append({
+        "@context": "https://schema.org",
+        "@type": "ImageObject",
+        "contentUrl": f"{DOMAIN}{og_path}",
+        "url": f"{DOMAIN}{og_path}",
+        "name": f"{indicator.name} — рейтинг регионов России, {last_year}",
+        "description": rating_alt,
+        "representativeOfPage": True,
+        "width": 1200,
+        "height": 630,
+    })
     html = await build_document(
         title=title,
         description=desc,
@@ -435,6 +457,7 @@ async def render_region_rating_html(code: str, db: AsyncSession) -> tuple[int, s
             f"{indicator.name} по регионам, рейтинг регионов {indicator.name}, "
             f"{indicator.name} по субъектам рф, топ регионов {indicator.name}"
         ),
+        og_image=f"{DOMAIN}{og_path}",
     )
     return 200, html
 

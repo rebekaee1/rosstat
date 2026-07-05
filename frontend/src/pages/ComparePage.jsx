@@ -21,6 +21,7 @@ import {
 import useDocumentMeta from '../lib/useMeta';
 import { ChartSkeleton } from '../components/Skeleton';
 import { track, events } from '../lib/track';
+import useSearchTracking from '../lib/useSearchTracking';
 import { exportNodeToPng } from '../lib/chartImage';
 import useScrollDepth from '../lib/useScrollDepth';
 import {
@@ -187,7 +188,7 @@ function AddCardHeader({ icon, title, hint }) {
  * скроллится), фильтруется вводом. Поддерживает группы (секции показателей).
  * Один визуальный язык с макро-поиском (`AddIndicator`).
  */
-function ComboSelect({ groups, value, onChange, placeholder, searchPlaceholder, ariaLabel, disabled }) {
+function ComboSelect({ groups, value, onChange, placeholder, searchPlaceholder, ariaLabel, disabled, trackContext }) {
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const boxRef = useRef(null);
@@ -211,6 +212,10 @@ function ComboSelect({ groups, value, onChange, placeholder, searchPlaceholder, 
   }, [groups, query]);
 
   const total = filtered.reduce((n, g) => n + g.items.length, 0);
+
+  // Спрос-аналитика: каждый набранный запрос в комбобоксах сравнения тоже
+  // уходит в search_query (директива «собирать все поиски», 2026-07-05).
+  useSearchTracking(trackContext || 'compare-combo', open ? query : '', total);
 
   return (
     <div className="relative" ref={boxRef}>
@@ -336,6 +341,7 @@ function AddRegionSeries({ selected, onAdd, atCap, capHint }) {
           placeholder="Выберите или найдите регион…"
           searchPlaceholder="Название региона…"
           disabled={atCap}
+          trackContext="compare-region"
         />
         <ComboSelect
           groups={indicatorGroups}
@@ -345,6 +351,7 @@ function AddRegionSeries({ selected, onAdd, atCap, capHint }) {
           placeholder="Выберите или найдите показатель…"
           searchPlaceholder="Название показателя…"
           disabled={atCap || !regionSlug}
+          trackContext="compare-region-indicator"
         />
         <button
           type="button"

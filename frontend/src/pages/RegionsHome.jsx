@@ -17,6 +17,7 @@ import ApiRetryBanner from '../components/ApiRetryBanner';
 import { SkeletonBox } from '../components/Skeleton';
 import { exportNodeToPng } from '../lib/chartImage';
 import { track, events } from '../lib/track';
+import useSearchTracking from '../lib/useSearchTracking';
 
 const RegionsMap = lazy(() => import('../components/RegionsMap'));
 
@@ -51,6 +52,12 @@ function normalize(s) {
 /**
  * Поиск произвольного показателя для карты («добавьте свой» — созвон
  * «На правки 13»): компактный combobox по каталогу из 489 показателей.
+ *
+ * Робастность (правки 2026-07-05): dropdown открывается и при вводе/клике,
+ * а не только по onFocus (после «сбросить» фокус оставался в поле и печать
+ * не подсвечивалась — value показывал пустую строку при open=false);
+ * пустой результат рисует «Ничего не найдено», а не молча прячет список;
+ * каждый набранный запрос уходит в спрос-аналитику (search_query).
  */
 function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
   const catalog = useRegionsCatalog();
@@ -66,14 +73,17 @@ function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
     return all.filter(i => normalize(i.name).includes(q)).slice(0, 50);
   }, [catalog.data, query]);
 
+  useSearchTracking('map-metric', open ? query : '', results.length);
+
   const isCustom = !!activeCode;
+  const openWith = (q) => { setOpen(true); setQuery(q); };
 
   return (
     <div className="relative min-w-0 flex-1 sm:max-w-xs">
-      <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs border transition-colors ${
+      <div className={`flex items-center gap-1.5 px-3 py-2 sm:py-1.5 rounded-full text-xs border transition-colors ${
         isCustom
           ? 'bg-champagne/15 text-champagne border-transparent'
-          : 'bg-surface border-border-subtle text-text-secondary'
+          : 'bg-surface border-border-subtle text-text-secondary focus-within:border-border-champagne'
       }`}
       >
         <Search size={13} className="shrink-0" />
@@ -81,11 +91,14 @@ function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
           type="text"
           value={open ? query : (isCustom ? activeName : '')}
           placeholder="Свой показатель…"
-          onFocus={() => { setOpen(true); setQuery(''); }}
+          onFocus={() => openWith('')}
+          onClick={() => { if (!open) openWith(''); }}
           onBlur={() => setTimeout(() => setOpen(false), 150)}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => { if (!open) setOpen(true); setQuery(e.target.value); }}
           className="min-w-0 flex-1 bg-transparent outline-none placeholder:text-text-tertiary"
           aria-label="Найти показатель для карты"
+          role="combobox"
+          aria-expanded={open}
         />
         {isCustom && !open && (
           <button
@@ -98,19 +111,27 @@ function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
           </button>
         )}
       </div>
-      {open && results.length > 0 && (
-        <div className="absolute z-30 mt-2 w-[min(90vw,26rem)] max-h-72 overflow-auto rounded-xl border border-border-subtle bg-surface shadow-2xl">
-          {results.map(i => (
-            <button
-              key={i.code}
-              type="button"
-              onMouseDown={(e) => { e.preventDefault(); onPick(i); setOpen(false); setQuery(''); }}
-              className="w-full px-3.5 py-2 text-left hover:bg-surface-hover transition-colors"
-            >
-              <div className="text-[13px] text-text-primary leading-snug">{i.name}</div>
-              <div className="text-[11px] text-text-tertiary">{i.section}</div>
-            </button>
-          ))}
+      {open && (
+        <div className="absolute right-0 sm:left-0 sm:right-auto z-30 mt-2 w-[min(calc(100vw-2rem),26rem)] max-h-72 overflow-auto rounded-xl border border-border-subtle bg-surface shadow-2xl">
+          {catalog.isLoading ? (
+            <div className="px-3.5 py-3 text-[13px] text-text-tertiary">Загрузка каталога…</div>
+          ) : results.length === 0 ? (
+            <div className="px-3.5 py-3 text-[13px] text-text-tertiary">
+              По запросу «{query}» ничего не найдено. Попробуйте короче: «зарплата», «врач», «жильё».
+            </div>
+          ) : (
+            results.map(i => (
+              <button
+                key={i.code}
+                type="button"
+                onMouseDown={(e) => { e.preventDefault(); onPick(i); setOpen(false); setQuery(''); }}
+                className="w-full px-3.5 py-2 text-left hover:bg-surface-hover transition-colors"
+              >
+                <div className="text-[13px] text-text-primary leading-snug">{i.name}</div>
+                <div className="text-[11px] text-text-tertiary">{i.section}</div>
+              </button>
+            ))
+          )}
         </div>
       )}
     </div>
@@ -231,6 +252,9 @@ export default function RegionsHome() {
 
   const totalShown = filtered.reduce((n, d) => n + d.regions.length, 0);
 
+  // Спрос-аналитика: что ищут в поиске регионов (в т.ч. запросы без результата).
+  useSearchTracking('regions-list', deferredQuery, totalShown);
+
   return (
     <div className="max-w-5xl mx-auto px-4 pt-24 pb-20">
       {/* Hero */}
@@ -308,7 +332,7 @@ export default function RegionsHome() {
               />
             </div>
             {/* Чипы округов — горизонтальный скролл на мобильных */}
-            <div className="mt-2 flex gap-1.5 overflow-x-auto pb-1 scrollbar-none" role="tablist" aria-label="Федеральные округа">
+            <div className="mt-2 flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide" role="tablist" aria-label="Федеральные округа">
               <button
                 onClick={() => setActiveDistrict(null)}
                 className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
@@ -371,7 +395,7 @@ export default function RegionsHome() {
               Поиск ВНЕ overflow-контейнера — иначе его выпадающий список
               обрезается прокруткой чипов (баг «Свой показатель нельзя найти»). */}
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center mb-3">
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none min-w-0" role="tablist" aria-label="Показатель карты">
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-hide min-w-0" role="tablist" aria-label="Показатель карты">
               <button
                 role="tab"
                 aria-selected={isOverview && !customMetric}

@@ -155,6 +155,10 @@ class Settings(BaseSettings):
     # Интерактивные кнопки бота (getUpdates-поллер каждые 30 с)
     telegram_poller_enabled: bool = False
 
+    # Админ-BI (/admin/bi): comma-separated email'ы с доступом к дашборду.
+    # Вход обычной сессией; email сверяется по способам входа пользователя.
+    admin_emails: str = "admin_forecasteconomy@forecasteconomy.com"
+
     model_config = {"env_prefix": "RUSTATS_", "env_file": ".env", "extra": "ignore"}
 
 

@@ -13,6 +13,7 @@ from app.api.auth import router as auth_router
 from app.api.oauth import router as oauth_router
 from app.api.export import router as export_router
 from app.api.regions import router as regions_router
+from app.api.admin_bi import router as admin_bi_router
 
 api_router = APIRouter(prefix="/api/v1")
 api_router.include_router(indicators_router)
@@ -28,3 +29,4 @@ api_router.include_router(auth_router)
 api_router.include_router(oauth_router)
 api_router.include_router(export_router)
 api_router.include_router(regions_router)
+api_router.include_router(admin_bi_router)

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { MessageSquare, CheckCircle2 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import { useAuth } from '../context/authContext';
@@ -238,6 +238,22 @@ export default function Account() {
           </button>
         </p>
       </section>
+
+      {user.is_admin && (
+        <section className="rounded-2xl bg-surface border border-border-champagne p-5 mb-5 shadow-sm">
+          <h2 className="text-sm font-semibold text-text-secondary mb-2">Служебное</h2>
+          <p className="text-sm text-text-secondary mb-3">
+            BI-аналитика платформы: трафик, воронка, retention, качество страниц,
+            поисковый спрос, гипотезы. Обновляется каждые 15 минут.
+          </p>
+          <Link
+            to="/admin/bi"
+            className="inline-block px-4 py-2 rounded-xl bg-champagne text-white text-sm font-medium"
+          >
+            Открыть BI-дашборд
+          </Link>
+        </section>
+      )}
 
       {msg && <div className="text-sm text-positive mb-4">{msg}</div>}
       {err && <div className="text-sm text-negative mb-4">{err}</div>}

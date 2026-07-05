@@ -342,6 +342,135 @@ async def og_image_region_indicator(slug: str, code: str, db: AsyncSession = Dep
     )
 
 
+@router.get("/api/v1/og-image/region-rating/{code}.png", include_in_schema=False)
+async def og_image_region_rating(code: str, db: AsyncSession = Depends(get_db)):
+    """PNG-барчарт рейтинга регионов: og:image + видимый <img> на /region-rating."""
+    from app.models import Region, RegionDataPoint, RegionIndicator
+    from app.services.og_image import cached_og, render_rating_og, store_og
+
+    cache_key = f"rating:{code}"
+    png = cached_og(cache_key)
+    if png is None:
+        indicator = (await db.execute(
+            select(RegionIndicator).where(RegionIndicator.code == code)
+        )).scalar_one_or_none()
+        if not indicator:
+            return Response(status_code=404)
+        last_year = (await db.execute(
+            select(func.max(RegionDataPoint.year))
+            .join(Region, Region.id == RegionDataPoint.region_id)
+            .where(RegionDataPoint.indicator_id == indicator.id, Region.kind == "region")
+        )).scalar_one_or_none()
+        if last_year is None:
+            return Response(status_code=404)
+        rows = (await db.execute(
+            select(Region.name, RegionDataPoint.value)
+            .join(Region, Region.id == RegionDataPoint.region_id)
+            .where(RegionDataPoint.indicator_id == indicator.id,
+                   RegionDataPoint.year == last_year,
+                   Region.kind == "region")
+            .order_by(RegionDataPoint.value.desc())
+        )).all()
+        if len(rows) < 5:
+            return Response(status_code=404)
+        png = render_rating_og(
+            name=indicator.name,
+            year=int(last_year),
+            unit=(indicator.unit or "").strip(),
+            rows=[(n, float(v)) for n, v in rows],
+            total=len(rows),
+        )
+        store_og(cache_key, png)
+    return Response(
+        content=png,
+        media_type="image/png",
+        headers={"Cache-Control": "public, max-age=3600"},
+    )
+
+
+@router.get("/api/v1/og-image/today.png", include_in_schema=False)
+async def og_image_today_hub(db: AsyncSession = Depends(get_db)):
+    """PNG-сводка «Экономика России сегодня» для хаба /today."""
+    from app.services.og_image import cached_og, render_today_hub_og, store_og
+    from app.services.seo_today import (
+        TODAY_CODES, TODAY_SPECS, _format_number, _indicator_with_rows, _ru_date,
+    )
+    from datetime import date as _date
+
+    cache_key = "today-hub"
+    png = cached_og(cache_key)
+    if png is None:
+        items: list[tuple[str, str]] = []
+        for code in TODAY_CODES:
+            spec = TODAY_SPECS[code]
+            indicator, rows = await _indicator_with_rows(db, spec.series_code, limit=1)
+            if indicator is None or not rows:
+                continue
+            unit = (indicator.unit or "").strip()
+            items.append((spec.query, f"{_format_number(rows[0].value)} {unit}".strip()))
+        if not items:
+            return Response(status_code=404)
+        png = render_today_hub_og(date_text=_ru_date(_date.today()), items=items)
+        store_og(cache_key, png)
+    return Response(
+        content=png,
+        media_type="image/png",
+        headers={"Cache-Control": "public, max-age=3600"},
+    )
+
+
+@router.get("/api/v1/og-image/region-vs/{slug_a}-vs-{slug_b}.png", include_in_schema=False)
+async def og_image_region_vs(slug_a: str, slug_b: str, db: AsyncSession = Depends(get_db)):
+    """PNG-таблица сравнения двух регионов для /region-vs."""
+    from app.services.og_image import cached_og, render_region_vs_og, store_og
+    from app.services.region_compare_data import build_region_compare_payload
+    from app.services.seo_regional import _fmt as _fmt_ru
+
+    cache_key = f"vs:{slug_a}:{slug_b}"
+    png = cached_og(cache_key)
+    if png is None:
+        payload = await build_region_compare_payload(slug_a, slug_b, db)
+        if payload is None:
+            return Response(status_code=404)
+
+        _UNIT_SHORT = {
+            "тысяч человек": "тыс. чел.",
+            "в процентах": "%",
+            "рублей": "руб.",
+            "миллионов рублей": "млн руб.",
+        }
+
+        def _vu(v, unit):
+            v = float(v)
+            u = (unit or "").strip()
+            # ВРП/инвестиции в «миллионах рублей» — конвертируем в трлн/млрд,
+            # иначе «32 339 002 миллионов рублей» не влезает в колонку картинки.
+            if u == "миллионов рублей":
+                if abs(v) >= 1_000_000:
+                    return f"{_fmt_ru(round(v / 1_000_000, 1))} трлн руб."
+                if abs(v) >= 1_000:
+                    return f"{_fmt_ru(round(v / 1_000, 1))} млрд руб."
+            return f"{_fmt_ru(v)} {_UNIT_SHORT.get(u, u)}".strip()
+
+        rows = [
+            (r["name"], _vu(r["a"]["value"], r["unit"]), _vu(r["b"]["value"], r["unit"]))
+            for r in payload["rows"]
+        ]
+        if not rows:
+            return Response(status_code=404)
+        png = render_region_vs_og(
+            name_a=payload["region_a"]["name"],
+            name_b=payload["region_b"]["name"],
+            rows=rows,
+        )
+        store_og(cache_key, png)
+    return Response(
+        content=png,
+        media_type="image/png",
+        headers={"Cache-Control": "public, max-age=3600"},
+    )
+
+
 def _html_response(status_code: int, html: str) -> Response:
     return Response(content=html, status_code=status_code, media_type="text/html; charset=utf-8")
 

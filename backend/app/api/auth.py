@@ -164,7 +164,13 @@ async def me(
     sess = getattr(request.state, "session", None)
     if sess:
         set_session_cookies(response, sess["sid"], sess["csrf"])
-    return {"user": await serialize_user(db, user)}
+    payload = await serialize_user(db, user)
+    # Признак админа — для показа BI-раздела в кабинете (/admin/bi).
+    # Обычным пользователям поле не отдаём вовсе: раздел для них не существует.
+    from app.api.admin_bi import user_is_admin
+    if await user_is_admin(db, user):
+        payload["is_admin"] = True
+    return {"user": payload}
 
 
 class SetPasswordIn(BaseModel):

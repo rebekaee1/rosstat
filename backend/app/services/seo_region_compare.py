@@ -108,6 +108,16 @@ async def render_region_vs_html(
         f"<tbody>{''.join(table_rows)}</tbody></table></div>"
     )
 
+    og_path = f"/og/region-vs/{canon_a}-vs-{canon_b}.png"
+    vs_alt = (f"Сравнение регионов {region_a['name']} и {region_b['name']}: "
+              f"население, зарплата, ВРП, безработица — данные Росстата")
+    figure_html = (
+        f'<figure class="seo-chart"><img src="{escape(og_path)}" alt="{escape(vs_alt)}" '
+        f'width="1200" height="630" loading="eager">'
+        f"<figcaption>{escape(region_a['name'])} и {escape(region_b['name'])}: ключевые показатели. "
+        f"Источник: Росстат. forecasteconomy.com</figcaption></figure>"
+    )
+
     body = f"""<div class="seo-page">
 <nav><a href="/">Главная</a> → <a href="/regions">Регионы</a> → {escape(region_a['name'])} vs {escape(region_b['name'])}</nav>
 <p class="seo-eyebrow">Сравнение регионов России</p>
@@ -115,6 +125,7 @@ async def render_region_vs_html(
 <p>Официальные данные Росстата по двум субъектам РФ: население, заработная плата, безработица,
 валовой региональный продукт, инвестиции, цены и доходы. По каждому показателю — значения за
 последний доступный год и вывод, где значение выше.</p>
+{figure_html}
 <section class="seo-section"><h2>Сводная таблица</h2>{compare_table}</section>
 {''.join(sections)}
 <section class="seo-section"><h2>Профили регионов</h2>
@@ -137,6 +148,18 @@ async def render_region_vs_html(
             "inLanguage": "ru-RU",
             "creator": {"@type": "Organization", "name": "Росстат"},
             "spatialCoverage": f"{region_a['name']}; {region_b['name']}",
+            "image": f"{DOMAIN}{og_path}",
+        },
+        {
+            "@context": "https://schema.org",
+            "@type": "ImageObject",
+            "contentUrl": f"{DOMAIN}{og_path}",
+            "url": f"{DOMAIN}{og_path}",
+            "name": f"{region_a['name']} и {region_b['name']} — сравнение регионов",
+            "description": vs_alt,
+            "representativeOfPage": True,
+            "width": 1200,
+            "height": 630,
         },
     ]
 
@@ -150,5 +173,6 @@ async def render_region_vs_html(
             f"{region_a['name']} или {region_b['name']}, сравнение {region_a['name']} {region_b['name']}, "
             f"{region_a['name']} {region_b['name']} зарплата, {region_a['name']} {region_b['name']} уровень жизни"
         ),
+        og_image=f"{DOMAIN}{og_path}",
     )
     return 200, html

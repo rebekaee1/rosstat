@@ -11,6 +11,7 @@ import {
 } from '../lib/regionsApi';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import { SkeletonBox } from '../components/Skeleton';
+import useSearchTracking from '../lib/useSearchTracking';
 
 function normalize(s) {
   return s.toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim();
@@ -136,6 +137,10 @@ export default function RegionProfile() {
   }, [data, deferredQuery]);
 
   const searching = normalize(deferredQuery).length > 0;
+
+  // Спрос-аналитика поиска показателей внутри карточки региона.
+  const foundIndicators = filteredSections.reduce((n, s) => n + s.indicators.length, 0);
+  useSearchTracking('region-profile', deferredQuery, foundIndicators);
   const headlineOrder = ['1.1', '3.4', '2.10.1', '8.2', '10.1', '20.1', '3.12', '8.1'];
   const headline = data
     ? headlineOrder.map(tc => data.headline[tc]).filter(Boolean)

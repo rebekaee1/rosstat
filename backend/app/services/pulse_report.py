@@ -150,12 +150,11 @@ async def _llm_summary(snapshot: dict, memory: list[dict]) -> str | None:
         return None
     hypotheses = await _open_hypotheses()
     payload = {
-        # Нарратив + JSON-блок гипотез не влезают в 1400 токенов: при обрыве по
-        # длине Bedrock отдаёт content=null (finish_reason=length) → отчёт
-        # молча уходил в fallback, а гипотезы не писались. 4000 хватает на
-        # полный ответ (finish_reason=stop). См. диагностику 2026-07-05.
+        # Без max_tokens: модель отвечает сколько нужно (директива владельца
+        # 2026-07-05 «освободи его»). История: лимит 1400 обрывал ответ по
+        # длине, Bedrock отдавал content=null → отчёт молча уходил в fallback,
+        # а блок ---HYPOTHESES--- (и апсерт гипотез) не доходил до БД.
         "model": settings.openrouter_model,
-        "max_tokens": 4000,
         "messages": [
             {"role": "system", "content": _SYSTEM_PROMPT},
             {

@@ -284,6 +284,9 @@ async def render_today_hub_html(db: AsyncSession) -> tuple[int, str]:
         "ключевая ставка ЦБ, инфляция, цена золота и топлива, индекс МосБиржи. "
         "Официальные данные, обновление ежедневно."
     )
+    og_path = "/og/today.png"
+    hub_alt = (f"Экономика России сегодня, {_ru_date(today)}: курс доллара, евро и юаня, "
+               f"ключевая ставка, инфляция, цена золота и топлива, индекс МосБиржи")
     body = f"""<main class="seo-page">
 <nav aria-label="Хлебные крошки"><a href="/">Главная</a> / Сегодня</nav>
 <p class="seo-eyebrow">Сводка на {escape(_ru_date(today))}</p>
@@ -291,6 +294,7 @@ async def render_today_hub_html(db: AsyncSession) -> tuple[int, str]:
 <p>Актуальные значения ключевых показателей. Каждая карточка ведёт на
 страницу показателя с последними значениями, графиком и таблицей; полная история и прогноз —
 на карточках индикаторов.</p>
+<figure class="seo-chart"><img src="{escape(og_path)}" width="1200" height="630" alt="{escape(hub_alt)}" loading="eager"><figcaption>Ключевые показатели экономики России на {escape(_ru_date(today))}. forecasteconomy.com</figcaption></figure>
 <section><h2>Показатели на сегодня</h2><ul class="seo-grid">{''.join(items_html)}</ul></section>
 <section><h2>Больше данных</h2><p>Более 100 макроэкономических индикаторов — на <a href="/">главной странице</a>;
 региональная статистика — в разделе <a href="/regions">Регионы России</a>;
@@ -301,6 +305,17 @@ async def render_today_hub_html(db: AsyncSession) -> tuple[int, str]:
         _site_json_ld(),
         _breadcrumbs([("/", "Главная"), ("/today", "Сегодня")]),
         {"@context": "https://schema.org", "@type": "ItemList", "itemListElement": list_items},
+        {
+            "@context": "https://schema.org",
+            "@type": "ImageObject",
+            "contentUrl": f"{DOMAIN}{og_path}",
+            "url": f"{DOMAIN}{og_path}",
+            "name": f"Экономика России сегодня, {_ru_date(today)}",
+            "description": hub_alt,
+            "representativeOfPage": True,
+            "width": 1200,
+            "height": 630,
+        },
     ]
     html = await build_document(
         title=title,
@@ -312,5 +327,6 @@ async def render_today_hub_html(db: AsyncSession) -> tuple[int, str]:
             "курс доллара сегодня, ключевая ставка сегодня, инфляция сейчас, "
             "экономика россии сегодня, цена золота сегодня, цена бензина сегодня"
         ),
+        og_image=f"{DOMAIN}{og_path}",
     )
     return 200, html
