@@ -5,7 +5,7 @@ export default function About() {
   useDocumentMeta({
     title: 'О проекте Forecast Economy',
     description:
-      'Бесплатная аналитическая платформа экономической статистики России: 100+ индикаторов, данные Росстата, Банка России и Минфина. Исторические ряды и прогнозы.',
+      'Бесплатная аналитическая платформа экономической статистики России: 100+ макроиндикаторов и 489 региональных показателей по 96 регионам. Данные Росстата, Банка России и Минфина.',
     path: '/about',
   });
 
@@ -26,7 +26,8 @@ export default function About() {
           {' '}<a href="https://rosstat.gov.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer" onClick={() => trackOutbound('https://rosstat.gov.ru')}>Росстат</a>,
           {' '}<a href="https://cbr.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer" onClick={() => trackOutbound('https://cbr.ru')}>Банк России</a>
           {' '}и <a href="https://minfin.gov.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer" onClick={() => trackOutbound('https://minfin.gov.ru')}>Минфин России</a>,
-          {' '}— показываем длинные исторические ряды по более чем 100 индикаторам и строим{' '}
+          {' '}— показываем длинные исторические ряды по более чем 100 макроэкономическим индикаторам
+          и 489 региональным показателям по всем 96 регионам России, и строим{' '}
           <strong className="text-text-primary">прогноз</strong> там, где это оправдано характером ряда.
         </p>
 

@@ -155,6 +155,21 @@ Backend в `seo_renderer.get_app_assets()` ходит на
 
 **Инвариант для новых индикаторов:** вся SEO-автоматика (sitemap, related, годовые страницы, OG-превью, RSS, IndexNow) подтягивает новый индикатор сама — из БД. Руками ничего добавлять не нужно; обязательны только осмысленные `seo_keywords` (см. чеклист «новый индикатор» в `AGENTS.md`).
 
+**2026-07-04 — программа индексации 40k + программатик-спрос (спринт «10k визитов/день»).** Расширение в рамках принятого решения:
+
+1. **Единый реестр URL** `app/services/site_urls.py::collect_url_sections` — одна точка истины для sitemap, IndexNow и очереди переобхода. Порядок секций = приоритет обхода.
+2. **Sitemap-индекс** — `/sitemap.xml` теперь `<sitemapindex>` из секций `/sitemap-{name}.xml` (core / today / ratings / regions / region-vs / calendar / years / regional-1..N по 10k). Per-file lastmod и статистика обхода в Вебмастере. nginx: regex-location `^/sitemap(-[a-z0-9-]+)?\.xml$`.
+3. **IndexNow full-site** (`indexnow.ping_full_site` + `backend/scripts/indexnow-ping-all.py`): батчи по 10 000 URL (лимит протокола), разовый прогон всех ~43k URL выполнен 2026-07-04; ETL-пинг дополнен страницами `/today/{code}`.
+4. **Автоподача переобхода Вебмастера** (`app/services/webmaster_recrawl.py`, cron 09:10 MSK): ежедневный дренаж квоты (~150 URL/день) приоритетными URL из реестра; state — Redis-set `wm:recrawl:submitted` в state-DB (переживает FLUSHDB кэша); цикл перезапускается после полного прохода. Флаг `webmaster_recrawl_enabled` + `yandex_webmaster_token`.
+5. **Новые SSR-семейства страниц** (все чистый SSR, `include_app=False`, свои canonical):
+   - `/today` + `/today/{code}` (`seo_today.py`, whitelist `TODAY_SPECS`, 10 кодов) — ВЧ-интент «X сегодня/сейчас»: значение, изменение к предыдущей точке, таблица, FAQ. `TodaySpec.series` разводит slug страницы и код ряда данных: `/today/cpi` показывает годовую инфляцию `cpi-yoy`, а не месячный индекс ~100. Типографика: русские даты, «п. п.» для %-рядов, `_dot()` против двойных точек после «руб.».
+   - `/region-rating/{code}` (`seo_regional.py::render_region_rating_html`, ~489 стр.) — «топ регионов по X»: полный ранжир за последний год, лидеры/аутсайдеры/РФ, ItemList. Порог ≥ 10 регионов за max-год (согласован с sitemap).
+   - `/region-vs/{a}-vs-{b}` (`seo_region_compare.py`, C(20,2)=190 пар топ-регионов по населению) — «Москва или СПб»: ключевые показатели за последний общий год. Canonical — упорядоченная пара.
+   - `/calendar/{y}/{mm}` (`seo_calendar.py`) — месячные посадочные календаря, только official-даты (ADR-0005), месяцы с ≥ 3 событиями.
+6. **Перелинковка**: SSR-хаб регионов → рейтинги; карточка регион-показателя → «полный рейтинг регионов»; главная (PAGE_META home links) → /today и /regions; месячные страницы календаря связаны prev/next.
+7. **Фикс BreadcrumbList в региональном SSR**: элементы `(name, path)` передавались в `_breadcrumbs` в перевёрнутом порядке — `item` получал имя вместо URL. Исправлено во всех региональных рендерах.
+8. **Деплой 2026-07-04**: всё выше на проде (`201.51.11.170`); `RUSTATS_YANDEX_WEBMASTER_TOKEN` добавлен в прод-`.env`; IndexNow-пинг новых секций (706 URL) принят; recrawl-job активен, первый автодренаж квоты — 05.07 09:10 МСК (квота 04.07 выбрана ручной подачей 200 URL).
+
 ## Out of scope (future work)
 
 - Migrate `frontend/src/lib/categories.js` тексты в API — вытащить через

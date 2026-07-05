@@ -10,7 +10,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.models import Indicator, IndicatorData
-from app.services.seo_content import CATEGORIES, CATEGORY_META, DOMAIN, PAGE_META, STATIC_PAGES
+# CATEGORIES/PAGE_META/STATIC_PAGES реэкспортируются для тестов
+# (test_sitemap_static_pages_constant) — сама генерация живёт в site_urls.py.
+from app.services.seo_content import (  # noqa: F401
+    CATEGORIES,
+    CATEGORY_META,
+    DOMAIN,
+    PAGE_META,
+    STATIC_PAGES,
+)
 from app.services.seo_renderer import render_category_html, render_home_html, render_indicator_html, render_page_html
 
 logger = logging.getLogger(__name__)
@@ -28,137 +36,77 @@ def _sitemap_lastmod(last_data: date | None, fallback: date) -> str:
     return (last_data or fallback).isoformat()
 
 
-@router.api_route("/sitemap.xml", methods=["GET", "HEAD"], include_in_schema=False)
-async def sitemap_xml(db: AsyncSession = Depends(get_db)):
-    from app.core.cache import cache_get, cache_set
+_SITEMAP_TTL = 6 * 3600
 
-    # ~42 тыс. URL (макро + региональный блок) — кэш готового XML на 6 часов.
-    cached = await cache_get("fe:sitemap:xml")
-    if cached:
-        return Response(content=cached, media_type="application/xml")
 
-    today = date.today()
-
-    urls = []
-    for path, freq, priority in STATIC_PAGES:
-        urls.append(
-            f"  <url>\n"
-            f"    <loc>{DOMAIN}{path}</loc>\n"
-            f"    <lastmod>{today.isoformat()}</lastmod>\n"
-            f"    <changefreq>{freq}</changefreq>\n"
-            f"    <priority>{priority}</priority>\n"
-            f"  </url>"
-        )
-
-    for slug in CATEGORIES:
-        urls.append(
-            f"  <url>\n"
-            f"    <loc>{DOMAIN}/category/{slug}</loc>\n"
-            f"    <lastmod>{today.isoformat()}</lastmod>\n"
-            f"    <changefreq>weekly</changefreq>\n"
-            f"    <priority>0.8</priority>\n"
-            f"  </url>"
-        )
-
-    stmt = (
-        select(
-            Indicator.code,
-            Indicator.is_listed,
-            func.max(IndicatorData.date).label("last_data"),
-        )
-        .outerjoin(IndicatorData, IndicatorData.indicator_id == Indicator.id)
-        .where(Indicator.is_active.is_(True))
-        .group_by(Indicator.id, Indicator.code, Indicator.is_listed)
-        .order_by(Indicator.code)
-    )
-    rows = (await db.execute(stmt)).all()
-    for code, listed, last_data in rows:
-        priority = _sitemap_priority(listed=listed, is_indicator=True)
-        lastmod = _sitemap_lastmod(last_data, today)
-        urls.append(
-            f"  <url>\n"
-            f"    <loc>{DOMAIN}/indicator/{code}</loc>\n"
-            f"    <lastmod>{lastmod}</lastmod>\n"
-            f"    <changefreq>daily</changefreq>\n"
-            f"    <priority>{priority}</priority>\n"
-            f"  </url>"
-        )
-
-    # Годовые landing-страницы /indicator/{code}/{year}: только listed
-    # индикаторы с >= 2 точками за год (см. render_indicator_year_html).
-    year_expr = func.extract("year", IndicatorData.date)
-    year_stmt = (
-        select(Indicator.code, year_expr.label("y"), func.max(IndicatorData.date))
-        .join(IndicatorData, IndicatorData.indicator_id == Indicator.id)
-        .where(Indicator.is_active.is_(True), Indicator.is_listed.is_(True))
-        .group_by(Indicator.code, year_expr)
-        .having(func.count(IndicatorData.id) >= 2)
-        .order_by(Indicator.code, year_expr)
-    )
-    year_rows = (await db.execute(year_stmt)).all()
-    current_year = today.year
-    for code, year, last_data in year_rows:
-        year = int(year)
-        freq = "weekly" if year == current_year else "yearly"
-        urls.append(
-            f"  <url>\n"
-            f"    <loc>{DOMAIN}/indicator/{code}/{year}</loc>\n"
-            f"    <lastmod>{_sitemap_lastmod(last_data, today)}</lastmod>\n"
-            f"    <changefreq>{freq}</changefreq>\n"
-            f"    <priority>0.4</priority>\n"
-            f"  </url>"
-        )
-
-    # --- Региональный блок: /regions, /region/{slug}, /region/{slug}/{code} ---
-    from app.models import Region, RegionDataPoint, RegionIndicator
-
-    urls.append(
+def _render_urlset(urls) -> str:
+    entries = "\n".join(
         f"  <url>\n"
-        f"    <loc>{DOMAIN}/regions</loc>\n"
-        f"    <lastmod>{today.isoformat()}</lastmod>\n"
-        f"    <changefreq>weekly</changefreq>\n"
-        f"    <priority>0.9</priority>\n"
+        f"    <loc>{DOMAIN}{u.path}</loc>\n"
+        f"    <lastmod>{u.lastmod}</lastmod>\n"
+        f"    <changefreq>{u.changefreq}</changefreq>\n"
+        f"    <priority>{u.priority}</priority>\n"
         f"  </url>"
+        for u in urls
     )
-    region_rows = (await db.execute(
-        select(Region.slug).where(Region.kind == "region").order_by(Region.sort_order)
-    )).scalars().all()
-    for rslug in region_rows:
-        urls.append(
-            f"  <url>\n"
-            f"    <loc>{DOMAIN}/region/{rslug}</loc>\n"
-            f"    <lastmod>{today.isoformat()}</lastmod>\n"
-            f"    <changefreq>weekly</changefreq>\n"
-            f"    <priority>0.8</priority>\n"
-            f"  </url>"
-        )
-    pair_stmt = (
-        select(Region.slug, RegionIndicator.code, func.max(RegionDataPoint.year))
-        .join(Region, Region.id == RegionDataPoint.region_id)
-        .join(RegionIndicator, RegionIndicator.id == RegionDataPoint.indicator_id)
-        .where(Region.kind == "region", RegionIndicator.is_listed.is_(True))
-        .group_by(Region.slug, RegionIndicator.code)
-        .order_by(Region.slug, RegionIndicator.code)
-    )
-    for rslug, icode, last_year in (await db.execute(pair_stmt)).all():
-        lastmod = f"{int(last_year)}-12-31" if last_year else today.isoformat()
-        urls.append(
-            f"  <url>\n"
-            f"    <loc>{DOMAIN}/region/{rslug}/{icode}</loc>\n"
-            f"    <lastmod>{lastmod}</lastmod>\n"
-            f"    <changefreq>monthly</changefreq>\n"
-            f"    <priority>0.5</priority>\n"
-            f"  </url>"
-        )
-
-    xml = (
+    return (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-        + "\n".join(urls)
+        + entries
         + "\n</urlset>"
     )
 
-    await cache_set("fe:sitemap:xml", xml, 6 * 3600)
+
+@router.api_route("/sitemap.xml", methods=["GET", "HEAD"], include_in_schema=False)
+async def sitemap_index(db: AsyncSession = Depends(get_db)):
+    """Sitemap-индекс: секции по типам страниц, регионы — чанками по ~10k.
+
+    Секционирование даёт per-file статистику обхода в Вебмастере и честный
+    lastmod на каждую часть (регионы обновляются раз в год, «сегодня» — ежедневно).
+    """
+    from app.core.cache import cache_get, cache_set
+    from app.services.site_urls import collect_url_sections
+
+    cached = await cache_get("fe:sitemap:index")
+    if cached:
+        return Response(content=cached, media_type="application/xml")
+
+    sections = await collect_url_sections(db)
+    today = date.today().isoformat()
+    entries = "\n".join(
+        f"  <sitemap>\n"
+        f"    <loc>{DOMAIN}/sitemap-{name}.xml</loc>\n"
+        f"    <lastmod>{max((u.lastmod for u in urls), default=today)}</lastmod>\n"
+        f"  </sitemap>"
+        for name, urls in sections.items()
+        if urls
+    )
+    xml = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        + entries
+        + "\n</sitemapindex>"
+    )
+    await cache_set("fe:sitemap:index", xml, _SITEMAP_TTL)
+    return Response(content=xml, media_type="application/xml")
+
+
+@router.api_route("/sitemap-{section}.xml", methods=["GET", "HEAD"], include_in_schema=False)
+async def sitemap_section(section: str, db: AsyncSession = Depends(get_db)):
+    from app.core.cache import cache_get, cache_set
+    from app.services.site_urls import collect_url_sections
+
+    cache_key = f"fe:sitemap:section:{section}"
+    cached = await cache_get(cache_key)
+    if cached:
+        return Response(content=cached, media_type="application/xml")
+
+    sections = await collect_url_sections(db)
+    urls = sections.get(section)
+    if not urls:
+        return Response(status_code=404)
+    xml = _render_urlset(urls)
+    await cache_set(cache_key, xml, _SITEMAP_TTL)
     return Response(content=xml, media_type="application/xml")
 
 

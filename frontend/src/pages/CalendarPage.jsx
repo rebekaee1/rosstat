@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { ChevronRight, Download, X } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import { useCalendarEvents, useCalendarUpcoming } from '../lib/hooks';
@@ -12,6 +12,11 @@ import { SkeletonBox } from '../components/Skeleton';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import { track, events } from '../lib/track';
 import { groupSimilarEvents } from '../lib/calendarGrouping';
+
+const MONTHS_NOM = [
+  'январь', 'февраль', 'март', 'апрель', 'май', 'июнь',
+  'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь',
+];
 
 const MONTHS_GENITIVE = [
   'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
@@ -73,26 +78,33 @@ const FAQ_ITEMS = [
   },
 ];
 
-export default function CalendarPage() {
+export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [initYear] = useState(() => new Date().getFullYear());
-  const [initMonth] = useState(() => new Date().getMonth());
+  const [initYear] = useState(() => fixedYear ?? new Date().getFullYear());
+  const [initMonth] = useState(() => fixedMonth ?? new Date().getMonth());
   const [year, setYear] = useState(() => {
+    if (fixedYear != null) return fixedYear;
     const p = parseInt(searchParams.get('y'), 10);
     return isNaN(p) ? initYear : p;
   });
   const [month, setMonth] = useState(() => {
+    if (fixedMonth != null) return fixedMonth;
     const p = parseInt(searchParams.get('m'), 10);
     return isNaN(p) ? initMonth : Math.max(0, Math.min(11, p));
   });
   const [source, setSource] = useState(searchParams.get('source') || '');
   const [selectedDate, setSelectedDate] = useState(null);
+  const navigate = useNavigate();
 
   useDocumentMeta({
-    title: 'Экономический календарь России',
-    description: 'Расписание публикации макроэкономических данных: Росстат, ЦБ РФ, Минфин.',
-    path: '/calendar',
+    title: seoPath
+      ? `Календарь экономической статистики — ${MONTHS_NOM[month]} ${year}: даты публикаций`
+      : 'Экономический календарь России',
+    description: seoPath
+      ? `Какие данные по экономике России выходят в ${MONTHS_GENITIVE[month]} ${year} года: публикации Росстата, Банка России и Минфина.`
+      : 'Расписание публикации макроэкономических данных: Росстат, ЦБ РФ, Минфин.',
+    path: seoPath || '/calendar',
   });
 
   const syncParams = useCallback((y, m, src) => {
@@ -109,11 +121,16 @@ export default function CalendarPage() {
     let newYear = year;
     if (newMonth > 11) { newMonth = 0; newYear++; }
     else if (newMonth < 0) { newMonth = 11; newYear--; }
+    if (seoPath) {
+      const mm = String(newMonth + 1).padStart(2, '0');
+      navigate(`/calendar/${newYear}/${mm}`);
+      return;
+    }
     setMonth(newMonth);
     setYear(newYear);
     setSelectedDate(null);
     syncParams(newYear, newMonth, source);
-  }, [month, year, source, syncParams]);
+  }, [month, year, source, syncParams, seoPath, navigate]);
 
   const handleSourceChange = useCallback((v) => {
     setSource(v);

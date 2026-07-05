@@ -244,8 +244,9 @@ def _site_json_ld() -> dict:
                 "url": DOMAIN,
                 "name": "Forecast Economy",
                 "description": (
-                    "Бесплатная аналитическая платформа макроэкономических данных России: "
-                    "ИПЦ, ключевая ставка, курсы валют, ВВП, безработица и 100+ показателей."
+                    "Бесплатная аналитическая платформа экономических данных России: "
+                    "ИПЦ, ключевая ставка, курсы валют, ВВП, безработица — 100+ "
+                    "макроиндикаторов и 489 региональных показателей по 96 регионам."
                 ),
                 "inLanguage": "ru-RU",
                 "publisher": {"@id": f"{DOMAIN}/#organization"},
@@ -282,26 +283,92 @@ DEFAULT_KEYWORDS = (
 # виден «голый» HTML до гидратации React — Tailwind bundle не стилизует .seo-page.
 SEO_CRITICAL_CSS = """<style id="seo-critical">
 body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:"DM Sans",system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
-.seo-page{max-width:56rem;margin:0 auto;padding:5rem 1rem 3rem}
+.seo-page{max-width:56rem;margin:0 auto;padding:2rem 1rem 3rem}
 .seo-eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:.3em;color:#B8942F;font-weight:600;margin:0 0 .75rem}
-.seo-page h1{font-size:1.25rem;font-weight:600;line-height:1.375;margin:0 0 1rem;max-width:48rem;color:#1A1A2E}
-@media(min-width:768px){.seo-page h1{font-size:1.5rem}}
-.seo-page h2{font-size:.75rem;text-transform:uppercase;letter-spacing:.2em;color:rgba(26,26,46,.65);font-weight:600;margin:2rem 0 .75rem;padding-top:.5rem;border-top:1px solid rgba(0,0,0,.08)}
+.seo-page h1{font-size:1.5rem;font-weight:700;line-height:1.3;letter-spacing:-.01em;margin:0 0 .75rem;max-width:48rem;color:#1A1A2E}
+@media(min-width:768px){.seo-page h1{font-size:2rem}}
+.seo-page h2{font-size:.75rem;text-transform:uppercase;letter-spacing:.2em;color:rgba(26,26,46,.65);font-weight:600;margin:2rem 0 .75rem}
+.seo-page h3{font-size:.9375rem;font-weight:600;margin:1rem 0 .25rem;color:#1A1A2E}
 .seo-page p,.seo-cat-desc{margin:0 0 1rem;color:rgba(26,26,46,.65)}
 .seo-page ul{margin:0 0 1rem;padding-left:1.25rem}
 .seo-page li{margin:.35rem 0}
 .seo-page a{color:#1A1A2E;text-decoration:underline;text-underline-offset:2px}
 .seo-page a:hover{color:#B8942F}
 .seo-section{margin:1.5rem 0}
-.seo-page nav{font-size:.875rem;margin-bottom:1.5rem;color:rgba(26,26,46,.65)}
-.seo-page table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.875rem}
-.seo-page th,.seo-page td{border:1px solid rgba(0,0,0,.08);padding:.5rem .75rem;text-align:left}
-.seo-page th{background:#F0F1F5;font-weight:600;color:#1A1A2E}
-.seo-page tbody tr:nth-child(even){background:rgba(255,255,255,.6)}
-.seo-chart{margin:1.25rem 0 1.5rem;border:1px solid rgba(0,0,0,.08);border-radius:.75rem;overflow:hidden;background:#fff}
+.seo-page nav{font-size:.8125rem;margin-bottom:1.25rem;color:rgba(26,26,46,.55)}
+.seo-page nav a{text-decoration:none;color:inherit}
+.seo-page nav a:hover{color:#B8942F;text-decoration:underline}
+.seo-page table{width:100%;border-collapse:separate;border-spacing:0;margin:1rem 0;font-size:.875rem;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:.9rem;overflow:hidden}
+.seo-page th,.seo-page td{padding:.55rem .9rem;text-align:left;border-bottom:1px solid rgba(0,0,0,.06)}
+.seo-page th{background:#F4F5F9;font-weight:600;color:rgba(26,26,46,.75);font-size:.75rem;text-transform:uppercase;letter-spacing:.08em}
+.seo-page tbody tr:last-child td{border-bottom:none}
+.seo-page tbody tr:hover{background:rgba(184,148,47,.05)}
+.seo-page td:last-child,.seo-page th:last-child{text-align:right;font-variant-numeric:tabular-nums}
+.seo-chart{margin:1.25rem 0 1.5rem;border:1px solid rgba(0,0,0,.08);border-radius:1rem;overflow:hidden;background:#fff;box-shadow:0 1px 3px rgba(26,26,46,.04)}
 .seo-chart img{display:block;width:100%;height:auto}
 .seo-chart figcaption{font-size:.8125rem;color:rgba(26,26,46,.6);padding:.5rem .75rem;border-top:1px solid rgba(0,0,0,.06)}
+.seo-topbar{position:sticky;top:0;z-index:10;background:rgba(248,249,252,.92);backdrop-filter:blur(8px);border-bottom:1px solid rgba(0,0,0,.07)}
+.seo-topbar-in{max-width:56rem;margin:0 auto;padding:.8rem 1rem;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap}
+.seo-brand{font-weight:700;font-size:1rem;letter-spacing:-.01em;text-decoration:none!important;color:#1A1A2E}
+.seo-brand em{font-style:normal;color:#B8942F}
+.seo-topnav{display:flex;gap:1rem;font-size:.875rem;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
+.seo-topnav a{text-decoration:none!important;color:rgba(26,26,46,.7)}
+.seo-topnav a:hover{color:#B8942F}
+.seo-hero{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:1rem;padding:1.25rem 1.5rem;margin:0 0 1.25rem;box-shadow:0 1px 3px rgba(26,26,46,.04)}
+.seo-hero-value{font-size:2.4rem;font-weight:700;letter-spacing:-.02em;line-height:1.1;color:#1A1A2E;font-variant-numeric:tabular-nums}
+@media(min-width:768px){.seo-hero-value{font-size:3rem}}
+.seo-hero-value small{font-size:1.05rem;font-weight:500;color:rgba(26,26,46,.55);margin-left:.35rem;letter-spacing:0}
+.seo-hero-meta{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-top:.55rem;font-size:.875rem;color:rgba(26,26,46,.6)}
+.seo-badge{display:inline-block;padding:.15rem .6rem;border-radius:999px;font-size:.8125rem;font-weight:600;white-space:nowrap}
+.seo-badge.up{background:rgba(22,121,76,.1);color:#16794C}
+.seo-badge.down{background:rgba(180,35,24,.08);color:#B42318}
+.seo-badge.flat{background:rgba(26,26,46,.06);color:rgba(26,26,46,.65)}
+.seo-tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;margin:1.25rem 0}
+@media(min-width:640px){.seo-tiles{grid-template-columns:repeat(4,1fr)}}
+.seo-tile{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:.9rem;padding:.8rem 1rem}
+.seo-tile b{display:block;font-size:1.05rem;font-weight:700;color:#1A1A2E;font-variant-numeric:tabular-nums;line-height:1.3}
+.seo-tile span{display:block;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:rgba(26,26,46,.5);font-weight:600;margin-bottom:.2rem}
+.seo-grid{display:grid;grid-template-columns:1fr;gap:.75rem;margin:1rem 0;padding:0;list-style:none}
+@media(min-width:640px){.seo-grid{grid-template-columns:repeat(2,1fr)}}
+.seo-grid li{margin:0}
+.seo-grid a.seo-item{display:block;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:.9rem;padding:.9rem 1.1rem;text-decoration:none!important;transition:border-color .15s}
+.seo-grid a.seo-item:hover{border-color:#B8942F}
+.seo-item-name{font-size:.8125rem;color:rgba(26,26,46,.6);margin-bottom:.15rem}
+.seo-item-value{font-size:1.35rem;font-weight:700;color:#1A1A2E;font-variant-numeric:tabular-nums}
+.seo-item-value small{font-size:.85rem;font-weight:500;color:rgba(26,26,46,.5);margin-left:.25rem}
+.seo-item-meta{font-size:.75rem;color:rgba(26,26,46,.5);margin-top:.25rem;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.seo-linkbtn{display:inline-block;background:#1A1A2E;color:#fff!important;text-decoration:none!important;padding:.55rem 1.1rem;border-radius:.6rem;font-weight:600;font-size:.875rem}
+.seo-linkbtn:hover{background:#B8942F}
+.seo-pills{display:flex;flex-wrap:wrap;gap:.5rem;margin:.75rem 0;padding:0;list-style:none}
+.seo-pills li{margin:0}
+.seo-pills a{display:inline-block;background:#fff;border:1px solid rgba(0,0,0,.1);border-radius:999px;padding:.35rem .9rem;font-size:.8125rem;text-decoration:none!important;color:rgba(26,26,46,.75)}
+.seo-pills a:hover{border-color:#B8942F;color:#B8942F}
+.seo-faq{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:.9rem;padding:.35rem 1.1rem .6rem;margin:.75rem 0}
+.seo-cta{max-width:56rem;margin:2.5rem auto 0;padding:0 1rem}
+.seo-cta-in{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:1rem;padding:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.seo-cta p{margin:0;color:rgba(26,26,46,.75);max-width:34rem}
+.seo-cta a.seo-btn{display:inline-block;background:#1A1A2E;color:#fff;text-decoration:none!important;padding:.7rem 1.4rem;border-radius:.6rem;font-weight:600;font-size:.9375rem;white-space:nowrap}
+.seo-cta a.seo-btn:hover{background:#B8942F;color:#fff}
+.seo-foot{max-width:56rem;margin:1.25rem auto 0;padding:0 1rem 2.5rem;font-size:.8125rem;color:rgba(26,26,46,.55)}
+.seo-foot a{color:inherit}
+.seo-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.seo-scroll table{min-width:26rem}
 </style>"""
+
+# Брендовый «хром» чистых SSR-страниц (include_app=False): единая шапка с
+# навигацией и CTA-футер на главную. Одна точка правки для всех программатик-
+# семейств (/today, /region-rating, /region-vs, /calendar/{y}/{m}, годовые
+# landing'и) — страницы ведут посетителя вглубь сайта, а не остаются тупиком.
+_SSR_CHROME_HEADER = """<header class="seo-topbar"><div class="seo-topbar-in">
+<a class="seo-brand" href="/">Forecast<em>Economy</em></a>
+<nav class="seo-topnav"><a href="/">Индикаторы</a><a href="/today">Сегодня</a><a href="/regions">Регионы</a><a href="/calendar">Календарь</a><a href="/compare">Сравнение</a></nav>
+</div></header>"""
+
+_SSR_CHROME_FOOTER = f"""<div class="seo-cta"><div class="seo-cta-in">
+<p><strong>Интерактивные графики, прогнозы и выгрузка данных</strong> — по каждому из более чем 900 рядов макростатистики и 480+ региональных показателей. Бесплатно, из официальных источников.</p>
+<a class="seo-btn" href="/">Открыть платформу</a>
+</div></div>
+<footer class="seo-foot">Данные — официальные источники: Росстат, Банк России, Минфин России, Московская биржа. Обновляются автоматически по мере публикации. © Forecast Economy · <a href="{DOMAIN}">forecasteconomy.com</a></footer>"""
 
 FREQUENCY_LABELS_RU = {
     "daily": "ежедневно",
@@ -345,6 +412,11 @@ async def build_document(
     og_url = escape(og_image or OG_IMAGE)
     body_scripts = assets.body_scripts if include_app else ""
     head_links = assets.head_links if include_app else _strip_preloads(assets.head_links)
+    if not include_app:
+        # Чистые SSR-страницы получают брендовый хром: шапка-навигация + CTA на
+        # платформу + футер об источниках. React-страницы — нет (гидратация
+        # заменит #root своим layout'ом).
+        body = f"{_SSR_CHROME_HEADER}\n{body}\n{_SSR_CHROME_FOOTER}"
     return f"""<!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -382,6 +454,40 @@ async def build_document(
 <body>
 <div id="root">{body}</div>
 {body_scripts}
+</body>
+</html>"""
+
+
+def render_not_found_html(message: str = "Страница не найдена") -> str:
+    """Брендовая 404 для SSR-роутов вместо голого «Not found».
+
+    Самодостаточный документ (без asset-fetch и БД): critical CSS + хром +
+    навигация по основным разделам. noindex — чтобы поисковики не тащили
+    404-страницы в выдачу.
+    """
+    safe = escape(message)
+    return f"""<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{SEO_CRITICAL_CSS}
+<title>{safe} — Forecast Economy</title>
+<meta name="robots" content="noindex, follow">
+</head>
+<body>
+{_SSR_CHROME_HEADER}
+<main class="seo-page">
+<h1>{safe}</h1>
+<p>Такой страницы нет или она переехала. Вот с чего можно продолжить:</p>
+<ul>
+<li><a href="/">Все экономические индикаторы России</a></li>
+<li><a href="/today">Ключевые показатели на сегодня</a></li>
+<li><a href="/regions">Статистика по регионам России</a></li>
+<li><a href="/calendar">Календарь публикаций статистики</a></li>
+</ul>
+</main>
+{_SSR_CHROME_FOOTER}
 </body>
 </html>"""
 

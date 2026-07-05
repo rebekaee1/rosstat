@@ -84,17 +84,43 @@ async def _api(method: str, payload: dict, files: dict | None = None) -> dict | 
         return None
 
 
-async def send_message(chat_id: str, text: str, reply_markup: dict | None = None) -> bool:
+async def send_message(
+    chat_id: str, text: str, reply_markup: dict | None = None, kind: str = "bot_reply"
+) -> bool:
+    """Отправка + полный архив в telegram_outbox (глаза агента, 2026-07-04)."""
+    from app.services.telegram_outbox import archive
+
     payload: dict = {"chat_id": chat_id, "text": text, "parse_mode": "HTML"}
     if reply_markup:
         payload["reply_markup"] = reply_markup
-    return await _api("sendMessage", payload) is not None
+    data = await _api("sendMessage", payload)
+    await archive(
+        chat_id=str(chat_id), method="sendMessage", kind=kind, text=text,
+        payload=payload, ok=data is not None,
+        telegram_message_id=(data or {}).get("result", {}).get("message_id"),
+        error=None if data is not None else "send failed (см. логи)",
+    )
+    return data is not None
 
 
-async def send_document(chat_id: str, filename: str, content: bytes, caption: str = "") -> bool:
+async def send_document(
+    chat_id: str, filename: str, content: bytes, caption: str = "",
+    kind: str = "bot_document",
+) -> bool:
+    """Отправка файла + архив с байтами содержимого в telegram_outbox."""
+    from app.services.telegram_outbox import archive
+
     payload = {"chat_id": chat_id, "caption": caption, "parse_mode": "HTML"}
     files = {"document": (filename, io.BytesIO(content))}
-    return await _api("sendDocument", payload, files=files) is not None
+    data = await _api("sendDocument", payload, files=files)
+    await archive(
+        chat_id=str(chat_id), method="sendDocument", kind=kind, text=caption,
+        payload=payload, file_name=filename, file_content=content,
+        ok=data is not None,
+        telegram_message_id=(data or {}).get("result", {}).get("message_id"),
+        error=None if data is not None else "send failed (см. логи)",
+    )
+    return data is not None
 
 
 # ---------------------------------------------------------------------------

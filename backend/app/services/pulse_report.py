@@ -298,7 +298,7 @@ async def send_pulse_report(report_date: date | None = None) -> bool:
     text = "\n".join(msg_parts)
 
     ok = await send_message(
-        settings.pulse_chat_id, text, reply_markup=main_menu_keyboard()
+        settings.pulse_chat_id, text, reply_markup=main_menu_keyboard(), kind="pulse_digest"
     )
     # память дня пишем даже при сбое отправки — снапшот уже посчитан
     await pulse.store_memory(d, pulse.memory_core(snapshot), summary or _fallback_summary(snapshot))

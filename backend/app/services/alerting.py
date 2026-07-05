@@ -14,32 +14,54 @@ _TELEGRAM_API = "https://api.telegram.org/bot{token}/sendMessage"
 
 
 async def send_telegram(
-    message: str, chat_id: Optional[str] = None, reply_markup: Optional[dict] = None
+    message: str,
+    chat_id: Optional[str] = None,
+    reply_markup: Optional[dict] = None,
+    kind: str = "alert",
 ) -> bool:
     """Send alert to Telegram (async, non-blocking). Returns True on success.
 
     `chat_id` переопределяет получателя; без него — primary `settings.telegram_chat_id`.
     `reply_markup` — inline-клавиатура (напр. меню бота под дайджестом).
+    `kind` — семантика отправки для архива telegram_outbox (etl_alert / digest / …).
+    Каждая отправка полностью архивируется в БД (`telegram_outbox`) — это
+    «глаза» агента следующей сессии; архивация не влияет на доставку.
     """
+    from app.services.telegram_outbox import archive  # локальный импорт против цикла
+
     token = settings.telegram_bot_token
     cid = chat_id or settings.telegram_chat_id
     if not token or not cid:
         return False
 
+    ok = False
+    tg_message_id: Optional[int] = None
+    error: Optional[str] = None
+    payload: dict = {"chat_id": cid, "text": message, "parse_mode": "HTML"}
+    if reply_markup:
+        payload["reply_markup"] = reply_markup
     try:
         url = _TELEGRAM_API.format(token=token)
-        payload: dict = {"chat_id": cid, "text": message, "parse_mode": "HTML"}
-        if reply_markup:
-            payload["reply_markup"] = reply_markup
         async with httpx.AsyncClient(timeout=10) as client:
             resp = await client.post(url, json=payload)
         if resp.status_code != 200:
-            logger.warning("Telegram alert failed: HTTP %d", resp.status_code)
-            return False
-        return True
-    except Exception:
+            error = f"HTTP {resp.status_code}: {resp.text[:200]}"
+            logger.warning("Telegram alert failed: %s", error)
+        else:
+            ok = True
+            try:
+                tg_message_id = resp.json().get("result", {}).get("message_id")
+            except Exception:
+                pass
+    except Exception as exc:
+        error = str(exc)[:250]
         logger.warning("Telegram alert failed", exc_info=True)
-        return False
+
+    await archive(
+        chat_id=str(cid), method="sendMessage", kind=kind, text=message,
+        payload=payload, ok=ok, telegram_message_id=tg_message_id, error=error,
+    )
+    return ok
 
 
 def digest_recipients() -> list[str]:
@@ -67,7 +89,7 @@ async def send_telegram_digest(message: str, reply_markup: Optional[dict] = None
     skrakan) могли сразу выгрузить CSV/раскрыть пользователей той же кнопкой.
     """
     return {
-        cid: await send_telegram(message, chat_id=cid, reply_markup=reply_markup)
+        cid: await send_telegram(message, chat_id=cid, reply_markup=reply_markup, kind="digest")
         for cid in digest_recipients()
     }
 
@@ -109,7 +131,7 @@ async def notify_new_user(info: dict) -> None:
         f"User-Agent: {esc((info.get('user_agent') or '')[:120])}",
         f"ID: <code>{esc(info.get('user_id'))}</code>",
     ]
-    await send_telegram("\n".join(lines))
+    await send_telegram("\n".join(lines), kind="new_user")
 
 
 async def notify_feedback(info: dict) -> None:
@@ -130,7 +152,7 @@ async def notify_feedback(info: dict) -> None:
     contact = info.get("contact")
     if contact:
         lines.insert(4, f"Контакт для ответа: {esc(contact)}")
-    await send_telegram("\n".join(lines))
+    await send_telegram("\n".join(lines), kind="feedback")
 
 
 async def alert_etl_failure(indicator_code: str, error: str) -> None:
@@ -139,7 +161,7 @@ async def alert_etl_failure(indicator_code: str, error: str) -> None:
         f"Indicator: <code>{escape(indicator_code)}</code>\n"
         f"Error: {escape(error[:200])}"
     )
-    await send_telegram(msg)
+    await send_telegram(msg, kind="etl_failure")
 
 
 async def alert_etl_summary(
@@ -157,4 +179,4 @@ async def alert_etl_summary(
         parts.append(f"Duration: {duration_sec:.0f}s")
     if failed:
         parts.append(f"Failed: {escape(', '.join(failed))}")
-    await send_telegram("\n".join(parts))
+    await send_telegram("\n".join(parts), kind="etl_summary")

@@ -34,6 +34,11 @@ const Account = lazy(() => import('./pages/Account'));
 const RegionsHome = lazy(() => import('./pages/RegionsHome'));
 const RegionProfile = lazy(() => import('./pages/RegionProfile'));
 const RegionIndicatorPage = lazy(() => import('./pages/RegionIndicatorPage'));
+const TodayHub = lazy(() => import('./pages/TodayHub'));
+const TodayIndicatorPage = lazy(() => import('./pages/TodayIndicatorPage'));
+const RegionRatingPage = lazy(() => import('./pages/RegionRatingPage'));
+const RegionComparePage = lazy(() => import('./pages/RegionComparePage'));
+const CalendarMonthPage = lazy(() => import('./pages/CalendarMonthPage'));
 
 const EmbedChart = lazy(() => import('./embed/EmbedChart'));
 const EmbedCard = lazy(() => import('./embed/EmbedCard'));
@@ -171,6 +176,11 @@ function AppRoutes() {
             <Route path="/register" element={<Register />} />
             <Route path="/account" element={<Account />} />
             <Route path="/indicator/:code" element={<IndicatorDetailKeyed />} />
+            <Route path="/today" element={<TodayHub />} />
+            <Route path="/today/:code" element={<TodayIndicatorPage />} />
+            <Route path="/region-rating/:code" element={<RegionRatingPage />} />
+            <Route path="/region-vs/:pair" element={<RegionComparePage />} />
+            <Route path="/calendar/:year/:month" element={<CalendarMonthPage />} />
             <Route path="/regions" element={<RegionsHome />} />
             <Route path="/region/:slug" element={<RegionProfile />} />
             <Route path="/region/:slug/:code" element={<RegionIndicatorPage />} />

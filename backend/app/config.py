@@ -57,6 +57,10 @@ class Settings(BaseSettings):
     indexnow_key: str = "a7c41d92e85f4b06b3d8f17c29e6a504"
     indexnow_endpoint: str = "https://yandex.com/indexnow"
 
+    # Автоподача переобхода Яндекс.Вебмастера: ежедневный дренаж квоты
+    # (~150 URL/день) приоритетными страницами из site_urls-реестра.
+    webmaster_recrawl_enabled: bool = True
+
     # Internal endpoints protection
     metrics_token: str = ""
 

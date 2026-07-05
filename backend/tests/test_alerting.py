@@ -14,7 +14,7 @@ import app.services.alerting as alerting
 def _capture_send(monkeypatch):
     calls: list = []
 
-    async def fake_send(message, chat_id=None, reply_markup=None):
+    async def fake_send(message, chat_id=None, reply_markup=None, kind="alert"):
         calls.append(chat_id)
         return True
 
@@ -66,3 +66,60 @@ def test_interactive_authorized_includes_owner_and_report_recipients(monkeypatch
     # pulse_chat_id тоже допускается (LLM-отчёт владельцу)
     monkeypatch.setattr(alerting.settings, "pulse_chat_id", "999", raising=False)
     assert alerting.interactive_authorized_ids() == {"433221767", "703822898", "999"}
+
+
+def test_send_telegram_archives_to_outbox(monkeypatch):
+    """Каждая отправка полностью архивируется в telegram_outbox (2026-07-04).
+
+    Проверяем контракт: archive() вызывается с текстом как отправлен, kind,
+    результатом и payload'ом (клавиатура). HTTP мокаем на успех.
+    """
+    import app.services.telegram_outbox as outbox
+
+    archived: list[dict] = []
+
+    async def fake_archive(**kwargs):
+        archived.append(kwargs)
+
+    monkeypatch.setattr(outbox, "archive", fake_archive)
+    monkeypatch.setattr(alerting.settings, "telegram_bot_token", "t", raising=False)
+    monkeypatch.setattr(alerting.settings, "telegram_chat_id", "111", raising=False)
+
+    class _Resp:
+        status_code = 200
+        text = ""
+        def json(self):
+            return {"ok": True, "result": {"message_id": 42}}
+
+    class _Client:
+        def __init__(self, *a, **kw): ...
+        async def __aenter__(self): return self
+        async def __aexit__(self, *a): return False
+        async def post(self, *a, **kw): return _Resp()
+
+    monkeypatch.setattr(alerting.httpx, "AsyncClient", _Client)
+
+    ok = asyncio.run(alerting.send_telegram(
+        "тест", reply_markup={"inline_keyboard": []}, kind="etl_summary"
+    ))
+    assert ok is True
+    assert len(archived) == 1
+    rec = archived[0]
+    assert rec["chat_id"] == "111"
+    assert rec["kind"] == "etl_summary"
+    assert rec["text"] == "тест"
+    assert rec["ok"] is True
+    assert rec["telegram_message_id"] == 42
+    assert "reply_markup" in rec["payload"]
+
+
+def test_archive_never_breaks_send(monkeypatch):
+    """Сбой архивации не роняет отправку (уведомление важнее записи о нём)."""
+    import app.services.telegram_outbox as outbox
+
+    async def broken_session():
+        raise RuntimeError("db down")
+
+    monkeypatch.setattr(outbox, "async_session", broken_session)
+    # archive не должен бросить исключение
+    asyncio.run(outbox.archive(chat_id="1", method="sendMessage", text="x", ok=True))

@@ -114,7 +114,7 @@ export default function RegionsHome() {
 
   const heatmapValues = useMemo(() => {
     if (!heatmap.data) return null;
-    return new Map(heatmap.data.values.map(v => [v.slug, v.value]));
+    return new Map(heatmap.data.values.map(v => [v.slug, v.raw ?? v.value]));
   }, [heatmap.data]);
 
   const namesBySlug = useMemo(() => {

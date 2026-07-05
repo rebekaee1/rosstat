@@ -252,6 +252,20 @@ async def lifespan(app: FastAPI):
             )
             logger.info("Acquisition sync enabled: daily at 08:20 MSK")
 
+        # Автоподача переобхода Яндекс.Вебмастера: каждое утро выбираем
+        # дневную квоту (~150 URL) приоритетными страницами из единого
+        # реестра site_urls (регионы, рейтинги, годовые landing'и).
+        if settings.webmaster_recrawl_enabled and settings.yandex_webmaster_token:
+            from app.services.webmaster_recrawl import recrawl_daily_job
+            scheduler.add_job(
+                recrawl_daily_job,
+                trigger=CronTrigger(hour=9, minute=10, timezone="Europe/Moscow"),
+                id="webmaster_recrawl",
+                name="Yandex.Webmaster recrawl queue (daily quota drain)",
+                replace_existing=True,
+            )
+            logger.info("Webmaster recrawl auto-submit enabled: daily at 09:10 MSK")
+
         if settings.telegram_digest_enabled:
             from app.tasks.analytics_scheduler import telegram_daily_digest_job
             scheduler.add_job(

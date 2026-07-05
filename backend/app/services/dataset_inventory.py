@@ -13,6 +13,7 @@
                      — дневные агрегаты привлечения;
 - webmaster_search_queries — запросы из поиска Яндекса (показы/клики/позиция);
 - hypotheses         — булев слой знаний (подтверждено/опровергнуто/открыто);
+- telegram_outbox    — архив всех исходящих Telegram-отправок (глаза агента);
 - users / indicator_data / region_data — продуктовое ядро.
 
 «Параметры» считаем честно: колонки таблицы + фактические ключи params_json /
@@ -37,6 +38,7 @@ from app.models import (
     MetrikaSearchPhrase,
     RawMetrikaVisit,
     RegionDataPoint,
+    TelegramOutbox,
     User,
     WebmasterSearchQuery,
 )
@@ -129,6 +131,15 @@ async def build_inventory(db: AsyncSession) -> dict[str, Any]:
     sections["webmaster_search_queries"] = {
         "rows": await db.scalar(select(func.count(WebmasterSearchQuery.id))) or 0,
         "columns": _table_columns(WebmasterSearchQuery),
+    }
+
+    # --- Архив исходящих Telegram (глаза агента, 2026-07-04) --------------------
+    sections["telegram_outbox"] = {
+        "rows": await db.scalar(select(func.count(TelegramOutbox.id))) or 0,
+        "by_kind": dict((await db.execute(
+            select(TelegramOutbox.kind, func.count()).group_by(TelegramOutbox.kind)
+        )).all()),
+        "columns": _table_columns(TelegramOutbox),
     }
 
     # --- Булев слой знаний -----------------------------------------------------

@@ -1,0 +1,83 @@
+{
+  "2026-07-02": {
+    "visits": 256,
+    "users": 237,
+    "pageviews": 692,
+    "channels": [
+      {
+        "channel": "Ad traffic",
+        "visits": 151,
+        "share_pct": 59.0
+      },
+      {
+        "channel": "Search engine traffic",
+        "visits": 74,
+        "share_pct": 28.9
+      },
+      {
+        "channel": "Direct traffic",
+        "visits": 20,
+        "share_pct": 7.8
+      },
+      {
+        "channel": "Internal traffic",
+        "visits": 9,
+        "share_pct": 3.5
+      },
+      {
+        "channel": "Link traffic",
+        "visits": 1,
+        "share_pct": 0.4
+      },
+      {
+        "channel": "Social network traffic",
+        "visits": 1,
+        "share_pct": 0.4
+      }
+    ]
+  },
+  "2026-07-03": {
+    "visits": 191,
+    "users": 176,
+    "pageviews": 497,
+    "channels": [
+      {
+        "channel": "Ad traffic",
+        "visits": 111,
+        "share_pct": 58.1
+      },
+      {
+        "channel": "Search engine traffic",
+        "visits": 50,
+        "share_pct": 26.2
+      },
+      {
+        "channel": "Direct traffic",
+        "visits": 22,
+        "share_pct": 11.5
+      },
+      {
+        "channel": "Link traffic",
+        "visits": 5,
+        "share_pct": 2.6
+      },
+      {
+        "channel": "Internal traffic",
+        "visits": 3,
+        "share_pct": 1.6
+      }
+    ]
+  },
+  "sitemap_urls": {
+    "2026-07-02": {
+      "total_urls": 2420,
+      "region_urls": 0,
+      "indicator_urls": 2398
+    },
+    "2026-07-03": {
+      "total_urls": 43269,
+      "region_urls": 40849,
+      "indicator_urls": 2398
+    }
+  }
+}

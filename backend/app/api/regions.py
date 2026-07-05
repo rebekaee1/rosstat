@@ -218,11 +218,30 @@ async def regions_heatmap(code: str, db: AsyncSession = Depends(get_db)):
                       "unit": indicator.unit},
         "year": last_year,
         "values": [
-            {"slug": s, "name": n, "value": _fmt(float(v))} for s, n, v in rows
+            {"slug": s, "name": n, "value": _fmt(float(v)), "raw": float(v)}
+            for s, n, v in rows
         ],
     }
     await cache_set(cache_key, result, settings.cache_ttl_data)
     return result
+
+
+@router.get("/vs/{slug_a}/{slug_b}")
+async def regions_compare(slug_a: str, slug_b: str, db: AsyncSession = Depends(get_db)):
+    """Сравнение двух регионов по ключевым показателям — JSON для SPA /region-vs/*."""
+    from app.services.region_compare_data import build_region_compare_payload
+
+    cache_key = f"fe:regions:vs:{slug_a}:{slug_b}"
+    cached = await cache_get(cache_key)
+    if cached:
+        return cached
+
+    payload = await build_region_compare_payload(slug_a, slug_b, db)
+    if payload is None:
+        raise HTTPException(404, "Нет данных для сравнения")
+
+    await cache_set(cache_key, payload, settings.cache_ttl_data)
+    return payload
 
 
 @router.get("/{slug}")

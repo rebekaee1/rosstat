@@ -10,16 +10,21 @@ no-cache для браузеров, но conditional-запросы ботов �
 """
 
 import hashlib
+import re
 
 from fastapi import APIRouter, Depends, Request, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
+from app.services.seo_calendar import render_calendar_month_html
+from app.services.seo_region_compare import render_region_vs_html
 from app.services.seo_regional import (
     render_region_html,
     render_region_indicator_html,
+    render_region_rating_html,
     render_regions_home_html,
 )
+from app.services.seo_today import render_today_hub_html, render_today_indicator_html
 from app.services.seo_renderer import (
     render_category_html,
     render_home_html,
@@ -33,6 +38,12 @@ router = APIRouter(tags=["seo-pages"])
 
 def _html_response(status_code: int, html: str, request: Request | None = None) -> Response:
     headers = {"Cache-Control": "no-cache"}
+    if status_code == 404 and "<html" not in html.lower():
+        # Рендереры возвращают голый маркер («Not found», «<h1>…</h1>») —
+        # наружу всегда уходит брендовая 404 с навигацией, не сырой текст.
+        from app.services.seo_renderer import render_not_found_html
+        text = re.sub(r"<[^>]+>", "", html).strip()
+        html = render_not_found_html(text if text and text != "Not found" else "Страница не найдена")
     if status_code == 200:
         etag = f'W/"{hashlib.md5(html.encode()).hexdigest()}"'
         headers["ETag"] = etag
@@ -93,6 +104,40 @@ async def seo_region_indicator(
     slug: str, code: str, request: Request, db: AsyncSession = Depends(get_db)
 ):
     status, html = await render_region_indicator_html(slug, code, db)
+    return _html_response(status, html, request)
+
+
+@router.api_route("/seo/region-rating/{code}", methods=["GET", "HEAD"], include_in_schema=False)
+async def seo_region_rating(code: str, request: Request, db: AsyncSession = Depends(get_db)):
+    status, html = await render_region_rating_html(code, db)
+    return _html_response(status, html, request)
+
+
+@router.api_route("/seo/region-vs/{slug_a}-vs-{slug_b}", methods=["GET", "HEAD"], include_in_schema=False)
+async def seo_region_vs(
+    slug_a: str, slug_b: str, request: Request, db: AsyncSession = Depends(get_db)
+):
+    status, html = await render_region_vs_html(slug_a, slug_b, db)
+    return _html_response(status, html, request)
+
+
+@router.api_route("/seo/today", methods=["GET", "HEAD"], include_in_schema=False)
+async def seo_today_hub(request: Request, db: AsyncSession = Depends(get_db)):
+    status, html = await render_today_hub_html(db)
+    return _html_response(status, html, request)
+
+
+@router.api_route("/seo/today/{code}", methods=["GET", "HEAD"], include_in_schema=False)
+async def seo_today_indicator(code: str, request: Request, db: AsyncSession = Depends(get_db)):
+    status, html = await render_today_indicator_html(code, db)
+    return _html_response(status, html, request)
+
+
+@router.api_route("/seo/calendar-month/{year}/{month}", methods=["GET", "HEAD"], include_in_schema=False)
+async def seo_calendar_month(
+    year: int, month: int, request: Request, db: AsyncSession = Depends(get_db)
+):
+    status, html = await render_calendar_month_html(year, month, db)
     return _html_response(status, html, request)
 
 

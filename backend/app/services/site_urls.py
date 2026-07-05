@@ -1,0 +1,248 @@
+"""Единый реестр публичных URL сайта.
+
+Одна точка истины для трёх потребителей:
+  1. sitemap-индекс (`/sitemap.xml` → `/sitemap-{section}.xml`) — `app/api/sitemap.py`;
+  2. IndexNow-батч по всему сайту (`indexnow.ping_full_site`);
+  3. приоритетная очередь переобхода Вебмастера (`webmaster_recrawl.py`).
+
+Секции возвращаются в порядке приоритета обхода: чем раньше секция и чем
+раньше URL внутри секции, тем важнее страница. Этот порядок используется
+очередью переобхода (150 URL/день) как приоритет.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from datetime import date
+
+from sqlalchemy import func, select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.models import (
+    EconomicEvent,
+    Indicator,
+    IndicatorData,
+    Region,
+    RegionDataPoint,
+    RegionIndicator,
+)
+from app.services.seo_content import CATEGORIES, STATIC_PAGES
+
+# Лимит протокола sitemap — 50 000 URL на файл; держим с запасом.
+REGIONAL_CHUNK = 10_000
+
+
+@dataclass(frozen=True)
+class SiteUrl:
+    path: str
+    lastmod: str
+    changefreq: str
+    priority: str
+
+
+def _u(path: str, lastmod: str, changefreq: str, priority: str) -> SiteUrl:
+    return SiteUrl(path=path, lastmod=lastmod, changefreq=changefreq, priority=priority)
+
+
+def _sitemap_priority(*, listed: bool) -> str:
+    return "0.8" if listed else "0.5"
+
+
+async def _core_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
+    urls = [
+        _u(path, today.isoformat(), freq, priority)
+        for path, freq, priority in STATIC_PAGES
+    ]
+    urls.extend(
+        _u(f"/category/{slug}", today.isoformat(), "weekly", "0.8")
+        for slug in CATEGORIES
+    )
+    stmt = (
+        select(
+            Indicator.code,
+            Indicator.is_listed,
+            func.max(IndicatorData.date).label("last_data"),
+        )
+        .outerjoin(IndicatorData, IndicatorData.indicator_id == Indicator.id)
+        .where(Indicator.is_active.is_(True))
+        .group_by(Indicator.id, Indicator.code, Indicator.is_listed)
+        .order_by(Indicator.is_listed.desc(), Indicator.code)
+    )
+    for code, listed, last_data in (await db.execute(stmt)).all():
+        urls.append(_u(
+            f"/indicator/{code}",
+            (last_data or today).isoformat(),
+            "daily",
+            _sitemap_priority(listed=listed),
+        ))
+    return urls
+
+
+async def _year_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
+    year_expr = func.extract("year", IndicatorData.date)
+    stmt = (
+        select(Indicator.code, year_expr.label("y"), func.max(IndicatorData.date))
+        .join(IndicatorData, IndicatorData.indicator_id == Indicator.id)
+        .where(Indicator.is_active.is_(True), Indicator.is_listed.is_(True))
+        .group_by(Indicator.code, year_expr)
+        .having(func.count(IndicatorData.id) >= 2)
+        .order_by(year_expr.desc(), Indicator.code)
+    )
+    urls = []
+    for code, year, last_data in (await db.execute(stmt)).all():
+        year = int(year)
+        freq = "weekly" if year == today.year else "yearly"
+        urls.append(_u(
+            f"/indicator/{code}/{year}",
+            (last_data or today).isoformat(),
+            freq,
+            "0.4",
+        ))
+    return urls
+
+
+async def _region_hub_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
+    urls = [_u("/regions", today.isoformat(), "weekly", "0.9")]
+    region_rows = (await db.execute(
+        select(Region.slug).where(Region.kind == "region").order_by(Region.sort_order)
+    )).scalars().all()
+    urls.extend(
+        _u(f"/region/{slug}", today.isoformat(), "weekly", "0.8")
+        for slug in region_rows
+    )
+    return urls
+
+
+async def _regional_pair_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
+    stmt = (
+        select(Region.slug, RegionIndicator.code, func.max(RegionDataPoint.year))
+        .join(Region, Region.id == RegionDataPoint.region_id)
+        .join(RegionIndicator, RegionIndicator.id == RegionDataPoint.indicator_id)
+        .where(Region.kind == "region", RegionIndicator.is_listed.is_(True))
+        .group_by(Region.slug, RegionIndicator.code)
+        .order_by(Region.slug, RegionIndicator.code)
+    )
+    urls = []
+    for rslug, icode, last_year in (await db.execute(stmt)).all():
+        lastmod = f"{int(last_year)}-12-31" if last_year else today.isoformat()
+        urls.append(_u(f"/region/{rslug}/{icode}", lastmod, "monthly", "0.5"))
+    return urls
+
+
+async def _rating_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
+    """Рейтинги регионов: listed показатели с >= 10 регионами за последний год.
+
+    Порог согласован с рендером `render_region_rating_html` (иначе URL из
+    sitemap отдавал бы 404): считаем регионы именно за max-год показателя.
+    """
+    last_year_sub = (
+        select(
+            RegionDataPoint.indicator_id.label("iid"),
+            func.max(RegionDataPoint.year).label("ly"),
+        )
+        .join(Region, Region.id == RegionDataPoint.region_id)
+        .where(Region.kind == "region")
+        .group_by(RegionDataPoint.indicator_id)
+        .subquery()
+    )
+    stmt = (
+        select(RegionIndicator.code, last_year_sub.c.ly)
+        .join(last_year_sub, last_year_sub.c.iid == RegionIndicator.id)
+        .join(RegionDataPoint, (RegionDataPoint.indicator_id == RegionIndicator.id)
+              & (RegionDataPoint.year == last_year_sub.c.ly))
+        .join(Region, (Region.id == RegionDataPoint.region_id) & (Region.kind == "region"))
+        .where(RegionIndicator.is_listed.is_(True))
+        .group_by(RegionIndicator.code, last_year_sub.c.ly)
+        .having(func.count(func.distinct(RegionDataPoint.region_id)) >= 10)
+        .order_by(RegionIndicator.code)
+    )
+    return [
+        _u(f"/region-rating/{code}", f"{int(y)}-12-31", "monthly", "0.7")
+        for code, y in (await db.execute(stmt)).all()
+    ]
+
+
+async def _today_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
+    from app.services.seo_today import TODAY_CODES
+
+    codes = (await db.execute(
+        select(Indicator.code).where(
+            Indicator.code.in_(list(TODAY_CODES)), Indicator.is_active.is_(True)
+        )
+    )).scalars().all()
+    urls = [_u("/today", today.isoformat(), "daily", "0.9")]
+    urls.extend(
+        _u(f"/today/{code}", today.isoformat(), "daily", "0.8")
+        for code in sorted(codes, key=list(TODAY_CODES).index)
+    )
+    return urls
+
+
+async def _calendar_month_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
+    stmt = (
+        select(
+            func.extract("year", EconomicEvent.scheduled_date).label("y"),
+            func.extract("month", EconomicEvent.scheduled_date).label("m"),
+            func.count(),
+        )
+        .group_by("y", "m")
+        .having(func.count() >= 3)
+        .order_by(func.extract("year", EconomicEvent.scheduled_date).desc(),
+                  func.extract("month", EconomicEvent.scheduled_date).desc())
+    )
+    urls = []
+    for y, m, _n in (await db.execute(stmt)).all():
+        y, m = int(y), int(m)
+        is_current = (y, m) >= (today.year, today.month)
+        urls.append(_u(
+            f"/calendar/{y}/{m:02d}",
+            today.isoformat() if is_current else f"{y}-{m:02d}-28",
+            "daily" if is_current else "monthly",
+            "0.6" if is_current else "0.4",
+        ))
+    return urls
+
+
+async def _region_vs_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
+    from app.services.seo_region_compare import top_region_pairs
+
+    pairs = await top_region_pairs(db)
+    return [
+        _u(f"/region-vs/{a}-vs-{b}", today.isoformat(), "monthly", "0.6")
+        for a, b in pairs
+    ]
+
+
+async def collect_url_sections(db: AsyncSession) -> dict[str, list[SiteUrl]]:
+    """Все публичные URL сайта, сгруппированные по секциям sitemap-индекса.
+
+    Порядок секций и URL внутри — приоритет обхода (используется очередью
+    переобхода Вебмастера).
+    """
+    today = date.today()
+    sections: dict[str, list[SiteUrl]] = {
+        "core": await _core_urls(db, today),
+        "today": await _today_urls(db, today),
+        "ratings": await _rating_urls(db, today),
+        "regions": await _region_hub_urls(db, today),
+        "region-vs": await _region_vs_urls(db, today),
+        "calendar": await _calendar_month_urls(db, today),
+        "years": await _year_urls(db, today),
+    }
+    pairs = await _regional_pair_urls(db, today)
+    for i in range(0, len(pairs), REGIONAL_CHUNK):
+        sections[f"regional-{i // REGIONAL_CHUNK + 1}"] = pairs[i:i + REGIONAL_CHUNK]
+    return sections
+
+
+async def collect_all_paths(db: AsyncSession, sections: list[str] | None = None) -> list[str]:
+    """Плоский список путей (для IndexNow и очереди переобхода), с сохранением приоритета."""
+    grouped = await collect_url_sections(db)
+    result: list[str] = []
+    for name, urls in grouped.items():
+        if sections is not None and name not in sections and not (
+            name.startswith("regional-") and "regional" in sections
+        ):
+            continue
+        result.extend(u.path for u in urls)
+    return result

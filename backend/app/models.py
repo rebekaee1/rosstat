@@ -2,7 +2,7 @@ import uuid
 from datetime import date, datetime, timezone
 from sqlalchemy import (
     String, Text, Boolean, Integer, BigInteger, Numeric, Date, DateTime,
-    ForeignKey, UniqueConstraint, Index, JSON, Uuid,
+    ForeignKey, UniqueConstraint, Index, JSON, LargeBinary, Uuid,
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
@@ -588,6 +588,45 @@ class Hypothesis(Base):
     evidence_json: Mapped[dict | None] = mapped_column(JSON)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None), onupdate=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+
+
+class TelegramOutbox(Base):
+    """Архив всех исходящих Telegram-отправок (директива владельца 2026-07-04).
+
+    Всё, что уходит в Telegram (дайджесты Пульса, ETL-алерты, ответы на кнопки,
+    файлы-выгрузки), сохраняется здесь полностью: текст как отправлен, полезная
+    нагрузка (клавиатура/caption), содержимое файла. Это «глаза и руки» агента:
+    следующая сессия Cursor читает таблицу и видит, что именно и кому отправила
+    система, вплоть до байтов CSV — без пересылки скриншотов в чат.
+
+    kind — семантика отправки (pulse_digest / etl_alert / new_user / feedback /
+    bot_reply / bot_document / analytics_digest); method — метод Bot API.
+    file_content хранится в БД (выгрузки — килобайты); при росте объёмов
+    переносить в объектное хранилище, но не терять доступность агенту.
+    """
+    __tablename__ = "telegram_outbox"
+    __table_args__ = (
+        Index("ix_tg_outbox_ts", "sent_at"),
+        Index("ix_tg_outbox_kind", "kind", "sent_at"),
+    )
+
+    id: Mapped[int] = mapped_column(
+        BigInteger().with_variant(Integer, "sqlite"), primary_key=True
+    )
+    sent_at: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False,
+        default=lambda: datetime.now(timezone.utc).replace(tzinfo=None),
+    )
+    chat_id: Mapped[str] = mapped_column(String(32), nullable=False)
+    method: Mapped[str] = mapped_column(String(30), nullable=False)  # sendMessage / sendDocument
+    kind: Mapped[str] = mapped_column(String(40), nullable=False, default="generic")
+    text: Mapped[str | None] = mapped_column(Text)  # текст или caption, как отправлен (HTML)
+    payload_json: Mapped[dict | None] = mapped_column(JSON)  # reply_markup и прочие поля запроса
+    file_name: Mapped[str | None] = mapped_column(String(200))
+    file_content: Mapped[bytes | None] = mapped_column(LargeBinary)
+    ok: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    telegram_message_id: Mapped[int | None] = mapped_column(BigInteger)
+    error: Mapped[str | None] = mapped_column(String(300))
 
 
 class Experiment(Base):
