@@ -1,22 +1,24 @@
-// Админ-BI /admin/bi (директива владельца 2026-07-05, редизайн 2026-07-05 ночь-2):
-// профессиональная многоуровневая визуализация для стратегических решений —
-// не сырые таблицы, а диаграммы MBA-уровня: donut-структуры, воронки, scatter-
-// квадранты «спрос×позиция» и «просмотры×вовлечение», Sankey-граф навигации,
-// retention-кривая + когорты, стек-бары событий. Везде hover с точными числами
-// и краткий содержательный вывод (insight) над графиком. Обычный пользователь
-// раздела не видит: backend отвечает 404 всем, кроме settings.admin_emails.
-// Данные самообновляются: Redis-кэш 15 минут + refetchInterval 15 минут.
+// Админ-BI /admin/bi (директива владельца 2026-07-05, ревизия «уровень MBA» той же ночью):
+// профессиональная многоуровневая визуализация для стратегических решений.
+// Принцип: у каждого потока информации СВОЯ геометрия — donut для структуры,
+// воронка для конверсионного пути, heatmap 7×24 для ритма недели, treemap для
+// состава контента, матрица origin×destination для навигации, Pareto для
+// концентрации трафика, scatter-квадранты для двухфакторных решений. Везде
+// точные числа (hover + подписи), человеческие названия, содержательный вывод.
+// Свежесть: Метрика Logs API отдаёт визиты с задержкой до суток, поэтому
+// свежие дни закрывает live-слой собственного счётчика behavior.js.
+// Доступ: backend отвечает 404 всем, кроме settings.admin_emails.
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   ResponsiveContainer, ComposedChart, Line, Area, Bar, BarChart, XAxis, YAxis,
   Tooltip, CartesianGrid, Legend, PieChart, Pie, Cell, LabelList,
-  ScatterChart, Scatter, ZAxis, ReferenceLine, FunnelChart, Funnel,
-  Sankey, Layer, Rectangle,
+  ScatterChart, Scatter, ZAxis, ReferenceLine, FunnelChart, Funnel, Treemap,
 } from 'recharts';
 import {
   Activity, Users, MousePointerClick, Search, TrendingUp, Route,
   AlertTriangle, Brain, Database, Megaphone, RefreshCw, Filter, LogIn,
+  CalendarClock, LayoutGrid,
 } from 'lucide-react';
 import api, { loginUser } from '../lib/api';
 import { useAuth } from '../context/authContext';
@@ -28,8 +30,7 @@ const GREEN = '#16A34A';
 const RED = '#DC2626';
 const BLUE = '#2563EB';
 const PURPLE = '#7C3AED';
-// Категориальная палитра для структурных диаграмм (донаты/стеки/scatter).
-const PALETTE = [GOLD, BLUE, GREEN, PURPLE, '#0891B2', '#DB2777', '#EA580C', '#65A30D', INK, '#9333EA'];
+const PALETTE = [GOLD, BLUE, GREEN, PURPLE, '#0891B2', '#DB2777', '#EA580C', '#65A30D', INK, '#9333EA', '#0D9488', '#C026D3'];
 
 const PERIODS = [
   { days: 1, label: 'Сутки' },
@@ -41,15 +42,103 @@ const PERIODS = [
 
 const SOURCE_RU = {
   ad: 'Реклама (Директ)',
-  organic: 'Поисковики',
+  organic: 'Поисковые системы',
   direct: 'Прямые заходы',
-  referral: 'Ссылки с сайтов',
-  link: 'Ссылки с сайтов',
-  internal: 'Внутренние',
-  recommend: 'Рекомендательные',
-  social: 'Соцсети',
-  unknown: 'Не определён',
+  referral: 'Переходы с сайтов',
+  link: 'Переходы с сайтов',
+  internal: 'Внутренние переходы',
+  recommend: 'Рекомендательные системы',
+  social: 'Социальные сети',
+  saved: 'Сохранённые страницы',
+  unknown: 'Источник не определён',
 };
+
+// Человеческие названия бизнес-событий (полный техноним показываем рядом).
+const EVENT_RU = {
+  register_nudge_view: 'Показ приглашения к регистрации',
+  register_nudge_expand: 'Раскрытие приглашения',
+  register_nudge_cta: 'Клик «Зарегистрироваться» в приглашении',
+  scroll_depth: 'Глубина прокрутки страницы',
+  compare_change: 'Смена ряда в сравнении',
+  compare_open: 'Открытие сравнения',
+  compare_add: 'Добавление ряда в сравнение',
+  compare_range: 'Смена периода сравнения',
+  compare_search: 'Поиск в сравнении',
+  compare_image_download: 'Скачивание картинки сравнения',
+  compare_limit_hit: 'Достигнут лимит рядов сравнения',
+  regions_map_metric: 'Смена показателя на карте',
+  regions_map_select: 'Клик по региону на карте',
+  regions_map_timeline: 'Перемотка лет на карте',
+  regions_view_toggle: 'Переключение списка и карты регионов',
+  region_indicator_view: 'Просмотр показателя региона',
+  region_compare_add: 'Регион добавлен в сравнение',
+  region_crosslink_click: 'Переход по мосту макро–регионы',
+  indicator_view: 'Просмотр карточки индикатора',
+  frequency_switch: 'Переключение частоты ряда',
+  chart_mode_change: 'Смена режима графика',
+  chart_range_change: 'Смена периода графика',
+  chart_zoom: 'Масштабирование графика',
+  chart_image_download: 'Скачивание картинки графика',
+  forecast_toggle: 'Включение прогноза',
+  forecast_view: 'Просмотр прогноза',
+  calc_mortgage: 'Расчёт ипотеки',
+  calc_compound: 'Расчёт сложного процента',
+  calc_preset: 'Пресет калькулятора',
+  calc_share: 'Шеринг расчёта',
+  calc_breakdown: 'Детализация расчёта',
+  calc_chart_mode: 'Режим графика калькулятора',
+  calc_copy_result: 'Копирование результата расчёта',
+  home_category_click: 'Клик по категории на главной',
+  home_indicator_click: 'Клик по индикатору на главной',
+  category_tile_click: 'Клик по плитке категории',
+  related_indicator_click: 'Клик по связанному индикатору',
+  breadcrumb_click: 'Клик по хлебным крошкам',
+  nav_category_open: 'Открытие меню категорий',
+  nav_link_click: 'Клик по ссылке меню',
+  nav_mobile_toggle: 'Мобильное меню',
+  search_query: 'Поиск на сайте',
+  search_select: 'Выбор результата поиска',
+  search_abandon: 'Поиск брошен без выбора',
+  download_csv: 'Скачивание CSV',
+  download_excel: 'Скачивание Excel',
+  download_ical: 'Подписка на календарь',
+  download_limit: 'Достигнут лимит скачиваний',
+  signup: 'Регистрация',
+  login_success: 'Вход в аккаунт',
+  oauth_start: 'Вход через соцсеть',
+  newsletter_opt_in: 'Подписка на рассылку',
+  newsletter_opt_out: 'Отписка от рассылки',
+  header_login_click: 'Клик «Войти» в шапке',
+  header_register_click: 'Клик «Регистрация» в шапке',
+  feedback_nudge_view: 'Показ виджета обратной связи',
+  feedback_nudge_expand: 'Раскрытие виджета обратной связи',
+  feedback_nudge_cta: 'Клик в виджете обратной связи',
+  feedback_submit: 'Отправка обратной связи',
+  faq_toggle: 'Раскрытие вопроса FAQ',
+  consent_update: 'Настройка cookie',
+  methodology_click: 'Переход к методологии',
+  source_link_click: 'Клик по источнику данных',
+  outbound_link: 'Переход на внешний сайт',
+  contact_email: 'Клик по адресу почты',
+  calendar_month_nav: 'Листание календаря',
+  calendar_source_filter: 'Фильтр календаря по источнику',
+  calendar_day_select: 'Выбор дня в календаре',
+  calendar_clear_day: 'Сброс дня в календаре',
+  table_search: 'Поиск по таблице данных',
+  table_sort: 'Сортировка таблицы',
+  table_page: 'Листание таблицы',
+  embed_runtime_view: 'Показ встроенного виджета',
+  embed_code_copy: 'Копирование кода виджета',
+  api_load_error: 'Ошибка загрузки данных',
+  api_retry: 'Повторная попытка загрузки',
+  error_reload: 'Перезагрузка после ошибки',
+  empty_state: 'Показ пустого состояния',
+  demographics_chart_type: 'Тип графика демографии',
+  demographics_csv: 'CSV демографии',
+};
+const eventLabel = (name) => EVENT_RU[name] || name;
+
+const DOW_RU = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
 const fmtInt = (n) => (n == null ? '—' : Number(n).toLocaleString('ru-RU'));
 const fmtPct = (n) => (n == null ? '—' : `${Number(n).toLocaleString('ru-RU')}%`);
@@ -84,8 +173,8 @@ function Card({ title, icon: Icon, insight, children, span }) {
   );
 }
 
-function Empty() {
-  return <p className="text-[13px] text-text-tertiary py-8 text-center">Нет данных за период</p>;
+function Empty({ note }) {
+  return <p className="text-[13px] text-text-tertiary py-8 text-center">{note || 'Нет данных за период'}</p>;
 }
 
 function Kpi({ label, value, sub, series, color = GOLD }) {
@@ -107,7 +196,7 @@ function Kpi({ label, value, sub, series, color = GOLD }) {
   );
 }
 
-// Донат: структура (доли) с центральной суммой и легендой с процентами.
+// Донат: структура (доли) с центральной суммой и легендой с точными числами.
 function Donut({ data, height = 240, centerLabel }) {
   const rows = (data || []).filter((d) => d.value > 0);
   if (!rows.length) return <Empty />;
@@ -142,19 +231,19 @@ function Donut({ data, height = 240, centerLabel }) {
   );
 }
 
-// Горизонтальные бары: рейтинг (фразы/города/поисковики/тупики).
-function HBars({ data, height, color = GOLD, unit = '', valueFmt = fmtInt }) {
+// Горизонтальные бары-рейтинг с числами у каждого бара.
+function HBars({ data, height, color = GOLD, unit = '', valueFmt = fmtInt, labelWidth = 148 }) {
   const rows = (data || []).filter((d) => d.value != null);
   if (!rows.length) return <Empty />;
   const h = height || Math.max(120, rows.length * 30 + 16);
   return (
     <ResponsiveContainer width="100%" height={h}>
-      <BarChart layout="vertical" data={rows} margin={{ top: 2, right: 44, bottom: 2, left: 4 }}>
+      <BarChart layout="vertical" data={rows} margin={{ top: 2, right: 48, bottom: 2, left: 4 }}>
         <XAxis type="number" hide />
         <YAxis
-          type="category" dataKey="name" width={148}
+          type="category" dataKey="name" width={labelWidth}
           tick={{ fontSize: 11.5, fill: 'rgba(26,26,46,0.72)' }}
-          tickFormatter={(v) => clip(v, 22)} interval={0}
+          tickFormatter={(v) => clip(v, Math.floor(labelWidth / 6.6))} interval={0}
         />
         <Tooltip {...TT_STYLE} cursor={{ fill: 'rgba(184,148,47,0.06)' }} formatter={(v) => [`${valueFmt(v)}${unit}`, 'значение']} />
         <Bar dataKey="value" fill={color} radius={[0, 4, 4, 0]} maxBarSize={22}>
@@ -168,38 +257,179 @@ function HBars({ data, height, color = GOLD, unit = '', valueFmt = fmtInt }) {
 const dictToBars = (obj, n = 12) =>
   Object.entries(obj || {}).sort((a, b) => b[1] - a[1]).slice(0, n).map(([name, value]) => ({ name, value }));
 
-/* ---------- Секции ---------- */
+function median(arr) {
+  const a = (arr || []).filter((v) => v != null && Number.isFinite(v)).sort((x, y) => x - y);
+  if (!a.length) return 0;
+  const mid = Math.floor(a.length / 2);
+  return a.length % 2 ? a[mid] : (a[mid - 1] + a[mid]) / 2;
+}
+
+/* ---------- Уникальные геометрии ---------- */
+
+// Пульс недели: сетка 7 дней × 24 часа, насыщенность клетки = просмотры.
+function WeekPulse({ cells }) {
+  const grid = useMemo(() => {
+    const m = new Map();
+    let max = 0;
+    for (const c of cells || []) {
+      m.set(`${c.dow}-${c.hour}`, c.count);
+      if (c.count > max) max = c.count;
+    }
+    return { m, max };
+  }, [cells]);
+  if (!grid.max) return <Empty />;
+
+  const CELL = 26; const GAP = 3; const LEFT = 34; const TOP = 20;
+  const width = LEFT + 24 * (CELL + GAP);
+  const height = TOP + 7 * (CELL + GAP);
+  return (
+    <div className="overflow-x-auto">
+      <svg width={width} height={height} className="block" role="img" aria-label="Активность по дням недели и часам">
+        {Array.from({ length: 24 }, (_, h) => (
+          h % 3 === 0 && (
+            <text key={`h${h}`} x={LEFT + h * (CELL + GAP) + CELL / 2} y={12} textAnchor="middle" fontSize={10} fill="rgba(26,26,46,0.5)">
+              {h}:00
+            </text>
+          )
+        ))}
+        {DOW_RU.map((d, dow) => (
+          <text key={d} x={0} y={TOP + dow * (CELL + GAP) + CELL / 2 + 4} fontSize={11} fill="rgba(26,26,46,0.65)">{d}</text>
+        ))}
+        {Array.from({ length: 7 }, (_, dow) => Array.from({ length: 24 }, (_, hour) => {
+          const v = grid.m.get(`${dow}-${hour}`) || 0;
+          const t = v / grid.max;
+          return (
+            <rect
+              key={`${dow}-${hour}`}
+              x={LEFT + hour * (CELL + GAP)} y={TOP + dow * (CELL + GAP)}
+              width={CELL} height={CELL} rx={4}
+              fill={v ? `rgba(184,148,47,${0.12 + t * 0.78})` : 'rgba(26,26,46,0.045)'}
+            >
+              <title>{`${DOW_RU[dow]}, ${hour}:00–${hour + 1}:00 — ${fmtInt(v)} просмотров`}</title>
+            </rect>
+          );
+        }))}
+      </svg>
+      <div className="flex items-center gap-2 mt-2 text-[11px] text-text-tertiary">
+        <span>меньше</span>
+        {[0.15, 0.35, 0.55, 0.75, 0.9].map((t) => (
+          <span key={t} className="w-4 h-4 rounded" style={{ background: `rgba(184,148,47,${t})` }} />
+        ))}
+        <span>больше · время московское</span>
+      </div>
+    </div>
+  );
+}
+
+// Treemap-плитка с именем, числом и долей.
+function TreemapCell({ x, y, width, height, name, views, share, index }) {
+  if (width < 4 || height < 4) return null;
+  const showText = width > 78 && height > 40;
+  return (
+    <g>
+      <rect x={x} y={y} width={width} height={height} rx={6}
+        fill={PALETTE[index % PALETTE.length]} fillOpacity={0.82} stroke="#fff" strokeWidth={2} />
+      {showText && (
+        <>
+          <text x={x + 8} y={y + 18} fontSize={12} fontWeight={600} fill="#fff">{clip(name, Math.floor(width / 7.5))}</text>
+          <text x={x + 8} y={y + 34} fontSize={11} fill="rgba(255,255,255,0.9)">{fmtInt(views)} · {share}%</text>
+        </>
+      )}
+    </g>
+  );
+}
+
+// Матрица переходов: строки — откуда, колонки — куда, клетка — число переходов.
+function TransitionMatrix({ transitions }) {
+  const { rows, cols, cell, max } = useMemo(() => {
+    const fromC = new Map(); const toC = new Map(); const m = new Map();
+    let mx = 0;
+    for (const t of transitions || []) {
+      fromC.set(t.from, (fromC.get(t.from) || 0) + t.count);
+      toC.set(t.to, (toC.get(t.to) || 0) + t.count);
+      m.set(`${t.from}→${t.to}`, t.count);
+      if (t.count > mx) mx = t.count;
+    }
+    const top = (map) => [...map.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([k]) => k);
+    return { rows: top(fromC), cols: top(toC), cell: m, max: mx };
+  }, [transitions]);
+
+  if (!rows.length) return <Empty />;
+  return (
+    <div className="overflow-x-auto">
+      <table className="text-[11.5px] border-separate" style={{ borderSpacing: 3 }}>
+        <thead>
+          <tr>
+            <th className="text-left text-text-tertiary font-medium pr-2 align-bottom pb-1">откуда \ куда</th>
+            {cols.map((c) => (
+              <th key={c} className="text-text-tertiary font-normal px-1 pb-1 max-w-24 align-bottom">
+                <div className="truncate w-24" title={c}>{clip(c, 16)}</div>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr key={r}>
+              <td className="text-text-primary pr-2 max-w-44"><div className="truncate w-44" title={r}>{clip(r, 28)}</div></td>
+              {cols.map((c) => {
+                const v = cell.get(`${r}→${c}`) || 0;
+                const t = max ? v / max : 0;
+                return (
+                  <td key={c}>
+                    <div
+                      className="w-24 h-8 rounded flex items-center justify-center tabular-nums"
+                      style={{
+                        background: v ? `rgba(184,148,47,${0.1 + t * 0.75})` : 'rgba(26,26,46,0.035)',
+                        color: t > 0.45 ? '#fff' : 'rgba(26,26,46,0.75)',
+                      }}
+                      title={`${r} → ${c}: ${fmtInt(v)} переходов`}
+                    >
+                      {v || '·'}
+                    </div>
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+/* ---------- Вкладки ---------- */
 
 function OverviewTab({ d }) {
   const kpi = useMemo(() => d.kpi_daily || [], [d.kpi_daily]);
   const totals = useMemo(() => {
-    const t = { visits: 0, visitors: 0, ad: 0, reg: 0, dl: 0, err: 0, ev: 0, srch: 0 };
+    const t = { visits: 0, visitors: 0, ad: 0, reg: 0, dl: 0, err: 0, ev: 0, srch: 0, live: 0 };
     for (const r of kpi) {
       t.visits += r.visits; t.visitors += r.visitors; t.ad += r.ad_visits;
       t.reg += r.registrations; t.dl += r.downloads; t.err += r.errors;
-      t.ev += r.events; t.srch += r.searches;
+      t.ev += r.events; t.srch += r.searches; t.live += r.live_sessions || 0;
     }
     return t;
   }, [kpi]);
   const spark = (key) => kpi.map((r) => ({ v: r[key] }));
-  const sources = d.acquisition?.sources || {};
-  const srcDonut = Object.entries(sources).map(([k, v]) => ({ name: SOURCE_RU[k] || k, value: v }));
+  const srcDonut = Object.entries(d.acquisition?.sources || {}).map(([k, v]) => ({ name: SOURCE_RU[k] || k, value: v }));
 
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
-        <Kpi label="Визиты" value={fmtInt(totals.visits)} series={spark('visits')} />
+        <Kpi label="Визиты (Метрика)" value={fmtInt(totals.visits)} series={spark('visits')} />
+        <Kpi label="Сессии (наш счётчик)" value={fmtInt(totals.live)} series={spark('live_sessions')} color={PURPLE} />
         <Kpi label="Посетители" value={fmtInt(totals.visitors)} series={spark('visitors')} color={INK} />
         <Kpi label="Из рекламы" value={fmtInt(totals.ad)} sub={totals.visits ? fmtPct(Math.round(totals.ad / totals.visits * 100)) : null} series={spark('ad_visits')} color={BLUE} />
         <Kpi label="Регистрации" value={fmtInt(totals.reg)} sub={`всего ${fmtInt(d.users?.total)}`} series={spark('registrations')} color={GREEN} />
         <Kpi label="Скачивания" value={fmtInt(totals.dl)} series={spark('downloads')} color={PURPLE} />
-        <Kpi label="События" value={fmtInt(totals.ev)} series={spark('events')} />
-        <Kpi label="Поиски" value={fmtInt(totals.srch)} series={spark('searches')} color={BLUE} />
-        <Kpi label="Ошибки" value={fmtInt(totals.err)} series={spark('errors')} color={RED} />
+        <Kpi label="Поиски на сайте" value={fmtInt(totals.srch)} series={spark('searches')} color={BLUE} />
+        <Kpi label="Ошибки фронта" value={fmtInt(totals.err)} series={spark('errors')} color={RED} />
       </div>
 
-      <Card title="Трафик по дням" icon={Activity} insight="Площадь — визиты, линии — уникальные посетители и платный трафик. Расхождение визитов и посетителей = глубина возвратов.">
-        <ResponsiveContainer width="100%" height={280}>
+      <Card title="Трафик по дням: Метрика и собственный счётчик" icon={Activity}
+        insight="Столбцы — сессии нашего счётчика (реальное время, без задержки). Площадь и линии — Яндекс.Метрика: она отдаёт визиты с задержкой до суток, поэтому свежие дни у неё могут быть пустыми — смотрите на столбцы.">
+        <ResponsiveContainer width="100%" height={290}>
           <ComposedChart data={kpi} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
             <defs>
               <linearGradient id="gVisits" x1="0" y1="0" x2="0" y2="1">
@@ -212,18 +442,24 @@ function OverviewTab({ d }) {
             <YAxis tick={{ fontSize: 11, fill: 'rgba(26,26,46,0.5)' }} width={40} />
             <Tooltip {...TT_STYLE} />
             <Legend wrapperStyle={{ fontSize: 12 }} />
-            <Area type="monotone" dataKey="visits" name="Визиты" stroke={GOLD} fill="url(#gVisits)" strokeWidth={2} />
-            <Line type="monotone" dataKey="visitors" name="Посетители" stroke={INK} strokeWidth={1.6} dot={false} />
+            <Bar dataKey="live_sessions" name="Сессии (наш счётчик, live)" fill={PURPLE} fillOpacity={0.30} radius={[3, 3, 0, 0]} maxBarSize={26} />
+            <Area type="monotone" dataKey="visits" name="Визиты (Метрика)" stroke={GOLD} fill="url(#gVisits)" strokeWidth={2} />
+            <Line type="monotone" dataKey="visitors" name="Посетители (Метрика)" stroke={INK} strokeWidth={1.6} dot={false} />
             <Line type="monotone" dataKey="ad_visits" name="Из рекламы" stroke={BLUE} strokeWidth={1.4} dot={false} strokeDasharray="4 3" />
           </ComposedChart>
         </ResponsiveContainer>
       </Card>
 
+      <Card title="Пульс недели: когда аудитория на сайте" icon={CalendarClock}
+        insight="Просмотры страниц по дням недели и часам (московское время). Тёмные зоны — пиковые окна: под них планируются публикации, реклама и релизы.">
+        <WeekPulse cells={d.activity_heatmap} />
+      </Card>
+
       <div className="grid lg:grid-cols-3 gap-5">
-        <Card title="Структура трафика" icon={Megaphone} span="lg:col-span-1" insight="Откуда приходят визиты за период.">
+        <Card title="Структура источников" icon={Megaphone} span="lg:col-span-1" insight="Откуда приходят визиты за период.">
           <Donut data={srcDonut} centerLabel="визитов" />
         </Card>
-        <Card title="Конверсии и ошибки по дням" icon={TrendingUp} span="lg:col-span-2" insight="Регистрации и скачивания — целевые действия; красная линия ошибок не должна расти вместе с трафиком.">
+        <Card title="Конверсии и ошибки по дням" icon={TrendingUp} span="lg:col-span-2" insight="Регистрации и скачивания — целевые действия. Красная линия ошибок не должна расти вместе с трафиком.">
           <ResponsiveContainer width="100%" height={240}>
             <ComposedChart data={kpi}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
@@ -245,21 +481,21 @@ function OverviewTab({ d }) {
 function AcquisitionTab({ d }) {
   const a = d.acquisition || {};
   const srcDonut = Object.entries(a.sources || {}).map(([k, v]) => ({ name: SOURCE_RU[k] || k, value: v }));
-  const devDonut = Object.entries(a.devices || {}).map(([k, v]) => ({ name: k, value: v }));
+  const devDonut = Object.entries(a.devices || {}).map(([k, v]) => ({ name: k === 'desktop' ? 'Компьютеры' : k === 'mobile' ? 'Смартфоны' : k === 'tablet' ? 'Планшеты' : k, value: v }));
   const ads = (a.ad_campaigns || []).filter((c) => c.visits > 0)
     .map((c) => ({ ...c, x: c.visits, y: c.goal_rate_pct, z: Math.max(c.bounce_pct, 1) }));
 
   return (
     <div className="grid lg:grid-cols-2 gap-5">
-      <Card title="Источники трафика" icon={Megaphone} insight="Баланс платного и органического трафика — основа стоимости привлечения.">
+      <Card title="Структура источников трафика" icon={Megaphone} insight="Баланс платного и органического трафика — основа стоимости привлечения.">
         <Donut data={srcDonut} centerLabel="визитов" />
       </Card>
-      <Card title="Поисковики" icon={Search} insight="Распределение органики по системам.">
+      <Card title="Поисковые системы" icon={Search} insight="Из каких поисковиков приходит органический трафик.">
         <HBars data={dictToBars(a.search_engines, 8)} color={BLUE} />
       </Card>
 
-      <Card title="Кампании Директа: объём × конверсия × отказы" icon={Megaphone} span="lg:col-span-2"
-        insight="По оси X — визиты, по Y — конверсия в цель, размер точки — доля отказов. Правый верх — эффективные кампании; крупные точки внизу справа — сливают бюджет.">
+      <Card title="Кампании Директа: объём, конверсия и отказы" icon={Megaphone} span="lg:col-span-2"
+        insight="По горизонтали — визиты, по вертикали — конверсия в цель, размер точки — доля отказов. Правый верх — эффективные кампании; крупные точки внизу справа расходуют бюджет впустую.">
         {ads.length ? (
           <ResponsiveContainer width="100%" height={300}>
             <ScatterChart margin={{ top: 10, right: 20, bottom: 20, left: 4 }}>
@@ -269,25 +505,34 @@ function AcquisitionTab({ d }) {
               <YAxis type="number" dataKey="y" name="Конверсия, %" unit="%" tick={{ fontSize: 11, fill: 'rgba(26,26,46,0.5)' }} width={44} />
               <ZAxis type="number" dataKey="z" range={[60, 500]} name="Отказы, %" />
               <Tooltip {...TT_STYLE} cursor={{ strokeDasharray: '3 3' }}
-                formatter={(v, n) => [n === 'Визиты' ? fmtInt(v) : `${v}%`, n]}
-                labelFormatter={() => ''} />
+                content={({ active, payload }) => {
+                  if (!active || !payload?.length) return null;
+                  const p = payload[0].payload;
+                  return (
+                    <div style={TT_STYLE.contentStyle}>
+                      <div style={{ fontWeight: 600, marginBottom: 2 }}>{p.campaign}</div>
+                      <div>Визиты: {fmtInt(p.visits)} · с целью: {fmtInt(p.goal_visits)} ({p.goal_rate_pct}%)</div>
+                      <div>Отказы: {p.bounce_pct}% · среднее время: {p.avg_duration_sec} с</div>
+                    </div>
+                  );
+                }} />
               <Scatter data={ads} fill={GOLD} fillOpacity={0.6}>
                 {ads.map((c, i) => <Cell key={i} fill={PALETTE[i % PALETTE.length]} />)}
                 <LabelList dataKey="campaign" position="top" formatter={(v) => clip(v, 16)} style={{ fontSize: 10, fill: 'rgba(26,26,46,0.6)' }} />
               </Scatter>
             </ScatterChart>
           </ResponsiveContainer>
-        ) : <p className="text-[13px] text-text-tertiary py-6 text-center">Платных кампаний за период нет. Колонка расхода появится после подключения коннектора Яндекс.Директа.</p>}
+        ) : <Empty note="Платных кампаний за период нет. Расход и цена клика появятся после подключения Яндекс.Директа." />}
       </Card>
 
-      <Card title="Поисковые фразы прихода" icon={Search} insight="С каких запросов реально приходят на сайт.">
-        <HBars data={dictToBars(a.top_phrases, 12)} />
+      <Card title="Поисковые фразы, с которых пришли" icon={Search} insight="Реальные запросы, приведшие посетителей из поиска.">
+        <HBars data={dictToBars(a.top_phrases, 12)} labelWidth={190} />
       </Card>
       <div className="space-y-5">
         <Card title="Устройства" icon={Users}>
-          <Donut data={devDonut} height={190} centerLabel="визитов" />
+          <Donut data={devDonut} height={180} centerLabel="визитов" />
         </Card>
-        <Card title="География (города)" icon={Users}>
+        <Card title="География: города" icon={Users}>
           <HBars data={dictToBars(a.top_cities, 8)} color={PURPLE} />
         </Card>
       </div>
@@ -309,18 +554,23 @@ function FunnelTab({ d }) {
   const engRate = totals.visits ? Math.round(totals.engaged / totals.visits * 100) : 0;
   const goalRate = totals.visits ? Math.round(totals.goal / totals.visits * 100) : 0;
 
-  // Стек по каналам: цель / вовлечённые-без-цели / отсеялись.
   const stack = bySource.map((s) => ({
     name: SOURCE_RU[s.source] || s.source,
     goal: s.goal_visits,
     engaged: Math.max(s.engaged - s.goal_visits, 0),
     bounced: Math.max(s.visits - s.engaged, 0),
+    visits: s.visits,
+    goal_pct: s.goal_pct,
+    engaged_pct: s.engaged_pct,
   }));
+
+  const landings = (f.top_landings || []).slice(0, 14);
+  const maxLandingVisits = Math.max(1, ...landings.map((l) => l.visits));
 
   return (
     <div className="space-y-5">
       <div className="grid lg:grid-cols-2 gap-5">
-        <Card title="Общая воронка визита" icon={Filter} insight={`Из всех визитов вовлекается ${engRate}%, доходят до целевого действия ${goalRate}%.`}>
+        <Card title="Общая воронка визита" icon={Filter} insight={`Из всех визитов вовлекается ${engRate}%, до целевого действия доходит ${goalRate}%. Цели: регистрация, вход, подписка, скачивание данных, обратная связь.`}>
           {funnelData.length ? (
             <ResponsiveContainer width="100%" height={260}>
               <FunnelChart>
@@ -333,15 +583,27 @@ function FunnelTab({ d }) {
             </ResponsiveContainer>
           ) : <Empty />}
         </Card>
-        <Card title="Качество каналов" icon={TrendingUp} insight="Состав каждого канала: доля дошедших до цели (зелёное), вовлечённых и отсеявшихся. Виден канал с высоким объёмом, но слабым качеством.">
+        <Card title="Качество каналов" icon={TrendingUp} insight="Состав каждого канала: дошли до цели (зелёное), вовлеклись (золотое), отсеялись (серое). Наведите — точные числа.">
           {stack.length ? (
             <ResponsiveContainer width="100%" height={260}>
               <BarChart layout="vertical" data={stack} margin={{ top: 2, right: 12, bottom: 2, left: 4 }} stackOffset="expand">
                 <XAxis type="number" hide domain={[0, 1]} />
-                <YAxis type="category" dataKey="name" width={128} tick={{ fontSize: 11.5, fill: 'rgba(26,26,46,0.72)' }} tickFormatter={(v) => clip(v, 18)} interval={0} />
-                <Tooltip {...TT_STYLE} formatter={(v, n) => [fmtInt(v), n]} />
+                <YAxis type="category" dataKey="name" width={150} tick={{ fontSize: 11.5, fill: 'rgba(26,26,46,0.72)' }} tickFormatter={(v) => clip(v, 21)} interval={0} />
+                <Tooltip {...TT_STYLE}
+                  content={({ active, payload }) => {
+                    if (!active || !payload?.length) return null;
+                    const p = payload[0].payload;
+                    return (
+                      <div style={TT_STYLE.contentStyle}>
+                        <div style={{ fontWeight: 600, marginBottom: 2 }}>{p.name}</div>
+                        <div>Визиты: {fmtInt(p.visits)}</div>
+                        <div>Вовлечены: {fmtInt(p.goal + p.engaged)} ({p.engaged_pct}%)</div>
+                        <div>Достигли цели: {fmtInt(p.goal)} ({p.goal_pct}%)</div>
+                      </div>
+                    );
+                  }} />
                 <Legend wrapperStyle={{ fontSize: 11 }} />
-                <Bar dataKey="goal" name="Цель" stackId="s" fill={GREEN} radius={[0, 0, 0, 0]} maxBarSize={26} />
+                <Bar dataKey="goal" name="Цель" stackId="s" fill={GREEN} maxBarSize={26} />
                 <Bar dataKey="engaged" name="Вовлечён" stackId="s" fill={GOLD} maxBarSize={26} />
                 <Bar dataKey="bounced" name="Отсеялся" stackId="s" fill="rgba(26,26,46,0.14)" maxBarSize={26} />
               </BarChart>
@@ -349,31 +611,39 @@ function FunnelTab({ d }) {
           ) : <Empty />}
         </Card>
       </div>
-      <Card title="Посадочные страницы: объём входа × конверсия" icon={Route}
-        insight="X — визиты на страницу входа, Y — их конверсия в цель. Правый верх — сильные точки входа, правый низ — трафик без отдачи.">
-        {(f.top_landings || []).length ? (
-          <ResponsiveContainer width="100%" height={300}>
-            <ScatterChart margin={{ top: 10, right: 20, bottom: 20, left: 4 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
-              <XAxis type="number" dataKey="visits" name="Визиты" tick={{ fontSize: 11, fill: 'rgba(26,26,46,0.5)' }}
-                label={{ value: 'визиты входа', position: 'insideBottom', offset: -8, fontSize: 11, fill: 'rgba(26,26,46,0.5)' }} />
-              <YAxis type="number" dataKey="goal_pct" name="Конверсия" unit="%" tick={{ fontSize: 11, fill: 'rgba(26,26,46,0.5)' }} width={44} />
-              <ZAxis range={[80, 80]} />
-              <Tooltip {...TT_STYLE} cursor={{ strokeDasharray: '3 3' }}
-                content={({ active, payload }) => {
-                  if (!active || !payload?.length) return null;
-                  const p = payload[0].payload;
-                  return (
-                    <div style={TT_STYLE.contentStyle}>
-                      <div style={{ fontWeight: 600, marginBottom: 2 }}>{p.page}</div>
-                      <div>Визиты: {fmtInt(p.visits)}</div>
-                      <div>С целью: {fmtInt(p.goal_visits)} ({p.goal_pct}%)</div>
-                    </div>
-                  );
-                }} />
-              <Scatter data={f.top_landings} fill={GOLD} fillOpacity={0.55} />
-            </ScatterChart>
-          </ResponsiveContainer>
+
+      <Card title="Посадочные страницы: объём входа и конверсия" icon={Route}
+        insight="Отсортировано по визитам. Длина полосы — визиты, цвет и метка справа — конверсия в цель на этой точке входа. Большая полоса с серой меткой — трафик без отдачи.">
+        {landings.length ? (
+          <div className="space-y-1.5">
+            {landings.map((l) => {
+              const w = Math.max(2, Math.round(l.visits / maxLandingVisits * 100));
+              const good = l.goal_pct >= 10;
+              const mid = l.goal_pct >= 3 && l.goal_pct < 10;
+              return (
+                <div key={l.page} className="flex items-center gap-3" title={`${l.page}: ${fmtInt(l.visits)} визитов, ${fmtInt(l.goal_visits)} с целью (${l.goal_pct}%)`}>
+                  <span className="w-56 shrink-0 truncate text-[12.5px] text-text-primary" title={l.page}>{l.page}</span>
+                  <div className="flex-1 h-5 rounded bg-obsidian-light/60 overflow-hidden relative">
+                    <div
+                      className="absolute inset-y-0 left-0 rounded"
+                      style={{ width: `${w}%`, background: good ? 'rgba(22,163,74,0.75)' : mid ? 'rgba(184,148,47,0.75)' : 'rgba(26,26,46,0.28)' }}
+                    />
+                    <span className="absolute inset-y-0 left-2 flex items-center text-[11px] tabular-nums" style={{ color: w > 22 ? '#fff' : 'rgba(26,26,46,0.7)' }}>
+                      {fmtInt(l.visits)}
+                    </span>
+                  </div>
+                  <span className={`w-24 shrink-0 text-right text-[12px] tabular-nums font-medium ${good ? 'text-positive' : mid ? 'text-champagne' : 'text-text-tertiary'}`}>
+                    {l.goal_pct}% · {fmtInt(l.goal_visits)}
+                  </span>
+                </div>
+              );
+            })}
+            <div className="flex items-center gap-4 pt-2 text-[11px] text-text-tertiary">
+              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded" style={{ background: 'rgba(22,163,74,0.75)' }} /> конверсия ≥ 10%</span>
+              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded" style={{ background: 'rgba(184,148,47,0.75)' }} /> 3–10%</span>
+              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded" style={{ background: 'rgba(26,26,46,0.28)' }} /> &lt; 3%</span>
+            </div>
+          </div>
         ) : <Empty />}
       </Card>
     </div>
@@ -383,7 +653,6 @@ function FunnelTab({ d }) {
 function RetentionTab({ d }) {
   const r = d.retention || {};
   const cohorts = useMemo(() => r.cohorts || [], [r.cohorts]);
-  // Кривая удержания: средний % возврата по смещению недель.
   const curve = useMemo(() => {
     const acc = {};
     for (const c of cohorts) {
@@ -395,7 +664,7 @@ function RetentionTab({ d }) {
     }
     return Array.from({ length: 8 }, (_, i) => {
       const k = i + 1; const a = acc[k] || { ret: 0, size: 0 };
-      return { week: `+${k}`, pct: a.size ? Math.round(a.ret / a.size * 1000) / 10 : 0 };
+      return { week: `+${k} нед.`, pct: a.size ? Math.round(a.ret / a.size * 1000) / 10 : 0 };
     });
   }, [cohorts]);
   const weekCols = ['+1', '+2', '+3', '+4', '+5', '+6', '+7', '+8'];
@@ -403,11 +672,11 @@ function RetentionTab({ d }) {
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        <Kpi label="Уникальных посетителей" value={fmtInt(r.unique_visitors)} sub="вся история" />
-        <Kpi label="Вернувшиеся (2+ недели)" value={fmtInt(r.returning_visitors)} color={GREEN} />
+        <Kpi label="Уникальных посетителей" value={fmtInt(r.unique_visitors)} sub="вся история наблюдений" />
+        <Kpi label="Вернувшиеся (2+ недели активности)" value={fmtInt(r.returning_visitors)} color={GREEN} />
         <Kpi label="Доля возвратов" value={fmtPct(r.returning_pct)} color={GOLD} />
       </div>
-      <Card title="Кривая удержания" icon={TrendingUp} insight="Средний по когортам процент вернувшихся через N недель после первого визита. Пологий хвост = растёт лояльная аудитория.">
+      <Card title="Кривая удержания" icon={TrendingUp} insight="Средний по когортам процент вернувшихся через N недель после первого визита. Пологий хвост — растёт лояльная аудитория.">
         <ResponsiveContainer width="100%" height={220}>
           <ComposedChart data={curve} margin={{ top: 6, right: 12, bottom: 0, left: 0 }}>
             <defs>
@@ -419,12 +688,14 @@ function RetentionTab({ d }) {
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
             <XAxis dataKey="week" tick={{ fontSize: 11, fill: 'rgba(26,26,46,0.5)' }} />
             <YAxis unit="%" tick={{ fontSize: 11, fill: 'rgba(26,26,46,0.5)' }} width={40} />
-            <Tooltip {...TT_STYLE} formatter={(v) => [`${v}%`, 'возврат']} />
-            <Area type="monotone" dataKey="pct" stroke={GOLD} fill="url(#gRet)" strokeWidth={2} />
+            <Tooltip {...TT_STYLE} formatter={(v) => [`${v}%`, 'вернулись']} />
+            <Area type="monotone" dataKey="pct" stroke={GOLD} fill="url(#gRet)" strokeWidth={2}>
+              <LabelList dataKey="pct" position="top" formatter={(v) => (v ? `${v}%` : '')} style={{ fontSize: 10, fill: 'rgba(26,26,46,0.55)' }} />
+            </Area>
           </ComposedChart>
         </ResponsiveContainer>
       </Card>
-      <Card title="Когорты по неделе первого визита" icon={Users} insight="Строка — когорта, столбец — недели спустя. Насыщенность клетки = доля вернувшихся. Тёплая диагональ вправо = удержание держится.">
+      <Card title="Когорты по неделе первого визита" icon={Users} insight="Строка — когорта новых посетителей, столбцы — недели спустя. Насыщенность клетки — доля вернувшихся (наведите для процента).">
         {cohorts.length ? (
           <div className="overflow-x-auto">
             <table className="w-full text-[13px]">
@@ -448,7 +719,7 @@ function RetentionTab({ d }) {
                           <span
                             className="inline-block min-w-9 rounded px-1.5 py-0.5 text-[12px] tabular-nums"
                             style={{ background: `rgba(184,148,47,${Math.min(0.85, pct * 2 + (v ? 0.08 : 0))})`, color: pct > 0.25 ? '#fff' : 'rgba(26,26,46,0.7)' }}
-                            title={`${Math.round(pct * 100)}%`}
+                            title={`${v} чел. = ${Math.round(pct * 100)}% когорты`}
                           >
                             {v || '·'}
                           </span>
@@ -467,23 +738,95 @@ function RetentionTab({ d }) {
 }
 
 function PagesTab({ d }) {
-  const pages = (d.pages || []).map((p) => ({
+  const pages = useMemo(() => (d.pages || []).map((p) => ({
     ...p,
     dwell: p.avg_dwell_sec ?? 0,
     problems: (p.dead_clicks || 0) + (p.rage_clicks || 0),
-  }));
+  })), [d.pages]);
   const medViews = median(pages.map((p) => p.pageviews));
   const medDwell = median(pages.filter((p) => p.dwell > 0).map((p) => p.dwell));
+
+  // Pareto: какие страницы дают 80% просмотров.
+  const pareto = useMemo(() => {
+    const sorted = [...pages].sort((a, b) => b.pageviews - a.pageviews).slice(0, 20);
+    const total = sorted.reduce((s, p) => s + p.pageviews, 0) || 1;
+    return sorted.reduce((acc, p) => {
+      const cum = (acc.length ? acc[acc.length - 1].cum_views : 0) + p.pageviews;
+      acc.push({ name: p.page, views: p.pageviews, cum_views: cum, cum_pct: Math.round(cum / total * 100) });
+      return acc;
+    }, []);
+  }, [pages]);
+
+  const sections = (d.content_structure?.sections || []).filter((s) => s.views > 0);
+  const totalSectionViews = sections.reduce((s, x) => s + x.views, 0) || 1;
+  const treeData = sections.map((s, i) => ({
+    name: s.name, views: s.views, share: Math.round(s.views / totalSectionViews * 100), index: i,
+  }));
+
   const problem = pages.filter((p) => p.problems > 0)
     .sort((a, b) => b.problems - a.problems).slice(0, 10)
     .map((p) => ({ name: p.page, value: p.problems }));
 
   return (
     <div className="space-y-5">
-      <Card title="Карта качества страниц: просмотры × вовлечённость" icon={Activity}
-        insight="X — просмотры, Y — среднее время на странице. Правый низ (много просмотров, мало времени) — «тонкие» популярные страницы, кандидаты на доработку. Пунктир — медианы.">
+      <Card title="Из чего состоит потребление контента" icon={LayoutGrid}
+        insight="Площадь плитки — просмотры раздела за период. Видно, какие продуктовые блоки несут трафик, а какие простаивают.">
+        {treeData.length ? (
+          <>
+            <ResponsiveContainer width="100%" height={300}>
+              <Treemap data={treeData} dataKey="views" nameKey="name" content={<TreemapCell />} isAnimationActive={false}>
+                <Tooltip {...TT_STYLE}
+                  content={({ active, payload }) => {
+                    if (!active || !payload?.length) return null;
+                    const p = payload[0].payload;
+                    const sec = sections.find((s) => s.name === p.name);
+                    return (
+                      <div style={TT_STYLE.contentStyle}>
+                        <div style={{ fontWeight: 600, marginBottom: 2 }}>{p.name}</div>
+                        <div>{fmtInt(p.views)} просмотров · {p.share}%</div>
+                        {sec?.top_pages?.slice(0, 3).map((tp) => (
+                          <div key={tp.page} style={{ color: 'rgba(26,26,46,0.6)' }}>{clip(tp.page, 34)} — {fmtInt(tp.views)}</div>
+                        ))}
+                      </div>
+                    );
+                  }} />
+              </Treemap>
+            </ResponsiveContainer>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-1 mt-3">
+              {sections.slice(0, 6).map((s, i) => (
+                <div key={s.name} className="text-[12px] text-text-secondary flex items-center gap-1.5 min-w-0">
+                  <span className="w-2 h-2 rounded-sm shrink-0" style={{ background: PALETTE[i % PALETTE.length] }} />
+                  <span className="truncate">{s.name}</span>
+                  <span className="tabular-nums text-text-tertiary shrink-0">{fmtInt(s.views)}</span>
+                </div>
+              ))}
+            </div>
+          </>
+        ) : <Empty />}
+      </Card>
+
+      <Card title="Концентрация трафика: правило 80/20" icon={TrendingUp}
+        insight="Столбцы — просмотры страниц (топ-20), линия — накопленная доля от их суммы. Где линия пересекает 80% — столько страниц несут основную нагрузку.">
+        {pareto.length ? (
+          <ResponsiveContainer width="100%" height={280}>
+            <ComposedChart data={pareto} margin={{ top: 6, right: 44, bottom: 40, left: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
+              <XAxis dataKey="name" tick={{ fontSize: 9.5, fill: 'rgba(26,26,46,0.55)', angle: -35, textAnchor: 'end' }} interval={0} height={58} tickFormatter={(v) => clip(v, 18)} />
+              <YAxis yAxisId="l" tick={{ fontSize: 11, fill: 'rgba(26,26,46,0.5)' }} width={40} />
+              <YAxis yAxisId="r" orientation="right" unit="%" domain={[0, 100]} tick={{ fontSize: 11, fill: 'rgba(26,26,46,0.5)' }} width={42} />
+              <Tooltip {...TT_STYLE} formatter={(v, n) => [n === 'Накопленная доля' ? `${v}%` : fmtInt(v), n]} />
+              <ReferenceLine yAxisId="r" y={80} stroke="rgba(220,38,38,0.35)" strokeDasharray="4 4" label={{ value: '80%', fontSize: 10, fill: 'rgba(220,38,38,0.7)', position: 'right' }} />
+              <Bar yAxisId="l" dataKey="views" name="Просмотры" fill={GOLD} radius={[3, 3, 0, 0]} maxBarSize={26} />
+              <Line yAxisId="r" type="monotone" dataKey="cum_pct" name="Накопленная доля" stroke={INK} strokeWidth={1.8} dot={{ r: 2.5 }} />
+            </ComposedChart>
+          </ResponsiveContainer>
+        ) : <Empty />}
+      </Card>
+
+      <Card title="Карта качества: просмотры и вовлечённость" icon={Activity}
+        insight="По горизонтали — просмотры, по вертикали — среднее время на странице. Правый низ (много просмотров, мало времени) — популярные «тонкие» страницы, кандидаты на доработку. Пунктир — медианы.">
         {pages.length ? (
-          <ResponsiveContainer width="100%" height={340}>
+          <ResponsiveContainer width="100%" height={320}>
             <ScatterChart margin={{ top: 10, right: 20, bottom: 20, left: 4 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
               <XAxis type="number" dataKey="pageviews" name="Просмотры" tick={{ fontSize: 11, fill: 'rgba(26,26,46,0.5)' }}
@@ -500,8 +843,8 @@ function PagesTab({ d }) {
                     <div style={TT_STYLE.contentStyle}>
                       <div style={{ fontWeight: 600, marginBottom: 2 }}>{p.page}</div>
                       <div>Просмотры: {fmtInt(p.pageviews)}</div>
-                      <div>Время: {p.avg_dwell_sec ?? '—'} с · скролл {p.avg_scroll_pct ?? '—'}%</div>
-                      <div>Dead: {fmtInt(p.dead_clicks)} · Rage: {fmtInt(p.rage_clicks)} · отказы {p.bounce_pct ?? '—'}%</div>
+                      <div>Время: {p.avg_dwell_sec ?? '—'} с · прокрутка {p.avg_scroll_pct ?? '—'}%</div>
+                      <div>Пустые клики: {fmtInt(p.dead_clicks)} · серии: {fmtInt(p.rage_clicks)} · отказы {p.bounce_pct ?? '—'}%</div>
                     </div>
                   );
                 }} />
@@ -510,8 +853,10 @@ function PagesTab({ d }) {
           </ResponsiveContainer>
         ) : <Empty />}
       </Card>
-      <Card title="Страницы с проблемными кликами (dead + rage)" icon={AlertTriangle} insight="Где пользователи кликают впустую или в раздражении — прямые кандидаты на UX-фикс.">
-        <HBars data={problem} color={RED} />
+
+      <Card title="Страницы с проблемными кликами" icon={AlertTriangle}
+        insight="Пустые клики (без реакции интерфейса) и серии раздражённых кликов — прямые кандидаты на исправление UX.">
+        <HBars data={problem} color={RED} labelWidth={190} />
       </Card>
     </div>
   );
@@ -521,11 +866,17 @@ function DemandTab({ d }) {
   const dem = d.demand || {};
   const s = d.onsite_search || {};
   const wm = (dem.webmaster_queries || []).filter((q) => q.impressions > 0 && q.avg_position != null);
+  const CTX_RU = {
+    global: 'Глобальный поиск (⌘K)',
+    'compare-macro': 'Поиск в сравнении',
+    'regions-map': 'Поиск показателя карты',
+    regions: 'Поиск по регионам',
+  };
 
   return (
     <div className="space-y-5">
-      <Card title="SEO-карта возможностей: показы × позиция" icon={Search}
-        insight="X — показы в Яндексе, Y — средняя позиция (выше = лучше, ось перевёрнута), размер — клики. Правый низ (много показов, но позиция слабая) — запросы с наибольшим потенциалом роста.">
+      <Card title="Карта возможностей в поиске Яндекса: показы и позиция" icon={Search}
+        insight="По горизонтали — показы, по вертикали — средняя позиция (выше = лучше, ось перевёрнута), размер точки — клики. Правый низ (много показов, слабая позиция) — запросы с наибольшим потенциалом роста трафика.">
         {wm.length ? (
           <ResponsiveContainer width="100%" height={340}>
             <ScatterChart margin={{ top: 10, right: 20, bottom: 20, left: 4 }}>
@@ -534,7 +885,7 @@ function DemandTab({ d }) {
                 label={{ value: 'показы', position: 'insideBottom', offset: -8, fontSize: 11, fill: 'rgba(26,26,46,0.5)' }} />
               <YAxis type="number" dataKey="avg_position" name="Позиция" reversed tick={{ fontSize: 11, fill: 'rgba(26,26,46,0.5)' }} width={40} />
               <ZAxis type="number" dataKey="clicks" range={[50, 480]} name="Клики" />
-              <ReferenceLine y={10} stroke="rgba(22,163,74,0.4)" strokeDasharray="4 4" label={{ value: 'топ-10', fontSize: 10, fill: 'rgba(22,163,74,0.7)', position: 'insideTopLeft' }} />
+              <ReferenceLine y={10} stroke="rgba(22,163,74,0.4)" strokeDasharray="4 4" label={{ value: 'первая страница выдачи', fontSize: 10, fill: 'rgba(22,163,74,0.7)', position: 'insideTopLeft' }} />
               <Tooltip {...TT_STYLE} cursor={{ strokeDasharray: '3 3' }}
                 content={({ active, payload }) => {
                   if (!active || !payload?.length) return null;
@@ -543,29 +894,30 @@ function DemandTab({ d }) {
                     <div style={TT_STYLE.contentStyle}>
                       <div style={{ fontWeight: 600, marginBottom: 2 }}>{p.query}</div>
                       <div>Показы: {fmtInt(p.impressions)} · клики: {fmtInt(p.clicks)}</div>
-                      <div>Ср. позиция: {p.avg_position}</div>
+                      <div>Средняя позиция: {p.avg_position}</div>
                     </div>
                   );
                 }} />
               <Scatter data={wm} fill={BLUE} fillOpacity={0.55} />
             </ScatterChart>
           </ResponsiveContainer>
-        ) : <p className="text-[13px] text-text-tertiary py-6 text-center">Данных Вебмастера за период нет.</p>}
+        ) : <Empty note="Данные Вебмастера за период отсутствуют — Яндекс отдаёт статистику запросов с задержкой в несколько дней." />}
       </Card>
       <div className="grid lg:grid-cols-2 gap-5">
-        <Card title="Поиски на сайте без результата" icon={AlertTriangle} insight="Прямая карта пробелов каталога: что люди ищут, но не находят.">
-          <HBars data={dictToBars(s.zero_results, 12)} color={RED} />
+        <Card title="Поиски на сайте без результата" icon={AlertTriangle} insight="Прямая карта пробелов каталога: что ищут, но не находят. Приоритет на добавление.">
+          <HBars data={dictToBars(s.zero_results, 12)} color={RED} labelWidth={190} />
         </Card>
-        <Card title="Фразы прихода из поиска (Метрика)" icon={Search} insight="Реальный органический спрос, приведший визиты.">
-          <HBars data={(dem.metrika_phrases || []).slice(0, 12).map((p) => ({ name: p.phrase, value: p.visits }))} color={GREEN} />
+        <Card title="Фразы прихода из поиска (Метрика)" icon={Search} insight="Реальный органический спрос, приведший визиты за период.">
+          <HBars data={(dem.metrika_phrases || []).slice(0, 12).map((p) => ({ name: p.phrase, value: p.visits }))} color={GREEN} labelWidth={190} />
         </Card>
       </div>
-      <Card title="Внутренние поиски по полям сайта" icon={Search} span="lg:col-span-2" insight="Что ищут в каждом поле — по контекстам (глобальный ⌘K, карта, регионы, сравнение).">
+      <Card title="Что ищут внутри сайта — по полям поиска" icon={Search}
+        insight={`Каждое поле поиска сайта — отдельный срез спроса. Всего запросов за период: ${fmtInt(s.total_queries)}.`}>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {Object.entries(s.by_context || {}).map(([ctx, counter]) => (
             <div key={ctx}>
-              <div className="text-[12px] font-medium text-text-secondary mb-2">{ctx}</div>
-              <HBars data={dictToBars(counter, 6)} height={Math.max(90, Object.keys(counter).length * 26)} />
+              <div className="text-[12px] font-medium text-text-secondary mb-2">{CTX_RU[ctx] || ctx}</div>
+              <HBars data={dictToBars(counter, 6)} height={Math.max(90, Math.min(6, Object.keys(counter).length) * 28)} />
             </div>
           ))}
           {!Object.keys(s.by_context || {}).length && <Empty />}
@@ -575,67 +927,51 @@ function DemandTab({ d }) {
   );
 }
 
-// Узел Sankey с подписью страницы.
-function SankeyNode({ x, y, width, height, index, payload, containerWidth }) {
-  if (x == null || y == null) return null;
-  const isLeft = x < (containerWidth || 480) / 2;
-  const name = payload?.name ?? '';
-  return (
-    <Layer key={`n-${index}`}>
-      <Rectangle x={x} y={y} width={width} height={height} fill={GOLD} fillOpacity={0.85} radius={2} />
-      <text
-        x={isLeft ? x + width + 6 : x - 6} y={y + height / 2}
-        textAnchor={isLeft ? 'start' : 'end'} dominantBaseline="middle"
-        fontSize={11} fill="rgba(26,26,46,0.75)"
-      >
-        {clip(name, 22)}
-      </text>
-    </Layer>
-  );
-}
-
 function NavigationTab({ d }) {
   const n = d.navigation || {};
-  const transitions = (n.top_transitions || []).slice(0, 14);
-  const sankey = useMemo(() => {
-    if (!transitions.length) return null;
-    const names = [];
-    const idx = (name) => {
-      let i = names.indexOf(name);
-      if (i === -1) { i = names.length; names.push(name); }
-      return i;
-    };
-    const links = transitions.map((t) => ({ source: idx(t.from), target: idx(t.to), value: t.count }));
-    // Sankey не терпит циклов source==target — отфильтруем.
-    const clean = links.filter((l) => l.source !== l.target);
-    if (names.length < 2 || !clean.length) return null;
-    return { nodes: names.map((name) => ({ name })), links: clean };
-  }, [transitions]);
-
+  const b = d.behavior_issues || {};
   return (
     <div className="space-y-5">
-      <Card title="Граф навигации: как перетекает трафик между страницами" icon={Route}
-        insight="Толщина потока — число переходов. Видны магистрали сайта и куда ведёт каждая ключевая страница.">
-        {sankey ? (
-          <ResponsiveContainer width="100%" height={Math.max(320, sankey.nodes.length * 26)}>
-            <Sankey
-              data={sankey}
-              node={<SankeyNode />}
-              link={{ stroke: GOLD, strokeOpacity: 0.18 }}
-              nodePadding={22} nodeWidth={10}
-              margin={{ top: 10, right: 160, bottom: 10, left: 20 }}
-            >
-              <Tooltip {...TT_STYLE} formatter={(v) => [fmtInt(v), 'переходов']} />
-            </Sankey>
-          </ResponsiveContainer>
-        ) : <Empty />}
+      <Card title="Матрица переходов: откуда и куда перетекает трафик" icon={Route}
+        insight="Строки — страница-источник, столбцы — страница-назначение, насыщенность клетки — число переходов. Читается по строке: куда уходит посетитель с ключевой страницы.">
+        <TransitionMatrix transitions={n.top_transitions} />
       </Card>
       <div className="grid lg:grid-cols-2 gap-5">
         <Card title="Точки входа" icon={LogIn} insight="С каких страниц начинаются сессии.">
-          <HBars data={dictToBars(n.top_entries, 10)} color={GREEN} />
+          <HBars data={dictToBars(n.top_entries, 10)} color={GREEN} labelWidth={190} />
         </Card>
-        <Card title="Точки выхода (тупики)" icon={Route} insight="Где сессии обрываются — кандидаты на усиление перелинковки.">
-          <HBars data={dictToBars(n.top_exits, 10)} color={RED} />
+        <Card title="Точки выхода" icon={Route} insight="Где сессии обрываются — кандидаты на усиление перелинковки и призывов к действию.">
+          <HBars data={dictToBars(n.top_exits, 10)} color={RED} labelWidth={190} />
+        </Card>
+        <Card title="Пустые клики: элементы без реакции" icon={MousePointerClick} insight="Пользователь кликает, интерфейс не отвечает. Каждая строка — конкретный элемент на конкретной странице.">
+          {(b.dead || []).length ? (
+            <ul className="space-y-1.5">
+              {(b.dead || []).map((x, i) => (
+                <li key={i} className="flex items-baseline gap-2 text-[12.5px]">
+                  <span className="tabular-nums font-semibold text-negative w-8 shrink-0 text-right">{fmtInt(x.count)}</span>
+                  <span className="min-w-0">
+                    <span className="text-text-primary">{clip(x.page, 32)}</span>
+                    <span className="text-text-tertiary font-mono text-[11px] block truncate" title={x.element}>{clip(x.element, 52)}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : <Empty />}
+        </Card>
+        <Card title="Серии раздражённых кликов" icon={MousePointerClick} insight="Многократные быстрые клики в одно место — признак «не работает» или «слишком медленно».">
+          {(b.rage || []).length ? (
+            <ul className="space-y-1.5">
+              {(b.rage || []).map((x, i) => (
+                <li key={i} className="flex items-baseline gap-2 text-[12.5px]">
+                  <span className="tabular-nums font-semibold text-negative w-8 shrink-0 text-right">{fmtInt(x.count)}</span>
+                  <span className="min-w-0">
+                    <span className="text-text-primary">{clip(x.page, 32)}</span>
+                    <span className="text-text-tertiary font-mono text-[11px] block truncate" title={x.element}>{clip(x.element, 52)}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : <Empty />}
         </Card>
       </div>
     </div>
@@ -643,34 +979,77 @@ function NavigationTab({ d }) {
 }
 
 function EventsTab({ d }) {
-  const rows = Object.entries(d.events || {})
-    .map(([name, v]) => ({ name, authed: v.authed, guest: v.guest, total: v.total }))
-    .sort((a, b) => b.total - a.total).slice(0, 22);
+  const all = Object.entries(d.events || {})
+    .map(([name, v]) => ({ name, label: eventLabel(name), authed: v.authed, guest: v.guest, total: v.total }))
+    .sort((a, b) => b.total - a.total);
+  const rows = all.slice(0, 24);
   return (
-    <Card title="Бизнес-события: гость и зарегистрированный" icon={Activity}
-      insight="Каждый бар — событие; сегменты — доля зарегистрированных (тёмное) и гостей. Видно, какие действия драйвят авторизованные пользователи.">
-      {rows.length ? (
-        <ResponsiveContainer width="100%" height={Math.max(260, rows.length * 26)}>
-          <BarChart layout="vertical" data={rows} margin={{ top: 2, right: 48, bottom: 2, left: 4 }}>
-            <XAxis type="number" hide />
-            <YAxis type="category" dataKey="name" width={168} tick={{ fontSize: 11, fill: 'rgba(26,26,46,0.72)' }} tickFormatter={(v) => clip(v, 26)} interval={0} />
-            <Tooltip {...TT_STYLE} formatter={(v, n) => [fmtInt(v), n === 'authed' ? 'Зарегистрированные' : 'Гости']} />
-            <Legend wrapperStyle={{ fontSize: 11 }} formatter={(v) => (v === 'authed' ? 'Зарегистрированные' : 'Гости')} />
-            <Bar dataKey="authed" name="authed" stackId="e" fill={INK} maxBarSize={20} radius={[0, 0, 0, 0]} />
-            <Bar dataKey="guest" name="guest" stackId="e" fill={GOLD} maxBarSize={20} radius={[0, 4, 4, 0]}>
-              <LabelList dataKey="total" position="right" formatter={fmtInt} style={{ fontSize: 10.5, fill: 'rgba(26,26,46,0.6)' }} />
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
-      ) : <Empty />}
-    </Card>
+    <div className="space-y-5">
+      <Card title="Бизнес-события: гости и зарегистрированные" icon={Activity}
+        insight="Каждая полоса — действие на сайте (тёмный сегмент — зарегистрированные, золотой — гости). Видно, какие действия делают авторизованные пользователи, а какие — случайные посетители.">
+        {rows.length ? (
+          <ResponsiveContainer width="100%" height={Math.max(260, rows.length * 27)}>
+            <BarChart layout="vertical" data={rows} margin={{ top: 2, right: 48, bottom: 2, left: 4 }}>
+              <XAxis type="number" hide />
+              <YAxis type="category" dataKey="label" width={230} tick={{ fontSize: 11, fill: 'rgba(26,26,46,0.72)' }} tickFormatter={(v) => clip(v, 34)} interval={0} />
+              <Tooltip {...TT_STYLE}
+                content={({ active, payload }) => {
+                  if (!active || !payload?.length) return null;
+                  const p = payload[0].payload;
+                  return (
+                    <div style={TT_STYLE.contentStyle}>
+                      <div style={{ fontWeight: 600, marginBottom: 2 }}>{p.label}</div>
+                      <div style={{ color: 'rgba(26,26,46,0.55)', fontFamily: 'monospace', fontSize: 11 }}>{p.name}</div>
+                      <div>Всего: {fmtInt(p.total)} · зарегистрированные: {fmtInt(p.authed)} · гости: {fmtInt(p.guest)}</div>
+                    </div>
+                  );
+                }} />
+              <Legend wrapperStyle={{ fontSize: 11 }} formatter={(v) => (v === 'authed' ? 'Зарегистрированные' : 'Гости')} />
+              <Bar dataKey="authed" name="authed" stackId="e" fill={INK} maxBarSize={20} />
+              <Bar dataKey="guest" name="guest" stackId="e" fill={GOLD} maxBarSize={20} radius={[0, 4, 4, 0]}>
+                <LabelList dataKey="total" position="right" formatter={fmtInt} style={{ fontSize: 10.5, fill: 'rgba(26,26,46,0.6)' }} />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        ) : <Empty />}
+      </Card>
+      <Card title="Полный реестр событий за период" icon={Database}
+        insight="Все события с точными числами — включая редкие, которых не видно на графике.">
+        {all.length ? (
+          <div className="overflow-x-auto">
+            <table className="w-full text-[12.5px]">
+              <thead>
+                <tr className="text-left text-text-tertiary border-b border-border-subtle">
+                  <th className="py-1.5 pr-3 font-medium">Событие</th>
+                  <th className="py-1.5 pr-3 font-medium">Техноним</th>
+                  <th className="py-1.5 pr-3 font-medium text-right">Всего</th>
+                  <th className="py-1.5 pr-3 font-medium text-right">Зарегистр.</th>
+                  <th className="py-1.5 pr-3 font-medium text-right">Гости</th>
+                </tr>
+              </thead>
+              <tbody>
+                {all.map((e) => (
+                  <tr key={e.name} className="border-b border-border-subtle/50 last:border-0">
+                    <td className="py-1 pr-3 text-text-primary">{e.label}</td>
+                    <td className="py-1 pr-3 text-text-tertiary font-mono text-[11px]">{e.name}</td>
+                    <td className="py-1 pr-3 text-right tabular-nums text-text-primary font-medium">{fmtInt(e.total)}</td>
+                    <td className="py-1 pr-3 text-right tabular-nums text-text-secondary">{fmtInt(e.authed)}</td>
+                    <td className="py-1 pr-3 text-right tabular-nums text-text-secondary">{fmtInt(e.guest)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : <Empty />}
+      </Card>
+    </div>
   );
 }
 
 function HypothesesTab({ d }) {
   const rows = d.hypotheses || [];
   if (!rows.length) {
-    return <Card title="Гипотезы Пульс-аналитика" icon={Brain}><p className="text-[13px] text-text-tertiary">Гипотез пока нет — Пульс пишет их ежедневно после утреннего отчёта.</p></Card>;
+    return <Card title="Гипотезы Пульс-аналитика" icon={Brain}><p className="text-[13px] text-text-tertiary">Гипотез пока нет — Пульс формулирует их ежедневно после утреннего отчёта.</p></Card>;
   }
   return (
     <div className="space-y-3">
@@ -700,36 +1079,94 @@ function HypothesesTab({ d }) {
   );
 }
 
+// Порядок и названия полей инвентаризации — раскрываем ВСЁ содержимое слоёв.
+const DATASET_FIELD_RU = {
+  rows: 'строк',
+  columns: 'колонок таблицы',
+  event_names: 'типов событий',
+  distinct_phrases: 'уникальных фраз',
+  from: 'с',
+  to: 'по',
+  users: 'пользователей',
+  indicator_points: 'точек макрорядов',
+  region_points: 'точек регионов',
+};
+const DATASET_TITLE_RU = {
+  behavior_events: 'Поведенческий поток (клики, прокрутка, курсор)',
+  frontend_events: 'Бизнес-события интерфейса',
+  raw_metrika_visits: 'Повизитная выгрузка Метрики',
+  metrika_search_phrases: 'Поисковые фразы (Метрика)',
+  metrika_daily_page_metrics: 'Дневные метрики страниц (Метрика)',
+  metrika_report_snapshots: 'Снапшоты отчётов Метрики',
+  webmaster_search_queries: 'Запросы из поиска (Вебмастер)',
+  telegram_outbox: 'Архив исходящих Telegram',
+  hypotheses: 'Гипотезы (слой знаний)',
+  core: 'Продуктовое ядро',
+};
+
 function DatasetTab({ d }) {
   const inv = d.dataset || {};
-  const sections = inv.sections || inv;
+  const sections = inv.sections || {};
+  const totals = inv.totals || {};
   return (
-    <Card title="Инвентаризация датасета: все собираемые слои" icon={Database} insight="Что и в каком объёме копится — основа для ML и глубокой аналитики.">
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {Object.entries(sections).map(([name, s]) => {
-          if (typeof s !== 'object' || s == null) return null;
-          return (
-            <div key={name} className="rounded-xl border border-border-subtle p-3.5">
-              <div className="text-[13px] font-semibold text-text-primary mb-1.5">{s.title || name}</div>
-              <ul className="text-[12px] text-text-secondary space-y-0.5">
-                {Object.entries(s).map(([k, v]) => {
-                  if (k === 'title' || typeof v === 'object') return null;
-                  return <li key={k}><span className="text-text-tertiary">{k}:</span> {typeof v === 'number' ? fmtInt(v) : String(v)}</li>;
-                })}
-              </ul>
-            </div>
-          );
-        })}
+    <div className="space-y-5">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        <Kpi label="Всего строк в датасете" value={fmtInt(totals.rows)} />
+        <Kpi label="Всего параметров (колонки + ключи + типы)" value={fmtInt(totals.parameters)} color={BLUE} />
+        <Kpi label="Слоёв данных" value={fmtInt(Object.keys(sections).length)} color={GREEN} />
       </div>
-    </Card>
+      <Card title="Инвентаризация: каждый слой с полным составом" icon={Database}
+        insight="Всё, что копится в хранилище: объёмы, окна времени, фактические ключи JSON-полей и разбивки по типам. Данные пересчитываются из БД при каждом обновлении.">
+        <div className="grid sm:grid-cols-2 gap-4">
+          {Object.entries(sections).map(([name, s]) => {
+            if (typeof s !== 'object' || s == null) return null;
+            const scalars = Object.entries(s).filter(([k, v]) => typeof v !== 'object' && k !== 'title');
+            const dicts = Object.entries(s).filter(([, v]) => v && typeof v === 'object' && !Array.isArray(v));
+            const lists = Object.entries(s).filter(([, v]) => Array.isArray(v));
+            return (
+              <div key={name} className="rounded-xl border border-border-subtle p-4">
+                <div className="text-[13px] font-semibold text-text-primary mb-0.5">{DATASET_TITLE_RU[name] || s.title || name}</div>
+                <div className="text-[10.5px] text-text-tertiary font-mono mb-2">{name}</div>
+                <div className="flex flex-wrap gap-x-4 gap-y-1 mb-2">
+                  {scalars.map(([k, v]) => (
+                    <span key={k} className="text-[12px] text-text-secondary">
+                      <span className="text-text-tertiary">{DATASET_FIELD_RU[k] || k}:</span>{' '}
+                      <span className="tabular-nums font-medium text-text-primary">
+                        {typeof v === 'number' ? fmtInt(v) : String(v).slice(0, 16)}
+                      </span>
+                    </span>
+                  ))}
+                </div>
+                {dicts.map(([k, obj]) => (
+                  <div key={k} className="mb-2">
+                    <div className="text-[11px] text-text-tertiary mb-1">{k === 'by_type' ? 'по типам событий' : k === 'by_kind' ? 'по видам отправок' : k === 'by_verdict' ? 'по вердиктам' : k === 'report_types' ? 'по типам отчётов' : k}</div>
+                    <div className="flex flex-wrap gap-1">
+                      {Object.entries(obj).map(([kk, vv]) => (
+                        <span key={kk} className="inline-flex items-center gap-1 rounded-full bg-obsidian-light/70 px-2 py-0.5 text-[11px]">
+                          <span className="text-text-secondary">{kk}</span>
+                          <span className="tabular-nums font-medium text-text-primary">{fmtInt(vv)}</span>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+                {lists.map(([k, arr]) => (
+                  <div key={k}>
+                    <div className="text-[11px] text-text-tertiary mb-1">{k === 'json_keys' ? `ключи JSON-полей (${arr.length})` : k}</div>
+                    <div className="flex flex-wrap gap-1 max-h-28 overflow-y-auto">
+                      {arr.map((kk) => (
+                        <span key={kk} className="rounded bg-obsidian-light/50 px-1.5 py-0.5 text-[10.5px] font-mono text-text-secondary">{kk}</span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            );
+          })}
+        </div>
+      </Card>
+    </div>
   );
-}
-
-function median(arr) {
-  const a = (arr || []).filter((v) => v != null && Number.isFinite(v)).sort((x, y) => x - y);
-  if (!a.length) return 0;
-  const mid = Math.floor(a.length / 2);
-  return a.length % 2 ? a[mid] : (a[mid - 1] + a[mid]) / 2;
 }
 
 /* ---------- Логин-гейт ---------- */
@@ -755,7 +1192,7 @@ function AdminLogin({ onSuccess }) {
   };
 
   return (
-    <div className="min-h-[60vh] flex items-center justify-center px-4">
+    <div className="min-h-[60vh] flex items-center justify-center px-4 pt-24">
       <form onSubmit={submit} className="w-full max-w-sm rounded-2xl bg-surface border border-border-subtle p-6 space-y-4">
         <h1 className="text-lg font-semibold text-text-primary">Служебный раздел</h1>
         <p className="text-[13px] text-text-secondary">Доступ по учётной записи администратора.</p>
@@ -788,7 +1225,7 @@ const TABS = [
   { id: 'acquisition', label: 'Привлечение', icon: Megaphone, C: AcquisitionTab },
   { id: 'funnel', label: 'Воронка', icon: Filter, C: FunnelTab },
   { id: 'retention', label: 'Retention', icon: Users, C: RetentionTab },
-  { id: 'pages', label: 'Страницы', icon: Route, C: PagesTab },
+  { id: 'pages', label: 'Контент', icon: LayoutGrid, C: PagesTab },
   { id: 'demand', label: 'Спрос и поиск', icon: Search, C: DemandTab },
   { id: 'navigation', label: 'Навигация и UX', icon: MousePointerClick, C: NavigationTab },
   { id: 'events', label: 'События', icon: TrendingUp, C: EventsTab },
@@ -826,7 +1263,7 @@ export default function AdminBI() {
   const Active = TABS.find((t) => t.id === tab)?.C || OverviewTab;
 
   return (
-    <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-6">
+    <div className="max-w-[1400px] mx-auto px-4 sm:px-6 pt-24 pb-10">
       <div className="flex flex-wrap items-center gap-3 mb-5">
         <h1 className="text-xl font-bold text-text-primary">BI-аналитика платформы</h1>
         <div className="flex items-center gap-1 rounded-full bg-surface border border-border-subtle p-1">

@@ -243,14 +243,19 @@ async def lifespan(app: FastAPI):
         # это часть накопительного DS-датасета, а не экспериментальный OS-синк.
         if settings.analytics_enabled and settings.yandex_metrika_read_token:
             from app.tasks.analytics_scheduler import acquisition_daily_job
+            # Три прогона в день: утренний до Пульса + дневной и вечерний
+            # (подстраховка от сбоя и дозапись позднего лога). Синк идемпотентен
+            # по (counter_id, visit_id); Logs API отдаёт данные только до вчера,
+            # «сегодня» в BI закрывает live-слой behavior_events.
             scheduler.add_job(
                 acquisition_daily_job,
-                trigger=CronTrigger(hour=8, minute=20, timezone="Europe/Moscow"),
+                trigger=CronTrigger(hour="8,14,20", minute=20,
+                                    timezone="Europe/Moscow"),
                 id="acquisition_daily",
                 name="Metrika acquisition sync (phrases/sources/visits log)",
                 replace_existing=True,
             )
-            logger.info("Acquisition sync enabled: daily at 08:20 MSK")
+            logger.info("Acquisition sync enabled: 08:20/14:20/20:20 MSK")
 
         # Автоподача переобхода Яндекс.Вебмастера: каждое утро выбираем
         # дневную квоту (~150 URL) приоритетными страницами из единого

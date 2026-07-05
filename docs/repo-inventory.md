@@ -2,7 +2,7 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Файлов:** 523  ·  **Строк:** 115 432  ·  **Токенов (≈):** 1 191 958
+**Файлов:** 523  ·  **Строк:** 115 992  ·  **Токенов (≈):** 1 199 729
 
 ## По верхним папкам
 
@@ -10,9 +10,9 @@
 |-------|-------:|------:|------------:|
 | `(root)` | 7 | 1 495 | 38 273 |
 | `.github` | 1 | 56 | 334 |
-| `backend` | 271 | 61 646 | 613 276 |
-| `docs` | 21 | 4 311 | 89 620 |
-| `frontend` | 187 | 40 175 | 367 515 |
+| `backend` | 271 | 61 753 | 614 372 |
+| `docs` | 21 | 4 311 | 90 196 |
+| `frontend` | 187 | 40 628 | 373 614 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 33 | 7 591 | 81 820 |
 
@@ -24,16 +24,16 @@
 | `frontend/src/lib/viewModelFamilies.generated.json` | 12 339 | 72 982 |
 | `backend/app/data/regional/indicators.json` | 6 359 | 57 767 |
 | `backend/seed_data.py` | 4 804 | 48 781 |
-| `docs/backlog.md` | 853 | 27 888 |
+| `docs/backlog.md` | 853 | 28 464 |
 | `CONTEXT.md` | 577 | 20 110 |
 | `scripts/metrika_daily_report.py` | 1 915 | 19 522 |
+| `frontend/src/pages/AdminBI.jsx` | 1 313 | 16 904 |
 | `frontend/src/lib/regionsMap.json` | 1 | 16 837 |
 | `backend/app/data/view_model_families.py` | 1 121 | 13 420 |
 | `frontend/src/pages/ComparePage.jsx` | 1 192 | 12 653 |
 | `AGENTS.md` | 387 | 11 818 |
 | `backend/app/services/seo_renderer.py` | 1 155 | 11 771 |
 | `backend/app/services/forecaster.py` | 1 252 | 11 552 |
-| `frontend/src/pages/AdminBI.jsx` | 874 | 11 058 |
 | `backend/app/models.py` | 753 | 9 603 |
 | `frontend/src/pages/CalculatorPage.jsx` | 830 | 9 520 |
 | `frontend/src/pages/IndicatorDetail.jsx` | 803 | 8 404 |
@@ -45,6 +45,7 @@
 | `scripts/build-indicator-index.py` | 676 | 7 424 |
 | `scripts/recrawl-priority-missing.txt` | 312 | 7 224 |
 | `docs/missed_data_audit.md` | 447 | 6 795 |
+| `backend/app/services/admin_bi.py` | 693 | 6 704 |
 | `frontend/src/pages/EmbedBuilder.jsx` | 512 | 6 644 |
 | `frontend/src/components/IndicatorChart.jsx` | 682 | 6 424 |
 | `backend/app/services/seo_content.py` | 539 | 6 260 |
@@ -52,7 +53,6 @@
 | `frontend/src/pages/RegionsHome.jsx` | 529 | 6 175 |
 | `docs/data_sources.md` | 385 | 6 058 |
 | `frontend/src/lib/useIndicatorViewModeData.js` | 645 | 5 980 |
-| `backend/app/services/admin_bi.py` | 591 | 5 695 |
 | `backend/app/services/calendar_seed.py` | 614 | 5 495 |
 | `backend/tests/test_derived_ops.py` | 603 | 5 317 |
 | `docs/adr/0006-indicator-card-unification.md` | 227 | 5 311 |
@@ -77,8 +77,8 @@
 | `backend/tests/test_calendar_seed.py` | 442 | 4 079 |
 | `frontend/src/pages/CompoundCalculatorPage.jsx` | 294 | 4 037 |
 | `docs/analytics_api_inventory/frontend_instrumentation.md` | 279 | 4 010 |
+| `backend/app/main.py` | 394 | 3 980 |
 | `frontend/src/pages/MortgageCalculatorPage.jsx` | 282 | 3 909 |
-| `backend/app/main.py` | 389 | 3 893 |
 | `docs/adr/0001-derived-indicators-engine-shape.md` | 140 | 3 873 |
 | `frontend/src/pages/DemographicsPage.jsx` | 357 | 3 848 |
 | `backend/tests/test_forecast_policy.py` | 372 | 3 814 |
@@ -290,6 +290,7 @@
 | `frontend/src/lib/housingViewModeGroups.test.js` | 77 | 886 |
 | `backend/app/data/housing_historical.py` | 92 | 884 |
 | `backend/tests/forecast_strategies/test_monthly_auto.py` | 100 | 881 |
+| `frontend/src/components/RegionCrossLink.jsx` | 69 | 881 |
 | `frontend/src/components/CategoryBlock.jsx` | 121 | 879 |
 | `backend/tests/test_cbr_bop.py` | 109 | 876 |
 | `backend/app/services/webmaster_recrawl.py` | 92 | 873 |
@@ -346,7 +347,6 @@
 | `frontend/src/lib/utm.test.js` | 68 | 651 |
 | `frontend/src/lib/useScrollDepth.js` | 74 | 640 |
 | `frontend/src/lib/unemploymentViewModeResolve.js` | 94 | 633 |
-| `frontend/src/components/RegionCrossLink.jsx` | 55 | 628 |
 | `backend/app/api/admin_bi.py` | 77 | 623 |
 | `backend/app/services/forecast_strategies/cpi_combined.py` | 71 | 623 |
 | `frontend/src/components/IndicatorMethodologyPanel.jsx` | 57 | 621 |

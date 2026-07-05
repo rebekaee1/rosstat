@@ -47,16 +47,46 @@ from app.models import (
 logger = logging.getLogger(__name__)
 
 # События-цели для воронки: что считаем «ценным действием» визита.
+# Ревизия 2026-07-05: цель = конверсионное действие (аккаунт, подписка, экспорт
+# данных, обратная связь). Вовлечение (compare_add, calc_*, chart_*) целью не
+# считается — оно живёт в engaged-слое воронки. Список сверен с track.js.
 _GOAL_EVENTS = {
     "signup", "login_success", "oauth_start", "newsletter_opt_in",
-    "download_csv", "download_excel", "chart_image_download",
-    "compare_image_download", "feedback_submit",
+    "download_csv", "download_excel", "download_ical",
+    "chart_image_download", "compare_image_download", "feedback_submit",
 }
 _DOWNLOAD_EVENTS = {
     "download_csv", "download_excel", "download_ical",
     "chart_image_download", "compare_image_download",
 }
 _ERROR_EVENTS = {"api_load_error", "error_reload", "api_retry"}
+
+# Классификация путей по продуктовым разделам — для структуры потребления
+# контента (treemap в BI). Порядок важен: первое совпадение выигрывает.
+_SECTION_RULES = [
+    ("/indicator/", "Карточки индикаторов"),
+    ("/region/", "Карточки регионов"),
+    ("/regions", "Каталог и карта регионов"),
+    ("/region-rating", "Рейтинги регионов"),
+    ("/region-vs", "Сравнения регионов"),
+    ("/calculator", "Калькуляторы"),
+    ("/compare", "Сравнение индикаторов"),
+    ("/category/", "Категории"),
+    ("/calendar", "Календарь"),
+    ("/today", "Страницы «сегодня»"),
+    ("/about", "О проекте"),
+    ("/methodology", "Методология"),
+    ("/admin", "Служебные"),
+]
+
+
+def _page_section(path: str) -> str:
+    if not path or path == "/":
+        return "Главная"
+    for prefix, name in _SECTION_RULES:
+        if path.startswith(prefix):
+            return name
+    return "Прочее"
 
 
 def _day(dt: datetime | date | None) -> str | None:
@@ -74,10 +104,14 @@ def _visit_field(v: RawMetrikaVisit, key: str) -> str:
 
 async def _kpi_daily(db: AsyncSession, since: datetime) -> list[dict]:
     """Ряды по дням: визиты/посетители (Метрика), события, регистрации,
-    скачивания, ошибки. Один ряд = одна точка на графике дашборда."""
+    скачивания, ошибки + live-слой из собственного потока behavior_events
+    (pageviews и уникальные сессии). Метрика Logs API отдаёт данные с
+    задержкой до суток — live-слой закрывает «сегодня и вчера» в реальном
+    времени, график не обрывается нулями на свежих днях."""
     days: dict[str, dict[str, Any]] = defaultdict(lambda: {
         "visits": 0, "visitors": set(), "ad_visits": 0, "events": 0,
         "registrations": 0, "downloads": 0, "errors": 0, "searches": 0,
+        "live_pageviews": 0, "live_sessions": set(),
     })
 
     visits = (await db.execute(
@@ -122,6 +156,19 @@ async def _kpi_daily(db: AsyncSession, since: datetime) -> list[dict]:
     for d_raw, cnt in reg_rows:
         days[str(d_raw)]["registrations"] = cnt
 
+    # Live-слой: собственный поток behavior.js (без лага Метрики).
+    live_rows = (await db.execute(
+        select(func.date(BehaviorEvent.occurred_at),
+               BehaviorEvent.session_id_hash)
+        .where(BehaviorEvent.event_type == "pageview",
+               BehaviorEvent.occurred_at >= since)
+    )).all()
+    for d_raw, session in live_rows:
+        d = str(d_raw)
+        days[d]["live_pageviews"] += 1
+        if session:
+            days[d]["live_sessions"].add(session)
+
     out = []
     for d in sorted(days):
         row = days[d]
@@ -135,6 +182,8 @@ async def _kpi_daily(db: AsyncSession, since: datetime) -> list[dict]:
             "downloads": row["downloads"],
             "errors": row["errors"],
             "searches": row["searches"],
+            "live_pageviews": row["live_pageviews"],
+            "live_sessions": len(row["live_sessions"]),
         })
     return out
 
@@ -488,6 +537,57 @@ async def _navigation_graph(db: AsyncSession, since: datetime) -> dict:
     }
 
 
+async def _activity_heatmap(db: AsyncSession, since: datetime) -> list[dict]:
+    """Пульс недели: pageviews по (день недели × час МСК). Показывает ритм
+    аудитории — когда сайт живёт, когда пустует; окна для релизов и рекламы."""
+    rows = (await db.execute(
+        select(BehaviorEvent.occurred_at)
+        .where(BehaviorEvent.event_type == "pageview",
+               BehaviorEvent.occurred_at >= since)
+        .limit(200000)
+    )).scalars().all()
+    grid: Counter = Counter()
+    for ts in rows:
+        if ts is None:
+            continue
+        msk = ts + timedelta(hours=3)  # UTC → МСК
+        grid[(msk.weekday(), msk.hour)] += 1
+    return [
+        {"dow": dow, "hour": hour, "count": cnt}
+        for (dow, hour), cnt in sorted(grid.items())
+    ]
+
+
+async def _content_structure(db: AsyncSession, since: datetime) -> dict:
+    """Структура потребления контента: раздел → просмотры + топ страниц внутри.
+    Treemap-витрина: видно, какие продуктовые блоки несут трафик."""
+    rows = (await db.execute(
+        select(BehaviorEvent.page, func.count(BehaviorEvent.id))
+        .where(BehaviorEvent.event_type == "pageview",
+               BehaviorEvent.occurred_at >= since)
+        .group_by(BehaviorEvent.page)
+    )).all()
+    sections: dict[str, dict[str, Any]] = defaultdict(lambda: {"views": 0, "pages": Counter()})
+    for page, cnt in rows:
+        if not page:
+            continue
+        sec = _page_section(page.split("?")[0])
+        sections[sec]["views"] += cnt
+        sections[sec]["pages"][page.split("?")[0]] += cnt
+    return {
+        "sections": [
+            {
+                "name": name,
+                "views": s["views"],
+                "top_pages": [
+                    {"page": p, "views": v} for p, v in s["pages"].most_common(5)
+                ],
+            }
+            for name, s in sorted(sections.items(), key=lambda kv: -kv[1]["views"])
+        ],
+    }
+
+
 async def _behavior_issues(db: AsyncSession, since: datetime) -> dict:
     """Проблемные элементы UI: dead- и rage-клики по element_path."""
     out = {}
@@ -583,6 +683,8 @@ async def build_bi_dashboard(db: AsyncSession, days: int = 30) -> dict[str, Any]
         "demand": await _demand_vs_coverage(db, since),
         "onsite_search": await _onsite_search(db, since),
         "navigation": await _navigation_graph(db, since),
+        "activity_heatmap": await _activity_heatmap(db, since),
+        "content_structure": await _content_structure(db, since),
         "behavior_issues": await _behavior_issues(db, since),
         "events": await _events_breakdown(db, since),
         "hypotheses": await _hypotheses(db),
