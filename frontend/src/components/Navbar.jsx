@@ -64,29 +64,47 @@ function AuthCluster({ mobile = false, onNavigate }) {
   );
 }
 
+// Пункт «Калькуляторы» раскрывается как категория (просьба руководителя
+// 2026-07-05: освободить место в верхнем меню).
+const CALCULATORS = [
+  { to: '/calculator', label: 'Калькулятор инфляции' },
+  { to: '/calculator/mortgage', label: 'Ипотечный калькулятор' },
+  { to: '/calculator/compound', label: 'Сложные проценты' },
+];
+
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [catOpen, setCatOpen] = useState(false);
+  const [calcOpen, setCalcOpen] = useState(false);
   const navRef = useRef(null);
   const catWrapRef = useRef(null);
+  const calcWrapRef = useRef(null);
 
   const closeAll = () => {
     setMobileOpen(false);
     setCatOpen(false);
+    setCalcOpen(false);
   };
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 200);
+    // Порог маленький: контент подходит под фиксированный навбар уже при
+    // ~30px скролла — при 200 текст страницы просвечивал сквозь слабое
+    // стекло (наложение, скрин руководителя 2026-07-05).
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   useEffect(() => {
-    if (!catOpen && !mobileOpen) return;
+    if (!catOpen && !mobileOpen && !calcOpen) return;
     const onDoc = (e) => {
       if (catOpen && catWrapRef.current && !catWrapRef.current.contains(e.target)) {
         setCatOpen(false);
+      }
+      if (calcOpen && calcWrapRef.current && !calcWrapRef.current.contains(e.target)) {
+        setCalcOpen(false);
       }
     };
     const onKey = (e) => {
@@ -98,7 +116,7 @@ export default function Navbar() {
       document.removeEventListener('mousedown', onDoc);
       document.removeEventListener('keydown', onKey);
     };
-  }, [catOpen, mobileOpen]);
+  }, [catOpen, mobileOpen, calcOpen]);
 
   useEffect(() => {
     if (!navRef.current) return;
@@ -123,7 +141,7 @@ export default function Navbar() {
     'rounded-xl block px-4 py-2.5 text-sm text-left transition-colors hover:bg-obsidian-lighter/80'
   );
 
-  const menuOpen = catOpen || mobileOpen;
+  const menuOpen = catOpen || mobileOpen || calcOpen;
 
   return (
     <>
@@ -142,7 +160,7 @@ export default function Navbar() {
           'max-w-6xl w-[calc(100%-2rem)]',
           scrolled
             ? 'glass-surface border border-border-subtle shadow-lg shadow-black/5'
-            : 'bg-white/60 backdrop-blur-sm border border-black/[0.04]'
+            : 'glass-surface-soft border border-black/[0.04]'
         )}
       >
       <Link
@@ -238,14 +256,43 @@ export default function Navbar() {
         <NavLink to="/compare" className={linkClass} onClick={closeAll}>
           Сравнение
         </NavLink>
-        <NavLink
-          to="/calculator"
-          className={linkClass}
-          onClick={closeAll}
-        >
-          <span className="xl:hidden">Калькулятор</span>
-          <span className="hidden xl:inline">Калькулятор инфляции</span>
-        </NavLink>
+        <div className="relative" ref={calcWrapRef}>
+          <button
+            type="button"
+            onClick={() => { setCalcOpen((o) => !o); setCatOpen(false); }}
+            className={cn(
+              FOCUS_RING,
+              'flex items-center gap-1 text-sm font-medium transition-colors px-2 py-1 rounded-xl',
+              calcOpen ? 'text-champagne' : 'text-text-secondary hover:text-text-primary'
+            )}
+            aria-expanded={calcOpen}
+            aria-haspopup="menu"
+          >
+            Калькуляторы
+            <ChevronDown className={cn('w-4 h-4 transition-transform', calcOpen && 'rotate-180')} />
+          </button>
+          {calcOpen && (
+            <div
+              className="absolute right-0 top-full z-[110] mt-2 min-w-[240px] rounded-2xl border border-border-subtle bg-surface py-2 shadow-2xl ring-1 ring-black/[0.08]"
+              role="menu"
+            >
+              {CALCULATORS.map((c) => (
+                <NavLink
+                  key={c.to}
+                  to={c.to}
+                  end
+                  className={({ isActive }) =>
+                    cn(itemClass, isActive ? 'text-champagne bg-champagne/5' : 'text-text-primary')
+                  }
+                  onClick={closeAll}
+                  role="menuitem"
+                >
+                  {c.label}
+                </NavLink>
+              ))}
+            </div>
+          )}
+        </div>
         <NavLink to="/about" className={linkClass} onClick={closeAll}>
           О проекте
         </NavLink>
@@ -312,9 +359,14 @@ export default function Navbar() {
             <NavLink to="/compare" className={linkClass} onClick={closeAll}>
               Сравнение
             </NavLink>
-            <NavLink to="/calculator" className={linkClass} onClick={closeAll}>
-              Калькулятор инфляции
-            </NavLink>
+            <p className="text-[10px] uppercase tracking-wider text-text-tertiary px-2 pt-3 pb-1">
+              Калькуляторы
+            </p>
+            {CALCULATORS.map((c) => (
+              <NavLink key={c.to} to={c.to} end className={linkClass} onClick={closeAll}>
+                {c.label}
+              </NavLink>
+            ))}
             <NavLink to="/about" className={linkClass} onClick={closeAll}>
               О проекте
             </NavLink>

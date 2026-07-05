@@ -61,6 +61,20 @@ def test_bi_dashboard_for_admin(auth_client):
     assert isinstance(data["acquisition"]["ad_campaigns"], list)
 
 
+def test_login_response_carries_is_admin(auth_client):
+    """Регрессия 2026-07-05: логин-гейт /admin/bi кладёт ответ /auth/login в
+    auth-контекст как есть. Без is_admin в этом ответе админ сразу после
+    входа видел «404 — страница не найдена» до полной перезагрузки."""
+    _register(auth_client, ADMIN_EMAIL)
+    auth_client.post("/api/v1/auth/logout", headers=csrf_headers(auth_client))
+
+    r = auth_client.post("/api/v1/auth/login", json={
+        "email": ADMIN_EMAIL, "password": PASSWORD,
+    })
+    assert r.status_code == 200, r.text
+    assert r.json()["user"].get("is_admin") is True
+
+
 def test_bi_dashboard_cached(auth_client):
     """Повторный запрос отдаётся из кэша (generated_at не меняется)."""
     _register(auth_client, ADMIN_EMAIL)

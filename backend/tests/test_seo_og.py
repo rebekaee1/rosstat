@@ -187,6 +187,8 @@ def test_sitemap_static_pages_constant():
     assert "/privacy" in paths
     assert "/compare" in paths
     assert "/calculator" in paths
+    assert "/calculator/mortgage" in paths
+    assert "/calculator/compound" in paths
     assert "/demographics" in paths
     assert "/methodology" in paths
 

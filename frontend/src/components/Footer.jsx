@@ -85,6 +85,16 @@ export default function Footer() {
                   Калькулятор инфляции
                 </Link>
               </li>
+              <li>
+                <Link to="/calculator/mortgage" className={footLink}>
+                  Ипотечный калькулятор
+                </Link>
+              </li>
+              <li>
+                <Link to="/calculator/compound" className={footLink}>
+                  Сложные проценты
+                </Link>
+              </li>
             </ul>
           </div>
 

@@ -163,6 +163,8 @@ export const events = {
   CALC_COPY_RESULT: 'calc_copy_result',
   CALC_CHART_MODE: 'calc_chart_mode',
   CALC_BREAKDOWN: 'calc_breakdown',
+  CALC_MORTGAGE: 'calc_mortgage',
+  CALC_COMPOUND: 'calc_compound',
   FAQ_TOGGLE: 'faq_toggle',
 
   CALENDAR_MONTH_NAV: 'calendar_month_nav',

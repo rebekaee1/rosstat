@@ -27,6 +27,8 @@ const ComparePage = lazy(() => import('./pages/ComparePage'));
 const CalendarPage = lazy(() => import('./pages/CalendarPage'));
 const EmbedBuilder = lazy(() => import('./pages/EmbedBuilder'));
 const CalculatorPage = lazy(() => import('./pages/CalculatorPage'));
+const MortgageCalculatorPage = lazy(() => import('./pages/MortgageCalculatorPage'));
+const CompoundCalculatorPage = lazy(() => import('./pages/CompoundCalculatorPage'));
 const DemographicsPage = lazy(() => import('./pages/DemographicsPage'));
 const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
@@ -172,6 +174,8 @@ function AppRoutes() {
             <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/widgets" element={<EmbedBuilder />} />
             <Route path="/calculator" element={<CalculatorPage />} />
+            <Route path="/calculator/mortgage" element={<MortgageCalculatorPage />} />
+            <Route path="/calculator/compound" element={<CompoundCalculatorPage />} />
             <Route path="/demographics" element={<DemographicsPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />

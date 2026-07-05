@@ -128,7 +128,7 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 335,
+          "line": 337,
           "kind": "tests"
         },
         {
@@ -7191,27 +7191,27 @@
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 274,
+          "line": 276,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 333,
+          "line": 335,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 438,
+          "line": 440,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 452,
+          "line": 454,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 492,
+          "line": 530,
           "kind": "seo"
         },
         {
@@ -7481,57 +7481,52 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 247,
+          "line": 249,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 378,
+          "line": 380,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 379,
+          "line": 381,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 386,
+          "line": 388,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 431,
+          "line": 433,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 435,
+          "line": 437,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 445,
+          "line": 447,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 450,
+          "line": 452,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 456,
+          "line": 458,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 484,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_seo_og.py",
-          "line": 502,
+          "line": 486,
           "kind": "tests"
         },
         {
@@ -7541,7 +7536,12 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 507,
+          "line": 506,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 509,
           "kind": "tests"
         },
         {
@@ -26097,6 +26097,11 @@
           "kind": "parser"
         },
         {
+          "file": "backend/app/services/seo_content.py",
+          "line": 470,
+          "kind": "seo"
+        },
+        {
           "file": "backend/scripts/audit-groups-submodes.py",
           "line": 129,
           "kind": "other"
@@ -32058,12 +32063,22 @@
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 334,
+          "line": 336,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 438,
+          "line": 440,
+          "kind": "seo"
+        },
+        {
+          "file": "backend/app/services/seo_content.py",
+          "line": 469,
+          "kind": "seo"
+        },
+        {
+          "file": "backend/app/services/seo_content.py",
+          "line": 487,
           "kind": "seo"
         },
         {
@@ -32148,27 +32163,27 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 248,
+          "line": 250,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 336,
+          "line": 338,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 340,
+          "line": 342,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 365,
+          "line": 367,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 431,
+          "line": 433,
           "kind": "tests"
         },
         {
@@ -32342,6 +32357,16 @@
           "kind": "other"
         },
         {
+          "file": "frontend/src/pages/CompoundCalculatorPage.jsx",
+          "line": 84,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/pages/CompoundCalculatorPage.jsx",
+          "line": 291,
+          "kind": "other"
+        },
+        {
           "file": "frontend/src/pages/EmbedBuilder.jsx",
           "line": 135,
           "kind": "other"
@@ -32354,6 +32379,16 @@
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
           "line": 262,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/pages/MortgageCalculatorPage.jsx",
+          "line": 91,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/pages/MortgageCalculatorPage.jsx",
+          "line": 284,
           "kind": "other"
         },
         {
@@ -36810,7 +36845,7 @@
         },
         {
           "file": "backend/app/services/seo_content.py",
-          "line": 479,
+          "line": 517,
           "kind": "seo"
         },
         {
@@ -36830,7 +36865,7 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 199,
+          "line": 201,
           "kind": "tests"
         },
         {
@@ -39930,6 +39965,11 @@
           "kind": "parser"
         },
         {
+          "file": "backend/app/services/seo_content.py",
+          "line": 488,
+          "kind": "seo"
+        },
+        {
           "file": "backend/app/services/seo_renderer.py",
           "line": 507,
           "kind": "seo"
@@ -39971,17 +40011,7 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 337,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_seo_og.py",
-          "line": 362,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_seo_og.py",
-          "line": 363,
+          "line": 339,
           "kind": "tests"
         },
         {
@@ -39991,7 +40021,17 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 368,
+          "line": 365,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 366,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 370,
           "kind": "tests"
         },
         {
@@ -40062,6 +40102,11 @@
         {
           "file": "frontend/src/lib/viewModelFamilies.generated.json",
           "line": 9963,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/pages/CompoundCalculatorPage.jsx",
+          "line": 292,
           "kind": "other"
         },
         {

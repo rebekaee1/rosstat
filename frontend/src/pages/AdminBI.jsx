@@ -31,6 +31,7 @@ const PERIODS = [
   { days: 7, label: 'Неделя' },
   { days: 30, label: 'Месяц' },
   { days: 90, label: 'Квартал' },
+  { days: 365, label: 'Год' },
 ];
 
 const SOURCE_RU = {

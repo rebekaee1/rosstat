@@ -96,6 +96,24 @@ body {
   -webkit-backdrop-filter: blur(24px);
 }
 
+/* Мягкое стекло для навбара в верхней части страницы. */
+.glass-surface-soft {
+  background: rgba(255, 255, 255, 0.68);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Без поддержки backdrop-filter (энергосбережение, in-app браузеры, старые
+   Safari) полупрозрачное стекло превращается в «просвечивающую» шапку —
+   текст страницы наслаивается на пункты меню (скрин руководителя
+   2026-07-05). Фолбэк: почти непрозрачный белый. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass-surface,
+  .glass-surface-soft {
+    background: rgba(255, 255, 255, 0.97);
+  }
+}
+
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;

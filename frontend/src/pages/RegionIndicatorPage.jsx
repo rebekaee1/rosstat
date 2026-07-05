@@ -45,10 +45,14 @@ function StatCell({ label, children }) {
   );
 }
 
+// Официальная размерность Росстата — именно «на 100 родов» (табл. 5.7.2
+// сборника «Регионы России»; сверено с публикациями: РФ 2024 — 36,5 аборта
+// на 100 родов, в 1993 — 235, то есть больше, чем родов). Не «на 1000».
 const ABORTION_SIBLING = {
   'beremennosti-s-abortivnym-ishodom-na-100-rodov': {
     code: 'beremennosti-s-abortivnym-ishodom-na-1000-zhenschin',
     label: 'на 1000 женщин 15–49 лет',
+    note: 'Размерность Росстата — на каждые 100 родов: значение 36 означает 36 прерываний беременности на 100 родившихся. В 1990-е показатель превышал 200.',
   },
   'beremennosti-s-abortivnym-ishodom-na-1000-zhenschin': {
     code: 'beremennosti-s-abortivnym-ishodom-na-100-rodov',
@@ -233,6 +237,12 @@ export default function RegionIndicatorPage() {
             </div>
             {ABORTION_SIBLING[code] && (
               <p className="mt-1 text-xs text-text-tertiary">
+                {ABORTION_SIBLING[code].note && (
+                  <>
+                    {ABORTION_SIBLING[code].note}
+                    {' '}
+                  </>
+                )}
                 Другой срез того же показателя Росстата —{' '}
                 <Link
                   to={`/region/${slug}/${ABORTION_SIBLING[code].code}`}

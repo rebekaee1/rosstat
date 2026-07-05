@@ -13,6 +13,7 @@ import {
 import useDocumentMeta from '../lib/useMeta';
 import useInflationCalc from '../lib/useInflationCalc';
 import { formatDate, formatAxisTick, cn } from '../lib/format';
+import { formatRubles, parseAmount, formatInput, fmtPct } from '../lib/calcFormat';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
 import { SkeletonBox } from '../components/Skeleton';
 import { track, events } from '../lib/track';
@@ -70,31 +71,6 @@ const CATEGORY_META = [
   { key: 'nonfood', label: 'Непродовольственные', icon: Package },
   { key: 'services', label: 'Услуги', icon: Wrench },
 ];
-
-/* ─── Helpers ─── */
-
-function formatRubles(n) {
-  if (n == null || !Number.isFinite(n)) return '—';
-  const abs = Math.abs(Math.round(n));
-  const sign = n < 0 ? '-' : '';
-  return sign + abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0') + '\u00A0₽';
-}
-
-function parseAmount(str) {
-  const cleaned = str.replace(/[^\d]/g, '');
-  return cleaned ? parseInt(cleaned, 10) : 0;
-}
-
-function formatInput(n) {
-  if (!n || n <= 0) return '';
-  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-}
-
-function fmtPct(v, sign = false) {
-  if (v == null || !Number.isFinite(v)) return '—';
-  const s = sign && v > 0 ? '+' : '';
-  return `${s}${v.toFixed(1)}%`;
-}
 
 /* ─── Sub-components ─── */
 
@@ -833,6 +809,21 @@ export default function CalculatorPage() {
             if (open) track(events.FAQ_TOGGLE, { question: title });
           }}
         />
+      </section>
+
+      {/* ── Другие калькуляторы ── */}
+      <section data-animate>
+        <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-4">Другие калькуляторы</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <Link to="/calculator/mortgage" className="group rounded-2xl bg-surface border border-border-subtle p-4 hover:border-champagne/30 transition-colors">
+            <p className="text-sm font-semibold text-text-primary group-hover:text-champagne transition-colors mb-1">Ипотечный калькулятор</p>
+            <p className="text-[13px] text-text-secondary">Ежемесячный платёж, переплата и график погашения кредита.</p>
+          </Link>
+          <Link to="/calculator/compound" className="group rounded-2xl bg-surface border border-border-subtle p-4 hover:border-champagne/30 transition-colors">
+            <p className="text-sm font-semibold text-text-primary group-hover:text-champagne transition-colors mb-1">Сложные проценты</p>
+            <p className="text-[13px] text-text-secondary">Рост капитала с пополнениями и поправкой на инфляцию.</p>
+          </Link>
+        </div>
       </section>
     </div>
   );

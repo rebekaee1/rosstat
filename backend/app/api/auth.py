@@ -91,6 +91,17 @@ async def _start_session(response: Response, user: User) -> None:
     set_session_cookies(response, sid, csrf)
 
 
+async def _serialize_with_admin(db: AsyncSession, user: User) -> dict:
+    """serialize_user + is_admin. Обязателен и в /login, и в /me: логин-гейт
+    /admin/bi кладёт ответ логина в auth-контекст как есть — без is_admin
+    админ после входа получал «404 — страница не найдена»."""
+    payload = await serialize_user(db, user)
+    from app.api.admin_bi import user_is_admin
+    if await user_is_admin(db, user):
+        payload["is_admin"] = True
+    return payload
+
+
 @router.post("/register", status_code=201)
 async def register(body: RegisterIn, request: Request, response: Response, db: AsyncSession = Depends(get_db)):
     if not body.consent:
@@ -140,7 +151,7 @@ async def login(body: LoginIn, request: Request, response: Response, db: AsyncSe
     await audit(db, user.id, "login", request)
     await db.commit()
     await _start_session(response, user)
-    return {"user": await serialize_user(db, user)}
+    return {"user": await _serialize_with_admin(db, user)}
 
 
 @router.post("/logout", status_code=204, dependencies=[Depends(require_csrf)])
@@ -164,13 +175,9 @@ async def me(
     sess = getattr(request.state, "session", None)
     if sess:
         set_session_cookies(response, sess["sid"], sess["csrf"])
-    payload = await serialize_user(db, user)
     # Признак админа — для показа BI-раздела в кабинете (/admin/bi).
     # Обычным пользователям поле не отдаём вовсе: раздел для них не существует.
-    from app.api.admin_bi import user_is_admin
-    if await user_is_admin(db, user):
-        payload["is_admin"] = True
-    return {"user": payload}
+    return {"user": await _serialize_with_admin(db, user)}
 
 
 class SetPasswordIn(BaseModel):
