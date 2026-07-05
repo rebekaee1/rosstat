@@ -25,7 +25,18 @@ from app.services.base_parser import BaseParser
 
 logger = logging.getLogger(__name__)
 
-_URL = "https://api.binance.com/api/v3/klines"
+# api.binance.com отдаёт 451 (Unavailable For Legal Reasons) с российских IP.
+# data-api.binance.vision — публичный market-data домен Binance с тем же
+# payload и эндпоинтом /api/v3/klines, без гео-ограничений; держим его первым
+# (тот же приём, что в ticker_sources/binance.py). Дальше — зеркала на случай
+# точечной недоступности конкретного хоста.
+_HOSTS = [
+    "https://data-api.binance.vision",
+    "https://api-gcp.binance.com",
+    "https://api.binance.com",
+]
+_PATH = "/api/v3/klines"
+_URL = f"{_HOSTS[0]}{_PATH}"  # канонический источник для FetchLog
 _DEFAULT_BACKFILL_DAYS = 1500  # ~4 years
 _LIMIT = 1000
 
@@ -34,10 +45,17 @@ def _fetch_klines(start_ms: int | None, limit: int, symbol: str = "BTCUSDT") -> 
     params = {"symbol": symbol, "interval": "1d", "limit": limit}
     if start_ms is not None:
         params["startTime"] = start_ms
+    last_err: Exception | None = None
     with httpx.Client(timeout=30.0, headers={"User-Agent": "ForecastEconomy/1.0"}) as c:
-        r = c.get(_URL, params=params)
-        r.raise_for_status()
-        return r.json()
+        for host in _HOSTS:
+            try:
+                r = c.get(f"{host}{_PATH}", params=params)
+                r.raise_for_status()
+                return r.json()
+            except (httpx.HTTPError, ValueError) as e:
+                last_err = e
+                continue
+    raise last_err or RuntimeError("Binance klines: все зеркала недоступны")
 
 
 def _klines_to_points(klines: list[list]) -> list[tuple[date, float]]:

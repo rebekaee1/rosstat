@@ -150,8 +150,12 @@ async def _llm_summary(snapshot: dict, memory: list[dict]) -> str | None:
         return None
     hypotheses = await _open_hypotheses()
     payload = {
+        # Нарратив + JSON-блок гипотез не влезают в 1400 токенов: при обрыве по
+        # длине Bedrock отдаёт content=null (finish_reason=length) → отчёт
+        # молча уходил в fallback, а гипотезы не писались. 4000 хватает на
+        # полный ответ (finish_reason=stop). См. диагностику 2026-07-05.
         "model": settings.openrouter_model,
-        "max_tokens": 1400,
+        "max_tokens": 4000,
         "messages": [
             {"role": "system", "content": _SYSTEM_PROMPT},
             {
@@ -181,8 +185,14 @@ async def _llm_summary(snapshot: dict, memory: list[dict]) -> str | None:
         if resp.status_code != 200:
             logger.warning("OpenRouter HTTP %d: %s", resp.status_code, resp.text[:300])
             return None
-        content = resp.json()["choices"][0]["message"]["content"].strip()
+        data = resp.json()
+        choice = (data.get("choices") or [{}])[0]
+        finish = choice.get("finish_reason")
+        # content может прийти None (обрыв по длине у Bedrock) — не роняем отчёт.
+        content = (choice.get("message") or {}).get("content")
+        content = (content or "").strip()
         if not content:
+            logger.warning("OpenRouter empty content (finish=%s)", finish)
             return None
         text, updates = _split_llm_output(content)
         if updates:

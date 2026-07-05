@@ -367,36 +367,40 @@ export default function RegionsHome() {
 
       {view === 'map' && (
         <div className="mt-4">
-          {/* Чипы показателей карты + режим «Обзор» + поиск любого из 489 */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none mb-3" role="tablist" aria-label="Показатель карты">
-            <button
-              role="tab"
-              aria-selected={isOverview && !customMetric}
-              onClick={() => { setMapMetric(OVERVIEW); setCustomMetric(null); track(events.REGIONS_MAP_METRIC, { metric: 'Обзор' }); }}
-              title="Клик по региону открывает его карточку со всеми показателями"
-              className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                isOverview && !customMetric
-                  ? 'bg-champagne/15 text-champagne'
-                  : 'bg-surface border border-border-subtle text-text-secondary hover:text-text-primary'
-              }`}
-            >
-              Обзор
-            </button>
-            {MAP_METRICS.map(m => (
+          {/* Показатель карты: чипы-пресеты (скроллятся) + поиск любого из 489.
+              Поиск ВНЕ overflow-контейнера — иначе его выпадающий список
+              обрезается прокруткой чипов (баг «Свой показатель нельзя найти»). */}
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center mb-3">
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none min-w-0" role="tablist" aria-label="Показатель карты">
               <button
-                key={m.code}
                 role="tab"
-                aria-selected={mapMetric === m.code && !customMetric}
-                onClick={() => { setMapMetric(m.code); setCustomMetric(null); track(events.REGIONS_MAP_METRIC, { metric: m.label }); }}
+                aria-selected={isOverview && !customMetric}
+                onClick={() => { setMapMetric(OVERVIEW); setCustomMetric(null); track(events.REGIONS_MAP_METRIC, { metric: 'Обзор' }); }}
+                title="Клик по региону открывает его карточку со всеми показателями"
                 className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                  mapMetric === m.code && !customMetric
+                  isOverview && !customMetric
                     ? 'bg-champagne/15 text-champagne'
                     : 'bg-surface border border-border-subtle text-text-secondary hover:text-text-primary'
                 }`}
               >
-                {m.label}
+                Обзор
               </button>
-            ))}
+              {MAP_METRICS.map(m => (
+                <button
+                  key={m.code}
+                  role="tab"
+                  aria-selected={mapMetric === m.code && !customMetric}
+                  onClick={() => { setMapMetric(m.code); setCustomMetric(null); track(events.REGIONS_MAP_METRIC, { metric: m.label }); }}
+                  className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                    mapMetric === m.code && !customMetric
+                      ? 'bg-champagne/15 text-champagne'
+                      : 'bg-surface border border-border-subtle text-text-secondary hover:text-text-primary'
+                  }`}
+                >
+                  {m.label}
+                </button>
+              ))}
+            </div>
             <MapMetricSearch
               activeCode={customMetric?.code}
               activeName={customMetric?.name || ''}

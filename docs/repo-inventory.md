@@ -2,7 +2,7 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Файлов:** 512  ·  **Строк:** 112 176  ·  **Токенов (≈):** 1 150 762
+**Файлов:** 512  ·  **Строк:** 112 266  ·  **Токенов (≈):** 1 151 760
 
 ## По верхним папкам
 
@@ -10,9 +10,9 @@
 |-------|-------:|------:|------------:|
 | `(root)` | 7 | 1 495 | 37 341 |
 | `.github` | 1 | 56 | 334 |
-| `backend` | 267 | 60 347 | 600 493 |
+| `backend` | 267 | 60 375 | 600 851 |
 | `docs` | 21 | 4 297 | 86 669 |
-| `frontend` | 180 | 38 232 | 342 985 |
+| `frontend` | 180 | 38 294 | 343 625 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 33 | 7 591 | 81 820 |
 
@@ -29,7 +29,7 @@
 | `scripts/metrika_daily_report.py` | 1 915 | 19 522 |
 | `frontend/src/lib/regionsMap.json` | 1 | 16 837 |
 | `backend/app/data/view_model_families.py` | 1 121 | 13 420 |
-| `frontend/src/pages/ComparePage.jsx` | 1 127 | 11 995 |
+| `frontend/src/pages/ComparePage.jsx` | 1 185 | 12 555 |
 | `backend/app/services/seo_renderer.py` | 1 155 | 11 771 |
 | `backend/app/services/forecaster.py` | 1 252 | 11 552 |
 | `AGENTS.md` | 387 | 10 886 |
@@ -51,7 +51,7 @@
 | `frontend/src/lib/useIndicatorViewModeData.js` | 645 | 5 980 |
 | `backend/app/services/seo_content.py` | 501 | 5 753 |
 | `backend/app/services/calendar_seed.py` | 614 | 5 495 |
-| `frontend/src/pages/RegionsHome.jsx` | 468 | 5 350 |
+| `frontend/src/pages/RegionsHome.jsx` | 472 | 5 430 |
 | `backend/tests/test_derived_ops.py` | 603 | 5 317 |
 | `docs/adr/0006-indicator-card-unification.md` | 227 | 5 311 |
 | `scripts/completeness.py` | 453 | 4 971 |
@@ -85,10 +85,10 @@
 | `backend/tests/test_rosstat_weekly_inflation.py` | 355 | 3 620 |
 | `docs/adr/0007-identity-user-accounts.md` | 151 | 3 594 |
 | `backend/app/api/embed.py` | 428 | 3 585 |
+| `backend/app/services/pulse_report.py` | 333 | 3 585 |
 | `docs/adr/0003-seo-single-source-server-rendered.md` | 181 | 3 484 |
 | `scripts/regional/parse_pril_2025.py` | 352 | 3 468 |
 | `README.md` | 240 | 3 432 |
-| `backend/app/services/pulse_report.py` | 323 | 3 432 |
 | `backend/app/services/seo_today.py` | 316 | 3 360 |
 | `backend/app/services/ticker_sources/moex_iss.py` | 353 | 3 339 |
 | `frontend/src/pages/CalendarPage.jsx` | 335 | 3 323 |
@@ -235,6 +235,7 @@
 | `frontend/src/components/TelemetryCard.jsx` | 111 | 1 151 |
 | `backend/app/services/cbr_gold_parser.py` | 131 | 1 149 |
 | `backend/tests/test_rosstat_ipi.py` | 120 | 1 141 |
+| `backend/app/services/binance_btcusdt_parser.py` | 119 | 1 134 |
 | `backend/app/services/cbr_ruonia_parser.py` | 128 | 1 094 |
 | `frontend/public/consent.js` | 102 | 1 094 |
 | `frontend/src/lib/cpiViewModeResolve.js` | 138 | 1 093 |
@@ -273,7 +274,6 @@
 | `frontend/src/lib/cpiViewModeGroups.test.js` | 101 | 936 |
 | `backend/app/services/identity/service.py` | 109 | 934 |
 | `frontend/src/lib/ppiViewModeGroups.test.js` | 74 | 931 |
-| `backend/app/services/binance_btcusdt_parser.py` | 101 | 929 |
 | `frontend/src/components/GenericViewModePicker.jsx` | 124 | 927 |
 | `frontend/src/lib/viewModeEngine.test.js` | 84 | 925 |
 | `backend/app/services/cbr_fx_parser.py` | 109 | 920 |

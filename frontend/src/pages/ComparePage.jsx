@@ -509,7 +509,10 @@ export default function ComparePage() {
   // карточке индикатора — созвон «На правки 13»).
   const [panOffset, setPanOffset] = useState(0);
   const [upsellOpen, setUpsellOpen] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const exportRef = useRef(null);
+  const chartAreaRef = useRef(null);
+  const dragRef = useRef(null);
 
   const { isAuthed } = useAuth();
   const cap = isAuthed ? USER_MAX : GUEST_MAX;
@@ -752,6 +755,50 @@ export default function ComparePage() {
   const rightUnit = distinctUnits[1];
   const leftColor = series.find((s) => (s.unit || '%') === leftUnit)?.color;
   const rightColor = series.find((s) => (s.unit || '%') === rightUnit)?.color;
+
+  // Перетаскивание графика мышью/пальцем — как на карточке индикатора.
+  // Тащим вправо → окно уходит в прошлое (panOffset растёт), влево → к свежим.
+  const handlePointerDown = useCallback((e) => {
+    if (maxPan <= 0) return;
+    const rect = chartAreaRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    dragRef.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      initPan: Math.min(panOffset, maxPan),
+      chartWidth: rect.width,
+      phase: 'deciding',
+    };
+  }, [maxPan, panOffset]);
+
+  const handlePointerMove = useCallback((e) => {
+    let d = dragRef.current;
+    if (!d) return;
+    if (d.phase === 'deciding') {
+      const dx = e.clientX - d.startX;
+      const dy = e.clientY - d.startY;
+      if (Math.hypot(dx, dy) < 8) return;
+      if (Math.abs(dy) >= Math.abs(dx)) { dragRef.current = null; return; }
+      d.phase = 'dragging';
+      try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* ok */ }
+      setIsDragging(true);
+    }
+    d = dragRef.current;
+    if (!d || d.phase !== 'dragging') return;
+    const windowLen = chartRows.length || 1;
+    const pixelsPerPoint = d.chartWidth / windowLen;
+    const shift = Math.round((e.clientX - d.startX) / pixelsPerPoint);
+    setPanOffset(Math.max(0, Math.min(d.initPan + shift, maxPan)));
+  }, [chartRows.length, maxPan]);
+
+  const handlePointerUp = useCallback((e) => {
+    const d = dragRef.current;
+    if (d?.phase === 'dragging') {
+      try { e.currentTarget.releasePointerCapture(e.pointerId); } catch { /* ok */ }
+    }
+    dragRef.current = null;
+    setIsDragging(false);
+  }, []);
 
   const handleExport = async () => {
     if (!hasData) return;
@@ -1028,19 +1075,27 @@ export default function ComparePage() {
               </p>
             )}
 
-            <div className="relative rounded-2xl">
-              {/* Водяной знак — гостевой тизер на экране (его экспорт получает
-                  тайловый знак из canvas; выгрузка зарегистрированного тоже
-                  с watermark — см. handleExport). */}
-              {!isAuthed && (
-                <div
-                  aria-hidden="true"
-                  data-no-export="true"
-                  className="pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 -rotate-6 select-none whitespace-nowrap text-3xl font-display font-bold tracking-[0.18em] text-text-primary opacity-[0.055] md:text-5xl"
-                >
-                  forecasteconomy.com
-                </div>
+            <div
+              ref={chartAreaRef}
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerUp}
+              onPointerCancel={handlePointerUp}
+              className={cn(
+                'relative rounded-2xl',
+                maxPan > 0 && (isDragging ? 'cursor-grabbing select-none' : 'cursor-grab'),
               )}
+              style={{ touchAction: 'pan-y' }}
+            >
+              {/* Водяной знак — всегда на экране (как на карточке индикатора):
+                  каждый скриншот несёт бренд. Экспорт добавляет ещё тайловый
+                  знак из canvas — см. handleExport. */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 -rotate-6 select-none whitespace-nowrap text-3xl font-display font-bold tracking-[0.18em] text-text-primary opacity-[0.055] md:text-5xl"
+              >
+                forecasteconomy.com
+              </div>
               <ResponsiveContainer width="100%" height={480}>
                 <ComposedChart data={chartRows} margin={{ top: 10, right: 20, bottom: 44, left: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
@@ -1115,6 +1170,9 @@ export default function ComparePage() {
                 />
                 <div className="flex justify-between text-[10px] font-mono text-text-tertiary mt-1">
                   <span>{chartRows[0] ? formatDate(chartRows[0].date, compareDateFmt) : ''}</span>
+                  <span className="hidden sm:inline text-text-tertiary/70 normal-case">
+                    перетащите график мышью или двигайте ползунок
+                  </span>
                   <span>{chartRows.length ? formatDate(chartRows[chartRows.length - 1].date, compareDateFmt) : ''}</span>
                 </div>
               </div>
