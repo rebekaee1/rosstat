@@ -67,6 +67,9 @@ htmlcov/
 article_NA/
 правки_v4/audio/
 
+# Metrika/Пульс артефакты (CSV, PNG, PDF) — генерируются scripts/metrika_*.py локально
+analytics/
+
 # Large media files outside the app
 *.mov
 *.mp4
