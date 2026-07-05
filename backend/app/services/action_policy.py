@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any
@@ -86,11 +87,14 @@ def _target_allowed(payload: dict[str, Any]) -> tuple[bool, str]:
     host = payload.get("host") or payload.get("host_id") or payload.get("domain")
     if host:
         normalized = str(host).lower()
-        if normalized.startswith("https://"):
-            normalized = normalized.removeprefix("https://")
-        if normalized.startswith("http://"):
-            normalized = normalized.removeprefix("http://")
+        # Поддерживаем и обычный URL, и host_id Яндекс.Вебмастера
+        # (`https:forecasteconomy.com:443` — схема через одинарное двоеточие).
+        for prefix in ("https://", "http://", "https:", "http:"):
+            if normalized.startswith(prefix):
+                normalized = normalized.removeprefix(prefix)
+                break
         normalized = normalized.strip("/")
+        normalized = re.sub(r":\d+$", "", normalized)
         if normalized not in allowed_hosts() and not normalized.endswith(".forecasteconomy.com"):
             return False, f"host {host!r} is not in analytics allowlist"
 

@@ -45,6 +45,17 @@ function StatCell({ label, children }) {
   );
 }
 
+const ABORTION_SIBLING = {
+  'beremennosti-s-abortivnym-ishodom-na-100-rodov': {
+    code: 'beremennosti-s-abortivnym-ishodom-na-1000-zhenschin',
+    label: 'на 1000 женщин 15–49 лет',
+  },
+  'beremennosti-s-abortivnym-ishodom-na-1000-zhenschin': {
+    code: 'beremennosti-s-abortivnym-ishodom-na-100-rodov',
+    label: 'на 100 родов',
+  },
+};
+
 export default function RegionIndicatorPage() {
   const { slug, code } = useParams();
   const { data, isLoading, isError, refetch, isFetching } = useRegionIndicator(slug, code);
@@ -214,10 +225,24 @@ export default function RegionIndicatorPage() {
             <div className="text-champagne text-xs font-mono uppercase tracking-widest mb-2">
               {data.indicator.section_name}
             </div>
-            <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary leading-tight">
-              {indName}
-            </h1>
-            <div className="mt-1 text-sm text-text-secondary">{regionName}</div>
+            <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2 mb-1">
+              <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary leading-tight flex-1 min-w-[12rem]">
+                {indName}
+              </h1>
+              <span className="text-sm text-text-secondary shrink-0 pt-1 sm:pt-1.5">{regionName}</span>
+            </div>
+            {ABORTION_SIBLING[code] && (
+              <p className="mt-1 text-xs text-text-tertiary">
+                Другой срез того же показателя Росстата —{' '}
+                <Link
+                  to={`/region/${slug}/${ABORTION_SIBLING[code].code}`}
+                  className="text-champagne hover:underline"
+                >
+                  {ABORTION_SIBLING[code].label}
+                </Link>
+                .
+              </p>
+            )}
 
             <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
               <span className="font-mono text-3xl font-bold text-text-primary">

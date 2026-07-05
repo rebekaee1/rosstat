@@ -194,6 +194,7 @@ async def render_region_html(slug: str, db: AsyncSession) -> tuple[int, str]:
         )
         section_names[ind.section_num] = ind.section_name
 
+    n_catalog = len(inds)
     section_html = "".join(
         f"<section class=\"seo-section\"><h2>{escape(section_names[num])}</h2>"
         f"<ul>{''.join(items)}</ul></section>"
@@ -202,15 +203,21 @@ async def render_region_html(slug: str, db: AsyncSession) -> tuple[int, str]:
 
     title = f"{region.name} — статистика региона: население, зарплата, ВРП, цены"
     desc = (
-        f"{region.name}: {n_present} социально-экономических показателей Росстата "
-        f"с 1990 года — население, зарплаты, безработица, ВРП, инвестиции, "
+        f"{region.name}: {n_catalog} показателей в каталоге Росстата"
+        + (f", данные по региону — {n_present}" if n_present < n_catalog else "")
+        + f" с 1990 года — население, зарплаты, безработица, ВРП, инвестиции, "
         f"строительство, цены. Графики и место региона в рейтингах России."
+    )
+    catalog_line = (
+        f"{n_catalog} показателей в каталоге; по региону — данные по {n_present}"
+        if n_present < n_catalog
+        else f"{n_catalog} показателей"
     )
     body = f"""<div class="seo-page">
 <nav><a href="/">Главная</a> → <a href="/regions">Регионы</a> → {escape(region.name)}</nav>
 <p class="seo-eyebrow">Региональная статистика Росстата</p>
 <h1>{escape(region.name)}: социально-экономические показатели</h1>
-<p>Официальные данные Росстата по региону {escape(region.name)}: {n_present} показателей
+<p>Официальные данные Росстата по региону {escape(region.name)}: {catalog_line}
 в {len(sections)} разделах — от численности населения и заработной платы до валового
 регионального продукта, инвестиций и потребительских цен. Ряды с 1990 года,
 по каждому показателю — график динамики и место региона среди субъектов РФ.</p>

@@ -94,12 +94,19 @@ export default function RegionAnnualChart({
 
   if (!data.length) return null;
 
+  const chartMargin = {
+    top: 12,
+    right: dualAxis ? rightAxisWidth + 12 : 12,
+    bottom: 0,
+    left: 8,
+  };
+
   return (
     <div>
       <div style={{ width: '100%', height }} role="img"
         aria-label={`График: ${regionName}, ${data[0].year}–${data[data.length - 1].year}`}>
         <ResponsiveContainer>
-          <ComposedChart data={data} margin={{ top: 12, right: dualAxis ? 4 : 8, bottom: 0, left: 4 }}>
+          <ComposedChart data={data} margin={chartMargin}>
             <defs>
               <linearGradient id="regionArea" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#B8942F" stopOpacity={0.28} />

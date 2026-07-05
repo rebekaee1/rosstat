@@ -188,8 +188,14 @@ export default function RegionProfile() {
             </h1>
             <p className="mt-2 text-sm text-text-secondary max-w-2xl">
               {(() => {
-                const n = data.sections.reduce((acc, s) => acc + s.indicators.length, 0);
-                return `Официальная статистика Росстата по региону: ${n} ${pluralRu(n, ['показатель', 'показателя', 'показателей'])} в ${data.sections.length} разделах, данные с 1990 года.`;
+                const catalog = data.catalog_total ?? data.sections.reduce((acc, s) => acc + s.indicators.length, 0);
+                const available = data.available_total ?? catalog;
+                const catalogWord = pluralRu(catalog, ['показатель', 'показателя', 'показателей']);
+                const availableWord = pluralRu(available, ['показатель', 'показателя', 'показателей']);
+                if (available < catalog) {
+                  return `Официальная статистика Росстата: ${catalog} ${catalogWord} в каталоге; по региону — данные по ${available} ${availableWord} в ${data.sections.length} разделах, с 1990 года.`;
+                }
+                return `Официальная статистика Росстата по региону: ${catalog} ${catalogWord} в ${data.sections.length} разделах, данные с 1990 года.`;
               })()}
             </p>
           </div>
