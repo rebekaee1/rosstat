@@ -7,7 +7,7 @@ import {
 import { Activity, ZoomIn, AreaChart as AreaIcon, BarChart3, LineChart as LineIcon } from 'lucide-react';
 import {
   formatDate, formatAxisTick, formatValue,
-  chartValueDigits, unitSuffix, cn,
+  chartValueDigits, unitSuffix, cn, pickChartAxisTicks,
 } from '../lib/format';
 import { track, events } from '../lib/track';
 import { mergeActualForecastChartSeries } from '../lib/chartForecastMerge';
@@ -363,6 +363,14 @@ export default function IndicatorChart({
     return { yDomain: [niceMin, niceMax], yWidth: w, yTicks: ticks };
   }, [visibleData, digits]);
 
+  // Равномерные подписи оси X (включая крайние даты): recharts с
+  // interval="preserveStartEnd" оставлял «разрыв» перед последним тиком
+  // (созвон «На правки 13»).
+  const xTicks = useMemo(
+    () => pickChartAxisTicks(visibleData, 7),
+    [visibleData],
+  );
+
   const title = cpiChartTitle
     ?? (mode === 'cpi'
       ? 'ИПЦ (к предыдущему месяцу, %)'
@@ -507,8 +515,8 @@ export default function IndicatorChart({
               stroke="rgba(0,0,0,0.1)"
               tick={{ fill: 'rgba(0,0,0,0.4)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
               tickLine={false}
-              interval="preserveStartEnd"
-              minTickGap={28}
+              ticks={xTicks}
+              interval={0}
               tickMargin={10}
               height={42}
               padding={{ left: 8, right: 24 }}

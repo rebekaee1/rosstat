@@ -158,8 +158,16 @@ export default function Navbar() {
         </span>
       </Link>
 
-      <div className="hidden lg:flex items-center gap-1.5 xl:gap-2 flex-1 justify-end">
-        <NavLink to="/" end className={linkClass} onClick={closeAll}>
+      {/* 1024–1280px: пунктов больше, чем влезает — «Главная» скрыта (лого ведёт
+          на главную), подпись поиска сжата. Иначе «Регистрация» выезжала за
+          пилюлю (скрин руководителя 2026-07-05). */}
+      <div className="hidden lg:flex items-center gap-1 xl:gap-2 flex-1 justify-end min-w-0">
+        <NavLink
+          to="/"
+          end
+          className={(p) => cn(linkClass(p), 'hidden xl:block')}
+          onClick={closeAll}
+        >
           Главная
         </NavLink>
 

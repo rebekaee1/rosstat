@@ -210,7 +210,8 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
           title={`Поиск индикаторов (${isMac ? '⌘' : 'Ctrl'}+K)`}
         >
           <Search className="w-4 h-4 shrink-0" aria-hidden="true" />
-          <span className="text-sm font-medium">Поиск</span>
+          {/* На 1024–1280px подпись скрыта — экономим ширину навбара. */}
+          <span className="text-sm font-medium hidden xl:inline">Поиск</span>
         </button>
       ) : variant === 'inline' ? (
         <button

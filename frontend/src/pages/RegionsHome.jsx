@@ -1,17 +1,27 @@
 // Лендинг регионального блока: /regions
 // Мобильный сценарий: поиск сверху → чипы округов → карточки регионов.
-// Режим «Карта»: choropleth по выбранному показателю, тап по региону —
-// переход сразу на карточку этого показателя в регионе.
-import { useMemo, useState, useDeferredValue, lazy, Suspense } from 'react';
+// Режим «Карта»: choropleth по выбранному показателю (предустановки + поиск по
+// всем 489), тап по региону — карточка показателя; режим «Обзор» — профиль
+// региона. Зум/пан и PNG-выгрузка с watermark — созвон «На правки 13».
+import { useMemo, useState, useRef, useDeferredValue, lazy, Suspense } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Search, MapPin, ChevronRight, Database, List, Map as MapIcon } from 'lucide-react';
+import {
+  Search, MapPin, ChevronRight, Database, List, Map as MapIcon,
+  Image as ImageIcon, X,
+} from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
-import { useRegionsLanding, useRegionsHeatmap, formatRegionValue } from '../lib/regionsApi';
+import {
+  useRegionsLanding, useRegionsHeatmap, useRegionsCatalog, formatRegionValue,
+} from '../lib/regionsApi';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import { SkeletonBox } from '../components/Skeleton';
+import { exportNodeToPng } from '../lib/chartImage';
 import { track, events } from '../lib/track';
 
 const RegionsMap = lazy(() => import('../components/RegionsMap'));
+
+// Спец-режим карты: клик по региону открывает его профиль, без раскраски.
+const OVERVIEW = '__overview';
 
 const DISTRICT_SHORT = {
   cfo: 'Центральный',
@@ -36,6 +46,75 @@ const MAP_METRICS = [
 
 function normalize(s) {
   return s.toLowerCase().replace(/ё/g, 'е').replace(/[^а-яa-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+/**
+ * Поиск произвольного показателя для карты («добавьте свой» — созвон
+ * «На правки 13»): компактный combobox по каталогу из 489 показателей.
+ */
+function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
+  const catalog = useRegionsCatalog();
+  const [query, setQuery] = useState('');
+  const [open, setOpen] = useState(false);
+
+  const results = useMemo(() => {
+    const sections = catalog.data?.sections || [];
+    const all = sections.flatMap(s =>
+      s.indicators.map(i => ({ code: i.code, name: i.name, section: s.name })));
+    const q = normalize(query);
+    if (!q) return all.slice(0, 50);
+    return all.filter(i => normalize(i.name).includes(q)).slice(0, 50);
+  }, [catalog.data, query]);
+
+  const isCustom = !!activeCode;
+
+  return (
+    <div className="relative min-w-0 flex-1 sm:max-w-xs">
+      <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs border transition-colors ${
+        isCustom
+          ? 'bg-champagne/15 text-champagne border-transparent'
+          : 'bg-surface border-border-subtle text-text-secondary'
+      }`}
+      >
+        <Search size={13} className="shrink-0" />
+        <input
+          type="text"
+          value={open ? query : (isCustom ? activeName : '')}
+          placeholder="Свой показатель…"
+          onFocus={() => { setOpen(true); setQuery(''); }}
+          onBlur={() => setTimeout(() => setOpen(false), 150)}
+          onChange={(e) => setQuery(e.target.value)}
+          className="min-w-0 flex-1 bg-transparent outline-none placeholder:text-text-tertiary"
+          aria-label="Найти показатель для карты"
+        />
+        {isCustom && !open && (
+          <button
+            type="button"
+            aria-label="Сбросить показатель"
+            onMouseDown={(e) => { e.preventDefault(); onClear(); }}
+            className="shrink-0 text-champagne/70 hover:text-champagne"
+          >
+            <X size={13} />
+          </button>
+        )}
+      </div>
+      {open && results.length > 0 && (
+        <div className="absolute z-30 mt-2 w-[min(90vw,26rem)] max-h-72 overflow-auto rounded-xl border border-border-subtle bg-surface shadow-2xl">
+          {results.map(i => (
+            <button
+              key={i.code}
+              type="button"
+              onMouseDown={(e) => { e.preventDefault(); onPick(i); setOpen(false); setQuery(''); }}
+              className="w-full px-3.5 py-2 text-left hover:bg-surface-hover transition-colors"
+            >
+              <div className="text-[13px] text-text-primary leading-snug">{i.name}</div>
+              <div className="text-[11px] text-text-tertiary">{i.section}</div>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
 
 // «Контрасты России»: живой блок-приманка — крайние значения по метрике.
@@ -101,7 +180,13 @@ export default function RegionsHome() {
   const [searchParams, setSearchParams] = useSearchParams();
   const view = searchParams.get('view') === 'map' ? 'map' : 'list';
   const [mapMetric, setMapMetric] = useState(MAP_METRICS[0].code);
-  const heatmap = useRegionsHeatmap(mapMetric, view === 'map');
+  // Произвольный показатель из поиска: { code, name } или null (чипы-пресеты).
+  const [customMetric, setCustomMetric] = useState(null);
+  const isOverview = mapMetric === OVERVIEW;
+  const activeMapCode = customMetric?.code || (isOverview ? null : mapMetric);
+  const heatmap = useRegionsHeatmap(activeMapCode, view === 'map' && !!activeMapCode);
+  const mapCardRef = useRef(null);
+  const [exportingMap, setExportingMap] = useState(false);
 
   // Данные для блока «Контрасты России» (list-режим).
   const wagesHeat = useRegionsHeatmap(MAP_METRICS[0].code, view === 'list');
@@ -126,7 +211,7 @@ export default function RegionsHome() {
   useDocumentMeta({
     title: 'Регионы России — социально-экономические показатели всех 85 субъектов РФ',
     description:
-      'Статистика по всем 85 регионам России: население, зарплаты, ВРП, безработица, инвестиции, цены и ещё 450+ показателей Росстата с 1990 года. Графики, рейтинги регионов, сравнение с общероссийским уровнем.',
+      'Статистика по всем 85 регионам России: население, зарплаты, ВРП, безработица, инвестиции, цены — 489 показателей Росстата с 1990 года. Графики, рейтинги регионов, сравнение с общероссийским уровнем.',
     path: '/regions',
   });
 
@@ -282,16 +367,29 @@ export default function RegionsHome() {
 
       {view === 'map' && (
         <div className="mt-4">
-          {/* Чипы показателей карты */}
-          <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none mb-3" role="tablist" aria-label="Показатель карты">
+          {/* Чипы показателей карты + режим «Обзор» + поиск любого из 489 */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none mb-3" role="tablist" aria-label="Показатель карты">
+            <button
+              role="tab"
+              aria-selected={isOverview && !customMetric}
+              onClick={() => { setMapMetric(OVERVIEW); setCustomMetric(null); track(events.REGIONS_MAP_METRIC, { metric: 'Обзор' }); }}
+              title="Клик по региону открывает его карточку со всеми показателями"
+              className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                isOverview && !customMetric
+                  ? 'bg-champagne/15 text-champagne'
+                  : 'bg-surface border border-border-subtle text-text-secondary hover:text-text-primary'
+              }`}
+            >
+              Обзор
+            </button>
             {MAP_METRICS.map(m => (
               <button
                 key={m.code}
                 role="tab"
-                aria-selected={mapMetric === m.code}
-                onClick={() => { setMapMetric(m.code); track(events.REGIONS_MAP_METRIC, { metric: m.label }); }}
+                aria-selected={mapMetric === m.code && !customMetric}
+                onClick={() => { setMapMetric(m.code); setCustomMetric(null); track(events.REGIONS_MAP_METRIC, { metric: m.label }); }}
                 className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                  mapMetric === m.code
+                  mapMetric === m.code && !customMetric
                     ? 'bg-champagne/15 text-champagne'
                     : 'bg-surface border border-border-subtle text-text-secondary hover:text-text-primary'
                 }`}
@@ -299,31 +397,69 @@ export default function RegionsHome() {
                 {m.label}
               </button>
             ))}
+            <MapMetricSearch
+              activeCode={customMetric?.code}
+              activeName={customMetric?.name || ''}
+              onPick={(i) => {
+                setCustomMetric({ code: i.code, name: i.name });
+                track(events.REGIONS_MAP_METRIC, { metric: `search:${i.code}` });
+              }}
+              onClear={() => setCustomMetric(null)}
+            />
           </div>
 
-          <div className="bg-surface border border-border-subtle rounded-xl p-3 sm:p-5">
-            {heatmap.data && (
-              <div className="mb-2 text-xs text-text-tertiary">
-                {heatmap.data.indicator.name}, {heatmap.data.year} год
-                {heatmap.data.indicator.unit ? `, ${heatmap.data.indicator.unit}` : ''}.
-                Нажмите на регион, чтобы открыть его показатель.
+          <div className="bg-surface border border-border-subtle rounded-xl p-3 sm:p-5 relative" ref={mapCardRef}>
+            <div className="mb-2 flex flex-wrap items-start justify-between gap-2">
+              <div className="text-xs text-text-tertiary min-w-0">
+                {activeMapCode && heatmap.data ? (
+                  <>
+                    {heatmap.data.indicator.name}, {heatmap.data.year} год
+                    {heatmap.data.indicator.unit ? `, ${heatmap.data.indicator.unit}` : ''}.
+                    {' '}Нажмите на регион, чтобы открыть его показатель.
+                  </>
+                ) : (
+                  'Нажмите на регион, чтобы открыть его карточку со всеми показателями.'
+                )}
               </div>
-            )}
+              <button
+                type="button"
+                data-no-export="true"
+                disabled={exportingMap}
+                onClick={async () => {
+                  if (exportingMap) return;
+                  setExportingMap(true);
+                  const ok = await exportNodeToPng(mapCardRef.current, {
+                    filename: `regions-map_${activeMapCode || 'overview'}.png`,
+                    watermark: true,
+                  }).catch(() => false);
+                  setExportingMap(false);
+                  if (ok) track(events.CHART_IMAGE_DOWNLOAD, { indicator: `regions-map:${activeMapCode || 'overview'}` });
+                }}
+                title="Скачать карту картинкой"
+                aria-label="Скачать карту картинкой"
+                className="shrink-0 text-xs px-2 py-1 rounded-full border border-border-subtle text-text-tertiary hover:text-champagne hover:border-border-champagne transition-colors inline-flex items-center gap-1 disabled:opacity-50"
+              >
+                <ImageIcon size={12} /> PNG
+              </button>
+            </div>
             <Suspense fallback={<SkeletonBox className="h-80 rounded-xl" />}>
               <RegionsMap
-                valuesBySlug={heatmapValues}
+                valuesBySlug={activeMapCode ? heatmapValues : null}
                 unit={heatmap.data?.indicator?.unit || ''}
                 nameBySlug={namesBySlug}
                 onSelect={(slug) => {
-                  track(events.REGIONS_MAP_SELECT, { region: slug, metric: mapMetric });
-                  navigate(`/region/${slug}/${mapMetric}`);
+                  track(events.REGIONS_MAP_SELECT, { region: slug, metric: activeMapCode || 'overview' });
+                  navigate(activeMapCode ? `/region/${slug}/${activeMapCode}` : `/region/${slug}`);
                 }}
               />
             </Suspense>
           </div>
           <p className="mt-3 text-xs text-text-tertiary leading-relaxed">
-            Интенсивность цвета — квантильная шкала по регионам за последний доступный год.
-            Москва, Санкт-Петербург и Севастополь показаны точками.
+            {activeMapCode
+              ? 'Интенсивность цвета — квантильная шкала по регионам за последний доступный год. '
+              : 'Режим обзора: клик по региону открывает его профиль. '}
+            Москва, Санкт-Петербург и Севастополь показаны точками. Кнопки «+»/«−»
+            приближают карту, в приближении её можно перетаскивать.
           </p>
         </div>
       )}

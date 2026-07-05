@@ -2,7 +2,7 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Файлов:** 512  ·  **Строк:** 111 649  ·  **Токенов (≈):** 1 145 035
+**Файлов:** 512  ·  **Строк:** 112 113  ·  **Токенов (≈):** 1 150 089
 
 ## По верхним папкам
 
@@ -10,9 +10,9 @@
 |-------|-------:|------:|------------:|
 | `(root)` | 7 | 1 495 | 37 341 |
 | `.github` | 1 | 56 | 334 |
-| `backend` | 267 | 60 322 | 600 214 |
+| `backend` | 267 | 60 322 | 600 213 |
 | `docs` | 21 | 4 297 | 86 669 |
-| `frontend` | 180 | 37 730 | 337 537 |
+| `frontend` | 180 | 38 194 | 342 592 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 33 | 7 591 | 81 820 |
 
@@ -29,10 +29,10 @@
 | `scripts/metrika_daily_report.py` | 1 915 | 19 522 |
 | `frontend/src/lib/regionsMap.json` | 1 | 16 837 |
 | `backend/app/data/view_model_families.py` | 1 121 | 13 420 |
+| `frontend/src/pages/ComparePage.jsx` | 1 127 | 11 995 |
 | `backend/app/services/seo_renderer.py` | 1 155 | 11 771 |
 | `backend/app/services/forecaster.py` | 1 252 | 11 552 |
 | `AGENTS.md` | 387 | 10 886 |
-| `frontend/src/pages/ComparePage.jsx` | 1 019 | 10 757 |
 | `backend/app/models.py` | 753 | 9 603 |
 | `frontend/src/pages/CalculatorPage.jsx` | 839 | 9 375 |
 | `frontend/src/pages/IndicatorDetail.jsx` | 803 | 8 404 |
@@ -40,17 +40,18 @@
 | `backend/app/services/calendar_sources/official_calendar.py` | 752 | 8 287 |
 | `backend/app/services/derived_ops.py` | 774 | 8 004 |
 | `docs/indicator-family-playbook.md` | 621 | 7 561 |
-| `backend/app/services/seo_regional.py` | 746 | 7 426 |
+| `backend/app/services/seo_regional.py` | 746 | 7 425 |
 | `scripts/build-indicator-index.py` | 676 | 7 424 |
 | `scripts/recrawl-priority-missing.txt` | 312 | 7 224 |
 | `docs/missed_data_audit.md` | 447 | 6 795 |
 | `frontend/src/pages/EmbedBuilder.jsx` | 512 | 6 644 |
-| `frontend/src/components/IndicatorChart.jsx` | 674 | 6 356 |
+| `frontend/src/components/IndicatorChart.jsx` | 682 | 6 424 |
 | `docs/data_sources.md` | 385 | 6 058 |
 | `frontend/src/lib/useIndicatorViewModeData.js` | 645 | 5 980 |
+| `frontend/src/pages/RegionIndicatorPage.jsx` | 507 | 5 949 |
 | `backend/app/services/seo_content.py` | 501 | 5 753 |
-| `frontend/src/pages/RegionIndicatorPage.jsx` | 474 | 5 593 |
 | `backend/app/services/calendar_seed.py` | 614 | 5 495 |
+| `frontend/src/pages/RegionsHome.jsx` | 468 | 5 350 |
 | `backend/tests/test_derived_ops.py` | 603 | 5 317 |
 | `docs/adr/0006-indicator-card-unification.md` | 227 | 5 311 |
 | `scripts/completeness.py` | 453 | 4 971 |
@@ -76,9 +77,8 @@
 | `frontend/src/pages/DemographicsPage.jsx` | 357 | 3 848 |
 | `backend/tests/test_forecast_policy.py` | 372 | 3 814 |
 | `scripts/regional/backfill_word.py` | 337 | 3 810 |
-| `frontend/src/pages/RegionsHome.jsx` | 332 | 3 777 |
 | `backend/app/api/regions.py` | 406 | 3 736 |
-| `frontend/src/components/IndicatorSearch.jsx` | 344 | 3 681 |
+| `frontend/src/components/IndicatorSearch.jsx` | 345 | 3 704 |
 | `scripts/audit-indicator-unification.py` | 307 | 3 654 |
 | `backend/app/api/auth.py` | 367 | 3 636 |
 | `backend/app/api/sitemap.py` | 369 | 3 631 |
@@ -103,9 +103,10 @@
 | `backend/app/tasks/scheduler.py` | 305 | 3 041 |
 | `backend/app/services/forecast_pipeline.py` | 338 | 3 037 |
 | `frontend/src/lib/viewModeFamilies.js` | 287 | 3 029 |
+| `frontend/src/components/Navbar.jsx` | 331 | 2 957 |
 | `backend/app/services/rosstat_weekly_price_parser.py` | 323 | 2 956 |
-| `frontend/src/components/Navbar.jsx` | 323 | 2 882 |
 | `backend/app/services/rosstat_gdp_parser.py` | 319 | 2 859 |
+| `frontend/src/pages/RegionProfile.jsx` | 258 | 2 773 |
 | `backend/app/services/rosstat_population_parser.py` | 306 | 2 760 |
 | `backend/app/services/rosstat_science_parser.py` | 325 | 2 752 |
 | `backend/app/data/regional/regions.json` | 578 | 2 731 |
@@ -113,10 +114,10 @@
 | `frontend/nginx.conf` | 280 | 2 718 |
 | `frontend/src/lib/behavior.js` | 314 | 2 715 |
 | `docs/adr/0002-derived-always-reflects-source.md` | 105 | 2 644 |
-| `frontend/src/pages/RegionProfile.jsx` | 239 | 2 590 |
 | `frontend/src/embed/EmbedChart.jsx` | 209 | 2 585 |
 | `backend/tests/test_calculation_engine.py` | 280 | 2 513 |
 | `frontend/src/pages/CategoryPage.jsx` | 245 | 2 512 |
+| `frontend/src/components/RegionsMap.jsx` | 254 | 2 474 |
 | `backend/app/services/rosstat_demo_parser.py` | 286 | 2 425 |
 | `frontend/src/lib/indicatorVariants.js` | 264 | 2 385 |
 | `docs/enterprise_resilience.md` | 71 | 2 372 |
@@ -164,13 +165,13 @@
 | `backend/app/services/cbr_keyrate.py` | 205 | 1 846 |
 | `frontend/src/pages/RegionComparePage.jsx` | 153 | 1 825 |
 | `backend/app/services/rosstat_sdds_fetcher.py` | 180 | 1 798 |
+| `frontend/src/components/RegionAnnualChart.jsx` | 191 | 1 785 |
 | `backend/app/config.py` | 161 | 1 781 |
 | `backend/tests/test_auth_oauth.py` | 158 | 1 780 |
 | `frontend/src/components/OAuthButtons.jsx` | 184 | 1 778 |
 | `backend/app/services/rosstat_ipi_parser.py` | 207 | 1 762 |
 | `scripts/regional/build_map_paths.py` | 190 | 1 724 |
 | `frontend/src/lib/viewModeFamilies.test.js` | 198 | 1 721 |
-| `frontend/src/components/RegionAnnualChart.jsx` | 181 | 1 696 |
 | `frontend/index.html` | 119 | 1 693 |
 | `backend/app/services/rosstat_housing_parser.py` | 194 | 1 681 |
 | `backend/app/api/export.py` | 189 | 1 675 |
@@ -207,11 +208,11 @@
 | `backend/app/services/brent_fred_parser.py` | 137 | 1 333 |
 | `docs/adr/0009-behavior-stream-first-party.md` | 93 | 1 330 |
 | `frontend/src/components/LiveTicker.jsx` | 132 | 1 323 |
-| `frontend/src/components/RegionsMap.jsx` | 143 | 1 323 |
 | `frontend/src/components/IndicatorForecastSection.jsx` | 144 | 1 307 |
 | `backend/app/services/cbr_keyrate_parser.py` | 148 | 1 306 |
 | `backend/app/services/cbr_trade_goods_monthly_parser.py` | 170 | 1 298 |
 | `docs/adr/0008-regional-bounded-context.md` | 92 | 1 298 |
+| `frontend/src/lib/regionsApi.js` | 159 | 1 286 |
 | `frontend/src/lib/calendarGrouping.test.js` | 145 | 1 267 |
 | `frontend/src/pages/TodayHub.jsx` | 120 | 1 259 |
 | `backend/app/services/analytics_features.py` | 162 | 1 252 |
@@ -229,11 +230,11 @@
 | `scripts/verify-data-loaded.py` | 125 | 1 178 |
 | `frontend/src/pages/Register.jsx` | 99 | 1 171 |
 | `backend/alembic/versions/8524e35ba1ee_init_schema.py` | 98 | 1 156 |
+| `frontend/src/pages/Dashboard.jsx` | 110 | 1 154 |
 | `frontend/src/components/TelemetryCard.jsx` | 111 | 1 151 |
 | `backend/app/services/cbr_gold_parser.py` | 131 | 1 149 |
 | `backend/tests/test_rosstat_ipi.py` | 120 | 1 141 |
 | `backend/app/services/action_policy.py` | 138 | 1 138 |
-| `frontend/src/pages/Dashboard.jsx` | 107 | 1 096 |
 | `backend/app/services/cbr_ruonia_parser.py` | 128 | 1 094 |
 | `frontend/public/consent.js` | 102 | 1 094 |
 | `frontend/src/lib/cpiViewModeResolve.js` | 138 | 1 093 |
@@ -246,7 +247,6 @@
 | `frontend/src/components/calendar/CalendarHero.jsx` | 114 | 1 063 |
 | `frontend/src/components/IndicatorDetailHeader.jsx` | 120 | 1 060 |
 | `backend/app/services/analytics_ingestion.py` | 135 | 1 047 |
-| `frontend/src/lib/regionsApi.js` | 132 | 1 045 |
 | `frontend/src/lib/cbrTermSliceRateContent.jsx` | 136 | 1 023 |
 | `frontend/src/lib/cpiViewModeContent.audit.test.js` | 115 | 1 010 |
 | `backend/tests/test_credit_indicators.py` | 104 | 993 |

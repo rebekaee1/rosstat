@@ -16,7 +16,7 @@ import { useRegionsLanding, useRegionsCatalog } from '../lib/regionsApi';
 import { useAuth } from '../context/authContext';
 import {
   formatDate, formatChartAxisDate, formatAxisTick, formatValueWithUnit,
-  unitSuffix, unitDigits, cn,
+  unitSuffix, unitDigits, cn, pickChartAxisTicks,
 } from '../lib/format';
 import useDocumentMeta from '../lib/useMeta';
 import { ChartSkeleton } from '../components/Skeleton';
@@ -50,6 +50,41 @@ const SCALE_OPTIONS = [
 
 const GUEST_MAX = 2;
 const USER_MAX = 10;
+
+// Шаг временной сетки: месячный ряд рядом с годовым выглядит «лесенкой» —
+// приведение к общему шагу усредняет значения за период (созвон «На правки 13»).
+const STEP_OPTIONS = [
+  { key: 'auto', label: 'Авто' },
+  { key: 'month', label: 'Месяц' },
+  { key: 'quarter', label: 'Квартал' },
+  { key: 'year', label: 'Год' },
+];
+
+/** Усреднение ряда по календарному шагу (месяц/квартал/год); 'auto' — как есть. */
+function aggregateToStep(points, step) {
+  if (!step || step === 'auto' || !points?.length) return points || [];
+  const keyFor = (dateStr) => {
+    const d = new Date(dateStr);
+    const y = d.getUTCFullYear();
+    if (step === 'year') return `${y}-01-01`;
+    const m = d.getUTCMonth();
+    const first = step === 'quarter' ? Math.floor(m / 3) * 3 : m;
+    return `${y}-${String(first + 1).padStart(2, '0')}-01`;
+  };
+  const buckets = new Map();
+  for (const p of points) {
+    const v = Number(p.value);
+    if (p.value == null || !Number.isFinite(v)) continue;
+    const k = keyFor(p.date);
+    const b = buckets.get(k) || { sum: 0, n: 0 };
+    b.sum += v;
+    b.n += 1;
+    buckets.set(k, b);
+  }
+  return [...buckets.entries()]
+    .sort(([a], [b]) => (a < b ? -1 : 1))
+    .map(([date, { sum, n }]) => ({ date, value: sum / n }));
+}
 
 const FREQ_LABEL = {
   daily: 'ежедневно',
@@ -469,6 +504,10 @@ export default function ComparePage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [range, setRange] = useState('5y');
   const [scale, setScale] = useState('values');
+  const [step, setStep] = useState('auto');
+  // Панорама окна: сдвиг в точках от правого края ряда («кружочек» как на
+  // карточке индикатора — созвон «На правки 13»).
+  const [panOffset, setPanOffset] = useState(0);
   const [upsellOpen, setUpsellOpen] = useState(false);
   const exportRef = useRef(null);
 
@@ -494,6 +533,9 @@ export default function ComparePage() {
   }, []);
 
   useScrollDepth({ key: 'compare', page: 'compare' });
+
+  // Смена набора рядов → окно к свежим данным.
+  useEffect(() => { setPanOffset(0); }, [codes]);
 
   const { data: indicators } = useIndicators();
 
@@ -603,32 +645,37 @@ export default function ComparePage() {
   const indexed = forceIndex || scale === 'index';
 
   const chartData = useMemo(() => {
-    const EMPTY = { rows: [], nonIndexableNames: [], nonIndexableKeys: new Set() };
+    const EMPTY = { rows: [], nonIndexableNames: [], nonIndexableKeys: new Set(), maxPan: 0 };
     if (!series.length) return EMPTY;
     const maps = series.map((s) => {
       const raw = Array.isArray(s.data?.data) ? s.data.data : [];
-      const pts = applyCompareTransform(raw, s.transform);
+      const pts = aggregateToStep(applyCompareTransform(raw, s.transform), step);
       return new Map(pts.map((p) => [p.date, p.value]));
     });
 
     const allDates = [...new Set(maps.flatMap((m) => [...m.keys()]))].sort();
     if (!allDates.length) return EMPTY;
 
+    // Окно: длина — из пресета периода, позиция — из слайдера-панорамы.
     const rangeOpt = RANGE_OPTIONS.find((r) => r.key === range);
-    let dates = allDates;
-    const last = series.map(() => null);
-
+    let windowLen = allDates.length;
     if (rangeOpt?.months) {
-      const lastDate = new Date(allDates[allDates.length - 1]);
-      const cutoff = new Date(lastDate);
+      const cutoff = new Date(allDates[allDates.length - 1]);
       cutoff.setUTCMonth(cutoff.getUTCMonth() - rangeOpt.months);
       const cutoffStr = cutoff.toISOString().slice(0, 10);
-      for (const d of allDates) {
-        if (d >= cutoffStr) break;
-        maps.forEach((m, i) => { if (m.has(d)) last[i] = m.get(d); });
-      }
-      dates = allDates.filter((d) => d >= cutoffStr);
+      windowLen = allDates.filter((d) => d >= cutoffStr).length || allDates.length;
     }
+    const maxPan = Math.max(0, allDates.length - windowLen);
+    const pan = Math.min(Math.max(0, panOffset), maxPan);
+    const endIdx = allDates.length - pan;
+    const startIdx = Math.max(0, endIdx - windowLen);
+
+    const last = series.map(() => null);
+    for (let di = 0; di < startIdx; di += 1) {
+      const d = allDates[di];
+      maps.forEach((m, i) => { if (m.has(d)) last[i] = m.get(d); });
+    }
+    const dates = allDates.slice(startIdx, endIdx);
 
     // База приведения: последнее значение до окна, иначе первое значение в окне.
     const base = series.map((_, i) => last[i]);
@@ -670,15 +717,29 @@ export default function ComparePage() {
       });
       return row;
     });
-    return { rows, nonIndexableNames, nonIndexableKeys };
-  }, [series, range, indexed]);
+    return { rows, nonIndexableNames, nonIndexableKeys, maxPan };
+  }, [series, range, indexed, step, panOffset]);
 
   const chartRows = chartData.rows;
-  const { nonIndexableNames, nonIndexableKeys } = chartData;
+  const { nonIndexableNames, nonIndexableKeys, maxPan } = chartData;
   const hasData = chartRows.length > 0;
   const loading = series.some((s) => s.loading);
   const hasError = series.some((s) => s.error);
-  const compareDateFmt = compareDateFormat(series.map((s) => s.ind));
+  // Формат дат оси: агрегированный шаг диктует гранулярность, иначе — частоты рядов.
+  const compareDateFmt = step === 'year'
+    ? 'annual'
+    : step === 'quarter'
+      ? 'quarterly'
+      : step === 'month'
+        ? 'short'
+        : compareDateFormat(series.map((s) => s.ind));
+
+  // Равномерные подписи оси X (включая первую и последнюю дату) — без
+  // «разрыва» перед последним тиком (созвон «На правки 13»).
+  const xTicks = useMemo(
+    () => pickChartAxisTicks(chartRows, 7),
+    [chartRows],
+  );
 
   // Оси: индекс → одна левая. Значения → группировка по единице: первая
   // единица слева, вторая справа (ряды одной единицы делят общую ось).
@@ -838,10 +899,31 @@ export default function ComparePage() {
             {RANGE_OPTIONS.map((opt) => (
               <button
                 key={opt.key}
-                onClick={() => { setRange(opt.key); track(events.COMPARE_RANGE, { range: opt.key }); }}
+                onClick={() => { setRange(opt.key); setPanOffset(0); track(events.COMPARE_RANGE, { range: opt.key }); }}
                 className={cn(
                   'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
                   range === opt.key ? 'bg-champagne/15 text-champagne' : 'text-text-tertiary hover:text-text-secondary',
+                )}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+
+          <span
+            className="text-[11px] font-mono uppercase tracking-widest text-text-tertiary md:ml-4"
+            title="Приведение рядов к общему шагу времени: значения усредняются за месяц, квартал или год"
+          >
+            Шаг
+          </span>
+          <div className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle">
+            {STEP_OPTIONS.map((opt) => (
+              <button
+                key={opt.key}
+                onClick={() => { setStep(opt.key); setPanOffset(0); track(events.COMPARE_RANGE, { step: opt.key }); }}
+                className={cn(
+                  'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
+                  step === opt.key ? 'bg-champagne/15 text-champagne' : 'text-text-tertiary hover:text-text-secondary',
                 )}
               >
                 {opt.label}
@@ -968,8 +1050,8 @@ export default function ComparePage() {
                     tick={{ fill: 'rgba(0,0,0,0.45)', fontSize: 10, fontFamily: 'monospace' }}
                     axisLine={{ stroke: 'rgba(0,0,0,0.12)' }}
                     tickLine={false}
-                    interval="preserveStartEnd"
-                    minTickGap={48}
+                    ticks={xTicks}
+                    interval={0}
                     tickMargin={8}
                     height={36}
                     label={{ value: 'Период', position: 'insideBottom', offset: -2, fill: 'rgba(0,0,0,0.5)', fontSize: 11, fontFamily: 'monospace' }}
@@ -1011,6 +1093,32 @@ export default function ComparePage() {
                 </ComposedChart>
               </ResponsiveContainer>
             </div>
+
+            {/* Панорама окна по всей истории — как на карточке индикатора. */}
+            {maxPan > 0 && (
+              <div className="px-2 mt-2" data-no-export="true">
+                <input
+                  type="range"
+                  min={0}
+                  max={maxPan}
+                  value={maxPan - Math.min(panOffset, maxPan)}
+                  onChange={(e) => setPanOffset(maxPan - Number(e.target.value))}
+                  aria-label="Позиция окна по времени"
+                  className="w-full h-1.5 appearance-none bg-obsidian-lighter rounded-full
+                    [&::-webkit-slider-thumb]:appearance-none
+                    [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4
+                    [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-champagne
+                    [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md
+                    [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4
+                    [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-champagne
+                    [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-0"
+                />
+                <div className="flex justify-between text-[10px] font-mono text-text-tertiary mt-1">
+                  <span>{chartRows[0] ? formatDate(chartRows[0].date, compareDateFmt) : ''}</span>
+                  <span>{chartRows.length ? formatDate(chartRows[chartRows.length - 1].date, compareDateFmt) : ''}</span>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </section>

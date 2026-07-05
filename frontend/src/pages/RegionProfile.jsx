@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import {
-  useRegionProfile, formatRegionValue, shortUnit, yearDelta,
+  useRegionProfile, formatRegionValue, shortUnit, yearDelta, pluralRu,
 } from '../lib/regionsApi';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import { SkeletonBox } from '../components/Skeleton';
@@ -76,11 +76,25 @@ function IndicatorRow({ item, slug }) {
   );
 }
 
+// Открытые разделы живут в sessionStorage: по умолчанию всё свёрнуто (правка
+// руководителя 2026-07-05), а выбор пользователя переживает уход на показатель
+// и возврат назад (жалоба из созвона: «открываются обратно»).
+const OPEN_SECTIONS_KEY = 'fe:region-open-sections';
+
+function readOpenSections() {
+  try {
+    const raw = sessionStorage.getItem(OPEN_SECTIONS_KEY);
+    return new Set(raw ? JSON.parse(raw) : []);
+  } catch {
+    return new Set();
+  }
+}
+
 export default function RegionProfile() {
   const { slug } = useParams();
   const { data, isLoading, isError, refetch, isFetching } = useRegionProfile(slug);
   const [query, setQuery] = useState('');
-  const [openSections, setOpenSections] = useState(() => new Set([1, 2, 3]));
+  const [openSections, setOpenSections] = useState(readOpenSections);
   const deferredQuery = useDeferredValue(query);
 
   const regionName = data?.region?.name;
@@ -132,6 +146,9 @@ export default function RegionProfile() {
       const next = new Set(prev);
       if (next.has(num)) next.delete(num);
       else next.add(num);
+      try {
+        sessionStorage.setItem(OPEN_SECTIONS_KEY, JSON.stringify([...next]));
+      } catch { /* приватный режим — не критично */ }
       return next;
     });
   };
@@ -170,8 +187,10 @@ export default function RegionProfile() {
               {data.region.name}
             </h1>
             <p className="mt-2 text-sm text-text-secondary max-w-2xl">
-              Официальная статистика Росстата по региону: {data.sections.reduce((n, s) => n + s.indicators.length, 0)} показателей
-              в {data.sections.length} разделах, данные с 1990 года.
+              {(() => {
+                const n = data.sections.reduce((acc, s) => acc + s.indicators.length, 0);
+                return `Официальная статистика Росстата по региону: ${n} ${pluralRu(n, ['показатель', 'показателя', 'показателей'])} в ${data.sections.length} разделах, данные с 1990 года.`;
+              })()}
             </p>
           </div>
 

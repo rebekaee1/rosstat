@@ -76,7 +76,8 @@ export function formatRegionValue(value) {
 /**
  * Компактный тик оси Y: большие числа сокращаются («1,2 млн», «120 тыс»),
  * остальные — с разрядными пробелами. Сокращается ЧИСЛО (не единица ряда):
- * ось всегда в единицах индикатора.
+ * ось всегда в единицах индикатора. Пробелы неразрывные — иначе SVG-текст
+ * recharts переносит «тыс» на вторую строку и подпись обрезается.
  */
 export function formatCompactTick(value) {
   if (value == null || !Number.isFinite(Number(value))) return '';
@@ -84,12 +85,38 @@ export function formatCompactTick(value) {
   const abs = Math.abs(num);
   const short = (v, suffix) => {
     const s = v.toLocaleString('ru-RU', { minimumFractionDigits: 0, maximumFractionDigits: 1 });
-    return `${s} ${suffix}`;
+    return `${s}\u00A0${suffix}`;
   };
   if (abs >= 1e9) return short(num / 1e9, 'млрд');
   if (abs >= 1e6) return short(num / 1e6, 'млн');
   if (abs >= 1e5) return short(num / 1e3, 'тыс');
-  return num.toLocaleString('ru-RU', { maximumFractionDigits: abs < 10 ? 1 : 0 });
+  return num
+    .toLocaleString('ru-RU', { maximumFractionDigits: abs < 10 ? 1 : 0 })
+    .replace(/\s/g, '\u00A0');
+}
+
+/**
+ * Ширина оси Y под самые длинные подписи ряда — чтобы «148,5 тыс» не
+ * обрезалось узкой осью (фикс 2026-07-05, скрин руководителя).
+ */
+export function compactTickAxisWidth(values) {
+  const nums = (values || []).filter((v) => v != null && Number.isFinite(Number(v)));
+  if (!nums.length) return 52;
+  const longest = Math.max(
+    formatCompactTick(Math.max(...nums)).length,
+    formatCompactTick(Math.min(...nums)).length,
+  );
+  return Math.max(40, Math.min(80, Math.round(longest * 6.8) + 12));
+}
+
+/** Русское склонение: pluralRu(471, ['показатель','показателя','показателей']). */
+export function pluralRu(n, [one, few, many]) {
+  const abs = Math.abs(n) % 100;
+  const d = abs % 10;
+  if (abs > 10 && abs < 20) return many;
+  if (d === 1) return one;
+  if (d >= 2 && d <= 4) return few;
+  return many;
 }
 
 /** Короткая единица для компактных подписей. */

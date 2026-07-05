@@ -19,6 +19,21 @@ import { exportTable } from '../lib/api';
 import { exportNodeToPng } from '../lib/chartImage';
 import { track, events } from '../lib/track';
 
+// Годовой ряд → изменения год к году, % (кнопка «% г/г», созвон «На правки 13»).
+function toYoYSeries(series) {
+  if (!series?.length) return [];
+  const byYear = new Map(series.map(p => [p.year, p.value]));
+  return series
+    .filter(p => {
+      const prev = byYear.get(p.year - 1);
+      return prev != null && prev !== 0;
+    })
+    .map(p => {
+      const prev = byYear.get(p.year - 1);
+      return { year: p.year, value: +(((p.value - prev) / Math.abs(prev)) * 100).toFixed(2) };
+    });
+}
+
 function StatCell({ label, children }) {
   return (
     <div className="bg-surface border border-border-subtle rounded-xl p-3.5">
@@ -35,6 +50,7 @@ export default function RegionIndicatorPage() {
   const { data, isLoading, isError, refetch, isFetching } = useRegionIndicator(slug, code);
   const [showTable, setShowTable] = useState(false);
   const [showRussia, setShowRussia] = useState(true);
+  const [showYoY, setShowYoY] = useState(false);
   const [exporting, setExporting] = useState(false);
   const { isAuthed } = useAuth();
   const chartRef = useRef(null);
@@ -221,7 +237,7 @@ export default function RegionIndicatorPage() {
           <div className="bg-surface border border-border-subtle rounded-xl p-4 mb-4" ref={chartRef}>
             <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
               <div className="text-xs text-text-tertiary font-mono">
-                {first.year}–{last.year}, {data.indicator.unit}
+                {first.year}–{last.year}, {showYoY ? 'изменение к предыдущему году, %' : data.indicator.unit}
               </div>
               <div className="flex flex-wrap items-center gap-1.5" data-no-export="true">
                 <label className="relative inline-flex items-center">
@@ -257,6 +273,19 @@ export default function RegionIndicatorPage() {
                     {showRussia ? '— Россия' : '+ Россия'}
                   </button>
                 )}
+                {data.series.length > 2 && (
+                  <button
+                    onClick={() => setShowYoY(v => !v)}
+                    title="Изменения к предыдущему году, в процентах"
+                    className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
+                      showYoY
+                        ? 'border-border-champagne text-champagne bg-champagne/5'
+                        : 'border-border-subtle text-text-tertiary hover:text-text-secondary'
+                    }`}
+                  >
+                    % г/г
+                  </button>
+                )}
                 <button
                   onClick={() => handleExportTable('csv')}
                   disabled={exporting}
@@ -287,11 +316,15 @@ export default function RegionIndicatorPage() {
               </div>
             </div>
             <RegionAnnualChart
-              series={data.series}
-              russiaSeries={showRussia ? data.russia_series : null}
-              compareSeries={compareSlug ? (compare.data?.series || null) : null}
+              series={showYoY ? toYoYSeries(data.series) : data.series}
+              russiaSeries={showRussia
+                ? (showYoY ? toYoYSeries(data.russia_series) : data.russia_series)
+                : null}
+              compareSeries={compareSlug
+                ? (showYoY ? toYoYSeries(compare.data?.series) : (compare.data?.series || null))
+                : null}
               compareName={compareSlug ? (compare.data?.region?.name || '') : ''}
-              unit={data.indicator.unit}
+              unit={showYoY ? '% г/г' : data.indicator.unit}
               regionName={regionName}
               height={300}
             />

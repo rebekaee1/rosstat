@@ -11,7 +11,7 @@ import {
   ResponsiveContainer, ComposedChart, Area, Line, XAxis, YAxis,
   Tooltip, CartesianGrid,
 } from 'recharts';
-import { formatRegionValue, formatCompactTick } from '../lib/regionsApi';
+import { formatRegionValue, formatCompactTick, compactTickAxisWidth } from '../lib/regionsApi';
 
 // Порог несопоставимости масштабов: если maxРФ/maxРегион больше — вторая ось.
 const DUAL_AXIS_RATIO = 3;
@@ -82,6 +82,16 @@ export default function RegionAnnualChart({
     return ratio > DUAL_AXIS_RATIO || ratio < 1 / DUAL_AXIS_RATIO;
   }, [data, showRussia]);
 
+  // Ширина осей — по самой длинной подписи, чтобы «148,5 тыс» не обрезалось.
+  const leftAxisWidth = useMemo(
+    () => compactTickAxisWidth(data.flatMap(d => [d.value, d.compare])),
+    [data],
+  );
+  const rightAxisWidth = useMemo(
+    () => compactTickAxisWidth(data.map(d => d.russia)),
+    [data],
+  );
+
   if (!data.length) return null;
 
   return (
@@ -89,7 +99,7 @@ export default function RegionAnnualChart({
       <div style={{ width: '100%', height }} role="img"
         aria-label={`График: ${regionName}, ${data[0].year}–${data[data.length - 1].year}`}>
         <ResponsiveContainer>
-          <ComposedChart data={data} margin={{ top: 8, right: dualAxis ? 4 : 8, bottom: 0, left: 4 }}>
+          <ComposedChart data={data} margin={{ top: 12, right: dualAxis ? 4 : 8, bottom: 0, left: 4 }}>
             <defs>
               <linearGradient id="regionArea" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#B8942F" stopOpacity={0.28} />
@@ -110,7 +120,7 @@ export default function RegionAnnualChart({
               tickFormatter={formatCompactTick}
               tickLine={false}
               axisLine={false}
-              width={52}
+              width={leftAxisWidth}
               domain={['auto', 'auto']}
             />
             {dualAxis && (
@@ -121,7 +131,7 @@ export default function RegionAnnualChart({
                 tickFormatter={formatCompactTick}
                 tickLine={false}
                 axisLine={false}
-                width={52}
+                width={rightAxisWidth}
                 domain={['auto', 'auto']}
               />
             )}
