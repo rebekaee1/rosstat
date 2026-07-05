@@ -102,6 +102,15 @@ def _visit_field(v: RawMetrikaVisit, key: str) -> str:
     return (raw.get(key) or "").strip()
 
 
+# ym:s:deviceCategory в Logs API — числовой код, не слово.
+_METRIKA_DEVICE = {"1": "desktop", "2": "mobile", "3": "tablet", "4": "tv"}
+
+
+def _visit_device(v: RawMetrikaVisit) -> str:
+    raw = _visit_field(v, "ym:s:deviceCategory")
+    return _METRIKA_DEVICE.get(raw, raw)
+
+
 def _has_goals(v: RawMetrikaVisit) -> bool:
     """Истинная проверка «визит достиг цели Метрики».
 
@@ -239,7 +248,7 @@ def _acquisition(visits: list[RawMetrikaVisit]) -> dict:
         city = _visit_field(v, "ym:s:regionCity")
         if city:
             cities[city] += 1
-        dev = _visit_field(v, "ym:s:deviceCategory")
+        dev = _visit_device(v)
         if dev:
             devices[dev] += 1
         if src in ("link", "referral") and v.referer:
@@ -716,7 +725,7 @@ async def _audience(db: AsyncSession, since: datetime,
     m_browsers: Counter = Counter()
     m_os: Counter = Counter()
     for v in window_visits:
-        dev = _visit_field(v, "ym:s:deviceCategory")
+        dev = _visit_device(v)
         if dev:
             m_devices[dev] += 1
         br = _visit_field(v, "ym:s:browser")
