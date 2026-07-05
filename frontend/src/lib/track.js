@@ -248,6 +248,7 @@ export const events = {
   REGIONS_VIEW_TOGGLE: 'regions_view_toggle',
   REGIONS_MAP_METRIC: 'regions_map_metric',
   REGIONS_MAP_SELECT: 'regions_map_select',
+  REGIONS_MAP_TIMELINE: 'regions_map_timeline',
   REGION_COMPARE_ADD: 'region_compare_add',
   REGION_CROSSLINK_CLICK: 'region_crosslink_click',
   // Просмотр карточки регионального показателя — first-party аналог

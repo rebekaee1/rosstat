@@ -58,6 +58,18 @@ export function useRegionsHeatmap(code, enabled = true) {
   });
 }
 
+/** Значения показателя по всем регионам за ВСЕ годы — для карты-таймлайна. */
+export function useRegionsHeatmapSeries(code, enabled = true) {
+  return useQuery({
+    queryKey: ['regions-heatmap-series', code],
+    queryFn: ({ signal }) =>
+      api.get(`/regions/heatmap-series/${code}`, { signal }).then(r => r.data),
+    enabled: !!code && enabled,
+    staleTime: STALE,
+    gcTime: GC,
+  });
+}
+
 /** Форматирование чисел региональных рядов: большие — с разрядами, малые — с дробью. */
 export function formatRegionValue(value) {
   if (value == null || Number.isNaN(value)) return '—';

@@ -226,6 +226,56 @@ async def regions_heatmap(code: str, db: AsyncSession = Depends(get_db)):
     return result
 
 
+@router.get("/heatmap-series/{code}")
+async def regions_heatmap_series(code: str, db: AsyncSession = Depends(get_db)):
+    """Значения показателя по всем субъектам за ВСЕ доступные годы — для карты
+    с ползунком времени (плавная анимация choropleth по годам).
+
+    Структура компактная: `values_by_year` — {год: {slug: raw}}. Раскраска на
+    фронте считается по КАЖДОМУ году отдельно (квантили внутри года) — карта
+    показывает относительную позицию региона в этом году, а не абсолютный рост
+    во времени. Роут — до `/{slug}`, иначе перехватится как slug региона.
+    """
+    cache_key = f"fe:regions:heatmap-series:{code}"
+    cached = await cache_get(cache_key)
+    if cached:
+        return cached
+
+    indicator = (await db.execute(
+        select(RegionIndicator).where(RegionIndicator.code == code)
+    )).scalar_one_or_none()
+    if indicator is None:
+        raise HTTPException(404, "Показатель не найден")
+
+    rows = (await db.execute(
+        select(Region.slug, RegionDataPoint.year, RegionDataPoint.value)
+        .join(Region, Region.id == RegionDataPoint.region_id)
+        .where(RegionDataPoint.indicator_id == indicator.id,
+               Region.kind == "region")
+        .order_by(RegionDataPoint.year)
+    )).all()
+    if not rows:
+        raise HTTPException(404, "Нет данных по этому показателю")
+
+    values_by_year: dict[str, dict[str, float]] = {}
+    for slug, year, value in rows:
+        values_by_year.setdefault(str(year), {})[slug] = _fmt(float(value))
+
+    years = sorted(int(y) for y in values_by_year)
+    result = {
+        "indicator": {"code": indicator.code, "name": indicator.name,
+                      "unit": indicator.unit},
+        "years": years,
+        "first_year": years[0],
+        "last_year": years[-1],
+        # Раскраска считается по каждому году отдельно (позиция региона ВНУТРИ
+        # года), поэтому пул для общей шкалы не нужен — экономит ~⅓ payload.
+        "values_by_year": values_by_year,
+    }
+    await cache_set(cache_key, result, settings.cache_ttl_data)
+    return result
+
+
 @router.get("/vs/{slug_a}/{slug_b}")
 async def regions_compare(slug_a: str, slug_b: str, db: AsyncSession = Depends(get_db)):
     """Сравнение двух регионов по ключевым показателям — JSON для SPA /region-vs/*."""

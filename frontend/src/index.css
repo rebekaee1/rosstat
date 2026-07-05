@@ -114,6 +114,38 @@ body {
   }
 }
 
+/* Ползунок времени на карте регионов: тонкий трек + champagne-бегунок. */
+.map-timeline {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 9999px;
+  outline: none;
+  cursor: pointer;
+}
+.map-timeline::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: #fff;
+  border: 3px solid #b8942f;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+  transition: transform 0.12s ease;
+}
+.map-timeline::-webkit-slider-thumb:hover {
+  transform: scale(1.12);
+}
+.map-timeline::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: #fff;
+  border: 3px solid #b8942f;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+}
+
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;

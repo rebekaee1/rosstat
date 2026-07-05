@@ -11,7 +11,8 @@ import {
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import {
-  useRegionsLanding, useRegionsHeatmap, useRegionsCatalog, formatRegionValue,
+  useRegionsLanding, useRegionsHeatmap, useRegionsHeatmapSeries,
+  useRegionsCatalog, formatRegionValue,
 } from '../lib/regionsApi';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import { SkeletonBox } from '../components/Skeleton';
@@ -20,6 +21,7 @@ import { track, events } from '../lib/track';
 import useSearchTracking from '../lib/useSearchTracking';
 
 const RegionsMap = lazy(() => import('../components/RegionsMap'));
+const MapTimeline = lazy(() => import('../components/MapTimeline'));
 
 // Спец-режим карты: клик по региону открывает его профиль, без раскраски.
 const OVERVIEW = '__overview';
@@ -205,9 +207,22 @@ export default function RegionsHome() {
   const [customMetric, setCustomMetric] = useState(null);
   const isOverview = mapMetric === OVERVIEW;
   const activeMapCode = customMetric?.code || (isOverview ? null : mapMetric);
-  const heatmap = useRegionsHeatmap(activeMapCode, view === 'map' && !!activeMapCode);
+  // Серия по всем годам — для карты с ползунком времени.
+  const series = useRegionsHeatmapSeries(activeMapCode, view === 'map' && !!activeMapCode);
   const mapCardRef = useRef(null);
   const [exportingMap, setExportingMap] = useState(false);
+
+  // Год, выбранный ползунком (null → показываем последний доступный).
+  // Источник года живёт внутри MapTimeline (self-driven анимация); сюда
+  // прилетает через onYearChange только для раскраски карты и подписи.
+  const [pickedYear, setPickedYear] = useState(null);
+  const seriesYears = series.data?.years || null;
+  const mapYear = useMemo(() => {
+    if (!seriesYears?.length) return null;
+    return pickedYear != null && seriesYears.includes(pickedYear)
+      ? pickedYear
+      : seriesYears[seriesYears.length - 1];
+  }, [seriesYears, pickedYear]);
 
   // Данные для блока «Контрасты России» (list-режим).
   const wagesHeat = useRegionsHeatmap(MAP_METRICS[0].code, view === 'list');
@@ -219,9 +234,11 @@ export default function RegionsHome() {
   };
 
   const heatmapValues = useMemo(() => {
-    if (!heatmap.data) return null;
-    return new Map(heatmap.data.values.map(v => [v.slug, v.raw ?? v.value]));
-  }, [heatmap.data]);
+    if (!series.data || mapYear == null) return null;
+    const slice = series.data.values_by_year[String(mapYear)];
+    if (!slice) return null;
+    return new Map(Object.entries(slice));
+  }, [series.data, mapYear]);
 
   const namesBySlug = useMemo(() => {
     const out = {};
@@ -399,7 +416,7 @@ export default function RegionsHome() {
               <button
                 role="tab"
                 aria-selected={isOverview && !customMetric}
-                onClick={() => { setMapMetric(OVERVIEW); setCustomMetric(null); track(events.REGIONS_MAP_METRIC, { metric: 'Обзор' }); }}
+                onClick={() => { setMapMetric(OVERVIEW); setCustomMetric(null); setPickedYear(null); track(events.REGIONS_MAP_METRIC, { metric: 'Обзор' }); }}
                 title="Клик по региону открывает его карточку со всеми показателями"
                 className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
                   isOverview && !customMetric
@@ -414,7 +431,7 @@ export default function RegionsHome() {
                   key={m.code}
                   role="tab"
                   aria-selected={mapMetric === m.code && !customMetric}
-                  onClick={() => { setMapMetric(m.code); setCustomMetric(null); track(events.REGIONS_MAP_METRIC, { metric: m.label }); }}
+                  onClick={() => { setMapMetric(m.code); setCustomMetric(null); setPickedYear(null); track(events.REGIONS_MAP_METRIC, { metric: m.label }); }}
                   className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
                     mapMetric === m.code && !customMetric
                       ? 'bg-champagne/15 text-champagne'
@@ -430,19 +447,21 @@ export default function RegionsHome() {
               activeName={customMetric?.name || ''}
               onPick={(i) => {
                 setCustomMetric({ code: i.code, name: i.name });
+                setPickedYear(null);
                 track(events.REGIONS_MAP_METRIC, { metric: `search:${i.code}` });
               }}
-              onClear={() => setCustomMetric(null)}
+              onClear={() => { setCustomMetric(null); setPickedYear(null); }}
             />
           </div>
 
           <div className="bg-surface border border-border-subtle rounded-xl p-3 sm:p-5 relative" ref={mapCardRef}>
             <div className="mb-2 flex flex-wrap items-start justify-between gap-2">
               <div className="text-xs text-text-tertiary min-w-0">
-                {activeMapCode && heatmap.data ? (
+                {activeMapCode && series.data ? (
                   <>
-                    {heatmap.data.indicator.name}, {heatmap.data.year} год
-                    {heatmap.data.indicator.unit ? `, ${heatmap.data.indicator.unit}` : ''}.
+                    {series.data.indicator.name}
+                    {mapYear != null ? `, ${mapYear} год` : ''}
+                    {series.data.indicator.unit ? `, ${series.data.indicator.unit}` : ''}.
                     {' '}Нажмите на регион, чтобы открыть его показатель.
                   </>
                 ) : (
@@ -473,7 +492,8 @@ export default function RegionsHome() {
             <Suspense fallback={<SkeletonBox className="h-80 rounded-xl" />}>
               <RegionsMap
                 valuesBySlug={activeMapCode ? heatmapValues : null}
-                unit={heatmap.data?.indicator?.unit || ''}
+                transitionMs={activeMapCode ? 650 : 150}
+                unit={series.data?.indicator?.unit || ''}
                 nameBySlug={namesBySlug}
                 onSelect={(slug) => {
                   track(events.REGIONS_MAP_SELECT, { region: slug, metric: activeMapCode || 'overview' });
@@ -481,10 +501,23 @@ export default function RegionsHome() {
                 }}
               />
             </Suspense>
+
+            {/* Ползунок времени: доступен, когда выбран показатель и есть ≥2 лет. */}
+            {activeMapCode && seriesYears && seriesYears.length > 1 && mapYear != null && (
+              <Suspense fallback={null}>
+                <MapTimeline
+                  key={activeMapCode}
+                  years={seriesYears}
+                  initialYear={seriesYears[seriesYears.length - 1]}
+                  onYearChange={setPickedYear}
+                  metric={activeMapCode}
+                />
+              </Suspense>
+            )}
           </div>
           <p className="mt-3 text-xs text-text-tertiary leading-relaxed">
             {activeMapCode
-              ? 'Интенсивность цвета — квантильная шкала по регионам за последний доступный год. '
+              ? 'Интенсивность цвета — позиция региона относительно других в выбранном году (шкала пересчитывается для каждого года). Двигайте ползунок или нажмите «play», чтобы увидеть, как менялась расстановка регионов по годам. '
               : 'Режим обзора: клик по региону открывает его профиль. '}
             Москва, Санкт-Петербург и Севастополь показаны точками. Кнопки «+»/«−»
             приближают карту, в приближении её можно перетаскивать.

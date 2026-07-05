@@ -40,6 +40,7 @@ export default function RegionsMap({
   unit = '',
   nameBySlug = {},          // slug -> имя региона (для тултипа)
   onSelect = null,          // клик по региону; по умолчанию — переход на профиль
+  transitionMs = 150,       // длительность перехода цвета (плавность анимации по годам)
 }) {
   const navigate = useNavigate();
   const [hover, setHover] = useState(null); // { slug, x, y }
@@ -56,6 +57,9 @@ export default function RegionsMap({
 
   // Map slug → цвет (не функция-замыкание: React Compiler не может сохранить
   // memoization функций, возвращаемых из useMemo — lint preserve-manual-memoization).
+  // Квантильная шкала строится по ТЕКУЩЕМУ срезу (год на ползунке): цвет
+  // отражает относительную позицию региона среди других В ЭТОМ ГОДУ, а не
+  // абсолютный рост во времени — при перемотке карта пересчитывается покадрово.
   const colorBySlug = useMemo(() => {
     const out = new Map();
     if (!valuesBySlug) return out;
@@ -157,7 +161,8 @@ export default function RegionsMap({
               fill={colorFor(r.slug)}
               stroke={hover?.slug === r.slug ? '#B8942F' : 'rgba(26,26,46,0.18)'}
               strokeWidth={(hover?.slug === r.slug ? 1.6 : 0.5) / k}
-              className="cursor-pointer transition-[fill] duration-150 hover:brightness-95"
+              style={{ transition: `fill ${transitionMs}ms ease` }}
+              className="cursor-pointer hover:brightness-95"
               onClick={() => handleSelect(r.slug)}
               onMouseMove={(e) => handleMove(e, r.slug)}
               onMouseLeave={() => setHover(null)}
@@ -175,6 +180,7 @@ export default function RegionsMap({
               fill={colorFor(m.slug)}
               stroke={hover?.slug === m.slug ? '#B8942F' : 'rgba(26,26,46,0.45)'}
               strokeWidth={1.4 / k}
+              style={{ transition: `fill ${transitionMs}ms ease` }}
               className="cursor-pointer"
               onClick={() => handleSelect(m.slug)}
               onMouseMove={(e) => handleMove(e, m.slug)}
