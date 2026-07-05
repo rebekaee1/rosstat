@@ -110,6 +110,7 @@ _METRIKA_DEVICE = {"1": "desktop", "2": "mobile", "3": "tablet", "4": "tv"}
 _METRIKA_BROWSER = {
     "yandex_browser": "Яндекс.Браузер",
     "yandexsearch": "Яндекс.Браузер",
+    "yandexbrowsercorp": "Яндекс.Браузер",
     "chrome": "Chrome",
     "chromemobile": "Chrome",
     "safari": "Safari",
@@ -130,6 +131,7 @@ _METRIKA_OS = {
     "windows": "Windows",
     "android": "Android",
     "ios": "iOS",
+    "ios_double": "iOS",
     "mac_os": "macOS",
     "macos": "macOS",
     "gnu_linux": "Linux",
