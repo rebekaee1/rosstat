@@ -105,10 +105,51 @@ def _visit_field(v: RawMetrikaVisit, key: str) -> str:
 # ym:s:deviceCategory в Logs API — числовой код, не слово.
 _METRIKA_DEVICE = {"1": "desktop", "2": "mobile", "3": "tablet", "4": "tv"}
 
+# Машинные ярлыки Logs API → те же канонические имена, что даёт наш ua_parser.
+# Иначе сверка «наш слой vs Метрика» на витрине не сопоставляется по ключам.
+_METRIKA_BROWSER = {
+    "yandex_browser": "Яндекс.Браузер",
+    "yandexsearch": "Яндекс.Браузер",
+    "chrome": "Chrome",
+    "chromemobile": "Chrome",
+    "safari": "Safari",
+    "safari_mobile": "Safari",
+    "mobile_safari": "Safari",
+    "firefox": "Firefox",
+    "firefox_mobile": "Firefox",
+    "edge": "Edge",
+    "edgin": "Edge",
+    "opera": "Opera",
+    "opera_mobile": "Opera",
+    "samsung_internet": "Samsung Internet",
+    "android_browser": "Android WebView",
+    "mi_browser": "Mi Browser",
+    "huawei_browser": "Huawei Browser",
+}
+_METRIKA_OS = {
+    "windows": "Windows",
+    "android": "Android",
+    "ios": "iOS",
+    "mac_os": "macOS",
+    "macos": "macOS",
+    "gnu_linux": "Linux",
+    "linux": "Linux",
+}
+
 
 def _visit_device(v: RawMetrikaVisit) -> str:
     raw = _visit_field(v, "ym:s:deviceCategory")
     return _METRIKA_DEVICE.get(raw, raw)
+
+
+def _visit_browser(v: RawMetrikaVisit) -> str:
+    raw = _visit_field(v, "ym:s:browser").lower()
+    return _METRIKA_BROWSER.get(raw, raw)
+
+
+def _visit_os(v: RawMetrikaVisit) -> str:
+    raw = _visit_field(v, "ym:s:operatingSystemRoot").lower()
+    return _METRIKA_OS.get(raw, raw)
 
 
 def _has_goals(v: RawMetrikaVisit) -> bool:
@@ -728,10 +769,10 @@ async def _audience(db: AsyncSession, since: datetime,
         dev = _visit_device(v)
         if dev:
             m_devices[dev] += 1
-        br = _visit_field(v, "ym:s:browser")
+        br = _visit_browser(v)
         if br:
             m_browsers[br] += 1
-        osr = _visit_field(v, "ym:s:operatingSystemRoot")
+        osr = _visit_os(v)
         if osr:
             m_os[osr] += 1
 
