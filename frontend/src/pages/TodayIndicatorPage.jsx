@@ -40,7 +40,7 @@ export default function TodayIndicatorPage() {
   const { data: indicator, isLoading: loadingMeta, isError: metaError, refetch: refetchMeta, isFetching: fetchingMeta } = useIndicator(seriesCode);
   const { data: rowsResp, isLoading: loadingData, isError: dataError, refetch: refetchData, isFetching: fetchingData } = useIndicatorData(seriesCode, { limit: 60 });
 
-  const points = rowsResp?.data || [];
+  const points = useMemo(() => rowsResp?.data || [], [rowsResp]);
   const last = points[points.length - 1];
   const prev = points.length > 1 ? points[points.length - 2] : null;
 

@@ -27,9 +27,7 @@ function useRegionCompare(slugA, slugB) {
 export default function RegionComparePage() {
   const { pair } = useParams();
   const parsed = parsePair(pair);
-  if (!parsed) return <Navigate to="/regions" replace />;
-
-  const [slugA, slugB] = parsed;
+  const [slugA, slugB] = parsed || [null, null];
   const { data, isLoading, isError, refetch, isFetching } = useRegionCompare(slugA, slugB);
 
   useDocumentMeta(data ? {
@@ -39,6 +37,8 @@ export default function RegionComparePage() {
       + `Росстата: ${(data.summary_bits || []).slice(0, 3).join('; ')}.`,
     path: data.canonical_path,
   } : null);
+
+  if (!parsed) return <Navigate to="/regions" replace />;
 
   if (!isLoading && !data && !isError) {
     return <Navigate to="/regions" replace />;
