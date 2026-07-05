@@ -9,12 +9,14 @@ import { ArrowLeft, TrendingUp, Flame, PiggyBank } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import api from '../lib/api';
 import useDocumentMeta from '../lib/useMeta';
-import { cn, formatAxisTick } from '../lib/format';
+import { cn } from '../lib/format';
+import { formatCompactTick, compactTickAxisWidth } from '../lib/regionsApi';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
 import { formatRubles, parseAmount, formatInput, fmtPct } from '../lib/calcFormat';
 import { track, events } from '../lib/track';
 import useScrollDepth from '../lib/useScrollDepth';
 import FaqAccordion from '../components/FaqAccordion';
+import CalcSlider from '../components/CalcSlider';
 
 const FAQ_ITEMS = [
   {
@@ -38,22 +40,6 @@ const FAQ_ITEMS = [
     a: 'Доходность вкладов следует за ключевой ставкой Банка России. На платформе доступны история ключевой ставки, ставки RUONIA и доходности ОФЗ — они задают ориентир для ставок по депозитам.',
   },
 ];
-
-function Slider({ label, value, onChange, min, max, step = 1, suffix = '' }) {
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-[10px] uppercase tracking-[0.2em] font-medium text-text-tertiary">{label}</span>
-        <span className="text-sm font-mono font-bold text-text-primary tabular-nums">{value}{suffix}</span>
-      </div>
-      <input
-        type="range" min={min} max={max} step={step} value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
-        className="calc-slider w-full"
-      />
-    </div>
-  );
-}
 
 function StatPill({ label, value, accent }) {
   return (
@@ -201,10 +187,10 @@ export default function CompoundCalculatorPage() {
           </div>
         </div>
 
-        <div className="grid sm:grid-cols-3 gap-6">
-          <Slider label="Ставка, % годовых" value={rate} onChange={setRate} min={0.1} max={30} step={0.1} suffix="%" />
-          <Slider label="Срок, лет" value={years} onChange={setYears} min={1} max={40} />
-          <Slider label="Инфляция, % в год" value={inflation} onChange={setInflation} min={0} max={20} step={0.5} suffix="%" />
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-5">
+          <CalcSlider label="Ставка, % годовых" value={rate} onChange={setRate} min={0.1} max={30} step={0.1} suffix="%" />
+          <CalcSlider label="Срок, лет" value={years} onChange={setYears} min={1} max={40} />
+          <CalcSlider label="Инфляция, % в год" value={inflation} onChange={setInflation} min={0} max={20} step={0.5} suffix="%" />
         </div>
       </section>
 
@@ -230,7 +216,7 @@ export default function CompoundCalculatorPage() {
               Рост капитала по годам
             </h3>
             <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={result.series} margin={{ top: 5, right: 10, bottom: 5, left: -5 }}>
+              <AreaChart data={result.series} margin={{ top: 5, right: 10, bottom: 5, left: 0 }}>
                 <defs>
                   <linearGradient id="cmpBal" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#B8942F" stopOpacity={0.2} />
@@ -238,10 +224,11 @@ export default function CompoundCalculatorPage() {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" vertical={false} />
-                <XAxis dataKey="year" tickFormatter={(v) => `${v} г.`} stroke="rgba(0,0,0,0.1)"
+                <XAxis dataKey="year" stroke="rgba(0,0,0,0.1)"
                   tick={{ fill: 'rgba(0,0,0,0.4)', fontSize: 11, fontFamily: 'JetBrains Mono' }} tickLine={false} />
                 <YAxis stroke="rgba(0,0,0,0.1)" tick={{ fill: 'rgba(0,0,0,0.4)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
-                  tickLine={false} axisLine={false} tickFormatter={(v) => formatAxisTick(v, 0)} width={62} />
+                  tickLine={false} axisLine={false} tickFormatter={formatCompactTick}
+                  width={compactTickAxisWidth(result.series.map((p) => p.balance))} />
                 <Tooltip
                   formatter={(v, name) => [
                     formatRubles(v),
@@ -256,7 +243,7 @@ export default function CompoundCalculatorPage() {
               </AreaChart>
             </ResponsiveContainer>
             <p className="mt-3 text-[12px] text-text-tertiary">
-              Золотая линия — капитал, пунктир — сумма собственных вложений, синяя — капитал в сегодняшних ценах (за вычетом инфляции {fmtPct(inflation)}).
+              По горизонтали — годы, по вертикали — рубли. Золотая линия — капитал, пунктир — сумма собственных вложений, синяя — капитал в сегодняшних ценах (за вычетом инфляции {fmtPct(inflation)}).
             </p>
           </section>
 

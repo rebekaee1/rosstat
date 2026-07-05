@@ -9,12 +9,14 @@ import { ArrowLeft, Home, Percent, Wallet, Clock } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import api from '../lib/api';
 import useDocumentMeta from '../lib/useMeta';
-import { cn, formatAxisTick } from '../lib/format';
+import { cn } from '../lib/format';
+import { formatCompactTick, compactTickAxisWidth } from '../lib/regionsApi';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
 import { formatRubles, parseAmount, formatInput, fmtPct } from '../lib/calcFormat';
 import { track, events } from '../lib/track';
 import useScrollDepth from '../lib/useScrollDepth';
 import FaqAccordion from '../components/FaqAccordion';
+import CalcSlider from '../components/CalcSlider';
 
 const FAQ_ITEMS = [
   {
@@ -38,30 +40,6 @@ const FAQ_ITEMS = [
     a: 'Досрочные платежи в первые годы дают максимальный эффект: они уменьшают тело долга, на которое начисляются проценты. Сокращение срока обычно выгоднее уменьшения платежа.',
   },
 ];
-
-function InputCard({ label, children }) {
-  return (
-    <div>
-      <div className="text-[10px] uppercase tracking-[0.2em] font-medium text-text-tertiary mb-2">{label}</div>
-      {children}
-    </div>
-  );
-}
-
-function Slider({ value, onChange, min, max, step = 1, suffix = '' }) {
-  return (
-    <div className="flex items-center gap-3">
-      <input
-        type="range" min={min} max={max} step={step} value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
-        className="calc-slider flex-1"
-      />
-      <span className="w-20 text-right text-sm font-mono font-bold text-text-primary tabular-nums shrink-0">
-        {value}{suffix}
-      </span>
-    </div>
-  );
-}
 
 function StatPill({ label, value, accent }) {
   return (
@@ -169,10 +147,14 @@ export default function MortgageCalculatorPage() {
       </header>
 
       <section data-animate className="rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6 space-y-6">
-        <InputCard label="Стоимость недвижимости">
+        <div>
+          <label htmlFor="mortgage-price" className="block text-[10px] uppercase tracking-[0.2em] font-medium text-text-tertiary mb-2">
+            Стоимость недвижимости
+          </label>
           <div className="relative">
             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-text-tertiary font-display pointer-events-none" aria-hidden>₽</span>
             <input
+              id="mortgage-price"
               type="text" inputMode="numeric" value={formatInput(price)}
               onChange={(e) => setPrice(parseAmount(e.target.value))}
               placeholder="8 000 000"
@@ -184,18 +166,16 @@ export default function MortgageCalculatorPage() {
               )}
             />
           </div>
-        </InputCard>
+        </div>
 
-        <div className="grid sm:grid-cols-3 gap-6">
-          <InputCard label={`Первоначальный взнос — ${result ? formatRubles(result.down) : '—'}`}>
-            <Slider value={downPct} onChange={setDownPct} min={0} max={90} suffix="%" />
-          </InputCard>
-          <InputCard label="Ставка, % годовых">
-            <Slider value={rate} onChange={setRate} min={0.1} max={30} step={0.1} suffix="%" />
-          </InputCard>
-          <InputCard label="Срок, лет">
-            <Slider value={years} onChange={setYears} min={1} max={30} />
-          </InputCard>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-5">
+          <CalcSlider
+            label="Первонач. взнос"
+            value={downPct} onChange={setDownPct} min={0} max={90}
+            display={`${downPct}% · ${result ? formatCompactTick(result.down) : 0}\u00A0₽`}
+          />
+          <CalcSlider label="Ставка, % годовых" value={rate} onChange={setRate} min={0.1} max={30} step={0.1} suffix="%" />
+          <CalcSlider label="Срок, лет" value={years} onChange={setYears} min={1} max={30} />
         </div>
       </section>
 
@@ -219,7 +199,7 @@ export default function MortgageCalculatorPage() {
               Остаток долга и накопленные проценты по годам
             </h3>
             <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={result.series} margin={{ top: 5, right: 10, bottom: 5, left: -5 }}>
+              <AreaChart data={result.series} margin={{ top: 5, right: 10, bottom: 5, left: 0 }}>
                 <defs>
                   <linearGradient id="mortBal" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#B8942F" stopOpacity={0.2} />
@@ -231,10 +211,11 @@ export default function MortgageCalculatorPage() {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" vertical={false} />
-                <XAxis dataKey="year" tickFormatter={(v) => `${v} г.`} stroke="rgba(0,0,0,0.1)"
+                <XAxis dataKey="year" stroke="rgba(0,0,0,0.1)"
                   tick={{ fill: 'rgba(0,0,0,0.4)', fontSize: 11, fontFamily: 'JetBrains Mono' }} tickLine={false} />
                 <YAxis stroke="rgba(0,0,0,0.1)" tick={{ fill: 'rgba(0,0,0,0.4)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
-                  tickLine={false} axisLine={false} tickFormatter={(v) => formatAxisTick(v, 0)} width={62} />
+                  tickLine={false} axisLine={false} tickFormatter={formatCompactTick}
+                  width={compactTickAxisWidth(result.series.flatMap((p) => [p.balance, p.interest]))} />
                 <Tooltip
                   formatter={(v, name) => [formatRubles(v), name === 'balance' ? 'Остаток долга' : 'Проценты накоплено']}
                   labelFormatter={(v) => `Год ${v}`}
@@ -243,6 +224,9 @@ export default function MortgageCalculatorPage() {
                 <Area dataKey="interest" name="interest" stroke="#1A1A2E" strokeWidth={1.4} fill="url(#mortInt)" dot={false} isAnimationActive={false} />
               </AreaChart>
             </ResponsiveContainer>
+            <p className="mt-3 text-[12px] text-text-tertiary">
+              По горизонтали — годы с начала кредита, по вертикали — рубли. Золотая линия — остаток долга, тёмная — накопленные проценты.
+            </p>
           </section>
 
           <section data-animate className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">

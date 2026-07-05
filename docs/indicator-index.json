@@ -32358,12 +32358,12 @@
         },
         {
           "file": "frontend/src/pages/CompoundCalculatorPage.jsx",
-          "line": 84,
+          "line": 70,
           "kind": "other"
         },
         {
           "file": "frontend/src/pages/CompoundCalculatorPage.jsx",
-          "line": 291,
+          "line": 278,
           "kind": "other"
         },
         {
@@ -32383,12 +32383,12 @@
         },
         {
           "file": "frontend/src/pages/MortgageCalculatorPage.jsx",
-          "line": 91,
+          "line": 69,
           "kind": "other"
         },
         {
           "file": "frontend/src/pages/MortgageCalculatorPage.jsx",
-          "line": 284,
+          "line": 268,
           "kind": "other"
         },
         {
@@ -40106,7 +40106,7 @@
         },
         {
           "file": "frontend/src/pages/CompoundCalculatorPage.jsx",
-          "line": 292,
+          "line": 279,
           "kind": "other"
         },
         {

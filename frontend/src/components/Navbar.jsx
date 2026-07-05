@@ -176,19 +176,11 @@ export default function Navbar() {
         </span>
       </Link>
 
-      {/* 1024–1280px: пунктов больше, чем влезает — «Главная» скрыта (лого ведёт
-          на главную), подпись поиска сжата. Иначе «Регистрация» выезжала за
-          пилюлю (скрин руководителя 2026-07-05). */}
+      {/* Пункта «Главная» на десктопе нет: пилюля max-w-6xl не вмещает полный
+          набор ни на одном брейкпоинте (наезжал на логотип — скрины
+          руководителя 2026-07-05), на главную ведёт логотип. В мобильном
+          меню пункт остаётся. */}
       <div className="hidden lg:flex items-center gap-1 xl:gap-2 flex-1 justify-end min-w-0">
-        <NavLink
-          to="/"
-          end
-          className={(p) => cn(linkClass(p), 'hidden xl:block')}
-          onClick={closeAll}
-        >
-          Главная
-        </NavLink>
-
         <div className="relative" ref={catWrapRef}>
           <button
             type="button"
@@ -293,7 +285,12 @@ export default function Navbar() {
             </div>
           )}
         </div>
-        <NavLink to="/about" className={linkClass} onClick={closeAll}>
+        {/* На lg (1024–1280) не влезает — доступна из футера и мобильного меню. */}
+        <NavLink
+          to="/about"
+          className={(p) => cn(linkClass(p), 'hidden xl:block')}
+          onClick={closeAll}
+        >
           О проекте
         </NavLink>
       </div>
