@@ -157,6 +157,69 @@ def test_behavior_batch_stores_known_types_only(auth_client, monkeypatch):
     assert body["stored"] == 5  # hack_type отброшен
 
 
+def test_behavior_session_start_builds_audience_portrait(auth_env, auth_client, monkeypatch):
+    """session_start → строка behavior_sessions с разобранным UA; повторная
+    отправка того же session_id не создаёт дубль (идемпотентность по PK)."""
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "behavior_events_enabled", True)
+    ev = {
+        "t": "session_start", "ts": 1751500000000, "url": "/indicator/cpi?utm_source=direct",
+        "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 YaBrowser/24.6.0.0 Safari/537.36",
+        "ref": "https://yandex.ru/search/?text=инфляция",
+        "sw": 1920, "sh": 1080, "vw": 1440, "vh": 810, "dpr": 2,
+        "lang": "ru-RU", "tz": "Europe/Moscow", "touch": 0,
+        "us": "direct", "um": "cpc", "uc": "brand",
+    }
+    for _ in range(2):  # повтор — проверка идемпотентности
+        r = auth_client.post("/api/v1/analytics/behavior", json={
+            "session_id": "sess-audience", "events": [ev],
+        })
+        assert r.status_code == 200
+
+    import asyncio
+
+    from sqlalchemy import select
+
+    from app.models import BehaviorSession
+
+    async def _fetch():
+        async with auth_env["session_maker"]() as db:
+            return (await db.execute(select(BehaviorSession))).scalars().all()
+
+    rows = asyncio.run(_fetch())
+    assert len(rows) == 1
+    s = rows[0]
+    assert s.browser == "Яндекс.Браузер"
+    assert s.os == "Windows"
+    assert s.device_type == "desktop"
+    assert s.screen_w == 1920
+    assert s.language == "ru-RU"
+    assert s.timezone == "Europe/Moscow"
+    assert s.referrer_host == "yandex.ru"
+    assert s.utm_source == "direct"
+
+
+def test_ua_parser_families():
+    """Основные семейства UA рунета разбираются в браузер/ОС/устройство."""
+    from app.services.ua_parser import parse_user_agent
+
+    cases = [
+        ("Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1",
+         {"browser": "Safari", "os": "iOS", "device_type": "mobile"}),
+        ("Mozilla/5.0 (Linux; Android 14; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Mobile Safari/537.36",
+         {"browser": "Chrome", "os": "Android", "device_type": "mobile"}),
+        ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0",
+         {"browser": "Edge", "os": "macOS", "device_type": "desktop"}),
+        ("Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)",
+         {"device_type": "bot"}),
+    ]
+    for ua, expected in cases:
+        parsed = parse_user_agent(ua)
+        for k, v in expected.items():
+            assert parsed[k] == v, f"{ua}: {k}={parsed[k]} != {v}"
+
+
 def test_behavior_batch_caps_events(auth_client, monkeypatch):
     from app.config import settings
 

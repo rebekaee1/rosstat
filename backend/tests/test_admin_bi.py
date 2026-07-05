@@ -17,7 +17,8 @@ PASSWORD = "Str0ng-passw0rd!"
 EXPECTED_SECTIONS = {
     "kpi_daily", "acquisition", "funnel", "retention", "pages", "demand",
     "onsite_search", "navigation", "behavior_issues", "events",
-    "hypotheses", "dataset", "users",
+    "hypotheses", "dataset", "users", "audience", "activity_heatmap",
+    "content_structure",
 }
 
 
@@ -81,3 +82,82 @@ def test_bi_dashboard_cached(auth_client):
     first = auth_client.get("/api/v1/admin/bi/dashboard?days=30").json()
     second = auth_client.get("/api/v1/admin/bi/dashboard?days=30").json()
     assert first["generated_at"] == second["generated_at"]
+
+
+# --- Истинность цифр (инцидент 2026-07-05: конверсия 91-100%) ----------------
+
+
+class _FakeVisit:
+    """Минимальный дублёр RawMetrikaVisit для чистых функций admin_bi."""
+
+    def __init__(self, goals_json=None, client_id_hash=None, visit_date=None,
+                 traffic_source="organic", duration_seconds=0, start_url=None,
+                 raw_json=None):
+        self.goals_json = goals_json
+        self.client_id_hash = client_id_hash
+        self.visit_date = visit_date
+        self.traffic_source = traffic_source
+        self.duration_seconds = duration_seconds
+        self.start_url = start_url
+        self.raw_json = raw_json or {}
+        self.search_engine = None
+        self.search_phrase = None
+        self.referer = None
+
+
+def test_has_goals_rejects_empty_wrappers():
+    """goals_json = {"goals": "[]"} или пустая строка — НЕ достигнутая цель.
+    Наивный truthy-чек давал конверсию 91-100% (ложь на витрине владельца)."""
+    from app.services.admin_bi import _has_goals
+
+    assert _has_goals(_FakeVisit(goals_json=None)) is False
+    assert _has_goals(_FakeVisit(goals_json={})) is False
+    assert _has_goals(_FakeVisit(goals_json={"goals": ""})) is False
+    assert _has_goals(_FakeVisit(goals_json={"goals": "[]"})) is False
+    assert _has_goals(_FakeVisit(goals_json={"goals": "[577576799]"})) is True
+    assert _has_goals(_FakeVisit(goals_json={"goals": "[5,6]"})) is True
+    assert _has_goals(_FakeVisit(goals_json={"goals": []})) is False
+    assert _has_goals(_FakeVisit(goals_json={"goals": [577576799]})) is True
+
+
+def test_funnel_goal_subset_of_engaged():
+    """Инвариант воронки: goal_visits ≤ engaged ≤ visits для каждого канала.
+    Визит с целью, но одной страницей и коротким временем — всё равно вовлечён."""
+    from datetime import date
+
+    from app.services.admin_bi import _funnel
+
+    visits = [
+        # Одностраничный короткий визит С ЦЕЛЬЮ — раньше падал мимо engaged.
+        _FakeVisit(goals_json={"goals": "[1]"}, traffic_source="ad",
+                   visit_date=date(2026, 7, 1), duration_seconds=5,
+                   raw_json={"ym:s:pageViews": "1"}),
+        # Обычный невовлечённый визит без цели.
+        _FakeVisit(traffic_source="ad", visit_date=date(2026, 7, 1),
+                   duration_seconds=3, raw_json={"ym:s:pageViews": "1"}),
+    ]
+    funnel = _funnel(visits, {})
+    row = next(r for r in funnel["by_source"] if r["source"] == "ad")
+    assert row["visits"] == 2
+    assert row["goal_visits"] == 1
+    assert row["engaged"] >= row["goal_visits"]
+
+
+def test_retention_day_cohorts():
+    """Дневные когорты: возврат на следующий день виден в day_plus, а
+    returning считает активность в >1 календарном дне (не неделе)."""
+    from datetime import date
+
+    from app.services.admin_bi import _retention
+
+    visits = [
+        _FakeVisit(client_id_hash="a", visit_date=date(2026, 7, 1)),
+        _FakeVisit(client_id_hash="a", visit_date=date(2026, 7, 2)),  # вернулся через день
+        _FakeVisit(client_id_hash="b", visit_date=date(2026, 7, 1)),
+    ]
+    ret = _retention(visits)
+    assert ret["unique_visitors"] == 2
+    assert ret["returning_visitors"] == 1
+    day_cohort = next(c for c in ret["day_cohorts"] if c["cohort_day"] == "2026-07-01")
+    assert day_cohort["size"] == 2
+    assert day_cohort["day_plus"].get("1") == 1

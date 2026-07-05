@@ -90,6 +90,22 @@ async def build_inventory(db: AsyncSession) -> dict[str, Any]:
         "from": b_from, "to": b_to,
     }
 
+    # --- Портреты сессий собственного счётчика (аудитория, 2026-07-05) --------
+    from app.models import BehaviorSession
+
+    s_total = await db.scalar(select(func.count(BehaviorSession.session_id_hash))) or 0
+    s_devices = dict((await db.execute(
+        select(BehaviorSession.device_type, func.count())
+        .group_by(BehaviorSession.device_type)
+    )).all())
+    s_from, s_to = await _time_range(db, BehaviorSession.started_at)
+    sections["behavior_sessions"] = {
+        "rows": s_total,
+        "by_type": {str(k or "unknown"): v for k, v in s_devices.items()},
+        "columns": _table_columns(BehaviorSession),
+        "from": s_from, "to": s_to,
+    }
+
     # --- Бизнес-события фронта ----------------------------------------------
     f_total = await db.scalar(select(func.count(FrontendEvent.id))) or 0
     f_names = await db.scalar(select(func.count(func.distinct(FrontendEvent.event_name)))) or 0

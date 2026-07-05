@@ -7335,6 +7335,11 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_analytics_api.py",
+          "line": 167,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_calendar_seed.py",
           "line": 210,
           "kind": "tests"

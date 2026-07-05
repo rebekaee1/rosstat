@@ -266,20 +266,27 @@ function median(arr) {
 
 /* ---------- Уникальные геометрии ---------- */
 
-// Пульс недели: сетка 7 дней × 24 часа, насыщенность клетки = просмотры.
+// Пульс недели: сетка 7 дней × 24 часа. Основной слой — визиты Метрики
+// (золотой). Клетки, где Метрика пуста, а собственный счётчик видит просмотры
+// (свежие часы до её выгрузки), — фиолетовые. Слои НЕ суммируются: визит и
+// просмотр — разные единицы, сумма была бы двойным счётом одного посещения.
 function WeekPulse({ cells }) {
   const grid = useMemo(() => {
     const m = new Map();
-    let max = 0;
+    let maxVisits = 0;
+    let maxOwn = 0;
     for (const c of cells || []) {
-      m.set(`${c.dow}-${c.hour}`, c.count);
-      if (c.count > max) max = c.count;
+      const own = c.count || 0;
+      const visits = c.visits || 0;
+      m.set(`${c.dow}-${c.hour}`, { own, visits });
+      if (visits > maxVisits) maxVisits = visits;
+      if (own > maxOwn) maxOwn = own;
     }
-    return { m, max };
+    return { m, maxVisits, maxOwn };
   }, [cells]);
-  if (!grid.max) return <Empty />;
+  if (!grid.maxVisits && !grid.maxOwn) return <Empty />;
 
-  const CELL = 26; const GAP = 3; const LEFT = 34; const TOP = 20;
+  const CELL = 30; const GAP = 3; const LEFT = 34; const TOP = 20;
   const width = LEFT + 24 * (CELL + GAP);
   const height = TOP + 7 * (CELL + GAP);
   return (
@@ -296,26 +303,44 @@ function WeekPulse({ cells }) {
           <text key={d} x={0} y={TOP + dow * (CELL + GAP) + CELL / 2 + 4} fontSize={11} fill="rgba(26,26,46,0.65)">{d}</text>
         ))}
         {Array.from({ length: 7 }, (_, dow) => Array.from({ length: 24 }, (_, hour) => {
-          const v = grid.m.get(`${dow}-${hour}`) || 0;
-          const t = v / grid.max;
+          const c = grid.m.get(`${dow}-${hour}`) || { own: 0, visits: 0 };
+          const ownOnly = !c.visits && c.own > 0;
+          const t = ownOnly
+            ? (grid.maxOwn ? c.own / grid.maxOwn : 0)
+            : (grid.maxVisits ? c.visits / grid.maxVisits : 0);
+          const shown = ownOnly ? c.own : c.visits;
+          const fill = shown
+            ? (ownOnly ? `rgba(124,58,237,${0.12 + t * 0.6})` : `rgba(184,148,47,${0.12 + t * 0.78})`)
+            : 'rgba(26,26,46,0.045)';
           return (
-            <rect
-              key={`${dow}-${hour}`}
-              x={LEFT + hour * (CELL + GAP)} y={TOP + dow * (CELL + GAP)}
-              width={CELL} height={CELL} rx={4}
-              fill={v ? `rgba(184,148,47,${0.12 + t * 0.78})` : 'rgba(26,26,46,0.045)'}
-            >
-              <title>{`${DOW_RU[dow]}, ${hour}:00–${hour + 1}:00 — ${fmtInt(v)} просмотров`}</title>
-            </rect>
+            <g key={`${dow}-${hour}`}>
+              <rect
+                x={LEFT + hour * (CELL + GAP)} y={TOP + dow * (CELL + GAP)}
+                width={CELL} height={CELL} rx={4} fill={fill}
+              >
+                <title>{`${DOW_RU[dow]}, ${hour}:00–${hour + 1}:00 — визиты Метрики: ${fmtInt(c.visits)}, просмотры нашего счётчика: ${fmtInt(c.own)}`}</title>
+              </rect>
+              {shown > 0 && (
+                <text
+                  x={LEFT + hour * (CELL + GAP) + CELL / 2} y={TOP + dow * (CELL + GAP) + CELL / 2 + 3.5}
+                  textAnchor="middle" fontSize={9.5} pointerEvents="none"
+                  fill={t > 0.55 ? '#fff' : 'rgba(26,26,46,0.65)'}
+                >
+                  {shown > 999 ? `${Math.round(shown / 100) / 10}k` : shown}
+                </text>
+              )}
+            </g>
           );
         }))}
       </svg>
-      <div className="flex items-center gap-2 mt-2 text-[11px] text-text-tertiary">
+      <div className="flex items-center gap-2 mt-2 text-[11px] text-text-tertiary flex-wrap">
         <span>меньше</span>
         {[0.15, 0.35, 0.55, 0.75, 0.9].map((t) => (
           <span key={t} className="w-4 h-4 rounded" style={{ background: `rgba(184,148,47,${t})` }} />
         ))}
-        <span>больше · время московское</span>
+        <span>больше — визиты Метрики</span>
+        <span className="w-4 h-4 rounded ml-2" style={{ background: 'rgba(124,58,237,0.5)' }} />
+        <span>только наш счётчик (Метрика ещё не отдала час) · время московское</span>
       </div>
     </div>
   );
@@ -451,7 +476,7 @@ function OverviewTab({ d }) {
       </Card>
 
       <Card title="Пульс недели: когда аудитория на сайте" icon={CalendarClock}
-        insight="Просмотры страниц по дням недели и часам (московское время). Тёмные зоны — пиковые окна: под них планируются публикации, реклама и релизы.">
+        insight="Активность по дням недели и часам (московское время): визиты Метрики плюс просмотры собственного счётчика. Тёмные зоны — пиковые окна: под них планируются публикации, реклама и релизы.">
         <WeekPulse cells={d.activity_heatmap} />
       </Card>
 
@@ -650,35 +675,82 @@ function FunnelTab({ d }) {
   );
 }
 
+// Универсальная когортная таблица-heatmap: строки — когорты, колонки — смещения.
+function CohortTable({ rows, keyField, offsetsField, cols, colPrefix }) {
+  if (!rows?.length) return <Empty />;
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full text-[13px]">
+        <thead>
+          <tr className="text-left text-text-tertiary border-b border-border-subtle">
+            <th className="py-1.5 pr-3 font-medium">Когорта</th>
+            <th className="py-1.5 pr-3 font-medium">Размер</th>
+            {cols.map((c) => <th key={c} className="py-1.5 pr-2 font-medium text-center">{colPrefix}{c}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((c) => (
+            <tr key={c[keyField]} className="border-b border-border-subtle/50 last:border-0">
+              <td className="py-1.5 pr-3 text-text-primary tabular-nums">{c[keyField]}</td>
+              <td className="py-1.5 pr-3 text-text-secondary tabular-nums">{fmtInt(c.size)}</td>
+              {cols.map((k) => {
+                const v = c[offsetsField]?.[String(k)] || 0;
+                const pct = c.size ? v / c.size : 0;
+                return (
+                  <td key={k} className="py-1 pr-2 text-center">
+                    <span
+                      className="inline-block min-w-9 rounded px-1.5 py-0.5 text-[12px] tabular-nums"
+                      style={{ background: `rgba(184,148,47,${Math.min(0.85, pct * 2 + (v ? 0.08 : 0))})`, color: pct > 0.25 ? '#fff' : 'rgba(26,26,46,0.7)' }}
+                      title={`${v} чел. = ${Math.round(pct * 100)}% когорты`}
+                    >
+                      {v || '·'}
+                    </span>
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 function RetentionTab({ d }) {
   const r = d.retention || {};
   const cohorts = useMemo(() => r.cohorts || [], [r.cohorts]);
-  const curve = useMemo(() => {
+  const dayCohorts = useMemo(() => r.day_cohorts || [], [r.day_cohorts]);
+
+  // Кривая возвратов по ДНЯМ — рабочий масштаб молодого продукта.
+  const dayCurve = useMemo(() => {
     const acc = {};
-    for (const c of cohorts) {
-      for (let i = 1; i <= 8; i += 1) {
-        const v = c.week_plus?.[String(i)] || 0;
+    for (const c of dayCohorts) {
+      for (let i = 1; i <= 14; i += 1) {
+        const v = c.day_plus?.[String(i)] || 0;
         if (!acc[i]) acc[i] = { ret: 0, size: 0 };
         acc[i].ret += v; acc[i].size += c.size;
       }
     }
-    return Array.from({ length: 8 }, (_, i) => {
+    return Array.from({ length: 14 }, (_, i) => {
       const k = i + 1; const a = acc[k] || { ret: 0, size: 0 };
-      return { week: `+${k} нед.`, pct: a.size ? Math.round(a.ret / a.size * 1000) / 10 : 0 };
+      return { day: `+${k}`, pct: a.size ? Math.round(a.ret / a.size * 1000) / 10 : 0 };
     });
-  }, [cohorts]);
-  const weekCols = ['+1', '+2', '+3', '+4', '+5', '+6', '+7', '+8'];
+  }, [dayCohorts]);
+  const dayCols = Array.from({ length: 10 }, (_, i) => i + 1);
+  const weekCols = [1, 2, 3, 4, 5, 6, 7, 8];
+  const hasWeekData = cohorts.some((c) => Object.keys(c.week_plus || {}).length > 0);
 
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         <Kpi label="Уникальных посетителей" value={fmtInt(r.unique_visitors)} sub="вся история наблюдений" />
-        <Kpi label="Вернувшиеся (2+ недели активности)" value={fmtInt(r.returning_visitors)} color={GREEN} />
+        <Kpi label="Вернувшиеся (активны более одного дня)" value={fmtInt(r.returning_visitors)} color={GREEN} />
         <Kpi label="Доля возвратов" value={fmtPct(r.returning_pct)} color={GOLD} />
       </div>
-      <Card title="Кривая удержания" icon={TrendingUp} insight="Средний по когортам процент вернувшихся через N недель после первого визита. Пологий хвост — растёт лояльная аудитория.">
+      <Card title="Кривая возвратов по дням" icon={TrendingUp}
+        insight="Средний по дневным когортам процент посетителей, вернувшихся через N дней после первого визита. Для молодого продукта дневной масштаб — основной; недельные когорты накопятся со временем.">
         <ResponsiveContainer width="100%" height={220}>
-          <ComposedChart data={curve} margin={{ top: 6, right: 12, bottom: 0, left: 0 }}>
+          <ComposedChart data={dayCurve} margin={{ top: 6, right: 12, bottom: 0, left: 0 }}>
             <defs>
               <linearGradient id="gRet" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor={GOLD} stopOpacity={0.25} />
@@ -686,7 +758,8 @@ function RetentionTab({ d }) {
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
-            <XAxis dataKey="week" tick={{ fontSize: 11, fill: 'rgba(26,26,46,0.5)' }} />
+            <XAxis dataKey="day" tick={{ fontSize: 11, fill: 'rgba(26,26,46,0.5)' }}
+              label={{ value: 'дней после первого визита', position: 'insideBottom', offset: -2, fontSize: 10.5, fill: 'rgba(26,26,46,0.45)' }} />
             <YAxis unit="%" tick={{ fontSize: 11, fill: 'rgba(26,26,46,0.5)' }} width={40} />
             <Tooltip {...TT_STYLE} formatter={(v) => [`${v}%`, 'вернулись']} />
             <Area type="monotone" dataKey="pct" stroke={GOLD} fill="url(#gRet)" strokeWidth={2}>
@@ -695,43 +768,15 @@ function RetentionTab({ d }) {
           </ComposedChart>
         </ResponsiveContainer>
       </Card>
-      <Card title="Когорты по неделе первого визита" icon={Users} insight="Строка — когорта новых посетителей, столбцы — недели спустя. Насыщенность клетки — доля вернувшихся (наведите для процента).">
-        {cohorts.length ? (
-          <div className="overflow-x-auto">
-            <table className="w-full text-[13px]">
-              <thead>
-                <tr className="text-left text-text-tertiary border-b border-border-subtle">
-                  <th className="py-1.5 pr-3 font-medium">Когорта</th>
-                  <th className="py-1.5 pr-3 font-medium">Размер</th>
-                  {weekCols.map((w) => <th key={w} className="py-1.5 pr-2 font-medium text-center">{w}</th>)}
-                </tr>
-              </thead>
-              <tbody>
-                {cohorts.map((c) => (
-                  <tr key={c.cohort_week} className="border-b border-border-subtle/50 last:border-0">
-                    <td className="py-1.5 pr-3 text-text-primary tabular-nums">{c.cohort_week}</td>
-                    <td className="py-1.5 pr-3 text-text-secondary tabular-nums">{fmtInt(c.size)}</td>
-                    {weekCols.map((w, i) => {
-                      const v = c.week_plus?.[String(i + 1)] || 0;
-                      const pct = c.size ? v / c.size : 0;
-                      return (
-                        <td key={w} className="py-1 pr-2 text-center">
-                          <span
-                            className="inline-block min-w-9 rounded px-1.5 py-0.5 text-[12px] tabular-nums"
-                            style={{ background: `rgba(184,148,47,${Math.min(0.85, pct * 2 + (v ? 0.08 : 0))})`, color: pct > 0.25 ? '#fff' : 'rgba(26,26,46,0.7)' }}
-                            title={`${v} чел. = ${Math.round(pct * 100)}% когорты`}
-                          >
-                            {v || '·'}
-                          </span>
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : <Empty />}
+      <Card title="Когорты по дню первого визита" icon={Users}
+        insight="Строка — новые посетители конкретного дня, столбцы — сколько из них вернулось через N дней. Насыщенность — доля вернувшихся (наведите для процента).">
+        <CohortTable rows={dayCohorts} keyField="cohort_day" offsetsField="day_plus" cols={dayCols} colPrefix="+" />
+      </Card>
+      <Card title="Когорты по неделе первого визита" icon={Users}
+        insight={hasWeekData
+          ? 'Строка — когорта новых посетителей, столбцы — недели спустя. Насыщенность клетки — доля вернувшихся.'
+          : 'Недельный масштаб станет информативным, когда истории наблюдений будет больше месяца — пока все посетители внутри первых недель.'}>
+        <CohortTable rows={cohorts} keyField="cohort_week" offsetsField="week_plus" cols={weekCols} colPrefix="+" />
       </Card>
     </div>
   );
@@ -978,6 +1023,116 @@ function NavigationTab({ d }) {
   );
 }
 
+const DEVICE_RU = {
+  desktop: 'Компьютеры', mobile: 'Смартфоны', tablet: 'Планшеты',
+  tv: 'Телевизоры', bot: 'Роботы', unknown: 'Не определено',
+};
+const deviceRu = (k) => DEVICE_RU[k] || k;
+
+// Парная сверка «наш счётчик vs Метрика»: два рейтинга одного среза рядом.
+function PairedBars({ own, metrika, ownLabel = 'Наш счётчик', metrikaLabel = 'Метрика', mapName = (x) => x, n = 8 }) {
+  const ownRows = dictToBars(own, n).map((r) => ({ ...r, name: mapName(r.name) }));
+  const mRows = dictToBars(metrika, n).map((r) => ({ ...r, name: mapName(r.name) }));
+  if (!ownRows.length && !mRows.length) return <Empty />;
+  return (
+    <div className="grid sm:grid-cols-2 gap-5">
+      <div>
+        <div className="text-[12px] font-medium text-text-secondary mb-2">{ownLabel}</div>
+        {ownRows.length ? <HBars data={ownRows} color={PURPLE} labelWidth={130} /> : <Empty note="Собственный счётчик ещё копит данные" />}
+      </div>
+      <div>
+        <div className="text-[12px] font-medium text-text-secondary mb-2">{metrikaLabel}</div>
+        {mRows.length ? <HBars data={mRows} color={GOLD} labelWidth={130} /> : <Empty note="Метрика не отдала срез за период" />}
+      </div>
+    </div>
+  );
+}
+
+function AudienceTab({ d }) {
+  const a = d.audience || {};
+  const ref = a.metrika_reference || {};
+  const devOwn = Object.entries(a.devices || {}).filter(([k]) => k !== 'bot')
+    .map(([k, v]) => ({ name: deviceRu(k), value: v }));
+  const devMetrika = Object.entries(ref.devices || {}).map(([k, v]) => ({ name: deviceRu(k), value: v }));
+
+  return (
+    <div className="space-y-5">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <Kpi label="Сессии (наш счётчик)" value={fmtInt(a.own_sessions_total)} color={PURPLE} sub="портреты behavior-сессий" />
+        <Kpi label="Из них зарегистрированные" value={fmtInt(a.own_authed_sessions)} color={GREEN} />
+        <Kpi label="Визиты (Метрика, сверка)" value={fmtInt(ref.visits_total)} />
+        <Kpi
+          label="Расхождение слоёв"
+          value={a.own_sessions_total && ref.visits_total
+            ? fmtPct(Math.round(Math.abs(a.own_sessions_total - ref.visits_total) / ref.visits_total * 100))
+            : '—'}
+          color={INK}
+          sub="сессии ≠ визиты по определению; большой разрыв — сигнал"
+        />
+      </div>
+
+      <Card title="Устройства: наш счётчик и Метрика" icon={Users}
+        insight="Один и тот же срез из двух независимых источников. Сходство подтверждает качество собственного сбора; расхождение — повод проверить, кого мы не видим (например, посетителей без JavaScript).">
+        <div className="grid sm:grid-cols-2 gap-5">
+          <div>
+            <div className="text-[12px] font-medium text-text-secondary mb-2">Наш счётчик</div>
+            <Donut data={devOwn} height={180} centerLabel="сессий" />
+          </div>
+          <div>
+            <div className="text-[12px] font-medium text-text-secondary mb-2">Метрика</div>
+            <Donut data={devMetrika} height={180} centerLabel="визитов" />
+          </div>
+        </div>
+      </Card>
+
+      <Card title="Браузеры" icon={LayoutGrid}
+        insight="Чем пользуется аудитория — приоритет тестирования интерфейса. Слева — наши данные с точными версиями, справа — референс Метрики.">
+        <PairedBars own={a.browsers} metrika={ref.browsers} />
+        {Object.keys(a.browser_versions || {}).length > 0 && (
+          <div className="mt-4">
+            <div className="text-[12px] font-medium text-text-secondary mb-2">Точные версии (наш счётчик)</div>
+            <div className="flex flex-wrap gap-1.5">
+              {Object.entries(a.browser_versions).map(([k, v]) => (
+                <span key={k} className="inline-flex items-center gap-1 rounded-full bg-obsidian-light/70 px-2 py-0.5 text-[11.5px]">
+                  <span className="text-text-secondary">{k}</span>
+                  <span className="tabular-nums font-medium text-text-primary">{fmtInt(v)}</span>
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </Card>
+
+      <Card title="Операционные системы" icon={LayoutGrid}
+        insight="Наши данные включают версию системы — точнее, чем агрегат Метрики.">
+        <PairedBars own={a.os} metrika={ref.os} />
+      </Card>
+
+      <div className="grid lg:grid-cols-2 gap-5">
+        <Card title="Экраны" icon={LayoutGrid}
+          insight="Физические разрешения экранов — под какие размеры проектировать интерфейс и графики.">
+          <HBars data={dictToBars(a.screens, 10)} color={BLUE} labelWidth={110} />
+        </Card>
+        <Card title="Ширина окна браузера" icon={LayoutGrid}
+          insight="Реальная ширина рабочей области — важнее разрешения экрана: окна бывают свёрнуты.">
+          <HBars data={dictToBars(a.viewports, 10)} color={BLUE} labelWidth={110} />
+        </Card>
+        <Card title="Языки и часовые пояса" icon={Users}
+          insight="Язык браузера и таймзона — география и локализация аудитории без сбора персональных данных.">
+          <div className="grid grid-cols-2 gap-4">
+            <HBars data={dictToBars(a.languages, 8)} color={GREEN} labelWidth={80} />
+            <HBars data={dictToBars(a.timezones, 8)} color={GREEN} labelWidth={130} />
+          </div>
+        </Card>
+        <Card title="Сайты-источники переходов" icon={Route}
+          insight="Домены, с которых пришли сессии по данным собственного счётчика.">
+          <HBars data={dictToBars(a.referrer_hosts, 10)} color={PURPLE} labelWidth={160} />
+        </Card>
+      </div>
+    </div>
+  );
+}
+
 function EventsTab({ d }) {
   const all = Object.entries(d.events || {})
     .map(([name, v]) => ({ name, label: eventLabel(name), authed: v.authed, guest: v.guest, total: v.total }))
@@ -1093,6 +1248,7 @@ const DATASET_FIELD_RU = {
 };
 const DATASET_TITLE_RU = {
   behavior_events: 'Поведенческий поток (клики, прокрутка, курсор)',
+  behavior_sessions: 'Портреты сессий (браузер, устройство, экран)',
   frontend_events: 'Бизнес-события интерфейса',
   raw_metrika_visits: 'Повизитная выгрузка Метрики',
   metrika_search_phrases: 'Поисковые фразы (Метрика)',
@@ -1223,6 +1379,7 @@ function AdminLogin({ onSuccess }) {
 const TABS = [
   { id: 'overview', label: 'Обзор', icon: Activity, C: OverviewTab },
   { id: 'acquisition', label: 'Привлечение', icon: Megaphone, C: AcquisitionTab },
+  { id: 'audience', label: 'Аудитория', icon: Users, C: AudienceTab },
   { id: 'funnel', label: 'Воронка', icon: Filter, C: FunnelTab },
   { id: 'retention', label: 'Retention', icon: Users, C: RetentionTab },
   { id: 'pages', label: 'Контент', icon: LayoutGrid, C: PagesTab },

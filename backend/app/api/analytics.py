@@ -254,6 +254,80 @@ _BEHAVIOR_COLUMN_KEYS = {"t", "ts", "url", "pl", "path", "text", "x", "y", "dead
 _BEHAVIOR_TYPES = {"pageview", "click", "move", "dwell", "copy"}
 
 
+def _int_or_none(v: Any) -> int | None:
+    try:
+        return int(v)
+    except (TypeError, ValueError):
+        return None
+
+
+async def _upsert_behavior_session(
+    db: AsyncSession, ev: dict, *, session_hash: str, user_id: str | None,
+    authed: bool, occurred: datetime,
+) -> None:
+    """session_start → строка в behavior_sessions (портрет сессии/аудитории).
+
+    Идемпотентно по PK session_id_hash (DO NOTHING) — повторная отправка
+    (например, после restore вкладки) не перетирает первый портрет.
+    """
+    from sqlalchemy.dialects.postgresql import insert as pg_insert
+
+    from app.models import BehaviorSession
+    from app.services.ua_parser import parse_user_agent
+
+    ua = (str(ev.get("ua") or "") or None) and str(ev.get("ua"))[:500]
+    parsed = parse_user_agent(ua)
+    referrer = (str(ev.get("ref") or "") or None) and str(ev.get("ref"))[:1000]
+    ref_host = None
+    if referrer:
+        try:
+            from urllib.parse import urlparse
+            ref_host = (urlparse(referrer).hostname or None) and urlparse(referrer).hostname[:200]
+        except ValueError:
+            ref_host = None
+
+    values = {
+        "session_id_hash": session_hash,
+        "user_id": user_id,
+        "authed": authed,
+        "started_at": occurred,
+        "entry_page": (str(ev.get("url") or "") or None) and str(ev.get("url"))[:500],
+        "referrer": referrer,
+        "referrer_host": ref_host,
+        "utm_source": (str(ev.get("us") or "") or None) and str(ev.get("us"))[:120],
+        "utm_medium": (str(ev.get("um") or "") or None) and str(ev.get("um"))[:120],
+        "utm_campaign": (str(ev.get("uc") or "") or None) and str(ev.get("uc"))[:200],
+        "ua_raw": ua,
+        "browser": parsed["browser"],
+        "browser_version": parsed["browser_version"],
+        "os": parsed["os"],
+        "os_version": parsed["os_version"],
+        "device_type": parsed["device_type"],
+        "screen_w": _int_or_none(ev.get("sw")),
+        "screen_h": _int_or_none(ev.get("sh")),
+        "viewport_w": _int_or_none(ev.get("vw")),
+        "viewport_h": _int_or_none(ev.get("vh")),
+        "dpr": ev.get("dpr") if isinstance(ev.get("dpr"), (int, float)) else None,
+        "language": (str(ev.get("lang") or "") or None) and str(ev.get("lang"))[:16],
+        "timezone": (str(ev.get("tz") or "") or None) and str(ev.get("tz"))[:60],
+        "touch": bool(ev.get("touch")) if ev.get("touch") is not None else None,
+    }
+    if db.bind.dialect.name == "postgresql":
+        stmt = pg_insert(BehaviorSession.__table__).values(**values).on_conflict_do_nothing(
+            index_elements=["session_id_hash"]
+        )
+        await db.execute(stmt)
+    else:  # sqlite в тестах
+        from sqlalchemy import select as sa_select
+        exists = await db.scalar(
+            sa_select(BehaviorSession.session_id_hash).where(
+                BehaviorSession.session_id_hash == session_hash
+            )
+        )
+        if not exists:
+            await db.execute(BehaviorSession.__table__.insert().values(**values))
+
+
 @router.post("/behavior")
 async def collect_behavior_batch(
     request: Request, payload: BehaviorBatchIn, db: AsyncSession = Depends(get_db)
@@ -275,14 +349,24 @@ async def collect_behavior_batch(
     now = datetime.now(timezone.utc).replace(tzinfo=None)
 
     rows = []
+    sessions_stored = 0
     for ev in events:
         etype = str(ev.get("t") or "")[:20]
-        if etype not in _BEHAVIOR_TYPES:
-            continue
         try:
             occurred = datetime.fromtimestamp(int(ev["ts"]) / 1000, tz=timezone.utc).replace(tzinfo=None)
         except (KeyError, TypeError, ValueError, OSError):
             occurred = now
+        if etype == "session_start" and session_hash:
+            await _upsert_behavior_session(
+                db, ev, session_hash=session_hash,
+                user_id=str(user_id) if user_id else None,
+                authed=bool(user_id) or bool(payload.authed),
+                occurred=occurred,
+            )
+            sessions_stored += 1
+            continue
+        if etype not in _BEHAVIOR_TYPES:
+            continue
         extra = {k: v for k, v in ev.items() if k not in _BEHAVIOR_COLUMN_KEYS}
         rows.append({
             "event_type": etype,
@@ -303,5 +387,6 @@ async def collect_behavior_batch(
         })
     if rows:
         await db.execute(BehaviorEvent.__table__.insert(), rows)
+    if rows or sessions_stored:
         await db.commit()
     return {"accepted": True, "stored": len(rows)}

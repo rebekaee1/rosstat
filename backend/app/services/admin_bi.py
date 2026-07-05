@@ -102,6 +102,27 @@ def _visit_field(v: RawMetrikaVisit, key: str) -> str:
     return (raw.get(key) or "").strip()
 
 
+def _has_goals(v: RawMetrikaVisit) -> bool:
+    """Истинная проверка «визит достиг цели Метрики».
+
+    goals_json хранится как {"goals": "[577576799,...]"} — строка со списком id
+    внутри объекта, и объект есть у КАЖДОГО визита с непустым полем выгрузки.
+    Наивный truthy-чек считал целью почти каждый визит (конверсия 91–100% —
+    инцидент 2026-07-05). Цель есть только если внутри непустой список id.
+    """
+    gj = v.goals_json
+    if not gj:
+        return False
+    if isinstance(gj, dict):
+        gj = gj.get("goals")
+    if isinstance(gj, str):
+        stripped = gj.strip().strip("[]").strip()
+        return bool(stripped)
+    if isinstance(gj, (list, tuple)):
+        return len(gj) > 0
+    return False
+
+
 async def _kpi_daily(db: AsyncSession, since: datetime) -> list[dict]:
     """Ряды по дням: визиты/посетители (Метрика), события, регистрации,
     скачивания, ошибки + live-слой из собственного потока behavior_events
@@ -169,6 +190,14 @@ async def _kpi_daily(db: AsyncSession, since: datetime) -> list[dict]:
         if session:
             days[d]["live_sessions"].add(session)
 
+    # Полный календарь окна: день без данных — явный ноль, а не дыра на оси
+    # времени (иначе график сжимает пропуски и искажает динамику).
+    cursor = since.date()
+    today = datetime.utcnow().date()
+    while cursor <= today:
+        days[cursor.isoformat()]  # defaultdict дозаполняет нулевую строку
+        cursor += timedelta(days=1)
+
     out = []
     for d in sorted(days):
         row = days[d]
@@ -219,7 +248,7 @@ def _acquisition(visits: list[RawMetrikaVisit]) -> dict:
             camp = _visit_field(v, "ym:s:UTMCampaign") or "(без метки)"
             c = campaigns[camp]
             c["visits"] += 1
-            if v.goals_json:
+            if _has_goals(v):
                 c["goal_visits"] += 1
             if _visit_field(v, "ym:s:bounce") in ("1", "true"):
                 c["bounce_like"] += 1
@@ -269,14 +298,17 @@ def _funnel(visits: list[RawMetrikaVisit], registrations_by_day: dict[str, int])
             pv = int(float(_visit_field(v, "ym:s:pageViews") or "0"))
         except ValueError:
             pv = 0
-        if pv > 1 or (v.duration_seconds or 0) >= 30:
+        goal = _has_goals(v)
+        # Инвариант воронки: достигшие цели ⊆ вовлечённые — визит с целью
+        # вовлечён по определению, даже если был короткий одностраничный.
+        if goal or pv > 1 or (v.duration_seconds or 0) >= 30:
             s["engaged"] += 1
-        if v.goals_json:
+        if goal:
             s["goal_visits"] += 1
         if v.start_url:
             path = v.start_url.split("forecasteconomy.com")[-1].split("?")[0][:80] or "/"
             landings[path]["visits"] += 1
-            if v.goals_json:
+            if goal:
                 landings[path]["goal_visits"] += 1
 
     steps = []
@@ -304,10 +336,17 @@ def _funnel(visits: list[RawMetrikaVisit], registrations_by_day: dict[str, int])
 
 
 def _retention(all_visits: list[RawMetrikaVisit]) -> dict:
-    """Когорты по неделе первого визита: сколько посетителей вернулись через
-    1/2/3/4+ недель. client_id_hash — стабильный идентификатор браузера."""
+    """Возвращаемость аудитории в двух масштабах.
+
+    Дневные когорты — рабочий инструмент, пока продукту недели (история
+    визитов с 2026-06-30): когорта = день первого визита, столбцы = вернулся
+    через N дней (1..14). Недельные когорты копятся параллельно и станут
+    главными, когда истории будет больше месяца. Возвращаемость (returning) —
+    посетитель активен более чем в одном КАЛЕНДАРНОМ ДНЕ (не неделе: внутри
+    одной недели возврат на следующий день — тоже возврат).
+    """
     first_seen: dict[str, date] = {}
-    weeks_active: dict[str, set[str]] = defaultdict(set)
+    days_active: dict[str, set[date]] = defaultdict(set)
 
     for v in sorted(all_visits, key=lambda x: (x.visit_date or date.min)):
         if not v.client_id_hash or not v.visit_date:
@@ -315,30 +354,49 @@ def _retention(all_visits: list[RawMetrikaVisit]) -> dict:
         cid = v.client_id_hash
         if cid not in first_seen:
             first_seen[cid] = v.visit_date
-        week = v.visit_date - timedelta(days=v.visit_date.weekday())
-        weeks_active[cid].add(week.isoformat())
+        days_active[cid].add(v.visit_date)
 
-    cohorts: dict[str, dict[str, Any]] = defaultdict(lambda: {"size": 0, "returned": Counter()})
+    # Дневные когорты: день первого визита → размер + вернувшиеся через N дней.
+    day_cohorts: dict[str, dict[str, Any]] = defaultdict(lambda: {"size": 0, "returned": Counter()})
+    # Недельные когорты (задел на зрелость продукта).
+    week_cohorts: dict[str, dict[str, Any]] = defaultdict(lambda: {"size": 0, "returned": Counter()})
+
     for cid, first in first_seen.items():
-        cohort_week = (first - timedelta(days=first.weekday())).isoformat()
-        c = cohorts[cohort_week]
-        c["size"] += 1
-        for week_iso in weeks_active[cid]:
-            offset = (date.fromisoformat(week_iso) - date.fromisoformat(cohort_week)).days // 7
-            if offset > 0:
-                c["returned"][min(offset, 8)] += 1
+        dc = day_cohorts[first.isoformat()]
+        dc["size"] += 1
+        cohort_week = first - timedelta(days=first.weekday())
+        wc = week_cohorts[cohort_week.isoformat()]
+        wc["size"] += 1
+        weeks_seen: set[int] = set()
+        for d in days_active[cid]:
+            day_offset = (d - first).days
+            if 0 < day_offset <= 14:
+                dc["returned"][day_offset] += 1
+            week_offset = ((d - timedelta(days=d.weekday())) - cohort_week).days // 7
+            if week_offset > 0 and week_offset not in weeks_seen:
+                weeks_seen.add(week_offset)
+                wc["returned"][min(week_offset, 8)] += 1
 
-    rows = []
-    for week in sorted(cohorts, reverse=True)[:12]:
-        c = cohorts[week]
-        rows.append({
+    day_rows = [
+        {
+            "cohort_day": day,
+            "size": c["size"],
+            "day_plus": {str(k): v for k, v in sorted(c["returned"].items())},
+        }
+        for day, c in sorted(day_cohorts.items(), reverse=True)[:21]
+    ]
+    week_rows = [
+        {
             "cohort_week": week,
             "size": c["size"],
             "week_plus": {str(k): v for k, v in sorted(c["returned"].items())},
-        })
-    returning = sum(1 for cid in first_seen if len(weeks_active[cid]) > 1)
+        }
+        for week, c in sorted(week_cohorts.items(), reverse=True)[:12]
+    ]
+    returning = sum(1 for cid in first_seen if len(days_active[cid]) > 1)
     return {
-        "cohorts": rows,
+        "cohorts": week_rows,
+        "day_cohorts": day_rows,
         "unique_visitors": len(first_seen),
         "returning_visitors": returning,
         "returning_pct": round(returning / (len(first_seen) or 1) * 100, 1),
@@ -537,9 +595,14 @@ async def _navigation_graph(db: AsyncSession, since: datetime) -> dict:
     }
 
 
-async def _activity_heatmap(db: AsyncSession, since: datetime) -> list[dict]:
-    """Пульс недели: pageviews по (день недели × час МСК). Показывает ритм
-    аудитории — когда сайт живёт, когда пустует; окна для релизов и рекламы."""
+async def _activity_heatmap(db: AsyncSession, since: datetime,
+                            window_visits: list[RawMetrikaVisit] | None = None) -> list[dict]:
+    """Пульс недели: активность по (день недели × час МСК) из ДВУХ слоёв.
+
+    count — просмотры собственного потока behavior.js (живёт с 2026-07-04);
+    visits — визиты Метрики по точному времени начала визита (история глубже).
+    Вместе сетка заполнена даже там, куда собственный слой ещё не дотянулся.
+    """
     rows = (await db.execute(
         select(BehaviorEvent.occurred_at)
         .where(BehaviorEvent.event_type == "pageview",
@@ -552,9 +615,24 @@ async def _activity_heatmap(db: AsyncSession, since: datetime) -> list[dict]:
             continue
         msk = ts + timedelta(hours=3)  # UTC → МСК
         grid[(msk.weekday(), msk.hour)] += 1
+
+    # Слой Метрики: ym:s:dateTime уже в таймзоне счётчика (МСК).
+    visits_grid: Counter = Counter()
+    for v in window_visits or []:
+        raw_dt = _visit_field(v, "ym:s:dateTime")
+        if not raw_dt:
+            continue
+        try:
+            dt = datetime.fromisoformat(raw_dt)
+        except ValueError:
+            continue
+        visits_grid[(dt.weekday(), dt.hour)] += 1
+
+    keys = sorted(set(grid) | set(visits_grid))
     return [
-        {"dow": dow, "hour": hour, "count": cnt}
-        for (dow, hour), cnt in sorted(grid.items())
+        {"dow": dow, "hour": hour, "count": grid.get((dow, hour), 0),
+         "visits": visits_grid.get((dow, hour), 0)}
+        for dow, hour in keys
     ]
 
 
@@ -585,6 +663,88 @@ async def _content_structure(db: AsyncSession, since: datetime) -> dict:
             }
             for name, s in sorted(sections.items(), key=lambda kv: -kv[1]["views"])
         ],
+    }
+
+
+async def _audience(db: AsyncSession, since: datetime,
+                    window_visits: list[RawMetrikaVisit]) -> dict:
+    """Портрет аудитории из СОБСТВЕННЫХ данных (behavior_sessions) со сверкой
+    с Метрикой. Директива владельца 2026-07-05: знать про посетителей всё —
+    браузер, ОС, устройство, экран, язык, таймзону, источник — своими силами;
+    Метрика — референс для сверки, не единственный источник.
+    """
+    from app.models import BehaviorSession
+
+    sessions = (await db.execute(
+        select(BehaviorSession).where(BehaviorSession.started_at >= since)
+    )).scalars().all()
+
+    browsers: Counter = Counter()
+    browser_versions: Counter = Counter()
+    oses: Counter = Counter()
+    devices: Counter = Counter()
+    screens: Counter = Counter()
+    viewports: Counter = Counter()
+    languages: Counter = Counter()
+    timezones: Counter = Counter()
+    ref_hosts: Counter = Counter()
+    authed_count = 0
+
+    for s in sessions:
+        if s.device_type == "bot":
+            continue
+        browsers[s.browser or "Неизвестен"] += 1
+        if s.browser and s.browser_version:
+            browser_versions[f"{s.browser} {s.browser_version}"] += 1
+        oses[(s.os or "Неизвестна") + (f" {s.os_version}" if s.os_version else "")] += 1
+        devices[s.device_type or "unknown"] += 1
+        if s.screen_w and s.screen_h:
+            screens[f"{s.screen_w}×{s.screen_h}"] += 1
+        if s.viewport_w:
+            viewports[f"{s.viewport_w}px"] += 1
+        if s.language:
+            languages[s.language] += 1
+        if s.timezone:
+            timezones[s.timezone] += 1
+        if s.referrer_host:
+            ref_hosts[s.referrer_host] += 1
+        if s.authed:
+            authed_count += 1
+
+    # Референс Метрики для сверки: устройства/браузеры из повизитного сырья.
+    m_devices: Counter = Counter()
+    m_browsers: Counter = Counter()
+    m_os: Counter = Counter()
+    for v in window_visits:
+        dev = _visit_field(v, "ym:s:deviceCategory")
+        if dev:
+            m_devices[dev] += 1
+        br = _visit_field(v, "ym:s:browser")
+        if br:
+            m_browsers[br] += 1
+        osr = _visit_field(v, "ym:s:operatingSystemRoot")
+        if osr:
+            m_os[osr] += 1
+
+    total = sum(devices.values())
+    return {
+        "own_sessions_total": total,
+        "own_authed_sessions": authed_count,
+        "browsers": dict(browsers.most_common(12)),
+        "browser_versions": dict(browser_versions.most_common(15)),
+        "os": dict(oses.most_common(12)),
+        "devices": dict(devices.most_common()),
+        "screens": dict(screens.most_common(12)),
+        "viewports": dict(viewports.most_common(10)),
+        "languages": dict(languages.most_common(10)),
+        "timezones": dict(timezones.most_common(10)),
+        "referrer_hosts": dict(ref_hosts.most_common(12)),
+        "metrika_reference": {
+            "visits_total": len(window_visits),
+            "devices": dict(m_devices.most_common()),
+            "browsers": dict(m_browsers.most_common(12)),
+            "os": dict(m_os.most_common(10)),
+        },
     }
 
 
@@ -683,8 +843,9 @@ async def build_bi_dashboard(db: AsyncSession, days: int = 30) -> dict[str, Any]
         "demand": await _demand_vs_coverage(db, since),
         "onsite_search": await _onsite_search(db, since),
         "navigation": await _navigation_graph(db, since),
-        "activity_heatmap": await _activity_heatmap(db, since),
+        "activity_heatmap": await _activity_heatmap(db, since, window_visits),
         "content_structure": await _content_structure(db, since),
+        "audience": await _audience(db, since, window_visits),
         "behavior_issues": await _behavior_issues(db, since),
         "events": await _events_breakdown(db, since),
         "hypotheses": await _hypotheses(db),

@@ -564,6 +564,47 @@ class BehaviorEvent(Base):
     ingested_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
 
 
+class BehaviorSession(Base):
+    """Портрет сессии собственного счётчика (аналог визита Метрики, 2026-07-05).
+
+    Одна строка = одна сессия behavior.js. Клиент шлёт событие session_start
+    один раз за сессию: user-agent, экран, язык, таймзона, referrer, UTM.
+    Сервер разбирает UA (`ua_parser.py`) в browser/os/device — этим закрывается
+    директива владельца «знать ВСЁ про аудиторию своими силами, Метрика — для
+    сверки». BI-вкладка «Аудитория» строится отсюда; связь с потоком событий —
+    по session_id_hash.
+    """
+    __tablename__ = "behavior_sessions"
+    __table_args__ = (
+        Index("ix_behavior_sessions_started", "started_at"),
+    )
+
+    session_id_hash: Mapped[str] = mapped_column(String(80), primary_key=True)
+    user_id: Mapped[str | None] = mapped_column(String(36))
+    authed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, server_default="false")
+    started_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    entry_page: Mapped[str | None] = mapped_column(String(500))
+    referrer: Mapped[str | None] = mapped_column(String(1000))
+    referrer_host: Mapped[str | None] = mapped_column(String(200))
+    utm_source: Mapped[str | None] = mapped_column(String(120))
+    utm_medium: Mapped[str | None] = mapped_column(String(120))
+    utm_campaign: Mapped[str | None] = mapped_column(String(200))
+    ua_raw: Mapped[str | None] = mapped_column(String(500))
+    browser: Mapped[str | None] = mapped_column(String(40))
+    browser_version: Mapped[str | None] = mapped_column(String(20))
+    os: Mapped[str | None] = mapped_column(String(30))
+    os_version: Mapped[str | None] = mapped_column(String(30))
+    device_type: Mapped[str | None] = mapped_column(String(12))
+    screen_w: Mapped[int | None] = mapped_column(Integer)
+    screen_h: Mapped[int | None] = mapped_column(Integer)
+    viewport_w: Mapped[int | None] = mapped_column(Integer)
+    viewport_h: Mapped[int | None] = mapped_column(Integer)
+    dpr: Mapped[float | None] = mapped_column(Numeric(4, 2))
+    language: Mapped[str | None] = mapped_column(String(16))
+    timezone: Mapped[str | None] = mapped_column(String(60))
+    touch: Mapped[bool | None] = mapped_column(Boolean)
+
+
 class Hypothesis(Base):
     """Булев слой знаний поверх собранных данных (стратегия владельца 2026-07-03).
 

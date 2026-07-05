@@ -5,6 +5,8 @@
  * дублируются в Метрику), а этот модуль собирает СЫРОЙ поведенческий поток без
  * ручной разметки, под data science:
  *
+ *   - session_start один раз за сессию: портрет посетителя (user-agent,
+ *                    экран, язык, таймзона, referrer, UTM) → behavior_sessions;
  *   - pageview      каждый переход по роутам SPA (+ первый заход);
  *   - click         КАЖДЫЙ клик: иерархический путь элемента, текст, координаты,
  *                    признаки dead (некликабельная цель) и rage (серия злых кликов);
@@ -26,6 +28,7 @@
 
 const ENDPOINT = '/api/v1/analytics/behavior';
 const SESSION_KEY = 'fe:analytics:session';
+const SESSION_META_KEY = 'fe:analytics:session:meta';
 const CONSENT_KEY = 'fe:consent:v1';
 const CONSENT_V = '2026-06-16';
 
@@ -177,6 +180,37 @@ function emitDwell() {
   });
 }
 
+/**
+ * Портрет сессии (session_start) — один раз за сессию: user-agent, экран,
+ * язык, таймзона, referrer и UTM точки входа. Серверная сторона разбирает UA
+ * в браузер/ОС/устройство (behavior_sessions) — собственный аналог визита
+ * Метрики, чтобы знать аудиторию своими данными и сверять с Метрикой.
+ */
+function emitSessionStart() {
+  try {
+    if (window.sessionStorage.getItem(SESSION_META_KEY)) return;
+    window.sessionStorage.setItem(SESSION_META_KEY, '1');
+  } catch { return; }
+  let tz = null;
+  try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || null; } catch { /* ignore */ }
+  const q = new URLSearchParams(window.location.search);
+  push('session_start', {
+    ua: (navigator.userAgent || '').slice(0, 500),
+    ref: document.referrer || null,
+    sw: (window.screen && window.screen.width) || null,
+    sh: (window.screen && window.screen.height) || null,
+    vw: window.innerWidth,
+    vh: window.innerHeight,
+    dpr: Math.round((window.devicePixelRatio || 1) * 100) / 100,
+    lang: (navigator.language || '').slice(0, 16) || null,
+    tz,
+    touch: 'ontouchstart' in window ? 1 : 0,
+    us: q.get('utm_source'),
+    um: q.get('utm_medium'),
+    uc: q.get('utm_campaign'),
+  });
+}
+
 function enterPage(url) {
   _pageLoadId = newPageLoadId();
   _pageEnteredAt = Date.now();
@@ -281,6 +315,7 @@ export function behaviorInit() {
   if (!_enabled) return;
 
   enterPage(cleanUrl());
+  emitSessionStart();
 
   document.addEventListener('click', onClick, { capture: true, passive: true });
   document.addEventListener('mousemove', onMove, { passive: true });
