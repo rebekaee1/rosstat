@@ -1,9 +1,12 @@
 # Yandex Webmaster API Inventory
 
-**Last verified:** 2026-05-22 (sanity-check, статус без изменений).
+**Last verified:** 2026-07-07 (включён ежедневный синк популярных запросов).
 **Implementation status:** `partial` — `app/services/yandex_webmaster_client.py`.
 Реализовано: `user`, `hosts`, `host`, `summary`, `diagnostics`, `sitemaps` (read),
-`search_queries_popular`, `recrawl_queue` / `recrawl_quota` / `submit_recrawl`,
+`search_queries_popular` (с 2026-07-07 — ежедневный синк 08:40 МСК в
+`webmaster_search_queries`: окно 7 дней по дню, идемпотентно;
+`analytics_backfill.backfill_webmaster_search_queries` — кормит BI «Спрос и SEO»),
+`recrawl_queue` / `recrawl_quota` / `submit_recrawl`,
 `indexing_history`, `links_internal_broken_samples`. Не реализовано:
 important-urls (+ history), owners, verification (read+start), sqi_history,
 search-urls/in-search и search-urls/events (history+samples), links/external,
