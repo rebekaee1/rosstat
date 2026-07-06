@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Cookie, X } from 'lucide-react';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
@@ -49,6 +49,7 @@ const btnBase = cn(
 );
 
 export default function CookieConsent() {
+  const { pathname } = useLocation();
   const [visible, setVisible] = useState(() => !isConsentCurrent(getConsent()));
   const [expanded, setExpanded] = useState(false);
   // Подразумеваемое согласие: по умолчанию всё включено (трекеры уже загружены).
@@ -74,6 +75,9 @@ export default function CookieConsent() {
     return () => window.removeEventListener(CONSENT_OPEN_EVENT, reopen);
   }, []);
 
+  // Служебные страницы (/admin/*) — баннер не показываем: админ не «посетитель»,
+  // а перекрытие карточек BI мешает работе (владелец, 2026-07-06).
+  if (pathname.startsWith('/admin')) return null;
   if (!visible) return null;
 
   const commit = (analytics, ads, action) => {

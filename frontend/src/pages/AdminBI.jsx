@@ -27,7 +27,7 @@ import { useAuth } from '../context/authContext';
 import useDocumentMeta from '../lib/useMeta';
 import {
   channelLabel, deviceLabel, engineLabel,
-  languageLabel, timezoneLabel, cityLabel, blockLabel, pageSectionRu,
+  languageLabel, timezoneLabel, cityLabel, geoRegionLabel, blockLabel, pageSectionRu,
   sliceMetricLabel, sliceDimLabel, collapsePhrases,
 } from '../lib/biLabels';
 
@@ -642,7 +642,7 @@ function AcquisitionTab({ d }) {
   // Поисковики: наш счётчик + сверка с Метрикой по переключателю.
   const metrikaEngines = a.search_engines || {};
   const engineBars = dictToBars(own.search_engines, 8);
-  const ownCities = dictToBars(aud.cities, 8);
+  const ownCities = dictToBars(aud.cities, 8, cityLabel);
   const [cmpSrc, toggleCmpSrc] = useMetrikaCompare('sources-acq');
   const [cmpEng, toggleCmpEng] = useMetrikaCompare('engines-acq');
   const [cmpDev, toggleCmpDev] = useMetrikaCompare('devices-acq');
@@ -720,7 +720,11 @@ function AcquisitionTab({ d }) {
       </Card>
 
       <Card title="Поисковые фразы, с которых пришли" icon={Search} source="metrika" insight="Реальные запросы, приведшие посетителей из поиска. Близкие недопечатки схлопнуты в полную фразу.">
-        <PhraseTable rows={collapsePhrases(a.top_phrases, { limit: 12 })} valueLabel="визитов" />
+        {(a.top_phrases && Object.keys(a.top_phrases).length) ? (
+          <PhraseTable rows={collapsePhrases(a.top_phrases, { limit: 12 })} valueLabel="визитов" />
+        ) : <Empty note={a.today_live
+          ? 'Фразы Метрика отдаёт повизитно за завершённый день — появятся завтра после утреннего синка.'
+          : undefined} />}
       </Card>
       <div className="space-y-5">
         <Card title="Устройства" icon={Users} source={devDonut.length ? 'own' : 'metrika'}
@@ -795,7 +799,9 @@ function FunnelTab({ d }) {
                 <Bar dataKey="bounced" name="Отсеялся" stackId="s" fill="rgba(26,26,46,0.14)" maxBarSize={26} />
               </BarChart>
             </ResponsiveContainer>
-          ) : <Empty />}
+          ) : <Empty note={d.metrika_live_today
+            ? 'Повизитные разрезы Метрики доступны за завершённые дни — за сегодня появятся завтра после утреннего синка.'
+            : undefined} />}
         </Card>
       </div>
 
@@ -834,7 +840,9 @@ function FunnelTab({ d }) {
               <span className="flex items-center gap-1"><span className="w-3 h-3 rounded" style={{ background: 'rgba(26,26,46,0.28)' }} /> &lt; 3%</span>
             </div>
           </div>
-        ) : <Empty />}
+        ) : <Empty note={d.metrika_live_today
+          ? 'Повизитные посадочные Метрика отдаёт за завершённый день — появятся завтра после утреннего синка.'
+          : undefined} />}
       </Card>
     </div>
   );
@@ -1758,7 +1766,9 @@ function ConversionTab({ d }) {
               ))}
             </ul>
           ) : (
-            <Empty note={mk.goals_dict_size === 0 ? 'Словарь целей Метрики синхронизируется ежедневно — появится после первого прогона.' : undefined} />
+            <Empty note={mk.today_live
+              ? 'Сводные визиты за сегодня — живые (Reporting API); повизитные цели Метрика отдаёт за завершённый день, появятся завтра после утреннего синка.'
+              : mk.goals_dict_size === 0 ? 'Словарь целей Метрики синхронизируется ежедневно — появится после первого прогона.' : undefined} />
           )}
         </Card>
       </div>
@@ -1947,11 +1957,11 @@ function AudienceFullTab({ d }) {
         <Card title="География: страны" icon={Globe2} source="own" insight="Наше гео по IP (база обновляется ежемесячно), сам адрес не хранится.">
           <HBars data={dictToBars(geo.countries, 8)} color={INK} />
         </Card>
-        <Card title="Регионы России" icon={Globe2} source="own">
-          <HBars data={dictToBars(geo.regions, 10)} color={BLUE} />
+        <Card title="Регионы" icon={Globe2} source="own">
+          <HBars data={dictToBars(geo.regions, 10, geoRegionLabel)} color={BLUE} />
         </Card>
         <Card title="Города" icon={Globe2} source="own">
-          <HBars data={dictToBars(geo.cities, 10)} color={PURPLE} />
+          <HBars data={dictToBars(geo.cities, 10, cityLabel)} color={PURPLE} />
         </Card>
       </div>
       <PeopleCard d={d} />
@@ -2369,8 +2379,9 @@ function AcquisitionFullTab({ d }) {
     <div className="space-y-5">
       <AcquisitionTab d={d} />
 
-      <Card title="Сегменты: канал × устройство × новизна" icon={Layers} source="metrika"
-        insight="Пересечение трёх осей на дневных агрегатах; «с целью» — только конверсионные business-цели (регистрация, подписка, скачивание). Где конверсия выше — там усиливать; сегменты с высокими отказами — проверять посадочные.">
+      <Card title="Сегменты: канал × устройство × новизна" icon={Layers}
+        source={d.segments?.source === 'own' ? 'own' : 'metrika'}
+        insight="Пересечение трёх осей; «с целью» — только конверсионные business-цели (регистрация, подписка, скачивание). За завершённые дни — агрегаты Метрики, за сегодня — сессии нашего счётчика. Где конверсия выше — там усиливать; сегменты с высокими отказами — проверять посадочные.">
         {segs.length ? (
           <div className="overflow-x-auto">
             <table className="w-full text-[12px]">
@@ -2402,7 +2413,7 @@ function AcquisitionFullTab({ d }) {
               </tbody>
             </table>
           </div>
-        ) : <Empty note="Сегменты строятся на дневных агрегатах — появятся после первого цикла." />}
+        ) : <Empty note="Сессий за период ещё нет — сегменты появятся с первым трафиком." />}
       </Card>
 
       <Card title="Деньги рекламы: расход, CPA, ROI" icon={Megaphone} source="metrika"

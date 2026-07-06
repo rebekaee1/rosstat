@@ -797,7 +797,9 @@ async def mart_geo(db: AsyncSession, period: Period | int = 30) -> dict[str, Any
         if region:
             regions[region] += cnt
         if city:
-            cities[city] += cnt
+            # DB-IP отдаёт округ в скобках («Moscow (Tsentralnyy ...)») —
+            # схлопываем в город, иначе Москва дублируется в топе.
+            cities[re.sub(r"\s*\(.+\)$", "", city)] += cnt
     return {
         "countries": dict(countries.most_common(15)),
         "regions": dict(regions.most_common(20)),
@@ -806,7 +808,12 @@ async def mart_geo(db: AsyncSession, period: Period | int = 30) -> dict[str, Any
 
 
 async def mart_segments(db: AsyncSession, period: Period | int = 30) -> dict[str, Any]:
-    """Сегментация на rollup'ах: канал × устройство × новизна (визиты Метрики)."""
+    """Сегментация: канал × устройство × новизна.
+
+    Основной слой — дневные агрегаты Метрики (DailyTraffic). Если за окно их
+    нет (период «Сегодня»: Метрика отдаёт агрегаты за завершённый день) —
+    fallback на собственные небот-сессии, чтобы карточка не была пустой.
+    """
     p = as_period(period)
     rows = (await db.execute(
         select(
@@ -830,8 +837,37 @@ async def mart_segments(db: AsyncSession, period: Period | int = 30) -> dict[str
             "avg_duration_sec": round(int(dur or 0) / v) if v else 0,
             "bounce_pct": round(int(bounces or 0) / v * 100, 1) if v else 0.0,
         })
+    if segments:
+        segments.sort(key=lambda s: -s["visits"])
+        return {"segments": segments, "source": "metrika"}
+
+    own_rows = (await db.execute(
+        select(
+            ServerSession.channel, ServerSession.device, ServerSession.is_new_visitor,
+            func.count(),
+            func.sum(case((ServerSession.macro_goals > 0, 1), else_=0)),
+            func.sum(ServerSession.duration_ms),
+            func.sum(case((ServerSession.pageviews <= 1, 1), else_=0)),
+        )
+        .where(ServerSession.day >= p.start_date, ServerSession.day <= p.end_date,
+               ServerSession.is_bot.is_(False), ServerSession.is_internal.is_(False))
+        .group_by(ServerSession.channel, ServerSession.device, ServerSession.is_new_visitor)
+    )).all()
+    for ch, dev, is_new, n, goals, dur_ms, bounces in own_rows:
+        v = int(n or 0)
+        goal_sessions = int(goals or 0)
+        segments.append({
+            "channel": ch or "direct",
+            "device": dev or "unknown",
+            "is_new": bool(is_new),
+            "visits": v,
+            "goal_visits": goal_sessions,
+            "conversion_pct": round(goal_sessions / v * 100, 2) if v else 0.0,
+            "avg_duration_sec": round(int(dur_ms or 0) / 1000 / v) if v else 0,
+            "bounce_pct": round(int(bounces or 0) / v * 100, 1) if v else 0.0,
+        })
     segments.sort(key=lambda s: -s["visits"])
-    return {"segments": segments}
+    return {"segments": segments, "source": "own"}
 
 
 # ---------------------------------------------------------------------------

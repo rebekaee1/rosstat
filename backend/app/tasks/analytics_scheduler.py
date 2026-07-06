@@ -227,6 +227,23 @@ async def acquisition_daily_job() -> None:
     logger.info("Acquisition sync %s: %s", yesterday, out)
 
 
+async def webmaster_queries_daily_job() -> None:
+    """Ежедневный синк популярных запросов Вебмастера (08:40 МСК).
+
+    Тянем окно последних 7 дней: у API лаг 2–3 дня, повторный прогон
+    идемпотентно дозаполняет дни, которые вчера ещё не отдавались.
+    Кормит блок «Спрос и SEO» (webmaster_queries) в BI.
+    """
+    if not settings.yandex_webmaster_token:
+        return
+    from app.services.analytics_backfill import backfill_webmaster_search_queries
+    today = date.today()
+    async with async_session() as db:
+        n = await backfill_webmaster_search_queries(
+            db, date_from=today - timedelta(days=7), date_to=today - timedelta(days=1))
+    logger.info("Webmaster search queries sync: %s rows", n)
+
+
 async def behavior_retention_job() -> None:
     """Аварийный клапан по диску для сырого поведенческого потока (04:30 МСК).
 

@@ -26,6 +26,7 @@ vs покрытие, внутренние поиски сайта, граф вн
 from __future__ import annotations
 
 import logging
+import re
 from collections import Counter, defaultdict
 from datetime import date, datetime, timedelta, timezone
 from typing import Any
@@ -756,7 +757,8 @@ async def _audience(db: AsyncSession, p: Period,
         if s.referrer_host and OWN_DOMAIN not in s.referrer_host:
             ref_hosts[s.referrer_host] += 1
         if s.city:
-            cities[s.city] += 1
+            # DB-IP отдаёт округ в скобках («Moscow (Tsentralnyy ...)») — схлопываем.
+            cities[re.sub(r"\s*\(.+\)$", "", s.city)] += 1
         if s.authed:
             authed_count += 1
 
@@ -950,4 +952,66 @@ async def build_bi_dashboard(db: AsyncSession, period: Period | int = 30) -> dic
         "hypotheses": await _hypotheses(db),
         "dataset": await build_inventory(db),
     }
+    await _merge_metrika_live_today(dashboard, p, window_visits)
     return dashboard
+
+
+async def _merge_metrika_live_today(
+    dashboard: dict[str, Any], p: Period, window_visits: list
+) -> None:
+    """Живой слой Метрики за сегодня (Reporting API) поверх Logs-данных.
+
+    Logs API отдаёт повизитку только за завершённые дни → на периоде,
+    включающем сегодня, Метрика-блоки были нулями («метрика не подгрузилась»,
+    владелец 2026-07-06). Если окно захватывает сегодня и повизитки за сегодня
+    нет — дотягиваем сводку и разрезы живыми числами Reporting API.
+    Детальные повизитные витрины (воронка по источникам, фразы) появятся
+    после утреннего синка — фронт помечает их подписью.
+    """
+    from app.services.analytics_period import msk_day
+    today_msk = msk_day(datetime.now(timezone.utc))
+    if p.end_date < today_msk:
+        return
+    has_today_visits = any(v.visit_date == today_msk for v in window_visits)
+    if has_today_visits:
+        return
+    from app.services.metrika_acquisition import live_today_reference
+    live = await live_today_reference()
+    if not live or not live.get("visits"):
+        return
+
+    dashboard["metrika_live_today"] = {"date": today_msk.isoformat(), **live}
+
+    # KPI-ряд: строка сегодняшнего дня получает живые визиты вместо нуля.
+    for row in dashboard.get("kpi_daily") or []:
+        if row.get("date") == today_msk.isoformat() and not row.get("visits"):
+            row["visits"] = live["visits"]
+            row["visitors"] = live["users"]
+
+    ns = (dashboard.get("metric_tree") or {}).get("north_star") or {}
+    if "metrika_visits_total" in ns:
+        ns["metrika_visits_total"] = int(ns["metrika_visits_total"] or 0) + live["visits"]
+
+    mf = dashboard.get("metrika_funnel") or {}
+    if not mf.get("visits"):
+        mf["visits"] = live["visits"]
+        mf["today_live"] = True  # цели за сегодня Logs-слой ещё не отдал
+
+    ref = (dashboard.get("audience") or {}).get("metrika_reference") or {}
+    if not ref.get("visits_total"):
+        ref.update({
+            "visits_total": live["visits"],
+            "devices": live["devices"],
+            "cities": live["cities"],
+            "today_live": True,
+        })
+
+    acq = dashboard.get("acquisition") or {}
+    if not acq.get("sources"):
+        acq.update({
+            "sources": live["sources"],
+            "search_engines": live["search_engines"],
+            "devices": live["devices"],
+            "top_cities": live["cities"],
+            "today_live": True,
+        })

@@ -175,3 +175,51 @@ def test_retention_day_cohorts():
     day_cohort = next(c for c in ret["day_cohorts"] if c["cohort_day"] == "2026-07-01")
     assert day_cohort["size"] == 2
     assert day_cohort["day_plus"].get("1") == 1
+
+
+def test_metrika_live_today_merge(monkeypatch):
+    """Живой слой Метрики за сегодня (2026-07-06, «метрика не подгрузилась»):
+    если окно захватывает сегодня и повизитки за сегодня нет — сводка и разрезы
+    дотягиваются из Reporting API поверх нулей Logs-слоя."""
+    import asyncio
+    from datetime import datetime, timezone
+
+    from app.services import admin_bi
+    from app.services.analytics_period import msk_day, resolve_period
+
+    today = msk_day(datetime.now(timezone.utc)).isoformat()
+
+    async def fake_live():
+        return {"visits": 42, "users": 30,
+                "sources": {"organic": 25, "direct": 17},
+                "search_engines": {"yandex": 20},
+                "devices": {"mobile": 30, "desktop": 12},
+                "cities": {"Москва": 15}}
+
+    monkeypatch.setattr(
+        "app.services.metrika_acquisition.live_today_reference", fake_live)
+
+    dashboard = {
+        "kpi_daily": [{"date": today, "visits": 0, "visitors": 0}],
+        "metric_tree": {"north_star": {"metrika_visits_total": 100}},
+        "metrika_funnel": {"visits": 0},
+        "audience": {"metrika_reference": {"visits_total": 0}},
+        "acquisition": {"sources": {}},
+    }
+    asyncio.run(admin_bi._merge_metrika_live_today(
+        dashboard, resolve_period("today"), window_visits=[]))
+
+    assert dashboard["metrika_live_today"]["visits"] == 42
+    assert dashboard["kpi_daily"][0]["visits"] == 42
+    assert dashboard["metric_tree"]["north_star"]["metrika_visits_total"] == 142
+    assert dashboard["metrika_funnel"]["visits"] == 42
+    assert dashboard["metrika_funnel"]["today_live"] is True
+    assert dashboard["audience"]["metrika_reference"]["visits_total"] == 42
+    assert dashboard["acquisition"]["sources"] == {"organic": 25, "direct": 17}
+
+    # Прошлое окно (без сегодня) live-слой не трогает.
+    past = {"kpi_daily": [], "metric_tree": {"north_star": {"metrika_visits_total": 5}},
+            "metrika_funnel": {"visits": 5}, "audience": {}, "acquisition": {}}
+    asyncio.run(admin_bi._merge_metrika_live_today(
+        past, resolve_period("custom", "2026-01-01", "2026-01-07"), window_visits=[]))
+    assert "metrika_live_today" not in past

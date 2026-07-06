@@ -136,9 +136,71 @@ const CITY_RU = {
   Minsk: 'Минск', Almaty: 'Алма-Ата', Tashkent: 'Ташкент', Baku: 'Баку',
   Yerevan: 'Ереван', Tbilisi: 'Тбилиси', Bishkek: 'Бишкек',
   Chisinau: 'Кишинёв', Astana: 'Астана', Karaganda: 'Караганда',
+  // Дальнее зарубежье: GeoIP отдаёт латиницу — русифицируем частые.
+  Amsterdam: 'Амстердам', Berlin: 'Берлин', London: 'Лондон', Paris: 'Париж',
+  Helsinki: 'Хельсинки', Frankfurt: 'Франкфурт', Warsaw: 'Варшава',
+  Prague: 'Прага', Vienna: 'Вена', Istanbul: 'Стамбул', Dubai: 'Дубай',
+  'Tel Aviv': 'Тель-Авив', Limassol: 'Лимасол', Larnaca: 'Ларнака',
+  Nicosia: 'Никосия', Belgrade: 'Белград', Riga: 'Рига', Vilnius: 'Вильнюс',
+  Tallinn: 'Таллин', 'New York': 'Нью-Йорк', 'San Jose': 'Сан-Хосе',
+  'San Francisco': 'Сан-Франциско', 'Los Angeles': 'Лос-Анджелес',
+  Beijing: 'Пекин', Shanghai: 'Шанхай', Tokyo: 'Токио', Seoul: 'Сеул',
+  Singapore: 'Сингапур', Bangkok: 'Бангкок', Bucharest: 'Бухарест',
 };
 
-export const cityLabel = (name) => CITY_RU[name] || (name ? name : '(не определён)');
+export const cityLabel = (name) => {
+  if (!name) return '(не определён)';
+  // DB-IP иногда добавляет округ в скобках («Moscow (Tsentralnyy ...)»).
+  const base = name.replace(/\s*\(.+\)$/, '');
+  return CITY_RU[base] || base;
+};
+
+/* ---------- Регионы (GeoIP en → русские имена) ---------- */
+
+const GEO_REGION_RU = {
+  Moscow: 'Москва', 'Moscow Oblast': 'Московская область',
+  'St.-Petersburg': 'Санкт-Петербург', 'Saint Petersburg': 'Санкт-Петербург',
+  'Leningrad Oblast': 'Ленинградская область',
+  'Novosibirsk Oblast': 'Новосибирская область',
+  'Sverdlovsk Oblast': 'Свердловская область',
+  Tatarstan: 'Татарстан', 'Republic of Tatarstan': 'Татарстан',
+  'Nizhny Novgorod Oblast': 'Нижегородская область',
+  'Chelyabinsk Oblast': 'Челябинская область',
+  'Samara Oblast': 'Самарская область', 'Omsk Oblast': 'Омская область',
+  'Rostov Oblast': 'Ростовская область',
+  Bashkortostan: 'Башкортостан', 'Republic of Bashkortostan': 'Башкортостан',
+  'Krasnoyarsk Krai': 'Красноярский край',
+  'Voronezh Oblast': 'Воронежская область', 'Perm Krai': 'Пермский край',
+  'Volgograd Oblast': 'Волгоградская область',
+  'Krasnodar Krai': 'Краснодарский край',
+  'Saratov Oblast': 'Саратовская область', 'Tyumen Oblast': 'Тюменская область',
+  'Irkutsk Oblast': 'Иркутская область', 'Kemerovo Oblast': 'Кемеровская область',
+  'Khabarovsk Krai': 'Хабаровский край', 'Primorsky Krai': 'Приморский край',
+  'Stavropol Krai': 'Ставропольский край', Udmurtia: 'Удмуртия',
+  'Kaliningrad Oblast': 'Калининградская область',
+  'Tula Oblast': 'Тульская область', 'Yaroslavl Oblast': 'Ярославская область',
+  'Tver Oblast': 'Тверская область', 'Belgorod Oblast': 'Белгородская область',
+  'Vladimir Oblast': 'Владимирская область', 'Kursk Oblast': 'Курская область',
+  'Lipetsk Oblast': 'Липецкая область', 'Ryazan Oblast': 'Рязанская область',
+  'Penza Oblast': 'Пензенская область', 'Kirov Oblast': 'Кировская область',
+  'Orenburg Oblast': 'Оренбургская область', 'Tomsk Oblast': 'Томская область',
+  'Ulyanovsk Oblast': 'Ульяновская область',
+  'Astrakhan Oblast': 'Астраханская область',
+  Dagestan: 'Дагестан', Crimea: 'Крым', 'Republic of Crimea': 'Крым',
+  // Частые зарубежные (в основном хостинг-трафик и релоканты).
+  Washington: 'Вашингтон (штат)', California: 'Калифорния',
+  'North Holland': 'Северная Голландия', 'Minsk City': 'Минск', Minsk: 'Минск',
+};
+
+// Хвосты «X Oblast / X Krai» вне словаря русифицируем по суффиксу,
+// чтобы не мешать латиницу с кириллицей в одной колонке.
+export const geoRegionLabel = (name) => {
+  if (!name) return '(не определён)';
+  if (GEO_REGION_RU[name]) return GEO_REGION_RU[name];
+  const m = /^(.+?)\s+(Oblast|Krai)$/.exec(name);
+  if (m) return `${cityLabel(m[1])} (${m[2] === 'Oblast' ? 'обл.' : 'край'})`;
+  return name;
+};
 
 /* ---------- Блоки страниц ([data-block]) ---------- */
 

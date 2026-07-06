@@ -194,6 +194,81 @@ async def backfill_metrika_search_phrases(db: AsyncSession, *, date_from: date, 
         raise
 
 
+_WEBMASTER_HOST_ID = "https:forecasteconomy.com:443"
+
+
+async def backfill_webmaster_search_queries(
+    db: AsyncSession, *, date_from: date, date_to: date
+) -> int:
+    """Популярные запросы Яндекс-поиска (Вебмастер) → webmaster_search_queries.
+
+    До 2026-07-06 таблицу никто не заполнял — блок «Спрос и SEO» в BI был
+    вечно пустым. Тянем по дню (у API лаг 2–3 дня: свежие дни отдают нули или
+    404 — молча пропускаем, доберём следующим прогоном). Идемпотентно по
+    (host, date, query, url).
+    """
+    from app.models import WebmasterSearchQuery
+    from app.services.yandex_webmaster_client import YandexWebmasterClient
+
+    if not settings.yandex_webmaster_token:
+        return 0
+    client = YandexWebmasterClient()
+    user_id = (await client.user()).data["user_id"]
+    run = await start_sync_run(
+        db, source="yandex_webmaster", job_type="daily_search_queries",
+        date_from=date_from, date_to=date_to,
+        metadata={"host": _WEBMASTER_HOST_ID},
+    )
+    await db.commit()
+    processed = 0
+    try:
+        for day in daterange(date_from, date_to):
+            try:
+                resp = await client.search_queries_popular(
+                    user_id, _WEBMASTER_HOST_ID,
+                    order_by="TOTAL_SHOWS",
+                    query_indicator=["TOTAL_SHOWS", "TOTAL_CLICKS",
+                                     "AVG_SHOW_POSITION", "AVG_CLICK_POSITION"],
+                    date_from=str(day), date_to=str(day), limit=100,
+                )
+            except Exception:  # noqa: BLE001 — свежие дни API ещё не отдаёт
+                continue
+            for q in (resp.data or {}).get("queries") or []:
+                text = (q.get("query_text") or "").strip()
+                if not text:
+                    continue
+                ind = q.get("indicators") or {}
+                shows = int(ind.get("TOTAL_SHOWS") or 0)
+                clicks = int(ind.get("TOTAL_CLICKS") or 0)
+                if not shows and not clicks:
+                    continue
+                existing = (await db.execute(
+                    select(WebmasterSearchQuery).where(
+                        WebmasterSearchQuery.host == _WEBMASTER_HOST_ID,
+                        WebmasterSearchQuery.date == day,
+                        WebmasterSearchQuery.query == text,
+                        WebmasterSearchQuery.url.is_(None),
+                    )
+                )).scalar_one_or_none() or WebmasterSearchQuery(
+                    host=_WEBMASTER_HOST_ID, date=day, query=text, url=None,
+                )
+                existing.impressions = shows
+                existing.clicks = clicks
+                existing.ctr = round(clicks / shows, 4) if shows else None
+                pos = ind.get("AVG_SHOW_POSITION")
+                existing.position = round(float(pos), 2) if pos is not None else None
+                db.add(existing)
+                processed += 1
+        await finish_sync_run(db, run, records_processed=processed)
+        await db.commit()
+        return processed
+    except Exception as exc:
+        await db.rollback()
+        await finish_sync_run(db, run, status="failed", error_message=str(exc)[:500])
+        await db.commit()
+        raise
+
+
 async def backfill_seo_snapshots(db: AsyncSession, *, base_url: str | None = None, limit: int | None = None) -> int:
     base_url = (base_url or settings.analytics_base_url).rstrip("/")
     run = await start_sync_run(db, source="seo_crawler", job_type="backfill_seo_snapshots", metadata={"base_url": base_url})

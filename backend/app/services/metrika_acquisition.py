@@ -122,6 +122,15 @@ def _visit_int(row: dict[str, str], field: str) -> int | None:
         return None
 
 
+def _clip(value: str | None, limit: int) -> str | None:
+    """Обрезка под VARCHAR-лимит колонки. Рекламные URL Яндекса с etext-токеном
+    бывают длиннее 1000 символов — без клипа падает вся суточная выгрузка
+    (StringDataRightTruncation). Полное значение остаётся в raw_json."""
+    if not value:
+        return None
+    return value[:limit]
+
+
 async def _upsert_visit(db: AsyncSession, counter_id: str, row: dict[str, str]) -> bool:
     """Одна строка Logs API → raw_metrika_visits. True = новая строка."""
     visit_id = (row.get("ym:s:visitID") or "").strip()
@@ -145,12 +154,12 @@ async def _upsert_visit(db: AsyncSession, counter_id: str, row: dict[str, str]) 
         except ValueError:
             item.start_time = None
     item.client_id_hash = stable_hash(row.get("ym:s:clientID") or "")[:80]
-    item.start_url = (row.get("ym:s:startURL") or None)
-    item.referer = (row.get("ym:s:referer") or None)
-    item.traffic_source = (row.get("ym:s:lastTrafficSource") or None)
-    item.search_engine = (row.get("ym:s:lastSearchEngine")
-                          or row.get("ym:s:lastSearchEngineRoot") or None)
-    item.search_phrase = (row.get("ym:s:lastSearchPhrase") or None)
+    item.start_url = _clip(row.get("ym:s:startURL"), 1000)
+    item.referer = _clip(row.get("ym:s:referer"), 1000)
+    item.traffic_source = _clip(row.get("ym:s:lastTrafficSource"), 100)
+    item.search_engine = _clip(row.get("ym:s:lastSearchEngine")
+                               or row.get("ym:s:lastSearchEngineRoot"), 100)
+    item.search_phrase = _clip(row.get("ym:s:lastSearchPhrase"), 500)
     item.duration_seconds = _visit_int(row, "ym:s:visitDuration")
     goals_raw = (row.get("ym:s:goalsID") or "").strip()
     item.goals_json = {"goals": goals_raw} if goals_raw and goals_raw not in ("[]", "") else None
@@ -230,6 +239,75 @@ async def sync_visits_for_day(db: AsyncSession, day: date, counter_id: str | Non
         await finish_sync_run(db, run, status="failed", error_message=str(exc)[:500])
         await db.commit()
         raise
+
+
+# --- Живой слой «сегодня» (Reporting API) ------------------------------------
+
+_LIVE_TODAY_CACHE_KEY = "bi:metrika_live_today"
+_LIVE_TODAY_TTL = 600  # 10 минут — свежесть «сегодня» без спама в API
+
+
+async def live_today_reference() -> dict[str, Any] | None:
+    """Живые агрегаты Метрики за сегодня через Reporting API.
+
+    Logs API отдаёт повизитные данные только за завершённые дни, поэтому на
+    периоде «Сегодня» все Метрика-блоки BI были нулями. Reporting API текущий
+    день отдаёт — берём сводку (визиты/посетители) и базовые разрезы
+    (источники, поисковики, устройства, города). Кэш 10 минут в cache-Redis.
+    Ошибка API → None: BI показывает честное «данных пока нет», не 500.
+    """
+    if not settings.yandex_metrika_read_token:
+        return None
+    from app.core.cache import cache_get, cache_set
+    cached = await cache_get(_LIVE_TODAY_CACHE_KEY)
+    if cached:
+        return cached
+
+    counter_id = _primary_counter_id()
+    rep = MetrikaReportingClient()
+
+    async def _breakdown(dimension: str, limit: int = 15, key: str = "id") -> dict[str, int]:
+        # key="id" — машинные коды (organic/desktop/yandex), совместимые с
+        # ключами Logs-слоя (`_acquisition`); key="name" — человекочитаемо (города).
+        r = await rep.table(
+            counter_id=counter_id, metrics=["ym:s:visits"],
+            dimensions=[dimension], date_from="today", date_to="today",
+            sort=["-ym:s:visits"], limit=limit,
+        )
+        out: dict[str, int] = {}
+        for row in (r.data or {}).get("data") or []:
+            dims = row.get("dimensions") or []
+            d0 = dims[0] or {} if dims else {}
+            label = d0.get(key) or d0.get("name")
+            visits = (row.get("metrics") or [0])[0]
+            if label and visits:
+                out[str(label)] = int(visits)
+        return out
+
+    try:
+        totals_resp = await rep.table(
+            counter_id=counter_id, metrics=["ym:s:visits", "ym:s:users"],
+            date_from="today", date_to="today", limit=1,
+        )
+        totals = (totals_resp.data or {}).get("totals") or []
+        if totals and isinstance(totals[0], list):
+            totals = totals[0]
+        visits = int(totals[0]) if totals else 0
+        users = int(totals[1]) if len(totals) > 1 else 0
+        live = {
+            "visits": visits,
+            "users": users,
+            "sources": await _breakdown("ym:s:lastTrafficSource", 10),
+            "search_engines": await _breakdown("ym:s:lastSearchEngineRoot", 8),
+            "devices": await _breakdown("ym:s:deviceCategory", 4),
+            "cities": await _breakdown("ym:s:regionCity", 15, key="name"),
+        }
+    except Exception:  # noqa: BLE001 — live-слой не должен ронять BI
+        logger.warning("Metrika live today fetch failed", exc_info=True)
+        return None
+
+    await cache_set(_LIVE_TODAY_CACHE_KEY, live, ttl=_LIVE_TODAY_TTL)
+    return live
 
 
 # --- Reporting-агрегаты дня -------------------------------------------------

@@ -566,6 +566,19 @@ async def lifespan(app: FastAPI):
             )
             logger.info("Webmaster recrawl auto-submit enabled: daily at 09:10 MSK")
 
+        # Запросы Яндекс-поиска (Вебмастер) → BI «Спрос и SEO». Окно 7 дней
+        # с учётом лага API 2–3 дня; идемпотентно дозаполняет пропуски.
+        if settings.yandex_webmaster_token:
+            from app.tasks.analytics_scheduler import webmaster_queries_daily_job
+            scheduler.add_job(
+                webmaster_queries_daily_job,
+                trigger=CronTrigger(hour=8, minute=40, timezone="Europe/Moscow"),
+                id="webmaster_queries_daily",
+                name="Yandex.Webmaster search queries sync (demand vs coverage)",
+                replace_existing=True,
+            )
+            logger.info("Webmaster queries sync enabled: daily at 08:40 MSK")
+
         # А-5: еженедельный отчёт индексации — «страницы в поиске» и динамика,
         # компас ступени «10k визитов/день». Понедельник, после утреннего ETL.
         if settings.yandex_webmaster_token:
