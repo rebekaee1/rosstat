@@ -28,7 +28,7 @@ from dataclasses import dataclass
 from datetime import date
 from typing import ClassVar
 
-from PyPDF2 import PdfReader
+from pypdf import PdfReader
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 

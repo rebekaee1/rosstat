@@ -153,7 +153,13 @@ export const DAILY_AGG_FREQUENCY = {
  * Выход: массив `{date, value}` той же формы, но `value` — `(val_t / val_{t-1} - 1) * 100`,
  *        округлённый до 2 знаков. Первый элемент исходного ряда отбрасывается;
  *        пары с нулевым знаменателем отбрасываются.
+ *
+ * Gap-guard (В-14, CTO-аудит 2026-07-06): «м/м» определён только между
+ * СОСЕДНИМИ календарными месяцами. Пары через дыру (>45 дней) пропускаются —
+ * иначе изменение за несколько месяцев подписывалось как месячное.
  */
+const MOM_MAX_GAP_MS = 45 * 24 * 3600 * 1000;
+
 export function applyMoMTransform(points) {
   if (!points || points.length < 2) return [];
   const sorted = [...points].sort((a, b) => {
@@ -166,6 +172,8 @@ export function applyMoMTransform(points) {
     const prev = Number(sorted[i - 1].value);
     const cur = Number(sorted[i].value);
     if (!prev) continue;
+    const gap = new Date(sorted[i].date).getTime() - new Date(sorted[i - 1].date).getTime();
+    if (gap > MOM_MAX_GAP_MS) continue;
     const mom = Math.round((cur / prev - 1) * 100 * 100) / 100;
     out.push({ ...sorted[i], value: mom });
   }

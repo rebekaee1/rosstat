@@ -243,9 +243,9 @@ async def render_region_html(slug: str, db: AsyncSession) -> tuple[int, str]:
 
 def _rank_phrase(position: int, total: int) -> str:
     if position <= 3:
-        return f"входит в тройку лидеров среди {total} субъектов РФ"
+        return f"входит в тройку регионов с наибольшим значением среди {total} субъектов РФ"
     if position <= 10:
-        return f"входит в десятку лидеров среди {total} субъектов РФ"
+        return f"входит в десятку регионов с наибольшим значением среди {total} субъектов РФ"
     if position > total - 5:
         return f"находится в конце списка — {position}-е место из {total}"
     return f"занимает {position}-е место из {total}"
@@ -320,7 +320,7 @@ async def render_region_rating_html(code: str, db: AsyncSession) -> tuple[int, s
     )
 
     faq = [
-        (f"Какой регион лидирует по показателю «{indicator.name}»?",
+        (f"У какого региона наибольшее значение показателя «{indicator.name}»?",
          f"По итогам {last_year} года первое место занимает {top[0][1]} — {_vu(top[0][2])}."),
         ("У какого региона наименьшее значение?",
          f"Наименьшее значение у региона {bottom[-1][1]} — {_vu(bottom[-1][2])}."),
@@ -364,7 +364,7 @@ async def render_region_rating_html(code: str, db: AsyncSession) -> tuple[int, s
     title = f"Рейтинг регионов России: {indicator.name} ({last_year})"
     desc = (
         f"{indicator.name} по регионам России за {last_year} год: рейтинг всех {total} "
-        f"субъектов РФ. Лидер — {top[0][1]} ({_vu(top[0][2])}). "
+        f"субъектов РФ. Наибольшее значение — {top[0][1]} ({_vu(top[0][2])}). "
         f"Полная таблица, данные Росстата."
     )
 
@@ -403,19 +403,19 @@ async def render_region_rating_html(code: str, db: AsyncSession) -> tuple[int, s
     if rf_value is not None:
         rf_tile = f'<div class="seo-tile"><span>Россия в целом</span><b>{escape(_vu(rf_value))}</b></div>'
     tiles_html = f"""<div class="seo-tiles">
-<div class="seo-tile"><span>Лидер — {escape(top[0][1])}</span><b>{escape(_vu(top[0][2]))}</b></div>
+<div class="seo-tile"><span>Наибольшее значение — {escape(top[0][1])}</span><b>{escape(_vu(top[0][2]))}</b></div>
 {rf_tile}
-<div class="seo-tile"><span>Минимум — {escape(bottom[-1][1])}</span><b>{escape(_vu(bottom[-1][2]))}</b></div>
+<div class="seo-tile"><span>Наименьшее значение — {escape(bottom[-1][1])}</span><b>{escape(_vu(bottom[-1][2]))}</b></div>
 <div class="seo-tile"><span>Данные за</span><b>{last_year} год</b></div>
 </div>"""
 
     og_path = f"/og/region-rating/{code}.png"
     rating_alt = (f"{indicator.name} по регионам России — рейтинг {last_year} года, "
-                  f"лидер {top[0][1]} ({_vu(top[0][2])})")
+                  f"наибольшее значение — {top[0][1]} ({_vu(top[0][2])})")
     figure_html = (
         f'<figure class="seo-chart"><img src="{escape(og_path)}" alt="{escape(rating_alt)}" '
         f'width="1200" height="630" loading="eager">'
-        f"<figcaption>{escape(indicator.name)}: лидирующие регионы, {last_year} год. "
+        f"<figcaption>{escape(indicator.name)}: регионы с наибольшими значениями, {last_year} год. "
         f"Источник: Росстат. forecasteconomy.com</figcaption></figure>"
     )
 

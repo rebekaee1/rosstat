@@ -1,4 +1,6 @@
 from datetime import date, timedelta
+
+from app.services.display import today_msk
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -42,7 +44,7 @@ def _is_public_source_bound_event(ev: EconomicEvent) -> bool:
 
 def _effective_status(ev: EconomicEvent) -> str:
     """Auto-promote 'scheduled' → 'released' when the date has passed."""
-    if ev.status == "scheduled" and ev.scheduled_date < date.today():
+    if ev.status == "scheduled" and ev.scheduled_date < today_msk():
         return "released"
     return ev.status
 
@@ -86,7 +88,7 @@ async def list_events(
     offset: int = Query(0, ge=0),
 ):
     if not from_date:
-        from_date = date.today() - timedelta(days=7)
+        from_date = today_msk() - timedelta(days=7)
     if not to_date:
         to_date = from_date + timedelta(days=60)
 
@@ -144,7 +146,7 @@ async def upcoming_events(
     if cached:
         return cached
 
-    today = date.today()
+    today = today_msk()
     stmt = (
         select(EconomicEvent, Indicator)
         .outerjoin(Indicator, EconomicEvent.indicator_id == Indicator.id)
@@ -199,7 +201,7 @@ async def export_ical(
     importance_min: int = Query(2, ge=1, le=3),
 ):
     if not from_date:
-        from_date = date.today()
+        from_date = today_msk()
     if not to_date:
         to_date = from_date + timedelta(days=90)
 

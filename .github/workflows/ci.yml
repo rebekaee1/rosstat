@@ -24,6 +24,55 @@ jobs:
         env:
           PYTHONPATH: .
         run: pytest -q
+      # Карта индикаторов: repo-inventory регенерируется, indicator-index
+      # проверяется guard'ом --check — как в scripts/check-all.sh. Без этого
+      # правка seed/парсеров/view-mode с непересобранной картой проходила CI.
+      - name: Indicator map guard
+        working-directory: .
+        run: |
+          python scripts/repo-inventory.py
+          python scripts/build-indicator-index.py --check
+
+  # Т-3: alembic-дрейф. Юнит-тесты строят схему через Base.metadata.create_all,
+  # поэтому сломанная/пропущенная миграция доезжала до прода незамеченной —
+  # entrypoint контейнера был единственным местом, где upgrade head исполнялся.
+  migrations:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: rustats
+          POSTGRES_PASSWORD: rustats
+          POSTGRES_DB: rustats
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U rustats"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/requirements-dev.txt
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+      - name: Alembic upgrade head (чистая БД)
+        env:
+          RUSTATS_DATABASE_URL: postgresql+asyncpg://rustats:rustats@localhost:5432/rustats
+        run: alembic upgrade head
+      - name: Schema smoke — модели совпадают с миграциями
+        env:
+          RUSTATS_DATABASE_URL: postgresql+asyncpg://rustats:rustats@localhost:5432/rustats
+          PYTHONPATH: .
+        run: python scripts/check-migration-drift.py
 
   frontend:
     runs-on: ubuntu-latest
@@ -54,3 +103,48 @@ jobs:
         run: docker build -t rosstat-backend-test backend/
       - name: Build frontend Docker image
         run: docker build -t rosstat-frontend-test frontend/
+
+  # Т-14/Т-16: E2E smoke на живом стеке — SPA загружается, ключевые страницы
+  # рендерят контент, SSR для ботов отдаёт canonical/JSON-LD.
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install frontend deps + chromium
+        working-directory: frontend
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: Start stack
+        run: |
+          docker compose up -d --build postgres redis backend frontend
+      - name: Wait for backend readiness
+        run: |
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:8000/api/v1/health/ready > /dev/null; then
+              echo "backend ready"; exit 0
+            fi
+            sleep 5
+          done
+          echo "backend not ready in 300s"; docker compose logs backend --tail=100; exit 1
+      # Детерминированные данные для smoke: синтетический ряд cpi вместо
+      # зависимости от внешнего ETL (rosstat может не отвечать раннерам CI).
+      - name: Seed synthetic cpi series
+        run: |
+          docker compose exec -T postgres psql -U rustats -d rustats -c "
+            INSERT INTO indicator_data (indicator_id, date, value, created_at)
+            SELECT i.id, d::date, 100 + random(), now()
+            FROM indicators i,
+                 generate_series('2020-01-01'::date, now()::date, interval '1 month') d
+            WHERE i.code = 'cpi'
+            ON CONFLICT DO NOTHING;"
+      - name: Run smoke
+        run: node scripts/e2e/smoke.mjs http://localhost:3000
+      - name: Logs on failure
+        if: failure()
+        run: docker compose logs backend frontend --tail=200

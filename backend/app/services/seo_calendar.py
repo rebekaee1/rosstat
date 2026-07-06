@@ -8,6 +8,8 @@
 from __future__ import annotations
 
 from datetime import date
+
+from app.services.display import today_msk
 from html import escape
 
 from sqlalchemy import extract, select
@@ -42,12 +44,16 @@ async def render_calendar_month_html(
     if not (2000 <= year <= 2100 and 1 <= month <= 12):
         return 404, "Not found"
 
+    # В-7: тот же provenance-фильтр, что у публичного API (ADR-0005) — иначе
+    # legacy-строка без event_key/source_hash показалась бы только в SSR.
+    from app.api.calendar import _public_calendar_conditions
+
     events = (await db.execute(
         select(EconomicEvent)
         .where(
             extract("year", EconomicEvent.scheduled_date) == year,
             extract("month", EconomicEvent.scheduled_date) == month,
-            EconomicEvent.is_estimated.is_(False),
+            *_public_calendar_conditions(),
         )
         .order_by(EconomicEvent.scheduled_date, EconomicEvent.importance.desc())
     )).scalars().all()
@@ -56,7 +62,7 @@ async def render_calendar_month_html(
 
     month_nom = _MONTHS_NOM[month - 1]
     month_gen = _MONTHS_GEN[month - 1]
-    today = date.today()
+    today = today_msk()
     is_future = (year, month) >= (today.year, today.month)
 
     rows_html = []

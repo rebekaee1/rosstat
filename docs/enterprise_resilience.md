@@ -1,6 +1,6 @@
 # Enterprise resilience — практики и инварианты
 
-**Last updated:** 2026-05-22 (документация-ревизия: добавлен nginx no-cache always фикс на SSR routes, дополнено cross-link на 7/7 чеклист «новый индикатор» в AGENTS).
+**Last updated:** 2026-07-06 (CTO-аудит, Волны 1/4: наблюдаемость и операционка выросли — реальный readiness `/health/ready` (БД + оба Redis + планировщик + возраст ETL как мягкая деградация), APScheduler-listener EVENT_JOB_ERROR/MISSED → Telegram, staleness-монитор индикаторов (10:00 МСК), алерты derived/retrain/backup-heartbeat/lockout/5xx-spike/rate-limit-fail-open, 5xx-счётчики в `/metrics`; deploy.sh с автооткатом на SHA-теги; Redis: maxmemory + выделенный `redis-state` (noeviction+AOF) для сессий; распределённые локи мутационных джобов (state-Redis SET NX); prod-assertions при `debug=false` (warn-режим); body-limit/таймауты на nginx и Caddy. Ранее 2026-05-22: nginx no-cache always на SSR routes.)
 **Part of:** [`../AGENTS.md`](../AGENTS.md), [`../CONTEXT.md`](../CONTEXT.md) (раздел «Operational invariants and traps»).
 **See also:** [`workflow.md`](workflow.md) (smoke C, прод-деплой), [`adr/0003-seo-single-source-server-rendered.md`](adr/0003-seo-single-source-server-rendered.md) (asset-hash trap), [`../AGENTS.md::Шаг 4 — чеклист «новый индикатор»`](../AGENTS.md) (другая ось: 7/7 при добавлении indicator, против 6/6 канарейки ниже).
 
@@ -49,7 +49,7 @@
 
 ## Мониторинг
 
-- **Health endpoints** — `/api/v1/health` (DB ping) и `/api/v1/analytics/health` (с проверкой failed analytics syncs за последние 24ч). Использовать в external uptime monitor.
+- **Health endpoints** — `/api/v1/health/live` (тривиальный liveness), `/api/v1/health/ready` (readiness: SELECT 1 + PING обоих Redis + `scheduler.running`; устаревший ETL — мягкая `degraded: true`, не 503 — см. Р-8), `/api/v1/analytics/health` (failed analytics syncs за 24ч). Docker-healthcheck и deploy-smoke смотрят на `/health/ready`; external uptime monitor — на `/health/live` + `/health/ready`.
 - **JSON-логи** — все backend-логи в stdout как JSON (`{ts, level, logger, msg, exc?}`). Удобно вбирать в любой коллектор.
 - **SEO audit** — `scripts/seo-audit.py` периодически проходит по списку indicator-страниц и проверяет, что SSR возвращает осмысленные `<title>`, `<meta description>`, `og:*`, JSON-LD. Запускается вручную, расписание — после крупных правок.
 

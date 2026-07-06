@@ -26,12 +26,15 @@ Response shape:
 from __future__ import annotations
 
 import json
+import logging
 from datetime import datetime, timezone
 
 from fastapi import APIRouter
 
 from app.core.cache import get_redis
 from app.tasks.ticker_worker import REDIS_KEY_PREFIX
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/ticker", tags=["ticker"])
 
@@ -62,7 +65,9 @@ async def get_live_ticker() -> dict:
                 continue
     except Exception:
         # If Redis is unreachable, return an empty list — the UI shows
-        # nothing rather than half-broken state.
+        # nothing rather than half-broken state. Логируем (Н-19): пустой
+        # тикер у всех посетителей не должен быть невидимым для оператора.
+        logger.warning("Live ticker: Redis unavailable, returning empty snapshot list")
         snapshots = []
 
     return {

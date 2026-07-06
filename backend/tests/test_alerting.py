@@ -71,17 +71,24 @@ def test_interactive_authorized_includes_owner_and_report_recipients(monkeypatch
 def test_send_telegram_archives_to_outbox(monkeypatch):
     """Каждая отправка полностью архивируется в telegram_outbox (2026-07-04).
 
-    Проверяем контракт: archive() вызывается с текстом как отправлен, kind,
-    результатом и payload'ом (клавиатура). HTTP мокаем на успех.
+    С Н-16 архив двухфазный: pending-запись ДО отправки (archive_begin),
+    результат — ПОСЛЕ (archive_finish). Проверяем контракт обеих фаз:
+    текст как отправлен, kind, payload с клавиатурой, итоговый ok/message_id.
     """
     import app.services.telegram_outbox as outbox
 
-    archived: list[dict] = []
+    begun: list[dict] = []
+    finished: list[dict] = []
 
-    async def fake_archive(**kwargs):
-        archived.append(kwargs)
+    async def fake_begin(**kwargs):
+        begun.append(kwargs)
+        return 7
 
-    monkeypatch.setattr(outbox, "archive", fake_archive)
+    async def fake_finish(row_id, **kwargs):
+        finished.append({"row_id": row_id, **kwargs})
+
+    monkeypatch.setattr(outbox, "archive_begin", fake_begin)
+    monkeypatch.setattr(outbox, "archive_finish", fake_finish)
     monkeypatch.setattr(alerting.settings, "telegram_bot_token", "t", raising=False)
     monkeypatch.setattr(alerting.settings, "telegram_chat_id", "111", raising=False)
 
@@ -103,14 +110,30 @@ def test_send_telegram_archives_to_outbox(monkeypatch):
         "тест", reply_markup={"inline_keyboard": []}, kind="etl_summary"
     ))
     assert ok is True
-    assert len(archived) == 1
-    rec = archived[0]
+    assert len(begun) == 1 and len(finished) == 1
+    rec = begun[0]
     assert rec["chat_id"] == "111"
     assert rec["kind"] == "etl_summary"
     assert rec["text"] == "тест"
-    assert rec["ok"] is True
-    assert rec["telegram_message_id"] == 42
     assert "reply_markup" in rec["payload"]
+    fin = finished[0]
+    assert fin["row_id"] == 7
+    assert fin["ok"] is True
+    assert fin["telegram_message_id"] == 42
+
+
+def test_archive_begin_never_breaks_send(monkeypatch):
+    """Сбой pending-записи (Н-16) не мешает отправке: begin возвращает None."""
+    import app.services.telegram_outbox as outbox
+
+    async def broken_session():
+        raise RuntimeError("db down")
+
+    monkeypatch.setattr(outbox, "async_session", broken_session)
+    row_id = asyncio.run(outbox.archive_begin(chat_id="1", method="sendMessage", text="x"))
+    assert row_id is None
+    # finish с None — no-op без исключений
+    asyncio.run(outbox.archive_finish(None, ok=True))
 
 
 def test_archive_never_breaks_send(monkeypatch):

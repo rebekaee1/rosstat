@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.models import Indicator, IndicatorData
-from app.core.cache import cache_get, cache_set
+from app.core.cache import cache_get, cache_set, versioned_key
 
 router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 
@@ -21,13 +21,13 @@ FLAGSHIP_MAP: dict[str, dict] = {
 }
 
 POINTS_LIMIT = 12
-CACHE_KEY = "fe:dashboard:sparklines"
 CACHE_TTL = 1800
 
 
 @router.get("/sparklines")
 async def dashboard_sparklines(db: AsyncSession = Depends(get_db)):
-    cached = await cache_get(CACHE_KEY)
+    cache_key = await versioned_key("dashboard", "sparklines")
+    cached = await cache_get(cache_key)
     if cached:
         return cached
 
@@ -118,5 +118,5 @@ async def dashboard_sparklines(db: AsyncSession = Depends(get_db)):
             "last_date": str(pts[-1].date) if pts else None,
         }
 
-    await cache_set(CACHE_KEY, result, CACHE_TTL)
+    await cache_set(cache_key, result, CACHE_TTL)
     return result

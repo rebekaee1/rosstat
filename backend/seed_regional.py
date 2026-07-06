@@ -32,23 +32,32 @@ DATA_DIR = Path(__file__).parent / "app" / "data" / "regional"
 CHUNK = 10_000
 
 
-def load_artifact():
+def load_meta():
     regions = json.loads((DATA_DIR / "regions.json").read_text())
     indicators = json.loads((DATA_DIR / "indicators.json").read_text())
-    points = []
+    return regions, indicators
+
+
+def iter_points():
+    """Стрим точек из артефакта (О-10): не держим ~1M кортежей в памяти."""
     with gzip.open(DATA_DIR / "data.csv.gz", "rt", encoding="utf-8") as fh:
         reader = csv.reader(fh, delimiter=";")
         next(reader)
         for code, rslug, year, value in reader:
-            points.append((code, rslug, int(year), float(value)))
-    return regions, indicators, points
+            yield code, rslug, int(year), float(value)
+
+
+def count_points() -> int:
+    with gzip.open(DATA_DIR / "data.csv.gz", "rt", encoding="utf-8") as fh:
+        return sum(1 for _ in fh) - 1  # минус заголовок
 
 
 async def seed_regional() -> None:
     if not (DATA_DIR / "data.csv.gz").exists():
         print("regional: артефакт app/data/regional/data.csv.gz отсутствует — пропуск")
         return
-    regions, indicators, points = load_artifact()
+    regions, indicators = load_meta()
+    n_artifact = count_points()
 
     async with async_session() as db:
         # --- регионы (upsert по slug) ---
@@ -88,29 +97,42 @@ async def seed_regional() -> None:
 
         # --- точки: пропуск, если счётчик совпадает ---
         n_db = (await db.execute(select(func.count()).select_from(RegionDataPoint))).scalar()
-        if n_db == len(points):
+        if n_db == n_artifact:
             print(f"regional: {n_db} точек уже загружены — пропуск")
             return
 
-        print(f"regional: в БД {n_db}, в артефакте {len(points)} — полная перезаливка")
+        print(f"regional: в БД {n_db}, в артефакте {n_artifact} — полная перезаливка")
         rid = {s: i for s, i in (await db.execute(select(Region.slug, Region.id))).all()}
         iid = {c: i for c, i in
                (await db.execute(select(RegionIndicator.code, RegionIndicator.id))).all()}
 
-        missing = {p[0] for p in points if p[0] not in iid} | \
-                  {p[1] for p in points if p[1] not in rid}
-        if missing:
-            raise RuntimeError(f"regional: нет метаданных для {sorted(missing)[:10]}")
-
         await db.execute(text("TRUNCATE region_data RESTART IDENTITY"))
-        rows = [
-            {"indicator_id": iid[c], "region_id": rid[r], "year": y, "value": v}
-            for c, r, y, v in points
-        ]
-        for i in range(0, len(rows), CHUNK):
-            await db.execute(RegionDataPoint.__table__.insert(), rows[i:i + CHUNK])
+        # О-10: COPY чанками через asyncpg вместо ~1M executemany-инсертов —
+        # на порядок быстрее и без гигантского списка в памяти.
+        raw = await (await db.connection()).get_raw_connection()
+        driver = raw.driver_connection
+        total = 0
+        chunk: list[tuple[int, int, int, float]] = []
+        for c, r, y, v in iter_points():
+            ind_id, reg_id = iid.get(c), rid.get(r)
+            if ind_id is None or reg_id is None:
+                raise RuntimeError(f"regional: нет метаданных для {c!r}/{r!r}")
+            chunk.append((ind_id, reg_id, y, v))
+            if len(chunk) >= CHUNK:
+                await driver.copy_records_to_table(
+                    "region_data", records=chunk,
+                    columns=("indicator_id", "region_id", "year", "value"),
+                )
+                total += len(chunk)
+                chunk = []
+        if chunk:
+            await driver.copy_records_to_table(
+                "region_data", records=chunk,
+                columns=("indicator_id", "region_id", "year", "value"),
+            )
+            total += len(chunk)
         await db.commit()
-        print(f"regional: загружено {len(rows)} точек, "
+        print(f"regional: загружено {total} точек, "
               f"{len(indicators)} показателей, {len(regions)} территорий")
 
 

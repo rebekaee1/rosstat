@@ -2,7 +2,7 @@ import uuid
 from datetime import date, datetime, timezone
 from sqlalchemy import (
     String, Text, Boolean, Integer, BigInteger, Numeric, Date, DateTime,
-    ForeignKey, UniqueConstraint, Index, JSON, LargeBinary, Uuid,
+    ForeignKey, UniqueConstraint, Index, JSON, LargeBinary, Uuid, text,
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
@@ -18,6 +18,9 @@ class Base(DeclarativeBase):
 
 class Indicator(Base):
     __tablename__ = "indicators"
+    # Индекс живёт в миграции 20260320; объявлен и здесь, чтобы metadata
+    # совпадала со схемой (CI-guard scripts/check-migration-drift.py).
+    __table_args__ = (Index("ix_indicators_category", "category"),)
 
     id: Mapped[int] = mapped_column(primary_key=True)
     code: Mapped[str] = mapped_column(String(50), unique=True, nullable=False, index=True)
@@ -114,6 +117,9 @@ class RegionDataPoint(Base):
         UniqueConstraint("indicator_id", "region_id", "year", name="uq_region_data_point"),
         Index("ix_region_data_indicator_year", "indicator_id", "year"),
         Index("ix_region_data_region", "region_id"),
+        # П-10: профиль региона ранжирует (indicator_id, year DESC) в рамках
+        # региона — композитный индекс отдаёт готовый порядок без сортировки.
+        Index("ix_region_data_region_indicator_year", "region_id", "indicator_id", "year"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -132,6 +138,14 @@ class RegionDataPoint(Base):
 
 class Forecast(Base):
     __tablename__ = "forecasts"
+    # Partial-индекс из миграции 20260403: выборка текущего прогноза индикатора.
+    __table_args__ = (
+        Index(
+            "ix_forecasts_indicator_current",
+            "indicator_id",
+            postgresql_where=text("is_current = true"),
+        ),
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True)
     indicator_id: Mapped[int] = mapped_column(ForeignKey("indicators.id", ondelete="CASCADE"), nullable=False)
@@ -157,6 +171,10 @@ class ForecastValue(Base):
     upper_bound: Mapped[float | None] = mapped_column(Numeric(12, 4))
 
     forecast: Mapped["Forecast"] = relationship(back_populates="values")
+
+    __table_args__ = (
+        Index("ix_forecast_values_forecast_date", "forecast_id", "date"),
+    )
 
 
 class EconomicEvent(Base):
@@ -212,6 +230,9 @@ class FetchLog(Base):
     status: Mapped[str] = mapped_column(String(20), nullable=False)
     source_url: Mapped[str | None] = mapped_column(String(500))
     records_added: Mapped[int] = mapped_column(Integer, default=0)
+    # П-3: ревизии in-place (value change по существующей дате) — отдельно от
+    # добавлений; от них зависит попадание source в updated_codes (derived).
+    records_updated: Mapped[int] = mapped_column(Integer, default=0)
     error_message: Mapped[str | None] = mapped_column(Text)
     started_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
     completed_at: Mapped[datetime | None] = mapped_column(DateTime)
@@ -847,6 +868,24 @@ class TelegramOutbox(Base):
     ok: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     telegram_message_id: Mapped[int | None] = mapped_column(BigInteger)
     error: Mapped[str | None] = mapped_column(String(300))
+
+
+class SeedState(Base):
+    """Key-value для seed_schema_hash (П-12, риск Р-3).
+
+    Entrypoint запускает seed_data.py на каждом старте контейнера; полный
+    прогон (908 upsert'ов + SEO + CalculationEngine + retrain прогнозов) —
+    минуты. Хэш desired-state payload'а позволяет пропустить всё, когда
+    входы не менялись. FORCE_SEED=1 — принудительный полный прогон.
+    """
+    __tablename__ = "seed_state"
+
+    key: Mapped[str] = mapped_column(String(64), primary_key=True)
+    value: Mapped[str] = mapped_column(Text, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False,
+        default=lambda: datetime.now(timezone.utc).replace(tzinfo=None),
+    )
 
 
 class Experiment(Base):

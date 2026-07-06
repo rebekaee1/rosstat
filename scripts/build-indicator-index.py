@@ -30,6 +30,7 @@ config-driven движок, рендерятся generic, даже если у �
 """
 from __future__ import annotations
 
+import datetime as _dt
 import json
 import re
 import subprocess
@@ -165,6 +166,21 @@ SKIP_RELPATHS = {
     "docs/indicator-index.json", "docs/indicator-index.md",
     "docs/repo-inventory.md", "docs/dead-code-report.md",
 }
+
+
+STAMP_PREFIX = "**Сгенерировано:**"
+
+
+def head_stamp() -> str:
+    """Дата последней генерации. Строка исключается из --check-сравнения
+    (см. _strip_stamp), поэтому wall-clock не ломает guard."""
+    return f"{STAMP_PREFIX} {_dt.date.today().isoformat()}"
+
+
+def _strip_stamp(text: str) -> str:
+    return "\n".join(
+        line for line in text.splitlines() if not line.startswith(STAMP_PREFIX)
+    )
 
 
 def _git_tracked() -> list[Path] | None:
@@ -452,6 +468,8 @@ def render_md(index: dict) -> str:
         "Подробности по каждому коду (files/derived_siblings) — в JSON."
     )
     out.append("")
+    out.append(head_stamp())
+    out.append("")
     out.append("## Как пользоваться (для агента)")
     out.append("")
     out.append("1. `python scripts/locate-indicator.py <code>` — где код вообще встречается.")
@@ -534,6 +552,8 @@ def render_dead_code(index: dict) -> str:
         "раздел «Почему это НЕ delete-list» ниже. Источник флагов — "
         "`docs/indicator-index.json`."
     )
+    out.append("")
+    out.append(head_stamp())
     out.append("")
     out.append("## Почему это НЕ delete-list (расследование 2026-06-24)")
     out.append("")
@@ -640,7 +660,9 @@ def main() -> int:
     if "--check" in sys.argv:
         ok = True
         for path, text in targets:
-            if not path.exists() or path.read_text(encoding="utf-8") != text:
+            if not path.exists() or _strip_stamp(
+                path.read_text(encoding="utf-8")
+            ) != _strip_stamp(text):
                 print(
                     f"indicator-index: {path.name} расходится с кодом — "
                     "запусти scripts/build-indicator-index.py",

@@ -27,7 +27,7 @@ async def send_telegram(
     Каждая отправка полностью архивируется в БД (`telegram_outbox`) — это
     «глаза» агента следующей сессии; архивация не влияет на доставку.
     """
-    from app.services.telegram_outbox import archive  # локальный импорт против цикла
+    from app.services.telegram_outbox import archive_begin, archive_finish  # против цикла
 
     token = settings.telegram_bot_token
     cid = chat_id or settings.telegram_chat_id
@@ -40,6 +40,11 @@ async def send_telegram(
     payload: dict = {"chat_id": cid, "text": message, "parse_mode": "HTML"}
     if reply_markup:
         payload["reply_markup"] = reply_markup
+
+    # Н-16: pending-запись ДО отправки — креш между send и архивом не оставляет дыру.
+    row_id = await archive_begin(
+        chat_id=str(cid), method="sendMessage", kind=kind, text=message, payload=payload,
+    )
     try:
         url = _TELEGRAM_API.format(token=token)
         async with httpx.AsyncClient(timeout=10) as client:
@@ -57,10 +62,7 @@ async def send_telegram(
         error = str(exc)[:250]
         logger.warning("Telegram alert failed", exc_info=True)
 
-    await archive(
-        chat_id=str(cid), method="sendMessage", kind=kind, text=message,
-        payload=payload, ok=ok, telegram_message_id=tg_message_id, error=error,
-    )
+    await archive_finish(row_id, ok=ok, telegram_message_id=tg_message_id, error=error)
     return ok
 
 
@@ -153,6 +155,16 @@ async def notify_feedback(info: dict) -> None:
     if contact:
         lines.insert(4, f"Контакт для ответа: {esc(contact)}")
     await send_telegram("\n".join(lines), kind="feedback")
+
+
+async def alert_forecast_issue(indicator_code: str, detail: str) -> None:
+    """Прогнозный контур (Н-7/Н-8): нерезолвнутая стратегия, провал каскада."""
+    msg = (
+        f"🟡 <b>Forecast issue</b>\n"
+        f"Indicator: <code>{escape(indicator_code)}</code>\n"
+        f"{escape(detail[:300])}"
+    )
+    await send_telegram(msg, kind="forecast_issue")
 
 
 async def alert_etl_failure(indicator_code: str, error: str) -> None:

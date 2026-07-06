@@ -35,7 +35,7 @@ export default function RegionRatingPage() {
     description:
       `${data.indicator.name} по регионам России за ${data.year} год: рейтинг всех `
       + `${ranked.length} субъектов РФ.`
-      + (top ? ` Лидер — ${top.name}.` : '')
+      + (top ? ` Наибольшее значение — ${top.name}.` : '')
       + ' Полная таблица, данные Росстата.',
     path: `/region-rating/${code}`,
   } : null);
@@ -69,14 +69,14 @@ export default function RegionRatingPage() {
           </h1>
           <p className="text-text-secondary mb-6 max-w-3xl">
             Рейтинг {ranked.length} субъектов Российской Федерации по показателю «{data.indicator.name}»
-            за {data.year} год. Лидирует {top.name} — {formatRegionValue(top.raw ?? top.value)}{' '}
+            за {data.year} год. Наибольшее значение у региона {top.name} — {formatRegionValue(top.raw ?? top.value)}{' '}
             {shortUnit(data.indicator.unit)}.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
             <div className="bg-surface border border-border-subtle rounded-xl p-3.5">
               <div className="text-[11px] text-text-tertiary uppercase tracking-wide flex items-center gap-1">
-                <Trophy size={12} className="text-champagne" /> Лидер
+                <Trophy size={12} className="text-champagne" /> Наибольшее значение
               </div>
               <div className="mt-1 font-semibold text-text-primary">{top.name}</div>
               <div className="font-mono text-sm text-text-secondary">
@@ -84,7 +84,7 @@ export default function RegionRatingPage() {
               </div>
             </div>
             <div className="bg-surface border border-border-subtle rounded-xl p-3.5">
-              <div className="text-[11px] text-text-tertiary uppercase tracking-wide">Минимум</div>
+              <div className="text-[11px] text-text-tertiary uppercase tracking-wide">Наименьшее значение</div>
               <div className="mt-1 font-semibold text-text-primary">{bottom.name}</div>
               <div className="font-mono text-sm text-text-secondary">
                 {formatRegionValue(bottom.raw ?? bottom.value)} {shortUnit(data.indicator.unit)}

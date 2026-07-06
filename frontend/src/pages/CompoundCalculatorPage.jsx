@@ -206,7 +206,7 @@ export default function CompoundCalculatorPage() {
               <StatPill label="Заработано процентами" value={formatRubles(result.gain)} accent />
               <StatPill label="В сегодняшних ценах" value={formatRubles(result.real)} />
               {result.doubling && result.doubling < 100 && (
-                <StatPill label="Удвоение капитала" value={`≈ ${result.doubling.toFixed(1)} лет`} />
+                <StatPill label="Удвоение капитала" value={`≈ ${result.doubling.toFixed(1).replace('.', ',')} лет`} />
               )}
             </div>
           </section>

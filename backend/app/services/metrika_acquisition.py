@@ -319,12 +319,28 @@ async def sync_acquisition_for_day(db: AsyncSession, day: date) -> dict[str, int
     (и наоборот). Возвращает счётчики для логов/инвентаризации.
     """
     out = {"reports": 0, "visits": 0}
+    failed_layers: list[str] = []
     try:
         out["reports"] = await sync_acquisition_reports_for_day(db, day)
     except Exception:
         logger.exception("Acquisition reports sync failed for %s", day)
+        failed_layers.append("reports")
     try:
         out["visits"] = await sync_visits_for_day(db, day)
     except Exception:
         logger.exception("Acquisition visits log sync failed for %s", day)
+        failed_layers.append("visits")
+    # Н-23: partial-провал не должен выглядеть успешной job'ой — дыра в
+    # DS-датасете (raw_metrika_visits/фразы) копится молча.
+    if failed_layers:
+        try:
+            from app.services.alerting import send_telegram
+            await send_telegram(
+                "🟡 <b>Metrika acquisition partial</b>\n"
+                f"День {day}: провалился слой {', '.join(failed_layers)} "
+                f"(собрано: reports={out['reports']}, visits={out['visits']}).",
+                kind="acquisition_alert",
+            )
+        except Exception:
+            logger.warning("Acquisition partial alert failed", exc_info=True)
     return out

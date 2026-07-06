@@ -121,13 +121,16 @@ function groupThousands(str) {
   return str.replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0');
 }
 
+// Десятичный разделитель — русская запятая (В-11): тысячи уже отделялись
+// NBSP по-русски, дробная часть оставалась с английской точкой. CSV/Excel-
+// экспорт не затронут — файлы собирает бэкенд из сырых значений.
 function formatFixed(num, digits) {
   const fixed = num.toFixed(digits);
   const [intPart, decPart] = fixed.split('.');
   const sign = intPart.startsWith('-') ? '-' : '';
   const abs = intPart.replace('-', '');
   const grouped = groupThousands(abs);
-  return decPart !== undefined ? `${sign}${grouped}.${decPart}` : `${sign}${grouped}`;
+  return decPart !== undefined ? `${sign}${grouped},${decPart}` : `${sign}${grouped}`;
 }
 
 export function formatValue(val, digits = 2) {
@@ -169,12 +172,14 @@ export function formatAxisTick(val, digits = 2) {
   const num = Number(val);
   if (!Number.isFinite(num)) return '';
   const fixed = num.toFixed(digits);
+  // Обрезка хвостовых нулей ДО замены точки на запятую (Р-25: regex завязан
+  // на точку из toFixed).
   const cleaned = fixed.replace(/\.?0+$/, '');
   const [intPart, decPart] = cleaned.split('.');
   const sign = intPart.startsWith('-') ? '-' : '';
   const abs = intPart.replace('-', '');
   const grouped = groupThousands(abs);
-  return decPart ? `${sign}${grouped}.${decPart}` : `${sign}${grouped}`;
+  return decPart ? `${sign}${grouped},${decPart}` : `${sign}${grouped}`;
 }
 
 export function formatChange(val) {

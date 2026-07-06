@@ -145,9 +145,9 @@ DERIVED_SPECS: list[DerivedSpec] = [
     # GDP year-over-year and quarter-over-quarter growth (две раздельные
     # семьи: nominal — в текущих ценах, real — в постоянных ценах 2021 г.).
     DerivedSpec("gdp-yoy", ("gdp-nominal",), ops.yoy),
-    DerivedSpec("gdp-qoq", ("gdp-nominal",), ops.qoq),
+    DerivedSpec("gdp-qoq", ("gdp-nominal",), ops.qoq_adjacent),  # В-6: только смежные кварталы
     DerivedSpec("gdp-real-yoy", ("gdp-real",), ops.yoy),
-    DerivedSpec("gdp-real-qoq", ("gdp-real",), ops.qoq),
+    DerivedSpec("gdp-real-qoq", ("gdp-real",), ops.qoq_adjacent),
 
     # Annual GDP (one point per complete calendar year):
     #   - nominal: sum of 4 quarterly values in current prices.
@@ -196,8 +196,8 @@ DERIVED_SPECS: list[DerivedSpec] = [
     DerivedSpec("trade-balance-yoy-abs", ("trade-balance",), ops.yoy_abs),
 
     # QoQ-only derivations.
-    DerivedSpec("exports-qoq", ("exports",), ops.qoq),
-    DerivedSpec("imports-qoq", ("imports",), ops.qoq),
+    DerivedSpec("exports-qoq", ("exports",), ops.qoq_adjacent),  # В-6
+    DerivedSpec("imports-qoq", ("imports",), ops.qoq_adjacent),
 
     # C2 (звонок 2026-05-21): зарплата в индексной форме, базовый год = 2010 (= 100).
     # Сопоставимый формат с индексами цен на жильё (их база тоже ≈2010), что нужно
@@ -315,58 +315,103 @@ class CalculationEngine:
         """Escape hatch for ad-hoc derivations that don't fit a `DerivedSpec`."""
         self._derived[code] = (sources, fn)
 
+    def dependents_closure_topo(self, source_codes: list[str]) -> list[str]:
+        """Транзитивное замыкание derived, зависящих от `source_codes`,
+        в топологическом порядке (П-2, риск Р-1).
+
+        В реестре есть цепочки derived-от-derived глубиной до 4 уровней
+        (`wages-nominal-annual → wages-index → housing-affordability →
+        housing-affordability-yoy-year`) — зависимые обязаны считаться ПОСЛЕ
+        своих derived-источников, иначе возьмут stale-вход. Порядок внутри
+        одного уровня детерминирован порядком регистрации.
+        """
+        dependents: dict[str, list[str]] = {}
+        for dst, (srcs, _fn) in self._derived.items():
+            for s in srcs:
+                dependents.setdefault(s, []).append(dst)
+
+        affected: set[str] = set()
+        stack = list(source_codes)
+        while stack:
+            s = stack.pop()
+            for dst in dependents.get(s, ()):
+                if dst not in affected:
+                    affected.add(dst)
+                    stack.append(dst)
+
+        # Kahn на подграфе affected; heap по индексу регистрации = детерминизм.
+        import heapq
+
+        order_index = {code: i for i, code in enumerate(self._derived)}
+        indegree = {
+            v: sum(1 for u in self._derived[v][0] if u in affected)
+            for v in affected
+        }
+        ready = [(order_index[v], v) for v, d in indegree.items() if d == 0]
+        heapq.heapify(ready)
+        out: list[str] = []
+        while ready:
+            _, u = heapq.heappop(ready)
+            out.append(u)
+            for w in dependents.get(u, ()):
+                if w in indegree:
+                    indegree[w] -= 1
+                    if indegree[w] == 0:
+                        heapq.heappush(ready, (order_index[w], w))
+        if len(out) < len(affected):
+            # Цикл в спеках — конфигурационная ошибка; не теряем ряды.
+            leftover = sorted(affected - set(out), key=order_index.get)
+            logger.error(
+                "CalculationEngine: cycle detected in derived specs, appending "
+                "in registry order: %s", leftover,
+            )
+            out.extend(leftover)
+        return out
+
     async def run_for_direct_dependents(
         self, db: AsyncSession, source_codes: list[str],
     ) -> list[str]:
-        """Пересчитать только derived, напрямую зависящие от `source_codes`.
+        """Пересчитать derived, зависящие от `source_codes` (включая
+        транзитивные уровни).
 
         Используется после ETL одного source (напр. бюджет Минфина), когда
         source-ряд укоротился (`replace_series`) и sibling-режимы должны
-        потерять устаревшие даты без полного прогона всех derived.
+        потерять устаревшие даты, не дожидаясь дневного батча. С П-2
+        реализация совпадает с `run_for_updated_sources`.
         """
-        if not source_codes:
-            return []
-        source_set = set(source_codes)
-        updated: list[str] = []
-        for code, (sources, fn) in self._derived.items():
-            if not source_set.intersection(sources):
-                continue
-            try:
-                n = await fn(db)
-                if n > 0:
-                    await cache_invalidate_indicator(code)
-                    updated.append(code)
-                logger.info("CalculationEngine (direct): %s → %d changes", code, n)
-            except Exception:
-                logger.exception(
-                    "CalculationEngine (direct): failed to compute '%s'", code,
-                )
-        return updated
+        return await self.run_for_updated_sources(db, source_codes)
 
     async def run_for_updated_sources(self, db: AsyncSession, source_codes: list[str]) -> list[str]:
-        """Recompute every derived series end-to-end after an ETL batch.
+        """Пересчитать замыкание зависимых derived после ETL-батча (П-2).
 
-        Semantic (ADR-0002, since 2026-05-05): derived[t] always reflects the
-        current state of source[t]. Whenever any source updated in this ETL
-        batch, every derived is recomputed across its full history — not just
-        the ones whose source code appears in `source_codes`. This matters
-        because parsers detect "new" by `records_added > 0` (incremental rows),
-        but Rosstat revises historical points in place (`records_updated > 0`).
-        Old code only touched derived whose source raised `records_added`,
-        leaving stale derived values for years after a silent revision.
+        Семантика ADR-0002 (derived[t] всегда отражает текущее source[t])
+        сохраняется дешевле, чем «пересчитай все 799 при любом изменении»:
 
-        `source_codes` is kept for short-circuit only: if the ETL batch did
-        nothing (`source_codes == []`), there's no point spending CPU to
-        re-derive identical numbers. Otherwise we recompute all 23 derived;
-        `bulk_upsert` is no-op for unchanged values, so cost is bounded.
+        - Парсеры считают изменением И добавления, И in-place ревизии
+          (`bulk_upsert` c WHERE value <> excluded.value возвращает точные
+          added/updated; `run_etl_for_indicator` включает ревизованный source
+          в updated_codes — П-3). Незатронутый source не порождает изменений
+          derived по определению чистых op'ов.
+        - Пересчёт идёт по транзитивному замыканию зависимости в
+          топологическом порядке (`dependents_closure_topo`) — цепочки
+          derived-от-derived получают свежие входы.
+        - Полный прогон всего реестра остаётся за `scripts/rebuild-all-derived.py`
+          (escape hatch) и seed-refresh (там source_codes = все источники,
+          замыкание совпадает с полным реестром).
 
         Returns the list of derived codes whose stored values actually changed
         (and thus whose Redis cache was invalidated).
         """
         if not source_codes:
             return []
+        todo = self.dependents_closure_topo(source_codes)
+        logger.info(
+            "CalculationEngine: %d source(s) → recomputing %d dependent derived",
+            len(source_codes), len(todo),
+        )
         updated: list[str] = []
-        for code, (_sources, fn) in self._derived.items():
+        for code in todo:
+            fn = self._derived[code][1]
             try:
                 n = await fn(db)
                 if n > 0:

@@ -13,11 +13,18 @@
 
 from __future__ import annotations
 
+import hashlib
 import io
+import logging
+import os
+import random
+import tempfile
 import time
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
+
+logger = logging.getLogger(__name__)
 
 WIDTH, HEIGHT = 1200, 630
 BG = (248, 249, 252)          # --color-obsidian
@@ -376,10 +383,31 @@ def render_region_vs_og(
     return buf.getvalue()
 
 
+# П-16: дисковый слой под in-process кэшем. Пространство ключей — десятки
+# тысяч (годовые landing'и, 40k региональных страниц); держать всё в памяти
+# нельзя (_CACHE_MAX=600), а после рестарта контейнера in-process кэш холодный
+# и бот-прожиг снова платит Pillow-рендер за каждую картинку. Диск (docker-том
+# og_cache) переживает рестарты и вмещает всё; TTL тот же.
+_DISK_DIR = Path(os.environ.get("OG_CACHE_DIR", "")) if os.environ.get("OG_CACHE_DIR") \
+    else Path(tempfile.gettempdir()) / "fe-og-cache"
+
+
+def _disk_path(code: str) -> Path:
+    return _DISK_DIR / (hashlib.md5(code.encode()).hexdigest() + ".png")
+
+
 def cached_og(code: str) -> bytes | None:
     entry = _CACHE.get(code)
     if entry and time.monotonic() - entry[0] < _CACHE_TTL:
         return entry[1]
+    try:
+        p = _disk_path(code)
+        if p.exists() and time.time() - p.stat().st_mtime < _CACHE_TTL:
+            png = p.read_bytes()
+            _CACHE[code] = (time.monotonic(), png)
+            return png
+    except OSError:
+        pass
     return None
 
 
@@ -388,3 +416,19 @@ def store_og(code: str, png: bytes) -> None:
         oldest = min(_CACHE, key=lambda k: _CACHE[k][0])
         _CACHE.pop(oldest, None)
     _CACHE[code] = (time.monotonic(), png)
+    try:
+        _DISK_DIR.mkdir(parents=True, exist_ok=True)
+        tmp = _disk_path(code).with_suffix(".tmp")
+        tmp.write_bytes(png)
+        tmp.replace(_disk_path(code))
+        # Редкая (≈1/200 записей) уборка протухших файлов, чтобы каталог не рос вечно.
+        if random.random() < 0.005:
+            cutoff = time.time() - 2 * _CACHE_TTL
+            for f in _DISK_DIR.glob("*.png"):
+                try:
+                    if f.stat().st_mtime < cutoff:
+                        f.unlink()
+                except OSError:
+                    continue
+    except OSError:
+        logger.debug("OG disk cache write failed for %s", code, exc_info=True)

@@ -25,7 +25,7 @@ function DeltaBadge({ value, prevValue }) {
   return (
     <span className={`inline-flex items-center gap-0.5 font-mono text-[11px] ${cls}`}>
       <Icon size={11} />
-      {Math.abs(d.pct) >= 0.1 ? `${Math.abs(d.pct).toFixed(1)}%` : '<0,1%'}
+      {Math.abs(d.pct) >= 0.1 ? `${Math.abs(d.pct).toFixed(1).replace('.', ',')}%` : '<0,1%'}
     </span>
   );
 }

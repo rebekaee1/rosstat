@@ -27,7 +27,7 @@ from __future__ import annotations
 
 import logging
 from collections import Counter, defaultdict
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
 from sqlalchemy import func, select
@@ -151,7 +151,7 @@ async def _kpi_daily(db: AsyncSession, since: datetime) -> list[dict]:
     # Полный календарь окна: день без данных — явный ноль, а не дыра на оси
     # времени (иначе график сжимает пропуски и искажает динамику).
     cursor = since.date()
-    today = datetime.utcnow().date()
+    today = datetime.now(timezone.utc).date()
     while cursor <= today:
         days[cursor.isoformat()]  # defaultdict дозаполняет нулевую строку
         cursor += timedelta(days=1)
@@ -771,7 +771,8 @@ async def _users_summary(db: AsyncSession, since: datetime) -> dict:
 async def build_bi_dashboard(db: AsyncSession, days: int = 30) -> dict[str, Any]:
     """Полный BI-снапшот. Тяжёлая функция — вызывать только через кэш (15 мин)."""
     days = max(1, min(days, 365))
-    since = datetime.utcnow() - timedelta(days=days)
+    # naive-UTC: колонки БД naive, aware-datetime в сравнениях даст TypeError.
+    since = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=days)
 
     # Сырые визиты окна — общая основа привлечения и воронки.
     window_visits = list((await db.execute(
@@ -804,7 +805,7 @@ async def build_bi_dashboard(db: AsyncSession, days: int = 30) -> dict[str, Any]
     from app.services.dataset_inventory import build_inventory
 
     dashboard: dict[str, Any] = {
-        "generated_at": datetime.utcnow().isoformat(timespec="seconds"),
+        "generated_at": datetime.now(timezone.utc).replace(tzinfo=None).isoformat(timespec="seconds"),
         "window_days": days,
         "users": await _users_summary(db, since),
         # --- executive-слой (marts, этап 3 «Аналитика 2.0») ---

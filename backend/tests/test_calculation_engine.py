@@ -61,34 +61,28 @@ def test_derived_sources_exist():
         assert callable(fn), f"{code} fn is not callable"
 
 
-def test_run_for_updated_sources_recomputes_every_derived_when_any_source_changed(monkeypatch):
-    """ADR-0002: derived series always reflect the current source state.
+def test_run_for_updated_sources_recomputes_dependents_closure(monkeypatch):
+    """П-2: пересчитывается транзитивное замыкание зависимых, не весь реестр.
 
-    Before this fix, only derived whose source code intersected `source_codes`
-    were recomputed. Any source revised in place (records_updated > 0 but
-    records_added == 0) silently skipped its derived. This test guards the
-    new dispatch rule: as long as the ETL batch was non-empty, every derived
-    is recomputed end-to-end — irrespective of which source codes were in
-    the batch.
+    Семантика ADR-0002 сохраняется, потому что парсеры включают в
+    `source_codes` и добавления, и in-place ревизии (П-3: `bulk_upsert`
+    возвращает точные added/updated, `run_etl_for_indicator` возвращает
+    status == success). Незатронутый source не меняет свои derived по
+    определению чистых op'ов — их пересчёт был пустой тратой CPU.
     """
     engine = CalculationEngine()
-    calls: dict[str, int] = {"a": 0, "b": 0, "c": 0}
+    calls: dict[str, int] = {"a": 0, "b": 0, "c": 0, "deep": 0}
 
-    async def fn_a(_db):
-        calls["a"] += 1
-        return 0
+    def fn(name):
+        async def _fn(_db):
+            calls[name] += 1
+            return 0
+        return _fn
 
-    async def fn_b(_db):
-        calls["b"] += 1
-        return 0
-
-    async def fn_c(_db):
-        calls["c"] += 1
-        return 0
-
-    engine.register("a", ["src1"], fn_a)
-    engine.register("b", ["src2"], fn_b)
-    engine.register("c", ["src3"], fn_c)
+    engine.register("a", ["src1"], fn("a"))
+    engine.register("b", ["src2"], fn("b"))
+    engine.register("c", ["src3"], fn("c"))
+    engine.register("deep", ["a"], fn("deep"))  # derived-от-derived
 
     monkeypatch.setattr(
         "app.services.calculation_engine.cache_invalidate_indicator",
@@ -99,8 +93,75 @@ def test_run_for_updated_sources_recomputes_every_derived_when_any_source_change
         engine.run_for_updated_sources(db=None, source_codes=["src1"])
     )
 
-    assert calls == {"a": 1, "b": 1, "c": 1}
+    # src1 → a → deep; b и c не зависят от src1 и не пересчитываются
+    assert calls == {"a": 1, "b": 0, "c": 0, "deep": 1}
     assert result == []
+
+
+def test_dependents_closure_is_topologically_ordered():
+    """Р-1: цепочка derived-от-derived считается в порядке зависимости —
+    зависимый всегда после своего derived-источника, при любом порядке
+    регистрации."""
+    engine = CalculationEngine()
+
+    async def noop(_db):
+        return 0
+
+    # Регистрируем НАМЕРЕННО в обратном порядке зависимости
+    engine.register("lvl3", ["lvl2"], noop)
+    engine.register("lvl2", ["lvl1"], noop)
+    engine.register("lvl1", ["src"], noop)
+    engine.register("unrelated", ["other-src"], noop)
+
+    order = engine.dependents_closure_topo(["src"])
+    assert order == ["lvl1", "lvl2", "lvl3"]
+    assert "unrelated" not in order
+
+
+def test_real_registry_topo_invariant():
+    """На реальном реестре: каждый derived-источник встречается в topo-выдаче
+    раньше своих зависимых (28 цепочек глубиной до 4 уровней)."""
+    all_sources = sorted({
+        s for (srcs, _fn) in calculation_engine._derived.values() for s in srcs
+    })
+    order = calculation_engine.dependents_closure_topo(all_sources)
+    # замыкание всех источников = весь реестр
+    assert set(order) == set(calculation_engine._derived.keys())
+    pos = {code: i for i, code in enumerate(order)}
+    for code, (srcs, _fn) in calculation_engine._derived.items():
+        for s in srcs:
+            if s in pos:  # source сам является derived
+                assert pos[s] < pos[code], (
+                    f"{code} посчитается раньше своего derived-источника {s}"
+                )
+
+
+def test_direct_dependents_delegates_to_closure(monkeypatch):
+    """run_for_direct_dependents теперь включает транзитивные уровни:
+    replace_series-источник (Минфин) тянет и глубоких зависимых."""
+    engine = CalculationEngine()
+    calls: dict[str, int] = {"direct": 0, "transitive": 0}
+
+    def fn(name, n=0):
+        async def _fn(_db):
+            calls[name] += 1
+            return n
+        return _fn
+
+    engine.register("direct", ["budget-revenue"], fn("direct", n=2))
+    engine.register("transitive", ["direct"], fn("transitive"))
+
+    invalidate = AsyncMock()
+    monkeypatch.setattr(
+        "app.services.calculation_engine.cache_invalidate_indicator",
+        invalidate,
+    )
+
+    result = asyncio.run(
+        engine.run_for_direct_dependents(db=None, source_codes=["budget-revenue"])
+    )
+    assert calls == {"direct": 1, "transitive": 1}
+    assert result == ["direct"]
 
 
 def test_run_for_updated_sources_short_circuits_on_empty_batch(monkeypatch):

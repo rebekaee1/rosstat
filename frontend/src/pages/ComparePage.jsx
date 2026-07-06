@@ -699,11 +699,12 @@ export default function ComparePage() {
     }
 
     // К общей базе (=100) приводится ТОЛЬКО положительный уровень. Знакопеременные
-    // ряды (сальдо, счёт текущих операций, дефицит) и %-приросты (могут пересекать
-    // ноль) к базе-100 не приводятся: деление на ~0 → выброс, отрицательная база →
-    // переворот знака. Такие ряды в режиме общей базы исключаем и подписываем, а не
-    // рисуем мусором.
-    const indexable = series.map((_, i) => isIndexableBase(base[i]));
+    // ряды (сальдо, счёт текущих операций, дефицит), %-ряды и представления
+    // «к прошлому периоду»/«к году» (это темпы, не уровни — В-12) к базе-100 не
+    // приводятся: деление на ~0 → выброс, отрицательная база → переворот знака,
+    // «инфляция 5% = 100 пунктов» — смысловой мусор. Такие ряды в режиме общей
+    // базы исключаем и подписываем, а не рисуем.
+    const indexable = series.map((s, i) => isIndexableBase(base[i], { unit: s.unit, repId: s.rep }));
     const nonIndexableNames = indexed
       ? series.filter((_, i) => !indexable[i]).map((s) => s.ind?.name || s.code)
       : [];
@@ -712,16 +713,21 @@ export default function ComparePage() {
     );
     const idxUnit = 'пунктов (старт = 100)';
 
+    // В-13 (CTO-аудит 2026-07-06): значение пишется в строку ТОЛЬКО на датах,
+    // где у ряда есть реальная точка. Раньше carry-forward (LOCF) протягивал
+    // последнее значение через даты без данных: тултип показывал «значение»
+    // там, где наблюдения нет, а линия шла ступенькой. Разрывы между точками
+    // соединяет connectNulls на <Line> — честная интерполяция между фактами.
     const rows = dates.map((d) => {
       const row = { date: d };
       maps.forEach((m, i) => {
-        if (m.has(d)) last[i] = m.get(d);
-        if (last[i] == null) return;
+        if (!m.has(d)) return;
+        const v = m.get(d);
         const s = series[i];
         if (indexed) {
-          if (indexable[i]) { row[s.key] = rebaseToHundred(last[i], base[i]); row[`${s.key}_unit`] = idxUnit; }
+          if (indexable[i]) { row[s.key] = rebaseToHundred(v, base[i]); row[`${s.key}_unit`] = idxUnit; }
         } else {
-          row[s.key] = last[i];
+          row[s.key] = v;
           row[`${s.key}_unit`] = s.unit || '%';
         }
       });

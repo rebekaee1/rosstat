@@ -28,6 +28,30 @@ def _mute_telegram(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr(settings, "telegram_chat_id", "", raising=False)
 
 
+@pytest.fixture(autouse=True)
+def _no_ssr_cache(monkeypatch: pytest.MonkeyPatch):
+    """SSR-кэш (П-14) в тестах отключён: иначе route-тесты читают/пишут
+    реальный localhost-Redis и ответы «прилипают» между прогонами.
+    Тесты самого кэша (test_ssr_cache.py) ставят свои моки поверх."""
+    import app.api.seo_pages as seo_pages
+
+    async def _miss(key):
+        return None
+
+    async def _skip(key, value, ttl=None):
+        return None
+
+    async def _plain_key(ns, rest):
+        return f"fe:{ns}:v0:{rest}"
+
+    monkeypatch.setattr(seo_pages, "cache_get", _miss)
+    monkeypatch.setattr(seo_pages, "cache_set", _skip)
+    # versioned_key (П-11) ходит в Redis за версией namespace — в тестах
+    # версия фиксированная, чтобы не трогать реальный localhost-Redis.
+    monkeypatch.setattr(seo_pages, "versioned_key", _plain_key)
+    seo_pages._render_locks.clear()
+
+
 @pytest.fixture
 def client(monkeypatch: pytest.MonkeyPatch):
     from app.config import settings
@@ -64,6 +88,32 @@ def auth_env(monkeypatch: pytest.MonkeyPatch):
     sync_engine.dispose()
 
     async_engine = create_async_engine(f"sqlite+aiosqlite:///{db_path}")
+
+    # Postgres-функции, которых нет в SQLite (нужны route-smoke тестам /stats).
+    class _StdDev:
+        def __init__(self):
+            self.vals = []
+
+        def step(self, v):
+            if v is not None:
+                self.vals.append(float(v))
+
+        def finalize(self):
+            n = len(self.vals)
+            if n < 2:
+                return None
+            mean = sum(self.vals) / n
+            return (sum((x - mean) ** 2 for x in self.vals) / (n - 1)) ** 0.5
+
+    from sqlalchemy import event
+
+    @event.listens_for(async_engine.sync_engine, "connect")
+    def _register_sqlite_fns(dbapi_conn, _):
+        # aiosqlite оборачивает соединение; сырой sqlite3.Connection — в _conn.
+        raw = getattr(dbapi_conn, "_connection", None) or getattr(dbapi_conn, "driver_connection", dbapi_conn)
+        raw = getattr(raw, "_conn", raw)
+        raw.create_aggregate("stddev", 1, _StdDev)
+
     TestSession = async_sessionmaker(async_engine, expire_on_commit=False)
 
     async def _override_get_db():

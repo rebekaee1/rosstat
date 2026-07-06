@@ -21,7 +21,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.models import Indicator, IndicatorData
-from app.core.cache import cache_get, cache_set, get_redis
+from app.core.cache import cache_get, cache_set, get_redis, versioned_key
+from app.services.display import display_value, format_month_ru, is_cpi_index
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/embed", tags=["embed"])
@@ -115,10 +116,24 @@ def _catmull_rom(pts: list[tuple[float, float]]) -> str:
 
 
 def _fmt_value(v: float, digits: int = 2) -> str:
+    """Русская типографика: NBSP в тысячах, запятая в дроби."""
     s = f"{v:,.{digits}f}"
     int_part, *dec = s.split(".")
     int_part = int_part.replace(",", "\u00A0")
-    return f"{int_part}.{dec[0]}" if dec else int_part
+    return f"{int_part},{dec[0]}" if dec else int_part
+
+
+def _period_stamp(ind, dt) -> str:
+    """Компактная подпись периода значения: «май 2026» / «30.06.2026».
+
+    Embed живёт на чужих сайтах — число без даты периода вводит в заблуждение
+    (В-24): посетитель не знает, «за когда» это значение.
+    """
+    if dt is None:
+        return ""
+    if (ind.frequency or "").lower() in ("monthly", "quarterly"):
+        return format_month_ru(dt)
+    return dt.strftime("%d.%m.%Y")
 
 
 def _svg_response(svg: str, max_age: int = 3600) -> Response:
@@ -149,7 +164,7 @@ async def sparkline_svg(
 ):
     _validate_code(code)
     color = _safe_color(color)
-    ck = f"fe:embed:spark:{code}:{w}:{h}:{period}:{color}:{fill}:{dot}:{stroke}"
+    ck = await versioned_key(code, f"embed:spark:{w}:{h}:{period}:{color}:{fill}:{dot}:{stroke}")
     cached = await cache_get(ck)
     if cached:
         return _svg_response(cached)
@@ -211,7 +226,7 @@ async def card_svg(
     db: AsyncSession = Depends(get_db),
 ):
     _validate_code(code)
-    ck = f"fe:embed:card:{code}:{w}:{h}:{theme}:{period}"
+    ck = await versioned_key(code, f"embed:card:{w}:{h}:{theme}:{period}")
     cached = await cache_get(ck)
     if cached:
         return _svg_response(cached)
@@ -220,9 +235,13 @@ async def card_svg(
     if not ind:
         raise HTTPException(404, f"Indicator '{code}' not found")
 
-    cur = float(rows[-1].value) if rows else None
-    prev = float(rows[-2].value) if len(rows) > 1 else None
+    # Display-adapter: CPI-индекс наружу уходит изменением цен («+0,17»),
+    # не сырыми «100.17» (В-24, класс инцидента «инфляция 100,2%»).
+    cpi = is_cpi_index(code)
+    cur = display_value(code, rows[-1].value) if rows else None
+    prev = display_value(code, rows[-2].value) if len(rows) > 1 else None
     change = round(cur - prev, 4) if cur is not None and prev is not None else None
+    stamp = _period_stamp(ind, rows[-1].date if rows else None)
 
     dark = theme == "dark"
     bg = "#1a1a1e" if dark else "#FFFFFF"
@@ -233,13 +252,13 @@ async def card_svg(
     accent = "#B8942F"
     pos_c, neg_c = "#22c55e", "#ef4444"
 
-    val_str = _fmt_value(cur) if cur is not None else "—"
+    val_str = ("+" if cpi and cur is not None and cur > 0 else "") + _fmt_value(cur) if cur is not None else "—"
     unit = _xml(ind.unit or "")
 
     chg_arrow, chg_str, chg_color = "", "", t2
     if change is not None:
         chg_arrow = "▲" if change > 0 else ("▼" if change < 0 else "")
-        chg_str = f'{"+" if change >= 0 else ""}{change:.2f}'
+        chg_str = f'{"+" if change >= 0 else ""}{_fmt_value(change)}'
         chg_color = pos_c if change > 0 else (neg_c if change < 0 else t2)
 
     # Sparkline in lower portion
@@ -270,6 +289,13 @@ async def card_svg(
         p.append(
             f'<text x="16" y="74" font-family="{MONO}" font-size="12"'
             f' fill="{chg_color}" font-weight="600">{chg_arrow} {chg_str}</text>'
+        )
+    # Дата периода значения — число без «за когда» на чужом сайте вводит
+    # в заблуждение (В-24).
+    if stamp:
+        p.append(
+            f'<text x="{w - 16}" y="24" font-family="{FONT}" font-size="10"'
+            f' fill="{t2}" text-anchor="end">{_xml(stamp)}</text>'
         )
 
     if spark_line:
@@ -312,7 +338,7 @@ async def badge_svg(
 ):
     """shields.io-compatible badge: ``label | value  ▲change``."""
     _validate_code(code)
-    ck = f"fe:embed:badge:{code}:{theme}:{period}"
+    ck = await versioned_key(code, f"embed:badge:{theme}:{period}")
     cached = await cache_get(ck)
     if cached:
         return _svg_response(cached)
@@ -321,19 +347,25 @@ async def badge_svg(
     if not ind:
         raise HTTPException(404, f"Indicator '{code}' not found")
 
-    cur = float(rows[-1].value) if rows else None
-    prev = float(rows[-2].value) if len(rows) > 1 else None
+    # Display-adapter (В-24): CPI — изменение цен, не сырой индекс; у значения
+    # есть дата периода.
+    cpi = is_cpi_index(code)
+    cur = display_value(code, rows[-1].value) if rows else None
+    prev = display_value(code, rows[-2].value) if len(rows) > 1 else None
     change = round(cur - prev, 4) if cur is not None and prev is not None else None
-    val_str = _fmt_value(cur) if cur is not None else "—"
+    val_str = ("+" if cpi and cur is not None and cur > 0 else "") + _fmt_value(cur) if cur is not None else "—"
     unit_str = (ind.unit or "").strip()
+    stamp = _period_stamp(ind, rows[-1].date if rows else None)
 
     label_raw = (ind.name or "")[:40]
     label = _xml(label_raw)
     vt_raw = f"{val_str} {unit_str}".strip()
     if change is not None:
         arrow = "\u25B2" if change > 0 else ("\u25BC" if change < 0 else "")
-        chg_str = f'{"+" if change >= 0 else ""}{change:.2f}'
+        chg_str = f'{"+" if change >= 0 else ""}{_fmt_value(change)}'
         vt_raw += f"  {arrow}{chg_str}"
+    if stamp:
+        vt_raw += f" · {stamp}"
     value_text = _xml(vt_raw)
 
     dark = theme == "dark"
@@ -372,6 +404,24 @@ async def badge_svg(
 
 # ─── Impression tracking ─────────────────────────────────────────
 
+# Н-28: сбои трекинга по-прежнему отвечают ok (UX embed важнее записи),
+# но массовая потеря аналитики должна быть видна: warning каждые N сбоев.
+_tracking_failures = 0
+_TRACKING_WARN_EVERY = 100
+
+
+def _note_tracking_failure(where: str) -> None:
+    global _tracking_failures
+    _tracking_failures += 1
+    if _tracking_failures % _TRACKING_WARN_EVERY == 0:
+        logger.warning(
+            "Embed tracking degraded: %d failures since start (last: %s)",
+            _tracking_failures, where,
+        )
+    else:
+        logger.debug("%s tracking failed", where, exc_info=True)
+
+
 PIXEL_GIF = (
     b"GIF89a\x01\x00\x01\x00\x80\x00\x00\xff\xff\xff"
     b"\x00\x00\x00!\xf9\x04\x00\x00\x00\x00\x00,\x00"
@@ -403,7 +453,7 @@ async def track_impression(request: Request):
         await r.hincrby(key, f"{code}:{wtype}:{domain}", 1)
         await r.expire(key, 90 * 86400)
     except Exception:
-        logger.debug("Impression tracking failed", exc_info=True)
+        _note_tracking_failure("impression")
     return {"ok": True}
 
 
@@ -420,7 +470,7 @@ async def tracking_pixel(
         r = await get_redis()
         await r.hincrby(f"fe:embed:imp:{today}", f"{code}:{t}:{domain}", 1)
     except Exception:
-        logger.debug("Pixel tracking failed", exc_info=True)
+        _note_tracking_failure("pixel")
     return Response(
         content=PIXEL_GIF,
         media_type="image/gif",

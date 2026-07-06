@@ -254,6 +254,11 @@ def main(src_dir: str):
                 slug = f"{base_slug}-{table_code.replace('.', '-')}"
             slug_seen[slug] = table_code
 
+            # В-8: 79 таблиц публикуются без единицы в шапке — кураторский
+            # фолбэк, чтобы пересборка артефакта не потеряла заполненные unit.
+            from unit_fallbacks import fill_unit
+            unit = fill_unit(slug, unit)
+
             n_points_before = len(points)
             years_present = set()
             any_region_seen = False

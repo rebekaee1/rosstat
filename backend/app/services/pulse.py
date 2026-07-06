@@ -51,10 +51,37 @@ _DOWNLOAD_EVENTS = {
 }
 _ERROR_EVENTS = {"error_reload", "api_retry", "api_error"}
 
+# Статусы FetchLog, означающие ошибку прогона. Источник истины — что реально
+# пишут base_parser.py ("failed") и tasks/scheduler.py ("failed"/"timeout").
+# Статуса "error" в системе не существует: фильтр по нему делал Пульс слепым
+# к ошибкам ETL (владелец видел «0 ошибок» при реальных провалах).
+ETL_ERROR_STATUSES = ("failed", "timeout")
+
 
 def _day_bounds(d: date) -> tuple[datetime, datetime]:
     start = datetime.combine(d, time.min)
     return start, start + timedelta(days=1)
+
+
+async def _etl_snapshot(db, start: datetime, end: datetime) -> dict[str, Any]:
+    """ETL-срез дня: прогоны по статусам + индикаторы с ошибочными прогонами."""
+    etl_rows = (await db.execute(
+        select(FetchLog.status, func.count(), func.coalesce(func.sum(FetchLog.records_added), 0))
+        .where(FetchLog.started_at >= start, FetchLog.started_at < end)
+        .group_by(FetchLog.status)
+    )).all()
+    failed_codes = (await db.execute(
+        select(func.distinct(FetchLog.indicator_id))
+        .where(
+            FetchLog.started_at >= start,
+            FetchLog.started_at < end,
+            FetchLog.status.in_(ETL_ERROR_STATUSES),
+        )
+    )).scalars().all()
+    return {
+        "by_status": {s: {"runs": n, "records": int(r)} for s, n, r in etl_rows},
+        "failed_indicator_ids": [int(i) for i in failed_codes][:20],
+    }
 
 
 async def _acquisition_from_warehouse(db, d: date) -> dict[str, Any]:
@@ -331,19 +358,7 @@ async def build_snapshot(d: date) -> dict[str, Any]:
         snap["acquisition"] = await _acquisition_from_warehouse(db, d)
 
         # --- ETL ------------------------------------------------------------
-        etl_rows = (await db.execute(
-            select(FetchLog.status, func.count(), func.coalesce(func.sum(FetchLog.records_added), 0))
-            .where(FetchLog.started_at >= start, FetchLog.started_at < end)
-            .group_by(FetchLog.status)
-        )).all()
-        failed_codes = (await db.execute(
-            select(func.distinct(FetchLog.indicator_id))
-            .where(FetchLog.started_at >= start, FetchLog.started_at < end, FetchLog.status == "error")
-        )).scalars().all()
-        snap["etl"] = {
-            "by_status": {s: {"runs": n, "records": int(r)} for s, n, r in etl_rows},
-            "failed_indicator_ids": [int(i) for i in failed_codes][:20],
-        }
+        snap["etl"] = await _etl_snapshot(db, start, end)
 
         # --- Приток данных ---------------------------------------------------
         # (у region_data нет created_at — региональный приток пришёл бы из ETL-логов)

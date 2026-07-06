@@ -133,8 +133,25 @@ def _ols_step(df_aux: pd.Series, lags: list[int], horizon_m: int,
             return None, None
         return float(pred), float(mse)
     except Exception:
+        _note_numeric_failure("ols_step")
         logger.debug("_ols_step failed for horizon=%d", horizon_m, exc_info=True)
         return None, None
+
+
+# Н-27: массовые OLS/ADF-сбои деградируют прогноз молча (каждый отдельный —
+# debug/фолбэк p=1.0). Считаем и раз в порог выносим warning: «модельный
+# слой сыпется», не дожидаясь жалобы на плоские прогнозы.
+_numeric_failures: dict[str, int] = {"ols_step": 0, "adf": 0}
+_NUMERIC_WARN_EVERY = 50
+
+
+def _note_numeric_failure(kind: str) -> None:
+    _numeric_failures[kind] += 1
+    if _numeric_failures[kind] % _NUMERIC_WARN_EVERY == 0:
+        logger.warning(
+            "Forecast numeric layer degraded: %s failed %d times since start",
+            kind, _numeric_failures[kind],
+        )
 
 
 def _multi_window_predict(data_col: pd.Series, window_size: int,
@@ -1077,6 +1094,7 @@ def _adf_transform(level: pd.Series) -> tuple[pd.Series, str]:
     try:
         p = adfuller(level, regression="c")[1]
     except Exception:
+        _note_numeric_failure("adf")
         p = 1.0
     if p <= 0.05:
         return level, "stationary"
@@ -1085,6 +1103,7 @@ def _adf_transform(level: pd.Series) -> tuple[pd.Series, str]:
     try:
         p2 = adfuller(diffed, regression="c")[1] if len(diffed) > 3 else 1.0
     except Exception:
+        _note_numeric_failure("adf")
         p2 = 1.0
     if p2 <= 0.05:
         return diffed, "dif"

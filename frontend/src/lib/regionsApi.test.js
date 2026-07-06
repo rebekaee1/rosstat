@@ -54,7 +54,8 @@ describe('yearDelta', () => {
     expect(yearDelta(null, 5)).toBeNull();
   });
 
-  it('переход через ноль считается от модуля базы', () => {
-    expect(yearDelta(5, -10).pct).toBe(150);
+  it('знакопеременные значения не дают процентного бейджа (В-20)', () => {
+    expect(yearDelta(5, -10)).toBeNull();
+    expect(yearDelta(-5, 10)).toBeNull();
   });
 });

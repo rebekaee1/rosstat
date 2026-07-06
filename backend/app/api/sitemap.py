@@ -10,6 +10,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.models import Indicator, IndicatorData
+from app.services.display import (
+    annual_summary,
+    display_value,
+    display_value_text,
+    format_date_ru,
+)
 # CATEGORIES/PAGE_META/STATIC_PAGES реэкспортируются для тестов
 # (test_sitemap_static_pages_constant) — сама генерация живёт в site_urls.py.
 from app.services.seo_content import (  # noqa: F401
@@ -101,13 +107,30 @@ async def sitemap_section(section: str, db: AsyncSession = Depends(get_db)):
     if cached:
         return Response(content=cached, media_type="application/xml")
 
-    sections = await collect_url_sections(db)
-    urls = sections.get(section)
-    if not urls:
+    # Мусорное имя секции не должно каждый раз запускать полную сборку 43k URL
+    # (боты/сканеры любят перебирать пути) — держим список известных секций.
+    known = await cache_get("fe:sitemap:known-sections")
+    if isinstance(known, list) and section not in known:
         return Response(status_code=404)
-    xml = _render_urlset(urls)
-    await cache_set(cache_key, xml, _SITEMAP_TTL)
-    return Response(content=xml, media_type="application/xml")
+
+    # П-13: miss любой секции стоит полного collect_url_sections (~43k URL) —
+    # раз уже собрали, прогреваем ВСЕ секции одним проходом, чтобы обход
+    # робота по 12 файлам не запускал сборку 12 раз.
+    sections = await collect_url_sections(db)
+    requested_xml: str | None = None
+    names: list[str] = []
+    for name, urls in sections.items():
+        if not urls:
+            continue
+        names.append(name)
+        xml = _render_urlset(urls)
+        await cache_set(f"fe:sitemap:section:{name}", xml, _SITEMAP_TTL)
+        if name == section:
+            requested_xml = xml
+    await cache_set("fe:sitemap:known-sections", names, _SITEMAP_TTL)
+    if requested_xml is None:
+        return Response(status_code=404)
+    return Response(content=requested_xml, media_type="application/xml")
 
 
 @router.api_route("/feed.xml", methods=["GET", "HEAD"], include_in_schema=False)
@@ -142,9 +165,12 @@ async def rss_feed(db: AsyncSession = Depends(get_db)):
     items = []
     for ind, value, dt in rows:
         pub = format_datetime(datetime(dt.year, dt.month, dt.day, tzinfo=timezone.utc))
-        title = escape(f"{ind.name}: {float(value):.4g} {ind.unit or ''}".strip())
+        # Display-adapter: CPI-индекс → изменение цен («+0,17 % за месяц»),
+        # русские числа и даты — сырой «100.2 %» в RSS был классом инцидента.
+        shown = display_value_text(ind.code, value, ind.unit, ind.frequency)
+        title = escape(f"{ind.name}: {shown}")
         desc_text = escape(
-            f"{ind.name} — значение {float(value):.4g} {ind.unit or ''} на {dt.isoformat()}. "
+            f"{ind.name} — значение {shown} на {format_date_ru(dt)}. "
             f"Источник: {ind.source}."
         )
         link = f"{DOMAIN}/indicator/{ind.code}"
@@ -182,7 +208,6 @@ async def rss_feed(db: AsyncSession = Depends(get_db)):
 async def og_image_indicator(code: str, db: AsyncSession = Depends(get_db)):
     """PNG-превью индикатора для og:image (спарклайн + актуальное значение)."""
     from app.services.og_image import cached_og, render_indicator_og, store_og
-    from app.services.seo_renderer import _format_number  # переиспользуем формат
 
     png = cached_og(code)
     if png is None:
@@ -207,15 +232,17 @@ async def og_image_indicator(code: str, db: AsyncSession = Depends(get_db)):
             step = len(ordered) / _MAXP
             idx = sorted({int(i * step) for i in range(_MAXP)} | {len(ordered) - 1})
             ordered = [ordered[i] for i in idx]
-        values = [float(v) for v, _ in ordered]
+        # CPI-индекс на картинке показывается изменением цен, не сырыми
+        # «100.17 %» (инцидент «инфляция 100,2%» — картинка уходит в Алису
+        # и Яндекс.Картинки); даты — по-русски.
+        values = [
+            v if (v := display_value(code, raw)) is not None else 0.0
+            for raw, _ in ordered
+        ]
         current_value, current_date = (rows[-1] if rows else (None, None))
         unit = (indicator.unit or "").strip()
-        value_text = (
-            f"{_format_number(current_value)} {unit}".strip()
-            if current_value is not None
-            else "нет данных"
-        )
-        date_text = f"на {current_date.isoformat()}" if current_date else ""
+        value_text = display_value_text(code, current_value, unit, indicator.frequency)
+        date_text = f"на {format_date_ru(current_date)}" if current_date else ""
         x_labels = None
         if len(ordered) >= 2:
             first_d, last_d = ordered[0][1], ordered[-1][1]
@@ -249,7 +276,6 @@ async def og_image_indicator_year(code: str, year: int, db: AsyncSession = Depen
     Яндекса может показать карточку с графиком за нужный год.
     """
     from app.services.og_image import cached_og, render_indicator_og, store_og
-    from app.services.seo_renderer import _format_number
 
     cache_key = f"{code}:{year}"
     png = cached_og(cache_key)
@@ -271,15 +297,21 @@ async def og_image_indicator_year(code: str, year: int, db: AsyncSession = Depen
         rows = rows_q.all()
         if len(rows) < 2:
             return Response(status_code=404)
-        values = [float(v) for v, _ in rows]
+        raw_values = [float(v) for v, _ in rows]
         first_date = rows[0][1]
         last_value, last_date = rows[-1]
         unit = (indicator.unit or "").strip()
-        avg = sum(values) / len(values)
-        value_text = f"{_format_number(last_value)} {unit}".strip()
-        # Среднее — сырой float (102.4667…); округляем до 2 знаков, чтобы подпись
-        # не тащила шум после запятой.
-        date_text = f"в среднем {_format_number(round(avg, 2))} {unit}".strip()
+        # Display-adapter: спарклайн и подписи в пользовательской семантике
+        # (CPI — изменение цен), годовой итог — по природе ряда (сумма для
+        # потоков, конец года для запасов, цепной рост для CPI), а не
+        # «среднее за год» для всего подряд.
+        values = [
+            v if (v := display_value(code, raw)) is not None else 0.0
+            for raw in raw_values
+        ]
+        value_text = display_value_text(code, last_value, unit, indicator.frequency)
+        summary_label, summary_text = annual_summary(code, raw_values, unit)
+        date_text = f"{summary_label.lower()} — {summary_text}"
         png = render_indicator_og(
             code=code,
             name=indicator.name,

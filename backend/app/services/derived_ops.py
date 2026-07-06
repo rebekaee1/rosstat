@@ -31,6 +31,15 @@ persistence and orchestration happens one layer up in `calculation_engine`.
 
 Rounding precision matches the legacy ad-hoc functions in calculation_engine
 exactly so that bit-identical values land in the database after the refactor.
+
+Числовой допуск (В-10, CTO-аудит 2026-07-06): хранение — Numeric, но расчёты
+идут во float (IEEE-754 double, ~15–16 значащих цифр). Все ops округляют
+результат до 1–4 знаков перед записью, поэтому накопленная погрешность
+одиночной операции (<1e-12 отн.) не доходит до хранимого значения. Худший
+случай — цепные произведения (`quarterly_index`, кумулятивный ИПЦ в
+`wages_real`): при длине цепи ~400 звеньев относительная ошибка ≤ ~1e-13,
+что на 9+ порядков ниже шага округления. Перевод цепных индексов на Decimal
+не оправдан: источник (Росстат) сам публикует значения с 1–2 знаками.
 """
 
 from __future__ import annotations
@@ -451,13 +460,23 @@ def mom(monthly: Series) -> Series:
     return points
 
 
+# В-6 (CTO-аудит 2026-07-06): «к прошлому периоду» определён только между
+# СОСЕДНИМИ периодами. Без guard'а дыра в ряду давала Q3/Q1 под видом «Кв/Кв»
+# (annual-in-quarterly trap в общем виде). Пороги — период + запас, но меньше
+# двух периодов.
+_POP_MAX_GAP_DAYS = {"month": 45, "quarter": 110, "year": 400}
+
+
 def period_over_period(series: Series, granularity: str, method: str = "last") -> Series:
     """«К прошлому периоду» on an aggregated bucket: aggregate `series` to
     `granularity` (last for stocks/levels, sum for flows), then take percent
-    change vs the previous bucket. Used e.g. for quarter-over-quarter of a
-    monthly stock (Кв/Кв).
+    change vs the previous ADJACENT bucket (gap-guard В-6). Used e.g. for
+    quarter-over-quarter of a monthly stock (Кв/Кв).
     """
-    return qoq(_aggregate(series, granularity, method))
+    return qoq_adjacent(
+        _aggregate(series, granularity, method),
+        max_gap_days=_POP_MAX_GAP_DAYS[granularity],
+    )
 
 
 def mom_abs(monthly: Series) -> Series:
@@ -497,9 +516,19 @@ def qoq_abs(series: Series) -> Series:
 def period_over_period_abs(series: Series, granularity: str, method: str = "last") -> Series:
     """«К прошлому периоду» в АБСОЛЮТНОМ выражении: агрегируем `series` к
     `granularity` (last для уровней/ставок), затем разница к предыдущему
-    bucket'у. Для дневных/месячных ставок Кв/Кв в п.п. вместо процента.
+    СОСЕДНЕМУ bucket'у (gap-guard В-6). Для дневных/месячных ставок Кв/Кв
+    в п.п. вместо процента.
     """
-    return qoq_abs(_aggregate(series, granularity, method))
+    max_gap = _POP_MAX_GAP_DAYS[granularity]
+    sorted_pts = sorted(_aggregate(series, granularity, method), key=lambda p: p[0])
+    points: Series = []
+    for i in range(1, len(sorted_pts)):
+        d_cur, v_cur = sorted_pts[i]
+        d_prev, v_prev = sorted_pts[i - 1]
+        if (d_cur - d_prev).days > max_gap:
+            continue
+        points.append((d_cur, round(v_cur - v_prev, 2)))
+    return points
 
 
 # --- Monthly rolling aggregates ----------------------------------------------
@@ -727,10 +756,14 @@ def cpi_mom_yoy(monthly: Series) -> Series:
 
 
 def cpi_mom_qoq(monthly: Series) -> Series:
-    """QoQ %: end-of-quarter level vs previous quarter-end (chained from monthly MoM)."""
+    """QoQ %: end-of-quarter level vs previous quarter-end (chained from monthly MoM).
+
+    Смежность кварталов гарантируется guard'ом (В-6): дыра в месячном ряде не
+    превращает «кв/кв» в изменение за несколько кварталов.
+    """
     levels = cumulative_level_from_mom(monthly)
     quarter_ends = [(d, v) for d, v in levels if d.month in _QUARTER_END_MONTHS]
-    return qoq(quarter_ends)
+    return qoq_adjacent(quarter_ends)
 
 
 def weekly_inflation_by_calendar_month(weekly: Series) -> Series:
@@ -738,18 +771,35 @@ def weekly_inflation_by_calendar_month(weekly: Series) -> Series:
 
     Anchored to the last weekly observation in the month. Used for «Рост за период /
     Месячная» (distinct from official monthly м/м).
+
+    Незакрытый хвостовой месяц НЕ эмитится (В-3): «рост за месяц» по 1–3
+    неделям выдавал частичный месяц за полный. Месяц считается закрытым, если
+    после него уже есть наблюдения ИЛИ его последняя неделя упирается в конец
+    месяца (последний бюллетень месяца выходит в его последние дни). MTD-срез
+    текущего месяца остаётся в `weekly_mtd_in_calendar_month` («Недельная»),
+    где частичность — семантика режима.
     """
     by_month: dict[tuple[int, int], list[tuple[date, float]]] = {}
     for d, v in weekly:
         by_month.setdefault((d.year, d.month), []).append((d, float(v)))
+    months = sorted(by_month)
     points: Series = []
-    for ym in sorted(by_month):
+    for i, ym in enumerate(months):
         weeks = sorted(by_month[ym], key=lambda p: p[0])
+        last_day = weeks[-1][0]
+        is_last_month = i == len(months) - 1
+        if is_last_month:
+            # закрыт, только если последняя неделя дотянулась до конца месяца
+            next_month = (date(last_day.year + 1, 1, 1) if last_day.month == 12
+                          else date(last_day.year, last_day.month + 1, 1))
+            days_to_month_end = (next_month - last_day).days - 1
+            if days_to_month_end > 3:
+                continue
         product = 1.0
         for _, wv in weeks:
             product *= wv / 100.0
         growth = product * 100.0 - 100.0
-        points.append((weeks[-1][0], round(growth, 4)))
+        points.append((last_day, round(growth, 4)))
     return points
 
 

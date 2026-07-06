@@ -34,7 +34,7 @@ from dataclasses import dataclass
 from datetime import date
 from typing import ClassVar
 
-from PyPDF2 import PdfReader
+from pypdf import PdfReader
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import FetchLog, Indicator

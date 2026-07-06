@@ -132,7 +132,7 @@
 
 ### Прогноз нового source-индикатора: выбор стратегии по природе
 
-Прогноз включается заданием `model_config_json.forecast_strategy` + `forecast_steps>0` в `seed_data.py` И регистрацией кода в соответствующем сете `backend/tests/test_forecast_policy.py` (whitelist `ALL_FORECAST_CODES` — иначе тест `test_only_approved_or_derived_forecasts_are_enabled` падает). После seed — retrain (`scripts/retrain-all-monthly-auto.py --codes <code>`), он каскадно протянет прогноз в derived sibling'ы (`derived_forecast.source_code==base`).
+Прогноз включается заданием `model_config_json.forecast_strategy` + `forecast_steps>0` в `seed_data.py` И регистрацией кода в соответствующем сете `backend/tests/test_forecast_policy.py` (whitelist `ALL_FORECAST_CODES` — иначе тест `test_only_approved_or_derived_forecasts_are_enabled` падает). После seed — retrain (`backend/scripts/retrain-all-monthly-auto.py --codes <code>`; в контейнере — `/app/scripts/retrain-all-monthly-auto.py`), он каскадно протянет прогноз в derived sibling'ы (`derived_forecast.source_code==base`).
 
 | Природа базового ряда | Стратегия | Когда |
 |---|---|---|
