@@ -4,18 +4,18 @@
 
 **Сгенерировано:** 2026-07-06
 
-**Файлов:** 584  ·  **Строк:** 132 576  ·  **Токенов (≈):** 1 356 009
+**Файлов:** 584  ·  **Строк:** 132 576  ·  **Токенов (≈):** 1 356 026
 
 ## По верхним папкам
 
 | Папка | Файлов | Строк | Токенов (≈) |
 |-------|-------:|------:|------------:|
-| `(root)` | 8 | 1 687 | 42 470 |
+| `(root)` | 8 | 1 687 | 42 497 |
 | `.github` | 1 | 150 | 1 250 |
-| `backend` | 316 | 75 220 | 727 714 |
+| `backend` | 316 | 75 220 | 727 711 |
 | `clickhouse` | 2 | 36 | 445 |
 | `docs` | 22 | 4 571 | 99 529 |
-| `frontend` | 197 | 42 899 | 402 578 |
+| `frontend` | 197 | 42 899 | 402 571 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 35 | 7 855 | 80 903 |
 
@@ -33,7 +33,7 @@
 | `scripts/metrika_daily_report.py` | 1 915 | 19 522 |
 | `frontend/src/lib/regionsMap.json` | 1 | 16 837 |
 | `backend/app/services/analytics_marts.py` | 1 261 | 13 683 |
-| `AGENTS.md` | 388 | 13 479 |
+| `AGENTS.md` | 388 | 13 506 |
 | `backend/app/data/view_model_families.py` | 1 121 | 13 420 |
 | `backend/app/models.py` | 1 020 | 13 340 |
 | `frontend/src/pages/ComparePage.jsx` | 1 198 | 12 787 |
@@ -46,7 +46,7 @@
 | `frontend/src/pages/IndicatorDetail.jsx` | 803 | 8 410 |
 | `backend/app/services/calendar_sources/official_calendar.py` | 752 | 8 287 |
 | `backend/app/main.py` | 756 | 7 886 |
-| `backend/app/services/seo_regional.py` | 776 | 7 764 |
+| `backend/app/services/seo_regional.py` | 776 | 7 761 |
 | `docs/indicator-family-playbook.md` | 621 | 7 578 |
 | `scripts/build-indicator-index.py` | 698 | 7 570 |
 | `docs/missed_data_audit.md` | 447 | 6 795 |
@@ -55,7 +55,7 @@
 | `frontend/src/pages/RegionIndicatorPage.jsx` | 542 | 6 369 |
 | `backend/app/services/seo_content.py` | 539 | 6 260 |
 | `docs/data_sources.md` | 385 | 6 253 |
-| `frontend/src/pages/RegionsHome.jsx` | 529 | 6 187 |
+| `frontend/src/pages/RegionsHome.jsx` | 529 | 6 183 |
 | `frontend/src/lib/useIndicatorViewModeData.js` | 645 | 5 980 |
 | `frontend/src/lib/behavior.js` | 636 | 5 967 |
 | `backend/app/tasks/analytics_rollups.py` | 568 | 5 752 |
@@ -244,7 +244,7 @@
 | `backend/tests/conftest.py` | 164 | 1 389 |
 | `backend/tests/test_regional.py` | 138 | 1 378 |
 | `frontend/src/lib/compareRepresentation.test.js` | 131 | 1 372 |
-| `frontend/public/llms.txt` | 80 | 1 369 |
+| `frontend/public/llms.txt` | 80 | 1 368 |
 | `scripts/pg-backup.sh` | 111 | 1 357 |
 | `backend/app/services/brent_fred_parser.py` | 137 | 1 333 |
 | `backend/app/services/seo_calendar.py` | 135 | 1 307 |
@@ -262,7 +262,7 @@
 | `scripts/audit-compare-representations.py` | 142 | 1 226 |
 | `backend/app/services/webmaster_indexing_report.py` | 127 | 1 224 |
 | `docs/adr/0005-official-calendar-source-bound.md` | 62 | 1 220 |
-| `frontend/src/pages/About.jsx` | 76 | 1 196 |
+| `frontend/src/pages/About.jsx` | 76 | 1 195 |
 | `backend/app/services/geoip.py` | 140 | 1 191 |
 | `backend/app/services/action_policy.py` | 142 | 1 186 |
 | `backend/app/services/telegram_outbox.py` | 135 | 1 182 |
@@ -270,7 +270,7 @@
 | `backend/tests/forecast_strategies/snapshots/gdp_real_2025_12.json` | 282 | 1 178 |
 | `scripts/verify-data-loaded.py` | 125 | 1 178 |
 | `frontend/src/pages/Register.jsx` | 99 | 1 171 |
-| `frontend/src/pages/Dashboard.jsx` | 110 | 1 160 |
+| `frontend/src/pages/Dashboard.jsx` | 110 | 1 159 |
 | `backend/alembic/versions/8524e35ba1ee_init_schema.py` | 98 | 1 156 |
 | `frontend/src/components/TelemetryCard.jsx` | 111 | 1 151 |
 | `backend/app/services/cbr_gold_parser.py` | 131 | 1 149 |
