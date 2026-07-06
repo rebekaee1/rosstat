@@ -160,15 +160,16 @@ class Settings(BaseSettings):
     telegram_digest_enabled: bool = False
     telegram_digest_cron_hour: int = 9
     telegram_digest_cron_minute: int = 0
-    # Доп. получатели дайджеста сверх primary (comma-separated chat_id). Realtime
-    # сюда НЕ дублируется — только ежедневный дайджест в 9:00.
+    # Доп. получатели сверх primary (comma-separated chat_id, напр. skrakan).
+    # Получают дайджест 9:00, пульс, регистрации и обратную связь (указание
+    # владельца 2026-07-06). Технические алерты (ETL/5xx) — только primary.
     telegram_digest_chat_ids: str = ""
     # Мгновенные уведомления (регистрации + обратная связь). false = тишина,
     # всё уходит только в ежедневный дайджест. ETL-алерты не затрагивает.
     telegram_realtime_alerts_enabled: bool = True
 
-    # «Пульс» — дневные снапшоты активности + LLM-отчёт владельцу (П9б).
-    # Получатель ТОЛЬКО владелец (pulse_chat_id), не digest-рассылка.
+    # «Пульс» — дневные снапшоты активности + LLM-отчёт (П9б).
+    # Получатели: pulse_chat_id + все digest_recipients (с 2026-07-06).
     pulse_enabled: bool = False
     pulse_chat_id: str = ""
     pulse_report_cron_hour: int = 9
