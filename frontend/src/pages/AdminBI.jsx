@@ -1217,7 +1217,7 @@ function EventsTab({ d }) {
   );
 }
 
-function HypothesesTab({ d }) {
+function HypothesesTab({ d, onOpenSlices }) {
   const rows = d.hypotheses || [];
   if (!rows.length) {
     return <Card title="Гипотезы Пульс-аналитика" icon={Brain}><p className="text-[13px] text-text-tertiary">Гипотез пока нет — Пульс формулирует их ежедневно после утреннего отчёта.</p></Card>;
@@ -1235,7 +1235,7 @@ function HypothesesTab({ d }) {
             >
               {h.verdict === true ? 'подтверждена' : h.verdict === false ? 'опровергнута' : 'открыта'}
             </span>
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <div className="text-[14px] text-text-primary">{h.statement}</div>
               {h.rationale && <div className="text-[12px] text-text-secondary mt-1">{h.rationale}</div>}
               <div className="text-[11px] text-text-tertiary mt-1">
@@ -1243,6 +1243,15 @@ function HypothesesTab({ d }) {
                 {h.source} · {h.updated_at?.slice(0, 10)}
               </div>
             </div>
+            {onOpenSlices && (
+              <button
+                type="button" onClick={onOpenSlices}
+                className="shrink-0 text-[11px] text-champagne hover:underline whitespace-nowrap"
+                title="Открыть OLAP-конструктор и проверить гипотезу произвольным срезом"
+              >
+                проверить в Срезах →
+              </button>
+            )}
           </div>
         </div>
       ))}
@@ -1415,6 +1424,12 @@ function DriverNode({ node }) {
             <>
               <div className="flex justify-between"><span>Посетителей за 14 дней</span><span className="tabular-nums">{fmtInt(det.visitors_14d)}</span></div>
               <div className="flex justify-between"><span>Вернулись (2+ дня)</span><span className="tabular-nums">{fmtInt(det.returned)}</span></div>
+              {det.windows && ['d1', 'd7', 'd30'].map((w) => det.windows[w] && (
+                <div key={w} className="flex justify-between">
+                  <span>Возврат за {w.slice(1)} {w === 'd1' ? 'день' : 'дней'}</span>
+                  <span className="tabular-nums">{det.windows[w].rate_pct}% <span className="text-text-tertiary">({fmtInt(det.windows[w].returned)}/{fmtInt(det.windows[w].cohort)})</span></span>
+                </div>
+              ))}
             </>
           )}
         </div>
@@ -1749,7 +1764,7 @@ const QUADRANT_COLOR = {
 };
 
 // «Что менять»: квадранты, adoption, копируемое, гипотезы.
-function ProductLoopTab({ d }) {
+function ProductLoopTab({ d, onOpenSlices }) {
   const q = d.page_quadrants || {};
   const items = (q.sections || []).map((s) => ({ ...s, x: s.views, y: s.avg_active_sec }));
   const fa = d.feature_adoption || {};
@@ -1827,7 +1842,32 @@ function ProductLoopTab({ d }) {
         </Card>
       </div>
 
-      <HypothesesTab d={d} />
+      <Card title="A/B-эксперименты: конверсия по вариантам" icon={SlidersHorizontal} source="own"
+        insight="Автоанализ experiment_exposure: охват варианта и доля посетителей, дошедших до микро/макро-цели. Карточки появляются с первым запущенным экспериментом.">
+        {(d.experiments?.experiments || []).length ? (
+          <div className="space-y-4">
+            {d.experiments.experiments.map((exp) => (
+              <div key={exp.experiment}>
+                <div className="text-[12.5px] font-semibold text-text-primary mb-1.5">{exp.experiment}</div>
+                <ul className="space-y-1">
+                  {exp.variants.map((v) => (
+                    <li key={v.variant} className="flex items-center gap-2 text-[12.5px]">
+                      <span className="w-16 shrink-0 text-text-secondary">{v.variant}</span>
+                      <div className="flex-1 h-2 rounded-full bg-black/5 overflow-hidden">
+                        <div className="h-full rounded-full" style={{ width: `${Math.min(v.conversion_pct, 100)}%`, background: GOLD }} />
+                      </div>
+                      <span className="tabular-nums text-text-primary shrink-0">{v.conversion_pct}%</span>
+                      <span className="text-[10px] text-text-tertiary tabular-nums shrink-0">{fmtInt(v.visitors)} чел.</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        ) : <Empty note={d.experiments?.note || 'Экспозиций нет — каркас готов к первому A/B.'} />}
+      </Card>
+
+      <HypothesesTab d={d} onOpenSlices={onOpenSlices} />
     </div>
   );
 }
@@ -2154,6 +2194,7 @@ export default function AdminBI() {
   }
 
   const Active = TABS.find((t) => t.id === tab)?.C || MetricTreeTab;
+  const openSlices = () => setTab('slices');
 
   return (
     <div className="max-w-[1400px] mx-auto px-4 sm:px-6 pt-24 pb-10">
@@ -2200,7 +2241,7 @@ export default function AdminBI() {
 
       {biLoading && <p className="text-[14px] text-text-tertiary py-10 text-center">Считаем витрины…</p>}
       {isError && <p className="text-[14px] text-negative py-10 text-center">Не удалось загрузить данные. Попробуйте обновить.</p>}
-      {data && <Active d={data} />}
+      {data && <Active d={data} onOpenSlices={openSlices} />}
     </div>
   );
 }
