@@ -100,9 +100,9 @@ def interactive_authorized_ids() -> set[str]:
     """Кто вправе жать кнопки бота (меню, карточки, выгрузка CSV пользователей).
 
     Владелец (`telegram_chat_id`) + получатели отчёта (`telegram_digest_chat_ids`,
-    напр. skrakan) + `pulse_chat_id`. Realtime-алерты (регистрации/обратная связь)
-    сюда НЕ относятся — они только у владельца. Так skrakan получает отчёт и может
-    сам выгрузить CSV, но не завален мгновенными уведомлениями (звонок 2026-07-03).
+    напр. skrakan) + `pulse_chat_id`. Регистрации/обратная связь/пульс с 2026-07-06
+    тоже уходят всем получателям дайджеста (указание владельца); технические
+    realtime-алерты (ETL/5xx/аномалии) остаются только у владельца.
     """
     ids = set(digest_recipients())
     if settings.pulse_chat_id:
@@ -133,7 +133,9 @@ async def notify_new_user(info: dict) -> None:
         f"User-Agent: {esc((info.get('user_agent') or '')[:120])}",
         f"ID: <code>{esc(info.get('user_id'))}</code>",
     ]
-    await send_telegram("\n".join(lines), kind="new_user")
+    # Всем получателям дайджеста (владелец + skrakan) — указание владельца 2026-07-06.
+    for cid in digest_recipients():
+        await send_telegram("\n".join(lines), chat_id=cid, kind="new_user")
 
 
 async def notify_feedback(info: dict) -> None:
@@ -154,7 +156,8 @@ async def notify_feedback(info: dict) -> None:
     contact = info.get("contact")
     if contact:
         lines.insert(4, f"Контакт для ответа: {esc(contact)}")
-    await send_telegram("\n".join(lines), kind="feedback")
+    for cid in digest_recipients():
+        await send_telegram("\n".join(lines), chat_id=cid, kind="feedback")
 
 
 async def alert_forecast_issue(indicator_code: str, detail: str) -> None:

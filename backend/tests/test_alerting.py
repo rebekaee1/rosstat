@@ -1,9 +1,10 @@
-"""Маршрутизация Telegram-алертов (звонки 2026-06-21/22).
+"""Маршрутизация Telegram-алертов (звонки 2026-06-21/22, правка 2026-07-06).
 
-Инвариант: ETL-ошибки и сводки идут ТОЛЬКО на primary (`telegram_chat_id`,
-= rebekaee1). Дайджест в 9:00 рассылается всем (`digest_recipients`, включая
-skrakan). skrakan не должен получать ошибки ETL — этот тест ловит регрессию,
-если кто-то переведёт `alert_etl_*` на broadcast.
+Инвариант: технические алерты (ETL-ошибки/сводки/аномалии) идут ТОЛЬКО на
+primary (`telegram_chat_id`, = rebekaee1). Дайджест 9:00, пульс, регистрации
+и обратная связь рассылаются всем (`digest_recipients`, включая skrakan) —
+указание владельца 2026-07-06. Тест ловит регрессию, если кто-то переведёт
+`alert_etl_*` на broadcast или наоборот сузит бизнес-уведомления.
 """
 
 import asyncio
@@ -31,12 +32,16 @@ def test_etl_alerts_go_to_primary_only(monkeypatch):
     assert calls == [None, None]
 
 
-def test_realtime_user_and_feedback_alerts_primary_only(monkeypatch):
+def test_realtime_user_and_feedback_alerts_broadcast(monkeypatch):
+    """Регистрации и обратная связь — всем получателям дайджеста
+    (владелец + skrakan), указание владельца 2026-07-06."""
     calls = _capture_send(monkeypatch)
     monkeypatch.setattr(alerting.settings, "telegram_realtime_alerts_enabled", True)
+    monkeypatch.setattr(alerting.settings, "telegram_chat_id", "111", raising=False)
+    monkeypatch.setattr(alerting.settings, "telegram_digest_chat_ids", "222", raising=False)
     asyncio.run(alerting.notify_new_user({"method": "email"}))
     asyncio.run(alerting.notify_feedback({"message": "hi"}))
-    assert calls == [None, None]
+    assert calls == ["111", "222", "111", "222"]
 
 
 def test_digest_broadcasts_to_all_recipients(monkeypatch):

@@ -26,6 +26,7 @@ from app.config import settings
 from app.database import async_session
 from app.models import Hypothesis
 from app.services import pulse
+from app.services.alerting import digest_recipients
 from app.services.telegram_bot import main_menu_keyboard, send_message
 
 logger = logging.getLogger(__name__)
@@ -312,9 +313,16 @@ async def send_pulse_report(report_date: date | None = None) -> bool:
         msg_parts += ["", raw]
     text = "\n".join(msg_parts)
 
-    ok = await send_message(
-        settings.pulse_chat_id, text, reply_markup=main_menu_keyboard(), kind="pulse_digest"
-    )
+    # Пульс — всем получателям дайджеста (владелец + skrakan, указание 2026-07-06);
+    # pulse_chat_id остаётся в списке через digest_recipients ∪ {pulse_chat_id}.
+    recipients = {str(settings.pulse_chat_id)} if settings.pulse_chat_id else set()
+    recipients |= set(digest_recipients())
+    results = {}
+    for cid in sorted(recipients):
+        results[cid] = await send_message(
+            cid, text, reply_markup=main_menu_keyboard(), kind="pulse_digest"
+        )
+    ok = any(results.values())
     # память дня пишем даже при сбое отправки — снапшот уже посчитан
     await pulse.store_memory(d, pulse.memory_core(snapshot), summary or _fallback_summary(snapshot))
     return ok

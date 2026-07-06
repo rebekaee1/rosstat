@@ -32823,12 +32823,12 @@
         },
         {
           "file": "backend/tests/test_alerting.py",
-          "line": 27,
+          "line": 28,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_alerting.py",
-          "line": 28,
+          "line": 29,
           "kind": "tests"
         },
         {

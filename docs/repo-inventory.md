@@ -4,7 +4,7 @@
 
 **Сгенерировано:** 2026-07-06
 
-**Файлов:** 584  ·  **Строк:** 132 576  ·  **Токенов (≈):** 1 356 026
+**Файлов:** 584  ·  **Строк:** 132 596  ·  **Токенов (≈):** 1 356 353
 
 ## По верхним папкам
 
@@ -12,10 +12,10 @@
 |-------|-------:|------:|------------:|
 | `(root)` | 8 | 1 687 | 42 497 |
 | `.github` | 1 | 150 | 1 250 |
-| `backend` | 316 | 75 220 | 727 711 |
+| `backend` | 316 | 75 236 | 727 968 |
 | `clickhouse` | 2 | 36 | 445 |
 | `docs` | 22 | 4 571 | 99 529 |
-| `frontend` | 197 | 42 899 | 402 571 |
+| `frontend` | 197 | 42 903 | 402 641 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 35 | 7 855 | 80 903 |
 
@@ -97,11 +97,11 @@
 | `backend/tests/test_forecast_policy.py` | 372 | 3 814 |
 | `scripts/regional/backfill_word.py` | 337 | 3 810 |
 | `backend/app/api/auth.py` | 380 | 3 794 |
+| `backend/app/services/pulse_report.py` | 348 | 3 790 |
 | `backend/app/services/forecast_pipeline.py` | 407 | 3 758 |
 | `frontend/src/components/IndicatorSearch.jsx` | 347 | 3 755 |
-| `backend/app/services/pulse_report.py` | 340 | 3 682 |
+| `frontend/src/components/Navbar.jsx` | 391 | 3 692 |
 | `scripts/audit-indicator-unification.py` | 307 | 3 654 |
-| `frontend/src/components/Navbar.jsx` | 387 | 3 622 |
 | `backend/tests/test_rosstat_weekly_inflation.py` | 355 | 3 620 |
 | `frontend/nginx.conf` | 348 | 3 616 |
 | `docs/adr/0007-identity-user-accounts.md` | 151 | 3 594 |
@@ -193,12 +193,12 @@
 | `frontend/src/components/IndicatorTile.jsx` | 168 | 1 850 |
 | `backend/app/services/cbr_keyrate.py` | 205 | 1 846 |
 | `frontend/src/pages/RegionComparePage.jsx` | 153 | 1 825 |
+| `backend/app/services/alerting.py` | 197 | 1 821 |
 | `frontend/src/components/RegionAnnualChart.jsx` | 198 | 1 804 |
 | `backend/app/services/rosstat_sdds_fetcher.py` | 180 | 1 798 |
 | `backend/app/tasks/ticker_worker.py` | 193 | 1 790 |
 | `backend/tests/test_admin_bi.py` | 177 | 1 784 |
 | `backend/tests/test_auth_oauth.py` | 158 | 1 780 |
-| `backend/app/services/alerting.py` | 194 | 1 778 |
 | `frontend/src/components/OAuthButtons.jsx` | 184 | 1 778 |
 | `backend/app/services/rosstat_ipi_parser.py` | 207 | 1 762 |
 | `frontend/src/lib/useInflationCalc.js` | 212 | 1 759 |
@@ -215,6 +215,7 @@
 | `frontend/src/components/RegisterNudge.jsx` | 166 | 1 589 |
 | `backend/app/services/upsert.py` | 163 | 1 587 |
 | `backend/app/services/cbr_dataservice_parser.py` | 181 | 1 585 |
+| `backend/tests/test_alerting.py` | 153 | 1 575 |
 | `frontend/src/lib/housingViewModeContent.jsx` | 152 | 1 566 |
 | `backend/app/services/analytics_period.py` | 178 | 1 561 |
 | `backend/app/services/cbr_trade_services_monthly_parser.py` | 203 | 1 553 |
@@ -231,7 +232,6 @@
 | `scripts/locate-indicator.py` | 167 | 1 498 |
 | `backend/app/services/cbr_monetary_agg_parser.py` | 173 | 1 488 |
 | `backend/tests/test_rosstat_population.py` | 185 | 1 483 |
-| `backend/tests/test_alerting.py` | 148 | 1 469 |
 | `backend/seed_regional.py` | 140 | 1 455 |
 | `backend/tests/test_upsert.py` | 166 | 1 439 |
 | `frontend/src/lib/regionsApi.js` | 176 | 1 437 |

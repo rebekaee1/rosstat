@@ -205,32 +205,36 @@ export default function Navbar() {
           </button>
           {catOpen && (
             <div
-              className="absolute right-0 top-full z-[110] mt-2 max-h-[min(70vh,420px)] min-w-[min(100vw-2rem,280px)] overflow-y-auto rounded-2xl border border-border-subtle bg-surface py-2 shadow-2xl ring-1 ring-black/[0.08]"
+              className="absolute left-0 top-full z-[110] mt-2 max-h-[min(80vh,560px)] w-[min(100vw-2rem,480px)] overflow-y-auto rounded-2xl border border-border-subtle bg-surface py-2 shadow-2xl ring-1 ring-black/[0.08]"
               role="menu"
             >
-              {CATEGORIES.map((c) =>
-                c.apiCategory ? (
-                  <NavLink
-                    key={c.slug}
-                    to={`/category/${c.slug}`}
-                    className={({ isActive }) =>
-                      cn(itemClass, isActive ? 'text-champagne bg-champagne/5' : 'text-text-primary')
-                    }
-                    onClick={closeAll}
-                    role="menuitem"
-                  >
-                    {c.name}
-                  </NavLink>
-                ) : (
-                  <div
-                    key={c.slug}
-                    className={cn(itemClass, 'cursor-default text-text-secondary')}
-                  >
-                    {c.name}
-                    <span className="ml-2 text-[10px] uppercase font-mono">скоро</span>
-                  </div>
-                )
-              )}
+              {/* Две колонки: все 12 категорий видны сразу, без скрытого скролла
+                  (раньше max-h 420px обрезал хвост списка на невидимом overflow). */}
+              <div className="grid grid-cols-2">
+                {CATEGORIES.map((c) =>
+                  c.apiCategory ? (
+                    <NavLink
+                      key={c.slug}
+                      to={`/category/${c.slug}`}
+                      className={({ isActive }) =>
+                        cn(itemClass, isActive ? 'text-champagne bg-champagne/5' : 'text-text-primary')
+                      }
+                      onClick={closeAll}
+                      role="menuitem"
+                    >
+                      {c.name}
+                    </NavLink>
+                  ) : (
+                    <div
+                      key={c.slug}
+                      className={cn(itemClass, 'cursor-default text-text-secondary')}
+                    >
+                      {c.name}
+                      <span className="ml-2 text-[10px] uppercase font-mono">скоро</span>
+                    </div>
+                  )
+                )}
+              </div>
               <div className="mx-4 my-1 h-px bg-border-subtle" />
               <NavLink
                 to="/demographics"
