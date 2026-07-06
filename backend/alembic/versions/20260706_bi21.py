@@ -10,7 +10,7 @@ from alembic import op
 import sqlalchemy as sa
 
 revision = "20260706_bi21"
-down_revision = "20260706_analytics2"
+down_revision = "20260706_region_data_idx"
 branch_labels = None
 depends_on = None
 

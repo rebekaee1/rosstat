@@ -4,7 +4,7 @@
 
 **Сгенерировано:** 2026-07-06
 
-**Файлов:** 584  ·  **Строк:** 132 539  ·  **Токенов (≈):** 1 354 726
+**Файлов:** 584  ·  **Строк:** 132 576  ·  **Токенов (≈):** 1 356 009
 
 ## По верхним папкам
 
@@ -12,9 +12,9 @@
 |-------|-------:|------:|------------:|
 | `(root)` | 8 | 1 687 | 42 470 |
 | `.github` | 1 | 150 | 1 250 |
-| `backend` | 316 | 75 220 | 727 713 |
+| `backend` | 316 | 75 220 | 727 714 |
 | `clickhouse` | 2 | 36 | 445 |
-| `docs` | 22 | 4 534 | 98 247 |
+| `docs` | 22 | 4 571 | 99 529 |
 | `frontend` | 197 | 42 899 | 402 578 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 35 | 7 855 | 80 903 |
@@ -28,7 +28,7 @@
 | `backend/app/data/regional/indicators.json` | 6 359 | 58 178 |
 | `backend/seed_data.py` | 4 886 | 49 521 |
 | `frontend/src/pages/AdminBI.jsx` | 2 594 | 34 745 |
-| `docs/backlog.md` | 885 | 32 918 |
+| `docs/backlog.md` | 885 | 33 591 |
 | `CONTEXT.md` | 584 | 20 732 |
 | `scripts/metrika_daily_report.py` | 1 915 | 19 522 |
 | `frontend/src/lib/regionsMap.json` | 1 | 16 837 |
@@ -138,6 +138,7 @@
 | `docker-compose.yml` | 245 | 2 581 |
 | `frontend/src/components/RegionsMap.jsx` | 260 | 2 580 |
 | `docs/enterprise_resilience.md` | 71 | 2 565 |
+| `docs/adr/0010-analytics-contour-identity-goals-marts-olap.md` | 177 | 2 531 |
 | `docs/workflow.md` | 133 | 2 526 |
 | `frontend/src/pages/CategoryPage.jsx` | 245 | 2 526 |
 | `backend/app/services/site_urls.py` | 273 | 2 503 |
@@ -177,7 +178,6 @@
 | `docs/analytics_api_inventory/yandex_webmaster.md` | 60 | 1 932 |
 | `backend/tests/forecast_strategies/snapshots/prod_signed_quarterly.json` | 560 | 1 926 |
 | `frontend/src/lib/format.test.js` | 212 | 1 923 |
-| `docs/adr/0010-analytics-contour-identity-goals-marts-olap.md` | 140 | 1 922 |
 | `frontend/src/lib/api.js` | 190 | 1 913 |
 | `frontend/src/pages/RegionRatingPage.jsx` | 158 | 1 893 |
 | `frontend/src/components/calendar/CalendarGrid.jsx` | 188 | 1 889 |
@@ -528,7 +528,7 @@
 | `backend/app/database.py` | 31 | 255 |
 | `frontend/src/components/Skeleton.jsx` | 35 | 254 |
 | `backend/tests/test_brent_seo.py` | 33 | 253 |
-| `backend/alembic/versions/20260706_bi21.py` | 36 | 249 |
+| `backend/alembic/versions/20260706_bi21.py` | 36 | 250 |
 | `backend/tests/test_ruonia_seo.py` | 33 | 247 |
 | `backend/tests/test_usd_rub_seo.py` | 33 | 245 |
 | `backend/tests/test_eur_rub_seo.py` | 33 | 244 |
