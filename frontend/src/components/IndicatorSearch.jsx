@@ -96,10 +96,12 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
     setHi(0);
   }, []);
 
-  const go = useCallback((code) => {
+  const go = useCallback((code, position = null) => {
     const q = (queryRef.current || '').trim();
     selectedRef.current = true;
-    track(events.SEARCH_SELECT, { q: q.slice(0, 120), code });
+    // position — номер строки в выдаче (1-based): клики по хвосту = сигнал,
+    // что ранжирование каталога не совпадает со спросом.
+    track(events.SEARCH_SELECT, { q: q.slice(0, 120), code, ...(position ? { position } : {}) });
     close();
     navigate(`/indicator/${code}`);
   }, [close, navigate]);
@@ -183,7 +185,7 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
       setHi((i) => Math.max(i - 1, 0));
     } else if (e.key === 'Enter' && results[hi]) {
       e.preventDefault();
-      go(results[hi].code);
+      go(results[hi].code, hi + 1);
     }
   };
 
@@ -304,7 +306,7 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
                       type="button"
                       data-row={i}
                       onMouseEnter={() => setHi(i)}
-                      onClick={() => go(ind.code)}
+                      onClick={() => go(ind.code, i + 1)}
                       className={cn(
                         'w-full text-left px-4 py-2.5 flex items-center gap-3 transition-colors',
                         active ? 'bg-champagne/10' : 'hover:bg-obsidian-lighter/60',

@@ -232,7 +232,7 @@ export default function RegionProfile() {
             {filteredSections.map(sec => {
               const isOpen = searching || openSections.has(sec.num);
               return (
-                <section key={sec.num} className="bg-surface border border-border-subtle rounded-xl overflow-hidden">
+                <section key={sec.num} data-block={`region-section-${sec.num}`} className="bg-surface border border-border-subtle rounded-xl overflow-hidden">
                   <button
                     onClick={() => toggleSection(sec.num)}
                     className="w-full flex items-center justify-between gap-3 px-4 py-3.5 text-left hover:bg-surface-hover transition-colors"

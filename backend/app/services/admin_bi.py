@@ -61,32 +61,16 @@ _DOWNLOAD_EVENTS = {
 }
 _ERROR_EVENTS = {"api_load_error", "error_reload", "api_retry"}
 
-# Классификация путей по продуктовым разделам — для структуры потребления
-# контента (treemap в BI). Порядок важен: первое совпадение выигрывает.
-_SECTION_RULES = [
-    ("/indicator/", "Карточки индикаторов"),
-    ("/region/", "Карточки регионов"),
-    ("/regions", "Каталог и карта регионов"),
-    ("/region-rating", "Рейтинги регионов"),
-    ("/region-vs", "Сравнения регионов"),
-    ("/calculator", "Калькуляторы"),
-    ("/compare", "Сравнение индикаторов"),
-    ("/category/", "Категории"),
-    ("/calendar", "Календарь"),
-    ("/today", "Страницы «сегодня»"),
-    ("/about", "О проекте"),
-    ("/methodology", "Методология"),
-    ("/admin", "Служебные"),
-]
-
-
-def _page_section(path: str) -> str:
-    if not path or path == "/":
-        return "Главная"
-    for prefix, name in _SECTION_RULES:
-        if path.startswith(prefix):
-            return name
-    return "Прочее"
+# Общие примитивы (маппинги Метрики, разделы, истинная проверка целей) живут
+# в analytics_marts — единой точке истины для BI, Пульса и rollup'ов.
+from app.services.analytics_marts import (  # noqa: E402
+    page_section as _page_section,
+    visit_browser as _visit_browser,
+    visit_device as _visit_device,
+    visit_field as _visit_field,
+    visit_has_goals as _has_goals,
+    visit_os as _visit_os,
+)
 
 
 def _day(dt: datetime | date | None) -> str | None:
@@ -95,84 +79,6 @@ def _day(dt: datetime | date | None) -> str | None:
     if isinstance(dt, datetime):
         return dt.date().isoformat()
     return dt.isoformat()
-
-
-def _visit_field(v: RawMetrikaVisit, key: str) -> str:
-    raw = v.raw_json or {}
-    return (raw.get(key) or "").strip()
-
-
-# ym:s:deviceCategory в Logs API — числовой код, не слово.
-_METRIKA_DEVICE = {"1": "desktop", "2": "mobile", "3": "tablet", "4": "tv"}
-
-# Машинные ярлыки Logs API → те же канонические имена, что даёт наш ua_parser.
-# Иначе сверка «наш слой vs Метрика» на витрине не сопоставляется по ключам.
-_METRIKA_BROWSER = {
-    "yandex_browser": "Яндекс.Браузер",
-    "yandexsearch": "Яндекс.Браузер",
-    "yandexbrowsercorp": "Яндекс.Браузер",
-    "chrome": "Chrome",
-    "chromemobile": "Chrome",
-    "safari": "Safari",
-    "safari_mobile": "Safari",
-    "mobile_safari": "Safari",
-    "firefox": "Firefox",
-    "firefox_mobile": "Firefox",
-    "edge": "Edge",
-    "edgin": "Edge",
-    "opera": "Opera",
-    "opera_mobile": "Opera",
-    "samsung_internet": "Samsung Internet",
-    "android_browser": "Android WebView",
-    "mi_browser": "Mi Browser",
-    "huawei_browser": "Huawei Browser",
-}
-_METRIKA_OS = {
-    "windows": "Windows",
-    "android": "Android",
-    "ios": "iOS",
-    "ios_double": "iOS",
-    "mac_os": "macOS",
-    "macos": "macOS",
-    "gnu_linux": "Linux",
-    "linux": "Linux",
-}
-
-
-def _visit_device(v: RawMetrikaVisit) -> str:
-    raw = _visit_field(v, "ym:s:deviceCategory")
-    return _METRIKA_DEVICE.get(raw, raw)
-
-
-def _visit_browser(v: RawMetrikaVisit) -> str:
-    raw = _visit_field(v, "ym:s:browser").lower()
-    return _METRIKA_BROWSER.get(raw, raw)
-
-
-def _visit_os(v: RawMetrikaVisit) -> str:
-    raw = _visit_field(v, "ym:s:operatingSystemRoot").lower()
-    return _METRIKA_OS.get(raw, raw)
-
-
-def _has_goals(v: RawMetrikaVisit) -> bool:
-    """Истинная проверка «визит достиг цели Метрики».
-
-    goals_json хранится как {"goals": "[577576799,...]"} — строка со списком id
-    внутри объекта, и объект есть у КАЖДОГО визита с непустым полем выгрузки.
-    Наивный truthy-чек считал целью почти каждый визит (конверсия 91–100% —
-    инцидент 2026-07-05). Цель есть только если внутри непустой список id.
-    """
-    gj = v.goals_json
-    if not gj:
-        return False
-    if isinstance(gj, dict):
-        gj = gj.get("goals")
-    if isinstance(gj, str):
-        stripped = gj.strip().strip("[]").strip()
-        return bool(stripped)
-    if isinstance(gj, (list, tuple)):
-        return len(gj) > 0
-    return False
 
 
 async def _kpi_daily(db: AsyncSession, since: datetime) -> list[dict]:
@@ -881,12 +787,40 @@ async def build_bi_dashboard(db: AsyncSession, days: int = 30) -> dict[str, Any]
     )).all()
     registrations_by_day = {str(d): c for d, c in reg_rows}
 
+    from app.services.analytics_marts import (
+        mart_ad_costs,
+        mart_blocks,
+        mart_collection_quality,
+        mart_feature_adoption,
+        mart_geo,
+        mart_metric_tree,
+        mart_metrika_funnel,
+        mart_own_funnel,
+        mart_page_quadrants,
+        mart_people,
+        mart_reliability,
+        mart_segments,
+    )
     from app.services.dataset_inventory import build_inventory
 
     dashboard: dict[str, Any] = {
         "generated_at": datetime.utcnow().isoformat(timespec="seconds"),
         "window_days": days,
         "users": await _users_summary(db, since),
+        # --- executive-слой (marts, этап 3 «Аналитика 2.0») ---
+        "metric_tree": await mart_metric_tree(db, days),
+        "own_funnel": await mart_own_funnel(db, days),
+        "metrika_funnel": await mart_metrika_funnel(db, days),
+        "segments": await mart_segments(db, days),
+        "geo": await mart_geo(db, days),
+        "blocks": await mart_blocks(db, days),
+        "page_quadrants": await mart_page_quadrants(db, days),
+        "feature_adoption": await mart_feature_adoption(db, days),
+        "people": await mart_people(db, days),
+        "reliability": await mart_reliability(db, min(days, 7)),
+        "collection_quality": await mart_collection_quality(db, min(days, 7)),
+        "ad_costs": await mart_ad_costs(db, days),
+        # --- операционные витрины ---
         "kpi_daily": await _kpi_daily(db, since),
         "acquisition": _acquisition(window_visits),
         "funnel": _funnel(window_visits, registrations_by_day),

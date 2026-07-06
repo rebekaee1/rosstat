@@ -326,6 +326,56 @@ async def lifespan(app: FastAPI):
                 replace_existing=True,
             )
 
+        # Вычислительный фундамент аналитики (ADR-0010): каждые 15 минут —
+        # серверная сессионизация (30-мин правило Метрики) + инкремент
+        # rollup'ов последних 2 суток + пороговые алерты-аномалии; раз в сутки
+        # ночью — пересчёт хвоста истории.
+        from app.tasks.analytics_rollups import rollups_15min_job, rollups_daily_job
+        scheduler.add_job(
+            rollups_15min_job,
+            trigger=IntervalTrigger(minutes=15),
+            id="analytics_rollups_15min",
+            name="Analytics: sessionize + rollups (last 2 days) + anomaly alerts",
+            replace_existing=True,
+            coalesce=True,
+            max_instances=1,
+        )
+        scheduler.add_job(
+            rollups_daily_job,
+            trigger=CronTrigger(hour=4, minute=50, timezone="Europe/Moscow"),
+            id="analytics_rollups_daily",
+            name="Analytics: full rollup history recompute + goals dict sync",
+            replace_existing=True,
+        )
+
+        # Гео-база DB-IP: фоновая загрузка при старте (если файла нет) и
+        # ежемесячное обновление — сайт стартует и без неё (гео = NULL).
+        if settings.geoip_auto_download:
+            from app.services.geoip import download_geoip_db
+            asyncio.create_task(download_geoip_db())
+            scheduler.add_job(
+                download_geoip_db,
+                trigger=CronTrigger(day=3, hour=5, minute=0, timezone="Europe/Moscow"),
+                id="geoip_monthly_update",
+                name="GeoIP DB-IP Lite monthly refresh",
+                replace_existing=True,
+            )
+
+        # OLAP-слой ClickHouse: производная копия Postgres, курсорный синк
+        # каждые 15 минут. Деградация мягкая: CH упал → сайт не замечает.
+        if settings.clickhouse_enabled:
+            from app.services.clickhouse_sync import clickhouse_sync_job
+            scheduler.add_job(
+                clickhouse_sync_job,
+                trigger=IntervalTrigger(minutes=15),
+                id="clickhouse_sync",
+                name="ClickHouse OLAP sync (derived copy of PG, cursor batches)",
+                replace_existing=True,
+                coalesce=True,
+                max_instances=1,
+            )
+            logger.info("ClickHouse sync enabled: every 15 min")
+
         if settings.telegram_poller_enabled:
             from app.services.telegram_bot import telegram_poll_job
             scheduler.add_job(

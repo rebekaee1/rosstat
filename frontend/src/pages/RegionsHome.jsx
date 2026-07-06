@@ -328,7 +328,7 @@ export default function RegionsHome() {
         <>
           {/* Контрасты России: цепляющие крайние значения */}
           {(wagesHeat.data || unempHeat.data) && (
-            <div className="mb-4 bg-surface border border-border-subtle rounded-xl p-4 space-y-2">
+            <div data-block="contrasts" className="mb-4 bg-surface border border-border-subtle rounded-xl p-4 space-y-2">
               <div className="text-xs font-mono uppercase tracking-widest text-champagne mb-1">Контрасты России</div>
               <ContrastRow heat={wagesHeat} metricLabel="Зарплата" />
               <ContrastRow heat={unempHeat} metricLabel="Безработица" betterIsLow />
@@ -454,7 +454,7 @@ export default function RegionsHome() {
             />
           </div>
 
-          <div className="bg-surface border border-border-subtle rounded-xl p-3 sm:p-5 relative" ref={mapCardRef}>
+          <div data-block="regions-map" className="bg-surface border border-border-subtle rounded-xl p-3 sm:p-5 relative" ref={mapCardRef}>
             <div className="mb-2 flex flex-wrap items-start justify-between gap-2">
               <div className="text-xs text-text-tertiary min-w-0">
                 {activeMapCode && series.data ? (

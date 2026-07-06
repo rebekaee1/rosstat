@@ -18,8 +18,10 @@ import {
 import {
   Activity, Users, MousePointerClick, Search, TrendingUp, Route,
   AlertTriangle, Brain, Database, Megaphone, RefreshCw, Filter, LogIn,
-  CalendarClock, LayoutGrid,
+  CalendarClock, LayoutGrid, Target, Wrench, ShieldCheck, Globe2,
+  SlidersHorizontal, Layers,
 } from 'lucide-react';
+import EChart from '../components/EChart';
 import api, { loginUser } from '../lib/api';
 import { useAuth } from '../context/authContext';
 import useDocumentMeta from '../lib/useMeta';
@@ -159,12 +161,26 @@ const TT_STYLE = {
   itemStyle: { color: '#1A1A2E' },
 };
 
-function Card({ title, icon: Icon, insight, children, span }) {
+// Badge источника данных на карточке: «Метрика» / «наш счётчик» / «оба» —
+// каждая цифра BI подписана, откуда она (сверяемость слоёв).
+const SOURCE_BADGE = {
+  metrika: { label: 'Метрика', cls: 'bg-blue-50 text-blue-700' },
+  own: { label: 'наш счётчик', cls: 'bg-purple-50 text-purple-700' },
+  both: { label: 'оба слоя', cls: 'bg-amber-50 text-amber-700' },
+};
+
+function Card({ title, icon: Icon, insight, children, span, source }) {
+  const badge = SOURCE_BADGE[source];
   return (
     <section className={`rounded-2xl bg-surface border border-border-subtle p-5 ${span || ''}`}>
       <h2 className="flex items-center gap-2 text-[15px] font-semibold text-text-primary">
         {Icon && <Icon size={16} className="text-champagne" />}
-        {title}
+        <span className="flex-1 min-w-0">{title}</span>
+        {badge && (
+          <span className={`shrink-0 text-[10px] px-2 py-0.5 rounded-full font-medium ${badge.cls}`}>
+            {badge.label}
+          </span>
+        )}
       </h2>
       {insight && <p className="text-[12.5px] text-text-secondary mt-1 mb-3 leading-snug">{insight}</p>}
       {!insight && <div className="mb-4" />}
@@ -1325,6 +1341,725 @@ function DatasetTab({ d }) {
   );
 }
 
+/* ---------- Аналитика 2.0: executive-вкладки ---------- */
+
+const STATUS_COLOR = { green: GREEN, yellow: '#D97706', red: RED };
+const STATUS_RU = { green: 'в норме', yellow: 'ниже цели', red: 'критично' };
+const CHANNEL_RU = {
+  search: 'Поиск', ad: 'Реклама (Директ)', campaign: 'Кампании (UTM)',
+  social: 'Соцсети', referral: 'Переходы с сайтов', internal: 'Внутренние',
+  direct: 'Прямые заходы', unknown: 'Не определён',
+};
+const TIER_RU = { macro: 'Макро', micro: 'Микро', engagement: 'Вовлечение', technical: 'Технические' };
+const TIER_COLOR = { macro: GREEN, micro: BLUE, engagement: GOLD, technical: 'rgba(26,26,46,0.35)' };
+
+function fmtDriverValue(node) {
+  if (node.format === 'pct') return `${Number(node.value).toLocaleString('ru-RU')}%`;
+  return fmtInt(Math.round(node.value));
+}
+
+// Узел дерева метрик: значение, target, статус-цвет, прогресс-бар, раскрытие.
+function DriverNode({ node }) {
+  const [open, setOpen] = useState(false);
+  const color = STATUS_COLOR[node.status] || GOLD;
+  const progress = node.target ? Math.min(node.value / node.target * 100, 100) : 0;
+  const det = node.detail || {};
+  return (
+    <div className="rounded-2xl bg-surface border border-border-subtle p-4">
+      <button type="button" onClick={() => setOpen((v) => !v)} className="w-full text-left">
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-[12.5px] text-text-tertiary">{node.label}</span>
+          <span className="text-[10px] px-1.5 py-0.5 rounded-full font-medium" style={{ background: `${color}18`, color }}>
+            {STATUS_RU[node.status] || node.status}
+          </span>
+        </div>
+        <div className="flex items-baseline gap-2 mt-1">
+          <span className="text-2xl font-bold tabular-nums text-text-primary">{fmtDriverValue(node)}</span>
+          <span className="text-[11.5px] text-text-tertiary">
+            цель {node.format === 'pct' ? `${node.target}%` : fmtInt(node.target)}
+          </span>
+        </div>
+        <div className="mt-2 h-1.5 rounded-full bg-obsidian overflow-hidden">
+          <div className="h-full rounded-full transition-all" style={{ width: `${progress}%`, background: color }} />
+        </div>
+        <div className="text-[10.5px] text-text-tertiary mt-1.5">{open ? 'Скрыть детали ▲' : 'Раскрыть ▼'}</div>
+      </button>
+      {open && (
+        <div className="mt-3 pt-3 border-t border-border-subtle space-y-1 text-[12px] text-text-secondary">
+          {node.key === 'acquisition' && (
+            <>
+              {Object.entries(det.channels || {}).sort((a, b) => b[1] - a[1]).map(([ch, v]) => (
+                <div key={ch} className="flex justify-between"><span>{CHANNEL_RU[ch] || ch}</span><span className="tabular-nums">{fmtInt(v)}</span></div>
+              ))}
+              <div className="flex justify-between pt-1 text-text-tertiary">
+                <span>Доля поиска</span>
+                <span className="tabular-nums">{Math.round((det.search_share || 0) * 100)}% (цель {Math.round((det.search_share_target || 0) * 100)}%)</span>
+              </div>
+            </>
+          )}
+          {node.key === 'engagement' && (
+            <>
+              <div className="flex justify-between"><span>Сессий за 7 дней</span><span className="tabular-nums">{fmtInt(det.sessions)}</span></div>
+              <div className="flex justify-between"><span>Из них вовлечённых</span><span className="tabular-nums">{fmtInt(det.engaged)}</span></div>
+              <p className="text-text-tertiary pt-1">Вовлечён: активный dwell &gt;15 с, скролл &gt;50% или 2+ страницы.</p>
+            </>
+          )}
+          {node.key === 'conversion' && (
+            <>
+              <div className="flex justify-between"><span>Микро-цели (сессий)</span><span className="tabular-nums">{fmtInt(det.micro_sessions)} · {det.micro_rate_pct}%</span></div>
+              <div className="flex justify-between"><span>Макро-цели (сессий)</span><span className="tabular-nums">{fmtInt(det.macro_sessions)} · {det.macro_rate_pct}%</span></div>
+              <div className="flex justify-between text-text-tertiary"><span>Цель макро</span><span className="tabular-nums">{det.macro_target_pct}%</span></div>
+            </>
+          )}
+          {node.key === 'retention' && (
+            <>
+              <div className="flex justify-between"><span>Посетителей за 14 дней</span><span className="tabular-nums">{fmtInt(det.visitors_14d)}</span></div>
+              <div className="flex justify-between"><span>Вернулись (2+ дня)</span><span className="tabular-nums">{fmtInt(det.returned)}</span></div>
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Главная BI: North Star + 4 драйвера + операционный обзор ниже.
+function MetricTreeTab({ d }) {
+  const tree = d.metric_tree || {};
+  const ns = tree.north_star || {};
+  const milestone = ns.milestone || 10000;
+  const nsColor = STATUS_COLOR[ns.status] || GOLD;
+  const series = (ns.series || []).map((x) => ({ v: x.visits }));
+
+  // Calendar-heatmap пульса: визиты по дням (ECharts calendar).
+  const calOption = useMemo(() => {
+    const src = ns.series || [];
+    const calData = src.map((x) => [x.day, x.visits]);
+    const calMax = Math.max(1, ...src.map((x) => x.visits));
+    const year = calData.length ? calData[calData.length - 1][0].slice(0, 4) : String(new Date().getFullYear());
+    return {
+      tooltip: { formatter: (p) => `${p.value[0]}: ${Number(p.value[1]).toLocaleString('ru-RU')} визитов` },
+      visualMap: {
+        min: 0, max: calMax, orient: 'horizontal', left: 'center', bottom: 0,
+        inRange: { color: ['#F4EFE3', GOLD, INK] }, textStyle: { fontSize: 10 },
+      },
+      calendar: {
+        range: year, cellSize: ['auto', 14], left: 40, right: 10, top: 24,
+        itemStyle: { borderWidth: 2, borderColor: '#fff', color: '#FAF8F2' },
+        splitLine: { lineStyle: { color: 'rgba(26,26,46,0.15)' } },
+        dayLabel: { fontSize: 9, nameMap: ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'] },
+        monthLabel: { fontSize: 10, nameMap: ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'] },
+        yearLabel: { show: false },
+      },
+      series: [{ type: 'heatmap', coordinateSystem: 'calendar', data: calData }],
+    };
+  }, [ns.series]);
+
+  return (
+    <div className="space-y-5">
+      <section className="rounded-2xl bg-surface border border-border-subtle p-6">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <div className="text-[13px] text-text-tertiary">{ns.label || 'Визиты в день'} · North Star</div>
+            <div className="flex items-baseline gap-3 mt-1">
+              <span className="text-4xl font-bold tabular-nums text-text-primary">{fmtInt(Math.round(ns.value || 0))}</span>
+              {ns.wow_pct != null && (
+                <span className={`text-[13px] font-medium tabular-nums ${ns.wow_pct >= 0 ? 'text-positive' : 'text-negative'}`}>
+                  {ns.wow_pct >= 0 ? '+' : ''}{ns.wow_pct}% неделя к неделе
+                </span>
+              )}
+            </div>
+            <div className="mt-3 max-w-md">
+              <div className="flex justify-between text-[11px] text-text-tertiary mb-1">
+                <span>до вехи {fmtInt(milestone)}</span>
+                <span className="tabular-nums">{Math.min(Math.round((ns.value || 0) / milestone * 100), 100)}%</span>
+              </div>
+              <div className="h-2 rounded-full bg-obsidian overflow-hidden">
+                <div className="h-full rounded-full" style={{ width: `${Math.min((ns.value || 0) / milestone * 100, 100)}%`, background: nsColor }} />
+              </div>
+              <div className="flex justify-between text-[10px] text-text-tertiary mt-1">
+                {(ns.milestones || []).map((m) => (
+                  <span key={m} className={m <= (ns.value || 0) ? 'text-champagne font-medium' : ''}>{fmtInt(m)}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="w-full sm:w-72 h-20">
+            {series.length > 1 && (
+              <ResponsiveContainer width="100%" height="100%">
+                <ComposedChart data={series} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
+                  <Area type="monotone" dataKey="v" stroke={GOLD} fill={GOLD} fillOpacity={0.15} strokeWidth={1.6} dot={false} isAnimationActive={false} />
+                </ComposedChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {(tree.drivers || []).map((n) => <DriverNode key={n.key} node={n} />)}
+      </div>
+
+      <Card title="Календарь трафика: каждый день года" icon={CalendarClock} source="metrika"
+        insight="Ритм платформы одним взглядом: тёмные клетки — сильные дни. Провалы и всплески видны сразу — к каждому должен находиться источник (публикация, реклама, сезон).">
+        <EChart option={calOption} height={180} />
+      </Card>
+
+      <OverviewTab d={d} />
+    </div>
+  );
+}
+
+// Горизонтальная воронка со ступенями и конверсией между ними.
+function FunnelSteps({ steps, color = GOLD }) {
+  const rows = (steps || []).filter((s) => s.count != null);
+  if (!rows.length || !rows[0].count) return <Empty />;
+  const max = rows[0].count || 1;
+  return (
+    <div className="space-y-2">
+      {rows.map((s, i) => {
+        const prev = i > 0 ? rows[i - 1].count : null;
+        const conv = prev ? Math.round(s.count / prev * 1000) / 10 : null;
+        return (
+          <div key={s.step}>
+            <div className="flex justify-between text-[12px] mb-0.5">
+              <span className="text-text-primary">{s.step}</span>
+              <span className="text-text-secondary tabular-nums">
+                {fmtInt(s.count)}{conv != null && <span className="text-text-tertiary"> · {conv}% от шага выше</span>}
+              </span>
+            </div>
+            <div className="h-5 rounded-md bg-obsidian overflow-hidden">
+              <div className="h-full rounded-md" style={{ width: `${Math.max(s.count / max * 100, 1.5)}%`, background: color, opacity: 1 - i * 0.16 }} />
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// Конверсия: собственная realtime-воронка + истинная воронка Метрики + события.
+function ConversionTab({ d }) {
+  const own = d.own_funnel || {};
+  const mk = d.metrika_funnel || {};
+  return (
+    <div className="space-y-5">
+      <div className="grid lg:grid-cols-2 gap-5">
+        <Card title="Собственная воронка: сессия → вовлечён → цель" icon={Filter} source="own"
+          insight="Серверные сессии нашего счётчика (правило 30 минут, боты исключены), реальное время. Вовлечён: активное чтение >15 с, скролл >50% или 2+ страницы.">
+          <FunnelSteps steps={own.steps} />
+          {own.bot_sessions > 0 && (
+            <p className="text-[11px] text-text-tertiary mt-3">Отфильтровано бот-сессий: {fmtInt(own.bot_sessions)}</p>
+          )}
+        </Card>
+        <Card title="Истинная конверсия Метрики: только бизнес-цели" icon={Target} source="metrika"
+          insight="«Достиг цели» = только макро- и микро-цели по словарю целей (регистрация, скачивание, сравнение) — скролл и технические события больше не завышают конверсию.">
+          <div className="grid grid-cols-3 gap-3 mb-4">
+            <Kpi label="Визиты" value={fmtInt(mk.visits)} />
+            <Kpi label="С любой целью" value={fmtInt(mk.visits_any_goal)} color={BLUE} />
+            <Kpi label="С бизнес-целью" value={fmtInt(mk.visits_business_goal)} sub={`${mk.conversion_pct ?? 0}% конверсия`} color={GREEN} />
+          </div>
+          {(mk.by_goal || []).length ? (
+            <ul className="space-y-1.5">
+              {(mk.by_goal || []).slice(0, 10).map((g) => (
+                <li key={g.goal} className="flex items-center gap-2 text-[12.5px]">
+                  <span className="w-2 h-2 rounded-full shrink-0" style={{ background: TIER_COLOR[g.tier] || 'rgba(26,26,46,0.25)' }} />
+                  <span className="flex-1 min-w-0 truncate text-text-primary" title={g.goal}>{eventLabel(g.goal)}</span>
+                  {g.tier && <span className="text-[10px] text-text-tertiary shrink-0">{TIER_RU[g.tier] || g.tier}</span>}
+                  <span className="text-text-secondary tabular-nums shrink-0">{fmtInt(g.visits)}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <Empty note={mk.goals_dict_size === 0 ? 'Словарь целей Метрики синхронизируется ежедневно — появится после первого прогона.' : undefined} />
+          )}
+        </Card>
+      </div>
+      <FunnelTab d={d} />
+      <EventsTab d={d} />
+    </div>
+  );
+}
+
+// Поведение: sankey-навигация + sunburst контента + контент/навигация/блоки.
+function BehaviorTab({ d }) {
+  const sankeyOption = useMemo(() => {
+    const transitions = d.navigation?.top_transitions || [];
+    if (!transitions.length) return null;
+    // Двудольный граф «откуда → куда»: узлы источника и назначения разводятся
+    // в разные множества — иначе циклы (A→B, B→A) ломают sankey.
+    const nodes = new Map();
+    const links = transitions.slice(0, 20).map((t) => {
+      const s = `Из: ${t.from}`;
+      const e = `В: ${t.to}`;
+      nodes.set(s, { name: s, itemStyle: { color: GOLD } });
+      nodes.set(e, { name: e, itemStyle: { color: BLUE } });
+      return { source: s, target: e, value: t.count };
+    });
+    return {
+      tooltip: { trigger: 'item', textStyle: { fontSize: 11 } },
+      series: [{
+        type: 'sankey', left: 8, right: 130, nodeWidth: 10, nodeGap: 6,
+        data: [...nodes.values()], links,
+        label: { fontSize: 10.5, formatter: (p) => clip(p.name.replace(/^(Из|В): /, ''), 28) },
+        lineStyle: { color: 'gradient', opacity: 0.35, curveness: 0.55 },
+        emphasis: { focus: 'adjacency' },
+      }],
+    };
+  }, [d.navigation]);
+
+  const sunburstOption = useMemo(() => {
+    const sections = d.content_structure?.sections || [];
+    if (!sections.length) return null;
+    return {
+      tooltip: { formatter: (p) => `${p.name}: ${Number(p.value).toLocaleString('ru-RU')} просмотров`, textStyle: { fontSize: 11 } },
+      series: [{
+        type: 'sunburst', radius: ['18%', '92%'],
+        data: sections.slice(0, 10).map((s, i) => ({
+          name: s.name || s.section, value: s.views,
+          itemStyle: { color: PALETTE[i % PALETTE.length] },
+          children: (s.top_pages || []).slice(0, 5).map((p) => ({
+            name: clip(p.page, 26), value: p.views,
+          })),
+        })),
+        label: { fontSize: 10, minAngle: 8, formatter: (p) => clip(p.name, 16) },
+        levels: [{}, { r0: '18%', r: '55%' }, { r0: '55%', r: '92%', label: { rotate: 'tangential' } }],
+      }],
+    };
+  }, [d.content_structure]);
+
+  return (
+    <div className="space-y-5">
+      <div className="grid lg:grid-cols-2 gap-5">
+        <Card title="Потоки навигации: откуда и куда ходят" icon={Route} source="own"
+          insight="Sankey переходов между страницами внутри сессии: толщина — число переходов. Видно магистральные маршруты и куда «стекает» аудитория.">
+          {sankeyOption ? <EChart option={sankeyOption} height={360} /> : <Empty />}
+        </Card>
+        <Card title="Структура потребления контента" icon={LayoutGrid} source="own"
+          insight="Sunburst: внутреннее кольцо — разделы, внешнее — конкретные страницы внутри. Клик по сектору — детализация.">
+          {sunburstOption ? <EChart option={sunburstOption} height={360} /> : <Empty />}
+        </Card>
+      </div>
+
+      <Card title="Внимание по блокам страниц" icon={MousePointerClick} source="own"
+        insight="Сколько раз блок реально увидели (IntersectionObserver ≥50% площади ≥1 с) и сколько секунд он был на экране. Блоки с высоким вниманием — расширять, с нулевым — поднимать выше или переделывать.">
+        {(d.blocks?.blocks || []).length ? (
+          <div className="overflow-x-auto">
+            <table className="w-full text-[12.5px]">
+              <thead>
+                <tr className="text-left text-text-tertiary border-b border-border-subtle">
+                  <th className="py-1.5 pr-3 font-medium">Раздел</th>
+                  <th className="py-1.5 pr-3 font-medium">Блок</th>
+                  <th className="py-1.5 pr-3 font-medium text-right">Показов</th>
+                  <th className="py-1.5 font-medium text-right">Среднее время видимости</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(d.blocks.blocks || []).slice(0, 25).map((b, i) => (
+                  <tr key={i} className="border-b border-border-subtle/50">
+                    <td className="py-1.5 pr-3 text-text-secondary">{b.section}</td>
+                    <td className="py-1.5 pr-3 text-text-primary font-mono text-[11.5px]">{b.block}</td>
+                    <td className="py-1.5 pr-3 text-right tabular-nums">{fmtInt(b.views)}</td>
+                    <td className="py-1.5 text-right tabular-nums">{b.avg_visible_sec} с</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : <Empty note="Блочная разметка собирается — данные появятся после деплоя фронта." />}
+      </Card>
+
+      <PagesTab d={d} />
+      <NavigationTab d={d} />
+    </div>
+  );
+}
+
+// Досье «Люди»: посетители со скорингом ценности.
+function PeopleCard({ d }) {
+  const people = d.people?.people || [];
+  return (
+    <Card title="Люди: досье посетителей со скорингом" icon={Users} source="own"
+      insight="Каждая строка — человек (постоянный идентификатор, кросс-девайс через аккаунт). Скоринг — сумма весов его действий: регистрация 100, скачивание 25, просмотр 1. Сверху — самые ценные.">
+      {people.length ? (
+        <div className="overflow-x-auto">
+          <table className="w-full text-[12px]">
+            <thead>
+              <tr className="text-left text-text-tertiary border-b border-border-subtle">
+                <th className="py-1.5 pr-2 font-medium">Посетитель</th>
+                <th className="py-1.5 pr-2 font-medium text-right">Скоринг</th>
+                <th className="py-1.5 pr-2 font-medium text-right">Сессий</th>
+                <th className="py-1.5 pr-2 font-medium text-right">Страниц</th>
+                <th className="py-1.5 pr-2 font-medium text-right">Активных минут</th>
+                <th className="py-1.5 pr-2 font-medium text-right">Целей (микро/макро)</th>
+                <th className="py-1.5 pr-2 font-medium">Портрет</th>
+                <th className="py-1.5 font-medium">Интересы</th>
+              </tr>
+            </thead>
+            <tbody>
+              {people.slice(0, 30).map((p) => (
+                <tr key={p.visitor} className="border-b border-border-subtle/50">
+                  <td className="py-1.5 pr-2">
+                    <span className="font-mono text-[11px] text-text-secondary">{p.visitor}</span>
+                    {p.user_id && <span className="ml-1.5 text-[9.5px] px-1.5 py-0.5 rounded-full bg-green-50 text-green-700 font-medium">аккаунт</span>}
+                  </td>
+                  <td className="py-1.5 pr-2 text-right tabular-nums font-semibold text-champagne">{fmtInt(p.score)}</td>
+                  <td className="py-1.5 pr-2 text-right tabular-nums">{p.sessions}</td>
+                  <td className="py-1.5 pr-2 text-right tabular-nums">{p.pageviews}</td>
+                  <td className="py-1.5 pr-2 text-right tabular-nums">{p.active_min}</td>
+                  <td className="py-1.5 pr-2 text-right tabular-nums">{p.micro_goals}/{p.macro_goals}</td>
+                  <td className="py-1.5 pr-2 text-text-secondary">
+                    {[p.device, p.browser, p.city, CHANNEL_RU[p.channel] || p.channel].filter(Boolean).join(' · ') || '—'}
+                  </td>
+                  <td className="py-1.5 text-text-secondary">{(p.interests || []).join(', ') || '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : <Empty note="Досье строится на серверных сессиях — появится после первого 15-минутного цикла." />}
+    </Card>
+  );
+}
+
+// Аудитория: портреты + гео собственного слоя + досье.
+function AudienceFullTab({ d }) {
+  const geo = d.geo || {};
+  return (
+    <div className="space-y-5">
+      <AudienceTab d={d} />
+      <div className="grid lg:grid-cols-3 gap-5">
+        <Card title="География: страны" icon={Globe2} source="own" insight="Наше гео по IP (база обновляется ежемесячно), сам адрес не хранится.">
+          <HBars data={dictToBars(geo.countries, 8)} color={INK} />
+        </Card>
+        <Card title="Регионы России" icon={Globe2} source="own">
+          <HBars data={dictToBars(geo.regions, 10)} color={BLUE} />
+        </Card>
+        <Card title="Города" icon={Globe2} source="own">
+          <HBars data={dictToBars(geo.cities, 10)} color={PURPLE} />
+        </Card>
+      </div>
+      <PeopleCard d={d} />
+    </div>
+  );
+}
+
+const QUADRANT_COLOR = {
+  'Продвигать': GREEN, 'Тиражировать': BLUE, 'Чинить': '#D97706', 'Переработать': RED,
+};
+
+// «Что менять»: квадранты, adoption, копируемое, гипотезы.
+function ProductLoopTab({ d }) {
+  const q = d.page_quadrants || {};
+  const items = (q.sections || []).map((s) => ({ ...s, x: s.views, y: s.avg_active_sec }));
+  const fa = d.feature_adoption || {};
+  const features = (fa.features || []).filter((f) => f.tier !== 'technical');
+
+  return (
+    <div className="space-y-5">
+      <Card title="Квадранты разделов: трафик × вовлечение" icon={Target} source="own"
+        insight="Каждая точка — раздел сайта. Правый верх (много трафика, глубокое чтение) — продвигать; левый верх — тиражировать паттерн; правый низ — чинить вовлечение; левый низ — переработать или понизить приоритет.">
+        {items.length ? (
+          <ResponsiveContainer width="100%" height={340}>
+            <ScatterChart margin={{ top: 10, right: 24, bottom: 20, left: 8 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
+              <XAxis type="number" dataKey="x" name="Просмотры" tick={{ fontSize: 11, fill: 'rgba(26,26,46,0.5)' }}
+                label={{ value: 'просмотры', position: 'insideBottom', offset: -8, fontSize: 11, fill: 'rgba(26,26,46,0.5)' }} />
+              <YAxis type="number" dataKey="y" name="Активные секунды" tick={{ fontSize: 11, fill: 'rgba(26,26,46,0.5)' }} width={40}
+                label={{ value: 'активное чтение, с', angle: -90, position: 'insideLeft', fontSize: 11, fill: 'rgba(26,26,46,0.5)' }} />
+              <ReferenceLine x={q.median_views} stroke="rgba(26,26,46,0.25)" strokeDasharray="4 3" />
+              <ReferenceLine y={q.median_engagement} stroke="rgba(26,26,46,0.25)" strokeDasharray="4 3" />
+              <Tooltip {...TT_STYLE} content={({ active, payload }) => {
+                if (!active || !payload?.length) return null;
+                const p = payload[0].payload;
+                return (
+                  <div style={TT_STYLE.contentStyle}>
+                    <div style={{ fontWeight: 600 }}>{p.section} — {p.quadrant}</div>
+                    <div>Просмотры: {fmtInt(p.views)} · активное чтение: {p.avg_active_sec} с</div>
+                    <div>Dead-клики: {fmtInt(p.dead_clicks)}</div>
+                  </div>
+                );
+              }} />
+              <Scatter data={items}>
+                {items.map((p, i) => <Cell key={i} fill={QUADRANT_COLOR[p.quadrant] || GOLD} />)}
+                <LabelList dataKey="section" position="top" style={{ fontSize: 10, fill: 'rgba(26,26,46,0.6)' }} />
+              </Scatter>
+            </ScatterChart>
+          </ResponsiveContainer>
+        ) : <Empty note="Квадранты строятся на дневных агрегатах страниц — появятся после первого цикла." />}
+        <div className="flex flex-wrap gap-3 mt-2">
+          {Object.entries(QUADRANT_COLOR).map(([name, color]) => (
+            <span key={name} className="flex items-center gap-1.5 text-[11px] text-text-secondary">
+              <span className="w-2.5 h-2.5 rounded-full" style={{ background: color }} />{name}
+            </span>
+          ))}
+        </div>
+      </Card>
+
+      <div className="grid lg:grid-cols-2 gap-5">
+        <Card title="Adoption фич: что реально используют" icon={Wrench} source="own"
+          insight="Бизнес-события по ценности: цвет — уровень цели (зелёный — макро, синий — микро, золотой — вовлечение). Фичи без использования — кандидаты на доработку видимости или удаление.">
+          {features.length ? (
+            <ul className="space-y-1.5">
+              {features.slice(0, 18).map((f) => (
+                <li key={f.event} className="flex items-center gap-2 text-[12.5px]">
+                  <span className="w-2 h-2 rounded-full shrink-0" style={{ background: TIER_COLOR[f.tier] || 'rgba(26,26,46,0.25)' }} />
+                  <span className="flex-1 min-w-0 truncate text-text-primary" title={f.event}>{eventLabel(f.event)}</span>
+                  <span className="text-[10px] text-text-tertiary shrink-0">{TIER_RU[f.tier] || f.tier}</span>
+                  <span className="text-text-secondary tabular-nums shrink-0">{fmtInt(f.count)}</span>
+                </li>
+              ))}
+            </ul>
+          ) : <Empty note="Появится после первого дневного агрегата целей." />}
+        </Card>
+        <Card title="Что уносят руками (copy)" icon={MousePointerClick} source="own"
+          insight="Текст, который копируют со страниц, — прямой сигнал ценности: кандидаты на кнопку «поделиться», embed-виджет или экспорт.">
+          {(fa.top_copied || []).length ? (
+            <ul className="space-y-1.5">
+              {fa.top_copied.map((c, i) => (
+                <li key={i} className="flex items-center gap-2 text-[12.5px]">
+                  <span className="flex-1 min-w-0 truncate text-text-primary" title={c.text}>{clip(c.text, 60)}</span>
+                  <span className="text-text-secondary tabular-nums shrink-0">{fmtInt(c.count)}</span>
+                </li>
+              ))}
+            </ul>
+          ) : <Empty />}
+        </Card>
+      </div>
+
+      <HypothesesTab d={d} />
+    </div>
+  );
+}
+
+// «Срезы»: произвольный вопрос к OLAP-слою (метрика × измерения × период).
+function SlicesTab() {
+  const [metric, setMetric] = useState('sessions');
+  const [dim1, setDim1] = useState('channel');
+  const [dim2, setDim2] = useState('');
+  const [days, setDays] = useState(30);
+
+  const { data: meta } = useQuery({
+    queryKey: ['bi-slices-meta'],
+    queryFn: () => api.get('/admin/bi/slices/meta').then((r) => r.data),
+    staleTime: 10 * 60 * 1000,
+    retry: 1,
+  });
+
+  const dims = [dim1, dim2].filter(Boolean).join(',');
+  const { data: slice, isFetching, isError } = useQuery({
+    queryKey: ['bi-slice', metric, dims, days],
+    queryFn: () => api.get(`/admin/bi/slices?metric=${metric}&dims=${dims}&days=${days}`).then((r) => r.data),
+    enabled: Boolean(meta?.available && metric),
+    retry: 0,
+  });
+
+  if (meta && !meta.available) {
+    return <Empty note={`Слой «Срезы» недоступен: ${meta.reason || 'ClickHouse выключен'}. Включается флагом на сервере.`} />;
+  }
+  const metricNames = Object.keys(meta?.metrics || {});
+  const metricTable = meta?.metrics?.[metric];
+  const dimOptions = metricTable ? (meta?.dimensions?.[metricTable] || []) : [];
+  const rows = slice?.rows || [];
+  const chartRows = rows.slice(0, 14).map((r) => ({
+    name: [r[dim1], dim2 && r[dim2]].filter(Boolean).join(' · ') || '—',
+    value: r.value,
+  }));
+
+  return (
+    <div className="space-y-5">
+      <Card title="Конструктор срезов" icon={SlidersHorizontal} source="own"
+        insight={`Любая метрика × до двух измерений × период — считает колоночный OLAP-слой за миллисекунды. ${meta?.sync_age_minutes != null ? `Свежесть данных: синк ${meta.sync_age_minutes} мин назад.` : ''}`}>
+        <div className="flex flex-wrap gap-3 mb-4">
+          <label className="text-[12px] text-text-secondary flex items-center gap-2">
+            Метрика
+            <select value={metric} onChange={(e) => { setMetric(e.target.value); setDim1(''); setDim2(''); }}
+              className="px-2.5 py-1.5 rounded-lg bg-obsidian border border-border-subtle text-[12.5px] text-text-primary">
+              {metricNames.map((m) => <option key={m} value={m}>{m}</option>)}
+            </select>
+          </label>
+          <label className="text-[12px] text-text-secondary flex items-center gap-2">
+            Измерение 1
+            <select value={dim1} onChange={(e) => setDim1(e.target.value)}
+              className="px-2.5 py-1.5 rounded-lg bg-obsidian border border-border-subtle text-[12.5px] text-text-primary">
+              <option value="">—</option>
+              {dimOptions.map((x) => <option key={x} value={x}>{x}</option>)}
+            </select>
+          </label>
+          <label className="text-[12px] text-text-secondary flex items-center gap-2">
+            Измерение 2
+            <select value={dim2} onChange={(e) => setDim2(e.target.value)}
+              className="px-2.5 py-1.5 rounded-lg bg-obsidian border border-border-subtle text-[12.5px] text-text-primary">
+              <option value="">—</option>
+              {dimOptions.filter((x) => x !== dim1).map((x) => <option key={x} value={x}>{x}</option>)}
+            </select>
+          </label>
+          <label className="text-[12px] text-text-secondary flex items-center gap-2">
+            Дней
+            <select value={days} onChange={(e) => setDays(Number(e.target.value))}
+              className="px-2.5 py-1.5 rounded-lg bg-obsidian border border-border-subtle text-[12.5px] text-text-primary">
+              {[7, 30, 90, 365].map((x) => <option key={x} value={x}>{x}</option>)}
+            </select>
+          </label>
+        </div>
+        {isFetching && <p className="text-[13px] text-text-tertiary py-6 text-center">Считаем срез…</p>}
+        {isError && <Empty note="Слой недоступен или срез невалиден — синк догонит после подъёма ClickHouse." />}
+        {!isFetching && !isError && rows.length > 0 && (
+          <>
+            {chartRows.length > 1 && <HBars data={chartRows} labelWidth={200} />}
+            <div className="overflow-x-auto mt-4">
+              <table className="w-full text-[12px]">
+                <thead>
+                  <tr className="text-left text-text-tertiary border-b border-border-subtle">
+                    {Object.keys(rows[0]).map((k) => <th key={k} className="py-1.5 pr-3 font-medium">{k}</th>)}
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.slice(0, 100).map((r, i) => (
+                    <tr key={i} className="border-b border-border-subtle/50">
+                      {Object.values(r).map((v, j) => (
+                        <td key={j} className="py-1 pr-3 tabular-nums text-text-secondary">
+                          {typeof v === 'number' ? fmtInt(v) : String(v ?? '—')}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
+        {!isFetching && !isError && rows.length === 0 && slice && <Empty />}
+      </Card>
+    </div>
+  );
+}
+
+// «Надёжность»: vitals + ошибки + полнота сбора + датасет.
+function ReliabilityTab({ d }) {
+  const r = d.reliability || {};
+  const cq = d.collection_quality || {};
+  const vitals = r.vitals_p75 || {};
+  const VITAL_BUDGET = { LCP: 2500, INP: 200, CLS: 0.1, FCP: 1800, TTFB: 800 };
+  const vitalStatus = (m, v) => {
+    const b = VITAL_BUDGET[m];
+    if (b == null || v == null) return 'rgba(26,26,46,0.4)';
+    return v <= b ? GREEN : v <= b * 1.6 ? '#D97706' : RED;
+  };
+
+  return (
+    <div className="space-y-5">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        {['LCP', 'INP', 'CLS', 'FCP', 'TTFB'].map((m) => (
+          <div key={m} className="rounded-xl bg-surface border border-border-subtle px-4 py-3">
+            <div className="text-[12px] text-text-tertiary">{m} · p75</div>
+            <div className="text-xl font-bold tabular-nums" style={{ color: vitalStatus(m, vitals[m]) }}>
+              {vitals[m] != null ? (m === 'CLS' ? vitals[m] : `${fmtInt(Math.round(vitals[m]))} мс`) : '—'}
+            </div>
+            <div className="text-[10.5px] text-text-tertiary">{r.vitals_samples?.[m] ? `${fmtInt(r.vitals_samples[m])} замеров` : 'нет замеров'}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="grid lg:grid-cols-2 gap-5">
+        <Card title="Ошибки JavaScript" icon={AlertTriangle} source="own"
+          insight={`Всего за окно: ${fmtInt(r.js_errors_total || 0)}. Каждая ошибка привязана к версии сборки — регрессия видна по деплою.`}>
+          {(r.js_errors_top || []).length ? (
+            <ul className="space-y-1.5">
+              {r.js_errors_top.map((e, i) => (
+                <li key={i} className="flex items-start gap-2 text-[12px]">
+                  <span className="text-negative font-semibold tabular-nums shrink-0">{fmtInt(e.count)}×</span>
+                  <span className="min-w-0 text-text-secondary font-mono text-[11px] break-all">{e.error}</span>
+                </li>
+              ))}
+            </ul>
+          ) : <Empty note="Ошибок за окно нет — хороший знак." />}
+        </Card>
+        <Card title="Латентность API глазами клиента" icon={Activity} source="own"
+          insight={`p75 по всем вызовам: ${r.api_p75_ms != null ? `${fmtInt(Math.round(r.api_p75_ms))} мс` : '—'}. Сэмпл 1 из 5 вызовов.`}>
+          {(r.api_slowest || []).length ? (
+            <HBars data={r.api_slowest.map((a) => ({ name: a.endpoint, value: Math.round(a.p75_ms || 0) }))} unit=" мс" color="#D97706" labelWidth={200} />
+          ) : <Empty />}
+        </Card>
+      </div>
+
+      <Card title="Полнота сбора: мета-мониторинг качества данных" icon={ShieldCheck} source="own"
+        insight="Насколько полны наши собственные данные: доля сессий с постоянным идентификатором, гео, каналом и мостом к Метрике. Тишина потока при живом трафике — сигнал сломанного сбора (алерт в Telegram).">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <Kpi label="Сессий за окно" value={fmtInt(cq.own_sessions)} />
+          <Kpi label="С visitor_id" value={fmtPct(cq.visitor_id_share_pct)} color={cq.visitor_id_share_pct >= 90 ? GREEN : '#D97706'} />
+          <Kpi label="С гео" value={fmtPct(cq.geo_share_pct)} color={cq.geo_share_pct >= 80 ? GREEN : '#D97706'} />
+          <Kpi label="С каналом" value={fmtPct(cq.channel_share_pct)} color={cq.channel_share_pct >= 90 ? GREEN : '#D97706'} />
+          <Kpi label="Мост к Метрике" value={fmtPct(cq.ym_bridge_share_pct)} sub="доля сессий с _ym_uid" color={BLUE} />
+          <Kpi label="Доля ботов" value={fmtPct(cq.bot_share_pct)} color={INK} />
+          <Kpi label="SSR-просмотры" value={fmtInt(cq.ssr_pageviews)} sub="standalone-сбор жив" color={PURPLE} />
+          <Kpi label="Тишина потока" value={cq.stream_silence_minutes != null ? `${cq.stream_silence_minutes} мин` : '—'}
+            sub={`лаг Метрики ${r.metrika_lag_hours != null ? `${r.metrika_lag_hours} ч` : '—'}`}
+            color={(cq.stream_silence_minutes ?? 0) > 30 ? RED : GREEN} />
+        </div>
+      </Card>
+
+      <DatasetTab d={d} />
+    </div>
+  );
+}
+
+// Привлечение: классика + сегменты + деньги Директа.
+function AcquisitionFullTab({ d }) {
+  const segs = d.segments?.segments || [];
+  const costs = d.ad_costs || {};
+  return (
+    <div className="space-y-5">
+      <AcquisitionTab d={d} />
+
+      <Card title="Сегменты: канал × устройство × новизна" icon={Layers} source="metrika"
+        insight="Пересечение трёх осей на дневных агрегатах: где конверсия выше — там усиливать; сегменты с высокими отказами — проверять посадочные.">
+        {segs.length ? (
+          <div className="overflow-x-auto">
+            <table className="w-full text-[12px]">
+              <thead>
+                <tr className="text-left text-text-tertiary border-b border-border-subtle">
+                  <th className="py-1.5 pr-3 font-medium">Канал</th>
+                  <th className="py-1.5 pr-3 font-medium">Устройство</th>
+                  <th className="py-1.5 pr-3 font-medium">Новизна</th>
+                  <th className="py-1.5 pr-3 font-medium text-right">Визиты</th>
+                  <th className="py-1.5 pr-3 font-medium text-right">С целью</th>
+                  <th className="py-1.5 pr-3 font-medium text-right">Конверсия</th>
+                  <th className="py-1.5 pr-3 font-medium text-right">Ср. время</th>
+                  <th className="py-1.5 font-medium text-right">Отказы</th>
+                </tr>
+              </thead>
+              <tbody>
+                {segs.slice(0, 20).map((s, i) => (
+                  <tr key={i} className="border-b border-border-subtle/50">
+                    <td className="py-1.5 pr-3 text-text-primary">{CHANNEL_RU[s.channel] || s.channel}</td>
+                    <td className="py-1.5 pr-3 text-text-secondary">{s.device === 'desktop' ? 'Компьютер' : s.device === 'mobile' ? 'Смартфон' : s.device === 'tablet' ? 'Планшет' : s.device}</td>
+                    <td className="py-1.5 pr-3 text-text-secondary">{s.is_new ? 'Новые' : 'Вернувшиеся'}</td>
+                    <td className="py-1.5 pr-3 text-right tabular-nums">{fmtInt(s.visits)}</td>
+                    <td className="py-1.5 pr-3 text-right tabular-nums">{fmtInt(s.goal_visits)}</td>
+                    <td className="py-1.5 pr-3 text-right tabular-nums font-medium" style={{ color: s.conversion_pct >= 5 ? GREEN : undefined }}>{s.conversion_pct}%</td>
+                    <td className="py-1.5 pr-3 text-right tabular-nums">{s.avg_duration_sec} с</td>
+                    <td className="py-1.5 text-right tabular-nums">{s.bounce_pct}%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : <Empty note="Сегменты строятся на дневных агрегатах — появятся после первого цикла." />}
+      </Card>
+
+      <Card title="Деньги рекламы: расход, CPA, ROI" icon={Megaphone} source="metrika"
+        insight={costs.connected
+          ? `Расход за окно: ${fmtInt(Math.round(costs.total_cost_rub || 0))} ₽ · макро-целей: ${fmtInt(costs.macro_goals_window)} · CPA ${costs.cpa_macro_rub != null ? `${fmtInt(Math.round(costs.cpa_macro_rub))} ₽` : '—'}.`
+          : costs.note || 'Коннектор Директа включится после передачи API-токена.'}>
+        {costs.connected && (costs.campaigns || []).length ? (
+          <HBars data={costs.campaigns.map((c) => ({ name: c.campaign, value: Math.round(c.cost_rub) }))} unit=" ₽" />
+        ) : <Empty note="Каркас готов: таблица расходов и синк ждут токен Яндекс.Директа." />}
+      </Card>
+    </div>
+  );
+}
+
 /* ---------- Логин-гейт ---------- */
 
 function AdminLogin({ onSuccess }) {
@@ -1376,24 +2111,25 @@ function AdminLogin({ onSuccess }) {
 
 /* ---------- Страница ---------- */
 
+// 10 разделов executive-модели (этап 3.6 «Аналитики 2.0»): «Дерево» — главная;
+// справочники (События/Датасет/Гипотезы) живут внутри соответствующих разделов.
 const TABS = [
-  { id: 'overview', label: 'Обзор', icon: Activity, C: OverviewTab },
-  { id: 'acquisition', label: 'Привлечение', icon: Megaphone, C: AcquisitionTab },
-  { id: 'audience', label: 'Аудитория', icon: Users, C: AudienceTab },
-  { id: 'funnel', label: 'Воронка', icon: Filter, C: FunnelTab },
-  { id: 'retention', label: 'Retention', icon: Users, C: RetentionTab },
-  { id: 'pages', label: 'Контент', icon: LayoutGrid, C: PagesTab },
-  { id: 'demand', label: 'Спрос и поиск', icon: Search, C: DemandTab },
-  { id: 'navigation', label: 'Навигация и UX', icon: MousePointerClick, C: NavigationTab },
-  { id: 'events', label: 'События', icon: TrendingUp, C: EventsTab },
-  { id: 'hypotheses', label: 'Гипотезы', icon: Brain, C: HypothesesTab },
-  { id: 'dataset', label: 'Датасет', icon: Database, C: DatasetTab },
+  { id: 'tree', label: 'Дерево', icon: Target, C: MetricTreeTab },
+  { id: 'acquisition', label: 'Привлечение', icon: Megaphone, C: AcquisitionFullTab },
+  { id: 'audience', label: 'Аудитория', icon: Users, C: AudienceFullTab },
+  { id: 'behavior', label: 'Поведение', icon: MousePointerClick, C: BehaviorTab },
+  { id: 'conversion', label: 'Конверсия', icon: Filter, C: ConversionTab },
+  { id: 'retention', label: 'Удержание', icon: Users, C: RetentionTab },
+  { id: 'demand', label: 'Спрос и SEO', icon: Search, C: DemandTab },
+  { id: 'product', label: 'Что менять', icon: Wrench, C: ProductLoopTab },
+  { id: 'slices', label: 'Срезы', icon: SlidersHorizontal, C: SlicesTab },
+  { id: 'reliability', label: 'Надёжность', icon: ShieldCheck, C: ReliabilityTab },
 ];
 
 export default function AdminBI() {
   const { user, isAuthed, isLoading, setUser } = useAuth();
   const [days, setDays] = useState(7);
-  const [tab, setTab] = useState('overview');
+  const [tab, setTab] = useState('tree');
 
   useDocumentMeta({ title: 'BI — служебный раздел', description: '', path: '/admin/bi', robots: 'noindex, nofollow' });
 
@@ -1417,7 +2153,7 @@ export default function AdminBI() {
     );
   }
 
-  const Active = TABS.find((t) => t.id === tab)?.C || OverviewTab;
+  const Active = TABS.find((t) => t.id === tab)?.C || MetricTreeTab;
 
   return (
     <div className="max-w-[1400px] mx-auto px-4 sm:px-6 pt-24 pb-10">

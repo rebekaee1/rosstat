@@ -474,7 +474,10 @@ def test_seo_etag_304(client, monkeypatch):
 
 
 def test_build_document_year_page_excludes_app(client):
-    """include_app=False: без React-bundle и без modulepreload (404 после гидратации)."""
+    """include_app=False: без React-bundle и без modulepreload (404 после гидратации).
+
+    Единственный разрешённый скрипт в теле — standalone-сборщик аналитики
+    behavior-standalone.js (ADR-0010: чистые SSR-страницы не слепая зона)."""
     import asyncio
 
     from app.services.seo_renderer import build_document
@@ -488,8 +491,13 @@ def test_build_document_year_page_excludes_app(client):
             include_app=False,
         )
     )
-    assert "module" not in html.split("<body>")[1]
+    body = html.split("<body>")[1]
     assert "modulepreload" not in html
+    assert "/assets/behavior-standalone.js" in body
+    # React-бандл (хэшированный index-*.js) в чистый SSR не попадает.
+    body_without_collector = body.replace(
+        '<script type="module" src="/assets/behavior-standalone.js" defer></script>', "")
+    assert "module" not in body_without_collector
 
 
 def test_build_document_og_image_override():

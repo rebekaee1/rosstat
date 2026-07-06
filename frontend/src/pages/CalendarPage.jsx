@@ -317,7 +317,7 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
         </div>
       )}
 
-      <section className="mt-16">
+      <section data-block="faq" className="mt-16">
         <h2 className="font-display text-xl font-bold text-text-primary mb-6">
           Частые вопросы
         </h2>

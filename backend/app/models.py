@@ -516,6 +516,9 @@ class FrontendEvent(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     event_name: Mapped[str] = mapped_column(String(120), nullable=False)
     session_id_hash: Mapped[str | None] = mapped_column(String(80))
+    # Постоянный посетитель (localStorage fe:analytics:visitor, живёт годами) —
+    # склейка событий одного человека между сессиями. Аналог clientID Метрики.
+    visitor_id_hash: Mapped[str | None] = mapped_column(String(80), index=True)
     # Атрибуция аудитории: сервер резолвит сессию (кука fe_sess) на приёме
     # события. authed=false + user_id=NULL → гость; иначе зарегистрированный.
     # Даёт разрез «гость vs зарегистрированный» в «Пульсе» без похода в Метрику.
@@ -549,6 +552,7 @@ class BehaviorEvent(Base):
     )
     event_type: Mapped[str] = mapped_column(String(20), nullable=False)
     session_id_hash: Mapped[str | None] = mapped_column(String(80))
+    visitor_id_hash: Mapped[str | None] = mapped_column(String(80), index=True)
     page_load_id: Mapped[str | None] = mapped_column(String(40))
     user_id: Mapped[str | None] = mapped_column(String(36))
     authed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, server_default="false")
@@ -580,15 +584,31 @@ class BehaviorSession(Base):
     )
 
     session_id_hash: Mapped[str] = mapped_column(String(80), primary_key=True)
+    visitor_id_hash: Mapped[str | None] = mapped_column(String(80), index=True)
+    # Идентификатор Метрики из first-party cookie _ym_uid, захэшированный
+    # ТЕМ ЖЕ stable_hash, что client_id_hash в raw_metrika_visits — прямой
+    # join даёт новому visitor'у его историю визитов Метрики (ретро-мост),
+    # retention не стартует с нуля.
+    ym_client_id: Mapped[str | None] = mapped_column(String(80))
     user_id: Mapped[str | None] = mapped_column(String(36))
     authed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, server_default="false")
     started_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     entry_page: Mapped[str | None] = mapped_column(String(500))
     referrer: Mapped[str | None] = mapped_column(String(1000))
     referrer_host: Mapped[str | None] = mapped_column(String(200))
+    # Классифицированный канал привлечения: ad / search / social / referral /
+    # internal / direct (traffic_channel.py, right после referrer/utm/yclid).
+    channel: Mapped[str | None] = mapped_column(String(20))
     utm_source: Mapped[str | None] = mapped_column(String(120))
     utm_medium: Mapped[str | None] = mapped_column(String(120))
     utm_campaign: Mapped[str | None] = mapped_column(String(200))
+    utm_term: Mapped[str | None] = mapped_column(String(200))
+    utm_content: Mapped[str | None] = mapped_column(String(200))
+    yclid: Mapped[str | None] = mapped_column(String(64))
+    # Гео по IP (DB-IP Lite, сам IP не храним — 152-ФЗ).
+    country: Mapped[str | None] = mapped_column(String(60))
+    geo_region: Mapped[str | None] = mapped_column(String(120))
+    city: Mapped[str | None] = mapped_column(String(120))
     ua_raw: Mapped[str | None] = mapped_column(String(500))
     browser: Mapped[str | None] = mapped_column(String(40))
     browser_version: Mapped[str | None] = mapped_column(String(20))
@@ -603,6 +623,165 @@ class BehaviorSession(Base):
     language: Mapped[str | None] = mapped_column(String(16))
     timezone: Mapped[str | None] = mapped_column(String(60))
     touch: Mapped[bool | None] = mapped_column(Boolean)
+    # Расширенный портрет устройства (2026-07-06): сеть, железо, тема.
+    conn_type: Mapped[str | None] = mapped_column(String(16))       # effectiveType: 4g/3g/…
+    downlink: Mapped[float | None] = mapped_column(Numeric(6, 2))   # Мбит/с
+    device_memory: Mapped[float | None] = mapped_column(Numeric(5, 1))  # ГБ (порогами)
+    cpu_cores: Mapped[int | None] = mapped_column(Integer)
+    color_scheme: Mapped[str | None] = mapped_column(String(10))    # light/dark
+    orientation: Mapped[str | None] = mapped_column(String(12))     # portrait/landscape
+    is_webdriver: Mapped[bool | None] = mapped_column(Boolean)      # headless/бот-признак
+
+
+class IdentityLink(Base):
+    """Граф идентичности: человек × его постоянные visitor_id (2026-07-06).
+
+    Кросс-девайс склейка ЧЕРЕЗ АККАУНТ: при каждом логине visitor привязывается
+    к user_id; история visitor'а до регистрации ретроспективно принадлежит
+    человеку. Вероятностный fingerprint-матчинг сознательно не делаем.
+    """
+    __tablename__ = "identity_links"
+    __table_args__ = (
+        UniqueConstraint("user_id", "visitor_id_hash", name="uq_identity_user_visitor"),
+        Index("ix_identity_visitor", "visitor_id_hash"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[str] = mapped_column(String(36), nullable=False, index=True)
+    visitor_id_hash: Mapped[str] = mapped_column(String(80), nullable=False)
+    first_seen: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+    last_seen: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+
+
+class MetrikaGoal(Base):
+    """Словарь целей Метрики: goal_id → имя/событие/tier (2026-07-06).
+
+    goals_json в raw_metrika_visits хранит голые числовые id — без словаря
+    конверсию не разложить по целям. Синк из Management API ежедневно;
+    tier проставляется из goal_taxonomy.py по event_name (conditions.url).
+    """
+    __tablename__ = "metrika_goals"
+
+    goal_id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True)
+    name: Mapped[str | None] = mapped_column(String(300))
+    event_name: Mapped[str | None] = mapped_column(String(120), index=True)
+    tier: Mapped[str | None] = mapped_column(String(20))  # macro/micro/engagement/technical
+    synced_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+
+
+class DirectCost(Base):
+    """Расходы Яндекс.Директа: день × кампания (каркас 2026-07-06).
+
+    Наполняется коннектором к API Директа после передачи владельцем токена
+    (RUSTATS_DIRECT_API_TOKEN). До этого таблица пустая, CPA-витрина в BI
+    показывает «нет данных о расходах».
+    """
+    __tablename__ = "direct_costs"
+    __table_args__ = (
+        UniqueConstraint("day", "campaign", name="uq_direct_cost_day_campaign"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    day: Mapped[date] = mapped_column(Date, nullable=False, index=True)
+    campaign: Mapped[str] = mapped_column(String(300), nullable=False)
+    cost_rub: Mapped[float] = mapped_column(Numeric(12, 2), nullable=False, default=0)
+    clicks: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    synced_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+
+
+class ServerSession(Base):
+    """Логическая сессия, посчитанная на сервере (правило Метрики: 30 минут
+    неактивности = новая сессия). Клиентский session_id остаётся технической
+    единицей батчей; ВСЕ витрины уровня «сессия/визит» (воронка, вовлечение,
+    конверсия) считаются на этих строках — иначе сверка с визитами Метрики
+    некорректна по определению. Пересчитывается инкрементально каждые 15 мин
+    (analytics_rollups.py), последние 2 суток — перезаписью.
+    """
+    __tablename__ = "server_sessions"
+    __table_args__ = (
+        UniqueConstraint("visitor_id_hash", "started_at", name="uq_server_session_visitor_start"),
+        Index("ix_server_session_day", "day"),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True)
+    day: Mapped[date] = mapped_column(Date, nullable=False)
+    visitor_id_hash: Mapped[str] = mapped_column(String(80), nullable=False)
+    user_id: Mapped[str | None] = mapped_column(String(36))
+    started_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    ended_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    duration_ms: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), default=0)
+    active_ms: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), default=0)
+    pageviews: Mapped[int] = mapped_column(Integer, default=0)
+    clicks: Mapped[int] = mapped_column(Integer, default=0)
+    max_scroll_pct: Mapped[int] = mapped_column(Integer, default=0)
+    entry_page: Mapped[str | None] = mapped_column(String(500))
+    exit_page: Mapped[str | None] = mapped_column(String(500))
+    channel: Mapped[str | None] = mapped_column(String(20))
+    device: Mapped[str | None] = mapped_column(String(20))
+    is_new_visitor: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, server_default="false")
+    is_engaged: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, server_default="false")
+    micro_goals: Mapped[int] = mapped_column(Integer, default=0)
+    macro_goals: Mapped[int] = mapped_column(Integer, default=0)
+    is_bot: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, server_default="false")
+    computed_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+
+
+class DailyTraffic(Base):
+    """Rollup: день × канал × устройство × новизна (визиты Метрики).
+    Витрины BI читают агрегат вместо полного скана raw_metrika_visits."""
+    __tablename__ = "daily_traffic"
+    __table_args__ = (
+        UniqueConstraint("day", "channel", "device", "is_new", name="uq_daily_traffic_key"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    day: Mapped[date] = mapped_column(Date, nullable=False, index=True)
+    channel: Mapped[str] = mapped_column(String(40), nullable=False, default="")
+    device: Mapped[str] = mapped_column(String(20), nullable=False, default="")
+    is_new: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    visits: Mapped[int] = mapped_column(Integer, default=0)
+    visitors: Mapped[int] = mapped_column(Integer, default=0)
+    pageviews: Mapped[int] = mapped_column(Integer, default=0)
+    goal_visits: Mapped[int] = mapped_column(Integer, default=0)
+    total_duration_sec: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), default=0)
+    bounces: Mapped[int] = mapped_column(Integer, default=0)
+    computed_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+
+
+class DailyGoal(Base):
+    """Rollup: день × событие × tier (собственные frontend_events)."""
+    __tablename__ = "daily_goals"
+    __table_args__ = (
+        UniqueConstraint("day", "event_name", name="uq_daily_goal_key"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    day: Mapped[date] = mapped_column(Date, nullable=False, index=True)
+    event_name: Mapped[str] = mapped_column(String(120), nullable=False)
+    tier: Mapped[str] = mapped_column(String(20), nullable=False, default="engagement")
+    count: Mapped[int] = mapped_column(Integer, default=0)
+    sessions: Mapped[int] = mapped_column(Integer, default=0)
+    authed_count: Mapped[int] = mapped_column(Integer, default=0)
+    computed_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+
+
+class DailyPage(Base):
+    """Rollup: день × страница (собственные pageview/dwell из behavior_events)."""
+    __tablename__ = "daily_pages"
+    __table_args__ = (
+        UniqueConstraint("day", "page", name="uq_daily_page_key"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    day: Mapped[date] = mapped_column(Date, nullable=False, index=True)
+    page: Mapped[str] = mapped_column(String(500), nullable=False)
+    views: Mapped[int] = mapped_column(Integer, default=0)
+    visitors: Mapped[int] = mapped_column(Integer, default=0)
+    total_dwell_ms: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), default=0)
+    total_active_ms: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), default=0)
+    avg_scroll_pct: Mapped[float | None] = mapped_column(Numeric(5, 1))
+    dead_clicks: Mapped[int] = mapped_column(Integer, default=0)
+    computed_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
 
 
 class Hypothesis(Base):

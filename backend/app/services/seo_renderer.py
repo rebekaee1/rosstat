@@ -368,7 +368,8 @@ _SSR_CHROME_FOOTER = f"""<div class="seo-cta"><div class="seo-cta-in">
 <p><strong>Интерактивные графики, прогнозы и выгрузка данных</strong> — по каждому из более чем 900 рядов макростатистики и 480+ региональных показателей. Бесплатно, из официальных источников.</p>
 <a class="seo-btn" href="/">Открыть платформу</a>
 </div></div>
-<footer class="seo-foot">Данные — официальные источники: Росстат, Банк России, Минфин России, Московская биржа. Обновляются автоматически по мере публикации. © Forecast Economy · <a href="{DOMAIN}">forecasteconomy.com</a></footer>"""
+<footer class="seo-foot">Данные — официальные источники: Росстат, Банк России, Минфин России, Московская биржа. Обновляются автоматически по мере публикации. © Forecast Economy · <a href="{DOMAIN}">forecasteconomy.com</a></footer>
+<script type="module" src="/assets/behavior-standalone.js" defer></script>"""
 
 FREQUENCY_LABELS_RU = {
     "daily": "ежедневно",

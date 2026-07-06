@@ -12,9 +12,18 @@
  *                    признаки dead (некликабельная цель) и rage (серия злых кликов);
  *   - move          траектория мыши: сэмплированная полилиния [x,y,dt] за окно
  *                    флеша (страница прореживается порогом расстояния);
- *   - dwell         уход со страницы: время на ней, максимум скролла, счётчики
- *                    кликов/дистанции мыши — «сколько жил и что делал»;
- *   - copy          что пользователь скопировал (первые 120 символов выделения).
+ *   - dwell         уход со страницы: время на ней (по стене И активное,
+ *                    visibility-aware), максимум скролла, счётчики кликов;
+ *   - copy          что пользователь скопировал (первые 120 символов выделения);
+ *   - vital         Web Vitals (LCP/INP/CLS/FCP/TTFB) — скорость глазами клиента;
+ *   - js_error      onerror + unhandledrejection: стек, версия сборки;
+ *   - api_timing    латентность /api/* глазами клиента (сэмпл 1 из 5);
+ *   - block_view    блочная аналитика: время видимости [data-block]-секций;
+ *   - form          воронка форм без снятия текста (фокус → submit).
+ *
+ * Идентичность: постоянный visitor_id (localStorage, живёт годами — аналог
+ * clientID Метрики) уходит в каждом батче; _ym_uid из куки Метрики в
+ * session_start даёт ретро-мост к повизитной истории raw_metrika_visits.
  *
  * Транспорт: буфер в памяти → sendBeacon на /api/v1/analytics/behavior батчами
  * (интервал 10 с / 60 событий / pagehide). При 100k посетителей/день это даёт
@@ -29,6 +38,7 @@
 const ENDPOINT = '/api/v1/analytics/behavior';
 const SESSION_KEY = 'fe:analytics:session';
 const SESSION_META_KEY = 'fe:analytics:session:meta';
+const VISITOR_KEY = 'fe:analytics:visitor';
 const CONSENT_KEY = 'fe:consent:v1';
 const CONSENT_V = '2026-06-16';
 
@@ -44,6 +54,11 @@ const RAGE_COUNT = 3;
 const INTERACTIVE = 'a,button,input,select,textarea,label,summary,[role="button"],[role="link"],[role="tab"],[role="menuitem"],[role="option"],[role="switch"],[onclick]';
 const NO_TEXT_CAPTURE = 'input,textarea,[contenteditable="true"]';
 
+const ACTIVE_GAP_MS = 15_000;    // разрыв активности больше — время не «активное»
+const ERRORS_MAX_PER_PAGE = 10;  // потолок js_error с одной страницы
+const API_TIMING_SAMPLE = 5;     // латентность API — каждый 5-й запрос
+const BLOCK_RESCAN_MS = 3_000;   // как часто искать новые [data-block] в DOM
+
 let _queue = [];
 let _identity = { authed: false, userId: null };
 let _pageLoadId = null;
@@ -58,6 +73,16 @@ let _recentClicks = [];
 let _timer = null;
 let _inited = false;
 let _enabled = true;
+// активное время: суммируем разрывы между действиями, если разрыв < ACTIVE_GAP_MS
+let _activeMs = 0;
+let _lastActivityTs = 0;
+let _errorCount = 0;
+let _apiCallCounter = 0;
+// блочная аналитика: имя блока → { enter: ts|null, ms: суммарно видим }
+let _blocks = new Map();
+let _blockObserver = null;
+let _blockTimer = null;
+let _formsSeen = new Set();
 
 function sessionId() {
   try {
@@ -70,6 +95,41 @@ function sessionId() {
   } catch {
     return null;
   }
+}
+
+/** Постоянный идентификатор посетителя (аналог clientID Метрики): UUID в
+ * localStorage, живёт годами, склеивает сессии одного человека. */
+export function visitorId() {
+  try {
+    let v = window.localStorage.getItem(VISITOR_KEY);
+    if (!v) {
+      v = (window.crypto && window.crypto.randomUUID)
+        ? window.crypto.randomUUID()
+        : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}`;
+      window.localStorage.setItem(VISITOR_KEY, v);
+    }
+    return v;
+  } catch {
+    return null;
+  }
+}
+
+/** _ym_uid из first-party куки Метрики — ретро-мост к её повизитной истории. */
+function ymUid() {
+  try {
+    const m = document.cookie.match(/(?:^|;\s*)_ym_uid=([^;]+)/);
+    return m ? decodeURIComponent(m[1]).slice(0, 40) : null;
+  } catch {
+    return null;
+  }
+}
+
+function markActivity() {
+  const now = Date.now();
+  if (_lastActivityTs && now - _lastActivityTs < ACTIVE_GAP_MS) {
+    _activeMs += now - _lastActivityTs;
+  }
+  _lastActivityTs = now;
 }
 
 function consentAllows() {
@@ -158,6 +218,7 @@ export function flush() {
   _queue = [];
   const body = JSON.stringify({
     session_id: sessionId(),
+    visitor_id: visitorId(),
     authed: _identity.authed ? 1 : 0,
     events,
   });
@@ -172,12 +233,50 @@ export function flush() {
 
 function emitDwell() {
   if (!_pageLoadId || !_pageEnteredAt) return;
+  markActivity();
   push('dwell', {
     ms: Date.now() - _pageEnteredAt,
+    active_ms: Math.min(_activeMs, Date.now() - _pageEnteredAt),
     scroll_pct: _maxScrollPct,
     clicks: _clickCount,
     move_px: Math.round(_moveDistance),
   });
+}
+
+/** Блочная аналитика: закрыть учёт видимости и отправить по событию на блок. */
+function emitBlockViews() {
+  const now = Date.now();
+  for (const [name, rec] of _blocks) {
+    if (rec.enter) { rec.ms += now - rec.enter; rec.enter = null; }
+    if (rec.ms >= 500) push('block_view', { block: name, ms: Math.round(rec.ms) });
+  }
+  _blocks = new Map();
+}
+
+function observeBlocksNow() {
+  if (!_blockObserver) return;
+  document.querySelectorAll('[data-block]').forEach((el) => {
+    if (el.__feBlockObserved) return;
+    el.__feBlockObserved = true;
+    _blockObserver.observe(el);
+  });
+}
+
+function setupBlockObserver() {
+  if (typeof IntersectionObserver === 'undefined') return;
+  _blockObserver = new IntersectionObserver((entries) => {
+    const now = Date.now();
+    for (const entry of entries) {
+      const name = entry.target.getAttribute('data-block');
+      if (!name) continue;
+      let rec = _blocks.get(name);
+      if (!rec) { rec = { enter: null, ms: 0 }; _blocks.set(name, rec); }
+      if (entry.isIntersecting && !rec.enter) rec.enter = now;
+      else if (!entry.isIntersecting && rec.enter) { rec.ms += now - rec.enter; rec.enter = null; }
+    }
+  }, { threshold: 0.5 });
+  observeBlocksNow();
+  _blockTimer = setInterval(observeBlocksNow, BLOCK_RESCAN_MS);
 }
 
 /**
@@ -194,6 +293,11 @@ function emitSessionStart() {
   let tz = null;
   try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || null; } catch { /* ignore */ }
   const q = new URLSearchParams(window.location.search);
+  const conn = navigator.connection || null;
+  let theme = null;
+  try { theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; } catch { /* ignore */ }
+  let orient = null;
+  try { orient = (window.screen.orientation && window.screen.orientation.type) ? (window.screen.orientation.type.startsWith('portrait') ? 'portrait' : 'landscape') : null; } catch { /* ignore */ }
   push('session_start', {
     ua: (navigator.userAgent || '').slice(0, 500),
     ref: document.referrer || null,
@@ -208,7 +312,119 @@ function emitSessionStart() {
     us: q.get('utm_source'),
     um: q.get('utm_medium'),
     uc: q.get('utm_campaign'),
+    ut: q.get('utm_term'),
+    uco: q.get('utm_content'),
+    yclid: q.get('yclid'),
+    ymuid: ymUid(),
+    conn: conn && conn.effectiveType ? String(conn.effectiveType).slice(0, 16) : null,
+    dl: conn && typeof conn.downlink === 'number' ? conn.downlink : null,
+    dm: typeof navigator.deviceMemory === 'number' ? navigator.deviceMemory : null,
+    hc: typeof navigator.hardwareConcurrency === 'number' ? navigator.hardwareConcurrency : null,
+    theme,
+    orient,
+    wd: navigator.webdriver ? 1 : 0,
   });
+}
+
+/** Web Vitals глазами клиента: LCP/INP/CLS/FCP/TTFB с рейтингом. Динамический
+ * импорт — библиотека не попадает в критический путь загрузки. */
+function setupVitals() {
+  import('web-vitals').then(({ onLCP, onINP, onCLS, onFCP, onTTFB }) => {
+    const report = (m) => push('vital', {
+      m: m.name,
+      v: Math.round(m.value * (m.name === 'CLS' ? 1000 : 1)) / (m.name === 'CLS' ? 1000 : 1),
+      rating: m.rating,
+    });
+    onLCP(report); onINP(report); onCLS(report); onFCP(report); onTTFB(report);
+  }).catch(() => { /* vitals опциональны */ });
+}
+
+/** JS-ошибки: onerror + unhandledrejection + упавшие ресурсы. Версия сборки
+ * (__BUILD_ID__ подставляет Vite) привязывает регрессии к деплоям. */
+function setupErrorCapture() {
+  const build = (typeof __BUILD_ID__ !== 'undefined' && __BUILD_ID__) || null;
+  window.addEventListener('error', (e) => {
+    if (_errorCount >= ERRORS_MAX_PER_PAGE) return;
+    _errorCount += 1;
+    if (e.target && e.target !== window && (e.target.src || e.target.href)) {
+      push('js_error', { kind: 'resource', src: String(e.target.src || e.target.href).slice(0, 300), tag: e.target.tagName, build });
+      return;
+    }
+    push('js_error', {
+      kind: 'error',
+      msg: String(e.message || '').slice(0, 300),
+      src: String(e.filename || '').slice(0, 300),
+      line: e.lineno || null,
+      stack: e.error && e.error.stack ? String(e.error.stack).slice(0, 500) : null,
+      build,
+    });
+  }, { capture: true });
+  window.addEventListener('unhandledrejection', (e) => {
+    if (_errorCount >= ERRORS_MAX_PER_PAGE) return;
+    _errorCount += 1;
+    const r = e.reason;
+    push('js_error', {
+      kind: 'rejection',
+      msg: String((r && (r.message || r)) || '').slice(0, 300),
+      stack: r && r.stack ? String(r.stack).slice(0, 500) : null,
+      build,
+    });
+  });
+}
+
+/** Латентность API глазами клиента: обёртка fetch, сэмпл 1 из N, только /api/. */
+function setupApiTiming() {
+  const orig = window.fetch;
+  if (typeof orig !== 'function') return;
+  // Сигнатура (input, init) сохраняется через arguments — init не читаем.
+  window.fetch = function feFetch(input) {
+    let url = null;
+    try { url = typeof input === 'string' ? input : (input && input.url) || null; } catch { /* ignore */ }
+    const isApi = url && url.indexOf('/api/') !== -1 && url.indexOf('/analytics/') === -1;
+    if (!isApi) return orig.apply(this, arguments);
+    _apiCallCounter += 1;
+    if (_apiCallCounter % API_TIMING_SAMPLE !== 0) return orig.apply(this, arguments);
+    const t0 = performance.now();
+    return orig.apply(this, arguments).then((resp) => {
+      push('api_timing', {
+        u: String(url).replace(/^https?:\/\/[^/]+/, '').split('?')[0].slice(0, 200),
+        ms: Math.round(performance.now() - t0),
+        st: resp.status,
+        ok: resp.ok ? 1 : 0,
+      });
+      return resp;
+    }, (err) => {
+      push('api_timing', {
+        u: String(url).replace(/^https?:\/\/[^/]+/, '').split('?')[0].slice(0, 200),
+        ms: Math.round(performance.now() - t0),
+        st: 0,
+        ok: 0,
+      });
+      throw err;
+    });
+  };
+}
+
+/** Воронка форм без снятия текста: первый фокус в форме и submit. */
+function formName(form) {
+  return (form.getAttribute('id') || form.getAttribute('name') || form.getAttribute('data-track') || form.getAttribute('aria-label') || elementPath(form)).slice(0, 120);
+}
+
+function onFormFocus(e) {
+  const el = e.target instanceof Element ? e.target : null;
+  const form = el && el.closest && el.closest('form');
+  if (!form) return;
+  const name = formName(form);
+  const key = `${_pageLoadId}:${name}`;
+  if (_formsSeen.has(key)) return;
+  _formsSeen.add(key);
+  push('form', { f: name, step: 'focus' });
+}
+
+function onFormSubmit(e) {
+  const form = e.target instanceof Element ? e.target.closest('form') : null;
+  if (!form) return;
+  push('form', { f: formName(form), step: 'submit' });
 }
 
 function enterPage(url) {
@@ -218,6 +434,10 @@ function enterPage(url) {
   _maxScrollPct = 0;
   _clickCount = 0;
   _moveDistance = 0;
+  _activeMs = 0;
+  _lastActivityTs = Date.now();
+  _errorCount = 0;
+  _formsSeen = new Set();
   push('pageview', {
     ref: document.referrer || null,
     vw: window.innerWidth,
@@ -232,6 +452,7 @@ function enterPage(url) {
 export function behaviorRouteChange(url) {
   if (!_inited || !_enabled) return;
   drainMoves();
+  emitBlockViews();
   emitDwell();
   // отложить на тик, чтобы document.title успел обновиться через useMeta
   setTimeout(() => enterPage(url), 60);
@@ -257,6 +478,17 @@ function onClick(e) {
 
   const interactive = el.closest(INTERACTIVE);
   const target = interactive || el;
+  // авто-outbound: клик по внешней ссылке несёт целевой хост+путь
+  let out = null;
+  const anchor = el.closest && el.closest('a[href]');
+  if (anchor) {
+    try {
+      const href = new URL(anchor.href, window.location.href);
+      if (href.host && href.host !== window.location.host) {
+        out = (href.host + href.pathname).slice(0, 200);
+      }
+    } catch { /* ignore */ }
+  }
   push('click', {
     path: elementPath(target),
     text: elementText(target),
@@ -266,6 +498,7 @@ function onClick(e) {
     vy: window.innerHeight ? Math.round((e.clientY / window.innerHeight) * 100) : null,
     dead: interactive ? 0 : 1,
     rage: rage ? 1 : 0,
+    ...(out ? { out } : {}),
   });
 }
 
@@ -302,11 +535,14 @@ function onCopy() {
 
 function onLeave() {
   drainMoves();
+  emitBlockViews();
   emitDwell();
   flush();
 }
 
-/** Единственная точка входа; идемпотентна. Вызывается из App при монтировании. */
+/** Единственная точка входа; идемпотентна. Вызывается из App при монтировании
+ * (SPA) и из standalone-бандла на чистых SSR-страницах — один исходник,
+ * полный паритет сбора. */
 export function behaviorInit() {
   if (_inited || typeof window === 'undefined') return;
   if (/^\/embed\//.test(window.location.pathname)) return;
@@ -314,16 +550,25 @@ export function behaviorInit() {
   _inited = true;
   if (!_enabled) return;
 
+  visitorId(); // создать постоянный идентификатор при первом заходе
+  setupErrorCapture();
+  setupApiTiming();
   enterPage(cleanUrl());
   emitSessionStart();
+  setupVitals();
+  setupBlockObserver();
 
-  document.addEventListener('click', onClick, { capture: true, passive: true });
-  document.addEventListener('mousemove', onMove, { passive: true });
-  window.addEventListener('scroll', onScroll, { passive: true });
+  document.addEventListener('click', (e) => { markActivity(); onClick(e); }, { capture: true, passive: true });
+  document.addEventListener('mousemove', (e) => { markActivity(); onMove(e); }, { passive: true });
+  window.addEventListener('scroll', () => { markActivity(); onScroll(); }, { passive: true });
+  document.addEventListener('keydown', markActivity, { passive: true });
   document.addEventListener('copy', onCopy);
+  document.addEventListener('focusin', onFormFocus, { passive: true });
+  document.addEventListener('submit', onFormSubmit, { capture: true });
   window.addEventListener('pagehide', onLeave);
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') onLeave();
+    else markActivity();
   });
 
   _timer = setInterval(flush, FLUSH_INTERVAL_MS);
@@ -343,7 +588,15 @@ export function _resetForTests() {
   _clickCount = 0;
   _moveDistance = 0;
   _lastMove = { x: 0, y: 0, t: 0 };
+  _activeMs = 0;
+  _lastActivityTs = 0;
+  _errorCount = 0;
+  _apiCallCounter = 0;
+  _blocks = new Map();
+  _formsSeen = new Set();
   if (_timer) { clearInterval(_timer); _timer = null; }
+  if (_blockTimer) { clearInterval(_blockTimer); _blockTimer = null; }
+  if (_blockObserver) { _blockObserver.disconnect(); _blockObserver = null; }
 }
 
 export { elementPath as _elementPath, consentAllows as _consentAllows };

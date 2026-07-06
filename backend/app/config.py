@@ -79,6 +79,27 @@ class Settings(BaseSettings):
     behavior_batch_max_events: int = 500
     behavior_raw_retention_days: int = 0
 
+    # Гео по IP (DB-IP City Lite, CC-BY). Файл лежит в docker-томе geoip_data;
+    # при отсутствии backend скачивает свежую месячную сборку в фоне при старте
+    # (сайт стартует и без гео — колонки просто NULL до появления файла).
+    geoip_db_path: str = "/app/geoip/dbip-city-lite.mmdb"
+    geoip_download_url_template: str = (
+        "https://download.db-ip.com/free/dbip-city-lite-{yyyy}-{mm}.mmdb.gz"
+    )
+    geoip_auto_download: bool = True
+
+    # OLAP-слой ClickHouse: производная копия Postgres, синк каждые 15 минут.
+    # Выключен по умолчанию (локальная разработка без CH-контейнера).
+    clickhouse_enabled: bool = False
+    clickhouse_host: str = "clickhouse"
+    clickhouse_port: int = 8123
+    clickhouse_db: str = "analytics"
+    clickhouse_user: str = "default"
+    clickhouse_password: str = ""
+
+    # Яндекс.Директ: расходы кампаний (коннектор включается после токена).
+    direct_api_token: str = ""
+
     # Forecast Analytics OS
     analytics_enabled: bool = False
     analytics_scheduler_enabled: bool = False

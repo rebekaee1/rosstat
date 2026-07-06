@@ -747,7 +747,7 @@ export default function IndicatorDetail() {
       <RegionCrossLink macroCode={code} />
 
       {relatedIndicators.length > 0 && (
-        <section className="mt-16">
+        <section data-block="related" className="mt-16">
           <div className="flex items-center gap-4 mb-6 flex-wrap">
             <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold">
               Похожие индикаторы

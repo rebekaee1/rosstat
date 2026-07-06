@@ -49,6 +49,7 @@ class ActionProposal(BaseModel):
 class FrontendEventIn(BaseModel):
     event_name: str
     session_id: str | None = None
+    visitor_id: str | None = None
     url: str | None = None
     referrer: str | None = None
     params: dict[str, Any] = Field(default_factory=dict)
@@ -58,8 +59,40 @@ class FrontendEventIn(BaseModel):
 class BehaviorBatchIn(BaseModel):
     """Батч сырых поведенческих событий от behavior.js (буфер → sendBeacon)."""
     session_id: str | None = None
+    visitor_id: str | None = None
     authed: int = 0
     events: list[dict[str, Any]] = Field(default_factory=list)
+
+
+def _hash_id(value: str | None) -> str | None:
+    return hashlib.sha256(value.encode("utf-8")).hexdigest() if value else None
+
+
+async def _upsert_identity_link(db: AsyncSession, user_id: str, visitor_hash: str) -> None:
+    """Граф идентичности: связка user × visitor обновляется при каждом
+    авторизованном батче. История visitor'а до регистрации ретроспективно
+    принадлежит человеку (join по visitor_id_hash)."""
+    from app.models import IdentityLink
+
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
+    if db.bind.dialect.name == "postgresql":
+        from sqlalchemy.dialects.postgresql import insert as pg_insert
+        stmt = pg_insert(IdentityLink.__table__).values(
+            user_id=user_id, visitor_id_hash=visitor_hash, first_seen=now, last_seen=now,
+        ).on_conflict_do_update(
+            constraint="uq_identity_user_visitor", set_={"last_seen": now},
+        )
+        await db.execute(stmt)
+    else:  # sqlite в тестах
+        existing = await db.scalar(
+            select(IdentityLink).where(
+                IdentityLink.user_id == user_id, IdentityLink.visitor_id_hash == visitor_hash
+            )
+        )
+        if existing:
+            existing.last_seen = now
+        else:
+            db.add(IdentityLink(user_id=user_id, visitor_id_hash=visitor_hash, first_seen=now, last_seen=now))
 
 
 @router.get("/health", dependencies=[Depends(_require_analytics_token)])
@@ -227,14 +260,18 @@ async def collect_event(request: Request, payload: FrontendEventIn, db: AsyncSes
     if not settings.frontend_events_enabled:
         return {"accepted": False, "reason": "frontend events disabled"}
     session_hash = hashlib.sha256(payload.session_id.encode("utf-8")).hexdigest() if payload.session_id else None
+    visitor_hash = _hash_id(payload.visitor_id)
     # Атрибуция аудитории. Эндпоинт — POST (не кэшируется), поэтому чтение
     # сессионной куки безопасно и не нарушает инвариант «не варьировать кэш по
     # куке». Резолв через state-Redis, без похода в БД: сессия несёт user_id.
     sess = await current_session(request)
     user_id = sess.get("user_id") if sess else None
+    if user_id and visitor_hash:
+        await _upsert_identity_link(db, str(user_id), visitor_hash)
     event = FrontendEvent(
         event_name=payload.event_name,
         session_id_hash=session_hash,
+        visitor_id_hash=visitor_hash,
         user_id=str(user_id) if user_id else None,
         authed=bool(user_id),
         url=payload.url,
@@ -251,7 +288,12 @@ async def collect_event(request: Request, payload: FrontendEventIn, db: AsyncSes
 # Горячие поля батч-события, выносимые в колонки behavior_events; остальное
 # уходит в params_json. Ключи совпадают с полями, которые шлёт behavior.js.
 _BEHAVIOR_COLUMN_KEYS = {"t", "ts", "url", "pl", "path", "text", "x", "y", "dead", "rage"}
-_BEHAVIOR_TYPES = {"pageview", "click", "move", "dwell", "copy"}
+# vital/js_error/api_timing — слой скорости и надёжности; block_view — блочная
+# аналитика (IntersectionObserver); form — воронка форм без снятия текста.
+_BEHAVIOR_TYPES = {
+    "pageview", "click", "move", "dwell", "copy",
+    "vital", "js_error", "api_timing", "block_view", "form",
+}
 
 
 def _int_or_none(v: Any) -> int | None:
@@ -261,42 +303,66 @@ def _int_or_none(v: Any) -> int | None:
         return None
 
 
+def _str_or_none(v: Any, limit: int) -> str | None:
+    s = str(v or "")
+    return s[:limit] if s else None
+
+
+def _num_or_none(v: Any) -> float | None:
+    return v if isinstance(v, (int, float)) and not isinstance(v, bool) else None
+
+
 async def _upsert_behavior_session(
-    db: AsyncSession, ev: dict, *, session_hash: str, user_id: str | None,
-    authed: bool, occurred: datetime,
+    db: AsyncSession, ev: dict, *, session_hash: str, visitor_hash: str | None,
+    user_id: str | None, authed: bool, occurred: datetime, client_ip: str | None,
 ) -> None:
     """session_start → строка в behavior_sessions (портрет сессии/аудитории).
 
     Идемпотентно по PK session_id_hash (DO NOTHING) — повторная отправка
     (например, после restore вкладки) не перетирает первый портрет.
+    Здесь же: гео по IP (сам IP не сохраняется) и классификация канала.
     """
     from sqlalchemy.dialects.postgresql import insert as pg_insert
 
     from app.models import BehaviorSession
+    from app.services.geoip import lookup as geo_lookup
+    from app.services.traffic_channel import classify_channel, referrer_host
     from app.services.ua_parser import parse_user_agent
+    from app.services.yandex_client import stable_hash
 
-    ua = (str(ev.get("ua") or "") or None) and str(ev.get("ua"))[:500]
+    # _ym_uid хэшируем тем же stable_hash, что client_id_hash Метрики:
+    # прямой join behavior_sessions × raw_metrika_visits (ретро-мост).
+    ym_raw = _str_or_none(ev.get("ymuid"), 40)
+    ua = _str_or_none(ev.get("ua"), 500)
     parsed = parse_user_agent(ua)
-    referrer = (str(ev.get("ref") or "") or None) and str(ev.get("ref"))[:1000]
-    ref_host = None
-    if referrer:
-        try:
-            from urllib.parse import urlparse
-            ref_host = (urlparse(referrer).hostname or None) and urlparse(referrer).hostname[:200]
-        except ValueError:
-            ref_host = None
+    referrer = _str_or_none(ev.get("ref"), 1000)
+    utm_source = _str_or_none(ev.get("us"), 120)
+    utm_medium = _str_or_none(ev.get("um"), 120)
+    yclid = _str_or_none(ev.get("yclid"), 64)
+    geo = geo_lookup(client_ip)
 
     values = {
         "session_id_hash": session_hash,
+        "visitor_id_hash": visitor_hash,
+        "ym_client_id": stable_hash(ym_raw)[:80] if ym_raw else None,
         "user_id": user_id,
         "authed": authed,
         "started_at": occurred,
-        "entry_page": (str(ev.get("url") or "") or None) and str(ev.get("url"))[:500],
+        "entry_page": _str_or_none(ev.get("url"), 500),
         "referrer": referrer,
-        "referrer_host": ref_host,
-        "utm_source": (str(ev.get("us") or "") or None) and str(ev.get("us"))[:120],
-        "utm_medium": (str(ev.get("um") or "") or None) and str(ev.get("um"))[:120],
-        "utm_campaign": (str(ev.get("uc") or "") or None) and str(ev.get("uc"))[:200],
+        "referrer_host": referrer_host(referrer),
+        "channel": classify_channel(
+            referrer=referrer, utm_source=utm_source, utm_medium=utm_medium, yclid=yclid,
+        ),
+        "utm_source": utm_source,
+        "utm_medium": utm_medium,
+        "utm_campaign": _str_or_none(ev.get("uc"), 200),
+        "utm_term": _str_or_none(ev.get("ut"), 200),
+        "utm_content": _str_or_none(ev.get("uco"), 200),
+        "yclid": yclid,
+        "country": geo["country"] and geo["country"][:60],
+        "geo_region": geo["region"] and geo["region"][:120],
+        "city": geo["city"] and geo["city"][:120],
         "ua_raw": ua,
         "browser": parsed["browser"],
         "browser_version": parsed["browser_version"],
@@ -307,10 +373,17 @@ async def _upsert_behavior_session(
         "screen_h": _int_or_none(ev.get("sh")),
         "viewport_w": _int_or_none(ev.get("vw")),
         "viewport_h": _int_or_none(ev.get("vh")),
-        "dpr": ev.get("dpr") if isinstance(ev.get("dpr"), (int, float)) else None,
-        "language": (str(ev.get("lang") or "") or None) and str(ev.get("lang"))[:16],
-        "timezone": (str(ev.get("tz") or "") or None) and str(ev.get("tz"))[:60],
+        "dpr": _num_or_none(ev.get("dpr")),
+        "language": _str_or_none(ev.get("lang"), 16),
+        "timezone": _str_or_none(ev.get("tz"), 60),
         "touch": bool(ev.get("touch")) if ev.get("touch") is not None else None,
+        "conn_type": _str_or_none(ev.get("conn"), 16),
+        "downlink": _num_or_none(ev.get("dl")),
+        "device_memory": _num_or_none(ev.get("dm")),
+        "cpu_cores": _int_or_none(ev.get("hc")),
+        "color_scheme": _str_or_none(ev.get("theme"), 10),
+        "orientation": _str_or_none(ev.get("orient"), 12),
+        "is_webdriver": bool(ev.get("wd")) if ev.get("wd") is not None else None,
     }
     if db.bind.dialect.name == "postgresql":
         stmt = pg_insert(BehaviorSession.__table__).values(**values).on_conflict_do_nothing(
@@ -344,8 +417,16 @@ async def collect_behavior_batch(
         hashlib.sha256(payload.session_id.encode("utf-8")).hexdigest()
         if payload.session_id else None
     )
+    visitor_hash = _hash_id(payload.visitor_id)
     sess = await current_session(request)
     user_id = sess.get("user_id") if sess else None
+    if user_id and visitor_hash:
+        await _upsert_identity_link(db, str(user_id), visitor_hash)
+    from app.services.geoip import client_ip_from_headers
+    client_ip = client_ip_from_headers(
+        request.headers.get("x-forwarded-for"),
+        request.client.host if request.client else None,
+    )
     now = datetime.now(timezone.utc).replace(tzinfo=None)
 
     rows = []
@@ -358,10 +439,10 @@ async def collect_behavior_batch(
             occurred = now
         if etype == "session_start" and session_hash:
             await _upsert_behavior_session(
-                db, ev, session_hash=session_hash,
+                db, ev, session_hash=session_hash, visitor_hash=visitor_hash,
                 user_id=str(user_id) if user_id else None,
                 authed=bool(user_id) or bool(payload.authed),
-                occurred=occurred,
+                occurred=occurred, client_ip=client_ip,
             )
             sessions_stored += 1
             continue
@@ -371,6 +452,7 @@ async def collect_behavior_batch(
         rows.append({
             "event_type": etype,
             "session_id_hash": session_hash,
+            "visitor_id_hash": visitor_hash,
             "page_load_id": (str(ev.get("pl") or "") or None) and str(ev.get("pl"))[:40],
             "user_id": str(user_id) if user_id else None,
             "authed": bool(user_id) or bool(payload.authed),
@@ -387,6 +469,6 @@ async def collect_behavior_batch(
         })
     if rows:
         await db.execute(BehaviorEvent.__table__.insert(), rows)
-    if rows or sessions_stored:
+    if rows or sessions_stored or (user_id and visitor_hash):
         await db.commit()
     return {"accepted": True, "stored": len(rows)}

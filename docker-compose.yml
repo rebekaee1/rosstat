@@ -108,9 +108,18 @@ services:
       RUSTATS_TELEGRAM_POLLER_ENABLED: ${RUSTATS_TELEGRAM_POLLER_ENABLED:-false}
       # Состояние (сессии/квоты) — отдельный Redis DB /1: FLUSHDB кэша не трогает
       RUSTATS_STATE_REDIS_URL: redis://:${REDIS_PASSWORD:-changeme}@redis:6379/1
+      # OLAP-слой ClickHouse (вкладка BI «Срезы»); выключается одной переменной,
+      # сайт при выключенном/упавшем CH работает как раньше.
+      RUSTATS_CLICKHOUSE_ENABLED: ${RUSTATS_CLICKHOUSE_ENABLED:-true}
+      RUSTATS_CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-analytics_dev}
+      # Расходы Директа: коннектор включается после передачи токена владельцем.
+      RUSTATS_DIRECT_API_TOKEN: ${RUSTATS_DIRECT_API_TOKEN:-}
       TZ: Europe/Moscow
     volumes:
       - ./output:/app/data:ro
+      # Гео-база DB-IP Lite: скачивается backend'ом при старте, обновляется
+      # ежемесячным job'ом. Том — чтобы не тянуть ~100 МБ при каждом rebuild.
+      - geoip_data:/app/geoip
     depends_on:
       postgres:
         condition: service_healthy
@@ -150,6 +159,47 @@ services:
       timeout: 10s
       retries: 3
 
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.8-alpine
+    # OLAP-слой (ADR-0010): производная копия Postgres, «любая метрика × любое
+    # измерение» для вкладки BI «Срезы». Ни одного нового пути записи: сайт и
+    # сбор пишут только в Postgres; CH можно снести и налить заново ресинком
+    # (docker compose exec backend python -c "...clickhouse_sync.resync()").
+    # Порт только внутри docker-сети; том в бэкапы НЕ входит.
+    environment:
+      CLICKHOUSE_DB: analytics
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-analytics_dev}
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      # Low-memory профиль: без него baseline CH съедает cgroup-лимит и любой
+      # GROUP BY падает с MEMORY_LIMIT_EXCEEDED (code 241).
+      - ./clickhouse/low-memory.xml:/etc/clickhouse-server/config.d/low-memory.xml:ro
+      - ./clickhouse/low-memory-users.xml:/etc/clickhouse-server/users.d/low-memory.xml:ro
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          memory: 700M
+          cpus: '0.5'
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO /dev/null http://127.0.0.1:8123/ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
 volumes:
   postgres_data:
   redis_data:
+  geoip_data:
+  clickhouse_data:

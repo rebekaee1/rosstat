@@ -53,7 +53,7 @@ export default function IndicatorSeoBlocks({ blocks, indicatorCode }) {
   if (items.length === 0) return null;
 
   return (
-    <section className="mt-16 mb-12 w-full">
+    <section data-block="about" className="mt-16 mb-12 w-full">
       <div className="flex items-center gap-4 mb-8">
         <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold">
           О показателе

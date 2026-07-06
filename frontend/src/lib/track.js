@@ -1,4 +1,5 @@
 import { CATEGORIES } from './categories';
+import { visitorId } from './behavior';
 
 const COUNTER_ID = 107136069;
 const EVENT_COLLECTOR_PATH = '/api/v1/analytics/events';
@@ -99,6 +100,7 @@ export function sendEvent(eventName, params) {
   const body = JSON.stringify({
     event_name: eventName,
     session_id: sessionId(),
+    visitor_id: visitorId(),
     url: window.location.href,
     referrer: document.referrer || null,
     params: params || {},

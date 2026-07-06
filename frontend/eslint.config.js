@@ -23,7 +23,8 @@ export default defineConfig([
     ],
     languageOptions: {
       ecmaVersion: 2020,
-      globals: globals.browser,
+      // __BUILD_ID__ — compile-time константа Vite (define в vite.config.js)
+      globals: { ...globals.browser, __BUILD_ID__: 'readonly' },
       parserOptions: {
         ecmaVersion: 'latest',
         ecmaFeatures: { jsx: true },

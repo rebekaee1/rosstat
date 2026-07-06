@@ -169,6 +169,30 @@ async def build_inventory(db: AsyncSession) -> dict[str, Any]:
         "rows": sum(h_by_verdict.values()), "by_verdict": h_by_verdict,
     }
 
+    # --- Вычислительный фундамент «Аналитики 2.0» (2026-07-06) ------------------
+    from app.models import DailyGoal, DailyPage, DailyTraffic, IdentityLink, MetrikaGoal, ServerSession
+
+    sections["server_sessions"] = {
+        "rows": await db.scalar(select(func.count(ServerSession.id))) or 0,
+        "columns": _table_columns(ServerSession),
+    }
+    sections["identity_links"] = {
+        "rows": await db.scalar(select(func.count(IdentityLink.id))) or 0,
+        "columns": _table_columns(IdentityLink),
+    }
+    sections["metrika_goals"] = {
+        "rows": await db.scalar(select(func.count(MetrikaGoal.goal_id))) or 0,
+        "columns": _table_columns(MetrikaGoal),
+    }
+    sections["rollups"] = {
+        "rows": (
+            (await db.scalar(select(func.count(DailyTraffic.id))) or 0)
+            + (await db.scalar(select(func.count(DailyGoal.id))) or 0)
+            + (await db.scalar(select(func.count(DailyPage.id))) or 0)
+        ),
+        "columns": _table_columns(DailyTraffic) + _table_columns(DailyGoal) + _table_columns(DailyPage),
+    }
+
     # --- Продуктовое ядро --------------------------------------------------------
     sections["core"] = {
         "users": await db.scalar(select(func.count(User.id))) or 0,

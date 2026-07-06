@@ -62,7 +62,7 @@ export default function Dashboard() {
         </Link>
       </header>
 
-      <section>
+      <section data-block="categories">
         <div className="flex items-center gap-4 mb-6">
           <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold">
             Категории

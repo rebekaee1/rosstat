@@ -259,7 +259,7 @@ export default function RegionIndicatorPage() {
           </div>
 
           {/* График */}
-          <div className="bg-surface border border-border-subtle rounded-xl p-4 mb-4" ref={chartRef}>
+          <div data-block="region-chart" className="bg-surface border border-border-subtle rounded-xl p-4 mb-4" ref={chartRef}>
             <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
               <div className="text-xs text-text-tertiary font-mono">
                 {first.year}–{last.year}, {showYoY ? 'изменение к предыдущему году, %' : data.indicator.unit}
@@ -397,7 +397,7 @@ export default function RegionIndicatorPage() {
 
           {/* Лидеры рейтинга */}
           {data.rank?.top?.length > 0 && (
-            <div className="bg-surface border border-border-subtle rounded-xl p-4 mb-6">
+            <div data-block="region-rating" className="bg-surface border border-border-subtle rounded-xl p-4 mb-6">
               <h2 className="text-sm font-semibold text-text-primary mb-3">
                 Регионы-лидеры, {data.rank.year}
               </h2>

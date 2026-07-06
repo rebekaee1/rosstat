@@ -1,0 +1,24 @@
+<!-- Low-memory профиль для ClickHouse в контейнере с лимитом ~1 ГБ.
+     Без него baseline сервера (кэши, пулы потоков) съедает почти весь
+     cgroup-лимит и любой GROUP BY падает с MEMORY_LIMIT_EXCEEDED (code 241).
+     Роль слоя — OLAP-копия небольшого Postgres (ADR-0010), большие кэши
+     не нужны. -->
+<clickhouse>
+    <max_server_memory_usage_to_ram_ratio>0.9</max_server_memory_usage_to_ram_ratio>
+    <mark_cache_size>67108864</mark_cache_size>
+    <index_mark_cache_size>16777216</index_mark_cache_size>
+    <uncompressed_cache_size>67108864</uncompressed_cache_size>
+    <max_concurrent_queries>10</max_concurrent_queries>
+    <max_connections>64</max_connections>
+    <!-- background_pool_size не трогаем: merge_tree sanity-check требует
+         согласованности с number_of_free_entries_in_pool_to_execute_mutation. -->
+    <!-- Профилировщик памяти и трейсы queries не нужны — экономим RAM. -->
+    <total_memory_profiler_step>0</total_memory_profiler_step>
+    <query_thread_log remove="remove"/>
+    <query_log remove="remove"/>
+    <metric_log remove="remove"/>
+    <asynchronous_metric_log remove="remove"/>
+    <trace_log remove="remove"/>
+    <text_log remove="remove"/>
+    <processors_profile_log remove="remove"/>
+</clickhouse>

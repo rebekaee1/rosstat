@@ -325,7 +325,7 @@ export default function IndicatorChartSection({
   };
 
   return (
-    <section className="mb-16">
+    <section data-block="chart" className="mb-16">
       <div className="flex items-center justify-between mb-6 border-b border-border-subtle pb-4 flex-wrap gap-3">
         <div className="flex items-center gap-4">
           <Terminal className="w-4 h-4 text-champagne" />

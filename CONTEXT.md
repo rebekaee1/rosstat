@@ -25,6 +25,7 @@
 | [`docs/adr/0006`](docs/adr/0006-indicator-card-unification.md) | Indicator card unification: ось «карточка vs derived vs variant vs frequency» (звонок 2026-05-22) |
 | [`docs/adr/0008`](docs/adr/0008-regional-bounded-context.md) | Региональный блок: bounded context `регион × показатель × год`, артефакт вместо ETL, дособор из архивных редакций |
 | [`docs/adr/0009`](docs/adr/0009-behavior-stream-first-party.md) | Поведенческий поток first-party: `behavior.js` автосбор (клики/мышь/скролл/dwell/copy) → `behavior_events`, retention сырья + вечные агрегаты в Пульсе |
+| [`docs/adr/0010`](docs/adr/0010-analytics-contour-identity-goals-marts-olap.md) | Аналитический контур: visitor_id + identity_links, серверные сессии (30 мин), таксономия целей, rollup'ы, единый слой витрин `analytics_marts`, OLAP-копия ClickHouse |
 | [`docs/indicator-family-playbook.md`](docs/indicator-family-playbook.md) | Семейство до продакшена: продуктовая модель, уровни UI A/B/C; эталоны **ИПЦ** (4×10) и **жильё** (2×3); фазы A–G |
 
 ---

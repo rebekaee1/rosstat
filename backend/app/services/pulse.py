@@ -353,6 +353,17 @@ async def build_snapshot(d: date) -> dict[str, Any]:
         ) or 0
         snap["data"] = {"new_points": new_points}
 
+        # --- ПОЛНЫЙ дневной контекст из единого слоя витрин (этап 6) ---------
+        # Директива владельца: LLM видит ВСЁ, что есть в аналитике за день.
+        # Те же функции кормят BI-дашборд — цифра в дайджесте Пульса и на
+        # экране BI по построению одна и та же.
+        try:
+            from app.services.analytics_marts import build_marts_daily_context
+            snap["marts"] = await build_marts_daily_context(db)
+        except Exception:  # noqa: BLE001 — Пульс не падает из-за витрин
+            logger.exception("Pulse marts context failed")
+            snap["marts"] = {"error": "marts context unavailable"}
+
     return snap
 
 

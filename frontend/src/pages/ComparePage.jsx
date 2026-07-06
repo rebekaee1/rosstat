@@ -863,7 +863,7 @@ export default function ComparePage() {
         </p>
       </div>
 
-      <section className="mb-6">
+      <section data-block="compare-add" className="mb-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
           {/* Макроиндикатор: поиск-по-всей-стране, добавление по клику. */}
           <div className="rounded-xl border border-border-subtle bg-surface p-3">
@@ -945,7 +945,7 @@ export default function ComparePage() {
         </div>
       )}
 
-      <section className="mb-8">
+      <section data-block="compare-chart" className="mb-8">
         <div className="flex items-center gap-4 border-b border-border-subtle pb-4 mb-6 flex-wrap">
           <Activity className="w-4 h-4 text-champagne" />
           <span className="text-[11px] font-mono uppercase tracking-widest text-text-tertiary">Период</span>

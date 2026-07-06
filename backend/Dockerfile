@@ -23,7 +23,9 @@ COPY --from=builder /usr/local/bin /usr/local/bin
 
 COPY . .
 
-RUN chmod +x /app/entrypoint.sh && chown -R appuser:appuser /app
+# /app/geoip — mountpoint тома geoip_data: создаём заранее, чтобы docker
+# проинициализировал том с владельцем appuser (иначе root и загрузка mmdb падает).
+RUN mkdir -p /app/geoip && chmod +x /app/entrypoint.sh && chown -R appuser:appuser /app
 
 USER appuser
 

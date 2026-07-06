@@ -169,7 +169,7 @@ export default function CategoryPage() {
         <IndicatorSearch variant="inline" inlinePlaceholder="Искать индикатор по всем категориям — например, инфляция или ВВП" />
       </div>
 
-      <section className="rounded-[2rem] border border-border-subtle bg-surface p-3 shadow-md ring-1 ring-black/[0.06] sm:p-6 md:p-8">
+      <section data-block="category-list" className="rounded-[2rem] border border-border-subtle bg-surface p-3 shadow-md ring-1 ring-black/[0.06] sm:p-6 md:p-8">
         <h2 className="mb-6 text-xs font-semibold uppercase tracking-[0.2em] text-text-primary/70">
           Индикаторы
         </h2>
@@ -207,7 +207,7 @@ export default function CategoryPage() {
       </section>
 
       {relatedCategories.length > 0 && (
-        <section className="mt-12">
+        <section data-block="related-categories" className="mt-12">
           <div className="flex items-center gap-4 mb-6">
             <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold">
               Связанные категории

@@ -11,7 +11,7 @@ export default function IndicatorMethodologyPanel({ indicator, content }) {
   const hasExternalSource = indicator?.source_url && indicator.source_url.startsWith('http');
 
   return (
-    <section className="lg:col-span-1 p-8 rounded-[2rem] bg-obsidian-light border border-border-subtle flex flex-col h-full">
+    <section data-block="methodology" className="lg:col-span-1 p-8 rounded-[2rem] bg-obsidian-light border border-border-subtle flex flex-col h-full">
       <div className="flex items-center gap-3 mb-6">
         <Info className="w-4 h-4 text-champagne" />
         <h3 className="text-xs font-mono uppercase tracking-[0.2em] text-text-secondary">

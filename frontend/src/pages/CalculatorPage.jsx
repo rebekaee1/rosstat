@@ -519,7 +519,7 @@ export default function CalculatorPage() {
       </header>
 
       {/* Calculator Card */}
-      <section data-animate className="rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6">
+      <section data-animate data-block="calc-form" className="rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6">
 
         {/* Reverse mode toggle */}
         <div className="flex items-center justify-between mb-5">
@@ -621,6 +621,7 @@ export default function CalculatorPage() {
           {/* ── Result Card ── */}
           <section
             data-animate
+            data-block="calc-result"
             className={cn(
               'rounded-[2rem] border p-6 md:p-8 mb-6 transition-colors duration-500',
               extremeInflation ? 'bg-negative/[0.03] border-negative/20' : 'bg-surface border-border-champagne'
@@ -781,7 +782,7 @@ export default function CalculatorPage() {
       )}
 
       {/* ── Methodology ── */}
-      <section data-animate className="rounded-[2rem] bg-obsidian-light border border-border-subtle p-6 md:p-8 mb-8">
+      <section data-animate data-block="calc-methodology" className="rounded-[2rem] bg-obsidian-light border border-border-subtle p-6 md:p-8 mb-8">
         <h3 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-4">Методология расчёта</h3>
         <div className="space-y-3 text-sm text-text-secondary leading-relaxed">
           <p>

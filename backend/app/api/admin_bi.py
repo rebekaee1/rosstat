@@ -75,3 +75,42 @@ async def bi_dashboard(
     data = await build_bi_dashboard(db, days)
     await cache_set(cache_key, data, ttl=_BI_CACHE_TTL)
     return data
+
+
+@router.get("/slices/meta")
+async def slices_meta(_admin: User = Depends(require_admin)):
+    """Справочник конструктора «Срезы»: доступные метрики и измерения."""
+    from app.config import settings
+    from app.services.clickhouse_sync import SLICE_DIMENSIONS, SLICE_METRICS, last_sync_age_minutes
+
+    if not settings.clickhouse_enabled:
+        return {"available": False, "reason": "Слой ClickHouse выключен"}
+    return {
+        "available": True,
+        "sync_age_minutes": await last_sync_age_minutes(),
+        "metrics": {m: table for m, (table, _) in SLICE_METRICS.items()},
+        "dimensions": {t: list(d.keys()) for t, d in SLICE_DIMENSIONS.items()},
+    }
+
+
+@router.get("/slices")
+async def slices_query(
+    metric: str,
+    dims: str = Query("", description="Измерения через запятую (максимум 2)"),
+    days: int = Query(30, ge=1, le=365),
+    _admin: User = Depends(require_admin),
+):
+    """Произвольный срез по OLAP-слою: метрика × до двух измерений × период.
+    Белый список измерений в clickhouse_sync — произвольный SQL исключён."""
+    from app.config import settings
+    from app.services.clickhouse_sync import run_slice
+
+    if not settings.clickhouse_enabled:
+        raise HTTPException(status_code=503, detail="Слой ClickHouse выключен")
+    try:
+        return await run_slice(metric, [d.strip() for d in dims.split(",") if d.strip()], days)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc))
+    except Exception as exc:  # noqa: BLE001 — CH недоступен: мягкая деградация
+        logger.warning("Slice query failed: %s", exc)
+        raise HTTPException(status_code=503, detail="Слой недоступен, синк догонит после подъёма")
