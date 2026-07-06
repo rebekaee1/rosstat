@@ -319,13 +319,12 @@ async def _upsert_behavior_session(
 ) -> None:
     """session_start → строка в behavior_sessions (портрет сессии/аудитории).
 
-    Идемпотентно по PK session_id_hash (DO NOTHING) — повторная отправка
-    (например, после restore вкладки) не перетирает первый портрет.
+    Идемпотентно по PK session_id_hash — повторная отправка (например, после
+    restore вкладки) не перетирает первый НАСТОЯЩИЙ портрет. Исключение:
+    синтетическую строку (собранную сервером из батча без session_start)
+    настоящий портрет апгрейдит полными данными (волна 2, п. 1/4).
     Здесь же: гео по IP (сам IP не сохраняется) и классификация канала.
     """
-    from sqlalchemy.dialects.postgresql import insert as pg_insert
-
-    from app.models import BehaviorSession
     from app.services.geoip import lookup as geo_lookup
     from app.services.traffic_channel import classify_channel, referrer_host
     from app.services.ua_parser import parse_user_agent
@@ -385,21 +384,117 @@ async def _upsert_behavior_session(
         "color_scheme": _str_or_none(ev.get("theme"), 10),
         "orientation": _str_or_none(ev.get("orient"), 12),
         "is_webdriver": bool(ev.get("wd")) if ev.get("wd") is not None else None,
+        "is_synthetic": False,
     }
+    await _insert_portrait(db, values, upgrade_synthetic=True)
+
+
+async def _insert_portrait(
+    db: AsyncSession, values: dict, *, upgrade_synthetic: bool
+) -> None:
+    """Вставка портрета: конфликт по PK — no-op; настоящий портрет
+    (upgrade_synthetic=True) перезаписывает синтетическую строку."""
+    from sqlalchemy.dialects.postgresql import insert as pg_insert
+
+    from app.models import BehaviorSession
+
+    table = BehaviorSession.__table__
     if db.bind.dialect.name == "postgresql":
-        stmt = pg_insert(BehaviorSession.__table__).values(**values).on_conflict_do_nothing(
-            index_elements=["session_id_hash"]
-        )
+        stmt = pg_insert(table).values(**values)
+        if upgrade_synthetic:
+            stmt = stmt.on_conflict_do_update(
+                index_elements=["session_id_hash"],
+                set_={k: v for k, v in values.items() if k != "session_id_hash"},
+                where=table.c.is_synthetic.is_(True),
+            )
+        else:
+            stmt = stmt.on_conflict_do_nothing(index_elements=["session_id_hash"])
         await db.execute(stmt)
     else:  # sqlite в тестах
-        from sqlalchemy import select as sa_select
-        exists = await db.scalar(
-            sa_select(BehaviorSession.session_id_hash).where(
-                BehaviorSession.session_id_hash == session_hash
+        from sqlalchemy import select as sa_select, update as sa_update
+        existing = (await db.execute(
+            sa_select(BehaviorSession.session_id_hash, BehaviorSession.is_synthetic)
+            .where(BehaviorSession.session_id_hash == values["session_id_hash"])
+        )).first()
+        if existing is None:
+            await db.execute(table.insert().values(**values))
+        elif upgrade_synthetic and existing.is_synthetic:
+            await db.execute(
+                sa_update(BehaviorSession)
+                .where(BehaviorSession.session_id_hash == values["session_id_hash"])
+                .values(**{k: v for k, v in values.items() if k != "session_id_hash"})
             )
-        )
-        if not exists:
-            await db.execute(BehaviorSession.__table__.insert().values(**values))
+
+
+async def _upsert_synthetic_portrait(
+    db: AsyncSession, ev: dict, *, session_hash: str, visitor_hash: str | None,
+    user_id: str | None, authed: bool, occurred: datetime, client_ip: str | None,
+    ua: str | None,
+) -> None:
+    """Частичный портрет из батча БЕЗ session_start (волна 2, п. 1/4).
+
+    session_start иногда теряется (beacon, ад-блокеры) — тогда сессия
+    оставалась без канала/браузера/устройства и выпадала из срезов аудитории.
+    Собираем портрет из того, что знает сервер на любом батче: User-Agent
+    запроса, гео по IP, referrer/viewport/touch первого pageview. Настоящий
+    session_start, дошедший позже (клиент ретраит), апгрейдит строку полным
+    портретом — см. `_upsert_behavior_session`.
+    """
+    from urllib.parse import parse_qs, urlsplit
+
+    from app.services.geoip import lookup as geo_lookup
+    from app.services.traffic_channel import classify_channel, referrer_host
+    from app.services.ua_parser import parse_user_agent
+
+    ua = _str_or_none(ua, 500)
+    parsed = parse_user_agent(ua)
+    referrer = _str_or_none(ev.get("ref"), 1000)
+    geo = geo_lookup(client_ip)
+
+    # UTM/yclid из сырого URL pageview (behavior.js шлёт pathname + search;
+    # в колонку page query уже отрезан — рекламные метки берём здесь).
+    q: dict = {}
+    try:
+        q = parse_qs(urlsplit(str(ev.get("url") or "")).query)
+    except ValueError:
+        pass
+    qp = lambda k, n: _str_or_none((q.get(k) or [None])[0], n)  # noqa: E731
+    utm_source, utm_medium, yclid = qp("utm_source", 120), qp("utm_medium", 120), qp("yclid", 64)
+
+    values = {
+        "session_id_hash": session_hash,
+        "visitor_id_hash": visitor_hash,
+        "user_id": user_id,
+        "authed": authed,
+        "started_at": occurred,
+        "entry_page": _normalize_page(ev.get("url")),
+        "referrer": referrer,
+        "referrer_host": referrer_host(referrer),
+        "channel": classify_channel(
+            referrer=referrer, utm_source=utm_source, utm_medium=utm_medium, yclid=yclid,
+        ),
+        "utm_source": utm_source,
+        "utm_medium": utm_medium,
+        "utm_campaign": qp("utm_campaign", 200),
+        "utm_term": qp("utm_term", 200),
+        "utm_content": qp("utm_content", 200),
+        "yclid": yclid,
+        "country": geo["country"] and geo["country"][:60],
+        "geo_region": geo["region"] and geo["region"][:120],
+        "city": geo["city"] and geo["city"][:120],
+        "ua_raw": ua,
+        "browser": parsed["browser"],
+        "browser_version": parsed["browser_version"],
+        "os": parsed["os"],
+        "os_version": parsed["os_version"],
+        "device_type": parsed["device_type"],
+        "viewport_w": _int_or_none(ev.get("vw")),
+        "viewport_h": _int_or_none(ev.get("vh")),
+        "dpr": _num_or_none(ev.get("dpr")),
+        "touch": bool(ev.get("touch")) if ev.get("touch") is not None else None,
+        "is_synthetic": True,
+    }
+    await _insert_portrait(db, values, upgrade_synthetic=False)
 
 
 # Гигиена времени на инжесте: расхождение клиентских часов и ретраи beacon
@@ -473,6 +568,7 @@ async def collect_behavior_batch(
 
     rows = []
     sessions_stored = 0
+    first_pageview: tuple[dict, datetime] | None = None
     for ev in events:
         etype = str(ev.get("t") or "")[:20]
         try:
@@ -480,6 +576,8 @@ async def collect_behavior_batch(
         except (KeyError, TypeError, ValueError, OSError):
             occurred = now
         occurred = _clamp_occurred(occurred, now)
+        if etype == "pageview" and first_pageview is None:
+            first_pageview = (ev, occurred)
         if etype == "session_start" and session_hash:
             await _upsert_behavior_session(
                 db, ev, session_hash=session_hash, visitor_hash=visitor_hash,
@@ -519,6 +617,17 @@ async def collect_behavior_batch(
         })
     if rows:
         await db.execute(BehaviorEvent.__table__.insert(), rows)
+    # Батч с pageview, но без session_start: гарантируем портрет сессии
+    # синтетической строкой (DO NOTHING — существующий портрет не трогаем).
+    if session_hash and first_pageview is not None and not sessions_stored:
+        pv_ev, pv_occurred = first_pageview
+        await _upsert_synthetic_portrait(
+            db, pv_ev, session_hash=session_hash, visitor_hash=visitor_hash,
+            user_id=str(user_id) if user_id else None,
+            authed=bool(user_id) or bool(payload.authed),
+            occurred=pv_occurred, client_ip=client_ip,
+            ua=request.headers.get("user-agent"),
+        )
     if rows or sessions_stored or (user_id and visitor_hash):
         await db.commit()
     return {"accepted": True, "stored": len(rows)}

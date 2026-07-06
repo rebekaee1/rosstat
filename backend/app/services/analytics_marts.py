@@ -500,6 +500,85 @@ async def mart_metrika_funnel(db: AsyncSession, period: Period | int = 30) -> di
     }
 
 
+async def mart_goal_reconciliation(db: AsyncSession, period: Period | int = 30) -> dict[str, Any]:
+    """Сверка конверсий двух счётчиков строка-к-строке (волна 2, п. 6).
+
+    Наши business-события (frontend_events, macro/micro по taxonomy) против
+    достижений соответствующих целей Метрики (metrika_goals.event_name —
+    маппинг цели на наше событие). Единицы разные и это честно показывается:
+    у нас — события и сессии с событием, у Метрики — визиты с целью.
+    Событие без цели в Метрике → metrika_visits = None (прочерк);
+    цель Метрики без нашего события → отдельный список metrika_only.
+    """
+    from app.services.goal_taxonomy import _MACRO, _MICRO  # noqa: PLC2701
+
+    p = as_period(period)
+
+    our_rows = (await db.execute(
+        select(
+            FrontendEvent.event_name,
+            func.count().label("n"),
+            func.count(func.distinct(FrontendEvent.session_id_hash)).label("s"),
+        )
+        .where(FrontendEvent.occurred_at >= p.start, FrontendEvent.occurred_at < p.end)
+        .group_by(FrontendEvent.event_name)
+    )).all()
+    ours = {name: (int(n or 0), int(s or 0)) for name, n, s in our_rows}
+
+    goal_dict = {g.goal_id: g for g in (await db.execute(select(MetrikaGoal))).scalars()}
+    mapped_events = {g.event_name for g in goal_dict.values() if g.event_name}
+
+    visits = (await db.execute(
+        select(RawMetrikaVisit.goals_json)
+        .where(RawMetrikaVisit.visit_date >= p.start_date,
+               RawMetrikaVisit.visit_date <= p.end_date,
+               RawMetrikaVisit.goals_json.isnot(None))
+    )).all()
+    per_goal: Counter = Counter()
+    for (gj,) in visits:
+        stub = RawMetrikaVisit(goals_json=gj)
+        for gid in set(visit_goal_ids(stub)):
+            per_goal[gid] += 1
+
+    metrika_by_event: Counter = Counter()
+    metrika_only: Counter = Counter()
+    for gid, cnt in per_goal.items():
+        g = goal_dict.get(gid)
+        if g and g.event_name:
+            metrika_by_event[g.event_name] += cnt
+        else:
+            metrika_only[(g.name if g else None) or f"цель #{gid}"] += cnt
+
+    # Строки: все business-события таксономии + всё замапленное в Метрике.
+    tier_order = {TIER_MACRO: 0, TIER_MICRO: 1}
+    events = sorted(
+        set(_MACRO) | set(_MICRO) | mapped_events,
+        key=lambda e: (tier_order.get(tier_for_event(e), 2), -ours.get(e, (0, 0))[0], e),
+    )
+    rows = []
+    for ev in events:
+        n, s = ours.get(ev, (0, 0))
+        rows.append({
+            "event": ev,
+            "tier": tier_for_event(ev),
+            "our_events": n,
+            "our_sessions": s,
+            # None = в Метрике нет цели под это событие (прочерк в UI);
+            # 0 = цель есть, достижений за период нет.
+            "metrika_visits": metrika_by_event.get(ev, 0) if ev in mapped_events else None,
+        })
+
+    return {
+        "period": p.to_meta(),
+        "rows": rows,
+        "metrika_only": [
+            {"goal": name, "visits": cnt} for name, cnt in metrika_only.most_common(10)
+        ],
+        "goals_dict_size": len(goal_dict),
+        "mapped_events": len(mapped_events),
+    }
+
+
 # ---------------------------------------------------------------------------
 # Витрина: надёжность (ошибки + vitals + api_timing + лаги)
 # ---------------------------------------------------------------------------
@@ -587,7 +666,7 @@ async def mart_reliability(db: AsyncSession, period: Period | int = 7) -> dict[s
                 for u, xs in api.items() if len(xs) >= 3
             ),
             key=lambda x: -(x["p75_ms"] or 0),
-        )[:10],
+        )[:60],
         "api_failed_sampled": api_fail,
         "metrika_lag_hours": metrika_lag_h,
     }
@@ -1040,7 +1119,7 @@ async def mart_embed_distribution(_db: AsyncSession | None = None, period: Perio
 # Витрина: «Люди» — досье посетителей со скорингом
 # ---------------------------------------------------------------------------
 
-async def mart_people(db: AsyncSession, period: Period | int = 30, limit: int = 50) -> dict[str, Any]:
+async def mart_people(db: AsyncSession, period: Period | int = 30, limit: int = 300) -> dict[str, Any]:
     """Список посетителей по visitor_id: портрет, сессии, интересы, скоринг
     ценности (веса goal_taxonomy). Для зарегистрированных — связка через
     identity_links (история до регистрации принадлежит человеку)."""

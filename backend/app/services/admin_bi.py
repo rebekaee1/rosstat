@@ -285,11 +285,11 @@ def _acquisition(visits: list[RawMetrikaVisit], biz_ids: set[int] | None = None)
 
     return {
         "sources": dict(sources.most_common()),
-        "search_engines": dict(engines.most_common(10)),
-        "top_phrases": dict(phrases.most_common(25)),
-        "top_cities": dict(cities.most_common(15)),
+        "search_engines": dict(engines.most_common(20)),
+        "top_phrases": dict(phrases.most_common(200)),
+        "top_cities": dict(cities.most_common(40)),
         "devices": dict(devices.most_common()),
-        "top_referers": dict(referers.most_common(10)),
+        "top_referers": dict(referers.most_common(50)),
         "ad_campaigns": ads,
     }
 
@@ -343,7 +343,7 @@ def _funnel(visits: list[RawMetrikaVisit], registrations_by_day: dict[str, int],
 
     top_landings = [
         {"page": p, **c, "goal_pct": round(c["goal_visits"] / (c["visits"] or 1) * 100, 1)}
-        for p, c in sorted(landings.items(), key=lambda kv: -kv[1]["visits"])[:20]
+        for p, c in sorted(landings.items(), key=lambda kv: -kv[1]["visits"])[:60]
     ]
     return {
         "by_source": steps,
@@ -512,7 +512,7 @@ async def _demand_vs_coverage(db: AsyncSession, p: Period) -> dict:
                MetrikaSearchPhrase.date <= p.end_date)
         .group_by(MetrikaSearchPhrase.phrase)
         .order_by(func.sum(MetrikaSearchPhrase.visits).desc())
-        .limit(30)
+        .limit(200)
     )).all()
 
     # Вебмастер отдаёт статистику запросов с лагом в несколько дней: на
@@ -534,7 +534,7 @@ async def _demand_vs_coverage(db: AsyncSession, p: Period) -> dict:
                WebmasterSearchQuery.date <= wm_to)
         .group_by(WebmasterSearchQuery.query)
         .order_by(func.sum(WebmasterSearchQuery.impressions).desc())
-        .limit(30)
+        .limit(200)
     )).all()
 
     return {
@@ -591,7 +591,7 @@ async def _onsite_search(db: AsyncSession, p: Period) -> dict:
         "by_context": {
             ctx: dict(counter.most_common(15)) for ctx, counter in by_context.items()
         },
-        "zero_results": dict(zero.most_common(25)),
+        "zero_results": dict(zero.most_common(200)),
     }
 
 
@@ -713,12 +713,29 @@ async def _content_structure(db: AsyncSession, p: Period) -> dict:
 
 async def _audience(db: AsyncSession, p: Period,
                     window_visits: list[RawMetrikaVisit]) -> dict:
-    """Портрет аудитории из СОБСТВЕННЫХ данных (behavior_sessions) со сверкой
-    с Метрикой. Директива владельца 2026-07-05: знать про посетителей всё —
-    браузер, ОС, устройство, экран, язык, таймзону, источник — своими силами;
-    Метрика — референс для сверки, не единственный источник.
+    """Портрет аудитории из СОБСТВЕННЫХ данных со сверкой с Метрикой.
+    Директива владельца 2026-07-05: знать про посетителей всё — браузер, ОС,
+    устройство, экран, язык, таймзону, источник — своими силами; Метрика —
+    референс для сверки, не единственный источник.
+
+    Волна 2, п. 4: устройства — из ПОЛНОГО потока server_sessions (device
+    доопределяется на сессионизации по touch/viewport, даже без портрета);
+    браузер/ОС/экран — из портретов behavior_sessions (UA живёт только там),
+    с явным покрытием портретами, чтобы владелец видел долю охвата.
     """
-    from app.models import BehaviorSession
+    from app.models import BehaviorSession, ServerSession
+
+    # Полный поток: все небот-невнутренние сессии окна (наш счётчик).
+    full_rows = (await db.execute(
+        select(ServerSession.device, func.count())
+        .where(ServerSession.started_at >= p.start, ServerSession.started_at < p.end,
+               ServerSession.is_bot.is_(False), ServerSession.is_internal.is_(False))
+        .group_by(ServerSession.device)
+    )).all()
+    full_devices: Counter = Counter()
+    for dev, n in full_rows:
+        full_devices[dev or "unknown"] += int(n or 0)
+    sessions_total = sum(full_devices.values())
 
     sessions = (await db.execute(
         select(BehaviorSession).where(BehaviorSession.started_at >= p.start,
@@ -781,20 +798,23 @@ async def _audience(db: AsyncSession, p: Period,
         if city:
             m_cities[city] += 1
 
-    total = sum(devices.values())
+    portraits_total = sum(devices.values())
     return {
-        "own_sessions_total": total,
+        "own_sessions_total": sessions_total,
+        "portraits_total": portraits_total,
+        "portrait_coverage_pct": round(portraits_total / sessions_total * 100, 1) if sessions_total else 0.0,
         "own_authed_sessions": authed_count,
-        "browsers": dict(browsers.most_common(12)),
-        "browser_versions": dict(browser_versions.most_common(15)),
-        "os": dict(oses.most_common(12)),
-        "devices": dict(devices.most_common()),
-        "screens": dict(screens.most_common(12)),
-        "viewports": dict(viewports.most_common(10)),
-        "languages": dict(languages.most_common(10)),
-        "timezones": dict(timezones.most_common(10)),
-        "referrer_hosts": dict(ref_hosts.most_common(12)),
-        "cities": dict(cities.most_common(15)),
+        "browsers": dict(browsers.most_common(30)),
+        "browser_versions": dict(browser_versions.most_common(40)),
+        "os": dict(oses.most_common(30)),
+        # Устройства — полный поток server_sessions, не только портреты.
+        "devices": dict(full_devices.most_common()) or dict(devices.most_common()),
+        "screens": dict(screens.most_common(30)),
+        "viewports": dict(viewports.most_common(25)),
+        "languages": dict(languages.most_common(20)),
+        "timezones": dict(timezones.most_common(20)),
+        "referrer_hosts": dict(ref_hosts.most_common(40)),
+        "cities": dict(cities.most_common(40)),
         "metrika_reference": {
             "visits_total": len(window_visits),
             "devices": dict(m_devices.most_common()),
@@ -903,6 +923,7 @@ async def build_bi_dashboard(db: AsyncSession, period: Period | int = 30) -> dic
         mart_experiments,
         mart_feature_adoption,
         mart_geo,
+        mart_goal_reconciliation,
         mart_metric_tree,
         mart_metrika_funnel,
         mart_own_funnel,
@@ -922,6 +943,7 @@ async def build_bi_dashboard(db: AsyncSession, period: Period | int = 30) -> dic
         "metric_tree": await mart_metric_tree(db, p),
         "own_funnel": await mart_own_funnel(db, p),
         "metrika_funnel": await mart_metrika_funnel(db, p),
+        "goal_reconciliation": await mart_goal_reconciliation(db, p),
         "segments": await mart_segments(db, p),
         "geo": await mart_geo(db, p),
         "blocks": await mart_blocks(db, p),

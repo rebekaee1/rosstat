@@ -652,6 +652,10 @@ class BehaviorSession(Base):
     color_scheme: Mapped[str | None] = mapped_column(String(10))    # light/dark
     orientation: Mapped[str | None] = mapped_column(String(12))     # portrait/landscape
     is_webdriver: Mapped[bool | None] = mapped_column(Boolean)      # headless/бот-признак
+    # Частичный портрет, собранный сервером из батча (UA запроса + первый
+    # pageview), когда session_start потерян. Настоящий session_start,
+    # пришедший позже, апгрейдит строку полным портретом (см. analytics.py).
+    is_synthetic: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, server_default="false")
 
 
 class IdentityLink(Base):

@@ -199,6 +199,118 @@ def test_sessionize_30min_rule_and_goals():
     _run_with_db(scenario)
 
 
+def test_sessionize_infers_channel_from_pageview_ref():
+    """Волна 2, п. 1: сессия без портрета получает канал из referrer первого
+    pageview (search / direct / ad по UTM в другой ветке), а не «не определён»."""
+    from app.models import BehaviorEvent, ServerSession
+    from app.tasks.analytics_rollups import sessionize
+    from sqlalchemy import select
+
+    base = datetime.utcnow().replace(microsecond=0) - timedelta(hours=2)
+
+    async def scenario(maker):
+        async with maker() as db:
+            db.add_all([
+                # Посетитель из поиска: ref = яндекс, touch-смартфон.
+                BehaviorEvent(
+                    session_id_hash="s-search", visitor_id_hash="v1",
+                    event_type="pageview", occurred_at=base, page="/indicator/cpi",
+                    params_json={"ref": "https://yandex.ru/search/?text=инфляция", "vw": 390, "touch": 1},
+                ),
+                # Прямой заход без единого признака: честный direct, десктоп.
+                BehaviorEvent(
+                    session_id_hash="s-direct", visitor_id_hash="v2",
+                    event_type="pageview", occurred_at=base + timedelta(minutes=1), page="/",
+                    params_json={"ref": None, "vw": 1920, "touch": 0},
+                ),
+            ])
+            await db.commit()
+            await sessionize(db, base - timedelta(minutes=5))
+            rows = {
+                s.visitor_id_hash: s for s in (await db.execute(select(ServerSession))).scalars()
+            }
+            assert rows["v1"].channel == "search" and rows["v1"].device == "mobile"
+            assert rows["v2"].channel == "direct" and rows["v2"].device == "desktop"
+
+    _run_with_db(scenario)
+
+
+def test_synthetic_portrait_upserted_and_upgraded():
+    """Батч без session_start рождает синтетический портрет; настоящий
+    session_start, дошедший позже, апгрейдит строку полными данными."""
+    from app.api.analytics import _insert_portrait
+    from app.models import BehaviorSession
+    from sqlalchemy import select
+
+    now = datetime.utcnow().replace(microsecond=0)
+
+    async def scenario(maker):
+        async with maker() as db:
+            synthetic = {
+                "session_id_hash": "sess-x", "visitor_id_hash": "v1",
+                "started_at": now, "channel": "search", "browser": "Chrome",
+                "is_synthetic": True,
+            }
+            await _insert_portrait(db, dict(synthetic), upgrade_synthetic=False)
+            await db.commit()
+            # Повторный синтетический — no-op (DO NOTHING).
+            await _insert_portrait(db, dict(synthetic, browser="Edge"), upgrade_synthetic=False)
+            await db.commit()
+            row = (await db.execute(select(BehaviorSession))).scalar_one()
+            assert row.is_synthetic is True and row.browser == "Chrome"
+
+            # Настоящий session_start апгрейдит синтетическую строку.
+            real = dict(synthetic, browser="Firefox", channel="ad", is_synthetic=False)
+            await _insert_portrait(db, real, upgrade_synthetic=True)
+            await db.commit()
+            db.expire_all()
+            row = (await db.execute(select(BehaviorSession))).scalar_one()
+            assert row.is_synthetic is False and row.browser == "Firefox" and row.channel == "ad"
+
+            # Но настоящий портрет повторный session_start НЕ перетирает.
+            await _insert_portrait(db, dict(real, browser="Opera"), upgrade_synthetic=True)
+            await db.commit()
+            db.expire_all()
+            row = (await db.execute(select(BehaviorSession))).scalar_one()
+            assert row.browser == "Firefox"
+
+    _run_with_db(scenario)
+
+
+def test_mart_goal_reconciliation():
+    """Волна 2, п. 6: сверка наших business-событий с целями Метрики.
+    Событие без цели → metrika_visits is None; цель без события → metrika_only."""
+    from app.models import FrontendEvent, MetrikaGoal, RawMetrikaVisit
+    from app.services.analytics_marts import mart_goal_reconciliation
+
+    now = datetime.utcnow().replace(microsecond=0)
+
+    async def scenario(maker):
+        async with maker() as db:
+            db.add_all([
+                FrontendEvent(event_name="signup", occurred_at=now, session_id_hash="s1", authed=True),
+                FrontendEvent(event_name="download_csv", occurred_at=now, session_id_hash="s1", authed=False),
+                FrontendEvent(event_name="download_csv", occurred_at=now, session_id_hash="s2", authed=False),
+                MetrikaGoal(goal_id=101, name="Регистрация", event_name="signup", tier="macro"),
+                MetrikaGoal(goal_id=102, name="Скролл 90%", event_name=None, tier="technical"),
+                RawMetrikaVisit(counter_id="c1", visit_id="v1", row_hash="h1", visit_date=now.date(), goals_json={"goals": "[101, 102]"}),
+                RawMetrikaVisit(counter_id="c1", visit_id="v2", row_hash="h2", visit_date=now.date(), goals_json={"goals": "[102]"}),
+            ])
+            await db.commit()
+            rec = await mart_goal_reconciliation(db, 7)
+            rows = {r["event"]: r for r in rec["rows"]}
+            assert rows["signup"]["our_events"] == 1
+            assert rows["signup"]["metrika_visits"] == 1
+            # download_csv не замаплен на цель Метрики → прочерк, не ноль.
+            assert rows["download_csv"]["our_events"] == 2
+            assert rows["download_csv"]["metrika_visits"] is None
+            # Цель без нашего события — в metrika_only.
+            only = {g["goal"]: g["visits"] for g in rec["metrika_only"]}
+            assert only.get("Скролл 90%") == 2
+
+    _run_with_db(scenario)
+
+
 # ---------------------------------------------------------------------------
 # Rollup'ы
 # ---------------------------------------------------------------------------

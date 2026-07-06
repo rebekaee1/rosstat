@@ -389,7 +389,7 @@ SLICE_DIMENSIONS = {
 }
 
 
-async def run_slice(metric: str, dims: list[str], days: int = 30, limit: int = 200) -> dict[str, Any]:
+async def run_slice(metric: str, dims: list[str], days: int = 30, limit: int = 1000) -> dict[str, Any]:
     """Конструктор среза: метрика × 1-2 измерения × период → строки."""
     if metric not in SLICE_METRICS:
         raise ValueError(f"Unknown metric: {metric}")

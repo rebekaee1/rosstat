@@ -184,6 +184,37 @@ async def sessionize(db, since: datetime) -> int:
     return len(sessions)
 
 
+def _infer_from_pageviews(evs) -> tuple[str | None, str | None, bool]:
+    """(channel, device, has_signal) из потока событий сессии — когда портрета
+    нет вовсе (ретро до 2026-07-06 или потерянный session_start).
+
+    behavior.js шлёт document.referrer в КАЖДОМ pageview (params.ref) —
+    канал первого pageview честно классифицируется referrer'ом входа.
+    Устройство — эвристика по touch/viewport первого pageview. Волна 2, п. 1.
+    """
+    first_pv = next(
+        (e for e in evs
+         if e.event_type == "pageview" and isinstance(e.params_json, dict)),
+        None,
+    )
+    if first_pv is None:
+        return None, None, False
+    p = first_pv.params_json
+    ref = str(p.get("ref") or "") or None
+    channel = classify_channel(referrer=ref)
+    touch = p.get("touch")
+    vw = p.get("vw") if isinstance(p.get("vw"), (int, float)) else None
+    device = None
+    if touch is not None or vw is not None:
+        if touch and (vw or 0) <= 820:
+            device = "mobile"
+        elif touch:
+            device = "tablet"
+        elif vw:
+            device = "desktop"
+    return channel, device, True
+
+
 def _finalize_session(visitor, evs, portraits, goals_by_session, known_visitors,
                       visitor_sessions: int = 1, fallback_portrait=None) -> dict[str, Any]:
     from app.services.bot_score import BOT_THRESHOLD, SessionSignals, score_session
@@ -204,15 +235,38 @@ def _finalize_session(visitor, evs, portraits, goals_by_session, known_visitors,
             active_ms += int(p.get("active_ms") or 0)
             max_scroll = max(max_scroll, int(p.get("scroll_pct") or 0))
 
-    portrait = None
+    own_portrait = None
     for e in evs:
         if e.session_id_hash and e.session_id_hash in portraits:
-            portrait = portraits[e.session_id_hash]
+            own_portrait = portraits[e.session_id_hash]
             break
     # Портрет этой клиентской сессии потерян — берём последний портрет того же
     # посетителя (устройство/UA стабильны; канал — приближение, но лучше пустоты).
-    if portrait is None:
-        portrait = fallback_portrait
+    portrait = own_portrait or fallback_portrait
+
+    # Канал и устройство (волна 2, п. 1): собственный портрет — истина;
+    # без него канал берём из referrer'а первого pageview ЭТОЙ сессии
+    # (точнее, чем канал другой сессии посетителя), устройство — из
+    # fallback-портрета либо эвристики touch/viewport. Честный остаток
+    # без всяких признаков — «direct», НЕ пустота.
+    if own_portrait is not None:
+        channel = own_portrait.channel or classify_channel(
+            own_portrait.referrer, own_portrait.utm_source,
+            own_portrait.utm_medium, own_portrait.yclid,
+        )
+        device = own_portrait.device_type
+    else:
+        ev_channel, ev_device, has_signal = _infer_from_pageviews(evs)
+        if has_signal:
+            channel = ev_channel
+        elif fallback_portrait is not None:
+            channel = fallback_portrait.channel or classify_channel(
+                fallback_portrait.referrer, fallback_portrait.utm_source,
+                fallback_portrait.utm_medium, fallback_portrait.yclid,
+            )
+        else:
+            channel = "direct"
+        device = (fallback_portrait.device_type if fallback_portrait else None) or ev_device
 
     micro = macro = 0
     session_ids = {e.session_id_hash for e in evs if e.session_id_hash}
@@ -257,12 +311,8 @@ def _finalize_session(visitor, evs, portraits, goals_by_session, known_visitors,
         "max_scroll_pct": max_scroll,
         "entry_page": next((e.page for e in evs if e.page), None),
         "exit_page": next((e.page for e in reversed(evs) if e.page), None),
-        # Ретро-портреты (до 2026-07-06) хранят referrer/UTM, но не channel —
-        # доклассифицируем на лету (backfill каналов, этап 0б).
-        "channel": (portrait.channel or classify_channel(
-            portrait.referrer, portrait.utm_source, portrait.utm_medium, portrait.yclid,
-        )) if portrait else None,
-        "device": portrait.device_type if portrait else None,
+        "channel": channel,
+        "device": device,
         "is_new_visitor": visitor not in known_visitors,
         "is_engaged": engaged,
         "micro_goals": micro,

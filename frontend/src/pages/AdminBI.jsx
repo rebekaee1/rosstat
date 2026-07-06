@@ -340,27 +340,67 @@ function HBars({ data, height, color = GOLD, unit = '', valueFmt = fmtInt, label
   );
 }
 
+// Клиентская пагинация длинных списков (волна 2, п. 3): сервер отдаёт
+// увеличенные лимиты, владелец долистывает до конца любой таблицы.
+function usePager(rows, pageSize = 25) {
+  const [page, setPage] = useState(0);
+  const total = rows?.length || 0;
+  const pages = Math.max(1, Math.ceil(total / pageSize));
+  const cur = Math.min(page, pages - 1);
+  return {
+    slice: (rows || []).slice(cur * pageSize, (cur + 1) * pageSize),
+    cur, pages, total, pageSize, setPage,
+  };
+}
+
+function Pager({ p }) {
+  if (p.pages <= 1) return null;
+  const from = p.cur * p.pageSize + 1;
+  const to = Math.min((p.cur + 1) * p.pageSize, p.total);
+  return (
+    <div className="flex items-center justify-between gap-3 mt-3 text-[12px] text-text-secondary">
+      <span className="tabular-nums">{fmtInt(from)}–{fmtInt(to)} из {fmtInt(p.total)}</span>
+      <div className="flex items-center gap-1">
+        <button type="button" disabled={p.cur === 0} onClick={() => p.setPage(p.cur - 1)}
+          className="px-2.5 py-1 rounded-lg border border-border-subtle disabled:opacity-35 hover:text-text-primary">
+          ← Назад
+        </button>
+        <span className="px-2 tabular-nums">{p.cur + 1} / {p.pages}</span>
+        <button type="button" disabled={p.cur >= p.pages - 1} onClick={() => p.setPage(p.cur + 1)}
+          className="px-2.5 py-1 rounded-lg border border-border-subtle disabled:opacity-35 hover:text-text-primary">
+          Вперёд →
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // Таблица фраз с числом (этап 4б BI 2.1): бары с count=1 на всю ширину
 // обманывали глаз — для редких фраз честнее ранжированная таблица.
-function PhraseTable({ rows, valueLabel = 'раз' }) {
+// Волна 2, п. 3: листается целиком, а не топ-12.
+function PhraseTable({ rows, valueLabel = 'раз', pageSize = 12 }) {
+  const pager = usePager(rows || [], pageSize);
   if (!rows?.length) return <Empty />;
   const max = rows[0]?.count || 1;
   return (
-    <table className="w-full text-[12.5px]">
-      <tbody>
-        {rows.map((r) => (
-          <tr key={r.phrase} className="border-b border-border-subtle/40 last:border-0">
-            <td className="py-1.5 pr-3 text-text-primary">
-              <span className="relative z-10">{r.phrase}</span>
-              <span className="block h-0.5 mt-0.5 rounded-full bg-champagne/50" style={{ width: `${Math.max(3, Math.round(r.count / max * 100))}%` }} aria-hidden />
-            </td>
-            <td className="py-1.5 text-right tabular-nums text-text-secondary whitespace-nowrap align-top">
-              {fmtInt(r.count)} <span className="text-text-tertiary text-[11px]">{valueLabel}</span>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <div className="overflow-x-auto">
+      <table className="w-full text-[12.5px]">
+        <tbody>
+          {pager.slice.map((r) => (
+            <tr key={r.phrase} className="border-b border-border-subtle/40 last:border-0">
+              <td className="py-1.5 pr-3 text-text-primary">
+                <span className="relative z-10">{r.phrase}</span>
+                <span className="block h-0.5 mt-0.5 rounded-full bg-champagne/50" style={{ width: `${Math.max(3, Math.round(r.count / max * 100))}%` }} aria-hidden />
+              </td>
+              <td className="py-1.5 text-right tabular-nums text-text-secondary whitespace-nowrap align-top">
+                {fmtInt(r.count)} <span className="text-text-tertiary text-[11px]">{valueLabel}</span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <Pager p={pager} />
+    </div>
   );
 }
 
@@ -576,7 +616,8 @@ function OverviewTab({ d }) {
 
       <Card title="Трафик по дням" icon={Activity} source="own"
         compare={{ on: cmpTraffic, toggle: toggleCmpTraffic }}
-        insight="Столбцы — сессии и посетители нашего счётчика без ботов и своей активности (реальное время). Переключатель «Метрика» накладывает пунктирную линию визитов Яндекс.Метрики: она отдаёт данные с задержкой до суток и рисуется только при достаточном числе точек.">
+        insight="Столбцы — сессии и посетители нашего счётчика без ботов и своей активности (реальное время). Переключатель «Метрика» накладывает пунктирную линию визитов Яндекс.Метрики: она отдаёт данные с задержкой до суток и рисуется только при достаточном числе точек."
+        hint="Столбцы — сессии и уникальные посетители по нашему серверному счётчику (сессионизация каждые 15 минут, правило 30 минут, боты и своя активность исключены). Пунктир — визиты Метрики за те же МСК-сутки. Читать: форма кривых должна совпадать; расхождение уровней — разные фильтры ботов.">
         <ResponsiveContainer width="100%" height={290}>
           <ComposedChart data={kpi} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
@@ -602,7 +643,8 @@ function OverviewTab({ d }) {
       <div className="grid lg:grid-cols-3 gap-5">
         <Card title="Структура источников" icon={Megaphone} span="lg:col-span-1" source="own"
           compare={{ on: cmpSources, toggle: toggleCmpSources }}
-          insight="Каналы сессий нашего счётчика за период (без ботов). Канал определяется по рекламным меткам, UTM и сайту-источнику перехода.">
+          insight="Каналы сессий нашего счётчика за период (без ботов). Канал определяется по рекламным меткам, UTM и сайту-источнику перехода."
+        hint="Каждая небот-сессия нашего счётчика получает канал: рекламные метки (yclid/UTM) → реклама или кампания, сайт перехода → поиск/соцсети/сайты, без признаков — прямой заход. Читать: доля платного трафика против бесплатного.">
           <Donut data={srcDonut} centerLabel="сессий" />
           {cmpSources && (
             <MetrikaOverlay>
@@ -610,7 +652,8 @@ function OverviewTab({ d }) {
             </MetrikaOverlay>
           )}
         </Card>
-        <Card title="Конверсии и ошибки по дням" icon={TrendingUp} span="lg:col-span-2" source="own" insight="Регистрации и скачивания — целевые действия по нашему счётчику. Красная линия ошибок не должна расти вместе с трафиком.">
+        <Card title="Конверсии и ошибки по дням" icon={TrendingUp} span="lg:col-span-2" source="own" insight="Регистрации и скачивания — целевые действия по нашему счётчику. Красная линия ошибок не должна расти вместе с трафиком."
+        hint="Регистрации — новые аккаунты (таблица пользователей), скачивания — события выгрузок нашего счётчика, ошибки — JS-ошибки фронта. По дням МСК. Читать: конверсии должны расти с трафиком, ошибки — нет.">
           <ResponsiveContainer width="100%" height={240}>
             <ComposedChart data={kpi}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
@@ -652,7 +695,8 @@ function AcquisitionTab({ d }) {
     <div className="grid lg:grid-cols-2 gap-5">
       <Card title="Структура источников трафика" icon={Megaphone} source="own"
         compare={{ on: cmpSrc, toggle: toggleCmpSrc }}
-        insight="Каналы сессий нашего счётчика (без ботов): баланс платного и органического трафика — основа стоимости привлечения.">
+        insight="Каналы сессий нашего счётчика (без ботов): баланс платного и органического трафика — основа стоимости привлечения."
+        hint="Каналы небот-сессий нашего счётчика за период: канал определяется по рекламным меткам первого перехода, сайту-источнику или отсутствию признаков (прямой заход). Кнопка «⇄ Метрика» накладывает те же доли по визитам Метрики для сверки.">
         <Donut data={srcDonut} centerLabel="сессий" />
         {cmpSrc && (
           <MetrikaOverlay>
@@ -662,7 +706,8 @@ function AcquisitionTab({ d }) {
       </Card>
       <Card title="Поисковые системы" icon={Search} source={engineBars.length ? 'own' : 'metrika'}
         compare={{ on: cmpEng, toggle: toggleCmpEng }}
-        insight="Из каких поисковиков приходит органический трафик: сессии нашего счётчика; пока собственный слой не накопился — данные Метрики.">
+        insight="Из каких поисковиков приходит органический трафик: сессии нашего счётчика; пока собственный слой не накопился — данные Метрики."
+        hint="Из какого поисковика пришла сессия — по домену перехода (yandex.*, google.* и т. д.). Источник — наш счётчик; сверка — Метрика. Читать: баланс Яндекс/Google показывает, под какую выдачу оптимизировать в первую очередь.">
         {engineBars.length
           ? <HBars data={engineBars} color={BLUE} />
           : <HBars data={dictToBars(metrikaEngines, 8, engineLabel)} color={BLUE} />}
@@ -674,7 +719,8 @@ function AcquisitionTab({ d }) {
       </Card>
 
       <Card title="Кампании Директа: объём, конверсия и отказы" icon={Megaphone} span="lg:col-span-2" source="metrika"
-        insight="По горизонтали — визиты, по вертикали — конверсия в цель, размер точки — доля отказов. Правый верх — эффективные кампании; крупные точки внизу справа расходуют бюджет впустую.">
+        insight="По горизонтали — визиты, по вертикали — конверсия в цель, размер точки — доля отказов. Правый верх — эффективные кампании; крупные точки внизу справа расходуют бюджет впустую."
+        hint="Только визиты Метрики с каналом «реклама», сгруппированы по UTM-метке кампании. Конверсия — доля визитов с business-целью (регистрация, скачивание). Читать: кампании внизу справа тратят бюджет без отдачи.">
         {/* Скаттер с 1–2 точками не читается: до трёх кампаний — компактный список. */}
         {ads.length > 0 && ads.length < 3 && (
           <div className="space-y-2">
@@ -719,9 +765,10 @@ function AcquisitionTab({ d }) {
         {ads.length === 0 && <Empty note="Платных кампаний за период нет. Расход и цена клика появятся после подключения Яндекс.Директа." />}
       </Card>
 
-      <Card title="Поисковые фразы, с которых пришли" icon={Search} source="metrika" insight="Реальные запросы, приведшие посетителей из поиска. Близкие недопечатки схлопнуты в полную фразу.">
+      <Card title="Поисковые фразы, с которых пришли" icon={Search} source="metrika" insight="Реальные запросы, приведшие посетителей из поиска. Близкие недопечатки схлопнуты в полную фразу."
+        hint="Повизитные данные Метрики за завершённые дни: точная фраза запроса, приведшего визит. Близкие недопечатки схлопнуты. Читать: это реальный спрос — фразы без страницы под них — идеи контента.">
         {(a.top_phrases && Object.keys(a.top_phrases).length) ? (
-          <PhraseTable rows={collapsePhrases(a.top_phrases, { limit: 12 })} valueLabel="визитов" />
+          <PhraseTable rows={collapsePhrases(a.top_phrases, { limit: 200 })} valueLabel="визитов" />
         ) : <Empty note={a.today_live
           ? 'Фразы Метрика отдаёт повизитно за завершённый день — появятся завтра после утреннего синка.'
           : undefined} />}
@@ -729,7 +776,8 @@ function AcquisitionTab({ d }) {
       <div className="space-y-5">
         <Card title="Устройства" icon={Users} source={devDonut.length ? 'own' : 'metrika'}
           compare={{ on: cmpDev, toggle: toggleCmpDev }}
-          insight="Сессии нашего счётчика по типу устройства (боты исключены).">
+          insight="Сессии нашего счётчика по типу устройства (боты исключены)."
+        hint="Тип устройства каждой небот-сессии нашего счётчика: из паспорта сессии, а при его отсутствии — по касаниям экрана и ширине окна. Сверка — Метрика по кнопке «⇄».">
           <Donut data={devDonut.length ? devDonut : metrikaDevDonut} height={180} centerLabel={devDonut.length ? 'сессий' : 'визитов'} />
           {cmpDev && devDonut.length > 0 && (
             <MetrikaOverlay>
@@ -739,7 +787,8 @@ function AcquisitionTab({ d }) {
         </Card>
         <Card title="География: города" icon={Users} source={ownCities.length ? 'own' : 'metrika'}
           compare={{ on: cmpGeo, toggle: toggleCmpGeo }}
-          insight="Города по сессиям нашего счётчика (гео по IP без хранения адреса); ретро-история до запуска гео-слоя видна только в Метрике.">
+          insight="Города по сессиям нашего счётчика (гео по IP без хранения адреса); ретро-история до запуска гео-слоя видна только в Метрике."
+        hint="Город определяется по IP-адресу на нашем сервере в момент сессии (адрес не сохраняется, база DB-IP). Читать: концентрация в столицах — норма; всплеск в неожиданном городе — проверka на ботов.">
           <HBars data={ownCities.length ? ownCities : dictToBars(a.top_cities, 8, cityLabel)} color={PURPLE} />
           {cmpGeo && ownCities.length > 0 && (
             <MetrikaOverlay>
@@ -766,15 +815,17 @@ function FunnelTab({ d }) {
     engaged_pct: s.engaged_pct,
   }));
 
-  const landings = (f.top_landings || []).slice(0, 14);
-  const maxLandingVisits = Math.max(1, ...landings.map((l) => l.visits));
+  const landPager = usePager(f.top_landings || [], 14);
+  const landings = landPager.slice;
+  const maxLandingVisits = Math.max(1, ...(f.top_landings || []).map((l) => l.visits));
 
   return (
     <div className="space-y-5">
       {/* Легаси «Общая воронка визита» удалена (этап 2б BI 2.1):
           её заменила «Истинная конверсия» на нашем счётчике. */}
       <div className="grid lg:grid-cols-1 gap-5">
-        <Card title="Качество каналов" icon={TrendingUp} source="metrika" insight="Состав каждого канала: дошли до business-цели (зелёное), вовлеклись (золотое), отсеялись (серое). Целью считаются только конверсионные действия — регистрация, подписка, скачивание; скролл и навигация не в счёт. Наведите — точные числа.">
+        <Card title="Качество каналов" icon={TrendingUp} source="metrika" insight="Состав каждого канала: дошли до business-цели (зелёное), вовлеклись (золотое), отсеялись (серое). Целью считаются только конверсионные действия — регистрация, подписка, скачивание; скролл и навигация не в счёт. Наведите — точные числа."
+        hint="Каждая полоса — канал по визитам Метрики за период, нормирован к 100%. Зелёное — визиты с business-целью, золотое — вовлечённые без цели (2+ страницы или 30+ секунд), серое — отсев. Читать: канал с большим серым — трафик не находит ценности.">
           {stack.length ? (
             <ResponsiveContainer width="100%" height={260}>
               <BarChart layout="vertical" data={stack} margin={{ top: 2, right: 12, bottom: 2, left: 4 }} stackOffset="expand">
@@ -806,7 +857,8 @@ function FunnelTab({ d }) {
       </div>
 
       <Card title="Посадочные страницы: объём входа и конверсия" icon={Route} source="metrika"
-        insight="Отсортировано по визитам. Длина полосы — визиты, цвет и метка справа — конверсия в business-цель на этой точке входа. Большая полоса с серой меткой — трафик без отдачи.">
+        insight="Отсортировано по визитам. Длина полосы — визиты, цвет и метка справа — конверсия в business-цель на этой точке входа. Большая полоса с серой меткой — трафик без отдачи."
+        hint="Первая страница визита по данным Метрики. Длина полосы — визиты, метка справа — доля визитов с business-целью. Меньше 10 визитов — «мало данных» вместо процента. Читать: большая полоса с серой меткой — точка входа без отдачи.">
         {landings.length ? (
           <div className="space-y-1.5">
             {landings.map((l) => {
@@ -839,6 +891,7 @@ function FunnelTab({ d }) {
               <span className="flex items-center gap-1"><span className="w-3 h-3 rounded" style={{ background: 'rgba(184,148,47,0.75)' }} /> 3–10%</span>
               <span className="flex items-center gap-1"><span className="w-3 h-3 rounded" style={{ background: 'rgba(26,26,46,0.28)' }} /> &lt; 3%</span>
             </div>
+            <Pager p={landPager} />
           </div>
         ) : <Empty note={d.metrika_live_today
           ? 'Повизитные посадочные Метрика отдаёт за завершённый день — появятся завтра после утреннего синка.'
@@ -921,7 +974,8 @@ function RetentionTab({ d }) {
         <Kpi label="Доля возвратов" value={fmtPct(r.returning_pct)} color={GOLD} />
       </div>
       <Card title="Кривая возвратов по дням" icon={TrendingUp}
-        insight="Средний по дневным когортам процент посетителей, вернувшихся через N дней после первого визита. Для молодого продукта дневной масштаб — основной; недельные когорты накопятся со временем.">
+        insight="Средний по дневным когортам процент посетителей, вернувшихся через N дней после первого визита. Для молодого продукта дневной масштаб — основной; недельные когорты накопятся со временем."
+        hint="Каждая точка — доля посетителей когорты дня, вернувшихся через N дней (данные Метрики по постоянному идентификатору). Читать: кривая, падающая к нулю за 2–3 дня, — продукт «одного визита»; полка — ядро постоянной аудитории.">
         <ResponsiveContainer width="100%" height={220}>
           <ComposedChart data={dayCurve} margin={{ top: 6, right: 12, bottom: 0, left: 0 }}>
             <defs>
@@ -942,13 +996,15 @@ function RetentionTab({ d }) {
         </ResponsiveContainer>
       </Card>
       <Card title="Когорты по дню первого визита" icon={Users}
-        insight="Строка — новые посетители конкретного дня, столбцы — сколько из них вернулось через N дней. Насыщенность — доля вернувшихся (наведите для процента).">
+        insight="Строка — новые посетители конкретного дня, столбцы — сколько из них вернулось через N дней. Насыщенность — доля вернувшихся (наведите для процента)."
+        hint="Строка — день первого визита посетителя, колонки — процент вернувшихся через 1, 2, 3… дня (Метрика). Читать по диагонали: устойчиво зелёные колонки — привычка пользоваться продуктом формируется.">
         <CohortTable rows={dayCohorts} keyField="cohort_day" offsetsField="day_plus" cols={dayCols} colPrefix="+" />
       </Card>
       <Card title="Когорты по неделе первого визита" icon={Users}
         insight={hasWeekData
           ? 'Строка — когорта новых посетителей, столбцы — недели спустя. Насыщенность клетки — доля вернувшихся.'
-          : 'Недельный масштаб станет информативным, когда истории наблюдений будет больше месяца — пока все посетители внутри первых недель.'}>
+          : 'Недельный масштаб станет информативным, когда истории наблюдений будет больше месяца — пока все посетители внутри первых недель.'}
+        hint="То же, что дневные когорты, но по неделям — сглаживает шум малых чисел и показывает тренд удержания на горизонте месяцев.">
         <CohortTable rows={cohorts} keyField="cohort_week" offsetsField="week_plus" cols={weekCols} colPrefix="+" />
       </Card>
     </div>
@@ -988,7 +1044,8 @@ function PagesTab({ d }) {
   return (
     <div className="space-y-5">
       <Card title="Из чего состоит потребление контента" icon={LayoutGrid}
-        insight="Площадь плитки — просмотры раздела за период. Видно, какие продуктовые блоки несут трафик, а какие простаивают.">
+        insight="Площадь плитки — просмотры раздела за период. Видно, какие продуктовые блоки несут трафик, а какие простаивают."
+        hint="Просмотры страниц нашего счётчика, сгруппированные в разделы сайта, за период. Площадь — доля просмотров. Читать: какие продукты реально несут трафик.">
         {treeData.length ? (
           <>
             <ResponsiveContainer width="100%" height={300}>
@@ -1024,7 +1081,8 @@ function PagesTab({ d }) {
       </Card>
 
       <Card title="Концентрация трафика: правило 80/20" icon={TrendingUp}
-        insight="Столбцы — просмотры страниц (топ-20), линия — накопленная доля от их суммы. Где линия пересекает 80% — столько страниц несут основную нагрузку.">
+        insight="Столбцы — просмотры страниц (топ-20), линия — накопленная доля от их суммы. Где линия пересекает 80% — столько страниц несут основную нагрузку."
+        hint="Страницы отсортированы по просмотрам (наш счётчик), линия — накопленная доля. Читать: если 20% страниц дают 80% трафика — усиливать топ и подтягивать хвост перелинковкой.">
         {pareto.length ? (
           <ResponsiveContainer width="100%" height={280}>
             <ComposedChart data={pareto} margin={{ top: 6, right: 44, bottom: 40, left: 0 }}>
@@ -1042,7 +1100,8 @@ function PagesTab({ d }) {
       </Card>
 
       <Card title="Карта качества: просмотры и вовлечённость" icon={Activity}
-        insight="По горизонтали — просмотры, по вертикали — среднее время на странице. Правый низ (много просмотров, мало времени) — популярные «тонкие» страницы, кандидаты на доработку. Пунктир — медианы.">
+        insight="По горизонтали — просмотры, по вертикали — среднее время на странице. Правый низ (много просмотров, мало времени) — популярные «тонкие» страницы, кандидаты на доработку. Пунктир — медианы."
+        hint="Каждая точка — страница: по горизонтали просмотры (наш счётчик), по вертикали активное время чтения. Читать: правый низ — популярные, но не удерживающие страницы, кандидаты на переработку.">
         {pages.length ? (
           <ResponsiveContainer width="100%" height={320}>
             <ScatterChart margin={{ top: 10, right: 20, bottom: 20, left: 4 }}>
@@ -1073,7 +1132,8 @@ function PagesTab({ d }) {
       </Card>
 
       <Card title="Страницы с проблемными кликами" icon={AlertTriangle}
-        insight="Пустые клики (без реакции интерфейса) и серии раздражённых кликов — прямые кандидаты на исправление UX.">
+        insight="Пустые клики (без реакции интерфейса) и серии раздражённых кликов — прямые кандидаты на исправление UX."
+        hint="Страницы с наибольшим числом пустых (без реакции интерфейса) и раздражённых (серии быстрых) кликов из потока поведения. Читать: сверху — самые болезненные точки UX.">
         <HBars data={problem} color={RED} labelWidth={190} />
       </Card>
     </div>
@@ -1096,7 +1156,8 @@ function DemandTab({ d }) {
       <Card title="Карта возможностей в поиске Яндекса: показы и позиция" icon={Search} source="metrika"
         insight={`Данные Яндекс.Вебмастера. По горизонтали — показы, по вертикали — средняя позиция (выше = лучше, ось перевёрнута), размер точки — клики. Правый низ (много показов, слабая позиция) — запросы с наибольшим потенциалом роста трафика.${
           dem.webmaster_window?.fallback ? ` Вебмастер отдаёт статистику с лагом — показано последнее доступное окно: ${dem.webmaster_window.from} — ${dem.webmaster_window.to}.` : ''
-        }`}>
+        }`}
+        hint="Запросы из Яндекс.Вебмастера: показы в выдаче, средняя позиция, размер точки — клики. Вебмастер отдаёт данные с лагом в несколько дней. Читать: правый низ — большой спрос при слабой позиции, главные кандидаты на SEO-работу.">
         {wm.length ? (
           <ResponsiveContainer width="100%" height={340}>
             <ScatterChart margin={{ top: 10, right: 20, bottom: 20, left: 4 }}>
@@ -1125,21 +1186,24 @@ function DemandTab({ d }) {
       </Card>
       <div className="grid lg:grid-cols-2 gap-5">
         <Card title="Поиски на сайте без результата" icon={AlertTriangle} source="own"
-          insight="Прямая карта пробелов каталога: что ищут, но не находят. Приоритет на добавление. Недопечатки схлопнуты, односимвольный мусор отброшен.">
-          <PhraseTable rows={collapsePhrases(s.zero_results, { limit: 12 })} valueLabel="поисков" />
+          insight="Прямая карта пробелов каталога: что ищут, но не находят. Приоритет на добавление. Недопечатки схлопнуты, односимвольный мусор отброшен."
+        hint="Запросы во внутренний поиск (наше событие search_query), на которые каталог не вернул ни одного результата. Читать: прямой список того, что аудитория ждёт от платформы, — приоритет на добавление.">
+          <PhraseTable rows={collapsePhrases(s.zero_results, { limit: 200 })} valueLabel="поисков" />
         </Card>
-        <Card title="Фразы прихода из поиска" icon={Search} source="metrika" insight="Реальный органический спрос, приведший визиты за период.">
+        <Card title="Фразы прихода из поиска" icon={Search} source="metrika" insight="Реальный органический спрос, приведший визиты за период."
+        hint="Поисковые фразы визитов по повизитным данным Метрики за завершённые дни периода. Читать: чем разнообразнее хвост, тем шире органический охват.">
           <PhraseTable
             rows={collapsePhrases(
               Object.fromEntries((dem.metrika_phrases || []).map((p) => [p.phrase, p.visits])),
-              { limit: 12 },
+              { limit: 200 },
             )}
             valueLabel="визитов"
           />
         </Card>
       </div>
       <Card title="Что ищут внутри сайта — по полям поиска" icon={Search}
-        insight={`Каждое поле поиска сайта — отдельный срез спроса. Всего запросов за период: ${fmtInt(s.total_queries)}.`}>
+        insight={`Каждое поле поиска сайта — отдельный срез спроса. Всего запросов за период: ${fmtInt(s.total_queries)}.`}
+        hint="Внутренние запросы нашего счётчика, разбитые по месту ввода: глобальный поиск, поиск сравнения, карта регионов. Читать: спрос в каждом контексте свой — глобальный поиск ищет индикаторы, карта — показатели регионов.">
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {Object.entries(s.by_context || {}).map(([ctx, counter]) => (
             <div key={ctx}>
@@ -1160,17 +1224,21 @@ function NavigationTab({ d }) {
   return (
     <div className="space-y-5">
       <Card title="Матрица переходов: откуда и куда перетекает трафик" icon={Route}
-        insight="Строки — страница-источник, столбцы — страница-назначение, насыщенность клетки — число переходов. Читается по строке: куда уходит посетитель с ключевой страницы.">
+        insight="Строки — страница-источник, столбцы — страница-назначение, насыщенность клетки — число переходов. Читается по строке: куда уходит посетитель с ключевой страницы."
+        hint="Переходы между разделами внутри сессий нашего счётчика: строка — откуда, столбец — куда, насыщенность — число переходов. Читать по строке: куда уходит посетитель с ключевой страницы; пустая строка — тупик.">
         <TransitionMatrix transitions={n.top_transitions} />
       </Card>
       <div className="grid lg:grid-cols-2 gap-5">
-        <Card title="Точки входа" icon={LogIn} insight="С каких страниц начинаются сессии.">
+        <Card title="Точки входа" icon={LogIn} insight="С каких страниц начинаются сессии."
+        hint="Первая страница сессии по нашему счётчику. Читать: что реально приводит людей — эти страницы должны загружаться быстро и вести вглубь.">
           <HBars data={dictToBars(n.top_entries, 10)} color={GREEN} labelWidth={190} />
         </Card>
-        <Card title="Точки выхода" icon={Route} insight="Где сессии обрываются — кандидаты на усиление перелинковки и призывов к действию.">
+        <Card title="Точки выхода" icon={Route} insight="Где сессии обрываются — кандидаты на усиление перелинковки и призывов к действию."
+        hint="Последняя страница сессии по нашему счётчику. Читать: страницы с большим выходом — кандидаты на усиление перелинковки и призывов к действию.">
           <HBars data={dictToBars(n.top_exits, 10)} color={RED} labelWidth={190} />
         </Card>
-        <Card title="Пустые клики: элементы без реакции" icon={MousePointerClick} insight="Пользователь кликает, интерфейс не отвечает. Каждая строка — конкретный элемент на конкретной странице.">
+        <Card title="Пустые клики: элементы без реакции" icon={MousePointerClick} insight="Пользователь кликает, интерфейс не отвечает. Каждая строка — конкретный элемент на конкретной странице."
+        hint="Клики из потока поведения, после которых интерфейс не изменился (dead click). Указан элемент и страница. Читать: сверху — элементы, которые выглядят кликабельными, но не работают.">
           {(b.dead || []).length ? (
             <ul className="space-y-1.5">
               {(b.dead || []).map((x, i) => (
@@ -1185,7 +1253,8 @@ function NavigationTab({ d }) {
             </ul>
           ) : <Empty />}
         </Card>
-        <Card title="Серии раздражённых кликов" icon={MousePointerClick} insight="Многократные быстрые клики в одно место — признак «не работает» или «слишком медленно».">
+        <Card title="Серии раздражённых кликов" icon={MousePointerClick} insight="Многократные быстрые клики в одно место — признак «не работает» или «слишком медленно»."
+        hint="Три и более быстрых клика в одну точку (rage click) — признак «не работает» или «слишком медленно». Читать: каждая строка — конкретное место фрустрации.">
           {(b.rage || []).length ? (
             <ul className="space-y-1.5">
               {(b.rage || []).map((x, i) => (
@@ -1235,9 +1304,11 @@ function AudienceTab({ d }) {
 
   return (
     <div className="space-y-5">
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <Kpi label="Сессии (наш счётчик)" value={fmtInt(a.own_sessions_total)} color={PURPLE} sub="портреты behavior-сессий" />
-        <Kpi label="Из них зарегистрированные" value={fmtInt(a.own_authed_sessions)} color={GREEN} />
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        <Kpi label="Сессии (наш счётчик)" value={fmtInt(a.own_sessions_total)} color={PURPLE} sub="все небот-сессии за период" />
+        <Kpi label="С полным портретом" value={fmtInt(a.portraits_total)} color={BLUE}
+          sub={a.portrait_coverage_pct != null ? `${a.portrait_coverage_pct}% сессий — база для браузеров и ОС` : 'база для браузеров и ОС'} />
+        <Kpi label="Сессии зарегистрированных" value={fmtInt(a.own_authed_sessions)} color={GREEN} />
         <Kpi label="Визиты (Метрика, сверка)" value={fmtInt(ref.visits_total)} />
         <Kpi
           label="Расхождение слоёв"
@@ -1249,7 +1320,8 @@ function AudienceTab({ d }) {
         />
       </div>
 
-      <Card title="Устройства: наш счётчик и Метрика" icon={Users}
+      <Card title="Устройства: наш счётчик и Метрика" icon={Users} source="both"
+        hint="Слева — все небот-сессии нашего счётчика за период (тип устройства определяется по паспорту сессии, а при его отсутствии — по касаниям и ширине окна из потока событий). Справа — визиты Метрики за тот же период."
         insight="Один и тот же срез из двух независимых источников. Сходство подтверждает качество собственного сбора; расхождение — повод проверить, кого мы не видим (например, посетителей без JavaScript).">
         <div className="grid sm:grid-cols-2 gap-5">
           <div>
@@ -1263,7 +1335,8 @@ function AudienceTab({ d }) {
         </div>
       </Card>
 
-      <Card title="Браузеры" icon={LayoutGrid}
+      <Card title="Браузеры" icon={LayoutGrid} source="both"
+        hint={`Наш срез строится из паспортов сессий (User-Agent), покрытие — ${a.portrait_coverage_pct != null ? `${a.portrait_coverage_pct}%` : 'растёт'} сессий периода; справа — референс Метрики по визитам. Доли сопоставимы, абсолютные числа — нет.`}
         insight="Чем пользуется аудитория — приоритет тестирования интерфейса. Слева — наши данные с точными версиями, справа — референс Метрики.">
         <PairedBars own={a.browsers} metrika={ref.browsers} />
         {Object.keys(a.browser_versions || {}).length > 0 && (
@@ -1282,28 +1355,33 @@ function AudienceTab({ d }) {
       </Card>
 
       <Card title="Операционные системы" icon={LayoutGrid}
-        insight="Наши данные включают версию системы — точнее, чем агрегат Метрики.">
+        insight="Наши данные включают версию системы — точнее, чем агрегат Метрики."
+        hint="Наш срез — из паспортов сессий (User-Agent с версией системы); справа — референс Метрики по визитам. Читать: доли важнее абсолютных чисел — базы разные.">
         <PairedBars own={a.os} metrika={ref.os} />
       </Card>
 
       <div className="grid lg:grid-cols-2 gap-5">
         <Card title="Экраны" icon={LayoutGrid}
-          insight="Физические разрешения экранов — под какие размеры проектировать интерфейс и графики.">
+          insight="Физические разрешения экранов — под какие размеры проектировать интерфейс и графики."
+        hint="Физическое разрешение экрана из паспортов сессий нашего счётчика. Читать: под верхние 2–3 разрешения проектируются графики и таблицы.">
           <HBars data={dictToBars(a.screens, 10)} color={BLUE} labelWidth={110} />
         </Card>
         <Card title="Ширина окна браузера" icon={LayoutGrid}
-          insight="Реальная ширина рабочей области — важнее разрешения экрана: окна бывают свёрнуты.">
+          insight="Реальная ширина рабочей области — важнее разрешения экрана: окна бывают свёрнуты."
+        hint="Фактическая ширина окна (viewport) при входе — по всем сессиям, где она известна. Читать: именно под неё, а не под разрешение экрана, вёрстка должна быть удобной.">
           <HBars data={dictToBars(a.viewports, 10)} color={BLUE} labelWidth={110} />
         </Card>
         <Card title="Языки и часовые пояса" icon={Users}
-          insight="Язык браузера и таймзона — география и локализация аудитории без сбора персональных данных.">
+          insight="Язык браузера и таймзона — география и локализация аудитории без сбора персональных данных."
+        hint="Язык браузера и часовой пояс из паспортов сессий — косвенная география и локализация без сбора персональных данных.">
           <div className="grid grid-cols-2 gap-4">
             <HBars data={dictToBars(a.languages, 8, languageLabel)} color={GREEN} labelWidth={90} />
             <HBars data={dictToBars(a.timezones, 8, timezoneLabel)} color={GREEN} labelWidth={130} />
           </div>
         </Card>
         <Card title="Сайты-источники переходов" icon={Route}
-          insight="Домены, с которых пришли сессии по данным собственного счётчика.">
+          insight="Домены, с которых пришли сессии по данным собственного счётчика."
+        hint="Домены, с которых пришли сессии по нашему счётчику (свой домен исключён). Читать: живые упоминания и партнёрские ссылки; новый домен в топе — повод посмотреть, кто сослался.">
           <HBars data={dictToBars(a.referrer_hosts, 10)} color={PURPLE} labelWidth={160} />
         </Card>
       </div>
@@ -1319,7 +1397,8 @@ function EventsTab({ d }) {
   return (
     <div className="space-y-5">
       <Card title="Бизнес-события: гости и зарегистрированные" icon={Activity}
-        insight="Каждая полоса — действие на сайте (тёмный сегмент — зарегистрированные, золотой — гости). Видно, какие действия делают авторизованные пользователи, а какие — случайные посетители.">
+        insight="Каждая полоса — действие на сайте (тёмный сегмент — зарегистрированные, золотой — гости). Видно, какие действия делают авторизованные пользователи, а какие — случайные посетители."
+        hint="Каждое срабатывание бизнес-событий нашего счётчика за период, разрез гость/аккаунт. Читать: действия, которые совершают только зарегистрированные, — ценность аккаунта; полный список — в реестре ниже.">
         {rows.length ? (
           <ResponsiveContainer width="100%" height={Math.max(260, rows.length * 27)}>
             <BarChart layout="vertical" data={rows} margin={{ top: 2, right: 48, bottom: 2, left: 4 }}>
@@ -1346,43 +1425,53 @@ function EventsTab({ d }) {
           </ResponsiveContainer>
         ) : <Empty />}
       </Card>
-      <Card title="Полный реестр событий за период" icon={Database}
-        insight="Все события с точными числами — включая редкие, которых не видно на графике.">
-        {all.length ? (
-          <div className="overflow-x-auto">
-            <table className="w-full text-[12.5px]">
-              <thead>
-                <tr className="text-left text-text-tertiary border-b border-border-subtle">
-                  <th className="py-1.5 pr-3 font-medium">Событие</th>
-                  <th className="py-1.5 pr-3 font-medium">Техноним</th>
-                  <th className="py-1.5 pr-3 font-medium text-right">Всего</th>
-                  <th className="py-1.5 pr-3 font-medium text-right">Зарегистр.</th>
-                  <th className="py-1.5 pr-3 font-medium text-right">Гости</th>
-                </tr>
-              </thead>
-              <tbody>
-                {all.map((e) => (
-                  <tr key={e.name} className="border-b border-border-subtle/50 last:border-0">
-                    <td className="py-1 pr-3 text-text-primary">{e.label}</td>
-                    <td className="py-1 pr-3 text-text-tertiary font-mono text-[11px]">{e.name}</td>
-                    <td className="py-1 pr-3 text-right tabular-nums text-text-primary font-medium">{fmtInt(e.total)}</td>
-                    <td className="py-1 pr-3 text-right tabular-nums text-text-secondary">{fmtInt(e.authed)}</td>
-                    <td className="py-1 pr-3 text-right tabular-nums text-text-secondary">{fmtInt(e.guest)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : <Empty />}
-      </Card>
+      <EventsRegistryCard all={all} />
     </div>
+  );
+}
+
+function EventsRegistryCard({ all }) {
+  const pager = usePager(all, 25);
+  return (
+    <Card title="Полный реестр событий за период" icon={Database} source="own"
+      hint="Каждая строка — тип бизнес-события нашего счётчика (track.js) с числом срабатываний за выбранный период. «Зарегистр.» — события от авторизованных пользователей, «Гости» — от анонимных посетителей. Список листается до конца."
+      insight="Все события с точными числами — включая редкие, которых не видно на графике.">
+      {all.length ? (
+        <div className="overflow-x-auto">
+          <table className="w-full text-[12.5px]">
+            <thead>
+              <tr className="text-left text-text-tertiary border-b border-border-subtle">
+                <th className="py-1.5 pr-3 font-medium">Событие</th>
+                <th className="py-1.5 pr-3 font-medium">Техноним</th>
+                <th className="py-1.5 pr-3 font-medium text-right">Всего</th>
+                <th className="py-1.5 pr-3 font-medium text-right">Зарегистр.</th>
+                <th className="py-1.5 pr-3 font-medium text-right">Гости</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pager.slice.map((e) => (
+                <tr key={e.name} className="border-b border-border-subtle/50 last:border-0">
+                  <td className="py-1 pr-3 text-text-primary">{e.label}</td>
+                  <td className="py-1 pr-3 text-text-tertiary font-mono text-[11px]">{e.name}</td>
+                  <td className="py-1 pr-3 text-right tabular-nums text-text-primary font-medium">{fmtInt(e.total)}</td>
+                  <td className="py-1 pr-3 text-right tabular-nums text-text-secondary">{fmtInt(e.authed)}</td>
+                  <td className="py-1 pr-3 text-right tabular-nums text-text-secondary">{fmtInt(e.guest)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <Pager p={pager} />
+        </div>
+      ) : <Empty />}
+    </Card>
   );
 }
 
 function HypothesesTab({ d, onOpenSlices }) {
   const rows = d.hypotheses || [];
   if (!rows.length) {
-    return <Card title="Гипотезы Пульс-аналитика" icon={Brain}><p className="text-[13px] text-text-tertiary">Гипотез пока нет — Пульс формулирует их ежедневно после утреннего отчёта.</p></Card>;
+    return <Card title="Гипотезы Пульс-аналитика" icon={Brain}
+        hint="Проверяемые гипотезы, которые ежедневно формулирует и проверяет LLM-аналитик по данным платформы. Статус: подтверждена / опровергнута / открыта, с уверенностью."><p className="text-[13px] text-text-tertiary">Гипотез пока нет — Пульс формулирует их ежедневно после утреннего отчёта.</p></Card>;
   }
   return (
     <div className="space-y-3">
@@ -1459,7 +1548,8 @@ function DatasetTab({ d }) {
         <Kpi label="Слоёв данных" value={fmtInt(Object.keys(sections).length)} color={GREEN} />
       </div>
       <Card title="Инвентаризация: каждый слой с полным составом" icon={Database}
-        insight="Всё, что копится в хранилище: объёмы, окна времени, фактические ключи JSON-полей и разбивки по типам. Данные пересчитываются из БД при каждом обновлении.">
+        insight="Всё, что копится в хранилище: объёмы, окна времени, фактические ключи JSON-полей и разбивки по типам. Данные пересчитываются из БД при каждом обновлении."
+        hint="Автоматическая опись всех слоёв данных платформы: сколько строк, какие поля, какие ключи JSON. Читать: это карта того, что вообще можно спросить у данных.">
         <div className="grid sm:grid-cols-2 gap-4">
           {Object.entries(sections).map(([name, s]) => {
             if (typeof s !== 'object' || s == null) return null;
@@ -1516,8 +1606,8 @@ function DatasetTab({ d }) {
 
 const STATUS_COLOR = { green: GREEN, yellow: '#D97706', red: RED };
 const STATUS_RU = { green: 'в норме', yellow: 'ниже цели', red: 'критично' };
-const TIER_RU = { macro: 'Макро', micro: 'Микро', engagement: 'Вовлечение', technical: 'Технические' };
-const TIER_COLOR = { macro: GREEN, micro: BLUE, engagement: GOLD, technical: 'rgba(26,26,46,0.35)' };
+const TIER_RU = { macro: 'Макро', micro: 'Микро', intent: 'Намерение', engagement: 'Вовлечение', technical: 'Технические' };
+const TIER_COLOR = { macro: GREEN, micro: BLUE, intent: PURPLE, engagement: GOLD, technical: 'rgba(26,26,46,0.35)' };
 
 function fmtDriverValue(node) {
   if (node.format === 'pct') return `${Number(node.value).toLocaleString('ru-RU')}%`;
@@ -1526,10 +1616,10 @@ function fmtDriverValue(node) {
 
 // Методика драйверов дерева (этап 4а BI 2.1): что стоит за каждым числом.
 const DRIVER_HINTS = {
-  acquisition: 'Сессии нашего счётчика за выбранный период — без ботов и собственной активности. Канал определяется по referrer и UTM-меткам входа в сессию; «не определён» — прямые заходы без меток.',
+  acquisition: 'Сессии нашего счётчика за выбранный период — без ботов и собственной активности. Канал определяется по рекламным меткам (yclid/UTM) и сайту-источнику первого перехода сессии; заход без всяких признаков — «Прямые заходы».',
   engagement: 'Доля вовлечённых сессий среди небот-сессий за период. Вовлечённой считается сессия с активным временем на странице больше 15 секунд, скроллом глубже 50% или просмотром двух и более страниц.',
   conversion: 'Доля сессий с бизнес-целью нашей таксономии: макро (регистрация, подписка) и микро (выгрузка, сравнение, интент связи). Навигация, скролл и телеметрия целями не считаются.',
-  retention: 'Доля посетителей, вернувшихся на сайт в другой календарный день внутри окна. Идентификация — по постоянному идентификатору посетителя нашего счётчика, когорты — по дню первого визита.',
+  retention: 'Доля посетителей, вернувшихся на сайт в другой календарный день внутри окна. Идентификация — по постоянному идентификатору посетителя нашего счётчика, когорты — по дню первой сессии.',
 };
 
 // Узел дерева метрик: значение, target, статус-цвет, прогресс-бар, раскрытие.
@@ -1694,7 +1784,8 @@ function MetricTreeTab({ d }) {
       </div>
 
       <Card title="Календарь трафика: каждый день года" icon={CalendarClock} source="own"
-        insight="Ритм платформы одним взглядом: тёмные клетки — сильные дни (сессии нашего счётчика без ботов, палитра масштабируется по максимуму года). Провалы и всплески видны сразу — к каждому должен находиться источник (публикация, реклама, сезон).">
+        insight="Ритм платформы одним взглядом: тёмные клетки — сильные дни (сессии нашего счётчика без ботов, палитра масштабируется по максимуму года). Провалы и всплески видны сразу — к каждому должен находиться источник (публикация, реклама, сезон)."
+        hint="Каждая клетка — день (МСК), насыщенность — число сессий нашего счётчика. Читать: сезонность, провалы (инциденты) и всплески (публикации, реклама) видны сразу.">
         <EChart option={calOption} height={180} />
       </Card>
 
@@ -1728,6 +1819,69 @@ function FunnelSteps({ steps, color = GOLD }) {
         );
       })}
     </div>
+  );
+}
+
+// Сверка конверсий двух счётчиков строка-к-строке (волна 2, п. 6):
+// наши business-события против достижений соответствующих целей Метрики.
+function GoalReconciliationCard({ d }) {
+  const gr = d.goal_reconciliation || {};
+  const rows = gr.rows || [];
+  const pager = usePager(rows, 20);
+  return (
+    <Card title="Сверка конверсий: наши события и цели Метрики" icon={Target} source="both"
+      hint="Каждая строка — конверсионное действие. «Событий / сессий» — наш счётчик: сколько раз действие совершено и в скольких сессиях. «Визитов с целью» — Метрика: в скольких визитах достигнута цель, замапленная на это событие. Единицы разные, поэтому сравнивать нужно порядок величин, а не точные числа. Прочерк — в Метрике нет цели под это событие."
+      insight="Два независимых счётчика об одном и том же: если порядки величин совпадают — конверсия считается честно; расхождение в разы — сигнал (потерянная цель, боты, задержка данных Метрики за последний день).">
+      {rows.length ? (
+        <div className="overflow-x-auto">
+          <table className="w-full text-[12.5px]">
+            <thead>
+              <tr className="text-left text-text-tertiary border-b border-border-subtle">
+                <th className="py-1.5 pr-3 font-medium">Действие</th>
+                <th className="py-1.5 pr-3 font-medium">Ярус</th>
+                <th className="py-1.5 pr-3 font-medium text-right">Наши события</th>
+                <th className="py-1.5 pr-3 font-medium text-right">Наши сессии</th>
+                <th className="py-1.5 font-medium text-right">Визиты с целью (Метрика)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pager.slice.map((r) => (
+                <tr key={r.event} className="border-b border-border-subtle/50 last:border-0">
+                  <td className="py-1.5 pr-3">
+                    <span className="text-text-primary">{eventLabel(r.event)}</span>
+                    <span className="block text-text-tertiary font-mono text-[10.5px]">{r.event}</span>
+                  </td>
+                  <td className="py-1.5 pr-3">
+                    <span className="inline-flex items-center gap-1.5 text-[11px] text-text-secondary">
+                      <span className="w-2 h-2 rounded-full" style={{ background: TIER_COLOR[r.tier] || 'rgba(26,26,46,0.25)' }} />
+                      {TIER_RU[r.tier] || r.tier}
+                    </span>
+                  </td>
+                  <td className="py-1.5 pr-3 text-right tabular-nums font-medium text-text-primary">{fmtInt(r.our_events)}</td>
+                  <td className="py-1.5 pr-3 text-right tabular-nums text-text-secondary">{fmtInt(r.our_sessions)}</td>
+                  <td className="py-1.5 text-right tabular-nums text-text-secondary">
+                    {r.metrika_visits == null
+                      ? <span className="text-text-tertiary" title="В Метрике нет цели, замапленной на это событие">— нет цели</span>
+                      : fmtInt(r.metrika_visits)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <Pager p={pager} />
+          {(gr.metrika_only || []).length > 0 && (
+            <div className="mt-3 pt-3 border-t border-dashed border-border-subtle text-[12px] text-text-secondary">
+              <span className="font-medium">Только в Метрике (без нашего события): </span>
+              {gr.metrika_only.map((g) => `${g.goal} — ${fmtInt(g.visits)}`).join(' · ')}
+            </div>
+          )}
+          <p className="text-[11px] text-text-tertiary mt-2">
+            Словарь целей Метрики: {fmtInt(gr.goals_dict_size)} целей, из них замаплено на наши события: {fmtInt(gr.mapped_events)}.
+            Повизитные цели Метрика отдаёт за завершённые дни — за сегодня её колонка отстаёт.
+          </p>
+        </div>
+      ) : <Empty note="Событий и целей за период нет." />}
+    </Card>
   );
 }
 
@@ -1772,6 +1926,7 @@ function ConversionTab({ d }) {
           )}
         </Card>
       </div>
+      <GoalReconciliationCard d={d} />
       <FunnelTab d={d} />
       <EventsTab d={d} />
     </div>
@@ -1851,17 +2006,20 @@ function BehaviorTab({ d }) {
     <div className="space-y-5">
       <div className="grid lg:grid-cols-2 gap-5">
         <Card title="Потоки навигации: откуда и куда ходят" icon={Route} source="own"
-          insight="Переходы между разделами сайта внутри сессии: толщина — число переходов (топ-15 потоков, единичные скрыты). Видно магистральные маршруты и куда «стекает» аудитория; постраничная детализация — в матрице переходов ниже.">
+          insight="Переходы между разделами сайта внутри сессии: толщина — число переходов (топ-15 потоков, единичные скрыты). Видно магистральные маршруты и куда «стекает» аудитория; постраничная детализация — в матрице переходов ниже."
+        hint="Диаграмма Санкей по переходам внутри сессий нашего счётчика: слева — раздел-источник, справа — назначение, толщина — объём. Читать: главные маршруты аудитории; тонкие обрывы — недоиспользованные связки.">
           {sankeyOption ? <EChart option={sankeyOption} height={360} /> : <Empty />}
         </Card>
         <Card title="Структура потребления контента" icon={LayoutGrid} source="own"
-          insight="Sunburst: внутреннее кольцо — разделы, внешнее — конкретные страницы внутри. Клик по сектору — детализация.">
+          insight="Sunburst: внутреннее кольцо — разделы, внешнее — конкретные страницы внутри. Клик по сектору — детализация."
+        hint="Sunburst по просмотрам нашего счётчика: внутреннее кольцо — разделы, внешнее — страницы внутри. Читать: соотношение колец показывает глубину каждого раздела.">
           {sunburstOption ? <EChart option={sunburstOption} height={360} /> : <Empty />}
         </Card>
       </div>
 
       <Card title="Внимание по блокам страниц" icon={MousePointerClick} source="own"
-        insight="Сколько раз блок реально увидели (IntersectionObserver ≥50% площади ≥1 с) и сколько секунд он был на экране. Блоки с высоким вниманием — расширять, с нулевым — поднимать выше или переделывать.">
+        insight="Сколько раз блок реально увидели (IntersectionObserver ≥50% площади ≥1 с) и сколько секунд он был на экране. Блоки с высоким вниманием — расширять, с нулевым — поднимать выше или переделывать."
+        hint="Видимость блоков страницы (IntersectionObserver): сколько раз блок попал в экран и как долго удерживал внимание. Читать: блоки внизу списка аудитория не доскролливает.">
         {(d.blocks?.blocks || []).length ? (
           <div className="overflow-x-auto">
             <table className="w-full text-[12.5px]">
@@ -1898,6 +2056,7 @@ function BehaviorTab({ d }) {
 // «Посетитель #N» (техноним в title); пустые по всему списку колонки скрыты.
 function PeopleCard({ d }) {
   const people = d.people?.people || [];
+  const pager = usePager(people, 30);
   const hasPortrait = people.some((p) => p.device || p.browser || p.city || p.channel);
   const hasInterests = people.some((p) => (p.interests || []).length > 0);
   return (
@@ -1920,10 +2079,10 @@ function PeopleCard({ d }) {
               </tr>
             </thead>
             <tbody>
-              {people.slice(0, 30).map((p, i) => (
+              {pager.slice.map((p, i) => (
                 <tr key={p.visitor} className="border-b border-border-subtle/50">
                   <td className="py-1.5 pr-2">
-                    <span className="text-text-primary" title={`идентификатор ${p.visitor}`}>Посетитель #{i + 1}</span>
+                    <span className="text-text-primary" title={`идентификатор ${p.visitor}`}>Посетитель #{pager.cur * pager.pageSize + i + 1}</span>
                     {p.user_id && <span className="ml-1.5 text-[9.5px] px-1.5 py-0.5 rounded-full bg-green-50 text-green-700 font-medium">аккаунт</span>}
                   </td>
                   <td className="py-1.5 pr-2 text-right tabular-nums font-semibold text-champagne">{fmtInt(p.score)}</td>
@@ -1941,6 +2100,7 @@ function PeopleCard({ d }) {
               ))}
             </tbody>
           </table>
+          <Pager p={pager} />
         </div>
       ) : <Empty note="Досье строится на серверных сессиях — появится после первого 15-минутного цикла." />}
     </Card>
@@ -1954,13 +2114,16 @@ function AudienceFullTab({ d }) {
     <div className="space-y-5">
       <AudienceTab d={d} />
       <div className="grid lg:grid-cols-3 gap-5">
-        <Card title="География: страны" icon={Globe2} source="own" insight="Наше гео по IP (база обновляется ежемесячно), сам адрес не хранится.">
+        <Card title="География: страны" icon={Globe2} source="own" insight="Наше гео по IP (база обновляется ежемесячно), сам адрес не хранится."
+        hint="Страна по IP на нашем сервере (адрес не сохраняется). Читать: доля не-России задаёт требования к скорости из-за рубежа.">
           <HBars data={dictToBars(geo.countries, 8)} color={INK} />
         </Card>
-        <Card title="Регионы" icon={Globe2} source="own">
+        <Card title="Регионы" icon={Globe2} source="own"
+        hint="Субъект РФ по IP-адресу сессии (наш счётчик, база DB-IP).">
           <HBars data={dictToBars(geo.regions, 10, geoRegionLabel)} color={BLUE} />
         </Card>
-        <Card title="Города" icon={Globe2} source="own">
+        <Card title="Города" icon={Globe2} source="own"
+        hint="Город по IP-адресу сессии (наш счётчик). Округа в скобках схлопнуты до города.">
           <HBars data={dictToBars(geo.cities, 10, cityLabel)} color={PURPLE} />
         </Card>
       </div>
@@ -1989,7 +2152,8 @@ function ProductLoopTab({ d, onOpenSlices }) {
   return (
     <div className="space-y-5">
       <Card title="Квадранты разделов: трафик × вовлечение" icon={Target} source="own"
-        insight="Каждая точка — раздел сайта. Правый верх (много трафика, глубокое чтение) — продвигать; левый верх — тиражировать паттерн; правый низ — чинить вовлечение; левый низ — переработать или понизить приоритет.">
+        insight="Каждая точка — раздел сайта. Правый верх (много трафика, глубокое чтение) — продвигать; левый верх — тиражировать паттерн; правый низ — чинить вовлечение; левый низ — переработать или понизить приоритет."
+        hint="Каждая точка — раздел сайта: по горизонтали просмотры (лог-шкала), по вертикали активное чтение в секундах; пунктир — медианы. Источник — наш счётчик. Читать по квадрантам: продвигать / тиражировать / чинить / переработать.">
         {items.length ? (
           <ResponsiveContainer width="100%" height={340}>
             <ScatterChart margin={{ top: 10, right: 24, bottom: 20, left: 8 }}>
@@ -2030,7 +2194,8 @@ function ProductLoopTab({ d, onOpenSlices }) {
 
       <div className="grid lg:grid-cols-2 gap-5">
         <Card title="Adoption фич: что реально используют" icon={Wrench} source="own"
-          insight="Бизнес-события по ценности: цвет — уровень цели (зелёный — макро, синий — микро, золотой — вовлечение). Фичи без использования — кандидаты на доработку видимости или удаление.">
+          insight="Бизнес-события по ценности: цвет — уровень цели (зелёный — макро, синий — микро, золотой — вовлечение). Фичи без использования — кандидаты на доработку видимости или удаление."
+        hint="Число срабатываний каждого бизнес-события за период, цвет — ярус ценности (макро/микро/вовлечение). Читать: фичи с нулём — либо не нужны, либо не видны; проверить видимость перед удалением.">
           {features.length ? (
             <ul className="space-y-1.5">
               {features.slice(0, 18).map((f) => (
@@ -2045,7 +2210,8 @@ function ProductLoopTab({ d, onOpenSlices }) {
           ) : <Empty note="Появится после первого дневного агрегата целей." />}
         </Card>
         <Card title="Что уносят руками (copy)" icon={MousePointerClick} source="own"
-          insight="Текст, который копируют со страниц, — прямой сигнал ценности: кандидаты на кнопку «поделиться», embed-виджет или экспорт.">
+          insight="Текст, который копируют со страниц, — прямой сигнал ценности: кандидаты на кнопку «поделиться», embed-виджет или экспорт."
+        hint="Событие copy нашего счётчика: какой текст копируют со страниц. Читать: топ копируемого — прямой кандидат на кнопку «поделиться», экспорт или embed-виджет.">
           {(fa.top_copied || []).length ? (
             <ul className="space-y-1.5">
               {fa.top_copied.map((c, i) => (
@@ -2060,7 +2226,8 @@ function ProductLoopTab({ d, onOpenSlices }) {
       </div>
 
       <Card title="A/B-эксперименты: конверсия по вариантам" icon={SlidersHorizontal} source="own"
-        insight="Автоанализ experiment_exposure: охват варианта и доля посетителей, дошедших до микро/макро-цели. Карточки появляются с первым запущенным экспериментом.">
+        insight="Автоанализ experiment_exposure: охват варианта и доля посетителей, дошедших до микро/макро-цели. Карточки появляются с первым запущенным экспериментом."
+        hint="Автоанализ событий experiment_exposure: охват каждого варианта и доля посетителей, дошедших до micro/macro-цели в окне эксперимента. Появляется с первым запущенным A/B.">
         {(d.experiments?.experiments || []).length ? (
           <div className="space-y-4">
             {d.experiments.experiments.map((exp) => (
@@ -2111,6 +2278,7 @@ function SlicesTab() {
     retry: 0,
   });
 
+  const tablePager = usePager(slice?.rows || [], 50);
   if (meta && !meta.available) {
     return <Empty note={`Слой «Срезы» недоступен: ${meta.reason || 'ClickHouse выключен'}. Включается флагом на сервере.`} />;
   }
@@ -2133,7 +2301,8 @@ function SlicesTab() {
   return (
     <div className="space-y-5">
       <Card title="Конструктор срезов" icon={SlidersHorizontal} source="own"
-        insight={`Любая метрика × до двух измерений × период — считает колоночный OLAP-слой за миллисекунды. ${meta?.sync_age_minutes != null ? `Свежесть данных: синк ${meta.sync_age_minutes} мин назад.` : ''}`}>
+        insight={`Любая метрика × до двух измерений × период — считает колоночный OLAP-слой за миллисекунды. ${meta?.sync_age_minutes != null ? `Свежесть данных: синк ${meta.sync_age_minutes} мин назад.` : ''}`}
+        hint="Произвольный вопрос к колоночному OLAP-слою (ClickHouse): метрика × до двух измерений × период. Основа — те же сессии и события, что и в остальных вкладках. Читать: инструмент проверки гипотез без выгрузок.">
         <div className="flex flex-wrap gap-3 mb-4">
           <label className="text-[12px] text-text-secondary flex items-center gap-2">
             Метрика
@@ -2183,7 +2352,7 @@ function SlicesTab() {
                   </tr>
                 </thead>
                 <tbody>
-                  {rows.slice(0, 100).map((r, i) => (
+                  {tablePager.slice.map((r, i) => (
                     <tr key={i} className="border-b border-border-subtle/50">
                       {Object.entries(r).map(([k, v], j) => (
                         <td key={j} className="py-1 pr-3 tabular-nums text-text-secondary">
@@ -2198,6 +2367,7 @@ function SlicesTab() {
                   ))}
                 </tbody>
               </table>
+              <Pager p={tablePager} />
             </div>
           </>
         )}
@@ -2211,6 +2381,7 @@ function SlicesTab() {
 function ReliabilityTab({ d }) {
   const r = d.reliability || {};
   const cq = d.collection_quality || {};
+  const apiPager = usePager(r.api_slowest || [], 15);
   const vitals = r.vitals_p75 || {};
   const VITAL_BUDGET = { LCP: 2500, INP: 200, CLS: 0.1, FCP: 1800, TTFB: 800 };
   const vitalStatus = (m, v) => {
@@ -2235,7 +2406,8 @@ function ReliabilityTab({ d }) {
 
       <div className="grid lg:grid-cols-2 gap-5">
         <Card title="Ошибки JavaScript" icon={AlertTriangle} source="own" window={r.period}
-          insight={`Всего за окно: ${fmtInt(r.js_errors_total || 0)}. Свои ошибки — детально сверху (привязаны к версии сборки, регрессия видна по деплою); сторонние скрипты (счётчики, реклама) схлопнуты до домена.`}>
+          insight={`Всего за окно: ${fmtInt(r.js_errors_total || 0)}. Свои ошибки — детально сверху (привязаны к версии сборки, регрессия видна по деплою); сторонние скрипты (счётчики, реклама) схлопнуты до домена.`}
+        hint="Ошибки фронтенда из потока поведения: свой код — детально (с версией сборки), сторонние скрипты — схлопнуты до домена. Читать: рост своих ошибок после деплоя — регрессия, откатывать.">
           {(r.js_errors_own || []).length || (r.js_errors_third_party || []).length ? (
             <div className="space-y-3">
               {(r.js_errors_own || []).length > 0 && (
@@ -2269,7 +2441,8 @@ function ReliabilityTab({ d }) {
           ) : <Empty note="Ошибок за окно нет — хороший знак." />}
         </Card>
         <Card title="Латентность API глазами клиента" icon={Activity} source="own"
-          insight={`p75 по всем вызовам: ${r.api_p75_ms != null ? `${fmtInt(Math.round(r.api_p75_ms))} мс` : '—'}. Сэмпл 1 из 5 вызовов; отсортировано по p75.`}>
+          insight={`p75 по всем вызовам: ${r.api_p75_ms != null ? `${fmtInt(Math.round(r.api_p75_ms))} мс` : '—'}. Сэмпл 1 из 5 вызовов; отсортировано по p75.`}
+        hint="Замеры времени ответа API из браузеров реальных посетителей (сэмпл 1 из 5 вызовов), p50/p75/max по endpoint'ам. Читать: p75 выше секунды — заметное пользователю ожидание.">
           {(r.api_slowest || []).length ? (
             <div className="overflow-x-auto">
               <table className="w-full text-[12px]">
@@ -2283,7 +2456,7 @@ function ReliabilityTab({ d }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {r.api_slowest.map((a) => (
+                  {apiPager.slice.map((a) => (
                     <tr key={a.endpoint} className="border-b border-border-subtle/50 last:border-0">
                       <td className="py-1.5 pr-3 font-mono text-[11px] text-text-secondary break-all">{a.endpoint}</td>
                       <td className="py-1.5 pr-3 text-right tabular-nums">{a.p50_ms != null ? `${fmtInt(Math.round(a.p50_ms))} мс` : '—'}</td>
@@ -2296,13 +2469,15 @@ function ReliabilityTab({ d }) {
                   ))}
                 </tbody>
               </table>
+              <Pager p={apiPager} />
             </div>
           ) : <Empty />}
         </Card>
       </div>
 
       <Card title="Полнота сбора: мета-мониторинг качества данных" icon={ShieldCheck} source="own" window={cq.period}
-        insight="Насколько полны наши собственные данные: доля сессий с постоянным идентификатором, гео, каналом и мостом к Метрике. Тишина потока при живом трафике — сигнал сломанного сбора (алерт в Telegram).">
+        insight="Насколько полны наши собственные данные: доля сессий с постоянным идентификатором, гео, каналом и мостом к Метрике. Тишина потока при живом трафике — сигнал сломанного сбора (алерт в Telegram)."
+        hint="Здоровье самого счётчика: доля сессий с постоянным идентификатором, гео, каналом, мостом к Метрике. Читать: падение любой доли — сломан сбор, а не поведение аудитории.">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <Kpi label="Сессий за окно" value={fmtInt(cq.own_sessions)} />
           <Kpi label="С visitor_id" value={fmtPct(cq.visitor_id_share_pct)} color={cq.visitor_id_share_pct >= 90 ? GREEN : '#D97706'} />
@@ -2374,6 +2549,7 @@ function BotnessCard({ d }) {
 // Привлечение: классика + сегменты + деньги Директа.
 function AcquisitionFullTab({ d }) {
   const segs = d.segments?.segments || [];
+  const segPager = usePager(segs, 20);
   const costs = d.ad_costs || {};
   return (
     <div className="space-y-5">
@@ -2381,7 +2557,8 @@ function AcquisitionFullTab({ d }) {
 
       <Card title="Сегменты: канал × устройство × новизна" icon={Layers}
         source={d.segments?.source === 'own' ? 'own' : 'metrika'}
-        insight="Пересечение трёх осей; «с целью» — только конверсионные business-цели (регистрация, подписка, скачивание). За завершённые дни — агрегаты Метрики, за сегодня — сессии нашего счётчика. Где конверсия выше — там усиливать; сегменты с высокими отказами — проверять посадочные.">
+        insight="Пересечение трёх осей; «с целью» — только конверсионные business-цели (регистрация, подписка, скачивание). За завершённые дни — агрегаты Метрики, за сегодня — сессии нашего счётчика. Где конверсия выше — там усиливать; сегменты с высокими отказами — проверять посадочные."
+        hint="Пересечение трёх осей по визитам Метрики (за сегодня — по нашим сессиям): объём, конверсия в business-цель, отказы, время. Читать: сегменты с высокой конверсией — усиливать; с высокими отказами — проверять посадочные.">
         {segs.length ? (
           <div className="overflow-x-auto">
             <table className="w-full text-[12px]">
@@ -2398,7 +2575,7 @@ function AcquisitionFullTab({ d }) {
                 </tr>
               </thead>
               <tbody>
-                {segs.slice(0, 20).map((s, i) => (
+                {segPager.slice.map((s, i) => (
                   <tr key={i} className="border-b border-border-subtle/50">
                     <td className="py-1.5 pr-3 text-text-primary">{channelLabel(s.channel)}</td>
                     <td className="py-1.5 pr-3 text-text-secondary">{deviceLabel(s.device)}</td>
@@ -2412,6 +2589,7 @@ function AcquisitionFullTab({ d }) {
                 ))}
               </tbody>
             </table>
+            <Pager p={segPager} />
           </div>
         ) : <Empty note="Сессий за период ещё нет — сегменты появятся с первым трафиком." />}
       </Card>
@@ -2419,11 +2597,51 @@ function AcquisitionFullTab({ d }) {
       <Card title="Деньги рекламы: расход, CPA, ROI" icon={Megaphone} source="metrika"
         insight={costs.connected
           ? `Расход за окно: ${fmtInt(Math.round(costs.total_cost_rub || 0))} ₽ · макро-целей: ${fmtInt(costs.macro_goals_window)} · CPA ${costs.cpa_macro_rub != null ? `${fmtInt(Math.round(costs.cpa_macro_rub))} ₽` : '—'}.`
-          : costs.note || 'Коннектор Директа включится после передачи API-токена.'}>
+          : costs.note || 'Коннектор Директа включится после передачи API-токена.'}
+        hint="Расход кампаний Яндекс.Директа против достигнутых макро-целей: цена одной конверсии (CPA). Появится полностью после подключения токена Директа.">
         {costs.connected && (costs.campaigns || []).length ? (
           <HBars data={costs.campaigns.map((c) => ({ name: c.campaign, value: Math.round(c.cost_rub) }))} unit=" ₽" />
         ) : <Empty note="Каркас готов: таблица расходов и синк ждут токен Яндекс.Директа." />}
       </Card>
+    </div>
+  );
+}
+
+/* ---------- Легенда терминов (волна 2, п. 2) ---------- */
+
+// Единый словарь дашборда: «сессии/посетители» — наш счётчик, «визиты» —
+// Метрика, «пользователи» — зарегистрированные аккаунты. Раскрываемая
+// шпаргалка в шапке, чтобы подписи карточек читались однозначно.
+function TermsLegend() {
+  const [open, setOpen] = useState(false);
+  const TERMS = [
+    ['Сессия', 'наш счётчик', 'Непрерывная активность посетителя на сайте: пауза 30 минут и дольше открывает новую сессию (то же правило, что у визита Метрики). Считается нашим сервером в реальном времени, боты и своя активность исключены.'],
+    ['Посетитель', 'наш счётчик', 'Уникальный человек по постоянному идентификатору браузера (кросс-девайс — через аккаунт). У одного посетителя может быть много сессий.'],
+    ['Визит', 'Метрика', 'Та же 30-минутная логика, но посчитанная Яндекс.Метрикой. Повизитные данные приходят с задержкой до суток, поэтому «сегодня» у Метрики — сводные живые числа. Сессия и визит совпадать не обязаны: разные счётчики, разные фильтры ботов.'],
+    ['Пользователь', 'аккаунты', 'Зарегистрированный аккаунт на платформе (вход по e-mail или через соцсети). Не путать с посетителем: большинство посетителей — гости без аккаунта.'],
+  ];
+  return (
+    <div className="mb-5 -mt-2">
+      <button type="button" onClick={() => setOpen((v) => !v)}
+        className="flex items-center gap-1.5 text-[12px] text-text-tertiary hover:text-text-primary">
+        <Info size={13} />
+        Словарь дашборда: чем сессия отличается от визита
+        <span className="text-[10px]">{open ? '▲' : '▼'}</span>
+      </button>
+      {open && (
+        <div className="mt-2 grid sm:grid-cols-2 gap-3 rounded-2xl bg-surface border border-border-subtle p-4">
+          {TERMS.map(([term, layer, def]) => (
+            <div key={term} className="text-[12.5px] leading-snug">
+              <span className="font-semibold text-text-primary">{term}</span>
+              <span className={`ml-1.5 text-[10px] px-1.5 py-0.5 rounded-full align-middle ${
+                layer === 'Метрика' ? 'bg-blue-50 text-blue-700'
+                  : layer === 'аккаунты' ? 'bg-green-50 text-green-700' : 'bg-purple-50 text-purple-700'
+              }`}>{layer}</span>
+              <p className="text-text-secondary mt-0.5">{def}</p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -2577,6 +2795,8 @@ export default function AdminBI() {
           <span className="hidden sm:inline">· автообновление каждые 15 мин</span>
         </button>
       </div>
+
+      <TermsLegend />
 
       <div className="flex gap-1.5 overflow-x-auto pb-2 mb-5 scrollbar-hide">
         {TABS.map((t) => (
