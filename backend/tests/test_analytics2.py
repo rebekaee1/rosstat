@@ -212,7 +212,8 @@ def test_rollup_daily_goals_and_pages():
 
 def test_marts_on_empty_db():
     from app.services.analytics_marts import (
-        mart_collection_quality, mart_metric_tree, mart_own_funnel, mart_segments,
+        mart_collection_quality, mart_experiments, mart_metric_tree,
+        mart_own_funnel, mart_segments,
     )
 
     async def scenario(maker):
@@ -223,6 +224,9 @@ def test_marts_on_empty_db():
             assert {d["key"] for d in tree["drivers"]} == {"acquisition", "engagement", "conversion", "retention"}
             for drv in tree["drivers"]:
                 assert drv["status"] in ("green", "yellow", "red")
+            # Раскрытие узла «Удержание»: окна 1/7/30 присутствуют всегда.
+            ret = next(d for d in tree["drivers"] if d["key"] == "retention")
+            assert {"d1", "d7", "d30"} <= set(ret["detail"]["windows"])
 
             funnel = await mart_own_funnel(db, days=7)
             assert [s["step"] for s in funnel["steps"]] == ["Сессии", "Вовлечённые", "Микро-цель", "Макро-цель"]
@@ -232,6 +236,47 @@ def test_marts_on_empty_db():
 
             segs = await mart_segments(db, days=7)
             assert segs["segments"] == []
+
+            exps = await mart_experiments(db, days=30)
+            assert exps["experiments"] == [] and exps["note"]
+
+    _run_with_db(scenario)
+
+
+def test_mart_experiments_conversion_by_variant():
+    """A/B-автоанализ: экспозиция по вариантам + конверсия visitor'а в цель."""
+    from datetime import datetime, timedelta
+
+    from app.models import FrontendEvent
+    from app.services.analytics_marts import mart_experiments
+
+    now = datetime.utcnow().replace(microsecond=0) - timedelta(hours=1)
+
+    async def scenario(maker):
+        async with maker() as db:
+            def exp(vid, variant):
+                return FrontendEvent(
+                    event_name="experiment_exposure", occurred_at=now,
+                    visitor_id_hash=vid, authed=False,
+                    params_json={"experiment": "cta-color", "variant": variant},
+                )
+            db.add_all([
+                exp("v1", "A"), exp("v2", "A"), exp("v3", "B"),
+                # v1 конвертируется (микро-цель), v2/v3 — нет.
+                FrontendEvent(event_name="download_csv", occurred_at=now,
+                              visitor_id_hash="v1", authed=False),
+                # scroll_depth — вовлечение, конверсией не считается.
+                FrontendEvent(event_name="scroll_depth", occurred_at=now,
+                              visitor_id_hash="v3", authed=False),
+            ])
+            await db.commit()
+
+            res = await mart_experiments(db, days=7)
+            assert len(res["experiments"]) == 1
+            variants = {v["variant"]: v for v in res["experiments"][0]["variants"]}
+            assert variants["A"]["visitors"] == 2 and variants["A"]["converted"] == 1
+            assert variants["A"]["conversion_pct"] == 50.0
+            assert variants["B"]["visitors"] == 1 and variants["B"]["converted"] == 0
 
     _run_with_db(scenario)
 

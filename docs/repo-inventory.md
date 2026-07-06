@@ -4,7 +4,7 @@
 
 **Сгенерировано:** 2026-07-06
 
-**Файлов:** 577  ·  **Строк:** 130 008  ·  **Токенов (≈):** 1 325 947
+**Файлов:** 577  ·  **Строк:** 130 206  ·  **Токенов (≈):** 1 328 356
 
 ## По верхним папкам
 
@@ -12,10 +12,10 @@
 |-------|-------:|------:|------------:|
 | `(root)` | 8 | 1 687 | 42 470 |
 | `.github` | 1 | 150 | 1 250 |
-| `backend` | 311 | 73 473 | 708 891 |
+| `backend` | 311 | 73 630 | 710 661 |
 | `clickhouse` | 2 | 36 | 445 |
 | `docs` | 22 | 4 534 | 98 247 |
-| `frontend` | 195 | 42 115 | 392 621 |
+| `frontend` | 195 | 42 156 | 393 260 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 35 | 7 855 | 80 903 |
 
@@ -28,7 +28,7 @@
 | `backend/app/data/regional/indicators.json` | 6 359 | 58 178 |
 | `backend/seed_data.py` | 4 886 | 49 521 |
 | `docs/backlog.md` | 885 | 32 918 |
-| `frontend/src/pages/AdminBI.jsx` | 2 206 | 28 884 |
+| `frontend/src/pages/AdminBI.jsx` | 2 247 | 29 523 |
 | `CONTEXT.md` | 584 | 20 732 |
 | `scripts/metrika_daily_report.py` | 1 915 | 19 522 |
 | `frontend/src/lib/regionsMap.json` | 1 | 16 837 |
@@ -39,12 +39,12 @@
 | `backend/app/services/seo_renderer.py` | 1 230 | 12 744 |
 | `backend/app/services/forecaster.py` | 1 271 | 11 729 |
 | `frontend/src/pages/CalculatorPage.jsx` | 854 | 9 817 |
+| `backend/app/services/analytics_marts.py` | 882 | 9 144 |
 | `backend/app/services/derived_ops.py` | 824 | 8 618 |
 | `backend/app/services/rosstat_weekly_inflation_parser.py` | 898 | 8 449 |
 | `frontend/src/pages/IndicatorDetail.jsx` | 803 | 8 410 |
 | `backend/app/services/calendar_sources/official_calendar.py` | 752 | 8 287 |
-| `backend/app/services/admin_bi.py` | 841 | 8 238 |
-| `backend/app/services/analytics_marts.py` | 772 | 7 915 |
+| `backend/app/services/admin_bi.py` | 843 | 8 259 |
 | `backend/app/main.py` | 756 | 7 886 |
 | `backend/app/services/seo_regional.py` | 776 | 7 764 |
 | `docs/indicator-family-playbook.md` | 621 | 7 578 |
@@ -114,6 +114,7 @@
 | `frontend/src/pages/CalendarPage.jsx` | 335 | 3 327 |
 | `backend/tests/forecast_strategies/fixtures/construction_work_series.json` | 1 | 3 279 |
 | `backend/app/tasks/analytics_scheduler.py` | 307 | 3 223 |
+| `backend/tests/test_analytics2.py` | 292 | 3 197 |
 | `frontend/src/lib/viewModeFamilies.js` | 295 | 3 130 |
 | `backend/tests/test_rosstat_gdp.py` | 308 | 3 121 |
 | `backend/tests/test_calculation_engine.py` | 341 | 3 117 |
@@ -133,7 +134,6 @@
 | `backend/app/services/dataset_inventory.py` | 247 | 2 725 |
 | `backend/tests/test_route_smoke.py` | 283 | 2 699 |
 | `frontend/src/embed/EmbedChart.jsx` | 216 | 2 692 |
-| `backend/tests/test_analytics2.py` | 247 | 2 677 |
 | `docker-compose.yml` | 245 | 2 581 |
 | `frontend/src/components/RegionsMap.jsx` | 260 | 2 580 |
 | `docs/enterprise_resilience.md` | 71 | 2 565 |

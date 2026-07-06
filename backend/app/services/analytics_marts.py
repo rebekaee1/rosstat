@@ -229,6 +229,31 @@ async def mart_metric_tree(db: AsyncSession, days: int = 30) -> dict[str, Any]:
     returned = sum(1 for _, d in ret_rows if int(d or 0) > 1)
     retention = returned / visitors_n if visitors_n else 0.0
 
+    # Раскрытие узла: классическое удержание 1/7/30 — доля вернувшихся в
+    # окно после ПЕРВОГО дня (окно наблюдения 45 дней, дешёвый скан).
+    day_rows = (await db.execute(
+        select(ServerSession.visitor_id_hash, ServerSession.day)
+        .where(ServerSession.day >= _since(45).date(), ServerSession.is_bot.is_(False))
+        .distinct()
+    )).all()
+    days_by_visitor: dict[str, list] = defaultdict(list)
+    for vid, day in day_rows:
+        days_by_visitor[vid].append(day)
+    ret_windows = {}
+    for label, win in (("d1", 1), ("d7", 7), ("d30", 30)):
+        # Когорта: первый визит достаточно давно, чтобы окно успело закрыться.
+        cutoff = _since(win).date()
+        cohort = [ds for ds in days_by_visitor.values() if min(ds) <= cutoff]
+        came_back = sum(
+            1 for ds in cohort
+            if any(0 < (d - min(ds)).days <= win for d in ds)
+        )
+        ret_windows[label] = {
+            "cohort": len(cohort),
+            "returned": came_back,
+            "rate_pct": round(came_back / len(cohort) * 100, 1) if cohort else 0.0,
+        }
+
     search_share = channels.get("search", 0) / ch_total
 
     def node(key: str, label: str, value: float, target: float, fmt: str, detail: dict) -> dict:
@@ -266,6 +291,7 @@ async def mart_metric_tree(db: AsyncSession, days: int = 30) -> dict[str, Any]:
             }),
             node("retention", "Удержание", round(retention * 100, 1), TARGETS["retention_7d"] * 100, "pct", {
                 "visitors_14d": visitors_n, "returned": returned,
+                "windows": ret_windows,
             }),
         ],
     }
@@ -719,6 +745,88 @@ async def mart_people(db: AsyncSession, days: int = 30, limit: int = 50) -> dict
 
 
 # ---------------------------------------------------------------------------
+# Витрина: A/B-эксперименты — автоанализ конверсии по вариантам
+# ---------------------------------------------------------------------------
+
+async def mart_experiments(db: AsyncSession, days: int = 30) -> dict[str, Any]:
+    """Автоанализ A/B: по каждому experiment_exposure (params: experiment,
+    variant) — охват и конверсия варианта в micro/macro-цель тем же visitor'ом
+    в окне эксперимента. Пусто, пока экспозиции не шлются — каркас готов."""
+    since = _since(days)
+    rows = (await db.execute(
+        select(FrontendEvent.visitor_id_hash, FrontendEvent.params_json)
+        .where(
+            FrontendEvent.occurred_at >= since,
+            FrontendEvent.event_name == "experiment_exposure",
+            FrontendEvent.visitor_id_hash.isnot(None),
+        )
+    )).all()
+    if not rows:
+        return {"experiments": [], "note": "Экспозиций нет — карточки появятся с первым A/B"}
+
+    # visitor → множество (experiment, variant)
+    exposed: dict[tuple[str, str], set] = defaultdict(set)
+    for vid, params in rows:
+        p = params or {}
+        exp = str(p.get("experiment") or p.get("exp") or "").strip()
+        var = str(p.get("variant") or p.get("var") or "").strip()
+        if exp and var:
+            exposed[(exp, var)].add(vid)
+
+    all_vids = set().union(*exposed.values()) if exposed else set()
+    converted: set = set()
+    if all_vids:
+        conv_rows = (await db.execute(
+            select(FrontendEvent.visitor_id_hash, FrontendEvent.event_name)
+            .where(
+                FrontendEvent.occurred_at >= since,
+                FrontendEvent.visitor_id_hash.in_(all_vids),
+            ).distinct()
+        )).all()
+        for vid, name in conv_rows:
+            if tier_for_event(name) in (TIER_MACRO, TIER_MICRO):
+                converted.add(vid)
+
+    experiments: dict[str, list] = defaultdict(list)
+    for (exp, var), vids in sorted(exposed.items()):
+        conv = len(vids & converted)
+        experiments[exp].append({
+            "variant": var,
+            "visitors": len(vids),
+            "converted": conv,
+            "conversion_pct": round(conv / len(vids) * 100, 2) if vids else 0.0,
+        })
+    return {
+        "experiments": [{"experiment": exp, "variants": vs} for exp, vs in experiments.items()],
+        "note": None,
+    }
+
+
+# ---------------------------------------------------------------------------
+# Витрина: CH-срезы дня для Пульса (аномалии-кандидаты; мягкая деградация)
+# ---------------------------------------------------------------------------
+
+async def mart_ch_slices_of_day(_db: AsyncSession | None = None) -> dict[str, Any]:
+    """2–3 стандартных OLAP-среза дня для LLM-контекста: канал×новизна,
+    источник×устройство Метрики, страница-топ. CH недоступен → {'available':
+    False} — Пульс собирается без срезов (инвариант «CH вторичен»)."""
+    from app.config import settings
+    if not settings.clickhouse_enabled:
+        return {"available": False}
+    try:
+        from app.services.clickhouse_sync import run_slice
+        return {
+            "available": True,
+            "sessions_by_channel": (await run_slice("sessions", ["channel", "is_new"], days=1))["rows"][:8],
+            "metrika_by_source_device": (await run_slice("metrika_visits", ["traffic_source", "device"], days=1))["rows"][:8],
+            "pageviews_by_page": (await run_slice("pageviews", ["page"], days=1))["rows"][:10],
+        }
+    except Exception as exc:  # noqa: BLE001 — деградация без падения снапшота
+        logger.warning("CH slices for pulse unavailable: %s", exc)
+        return {"available": False}
+
+
+# ---------------------------------------------------------------------------
 # Витрина: расходы Директа (CPA/ROI — каркас до передачи токена)
 # ---------------------------------------------------------------------------
 
@@ -768,5 +876,7 @@ async def build_marts_daily_context(db: AsyncSession) -> dict[str, Any]:
         "blocks_today": await mart_blocks(db, days=1),
         "page_quadrants_7d": await mart_page_quadrants(db, days=7),
         "feature_adoption_7d": await mart_feature_adoption(db, days=7),
+        "experiments_30d": await mart_experiments(db, days=30),
         "ad_costs": await mart_ad_costs(db, days=7),
+        "ch_slices": await mart_ch_slices_of_day(db),
     }
