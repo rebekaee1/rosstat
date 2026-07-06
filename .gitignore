@@ -11,6 +11,8 @@ build/
 .env
 .env.local
 .env.*.local
+.env.bak-*
+backups/
 
 # Logs
 *.log
