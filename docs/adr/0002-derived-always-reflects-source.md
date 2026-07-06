@@ -2,7 +2,7 @@
 
 - **Date:** 2026-05-05
 - **Status:** Accepted
-- **Last verified:** 2026-05-22 (документация-ревизия: 31 derived в `DERIVED_SPECS`; инвариант `bulk_upsert` — `INSERT … ON CONFLICT DO UPDATE WHERE data_points.value <> excluded.value` — стабилен в `backend/app/services/upsert.py::bulk_upsert`; тестами покрыто в `backend/tests/test_upsert.py` через empty list / None value / partial / mixed cases (закрытие E1 из звонка 2026-05-21)).
+- **Last verified:** 2026-07-06 (CTO-аудит: dispatch переведён на инкрементальное замыкание в topo-порядке, pure-revision-day limit снят, `bulk_upsert` переведён на chunked multi-row statement с теми же гарантиями WHERE-гарда — см. «Subsequent additions»). Ранее 2026-05-22 (документация-ревизия: 31 derived в `DERIVED_SPECS`; инвариант `bulk_upsert` покрыт тестами `backend/tests/test_upsert.py`).
 - **Author:** architecture grilling session (улучшение архитектуры по запросу пользователя).
 - **Supersedes:** ad-hoc behaviour of `CalculationEngine.run_for_updated_sources` prior to this change.
 - **Part of:** [`../../CONTEXT.md`](../../CONTEXT.md) (раздел `Derived indicator` + «Pure-revision day» trap).
@@ -103,3 +103,34 @@ If future evidence shows this assumption breaking (e.g. парсер introduced 
 
 - **`had_new` detector** в scheduler, который игнорирует ревизии. С этим ADR детектор остаётся релевантным как **no-op short-circuit для совсем пустых ETL-батчей** (если ни один парсер не вернул новых строк, нет смысла тратить CPU на пересчёт). Если потребуется убрать pure-revision-day limit — это отдельный ADR с изменением `BaseParser.run()` (передавать `records_added + records_updated` в `fetch_log`) и scheduler-детектора.
 - **Telemetry hook**, отчитывающийся о размере drift после каждого daily ETL (например, «derived recomputation produced 0 changes today» → no drift, vs «produced 18 changes» → silent revision somewhere upstream). Полезно, но separate.
+
+## Subsequent additions (after acceptance)
+
+### 2026-07-06 — инкрементальный dispatch по замыканию зависимости (CTO-аудит, П-2/П-3)
+
+Оба пункта из «Out of scope» реализованы; инвариант «derived[t] отражает
+текущее source[t]» сохранён, но достигается дешевле и точнее:
+
+1. **Pure-revision day limitation снята (П-3).** `fetch_log` получил колонку
+   `records_updated` (Alembic `20260706_etl_perf`); `BaseParser.run()` пишет
+   ревизии отдельно, а `run_etl_for_indicator` возвращает
+   `fetch_log.status == "success"` (added ∨ updated ∨ pruned) вместо
+   `records_added > 0`. Ревизованный in-place source теперь попадает в
+   `updated_codes` в тот же день.
+2. **Dispatch стал инкрементальным (П-2).** Поскольку сигнал теперь полный,
+   «пересчитай все 799 при любом изменении» избыточен:
+   `run_for_updated_sources` пересчитывает **транзитивное замыкание**
+   зависимых derived в **топологическом порядке**
+   (`CalculationEngine.dependents_closure_topo`, алгоритм Кана). В реестре
+   28 цепочек derived-от-derived глубиной до 4 уровней
+   (`wages-nominal-annual → wages-index → housing-affordability →
+   housing-affordability-yoy-year`) — порядок обязателен, иначе зависимые
+   считались бы от stale-входов. `run_for_direct_dependents` делегирует туда же
+   (транзитивные уровни после replace_series-источников больше не ждут
+   дневного батча).
+3. **Верификация (риск Р-1):** `scripts/verify-derived-incremental.py` —
+   полный rebuild (порядок реестра) vs инкрементальный прогон (topo-замыкание)
+   в транзакциях с rollback, байт-в-байт sha256-сверка всех 799 рядов.
+   Прогнано на локальной БД 2026-07-06: 0 расхождений. Юнит-инвариант — 
+   `test_real_registry_topo_invariant` (каждый derived-источник раньше
+   зависимого). Escape hatch `scripts/rebuild-all-derived.py` не тронут.

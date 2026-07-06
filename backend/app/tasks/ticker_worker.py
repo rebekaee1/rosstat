@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import json
 import logging
+import time
 
 from app.core.cache import get_redis
 from app.services.ticker_sources.binance import fetch_all as binance_fetch_all
@@ -96,11 +97,14 @@ async def ticker_pull_job() -> None:
         return
 
     snapshots = []
-    for src in (moex, binance):
+    for name, src in (("moex", moex), ("binance", binance)):
         if isinstance(src, list):
             snapshots.extend(src)
+            if src:
+                _source_last_ok[name] = time.monotonic()
         elif isinstance(src, Exception):
             logger.warning("ticker_pull_job: source failed: %s", src)
+        _check_source_staleness(name)
 
     # Brent fallback: MOEX FORTS периодически недоступен с сервера (block по IP,
     # ConnectTimeout). У FX/золота есть fallback на ЦБ, у Brent его нет — без
@@ -113,6 +117,7 @@ async def ticker_pull_job() -> None:
 
     if not snapshots:
         logger.info("ticker_pull_job: no snapshots fetched, skipping Redis write")
+        _note_write_failure("all sources empty")
         return
 
     try:
@@ -125,5 +130,64 @@ async def ticker_pull_job() -> None:
                 ex=REDIS_TTL_SECONDS,
             )
         await pipe.execute()
+        global _last_write_ok_ts
+        _last_write_ok_ts = time.monotonic()
     except Exception:
         logger.exception("ticker_pull_job: Redis write failed")
+        _note_write_failure("Redis write failed")
+
+
+# --- Н-20: тикер молча протухает по TTL, если запись не проходит -----------
+# job интервальная (каждые ~30с); если успешной записи не было дольше
+# _STALE_ALERT_SECONDS — один алерт, дальше молчим _ALERT_COOLDOWN.
+_STALE_ALERT_SECONDS = 180
+_ALERT_COOLDOWN = 1800
+_last_write_ok_ts: float | None = None
+_last_alert_ts: float = 0.0
+
+# --- Н-30: per-source staleness — частичный сбой (MOEX жив, Binance лежит)
+# не ловится глобальным чеком: часть тайлов молча пропадает по TTL.
+_SOURCE_STALE_SECONDS = 1800
+_source_last_ok: dict[str, float] = {}
+_source_alerted: set[str] = set()
+
+
+def _check_source_staleness(name: str) -> None:
+    now = time.monotonic()
+    last_ok = _source_last_ok.get(name)
+    if last_ok is None:
+        return  # источник ещё ни разу не отдавал данные (startup)
+    if now - last_ok < _SOURCE_STALE_SECONDS:
+        _source_alerted.discard(name)  # восстановился — взводим алерт заново
+        return
+    if name in _source_alerted:
+        return
+    _source_alerted.add(name)
+    logger.error(
+        "ticker source '%s' stale: no data for %.0f min — тайлы источника "
+        "пропадут с бара по TTL", name, (now - last_ok) / 60,
+    )
+
+
+def _note_write_failure(reason: str) -> None:
+    global _last_alert_ts
+    import asyncio
+
+    now = time.monotonic()
+    if _last_write_ok_ts is None:
+        return  # ещё ни одной успешной записи (startup) — не алертим
+    if now - _last_write_ok_ts < _STALE_ALERT_SECONDS:
+        return
+    if now - _last_alert_ts < _ALERT_COOLDOWN:
+        return
+    _last_alert_ts = now
+    try:
+        from app.services.alerting import send_telegram
+        asyncio.get_running_loop().create_task(send_telegram(
+            "🟡 <b>Live ticker stale</b>\n"
+            f"Нет успешной записи снапшотов дольше {_STALE_ALERT_SECONDS // 60} мин "
+            f"({reason}) — тикер на сайте протухнет по TTL.",
+            kind="ticker_stale",
+        ))
+    except Exception:
+        logger.warning("Ticker stale alert failed", exc_info=True)

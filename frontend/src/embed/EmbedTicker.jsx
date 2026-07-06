@@ -36,6 +36,15 @@ function TickerItem({ ind, colors }) {
   );
 }
 
+// В-33: без `codes` дефолт — curated-набор ключевых показателей, а не
+// сортировка по raw value среди несопоставимых единиц (иначе «топ-8» —
+// случайная смесь самых больших чисел: ВВП в млрд рядом с индексами).
+// Только listed-коды: useIndicators() отдаёт каталог без derived-siblings.
+const DEFAULT_CODES = [
+  'key-rate', 'cpi', 'usd-rub', 'eur-rub',
+  'brent', 'unemployment', 'imoex', 'gold-price',
+];
+
 export default function EmbedTicker() {
   const { theme, codes, speed } = useEmbedParams();
   const colors = THEME_COLORS[theme];
@@ -46,14 +55,11 @@ export default function EmbedTicker() {
   const { data: allIndicators, isLoading, isError } = useIndicators();
 
   const items = useMemo(() => {
+    const wanted = codes.length ? codes : DEFAULT_CODES;
     if (!allIndicators?.length) return [];
-    if (codes.length) {
-      return codes.map(c => allIndicators.find(i => i.code === c)).filter(Boolean);
-    }
-    return allIndicators
-      .filter(i => i.current_value != null)
-      .sort((a, b) => (b.current_value || 0) - (a.current_value || 0))
-      .slice(0, 8);
+    return wanted
+      .map(c => allIndicators.find(i => i.code === c))
+      .filter(i => i && i.current_value != null);
   }, [allIndicators, codes]);
 
   const statusStyle = { background: colors.bg, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', color: colors.textTertiary, fontSize: 12, fontFamily: 'system-ui' };

@@ -11,7 +11,7 @@ import asyncio
 import logging
 from datetime import date
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
@@ -53,6 +53,42 @@ async def clear_current_forecasts(db: AsyncSession, indicator: Indicator) -> int
     return len(old)
 
 
+async def _forecast_bounds(
+    db: AsyncSession, indicator: Indicator,
+) -> tuple[float | None, float | None]:
+    """Доменные границы прогноза (В-27).
+
+    Явные — из `model_config_json.forecast_constraints` (`non_negative`,
+    `min`, `max`). Неявный пол: если вся фактическая история ряда >= 0
+    (цены, ставки, индексы, объёмы), прогноз и его CI не имеют права уходить
+    ниже нуля — статистическая модель об этом не знает.
+    """
+    cons = (indicator.model_config_json or {}).get("forecast_constraints") or {}
+    lo = cons.get("min")
+    hi = cons.get("max")
+    if lo is None and cons.get("non_negative"):
+        lo = 0.0
+    if lo is None:
+        min_actual = await db.scalar(
+            select(func.min(IndicatorData.value))
+            .where(IndicatorData.indicator_id == indicator.id)
+        )
+        if min_actual is not None and float(min_actual) >= 0:
+            lo = 0.0
+    return (float(lo) if lo is not None else None,
+            float(hi) if hi is not None else None)
+
+
+def _clamp(v: float | None, lo: float | None, hi: float | None) -> float | None:
+    if v is None:
+        return None
+    if lo is not None and v < lo:
+        return lo
+    if hi is not None and v > hi:
+        return hi
+    return v
+
+
 async def _save_forecast(
     db: AsyncSession,
     indicator: Indicator,
@@ -86,14 +122,26 @@ async def _save_forecast(
     db.add(new_forecast)
     await db.flush()
 
+    lo, hi = await _forecast_bounds(db, indicator)
+    clamped = 0
     for fp in result.points:
+        value = _clamp(fp.value, lo, hi)
+        lower = _clamp(fp.lower_bound, lo, hi)
+        upper = _clamp(fp.upper_bound, lo, hi)
+        if (value, lower, upper) != (fp.value, fp.lower_bound, fp.upper_bound):
+            clamped += 1
         db.add(ForecastValue(
             forecast_id=new_forecast.id,
             date=fp.date,
-            value=fp.value,
-            lower_bound=fp.lower_bound,
-            upper_bound=fp.upper_bound,
+            value=value,
+            lower_bound=lower,
+            upper_bound=upper,
         ))
+    if clamped:
+        logger.warning(
+            "Forecast '%s' for %s: %d/%d point(s) clamped to domain bounds [%s, %s]",
+            result.model_name, indicator.code, clamped, len(result.points), lo, hi,
+        )
 
     logger.info(
         "Saved forecast '%s' for %s (%d points)",
@@ -229,10 +277,22 @@ async def retrain_indicator_forecast(
     strategy_name = cfg.get("forecast_strategy") or _legacy_resolve_name(indicator, cfg)
     strategy = resolve(strategy_name)
     if strategy is None:
+        # Н-7: нерезолвнутая стратегия — чистим устаревший прогноз (иначе он
+        # молча остаётся current и стареет) и алертим, а не только логируем.
+        removed = await clear_current_forecasts(db, indicator)
         logger.error(
-            "No strategy resolved for '%s' (name=%s); skipping",
-            indicator.code, strategy_name,
+            "No strategy resolved for '%s' (name=%s); cleared %d stale forecast(s)",
+            indicator.code, strategy_name, removed,
         )
+        try:
+            from app.services.alerting import alert_forecast_issue
+            await alert_forecast_issue(
+                indicator.code,
+                f"Стратегия '{strategy_name}' не найдена в реестре; "
+                f"очищено {removed} устаревших прогнозов.",
+            )
+        except Exception:  # pragma: no cover — алерт не роняет pipeline
+            logger.warning("Forecast issue alert failed", exc_info=True)
         return
 
     # Derived стратегия требует данные источника — подгружаем заранее.
@@ -334,5 +394,14 @@ async def _retrain_dependents(
         logger.info("Cascading retrain: %s → %s", source.code, cand.code)
         try:
             await retrain_indicator_forecast(db, cand, _retrain_chain=chain)
-        except Exception:  # pragma: no cover — каскад не должен ронять основной retrain
+        except Exception as e:  # pragma: no cover — каскад не должен ронять основной retrain
+            # Н-8: зависимый прогноз молча остаётся stale — алертим.
             logger.exception("Cascading retrain failed for '%s'", cand.code)
+            try:
+                from app.services.alerting import alert_forecast_issue
+                await alert_forecast_issue(
+                    cand.code,
+                    f"Каскадный retrain от '{source.code}' упал: {str(e)[:200]}",
+                )
+            except Exception:
+                logger.warning("Forecast issue alert failed", exc_info=True)

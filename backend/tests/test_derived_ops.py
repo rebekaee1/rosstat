@@ -385,10 +385,25 @@ def test_weekly_inflation_by_calendar_month_products_weeks():
         (date(2026, 2, 2), 100.2),
     ]
     out = weekly_inflation_by_calendar_month(weekly)
-    assert len(out) == 2
+    # Февраль (одна неделя, месяц не закрыт) не эмитится — «рост за месяц»
+    # по частичному месяцу выдавал бы 1 неделю за полный месяц (В-3).
+    assert len(out) == 1
     jan = next(v for d, v in out if d.month == 1)
     expected_jan = (100.5 / 100) * (100.3 / 100) * 100 - 100
     assert abs(jan - round(expected_jan, 4)) < 0.0001
+
+
+def test_weekly_inflation_last_month_emitted_when_closed():
+    """Хвостовой месяц эмитится, если последняя неделя дошла до конца месяца."""
+    weekly = [
+        (date(2026, 1, 5), 100.5),
+        (date(2026, 1, 12), 100.3),
+        (date(2026, 1, 19), 100.1),
+        (date(2026, 1, 29), 100.2),  # до конца января 2 дня — месяц закрыт
+    ]
+    out = weekly_inflation_by_calendar_month(weekly)
+    assert len(out) == 1
+    assert out[0][0] == date(2026, 1, 29)
 
 
 def test_weekly_mtd_emits_point_per_week_and_differs_from_wow():

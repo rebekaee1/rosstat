@@ -110,6 +110,18 @@ describe('compareRepresentation — index base guard', () => {
     expect(isIndexableBase(Infinity)).toBe(false);
   });
 
+  it('В-12: %-ряды и темповые представления не индексируются к базе-100', () => {
+    // Инфляция 5% — темп, а не уровень: «= 100 пунктов» смыслово неверно.
+    expect(isIndexableBase(5, { unit: '%', repId: REP_LEVEL })).toBe(false);
+    expect(isIndexableBase(8.6, { unit: '‰' })).toBe(false);
+    // Представления «к прошлому периоду» / «к году» — тоже темпы.
+    expect(isIndexableBase(120, { unit: 'млрд руб.', repId: REP_POP })).toBe(false);
+    expect(isIndexableBase(120, { unit: 'млрд руб.', repId: REP_YOY })).toBe(false);
+    // Обычный уровень остаётся индексируемым.
+    expect(isIndexableBase(120, { unit: 'млрд руб.', repId: REP_LEVEL })).toBe(true);
+    expect(isIndexableBase(120, { unit: 'индекс' })).toBe(true);
+  });
+
   it('rebaseToHundred приводит к базе-100 без выбросов на валидной базе', () => {
     expect(rebaseToHundred(120, 100)).toBeCloseTo(120);
     expect(rebaseToHundred(50, 200)).toBeCloseTo(25);

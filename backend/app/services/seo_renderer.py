@@ -35,6 +35,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.models import Indicator, IndicatorData
+from app.services.display import (
+    today_msk,
+    annual_summary,
+    display_value,
+    display_value_text,
+    format_date_ru,
+    format_number_ru,
+    is_cpi_index,
+)
 from app.services.seo_content import (
     CATEGORIES,
     CATEGORY_META,
@@ -112,16 +121,18 @@ def clean_text(value: str | None, fallback: str = "") -> str:
 
 
 def _format_date(value: date | None) -> str:
-    return value.isoformat() if value else "нет данных"
+    """Человекочитаемая русская дата («1 мая 2026») — для видимого текста."""
+    return format_date_ru(value)
+
+
+def _iso_date(value: date | None) -> str:
+    """ISO-дата для машинных полей JSON-LD (temporalCoverage, dateModified)."""
+    return value.isoformat() if value else ""
 
 
 def _format_number(value) -> str:
-    if value is None:
-        return "нет данных"
-    number = float(value)
-    if abs(number) >= 1000:
-        return f"{number:,.2f}".replace(",", " ")
-    return f"{number:.4f}".rstrip("0").rstrip(".")
+    """Русская типографика чисел (запятая в дроби) — для видимого текста."""
+    return format_number_ru(value)
 
 
 def _absolute(path: str) -> str:
@@ -196,14 +207,18 @@ def _sort_indicators_for_seo(
     return sorted(indicators, key=sort_key)
 
 
-def _enrich_description(desc: str, current, unit: str) -> str:
-    """Добавляет актуальное значение в meta description (CTR в выдаче)."""
+def _enrich_description(desc: str, current, unit: str,
+                        code: str | None = None, frequency: str | None = None) -> str:
+    """Добавляет актуальное значение в meta description (CTR в выдаче).
+
+    Значение идёт через display-adapter: CPI-индекс показывается как изменение
+    цен («+0,17 % за месяц»), а не сырые «100,17 %» (инцидент «инфляция 100,2%»).
+    """
     if not current:
         return desc
-    unit_suffix = f" {unit.strip()}" if unit and unit.strip() else ""
     snippet = (
-        f"Актуальное значение — {_format_number(current.value)}{unit_suffix} "
-        f"на {_format_date(current.date)}."
+        f"Актуальное значение — {display_value_text(code, current.value, unit, frequency)} "
+        f"на {format_date_ru(current.date)}."
     )
     if snippet.lower()[:20] in desc.lower():
         return desc
@@ -285,6 +300,7 @@ SEO_CRITICAL_CSS = """<style id="seo-critical">
 body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:"DM Sans",system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
 .seo-page{max-width:56rem;margin:0 auto;padding:2rem 1rem 3rem}
 .seo-eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:.3em;color:#B8942F;font-weight:600;margin:0 0 .75rem}
+.seo-note{font-size:13px;color:#8a6d1f;background:#fdf6e3;border:1px solid #ecd9a0;border-radius:8px;padding:.5rem .75rem;margin:.5rem 0}
 .seo-page h1{font-size:1.5rem;font-weight:700;line-height:1.3;letter-spacing:-.01em;margin:0 0 .75rem;max-width:48rem;color:#1A1A2E}
 @media(min-width:768px){.seo-page h1{font-size:2rem}}
 .seo-page h2{font-size:.75rem;text-transform:uppercase;letter-spacing:.2em;color:rgba(26,26,46,.65);font-weight:600;margin:2rem 0 .75rem}
@@ -819,6 +835,9 @@ async def render_indicator_html(
     latest_rows = await _latest_rows(db, data_indicator.id, limit=SSR_LATEST_ROWS)
     count, first_dt, last_dt = await _indicator_stats(db, data_indicator.id)
     related = await _related_indicators(db, indicator)
+    # А-4: внутренняя перелинковка «по годам» — год-запросы («X в 2019»)
+    # должны ранжировать годовые landing'и, а не карточку со сниппетом «сегодня».
+    data_years = await indicator_data_years(db, indicator.id)
     title = indicator.seo_title or f"{display_name} — данные и график"
     desc = (
         indicator.seo_description
@@ -828,7 +847,10 @@ async def render_indicator_html(
         )
     )
     current = latest_rows[0] if latest_rows else None
-    desc = _enrich_description(desc, current, display_unit or indicator.unit)
+    desc = _enrich_description(
+        desc, current, display_unit or indicator.unit,
+        code=data_indicator.code, frequency=display_frequency,
+    )
     body = _indicator_body(
         indicator,
         category,
@@ -840,10 +862,16 @@ async def render_indicator_html(
         display_name=display_name,
         display_unit=display_unit,
         display_frequency=display_frequency,
+        data_code=data_indicator.code,
+        data_years=data_years,
     )
     canonical_path = f"/indicator/{indicator.code}"
     if resolved_mode and resolved_mode.mode != family.default_mode:
         canonical_path = f"{canonical_path}?mode={resolved_mode.mode}"
+    # OG-картинка и видимый график — от ряда ВЫБРАННОГО режима (data_indicator),
+    # а не базового: раньше mode-страница писала «годовая сумма», а картинка
+    # показывала квартальный базовый ряд (В-2).
+    og_path = f"{DOMAIN}/og/{data_indicator.code}.png"
     json_ld = [
         _site_json_ld(),
         _breadcrumbs([
@@ -859,9 +887,9 @@ async def render_indicator_html(
             "url": _absolute(canonical_path),
             "inLanguage": "ru-RU",
             "creator": {"@type": "Organization", "name": indicator.source},
-            "temporalCoverage": f"{_format_date(first_dt)}/{_format_date(last_dt)}",
+            "temporalCoverage": f"{_iso_date(first_dt)}/{_iso_date(last_dt)}",
             "variableMeasured": display_name,
-            "dateModified": _format_date(last_dt),
+            "dateModified": _iso_date(last_dt),
             "keywords": clean_text(indicator.seo_keywords or "", display_name),
             "isAccessibleForFree": True,
             "license": "https://creativecommons.org/publicdomain/zero/1.0/",
@@ -872,13 +900,13 @@ async def render_indicator_html(
                     "contentUrl": _absolute(f"/api/v1/indicators/{data_indicator.code}/data"),
                 }
             ],
-            "image": f"{DOMAIN}/og/{indicator.code}.png",
+            "image": og_path,
         },
         {
             "@context": "https://schema.org",
             "@type": "ImageObject",
-            "contentUrl": f"{DOMAIN}/og/{indicator.code}.png",
-            "url": f"{DOMAIN}/og/{indicator.code}.png",
+            "contentUrl": og_path,
+            "url": og_path,
             "caption": f"{display_name} — график динамики ({indicator.source})",
             "description": desc,
             "width": 1200,
@@ -900,7 +928,7 @@ async def render_indicator_html(
         json_ld=json_ld,
         keywords=indicator.seo_keywords or None,
         extra_head=extra_head or None,
-        og_image=f"{DOMAIN}/og/{indicator.code}.png",
+        og_image=og_path,
     )
     return 200, html
 
@@ -948,22 +976,44 @@ async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> 
     years = await indicator_data_years(db, indicator.id)
     values = [float(r.value) for r in rows]
     first, last = rows[0], rows[-1]
-    vmin, vmax = min(values), max(values)
-    avg = sum(values) / len(values)
     unit = indicator.unit or ""
     category = _category_for_api(indicator.category)
     category_link = _link(f"/category/{category.slug}", category.name) if category else "Индикаторы"
 
     name = indicator.name
-    title = f"{name} в {year} году — данные по месяцам и итоги"
+    # Семантика значений и итога — через display-adapter: CPI-индекс людям
+    # показывается изменением цен, годовой итог сворачивается по природе ряда
+    # (сумма для потоков, конец года для запасов, цепной рост для CPI) — а не
+    # «среднее за год» для всего подряд (В-25).
+    cpi_mode = is_cpi_index(code)
+    shown_values = [display_value(code, v) for v in values]
+    vmin, vmax = min(shown_values), max(shown_values)
+    summary_label, summary_text = annual_summary(code, values, unit)
+    # Незавершённый год не выдаём за «итоги года» (В-26): честная рамка
+    # «с начала года», итог — «на дату последнего значения».
+    current_year = today_msk().year == year
+    period_note = f" (данные с начала года по {_format_date(last.date)})" if current_year else ""
+    totals_head = f"{name} в {year} году: данные с начала года" if current_year else f"Итоги {year} года"
+    if current_year:
+        summary_label = f"{summary_label} (на {_format_date(last.date)})"
+    range_label = (
+        "Минимальное и максимальное изменение за период"
+        if cpi_mode else "Минимум и максимум"
+    )
+    unit_suffix = f" {escape(unit)}" if unit and not cpi_mode else (" %" if cpi_mode else "")
+    title = (
+        f"{name} в {year} году — данные с начала года"
+        if current_year else f"{name} в {year} году — данные по месяцам и итоги"
+    )
     desc = (
-        f"{name} в {year} году: {len(rows)} значений, "
-        f"от {_format_number(vmin)} до {_format_number(vmax)} {unit}, "
-        f"среднее {_format_number(avg)} {unit}. Официальные данные — {indicator.source}."
+        f"{name} в {year} году{period_note or ''}: {len(rows)} значений, "
+        f"{summary_label.lower()} — {summary_text}. Официальные данные — {indicator.source}."
     )
 
+    value_head = "Изменение цен, %" if cpi_mode else (f"Значение, {escape(unit)}" if unit else "Значение")
     data_rows = "".join(
-        f"<tr><td>{escape(_format_date(r.date))}</td><td>{escape(_format_number(r.value))}</td></tr>"
+        f"<tr><td>{escape(_format_date(r.date))}</td>"
+        f"<td>{escape(format_number_ru(display_value(code, r.value), signed=cpi_mode))}</td></tr>"
         for r in rows
     )
     year_links = _links_list(
@@ -978,20 +1028,22 @@ async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> 
 <nav aria-label="Хлебные крошки">{_link("/", "Главная")} / {category_link} / {_link(f"/indicator/{code}", name)} / {year}</nav>
 <h1>{escape(title.split(" — ")[0])}</h1>
 <p>{escape(desc)}</p>
-<figure class="seo-chart"><img src="{DOMAIN}/og/{escape(code)}/{year}.png" width="1200" height="630" alt="{escape(name)} в {year} году — график по месяцам, среднее {escape(_format_number(avg))} {escape(unit)}, источник {escape(indicator.source)}" loading="lazy"><figcaption>{escape(name)} в {year} году — график динамики. Источник: {escape(indicator.source)}. forecasteconomy.com</figcaption></figure>
-<section><h2>Итоги {year} года</h2>
+<figure class="seo-chart"><img src="{DOMAIN}/og/{escape(code)}/{year}.png" width="1200" height="630" alt="{escape(name)} в {year} году — график, {escape(summary_label.lower())} {escape(summary_text)}, источник {escape(indicator.source)}" loading="lazy"><figcaption>{escape(name)} в {year} году — график динамики. Источник: {escape(indicator.source)}. forecasteconomy.com</figcaption></figure>
+<section><h2>{escape(totals_head)}</h2>
 <ul>
-<li>Значение на начало года: {escape(_format_number(first.value))} {escape(unit)} ({escape(_format_date(first.date))})</li>
-<li>Значение на конец года: {escape(_format_number(last.value))} {escape(unit)} ({escape(_format_date(last.date))})</li>
-<li>Минимум: {escape(_format_number(vmin))} {escape(unit)}, максимум: {escape(_format_number(vmax))} {escape(unit)}</li>
-<li>Среднее за год: {escape(_format_number(avg))} {escape(unit)}</li>
+<li>{escape(summary_label)}: {escape(summary_text)}</li>
+<li>Значение на начало года: {escape(format_number_ru(display_value(code, first.value), signed=cpi_mode))}{unit_suffix} ({escape(_format_date(first.date))})</li>
+<li>{'Последнее значение' if current_year else 'Значение на конец года'}: {escape(format_number_ru(display_value(code, last.value), signed=cpi_mode))}{unit_suffix} ({escape(_format_date(last.date))})</li>
+<li>{escape(range_label)}: {escape(format_number_ru(vmin, signed=cpi_mode))} … {escape(format_number_ru(vmax, signed=cpi_mode))}{unit_suffix}</li>
 <li>Количество наблюдений: {len(rows)}</li>
 <li>Источник: {escape(indicator.source)}</li>
 </ul></section>
-<section><h2>Все значения за {year} год</h2><table><thead><tr><th>Дата</th><th>Значение, {escape(unit)}</th></tr></thead><tbody>{data_rows}</tbody></table></section>
+<section><h2>Все значения за {year} год</h2><table><thead><tr><th>Дата</th><th>{value_head}</th></tr></thead><tbody>{data_rows}</tbody></table></section>
 <section><h2>График и прогноз</h2><p>Полная история, интерактивный график и прогноз — на странице {_link(f"/indicator/{code}", name)}.</p></section>
 <section><h2>Другие годы</h2>{year_links}</section>
 </main>"""
+    # temporalCoverage — по факту, не «до 31 декабря» для незакрытого года (В-26).
+    coverage_end = _iso_date(last.date) if current_year else f"{year}-12-31"
     json_ld = [
         _site_json_ld(),
         _breadcrumbs([
@@ -1007,7 +1059,7 @@ async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> 
             "url": _absolute(canonical_path),
             "inLanguage": "ru-RU",
             "creator": {"@type": "Organization", "name": indicator.source},
-            "temporalCoverage": f"{year}-01-01/{year}-12-31",
+            "temporalCoverage": f"{_iso_date(first.date)}/{coverage_end}",
             "variableMeasured": name,
             "image": f"{DOMAIN}/og/{code}/{year}.png",
         },
@@ -1115,14 +1167,24 @@ def _indicator_body(
     display_name: str | None = None,
     display_unit: str | None = None,
     display_frequency: str | None = None,
+    data_code: str | None = None,
+    data_years: list[int] | None = None,
 ) -> str:
     name = display_name or indicator.name
     unit = display_unit or indicator.unit
     frequency = display_frequency or indicator.frequency
+    # Семантика значений определяется рядом, который реально показан
+    # (data_code режима), а не базовой карточкой.
+    value_code = data_code or indicator.code
     current = latest_rows[0] if latest_rows else None
     category_link = _link(f"/category/{category.slug}", category.name) if category else "Индикаторы"
+    # CPI-индекс (~100.xx) людям показывается как изменение цен в % — как в
+    # React-слое; сырой индекс в SSR был воспроизведённым инцидентом «100,2%».
+    cpi_mode = is_cpi_index(value_code)
+    value_head = "Изменение цен, %" if cpi_mode else (f"Значение, {unit}" if unit else "Значение")
     data_rows = "".join(
-        f"<tr><td>{escape(_format_date(row.date))}</td><td>{escape(_format_number(row.value))}</td></tr>"
+        f"<tr><td>{escape(_format_date(row.date))}</td>"
+        f"<td>{escape(format_number_ru(display_value(value_code, row.value), signed=cpi_mode))}</td></tr>"
         for row in latest_rows
     )
     source_link = _link(indicator.source_url, indicator.source) if indicator.source_url else escape(indicator.source)
@@ -1131,18 +1193,30 @@ def _indicator_body(
     # Индикаторы с собственными seo_blocks — без GLOBAL (иначе два блока
     # «Источник и обновление» в SSR: generic + предметный).
     blocks = custom_blocks if custom_blocks else GLOBAL_INDICATOR_BLOCKS
+    current_text = display_value_text(
+        value_code, current.value if current else None, unit, frequency,
+    )
     chart_alt = (
         f"{name} — график динамики, последнее значение "
-        f"{_format_number(current.value if current else None)} {unit}, источник {indicator.source}"
+        f"{current_text}, источник {indicator.source}"
     )
+    og_code = data_code or indicator.code
+    # А-4: блок «по годам» — ссылки на годовые landing'и (последние 12 лет).
+    years_section = ""
+    if data_years:
+        year_links = _links_list(tuple(
+            (f"/indicator/{indicator.code}/{y}", f"{name} в {y} году")
+            for y in sorted(data_years, reverse=True)[:12]
+        ))
+        years_section = f"<section><h2>{escape(name)} по годам</h2>{year_links}</section>\n"
     return f"""<main class="seo-page">
 <nav aria-label="Хлебные крошки">{_link("/", "Главная")} / {category_link} / {escape(name)}</nav>
 <h1>{escape(name)}</h1>
 <p>{escape(clean_text(indicator.description, f"{name}: официальный экономический индикатор с историей значений и графиком."))}</p>
-<figure class="seo-chart"><img src="{DOMAIN}/og/{escape(indicator.code)}.png" width="1200" height="630" alt="{escape(chart_alt)}" loading="lazy"><figcaption>{escape(name)} — график динамики по данным {escape(indicator.source)}. Источник: forecasteconomy.com</figcaption></figure>
+<figure class="seo-chart"><img src="{DOMAIN}/og/{escape(og_code)}.png" width="1200" height="630" alt="{escape(chart_alt)}" loading="lazy"><figcaption>{escape(name)} — график динамики по данным {escape(indicator.source)}. Источник: forecasteconomy.com</figcaption></figure>
 <section><h2>Текущее значение</h2>
 <ul>
-<li>Последнее значение: {escape(_format_number(current.value if current else None))} {escape(unit)}</li>
+<li>Последнее значение: {escape(current_text)}</li>
 <li>Дата последнего значения: {escape(_format_date(current.date if current else None))}</li>
 <li>Периодичность: {escape(_format_frequency(frequency))}</li>
 <li>Источник: {source_link}</li>
@@ -1151,6 +1225,6 @@ def _indicator_body(
 </ul></section>
 {_blocks_html(blocks, current_code=indicator.code)}
 <section><h2>Методология</h2><p>{escape(clean_text(indicator.methodology, "Методология показателя указана по данным официального источника и используется для интерпретации ряда."))}</p></section>
-<section><h2>Последние данные</h2><table><thead><tr><th>Дата</th><th>Значение</th></tr></thead><tbody>{data_rows}</tbody></table></section>
-<section><h2>Связанные индикаторы</h2>{_links_list(related_links or ((f"/category/{category.slug}", category.name),) if category else tuple())}</section>
+<section><h2>Последние данные</h2><table><thead><tr><th>Дата</th><th>{escape(value_head)}</th></tr></thead><tbody>{data_rows}</tbody></table></section>
+{years_section}<section><h2>Связанные индикаторы</h2>{_links_list(related_links or ((f"/category/{category.slug}", category.name),) if category else tuple())}</section>
 </main>"""

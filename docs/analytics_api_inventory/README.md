@@ -1,6 +1,6 @@
 # Analytics API Inventory
 
-**Last verified:** 2026-05-22 (sanity-check: `metrika_data_import.md` удалён — был `planned, no code`; остальные 6 файлов актуальны по статусу).
+**Last verified:** 2026-07-06 (ревизия CTO-аудита: статусы файлов актуальны; с 2026-05-22 добавились потребители существующих клиентов — `metrika_acquisition.py` (повизитная выгрузка Logs API + агрегаты Reporting в `raw_metrika_visits`/снапшоты, cron 08:20/14:20/20:20 МСК), `webmaster_recrawl.py` (автоподача переобхода 09:10 МСК), `webmaster_indexing_report.py` (еженедельный отчёт индексации, пн 09:30 МСК), admin-BI (`admin_bi.py` читает выгрузки как референс). Сами клиенты (`yandex_*_client.py`) без изменений — таблица статусов ниже верна. Ранее 2026-05-22: `metrika_data_import.md` удалён — был `planned, no code`.)
 **Part of:** [`../../AGENTS.md`](../../AGENTS.md), [`../../CONTEXT.md`](../../CONTEXT.md) (раздел `Forecast Analytics OS`).
 **Code anchors:** `backend/app/services/yandex_*.py` (clients), `backend/app/services/analytics_*.py` (ingestion + features), `backend/app/api/analytics.py` (REST), `mcp/forecast-analytics-mcp/` (MCP server).
 

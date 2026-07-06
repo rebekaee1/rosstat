@@ -1,7 +1,10 @@
 """Тесты «пульса» (П9б): память, оформление отчёта, безопасность бота."""
 import asyncio
+import os
+import tempfile
+from datetime import date, datetime
 
-from app.services.pulse import memory_core
+from app.services.pulse import ETL_ERROR_STATUSES, _day_bounds, _etl_snapshot, memory_core
 from app.services.pulse_report import _fallback_summary, _raw_digits_block
 from app.services.telegram_bot import main_menu_keyboard
 
@@ -48,6 +51,59 @@ SNAP = {
         "raw_visits": {"total": 280, "by_source": {"ad": 130, "organic": 120, "direct": 30}},
     },
 }
+
+
+def test_etl_snapshot_sees_failed_and_timeout():
+    """Регрессия Б-1: Пульс был слеп к ошибкам ETL.
+
+    Парсеры и планировщик пишут статусы "failed"/"timeout" (base_parser.py:142,
+    tasks/scheduler.py:68,77), а Пульс фильтровал по несуществующему "error" и
+    рапортовал «0 ошибок» при реальных провалах. Тест кормит _etl_snapshot всеми
+    боевыми статусами и требует, чтобы оба ошибочных попали в failed-список.
+    """
+    from sqlalchemy import create_engine
+    from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+
+    from app.models import Base, FetchLog
+
+    assert set(ETL_ERROR_STATUSES) == {"failed", "timeout"}
+
+    fd, db_path = tempfile.mkstemp(suffix=".db")
+    os.close(fd)
+    try:
+        sync_engine = create_engine(f"sqlite:///{db_path}")
+        Base.metadata.create_all(sync_engine)
+        sync_engine.dispose()
+
+        engine = create_async_engine(f"sqlite+aiosqlite:///{db_path}")
+        Session = async_sessionmaker(engine, expire_on_commit=False)
+        d = date(2026, 7, 6)
+        ts = datetime(2026, 7, 6, 6, 0)
+
+        async def run() -> dict:
+            async with Session() as db:
+                db.add_all([
+                    FetchLog(indicator_id=1, status="success", started_at=ts, records_added=5),
+                    FetchLog(indicator_id=2, status="no_new_data", started_at=ts, records_added=0),
+                    FetchLog(indicator_id=3, status="failed", started_at=ts, records_added=0),
+                    FetchLog(indicator_id=4, status="timeout", started_at=ts, records_added=0),
+                ])
+                await db.commit()
+                start, end = _day_bounds(d)
+                snap = await _etl_snapshot(db, start, end)
+            await engine.dispose()
+            return snap
+
+        snap = asyncio.run(run())
+        assert sorted(snap["failed_indicator_ids"]) == [3, 4]
+        assert snap["by_status"]["failed"]["runs"] == 1
+        assert snap["by_status"]["timeout"]["runs"] == 1
+        assert snap["by_status"]["success"]["records"] == 5
+    finally:
+        try:
+            os.unlink(db_path)
+        except OSError:
+            pass
 
 
 def test_memory_core_is_compact():

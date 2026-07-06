@@ -38,8 +38,19 @@ async def recrawl_daily_job() -> dict[str, int]:
         user_id = user.data["user_id"]
         quota_resp = await client.recrawl_quota(user_id, _HOST_ID)
         remaining = int(quota_resp.data.get("quota_remainder", 0))
-    except Exception:
+    except Exception as exc:
+        # Н-24: живой токен + недоступный API = дневная квота переобхода
+        # потеряна; молчаливый лог откладывал обнаружение на недели.
         logger.exception("Recrawl job: quota/user fetch failed")
+        try:
+            from app.services.alerting import send_telegram
+            await send_telegram(
+                "🟡 <b>Webmaster recrawl failed</b>\n"
+                f"Квота/пользователь недоступны: {str(exc)[:200]}",
+                kind="recrawl_alert",
+            )
+        except Exception:
+            logger.warning("Recrawl alert failed", exc_info=True)
         return {"submitted": 0, "quota": 0}
 
     if remaining <= 0:

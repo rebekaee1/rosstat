@@ -1,4 +1,5 @@
 import asyncio
+import ipaddress
 import json
 import logging
 import time
@@ -8,6 +9,7 @@ from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.middleware.gzip import GZipMiddleware
+from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_MISSED
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 from apscheduler.triggers.interval import IntervalTrigger
@@ -36,12 +38,95 @@ logging.basicConfig(level=logging.INFO, handlers=[_handler])
 logger = logging.getLogger(__name__)
 
 
+# Приватные/loopback-сети — это наши прокси-хопы (Caddy на хосте, nginx в
+# docker-сети), а не клиенты. Публичные порты наружу не смотрят (всё на
+# 127.0.0.1 в compose), внешний путь один: Caddy:443 → nginx → backend.
+_TRUSTED_PROXY_NETS = tuple(
+    ipaddress.ip_network(n)
+    for n in ("127.0.0.0/8", "10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "::1/128", "fc00::/7")
+)
+
+
+def pick_client_ip(forwarded_for: str, fallback: str) -> str:
+    """Реальный клиентский IP из X-Forwarded-For.
+
+    Заголовок append-only (nginx делает $proxy_add_x_forwarded_for), поэтому
+    ЛЕВЫЕ элементы может подделать клиент. Идём справа налево, пропуская наши
+    доверенные прокси-хопы; первый недоверенный ВАЛИДНЫЙ адрес — клиент.
+    Брать первый слева (как раньше) нельзя: ротация фейковых XFF давала обход
+    rate-limit. Невалидные токены не могут стать ключом лимита — иначе ротация
+    мусорных строк открывала бы тот же обход.
+    """
+    chain = []
+    for part in forwarded_for.split(","):
+        part = part.strip()
+        if not part:
+            continue
+        try:
+            chain.append((part, ipaddress.ip_address(part)))
+        except ValueError:
+            continue  # мусор — не хоп и не клиент
+    for raw, addr in reversed(chain):
+        if not any(addr in net for net in _TRUSTED_PROXY_NETS):
+            return raw
+    # Вся цепочка из приватных адресов (dev за локальным прокси) — берём
+    # ближайший к клиенту, иначе fallback на peer-адрес сокета.
+    return chain[0][0] if chain else fallback
+
+
+# Атомарный INCR+EXPIRE: между incr и expire нет окна, в котором сбой оставил
+# бы ключ без TTL (= вечный 429 для IP). Ветка TTL<0 лечит legacy-ключи,
+# созданные старым неатомарным кодом.
+_RATE_LIMIT_LUA = """
+local c = redis.call('INCR', KEYS[1])
+if c == 1 or redis.call('TTL', KEYS[1]) < 0 then
+    redis.call('EXPIRE', KEYS[1], ARGV[1])
+end
+return c
+"""
+
+
 class RateLimitMiddleware(BaseHTTPMiddleware):
     """Redis-based rate limiter with separate limits for main API and embed endpoints."""
 
     LIMIT = 120
     EMBED_LIMIT = 600
     WINDOW = 60
+
+    # Н-18: fail-open осознан (доступность > лимит), но при лежащем Redis
+    # защита исчезает у ВСЕХ запросов — это должно алертиться, не только
+    # per-request warning. Порог: >= 30 fail-open за минуту.
+    fail_open_count = 0
+    _fail_open_recent: list[float] = []
+    _fail_open_last_alert: float = 0.0
+    FAIL_OPEN_THRESHOLD = 30
+    FAIL_OPEN_WINDOW = 60
+    FAIL_OPEN_COOLDOWN = 1800
+
+    @classmethod
+    def _note_fail_open(cls, client_ip: str) -> None:
+        import time as _time
+
+        cls.fail_open_count += 1
+        now = _time.monotonic()
+        cls._fail_open_recent = [t for t in cls._fail_open_recent
+                                 if now - t < cls.FAIL_OPEN_WINDOW]
+        cls._fail_open_recent.append(now)
+        logger.warning(
+            "Rate limit check failed (Redis unavailable), allowing request from %s", client_ip)
+        if (len(cls._fail_open_recent) >= cls.FAIL_OPEN_THRESHOLD
+                and now - cls._fail_open_last_alert > cls.FAIL_OPEN_COOLDOWN):
+            cls._fail_open_last_alert = now
+            try:
+                from app.services.alerting import send_telegram
+                asyncio.get_running_loop().create_task(send_telegram(
+                    "🔴 <b>Rate limiter fail-open</b>\n"
+                    f"{len(cls._fail_open_recent)} запросов прошли без лимита за "
+                    f"{cls.FAIL_OPEN_WINDOW}с — Redis недоступен, защита от флуда отключена.",
+                    kind="rate_limit_alert",
+                ))
+            except Exception:
+                logger.exception("Rate limiter fail-open alert failed")
 
     async def dispatch(self, request: Request, call_next):
         if not request.url.path.startswith("/api/"):
@@ -50,14 +135,14 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         is_embed = request.url.path.startswith("/api/v1/embed/")
         limit = self.EMBED_LIMIT if is_embed else self.LIMIT
 
-        forwarded = request.headers.get("x-forwarded-for", "")
-        client_ip = forwarded.split(",")[0].strip() if forwarded else (request.client.host if request.client else "unknown")
+        client_ip = pick_client_ip(
+            request.headers.get("x-forwarded-for", ""),
+            request.client.host if request.client else "unknown",
+        )
         key = f"rle:{client_ip}" if is_embed else f"rl:{client_ip}"
         try:
             redis = await get_redis()
-            count = await redis.incr(key)
-            if count == 1:
-                await redis.expire(key, self.WINDOW)
+            count = await redis.eval(_RATE_LIMIT_LUA, 1, key, self.WINDOW)
             if count > limit:
                 return Response(
                     content=json.dumps({"detail": "Rate limit exceeded"}),
@@ -66,10 +151,164 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                     headers={"Retry-After": str(self.WINDOW)},
                 )
         except Exception:
-            logger.warning("Rate limit check failed (Redis unavailable), allowing request from %s", client_ip)
+            self._note_fail_open(client_ip)
         return await call_next(request)
 
-scheduler = AsyncIOScheduler()
+class HttpStatusCounterMiddleware(BaseHTTPMiddleware):
+    """Н-13: серверный error-rate. Считаем ответы по классам статусов
+    (in-process, отдаются в /metrics) и алертим на всплеск 5xx.
+
+    Спайк-детектор — скользящее окно: >= SPIKE_THRESHOLD ответов 5xx за
+    SPIKE_WINDOW секунд → один Telegram-алерт, дальше молчим COOLDOWN.
+    """
+
+    SPIKE_THRESHOLD = 10
+    SPIKE_WINDOW = 300
+    COOLDOWN = 900
+
+    counters: dict[str, int] = {"2xx": 0, "3xx": 0, "4xx": 0, "5xx": 0}
+    _recent_5xx: list[float] = []
+    _last_alert_ts: float = 0.0
+
+    async def dispatch(self, request: Request, call_next):
+        try:
+            response = await call_next(request)
+            status = response.status_code
+        except Exception:
+            self._record(500, request.url.path)
+            raise
+        self._record(status, request.url.path)
+        return response
+
+    @classmethod
+    def _record(cls, status: int, path: str) -> None:
+        bucket = f"{status // 100}xx"
+        if bucket in cls.counters:
+            cls.counters[bucket] += 1
+        if status >= 500:
+            now = time.time()
+            cls._recent_5xx = [t for t in cls._recent_5xx if now - t < cls.SPIKE_WINDOW]
+            cls._recent_5xx.append(now)
+            if (len(cls._recent_5xx) >= cls.SPIKE_THRESHOLD
+                    and now - cls._last_alert_ts > cls.COOLDOWN):
+                cls._last_alert_ts = now
+                try:
+                    from app.services.alerting import send_telegram
+                    asyncio.get_running_loop().create_task(send_telegram(
+                        f"🔴 <b>5xx spike</b>\n{len(cls._recent_5xx)} ответов 5xx "
+                        f"за {cls.SPIKE_WINDOW // 60} мин (последний путь: {path[:120]})",
+                        kind="http_5xx_spike",
+                    ))
+                except Exception:
+                    logger.exception("5xx spike alert failed")
+
+
+# О-14: глобальные дефолты — пропущенный запуск схлопывается в один (coalesce),
+# job не дублируется при overlap, misfire до часа исполняется, старше — skip.
+scheduler = AsyncIOScheduler(
+    job_defaults={"coalesce": True, "max_instances": 1, "misfire_grace_time": 3600}
+)
+
+
+def locked_job(fn, job_id: str, ttl_seconds: int):
+    """О-13: распределённый лок на исполнение job (state-Redis SET NX EX).
+
+    Планировщик in-process: два инстанса backend (UVICORN_WORKERS=2 или
+    overlap при рестарте) исполнили бы ETL/derived/retrain дважды. Лок с TTL
+    гарантирует одного исполнителя; при недоступном Redis — fail-open
+    (single-instance допущение важнее, чем пропуск прогона).
+    """
+    import uuid
+
+    _RELEASE_LUA = (
+        "if redis.call('GET', KEYS[1]) == ARGV[1] then "
+        "return redis.call('DEL', KEYS[1]) else return 0 end"
+    )
+
+    async def wrapper(*args, **kwargs):
+        from app.core.cache import get_state_redis
+
+        key = f"sched:lock:{job_id}"
+        token = uuid.uuid4().hex
+        redis = None
+        try:
+            redis = await get_state_redis()
+            acquired = await redis.set(key, token, nx=True, ex=ttl_seconds)
+            if not acquired:
+                logger.info("Job %s: lock held by another instance, skipping", job_id)
+                return None
+        except Exception:
+            logger.warning("Job %s: lock check failed (Redis down), running unlocked", job_id)
+            redis = None
+        try:
+            return await fn(*args, **kwargs)
+        finally:
+            if redis is not None:
+                try:
+                    await redis.eval(_RELEASE_LUA, 1, key, token)
+                except Exception:
+                    pass  # TTL добьёт ключ сам
+
+    wrapper.__name__ = f"locked_{getattr(fn, '__name__', job_id)}"
+    return wrapper
+
+
+def _scheduler_event_listener(event) -> None:
+    """Н-2: упавшая/пропущенная job планировщика — алерт, а не только строка в логах."""
+    try:
+        from html import escape
+
+        from app.services.alerting import send_telegram
+
+        if getattr(event, "exception", None):
+            kind = "🔴 <b>Scheduler job failed</b>"
+            detail = escape(str(event.exception)[:300])
+        else:
+            kind = "🟡 <b>Scheduler job missed</b>"
+            detail = "misfire (job не запустилась в срок)"
+        job = scheduler.get_job(event.job_id)
+        next_run = getattr(job, "next_run_time", None)
+        msg = (
+            f"{kind}\nJob: <code>{escape(str(event.job_id))}</code>\n"
+            f"{detail}\nNext run: {next_run or '—'}"
+        )
+        logger.error("Scheduler event: job=%s exc=%s", event.job_id,
+                     getattr(event, "exception", None))
+        asyncio.get_running_loop().create_task(send_telegram(msg, kind="scheduler_alert"))
+    except Exception:  # алерт не должен ронять loop планировщика
+        logger.exception("Scheduler event listener failed")
+
+
+scheduler.add_listener(_scheduler_event_listener, EVENT_JOB_ERROR | EVENT_JOB_MISSED)
+
+
+async def _cleanup_stuck_fetch_logs() -> None:
+    """О-9: OOM-kill/рестарт посреди ETL оставляет fetch_log в `running` навсегда.
+
+    При старте помечаем зависшие записи (running > 6 часов) как `interrupted` —
+    иначе они вечно висят «выполняется» в мониторинге и Пульсе.
+    """
+    try:
+        from datetime import datetime, timedelta, timezone
+
+        from sqlalchemy import update
+
+        from app.database import async_session
+        from app.models import FetchLog
+
+        # naive-UTC — как хранятся колонки (Р-16)
+        cutoff = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(hours=6)
+        async with async_session() as db:
+            result = await db.execute(
+                update(FetchLog)
+                .where(FetchLog.status == "running", FetchLog.started_at < cutoff)
+                .values(status="interrupted", error_message="stale running (startup cleanup)")
+            )
+            await db.commit()
+        if result.rowcount:
+            logger.warning("Startup cleanup: %d stuck fetch_log rows -> interrupted", result.rowcount)
+    except Exception as e:
+        logger.warning("Stuck fetch_log cleanup failed: %s", e)
 
 
 async def _catch_up_empty_indicators() -> None:
@@ -109,12 +348,25 @@ async def _catch_up_empty_indicators() -> None:
             "Startup catch-up: %d source indicator(s) with 0 points, triggering ETL: %s",
             len(empty), ", ".join(c for c, _ in empty),
         )
+        catch_up_failed: list[str] = []
         for code, _ in empty:
             try:
                 updated = await run_etl_for_indicator(code)
                 logger.info("Startup catch-up: %s — updated=%s", code, updated)
             except Exception as e:
                 logger.warning("Startup catch-up: %s failed: %s", code, e)
+                catch_up_failed.append(code)
+        # Н-9: новый индикатор, который не смог наполниться при старте, —
+        # это пустая карточка на проде; молчаливый warning недостаточен.
+        if catch_up_failed:
+            from html import escape
+
+            from app.services.alerting import send_telegram
+            await send_telegram(
+                "🔴 <b>Startup catch-up failed</b>\n"
+                f"Пустые индикаторы не наполнились: <code>{escape(', '.join(catch_up_failed))}</code>",
+                kind="etl_failure",
+            )
     except Exception as e:
         logger.warning("Startup catch-up aborted: %s", e)
 
@@ -131,10 +383,42 @@ async def lifespan(app: FastAPI):
             "auth_fake_provider_enabled must be false in production (RUSTATS_DEBUG=false)"
         )
 
+    # О-19/Р-10: prod-конфиг с dev-дефолтами — предвестник инцидента (cookie без
+    # Secure, http base URL, пароли из .env.example). Пока warn-режим: CRITICAL
+    # в лог + Telegram, БЕЗ остановки старта — enforcement после подтверждения
+    # владельцем, что прод-.env полон.
+    if not settings.debug:
+        prod_config_issues: list[str] = []
+        if not settings.auth_cookie_secure:
+            prod_config_issues.append("auth_cookie_secure=False (session cookie без Secure)")
+        if settings.auth_public_base_url.startswith("http://"):
+            prod_config_issues.append(f"auth_public_base_url не https: {settings.auth_public_base_url}")
+        if "rustats_dev" in settings.database_url:
+            prod_config_issues.append("database_url содержит dev-пароль rustats_dev")
+        if ":changeme@" in settings.redis_url:
+            prod_config_issues.append("redis_url содержит дефолтный пароль changeme")
+        if prod_config_issues:
+            for issue in prod_config_issues:
+                logger.critical("PROD CONFIG: %s", issue)
+            try:
+                from html import escape
+
+                from app.services.alerting import send_telegram
+                asyncio.create_task(send_telegram(
+                    "🔴 <b>Небезопасный prod-конфиг</b>\n"
+                    + "\n".join(f"— {escape(i)}" for i in prod_config_issues),
+                    kind="prod_config_alert",
+                ))
+            except Exception:
+                logger.exception("Prod config alert failed")
+
     if settings.scheduler_enabled:
         from app.tasks.scheduler import daily_update_job
+        # О-13: мутационные джобы (ETL/derived/retrain) — под распределённым
+        # локом: overlap инстансов не должен дублировать записи и retrain.
+        _locked_daily = locked_job(daily_update_job, "daily_etl", ttl_seconds=3 * 3600)
         scheduler.add_job(
-            daily_update_job,
+            _locked_daily,
             trigger=CronTrigger(
                 hour=settings.scheduler_cron_hour,
                 minute=settings.scheduler_cron_minute,
@@ -149,7 +433,7 @@ async def lifespan(app: FastAPI):
         # изменившимся карточкам), идемпотентный upsert — повторный прогон без
         # изменений не трогает БД.
         scheduler.add_job(
-            daily_update_job,
+            locked_job(daily_update_job, "evening_etl", ttl_seconds=3 * 3600),
             trigger=CronTrigger(
                 hour=settings.scheduler_evening_hour,
                 minute=settings.scheduler_evening_minute,
@@ -181,12 +465,23 @@ async def lifespan(app: FastAPI):
         from app.tasks.scheduler import late_minfin_etl_job
 
         scheduler.add_job(
-            late_minfin_etl_job,
+            locked_job(late_minfin_etl_job, "late_minfin_etl", ttl_seconds=3600),
             trigger=CronTrigger(
                 hour=15, minute=0, timezone="Europe/Moscow",
             ),
             id="late_minfin_etl",
             name="Late Minfin ETL pass (catches in-place CSV content updates)",
+            replace_existing=True,
+        )
+
+        # Н-3: «источник молча умер» (вечный no_new_data) — ежедневная сверка
+        # max(data.date) против SLA частоты каждого индикатора, после утреннего ETL.
+        from app.tasks.scheduler import staleness_check_job
+        scheduler.add_job(
+            staleness_check_job,
+            trigger=CronTrigger(hour=10, minute=0, timezone="Europe/Moscow"),
+            id="staleness_check",
+            name="Indicator staleness check (max(data.date) vs frequency SLA)",
             replace_existing=True,
         )
         from app.tasks.ticker_worker import ticker_pull_job
@@ -270,6 +565,20 @@ async def lifespan(app: FastAPI):
                 replace_existing=True,
             )
             logger.info("Webmaster recrawl auto-submit enabled: daily at 09:10 MSK")
+
+        # А-5: еженедельный отчёт индексации — «страницы в поиске» и динамика,
+        # компас ступени «10k визитов/день». Понедельник, после утреннего ETL.
+        if settings.yandex_webmaster_token:
+            from app.services.webmaster_indexing_report import indexing_report_job
+            scheduler.add_job(
+                indexing_report_job,
+                trigger=CronTrigger(day_of_week="mon", hour=9, minute=30,
+                                    timezone="Europe/Moscow"),
+                id="indexing_report_weekly",
+                name="Yandex indexing weekly report (searchable pages + dynamics)",
+                replace_existing=True,
+            )
+            logger.info("Weekly indexing report enabled: Mon 09:30 MSK")
 
         if settings.telegram_digest_enabled:
             from app.tasks.analytics_scheduler import telegram_daily_digest_job
@@ -389,6 +698,8 @@ async def lifespan(app: FastAPI):
             )
             logger.info("Telegram poller enabled: every 30s")
 
+        asyncio.create_task(_cleanup_stuck_fetch_logs())
+
         # «New indicator initial ETL trap» — закрытие. После seed_data
         # любые новые source-индикаторы могут стоять с 0 точек, пока
         # daily-job не отработает (06:00 МСК). Триггерим catch-up для них
@@ -418,6 +729,7 @@ app = FastAPI(
 
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 app.add_middleware(RateLimitMiddleware)
+app.add_middleware(HttpStatusCounterMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[

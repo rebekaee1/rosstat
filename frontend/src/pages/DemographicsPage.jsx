@@ -13,9 +13,13 @@ import ApiRetryBanner from '../components/ApiRetryBanner';
 import { track, trackFile, events } from '../lib/track';
 
 const GROUPS = [
+  // В-30: границы трудоспособного возраста менялись (пенсионная реформа
+  // 2019–2028 поэтапно сдвигает верхнюю границу) — в коротких подписях
+  // конкретные возрасты не фиксируем — группы определяются методологией
+  // Росстата на каждый год.
   { key: 'pop-under-working-age', color: '#D4A574', colorMuted: '#D4A574', label: 'Моложе трудоспособного', short: 'Дети (0–15)' },
   { key: 'working-age-population', color: '#B8942F', colorMuted: '#B8942F', label: 'Трудоспособные', short: 'Трудоспособные' },
-  { key: 'pop-over-working-age', color: '#8B7A6B', colorMuted: '#8B7A6B', label: 'Старше трудоспособного', short: 'Старше (60+/55+)' },
+  { key: 'pop-over-working-age', color: '#8B7A6B', colorMuted: '#8B7A6B', label: 'Старше трудоспособного', short: 'Старше трудоспособного' },
 ];
 
 function StructureTooltip({ active, payload, label }) {
@@ -33,7 +37,7 @@ function StructureTooltip({ active, payload, label }) {
               <span className="text-xs text-text-secondary">{g?.label}</span>
             </div>
             <span className="text-sm font-mono font-semibold text-text-primary">
-              {p.value?.toFixed(1)}
+              {p.value?.toFixed(1).replace('.', ',')}
             </span>
           </div>
         );
@@ -41,7 +45,7 @@ function StructureTooltip({ active, payload, label }) {
       <div className="mt-2 pt-2 border-t border-border-subtle flex justify-between">
         <span className="text-xs text-text-tertiary">Всего</span>
         <span className="text-sm font-mono font-semibold text-text-primary">
-          {total.toFixed(1)} млн
+          {total.toFixed(1).replace('.', ',')} млн
         </span>
       </div>
     </div>
@@ -62,7 +66,7 @@ function PercentTooltip({ active, payload, label }) {
               <span className="text-xs text-text-secondary">{g?.label}</span>
             </div>
             <span className="text-sm font-mono font-semibold text-text-primary">
-              {p.value?.toFixed(1)}%
+              {p.value?.toFixed(1).replace('.', ',')}%
             </span>
           </div>
         );
@@ -103,7 +107,7 @@ function StructureBar({ latest }) {
       <div className="grid grid-cols-3 gap-6">
         {GROUPS.map((g) => {
           const val = latest[g.key] || 0;
-          const pct = ((val / total) * 100).toFixed(1);
+          const pct = ((val / total) * 100).toFixed(1).replace('.', ',');
           return (
             <Link
               key={g.key}
@@ -115,7 +119,7 @@ function StructureBar({ latest }) {
                 <span className="text-[11px] text-text-tertiary uppercase tracking-wider">{g.short}</span>
               </div>
               <p className="text-2xl font-display font-bold text-text-primary tracking-tight">
-                {val.toFixed(1)}
+                {val.toFixed(1).replace('.', ',')}
               </p>
               <p className="text-xs text-text-tertiary font-mono mt-0.5">млн чел., {pct}%</p>
             </Link>
@@ -193,7 +197,10 @@ export default function DemographicsPage() {
         </div>
         <p className="text-text-secondary leading-relaxed">
           Три возрастные группы по классификации Росстата: моложе трудоспособного возраста (0–15 лет),
-          в трудоспособном возрасте (мужчины 16–59, женщины 16–54) и старше трудоспособного.
+          в трудоспособном возрасте и старше трудоспособного. Границы трудоспособного возраста
+          определяются законодательством на каждый год: до 2019 года — мужчины 16–59 лет и
+          женщины 16–54 года, с 2019 года верхняя граница поэтапно повышается в рамках
+          пенсионной реформы.
           {firstYear && <> Источник: данные Росстата с {firstYear} года.</>}
         </p>
       </header>
@@ -235,7 +242,7 @@ export default function DemographicsPage() {
               Структура на {latest.year} г.
             </h2>
             <span className="text-sm font-mono text-text-tertiary">
-              {GROUPS.reduce((s, g) => s + (latest[g.key] || 0), 0).toFixed(1)} млн чел.
+              {GROUPS.reduce((s, g) => s + (latest[g.key] || 0), 0).toFixed(1).replace('.', ',')} млн чел.
             </span>
           </div>
           <StructureBar latest={latest} />

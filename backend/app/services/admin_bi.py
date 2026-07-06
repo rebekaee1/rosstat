@@ -27,7 +27,7 @@ from __future__ import annotations
 
 import logging
 from collections import Counter, defaultdict
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
 from sqlalchemy import func, select
@@ -912,7 +912,7 @@ async def build_bi_dashboard(db: AsyncSession, period: Period | int = 30) -> dic
     from app.services.dataset_inventory import build_inventory
 
     dashboard: dict[str, Any] = {
-        "generated_at": datetime.utcnow().isoformat(timespec="seconds"),
+        "generated_at": datetime.now(timezone.utc).replace(tzinfo=None).isoformat(timespec="seconds"),
         "window_days": p.days,
         "period": p.to_meta(),
         "users": await _users_summary(db, p),

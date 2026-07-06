@@ -62,7 +62,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Откуда берутся данные?',
-    a: 'Все данные — официальные значения ИПЦ Росстата (Федеральной службы государственной статистики) с января 1991 года по текущий месяц. Обновляются ежедневно.',
+    a: 'Все данные — официальные значения ИПЦ Росстата (Федеральной службы государственной статистики) с января 1991 года по текущий месяц. Обновляются по мере публикации Росстата.',
   },
 ];
 
@@ -349,20 +349,28 @@ export default function CalculatorPage() {
     } catch { /* clipboard unavailable */ }
   }, [amount, fromYear, toYear, setSearchParams]);
 
+  // В-28: hero и share-текст показывают ФАКТИЧЕСКИ посчитанный период
+  // (клэмп к доступным данным), а не введённые годы — иначе «?from=1990»
+  // считался бы с 1991, а пользователь видел «с 1990».
+  const dispFrom = result?.effectiveFrom ?? fromYear;
+  const dispTo = result?.effectiveTo ?? toYear;
+
   const handleCopyText = useCallback(async () => {
     if (!result) return;
     track(events.CALC_COPY_RESULT);
+    const f = result.effectiveFrom ?? fromYear;
+    const t = result.effectiveTo ?? toYear;
     const text = reversed
-      ? `${formatInput(amount)} ₽ в ${toYear} году — это было ${formatRubles(result.purchasing)} в ${fromYear} году (инфляция ${result.totalInflation.toFixed(1)}%). Рассчитано на forecasteconomy.com/calculator`
-      : `${formatInput(amount)} ₽ в ${fromYear} году эквивалентны ${formatRubles(result.equivalent)} в ${toYear} году (инфляция ${result.totalInflation.toFixed(1)}%). Рассчитано на forecasteconomy.com/calculator`;
+      ? `${formatInput(amount)} ₽ в ${t} году — это было ${formatRubles(result.purchasing)} в ${f} году (инфляция ${fmtPct(result.totalInflation)}). Рассчитано на forecasteconomy.com/calculator`
+      : `${formatInput(amount)} ₽ в ${f} году эквивалентны ${formatRubles(result.equivalent)} в ${t} году (инфляция ${fmtPct(result.totalInflation)}). Рассчитано на forecasteconomy.com/calculator`;
     try { await navigator.clipboard.writeText(text); } catch { /* ok */ }
   }, [result, amount, fromYear, toYear, reversed]);
 
   const heroValue = reversed ? result?.purchasing : result?.equivalent;
   const heroPrefix = reversed
-    ? `${formatInput(amount)} ₽ в ${toYear} году — это было`
-    : `${formatInput(amount)} ₽ в ${fromYear} году — это`;
-  const heroSuffix = reversed ? `в ${fromYear} году` : `в ${toYear} году`;
+    ? `${formatInput(amount)} ₽ в ${dispTo} году — это было`
+    : `${formatInput(amount)} ₽ в ${dispFrom} году — это`;
+  const heroSuffix = reversed ? `в ${dispFrom} году` : `в ${dispTo} году`;
 
   const chartData = useMemo(() => {
     if (!result?.series?.length) return [];
@@ -433,19 +441,19 @@ export default function CalculatorPage() {
       const ratio = result.peakYear.rate / result.avgAnnual;
       items.push({
         icon: Flame,
-        text: `Пиковая инфляция: ${result.peakYear.year} год — ${result.peakYear.rate.toFixed(1)}%${ratio > 1.5 ? ` (в ${ratio.toFixed(1)}× больше средней)` : ''}`,
+        text: `Пиковая инфляция: ${result.peakYear.year} год — ${fmtPct(result.peakYear.rate)}${ratio > 1.5 ? ` (в ${ratio.toFixed(1).replace('.', ',')}× больше средней)` : ''}`,
       });
     }
 
     items.push({
       icon: Target,
-      text: `Для сохранения покупательной способности доходы должны были расти минимум на ${result.avgAnnual.toFixed(1)}% ежегодно`,
+      text: `Для сохранения покупательной способности доходы должны были расти минимум на ${fmtPct(result.avgAnnual)} ежегодно`,
     });
 
     if (result.doublingYears && result.doublingYears < 100) {
       items.push({
         icon: Clock,
-        text: `При средней инфляции ${result.avgAnnual.toFixed(1)}% цены удваиваются каждые ${result.doublingYears} лет`,
+        text: `При средней инфляции ${fmtPct(result.avgAnnual)} цены удваиваются каждые ${result.doublingYears} лет`,
       });
     }
 
@@ -640,19 +648,34 @@ export default function CalculatorPage() {
             />
             <p className="text-sm text-text-secondary mb-6">{heroSuffix}</p>
 
+            {/* В-29: границы периода проговорены явно — «из 2000 в 2026»
+                означает с января 2000 по последний доступный месяц 2026. */}
+            {result.periodFrom && result.periodTo && (
+              <p className="text-xs text-text-tertiary mb-6 -mt-4">
+                Период расчёта: с {formatDate(result.periodFrom, 'full')} по {formatDate(result.periodTo, 'full')}.
+              </p>
+            )}
+
+            {result.clamped && (
+              <p className="text-xs text-text-tertiary mb-6 -mt-4">
+                Данные ИПЦ доступны с {effectiveMin} по {effectiveMax} год — расчёт выполнен
+                за {dispFrom}–{dispTo}.
+              </p>
+            )}
+
             {/* Stat pills */}
             <div className="flex flex-wrap gap-3 mb-6">
               <div className="px-4 py-2.5 rounded-xl bg-obsidian border border-border-subtle">
                 <p className="text-[10px] uppercase tracking-[0.15em] text-text-tertiary font-medium mb-0.5">Инфляция</p>
-                <p className="text-base font-mono font-bold text-text-primary tabular-nums">+{result.totalInflation.toFixed(1)}%</p>
+                <p className="text-base font-mono font-bold text-text-primary tabular-nums">{fmtPct(result.totalInflation, true)}</p>
               </div>
               <div className="px-4 py-2.5 rounded-xl bg-obsidian border border-border-subtle">
                 <p className="text-[10px] uppercase tracking-[0.15em] text-text-tertiary font-medium mb-0.5">Среднегодовая</p>
-                <p className="text-base font-mono font-bold text-text-primary tabular-nums">{result.avgAnnual.toFixed(1)}%</p>
+                <p className="text-base font-mono font-bold text-text-primary tabular-nums">{fmtPct(result.avgAnnual)}</p>
               </div>
               <div className="px-4 py-2.5 rounded-xl bg-obsidian border border-border-subtle">
                 <p className="text-[10px] uppercase tracking-[0.15em] text-text-tertiary font-medium mb-0.5">Множитель</p>
-                <p className="text-base font-mono font-bold text-text-primary tabular-nums">×{result.multiplier.toFixed(2)}</p>
+                <p className="text-base font-mono font-bold text-text-primary tabular-nums">×{result.multiplier.toFixed(2).replace('.', ',')}</p>
               </div>
             </div>
 

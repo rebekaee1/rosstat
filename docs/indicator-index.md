@@ -2,6 +2,8 @@
 
 > Генерируется `scripts/build-indicator-index.py`. НЕ редактировать руками. Полная машинная версия — `docs/indicator-index.json`. Подробности по каждому коду (files/derived_siblings) — в JSON.
 
+**Сгенерировано:** 2026-07-06
+
 ## Как пользоваться (для агента)
 
 1. `python scripts/locate-indicator.py <code>` — где код вообще встречается.

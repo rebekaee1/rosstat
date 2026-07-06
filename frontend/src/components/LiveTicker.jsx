@@ -22,10 +22,10 @@ function formatPrice(value, decimals) {
 function formatPct(pct) {
   if (pct === null || pct === undefined) return '—';
   const sign = pct > 0 ? '+' : '';
-  return `${sign}${pct.toFixed(2)}%`;
+  return `${sign}${pct.toFixed(2).replace('.', ',')}%`;
 }
 
-function TickerCell({ snapshot }) {
+function TickerCell({ snapshot, nowMs }) {
   // Хуки должны вызываться в стабильном порядке на каждом рендере (React rules-of-hooks);
   // ранний return ставим **после** объявления хуков, иначе ESLint roof-of-hooks ошибка.
   const meta = TICKER_META[snapshot.code];
@@ -60,6 +60,19 @@ function TickerCell({ snapshot }) {
   const negative = pct !== null && pct !== undefined && pct < 0;
   const hasPrice = snapshot.price > 0;
 
+  // В-17: старая котировка не выдаётся за живую. Если снапшот не обновлялся
+  // дольше 15 минут — приглушаем ячейку и подписываем время данных в тултипе.
+  // «Сейчас» — момент прихода ответа (dataUpdatedAt из React Query, проп),
+  // а не Date.now() в рендере: поллинг каждые POLL_INTERVAL_MS освежает его.
+  const fetchedMs = snapshot.fetched_at ? new Date(snapshot.fetched_at).getTime() : null;
+  const isStale = fetchedMs !== null && nowMs - fetchedMs > 15 * 60 * 1000;
+  const asOf = fetchedMs !== null
+    ? new Date(fetchedMs).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Moscow' })
+    : null;
+  const titleParts = [`Источник: ${snapshot.source}`];
+  if (!snapshot.market_open) titleParts.push('торги закрыты');
+  if (asOf) titleParts.push(isStale ? `данные на ${asOf} МСК (обновление недоступно)` : `данные на ${asOf} МСК`);
+
   return (
     <Link
       to={meta.linkTo}
@@ -70,8 +83,9 @@ function TickerCell({ snapshot }) {
         'border border-transparent',
         flash === 'up' && 'bg-positive/10 border-positive/30',
         flash === 'down' && 'bg-negative/10 border-negative/30',
+        isStale && 'opacity-60',
       )}
-      title={snapshot.market_open ? `Источник: ${snapshot.source}` : `Источник: ${snapshot.source} (торги закрыты)`}
+      title={titleParts.join(' · ')}
     >
       <span className="text-[9px] uppercase tracking-wide text-text-secondary font-medium sm:text-[11px]">
         {meta.label}
@@ -100,7 +114,7 @@ async function fetchLiveTicker() {
 export default function LiveTicker() {
   // Тикер показываем на всех ширинах: на мобиле — статичный компактный ряд
   // (без анимации/карусели, чтобы не отвлекал), на десктопе — полная строка.
-  const { data } = useQuery({
+  const { data, dataUpdatedAt } = useQuery({
     queryKey: ['ticker', 'live'],
     queryFn: fetchLiveTicker,
     refetchInterval: POLL_INTERVAL_MS,
@@ -123,7 +137,7 @@ export default function LiveTicker() {
           aria-label="Котировки"
         >
           {snapshots.map((s) => (
-            <TickerCell key={s.code} snapshot={s} />
+            <TickerCell key={s.code} snapshot={s} nowMs={dataUpdatedAt} />
           ))}
         </div>
       </div>

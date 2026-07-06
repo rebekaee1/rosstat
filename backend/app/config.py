@@ -9,6 +9,9 @@ class Settings(BaseSettings):
     # Database
     database_url: str = "postgresql+asyncpg://rustats:rustats@localhost:5432/rustats"
     database_echo: bool = False
+    # О-15: пул соединений per-process; бюджет см. комментарий в database.py.
+    db_pool_size: int = 5
+    db_max_overflow: int = 10
 
     # Redis
     redis_url: str = "redis://localhost:6379/0"

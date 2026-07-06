@@ -81,7 +81,18 @@ export default function GenericIndicatorView({
   // Метаданные именно отображаемого ряда (native source или derived sibling) —
   // источник истины для unit/частоты/имени/методологии режима.
   const { data: resolvedIndicator } = useIndicator(resolved?.code);
-  const effectiveIndicator = resolvedIndicator || indicator;
+  // В-19: пока метаданные sibling'а грузятся, unit/frequency берём из конфига
+  // режима (resolved) — иначе первый paint выходит с единицей/частотой родителя
+  // («млрд руб.» на графике «% г/г»).
+  const effectiveIndicator = useMemo(() => {
+    if (resolvedIndicator) return resolvedIndicator;
+    if (!indicator || !resolved || resolved.isNative) return indicator;
+    return {
+      ...indicator,
+      unit: resolved.unit ?? indicator.unit,
+      frequency: resolved.frequency ?? indicator.frequency,
+    };
+  }, [resolvedIndicator, indicator, resolved]);
 
   const {
     dataPoints, viewStats, forecastResp, forecastEnabled, hasForecast, isLoading,

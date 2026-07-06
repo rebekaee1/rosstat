@@ -162,9 +162,14 @@ export function shortUnit(unit = '') {
   return unit.length > 26 ? '' : unit;
 }
 
-/** Дельта к прошлому году: направление и текст. */
+/** Дельта к прошлому году: направление и текст.
+ *
+ * В-20 (CTO-аудит 2026-07-06): при отрицательной базе или переходе через ноль
+ * процент нечитаем (сальдо −5 → +5 это не «+200%») — бейдж не показываем.
+ */
 export function yearDelta(value, prevValue) {
   if (value == null || prevValue == null || prevValue === 0) return null;
+  if (prevValue < 0 || value < 0) return null;
   const pct = ((value - prevValue) / Math.abs(prevValue)) * 100;
   if (!Number.isFinite(pct)) return null;
   return { pct, up: pct > 0.005, down: pct < -0.005 };

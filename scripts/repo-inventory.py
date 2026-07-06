@@ -15,6 +15,7 @@ build/*.lock/бинарники). Для каждого файла: путь, ч
 """
 from __future__ import annotations
 
+import datetime as _dt
 import subprocess
 import sys
 from pathlib import Path
@@ -132,6 +133,8 @@ def build() -> str:
         ".git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники."
     )
     out.append("")
+    out.append(f"**Сгенерировано:** {_dt.date.today().isoformat()}")
+    out.append("")
     out.append(f"**Файлов:** {len(rows)}  ·  **Строк:** {total_lines:,}  ·  "
                f"**Токенов (≈):** {total_tokens:,}".replace(",", " "))
     out.append("")
@@ -161,9 +164,11 @@ def main() -> int:
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(md, encoding="utf-8")
     # Короткая сводка в stdout для CI/человека.
-    first_line = md.splitlines()[4] if len(md.splitlines()) > 4 else ""
+    totals = next(
+        (l for l in md.splitlines() if l.startswith("**Файлов:**")), ""
+    )
     print(f"repo-inventory: wrote {OUT.relative_to(ROOT)}")
-    print(first_line)
+    print(totals)
     return 0
 
 

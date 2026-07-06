@@ -6,7 +6,7 @@
 """
 
 import asyncio
-from datetime import date
+from datetime import date, datetime, timedelta
 
 import pytest
 from fastapi.testclient import TestClient
@@ -146,9 +146,28 @@ def seeded_env(auth_env):
             )
             s.add(usd)
             await s.flush()
+            # Даты относительные: freshness-guard (В-4) не должен сработать
+            # на свежесеянных данных независимо от текущей даты запуска.
             for i, v in enumerate([76.5, 77.0, 77.2]):
                 s.add(IndicatorData(
-                    indicator_id=usd.id, date=date(2026, 7, 1 + i), value=v,
+                    indicator_id=usd.id,
+                    date=date.today() - timedelta(days=2 - i),
+                    value=v,
+                ))
+
+            # Умерший ETL: дневной ряд, последняя точка 30 дней назад (> SLA 7).
+            gold = Indicator(
+                code="gold-price", name="Цена золота", unit="руб./г",
+                category="Товарные рынки", source="Банк России", frequency="daily",
+                parser_type="cbr_metals", is_active=True, is_listed=True,
+            )
+            s.add(gold)
+            await s.flush()
+            for i, v in enumerate([7100.0, 7150.0]):
+                s.add(IndicatorData(
+                    indicator_id=gold.id,
+                    date=date.today() - timedelta(days=31 - i),
+                    value=v,
                 ))
 
             rf = Region(slug="russia", name="Российская Федерация", kind="country", sort_order=0)
@@ -177,11 +196,17 @@ def seeded_env(auth_env):
             s.add(RegionDataPoint(indicator_id=pop.id, region_id=rf.id,
                                   year=2023, value=146000))
 
+            # События с полным provenance — SSR-календарь показывает только
+            # source-bound строки (В-7: тот же фильтр, что и публичный API).
             for day in (4, 11, 18):
                 s.add(EconomicEvent(
                     title=f"Публикация {day}", event_type="release",
                     source="rosstat", scheduled_date=date(2026, 7, day),
                     event_key=f"test-{day}", is_estimated=False,
+                    date_confidence="official_explicit",
+                    source_url="https://rosstat.gov.ru/calendar",
+                    source_hash=f"hash-{day}",
+                    last_seen_at=datetime(2026, 7, 1, 12, 0),
                 ))
             await s.commit()
 
@@ -210,6 +235,37 @@ def test_render_today_pages(seeded_env):
         assert nf.status_code == 404
         assert "<html" in nf.text and 'class="seo-topbar"' in nf.text
         assert "noindex" in nf.text
+
+
+def test_today_freshness_guard(seeded_env):
+    """В-4: устаревший ряд не продаётся как «сегодня» — честная рамка."""
+    with TestClient(seeded_env["app"]) as tc:
+        r = tc.get("/seo/today/gold-price")
+        assert r.status_code == 200
+        assert "Цена золота — последнее значение" in r.text
+        assert "Последнее доступное значение" in r.text
+        assert "Новых публикаций источника пока нет" in r.text
+        # заголовок не обещает сегодняшнюю дату
+        assert "Цена золота сегодня," not in r.text
+
+        # свежий ряд по-прежнему в «сегодня»-рамке
+        fresh = tc.get("/seo/today/usd-rub")
+        assert "Курс доллара сегодня" in fresh.text
+        assert "Новых публикаций источника пока нет" not in fresh.text
+
+
+def test_is_stale_thresholds():
+    from app.services.seo_today import is_stale
+
+    today = date(2026, 7, 6)
+    assert not is_stale("daily", today - timedelta(days=5), today)
+    assert is_stale("daily", today - timedelta(days=8), today)
+    assert not is_stale("weekly", today - timedelta(days=14), today)
+    assert is_stale("weekly", today - timedelta(days=30), today)
+    assert not is_stale("monthly", today - timedelta(days=60), today)
+    assert is_stale("monthly", today - timedelta(days=90), today)
+    # неизвестная частота — дефолт как monthly
+    assert not is_stale(None, today - timedelta(days=60), today)
 
 
 def test_render_region_rating(seeded_env):

@@ -5,9 +5,11 @@ Run once after first migration: python seed_data.py
 
 import asyncio
 import csv
+import hashlib
+import json
 import os
 import sys
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 from sqlalchemy import delete, extract, select, update
@@ -17,7 +19,7 @@ from sqlalchemy.dialects.postgresql import insert as pg_insert
 sys.path.insert(0, str(Path(__file__).parent))
 
 from app.database import async_session
-from app.models import Indicator, IndicatorData
+from app.models import Indicator, IndicatorData, SeedState
 from app.services.forecast_pipeline import retrain_indicator_forecast
 from app.data.indicator_seo import (
     INDICATOR_SEO,
@@ -4540,7 +4542,87 @@ for _ind in INDICATORS:
         _cfg["forecast_strategy"] = "monthly_auto"
 
 
+_SEED_HASH_KEY = "seed_schema_hash"
+
+
+def compute_seed_hash() -> str:
+    """Хэш ПОЛНОГО desired-state payload'а (П-12, риск Р-3).
+
+    Хэшируется сам сгенерированный payload, а не список файлов: INDICATORS уже
+    включает развёрнутые generic-семьи из view_model_families, SEO-слои —
+    актуальные словари. Любая правка любого входа меняет хэш → полный прогон.
+    """
+    from app.data.wages_historical import MONTHLY_GAP_FILL
+
+    def _canon(obj):
+        """JSON-канонизация с нестроковыми ключами (date в gap_fill и т.п.)."""
+        if isinstance(obj, dict):
+            return {str(k): _canon(v) for k, v in obj.items()}
+        if isinstance(obj, (list, tuple)):
+            return [_canon(v) for v in obj]
+        if isinstance(obj, (str, int, float, bool)) or obj is None:
+            return obj
+        return str(obj)
+
+    payload = _canon({
+        "indicators": INDICATORS,
+        "seo": INDICATOR_SEO,
+        "seo_keywords": INDICATOR_SEO_KEYWORDS,
+        "seo_blocks": INDICATOR_SEO_BLOCKS,
+        "hidden": sorted(INDICATOR_HIDDEN_FROM_LISTING),
+        "gap_fill": MONTHLY_GAP_FILL,
+    })
+    blob = json.dumps(payload, sort_keys=True, ensure_ascii=False)
+    return hashlib.sha256(blob.encode()).hexdigest()
+
+
+async def _stored_seed_hash(db) -> str | None:
+    try:
+        row = await db.get(SeedState, _SEED_HASH_KEY)
+        return row.value if row else None
+    except Exception:
+        # Таблицы ещё нет (старая БД до миграции) — считаем «хэша нет».
+        await db.rollback()
+        return None
+
+
+async def _store_seed_hash(db, value: str) -> None:
+    row = await db.get(SeedState, _SEED_HASH_KEY)
+    if row is None:
+        db.add(SeedState(key=_SEED_HASH_KEY, value=value,
+                         updated_at=datetime.now(timezone.utc).replace(tzinfo=None)))
+    else:
+        row.value = value
+        row.updated_at = datetime.now(timezone.utc).replace(tzinfo=None)
+    await db.commit()
+
+
 async def seed():
+    desired_hash = compute_seed_hash()
+    force = os.environ.get("FORCE_SEED", "") == "1"
+    async with async_session() as db:
+        stored = await _stored_seed_hash(db)
+        if stored == desired_hash and not force:
+            # Р-3: решение логируем явно — «пропущено» не должно выглядеть
+            # как «применено».
+            print(f"  Seed skipped: schema hash match ({desired_hash[:12]}…). "
+                  "FORCE_SEED=1 для полного прогона.")
+            return
+        if force:
+            print("  FORCE_SEED=1 — полный прогон независимо от хэша.")
+        elif stored is None:
+            print("  Seed hash отсутствует — полный прогон.")
+        else:
+            print(f"  Seed hash изменился ({(stored or '')[:12]}… → {desired_hash[:12]}…) — полный прогон.")
+
+    await _seed_full()
+
+    async with async_session() as db:
+        await _store_seed_hash(db, desired_hash)
+        print(f"  Seed hash stored: {desired_hash[:12]}…")
+
+
+async def _seed_full():
     async with async_session() as db:
         # Seed indicators — upsert metadata, preserve data
         _metadata_cols = [

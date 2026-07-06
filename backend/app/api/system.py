@@ -1,9 +1,11 @@
 import time
+from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
-from sqlalchemy import select, func, desc
+from sqlalchemy import select, func, desc, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.cache import get_redis, get_state_redis
 from app.database import get_db
 from app.models import Indicator, IndicatorData, FetchLog, Forecast
 from app.schemas import SystemStatus
@@ -13,10 +15,104 @@ router = APIRouter(tags=["system"])
 
 _START_TIME = time.time()
 
+# Возраст последнего успешного ETL, после которого readiness помечает
+# деградацию (не роняя 503: рестарт контейнера мёртвый источник не чинит).
+_ETL_FRESH_HOURS = 36
+
+# Н-25: возраст heartbeat pg-backup (cron 04:00 + запас). Ключ пишет
+# scripts/pg-backup.sh; отсутствие ключа (dev, свежий Redis) — не деградация,
+# только просроченный существующий heartbeat.
+_PG_BACKUP_FRESH_HOURS = 30
+_PG_BACKUP_HEARTBEAT_KEY = "fe:ops:pg_backup_last_ok"
+
 
 @router.get("/health")
+@router.get("/health/live")
 async def health():
+    """Liveness: процесс жив и отвечает. Ничего внешнего не проверяет."""
     return {"status": "ok"}
+
+
+@router.get("/health/ready")
+async def health_ready(response: Response, db: AsyncSession = Depends(get_db)):
+    """Readiness (Н-1): БД, оба Redis, планировщик, свежесть ETL.
+
+    503 — только при отказе жёстких зависимостей (БД / Redis / планировщик):
+    их рестарт или алерт чинит. Устаревший ETL — мягкая деградация
+    (`degraded: true`): источник может быть мёртв неделями, рестартовать
+    backend бессмысленно; за алерт отвечает staleness-job (Н-3).
+    """
+    checks: dict[str, str] = {}
+    hard_ok = True
+
+    try:
+        await db.execute(text("SELECT 1"))
+        checks["db"] = "ok"
+    except Exception:
+        checks["db"] = "fail"
+        hard_ok = False
+
+    try:
+        await (await get_redis()).ping()
+        checks["cache_redis"] = "ok"
+    except Exception:
+        checks["cache_redis"] = "fail"
+        hard_ok = False
+
+    # state-Redis (DB 1): сессии/lockout/квоты (Н-12) — его отказ ломает auth.
+    try:
+        await (await get_state_redis()).ping()
+        checks["state_redis"] = "ok"
+    except Exception:
+        checks["state_redis"] = "fail"
+        hard_ok = False
+
+    if settings.scheduler_enabled:
+        from app.main import scheduler  # noqa: PLC0415 — против циклического импорта
+        checks["scheduler"] = "ok" if scheduler.running else "fail"
+        if not scheduler.running:
+            hard_ok = False
+
+    degraded = False
+    if checks["db"] == "ok":
+        try:
+            last_ok = await db.scalar(
+                select(func.max(FetchLog.completed_at))
+                .where(FetchLog.status.in_(("success", "no_new_data")))
+            )
+            if last_ok is not None:
+                age_h = (
+                    datetime.now(timezone.utc).replace(tzinfo=None) - last_ok
+                ).total_seconds() / 3600
+                checks["etl_last_ok_age_hours"] = f"{age_h:.1f}"
+                if age_h > _ETL_FRESH_HOURS:
+                    degraded = True
+            else:
+                checks["etl_last_ok_age_hours"] = "never"
+        except Exception:
+            checks["etl_last_ok_age_hours"] = "unknown"
+
+    # Н-25: heartbeat pg-backup (пишется cron-скриптом в cache-Redis).
+    if checks["cache_redis"] == "ok":
+        try:
+            raw = await (await get_redis()).get(_PG_BACKUP_HEARTBEAT_KEY)
+            if raw is not None:
+                backup_age_h = (time.time() - float(raw)) / 3600
+                checks["pg_backup_age_hours"] = f"{backup_age_h:.1f}"
+                if backup_age_h > _PG_BACKUP_FRESH_HOURS:
+                    degraded = True
+            else:
+                checks["pg_backup_age_hours"] = "never"
+        except Exception:
+            checks["pg_backup_age_hours"] = "unknown"
+
+    if not hard_ok:
+        response.status_code = 503
+    return {
+        "status": "ok" if hard_ok and not degraded else ("fail" if not hard_ok else "degraded"),
+        "degraded": degraded,
+        "checks": checks,
+    }
 
 
 def _check_metrics_token(token: str = Query("", alias="token")):
@@ -61,6 +157,43 @@ async def prometheus_metrics(db: AsyncSession = Depends(get_db), _=Depends(_chec
         "# HELP fe_uptime_seconds Backend uptime in seconds",
         "# TYPE fe_uptime_seconds gauge",
         f"fe_uptime_seconds {uptime:.0f}",
+    ]
+
+    # Н-13: серверный error-rate по классам статусов (in-process, с рестарта).
+    from app.main import HttpStatusCounterMiddleware  # noqa: PLC0415 — против цикла
+    lines += [
+        "# HELP fe_http_responses_total HTTP responses by status class",
+        "# TYPE fe_http_responses_total counter",
+    ]
+    lines += [
+        f'fe_http_responses_total{{class="{cls}"}} {n}'
+        for cls, n in HttpStatusCounterMiddleware.counters.items()
+    ]
+
+    # Н-17/Н-18: деградация Redis — fail-open счётчики кэша и rate-лимитера.
+    from app.core.cache import failure_counters
+    from app.main import RateLimitMiddleware
+    lines += [
+        "# HELP fe_cache_failures_total Redis cache fail-open operations",
+        "# TYPE fe_cache_failures_total counter",
+    ]
+    lines += [
+        f'fe_cache_failures_total{{op="{op}"}} {n}'
+        for op, n in failure_counters.items()
+    ]
+    lines += [
+        "# HELP fe_rate_limit_fail_open_total Requests allowed without rate limit (Redis down)",
+        "# TYPE fe_rate_limit_fail_open_total counter",
+        f"fe_rate_limit_fail_open_total {RateLimitMiddleware.fail_open_count}",
+    ]
+
+    # Н-29: свежесть GeoIP-базы (аудитория без гео при протухшем файле).
+    from app.services.geoip import db_age_days
+    age = db_age_days()
+    lines += [
+        "# HELP fe_geoip_db_age_days GeoIP database file age in days (-1 = missing)",
+        "# TYPE fe_geoip_db_age_days gauge",
+        f"fe_geoip_db_age_days {age if age is not None else -1:.1f}",
     ]
     return Response(content="\n".join(lines) + "\n", media_type="text/plain")
 

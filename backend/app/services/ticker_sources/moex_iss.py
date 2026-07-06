@@ -125,12 +125,12 @@ async def _fetch_cbr_daily(client: httpx.AsyncClient) -> dict[str, tuple[float, 
     ETL дешевле, чем строить дельту на каждом тике.
     """
     from xml.etree import ElementTree
-    from datetime import datetime, timedelta
+    from datetime import timedelta
 
     out: dict[str, tuple[float, float | None]] = {}
 
     # Today + yesterday конкурентно — fallback не должен растягивать тик.
-    yest = (datetime.utcnow() - timedelta(days=1)).strftime("%d/%m/%Y")
+    yest = (utcnow() - timedelta(days=1)).strftime("%d/%m/%Y")
     today_resp, yest_resp = await asyncio.gather(
         client.get(_CBR_DAILY_URL, timeout=_TIMEOUT),
         client.get(_CBR_DAILY_URL, params={"date_req": yest}, timeout=_TIMEOUT),
@@ -231,10 +231,10 @@ async def _fetch_cbr_gold(client: httpx.AsyncClient) -> tuple[float | None, floa
     Тянем небольшой диапазон последних дней из xml_metall.asp, берём
     последнюю запись по золоту (Code=1) и предыдущую для дельты.
     """
-    from datetime import date as _date, datetime, timedelta
+    from datetime import date as _date, timedelta
     from xml.etree import ElementTree
 
-    now = datetime.utcnow()
+    now = utcnow()
     params = {
         "date_req1": (now - timedelta(days=10)).strftime("%d/%m/%Y"),
         "date_req2": now.strftime("%d/%m/%Y"),

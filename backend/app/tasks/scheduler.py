@@ -9,16 +9,16 @@ ETL scheduler: ежедневный прогон **всех активных** �
 import asyncio
 import logging
 import time
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 
-from sqlalchemy import select, update
+from sqlalchemy import func, select, update
 
 from app.database import async_session
-from app.models import Indicator, FetchLog, EconomicEvent
+from app.models import Indicator, IndicatorData, FetchLog, EconomicEvent
 from app.services.rosstat_cpi_parser import get_parser
 from app.services.calculation_engine import calculation_engine
 from app.services.forecast_pipeline import retrain_indicator_forecast
-from app.services.alerting import alert_etl_failure, alert_etl_summary
+from app.services.alerting import alert_etl_failure, alert_etl_summary, send_telegram
 
 ETL_TIMEOUT_SECONDS = 300
 # Тяжёлые парсеры: cold-start может идти минуты; steady-state weekly — секунды.
@@ -61,7 +61,12 @@ async def run_etl_for_indicator(indicator_code: str) -> bool:
             await parser.run(db, indicator, fetch_log)
             if fetch_log.status == "failed":
                 raise RuntimeError(fetch_log.error_message or "Parser reported failure")
-            return (fetch_log.records_added or 0) > 0
+            # П-3: «данные изменились» = добавления И ревизии (status=success
+            # ставится парсером при added/updated/pruned > 0). Раньше чистая
+            # in-place ревизия (records_updated>0, added=0) не попадала в
+            # updated_codes — при инкрементальном derived-пересчёте (П-2)
+            # её зависимые остались бы stale.
+            return fetch_log.status == "success"
         except asyncio.CancelledError:
             if fetch_log.status not in ("failed", "timeout"):
                 await db.rollback()
@@ -146,8 +151,12 @@ async def daily_update_job():
                     logger.info("CalculationEngine updated derived indicators: %s", derived)
                     ping_codes.extend(derived)
                     await _retrain_self_modeled_derived(db, derived)
-            except Exception:
+            except Exception as e:
+                # Н-5: source обновился, derived stale — это витринная ложь,
+                # а не внутренняя мелочь; в summary и алерт, не только в лог.
                 logger.exception("CalculationEngine failed")
+                failed_codes.append("derived-engine")
+                await alert_etl_failure("derived-engine", str(e))
         # IndexNow: сообщаем поисковикам об обновлённых карточках (source +
         # derived) сразу после ETL — робот узнаёт о свежих данных за минуты.
         try:
@@ -189,9 +198,11 @@ async def _retrain_self_modeled_derived(db, derived_codes: list[str]) -> None:
                 await retrain_indicator_forecast(db, ind)
                 await db.commit()
                 logger.info("Retrained self-modeled derived forecast: %s", ind.code)
-            except Exception:
+            except Exception as e:
                 await db.rollback()
+                # Н-6: старый прогноз молча остаётся current — алертим.
                 logger.exception("Self-modeled derived retrain failed: %s", ind.code)
+                await alert_etl_failure(f"retrain:{ind.code}", str(e))
 
 
 async def run_etl_for_parser_type(parser_type: str) -> dict[str, int]:
@@ -237,9 +248,11 @@ async def run_etl_for_parser_type(parser_type: str) -> dict[str, int]:
             )
             if had_new:
                 updated_codes.append(code)
-        except Exception:
+        except Exception as e:
+            # Н-15: late-pass подключён к тому же алертингу, что и daily.
             logger.exception("Late ETL failed for %s", code)
             failed_codes.append(code)
+            await alert_etl_failure(code, str(e))
         finally:
             async with _lock:
                 _running_locks.discard(code)
@@ -255,8 +268,10 @@ async def run_etl_for_parser_type(parser_type: str) -> dict[str, int]:
                         "Late ETL pass updated derived indicators: %s", derived
                     )
                     ping_codes.extend(derived)
-            except Exception:
+            except Exception as e:
                 logger.exception("CalculationEngine failed in late pass")
+                failed_codes.append("derived-engine")
+                await alert_etl_failure("derived-engine", str(e))
         try:
             from app.services.indexnow import ping_updated_indicators
 
@@ -282,6 +297,98 @@ async def late_minfin_etl_job():
     insurance.
     """
     await run_etl_for_parser_type("minfin_budget_csv")
+
+
+# ---------------------------------------------------------------------------
+#  Staleness-мониторинг (Н-3): «источник молча умер» виден не через failed,
+#  а через вечный no_new_data. Ежедневная сверка max(data.date) с SLA частоты.
+# ---------------------------------------------------------------------------
+
+# Пороги с запасом на лаг публикации источника (месячный ряд Росстата выходит
+# через 4-6 недель после периода). Синхронизированы по духу с freshness-SLA
+# страниц /today (`seo_today._STALE_AFTER_DAYS`), но мягче: здесь алерт
+# оператору, там — честная рамка пользователю.
+STALENESS_SLA_DAYS: dict[str, int] = {
+    "daily": 7,
+    "weekly": 21,
+    "monthly": 75,
+    "quarterly": 150,
+    "annual": 550,
+}
+_STALENESS_DEFAULT_DAYS = 550  # irregular и незнакомые частоты
+
+
+def find_stale(rows: list[tuple[str, str | None, date | None]],
+               today: date | None = None) -> list[tuple[str, int]]:
+    """Из (code, frequency, max_date) — [(code, возраст_дней)] сверх SLA.
+
+    Чистая функция для тестируемости; ряды без точек пропускаются (их ловит
+    startup catch-up, Н-9).
+    """
+    today = today or date.today()
+    stale: list[tuple[str, int]] = []
+    for code, frequency, max_date in rows:
+        if max_date is None:
+            continue
+        sla = STALENESS_SLA_DAYS.get((frequency or "").lower(), _STALENESS_DEFAULT_DAYS)
+        age = (today - max_date).days
+        if age > sla:
+            stale.append((code, age))
+    return stale
+
+
+async def staleness_check_job() -> list[tuple[str, int]]:
+    """Ежедневная проверка свежести всех активных индикаторов + Telegram-алерт."""
+    async with async_session() as db:
+        q = await db.execute(
+            select(Indicator.code, Indicator.frequency, func.max(IndicatorData.date))
+            .outerjoin(IndicatorData, IndicatorData.indicator_id == Indicator.id)
+            .where(Indicator.is_active.is_(True))
+            .group_by(Indicator.id)
+        )
+        rows = [(code, freq, max_date) for code, freq, max_date in q.all()]
+
+    # Н-14: meta-чек «алерты сломаны». Система шлёт минимум одно сообщение в
+    # сутки (ETL-summary); если последней успешной отправки нет > 26 ч —
+    # Telegram-канал, вероятно, мёртв. Алертить через него же бессмысленно —
+    # маркер в лог уровнем ERROR (виден в docker logs / Loki).
+    try:
+        from app.models import TelegramOutbox
+        async with async_session() as db:
+            last_ok = await db.scalar(
+                select(func.max(TelegramOutbox.sent_at))
+                .where(TelegramOutbox.ok.is_(True))
+            )
+        if last_ok is not None:
+            age_h = (datetime.now(timezone.utc).replace(tzinfo=None) - last_ok
+                     ).total_seconds() / 3600
+            if age_h > 26:
+                logger.error(
+                    "ALERTING CHANNEL DEAD? Последнее успешное Telegram-сообщение "
+                    "%.0f ч назад — проверь токен/сеть (telegram_outbox)", age_h,
+                )
+    except Exception:
+        logger.warning("Telegram outbox freshness check failed", exc_info=True)
+
+    stale = find_stale(rows)
+    if stale:
+        from html import escape
+        stale.sort(key=lambda p: -p[1])
+        listing = "\n".join(
+            f"• <code>{escape(code)}</code> — {age} дн. без новых точек"
+            for code, age in stale[:25]
+        )
+        more = f"\n…и ещё {len(stale) - 25}" if len(stale) > 25 else ""
+        await send_telegram(
+            f"🟡 <b>Staleness check</b>\n{len(stale)} индикатор(ов) старше SLA "
+            f"своей частоты:\n{listing}{more}",
+            kind="staleness",
+        )
+        logger.warning("Staleness check: %d stale indicator(s): %s",
+                       len(stale), ", ".join(c for c, _ in stale))
+    else:
+        logger.info("Staleness check: all %d active indicators fresh", len(rows))
+    return stale
 
 
 async def _promote_past_events() -> None:

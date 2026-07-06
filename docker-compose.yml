@@ -13,7 +13,10 @@ services:
     deploy:
       resources:
         limits:
-          memory: 512M
+          # О-10: 512M было впритык при региональной перезаливке (~1M строк) +
+          # pg_dump бэкапа поверх рабочей нагрузки; 1G даёт запас без риска
+          # выесть память хоста (4GB VPS: backend ~1G + postgres 1G + прочее).
+          memory: 1G
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U rustats"]
       interval: 10s
@@ -22,7 +25,11 @@ services:
 
   redis:
     image: redis:7-alpine
-    command: redis-server --requirepass ${REDIS_PASSWORD:-changeme}
+    # О-8: maxmemory ниже cgroup-лимита — переполнение не превращается в OOM-kill.
+    # Политика через env: пока сессии живут в DB1 этого же инстанса — noeviction
+    # (allkeys-lru выселил бы сессии). После переезда state на redis-state
+    # (см. ниже) владелец ставит REDIS_CACHE_POLICY=allkeys-lru.
+    command: redis-server --requirepass ${REDIS_PASSWORD:-changeme} --maxmemory 100mb --maxmemory-policy ${REDIS_CACHE_POLICY:-noeviction}
     ports:
       - "127.0.0.1:6380:6379"
     volumes:
@@ -32,6 +39,26 @@ services:
       resources:
         limits:
           memory: 128M
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-changeme}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis-state:
+    image: redis:7-alpine
+    # О-8: выделенный инстанс для state (сессии/lockout/квоты) — noeviction +
+    # AOF-persistence: сессии пользователей не выселяются и переживают рестарт.
+    # Включение: RUSTATS_STATE_REDIS_URL=redis://:<pass>@redis-state:6379/0 в .env
+    # (одноразовый разлогин всех — применять по команде владельца, см. Р-4).
+    command: redis-server --requirepass ${REDIS_PASSWORD:-changeme} --maxmemory 48mb --maxmemory-policy noeviction --appendonly yes
+    volumes:
+      - redis_state_data:/data
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 64M
     healthcheck:
       test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-changeme}", "ping"]
       interval: 10s
@@ -63,6 +90,8 @@ services:
     environment:
       RUSTATS_DATABASE_URL: postgresql+asyncpg://rustats:${POSTGRES_PASSWORD:-rustats_dev}@postgres:5432/rustats
       RUSTATS_REDIS_URL: redis://:${REDIS_PASSWORD:-changeme}@redis:6379/0
+      # П-16: дисковый кэш OG-картинок (переживает рестарт контейнера)
+      OG_CACHE_DIR: /app/og-cache
       RUSTATS_ROSSTAT_CA_CERT: /app/certs/russiantrustedca2024.pem
       RUSTATS_SCHEDULER_ENABLED: "true"
       # First-party приём событий фронта (питает «Пульс»). По умолчанию ON и
@@ -106,8 +135,9 @@ services:
       RUSTATS_OPENROUTER_API_KEY: ${RUSTATS_OPENROUTER_API_KEY:-}
       RUSTATS_OPENROUTER_MODEL: ${RUSTATS_OPENROUTER_MODEL:-anthropic/claude-sonnet-5}
       RUSTATS_TELEGRAM_POLLER_ENABLED: ${RUSTATS_TELEGRAM_POLLER_ENABLED:-false}
-      # Состояние (сессии/квоты) — отдельный Redis DB /1: FLUSHDB кэша не трогает
-      RUSTATS_STATE_REDIS_URL: redis://:${REDIS_PASSWORD:-changeme}@redis:6379/1
+      # Состояние (сессии/квоты) — отдельный Redis DB /1: FLUSHDB кэша не трогает.
+      # Переезд на выделенный redis-state (О-8) — переопределением в .env.
+      RUSTATS_STATE_REDIS_URL: ${RUSTATS_STATE_REDIS_URL:-redis://:${REDIS_PASSWORD:-changeme}@redis:6379/1}
       # OLAP-слой ClickHouse (вкладка BI «Срезы»); выключается одной переменной,
       # сайт при выключенном/упавшем CH работает как раньше.
       RUSTATS_CLICKHOUSE_ENABLED: ${RUSTATS_CLICKHOUSE_ENABLED:-true}
@@ -120,18 +150,26 @@ services:
       # Гео-база DB-IP Lite: скачивается backend'ом при старте, обновляется
       # ежемесячным job'ом. Том — чтобы не тянуть ~100 МБ при каждом rebuild.
       - geoip_data:/app/geoip
+      # П-16: дисковый кэш OG-картинок — переживает rebuild/рестарт
+      - og_cache:/app/og-cache
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
+      redis-state:
+        condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-sf", "http://localhost:8000/api/v1/health"]
+      # readiness (Н-1): БД + оба Redis + планировщик; 503 = unhealthy
+      test: ["CMD", "curl", "-sf", "http://localhost:8000/api/v1/health/ready"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 60s
+      # О-12: холодный старт = alembic + seed + региональный сидер (минуты);
+      # при seed-hash-скипе — секунды. 240s покрывает худший случай без
+      # флаппинга «unhealthy → frontend не стартует».
+      start_period: 240s
 
   frontend:
     build:
@@ -201,5 +239,7 @@ services:
 volumes:
   postgres_data:
   redis_data:
+  redis_state_data:
   geoip_data:
+  og_cache:
   clickhouse_data:

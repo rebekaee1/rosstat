@@ -8,5 +8,9 @@ export default defineConfig({
   test: {
     environment: 'node',
     include: ['src/**/*.test.{js,jsx}'],
+    // Т-13: component-тесты (testing-library) живут в jsdom; юнит-тесты lib/
+    // остаются в быстром node-окружении.
+    environmentMatchGlobs: [['src/**/*.component.test.jsx', 'jsdom']],
+    setupFiles: ['src/test/setup.js'],
   },
 });

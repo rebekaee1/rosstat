@@ -73,7 +73,13 @@ analytics/
 # Large media files outside the app
 *.mov
 *.mp4
+*.wav
+*.zip
 RID_listing.*
+
+# Одноразовые operational-дампы (списки URL для переобхода и т.п.)
+scripts/*-missing.txt
+scripts/*.dump.txt
 
 # Presentation slides (not code)
 фото/

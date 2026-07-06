@@ -47,6 +47,15 @@ def _get_reader():
     return _reader
 
 
+def db_age_days() -> float | None:
+    """Возраст файла базы в днях; None — файла нет (Н-29: метрика свежести гео)."""
+    try:
+        return (datetime.now(timezone.utc).timestamp()
+                - os.path.getmtime(settings.geoip_db_path)) / 86400
+    except OSError:
+        return None
+
+
 def _name(block: dict | None, lang: str = "ru") -> str | None:
     if not isinstance(block, dict):
         return None

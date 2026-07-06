@@ -21,5 +21,5 @@ export function formatInput(n) {
 export function fmtPct(v, sign = false) {
   if (v == null || !Number.isFinite(v)) return '—';
   const s = sign && v > 0 ? '+' : '';
-  return `${s}${v.toFixed(1)}%`;
+  return `${s}${v.toFixed(1).replace('.', ',')}%`;
 }

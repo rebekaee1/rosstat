@@ -349,9 +349,23 @@ def test_enrich_description_adds_latest_value():
     from app.services.seo_renderer import _enrich_description
 
     current = SimpleNamespace(value=13.96, date=date(2026, 6, 10))
-    out = _enrich_description("RUONIA: ставка овернайт.", current, "%")
-    assert "13.96" in out
-    assert "2026-06-10" in out
+    out = _enrich_description("RUONIA: ставка овернайт.", current, "%", code="ruonia")
+    # Русская типографика: запятая в дроби, дата словами (В-22)
+    assert "13,96" in out
+    assert "10 июня 2026" in out
+
+
+def test_enrich_description_cpi_shows_change_not_raw_index():
+    """Инцидент «инфляция 100,2%»: CPI-индекс в meta — изменение цен, не сырой индекс."""
+    from datetime import date
+    from types import SimpleNamespace
+
+    from app.services.seo_renderer import _enrich_description
+
+    current = SimpleNamespace(value=100.17, date=date(2026, 5, 1))
+    out = _enrich_description("ИПЦ России.", current, "%", code="cpi", frequency="monthly")
+    assert "+0,17 % за месяц" in out
+    assert "100,17" not in out and "100.17" not in out
 
 
 def test_autolink_terms_in_seo_blocks():

@@ -738,6 +738,7 @@ class RosstatWeeklyCpiParser(BaseParser):
                     records_added, records_updated, code,
                 )
                 fetch_log.records_added = records_added
+                fetch_log.records_updated = records_updated
             elif not any(segment_snapshot.get(s) for s in WEEKLY_SEGMENT_CODES):
                 logger.warning("No data points parsed for %s", code)
                 fetch_log.status = "no_new_data"
@@ -745,6 +746,7 @@ class RosstatWeeklyCpiParser(BaseParser):
                     fetch_log.error_message = "Parser returned 0 data points"
                 fetch_log.completed_at = _utcnow_naive()
                 await db.commit()
+                await self._alert_zero_parse_if_regression(db, indicator)
                 return
 
             if segment_snapshot:
@@ -756,6 +758,7 @@ class RosstatWeeklyCpiParser(BaseParser):
                     records_added += extra_added
                     records_updated += extra_updated
                     fetch_log.records_added = records_added
+                    fetch_log.records_updated = records_updated
 
             await self._handle_forecasts(db, indicator, cfg, records_added, records_updated)
 
@@ -778,6 +781,11 @@ class RosstatWeeklyCpiParser(BaseParser):
             fetch_log.completed_at = _utcnow_naive()
             db.add(fetch_log)
             await db.commit()
+
+    def _zero_parse_expected(self, indicator: Indicator, cfg: dict) -> bool:
+        # Сегментные ряды пусты by design — их наполняет primary-прогон;
+        # zero-parse-алерт (Н-4) для них ложный.
+        return cfg.get("weekly_segment") not in (None, "all")
 
     async def _fetch_and_parse(
         self,

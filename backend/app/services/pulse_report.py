@@ -298,7 +298,13 @@ async def send_pulse_report(report_date: date | None = None) -> bool:
     memory = await pulse.load_memory(days=7, before=d)
 
     summary = await _llm_summary(snapshot, memory)
-    body = summary or _fallback_summary(snapshot)
+    # Н-22: fallback без пометки маскировал недоступность LLM — владелец
+    # читал детерминированную сводку, думая, что это аналитик (и гипотезы
+    # молча не обновлялись).
+    body = summary or (
+        "⚠️ <i>LLM-аналитик недоступен — детерминированная сводка без гипотез.</i>\n\n"
+        + _fallback_summary(snapshot)
+    )
 
     msg_parts = [f"🛰 <b>Пульс платформы — {d.isoformat()}</b>", "", body]
     raw = _raw_digits_block(snapshot)
@@ -315,18 +321,20 @@ async def send_pulse_report(report_date: date | None = None) -> bool:
 
 
 async def pulse_snapshot_job() -> None:
-    """Ежедневная фиксация снапшота (23:57 МСК) — чтобы день не потерялся."""
-    try:
-        snap = await pulse.build_snapshot(date.today())
-        await pulse.store_snapshot(snap)
-        logger.info("Pulse snapshot stored for %s", snap["date"])
-    except Exception:
-        logger.exception("Pulse snapshot job failed")
+    """Ежедневная фиксация снапшота (23:57 МСК) — чтобы день не потерялся.
+
+    Н-21: исключение НЕ глотаем — прокидываем в APScheduler, чтобы сработал
+    scheduler-listener (Н-2) и владелец получил алерт, а не молча потерял день.
+    """
+    snap = await pulse.build_snapshot(date.today())
+    await pulse.store_snapshot(snap)
+    logger.info("Pulse snapshot stored for %s", snap["date"])
 
 
 async def pulse_report_job() -> None:
-    """Ежедневный LLM-отчёт за вчера (09:05 МСК)."""
-    try:
-        await send_pulse_report()
-    except Exception:
-        logger.exception("Pulse report job failed")
+    """Ежедневный LLM-отчёт за вчера (09:05 МСК).
+
+    Н-21: сбой прокидывается в scheduler-listener (Н-2) → Telegram-алерт.
+    Недоступность LLM сюда не попадает — она обработана fallback'ом внутри.
+    """
+    await send_pulse_report()

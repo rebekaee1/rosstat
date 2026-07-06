@@ -34,4 +34,5 @@ else
 fi
 "$MAP_PY" scripts/repo-inventory.py
 "$MAP_PY" scripts/build-indicator-index.py --check
+"$MAP_PY" scripts/audit-doc-counters.py
 echo "== map OK =="

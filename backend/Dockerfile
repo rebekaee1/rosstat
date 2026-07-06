@@ -6,8 +6,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc libpq-dev && \
     rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir --timeout 120 -r requirements.txt
+COPY requirements.txt constraints.txt ./
+# -c constraints.txt лочит транзитивные зависимости (Э-1): сборка воспроизводима
+RUN pip install --no-cache-dir --timeout 120 -r requirements.txt -c constraints.txt
 
 FROM python:3.12-slim
 

@@ -91,6 +91,10 @@ class BaseParser(ABC):
                     fetch_log.error_message = "Parser returned 0 data points"
                 fetch_log.completed_at = _utcnow_naive()
                 await db.commit()
+                # Н-4: различаем «источник официально пуст» (новый индикатор,
+                # истории нет) и «ранее живой источник распарсился в ноль»
+                # (смена layout) — второе маскировалось под успешный no_new_data.
+                await self._alert_zero_parse_if_regression(db, indicator)
                 return
 
             pruned = 0
@@ -108,6 +112,9 @@ class BaseParser(ABC):
                 records_added, records_updated, code,
             )
             fetch_log.records_added = records_added + pruned
+            # П-3: ревизии отдельным полем — от них зависит updated_codes
+            # (инкрементальный derived-пересчёт) и диагностика тихих ревизий.
+            fetch_log.records_updated = records_updated
 
             extra_added, extra_updated = await self._post_upsert(
                 db, indicator, cfg, fetch_log, points, records_added, records_updated,
@@ -116,6 +123,7 @@ class BaseParser(ABC):
                 records_added += extra_added
                 records_updated += extra_updated
                 fetch_log.records_added = records_added
+                fetch_log.records_updated = records_updated
 
             await self._handle_forecasts(
                 db, indicator, cfg, records_added, records_updated, pruned,
@@ -144,6 +152,47 @@ class BaseParser(ABC):
             fetch_log.completed_at = _utcnow_naive()
             db.add(fetch_log)
             await db.commit()
+
+    def _zero_parse_expected(self, indicator: Indicator, cfg: dict) -> bool:
+        """Override: True, если пустой parse-результат для этого ряда легитимен.
+
+        Пример — сегментные ряды недельного ИПЦ: их точки пишет primary-прогон
+        `inflation-weekly` через `_post_upsert`, собственный fetch пуст by design.
+        """
+        return False
+
+    async def _alert_zero_parse_if_regression(
+        self, db: AsyncSession, indicator: Indicator,
+    ) -> None:
+        """Алерт, если парсер с непустой историей ряда вернул 0 точек (Н-4).
+
+        Вероятная причина — источник сменил layout/URL; статус останется
+        no_new_data (данные в БД целы), но оператор должен узнать сразу,
+        а не через staleness-SLA недели спустя.
+        """
+        if self._zero_parse_expected(indicator, indicator.model_config_json or {}):
+            return
+        try:
+            from sqlalchemy import func, select
+
+            from app.models import IndicatorData
+            from app.services.alerting import send_telegram  # локально против цикла
+
+            existing = await db.scalar(
+                select(func.count(IndicatorData.id))
+                .where(IndicatorData.indicator_id == indicator.id)
+            )
+            if existing and existing > 0:
+                from html import escape
+                await send_telegram(
+                    "🟡 <b>Zero-parse regression</b>\n"
+                    f"Indicator: <code>{escape(indicator.code)}</code>\n"
+                    f"Парсер вернул 0 точек при {existing} точках истории — "
+                    "вероятна смена layout источника.",
+                    kind="zero_parse",
+                )
+        except Exception:
+            logger.warning("Zero-parse alert failed for %s", indicator.code, exc_info=True)
 
     @abstractmethod
     async def _fetch_and_parse(

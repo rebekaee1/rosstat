@@ -1,5 +1,5 @@
 import re
-from datetime import date
+from datetime import date, timedelta
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -9,49 +9,129 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.models import Indicator, IndicatorData
 from app.schemas import IndicatorSummary, IndicatorDetail, IndicatorStats, DataPointOut, DataResponse
-from app.core.cache import cache_get, cache_set
+from app.core.cache import cache_get, cache_set, versioned_key
 from app.config import settings
 
 router = APIRouter(prefix="/indicators", tags=["indicators"])
 
 
-# Сколько точек назад брать за «год назад» по частоте — для расчёта hero YoY%.
-# Применяется только если у индикатора `model_config_json.hero_view == "yoy_pct"`.
-_YOY_STEPS = {"weekly": 52, "monthly": 12, "quarterly": 4, "annual": 1, "daily": 252}
+# Расчёт hero YoY% (только для индикаторов с `model_config_json.hero_view ==
+# "yoy_pct"`). Точка «год назад» ищется ПО ДАТЕ, а не по позиции в ряду:
+# позиционный сдвиг (rows[12] = «год назад») при дыре в ряду молча сравнивал
+# с 13-месячной давностью, а weekly (52 шага) дрейфовал на 53-недельных годах.
+# Для месячных/квартальных/годовых дата совпадает точно (точки — начала
+# периодов); для weekly/daily даты публикаций плавают — ближайшая точка в
+# допуске ±6 дней вокруг «минус 364/365 дней» (без допуска hero исчез бы у
+# недельных карточек вовсе — регресс хуже дрейфа).
+_YOY_TARGET = {
+    "monthly": ("exact", None),
+    "quarterly": ("exact", None),
+    "annual": ("exact", None),
+    "weekly": ("nearest", timedelta(days=364)),
+    "daily": ("nearest", timedelta(days=365)),
+}
+_YOY_TOLERANCE = timedelta(days=6)
+
+
+def _year_ago_target(d: date, frequency: str) -> date | None:
+    mode = _YOY_TARGET.get(frequency)
+    if mode is None:
+        return None
+    kind, delta = mode
+    if kind == "nearest":
+        return d - delta
+    try:
+        return d.replace(year=d.year - 1)
+    except ValueError:  # 29 февраля
+        return d.replace(year=d.year - 1, day=28)
+
+
+def _lookup_year_ago(points: list[tuple[date, float]], d: date, frequency: str) -> float | None:
+    """Значение «год назад» от даты d: точное совпадение или ближайшее в допуске."""
+    target = _year_ago_target(d, frequency)
+    if target is None:
+        return None
+    exact = frequency in ("monthly", "quarterly", "annual")
+    best: tuple[int, float] | None = None
+    for pd, pv in points:
+        diff = abs((pd - target).days)
+        if exact:
+            if diff == 0:
+                return pv
+        elif diff <= _YOY_TOLERANCE.days and (best is None or diff < best[0]):
+            best = (diff, pv)
+    return best[1] if best else None
+
+
+def _hero_window(current_date: date, frequency: str) -> tuple[date, date] | None:
+    """Окно дат, в котором лежат кандидаты «год назад» для current и prev точек."""
+    window_lo = _year_ago_target(current_date, frequency)
+    if window_lo is None:
+        return None
+    return window_lo - timedelta(days=100), current_date - timedelta(days=300)
+
+
+def _hero_yoy_from_points(
+    frequency: str,
+    current_val: float,
+    rows: list[tuple[date, float]],
+    candidates: list[tuple[date, float]],
+):
+    """Чистый расчёт hero YoY% по уже выбранным точкам.
+
+    `rows` — последние точки ряда (новые первыми), `candidates` — точки в окне
+    «год назад». Возвращает `(hero_value, hero_unit, hero_label, hero_change)`
+    или `(None, …)`, если точки «год назад» нет (дыра в ряду) — честное «нет
+    данных» вместо сравнения с чужим периодом. `hero_change` — ускорение/
+    замедление в п.п.: разница между текущим YoY% и YoY% предыдущего периода
+    (бейдж изменения на карточке-индексе, где «первая цифра» сама уже Г/г)."""
+    if not rows:
+        return None, None, None, None
+    current_date = rows[0][0]
+    year_ago = _lookup_year_ago(candidates, current_date, frequency)
+    if not year_ago:
+        return None, None, None, None
+    pct = (current_val - year_ago) / year_ago * 100.0
+    hero_change = None
+    if len(rows) > 1:
+        prev_date, prev_val = rows[1][0], float(rows[1][1])
+        prev_year_ago = _lookup_year_ago(candidates, prev_date, frequency)
+        if prev_year_ago:
+            prev_pct = (prev_val - prev_year_ago) / prev_year_ago * 100.0
+            hero_change = round(pct - prev_pct, 2)
+    return round(pct, 2), "%", "Год к году", hero_change
 
 
 async def _hero_yoy_pct(db: AsyncSession, ind_id: int, frequency: str, current_val: float | None):
-    """Найти точку «год назад» по частоте и посчитать YoY% к current_val.
-
-    Возвращает `(hero_value, hero_unit, hero_label, hero_change)` или
-    `(None, …)`, если данных мало. `hero_change` — ускорение/замедление в п.п.:
-    разница между текущим YoY% и YoY% предыдущего периода (бейдж изменения на
-    карточке-индексе, где «первая цифра» сама по себе уже Г/г). Без этого
-    индекс-карточки (ИПП/ИЦП/цены жилья) шли без бейджа изменения."""
-    if current_val is None:
-        return None, None, None, None
-    steps = _YOY_STEPS.get(frequency)
-    if not steps:
+    """Hero YoY% для одного индикатора (detail-endpoint): 2 точечных запроса."""
+    if current_val is None or frequency not in _YOY_TARGET:
         return None, None, None, None
     rows = (await db.execute(
-        select(IndicatorData.value)
+        select(IndicatorData.date, IndicatorData.value)
         .where(IndicatorData.indicator_id == ind_id)
         .order_by(desc(IndicatorData.date))
-        .limit(steps + 2)
-    )).scalars().all()
-    if len(rows) <= steps:
+        .limit(3)
+    )).all()
+    if not rows:
         return None, None, None, None
-    year_ago = float(rows[steps])
-    if year_ago == 0:
+    window = _hero_window(rows[0][0], frequency)
+    if window is None:
         return None, None, None, None
-    pct = (float(current_val) - year_ago) / year_ago * 100.0
-    hero_change = None
-    if len(rows) > steps + 1:
-        prev_year_ago = float(rows[steps + 1])
-        if prev_year_ago != 0:
-            prev_pct = (float(rows[1]) - prev_year_ago) / prev_year_ago * 100.0
-            hero_change = round(pct - prev_pct, 2)
-    return round(pct, 2), "%", "Год к году", hero_change
+    candidates = [
+        (d, float(v)) for d, v in (await db.execute(
+            select(IndicatorData.date, IndicatorData.value)
+            .where(
+                IndicatorData.indicator_id == ind_id,
+                IndicatorData.date >= window[0],
+                IndicatorData.date <= window[1],
+            )
+            .order_by(desc(IndicatorData.date))
+        )).all()
+    ]
+    return _hero_yoy_from_points(
+        frequency, float(current_val),
+        [(d, float(v)) for d, v in rows], candidates,
+    )
 
 
 def _hero_view(indicator) -> str | None:
@@ -66,10 +146,11 @@ async def list_indicators(
     include_inactive: bool = Query(False, description="Показать неактивные индикаторы"),
     include_unlisted: bool = Query(False, description="Показать индикаторы со is_listed=False (counterpart-карточки разных частот)"),
 ):
-    cache_key = (
-        f"fe:indicators:list:{category or 'all'}:"
+    cache_key = await versioned_key(
+        "indicators",
+        f"list:{category or 'all'}:"
         f"{'all' if include_inactive else 'active'}:"
-        f"{'all' if include_unlisted else 'listed'}"
+        f"{'all' if include_unlisted else 'listed'}",
     )
     cached = await cache_get(cache_key)
     if cached:
@@ -115,6 +196,45 @@ async def list_indicators(
     for v in by_ind.values():
         v.sort(key=lambda r: r.rn)
 
+    # П-8: hero YoY% для всех hero-индикаторов каталога — ОДНИМ запросом по
+    # объединению их окон «год назад», вместо 2 запросов на каждый индикатор
+    # в цикле (при ~8 hero-кодах это было 16 лишних round-trip'ов на cache miss).
+    hero_data: dict[int, tuple] = {}
+    hero_windows: dict[int, tuple[date, date]] = {}
+    freq_by_id: dict[int, str] = {}
+    for ind in indicators:
+        if _hero_view(ind) != "yoy_pct" or ind.frequency not in _YOY_TARGET:
+            continue
+        rows = by_ind.get(ind.id)
+        if not rows or rows[0].value is None:
+            continue
+        window = _hero_window(rows[0].date, ind.frequency)
+        if window:
+            hero_windows[ind.id] = window
+            freq_by_id[ind.id] = ind.frequency
+    if hero_windows:
+        lo = min(w[0] for w in hero_windows.values())
+        hi = max(w[1] for w in hero_windows.values())
+        cand_rows = (await db.execute(
+            select(IndicatorData.indicator_id, IndicatorData.date, IndicatorData.value)
+            .where(
+                IndicatorData.indicator_id.in_(hero_windows.keys()),
+                IndicatorData.date >= lo,
+                IndicatorData.date <= hi,
+            )
+        )).all()
+        cand_by_ind: dict[int, list[tuple[date, float]]] = {}
+        for iid, d, v in cand_rows:
+            w = hero_windows[iid]
+            if w[0] <= d <= w[1]:
+                cand_by_ind.setdefault(iid, []).append((d, float(v)))
+        for iid in hero_windows:
+            ind_rows = [(r.date, float(r.value)) for r in by_ind[iid]]
+            hero_data[iid] = _hero_yoy_from_points(
+                freq_by_id[iid], ind_rows[0][1], ind_rows,
+                cand_by_ind.get(iid, []),
+            )
+
     out = []
     for ind in indicators:
         rows = by_ind.get(ind.id, [])
@@ -128,11 +248,8 @@ async def list_indicators(
         # индекса (раньше карточка показывала 346, а страница по умолчанию — г/г,
         # что путало). Так карточка совпадает со значением при первом входе.
         hero_value = hero_unit = hero_label = hero_change = None
-        if _hero_view(ind) == "yoy_pct":
-            hero_value, hero_unit, hero_label, hero_change = await _hero_yoy_pct(
-                db, ind.id, ind.frequency,
-                float(current_val) if current_val is not None else None,
-            )
+        if ind.id in hero_data:
+            hero_value, hero_unit, hero_label, hero_change = hero_data[ind.id]
 
         out.append(IndicatorSummary(
             code=ind.code, name=ind.name, name_en=ind.name_en,
@@ -163,7 +280,8 @@ def _validate_code(code: str) -> None:
 @router.get("/{code}", response_model=IndicatorDetail)
 async def get_indicator(code: str, db: AsyncSession = Depends(get_db)):
     _validate_code(code)
-    cached = await cache_get(f"fe:{code}:detail")
+    detail_key = await versioned_key(code, "detail")
+    cached = await cache_get(detail_key)
     if cached:
         return cached
 
@@ -223,7 +341,7 @@ async def get_indicator(code: str, db: AsyncSession = Depends(get_db)):
         hero_change=hero_change,
     )
 
-    await cache_set(f"fe:{code}:detail", detail.model_dump(mode="json"), settings.cache_ttl_meta)
+    await cache_set(detail_key, detail.model_dump(mode="json"), settings.cache_ttl_meta)
     return detail
 
 
@@ -236,7 +354,7 @@ async def get_indicator_data(
     db: AsyncSession = Depends(get_db),
 ):
     _validate_code(code)
-    cache_key = f"fe:{code}:data:{from_date}:{to_date}:{limit}"
+    cache_key = await versioned_key(code, f"data:{from_date}:{to_date}:{limit}")
     cached = await cache_get(cache_key)
     if cached:
         return cached

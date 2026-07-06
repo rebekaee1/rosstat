@@ -143,8 +143,11 @@ export default function useInflationCalc(amount, fromYear, toYear) {
       return { ...base, result: null };
     }
 
+    // В-28: клэмп периода к доступным данным должен быть виден пользователю —
+    // hero и share-текст показывают effective-годы, а не введённые.
     const effectiveFrom = Math.max(fromYear, minYear);
     const effectiveTo = Math.min(toYear, lastAvailableYear);
+    const clamped = effectiveFrom !== fromYear || effectiveTo !== toYear;
     if (effectiveFrom > effectiveTo) {
       return {
         ...base,
@@ -154,6 +157,7 @@ export default function useInflationCalc(amount, fromYear, toYear) {
           series: [], months: 0,
           food: 0, nonfood: 0, services: 0,
           yearlyBreakdown: [], peakYear: null, troughYear: null, doublingYears: null,
+          effectiveFrom, effectiveTo, clamped,
         },
       };
     }
@@ -195,6 +199,13 @@ export default function useInflationCalc(amount, fromYear, toYear) {
         peakYear,
         troughYear,
         doublingYears,
+        effectiveFrom,
+        effectiveTo,
+        clamped,
+        // В-29: явные границы расчётного периода (с января from-года по
+        // последний доступный месяц to-года) — для подписи под результатом.
+        periodFrom: fromDate,
+        periodTo: toDate,
       },
     };
   }, [amount, fromYear, toYear, cpiAll, cpiFood, cpiNonfood, cpiServices, isLoading, isError, lastAvailableYear, minYear, lastAvailableDate]);

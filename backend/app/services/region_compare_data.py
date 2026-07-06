@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from sqlalchemy import func, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import Region, RegionDataPoint, RegionIndicator
@@ -31,26 +31,31 @@ async def build_region_compare_payload(
     if not indicators:
         return None
 
+    # П-21: все точки обоих регионов по всем ключевым показателям — одним
+    # запросом (раньше 2 запроса на показатель в цикле: ~20 round-trip'ов
+    # на каждую из 190 SSR-страниц пары при cache miss).
+    points: dict[int, dict[int, dict[int, float]]] = {}
+    all_rows = (await db.execute(
+        select(RegionDataPoint.indicator_id, RegionDataPoint.region_id,
+               RegionDataPoint.year, RegionDataPoint.value)
+        .where(RegionDataPoint.indicator_id.in_([i.id for i in indicators]),
+               RegionDataPoint.region_id.in_([region_a.id, region_b.id]))
+    )).all()
+    for iid, rid, year, value in all_rows:
+        points.setdefault(iid, {}).setdefault(int(year), {})[rid] = float(value)
+
     rows = []
     summary_bits = []
     for ind in indicators:
-        common_year = (await db.execute(
-            select(RegionDataPoint.year)
-            .where(RegionDataPoint.indicator_id == ind.id,
-                   RegionDataPoint.region_id.in_([region_a.id, region_b.id]))
-            .group_by(RegionDataPoint.year)
-            .having(func.count(func.distinct(RegionDataPoint.region_id)) == 2)
-            .order_by(RegionDataPoint.year.desc())
-            .limit(1)
-        )).scalar_one_or_none()
+        by_year = points.get(ind.id, {})
+        common_year = max(
+            (y for y, vals in by_year.items()
+             if region_a.id in vals and region_b.id in vals),
+            default=None,
+        )
         if common_year is None:
             continue
-        vals = dict((await db.execute(
-            select(RegionDataPoint.region_id, RegionDataPoint.value)
-            .where(RegionDataPoint.indicator_id == ind.id,
-                   RegionDataPoint.year == common_year,
-                   RegionDataPoint.region_id.in_([region_a.id, region_b.id]))
-        )).all())
+        vals = by_year[common_year]
         va, vb = vals.get(region_a.id), vals.get(region_b.id)
         if va is None or vb is None:
             continue

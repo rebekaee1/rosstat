@@ -26,14 +26,15 @@ function EmbedTooltip({ active, payload, label, unit, colors }) {
       <div style={{ color: colors.textTertiary, fontSize: 10, marginBottom: 4, fontFamily: 'ui-monospace, monospace' }}>
         {formatDate(label)}
       </div>
+      {/* В-18: на чужом сайте без легенды цвет ничего не говорит — подписываем словами. */}
       {actual && (
         <div style={{ color: '#B8942F', fontWeight: 600, fontFamily: 'ui-monospace, monospace' }}>
-          {formatValueWithUnit(actual.value, unit)}
+          Факт: {formatValueWithUnit(actual.value, unit)}
         </div>
       )}
       {forecast && !actual && (
         <div style={{ color: '#7C3AED', fontWeight: 600, fontFamily: 'ui-monospace, monospace' }}>
-          {formatValueWithUnit(forecast.value, unit)}
+          Прогноз: {formatValueWithUnit(forecast.value, unit)}
         </div>
       )}
     </div>
@@ -118,6 +119,12 @@ export default function EmbedChart() {
             <div style={{ fontSize: 12, fontWeight: 600, color: colors.textSecondary, fontFamily: 'system-ui, sans-serif', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {meta.name}
             </div>
+            {/* В-18: hero-значение без даты вводит в заблуждение на чужом сайте. */}
+            {meta.current_date && (
+              <div style={{ fontSize: 10, color: colors.textTertiary, fontFamily: 'ui-monospace, monospace' }}>
+                на {formatDate(meta.current_date)}
+              </div>
+            )}
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, flexShrink: 0 }}>
             <span style={{ fontSize: 20, fontWeight: 700, fontFamily: 'ui-monospace, monospace', color: colors.text }}>

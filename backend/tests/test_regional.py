@@ -59,6 +59,14 @@ class TestArtifact:
         codes = [i["code"] for i in indicators]
         assert len(codes) == len(set(codes))
 
+    def test_all_units_non_empty(self, artifact):
+        """В-8 (CTO-аудит 2026-07-06): «Соотношение мужчин и женщин: 1200»
+        без «на 1000 мужчин» — обман витрины. 79 таблиц без единицы в шапке
+        закрыты кураторским фолбэком scripts/regional/unit_fallbacks.py."""
+        _, indicators, _ = artifact
+        empty = [i["code"] for i in indicators if not (i.get("unit") or "").strip()]
+        assert not empty, f"показатели без unit: {empty[:10]}"
+
     def test_points_reference_known_metadata(self, artifact):
         regions, indicators, points = artifact
         known_codes = {i["code"] for i in indicators}
@@ -123,5 +131,8 @@ class TestSeoTypography:
         assert _pct(5, 0) is None
 
     def test_rank_phrase(self):
-        assert "лидер" in _rank_phrase(1, 85)
+        # В-31: нейтральная формулировка вместо «лидера» — «наибольшее значение»
+        # не хвалит регион за нежелательные метрики (преступность, аборты).
+        assert "наибольш" in _rank_phrase(1, 85)
+        assert "лидер" not in _rank_phrase(1, 85).lower()
         assert "85" in _rank_phrase(85, 85)

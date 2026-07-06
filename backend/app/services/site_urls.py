@@ -15,6 +15,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import date
 
+from app.services.display import today_msk
+
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -102,13 +104,26 @@ async def _year_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
 
 
 async def _region_hub_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
+    """Региональные данные годовые — lastmod «сегодня» обманывал краулера (В-32).
+
+    Честный lastmod хаба региона — конец последнего года его данных.
+    """
     urls = [_u("/regions", today.isoformat(), "weekly", "0.9")]
     region_rows = (await db.execute(
-        select(Region.slug).where(Region.kind == "region").order_by(Region.sort_order)
-    )).scalars().all()
+        select(Region.slug, func.max(RegionDataPoint.year))
+        .outerjoin(RegionDataPoint, RegionDataPoint.region_id == Region.id)
+        .where(Region.kind == "region")
+        .group_by(Region.id, Region.slug, Region.sort_order)
+        .order_by(Region.sort_order)
+    )).all()
     urls.extend(
-        _u(f"/region/{slug}", today.isoformat(), "weekly", "0.8")
-        for slug in region_rows
+        _u(
+            f"/region/{slug}",
+            f"{int(last_year)}-12-31" if last_year else today.isoformat(),
+            "monthly",
+            "0.8",
+        )
+        for slug, last_year in region_rows
     )
     return urls
 
@@ -179,12 +194,17 @@ async def _today_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
 
 
 async def _calendar_month_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
+    # Считаем только события, которые SSR-страница реально покажет (тот же
+    # provenance-фильтр, В-7) — иначе sitemap ссылался бы на 404-месяцы.
+    from app.api.calendar import _public_calendar_conditions
+
     stmt = (
         select(
             func.extract("year", EconomicEvent.scheduled_date).label("y"),
             func.extract("month", EconomicEvent.scheduled_date).label("m"),
             func.count(),
         )
+        .where(*_public_calendar_conditions())
         .group_by("y", "m")
         .having(func.count() >= 3)
         .order_by(func.extract("year", EconomicEvent.scheduled_date).desc(),
@@ -206,9 +226,14 @@ async def _calendar_month_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
 async def _region_vs_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
     from app.services.seo_region_compare import top_region_pairs
 
+    # В-32: данные пар годовые — честный lastmod общий по датасету, не «сегодня».
+    last_year = (await db.execute(
+        select(func.max(RegionDataPoint.year))
+    )).scalar_one_or_none()
+    lastmod = f"{int(last_year)}-12-31" if last_year else today.isoformat()
     pairs = await top_region_pairs(db)
     return [
-        _u(f"/region-vs/{a}-vs-{b}", today.isoformat(), "monthly", "0.6")
+        _u(f"/region-vs/{a}-vs-{b}", lastmod, "monthly", "0.6")
         for a, b in pairs
     ]
 
@@ -219,7 +244,7 @@ async def collect_url_sections(db: AsyncSession) -> dict[str, list[SiteUrl]]:
     Порядок секций и URL внутри — приоритет обхода (используется очередью
     переобхода Вебмастера).
     """
-    today = date.today()
+    today = today_msk()
     sections: dict[str, list[SiteUrl]] = {
         "core": await _core_urls(db, today),
         "today": await _today_urls(db, today),

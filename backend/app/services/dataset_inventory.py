@@ -22,7 +22,7 @@ raw_json (по свежей выборке строк) + кардинально�
 """
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any
 
 from sqlalchemy import func, select
@@ -74,7 +74,11 @@ async def _time_range(db: AsyncSession, col) -> tuple[str | None, str | None]:
 
 async def build_inventory(db: AsyncSession) -> dict[str, Any]:
     """Полная инвентаризация датасета. Возвращает JSON-совместимый dict."""
-    inv: dict[str, Any] = {"generated_at": datetime.utcnow().isoformat(timespec="seconds")}
+    inv: dict[str, Any] = {
+        "generated_at": datetime.now(timezone.utc)
+        .replace(tzinfo=None)
+        .isoformat(timespec="seconds")
+    }
     sections: dict[str, dict[str, Any]] = {}
 
     # --- Поведенческий поток -------------------------------------------------

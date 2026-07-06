@@ -34,6 +34,13 @@ function toYoYSeries(series) {
     });
 }
 
+// В-20 (CTO-аудит 2026-07-06): для знакопеременных рядов (сальдо миграции
+// и т.п.) «% г/г» от базы, переходящей через ноль, — нечитаемый процент
+// (тысячи % и перевороты знака). Тоггл для таких рядов не показываем.
+function isNegativeCapable(series) {
+  return Array.isArray(series) && series.some(p => p?.value != null && p.value < 0);
+}
+
 function StatCell({ label, children }) {
   return (
     <div className="bg-surface border border-border-subtle rounded-xl p-3.5">
@@ -61,7 +68,9 @@ export default function RegionIndicatorPage() {
   const { data, isLoading, isError, refetch, isFetching } = useRegionIndicator(slug, code);
   const [showTable, setShowTable] = useState(false);
   const [showRussia, setShowRussia] = useState(true);
-  const [showYoY, setShowYoY] = useState(false);
+  const [showYoYRaw, setShowYoY] = useState(false);
+  // В-20: для знакопеременных рядов режим «% г/г» недоступен.
+  const showYoY = showYoYRaw && !isNegativeCapable(data?.series);
   const [exporting, setExporting] = useState(false);
   const { isAuthed } = useAuth();
   const chartRef = useRef(null);
@@ -252,7 +261,7 @@ export default function RegionIndicatorPage() {
               <span className="font-mono text-sm text-text-tertiary">{last.year}</span>
               {delta && (
                 <span className={`font-mono text-sm ${delta.up ? 'text-positive' : delta.down ? 'text-negative' : 'text-text-tertiary'}`}>
-                  {delta.up ? '+' : ''}{delta.pct.toFixed(1)}% за год
+                  {delta.up ? '+' : ''}{delta.pct.toFixed(1).replace('.', ',')}% за год
                 </span>
               )}
             </div>
@@ -298,7 +307,7 @@ export default function RegionIndicatorPage() {
                     {showRussia ? '— Россия' : '+ Россия'}
                   </button>
                 )}
-                {data.series.length > 2 && (
+                {data.series.length > 2 && !isNegativeCapable(data.series) && (
                   <button
                     onClick={() => setShowYoY(v => !v)}
                     title="Изменения к предыдущему году, в процентах"
@@ -395,11 +404,12 @@ export default function RegionIndicatorPage() {
             </StatCell>
           </div>
 
-          {/* Лидеры рейтинга */}
+          {/* Верх рейтинга (В-31: не «лидеры» — для смертности/безработицы
+              максимум не достижение, нейтральная формулировка) */}
           {data.rank?.top?.length > 0 && (
             <div data-block="region-rating" className="bg-surface border border-border-subtle rounded-xl p-4 mb-6">
               <h2 className="text-sm font-semibold text-text-primary mb-3">
-                Регионы-лидеры, {data.rank.year}
+                Наибольшие значения по регионам, {data.rank.year}
               </h2>
               <ol className="space-y-1.5">
                 {data.rank.top.map((r, i) => (

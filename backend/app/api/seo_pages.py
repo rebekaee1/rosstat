@@ -7,14 +7,31 @@ replaces the prerendered root with the interactive application.
 ETag: content-hash каждого ответа; роботы с If-None-Match получают 304 и
 не тратят crawl budget на неизменившиеся страницы (nginx отдаёт SSR с
 no-cache для браузеров, но conditional-запросы ботов проходят насквозь).
+
+HTML-кэш (П-14/П-15, риск Р-5): готовый SSR HTML кэшируется в Redis.
+Бот-прожиг каталога (40k региональных URL) перестаёт стоить полного
+рендера на каждый запрос. Два trap'а закрыты конструкцией ключа:
+- stale-данные: ключи индикаторных страниц живут в namespace `fe:{code}:*`,
+  который ETL инвалидирует при любом изменении данных ряда; страницы
+  с «сегодняшней» датой включают текущую дату в ключ;
+- asset-hash trap: ключ включает подпись Vite-ассетов — после rebuild
+  фронта закэшированный HTML со старыми чанками не отдаётся.
 """
 
+import asyncio
 import hashlib
 import re
+from datetime import date as _date
 
 from fastapi import APIRouter, Depends, Request, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.cache import cache_get, cache_set, versioned_key
+from app.data.legacy_redirects import (
+    LEGACY_REGION_SLUG_PREFIXES,
+    resolve_legacy_indicator,
+    resolve_unlisted_indicator,
+)
 from app.database import get_db
 from app.services.seo_calendar import render_calendar_month_html
 from app.services.seo_region_compare import render_region_vs_html
@@ -34,6 +51,70 @@ from app.services.seo_renderer import (
 )
 
 router = APIRouter(tags=["seo-pages"])
+
+# TTL кэша HTML: региональные страницы — датасет годовой, безопасно долго;
+# макро-страницы — короче (данные меняются ETL'ом, плюс namespace-инвалидация).
+_SSR_TTL_INDICATOR = 900       # 15 мин; + инвалидация fe:{code}:* при ETL
+_SSR_TTL_REGIONAL = 6 * 3600   # регион × показатель × год — обновляется раз в год
+_SSR_TTL_MISC = 1800
+
+
+async def _asset_sig() -> str:
+    """Подпись Vite-ассетов текущего фронта (asset-hash trap, Р-5)."""
+    from app.services.seo_renderer import get_app_assets
+    assets = await get_app_assets()
+    return hashlib.md5(
+        (assets.head_links + assets.body_scripts).encode()
+    ).hexdigest()[:12]
+
+
+async def _ssr_key(namespace: str, variant: str, sig: str) -> str:
+    """`namespace` для индикаторных страниц = код индикатора — версия namespace
+    бампается ETL-инвалидацией `cache_invalidate_indicator` (П-11, без SCAN)."""
+    return await versioned_key(
+        namespace, f"ssr:{hashlib.md5(variant.encode()).hexdigest()[:16]}:{sig}"
+    )
+
+
+# П-11 (stampede): бот-прожиг шлёт пачку одинаковых URL — на cache-miss рендер
+# должен выполниться один раз, остальные ждут результат (in-process singleflight).
+_render_locks: dict[str, asyncio.Lock] = {}
+_RENDER_LOCKS_MAX = 2000
+
+
+async def _cached_html(namespace: str, variant: str, ttl: int, render_coro_factory):
+    """Вернуть (status, html) из кэша или отрендерить и закэшировать.
+
+    Кэшируются только 200-е ответы: 404 не должен «прилипать» на TTL
+    (индикатор мог появиться после деплоя/seed).
+    """
+    sig = await _asset_sig()
+    key = await _ssr_key(namespace, variant, sig)
+    cached = await cache_get(key)
+    if isinstance(cached, str) and cached:
+        return 200, cached
+
+    if len(_render_locks) > _RENDER_LOCKS_MAX:
+        _render_locks.clear()  # защита от роста на уникальных 404-путях
+    lock = _render_locks.setdefault(key, asyncio.Lock())
+    async with lock:
+        cached = await cache_get(key)  # мог появиться, пока ждали лок
+        if isinstance(cached, str) and cached:
+            return 200, cached
+        status, html = await render_coro_factory()
+        if status == 200:
+            await cache_set(key, html, ttl)
+        return status, html
+
+
+def _permanent_redirect(path: str) -> Response:
+    """301 на канонический публичный URL (А-2/А-3): абсолютный Location —
+    ответ уходит роботу через nginx-proxy, относительный путь двусмыслен."""
+    from app.services.seo_renderer import DOMAIN
+    return Response(
+        status_code=301,
+        headers={"Location": f"{DOMAIN}{path}", "Cache-Control": "no-cache"},
+    )
 
 
 def _html_response(status_code: int, html: str, request: Request | None = None) -> Response:
@@ -83,7 +164,18 @@ async def seo_indicator(
     mode: str | None = None,
     db: AsyncSession = Depends(get_db),
 ):
-    status, html = await render_indicator_html(code, db, mode=mode)
+    # А-2: переименованные коды → 301 на актуальную карточку.
+    # А-3: unlisted sibling-ряды (generic-режимы, bespoke-легаси) → 301 на
+    # канонический URL семьи вместо 404 — робот не выбрасывает старый URL.
+    # Variant-члены групп (топливо, разделы ИПП) резолвером не покрываются
+    # намеренно: у них собственные живые карточки.
+    target = resolve_legacy_indicator(code) or resolve_unlisted_indicator(code)
+    if target:
+        return _permanent_redirect(target)
+    status, html = await _cached_html(
+        code, f"indicator:{code}:{mode or ''}", _SSR_TTL_INDICATOR,
+        lambda: render_indicator_html(code, db, mode=mode),
+    )
     return _html_response(status, html, request)
 
 
@@ -93,9 +185,31 @@ async def seo_regions(request: Request, db: AsyncSession = Depends(get_db)):
     return _html_response(status, html, request)
 
 
+async def _canonical_region_slug(slug: str, db: AsyncSession) -> str | None:
+    """А-2: старый короткий слаг региона → канонический с префиксом
+    («tatarstan» → «respublika-tatarstan»), если такой регион существует."""
+    from sqlalchemy import select
+
+    from app.models import Region
+
+    for prefix in LEGACY_REGION_SLUG_PREFIXES:
+        candidate = f"{prefix}{slug}"
+        q = await db.execute(select(Region.slug).where(Region.slug == candidate))
+        if q.scalar_one_or_none():
+            return candidate
+    return None
+
+
 @router.api_route("/seo/region/{slug}", methods=["GET", "HEAD"], include_in_schema=False)
 async def seo_region(slug: str, request: Request, db: AsyncSession = Depends(get_db)):
-    status, html = await render_region_html(slug, db)
+    status, html = await _cached_html(
+        "ssr-region", f"region:{slug}", _SSR_TTL_REGIONAL,
+        lambda: render_region_html(slug, db),
+    )
+    if status == 404:
+        canonical = await _canonical_region_slug(slug, db)
+        if canonical:
+            return _permanent_redirect(f"/region/{canonical}")
     return _html_response(status, html, request)
 
 
@@ -103,13 +217,23 @@ async def seo_region(slug: str, request: Request, db: AsyncSession = Depends(get
 async def seo_region_indicator(
     slug: str, code: str, request: Request, db: AsyncSession = Depends(get_db)
 ):
-    status, html = await render_region_indicator_html(slug, code, db)
+    status, html = await _cached_html(
+        "ssr-region", f"region:{slug}:{code}", _SSR_TTL_REGIONAL,
+        lambda: render_region_indicator_html(slug, code, db),
+    )
+    if status == 404:
+        canonical = await _canonical_region_slug(slug, db)
+        if canonical:
+            return _permanent_redirect(f"/region/{canonical}/{code}")
     return _html_response(status, html, request)
 
 
 @router.api_route("/seo/region-rating/{code}", methods=["GET", "HEAD"], include_in_schema=False)
 async def seo_region_rating(code: str, request: Request, db: AsyncSession = Depends(get_db)):
-    status, html = await render_region_rating_html(code, db)
+    status, html = await _cached_html(
+        "ssr-region", f"region-rating:{code}", _SSR_TTL_REGIONAL,
+        lambda: render_region_rating_html(code, db),
+    )
     return _html_response(status, html, request)
 
 
@@ -117,7 +241,10 @@ async def seo_region_rating(code: str, request: Request, db: AsyncSession = Depe
 async def seo_region_vs(
     slug_a: str, slug_b: str, request: Request, db: AsyncSession = Depends(get_db)
 ):
-    status, html = await render_region_vs_html(slug_a, slug_b, db)
+    status, html = await _cached_html(
+        "ssr-region", f"region-vs:{slug_a}:{slug_b}", _SSR_TTL_REGIONAL,
+        lambda: render_region_vs_html(slug_a, slug_b, db),
+    )
     return _html_response(status, html, request)
 
 
@@ -129,7 +256,12 @@ async def seo_today_hub(request: Request, db: AsyncSession = Depends(get_db)):
 
 @router.api_route("/seo/today/{code}", methods=["GET", "HEAD"], include_in_schema=False)
 async def seo_today_indicator(code: str, request: Request, db: AsyncSession = Depends(get_db)):
-    status, html = await render_today_indicator_html(code, db)
+    # «Сегодня» в заголовке: текущая дата в variant — смена суток гарантированно
+    # инвалидирует, даже без ETL (freshness-guard В-4 не должен кэшем ломаться).
+    status, html = await _cached_html(
+        code, f"today:{code}:{_date.today().isoformat()}", _SSR_TTL_INDICATOR,
+        lambda: render_today_indicator_html(code, db),
+    )
     return _html_response(status, html, request)
 
 
@@ -150,5 +282,13 @@ async def seo_indicator_year(
 ):
     if year < 1990 or year > 2100:
         return _html_response(404, "Not found")
-    status, html = await render_indicator_year_html(code, year, db)
+    # Годовые landing легаси/sibling-кодов — 301 на годовую страницу канона.
+    target = resolve_legacy_indicator(code) or resolve_unlisted_indicator(code)
+    if target:
+        base_path = target.split("?")[0]
+        return _permanent_redirect(f"{base_path}/{year}")
+    status, html = await _cached_html(
+        code, f"indicator-year:{code}:{year}", _SSR_TTL_INDICATOR,
+        lambda: render_indicator_year_html(code, year, db),
+    )
     return _html_response(status, html, request)

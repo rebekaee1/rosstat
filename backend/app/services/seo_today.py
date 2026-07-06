@@ -11,6 +11,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import date
+
+from app.services.display import today_msk
 from html import escape
 
 from sqlalchemy import desc, select
@@ -51,6 +53,26 @@ def _dot(text: str) -> str:
 
 def _ru_date_short(d: date) -> str:
     return d.strftime("%d.%m.%Y")
+
+
+# Freshness-SLA по частоте ряда (В-4): страница «X сегодня» продаёт свежесть,
+# поэтому при умершем ETL заголовок обязан честно переключиться на «последнее
+# доступное значение». Пороги — с запасом на лаг публикации источника
+# (месячный ряд Росстата выходит через ~4–6 недель после периода).
+_STALE_AFTER_DAYS = {
+    "daily": 7,
+    "weekly": 21,
+    "monthly": 75,
+    "quarterly": 150,
+    "annual": 500,
+}
+
+
+def is_stale(frequency: str | None, last_date: date, today: date | None = None) -> bool:
+    """Свежесть значения относительно SLA своей частоты."""
+    today = today or today_msk()
+    limit = _STALE_AFTER_DAYS.get((frequency or "").lower(), 75)
+    return (today - last_date).days > limit
 
 
 @dataclass(frozen=True)
@@ -145,13 +167,24 @@ async def render_today_indicator_html(code: str, db: AsyncSession) -> tuple[int,
 
     last, prev = rows[0], rows[1]
     unit = (indicator.unit or "").strip()
-    today = date.today()
+    today = today_msk()
     value_text = f"{_format_number(last.value)} {unit}".strip()
     change = _change_phrase(float(last.value), float(prev.value), unit)
 
-    title = f"{spec.query} сегодня, {_ru_date(today)} — {value_text}"
+    # Freshness-guard (В-4): если значение старше SLA своей частоты, страница
+    # не продаёт «сегодня, {дата}» — честная рамка «последнее доступное значение».
+    stale = is_stale(indicator.frequency, last.date, today)
+    if stale:
+        title = f"{spec.query} — последнее значение на {_ru_date(last.date)}: {value_text}"
+    else:
+        title = f"{spec.query} сегодня, {_ru_date(today)} — {value_text}"
+    fresh_frame = (
+        f"последнее доступное значение на {_ru_date(last.date)}" if stale
+        else f"данные на {_ru_date(last.date)}"
+    )
     desc_text = (
-        f"{spec.query} на сегодня: {value_text} (данные на {_ru_date(last.date)}, "
+        f"{spec.query}{' — последнее доступное значение' if stale else ' на сегодня'}: "
+        f"{value_text} ({fresh_frame}, "
         f"{change}). Источник — {indicator.source}. График, таблица последних значений "
         f"и прогноз."
     )
@@ -188,14 +221,21 @@ async def render_today_indicator_html(code: str, db: AsyncSession) -> tuple[int,
     og_path = f"/og/{spec.series_code}.png"
     canonical = f"/today/{code}"
     badge = _change_badge(float(last.value), float(prev.value), unit)
+    eyebrow = "Последнее доступное значение" if stale else "Показатель на сегодня"
+    h1_text = f"{spec.query} — последнее значение" if stale else f"{spec.query} сегодня"
+    stale_note = (
+        f'<p class="seo-note">Новых публикаций источника пока нет: показано последнее '
+        f'доступное значение на {escape(_ru_date(last.date))}.</p>' if stale else ""
+    )
     body = f"""<main class="seo-page">
 <nav aria-label="Хлебные крошки"><a href="/">Главная</a> / <a href="/today">Сегодня</a> / {escape(spec.query)}</nav>
-<p class="seo-eyebrow">Показатель на сегодня</p>
-<h1>{escape(spec.query)} сегодня</h1>
+<p class="seo-eyebrow">{escape(eyebrow)}</p>
+<h1>{escape(h1_text)}</h1>
 <div class="seo-hero">
 <div class="seo-hero-value">{escape(_format_number(last.value))}<small>{escape(unit)}</small></div>
 <div class="seo-hero-meta">{badge}<span>на {escape(_ru_date(last.date))}</span><span>· источник: {escape(indicator.source)}</span></div>
 </div>
+{stale_note}
 <div class="seo-tiles">
 <div class="seo-tile"><span>Предыдущее</span><b>{escape(_format_number(prev.value))} {escape(unit)}</b></div>
 <div class="seo-tile"><span>Минимум за {len(rows)} набл.</span><b>{escape(_format_number(vmin))} {escape(unit)}</b></div>
@@ -248,7 +288,7 @@ async def render_today_indicator_html(code: str, db: AsyncSession) -> tuple[int,
 
 
 async def render_today_hub_html(db: AsyncSession) -> tuple[int, str]:
-    today = date.today()
+    today = today_msk()
     items_html = []
     list_items = []
     for i, code in enumerate(TODAY_CODES, 1):
@@ -279,10 +319,12 @@ async def render_today_hub_html(db: AsyncSession) -> tuple[int, str]:
         return 404, "Not found"
 
     title = f"Экономика России сегодня, {_ru_date(today)}: курсы, ставка, инфляция, цены"
+    # «Обновление по мере публикации», не «ежедневно» (В-16): половина рядов —
+    # недельные/месячные, обещание ежедневности вводило в заблуждение.
     desc_text = (
         "Ключевые экономические показатели России на сегодня: курс доллара, евро и юаня, "
         "ключевая ставка ЦБ, инфляция, цена золота и топлива, индекс МосБиржи. "
-        "Официальные данные, обновление ежедневно."
+        "Официальные данные, обновление по мере публикации источников."
     )
     og_path = "/og/today.png"
     hub_alt = (f"Экономика России сегодня, {_ru_date(today)}: курс доллара, евро и юаня, "

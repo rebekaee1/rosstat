@@ -88,15 +88,17 @@ async def send_message(
     chat_id: str, text: str, reply_markup: dict | None = None, kind: str = "bot_reply"
 ) -> bool:
     """Отправка + полный архив в telegram_outbox (глаза агента, 2026-07-04)."""
-    from app.services.telegram_outbox import archive
+    from app.services.telegram_outbox import archive_begin, archive_finish
 
     payload: dict = {"chat_id": chat_id, "text": text, "parse_mode": "HTML"}
     if reply_markup:
         payload["reply_markup"] = reply_markup
+    row_id = await archive_begin(
+        chat_id=str(chat_id), method="sendMessage", kind=kind, text=text, payload=payload,
+    )
     data = await _api("sendMessage", payload)
-    await archive(
-        chat_id=str(chat_id), method="sendMessage", kind=kind, text=text,
-        payload=payload, ok=data is not None,
+    await archive_finish(
+        row_id, ok=data is not None,
         telegram_message_id=(data or {}).get("result", {}).get("message_id"),
         error=None if data is not None else "send failed (см. логи)",
     )
@@ -108,15 +110,17 @@ async def send_document(
     kind: str = "bot_document",
 ) -> bool:
     """Отправка файла + архив с байтами содержимого в telegram_outbox."""
-    from app.services.telegram_outbox import archive
+    from app.services.telegram_outbox import archive_begin, archive_finish
 
     payload = {"chat_id": chat_id, "caption": caption, "parse_mode": "HTML"}
     files = {"document": (filename, io.BytesIO(content))}
-    data = await _api("sendDocument", payload, files=files)
-    await archive(
+    row_id = await archive_begin(
         chat_id=str(chat_id), method="sendDocument", kind=kind, text=caption,
         payload=payload, file_name=filename, file_content=content,
-        ok=data is not None,
+    )
+    data = await _api("sendDocument", payload, files=files)
+    await archive_finish(
+        row_id, ok=data is not None,
         telegram_message_id=(data or {}).get("result", {}).get("message_id"),
         error=None if data is not None else "send failed (см. логи)",
     )

@@ -56,9 +56,9 @@ describe('format', () => {
     expect(formatValue(null)).toBe('—');
   });
 
-  it('formatChange adds sign', () => {
-    expect(formatChange(1.2)).toBe('+1.20');
-    expect(formatChange(-0.5)).toBe('-0.50');
+  it('formatChange adds sign (русская запятая — В-11)', () => {
+    expect(formatChange(1.2)).toBe('+1,20');
+    expect(formatChange(-0.5)).toBe('-0,50');
   });
 
   it('cn joins classes', () => {
@@ -66,17 +66,17 @@ describe('format', () => {
   });
 });
 
-describe('formatValueWithUnit', () => {
+describe('formatValueWithUnit (русская типографика — В-11)', () => {
   it('formats percentage', () => {
-    expect(formatValueWithUnit(15.3456, '%')).toBe('15.35%');
+    expect(formatValueWithUnit(15.3456, '%')).toBe('15,35%');
   });
 
   it('formats rubles', () => {
-    expect(formatValueWithUnit(89.1234, 'руб.')).toBe('89.12 руб.');
+    expect(formatValueWithUnit(89.1234, 'руб.')).toBe('89,12 руб.');
   });
 
   it('formats mlrd rubles', () => {
-    expect(formatValueWithUnit(17624.3, 'млрд руб.')).toBe('17\u00A0624.3 млрд ₽');
+    expect(formatValueWithUnit(17624.3, 'млрд руб.')).toBe('17\u00A0624,3 млрд ₽');
   });
 
   it('handles null', () => {
@@ -84,7 +84,7 @@ describe('formatValueWithUnit', () => {
   });
 
   it('handles unknown unit', () => {
-    expect(formatValueWithUnit(42, 'шт.')).toBe('42.00 шт.');
+    expect(formatValueWithUnit(42, 'шт.')).toBe('42,00 шт.');
   });
 });
 
