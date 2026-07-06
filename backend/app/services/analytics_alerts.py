@@ -7,6 +7,11 @@
 - лаг повизитного сырья Метрики > 36 часов;
 - лаг ClickHouse-синка > 1 часа (если слой включён).
 
+Плюс суточная калибровка антибота (`check_bot_calibration`, из ночного
+rollups_daily_job): небот-сессии за последний полный день с повизиткой
+Метрики должны попадать в коридор ±15% к её визитам — вылет означает, что
+веса bot_score разъехались с реальностью (см. services/bot_score.py).
+
 Антиспам: не чаще одного алерта каждого типа в 2 часа (state-Redis DB 1 —
 переживает FLUSHDB кэша). Канал доставки — общий send_telegram (архивируется
 в telegram_outbox, как всё исходящее).
@@ -110,3 +115,48 @@ async def check_anomalies() -> None:
                 await _alert("clickhouse_lag", f"ClickHouse-синк отстаёт на {age} мин (порог 60).")
         except Exception:  # noqa: BLE001
             pass
+
+
+BOT_CALIBRATION_TOLERANCE_PCT = 15  # коридор ±15% к визитам Метрики
+
+
+async def check_bot_calibration() -> dict | None:
+    """Суточная сверка: небот-сессии против визитов Метрики за последний
+    полный МСК-день, по которому уже есть повизитка (лаг Logs API — сутки).
+    Возвращает измерение для логов/тестов; вылет из коридора — алерт."""
+    from app.models import ServerSession
+    from app.services.analytics_period import msk_day
+
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
+    async with async_session() as db:
+        # Последний день, за который у Метрики есть данные (кроме сегодня —
+        # день не закрыт, сравнение бессмысленно).
+        last_metrika_day = await db.scalar(
+            select(func.max(RawMetrikaVisit.visit_date))
+            .where(RawMetrikaVisit.visit_date < msk_day(now))
+        )
+        if not last_metrika_day:
+            return None
+        metrika_visits = int(await db.scalar(
+            select(func.count()).select_from(RawMetrikaVisit)
+            .where(RawMetrikaVisit.visit_date == last_metrika_day)
+        ) or 0)
+        our_sessions = int(await db.scalar(
+            select(func.count()).select_from(ServerSession)
+            .where(ServerSession.day == last_metrika_day, ServerSession.is_bot.is_(False))
+        ) or 0)
+
+    if metrika_visits < 20:  # малая база — сверка статистически пуста
+        return {"day": str(last_metrika_day), "metrika": metrika_visits, "ours": our_sessions, "skipped": True}
+
+    ratio_pct = round(our_sessions / metrika_visits * 100)
+    out = {"day": str(last_metrika_day), "metrika": metrika_visits, "ours": our_sessions, "ratio_pct": ratio_pct}
+    if abs(ratio_pct - 100) > BOT_CALIBRATION_TOLERANCE_PCT:
+        await _alert(
+            "bot_calibration",
+            f"Антибот-калибровка за {last_metrika_day}: наши небот-сессии {our_sessions} "
+            f"против {metrika_visits} визитов Метрики ({ratio_pct}%) — вне коридора "
+            f"±{BOT_CALIBRATION_TOLERANCE_PCT}%. Проверить веса bot_score.",
+        )
+    logger.info("Bot calibration: %s", out)
+    return out

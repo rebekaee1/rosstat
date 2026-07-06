@@ -7085,6 +7085,11 @@
           "kind": "other"
         },
         {
+          "file": "backend/app/api/analytics.py",
+          "line": 421,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/api/dashboard.py",
           "line": 12,
           "kind": "other"
@@ -7301,47 +7306,47 @@
         },
         {
           "file": "backend/tests/test_analytics2.py",
-          "line": 61,
+          "line": 98,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_analytics2.py",
-          "line": 119,
+          "line": 156,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_analytics2.py",
-          "line": 128,
+          "line": 165,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_analytics2.py",
-          "line": 129,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_analytics2.py",
-          "line": 149,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_analytics2.py",
-          "line": 182,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_analytics2.py",
-          "line": 183,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_analytics2.py",
-          "line": 184,
+          "line": 166,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_analytics2.py",
           "line": 186,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_analytics2.py",
+          "line": 219,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_analytics2.py",
+          "line": 220,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_analytics2.py",
+          "line": 221,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_analytics2.py",
+          "line": 223,
           "kind": "tests"
         },
         {
@@ -7768,6 +7773,11 @@
           "file": "frontend/src/components/IndicatorTelemetryGrid.jsx",
           "line": 96,
           "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/biLabels.test.js",
+          "line": 44,
+          "kind": "tests"
         },
         {
           "file": "frontend/src/lib/categories.js",

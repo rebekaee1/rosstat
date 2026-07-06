@@ -76,7 +76,8 @@ _DDL = [
         entry_page String, exit_page String,
         channel LowCardinality(String), device LowCardinality(String),
         is_new_visitor UInt8, is_engaged UInt8,
-        micro_goals Int32, macro_goals Int32, is_bot UInt8
+        micro_goals Int32, macro_goals Int32, is_bot UInt8,
+        bot_score Int32, is_internal UInt8
     ) ENGINE = ReplacingMergeTree PARTITION BY toYYYYMM(day)
       ORDER BY (visitor_id_hash, started_at)""",
     """CREATE TABLE IF NOT EXISTS raw_metrika_visits (
@@ -196,10 +197,19 @@ async def _sync_events(db, ch) -> int:
 
 async def _sync_replacing(db, ch, days: int = 2) -> int:
     """Идемпотентные слои: последние N суток перезаливкой (Replacing-дедуп)."""
-    from app.services.analytics_marts import visit_browser, visit_device, visit_field, visit_has_goals, visit_os
+    from app.services.analytics_marts import (
+        business_goal_ids,
+        visit_browser,
+        visit_device,
+        visit_field,
+        visit_has_business_goal,
+        visit_os,
+    )
 
     since = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=days)
     total = 0
+    # has_goal в CH — только business-tier цели (этап 2б BI 2.1).
+    biz_ids = await business_goal_ids(db)
 
     sessions = (await db.execute(
         select(BehaviorSession).where(BehaviorSession.started_at >= since)
@@ -237,12 +247,14 @@ async def _sync_replacing(db, ch, days: int = 2) -> int:
                 s.exit_page or "", s.channel or "", s.device or "",
                 1 if s.is_new_visitor else 0, 1 if s.is_engaged else 0,
                 int(s.micro_goals or 0), int(s.macro_goals or 0), 1 if s.is_bot else 0,
+                int(s.bot_score or 0), 1 if s.is_internal else 0,
             ] for s in srv],
             column_names=[
                 "id", "day", "visitor_id_hash", "user_id", "started_at", "duration_ms",
                 "active_ms", "pageviews", "clicks", "max_scroll_pct", "entry_page",
                 "exit_page", "channel", "device", "is_new_visitor", "is_engaged",
                 "micro_goals", "macro_goals", "is_bot",
+                "bot_score", "is_internal",
             ],
         )
         total += len(srv)
@@ -257,7 +269,7 @@ async def _sync_replacing(db, ch, days: int = 2) -> int:
                 v.visit_id, v.client_id_hash or "", v.visit_date or datetime(1970, 1, 1).date(),
                 _dt(v.start_time), v.start_url or "", v.traffic_source or "",
                 v.search_engine or "", int(v.duration_seconds or 0),
-                1 if visit_has_goals(v) else 0,
+                1 if visit_has_business_goal(v, biz_ids) else 0,
                 visit_device(v), visit_browser(v), visit_os(v),
                 1 if visit_field(v, "ym:s:isNewUser") == "1" else 0,
             ] for v in visits],
@@ -319,10 +331,12 @@ async def resync() -> None:
     loop = asyncio.get_running_loop()
     ch = await loop.run_in_executor(None, _client)
     try:
-        await loop.run_in_executor(None, _ensure_schema, ch)
+        # DROP+CREATE (не TRUNCATE): ресинк подхватывает и изменения схемы
+        # (новые колонки вроде bot_score/is_internal) без ручных ALTER.
         for table in ("behavior_events", "frontend_events", "behavior_sessions",
                       "server_sessions", "raw_metrika_visits", "identity_links"):
-            await loop.run_in_executor(None, ch.command, f"TRUNCATE TABLE {table}")
+            await loop.run_in_executor(None, ch.command, f"DROP TABLE IF EXISTS {table}")
+        await loop.run_in_executor(None, _ensure_schema, ch)
         for table in ("behavior_events", "frontend_events"):
             await _cursor_set(table, 0)
         async with async_session() as db:
@@ -385,11 +399,20 @@ async def run_slice(metric: str, dims: list[str], days: int = 30, limit: int = 2
     time_col = {"server_sessions": "day", "behavior_events": "toDate(occurred_at)",
                 "raw_metrika_visits": "visit_date"}[table]
 
-    dim_exprs = [f"{allowed[d]} AS {d}" for d in sel_dims]
+    # Пустое значение измерения → «(не определён)» прямо в SQL (этап 3б).
+    dim_exprs = [
+        f"if(empty({allowed[d]}), '(не определён)', {allowed[d]}) AS {d}"
+        for d in sel_dims
+    ]
     group = ", ".join(sel_dims) if sel_dims else ""
+    # FINAL обязателен для ReplacingMergeTree: без него перезалитые окна
+    # читаются с дублями до фонового merge (аудит 2026-07-06: +64% строк).
+    final = " FINAL" if table in ("server_sessions", "raw_metrika_visits", "behavior_sessions") else ""
+    # Срезы по нашим сессиям — только люди и не своя активность (этапы 3/3б).
+    extra_where = " AND is_bot = 0 AND is_internal = 0" if table == "server_sessions" else ""
     sql = (
-        f"SELECT {', '.join(dim_exprs + [expr + ' AS value'])} FROM {table} "
-        f"WHERE {time_col} >= today() - {int(days)} "
+        f"SELECT {', '.join(dim_exprs + [expr + ' AS value'])} FROM {table}{final} "
+        f"WHERE {time_col} >= today() - {int(days)}{extra_where} "
         + (f"GROUP BY {group} ORDER BY value DESC " if group else "")
         + f"LIMIT {int(limit)}"
     )

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { TrendingUp, Menu, X, ChevronDown } from 'lucide-react';
 import gsap from 'gsap';
 import { cn } from '../lib/format';
@@ -80,6 +80,10 @@ export default function Navbar() {
   const navRef = useRef(null);
   const catWrapRef = useRef(null);
   const calcWrapRef = useRef(null);
+  const { pathname } = useLocation();
+  // Служебный раздел /admin/*: fixed-пилюля наезжала на карточки BI при
+  // скролле (обход BI 2.1, этап 4а) — показываем шапку только вверху страницы.
+  const isAdmin = pathname.startsWith('/admin');
 
   const closeAll = () => {
     setMobileOpen(false);
@@ -160,7 +164,10 @@ export default function Navbar() {
           'max-w-6xl w-[calc(100%-2rem)]',
           scrolled
             ? 'glass-surface border border-border-subtle shadow-lg shadow-black/5'
-            : 'glass-surface-soft border border-black/[0.04]'
+            : 'glass-surface-soft border border-black/[0.04]',
+          // !opacity: GSAP-tween появления оставляет inline opacity:1 — без
+          // important класс не победит его.
+          isAdmin && scrolled && !menuOpen && '-translate-y-24 !opacity-0 pointer-events-none'
         )}
       >
       <Link

@@ -15,11 +15,12 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from collections import Counter, defaultdict
 from datetime import datetime, timedelta
 from typing import Any
 
-from sqlalchemy import case, func, select
+from sqlalchemy import case, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.data.bi_targets import NORTH_STAR_MILESTONES, TARGETS, next_milestone, status_for
@@ -38,6 +39,7 @@ from app.models import (
     User,
 )
 from app.services.goal_taxonomy import (
+    SCORE_EVENT_CAP,
     TIER_MACRO,
     TIER_MICRO,
     tier_for_event,
@@ -160,8 +162,68 @@ def visit_has_goals(v: RawMetrikaVisit) -> bool:
     return bool(visit_goal_ids(v))
 
 
+async def business_goal_ids(db: AsyncSession) -> set[int]:
+    """id business-tier целей Метрики (macro/micro по словарю metrika_goals).
+
+    Этап 2б BI 2.1: «конверсия» во всех Метрика-витринах считается только по
+    этим целям — авто-цели (скролл, показы, ошибки) конверсией не являются.
+    """
+    rows = (await db.execute(select(MetrikaGoal.goal_id, MetrikaGoal.tier))).all()
+    return {int(gid) for gid, tier in rows if tier in (TIER_MACRO, TIER_MICRO)}
+
+
+def visit_has_business_goal(v: RawMetrikaVisit, business_ids: set[int]) -> bool:
+    """«Визит конвертировался»: достигнута хотя бы одна business-tier цель.
+    Пустой словарь (токен Метрики не настроен) — фолбэк на любую цель."""
+    ids = visit_goal_ids(v)
+    if not business_ids:
+        return bool(ids)
+    return any(g in business_ids for g in ids)
+
+
 def _since(days: int) -> datetime:
     return datetime.utcnow() - timedelta(days=days)
+
+
+# Все витрины принимают period: Period (МСК-границы) либо int (легаси «за N
+# дней») — as_period нормализует. Полуинтервал [start, end) режет datetime-
+# колонки, [start_date, end_date] — day-колонки rollup'ов и Метрики.
+from app.services.analytics_period import Period, as_period  # noqa: E402
+
+# --- Самоисключение (BI 2.1, этап 3б) -------------------------------------
+# Собственная активность пачкает данные: сессии владельца/админов и страницы
+# /admin/* не должны попадать в поведенческие витрины, свой домен — в
+# «Сайты-источники». Единая точка определения «своих» — здесь.
+
+OWN_DOMAIN = "forecasteconomy.com"
+
+# SQL-предикат «не служебная страница» для behavior_events-витрин.
+def not_admin_page(col):
+    return ~func.coalesce(col, "").like("/admin%")
+
+
+async def admin_identity(db: AsyncSession) -> tuple[set[str], set[str]]:
+    """(user_ids, visitor_id_hashes) владельца и админов: по admin_emails
+    через способы входа + все visitor'ы этих людей из identity_links."""
+    from app.config import settings
+    from app.models import EmailCredential, IdentityLink, OAuthIdentity
+
+    allowed = {e.strip().lower() for e in (settings.admin_emails or "").split(",") if e.strip()}
+    if not allowed:
+        return set(), set()
+    user_ids: set[str] = set()  # str: identity_links/server_sessions хранят UUID строкой
+    for uid, email in (await db.execute(select(EmailCredential.user_id, EmailCredential.email))).all():
+        if email and email.lower() in allowed:
+            user_ids.add(str(uid))
+    for uid, email in (await db.execute(select(OAuthIdentity.user_id, OAuthIdentity.email))).all():
+        if email and email.lower() in allowed:
+            user_ids.add(str(uid))
+    if not user_ids:
+        return set(), set()
+    visitors = set((await db.execute(
+        select(IdentityLink.visitor_id_hash).where(IdentityLink.user_id.in_(user_ids))
+    )).scalars())
+    return user_ids, visitors
 
 
 def _pctl(values: list[float], p: float) -> float | None:
@@ -176,40 +238,58 @@ def _pctl(values: list[float], p: float) -> float | None:
 # Витрина: дерево метрик (North Star + 4 драйвера)
 # ---------------------------------------------------------------------------
 
-async def mart_metric_tree(db: AsyncSession, days: int = 30) -> dict[str, Any]:
-    """Экран-главная BI: North Star (визиты/день) против траектории к 10k,
-    4 драйвера с таргетами из bi_targets.py и статус-цветом."""
-    since_day = _since(days).date()
+async def mart_metric_tree(db: AsyncSession, period: Period | int = 30) -> dict[str, Any]:
+    """Экран-главная BI: North Star против траектории к 10k, 4 драйвера с
+    таргетами из bi_targets.py и статус-цветом. ВСЕ драйверы и их раскрытия
+    считаются на выбранном периоде (BI 2.1) — цифра карточки и цифра
+    разложения по построению из одного окна."""
+    p = as_period(period)
 
-    # North Star: визиты Метрики по дням (наши сессии — сверка ниже).
+    # North Star: НАШИ небот-сессии по дням (истина с BI 2.1), Метрика — в
+    # сверке mart_metrika_funnel. Среднее за период против предыдущего
+    # окна той же длины.
     traffic = (await db.execute(
-        select(DailyTraffic.day, func.sum(DailyTraffic.visits))
-        .where(DailyTraffic.day >= since_day)
-        .group_by(DailyTraffic.day).order_by(DailyTraffic.day)
+        select(ServerSession.day, func.count(), func.count(func.distinct(ServerSession.visitor_id_hash)))
+        .where(ServerSession.day >= p.start_date, ServerSession.day <= p.end_date,
+               ServerSession.is_bot.is_(False), ServerSession.is_internal.is_(False))
+        .group_by(ServerSession.day).order_by(ServerSession.day)
     )).all()
-    visits_by_day = [{"day": d.isoformat(), "visits": int(n or 0)} for d, n in traffic]
-    last7 = [x["visits"] for x in visits_by_day[-7:]]
-    prev7 = [x["visits"] for x in visits_by_day[-14:-7]]
-    ns_value = round(sum(last7) / max(len(last7), 1), 1)
-    ns_prev = round(sum(prev7) / max(len(prev7), 1), 1) if prev7 else 0.0
+    visits_by_day = [
+        {"day": d.isoformat(), "visits": int(n or 0), "visitors": int(u or 0)}
+        for d, n, u in traffic
+    ]
+    span = p.days
+    prev_from = p.start_date - timedelta(days=span)
+    prev_to = p.start_date - timedelta(days=1)
+    prev_total = await db.scalar(
+        select(func.count()).select_from(ServerSession).where(
+            ServerSession.day >= prev_from, ServerSession.day <= prev_to,
+            ServerSession.is_bot.is_(False), ServerSession.is_internal.is_(False))
+    ) or 0
+    cur_total = sum(x["visits"] for x in visits_by_day)
+    ns_value = round(cur_total / span, 1)
+    ns_prev = round(int(prev_total) / span, 1)
 
-    # Каналы за 7 дней (уровень 2 драйвера «Привлечение»).
+    # Каналы за период (уровень 2 драйвера «Привлечение») — по НАШИМ
+    # небот-сессиям (этап 2 BI 2.1); Метрика-каналы живут в mart_segments.
     ch_rows = (await db.execute(
-        select(DailyTraffic.channel, func.sum(DailyTraffic.visits))
-        .where(DailyTraffic.day >= _since(7).date())
-        .group_by(DailyTraffic.channel)
+        select(ServerSession.channel, func.count())
+        .where(ServerSession.day >= p.start_date, ServerSession.day <= p.end_date,
+               ServerSession.is_bot.is_(False), ServerSession.is_internal.is_(False))
+        .group_by(ServerSession.channel)
     )).all()
-    channels = {ch or "direct": int(n or 0) for ch, n in ch_rows}
+    channels = {ch or "unknown": int(n or 0) for ch, n in ch_rows}
     ch_total = sum(channels.values()) or 1
 
-    # Собственные серверные сессии окна: вовлечение и конверсия.
+    # Собственные серверные сессии периода: вовлечение и конверсия.
     sess = (await db.execute(
         select(
             func.count().label("total"),
             func.sum(case((ServerSession.is_engaged.is_(True), 1), else_=0)).label("engaged"),
             func.sum(case((ServerSession.micro_goals > 0, 1), else_=0)).label("micro"),
             func.sum(case((ServerSession.macro_goals > 0, 1), else_=0)).label("macro"),
-        ).where(ServerSession.day >= _since(7).date(), ServerSession.is_bot.is_(False))
+        ).where(ServerSession.day >= p.start_date, ServerSession.day <= p.end_date,
+                ServerSession.is_bot.is_(False), ServerSession.is_internal.is_(False))
     )).one()
     total_s = int(sess.total or 0)
     engaged = int(sess.engaged or 0)
@@ -219,10 +299,12 @@ async def mart_metric_tree(db: AsyncSession, days: int = 30) -> dict[str, Any]:
     micro_rate = micro_s / engaged if engaged else 0.0
     macro_rate = macro_s / engaged if engaged else 0.0
 
-    # Удержание 7 дней: посетители с >1 днём активности за последние 14 дней.
+    # Удержание: посетители периода, активные более чем в одном МСК-дне
+    # окна «период + такое же окно назад» (короткий период — короткая память).
     ret_rows = (await db.execute(
         select(ServerSession.visitor_id_hash, func.count(func.distinct(ServerSession.day)))
-        .where(ServerSession.day >= _since(14).date(), ServerSession.is_bot.is_(False))
+        .where(ServerSession.day >= prev_from, ServerSession.day <= p.end_date,
+               ServerSession.is_bot.is_(False), ServerSession.is_internal.is_(False))
         .group_by(ServerSession.visitor_id_hash)
     )).all()
     visitors_n = len(ret_rows)
@@ -233,7 +315,7 @@ async def mart_metric_tree(db: AsyncSession, days: int = 30) -> dict[str, Any]:
     # окно после ПЕРВОГО дня (окно наблюдения 45 дней, дешёвый скан).
     day_rows = (await db.execute(
         select(ServerSession.visitor_id_hash, ServerSession.day)
-        .where(ServerSession.day >= _since(45).date(), ServerSession.is_bot.is_(False))
+        .where(ServerSession.day >= _since(45).date(), ServerSession.is_bot.is_(False), ServerSession.is_internal.is_(False))
         .distinct()
     )).all()
     days_by_visitor: dict[str, list] = defaultdict(list)
@@ -262,18 +344,49 @@ async def mart_metric_tree(db: AsyncSession, days: int = 30) -> dict[str, Any]:
             "format": fmt, "status": status_for(value, target), "detail": detail,
         }
 
+    period_visitors = await db.scalar(
+        select(func.count(func.distinct(ServerSession.visitor_id_hash))).where(
+            ServerSession.day >= p.start_date, ServerSession.day <= p.end_date,
+            ServerSession.is_bot.is_(False), ServerSession.is_internal.is_(False))
+    ) or 0
+
+    # Мягкая сверочная плашка «по Метрике: N визитов» (этап 2 BI 2.1).
+    metrika_visits = await db.scalar(
+        select(func.count()).select_from(RawMetrikaVisit).where(
+            RawMetrikaVisit.visit_date >= p.start_date,
+            RawMetrikaVisit.visit_date <= p.end_date)
+    ) or 0
+
+    # Календарь года: НАШИ небот-сессии за последние 365 дней — независимо от
+    # выбранного периода (клетки всего года, палитра автоскейлится на фронте).
+    year_ago = p.end_date - timedelta(days=364)
+    cal_rows = (await db.execute(
+        select(ServerSession.day, func.count())
+        .where(ServerSession.day >= year_ago, ServerSession.day <= p.end_date,
+               ServerSession.is_bot.is_(False), ServerSession.is_internal.is_(False))
+        .group_by(ServerSession.day).order_by(ServerSession.day)
+    )).all()
+    calendar = [{"day": d.isoformat(), "visits": int(n or 0)} for d, n in cal_rows]
+
     return {
+        "period": p.to_meta(),
         "north_star": {
-            "label": "Визиты в день (среднее за 7 дней)",
+            "label": f"Сессии в день ({p.label})",
             "value": ns_value,
+            "sessions_total": cur_total,
+            "visitors_total": int(period_visitors),
+            "metrika_visits_total": int(metrika_visits),
             "prev7": ns_prev,
+            "prev_label": f"{prev_from.strftime('%d.%m')}–{prev_to.strftime('%d.%m')}",
             "wow_pct": round((ns_value - ns_prev) / ns_prev * 100, 1) if ns_prev else None,
             "milestone": next_milestone(ns_value),
             "milestones": NORTH_STAR_MILESTONES,
             "target_final": 10_000,
             "status": status_for(ns_value, TARGETS["visits_per_day"]),
             "series": visits_by_day,
+            "source": "own",
         },
+        "calendar": calendar,
         "drivers": [
             node("acquisition", "Привлечение", round(ns_value, 1), TARGETS["visits_per_day"], "visits", {
                 "channels": channels,
@@ -290,7 +403,8 @@ async def mart_metric_tree(db: AsyncSession, days: int = 30) -> dict[str, Any]:
                 "micro_sessions": micro_s, "macro_sessions": macro_s,
             }),
             node("retention", "Удержание", round(retention * 100, 1), TARGETS["retention_7d"] * 100, "pct", {
-                "visitors_14d": visitors_n, "returned": returned,
+                "visitors_window": visitors_n, "returned": returned,
+                "window_label": f"{prev_from.strftime('%d.%m')}–{p.end_date.strftime('%d.%m')}",
                 "windows": ret_windows,
             }),
         ],
@@ -301,36 +415,44 @@ async def mart_metric_tree(db: AsyncSession, days: int = 30) -> dict[str, Any]:
 # Витрина: истинная воронка (собственная realtime + Метрика-сверка)
 # ---------------------------------------------------------------------------
 
-async def mart_own_funnel(db: AsyncSession, days: int = 30) -> dict[str, Any]:
+async def mart_own_funnel(db: AsyncSession, period: Period | int = 30) -> dict[str, Any]:
     """Собственная воронка на серверных сессиях: сессия → вовлечён →
     микро-цель → макро-цель. Реалтайм (сессионизация каждые 15 мин)."""
-    since_day = _since(days).date()
+    p = as_period(period)
     row = (await db.execute(
         select(
             func.count().label("sessions"),
             func.sum(case((ServerSession.is_engaged.is_(True), 1), else_=0)).label("engaged"),
             func.sum(case((ServerSession.micro_goals > 0, 1), else_=0)).label("micro"),
             func.sum(case((ServerSession.macro_goals > 0, 1), else_=0)).label("macro"),
-            func.sum(case((ServerSession.is_bot.is_(True), 1), else_=0)).label("bots"),
-        ).where(ServerSession.day >= since_day)
+        ).where(ServerSession.day >= p.start_date, ServerSession.day <= p.end_date,
+                ServerSession.is_bot.is_(False), ServerSession.is_internal.is_(False))
     )).one()
-    sessions = int(row.sessions or 0) - int(row.bots or 0)
+    excluded = await db.scalar(
+        select(func.count()).select_from(ServerSession).where(
+            ServerSession.day >= p.start_date, ServerSession.day <= p.end_date,
+            (ServerSession.is_bot.is_(True)) | (ServerSession.is_internal.is_(True)))
+    ) or 0
+    sessions = int(row.sessions or 0)
     return {
         "source": "own",
+        "period": p.to_meta(),
         "steps": [
             {"step": "Сессии", "count": sessions},
             {"step": "Вовлечённые", "count": int(row.engaged or 0)},
             {"step": "Микро-цель", "count": int(row.micro or 0)},
             {"step": "Макро-цель", "count": int(row.macro or 0)},
         ],
-        "bots_excluded": int(row.bots or 0),
+        "bots_excluded": int(excluded),
     }
 
 
-async def mart_metrika_funnel(db: AsyncSession, days: int = 30) -> dict[str, Any]:
+async def mart_metrika_funnel(db: AsyncSession, period: Period | int = 30) -> dict[str, Any]:
     """Истинная конверсия Метрики: «достиг цели» = только macro/micro цели
     по словарю metrika_goals (раньше целью считалась любая из 92, включая
-    скролл и ошибку). Разложение по целям с человеческими именами."""
+    скролл и ошибку). Разложение по целям с человеческими именами; словарь
+    включает soft-deleted цели — историческая goals_json резолвится всегда."""
+    p = as_period(period)
     goal_dict = {
         g.goal_id: g for g in (await db.execute(select(MetrikaGoal))).scalars()
     }
@@ -338,7 +460,8 @@ async def mart_metrika_funnel(db: AsyncSession, days: int = 30) -> dict[str, Any
         gid for gid, g in goal_dict.items() if g.tier in (TIER_MACRO, TIER_MICRO)
     }
     visits = (await db.execute(
-        select(RawMetrikaVisit).where(RawMetrikaVisit.visit_date >= _since(days).date())
+        select(RawMetrikaVisit).where(RawMetrikaVisit.visit_date >= p.start_date,
+                                      RawMetrikaVisit.visit_date <= p.end_date)
     )).scalars().all()
 
     total = len(visits)
@@ -363,6 +486,7 @@ async def mart_metrika_funnel(db: AsyncSession, days: int = 30) -> dict[str, Any
 
     return {
         "source": "metrika",
+        "period": p.to_meta(),
         "visits": total,
         "visits_any_goal": any_goal,
         "visits_business_goal": business_goal,
@@ -380,37 +504,54 @@ async def mart_metrika_funnel(db: AsyncSession, days: int = 30) -> dict[str, Any
 # Витрина: надёжность (ошибки + vitals + api_timing + лаги)
 # ---------------------------------------------------------------------------
 
-async def mart_reliability(db: AsyncSession, days: int = 7) -> dict[str, Any]:
-    since = _since(days)
+async def mart_reliability(db: AsyncSession, period: Period | int = 7) -> dict[str, Any]:
+    p = as_period(period)
     rows = (await db.execute(
         select(BehaviorEvent.event_type, BehaviorEvent.page, BehaviorEvent.params_json)
-        .where(BehaviorEvent.occurred_at >= since,
+        .where(BehaviorEvent.occurred_at >= p.start, BehaviorEvent.occurred_at < p.end,
                BehaviorEvent.event_type.in_(("vital", "js_error", "api_timing")))
     )).all()
 
     vitals: dict[str, list[float]] = defaultdict(list)
     errors: Counter = Counter()
+    own_errors: Counter = Counter()
+    third_party_errors: Counter = Counter()
     error_pages: Counter = Counter()
     api: dict[str, list[float]] = defaultdict(list)
     api_fail = 0
+
+    def _error_host(pr: dict) -> str:
+        """Домен скрипта-виновника: из src (filename) либо первого URL стека."""
+        src = str(pr.get("src") or "")
+        m = re.search(r"https?://([^/\s):]+)", src) or re.search(r"https?://([^/\s):]+)", str(pr.get("stack") or ""))
+        return m.group(1).lower() if m else ""
+
     for etype, page, params in rows:
-        p = params if isinstance(params, dict) else {}
-        if etype == "vital" and p.get("m") is not None:
+        pr = params if isinstance(params, dict) else {}
+        if etype == "vital" and pr.get("m") is not None:
             try:
-                vitals[str(p["m"])].append(float(p.get("v") or 0))
+                vitals[str(pr["m"])].append(float(pr.get("v") or 0))
             except (TypeError, ValueError):
                 pass
         elif etype == "js_error":
-            errors[(p.get("msg") or p.get("src") or "unknown")[:160]] += 1
+            label = (pr.get("msg") or pr.get("src") or "unknown")[:160]
+            errors[label] += 1
+            # Свои vs сторонние (этап 4б): 10/10 топ-ошибок прода — счётчики
+            # Метрики и РСЯ; без разделения свои регрессии тонут в чужом шуме.
+            host = _error_host(pr)
+            if not host or OWN_DOMAIN in host or host.startswith(("localhost", "127.")):
+                own_errors[label] += 1
+            else:
+                third_party_errors[host] += 1
             if page:
                 error_pages[page.split("?")[0]] += 1
         elif etype == "api_timing":
-            u = str(p.get("u") or "")[:120]
+            u = str(pr.get("u") or "")[:120]
             try:
-                api[u].append(float(p.get("ms") or 0))
+                api[u].append(float(pr.get("ms") or 0))
             except (TypeError, ValueError):
                 pass
-            if not p.get("ok"):
+            if not pr.get("ok"):
                 api_fail += 1
 
     # Лаг Метрики: свежесть последнего повизитного сырья.
@@ -422,14 +563,29 @@ async def mart_reliability(db: AsyncSession, days: int = 7) -> dict[str, Any]:
 
     api_all = [ms for xs in api.values() for ms in xs]
     return {
+        "period": p.to_meta(),
         "vitals_p75": {m: _pctl(xs, 0.75) for m, xs in vitals.items()},
         "vitals_samples": {m: len(xs) for m, xs in vitals.items()},
         "js_errors_total": int(sum(errors.values())),
         "js_errors_top": [{"error": e, "count": c} for e, c in errors.most_common(12)],
+        # Разделение свои/сторонние (этап 4б): свои — детально, чужие —
+        # схлопнуты до домена скрипта.
+        "js_errors_own": [{"error": e, "count": c} for e, c in own_errors.most_common(12)],
+        "js_errors_third_party": [{"domain": h, "count": c} for h, c in third_party_errors.most_common(8)],
         "js_error_pages": dict(error_pages.most_common(10)),
         "api_p75_ms": _pctl(api_all, 0.75),
+        # Таблица латентности (этап 4б): p50/p75/max/вызовы по endpoint'ам.
         "api_slowest": sorted(
-            ({"endpoint": u, "p75_ms": _pctl(xs, 0.75), "calls": len(xs)} for u, xs in api.items() if len(xs) >= 3),
+            (
+                {
+                    "endpoint": u,
+                    "p50_ms": _pctl(xs, 0.50),
+                    "p75_ms": _pctl(xs, 0.75),
+                    "max_ms": max(xs) if xs else None,
+                    "calls": len(xs),
+                }
+                for u, xs in api.items() if len(xs) >= 3
+            ),
             key=lambda x: -(x["p75_ms"] or 0),
         )[:10],
         "api_failed_sampled": api_fail,
@@ -441,8 +597,12 @@ async def mart_reliability(db: AsyncSession, days: int = 7) -> dict[str, Any]:
 # Витрина: полнота сбора (мета-мониторинг качества данных)
 # ---------------------------------------------------------------------------
 
-async def mart_collection_quality(db: AsyncSession, days: int = 7) -> dict[str, Any]:
-    since = _since(days)
+async def mart_collection_quality(db: AsyncSession, period: Period | int = 7) -> dict[str, Any]:
+    """Health-панель собственного счётчика: доля портретов, заполненность
+    полей, аномалии времени, калибровка к Метрике (расширено по итогам
+    CTO-аудита 2026-07-06)."""
+    p = as_period(period)
+    since, until = p.start, p.end
     sessions = (await db.execute(
         select(
             func.count().label("total"),
@@ -451,18 +611,64 @@ async def mart_collection_quality(db: AsyncSession, days: int = 7) -> dict[str, 
             func.sum(case((BehaviorSession.ym_client_id.isnot(None), 1), else_=0)).label("with_ym"),
             func.sum(case((BehaviorSession.is_webdriver.is_(True), 1), else_=0)).label("bots"),
             func.sum(case((BehaviorSession.channel.isnot(None), 1), else_=0)).label("with_channel"),
-        ).where(BehaviorSession.started_at >= since)
+        ).where(BehaviorSession.started_at >= since, BehaviorSession.started_at < until)
     )).one()
     total = int(sessions.total or 0)
 
     def share(x) -> float | None:
         return round(int(x or 0) / total * 100, 1) if total else None
 
+    # Реальное покрытие портретами: сколько активных сессий потока имеют
+    # строку session_start (ретрай портрета в behavior.js чинит недобор).
+    ev = (await db.execute(
+        select(
+            func.count(func.distinct(BehaviorEvent.session_id_hash)).label("stream_sessions"),
+            func.count().label("events"),
+            func.sum(case((BehaviorEvent.visitor_id_hash.isnot(None), 1), else_=0)).label("ev_with_visitor"),
+        ).where(BehaviorEvent.occurred_at >= since, BehaviorEvent.occurred_at < until)
+    )).one()
+    stream_sessions = int(ev.stream_sessions or 0)
+    events_total = int(ev.events or 0)
+
+    # Аномалии dwell: события, где страница «читалась» дольше 4 часов
+    # (клампится на инжесте с 2026-07-06 — счётчик должен идти к нулю).
+    dwell_rows = (await db.execute(
+        select(BehaviorEvent.params_json)
+        .where(BehaviorEvent.occurred_at >= since, BehaviorEvent.occurred_at < until,
+               BehaviorEvent.event_type == "dwell")
+        .limit(50000)
+    )).scalars().all()
+    dwell_total = len(dwell_rows)
+    dwell_over_4h = sum(
+        1 for p in dwell_rows
+        if isinstance(p, dict) and isinstance(p.get("ms"), (int, float)) and p["ms"] > 4 * 3600 * 1000
+    )
+    dwell_with_active = sum(
+        1 for p in dwell_rows if isinstance(p, dict) and p.get("active_ms") is not None
+    )
+
+    # Калибровка к Метрике: небот-сессии vs визиты за последний ПОЛНЫЙ день
+    # (Logs API отдаёт вчерашний день; сегодняшний сравнивать нечестно).
+    from app.services.analytics_period import msk_day
+    yesterday = msk_day(datetime.utcnow()) - timedelta(days=1)
+    own_yesterday = await db.scalar(
+        select(func.count()).select_from(ServerSession).where(
+            ServerSession.day == yesterday, ServerSession.is_bot.is_(False), ServerSession.is_internal.is_(False))
+    ) or 0
+    metrika_yesterday = await db.scalar(
+        select(func.count()).select_from(RawMetrikaVisit).where(
+            RawMetrikaVisit.visit_date == yesterday)
+    ) or 0
+    calibration = (
+        round(own_yesterday / metrika_yesterday, 2) if metrika_yesterday else None
+    )
+
     # Покрытие SSR-страниц собственным потоком: есть ли pageview с чистых
     # SSR-маршрутов (standalone-бандл жив).
     ssr_pv = await db.scalar(
         select(func.count()).select_from(BehaviorEvent).where(
             BehaviorEvent.occurred_at >= since,
+            BehaviorEvent.occurred_at < until,
             BehaviorEvent.event_type == "pageview",
             (BehaviorEvent.page.like("/today%")
              | BehaviorEvent.page.like("/region-rating%")
@@ -476,15 +682,98 @@ async def mart_collection_quality(db: AsyncSession, days: int = 7) -> dict[str, 
         if last_event else None
     )
     return {
+        "period": p.to_meta(),
         "own_sessions": total,
-        "portrait_share_pct": share(sessions.total),
+        "stream_sessions": stream_sessions,
+        "portrait_share_pct": (
+            round(total / stream_sessions * 100, 1) if stream_sessions else None
+        ),
         "visitor_id_share_pct": share(sessions.with_visitor),
+        "event_visitor_id_share_pct": (
+            round(int(ev.ev_with_visitor or 0) / events_total * 100, 1) if events_total else None
+        ),
         "geo_share_pct": share(sessions.with_geo),
         "ym_bridge_share_pct": share(sessions.with_ym),
         "channel_share_pct": share(sessions.with_channel),
         "bot_share_pct": share(sessions.bots),
+        "dwell_events": dwell_total,
+        "dwell_over_4h": dwell_over_4h,
+        "dwell_active_ms_share_pct": (
+            round(dwell_with_active / dwell_total * 100, 1) if dwell_total else None
+        ),
+        "calibration_vs_metrika": calibration,
+        "calibration_note": (
+            f"небот-сессии {own_yesterday} / визиты Метрики {metrika_yesterday} за {yesterday.isoformat()}"
+            if metrika_yesterday else "нет визитов Метрики за вчера (лаг Logs API)"
+        ),
         "ssr_pageviews": int(ssr_pv),
         "stream_silence_minutes": silence_min,
+    }
+
+
+async def mart_botness(db: AsyncSession, period: Period | int = 7) -> dict[str, Any]:
+    """Витрина роботности (BI 2.1, этап 3): сколько сессий отсеял антибот,
+    распределение bot_score и по-дневная калибровка небот-сессий к визитам
+    Метрики (целевой коридор ±15%). Живёт во вкладке «Надёжность»."""
+    from app.services.bot_score import BOT_THRESHOLD
+
+    p = as_period(period)
+    rows = (await db.execute(
+        select(
+            ServerSession.day,
+            func.count().label("total"),
+            func.sum(case((ServerSession.is_bot.is_(True), 1), else_=0)).label("bots"),
+        )
+        .where(ServerSession.day >= p.start_date, ServerSession.day <= p.end_date)
+        .group_by(ServerSession.day)
+        .order_by(ServerSession.day)
+    )).all()
+
+    metrika_by_day = dict((await db.execute(
+        select(RawMetrikaVisit.visit_date, func.count())
+        .where(RawMetrikaVisit.visit_date >= p.start_date,
+               RawMetrikaVisit.visit_date <= p.end_date)
+        .group_by(RawMetrikaVisit.visit_date)
+    )).all())
+
+    days = []
+    for day, total, bots in rows:
+        total, bots = int(total or 0), int(bots or 0)
+        humans = total - bots
+        metrika = int(metrika_by_day.get(day, 0))
+        days.append({
+            "day": day.isoformat() if hasattr(day, "isoformat") else str(day),
+            "sessions": total,
+            "bots": bots,
+            "humans": humans,
+            "bot_share_pct": round(bots / total * 100, 1) if total else None,
+            "metrika_visits": metrika or None,
+            "ratio_pct": round(humans / metrika * 100) if metrika else None,
+        })
+
+    # Распределение счёта — видно, на чём срабатывает антибот.
+    buckets = [("0", 0, 0), ("1–39", 1, 39), ("40–59", 40, 59),
+               (f"{BOT_THRESHOLD}–99", BOT_THRESHOLD, 99), ("100", 100, 100)]
+    histogram = []
+    for label, lo, hi in buckets:
+        cnt = await db.scalar(
+            select(func.count()).select_from(ServerSession)
+            .where(ServerSession.day >= p.start_date, ServerSession.day <= p.end_date,
+                   ServerSession.bot_score >= lo, ServerSession.bot_score <= hi)
+        ) or 0
+        histogram.append({"bucket": label, "sessions": int(cnt)})
+
+    total_all = sum(d["sessions"] for d in days)
+    total_bots = sum(d["bots"] for d in days)
+    return {
+        "period": p.to_meta(),
+        "threshold": BOT_THRESHOLD,
+        "sessions": total_all,
+        "bots": total_bots,
+        "bot_share_pct": round(total_bots / total_all * 100, 1) if total_all else None,
+        "days": days,
+        "score_histogram": histogram,
+        "note": "Коридор приёмки: небот-сессии в пределах ±15% к визитам Метрики за полный день.",
     }
 
 
@@ -492,11 +781,11 @@ async def mart_collection_quality(db: AsyncSession, days: int = 7) -> dict[str, 
 # Витрина: гео и сегментация
 # ---------------------------------------------------------------------------
 
-async def mart_geo(db: AsyncSession, days: int = 30) -> dict[str, Any]:
-    since = _since(days)
+async def mart_geo(db: AsyncSession, period: Period | int = 30) -> dict[str, Any]:
+    p = as_period(period)
     rows = (await db.execute(
         select(BehaviorSession.country, BehaviorSession.geo_region, BehaviorSession.city, func.count())
-        .where(BehaviorSession.started_at >= since)
+        .where(BehaviorSession.started_at >= p.start, BehaviorSession.started_at < p.end)
         .group_by(BehaviorSession.country, BehaviorSession.geo_region, BehaviorSession.city)
     )).all()
     countries: Counter = Counter()
@@ -516,16 +805,16 @@ async def mart_geo(db: AsyncSession, days: int = 30) -> dict[str, Any]:
     }
 
 
-async def mart_segments(db: AsyncSession, days: int = 30) -> dict[str, Any]:
+async def mart_segments(db: AsyncSession, period: Period | int = 30) -> dict[str, Any]:
     """Сегментация на rollup'ах: канал × устройство × новизна (визиты Метрики)."""
-    since_day = _since(days).date()
+    p = as_period(period)
     rows = (await db.execute(
         select(
             DailyTraffic.channel, DailyTraffic.device, DailyTraffic.is_new,
             func.sum(DailyTraffic.visits), func.sum(DailyTraffic.goal_visits),
             func.sum(DailyTraffic.total_duration_sec), func.sum(DailyTraffic.bounces),
         )
-        .where(DailyTraffic.day >= since_day)
+        .where(DailyTraffic.day >= p.start_date, DailyTraffic.day <= p.end_date)
         .group_by(DailyTraffic.channel, DailyTraffic.device, DailyTraffic.is_new)
     )).all()
     segments = []
@@ -549,13 +838,15 @@ async def mart_segments(db: AsyncSession, days: int = 30) -> dict[str, Any]:
 # Витрина: блочная аналитика
 # ---------------------------------------------------------------------------
 
-async def mart_blocks(db: AsyncSession, days: int = 30) -> dict[str, Any]:
+async def mart_blocks(db: AsyncSession, period: Period | int = 30) -> dict[str, Any]:
     """Что реально смотрят: время видимости [data-block] по разделам сайта.
     Блоки с высоким вниманием — расширять; с нулевым — поднимать/переделывать."""
-    since = _since(days)
+    p = as_period(period)
     rows = (await db.execute(
         select(BehaviorEvent.page, BehaviorEvent.params_json)
-        .where(BehaviorEvent.occurred_at >= since, BehaviorEvent.event_type == "block_view")
+        .where(BehaviorEvent.occurred_at >= p.start, BehaviorEvent.occurred_at < p.end,
+               BehaviorEvent.event_type == "block_view",
+               not_admin_page(BehaviorEvent.page))
     )).all()
     agg: dict[tuple[str, str], dict[str, int]] = defaultdict(lambda: {"views": 0, "ms": 0})
     for page, params in rows:
@@ -582,16 +873,17 @@ async def mart_blocks(db: AsyncSession, days: int = 30) -> dict[str, Any]:
 # Витрина: «Что менять» — контур продуктовых решений
 # ---------------------------------------------------------------------------
 
-async def mart_page_quadrants(db: AsyncSession, days: int = 30) -> dict[str, Any]:
+async def mart_page_quadrants(db: AsyncSession, period: Period | int = 30) -> dict[str, Any]:
     """Матрица «трафик × вовлечение» по разделам: квадрант = действие
     (продвигать / тиражировать / чинить / переработать)."""
-    since_day = _since(days).date()
+    p = as_period(period)
     rows = (await db.execute(
         select(
             DailyPage.page,
             func.sum(DailyPage.views), func.sum(DailyPage.total_active_ms),
             func.sum(DailyPage.total_dwell_ms), func.sum(DailyPage.dead_clicks),
-        ).where(DailyPage.day >= since_day).group_by(DailyPage.page)
+        ).where(DailyPage.day >= p.start_date, DailyPage.day <= p.end_date)
+        .group_by(DailyPage.page)
     )).all()
     by_section: dict[str, dict[str, int]] = defaultdict(lambda: {"views": 0, "active_ms": 0, "dwell_ms": 0, "dead": 0})
     for page, views, active, dwell, dead in rows:
@@ -626,13 +918,13 @@ async def mart_page_quadrants(db: AsyncSession, days: int = 30) -> dict[str, Any
     return {"sections": items, "median_views": views_med, "median_engagement": eng_med}
 
 
-async def mart_feature_adoption(db: AsyncSession, days: int = 30) -> dict[str, Any]:
+async def mart_feature_adoption(db: AsyncSession, period: Period | int = 30) -> dict[str, Any]:
     """Adoption фич по бизнес-событиям + сигналы «где ждут интерактив»
     (dead-клики) и «что уносят руками» (copy — кандидаты на share/embed)."""
-    since_day = _since(days).date()
+    p = as_period(period)
     rows = (await db.execute(
         select(DailyGoal.event_name, DailyGoal.tier, func.sum(DailyGoal.count), func.sum(DailyGoal.sessions))
-        .where(DailyGoal.day >= since_day)
+        .where(DailyGoal.day >= p.start_date, DailyGoal.day <= p.end_date)
         .group_by(DailyGoal.event_name, DailyGoal.tier)
     )).all()
     features = [
@@ -642,10 +934,11 @@ async def mart_feature_adoption(db: AsyncSession, days: int = 30) -> dict[str, A
     ]
     features.sort(key=lambda x: -x["count"])
 
-    since = _since(days)
     copies = (await db.execute(
         select(BehaviorEvent.element_text, func.count())
-        .where(BehaviorEvent.occurred_at >= since, BehaviorEvent.event_type == "copy")
+        .where(BehaviorEvent.occurred_at >= p.start, BehaviorEvent.occurred_at < p.end,
+               BehaviorEvent.event_type == "copy",
+               not_admin_page(BehaviorEvent.page))  # свои копии из BI — не сигнал
         .group_by(BehaviorEvent.element_text)
         .order_by(func.count().desc()).limit(15)
     )).all()
@@ -655,16 +948,67 @@ async def mart_feature_adoption(db: AsyncSession, days: int = 30) -> dict[str, A
     }
 
 
+async def mart_embed_distribution(_db: AsyncSession | None = None, period: Period | int = 30) -> dict[str, Any]:
+    """Распространение виджетов: показы embed'ов на чужих сайтах.
+
+    Источник — Redis-счётчики показов `fe:embed:imp:{day}` (поле
+    `code:type:domain`), которые пишут пиксель и impression-endpoint
+    embed API. Это недооценённый сигнал дистрибуции бренда: каждый показ —
+    наш график на чужой странице со ссылкой на нас.
+    """
+    from app.core.cache import get_redis
+
+    p = as_period(period)
+    by_domain: Counter = Counter()
+    by_code: Counter = Counter()
+    by_type: Counter = Counter()
+    daily: dict[str, int] = {}
+    total = 0
+    try:
+        r = await get_redis()
+        cursor_day = p.start_date
+        days_list = []
+        while cursor_day <= p.end_date and len(days_list) < 90:
+            days_list.append(cursor_day.isoformat())
+            cursor_day += timedelta(days=1)
+        for day in days_list:
+            h = await r.hgetall(f"fe:embed:imp:{day}")
+            if not h:
+                continue
+            day_total = 0
+            for field, cnt in h.items():
+                key = field.decode() if isinstance(field, bytes) else str(field)
+                n = int(cnt)
+                parts = key.split(":")
+                code = parts[0] if parts else "unknown"
+                wtype = parts[1] if len(parts) > 1 else "unknown"
+                domain = ":".join(parts[2:]) or "direct"
+                by_code[code] += n
+                by_type[wtype] += n
+                by_domain[domain] += n
+                day_total += n
+            daily[day] = day_total
+            total += day_total
+    except Exception:  # noqa: BLE001 — Redis недоступен: карточка пустая, не 500
+        logger.warning("mart_embed_distribution: Redis unavailable", exc_info=True)
+    return {
+        "total_impressions": total,
+        "domains": [{"domain": d, "count": c} for d, c in by_domain.most_common(20)],
+        "codes": [{"code": c, "count": n} for c, n in by_code.most_common(15)],
+        "types": dict(by_type.most_common()),
+        "daily": [{"date": d, "count": c} for d, c in sorted(daily.items())],
+    }
+
+
 # ---------------------------------------------------------------------------
 # Витрина: «Люди» — досье посетителей со скорингом
 # ---------------------------------------------------------------------------
 
-async def mart_people(db: AsyncSession, days: int = 30, limit: int = 50) -> dict[str, Any]:
+async def mart_people(db: AsyncSession, period: Period | int = 30, limit: int = 50) -> dict[str, Any]:
     """Список посетителей по visitor_id: портрет, сессии, интересы, скоринг
     ценности (веса goal_taxonomy). Для зарегистрированных — связка через
     identity_links (история до регистрации принадлежит человеку)."""
-    since_day = _since(days).date()
-    since = _since(days)
+    p = as_period(period)
 
     sess_rows = (await db.execute(
         select(
@@ -677,22 +1021,27 @@ async def mart_people(db: AsyncSession, days: int = 30, limit: int = 50) -> dict
             func.max(ServerSession.ended_at).label("last_seen"),
             func.min(ServerSession.started_at).label("first_seen"),
         )
-        .where(ServerSession.day >= since_day, ServerSession.is_bot.is_(False))
+        .where(ServerSession.day >= p.start_date, ServerSession.day <= p.end_date,
+               ServerSession.is_bot.is_(False), ServerSession.is_internal.is_(False))
         .group_by(ServerSession.visitor_id_hash)
         .order_by(func.count().desc())
         .limit(limit * 2)
     )).all()
 
-    visitor_ids = [r.visitor_id_hash for r in sess_rows]
-    # Портрет: последняя сессия с известным visitor.
+    visitor_ids = [r.visitor_id_hash for r in sess_rows if r.visitor_id_hash]
+    # Портрет: последняя сессия с известным visitor. Попутно строим карту
+    # session_id → visitor: события старых бандлов идут без visitor_id_hash,
+    # и скоринг/интересы без этого моста были нулевыми (фикс 4б).
     portraits: dict[str, BehaviorSession] = {}
+    session_to_visitor: dict[str, str] = {}
     if visitor_ids:
-        for p in (await db.execute(
+        for bs in (await db.execute(
             select(BehaviorSession)
             .where(BehaviorSession.visitor_id_hash.in_(visitor_ids))
             .order_by(BehaviorSession.started_at)
         )).scalars():
-            portraits[p.visitor_id_hash] = p
+            portraits[bs.visitor_id_hash] = bs
+            session_to_visitor[bs.session_id_hash] = bs.visitor_id_hash
 
     # Связка с аккаунтами.
     links: dict[str, str] = {}
@@ -702,25 +1051,46 @@ async def mart_people(db: AsyncSession, days: int = 30, limit: int = 50) -> dict
         )).scalars():
             links[link.visitor_id_hash] = link.user_id
 
-    # Интересы + скоринг по бизнес-событиям.
+    # Интересы + скоринг по бизнес-событиям. Событие резолвится в человека
+    # по visitor_id_hash ЛИБО по session_id_hash (мост через behavior_sessions):
+    # хвост старых бандлов шлёт события без visitor — без моста скоринг нулевой.
     interests: dict[str, Counter] = defaultdict(Counter)
     scores: dict[str, int] = defaultdict(int)
     if visitor_ids:
         ev_rows = (await db.execute(
-            select(FrontendEvent.visitor_id_hash, FrontendEvent.event_name, FrontendEvent.url, func.count())
-            .where(FrontendEvent.occurred_at >= since, FrontendEvent.visitor_id_hash.in_(visitor_ids))
-            .group_by(FrontendEvent.visitor_id_hash, FrontendEvent.event_name, FrontendEvent.url)
+            select(FrontendEvent.visitor_id_hash, FrontendEvent.session_id_hash,
+                   FrontendEvent.event_name, FrontendEvent.url, func.count())
+            .where(FrontendEvent.occurred_at >= p.start, FrontendEvent.occurred_at < p.end,
+                   or_(FrontendEvent.visitor_id_hash.in_(visitor_ids),
+                       FrontendEvent.session_id_hash.in_(list(session_to_visitor))))
+            .group_by(FrontendEvent.visitor_id_hash, FrontendEvent.session_id_hash,
+                      FrontendEvent.event_name, FrontendEvent.url)
         )).all()
-        for vid, name, url, cnt in ev_rows:
-            scores[vid] += weight_for_event(name) * int(cnt)
+        known = set(visitor_ids)
+        per_event: dict[tuple[str, str], int] = defaultdict(int)
+        for vid, sid, name, url, cnt in ev_rows:
+            person = vid if vid in known else session_to_visitor.get(sid or "")
+            if not person:
+                continue
+            per_event[(person, name)] += int(cnt)
             if url and "/indicator/" in url:
                 code = url.split("/indicator/")[-1].split("?")[0].split("/")[0]
                 if code:
-                    interests[vid][code] += int(cnt)
+                    interests[person][code] += int(cnt)
+        # Кэп: одно событие даёт очки максимум SCORE_EVENT_CAP раз — иначе
+        # scroll_depth/indicator_view делают «скроллера» ценнее конверсии.
+        for (vid, name), cnt in per_event.items():
+            scores[vid] += weight_for_event(name) * min(cnt, SCORE_EVENT_CAP)
 
     people = []
     for r in sess_rows:
         vid = r.visitor_id_hash
+        if not vid:
+            continue
+        # Фильтр шума (этап 4б): случайный однократный заход без единой цели
+        # не «человек в досье» — оставляем ≥2 сессий либо ≥1 цель/очко.
+        if int(r.sessions or 0) < 2 and not int(r.micro or 0) and not int(r.macro or 0) and not scores.get(vid, 0):
+            continue
         p = portraits.get(vid)
         people.append({
             "visitor": vid[:12],
@@ -748,15 +1118,17 @@ async def mart_people(db: AsyncSession, days: int = 30, limit: int = 50) -> dict
 # Витрина: A/B-эксперименты — автоанализ конверсии по вариантам
 # ---------------------------------------------------------------------------
 
-async def mart_experiments(db: AsyncSession, days: int = 30) -> dict[str, Any]:
+async def mart_experiments(db: AsyncSession, period: Period | int = 30) -> dict[str, Any]:
     """Автоанализ A/B: по каждому experiment_exposure (params: experiment,
     variant) — охват и конверсия варианта в micro/macro-цель тем же visitor'ом
     в окне эксперимента. Пусто, пока экспозиции не шлются — каркас готов."""
-    since = _since(days)
+    p = as_period(period)
+    since, until = p.start, p.end
     rows = (await db.execute(
         select(FrontendEvent.visitor_id_hash, FrontendEvent.params_json)
         .where(
             FrontendEvent.occurred_at >= since,
+            FrontendEvent.occurred_at < until,
             FrontendEvent.event_name == "experiment_exposure",
             FrontendEvent.visitor_id_hash.isnot(None),
         )
@@ -780,6 +1152,7 @@ async def mart_experiments(db: AsyncSession, days: int = 30) -> dict[str, Any]:
             select(FrontendEvent.visitor_id_hash, FrontendEvent.event_name)
             .where(
                 FrontendEvent.occurred_at >= since,
+                FrontendEvent.occurred_at < until,
                 FrontendEvent.visitor_id_hash.in_(all_vids),
             ).distinct()
         )).all()
@@ -830,18 +1203,20 @@ async def mart_ch_slices_of_day(_db: AsyncSession | None = None) -> dict[str, An
 # Витрина: расходы Директа (CPA/ROI — каркас до передачи токена)
 # ---------------------------------------------------------------------------
 
-async def mart_ad_costs(db: AsyncSession, days: int = 30) -> dict[str, Any]:
-    since_day = _since(days).date()
+async def mart_ad_costs(db: AsyncSession, period: Period | int = 30) -> dict[str, Any]:
+    p = as_period(period)
     rows = (await db.execute(
         select(DirectCost.campaign, func.sum(DirectCost.cost_rub), func.sum(DirectCost.clicks))
-        .where(DirectCost.day >= since_day).group_by(DirectCost.campaign)
+        .where(DirectCost.day >= p.start_date, DirectCost.day <= p.end_date)
+        .group_by(DirectCost.campaign)
     )).all()
     total_cost = float(sum(float(c or 0) for _, c, _ in rows))
 
     # Macro-цели окна для CPA (когда появятся расходы).
     macro_goals = await db.scalar(
         select(func.sum(DailyGoal.count)).where(
-            DailyGoal.day >= since_day, DailyGoal.tier == TIER_MACRO,
+            DailyGoal.day >= p.start_date, DailyGoal.day <= p.end_date,
+            DailyGoal.tier == TIER_MACRO,
         )
     ) or 0
     return {
@@ -865,18 +1240,22 @@ async def build_marts_daily_context(db: AsyncSession) -> dict[str, Any]:
     """ВСЕ витрины marts-слоя за окно «день» — уходит в снапшот Пульса.
     Директива владельца: LLM видит всё, что есть в аналитике за день; цифра
     в дайджесте и на экране BI по построению одна и та же (одни функции)."""
+    from app.services.analytics_period import resolve_period
+
+    today = resolve_period("today")
+    week = resolve_period("7d")
     return {
-        "metric_tree": await mart_metric_tree(db, days=14),
-        "own_funnel_today": await mart_own_funnel(db, days=1),
-        "metrika_funnel_7d": await mart_metrika_funnel(db, days=7),
-        "reliability": await mart_reliability(db, days=1),
-        "collection_quality": await mart_collection_quality(db, days=1),
-        "geo_today": await mart_geo(db, days=1),
-        "segments_7d": await mart_segments(db, days=7),
-        "blocks_today": await mart_blocks(db, days=1),
-        "page_quadrants_7d": await mart_page_quadrants(db, days=7),
-        "feature_adoption_7d": await mart_feature_adoption(db, days=7),
-        "experiments_30d": await mart_experiments(db, days=30),
-        "ad_costs": await mart_ad_costs(db, days=7),
+        "metric_tree": await mart_metric_tree(db, as_period(14)),
+        "own_funnel_today": await mart_own_funnel(db, today),
+        "metrika_funnel_7d": await mart_metrika_funnel(db, week),
+        "reliability": await mart_reliability(db, today),
+        "collection_quality": await mart_collection_quality(db, today),
+        "geo_today": await mart_geo(db, today),
+        "segments_7d": await mart_segments(db, week),
+        "blocks_today": await mart_blocks(db, today),
+        "page_quadrants_7d": await mart_page_quadrants(db, week),
+        "feature_adoption_7d": await mart_feature_adoption(db, week),
+        "experiments_30d": await mart_experiments(db, resolve_period("30d")),
+        "ad_costs": await mart_ad_costs(db, week),
         "ch_slices": await mart_ch_slices_of_day(db),
     }

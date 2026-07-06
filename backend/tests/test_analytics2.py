@@ -46,6 +46,43 @@ def test_taxonomy_tiers():
     assert weight_for_event("api_load_error") == 0
 
 
+def test_taxonomy_intent_tier_and_reclassification():
+    """Ревизия 2026-07-06: intent — не конверсия; негативные сигналы —
+    technical; login_success — micro (возвратный вход ≠ приобретение)."""
+    from app.services.goal_taxonomy import (
+        TIER_INTENT, TIER_MICRO, TIER_TECHNICAL, is_conversion, tier_for_event,
+    )
+
+    for ev in ("oauth_start", "header_register_click", "header_login_click",
+               "register_nudge_cta", "feedback_nudge_cta"):
+        assert tier_for_event(ev) == TIER_INTENT, ev
+        assert not is_conversion(ev), f"{ev}: клик по кнопке — не достижение"
+
+    assert tier_for_event("search_abandon") == TIER_TECHNICAL
+    assert tier_for_event("outbound_link") == TIER_TECHNICAL
+    assert tier_for_event("embed_runtime_view") == TIER_TECHNICAL
+    assert tier_for_event("login_success") == TIER_MICRO
+    assert tier_for_event("contact_email") == TIER_MICRO
+    assert is_conversion("login_success") and is_conversion("contact_email")
+
+
+def test_taxonomy_covers_frontend_registry():
+    """Каждое событие реестра track.js классифицировано ЯВНО — фолбэк
+    «engagement по умолчанию» не должен молча глотать новые события."""
+    import re
+    from pathlib import Path
+
+    from app.services.goal_taxonomy import explicit_events
+
+    track = Path(__file__).resolve().parents[2] / "frontend" / "src" / "lib" / "track.js"
+    if not track.exists():
+        pytest.skip("frontend/src/lib/track.js недоступен в этом окружении")
+    registry = set(re.findall(r"[A-Z_]+:\s*'([a-z0-9_]+)'", track.read_text()))
+    assert len(registry) >= 90, "реестр track.js подозрительно мал — регекс разошёлся с форматом"
+    missing = registry - explicit_events()
+    assert not missing, f"события без явного tier в goal_taxonomy: {sorted(missing)}"
+
+
 # ---------------------------------------------------------------------------
 # Классификация каналов
 # ---------------------------------------------------------------------------
@@ -218,7 +255,7 @@ def test_marts_on_empty_db():
 
     async def scenario(maker):
         async with maker() as db:
-            tree = await mart_metric_tree(db, days=7)
+            tree = await mart_metric_tree(db, period=7)
             assert {"north_star", "drivers"} <= set(tree)
             assert len(tree["drivers"]) == 4
             assert {d["key"] for d in tree["drivers"]} == {"acquisition", "engagement", "conversion", "retention"}
@@ -228,16 +265,16 @@ def test_marts_on_empty_db():
             ret = next(d for d in tree["drivers"] if d["key"] == "retention")
             assert {"d1", "d7", "d30"} <= set(ret["detail"]["windows"])
 
-            funnel = await mart_own_funnel(db, days=7)
+            funnel = await mart_own_funnel(db, period=7)
             assert [s["step"] for s in funnel["steps"]] == ["Сессии", "Вовлечённые", "Микро-цель", "Макро-цель"]
 
-            cq = await mart_collection_quality(db, days=7)
+            cq = await mart_collection_quality(db, period=7)
             assert cq["own_sessions"] == 0
 
-            segs = await mart_segments(db, days=7)
+            segs = await mart_segments(db, period=7)
             assert segs["segments"] == []
 
-            exps = await mart_experiments(db, days=30)
+            exps = await mart_experiments(db, period=30)
             assert exps["experiments"] == [] and exps["note"]
 
     _run_with_db(scenario)
@@ -271,7 +308,7 @@ def test_mart_experiments_conversion_by_variant():
             ])
             await db.commit()
 
-            res = await mart_experiments(db, days=7)
+            res = await mart_experiments(db, period=7)
             assert len(res["experiments"]) == 1
             variants = {v["variant"]: v for v in res["experiments"][0]["variants"]}
             assert variants["A"]["visitors"] == 2 and variants["A"]["converted"] == 1
@@ -290,3 +327,112 @@ def test_bi_targets_status():
     assert status_for(30, 100) == "red"
     assert next_milestone(150) > 150
     assert next_milestone(10_500) >= 10_000
+
+
+def test_period_resolver_msk():
+    """BI 2.1: «день» — 00:00 МСК → сейчас; custom-даты МСК; tail-подокно."""
+    from datetime import datetime, timedelta, timezone
+
+    from app.services.analytics_period import MSK_OFFSET, as_period, msk_day, resolve_period
+
+    now_utc = datetime.now(timezone.utc).replace(tzinfo=None)
+    today_msk = (now_utc + MSK_OFFSET).date()
+
+    p = resolve_period("today")
+    assert p.start_date == p.end_date == today_msk
+    # Начало окна = 00:00 МСК в UTC (МСК-полночь минус 3 часа).
+    assert p.start + MSK_OFFSET == datetime.combine(today_msk, datetime.min.time())
+    assert p.start <= now_utc <= p.end + timedelta(seconds=5)
+
+    y = resolve_period("yesterday")
+    assert y.end_date == today_msk - timedelta(days=1)
+    assert y.end == p.start  # стык суток без дыр и перекрытий
+
+    # custom: перепутанные даты меняются местами, будущее обрезается по сегодня.
+    c = resolve_period("custom", "2026-07-04", "2026-07-01")
+    assert (c.start_date.isoformat(), c.end_date.isoformat()) == ("2026-07-01", "2026-07-04")
+    assert resolve_period("custom", None, None).preset == "30d"  # мягкий фолбэк
+
+    # int-легаси: N последних МСК-дней включая сегодня.
+    p14 = as_period(14)
+    assert p14.days == 14 and p14.end_date == today_msk
+
+    # tail: хвостовое подокно не длиннее исходного и заканчивается тем же днём.
+    t = resolve_period("90d").tail(7)
+    assert t.days == 7 and t.end_date == today_msk
+    assert resolve_period("today").tail(7).days == 1
+
+    assert msk_day(datetime(2026, 7, 5, 21, 30)) == (datetime(2026, 7, 5, 21, 30) + MSK_OFFSET).date()
+
+
+def test_bot_score_heuristics():
+    """BI 2.1 этап 3: антибот-скоринг — неопровержимые сигналы >= порога,
+    поведенческие складываются, живой человек не штрафуется."""
+    from app.services.bot_score import BOT_THRESHOLD, SessionSignals, score_session, signal_breakdown
+
+    def sig(**kw):
+        base = dict(pageviews=1, clicks=0, moves=0, active_ms=0, max_scroll_pct=0,
+                    synthetic_clicks=0, visitor_sessions=1)
+        base.update(kw)
+        return SessionSignals(**base)
+
+    # Headless/webdriver — бот безусловно.
+    assert score_session(sig(is_webdriver=True, has_portrait=True)) >= BOT_THRESHOLD
+    # Явный бот-UA.
+    assert score_session(sig(has_portrait=True, ua_raw="Mozilla/5.0 (compatible; YandexBot/3.0)")) >= BOT_THRESHOLD
+    # Паттерн 41% прода: 1 pageview, ноль следов человека.
+    s = sig()
+    assert score_session(s) >= BOT_THRESHOLD
+    assert "no_human_traces" in signal_breakdown(s)
+    # Живой человек: движение мыши + активное время → не бот.
+    human = sig(moves=3, active_ms=8000)
+    assert score_session(human) < BOT_THRESHOLD
+    # Мобильный человек: без мыши и кликов, но тач-скролл оставил след.
+    assert score_session(sig(max_scroll_pct=45)) < BOT_THRESHOLD
+    # Headless с доставленным dwell, но без единого следа ввода — бот
+    # (dwell сам по себе следом не считается).
+    assert score_session(sig()) >= BOT_THRESHOLD
+    # Только синтетические клики (isTrusted=false) — бот.
+    assert score_session(sig(clicks=2, synthetic_clicks=2)) >= BOT_THRESHOLD
+    # Настоящие клики среди синтетических — сигнал не срабатывает.
+    assert "synthetic_clicks" not in signal_breakdown(sig(clicks=5, synthetic_clicks=1, moves=2, active_ms=3000))
+    # Флуд сессий с одного visitor — добавка, но не приговор сам по себе.
+    flood = sig(moves=2, active_ms=3000, visitor_sessions=50)
+    assert 0 < score_session(flood) < BOT_THRESHOLD
+
+
+def test_sessionize_sets_bot_score():
+    """Сессионизация проставляет bot_score/is_bot: бот-паттерн ловится,
+    человек с движениями мыши и dwell — чистый."""
+    from sqlalchemy import select
+
+    from app.models import BehaviorEvent, ServerSession
+    from app.tasks import analytics_rollups as ar
+
+    base = datetime.utcnow().replace(microsecond=0) - timedelta(hours=2)
+
+    async def scenario(maker):
+        async with maker() as db:
+            def ev(vis, etype, minutes, **kw):
+                return BehaviorEvent(
+                    event_type=etype, visitor_id_hash=vis, session_id_hash=f"s-{vis}",
+                    occurred_at=base + timedelta(minutes=minutes), page="/", **kw,
+                )
+
+            db.add_all([
+                # Бот: одиночный pageview без следов.
+                ev("bot1", "pageview", 0),
+                # Человек: pageview + мышь + dwell с active_ms.
+                ev("hum1", "pageview", 0),
+                ev("hum1", "move", 1),
+                ev("hum1", "dwell", 2, params_json={"ms": 60000, "active_ms": 20000, "scroll_pct": 60}),
+            ])
+            await db.commit()
+
+            n = await ar.sessionize(db, base - timedelta(minutes=5))
+            assert n == 2
+            rows = {s.visitor_id_hash: s for s in (await db.execute(select(ServerSession))).scalars()}
+            assert rows["bot1"].is_bot and rows["bot1"].bot_score >= 60
+            assert not rows["hum1"].is_bot and rows["hum1"].bot_score < 60
+
+    _run_with_db(scenario)

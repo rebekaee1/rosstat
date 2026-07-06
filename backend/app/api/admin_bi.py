@@ -59,21 +59,32 @@ async def require_admin(
 
 @router.get("/dashboard")
 async def bi_dashboard(
-    days: int = Query(30, ge=1, le=365),
+    period: str = Query("30d", description="Пресет: today/yesterday/7d/30d/90d/custom"),
+    date_from: str | None = Query(None, alias="from", description="МСК-дата начала (custom)"),
+    date_to: str | None = Query(None, alias="to", description="МСК-дата конца (custom)"),
+    days: int | None = Query(None, ge=1, le=365, description="Легаси-параметр: N последних дней"),
     fresh: bool = Query(False, description="Принудительный пересчёт мимо кэша"),
     _admin: User = Depends(require_admin),
     db: AsyncSession = Depends(get_db),
 ):
     from app.core.cache import cache_get, cache_set
     from app.services.admin_bi import build_bi_dashboard
+    from app.services.analytics_period import as_period, resolve_period
 
-    cache_key = f"fe:admin:bi:dashboard:{days}"
+    if days is not None and period == "30d" and not date_from:
+        p = as_period(days)  # легаси-вызовы ?days=N продолжают работать
+    else:
+        p = resolve_period(period, date_from, date_to)
+
+    # Окно, включающее сегодня, растёт в реальном времени — кэш короче.
+    ttl = 5 * 60 if p.end_date >= resolve_period("today").start_date else _BI_CACHE_TTL
+    cache_key = f"fe:admin:bi:dashboard:{p.preset}:{p.start_date}:{p.end_date}"
     if not fresh:
         cached = await cache_get(cache_key)
         if cached:
             return cached
-    data = await build_bi_dashboard(db, days)
-    await cache_set(cache_key, data, ttl=_BI_CACHE_TTL)
+    data = await build_bi_dashboard(db, p)
+    await cache_set(cache_key, data, ttl=ttl)
     return data
 
 

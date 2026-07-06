@@ -40,9 +40,12 @@ from app.models import (
     MetrikaDailyPageMetric,
     MetrikaSearchPhrase,
     RawMetrikaVisit,
+    ServerSession,
     User,
     WebmasterSearchQuery,
 )
+from app.services.analytics_marts import OWN_DOMAIN
+from app.services.analytics_period import Period, as_period, msk_day_expr as _msk_day_expr
 
 logger = logging.getLogger(__name__)
 
@@ -64,11 +67,12 @@ _ERROR_EVENTS = {"api_load_error", "error_reload", "api_retry"}
 # Общие примитивы (маппинги Метрики, разделы, истинная проверка целей) живут
 # в analytics_marts — единой точке истины для BI, Пульса и rollup'ов.
 from app.services.analytics_marts import (  # noqa: E402
+    business_goal_ids,
     page_section as _page_section,
     visit_browser as _visit_browser,
     visit_device as _visit_device,
     visit_field as _visit_field,
-    visit_has_goals as _has_goals,
+    visit_has_business_goal as _has_business_goal,
     visit_os as _visit_os,
 )
 
@@ -81,22 +85,38 @@ def _day(dt: datetime | date | None) -> str | None:
     return dt.isoformat()
 
 
-async def _kpi_daily(db: AsyncSession, since: datetime) -> list[dict]:
+async def _kpi_daily(db: AsyncSession, p: Period) -> list[dict]:
     """Ряды по дням: визиты/посетители (Метрика), события, регистрации,
     скачивания, ошибки + live-слой из собственного потока behavior_events
     (pageviews и уникальные сессии). Метрика Logs API отдаёт данные с
     задержкой до суток — live-слой закрывает «сегодня и вчера» в реальном
-    времени, график не обрывается нулями на свежих днях."""
+    времени, график не обрывается нулями на свежих днях. Дни — МСК."""
     days: dict[str, dict[str, Any]] = defaultdict(lambda: {
         "visits": 0, "visitors": set(), "ad_visits": 0, "events": 0,
         "registrations": 0, "downloads": 0, "errors": 0, "searches": 0,
         "live_pageviews": 0, "live_sessions": set(),
+        "own_sessions": 0, "own_visitors": 0,
     })
+
+    # Наш счётчик — истина (этап 2 BI 2.1): небот-сессии и посетители по дням.
+    own_rows = (await db.execute(
+        select(ServerSession.day, func.count(),
+               func.count(func.distinct(ServerSession.visitor_id_hash)))
+        .where(ServerSession.day >= p.start_date, ServerSession.day <= p.end_date,
+               ServerSession.is_bot.is_(False), ServerSession.is_internal.is_(False))
+        .group_by(ServerSession.day)
+    )).all()
+    for d_raw, n_sessions, n_visitors in own_rows:
+        d = _day(d_raw)
+        if d:
+            days[d]["own_sessions"] = int(n_sessions or 0)
+            days[d]["own_visitors"] = int(n_visitors or 0)
 
     visits = (await db.execute(
         select(RawMetrikaVisit.visit_date, RawMetrikaVisit.client_id_hash,
                RawMetrikaVisit.traffic_source)
-        .where(RawMetrikaVisit.visit_date >= since.date())
+        .where(RawMetrikaVisit.visit_date >= p.start_date,
+               RawMetrikaVisit.visit_date <= p.end_date)
     )).all()
     for vd, client, source in visits:
         d = _day(vd)
@@ -108,14 +128,13 @@ async def _kpi_daily(db: AsyncSession, since: datetime) -> list[dict]:
         if source == "ad":
             days[d]["ad_visits"] += 1
 
+    # МСК-день для datetime-колонок: сдвиг на +3ч до взятия даты.
+    dialect = db.bind.dialect.name
+    msk_date = _msk_day_expr(FrontendEvent.occurred_at, dialect)
     ev_rows = (await db.execute(
-        select(
-            func.date(FrontendEvent.occurred_at),
-            FrontendEvent.event_name,
-            func.count(FrontendEvent.id),
-        )
-        .where(FrontendEvent.occurred_at >= since)
-        .group_by(func.date(FrontendEvent.occurred_at), FrontendEvent.event_name)
+        select(msk_date, FrontendEvent.event_name, func.count(FrontendEvent.id))
+        .where(FrontendEvent.occurred_at >= p.start, FrontendEvent.occurred_at < p.end)
+        .group_by(msk_date, FrontendEvent.event_name)
     )).all()
     for d_raw, name, cnt in ev_rows:
         d = str(d_raw)
@@ -127,20 +146,23 @@ async def _kpi_daily(db: AsyncSession, since: datetime) -> list[dict]:
         if name == "search_query":
             days[d]["searches"] += cnt
 
+    reg_msk_date = _msk_day_expr(User.created_at, dialect)
     reg_rows = (await db.execute(
-        select(func.date(User.created_at), func.count(User.id))
-        .where(User.created_at >= since)
-        .group_by(func.date(User.created_at))
+        select(reg_msk_date, func.count(User.id))
+        .where(User.created_at >= p.start, User.created_at < p.end)
+        .group_by(reg_msk_date)
     )).all()
     for d_raw, cnt in reg_rows:
         days[str(d_raw)]["registrations"] = cnt
 
     # Live-слой: собственный поток behavior.js (без лага Метрики).
+    beh_msk_date = _msk_day_expr(BehaviorEvent.occurred_at, dialect)
     live_rows = (await db.execute(
-        select(func.date(BehaviorEvent.occurred_at),
-               BehaviorEvent.session_id_hash)
+        select(beh_msk_date, BehaviorEvent.session_id_hash)
         .where(BehaviorEvent.event_type == "pageview",
-               BehaviorEvent.occurred_at >= since)
+               BehaviorEvent.occurred_at >= p.start,
+               BehaviorEvent.occurred_at < p.end,
+               ~func.coalesce(BehaviorEvent.page, "").like("/admin%"))
     )).all()
     for d_raw, session in live_rows:
         d = str(d_raw)
@@ -150,9 +172,8 @@ async def _kpi_daily(db: AsyncSession, since: datetime) -> list[dict]:
 
     # Полный календарь окна: день без данных — явный ноль, а не дыра на оси
     # времени (иначе график сжимает пропуски и искажает динамику).
-    cursor = since.date()
-    today = datetime.utcnow().date()
-    while cursor <= today:
+    cursor = p.start_date
+    while cursor <= p.end_date:
         days[cursor.isoformat()]  # defaultdict дозаполняет нулевую строку
         cursor += timedelta(days=1)
 
@@ -171,12 +192,48 @@ async def _kpi_daily(db: AsyncSession, since: datetime) -> list[dict]:
             "searches": row["searches"],
             "live_pageviews": row["live_pageviews"],
             "live_sessions": len(row["live_sessions"]),
+            "own_sessions": row["own_sessions"],
+            "own_visitors": row["own_visitors"],
         })
     return out
 
 
-def _acquisition(visits: list[RawMetrikaVisit]) -> dict:
-    """Источники, поисковики, кампании, фразы, гео и устройства из сырых визитов."""
+async def _own_acquisition(db: AsyncSession, p: Period) -> dict:
+    """Привлечение по НАШЕМУ счётчику (этап 2 BI 2.1): каналы небот-сессий +
+    поисковики из referrer-хостов портретов. Метрика-аналог — `_acquisition`.
+    """
+    from app.models import BehaviorSession
+    from app.services.traffic_channel import search_engine_name
+
+    ch_rows = (await db.execute(
+        select(ServerSession.channel, func.count())
+        .where(ServerSession.day >= p.start_date, ServerSession.day <= p.end_date,
+               ServerSession.is_bot.is_(False), ServerSession.is_internal.is_(False))
+        .group_by(ServerSession.channel)
+    )).all()
+    channels = {ch or "unknown": int(n or 0) for ch, n in ch_rows}
+
+    eng_rows = (await db.execute(
+        select(BehaviorSession.referrer_host, func.count())
+        .where(BehaviorSession.started_at >= p.start,
+               BehaviorSession.started_at < p.end,
+               BehaviorSession.channel == "search")
+        .group_by(BehaviorSession.referrer_host)
+    )).all()
+    engines: Counter = Counter()
+    for host, n in eng_rows:
+        engines[search_engine_name(host) or "(не определён)"] += int(n or 0)
+
+    return {
+        "source": "own",
+        "channels": channels,
+        "search_engines": dict(engines.most_common(10)),
+    }
+
+
+def _acquisition(visits: list[RawMetrikaVisit], biz_ids: set[int] | None = None) -> dict:
+    """Источники, поисковики, кампании, фразы, гео и устройства из сырых визитов.
+    Конверсия кампаний — только business-tier цели (этап 2б BI 2.1)."""
     sources: Counter = Counter()
     engines: Counter = Counter()
     campaigns: dict[str, dict[str, Any]] = defaultdict(lambda: {
@@ -206,7 +263,7 @@ def _acquisition(visits: list[RawMetrikaVisit]) -> dict:
             camp = _visit_field(v, "ym:s:UTMCampaign") or "(без метки)"
             c = campaigns[camp]
             c["visits"] += 1
-            if _has_goals(v):
+            if _has_business_goal(v, biz_ids or set()):
                 c["goal_visits"] += 1
             if _visit_field(v, "ym:s:bounce") in ("1", "true"):
                 c["bounce_like"] += 1
@@ -236,12 +293,14 @@ def _acquisition(visits: list[RawMetrikaVisit]) -> dict:
     }
 
 
-def _funnel(visits: list[RawMetrikaVisit], registrations_by_day: dict[str, int]) -> dict:
+def _funnel(visits: list[RawMetrikaVisit], registrations_by_day: dict[str, int],
+            biz_ids: set[int] | None = None) -> dict:
     """Воронка «источник → вовлечение → цель» по каналам + сквозной счёт.
 
     Точного join'а «визит Метрики ↔ first-party событие» нет (нет общего id),
     поэтому воронка агрегатная: канал → визиты → визиты с >1 страницей →
-    визиты с достигнутой целью Метрики. Регистрации — сквозной счётчик рядом.
+    визиты с достигнутой business-tier целью (этап 2б BI 2.1 — авто-цели
+    вроде скролла конверсией не считаются). Регистрации — сквозной счётчик.
     """
     by_source: dict[str, dict[str, int]] = defaultdict(lambda: {
         "visits": 0, "engaged": 0, "goal_visits": 0,
@@ -256,7 +315,7 @@ def _funnel(visits: list[RawMetrikaVisit], registrations_by_day: dict[str, int])
             pv = int(float(_visit_field(v, "ym:s:pageViews") or "0"))
         except ValueError:
             pv = 0
-        goal = _has_goals(v)
+        goal = _has_business_goal(v, biz_ids or set())
         # Инвариант воронки: достигшие цели ⊆ вовлечённые — визит с целью
         # вовлечён по определению, даже если был короткий одностраничный.
         if goal or pv > 1 or (v.duration_seconds or 0) >= 30:
@@ -361,13 +420,16 @@ def _retention(all_visits: list[RawMetrikaVisit]) -> dict:
     }
 
 
-async def _pages_quality(db: AsyncSession, since: datetime) -> list[dict]:
+async def _pages_quality(db: AsyncSession, p: Period) -> list[dict]:
     """Качество страниц: pageviews + dwell + dead/rage из behavior,
     bounce из дневных агрегатов Метрики. «Тонкие» страницы — низкий dwell."""
+    since, until = p.start, p.end
     pv_rows = (await db.execute(
         select(BehaviorEvent.page, func.count(BehaviorEvent.id))
         .where(BehaviorEvent.event_type == "pageview",
-               BehaviorEvent.occurred_at >= since)
+               BehaviorEvent.occurred_at >= since,
+               BehaviorEvent.occurred_at < until,
+               ~func.coalesce(BehaviorEvent.page, "").like("/admin%"))
         .group_by(BehaviorEvent.page)
         .order_by(func.count(BehaviorEvent.id).desc())
         .limit(40)
@@ -387,40 +449,43 @@ async def _pages_quality(db: AsyncSession, since: datetime) -> list[dict]:
         select(BehaviorEvent.page, BehaviorEvent.params_json)
         .where(BehaviorEvent.event_type == "dwell",
                BehaviorEvent.occurred_at >= since,
+               BehaviorEvent.occurred_at < until,
                BehaviorEvent.page.in_(page_list))
         .limit(50000)
     )).all()
     dwell_acc: dict[str, list[float]] = defaultdict(list)
     scroll_acc: dict[str, list[float]] = defaultdict(list)
-    for p, params in dwell_rows:
+    for pg, params in dwell_rows:
         if not isinstance(params, dict):
             continue
         ms = params.get("ms") or params.get("dwell_ms")
         if isinstance(ms, (int, float)) and ms > 0:
-            dwell_acc[p].append(float(ms) / 1000)
+            dwell_acc[pg].append(float(ms) / 1000)
         sc = params.get("scroll") or params.get("scroll_pct") or params.get("max_scroll")
         if isinstance(sc, (int, float)):
-            scroll_acc[p].append(float(sc))
-    for p, arr in dwell_acc.items():
-        pages[p]["avg_dwell_sec"] = round(sum(arr) / len(arr), 1)
-    for p, arr in scroll_acc.items():
-        pages[p]["avg_scroll_pct"] = round(sum(arr) / len(arr), 1)
+            scroll_acc[pg].append(float(sc))
+    for pg, arr in dwell_acc.items():
+        pages[pg]["avg_dwell_sec"] = round(sum(arr) / len(arr), 1)
+    for pg, arr in scroll_acc.items():
+        pages[pg]["avg_scroll_pct"] = round(sum(arr) / len(arr), 1)
 
     for flag, key in ((BehaviorEvent.is_dead, "dead_clicks"), (BehaviorEvent.is_rage, "rage_clicks")):
         rows = (await db.execute(
             select(BehaviorEvent.page, func.count(BehaviorEvent.id))
             .where(BehaviorEvent.event_type == "click", flag.is_(True),
                    BehaviorEvent.occurred_at >= since,
+                   BehaviorEvent.occurred_at < until,
                    BehaviorEvent.page.in_(page_list))
             .group_by(BehaviorEvent.page)
         )).all()
-        for p, cnt in rows:
-            pages[p][key] = cnt
+        for pg, cnt in rows:
+            pages[pg][key] = cnt
 
     bounce_rows = (await db.execute(
         select(MetrikaDailyPageMetric.url,
                func.avg(MetrikaDailyPageMetric.bounce_rate))
-        .where(MetrikaDailyPageMetric.date >= since.date())
+        .where(MetrikaDailyPageMetric.date >= p.start_date,
+               MetrikaDailyPageMetric.date <= p.end_date)
         .group_by(MetrikaDailyPageMetric.url)
     )).all()
     bounce_by_path = {}
@@ -428,32 +493,44 @@ async def _pages_quality(db: AsyncSession, since: datetime) -> list[dict]:
         if url and rate is not None:
             path = url.split("forecasteconomy.com")[-1].split("?")[0] or "/"
             bounce_by_path[path] = round(float(rate), 1)
-    for p in pages:
-        if p in bounce_by_path:
-            pages[p]["bounce_pct"] = bounce_by_path[p]
+    for pg in pages:
+        if pg in bounce_by_path:
+            pages[pg]["bounce_pct"] = bounce_by_path[pg]
 
     return sorted(pages.values(), key=lambda r: -r["pageviews"])
 
 
-async def _demand_vs_coverage(db: AsyncSession, since: datetime) -> dict:
+async def _demand_vs_coverage(db: AsyncSession, p: Period) -> dict:
     """Поисковый спрос против покрытия: фразы Метрики (пришли), запросы
     Вебмастера (показы/клики/позиция) и внутренние поиски без результата
     (пробелы каталога) — приоритизированная карта «что добавить»."""
     metrika = (await db.execute(
         select(MetrikaSearchPhrase.phrase,
                func.sum(MetrikaSearchPhrase.visits))
-        .where(MetrikaSearchPhrase.date >= since.date())
+        .where(MetrikaSearchPhrase.date >= p.start_date,
+               MetrikaSearchPhrase.date <= p.end_date)
         .group_by(MetrikaSearchPhrase.phrase)
         .order_by(func.sum(MetrikaSearchPhrase.visits).desc())
         .limit(30)
     )).all()
+
+    # Вебмастер отдаёт статистику запросов с лагом в несколько дней: на
+    # коротких пресетах («Сутки») окно пустое. Фолбэк — последнее доступное
+    # окно той же длины, с явной пометкой дат для подписи на карточке (4б).
+    wm_from, wm_to, wm_fallback = p.start_date, p.end_date, False
+    last_wm_date = await db.scalar(select(func.max(WebmasterSearchQuery.date)))
+    if last_wm_date and last_wm_date < p.start_date:
+        wm_to = last_wm_date
+        wm_from = last_wm_date - (p.end_date - p.start_date)
+        wm_fallback = True
 
     webmaster = (await db.execute(
         select(WebmasterSearchQuery.query,
                func.sum(WebmasterSearchQuery.impressions),
                func.sum(WebmasterSearchQuery.clicks),
                func.avg(WebmasterSearchQuery.position))
-        .where(WebmasterSearchQuery.date >= since.date())
+        .where(WebmasterSearchQuery.date >= wm_from,
+               WebmasterSearchQuery.date <= wm_to)
         .group_by(WebmasterSearchQuery.query)
         .order_by(func.sum(WebmasterSearchQuery.impressions).desc())
         .limit(30)
@@ -472,16 +549,20 @@ async def _demand_vs_coverage(db: AsyncSession, since: datetime) -> dict:
             }
             for q, i, c, pos in webmaster
         ],
+        "webmaster_window": {
+            "from": wm_from.isoformat(), "to": wm_to.isoformat(), "fallback": wm_fallback,
+        },
     }
 
 
-async def _onsite_search(db: AsyncSession, since: datetime) -> dict:
+async def _onsite_search(db: AsyncSession, p: Period) -> dict:
     """Все внутренние поиски сайта: единое событие search_query{q, results,
     context} + поиск сравнения. Zero-results = карта пробелов каталога."""
     rows = (await db.execute(
         select(FrontendEvent.event_name, FrontendEvent.params_json)
         .where(FrontendEvent.event_name.in_(("search_query", "compare_search")),
-               FrontendEvent.occurred_at >= since)
+               FrontendEvent.occurred_at >= p.start,
+               FrontendEvent.occurred_at < p.end)
         .order_by(FrontendEvent.occurred_at.desc())
         .limit(20000)
     )).all()
@@ -513,15 +594,17 @@ async def _onsite_search(db: AsyncSession, since: datetime) -> dict:
     }
 
 
-async def _navigation_graph(db: AsyncSession, since: datetime) -> dict:
+async def _navigation_graph(db: AsyncSession, p: Period) -> dict:
     """Граф внутренней навигации из pageview-потока behavior.js: топ переходов
     страница → страница, входы и «тупики» (страницы без продолжения)."""
     rows = (await db.execute(
         select(BehaviorEvent.session_id_hash, BehaviorEvent.page,
                BehaviorEvent.occurred_at)
         .where(BehaviorEvent.event_type == "pageview",
-               BehaviorEvent.occurred_at >= since,
-               BehaviorEvent.session_id_hash.isnot(None))
+               BehaviorEvent.occurred_at >= p.start,
+               BehaviorEvent.occurred_at < p.end,
+               BehaviorEvent.session_id_hash.isnot(None),
+               ~func.coalesce(BehaviorEvent.page, "").like("/admin%"))
         .order_by(BehaviorEvent.session_id_hash, BehaviorEvent.occurred_at)
         .limit(100000)
     )).all()
@@ -553,18 +636,19 @@ async def _navigation_graph(db: AsyncSession, since: datetime) -> dict:
     }
 
 
-async def _activity_heatmap(db: AsyncSession, since: datetime,
+async def _activity_heatmap(db: AsyncSession, p: Period,
                             window_visits: list[RawMetrikaVisit] | None = None) -> list[dict]:
     """Пульс недели: активность по (день недели × час МСК) из ДВУХ слоёв.
 
-    count — просмотры собственного потока behavior.js (живёт с 2026-07-04);
-    visits — визиты Метрики по точному времени начала визита (история глубже).
-    Вместе сетка заполнена даже там, куда собственный слой ещё не дотянулся.
+    count — НАШИ небот-сессии (server_sessions, истина с BI 2.1);
+    visits — визиты Метрики по точному времени начала визита (сверка).
     """
     rows = (await db.execute(
-        select(BehaviorEvent.occurred_at)
-        .where(BehaviorEvent.event_type == "pageview",
-               BehaviorEvent.occurred_at >= since)
+        select(ServerSession.started_at)
+        .where(ServerSession.started_at >= p.start,
+               ServerSession.started_at < p.end,
+               ServerSession.is_bot.is_(False),
+               ServerSession.is_internal.is_(False))
         .limit(200000)
     )).scalars().all()
     grid: Counter = Counter()
@@ -594,13 +678,15 @@ async def _activity_heatmap(db: AsyncSession, since: datetime,
     ]
 
 
-async def _content_structure(db: AsyncSession, since: datetime) -> dict:
+async def _content_structure(db: AsyncSession, p: Period) -> dict:
     """Структура потребления контента: раздел → просмотры + топ страниц внутри.
     Treemap-витрина: видно, какие продуктовые блоки несут трафик."""
     rows = (await db.execute(
         select(BehaviorEvent.page, func.count(BehaviorEvent.id))
         .where(BehaviorEvent.event_type == "pageview",
-               BehaviorEvent.occurred_at >= since)
+               BehaviorEvent.occurred_at >= p.start,
+               BehaviorEvent.occurred_at < p.end,
+               ~func.coalesce(BehaviorEvent.page, "").like("/admin%"))
         .group_by(BehaviorEvent.page)
     )).all()
     sections: dict[str, dict[str, Any]] = defaultdict(lambda: {"views": 0, "pages": Counter()})
@@ -624,7 +710,7 @@ async def _content_structure(db: AsyncSession, since: datetime) -> dict:
     }
 
 
-async def _audience(db: AsyncSession, since: datetime,
+async def _audience(db: AsyncSession, p: Period,
                     window_visits: list[RawMetrikaVisit]) -> dict:
     """Портрет аудитории из СОБСТВЕННЫХ данных (behavior_sessions) со сверкой
     с Метрикой. Директива владельца 2026-07-05: знать про посетителей всё —
@@ -634,7 +720,8 @@ async def _audience(db: AsyncSession, since: datetime,
     from app.models import BehaviorSession
 
     sessions = (await db.execute(
-        select(BehaviorSession).where(BehaviorSession.started_at >= since)
+        select(BehaviorSession).where(BehaviorSession.started_at >= p.start,
+                                      BehaviorSession.started_at < p.end)
     )).scalars().all()
 
     browsers: Counter = Counter()
@@ -646,6 +733,7 @@ async def _audience(db: AsyncSession, since: datetime,
     languages: Counter = Counter()
     timezones: Counter = Counter()
     ref_hosts: Counter = Counter()
+    cities: Counter = Counter()
     authed_count = 0
 
     for s in sessions:
@@ -664,15 +752,19 @@ async def _audience(db: AsyncSession, since: datetime,
             languages[s.language] += 1
         if s.timezone:
             timezones[s.timezone] += 1
-        if s.referrer_host:
+        # Свой домен — внутренние переходы, а не «сайт-источник» (этап 3б).
+        if s.referrer_host and OWN_DOMAIN not in s.referrer_host:
             ref_hosts[s.referrer_host] += 1
+        if s.city:
+            cities[s.city] += 1
         if s.authed:
             authed_count += 1
 
-    # Референс Метрики для сверки: устройства/браузеры из повизитного сырья.
+    # Референс Метрики для сверки: устройства/браузеры/гео из повизитного сырья.
     m_devices: Counter = Counter()
     m_browsers: Counter = Counter()
     m_os: Counter = Counter()
+    m_cities: Counter = Counter()
     for v in window_visits:
         dev = _visit_device(v)
         if dev:
@@ -683,6 +775,9 @@ async def _audience(db: AsyncSession, since: datetime,
         osr = _visit_os(v)
         if osr:
             m_os[osr] += 1
+        city = _visit_field(v, "ym:s:regionCity")
+        if city:
+            m_cities[city] += 1
 
     total = sum(devices.values())
     return {
@@ -697,16 +792,18 @@ async def _audience(db: AsyncSession, since: datetime,
         "languages": dict(languages.most_common(10)),
         "timezones": dict(timezones.most_common(10)),
         "referrer_hosts": dict(ref_hosts.most_common(12)),
+        "cities": dict(cities.most_common(15)),
         "metrika_reference": {
             "visits_total": len(window_visits),
             "devices": dict(m_devices.most_common()),
             "browsers": dict(m_browsers.most_common(12)),
             "os": dict(m_os.most_common(10)),
+            "cities": dict(m_cities.most_common(15)),
         },
     }
 
 
-async def _behavior_issues(db: AsyncSession, since: datetime) -> dict:
+async def _behavior_issues(db: AsyncSession, p: Period) -> dict:
     """Проблемные элементы UI: dead- и rage-клики по element_path."""
     out = {}
     for flag, key in ((BehaviorEvent.is_dead, "dead"), (BehaviorEvent.is_rage, "rage")):
@@ -714,7 +811,9 @@ async def _behavior_issues(db: AsyncSession, since: datetime) -> dict:
             select(BehaviorEvent.page, BehaviorEvent.element_path,
                    func.count(BehaviorEvent.id))
             .where(BehaviorEvent.event_type == "click", flag.is_(True),
-                   BehaviorEvent.occurred_at >= since)
+                   BehaviorEvent.occurred_at >= p.start,
+                   BehaviorEvent.occurred_at < p.end,
+                   ~func.coalesce(BehaviorEvent.page, "").like("/admin%"))
             .group_by(BehaviorEvent.page, BehaviorEvent.element_path)
             .order_by(func.count(BehaviorEvent.id).desc())
             .limit(20)
@@ -725,12 +824,13 @@ async def _behavior_issues(db: AsyncSession, since: datetime) -> dict:
     return out
 
 
-async def _events_breakdown(db: AsyncSession, since: datetime) -> dict:
+async def _events_breakdown(db: AsyncSession, p: Period) -> dict:
     """Все бизнес-события за окно: имя → счётчик, разрез гость/зарегистрированный."""
     rows = (await db.execute(
         select(FrontendEvent.event_name, FrontendEvent.authed,
                func.count(FrontendEvent.id))
-        .where(FrontendEvent.occurred_at >= since)
+        .where(FrontendEvent.occurred_at >= p.start,
+               FrontendEvent.occurred_at < p.end)
         .group_by(FrontendEvent.event_name, FrontendEvent.authed)
     )).all()
     agg: dict[str, dict[str, int]] = defaultdict(lambda: {"total": 0, "authed": 0, "guest": 0})
@@ -760,37 +860,44 @@ async def _hypotheses(db: AsyncSession) -> list[dict]:
     ]
 
 
-async def _users_summary(db: AsyncSession, since: datetime) -> dict:
+async def _users_summary(db: AsyncSession, p: Period) -> dict:
     total = await db.scalar(select(func.count(User.id))) or 0
     new = await db.scalar(
-        select(func.count(User.id)).where(User.created_at >= since)
+        select(func.count(User.id)).where(User.created_at >= p.start,
+                                          User.created_at < p.end)
     ) or 0
     return {"total": total, "new_in_window": new}
 
 
-async def build_bi_dashboard(db: AsyncSession, days: int = 30) -> dict[str, Any]:
+async def build_bi_dashboard(db: AsyncSession, period: Period | int = 30) -> dict[str, Any]:
     """Полный BI-снапшот. Тяжёлая функция — вызывать только через кэш (15 мин)."""
-    days = max(1, min(days, 365))
-    since = datetime.utcnow() - timedelta(days=days)
+    p = as_period(period)
 
     # Сырые визиты окна — общая основа привлечения и воронки.
     window_visits = list((await db.execute(
-        select(RawMetrikaVisit).where(RawMetrikaVisit.visit_date >= since.date())
+        select(RawMetrikaVisit).where(RawMetrikaVisit.visit_date >= p.start_date,
+                                      RawMetrikaVisit.visit_date <= p.end_date)
     )).scalars().all())
     # Retention считаем по всей истории визитов (когорты глубже окна).
     all_visits = list((await db.execute(select(RawMetrikaVisit))).scalars().all())
 
+    reg_msk = _msk_day_expr(User.created_at, db.bind.dialect.name)
     reg_rows = (await db.execute(
-        select(func.date(User.created_at), func.count(User.id))
-        .where(User.created_at >= since)
-        .group_by(func.date(User.created_at))
+        select(reg_msk, func.count(User.id))
+        .where(User.created_at >= p.start, User.created_at < p.end)
+        .group_by(reg_msk)
     )).all()
     registrations_by_day = {str(d): c for d, c in reg_rows}
+    # Business-tier цели Метрики: конверсия «Сегментов»/«Посадочных»/кампаний
+    # считается только по ним (этап 2б BI 2.1).
+    biz_ids = await business_goal_ids(db)
 
     from app.services.analytics_marts import (
         mart_ad_costs,
         mart_blocks,
+        mart_botness,
         mart_collection_quality,
+        mart_embed_distribution,
         mart_experiments,
         mart_feature_adoption,
         mart_geo,
@@ -806,36 +913,40 @@ async def build_bi_dashboard(db: AsyncSession, days: int = 30) -> dict[str, Any]
 
     dashboard: dict[str, Any] = {
         "generated_at": datetime.utcnow().isoformat(timespec="seconds"),
-        "window_days": days,
-        "users": await _users_summary(db, since),
+        "window_days": p.days,
+        "period": p.to_meta(),
+        "users": await _users_summary(db, p),
         # --- executive-слой (marts, этап 3 «Аналитика 2.0») ---
-        "metric_tree": await mart_metric_tree(db, days),
-        "own_funnel": await mart_own_funnel(db, days),
-        "metrika_funnel": await mart_metrika_funnel(db, days),
-        "segments": await mart_segments(db, days),
-        "geo": await mart_geo(db, days),
-        "blocks": await mart_blocks(db, days),
-        "page_quadrants": await mart_page_quadrants(db, days),
-        "feature_adoption": await mart_feature_adoption(db, days),
-        "experiments": await mart_experiments(db, days),
-        "people": await mart_people(db, days),
-        "reliability": await mart_reliability(db, min(days, 7)),
-        "collection_quality": await mart_collection_quality(db, min(days, 7)),
-        "ad_costs": await mart_ad_costs(db, days),
+        "metric_tree": await mart_metric_tree(db, p),
+        "own_funnel": await mart_own_funnel(db, p),
+        "metrika_funnel": await mart_metrika_funnel(db, p),
+        "segments": await mart_segments(db, p),
+        "geo": await mart_geo(db, p),
+        "blocks": await mart_blocks(db, p),
+        "page_quadrants": await mart_page_quadrants(db, p),
+        "feature_adoption": await mart_feature_adoption(db, p),
+        "embed_distribution": await mart_embed_distribution(db, p),
+        "experiments": await mart_experiments(db, p),
+        "people": await mart_people(db, p),
+        "reliability": await mart_reliability(db, p.tail(7)),
+        "collection_quality": await mart_collection_quality(db, p.tail(7)),
+        "botness": await mart_botness(db, p.tail(7)),
+        "ad_costs": await mart_ad_costs(db, p),
         # --- операционные витрины ---
-        "kpi_daily": await _kpi_daily(db, since),
-        "acquisition": _acquisition(window_visits),
-        "funnel": _funnel(window_visits, registrations_by_day),
+        "kpi_daily": await _kpi_daily(db, p),
+        "acquisition": _acquisition(window_visits, biz_ids),
+        "own_acquisition": await _own_acquisition(db, p),
+        "funnel": _funnel(window_visits, registrations_by_day, biz_ids),
         "retention": _retention(all_visits),
-        "pages": await _pages_quality(db, since),
-        "demand": await _demand_vs_coverage(db, since),
-        "onsite_search": await _onsite_search(db, since),
-        "navigation": await _navigation_graph(db, since),
-        "activity_heatmap": await _activity_heatmap(db, since, window_visits),
-        "content_structure": await _content_structure(db, since),
-        "audience": await _audience(db, since, window_visits),
-        "behavior_issues": await _behavior_issues(db, since),
-        "events": await _events_breakdown(db, since),
+        "pages": await _pages_quality(db, p),
+        "demand": await _demand_vs_coverage(db, p),
+        "onsite_search": await _onsite_search(db, p),
+        "navigation": await _navigation_graph(db, p),
+        "activity_heatmap": await _activity_heatmap(db, p, window_visits),
+        "content_structure": await _content_structure(db, p),
+        "audience": await _audience(db, p, window_visits),
+        "behavior_issues": await _behavior_issues(db, p),
+        "events": await _events_breakdown(db, p),
         "hypotheses": await _hypotheses(db),
         "dataset": await build_inventory(db),
     }

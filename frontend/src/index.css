@@ -300,3 +300,9 @@ body {
     animation: none;
   }
 }
+
+/* Служебные страницы /admin/*: скрываем floorAd РСЯ, отрисованный до перехода
+   (SDK живёт глобально и переживает SPA-навигацию — см. YandexRSY.jsx) */
+.rsy-hidden [id^='yandex_rtb'] {
+  display: none !important;
+}

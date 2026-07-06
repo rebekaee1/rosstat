@@ -665,7 +665,10 @@ class MetrikaGoal(Base):
     goal_id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True)
     name: Mapped[str | None] = mapped_column(String(300))
     event_name: Mapped[str | None] = mapped_column(String(120), index=True)
-    tier: Mapped[str | None] = mapped_column(String(20))  # macro/micro/engagement/technical
+    tier: Mapped[str | None] = mapped_column(String(20))  # macro/micro/intent/engagement/technical
+    # Soft-delete: цель удалена из счётчика (чистка 2026-07-06), но словарная
+    # запись живёт — исторические goals_json продолжают резолвиться в имена.
+    deleted: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false", nullable=False)
     synced_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
 
 
@@ -723,6 +726,11 @@ class ServerSession(Base):
     micro_goals: Mapped[int] = mapped_column(Integer, default=0)
     macro_goals: Mapped[int] = mapped_column(Integer, default=0)
     is_bot: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, server_default="false")
+    # Эвристический скор роботности 0..100 (bot_score.py): is_bot = score>=порога.
+    bot_score: Mapped[int] = mapped_column(Integer, default=0, nullable=False, server_default="0")
+    # Собственная активность (владелец/админы по identity_links, /admin/*):
+    # исключается из витрин, но не смешивается с ботами (этап 3б BI 2.1).
+    is_internal: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, server_default="false")
     computed_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
 
 

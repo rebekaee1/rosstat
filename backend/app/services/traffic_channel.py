@@ -28,6 +28,28 @@ _AD_MEDIUMS = {"cpc", "cpm", "cpa", "paid", "ppc", "banner", "ad", "ads", "perfo
 
 CHANNELS = ("ad", "campaign", "search", "social", "referral", "internal", "direct")
 
+# Человеческие имена поисковиков для витрин (этап 2 BI 2.1): host-префикс →
+# ярлык. Порядок важен — go.mail.ru раньше mail.ru.
+_ENGINE_NAMES: tuple[tuple[str, str], ...] = (
+    ("yandex.", "Яндекс"), ("ya.ru", "Яндекс"),
+    ("google.", "Google"), ("bing.com", "Bing"),
+    ("duckduckgo.com", "DuckDuckGo"),
+    ("go.mail.ru", "Поиск Mail.ru"), ("mail.ru", "Поиск Mail.ru"),
+    ("nova.rambler.ru", "Рамблер"), ("rambler.ru", "Рамблер"),
+    ("search.brave.com", "Brave"), ("baidu.com", "Baidu"),
+)
+
+
+def search_engine_name(host: str | None) -> str | None:
+    """Имя поисковика по referrer-хосту; None — хост не поисковый."""
+    if not host:
+        return None
+    h = host.lower().removeprefix("www.")
+    for prefix, name in _ENGINE_NAMES:
+        if h.startswith(prefix) or ("." + prefix) in ("." + h):
+            return name
+    return None
+
 
 def referrer_host(referrer: str | None) -> str | None:
     if not referrer:

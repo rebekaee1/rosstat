@@ -108,7 +108,7 @@ class _FakeVisit:
 def test_has_goals_rejects_empty_wrappers():
     """goals_json = {"goals": "[]"} или пустая строка — НЕ достигнутая цель.
     Наивный truthy-чек давал конверсию 91-100% (ложь на витрине владельца)."""
-    from app.services.admin_bi import _has_goals
+    from app.services.analytics_marts import visit_has_goals as _has_goals
 
     assert _has_goals(_FakeVisit(goals_json=None)) is False
     assert _has_goals(_FakeVisit(goals_json={})) is False
@@ -118,6 +118,20 @@ def test_has_goals_rejects_empty_wrappers():
     assert _has_goals(_FakeVisit(goals_json={"goals": "[5,6]"})) is True
     assert _has_goals(_FakeVisit(goals_json={"goals": []})) is False
     assert _has_goals(_FakeVisit(goals_json={"goals": [577576799]})) is True
+
+
+def test_business_goal_filter():
+    """Этап 2б BI 2.1: конверсия — только business-tier цели; авто-цели
+    (скролл, показы) её не создают. Пустой словарь — фолбэк на любую цель."""
+    from app.services.analytics_marts import visit_has_business_goal
+
+    biz = {100, 200}
+    assert visit_has_business_goal(_FakeVisit(goals_json={"goals": "[100]"}), biz) is True
+    assert visit_has_business_goal(_FakeVisit(goals_json={"goals": "[999]"}), biz) is False
+    assert visit_has_business_goal(_FakeVisit(goals_json={"goals": "[999,200]"}), biz) is True
+    assert visit_has_business_goal(_FakeVisit(goals_json=None), biz) is False
+    # Фолбэк без словаря (токен Метрики не настроен).
+    assert visit_has_business_goal(_FakeVisit(goals_json={"goals": "[999]"}), set()) is True
 
 
 def test_funnel_goal_subset_of_engaged():

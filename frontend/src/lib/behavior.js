@@ -211,36 +211,65 @@ function drainMoves() {
   push('move', { pts, n: pts.length });
 }
 
+function batchId() {
+  return (window.crypto && window.crypto.randomUUID)
+    ? window.crypto.randomUUID()
+    : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+}
+
 export function flush() {
   drainMoves();
   if (!_queue.length) return;
   const events = _queue;
   _queue = [];
+  // batch_id — идемпотентность на инжесте: sendBeacon умеет ретраить,
+  // сервер дедуплицирует повторную доставку того же батча (Redis SETNX).
+  const hasPortrait = events.some((e) => e.t === 'session_start');
   const body = JSON.stringify({
     session_id: sessionId(),
     visitor_id: visitorId(),
     authed: _identity.authed ? 1 : 0,
+    batch_id: batchId(),
     events,
   });
   try {
-    if (navigator.sendBeacon) {
+    // Батч с портретом шлём через fetch: только подтверждённая доставка
+    // (resp.ok) помечает session_start отправленным — иначе портрет
+    // переотправится на следующем pageview (сервер идемпотентен).
+    if (!hasPortrait && navigator.sendBeacon) {
       const ok = navigator.sendBeacon(ENDPOINT, new Blob([body], { type: 'application/json' }));
       if (ok) return;
     }
-    fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, keepalive: true }).catch(() => {});
+    fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, keepalive: true })
+      .then((resp) => {
+        if (hasPortrait && resp && resp.ok) {
+          try { window.sessionStorage.setItem(SESSION_META_KEY, '1'); } catch { /* ignore */ }
+        }
+      })
+      .catch(() => {});
   } catch { /* телеметрия никогда не ломает UX */ }
 }
+
+const DWELL_MAX_MS = 4 * 3600 * 1000; // страховка от вкладок, забытых на ночь
 
 function emitDwell() {
   if (!_pageLoadId || !_pageEnteredAt) return;
   markActivity();
+  const now = Date.now();
+  const ms = Math.min(now - _pageEnteredAt, DWELL_MAX_MS);
   push('dwell', {
-    ms: Date.now() - _pageEnteredAt,
-    active_ms: Math.min(_activeMs, Date.now() - _pageEnteredAt),
+    ms,
+    active_ms: Math.min(_activeMs, ms),
     scroll_pct: _maxScrollPct,
     clicks: _clickCount,
     move_px: Math.round(_moveDistance),
   });
+  // Сегментация: dwell закрывает отрезок и обнуляет счётчики — повторный
+  // visibilitychange не дублирует уже отправленное время (лечит dwell > 4ч).
+  _pageEnteredAt = now;
+  _activeMs = 0;
+  _clickCount = 0;
+  _moveDistance = 0;
 }
 
 /** Блочная аналитика: закрыть учёт видимости и отправить по событию на блок. */
@@ -286,9 +315,11 @@ function setupBlockObserver() {
  * Метрики, чтобы знать аудиторию своими данными и сверять с Метрикой.
  */
 function emitSessionStart() {
+  // Флаг ставит flush() ТОЛЬКО после подтверждённой доставки (resp.ok) —
+  // при потере батча портрет переотправится со следующей страницы
+  // (сервер идемпотентен по session_id_hash). Лечит «сессии без портрета».
   try {
     if (window.sessionStorage.getItem(SESSION_META_KEY)) return;
-    window.sessionStorage.setItem(SESSION_META_KEY, '1');
   } catch { return; }
   let tz = null;
   try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || null; } catch { /* ignore */ }
@@ -446,6 +477,7 @@ function enterPage(url) {
     touch: 'ontouchstart' in window ? 1 : 0,
     title: (document.title || '').slice(0, 120),
   });
+  emitSessionStart(); // ретрай портрета, пока доставка не подтверждена
 }
 
 /** Вызывается роутером при смене страницы: закрывает предыдущую (dwell) и открывает новую. */
@@ -498,6 +530,9 @@ function onClick(e) {
     vy: window.innerHeight ? Math.round((e.clientY / window.innerHeight) * 100) : null,
     dead: interactive ? 0 : 1,
     rage: rage ? 1 : 0,
+    // isTrusted=false — синтетический клик (скрипт/бот, не устройство ввода);
+    // антибот-скоринг сервера читает этот флаг (BI 2.1, этап 3).
+    ...(e.isTrusted ? {} : { synthetic: 1 }),
     ...(out ? { out } : {}),
   });
 }
@@ -553,8 +588,7 @@ export function behaviorInit() {
   visitorId(); // создать постоянный идентификатор при первом заходе
   setupErrorCapture();
   setupApiTiming();
-  enterPage(cleanUrl());
-  emitSessionStart();
+  enterPage(cleanUrl()); // pageview + портрет (session_start с ретраем)
   setupVitals();
   setupBlockObserver();
 

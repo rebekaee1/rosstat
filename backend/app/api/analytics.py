@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import hashlib
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Query, Request
@@ -61,6 +61,7 @@ class BehaviorBatchIn(BaseModel):
     session_id: str | None = None
     visitor_id: str | None = None
     authed: int = 0
+    batch_id: str | None = None  # клиентский UUID батча — дедуп повторной доставки
     events: list[dict[str, Any]] = Field(default_factory=list)
 
 
@@ -348,7 +349,7 @@ async def _upsert_behavior_session(
         "user_id": user_id,
         "authed": authed,
         "started_at": occurred,
-        "entry_page": _str_or_none(ev.get("url"), 500),
+        "entry_page": _normalize_page(ev.get("url")),
         "referrer": referrer,
         "referrer_host": referrer_host(referrer),
         "channel": classify_channel(
@@ -401,6 +402,45 @@ async def _upsert_behavior_session(
             await db.execute(BehaviorSession.__table__.insert().values(**values))
 
 
+# Гигиена времени на инжесте: расхождение клиентских часов и ретраи beacon
+# не должны раскидывать события по чужим дням (аудит 2026-07-06).
+_CLOCK_PAST_LIMIT = timedelta(days=7)
+_CLOCK_FUTURE_LIMIT = timedelta(minutes=5)
+_DWELL_MAX_MS = 4 * 3600 * 1000  # вкладка, забытая на ночь, — не 19 часов чтения
+
+
+def _clamp_occurred(occurred: datetime, now: datetime) -> datetime:
+    if occurred > now + _CLOCK_FUTURE_LIMIT:
+        return now
+    if occurred < now - _CLOCK_PAST_LIMIT:
+        return now
+    return occurred
+
+
+def _normalize_page(url: Any) -> str | None:
+    """Страница без query-string: /indicator/cpi?mode=weekly и без него —
+    одна строка в витринах. Сырой query при необходимости остаётся в
+    params_json события pageview (title/ref), для маркетинга есть UTM портрета."""
+    s = str(url or "")
+    if not s:
+        return None
+    return s.split("?", 1)[0].split("#", 1)[0][:500] or "/"
+
+
+async def _is_duplicate_batch(batch_id: str | None) -> bool:
+    """Дедуп повторной доставки батча (sendBeacon ретраит): SETNX с TTL.
+    Redis недоступен — принимаем батч (лучше редкий дубль, чем потеря)."""
+    if not batch_id:
+        return False
+    try:
+        from app.core.cache import get_state_redis
+        r = await get_state_redis()
+        fresh = await r.set(f"fe:beh:batch:{batch_id[:64]}", "1", nx=True, ex=3600)
+        return not fresh
+    except Exception:  # noqa: BLE001
+        return False
+
+
 @router.post("/behavior")
 async def collect_behavior_batch(
     request: Request, payload: BehaviorBatchIn, db: AsyncSession = Depends(get_db)
@@ -412,6 +452,8 @@ async def collect_behavior_batch(
     events = payload.events[: settings.behavior_batch_max_events]
     if not events:
         return {"accepted": True, "stored": 0}
+    if await _is_duplicate_batch(payload.batch_id):
+        return {"accepted": True, "stored": 0, "duplicate": True}
 
     session_hash = (
         hashlib.sha256(payload.session_id.encode("utf-8")).hexdigest()
@@ -437,6 +479,7 @@ async def collect_behavior_batch(
             occurred = datetime.fromtimestamp(int(ev["ts"]) / 1000, tz=timezone.utc).replace(tzinfo=None)
         except (KeyError, TypeError, ValueError, OSError):
             occurred = now
+        occurred = _clamp_occurred(occurred, now)
         if etype == "session_start" and session_hash:
             await _upsert_behavior_session(
                 db, ev, session_hash=session_hash, visitor_hash=visitor_hash,
@@ -449,6 +492,13 @@ async def collect_behavior_batch(
         if etype not in _BEHAVIOR_TYPES:
             continue
         extra = {k: v for k, v in ev.items() if k not in _BEHAVIOR_COLUMN_KEYS}
+        # Гигиена dwell: старые клиентские бандлы из кэша не клампят ms —
+        # страхуемся на инжесте, иначе «19 часов на странице» портит витрины.
+        if etype == "dwell":
+            for key in ("ms", "active_ms"):
+                v = extra.get(key)
+                if isinstance(v, (int, float)) and v > _DWELL_MAX_MS:
+                    extra[key] = _DWELL_MAX_MS
         rows.append({
             "event_type": etype,
             "session_id_hash": session_hash,
@@ -456,7 +506,7 @@ async def collect_behavior_batch(
             "page_load_id": (str(ev.get("pl") or "") or None) and str(ev.get("pl"))[:40],
             "user_id": str(user_id) if user_id else None,
             "authed": bool(user_id) or bool(payload.authed),
-            "page": (str(ev.get("url") or "") or None) and str(ev.get("url"))[:500],
+            "page": _normalize_page(ev.get("url")),
             "element_path": (str(ev.get("path") or "") or None) and str(ev.get("path"))[:400],
             "element_text": (str(ev.get("text") or "") or None) and str(ev.get("text"))[:120],
             "x": ev.get("x") if isinstance(ev.get("x"), int) else None,

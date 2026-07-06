@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 /**
  * Yandex.RTB (РСЯ) floor-ad: touch + desktop.
@@ -17,6 +18,9 @@ import { useEffect } from 'react';
  *   завышены.
  * - Embed-routes (`/embed/*`) монтируют свой ErrorBoundary без YandexRSY —
  *   подключение происходит в `AppRoutes`, не в `EmbedRoutes`.
+ * - Служебные страницы `/admin/*` без рекламы (BI 2.1, этап 4а): на них
+ *   реклама не инициализируется, а floorAd, отрисованный до перехода,
+ *   прячется классом `rsy-hidden` на <html> (CSS в index.css).
  *
  * Маркировка «Реклама»: её несёт сам креатив РСЯ (Yandex как рекламная
  * система ставит метку «Реклама» + домен/erid рекламодателя — это её зона
@@ -39,8 +43,19 @@ const RSY_BLOCKS = [
 ];
 
 export default function YandexRSY() {
+  const { pathname } = useLocation();
+  const isAdmin = pathname.startsWith('/admin');
+
+  // Служебный раздел /admin/*: рекламу не инициализируем, а уже отрисованный
+  // floorAd прячем CSS-классом (этап 4а BI 2.1) — SDK РСЯ живёт глобально
+  // и переживает SPA-навигацию, поэтому unmount недостаточно.
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof document === 'undefined') return;
+    document.documentElement.classList.toggle('rsy-hidden', isAdmin);
+  }, [isAdmin]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || isAdmin) return;
     if (window.__rsyFloorAdRendered) return;
     window.__rsyFloorAdRendered = true;
 
@@ -59,7 +74,7 @@ export default function YandexRSY() {
         // Не падаем, если РСЯ не загрузилась (CSP/AdBlock/сетевой блок).
       }
     });
-  }, []);
+  }, [isAdmin]);
 
   return null;
 }
