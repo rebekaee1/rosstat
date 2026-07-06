@@ -1933,7 +1933,7 @@ function PeopleCard({ d }) {
                   <td className="py-1.5 pr-2 text-right tabular-nums">{p.micro_goals}/{p.macro_goals}</td>
                   {hasPortrait && (
                     <td className="py-1.5 pr-2 text-text-secondary">
-                      {[p.device && deviceLabel(p.device), p.browser, p.city, p.channel && channelLabel(p.channel)].filter(Boolean).join(' · ') || '—'}
+                      {[p.device && deviceLabel(p.device), p.browser, p.city && cityLabel(p.city), p.channel && channelLabel(p.channel)].filter(Boolean).join(' · ') || '—'}
                     </td>
                   )}
                   {hasInterests && <td className="py-1.5 text-text-secondary">{(p.interests || []).join(', ') || '—'}</td>}

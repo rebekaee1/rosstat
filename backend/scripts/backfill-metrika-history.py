@@ -162,10 +162,24 @@ async def main() -> None:
     if mode in ("reports", "all"):
         day = date_from
         while day <= date_to:
-            async with async_session() as db:
-                n = await sync_acquisition_reports_for_day(db, day)
+            # Reporting API отвечает 429 при исчерпании квоты (6 запросов на
+            # день × ~30 дней хватает, чтобы упереться) — ждём и повторяем
+            # тот же день, upsert идемпотентен.
+            for attempt in range(8):
+                try:
+                    async with async_session() as db:
+                        n = await sync_acquisition_reports_for_day(db, day)
+                    break
+                except YandexApiError as exc:
+                    if exc.status_code != 429:
+                        raise
+                    wait = min(60 * (attempt + 1), 300)
+                    print(f"REPORTS {day}: 429, жду {wait}с (попытка {attempt + 1})", flush=True)
+                    await asyncio.sleep(wait)
+            else:
+                raise RuntimeError(f"REPORTS {day}: квота 429 не отпустила за 8 попыток")
             print(f"REPORTS {day}: {n} строк", flush=True)
-            await asyncio.sleep(0.3)  # щадим квоту Reporting API
+            await asyncio.sleep(2)  # щадим квоту Reporting API
             day += timedelta(days=1)
 
     print("DONE", flush=True)
