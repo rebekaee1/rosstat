@@ -4,15 +4,15 @@
 
 **Сгенерировано:** 2026-07-08
 
-**Файлов:** 586  ·  **Строк:** 133 827  ·  **Токенов (≈):** 1 373 625
+**Файлов:** 586  ·  **Строк:** 133 843  ·  **Токенов (≈):** 1 373 846
 
 ## По верхним папкам
 
 | Папка | Файлов | Строк | Токенов (≈) |
 |-------|-------:|------:|------------:|
-| `(root)` | 8 | 1 689 | 42 502 |
+| `(root)` | 8 | 1 690 | 42 516 |
 | `.github` | 1 | 150 | 1 250 |
-| `backend` | 318 | 76 158 | 738 054 |
+| `backend` | 318 | 76 173 | 738 261 |
 | `clickhouse` | 2 | 36 | 445 |
 | `docs` | 22 | 4 581 | 100 648 |
 | `frontend` | 197 | 43 200 | 408 703 |
@@ -72,8 +72,8 @@
 | `backend/tests/forecast_strategies/test_derived.py` | 534 | 4 789 |
 | `backend/app/services/forecast_strategies/derived_from_source.py` | 446 | 4 779 |
 | `scripts/regional/regions_registry.py` | 293 | 4 762 |
+| `backend/app/services/clickhouse_sync.py` | 449 | 4 759 |
 | `backend/app/services/analytics_report_bundle.py` | 435 | 4 578 |
-| `backend/app/services/clickhouse_sync.py` | 434 | 4 552 |
 | `backend/app/services/minfin_budget_parser.py` | 471 | 4 420 |
 | `docs/adr/0004-rosstat-russian-canonical-sdds-deprecated.md` | 190 | 4 403 |
 | `frontend/src/components/IndicatorChartSection.jsx` | 443 | 4 383 |
@@ -136,7 +136,7 @@
 | `backend/app/services/dataset_inventory.py` | 247 | 2 725 |
 | `backend/tests/test_route_smoke.py` | 283 | 2 699 |
 | `frontend/src/embed/EmbedChart.jsx` | 216 | 2 692 |
-| `docker-compose.yml` | 245 | 2 581 |
+| `docker-compose.yml` | 246 | 2 595 |
 | `frontend/src/components/RegionsMap.jsx` | 260 | 2 580 |
 | `docs/enterprise_resilience.md` | 71 | 2 565 |
 | `docs/adr/0010-analytics-contour-identity-goals-marts-olap.md` | 177 | 2 531 |

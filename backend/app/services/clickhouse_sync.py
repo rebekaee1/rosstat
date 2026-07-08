@@ -10,7 +10,9 @@ clickhouse_data в бэкапы не входит.
 (курсоры в state-Redis DB 1), события append-only. raw_metrika_visits —
 перезаливка последних 2 суток, ReplacingMergeTree дедуплицирует по visit_id.
 Идемпотентный DDL выполняется на старте каждого прогона (CREATE TABLE IF NOT
-EXISTS) — новая таблица появляется без ручных миграций CH.
+EXISTS) — новая таблица появляется без ручных миграций CH; для колонок,
+добавленных в уже существующую таблицу, — `_COLUMN_GUARDS` (ALTER TABLE ADD
+COLUMN IF NOT EXISTS), иначе дрейф схемы виден только после ручного `resync()`.
 
 Деградация: CH упал → синк пишет warning и молчит, сайт не замечает,
 «Срезы» отвечают «слой недоступен», после подъёма синк догоняет по курсорам.
@@ -90,6 +92,17 @@ _DDL = [
     """CREATE TABLE IF NOT EXISTS identity_links (
         user_id String, visitor_id_hash String, first_seen DateTime, last_seen DateTime
     ) ENGINE = ReplacingMergeTree ORDER BY (user_id, visitor_id_hash)""",
+]
+
+# Дрейф схемы: `CREATE TABLE IF NOT EXISTS` не подтягивает новые колонки в уже
+# существующую таблицу — если `_DDL` выше пополнился полем после того, как
+# таблица создана на проде, синк падает "Unrecognized column" до ручного
+# `resync()`. Единственное место, которое трогаем при добавлении колонки в
+# существующую таблицу (2026-07-08: bot_score/is_internal подвисли в
+# server_sessions именно так).
+_COLUMN_GUARDS = [
+    ("server_sessions", "bot_score", "Int32"),
+    ("server_sessions", "is_internal", "UInt8"),
 ]
 
 
@@ -295,6 +308,8 @@ async def _sync_replacing(db, ch, days: int = 2) -> int:
 def _ensure_schema(ch) -> None:
     for ddl in _DDL:
         ch.command(ddl)
+    for table, column, col_type in _COLUMN_GUARDS:
+        ch.command(f"ALTER TABLE {table} ADD COLUMN IF NOT EXISTS {column} {col_type}")
 
 
 async def clickhouse_sync_job() -> None:
