@@ -134,6 +134,15 @@ def visit_os(v: RawMetrikaVisit) -> str:
     return METRIKA_OS.get(raw, raw)
 
 
+def visit_is_robot(v: RawMetrikaVisit) -> bool:
+    """True, если Метрика-Про пометила визит как роботный (isRobotPro=1).
+
+    Поле доступно не на всех тарифах — отсутствие в raw_json (обычный тариф,
+    старые визиты до 2026-07-08) НЕ означает «не робот», означает «неизвестно»;
+    вызывающий код должен это не путать с явным False."""
+    return visit_field(v, "ym:s:isRobotPro") == "1"
+
+
 def visit_goal_ids(v: RawMetrikaVisit) -> list[int]:
     """Список id целей визита. goals_json: {"goals": "[123,456]"} | list | str."""
     gj = v.goals_json

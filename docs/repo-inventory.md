@@ -4,7 +4,7 @@
 
 **Сгенерировано:** 2026-07-08
 
-**Файлов:** 586  ·  **Строк:** 133 861  ·  **Токенов (≈):** 1 374 109
+**Файлов:** 586  ·  **Строк:** 134 208  ·  **Токенов (≈):** 1 377 750
 
 ## По верхним папкам
 
@@ -12,7 +12,7 @@
 |-------|-------:|------:|------------:|
 | `(root)` | 8 | 1 695 | 42 584 |
 | `.github` | 1 | 150 | 1 250 |
-| `backend` | 318 | 76 186 | 738 456 |
+| `backend` | 318 | 76 533 | 742 097 |
 | `clickhouse` | 2 | 36 | 445 |
 | `docs` | 22 | 4 581 | 100 648 |
 | `frontend` | 197 | 43 200 | 408 703 |
@@ -32,7 +32,7 @@
 | `CONTEXT.md` | 584 | 20 732 |
 | `scripts/metrika_daily_report.py` | 1 915 | 19 522 |
 | `frontend/src/lib/regionsMap.json` | 1 | 16 837 |
-| `backend/app/services/analytics_marts.py` | 1 376 | 14 895 |
+| `backend/app/services/analytics_marts.py` | 1 385 | 14 993 |
 | `AGENTS.md` | 388 | 13 506 |
 | `backend/app/models.py` | 1 024 | 13 423 |
 | `backend/app/data/view_model_families.py` | 1 121 | 13 420 |
@@ -58,6 +58,7 @@
 | `backend/app/services/seo_content.py` | 539 | 6 260 |
 | `docs/data_sources.md` | 385 | 6 253 |
 | `backend/app/tasks/analytics_rollups.py` | 618 | 6 234 |
+| `backend/app/services/pulse.py` | 557 | 6 203 |
 | `frontend/src/pages/RegionsHome.jsx` | 529 | 6 183 |
 | `frontend/src/lib/useIndicatorViewModeData.js` | 645 | 5 980 |
 | `frontend/src/lib/behavior.js` | 636 | 5 967 |
@@ -65,7 +66,7 @@
 | `backend/tests/test_derived_ops.py` | 618 | 5 470 |
 | `docs/adr/0006-indicator-card-unification.md` | 227 | 5 311 |
 | `backend/app/api/sitemap.py` | 530 | 5 306 |
-| `backend/app/services/pulse.py` | 466 | 5 102 |
+| `backend/app/services/telegram_bot.py` | 496 | 5 156 |
 | `scripts/completeness.py` | 453 | 4 971 |
 | `backend/tests/test_seo_og.py` | 540 | 4 866 |
 | `backend/app/services/calculation_engine.py` | 428 | 4 824 |
@@ -74,27 +75,26 @@
 | `scripts/regional/regions_registry.py` | 293 | 4 762 |
 | `backend/app/services/clickhouse_sync.py` | 449 | 4 759 |
 | `backend/app/services/analytics_report_bundle.py` | 435 | 4 578 |
+| `backend/app/services/metrika_acquisition.py` | 446 | 4 447 |
 | `backend/app/services/minfin_budget_parser.py` | 471 | 4 420 |
 | `docs/adr/0004-rosstat-russian-canonical-sdds-deprecated.md` | 190 | 4 403 |
 | `frontend/src/components/IndicatorChartSection.jsx` | 443 | 4 383 |
 | `backend/alembic/versions/20260428_add_analytics_os_tables.py` | 327 | 4 373 |
 | `frontend/src/lib/cpiViewModeContent.jsx` | 436 | 4 359 |
 | `frontend/public/sitemap.xml` | 573 | 4 353 |
-| `backend/app/services/telegram_bot.py` | 403 | 4 313 |
 | `backend/app/api/regions.py` | 459 | 4 303 |
 | `backend/app/api/indicators.py` | 435 | 4 278 |
 | `backend/app/tasks/scheduler.py` | 412 | 4 272 |
-| `backend/app/services/metrika_acquisition.py` | 424 | 4 220 |
 | `backend/app/api/embed.py` | 478 | 4 116 |
 | `frontend/src/pages/Methodology.jsx` | 317 | 4 096 |
 | `backend/tests/test_calendar_seed.py` | 442 | 4 079 |
+| `backend/app/services/pulse_report.py` | 366 | 4 056 |
 | `frontend/src/pages/CompoundCalculatorPage.jsx` | 294 | 4 042 |
 | `backend/app/services/seo_today.py` | 374 | 4 035 |
 | `docs/analytics_api_inventory/frontend_instrumentation.md` | 279 | 4 010 |
 | `frontend/src/pages/DemographicsPage.jsx` | 364 | 3 991 |
 | `backend/app/services/og_image.py` | 434 | 3 954 |
 | `frontend/src/pages/MortgageCalculatorPage.jsx` | 282 | 3 909 |
-| `backend/app/services/pulse_report.py` | 355 | 3 883 |
 | `docs/adr/0001-derived-indicators-engine-shape.md` | 140 | 3 873 |
 | `backend/tests/test_forecast_policy.py` | 372 | 3 814 |
 | `scripts/regional/backfill_word.py` | 337 | 3 810 |
@@ -116,6 +116,7 @@
 | `backend/app/services/ticker_sources/moex_iss.py` | 353 | 3 330 |
 | `frontend/src/pages/CalendarPage.jsx` | 335 | 3 327 |
 | `backend/tests/forecast_strategies/fixtures/construction_work_series.json` | 1 | 3 279 |
+| `backend/tests/test_pulse.py` | 341 | 3 223 |
 | `frontend/src/lib/viewModeFamilies.js` | 295 | 3 130 |
 | `backend/tests/test_rosstat_gdp.py` | 308 | 3 121 |
 | `backend/tests/test_calculation_engine.py` | 341 | 3 117 |
@@ -158,7 +159,6 @@
 | `frontend/src/App.jsx` | 211 | 2 216 |
 | `backend/app/api/calendar.py` | 250 | 2 204 |
 | `frontend/src/components/calendar/CalendarEventCard.jsx` | 250 | 2 169 |
-| `backend/tests/test_pulse.py` | 227 | 2 145 |
 | `backend/app/api/oauth.py` | 220 | 2 119 |
 | `backend/app/services/rosstat_ind_parser.py` | 282 | 2 111 |
 | `backend/tests/test_parser_fixtures.py` | 263 | 2 099 |
@@ -350,6 +350,7 @@
 | `backend/tests/forecast_strategies/test_gdp_real_snapshot.py` | 87 | 834 |
 | `backend/tests/test_derived_specs_execution.py` | 98 | 831 |
 | `backend/tests/test_ssr_matrix.py` | 101 | 831 |
+| `backend/app/services/yandex_webmaster_client.py` | 62 | 825 |
 | `docs/analytics_api_inventory/metrika_reporting.md` | 47 | 823 |
 | `backend/app/services/ua_parser.py` | 93 | 822 |
 | `backend/app/services/oauth/yandex.py` | 82 | 813 |
@@ -379,7 +380,6 @@
 | `backend/tests/forecast_strategies/test_housing_quarterly_snapshot.py` | 79 | 720 |
 | `frontend/src/lib/useMeta.js` | 78 | 719 |
 | `backend/app/security/auth.py` | 83 | 707 |
-| `backend/app/services/yandex_webmaster_client.py` | 55 | 704 |
 | `backend/tests/test_rate_limit.py` | 76 | 701 |
 | `frontend/src/embed/useEmbedParams.js` | 91 | 695 |
 | `backend/app/services/yandex_metrika_reporting.py` | 82 | 693 |

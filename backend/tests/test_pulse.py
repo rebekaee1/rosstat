@@ -126,6 +126,8 @@ def test_memory_core_is_compact():
         "behavior_rage": 5,
         "metrika_visits": 280,
         "metrika_ad_visits": 130,
+        "seo_indexed_share_pct": None,
+        "seo_searchable_pages": None,
     }
 
 
@@ -190,6 +192,66 @@ def test_split_llm_output_without_separator_is_plain_text():
     assert text == "Просто текст отчёта." and updates == []
 
 
+def test_seo_snapshot_disabled_without_token(monkeypatch):
+    from app.services import pulse
+
+    monkeypatch.setattr(pulse.settings, "yandex_webmaster_token", "")
+    result = asyncio.run(pulse._seo_snapshot(None))
+    assert result == {"available": False, "reason": "webmaster token not configured"}
+
+
+def test_seo_snapshot_computes_indexed_share(monkeypatch):
+    """Н-24 (2026-07-08): доля индексации должна попадать в снапшот Пульса —
+    раньше эта цифра жила только в отдельном еженедельном отчёте без LLM."""
+    from app.services import pulse
+    from app.services import yandex_webmaster_client as ywc
+
+    monkeypatch.setattr(pulse.settings, "yandex_webmaster_token", "token")
+
+    class FakeResp:
+        def __init__(self, data):
+            self.data = data
+
+    class FakeClient:
+        async def user(self):
+            return FakeResp({"user_id": "u1"})
+
+        async def summary(self, user_id, host_id):
+            return FakeResp({
+                "searchable_pages_count": 3527,
+                "excluded_pages_count": 2,
+                "sqi": 10,
+                "site_problems": {"RECOMMENDATION": 3},
+            })
+
+    monkeypatch.setattr(ywc, "YandexWebmasterClient", FakeClient)
+
+    async def fake_collect_all_paths(db):
+        return ["/x"] * 43300
+
+    monkeypatch.setattr("app.services.site_urls.collect_all_paths", fake_collect_all_paths)
+
+    class FakeDB:
+        async def scalar(self, *a, **kw):
+            return None  # нет строк webmaster_search_queries за сегодня
+
+    result = asyncio.run(pulse._seo_snapshot(FakeDB()))
+    assert result["available"] is True
+    assert result["searchable_pages"] == 3527
+    assert result["sitemap_urls_total"] == 43300
+    assert result["indexed_share_pct"] == round(100 * 3527 / 43300, 1)
+    assert result["top_search_queries"] == []
+
+
+def test_memory_core_includes_seo_indexed_share():
+    from app.services.pulse import memory_core
+
+    snap = {**SNAP, "seo": {"available": True, "indexed_share_pct": 8.1, "searchable_pages": 3527}}
+    core = memory_core(snap)
+    assert core["seo_indexed_share_pct"] == 8.1
+    assert core["seo_searchable_pages"] == 3527
+
+
 def test_parse_visits_tsv():
     from app.services.metrika_acquisition import parse_visits_tsv
 
@@ -203,6 +265,58 @@ def test_parse_visits_tsv():
     assert len(rows) == 2
     assert rows[0]["ym:s:visitID"] == "123"
     assert rows[1]["ym:s:lastTrafficSource"] == "organic"
+
+
+def test_split_telegram_text_short_stays_single():
+    from app.services.telegram_bot import _split_telegram_text
+
+    assert _split_telegram_text("короткий текст") == ["короткий текст"]
+
+
+def test_split_telegram_text_splits_long_and_keeps_blockquote_valid():
+    from app.services.telegram_bot import _split_telegram_text
+
+    header = "\n".join(f"строка заголовка номер {i}" for i in range(50))
+    blockquote = "<blockquote expandable>" + "\n".join(f"строка {i}" for i in range(20)) + "</blockquote>"
+    text = header + "\n" + blockquote
+    chunks = _split_telegram_text(text, limit=200)
+    assert len(chunks) > 1
+    for chunk in chunks:
+        assert len(chunk) <= 200
+        # ни один чанк не оставляет тег незакрытым/несбалансированным
+        assert chunk.count("<blockquote") == chunk.count("</blockquote>")
+
+
+def test_split_telegram_text_splits_oversized_single_blockquote():
+    """Реальный кейс 2026-07-08: LLM обернула почти весь ответ в один blockquote
+    длиннее лимита — старая версия сплиттера держала его целиком и не резала."""
+    from app.services.telegram_bot import _split_telegram_text
+
+    inner = "\n".join(f"пункт отчёта номер {i} с содержательным текстом" for i in range(120))
+    text = "🛰 <b>Пульс</b>\n\n<blockquote expandable>" + inner + "</blockquote>"
+    assert len(text) > 4000
+    chunks = _split_telegram_text(text, limit=1000)
+    assert len(chunks) > 1
+    for chunk in chunks:
+        assert len(chunk) <= 1000
+        assert chunk.count("<blockquote") == chunk.count("</blockquote>")
+
+
+def test_send_message_splits_and_archives_each_chunk(monkeypatch):
+    from app.services import telegram_bot as tb
+
+    sent_texts = []
+
+    async def fake_api(method, payload, files=None):
+        sent_texts.append(payload["text"])
+        return {"ok": True, "result": {"message_id": len(sent_texts)}}
+
+    monkeypatch.setattr(tb, "_api", fake_api)
+    long_text = "x" * 9000
+    ok = asyncio.run(tb.send_message("1", long_text, reply_markup={"a": 1}))
+    assert ok is True
+    assert len(sent_texts) >= 3
+    assert "".join(sent_texts) == long_text
 
 
 def test_poller_ignores_foreign_chat(monkeypatch):

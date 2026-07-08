@@ -91,6 +91,17 @@ _VISIT_FIELDS: list[str] = [
     "ym:s:goalsID",
 ]
 
+# Поля, доступные не на всех тарифах/счётчиках — Яндекс отвечает 400 на весь
+# запрос, если хотя бы одно недоступно. Пробуем "жадно", при отказе снимаем их
+# по одному с хвоста (см. _create_request_with_optional_fields).
+_OPTIONAL_FIELDS: list[str] = [
+    "ym:s:lastSearchPhrase",
+    # isRobotPro — доля роботности по антифрод-данным Директа; только Метрика
+    # Pro и только с 2025-04-19 (Н-24, аудит правдивости BI 2026-07-08). Летит
+    # в raw_json как есть; helper — analytics_marts.py::visit_is_robot.
+    "ym:s:isRobotPro",
+]
+
 _POLL_INTERVAL_SECONDS = 15
 _POLL_MAX_ATTEMPTS = 40  # ~10 минут — за глаза для суточной выгрузки
 
@@ -112,6 +123,31 @@ def parse_visits_tsv(tsv: str) -> list[dict[str, str]]:
             continue  # битая строка — не роняем всю выгрузку
         rows.append(dict(zip(header, values)))
     return rows
+
+
+async def _create_visits_request(
+    client: MetrikaLogsClient, counter_id: str, day: date,
+) -> tuple[Any, list[str]]:
+    """Создать logrequest, прогрессивно снимая недоступные опциональные поля.
+
+    Разные счётчики/тарифы дают разный набор прав (Pro-only isRobotPro,
+    lastSearchPhrase зависит от настроек) — Яндекс на HTTP 400 не говорит,
+    какое именно поле виновато, поэтому снимаем с хвоста по одному вместо
+    одного жёстко закодированного фолбэка."""
+    optional = list(_OPTIONAL_FIELDS)
+    while True:
+        fields = list(_VISIT_FIELDS) + optional
+        try:
+            created = await client.create_request(
+                counter_id, source="visits", fields=fields,
+                date_from=day, date_to=day,
+            )
+            return created, fields
+        except YandexApiError as exc:
+            if not optional:
+                raise
+            dropped = optional.pop()
+            logger.info("Logs API rejected field %s (%s), retrying without it", dropped, exc)
 
 
 def _visit_int(row: dict[str, str], field: str) -> int | None:
@@ -178,10 +214,6 @@ async def sync_visits_for_day(db: AsyncSession, day: date, counter_id: str | Non
     """
     counter_id = counter_id or _primary_counter_id()
     client = MetrikaLogsClient()
-    fields = list(_VISIT_FIELDS)
-    # lastSearchPhrase доступна не на всех счётчиках (зависит от прав/настроек);
-    # пробуем с ней, при отказе создаём запрос без неё.
-    fields_with_phrase = fields + ["ym:s:lastSearchPhrase"]
 
     run = await start_sync_run(
         db, source="yandex_metrika_logs", job_type="daily_visits_log",
@@ -189,17 +221,7 @@ async def sync_visits_for_day(db: AsyncSession, day: date, counter_id: str | Non
     )
     await db.commit()
     try:
-        try:
-            created = await client.create_request(
-                counter_id, source="visits", fields=fields_with_phrase,
-                date_from=day, date_to=day,
-            )
-        except YandexApiError as exc:
-            logger.info("Logs API rejected lastSearchPhrase (%s), retrying without it", exc)
-            created = await client.create_request(
-                counter_id, source="visits", fields=fields,
-                date_from=day, date_to=day,
-            )
+        created, _fields_used = await _create_visits_request(client, counter_id, day)
         request_id = str(created.data["log_request"]["request_id"])
 
         parts: list[int] = []

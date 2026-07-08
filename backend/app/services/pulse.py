@@ -20,6 +20,7 @@ from typing import Any
 
 from sqlalchemy import func, select
 
+from app.config import settings
 from app.core.cache import get_state_redis
 from app.database import async_session
 from app.models import (
@@ -35,6 +36,7 @@ from app.models import (
     OAuthIdentity,
     RawMetrikaVisit,
     User,
+    WebmasterSearchQuery,
 )
 
 logger = logging.getLogger(__name__)
@@ -135,6 +137,90 @@ async def _acquisition_from_warehouse(db, d: date) -> dict[str, Any]:
         )).all())
         acq["raw_visits"] = {"total": visits_total, "by_source": by_source}
     return acq
+
+
+async def _seo_snapshot(db) -> dict[str, Any]:
+    """Индексация в Яндексе + спрос без покрытия — ежедневно в снапшот Пульса.
+
+    Н-24 (2026-07-08): владелец считал, что LLM-аналитик знает о доле
+    проиндексированных страниц — на деле эта цифра жила только в отдельном
+    ДЕТЕРМИНИРОВАННОМ еженедельном отчёте (`webmaster_indexing_report.py`,
+    пн 09:30, без LLM), в дневной снапшот не попадала вообще. Тянем summary
+    Вебмастера живым вызовом (дёшево, раз в день) + топ поисковых запросов
+    из уже синкнутой `webmaster_search_queries` (08:40 МСК)."""
+    if not settings.yandex_webmaster_token:
+        return {"available": False, "reason": "webmaster token not configured"}
+    try:
+        from app.services.site_urls import collect_all_paths
+        from app.services.webmaster_indexing_report import _HOST_ID
+        from app.services.yandex_webmaster_client import YandexWebmasterClient
+
+        client = YandexWebmasterClient()
+        user = await client.user()
+        user_id = user.data["user_id"]
+        summary = (await client.summary(user_id, _HOST_ID)).data
+        searchable = summary.get("searchable_pages_count")
+        total_urls = len(await collect_all_paths(db))
+
+        # Причины исключения страниц (Н-24, доп. проход 2026-07-08): summary
+        # даёт голое число excluded_pages_count без объяснения — LLM не может
+        # посоветовать, что чинить. search-urls/events/samples отдаёт по
+        # каждому событию reason (excluded_url_status); агрегируем top-5.
+        exclusion_reasons: list[dict[str, Any]] = []
+        try:
+            events = (await client.search_events_samples(user_id, _HOST_ID, limit=100)).data
+            reasons: dict[str, int] = {}
+            for sample in events.get("samples") or []:
+                if sample.get("event") != "REMOVED_FROM_SEARCH":
+                    continue
+                reason = sample.get("excluded_url_status") or "UNKNOWN"
+                reasons[reason] = reasons.get(reason, 0) + 1
+            exclusion_reasons = [
+                {"reason": r, "count": n}
+                for r, n in sorted(reasons.items(), key=lambda kv: -kv[1])[:5]
+            ]
+        except Exception:
+            logger.warning("Pulse SEO snapshot: exclusion reasons unavailable", exc_info=True)
+
+        last_date = await db.scalar(select(func.max(WebmasterSearchQuery.date)))
+        top_demand: list[dict[str, Any]] = []
+        if last_date:
+            rows = (await db.execute(
+                select(
+                    WebmasterSearchQuery.query,
+                    func.sum(WebmasterSearchQuery.impressions),
+                    func.sum(WebmasterSearchQuery.clicks),
+                    func.avg(WebmasterSearchQuery.position),
+                )
+                .where(WebmasterSearchQuery.date == last_date)
+                .group_by(WebmasterSearchQuery.query)
+                .order_by(func.sum(WebmasterSearchQuery.impressions).desc())
+                .limit(10)
+            )).all()
+            top_demand = [
+                {
+                    "query": q, "impressions": int(i or 0), "clicks": int(c or 0),
+                    "avg_position": round(float(p), 1) if p is not None else None,
+                }
+                for q, i, c, p in rows
+            ]
+        return {
+            "available": True,
+            "sitemap_urls_total": total_urls,
+            "searchable_pages": searchable,
+            "excluded_pages": summary.get("excluded_pages_count"),
+            "sqi": summary.get("sqi"),
+            "indexed_share_pct": (
+                round(100 * searchable / total_urls, 1) if searchable and total_urls else None
+            ),
+            "site_problems": summary.get("site_problems") or {},
+            "exclusion_reasons_sample": exclusion_reasons,
+            "top_search_queries_date": last_date.isoformat() if last_date else None,
+            "top_search_queries": top_demand,
+        }
+    except Exception:
+        logger.warning("Pulse SEO snapshot failed", exc_info=True)
+        return {"available": False, "reason": "fetch failed"}
 
 
 async def build_snapshot(d: date) -> dict[str, Any]:
@@ -368,6 +454,9 @@ async def build_snapshot(d: date) -> dict[str, Any]:
         ) or 0
         snap["data"] = {"new_points": new_points}
 
+        # --- SEO / индексация в Яндексе --------------------------------------
+        snap["seo"] = await _seo_snapshot(db)
+
         # --- ПОЛНЫЙ дневной контекст из единого слоя витрин (этап 6) ---------
         # Директива владельца: LLM видит ВСЁ, что есть в аналитике за день.
         # Те же функции кормят BI-дашборд — цифра в дайджесте Пульса и на
@@ -440,6 +529,8 @@ def memory_core(snap: dict[str, Any]) -> dict[str, Any]:
             for v in snap.get("acquisition", {}).get("traffic_sources", {}).values()
             if v.get("id") == "ad"
         ),
+        "seo_indexed_share_pct": snap.get("seo", {}).get("indexed_share_pct"),
+        "seo_searchable_pages": snap.get("seo", {}).get("searchable_pages"),
     }
 
 

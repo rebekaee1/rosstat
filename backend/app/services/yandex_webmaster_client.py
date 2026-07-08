@@ -53,3 +53,10 @@ class YandexWebmasterClient:
 
     async def links_internal_broken_samples(self, user_id: str, host_id: str) -> YandexResponse:
         return await self.client.request("GET", f"/v4/user/{user_id}/hosts/{host_id}/links/internal/broken/samples/")
+
+    async def search_events_samples(self, user_id: str, host_id: str, **params: Any) -> YandexResponse:
+        """Примеры страниц, появившихся/исключённых из поиска, с причиной
+        (excluded_url_status) — единственный источник «почему» рядом с числом
+        excluded_pages_count из summary (Н-24, аудит правдивости BI 2026-07-08)."""
+        return await self.client.request(
+            "GET", f"/v4/user/{user_id}/hosts/{host_id}/search-urls/events/samples/", params=params)
