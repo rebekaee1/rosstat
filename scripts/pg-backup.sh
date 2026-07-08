@@ -106,6 +106,13 @@ tg_notify "🟢 pg-backup ok: full $SIZE, identity $ISIZE ($(date '+%F %T'))"
 # Н-25: machine-readable heartbeat в cache-Redis — /api/v1/health/ready
 # помечает degraded, если бэкап старше 30 часов (cron не сработал/сломан crontab
 # — Telegram-алерта не будет, trap ERR не запускавшийся скрипт не поймает).
-REDIS_PASS=$(grep -E '^REDIS_PASSWORD=' "$COMPOSE_DIR/.env" 2>/dev/null | cut -d= -f2- || true)
-dc exec -T redis redis-cli ${REDIS_PASS:+-a "$REDIS_PASS"} --no-auth-warning \
-  SET fe:ops:pg_backup_last_ok "$(date +%s)" >/dev/null 2>&1 || true
+# Дефолт "changeme" ЗЕРКАЛИТ docker-compose.yml (`${REDIS_PASSWORD:-changeme}`
+# у команды redis-server) — без него на инсталляциях без явного REDIS_PASSWORD
+# в .env (как прод на 2026-07-08) SET уходил в NOAUTH и молча проглатывался
+# `|| true`: heartbeat никогда не писался, health/ready вечно отдавал "never".
+REDIS_PASS=$(grep -E '^REDIS_PASSWORD=' "$COMPOSE_DIR/.env" 2>/dev/null | cut -d= -f2-)
+REDIS_PASS="${REDIS_PASS:-changeme}"
+if ! dc exec -T redis redis-cli -a "$REDIS_PASS" --no-auth-warning \
+  SET fe:ops:pg_backup_last_ok "$(date +%s)" >/dev/null 2>&1; then
+  echo "[$(date)] WARN: pg_backup heartbeat SET в Redis не прошёл (не влияет на бэкап)" >&2
+fi
