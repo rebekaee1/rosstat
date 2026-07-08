@@ -4,13 +4,13 @@
 
 **Сгенерировано:** 2026-07-08
 
-**Файлов:** 586  ·  **Строк:** 133 860  ·  **Токенов (≈):** 1 374 091
+**Файлов:** 586  ·  **Строк:** 133 861  ·  **Токенов (≈):** 1 374 109
 
 ## По верхним папкам
 
 | Папка | Файлов | Строк | Токенов (≈) |
 |-------|-------:|------:|------------:|
-| `(root)` | 8 | 1 694 | 42 566 |
+| `(root)` | 8 | 1 695 | 42 584 |
 | `.github` | 1 | 150 | 1 250 |
 | `backend` | 318 | 76 186 | 738 456 |
 | `clickhouse` | 2 | 36 | 445 |
@@ -136,7 +136,7 @@
 | `backend/app/services/dataset_inventory.py` | 247 | 2 725 |
 | `backend/tests/test_route_smoke.py` | 283 | 2 699 |
 | `frontend/src/embed/EmbedChart.jsx` | 216 | 2 692 |
-| `docker-compose.yml` | 246 | 2 595 |
+| `docker-compose.yml` | 247 | 2 613 |
 | `frontend/src/components/RegionsMap.jsx` | 260 | 2 580 |
 | `docs/enterprise_resilience.md` | 71 | 2 565 |
 | `docs/adr/0010-analytics-contour-identity-goals-marts-olap.md` | 177 | 2 531 |
