@@ -1197,9 +1197,12 @@ INDICATOR_HIDDEN_FROM_LISTING: set[str] = {
     # wages-yoy — режим номинальной (override). wages-index (номинальный индекс
     # 2010=100) — служебный ряд для сопоставления с ценами на жильё, не карточка.
     # wages-nominal-annual — annual sibling с историей 1991-2014 (не listed).
+    # wages-nominal-annual-yoy — Г/г режим «По годам» поверх deep-ряда (1992+,
+    # созвон «На правки 13» 2026-07-08), тот же паттерн, что avg-year override.
     "wages-index",
     "wages-yoy",
     "wages-nominal-annual",
+    "wages-nominal-annual-yoy",
     # Индекс доступности жилья: вторичный рынок — карточка каталога, первичный —
     # вариант через pill «Рынок жилья» (одинаковый набор режимов T12).
     "housing-affordability-primary",

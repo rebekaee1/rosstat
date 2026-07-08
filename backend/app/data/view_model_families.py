@@ -777,8 +777,20 @@ _FAMILY_DEFS: list[FamilyDef] = [
     # `wages-nominal-avg-year` (был бы average ТОЛЬКО по нативному месячному
     # ряду 2015+ — визуальный обрыв истории на кнопке «По годам», созвон
     # «На правки 13» 2026-07-08). Тот же паттерн, что gdp-nominal:sum-year.
+    # yoy-year → wages-nominal-annual-yoy (1992+, yoy() прямо на deep annual-
+    # ряду) — тот же trap: auto-generated sibling считал бы period_avg(year)+yoy
+    # ПОВЕРХ помесячного 2015+ и обрывался на 2016. mom/qoq/avg-quarter/yoy
+    # (месячный)/yoy-quarter НЕ переопределены и остаются 2015/2016+ — источник
+    # 1991-2014 (wages_historical.py) даёт только ОДНО среднегодовое значение в
+    # год, без месячной/квартальной раскладки, поэтому глубже физически нечем
+    # заполнить (Source-depth invariant, AGENTS.md::Шаг 4, п.1 — не огрызок, а
+    # честный пол данных).
     FamilyDef("wages-nominal", "Средняя заработная плата", "T8", "руб.", "Рынок труда", "monthly",
-              overrides={"yoy": "wages-yoy", "avg-year": "wages-nominal-annual"}),
+              overrides={
+                  "yoy": "wages-yoy",
+                  "avg-year": "wages-nominal-annual",
+                  "yoy-year": "wages-nominal-annual-yoy",
+              }),
     FamilyDef("wages-real", "Реальная заработная плата", "T8", "индекс", "Рынок труда", "monthly"),
     # T9 — ВВП (reuse легаси-кодов derived)
     FamilyDef("gdp-nominal", "Номинальный ВВП", "T9", "млрд руб.", "ВВП", "quarterly",

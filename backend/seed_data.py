@@ -895,6 +895,26 @@ INDICATORS = [
         "is_listed": False,
         "category": "Рынок труда",
     },
+    # Г/г зарплаты «по годам» (1992+, вместо обрыва на 2016 у авто-generated
+    # sibling'а поверх месячного ряда) — yoy() прямо на wages-nominal-annual.
+    # Не в каталоге; доступен как режим «Г/г по годам» на карточке wages-nominal.
+    {
+        "code": "wages-nominal-annual-yoy",
+        "name": "Средняя зарплата (Г/г по годам)",
+        "name_en": "Average Wages (YoY, Annual)",
+        "unit": "%",
+        "frequency": "annual",
+        "source": "Росстат",
+        "source_url": "https://rosstat.gov.ru/labour_costs",
+        "description": (
+            "Изменение среднегодовой номинальной зарплаты к предыдущему году, в процентах."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {"forecast_steps": 0},
+        "is_active": True,
+        "is_listed": False,
+        "category": "Рынок труда",
+    },
     # ─── Производные (CalculationEngine) ───
     {
         "code": "wages-real",

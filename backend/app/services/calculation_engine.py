@@ -142,6 +142,15 @@ DERIVED_SPECS: list[DerivedSpec] = [
         partial(ops.annual_mean_with_prefix, prefix=_ANNUAL_NOMINAL_WAGES_RUB),
     ),
 
+    # Г/г «по годам» зарплаты (1992+): yoy() матчит по date(year-1, month, day),
+    # поэтому применённый прямо к annual-ряду `wages-nominal-annual` (1 точка/год,
+    # 1 января) корректно даёт год-к-году без промежуточной месячной агрегации —
+    # первая точка 1992 (1991 не с чем сравнивать). До этого «yoy-year» режим
+    # карточки считался через period_avg(year)+yoy ПОВЕРХ помесячного wages-nominal
+    # (2015+) — глубина обрывалась на 2016. Тот же trap и то же решение, что у
+    # `avg-year` (override на deep-ряд), созвон «На правки 13» 2026-07-08.
+    DerivedSpec("wages-nominal-annual-yoy", ("wages-nominal-annual",), ops.yoy),
+
     # GDP year-over-year and quarter-over-quarter growth (две раздельные
     # семьи: nominal — в текущих ценах, real — в постоянных ценах 2021 г.).
     DerivedSpec("gdp-yoy", ("gdp-nominal",), ops.yoy),

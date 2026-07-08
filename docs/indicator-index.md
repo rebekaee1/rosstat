@@ -912,11 +912,11 @@
 | `wages-index` | Рынок труда | monthly | `generic` | — | — | — |
 | `wages-nominal` | Рынок труда | monthly | `generic` | monthly_auto | ✓ | — |
 | `wages-nominal-annual` | Рынок труда | annual | `generic` | derived_from_source | — | — |
+| `wages-nominal-annual-yoy` | Рынок труда | annual | `generic` | — | — | — |
 | `wages-nominal-avg-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `wages-nominal-mom` | Рынок труда | monthly | `generic` | derived_from_source | — | — |
 | `wages-nominal-qoq` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `wages-nominal-yoy-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
-| `wages-nominal-yoy-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
 | `wages-real` | Рынок труда | monthly | `generic` | monthly_auto | ✓ | — |
 | `wages-real-avg-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `wages-real-avg-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |

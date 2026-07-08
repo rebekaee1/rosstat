@@ -11955,7 +11955,7 @@
         "unit": "%"
       },
       {
-        "code": "wages-nominal-yoy-year",
+        "code": "wages-nominal-annual-yoy",
         "forecastable": true,
         "frequency": "annual",
         "group": "yoy",
@@ -11965,7 +11965,7 @@
         "unit": "%"
       },
       {
-        "code": "wages-nominal-yoy-year",
+        "code": "wages-nominal-annual-yoy",
         "forecastable": true,
         "frequency": "annual",
         "group": "pop",

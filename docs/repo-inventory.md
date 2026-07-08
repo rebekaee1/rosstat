@@ -4,7 +4,7 @@
 
 **Сгенерировано:** 2026-07-08
 
-**Файлов:** 586  ·  **Строк:** 134 455  ·  **Токенов (≈):** 1 381 776
+**Файлов:** 586  ·  **Строк:** 134 506  ·  **Токенов (≈):** 1 382 478
 
 ## По верхним папкам
 
@@ -12,28 +12,28 @@
 |-------|-------:|------:|------------:|
 | `(root)` | 8 | 1 695 | 42 620 |
 | `.github` | 1 | 150 | 1 250 |
-| `backend` | 318 | 76 568 | 742 662 |
+| `backend` | 318 | 76 612 | 743 255 |
 | `clickhouse` | 2 | 36 | 445 |
 | `docs` | 22 | 4 581 | 101 194 |
-| `frontend` | 197 | 43 412 | 411 582 |
+| `frontend` | 197 | 43 412 | 411 583 |
 | `mcp` | 3 | 158 | 1 120 |
-| `scripts` | 35 | 7 855 | 80 903 |
+| `scripts` | 35 | 7 862 | 81 011 |
 
 ## Все файлы (по убыванию токенов)
 
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
-| `backend/app/data/indicator_seo.py` | 8 580 | 110 682 |
-| `frontend/src/lib/viewModelFamilies.generated.json` | 12 339 | 72 982 |
+| `backend/app/data/indicator_seo.py` | 8 583 | 110 730 |
+| `frontend/src/lib/viewModelFamilies.generated.json` | 12 339 | 72 983 |
 | `backend/app/data/regional/indicators.json` | 6 359 | 58 178 |
-| `backend/seed_data.py` | 4 901 | 49 752 |
+| `backend/seed_data.py` | 4 921 | 49 963 |
 | `frontend/src/pages/AdminBI.jsx` | 2 825 | 39 895 |
 | `docs/backlog.md` | 892 | 35 207 |
 | `CONTEXT.md` | 584 | 20 768 |
 | `scripts/metrika_daily_report.py` | 1 915 | 19 522 |
 | `frontend/src/lib/regionsMap.json` | 1 | 16 837 |
 | `backend/app/services/analytics_marts.py` | 1 385 | 14 993 |
-| `backend/app/data/view_model_families.py` | 1 127 | 13 539 |
+| `backend/app/data/view_model_families.py` | 1 139 | 13 712 |
 | `AGENTS.md` | 388 | 13 506 |
 | `backend/app/models.py` | 1 024 | 13 423 |
 | `frontend/src/pages/ComparePage.jsx` | 1 216 | 13 057 |
@@ -68,9 +68,9 @@
 | `docs/adr/0006-indicator-card-unification.md` | 227 | 5 311 |
 | `backend/app/api/sitemap.py` | 530 | 5 306 |
 | `backend/app/services/telegram_bot.py` | 496 | 5 156 |
+| `backend/app/services/calculation_engine.py` | 437 | 4 985 |
 | `scripts/completeness.py` | 453 | 4 971 |
 | `backend/tests/test_seo_og.py` | 540 | 4 866 |
-| `backend/app/services/calculation_engine.py` | 428 | 4 824 |
 | `backend/tests/forecast_strategies/test_derived.py` | 534 | 4 789 |
 | `backend/app/services/forecast_strategies/derived_from_source.py` | 446 | 4 779 |
 | `scripts/regional/regions_registry.py` | 293 | 4 762 |
@@ -234,6 +234,7 @@
 | `scripts/locate-indicator.py` | 167 | 1 498 |
 | `backend/app/services/cbr_monetary_agg_parser.py` | 173 | 1 488 |
 | `backend/tests/test_rosstat_population.py` | 185 | 1 483 |
+| `scripts/pg-backup.sh` | 118 | 1 465 |
 | `backend/seed_regional.py` | 140 | 1 455 |
 | `backend/tests/test_upsert.py` | 166 | 1 439 |
 | `frontend/src/lib/regionsApi.js` | 176 | 1 437 |
@@ -246,7 +247,6 @@
 | `backend/tests/conftest.py` | 164 | 1 389 |
 | `backend/tests/test_regional.py` | 138 | 1 378 |
 | `frontend/public/llms.txt` | 80 | 1 368 |
-| `scripts/pg-backup.sh` | 111 | 1 357 |
 | `backend/app/services/brent_fred_parser.py` | 137 | 1 333 |
 | `backend/app/services/seo_calendar.py` | 135 | 1 307 |
 | `frontend/src/components/IndicatorForecastSection.jsx` | 144 | 1 307 |
