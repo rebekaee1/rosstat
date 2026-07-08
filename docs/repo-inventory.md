@@ -4,7 +4,7 @@
 
 **Сгенерировано:** 2026-07-08
 
-**Файлов:** 586  ·  **Строк:** 134 208  ·  **Токенов (≈):** 1 377 750
+**Файлов:** 586  ·  **Строк:** 134 208  ·  **Токенов (≈):** 1 378 296
 
 ## По верхним папкам
 
@@ -14,7 +14,7 @@
 | `.github` | 1 | 150 | 1 250 |
 | `backend` | 318 | 76 533 | 742 097 |
 | `clickhouse` | 2 | 36 | 445 |
-| `docs` | 22 | 4 581 | 100 648 |
+| `docs` | 22 | 4 581 | 101 194 |
 | `frontend` | 197 | 43 200 | 408 703 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 35 | 7 855 | 80 903 |
@@ -28,7 +28,7 @@
 | `backend/app/data/regional/indicators.json` | 6 359 | 58 178 |
 | `backend/seed_data.py` | 4 886 | 49 521 |
 | `frontend/src/pages/AdminBI.jsx` | 2 825 | 39 895 |
-| `docs/backlog.md` | 892 | 34 661 |
+| `docs/backlog.md` | 892 | 35 207 |
 | `CONTEXT.md` | 584 | 20 732 |
 | `scripts/metrika_daily_report.py` | 1 915 | 19 522 |
 | `frontend/src/lib/regionsMap.json` | 1 | 16 837 |
