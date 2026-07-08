@@ -10,6 +10,11 @@ Bot API: expandable blockquote для сырых цифр + inline-кнопки,
 прошлые дни — компактная память (числовое ядро + однострочная сводка),
 поэтому окно не растёт с историей. После отчёта сводка дня записывается
 в память (TTL 30 дней) — так у системы есть «вчера» и тренд недели.
+
+Сеть (2026-07-08): прод-сервер российский, OpenRouter/Anthropic/OpenAI/Groq
+блокируют его на границе Cloudflare (гео/санкционный комплаенс). Обход —
+`settings.openrouter_proxy_url` (HTTP-forward-proxy на внешнем не-РФ хосте,
+только для этого запроса); детали и security-модель прокси — `docs/backlog.md`.
 """
 from __future__ import annotations
 
@@ -172,7 +177,9 @@ async def _llm_summary(snapshot: dict, memory: list[dict]) -> str | None:
         ],
     }
     try:
-        async with httpx.AsyncClient(timeout=90) as client:
+        async with httpx.AsyncClient(
+            timeout=90, proxy=settings.openrouter_proxy_url or None
+        ) as client:
             resp = await client.post(
                 _OPENROUTER_URL,
                 json=payload,

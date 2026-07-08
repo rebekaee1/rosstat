@@ -4,15 +4,15 @@
 
 **Сгенерировано:** 2026-07-08
 
-**Файлов:** 586  ·  **Строк:** 133 843  ·  **Токенов (≈):** 1 373 846
+**Файлов:** 586  ·  **Строк:** 133 860  ·  **Токенов (≈):** 1 374 091
 
 ## По верхним папкам
 
 | Папка | Файлов | Строк | Токенов (≈) |
 |-------|-------:|------:|------------:|
-| `(root)` | 8 | 1 690 | 42 516 |
+| `(root)` | 8 | 1 694 | 42 566 |
 | `.github` | 1 | 150 | 1 250 |
-| `backend` | 318 | 76 173 | 738 261 |
+| `backend` | 318 | 76 186 | 738 456 |
 | `clickhouse` | 2 | 36 | 445 |
 | `docs` | 22 | 4 581 | 100 648 |
 | `frontend` | 197 | 43 200 | 408 703 |
@@ -94,11 +94,11 @@
 | `frontend/src/pages/DemographicsPage.jsx` | 364 | 3 991 |
 | `backend/app/services/og_image.py` | 434 | 3 954 |
 | `frontend/src/pages/MortgageCalculatorPage.jsx` | 282 | 3 909 |
+| `backend/app/services/pulse_report.py` | 355 | 3 883 |
 | `docs/adr/0001-derived-indicators-engine-shape.md` | 140 | 3 873 |
 | `backend/tests/test_forecast_policy.py` | 372 | 3 814 |
 | `scripts/regional/backfill_word.py` | 337 | 3 810 |
 | `backend/app/api/auth.py` | 380 | 3 794 |
-| `backend/app/services/pulse_report.py` | 348 | 3 790 |
 | `backend/app/services/forecast_pipeline.py` | 407 | 3 758 |
 | `frontend/src/components/IndicatorSearch.jsx` | 347 | 3 755 |
 | `frontend/src/components/Navbar.jsx` | 391 | 3 692 |
@@ -154,11 +154,11 @@
 | `backend/tests/test_admin_bi.py` | 225 | 2 329 |
 | `frontend/src/pages/TodayIndicatorPage.jsx` | 204 | 2 323 |
 | `backend/app/api/system.py` | 231 | 2 234 |
+| `backend/app/config.py` | 196 | 2 223 |
 | `frontend/src/App.jsx` | 211 | 2 216 |
 | `backend/app/api/calendar.py` | 250 | 2 204 |
 | `frontend/src/components/calendar/CalendarEventCard.jsx` | 250 | 2 169 |
 | `backend/tests/test_pulse.py` | 227 | 2 145 |
-| `backend/app/config.py` | 190 | 2 121 |
 | `backend/app/api/oauth.py` | 220 | 2 119 |
 | `backend/app/services/rosstat_ind_parser.py` | 282 | 2 111 |
 | `backend/tests/test_parser_fixtures.py` | 263 | 2 099 |
@@ -323,6 +323,7 @@
 | `frontend/src/components/GenericViewModePicker.jsx` | 124 | 927 |
 | `frontend/src/lib/viewModeEngine.test.js` | 84 | 925 |
 | `backend/app/services/cbr_fx_parser.py` | 109 | 920 |
+| `.env.example` | 98 | 917 |
 | `backend/tests/forecast_strategies/snapshots/housing_primary_2026_q1.json` | 222 | 915 |
 | `backend/app/services/moex_index_parser.py` | 104 | 909 |
 | `backend/app/services/session.py` | 117 | 904 |
@@ -340,7 +341,6 @@
 | `frontend/src/lib/calendarGrouping.js` | 93 | 869 |
 | `scripts/insert-gdp-q1-2026-estimate.py` | 84 | 869 |
 | `frontend/src/lib/frequencySwitcher.test.js` | 108 | 868 |
-| `.env.example` | 94 | 867 |
 | `frontend/src/lib/cpiViewModeGroups.js` | 99 | 861 |
 | `frontend/src/components/YandexRSY.jsx` | 80 | 857 |
 | `backend/tests/test_rosstat_labor.py` | 90 | 845 |

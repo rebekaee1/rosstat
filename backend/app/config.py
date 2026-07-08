@@ -177,6 +177,12 @@ class Settings(BaseSettings):
     # LLM-фильтр отчёта через OpenRouter; пустой ключ = детерминированный fallback.
     openrouter_api_key: str = ""
     openrouter_model: str = "anthropic/claude-sonnet-5"
+    # 2026-07-08: прод-IP российский, OpenRouter/Anthropic режут его на границе
+    # Cloudflare (гео/санкционный комплаенс, не репутация конкретного IP —
+    # подтверждено: тот же блок на api.openai.com/api.anthropic.com напрямую,
+    # а Mistral/DeepSeek/Together с того же IP отвечают штатным 401). Пустая
+    # строка = без прокси (для dev/других сред, где блока нет).
+    openrouter_proxy_url: str = ""
     # Интерактивные кнопки бота (getUpdates-поллер каждые 30 с)
     telegram_poller_enabled: bool = False
 
