@@ -110,7 +110,7 @@ tg_notify "🟢 pg-backup ok: full $SIZE, identity $ISIZE ($(date '+%F %T'))"
 # у команды redis-server) — без него на инсталляциях без явного REDIS_PASSWORD
 # в .env (как прод на 2026-07-08) SET уходил в NOAUTH и молча проглатывался
 # `|| true`: heartbeat никогда не писался, health/ready вечно отдавал "never".
-REDIS_PASS=$(grep -E '^REDIS_PASSWORD=' "$COMPOSE_DIR/.env" 2>/dev/null | cut -d= -f2-)
+REDIS_PASS=$(grep -E '^REDIS_PASSWORD=' "$COMPOSE_DIR/.env" 2>/dev/null | cut -d= -f2- || true)
 REDIS_PASS="${REDIS_PASS:-changeme}"
 if ! dc exec -T redis redis-cli -a "$REDIS_PASS" --no-auth-warning \
   SET fe:ops:pg_backup_last_ok "$(date +%s)" >/dev/null 2>&1; then
