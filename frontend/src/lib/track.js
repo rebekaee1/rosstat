@@ -251,6 +251,8 @@ export const events = {
   REGIONS_MAP_METRIC: 'regions_map_metric',
   REGIONS_MAP_SELECT: 'regions_map_select',
   REGIONS_MAP_TIMELINE: 'regions_map_timeline',
+  // «Контрасты России» на /regions — цикл по следующей паре показателей.
+  REGIONS_CONTRASTS_SHUFFLE: 'regions_contrasts_shuffle',
   REGION_COMPARE_ADD: 'region_compare_add',
   REGION_CROSSLINK_CLICK: 'region_crosslink_click',
   // Просмотр карточки регионального показателя — first-party аналог

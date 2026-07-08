@@ -21,7 +21,7 @@ export default function About() {
         <p className="text-text-secondary leading-relaxed mb-6">
           <strong className="text-text-primary">Forecast Economy</strong> — веб-платформа для работы с официальной
           экономической статистикой России: инфляция и цены, ключевая ставка и ставки рынка, ВВП и
-          промышленное производство, рынок труда и зарплаты, внешняя торговля и платёжный баланс,
+          промышленное производство, рынок труда, внешняя торговля,
           бюджет, биржевые индексы и товарные рынки. Мы собираем данные из первичных источников —
           {' '}<a href="https://rosstat.gov.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer" onClick={() => trackOutbound('https://rosstat.gov.ru')}>Росстат</a>,
           {' '}<a href="https://cbr.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer" onClick={() => trackOutbound('https://cbr.ru')}>Банк России</a>
@@ -34,18 +34,14 @@ export default function About() {
         <h2 className="text-xl font-semibold text-text-primary mt-10 mb-3">Для кого этот сервис</h2>
         <ul className="list-disc pl-5 text-text-secondary space-y-2 mb-6">
           <li>аналитикам и экономистам, которым нужны ряды, сравнения и прогноз в одном месте;</li>
-          <li>инвесторам и финансистам — отслеживать инфляцию, ставки, валюту, биржевые индексы и сырьё;</li>
+          <li>инвесторам и финансистам — отслеживать инфляцию, ставки, валюту, биржевые индексы и товарные рынки;</li>
           <li>предпринимателям — следить за спросом, ценами и промышленной активностью;</li>
-          <li>журналистам, преподавателям и студентам — готовые графики и контекст по экономике России;</li>
+          <li>журналистам, преподавателям и студентам — текущая ситуация по экономике России;</li>
           <li>всем, кто хочет видеть <strong className="text-text-primary">официальные данные</strong>, а не только заголовки новостей.</li>
         </ul>
 
         <h2 className="text-xl font-semibold text-text-primary mt-10 mb-3">Чем мы отличаемся</h2>
         <ul className="list-disc pl-5 text-text-secondary space-y-2 mb-6">
-          <li>
-            <strong className="text-text-primary">Первичные данные.</strong> Источники указаны на каждой
-            странице; вы можете свериться с оригиналом на сайте Росстата, Банка России или Минфина.
-          </li>
           <li>
             <strong className="text-text-primary">Прогноз с методологией.</strong> Модель и окна
             обучения описаны в интерфейсе; прогноз — оценка по истории ряда, а не «мнение редакции».

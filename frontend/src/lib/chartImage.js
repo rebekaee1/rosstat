@@ -1,9 +1,12 @@
 import { toPng } from 'html-to-image';
 
 // Экспорт DOM-узла графика в PNG. Используется карточкой индикатора,
-// страницей сравнения и региональным блоком. Watermark «forecasteconomy.com»
-// ставится на ВСЕ выгружаемые картинки — и гостям, и зарегистрированным
-// (решение владельца 2026-07-02): каждый разошедшийся скриншот несёт бренд.
+// страницей сравнения и региональным блоком. Скачивание картинки везде по
+// сайту гейтится регистрацией (гостю — окно входа, а не файл), поэтому до
+// функции доходят только зарегистрированные — watermark им не ставится
+// (решение владельца пересмотрено 2026-07-08, созвон «На правки 13»; до этого
+// знак стоял у всех без исключения). Параметр `watermark` оставлен на случай
+// будущего негейтированного места экспорта.
 //
 // Фон берётся из реального computed-стиля узла (тема светлая,
 // `--color-surface: #FFFFFF`), а не хардкодом — иначе экспорт уезжал в старый
@@ -74,7 +77,7 @@ function triggerDownload(blob, filename) {
  * Рендерит узел в PNG (опц. с watermark) и сохраняет файл.
  * @returns {Promise<boolean>} успех
  */
-export async function exportNodeToPng(node, { filename = 'chart.png', watermark = true, background } = {}) {
+export async function exportNodeToPng(node, { filename = 'chart.png', watermark = false, background } = {}) {
   if (!node) return false;
   const bg = background || resolveBackground(node);
   const dataUrl = await toPng(node, {

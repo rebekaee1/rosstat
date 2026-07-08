@@ -112,6 +112,7 @@ _ENGAGEMENT = {
     "regions_map_select",
     "regions_map_timeline",
     "regions_view_toggle",
+    "regions_contrasts_shuffle",
     "calendar_day_select",
     "calendar_clear_day",
     "calendar_month_nav",

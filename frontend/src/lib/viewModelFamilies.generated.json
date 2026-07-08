@@ -11905,7 +11905,7 @@
         "unit": "руб."
       },
       {
-        "code": "wages-nominal-avg-year",
+        "code": "wages-nominal-annual",
         "forecastable": true,
         "frequency": "annual",
         "group": "avg",

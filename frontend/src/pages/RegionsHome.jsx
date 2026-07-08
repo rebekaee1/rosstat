@@ -2,12 +2,15 @@
 // Мобильный сценарий: поиск сверху → чипы округов → карточки регионов.
 // Режим «Карта»: choropleth по выбранному показателю (предустановки + поиск по
 // всем 489), тап по региону — карточка показателя; режим «Обзор» — профиль
-// региона. Зум/пан и PNG-выгрузка с watermark — созвон «На правки 13».
+// региона. Зум/пан — созвон «На правки 13». PNG-выгрузка карты — только для
+// зарегистрированных, без watermark (правило 2026-07-08, единое по сайту —
+// см. IndicatorChartSection.jsx); до этой правки карта была единственным
+// местом сайта, откуда гость мог скачать картинку без входа.
 import { useMemo, useState, useRef, useDeferredValue, lazy, Suspense } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Search, MapPin, ChevronRight, Database, List, Map as MapIcon,
-  Image as ImageIcon, X,
+  Image as ImageIcon, X, RefreshCw,
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import {
@@ -19,6 +22,7 @@ import { SkeletonBox } from '../components/Skeleton';
 import { exportNodeToPng } from '../lib/chartImage';
 import { track, events } from '../lib/track';
 import useSearchTracking from '../lib/useSearchTracking';
+import { useAuth } from '../context/authContext';
 
 const RegionsMap = lazy(() => import('../components/RegionsMap'));
 const MapTimeline = lazy(() => import('../components/MapTimeline'));
@@ -141,6 +145,22 @@ function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
 }
 
 // «Контрасты России»: живой блок-приманка — крайние значения по метрике.
+// Пул из 6 показателей (созвон «На правки 13», 2026-07-08: расширить + сделать
+// информативнее, но НЕ выводить на передний план) — крутится по 2 за раз через
+// кнопку-«кубик», кратность лидер/аутсайдер добавлена как badge. Опрос всех 6
+// heatmap'ов идёт всегда (view === 'list'), но рендерится только видимая пара —
+// переключение страницы мгновенное, без повторных запросов.
+const CONTRAST_METRICS = [
+  { code: 'srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy', label: 'Зарплата' },
+  { code: 'uroven-bezrabotitsy', label: 'Безработица', betterIsLow: true },
+  { code: 'valovoy-regionalnyy-produkt-na-dushu-naseleniya', label: 'ВРП на душу' },
+  { code: 'chislennost-naseleniya-s-denezhnymi-dohodami-nizhe-granitsy', label: 'Бедность', betterIsLow: true },
+  { code: 'investitsii-v-osnovnoy-kapital', label: 'Инвестиции' },
+  { code: 'chislennost-naseleniya', label: 'Население' },
+];
+const CONTRAST_PAGE_SIZE = 2;
+const CONTRAST_PAGES = Math.ceil(CONTRAST_METRICS.length / CONTRAST_PAGE_SIZE);
+
 function ContrastRow({ heat, metricLabel, betterIsLow = false }) {
   const rows = heat?.data?.values;
   if (!rows?.length) return null;
@@ -150,8 +170,16 @@ function ContrastRow({ heat, metricLabel, betterIsLow = false }) {
   const first = betterIsLow ? lo : hi;
   const second = betterIsLow ? hi : lo;
   const code = heat.data.indicator.code;
-  const unit = heat.data.indicator.unit;
-  const short = unit === 'рублей' ? '₽' : unit === 'в процентах' ? '%' : '';
+  const unit = heat.data.indicator.unit || '';
+  const short = /процент/.test(unit) ? '%'
+    : /миллионов рублей/.test(unit) ? 'млн ₽'
+    : unit === 'рублей' ? '₽'
+    : /тысяч человек/.test(unit) ? 'тыс. чел.'
+    : '';
+  const ratio = second.value ? Math.abs(first.value / second.value) : null;
+  const ratioLabel = ratio && ratio >= 1.05
+    ? `× ${ratio.toLocaleString('ru-RU', { maximumFractionDigits: 1 })}`
+    : null;
   return (
     <div className="flex flex-col sm:flex-row sm:items-center gap-x-3 gap-y-0.5 text-[13px]">
       <span className="text-text-tertiary w-28 shrink-0">{metricLabel}</span>
@@ -163,6 +191,11 @@ function ContrastRow({ heat, metricLabel, betterIsLow = false }) {
         <Link to={`/region/${second.slug}/${code}`} className="text-text-primary hover:text-champagne transition-colors">
           {second.name} <span className="font-mono text-negative">{formatRegionValue(second.value)} {short}</span>
         </Link>
+        {ratioLabel && (
+          <span className="text-[11px] font-mono text-champagne/70" title="Во сколько раз лидер превосходит аутсайдера">
+            {ratioLabel}
+          </span>
+        )}
       </span>
     </div>
   );
@@ -193,6 +226,7 @@ function RegionCard({ region }) {
 }
 
 export default function RegionsHome() {
+  const { isAuthed } = useAuth();
   const { data, isLoading, isError, refetch, isFetching } = useRegionsLanding();
   const [query, setQuery] = useState('');
   const [activeDistrict, setActiveDistrict] = useState(null);
@@ -224,9 +258,21 @@ export default function RegionsHome() {
       : seriesYears[seriesYears.length - 1];
   }, [seriesYears, pickedYear]);
 
-  // Данные для блока «Контрасты России» (list-режим).
-  const wagesHeat = useRegionsHeatmap(MAP_METRICS[0].code, view === 'list');
-  const unempHeat = useRegionsHeatmap('uroven-bezrabotitsy', view === 'list');
+  // Данные для блока «Контрасты России» (list-режим): все 6 из пула грузятся
+  // сразу (react-query кэширует по code, staleTime 10 мин — дёшево), рендерим
+  // только видимую пару по contrastPage. Фиксированное число вызовов хука —
+  // без нарушения rules-of-hooks (пул статический, не runtime-массив).
+  const contrastHeat0 = useRegionsHeatmap(CONTRAST_METRICS[0].code, view === 'list');
+  const contrastHeat1 = useRegionsHeatmap(CONTRAST_METRICS[1].code, view === 'list');
+  const contrastHeat2 = useRegionsHeatmap(CONTRAST_METRICS[2].code, view === 'list');
+  const contrastHeat3 = useRegionsHeatmap(CONTRAST_METRICS[3].code, view === 'list');
+  const contrastHeat4 = useRegionsHeatmap(CONTRAST_METRICS[4].code, view === 'list');
+  const contrastHeat5 = useRegionsHeatmap(CONTRAST_METRICS[5].code, view === 'list');
+  const contrastHeats = [contrastHeat0, contrastHeat1, contrastHeat2, contrastHeat3, contrastHeat4, contrastHeat5];
+  const [contrastPage, setContrastPage] = useState(0);
+  const contrastStart = contrastPage * CONTRAST_PAGE_SIZE;
+  const contrastVisible = CONTRAST_METRICS.slice(contrastStart, contrastStart + CONTRAST_PAGE_SIZE)
+    .map((m, i) => ({ ...m, heat: contrastHeats[contrastStart + i] }));
 
   const setView = (v) => {
     setSearchParams(v === 'map' ? { view: 'map' } : {}, { replace: true });
@@ -326,12 +372,29 @@ export default function RegionsHome() {
 
       {view === 'list' && (
         <>
-          {/* Контрасты России: цепляющие крайние значения */}
-          {(wagesHeat.data || unempHeat.data) && (
+          {/* Контрасты России: цепляющие крайние значения, интересная фича
+              с вариативностью — не на переднем плане, компактный блок. */}
+          {contrastVisible.some(m => m.heat.data) && (
             <div data-block="contrasts" className="mb-4 bg-surface border border-border-subtle rounded-xl p-4 space-y-2">
-              <div className="text-xs font-mono uppercase tracking-widest text-champagne mb-1">Контрасты России</div>
-              <ContrastRow heat={wagesHeat} metricLabel="Зарплата" />
-              <ContrastRow heat={unempHeat} metricLabel="Безработица" betterIsLow />
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-mono uppercase tracking-widest text-champagne">Контрасты России</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const next = (contrastPage + 1) % CONTRAST_PAGES;
+                    setContrastPage(next);
+                    track(events.REGIONS_CONTRASTS_SHUFFLE, { page: next });
+                  }}
+                  title="Показать другую пару показателей"
+                  aria-label="Другая пара показателей"
+                  className="text-text-tertiary hover:text-champagne transition-colors p-0.5 -m-0.5"
+                >
+                  <RefreshCw size={13} />
+                </button>
+              </div>
+              {contrastVisible.map(m => (
+                <ContrastRow key={m.code} heat={m.heat} metricLabel={m.label} betterIsLow={m.betterIsLow} />
+              ))}
             </div>
           )}
 
@@ -474,10 +537,15 @@ export default function RegionsHome() {
                 disabled={exportingMap}
                 onClick={async () => {
                   if (exportingMap) return;
+                  if (!isAuthed) {
+                    track(events.CHART_IMAGE_BLOCKED, { indicator: `regions-map:${activeMapCode || 'overview'}` });
+                    window.dispatchEvent(new CustomEvent('fe:download-limit'));
+                    return;
+                  }
                   setExportingMap(true);
                   const ok = await exportNodeToPng(mapCardRef.current, {
                     filename: `regions-map_${activeMapCode || 'overview'}.png`,
-                    watermark: true,
+                    watermark: false,
                   }).catch(() => false);
                   setExportingMap(false);
                   if (ok) track(events.CHART_IMAGE_DOWNLOAD, { indicator: `regions-map:${activeMapCode || 'overview'}` });

@@ -251,6 +251,8 @@ async def list_indicators(
         if ind.id in hero_data:
             hero_value, hero_unit, hero_label, hero_change = hero_data[ind.id]
 
+        ind_mcfg = ind.model_config_json or {}
+
         out.append(IndicatorSummary(
             code=ind.code, name=ind.name, name_en=ind.name_en,
             unit=ind.unit, category=ind.category, frequency=ind.frequency,
@@ -262,6 +264,8 @@ async def list_indicators(
             hero_value=hero_value, hero_unit=hero_unit, hero_label=hero_label,
             hero_change=hero_change,
             seo_keywords=ind.seo_keywords,
+            alternate_frequencies=ind_mcfg.get("alternate_frequencies") or None,
+            primary_indicator_code=ind_mcfg.get("primary_indicator_code") or None,
         ))
 
     serialized = [s.model_dump(mode="json") for s in out]

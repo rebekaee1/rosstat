@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   REP_LEVEL, REP_POP, REP_YOY,
   compareRepresentationsFor, resolveCompareSeries, applyCompareTransform,
-  isIndexableBase, rebaseToHundred,
+  isIndexableBase, rebaseToHundred, resolveStepOverride,
 } from './compareRepresentation';
 
 describe('compareRepresentation — resolver', () => {
@@ -127,5 +127,39 @@ describe('compareRepresentation — index base guard', () => {
     expect(rebaseToHundred(50, 200)).toBeCloseTo(25);
     // на невалидной базе не вызывается — но математически guard выше её отсекает
     expect(isIndexableBase(0)).toBe(false);
+  });
+});
+
+describe('compareRepresentation — resolveStepOverride (третий слой)', () => {
+  const wages = { code: 'wages-nominal', alternate_frequencies: { annual: 'wages-nominal-annual' } };
+
+  it('подключает реальный годовой ряд вместо клиентского усреднения на level', () => {
+    expect(resolveStepOverride(wages, REP_LEVEL, 'year')).toBe('wages-nominal-annual');
+  });
+
+  it('не применяется на pop/yoy представлениях — там уже generic-семья своей глубины', () => {
+    expect(resolveStepOverride(wages, REP_POP, 'year')).toBeNull();
+    expect(resolveStepOverride(wages, REP_YOY, 'year')).toBeNull();
+  });
+
+  it('не применяется при step=auto или отсутствующем шаге', () => {
+    expect(resolveStepOverride(wages, REP_LEVEL, 'auto')).toBeNull();
+    expect(resolveStepOverride(wages, REP_LEVEL, null)).toBeNull();
+  });
+
+  it('нет alternate_frequencies на нужную частоту → null (клиентское усреднение как раньше)', () => {
+    expect(resolveStepOverride(wages, REP_LEVEL, 'month')).toBeNull();
+    expect(resolveStepOverride(wages, REP_LEVEL, 'quarter')).toBeNull();
+    expect(resolveStepOverride({ code: 'foo' }, REP_LEVEL, 'year')).toBeNull();
+  });
+
+  it('индикатор без alternate_frequencies вообще — null', () => {
+    expect(resolveStepOverride({ code: 'cpi' }, REP_LEVEL, 'year')).toBeNull();
+    expect(resolveStepOverride(null, REP_LEVEL, 'year')).toBeNull();
+  });
+
+  it('квартальный первичный ряд с alternate monthly (exports) — Шаг=Месяц берёт настоящий месячный ряд', () => {
+    const exports = { code: 'exports', alternate_frequencies: { monthly: 'exports-monthly' } };
+    expect(resolveStepOverride(exports, REP_LEVEL, 'month')).toBe('exports-monthly');
   });
 });

@@ -30,8 +30,16 @@ export const REP_YOY = 'yoy';
 // Порядок кнопок в переключателе представления.
 export const REP_ORDER = [REP_LEVEL, REP_POP, REP_YOY];
 
+// Подсказки к кнопкам представления — та же формулировка, что на карточке
+// индикатора (группа «К соотв. периоду пред. года», см. view_model_families.py).
+export const REP_HINT = {
+  [REP_LEVEL]: 'Исходные значения ряда в его единицах измерения',
+  [REP_POP]: 'Изменение к предыдущему месяцу или кварталу, в процентах',
+  [REP_YOY]: 'Изменение к соответствующему периоду год назад (Г/г), в процентах',
+};
+
 const LABEL_POP = 'К прошлому периоду';
-const LABEL_YOY = 'К году';
+const LABEL_YOY = 'К прошлому году';
 
 const CPI_CODES = ['cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services'];
 const HOUSING_CODES = ['housing-price-primary', 'housing-price-secondary'];
@@ -138,6 +146,28 @@ export function isIndexableBase(base, { unit, repId } = {}) {
 /** Значение ряда, приведённое к базе-100. Вызывать только при isIndexableBase(base). */
 export function rebaseToHundred(value, base) {
   return (value / base) * 100;
+}
+
+// Шаг переключателя времени → ключ `alternate_frequencies` на карточке
+// индикатора (тот же справочник частот, что `frequencySwitcher.js`).
+const STEP_FREQ_KEY = { month: 'monthly', quarter: 'quarterly', year: 'annual' };
+
+/**
+ * «Третий слой» сравнения (созвон «На правки 13», 2026-07-08): переключатель
+ * «Шаг» по умолчанию просто усредняет уже загруженные точки клиентски —
+ * для показателя с более глубоким альтернативным рядом на этой частоте
+ * (напр. `wages-nominal` → `wages-nominal-annual`, 1991+, а не усреднение
+ * помесячного 2015+) это даёт куцую историю вместо настоящей. Если у
+ * индикатора есть `alternate_frequencies[freqKey]` — используем его код
+ * вместо клиентской агрегации. Применяется только к представлению «Значение»
+ * (level): pop/yoy уже разрешаются generic-семьёй на своей нативной глубине,
+ * alternate_frequencies линкует именно уровневые ряды одного показателя.
+ */
+export function resolveStepOverride(indicator, repId, step) {
+  if (repId !== REP_LEVEL || !step || step === 'auto') return null;
+  const freqKey = STEP_FREQ_KEY[step];
+  const altCode = freqKey && indicator?.alternate_frequencies?.[freqKey];
+  return altCode || null;
 }
 
 export function applyCompareTransform(points, transform) {

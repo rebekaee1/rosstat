@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis,
-  Tooltip, CartesianGrid,
+  Tooltip, CartesianGrid, PieChart, Pie, Cell,
 } from 'recharts';
-import { ArrowLeft, Home, Percent, Wallet, Clock } from 'lucide-react';
+import { ArrowLeft, Home, Percent, Wallet, Clock, PieChart as PieIcon } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import api from '../lib/api';
 import useDocumentMeta from '../lib/useMeta';
@@ -100,20 +100,43 @@ export default function MortgageCalculatorPage() {
     const total = payment * n;
     const overpay = total - principal;
 
-    // Годовой график остатка долга и накопленных процентов.
+    // Годовой график остатка долга и накопленных процентов + разбивка
+    // платежа на тело/проценты по годам (для интерактивного «Разбивка по
+    // году» — созвон «На правки 13»: аннуитет неизменен по сумме, но доля
+    // процентов внутри него падает год от года).
     let balance = principal;
     let interestPaid = 0;
     const series = [{ year: 0, balance: Math.round(balance), interest: 0 }];
+    const yearly = [];
+    let yearPrincipal = 0;
+    let yearInterest = 0;
     for (let m = 1; m <= n; m += 1) {
       const int = balance * r;
+      const princ = payment - int;
       interestPaid += int;
-      balance = Math.max(0, balance - (payment - int));
+      yearInterest += int;
+      yearPrincipal += princ;
+      balance = Math.max(0, balance - princ);
       if (m % 12 === 0 || m === n) {
-        series.push({ year: Math.ceil(m / 12), balance: Math.round(balance), interest: Math.round(interestPaid) });
+        const y = Math.ceil(m / 12);
+        series.push({ year: y, balance: Math.round(balance), interest: Math.round(interestPaid) });
+        yearly.push({
+          year: y, balance: Math.round(balance),
+          principalPaid: Math.round(yearPrincipal), interestPaid: Math.round(yearInterest),
+        });
+        yearPrincipal = 0;
+        yearInterest = 0;
       }
     }
-    return { principal, payment, total, overpay, series, down: price - principal };
+    return { principal, payment, total, overpay, series, yearly, down: price - principal };
   }, [price, downPct, rate, years]);
+
+  const yearCount = result?.yearly?.length || 1;
+  const [selectedYear, setSelectedYear] = useState(1);
+  // Клэмп инлайн, а не эффектом: срок могли сократить слайдером, старое
+  // выбранное значение года может выйти за новый диапазон.
+  const clampedYear = Math.min(Math.max(1, selectedYear), yearCount);
+  const yearBreakdown = result?.yearly?.[clampedYear - 1] || null;
 
   return (
     <div ref={containerRef} className="max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24">
@@ -170,7 +193,7 @@ export default function MortgageCalculatorPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-5">
           <CalcSlider
-            label="Первонач. взнос"
+            label="Первый взнос"
             value={downPct} onChange={setDownPct} min={0} max={90}
             display={`${downPct}% · ${result ? formatCompactTick(result.down) : 0}\u00A0₽`}
           />
@@ -182,15 +205,59 @@ export default function MortgageCalculatorPage() {
       {result && (
         <>
           <section data-animate className="rounded-[2rem] bg-surface border border-border-champagne p-6 md:p-8 mb-6" aria-live="polite">
-            <p className="text-sm text-text-secondary mb-2">Ежемесячный платёж</p>
-            <p className="font-display font-bold tracking-tight text-text-primary text-4xl md:text-5xl lg:text-6xl mb-6">
-              {formatRubles(result.payment)}
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <StatPill label="Сумма кредита" value={formatRubles(result.principal)} />
-              <StatPill label="Переплата" value={formatRubles(result.overpay)} accent />
-              <StatPill label="Всего выплат" value={formatRubles(result.total)} />
-              <StatPill label="Переплата к кредиту" value={fmtPct(result.principal ? (result.overpay / result.principal) * 100 : 0)} />
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-center">
+              <div>
+                <p className="text-sm text-text-secondary mb-2">Ежемесячный платёж</p>
+                <p className="font-display font-bold tracking-tight text-text-primary text-4xl md:text-5xl lg:text-6xl mb-6">
+                  {formatRubles(result.payment)}
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <StatPill label="Сумма кредита" value={formatRubles(result.principal)} />
+                  <StatPill label="Переплата" value={formatRubles(result.overpay)} accent />
+                  <StatPill label="Всего выплат" value={formatRubles(result.total)} />
+                  <StatPill label="Переплата к кредиту" value={fmtPct(result.principal ? (result.overpay / result.principal) * 100 : 0)} />
+                </div>
+              </div>
+
+              <div className="flex flex-col items-center shrink-0 mx-auto lg:mx-0">
+                <div className="relative w-[168px] h-[168px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={[
+                          { name: 'Тело кредита', value: result.principal },
+                          { name: 'Переплата', value: result.overpay },
+                        ]}
+                        dataKey="value" nameKey="name"
+                        innerRadius={54} outerRadius={78}
+                        paddingAngle={2} startAngle={90} endAngle={-270}
+                        stroke="none" isAnimationActive={false}
+                      >
+                        <Cell fill="#B8942F" />
+                        <Cell fill="#1A1A2E" fillOpacity={0.85} />
+                      </Pie>
+                      <Tooltip
+                        formatter={(v, name) => [formatRubles(v), name]}
+                        contentStyle={{ fontSize: 12 }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                    <span className="text-[10px] uppercase tracking-wider text-text-tertiary">Переплата</span>
+                    <span className="text-xl font-mono font-bold text-text-primary tabular-nums">
+                      {fmtPct(result.principal ? (result.overpay / result.principal) * 100 : 0)}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex gap-4 mt-3 text-[11px]">
+                  <span className="flex items-center gap-1.5 text-text-secondary">
+                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: '#B8942F' }} />Кредит
+                  </span>
+                  <span className="flex items-center gap-1.5 text-text-secondary">
+                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: '#1A1A2E', opacity: 0.85 }} />Переплата
+                  </span>
+                </div>
+              </div>
             </div>
           </section>
 
@@ -228,6 +295,49 @@ export default function MortgageCalculatorPage() {
               По горизонтали — годы с начала кредита, по вертикали — рубли. Золотая линия — остаток долга, тёмная — накопленные проценты.
             </p>
           </section>
+
+          {yearBreakdown && (
+            <section data-animate className="rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-5 md:p-6 mb-6">
+              <div className="flex items-center gap-2 mb-1">
+                <PieIcon className="w-4 h-4 text-champagne" />
+                <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
+                  Из чего состоит платёж в конкретный год
+                </h3>
+              </div>
+              <p className="text-[12px] text-text-tertiary mb-4">
+                Сумма ежемесячного платежа не меняется, но со временем в ней падает доля процентов и растёт доля тела долга.
+              </p>
+              <CalcSlider
+                label="Год кредита"
+                value={clampedYear} onChange={setSelectedYear} min={1} max={yearCount}
+                display={`${clampedYear}-й из ${yearCount}`}
+              />
+              <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <StatPill label="Проценты за год" value={formatRubles(yearBreakdown.interestPaid)} accent />
+                <StatPill label="Тело долга за год" value={formatRubles(yearBreakdown.principalPaid)} />
+                <StatPill label="Остаток долга на конец года" value={formatRubles(yearBreakdown.balance)} />
+              </div>
+              <div className="mt-4 h-3 rounded-full overflow-hidden bg-obsidian border border-border-subtle flex">
+                <div
+                  className="h-full transition-all duration-300"
+                  style={{
+                    width: `${(yearBreakdown.interestPaid / (yearBreakdown.interestPaid + yearBreakdown.principalPaid || 1)) * 100}%`,
+                    backgroundColor: '#1A1A2E', opacity: 0.85,
+                  }}
+                  title="Проценты"
+                />
+                <div
+                  className="h-full flex-1 transition-all duration-300"
+                  style={{ backgroundColor: '#B8942F' }}
+                  title="Тело долга"
+                />
+              </div>
+              <div className="flex justify-between mt-1.5 text-[11px] text-text-tertiary">
+                <span>Проценты — {fmtPct((yearBreakdown.interestPaid / (yearBreakdown.interestPaid + yearBreakdown.principalPaid || 1)) * 100)}</span>
+                <span>Тело долга — {fmtPct((yearBreakdown.principalPaid / (yearBreakdown.interestPaid + yearBreakdown.principalPaid || 1)) * 100)}</span>
+              </div>
+            </section>
+          )}
 
           <section data-animate className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
             <div className="flex items-start gap-3 p-3.5 rounded-xl bg-obsidian-light/70 border border-border-subtle">

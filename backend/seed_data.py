@@ -873,7 +873,22 @@ INDICATORS = [
         ),
         "parser_type": "derived",
         "model_config_json": {
-            "forecast_steps": 0,
+            # Прогноз протягивается из месячного прогноза wages-nominal тем же
+            # generic-pipeline, что считает факт (period_avg/year) — тот же
+            # паттерн, что gdp-nominal-annual (derived_from_source + pipeline).
+            # До 2026-07-08 этот ряд прогноза не имел (forecast_steps=0); после
+            # того, как режим «По годам» карточки/сравнения стал указывать сюда
+            # (view_model_families overrides avg-year), а не на короткий
+            # auto-generated `wages-nominal-avg-year`, прогноз восстановлен здесь.
+            "forecast_steps": 2,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "wages-nominal",
+                "operation": "pipeline",
+                "pipeline": [["period_avg", {"granularity": "year"}]],
+                "monthly_tail_extrapolate": True,
+                "model_name": "Wages-Nominal-Annual-Avg",
+            },
             "primary_indicator_code": "wages-nominal",
         },
         "is_active": True,

@@ -92,6 +92,10 @@ DERIVED_FROM_SOURCE_FORECAST_CODES = {
     "gdp-real-qoq",
     "gdp-real-annual",
     "gdp-nominal-annual",
+    # Средняя зарплата «По годам» (avg-year override, wages-nominal →
+    # wages-nominal-annual, созвон «На правки 13» 2026-07-08): тот же паттерн,
+    # что gdp-nominal-annual — pipeline period_avg/year поверх месячного прогноза.
+    "wages-nominal-annual",
     "housing-yoy-primary",
     "housing-yoy-secondary",
     "housing-qoq-primary",

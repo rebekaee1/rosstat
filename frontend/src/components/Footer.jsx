@@ -62,6 +62,11 @@ export default function Footer() {
                   Банк России
                 </a>
               </li>
+              <li>
+                <a href="https://minfin.gov.ru" target="_blank" rel="noopener noreferrer" className={footLink} onClick={() => trackOutbound('https://minfin.gov.ru')}>
+                  Минфин России
+                </a>
+              </li>
             </ul>
           </div>
 

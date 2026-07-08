@@ -258,12 +258,11 @@ export default function IndicatorChartSection({
     : null;
   const chartRef = useRef(null);
 
-  // Скачивание графика картинкой. Единое правило по всему сайту:
-  // гость → гейт регистрации (скачать нельзя вообще); зарегистрированный →
-  // PNG текущего вида (режим + прогноз как на экране). Водяной знак
-  // «forecasteconomy.com» стоит НА ВСЕХ выгружаемых картинках без исключений
-  // (решение владельца 2026-07-02): любой скриншот, разошедшийся по сети,
-  // работает на бренд.
+  // Скачивание графика картинкой. Единое правило по всему сайту (пересмотрено
+  // 2026-07-08, созвон «На правки 13»): гость → гейт регистрации (скачать
+  // нельзя вообще); зарегистрированный → чистый PNG текущего вида (режим +
+  // прогноз как на экране), без водяного знака — до 2026-07-08 знак стоял и
+  // у зарегистрированных тоже, решение развёрнуто владельцем.
   const handleDownloadImage = async () => {
     if (!downloadAuthed) {
       track(events.CHART_IMAGE_BLOCKED, { indicator: code, indicatorCategory: indicator?.category });
@@ -272,7 +271,7 @@ export default function IndicatorChartSection({
     }
     const ok = await exportNodeToPng(chartRef.current, {
       filename: `${code}_${safeViewMode || chartMode || 'chart'}.png`,
-      watermark: true,
+      watermark: false,
     }).catch(() => false);
     if (ok) {
       track(events.CHART_IMAGE_DOWNLOAD, {

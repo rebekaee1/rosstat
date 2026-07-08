@@ -32,6 +32,15 @@ class IndicatorSummary(BaseModel):
     # seo_keywords здесь только для search-haystack (фронт ищет по нему).
     # Не для UI-отображения. Содержит синонимы/корни на русском и en.
     seo_keywords: str | None = None
+    # Linkage на индикатор-counterpart другой частоты (T3 plan).
+    # Пример: для `exports` (quarterly) → {"monthly": "exports-monthly"}.
+    # На листинге нужен странице сравнения (compare-третий-слой, 2026-07-08):
+    # переключатель «Шаг» подключает реальный глубокий ряд вместо клиентского
+    # усреднения, если он у индикатора есть — без этого поля Compare видел бы
+    # только облегчённый IndicatorSummary без ссылки на alternate-ряд.
+    alternate_frequencies: dict[str, str] | None = None
+    # Обратная ссылка: monthly counterpart → primary quarterly. Для SSR canonical.
+    primary_indicator_code: str | None = None
 
     model_config = {"from_attributes": True}
 
@@ -49,12 +58,6 @@ class IndicatorDetail(IndicatorSummary):
     first_date: date | None = None
     last_date: date | None = None
     updated_at: datetime | None = None
-    # Linkage на индикатор-counterpart другой частоты (T3 plan).
-    # Пример: для `exports` (quarterly) → {"monthly": "exports-monthly"}.
-    # Используется frontend frequency switcher на странице индикатора.
-    alternate_frequencies: dict[str, str] | None = None
-    # Обратная ссылка: monthly counterpart → primary quarterly. Для SSR canonical.
-    primary_indicator_code: str | None = None
 
 
 class IndicatorStats(BaseModel):

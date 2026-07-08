@@ -25,8 +25,8 @@ import useSearchTracking from '../lib/useSearchTracking';
 import { exportNodeToPng } from '../lib/chartImage';
 import useScrollDepth from '../lib/useScrollDepth';
 import {
-  REP_LEVEL, REP_ORDER, compareRepresentationsFor, resolveCompareSeries,
-  applyCompareTransform, isIndexableBase, rebaseToHundred,
+  REP_LEVEL, REP_ORDER, REP_HINT, compareRepresentationsFor, resolveCompareSeries,
+  applyCompareTransform, isIndexableBase, rebaseToHundred, resolveStepOverride,
 } from '../lib/compareRepresentation';
 
 const RANGE_OPTIONS = [
@@ -612,11 +612,16 @@ export default function ComparePage() {
     const repId = repByCode[code] || REP_LEVEL;
     const spec = resolveCompareSeries(ind || { code }, repId)
       || { code, transform: null, unit: ind?.unit, repId: REP_LEVEL, label: 'Значение' };
+    // Третий слой (compareRepresentation.js::resolveStepOverride): «Шаг»
+    // переключает на реальный более глубокий ряд вместо клиентского
+    // усреднения, если он есть у показателя на этой частоте.
+    const stepAlt = resolveStepOverride(ind, spec.repId, step);
     return {
       code, ind, repId: spec.repId, repLabel: spec.label,
-      fetchCode: spec.code, transform: spec.transform, unit: spec.unit,
+      fetchCode: stepAlt || spec.code, transform: stepAlt ? null : spec.transform,
+      unit: spec.unit, stepDeep: !!stepAlt,
     };
-  }), [codes, indicators, repByCode]);
+  }), [codes, indicators, repByCode, step]);
 
   const results = useQueries({
     queries: resolved.map((r) => ({
@@ -639,6 +644,7 @@ export default function ComparePage() {
     repLabel: r.repLabel,
     unit: r.isRegion ? results[i]?.data?.__regionMeta?.unit : r.unit,
     transform: r.transform,
+    stepDeep: r.stepDeep,
     data: results[i]?.data,
     loading: results[i]?.isLoading,
     error: results[i]?.isError,
@@ -659,7 +665,11 @@ export default function ComparePage() {
     if (!series.length) return EMPTY;
     const maps = series.map((s) => {
       const raw = Array.isArray(s.data?.data) ? s.data.data : [];
-      const pts = aggregateToStep(applyCompareTransform(raw, s.transform), step);
+      const transformed = applyCompareTransform(raw, s.transform);
+      // stepDeep: данные уже загружены на нативной частоте нужного шага
+      // (реальный alternate_frequencies ряд) — повторная клиентская
+      // агрегация не нужна и исказила бы уже готовые годовые/квартальные точки.
+      const pts = s.stepDeep ? transformed : aggregateToStep(transformed, step);
       return new Map(pts.map((p) => [p.date, p.value]));
     });
 
@@ -813,16 +823,23 @@ export default function ComparePage() {
     setIsDragging(false);
   }, []);
 
+  // Скачивание картинки сравнения — только для зарегистрированных, без
+  // watermark (правило 2026-07-08, единое по сайту — см.
+  // IndicatorChartSection.jsx); до этой правки гость мог скачать сравнение
+  // без входа.
   const handleExport = async () => {
     if (!hasData) return;
-    // Водяной знак «forecasteconomy.com» — на всех выгрузках, для гостей и
-    // зарегистрированных (решение владельца 2026-07-02).
+    if (!isAuthed) {
+      track(events.COMPARE_IMAGE_BLOCKED, { count: codes.length });
+      window.dispatchEvent(new CustomEvent('fe:download-limit'));
+      return;
+    }
     const ok = await exportNodeToPng(exportRef.current, {
       filename: `compare_${codes.join('-').replace(/:/g, '_') || 'chart'}.png`,
-      watermark: true,
+      watermark: false,
     }).catch(() => false);
     if (ok) {
-      track(events.COMPARE_IMAGE_DOWNLOAD, { count: codes.length, watermark: true, authed: isAuthed });
+      track(events.COMPARE_IMAGE_DOWNLOAD, { count: codes.length, watermark: false, authed: isAuthed });
     } else {
       track(events.COMPARE_IMAGE_BLOCKED, { count: codes.length });
     }
@@ -919,6 +936,7 @@ export default function ComparePage() {
                         <button
                           key={o.id}
                           type="button"
+                          title={REP_HINT[o.id]}
                           onClick={() => setRep(s.code, o.id)}
                           className={cn(
                             'px-2 py-1 text-[11px] rounded-md transition-colors',
@@ -972,7 +990,7 @@ export default function ComparePage() {
 
           <span
             className="text-[11px] font-mono uppercase tracking-widest text-text-tertiary md:ml-4"
-            title="Приведение рядов к общему шагу времени: значения усредняются за месяц, квартал или год"
+            title="Приведение рядов к общему шагу времени. Если у показателя есть отдельный ряд на этой частоте (например, годовой) — используется он целиком, иначе значения усредняются"
           >
             Шаг
           </span>
@@ -1033,8 +1051,8 @@ export default function ComparePage() {
           <p className="-mt-3 mb-6 text-xs text-text-tertiary">
             Выбрано 3+ разных единиц измерения — график доступен только в режиме
             «Общая база». Чтобы вернуть исходные значения на общую ось, приведите
-            ряды к одному представлению (например, «К году» — тогда все они станут
-            процентами).
+            ряды к одному представлению (например, «К прошлому году» — тогда все
+            они станут процентами).
           </p>
         )}
 

@@ -2,7 +2,7 @@
 
 > Генерируется `scripts/build-indicator-index.py`. НЕ редактировать руками. Полная машинная версия — `docs/indicator-index.json`. Подробности по каждому коду (files/derived_siblings) — в JSON.
 
-**Сгенерировано:** 2026-07-07
+**Сгенерировано:** 2026-07-08
 
 ## Как пользоваться (для агента)
 
@@ -24,13 +24,13 @@
 
 ## Сводка
 
-- Всего кодов: **908**
+- Всего кодов: **907**
 - in_both_viewmode_systems (дубль легаси+generic): **14**
 - shadowed_legacy (мёртвая легаси-ветка): **24**
 - unresolved (нет ui_stack): **0**
 - derived_not_seeded: **0**
 
-По стекам: `cpi`=32, `generic`=864, `housing`=8, `ppi`=4
+По стекам: `cpi`=32, `generic`=863, `housing`=8, `ppi`=4
 
 ## Все индикаторы
 
@@ -911,9 +911,8 @@
 | `usd-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `wages-index` | Рынок труда | monthly | `generic` | — | — | — |
 | `wages-nominal` | Рынок труда | monthly | `generic` | monthly_auto | ✓ | — |
-| `wages-nominal-annual` | Рынок труда | annual | `generic` | — | — | — |
+| `wages-nominal-annual` | Рынок труда | annual | `generic` | derived_from_source | — | — |
 | `wages-nominal-avg-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
-| `wages-nominal-avg-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
 | `wages-nominal-mom` | Рынок труда | monthly | `generic` | derived_from_source | — | — |
 | `wages-nominal-qoq` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `wages-nominal-yoy-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |

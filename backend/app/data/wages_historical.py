@@ -85,8 +85,10 @@ ANCHOR_YEAR = 2015
 #
 #   2022-12 = 88 468 руб — декабрьский пик (годовые премии, 13-я зарплата).
 #   Отсутствие декабря также исключало 2022 из годового ряда
-#   `wages-nominal-annual` (annual mean требует 12 месяцев) и занижало
-#   среднее 2022 в `wages-nominal-avg-year`.
+#   `wages-nominal-annual` (annual mean требует 12 месяцев; 2026-07-08:
+#   view_model_families avg-year тоже указывает на этот код override'ом —
+#   единственный годовой ряд зарплаты, второго `wages-nominal-avg-year`
+#   больше нет).
 MONTHLY_GAP_FILL: dict[str, dict[date, float]] = {
     "wages-nominal": {
         date(2022, 12, 1): 88468.0,

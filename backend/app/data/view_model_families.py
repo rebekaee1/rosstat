@@ -771,8 +771,14 @@ _FAMILY_DEFS: list[FamilyDef] = [
     # (звонок 2026-06-25). У каждого свой полный набор режимов T8. wages-index
     # (номинальный индекс 2010=100) остаётся служебным рядом для сопоставления с
     # ценами на жильё — не карточка.
+    # avg-year → существующий ряд wages-nominal-annual (1991+, immutable
+    # исторический хвост 1991-2014 + annual mean месячного 2015+,
+    # calculation_engine::annual_mean_with_prefix), а НЕ авто-генерируемый
+    # `wages-nominal-avg-year` (был бы average ТОЛЬКО по нативному месячному
+    # ряду 2015+ — визуальный обрыв истории на кнопке «По годам», созвон
+    # «На правки 13» 2026-07-08). Тот же паттерн, что gdp-nominal:sum-year.
     FamilyDef("wages-nominal", "Средняя заработная плата", "T8", "руб.", "Рынок труда", "monthly",
-              overrides={"yoy": "wages-yoy"}),
+              overrides={"yoy": "wages-yoy", "avg-year": "wages-nominal-annual"}),
     FamilyDef("wages-real", "Реальная заработная плата", "T8", "индекс", "Рынок труда", "monthly"),
     # T9 — ВВП (reuse легаси-кодов derived)
     FamilyDef("gdp-nominal", "Номинальный ВВП", "T9", "млрд руб.", "ВВП", "quarterly",

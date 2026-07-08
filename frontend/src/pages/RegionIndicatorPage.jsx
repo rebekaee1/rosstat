@@ -1,6 +1,7 @@
 // Детальная страница показателя региона: /region/{slug}/{code}
 // График + рейтинг среди регионов + сравнение с РФ + таблица значений +
-// выгрузка CSV/Excel/PNG (только для зарегистрированных, PNG — с watermark).
+// выгрузка CSV/Excel/PNG (только для зарегистрированных, PNG — без watermark,
+// см. правило 2026-07-08 в IndicatorChartSection.jsx).
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
@@ -87,7 +88,7 @@ export default function RegionIndicatorPage() {
   }, [landing.data, slug]);
 
   // Выгрузка данных региона — только для зарегистрированных: гостю показываем
-  // гейт регистрации (то же окно, что в макроблоке). PNG — всегда с watermark.
+  // гейт регистрации (то же окно, что в макроблоке). PNG — без watermark.
   const requireAuth = (blockedEvent) => {
     if (isAuthed) return true;
     track(blockedEvent, { indicator: `region:${slug}:${code}` });
@@ -128,7 +129,7 @@ export default function RegionIndicatorPage() {
     setExporting(true);
     const ok = await exportNodeToPng(chartRef.current, {
       filename: `${slug}_${code}.png`,
-      watermark: true,
+      watermark: false,
     }).catch(() => false);
     setExporting(false);
     if (ok) track(events.CHART_IMAGE_DOWNLOAD, { indicator: `region:${slug}:${code}`, region: slug });

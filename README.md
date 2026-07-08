@@ -156,7 +156,7 @@ Base URL: `/api/v1` (за исключением SSR-эндпоинтов `/seo/
 | `business` | Бизнес | ИПП (default YoY), розница, ввод жилья, индекс доступности жилья, основные фонды |
 | `science` | Наука | Аспиранты, докторанты, организации НИР, инновационная активность, R&D |
 
-Source-индикаторы (109) извлекаются через 30 парсер-типов в `PARSER_REGISTRY` (`backend/app/services/*_parser.py`; 28 используются в seed, `cbr_dataservice_sum`/`cbr_monetary_html` зарегистрированы про запас); derived рассчитываются движком `calculation_engine` через `DERIVED_SPECS` (799 спеков: 42 ручных + 757 сгенерированных view-mode-семьями) + 27 чистых ops из `derived_ops.py` (см. ADR-0001 и ADR-0002). Дублирующие карточки в каталоге объединены через 101 generic view-mode family (ADR-0006); всего в seed 908 рядов.
+Source-индикаторы (109) извлекаются через 30 парсер-типов в `PARSER_REGISTRY` (`backend/app/services/*_parser.py`; 28 используются в seed, `cbr_dataservice_sum`/`cbr_monetary_html` зарегистрированы про запас); derived рассчитываются движком `calculation_engine` через `DERIVED_SPECS` (798 спеков: 41 ручных + 757 сгенерированных view-mode-семьями) + 27 чистых ops из `derived_ops.py` (см. ADR-0001 и ADR-0002). Дублирующие карточки в каталоге объединены через 101 generic view-mode family (ADR-0006); всего в seed 907 рядов.
 
 ## Прогнозы
 

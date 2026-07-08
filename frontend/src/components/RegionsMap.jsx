@@ -154,6 +154,25 @@ export default function RegionsMap({
         style={{ touchAction: k > 1 ? 'none' : 'pan-y' }}
       >
         <g transform={`translate(${tx} ${ty}) scale(${k})`}>
+          {/* Подложка-«шов»: тот же путь, обводка своим же цветом фиксированной
+              (не делённой на k) толщины. build_map_paths.py упрощает полигоны
+              с допуском 1.1 у.е. viewBox — на стыке соседних регионов остаётся
+              микрозазор такого порядка в координатах карты; при делении обводки
+              на k (толщина в px экрана — const) зазор растёт вместе с зумом
+              быстрее неё и на кадре 8× виден белым «швом» (эффект «мозаики»).
+              Обводка ЭТОГО слоя не делится на k — растёт вместе с зазором. */}
+          {mapData.regions.map(r => (
+            <path
+              key={`seal-${r.slug}`}
+              d={r.path}
+              fill={colorFor(r.slug)}
+              stroke={colorFor(r.slug)}
+              strokeWidth={1.4}
+              style={{ transition: `fill ${transitionMs}ms ease` }}
+              pointerEvents="none"
+              aria-hidden="true"
+            />
+          ))}
           {mapData.regions.map(r => (
             <path
               key={r.slug}
