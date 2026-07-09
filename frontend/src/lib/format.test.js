@@ -3,6 +3,7 @@ import {
   formatDate,
   formatChartAxisDate,
   pickChartAxisTicks,
+  chartAxisTickBudget,
   formatValue,
   formatChange,
   formatValueWithUnit,
@@ -50,6 +51,18 @@ describe('format', () => {
     expect(ticks.length).toBeLessThanOrEqual(7);
     expect(ticks[0]).toBe(points[0].date);
     expect(ticks[ticks.length - 1]).toBe(points[points.length - 1].date);
+  });
+
+  it('pickChartAxisTicks supports custom dateKey (годовые региональные ряды)', () => {
+    const points = Array.from({ length: 24 }, (_, i) => ({ year: 2000 + i }));
+    const ticks = pickChartAxisTicks(points, 4, 'year');
+    expect(ticks).toEqual([2000, 2008, 2015, 2023]);
+  });
+
+  it('chartAxisTickBudget shrinks on narrow plot (мобилка)', () => {
+    expect(chartAxisTickBudget(220, 8)).toBeLessThanOrEqual(4);
+    expect(chartAxisTickBudget(700, 8)).toBe(7);
+    expect(chartAxisTickBudget(0, 8)).toBe(7);
   });
 
   it('formatValue handles null', () => {

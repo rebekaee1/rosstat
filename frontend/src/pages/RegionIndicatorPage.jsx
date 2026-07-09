@@ -44,9 +44,9 @@ function isNegativeCapable(series) {
 
 function StatCell({ label, children }) {
   return (
-    <div className="bg-surface border border-border-subtle rounded-xl p-3.5">
-      <div className="text-[11px] text-text-tertiary uppercase tracking-wide">{label}</div>
-      <div className="mt-1 font-mono font-semibold text-text-primary text-[15px] leading-tight">
+    <div className="bg-surface border border-border-subtle rounded-xl p-3 sm:p-3.5 min-w-0">
+      <div className="text-[10px] sm:text-[11px] text-text-tertiary uppercase tracking-wide truncate">{label}</div>
+      <div className="mt-1 font-mono font-semibold text-text-primary text-sm sm:text-[15px] leading-tight break-words">
         {children}
       </div>
     </div>
@@ -269,13 +269,13 @@ export default function RegionIndicatorPage() {
           </div>
 
           {/* График */}
-          <div data-block="region-chart" className="bg-surface border border-border-subtle rounded-xl p-4 mb-4" ref={chartRef}>
-            <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+          <div data-block="region-chart" className="bg-surface border border-border-subtle rounded-xl p-3 sm:p-4 mb-4" ref={chartRef}>
+            <div className="flex flex-col gap-2 mb-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
               <div className="text-xs text-text-tertiary font-mono">
                 {first.year}–{last.year}, {showYoY ? 'изменение к предыдущему году, %' : data.indicator.unit}
               </div>
               <div className="flex flex-wrap items-center gap-1.5" data-no-export="true">
-                <label className="relative inline-flex items-center">
+                <label className="relative inline-flex items-center min-w-0">
                   <GitCompare size={12} className="absolute left-2 text-text-tertiary pointer-events-none" />
                   <select
                     value={compareSlug}
@@ -284,7 +284,7 @@ export default function RegionIndicatorPage() {
                       if (e.target.value) track(events.REGION_COMPARE_ADD, { region: slug, compare: e.target.value, indicator: code });
                     }}
                     aria-label="Сравнить с другим регионом"
-                    className={`text-xs pl-7 pr-2 py-1 rounded-full border bg-transparent max-w-[160px] truncate transition-colors cursor-pointer focus:outline-none ${
+                    className={`text-xs pl-7 pr-2 py-1 rounded-full border bg-transparent max-w-[min(160px,calc(100vw-8rem))] truncate transition-colors cursor-pointer focus:outline-none ${
                       compareSlug
                         ? 'border-[#5B7DA8] text-[#5B7DA8]'
                         : 'border-border-subtle text-text-tertiary hover:text-text-secondary'

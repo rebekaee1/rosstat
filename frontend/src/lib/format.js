@@ -34,20 +34,33 @@ export function formatChartAxisDate(dateStr, format = 'short', { multiYear = fal
   return formatDate(dateStr, format === 'full' ? 'short' : format);
 }
 
+/**
+ * Сколько подписей оси X влезает без наезда (мобилка ~235px plot → 3–4 тика).
+ * labelChars — типичная длина подписи («май 2022» ≈ 8, «2023» ≈ 4).
+ */
+export function chartAxisTickBudget(plotWidthPx, labelChars = 8) {
+  const w = Number(plotWidthPx) || 0;
+  if (w <= 0) return 7;
+  // ~6.2px на символ JetBrains Mono 11px + зазор между подписями.
+  const perTick = Math.max(36, labelChars * 6.2 + 18);
+  return Math.max(2, Math.min(7, Math.floor(w / perTick) + 1));
+}
+
 /** Равномерно N подписей по видимому окну (daily/weekly не заливают ось). */
-export function pickChartAxisTicks(points, maxTicks = 7) {
+export function pickChartAxisTicks(points, maxTicks = 7, dateKey = 'date') {
   if (!points?.length) return [];
+  const get = (p) => (dateKey === 'date' ? p.date : p[dateKey]);
   if (points.length <= maxTicks) {
-    return points.map((p) => p.date);
+    return points.map(get);
   }
-  const ticks = [points[0].date];
+  const ticks = [get(points[0])];
   const step = (points.length - 1) / (maxTicks - 1);
   for (let i = 1; i < maxTicks - 1; i += 1) {
     const idx = Math.round(i * step);
-    const date = points[idx].date;
+    const date = get(points[idx]);
     if (ticks[ticks.length - 1] !== date) ticks.push(date);
   }
-  const last = points[points.length - 1].date;
+  const last = get(points[points.length - 1]);
   if (ticks[ticks.length - 1] !== last) ticks.push(last);
   return ticks;
 }

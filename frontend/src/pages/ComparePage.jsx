@@ -16,7 +16,7 @@ import { useRegionsLanding, useRegionsCatalog } from '../lib/regionsApi';
 import { useAuth } from '../context/authContext';
 import {
   formatDate, formatChartAxisDate, formatAxisTick, formatValueWithUnit,
-  unitSuffix, unitDigits, cn, pickChartAxisTicks,
+  unitSuffix, unitDigits, cn, pickChartAxisTicks, chartAxisTickBudget,
 } from '../lib/format';
 import useDocumentMeta from '../lib/useMeta';
 import { ChartSkeleton } from '../components/Skeleton';
@@ -517,9 +517,22 @@ export default function ComparePage() {
   const [panOffset, setPanOffset] = useState(0);
   const [upsellOpen, setUpsellOpen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [plotWidth, setPlotWidth] = useState(0);
   const exportRef = useRef(null);
   const chartAreaRef = useRef(null);
   const dragRef = useRef(null);
+
+  useEffect(() => {
+    const el = chartAreaRef.current;
+    if (!el || typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver((entries) => {
+      const w = entries[0]?.contentRect?.width;
+      if (w) setPlotWidth(w);
+    });
+    ro.observe(el);
+    setPlotWidth(el.clientWidth || 0);
+    return () => ro.disconnect();
+  }, []);
 
   const { isAuthed } = useAuth();
   const cap = isAuthed ? USER_MAX : GUEST_MAX;
@@ -760,12 +773,16 @@ export default function ComparePage() {
         ? 'short'
         : compareDateFormat(series.map((s) => s.ind));
 
-  // Равномерные подписи оси X (включая первую и последнюю дату) — без
-  // «разрыва» перед последним тиком (созвон «На правки 13»).
-  const xTicks = useMemo(
-    () => pickChartAxisTicks(chartRows, 7),
-    [chartRows],
-  );
+  // Равномерные подписи оси X; бюджет тиков — от ширины (мобилка).
+  const xTicks = useMemo(() => {
+    const labelChars = compareDateFmt === 'annual' ? 4
+      : compareDateFmt === 'quarterly' ? 10
+        : 8;
+    return pickChartAxisTicks(
+      chartRows,
+      chartAxisTickBudget(Math.max(0, plotWidth - 80), labelChars),
+    );
+  }, [chartRows, plotWidth, compareDateFmt]);
 
   // Оси: индекс → одна левая. Значения → группировка по единице: первая
   // единица слева, вторая справа (ряды одной единицы делят общую ось).

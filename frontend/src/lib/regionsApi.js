@@ -91,7 +91,7 @@ export function formatRegionValue(value) {
  * ось всегда в единицах индикатора. Пробелы неразрывные — иначе SVG-текст
  * recharts переносит «тыс» на вторую строку и подпись обрезается.
  */
-export function formatCompactTick(value) {
+export function formatCompactTick(value, { narrow = false } = {}) {
   if (value == null || !Number.isFinite(Number(value))) return '';
   const num = Number(value);
   const abs = Math.abs(num);
@@ -99,9 +99,9 @@ export function formatCompactTick(value) {
     const s = v.toLocaleString('ru-RU', { minimumFractionDigits: 0, maximumFractionDigits: 1 });
     return `${s}\u00A0${suffix}`;
   };
-  if (abs >= 1e9) return short(num / 1e9, 'млрд');
+  if (abs >= 1e9) return short(num / 1e9, narrow ? 'млрд' : 'млрд');
   if (abs >= 1e6) return short(num / 1e6, 'млн');
-  if (abs >= 1e5) return short(num / 1e3, 'тыс');
+  if (abs >= 1e5) return short(num / 1e3, narrow ? 'т' : 'тыс');
   return num
     .toLocaleString('ru-RU', { maximumFractionDigits: abs < 10 ? 1 : 0 })
     .replace(/\s/g, '\u00A0');
@@ -110,15 +110,18 @@ export function formatCompactTick(value) {
 /**
  * Ширина оси Y под самые длинные подписи ряда — чтобы «148,5 тыс» не
  * обрезалось узкой осью (фикс 2026-07-05, скрин руководителя).
+ * narrow=true — бюджет под короткие суффиксы («т» вместо «тыс») на мобилке.
  */
-export function compactTickAxisWidth(values) {
+export function compactTickAxisWidth(values, { narrow = false } = {}) {
   const nums = (values || []).filter((v) => v != null && Number.isFinite(Number(v)));
-  if (!nums.length) return 52;
+  if (!nums.length) return narrow ? 40 : 52;
   const longest = Math.max(
-    formatCompactTick(Math.max(...nums)).length,
-    formatCompactTick(Math.min(...nums)).length,
+    formatCompactTick(Math.max(...nums), { narrow }).length,
+    formatCompactTick(Math.min(...nums), { narrow }).length,
   );
-  return Math.max(40, Math.min(80, Math.round(longest * 6.8) + 12));
+  const minW = narrow ? 34 : 40;
+  const maxW = narrow ? 44 : 80;
+  return Math.max(minW, Math.min(maxW, Math.round(longest * (narrow ? 6.2 : 6.8)) + (narrow ? 8 : 12)));
 }
 
 /** Русское склонение: pluralRu(471, ['показатель','показателя','показателей']). */

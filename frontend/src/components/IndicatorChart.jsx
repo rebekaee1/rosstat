@@ -7,7 +7,7 @@ import {
 import { Activity, ZoomIn, AreaChart as AreaIcon, BarChart3, LineChart as LineIcon } from 'lucide-react';
 import {
   formatDate, formatAxisTick, formatValue,
-  chartValueDigits, unitSuffix, cn, pickChartAxisTicks,
+  chartValueDigits, unitSuffix, cn, pickChartAxisTicks, chartAxisTickBudget,
 } from '../lib/format';
 import { track, events } from '../lib/track';
 import { mergeActualForecastChartSeries } from '../lib/chartForecastMerge';
@@ -150,12 +150,27 @@ export default function IndicatorChart({
   const [isHovering, setIsHovering] = useState(false);
   const [prevPreset, setPrevPreset] = useState(rangePreset);
   const [chartType, setChartType] = useState(defaultChartType);
+  // Ширина plot-area: на мобилке 7 длинных тиков («май 2022») наезжают друг
+  // на друга при interval={0} — бюджет тиков считаем от фактической ширины.
+  const [plotWidth, setPlotWidth] = useState(0);
   const dragRef = useRef(null);
   const onChartDataRef = useRef(onChartData);
   const onFullDataRef = useRef(onFullData);
 
   useEffect(() => { onChartDataRef.current = onChartData; }, [onChartData]);
   useEffect(() => { onFullDataRef.current = onFullData; }, [onFullData]);
+
+  useEffect(() => {
+    const el = chartAreaRef.current;
+    if (!el || typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver((entries) => {
+      const w = entries[0]?.contentRect?.width;
+      if (w) setPlotWidth(w);
+    });
+    ro.observe(el);
+    setPlotWidth(el.clientWidth || 0);
+    return () => ro.disconnect();
+  }, []);
 
   if (prevPreset !== rangePreset) {
     setPrevPreset(rangePreset);
@@ -363,12 +378,18 @@ export default function IndicatorChart({
     return { yDomain: [niceMin, niceMax], yWidth: w, yTicks: ticks };
   }, [visibleData, digits]);
 
-  // Равномерные подписи оси X (включая крайние даты): recharts с
-  // interval="preserveStartEnd" оставлял «разрыв» перед последним тиком
-  // (созвон «На правки 13»).
+  // Равномерные подписи оси X (включая крайние даты). Число тиков — от
+  // ширины контейнера: на ~235px plot (iPhone) 7×«май 2022» наезжают.
+  const xTickBudget = useMemo(() => {
+    const labelChars = dateFormat === 'annual' ? 4
+      : dateFormat === 'quarterly' ? 10
+        : dateFormat === 'day' || dateFormat === 'weekly' ? 10
+          : 8;
+    return chartAxisTickBudget(Math.max(0, plotWidth - 80), labelChars);
+  }, [plotWidth, dateFormat]);
   const xTicks = useMemo(
-    () => pickChartAxisTicks(visibleData, 7),
-    [visibleData],
+    () => pickChartAxisTicks(visibleData, xTickBudget),
+    [visibleData, xTickBudget],
   );
 
   const title = cpiChartTitle

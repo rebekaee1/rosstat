@@ -6,12 +6,13 @@
 // одна общая ось прижимает линию региона к нулю и график перестаёт читаться.
 // В этом случае РФ автоматически уводится на правую ось (dual-axis), а под
 // графиком появляется подпись, какая линия к какой оси относится.
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ResponsiveContainer, ComposedChart, Area, Line, XAxis, YAxis,
   Tooltip, CartesianGrid,
 } from 'recharts';
 import { formatRegionValue, formatCompactTick, compactTickAxisWidth } from '../lib/regionsApi';
+import { pickChartAxisTicks, chartAxisTickBudget } from '../lib/format';
 
 // Порог несопоставимости масштабов: если maxРФ/maxРегион больше — вторая ось.
 const DUAL_AXIS_RATIO = 3;
@@ -56,6 +57,21 @@ export default function RegionAnnualChart({
   regionName = '',
   height = 320,
 }) {
+  const wrapRef = useRef(null);
+  const [plotWidth, setPlotWidth] = useState(0);
+
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el || typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver((entries) => {
+      const w = entries[0]?.contentRect?.width;
+      if (w) setPlotWidth(w);
+    });
+    ro.observe(el);
+    setPlotWidth(el.clientWidth || 0);
+    return () => ro.disconnect();
+  }, []);
+
   const data = useMemo(() => {
     const rfByYear = new Map((russiaSeries || []).map(p => [p.year, p.value]));
     const cmpByYear = new Map((compareSeries || []).map(p => [p.year, p.value]));
@@ -82,29 +98,50 @@ export default function RegionAnnualChart({
     return ratio > DUAL_AXIS_RATIO || ratio < 1 / DUAL_AXIS_RATIO;
   }, [data, showRussia]);
 
-  // Ширина осей — по самой длинной подписи, чтобы «148,5 тыс» не обрезалось.
+  const isNarrow = plotWidth > 0 && plotWidth < 420;
+
+  // Ширина осей — по самой длинной подписи; на узком экране жёстче клэмп,
+  // иначе dual-axis съедает половину plot-area (скрин Белгород/Россия).
   const leftAxisWidth = useMemo(
-    () => compactTickAxisWidth(data.flatMap(d => [d.value, d.compare])),
-    [data],
+    () => compactTickAxisWidth(data.flatMap(d => [d.value, d.compare]), { narrow: isNarrow }),
+    [data, isNarrow],
   );
-  const rightAxisWidth = useMemo(
-    () => compactTickAxisWidth(data.map(d => d.russia)),
-    [data],
-  );
+  const rightAxisWidth = useMemo(() => {
+    if (!dualAxis) return 0;
+    return compactTickAxisWidth(data.map(d => d.russia), { narrow: isNarrow });
+  }, [data, dualAxis, isNarrow]);
+
+  const xTicks = useMemo(() => {
+    const axisW = Math.max(
+      0,
+      plotWidth - leftAxisWidth - (dualAxis ? rightAxisWidth : 0) - 24,
+    );
+    let budget = chartAxisTickBudget(axisW, 4);
+    // Dual-axis на узком экране: 4 года вместо 6 — иначе подписи года
+    // визуально «прыгают» между плотными промежутками.
+    if (isNarrow && dualAxis) budget = Math.min(budget, 4);
+    else if (isNarrow) budget = Math.min(budget, 5);
+    return pickChartAxisTicks(data, budget, 'year');
+  }, [data, plotWidth, leftAxisWidth, rightAxisWidth, dualAxis, isNarrow]);
 
   if (!data.length) return null;
 
   const chartMargin = {
     top: 12,
-    right: dualAxis ? rightAxisWidth + 12 : 12,
-    bottom: 0,
-    left: 8,
+    right: dualAxis ? Math.max(8, rightAxisWidth - 4) : (isNarrow ? 8 : 12),
+    bottom: 4,
+    left: isNarrow ? 0 : 4,
   };
+  const chartHeight = isNarrow ? Math.min(height, 260) : height;
 
   return (
     <div>
-      <div style={{ width: '100%', height }} role="img"
-        aria-label={`График: ${regionName}, ${data[0].year}–${data[data.length - 1].year}`}>
+      <div
+        ref={wrapRef}
+        style={{ width: '100%', height: chartHeight }}
+        role="img"
+        aria-label={`График: ${regionName}, ${data[0].year}–${data[data.length - 1].year}`}
+      >
         <ResponsiveContainer>
           <ComposedChart data={data} margin={chartMargin}>
             <defs>
@@ -119,12 +156,19 @@ export default function RegionAnnualChart({
               tick={tickStyle}
               tickLine={false}
               axisLine={false}
-              minTickGap={28}
+              ticks={xTicks}
+              interval={0}
+              tickMargin={6}
+              padding={{ left: 4, right: 4 }}
             />
             <YAxis
               yAxisId="region"
-              tick={{ ...tickStyle, fill: dualAxis ? 'rgba(184,148,47,0.75)' : tickStyle.fill }}
-              tickFormatter={formatCompactTick}
+              tick={{
+                ...tickStyle,
+                fontSize: isNarrow ? 10 : 11,
+                fill: dualAxis ? 'rgba(184,148,47,0.75)' : tickStyle.fill,
+              }}
+              tickFormatter={(v) => formatCompactTick(v, { narrow: isNarrow })}
               tickLine={false}
               axisLine={false}
               width={leftAxisWidth}
@@ -134,8 +178,12 @@ export default function RegionAnnualChart({
               <YAxis
                 yAxisId="rf"
                 orientation="right"
-                tick={{ ...tickStyle, fill: 'rgba(58,58,80,0.6)' }}
-                tickFormatter={formatCompactTick}
+                tick={{
+                  ...tickStyle,
+                  fontSize: isNarrow ? 10 : 11,
+                  fill: 'rgba(58,58,80,0.6)',
+                }}
+                tickFormatter={(v) => formatCompactTick(v, { narrow: isNarrow })}
                 tickLine={false}
                 axisLine={false}
                 width={rightAxisWidth}
