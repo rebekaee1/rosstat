@@ -275,8 +275,14 @@ export default function RegionIndicatorPage() {
                 {first.year}–{last.year}, {showYoY ? 'изменение к предыдущему году, %' : data.indicator.unit}
               </div>
               <div className="flex flex-wrap items-center gap-1.5" data-no-export="true">
-                <label className="relative inline-flex items-center min-w-0">
-                  <GitCompare size={12} className="absolute left-2 text-text-tertiary pointer-events-none" />
+                <label
+                  className={`inline-flex items-center gap-1.5 min-w-0 max-w-full rounded-full border px-2.5 py-1 transition-colors ${
+                    compareSlug
+                      ? 'border-[#5B7DA8] text-[#5B7DA8]'
+                      : 'border-border-subtle text-text-tertiary hover:text-text-secondary'
+                  }`}
+                >
+                  <GitCompare size={12} className="shrink-0 opacity-70" aria-hidden />
                   <select
                     value={compareSlug}
                     onChange={(e) => {
@@ -284,11 +290,7 @@ export default function RegionIndicatorPage() {
                       if (e.target.value) track(events.REGION_COMPARE_ADD, { region: slug, compare: e.target.value, indicator: code });
                     }}
                     aria-label="Сравнить с другим регионом"
-                    className={`text-xs pl-7 pr-2 py-1 rounded-full border bg-transparent max-w-[min(160px,calc(100vw-8rem))] truncate transition-colors cursor-pointer focus:outline-none ${
-                      compareSlug
-                        ? 'border-[#5B7DA8] text-[#5B7DA8]'
-                        : 'border-border-subtle text-text-tertiary hover:text-text-secondary'
-                    }`}
+                    className="min-w-0 flex-1 bg-transparent text-xs text-inherit border-0 p-0 pr-0.5 cursor-pointer focus:outline-none appearance-auto"
                   >
                     <option value="">Сравнить с регионом</option>
                     {regionOptions.map(r => (
