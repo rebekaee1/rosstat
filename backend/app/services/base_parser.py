@@ -176,21 +176,14 @@ class BaseParser(ABC):
             from sqlalchemy import func, select
 
             from app.models import IndicatorData
-            from app.services.alerting import send_telegram  # локально против цикла
+            from app.services.alerting import alert_zero_parse
 
             existing = await db.scalar(
                 select(func.count(IndicatorData.id))
                 .where(IndicatorData.indicator_id == indicator.id)
             )
             if existing and existing > 0:
-                from html import escape
-                await send_telegram(
-                    "🟡 <b>Zero-parse regression</b>\n"
-                    f"Indicator: <code>{escape(indicator.code)}</code>\n"
-                    f"Парсер вернул 0 точек при {existing} точках истории — "
-                    "вероятна смена layout источника.",
-                    kind="zero_parse",
-                )
+                await alert_zero_parse(indicator.code, int(existing))
         except Exception:
             logger.warning("Zero-parse alert failed for %s", indicator.code, exc_info=True)
 

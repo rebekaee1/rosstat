@@ -132,11 +132,10 @@ async def daily_update_job():
             msg = f"ETL timed out after {timeout}s"
             logger.error("Timeout for indicator '%s': %s", code, msg)
             failed_codes.append(code)
-            await alert_etl_failure(code, msg)
+            # Per-indicator TG не шлём: итог в alert_etl_summary (антидубль).
         except Exception as e:
             logger.exception("Failed to update indicator '%s'", code)
             failed_codes.append(code)
-            await alert_etl_failure(code, str(e))
         finally:
             async with _lock:
                 _running_locks.discard(code)
@@ -156,7 +155,6 @@ async def daily_update_job():
                 # а не внутренняя мелочь; в summary и алерт, не только в лог.
                 logger.exception("CalculationEngine failed")
                 failed_codes.append("derived-engine")
-                await alert_etl_failure("derived-engine", str(e))
         # IndexNow: сообщаем поисковикам об обновлённых карточках (source +
         # derived) сразу после ETL — робот узнаёт о свежих данных за минуты.
         try:
@@ -373,19 +371,30 @@ async def staleness_check_job() -> list[tuple[str, int]]:
     stale = find_stale(rows)
     if stale:
         from html import escape
+
+        from app.services.alerting import STALENESS_MUTE_TTL, alert_muted
+
         stale.sort(key=lambda p: -p[1])
-        listing = "\n".join(
-            f"• <code>{escape(code)}</code> — {age} дн. без новых точек"
-            for code, age in stale[:25]
-        )
-        more = f"\n…и ещё {len(stale) - 25}" if len(stale) > 25 else ""
-        await send_telegram(
-            f"🟡 <b>Staleness check</b>\n{len(stale)} индикатор(ов) старше SLA "
-            f"своей частоты:\n{listing}{more}",
-            kind="staleness",
-        )
+        # Хронический хвост (демография 1285 дн. и т.п.) — раз в неделю,
+        # не каждый день один и тот же список из 340 кодов.
+        if await alert_muted("staleness", STALENESS_MUTE_TTL):
+            logger.info(
+                "Staleness check muted (%d stale) — next digest in ≤%dd",
+                len(stale), STALENESS_MUTE_TTL // 86400,
+            )
+        else:
+            listing = "\n".join(
+                f"• <code>{escape(code)}</code> — {age} дн. без новых точек"
+                for code, age in stale[:25]
+            )
+            more = f"\n…и ещё {len(stale) - 25}" if len(stale) > 25 else ""
+            await send_telegram(
+                f"🟡 <b>Staleness check</b>\n{len(stale)} индикатор(ов) старше SLA "
+                f"своей частоты:\n{listing}{more}",
+                kind="staleness",
+            )
         logger.warning("Staleness check: %d stale indicator(s): %s",
-                       len(stale), ", ".join(c for c, _ in stale))
+                       len(stale), ", ".join(c for c, _ in stale[:40]))
     else:
         logger.info("Staleness check: all %d active indicators fresh", len(rows))
     return stale

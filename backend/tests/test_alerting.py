@@ -25,10 +25,33 @@ def _capture_send(monkeypatch):
 
 def test_etl_alerts_go_to_primary_only(monkeypatch):
     calls = _capture_send(monkeypatch)
+
+    async def never_muted(key, ttl):
+        return False
+
+    monkeypatch.setattr(alerting, "alert_muted", never_muted)
     asyncio.run(alerting.alert_etl_failure("key-rate", "boom"))
     asyncio.run(alerting.alert_etl_summary(89, 7, ["key-rate"], 525.0))
     # chat_id=None → send_telegram уходит в settings.telegram_chat_id (primary).
     # Явный digest-получатель сюда никогда не подставляется.
+    assert calls == [None, None]
+
+
+def test_etl_failure_and_zero_parse_respect_mute(monkeypatch):
+    """Повтор того же кода в mute-окне не шлёт Telegram (антидубль ETL/evening)."""
+    calls = _capture_send(monkeypatch)
+    muted = {"etl_failure:budget-deficit": True, "zero_parse:coal": True}
+
+    async def fake_muted(key, ttl):
+        return muted.get(key, False)
+
+    monkeypatch.setattr(alerting, "alert_muted", fake_muted)
+    asyncio.run(alerting.alert_etl_failure("budget-deficit", "503"))
+    asyncio.run(alerting.alert_zero_parse("coal", 2721))
+    assert calls == []
+    muted.clear()
+    asyncio.run(alerting.alert_etl_failure("budget-deficit", "503"))
+    asyncio.run(alerting.alert_zero_parse("coal", 2721))
     assert calls == [None, None]
 
 

@@ -12,6 +12,32 @@ logger = logging.getLogger(__name__)
 
 _TELEGRAM_API = "https://api.telegram.org/bot{token}/sendMessage"
 
+# Антиспам повторяющихся технических алертов (state-Redis DB 1).
+# Daily ETL + evening + late-Minfin иначе шлют один и тот же budget-*/coal
+# по 2–3 раза в сутки; zero-parse — на каждый прогон.
+_ETL_FAILURE_MUTE_TTL = 12 * 3600
+_ZERO_PARSE_MUTE_TTL = 24 * 3600
+STALENESS_MUTE_TTL = 6 * 24 * 3600  # хронический список — раз в неделю
+
+
+async def alert_muted(alert_key: str, ttl_seconds: int) -> bool:
+    """True = уже слали недавно, пропустить. False = можно слать (ключ поставлен).
+
+    При недоступности Redis — fail-open (шлём): лучше шум, чем слепота.
+    """
+    try:
+        from app.core.cache import get_state_redis
+
+        r = await get_state_redis()
+        key = f"fe:alerts:mute:{alert_key}"
+        if await r.get(key):
+            return True
+        await r.set(key, "1", ex=ttl_seconds)
+        return False
+    except Exception:  # noqa: BLE001
+        logger.warning("alert mute check failed for %s — sending anyway", alert_key)
+        return False
+
 
 async def send_telegram(
     message: str,
@@ -171,12 +197,33 @@ async def alert_forecast_issue(indicator_code: str, detail: str) -> None:
 
 
 async def alert_etl_failure(indicator_code: str, error: str) -> None:
+    """Per-indicator ETL fail. Mute 12h на код — иначе late-Minfin/evening
+    дублируют утренний fail тем же 503. В daily_update_job per-indicator
+    не зовём: там достаточно summary со списком failed.
+    """
+    if await alert_muted(f"etl_failure:{indicator_code}", _ETL_FAILURE_MUTE_TTL):
+        logger.info("ETL failure muted for %s", indicator_code)
+        return
     msg = (
         f"🔴 <b>ETL Failed</b>\n"
         f"Indicator: <code>{escape(indicator_code)}</code>\n"
         f"Error: {escape(error[:200])}"
     )
     await send_telegram(msg, kind="etl_failure")
+
+
+async def alert_zero_parse(indicator_code: str, existing_points: int) -> None:
+    """Zero-parse regression (история есть, парсер вернул 0). Mute 24h на код."""
+    if await alert_muted(f"zero_parse:{indicator_code}", _ZERO_PARSE_MUTE_TTL):
+        logger.info("Zero-parse muted for %s", indicator_code)
+        return
+    await send_telegram(
+        "🟡 <b>Zero-parse regression</b>\n"
+        f"Indicator: <code>{escape(indicator_code)}</code>\n"
+        f"Парсер вернул 0 точек при {existing_points} точках истории — "
+        "вероятна смена layout источника.",
+        kind="zero_parse",
+    )
 
 
 async def alert_etl_summary(
