@@ -22,6 +22,7 @@ import logging
 import re
 import threading
 import time
+from pathlib import Path
 from dataclasses import dataclass
 from datetime import date
 from typing import ClassVar
@@ -39,6 +40,10 @@ from app.services.http_client import create_session
 logger = logging.getLogger(__name__)
 
 CATALOG_URL = "https://minfin.gov.ru/opendata/7710168360-fedbud_month/"
+# Упакованный снимок на случай блок/503 всего minfin.gov.ru с прод-IP.
+_ARTIFACT_CSV = (
+    Path(__file__).resolve().parent.parent / "data" / "minfin" / "fedbud_month.csv"
+)
 # New passport files use `data-YYYYMMDDTHHMM-structure-…T….csv`; older ones omit
 # the `THHMM` segment. Accept both so discovery does not silently empty out.
 _DATA_RE = re.compile(
@@ -51,13 +56,14 @@ _RU_OPENDATA_RE = re.compile(
     re.IGNORECASE,
 )
 
-# Stronger than global `http_client` (total=3): Minfin intermittently answers
-# 503 under load. ~8 retries with backoff ≈ minutes of patience, not seconds.
+# Stronger than global `http_client` (total=3), but not endless: при блокe
+# всего minfin.gov.ru с прод-IP (стабильный 503) быстро уходим в packaged
+# artifact, а не ждём минуты на бесполезные retry.
 _MINFIN_RETRY = Retry(
-    total=8,
-    connect=5,
-    read=5,
-    backoff_factor=1.5,
+    total=4,
+    connect=3,
+    read=3,
+    backoff_factor=1.0,
     status_forcelist=[408, 429, 500, 502, 503, 504],
     allowed_methods=["GET", "HEAD"],
     raise_on_status=False,
@@ -509,30 +515,53 @@ def fetch_and_parse_budget(target: str = "deficit") -> tuple[list[BudgetPoint], 
 
     URL discovery: process TTL cache + state-Redis last-good fallback on 503
     (см. `_find_csv_url`). CSV path всегда без `/ru/`.
-    """
-    csv_url = normalize_minfin_csv_url(_find_csv_url())
-    session = _create_minfin_session(timeout=90)
-    try:
-        resp = session.get(csv_url, timeout=90)
-        # Rare: stale last-good or locale-prefixed URL → 404. Retry once after
-        # force re-discover if we were on a fallback path.
-        if resp.status_code == 404:
-            logger.warning(
-                "Minfin CSV 404 at %s — invalidating cache and re-discovering",
-                csv_url.rsplit("/", 1)[-1],
-            )
-            _invalidate_csv_url_cache()
-            csv_url = normalize_minfin_csv_url(_find_csv_url(force_catalog=True))
-            resp = session.get(csv_url, timeout=90)
-        resp.raise_for_status()
-        resp.encoding = "utf-8"
-        points = _parse_budget_csv(resp.text, target=target)
-    finally:
-        session.close()
 
-    if points:
-        _persist_csv_url(csv_url)
-    return points, csv_url
+    Если весь minfin.gov.ru недоступен с прод-IP (стабильный 503 на весь хост —
+    инцидент 2026-07), берём упакованный снимок
+    `app/data/minfin/fedbud_month.csv` (обновлять с машины, где Минфин
+    открывается: `curl …/data-*.csv -o backend/app/data/minfin/fedbud_month.csv`).
+    """
+    try:
+        csv_url = normalize_minfin_csv_url(_find_csv_url())
+        session = _create_minfin_session(timeout=90)
+        try:
+            resp = session.get(csv_url, timeout=90)
+            # Rare: stale last-good or locale-prefixed URL → 404. Retry once after
+            # force re-discover if we were on a fallback path.
+            if resp.status_code == 404:
+                logger.warning(
+                    "Minfin CSV 404 at %s — invalidating cache and re-discovering",
+                    csv_url.rsplit("/", 1)[-1],
+                )
+                _invalidate_csv_url_cache()
+                csv_url = normalize_minfin_csv_url(_find_csv_url(force_catalog=True))
+                resp = session.get(csv_url, timeout=90)
+            resp.raise_for_status()
+            resp.encoding = "utf-8"
+            points = _parse_budget_csv(resp.text, target=target)
+        finally:
+            session.close()
+
+        if points:
+            _persist_csv_url(csv_url)
+        return points, csv_url
+    except Exception as exc:
+        artifact = _ARTIFACT_CSV
+        if not artifact.is_file():
+            raise
+        logger.warning(
+            "Minfin network fetch failed (%s); using packaged artifact %s "
+            "(прод-IP иногда получает 503 на весь minfin.gov.ru)",
+            exc,
+            artifact.name,
+        )
+        text = artifact.read_text(encoding="utf-8-sig")
+        points = _parse_budget_csv(text, target=target)
+        if not points:
+            raise RuntimeError(
+                f"Minfin artifact {artifact.name} parsed 0 points after network failure"
+            ) from exc
+        return points, f"artifact://{artifact.name}"
 
 
 class MinfinBudgetParser(BaseParser):

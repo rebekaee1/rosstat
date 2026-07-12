@@ -212,3 +212,17 @@ def test_find_csv_url_force_catalog_skips_stale_fallback(monkeypatch):
     with pytest.raises(RuntimeError, match="catalog down"):
         _find_csv_url(force_catalog=True)
     _invalidate_csv_url_cache()
+
+
+def test_artifact_fallback_when_network_fails(monkeypatch):
+    """При недоступности minfin.gov.ru парсер читает packaged CSV."""
+    from app.services import minfin_budget_parser as m
+
+    def boom(*a, **k):
+        raise RuntimeError("503 simulated")
+
+    monkeypatch.setattr(m, "_find_csv_url", boom)
+    points, src = m.fetch_and_parse_budget("deficit")
+    assert src.startswith("artifact://")
+    assert len(points) >= 180
+    assert points[-1].date.year >= 2026

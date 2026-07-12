@@ -162,7 +162,10 @@ Endpoint: `cbr.ru/dataservice/data?publicationId={pub}&datasetId={ds}&measureId=
 
 **Trap (in-place content update)**: timestamp в имени CSV (`data-YYYYMMDDTHHMM-structure-…csv`) — это дата создания паспорта, а **не** snapshot content. Минфин дополняет тот же URL новыми месяцами в течение дня. Поэтому утренний `daily_update_job` (03:00 MSK) может получить ещё «вчерашнюю» версию того же URL. Контрмеры: `late_minfin_etl_job` (APScheduler 15:00 MSK) перезапускает все `parser_type=minfin_budget_csv` индикаторы; парсер логирует `last_parsed_date` + `last_db_date`. См. `docs/enterprise_resilience.md::Парсеры и источники`.
 
-**Trap (503 + `/ru/` CSV path, 2026-07)**: каталог Минфина периодически отвечает 503; глобальный `http_client` (total=3) исчерпывался → падали сразу три индикатора (`budget-*`), каждый раз заново долбя каталог. Контрмеры в `minfin_budget_parser`: Minfin-specific Retry(total=8), process TTL-кэш URL (10 мин, один hit на тройку), last-good URL в state Redis (fallback при 503). **CSV всегда без `/ru/`**: `…/opendata/…/data-*.csv` (200); `…/ru/opendata/…/data-*.csv` → 404.
+**Trap (503 + `/ru/` CSV path, 2026-07)**: каталог Минфина периодически отвечает 503; глобальный `http_client` (total=3) исчерпывался → падали сразу три индикатора (`budget-*`), каждый раз заново долбя каталог. Контрмеры в `minfin_budget_parser`: Minfin-specific Retry, process TTL-кэш URL (10 мин, один hit на тройку), last-good URL в state Redis. **CSV всегда без `/ru/`**: `…/opendata/…/data-*.csv` (200); `…/ru/opendata/…/data-*.csv` → 404.
+
+**Trap (прод-IP ban на весь minfin.gov.ru, 2026-07-12)**: с `201.51.11.170` хост отвечает стабильным 503 на любой URL (в т.ч. `/`), при этом с обычных сетей — 200. Proxy OpenRouter не помогает. Fallback: упакованный снимок `backend/app/data/minfin/fedbud_month.csv`. Обновлять с машины, где Минфин открывается:
+`curl -A 'Mozilla/5.0' -o backend/app/data/minfin/fedbud_month.csv 'https://minfin.gov.ru/opendata/7710168360-fedbud_month/<latest-data-*.csv>'`.
 
 | Индикатор | budget_target |
 |-----------|---------------|
