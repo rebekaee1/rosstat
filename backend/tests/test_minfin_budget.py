@@ -1,9 +1,19 @@
 """Tests for MinfinBudgetParser CSV parsing."""
 
+from unittest.mock import MagicMock
+
+import pytest
+import requests
+
 from app.services.minfin_budget_parser import (
     MinfinBudgetParser,
+    _DATA_RE,
+    _cache_set_csv_url,
+    _find_csv_url,
+    _invalidate_csv_url_cache,
     _parse_budget_csv,
     fetch_and_parse_budget,
+    normalize_minfin_csv_url,
 )
 
 
@@ -97,3 +107,108 @@ def test_parse_budget_csv_revenue_target():
         (1, 2364.3),
         (2, 2403.1),
     ]
+
+
+def test_normalize_minfin_csv_url_strips_ru_locale():
+    bad = (
+        "https://minfin.gov.ru/ru/opendata/7710168360-fedbud_month/"
+        "data-20260709T0100-structure-20210312T0100.csv"
+    )
+    good = (
+        "https://minfin.gov.ru/opendata/7710168360-fedbud_month/"
+        "data-20260709T0100-structure-20210312T0100.csv"
+    )
+    assert normalize_minfin_csv_url(bad) == good
+    assert normalize_minfin_csv_url(good) == good
+
+
+def test_data_re_accepts_legacy_and_timed_filenames():
+    assert _DATA_RE.search("data-20250819-structure-20210312.csv")
+    assert _DATA_RE.search("data-20260709T0100-structure-20210312T0100.csv")
+    assert not _DATA_RE.search("structure-20210312.csv")
+
+
+def test_find_csv_url_uses_process_cache(monkeypatch):
+    _invalidate_csv_url_cache()
+    calls = {"n": 0}
+
+    def fake_discover(_session):
+        calls["n"] += 1
+        return (
+            "https://minfin.gov.ru/opendata/7710168360-fedbud_month/"
+            "data-20260709T0100-structure-20210312T0100.csv"
+        )
+
+    monkeypatch.setattr(
+        "app.services.minfin_budget_parser._discover_csv_url_from_catalog",
+        fake_discover,
+    )
+    monkeypatch.setattr(
+        "app.services.minfin_budget_parser._persist_csv_url",
+        lambda _url: None,
+    )
+    monkeypatch.setattr(
+        "app.services.minfin_budget_parser._create_minfin_session",
+        lambda **_kw: MagicMock(close=lambda: None),
+    )
+
+    a = _find_csv_url()
+    b = _find_csv_url()
+    assert a == b
+    assert calls["n"] == 1
+    _invalidate_csv_url_cache()
+
+
+def test_find_csv_url_falls_back_to_persisted_on_catalog_error(monkeypatch):
+    _invalidate_csv_url_cache()
+    persisted = (
+        "https://minfin.gov.ru/opendata/7710168360-fedbud_month/"
+        "data-20260609T0100-structure-20210312T0100.csv"
+    )
+
+    def boom(_session):
+        raise requests.exceptions.RetryError("too many 503")
+
+    monkeypatch.setattr(
+        "app.services.minfin_budget_parser._discover_csv_url_from_catalog",
+        boom,
+    )
+    monkeypatch.setattr(
+        "app.services.minfin_budget_parser._load_persisted_csv_url",
+        lambda: persisted,
+    )
+    monkeypatch.setattr(
+        "app.services.minfin_budget_parser._create_minfin_session",
+        lambda **_kw: MagicMock(close=lambda: None),
+    )
+
+    assert _find_csv_url() == persisted
+    _invalidate_csv_url_cache()
+
+
+def test_find_csv_url_force_catalog_skips_stale_fallback(monkeypatch):
+    _invalidate_csv_url_cache()
+    _cache_set_csv_url(
+        "https://minfin.gov.ru/opendata/7710168360-fedbud_month/"
+        "data-STALE.csv"
+    )
+
+    def boom(_session):
+        raise RuntimeError("catalog down")
+
+    monkeypatch.setattr(
+        "app.services.minfin_budget_parser._discover_csv_url_from_catalog",
+        boom,
+    )
+    monkeypatch.setattr(
+        "app.services.minfin_budget_parser._load_persisted_csv_url",
+        lambda: "https://minfin.gov.ru/opendata/x/data-STALE.csv",
+    )
+    monkeypatch.setattr(
+        "app.services.minfin_budget_parser._create_minfin_session",
+        lambda **_kw: MagicMock(close=lambda: None),
+    )
+
+    with pytest.raises(RuntimeError, match="catalog down"):
+        _find_csv_url(force_catalog=True)
+    _invalidate_csv_url_cache()

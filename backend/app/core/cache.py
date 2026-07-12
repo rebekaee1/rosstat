@@ -54,14 +54,43 @@ async def get_state_redis() -> Redis:
         return _state_redis
 
 
+_sync_state_redis = None
+
+
+def get_state_redis_sync():
+    """Синхронный клиент state-Redis для ETL в `asyncio.to_thread`.
+
+    Ленивый singleton; при ошибке транспорта вызывающий код должен fail-open.
+    Не путать с async `get_state_redis` — event loop из thread не трогаем.
+    """
+    global _sync_state_redis
+    if _sync_state_redis is not None:
+        return _sync_state_redis
+    import redis as redis_sync
+
+    _sync_state_redis = redis_sync.Redis.from_url(
+        _state_redis_url(),
+        decode_responses=True,
+        socket_connect_timeout=1.5,
+        socket_timeout=1.5,
+    )
+    return _sync_state_redis
+
+
 async def close_redis():
-    global _redis, _state_redis
+    global _redis, _state_redis, _sync_state_redis
     if _redis:
         await _redis.aclose()
         _redis = None
     if _state_redis:
         await _state_redis.aclose()
         _state_redis = None
+    if _sync_state_redis is not None:
+        try:
+            _sync_state_redis.close()
+        except Exception:
+            pass
+        _sync_state_redis = None
 
 
 # Н-17: fail-open кэша считаем — единичный сбой это warning, всплеск (Redis

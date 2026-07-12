@@ -1,8 +1,16 @@
 """ETL: Минфин open data CSV → IndicatorData (monthly budget deficit/surplus).
 
-Source: https://minfin.gov.ru/OpenData/7710168360-fedbud_month/
+Source: https://minfin.gov.ru/opendata/7710168360-fedbud_month/
 Format: CSV (comma-separated, UTF-8 BOM), cumulative from year start.
 Columns: Год, Месяц, Доходы всего, ..., Расходы всего, ..., Дефицит/Профицит, ...
+
+Resilience (2026-07):
+- Minfin-specific HTTP retries (stronger than global http_client defaults).
+- Process-level short TTL cache of discovered CSV URL — three budget indicators
+  share one catalog hit per ETL wave.
+- Persist last-good CSV URL in state Redis; on catalog 503 fall back to it.
+- Canonical CSV path is WITHOUT `/ru/` (`…/opendata/…/data-*.csv`). The
+  `/ru/opendata/…/data-*.csv` variant returns 404.
 """
 
 from __future__ import annotations
@@ -12,6 +20,8 @@ import csv
 import io
 import logging
 import re
+import threading
+import time
 from dataclasses import dataclass
 from datetime import date
 from typing import ClassVar
@@ -19,6 +29,7 @@ from typing import ClassVar
 from bs4 import BeautifulSoup
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from urllib3.util.retry import Retry
 
 from app.models import FetchLog, Indicator, IndicatorData
 from app.services.base_parser import BaseParser
@@ -28,7 +39,36 @@ from app.services.http_client import create_session
 logger = logging.getLogger(__name__)
 
 CATALOG_URL = "https://minfin.gov.ru/opendata/7710168360-fedbud_month/"
-_DATA_RE = re.compile(r"data-\d{8}T\d{4}-structure-\d{8}T\d{4}\.csv")
+# New passport files use `data-YYYYMMDDTHHMM-structure-…T….csv`; older ones omit
+# the `THHMM` segment. Accept both so discovery does not silently empty out.
+_DATA_RE = re.compile(
+    r"data-\d{8}(?:T\d{4})?-structure-\d{8}(?:T\d{4})?\.csv",
+    re.IGNORECASE,
+)
+# `/ru/opendata/.../data-*.csv` → 404; strip the locale segment for file URLs.
+_RU_OPENDATA_RE = re.compile(
+    r"(https?://minfin\.gov\.ru)/ru(/opendata/)",
+    re.IGNORECASE,
+)
+
+# Stronger than global `http_client` (total=3): Minfin intermittently answers
+# 503 under load. ~8 retries with backoff ≈ minutes of patience, not seconds.
+_MINFIN_RETRY = Retry(
+    total=8,
+    connect=5,
+    read=5,
+    backoff_factor=1.5,
+    status_forcelist=[408, 429, 500, 502, 503, 504],
+    allowed_methods=["GET", "HEAD"],
+    raise_on_status=False,
+)
+
+_CSV_URL_CACHE_TTL_SEC = 600  # process cache: one catalog hit for 3 indicators
+_CSV_URL_STATE_KEY = "etl:minfin:fedbud_month:csv_url"
+_CSV_URL_STATE_TTL_SEC = 60 * 60 * 24 * 90  # 90 days across restarts / 503 windows
+
+_csv_url_lock = threading.Lock()
+_csv_url_cache: tuple[float, str] | None = None
 
 PRESS_LIST_URL = "https://minfin.gov.ru/ru/press-center/"
 PRESS_TITLE_RE = re.compile(
@@ -51,43 +91,133 @@ MONTH_GENITIVE_MAP = {
     "сентября": 9, "октября": 10, "ноября": 11, "декабря": 12,
 }
 
+
 @dataclass
 class BudgetPoint:
     date: date
     value: float
 
 
-def _find_csv_url() -> str:
-    """Discover the latest data CSV URL from the Minfin open data catalog page.
+def _create_minfin_session(*, timeout: int = 60):
+    return create_session(timeout=timeout, retry=_MINFIN_RETRY)
 
-    Если на странице несколько кандидатов (исторически Минфин публикует версии
-    с разными timestamps), выбираем самый свежий по lexicographic max имени
-    (timestamps в формате YYYYMMDDTHHMM — корректно сравниваются как строки).
-    """
-    session = create_session()
+
+def normalize_minfin_csv_url(url: str) -> str:
+    """Canonicalise Minfin OpenData CSV URL: drop `/ru/` before `/opendata/`."""
+    return _RU_OPENDATA_RE.sub(r"\1\2", url.strip())
+
+
+def _persist_csv_url(url: str) -> None:
     try:
-        resp = session.get(CATALOG_URL, timeout=30)
-        resp.raise_for_status()
-        soup = BeautifulSoup(resp.text, "html.parser")
-        candidates: list[str] = []
-        for a in soup.find_all("a", href=True):
-            href = a["href"]
-            if _DATA_RE.search(href):
-                if not href.startswith("http"):
-                    href = f"https://minfin.gov.ru{href}"
-                candidates.append(href)
-        if not candidates:
-            raise RuntimeError("Minfin: could not find data CSV link on catalog page")
-        candidates.sort(reverse=True)
-        if len(candidates) > 1:
-            logger.info(
-                "Minfin: %d CSV candidates, picking latest: %s",
-                len(candidates),
-                candidates[0].rsplit("/", 1)[-1],
-            )
-        return candidates[0]
+        from app.core.cache import get_state_redis_sync
+
+        r = get_state_redis_sync()
+        r.set(_CSV_URL_STATE_KEY, url, ex=_CSV_URL_STATE_TTL_SEC)
+    except Exception as exc:
+        logger.warning("Minfin: could not persist last-good CSV URL: %s", exc)
+
+
+def _load_persisted_csv_url() -> str | None:
+    try:
+        from app.core.cache import get_state_redis_sync
+
+        r = get_state_redis_sync()
+        raw = r.get(_CSV_URL_STATE_KEY)
+        if not raw:
+            return None
+        return normalize_minfin_csv_url(str(raw))
+    except Exception as exc:
+        logger.warning("Minfin: could not load last-good CSV URL: %s", exc)
+        return None
+
+
+def _invalidate_csv_url_cache() -> None:
+    global _csv_url_cache
+    with _csv_url_lock:
+        _csv_url_cache = None
+
+
+def _discover_csv_url_from_catalog(session) -> str:
+    """Hit the catalog page and pick the lexicographically latest data-*.csv."""
+    resp = session.get(CATALOG_URL, timeout=45)
+    resp.raise_for_status()
+    soup = BeautifulSoup(resp.text, "html.parser")
+    candidates: list[str] = []
+    for a in soup.find_all("a", href=True):
+        href = a["href"]
+        if not _DATA_RE.search(href):
+            continue
+        if not href.startswith("http"):
+            href = f"https://minfin.gov.ru{href}"
+        candidates.append(normalize_minfin_csv_url(href))
+    # Deduplicate after normalisation (page often lists the same file 2–3×).
+    candidates = sorted(set(candidates), reverse=True)
+    if not candidates:
+        raise RuntimeError("Minfin: could not find data CSV link on catalog page")
+    if len(candidates) > 1:
+        logger.info(
+            "Minfin: %d CSV candidates, picking latest: %s",
+            len(candidates),
+            candidates[0].rsplit("/", 1)[-1],
+        )
+    return candidates[0]
+
+
+def _cache_get_csv_url() -> str | None:
+    with _csv_url_lock:
+        if _csv_url_cache is None:
+            return None
+        cached_at, cached_url = _csv_url_cache
+        if time.monotonic() - cached_at >= _CSV_URL_CACHE_TTL_SEC:
+            return None
+        return cached_url
+
+
+def _cache_set_csv_url(url: str) -> None:
+    global _csv_url_cache
+    with _csv_url_lock:
+        _csv_url_cache = (time.monotonic(), url)
+
+
+def _find_csv_url(*, force_catalog: bool = False) -> str:
+    """Discover the latest Minfin budget CSV URL with cache + last-good fallback.
+
+    Order:
+    1. Process TTL cache (shared by budget-revenue/expenditure/deficit),
+       unless `force_catalog=True`.
+    2. Live catalog discovery (Minfin-strong retries).
+    3. On catalog failure — last-good URL from state Redis (if any).
+       Skipped when `force_catalog=True` (404 recovery must not re-use stale).
+    """
+    if not force_catalog:
+        cached = _cache_get_csv_url()
+        if cached:
+            return cached
+
+    session = _create_minfin_session(timeout=45)
+    try:
+        try:
+            url = _discover_csv_url_from_catalog(session)
+        except Exception as exc:
+            if force_catalog:
+                raise
+            fallback = _load_persisted_csv_url()
+            if fallback:
+                logger.warning(
+                    "Minfin catalog discovery failed (%s); "
+                    "using persisted last-good CSV: %s",
+                    exc,
+                    fallback.rsplit("/", 1)[-1],
+                )
+                _cache_set_csv_url(fallback)
+                return fallback
+            raise
     finally:
         session.close()
+
+    _cache_set_csv_url(url)
+    _persist_csv_url(url)
+    return url
 
 
 def _find_col_index(header: list[str], target: str) -> int | None:
@@ -209,9 +339,9 @@ def _find_latest_preliminary_press_url() -> str | None:
     Returns None when no such release is currently linked from the listing —
     in that case the press fallback is silently disabled (CSV-only behaviour).
     """
-    session = create_session()
+    session = _create_minfin_session(timeout=45)
     try:
-        resp = session.get(PRESS_LIST_URL, timeout=30)
+        resp = session.get(PRESS_LIST_URL, timeout=45)
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, "html.parser")
         for a in soup.find_all("a", href=True):
@@ -312,9 +442,9 @@ def _augment_with_press_preliminary(
     if not press_url:
         return points, None
 
-    session = create_session()
+    session = _create_minfin_session(timeout=45)
     try:
-        resp = session.get(press_url, timeout=30)
+        resp = session.get(press_url, timeout=45)
         resp.raise_for_status()
         parsed = _parse_press_release_cumulative(resp.text)
     except Exception as exc:
@@ -376,17 +506,32 @@ def fetch_and_parse_budget(target: str = "deficit") -> tuple[list[BudgetPoint], 
     Helpers `_find_latest_preliminary_press_url` / `_parse_press_release_cumulative`
     / `_augment_with_press_preliminary` оставлены для возможного будущего
     использования, но в пайплайне не вызываются.
+
+    URL discovery: process TTL cache + state-Redis last-good fallback on 503
+    (см. `_find_csv_url`). CSV path всегда без `/ru/`.
     """
-    csv_url = _find_csv_url()
-    session = create_session()
+    csv_url = normalize_minfin_csv_url(_find_csv_url())
+    session = _create_minfin_session(timeout=90)
     try:
-        resp = session.get(csv_url, timeout=60)
+        resp = session.get(csv_url, timeout=90)
+        # Rare: stale last-good or locale-prefixed URL → 404. Retry once after
+        # force re-discover if we were on a fallback path.
+        if resp.status_code == 404:
+            logger.warning(
+                "Minfin CSV 404 at %s — invalidating cache and re-discovering",
+                csv_url.rsplit("/", 1)[-1],
+            )
+            _invalidate_csv_url_cache()
+            csv_url = normalize_minfin_csv_url(_find_csv_url(force_catalog=True))
+            resp = session.get(csv_url, timeout=90)
         resp.raise_for_status()
         resp.encoding = "utf-8"
         points = _parse_budget_csv(resp.text, target=target)
     finally:
         session.close()
 
+    if points:
+        _persist_csv_url(csv_url)
     return points, csv_url
 
 
@@ -396,17 +541,14 @@ class MinfinBudgetParser(BaseParser):
     `replace_series=True`: БД = точный снимок CSV; preliminary-точки из старого
     пресс-fallback (артефакты ~10 трлн) удаляются при следующем ETL.
 
-    Operational trap (см. enterprise_resilience.md): Минфин обновляет content
-    CSV-файла `data-YYYYMMDDTHHMM-structure-…csv` *in-place*, не меняя URL.
-    Timestamp в имени = дата создания паспорта, не snapshot content. Поэтому
-    `_find_csv_url` всегда вернёт стабильный URL, и при scheduled ETL утром
-    мы можем скачать ещё «вчерашнюю» версию content. Решение:
-    1. 2x daily запуск (см. scheduler) — утренний + обеденный pass.
-    2. Этот парсер логирует last_parsed_date + last_db_date — если
-       last_parsed > last_db но bulk_upsert вернёт (0,0), это означает что
-       upsert идемпотентен (значения совпали с БД) — но НЕ означает что
-       новые данные были (это лог уровня INFO). Реальная аномалия — если
-       last_parsed > last_db, но parser возвращает 0 точек.
+    Operational traps (см. enterprise_resilience.md / data_sources.md):
+    1. In-place CSV content: Минфин обновляет content файла
+       `data-YYYYMMDDTHHMM-structure-…csv` *in-place*, не меняя URL.
+       Timestamp в имени = дата создания паспорта, не snapshot content.
+       Контрмеры: 2× daily ETL + лог last_parsed vs last_db.
+    2. Intermittent 503 on catalog: Minfin-specific Retry(total=8), process
+       TTL cache of CSV URL (shared by 3 indicators), last-good URL in state
+       Redis. Canonical CSV path NEVER uses `/ru/` (that path 404s).
     """
 
     parser_type: ClassVar[str] = "minfin_budget_csv"

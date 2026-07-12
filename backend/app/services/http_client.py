@@ -1,5 +1,7 @@
 """Shared requests.Session with automatic retries and User-Agent for all ETL fetchers."""
 
+from __future__ import annotations
+
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
@@ -24,9 +26,18 @@ class _TimeoutAdapter(HTTPAdapter):
         return super().send(request, **kwargs)
 
 
-def create_session(timeout: int = 60) -> requests.Session:
+def create_session(
+    timeout: int = 60,
+    *,
+    retry: Retry | None = None,
+) -> requests.Session:
+    """Build a Session with retries.
+
+    Defaults (`total=3`) stay for all parsers. Flaky hosts (e.g. Minfin) pass a
+    stronger `retry=` without changing the global strategy.
+    """
     s = requests.Session()
-    adapter = _TimeoutAdapter(timeout=timeout, max_retries=_RETRY_STRATEGY)
+    adapter = _TimeoutAdapter(timeout=timeout, max_retries=retry or _RETRY_STRATEGY)
     s.mount("https://", adapter)
     s.mount("http://", adapter)
     s.headers.update({

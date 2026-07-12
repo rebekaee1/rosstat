@@ -90,11 +90,18 @@ export default function IndicatorDetailHeader({
               <Activity className="w-3 h-3 text-champagne" />
               {FREQ_MAP[effectiveFrequency] || effectiveFrequency}
             </span>
-            {indicator?.category && (
+            {category ? (
+              <Link
+                to={`/category/${category.slug}`}
+                className="hidden sm:inline text-xs font-mono text-text-tertiary hover:text-champagne transition-colors"
+              >
+                {indicator.category}
+              </Link>
+            ) : indicator?.category ? (
               <span className="hidden sm:inline text-xs font-mono text-text-tertiary">
                 {indicator.category}
               </span>
-            )}
+            ) : null}
           </div>
 
           <h1

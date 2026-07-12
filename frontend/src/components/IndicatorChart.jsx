@@ -581,6 +581,7 @@ export default function IndicatorChart({
                 fillOpacity={0.06}
                 stroke="none"
                 ifOverflow="visible"
+                style={{ pointerEvents: 'none' }}
               />
             )}
             {forecastStartDate && showForecast && chartType !== 'bar' && (
@@ -589,6 +590,7 @@ export default function IndicatorChart({
                 stroke="rgba(124,58,237,0.45)"
                 strokeDasharray="4 4"
                 strokeWidth={1}
+                style={{ pointerEvents: 'none' }}
               />
             )}
 
