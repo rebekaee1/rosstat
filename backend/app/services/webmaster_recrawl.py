@@ -26,11 +26,32 @@ _SUBMITTED_KEY = "wm:recrawl:submitted"
 _HOST_ID = "https:forecasteconomy.com:443"
 
 
+async def _alert_recrawl(text: str) -> None:
+    try:
+        from app.services.alerting import send_telegram
+        await send_telegram(f"🟡 <b>Webmaster recrawl</b>\n{text}", kind="recrawl_alert")
+    except Exception:
+        logger.warning("Recrawl alert failed", exc_info=True)
+
+
 async def recrawl_daily_job() -> dict[str, int]:
     """Подать в переобход следующую порцию приоритетных URL (до квоты)."""
     if not settings.yandex_webmaster_token:
         logger.info("Recrawl job skipped: no webmaster token")
         return {"submitted": 0, "quota": 0}
+
+    # submit_recrawl идёт через action_policy: без live writes POST не уходит,
+    # квота 150 сгорает впустую (инцидент 2026-07-11/12: submitted 0 при quota 150).
+    if not settings.analytics_live_writes_enabled:
+        logger.error(
+            "Recrawl job blocked: analytics_live_writes_enabled=false "
+            "(нужен RUSTATS_ANALYTICS_LIVE_WRITES_ENABLED=true на проде)"
+        )
+        await _alert_recrawl(
+            "Заблокирован: <code>analytics_live_writes_enabled=false</code>. "
+            "Квота переобхода не тратится — включите live writes на проде."
+        )
+        return {"submitted": 0, "quota": 0, "blocked": "live_writes_disabled"}
 
     client = YandexWebmasterClient()
     try:
@@ -42,15 +63,7 @@ async def recrawl_daily_job() -> dict[str, int]:
         # Н-24: живой токен + недоступный API = дневная квота переобхода
         # потеряна; молчаливый лог откладывал обнаружение на недели.
         logger.exception("Recrawl job: quota/user fetch failed")
-        try:
-            from app.services.alerting import send_telegram
-            await send_telegram(
-                "🟡 <b>Webmaster recrawl failed</b>\n"
-                f"Квота/пользователь недоступны: {str(exc)[:200]}",
-                kind="recrawl_alert",
-            )
-        except Exception:
-            logger.warning("Recrawl alert failed", exc_info=True)
+        await _alert_recrawl(f"Квота/пользователь недоступны: {str(exc)[:200]}")
         return {"submitted": 0, "quota": 0}
 
     if remaining <= 0:
