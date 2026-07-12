@@ -116,6 +116,15 @@ async def upsert_calendar_candidates(db: AsyncSession, candidates: list[Calendar
                 fetched_at,
             )
 
+        # Preserve early-release enrichment: if IndicatorData already filled
+        # actual_value, do not downgrade status back to scheduled on sync.
+        if existing is not None and (existing.actual_value or existing.status == "released"):
+            status = "released"
+        elif candidate.scheduled_date < fetched_at.date():
+            status = "released"
+        else:
+            status = "scheduled"
+
         if existing is None:
             db.add(EconomicEvent(
                 title=candidate.title,
@@ -128,7 +137,7 @@ async def upsert_calendar_candidates(db: AsyncSession, candidates: list[Calendar
                 is_estimated=False,
                 reference_period=candidate.reference_period,
                 importance=candidate.importance,
-                status="released" if candidate.scheduled_date < fetched_at.date() else "scheduled",
+                status=status,
                 description=candidate.description,
                 source_url=candidate.source_url,
                 event_key=candidate.event_key,
@@ -149,6 +158,8 @@ async def upsert_calendar_candidates(db: AsyncSession, candidates: list[Calendar
             existing.title,
             existing.source_hash,
             existing.event_key,
+            existing.status,
+            existing.source_url,
         )
         existing.title = candidate.title
         existing.title_en = candidate.title_en
@@ -160,7 +171,7 @@ async def upsert_calendar_candidates(db: AsyncSession, candidates: list[Calendar
         existing.is_estimated = False
         existing.reference_period = candidate.reference_period
         existing.importance = candidate.importance
-        existing.status = "released" if candidate.scheduled_date < fetched_at.date() else "scheduled"
+        existing.status = status
         existing.description = candidate.description
         existing.source_url = candidate.source_url
         existing.event_key = candidate.event_key
@@ -176,6 +187,8 @@ async def upsert_calendar_candidates(db: AsyncSession, candidates: list[Calendar
             existing.title,
             existing.source_hash,
             existing.event_key,
+            existing.status,
+            existing.source_url,
         )
         if before != after:
             changed += 1

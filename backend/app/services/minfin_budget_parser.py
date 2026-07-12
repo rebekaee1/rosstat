@@ -56,15 +56,14 @@ _RU_OPENDATA_RE = re.compile(
     re.IGNORECASE,
 )
 
-# Stronger than global `http_client` (total=3), but not endless: при блокe
-# всего minfin.gov.ru с прод-IP (стабильный 503) быстро уходим в packaged
-# artifact, а не ждём минуты на бесполезные retry.
+# 403/429/503 — один ответ в ProxyFallbackSession (direct → HTTP → Tor SOCKS),
+# без urllib3-retry на ban-статусах (иначе минуты на 503 до hop).
 _MINFIN_RETRY = Retry(
     total=4,
     connect=3,
     read=3,
     backoff_factor=1.0,
-    status_forcelist=[408, 429, 500, 502, 503, 504],
+    status_forcelist=[408, 500, 502, 504],
     allowed_methods=["GET", "HEAD"],
     raise_on_status=False,
 )

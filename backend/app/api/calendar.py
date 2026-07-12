@@ -153,6 +153,8 @@ async def upcoming_events(
         .where(
             EconomicEvent.scheduled_date >= today,
             EconomicEvent.importance >= importance_min,
+            EconomicEvent.actual_value.is_(None),
+            EconomicEvent.status != "released",
             *_public_calendar_conditions(),
         )
         .order_by(EconomicEvent.scheduled_date, EconomicEvent.importance.desc())

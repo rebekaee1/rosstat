@@ -53,6 +53,7 @@ pytz==2026.2
 PyYAML==6.0.3
 redis==5.2.1
 requests==2.32.3
+PySocks==1.7.1
 scipy==1.14.1
 six==1.17.0
 sortedcontainers==2.4.0

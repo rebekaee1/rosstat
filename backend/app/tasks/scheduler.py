@@ -401,7 +401,11 @@ async def staleness_check_job() -> list[tuple[str, int]]:
 
 
 async def _promote_past_events() -> None:
-    """Bulk-update stale 'scheduled' events whose date has passed → 'released'."""
+    """Bulk-update stale 'scheduled' events whose date has passed → 'released'.
+
+    Also enrich from IndicatorData (early publications still on a future
+    scheduled_date) so upcoming API stops advertising already-released rows.
+    """
     today = datetime.now(timezone.utc).replace(tzinfo=None).date()
     async with async_session() as db:
         result = await db.execute(
@@ -419,3 +423,12 @@ async def _promote_past_events() -> None:
         await db.commit()
         if count:
             logger.info("Promoted %d stale calendar events: scheduled → released", count)
+        try:
+            from app.services.calendar_sources.enrichment import (
+                enrich_events_from_indicator_data,
+            )
+            enriched = await enrich_events_from_indicator_data(db)
+            if enriched:
+                logger.info("Calendar enrichment after promote: %d events", enriched)
+        except Exception:
+            logger.exception("Calendar enrichment from IndicatorData failed")

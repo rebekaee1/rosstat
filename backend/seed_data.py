@@ -936,8 +936,10 @@ INDICATORS = [
         ),
         "parser_type": "derived",
         "model_config_json": {
+            # Индекс (база 100) — absolute, не percentage: иначе monthly_auto
+            # учится на приростах уровня и ломает каскад YoY (wages-real-yoy).
             "forecast_steps": 0,
-            "forecast_transform": "percentage",
+            "forecast_transform": "absolute",
         },
         "is_active": True,
         "category": "Рынок труда",
@@ -1938,7 +1940,16 @@ INDICATORS = [
         ),
         "parser_type": "minfin_budget_csv",
         "model_config_json": {
-            "forecast_steps": 0,
+            # Прогноз сальдо = тождество revenue − expenditure (оба monthly_auto),
+            # иначе три независимых OLS не сходятся. См. trade-balance / subtract.
+            "forecast_steps": 12,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "budget-revenue",
+                "source_code_2": "budget-expenditure",
+                "operation": "subtract",
+                "model_name": "Budget-Deficit-Identity",
+            },
             "forecast_transform": "absolute",
         },
         "is_active": True,
@@ -3561,7 +3572,7 @@ INDICATORS = [
         "unit": "млрд руб.",
         "frequency": "monthly",
         "source": "Росстат",
-        "source_url": "https://rosstat.gov.ru/compendium/document/50802",
+        "source_url": "https://rosstat.gov.ru/folder/14458",
         "description": "Объём работ, выполненных по виду деятельности «Строительство». Включает новое строительство, капремонт, реконструкцию и модернизацию.",
         "methodology": (
             "Объём выполненных строительных работ в текущих ценах. Включает "
@@ -3617,7 +3628,7 @@ INDICATORS = [
         "unit": "млн кв.м",
         "frequency": "monthly",
         "source": "Росстат",
-        "source_url": "https://rosstat.gov.ru/folder/10705",
+        "source_url": "https://rosstat.gov.ru/folder/14458",
         "description": (
             "Ввод в действие жилых домов (млн кв.м общей площади). "
             "Ежемесячные данные из сборника индикаторов Росстата."
@@ -4543,7 +4554,7 @@ INDICATOR_HIDDEN_FROM_LISTING.update(_generated_sibling_codes)
 # (forecast_steps=0). Немесячные ряды и индикаторы со своими стратегиями
 # (CPI/ИЦП/ВВП/жильё, derived) не трогаем — оставляем как были.
 MONTHLY_AUTO_FORECAST_CODES = {
-    "auto-loan-rate", "budget-deficit", "budget-expenditure", "budget-revenue",
+    "auto-loan-rate", "budget-expenditure", "budget-revenue",
     "business-credit", "consumer-credit",
     "credit-rate-corp-1to3y", "credit-rate-corp-over3y", "credit-rate-corp-short",
     "credit-rate-ind-1to3y", "credit-rate-ind-over3y", "credit-rate-ind-short",

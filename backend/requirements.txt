@@ -8,6 +8,7 @@ alembic==1.14.1
 redis[hiredis]==5.2.1
 apscheduler==3.10.4
 requests==2.32.3
+PySocks==1.7.1
 beautifulsoup4==4.12.3
 pandas==2.2.3
 openpyxl==3.1.5

@@ -86,6 +86,8 @@ SIGNED_QUARTERLY_FORECAST_CODES = {
 DERIVED_FROM_SOURCE_FORECAST_CODES = {
     # Торговый баланс: прогноз = тождество exports − imports (subtract).
     "trade-balance",
+    # Бюджетное сальдо: прогноз = тождество revenue − expenditure (subtract).
+    "budget-deficit",
     "gdp-yoy",
     "gdp-qoq",
     "gdp-real-yoy",
@@ -324,6 +326,34 @@ def test_trade_balance_forecast_is_identity() -> None:
     assert derived.get("source_code") == "exports"
     assert derived.get("source_code_2") == "imports"
     assert int(cfg.get("forecast_steps", 0) or 0) > 0
+
+
+def test_budget_deficit_forecast_is_identity() -> None:
+    """budget-deficit прогнозируется как тождество revenue − expenditure."""
+    by_code = {ind["code"]: ind for ind in INDICATORS}
+    cfg = by_code["budget-deficit"]["model_config_json"]
+    assert cfg.get("forecast_strategy") == "derived_from_source"
+    derived = cfg.get("derived_forecast") or {}
+    assert derived.get("operation") == "subtract"
+    assert derived.get("source_code") == "budget-revenue"
+    assert derived.get("source_code_2") == "budget-expenditure"
+    assert int(cfg.get("forecast_steps", 0) or 0) > 0
+    # Не должен остаться в независимом monthly_auto — иначе сальдо ≠ R−E.
+    assert "budget-deficit" not in MONTHLY_AUTO_CODES
+
+
+def test_wages_real_yoy_has_derived_forecast() -> None:
+    """YoY реальной зарплаты протягивается из monthly_auto базы."""
+    by_code = {ind["code"]: ind for ind in INDICATORS}
+    base = by_code["wages-real"]["model_config_json"]
+    assert base.get("forecast_strategy") == "monthly_auto"
+    assert base.get("forecast_transform") == "absolute"
+    yoy = by_code["wages-real-yoy"]["model_config_json"]
+    assert yoy.get("forecast_strategy") == "derived_from_source"
+    derived = yoy.get("derived_forecast") or {}
+    assert derived.get("source_code") == "wages-real"
+    assert derived.get("operation") == "pipeline"
+    assert int(yoy.get("forecast_steps", 0) or 0) > 0
 
 
 def test_all_derived_cpi_forecasts_are_api_whitelisted() -> None:

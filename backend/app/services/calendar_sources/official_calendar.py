@@ -30,7 +30,9 @@ ROSSTAT_GDP_URL = "https://rosstat.gov.ru/statistics/accounts"
 ROSSTAT_LABOR_URL = "https://rosstat.gov.ru/labor_market_employment_salaries"
 ROSSTAT_BUSINESS_URL = "https://rosstat.gov.ru/enterprise_industrial"
 ROSSTAT_TRADE_URL = "https://rosstat.gov.ru/folder/10705"
-ROSSTAT_CONSTRUCTION_URL = "https://rosstat.gov.ru/compendium/document/50802"
+# Строительство / ввод жилья — не путать с торговлей (folder/10705).
+ROSSTAT_CONSTRUCTION_URL = "https://rosstat.gov.ru/folder/14458"
+ROSSTAT_CONSTRUCTION_KEP_URL = "https://rosstat.gov.ru/compendium/document/50802"
 
 
 MONTH_NAMES_RU = [
@@ -185,7 +187,7 @@ ROSSTAT_MONTHLY_RULES = [
         "title_en": "Housing Commissioned",
         "importance": 1,
         "nth_workday": 15,
-        "source_url": ROSSTAT_TRADE_URL,
+        "source_url": ROSSTAT_CONSTRUCTION_URL,
         "rule": "15-й рабочий день месяца, следующего за отчетным периодом",
     },
     {
@@ -371,10 +373,23 @@ async def refresh_official_calendar(
     candidates.extend(build_cbr_monetary_policy_candidates(today=today, months_ahead=months_ahead))
     candidates.extend(fetch_cbr_calendar_candidates(today=today, months_ahead=months_ahead))
 
+    async def _persist(session: AsyncSession) -> int:
+        from app.services.calendar_sources.enrichment import (
+            enrich_events_from_indicator_data,
+            filter_speculative_rosstat_monthly,
+            prune_persisted_speculative_rosstat_monthly,
+        )
+
+        filtered = await filter_speculative_rosstat_monthly(session, candidates)
+        changed = await upsert_calendar_candidates(session, filtered)
+        await prune_persisted_speculative_rosstat_monthly(session)
+        await enrich_events_from_indicator_data(session)
+        return changed
+
     if db is not None:
-        return await upsert_calendar_candidates(db, candidates)
+        return await _persist(db)
     async with async_session_factory() as session:
-        return await upsert_calendar_candidates(session, candidates)
+        return await _persist(session)
 
 
 def build_rule_candidates(*, today: date, months_ahead: int) -> list[CalendarCandidate]:

@@ -11963,16 +11963,6 @@
         "label": "По годам",
         "mode": "yoy-year",
         "unit": "%"
-      },
-      {
-        "code": "wages-nominal-annual-yoy",
-        "forecastable": true,
-        "frequency": "annual",
-        "group": "pop",
-        "isNative": false,
-        "label": "Г/г",
-        "mode": "pop-gg",
-        "unit": "%"
       }
     ],
     "name": "Средняя заработная плата",
@@ -12079,16 +12069,6 @@
         "isNative": false,
         "label": "По годам",
         "mode": "yoy-year",
-        "unit": "%"
-      },
-      {
-        "code": "wages-real-yoy-year",
-        "forecastable": true,
-        "frequency": "annual",
-        "group": "pop",
-        "isNative": false,
-        "label": "Г/г",
-        "mode": "pop-gg",
         "unit": "%"
       }
     ],

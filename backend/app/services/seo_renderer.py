@@ -34,6 +34,12 @@ from sqlalchemy import desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
+from app.data.indicator_seo import (
+    FORECAST_SSR_CHART_NOTE,
+    FORECAST_SSR_PILOT_CODES,
+    append_forecast_ssr_desc_tail,
+    forecast_ssr_image_name,
+)
 from app.models import Indicator, IndicatorData
 from app.services.display import (
     today_msk,
@@ -225,6 +231,18 @@ def _enrich_description(desc: str, current, unit: str,
     return f"{snippet} {desc}"
 
 
+def _forecast_ssr_enabled(indicator: Indicator) -> bool:
+    """B1/B2 пилот V2+V4+V5: whitelist ∩ реальный модельный прогноз."""
+    if indicator.code not in FORECAST_SSR_PILOT_CODES:
+        return False
+    cfg = indicator.model_config_json or {}
+    try:
+        steps = int(cfg.get("forecast_steps") or 0)
+    except (TypeError, ValueError):
+        steps = 0
+    return steps > 0
+
+
 def _json_script(data: dict) -> str:
     return (
         '<script type="application/ld+json">'
@@ -320,9 +338,10 @@ body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:"DM Sans",system-ui,s
 .seo-page tbody tr:last-child td{border-bottom:none}
 .seo-page tbody tr:hover{background:rgba(184,148,47,.05)}
 .seo-page td:last-child,.seo-page th:last-child{text-align:right;font-variant-numeric:tabular-nums}
-.seo-chart{margin:1.25rem 0 1.5rem;border:1px solid rgba(0,0,0,.08);border-radius:1rem;overflow:hidden;background:#fff;box-shadow:0 1px 3px rgba(26,26,46,.04)}
+.seo-chart{margin:1.25rem 0 .75rem;border:1px solid rgba(0,0,0,.08);border-radius:1rem;overflow:hidden;background:#fff;box-shadow:0 1px 3px rgba(26,26,46,.04)}
 .seo-chart img{display:block;width:100%;height:auto}
 .seo-chart figcaption{font-size:.8125rem;color:rgba(26,26,46,.6);padding:.5rem .75rem;border-top:1px solid rgba(0,0,0,.06)}
+.seo-forecast-note{margin:0 0 1.5rem;font-size:.9375rem;line-height:1.55;color:rgba(26,26,46,.72)}
 .seo-topbar{position:sticky;top:0;z-index:10;background:rgba(248,249,252,.92);backdrop-filter:blur(8px);border-bottom:1px solid rgba(0,0,0,.07)}
 .seo-topbar-in{max-width:56rem;margin:0 auto;padding:.8rem 1rem;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap}
 .seo-brand{font-weight:700;font-size:1rem;letter-spacing:-.01em;text-decoration:none!important;color:#1A1A2E}
@@ -846,6 +865,10 @@ async def render_indicator_html(
             f"{display_name}: динамика, источник, методология и последние значения.",
         )
     )
+    forecast_ssr = _forecast_ssr_enabled(indicator)
+    # V2: хвост meta description (без дубля, если «прогноз» уже в тексте).
+    if forecast_ssr:
+        desc = append_forecast_ssr_desc_tail(desc)
     current = latest_rows[0] if latest_rows else None
     desc = _enrich_description(
         desc, current, display_unit or indicator.unit,
@@ -864,6 +887,7 @@ async def render_indicator_html(
         display_frequency=display_frequency,
         data_code=data_indicator.code,
         data_years=data_years,
+        forecast_ssr=forecast_ssr,
     )
     canonical_path = f"/indicator/{indicator.code}"
     if resolved_mode and resolved_mode.mode != family.default_mode:
@@ -872,6 +896,11 @@ async def render_indicator_html(
     # а не базового: раньше mode-страница писала «годовая сумма», а картинка
     # показывала квартальный базовый ряд (В-2).
     og_path = f"{DOMAIN}/og/{data_indicator.code}.png"
+    image_name = (
+        forecast_ssr_image_name(display_name)
+        if forecast_ssr
+        else f"{display_name} — график динамики ({indicator.source})"
+    )
     json_ld = [
         _site_json_ld(),
         _breadcrumbs([
@@ -907,7 +936,8 @@ async def render_indicator_html(
             "@type": "ImageObject",
             "contentUrl": og_path,
             "url": og_path,
-            "caption": f"{display_name} — график динамики ({indicator.source})",
+            "name": image_name,
+            "caption": image_name if forecast_ssr else f"{display_name} — график динамики ({indicator.source})",
             "description": desc,
             "width": 1200,
             "height": 630,
@@ -1169,6 +1199,7 @@ def _indicator_body(
     display_frequency: str | None = None,
     data_code: str | None = None,
     data_years: list[int] | None = None,
+    forecast_ssr: bool = False,
 ) -> str:
     name = display_name or indicator.name
     unit = display_unit or indicator.unit
@@ -1196,11 +1227,23 @@ def _indicator_body(
     current_text = display_value_text(
         value_code, current.value if current else None, unit, frequency,
     )
+    # V5: alt с «прогноз» на пилотных карточках; иначе — факт + последнее значение.
     chart_alt = (
-        f"{name} — график динамики, последнее значение "
-        f"{current_text}, источник {indicator.source}"
+        forecast_ssr_image_name(name)
+        if forecast_ssr
+        else (
+            f"{name} — график динамики, последнее значение "
+            f"{current_text}, источник {indicator.source}"
+        )
     )
     og_code = data_code or indicator.code
+    # V4: видимый абзац под графиком (только пилот с реальным прогнозом).
+    forecast_note = ""
+    if forecast_ssr:
+        forecast_note = (
+            f'<p class="seo-forecast-note">{escape(FORECAST_SSR_CHART_NOTE)}'
+            f'{_link("/methodology", "как считается прогноз")}.</p>\n'
+        )
     # А-4: блок «по годам» — ссылки на годовые landing'и (последние 12 лет).
     years_section = ""
     if data_years:
@@ -1214,7 +1257,7 @@ def _indicator_body(
 <h1>{escape(name)}</h1>
 <p>{escape(clean_text(indicator.description, f"{name}: официальный экономический индикатор с историей значений и графиком."))}</p>
 <figure class="seo-chart"><img src="{DOMAIN}/og/{escape(og_code)}.png" width="1200" height="630" alt="{escape(chart_alt)}" loading="lazy"><figcaption>{escape(name)} — график динамики по данным {escape(indicator.source)}. Источник: forecasteconomy.com</figcaption></figure>
-<section><h2>Текущее значение</h2>
+{forecast_note}<section><h2>Текущее значение</h2>
 <ul>
 <li>Последнее значение: {escape(current_text)}</li>
 <li>Дата последнего значения: {escape(_format_date(current.date if current else None))}</li>

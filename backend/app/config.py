@@ -100,8 +100,12 @@ class Settings(BaseSettings):
     clickhouse_user: str = "default"
     clickhouse_password: str = ""
 
-    # Яндекс.Директ: расходы кампаний (коннектор включается после токена).
+    # Яндекс.Директ / РСЯ (партнёрка): расход кампаний. Токен — только в prod .env.
     direct_api_token: str = ""
+    # Яндекс.Партнёр (РСЯ) OAuth — хранить только в prod .env, не коммитить.
+    yandex_partner_client_id: str = ""
+    yandex_partner_client_secret: str = ""
+    yandex_partner_token: str = ""
 
     # Forecast Analytics OS
     analytics_enabled: bool = False
@@ -183,6 +187,13 @@ class Settings(BaseSettings):
     # а Mistral/DeepSeek/Together с того же IP отвечают штатным 401). Пустая
     # строка = без прокси (для dev/других сред, где блока нет).
     openrouter_proxy_url: str = ""
+    # Исходящий HTTP-прокси для ETL-парсеров (http_client ProxyFallbackSession).
+    # Пусто = тот же URL, что openrouter_proxy_url. Отдельное поле — если для
+    # Минфина/Росстата нужен другой egress (residential), чем для LLM.
+    etl_http_proxy_url: str = ""
+    # SOCKS (например host Tor): после direct и HTTP-прокси. Prod Docker →
+    # socks5h://172.18.0.1:9050 (Tor SocksPort на gateway rosstat_default). Нужен PySocks.
+    etl_socks_proxy_url: str = ""
     # Интерактивные кнопки бота (getUpdates-поллер каждые 30 с)
     telegram_poller_enabled: bool = False
 

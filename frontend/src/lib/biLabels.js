@@ -9,7 +9,7 @@
 // Покрывает обе номенклатуры: traffic_source Метрики (organic/link/saved…)
 // и наш classify_channel (search/referral/campaign…).
 export const CHANNEL_RU = {
-  ad: 'Реклама (Директ)',
+  ad: 'Реклама (РСЯ)',
   organic: 'Поисковые системы',
   search: 'Поисковые системы',
   campaign: 'Рассылки и посевы',

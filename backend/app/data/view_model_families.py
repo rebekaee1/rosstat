@@ -868,7 +868,13 @@ def _add_pop_yoy_alias(fam: Family) -> None:
     `*-yoy-year` (тот же code / pipeline / прогноз) — меняется только группа и
     подпись кнопки. Семьи без pop-группы (годовые T10/T10a) и без yoy-year
     (нативно-годовые) пропускаются.
+
+    Исключение (созвон Никита/Евгений): wages-nominal / wages-real — алиас
+    «Г/г» в «К прошлому периоду» путает с полноценной группой «К соотв. периоду
+    пред. года»; для этих двух баз pop-gg не добавляем.
     """
+    if fam.base in ("wages-nominal", "wages-real"):
+        return
     if not any(g.id == "pop" for g in fam.groups):
         return
     yoy_year = next((m for m in fam.modes if m.mode == "yoy-year"), None)

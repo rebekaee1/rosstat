@@ -85,3 +85,4 @@ scripts/*.dump.txt
 
 # Presentation slides (not code)
 фото/
+.tmp/

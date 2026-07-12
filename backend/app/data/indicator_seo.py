@@ -26,6 +26,45 @@ CATEGORY_KEYWORDS_RU: dict[str, str] = {
 }
 
 
+# B1/B2 SSR «прогноз» пилот (V2+V4+V5) — созвон НА правки 14 / 2026-07-12.
+# Только эти коды; V1 (seo_title) и V6 (FAQ) — не без отдельного «да».
+# V2/V4/V5 применяются только если у ряда реально есть модельный прогноз
+# (forecast_steps > 0): иначе ложный GEO-сигнал (пример — key-rate).
+FORECAST_SSR_PILOT_CODES: frozenset[str] = frozenset({
+    "cpi",
+    "key-rate",
+    "gdp-real",
+    "unemployment",
+    "wages-nominal",
+})
+
+FORECAST_SSR_DESC_TAIL = (
+    "Актуальные данные и модельный прогноз на ближайшие периоды."
+)
+
+FORECAST_SSR_CHART_NOTE = (
+    "На графике — официальный ряд и наш модельный прогноз (пунктир). "
+    "Методология — "
+)
+
+
+def forecast_ssr_image_name(display_name: str) -> str:
+    """V5: ImageObject name / OG alt для пилотных карточек с прогнозом."""
+    return f"{display_name} — график динамики и прогноз, forecasteconomy.com"
+
+
+def append_forecast_ssr_desc_tail(desc: str) -> str:
+    """V2: хвост seo_description, без дубля если «прогноз» уже есть."""
+    text = (desc or "").strip()
+    if "прогноз" in text.lower():
+        return text
+    if not text:
+        return FORECAST_SSR_DESC_TAIL
+    if not text.endswith("."):
+        text += "."
+    return f"{text} {FORECAST_SSR_DESC_TAIL}"
+
+
 def default_keywords(name: str, category: str | None, source: str | None) -> str:
     """Compose meta-keywords из имени индикатора + категории + общих терминов.
 
@@ -560,14 +599,16 @@ INDICATOR_SEO: dict[str, dict[str, str]] = {
         "seo_title": "Уровень безработицы — график и динамика",
         "seo_description": (
             "Доля безработных в %: помесячно, среднее по кварталам и 12М сглаживание. "
-            "Обследование рабочей силы Росстата, история с 1990-х."
+            "Обследование рабочей силы Росстата, история с 1990-х. "
+            "Актуальные данные и модельный прогноз на ближайшие периоды."
         ),
     },
     "wages-nominal": {
         "seo_title": "Средняя заработная плата в России — график и данные",
         "seo_description": (
             "Номинальная зарплата в рублях: помесячно с 2015 года, годовой ряд с 1991 года, "
-            "реальная, год к году и индекс 2015=100. Официальная статистика Росстата."
+            "реальная, год к году и индекс 2015=100. Официальная статистика Росстата. "
+            "Актуальные данные и модельный прогноз на ближайшие периоды."
         ),
     },
     "wages-real": {

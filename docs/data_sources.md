@@ -164,8 +164,7 @@ Endpoint: `cbr.ru/dataservice/data?publicationId={pub}&datasetId={ds}&measureId=
 
 **Trap (503 + `/ru/` CSV path, 2026-07)**: каталог Минфина периодически отвечает 503; глобальный `http_client` (total=3) исчерпывался → падали сразу три индикатора (`budget-*`), каждый раз заново долбя каталог. Контрмеры в `minfin_budget_parser`: Minfin-specific Retry, process TTL-кэш URL (10 мин, один hit на тройку), last-good URL в state Redis. **CSV всегда без `/ru/`**: `…/opendata/…/data-*.csv` (200); `…/ru/opendata/…/data-*.csv` → 404.
 
-**Trap (прод-IP ban на весь minfin.gov.ru, 2026-07-12)**: с `201.51.11.170` хост отвечает стабильным 503 на любой URL (в т.ч. `/`), при этом с обычных сетей — 200. Proxy OpenRouter не помогает. Fallback: упакованный снимок `backend/app/data/minfin/fedbud_month.csv`. Обновлять с машины, где Минфин открывается:
-`curl -A 'Mozilla/5.0' -o backend/app/data/minfin/fedbud_month.csv 'https://minfin.gov.ru/opendata/7710168360-fedbud_month/<latest-data-*.csv>'`.
+**Trap (прод-IP ban на весь minfin.gov.ru, 2026-07-12)**: с `201.51.11.170` и с OpenRouter-прокси `5.129.210.89` — стабильный 503; с обычных сетей — 200. `http_client.ProxyFallbackSession`: direct → HTTP (`RUSTATS_ETL_HTTP_PROXY_URL` / `OPENROUTER`) → SOCKS (`RUSTATS_ETL_SOCKS_PROXY_URL`). На проде SOCKS = host Tor `socks5h://172.18.0.1:9050` (Tor `SocksPort` на gateway сети `rosstat_default`; из контейнера нужен PySocks). Live-проверка: catalog+CSV через Tor = 200. Packaged snapshot `backend/app/data/minfin/fedbud_month.csv` остаётся последним fallback. **Не ставить Cloudflare WARP на хост** — ломает весь сетевой стек.
 
 | Индикатор | budget_target |
 |-----------|---------------|

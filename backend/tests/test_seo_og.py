@@ -368,6 +368,72 @@ def test_enrich_description_cpi_shows_change_not_raw_index():
     assert "100,17" not in out and "100.17" not in out
 
 
+def test_forecast_ssr_desc_tail_no_duplicate():
+    """V2: хвост не дублируется, если «прогноз» уже в description."""
+    from app.data.indicator_seo import (
+        FORECAST_SSR_DESC_TAIL,
+        append_forecast_ssr_desc_tail,
+    )
+
+    with_forecast = "ИПЦ России: прогноз на 12 месяцев."
+    assert append_forecast_ssr_desc_tail(with_forecast) == with_forecast
+    bare = "Уровень безработицы: помесячный ряд Росстата."
+    out = append_forecast_ssr_desc_tail(bare)
+    assert FORECAST_SSR_DESC_TAIL in out
+    assert out.count("прогноз") == 1
+
+
+def test_forecast_ssr_pilot_gate_requires_forecast_steps():
+    """V2/V4/V5 только для whitelist ∩ forecast_steps>0 (key-rate без прогноза — off)."""
+    from types import SimpleNamespace
+
+    from app.data.indicator_seo import FORECAST_SSR_PILOT_CODES
+    from app.services.seo_renderer import _forecast_ssr_enabled
+
+    assert FORECAST_SSR_PILOT_CODES == frozenset({
+        "cpi", "key-rate", "gdp-real", "unemployment", "wages-nominal",
+    })
+    cpi = SimpleNamespace(code="cpi", model_config_json={"forecast_steps": 12})
+    key = SimpleNamespace(code="key-rate", model_config_json={"forecast_steps": 0})
+    other = SimpleNamespace(code="m2", model_config_json={"forecast_steps": 12})
+    assert _forecast_ssr_enabled(cpi) is True
+    assert _forecast_ssr_enabled(key) is False
+    assert _forecast_ssr_enabled(other) is False
+
+
+def test_forecast_ssr_indicator_body_v4_v5():
+    """V4 абзац под графиком + V5 alt с «прогноз» на пилоте."""
+    from types import SimpleNamespace
+
+    from app.data.indicator_seo import FORECAST_SSR_CHART_NOTE, forecast_ssr_image_name
+    from app.services.seo_renderer import _indicator_body
+
+    ind = SimpleNamespace(
+        code="cpi",
+        name="Индекс потребительских цен на товары и услуги",
+        unit="%",
+        frequency="monthly",
+        source="Росстат",
+        source_url="https://rosstat.gov.ru/statistics/price",
+        description="ИПЦ России.",
+        methodology="Фиксированная корзина.",
+        seo_blocks=None,
+        model_config_json={"forecast_steps": 12},
+    )
+    html = _indicator_body(
+        ind, None, [], [], 0, None, None, forecast_ssr=True,
+    )
+    assert 'class="seo-forecast-note"' in html
+    assert FORECAST_SSR_CHART_NOTE in html
+    assert 'href="/methodology"' in html
+    expected_alt = forecast_ssr_image_name(ind.name)
+    assert f'alt="{expected_alt}"' in html
+    # Без флага — нет V4/V5.
+    html_off = _indicator_body(ind, None, [], [], 0, None, None, forecast_ssr=False)
+    assert "seo-forecast-note" not in html_off
+    assert "график динамики и прогноз" not in html_off
+
+
 def test_autolink_terms_in_seo_blocks():
     """Перелинковка: первое вхождение термина → ссылка, self-ссылки пропущены."""
     from html import escape
