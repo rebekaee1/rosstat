@@ -100,9 +100,9 @@ class Settings(BaseSettings):
     clickhouse_user: str = "default"
     clickhouse_password: str = ""
 
-    # Яндекс.Директ / РСЯ (партнёрка): расход кампаний. Токен — только в prod .env.
+    # Яндекс.Директ: расход кампаний (spend). Токен — только в prod .env.
     direct_api_token: str = ""
-    # Яндекс.Партнёр (РСЯ) OAuth — хранить только в prod .env, не коммитить.
+    # Яндекс.Партнёр (РСЯ): доход площадки (Partner Statistics). Не путать с Директом.
     yandex_partner_client_id: str = ""
     yandex_partner_client_secret: str = ""
     yandex_partner_token: str = ""

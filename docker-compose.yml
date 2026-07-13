@@ -148,8 +148,11 @@ services:
       # сайт при выключенном/упавшем CH работает как раньше.
       RUSTATS_CLICKHOUSE_ENABLED: ${RUSTATS_CLICKHOUSE_ENABLED:-true}
       RUSTATS_CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-analytics_dev}
-      # Расходы Директа: коннектор включается после передачи токена владельцем.
+      # Расходы Директа (spend) и доход РСЯ (Partner Statistics) — токены только в .env.
       RUSTATS_DIRECT_API_TOKEN: ${RUSTATS_DIRECT_API_TOKEN:-}
+      RUSTATS_YANDEX_PARTNER_CLIENT_ID: ${RUSTATS_YANDEX_PARTNER_CLIENT_ID:-}
+      RUSTATS_YANDEX_PARTNER_CLIENT_SECRET: ${RUSTATS_YANDEX_PARTNER_CLIENT_SECRET:-}
+      RUSTATS_YANDEX_PARTNER_TOKEN: ${RUSTATS_YANDEX_PARTNER_TOKEN:-}
       TZ: Europe/Moscow
     volumes:
       - ./output:/app/data:ro

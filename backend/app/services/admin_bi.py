@@ -928,6 +928,7 @@ async def build_bi_dashboard(db: AsyncSession, period: Period | int = 30) -> dic
         mart_metrika_funnel,
         mart_own_funnel,
         mart_page_quadrants,
+        mart_partner_revenue,
         mart_people,
         mart_reliability,
         mart_segments,
@@ -956,6 +957,7 @@ async def build_bi_dashboard(db: AsyncSession, period: Period | int = 30) -> dic
         "collection_quality": await mart_collection_quality(db, p.tail(7)),
         "botness": await mart_botness(db, p.tail(7)),
         "ad_costs": await mart_ad_costs(db, p),
+        "partner_revenue": await mart_partner_revenue(db, p),
         # --- операционные витрины ---
         "kpi_daily": await _kpi_daily(db, p),
         "acquisition": _acquisition(window_visits, biz_ids),

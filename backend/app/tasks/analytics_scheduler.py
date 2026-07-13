@@ -227,6 +227,21 @@ async def acquisition_daily_job() -> None:
     logger.info("Acquisition sync %s: %s", yesterday, out)
 
 
+async def partner_revenue_daily_job() -> None:
+    """Ежедневный синк дохода РСЯ (Partner Statistics), ~08:30 МСК.
+
+    Preset ``30days`` — идемпотентный upsert по дню; лаг кабинета обычно
+    T+1. Кормит витрину ``partner_revenue`` в BI / Пульсе.
+    """
+    from app.services.yandex_partner_stats import partner_configured, sync_partner_revenue
+
+    if not partner_configured():
+        logger.info("Partner revenue sync skipped: no token")
+        return
+    out = await sync_partner_revenue(period="30days")
+    logger.info("Partner revenue sync: %s", out)
+
+
 async def webmaster_queries_daily_job() -> None:
     """Ежедневный синк популярных запросов Вебмастера (08:40 МСК).
 

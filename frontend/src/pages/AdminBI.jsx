@@ -762,7 +762,7 @@ function AcquisitionTab({ d }) {
             </ScatterChart>
           </ResponsiveContainer>
         ) : null}
-        {ads.length === 0 && <Empty note="Платных кампаний за период нет. Расход и цена клика появятся после подключения рекламного кабинета (РСЯ / партнёрские сети)." />}
+        {ads.length === 0 && <Empty note="Платных кампаний Директа за период нет. Расход и CPA появятся после подключения токена Директа; доход РСЯ — в отдельной карточке ниже." />}
       </Card>
 
       <Card title="Поисковые фразы, с которых пришли" icon={Search} source="metrika" insight="Реальные запросы, приведшие посетителей из поиска. Близкие недопечатки схлопнуты в полную фразу."
@@ -2546,11 +2546,15 @@ function BotnessCard({ d }) {
   );
 }
 
-// Привлечение: классика + сегменты + деньги Директа.
+// Привлечение: классика + сегменты + доход РСЯ + каркас расхода Директа.
 function AcquisitionFullTab({ d }) {
   const segs = d.segments?.segments || [];
   const segPager = usePager(segs, 20);
   const costs = d.ad_costs || {};
+  const rev = d.partner_revenue || {};
+  const revDays = rev.days || [];
+  const revPager = usePager([...revDays].reverse(), 14);
+  const fmtRub = (n) => `${Number(n || 0).toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₽`;
   return (
     <div className="space-y-5">
       <AcquisitionTab d={d} />
@@ -2594,14 +2598,59 @@ function AcquisitionFullTab({ d }) {
         ) : <Empty note="Сессий за период ещё нет — сегменты появятся с первым трафиком." />}
       </Card>
 
-      <Card title="Деньги рекламы: расход, CPA, ROI" icon={Megaphone} source="metrika"
+      <Card title="Доход РСЯ (партнёрка)" icon={Megaphone} source="own"
+        insight={rev.connected
+          ? `Доход за окно: ${fmtRub(rev.total_revenue_rub)} · показов ${fmtInt(rev.total_shows)} · кликов по блокам ${fmtInt(rev.total_hits)}.`
+          : rev.note || 'Доход РСЯ появится после синка Partner Statistics.'}
+        hint="Вознаграждение площадки без НДС по дням (Partner Statistics). Это доход от рекламных блоков на сайте, не расход Директа.">
+        {rev.connected && revDays.length ? (
+          <div className="space-y-3">
+            <div className="h-40">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={revDays.map((r) => ({ day: r.day.slice(5), revenue: Number(r.revenue_rub || 0) }))}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                  <XAxis dataKey="day" tick={{ fontSize: 10 }} />
+                  <YAxis tick={{ fontSize: 10 }} width={44} />
+                  <Tooltip formatter={(v) => fmtRub(v)} labelFormatter={(l) => `День ${l}`} />
+                  <Bar dataKey="revenue" fill={GOLD} radius={[3, 3, 0, 0]} name="Доход" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-[12px]">
+                <thead>
+                  <tr className="text-left text-text-tertiary border-b border-border-subtle">
+                    <th className="py-1.5 pr-3 font-medium">День</th>
+                    <th className="py-1.5 pr-3 font-medium text-right">Показы</th>
+                    <th className="py-1.5 pr-3 font-medium text-right">Клики</th>
+                    <th className="py-1.5 font-medium text-right">Доход</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {revPager.slice.map((r) => (
+                    <tr key={r.day} className="border-b border-border-subtle/50">
+                      <td className="py-1.5 pr-3 tabular-nums text-text-primary">{r.day}</td>
+                      <td className="py-1.5 pr-3 text-right tabular-nums">{fmtInt(r.shows)}</td>
+                      <td className="py-1.5 pr-3 text-right tabular-nums">{fmtInt(r.hits)}</td>
+                      <td className="py-1.5 text-right tabular-nums font-medium">{fmtRub(r.revenue_rub)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <Pager p={revPager} />
+            </div>
+          </div>
+        ) : <Empty note={rev.note || 'Строк дохода ещё нет — дождитесь утреннего синка или прогоните вручную.'} />}
+      </Card>
+
+      <Card title="Расход Директа: CPA" icon={Target} source="metrika"
         insight={costs.connected
           ? `Расход за окно: ${fmtInt(Math.round(costs.total_cost_rub || 0))} ₽ · макро-целей: ${fmtInt(costs.macro_goals_window)} · CPA ${costs.cpa_macro_rub != null ? `${fmtInt(Math.round(costs.cpa_macro_rub))} ₽` : '—'}.`
-          : costs.note || 'Коннектор партнёрской сети (РСЯ) включится после передачи API-токена.'}
-        hint="Расход кампаний партнёрских сетей (РСЯ) против достигнутых макро-целей: цена одной конверсии (CPA). Появится полностью после подключения токена.">
+          : costs.note || 'Коннектор Директа (расход) ждёт отдельный API-токен.'}
+        hint="Расход рекламных кампаний Яндекс.Директа против макро-целей (CPA). Не путать с доходом РСЯ выше.">
         {costs.connected && (costs.campaigns || []).length ? (
           <HBars data={costs.campaigns.map((c) => ({ name: c.campaign, value: Math.round(c.cost_rub) }))} unit=" ₽" />
-        ) : <Empty note="Каркас готов: таблица расходов и синк ждут токен партнёрской сети (РСЯ)." />}
+        ) : <Empty note="Каркас готов: таблица расходов и синк ждут токен Директа (spend)." />}
       </Card>
     </div>
   );

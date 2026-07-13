@@ -1324,7 +1324,7 @@ async def mart_ch_slices_of_day(_db: AsyncSession | None = None) -> dict[str, An
 
 
 # ---------------------------------------------------------------------------
-# Витрина: расходы Директа (CPA/ROI — каркас до передачи токена)
+# Витрина: расходы Директа (CPA — каркас) + доход РСЯ (Partner Statistics)
 # ---------------------------------------------------------------------------
 
 async def mart_ad_costs(db: AsyncSession, period: Period | int = 30) -> dict[str, Any]:
@@ -1352,7 +1352,53 @@ async def mart_ad_costs(db: AsyncSession, period: Period | int = 30) -> dict[str
         ],
         "macro_goals_window": int(macro_goals),
         "cpa_macro_rub": round(total_cost / macro_goals, 2) if rows and macro_goals else None,
-        "note": None if rows else "Коннектор Директа включится после передачи API-токена владельцем",
+        "note": None if rows else "Коннектор Директа (расход) — отдельный токен; сейчас пусто",
+    }
+
+
+async def mart_partner_revenue(db: AsyncSession, period: Period | int = 30) -> dict[str, Any]:
+    """Доход РСЯ по дням (partner_wo_nds) за окно BI."""
+    from app.models import PartnerRevenue
+    from app.services.yandex_partner_stats import partner_configured
+
+    p = as_period(period)
+    rows = (await db.execute(
+        select(
+            PartnerRevenue.day,
+            PartnerRevenue.shows,
+            PartnerRevenue.hits,
+            PartnerRevenue.revenue_rub,
+        )
+        .where(PartnerRevenue.day >= p.start_date, PartnerRevenue.day <= p.end_date)
+        .order_by(PartnerRevenue.day)
+    )).all()
+    total_rev = float(sum(float(r or 0) for *_, r in rows))
+    total_shows = int(sum(int(s or 0) for _, s, _, _ in rows))
+    total_hits = int(sum(int(h or 0) for _, _, h, _ in rows))
+    days = [
+        {
+            "day": d.isoformat(),
+            "shows": int(shows or 0),
+            "hits": int(hits or 0),
+            "revenue_rub": float(rev or 0),
+        }
+        for d, shows, hits, rev in rows
+    ]
+    configured = partner_configured()
+    connected = bool(rows)
+    note = None
+    if not configured:
+        note = "Нет RUSTATS_YANDEX_PARTNER_TOKEN — доход РСЯ не синхронизируется"
+    elif not connected:
+        note = "Токен есть, строк ещё нет — дождитесь синка или прогоните вручную"
+    return {
+        "configured": configured,
+        "connected": connected,
+        "total_revenue_rub": round(total_rev, 2),
+        "total_shows": total_shows,
+        "total_hits": total_hits,
+        "days": days,
+        "note": note,
     }
 
 
@@ -1381,5 +1427,6 @@ async def build_marts_daily_context(db: AsyncSession) -> dict[str, Any]:
         "feature_adoption_7d": await mart_feature_adoption(db, week),
         "experiments_30d": await mart_experiments(db, resolve_period("30d")),
         "ad_costs": await mart_ad_costs(db, week),
+        "partner_revenue": await mart_partner_revenue(db, week),
         "ch_slices": await mart_ch_slices_of_day(db),
     }

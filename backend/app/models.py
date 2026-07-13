@@ -702,7 +702,7 @@ class DirectCost(Base):
 
     Наполняется коннектором к API Директа после передачи владельцем токена
     (RUSTATS_DIRECT_API_TOKEN). До этого таблица пустая, CPA-витрина в BI
-    показывает «нет данных о расходах».
+    показывает «нет данных о расходах». Не путать с PartnerRevenue (доход РСЯ).
     """
     __tablename__ = "direct_costs"
     __table_args__ = (
@@ -714,6 +714,26 @@ class DirectCost(Base):
     campaign: Mapped[str] = mapped_column(String(300), nullable=False)
     cost_rub: Mapped[float] = mapped_column(Numeric(12, 2), nullable=False, default=0)
     clicks: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    synced_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+
+
+class PartnerRevenue(Base):
+    """Доход РСЯ (Яндекс.Партнёр): день × показы/hits/вознаграждение без НДС.
+
+    Источник — Partner Statistics API (`statistics2/get`, measure partner_wo_nds).
+    Токен: RUSTATS_YANDEX_PARTNER_TOKEN (scope партнёрки). Это monetization
+    площадки, не расход Директа (см. DirectCost).
+    """
+    __tablename__ = "partner_revenue"
+    __table_args__ = (
+        UniqueConstraint("day", name="uq_partner_revenue_day"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    day: Mapped[date] = mapped_column(Date, nullable=False, index=True)
+    shows: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    hits: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    revenue_rub: Mapped[float] = mapped_column(Numeric(12, 2), nullable=False, default=0)
     synced_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
 
 

@@ -566,6 +566,20 @@ async def lifespan(app: FastAPI):
             )
             logger.info("Webmaster recrawl auto-submit enabled: daily at 09:10 MSK")
 
+        # Доход РСЯ (Partner Statistics) → BI «Привлечение». Окно 30 дней,
+        # upsert по дню; включается только при наличии partner-токена.
+        from app.services.yandex_partner_stats import partner_configured
+        if partner_configured():
+            from app.tasks.analytics_scheduler import partner_revenue_daily_job
+            scheduler.add_job(
+                partner_revenue_daily_job,
+                trigger=CronTrigger(hour=8, minute=30, timezone="Europe/Moscow"),
+                id="partner_revenue_daily",
+                name="Yandex.Partner RSYa revenue sync (shows/hits/partner_wo_nds)",
+                replace_existing=True,
+            )
+            logger.info("Partner revenue sync enabled: daily at 08:30 MSK")
+
         # Запросы Яндекс-поиска (Вебмастер) → BI «Спрос и SEO». Окно 7 дней
         # с учётом лага API 2–3 дня; идемпотентно дозаполняет пропуски.
         if settings.yandex_webmaster_token:
