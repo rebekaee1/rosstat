@@ -230,13 +230,13 @@ Multi-source merge:
 |-----------|------------|------|--------------|---------------|-----|
 | `gdp-nominal` | official_quarterly | `mediabank/VVP_kvartal_s-1995-2026.xlsx` | `2` | `1` | — |
 | `gdp-real` | official_quarterly | `mediabank/VVP_kvartal_s-1995-2026.xlsx` | `9` | `3` | — |
-| `gdp-consumption` | official_use | `mediabank/GDP-quarters-of-use-1995-4kv-2025.xls` | `2` | `1` | 7 |
-| `gdp-government` | official_use | `mediabank/GDP-quarters-of-use-1995-4kv-2025.xls` | `2` | `1` | 8 |
-| `gdp-investment` | official_use | `mediabank/GDP-quarters-of-use-1995-4kv-2025.xls` | `2` | `1` | 11 |
+| `gdp-consumption` | official_use | `mediabank/GDP-quarters-of-use-1995_1kv-2026.xls` | `2` | `1` | 7 |
+| `gdp-government` | official_use | `mediabank/GDP-quarters-of-use-1995_1kv-2026.xls` | `2` | `1` | 8 |
+| `gdp-investment` | official_use | `mediabank/GDP-quarters-of-use-1995_1kv-2026.xls` | `2` | `1` | 11 |
 
 История ВВП: 1995-Q1 → present (~125 точек на каждый индикатор после Q1-2026).
 
-**Trap (имя файла, 2026-07):** на `/statistics/accounts` канон — `VVP_kvartal_s-1995-2026.xlsx` (дефис после `s`). Старый URL `VVP_kvartal_s_1995-2026.xlsx` (подчёркивание) всё ещё 200, но без I кв. 2026 — ETL молча `no_new_data`. URL в `ROSSTAT_STATIC_URLS['gdp_quarterly']`.
+**Trap (имя файла, 2026-07):** на `/statistics/accounts` канон — `VVP_kvartal_s-1995-2026.xlsx` (дефис после `s`). Старый URL `VVP_kvartal_s_1995-2026.xlsx` (подчёркивание) всё ещё 200, но без I кв. 2026 — ETL молча `no_new_data`. URL в `ROSSTAT_STATIC_URLS['gdp_quarterly']`. Аналогично use-side: канон `GDP-quarters-of-use-1995_1kv-2026.xls`; старый `…-4kv-2025.xls` остаётся без I кв. 2026.
 
 ## Росстат — промышленность (RosstatIpiParser)
 

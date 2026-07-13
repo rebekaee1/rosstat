@@ -9,7 +9,7 @@
    в ценах 2008 1995-2011) + `gdp_overlap_year` (default 2011) — продлевают
    историю до 1995 через **ratio-splice** на overlap-году (см. `splice_at_overlap`).
 
-2. `gdp_source: "official_use"` — `GDP-quarters-of-use-1995-4kv-2025.xls` (rosstat.gov.ru):
+2. `gdp_source: "official_use"` — `GDP-quarters-of-use-1995_1kv-2026.xls` (rosstat.gov.ru):
    Quarter-grid layout, multi-row (стек индикаторов на одном sheet).
    `gdp_sheet`: "1" = ОКВЭД2007 (1995-2011), "2" = ОКВЭД2 (2011+).
    `gdp_row_index` (0-based): 4 = ВВП, 7 = домохозяйства, 8 = госуправление, 11 = GFCF.
