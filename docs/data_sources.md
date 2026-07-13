@@ -164,7 +164,7 @@ Endpoint: `cbr.ru/dataservice/data?publicationId={pub}&datasetId={ds}&measureId=
 
 **Trap (503 + `/ru/` CSV path, 2026-07)**: каталог Минфина периодически отвечает 503; глобальный `http_client` (total=3) исчерпывался → падали сразу три индикатора (`budget-*`), каждый раз заново долбя каталог. Контрмеры в `minfin_budget_parser`: Minfin-specific Retry, process TTL-кэш URL (10 мин, один hit на тройку), last-good URL в state Redis. **CSV всегда без `/ru/`**: `…/opendata/…/data-*.csv` (200); `…/ru/opendata/…/data-*.csv` → 404.
 
-**Trap (прод-IP ban на весь minfin.gov.ru, 2026-07-12)**: с `201.51.11.170` и с OpenRouter-прокси `5.129.210.89` — стабильный 503; с обычных сетей — 200. `http_client.ProxyFallbackSession`: direct → HTTP (`RUSTATS_ETL_HTTP_PROXY_URL` / `OPENROUTER`) → SOCKS (`RUSTATS_ETL_SOCKS_PROXY_URL`). На проде SOCKS = host Tor `socks5h://172.18.0.1:9050` (Tor `SocksPort` на gateway сети `rosstat_default`; из контейнера нужен PySocks). Live-проверка: catalog+CSV через Tor = 200. Packaged snapshot `backend/app/data/minfin/fedbud_month.csv` остаётся последним fallback. **Не ставить Cloudflare WARP на хост** — ломает весь сетевой стек.
+**Trap (прод-IP ban на весь minfin.gov.ru, 2026-07-12)**: с `201.51.11.170` и с OpenRouter-прокси `5.129.210.89` — стабильный 503; с обычных сетей — 200. `http_client.ProxyFallbackSession`: direct → HTTP (`RUSTATS_ETL_HTTP_PROXY_URL` / `OPENROUTER`) → SOCKS (`RUSTATS_ETL_SOCKS_PROXY_URL`). На проде SOCKS = host Tor `socks5h://172.18.0.1:9050` (Tor `SocksPort` на gateway сети `rosstat_default`; из контейнера нужен PySocks). Live-проверка: catalog+CSV через Tor = 200. Packaged snapshot `backend/app/data/minfin/fedbud_month.csv` остаётся последним fallback. **Не ставить Cloudflare WARP на хост** — ломает весь сетевой стек. **Trap (ночные timeout 300с, 2026-07-13)**: urllib3 Retry(connect/read=3) × timeout 45–90с сжигал бюджет `wait_for` до artifact; укорочены Minfin retries (total/connect/read=1, timeout 25–40с), `ETL_TIMEOUT_BY_PARSER[minfin_budget_csv]=600`.
 
 | Индикатор | budget_target |
 |-----------|---------------|
@@ -228,13 +228,15 @@ Multi-source merge:
 
 | Индикатор | gdp_source | File | Modern sheet | History sheet | Row |
 |-----------|------------|------|--------------|---------------|-----|
-| `gdp-nominal` | official_quarterly | `mediabank/VVP_kvartal_s_1995-2026.xlsx` | `2` | `1` | — |
-| `gdp-real` | official_quarterly | `mediabank/VVP_kvartal_s_1995-2026.xlsx` | `9` | `3` | — |
+| `gdp-nominal` | official_quarterly | `mediabank/VVP_kvartal_s-1995-2026.xlsx` | `2` | `1` | — |
+| `gdp-real` | official_quarterly | `mediabank/VVP_kvartal_s-1995-2026.xlsx` | `9` | `3` | — |
 | `gdp-consumption` | official_use | `mediabank/GDP-quarters-of-use-1995-4kv-2025.xls` | `2` | `1` | 7 |
 | `gdp-government` | official_use | `mediabank/GDP-quarters-of-use-1995-4kv-2025.xls` | `2` | `1` | 8 |
 | `gdp-investment` | official_use | `mediabank/GDP-quarters-of-use-1995-4kv-2025.xls` | `2` | `1` | 11 |
 
-История ВВП: 1995-Q1 → present (~124 точки на каждый индикатор).
+История ВВП: 1995-Q1 → present (~125 точек на каждый индикатор после Q1-2026).
+
+**Trap (имя файла, 2026-07):** на `/statistics/accounts` канон — `VVP_kvartal_s-1995-2026.xlsx` (дефис после `s`). Старый URL `VVP_kvartal_s_1995-2026.xlsx` (подчёркивание) всё ещё 200, но без I кв. 2026 — ETL молча `no_new_data`. URL в `ROSSTAT_STATIC_URLS['gdp_quarterly']`.
 
 ## Росстат — промышленность (RosstatIpiParser)
 

@@ -24,6 +24,8 @@ ETL_TIMEOUT_SECONDS = 300
 # Тяжёлые парсеры: cold-start может идти минуты; steady-state weekly — секунды.
 ETL_TIMEOUT_BY_PARSER: dict[str, int] = {
     "rosstat_weekly_cpi": 600,
+    # Minfin: direct 503 → Tor SOCKS (+ artifact). Ночью Tor иногда >5 мин.
+    "minfin_budget_csv": 600,
 }
 
 logger = logging.getLogger(__name__)
@@ -72,7 +74,8 @@ async def run_etl_for_indicator(indicator_code: str) -> bool:
                 await db.rollback()
                 fetch_log.status = "timeout"
                 fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-                fetch_log.error_message = f"ETL cancelled/timed out after {ETL_TIMEOUT_SECONDS}s"
+                to = etl_timeout_for(indicator.parser_type)
+                fetch_log.error_message = f"ETL cancelled/timed out after {to}s"
                 db.add(fetch_log)
                 await db.commit()
             raise

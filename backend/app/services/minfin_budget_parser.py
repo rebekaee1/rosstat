@@ -58,11 +58,13 @@ _RU_OPENDATA_RE = re.compile(
 
 # 403/429/503 — один ответ в ProxyFallbackSession (direct → HTTP → Tor SOCKS),
 # без urllib3-retry на ban-статусах (иначе минуты на 503 до hop).
+# connect/read = 1: иначе hung-сокет × timeout=45–90 сжигает ETL_TIMEOUT 300с
+# до artifact-fallback (ночные timeout 2026-07-12/13 при живом Tor днём).
 _MINFIN_RETRY = Retry(
-    total=4,
-    connect=3,
-    read=3,
-    backoff_factor=1.0,
+    total=1,
+    connect=1,
+    read=1,
+    backoff_factor=0.5,
     status_forcelist=[408, 500, 502, 504],
     allowed_methods=["GET", "HEAD"],
     raise_on_status=False,
@@ -103,7 +105,7 @@ class BudgetPoint:
     value: float
 
 
-def _create_minfin_session(*, timeout: int = 60):
+def _create_minfin_session(*, timeout: int = 25):
     return create_session(timeout=timeout, retry=_MINFIN_RETRY)
 
 
@@ -144,7 +146,7 @@ def _invalidate_csv_url_cache() -> None:
 
 def _discover_csv_url_from_catalog(session) -> str:
     """Hit the catalog page and pick the lexicographically latest data-*.csv."""
-    resp = session.get(CATALOG_URL, timeout=45)
+    resp = session.get(CATALOG_URL, timeout=25)
     resp.raise_for_status()
     soup = BeautifulSoup(resp.text, "html.parser")
     candidates: list[str] = []
@@ -199,7 +201,7 @@ def _find_csv_url(*, force_catalog: bool = False) -> str:
         if cached:
             return cached
 
-    session = _create_minfin_session(timeout=45)
+    session = _create_minfin_session(timeout=25)
     try:
         try:
             url = _discover_csv_url_from_catalog(session)
@@ -344,7 +346,7 @@ def _find_latest_preliminary_press_url() -> str | None:
     Returns None when no such release is currently linked from the listing —
     in that case the press fallback is silently disabled (CSV-only behaviour).
     """
-    session = _create_minfin_session(timeout=45)
+    session = _create_minfin_session(timeout=25)
     try:
         resp = session.get(PRESS_LIST_URL, timeout=45)
         resp.raise_for_status()
@@ -447,7 +449,7 @@ def _augment_with_press_preliminary(
     if not press_url:
         return points, None
 
-    session = _create_minfin_session(timeout=45)
+    session = _create_minfin_session(timeout=25)
     try:
         resp = session.get(press_url, timeout=45)
         resp.raise_for_status()
@@ -522,9 +524,9 @@ def fetch_and_parse_budget(target: str = "deficit") -> tuple[list[BudgetPoint], 
     """
     try:
         csv_url = normalize_minfin_csv_url(_find_csv_url())
-        session = _create_minfin_session(timeout=90)
+        session = _create_minfin_session(timeout=40)
         try:
-            resp = session.get(csv_url, timeout=90)
+            resp = session.get(csv_url, timeout=40)
             # Rare: stale last-good or locale-prefixed URL → 404. Retry once after
             # force re-discover if we were on a fallback path.
             if resp.status_code == 404:
@@ -534,7 +536,7 @@ def fetch_and_parse_budget(target: str = "deficit") -> tuple[list[BudgetPoint], 
                 )
                 _invalidate_csv_url_cache()
                 csv_url = normalize_minfin_csv_url(_find_csv_url(force_catalog=True))
-                resp = session.get(csv_url, timeout=90)
+                resp = session.get(csv_url, timeout=40)
             resp.raise_for_status()
             resp.encoding = "utf-8"
             points = _parse_budget_csv(resp.text, target=target)
