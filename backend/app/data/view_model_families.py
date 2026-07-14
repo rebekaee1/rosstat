@@ -1035,6 +1035,20 @@ def _monthly_forecast_meta(fam: "Family", m: "Mode") -> dict | None:
     }
 
 
+def iter_superseded_default_sibling_codes():
+    """Коды авто-sibling'ов, заменённые FamilyDef.overrides на другой ряд.
+
+    До override семья сидила в БД как `{base}-{token}`; после смены кода режима
+    старый ряд остаётся orphan'ом. seed сбрасывает is_listed=True глобально —
+    без явного скрытия такие строки снова попадают в каталог.
+    """
+    for fam_def in _FAMILY_DEFS:
+        for token, override_code in fam_def.overrides.items():
+            default_code = f"{fam_def.base}-{token}"
+            if default_code != override_code:
+                yield default_code
+
+
 def iter_sibling_indicators():
     """Yield метаданные seed-строки для каждого НЕ-нативного режима-sibling.
 

@@ -28,7 +28,10 @@ from app.data.indicator_seo import (
     INDICATOR_HIDDEN_FROM_LISTING,
     default_keywords,
 )
-from app.data.view_model_families import iter_sibling_indicators as _iter_vmf_siblings
+from app.data.view_model_families import (
+    iter_sibling_indicators as _iter_vmf_siblings,
+    iter_superseded_default_sibling_codes as _iter_superseded_siblings,
+)
 
 CPI_DESCRIPTION = (
     "Индекс потребительских цен (ИПЦ) измеряет изменение цен на товары и услуги, "
@@ -4544,6 +4547,8 @@ for _meta in _iter_vmf_siblings():
 
 # Скрываем сгенерированные siblings из каталога (доступны через режимы/поиск).
 INDICATOR_HIDDEN_FROM_LISTING.update(_generated_sibling_codes)
+# Orphan'ы: авто-код до override (напр. wages-nominal-yoy-year → annual-yoy).
+INDICATOR_HIDDEN_FROM_LISTING.update(_iter_superseded_siblings())
 
 
 # --- Месячный прогноз (Прогноз_месячных_данных.ipynb, руководитель, июнь 2026) ---

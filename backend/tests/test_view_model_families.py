@@ -83,6 +83,30 @@ def test_gdp_reuses_legacy_codes():
     assert by_mode["sum-year"] == "gdp-nominal-annual"
 
 
+def test_wages_nominal_yoy_year_override_supersedes_auto_sibling():
+    wages = vmf.FAMILY_BY_BASE["wages-nominal"]
+    by_mode = {m.mode: m.code for m in wages.modes}
+    assert by_mode["yoy-year"] == "wages-nominal-annual-yoy"
+    superseded = set(vmf.iter_superseded_default_sibling_codes())
+    assert "wages-nominal-yoy-year" in superseded
+    assert "wages-nominal-avg-year" in superseded
+    assert "wages-nominal-annual-yoy" not in superseded
+
+
+def test_superseded_default_siblings_not_in_active_iter():
+    active = {m["code"] for m in vmf.iter_sibling_indicators()}
+    for code in vmf.iter_superseded_default_sibling_codes():
+        assert code not in active, f"{code} не должен генерироваться после override"
+
+
+def test_superseded_siblings_hidden_in_seed():
+    import seed_data
+
+    superseded = set(vmf.iter_superseded_default_sibling_codes())
+    assert superseded, "ожидаются superseded-коды от overrides"
+    assert superseded <= seed_data.INDICATOR_HIDDEN_FROM_LISTING
+
+
 def test_budget_deficit_flow_plus_abs_deltas():
     """Дефицит (поток со знаком): За период (сумма) + приросты в АБСОЛЮТЕ.
 

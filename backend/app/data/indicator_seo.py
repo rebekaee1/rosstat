@@ -1240,6 +1240,8 @@ INDICATOR_HIDDEN_FROM_LISTING: set[str] = {
     # wages-nominal-annual — annual sibling с историей 1991-2014 (не listed).
     # wages-nominal-annual-yoy — Г/г режим «По годам» поверх deep-ряда (1992+,
     # созвон «На правки 13» 2026-07-08), тот же паттерн, что avg-year override.
+    # wages-nominal-yoy-year / wages-nominal-avg-year — устаревшие авто-sibling'ы
+    # до overrides; также в iter_superseded_default_sibling_codes() (seed).
     "wages-index",
     "wages-yoy",
     "wages-nominal-annual",
