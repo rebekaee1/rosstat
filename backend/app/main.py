@@ -371,6 +371,21 @@ async def _catch_up_empty_indicators() -> None:
         logger.warning("Startup catch-up aborted: %s", e)
 
 
+async def _startup_data_catch_up() -> None:
+    """Startup: пустые source-ряды → ETL; затем gap-fill пустых прогнозов.
+
+    Порядок важен: без факта retrain бессмысленен. Forecast gap-fill закрывает
+    «включили strategy в seed, забыли ручной retrain» без ручных команд.
+    """
+    await _catch_up_empty_indicators()
+    try:
+        from app.tasks.scheduler import _catch_up_empty_forecasts_safe
+
+        await _catch_up_empty_forecasts_safe("startup")
+    except Exception as e:
+        logger.warning("Startup forecast catch-up aborted: %s", e)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
@@ -727,12 +742,9 @@ async def lifespan(app: FastAPI):
 
         asyncio.create_task(_cleanup_stuck_fetch_logs())
 
-        # «New indicator initial ETL trap» — закрытие. После seed_data
-        # любые новые source-индикаторы могут стоять с 0 точек, пока
-        # daily-job не отработает (06:00 МСК). Триггерим catch-up для них
-        # сразу при startup — в фоновой задаче, чтобы не блокировать
-        # uvicorn ready. См. CONTEXT.md::Operational invariants.
-        asyncio.create_task(_catch_up_empty_indicators())
+        # «New indicator initial ETL trap» + forecast gap-fill (steps>0 без
+        # текущего прогноза). Фоном, чтобы не блокировать uvicorn ready.
+        asyncio.create_task(_startup_data_catch_up())
 
     yield
 

@@ -17,7 +17,7 @@ from app.database import async_session
 from app.models import Indicator, IndicatorData, FetchLog, EconomicEvent
 from app.services.rosstat_cpi_parser import get_parser
 from app.services.calculation_engine import calculation_engine
-from app.services.forecast_pipeline import retrain_indicator_forecast
+from app.services.forecast_pipeline import catch_up_empty_forecasts, retrain_indicator_forecast
 from app.services.alerting import alert_etl_failure, alert_etl_summary, send_telegram
 
 ETL_TIMEOUT_SECONDS = 300
@@ -167,6 +167,10 @@ async def daily_update_job():
         except Exception:
             logger.exception("IndexNow ping failed (non-fatal)")
 
+    # Gap-fill: steps>0 без текущего прогноза (после seed/включения стратегии
+    # или сбоя retrain). Идемпотентно — при полном покрытии no-op.
+    await _catch_up_empty_forecasts_safe("daily_etl")
+
     await _promote_past_events()
 
     duration = time.monotonic() - t0
@@ -204,6 +208,25 @@ async def _retrain_self_modeled_derived(db, derived_codes: list[str]) -> None:
                 # Н-6: старый прогноз молча остаётся current — алертим.
                 logger.exception("Self-modeled derived retrain failed: %s", ind.code)
                 await alert_etl_failure(f"retrain:{ind.code}", str(e))
+
+
+async def _catch_up_empty_forecasts_safe(context: str) -> list[str]:
+    """Gap-fill пустых прогнозов; ошибки не роняют ETL/startup."""
+    try:
+        async with async_session() as db:
+            filled = await catch_up_empty_forecasts(db)
+            await db.commit()
+            if filled:
+                logger.info(
+                    "Forecast catch-up (%s): retrained %d: %s",
+                    context, len(filled), ", ".join(filled),
+                )
+            else:
+                logger.info("Forecast catch-up (%s): nothing missing", context)
+            return filled
+    except Exception:
+        logger.exception("Forecast catch-up (%s) aborted", context)
+        return []
 
 
 async def run_etl_for_parser_type(parser_type: str) -> dict[str, int]:
@@ -269,6 +292,7 @@ async def run_etl_for_parser_type(parser_type: str) -> dict[str, int]:
                         "Late ETL pass updated derived indicators: %s", derived
                     )
                     ping_codes.extend(derived)
+                    await _retrain_self_modeled_derived(db, derived)
             except Exception as e:
                 logger.exception("CalculationEngine failed in late pass")
                 failed_codes.append("derived-engine")
@@ -279,6 +303,8 @@ async def run_etl_for_parser_type(parser_type: str) -> dict[str, int]:
             await ping_updated_indicators(ping_codes)
         except Exception:
             logger.exception("IndexNow ping failed (non-fatal)")
+
+    await _catch_up_empty_forecasts_safe(f"late_etl:{parser_type}")
 
     logger.info(
         "Late ETL pass for parser_type=%s done: %d updated, %d failed",

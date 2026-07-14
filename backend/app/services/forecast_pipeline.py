@@ -405,3 +405,103 @@ async def _retrain_dependents(
                 )
             except Exception:
                 logger.warning("Forecast issue alert failed", exc_info=True)
+
+
+# ---------------------------------------------------------------------------
+#  Change-gate + empty-forecast gap-fill
+# ---------------------------------------------------------------------------
+
+def values_changed_for_retrain(
+    records_added: int,
+    records_updated: int,
+    pruned: int = 0,
+) -> bool:
+    """True, если upsert реально изменил ряд (ADR-0002: без изменений — без retrain)."""
+    return records_added > 0 or records_updated > 0 or pruned > 0
+
+
+def forecast_steps_of(indicator: Indicator) -> int:
+    cfg = indicator.model_config_json or {}
+    return int(cfg.get("forecast_steps", 0) or 0)
+
+
+def _is_derived_from_source(indicator: Indicator) -> bool:
+    cfg = indicator.model_config_json or {}
+    return cfg.get("forecast_strategy") == "derived_from_source"
+
+
+def order_for_forecast_catch_up(indicators: list[Indicator]) -> list[Indicator]:
+    """Сначала собственные модели (каскад заполнит derived_from_source), потом хвост."""
+    primary = [i for i in indicators if not _is_derived_from_source(i)]
+    derived = [i for i in indicators if _is_derived_from_source(i)]
+    return primary + derived
+
+
+async def _current_forecast_value_count(db: AsyncSession, indicator_id: int) -> int:
+    return int(
+        await db.scalar(
+            select(func.count(ForecastValue.id))
+            .join(Forecast, Forecast.id == ForecastValue.forecast_id)
+            .where(
+                Forecast.indicator_id == indicator_id,
+                Forecast.is_current.is_(True),
+            )
+        )
+        or 0
+    )
+
+
+async def find_indicators_needing_forecast_catch_up(
+    db: AsyncSession,
+) -> list[Indicator]:
+    """Активные ряды с forecast_steps>0 без текущего прогноза (или с 0 точек)."""
+    rows = (
+        await db.execute(select(Indicator).where(Indicator.is_active.is_(True)))
+    ).scalars().all()
+    needing: list[Indicator] = []
+    for ind in rows:
+        if forecast_steps_of(ind) <= 0:
+            continue
+        if await _current_forecast_value_count(db, ind.id) > 0:
+            continue
+        needing.append(ind)
+    return needing
+
+
+async def catch_up_empty_forecasts(db: AsyncSession) -> list[str]:
+    """Одноразовый gap-fill: retrain для рядов со steps>0 без текущего прогноза.
+
+    После seed/deploy со включённой стратегией или после сбоя retrain — без
+    ручного вызова. Источники сначала: `_retrain_dependents` заполняет siblings.
+    Возвращает коды, для которых вызван retrain (не гарантия непустого результата —
+    мало истории / пустая стратегия остаются без точек).
+    """
+    needing = await find_indicators_needing_forecast_catch_up(db)
+    if not needing:
+        return []
+
+    ordered = order_for_forecast_catch_up(needing)
+    logger.info(
+        "Forecast catch-up: %d indicator(s) missing current forecast: %s",
+        len(ordered),
+        ", ".join(i.code for i in ordered),
+    )
+    retrained: list[str] = []
+    for ind in ordered:
+        # Каскад от primary мог уже заполнить derived — не гоняем лишний раз.
+        if await _current_forecast_value_count(db, ind.id) > 0:
+            continue
+        try:
+            await retrain_indicator_forecast(db, ind)
+            retrained.append(ind.code)
+        except Exception as e:  # pragma: no cover — gap-fill не роняет startup/ETL
+            logger.exception("Forecast catch-up failed for '%s'", ind.code)
+            try:
+                from app.services.alerting import alert_forecast_issue
+                await alert_forecast_issue(
+                    ind.code,
+                    f"Gap-fill retrain упал: {str(e)[:200]}",
+                )
+            except Exception:
+                logger.warning("Forecast issue alert failed", exc_info=True)
+    return retrained

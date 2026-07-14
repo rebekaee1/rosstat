@@ -51,7 +51,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.cache import cache_invalidate_indicator
 from app.models import FetchLog, Indicator
-from app.services.forecast_pipeline import retrain_indicator_forecast
+from app.services.forecast_pipeline import (
+    retrain_indicator_forecast,
+    values_changed_for_retrain,
+)
 from app.services.upsert import bulk_upsert, prune_indicator_dates_not_in
 
 logger = logging.getLogger(__name__)
@@ -254,10 +257,14 @@ class BaseParser(ABC):
         records_updated: int,
         pruned: int = 0,
     ) -> None:
-        """Default: retrain прогноз только если есть forecast_steps > 0 И что-то изменилось.
+        """Default: retrain только при forecast_steps>0 и реальном изменении ряда.
 
-        Override в cbr_keyrate (там steps==0 → clear_current_forecasts).
+        Idempotent upsert без смены value (ADR-0002) → retrain не трогаем.
+        `retrain_indicator_forecast` каскадно обновляет derived_from_source siblings.
+        Override в cbr_keyrate (steps==0 → clear_current_forecasts).
         """
         steps = int(cfg.get("forecast_steps", 0) or 0)
-        if steps > 0 and (records_added > 0 or records_updated > 0 or pruned > 0):
+        if steps > 0 and values_changed_for_retrain(
+            records_added, records_updated, pruned,
+        ):
             await retrain_indicator_forecast(db, indicator)

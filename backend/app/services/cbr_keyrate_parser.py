@@ -26,7 +26,11 @@ from app.services.cbr_keyrate import (
     get_latest_keyrate_announcement,
 )
 from app.services.data_validator import validate_points
-from app.services.forecast_pipeline import clear_current_forecasts, retrain_indicator_forecast
+from app.services.forecast_pipeline import (
+    clear_current_forecasts,
+    retrain_indicator_forecast,
+    values_changed_for_retrain,
+)
 from app.services.upsert import bulk_upsert
 
 logger = logging.getLogger(__name__)
@@ -139,7 +143,7 @@ class CbrKeyRateParser(BaseParser):
         """
         steps = int(cfg.get("forecast_steps", 12) or 0)
         if steps > 0:
-            if records_added > 0 or records_updated > 0 or pruned > 0:
+            if values_changed_for_retrain(records_added, records_updated, pruned):
                 await retrain_indicator_forecast(db, indicator)
             return
 
