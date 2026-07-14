@@ -16,14 +16,11 @@ import { useLocation } from 'react-router-dom';
  * - `/admin/*`: не инициализируем; уже отрисованный floorAd прячется
  *   классом `rsy-hidden` на <html> (CSS в index.css).
  *
- * Empty-state (2026-07-14): если SDK оставил серый шелл «РЕКЛАМА»+X без
- * креатива (no-fill / VIDEO_ERROR / CSP media) — destroy + force-remove,
- * чтобы не перекрывать контент. Goal `rsy_floor_render` — только при
- * непустом креативе.
- *
- * Тайминг: Floor Ad по докам РСЯ появляется ~через 2 с после открытия
- * страницы; креатив (video/iframe) догружается позже. Первый empty-check
- * раньше ~5–6 с и без серии «пусто» подряд убивал медленный fill.
+ * Empty-state (2026-07-14, rev.2): watchdog ~6 с с destroy УБРАН.
+ * Он снимал живой Floor Ad после видимого fill (late iframe / video /
+ * Shadow DOM — детектор «пусто» давал false positive). Снос живой рекламы
+ * хуже серого chrome. Destroy только в `onError` (явный no-bid / SDK error).
+ * Fill-детектор остаётся для цели Метрики `rsy_floor_render`.
  *
  * Активные блоки:
  *   R-A-19489903-2 floorAd touch    — мобильные
@@ -38,18 +35,24 @@ const RSY_BLOCKS = [
   { blockId: 'R-A-19489903-1', type: 'floorAd', platform: 'desktop' },
 ];
 
-/** Первый тик после появления Floor Ad (~2 с) + запас на догрузку креатива. */
-const EMPTY_CHECK_MS = 6000;
-const EMPTY_RETRY_MS = 2000;
-/** Сколько подряд «пустых» тиков нужно до destroy (защита от slow-fill). */
-const EMPTY_STREAK_NEED = 2;
-const EMPTY_MAX_TRIES = 4;
+/** Цель Метрики: ждём fill, не уничтожаем шелл. */
+const FILL_GOAL_CHECK_MS = 8_000;
+
+/**
+ * Бывший EMPTY_CHECK_MS (~6 с) уничтожал рекламу. Оставляем константу
+ * заведомо «выключенной» (>1 час), чтобы тесты ловили регрессию к ~6 с.
+ * Auto-destroy по таймеру не вызывается.
+ */
+const EMPTY_CHECK_MS = 3_600_000;
+
 /** SDK ставит `data-r-a-19489903-2-floorad` (= `data-` + blockId.lower + `-floorad`). */
 function floorAdMarkerAttr(blockId) {
   return `data-${String(blockId).toLowerCase()}-floorad`;
 }
 
 const MARKER_ATTRS = RSY_BLOCKS.map((b) => floorAdMarkerAttr(b.blockId));
+
+const MEDIA_SEL = 'iframe, img, video, canvas, object, embed, source, yanetag, [data-videoname]';
 
 function destroyBlock(blockId) {
   try {
@@ -90,91 +93,66 @@ function shellForBlock(blockId) {
   return marker.parentElement;
 }
 
+function hasLiveMedia(root) {
+  if (!root || typeof root.querySelectorAll !== 'function') return false;
+  const nodes = root.querySelectorAll(MEDIA_SEL);
+  for (const media of nodes) {
+    if (media.tagName === 'IMG') {
+      if (media.complete && media.naturalWidth === 0) continue;
+      return true;
+    }
+    if (media.tagName === 'SOURCE') {
+      if (media.getAttribute?.('src') || media.src) return true;
+      continue;
+    }
+    return true;
+  }
+  return false;
+}
+
 /**
  * Пустой креатив: есть chrome (шелл), но нет media/текста объявления.
- * Закрытие/«РЕКЛАМА» в chrome не считаем наполнением.
+ *
+ * Консервативно: при сомнении — не пустой. Пустой `.needsclick` сам по себе
+ * НЕ доказательство пустоты (РСЯ часто держит слот, пока video/iframe
+ * догружается в соседний узел / Shadow DOM).
+ *
+ * Используется только для цели Метрики, не для auto-destroy.
  */
 export function isFloorAdShellEmpty(shell) {
   if (!shell || typeof shell.querySelector !== 'function') return true;
-  const media = shell.querySelector('iframe, img, video, canvas, object, embed');
-  if (media) {
-    if (media.tagName === 'IMG' && media.naturalWidth === 0 && media.complete) {
-      /* битая картинка — не считаем fill */
-    } else {
-      return false;
-    }
-  }
-  const slots = shell.querySelectorAll('.needsclick');
+  if (hasLiveMedia(shell)) return false;
+
+  const slots =
+    typeof shell.querySelectorAll === 'function'
+      ? shell.querySelectorAll('.needsclick')
+      : [];
   if (slots.length > 0) {
     const anyFilled = [...slots].some(
       (s) => s.children.length > 0 || (s.innerText || '').trim().length > 0
     );
     if (anyFilled) return false;
-    return true;
   }
+
   const raw = (shell.innerText || '')
     .replace(/РЕКЛАМА/gi, '')
     .replace(/advertisement/gi, '')
+    .replace(/закрыть/gi, '')
     .replace(/\s+/g, ' ')
     .trim();
-  return raw.length < 12;
-}
+  if (raw.length >= 12) return false;
 
-function findOrphanFloorShells() {
-  if (typeof document === 'undefined') return [];
-  return [...document.querySelectorAll('div')].filter((el) => {
-    const s = window.getComputedStyle(el);
-    if (s.position !== 'fixed' && s.position !== 'sticky') return false;
-    const z = parseInt(s.zIndex, 10);
-    if (!(z > 1_000_000)) return false;
-    if (el.offsetHeight < 60) return false;
-    if (el.offsetWidth < window.innerWidth * 0.8) return false;
-    return isFloorAdShellEmpty(el);
-  });
-}
-
-function collapseEmptyFloorAd(blockId) {
-  const shell = shellForBlock(blockId);
-  if (shell && isFloorAdShellEmpty(shell)) {
-    destroyBlock(blockId);
-    forceRemoveShell(blockId);
-    return true;
-  }
-  // Фоллбэк: шелл без/с битым маркером (obfuscated class csr-uniq*).
-  const orphans = findOrphanFloorShells();
-  if (!orphans.length) return false;
-  destroyBlock(blockId);
-  orphans.forEach((el) => el.remove());
-  forceRemoveShell(blockId);
   return true;
 }
 
-function watchEmptyFloorAd(blockId) {
-  let tries = 0;
-  let emptyStreak = 0;
-  const tick = () => {
-    tries += 1;
+function trackFloorFillGoal(blockId) {
+  window.setTimeout(() => {
     const shell = shellForBlock(blockId);
-    if (shell && !isFloorAdShellEmpty(shell)) {
-      return; // живой креатив — стоп
+    if (!shell || isFloorAdShellEmpty(shell)) return;
+    if (typeof window.ym === 'function') {
+      window.ym(107136069, 'reachGoal', 'rsy_floor_render');
     }
-    if (shell && isFloorAdShellEmpty(shell)) {
-      emptyStreak += 1;
-    } else {
-      // Шела ещё нет: orphan-fallback только с поздних тиков (не гоняем 2 с).
-      const orphans = tries >= 2 ? findOrphanFloorShells() : [];
-      if (orphans.length) emptyStreak += 1;
-      else emptyStreak = 0;
-    }
-    if (emptyStreak >= EMPTY_STREAK_NEED) {
-      collapseEmptyFloorAd(blockId);
-      return;
-    }
-    if (tries < EMPTY_MAX_TRIES) {
-      window.setTimeout(tick, EMPTY_RETRY_MS);
-    }
-  };
-  window.setTimeout(tick, EMPTY_CHECK_MS);
+  }, FILL_GOAL_CHECK_MS);
 }
 
 function renderFloorAd() {
@@ -188,36 +166,19 @@ function renderFloorAd() {
     RSY_BLOCKS.find((b) => b.platform === 'desktop') ||
     RSY_BLOCKS[0];
 
-  let watched = false;
-  const armWatch = () => {
-    if (watched) return;
-    watched = true;
-    watchEmptyFloorAd(cfg.blockId);
-  };
-
   adv.render({
     blockId: cfg.blockId,
     type: cfg.type,
     platform: cfg.platform,
     onError: () => {
+      // Единственный путь auto-destroy: явный no-bid / ошибка SDK.
       destroyBlock(cfg.blockId);
       forceRemoveShell(cfg.blockId);
     },
     onRender: () => {
-      armWatch();
-      // Goal только если к моменту проверки креатив реально заполнен.
-      window.setTimeout(() => {
-        const shell = shellForBlock(cfg.blockId);
-        if (!shell || isFloorAdShellEmpty(shell)) return;
-        if (typeof window.ym === 'function') {
-          window.ym(107136069, 'reachGoal', 'rsy_floor_render');
-        }
-      }, EMPTY_CHECK_MS + EMPTY_RETRY_MS);
+      trackFloorFillGoal(cfg.blockId);
     },
   });
-
-  // onRender может не прийти при partial chrome — сторожим один раз, не дублем.
-  armWatch();
 }
 
 export default function YandexRSY() {
@@ -254,4 +215,12 @@ export default function YandexRSY() {
 }
 
 // Экспорт маркеров для тестов / CSS-аудита.
-export const __RSY_TEST = { RSY_BLOCKS, MARKER_ATTRS, isFloorAdShellEmpty };
+export const __RSY_TEST = {
+  RSY_BLOCKS,
+  MARKER_ATTRS,
+  isFloorAdShellEmpty,
+  EMPTY_CHECK_MS,
+  hasLiveMedia,
+  /** true = timer auto-destroy отключён; снос только через onError. */
+  AUTO_DESTROY_DISABLED: true,
+};
