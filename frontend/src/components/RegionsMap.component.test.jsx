@@ -1,6 +1,6 @@
-// Т-13: RegionsMap — choropleth рендерит все субъекты и красит их по данным.
+// Т-13: RegionsMap — choropleth + hover-outline из той же геометрии, что fill.
 import { describe, it, expect } from 'vitest';
-import { render } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import RegionsMap from './RegionsMap';
 import mapData from '../lib/regionsMap.json';
@@ -28,9 +28,22 @@ describe('RegionsMap', () => {
     const paths = [...container.querySelectorAll('svg path[role="button"]')];
     const colored = paths.filter((p) => values.has(p.getAttribute('aria-label')));
     const neutral = paths.find((p) => !values.has(p.getAttribute('aria-label')));
-    // aria-label = slug (nameBySlug не передан) — надёжный идентификатор.
     expect(colored.length).toBeGreaterThan(0);
     const fills = new Set(colored.map((p) => p.getAttribute('fill')));
     expect(fills.has(neutral.getAttribute('fill'))).toBe(false);
+  });
+
+  it('hover-outline использует тот же path d, что и fill региона', () => {
+    const target = mapData.regions[0];
+    const { container } = renderMap();
+    const fillPath = container.querySelector(`svg path[data-region-slug="${target.slug}"]`);
+    expect(fillPath).toBeTruthy();
+    fireEvent.mouseMove(fillPath);
+    const outline = container.querySelector(`svg path[data-hover-outline="${target.slug}"]`);
+    expect(outline).toBeTruthy();
+    expect(outline.getAttribute('d')).toBe(fillPath.getAttribute('d'));
+    expect(outline.getAttribute('d')).toBe(target.path);
+    expect(outline.getAttribute('fill')).toBe('none');
+    expect(outline.getAttribute('stroke')).toBe('#B8942F');
   });
 });

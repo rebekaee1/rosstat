@@ -155,9 +155,12 @@ export const events = {
   COMPARE_LIMIT_HIT: 'compare_limit_hit',
 
   // Скачивание графика картинкой (per-indicator). Гость → гейт регистрации,
-  // авторизованный → PNG с watermark. Каждое — цель Метрики.
+  // авторизованный → PNG без watermark (правило 2026-07-08). Каждое — цель Метрики.
   CHART_IMAGE_DOWNLOAD: 'chart_image_download',
   CHART_IMAGE_BLOCKED: 'chart_image_blocked',
+  // GIF карты регионов по годам — тот же гейт, что PNG (только auth, без watermark).
+  REGIONS_MAP_GIF_DOWNLOAD: 'regions_map_gif_download',
+  REGIONS_MAP_GIF_BLOCKED: 'regions_map_gif_blocked',
 
   CALC_DIRECTION: 'calc_direction',
   CALC_PRESET: 'calc_preset',

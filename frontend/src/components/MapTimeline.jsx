@@ -1,18 +1,13 @@
-// Ползунок времени для карты регионов: прокрутка показателя по годам с
-// плавной анимацией раскраски (сама анимация — CSS-переход fill в RegionsMap,
-// здесь только смена активного года). Кнопка Play проигрывает историю
-// покадрово по годам. Год живёт внутри компонента (self-driven), наверх
-// уходит через onYearChange только для раскраски карты и подписи. Движение
-// ползунка и запуск отправляются в аналитику (событие region_map_timeline) —
-// попадает в Пульс/BI для гипотез «как менялось во времени».
+// Ползунок времени для карты регионов: прокрутка показателя по годам.
+// Год — controlled с родителя (URL ?year= + раскраска карты); play/pause
+// живут внутри. Движение ползунка и запуск — в аналитику (region_map_timeline).
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Play, Pause, RotateCcw } from 'lucide-react';
 import { track, events } from '../lib/track';
 
-const STEP_MS = 900; // темп покадровой смены года при проигрывании
+const STEP_MS = 900;
 
-export default function MapTimeline({ years, initialYear, onYearChange, metric }) {
-  const [year, setYear] = useState(initialYear ?? years[years.length - 1]);
+export default function MapTimeline({ years, year, onYearChange, metric }) {
   const [playing, setPlaying] = useState(false);
   const trackTimer = useRef(null);
 
@@ -21,7 +16,6 @@ export default function MapTimeline({ years, initialYear, onYearChange, metric }
   const atEnd = year >= max;
 
   const setYearBoth = useCallback((y) => {
-    setYear(y);
     onYearChange(y);
   }, [onYearChange]);
 
@@ -29,13 +23,10 @@ export default function MapTimeline({ years, initialYear, onYearChange, metric }
     track(events.REGIONS_MAP_TIMELINE, { metric, year: y, action });
   }, [metric]);
 
-  // Проигрывание: раз в STEP_MS переходим к следующему году; эффект каждый раз
-  // видит свежий year (перезапускается при его смене). На последнем году —
-  // останавливаемся. setState — внутри setTimeout (асинхронно), не в теле эффекта.
   useEffect(() => {
     if (!playing) return undefined;
     const i = years.indexOf(year);
-    if (i >= years.length - 1) return undefined; // достигли конца
+    if (i >= years.length - 1) return undefined;
     const t = setTimeout(() => {
       const next = years[i + 1];
       setYearBoth(next);
@@ -46,7 +37,7 @@ export default function MapTimeline({ years, initialYear, onYearChange, metric }
 
   const togglePlay = useCallback(() => {
     if (playing) { setPlaying(false); return; }
-    if (atEnd) setYearBoth(years[0]); // с конца — перематываем в начало
+    if (atEnd) setYearBoth(years[0]);
     setPlaying(true);
     emit('play', atEnd ? years[0] : year);
   }, [playing, atEnd, years, year, setYearBoth, emit]);
@@ -55,7 +46,6 @@ export default function MapTimeline({ years, initialYear, onYearChange, metric }
     setPlaying(false);
     const y = Number(e.target.value);
     setYearBoth(y);
-    // Дебаунс аналитики скраба — не спамим на каждый шаг ползунка.
     if (trackTimer.current) clearTimeout(trackTimer.current);
     trackTimer.current = setTimeout(() => emit('scrub', y), 600);
   }, [setYearBoth, emit]);

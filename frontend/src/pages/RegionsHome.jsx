@@ -2,15 +2,14 @@
 // Мобильный сценарий: поиск сверху → чипы округов → карточки регионов.
 // Режим «Карта»: choropleth по выбранному показателю (предустановки + поиск по
 // всем 489), тап по региону — карточка показателя; режим «Обзор» — профиль
-// региона. Зум/пан — созвон «На правки 13». PNG-выгрузка карты — только для
-// зарегистрированных, без watermark (правило 2026-07-08, единое по сайту —
-// см. IndicatorChartSection.jsx); до этой правки карта была единственным
-// местом сайта, откуда гость мог скачать картинку без входа.
-import { useMemo, useState, useRef, useDeferredValue, lazy, Suspense } from 'react';
+// региона. Зум/пан — созвон «На правки 13». PNG/GIF-выгрузка карты — только для
+// зарегистрированных, без watermark (правило 2026-07-08). Состояние карты в URL:
+// /regions?view=map&indicator=<code|overview>&year=YYYY — shareable deep-link.
+import { useMemo, useState, useRef, useDeferredValue, useCallback, lazy, Suspense } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Search, MapPin, ChevronRight, Database, List, Map as MapIcon,
-  Image as ImageIcon, X, RefreshCw,
+  Image as ImageIcon, Film, X, RefreshCw,
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import {
@@ -20,15 +19,17 @@ import {
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import { SkeletonBox } from '../components/Skeleton';
 import { exportNodeToPng } from '../lib/chartImage';
+import { buildRegionsMapGif, downloadBlob } from '../lib/regionsMapGif';
+import {
+  parseRegionsMapParams, buildRegionsMapSearchParams, searchParamsEqual,
+  MAP_OVERVIEW,
+} from '../lib/regionsMapUrl';
 import { track, events } from '../lib/track';
 import useSearchTracking from '../lib/useSearchTracking';
 import { useAuth } from '../context/authContext';
 
 const RegionsMap = lazy(() => import('../components/RegionsMap'));
 const MapTimeline = lazy(() => import('../components/MapTimeline'));
-
-// Спец-режим карты: клик по региону открывает его профиль, без раскраски.
-const OVERVIEW = '__overview';
 
 const DISTRICT_SHORT = {
   cfo: 'Центральный',
@@ -41,7 +42,6 @@ const DISTRICT_SHORT = {
   dfo: 'Дальневосточный',
 };
 
-// Показатели-переключатели карты: подпись → код регионального показателя.
 const MAP_METRICS = [
   { code: 'srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy', label: 'Зарплата' },
   { code: 'chislennost-naseleniya', label: 'Население' },
@@ -51,20 +51,12 @@ const MAP_METRICS = [
   { code: 'chislennost-naseleniya-s-denezhnymi-dohodami-nizhe-granitsy', label: 'Бедность' },
 ];
 
+const PRESET_CODES = new Set(MAP_METRICS.map((m) => m.code));
+
 function normalize(s) {
   return s.toLowerCase().replace(/ё/g, 'е').replace(/[^а-яa-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
-/**
- * Поиск произвольного показателя для карты («добавьте свой» — созвон
- * «На правки 13»): компактный combobox по каталогу из 489 показателей.
- *
- * Робастность (правки 2026-07-05): dropdown открывается и при вводе/клике,
- * а не только по onFocus (после «сбросить» фокус оставался в поле и печать
- * не подсвечивалась — value показывал пустую строку при open=false);
- * пустой результат рисует «Ничего не найдено», а не молча прячет список;
- * каждый набранный запрос уходит в спрос-аналитику (search_query).
- */
 function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
   const catalog = useRegionsCatalog();
   const [query, setQuery] = useState('');
@@ -72,11 +64,11 @@ function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
 
   const results = useMemo(() => {
     const sections = catalog.data?.sections || [];
-    const all = sections.flatMap(s =>
-      s.indicators.map(i => ({ code: i.code, name: i.name, section: s.name })));
+    const all = sections.flatMap((s) =>
+      s.indicators.map((i) => ({ code: i.code, name: i.name, section: s.name })));
     const q = normalize(query);
     if (!q) return all.slice(0, 50);
-    return all.filter(i => normalize(i.name).includes(q)).slice(0, 50);
+    return all.filter((i) => normalize(i.name).includes(q)).slice(0, 50);
   }, [catalog.data, query]);
 
   useSearchTracking('map-metric', open ? query : '', results.length);
@@ -126,7 +118,7 @@ function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
               По запросу «{query}» ничего не найдено. Попробуйте короче: «зарплата», «врач», «жильё».
             </div>
           ) : (
-            results.map(i => (
+            results.map((i) => (
               <button
                 key={i.code}
                 type="button"
@@ -144,12 +136,6 @@ function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
   );
 }
 
-// «Контрасты России»: живой блок-приманка — крайние значения по метрике.
-// Пул из 6 показателей (созвон «На правки 13», 2026-07-08: расширить + сделать
-// информативнее, но НЕ выводить на передний план) — крутится по 2 за раз через
-// кнопку-«кубик», кратность лидер/аутсайдер добавлена как badge. Опрос всех 6
-// heatmap'ов идёт всегда (view === 'list'), но рендерится только видимая пара —
-// переключение страницы мгновенное, без повторных запросов.
 const CONTRAST_METRICS = [
   { code: 'srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy', label: 'Зарплата' },
   { code: 'uroven-bezrabotitsy', label: 'Безработица', betterIsLow: true },
@@ -228,40 +214,68 @@ function RegionCard({ region }) {
 export default function RegionsHome() {
   const { isAuthed } = useAuth();
   const { data, isLoading, isError, refetch, isFetching } = useRegionsLanding();
+  const catalog = useRegionsCatalog();
   const [query, setQuery] = useState('');
   const [activeDistrict, setActiveDistrict] = useState(null);
   const deferredQuery = useDeferredValue(query);
   const navigate = useNavigate();
 
-  // Режим просмотра: список (по умолчанию) или карта — сохраняется в URL.
   const [searchParams, setSearchParams] = useSearchParams();
-  const view = searchParams.get('view') === 'map' ? 'map' : 'list';
-  const [mapMetric, setMapMetric] = useState(MAP_METRICS[0].code);
-  // Произвольный показатель из поиска: { code, name } или null (чипы-пресеты).
-  const [customMetric, setCustomMetric] = useState(null);
-  const isOverview = mapMetric === OVERVIEW;
-  const activeMapCode = customMetric?.code || (isOverview ? null : mapMetric);
-  // Серия по всем годам — для карты с ползунком времени.
+  const { view, indicator: urlIndicator, year: urlYear } = parseRegionsMapParams(searchParams);
+
+  const isOverview = urlIndicator === MAP_OVERVIEW;
+  // null indicator + map → дефолтный пресет (первый чип), как раньше без URL.
+  const activeMapCode = view !== 'map' || isOverview
+    ? null
+    : (urlIndicator || MAP_METRICS[0].code);
+  const isCustomMetric = !!(activeMapCode && !PRESET_CODES.has(activeMapCode));
+  const isDefaultPreset = view === 'map' && !urlIndicator && !isOverview;
+
+  const customName = useMemo(() => {
+    if (!isCustomMetric || !activeMapCode) return '';
+    const sections = catalog.data?.sections || [];
+    for (const s of sections) {
+      const hit = s.indicators.find((i) => i.code === activeMapCode);
+      if (hit) return hit.name;
+    }
+    return activeMapCode;
+  }, [isCustomMetric, activeMapCode, catalog.data]);
+
   const series = useRegionsHeatmapSeries(activeMapCode, view === 'map' && !!activeMapCode);
   const mapCardRef = useRef(null);
   const [exportingMap, setExportingMap] = useState(false);
+  const [exportingGif, setExportingGif] = useState(false);
 
-  // Год, выбранный ползунком (null → показываем последний доступный).
-  // Источник года живёт внутри MapTimeline (self-driven анимация); сюда
-  // прилетает через onYearChange только для раскраски карты и подписи.
-  const [pickedYear, setPickedYear] = useState(null);
   const seriesYears = series.data?.years || null;
+
+  // Год — из URL (?year=); если нет или вне ряда — последний доступный.
+  // Скраб/play пишут year в query (replace), без локального дубля состояния.
   const mapYear = useMemo(() => {
     if (!seriesYears?.length) return null;
-    return pickedYear != null && seriesYears.includes(pickedYear)
-      ? pickedYear
-      : seriesYears[seriesYears.length - 1];
-  }, [seriesYears, pickedYear]);
+    if (urlYear != null && seriesYears.includes(urlYear)) return urlYear;
+    return seriesYears[seriesYears.length - 1];
+  }, [seriesYears, urlYear]);
 
-  // Данные для блока «Контрасты России» (list-режим): все 6 из пула грузятся
-  // сразу (react-query кэширует по code, staleTime 10 мин — дёшево), рендерим
-  // только видимую пару по contrastPage. Фиксированное число вызовов хука —
-  // без нарушения rules-of-hooks (пул статический, не runtime-массив).
+  const syncMapUrl = useCallback((next) => {
+    const desired = buildRegionsMapSearchParams(next);
+    setSearchParams((prev) => {
+      if (searchParamsEqual(desired, prev)) return prev;
+      return desired;
+    }, { replace: true });
+  }, [setSearchParams]);
+
+  const mapIndicatorParam = isOverview
+    ? MAP_OVERVIEW
+    : (isDefaultPreset ? null : activeMapCode);
+
+  const setMapYear = useCallback((y) => {
+    syncMapUrl({
+      view: 'map',
+      indicator: mapIndicatorParam,
+      year: y,
+    });
+  }, [syncMapUrl, mapIndicatorParam]);
+
   const contrastHeat0 = useRegionsHeatmap(CONTRAST_METRICS[0].code, view === 'list');
   const contrastHeat1 = useRegionsHeatmap(CONTRAST_METRICS[1].code, view === 'list');
   const contrastHeat2 = useRegionsHeatmap(CONTRAST_METRICS[2].code, view === 'list');
@@ -275,8 +289,37 @@ export default function RegionsHome() {
     .map((m, i) => ({ ...m, heat: contrastHeats[contrastStart + i] }));
 
   const setView = (v) => {
-    setSearchParams(v === 'map' ? { view: 'map' } : {}, { replace: true });
+    if (v === 'list') {
+      syncMapUrl({ view: 'list' });
+    } else {
+      syncMapUrl({
+        view: 'map',
+        indicator: mapIndicatorParam,
+        year: activeMapCode && mapYear != null ? mapYear : null,
+      });
+    }
     track(events.REGIONS_VIEW_TOGGLE, { view: v });
+  };
+
+  const selectOverview = () => {
+    syncMapUrl({ view: 'map', indicator: MAP_OVERVIEW });
+    track(events.REGIONS_MAP_METRIC, { metric: 'Обзор' });
+  };
+
+  const selectPreset = (m) => {
+    // Дефолтный первый чип — без indicator в URL (короче шаринг).
+    const indicator = m.code === MAP_METRICS[0].code ? null : m.code;
+    syncMapUrl({ view: 'map', indicator });
+    track(events.REGIONS_MAP_METRIC, { metric: m.label });
+  };
+
+  const selectCustom = (i) => {
+    syncMapUrl({ view: 'map', indicator: i.code });
+    track(events.REGIONS_MAP_METRIC, { metric: `search:${i.code}` });
+  };
+
+  const clearCustom = () => {
+    syncMapUrl({ view: 'map', indicator: null });
   };
 
   const heatmapValues = useMemo(() => {
@@ -288,39 +331,91 @@ export default function RegionsHome() {
 
   const namesBySlug = useMemo(() => {
     const out = {};
-    (data?.districts || []).forEach(d => d.regions.forEach(r => { out[r.slug] = r.name; }));
+    (data?.districts || []).forEach((d) => d.regions.forEach((r) => { out[r.slug] = r.name; }));
     return out;
   }, [data]);
 
+  const mapMetaTitle = series.data?.indicator?.name
+    ? `${series.data.indicator.name} на карте регионов России`
+    : isOverview
+      ? 'Карта регионов России — обзор субъектов РФ'
+      : 'Регионы России — социально-экономические показатели 85 субъектов РФ';
+  const mapMetaDesc = series.data?.indicator?.name
+    ? `${series.data.indicator.name} по 85 субъектам РФ на карте: динамика по годам, данные Росстата. Сравните регионы и откройте карточку показателя.`
+    : 'Статистика по 85 регионам России: население, зарплаты, ВРП, безработица, инвестиции, цены — 489 показателей Росстата с 1990 года. Графики, рейтинги регионов, сравнение с общероссийским уровнем.';
+
   useDocumentMeta({
-    title: 'Регионы России — социально-экономические показатели 85 субъектов РФ',
-    description:
-      'Статистика по 85 регионам России: население, зарплаты, ВРП, безработица, инвестиции, цены — 489 показателей Росстата с 1990 года. Графики, рейтинги регионов, сравнение с общероссийским уровнем.',
-    path: '/regions',
+    title: view === 'map' ? mapMetaTitle : 'Регионы России — социально-экономические показатели 85 субъектов РФ',
+    description: view === 'map' ? mapMetaDesc : 'Статистика по 85 регионам России: население, зарплаты, ВРП, безработица, инвестиции, цены — 489 показателей Росстата с 1990 года. Графики, рейтинги регионов, сравнение с общероссийским уровнем.',
+    path: view === 'map'
+      ? `/regions?${buildRegionsMapSearchParams({
+        view: 'map',
+        indicator: mapIndicatorParam,
+        year: activeMapCode && urlYear != null ? urlYear : null,
+      }).toString()}`
+      : '/regions',
   });
 
   const filtered = useMemo(() => {
     if (!data) return [];
     const q = normalize(deferredQuery);
     return data.districts
-      .filter(d => !activeDistrict || d.slug === activeDistrict)
-      .map(d => ({
+      .filter((d) => !activeDistrict || d.slug === activeDistrict)
+      .map((d) => ({
         ...d,
         regions: q
-          ? d.regions.filter(r => normalize(r.name).includes(q))
+          ? d.regions.filter((r) => normalize(r.name).includes(q))
           : d.regions,
       }))
-      .filter(d => d.regions.length > 0);
+      .filter((d) => d.regions.length > 0);
   }, [data, deferredQuery, activeDistrict]);
 
   const totalShown = filtered.reduce((n, d) => n + d.regions.length, 0);
 
-  // Спрос-аналитика: что ищут в поиске регионов (в т.ч. запросы без результата).
   useSearchTracking('regions-list', deferredQuery, totalShown);
+
+  const handlePng = async () => {
+    if (exportingMap) return;
+    if (!isAuthed) {
+      track(events.CHART_IMAGE_BLOCKED, { indicator: `regions-map:${activeMapCode || 'overview'}` });
+      window.dispatchEvent(new CustomEvent('fe:download-limit'));
+      return;
+    }
+    setExportingMap(true);
+    const ok = await exportNodeToPng(mapCardRef.current, {
+      filename: `regions-map_${activeMapCode || 'overview'}.png`,
+      watermark: false,
+    }).catch(() => false);
+    setExportingMap(false);
+    if (ok) track(events.CHART_IMAGE_DOWNLOAD, { indicator: `regions-map:${activeMapCode || 'overview'}` });
+  };
+
+  const handleGif = async () => {
+    if (exportingGif) return;
+    if (!isAuthed) {
+      track(events.REGIONS_MAP_GIF_BLOCKED, { indicator: activeMapCode || 'overview' });
+      window.dispatchEvent(new CustomEvent('fe:download-limit'));
+      return;
+    }
+    if (!series.data || !seriesYears || seriesYears.length < 2) return;
+    setExportingGif(true);
+    try {
+      const blob = await buildRegionsMapGif(series.data);
+      downloadBlob(blob, `regions-map_${activeMapCode}.gif`);
+      track(events.REGIONS_MAP_GIF_DOWNLOAD, {
+        indicator: activeMapCode,
+        years: seriesYears.length,
+      });
+    } catch {
+      /* генерация сорвалась — молча, без файла */
+    }
+    setExportingGif(false);
+  };
+
+  const gifAvailable = !!(activeMapCode && seriesYears && seriesYears.length > 1 && series.data);
 
   return (
     <div className="max-w-5xl mx-auto px-4 pt-24 pb-20">
-      {/* Hero */}
       <div className="mb-8">
         <div className="flex items-center gap-2 text-champagne text-xs font-mono uppercase tracking-widest mb-3">
           <MapPin size={14} />
@@ -346,7 +441,6 @@ export default function RegionsHome() {
         )}
       </div>
 
-      {/* Переключатель Список / Карта */}
       <div className="flex items-center gap-1 mb-2 bg-surface border border-border-subtle rounded-xl p-1 w-fit" role="tablist" aria-label="Режим просмотра">
         <button
           role="tab"
@@ -372,9 +466,7 @@ export default function RegionsHome() {
 
       {view === 'list' && (
         <>
-          {/* Контрасты России: цепляющие крайние значения, интересная фича
-              с вариативностью — не на переднем плане, компактный блок. */}
-          {contrastVisible.some(m => m.heat.data) && (
+          {contrastVisible.some((m) => m.heat.data) && (
             <div data-block="contrasts" className="mb-4 bg-surface border border-border-subtle rounded-xl p-4 space-y-2">
               <div className="flex items-center justify-between mb-1">
                 <span className="text-xs font-mono uppercase tracking-widest text-champagne">Контрасты России</span>
@@ -392,13 +484,12 @@ export default function RegionsHome() {
                   <RefreshCw size={13} />
                 </button>
               </div>
-              {contrastVisible.map(m => (
+              {contrastVisible.map((m) => (
                 <ContrastRow key={m.code} heat={m.heat} metricLabel={m.label} betterIsLow={m.betterIsLow} />
               ))}
             </div>
           )}
 
-          {/* Поиск: sticky на мобильных, всегда под рукой */}
           <div className="sticky top-14 z-10 -mx-4 px-4 py-2 bg-obsidian/95 backdrop-blur-sm">
             <div className="relative">
               <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
@@ -411,7 +502,6 @@ export default function RegionsHome() {
                 aria-label="Поиск региона"
               />
             </div>
-            {/* Чипы округов — горизонтальный скролл на мобильных */}
             <div className="mt-2 flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide" role="tablist" aria-label="Федеральные округа">
               <button
                 onClick={() => setActiveDistrict(null)}
@@ -423,7 +513,7 @@ export default function RegionsHome() {
               >
                 Все округа
               </button>
-              {(data?.districts || []).map(d => (
+              {(data?.districts || []).map((d) => (
                 <button
                   key={d.slug}
                   onClick={() => setActiveDistrict(activeDistrict === d.slug ? null : d.slug)}
@@ -447,16 +537,15 @@ export default function RegionsHome() {
             </div>
           )}
 
-          {/* Список по округам */}
           <div className="mt-6 space-y-8">
-            {filtered.map(d => (
+            {filtered.map((d) => (
               <section key={d.slug} aria-labelledby={`district-${d.slug}`}>
                 <h2 id={`district-${d.slug}`} className="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-3 flex items-baseline gap-2">
                   {d.name}
                   <span className="font-mono text-xs text-text-tertiary normal-case tracking-normal">{d.regions.length}</span>
                 </h2>
                 <div className="grid gap-2 sm:grid-cols-2">
-                  {d.regions.map(r => <RegionCard key={r.slug} region={r} />)}
+                  {d.regions.map((r) => <RegionCard key={r.slug} region={r} />)}
                 </div>
               </section>
             ))}
@@ -471,49 +560,45 @@ export default function RegionsHome() {
 
       {view === 'map' && (
         <div className="mt-4">
-          {/* Показатель карты: чипы-пресеты (скроллятся) + поиск любого из 489.
-              Поиск ВНЕ overflow-контейнера — иначе его выпадающий список
-              обрезается прокруткой чипов (баг «Свой показатель нельзя найти»). */}
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center mb-3">
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-hide min-w-0" role="tablist" aria-label="Показатель карты">
               <button
                 role="tab"
-                aria-selected={isOverview && !customMetric}
-                onClick={() => { setMapMetric(OVERVIEW); setCustomMetric(null); setPickedYear(null); track(events.REGIONS_MAP_METRIC, { metric: 'Обзор' }); }}
+                aria-selected={isOverview}
+                onClick={selectOverview}
                 title="Клик по региону открывает его карточку со всеми показателями"
                 className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                  isOverview && !customMetric
+                  isOverview
                     ? 'bg-champagne/15 text-champagne'
                     : 'bg-surface border border-border-subtle text-text-secondary hover:text-text-primary'
                 }`}
               >
                 Обзор
               </button>
-              {MAP_METRICS.map(m => (
-                <button
-                  key={m.code}
-                  role="tab"
-                  aria-selected={mapMetric === m.code && !customMetric}
-                  onClick={() => { setMapMetric(m.code); setCustomMetric(null); setPickedYear(null); track(events.REGIONS_MAP_METRIC, { metric: m.label }); }}
-                  className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                    mapMetric === m.code && !customMetric
-                      ? 'bg-champagne/15 text-champagne'
-                      : 'bg-surface border border-border-subtle text-text-secondary hover:text-text-primary'
-                  }`}
-                >
-                  {m.label}
-                </button>
-              ))}
+              {MAP_METRICS.map((m) => {
+                const selected = !isOverview && !isCustomMetric && activeMapCode === m.code;
+                return (
+                  <button
+                    key={m.code}
+                    role="tab"
+                    aria-selected={selected}
+                    onClick={() => selectPreset(m)}
+                    className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                      selected
+                        ? 'bg-champagne/15 text-champagne'
+                        : 'bg-surface border border-border-subtle text-text-secondary hover:text-text-primary'
+                    }`}
+                  >
+                    {m.label}
+                  </button>
+                );
+              })}
             </div>
             <MapMetricSearch
-              activeCode={customMetric?.code}
-              activeName={customMetric?.name || ''}
-              onPick={(i) => {
-                setCustomMetric({ code: i.code, name: i.name });
-                setPickedYear(null);
-                track(events.REGIONS_MAP_METRIC, { metric: `search:${i.code}` });
-              }}
-              onClear={() => { setCustomMetric(null); setPickedYear(null); }}
+              activeCode={isCustomMetric ? activeMapCode : null}
+              activeName={customName}
+              onPick={selectCustom}
+              onClear={clearCustom}
             />
           </div>
 
@@ -531,31 +616,32 @@ export default function RegionsHome() {
                   'Нажмите на регион, чтобы открыть его карточку со всеми показателями.'
                 )}
               </div>
-              <button
-                type="button"
-                data-no-export="true"
-                disabled={exportingMap}
-                onClick={async () => {
-                  if (exportingMap) return;
-                  if (!isAuthed) {
-                    track(events.CHART_IMAGE_BLOCKED, { indicator: `regions-map:${activeMapCode || 'overview'}` });
-                    window.dispatchEvent(new CustomEvent('fe:download-limit'));
-                    return;
+              <div className="shrink-0 flex items-center gap-1.5" data-no-export="true">
+                <button
+                  type="button"
+                  disabled={exportingMap}
+                  onClick={handlePng}
+                  title={isAuthed ? 'Скачать карту картинкой' : 'Скачивание доступно после регистрации'}
+                  aria-label="Скачать карту картинкой"
+                  className="text-xs px-2 py-1 rounded-full border border-border-subtle text-text-tertiary hover:text-champagne hover:border-border-champagne transition-colors inline-flex items-center gap-1 disabled:opacity-50"
+                >
+                  <ImageIcon size={12} /> PNG
+                </button>
+                <button
+                  type="button"
+                  disabled={exportingGif || !gifAvailable}
+                  onClick={handleGif}
+                  title={
+                    !gifAvailable
+                      ? 'GIF доступен, когда выбран показатель с историей по годам'
+                      : (isAuthed ? 'Скачать GIF по годам' : 'Скачивание доступно после регистрации')
                   }
-                  setExportingMap(true);
-                  const ok = await exportNodeToPng(mapCardRef.current, {
-                    filename: `regions-map_${activeMapCode || 'overview'}.png`,
-                    watermark: false,
-                  }).catch(() => false);
-                  setExportingMap(false);
-                  if (ok) track(events.CHART_IMAGE_DOWNLOAD, { indicator: `regions-map:${activeMapCode || 'overview'}` });
-                }}
-                title="Скачать карту картинкой"
-                aria-label="Скачать карту картинкой"
-                className="shrink-0 text-xs px-2 py-1 rounded-full border border-border-subtle text-text-tertiary hover:text-champagne hover:border-border-champagne transition-colors inline-flex items-center gap-1 disabled:opacity-50"
-              >
-                <ImageIcon size={12} /> PNG
-              </button>
+                  aria-label="Скачать GIF по годам"
+                  className="text-xs px-2 py-1 rounded-full border border-border-subtle text-text-tertiary hover:text-champagne hover:border-border-champagne transition-colors inline-flex items-center gap-1 disabled:opacity-50"
+                >
+                  <Film size={12} /> {exportingGif ? 'GIF…' : 'GIF'}
+                </button>
+              </div>
             </div>
             <Suspense fallback={<SkeletonBox className="h-80 rounded-xl" />}>
               <RegionsMap
@@ -563,6 +649,7 @@ export default function RegionsHome() {
                 transitionMs={activeMapCode ? 650 : 150}
                 unit={series.data?.indicator?.unit || ''}
                 nameBySlug={namesBySlug}
+                brandMark
                 onSelect={(slug) => {
                   track(events.REGIONS_MAP_SELECT, { region: slug, metric: activeMapCode || 'overview' });
                   navigate(activeMapCode ? `/region/${slug}/${activeMapCode}` : `/region/${slug}`);
@@ -570,14 +657,13 @@ export default function RegionsHome() {
               />
             </Suspense>
 
-            {/* Ползунок времени: доступен, когда выбран показатель и есть ≥2 лет. */}
             {activeMapCode && seriesYears && seriesYears.length > 1 && mapYear != null && (
               <Suspense fallback={null}>
                 <MapTimeline
                   key={activeMapCode}
                   years={seriesYears}
-                  initialYear={seriesYears[seriesYears.length - 1]}
-                  onYearChange={setPickedYear}
+                  year={mapYear}
+                  onYearChange={setMapYear}
                   metric={activeMapCode}
                 />
               </Suspense>

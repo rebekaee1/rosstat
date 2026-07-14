@@ -57,6 +57,7 @@ _MICRO = {
     "demographics_csv",
     "chart_image_download",
     "compare_image_download",
+    "regions_map_gif_download",
     "compare_add",
     "compare_change",
     "region_compare_add",
@@ -147,6 +148,7 @@ _TECHNICAL = {
     "download_limit",
     "compare_image_blocked",
     "chart_image_blocked",
+    "regions_map_gif_blocked",
     "compare_limit_hit",
     "experiment_exposure",
     "embed_runtime_view",   # сигнал дистрибуции — своя карточка, не конверсия
@@ -163,6 +165,7 @@ _WEIGHT_OVERRIDES = {
     "download_csv": 12,
     "download_excel": 12,
     "chart_image_download": 8,
+    "regions_map_gif_download": 8,
     "oauth_start": 5,
     "header_register_click": 4,
     "forecast_view": 4,

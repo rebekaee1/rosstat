@@ -1,0 +1,19 @@
+import { describe, it, expect } from 'vitest';
+import { buildQuantiles, colorsBySlug, MAP_NO_DATA, MAP_SCALE } from './regionsMapColors';
+
+describe('regionsMapColors', () => {
+  it('buildQuantiles красит по рангу внутри среза', () => {
+    const q = buildQuantiles([10, 20, 30, 40, 50]);
+    expect(q(10)).toBe(MAP_SCALE[0]);
+    expect(q(50)).toBe(MAP_SCALE[MAP_SCALE.length - 1]);
+    expect(q(null)).toBe(MAP_NO_DATA);
+  });
+
+  it('colorsBySlug принимает Map и plain object', () => {
+    const fromMap = colorsBySlug(new Map([['a', 1], ['b', 100]]));
+    const fromObj = colorsBySlug({ a: 1, b: 100 });
+    expect(fromMap.get('a')).toBe(fromObj.get('a'));
+    expect(fromMap.get('b')).toBe(fromObj.get('b'));
+    expect(fromMap.get('a')).not.toBe(fromMap.get('b'));
+  });
+});
