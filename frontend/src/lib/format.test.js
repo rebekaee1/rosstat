@@ -60,10 +60,24 @@ describe('format', () => {
     expect(ticks).toEqual([2000, 2008, 2015, 2023]);
   });
 
-  it('pickChartAxisTicks annual cadence: равный шаг лет 2015–2025', () => {
+  it('pickChartAxisTicks annual: desktop budget → все годы 2015–2025', () => {
     const points = Array.from({ length: 11 }, (_, i) => ({
       date: `${2015 + i}-12-31`,
     }));
+    // ~620px plot, «2023» ≈ 4 символа → бюджет ≥ 11
+    const budget = chartAxisTickBudget(620, 4);
+    expect(budget).toBeGreaterThanOrEqual(11);
+    const ticks = pickChartAxisTicks(points, budget, { cadence: 'annual' });
+    expect(ticks).toEqual(points.map((p) => p.date));
+    expect(ticks[0]).toBe('2015-12-31');
+    expect(ticks[ticks.length - 1]).toBe('2025-12-31');
+  });
+
+  it('pickChartAxisTicks annual: узкий budget → равный шаг без хвоста', () => {
+    const points = Array.from({ length: 11 }, (_, i) => ({
+      date: `${2015 + i}-12-31`,
+    }));
+    // maxTicks=6 → n=6 делит span=10 → step 2
     const ticks = pickChartAxisTicks(points, 6, { cadence: 'annual' });
     expect(ticks).toEqual([
       '2015-12-31',
@@ -81,28 +95,64 @@ describe('format', () => {
     expect(ticks).toEqual([2015, 2017, 2019, 2021, 2023, 2025]);
   });
 
-  it('pickChartAxisTicks quarterly cadence: равный шаг кварталов', () => {
+  it('pickChartAxisTicks annual: mobile-ish width без наезда', () => {
+    const points = Array.from({ length: 11 }, (_, i) => ({
+      date: `${2015 + i}-12-31`,
+    }));
+    const budget = chartAxisTickBudget(220, 4);
+    expect(budget).toBeLessThan(11);
+    const ticks = pickChartAxisTicks(points, budget, { cadence: 'annual' });
+    expect(ticks[0]).toBe('2015-12-31');
+    expect(ticks[ticks.length - 1]).toBe('2025-12-31');
+    expect(ticks.length).toBeLessThanOrEqual(budget);
+    // равные годовые промежутки (включая last)
+    const years = ticks.map((d) => new Date(d).getUTCFullYear());
+    const gaps = [];
+    for (let i = 1; i < years.length; i += 1) gaps.push(years[i] - years[i - 1]);
+    expect(new Set(gaps).size).toBe(1);
+  });
+
+  it('pickChartAxisTicks quarterly: плотный ряд, равный шаг, first+last', () => {
     const points = [];
     for (let y = 2020; y <= 2025; y += 1) {
       for (const m of [0, 3, 6, 9]) {
         points.push({ date: `${y}-${String(m + 1).padStart(2, '0')}-01` });
       }
     }
-    // 2020-Q1 … 2025-Q4 = 24 точки; budget 7 → step 4 квартала = 1 год
-    const ticks = pickChartAxisTicks(points, 7, { cadence: 'quarterly' });
+    // 24 точки, span=23 (простое) → ceil-fallback; desktop budget шире 7
+    const budget = chartAxisTickBudget(700, 10);
+    expect(budget).toBeGreaterThan(7);
+    const ticks = pickChartAxisTicks(points, budget, { cadence: 'quarterly' });
     expect(ticks[0]).toBe('2020-01-01');
     expect(ticks[ticks.length - 1]).toBe('2025-10-01');
-    expect(ticks.length).toBeLessThanOrEqual(7);
-    // промежутки в годах должны быть равны (по квартальному индексу)
+    expect(ticks.length).toBeLessThanOrEqual(budget);
+    expect(ticks.length).toBeGreaterThan(2);
+
     const toQ = (s) => {
       const d = new Date(s);
       return d.getUTCFullYear() * 4 + Math.floor(d.getUTCMonth() / 3);
     };
-    const gaps = [];
+    // промежуточные шаги равны; хвост до last может отличаться на простом span
+    const midGaps = [];
     for (let i = 1; i < ticks.length - 1; i += 1) {
-      gaps.push(toQ(ticks[i]) - toQ(ticks[i - 1]));
+      midGaps.push(toQ(ticks[i]) - toQ(ticks[i - 1]));
     }
-    expect(new Set(gaps).size).toBe(1);
+    if (midGaps.length) expect(new Set(midGaps).size).toBe(1);
+  });
+
+  it('pickChartAxisTicks quarterly: mobile-ish — меньше тиков, без перекрытия budget', () => {
+    const points = [];
+    for (let y = 2018; y <= 2025; y += 1) {
+      for (const m of [0, 3, 6, 9]) {
+        points.push({ date: `${y}-${String(m + 1).padStart(2, '0')}-01` });
+      }
+    }
+    const budget = chartAxisTickBudget(240, 10);
+    expect(budget).toBeLessThanOrEqual(6);
+    const ticks = pickChartAxisTicks(points, budget, { cadence: 'quarterly' });
+    expect(ticks.length).toBeLessThanOrEqual(budget);
+    expect(ticks[0]).toBe(points[0].date);
+    expect(ticks[ticks.length - 1]).toBe(points[points.length - 1].date);
   });
 
   it('formatAxisTick digits=0 keeps integer trailing zeros', () => {
@@ -117,10 +167,11 @@ describe('format', () => {
     expect(formatAxisTick(1500.5, 1)).toBe('1\u00A0500,5');
   });
 
-  it('chartAxisTickBudget shrinks on narrow plot (мобилка)', () => {
-    expect(chartAxisTickBudget(220, 8)).toBeLessThanOrEqual(4);
-    expect(chartAxisTickBudget(700, 8)).toBe(7);
-    expect(chartAxisTickBudget(0, 8)).toBe(7);
+  it('chartAxisTickBudget: узкий plot меньше, широкий — плотнее 7', () => {
+    expect(chartAxisTickBudget(220, 8)).toBeLessThanOrEqual(5);
+    expect(chartAxisTickBudget(700, 4)).toBeGreaterThanOrEqual(11);
+    expect(chartAxisTickBudget(700, 8)).toBeGreaterThan(7);
+    expect(chartAxisTickBudget(0, 8)).toBe(8);
   });
 
   it('formatValue handles null', () => {

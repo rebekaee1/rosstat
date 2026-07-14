@@ -35,22 +35,38 @@ export function formatChartAxisDate(dateStr, format = 'short', { multiYear = fal
 }
 
 /**
- * Сколько подписей оси X влезает без наезда (мобилка ~235px plot → 3–4 тика).
- * labelChars — типичная длина подписи («май 2022» ≈ 8, «2023» ≈ 4).
+ * Сколько подписей оси X влезает без наезда.
+ * labelChars — типичная длина подписи («май 2022» ≈ 8, «2023» ≈ 4, «I кв. 2024» ≈ 10).
+ * Потолок высокий: плотность ограничена шириной, не магической «7».
  */
 export function chartAxisTickBudget(plotWidthPx, labelChars = 8) {
   const w = Number(plotWidthPx) || 0;
-  if (w <= 0) return 7;
-  // ~6.2px на символ JetBrains Mono 11px + зазор между подписями.
-  const perTick = Math.max(36, labelChars * 6.2 + 18);
-  return Math.max(2, Math.min(7, Math.floor(w / perTick) + 1));
+  // SSR / до ResizeObserver — умеренный дефолт; после замера пересчитается.
+  if (w <= 0) return 8;
+  // JetBrains Mono ~11px ≈ 6px/символ; зазор меньше для коротких лейблов («2023»).
+  const gapPx = labelChars <= 4 ? 10 : 14;
+  const perTick = Math.max(28, labelChars * 6 + gapPx);
+  return Math.max(2, Math.min(36, Math.floor(w / perTick) + 1));
 }
 
-/** «Красивый» шаг для календарной оси (годы / кварталы). */
-function niceCalendarStep(span, maxTicks) {
-  const ideal = span / Math.max(1, maxTicks - 1);
-  const candidates = [1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25, 50, 100];
-  return candidates.find((c) => c >= ideal) ?? Math.ceil(ideal);
+/**
+ * Плотнейший календарный шаг ≤ maxTicks (включая first+last).
+ * 1) ceil — максимум подписей без превышения бюджета;
+ * 2) если ближайший больший делитель span даёт почти ту же плотность
+ *    (не теряем больше одного тика) — берём его, чтобы last-gap = step.
+ */
+function densestCalendarStep(span, maxTicks) {
+  if (span <= 0) return 1;
+  const slots = Math.max(1, maxTicks - 1);
+  const minStep = Math.max(1, Math.ceil(span / slots));
+  const ceilCount = Math.floor(span / minStep) + 1;
+  for (let step = minStep; step <= span; step += 1) {
+    if (span % step !== 0) continue;
+    const evenCount = span / step + 1;
+    if (evenCount >= ceilCount - 1) return step;
+    break;
+  }
+  return minStep;
 }
 
 function parseUtcParts(value) {
@@ -63,8 +79,8 @@ function parseUtcParts(value) {
 }
 
 /**
- * Календарные тики для annual/quarterly: равный шаг по годам/кварталам,
- * всегда first+last. Index-sampling даёт кривые промежутки (2015→2016→2018…).
+ * Календарные тики annual/quarterly: максимальная плотность без наезда,
+ * равный шаг (1y/2y… или 1q/2q/1y…), всегда first+last.
  */
 function pickCalendarAlignedTicks(values, maxTicks, cadence) {
   if (!values.length) return [];
@@ -79,13 +95,13 @@ function pickCalendarAlignedTicks(values, maxTicks, cadence) {
   if (cadence === 'annual') {
     const span = b.year - a.year;
     if (span <= 0) return [first, last];
-    const step = niceCalendarStep(span, maxTicks);
-    const ticks = [first];
+    const step = densestCalendarStep(span, maxTicks);
     const byYear = new Map();
     for (const v of values) {
       const p = parseUtcParts(v);
       if (p && !byYear.has(p.year)) byYear.set(p.year, v);
     }
+    const ticks = [first];
     for (let y = a.year + step; y < b.year; y += step) {
       const hit = byYear.get(y);
       if (hit != null) ticks.push(hit);
@@ -94,13 +110,13 @@ function pickCalendarAlignedTicks(values, maxTicks, cadence) {
     return ticks;
   }
 
-  // quarterly: шаг в кварталах (равная сетка I/II/III/IV)
+  // quarterly: шаг в кварталах
   const toQ = (p) => p.year * 4 + Math.floor(p.month / 3);
   const q0 = toQ(a);
   const q1 = toQ(b);
   const span = q1 - q0;
   if (span <= 0) return [first, last];
-  const step = niceCalendarStep(span, maxTicks);
+  const step = densestCalendarStep(span, maxTicks);
   const byQ = new Map();
   for (const v of values) {
     const p = parseUtcParts(v);
@@ -118,8 +134,8 @@ function pickCalendarAlignedTicks(values, maxTicks, cadence) {
 }
 
 /**
- * Равномерно N подписей по видимому окну (daily/weekly не заливают ось).
- * cadence: 'annual' | 'quarterly' — календарная сетка вместо index-sampling.
+ * Подписи оси X: плотнейший набор ≤ maxTicks, всегда first+last.
+ * cadence: 'annual' | 'quarterly' — календарный равный шаг (не index-sampling).
  * 3-й аргумент — dateKey (строка) или options { dateKey, cadence }.
  */
 export function pickChartAxisTicks(points, maxTicks = 7, dateKeyOrOptions = 'date') {
