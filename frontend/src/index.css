@@ -302,7 +302,10 @@ body {
 }
 
 /* Служебные страницы /admin/*: скрываем floorAd РСЯ, отрисованный до перехода
-   (SDK живёт глобально и переживает SPA-навигацию — см. YandexRSY.jsx) */
-.rsy-hidden [id^='yandex_rtb'] {
+   (SDK живёт глобально и переживает SPA-навигацию — см. YandexRSY.jsx).
+   Floor Ad не всегда использует id^=yandex_rtb — ловим шелл через :has(data-маркер). */
+.rsy-hidden [id^='yandex_rtb'],
+.rsy-hidden div:has([data-r-a-19489903-1-floorad]),
+.rsy-hidden div:has([data-r-a-19489903-2-floorad]) {
   display: none !important;
 }

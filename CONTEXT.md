@@ -330,30 +330,30 @@ Daily ETL (06:00 МСК, `RUSTATS_SCHEDULER_CRON_HOUR/MINUTE`) запускае�
 
 ### Yandex.RSY (РСЯ floor-ad) — отдельный CSP-набор доменов
 
-Контекстная реклама РСЯ — **независимый от Метрики** домен-граф:
-- `script-src https://yandex.ru https://an.yandex.ru https://yastatic.net` — `context.js` и runtime AdvManager (`yandex.ru/ads/system/context.js`).
-- `img-src https://yandex.ru https://an.yandex.ru https://avatars.mds.yandex.net https://yastatic.net https://*.yandex.net` — креативы.
-- `connect-src https://yandex.ru https://an.yandex.ru` — телеметрия показов/кликов.
-- `frame-src` + `child-src` для `https://yandex.ru https://an.yandex.ru https://*.yandex.net` — рекламный iframe.
-- `style-src https://yastatic.net`, `font-src https://yastatic.net` — стили блока.
+Контекстная реклама РСЯ — **независимый от Метрики** домен-граф (официальный CSP partner docs + наш Caddyfile):
+- `script-src https://yandex.ru https://an.yandex.ru https://yastatic.net https://*.yandex.ru https://*.adfox.ru` — `context.js` / AdvManager.
+- `img-src` + `media-src` для `yandex.ru` / `*.yandex.ru` / `*.yandex.net` / `*.adfox.ru` / `yastatic.net` / `blob:` / `data:` — картинки и **видео** Floor Ad (touch).
+- `connect-src` + `blob:` для телеметрии показов/кликов и adfox.
+- `frame-src` + `child-src`: `yandex.ru` / `an.yandex.ru` / `*.yandex.ru` / `*.yandex.net` / `yandexadexchange.net` / `*.yandexadexchange.net` / `*.adfox.ru` — рекламный iframe.
+- `style-src https://yastatic.net`, `font-src https://yastatic.net data:` — стили блока.
 
 Точка инициализации:
 1. **Loader** (`context.js`) грузится из consent-bootstrap `frontend/public/consent.js::loadAds()`. С 2026-06-16 модель — **подразумеваемое согласие** (152-ФЗ, ст. 9 ч. 1: согласие действием): Метрика и реклама грузятся **всем по умолчанию** при первом заходе, если в `localStorage['fe:consent:v1']` нет явного opt-out текущей версии. Баннер `CookieConsent.jsx` стал информационным («Продолжая пользоваться сайтом, вы соглашаетесь…»), отзыв/настройка — кнопка «Настройки cookie» в подвале; Политика и Соглашение переписаны под это (фикс падения статистики Метрики и дохода РСЯ после прежнего opt-in). И SPA shell (`index.html`), и SSR (`seo_renderer.py::_consent_bootstrap()`) подключают один и тот же `/consent.js` (nginx отдаёт с no-cache). Loader один на документ, независимо от количества блоков.
-2. **Рендер блоков** — фронт-компонент `frontend/src/components/YandexRSY.jsx`, массив `RSY_BLOCKS` (туда добавлять новые конфигурации). Монтируется в `App.jsx::AppRoutes`. Embed-routes (`/embed/*`) **не** включают РСЯ.
-3. **Guard от двойного рендера** — `window.__rsyFloorAdRendered = true` на первом mount. SPA-навигация (React Router) не вызывает повторный `Ya.Context.AdvManager.render()`; без этого счётчики показов в кабинете РСЯ завышались бы на каждом route-переходе.
+2. **Рендер блоков** — фронт-компонент `frontend/src/components/YandexRSY.jsx`, массив `RSY_BLOCKS`. Рендерится **только** блок текущей платформы через `AdvManager.getPlatform()`. Монтируется в `App.jsx::AppRoutes`. Embed-routes (`/embed/*`) **не** включают РСЯ.
+3. **Guard от двойного рендера** — `window.__rsyFloorAdRendered = true` на первом mount. SPA-навигация не вызывает повторный `render()`.
+4. **Empty-state** — если SDK оставил серый chrome без креатива (`onError` / пустой `.needsclick` ~2 с), вызываем `destroy` + force-remove шелла; goal `rsy_floor_render` — только при непустом fill.
 
 Активные блоки (2026-06-23):
 - `R-A-19489903-2` тип `floorAd` платформа `touch` (мобильные).
 - `R-A-19489903-1` тип `floorAd` платформа `desktop` (десктоп).
 
-Оба блока рендерятся одним push в `yaContextCb`. Yandex AdvManager определяет class устройства и показывает только соответствующий — лишних креативов не подгружается.
-
 Trap-симптомы при ломанной CSP:
-- Консоль: `Refused to load the script 'https://yandex.ru/ads/system/context.js' because it violates the following Content Security Policy directive: ...` → не хватает `yandex.ru` в `script-src`.
-- Объявление загружается, но iframe пустой → `frame-src` / `child-src` режут `*.yandex.net`.
+- Консоль: `Refused to load the script 'https://yandex.ru/ads/system/context.js' ...` → не хватает `yandex.ru` в `script-src`.
+- Объявление загружается, но iframe пустой → `frame-src` / `child-src` режут `*.yandex.net` / `yandexadexchange.net`.
 - Креативы битые → `img-src` режет `avatars.mds.yandex.net`.
+- **Пустой серый Floor Ad «РЕКЛАМА»+X на iPhone без креатива** → нет `media-src` (fallback на `default-src 'self'` режет video Floor Ad). Фикс 2026-07-14.
 
-Goal в Метрике: `rsy_floor_render` (см. `frontend/src/components/YandexRSY.jsx`) — фиксирует момент успешного render, можно сверять с показами в кабинете РСЯ.
+Goal в Метрике: `rsy_floor_render` — успешный непустой render.
 
 Маркировку «Реклама» (+ домен/erid рекламодателя) несёт сам креатив РСЯ — отдельный оверлей-ярлык мы не рисуем (убран 2026-06-24: floorAd переменной высоты, фиксированный ярлык попадал в середину объявления).
 

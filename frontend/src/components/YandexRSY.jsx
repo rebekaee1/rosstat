@@ -8,50 +8,177 @@ import { useLocation } from 'react-router-dom';
  * - Loader (`window.yaContextCb` + `https://yandex.ru/ads/system/context.js`)
  *   подключается в `index.html` и в SSR (см. backend/app/services/seo_renderer.py)
  *   — один раз на документ, независимо от количества блоков.
- * - Render двух блоков (touch + desktop) идёт через один push в
- *   `yaContextCb`. Yandex AdvManager сам определяет class устройства и
- *   показывает только соответствующий блок: на iPhone — touch, на desktop —
- *   desktop. Лишних креативов не подгружается.
- * - SPA-навигация (React Router) не вызывает повторный рендер благодаря
- *   `window.__rsyFloorAdRendered` guard. Без guard каждый переход создавал
- *   бы новые экземпляры блоков и счётчики показов в кабинете РСЯ были бы
- *   завышены.
- * - Embed-routes (`/embed/*`) монтируют свой ErrorBoundary без YandexRSY —
- *   подключение происходит в `AppRoutes`, не в `EmbedRoutes`.
- * - Служебные страницы `/admin/*` без рекламы (BI 2.1, этап 4а): на них
- *   реклама не инициализируется, а floorAd, отрисованный до перехода,
- *   прячется классом `rsy-hidden` на <html> (CSS в index.css).
+ * - Рендерим ТОЛЬКО блок текущей платформы через
+ *   `Ya.Context.AdvManager.getPlatform()` (официальный рецепт РСЯ). Рендер
+ *   обоих подряд оставлял на touch пустой chrome-шелл без креатива.
+ * - SPA-навигация не вызывает повторный рендер (`window.__rsyFloorAdRendered`).
+ * - Embed-routes (`/embed/*`) монтируют свой ErrorBoundary без YandexRSY.
+ * - `/admin/*`: не инициализируем; уже отрисованный floorAd прячется
+ *   классом `rsy-hidden` на <html> (CSS в index.css).
  *
- * Маркировка «Реклама»: её несёт сам креатив РСЯ (Yandex как рекламная
- * система ставит метку «Реклама» + домен/erid рекламодателя — это её зона
- * ответственности в RTB). Свой оверлей-ярлык мы НЕ рисуем: floorAd имеет
- * переменную высоту (картинка + текст + кнопка закрытия), и отдельный
- * фиксированный элемент с захардкоженным `bottom` попадал в середину
- * объявления (баг 2026-06-24). Дубль был и избыточен, и ломал вёрстку.
+ * Empty-state (2026-07-14): если SDK оставил серый шелл «РЕКЛАМА»+X без
+ * креатива (no-fill / VIDEO_ERROR / CSP media) — destroy + force-remove,
+ * чтобы не перекрывать контент. Goal `rsy_floor_render` — только при
+ * непустом креативе.
  *
- * Активные блоки (см. также CONTEXT.md::Yandex.RSY):
- *   R-A-19489903-2 floorAd touch    — мобильные устройства
+ * Активные блоки:
+ *   R-A-19489903-2 floorAd touch    — мобильные
  *   R-A-19489903-1 floorAd desktop  — десктоп
  *
- * Trap (CONTEXT.md::Yandex.RSY domains CSP): без yandex.ru/an.yandex.ru/
- * *.yandex.net/yastatic.net в CSP (Caddyfile) браузер блокирует context.js
- * + iframe объявлений → реклама молча не загружается.
+ * Trap: без media-src / frame-src для РСЯ в Caddyfile видео и iframe
+ * креативов молча не грузятся → пустой серый floorAd на iPhone.
  */
+
 const RSY_BLOCKS = [
   { blockId: 'R-A-19489903-2', type: 'floorAd', platform: 'touch' },
   { blockId: 'R-A-19489903-1', type: 'floorAd', platform: 'desktop' },
 ];
 
+const EMPTY_CHECK_MS = 2200;
+const EMPTY_RETRY_MS = 1500;
+const MARKER_ATTRS = RSY_BLOCKS.map(
+  (b) => `data-r-a-${b.blockId.toLowerCase()}-floorad`
+);
+
+function destroyBlock(blockId) {
+  try {
+    window.Ya?.Context?.AdvManager?.destroy?.({ blockId });
+  } catch {
+    /* SDK может быть недоступен (AdBlock) */
+  }
+}
+
+/** Снимает оставшийся fixed-шелл по data-маркеру блока РСЯ. */
+function forceRemoveShell(blockId) {
+  if (typeof document === 'undefined') return;
+  const attr = `data-r-a-${blockId.toLowerCase()}-floorad`;
+  document.querySelectorAll(`[${attr}]`).forEach((marker) => {
+    let el = marker;
+    while (el && el !== document.body) {
+      const pos = window.getComputedStyle(el).position;
+      if (pos === 'fixed' || pos === 'sticky') {
+        el.remove();
+        return;
+      }
+      el = el.parentElement;
+    }
+    marker.remove();
+  });
+}
+
+function shellForBlock(blockId) {
+  const attr = `data-r-a-${blockId.toLowerCase()}-floorad`;
+  const marker = document.querySelector(`[${attr}]`);
+  if (!marker) return null;
+  let el = marker;
+  while (el && el !== document.body) {
+    const pos = window.getComputedStyle(el).position;
+    if (pos === 'fixed' || pos === 'sticky') return el;
+    el = el.parentElement;
+  }
+  return marker.parentElement;
+}
+
+/**
+ * Пустой креатив: есть chrome (шелл), но нет media/текста объявления.
+ * Закрытие/«РЕКЛАМА» в chrome не считаем наполнением.
+ */
+export function isFloorAdShellEmpty(shell) {
+  if (!shell || typeof shell.querySelector !== 'function') return true;
+  const media = shell.querySelector('iframe, img, video, canvas, object, embed');
+  if (media) {
+    if (media.tagName === 'IMG' && media.naturalWidth === 0 && media.complete) {
+      /* битая картинка — не считаем fill */
+    } else {
+      return false;
+    }
+  }
+  const slots = shell.querySelectorAll('.needsclick');
+  if (slots.length > 0) {
+    const anyFilled = [...slots].some(
+      (s) => s.children.length > 0 || (s.innerText || '').trim().length > 0
+    );
+    if (anyFilled) return false;
+    return true;
+  }
+  const raw = (shell.innerText || '')
+    .replace(/РЕКЛАМА/gi, '')
+    .replace(/advertisement/gi, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return raw.length < 12;
+}
+
+function collapseEmptyFloorAd(blockId) {
+  const shell = shellForBlock(blockId);
+  if (!shell) return false;
+  if (!isFloorAdShellEmpty(shell)) return false;
+  destroyBlock(blockId);
+  forceRemoveShell(blockId);
+  return true;
+}
+
+function watchEmptyFloorAd(blockId) {
+  let tries = 0;
+  const tick = () => {
+    tries += 1;
+    if (collapseEmptyFloorAd(blockId)) return;
+    const shell = shellForBlock(blockId);
+    if (!shell && tries >= 2) return;
+    if (tries < 3) {
+      window.setTimeout(tick, EMPTY_RETRY_MS);
+    }
+  };
+  window.setTimeout(tick, EMPTY_CHECK_MS);
+}
+
+function renderFloorAd() {
+  const adv = window.Ya?.Context?.AdvManager;
+  if (!adv || typeof adv.render !== 'function') return;
+
+  const platform =
+    typeof adv.getPlatform === 'function' ? adv.getPlatform() : null;
+  const cfg =
+    RSY_BLOCKS.find((b) => b.platform === platform) ||
+    RSY_BLOCKS.find((b) => b.platform === 'desktop') ||
+    RSY_BLOCKS[0];
+
+  adv.render({
+    blockId: cfg.blockId,
+    type: cfg.type,
+    platform: cfg.platform,
+    onError: () => {
+      destroyBlock(cfg.blockId);
+      forceRemoveShell(cfg.blockId);
+    },
+    onRender: () => {
+      watchEmptyFloorAd(cfg.blockId);
+      window.setTimeout(() => {
+        if (collapseEmptyFloorAd(cfg.blockId)) return;
+        if (typeof window.ym === 'function') {
+          window.ym(107136069, 'reachGoal', 'rsy_floor_render');
+        }
+      }, EMPTY_CHECK_MS + 50);
+    },
+  });
+
+  // onRender может не прийти при partial chrome — всё равно сторожим шелл.
+  watchEmptyFloorAd(cfg.blockId);
+}
+
 export default function YandexRSY() {
   const { pathname } = useLocation();
   const isAdmin = pathname.startsWith('/admin');
 
-  // Служебный раздел /admin/*: рекламу не инициализируем, а уже отрисованный
-  // floorAd прячем CSS-классом (этап 4а BI 2.1) — SDK РСЯ живёт глобально
-  // и переживает SPA-навигацию, поэтому unmount недостаточно.
   useEffect(() => {
     if (typeof document === 'undefined') return;
     document.documentElement.classList.toggle('rsy-hidden', isAdmin);
+    if (isAdmin) {
+      for (const b of RSY_BLOCKS) {
+        destroyBlock(b.blockId);
+        forceRemoveShell(b.blockId);
+      }
+    }
   }, [isAdmin]);
 
   useEffect(() => {
@@ -62,14 +189,7 @@ export default function YandexRSY() {
     window.yaContextCb = window.yaContextCb || [];
     window.yaContextCb.push(() => {
       try {
-        if (window.Ya && window.Ya.Context && window.Ya.Context.AdvManager) {
-          for (const cfg of RSY_BLOCKS) {
-            window.Ya.Context.AdvManager.render(cfg);
-          }
-          if (typeof window.ym === 'function') {
-            window.ym(107136069, 'reachGoal', 'rsy_floor_render');
-          }
-        }
+        renderFloorAd();
       } catch {
         // Не падаем, если РСЯ не загрузилась (CSP/AdBlock/сетевой блок).
       }
@@ -78,3 +198,6 @@ export default function YandexRSY() {
 
   return null;
 }
+
+// Экспорт маркеров для тестов / CSS-аудита.
+export const __RSY_TEST = { RSY_BLOCKS, MARKER_ATTRS, isFloorAdShellEmpty };
