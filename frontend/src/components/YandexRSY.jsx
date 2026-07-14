@@ -36,9 +36,12 @@ const RSY_BLOCKS = [
 
 const EMPTY_CHECK_MS = 2200;
 const EMPTY_RETRY_MS = 1500;
-const MARKER_ATTRS = RSY_BLOCKS.map(
-  (b) => `data-r-a-${b.blockId.toLowerCase()}-floorad`
-);
+/** SDK ставит `data-r-a-19489903-2-floorad` (= `data-` + blockId.lower + `-floorad`). */
+function floorAdMarkerAttr(blockId) {
+  return `data-${String(blockId).toLowerCase()}-floorad`;
+}
+
+const MARKER_ATTRS = RSY_BLOCKS.map((b) => floorAdMarkerAttr(b.blockId));
 
 function destroyBlock(blockId) {
   try {
@@ -51,7 +54,7 @@ function destroyBlock(blockId) {
 /** Снимает оставшийся fixed-шелл по data-маркеру блока РСЯ. */
 function forceRemoveShell(blockId) {
   if (typeof document === 'undefined') return;
-  const attr = `data-r-a-${blockId.toLowerCase()}-floorad`;
+  const attr = floorAdMarkerAttr(blockId);
   document.querySelectorAll(`[${attr}]`).forEach((marker) => {
     let el = marker;
     while (el && el !== document.body) {
@@ -67,7 +70,7 @@ function forceRemoveShell(blockId) {
 }
 
 function shellForBlock(blockId) {
-  const attr = `data-r-a-${blockId.toLowerCase()}-floorad`;
+  const attr = floorAdMarkerAttr(blockId);
   const marker = document.querySelector(`[${attr}]`);
   if (!marker) return null;
   let el = marker;
@@ -109,11 +112,31 @@ export function isFloorAdShellEmpty(shell) {
   return raw.length < 12;
 }
 
+function findOrphanFloorShells() {
+  if (typeof document === 'undefined') return [];
+  return [...document.querySelectorAll('div')].filter((el) => {
+    const s = window.getComputedStyle(el);
+    if (s.position !== 'fixed' && s.position !== 'sticky') return false;
+    const z = parseInt(s.zIndex, 10);
+    if (!(z > 1_000_000)) return false;
+    if (el.offsetHeight < 60) return false;
+    if (el.offsetWidth < window.innerWidth * 0.8) return false;
+    return isFloorAdShellEmpty(el);
+  });
+}
+
 function collapseEmptyFloorAd(blockId) {
   const shell = shellForBlock(blockId);
-  if (!shell) return false;
-  if (!isFloorAdShellEmpty(shell)) return false;
+  if (shell && isFloorAdShellEmpty(shell)) {
+    destroyBlock(blockId);
+    forceRemoveShell(blockId);
+    return true;
+  }
+  // Фоллбэк: шелл без/с битым маркером (obfuscated class csr-uniq*).
+  const orphans = findOrphanFloorShells();
+  if (!orphans.length) return false;
   destroyBlock(blockId);
+  orphans.forEach((el) => el.remove());
   forceRemoveShell(blockId);
   return true;
 }
