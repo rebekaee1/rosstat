@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   formatDate,
   formatChartAxisDate,
+  formatAxisTick,
   pickChartAxisTicks,
   chartAxisTickBudget,
   formatValue,
@@ -57,6 +58,63 @@ describe('format', () => {
     const points = Array.from({ length: 24 }, (_, i) => ({ year: 2000 + i }));
     const ticks = pickChartAxisTicks(points, 4, 'year');
     expect(ticks).toEqual([2000, 2008, 2015, 2023]);
+  });
+
+  it('pickChartAxisTicks annual cadence: равный шаг лет 2015–2025', () => {
+    const points = Array.from({ length: 11 }, (_, i) => ({
+      date: `${2015 + i}-12-31`,
+    }));
+    const ticks = pickChartAxisTicks(points, 6, { cadence: 'annual' });
+    expect(ticks).toEqual([
+      '2015-12-31',
+      '2017-12-31',
+      '2019-12-31',
+      '2021-12-31',
+      '2023-12-31',
+      '2025-12-31',
+    ]);
+  });
+
+  it('pickChartAxisTicks annual year-key cadence (регионы)', () => {
+    const points = Array.from({ length: 11 }, (_, i) => ({ year: 2015 + i }));
+    const ticks = pickChartAxisTicks(points, 6, { dateKey: 'year', cadence: 'annual' });
+    expect(ticks).toEqual([2015, 2017, 2019, 2021, 2023, 2025]);
+  });
+
+  it('pickChartAxisTicks quarterly cadence: равный шаг кварталов', () => {
+    const points = [];
+    for (let y = 2020; y <= 2025; y += 1) {
+      for (const m of [0, 3, 6, 9]) {
+        points.push({ date: `${y}-${String(m + 1).padStart(2, '0')}-01` });
+      }
+    }
+    // 2020-Q1 … 2025-Q4 = 24 точки; budget 7 → step 4 квартала = 1 год
+    const ticks = pickChartAxisTicks(points, 7, { cadence: 'quarterly' });
+    expect(ticks[0]).toBe('2020-01-01');
+    expect(ticks[ticks.length - 1]).toBe('2025-10-01');
+    expect(ticks.length).toBeLessThanOrEqual(7);
+    // промежутки в годах должны быть равны (по квартальному индексу)
+    const toQ = (s) => {
+      const d = new Date(s);
+      return d.getUTCFullYear() * 4 + Math.floor(d.getUTCMonth() / 3);
+    };
+    const gaps = [];
+    for (let i = 1; i < ticks.length - 1; i += 1) {
+      gaps.push(toQ(ticks[i]) - toQ(ticks[i - 1]));
+    }
+    expect(new Set(gaps).size).toBe(1);
+  });
+
+  it('formatAxisTick digits=0 keeps integer trailing zeros', () => {
+    expect(formatAxisTick(10000, 0)).toBe('10\u00A0000');
+    expect(formatAxisTick(15000, 0)).toBe('15\u00A0000');
+    expect(formatAxisTick(15000.0, 0)).toBe('15\u00A0000');
+  });
+
+  it('formatAxisTick still strips fractional trailing zeros', () => {
+    expect(formatAxisTick(15.1, 2)).toBe('15,1');
+    expect(formatAxisTick(15.0, 2)).toBe('15');
+    expect(formatAxisTick(1500.5, 1)).toBe('1\u00A0500,5');
   });
 
   it('chartAxisTickBudget shrinks on narrow plot (мобилка)', () => {

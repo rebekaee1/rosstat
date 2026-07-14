@@ -387,10 +387,12 @@ export default function IndicatorChart({
           : 8;
     return chartAxisTickBudget(Math.max(0, plotWidth - 80), labelChars);
   }, [plotWidth, dateFormat]);
-  const xTicks = useMemo(
-    () => pickChartAxisTicks(visibleData, xTickBudget),
-    [visibleData, xTickBudget],
-  );
+  const xTicks = useMemo(() => {
+    const cadence = dateFormat === 'annual' || dateFormat === 'quarterly'
+      ? dateFormat
+      : null;
+    return pickChartAxisTicks(visibleData, xTickBudget, { cadence });
+  }, [visibleData, xTickBudget, dateFormat]);
 
   const title = cpiChartTitle
     ?? (mode === 'cpi'

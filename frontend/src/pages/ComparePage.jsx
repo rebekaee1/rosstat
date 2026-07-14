@@ -778,9 +778,13 @@ export default function ComparePage() {
     const labelChars = compareDateFmt === 'annual' ? 4
       : compareDateFmt === 'quarterly' ? 10
         : 8;
+    const cadence = compareDateFmt === 'annual' || compareDateFmt === 'quarterly'
+      ? compareDateFmt
+      : null;
     return pickChartAxisTicks(
       chartRows,
       chartAxisTickBudget(Math.max(0, plotWidth - 80), labelChars),
+      { cadence },
     );
   }, [chartRows, plotWidth, compareDateFmt]);
 

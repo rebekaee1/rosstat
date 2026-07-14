@@ -46,21 +46,106 @@ export function chartAxisTickBudget(plotWidthPx, labelChars = 8) {
   return Math.max(2, Math.min(7, Math.floor(w / perTick) + 1));
 }
 
-/** Равномерно N подписей по видимому окну (daily/weekly не заливают ось). */
-export function pickChartAxisTicks(points, maxTicks = 7, dateKey = 'date') {
-  if (!points?.length) return [];
-  const get = (p) => (dateKey === 'date' ? p.date : p[dateKey]);
-  if (points.length <= maxTicks) {
-    return points.map(get);
+/** «Красивый» шаг для календарной оси (годы / кварталы). */
+function niceCalendarStep(span, maxTicks) {
+  const ideal = span / Math.max(1, maxTicks - 1);
+  const candidates = [1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25, 50, 100];
+  return candidates.find((c) => c >= ideal) ?? Math.ceil(ideal);
+}
+
+function parseUtcParts(value) {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return { year: value, month: 0 };
   }
-  const ticks = [get(points[0])];
+  const d = new Date(value);
+  if (isNaN(d.getTime())) return null;
+  return { year: d.getUTCFullYear(), month: d.getUTCMonth() };
+}
+
+/**
+ * Календарные тики для annual/quarterly: равный шаг по годам/кварталам,
+ * всегда first+last. Index-sampling даёт кривые промежутки (2015→2016→2018…).
+ */
+function pickCalendarAlignedTicks(values, maxTicks, cadence) {
+  if (!values.length) return [];
+  if (values.length <= maxTicks) return values;
+
+  const first = values[0];
+  const last = values[values.length - 1];
+  const a = parseUtcParts(first);
+  const b = parseUtcParts(last);
+  if (!a || !b) return null;
+
+  if (cadence === 'annual') {
+    const span = b.year - a.year;
+    if (span <= 0) return [first, last];
+    const step = niceCalendarStep(span, maxTicks);
+    const ticks = [first];
+    const byYear = new Map();
+    for (const v of values) {
+      const p = parseUtcParts(v);
+      if (p && !byYear.has(p.year)) byYear.set(p.year, v);
+    }
+    for (let y = a.year + step; y < b.year; y += step) {
+      const hit = byYear.get(y);
+      if (hit != null) ticks.push(hit);
+    }
+    if (ticks[ticks.length - 1] !== last) ticks.push(last);
+    return ticks;
+  }
+
+  // quarterly: шаг в кварталах (равная сетка I/II/III/IV)
+  const toQ = (p) => p.year * 4 + Math.floor(p.month / 3);
+  const q0 = toQ(a);
+  const q1 = toQ(b);
+  const span = q1 - q0;
+  if (span <= 0) return [first, last];
+  const step = niceCalendarStep(span, maxTicks);
+  const byQ = new Map();
+  for (const v of values) {
+    const p = parseUtcParts(v);
+    if (!p) continue;
+    const q = toQ(p);
+    if (!byQ.has(q)) byQ.set(q, v);
+  }
+  const ticks = [first];
+  for (let q = q0 + step; q < q1; q += step) {
+    const hit = byQ.get(q);
+    if (hit != null) ticks.push(hit);
+  }
+  if (ticks[ticks.length - 1] !== last) ticks.push(last);
+  return ticks;
+}
+
+/**
+ * Равномерно N подписей по видимому окну (daily/weekly не заливают ось).
+ * cadence: 'annual' | 'quarterly' — календарная сетка вместо index-sampling.
+ * 3-й аргумент — dateKey (строка) или options { dateKey, cadence }.
+ */
+export function pickChartAxisTicks(points, maxTicks = 7, dateKeyOrOptions = 'date') {
+  if (!points?.length) return [];
+  const opts = typeof dateKeyOrOptions === 'object' && dateKeyOrOptions != null
+    ? dateKeyOrOptions
+    : { dateKey: dateKeyOrOptions };
+  const dateKey = opts.dateKey ?? 'date';
+  const cadence = opts.cadence ?? null;
+  const get = (p) => (dateKey === 'date' ? p.date : p[dateKey]);
+  const values = points.map(get);
+
+  if (cadence === 'annual' || cadence === 'quarterly') {
+    const calendar = pickCalendarAlignedTicks(values, maxTicks, cadence);
+    if (calendar) return calendar;
+  }
+
+  if (points.length <= maxTicks) return values;
+  const ticks = [values[0]];
   const step = (points.length - 1) / (maxTicks - 1);
   for (let i = 1; i < maxTicks - 1; i += 1) {
     const idx = Math.round(i * step);
-    const date = get(points[idx]);
+    const date = values[idx];
     if (ticks[ticks.length - 1] !== date) ticks.push(date);
   }
-  const last = get(points[points.length - 1]);
+  const last = values[values.length - 1];
   if (ticks[ticks.length - 1] !== last) ticks.push(last);
   return ticks;
 }
@@ -185,9 +270,11 @@ export function formatAxisTick(val, digits = 2) {
   const num = Number(val);
   if (!Number.isFinite(num)) return '';
   const fixed = num.toFixed(digits);
-  // Обрезка хвостовых нулей ДО замены точки на запятую (Р-25: regex завязан
-  // на точку из toFixed).
-  const cleaned = fixed.replace(/\.?0+$/, '');
+  // Обрезаем только дробный хвост `.0+` (Р-25). Без точки `\.?0+$` съедал
+  // нули целой части: digits=0 → 15000.toFixed(0)="15000" → "15".
+  const cleaned = fixed.includes('.')
+    ? fixed.replace(/\.?0+$/, '')
+    : fixed;
   const [intPart, decPart] = cleaned.split('.');
   const sign = intPart.startsWith('-') ? '-' : '';
   const abs = intPart.replace('-', '');
