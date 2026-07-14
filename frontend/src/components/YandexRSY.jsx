@@ -21,6 +21,10 @@ import { useLocation } from 'react-router-dom';
  * чтобы не перекрывать контент. Goal `rsy_floor_render` — только при
  * непустом креативе.
  *
+ * Тайминг: Floor Ad по докам РСЯ появляется ~через 2 с после открытия
+ * страницы; креатив (video/iframe) догружается позже. Первый empty-check
+ * раньше ~5–6 с и без серии «пусто» подряд убивал медленный fill.
+ *
  * Активные блоки:
  *   R-A-19489903-2 floorAd touch    — мобильные
  *   R-A-19489903-1 floorAd desktop  — десктоп
@@ -34,8 +38,12 @@ const RSY_BLOCKS = [
   { blockId: 'R-A-19489903-1', type: 'floorAd', platform: 'desktop' },
 ];
 
-const EMPTY_CHECK_MS = 2200;
-const EMPTY_RETRY_MS = 1500;
+/** Первый тик после появления Floor Ad (~2 с) + запас на догрузку креатива. */
+const EMPTY_CHECK_MS = 6000;
+const EMPTY_RETRY_MS = 2000;
+/** Сколько подряд «пустых» тиков нужно до destroy (защита от slow-fill). */
+const EMPTY_STREAK_NEED = 2;
+const EMPTY_MAX_TRIES = 4;
 /** SDK ставит `data-r-a-19489903-2-floorad` (= `data-` + blockId.lower + `-floorad`). */
 function floorAdMarkerAttr(blockId) {
   return `data-${String(blockId).toLowerCase()}-floorad`;
@@ -143,12 +151,26 @@ function collapseEmptyFloorAd(blockId) {
 
 function watchEmptyFloorAd(blockId) {
   let tries = 0;
+  let emptyStreak = 0;
   const tick = () => {
     tries += 1;
-    if (collapseEmptyFloorAd(blockId)) return;
     const shell = shellForBlock(blockId);
-    if (!shell && tries >= 2) return;
-    if (tries < 3) {
+    if (shell && !isFloorAdShellEmpty(shell)) {
+      return; // живой креатив — стоп
+    }
+    if (shell && isFloorAdShellEmpty(shell)) {
+      emptyStreak += 1;
+    } else {
+      // Шела ещё нет: orphan-fallback только с поздних тиков (не гоняем 2 с).
+      const orphans = tries >= 2 ? findOrphanFloorShells() : [];
+      if (orphans.length) emptyStreak += 1;
+      else emptyStreak = 0;
+    }
+    if (emptyStreak >= EMPTY_STREAK_NEED) {
+      collapseEmptyFloorAd(blockId);
+      return;
+    }
+    if (tries < EMPTY_MAX_TRIES) {
       window.setTimeout(tick, EMPTY_RETRY_MS);
     }
   };
@@ -166,6 +188,13 @@ function renderFloorAd() {
     RSY_BLOCKS.find((b) => b.platform === 'desktop') ||
     RSY_BLOCKS[0];
 
+  let watched = false;
+  const armWatch = () => {
+    if (watched) return;
+    watched = true;
+    watchEmptyFloorAd(cfg.blockId);
+  };
+
   adv.render({
     blockId: cfg.blockId,
     type: cfg.type,
@@ -175,18 +204,20 @@ function renderFloorAd() {
       forceRemoveShell(cfg.blockId);
     },
     onRender: () => {
-      watchEmptyFloorAd(cfg.blockId);
+      armWatch();
+      // Goal только если к моменту проверки креатив реально заполнен.
       window.setTimeout(() => {
-        if (collapseEmptyFloorAd(cfg.blockId)) return;
+        const shell = shellForBlock(cfg.blockId);
+        if (!shell || isFloorAdShellEmpty(shell)) return;
         if (typeof window.ym === 'function') {
           window.ym(107136069, 'reachGoal', 'rsy_floor_render');
         }
-      }, EMPTY_CHECK_MS + 50);
+      }, EMPTY_CHECK_MS + EMPTY_RETRY_MS);
     },
   });
 
-  // onRender может не прийти при partial chrome — всё равно сторожим шелл.
-  watchEmptyFloorAd(cfg.blockId);
+  // onRender может не прийти при partial chrome — сторожим один раз, не дублем.
+  armWatch();
 }
 
 export default function YandexRSY() {
