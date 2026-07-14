@@ -1,5 +1,5 @@
 """SSR-рендер регионального блока: /regions, /region/{slug}, /region/{slug}/{code},
-/region-rating/{code}.
+/region-rating/{code}, /regions/map/{code}.
 
 Каждая страница регион-показателя получает уникальный автоконтент из данных:
 текущее значение, динамика за год/5 лет/весь период, место в рейтинге регионов,
@@ -10,6 +10,11 @@
 Рейтинги (/region-rating/{code}) — программатик-страницы под спрос
 «топ регионов по X», «где самая высокая/низкая X»: полная ранжированная
 таблица всех субъектов по последнему году + лидеры/аутсайдеры/РФ.
+
+Карта (/regions/map/{code}?year=YYYY) — интерактивная choropleth-поверхность
+(SPA hydrates); SSR даёт title/description/OG/JSON-LD для шаринга и краулеров.
+Это НЕ рейтинг: рейтинг = таблица мест, карта = пространственный срез + год.
+Legacy query `/regions?view=map&indicator=&year=` → 301 на канон (seo_pages).
 """
 
 from html import escape
@@ -43,6 +48,13 @@ _REGIONS_DESC = (
     "инвестиции, цены — 489 показателей Росстата с 1990 года. Графики, "
     "рейтинги регионов, сравнение с общероссийским уровнем."
 )
+
+# Дефолтный чип карты на фронте (MAP_METRICS[0]) — общий канон для 301
+# `/regions?view=map` без indicator и для sitemap-хаба.
+DEFAULT_MAP_CODE = (
+    "srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy"
+)
+MAP_OVERVIEW_CODE = "overview"
 
 
 def _fmt(value: float) -> str:
@@ -106,7 +118,7 @@ async def render_regions_home_html(db: AsyncSession) -> tuple[int, str]:
             f"<section class=\"seo-section\"><h2>{escape(d.name)}</h2><ul>{links}</ul></section>"
         )
 
-    # Точка входа робота в рейтинги: ключевые показатели с мостом в макро.
+    # Точка входа робота в рейтинги и карту: ключевые показатели с мостом в макро.
     rating_inds = (await db.execute(
         select(RegionIndicator.code, RegionIndicator.name)
         .where(RegionIndicator.table_code.in_(list(MACRO_BY_TABLE)),
@@ -115,14 +127,20 @@ async def render_regions_home_html(db: AsyncSession) -> tuple[int, str]:
     )).all()
     ratings_html = ""
     if rating_inds:
-        items = "".join(
-            f'<li><a href="/region-rating/{escape(c)}">Рейтинг регионов: {escape(n)}</a></li>'
+        rating_items = "".join(
+            f'<li><a href="/region-rating/{escape(c)}">Рейтинг: {escape(n)}</a></li>'
+            for c, n in rating_inds
+        )
+        map_items = "".join(
+            f'<li><a href="/regions/map/{escape(c)}">Карта: {escape(n)}</a></li>'
             for c, n in rating_inds
         )
         ratings_html = (
-            f"<section class=\"seo-section\"><h2>Рейтинги регионов</h2>"
-            f"<p>Все субъекты РФ, ранжированные по значению показателя за последний год.</p>"
-            f"<ul>{items}</ul></section>"
+            f"<section class=\"seo-section\"><h2>Рейтинги и карта регионов</h2>"
+            f"<p>Все субъекты РФ по значению показателя: полная таблица мест "
+            f"или интерактивная карта с выбором года.</p>"
+            f"<h3>Рейтинги</h3><ul>{rating_items}</ul>"
+            f"<h3>Карта</h3><ul>{map_items}</ul></section>"
         )
 
     body = f"""<div class="seo-page">
@@ -419,6 +437,14 @@ async def render_region_rating_html(code: str, db: AsyncSession) -> tuple[int, s
         f"Источник: Росстат. forecasteconomy.com</figcaption></figure>"
     )
 
+    map_html = (
+        f"<section class=\"seo-section\"><h2>На карте регионов</h2>"
+        f"<p>Тот же показатель на интерактивной карте России — цвет регионов "
+        f"по значению, ползунок по годам: "
+        f"<a href=\"/regions/map/{escape(code)}\">открыть карту «{escape(indicator.name)}»</a>.</p>"
+        f"</section>"
+    )
+
     body = f"""<div class="seo-page">
 <nav><a href="/">Главная</a> → <a href="/regions">Регионы</a> → Рейтинг: {escape(indicator.name)}</nav>
 <p class="seo-eyebrow">{escape(indicator.section_name)} — рейтинг регионов</p>
@@ -428,6 +454,7 @@ async def render_region_rating_html(code: str, db: AsyncSession) -> tuple[int, s
 {tiles_html}
 <section class="seo-section"><h2>Полный рейтинг ({total} регионов)</h2>{table_html}</section>
 {faq_html}
+{map_html}
 {macro_html}
 {siblings_html}
 <section class="seo-section"><h2>Источник данных</h2>
@@ -456,6 +483,205 @@ async def render_region_rating_html(code: str, db: AsyncSession) -> tuple[int, s
         keywords=(
             f"{indicator.name} по регионам, рейтинг регионов {indicator.name}, "
             f"{indicator.name} по субъектам рф, топ регионов {indicator.name}"
+        ),
+        og_image=f"{DOMAIN}{og_path}",
+    )
+    return 200, html
+
+
+async def render_regions_map_html(
+    code: str, db: AsyncSession, *, year: int | None = None
+) -> tuple[int, str]:
+    """Интерактивная карта регионов: /regions/map/{code}?year=YYYY.
+
+    SSR с React-bundle (include_app=True): краулер/превью получают meta +
+    видимый контент; SPA гидратирует choropleth. OG переиспользует барчарт
+    рейтинга — отдельный map-PNG не заводим (минимальный корректный SEO).
+    """
+    if code == MAP_OVERVIEW_CODE:
+        title = "Карта регионов России — обзор субъектов РФ"
+        desc = (
+            "Интерактивная карта 85 субъектов Российской Федерации: откройте "
+            "профиль региона или выберите показатель Росстата для цветовой шкалы "
+            "по годам. Forecast Economy."
+        )
+        body = f"""<div class="seo-page">
+<nav><a href="/">Главная</a> → <a href="/regions">Регионы</a> → Карта</nav>
+<p class="seo-eyebrow">Интерактивная карта субъектов РФ</p>
+<h1>Карта регионов России</h1>
+<p>Обзорный режим: клик по субъекту открывает профиль региона со всеми
+показателями сборника Росстата. Выберите показатель на странице, чтобы
+увидеть цветовую карту и динамику по годам.</p>
+<section class="seo-section"><h2>Популярные срезы на карте</h2>
+<ul>
+<li><a href="/regions/map/{escape(DEFAULT_MAP_CODE)}">Среднемесячная заработная плата</a></li>
+<li><a href="/regions/map/chislennost-naseleniya">Численность населения</a></li>
+<li><a href="/regions/map/uroven-bezrabotitsy">Уровень безработицы</a></li>
+</ul></section>
+<section class="seo-section"><h2>Рейтинги</h2>
+<p>Таблицу мест по показателю смотрите в разделе
+<a href="/regions">рейтингов регионов</a>.</p></section>
+</div>"""
+        json_ld = [_breadcrumbs([
+            ("/", "Главная"), ("/regions", "Регионы"),
+            ("/regions/map/overview", "Карта"),
+        ])]
+        html = await build_document(
+            title=title,
+            description=desc,
+            canonical_path="/regions/map/overview",
+            body=body,
+            json_ld=json_ld,
+            keywords="карта регионов россии, субъекты рф на карте, регионы россии статистика",
+        )
+        return 200, html
+
+    indicator = (await db.execute(
+        select(RegionIndicator).where(
+            RegionIndicator.code == code, RegionIndicator.is_listed.is_(True)
+        )
+    )).scalar_one_or_none()
+    if indicator is None:
+        return 404, "<h1>Показатель не найден</h1>"
+
+    years_avail = (await db.execute(
+        select(RegionDataPoint.year)
+        .join(Region, Region.id == RegionDataPoint.region_id)
+        .where(RegionDataPoint.indicator_id == indicator.id, Region.kind == "region")
+        .group_by(RegionDataPoint.year)
+        .having(func.count(func.distinct(RegionDataPoint.region_id)) >= 10)
+        .order_by(RegionDataPoint.year)
+    )).scalars().all()
+    if not years_avail:
+        return 404, "<h1>Нет данных для карты</h1>"
+
+    years_list = [int(y) for y in years_avail]
+    last_year = years_list[-1]
+    map_year = year if year in years_list else last_year
+
+    rows = (await db.execute(
+        select(Region.slug, Region.name, RegionDataPoint.value)
+        .join(Region, Region.id == RegionDataPoint.region_id)
+        .where(RegionDataPoint.indicator_id == indicator.id,
+               RegionDataPoint.year == map_year,
+               Region.kind == "region")
+        .order_by(RegionDataPoint.value.desc())
+    )).all()
+    if len(rows) < 10:
+        return 404, "<h1>Недостаточно данных</h1>"
+
+    unit = indicator.unit or ""
+    total = len(rows)
+    top = rows[:3]
+    bottom = rows[-3:]
+
+    def _vu(v) -> str:
+        return f"{_fmt(float(v))} {unit}".strip()
+
+    year_note = (
+        f" за {map_year} год"
+        if map_year == last_year
+        else f" за {map_year} год (последний доступный — {last_year})"
+    )
+    title = f"Карта регионов России: {indicator.name} ({map_year})"
+    desc = (
+        f"{indicator.name} на карте 85 субъектов РФ{year_note}. "
+        f"Наибольшее значение — {top[0][1]} ({_vu(top[0][2])}), "
+        f"наименьшее — {bottom[-1][1]} ({_vu(bottom[-1][2])}). "
+        f"Интерактивная карта и рейтинг, данные Росстата."
+    )
+
+    canonical = f"/regions/map/{code}"
+    if year is not None and year in years_list:
+        canonical = f"{canonical}?year={year}"
+
+    og_path = f"/og/region-rating/{code}.png"
+    map_alt = (
+        f"{indicator.name} по регионам России — карта и рейтинг, {map_year} год, "
+        f"лидер — {top[0][1]} ({_vu(top[0][2])})"
+    )
+    figure_html = (
+        f'<figure class="seo-chart"><img src="{escape(og_path)}" alt="{escape(map_alt)}" '
+        f'width="1200" height="630" loading="eager">'
+        f"<figcaption>{escape(indicator.name)} по регионам, {map_year} год. "
+        f"Источник: Росстат. forecasteconomy.com</figcaption></figure>"
+    )
+
+    leaders = "".join(
+        f"<li><a href=\"/region/{escape(s)}/{escape(code)}\">{escape(n)}</a> — "
+        f"{escape(_vu(v))}</li>"
+        for s, n, v in top
+    )
+    year_links = "".join(
+        f'<li><a href="/regions/map/{escape(code)}?year={y}">{y}</a></li>'
+        for y in years_list[-8:]
+    )
+
+    json_ld = [
+        _breadcrumbs([
+            ("/", "Главная"), ("/regions", "Регионы"),
+            (f"/regions/map/{code}", f"Карта: {indicator.name}"),
+        ]),
+        {
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": title,
+            "description": desc,
+            "url": f"{DOMAIN}{canonical}",
+            "applicationCategory": "BusinessApplication",
+            "operatingSystem": "Any",
+            "isAccessibleForFree": True,
+            "inLanguage": "ru-RU",
+        },
+        {
+            "@context": "https://schema.org",
+            "@type": "ImageObject",
+            "contentUrl": f"{DOMAIN}{og_path}",
+            "url": f"{DOMAIN}{og_path}",
+            "name": f"{indicator.name} — карта и рейтинг регионов, {map_year}",
+            "description": map_alt,
+            "representativeOfPage": True,
+            "width": 1200,
+            "height": 630,
+        },
+    ]
+
+    body = f"""<div class="seo-page">
+<nav><a href="/">Главная</a> → <a href="/regions">Регионы</a> → Карта: {escape(indicator.name)}</nav>
+<p class="seo-eyebrow">{escape(indicator.section_name)} — карта регионов</p>
+<h1>{escape(indicator.name)} на карте регионов России, {map_year} год</h1>
+<p>Интерактивная карта {total} субъектов Российской Федерации по показателю
+«{escape(indicator.name)}»{escape(year_note)}. Цвет региона отражает значение
+относительно других субъектов; ползунок на странице переключает годы
+с {years_list[0]} по {last_year}. Данные — сборник Росстата
+«Регионы России. Социально-экономические показатели».</p>
+{figure_html}
+<div class="seo-tiles">
+<div class="seo-tile"><span>Наибольшее — {escape(top[0][1])}</span><b>{escape(_vu(top[0][2]))}</b></div>
+<div class="seo-tile"><span>Наименьшее — {escape(bottom[-1][1])}</span><b>{escape(_vu(bottom[-1][2]))}</b></div>
+<div class="seo-tile"><span>Год на карте</span><b>{map_year}</b></div>
+<div class="seo-tile"><span>Регионов на срезе</span><b>{total}</b></div>
+</div>
+<section class="seo-section"><h2>Лидеры {map_year} года</h2><ol>{leaders}</ol>
+<p>Полная таблица мест —
+<a href="/region-rating/{escape(code)}">рейтинг регионов по «{escape(indicator.name)}»</a>.</p>
+</section>
+<section class="seo-section"><h2>Другие годы</h2><ul class="seo-pills">{year_links}</ul></section>
+<section class="seo-section"><h2>Источник</h2>
+<p>Росстат, единицы: {escape(unit or 'единицы источника')}. После загрузки страницы
+доступна интерактивная карта с выбором года и переходом в карточку региона.</p>
+</section>
+</div>"""
+
+    html = await build_document(
+        title=title,
+        description=desc,
+        canonical_path=canonical,
+        body=body,
+        json_ld=json_ld,
+        keywords=(
+            f"{indicator.name} карта регионов, {indicator.name} по регионам россии, "
+            f"карта субъектов рф {indicator.name}, {indicator.name} {map_year}"
         ),
         og_image=f"{DOMAIN}{og_path}",
     )

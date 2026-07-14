@@ -35,7 +35,7 @@ export default function RegionCrossLink({ macroCode }) {
         </p>
         <div className="flex flex-wrap gap-2">
           <Link
-            to="/regions?view=map"
+            to={`/regions/map/${regionInd.code}`}
             onClick={() => track(events.REGION_CROSSLINK_CLICK, { from: macroCode, to: 'regions-map' })}
             className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-champagne/10 text-champagne text-[13px] font-medium hover:bg-champagne/20 transition-colors"
           >

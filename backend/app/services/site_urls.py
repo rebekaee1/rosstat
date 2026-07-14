@@ -144,12 +144,8 @@ async def _regional_pair_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
     return urls
 
 
-async def _rating_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
-    """Рейтинги регионов: listed показатели с >= 10 регионами за последний год.
-
-    Порог согласован с рендером `render_region_rating_html` (иначе URL из
-    sitemap отдавал бы 404): считаем регионы именно за max-год показателя.
-    """
+async def _rating_eligible_codes(db: AsyncSession) -> list[tuple[str, int]]:
+    """Listed показатели с ≥ 10 регионами за max-год (рейтинг и карта)."""
     last_year_sub = (
         select(
             RegionDataPoint.indicator_id.label("iid"),
@@ -171,9 +167,30 @@ async def _rating_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
         .having(func.count(func.distinct(RegionDataPoint.region_id)) >= 10)
         .order_by(RegionIndicator.code)
     )
+    return [(code, int(y)) for code, y in (await db.execute(stmt)).all()]
+
+
+async def _rating_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
+    """Рейтинги регионов: listed показатели с >= 10 регионами за последний год.
+
+    Порог согласован с рендером `render_region_rating_html` (иначе URL из
+    sitemap отдавал бы 404): считаем регионы именно за max-год показателя.
+    """
     return [
-        _u(f"/region-rating/{code}", f"{int(y)}-12-31", "monthly", "0.7")
-        for code, y in (await db.execute(stmt)).all()
+        _u(f"/region-rating/{code}", f"{y}-12-31", "monthly", "0.7")
+        for code, y in await _rating_eligible_codes(db)
+    ]
+
+
+async def _map_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
+    """Карта регионов по показателю: /regions/map/{code} (без year в sitemap).
+
+    Тот же пул, что у рейтингов: map SSR требует ≥ 10 регионов на срезе.
+    Год в query — только для shareable deep-link, в индекс не раздуваем.
+    """
+    return [
+        _u(f"/regions/map/{code}", f"{y}-12-31", "monthly", "0.65")
+        for code, y in await _rating_eligible_codes(db)
     ]
 
 
@@ -249,6 +266,7 @@ async def collect_url_sections(db: AsyncSession) -> dict[str, list[SiteUrl]]:
         "core": await _core_urls(db, today),
         "today": await _today_urls(db, today),
         "ratings": await _rating_urls(db, today),
+        "maps": await _map_urls(db, today),
         "regions": await _region_hub_urls(db, today),
         "region-vs": await _region_vs_urls(db, today),
         "calendar": await _calendar_month_urls(db, today),

@@ -2,7 +2,7 @@
 
 **Status:** Accepted (в production на forecasteconomy.com).
 **Date:** 2026-05-07.
-**Last verified:** 2026-05-22 (документация-ревизия: SSR через `__spa-index.html` + Vite shell discovery работает; 7 SSR-routes в `frontend/nginx.conf`: `/`, `/{about,privacy,compare,calculator,calendar,demographics,widgets}`, `/category/<slug>`, `/indicator/<code>`; добавлен `no-cache always` фикс 2026-05-22 для всех SSR routes — закрывает Browser-cache trap, см. `enterprise_resilience.md::Frontend и кэш`).
+**Last verified:** 2026-07-14 (SEO `/regions/map/{code}` для шаринга карты; см. Subsequent additions).
 **Part of:** [`../../CONTEXT.md`](../../CONTEXT.md) (раздел `SEO meta bundle` + «Asset-hash mismatch trap»).
 **Related:** [ADR-0002](0002-derived-always-reflects-source.md) (паттерн single-source-of-truth), [`../enterprise_resilience.md`](../enterprise_resilience.md) (asset-hash trap, CSP).
 **Code anchors:** `backend/app/services/seo_renderer.py`, `backend/app/services/seo_content.py`, `backend/app/api/seo_pages.py`, `frontend/nginx.conf` (location-блоки `/seo/*` и `/__spa-index.html`).
@@ -158,7 +158,7 @@ Backend в `seo_renderer.get_app_assets()` ходит на
 **2026-07-04 — программа индексации 40k + программатик-спрос (спринт «10k визитов/день»).** Расширение в рамках принятого решения:
 
 1. **Единый реестр URL** `app/services/site_urls.py::collect_url_sections` — одна точка истины для sitemap, IndexNow и очереди переобхода. Порядок секций = приоритет обхода.
-2. **Sitemap-индекс** — `/sitemap.xml` теперь `<sitemapindex>` из секций `/sitemap-{name}.xml` (core / today / ratings / regions / region-vs / calendar / years / regional-1..N по 10k). Per-file lastmod и статистика обхода в Вебмастере. nginx: regex-location `^/sitemap(-[a-z0-9-]+)?\.xml$`.
+2. **Sitemap-индекс** — `/sitemap.xml` теперь `<sitemapindex>` из секций `/sitemap-{name}.xml` (core / today / ratings / maps / regions / region-vs / calendar / years / regional-1..N по 10k). Per-file lastmod и статистика обхода в Вебмастере. nginx: regex-location `^/sitemap(-[a-z0-9-]+)?\.xml$`.
 3. **IndexNow full-site** (`indexnow.ping_full_site` + `backend/scripts/indexnow-ping-all.py`): батчи по 10 000 URL (лимит протокола), разовый прогон всех ~43k URL выполнен 2026-07-04; ETL-пинг дополнен страницами `/today/{code}`.
 4. **Автоподача переобхода Вебмастера** (`app/services/webmaster_recrawl.py`, cron 09:10 MSK): ежедневный дренаж квоты (~150 URL/день) приоритетными URL из реестра; state — Redis-set `wm:recrawl:submitted` в state-DB (переживает FLUSHDB кэша); цикл перезапускается после полного прохода. Флаг `webmaster_recrawl_enabled` + `yandex_webmaster_token`.
 5. **Новые SSR-семейства страниц** (все чистый SSR, `include_app=False`, свои canonical):
@@ -169,6 +169,13 @@ Backend в `seo_renderer.get_app_assets()` ходит на
 6. **Перелинковка**: SSR-хаб регионов → рейтинги; карточка регион-показателя → «полный рейтинг регионов»; главная (PAGE_META home links) → /today и /regions; месячные страницы календаря связаны prev/next.
 7. **Фикс BreadcrumbList в региональном SSR**: элементы `(name, path)` передавались в `_breadcrumbs` в перевёрнутом порядке — `item` получал имя вместо URL. Исправлено во всех региональных рендерах.
 8. **Деплой 2026-07-04**: всё выше на проде (`201.51.11.170`); `RUSTATS_YANDEX_WEBMASTER_TOKEN` добавлен в прод-`.env`; IndexNow-пинг новых секций (706 URL) принят; recrawl-job активен, первый автодренаж квоты — 05.07 09:10 МСК (квота 04.07 выбрана ручной подачей 200 URL).
+
+**2026-07-14 — SEO шаринга карты регионов.** `/region-rating/{code}` ≠ интерактивная карта с годом. Канон shareable URL:
+
+1. **`/regions/map/{code}`** (+ опционально `?year=YYYY`) — SSR `seo_regional.py::render_regions_map_html`, nginx → `/seo/regions/map/{code}`, SPA-роут тот же компонент `RegionsHome`. Meta/OG/JSON-LD/видимый chart; OG переиспользует `/og/region-rating/{code}.png` (отдельный map-PNG не плодим).
+2. **Legacy query** `/regions?view=map&indicator=&year=` (прод `9226c77`) → **301** на канон (`seo_pages.seo_regions`).
+3. **Sitemap** секция `maps` (`site_urls._map_urls`) — тот же пул listed ≥10 регионов, что у ratings; year-варианты в индекс не входят.
+4. **Перелинковка**: хаб `/regions` → рейтинги и карты; рейтинг ↔ карта; макро-кросслинк → `/regions/map/{code}`.
 
 ## Out of scope (future work)
 

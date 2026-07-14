@@ -36,10 +36,12 @@ from app.database import get_db
 from app.services.seo_calendar import render_calendar_month_html
 from app.services.seo_region_compare import render_region_vs_html
 from app.services.seo_regional import (
+    DEFAULT_MAP_CODE,
     render_region_html,
     render_region_indicator_html,
     render_region_rating_html,
     render_regions_home_html,
+    render_regions_map_html,
 )
 from app.services.seo_today import render_today_hub_html, render_today_indicator_html
 from app.services.seo_renderer import (
@@ -181,7 +183,28 @@ async def seo_indicator(
 
 @router.api_route("/seo/regions", methods=["GET", "HEAD"], include_in_schema=False)
 async def seo_regions(request: Request, db: AsyncSession = Depends(get_db)):
+    # Legacy share URLs (prod 9226c77): /regions?view=map&indicator=&year=
+    # → канон /regions/map/{code}?year=
+    if request.query_params.get("view") == "map":
+        raw = request.query_params.get("indicator") or DEFAULT_MAP_CODE
+        code = raw if re.fullmatch(r"[a-z0-9-]+", raw, re.I) else DEFAULT_MAP_CODE
+        target = f"/regions/map/{code}"
+        year = request.query_params.get("year")
+        if year and re.fullmatch(r"\d{4}", year):
+            target = f"{target}?year={year}"
+        return _permanent_redirect(target)
     status, html = await render_regions_home_html(db)
+    return _html_response(status, html, request)
+
+
+@router.api_route("/seo/regions/map/{code}", methods=["GET", "HEAD"], include_in_schema=False)
+async def seo_regions_map(code: str, request: Request, db: AsyncSession = Depends(get_db)):
+    year_raw = request.query_params.get("year")
+    year = int(year_raw) if year_raw and re.fullmatch(r"\d{4}", year_raw) else None
+    status, html = await _cached_html(
+        "ssr-region", f"regions-map:{code}:{year or ''}", _SSR_TTL_REGIONAL,
+        lambda: render_regions_map_html(code, db, year=year),
+    )
     return _html_response(status, html, request)
 
 

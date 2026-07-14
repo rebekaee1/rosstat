@@ -81,6 +81,7 @@ def test_indexnow_batches_split(monkeypatch):
 @pytest.mark.parametrize("path,renderer", [
     ("/seo/today", "render_today_hub_html"),
     ("/seo/region-rating/some-code", "render_region_rating_html"),
+    ("/seo/regions/map/some-code", "render_regions_map_html"),
 ])
 def test_seo_routes_no_args(client, monkeypatch, path, renderer):
     from app.api import seo_pages
@@ -92,6 +93,19 @@ def test_seo_routes_no_args(client, monkeypatch, path, renderer):
     r = client.get(path)
     assert r.status_code == 200
     assert "ok" in r.text
+
+
+def test_seo_regions_map_legacy_query_redirects(client):
+    """Legacy share URL → канон /regions/map/{code}?year=."""
+    r = client.get(
+        "/seo/regions",
+        params={"view": "map", "indicator": "uroven-bezrabotitsy", "year": "2015"},
+        follow_redirects=False,
+    )
+    assert r.status_code == 301
+    assert r.headers["location"].endswith(
+        "/regions/map/uroven-bezrabotitsy?year=2015"
+    )
 
 
 def test_seo_region_vs_route_parses_pair(client, monkeypatch):
@@ -276,6 +290,26 @@ def test_render_region_rating(seeded_env):
         assert "Регион 11" in r.text  # лидер по значению
         assert "/region/region-11/chislennost-naseleniya" in r.text
         assert "146" in r.text  # общероссийское значение упомянуто
+        assert "/regions/map/chislennost-naseleniya" in r.text
+
+
+def test_render_regions_map(seeded_env):
+    with TestClient(seeded_env["app"]) as tc:
+        r = tc.get("/seo/regions/map/chislennost-naseleniya")
+        assert r.status_code == 200
+        assert "на карте регионов России" in r.text
+        assert 'canonical" href="https://forecasteconomy.com/regions/map/chislennost-naseleniya"' in r.text
+        assert "/og/region-rating/chislennost-naseleniya.png" in r.text
+        assert "/region-rating/chislennost-naseleniya" in r.text
+
+        with_year = tc.get("/seo/regions/map/chislennost-naseleniya?year=2022")
+        assert with_year.status_code == 200
+        assert "2022" in with_year.text
+        assert 'canonical" href="https://forecasteconomy.com/regions/map/chislennost-naseleniya?year=2022"' in with_year.text
+
+        overview = tc.get("/seo/regions/map/overview")
+        assert overview.status_code == 200
+        assert "Карта регионов России" in overview.text
 
 
 def test_render_region_vs(seeded_env):
@@ -313,5 +347,9 @@ def test_sitemap_sections(seeded_env):
         ratings = tc.get("/sitemap-ratings.xml")
         assert ratings.status_code == 200
         assert "/region-rating/chislennost-naseleniya" in ratings.text
+
+        maps = tc.get("/sitemap-maps.xml")
+        assert maps.status_code == 200
+        assert "/regions/map/chislennost-naseleniya" in maps.text
 
         assert tc.get("/sitemap-nope.xml").status_code == 404

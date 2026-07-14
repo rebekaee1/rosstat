@@ -187,6 +187,7 @@ function AppRoutes() {
             <Route path="/region-vs/:pair" element={<RegionComparePage />} />
             <Route path="/calendar/:year/:month" element={<CalendarMonthPage />} />
             <Route path="/regions" element={<RegionsHome />} />
+            <Route path="/regions/map/:code" element={<RegionsHome />} />
             <Route path="/region/:slug" element={<RegionProfile />} />
             <Route path="/region/:slug/:code" element={<RegionIndicatorPage />} />
             <Route path="/admin/bi" element={<AdminBI />} />

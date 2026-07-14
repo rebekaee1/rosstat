@@ -4,9 +4,9 @@
 // всем 489), тап по региону — карточка показателя; режим «Обзор» — профиль
 // региона. Зум/пан — созвон «На правки 13». PNG/GIF-выгрузка карты — только для
 // зарегистрированных, без watermark (правило 2026-07-08). Состояние карты в URL:
-// /regions?view=map&indicator=<code|overview>&year=YYYY — shareable deep-link.
-import { useMemo, useState, useRef, useDeferredValue, useCallback, lazy, Suspense } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+// /regions/map/{code}?year=YYYY (legacy query → 301/client replace на канон).
+import { useMemo, useState, useRef, useDeferredValue, useCallback, useEffect, lazy, Suspense } from 'react';
+import { Link, useNavigate, useSearchParams, useLocation, useParams } from 'react-router-dom';
 import {
   Search, MapPin, ChevronRight, Database, List, Map as MapIcon,
   Image as ImageIcon, Film, X, RefreshCw,
@@ -21,8 +21,8 @@ import { SkeletonBox } from '../components/Skeleton';
 import { exportNodeToPng } from '../lib/chartImage';
 import { buildRegionsMapGif, downloadBlob } from '../lib/regionsMapGif';
 import {
-  parseRegionsMapParams, buildRegionsMapSearchParams, searchParamsEqual,
-  MAP_OVERVIEW,
+  parseRegionsMapLocation, buildRegionsMapLocation, buildRegionsMapHref,
+  locationsEqual, MAP_OVERVIEW, DEFAULT_MAP_CODE,
 } from '../lib/regionsMapUrl';
 import { track, events } from '../lib/track';
 import useSearchTracking from '../lib/useSearchTracking';
@@ -219,17 +219,32 @@ export default function RegionsHome() {
   const [activeDistrict, setActiveDistrict] = useState(null);
   const deferredQuery = useDeferredValue(query);
   const navigate = useNavigate();
+  const location = useLocation();
+  const { code: pathCode } = useParams();
+  const [searchParams] = useSearchParams();
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const { view, indicator: urlIndicator, year: urlYear } = parseRegionsMapParams(searchParams);
+  const { view, indicator: urlIndicator, year: urlYear } = parseRegionsMapLocation(
+    location.pathname,
+    searchParams,
+  );
+
+  // Legacy query на /regions?view=map… → канон /regions/map/{code}?year=
+  useEffect(() => {
+    if (location.pathname !== '/regions' && location.pathname !== '/regions/') return;
+    if (searchParams.get('view') !== 'map') return;
+    const next = buildRegionsMapLocation({
+      view: 'map',
+      indicator: urlIndicator || DEFAULT_MAP_CODE,
+      year: urlYear,
+    });
+    navigate(`${next.pathname}${next.search}`, { replace: true });
+  }, [location.pathname, searchParams, urlIndicator, urlYear, navigate]);
 
   const isOverview = urlIndicator === MAP_OVERVIEW;
-  // null indicator + map → дефолтный пресет (первый чип), как раньше без URL.
   const activeMapCode = view !== 'map' || isOverview
     ? null
-    : (urlIndicator || MAP_METRICS[0].code);
+    : (urlIndicator || pathCode || DEFAULT_MAP_CODE);
   const isCustomMetric = !!(activeMapCode && !PRESET_CODES.has(activeMapCode));
-  const isDefaultPreset = view === 'map' && !urlIndicator && !isOverview;
 
   const customName = useMemo(() => {
     if (!isCustomMetric || !activeMapCode) return '';
@@ -249,7 +264,6 @@ export default function RegionsHome() {
   const seriesYears = series.data?.years || null;
 
   // Год — из URL (?year=); если нет или вне ряда — последний доступный.
-  // Скраб/play пишут year в query (replace), без локального дубля состояния.
   const mapYear = useMemo(() => {
     if (!seriesYears?.length) return null;
     if (urlYear != null && seriesYears.includes(urlYear)) return urlYear;
@@ -257,16 +271,13 @@ export default function RegionsHome() {
   }, [seriesYears, urlYear]);
 
   const syncMapUrl = useCallback((next) => {
-    const desired = buildRegionsMapSearchParams(next);
-    setSearchParams((prev) => {
-      if (searchParamsEqual(desired, prev)) return prev;
-      return desired;
-    }, { replace: true });
-  }, [setSearchParams]);
+    const desired = buildRegionsMapLocation(next);
+    const current = { pathname: location.pathname, search: location.search || '' };
+    if (locationsEqual(desired, current)) return;
+    navigate(`${desired.pathname}${desired.search}`, { replace: true });
+  }, [navigate, location.pathname, location.search]);
 
-  const mapIndicatorParam = isOverview
-    ? MAP_OVERVIEW
-    : (isDefaultPreset ? null : activeMapCode);
+  const mapIndicatorParam = isOverview ? MAP_OVERVIEW : activeMapCode;
 
   const setMapYear = useCallback((y) => {
     syncMapUrl({
@@ -294,7 +305,7 @@ export default function RegionsHome() {
     } else {
       syncMapUrl({
         view: 'map',
-        indicator: mapIndicatorParam,
+        indicator: mapIndicatorParam || DEFAULT_MAP_CODE,
         year: activeMapCode && mapYear != null ? mapYear : null,
       });
     }
@@ -307,9 +318,7 @@ export default function RegionsHome() {
   };
 
   const selectPreset = (m) => {
-    // Дефолтный первый чип — без indicator в URL (короче шаринг).
-    const indicator = m.code === MAP_METRICS[0].code ? null : m.code;
-    syncMapUrl({ view: 'map', indicator });
+    syncMapUrl({ view: 'map', indicator: m.code });
     track(events.REGIONS_MAP_METRIC, { metric: m.label });
   };
 
@@ -319,7 +328,7 @@ export default function RegionsHome() {
   };
 
   const clearCustom = () => {
-    syncMapUrl({ view: 'map', indicator: null });
+    syncMapUrl({ view: 'map', indicator: DEFAULT_MAP_CODE });
   };
 
   const heatmapValues = useMemo(() => {
@@ -348,11 +357,11 @@ export default function RegionsHome() {
     title: view === 'map' ? mapMetaTitle : 'Регионы России — социально-экономические показатели 85 субъектов РФ',
     description: view === 'map' ? mapMetaDesc : 'Статистика по 85 регионам России: население, зарплаты, ВРП, безработица, инвестиции, цены — 489 показателей Росстата с 1990 года. Графики, рейтинги регионов, сравнение с общероссийским уровнем.',
     path: view === 'map'
-      ? `/regions?${buildRegionsMapSearchParams({
+      ? buildRegionsMapHref({
         view: 'map',
         indicator: mapIndicatorParam,
         year: activeMapCode && urlYear != null ? urlYear : null,
-      }).toString()}`
+      })
       : '/regions',
   });
 

@@ -47,6 +47,7 @@ MATRIX = [
     ("/seo/category/prices", "/category/prices"),
     ("/seo/indicator/cpi", "/indicator/cpi"),
     ("/seo/regions", "/regions"),
+    ("/seo/regions/map/naselenie", "/regions/map/naselenie"),
     ("/seo/region/moskva", "/region/moskva"),
     ("/seo/region/moskva/naselenie", "/region/moskva/naselenie"),
     ("/seo/region-rating/naselenie", "/region-rating/naselenie"),
