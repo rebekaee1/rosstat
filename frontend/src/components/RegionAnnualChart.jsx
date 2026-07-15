@@ -121,7 +121,12 @@ export default function RegionAnnualChart({
     // визуально «прыгают» между плотными промежутками.
     if (isNarrow && dualAxis) budget = Math.min(budget, 4);
     else if (isNarrow) budget = Math.min(budget, 5);
-    return pickChartAxisTicks(data, budget, { dateKey: 'year', cadence: 'annual' });
+    return pickChartAxisTicks(data, budget, {
+      dateKey: 'year',
+      cadence: 'annual',
+      plotWidthPx: axisW,
+      formatLabel: (y) => String(y),
+    });
   }, [data, plotWidth, leftAxisWidth, rightAxisWidth, dualAxis, isNarrow]);
 
   if (!data.length) return null;

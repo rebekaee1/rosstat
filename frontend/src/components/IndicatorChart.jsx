@@ -378,21 +378,34 @@ export default function IndicatorChart({
     return { yDomain: [niceMin, niceMax], yWidth: w, yTicks: ticks };
   }, [visibleData, digits]);
 
-  // Равномерные подписи оси X (включая крайние даты). Число тиков — от
-  // ширины контейнера: на ~235px plot (iPhone) 7×«май 2022» наезжают.
+  // Подписи оси X: бюджет от ширины + фактическая RU-строка («7 июля 2025»),
+  // затем densest step без пересечения (см. pickChartAxisTicks).
+  const axisDateFormat = dateFormat === 'full' ? 'short' : dateFormat;
+  const formatXAxisLabel = useCallback(
+    (d) => formatDate(d, axisDateFormat),
+    [axisDateFormat],
+  );
+  const xAxisPlotWidth = Math.max(0, plotWidth - 80);
   const xTickBudget = useMemo(() => {
-    const labelChars = dateFormat === 'annual' ? 4
-      : dateFormat === 'quarterly' ? 10
-        : dateFormat === 'day' || dateFormat === 'weekly' ? 10
-          : 8;
-    return chartAxisTickBudget(Math.max(0, plotWidth - 80), labelChars);
-  }, [plotWidth, dateFormat]);
+    const sample = visibleData[0]?.date ?? visibleData[visibleData.length - 1]?.date;
+    const sampleLabel = sample != null ? formatXAxisLabel(sample) : '';
+    const labelSpec = sampleLabel
+      || (dateFormat === 'annual' ? 4
+        : dateFormat === 'quarterly' ? 10
+          : dateFormat === 'day' || dateFormat === 'weekly' ? '7 июля 2025'
+            : 8);
+    return chartAxisTickBudget(xAxisPlotWidth, labelSpec);
+  }, [xAxisPlotWidth, dateFormat, visibleData, formatXAxisLabel]);
   const xTicks = useMemo(() => {
     const cadence = dateFormat === 'annual' || dateFormat === 'quarterly'
       ? dateFormat
       : null;
-    return pickChartAxisTicks(visibleData, xTickBudget, { cadence });
-  }, [visibleData, xTickBudget, dateFormat]);
+    return pickChartAxisTicks(visibleData, xTickBudget, {
+      cadence,
+      plotWidthPx: xAxisPlotWidth,
+      formatLabel: formatXAxisLabel,
+    });
+  }, [visibleData, xTickBudget, dateFormat, xAxisPlotWidth, formatXAxisLabel]);
 
   const title = cpiChartTitle
     ?? (mode === 'cpi'
@@ -534,7 +547,7 @@ export default function IndicatorChart({
             />
             <XAxis
               dataKey="date"
-              tickFormatter={d => formatDate(d, dateFormat === 'full' ? 'short' : dateFormat)}
+              tickFormatter={formatXAxisLabel}
               stroke="rgba(0,0,0,0.1)"
               tick={{ fill: 'rgba(0,0,0,0.4)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
               tickLine={false}

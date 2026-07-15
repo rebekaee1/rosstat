@@ -773,18 +773,21 @@ export default function ComparePage() {
         ? 'short'
         : compareDateFormat(series.map((s) => s.ind));
 
-  // Равномерные подписи оси X; бюджет тиков — от ширины (мобилка).
+  // Подписи оси X: бюджет от ширины + formatChartAxisDate (как tickFormatter).
   const xTicks = useMemo(() => {
-    const labelChars = compareDateFmt === 'annual' ? 4
-      : compareDateFmt === 'quarterly' ? 10
-        : 8;
+    const axisW = Math.max(0, plotWidth - 80);
+    const formatLabel = (d) => formatChartAxisDate(d, compareDateFmt, { multiYear: true });
+    const sample = chartRows[0]?.date ?? chartRows[chartRows.length - 1]?.date;
+    const labelSpec = sample != null
+      ? formatLabel(sample)
+      : (compareDateFmt === 'annual' ? 4 : compareDateFmt === 'quarterly' ? 10 : 8);
     const cadence = compareDateFmt === 'annual' || compareDateFmt === 'quarterly'
       ? compareDateFmt
       : null;
     return pickChartAxisTicks(
       chartRows,
-      chartAxisTickBudget(Math.max(0, plotWidth - 80), labelChars),
-      { cadence },
+      chartAxisTickBudget(axisW, labelSpec),
+      { cadence, plotWidthPx: axisW, formatLabel },
     );
   }, [chartRows, plotWidth, compareDateFmt]);
 

@@ -34,19 +34,52 @@ export function formatChartAxisDate(dateStr, format = 'short', { multiYear = fal
   return formatDate(dateStr, format === 'full' ? 'short' : format);
 }
 
+/** JetBrains Mono 11px: чуть консервативнее реальной ширины кириллицы. */
+const AXIS_PX_PER_CHAR = 6.6;
+const AXIS_LABEL_GAP_PX = 12;
+
+/**
+ * Оценка ширины подписи оси X в px («7 июля 2025», «I кв. 2024», «2023»).
+ * labelOrChars — строка подписи или число символов.
+ */
+export function estimateAxisLabelWidthPx(labelOrChars) {
+  const n = typeof labelOrChars === 'number'
+    ? Math.max(0, labelOrChars)
+    : String(labelOrChars ?? '').length;
+  return Math.max(16, Math.ceil(n * AXIS_PX_PER_CHAR));
+}
+
 /**
  * Сколько подписей оси X влезает без наезда.
- * labelChars — типичная длина подписи («май 2022» ≈ 8, «2023» ≈ 4, «I кв. 2024» ≈ 10).
- * Потолок высокий: плотность ограничена шириной, не магической «7».
+ * 2-й аргумент: число символов, готовая ширина в px (>40), либо строка-образец
+ * («7 июля 2025»). Потолок высокий — плотность режет ширина, не магическая «7».
  */
-export function chartAxisTickBudget(plotWidthPx, labelChars = 8) {
+export function chartAxisTickBudget(plotWidthPx, labelCharsOrSample = 8) {
   const w = Number(plotWidthPx) || 0;
   // SSR / до ResizeObserver — умеренный дефолт; после замера пересчитается.
   if (w <= 0) return 8;
-  // JetBrains Mono ~11px ≈ 6px/символ; зазор меньше для коротких лейблов («2023»).
-  const gapPx = labelChars <= 4 ? 10 : 14;
-  const perTick = Math.max(28, labelChars * 6 + gapPx);
-  return Math.max(2, Math.min(36, Math.floor(w / perTick) + 1));
+
+  let labelW;
+  let chars;
+  if (typeof labelCharsOrSample === 'string') {
+    labelW = estimateAxisLabelWidthPx(labelCharsOrSample);
+    chars = labelCharsOrSample.length;
+  } else if (typeof labelCharsOrSample === 'number' && labelCharsOrSample > 40) {
+    // Уже ширина в px (редко; для явной передачи estimateAxisLabelWidthPx).
+    labelW = labelCharsOrSample;
+    chars = Math.ceil(labelW / AXIS_PX_PER_CHAR);
+  } else {
+    chars = Number(labelCharsOrSample) || 8;
+    labelW = estimateAxisLabelWidthPx(chars);
+  }
+
+  const gapPx = chars <= 4 ? 10 : AXIS_LABEL_GAP_PX;
+  const perTick = Math.max(28, labelW + gapPx);
+  // (N-1)*perTick + labelW ≤ w  →  N ≤ (w - labelW)/perTick + 1
+  // Эквивалент floor(w/perTick)+1 при labelW≈perTick-gap; для длинных RU-дат
+  // вычитаем половину крайних подписей, чтобы не завышать бюджет.
+  const usable = Math.max(0, w - labelW * 0.35);
+  return Math.max(2, Math.min(36, Math.floor(usable / perTick) + 1));
 }
 
 /**
@@ -55,7 +88,7 @@ export function chartAxisTickBudget(plotWidthPx, labelChars = 8) {
  * 2) если ближайший больший делитель span даёт почти ту же плотность
  *    (не теряем больше одного тика) — берём его, чтобы last-gap = step.
  */
-function densestCalendarStep(span, maxTicks) {
+export function densestCalendarStep(span, maxTicks) {
   if (span <= 0) return 1;
   const slots = Math.max(1, maxTicks - 1);
   const minStep = Math.max(1, Math.ceil(span / slots));
@@ -79,12 +112,53 @@ function parseUtcParts(value) {
 }
 
 /**
+ * Пересекаются ли подписи на категориальной оси (позиция ∝ индекс в ряду).
+ * items: [{ index, label }], maxIndex — последний индекс данных.
+ */
+export function axisTickLabelsOverlap(items, maxIndex, plotWidthPx, gapPx = AXIS_LABEL_GAP_PX) {
+  const w = Number(plotWidthPx) || 0;
+  if (w <= 0 || !items?.length || items.length < 2) return false;
+  const span = Math.max(1, maxIndex);
+  let prevRight = -Infinity;
+  for (const it of items) {
+    const x = (it.index / span) * w;
+    const half = estimateAxisLabelWidthPx(it.label) / 2;
+    const left = x - half;
+    if (left < prevRight + gapPx) return true;
+    prevRight = x + half;
+  }
+  return false;
+}
+
+function buildTickItems(values, indices, formatLabel) {
+  return indices.map((index) => ({
+    index,
+    value: values[index],
+    label: formatLabel ? String(formatLabel(values[index]) ?? '') : String(values[index] ?? ''),
+  }));
+}
+
+function indexStepTicks(values, step) {
+  const last = values.length - 1;
+  const indices = [0];
+  for (let i = step; i < last; i += step) indices.push(i);
+  if (indices[indices.length - 1] !== last) indices.push(last);
+  return indices;
+}
+
+/**
  * Календарные тики annual/quarterly: максимальная плотность без наезда,
  * равный шаг (1y/2y… или 1q/2q/1y…), всегда first+last.
+ * Возвращает { values, indices } либо null.
  */
 function pickCalendarAlignedTicks(values, maxTicks, cadence) {
-  if (!values.length) return [];
-  if (values.length <= maxTicks) return values;
+  if (!values.length) return { values: [], indices: [] };
+  if (values.length <= maxTicks) {
+    return {
+      values: [...values],
+      indices: values.map((_, i) => i),
+    };
+  }
 
   const first = values[0];
   const last = values[values.length - 1];
@@ -92,9 +166,16 @@ function pickCalendarAlignedTicks(values, maxTicks, cadence) {
   const b = parseUtcParts(last);
   if (!a || !b) return null;
 
+  const valueIndex = new Map();
+  values.forEach((v, i) => {
+    if (!valueIndex.has(v)) valueIndex.set(v, i);
+  });
+
   if (cadence === 'annual') {
     const span = b.year - a.year;
-    if (span <= 0) return [first, last];
+    if (span <= 0) {
+      return { values: [first, last], indices: [0, values.length - 1] };
+    }
     const step = densestCalendarStep(span, maxTicks);
     const byYear = new Map();
     for (const v of values) {
@@ -107,7 +188,10 @@ function pickCalendarAlignedTicks(values, maxTicks, cadence) {
       if (hit != null) ticks.push(hit);
     }
     if (ticks[ticks.length - 1] !== last) ticks.push(last);
-    return ticks;
+    return {
+      values: ticks,
+      indices: ticks.map((v) => valueIndex.get(v)),
+    };
   }
 
   // quarterly: шаг в кварталах
@@ -115,7 +199,9 @@ function pickCalendarAlignedTicks(values, maxTicks, cadence) {
   const q0 = toQ(a);
   const q1 = toQ(b);
   const span = q1 - q0;
-  if (span <= 0) return [first, last];
+  if (span <= 0) {
+    return { values: [first, last], indices: [0, values.length - 1] };
+  }
   const step = densestCalendarStep(span, maxTicks);
   const byQ = new Map();
   for (const v of values) {
@@ -130,13 +216,81 @@ function pickCalendarAlignedTicks(values, maxTicks, cadence) {
     if (hit != null) ticks.push(hit);
   }
   if (ticks[ticks.length - 1] !== last) ticks.push(last);
-  return ticks;
+  return {
+    values: ticks,
+    indices: ticks.map((v) => valueIndex.get(v)),
+  };
 }
 
 /**
- * Подписи оси X: плотнейший набор ≤ maxTicks, всегда first+last.
- * cadence: 'annual' | 'quarterly' — календарный равный шаг (не index-sampling).
- * 3-й аргумент — dateKey (строка) или options { dateKey, cadence }.
+ * Равный шаг по индексу (daily/weekly/monthly): densestCalendarStep на span точек.
+ */
+function pickIndexAlignedTicks(values, maxTicks) {
+  if (!values.length) return { values: [], indices: [] };
+  if (values.length <= maxTicks) {
+    return {
+      values: [...values],
+      indices: values.map((_, i) => i),
+    };
+  }
+  const span = values.length - 1;
+  const step = densestCalendarStep(span, maxTicks);
+  const indices = indexStepTicks(values, step);
+  return {
+    values: indices.map((i) => values[i]),
+    indices,
+  };
+}
+
+/**
+ * Ужимаем maxTicks, пока подписи не перестанут наезжать (plotWidth + formatLabel).
+ * Предпочитаем календарный/index-aligned шаг; всегда first+last, если влезают.
+ */
+function fitTicksNoOverlap(values, maxTicks, cadence, plotWidthPx, formatLabel) {
+  const maxIndex = values.length - 1;
+  if (maxIndex < 0) return [];
+  if (maxIndex === 0) return [values[0]];
+
+  const tryBudget = (budget) => {
+    if (cadence === 'annual' || cadence === 'quarterly') {
+      return pickCalendarAlignedTicks(values, budget, cadence);
+    }
+    return pickIndexAlignedTicks(values, budget);
+  };
+
+  // Верхняя оценка по самой длинной подписи в окне (не по среднему).
+  let budget = Math.max(2, maxTicks);
+  if (plotWidthPx > 0 && formatLabel) {
+    let longest = '';
+    const stride = Math.max(1, Math.floor(values.length / 48));
+    for (let i = 0; i < values.length; i += stride) {
+      const s = String(formatLabel(values[i]) ?? '');
+      if (s.length > longest.length) longest = s;
+    }
+    const tail = String(formatLabel(values[maxIndex]) ?? '');
+    if (tail.length > longest.length) longest = tail;
+    budget = Math.min(budget, chartAxisTickBudget(plotWidthPx, longest || 8));
+  }
+
+  for (let b = budget; b >= 2; b -= 1) {
+    const picked = tryBudget(b);
+    if (!picked) continue;
+    if (!(plotWidthPx > 0 && formatLabel)) return picked.values;
+    const items = buildTickItems(values, picked.indices, formatLabel);
+    if (!axisTickLabelsOverlap(items, maxIndex, plotWidthPx)) return picked.values;
+  }
+
+  // Крайний случай: только first+last, если они не наезжают; иначе — оба всё равно
+  // (иначе ось без якорей), вызывающий код уже сузил окно.
+  return [values[0], values[maxIndex]];
+}
+
+/**
+ * Подписи оси X: плотнейший набор без наезда, всегда first+last.
+ * cadence: 'annual' | 'quarterly' — календарный шаг; иначе равный шаг по индексу
+ * (daily/weekly/плотный monthly).
+ * options: { dateKey, cadence, plotWidthPx, formatLabel }.
+ * 3-й аргумент — dateKey (строка) или options.
  */
 export function pickChartAxisTicks(points, maxTicks = 7, dateKeyOrOptions = 'date') {
   if (!points?.length) return [];
@@ -145,15 +299,22 @@ export function pickChartAxisTicks(points, maxTicks = 7, dateKeyOrOptions = 'dat
     : { dateKey: dateKeyOrOptions };
   const dateKey = opts.dateKey ?? 'date';
   const cadence = opts.cadence ?? null;
+  const plotWidthPx = Number(opts.plotWidthPx) || 0;
+  const formatLabel = typeof opts.formatLabel === 'function' ? opts.formatLabel : null;
   const get = (p) => (dateKey === 'date' ? p.date : p[dateKey]);
   const values = points.map(get);
 
+  if (plotWidthPx > 0 && formatLabel) {
+    return fitTicksNoOverlap(values, maxTicks, cadence, plotWidthPx, formatLabel);
+  }
+
   if (cadence === 'annual' || cadence === 'quarterly') {
     const calendar = pickCalendarAlignedTicks(values, maxTicks, cadence);
-    if (calendar) return calendar;
+    if (calendar) return calendar.values;
   }
 
   if (points.length <= maxTicks) return values;
+  // Без plotWidth — прежнее равномерное index-sampling (SSR / legacy callers).
   const ticks = [values[0]];
   const step = (points.length - 1) / (maxTicks - 1);
   for (let i = 1; i < maxTicks - 1; i += 1) {

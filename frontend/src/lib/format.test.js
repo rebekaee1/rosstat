@@ -5,6 +5,9 @@ import {
   formatAxisTick,
   pickChartAxisTicks,
   chartAxisTickBudget,
+  estimateAxisLabelWidthPx,
+  axisTickLabelsOverlap,
+  densestCalendarStep,
   formatValue,
   formatChange,
   formatValueWithUnit,
@@ -15,6 +18,12 @@ import {
   adjustCpiForecastDisplay,
   resolveDateFormat,
 } from './format';
+
+/** Индексы выбранных тиков в полном ряду (для overlap-проверки). */
+function tickIndices(points, ticks, dateKey = 'date') {
+  const get = (p) => (dateKey === 'date' ? p.date : p[dateKey]);
+  return ticks.map((t) => points.findIndex((p) => get(p) === t));
+}
 
 describe('format', () => {
   it('formatDate full month in Russian', () => {
@@ -43,6 +52,15 @@ describe('format', () => {
     expect(formatChartAxisDate('2024-01-15', 'day', { multiYear: true })).toBe("15 янв '24");
   });
 
+  it('estimateAxisLabelWidthPx scales with RU string length', () => {
+    const short = estimateAxisLabelWidthPx('2023');
+    const longLabel = '7 июля 2025';
+    const long = estimateAxisLabelWidthPx(longLabel);
+    expect(long).toBeGreaterThan(short);
+    expect(long).toBe(Math.ceil(longLabel.length * 6.6));
+    expect(estimateAxisLabelWidthPx(4)).toBe(short);
+  });
+
   it('pickChartAxisTicks returns at most maxTicks evenly spaced', () => {
     const points = Array.from({ length: 200 }, (_, i) => ({
       date: `2024-${String((i % 12) + 1).padStart(2, '0')}-01`,
@@ -67,7 +85,11 @@ describe('format', () => {
     // ~620px plot, «2023» ≈ 4 символа → бюджет ≥ 11
     const budget = chartAxisTickBudget(620, 4);
     expect(budget).toBeGreaterThanOrEqual(11);
-    const ticks = pickChartAxisTicks(points, budget, { cadence: 'annual' });
+    const ticks = pickChartAxisTicks(points, budget, {
+      cadence: 'annual',
+      plotWidthPx: 620,
+      formatLabel: (d) => formatDate(d, 'annual'),
+    });
     expect(ticks).toEqual(points.map((p) => p.date));
     expect(ticks[0]).toBe('2015-12-31');
     expect(ticks[ticks.length - 1]).toBe('2025-12-31');
@@ -101,7 +123,11 @@ describe('format', () => {
     }));
     const budget = chartAxisTickBudget(220, 4);
     expect(budget).toBeLessThan(11);
-    const ticks = pickChartAxisTicks(points, budget, { cadence: 'annual' });
+    const ticks = pickChartAxisTicks(points, budget, {
+      cadence: 'annual',
+      plotWidthPx: 220,
+      formatLabel: (d) => formatDate(d, 'annual'),
+    });
     expect(ticks[0]).toBe('2015-12-31');
     expect(ticks[ticks.length - 1]).toBe('2025-12-31');
     expect(ticks.length).toBeLessThanOrEqual(budget);
@@ -110,6 +136,12 @@ describe('format', () => {
     const gaps = [];
     for (let i = 1; i < years.length; i += 1) gaps.push(years[i] - years[i - 1]);
     expect(new Set(gaps).size).toBe(1);
+    const idxs = tickIndices(points, ticks);
+    const items = idxs.map((index) => ({
+      index,
+      label: formatDate(points[index].date, 'annual'),
+    }));
+    expect(axisTickLabelsOverlap(items, points.length - 1, 220)).toBe(false);
   });
 
   it('pickChartAxisTicks quarterly: плотный ряд, равный шаг, first+last', () => {
@@ -153,6 +185,80 @@ describe('format', () => {
     expect(ticks.length).toBeLessThanOrEqual(budget);
     expect(ticks[0]).toBe(points[0].date);
     expect(ticks[ticks.length - 1]).toBe(points[points.length - 1].date);
+  });
+
+  it('pickChartAxisTicks weekly: длинные RU-даты на узком plot без наезда', () => {
+    // ~52 недели (ИПЦ н/н), подписи вида «7 июля 2025»
+    const points = [];
+    const start = Date.UTC(2025, 6, 7); // 7 июля 2025
+    for (let i = 0; i < 52; i += 1) {
+      const d = new Date(start + i * 7 * 86400000);
+      points.push({ date: d.toISOString().slice(0, 10) });
+    }
+    const formatLabel = (d) => formatDate(d, 'weekly');
+    expect(formatLabel(points[0].date)).toBe('7 июля 2025');
+    const plotW = 360;
+    // Наивный бюджет по «10 символам» (баг до фикса) завышал бы плотность.
+    const naive = chartAxisTickBudget(plotW, 10);
+    const ticks = pickChartAxisTicks(points, Math.max(naive, 12), {
+      plotWidthPx: plotW,
+      formatLabel,
+    });
+    expect(ticks[0]).toBe(points[0].date);
+    expect(ticks[ticks.length - 1]).toBe(points[points.length - 1].date);
+    expect(ticks.length).toBeGreaterThanOrEqual(2);
+    expect(ticks.length).toBeLessThan(naive); // обязательно проредили относительно завышенного
+    const idxs = tickIndices(points, ticks);
+    const items = idxs.map((index) => ({
+      index,
+      label: formatLabel(points[index].date),
+    }));
+    expect(axisTickLabelsOverlap(items, points.length - 1, plotW)).toBe(false);
+    // равный шаг по индексу (кроме возможно хвоста до last на простом span)
+    const midGaps = [];
+    for (let i = 1; i < idxs.length - 1; i += 1) midGaps.push(idxs[i] - idxs[i - 1]);
+    if (midGaps.length) expect(new Set(midGaps).size).toBe(1);
+  });
+
+  it('pickChartAxisTicks daily: длинные RU-даты, desktop — плотнее mobile, без наезда', () => {
+    const points = Array.from({ length: 90 }, (_, i) => {
+      const d = new Date(Date.UTC(2025, 0, 1 + i));
+      return { date: d.toISOString().slice(0, 10) };
+    });
+    const formatLabel = (d) => formatDate(d, 'day');
+    const narrow = pickChartAxisTicks(points, 20, {
+      plotWidthPx: 280,
+      formatLabel,
+    });
+    const wide = pickChartAxisTicks(points, 24, {
+      plotWidthPx: 720,
+      formatLabel,
+    });
+    expect(wide.length).toBeGreaterThan(narrow.length);
+    for (const [ticks, w] of [[narrow, 280], [wide, 720]]) {
+      expect(ticks[0]).toBe(points[0].date);
+      expect(ticks[ticks.length - 1]).toBe(points[points.length - 1].date);
+      const idxs = tickIndices(points, ticks);
+      const items = idxs.map((index) => ({
+        index,
+        label: formatLabel(points[index].date),
+      }));
+      expect(axisTickLabelsOverlap(items, points.length - 1, w)).toBe(false);
+    }
+  });
+
+  it('pickChartAxisTicks weekly: sample-string budget «7 июля 2025» уже режет плотность', () => {
+    const byChars = chartAxisTickBudget(500, 10);
+    const bySample = chartAxisTickBudget(500, '7 июля 2025');
+    expect(bySample).toBeLessThan(byChars);
+    expect(bySample).toBeLessThanOrEqual(6);
+  });
+
+  it('densestCalendarStep prefers even divisor when near ceil density', () => {
+    // span=10, maxTicks=6 → ceil step=2, even step=2
+    expect(densestCalendarStep(10, 6)).toBe(2);
+    // span=10, maxTicks=11 → step 1
+    expect(densestCalendarStep(10, 11)).toBe(1);
   });
 
   it('formatAxisTick digits=0 keeps integer trailing zeros', () => {
