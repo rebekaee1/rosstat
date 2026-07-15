@@ -22,14 +22,29 @@ export function buildQuantiles(values, { scale = MAP_SCALE, noData = MAP_NO_DATA
   };
 }
 
+function entriesOf(valuesBySlug) {
+  if (!valuesBySlug) return [];
+  return valuesBySlug instanceof Map
+    ? [...valuesBySlug.entries()]
+    : Object.entries(valuesBySlug);
+}
+
 /** Map slug → цвет для текущего среза valuesBySlug (Map или plain object). */
 export function colorsBySlug(valuesBySlug) {
   const out = new Map();
-  if (!valuesBySlug) return out;
-  const entries = valuesBySlug instanceof Map
-    ? [...valuesBySlug.entries()]
-    : Object.entries(valuesBySlug);
+  const entries = entriesOf(valuesBySlug);
+  if (!entries.length) return out;
   const q = buildQuantiles(entries.map(([, v]) => v).filter((v) => v != null));
   for (const [slug, v] of entries) out.set(slug, q(v));
   return out;
+}
+
+/** Min/max числовых значений среза — для легенды GIF и live-карты. */
+export function valueExtent(valuesBySlug) {
+  const nums = entriesOf(valuesBySlug)
+    .map(([, v]) => v)
+    .filter((v) => v != null && Number.isFinite(Number(v)))
+    .map(Number);
+  if (!nums.length) return null;
+  return { min: Math.min(...nums), max: Math.max(...nums) };
 }

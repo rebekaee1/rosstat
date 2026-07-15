@@ -46,4 +46,15 @@ describe('RegionsMap', () => {
     expect(outline.getAttribute('fill')).toBe('none');
     expect(outline.getAttribute('stroke')).toBe('#B8942F');
   });
+
+  it('brandMark сидит в обёртке SVG, не уезжает к легенде', () => {
+    const values = new Map([[mapData.regions[0].slug, 42]]);
+    const { container } = renderMap({ valuesBySlug: values, brandMark: true });
+    const brand = [...container.querySelectorAll('[data-no-export="true"]')]
+      .find((el) => el.textContent?.includes('Forecast Economy'));
+    expect(brand).toBeTruthy();
+    const mapWrap = container.querySelector('svg')?.parentElement;
+    expect(mapWrap?.contains(brand)).toBe(true);
+    expect(container.textContent).toMatch(/42/);
+  });
 });

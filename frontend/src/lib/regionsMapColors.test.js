@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { buildQuantiles, colorsBySlug, MAP_NO_DATA, MAP_SCALE } from './regionsMapColors';
+import {
+  buildQuantiles, colorsBySlug, valueExtent, MAP_NO_DATA, MAP_SCALE,
+} from './regionsMapColors';
 
 describe('regionsMapColors', () => {
   it('buildQuantiles красит по рангу внутри среза', () => {
@@ -15,5 +17,12 @@ describe('regionsMapColors', () => {
     expect(fromMap.get('a')).toBe(fromObj.get('a'));
     expect(fromMap.get('b')).toBe(fromObj.get('b'));
     expect(fromMap.get('a')).not.toBe(fromMap.get('b'));
+  });
+
+  it('valueExtent отдаёт min/max среза', () => {
+    expect(valueExtent({ a: 10, b: 40, c: 25 })).toEqual({ min: 10, max: 40 });
+    expect(valueExtent(new Map([['a', 3], ['b', 1]]))).toEqual({ min: 1, max: 3 });
+    expect(valueExtent({})).toBeNull();
+    expect(valueExtent(null)).toBeNull();
   });
 });
