@@ -8,6 +8,10 @@
 Секции возвращаются в порядке приоритета обхода: чем раньше секция и чем
 раньше URL внутри секции, тем важнее страница. Этот порядок используется
 очередью переобхода (150 URL/день) как приоритет.
+
+Инвариант индексации: в реестр не попадают URL, которые SSR отвечает 301
+(unlisted view-mode siblings → `/indicator/{base}?mode=…`, легаси-коды).
+Иначе Вебмастер тратит квоту переобхода (~150/день) на NOT_CANONICAL.
 """
 
 from __future__ import annotations
@@ -50,6 +54,34 @@ def _sitemap_priority(*, listed: bool) -> str:
     return "0.8" if listed else "0.5"
 
 
+def is_redirect_only_indicator(code: str) -> bool:
+    """Код, у которого `/indicator/{code}` — только 301 на канон (не индексировать)."""
+    from app.data.legacy_redirects import (
+        resolve_legacy_indicator,
+        resolve_unlisted_indicator,
+    )
+
+    return bool(resolve_legacy_indicator(code) or resolve_unlisted_indicator(code))
+
+
+def is_recrawl_eligible(path: str) -> bool:
+    """Путь можно подавать в переобход Вебмастера (остаётся в поиске).
+
+    Отсекаем:
+    - query-варианты (`/compare?*`, `?year=`, legacy `?view=map`…) — неканон;
+    - bare `/indicator/{sibling}` / year-landing легаси-кодов, которые 301.
+    Канонические карточки, регионы, рейтинги, карты, /today, годы listed — ок.
+    """
+    if "?" in path:
+        return False
+    if path.startswith("/indicator/"):
+        rest = path[len("/indicator/"):]
+        code = rest.split("/", 1)[0]
+        if code and is_redirect_only_indicator(code):
+            return False
+    return True
+
+
 async def _core_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
     urls = [
         _u(path, today.isoformat(), freq, priority)
@@ -71,6 +103,10 @@ async def _core_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
         .order_by(Indicator.is_listed.desc(), Indicator.code)
     )
     for code, listed, last_data in (await db.execute(stmt)).all():
+        # Unlisted view-mode siblings и легаси-коды → 301; в sitemap/IndexNow
+        # / recrawl не кладём (иначе NOT_CANONICAL жжёт квоту Вебмастера).
+        if is_redirect_only_indicator(code):
+            continue
         urls.append(_u(
             f"/indicator/{code}",
             (last_data or today).isoformat(),
@@ -92,6 +128,8 @@ async def _year_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
     )
     urls = []
     for code, year, last_data in (await db.execute(stmt)).all():
+        if is_redirect_only_indicator(code):
+            continue
         year = int(year)
         freq = "weekly" if year == today.year else "yearly"
         urls.append(_u(
@@ -289,3 +327,15 @@ async def collect_all_paths(db: AsyncSession, sections: list[str] | None = None)
             continue
         result.extend(u.path for u in urls)
     return result
+
+
+def filter_recrawl_paths(paths: list[str]) -> tuple[list[str], list[str]]:
+    """Разделить реестр на eligible / skip (для skip-on-submit без траты квоты)."""
+    eligible: list[str] = []
+    skipped: list[str] = []
+    for path in paths:
+        if is_recrawl_eligible(path):
+            eligible.append(path)
+        else:
+            skipped.append(path)
+    return eligible, skipped

@@ -70,17 +70,25 @@ async def recrawl_daily_job() -> dict[str, int]:
         logger.info("Recrawl job: daily quota exhausted, nothing to do")
         return {"submitted": 0, "quota": 0}
 
-    from app.services.site_urls import collect_all_paths
+    from app.services.site_urls import collect_all_paths, filter_recrawl_paths
 
     async with async_session() as db:
         paths = await collect_all_paths(db)
 
+    # Защитный слой: даже если junk снова попадёт в реестр (или останется в
+    # старом курсоре), помечаем skip без POST — квота не горит, курсор идёт дальше.
+    eligible, skipped = filter_recrawl_paths(paths)
+
     from app.services.yandex_client import YandexApiError
 
     redis = await get_state_redis()
+    if skipped:
+        # Batch SADD — junk из прошлых циклов / query-варианты не блокируют прогресс.
+        await redis.sadd(_SUBMITTED_KEY, *skipped)
+
     submitted = 0
     wrapped_around = False
-    for path in paths:
+    for path in eligible:
         if submitted >= remaining:
             break
         if await redis.sismember(_SUBMITTED_KEY, path):
@@ -102,15 +110,22 @@ async def recrawl_daily_job() -> dict[str, int]:
             logger.exception("Recrawl submit failed for %s", url)
             break
     else:
-        # Прошли весь реестр — все URL уже подавались. Начинаем новый цикл.
+        # Прошли весь eligible-реестр — все URL уже подавались. Начинаем новый цикл.
         if submitted < remaining:
             await redis.delete(_SUBMITTED_KEY)
             wrapped_around = True
 
     total_submitted = 0 if wrapped_around else int(await redis.scard(_SUBMITTED_KEY))
     logger.info(
-        "Recrawl job: submitted %d URL(s) (quota %d), cursor at %d/%d%s",
-        submitted, remaining, total_submitted, len(paths),
+        "Recrawl job: submitted %d URL(s) (quota %d), skipped_noncanonical %d, "
+        "cursor at %d/%d%s",
+        submitted, remaining, len(skipped), total_submitted, len(eligible),
         ", cycle restarted" if wrapped_around else "",
     )
-    return {"submitted": submitted, "quota": remaining, "cursor": total_submitted}
+    return {
+        "submitted": submitted,
+        "quota": remaining,
+        "cursor": total_submitted,
+        "skipped_noncanonical": len(skipped),
+        "eligible": len(eligible),
+    }

@@ -177,6 +177,13 @@ Backend в `seo_renderer.get_app_assets()` ходит на
 3. **Sitemap** секция `maps` (`site_urls._map_urls`) — тот же пул listed ≥10 регионов, что у ratings; year-варианты в индекс не входят.
 4. **Перелинковка**: хаб `/regions` → рейтинги и карты; рейтинг ↔ карта; макро-кросслинк → `/regions/map/{code}`.
 
+**2026-07-16 — фильтр неканонических URL в реестре / переобходе.** Searchable в Вебмастере просел (~9070→~3134) на классе дублей: очередь `webmaster_recrawl` подавала bare `/indicator/{sibling}`, которые SSR 301 на `/indicator/{base}?mode=…` (NOT_CANONICAL), сжигая ~150 URL/день квоты.
+
+1. **`site_urls.is_redirect_only_indicator` / `is_recrawl_eligible`** — одна точка: коды из `legacy_redirects.resolve_*` и любые path с `?` не входят в индексный контур.
+2. **`_core_urls` / `_year_urls`** — redirect-only siblings вычищены из sitemap и IndexNow (раньше попадали с priority 0.5).
+3. **`webmaster_recrawl`**: `filter_recrawl_paths` + skip-on-submit (SADD без POST) — курсор идёт мимо junk, квота не тратится; полный reset `wm:recrawl:submitted` не нужен.
+4. Тесты: `tests/test_site_urls_recrawl_filter.py`.
+
 ## Out of scope (future work)
 
 - Migrate `frontend/src/lib/categories.js` тексты в API — вытащить через
