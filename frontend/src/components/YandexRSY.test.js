@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isFloorAdShellEmpty, __RSY_TEST } from '../components/YandexRSY';
+import { isFloorAdShellEmpty, __RSY_TEST } from '../lib/rsyFloorAd';
 
 /** Минимальный DOM-like шелл без jsdom (vitest environment: node). */
 function shell({ media = [], slots = [], text = '' } = {}) {

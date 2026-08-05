@@ -53,6 +53,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.cache import cache_invalidate_indicator
 from app.models import FetchLog, Indicator, IndicatorData
 from app.services.base_parser import BaseParser, _utcnow_naive
+from app.services.forecast_pipeline import retrain_indicator_forecast
 from app.services.http_client import create_session
 from app.services.upsert import bulk_upsert
 
@@ -889,6 +890,12 @@ class RosstatWeeklyCpiParser(BaseParser):
             extra_updated += updated
             if added or updated:
                 await cache_invalidate_indicator(seg_code)
+                # Сегмент пишется обходом собственного ETL-прогона — его
+                # _handle_forecasts не срабатывает, и прогноз (generic_ols)
+                # остаётся stale поверх свежего факта (инцидент 2026-08-05).
+                seg_cfg = target.model_config_json or {}
+                if int(seg_cfg.get("forecast_steps", 0) or 0) > 0:
+                    await retrain_indicator_forecast(db, target)
             logger.info(
                 "Weekly CPI segment %s → %s: %d new, %d updated",
                 segment, seg_code, added, updated,

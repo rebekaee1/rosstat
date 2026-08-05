@@ -67,6 +67,11 @@ export default function Footer() {
                   Минфин России
                 </a>
               </li>
+              <li>
+                <a href="https://ec.europa.eu/eurostat" target="_blank" rel="noopener noreferrer" className={footLink} onClick={() => trackOutbound('https://ec.europa.eu/eurostat')}>
+                  Евростат
+                </a>
+              </li>
             </ul>
           </div>
 
@@ -75,6 +80,16 @@ export default function Footer() {
               Инструменты
             </h4>
             <ul className="space-y-2 text-sm text-text-secondary">
+              <li>
+                <Link to="/world" className={footLink}>
+                  Мировая экономика
+                </Link>
+              </li>
+              <li>
+                <Link to="/regions" className={footLink}>
+                  Регионы России
+                </Link>
+              </li>
               <li>
                 <Link to="/calendar" className={footLink}>
                   Календарь публикаций

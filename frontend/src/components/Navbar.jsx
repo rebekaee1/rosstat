@@ -159,9 +159,12 @@ export default function Navbar() {
       <nav
         ref={navRef}
         className={cn(
-          'fixed top-11 md:top-12 inset-x-0 mx-auto z-[100] transition-all duration-500 ease-out',
+          'fixed top-11 md:top-12 inset-x-0 mx-auto z-[100]',
+          // Не transition-all: иначе transition тянет backdrop-filter и в
+          // части движков blur на время/после смены soft↔surface пропадает.
+          'transition-[transform,opacity,background-color,box-shadow,border-color] duration-500 ease-out',
           'rounded-[2rem] px-5 lg:px-6 py-3 flex items-center gap-3',
-          'max-w-6xl w-[calc(100%-2rem)]',
+          'max-w-7xl w-[calc(100%-2rem)]',
           scrolled
             ? 'glass-surface border border-border-subtle shadow-lg shadow-black/5'
             : 'glass-surface-soft border border-black/[0.04]',
@@ -183,10 +186,12 @@ export default function Navbar() {
         </span>
       </Link>
 
-      {/* Пункта «Главная» на десктопе нет: пилюля max-w-6xl не вмещает полный
-          набор ни на одном брейкпоинте (наезжал на логотип — скрины
-          руководителя 2026-07-05), на главную ведёт логотип. В мобильном
-          меню пункт остаётся. */}
+      {/* justify-end: при переполнении лишнее выезжает ВЛЕВО, поверх логотипа
+          (задвоенный логотип на скринах руководителя 2026-07-05 и 2026-07-27).
+          scrollWidth такое переполнение не показывает — ловится только
+          сравнением боксов, см. scripts/e2e/navbar-overlap.mjs. Поэтому набор
+          пунктов режется по брейкпоинтам, а «Главная» и «О проекте» на
+          десктопе живут в футере и мобильном меню. */}
       <div className="hidden lg:flex items-center gap-1 xl:gap-2 flex-1 justify-end min-w-0">
         <div className="relative" ref={catWrapRef}>
           <button
@@ -253,13 +258,24 @@ export default function Navbar() {
         <NavLink to="/regions" className={linkClass} onClick={closeAll}>
           Регионы
         </NavLink>
-        <NavLink to="/calendar" className={linkClass} onClick={closeAll}>
+        <NavLink to="/world" className={linkClass} onClick={closeAll}>
+          Мировая экономика
+        </NavLink>
+        <NavLink
+          to="/calendar"
+          className={(p) => cn(linkClass(p), 'hidden xl:block')}
+          onClick={closeAll}
+        >
           Календарь
         </NavLink>
-        <NavLink to="/compare" className={linkClass} onClick={closeAll}>
+        <NavLink
+          to="/compare"
+          className={(p) => cn(linkClass(p), 'hidden xl:block')}
+          onClick={closeAll}
+        >
           Сравнение
         </NavLink>
-        <div className="relative" ref={calcWrapRef}>
+        <div className="relative hidden xl:block" ref={calcWrapRef}>
           <button
             type="button"
             onClick={() => { setCalcOpen((o) => !o); setCatOpen(false); }}
@@ -296,14 +312,7 @@ export default function Navbar() {
             </div>
           )}
         </div>
-        {/* На lg (1024–1280) не влезает — доступна из футера и мобильного меню. */}
-        <NavLink
-          to="/about"
-          className={(p) => cn(linkClass(p), 'hidden xl:block')}
-          onClick={closeAll}
-        >
-          О проекте
-        </NavLink>
+        {/* В пилюлю не влезает: доступна из футера и мобильного меню. */}
       </div>
 
       <div className="hidden lg:flex items-center shrink-0 gap-2 xl:gap-3">
@@ -357,6 +366,9 @@ export default function Navbar() {
             <div className="mx-2 my-1 h-px bg-border-subtle" />
             <NavLink to="/regions" className={linkClass} onClick={closeAll}>
               Регионы России
+            </NavLink>
+            <NavLink to="/world" className={linkClass} onClick={closeAll}>
+              Мировая экономика
             </NavLink>
             <NavLink to="/demographics" className={linkClass} onClick={closeAll}>
               Возрастная структура

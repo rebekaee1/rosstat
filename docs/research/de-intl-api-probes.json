@@ -1,0 +1,51 @@
+{
+  "probed_at": "2026-07-19",
+  "country": "DE/DEU",
+  "eurostat": {
+    "base": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/",
+    "series": {
+      "nama_10_gdp CLV10_MEUR B1GQ": "1991..2025 n=35 p:2022-2025",
+      "namq_10_gdp CLV_I10 SCA": "1991-Q1..2026-Q1 n=141",
+      "prc_hicp_midx I15 CP00": "1996-01..2025-12 n=360",
+      "une_rt_m age=TOTAL SA": "1991-01..2026-05 n=425",
+      "sts_inpr_m B-D I21 SCA": "1991-01..2026-05 n=425",
+      "sts_trtu_m VOL_SLS G47": "1994-01..2026-05 n=389 status=p all",
+      "gov_10dd_edpt1 B9/GD": "1995..2025 n=31",
+      "prc_hpi_q I15_Q": "2005-Q1..2026-Q1 n=85",
+      "bop_c6_m CA": "1991-01..2026-05 n=425",
+      "ei_etea_m BAL_RT EXT_EA21": "2002-01..2026-05 n=293"
+    }
+  },
+  "oecd": {
+    "base": "https://sdmx.oecd.org/public/rest/",
+    "portal": "https://data-explorer.oecd.org",
+    "series": {
+      "DSD_NAAG@DF_NAAG_I A.DEU.B1GQ": "1970..2025 n=56",
+      "DSD_PRICES@DF_PRICES_ALL DEU.M.N.CPI.IX._T.N.": "1955-01..2026-06 n=858",
+      "LFS/STES/QNA": "structure known / data 429 — history not confirmed"
+    }
+  },
+  "imf": {
+    "base": "https://api.imf.org/external/sdmx/3.0/",
+    "legacy_dataservices": "DNS dead",
+    "series": {
+      "CPI DEU.CPI._T.IX.M": "1955-M01..2026-M06 n=858",
+      "WEO NGDP_RPCH/PCPIPCH/BCA/LUR": "1980..2031 n=52 (2026-2031 projections)",
+      "BOP/IRFCL DEU keys": "not confirmed this session"
+    }
+  },
+  "world_bank": {
+    "base": "https://api.worldbank.org/v2/country/DEU/indicator/",
+    "series": {
+      "NY.GDP.MKTP.KD.ZG": "1961..2025 n=65",
+      "NY.GDP.MKTP.KD": "1960..2025 n=66",
+      "FP.CPI.TOTL.ZG": "1960..2025 n=66",
+      "SL.UEM.TOTL.ZS": "1991..2025 n=35",
+      "SL.UEM.TOTL.NE.ZS": "1983..2025 n=43",
+      "BN.CAB.XOKA.CD": "1971..2025 n=47",
+      "FI.RES.TOTL.CD": "1960..2025 n=66",
+      "GC.DOD.TOTL.GD.ZS": "1990 only n=1 UNUSABLE",
+      "GC.BAL.CASH.GD.ZS": "empty UNUSABLE"
+    }
+  }
+}

@@ -383,6 +383,70 @@ def render_region_vs_og(
     return buf.getvalue()
 
 
+def render_world_country_og(
+    *,
+    country_name: str,
+    indicators_count: int,
+    items: list[tuple[str, str]],
+) -> bytes:
+    """Сводка страны для /og/world/{slug}.png: сетка ключевых значений."""
+    img = Image.new("RGB", (WIDTH, HEIGHT), BG)
+    draw = ImageDraw.Draw(img, "RGBA")
+    margin = 64
+    _brand_header(draw, "мировая экономика")
+
+    title_font = _font(48, bold=True)
+    title = f"Экономика {country_name}"
+    lines = _wrap_text(draw, title, title_font, WIDTH - margin * 2)
+    y = 92
+    for line in lines:
+        draw.text((margin, y), line, font=title_font, fill=TEXT_PRIMARY)
+        y += 54
+
+    sub_font = _font(26)
+    draw.text(
+        (margin, y + 4),
+        f"{indicators_count} показателей · Евростат",
+        font=sub_font,
+        fill=TEXT_SECONDARY,
+    )
+
+    grid = items[:6]
+    cols = 2
+    cell_w = (WIDTH - margin * 2 - 24) // cols
+    cell_h = 88
+    top_y = y + 50
+    label_font = _font(24)
+    value_font = _font(34, bold=True)
+    for i, (label, value_text) in enumerate(grid):
+        cx = margin + (i % cols) * (cell_w + 24)
+        cy = top_y + (i // cols) * (cell_h + 10)
+        draw.rounded_rectangle(
+            [cx, cy, cx + cell_w, cy + cell_h],
+            radius=14,
+            fill=(255, 255, 255),
+            outline=(0, 0, 0, 28),
+            width=1,
+        )
+        draw.text(
+            (cx + 22, cy + 12),
+            _fit_text(draw, label, label_font, cell_w - 40),
+            font=label_font,
+            fill=TEXT_SECONDARY,
+        )
+        draw.text(
+            (cx + 22, cy + 44),
+            _fit_text(draw, value_text, value_font, cell_w - 40),
+            font=value_font,
+            fill=TEXT_PRIMARY,
+        )
+
+    _brand_footer(draw, "официальные данные Евростата")
+    buf = io.BytesIO()
+    img.save(buf, format="PNG", optimize=True)
+    return buf.getvalue()
+
+
 # П-16: дисковый слой под in-process кэшем. Пространство ключей — десятки
 # тысяч (годовые landing'и, 40k региональных страниц); держать всё в памяти
 # нельзя (_CACHE_MAX=600), а после рестарта контейнера in-process кэш холодный

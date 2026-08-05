@@ -31,11 +31,15 @@ from app.models import (
     Region,
     RegionDataPoint,
     RegionIndicator,
+    WorldCountry,
+    WorldDataPoint,
+    WorldIndicator,
 )
 from app.services.seo_content import CATEGORIES, STATIC_PAGES
 
 # Лимит протокола sitemap — 50 000 URL на файл; держим с запасом.
 REGIONAL_CHUNK = 10_000
+WORLD_CHUNK = 10_000
 
 
 @dataclass(frozen=True)
@@ -293,6 +297,93 @@ async def _region_vs_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
     ]
 
 
+async def _world_hub_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
+    """Хаб /world + страницы стран с listed-показателями.
+
+    lastmod страны — дата последней точки её listed-рядов (не «сегодня»).
+    """
+    urls = [_u("/world", today.isoformat(), "weekly", "0.9")]
+    last_sub = (
+        select(
+            WorldIndicator.country_id.label("cid"),
+            func.max(WorldDataPoint.date).label("last_data"),
+        )
+        .join(WorldDataPoint, WorldDataPoint.indicator_id == WorldIndicator.id)
+        .where(WorldIndicator.is_listed.is_(True))
+        .group_by(WorldIndicator.country_id)
+        .subquery()
+    )
+    rows = (
+        await db.execute(
+            select(WorldCountry.slug, last_sub.c.last_data)
+            .join(last_sub, last_sub.c.cid == WorldCountry.id)
+            .where(WorldCountry.is_active.is_(True))
+            .order_by(WorldCountry.sort_order, WorldCountry.name_ru)
+        )
+    ).all()
+    for slug, last_data in rows:
+        urls.append(_u(
+            f"/world/{slug}",
+            (last_data or today).isoformat(),
+            "weekly",
+            "0.8",
+        ))
+    return urls
+
+
+async def _world_indicator_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
+    """Карточки listed-индикаторов: /world/{slug}/{code}.
+
+    Только primary частоты каждой card_key-группы (вторичные M/Q/A → 301,
+    в индекс не идут). Unlisted в индекс не идут.
+    """
+    from app.data.legacy_redirects import world_card_primary_rank
+    from app.data.eurostat_listing import card_key
+
+    stmt = (
+        select(
+            WorldCountry.slug,
+            WorldIndicator,
+            func.max(WorldDataPoint.date),
+        )
+        .join(WorldIndicator, WorldIndicator.country_id == WorldCountry.id)
+        .outerjoin(WorldDataPoint, WorldDataPoint.indicator_id == WorldIndicator.id)
+        .where(
+            WorldCountry.is_active.is_(True),
+            WorldIndicator.is_listed.is_(True),
+        )
+        .group_by(WorldCountry.slug, WorldIndicator.id)
+        .order_by(WorldCountry.slug, WorldIndicator.code)
+    )
+    rows = (await db.execute(stmt)).all()
+
+    # slug → card_key → best (ind, last_data)
+    best: dict[tuple, tuple] = {}
+    for cslug, ind, last_data in rows:
+        key = (cslug, card_key(
+            country_id=ind.country_id,
+            dataset_id=ind.dataset_id,
+            unit=ind.unit,
+            unit_ru=ind.unit_ru,
+            slice_json=ind.slice_json,
+        ))
+        prev = best.get(key)
+        if prev is None or world_card_primary_rank(ind) < world_card_primary_rank(prev[0]):
+            best[key] = (ind, last_data)
+
+    urls = []
+    for (cslug, _ck), (ind, last_data) in sorted(
+        best.items(), key=lambda kv: (kv[0][0], kv[1][0].code)
+    ):
+        urls.append(_u(
+            f"/world/{cslug}/{ind.code}",
+            (last_data or today).isoformat(),
+            "weekly",
+            "0.5",
+        ))
+    return urls
+
+
 async def collect_url_sections(db: AsyncSession) -> dict[str, list[SiteUrl]]:
     """Все публичные URL сайта, сгруппированные по секциям sitemap-индекса.
 
@@ -307,12 +398,18 @@ async def collect_url_sections(db: AsyncSession) -> dict[str, list[SiteUrl]]:
         "maps": await _map_urls(db, today),
         "regions": await _region_hub_urls(db, today),
         "region-vs": await _region_vs_urls(db, today),
+        "world": await _world_hub_urls(db, today),
         "calendar": await _calendar_month_urls(db, today),
         "years": await _year_urls(db, today),
     }
     pairs = await _regional_pair_urls(db, today)
     for i in range(0, len(pairs), REGIONAL_CHUNK):
         sections[f"regional-{i // REGIONAL_CHUNK + 1}"] = pairs[i:i + REGIONAL_CHUNK]
+    world_inds = await _world_indicator_urls(db, today)
+    for i in range(0, len(world_inds), WORLD_CHUNK):
+        sections[f"world-indicators-{i // WORLD_CHUNK + 1}"] = (
+            world_inds[i:i + WORLD_CHUNK]
+        )
     return sections
 
 
@@ -322,7 +419,8 @@ async def collect_all_paths(db: AsyncSession, sections: list[str] | None = None)
     result: list[str] = []
     for name, urls in grouped.items():
         if sections is not None and name not in sections and not (
-            name.startswith("regional-") and "regional" in sections
+            (name.startswith("regional-") and "regional" in sections)
+            or (name.startswith("world-indicators-") and "world" in sections)
         ):
             continue
         result.extend(u.path for u in urls)

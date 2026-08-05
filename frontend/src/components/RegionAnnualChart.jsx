@@ -68,7 +68,6 @@ export default function RegionAnnualChart({
       if (w) setPlotWidth(w);
     });
     ro.observe(el);
-    setPlotWidth(el.clientWidth || 0);
     return () => ro.disconnect();
   }, []);
 

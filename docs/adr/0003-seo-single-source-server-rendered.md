@@ -2,7 +2,7 @@
 
 **Status:** Accepted (в production на forecasteconomy.com).
 **Date:** 2026-05-07.
-**Last verified:** 2026-07-14 (SEO `/regions/map/{code}` для шаринга карты; см. Subsequent additions).
+**Last verified:** 2026-07-27 (SSR/SEO `/world`; см. Subsequent additions).
 **Part of:** [`../../CONTEXT.md`](../../CONTEXT.md) (раздел `SEO meta bundle` + «Asset-hash mismatch trap»).
 **Related:** [ADR-0002](0002-derived-always-reflects-source.md) (паттерн single-source-of-truth), [`../enterprise_resilience.md`](../enterprise_resilience.md) (asset-hash trap, CSP).
 **Code anchors:** `backend/app/services/seo_renderer.py`, `backend/app/services/seo_content.py`, `backend/app/api/seo_pages.py`, `frontend/nginx.conf` (location-блоки `/seo/*` и `/__spa-index.html`).
@@ -183,6 +183,14 @@ Backend в `seo_renderer.get_app_assets()` ходит на
 2. **`_core_urls` / `_year_urls`** — redirect-only siblings вычищены из sitemap и IndexNow (раньше попадали с priority 0.5).
 3. **`webmaster_recrawl`**: `filter_recrawl_paths` + skip-on-submit (SADD без POST) — курсор идёт мимо junk, квота не тратится; полный reset `wm:recrawl:submitted` не нужен.
 4. Тесты: `tests/test_site_urls_recrawl_filter.py`.
+
+**2026-07-27 — SSR/SEO раздела «Мировая экономика».** Тот же механизм ADR-0003, что у регионов:
+
+1. **`seo_world.py`** — `/world`, `/world/{slug}`, `/world/{slug}/{code}`: русский контент, Евростат как источник, без прогнозов; genitive в заголовках («Экономика Германии»); meta/OG/JSON-LD (BreadcrumbList + Dataset + ImageObject) + видимый `<img class="seo-chart">`.
+2. **OG** — `/og/world/{slug}.png`, `/og/world/{slug}/{code}.png` (`og_image.render_world_country_og` + `render_indicator_og`); nginx rewrite до generic `/og/{code}`.
+3. **Sitemap** — секции `world` (хаб+страны) и `world-indicators-{N}` чанками 10k; только `is_listed=true`; lastmod от последней точки.
+4. **nginx** — `/world*` с SPA на SSR-прокси (`/seo/world*`), named captures; код индикатора `[a-z0-9_.-]`.
+5. Тесты: `tests/test_seo_world.py`.
 
 ## Out of scope (future work)
 

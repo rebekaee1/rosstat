@@ -86,3 +86,7 @@ scripts/*.dump.txt
 # Presentation slides (not code)
 фото/
 .tmp/
+tmp/
+
+# Выходные артефакты аудитов мирового блока (регенерируются scripts/audit-world-run-all.py)
+scripts/audit-world-out/

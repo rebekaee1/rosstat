@@ -31,6 +31,7 @@ from app.data.legacy_redirects import (
     LEGACY_REGION_SLUG_PREFIXES,
     resolve_legacy_indicator,
     resolve_unlisted_indicator,
+    resolve_world_frequency_sibling,
 )
 from app.database import get_db
 from app.services.seo_calendar import render_calendar_month_html
@@ -44,6 +45,11 @@ from app.services.seo_regional import (
     render_regions_map_html,
 )
 from app.services.seo_today import render_today_hub_html, render_today_indicator_html
+from app.services.seo_world import (
+    render_world_country_html,
+    render_world_home_html,
+    render_world_indicator_html,
+)
 from app.services.seo_renderer import (
     render_category_html,
     render_home_html,
@@ -58,6 +64,7 @@ router = APIRouter(tags=["seo-pages"])
 # макро-страницы — короче (данные меняются ETL'ом, плюс namespace-инвалидация).
 _SSR_TTL_INDICATOR = 900       # 15 мин; + инвалидация fe:{code}:* при ETL
 _SSR_TTL_REGIONAL = 6 * 3600   # регион × показатель × год — обновляется раз в год
+_SSR_TTL_WORLD = 6 * 3600      # мировой блок — внешний источник, обновляется пачками
 _SSR_TTL_MISC = 1800
 
 
@@ -313,5 +320,41 @@ async def seo_indicator_year(
     status, html = await _cached_html(
         code, f"indicator-year:{code}:{year}", _SSR_TTL_INDICATOR,
         lambda: render_indicator_year_html(code, year, db),
+    )
+    return _html_response(status, html, request)
+
+
+@router.api_route("/seo/world", methods=["GET", "HEAD"], include_in_schema=False)
+async def seo_world_home(request: Request, db: AsyncSession = Depends(get_db)):
+    status, html = await _cached_html(
+        "ssr-world", "world-home", _SSR_TTL_WORLD,
+        lambda: render_world_home_html(db),
+    )
+    return _html_response(status, html, request)
+
+
+@router.api_route("/seo/world/{slug}", methods=["GET", "HEAD"], include_in_schema=False)
+async def seo_world_country(
+    slug: str, request: Request, db: AsyncSession = Depends(get_db)
+):
+    status, html = await _cached_html(
+        "ssr-world", f"world:{slug}", _SSR_TTL_WORLD,
+        lambda: render_world_country_html(slug, db),
+    )
+    return _html_response(status, html, request)
+
+
+@router.api_route("/seo/world/{slug}/{code}", methods=["GET", "HEAD"], include_in_schema=False)
+async def seo_world_indicator(
+    slug: str, code: str, request: Request, db: AsyncSession = Depends(get_db)
+):
+    # Вторичные частоты (квартал/год) → 301 на primary?mode=level-{freq},
+    # как resolve_unlisted_indicator для российских sibling-рядов.
+    target = await resolve_world_frequency_sibling(db, slug, code)
+    if target:
+        return _permanent_redirect(target)
+    status, html = await _cached_html(
+        "ssr-world", f"world:{slug}:{code}", _SSR_TTL_WORLD,
+        lambda: render_world_indicator_html(slug, code, db),
     )
     return _html_response(status, html, request)

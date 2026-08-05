@@ -503,6 +503,172 @@ async def og_image_region_vs(slug_a: str, slug_b: str, db: AsyncSession = Depend
     )
 
 
+@router.get("/api/v1/og-image/world/{slug}.png", include_in_schema=False)
+async def og_image_world_country(slug: str, db: AsyncSession = Depends(get_db)):
+    """PNG-сводка страны для /world/{slug}: og:image + видимый <img> SSR."""
+    from app.data.eurostat_units_ru import unit_suffix
+    from app.models import WorldCountry, WorldDataPoint, WorldIndicator
+    from app.services.display import format_number_ru
+    from app.services.og_image import cached_og, render_world_country_og, store_og
+
+    cache_key = f"world:{slug}"
+    png = cached_og(cache_key)
+    if png is None:
+        country = (
+            await db.execute(
+                select(WorldCountry).where(
+                    WorldCountry.slug == slug,
+                    WorldCountry.is_active.is_(True),
+                )
+            )
+        ).scalar_one_or_none()
+        if country is None:
+            return Response(status_code=404)
+
+        inds = (
+            await db.execute(
+                select(WorldIndicator)
+                .where(
+                    WorldIndicator.country_id == country.id,
+                    WorldIndicator.is_listed.is_(True),
+                )
+                .order_by(WorldIndicator.points_count.desc(), WorldIndicator.name_ru)
+                .limit(12)
+            )
+        ).scalars().all()
+        if not inds:
+            return Response(status_code=404)
+
+        ids = [i.id for i in inds]
+        rn = func.row_number().over(
+            partition_by=WorldDataPoint.indicator_id,
+            order_by=WorldDataPoint.date.desc(),
+        ).label("rn")
+        sub = (
+            select(
+                WorldDataPoint.indicator_id,
+                WorldDataPoint.value,
+                rn,
+            )
+            .where(WorldDataPoint.indicator_id.in_(ids))
+            .subquery()
+        )
+        latest = {
+            iid: float(value)
+            for iid, value in (
+                await db.execute(
+                    select(sub.c.indicator_id, sub.c.value).where(sub.c.rn == 1)
+                )
+            ).all()
+        }
+        items: list[tuple[str, str]] = []
+        for ind in inds:
+            if ind.id not in latest:
+                continue
+            unit = unit_suffix((ind.unit_ru or ind.unit or "").strip())
+            label = ind.name_ru if len(ind.name_ru) <= 42 else ind.name_ru[:41] + "…"
+            value_text = f"{format_number_ru(latest[ind.id])} {unit}".strip()
+            items.append((label, value_text))
+            if len(items) >= 6:
+                break
+        if not items:
+            return Response(status_code=404)
+
+        n_listed = (
+            await db.execute(
+                select(func.count()).select_from(WorldIndicator).where(
+                    WorldIndicator.country_id == country.id,
+                    WorldIndicator.is_listed.is_(True),
+                )
+            )
+        ).scalar() or len(inds)
+
+        from app.services.seo_world import _genitive
+
+        png = render_world_country_og(
+            country_name=_genitive(country),
+            indicators_count=int(n_listed),
+            items=items,
+        )
+        store_og(cache_key, png)
+    return Response(
+        content=png,
+        media_type="image/png",
+        headers={"Cache-Control": "public, max-age=3600"},
+    )
+
+
+@router.get("/api/v1/og-image/world/{slug}/{code}.png", include_in_schema=False)
+async def og_image_world_indicator(
+    slug: str, code: str, db: AsyncSession = Depends(get_db)
+):
+    """PNG-график мирового показателя: og:image + видимый <img> SSR-страницы."""
+    from app.data.eurostat_units_ru import unit_suffix
+    from app.models import WorldCountry, WorldDataPoint, WorldIndicator
+    from app.services.display import format_number_ru, format_month_ru
+    from app.services.og_image import cached_og, render_indicator_og, store_og
+
+    cache_key = f"world:{slug}:{code}"
+    png = cached_og(cache_key)
+    if png is None:
+        country = (
+            await db.execute(
+                select(WorldCountry).where(
+                    WorldCountry.slug == slug,
+                    WorldCountry.is_active.is_(True),
+                )
+            )
+        ).scalar_one_or_none()
+        indicator = (
+            await db.execute(
+                select(WorldIndicator).where(
+                    WorldIndicator.code == code,
+                    WorldIndicator.is_listed.is_(True),
+                )
+            )
+        ).scalar_one_or_none()
+        if (
+            country is None
+            or indicator is None
+            or indicator.country_id != country.id
+        ):
+            return Response(status_code=404)
+        rows = (
+            await db.execute(
+                select(WorldDataPoint.date, WorldDataPoint.value)
+                .where(WorldDataPoint.indicator_id == indicator.id)
+                .order_by(WorldDataPoint.date)
+            )
+        ).all()
+        if len(rows) < 2:
+            return Response(status_code=404)
+        values = [float(v) for _d, v in rows]
+        unit = unit_suffix((indicator.unit_ru or indicator.unit or "").strip())
+        value_text = f"{format_number_ru(values[-1])} {unit}".strip()
+        last_date = rows[-1][0]
+        first_date = rows[0][0]
+        date_text = format_month_ru(last_date) or last_date.isoformat()
+        from app.data.eurostat_titles_ru import country_prepositional
+        from app.data.legacy_redirects import strip_world_frequency_suffix
+
+        subject = strip_world_frequency_suffix(indicator.name_ru) or indicator.name_ru
+        prep = country_prepositional(country.slug, country.name_ru)
+        png = render_indicator_og(
+            code=cache_key,
+            name=f"{subject} в {prep}",
+            value_text=value_text,
+            date_text=date_text,
+            values=values,
+            x_labels=(str(first_date.year), str(last_date.year)),
+        )
+        store_og(cache_key, png)
+    return Response(
+        content=png,
+        media_type="image/png",
+        headers={"Cache-Control": "public, max-age=3600"},
+    )
+
+
 def _html_response(status_code: int, html: str) -> Response:
     return Response(content=html, status_code=status_code, media_type="text/html; charset=utf-8")
 

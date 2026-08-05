@@ -28,7 +28,7 @@
 }
 
 html {
-  overflow-x: hidden;
+  overflow-x: clip;
   scroll-behavior: smooth;
 }
 
@@ -45,7 +45,10 @@ html {
 
 body {
   margin: 0;
-  overflow-x: hidden;
+  /* clip (не hidden): overflow-x:hidden форсирует overflow-y:auto и создаёт
+     scroll-containment, из-за которого backdrop-filter на fixed-шапке часто
+     не рисуется, хотя computed и показывает blur(...). */
+  overflow-x: clip;
   background-color: var(--color-obsidian);
   color: var(--color-text-primary);
   font-family: var(--font-sans);
@@ -58,7 +61,7 @@ body {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 .noise-overlay {
@@ -90,28 +93,43 @@ body {
   transform: translateY(-1px);
 }
 
+/*
+ * Glass surfaces.
+ *
+ * Пишем ТОЛЬКО unprefixed `backdrop-filter`. Lightning CSS (через
+ * @tailwindcss/vite) при паре `backdrop-filter` + `-webkit-backdrop-filter`
+ * в одной декларации оставляет в бандле только webkit-префикс и выкидывает
+ * стандартное свойство. Современный Chromium при этом CSS.supports
+ * ('backdrop-filter') = true, а '-webkit-backdrop-filter' не применяет →
+ * computed backdrop-filter: none, полупрозрачный фон без матовости,
+ * текст страницы просвечивает сквозь шапку (логотип «задвоен»).
+ *
+ * @supports / CSS.supports / проверка computed backdropFilter НЕ годится
+ * как страховка непрозрачности: движок может заявлять поддержку и даже
+ * отдавать computed blur(...), а пиксельно не рисовать (Electron,
+ * GPU-деградация). Для <nav> — отдельный пол непрозрачности ниже.
+ */
 .glass-surface {
   background: rgba(255, 255, 255, 0.72);
   backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
 }
 
 /* Мягкое стекло для навбара в верхней части страницы. */
 .glass-surface-soft {
   background: rgba(255, 255, 255, 0.68);
   backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
 }
 
-/* Без поддержки backdrop-filter (энергосбережение, in-app браузеры, старые
-   Safari) полупрозрачное стекло превращается в «просвечивающую» шапку —
-   текст страницы наслаивается на пункты меню (скрин руководителя
-   2026-07-05). Фолбэк: почти непрозрачный белый. */
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .glass-surface,
-  .glass-surface-soft {
-    background: rgba(255, 255, 255, 0.97);
-  }
+/*
+ * Шапка: почти непрозрачный белый пол. При 0.97 глифы под пилюлей
+ * нечитаемы даже если backdrop-filter объявлен, но не отрисован
+ * (Electron / GPU / containment). Blur при живом композитинге даёт
+ * матовую «морозность» поверх — стекло остаётся стеклом, задвоение
+ * логотипа исключено конструктивно, не через @supports.
+ */
+nav.glass-surface,
+nav.glass-surface-soft {
+  background: rgba(255, 255, 255, 0.97);
 }
 
 /* Ползунок времени на карте регионов: тонкий трек + champagne-бегунок. */

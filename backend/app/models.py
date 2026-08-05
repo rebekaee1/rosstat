@@ -136,6 +136,87 @@ class RegionDataPoint(Base):
     region: Mapped["Region"] = relationship(back_populates="data_points")
 
 
+# --- Мировой блок (Eurostat) — отдельный bounded context, по образцу ADR-0008 ---
+
+
+class WorldCountry(Base):
+    __tablename__ = "world_countries"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    code: Mapped[str] = mapped_column(String(8), unique=True, nullable=False, index=True)
+    slug: Mapped[str] = mapped_column(String(80), unique=True, nullable=False, index=True)
+    name_ru: Mapped[str] = mapped_column(String(150), nullable=False)
+    name_en: Mapped[str] = mapped_column(String(150), nullable=False)
+    region_ru: Mapped[str] = mapped_column(String(80), nullable=False, default="Европа")
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, server_default="true")
+    sort_order: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+
+    indicators: Mapped[list["WorldIndicator"]] = relationship(
+        back_populates="country", cascade="all, delete-orphan", passive_deletes=True
+    )
+
+
+class WorldIndicator(Base):
+    __tablename__ = "world_indicators"
+    __table_args__ = (
+        UniqueConstraint("country_id", "dataset_id", "slice_hash", name="uq_world_ind_slice"),
+        Index("ix_world_indicators_country_category", "country_id", "category_ru"),
+        Index("ix_world_indicators_code", "code", unique=True),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    country_id: Mapped[int] = mapped_column(
+        ForeignKey("world_countries.id", ondelete="CASCADE"), nullable=False
+    )
+    code: Mapped[str] = mapped_column(String(120), nullable=False)
+    dataset_id: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
+    slice_json: Mapped[dict | None] = mapped_column(JSON)
+    slice_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    name_ru: Mapped[str] = mapped_column(String(400), nullable=False)
+    name_en: Mapped[str | None] = mapped_column(String(400))
+    # curated | composed | raw — предохранитель листинга (см. eurostat_titles_ru)
+    name_quality: Mapped[str] = mapped_column(
+        String(20), nullable=False, default="raw", server_default="raw"
+    )
+    unit: Mapped[str] = mapped_column(String(80), nullable=False, default="")
+    unit_ru: Mapped[str] = mapped_column(String(80), nullable=False, default="")
+    frequency: Mapped[str] = mapped_column(String(20), nullable=False)
+    category_ru: Mapped[str] = mapped_column(String(80), nullable=False, default="")
+    source: Mapped[str] = mapped_column(String(100), nullable=False, default="Eurostat")
+    source_url: Mapped[str | None] = mapped_column(String(500))
+    description: Mapped[str | None] = mapped_column(Text)
+    methodology: Mapped[str | None] = mapped_column(Text)
+    history_start: Mapped[date | None] = mapped_column(Date)
+    history_end: Mapped[date | None] = mapped_column(Date)
+    points_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    is_listed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default="false")
+    seo_title: Mapped[str | None] = mapped_column(String(300))
+    seo_description: Mapped[str | None] = mapped_column(Text)
+    seo_keywords: Mapped[str | None] = mapped_column(Text)
+
+    country: Mapped["WorldCountry"] = relationship(back_populates="indicators")
+    data_points: Mapped[list["WorldDataPoint"]] = relationship(
+        back_populates="indicator", cascade="all, delete-orphan", passive_deletes=True
+    )
+
+
+class WorldDataPoint(Base):
+    __tablename__ = "world_data_points"
+    __table_args__ = (
+        UniqueConstraint("indicator_id", "date", name="uq_world_data_point"),
+        Index("ix_world_data_points_indicator_date", "indicator_id", "date"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    indicator_id: Mapped[int] = mapped_column(
+        ForeignKey("world_indicators.id", ondelete="CASCADE"), nullable=False
+    )
+    date: Mapped[date] = mapped_column(Date, nullable=False)
+    value: Mapped[float] = mapped_column(Numeric(20, 6), nullable=False)
+
+    indicator: Mapped["WorldIndicator"] = relationship(back_populates="data_points")
+
+
 class Forecast(Base):
     __tablename__ = "forecasts"
     # Partial-индекс из миграции 20260403: выборка текущего прогноза индикатора.

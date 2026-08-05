@@ -168,7 +168,6 @@ export default function IndicatorChart({
       if (w) setPlotWidth(w);
     });
     ro.observe(el);
-    setPlotWidth(el.clientWidth || 0);
     return () => ro.disconnect();
   }, []);
 

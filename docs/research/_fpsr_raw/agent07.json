@@ -1,0 +1,581 @@
+{
+  "agent": "07",
+  "researched_at": "2026-07-19",
+  "method": "WebSearch + live HTTP probes (curl) of official domains; DataService JSON sampled; file downloads GET confirmed",
+  "priority_note": "Банк России — основной объём; SDMX public endpoint на cbr.ru не обнаружен (404). Есть REST DataService JSON, legacy SOAP DailyInfo, XML scripts, Excel/PDF на vfs/Collection.",
+  "subjects": [
+    {
+      "code": "rostechnadzor",
+      "full_name": "Федеральная служба по экологическому, технологическому и атомному надзору (Ростехнадзор)",
+      "official_site": "https://gosnadzor.ru/",
+      "stats_portal": "https://www.gosnadzor.ru/activity/control/rates/",
+      "role": "Федеральный надзор: промышленная / энергетическая / ядерная безопасность, строительный надзор; статистика контрольной деятельности и аварийности",
+      "open_access": true,
+      "api": false,
+      "formats": [
+        "PDF",
+        "CSV",
+        "HTML"
+      ],
+      "etl_difficulty_1_5": 4,
+      "volume_estimate": "низкий–средний: реестры/отчёты о проверках, целевые показатели ГП; машиночитаемых рядов мало",
+      "notes": "Центральный сайт + территориальные управления (enis/mos/priok/cntr.gosnadzor.ru) публикуют аварийность/травматизм преимущественно PDF/HTML. Набор открытых данных на data.gov.ru устарел (последнее изменение CSV 2021). Единого time-series API нет.",
+      "datasets": [
+        {
+          "family": "Статистика контроля (форма 1-контроль / сведения о ГКн) — федеральный план статистических работ",
+          "frequency": "Y",
+          "history_from": "2013",
+          "history_to": "2022+",
+          "unit": "число проверок / нарушений / предписаний (по формам)",
+          "decomposition": "плановые/внеплановые; по видам надзора (на уровне отчётов)",
+          "format": "PDF",
+          "url": "https://www.gosnadzor.ru/activity/control/rates/",
+          "notes": "Подтверждён HTTP 200. Архив PDF также на http://www.enis.gosnadzor.ru/stats/ (2013–2022)."
+        },
+        {
+          "family": "Форма 1-контроль (архив Енисейского управления / ЕНИС)",
+          "frequency": "Y",
+          "history_from": "2013",
+          "history_to": "2022",
+          "unit": "показатели контрольной деятельности",
+          "decomposition": "годовые PDF по годам",
+          "format": "PDF",
+          "url": "http://www.enis.gosnadzor.ru/stats/",
+          "notes": "Список годовых PDF 2013–2022 подтверждён на странице."
+        },
+        {
+          "family": "Аварийность и травматизм на поднадзорных объектах (территориальные управления)",
+          "frequency": "Q/Y/M",
+          "history_from": "2011",
+          "history_to": "2026",
+          "unit": "число аварий / НС / погибших",
+          "decomposition": "по отраслям (нефтегаз, энергетика и др.) на части сайтов ТУ",
+          "format": "HTML/PDF",
+          "url": "http://enis.gosnadzor.ru/info/crash/",
+          "notes": "Енисейское ТУ: кварталы 2025–2026 и годовые с ~2011. Центральный агрегат в Excel не найден; ETL = парсинг PDF/HTML по ТУ."
+        },
+        {
+          "family": "Открытые данные: целевые показатели госпрограмм (7709561778-pokazateli)",
+          "frequency": "Y",
+          "history_from": "2019",
+          "history_to": "2021",
+          "unit": "значения целевых показателей ГП",
+          "decomposition": "по программам/показателям в CSV",
+          "format": "CSV",
+          "url": "https://www.gosnadzor.ru/opendata/7709561778-pokazateli/index_od.php",
+          "notes": "Паспорт: data.gov.ru CSV data-20210218T1444…; первая публикация 06.11.2019; last modified 18.02.2021; актуальность до 31.12.2021 — набор STALE. Дубль на портале открытых данных РФ."
+        },
+        {
+          "family": "Открытые данные: сведения о государственном контроле (7709561778-svedgkn)",
+          "frequency": "Y",
+          "history_from": null,
+          "history_to": null,
+          "unit": "сведения о ГКн",
+          "decomposition": null,
+          "format": "CSV/HTML passport",
+          "url": "https://www.gosnadzor.ru/opendata/7709561778-svedgkn/index_od.php",
+          "notes": "Страница паспорта HTTP 200 (2026-07-19). Глубина history в сессии не выгружалась целиком — уточнять по CSV на data.gov.ru."
+        },
+        {
+          "family": "Реестр наборов открытых данных Ростехнадзора",
+          "frequency": "irregular",
+          "history_from": null,
+          "history_to": null,
+          "unit": "n/a",
+          "decomposition": "каталог наборов",
+          "format": "HTML + PDF приказы",
+          "url": "https://www.gosnadzor.ru/opendata/",
+          "notes": "Каталог opendata; приказы Пр-281/313/59 PDF. Машиночитаемость слабая вне CSV на data.gov.ru."
+        }
+      ]
+    },
+    {
+      "code": "minsport",
+      "full_name": "Министерство спорта Российской Федерации (Минспорт России)",
+      "official_site": "https://www.minsport.gov.ru/",
+      "stats_portal": "https://www.minsport.gov.ru/activity/statisticheskaya-informacziya/",
+      "role": "Отраслевая статистика физкультуры и спорта (форма 1-ФК), показатели госпрограммы, аналитика ЕМИР",
+      "open_access": true,
+      "api": "partial (ЕМИР web-UI / Nuxt; публичный REST в сессии не подтверждён)",
+      "formats": [
+        "XLS",
+        "XLSX",
+        "XLSM",
+        "PDF",
+        "DOC",
+        "HTML"
+      ],
+      "etl_difficulty_1_5": 2,
+      "volume_estimate": "средний: годовые своды 1-ФК + показатели развития; регионы в ЕМИР",
+      "notes": "Основной машиночитаемый контур — storage.minsport.gov.ru (CMS uploads). Параллельно портал ЕМИР emir.gov.ru с дашбордами. Форма 1-ФК — федеральное статнаблюдение (Росстат утверждает форму, Минспорт собирает/публикует своды).",
+      "datasets": [
+        {
+          "family": "Форма 1-ФК «Сведения о физической культуре и спорте» — сводный отчёт по РФ",
+          "frequency": "Y",
+          "history_from": "2010",
+          "history_to": "2025",
+          "unit": "чел., объекты, % охвата и др. по форме",
+          "decomposition": "регионы / виды спорта / адаптивный спорт (в шаблонах и сводах)",
+          "format": "XLS/XLSX/XLSM",
+          "url": "https://www.minsport.gov.ru/activity/statisticheskaya-informacziya/",
+          "notes": "Подтверждены файлы на storage.minsport.gov.ru: своды 1-ФК 2014–2023+, шаблоны 2013–2025, сводный отчёт РФ. Дубль раздела: /activity/mass-sport/statisticheskaya-informacziya/."
+        },
+        {
+          "family": "Показатели развития физической культуры и спорта (годовые Excel)",
+          "frequency": "Y",
+          "history_from": "2015",
+          "history_to": "2025",
+          "unit": "тыс. чел., %, объекты, EPS и др.",
+          "decomposition": "РФ / регионы; доля систематически занимающихся; обеспеченность сооружениями",
+          "format": "XLSX/XLS",
+          "url": "https://storage.minsport.gov.ru/cms-uploads/cms/Pokazateli_razvitiya_fizicheskoj_kultury_i_sporta_po_itogam_2025_goda_785ac00d65.xlsx",
+          "notes": "Подтверждены серии Pokazateli_* за 2015–2025 (в т.ч. 2022/2023/2024/2025). Ключевой KPI: доля граждан 3–79 лет, систематически занимающихся ФКиС."
+        },
+        {
+          "family": "ЕМИР — показатели развития (дашборд)",
+          "frequency": "Y",
+          "history_from": "2015",
+          "history_to": "2024",
+          "unit": "тыс. чел., %",
+          "decomposition": "РФ / регионы / виды спорта / адаптивный спорт",
+          "format": "HTML (таблицы UI)",
+          "url": "https://emir.gov.ru/analytics/indicators",
+          "notes": "HTTP 200. Разделы: итоги РФ, план регионов, виды спорта, адаптивный спорт, сводные отчёты (/analytics/indicators/reports). На странице sports-development/rf в UI видны ряды с 2015."
+        },
+        {
+          "family": "Численность населения с противопоказаниями к занятиям ФКиС (служебные таблицы для расчётов)",
+          "frequency": "Y",
+          "history_from": "2022",
+          "history_to": "2025",
+          "unit": "чел.",
+          "decomposition": "регионы",
+          "format": "XLSX/XLS",
+          "url": "https://www.minsport.gov.ru/activity/statisticheskaya-informacziya/",
+          "notes": "Файлы на storage.minsport.gov.ru (protivopokaz*, Oczenka_chislennosti_*). Нужны для корректного знаменателя KPI."
+        },
+        {
+          "family": "Форма 3-АФК (адаптивная физкультура) — шаблоны/своды",
+          "frequency": "Y",
+          "history_from": "2014",
+          "history_to": "2015+",
+          "unit": "по форме 3-АФК",
+          "decomposition": "регионы",
+          "format": "XLS/DOC",
+          "url": "https://www.minsport.gov.ru/activity/statisticheskaya-informacziya/",
+          "notes": "Исторические шаблоны/своды 3-АФК на storage; актуальный контур частично в ЕМИР adaptive-physical-culture."
+        }
+      ]
+    },
+    {
+      "code": "cbr",
+      "full_name": "Центральный банк Российской Федерации (Банк России)",
+      "official_site": "https://www.cbr.ru/",
+      "stats_portal": "https://www.cbr.ru/statistics/",
+      "role": "Официальная макрофинансовая статистика: денежная масса, ставки, кредитование, внешний сектор, резервы, курсы, инфляционные ожидания, банковский сектор, ССРД МВФ",
+      "open_access": true,
+      "api": true,
+      "formats": [
+        "JSON (DataService)",
+        "XML (scripts + SOAP)",
+        "XLSX",
+        "XLS",
+        "PDF",
+        "HTML tables"
+      ],
+      "etl_difficulty_1_5": 2,
+      "volume_estimate": "очень высокий: сотни рядов; DataService ~34 publication nodes; vfs Excel + hd_base HTML + бюллетени",
+      "notes": "Приоритетный источник. Публичного SDMX REST на cbr.ru НЕ найдено (пробы /sdmx, /statistics/sdmx → 404). Есть: (1) REST DataService JSON https://www.cbr.ru/dataservice ; (2) legacy SOAP DailyInfo.asmx; (3) XML_daily/XML_dynamic/xml_metall; (4) Excel на /vfs/statistics/… и Collection/File; (5) HTML-базы hd_base. ССРД МВФ: /statistics/ssrd/ (не SDMX). Документация API: /statistics/data-service/APIdocumentation/.",
+      "datasets": [
+        {
+          "family": "DataService REST API — каталог публикаций и рядов",
+          "frequency": "M/Q (зависит от ряда)",
+          "history_from": "1992",
+          "history_to": "2026",
+          "unit": "зависит от indicator",
+          "decomposition": "publications → datasets → measures/elements",
+          "format": "JSON",
+          "url": "https://www.cbr.ru/dataservice/publications",
+          "notes": "Подтверждено 2026-07-19: /publications отдаёт 34 узла. Ключевые active: ставки (14–19), кредитование (20–23), денежная масса (5), BOP агрегаты (8–12), курсовые индексы (33–36), мониторинг предприятий (25–30). UI: https://www.cbr.ru/statistics/data-service/"
+        },
+        {
+          "family": "Денежные агрегаты M0/M1/M2 / широкая денежная масса",
+          "frequency": "M",
+          "history_from": "1992",
+          "history_to": "2026",
+          "unit": "млрд руб.",
+          "decomposition": "M0; M1; M2; broad money; SA-версия",
+          "format": "XLSX + JSON DataService",
+          "url": "https://www.cbr.ru/vfs/statistics/credit_statistics/monetary_agg.xlsx",
+          "notes": "Excel HTTP 200 (175 KB). DataService publicationId=5 datasets 5–8; /years для M2 → FromYear=1992 ToYear=2026. Раздел: https://www.cbr.ru/statistics/macro_itm/dkfs/"
+        },
+        {
+          "family": "Обзоры / балансы денежно-кредитных организаций (survey_*)",
+          "frequency": "M",
+          "history_from": null,
+          "history_to": "2026",
+          "unit": "млрд руб.",
+          "decomposition": "ЦБ / ОДК / ДК / ОФК / ФК; расширенные survey_*_ext",
+          "format": "XLSX",
+          "url": "https://www.cbr.ru/statistics/macro_itm/dkfs/",
+          "notes": "На dkfs подтверждены: survey_cb.xlsx, balance_odc.xlsx, survey_odc.xlsx, survey_dc_new.xlsx, survey_ofc.xlsx, survey_fc.xlsx, ms_m21/m22, mb_bd.xlsx."
+        },
+        {
+          "family": "Ключевая ставка Банка России",
+          "frequency": "D",
+          "history_from": "2013-09-17",
+          "history_to": "2026-07-17",
+          "unit": "% годовых",
+          "decomposition": null,
+          "format": "HTML (+ PDF export)",
+          "url": "https://www.cbr.ru/hd_base/KeyRate/",
+          "notes": "Подтверждено: data-min-date=17.09.2013; на странице «Данные доступны с 17.09.2013 по 17.07.2026»."
+        },
+        {
+          "family": "RUONIA",
+          "frequency": "D",
+          "history_from": "2010-01-11",
+          "history_to": "2026",
+          "unit": "% годовых",
+          "decomposition": null,
+          "format": "HTML",
+          "url": "https://www.cbr.ru/hd_base/ruonia/dynamics/",
+          "notes": "data-min-date=11.01.2010 подтверждён. Также MIACR и др. в https://www.cbr.ru/hd_base/"
+        },
+        {
+          "family": "Международные резервы РФ (еженедельные)",
+          "frequency": "W",
+          "history_from": "1998-05",
+          "history_to": "2026",
+          "unit": "млрд долл. США",
+          "decomposition": "валютные резервы / золото / позиция в МВФ / СДР (на связанных страницах)",
+          "format": "HTML",
+          "url": "https://www.cbr.ru/hd_base/mrrf/mrrf_7d/",
+          "notes": "data-min-date=05.1998. Раздел: /statistics/macro_itm/external_sector/ir/"
+        },
+        {
+          "family": "Официальные курсы валют ЦБ",
+          "frequency": "D",
+          "history_from": "1998-01",
+          "history_to": "2026",
+          "unit": "руб. за единицу / за nominal",
+          "decomposition": "по валютам (USD R01235, EUR R01239, CNY R01375, …)",
+          "format": "XML",
+          "url": "https://www.cbr.ru/scripts/XML_dynamic.asp?date_req1={dd/mm/yyyy}&date_req2={dd/mm/yyyy}&VAL_NM_RQ={code}",
+          "notes": "Проба 2024-01 USD вернула XML ValCurs. Срез: XML_daily.asp. SOAP WSDL: https://www.cbr.ru/DailyInfoWebServ/DailyInfo.asmx?WSDL. Сырой XML глубже 1998 есть, но до деноминации — старые рубли."
+        },
+        {
+          "family": "Учётные цены драгметаллов (золото и др.)",
+          "frequency": "D",
+          "history_from": "1998-01",
+          "history_to": "2026",
+          "unit": "руб./грамм",
+          "decomposition": "Au/Ag/Pt/Pd",
+          "format": "XML",
+          "url": "https://www.cbr.ru/scripts/xml_metall.asp?date_req1={from}&date_req2={to}",
+          "notes": "Endpoint живой (проба 2024-01)."
+        },
+        {
+          "family": "Платёжный баланс РФ (стандартная таблица + аналитические PDF)",
+          "frequency": "Q",
+          "history_from": "1994",
+          "history_to": "2026",
+          "unit": "млн / млрд долл. США",
+          "decomposition": "CA / capital / financial; товары/услуги; FDI и др.",
+          "format": "XLSX + PDF + JSON DataService",
+          "url": "https://www.cbr.ru/vfs/statistics/credit_statistics/bop/bal_of_payments_standart.xlsx",
+          "notes": "XLSX HTTP 200 (~459 KB). DataService pub 8 dataset 9 years 1994–2026. Хаб: /statistics/macro_itm/external_sector/"
+        },
+        {
+          "family": "Внешняя торговля товарами (monthly)",
+          "frequency": "M",
+          "history_from": "1997-01",
+          "history_to": "2026",
+          "unit": "млн долл. США",
+          "decomposition": "экспорт/импорт/сальдо",
+          "format": "XLS",
+          "url": "https://www.cbr.ru/vfs/statistics/credit_statistics/trade/trade.xls",
+          "notes": "HTTP 200. Раздел etg."
+        },
+        {
+          "family": "Внешняя торговля услугами (monthly)",
+          "frequency": "M",
+          "history_from": "2018-01",
+          "history_to": "2026",
+          "unit": "млн долл. США",
+          "decomposition": "экспорт/импорт услуг",
+          "format": "XLSX",
+          "url": "https://www.cbr.ru/vfs/statistics/credit_statistics/trade/trade_monthly.xlsx",
+          "notes": "HTTP 200. Раздел ets."
+        },
+        {
+          "family": "Внешний долг РФ",
+          "frequency": "Q",
+          "history_from": null,
+          "history_to": "2026",
+          "unit": "млн долл. США",
+          "decomposition": "секторы / инструменты (в debt_new.xlsx)",
+          "format": "XLSX",
+          "url": "https://www.cbr.ru/vfs/statistics/credit_statistics/debt/debt_new.xlsx",
+          "notes": "HTTP 200 (63 KB). Раздел ed."
+        },
+        {
+          "family": "Процентные ставки по кредитам и депозитам (DataService)",
+          "frequency": "M",
+          "history_from": "2014",
+          "history_to": "2026",
+          "unit": "% годовых",
+          "decomposition": "корп/физлица; сроки; валюты; территориальный / ОКВЭД разрезы",
+          "format": "JSON",
+          "url": "https://www.cbr.ru/dataservice/data?publicationId=14&datasetId=29&y1=2017&y2=2026",
+          "notes": "years: ds29 → 2017–2026; депозиты pub18 ds37 → 2014–2026. Каталог publications 14–19."
+        },
+        {
+          "family": "Объёмы кредитования (физлица, ипотека, юрлица/МСП)",
+          "frequency": "M",
+          "history_from": "2019",
+          "history_to": "2026",
+          "unit": "млн / млрд руб. (зависит от ряда)",
+          "decomposition": "физлица / ипотека / юрлица / МСП",
+          "format": "JSON",
+          "url": "https://www.cbr.ru/dataservice/datasets?publicationId=20",
+          "notes": "years pub20/21 → FromYear=2019. Банковский сектор: https://www.cbr.ru/statistics/bank_sector/"
+        },
+        {
+          "family": "Инфляционные ожидания населения и ценовые ожидания предприятий",
+          "frequency": "M",
+          "history_from": "2013",
+          "history_to": "2026-06",
+          "unit": "% (медиана ожиданий и др.)",
+          "decomposition": "население (инФОМ) / предприятия / аналитики",
+          "format": "XLSX + PDF комментарии",
+          "url": "https://www.cbr.ru/statistics/ddkp/inflationary_expectations/",
+          "notes": "Подтверждены Infl_exp_YY-MM.xlsx / stat_Infl_exp_* минимум с 2023-03 до 2026-06; архив аналитики с 2013. Хаб: /statistics/macro_itm/infl_dkp/"
+        },
+        {
+          "family": "Мониторинг предприятий (DataService)",
+          "frequency": "M",
+          "history_from": null,
+          "history_to": "2026",
+          "unit": "балансы/индексы опросов",
+          "decomposition": "все / крупные / средние / малые и микро",
+          "format": "JSON",
+          "url": "https://www.cbr.ru/dataservice/publications",
+          "notes": "publications 24–30 active."
+        },
+        {
+          "family": "Номинальные курсы и индексы обменного курса рубля (DataService)",
+          "frequency": "M/Q",
+          "history_from": null,
+          "history_to": "2026",
+          "unit": "руб. за ед. валюты; индексы",
+          "decomposition": "валюты; номинальные / индексы; месяц / квартал",
+          "format": "JSON",
+          "url": "https://www.cbr.ru/dataservice/datasets?publicationId=33",
+          "notes": "publications 33–36."
+        },
+        {
+          "family": "ССРД МВФ (SDDS) — витрина ключевых показателей",
+          "frequency": "D/W/M/Q",
+          "history_from": null,
+          "history_to": "2026",
+          "unit": "микс",
+          "decomposition": "финансовый / внешний / реальный сектор по стандарту МВФ",
+          "format": "HTML",
+          "url": "https://www.cbr.ru/statistics/ssrd/data/",
+          "notes": "Это SDDS (ССРД), НЕ SDMX API. Хаб: https://www.cbr.ru/statistics/ssrd/"
+        },
+        {
+          "family": "Базы данных hd_base (ликвидность, денежная база, металлы, корсчета, репо и др.)",
+          "frequency": "D/W/M",
+          "history_from": "varies",
+          "history_to": "2026",
+          "unit": "микс",
+          "decomposition": "по инструментам ДКП",
+          "format": "HTML",
+          "url": "https://www.cbr.ru/hd_base/",
+          "notes": "Каталог баз: ключставка, RUONIA, MIACR, G-curve, курсы, драгметаллы, ОР, ликвидность, резервы, трансграничные переводы и др."
+        },
+        {
+          "family": "Статистический бюллетень / банковский сектор (сводные PDF)",
+          "frequency": "M",
+          "history_from": "2015",
+          "history_to": "2026",
+          "unit": "микс показателей КО",
+          "decomposition": "по группам КО / датам",
+          "format": "PDF",
+          "url": "https://www.cbr.ru/statistics/bank_sector/",
+          "notes": "Архив svst*.pdf (наблюдались файлы с 2015). ETL тяжёлый (PDF)."
+        },
+        {
+          "family": "Макроэкономическая статистика — хаб разделов",
+          "frequency": "mixed",
+          "history_from": null,
+          "history_to": "2026",
+          "unit": "n/a",
+          "decomposition": "внешний сектор; ДКФС; СНС; ценные бумаги; домохозяйства; нефинсектор; FAFBS",
+          "format": "HTML hub",
+          "url": "https://www.cbr.ru/statistics/macro_itm/",
+          "notes": "Подразделы: dkfs, external_sector, Non-financial_sector, fafbs, households, infl_dkp, sec_st, program_stat."
+        }
+      ]
+    },
+    {
+      "code": "rosprirodnadzor",
+      "full_name": "Федеральная служба по надзору в сфере природопользования (Росприроднадзор)",
+      "official_site": "https://rpn.gov.ru/",
+      "stats_portal": "https://rpn.gov.ru/opendata/",
+      "role": "Надзор в сфере природопользования; открытые реестры отходов/разрешений; приём статотчётности 2-ТП (электронно)",
+      "open_access": true,
+      "api": false,
+      "formats": [
+        "CSV",
+        "PDF",
+        "HTML"
+      ],
+      "etl_difficulty_1_5": 3,
+      "volume_estimate": "средний: ~12 наборов opendata (в основном реестры), мало классических macro time-series",
+      "notes": "Публичная витрина — реестры и отдельные отчёты CSV. Агрегированная экологическая статистика 2-ТП собирается ведомством, но сводные ряды для публики ограничены; приём — только электронно (с 2022). Макро-экостатистика часто у Росстата/ЕМИСС.",
+      "datasets": [
+        {
+          "family": "Каталог открытых данных Росприроднадзора (12 наборов)",
+          "frequency": "irregular / Y",
+          "history_from": "2022",
+          "history_to": "2024",
+          "unit": "записи реестров",
+          "decomposition": "по типам разрешений/реестров",
+          "format": "CSV (+ structure CSV)",
+          "url": "https://rpn.gov.ru/opendata/",
+          "notes": "Подтверждены коды: fkko, groro, banktehnologiy, report-recycling-standards, reestrdob/soderjanie/sogl, akklimatizaciya, pereselenie, isp, grunt, razresheniyazahoronenie."
+        },
+        {
+          "family": "Отчётность о выполнении нормативов утилизации отходов от использования товаров",
+          "frequency": "Y",
+          "history_from": "2022-11",
+          "history_to": "2024-02",
+          "unit": "сведения отчётности (поля CSV)",
+          "decomposition": "по отчитывающимся субъектам/товарам (в файле)",
+          "format": "CSV",
+          "url": "https://rpn.gov.ru/opendata/7703381225-report-recycling-standards",
+          "notes": "Паспорт: data_20240229T0447_structure_20240229T0447.csv; период обновления — ежегодно; first publish 18.11.2022."
+        },
+        {
+          "family": "Федеральный классификационный каталог отходов (ФККО)",
+          "frequency": "irregular",
+          "history_from": null,
+          "history_to": "current",
+          "unit": "коды отходов",
+          "decomposition": "иерархия ФККО",
+          "format": "CSV",
+          "url": "https://rpn.gov.ru/opendata/7703381225-fkko",
+          "notes": "Справочник/классификатор, не time-series."
+        },
+        {
+          "family": "ГРОРО — государственный реестр объектов размещения отходов",
+          "frequency": "irregular",
+          "history_from": null,
+          "history_to": "current",
+          "unit": "объекты",
+          "decomposition": "по объектам/регионам",
+          "format": "CSV",
+          "url": "https://rpn.gov.ru/opendata/7703381225-groro",
+          "notes": "Реестр объектов размещения отходов."
+        },
+        {
+          "family": "Банк данных об отходах и технологиях утилизации/обезвреживания",
+          "frequency": "irregular",
+          "history_from": null,
+          "history_to": "current",
+          "unit": "записи технологий",
+          "decomposition": "по видам отходов/технологий",
+          "format": "CSV",
+          "url": "https://rpn.gov.ru/opendata/7703381225-banktehnologiy",
+          "notes": "Справочно-реестровый набор."
+        },
+        {
+          "family": "Статистическая отчётность 2-ТП (приём, не публичный ряд)",
+          "frequency": "Y",
+          "history_from": null,
+          "history_to": null,
+          "unit": "по формам 2-ТП (отходы/воздух/рекультивация)",
+          "decomposition": "респонденты → электронная сдача",
+          "format": "electronic reporting (не открытый bulk)",
+          "url": "https://rpn.gov.ru/regions/54/for%20users/report/",
+          "notes": "С 01.01.2022 бумажный приём отменён. Публичных bulk time-series 2-ТП на портале не найдено — для макро чаще Росстат/ЕМИСС."
+        }
+      ]
+    },
+    {
+      "code": "rosalcogoltabakkontrol",
+      "full_name": "Федеральная служба по контролю за алкогольным и табачным рынками (Росалкогольтабакконтроль, ФСКАТР / ранее ФСРАР)",
+      "official_site": "https://fsrar.gov.ru/",
+      "stats_portal": "https://fsrar.gov.ru/",
+      "role": "Контроль производства и оборота алкоголя и табака; ЕГАИС; статистические сборники рынка алкоголя; открытые данные (план на data.gov.ru)",
+      "open_access": "partial",
+      "api": false,
+      "formats": [
+        "PDF",
+        "HTML (сайт/EGAIS portal)"
+      ],
+      "etl_difficulty_1_5": 4,
+      "volume_estimate": "средний по содержанию сборников, но плохая машиночитаемость (PDF); сайт SPA часто отдаёт пустой/непарсируемый HTML",
+      "notes": "Домены: fsrar.gov.ru / fskatr.gov.ru, egais.ru, service.fsrar.ru, public.fsrar.ru (ЕСПАР). Главная в пробах 2026-07-19 — ~1.7MB HTML с пустым title; /statistics 404. Прямые PDF по /files/… скачиваются. План открытости 2026: сборник «Основные показатели…» + OD на data.gov.ru.",
+      "datasets": [
+        {
+          "family": "Статистический сборник «Основные показатели, характеризующие рынок алкогольной продукции» 2019–2021",
+          "frequency": "Y",
+          "history_from": "2019",
+          "history_to": "2021",
+          "unit": "тыс. дал / шт. / %",
+          "decomposition": "виды продукции; производство / оборот / розница; субъекты РФ",
+          "format": "PDF",
+          "url": "https://fsrar.gov.ru/files/26163_stats_2019-2021.pdf",
+          "notes": "GET подтверждён: HTTP 200, ~4.5 MB PDF."
+        },
+        {
+          "family": "Статистический сборник «Основные показатели…» 2021–2023",
+          "frequency": "Y",
+          "history_from": "2021",
+          "history_to": "2023",
+          "unit": "тыс. дал / др.",
+          "decomposition": "виды алкогольной продукции; производство/оборот",
+          "format": "PDF",
+          "url": "https://fsrar.gov.ru/files/31436_%D1%81%D1%82%D0%B0%D1%82%D1%81%D0%B1%D0%BE%D1%80%D0%BD%D0%B8%D0%BA%20_2021-2023.pdf",
+          "notes": "GET подтверждён: HTTP 200, ~6.7 MB PDF."
+        },
+        {
+          "family": "Информация об объёмах производства и оборота этилового спирта, алкогольной и спиртосодержащей продукции",
+          "frequency": "M/Q (заявлено ведомством; deep-link не извлечён)",
+          "history_from": null,
+          "history_to": "2025+",
+          "unit": "тыс. дал",
+          "decomposition": "виды продукции",
+          "format": "PDF/HTML",
+          "url": "https://fsrar.gov.ru/",
+          "notes": "Заявлено в Плане Концепции открытости на 2026. Стабильный deep-link в сессии не зафиксирован из-за SPA."
+        },
+        {
+          "family": "ЕГАИС — портал / сервисы (операционный контур, не статистический bulk)",
+          "frequency": "realtime/operational",
+          "history_from": null,
+          "history_to": null,
+          "unit": "учётные документы (B2G)",
+          "decomposition": "участники рынка",
+          "format": "web portals",
+          "url": "https://egais.ru/",
+          "notes": "egais.ru HTTP 200. service.fsrar.ru — портал сервисов; public.fsrar.ru — ЕСПАР. Публичного open time-series API не обнаружено."
+        },
+        {
+          "family": "Открытые данные на data.gov.ru (план ведомства)",
+          "frequency": "irregular",
+          "history_from": null,
+          "history_to": null,
+          "unit": "n/a",
+          "decomposition": null,
+          "format": "CSV (планово)",
+          "url": "https://data.gov.ru/",
+          "notes": "План OD 2025–2026 требует размещения на data.gov.ru. Живой перечень наборов ФСКАТР через data.gov.ru в сессии не подтверждён."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,630 @@
+{
+  "agent": "04",
+  "research_date": "2026-07-19",
+  "method": "WebSearch + WebFetch/curl .gov.ru; только URL/поля, подтверждённые HTTP 200 или текстом официальной страницы",
+  "subjects": [
+    {
+      "code": "minobrnauki",
+      "full_name": "Министерство науки и высшего образования Российской Федерации",
+      "official_site": "https://minobrnauki.gov.ru/",
+      "stats_portal": "https://minobrnauki.gov.ru/action/stat/",
+      "role": "Субъект ФПСР по высшему образованию и науке: сбор/публикация сводов ФСН (ВПО, наука), мониторинг эффективности вузов, открытые данные",
+      "open_access": "да",
+      "api": "нет (публичные архивы RAR/ZIP/XLSX/CSV на сайте; мониторинг — веб-витрина)",
+      "formats": [
+        "RAR",
+        "ZIP",
+        "XLSX",
+        "CSV",
+        "PDF",
+        "HTML"
+      ],
+      "etl_difficulty_1_5": 3,
+      "volume_estimate": "годовые своды ВПО-1 с 2013 (13 архивов) + ВПО-2 с 2015; наука 2-наука(ИНВ) XLSX 2018–2024; мониторинг ~1257 организаций ВО (2025); раздел opendata — единицы наборов CSV",
+      "notes": "Разделы: /action/stat/highed/, /science/, /added/, /sntr/, /fsn/, /opendata/. Мониторинг эффективности ВО на https://monitoring.miccedu.ru/ (оператор МИРЭА/ГИВЦ). Open-data «численность студентов» актуальность IV кв. 2021 (не обновлялось с 15.04.2022) — для рядов лучше своды ВПО-1.",
+      "datasets": [
+        {
+          "family": "Форма ВПО-1 — своды по программам бакалавриата/специалитета/магистратуры",
+          "frequency": "Y",
+          "history_from": "2013",
+          "history_to": "2025",
+          "unit": "человек / организации (сводные таблицы ФСН)",
+          "decomposition": "организации ВО; формы обучения; субъекты РФ (внутри архивов)",
+          "format": "RAR/ZIP (таблицы внутри)",
+          "url": "https://minobrnauki.gov.ru/action/stat/highed/",
+          "notes": "Подтверждены файлы VPO_1_2013_.rar … Своды ВПО-1 2025.zip на странице. Ежегодная публикация сводов."
+        },
+        {
+          "family": "Форма ВПО-2 — материально-техническая база и финансово-экономическая деятельность вузов",
+          "frequency": "Y",
+          "history_from": "2015",
+          "history_to": "2025",
+          "unit": "руб. / натуральные показатели базы (сводные таблицы)",
+          "decomposition": "организации ВО",
+          "format": "RAR/ZIP",
+          "url": "https://minobrnauki.gov.ru/action/stat/highed/",
+          "notes": "Файлы VPO-2_2015.rar … Своды ВПО-2 за 2025 г.zip (upload/2026/07/)."
+        },
+        {
+          "family": "Форма 2-наука (ИНВ) — основные показатели научной деятельности",
+          "frequency": "Y",
+          "history_from": "2018",
+          "history_to": "2024",
+          "unit": "показатели ФСН (XLSX)",
+          "decomposition": "организации, выполняющие исследования и разработки",
+          "format": "XLSX",
+          "url": "https://minobrnauki.gov.ru/action/stat/science/",
+          "notes": "На странице «Наука» подтверждены XLSX 2018–2024 (краткие/основные показатели)."
+        },
+        {
+          "family": "Мониторинг эффективности образовательных организаций высшего образования",
+          "frequency": "Y",
+          "history_from": "2014",
+          "history_to": "2025",
+          "unit": "организации; контингент студентов (чел.)",
+          "decomposition": "вуз / филиал; гос/частные; форма обучения; субъект РФ",
+          "format": "HTML (витрина)",
+          "url": "https://monitoring.miccedu.ru/?m=vpo&year=2025",
+          "notes": "Мониторинг 2025: 1257 организаций, контингент 4 606 291. В навигации доступны годы 2014–2025. Не bulk CSV API."
+        },
+        {
+          "family": "Открытые данные — численность студентов по формам обучения и субъектам РФ",
+          "frequency": "Y",
+          "history_from": "2020",
+          "history_to": "2021",
+          "unit": "человек",
+          "decomposition": "ФО / субъект РФ; очная / очно-заочная / заочная",
+          "format": "CSV",
+          "url": "https://minobrnauki.gov.ru/opendata/9710062939-svedeniya-o-chislennosti-studentov-obrazovatelnykh-organizatsiy-osushchestvlyayushchikh-obrazovateln",
+          "notes": "Паспорт: первая публикация 29.12.2020; последнее изменение 15.04.2022 (данные за 2021); периодичность «ежегодно», но фактически stale."
+        },
+        {
+          "family": "Инструкции/письма по сбору ФСН (ВПО-1, 1-ПК и др.) согласно ФПСР",
+          "frequency": "Y",
+          "history_from": "2019",
+          "history_to": "2025",
+          "unit": "n/a (методика сбора)",
+          "decomposition": "по формам ФСН",
+          "format": "ZIP",
+          "url": "https://minobrnauki.gov.ru/action/stat/fsn/",
+          "notes": "Не ряды данных, а письма по сбору; ZIP по учебным годам 2019/20–2025/26."
+        }
+      ]
+    },
+    {
+      "code": "rosvodresursy",
+      "full_name": "Федеральное агентство водных ресурсов (Росводресурсы)",
+      "official_site": "http://voda.gov.ru/",
+      "stats_portal": "http://voda.gov.ru/otkrytoe-agentstvo/opendata/",
+      "role": "Ведение ГВР, госмониторинг водных объектов, свод ФСН 2-ТП (водхоз), режимы водохранилищ, госдоклады о водных ресурсах; публикация открытых данных на ГИС ЦП «Водные данные»",
+      "open_access": "частично",
+      "api": "заявлен API ГВР на платформе «Водные данные» (https://gis.favr.ru/web/guest/opendata) — раздел «Разработчикам»; с пробы 2026-07-19 gis.favr.ru недоступен (timeout)",
+      "formats": [
+        "HTML",
+        "PDF",
+        "API (заявлен)",
+        "CSV/OD (на платформе, не проверен live)"
+      ],
+      "etl_difficulty_1_5": 4,
+      "volume_estimate": "оперативные режимы водохранилищ — десятки указаний/мес; ГВР — еженедельные сводки предоставления водных объектов; госдоклады — архив Y; 2-ТП (водхоз) — годовая ФСН",
+      "notes": "HTTPS voda.gov.ru с пробы часто 403/fail; HTTP 200 на ряде разделов. Open data URL в меню подтверждён; сама страница opendata с пробы редиректит/не отдаёт тело. Платформа: официальный пресс-релиз http://voda.gov.ru/press-tsenter/news/federalnye/557689/ — карта, OD из ГВР и мониторинга, API форм ГВР. Счёт водных ресурсов (методика пр. 355) формируется Росводресурсами на базе 2-ТП (водхоз).",
+      "datasets": [
+        {
+          "family": "ГИС ЦП «Водные данные» — открытые данные ГВР и госмониторинга водных объектов",
+          "frequency": "D",
+          "history_from": null,
+          "history_to": null,
+          "unit": "водные объекты / гидрологическая обстановка (смешанные)",
+          "decomposition": "объекты ГВР; карта РФ",
+          "format": "веб-портал + API (заявлен)",
+          "url": "https://gis.favr.ru/web/guest/opendata",
+          "notes": "URL подтверждён ссылкой в официальном пресс-релизе Росводресурсов. Live fetch портала с пробы не удался — глубину истории не фиксируем."
+        },
+        {
+          "family": "Сведения о режимах работы крупнейших водохранилищ и каскадов (указания Росводресурсов)",
+          "frequency": "D",
+          "history_from": null,
+          "history_to": "2026-07",
+          "unit": "режимы гидроузлов (документы-указания)",
+          "decomposition": "каскады (напр. Волжско-Камский)",
+          "format": "HTML/PDF (публикации)",
+          "url": "http://voda.gov.ru/activities/svedeniya-o-rezhimakh-raboty-krupneyshikh-vodokhranilishch-i-ikh-kaskadov/",
+          "notes": "На странице лента указаний с датами (май–июль 2026 почти ежедневно). Не классический числовой time-series CSV."
+        },
+        {
+          "family": "Информация о предоставлении водных объектов в пользование (сводки ГВР)",
+          "frequency": "W",
+          "history_from": null,
+          "history_to": "2026-07",
+          "unit": "сведения о предоставлении в пользование",
+          "decomposition": "водные объекты / пользователи",
+          "format": "HTML",
+          "url": "http://voda.gov.ru/activities/gosudarstvennyy-vodnyy-reestr/",
+          "notes": "Лента сводок ~раз в неделю (напр. 14.05…16.07.2026). Раздел ГВР."
+        },
+        {
+          "family": "Государственные доклады «О состоянии и использовании водных ресурсов Российской Федерации»",
+          "frequency": "Y",
+          "history_from": null,
+          "history_to": null,
+          "unit": "аналитический доклад",
+          "decomposition": "РФ / бассейны (внутри докладов)",
+          "format": "PDF/HTML",
+          "url": "http://voda.gov.ru/regulatory/gosudarstvennye-doklady/",
+          "notes": "На индексе видны карточки докладов (публикация записей 23.12.2019). Точные годы охвата в заголовках на листинге обрезаны — не выдумываем; открывать doc-* поштучно."
+        },
+        {
+          "family": "ФСН 2-ТП (водхоз) «Сведения об использовании воды» — ведомственный контур сбора",
+          "frequency": "Y",
+          "history_from": null,
+          "history_to": null,
+          "unit": "тыс. м³",
+          "decomposition": "водопользователи; источники; виды использования",
+          "format": "форма ФСН (сбор); публикация сводов — через ЕМИСС/ведомство",
+          "url": "http://voda.gov.ru/",
+          "notes": "В меню сайта раздел «2-тп (водхоз)». Форма утверждена Росстатом (пр. №445 от 02.10.2024); респонденты → Росводресурсы. Прямой bulk URL свода на сайте с пробы не подтверждён."
+        },
+        {
+          "family": "Отчёты о деятельности агентства / открытость",
+          "frequency": "Y",
+          "history_from": "2017",
+          "history_to": "2025",
+          "unit": "n/a (адм. отчёты)",
+          "decomposition": null,
+          "format": "HTML/PDF",
+          "url": "http://voda.gov.ru/otkrytoe-agentstvo/otchety-o-deyatelnosti/",
+          "notes": "Лента отчётов 2017–2025 (обращения граждан, планы открытости). Не отраслевая статистика воды."
+        }
+      ]
+    },
+    {
+      "code": "rosleshoz",
+      "full_name": "Федеральное агентство лесного хозяйства (Рослесхоз)",
+      "official_site": "https://rosleshoz.gov.ru/",
+      "stats_portal": "https://rosleshoz.gov.ru/opendata/",
+      "role": "Государственный лесной реестр; охрана/защита/воспроизводство лесов; открытые данные по площадям, запасам, пожарам, заготовке древесины, расходам",
+      "open_access": "да",
+      "api": "нет REST API; машиночитаемый каталог list.csv / list.json / list.xml",
+      "formats": [
+        "CSV",
+        "JSON",
+        "XML",
+        "HTML"
+      ],
+      "etl_difficulty_1_5": 2,
+      "volume_estimate": "38 наборов открытых данных (каталог list.json); ключевые срезы на 01.01.2026 + годовые ряды пожаров/заготовки/восстановления",
+      "notes": "Каталог: https://rosleshoz.gov.ru/opendata/list.json (standard 3.0). Обобщённые данные ГЛР: https://rosleshoz.gov.ru/activity/forest-register/ (площадь лесов на 01.01.2024 — 1188,3 млн га). Многие OD — snapshot «на 01.01.2026», не длинный time-series в одном файле.",
+      "datasets": [
+        {
+          "family": "Сведения о землях лесного фонда",
+          "frequency": "Y",
+          "history_from": "2026-01-01",
+          "history_to": "2026-01-01",
+          "unit": "тыс. га",
+          "decomposition": "субъекты РФ; категории земель лесного фонда",
+          "format": "CSV",
+          "url": "https://rosleshoz.gov.ru/opendata/7705598840-ForestFund/",
+          "notes": "Идентификатор 7705598840-ForestFund; срез на 01.01.2026."
+        },
+        {
+          "family": "Площадь лесных земель",
+          "frequency": "Y",
+          "history_from": "2026-01-01",
+          "history_to": "2026-01-01",
+          "unit": "тыс. га",
+          "decomposition": "субъекты РФ",
+          "format": "CSV",
+          "url": "https://rosleshoz.gov.ru/opendata/7705598840-ForestlandArea/",
+          "notes": "7705598840-ForestlandArea."
+        },
+        {
+          "family": "Лесистость территории",
+          "frequency": "Y",
+          "history_from": "2026-01-01",
+          "history_to": "2026-01-01",
+          "unit": "% / доля",
+          "decomposition": "субъекты РФ",
+          "format": "CSV",
+          "url": "https://rosleshoz.gov.ru/opendata/7705598840-ForestCover/",
+          "notes": "7705598840-ForestCover; на ГЛР-странице лесистость РФ 46,4% (на 01.01.2024)."
+        },
+        {
+          "family": "Площадь земель, покрытых лесной растительностью",
+          "frequency": "Y",
+          "history_from": "2026-01-01",
+          "history_to": "2026-01-01",
+          "unit": "тыс. га",
+          "decomposition": "субъекты РФ",
+          "format": "CSV",
+          "url": "https://rosleshoz.gov.ru/opendata/7705598840-VegetationArea/",
+          "notes": "7705598840-VegetationArea."
+        },
+        {
+          "family": "Общий запас древесины лесных насаждений",
+          "frequency": "Y",
+          "history_from": "2026-01-01",
+          "history_to": "2026-01-01",
+          "unit": "млн м³",
+          "decomposition": "земли лесного фонда / иные категории; субъекты РФ",
+          "format": "CSV",
+          "url": "https://rosleshoz.gov.ru/opendata/7705598840-WoodStock/",
+          "notes": "7705598840-WoodStock; на ГЛР HTML общий запас на 01.01.2024 — 82,2 млрд м³."
+        },
+        {
+          "family": "Объём заготовленной древесины",
+          "frequency": "Y",
+          "history_from": "2025",
+          "history_to": "2025",
+          "unit": "тыс. м³",
+          "decomposition": "субъекты РФ (типично для OD Рослесхоза)",
+          "format": "CSV",
+          "url": "https://rosleshoz.gov.ru/opendata/7705598840-WoodVolume/",
+          "notes": "7705598840-WoodVolume — «за 2025 год» по каталогу."
+        },
+        {
+          "family": "Площадь лесовосстановления",
+          "frequency": "Y",
+          "history_from": null,
+          "history_to": null,
+          "unit": "тыс. га",
+          "decomposition": "субъекты РФ",
+          "format": "CSV",
+          "url": "https://rosleshoz.gov.ru/opendata/7705598840-ReforestationArea/",
+          "notes": "7705598840-ReforestationArea; год среза в title каталога не указан явно."
+        },
+        {
+          "family": "Лесные пожары — количество и площадь (земли лесного фонда)",
+          "frequency": "Y",
+          "history_from": "2023",
+          "history_to": "2023",
+          "unit": "шт.; га/тыс. га",
+          "decomposition": "субъекты РФ; зона контроля / тушение",
+          "format": "CSV",
+          "url": "https://rosleshoz.gov.ru/opendata/7705598840-RegisterForestFires/",
+          "notes": "Связанные наборы: RegisterForestFires, ForesFundFires, FireCover, ForesFundFiresArea (в titles — за 2023)."
+        },
+        {
+          "family": "Гибель лесных насаждений; санитарно-оздоровительные мероприятия",
+          "frequency": "Y",
+          "history_from": "2025",
+          "history_to": "2025",
+          "unit": "га / объём мероприятий",
+          "decomposition": "субъекты РФ",
+          "format": "CSV",
+          "url": "https://rosleshoz.gov.ru/opendata/7705598840-RegisterPlants/",
+          "notes": "RegisterPlants и SanitationActivities — за 2025 год."
+        },
+        {
+          "family": "Показатели (индикаторы) ГП «Развитие лесного хозяйства»",
+          "frequency": "Y",
+          "history_from": "2022",
+          "history_to": "2025",
+          "unit": "индикаторы ГП (смешанные)",
+          "decomposition": "по индикаторам программы",
+          "format": "CSV",
+          "url": "https://rosleshoz.gov.ru/opendata/7705598840-Indicators/",
+          "notes": "Indicators (факт 2025) + IndicatorsMain (за 2022). Обновление Indicators по странице — 14.05.2026."
+        },
+        {
+          "family": "Каталог / реестр наборов открытых данных Рослесхоза",
+          "frequency": "Y",
+          "history_from": "2016-06-20",
+          "history_to": "2026-05-25",
+          "unit": "n/a",
+          "decomposition": null,
+          "format": "CSV/JSON/XML",
+          "url": "https://rosleshoz.gov.ru/opendata/list.json",
+          "notes": "meta.csv реестра: первая публикация 20.06.2016; last change 25.05.2026; 38 наборов."
+        }
+      ]
+    },
+    {
+      "code": "rosnedra",
+      "full_name": "Федеральное агентство по недропользованию (Роснедра)",
+      "official_site": "https://rosnedra.gov.ru/",
+      "stats_portal": "https://rosnedra.gov.ru/activity/documents/statisticheskaya-otchyetnost/statisticheskaya-otchyetnost-rosnedr/",
+      "role": "Статотчётность недропользователей (2-ГР, 7-ГР и др.), госдоклады, госбаланс запасов, открытые данные (в основном адм./картографические реестры)",
+      "open_access": "частично",
+      "api": "нет публичного stats API; сдача форм через ЛКН https://lk.rosnedra.gov.ru (для респондентов)",
+      "formats": [
+        "PDF/HTML (своды)",
+        "CSV",
+        "XLS"
+      ],
+      "etl_difficulty_1_5": 3,
+      "volume_estimate": "своды 2-ГР/7-ГР: Q и Y минимум с 2022 по 9м 2024 (пагинация 6 стр.); госдоклады 2019–2023; OD — ~14 наборов, преимущественно не макроряды",
+      "notes": "Раздел форм: /activity/documents/statisticheskaya-otchyetnost/. Госдоклады: /activity/documents/gosudarstvennye-doklady/. Госбаланс запасов: /activity/gosudarstvennyy-balans-zapasov/. Open data: https://rosnedra.gov.ru/opendata/.",
+      "datasets": [
+        {
+          "family": "Сводные отчёты формы 2-ГР",
+          "frequency": "Q",
+          "history_from": "2022",
+          "history_to": "2024-Q3",
+          "unit": "показатели ГРР/недропользования (по форме 2-ГР)",
+          "decomposition": "свод РФ (публикуемые отчёты)",
+          "format": "документ (страница отчёта)",
+          "url": "https://rosnedra.gov.ru/activity/documents/statisticheskaya-otchyetnost/statisticheskaya-otchyetnost-rosnedr/",
+          "notes": "На листинге: свод за 2022 Y, 9м 2022, 1кв 2023, 2023 Y, 9м 2024. Есть и годовые точки — частота публикации Q/Y."
+        },
+        {
+          "family": "Сводные отчёты формы 7-ГР",
+          "frequency": "Q",
+          "history_from": "2022",
+          "history_to": "2024-Q3",
+          "unit": "показатели по форме 7-ГР",
+          "decomposition": "свод РФ",
+          "format": "документ",
+          "url": "https://rosnedra.gov.ru/activity/documents/statisticheskaya-otchyetnost/statisticheskaya-otchyetnost-rosnedr/",
+          "notes": "Параллельно 2-ГР: 2022 Y, 9м 2022, 1кв 2023, 2023 Y, 9м 2024."
+        },
+        {
+          "family": "Государственные доклады Роснедр",
+          "frequency": "Y",
+          "history_from": "2019",
+          "history_to": "2023",
+          "unit": "доклад",
+          "decomposition": null,
+          "format": "HTML/PDF",
+          "url": "https://rosnedra.gov.ru/activity/documents/gosudarstvennye-doklady/",
+          "notes": "Подтверждены карточки «Государственный доклад 2019…2023»."
+        },
+        {
+          "family": "Государственный баланс запасов полезных ископаемых",
+          "frequency": "Y",
+          "history_from": null,
+          "history_to": null,
+          "unit": "запасы ПИ (по балансу)",
+          "decomposition": "виды ПИ / участки (в материалах баланса)",
+          "format": "HTML (раздел)",
+          "url": "https://rosnedra.gov.ru/activity/gosudarstvennyy-balans-zapasov/",
+          "notes": "Раздел существует (HTTP 200). Конкретные файлы/годы истории на листинге с пробы не извлечены — не выдумываем."
+        },
+        {
+          "family": "Открытые данные — реестр государственных геологических карт",
+          "frequency": "Y",
+          "history_from": null,
+          "history_to": null,
+          "unit": "перечень карт",
+          "decomposition": "масштабы 1:5 000 000 … 1:200 000",
+          "format": "CSV",
+          "url": "https://rosnedra.gov.ru/opendata/7703518529-strterr/",
+          "notes": "Паспорт: «Реестр государственных геологических карт…»; CSV data-111-structure-1.csv (~1.7 MB)."
+        },
+        {
+          "family": "Открытые данные — информация об обращениях граждан",
+          "frequency": "Y",
+          "history_from": null,
+          "history_to": null,
+          "unit": "обращения",
+          "decomposition": "тематика / результаты рассмотрения",
+          "format": "CSV",
+          "url": "https://rosnedra.gov.ru/opendata/7703518529-obrgr/",
+          "notes": "Адм. OD, не запасы/добыча. CSV ~45 MB."
+        },
+        {
+          "family": "Открытые данные — перечни НПА / госуслуг / ТО / подведомственных организаций",
+          "frequency": "Y",
+          "history_from": "2024-02",
+          "history_to": "2024-02",
+          "unit": "n/a (справочники)",
+          "decomposition": null,
+          "format": "CSV",
+          "url": "https://rosnedra.gov.ru/opendata/",
+          "notes": "Подтверждены наборы: normsferregul, perechengu, terr, rosnedrapodvedorglist, vedper и др. (паспорта 14–21.02.2024)."
+        }
+      ]
+    },
+    {
+      "code": "minpromtorg",
+      "full_name": "Министерство промышленности и торговли Российской Федерации",
+      "official_site": "https://minpromtorg.gov.ru/",
+      "stats_portal": "https://minpromtorg.gov.ru/opendata/",
+      "role": "Отраслевое регулирование промышленности и торговли; ГИСП; открытые реестры промпродукции/лицензий; классическая статистика промпроизводства — у Росстата, не здесь",
+      "open_access": "да",
+      "api": "нет единого stats API; витрины ГИСП https://gisp.gov.ru/ (реестр продукции и др.)",
+      "formats": [
+        "CSV",
+        "HTML"
+      ],
+      "etl_difficulty_1_5": 2,
+      "volume_estimate": "14 наборов OD на сайте (листинг 2026-07-19); крупнейшие по скачиваниям — реестр лек. лицензий и реестр российской промпродукции",
+      "notes": "Раздел «Статистика» на EN-странице есть как пункт меню, отдельный path /openministry/stat/ с пробы отдал server error. Индекс промпроизводства — Росстат/ЕМИСС, не Минпромторг.",
+      "datasets": [
+        {
+          "family": "Реестр российской промышленной продукции",
+          "frequency": "D",
+          "history_from": null,
+          "history_to": "2026-07-17",
+          "unit": "записи реестра",
+          "decomposition": "продукция / производители",
+          "format": "CSV",
+          "url": "https://minpromtorg.gov.ru/opendata/1000000012-ReestrProducts",
+          "notes": "Файл data-20260717-structure-20210405.csv; также UI https://gisp.gov.ru/pp719v2/pub/prod/."
+        },
+        {
+          "family": "Производители российской промышленной продукции",
+          "frequency": "D",
+          "history_from": null,
+          "history_to": "2026-07-17",
+          "unit": "организации",
+          "decomposition": "организации-производители",
+          "format": "CSV",
+          "url": "https://minpromtorg.gov.ru/opendata/1000000011-ReestrOrgs",
+          "notes": "data-20260717-structure-20210405.csv."
+        },
+        {
+          "family": "Заключения о подтверждении производства промышленной продукции на территории РФ",
+          "frequency": "D",
+          "history_from": null,
+          "history_to": "2026-07-17",
+          "unit": "заключения",
+          "decomposition": null,
+          "format": "CSV",
+          "url": "https://minpromtorg.gov.ru/opendata/1000000010-resolutions",
+          "notes": "Актуализация CSV 17.07.2026."
+        },
+        {
+          "family": "Меры поддержки ГИСП",
+          "frequency": "D",
+          "history_from": null,
+          "history_to": "2026-07-17",
+          "unit": "меры поддержки",
+          "decomposition": null,
+          "format": "CSV",
+          "url": "https://minpromtorg.gov.ru/opendata/1000000001-meripoddergki",
+          "notes": "Открытый набор мер поддержки."
+        },
+        {
+          "family": "Реестр лицензий на производство лекарственных средств",
+          "frequency": "D",
+          "history_from": null,
+          "history_to": "2026-07-18",
+          "unit": "лицензии",
+          "decomposition": null,
+          "format": "CSV",
+          "url": "https://minpromtorg.gov.ru/opendata/0000000001-LicenziLekarstvaMinpromtorg",
+          "notes": "Высокая востребованность на листинге OD."
+        },
+        {
+          "family": "Лицензии и заявления в сфере внешней торговли",
+          "frequency": "D",
+          "history_from": null,
+          "history_to": "2026-07-17",
+          "unit": "лицензии / заявления",
+          "decomposition": "выданные / поданные",
+          "format": "CSV",
+          "url": "https://minpromtorg.gov.ru/opendata/7705596339-ais_vti_license",
+          "notes": "Пара: ais_vti_license + ais_vti_request."
+        },
+        {
+          "family": "Сведения об оказании Минпромторгом России государственных услуг",
+          "frequency": "Y",
+          "history_from": null,
+          "history_to": "2026-07-18",
+          "unit": "услуги (статистика оказания)",
+          "decomposition": null,
+          "format": "CSV",
+          "url": "https://minpromtorg.gov.ru/opendata/7705596339-GosuslugiStatMinpromtorg",
+          "notes": "Адм. статистика услуг."
+        },
+        {
+          "family": "Перечень респондентов ФСН № 2-ЛЕК (пром) — производство лексредств",
+          "frequency": "Y",
+          "history_from": "2026-01-12",
+          "history_to": "2026-01-12",
+          "unit": "респонденты",
+          "decomposition": null,
+          "format": "CSV",
+          "url": "https://minpromtorg.gov.ru/opendata/123435633256662263222",
+          "notes": "Не сами данные производства, а перечень респондентов для сбора 2-ЛЕК (пром)."
+        }
+      ]
+    },
+    {
+      "code": "minenergo",
+      "full_name": "Министерство энергетики Российской Федерации",
+      "official_site": "https://minenergo.gov.ru/",
+      "stats_portal": "https://minenergo.gov.ru/open-data/open-data-page",
+      "role": "Отраслевая политика ТЭК; публикация открытых данных (выработка электроэнергии, тепло, нормативы потерь УВС, индикаторы ГП «Развитие энергетики») и аналитических отчётов/коллегий",
+      "open_access": "да",
+      "api": "нет",
+      "formats": [
+        "CSV",
+        "PDF"
+      ],
+      "etl_difficulty_1_5": 3,
+      "volume_estimate": "39 наборов открытых данных на странице OD; отраслевые числовые ряды в OD часто однолетние срезы (напр. выработка 2021); длинные ряды — в PDF-отчётах коллегий, не в CSV API",
+      "notes": "Подтверждено WebFetch 2026-07-19: реестр OD + наборы CSV (выработка электроэнергии 2021, производство тепловой энергии, нормативы потерь УВС 2021, индикаторы ГП «Развитие энергетики», СиПР ЕЭС и др.). Раздел /activity/statistic с пробы — тонкая JS-оболочка без данных. Макродобыча нефти/газа в открытых CSV как длинный ряд не найдена — цифры в презентациях коллегий (PDF).",
+      "datasets": [
+        {
+          "family": "Объём выработки электроэнергии в России",
+          "frequency": "Y",
+          "history_from": "2021",
+          "history_to": "2021",
+          "unit": "млрд кВт·ч (ожидаемо; уточнять в CSV)",
+          "decomposition": null,
+          "format": "CSV",
+          "url": "https://minenergo.gov.ru/open-data/open-data-page",
+          "notes": "Набор перечислен на странице OD как «Объем выработки электроэнергии в России (2021)». Прямую download-ссылку из HTML SPA с пробы не извлекли — брать через UI страницы."
+        },
+        {
+          "family": "Производство тепловой энергии",
+          "frequency": "Y",
+          "history_from": null,
+          "history_to": null,
+          "unit": "Гкал / иной (в CSV)",
+          "decomposition": null,
+          "format": "CSV",
+          "url": "https://minenergo.gov.ru/open-data/open-data-page",
+          "notes": "Набор «Производство тепловой энергии» в списке OD."
+        },
+        {
+          "family": "Нормативы технологических потерь углеводородного сырья при добыче",
+          "frequency": "Y",
+          "history_from": "2021",
+          "history_to": "2021",
+          "unit": "нормативы потерь",
+          "decomposition": "месторождения / схемы разработки (по набору)",
+          "format": "CSV",
+          "url": "https://minenergo.gov.ru/open-data/open-data-page",
+          "notes": "«Нормативы технологических потерь углеводородного сырья… (2021)»."
+        },
+        {
+          "family": "Сведения о достижении показателей (индикаторов) ГП РФ «Развитие энергетики»",
+          "frequency": "Y",
+          "history_from": null,
+          "history_to": null,
+          "unit": "индикаторы ГП",
+          "decomposition": "по индикаторам программы",
+          "format": "CSV",
+          "url": "https://minenergo.gov.ru/open-data/open-data-page",
+          "notes": "Набор в списке OD."
+        },
+        {
+          "family": "Сведения, содержащиеся в Схеме и программе развития ЕЭС России",
+          "frequency": "Y",
+          "history_from": null,
+          "history_to": null,
+          "unit": "показатели СиПР",
+          "decomposition": "ЕЭС / объекты",
+          "format": "CSV",
+          "url": "https://minenergo.gov.ru/open-data/open-data-page",
+          "notes": "Планово-программный набор, не оперативная статистика СО ЕЭС."
+        },
+        {
+          "family": "Отчёты об исполнении инвестиционных программ / вводов ОС субъектов электроэнергетики",
+          "frequency": "Y",
+          "history_from": null,
+          "history_to": null,
+          "unit": "инвестиции / вводы",
+          "decomposition": "субъекты электроэнергетики",
+          "format": "CSV",
+          "url": "https://minenergo.gov.ru/open-data/open-data-page",
+          "notes": "Два набора в OD: отчёты об исполнении инвестпрограмм и отчёты о вводах ОС."
+        },
+        {
+          "family": "Аналитика коллегии / отчёты о результатах ТЭК (нефть, газ, уголь, электроэнергия)",
+          "frequency": "Y",
+          "history_from": "2020",
+          "history_to": "2025",
+          "unit": "млн т; млрд м³; млрд кВт·ч; ГВт",
+          "decomposition": "виды энергоресурсов; типы генерации (в презентациях)",
+          "format": "PDF",
+          "url": "https://minenergo.gov.ru/upload/iblock/24f/w5di5x0ijq6p6wjy4haccvptagofymwr/Prezentatsia_Kollegia_Minenergo.pdf",
+          "notes": "Подтверждённый PDF коллегии: добыча нефти 2025 = 511,5 млн т; выработка 1183,9 млрд кВт·ч; мощность на 01.01.2026 = 270,3 ГВт. Также отчётные PDF (напр. Tom_1 за 2020). Не machine-readable time-series."
+        },
+        {
+          "family": "Реестр наборов открытых данных Минэнерго",
+          "frequency": "Y",
+          "history_from": null,
+          "history_to": null,
+          "unit": "n/a",
+          "decomposition": null,
+          "format": "CSV",
+          "url": "https://minenergo.gov.ru/open-data/open-data-page",
+          "notes": "На странице: «Реестр наборов… Скачать (12 КБ) .CSV»; всего наборов 39."
+        }
+      ]
+    }
+  ]
+}

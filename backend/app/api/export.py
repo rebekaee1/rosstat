@@ -3,10 +3,15 @@
 Генерация файла перенесена с клиента на бэкенд: это (1) даёт жёсткий лимит
 гостевых скачиваний, (2) снимает ~430 КБ xlsx из фронтового бандла. Трансформы
 рядов (режимы графика) остаются на клиенте — сюда приходят уже готовые точки.
+
+Числа в CSV — через ``display.format_number_ru`` (русская запятая). В шапке
+файла — название, единица, частота, страна, источник и дата выгрузки.
 """
 import io
 import logging
+from datetime import datetime
 from urllib.parse import quote
+from zoneinfo import ZoneInfo
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from pydantic import BaseModel, field_validator
@@ -17,11 +22,13 @@ from app.database import get_db
 from app.models import User
 from app.security.auth import get_optional_user
 from app.security import download_quota as dq
+from app.services.display import format_number_ru, today_msk
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/export", tags=["export"])
 
 _MAX_POINTS = 100_000
+_MSK = ZoneInfo("Europe/Moscow")
 
 
 class ExportPoint(BaseModel):
@@ -30,11 +37,30 @@ class ExportPoint(BaseModel):
     forecast: float | None = None
 
 
+class ExportMeta(BaseModel):
+    """Опциональные поля provenance для шапки файла."""
+
+    indicator_name: str | None = None
+    unit: str | None = None
+    frequency: str | None = None
+    country: str | None = None
+    source: str | None = None
+    source_url: str | None = None
+
+
 class ExportIn(BaseModel):
     format: str
     filename: str
     value_label: str = "Значение"
     points: list[ExportPoint]
+    # Плоские поля (удобно для клиента) + вложенный meta.
+    indicator_name: str | None = None
+    unit: str | None = None
+    frequency: str | None = None
+    country: str | None = None
+    source: str | None = None
+    source_url: str | None = None
+    meta: ExportMeta | None = None
 
     @field_validator("format")
     @classmethod
@@ -91,14 +117,73 @@ def _split(points: list[ExportPoint]):
     return facts, forecasts
 
 
-def _build_xlsx(facts, forecasts, value_label: str) -> bytes:
+def _resolve_meta(body: ExportIn | None = None, **kwargs) -> dict[str, str]:
+    """Собрать поля шапки из body / kwargs."""
+    m = (body.meta if body is not None else None) or ExportMeta()
+    get = lambda k: (
+        kwargs.get(k)
+        or (getattr(body, k, None) if body is not None else None)
+        or getattr(m, k, None)
+        or ""
+    )
+    exported_at = datetime.now(_MSK).strftime("%Y-%m-%d %H:%M %Z")
+    return {
+        "indicator_name": str(get("indicator_name") or "").strip(),
+        "unit": str(get("unit") or "").strip(),
+        "frequency": str(get("frequency") or "").strip(),
+        "country": str(get("country") or "").strip(),
+        "source": str(get("source") or "").strip(),
+        "source_url": str(get("source_url") or "").strip(),
+        "exported_at": exported_at,
+        "exported_date": today_msk().isoformat(),
+    }
+
+
+def _meta_rows(meta: dict[str, str], value_label: str) -> list[tuple[str, str]]:
+    """Пары (поле, значение) для шапки файла."""
+    name = meta.get("indicator_name") or value_label or "Значение"
+    rows: list[tuple[str, str]] = [
+        ("Показатель", name),
+    ]
+    if meta.get("unit"):
+        rows.append(("Единица", meta["unit"]))
+    if meta.get("frequency"):
+        rows.append(("Частота", meta["frequency"]))
+    if meta.get("country"):
+        rows.append(("Страна", meta["country"]))
+    source = meta.get("source") or "Евростат"
+    rows.append(("Источник", source))
+    if meta.get("source_url"):
+        rows.append(("URL источника", meta["source_url"]))
+    rows.append(("Дата выгрузки", meta.get("exported_at") or meta.get("exported_date") or ""))
+    return rows
+
+
+def _format_csv_value(val: float | None) -> str:
+    if val is None:
+        return ""
+    return format_number_ru(val)
+
+
+def _build_xlsx(
+    facts,
+    forecasts,
+    value_label: str,
+    meta: dict[str, str] | None = None,
+) -> bytes:
     from openpyxl import Workbook
 
+    meta = meta or _resolve_meta()
     wb = Workbook()
-    ws = wb.active
-    ws.title = "Факт"
+    ws_meta = wb.active
+    ws_meta.title = "Описание"
+    for label, value in _meta_rows(meta, value_label):
+        ws_meta.append([label, value])
+
+    ws = wb.create_sheet("Факт", 1)
     ws.append(["Дата", value_label])
     for date, val in facts:
+        # Excel хранит число нативно; подпись единицы — в «Описание».
         ws.append([date, val])
     if forecasts:
         ws2 = wb.create_sheet("Прогноз")
@@ -110,12 +195,23 @@ def _build_xlsx(facts, forecasts, value_label: str) -> bytes:
     return buf.getvalue()
 
 
-def _build_csv(facts, forecasts, value_label: str) -> bytes:
-    lines = [";".join(["Дата", value_label, "Тип"])]
+def _build_csv(
+    facts,
+    forecasts,
+    value_label: str,
+    meta: dict[str, str] | None = None,
+) -> bytes:
+    meta = meta or _resolve_meta()
+    lines: list[str] = []
+    for label, value in _meta_rows(meta, value_label):
+        # экранируем ';' в значениях
+        safe = str(value).replace(";", ",")
+        lines.append(f"# {label};{safe}")
+    lines.append(";".join(["Дата", value_label, "Тип"]))
     for date, val in facts:
-        lines.append(";".join([date, "" if val is None else f"{val:.4f}", "факт"]))
+        lines.append(";".join([date, _format_csv_value(val), "факт"]))
     for date, val in forecasts:
-        lines.append(";".join([date, "" if val is None else f"{val:.4f}", "прогноз"]))
+        lines.append(";".join([date, _format_csv_value(val), "прогноз"]))
     return ("\ufeff" + "\n".join(lines)).encode("utf-8")
 
 
@@ -168,11 +264,15 @@ async def export_table(
     # Полный период истории — бонус за регистрацию: гостю обрезаем глубину.
     points = body.points if user is not None else _limit_history(body.points)
     facts, forecasts = _split(points)
+    meta = _resolve_meta(body)
+    # Если клиент не передал имя — вытащим из value_label.
+    if not meta.get("indicator_name") and body.value_label:
+        meta["indicator_name"] = body.value_label
     if body.format == "xlsx":
-        data = _build_xlsx(facts, forecasts, body.value_label)
+        data = _build_xlsx(facts, forecasts, body.value_label, meta)
         media = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     else:
-        data = _build_csv(facts, forecasts, body.value_label)
+        data = _build_csv(facts, forecasts, body.value_label, meta)
         media = "text/csv; charset=utf-8"
 
     resp = Response(content=data, media_type=media)

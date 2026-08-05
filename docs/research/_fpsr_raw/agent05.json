@@ -1,0 +1,541 @@
+{
+  "agent": "05",
+  "researched_at": "2026-07-19",
+  "method": "WebSearch + WebFetch/curl of official .gov.ru pages; only verified facts",
+  "subjects": [
+    {
+      "code": "mcx",
+      "full_name": "Министерство сельского хозяйства Российской Федерации (Минсельхоз России)",
+      "official_site": "https://mcx.gov.ru/",
+      "stats_portal": "http://opendata.mcx.ru/opendata/",
+      "role": "ФОИВ; распорядитель отраслевых открытых данных АПК; макропоказатели АПК в основном публикует Росстат",
+      "open_access": "yes",
+      "api": "каталог list.xml (не REST time-series API); наборы — XML по прямым URL",
+      "formats": [
+        "XML",
+        "XSD"
+      ],
+      "etl_difficulty_1_5": 3,
+      "volume_estimate": "37 реестров/наборов на opendata.mcx.ru; смесь реестров и отраслевых срезов",
+      "notes": "Подтверждён каталог http://opendata.mcx.ru/opendata/list.xml (37 item, format XML). Публичного JSON/SDMX API не обнаружено.",
+      "datasets": [
+        {
+          "family": "Каталог открытых данных Минсельхоза (list.xml)",
+          "frequency": "irregular",
+          "history_from": "2017",
+          "history_to": "2026",
+          "unit": "n/a",
+          "decomposition": "37 наборов",
+          "format": "XML",
+          "url": "http://opendata.mcx.ru/opendata/list.xml",
+          "notes": "standardversion gosmonitor 3.0; страница http://opendata.mcx.ru/opendata/"
+        },
+        {
+          "family": "Посевная площадь (весенний учёт, хозяйства всех категорий)",
+          "frequency": "Y",
+          "history_from": "2017",
+          "history_to": "2017",
+          "unit": "площадь (по структуре набора)",
+          "decomposition": "РФ",
+          "format": "XML",
+          "url": "http://opendata.mcx.ru/opendata/7708075454-posevzemlivesna/",
+          "notes": "meta created/modified 2017-11-03; последующих версий в meta нет"
+        },
+        {
+          "family": "Производство продукции промышленного рыбоводства (аквакультура)",
+          "frequency": "irregular",
+          "history_from": "2018",
+          "history_to": "2023",
+          "unit": "по структуре набора",
+          "decomposition": "отраслевой срез",
+          "format": "XML",
+          "url": "http://opendata.mcx.ru/opendata/7708075454-productryiba/",
+          "notes": "версии до data-20230517; modified 2023-05-17"
+        },
+        {
+          "family": "Ход сенокошения и заготовки кормов",
+          "frequency": "irregular",
+          "history_from": "2018",
+          "history_to": "2023",
+          "unit": "по структуре набора",
+          "decomposition": "сезонные срезы",
+          "format": "XML",
+          "url": "http://opendata.mcx.ru/opendata/7708075454-senokos/",
+          "notes": "много версий data-20180809 … data-20230202"
+        },
+        {
+          "family": "Наличие мелиорированных земель",
+          "frequency": "Y",
+          "history_from": "2017",
+          "history_to": "2022",
+          "unit": "по структуре набора",
+          "decomposition": "РФ",
+          "format": "XML",
+          "url": "http://opendata.mcx.ru/opendata/7708075454-meliorzemli/",
+          "notes": "версии до data-20220511"
+        },
+        {
+          "family": "Реализация племенного молодняка КРС",
+          "frequency": "Y",
+          "history_from": "2018",
+          "history_to": "2025",
+          "unit": "по структуре набора",
+          "decomposition": "племенное животноводство",
+          "format": "XML",
+          "url": "http://opendata.mcx.ru/opendata/7708075454-plemennoymolodnyak/",
+          "notes": "latest data-20260206; valid 2025-01-01"
+        },
+        {
+          "family": "Племенное маточное поголовье (организации ГПР)",
+          "frequency": "Y",
+          "history_from": "2018",
+          "history_to": "2025",
+          "unit": "головы (по структуре)",
+          "decomposition": "организации ГПР",
+          "format": "XML",
+          "url": "http://opendata.mcx.ru/opendata/7708075454-matochnoepogolovie/",
+          "notes": "latest data-20260206"
+        },
+        {
+          "family": "Расходы бюджетов за счёт субсидий (АПК)",
+          "frequency": "Y",
+          "history_from": "2018",
+          "history_to": "2026",
+          "unit": "руб. (по структуре)",
+          "decomposition": "федеральный + субъекты РФ",
+          "format": "XML",
+          "url": "http://opendata.mcx.ru/opendata/7708075454-rashodisub/",
+          "notes": "latest data-20260316; valid 2026-01-01"
+        },
+        {
+          "family": "Реестры (пестициды, агрохимикаты, виноградники, органика, ФГИС Зерно и др.)",
+          "frequency": "irregular",
+          "history_from": null,
+          "history_to": null,
+          "unit": "записи реестра",
+          "decomposition": "по объекту учёта",
+          "format": "XML",
+          "url": "http://opendata.mcx.ru/opendata/",
+          "notes": "Примеры id: pestitsidy, agrokhimikaty, vinogradniki, organicprod, sdiz. Реестры, не макроряды."
+        }
+      ]
+    },
+    {
+      "code": "rostransnadzor",
+      "full_name": "Федеральная служба по надзору в сфере транспорта (Ространснадзор)",
+      "official_site": "https://rostransnadzor.gov.ru/",
+      "stats_portal": "https://rostransnadzor.gov.ru/opendata",
+      "role": "надзор/лицензирование; не основной публикатор объёмных рядов перевозок",
+      "open_access": "yes",
+      "api": "нет (прямые CSV)",
+      "formats": [
+        "CSV",
+        "PDF",
+        "DOCX"
+      ],
+      "etl_difficulty_1_5": 2,
+      "volume_estimate": "4 набора ОД + серия годовых докладов PDF/DOCX",
+      "notes": "Объёмной статистики перевозок на сайте нет — это Росстат/Росавиация/Росморречфлот/Минтранс.",
+      "datasets": [
+        {
+          "family": "Реестр лицензий",
+          "frequency": "irregular",
+          "history_from": "2015",
+          "history_to": "2024",
+          "unit": "записи реестра",
+          "decomposition": "по видам лицензий",
+          "format": "CSV",
+          "url": "https://rostransnadzor.gov.ru/opendata/6",
+          "notes": "7714549751-reestrlicenziy; data-20240507-structure-20230427.csv"
+        },
+        {
+          "family": "Реестр информационных систем",
+          "frequency": "irregular",
+          "history_from": "2015",
+          "history_to": "2024",
+          "unit": "записи",
+          "decomposition": "ИС службы",
+          "format": "CSV",
+          "url": "https://rostransnadzor.gov.ru/opendata/4",
+          "notes": "7714549751-reestrinformsystem"
+        },
+        {
+          "family": "Сводный план плановых КНМ",
+          "frequency": "Y",
+          "history_from": null,
+          "history_to": "2026",
+          "unit": "мероприятия",
+          "decomposition": "план проверок",
+          "format": "CSV",
+          "url": "https://rostransnadzor.gov.ru/opendata/5",
+          "notes": "7714549751-planproverok; data_20260422_tzp.csv"
+        },
+        {
+          "family": "Вакантные должности госслужбы",
+          "frequency": "irregular",
+          "history_from": "2017",
+          "history_to": "2024",
+          "unit": "вакансии",
+          "decomposition": "кадры",
+          "format": "CSV",
+          "url": "https://rostransnadzor.gov.ru/opendata/2",
+          "notes": "не экономический индикатор"
+        },
+        {
+          "family": "Годовые доклады о лицензировании",
+          "frequency": "Y",
+          "history_from": "2015",
+          "history_to": "2025",
+          "unit": "показатели лицензирования (в тексте)",
+          "decomposition": "по видам деятельности",
+          "format": "PDF/DOCX",
+          "url": "https://rostransnadzor.gov.ru/deyatelnost/82",
+          "notes": "Материалы 2015–2025 подтверждены на странице"
+        },
+        {
+          "family": "Доклады о госконтроле (надзоре) в сфере транспорта и ТБ",
+          "frequency": "Y",
+          "history_from": null,
+          "history_to": null,
+          "unit": "показатели контроля (в PDF)",
+          "decomposition": "по видам контроля",
+          "format": "PDF",
+          "url": "https://rostransnadzor.gov.ru/deyatelnost/83",
+          "notes": "Серия документов; годы history_from не зафиксированы без открытия каждого файла"
+        },
+        {
+          "family": "Обзоры практики рассмотрения жалоб",
+          "frequency": "Q",
+          "history_from": "2024",
+          "history_to": "2025",
+          "unit": "число жалоб (в обзорах)",
+          "decomposition": "квартальные обзоры",
+          "format": "PDF/HTML",
+          "url": "https://rostransnadzor.gov.ru/deyatelnost/144",
+          "notes": "I–IV кв. 2024 и 2025 на странице"
+        }
+      ]
+    },
+    {
+      "code": "favt",
+      "full_name": "Федеральное агентство воздушного транспорта (Росавиация)",
+      "official_site": "https://favt.gov.ru/",
+      "stats_portal": "https://favt.gov.ru/stat-date/",
+      "role": "субъект ОСУ по п. 33.2 ФПСР (форма 12-ГА); сайт + ОД CSV + ЕМИСС",
+      "open_access": "yes",
+      "api": "нет REST; CSV + HTML; агрегаты в ЕМИСС",
+      "formats": [
+        "HTML",
+        "CSV"
+      ],
+      "etl_difficulty_1_5": 2,
+      "volume_estimate": "десятки CSV в ОД + живые HTML-сводки; месячный CSV пассажиров 2001–2020; актуальные годы в HTML/ЕМИСС",
+      "notes": "Живая таблица 12-ГА: https://www.favt.gov.ru/dejatelnost-vozdushnye-perevozki-stat-dannie/ (на 27.01.2025, Янв–Дек 2023/2024). CSV ОД по meta — до дек.2020 (stale). ЕМИСС 37020/37021.",
+      "datasets": [
+        {
+          "family": "Основные показатели ГА (форма №12-ГА), живая таблица",
+          "frequency": "M",
+          "history_from": null,
+          "history_to": "2024",
+          "unit": "пасс.; тыс.пасс.км; т; тыс.ткм; %",
+          "decomposition": "всего / регулярные / нерегулярные; МВЛ / ВВЛ",
+          "format": "HTML",
+          "url": "https://www.favt.gov.ru/dejatelnost-vozdushnye-perevozki-stat-dannie/",
+          "notes": "Hub: https://favt.gov.ru/stat-date/ (перевозки, аэропорты, интенсивность ВД, авиаГСМ)"
+        },
+        {
+          "family": "Перевозки пассажиров ГА (ОД CSV)",
+          "frequency": "M",
+          "history_from": "2001",
+          "history_to": "2020",
+          "unit": "чел.",
+          "decomposition": "МВЛ / ДЗ / СНГ / внутренние / местные / итого",
+          "format": "CSV",
+          "url": "https://favt.gov.ru/opendata/7714549744-statpassga/",
+          "notes": "Файл data-20210201-structure-20151111.csv проверен: строки с 2001 по 2020. meta modified 01.02.2021. Каталог list.csv: https://favt.gov.ru/opendata/list.csv"
+        },
+        {
+          "family": "Перевозки грузов и почты ГА (ОД CSV)",
+          "frequency": "M",
+          "history_from": null,
+          "history_to": "2020",
+          "unit": "т",
+          "decomposition": "МВЛ / ДЗ / СНГ / внутренние / местные",
+          "format": "CSV",
+          "url": "https://favt.gov.ru/opendata/7714549744-statgruzga/",
+          "notes": "meta: актуализация на декабрь 2020"
+        },
+        {
+          "family": "Пассажирооборот ГА (ОД CSV)",
+          "frequency": "M",
+          "history_from": null,
+          "history_to": "2020",
+          "unit": "тыс.пасс.км",
+          "decomposition": "МВЛ / ДЗ / СНГ / внутренние / местные",
+          "format": "CSV",
+          "url": "https://favt.gov.ru/opendata/7714549744-statpassobga/",
+          "notes": "ЕМИСС: https://www.fedstat.ru/indicator/37020"
+        },
+        {
+          "family": "Тоннокилометраж / грузооборот / занятость кресел / комм. загрузка / самолёто-км / число ВС / обслуживание пассажиров",
+          "frequency": "M",
+          "history_from": null,
+          "history_to": "2020",
+          "unit": "смешанные",
+          "decomposition": "как в паспортах",
+          "format": "CSV",
+          "url": "https://favt.gov.ru/opendata/",
+          "notes": "ids: stattonkilomga, statgruzoborga, statpasskresga, statkomzagruzga, statsamkilomga, statkolsudga, statobslpassga"
+        },
+        {
+          "family": "Объёмы перевозок пассажиров через аэропорты РФ",
+          "frequency": "M",
+          "history_from": null,
+          "history_to": "2020",
+          "unit": "чел.",
+          "decomposition": "аэропорты × МВЛ/ВВЛ",
+          "format": "CSV",
+          "url": "https://favt.gov.ru/opendata/7714549744-statperevaeroportpas/",
+          "notes": "meta created 02.11.2018; data до дек.2020"
+        },
+        {
+          "family": "Объёмы перевозок грузов через аэропорты РФ",
+          "frequency": "M",
+          "history_from": null,
+          "history_to": "2020",
+          "unit": "т",
+          "decomposition": "аэропорты × МВЛ/ВВЛ",
+          "format": "CSV",
+          "url": "https://favt.gov.ru/opendata/7714549744-statperevaeroportgr/",
+          "notes": "аналогично пассажирскому набору"
+        },
+        {
+          "family": "ЕМИСС: пассажирооборот воздушного транспорта",
+          "frequency": "M",
+          "history_from": null,
+          "history_to": null,
+          "unit": "пасс.км",
+          "decomposition": "по методологии ЕМИСС",
+          "format": "ЕМИСС",
+          "url": "https://www.fedstat.ru/indicator/37020",
+          "notes": "глубина истории с fedstat не скачана (таймаут) — годы не выдуманы"
+        },
+        {
+          "family": "ЕМИСС: перевозки грузов воздушным транспортом",
+          "frequency": "M",
+          "history_from": null,
+          "history_to": null,
+          "unit": "т",
+          "decomposition": "по методологии ЕМИСС",
+          "format": "ЕМИСС",
+          "url": "https://www.fedstat.ru/indicator/37021",
+          "notes": "форма 12-ГА"
+        },
+        {
+          "family": "Сводки в бюллетене Минтранса «Транспорт России»",
+          "frequency": "Q",
+          "history_from": "2023",
+          "history_to": "2025",
+          "unit": "млн пасс. / др.",
+          "decomposition": "воздушный транспорт в ТК",
+          "format": "PDF",
+          "url": "https://www.mintrans.gov.ru/ministry/results/180/documents",
+          "notes": "В PDF: данные Росавиации (п. 33.2 ФПСР). Выпуски 2023–2025 на странице."
+        }
+      ]
+    },
+    {
+      "code": "rosavtodor",
+      "full_name": "Федеральное дорожное агентство (Росавтодор)",
+      "official_site": "https://rosavtodor.gov.ru/",
+      "stats_portal": "https://rosavtodor.gov.ru/opendata",
+      "role": "управление фед. дорожной сетью; публикация ОД CSV и показателей нацпроекта",
+      "open_access": "partial",
+      "api": "нет; CSV по URL (часть наборов — ЕСИА)",
+      "formats": [
+        "CSV",
+        "HTML"
+      ],
+      "etl_difficulty_1_5": 3,
+      "volume_estimate": "~60 наборов ОД (реестры ФКУ/дорог) + 1 ключевой ФПСР-срез + дашборд нацпроекта",
+      "notes": "Каталог https://rosavtodor.gov.ru/opendata. Часть паспортов (dorogiavtodora, svoddor) редиректят на esia.gosuslugi.ru. Смежный CSV протяжённости у Минтранса: https://mintrans.gov.ru/opendata/7705851331-lengthroads (2017).",
+      "datasets": [
+        {
+          "family": "Статистика ФПСР: дороги общего пользования и сооружения",
+          "frequency": "Y",
+          "history_from": "2024",
+          "history_to": "2024",
+          "unit": "км / тыс.м² покрытия",
+          "decomposition": "субъекты РФ; фед./рег.; типы покрытия",
+          "format": "CSV",
+          "url": "https://rosavtodor.gov.ru/opendata/7717509757-statdg",
+          "notes": "«по состоянию на 01.01.2024»; first publish 29.03.2024; файл data-2024-03-29…csv скачан"
+        },
+        {
+          "family": "Классификация автомобильных дорог федерального значения",
+          "frequency": "irregular",
+          "history_from": "2015",
+          "history_to": "2025",
+          "unit": "перечень дорог",
+          "decomposition": "учётный номер / наименование",
+          "format": "CSV",
+          "url": "https://rosavtodor.gov.ru/opendata/7717509757-klassifikator",
+          "notes": "версии 2015–2025-07-07"
+        },
+        {
+          "family": "Перечни фед. дорог по ФКУ Упрдор",
+          "frequency": "irregular",
+          "history_from": null,
+          "history_to": "2026",
+          "unit": "участки",
+          "decomposition": "по ФКУ",
+          "format": "CSV",
+          "url": "https://rosavtodor.gov.ru/opendata",
+          "notes": "много наборов 7717509757-fku*; реестры, не трафик"
+        },
+        {
+          "family": "Временные ограничения движения по фед. дорогам",
+          "frequency": "irregular",
+          "history_from": "2018",
+          "history_to": "2024",
+          "unit": "события ограничений",
+          "decomposition": "по участкам",
+          "format": "CSV",
+          "url": "https://rosavtodor.gov.ru/opendata/7717509757-vremogran",
+          "notes": "first publish 23.01.2018"
+        },
+        {
+          "family": "Дороги, переданные в доверительное управление ГК «Автодор»",
+          "frequency": "irregular",
+          "history_from": null,
+          "history_to": null,
+          "unit": "участки",
+          "decomposition": "Автодор",
+          "format": "CSV",
+          "url": "https://rosavtodor.gov.ru/opendata/7717509757-dorogiavtodora",
+          "notes": "в каталоге есть; паспорт уходит на ЕСИА — CSV в открытом виде не подтверждён"
+        },
+        {
+          "family": "Показатели нацпроекта «Инфраструктура для жизни» / дороги",
+          "frequency": "Y",
+          "history_from": null,
+          "history_to": "2025",
+          "unit": "% нормативного состояния; объекты",
+          "decomposition": "рег./местная сеть; опорная сеть; агломерации",
+          "format": "HTML",
+          "url": "https://dorogistrany.ru/home/statistics",
+          "notes": "дашборд с факт/план 2025; API не найден"
+        }
+      ]
+    },
+    {
+      "code": "morflot",
+      "full_name": "Федеральное агентство морского и речного транспорта (Росморречфлот)",
+      "official_site": "https://morflot.gov.ru/",
+      "stats_portal": "https://morflot.gov.ru/glavnaya/otkryitoe_agentstvo/of_stat_info/",
+      "role": "субъект ФПСР по морскому/ВВП транспорту; сбор 1-море/1-река; ОСИ в ЕМИСС",
+      "open_access": "partial",
+      "api": "нет собственного; ОСИ через https://www.fedstat.ru/organizations/",
+      "formats": [
+        "ЕМИСС",
+        "PDF",
+        "DOCX",
+        "XLSX",
+        "HTML"
+      ],
+      "etl_difficulty_1_5": 4,
+      "volume_estimate": "ключевые месячные ряды в ЕМИСС; на сайте — методология/формы; детальная портовая выгрузка ограничена",
+      "notes": "of_stat_info явно указывает ЕМИСС. Есть ФГБУ «ИАСЦ». SSL morflot.gov.ru с ошибкой сертификата. Раздел ОД — планы/приказы, не time-series. Сводки также в бюллетене Минтранса.",
+      "datasets": [
+        {
+          "family": "Официальная статистическая информация (указатель → ЕМИСС)",
+          "frequency": "M",
+          "history_from": null,
+          "history_to": null,
+          "unit": "см. ЕМИСС",
+          "decomposition": "морской / ВВП",
+          "format": "ЕМИСС",
+          "url": "https://morflot.gov.ru/glavnaya/otkryitoe_agentstvo/of_stat_info/",
+          "notes": "Ссылка на fedstat.ru/organizations/; перечень респондентов XLSX (актуализация 22.07.2025); приказы Росстата по формам"
+        },
+        {
+          "family": "ЕМИСС: объём перевозок грузов на морском транспорте",
+          "frequency": "M",
+          "history_from": null,
+          "history_to": null,
+          "unit": "тыс. т",
+          "decomposition": "по методологии формы",
+          "format": "ЕМИСС",
+          "url": "https://www.fedstat.ru/indicator/57671",
+          "notes": "п. 35.14 ФПСР; глубина ряда не скачана"
+        },
+        {
+          "family": "ЕМИСС: пассажиры морского транспорта",
+          "frequency": "M",
+          "history_from": null,
+          "history_to": null,
+          "unit": "чел.",
+          "decomposition": "морской транспорт",
+          "format": "ЕМИСС",
+          "url": "https://www.fedstat.ru/indicator/57665",
+          "notes": "также 57666 — пассажиры ВВП"
+        },
+        {
+          "family": "Формы ФСН 1-море / 1-река (сбор первички)",
+          "frequency": "M",
+          "history_from": "2025",
+          "history_to": null,
+          "unit": "тыс. т; тыс. т·км; пасс.",
+          "decomposition": "грузы/пассажиры; виды плавания",
+          "format": "DOCX (утверждение)",
+          "url": "https://morflot.gov.ru/glavnaya/otkryitoe_agentstvo/of_stat_info/",
+          "notes": "Приказ Росстата 26.12.2024 №685; респонденты → Росморречфлоту. Не публичный датасет."
+        },
+        {
+          "family": "Открытые данные Росморречфлота (раздел)",
+          "frequency": "irregular",
+          "history_from": null,
+          "history_to": null,
+          "unit": "n/a",
+          "decomposition": "планы ОД",
+          "format": "PDF",
+          "url": "https://morflot.gov.ru/glavnaya/otkryitoe_agentstvo/opendata/",
+          "notes": "приказы/планы 2024–2025; статистических CSV-рядов на странице нет"
+        },
+        {
+          "family": "Статистика госуслуг (архив)",
+          "frequency": "Y",
+          "history_from": "2014",
+          "history_to": "2016",
+          "unit": "число услуг",
+          "decomposition": "госуслуги",
+          "format": "PDF/DOCX",
+          "url": "https://morflot.gov.ru/deyatelnost/gosuslugi/o_gosudarstvennyih_uslugah/statisticheskie_i_analiticheskie_materialyi/",
+          "notes": "stat-2014…2016 — не перевозки"
+        },
+        {
+          "family": "Сводки в бюллетене Минтранса «Транспорт России»",
+          "frequency": "Q",
+          "history_from": "2023",
+          "history_to": "2025",
+          "unit": "млн т; млн пасс.; портовый грузооборот",
+          "decomposition": "морской / ВВП / порты",
+          "format": "PDF",
+          "url": "https://www.mintrans.gov.ru/ministry/results/180/documents",
+          "notes": "В PDF: данные Росморречфлота (пп. 35.10/35.14/35.15) и ЕМИСС"
+        },
+        {
+          "family": "Реестр морских портов (не time-series)",
+          "frequency": "irregular",
+          "history_from": null,
+          "history_to": null,
+          "unit": "записи",
+          "decomposition": "порты",
+          "format": "HTML",
+          "url": "https://morflot.gov.ru/deyatelnost/napravleniya_deyatelnosti/portyi_rf/reestr_mp/",
+          "notes": "реестр, не грузооборот"
+        }
+      ]
+    }
+  ]
+}

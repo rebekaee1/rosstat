@@ -36,6 +36,9 @@ const Account = lazy(() => import('./pages/Account'));
 const RegionsHome = lazy(() => import('./pages/RegionsHome'));
 const RegionProfile = lazy(() => import('./pages/RegionProfile'));
 const RegionIndicatorPage = lazy(() => import('./pages/RegionIndicatorPage'));
+const WorldHome = lazy(() => import('./pages/WorldHome'));
+const WorldCountry = lazy(() => import('./pages/WorldCountry'));
+const WorldIndicatorPage = lazy(() => import('./pages/WorldIndicatorPage'));
 const TodayHub = lazy(() => import('./pages/TodayHub'));
 const TodayIndicatorPage = lazy(() => import('./pages/TodayIndicatorPage'));
 const RegionRatingPage = lazy(() => import('./pages/RegionRatingPage'));
@@ -190,6 +193,9 @@ function AppRoutes() {
             <Route path="/regions/map/:code" element={<RegionsHome />} />
             <Route path="/region/:slug" element={<RegionProfile />} />
             <Route path="/region/:slug/:code" element={<RegionIndicatorPage />} />
+            <Route path="/world" element={<WorldHome />} />
+            <Route path="/world/:slug" element={<WorldCountry />} />
+            <Route path="/world/:slug/:code" element={<WorldIndicatorPage />} />
             <Route path="/admin/bi" element={<AdminBI />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

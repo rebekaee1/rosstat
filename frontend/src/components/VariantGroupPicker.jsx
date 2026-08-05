@@ -6,12 +6,20 @@ import { cn } from '../lib/format';
  *
  * `?mode=` берём из текущего URL (источник правды), чтобы при переходе на sibling
  * сохранялся выбранный «Режим инфляции» (месячная, недельная, …).
+ *
+ * `basePath` — префикс URL без кода: `/indicator` (дефолт) или `/world/{slug}`.
  */
-export default function VariantGroupPicker({ group, currentCode, embedded = false }) {
+export default function VariantGroupPicker({
+  group,
+  currentCode,
+  embedded = false,
+  basePath = '/indicator',
+}) {
   const [searchParams] = useSearchParams();
   if (!group) return null;
   const modeParam = searchParams.get('mode');
   const suffix = modeParam ? `?mode=${encodeURIComponent(modeParam)}` : '';
+  const root = (basePath || '/indicator').replace(/\/$/, '');
 
   const body = (
     <>
@@ -22,7 +30,7 @@ export default function VariantGroupPicker({ group, currentCode, embedded = fals
         {group.codes.map((item) => (
           <Link
             key={item.code}
-            to={`/indicator/${item.code}${suffix}`}
+            to={`${root}/${item.code}${suffix}`}
             preventScrollReset
             className={cn(
               'rounded-xl px-3 py-2 text-xs font-medium transition-colors',
