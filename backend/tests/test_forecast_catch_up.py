@@ -180,3 +180,53 @@ def test_catch_up_empty_forecasts_retrains_missing_only(monkeypatch):
     # Source first; derived skipped after cascade filled counts[2].
     assert filled == ["exports"]
     assert retrained == ["exports"]
+
+
+def test_retrain_recalculated_derived_covers_derived_from_source(monkeypatch):
+    """Регрессия 2026-08-05: после пересчёта движком derived_from_source ряды
+    тоже ретрейнятся — иначе их прогноз остаётся с точкой на последней дате
+    факта (source-каскад бежит ДО пересчёта, по stale-факту), и фронт рисует
+    свежий факт как прогноз (gdp-*-qoq/yoy)."""
+    from app.tasks import scheduler
+
+    retrained: list[str] = []
+
+    async def _fake_retrain(db, indicator, _retrain_chain=None):
+        retrained.append(indicator.code)
+
+    monkeypatch.setattr(scheduler, "retrain_indicator_forecast", _fake_retrain)
+
+    rows = [
+        SimpleNamespace(
+            code="gdp-qoq",
+            model_config_json={
+                "forecast_steps": 4,
+                "forecast_strategy": "derived_from_source",
+                "derived_forecast": {"source_code": "gdp-nominal", "operation": "qoq"},
+            },
+        ),
+        SimpleNamespace(
+            code="housing-affordability",
+            model_config_json={"forecast_steps": 4, "forecast_strategy": "generic_quarterly"},
+        ),
+        SimpleNamespace(
+            code="btc-usd-avg-month",
+            model_config_json={"forecast_steps": 0},
+        ),
+        SimpleNamespace(
+            code="no-strategy-row",
+            model_config_json={"forecast_steps": 4},
+        ),
+    ]
+    result_proxy = MagicMock()
+    result_proxy.scalars.return_value.all.return_value = rows
+    db = AsyncMock()
+    db.execute = AsyncMock(return_value=result_proxy)
+
+    asyncio.run(
+        scheduler._retrain_recalculated_derived(
+            db, [r.code for r in rows],
+        )
+    )
+
+    assert retrained == ["gdp-qoq", "housing-affordability"]

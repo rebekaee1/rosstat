@@ -285,6 +285,14 @@ Daily ETL (06:00 МСК, `RUSTATS_SCHEDULER_CRON_HOUR/MINUTE`) запускае�
 
 Описано в ADR-0002. Если в ETL-батч ни один парсер не добавил новые строки (только in-place revisions), `run_for_updated_sources` не сработает; derived останутся stale до следующего «обычного» дня. Митигируется тем, что `cbr-fx`/`cbr-ruonia`/`gold-price`/`key-rate` — daily-источники. На практике pure-revision day без `records_added > 0` — крайне редкое явление. Жёсткий триггер ручного катчапа: `scripts/rebuild-all-derived.py`.
 
+### Derived-forecast ordering trap (прогноз поверх свежего факта)
+
+Инцидент 2026-08-05: на карточках «ВВП и рост» режим «К прошлому периоду» рисовал свежий факт Q1-2026 как ПРОГНОЗ. Причина — гонка двух каскадов: source-ETL ретрейнит `derived_from_source` siblings (`_retrain_dependents`) ДО того, как CalculationEngine досчитал их собственный факт. Фильтр `derived_from_source._select_forecast_points` отсекает прошлое по stale-факту derived-ряда → прогноз получает точку на дате, которая минутой позже становится фактом, а collision-policy фронта (`chartForecastMerge.js`: «на последней дате факта прогноз побеждает» — нужна для partial-bucket агрегатов) рисует её как прогноз.
+
+**Правило:** прогноз derived-ряда валиден только относительно СВЕЖЕГО собственного факта. Поэтому после `calculation_engine.run_for_updated_sources` вызывается `_retrain_recalculated_derived` (scheduler.py), ретрейнящий ВСЕ пересчитанные derived с активной стратегией — включая `derived_from_source` (исключение для них отсюда убрано 2026-08-05). Исключение-не-дефект: конфиги с `monthly_tail_extrapolate`/`period_sum` легально держат ОДНУ прогнозную точку на якоре текущего незакрытого bucket'а (nowcast). Тот же класс бага был у сегментов weekly-CPI: primary-прогон пишет sibling-ряды в обход их `_handle_forecasts` — теперь `_post_upsert` сам ретрейнит сегменты с `forecast_steps>0`.
+
+**Диагностика**: прогноз, у которого `min(forecast date) <= max(fact date)` у ряда без anchor-конфига = stale. Ремонт — ретрейн таких рядов (`retrain_indicator_forecast`), данные трогать не нужно.
+
 ### auto-loan-rate `element_id` (ЦБ DataService)
 
 Декабрь 2025: ЦБ переразложил dataset 28 (auto-loan-rate). Исторические `element_id 2/4/5/6/7/9/10/11` больше не публикуются, остался только агрегированный `element_id=110` («По всем срокам»). Парсер с `element_id=11` тихо возвращал 0 точек 5 месяцев. Текущий `seed_data.py` хранит `"element_id": 110`. Если ЦБ снова переразложит другой dataset — симптом тот же: ETL `success` + `records_added=0` несколько недель подряд.

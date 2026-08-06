@@ -995,9 +995,11 @@ def _mode_forecast_meta(fam: "Family", m: "Mode", base_freq: str) -> dict | None
         "pipeline": [[op, dict(kwargs)] for op, kwargs in m.pipeline],
         "model_name": f"{m.code}-derived",
     }
-    # Квартал/год из месячного прогноза: последний месяц bucket'а → агрегат
-    # (поток ×3/×12, уровень/ставка — как есть). Не ждём 12 полных месяцев.
-    if agg_gran in ("quarter", "year"):
+    # Квартал/год из МЕСЯЧНОГО прогноза: последний месяц bucket'а → агрегат
+    # (поток ×3/×12, уровень/ставка — как есть). Базовый квартальный ряд уже
+    # публикует факт целиком, поэтому ему нельзя включать nowcast на той же
+    # anchor-дате: иначе прогноз перерисовывает свежий факт пунктиром.
+    if base_freq == "monthly" and agg_gran in ("quarter", "year"):
         cfg["monthly_tail_extrapolate"] = True
     else:
         min_periods = _BUCKET_MIN_PERIODS.get((base_freq, agg_gran)) if agg_gran else None

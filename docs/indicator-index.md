@@ -2,7 +2,7 @@
 
 > Генерируется `scripts/build-indicator-index.py`. НЕ редактировать руками. Полная машинная версия — `docs/indicator-index.json`. Подробности по каждому коду (files/derived_siblings) — в JSON.
 
-**Сгенерировано:** 2026-07-08
+**Сгенерировано:** 2026-08-06
 
 ## Как пользоваться (для агента)
 
@@ -79,7 +79,7 @@
 | `btc-usd-yoy` | Валюты | monthly | `generic` | — | — | — |
 | `btc-usd-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
 | `btc-usd-yoy-year` | Валюты | annual | `generic` | — | — | — |
-| `budget-deficit` | Финансы | monthly | `generic` | monthly_auto | ✓ | — |
+| `budget-deficit` | Финансы | monthly | `generic` | derived_from_source | ✓ | — |
 | `budget-deficit-mom` | Бюджет | monthly | `generic` | derived_from_source | — | — |
 | `budget-deficit-qoq` | Бюджет | quarterly | `generic` | derived_from_source | — | — |
 | `budget-deficit-sum-quarter` | Бюджет | quarterly | `generic` | derived_from_source | — | — |
@@ -954,7 +954,7 @@
 - **Тип** (верх, эталон — переключатель ИПЦ): `value` Уровень/значение · `pop` К прошлому периоду · `yoy` К соотв. периоду пред. года · `index` Индекс
 - **Частота** (низ): `day` дн · `week` нед · `month` мес · `quarter` кв · `year` год
 
-Корней-семейств: **112** · с полной матрицей: **101** · с пробелами: **11**. Покрытие: {'bespoke': 7, 'bespoke-data': 4, 'generic': 101}.
+Корней-семейств: **112** · с полной матрицей: **100** · с пробелами: **12**. Покрытие: {'bespoke': 7, 'bespoke-data': 4, 'generic': 101}.
 
 ## Систематические пробелы по типам
 
@@ -978,7 +978,7 @@
 | generic/T6 | flow | month | 10 | — |
 | generic/T7 | signed-flow | month | 1 | — |
 | generic/T8 | avg-level | month | 3 | — |
-| generic/T8 | index | month | 1 | — |
+| generic/T8 | index | month | 1 | `pop:year` |
 | generic/T9 | gdp | quarter | 10 | — |
 | generic/T9s | signed-flow | quarter | 3 | — |
 
@@ -997,6 +997,7 @@
 | `ppi` | bespoke/PPI | index | month | 0.8 | `yoy:quarter`, `yoy:year` | full | yes | curated |
 | `housing-price-primary` | bespoke/HOUSING | index | quarter | 0.857 | `pop:year` | full | yes | curated |
 | `housing-price-secondary` | bespoke/HOUSING | index | quarter | 0.857 | `pop:year` | full | yes | curated |
+| `wages-real` | generic/T8 | index | month | 0.9 | `pop:year` | full | yes | curated |
 
 ## Измерения паспорта (агрегат)
 

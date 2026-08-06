@@ -152,7 +152,7 @@ async def daily_update_job():
                 if derived:
                     logger.info("CalculationEngine updated derived indicators: %s", derived)
                     ping_codes.extend(derived)
-                    await _retrain_self_modeled_derived(db, derived)
+                    await _retrain_recalculated_derived(db, derived)
             except Exception as e:
                 # Н-5: source обновился, derived stale — это витринная ложь,
                 # а не внутренняя мелочь; в summary и алерт, не только в лог.
@@ -179,15 +179,20 @@ async def daily_update_job():
     logger.info("Daily ETL update complete in %.0fs.", duration)
 
 
-async def _retrain_self_modeled_derived(db, derived_codes: list[str]) -> None:
-    """Ретрейн прогноза для derived-индикаторов с собственной моделью.
+async def _retrain_recalculated_derived(db, derived_codes: list[str]) -> None:
+    """Ретрейн прогнозов пересчитанных derived-индикаторов — ПОСЛЕ движка.
 
-    Source-каскад (`retrain_indicator_forecast` после ETL источника) покрывает
-    только `derived_from_source` siblings. Расчётные ряды с собственной моделью
-    (`monthly_auto` на самом ряде, напр. индекс доступности жилья) пересчитывает
-    движок, но их прогноз без этого шага останется stale. Ретрейним те из
-    пересчитанных, у кого стратегия не derived_from_source; каскад внутри
-    подтянет их собственные агрегаты/приросты.
+    Порядок критичен. Source-каскад (`retrain_indicator_forecast` в конце ETL
+    источника) ретрейнит `derived_from_source` siblings ДО того, как
+    CalculationEngine досчитал их собственный факт: фильтр «только точки
+    за пределами факта» работает по stale-факту, и прогноз derived-ряда
+    получает точку на дату, которая минутой позже станет фактом. Фронт по
+    collision-policy рисует её как прогноз — «факт Q1 идёт как прогноз»
+    (инцидент 2026-08-05, семейство gdp-*-qoq/yoy). Поэтому после пересчёта
+    движком ретрейним ВСЕ затронутые derived с активной стратегией — и
+    self-modeled (`monthly_auto` на самом ряде), и `derived_from_source`
+    (повторный прогон по свежему факту отрежет overlap; трансформы дешёвые).
+    Каскад внутри retrain подтянет их собственные агрегаты/приросты.
     """
     if not derived_codes:
         return
@@ -198,15 +203,15 @@ async def _retrain_self_modeled_derived(db, derived_codes: list[str]) -> None:
         cfg = ind.model_config_json or {}
         strategy = cfg.get("forecast_strategy")
         steps = int(cfg.get("forecast_steps", 0) or 0)
-        if steps > 0 and strategy and strategy != "derived_from_source":
+        if steps > 0 and strategy:
             try:
                 await retrain_indicator_forecast(db, ind)
                 await db.commit()
-                logger.info("Retrained self-modeled derived forecast: %s", ind.code)
+                logger.info("Retrained derived forecast after recalc: %s", ind.code)
             except Exception as e:
                 await db.rollback()
                 # Н-6: старый прогноз молча остаётся current — алертим.
-                logger.exception("Self-modeled derived retrain failed: %s", ind.code)
+                logger.exception("Derived retrain after recalc failed: %s", ind.code)
                 await alert_etl_failure(f"retrain:{ind.code}", str(e))
 
 
@@ -292,7 +297,7 @@ async def run_etl_for_parser_type(parser_type: str) -> dict[str, int]:
                         "Late ETL pass updated derived indicators: %s", derived
                     )
                     ping_codes.extend(derived)
-                    await _retrain_self_modeled_derived(db, derived)
+                    await _retrain_recalculated_derived(db, derived)
             except Exception as e:
                 logger.exception("CalculationEngine failed in late pass")
                 failed_codes.append("derived-engine")

@@ -117,21 +117,31 @@ class BrentDailyFredParser(BaseParser):
             except ValueError:
                 pass
 
-        existing_n = (await db.execute(
-            select(func.count(IndicatorData.id)).where(IndicatorData.indicator_id == indicator.id)
-        )).scalar() or 0
+        earliest = (await db.execute(
+            select(func.min(IndicatorData.date)).where(IndicatorData.indicator_id == indicator.id)
+        )).scalar()
         today = date.today()
-        date_from = backfill_from if existing_n == 0 else today - timedelta(days=30)
         url = _BASE_URL + symbol
 
+        # Свежий хвост всегда; глубокая история — при первом прогоне или когда
+        # самая ранняя точка БД позже `backfill_from` (self-healing: расширение
+        # истории = смена конфига + ETL, без одноразовых скриптов).
+        windows: list[tuple[date, date]] = []
+        if earliest is None:
+            windows.append((backfill_from, today))
+        else:
+            windows.append((today - timedelta(days=30), today))
+            if earliest > backfill_from:
+                windows.append((backfill_from, earliest))
+
+        by_date: dict[date, float] = {}
         try:
-            payload = await asyncio.to_thread(_fetch_yahoo, symbol, date_from, today)
-            points = _parse_yahoo(payload)
+            for w_start, w_end in windows:
+                payload = await asyncio.to_thread(_fetch_yahoo, symbol, w_start, w_end)
+                for d, v in _parse_yahoo(payload):
+                    by_date[d] = v
         except Exception as e:
             fetch_log.error_message = f"Yahoo {symbol} fetch failed: {e}"[:500]
             return [], url
 
-        by_date: dict[date, float] = {}
-        for d, v in points:
-            by_date[d] = v
         return sorted(by_date.items()), url

@@ -84,19 +84,21 @@ Endpoint: `cbr.ru/scripts/XML_dynamic.asp?date_req1={from}&date_req2={to}&VAL_NM
 
 Тикер config-driven через `model_config_json.binance_symbol`. Прогноз не строится (`forecast_steps=0`), категория «Валюты».
 
-| Индикатор | Endpoint |
-|-----------|----------|
-| `btc-usd` | `api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d` — поле `close`, дата = календарный торговый день (UTC). Backfill ~1500 дней. Live-тикер — отдельно `ticker_sources/binance.py`. |
-| `eth-usd` | то же, `symbol=ETHUSDT`. |
-| `sol-usd` | то же, `symbol=SOLUSDT`. |
+Глубина истории (2026-08-05, self-healing): Binance BTCUSDT/ETHUSDT листингованы с 2017-08-17, SOLUSDT — с 2020-08-11; более ранний сегмент добирается с Coinbase Exchange (`api.exchange.coinbase.com/products/<sym>/candles`, дневные, ≤300 свечей/запрос) по `model_config_json.pre_binance`. Парсер дозапрашивает окно `[backfill_from, earliest)`, когда самая ранняя точка БД позже `backfill_from` — расширение истории делается сменой конфига + ETL, без одноразовых скриптов. На пересечении дат побеждает Binance (канон свежей эпохи).
+
+| Индикатор | Endpoint | История |
+|-----------|----------|---------|
+| `btc-usd` | `api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d` — поле `close`, дата = календарный торговый день (UTC). Live-тикер — отдельно `ticker_sources/binance.py`. | 2015-07-20 → (Coinbase BTC-USD до 2017-08-16, дальше Binance) |
+| `eth-usd` | то же, `symbol=ETHUSDT`. | 2016-05-18 → (Coinbase ETH-USD до 2017-08-16, дальше Binance) |
+| `sol-usd` | то же, `symbol=SOLUSDT`. | 2020-08-11 → (Binance; монета запущена 2020-03, раньше первоисточника нет) |
 
 ## Yahoo chart — commodities daily (BrentDailyFredParser, `parser_type=moex_brent_daily`)
 
-Один парсер на весь товарный desk: тикер config-driven через `model_config_json.yahoo_symbol` (дефолт `BZ=F`), старт бэкфилла — `backfill_from` (дефолт `2015-01-01`). Прогноз не строится, категория «Товарные рынки». Endpoint: `query1.finance.yahoo.com/v8/finance/chart/<symbol>?interval=1d`, поле `close`.
+Один парсер на весь товарный desk: тикер config-driven через `model_config_json.yahoo_symbol` (дефолт `BZ=F`), старт бэкфилла — `backfill_from` (дефолт `2015-01-01`). Прогноз не строится, категория «Товарные рынки». Endpoint: `query1.finance.yahoo.com/v8/finance/chart/<symbol>?interval=1d`, поле `close`. С 2026-08-05 парсер self-healing: при `earliest > backfill_from` дозапрашивает окно `[backfill_from, earliest)`.
 
 | Индикатор | yahoo_symbol | Заметки |
 |-----------|--------------|---------|
-| `brent` | `BZ=F` | Brent front-month (ICE). Live-тикер — MOEX FORTS `BR-*` через `ticker_sources/moex_iss.py`. |
+| `brent` | `BZ=F` | Brent front-month (ICE). История с 2007-07-30 (пол Yahoo BZ=F). Live-тикер — MOEX FORTS `BR-*` через `ticker_sources/moex_iss.py`. |
 | `copper` | `HG=F` | COMEX, USD/lb. |
 | `silver` | `SI=F` | COMEX, USD/oz. |
 | `natural-gas` | `NG=F` | NYMEX Henry Hub, USD/MMBtu. |

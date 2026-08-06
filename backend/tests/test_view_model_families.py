@@ -156,6 +156,22 @@ def test_sibling_metadata_complete():
         assert meta["parent"] in vmf.FAMILY_BY_BASE
 
 
+def test_only_monthly_sources_get_partial_bucket_nowcasts():
+    """Quarterly source already has a published fact for its quarter.
+
+    `monthly_tail_extrapolate` is valid only when a monthly source needs
+    predicted remaining months to complete the current bucket. Applying it to
+    quarterly sources caused a forecast to replace the current fact in modes
+    such as external-debt-qoq.
+    """
+    siblings = {meta["code"]: meta for meta in vmf.iter_sibling_indicators()}
+
+    assert siblings["m2-qoq"]["forecast"]["monthly_tail_extrapolate"] is True
+    assert "monthly_tail_extrapolate" not in siblings["external-debt-qoq"]["forecast"]
+    assert siblings["external-debt-eop-year"]["forecast"]["complete_bucket"] == "year"
+    assert siblings["external-debt-eop-year"]["forecast"]["min_periods"] == 4
+
+
 def test_frontend_mirror_serializable():
     import json
 
