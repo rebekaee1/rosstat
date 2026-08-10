@@ -123,9 +123,9 @@ Endpoint: `cbr.ru/scripts/XML_dynamic.asp?date_req1={from}&date_req2={to}&VAL_NM
 
 | Индикатор | URL |
 |-----------|-----|
-| `key-rate` | `cbr.ru/hd_base/KeyRate/` |
-| `international-reserves` | `cbr.ru/hd_base/mrrf/mrrf_7d/` |
-| `ruonia` | `cbr.ru/hd_base/ruonia/dynamics/` |
+| `key-rate` | `cbr.ru/hd_base/KeyRate/` (UniDbQuery `DD.MM.YYYY`) |
+| `international-reserves` | `cbr.ru/hd_base/mrrf/mrrf_7d/` (monthpicker `MM.YYYY`, пол с 29.05.1998; `backfill_from=1998-05-01`) |
+| `ruonia` | `cbr.ru/hd_base/ruonia/dynamics/` (UniDbQuery `DD.MM.YYYY`) |
 
 ## ЦБ РФ — DataService JSON (CbrDataServiceParser)
 

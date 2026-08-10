@@ -2,6 +2,11 @@
 
 Источник: https://www.cbr.ru/hd_base/mrrf/mrrf_7d/
 HTML-таблица UniDbQuery: дата DD.MM.YYYY | значение (млрд $, запятая как разделитель).
+
+Trap (2026-08): фильтр периода на странице — monthpicker, параметры
+``UniDbQuery.From`` / ``To`` принимают ``MM.YYYY`` (например ``05.1998``),
+не ``DD.MM.YYYY``. Старый формат сайт молча игнорировал и отдавал
+дефолтное окно ~последний год → в БД оставался огрызок с ~июля 2025.
 """
 
 from __future__ import annotations
@@ -23,7 +28,8 @@ from app.services.http_client import create_session
 logger = logging.getLogger(__name__)
 
 _DATE_RE = re.compile(r"\d{2}\.\d{2}\.\d{4}")
-DEFAULT_BACKFILL_FROM = date(2006, 1, 1)
+# Пол источника на странице ЦБ: «Данные доступны с 29.05.1998».
+DEFAULT_BACKFILL_FROM = date(1998, 5, 1)
 CHUNK_DAYS = 365
 
 
@@ -32,12 +38,17 @@ def _parse_ru_float(s: str) -> float:
     return float(t)
 
 
+def format_unidb_month(d: date) -> str:
+    """Формат периода для monthpicker UniDbQuery: MM.YYYY."""
+    return f"{d.month:02d}.{d.year}"
+
+
 def fetch_reserves_html(date_from: date, date_to: date) -> tuple[str, str]:
     url = f"{settings.cbr_base_url.rstrip('/')}/hd_base/mrrf/mrrf_7d/"
     params = {
         "UniDbQuery.Posted": "True",
-        "UniDbQuery.From": date_from.strftime("%d.%m.%Y"),
-        "UniDbQuery.To": date_to.strftime("%d.%m.%Y"),
+        "UniDbQuery.From": format_unidb_month(date_from),
+        "UniDbQuery.To": format_unidb_month(date_to),
     }
     session = create_session()
     try:
@@ -85,33 +96,62 @@ class CbrReservesParser(BaseParser):
     ) -> tuple[list, str]:
         date_to = date.today()
 
-        existing_n = (await db.execute(
-            select(func.count(IndicatorData.id)).where(IndicatorData.indicator_id == indicator.id)
-        )).scalar() or 0
+        floor = DEFAULT_BACKFILL_FROM
+        raw_from = cfg.get("backfill_from")
+        if raw_from:
+            try:
+                floor = date.fromisoformat(str(raw_from))
+            except ValueError:
+                logger.warning(
+                    "%s: bad backfill_from %r — использую %s",
+                    indicator.code, raw_from, DEFAULT_BACKFILL_FROM,
+                )
 
-        if cfg.get("backfill_from"):
-            date_from = date.fromisoformat(cfg["backfill_from"])
-        elif existing_n == 0:
-            date_from = DEFAULT_BACKFILL_FROM
+        earliest = (await db.execute(
+            select(func.min(IndicatorData.date)).where(
+                IndicatorData.indicator_id == indicator.id
+            )
+        )).scalar_one_or_none()
+
+        windows: list[tuple[date, date]] = []
+        if earliest is None:
+            windows.append((floor, date_to))
         else:
+            # Self-healing: если в БД огрызок (формат дат раньше был сломан),
+            # дозапрашиваем [floor, earliest) одним проходом вместе с хвостом.
+            if earliest > floor:
+                windows.append((floor, earliest - timedelta(days=1)))
             win = int(cfg.get("incremental_fetch_days", 90))
-            date_from = date_to - timedelta(days=win)
+            windows.append((max(floor, date_to - timedelta(days=win)), date_to))
 
         all_points: list[tuple[date, float]] = []
         chunk_errors: list[str] = []
-        chunk_start = date_from
         final_url = ""
-        while chunk_start < date_to:
-            chunk_end = min(chunk_start + timedelta(days=CHUNK_DAYS), date_to)
-            try:
-                html, final_url = await asyncio.to_thread(fetch_reserves_html, chunk_start, chunk_end)
-                chunk_points = await asyncio.to_thread(parse_reserves_html, html)
-                all_points.extend(chunk_points)
-                logger.debug("Reserves chunk %s–%s: %d points", chunk_start, chunk_end, len(chunk_points))
-            except Exception as chunk_exc:
-                logger.warning("Reserves chunk %s–%s failed, skipping", chunk_start, chunk_end, exc_info=True)
-                chunk_errors.append(f"{chunk_start}–{chunk_end}: {chunk_exc}")
-            chunk_start = chunk_end + timedelta(days=1)
+        for win_start, win_end in windows:
+            if win_start > win_end:
+                continue
+            chunk_start = win_start
+            while chunk_start <= win_end:
+                chunk_end = min(chunk_start + timedelta(days=CHUNK_DAYS), win_end)
+                try:
+                    html, final_url = await asyncio.to_thread(
+                        fetch_reserves_html, chunk_start, chunk_end,
+                    )
+                    chunk_points = await asyncio.to_thread(parse_reserves_html, html)
+                    all_points.extend(chunk_points)
+                    logger.debug(
+                        "Reserves chunk %s–%s: %d points",
+                        format_unidb_month(chunk_start),
+                        format_unidb_month(chunk_end),
+                        len(chunk_points),
+                    )
+                except Exception as chunk_exc:
+                    logger.warning(
+                        "Reserves chunk %s–%s failed, skipping",
+                        chunk_start, chunk_end, exc_info=True,
+                    )
+                    chunk_errors.append(f"{chunk_start}–{chunk_end}: {chunk_exc}")
+                chunk_start = chunk_end + timedelta(days=1)
 
         by_date: dict[date, float] = {}
         for d, v in all_points:

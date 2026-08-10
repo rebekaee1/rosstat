@@ -2,7 +2,7 @@
 
 from datetime import date
 
-from app.services.cbr_reserves_parser import parse_reserves_html
+from app.services.cbr_reserves_parser import format_unidb_month, parse_reserves_html
 
 SAMPLE_HTML = """
 <table class="data">
@@ -39,3 +39,11 @@ class TestParseReservesHtml:
         result = parse_reserves_html(html)
         assert len(result) == 1
         assert result[0][1] == 1234.56
+
+
+class TestFormatUnidbMonth:
+    def test_month_year_not_day(self):
+        # Monthpicker ЦБ принимает MM.YYYY; DD.MM.YYYY сайт игнорирует.
+        assert format_unidb_month(date(1998, 5, 29)) == "05.1998"
+        assert format_unidb_month(date(2020, 1, 1)) == "01.2020"
+        assert format_unidb_month(date(2026, 7, 31)) == "07.2026"

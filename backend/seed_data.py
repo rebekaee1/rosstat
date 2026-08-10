@@ -2755,6 +2755,10 @@ INDICATORS = [
         ),
         "parser_type": "cbr_reserves_html",
         "model_config_json": {
+            # Пол источника на cbr.ru/hd_base/mrrf/mrrf_7d/: с 29.05.1998.
+            # UniDbQuery — monthpicker (MM.YYYY); парсер самовосстанавливает
+            # окно [backfill_from, earliest), если в БД огрызок.
+            "backfill_from": "1998-05-01",
             "forecast_steps": 0,
             "validation": {"min": 0, "max": 2000},
         },
