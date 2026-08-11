@@ -139,6 +139,7 @@ def harvest_eurostat(enrich: bool, limit: int | None, workers: int) -> Iterator[
             period_end=end or None,
             url=f"https://ec.europa.eu/eurostat/databrowser/view/{code}/default/table",
             extra={"kind": r[2].strip(), "last_update": r[3].strip(),
+                   "last_structure_change": r[4].strip(),
                    "values": (r[7].strip() if len(r) > 7 else "")},
         )
         n += 1

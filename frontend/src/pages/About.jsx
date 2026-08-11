@@ -5,7 +5,7 @@ export default function About() {
   useDocumentMeta({
     title: 'О проекте Forecast Economy',
     description:
-      'Бесплатная аналитическая платформа экономической статистики России: 100+ макроиндикаторов и 489 региональных показателей по 85 регионам. Данные Росстата, Банка России и Минфина.',
+      'Бесплатная аналитическая платформа: экономика России, регионы и доступная статистика стран. Более 100 макроиндикаторов и 489 региональных показателей по 85 регионам. Данные Росстата, Банка России, Минфина и Евростата.',
     path: '/about',
   });
 
@@ -16,16 +16,19 @@ export default function About() {
           О проекте
         </p>
         <h1 className="font-display text-3xl md:text-4xl font-bold text-text-primary mb-6 leading-tight">
-          Forecast Economy — макроэкономический терминал для России
+          Forecast Economy — аналитика экономики России, регионов и стран
         </h1>
         <p className="text-text-secondary leading-relaxed mb-6">
           <strong className="text-text-primary">Forecast Economy</strong> — веб-платформа для работы с официальной
-          экономической статистикой России: инфляция и цены, ключевая ставка и ставки рынка, ВВП и
+          экономической статистикой. Основа — Россия: инфляция и цены, ключевая ставка и ставки рынка, ВВП и
           промышленное производство, рынок труда, внешняя торговля,
-          бюджет, биржевые индексы и товарные рынки. Мы собираем данные из первичных источников —
+          бюджет, биржевые индексы и товарные рынки. Плюс региональные ряды по субъектам РФ и доступная
+          статистика отдельных стран из официальных национальных и международных первоисточников.
+          Мы собираем данные из первичных источников —
           {' '}<a href="https://rosstat.gov.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer" onClick={() => trackOutbound('https://rosstat.gov.ru')}>Росстат</a>,
-          {' '}<a href="https://cbr.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer" onClick={() => trackOutbound('https://cbr.ru')}>Банк России</a>
-          {' '}и <a href="https://minfin.gov.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer" onClick={() => trackOutbound('https://minfin.gov.ru')}>Минфин России</a>,
+          {' '}<a href="https://cbr.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer" onClick={() => trackOutbound('https://cbr.ru')}>Банк России</a>,
+          {' '}<a href="https://minfin.gov.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer" onClick={() => trackOutbound('https://minfin.gov.ru')}>Минфин России</a>
+          {' '}и <a href="https://ec.europa.eu/eurostat" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer" onClick={() => trackOutbound('https://ec.europa.eu/eurostat')}>Евростат</a>,
           {' '}— показываем длинные исторические ряды по более чем 100 макроэкономическим индикаторам
           и 489 региональным показателям по 85 регионам России, и строим{' '}
           <strong className="text-text-primary">прогноз</strong> там, где это оправдано характером ряда.
@@ -36,7 +39,7 @@ export default function About() {
           <li>аналитикам и экономистам, которым нужны ряды, сравнения и прогноз в одном месте;</li>
           <li>инвесторам и финансистам — отслеживать инфляцию, ставки, валюту, биржевые индексы и товарные рынки;</li>
           <li>предпринимателям — следить за спросом, ценами и промышленной активностью;</li>
-          <li>журналистам, преподавателям и студентам — текущая ситуация по экономике России;</li>
+          <li>журналистам, преподавателям и студентам — текущая ситуация по экономике России и доступным страновым рядам;</li>
           <li>всем, кто хочет видеть <strong className="text-text-primary">официальные данные</strong>, а не только заголовки новостей.</li>
         </ul>
 
@@ -47,8 +50,8 @@ export default function About() {
             обучения описаны в интерфейсе; прогноз — оценка по истории ряда, а не «мнение редакции».
           </li>
           <li>
-            <strong className="text-text-primary">Бесплатный доступ.</strong> Просмотр данных и прогнозов
-            не требует регистрации.
+            <strong className="text-text-primary">Бесплатный просмотр.</strong> Графики, таблицы и прогнозы
+            доступны без регистрации. Скачивание данных и изображений графиков — после бесплатной регистрации.
           </li>
         </ul>
 

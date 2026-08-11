@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 """
-Аудит публичного языка: ищет «внутренности» в полях, которые видит пользователь сайта.
+Аудит публичного языка: ищет «внутренности» и устаревшие product-claims
+в полях/файлах, которые видит пользователь сайта.
 
 Сканирует:
   - backend/seed_data.py — поля description / methodology / seo_title / seo_description / name
   - backend/app/services/seo_content.py — CATEGORY_META, любые user-visible тексты
   - frontend/src/lib/categories.js — UI карточки категорий
   - frontend/src/lib/cpiViewModeContent.jsx — режимные тексты ИПЦ (состав × режим)
+  - product-surfaces (About/Privacy/Terms/Footer/RegisterNudge/index.html/llms.txt)
+    + banlist устаревших product-claims (80+/9/девяти, ложный guest-quota, overclaim мира)
 
 Правило закреплено в .cursor/rules/methodology-language.mdc.
 
@@ -14,6 +17,7 @@
 Exit code: 0 — чисто, 1 — найдены утечки.
 """
 from __future__ import annotations
+
 import ast
 import re
 import sys
@@ -21,7 +25,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 
-BAD_PATTERNS = [
+# «Внутренности» реализации — нельзя в user-visible текстах.
+INTERNAL_PATTERNS = [
     r'\.(pdf|xlsx?|csv|xml|json)\b',
     r'\{(MM|YYYY|YY)\}',
     r'\b(парсер|парсера|парсеру|cumulative|chain[\s\']?ит|chain to|chains|splice|overlap-год|bulk_upsert|регекс)\b',
@@ -31,9 +36,55 @@ BAD_PATTERNS = [
     r'osn-', r'ind_baza', r'VVP_kvartal', r'GDP-quarters-of-use', r'bal_of_payments',
     r'/folder/\d+',
 ]
-master = re.compile('|'.join(BAD_PATTERNS), re.IGNORECASE)
+INTERNAL_RE = re.compile('|'.join(INTERNAL_PATTERNS), re.IGNORECASE)
+
+# Устаревшие / вводящие в заблуждение product-claims на маркетинговых поверхностях.
+PRODUCT_CLAIM_PATTERNS = [
+    r'\b80\s*\+',
+    r'\bв\s+9\s+категори',
+    r'\b9\s+категори',
+    r'\bдевяти\b',
+    r'стран\s+мира',
+    r'всей?\s+мир[ае]?\b',
+    r'по\s+всем\s+странам',
+    r'данных?\s+всего\s+мира',
+    r'снимает\s+лимит',
+    r'лимит\s+на\s+выгруз',
+    r'лимит\s+бесплатных\s+выгрузок',
+    r'выгрузк\w*\s+без\s+регистрац',
+    r'скачиван\w*\s+без\s+регистрац',
+    r'весь\s+аналитический\s+контент\s+Сайта\s+доступен\s+без\s+регистрац',
+    r'доступ\s+к\s+Сайту\s+предоставляется\s+без\s+регистрац',
+]
+PRODUCT_CLAIM_RE = re.compile('|'.join(PRODUCT_CLAIM_PATTERNS), re.IGNORECASE)
 
 PUBLIC_FIELDS = ('name', 'description', 'methodology', 'seo_title', 'seo_description')
+
+INTERNAL_SURFACES = (
+    'backend/app/services/seo_content.py',
+    'frontend/src/lib/categories.js',
+    'frontend/src/lib/cpiViewModeContent.jsx',
+)
+
+PRODUCT_SURFACES = (
+    'frontend/src/pages/About.jsx',
+    'frontend/src/pages/Privacy.jsx',
+    'frontend/src/pages/Terms.jsx',
+    'frontend/src/components/Footer.jsx',
+    'frontend/src/components/RegisterNudge.jsx',
+    'frontend/index.html',
+    'frontend/public/llms.txt',
+)
+
+PRODUCT_CLAIM_ONLY_SURFACES = (
+    'backend/app/services/seo_content.py',
+    'backend/app/services/seo_renderer.py',
+    'frontend/src/pages/Dashboard.jsx',
+    'frontend/src/components/home/HomeHero.jsx',
+    'frontend/src/components/home/HomeCountriesPanel.jsx',
+    'frontend/src/components/home/HomeTools.jsx',
+)
+
 
 def scan_seed() -> list[tuple[str, str, str]]:
     seed_path = ROOT / 'backend' / 'seed_data.py'
@@ -63,49 +114,109 @@ def scan_seed() -> list[tuple[str, str, str]]:
             text = rec.get(field)
             if not text or not isinstance(text, str):
                 continue
-            if master.search(text):
+            if INTERNAL_RE.search(text):
                 issues.append((code, field, text[:240].replace('\n', ' ')))
     return issues
 
-def scan_file(path: Path) -> list[tuple[int, str]]:
-    text = path.read_text(encoding='utf-8')
-    lines = text.split('\n')
+
+_URL_EXT = re.compile(r'^\.(pdf|xlsx?|csv|xml|json)$', re.IGNORECASE)
+_COMMENT_RE = re.compile(
+    r'//.*?$|/\*.*?\*/|<!--.*?-->',
+    re.MULTILINE | re.DOTALL,
+)
+
+
+def _is_url_path_extension(text: str, start: int, matched: str) -> bool:
+    """Не считать утечкой суффикс URL вроде /sitemap.xml или https://…/feed.xml."""
+    if not _URL_EXT.match(matched):
+        return False
+    before = text[max(0, start - 12):start]
+    return '/' in before or '://' in before
+
+
+def _strip_comments(text: str) -> str:
+    """Убрать JS/JSX/HTML-комментарии, сохранив длины строк (замена пробелами)."""
+    def repl(m: re.Match[str]) -> str:
+        return re.sub(r'[^\n]', ' ', m.group(0))
+
+    return _COMMENT_RE.sub(repl, text)
+
+
+def scan_file(
+    path: Path,
+    pattern: re.Pattern[str],
+    *,
+    strip_comments: bool = False,
+) -> list[tuple[int, str]]:
+    raw = path.read_text(encoding='utf-8')
+    text = _strip_comments(raw) if strip_comments else raw
+    lines = raw.split('\n')
     out = []
-    for m in master.finditer(text):
+    for m in pattern.finditer(text):
+        if _is_url_path_extension(text, m.start(), m.group(0)):
+            continue
         line_no = text[:m.start()].count('\n') + 1
         out.append((line_no, lines[line_no - 1][:200]))
     return out
 
-def main() -> int:
-    leaks = 0
-    seed_issues = scan_seed()
-    if seed_issues:
-        leaks += len(seed_issues)
-        print(f'\n[seed_data.py] {len(seed_issues)} leaks:')
-        for code, field, preview in seed_issues:
-            print(f'  {code} | {field}')
-            print(f'    {preview}')
 
-    for rel in (
-        'backend/app/services/seo_content.py',
-        'frontend/src/lib/categories.js',
-        'frontend/src/lib/cpiViewModeContent.jsx',
-    ):
+def collect_issues() -> list[tuple[str, str]]:
+    """Возвращает список (location, preview) для печати и тестов."""
+    found: list[tuple[str, str]] = []
+
+    for code, field, preview in scan_seed():
+        found.append((f'seed_data.py:{code}:{field}', preview))
+
+    for rel in INTERNAL_SURFACES:
         p = ROOT / rel
         if not p.exists():
+            found.append((rel, 'MISSING FILE'))
             continue
-        hits = scan_file(p)
-        if hits:
-            leaks += len(hits)
-            print(f'\n[{rel}] {len(hits)} leaks:')
-            for line_no, line in hits:
-                print(f'  line {line_no}: {line}')
+        for line_no, line in scan_file(p, INTERNAL_RE):
+            found.append((f'{rel}:{line_no}', line))
 
-    if leaks == 0:
+    for rel in PRODUCT_SURFACES:
+        p = ROOT / rel
+        if not p.exists():
+            found.append((rel, 'MISSING FILE'))
+            continue
+        # В JSX/HTML комментарии — для разработчиков; user-visible — строки/разметка.
+        for line_no, line in scan_file(p, INTERNAL_RE, strip_comments=True):
+            found.append((f'{rel}:{line_no}:internal', line))
+        for line_no, line in scan_file(p, PRODUCT_CLAIM_RE, strip_comments=True):
+            found.append((f'{rel}:{line_no}:product-claim', line))
+
+    for rel in PRODUCT_CLAIM_ONLY_SURFACES:
+        p = ROOT / rel
+        if not p.exists():
+            found.append((rel, 'MISSING FILE'))
+            continue
+        for line_no, line in scan_file(p, PRODUCT_CLAIM_RE, strip_comments=True):
+            found.append((f'{rel}:{line_no}:product-claim', line))
+
+    return found
+
+
+def main() -> int:
+    issues = collect_issues()
+    if not issues:
         print('OK: no public-language leaks found.')
         return 0
-    print(f'\nFAIL: {leaks} total leaks. See .cursor/rules/methodology-language.mdc.')
+
+    by_file: dict[str, list[tuple[str, str]]] = {}
+    for loc, preview in issues:
+        key = loc.split(':')[0]
+        by_file.setdefault(key, []).append((loc, preview))
+
+    for key, rows in by_file.items():
+        print(f'\n[{key}] {len(rows)} leaks:')
+        for loc, preview in rows:
+            print(f'  {loc}')
+            print(f'    {preview}')
+
+    print(f'\nFAIL: {len(issues)} total leaks. See .cursor/rules/methodology-language.mdc.')
     return 1
+
 
 if __name__ == '__main__':
     sys.exit(main())

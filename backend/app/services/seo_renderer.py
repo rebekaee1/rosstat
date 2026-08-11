@@ -277,9 +277,8 @@ def _site_json_ld() -> dict:
                 "url": DOMAIN,
                 "name": "Forecast Economy",
                 "description": (
-                    "Бесплатная аналитическая платформа экономических данных России: "
-                    "ИПЦ, ключевая ставка, курсы валют, ВВП, безработица — 100+ "
-                    "макроиндикаторов и 489 региональных показателей по 85 регионам."
+                    "Аналитическая платформа официальных экономических данных России, "
+                    "85 регионов и доступных стран: графики, таблицы, сравнения и прогнозы."
                 ),
                 "inLanguage": "ru-RU",
                 "publisher": {"@id": f"{DOMAIN}/#organization"},
@@ -396,14 +395,14 @@ body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:"DM Sans",system-ui,s
 # landing'и) — страницы ведут посетителя вглубь сайта, а не остаются тупиком.
 _SSR_CHROME_HEADER = """<header class="seo-topbar"><div class="seo-topbar-in">
 <a class="seo-brand" href="/">Forecast<em>Economy</em></a>
-<nav class="seo-topnav"><a href="/">Индикаторы</a><a href="/today">Сегодня</a><a href="/regions">Регионы</a><a href="/calendar">Календарь</a><a href="/compare">Сравнение</a></nav>
+<nav class="seo-topnav"><a href="/">Индикаторы</a><a href="/today">Сегодня</a><a href="/regions">Регионы</a><a href="/world">Страны</a><a href="/calendar">Календарь</a><a href="/compare">Сравнение</a></nav>
 </div></header>"""
 
 _SSR_CHROME_FOOTER = f"""<div class="seo-cta"><div class="seo-cta-in">
-<p><strong>Интерактивные графики, прогнозы и выгрузка данных</strong> — по каждому из более чем 900 рядов макростатистики и 480+ региональных показателей. Бесплатно, из официальных источников.</p>
+<p><strong>Интерактивные графики, сравнения и проверенные прогнозы</strong> — для показателей России, регионов и доступных стран. Просмотр открыт всем, скачивание — после бесплатной регистрации.</p>
 <a class="seo-btn" href="/">Открыть платформу</a>
 </div></div>
-<footer class="seo-foot">Данные — официальные источники: Росстат, Банк России, Минфин России, Московская биржа. Обновляются автоматически по мере публикации. © Forecast Economy · <a href="{DOMAIN}">forecasteconomy.com</a></footer>
+<footer class="seo-foot">Данные — только официальные первоисточники: государственные статистические ведомства, центральные банки и официальные биржи. Обновляются по мере публикации. © Forecast Economy · <a href="{DOMAIN}">forecasteconomy.com</a></footer>
 <script type="module" src="/assets/behavior-standalone.js" defer></script>"""
 
 FREQUENCY_LABELS_RU = {
@@ -660,7 +659,7 @@ async def render_home_html(db: AsyncSession) -> str:
     flagship_links = tuple((f"/indicator/{ind.code}", ind.name) for ind in flagships)
     page = PAGE_META["home"]
     body = f"""<main class="seo-page">
-<p class="seo-eyebrow">Бесплатная аналитическая платформа экономических данных России</p>
+<p class="seo-eyebrow">Официальные данные России, регионов и стран</p>
 <h1>{escape(page.h1)}</h1>
 <p>{escape(page.intro)}</p>
 {_blocks_html(page.blocks)}

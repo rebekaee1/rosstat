@@ -22,8 +22,8 @@ export default function Footer() {
               <span className="text-base font-bold">Forecast Economy</span>
             </div>
             <p className="text-sm text-text-secondary leading-relaxed max-w-xs">
-              Бесплатная аналитическая платформа экономических данных России. Официальные источники,
-              графики и прогнозы.
+              Бесплатная аналитическая платформа: экономика России, регионы и доступная статистика
+              стран. Официальные источники, графики и прогнозы.
             </p>
           </div>
 
