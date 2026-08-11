@@ -235,6 +235,13 @@ const BLOCK_RU = {
   'calc-result': 'Результат калькулятора',
   'calc-methodology': 'Методология калькулятора',
   about: 'О проекте',
+  'home-hero': 'Hero главной',
+  'home-russia-today': 'Россия сегодня',
+  'home-workbench': 'Рабочий стол главной',
+  'home-workbench-russia': 'Вкладка Россия на главной',
+  'home-workbench-regions': 'Вкладка Регионы на главной',
+  'home-workbench-countries': 'Вкладка Страны на главной',
+  'home-tools': 'Инструменты главной',
 };
 
 export function blockLabel(slug) {

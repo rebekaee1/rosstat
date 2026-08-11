@@ -9,6 +9,8 @@ describe('biLabels — словарь ярлыков BI', () => {
     expect(blockLabel('chart')).toBe('График индикатора');
     expect(blockLabel('region-section-6')).toBe('Раздел региона: Культура, отдых и туризм');
     expect(blockLabel('region-section-99')).toBe('Раздел карточки региона №99');
+    expect(blockLabel('home-workbench')).toBe('Рабочий стол главной');
+    expect(blockLabel('home-russia-today')).toBe('Россия сегодня');
     expect(blockLabel('unknown-slug')).toBe('unknown-slug');
   });
 
