@@ -1,7 +1,14 @@
 // Общий setup vitest. Для node-тестов no-op; для jsdom (component-тесты,
 // Т-13) — полифилы браузерных API, которых нет в jsdom, но которые требуют
 // recharts (ResizeObserver), gsap/анимации (matchMedia) и трекинг.
+import { afterEach } from 'vitest';
+import { cleanup } from '@testing-library/react';
+
 if (typeof window !== 'undefined') {
+  // Vitest globals выключены, поэтому auto-cleanup testing-library не видит
+  // глобальный afterEach. Явно размонтируем React-дерево до teardown jsdom.
+  afterEach(cleanup);
+
   class RO {
     observe() {}
     unobserve() {}

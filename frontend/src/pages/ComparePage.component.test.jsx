@@ -37,6 +37,7 @@ describe('ComparePage', () => {
       ['/regions/catalog', { sections: [] }],
       [/^\/regions\/?$/, { districts: [], russia: null, totals: { regions: 0, indicators: 0, points: 0 } }],
       [/^\/regions/, { districts: [], sections: [] }],
+      ['/world/compare/catalog', { items: [], total: 0 }],
     ]);
     renderPage(<ComparePage />, { path: '/compare', route: '/compare' });
     const heading = await screen.findByRole('heading', { level: 1 });

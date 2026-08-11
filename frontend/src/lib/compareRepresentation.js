@@ -113,6 +113,22 @@ export function compareRepresentationsFor(indicator) {
   return REP_ORDER.filter((id) => map[id]).map((id) => ({ id, label: map[id].label }));
 }
 
+export function worldCompareRepresentationsFor(meta) {
+  const options = [{ id: REP_LEVEL, label: 'Значение' }];
+  if (!meta?.frequency || meta?.conceptSlug === 'budget-balance-gdp') return options;
+  options.push(
+    { id: REP_POP, label: LABEL_POP },
+    { id: REP_YOY, label: LABEL_YOY },
+  );
+  return options;
+}
+
+export function worldCompareTransformFor(repId, frequency) {
+  if (repId === REP_POP) return `world-pop-${frequency}`;
+  if (repId === REP_YOY) return `world-yoy-${frequency}`;
+  return null;
+}
+
 /**
  * Разрешить (индикатор, repId) в спецификацию загрузки:
  * { code, transform, unit, repId }. Неизвестное представление → level.
@@ -178,5 +194,34 @@ export function applyCompareTransform(points, transform) {
   }
   if (transform === 'mom') return applyMoMTransform(points);
   if (transform === 'cpiCumulative') return buildCumulativeIndex(points);
+  if (transform?.startsWith('world-')) {
+    const [, comparison, frequency] = transform.split('-');
+    const byDate = new Map(points.map((point) => [String(point.date).slice(0, 10), Number(point.value)]));
+    const previousDate = (isoDate) => {
+      const [year, month, day] = isoDate.split('-').map(Number);
+      if (comparison === 'yoy' || frequency === 'annual') {
+        return `${year - 1}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      }
+      if (frequency === 'monthly') {
+        const previousMonth = month === 1 ? 12 : month - 1;
+        const previousYear = month === 1 ? year - 1 : year;
+        return `${previousYear}-${String(previousMonth).padStart(2, '0')}-01`;
+      }
+      if (frequency === 'quarterly') {
+        const previousMonth = month === 1 ? 10 : month - 3;
+        const previousYear = month === 1 ? year - 1 : year;
+        return `${previousYear}-${String(previousMonth).padStart(2, '0')}-01`;
+      }
+      return null;
+    };
+    return points.flatMap((point) => {
+      const date = String(point.date).slice(0, 10);
+      const previous = previousDate(date);
+      const previousValue = previous ? byDate.get(previous) : undefined;
+      const value = Number(point.value);
+      if (!Number.isFinite(value) || !Number.isFinite(previousValue) || previousValue === 0) return [];
+      return [{ ...point, value: Math.round((value / previousValue - 1) * 10000) / 100 }];
+    });
+  }
   return points;
 }

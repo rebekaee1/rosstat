@@ -3,6 +3,7 @@ import {
   REP_LEVEL, REP_POP, REP_YOY,
   compareRepresentationsFor, resolveCompareSeries, applyCompareTransform,
   isIndexableBase, rebaseToHundred, resolveStepOverride,
+  worldCompareRepresentationsFor, worldCompareTransformFor,
 } from './compareRepresentation';
 
 describe('compareRepresentation — resolver', () => {
@@ -95,6 +96,33 @@ describe('compareRepresentation — transforms', () => {
 
   it('empty input yields empty output', () => {
     expect(applyCompareTransform([], 'mom')).toEqual([]);
+  });
+
+  it('world monthly series supports adjacent and year-over-year comparisons', () => {
+    expect(worldCompareRepresentationsFor({
+      frequency: 'monthly',
+      conceptSlug: 'hicp-index',
+    }).map((item) => item.id)).toEqual([REP_LEVEL, REP_POP, REP_YOY]);
+    const points = [
+      { date: '2024-01-01', value: 100 },
+      { date: '2024-02-01', value: 101 },
+      { date: '2025-01-01', value: 110 },
+    ];
+    expect(applyCompareTransform(
+      points,
+      worldCompareTransformFor(REP_POP, 'monthly'),
+    )).toEqual([{ date: '2024-02-01', value: 1 }]);
+    expect(applyCompareTransform(
+      points,
+      worldCompareTransformFor(REP_YOY, 'monthly'),
+    )).toEqual([{ date: '2025-01-01', value: 10 }]);
+  });
+
+  it('signed budget concept remains level-only', () => {
+    expect(worldCompareRepresentationsFor({
+      frequency: 'annual',
+      conceptSlug: 'budget-balance-gdp',
+    }).map((item) => item.id)).toEqual([REP_LEVEL]);
   });
 });
 

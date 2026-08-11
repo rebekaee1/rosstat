@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useState, useDeferredValue } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
-  ChevronRight, ChevronDown, Search, Globe2,
+  ChevronRight, Search, Globe2, BarChart3, ArrowUpRight,
+  CalendarRange, TrendingUp,
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import {
@@ -14,6 +15,7 @@ import { formatDate } from '../lib/format';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import { SkeletonBox } from '../components/Skeleton';
 import useSearchTracking from '../lib/useSearchTracking';
+import { CountrySilhouette } from '../components/WorldMap';
 
 function normalize(s) {
   return (s || '').toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim();
@@ -41,15 +43,15 @@ function IndicatorRow({ item, slug }) {
   return (
     <Link
       to={`/world/${slug}/${item.code}`}
-      className="group flex items-center justify-between gap-3 px-3.5 py-3 hover:bg-surface-hover rounded-lg transition-colors"
+      className="group flex min-h-[92px] items-center justify-between gap-4 rounded-xl border border-border-subtle bg-white px-4 py-3.5 transition-all hover:-translate-y-0.5 hover:border-border-champagne hover:shadow-[0_12px_30px_rgba(35,30,16,0.06)]"
     >
       <div className="min-w-0 flex-1">
         <div className="text-[14px] text-text-primary leading-snug group-hover:text-champagne transition-colors">
           {name}
         </div>
-        <div className="mt-0.5 text-[11px] text-text-tertiary">
-          {item.unit}
-          {freqLine ? ` · ${freqLine}` : ''}
+        <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-[10px] text-text-tertiary">
+          {freqLine && <span className="rounded-full bg-obsidian-light px-2 py-0.5 font-mono">{freqLine}</span>}
+          {item.unit && <span className="truncate">{item.unit}</span>}
         </div>
       </div>
       <div className="shrink-0 text-right">
@@ -60,27 +62,18 @@ function IndicatorRow({ item, slug }) {
           {item.last_date ? formatDate(item.last_date, item.frequency === 'annual' ? 'annual' : 'full') : '—'}
         </div>
       </div>
-      <ChevronRight size={14} className="shrink-0 text-text-tertiary group-hover:text-champagne transition-colors" />
+      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-obsidian-light">
+        <ChevronRight size={13} className="text-text-tertiary transition-colors group-hover:text-champagne" />
+      </span>
     </Link>
   );
-}
-
-const OPEN_KEY = 'fe:world-open-sections';
-
-function readOpenSections() {
-  try {
-    const raw = sessionStorage.getItem(OPEN_KEY);
-    return new Set(raw ? JSON.parse(raw) : []);
-  } catch {
-    return new Set();
-  }
 }
 
 export default function WorldCountry() {
   const { slug } = useParams();
   const { data, isLoading, isError, refetch, isFetching, error } = useWorldCountry(slug);
   const [query, setQuery] = useState('');
-  const [openSections, setOpenSections] = useState(readOpenSections);
+  const [activeCategory, setActiveCategory] = useState('');
   const deferredQuery = useDeferredValue(query);
 
   const countryName = data?.country?.name;
@@ -93,7 +86,7 @@ export default function WorldCountry() {
     path: `/world/${slug}`,
   } : {
     title: notFound ? 'Страна не найдена' : 'Мировая экономика',
-    description: 'Макроэкономические показатели стран мира.',
+    description: 'Макроэкономические показатели стран Европы.',
     path: `/world/${slug}`,
   });
 
@@ -155,23 +148,15 @@ export default function WorldCountry() {
 
   useSearchTracking('world-country-indicators', deferredQuery, matchCount);
 
-  const toggleSection = (name) => {
-    setOpenSections((prev) => {
-      const next = new Set(prev);
-      if (next.has(name)) next.delete(name);
-      else next.add(name);
-      try {
-        sessionStorage.setItem(OPEN_KEY, JSON.stringify([...next]));
-      } catch { /* ignore */ }
-      return next;
-    });
-  };
-
-  // При поиске — раскрываем все совпавшие секции
-  const isOpen = (name) => (deferredQuery ? true : openSections.has(name));
+  const resolvedActiveCategory = filteredCategories.some((cat) => cat.name === activeCategory)
+    ? activeCategory
+    : (filteredCategories[0]?.name || '');
+  const visibleCategories = deferredQuery
+    ? filteredCategories
+    : filteredCategories.filter((cat) => cat.name === resolvedActiveCategory);
 
   return (
-    <div className="max-w-5xl mx-auto px-4 pt-24 pb-20">
+    <div className="mx-auto w-full max-w-7xl px-4 pb-24 pt-24 sm:px-6">
       <nav className="flex items-center gap-1.5 text-xs text-text-tertiary mb-4 overflow-hidden" aria-label="Хлебные крошки">
         <Link to="/world" className="hover:text-champagne transition-colors shrink-0">Мировая экономика</Link>
         <ChevronRight size={12} className="shrink-0" />
@@ -214,27 +199,137 @@ export default function WorldCountry() {
 
       {data && (
         <>
-          <div className="mb-6">
-            <div className="flex items-center gap-2 text-champagne text-xs font-mono uppercase tracking-widest mb-2">
-              <Globe2 size={13} />
-              {data.country.region}
+          <section className="relative mb-8 overflow-hidden rounded-[2rem] border border-border-subtle bg-surface p-6 shadow-[0_22px_70px_rgba(35,30,16,0.06)] sm:p-8">
+            <div className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-champagne/10 blur-3xl" />
+            <div className="relative grid gap-7 lg:grid-cols-[minmax(0,1.3fr)_minmax(260px,0.7fr)] lg:items-center">
+              <div>
+                <div className="mb-4 flex items-center gap-3">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-full border border-champagne/20 bg-champagne/8 font-mono text-sm font-semibold text-champagne">
+                    {data.country.code}
+                  </span>
+                  <div>
+                    <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">
+                      <Globe2 size={12} />
+                      {data.country.region}
+                    </div>
+                    <div className="mt-1 text-xs text-text-tertiary">{data.country.name_en}</div>
+                  </div>
+                </div>
+                <h1 className="font-display text-4xl font-bold leading-tight text-text-primary sm:text-5xl">
+                  {countryName}: экономика и показатели
+                </h1>
+                <p className="mt-4 max-w-2xl text-sm leading-6 text-text-secondary">
+                  {totalIndicators} {pluralRu(totalIndicators, ['показатель', 'показателя', 'показателей'])}
+                  {' '}в {data.categories.length} {pluralRu(data.categories.length, ['тематическом разделе', 'тематических разделах', 'тематических разделах'])}
+                  {data.coverage?.history_start
+                    ? `; доступная история начинается с ${formatDate(data.coverage.history_start, 'annual')} года.`
+                    : '.'}
+                </p>
+              </div>
+              <div>
+                <CountrySilhouette
+                  code={data.country.code}
+                  name={countryName}
+                  region={data.country.region}
+                  historyStart={data.coverage?.history_start}
+                  historyEnd={data.coverage?.history_end}
+                  frequencies={data.coverage?.frequencies}
+                />
+                <Link
+                  to={data.overview?.[0]
+                    ? `/compare?codes=w:${slug}:${data.overview[0].concept_slug}`
+                    : '/compare'}
+                  className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-champagne px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-transform hover:-translate-y-0.5"
+                >
+                  <BarChart3 size={15} />
+                  Сравнить показатели
+                  <ArrowUpRight size={14} />
+                </Link>
+              </div>
             </div>
-            <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary leading-tight">
-              {countryName}
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              {totalIndicators}{' '}
-              {pluralRu(totalIndicators, ['показатель', 'показателя', 'показателей'])}
-              {' · источник: Евростат'}
-            </p>
+
+            <div className="relative mt-7 grid gap-2 border-t border-border-subtle pt-5 sm:grid-cols-3 sm:gap-4">
+              {(data.overview || []).slice(0, 3).map((item) => (
+                <Link
+                  key={item.concept_slug}
+                  to={`/world/${slug}/${item.indicator_code}`}
+                  className="group min-w-0 rounded-xl bg-obsidian-light/65 px-3 py-3 transition-colors hover:bg-champagne/[0.08]"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="font-mono text-lg font-semibold tabular-nums text-text-primary">
+                      {formatWorldValue(item.value)}
+                    </div>
+                    <TrendingUp size={13} className="mt-1 shrink-0 text-champagne" />
+                  </div>
+                  <div className="mt-1 line-clamp-1 text-[10px] text-text-secondary group-hover:text-text-primary">
+                    {item.name}
+                  </div>
+                  <div className="mt-1 truncate font-mono text-[9px] text-text-tertiary">
+                    {formatDate(item.date, item.frequency === 'annual' ? 'annual' : 'full')}
+                  </div>
+                </Link>
+              ))}
+              {!data.overview?.length && (
+                <div className="sm:col-span-3 text-xs text-text-tertiary">
+                  {totalIndicators} показателей · {data.categories.length} разделов · источник — Евростат
+                </div>
+              )}
+            </div>
             {data._fromMock && (
               <p className="mt-1 text-[12px] text-text-tertiary font-mono">
                 Демо-данные (API ещё не подключён)
               </p>
             )}
-          </div>
+          </section>
 
-          <div className="mb-5 relative">
+          {data.overview?.length > 0 && (
+            <section className="mb-8" data-block="country-overview">
+              <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">
+                    Экономический профиль
+                  </div>
+                  <h2 className="mt-1 font-display text-2xl font-bold text-text-primary">
+                    Ключевые показатели
+                  </h2>
+                </div>
+                {data.coverage?.frequencies?.length > 0 && (
+                  <div className="flex items-center gap-2 text-[11px] text-text-tertiary">
+                    <CalendarRange size={13} className="text-champagne" />
+                    {data.coverage.frequencies.map((frequency) => FREQ_LABEL[frequency] || frequency).join(' · ')}
+                  </div>
+                )}
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                {data.overview.slice(0, 6).map((item) => (
+                  <Link
+                    key={item.concept_slug}
+                    to={`/world/${slug}/${item.indicator_code}`}
+                    className="group rounded-2xl border border-border-subtle bg-surface p-4 shadow-[0_10px_30px_rgba(35,30,16,0.04)] transition-all hover:-translate-y-0.5 hover:border-border-champagne hover:shadow-[0_16px_35px_rgba(35,30,16,0.07)]"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="text-[12px] leading-5 text-text-secondary group-hover:text-text-primary">
+                        {item.name}
+                      </div>
+                      <TrendingUp size={14} className="mt-0.5 shrink-0 text-champagne" />
+                    </div>
+                    <div className="mt-4 font-mono text-2xl font-semibold tabular-nums text-text-primary">
+                      {formatWorldValue(item.value)}
+                    </div>
+                    <div className="mt-1 line-clamp-2 text-[10px] leading-4 text-text-tertiary">
+                      {item.unit}
+                    </div>
+                    <div className="mt-3 flex items-center justify-between border-t border-border-subtle pt-2.5 font-mono text-[10px] text-text-tertiary">
+                      <span>{formatDate(item.date, item.frequency === 'annual' ? 'annual' : 'full')}</span>
+                      <ChevronRight size={12} className="transition-transform group-hover:translate-x-0.5" />
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
+
+          <div className="relative mb-6">
             <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
             <input
               type="search"
@@ -242,7 +337,7 @@ export default function WorldCountry() {
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Найти показатель…"
               aria-label="Поиск по показателям страны"
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface border border-border-subtle text-sm text-text-primary placeholder:text-text-tertiary focus:outline-none focus:border-border-champagne"
+              className="w-full rounded-xl border border-border-subtle bg-surface py-3 pl-10 pr-4 text-sm text-text-primary shadow-sm placeholder:text-text-tertiary focus:border-border-champagne focus:outline-none"
             />
           </div>
 
@@ -256,35 +351,53 @@ export default function WorldCountry() {
             </div>
           )}
 
-          <div className="space-y-3">
-            {filteredCategories.map((cat) => {
-              const open = isOpen(cat.name);
-              return (
-                <div key={cat.name} className="bg-surface border border-border-subtle rounded-xl overflow-hidden">
-                  <button
-                    type="button"
-                    onClick={() => toggleSection(cat.name)}
-                    className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-surface-hover transition-colors"
-                    aria-expanded={open}
-                  >
-                    <span className="text-sm font-medium text-text-primary">
-                      {cat.name}
-                      <span className="ml-2 font-mono text-[11px] text-text-tertiary font-normal">
-                        {cat.indicators.length}
-                      </span>
-                    </span>
-                    <ChevronDown size={16} className={`text-text-tertiary transition-transform ${open ? 'rotate-180' : ''}`} />
-                  </button>
-                  {open && (
-                    <div className="border-t border-border-subtle pb-1">
-                      {cat.indicators.map((ind) => (
-                        <IndicatorRow key={ind.code} item={ind} slug={slug} />
-                      ))}
-                    </div>
-                  )}
+          <div className="grid gap-6 lg:grid-cols-[250px_minmax(0,1fr)]">
+            {!deferredQuery && (
+              <aside className="lg:sticky lg:top-24 lg:self-start">
+                <div className="mb-2 px-2 text-[10px] font-mono uppercase tracking-[0.18em] text-text-tertiary">
+                  Темы
                 </div>
-              );
-            })}
+                <div className="flex gap-2 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible">
+                  {filteredCategories.map((cat) => (
+                    <button
+                      key={cat.name}
+                      type="button"
+                      onClick={() => setActiveCategory(cat.name)}
+                      className={[
+                        'flex shrink-0 items-center justify-between gap-4 rounded-xl px-3.5 py-2.5 text-left text-sm transition-colors',
+                        resolvedActiveCategory === cat.name
+                          ? 'bg-champagne/12 font-medium text-champagne'
+                          : 'bg-surface text-text-secondary hover:bg-surface-hover hover:text-text-primary',
+                      ].join(' ')}
+                    >
+                      <span>{cat.name}</span>
+                      <span className="font-mono text-[10px] opacity-60">{cat.indicators.length}</span>
+                    </button>
+                  ))}
+                </div>
+              </aside>
+            )}
+
+            <div className="min-w-0 space-y-8">
+              {visibleCategories.map((cat) => (
+                <section key={cat.name}>
+                  <div className="mb-4 flex items-end justify-between gap-4">
+                    <div>
+                      <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">
+                        {deferredQuery ? 'Результаты поиска' : 'Показатели'}
+                      </div>
+                      <h2 className="mt-1 font-display text-2xl font-bold text-text-primary">{cat.name}</h2>
+                    </div>
+                    <span className="font-mono text-xs text-text-tertiary">{cat.indicators.length}</span>
+                  </div>
+                  <div className="grid gap-2.5 xl:grid-cols-2">
+                    {cat.indicators.map((ind) => (
+                      <IndicatorRow key={ind.code} item={ind} slug={slug} />
+                    ))}
+                  </div>
+                </section>
+              ))}
+            </div>
           </div>
         </>
       )}

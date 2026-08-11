@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
+import { createElement, useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useQueries } from '@tanstack/react-query';
 import {
@@ -7,12 +7,13 @@ import {
 } from 'recharts';
 import {
   ArrowLeft, Activity, GitCompare, Search, X, Plus, ImageDown, Sparkles,
-  Landmark, MapPin, Check, ChevronDown,
+  Landmark, MapPin, Check, ChevronDown, Globe2,
 } from 'lucide-react';
 import { useIndicators } from '../lib/hooks';
 import { fetchIndicatorData } from '../lib/api';
 import api from '../lib/api';
 import { useRegionsLanding, useRegionsCatalog } from '../lib/regionsApi';
+import { fetchWorldCompareSeries, useWorldCompareCatalog } from '../lib/worldApi';
 import { useAuth } from '../context/authContext';
 import {
   formatDate, formatChartAxisDate, formatAxisTick, formatValueWithUnit,
@@ -27,7 +28,14 @@ import useScrollDepth from '../lib/useScrollDepth';
 import {
   REP_LEVEL, REP_ORDER, REP_HINT, compareRepresentationsFor, resolveCompareSeries,
   applyCompareTransform, isIndexableBase, rebaseToHundred, resolveStepOverride,
+  worldCompareRepresentationsFor, worldCompareTransformFor,
 } from '../lib/compareRepresentation';
+import {
+  activeCompatibilityNote,
+  compareCompatibility,
+  parseWorldCompareCode,
+  sanitizeCompareCodes,
+} from '../lib/compareCompatibility';
 
 const RANGE_OPTIONS = [
   { key: '3y', label: '3 года', months: 36 },
@@ -60,6 +68,24 @@ const STEP_OPTIONS = [
   { key: 'quarter', label: 'Квартал' },
   { key: 'year', label: 'Год' },
 ];
+
+function pearsonCorrelation(pairs) {
+  if (pairs.length < 6) return null;
+  const meanX = pairs.reduce((sum, pair) => sum + pair[0], 0) / pairs.length;
+  const meanY = pairs.reduce((sum, pair) => sum + pair[1], 0) / pairs.length;
+  let covariance = 0;
+  let varianceX = 0;
+  let varianceY = 0;
+  for (const [x, y] of pairs) {
+    const dx = x - meanX;
+    const dy = y - meanY;
+    covariance += dx * dy;
+    varianceX += dx * dx;
+    varianceY += dy * dy;
+  }
+  const denominator = Math.sqrt(varianceX * varianceY);
+  return denominator > 0 ? covariance / denominator : null;
+}
 
 /** Усреднение ряда по календарному шагу (месяц/квартал/год); 'auto' — как есть. */
 function aggregateToStep(points, step) {
@@ -129,7 +155,9 @@ function parseReps(searchParams) {
   const out = {};
   if (!raw) return out;
   raw.split(',').forEach((pair) => {
-    const [code, rep] = pair.split(':');
+    const separator = pair.lastIndexOf(':');
+    const code = separator > 0 ? pair.slice(0, separator) : '';
+    const rep = separator > 0 ? pair.slice(separator + 1) : '';
     if (code && rep && REP_ORDER.includes(rep.trim())) out[code.trim()] = rep.trim();
   });
   return out;
@@ -144,6 +172,10 @@ function isRegionCode(code) {
   return code.startsWith('r:');
 }
 
+function isWorldCode(code) {
+  return !!parseWorldCompareCode(code);
+}
+
 async function fetchRegionSeries(code, { signal }) {
   const [, slug, indCode] = code.split(':');
   const resp = await api.get(`/regions/${slug}/i/${indCode}`, { signal });
@@ -156,6 +188,23 @@ async function fetchRegionSeries(code, { signal }) {
       unit: d.indicator.unit,
       frequency: 'annual',
       category: 'Регионы',
+    },
+  };
+}
+
+async function fetchWorldSeries(code, { signal }) {
+  const parsed = parseWorldCompareCode(code);
+  if (!parsed) throw new Error('Некорректный код мирового ряда');
+  const payload = await fetchWorldCompareSeries(parsed.countrySlug, parsed.conceptSlug, { signal });
+  return {
+    data: payload.data,
+    __worldMeta: {
+      code,
+      name: `${payload.meta.concept_name} — ${payload.meta.country_name}`,
+      unit: payload.meta.unit,
+      frequency: payload.meta.frequency,
+      category: 'Мировая экономика',
+      conceptSlug: payload.meta.concept_slug,
     },
   };
 }
@@ -292,7 +341,9 @@ function ComboSelect({ groups, value, onChange, placeholder, searchPlaceholder, 
  * Оба поля можно листать целиком или искать вводом (85 регионов × десятки
  * показателей).
  */
-function AddRegionSeries({ selected, onAdd, atCap, capHint }) {
+function AddRegionSeries({
+  selected, onAdd, atCap, capHint, compatibilityFor,
+}) {
   const landing = useRegionsLanding();
   const catalog = useRegionsCatalog();
   const [regionSlug, setRegionSlug] = useState('');
@@ -310,13 +361,20 @@ function AddRegionSeries({ selected, onAdd, atCap, capHint }) {
     const sections = catalog.data?.sections || [];
     return sections.map((s) => ({
       label: s.name,
-      items: s.indicators.map((i) => ({ value: i.code, label: i.name })),
-    }));
-  }, [catalog.data]);
+      items: s.indicators
+        .filter((indicator) => !regionSlug
+          || !compatibilityFor
+          || compatibilityFor(`r:${regionSlug}:${indicator.code}`).allowed)
+        .map((i) => ({ value: i.code, label: i.name })),
+    })).filter((section) => section.items.length);
+  }, [catalog.data, compatibilityFor, regionSlug]);
 
   const code = regionSlug && indCode ? `r:${regionSlug}:${indCode}` : null;
   const already = code && selected.includes(code);
-  const canAdd = code && !already && !atCap;
+  const compatibility = code && compatibilityFor
+    ? compatibilityFor(code)
+    : { allowed: true, reason: null };
+  const canAdd = code && !already && !atCap && compatibility.allowed;
 
   const handleAdd = () => {
     if (!canAdd) return;
@@ -357,7 +415,11 @@ function AddRegionSeries({ selected, onAdd, atCap, capHint }) {
           type="button"
           disabled={!canAdd}
           onClick={handleAdd}
-          title={atCap ? capHint : (already ? 'Этот ряд уже добавлен' : undefined)}
+          title={atCap
+            ? capHint
+            : already
+              ? 'Этот ряд уже добавлен'
+              : compatibility.reason || undefined}
           className={cn(
             'inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
             canAdd
@@ -373,7 +435,9 @@ function AddRegionSeries({ selected, onAdd, atCap, capHint }) {
   );
 }
 
-function AddIndicator({ indicators, selected, onAdd, atCap, capHint }) {
+function AddIndicator({
+  indicators, selected, onAdd, atCap, capHint, compatibilityFor,
+}) {
   const [query, setQuery] = useState('');
   const [openList, setOpenList] = useState(false);
   // Директория сравнения: показываем ВСЕ показатели (минус уже выбранные),
@@ -383,13 +447,15 @@ function AddIndicator({ indicators, selected, onAdd, atCap, capHint }) {
   // seo_keywords (синонимы/корни), как в основном поиске.
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
-    const pool = (indicators || []).filter((i) => !selected.includes(i.code));
+    const pool = (indicators || []).filter((i) =>
+      !selected.includes(i.code)
+      && (!compatibilityFor || compatibilityFor(i.code).allowed));
     if (!q) return pool;
     return pool.filter((i) => {
       const hay = `${i.name || ''} ${i.name_en || ''} ${i.category || ''} ${i.code || ''} ${i.seo_keywords || ''}`.toLowerCase();
       return hay.includes(q);
     });
-  }, [indicators, selected, query]);
+  }, [indicators, selected, query, compatibilityFor]);
 
   // Спрос-аналитика поиска сравнения (как в основном поиске): фиксируем
   // введённый запрос с числом результатов через debounce. Запрос с 0
@@ -440,6 +506,94 @@ function AddIndicator({ indicators, selected, onAdd, atCap, capHint }) {
             </button>
           ))}
         </div>
+      )}
+    </div>
+  );
+}
+
+function AddWorldSeries({
+  items, selected, onAdd, atCap, capHint, compatibilityFor,
+}) {
+  const concepts = useMemo(() => {
+    const map = new Map();
+    for (const item of items || []) {
+      if (!map.has(item.concept_slug)) {
+        map.set(item.concept_slug, {
+          value: item.concept_slug,
+          label: item.concept_name,
+        });
+      }
+    }
+    return [...map.values()].sort((a, b) => a.label.localeCompare(b.label, 'ru'));
+  }, [items]);
+  const [concept, setConcept] = useState('');
+  const [countryCode, setCountryCode] = useState('');
+
+  const activeConcept = concepts.some((item) => item.value === concept)
+    ? concept
+    : (concepts[0]?.value || '');
+
+  const countryItems = useMemo(
+    () => (items || [])
+      .filter((item) => item.concept_slug === activeConcept)
+      .map((item) => ({
+        value: item.code,
+        label: `${item.country_name} · ${item.frequency === 'monthly' ? 'месяц' : item.frequency === 'quarterly' ? 'квартал' : 'год'}`,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label, 'ru')),
+    [items, activeConcept],
+  );
+  const already = selected.includes(countryCode);
+  const compatibility = countryCode
+    ? compatibilityFor(countryCode)
+    : { allowed: false, reason: null };
+  const canAdd = countryCode && !already && !atCap && compatibility.allowed;
+
+  return (
+    <div className="grid gap-2">
+      <ComboSelect
+        groups={[{ label: 'Показатель', items: concepts }]}
+        value={activeConcept}
+        onChange={(value) => { setConcept(value); setCountryCode(''); }}
+        placeholder="Выберите показатель…"
+        searchPlaceholder="Найти показатель…"
+        ariaLabel="Мировой показатель"
+        disabled={atCap}
+        trackContext="compare-world-concept"
+      />
+      <ComboSelect
+        groups={[{ label: 'Страны', items: countryItems }]}
+        value={countryCode}
+        onChange={setCountryCode}
+        placeholder="Выберите страну…"
+        searchPlaceholder="Найти страну…"
+        ariaLabel="Страна мирового показателя"
+        disabled={atCap || !activeConcept}
+        trackContext="compare-world-country"
+      />
+      <button
+        type="button"
+        disabled={!canAdd}
+        onClick={() => { if (canAdd) { onAdd(countryCode); setCountryCode(''); } }}
+        title={atCap
+          ? capHint
+          : already
+            ? 'Эта страна уже добавлена'
+            : compatibility.reason || undefined}
+        className={cn(
+          'inline-flex min-h-10 w-full items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium transition-colors',
+          canAdd
+            ? 'bg-champagne text-white hover:bg-champagne-muted'
+            : 'cursor-not-allowed bg-obsidian-lighter text-text-tertiary',
+        )}
+      >
+        <Plus className="h-3.5 w-3.5" />
+        Добавить
+      </button>
+      {countryCode && !already && !atCap && !compatibility.allowed && (
+        <p className="text-xs leading-relaxed text-text-tertiary">
+          {compatibility.reason}
+        </p>
       )}
     </div>
   );
@@ -512,6 +666,7 @@ export default function ComparePage() {
   const [range, setRange] = useState('5y');
   const [scale, setScale] = useState('values');
   const [step, setStep] = useState('auto');
+  const [compatibilityMessage, setCompatibilityMessage] = useState('');
   // Панорама окна: сдвиг в точках от правого края ряда («кружочек» как на
   // карточке индикатора — созвон «На правки 13»).
   const [panOffset, setPanOffset] = useState(0);
@@ -538,14 +693,15 @@ export default function ComparePage() {
   // Гость никогда не рендерит/экспортирует больше двух рядов — даже если коды
   // переданы напрямую в URL.
   const allCodes = useMemo(() => parseCodes(searchParams), [searchParams]);
+  const compatibleCodes = useMemo(() => sanitizeCompareCodes(allCodes), [allCodes]);
   const codes = useMemo(
-    () => (isAuthed ? allCodes : allCodes.slice(0, GUEST_MAX)),
-    [allCodes, isAuthed],
+    () => (isAuthed ? compatibleCodes : compatibleCodes.slice(0, GUEST_MAX)),
+    [compatibleCodes, isAuthed],
   );
 
   useDocumentMeta({
     title: 'Сравнение индикаторов',
-    description: 'Сравнивайте макроэкономические индикаторы России на одном графике — до 10 рядов.',
+    description: 'Сравнение макроэкономических индикаторов России, регионов и методологически сопоставимых показателей стран Европы.',
     path: '/compare',
   });
 
@@ -560,6 +716,27 @@ export default function ComparePage() {
   useEffect(() => { setPanOffset(0); }, [codes]);
 
   const { data: indicators } = useIndicators();
+  const { data: worldCompareCatalog } = useWorldCompareCatalog();
+  const hasWorldSeries = codes.some(isWorldCode);
+  const dataSpacesCount = [
+    codes.some(isWorldCode),
+    codes.some(isRegionCode),
+    codes.some((code) => !isWorldCode(code) && !isRegionCode(code)),
+  ].filter(Boolean).length;
+  const worldCompareItems = worldCompareCatalog?.items || [];
+  const compatibilityNote = activeCompatibilityNote(codes);
+  const worldMetaByCode = useMemo(
+    () => new Map((worldCompareCatalog?.items || []).map((item) => [item.code, {
+      frequency: item.frequency,
+      conceptSlug: item.concept_slug,
+      unit: item.unit,
+    }])),
+    [worldCompareCatalog],
+  );
+
+  useEffect(() => {
+    if (hasWorldSeries && step !== 'auto') setStep('auto');
+  }, [hasWorldSeries, step]);
 
   const repByCode = useMemo(() => parseReps(searchParams), [searchParams]);
 
@@ -572,7 +749,10 @@ export default function ComparePage() {
     // Убираем rep-записи удалённых кодов, чтобы URL не тащил мусор.
     const rawRep = params.get('rep');
     if (rawRep) {
-      const kept = rawRep.split(',').filter((pair) => next.includes(pair.split(':')[0]));
+      const kept = rawRep.split(',').filter((pair) => {
+        const separator = pair.lastIndexOf(':');
+        return separator > 0 && next.includes(pair.slice(0, separator));
+      });
       if (kept.length) params.set('rep', kept.join(','));
       else params.delete('rep');
     }
@@ -598,6 +778,12 @@ export default function ComparePage() {
       }
       return;
     }
+    const compatibility = compareCompatibility(codes, code);
+    if (!compatibility.allowed) {
+      setCompatibilityMessage(compatibility.reason);
+      return;
+    }
+    setCompatibilityMessage('');
     const next = [...codes, code];
     writeCodes(next);
     track(events.COMPARE_ADD, { code, count: next.length });
@@ -612,6 +798,22 @@ export default function ComparePage() {
   // Так каждый ряд грузится в выбранном виде (уровень/к пред./к году), а не в
   // нативном. Резолвер (compareRepresentation.js) знает generic-семьи и bespoke.
   const resolved = useMemo(() => codes.map((code) => {
+    if (isWorldCode(code)) {
+      const meta = worldMetaByCode.get(code);
+      const requestedRep = repByCode[code] || REP_LEVEL;
+      const options = worldCompareRepresentationsFor(meta);
+      const repId = options.some((item) => item.id === requestedRep)
+        ? requestedRep
+        : REP_LEVEL;
+      return {
+        code, ind: null, repId,
+        repLabel: options.find((item) => item.id === repId)?.label || 'Значение',
+        fetchCode: code,
+        transform: worldCompareTransformFor(repId, meta?.frequency),
+        unit: repId === REP_LEVEL ? meta?.unit : '%',
+        isWorld: true,
+      };
+    }
     // Региональный ряд (`r:{slug}:{code}`): годовой уровень без представлений —
     // метаданные приходят вместе с данными (__regionMeta), резолвер не нужен.
     if (isRegionCode(code)) {
@@ -633,12 +835,14 @@ export default function ComparePage() {
       fetchCode: stepAlt || spec.code, transform: stepAlt ? null : spec.transform,
       unit: spec.unit, stepDeep: !!stepAlt,
     };
-  }), [codes, indicators, repByCode, step]);
+  }), [codes, indicators, repByCode, step, worldMetaByCode]);
 
   const results = useQueries({
     queries: resolved.map((r) => ({
       queryKey: ['indicator-data', r.fetchCode, undefined],
-      queryFn: ({ signal }) => (r.isRegion
+      queryFn: ({ signal }) => (r.isWorld
+        ? fetchWorldSeries(r.fetchCode, { signal })
+        : r.isRegion
         ? fetchRegionSeries(r.fetchCode, { signal })
         : fetchIndicatorData(r.fetchCode, undefined, { signal })),
       enabled: !!r.fetchCode,
@@ -651,10 +855,15 @@ export default function ComparePage() {
     code: r.code,
     key: `v${i}`,
     color: PALETTE[i % PALETTE.length],
-    ind: r.isRegion ? results[i]?.data?.__regionMeta : r.ind,
+    ind: r.isWorld
+      ? results[i]?.data?.__worldMeta
+      : r.isRegion ? results[i]?.data?.__regionMeta : r.ind,
     rep: r.repId,
     repLabel: r.repLabel,
-    unit: r.isRegion ? results[i]?.data?.__regionMeta?.unit : r.unit,
+    unit: r.isWorld
+      ? (r.repId === REP_LEVEL ? results[i]?.data?.__worldMeta?.unit : r.unit)
+      : r.isRegion ? results[i]?.data?.__regionMeta?.unit : r.unit,
+    isWorld: r.isWorld,
     transform: r.transform,
     stepDeep: r.stepDeep,
     data: results[i]?.data,
@@ -681,7 +890,7 @@ export default function ComparePage() {
       // stepDeep: данные уже загружены на нативной частоте нужного шага
       // (реальный alternate_frequencies ряд) — повторная клиентская
       // агрегация не нужна и исказила бы уже готовые годовые/квартальные точки.
-      const pts = s.stepDeep ? transformed : aggregateToStep(transformed, step);
+      const pts = s.stepDeep || s.isWorld ? transformed : aggregateToStep(transformed, step);
       return new Map(pts.map((p) => [p.date, p.value]));
     });
 
@@ -760,6 +969,40 @@ export default function ComparePage() {
 
   const chartRows = chartData.rows;
   const { nonIndexableNames, nonIndexableKeys, maxPan } = chartData;
+  const analysisSummary = useMemo(() => {
+    const metrics = series.map((item) => {
+      const points = chartRows
+        .filter((row) => Number.isFinite(Number(row[item.key])))
+        .map((row) => ({ date: row.date, value: Number(row[item.key]) }));
+      if (!points.length) return { item, points: [], first: null, last: null };
+      const first = points[0];
+      const last = points[points.length - 1];
+      return {
+        item,
+        points,
+        first,
+        last,
+        minimum: Math.min(...points.map((point) => point.value)),
+        maximum: Math.max(...points.map((point) => point.value)),
+        change: last.value - first.value,
+      };
+    });
+    const base = metrics[0];
+    const correlations = base?.points?.length
+      ? metrics.slice(1).map((metric) => {
+          const byDate = new Map(metric.points.map((point) => [point.date, point.value]));
+          const pairs = base.points
+            .filter((point) => byDate.has(point.date))
+            .map((point) => [point.value, byDate.get(point.date)]);
+          return {
+            item: metric.item,
+            value: pearsonCorrelation(pairs),
+            observations: pairs.length,
+          };
+        }).filter((result) => result.value != null)
+      : [];
+    return { metrics, correlations, base: base?.item || null };
+  }, [chartRows, series]);
   const hasData = chartRows.length > 0;
   const loading = series.some((s) => s.loading);
   const hasError = series.some((s) => s.error);
@@ -900,36 +1143,79 @@ export default function ComparePage() {
           Сравнение показателей
         </h1>
         <p className="text-sm md:text-base text-text-tertiary max-w-2xl">
-          На один график можно вывести и макроэкономические индикаторы страны, и
-          показатели отдельных регионов — например, сопоставить зарплату в своём
-          регионе с инфляцией по России. У каждого ряда выбирается представление
-          (значение, к прошлому периоду, к году), а если единицы измерения
-          различаются, режим «Общая база» приводит все ряды к единой точке
-          отсчёта — сто в начале периода, на графике остаётся только динамика.
+          Сопоставляйте показатели России, регионов и стран. Межстрановые ряды
+          объединяются по единой методологии, а смешанные наборы доступны только
+          для заранее проверенных показателей.
         </p>
       </div>
 
       <section data-block="compare-add" className="mb-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
-          {/* Макроиндикатор: поиск-по-всей-стране, добавление по клику. */}
-          <div className="rounded-xl border border-border-subtle bg-surface p-3">
-            <AddCardHeader
-              icon={Landmark}
-              title="Добавить макроиндикатор"
-              hint="По стране — инфляция, ВВП, ключевая ставка, безработица…"
-            />
-            <AddIndicator
-              indicators={indicators}
+        <div className="overflow-visible rounded-2xl border border-border-subtle bg-surface p-4 shadow-[0_16px_45px_rgba(35,30,16,0.05)] sm:p-5">
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-border-subtle pb-4">
+            <div>
+              <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">Добавить ряд</div>
+              <div className="mt-1 text-sm text-text-secondary">
+                Россия, регионы и страны доступны одновременно; несовместимые сочетания блокируются
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-1.5 text-[10px] font-mono text-text-tertiary">
+              {[['Россия', Landmark], ['Регионы', MapPin], ['Страны', Globe2]].map(([label, Icon]) => (
+                <span key={label} className="inline-flex items-center gap-1 rounded-full bg-obsidian-light px-2.5 py-1.5">
+                  {createElement(Icon, { className: 'h-3 w-3 text-champagne' })}
+                  {label}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid gap-3 xl:grid-cols-3">
+            <div className="rounded-xl border border-border-subtle bg-obsidian-light/45 p-3">
+              <AddCardHeader
+                icon={Landmark}
+                title="Россия"
+                hint="Федеральный макроэкономический ряд"
+              />
+              <AddIndicator
+                indicators={indicators}
+                selected={codes}
+                onAdd={addCode}
+                atCap={atCap}
+                capHint={capHint}
+                compatibilityFor={(code) => compareCompatibility(codes, code)}
+              />
+            </div>
+
+            <AddRegionSeries
               selected={codes}
               onAdd={addCode}
               atCap={atCap}
               capHint={capHint}
+              compatibilityFor={(code) => compareCompatibility(codes, code)}
             />
-          </div>
 
-          {/* Региональный индикатор: регион + показатель. Тот же визуальный язык. */}
-          <AddRegionSeries selected={codes} onAdd={addCode} atCap={atCap} capHint={capHint} />
+            <div className="rounded-xl border border-border-subtle bg-obsidian-light/45 p-3">
+              <AddCardHeader
+                icon={Globe2}
+                title="Страны"
+                hint="Единый показатель, затем страна"
+              />
+              <AddWorldSeries
+                items={worldCompareItems}
+                selected={codes}
+                onAdd={addCode}
+                atCap={atCap}
+                capHint={capHint}
+                compatibilityFor={(code) => compareCompatibility(codes, code)}
+              />
+            </div>
+          </div>
         </div>
+
+        {compatibilityMessage && (
+          <div className="mt-3 rounded-xl border border-champagne/25 bg-champagne/[0.06] px-3.5 py-2.5 text-xs leading-relaxed text-text-secondary" role="status">
+            {compatibilityMessage}
+          </div>
+        )}
 
         <div className="mt-3 flex items-center text-xs text-text-tertiary">
           {isAuthed
@@ -945,7 +1231,12 @@ export default function ComparePage() {
         {codes.length > 0 && (
           <div className="mt-4 flex flex-col gap-2">
             {series.map((s) => {
-              const reps = compareRepresentationsFor(s.ind || { code: s.code });
+              const reps = s.isWorld
+                ? worldCompareRepresentationsFor({
+                    frequency: s.ind?.frequency,
+                    conceptSlug: s.ind?.conceptSlug,
+                  })
+                : compareRepresentationsFor(s.ind || { code: s.code });
               return (
                 <div
                   key={s.code}
@@ -979,6 +1270,11 @@ export default function ComparePage() {
                 </div>
               );
             })}
+          </div>
+        )}
+        {dataSpacesCount > 1 && compatibilityNote && (
+          <div className="mt-3 rounded-xl border border-champagne/20 bg-champagne/[0.06] px-3.5 py-2.5 text-xs leading-relaxed text-text-secondary">
+            {compatibilityNote}
           </div>
         )}
       </section>
@@ -1021,10 +1317,13 @@ export default function ComparePage() {
             {STEP_OPTIONS.map((opt) => (
               <button
                 key={opt.key}
+                disabled={hasWorldSeries && opt.key !== 'auto'}
                 onClick={() => { setStep(opt.key); setPanOffset(0); track(events.COMPARE_RANGE, { step: opt.key }); }}
+                title={hasWorldSeries && opt.key !== 'auto' ? 'Мировые ряды показываются только на официальной частоте' : undefined}
                 className={cn(
                   'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
                   step === opt.key ? 'bg-champagne/15 text-champagne' : 'text-text-tertiary hover:text-text-secondary',
+                  hasWorldSeries && opt.key !== 'auto' && 'cursor-not-allowed opacity-45 hover:text-text-tertiary',
                 )}
               >
                 {opt.label}
@@ -1234,6 +1533,88 @@ export default function ComparePage() {
           </div>
         )}
       </section>
+
+      {hasData && analysisSummary.metrics.some((metric) => metric.last) && (
+        <section data-block="compare-analysis" className="rounded-[2rem] border border-border-subtle bg-surface p-5 shadow-[0_16px_45px_rgba(35,30,16,0.05)] md:p-7">
+          <div className="mb-5 flex flex-col gap-2 border-b border-border-subtle pb-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">
+                Аналитическая сводка
+              </div>
+              <h2 className="mt-1 font-display text-2xl font-bold text-text-primary">
+                Что изменилось за выбранный период
+              </h2>
+            </div>
+            <div className="text-[11px] leading-5 text-text-tertiary">
+              Расчёты используют только опубликованные точки без заполнения пропусков
+            </div>
+          </div>
+
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {analysisSummary.metrics.filter((metric) => metric.last).map((metric) => {
+              const displayUnit = indexed ? 'пунктов' : (metric.item.unit || '%');
+              return (
+                <div key={metric.item.code} className="rounded-2xl border border-border-subtle bg-obsidian-light p-4">
+                  <div className="flex items-start gap-2">
+                    <span className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: metric.item.color }} />
+                    <div className="min-w-0 text-sm font-medium leading-5 text-text-primary">
+                      {metric.item.ind?.name || metric.item.code}
+                    </div>
+                  </div>
+                  <div className="mt-4 grid grid-cols-2 gap-3">
+                    <div>
+                      <div className="text-[10px] uppercase tracking-wide text-text-tertiary">Последнее</div>
+                      <div className="mt-1 font-mono text-lg font-semibold text-text-primary">
+                        {formatValueWithUnit(metric.last.value, displayUnit)}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] uppercase tracking-wide text-text-tertiary">Изменение</div>
+                      <div className={cn(
+                        'mt-1 font-mono text-lg font-semibold',
+                        metric.change > 0 ? 'text-positive' : metric.change < 0 ? 'text-negative' : 'text-text-primary',
+                      )}>
+                        {metric.change > 0 ? '+' : ''}
+                        {formatValueWithUnit(metric.change, displayUnit)}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-3 flex items-center justify-between border-t border-border-subtle pt-2.5 font-mono text-[10px] text-text-tertiary">
+                    <span>{formatDate(metric.first.date, compareDateFmt)} → {formatDate(metric.last.date, compareDateFmt)}</span>
+                    <span>{metric.points.length} точек</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {analysisSummary.correlations.length > 0 && (
+            <div className="mt-5 rounded-2xl border border-champagne/15 bg-champagne/[0.05] p-4">
+              <div className="flex items-center gap-2 text-xs font-semibold text-text-primary">
+                <Sparkles size={14} className="text-champagne" />
+                Синхронность с первым рядом
+              </div>
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                {analysisSummary.correlations.map((result) => (
+                  <div key={result.item.code} className="flex items-center justify-between gap-3 rounded-xl bg-white/65 px-3 py-2.5">
+                    <span className="min-w-0 truncate text-xs text-text-secondary">
+                      {result.item.ind?.name || result.item.code}
+                    </span>
+                    <span className="shrink-0 font-mono text-sm font-semibold text-text-primary">
+                      r = {result.value.toFixed(2)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-3 text-[10px] leading-4 text-text-tertiary">
+                Коэффициент Пирсона рассчитан только по совпадающим датам
+                ({analysisSummary.correlations.map((item) => item.observations).join(', ')} наблюдений).
+                Связь динамики не означает причинную зависимость.
+              </p>
+            </div>
+          )}
+        </section>
+      )}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 // API-слой мирового блока (bounded context «Мировая экономика»).
 // Отдельно от макро/регионов: своя ось (страна × индикатор × mode).
-// Прогнозов нет — ни в API, ни в UI.
+// Факты и quality-gated прогнозы остаются в отдельном world API.
 import { useQuery } from '@tanstack/react-query';
 import api from './api';
 import { formatValue } from './format';
@@ -52,7 +52,7 @@ export function useWorldCountries() {
   });
 }
 
-export function useWorldCountry(slug) {
+export function useWorldCountry(slug, { enabled = true } = {}) {
   return useQuery({
     queryKey: ['world-country', slug],
     queryFn: ({ signal }) =>
@@ -68,7 +68,7 @@ export function useWorldCountry(slug) {
           return mock;
         },
       ),
-    enabled: !!slug,
+    enabled: enabled && !!slug,
     staleTime: STALE,
     gcTime: GC,
     retry: (count, err) => {
@@ -108,13 +108,21 @@ export function useWorldIndicator(slug, code) {
  * Данные ряда. `requestCode` — primary или sibling (легаси-фолбэк);
  * `mode` — составной токен или легаси id (бэкенд принимает оба).
  */
-export function useWorldIndicatorData(slug, code, mode, { from, to, requestCode } = {}) {
+export function useWorldIndicatorData(
+  slug,
+  code,
+  mode,
+  {
+    from, to, requestCode, includeForecast = false,
+  } = {},
+) {
   const dataCode = requestCode || code;
   return useQuery({
-    queryKey: ['world-indicator-data', slug, dataCode, mode, from, to],
+    queryKey: ['world-indicator-data', slug, dataCode, mode, includeForecast, from, to],
     queryFn: ({ signal }) => {
       const params = {};
       if (mode) params.mode = mode;
+      if (includeForecast) params.include_forecast = true;
       if (from) params.from = from;
       if (to) params.to = to;
       return withMockFallback(
@@ -143,6 +151,62 @@ export function useWorldSearch(q, { country, limit = 50, enabled = true } = {}) 
     staleTime: 60 * 1000,
     gcTime: GC,
   });
+}
+
+export function useWorldCompareCatalog({ enabled = true } = {}) {
+  return useQuery({
+    queryKey: ['world-compare-catalog'],
+    queryFn: async ({ signal }) => (await api.get('/world/compare/catalog', { signal })).data,
+    enabled,
+    staleTime: STALE,
+    gcTime: GC,
+  });
+}
+
+export async function fetchWorldCompareSeries(countrySlug, conceptSlug, { signal } = {}) {
+  return (await api.get(`/world/compare/series/${countrySlug}/${conceptSlug}`, { signal })).data;
+}
+
+export async function fetchWorldIndicatorMode(countrySlug, indicatorCode, mode, { signal } = {}) {
+  return (
+    await api.get(`/world/indicators/${countrySlug}/${indicatorCode}/data`, {
+      signal,
+      params: { mode },
+    })
+  ).data;
+}
+
+export function useWorldCompareSnapshot(conceptSlug) {
+  return useQuery({
+    queryKey: ['world-compare-snapshot', conceptSlug],
+    queryFn: async ({ signal }) => (
+      await api.get(`/world/compare/snapshot/${conceptSlug}`, { signal })
+    ).data,
+    enabled: !!conceptSlug,
+    staleTime: STALE,
+    gcTime: GC,
+  });
+}
+
+export function useWorldMapSeries(conceptSlug) {
+  return useQuery({
+    queryKey: ['world-map-series', conceptSlug],
+    queryFn: async ({ signal }) => (
+      await api.get(`/world/compare/map-series/${conceptSlug}`, { signal })
+    ).data,
+    enabled: !!conceptSlug,
+    staleTime: STALE,
+    gcTime: GC,
+  });
+}
+
+export async function fetchWorldAverageSeries(conceptSlug, mode, { signal } = {}) {
+  return (
+    await api.get(`/world/compare/average/${conceptSlug}`, {
+      signal,
+      params: mode ? { mode } : undefined,
+    })
+  ).data;
 }
 
 /**

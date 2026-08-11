@@ -299,7 +299,7 @@ export function groupModesFromApi(modes) {
       available,
       official: m.official !== false,
       disabled: !available,
-      hint: !available ? 'нет ряда' : (!m.official ? 'пересчёт' : undefined),
+      hint: !available ? 'нет официального ряда' : (!m.official ? 'расчётный ряд' : undefined),
     });
   }
 

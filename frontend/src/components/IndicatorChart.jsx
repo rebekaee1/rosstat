@@ -70,33 +70,49 @@ function dateBasedWindowSize(data, months) {
 function CustomTooltip({
   active, payload, label, mode, levelTooltipLabel, forecastTooltipLabel,
   dateFormat = 'full', unit = '%', valueDigits = 2, visible = true,
+  numericTooltipOnly = false, comparisonSeries = [], actualSeriesLabel = '',
 }) {
   if (!visible || !active || !payload?.length) return null;
 
   const actual = payload.find(p => p.dataKey === 'actual' && p.value != null && !isNaN(p.value));
   const forecast = payload.find(p => p.dataKey === 'forecast' && p.value != null && !isNaN(p.value));
+  const comparisons = comparisonSeries
+    .map((series) => ({
+      ...series,
+      payload: payload.find(
+        (item) => item.dataKey === series.dataKey && item.value != null && !isNaN(item.value),
+      ),
+    }))
+    .filter((series) => series.payload);
 
   const actualLabel = mode === 'cpi'
     ? (levelTooltipLabel || 'ИПЦ к пред. месяцу')
     : 'Инфляция (12 мес.)';
   const forecastLabel = forecastTooltipLabel
     || (mode === 'cpi' ? 'Прогноз' : 'Прогноз (12 мес.)');
+  const compactNumeric = numericTooltipOnly && comparisons.length === 0;
 
   return (
-    <div className="glass-surface rounded-xl border border-border-subtle px-4 py-3 shadow-2xl min-w-[200px]">
+    <div className={`glass-surface rounded-xl border border-border-subtle px-4 py-3 shadow-2xl ${compactNumeric ? 'min-w-[118px]' : 'min-w-[200px]'}`}>
       <p className="text-xs font-mono text-text-tertiary mb-2">{formatDate(label, dateFormat)}</p>
 
       {/* Bridge-точка (последний факт, от которого тянется прогнозная линия)
           несёт оба значения — приоритет у факта, иначе последняя фактическая
           точка ошибочно подписывалась «Прогноз». */}
       {actual && (
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-champagne" />
-            <span className="text-xs text-text-tertiary">{actualLabel}</span>
-          </div>
+        <div className={compactNumeric ? 'text-left' : 'flex items-center justify-between gap-4'}>
+          {(!numericTooltipOnly || comparisons.length > 0) && (
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-champagne" />
+              <span className="max-w-[150px] truncate text-xs text-text-tertiary">
+                {actualSeriesLabel || actualLabel}
+              </span>
+            </div>
+          )}
           <span className="text-sm font-mono font-semibold text-champagne">
-            {`${formatValue(actual.value, valueDigits)}${unitSuffix(unit)}`}
+            {numericTooltipOnly
+              ? formatValue(actual.value, valueDigits)
+              : `${formatValue(actual.value, valueDigits)}${unitSuffix(unit)}`}
           </span>
         </div>
       )}
@@ -112,6 +128,24 @@ function CustomTooltip({
           </span>
         </div>
       )}
+      {comparisons.map((series, index) => (
+        <div
+          key={series.dataKey}
+          className={`mt-1 flex items-center justify-between gap-4 ${numericTooltipOnly && index === 0 ? 'border-t border-border-subtle pt-1.5' : ''}`}
+        >
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full" style={{ backgroundColor: series.color }} />
+            <span className="max-w-[150px] truncate text-xs text-text-tertiary">
+              {series.label || 'Сравнение'}
+            </span>
+          </div>
+          <span className="font-mono text-sm font-semibold" style={{ color: series.color }}>
+            {numericTooltipOnly
+              ? formatValue(series.payload.value, valueDigits)
+              : `${formatValue(series.payload.value, valueDigits)}${unitSuffix(unit)}`}
+          </span>
+        </div>
+      ))}
     </div>
   );
 }
@@ -137,6 +171,11 @@ export default function IndicatorChart({
   indicatorCode,
   indicatorCategory,
   defaultChartType = 'area',
+  numericTooltipOnly = false,
+  comparisonData = null,
+  comparisonLabel = '',
+  comparisonSeries = null,
+  actualSeriesLabel = '',
 }) {
   const digits = chartValueDigits(unit, chartMode ?? mode);
   const ref = useRef(null);
@@ -156,6 +195,24 @@ export default function IndicatorChart({
   const dragRef = useRef(null);
   const onChartDataRef = useRef(onChartData);
   const onFullDataRef = useRef(onFullData);
+  const resolvedComparisonSeries = useMemo(() => {
+    if (comparisonSeries?.length) {
+      return comparisonSeries.map((series, index) => ({
+        ...series,
+        dataKey: series.dataKey || `comparison_${index}`,
+        color: series.color || '#397C8C',
+      }));
+    }
+    if (comparisonData?.length) {
+      return [{
+        data: comparisonData,
+        dataKey: 'comparison_0',
+        label: comparisonLabel || 'Сравнение',
+        color: '#397C8C',
+      }];
+    }
+    return [];
+  }, [comparisonSeries, comparisonData, comparisonLabel]);
 
   useEffect(() => { onChartDataRef.current = onChartData; }, [onChartData]);
   useEffect(() => { onFullDataRef.current = onFullData; }, [onFullData]);
@@ -189,24 +246,37 @@ export default function IndicatorChart({
   }, []);
 
   const chartData = useMemo(() => {
+    let base;
     if (mode === 'cpi') {
       const points = cpiData || [];
       const fcValues = forecastData?.forecast?.values || [];
-      return mergeActualForecastChartSeries(points, fcValues, {
+      base = mergeActualForecastChartSeries(points, fcValues, {
+        showForecast,
+        bridgeLine: chartType !== 'bar',
+      });
+    } else {
+      if (!inflation) return [];
+      const actuals = inflation.actuals || [];
+      const forecasts = inflation.forecast || [];
+      base = mergeActualForecastChartSeries(actuals, forecasts, {
         showForecast,
         bridgeLine: chartType !== 'bar',
       });
     }
 
-    if (!inflation) return [];
-
-    const actuals = inflation.actuals || [];
-    const forecasts = inflation.forecast || [];
-    return mergeActualForecastChartSeries(actuals, forecasts, {
-      showForecast,
-      bridgeLine: chartType !== 'bar',
-    });
-  }, [inflation, cpiData, forecastData, showForecast, mode, chartType]);
+    if (!resolvedComparisonSeries.length) return base;
+    const rows = new Map(base.map((row) => [row.date, { ...row }]));
+    for (const series of resolvedComparisonSeries) {
+      for (const point of series.data || []) {
+        const date = point.date;
+        if (!date || point.value == null) continue;
+        const row = rows.get(date) || { date, actual: null, forecast: null };
+        row[series.dataKey] = Number(point.value);
+        rows.set(date, row);
+      }
+    }
+    return [...rows.values()].sort((a, b) => a.date.localeCompare(b.date));
+  }, [inflation, cpiData, forecastData, showForecast, mode, chartType, resolvedComparisonSeries]);
 
   const dataLen = chartData.length;
 
@@ -355,6 +425,10 @@ export default function IndicatorChart({
     for (const row of visibleData) {
       if (row.actual != null) { min = Math.min(min, row.actual); max = Math.max(max, row.actual); }
       if (row.forecast != null) { min = Math.min(min, row.forecast); max = Math.max(max, row.forecast); }
+      for (const series of resolvedComparisonSeries) {
+        const value = row[series.dataKey];
+        if (value != null) { min = Math.min(min, value); max = Math.max(max, value); }
+      }
     }
     if (!isFinite(min)) return { yDomain: ['auto', 'auto'], yWidth: 55, yTicks: undefined };
 
@@ -375,7 +449,7 @@ export default function IndicatorChart({
     const sampleLabel = formatAxisTick(niceMin < 0 ? niceMin : absMax, digits);
     const w = Math.max(45, Math.min(120, sampleLabel.length * 7.5 + 12));
     return { yDomain: [niceMin, niceMax], yWidth: w, yTicks: ticks };
-  }, [visibleData, digits]);
+  }, [visibleData, digits, resolvedComparisonSeries]);
 
   // Подписи оси X: бюджет от ширины + фактическая RU-строка («7 июля 2025»),
   // затем densest step без пересечения (см. pickChartAxisTicks).
@@ -576,6 +650,9 @@ export default function IndicatorChart({
                   unit={unit}
                   valueDigits={digits}
                   visible={isHovering}
+                  numericTooltipOnly={numericTooltipOnly}
+                  comparisonSeries={resolvedComparisonSeries}
+                  actualSeriesLabel={actualSeriesLabel}
                 />
               )}
               cursor={isDragging || !isHovering ? false : { stroke: 'rgba(0,0,0,0.15)', strokeWidth: 1 }}
@@ -663,6 +740,18 @@ export default function IndicatorChart({
                 />
               )
             )}
+            {resolvedComparisonSeries.map((series) => (
+              <Line
+                key={series.dataKey}
+                dataKey={series.dataKey}
+                stroke={series.color}
+                strokeWidth={2}
+                connectNulls
+                dot={false}
+                activeDot={isDragging ? false : { r: 4, fill: series.color, stroke: '#FFFFFF', strokeWidth: 2 }}
+                isAnimationActive={false}
+              />
+            ))}
           </ComposedChart>
         </ResponsiveContainer>
 
@@ -699,6 +788,21 @@ export default function IndicatorChart({
             <span>{visibleData[0] ? formatDate(visibleData[0].date, dateFormat) : ''}</span>
             <span>{visibleData.length ? formatDate(visibleData[visibleData.length - 1].date, dateFormat) : ''}</span>
           </div>
+        </div>
+      )}
+
+      {resolvedComparisonSeries.length > 0 && (
+        <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border-subtle pt-3">
+          <div className="flex items-center gap-2">
+            <span className="h-0.5 w-5 rounded-full bg-champagne" />
+            <span className="text-[11px] text-text-tertiary">{actualSeriesLabel || 'Основной ряд'}</span>
+          </div>
+          {resolvedComparisonSeries.map((series) => (
+            <div key={series.dataKey} className="flex min-w-0 items-center gap-2">
+              <span className="h-0.5 w-5 shrink-0 rounded-full" style={{ backgroundColor: series.color }} />
+              <span className="max-w-[14rem] truncate text-[11px] text-text-tertiary">{series.label}</span>
+            </div>
+          ))}
         </div>
       )}
 

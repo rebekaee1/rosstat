@@ -1,13 +1,14 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ChevronDown, ChevronUp, Search } from 'lucide-react';
-import { formatDate, formatValueWithUnit, unitSuffix, cn } from '../lib/format';
+import { formatDate, formatValue, formatValueWithUnit, unitSuffix, cn } from '../lib/format';
 import { track, events } from '../lib/track';
 
 const PAGE_SIZE = 20;
 
 export default function DataTable({
   data, title = 'Исторические данные', dateFormat = 'full', unit = '%', valueDigits,
+  showUnitInValues = true,
 }) {
   const ref = useRef(null);
   const [page, setPage] = useState(0);
@@ -52,6 +53,7 @@ export default function DataTable({
 
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
   const pageData = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+  const tableUnit = unitSuffix(unit);
 
   return (
     <div ref={ref} className="rounded-[2rem] bg-surface border border-border-subtle overflow-hidden">
@@ -88,7 +90,7 @@ export default function DataTable({
                 </span>
               </th>
               <th className="text-right px-5 py-3 text-xs font-medium text-text-tertiary uppercase tracking-wider">
-                Значение ({unitSuffix(unit)})
+                Значение{tableUnit ? ` (${tableUnit})` : ''}
               </th>
             </tr>
           </thead>
@@ -115,7 +117,9 @@ export default function DataTable({
                     {formatDate(row.date, dateFormat)}
                   </td>
                   <td className="px-5 py-2.5 text-right font-mono text-sm font-medium text-text-primary">
-                    {formatValueWithUnit(row.value, unit, valueDigits)}
+                    {showUnitInValues
+                      ? formatValueWithUnit(row.value, unit, valueDigits)
+                      : formatValue(row.value, valueDigits)}
                   </td>
                 </tr>
               ))

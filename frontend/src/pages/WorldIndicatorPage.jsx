@@ -1,8 +1,10 @@
 // Карточка мирового индикатора: /world/{slug}/{code}?mode=
-// Двухуровневый режим (тип × частота), variants, без прогнозов.
+// Двухуровневый режим (тип × частота), variants и quality-gated прогнозы.
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { ChevronRight, ArrowUpRight } from 'lucide-react';
+import {
+  ChevronRight, ArrowUpRight, Database, Globe2, Layers3,
+} from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import {
   useWorldIndicator, useWorldIndicatorData, useWorldCountry, formatWorldValue,
@@ -37,6 +39,7 @@ const FREQ_RU = {
   quarterly: 'Ежеквартально',
   annual: 'Ежегодно',
 };
+const EMPTY_POINTS = [];
 
 export default function WorldIndicatorPage() {
   const { slug, code } = useParams();
@@ -45,7 +48,13 @@ export default function WorldIndicatorPage() {
   const urlMode = searchParams.get('mode');
 
   const metaQ = useWorldIndicator(slug, code);
-  const countryQ = useWorldCountry(slug);
+  const apiIsComposite = Array.isArray(metaQ.data?.modes)
+    && metaQ.data.modes.some((m) => m.type && m.freq);
+  // Современная meta уже содержит страну и sibling-частоты. Тяжёлый каталог
+  // страны нужен только для legacy-контракта; не конкурируем с первым графиком.
+  const countryQ = useWorldCountry(slug, {
+    enabled: Boolean(metaQ.data) && !apiIsComposite,
+  });
 
   // Frequencies: из meta или из схлопнутого каталога страны (легаси API).
   const frequencies = useMemo(() => {
@@ -93,12 +102,6 @@ export default function WorldIndicatorPage() {
 
   // Новый API: data всегда с primary + составной mode.
   // Легаси: грузим sibling-код + старый токен режима.
-  const apiIsComposite = useMemo(
-    () => Array.isArray(metaQ.data?.modes)
-      && metaQ.data.modes.some((m) => m.type && m.freq),
-    [metaQ.data],
-  );
-
   const dataCode = useMemo(() => {
     if (apiIsComposite) return metaQ.data?.primary_code || code;
     if (!modeParsed) return code;
@@ -108,10 +111,13 @@ export default function WorldIndicatorPage() {
 
   const dataModeParam = apiIsComposite
     ? activeMode
-    : worldModeToLegacyDataToken(activeMode);
+    : (metaQ.data ? worldModeToLegacyDataToken(activeMode) : null);
 
+  const forecastAvailable = Boolean(metaQ.data?.forecast_available);
+  const [showForecast, setShowForecast] = useState(false);
   const dataQ = useWorldIndicatorData(slug, code, dataModeParam, {
     requestCode: dataCode,
+    includeForecast: forecastAvailable && showForecast,
   });
 
   const [fullChartData, setFullChartData] = useState([]);
@@ -140,6 +146,10 @@ export default function WorldIndicatorPage() {
     }, { replace: true });
   }, [activeMode, urlMode, setSearchParams]);
 
+  useEffect(() => {
+    setShowForecast(false);
+  }, [code, activeMode]);
+
   const setMode = useCallback((mode) => {
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
@@ -158,14 +168,14 @@ export default function WorldIndicatorPage() {
     [metaQ.data?.variants],
   );
 
-  const points = dataQ.data?.points || [];
+  // Стабильная ссылка обязательна: IndicatorChart сообщает объединённый ряд
+  // через onFullData; новый [] на каждом рендере замыкал update-loop.
+  const points = dataQ.data?.points || EMPTY_POINTS;
+  const forecastPoints = dataQ.data?.forecast?.points || EMPTY_POINTS;
   const empty = !dataQ.isLoading && isEmptySeries(points);
   const last = points.length ? points[points.length - 1] : null;
   const displayUnit = dataQ.data?.unit_ru || dataQ.data?.unit
     || modeMeta?.unit || indicator?.unit || '';
-  // Единица рядом с числом — только та её часть, что читается справа от значения:
-  // «-14,4 индекс» и «7,3 балл индекса» — безграмотно. Полная единица остаётся
-  // в подписи оси, в поле «Единица» и в шапке таблицы.
   const unitBesideValue = dataQ.data?.unit_suffix ?? indicator?.unit_suffix ?? '';
   const activeFreq = dataQ.data?.frequency || modeParsed?.freq || indicator?.frequency;
   const aggregated = Boolean(dataQ.data?.aggregated)
@@ -176,11 +186,11 @@ export default function WorldIndicatorPage() {
     description:
       `${displayName} (${country.name}): последнее значение ${formatWorldValue(last?.value)}${unitBesideValue ? ` ${unitBesideValue}` : ''}`
       + (last?.date ? ` на ${formatDate(last.date, 'full')}` : '')
-      + `. Источник: Евростат.`,
+      + `. Источник: ${indicator.source || 'официальная статистика'}.`,
     path: `/world/${slug}/${code}`,
   } : {
     title: notFound ? 'Показатель не найден' : 'Мировая экономика',
-    description: 'Макроэкономические показатели стран мира.',
+    description: 'Макроэкономические показатели стран Европы.',
     path: `/world/${slug}/${code}`,
   });
 
@@ -190,8 +200,8 @@ export default function WorldIndicatorPage() {
       '@context': 'https://schema.org',
       '@type': 'Dataset',
       name: `${displayName} — ${country.name}`,
-      description: indicator.description || `${displayName}, ${country.name}. Источник: Евростат.`,
-      creator: { '@type': 'Organization', name: 'Евростат' },
+      description: indicator.description || `${displayName}, ${country.name}. Источник: ${indicator.source || 'официальная статистика'}.`,
+      creator: { '@type': 'Organization', name: indicator.source || 'Официальный источник' },
       publisher: { '@type': 'Organization', name: 'Forecast Economy', url: 'https://forecasteconomy.com' },
     };
     const script = document.createElement('script');
@@ -224,7 +234,7 @@ export default function WorldIndicatorPage() {
     return {
       ...indicator,
       name: displayName,
-      source: indicator.source || 'Евростат',
+      source: indicator.source || 'Официальный источник',
     };
   }, [indicator, displayName]);
 
@@ -258,7 +268,7 @@ export default function WorldIndicatorPage() {
   }, [indicator, displayName, activeFreq]);
 
   return (
-    <div className="max-w-5xl mx-auto px-4 pt-24 pb-20">
+    <div className="mx-auto w-full max-w-7xl px-4 pb-24 pt-24 sm:px-6">
       <nav className="flex items-center gap-1.5 text-xs text-text-tertiary mb-4 overflow-hidden" aria-label="Хлебные крошки">
         <Link to="/world" className="hover:text-champagne transition-colors shrink-0">Мировая экономика</Link>
         <ChevronRight size={12} className="shrink-0" />
@@ -307,37 +317,63 @@ export default function WorldIndicatorPage() {
 
       {metaQ.data && indicator && (
         <>
-          <header className="mb-6">
-            <div className="text-champagne text-xs font-mono uppercase tracking-widest mb-2">
-              {indicator.category}
-            </div>
-            <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2 mb-1">
-              <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary leading-tight flex-1 min-w-[12rem]">
-                {displayName}
-              </h1>
-              <span className="text-sm text-text-secondary shrink-0 pt-1 sm:pt-1.5">
-                {country?.name}
-              </span>
-            </div>
+          <header className="relative mb-6 overflow-hidden rounded-[2rem] border border-border-subtle bg-surface p-6 shadow-[0_22px_70px_rgba(35,30,16,0.06)] sm:p-8">
+            <div className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-champagne/9 blur-3xl" />
+            <div className="relative grid gap-7 lg:grid-cols-[minmax(0,1fr)_310px] lg:items-stretch">
+              <div className="flex min-w-0 flex-col justify-between">
+                <div>
+                  <div className="mb-4 flex flex-wrap items-center gap-2">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-champagne/10 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.15em] text-champagne">
+                      <Globe2 size={11} />
+                      {country?.name}
+                    </span>
+                    <span className="rounded-full bg-obsidian-light px-3 py-1 text-[10px] font-mono uppercase tracking-[0.12em] text-text-tertiary">
+                      {indicator.category}
+                    </span>
+                  </div>
+                  <h1 className="max-w-3xl font-display text-3xl font-bold leading-[1.1] text-text-primary sm:text-4xl">
+                    {displayName}
+                  </h1>
+                  {indicator.description && (
+                    <p className="mt-4 max-w-2xl text-sm leading-6 text-text-secondary">
+                      {indicator.description}
+                    </p>
+                  )}
+                </div>
+                <div className="mt-7 flex flex-wrap gap-x-6 gap-y-3 text-xs text-text-tertiary">
+                  <span className="inline-flex items-center gap-2">
+                    <Layers3 size={14} className="text-champagne" />
+                    {FREQ_RU[activeFreq] || activeFreq || '—'}
+                  </span>
+                  <span className="inline-flex items-center gap-2">
+                    <Database size={14} className="text-champagne" />
+                    {dataQ.data?.count ?? indicator.points_count ?? '—'} точек
+                  </span>
+                </div>
+              </div>
 
-            <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              {last ? (
-                <>
-                  <span className="font-mono text-3xl font-bold text-text-primary">
-                    {formatWorldValue(last.value, chartValueDigits(displayUnit))}
-                  </span>
-                  {unitBesideValue ? (
-                    <span className="text-sm text-text-secondary">{unitBesideValue}</span>
-                  ) : null}
-                  <span className="font-mono text-sm text-text-tertiary">
-                    {formatDate(last.date, dateFormat)}
-                  </span>
-                </>
-              ) : dataQ.isLoading ? (
-                <SkeletonBox className="h-9 w-40" />
-              ) : (
-                <span className="text-sm text-text-tertiary">Нет данных для выбранного режима</span>
-              )}
+              <div className="flex flex-col justify-between rounded-2xl border border-champagne/15 bg-gradient-to-br from-champagne/[0.09] to-white p-5 sm:p-6">
+                <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-text-tertiary">
+                  Последнее значение
+                </div>
+                {last ? (
+                  <div className="my-5">
+                    <div className="font-mono text-4xl font-bold tracking-tight text-text-primary sm:text-5xl">
+                      {formatWorldValue(last.value, chartValueDigits(displayUnit))}
+                    </div>
+                    <div className="mt-2 max-w-[16rem] text-xs leading-5 text-text-secondary">
+                      {displayUnit || 'значение ряда'}
+                    </div>
+                  </div>
+                ) : dataQ.isLoading ? (
+                  <SkeletonBox className="my-5 h-12 w-40" />
+                ) : (
+                  <span className="my-5 text-sm text-text-tertiary">Нет данных для выбранного режима</span>
+                )}
+                <div className="border-t border-champagne/15 pt-3 font-mono text-xs text-text-tertiary">
+                  {last?.date ? formatDate(last.date, dateFormat) : '—'}
+                </div>
+              </div>
             </div>
             {metaQ.data._fromMock && (
               <p className="mt-2 text-[12px] text-text-tertiary font-mono">
@@ -374,6 +410,11 @@ export default function WorldIndicatorPage() {
             indicator={chartIndicator}
             modeMeta={modeMeta}
             dataPoints={points}
+            forecastData={forecastPoints}
+            forecastMeta={dataQ.data?.forecast}
+            forecastEnabled={forecastAvailable}
+            showForecast={showForecast}
+            onToggleForecast={() => setShowForecast((current) => !current)}
             chartLoading={dataQ.isLoading}
             emptyHint={empty ? 'Для этого режима пока нет точек. Выберите другой режим или вернитесь позже.' : undefined}
             onFullData={setFullChartData}
@@ -382,6 +423,9 @@ export default function WorldIndicatorPage() {
             frequency={activeFreq}
             aggregated={aggregated}
             unit={displayUnit}
+            country={country}
+            conceptSlug={indicator.concept_slug}
+            comparisonPeers={metaQ.data.peers || []}
           />
 
           <div className="grid lg:grid-cols-3 gap-6 mb-12">
@@ -446,6 +490,7 @@ export default function WorldIndicatorPage() {
               dateFormat={dateFormat}
               unit={displayUnit}
               valueDigits={chartValueDigits(displayUnit)}
+              showUnitInValues={false}
             />
           </section>
         </>
