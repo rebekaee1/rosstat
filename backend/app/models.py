@@ -136,7 +136,7 @@ class RegionDataPoint(Base):
     region: Mapped["Region"] = relationship(back_populates="data_points")
 
 
-# --- Мировой блок (Eurostat) — отдельный bounded context, по образцу ADR-0008 ---
+# --- Мировой блок — отдельный multi-provider bounded context, по образцу ADR-0008 ---
 
 
 class WorldCountry(Base):
@@ -159,8 +159,12 @@ class WorldCountry(Base):
 class WorldIndicator(Base):
     __tablename__ = "world_indicators"
     __table_args__ = (
-        UniqueConstraint("country_id", "dataset_id", "slice_hash", name="uq_world_ind_slice"),
+        UniqueConstraint(
+            "provider", "country_id", "dataset_id", "slice_hash",
+            name="uq_world_ind_provider_slice",
+        ),
         Index("ix_world_indicators_country_category", "country_id", "category_ru"),
+        Index("ix_world_indicators_provider_dataset", "provider", "dataset_id"),
         Index("ix_world_indicators_code", "code", unique=True),
     )
 
@@ -168,8 +172,13 @@ class WorldIndicator(Base):
     country_id: Mapped[int] = mapped_column(
         ForeignKey("world_countries.id", ondelete="CASCADE"), nullable=False
     )
+    # Машинный идентификатор источника (eurostat, bea, bls, ibge, mospi, nbs…).
+    # Не путать с публичным `source`: provider участвует в identity/provenance.
+    provider: Mapped[str] = mapped_column(
+        String(50), nullable=False, default="eurostat", server_default="eurostat",
+    )
     code: Mapped[str] = mapped_column(String(120), nullable=False)
-    dataset_id: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
+    dataset_id: Mapped[str] = mapped_column(String(160), nullable=False, index=True)
     slice_json: Mapped[dict | None] = mapped_column(JSON)
     slice_hash: Mapped[str] = mapped_column(String(64), nullable=False)
     name_ru: Mapped[str] = mapped_column(String(400), nullable=False)
@@ -198,6 +207,9 @@ class WorldIndicator(Base):
     data_points: Mapped[list["WorldDataPoint"]] = relationship(
         back_populates="indicator", cascade="all, delete-orphan", passive_deletes=True
     )
+    forecasts: Mapped[list["WorldForecast"]] = relationship(
+        back_populates="indicator", cascade="all, delete-orphan", passive_deletes=True
+    )
 
 
 class WorldDataPoint(Base):
@@ -215,6 +227,137 @@ class WorldDataPoint(Base):
     value: Mapped[float] = mapped_column(Numeric(20, 6), nullable=False)
 
     indicator: Mapped["WorldIndicator"] = relationship(back_populates="data_points")
+
+
+class WorldDatasetState(Base):
+    """Последнее подтверждённое состояние provider dataset.
+
+    Eurostat использует TOC-версии, национальные адаптеры — эквивалентные
+    revision/update tokens. Identity всегда provider × dataset_id.
+    """
+
+    __tablename__ = "world_dataset_state"
+
+    provider: Mapped[str] = mapped_column(
+        String(50), primary_key=True, default="eurostat", server_default="eurostat",
+    )
+    dataset_id: Mapped[str] = mapped_column(String(160), primary_key=True)
+    last_update_of_data: Mapped[date | None] = mapped_column(Date)
+    last_structure_change: Mapped[date | None] = mapped_column(Date)
+    last_slice_hash: Mapped[str | None] = mapped_column(String(64))
+    status: Mapped[str] = mapped_column(String(20), nullable=False, default="ok")
+    last_success_at: Mapped[datetime | None] = mapped_column(DateTime)
+    last_error: Mapped[str | None] = mapped_column(Text)
+
+
+class WorldIngestRun(Base):
+    """Аудит отдельного запуска world ingest: не смешивается с российским FetchLog."""
+
+    __tablename__ = "world_ingest_runs"
+    __table_args__ = (Index("ix_world_ingest_runs_started", "started_at"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    source: Mapped[str] = mapped_column(String(50), nullable=False, default="eurostat")
+    status: Mapped[str] = mapped_column(String(20), nullable=False, default="running")
+    is_shadow: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    datasets_selected: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    datasets_succeeded: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    datasets_failed: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    started_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime)
+    error_message: Mapped[str | None] = mapped_column(Text)
+
+
+class WorldIngestDatasetLog(Base):
+    """Provenance результата одного provider dataset в рамках запуска."""
+
+    __tablename__ = "world_ingest_dataset_logs"
+    __table_args__ = (
+        UniqueConstraint(
+            "run_id", "provider", "dataset_id",
+            name="uq_world_ingest_run_provider_dataset",
+        ),
+        Index(
+            "ix_world_ingest_dataset_log_provider_dataset",
+            "provider", "dataset_id", "status",
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    run_id: Mapped[int] = mapped_column(
+        ForeignKey("world_ingest_runs.id", ondelete="CASCADE"), nullable=False
+    )
+    provider: Mapped[str] = mapped_column(
+        String(50), nullable=False, default="eurostat", server_default="eurostat",
+    )
+    dataset_id: Mapped[str] = mapped_column(String(160), nullable=False)
+    status: Mapped[str] = mapped_column(String(20), nullable=False)
+    source_updated_at: Mapped[date | None] = mapped_column(Date)
+    structure_changed_at: Mapped[date | None] = mapped_column(Date)
+    slice_hash: Mapped[str | None] = mapped_column(String(64))
+    rows_fetched: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    rows_inserted: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    rows_updated: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    rows_removed: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    error_message: Mapped[str | None] = mapped_column(Text)
+
+    run: Mapped["WorldIngestRun"] = relationship()
+
+
+class WorldForecast(Base):
+    """Оценка модели world-ряда и, при пройденном gate, текущий прогноз."""
+
+    __tablename__ = "world_forecasts"
+    __table_args__ = (
+        Index(
+            "ix_world_forecasts_indicator_current",
+            "world_indicator_id",
+            postgresql_where=text("is_current = true"),
+        ),
+        Index("ix_world_forecasts_gate_created", "gate_status", "created_at"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    world_indicator_id: Mapped[int] = mapped_column(
+        ForeignKey("world_indicators.id", ondelete="CASCADE"), nullable=False,
+    )
+    strategy: Mapped[str] = mapped_column(String(50), nullable=False)
+    model_name: Mapped[str] = mapped_column(String(120), nullable=False)
+    model_params: Mapped[dict | None] = mapped_column(JSON)
+    gate_status: Mapped[str] = mapped_column(String(20), nullable=False)
+    gate_reason: Mapped[str | None] = mapped_column(String(300))
+    mase: Mapped[float | None] = mapped_column(Numeric(12, 6))
+    baseline_mase: Mapped[float | None] = mapped_column(Numeric(12, 6))
+    origins: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    horizon: Mapped[int] = mapped_column(Integer, nullable=False)
+    is_current: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=False, server_default="false",
+    )
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+
+    indicator: Mapped["WorldIndicator"] = relationship(back_populates="forecasts")
+    values: Mapped[list["WorldForecastValue"]] = relationship(
+        back_populates="forecast", cascade="all, delete-orphan", passive_deletes=True,
+    )
+
+
+class WorldForecastValue(Base):
+    __tablename__ = "world_forecast_values"
+    __table_args__ = (
+        UniqueConstraint("forecast_id", "date", name="uq_world_forecast_value"),
+        Index("ix_world_forecast_values_forecast_date", "forecast_id", "date"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    forecast_id: Mapped[int] = mapped_column(
+        ForeignKey("world_forecasts.id", ondelete="CASCADE"), nullable=False,
+    )
+    date: Mapped[date] = mapped_column(Date, nullable=False)
+    value: Mapped[float] = mapped_column(Numeric(20, 6), nullable=False)
+    lower_bound: Mapped[float | None] = mapped_column(Numeric(20, 6))
+    upper_bound: Mapped[float | None] = mapped_column(Numeric(20, 6))
+
+    forecast: Mapped["WorldForecast"] = relationship(back_populates="values")
 
 
 class Forecast(Base):

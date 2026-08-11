@@ -8,9 +8,9 @@ DISTINCT FROM excluded.value). Докачиваемый: повторный за
 Запуск (в контейнере backend или с хоста с RUSTATS_DATABASE_URL)::
 
     python /app/scripts/load-world-eurostat.py
-    python /app/scripts/load-world-eurostat.py --freq M,Q --workers 6
+    python /app/scripts/load-world-eurostat.py --freq M,Q
     python /app/scripts/load-world-eurostat.py --only prc_hicp_midx
-    python /app/scripts/load-world-eurostat.py --dry-run --limit 5
+    python /app/scripts/load-world-eurostat.py --dry-run --limit 5 --no-cache
 """
 
 from __future__ import annotations
@@ -23,8 +23,9 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date
 
-from sqlalchemy import select, text
+from sqlalchemy import func, select, text
 from sqlalchemy.dialects.postgresql import insert as pg_insert
+from sqlalchemy.ext.asyncio import AsyncSession
 
 sys.path.insert(0, "/app")
 
@@ -197,31 +198,65 @@ async def ensure_countries(geos: set[str]) -> dict[str, int]:
         return {c.code: c.id for c in rows}
 
 
-async def upsert_points(indicator_id: int, points: list[tuple[date, float]]) -> int:
-    """Batch upsert; returns number of rows touched (inserted or updated)."""
+async def reconcile_points(
+    db: AsyncSession,
+    indicator_id: int,
+    points: list[tuple[date, float]],
+) -> tuple[int, int]:
+    """Синхронизировать полный источник в текущей транзакции.
+
+    Даты, исчезнувшие из успешно распарсенного source-ответа, удаляются только
+    для конкретного indicator. Ошибка fetch/parse не вызывает эту функцию и не
+    может стереть старый ряд.
+    """
     if not points:
-        return 0
+        return 0, 0
     touched = 0
-    async with async_session() as db:
-        for i in range(0, len(points), _UPSERT_CHUNK):
-            chunk = points[i : i + _UPSERT_CHUNK]
-            values = [
-                {"indicator_id": indicator_id, "date": d, "value": v}
-                for d, v in chunk
-            ]
-            stmt = pg_insert(WorldDataPoint).values(values)
-            stmt = stmt.on_conflict_do_update(
-                constraint="uq_world_data_point",
-                set_={"value": stmt.excluded.value},
-                where=(WorldDataPoint.__table__.c.value.is_distinct_from(stmt.excluded.value)),
-            ).returning(WorldDataPoint.id)
-            res = await db.execute(stmt)
-            touched += len(res.fetchall())
-        await db.commit()
-    return touched
+    source_dates = [d for d, _ in points]
+    for i in range(0, len(points), _UPSERT_CHUNK):
+        chunk = points[i : i + _UPSERT_CHUNK]
+        values = [
+            {"indicator_id": indicator_id, "date": d, "value": v}
+            for d, v in chunk
+        ]
+        stmt = pg_insert(WorldDataPoint).values(values)
+        stmt = stmt.on_conflict_do_update(
+            constraint="uq_world_data_point",
+            set_={"value": stmt.excluded.value},
+            where=(WorldDataPoint.__table__.c.value.is_distinct_from(stmt.excluded.value)),
+        ).returning(WorldDataPoint.id)
+        res = await db.execute(stmt)
+        touched += len(res.fetchall())
+
+    removed = await db.execute(
+        WorldDataPoint.__table__.delete().where(
+            WorldDataPoint.indicator_id == indicator_id,
+            WorldDataPoint.date.not_in(source_dates),
+        )
+    )
+    return touched, int(removed.rowcount or 0)
+
+
+async def refresh_indicator_extent(db: AsyncSession, indicator_id: int) -> None:
+    """Только фактическая БД определяет историю и count после reconciliation."""
+    count, history_start, history_end = (
+        await db.execute(
+            select(
+                func.count(WorldDataPoint.id),
+                func.min(WorldDataPoint.date),
+                func.max(WorldDataPoint.date),
+            ).where(WorldDataPoint.indicator_id == indicator_id)
+        )
+    ).one()
+    ind = await db.get(WorldIndicator, indicator_id)
+    if ind is not None:
+        ind.points_count = int(count or 0)
+        ind.history_start = history_start
+        ind.history_end = history_end
 
 
 async def upsert_indicator_meta(
+    db: AsyncSession,
     *,
     country_id: int,
     country_code: str,
@@ -282,83 +317,95 @@ async def upsert_indicator_meta(
         f"{country_name_ru} статистика, график"
     )
 
-    async with async_session() as db:
-        existing = (
-            await db.execute(
-                select(WorldIndicator).where(
-                    WorldIndicator.country_id == country_id,
-                    WorldIndicator.dataset_id == result.dataset_id,
-                    WorldIndicator.slice_hash == result.slice_hash,
-                )
+    existing = (
+        await db.execute(
+            select(WorldIndicator).where(
+                WorldIndicator.provider == "eurostat",
+                WorldIndicator.country_id == country_id,
+                WorldIndicator.dataset_id == result.dataset_id,
+                WorldIndicator.slice_hash == result.slice_hash,
             )
+        )
+    ).scalar_one_or_none()
+    created = False
+    if existing is None:
+        by_code = (
+            await db.execute(select(WorldIndicator).where(WorldIndicator.code == code))
         ).scalar_one_or_none()
-        created = False
-        if existing is None:
-            by_code = (
-                await db.execute(select(WorldIndicator).where(WorldIndicator.code == code))
-            ).scalar_one_or_none()
-            if by_code is not None:
-                existing = by_code
-            else:
-                ind = WorldIndicator(
-                    country_id=country_id,
-                    code=code,
-                    dataset_id=result.dataset_id,
-                    slice_json=result.slice_,
-                    slice_hash=result.slice_hash,
-                    name_ru=name_ru,
-                    name_en=result.title_en[:400] if result.title_en else None,
-                    name_quality=quality,
-                    unit=result.unit or unit_ru or "",
-                    unit_ru=unit_ru,
-                    frequency=result.frequency,
-                    category_ru=category,
-                    source="Евростат",
-                    source_url=result.source_url,
-                    description=desc,
-                    methodology=meth,
-                    history_start=hs,
-                    history_end=he,
-                    points_count=len(points),
-                    is_listed=listed,
-                    seo_title=seo_title,
-                    seo_description=desc,
-                    seo_keywords=seo_kw,
-                )
-                db.add(ind)
-                await db.flush()
-                await db.commit()
-                return ind.id, True
+        if by_code is not None:
+            existing = by_code
+        else:
+            ind = WorldIndicator(
+                country_id=country_id,
+                provider="eurostat",
+                code=code,
+                dataset_id=result.dataset_id,
+                slice_json=result.slice_,
+                slice_hash=result.slice_hash,
+                name_ru=name_ru,
+                name_en=result.title_en[:400] if result.title_en else None,
+                name_quality=quality,
+                unit=result.unit or unit_ru or "",
+                unit_ru=unit_ru,
+                frequency=result.frequency,
+                category_ru=category,
+                source="Евростат",
+                source_url=result.source_url,
+                description=desc,
+                methodology=meth,
+                history_start=hs,
+                history_end=he,
+                points_count=len(points),
+                is_listed=listed,
+                seo_title=seo_title,
+                seo_description=desc,
+                seo_keywords=seo_kw,
+            )
+            db.add(ind)
+            await db.flush()
+            return ind.id, True
 
-        existing.code = code
-        existing.slice_json = result.slice_
-        existing.name_ru = name_ru
-        existing.name_en = (result.title_en or "")[:400] or existing.name_en
-        existing.name_quality = quality
-        existing.unit = result.unit or existing.unit
-        existing.unit_ru = unit_ru or existing.unit_ru
-        existing.frequency = result.frequency
-        existing.category_ru = category
-        existing.source = "Евростат"
-        existing.source_url = result.source_url
-        existing.description = desc
-        existing.methodology = meth
-        existing.history_start = hs
-        existing.history_end = he
-        existing.points_count = len(points)
-        existing.is_listed = listed
-        existing.seo_title = seo_title
-        existing.seo_description = desc
-        existing.seo_keywords = seo_kw
-        await db.commit()
-        return existing.id, created
+    existing.code = code
+    existing.provider = "eurostat"
+    existing.slice_json = result.slice_
+    existing.name_ru = name_ru
+    existing.name_en = (result.title_en or "")[:400] or existing.name_en
+    existing.name_quality = quality
+    existing.unit = result.unit or existing.unit
+    existing.unit_ru = unit_ru or existing.unit_ru
+    existing.frequency = result.frequency
+    existing.category_ru = category
+    existing.source = "Евростат"
+    existing.source_url = result.source_url
+    existing.description = desc
+    existing.methodology = meth
+    existing.history_start = hs
+    existing.history_end = he
+    existing.points_count = len(points)
+    existing.is_listed = listed
+    existing.seo_title = seo_title
+    existing.seo_description = desc
+    existing.seo_keywords = seo_kw
+    await db.flush()
+    return existing.id, created
 
 
-def _parse_one(dataset_id: str, catalog_freq: str | None) -> list[DatasetParseResult] | Exception:
+def _parse_one(
+    dataset_id: str,
+    catalog_freq: str | None,
+    *,
+    use_cache: bool,
+) -> list[DatasetParseResult] | Exception:
     try:
         if dataset_id.lower() in DEEP_DATASET_SLICES:
-            return fetch_deep_slices(dataset_id)
-        return [fetch_and_parse_dataset(dataset_id, catalog_freq=catalog_freq)]
+            return fetch_deep_slices(dataset_id, use_cache=use_cache)
+        return [
+            fetch_and_parse_dataset(
+                dataset_id,
+                catalog_freq=catalog_freq,
+                use_cache=use_cache,
+            )
+        ]
     except Exception as exc:  # noqa: BLE001
         return exc
 
@@ -368,57 +415,62 @@ async def persist_result(
     country_ids: dict[str, int],
     country_names: dict[str, str],
 ) -> tuple[int, int]:
-    """Returns (indicators_upserted, points_touched)."""
+    """Persist one parsed slice atomically; returns (indicators, changed points)."""
     n_ind = 0
     n_pts = 0
-    for geo, points in result.series_by_geo.items():
-        cid = country_ids.get(geo)
-        if cid is None:
-            # try slug aliases (GR→EL)
-            meta = WORLD_COUNTRIES.get(geo)
-            if not meta:
-                continue
-            # find country by slug
-            async with async_session() as db:
-                row = (
-                    await db.execute(select(WorldCountry).where(WorldCountry.slug == meta[0]))
-                ).scalar_one_or_none()
-                if row is None:
-                    continue
-                cid = row.id
-                country_names[geo] = row.name_ru
-        name_ru = country_names.get(geo) or WORLD_COUNTRIES[geo][1]
-        slug = (WORLD_COUNTRIES.get(geo) or (None,))[0]
-        iid, _ = await upsert_indicator_meta(
-            country_id=cid,
-            country_code=geo if geo in ("EL", "GR", "UK", "GB") else geo,
-            country_name_ru=name_ru,
-            country_slug=slug,
-            result=result,
-            points=points,
-        )
-        # Fix code to use DB country code
-        async with async_session() as db:
-            ind = await db.get(WorldIndicator, iid)
-            if ind is not None:
-                c = await db.get(WorldCountry, ind.country_id)
-                if c is not None:
-                    new_code = make_indicator_code(c.code, result.dataset_id, result.slice_)
-                    if ind.code != new_code:
-                        clash = (
-                            await db.execute(
-                                select(WorldIndicator).where(
-                                    WorldIndicator.code == new_code,
-                                    WorldIndicator.id != ind.id,
+    async with async_session() as db:
+        async with db.begin():
+            for geo, points in result.series_by_geo.items():
+                cid = country_ids.get(geo)
+                if cid is None:
+                    meta = WORLD_COUNTRIES.get(geo)
+                    if not meta:
+                        continue
+                    row = (
+                        await db.execute(
+                            select(WorldCountry).where(WorldCountry.slug == meta[0])
+                        )
+                    ).scalar_one_or_none()
+                    if row is None:
+                        continue
+                    cid = row.id
+                    country_names[geo] = row.name_ru
+
+                name_ru = country_names.get(geo) or WORLD_COUNTRIES[geo][1]
+                slug = (WORLD_COUNTRIES.get(geo) or (None,))[0]
+                iid, _ = await upsert_indicator_meta(
+                    db,
+                    country_id=cid,
+                    country_code=geo if geo in ("EL", "GR", "UK", "GB") else geo,
+                    country_name_ru=name_ru,
+                    country_slug=slug,
+                    result=result,
+                    points=points,
+                )
+                ind = await db.get(WorldIndicator, iid)
+                if ind is not None:
+                    country = await db.get(WorldCountry, ind.country_id)
+                    if country is not None:
+                        new_code = make_indicator_code(
+                            country.code,
+                            result.dataset_id,
+                            result.slice_,
+                        )
+                        if ind.code != new_code:
+                            clash = (
+                                await db.execute(
+                                    select(WorldIndicator).where(
+                                        WorldIndicator.code == new_code,
+                                        WorldIndicator.id != ind.id,
+                                    )
                                 )
-                            )
-                        ).scalar_one_or_none()
-                        if clash is None:
-                            ind.code = new_code
-                            await db.commit()
-        touched = await upsert_points(iid, points)
-        n_ind += 1
-        n_pts += touched
+                            ).scalar_one_or_none()
+                            if clash is None:
+                                ind.code = new_code
+                touched, _removed = await reconcile_points(db, iid, points)
+                await refresh_indicator_extent(db, iid)
+                n_ind += 1
+                n_pts += touched
     return n_ind, n_pts
 
 
@@ -461,7 +513,12 @@ async def run(args: argparse.Namespace) -> int:
 
     with ThreadPoolExecutor(max_workers=workers) as pool:
         futs = {
-            pool.submit(_parse_one, d["dataset_id"], d.get("frequency")): d
+            pool.submit(
+                _parse_one,
+                d["dataset_id"],
+                d.get("frequency"),
+                use_cache=not args.no_cache,
+            ): d
             for d in datasets
         }
         done = 0
@@ -540,9 +597,19 @@ def main() -> None:
     p.add_argument("--themes", default=DEFAULT_THEMES, help="Comma-separated dataset_id prefixes")
     p.add_argument("--freq", default="M,Q,A", help="Frequencies: M,Q,A,W,D")
     p.add_argument("--limit", type=int, default=None)
-    p.add_argument("--workers", type=int, default=6)
+    p.add_argument(
+        "--workers",
+        type=int,
+        default=1,
+        help="Parallel extraction workers; keep 1 for Eurostat fair use.",
+    )
     p.add_argument("--dry-run", action="store_true")
     p.add_argument("--only", default=None, help="Single dataset_id")
+    p.add_argument(
+        "--no-cache",
+        action="store_true",
+        help="Bypass URL-only disk cache (required for changed TOC datasets).",
+    )
     args = p.parse_args()
     raise SystemExit(asyncio.run(run(args)))
 

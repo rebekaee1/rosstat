@@ -22,12 +22,11 @@ from app.data.eurostat_listing import (
     variant_group_key,
 )
 from app.data.eurostat_titles_ru import split_freq_suffix
+from app.data.world_aggregation import aggregate_series, aggregation_policy_for
 from app.services.world_view_modes import (
     apply_mode,
     is_signed_or_zero_crossing,
     mode_unit as transform_unit,
-    transform_avg_quarter,
-    transform_avg_year,
 )
 
 MODE_TYPES = ("level", "step", "yoy", "yoyabs", "index")
@@ -53,12 +52,6 @@ STEP_LABEL = {
     "annual": "Г/г",
 }
 
-
-# Чем мельче — тем пригоднее как источник агрегации вверх.
-_FINER = {
-    "quarterly": ("monthly",),
-    "annual": ("monthly", "quarterly"),
-}
 
 _LEGACY_TO_COMPOSITE = {
     "level": None,  # → level-{native}
@@ -89,6 +82,8 @@ class ResolvedSeries:
     transform: str  # ключ apply_mode / спец.
     aggregated: bool
     official: bool
+    source_frequency: str
+    aggregation_policy: str | None = None
 
 
 def display_name(name_ru: str | None) -> str:
@@ -98,13 +93,16 @@ def display_name(name_ru: str | None) -> str:
 
 
 def indicator_card_key(ind: Any) -> tuple:
-    return card_key(
+    base = card_key(
         country_id=ind.country_id,
         dataset_id=ind.dataset_id,
         unit=ind.unit,
         unit_ru=ind.unit_ru,
         slice_json=ind.slice_json or {},
     )
+    # Первая позиция остаётся country_id: peer_key=key[1:] становится
+    # provider-aware и не склеивает одноимённые datasets разных ведомств.
+    return (base[0], getattr(ind, "provider", "eurostat"), *base[1:])
 
 
 def rank_indicator(ind: Any, substance_score_fn) -> tuple:
@@ -183,14 +181,6 @@ def parse_mode_token(token: str | None, *, native_freq: str) -> ParsedMode:
     raise ValueError(f"unknown mode: {token}")
 
 
-def _can_aggregate_to(freq: str, by_freq: dict[str, Any]) -> str | None:
-    """Код более мелкой частоты, из которой можно агрегировать в freq."""
-    for src in _FINER.get(freq, ()):
-        if src in by_freq:
-            return src
-    return None
-
-
 def resolve_series_for_mode(
     *,
     parsed: ParsedMode,
@@ -211,24 +201,33 @@ def resolve_series_for_mode(
             transform=transform,
             aggregated=False,
             official=True,
+            source_frequency=freq,
         )
 
-    # Нет официального ряда этой частоты — агрегация с более мелкой.
-    src_freq = _can_aggregate_to(freq, by_freq)
-    if src_freq is None:
-        return None
-    src = by_freq[src_freq]
+    candidates = {
+        "quarterly": ("monthly",),
+        "annual": ("quarterly", "monthly"),
+    }.get(freq, ())
     transform = _transform_for(typ, freq, signed)
     if transform is None:
         return None
-    # Спец: сначала агрегируем уровень, потом step/yoy/index на результате.
-    return ResolvedSeries(
-        source_code=src.code,
-        frequency=freq,
-        transform=f"agg:{freq}:{transform}",
-        aggregated=True,
-        official=False,
-    )
+    for source_frequency in candidates:
+        source = by_freq.get(source_frequency)
+        if source is None:
+            continue
+        policy = aggregation_policy_for(source)
+        if policy is None:
+            continue
+        return ResolvedSeries(
+            source_code=source.code,
+            frequency=freq,
+            transform=transform,
+            aggregated=True,
+            official=False,
+            source_frequency=source_frequency,
+            aggregation_policy=policy,
+        )
+    return None
 
 
 def _transform_for(typ: str, freq: str, signed: bool = False) -> str | None:
@@ -258,19 +257,23 @@ def apply_resolved(
     series: list[tuple[date, float]],
     resolved: ResolvedSeries,
 ) -> list[tuple[date, float]]:
-    """Применить transform, при необходимости сначала агрегировав."""
+    """Применить transform к официальному исходному ряду.
+
+    Для расчётной частоты сначала строится полный календарный уровень по
+    верифицированной policy, затем к нему применяется выбранный режим.
+    """
     tr = resolved.transform
-    if tr.startswith("agg:"):
-        # agg:{target_freq}:{final_transform}
-        _, target_freq, final = tr.split(":", 2)
-        if target_freq == "quarterly":
-            series = transform_avg_quarter(series)
-        elif target_freq == "annual":
-            series = transform_avg_year(series)
-        else:
-            raise ValueError(f"cannot aggregate to {target_freq}")
-        tr = final
-    return apply_mode(series, tr)
+    base = series
+    if resolved.aggregated:
+        if not resolved.aggregation_policy:
+            raise ValueError("aggregation policy is required")
+        base = aggregate_series(
+            series,
+            source_frequency=resolved.source_frequency,
+            target_frequency=resolved.frequency,
+            policy=resolved.aggregation_policy,
+        )
+    return apply_mode(base, tr)
 
 
 def mode_unit_for(parsed: ParsedMode, base_unit: str, signed: bool = False) -> str:
@@ -388,6 +391,7 @@ def build_variants(
     siblings: Iterable[Any],
 ) -> list[dict]:
     """Список variant-pill'ов; [] если stem вне whitelist."""
+    provider = getattr(current, "provider", "eurostat")
     vg = variant_group_key(country_id=current.country_id, dataset_id=current.dataset_id)
     if vg is None:
         return []
@@ -395,6 +399,8 @@ def build_variants(
     items = []
     seen: set[str] = set()
     for ind in siblings:
+        if getattr(ind, "provider", "eurostat") != provider:
+            continue
         if variant_group_key(country_id=ind.country_id, dataset_id=ind.dataset_id) != vg:
             continue
         if ind.code in seen:

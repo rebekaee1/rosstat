@@ -10,7 +10,6 @@ from app.services.world_cards import build_modes_matrix, members_by_freq
 from app.services.world_view_modes import (
     apply_mode,
     is_signed_or_zero_crossing,
-    transform_avg_year,
     transform_index_first,
     transform_mom,
     transform_yoy,
@@ -39,7 +38,7 @@ def test_mom_and_yoy_arithmetic():
     assert yoy[date(2025, 2, 1)] == 20.0
 
 
-def test_index_first_and_avg_year():
+def test_index_first():
     series = [
         (date(2024, 1, 1), 50.0),
         (date(2024, 2, 1), 100.0),
@@ -48,8 +47,6 @@ def test_index_first_and_avg_year():
     idx = dict(transform_index_first(series))
     assert idx[date(2024, 1, 1)] == 100.0
     assert idx[date(2024, 2, 1)] == 200.0
-    avg = dict(transform_avg_year(series))
-    assert avg[date(2024, 1, 1)] == 100.0
 
 
 class _Ind:
@@ -92,13 +89,14 @@ def test_signed_series_compares_in_units_not_percent():
     assert "forecast" not in types
 
 
-def test_positive_monthly_has_full_matrix():
+def test_positive_monthly_exposes_only_official_frequency():
     series = [(date(2024, m, 1), 100.0 + m) for m in range(1, 13)]
     series += [(date(2025, m, 1), 120.0 + m) for m in range(1, 7)]
     modes = _matrix("monthly", series, unit="индекс")
     ids = _available(modes)
     assert {"level-monthly", "step-monthly", "yoy-monthly", "index-monthly"} <= ids
-    assert {"level-quarterly", "level-annual"} <= ids  # агрегация вверх
+    assert "level-quarterly" not in ids
+    assert "level-annual" not in ids
     assert "yoyabs-monthly" not in ids  # процентный YoY уже покрывает сравнение
     by_id = {m["id"]: m for m in modes}
     assert by_id["step-monthly"]["unit"] == "%"
@@ -111,7 +109,7 @@ def test_quarterly_has_qoq_not_mom():
     ids = _available(modes)
     assert "step-quarterly" in ids
     assert "step-monthly" not in ids  # месячного ряда нет — агрегация вниз невозможна
-    assert "level-annual" in ids
+    assert "level-annual" not in ids
 
 
 def test_annual_has_no_subannual_steps():
@@ -198,7 +196,13 @@ def test_public_texts_name_country_not_template():
 def world_client(auth_env):
     import asyncio
     from fastapi.testclient import TestClient
-    from app.models import WorldCountry, WorldDataPoint, WorldIndicator
+    from app.models import (
+        WorldCountry,
+        WorldDataPoint,
+        WorldForecast,
+        WorldForecastValue,
+        WorldIndicator,
+    )
 
     async def _seed():
         async with auth_env["session_maker"]() as db:
@@ -230,8 +234,8 @@ def world_client(auth_env):
                 description="Гармонизированный индекс потребительских цен в Германии — официальный ряд Евростата.",
                 methodology="Источник данных — Евростат. Частота публикации — месячная.",
                 history_start=date(2024, 1, 1),
-                history_end=date(2025, 6, 1),
-                points_count=18,
+                history_end=date(2026, 6, 1),
+                points_count=100,
                 is_listed=True,
             )
             raw = WorldIndicator(
@@ -252,7 +256,29 @@ def world_client(auth_env):
                 points_count=8,
                 is_listed=False,
             )
-            db.add_all([ind, raw])
+            fr_ind = WorldIndicator(
+                country_id=fr.id,
+                code="fr-prc_hicp_midx-cp00-i15",
+                dataset_id="prc_hicp_midx",
+                slice_json={"unit": "I15", "coicop": "CP00", "freq": "M"},
+                slice_hash="fr-abc",
+                name_ru="Гармонизированный индекс потребительских цен, помесячно",
+                name_en="HICP - monthly data (index)",
+                name_quality="curated",
+                unit="I15",
+                unit_ru="индекс 2015=100",
+                frequency="monthly",
+                category_ru="Цены",
+                source="Евростат",
+                source_url="https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_midx",
+                description="Гармонизированный индекс потребительских цен во Франции.",
+                methodology="Источник данных — Евростат. Частота публикации — месячная.",
+                history_start=date(2024, 1, 1),
+                history_end=date(2026, 6, 1),
+                points_count=100,
+                is_listed=True,
+            )
+            db.add_all([ind, raw, fr_ind])
             await db.flush()
             for i in range(18):
                 y = 2024 + (i // 12)
@@ -262,6 +288,42 @@ def world_client(auth_env):
                     date=date(y, m, 1),
                     value=100.0 + i,
                 ))
+            db.add_all([
+                WorldDataPoint(indicator_id=fr_ind.id, date=date(2024, 1, 1), value=99.0),
+                WorldDataPoint(indicator_id=fr_ind.id, date=date(2025, 1, 1), value=103.0),
+                WorldDataPoint(indicator_id=fr_ind.id, date=date(2025, 6, 1), value=104.0),
+                WorldDataPoint(indicator_id=fr_ind.id, date=date(2026, 6, 1), value=105.0),
+            ])
+            forecast = WorldForecast(
+                world_indicator_id=ind.id,
+                strategy="seasonal_drift",
+                model_name="World-seasonal_drift-v1",
+                gate_status="passed",
+                gate_reason="beats_seasonal_naive",
+                mase=0.7,
+                baseline_mase=1.1,
+                origins=8,
+                horizon=12,
+                is_current=True,
+            )
+            db.add(forecast)
+            await db.flush()
+            db.add_all([
+                WorldForecastValue(
+                    forecast_id=forecast.id,
+                    date=date(2025, 7, 1),
+                    value=118.0,
+                    lower_bound=116.0,
+                    upper_bound=120.0,
+                ),
+                WorldForecastValue(
+                    forecast_id=forecast.id,
+                    date=date(2025, 8, 1),
+                    value=119.0,
+                    lower_bound=116.5,
+                    upper_bound=121.5,
+                ),
+            ])
             await db.commit()
 
     asyncio.run(_seed())
@@ -289,6 +351,8 @@ def test_world_country_detail_hides_raw(world_client):
     ]
     assert "de-prc_hicp_midx-cp00-i15" in codes
     assert "de-zz_raw" not in codes
+    assert body["overview"][0]["concept_slug"] == "hicp-index"
+    assert body["coverage"]["history_start"] == "2024-01-01"
 
 
 def test_world_indicator_modes_and_data(world_client):
@@ -296,11 +360,16 @@ def test_world_indicator_modes_and_data(world_client):
     assert meta.status_code == 200
     body = meta.json()
     assert "primary_code" in body
+    assert body["indicator"]["concept_slug"] == "hicp-index"
+    assert body["peers"][0]["country_slug"] == "france"
     mode_ids = [m["id"] for m in body["modes"]]
     assert "level-monthly" in mode_ids
     assert "yoy-monthly" in mode_ids
     assert "step-monthly" in mode_ids
     assert all("forecast" not in m for m in mode_ids)
+    modes_by_id = {m["id"]: m for m in body["modes"]}
+    assert modes_by_id["level-quarterly"]["available"] is True
+    assert modes_by_id["level-quarterly"]["official"] is False
 
     data = world_client.get(
         "/api/v1/world/indicators/germany/de-prc_hicp_midx-cp00-i15/data",
@@ -313,6 +382,26 @@ def test_world_indicator_modes_and_data(world_client):
     assert pts[0]["value"] == 100.0
     assert payload["mode"] == "level-monthly"
     assert payload["aggregated"] is False
+    assert payload["forecast"] is None
+
+    with_forecast = world_client.get(
+        "/api/v1/world/indicators/germany/de-prc_hicp_midx-cp00-i15/data",
+        params={"mode": "level", "include_forecast": True},
+    )
+    assert with_forecast.status_code == 200
+    forecast = with_forecast.json()["forecast"]
+    assert forecast["source_code"] == "de-prc_hicp_midx-cp00-i15"
+    assert forecast["quality"]["mase"] == 0.7
+    assert [point["value"] for point in forecast["points"]] == [118.0, 119.0]
+
+    calculated_quarter = world_client.get(
+        "/api/v1/world/indicators/germany/de-prc_hicp_midx-cp00-i15/data",
+        params={"mode": "level-quarterly"},
+    )
+    assert calculated_quarter.status_code == 200
+    calculated_payload = calculated_quarter.json()
+    assert calculated_payload["aggregated"] is True
+    assert len(calculated_payload["points"]) == 6
 
     yoy = world_client.get(
         "/api/v1/world/indicators/germany/de-prc_hicp_midx-cp00-i15/data",
@@ -321,6 +410,30 @@ def test_world_indicator_modes_and_data(world_client):
     assert yoy["mode"] == "yoy-monthly"
     by_date = {p["date"]: p["value"] for p in yoy["points"]}
     assert by_date["2025-01-01"] == 12.0
+
+
+def test_world_compare_contract_and_snapshot(world_client):
+    catalog = world_client.get("/api/v1/world/compare/catalog")
+    assert catalog.status_code == 200
+    item = catalog.json()["items"][0]
+    assert item["code"] == "w:germany:hicp-index"
+    assert item["indicator_code"] == "de-prc_hicp_midx-cp00-i15"
+
+    snapshot = world_client.get("/api/v1/world/compare/snapshot/hicp-index")
+    assert snapshot.status_code == 200
+    payload = snapshot.json()
+    assert payload["concept"]["slug"] == "hicp-index"
+    assert payload["items"][0]["country_slug"] == "germany"
+    assert payload["items"][0]["value"] == 117.0
+    assert payload["average"] is None  # два ряда не выдаются за устойчивый benchmark
+
+    map_series = world_client.get("/api/v1/world/compare/map-series/hicp-index")
+    assert map_series.status_code == 200
+    map_payload = map_series.json()
+    assert map_payload["years"] == [2024, 2025, 2026]
+    assert map_payload["values_by_year"]["2024"]["DE"]["value"] == 111.0
+    assert map_payload["values_by_year"]["2024"]["FR"]["value"] == 99.0
+    assert map_payload["values_by_year"]["2025"]["DE"]["date"] == "2025-06-01"
 
 
 def test_world_search_and_404(world_client):

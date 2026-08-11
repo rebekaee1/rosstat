@@ -16,6 +16,7 @@ from app.data.eurostat_titles_ru import slice_reflected_in_name
 from app.services.world_cards import (
     apply_resolved,
     build_modes_matrix,
+    indicator_card_key,
     members_by_freq,
     parse_mode_token,
     resolve_series_for_mode,
@@ -49,6 +50,19 @@ def test_card_key_same_across_frequencies():
     )
     assert k_m == k_q
     assert k_m[1] == "une_rt"
+
+
+def test_indicator_card_key_never_merges_different_providers():
+    common = dict(
+        country_id=1,
+        dataset_id="gdp_q",
+        unit="INDEX",
+        unit_ru="индекс",
+        slice_json={"freq": "Q", "unit": "INDEX"},
+    )
+    assert indicator_card_key(_Ind(provider="bea", **common)) != indicator_card_key(
+        _Ind(provider="aggregator", **common)
+    )
 
 
 def test_card_key_anti_merge_extra_dims():
@@ -118,14 +132,16 @@ def test_parse_mode_legacy_and_composite():
     assert p5.id == "yoyabs-monthly"
 
 
-def test_resolve_official_vs_aggregated():
+def test_resolve_only_official_frequency():
     monthly = _Ind(
         code="de-une_rt_m", frequency="monthly", points_count=400,
         history_start=date(1990, 1, 1), history_end=date(2026, 1, 1),
+        dataset_id="une_rt_m", unit="PC_ACT",
     )
     quarterly = _Ind(
         code="de-une_rt_q", frequency="quarterly", points_count=100,
         history_start=date(1990, 1, 1), history_end=date(2026, 1, 1),
+        dataset_id="une_rt_q", unit="PC_ACT",
     )
     by_freq = members_by_freq([monthly, quarterly])
 
@@ -136,29 +152,167 @@ def test_resolve_official_vs_aggregated():
     assert r.aggregated is False
     assert r.official is True
 
-    # только monthly → level-quarterly агрегируется
+    # Только monthly: при отсутствии official sibling строится среднее полного периода.
     by_m = members_by_freq([monthly])
     parsed2 = parse_mode_token("level-quarterly", native_freq="monthly")
     r2 = resolve_series_for_mode(parsed=parsed2, by_freq=by_m, signed=False)
     assert r2 is not None
     assert r2.aggregated is True
-    assert r2.source_code == "de-une_rt_m"
+    assert r2.aggregation_policy == "mean"
 
 
-def test_apply_resolved_aggregated_then_yoy():
-    series = []
-    for y in (2024, 2025):
-        for m in range(1, 13):
-            series.append((date(y, m, 1), 100.0 + m + (y - 2024) * 12))
-    from app.services.world_cards import ResolvedSeries
-    resolved = ResolvedSeries(
-        source_code="x", frequency="quarterly",
-        transform="agg:quarterly:yoy", aggregated=True, official=False,
+def test_calculated_frequency_uses_complete_periods_then_mode():
+    monthly = _Ind(
+        code="hicp", frequency="monthly", points_count=14,
+        history_start=date(2024, 1, 1), history_end=date(2025, 2, 1),
+        dataset_id="prc_hicp_midx", unit="I15",
     )
-    out = apply_resolved(series, resolved)
-    # есть точки г/г на квартальных средних
-    assert len(out) >= 1
-    assert all(isinstance(v, float) for _, v in out)
+    resolved = resolve_series_for_mode(
+        parsed=parse_mode_token("level-annual", native_freq="monthly"),
+        by_freq=members_by_freq([monthly]),
+        signed=False,
+    )
+    points = [
+        (date(2024, month, 1), 100.0 + month)
+        for month in range(1, 13)
+    ] + [
+        (date(2025, 1, 1), 120.0),
+        (date(2025, 2, 1), 121.0),
+    ]
+    assert resolved is not None
+    assert apply_resolved(points, resolved) == [(date(2024, 1, 1), 106.5)]
+
+
+def test_quarterly_gdp_sums_only_complete_calendar_year():
+    quarterly = _Ind(
+        code="gdp", frequency="quarterly", points_count=6,
+        history_start=date(2024, 1, 1), history_end=date(2025, 4, 1),
+        dataset_id="namq_10_gdp", unit="CLV15_MEUR",
+    )
+    resolved = resolve_series_for_mode(
+        parsed=parse_mode_token("level-annual", native_freq="quarterly"),
+        by_freq=members_by_freq([quarterly]),
+        signed=False,
+    )
+    assert resolved is not None
+    assert resolved.aggregation_policy == "sum"
+    assert apply_resolved(
+        [
+            (date(2024, 1, 1), 10.0),
+            (date(2024, 4, 1), 11.0),
+            (date(2024, 7, 1), 12.0),
+            (date(2024, 10, 1), 13.0),
+            (date(2025, 1, 1), 14.0),
+            (date(2025, 4, 1), 15.0),
+        ],
+        resolved,
+    ) == [(date(2024, 1, 1), 46.0)]
+
+
+def test_quarterly_labour_rate_uses_annual_mean():
+    quarterly = _Ind(
+        code="employment-rate", frequency="quarterly", points_count=4,
+        history_start=date(2024, 1, 1), history_end=date(2024, 10, 1),
+        dataset_id="lfsq_ergacob", unit="PC",
+    )
+    resolved = resolve_series_for_mode(
+        parsed=parse_mode_token("level-annual", native_freq="quarterly"),
+        by_freq=members_by_freq([quarterly]),
+        signed=False,
+    )
+    assert resolved is not None
+    assert resolved.aggregation_policy == "mean"
+    assert apply_resolved(
+        [
+            (date(2024, 1, 1), 70.0),
+            (date(2024, 4, 1), 72.0),
+            (date(2024, 7, 1), 74.0),
+            (date(2024, 10, 1), 76.0),
+        ],
+        resolved,
+    ) == [(date(2024, 1, 1), 73.0)]
+
+
+@pytest.mark.parametrize(
+    ("dataset_id", "unit"),
+    [
+        ("ei_lmlc_q", "PCH_SM"),
+        ("ei_isppe_q", "PCH_SM"),
+        ("namq_10_a10", "PC_GDP"),
+    ],
+)
+def test_quarterly_ready_made_changes_and_gdp_shares_stay_closed(dataset_id, unit):
+    quarterly = _Ind(
+        code="unsupported", frequency="quarterly", points_count=8,
+        history_start=date(2023, 1, 1), history_end=date(2024, 10, 1),
+        dataset_id=dataset_id, unit=unit,
+    )
+    assert resolve_series_for_mode(
+        parsed=parse_mode_token("level-annual", native_freq="quarterly"),
+        by_freq=members_by_freq([quarterly]),
+        signed=False,
+    ) is None
+
+
+def test_curated_confidence_index_unlocks_complete_period_averages():
+    monthly = _Ind(
+        code="confidence", frequency="monthly", points_count=12,
+        history_start=date(2024, 1, 1), history_end=date(2024, 12, 1),
+        dataset_id="ei_bsbu_m_r2", unit="", unit_ru="индекс",
+    )
+    resolved = resolve_series_for_mode(
+        parsed=parse_mode_token("level-quarterly", native_freq="monthly"),
+        by_freq=members_by_freq([monthly]),
+        signed=False,
+    )
+    assert resolved is not None
+    assert resolved.aggregation_policy == "mean"
+
+
+def test_food_monitoring_index_unlocks_quarterly_and_annual_modes():
+    monthly = _Ind(
+        code="food", frequency="monthly", points_count=12,
+        history_start=date(2025, 1, 1), history_end=date(2025, 12, 1),
+        dataset_id="prc_fpmt_m", unit="I25", unit_ru="индекс (2025 = 100)",
+    )
+    by_freq = members_by_freq([monthly])
+    quarter = resolve_series_for_mode(
+        parsed=parse_mode_token("level-quarterly", native_freq="monthly"),
+        by_freq=by_freq,
+        signed=False,
+    )
+    annual = resolve_series_for_mode(
+        parsed=parse_mode_token("level-annual", native_freq="monthly"),
+        by_freq=by_freq,
+        signed=False,
+    )
+    assert quarter is not None and quarter.aggregation_policy == "mean"
+    assert annual is not None and annual.aggregation_policy == "mean"
+
+
+def test_flow_and_stock_datasets_use_different_period_semantics():
+    flow = _Ind(
+        code="energy", frequency="monthly", points_count=12,
+        history_start=date(2024, 1, 1), history_end=date(2024, 12, 1),
+        dataset_id="nrg_cb_em", unit="GWH",
+    )
+    stock = _Ind(
+        code="stock", frequency="monthly", points_count=12,
+        history_start=date(2024, 1, 1), history_end=date(2024, 12, 1),
+        dataset_id="nrg_stk_oilm", unit="THS_T",
+    )
+    flow_resolved = resolve_series_for_mode(
+        parsed=parse_mode_token("level-quarterly", native_freq="monthly"),
+        by_freq=members_by_freq([flow]),
+        signed=False,
+    )
+    stock_resolved = resolve_series_for_mode(
+        parsed=parse_mode_token("level-quarterly", native_freq="monthly"),
+        by_freq=members_by_freq([stock]),
+        signed=False,
+    )
+    assert flow_resolved is not None and flow_resolved.aggregation_policy == "sum"
+    assert stock_resolved is not None and stock_resolved.aggregation_policy == "last"
 
 
 def test_modes_matrix_marks_unavailable():
@@ -171,8 +325,7 @@ def test_modes_matrix_marks_unavailable():
     by_id = {m["id"]: m for m in modes}
     assert by_id["level-monthly"]["available"] is True
     assert by_id["level-monthly"]["official"] is True
-    assert by_id["level-quarterly"]["available"] is True
-    assert by_id["level-quarterly"]["official"] is False  # aggregated path
+    assert by_id["level-quarterly"]["available"] is False
     assert by_id["step-monthly"]["available"] is True
     assert by_id["yoy-monthly"]["available"] is True
 

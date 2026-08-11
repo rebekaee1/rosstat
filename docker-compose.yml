@@ -95,6 +95,11 @@ services:
       OG_CACHE_DIR: /app/og-cache
       RUSTATS_ROSSTAT_CA_CERT: /app/certs/russiantrustedca2024.pem
       RUSTATS_SCHEDULER_ENABLED: "true"
+      # World Eurostat ingest запускается только после двух shadow-прогонов и
+      # включается отдельным env; не конкурирует с российским daily ETL.
+      RUSTATS_WORLD_EUROSTAT_INGEST_ENABLED: ${RUSTATS_WORLD_EUROSTAT_INGEST_ENABLED:-false}
+      RUSTATS_WORLD_EUROSTAT_INGEST_SHADOW: ${RUSTATS_WORLD_EUROSTAT_INGEST_SHADOW:-true}
+      RUSTATS_WORLD_FORECAST_ENABLED: ${RUSTATS_WORLD_FORECAST_ENABLED:-false}
       # First-party приём событий фронта (питает «Пульс»). По умолчанию ON и
       # НЕ зависит от ANALYTICS_ENABLED — иначе на проде телеметрия не пишется.
       RUSTATS_FRONTEND_EVENTS_ENABLED: ${RUSTATS_FRONTEND_EVENTS_ENABLED:-true}

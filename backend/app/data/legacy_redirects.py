@@ -120,6 +120,7 @@ async def world_card_siblings(db: AsyncSession, indicator) -> list:
         await db.execute(
             select(WorldIndicator).where(
                 WorldIndicator.country_id == indicator.country_id,
+                WorldIndicator.provider == indicator.provider,
                 or_(
                     WorldIndicator.dataset_id == stem,
                     WorldIndicator.dataset_id.like(f"{stem}_%"),

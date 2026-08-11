@@ -489,6 +489,50 @@ async def lifespan(app: FastAPI):
             replace_existing=True,
         )
 
+        # World Eurostat — отдельный TOC-driven контур, по умолчанию выключен.
+        # В shadow режиме журналирует changed-set без записи data points.
+        if settings.world_eurostat_ingest_enabled:
+            from app.services.world_eurostat_ingest import world_eurostat_ingest_job
+
+            scheduler.add_job(
+                locked_job(
+                    world_eurostat_ingest_job,
+                    "world_eurostat_ingest",
+                    ttl_seconds=6 * 3600,
+                ),
+                trigger=CronTrigger(
+                    hour=settings.world_eurostat_ingest_hour,
+                    minute=settings.world_eurostat_ingest_minute,
+                    timezone="Europe/Moscow",
+                ),
+                id="world_eurostat_ingest",
+                name="World Eurostat TOC-driven ingest",
+                replace_existing=True,
+                max_instances=1,
+                coalesce=True,
+            )
+
+        if settings.world_forecast_enabled:
+            from app.services.world_forecast_pipeline import world_forecast_job
+
+            scheduler.add_job(
+                locked_job(
+                    world_forecast_job,
+                    "world_forecast",
+                    ttl_seconds=3 * 3600,
+                ),
+                trigger=CronTrigger(
+                    hour=settings.world_forecast_hour,
+                    minute=settings.world_forecast_minute,
+                    timezone="Europe/Moscow",
+                ),
+                id="world_forecast",
+                name="World quality-gated monthly/quarterly forecasts",
+                replace_existing=True,
+                max_instances=1,
+                coalesce=True,
+            )
+
         # Н-3: «источник молча умер» (вечный no_new_data) — ежедневная сверка
         # max(data.date) против SLA частоты каждого индикатора, после утреннего ETL.
         from app.tasks.scheduler import staleness_check_job

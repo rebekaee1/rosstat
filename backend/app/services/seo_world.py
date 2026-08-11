@@ -641,6 +641,7 @@ async def render_world_indicator_html(
             select(WorldCountry.slug, WorldCountry.name_ru, WorldIndicator.code)
             .join(WorldIndicator, WorldIndicator.country_id == WorldCountry.id)
             .where(
+                WorldIndicator.provider == indicator.provider,
                 WorldIndicator.dataset_id == indicator.dataset_id,
                 WorldIndicator.slice_hash == indicator.slice_hash,
                 WorldIndicator.is_listed.is_(True),

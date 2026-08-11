@@ -1,6 +1,6 @@
 # Forecast Economy — Project Context
 
-**Last updated:** 2026-07-06, вечер (CTO-аудит, дозакрытие хвостов: trap «nginx map с capture-группой» добавлен в traps; adjacency-guard `period_over_period{,_abs}`; батч-hero каталога; COPY-сидер регионов; полная матрица покрытия — `docs/backlog.md::2026-07-06`. Ранее Волна 5: актуализированы счётчики — 907 рядов seed / 109 source / 798 derived (41+757) / 30 парсер-типов / 27 ops / 101 generic-семья (2026-07-08: минус один авто-сиблинг `wages-nominal-avg-year` после `overrides={"avg-year": "wages-nominal-annual"}` — созвон «На правки 13»); derived-пересчёт стал инкрементальным по dependency-графу в topo-порядке (П-2), «пересчитывает все 31» — история. Ранее 2026-06-24: Фаза 3 — углублена история source-рядов до пола источника: `usd-rub`/`cny-rub`/`gold-price`→1998, `eur-rub`→1999, `m2`→1992, `current-account`→1998 (через `backfill_from`/`backfill_from_year`, деноминация-aware floor; каскад протянул на все уровни матрицы); знаковые квартальные прогнозы закрыты — `trade-balance` тождеством `exports−imports` (`derived_from_source` op=`subtract`, 2-source), `current-account` стратегией `signed_quarterly` (level-diff); skip-лист рядов на полу источника — `docs/backlog.md::A0.3`. Ранее — новая стратегия `generic_quarterly` для положительных квартальных рядов — `exports`/`imports`/`external-debt` получили квартальный прогноз; каскад заполнил прогноз новых yoy-кв/год sibling'ов A0.1. Ранее 2026-06-23 (прогноз во всех режимах: `_mode_forecastable` в `view_model_families` — флаг режима выводится из частоты базы (`yoy/mom/qoq` показывают derived-прогноз, не хардкод False); `monthly_auto` = 36 (+`housing-affordability`/`-primary` собственной моделью на ряде отношения, ретрейн через `scheduler._retrain_self_modeled_derived`); `hero_change` (ускорение Г/г в п.п.) на индекс-карточках; фикс key-rate `_handle_forecasts`). Ранее 2026-06-22 (forecast registry: `monthly_auto` обновлённый алгоритм, 34 ряда).
+**Last updated:** 2026-08-06 (ADR-0011: Eurostat-мир — отдельный TOC-driven data plane с shadow/provenance; до доказанной `sum|avg|last` synthetic частоты карточек fail-closed). Ранее 2026-07-06, вечер (CTO-аудит, дозакрытие хвостов: trap «nginx map с capture-группой» добавлен в traps; adjacency-guard `period_over_period{,_abs}`; батч-hero каталога; COPY-сидер регионов; полная матрица покрытия — `docs/backlog.md::2026-07-06`. Ранее Волна 5: актуализированы счётчики — 907 рядов seed / 109 source / 798 derived (41+757) / 30 парсер-типов / 27 ops / 101 generic-семья (2026-07-08: минус один авто-сиблинг `wages-nominal-avg-year` после `overrides={"avg-year": "wages-nominal-annual"}` — созвон «На правки 13»); derived-пересчёт стал инкрементальным по dependency-графу в topo-порядке (П-2), «пересчитывает все 31» — история. Ранее 2026-06-24: Фаза 3 — углублена история source-рядов до пола источника: `usd-rub`/`cny-rub`/`gold-price`→1998, `eur-rub`→1999, `m2`→1992, `current-account`→1998 (через `backfill_from`/`backfill_from_year`, деноминация-aware floor; каскад протянул на все уровни матрицы); знаковые квартальные прогнозы закрыты — `trade-balance` тождеством `exports−imports` (`derived_from_source` op=`subtract`, 2-source), `current-account` стратегией `signed_quarterly` (level-diff); skip-лист рядов на полу источника — `docs/backlog.md::A0.3`. Ранее — новая стратегия `generic_quarterly` для положительных квартальных рядов — `exports`/`imports`/`external-debt` получили квартальный прогноз; каскад заполнил прогноз новых yoy-кв/год sibling'ов A0.1. Ранее 2026-06-23 (прогноз во всех режимах: `_mode_forecastable` в `view_model_families` — флаг режима выводится из частоты базы (`yoy/mom/qoq` показывают derived-прогноз, не хардкод False); `monthly_auto` = 36 (+`housing-affordability`/`-primary` собственной моделью на ряде отношения, ретрейн через `scheduler._retrain_self_modeled_derived`); `hero_change` (ускорение Г/г в п.п.) на индекс-карточках; фикс key-rate `_handle_forecasts`). Ранее 2026-06-22 (forecast registry: `monthly_auto` обновлённый алгоритм, 34 ряда).
 **Part of:** [`AGENTS.md`](AGENTS.md) (точка входа для AI-агента).
 **See also:** [`README.md`](README.md), [`docs/workflow.md`](docs/workflow.md), [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md), [`docs/data_sources.md`](docs/data_sources.md), [`docs/analytics_api_inventory/`](docs/analytics_api_inventory/), [`docs/adr/`](docs/adr/). Parser internals (CBR/Минфин/Rosstat) живут в docstrings `backend/app/services/*_parser.py`.
 
@@ -26,6 +26,8 @@
 | [`docs/adr/0008`](docs/adr/0008-regional-bounded-context.md) | Региональный блок: bounded context `регион × показатель × год`, артефакт вместо ETL, дособор из архивных редакций |
 | [`docs/adr/0009`](docs/adr/0009-behavior-stream-first-party.md) | Поведенческий поток first-party: `behavior.js` автосбор (клики/мышь/скролл/dwell/copy) → `behavior_events`, retention сырья + вечные агрегаты в Пульсе |
 | [`docs/adr/0010`](docs/adr/0010-analytics-contour-identity-goals-marts-olap.md) | Аналитический контур: visitor_id + identity_links, серверные сессии (30 мин), таксономия целей, rollup'ы, единый слой витрин `analytics_marts`, OLAP-копия ClickHouse |
+| [`docs/adr/0011`](docs/adr/0011-world-eurostat-data-plane.md) | Eurostat-мир: отдельный TOC-driven data plane, shadow/provenance и fail-closed частоты |
+| [`docs/adr/0012`](docs/adr/0012-world-multi-provider-official-first-forecasts.md) | Multi-provider world: только официальные первоисточники, provider-aware identity, единый adapter contract и quality-gated прогнозы |
 | [`docs/indicator-family-playbook.md`](docs/indicator-family-playbook.md) | Семейство до продакшена: продуктовая модель, уровни UI A/B/C; эталоны **ИПЦ** (4×10) и **жильё** (2×3); фазы A–G |
 
 ---
@@ -257,6 +259,28 @@ Daily ETL (06:00 МСК, `RUSTATS_SCHEDULER_CRON_HOUR/MINUTE`) запускае�
 Не путать с `RUSTATS_ANALYTICS_API_TOKEN` (Forecast Analytics OS) — это машинный bearer-токен для MCP-агента, не идентичность конечного пользователя.
 
 Цель кабинета — **lead-gen**: вход через OAuth открывает полную выгрузку рядов (gate только на download, см. домен Export) и собирает согласие на рассылки о выходе данных (домен Notifications). Не монетизация, не платный wall. Детали — ADR-0007 (в работе).
+
+### Мировой multi-provider блок (ADR-0011/0012)
+
+Отдельный bounded context с осью `provider × страна × dataset × slice × период`.
+Eurostat — первый адаптер, а не универсальный источник для всех стран.
+
+- **Official-first** — ряд поступает только из официального национального ведомства,
+  центрального банка, таможни, министерства, официальной биржи или
+  наднационального статистического органа. Национальный первоисточник имеет
+  приоритет; коммерческие и новостные агрегаторы запрещены.
+- **Provider** — машинный код издателя (`eurostat`, далее `bea`, `bls`, `ibge`,
+  `mospi`, `nbs` после отдельной проверки). Он входит в identity и provenance;
+  публичное поле `source` — человекочитаемое имя организации.
+- **WorldSourceAdapter** — единый контракт catalogue → series identity →
+  dimensions/frequency/unit → observations/revision metadata. Product-слои не
+  знают wire-формат ведомства.
+- **WorldConcept** — вручную доказанная семантическая связь рядов разных стран и
+  providers. Совпадение названия/единицы само по себе сравнение не открывает.
+- **WorldForecast** — отдельный от России прогнозный контур. Публичен только для
+  свежего регулярного M/Q primary-series, где rolling-origin `MASE < 1` и модель
+  минимум на 2% точнее seasonal-naive. Не прошедший gate ряд корректно остаётся
+  без прогнозной линии.
 
 ### Региональный блок (ADR-0008, реализован локально 2026-07-02)
 

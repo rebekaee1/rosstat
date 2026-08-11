@@ -116,8 +116,10 @@
    против объединения gen∪variant∪freq∪bespoke.
 4. **Источник — только официальный** (Росстат, Банк России, Минфin, МосБиржа ISS
    и подобные первоисточники / биржи). Никаких новостных сайтов и сервисов-
-   агрегаторов. Точная карта `URL/endpoint` — `docs/data_sources.md` + docstring
-   парсера.
+ агрегаторов. Для зарубежного национального показателя приоритет всегда у
+ национального статистического ведомства/ЦБ/таможни/министерства; OECD и
+ Всемирный банк не заменяют доступный первоисточник. Точная карта `URL/endpoint`
+ — `docs/data_sources.md` + docstring парсера.
 5. **Правильные названия графика и осей** — заголовок и подпись оси отражают
    единицу/частоту/режим (generic берёт из `unit`/`frequency`; bespoke — из
    `*ViewModeContent`). Проверить глазами в каждом режиме.
@@ -223,6 +225,9 @@
  - `0008-regional-bounded-context.md` — региональный блок: отдельный bounded context `регион × показатель × год`, артефакт вместо ETL (сборник «Регионы России», обновление раз в год), дособор из архивных редакций 2003–2023, без прогнозов/derived.
  - `0009-behavior-stream-first-party.md` — поведенческий поток first-party («видеокамера»): `behavior.js` автосбор без разметки (pageview/click/move/dwell/copy, dead/rage-клики) → батчи в `behavior_events`; retention сырья 90 дней, дневные агрегаты в Пульс-снапшотах вечные; не смешивать с бизнес-событиями `track.js`/`frontend_events`.
  - `0010-analytics-contour-identity-goals-marts-olap.md` — аналитический контур поверх сырья: идентичность (visitor_id + identity_links + мост `_ym_uid`), гео по IP своими силами, серверная сессионизация (правило 30 мин), таксономия целей macro/micro/engagement/technical (`goal_taxonomy.py`), rollup-таблицы, единый слой витрин `analytics_marts` (BI + Пульс + бот читают одни функции), BI 10 разделов с деревом метрик, OLAP-копия ClickHouse (вторична, деградация без влияния на сайт), realtime-алерты аномалий.
+ - `0011-world-eurostat-data-plane.md` — мировой Eurostat как отдельный TOC-driven data plane: shadow/provenance, curated concepts и fail-closed агрегации частот.
+ - `0012-world-multi-provider-official-first-forecasts.md` — multi-provider world: только официальные первоисточники, provider-aware identity, единый adapter contract и quality-gated M/Q прогнозы.
+ - `0011-world-eurostat-data-plane.md` — отдельный TOC-driven контур Eurostat: shadow/provenance, изоляция от российского ETL и fail-closed synthetic частоты.
 
 После этих файлов агент способен ответить на ~90% вопросов и делать осмысленные правки.
 

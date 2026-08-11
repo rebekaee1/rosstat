@@ -43,6 +43,17 @@ class Settings(BaseSettings):
     scheduler_evening_hour: int = 20
     scheduler_evening_minute: int = 0
     ticker_pull_interval_seconds: int = 8
+    # Eurostat world block — отдельный opt-in job. До двух успешных shadow
+    # прогонов не меняет world_*; не смешивается с daily_update_job России.
+    world_eurostat_ingest_enabled: bool = False
+    world_eurostat_ingest_shadow: bool = True
+    world_eurostat_ingest_hour: int = 2
+    world_eurostat_ingest_minute: int = 20
+    # Прогнозы world_* изолированы от российского pipeline и выключены до
+    # локального backfill + проверки quality-gate отчёта.
+    world_forecast_enabled: bool = False
+    world_forecast_hour: int = 4
+    world_forecast_minute: int = 20
 
     # Alerting
     telegram_bot_token: str = ""

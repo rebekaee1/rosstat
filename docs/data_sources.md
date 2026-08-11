@@ -1,5 +1,7 @@
 # Data sources — точная карта индикатор → файл/endpoint
 
+**World extension last verified:** 2026-08-06 (Eurostat catalogue/dissemination API; multi-provider official-first contract ADR-0012).
+
 **Last updated:** 2026-07-06 (CTO-аудит, Волна 5: счётчик source-индикаторов актуализирован — 109 (было заявлено 75); добавленные с 2026-05-31 семейства покрыты соответствующими разделами ниже и docstrings парсеров: демография (`rosstat_demo`), наука/инновации (`rosstat_science`), основные фонды (`rosstat_fixed_assets`), ИПП-разделы (`rosstat_ind`), крипта BTC/ETH/SOL (`binance_btcusdt`), биржевые индексы и товарные MOEX (`moex_index`, `moex_brent_daily`), недельные цены топлива (`rosstat_weekly_price`), денежные агрегаты M0/M1/M2 (`cbr_monetary_agg`). Два parser_type зарегистрированы, но в seed не используются (задел): `cbr_dataservice_sum` — суммирование нескольких DataService-элементов по дате, `cbr_monetary_html` — HTML-таблицы денежной статистики ЦБ; не удалять без ревизии прод-БД. Ранее 2026-05-31: T13 — данный файл стал основным местом хранения технических деталей источников — имена файлов, листы, строки/колонки, API-id; публичные `methodology` поля индикаторов в `seed_data.py` не выдают этих внутренностей, см. правило [`.cursor/rules/methodology-language.mdc`](../.cursor/rules/methodology-language.mdc).)
 **Part of:** [`AGENTS.md`](../AGENTS.md), [`CONTEXT.md`](../CONTEXT.md).
 **Related:** docstrings парсеров `backend/app/services/{cbr_*,minfin_*,rosstat_*}_parser.py` (per-parser internals: traps, схема `model_config_json`, особенности формата), [`docs/adr/0004`](adr/0004-rosstat-russian-canonical-sdds-deprecated.md) (Rosstat русский canonical).
@@ -338,6 +340,32 @@ Multi-source merge: история (1897+) + components (1990+) + latest акт�
 > `min_year=2018` в `SCIENCE_CONFIG` (`rosstat_science_parser.py`): парсер
 > отдаёт только новый ряд. Существующие старые точки на проде вычищены разово
 > (DELETE date < 2018). `small-business-innovation` уже идёт с 2019 — не затронут.
+
+---
+
+## Мировой блок — Eurostat и официальный multi-provider contract
+
+Мировой bounded context не входит в счётчик 109 российских source-индикаторов.
+Первый действующий provider — официальный Eurostat; подключение национальных
+ведомств выполняется отдельными adapters по ADR-0012.
+
+| Provider | Официальный источник | Каталог/версии | Наблюдения |
+|----------|----------------------|----------------|------------|
+| `eurostat` | Eurostat, Statistical Office of the European Union | `https://ec.europa.eu/eurostat/api/dissemination/catalogue/toc/txt?lang=en` (`last update of data`, `last table structure change`) | Eurostat Dissemination API; ссылка конкретного dataset хранится в `WorldIndicator.source_url` |
+
+Техническая identity ряда:
+`provider × country × dataset_id × slice_hash`; slice включает все значимые
+dimensions, единицу и частоту. `world_dataset_state` хранит версии источника по
+паре `provider × dataset_id`. Parser internals Eurostat — docstrings
+`app/services/eurostat_parser.py`, обновление — `world_eurostat_ingest.py`.
+
+**Инвариант источника:** национальная статистика берётся прежде всего из
+официального национального ведомства, центрального банка, таможни или
+министерства. OECD/World Bank разрешены только как канонический международный
+издатель конкретного ряда или контрольная сверка; коммерческий/новостной
+агрегатор не может быть source. Проверенные, но ещё не подключённые источники из
+исследовательских Excel не считаются production provider до реализации adapter,
+golden-series теста и фиксации здесь.
 
 ---
 
