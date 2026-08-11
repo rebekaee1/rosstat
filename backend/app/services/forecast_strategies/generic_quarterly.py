@@ -28,7 +28,7 @@ def generic_quarterly_strategy(
     values: Sequence[float],
     ctx: StrategyContext,
 ) -> Sequence[StrategyOutput]:
-    model_name = f"{ctx.indicator_code}-Quarterly-MW"
+    model_name = ctx.cfg.get("model_name") or f"{ctx.indicator_code}-Quarterly-MW"
     result = train_generic_quarterly(
         list(dates), list(values),
         forecast_steps=ctx.forecast_steps or 4,
