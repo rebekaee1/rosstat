@@ -179,6 +179,9 @@ async def resolve_world_frequency_sibling(
         return None
 
     primary = min(siblings, key=world_card_primary_rank)
+    # Unlisted/нулевой primary — не 301 ни на мёртвую карточку, ни на /world/{slug}.
+    if not getattr(primary, "is_listed", False):
+        return None
     if primary.code == indicator.code:
         return None
 
@@ -186,3 +189,57 @@ async def resolve_world_frequency_sibling(
     if freq not in ("monthly", "quarterly", "annual"):
         freq = "monthly"
     return f"/world/{slug}/{primary.code}?mode=level-{freq}"
+
+
+async def resolve_world_unlisted_indicator(
+    db: AsyncSession, slug: str, code: str
+) -> str | None:
+    """Пустой/нулевой unlisted ряд → 301 на страницу страны.
+
+    Срезы с реальным сигналом остаются открытыми (variant-пикер), даже если
+    ``is_listed=false`` и они не в каталоге страны.
+    """
+    from sqlalchemy import select as sa_select
+
+    from app.models import WorldCountry, WorldDataPoint, WorldIndicator
+
+    country = (
+        await db.execute(
+            select(WorldCountry).where(
+                WorldCountry.slug == slug,
+                WorldCountry.is_active.is_(True),
+            )
+        )
+    ).scalar_one_or_none()
+    if country is None:
+        return None
+
+    indicator = (
+        await db.execute(
+            select(WorldIndicator).where(
+                WorldIndicator.country_id == country.id,
+                WorldIndicator.code == code,
+            )
+        )
+    ).scalar_one_or_none()
+    if indicator is None:
+        return None
+
+    siblings = await world_card_siblings(db, indicator)
+    primary = min(siblings, key=world_card_primary_rank)
+    if getattr(primary, "is_listed", False):
+        return None
+
+    has_signal = (
+        await db.execute(
+            sa_select(WorldDataPoint.indicator_id)
+            .where(
+                WorldDataPoint.indicator_id.in_([indicator.id, primary.id]),
+                WorldDataPoint.value != 0,
+            )
+            .limit(1)
+        )
+    ).first()
+    if has_signal is not None:
+        return None
+    return f"/world/{slug}"

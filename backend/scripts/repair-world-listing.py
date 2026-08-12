@@ -511,6 +511,50 @@ _NATIONAL_PASSPORT_CODES: frozenset[str] = frozenset({
 })
 
 
+async def unlist_all_zero_series() -> dict[str, int]:
+    """Снять с витрины ряды, где все точки = 0 (или точек нет).
+
+    Такие срезы не должны попадать в каталог/поиск; variant-пикер
+    дополнительно фильтрует по сигналу в API.
+    """
+    async with async_session() as db:
+        listed_ids = list(
+            (
+                await db.execute(
+                    select(WorldIndicator.id).where(WorldIndicator.is_listed.is_(True))
+                )
+            ).scalars().all()
+        )
+        if not listed_ids:
+            return {"checked": 0, "unlisted": 0}
+
+        with_signal = set(
+            (
+                await db.execute(
+                    select(WorldDataPoint.indicator_id)
+                    .where(
+                        WorldDataPoint.indicator_id.in_(listed_ids),
+                        WorldDataPoint.value != 0,
+                    )
+                    .distinct()
+                )
+            ).scalars().all()
+        )
+        dead = [i for i in listed_ids if i not in with_signal]
+        if not dead:
+            return {"checked": len(listed_ids), "unlisted": 0}
+
+        rows = (
+            await db.execute(
+                select(WorldIndicator).where(WorldIndicator.id.in_(dead))
+            )
+        ).scalars().all()
+        for ind in rows:
+            ind.is_listed = False
+        await db.commit()
+        return {"checked": len(listed_ids), "unlisted": len(rows)}
+
+
 async def unlist_eurostat_on_national_passports() -> dict[str, int]:
     """National-first: снять eurostat leftovers с listed у passport-стран."""
     from collections import Counter
@@ -790,6 +834,7 @@ async def main() -> int:
     n_disp = await dedupe_display_names()
     country_vis = await apply_country_visibility()
     nat_eu = await unlist_eurostat_on_national_passports()
+    zero_guard = await unlist_all_zero_series()
 
     try:
         await bump_namespaces("world")
@@ -808,6 +853,7 @@ async def main() -> int:
     log.info("display_name_deduped=%d", n_disp)
     log.info("country_visibility=%s", country_vis)
     log.info("national_passport_eurostat_unlisted=%s", nat_eu)
+    log.info("all_zero_guard=%s", zero_guard)
     log.info("AFTER %s", after)
 
     # аудит ключа: нет ли групп с разными stem (не должно быть)

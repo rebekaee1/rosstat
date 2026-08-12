@@ -120,6 +120,25 @@ async def _load_points(
     return [(d, float(v)) for d, v in rows]
 
 
+async def _ids_with_nonzero_signal(
+    db: AsyncSession, indicator_ids: list[int],
+) -> set[int]:
+    """id рядов с хотя бы одной ненулевой точкой (не «пустой ноль»)."""
+    if not indicator_ids:
+        return set()
+    rows = (
+        await db.execute(
+            select(WorldDataPoint.indicator_id)
+            .where(
+                WorldDataPoint.indicator_id.in_(indicator_ids),
+                WorldDataPoint.value != 0,
+            )
+            .distinct()
+        )
+    ).all()
+    return {int(r[0]) for r in rows}
+
+
 async def _load_current_world_forecast(
     db: AsyncSession,
     indicator_id: int,
@@ -472,7 +491,7 @@ async def world_compare_snapshot(
     items = []
     for country, indicator in members:
         latest = latest_by_id.get(indicator.id)
-        if latest is None:
+        if latest is None or latest[1] == 0:
             continue
         point_date, value = latest
         items.append({
@@ -682,7 +701,7 @@ async def world_compare_average_series(
 
 @router.get("/countries/{slug}")
 async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
-    cache_key = await versioned_key("world", f"country:v3:{slug}")
+    cache_key = await versioned_key("world", f"country:v4:{slug}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -699,6 +718,10 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
             primary = _primary_of_card(members)
             if primary is not None:
                 listed.append(primary)
+
+    # Защита: all-zero не в каталоге страны (даже если is_listed ещё true).
+    listed_signal = await _ids_with_nonzero_signal(db, [i.id for i in listed])
+    listed = [i for i in listed if i.id in listed_signal]
 
     last_map: dict[int, tuple[date, float]] = {}
     prev_map: dict[int, float] = {}
@@ -808,7 +831,7 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
     overview = []
     for concept, indicator in overview_candidates:
         latest = overview_latest.get(indicator.id)
-        if latest is None:
+        if latest is None or latest[1] == 0:
             continue
         overview.append({
             "concept_slug": concept.slug,
@@ -856,7 +879,7 @@ async def _card_context(
 
 @router.get("/indicators/{slug}/{code}")
 async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db)):
-    cache_key = await versioned_key("world", f"ind:v6:{slug}:{code}")
+    cache_key = await versioned_key("world", f"ind:v9:{slug}:{code}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -864,10 +887,12 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
     country = await _country_by_slug(db, slug)
     ind = await _indicator_by_code(db, country.id, code)
     primary, by_freq, all_inds = await _card_context(db, country, ind)
-    # Карточка на витрине только если primary listed (unlisted = мусор/нули/дубль).
-    # Иначе прямой URL обходил SSR-404 через SPA + этот API.
+    # Витрина: listed. Срезы с реальным сигналом тоже открываем (variant-пикер),
+    # все-нули / пустые unlisted — 404.
     if not primary.is_listed:
-        raise HTTPException(404, "Индикатор не найден")
+        signal_ids = await _ids_with_nonzero_signal(db, [ind.id, primary.id])
+        if ind.id not in signal_ids and primary.id not in signal_ids:
+            raise HTTPException(404, "Индикатор не найден")
 
     # точки primary — для знака ряда в матрице
     series_by_code: dict[str, list] = {}
@@ -881,17 +906,21 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
         unit=unit,
     )
 
-    # variants: primary каждой карточки той же variant-группы
+    # variants: только ряды с ненулевым сигналом (нули не в пикере).
     vg = variant_group_key(country_id=ind.country_id, dataset_id=ind.dataset_id)
     variant_primaries: list[WorldIndicator] = []
     if vg is not None:
         groups = _card_members_map(all_inds)
+        candidates: list[WorldIndicator] = []
         for members in groups.values():
             p = _primary_of_card(members)
             if p is None:
                 continue
-            if variant_group_key(country_id=p.country_id, dataset_id=p.dataset_id) == vg:
-                variant_primaries.append(p)
+            if variant_group_key(country_id=p.country_id, dataset_id=p.dataset_id) != vg:
+                continue
+            candidates.append(p)
+        signal = await _ids_with_nonzero_signal(db, [p.id for p in candidates])
+        variant_primaries = [p for p in candidates if p.id in signal]
 
     # текущий для variants — primary своей карточки
     variants = build_variants(primary, variant_primaries)
@@ -908,6 +937,7 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
             .join(WorldIndicator, WorldIndicator.country_id == WorldCountry.id)
             .where(
                 WorldCountry.is_active.is_(True),
+                WorldIndicator.is_listed.is_(True),
                 WorldIndicator.name_quality.in_(("curated", "composed")),
                 WorldIndicator.provider == ind.provider,
                 WorldIndicator.dataset_id.in_(peer_dataset_ids),
@@ -924,9 +954,12 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
         entry = peer_members.setdefault(peer_country.id, (peer_country, []))
         entry[1].append(peer_indicator)
     peers = []
+    peer_signal = await _ids_with_nonzero_signal(
+        db, [(_primary_of_card(members) or members[0]).id for _, members in peer_members.values()],
+    )
     for peer_country, members in peer_members.values():
         peer_primary = _primary_of_card(members)
-        if peer_primary is None:
+        if peer_primary is None or peer_primary.id not in peer_signal:
             continue
         peers.append({
             "country_code": peer_country.code,
@@ -1008,7 +1041,9 @@ async def indicator_data(
     ind = await _indicator_by_code(db, country.id, code)
     _primary, by_freq, _all = await _card_context(db, country, ind)
     if not _primary.is_listed:
-        raise HTTPException(404, "Индикатор не найден")
+        signal_ids = await _ids_with_nonzero_signal(db, [ind.id, _primary.id])
+        if ind.id not in signal_ids and _primary.id not in signal_ids:
+            raise HTTPException(404, "Индикатор не найден")
 
     native = normalize_frequency(ind.frequency) or "monthly"
     try:
@@ -1214,6 +1249,7 @@ async def search_world(
         )
 
     rows = (await db.execute(stmt)).all()
+    signal = await _ids_with_nonzero_signal(db, [ind.id for ind, _c in rows])
     results = [
         {
             "code": ind.code,
@@ -1225,5 +1261,6 @@ async def search_world(
             "frequency": normalize_frequency(ind.frequency),
         }
         for ind, c in rows
+        if ind.id in signal
     ]
     return {"results": results, "total": len(results)}

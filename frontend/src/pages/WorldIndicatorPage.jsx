@@ -334,7 +334,7 @@ export default function WorldIndicatorPage() {
         <div className="mt-8 rounded-2xl border border-border-subtle bg-surface p-8 text-center">
           <h1 className="mb-3 font-display text-2xl font-bold text-text-primary">Показатель не найден</h1>
           <p className="mb-6 text-text-secondary">
-            Такого показателя для этой страны нет. Вернитесь к списку или откройте другой раздел платформы.
+            Такого показателя для этой страны нет в каталоге. Вернитесь к списку или откройте другой раздел.
           </p>
           <div className="flex flex-wrap justify-center gap-3 text-sm">
             <Link to={`/world/${slug}`} className="rounded-xl bg-champagne/10 px-4 py-2 text-champagne transition-colors hover:bg-champagne/20">

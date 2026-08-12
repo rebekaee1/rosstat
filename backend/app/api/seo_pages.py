@@ -353,6 +353,8 @@ async def seo_world_indicator(
     target = await resolve_world_frequency_sibling(db, slug, code)
     if target:
         return _permanent_redirect(target)
+    # Нулевые/скрытые ряды не редиректим на страну — просто 404.
+    # Исключение из выбора (listing/variants) делается в API/repair.
     status, html = await _cached_html(
         "ssr-world", f"world:{slug}:{code}", _SSR_TTL_WORLD,
         lambda: render_world_indicator_html(slug, code, db),
