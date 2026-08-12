@@ -36,9 +36,9 @@ const RELATIVE_LABELS = [
 const DIVERGING_LABELS = [
   'Сильно ниже нуля',
   'Умеренно ниже нуля',
-  'Ниже нуля · близко к нулю',
+  'Ниже нуля, близко к нулю',
   'Около нуля',
-  'Выше нуля · близко к нулю',
+  'Выше нуля, близко к нулю',
   'Умеренно выше нуля',
   'Сильно выше нуля',
 ];
@@ -109,7 +109,7 @@ function relativeModel(values) {
       const band = bandFor(value);
       if (band < 0) return '';
       const rank = percentile(values, value);
-      return `${RELATIVE_LABELS[band]} · ${rank}-й процентиль`;
+      return `${RELATIVE_LABELS[band]}, ${rank}-й процентиль`;
     },
   };
 }

@@ -73,8 +73,10 @@ export function useWorldCountry(slug, { enabled = true } = {}) {
     gcTime: GC,
     retry: (count, err) => {
       if (err?.response?.status === 404) return false;
-      return count < 1;
+      // Крупные страны: краткий Empty reply при рестарте backend.
+      return count < 2;
     },
+    retryDelay: (attempt) => 400 * 2 ** attempt,
   });
 }
 

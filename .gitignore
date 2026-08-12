@@ -90,3 +90,9 @@ tmp/
 
 # Выходные артефакты аудитов мирового блока (регенерируются scripts/audit-world-run-all.py)
 scripts/audit-world-out/
+
+# Локальный кэш deep-ingest / listing-батчей Eurostat (не в git)
+backend/.cache/
+
+# Сырые дампы аудита underslice (регенерируются research-скриптами)
+docs/research/eurostat-underslice-*.txt

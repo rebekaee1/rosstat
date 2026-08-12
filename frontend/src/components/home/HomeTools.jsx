@@ -1,6 +1,6 @@
 import { createElement } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, BarChart3, CalendarRange, Globe2, MapPin } from 'lucide-react';
+import { ArrowRight, BarChart3, Globe2, MapPin } from 'lucide-react';
 
 const TOOLS = [
   {
@@ -8,12 +8,6 @@ const TOOLS = [
     title: 'Сравнение',
     desc: 'Россия, регионы и страны на одном графике',
     icon: BarChart3,
-  },
-  {
-    to: '/calendar',
-    title: 'Календарь',
-    desc: 'Официальные даты публикаций статистики',
-    icon: CalendarRange,
   },
   {
     to: '/regions',
@@ -38,7 +32,7 @@ export default function HomeTools() {
         </h2>
         <div className="h-px flex-1 bg-border-subtle" />
       </div>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {TOOLS.map(({ to, title, desc, icon }) => (
           <Link
             key={to}

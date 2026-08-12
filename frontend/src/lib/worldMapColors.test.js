@@ -18,9 +18,9 @@ describe('buildWorldColorModel', () => {
     expect(model.colorFor(35)).toBe(WORLD_RELATIVE_SCALE[6]);
     expect(model.median).toBe(18);
     expect(model.sampleSize).toBe(35);
-    expect(model.describe(1)).toBe('Нижние 15% стран · 1-й процентиль');
-    expect(model.describe(18)).toBe('Около медианы · 50-й процентиль');
-    expect(model.describe(35)).toBe('Верхние 15% стран · 99-й процентиль');
+    expect(model.describe(1)).toBe('Нижние 15% стран, 1-й процентиль');
+    expect(model.describe(18)).toBe('Около медианы, 50-й процентиль');
+    expect(model.describe(35)).toBe('Верхние 15% стран, 99-й процентиль');
   });
 
   it('uses a zero-centred diverging scale for signed values', () => {
@@ -41,7 +41,7 @@ describe('buildWorldColorModel', () => {
     );
     expect(model.kind).toBe('diverging');
     expect(model.colorFor(-8)).toBe(WORLD_DIVERGING_SCALE[0]);
-    expect(model.describe(-1)).toBe('Ниже нуля · близко к нулю');
+    expect(model.describe(-1)).toBe('Ниже нуля, близко к нулю');
   });
 
   it('keeps missing and non-numeric values neutral', () => {

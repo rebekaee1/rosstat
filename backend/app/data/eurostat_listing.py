@@ -13,9 +13,12 @@
 
 from __future__ import annotations
 
+import json
 import re
 from datetime import date
-from typing import Any
+from functools import lru_cache
+from pathlib import Path
+from typing import Any, Literal
 
 # Минимальная длина истории для is_listed=true (primary карточки).
 LISTING_MIN_POINTS_BY_FREQUENCY: dict[str, int] = {
@@ -43,8 +46,9 @@ _CORE_SLICE_KEYS = frozenset({
 # Суффикс частоты в dataset_id Евростата: une_rt_m / sts_inpr_q / …
 _DATASET_FREQ_SUFFIX = re.compile(r"_[mqawd]$", re.I)
 
-# Variant-группы: только whitelist stem'ов (не авто на весь каталог).
-VARIANT_WHITELIST_STEMS = frozenset({"une_rt"})
+# Variant-группы: любой stem с >1 карточкой (build_variants сам вернёт [] при одном).
+VARIANT_WHITELIST_STEMS = frozenset()  # deprecated; variant_group_key больше не фильтрует
+
 
 FREQ_ORDER = ("monthly", "quarterly", "annual", "weekly", "daily")
 
@@ -163,9 +167,9 @@ def variant_group_key(
     country_id: int,
     dataset_id: str,
 ) -> tuple | None:
-    """Ключ variant-группы или None, если stem вне whitelist."""
+    """Ключ variant-группы: страна × stem. Один срез → UI сам скроет picker."""
     stem = dataset_stem(dataset_id)
-    if stem not in VARIANT_WHITELIST_STEMS:
+    if not stem:
         return None
     return (int(country_id), stem)
 
@@ -270,6 +274,113 @@ def listing_rank_tuple(
     return (depth, prefer, substance)
 
 
+ListingMode = Literal["full_ok", "headline_ok", "no"]
+
+_LISTING_DECISIONS_PATH = Path(__file__).with_name("eurostat_listing_decisions.json")
+
+# Измерения, которые не считаем «микросрезом» при headline_ok.
+_HEADLINE_IDENTITY_DIMS = frozenset({
+    "freq", "geo", "time", "unit", "s_adj",
+})
+
+
+@lru_cache(maxsize=1)
+def load_listing_decisions() -> dict[str, dict[str, Any]]:
+    """Редакторские решения listable/mode по dataset_id (SEO-merged канон)."""
+    if not _LISTING_DECISIONS_PATH.is_file():
+        return {}
+    raw = json.loads(_LISTING_DECISIONS_PATH.read_text(encoding="utf-8"))
+    if not isinstance(raw, dict):
+        return {}
+    out: dict[str, dict[str, Any]] = {}
+    for key, val in raw.items():
+        ds = str(key).strip().lower()
+        if not ds or not isinstance(val, dict):
+            continue
+        mode = str(val.get("mode") or "").strip().lower()
+        if mode not in {"full_ok", "headline_ok", "no"}:
+            continue
+        out[ds] = {
+            "listable": bool(val.get("listable")) and mode != "no",
+            "mode": mode,
+            "reason": str(val.get("reason") or ""),
+        }
+    return out
+
+
+def listing_mode_for_dataset(dataset_id: str | None) -> ListingMode | None:
+    """Режим витрины для датасета или None, если решения нет."""
+    ds = (dataset_id or "").strip().lower()
+    if not ds:
+        return None
+    hit = load_listing_decisions().get(ds)
+    if not hit:
+        return None
+    return hit["mode"]  # type: ignore[return-value]
+
+
+def narrowing_dim_is_aggregate(dim: str, code: str | None) -> bool:
+    """True, если код измерения — итоговый / не сужает headline."""
+    from app.data.eurostat_dim_labels_ru import is_dim_totalish
+
+    d = (dim or "").strip().lower()
+    c = (code or "").strip().upper()
+    if not c or is_dim_totalish(d, c):
+        return True
+    # Возрастной «рабочий возраст» уже totalish в dim_labels; дубль на всякий.
+    if d == "age" and c in {"Y15-74", "TOTAL", "T"}:
+        return True
+    if d == "sex" and c in {"T", "TOTAL"}:
+        return True
+    return False
+
+
+def varying_narrowing_dims(
+    slices: list[dict[str, Any] | None],
+) -> frozenset[str]:
+    """Измерения, которые реально варьируют между срезами датасета."""
+    from app.data.eurostat_titles_ru import _NARROWING_NAME_DIMS
+
+    values: dict[str, set[str]] = {}
+    for sl in slices:
+        if not sl:
+            continue
+        for dim in _NARROWING_NAME_DIMS:
+            if dim in _HEADLINE_IDENTITY_DIMS:
+                continue
+            raw = sl.get(dim)
+            if raw is None:
+                continue
+            val = str(raw).strip().upper()
+            if not val:
+                continue
+            values.setdefault(dim, set()).add(val)
+    return frozenset(d for d, vals in values.items() if len(vals) > 1)
+
+
+def is_headline_aggregate_slice(
+    slice_json: dict[str, Any] | None,
+    *,
+    varying_dims: frozenset[str] | None = None,
+) -> bool:
+    """Срез годится для headline_ok: все варьирующие narrowing-dim — TOTAL.
+
+    Константные по датасету измерения (часть identity набора) не требуют TOTAL.
+    """
+    sl = slice_json or {}
+    dims = varying_dims
+    if dims is None:
+        from app.data.eurostat_titles_ru import _NARROWING_NAME_DIMS
+
+        dims = frozenset(
+            d for d in _NARROWING_NAME_DIMS if d not in _HEADLINE_IDENTITY_DIMS
+        )
+    for dim in dims:
+        if not narrowing_dim_is_aggregate(dim, sl.get(dim)):
+            return False
+    return True
+
+
 # Дополнительные срезы глубоких наборов (headline TOTAL недостаточен).
 # Без них оперативные teilm* закрывают витрину огрызками.
 DEEP_DATASET_SLICES: dict[str, list[dict[str, str]]] = {
@@ -295,5 +406,27 @@ DEEP_DATASET_SLICES: dict[str, list[dict[str, str]]] = {
         {"freq": "A", "age": "Y25-74", "unit": "PC_ACT", "sex": "T"},
         {"freq": "A", "age": "Y15-74", "unit": "THS_PER", "sex": "T"},
         {"freq": "A", "age": "Y15-24", "unit": "THS_PER", "sex": "T"},
+    ],
+    # Средний эквивалентный доход по составу домохозяйства (EU-SILC).
+    # TOTAL + основные разрезы; пустые члены кодлистa отсеются MIN_POINTS.
+    "ilc_di04": [
+        {"freq": "A", "hhcomp": hh, "statinfo": "MEAN_EI", "unit": "EUR"}
+        for hh in (
+            "TOTAL",
+            "A1",
+            "A1_DCH",
+            "A2",
+            "A2_DCH1",
+            "A2_DCH2",
+            "A2_DCH_GE3",
+            "A_GE2_DCH",
+            "A_GE2_NDCH",
+            "A_GE3",
+            "A_GE3_DCH",
+            "DCH",
+            "NDCH",
+            "A2_2LT65",
+            "A2_GE1_GE65",
+        )
     ],
 }

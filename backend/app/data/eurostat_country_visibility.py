@@ -21,6 +21,11 @@ COUNTRY_VITRINE_MIN_CATEGORIES = 3
 # и отсекает партнёров (CN/US/JP/…) без ручного geo-списка.
 COUNTRY_VITRINE_MEDIAN_FRACTION = 0.15
 
+# Страны с national-core YAML: eurostat ingest/deep-expand не ставит is_listed.
+EUROSTAT_SUPPRESS_LISTED_CODES: frozenset[str] = frozenset({
+    "CA", "AU", "UK", "GB", "US", "JP", "CN", "IN", "BR", "MX", "KR",
+})
+
 
 def country_passes_vitrine_threshold(
     *,
@@ -52,3 +57,63 @@ def country_passes_vitrine_threshold(
     if med > 0 and listed < med * COUNTRY_VITRINE_MEDIAN_FRACTION:
         return False
     return True
+
+
+def is_eurostat_listing_pipeline_target(ind: object) -> bool:
+    """Ряд участвует в Eurostat fold/defect/listing (не national passport)."""
+    return (getattr(ind, "provider", None) or "").lower() == "eurostat"
+
+
+def is_eurostat_retitle_target(ind: object) -> bool:
+    """Eurostat-композитор может пересобрать name/unit/seo.
+
+    National-provider ряды не трогаем. Ручной curated passport на Eurostat
+    тоже не переписываем (quality=curated + suppress-country).
+    """
+    if not is_eurostat_listing_pipeline_target(ind):
+        return False
+    quality = (getattr(ind, "name_quality", None) or "").lower()
+    # Обычный eurostat curated/composed — пересобираем (словари обновились).
+    # Явный national overlay помечается отдельно, если появится; пока все eurostat.
+    _ = quality
+    return True
+
+
+def indicator_counts_toward_national_core(ind: object) -> bool:
+    """Свежий listed-ряд учитывается в national-core / витрине страны."""
+    from datetime import date, datetime
+
+    if not getattr(ind, "is_listed", False):
+        return False
+    he = getattr(ind, "history_end", None)
+    if he is None:
+        return False
+    if isinstance(he, datetime):
+        he = he.date()
+    if not isinstance(he, date):
+        return False
+    # Brexit/партнёры с хвостом ≤2019 не считаем «живым» ядром витрины.
+    return he.year >= 2020
+
+
+def country_passes_vitrine(
+    *,
+    listed_cards: int,
+    category_count: int,
+    median_listed: float,
+    country_code: str | None = None,
+    fresh_listed_count: int = 0,
+    has_non_eurostat: bool = False,
+) -> bool:
+    """Витрина: Eurostat-порог ИЛИ national-core (нац. провайдер / свежий паспорт)."""
+    code = (country_code or "").strip().upper()
+    # Есть живые non-eurostat ряды — страна на витрине даже при узком Eurostat.
+    if has_non_eurostat and int(fresh_listed_count or 0) >= 1:
+        return True
+    # Suppress-list без национального источника — только через общий порог
+    # (обычно не проходит: мало свежих listed).
+    return country_passes_vitrine_threshold(
+        listed_cards=listed_cards,
+        category_count=category_count,
+        median_listed=median_listed,
+    )

@@ -10,6 +10,7 @@ import { formatChange, formatDate, formatValue, resolveDateFormat } from '../../
 import { SkeletonBox } from '../Skeleton';
 import { track, events } from '../../lib/track';
 
+/** Автономный блок «Россия сегодня» (на главной встроен в HomeHero). */
 function PulseCard({ indicator }) {
   const pulse = displayPulseValue(indicator);
   const label = HOME_TODAY_LABELS[indicator.code] || indicator.name;

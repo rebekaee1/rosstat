@@ -1,9 +1,9 @@
 // Страница региона: /region/{slug}
-// Мобильный сценарий: ключевые цифры → поиск по показателям → разделы-аккордеоны.
+// Как у стран: темы слева, сетка показателей справа.
 import { useEffect, useMemo, useState, useDeferredValue } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
-  ChevronRight, ChevronDown, Search, MapPin, TrendingUp, TrendingDown, Minus,
+  ChevronRight, Search, MapPin, TrendingUp, TrendingDown, Minus,
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import {
@@ -11,10 +11,11 @@ import {
 } from '../lib/regionsApi';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import { SkeletonBox } from '../components/Skeleton';
+import MobileNavSelect from '../components/MobileNavSelect';
 import useSearchTracking from '../lib/useSearchTracking';
 
 function normalize(s) {
-  return s.toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim();
+  return (s || '').toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim();
 }
 
 function DeltaBadge({ value, prevValue }) {
@@ -23,8 +24,8 @@ function DeltaBadge({ value, prevValue }) {
   const Icon = d.up ? TrendingUp : d.down ? TrendingDown : Minus;
   const cls = d.up ? 'text-positive' : d.down ? 'text-negative' : 'text-text-tertiary';
   return (
-    <span className={`inline-flex items-center gap-0.5 font-mono text-[11px] ${cls}`}>
-      <Icon size={11} />
+    <span className={`inline-flex items-center gap-0.5 font-mono text-[10px] tabular-nums ${cls}`}>
+      <Icon size={10} />
       {Math.abs(d.pct) >= 0.1 ? `${Math.abs(d.pct).toFixed(1).replace('.', ',')}%` : '<0,1%'}
     </span>
   );
@@ -34,14 +35,14 @@ function HeadlineCard({ item, slug }) {
   return (
     <Link
       to={`/region/${slug}/${item.code}`}
-      className="group bg-surface border border-border-subtle rounded-xl p-3.5 hover:border-border-champagne hover:shadow-sm transition-all"
+      className="group rounded-xl border border-border-subtle bg-surface p-3.5 transition-all hover:border-border-champagne hover:shadow-sm"
     >
-      <div className="text-[11px] text-text-tertiary uppercase tracking-wide">{item.label}</div>
-      <div className="mt-1 font-mono font-semibold text-text-primary text-lg leading-none">
+      <div className="text-[11px] uppercase tracking-wide text-text-tertiary">{item.label}</div>
+      <div className="mt-1 font-mono text-lg font-semibold leading-none text-text-primary">
         {formatRegionValue(item.value)}
         <span className="ml-1 text-[11px] font-normal text-text-secondary">{shortUnit(item.unit)}</span>
       </div>
-      <div className="mt-1.5 flex items-center justify-between">
+      <div className="mt-1.5 flex items-center justify-between gap-2">
         <span className="font-mono text-[11px] text-text-tertiary">{item.year}</span>
         <DeltaBadge value={item.value} prevValue={item.prev_value} />
       </div>
@@ -53,50 +54,36 @@ function IndicatorRow({ item, slug }) {
   return (
     <Link
       to={`/region/${slug}/${item.code}`}
-      className="group flex items-center justify-between gap-3 px-3.5 py-3 hover:bg-surface-hover rounded-lg transition-colors"
+      className="group flex flex-col gap-2 rounded-xl border border-border-subtle bg-white px-3.5 py-3 transition-all hover:border-border-champagne hover:shadow-[0_12px_30px_rgba(35,30,16,0.06)] sm:min-h-[84px] sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-3.5"
     >
       <div className="min-w-0 flex-1">
-        <div className="text-[14px] text-text-primary leading-snug group-hover:text-champagne transition-colors">
+        <div className="text-[13px] leading-snug text-text-primary transition-colors group-hover:text-champagne sm:text-[14px]">
           {item.name}
         </div>
-        <div className="mt-0.5 text-[11px] text-text-tertiary">
+        <div className="mt-1 text-[10px] text-text-tertiary sm:mt-1.5">
           {shortUnit(item.unit) || item.unit}
         </div>
       </div>
-      <div className="shrink-0 text-right">
-        <div className="font-mono text-[14px] font-medium text-text-primary">
+      <div className="flex items-baseline justify-between gap-3 border-t border-border-subtle/60 pt-2 sm:w-[7.25rem] sm:shrink-0 sm:flex-col sm:items-end sm:justify-center sm:border-0 sm:pt-0 sm:text-right">
+        <div className="font-mono text-[15px] font-semibold tabular-nums text-text-primary sm:text-[14px] sm:font-medium">
           {formatRegionValue(item.value)}
         </div>
-        <div className="flex items-center justify-end gap-1.5">
-          <span className="font-mono text-[10px] text-text-tertiary">{item.year}</span>
+        <div className="flex items-center gap-1.5">
           <DeltaBadge value={item.value} prevValue={item.prev_value} />
+          <span className="font-mono text-[10px] text-text-tertiary">{item.year}</span>
         </div>
       </div>
-      <ChevronRight size={14} className="shrink-0 text-text-tertiary group-hover:text-champagne transition-colors" />
     </Link>
   );
-}
-
-// Открытые разделы живут в sessionStorage: по умолчанию всё свёрнуто (правка
-// руководителя 2026-07-05), а выбор пользователя переживает уход на показатель
-// и возврат назад (жалоба из созвона: «открываются обратно»).
-const OPEN_SECTIONS_KEY = 'fe:region-open-sections';
-
-function readOpenSections() {
-  try {
-    const raw = sessionStorage.getItem(OPEN_SECTIONS_KEY);
-    return new Set(raw ? JSON.parse(raw) : []);
-  } catch {
-    return new Set();
-  }
 }
 
 export default function RegionProfile() {
   const { slug } = useParams();
   const { data, isLoading, isError, refetch, isFetching } = useRegionProfile(slug);
   const [query, setQuery] = useState('');
-  const [openSections, setOpenSections] = useState(readOpenSections);
+  const [activeSection, setActiveSection] = useState('');
   const deferredQuery = useDeferredValue(query);
+  const searching = normalize(deferredQuery).length > 0;
 
   const regionName = data?.region?.name;
   useDocumentMeta(regionName ? {
@@ -106,9 +93,8 @@ export default function RegionProfile() {
     path: `/region/${slug}`,
   } : null);
 
-  // Breadcrumb JSON-LD
   useEffect(() => {
-    if (!regionName) return;
+    if (!regionName) return undefined;
     const jsonLd = {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
@@ -132,47 +118,44 @@ export default function RegionProfile() {
     const q = normalize(deferredQuery);
     if (!q) return data.sections;
     return data.sections
-      .map(s => ({ ...s, indicators: s.indicators.filter(i => normalize(i.name).includes(q)) }))
-      .filter(s => s.indicators.length > 0);
+      .map((s) => ({ ...s, indicators: s.indicators.filter((i) => normalize(i.name).includes(q)) }))
+      .filter((s) => s.indicators.length > 0);
   }, [data, deferredQuery]);
 
-  const searching = normalize(deferredQuery).length > 0;
-
-  // Спрос-аналитика поиска показателей внутри карточки региона.
   const foundIndicators = filteredSections.reduce((n, s) => n + s.indicators.length, 0);
   useSearchTracking('region-profile', deferredQuery, foundIndicators);
+
   const headlineOrder = ['1.1', '3.4', '2.10.1', '8.2', '10.1', '20.1', '3.12', '8.1'];
   const headline = data
-    ? headlineOrder.map(tc => data.headline[tc]).filter(Boolean)
+    ? headlineOrder.map((tc) => data.headline[tc]).filter(Boolean)
     : [];
 
-  const toggleSection = (num) => {
-    setOpenSections(prev => {
-      const next = new Set(prev);
-      if (next.has(num)) next.delete(num);
-      else next.add(num);
-      try {
-        sessionStorage.setItem(OPEN_SECTIONS_KEY, JSON.stringify([...next]));
-      } catch { /* приватный режим — не критично */ }
-      return next;
-    });
-  };
+  const resolvedActive = filteredSections.some((s) => String(s.num) === String(activeSection))
+    ? filteredSections.find((s) => String(s.num) === String(activeSection))?.num
+    : (filteredSections[0]?.num || '');
+  const visibleSections = searching
+    ? filteredSections
+    : filteredSections.filter((s) => s.num === resolvedActive);
 
   return (
-    <div className="max-w-5xl mx-auto px-4 pt-24 pb-20">
-      {/* Хлебные крошки */}
-      <nav className="flex items-center gap-1.5 text-xs text-text-tertiary mb-4" aria-label="Хлебные крошки">
-        <Link to="/" className="hover:text-champagne transition-colors">Главная</Link>
-        <ChevronRight size={12} />
-        <Link to="/regions" className="hover:text-champagne transition-colors">Регионы</Link>
-        {regionName && (<><ChevronRight size={12} /><span className="text-text-secondary truncate">{regionName}</span></>)}
+    <div className="mx-auto w-full max-w-7xl overflow-x-hidden px-4 pb-24 pt-24 sm:px-6">
+      <nav className="mb-4 flex min-w-0 items-center gap-1.5 overflow-hidden text-xs text-text-tertiary" aria-label="Хлебные крошки">
+        <Link to="/" className="shrink-0 transition-colors hover:text-champagne">Главная</Link>
+        <ChevronRight size={12} className="shrink-0" />
+        <Link to="/regions" className="shrink-0 transition-colors hover:text-champagne">Регионы</Link>
+        {regionName && (
+          <>
+            <ChevronRight size={12} className="shrink-0" />
+            <span className="min-w-0 truncate text-text-secondary">{regionName}</span>
+          </>
+        )}
       </nav>
 
       {isError && <ApiRetryBanner onRetry={refetch} retrying={isFetching} />}
       {isLoading && (
         <div className="space-y-4">
           <SkeletonBox className="h-10 w-72" />
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {Array.from({ length: 8 }).map((_, i) => <SkeletonBox key={i} className="h-24 rounded-xl" />)}
           </div>
         </div>
@@ -180,18 +163,17 @@ export default function RegionProfile() {
 
       {data && (
         <>
-          {/* Шапка региона */}
-          <div className="mb-6">
+          <div className="mb-8">
             {data.region.district_name && (
-              <div className="flex items-center gap-1.5 text-champagne text-xs font-mono uppercase tracking-widest mb-2">
+              <div className="mb-2 flex items-center gap-1.5 font-mono text-xs uppercase tracking-widest text-champagne">
                 <MapPin size={13} />
                 {data.region.district_name}
               </div>
             )}
-            <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary leading-tight">
+            <h1 className="font-display text-[1.65rem] font-bold leading-tight text-text-primary sm:text-4xl">
               {data.region.name}
             </h1>
-            <p className="mt-2 text-sm text-text-secondary max-w-2xl">
+            <p className="mt-2 max-w-2xl text-sm text-text-secondary">
               {(() => {
                 const catalog = data.catalog_total ?? data.sections.reduce((acc, s) => acc + s.indicators.length, 0);
                 const available = data.available_total ?? catalog;
@@ -205,62 +187,97 @@ export default function RegionProfile() {
             </p>
           </div>
 
-          {/* Ключевые цифры */}
           {headline.length > 0 && (
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-8">
-              {headline.map(h => <HeadlineCard key={h.code} item={h} slug={slug} />)}
+            <div className="mb-8 grid grid-cols-2 gap-2 sm:grid-cols-4">
+              {headline.map((h) => <HeadlineCard key={h.code} item={h} slug={slug} />)}
             </div>
           )}
 
-          {/* Поиск по показателям */}
-          <div className="sticky top-14 z-10 -mx-4 px-4 py-2 bg-obsidian/95 backdrop-blur-sm mb-4">
-            <div className="relative">
-              <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
-              <input
-                type="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Найти показатель: зарплата, жильё, урожайность…"
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-surface border border-border-subtle text-[15px] text-text-primary placeholder:text-text-tertiary focus:outline-none focus:border-border-champagne focus:ring-2 focus:ring-champagne/10 transition-all"
-                aria-label="Поиск показателя в регионе"
-              />
-            </div>
+          <div className="relative mb-6">
+            <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Найти показатель: зарплата, жильё, урожайность…"
+              className="w-full rounded-xl border border-border-subtle bg-surface py-3 pl-10 pr-4 text-sm text-text-primary shadow-sm placeholder:text-text-tertiary focus:border-border-champagne focus:outline-none"
+              aria-label="Поиск показателя в регионе"
+            />
           </div>
 
-          {/* Разделы */}
-          <div className="space-y-3">
-            {filteredSections.map(sec => {
-              const isOpen = searching || openSections.has(sec.num);
-              return (
-                <section key={sec.num} data-block={`region-section-${sec.num}`} className="bg-surface border border-border-subtle rounded-xl overflow-hidden">
-                  <button
-                    onClick={() => toggleSection(sec.num)}
-                    className="w-full flex items-center justify-between gap-3 px-4 py-3.5 text-left hover:bg-surface-hover transition-colors"
-                    aria-expanded={isOpen}
-                  >
-                    <span className="font-medium text-[15px] text-text-primary">
-                      {sec.name}
-                    </span>
-                    <span className="flex items-center gap-2 shrink-0">
-                      <span className="font-mono text-xs text-text-tertiary">{sec.indicators.length}</span>
-                      <ChevronDown size={16} className={`text-text-tertiary transition-transform ${isOpen ? 'rotate-180' : ''}`} />
-                    </span>
-                  </button>
-                  {isOpen && (
-                    <div className="border-t border-border-subtle py-1">
-                      {sec.indicators.map(item => (
-                        <IndicatorRow key={item.code} item={item} slug={slug} />
-                      ))}
-                    </div>
-                  )}
-                </section>
-              );
-            })}
-            {searching && filteredSections.length === 0 && (
-              <div className="text-center py-12 text-text-secondary">
-                По запросу «{query}» показателей не найдено
-              </div>
+          {searching && filteredSections.length === 0 && (
+            <div className="rounded-2xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
+              По запросу «{query}» показателей не найдено.
+              {' '}
+              <button type="button" onClick={() => setQuery('')} className="text-champagne hover:underline">
+                Сбросить поиск
+              </button>
+            </div>
+          )}
+
+          {!searching && (
+            <MobileNavSelect
+              label="Темы"
+              value={String(resolvedActive)}
+              onChange={(v) => setActiveSection(Number(v))}
+              options={filteredSections.map((sec) => ({
+                value: String(sec.num),
+                label: sec.name,
+                count: sec.indicators.length,
+              }))}
+            />
+          )}
+
+          <div className={searching
+            ? 'min-w-0 space-y-8'
+            : 'grid min-w-0 gap-6 lg:grid-cols-[250px_minmax(0,1fr)]'}
+          >
+            {!searching && (
+              <aside className="hidden min-w-0 lg:sticky lg:top-24 lg:block lg:self-start">
+                <div className="mb-2 px-2 text-[10px] font-mono uppercase tracking-[0.18em] text-text-tertiary">
+                  Темы
+                </div>
+                <div className="flex flex-col gap-2">
+                  {filteredSections.map((sec) => (
+                    <button
+                      key={sec.num}
+                      type="button"
+                      onClick={() => setActiveSection(sec.num)}
+                      className={[
+                        'flex items-center justify-between gap-4 rounded-xl px-3.5 py-2.5 text-left text-sm transition-colors',
+                        resolvedActive === sec.num
+                          ? 'bg-champagne/12 font-medium text-champagne'
+                          : 'bg-surface text-text-secondary hover:bg-surface-hover hover:text-text-primary',
+                      ].join(' ')}
+                    >
+                      <span className="min-w-0 truncate">{sec.name}</span>
+                      <span className="shrink-0 font-mono text-[10px] opacity-60">{sec.indicators.length}</span>
+                    </button>
+                  ))}
+                </div>
+              </aside>
             )}
+
+            <div className="min-w-0 space-y-8">
+              {visibleSections.map((sec) => (
+                <section key={sec.num} data-block={`region-section-${sec.num}`}>
+                  <div className="mb-3 flex items-end justify-between gap-3 sm:mb-4 sm:gap-4">
+                    <div className="min-w-0">
+                      <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">
+                        {searching ? 'Результаты поиска' : 'Показатели'}
+                      </div>
+                      <h2 className="mt-1 font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">{sec.name}</h2>
+                    </div>
+                    <span className="shrink-0 font-mono text-xs text-text-tertiary">{sec.indicators.length}</span>
+                  </div>
+                  <div className="grid gap-2 sm:gap-2.5 xl:grid-cols-2">
+                    {sec.indicators.map((item) => (
+                      <IndicatorRow key={item.code} item={item} slug={slug} />
+                    ))}
+                  </div>
+                </section>
+              ))}
+            </div>
           </div>
         </>
       )}

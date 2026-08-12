@@ -1,27 +1,27 @@
 import { describe, expect, it } from 'vitest';
 import {
+  HOME_MAP_SIDE_LINKS,
   HOME_TODAY_CODES,
-  WORKBENCH_TABS,
-  countryCoverageNote,
   displayPulseValue,
   heatmapValuesBySlug,
-  isWorkbenchTab,
   pickIndicatorsByCodes,
   rankHeatmapValues,
   resolveActiveMapYear,
-  resolveCountryMacroregion,
-  resolveWorkbenchTab,
+  withRussiaOnHomeMap,
   worldRankingFromYearItems,
   worldYearItems,
 } from './homeWorkbench';
 
 describe('homeWorkbench', () => {
-  it('держит три вкладки Россия / Регионы / Страны', () => {
-    expect(WORKBENCH_TABS.map((t) => t.id)).toEqual(['russia', 'regions', 'countries']);
-    expect(WORKBENCH_TABS.map((t) => t.label)).toEqual(['Россия', 'Регионы', 'Страны']);
-    expect(isWorkbenchTab('europe')).toBe(false);
-    expect(resolveWorkbenchTab('countries')).toBe('countries');
-    expect(resolveWorkbenchTab('europe')).toBe('russia');
+  it('держит боковые переходы карты без mid-dot', () => {
+    expect(HOME_MAP_SIDE_LINKS.map((l) => l.id)).toEqual([
+      'russia-macro', 'regions', 'europe', 'world',
+    ]);
+    for (const link of HOME_MAP_SIDE_LINKS) {
+      expect(link.label.includes('·')).toBe(false);
+      expect(link.to.startsWith('/')).toBe(true);
+    }
+    expect(HOME_MAP_SIDE_LINKS[0].scrollId).toBe('russia-categories');
   });
 
   it('собирает «Россия сегодня» из листинга без лишних кодов', () => {
@@ -67,7 +67,7 @@ describe('homeWorkbench', () => {
     expect(map.get('b')).toBe(30);
   });
 
-  it('готовит мировой рейтинг и честную подпись покрытия', () => {
+  it('готовит мировой рейтинг и оверлей РФ', () => {
     const series = {
       values_by_year: {
         2024: {
@@ -77,9 +77,23 @@ describe('homeWorkbench', () => {
       },
     };
     expect(resolveActiveMapYear([2022, 2023, 2024], null)).toBe(2024);
+    expect(resolveActiveMapYear([2024, 2025, 2026], null, {
+      2024: Object.fromEntries([...Array(20)].map((_, i) => [`C${i}`, { value: 1 }])),
+      2025: Object.fromEntries([...Array(20)].map((_, i) => [`C${i}`, { value: 1 }])),
+      2026: { US: { value: 1 } },
+    })).toBe(2025);
     const items = worldYearItems(series, 2024);
     expect(worldRankingFromYearItems(items, 1)[0].country_slug).toBe('france');
-    expect(resolveCountryMacroregion('asia')).toBe('europe');
-    expect(countryCoverageNote('europe')).toMatch(/Европ/i);
+
+    const overlay = withRussiaOnHomeMap({
+      countries: [{ code: 'DE', slug: 'germany', name: 'Германия' }],
+      yearItems: items,
+      indicators: [{ code: 'unemployment', current_value: 2.2 }],
+      conceptSlug: 'unemployment-rate',
+      activeYear: 2024,
+    });
+    expect(overlay.countries.some((c) => c.code === 'RU')).toBe(true);
+    expect(overlay.yearItems.RU.value).toBeCloseTo(2.2);
+    expect(overlay.russiaIndicatorCode).toBe('unemployment');
   });
 });

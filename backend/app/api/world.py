@@ -18,6 +18,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.cache import cache_get, cache_set, versioned_key
 from app.data.eurostat_listing import (
+    dataset_stem,
     is_stale_history,
     normalize_frequency,
     variant_group_key,
@@ -25,6 +26,7 @@ from app.data.eurostat_listing import (
 from app.data.eurostat_titles_ru import listing_substance_score
 from app.data.eurostat_units_ru import unit_suffix
 from app.data.world_concepts import CONCEPT_BY_SLUG, WORLD_CONCEPTS, concept_for_indicator
+from app.data.world_concept_national import national_codes_for_concept
 from app.database import get_db
 from app.models import (
     WorldCountry,
@@ -156,6 +158,49 @@ async def _country_indicators(db: AsyncSession, country_id: int) -> list[WorldIn
     )
 
 
+async def _country_indicators_for_listing(
+    db: AsyncSession, country_id: int,
+) -> list[WorldIndicator]:
+    """Listed + sibling-частоты тех же stem — без полной выгрузки 7k+ рядов страны.
+
+    Полный `_country_indicators` на DE/FR/ES тянет тысячи ORM-объектов и на
+    холодном кэше/рестарте backend давал Empty reply / таймаут фронта (15 с).
+    """
+    listed = list(
+        (
+            await db.execute(
+                select(WorldIndicator).where(
+                    WorldIndicator.country_id == country_id,
+                    WorldIndicator.is_listed.is_(True),
+                )
+            )
+        ).scalars().all()
+    )
+    if not listed:
+        return await _country_indicators(db, country_id)
+
+    stems = {dataset_stem(ind.dataset_id) for ind in listed if ind.dataset_id}
+    stems.discard("")
+    if not stems:
+        return listed
+
+    clauses = []
+    for stem in stems:
+        clauses.append(WorldIndicator.dataset_id == stem)
+        clauses.append(WorldIndicator.dataset_id.like(f"{stem}\\_%", escape="\\"))
+
+    return list(
+        (
+            await db.execute(
+                select(WorldIndicator).where(
+                    WorldIndicator.country_id == country_id,
+                    or_(*clauses),
+                )
+            )
+        ).scalars().all()
+    )
+
+
 def _compare_concepts():
     return [
         concept
@@ -195,23 +240,55 @@ async def _concept_members(
     db: AsyncSession,
     concept,
 ) -> list[tuple[WorldCountry, WorldIndicator]]:
+    # Не тянем всю таблицу world_indicators (после deep-expand — 100k+ строк):
+    # только listed + dataset_id понятия (+ явный national crosswalk).
+    allowed = {
+        str(ds).lower()
+        for ds in concept.dataset_ids
+    }
+    if concept.provider_dataset_ids:
+        for ids in concept.provider_dataset_ids.values():
+            allowed.update(str(ds).lower() for ds in ids)
+    national_codes = national_codes_for_concept(concept.slug)
     rows = (
         await db.execute(
             select(WorldCountry, WorldIndicator)
             .join(WorldIndicator, WorldIndicator.country_id == WorldCountry.id)
-            .where(WorldCountry.is_active.is_(True))
+            .where(
+                WorldCountry.is_active.is_(True),
+                WorldIndicator.is_listed.is_(True),
+                or_(
+                    func.lower(WorldIndicator.dataset_id).in_(sorted(allowed)),
+                    WorldIndicator.code.in_(sorted(national_codes)),
+                ) if national_codes else (
+                    func.lower(WorldIndicator.dataset_id).in_(sorted(allowed))
+                ),
+            )
             .order_by(WorldCountry.sort_order, WorldCountry.name_ru, WorldIndicator.code)
         )
     ).all()
-    members = [
-        (country, indicator)
-        for country, indicator in rows
-        if concept_for_indicator(indicator) == concept
-    ]
-    counts: dict[int, int] = defaultdict(int)
-    for country, _ in members:
-        counts[country.id] += 1
-    return [(country, indicator) for country, indicator in members if counts[country.id] == 1]
+    members: list[tuple[WorldCountry, WorldIndicator]] = []
+    for country, indicator in rows:
+        if indicator.code in national_codes:
+            members.append((country, indicator))
+            continue
+        if concept_for_indicator(indicator) == concept:
+            members.append((country, indicator))
+    # Одна страна — один ряд: national имеет приоритет над eurostat-дублем.
+    by_country: dict[int, tuple[WorldCountry, WorldIndicator]] = {}
+    for country, indicator in members:
+        prev = by_country.get(country.id)
+        if prev is None:
+            by_country[country.id] = (country, indicator)
+            continue
+        prev_is_national = prev[1].code in national_codes
+        cur_is_national = indicator.code in national_codes
+        if cur_is_national and not prev_is_national:
+            by_country[country.id] = (country, indicator)
+        elif prev_is_national == cur_is_national:
+            # Два eurostat match — страна неоднозначна, выкидываем оба.
+            by_country.pop(country.id, None)
+    return list(by_country.values())
 
 
 def _card_members_map(
@@ -290,12 +367,20 @@ async def world_compare_catalog(db: AsyncSession = Depends(get_db)):
         return cached
 
     concepts = {concept.slug: concept for concept in _compare_concepts()}
+    allowed_datasets: set[str] = set()
+    for concept in concepts.values():
+        allowed_datasets.update(str(ds).lower() for ds in concept.dataset_ids)
+        if concept.provider_dataset_ids:
+            for ids in concept.provider_dataset_ids.values():
+                allowed_datasets.update(str(ds).lower() for ds in ids)
     rows = (
         await db.execute(
             select(WorldCountry, WorldIndicator)
             .join(WorldIndicator, WorldIndicator.country_id == WorldCountry.id)
             .where(
                 WorldCountry.is_active.is_(True),
+                WorldIndicator.is_listed.is_(True),
+                func.lower(WorldIndicator.dataset_id).in_(sorted(allowed_datasets)),
             )
             .order_by(WorldCountry.sort_order, WorldCountry.name_ru, WorldIndicator.code)
         )
@@ -429,7 +514,7 @@ async def world_compare_map_series(
     concept = CONCEPT_BY_SLUG.get(concept_slug)
     if concept is None or "compare" not in concept.enabled_surfaces:
         raise HTTPException(404, "Понятие для карты не найдено")
-    cache_key = await versioned_key("world", f"compare:map-series:v1:{concept_slug}")
+    cache_key = await versioned_key("world", f"compare:map-series:v2:{concept_slug}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -597,13 +682,13 @@ async def world_compare_average_series(
 
 @router.get("/countries/{slug}")
 async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
-    cache_key = await versioned_key("world", f"country:v2:{slug}")
+    cache_key = await versioned_key("world", f"country:v3:{slug}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
 
     country = await _country_by_slug(db, slug)
-    all_inds = await _country_indicators(db, country.id)
+    all_inds = await _country_indicators_for_listing(db, country.id)
     groups = _card_members_map(all_inds)
 
     # Только primary с is_listed (после repair — совпадает с pick_primary)
@@ -616,31 +701,33 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
                 listed.append(primary)
 
     last_map: dict[int, tuple[date, float]] = {}
+    prev_map: dict[int, float] = {}
     if listed:
         ids = [i.id for i in listed]
-        sub = (
+        ranked = (
             select(
-                WorldDataPoint.indicator_id,
-                func.max(WorldDataPoint.date).label("md"),
+                WorldDataPoint.indicator_id.label("indicator_id"),
+                WorldDataPoint.date.label("date"),
+                WorldDataPoint.value.label("value"),
+                func.row_number().over(
+                    partition_by=WorldDataPoint.indicator_id,
+                    order_by=WorldDataPoint.date.desc(),
+                ).label("rn"),
             )
             .where(WorldDataPoint.indicator_id.in_(ids))
-            .group_by(WorldDataPoint.indicator_id)
             .subquery()
         )
         last_rows = (
             await db.execute(
-                select(
-                    WorldDataPoint.indicator_id,
-                    WorldDataPoint.date,
-                    WorldDataPoint.value,
-                ).join(
-                    sub,
-                    (WorldDataPoint.indicator_id == sub.c.indicator_id)
-                    & (WorldDataPoint.date == sub.c.md),
-                )
+                select(ranked.c.indicator_id, ranked.c.date, ranked.c.value, ranked.c.rn)
+                .where(ranked.c.rn <= 2)
             )
         ).all()
-        last_map = {iid: (d, float(v)) for iid, d, v in last_rows}
+        for iid, d, v, rn in last_rows:
+            if rn == 1:
+                last_map[iid] = (d, float(v))
+            elif rn == 2:
+                prev_map[iid] = float(v)
 
     by_cat: dict[str, list] = {}
     for ind in listed:
@@ -648,6 +735,10 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
         members = groups.get(key) or [ind]
         by_freq = members_by_freq(members)
         last = last_map.get(ind.id)
+        prev_val = prev_map.get(ind.id)
+        change = None
+        if last is not None and prev_val is not None:
+            change = round(float(last[1]) - float(prev_val), 4)
         freqs_sorted = [f for f in ("monthly", "quarterly", "annual") if f in by_freq]
         for f in sorted(by_freq.keys()):
             if f not in freqs_sorted:
@@ -663,6 +754,8 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
             "frequencies": freqs_sorted,
             "last_value": round(last[1], 4) if last else None,
             "last_date": _fmt_date(last[0]) if last else None,
+            "prev_value": round(prev_val, 4) if prev_val is not None else None,
+            "change": change,
             "points_count": ind.points_count,
             "archived": is_stale_history(ind.history_end),
         }
@@ -763,7 +856,7 @@ async def _card_context(
 
 @router.get("/indicators/{slug}/{code}")
 async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db)):
-    cache_key = await versioned_key("world", f"ind:v5:{slug}:{code}")
+    cache_key = await versioned_key("world", f"ind:v6:{slug}:{code}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -771,6 +864,10 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
     country = await _country_by_slug(db, slug)
     ind = await _indicator_by_code(db, country.id, code)
     primary, by_freq, all_inds = await _card_context(db, country, ind)
+    # Карточка на витрине только если primary listed (unlisted = мусор/нули/дубль).
+    # Иначе прямой URL обходил SSR-404 через SPA + этот API.
+    if not primary.is_listed:
+        raise HTTPException(404, "Индикатор не найден")
 
     # точки primary — для знака ряда в матрице
     series_by_code: dict[str, list] = {}
@@ -901,7 +998,7 @@ async def indicator_data(
 ):
     cache_key = await versioned_key(
         "world",
-        f"data:v3:{slug}:{code}:{mode}:{int(include_forecast)}:{date_from}:{date_to}",
+        f"data:v4:{slug}:{code}:{mode}:{int(include_forecast)}:{date_from}:{date_to}",
     )
     cached = await cache_get(cache_key)
     if cached:
@@ -910,6 +1007,8 @@ async def indicator_data(
     country = await _country_by_slug(db, slug)
     ind = await _indicator_by_code(db, country.id, code)
     _primary, by_freq, _all = await _card_context(db, country, ind)
+    if not _primary.is_listed:
+        raise HTTPException(404, "Индикатор не найден")
 
     native = normalize_frequency(ind.frequency) or "monthly"
     try:

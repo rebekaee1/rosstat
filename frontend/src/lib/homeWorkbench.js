@@ -1,18 +1,8 @@
 /**
- * Конфиг и чистые хелперы рабочего стола главной («три плоскости»).
- * Вкладка «Страны» архитектурно готова к макрорегионам; текущее покрытие —
- * европейская статистика — подписывается честно, без привязки id/URL к Европе.
+ * Конфиг и чистые хелперы главной: оперативный срез РФ и карта мира.
  */
 
 import { isCpiIndex } from './format';
-
-export const WORKBENCH_TABS = Object.freeze([
-  { id: 'russia', label: 'Россия' },
-  { id: 'regions', label: 'Регионы' },
-  { id: 'countries', label: 'Страны' },
-]);
-
-export const DEFAULT_WORKBENCH_TAB = 'russia';
 
 /** Шесть оперативных значений блока «Россия сегодня» — из одного листинга. */
 export const HOME_TODAY_CODES = Object.freeze([
@@ -33,7 +23,17 @@ export const HOME_TODAY_LABELS = Object.freeze({
   'gold-price': 'Золото',
 });
 
-/** Флагманы вкладки «Россия» (без карты). */
+/** Короткие единицы для плотных карточек «Россия сегодня» (без переносов). */
+export const HOME_TODAY_UNIT_SHORT = Object.freeze({
+  'usd-rub': '₽',
+  'key-rate': '%',
+  cpi: '%',
+  unemployment: '%',
+  imoex: 'пт',
+  'gold-price': '₽/г',
+});
+
+/** Флагманы (если понадобится отдельный список РФ). */
 export const HOME_RUSSIA_FLAGSHIP_CODES = Object.freeze([
   'cpi',
   'key-rate',
@@ -79,30 +79,52 @@ export const HOME_COUNTRY_CONCEPT_SHORT = Object.freeze({
 
 export const DEFAULT_HOME_COUNTRY_CONCEPT = 'unemployment-rate';
 
-/**
- * Макрорегионы для вкладки «Страны». Сейчас доступен только europe;
- * остальные — зарезервированы под будущие официальные источники.
- */
-export const HOME_COUNTRY_MACROREGIONS = Object.freeze([
+/** World concept slug → российский indicator code для оверлея РФ на карте. */
+export const HOME_MAP_RUSSIA_CONCEPT_CODES = Object.freeze({
+  'unemployment-rate': 'unemployment',
+  'hicp-index': 'cpi',
+  'gdp-volume-quarterly': 'gdp-real',
+  'gdp-volume-annual': 'gdp-real-annual',
+  population: 'population',
+});
+
+export const HOME_MAP_RUSSIA_COUNTRY = Object.freeze({
+  code: 'RU',
+  slug: 'russia',
+  name: 'Россия',
+  name_en: 'Russia',
+  region: 'Европа',
+  indicators_count: 0,
+  is_active: true,
+});
+
+export const HOME_MAP_SIDE_LINKS = Object.freeze([
+  {
+    id: 'russia-macro',
+    label: 'Показатели России',
+    description: 'Макроэкономика РФ',
+    to: '/#russia-categories',
+    scrollId: 'russia-categories',
+  },
+  {
+    id: 'regions',
+    label: 'Регионы России',
+    description: '85 субъектов, 489 показателей',
+    to: '/regions',
+  },
   {
     id: 'europe',
     label: 'Европа',
-    available: true,
-    coverageNote: 'Текущее покрытие — страны Европы по данным Евростата',
+    description: 'Каталог стран Европы',
+    to: '/world',
   },
-  { id: 'americas', label: 'Америка', available: false },
-  { id: 'asia', label: 'Азия', available: false },
+  {
+    id: 'world',
+    label: 'Мир',
+    description: 'Все доступные страны',
+    to: '/world',
+  },
 ]);
-
-export const DEFAULT_HOME_COUNTRY_MACROREGION = 'europe';
-
-export function isWorkbenchTab(id) {
-  return WORKBENCH_TABS.some((tab) => tab.id === id);
-}
-
-export function resolveWorkbenchTab(id, fallback = DEFAULT_WORKBENCH_TAB) {
-  return isWorkbenchTab(id) ? id : fallback;
-}
 
 export function indexIndicatorsByCode(indicators) {
   const map = new Map();
@@ -164,10 +186,16 @@ export function heatmapNameBySlug(heat) {
   return map;
 }
 
-export function resolveActiveMapYear(years, preferred) {
+export function resolveActiveMapYear(years, preferred, valuesByYear = null) {
   const list = years || [];
   if (!list.length) return null;
   if (preferred != null && list.includes(preferred)) return preferred;
+  if (valuesByYear) {
+    for (let i = list.length - 1; i >= 0; i -= 1) {
+      const bucket = valuesByYear[String(list[i])] || {};
+      if (Object.keys(bucket).length >= 8) return list[i];
+    }
+  }
   return list[list.length - 1];
 }
 
@@ -183,17 +211,47 @@ export function worldRankingFromYearItems(yearItems, limit = 8) {
     .slice(0, limit);
 }
 
-export function availableCountryMacroregions(macros = HOME_COUNTRY_MACROREGIONS) {
-  return macros.filter((m) => m.available);
+export function russiaIndicatorCodeForConcept(conceptSlug) {
+  return HOME_MAP_RUSSIA_CONCEPT_CODES[conceptSlug] || null;
 }
 
-export function resolveCountryMacroregion(id, macros = HOME_COUNTRY_MACROREGIONS) {
-  const hit = macros.find((m) => m.id === id && m.available);
-  return hit?.id || DEFAULT_HOME_COUNTRY_MACROREGION;
-}
+/**
+ * Добавляет РФ в список стран карты и значение из российского индикатора
+ * (Eurostat-plane намеренно не содержит RU).
+ */
+export function withRussiaOnHomeMap({
+  countries = [],
+  yearItems = {},
+  indicators = [],
+  conceptSlug,
+  activeYear,
+} = {}) {
+  const list = [...(countries || [])];
+  const hasRu = list.some((c) => c?.code === 'RU' || c?.slug === 'russia');
+  if (!hasRu) {
+    list.push({ ...HOME_MAP_RUSSIA_COUNTRY });
+  }
 
-export function countryCoverageNote(macroId, macros = HOME_COUNTRY_MACROREGIONS) {
-  const hit = macros.find((m) => m.id === macroId);
-  return hit?.coverageNote
-    || 'Текущее покрытие — доступные страны официальной статистики';
+  const items = { ...(yearItems || {}) };
+  const ruCode = russiaIndicatorCodeForConcept(conceptSlug);
+  const ind = ruCode
+    ? indexIndicatorsByCode(indicators).get(ruCode)
+    : null;
+  const pulse = displayPulseValue(ind);
+  if (pulse?.value != null) {
+    const yearHint = activeYear != null ? String(activeYear) : null;
+    const date = ind?.current_date
+      || (yearHint ? `${yearHint}-01-01` : null);
+    items.RU = {
+      country_code: 'RU',
+      country_slug: 'russia',
+      country_name: 'Россия',
+      indicator_code: ruCode,
+      date,
+      value: Number(pulse.value),
+      _fromRussia: true,
+    };
+  }
+
+  return { countries: list, yearItems: items, russiaIndicatorCode: ruCode };
 }

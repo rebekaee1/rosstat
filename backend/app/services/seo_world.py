@@ -2,8 +2,9 @@
 
 По образцу seo_regional.py (ADR-0003): видимый контент + meta + JSON-LD +
 картинка-график тремя путями (og:image, ImageObject, <img class="seo-chart">).
-Прогнозов нет. Источник в публичных текстах — «Евростат» (без внутренних
-идентификаторов наборов и технического жаргона).
+Прогнозов нет. Публичный источник — «Евростат» для eurostat-рядов либо
+русское имя национального ведомства/ЦБ (Banxico → «Банк Мексики» и т.п.).
+Внутренние идентификаторы наборов и технический жаргон наружу не выдаём.
 """
 
 from __future__ import annotations
@@ -221,17 +222,84 @@ def _unit_sfx(unit: str) -> str:
     return f" {sfx}" if sfx else ""
 
 
-def _source_label(raw: str | None) -> str:
-    """Публичное имя источника: всегда «Евростат», без латиницы/жаргона."""
+# Публичные имена национальных источников (provider → русский).
+# Дублируем здесь, чтобы SSR не зависел от модуля national ingest.
+_SOURCE_BY_PROVIDER: dict[str, str] = {
+    "eurostat": _SOURCE_PUBLIC,
+    "statcan": "Статистическое управление Канады",
+    "boc_valet": "Банк Канады",
+    "abs": "Австралийское бюро статистики",
+    "rba": "Резервный банк Австралии",
+    "ons": "Управление национальной статистики Великобритании",
+    "boe_iadb": "Банк Англии",
+    "fred": "Федеральный резервный банк Сент-Луиса",
+    "bls": "Бюро трудовой статистики США",
+    "bea": "Бюро экономического анализа США",
+    "boj": "Банк Японии",
+    "estat": "Статистическое бюро Японии",
+    "ecos": "Банк Кореи",
+    "bcb_sgs": "Банк Бразилии",
+    "banxico_sie": "Банк Мексики",
+    "nbs": "Национальное статистическое бюро Китая",
+    "cfets": "Китайская система валютных торгов",
+    "mospi": "Министерство статистики и программной реализации Индии",
+    "rbi": "Резервный банк Индии",
+}
+
+
+def _source_label(raw: str | None, provider: str | None = None) -> str:
+    """Публичное имя источника без латиницы/жаргона.
+
+    Eurostat → «Евростат». Национальный provider → кириллическое имя ведомства.
+    Иначе — кириллический ``source`` из БД.
+    """
+    prov = (provider or "").strip().lower()
+    if prov:
+        mapped = _SOURCE_BY_PROVIDER.get(prov)
+        if mapped:
+            return mapped
     if not raw:
         return _SOURCE_PUBLIC
     low = raw.strip().lower()
     if low in ("eurostat", "евростат"):
         return _SOURCE_PUBLIC
-    # На всякий случай не пропускаем латинские имена источников наружу.
-    if any(c.isascii() and c.isalpha() for c in raw):
+    # Уже русское публичное имя (национальный passport пишет кириллицу).
+    if any("\u0400" <= ch <= "\u04FF" for ch in raw):
+        return raw.strip()
+    # Латиница без известного provider — не светим наружу.
+    return _SOURCE_PUBLIC
+
+
+def _join_sources_ru(labels: list[str]) -> str:
+    """«A» / «A и B» / «A, B и C»."""
+    uniq: list[str] = []
+    seen: set[str] = set()
+    for label in labels:
+        text = (label or "").strip()
+        if not text or text in seen:
+            continue
+        seen.add(text)
+        uniq.append(text)
+    if not uniq:
         return _SOURCE_PUBLIC
-    return raw.strip() or _SOURCE_PUBLIC
+    if len(uniq) == 1:
+        return uniq[0]
+    if len(uniq) == 2:
+        return f"{uniq[0]} и {uniq[1]}"
+    return f"{', '.join(uniq[:-1])} и {uniq[-1]}"
+
+
+def _country_source_phrase(inds: list[WorldIndicator]) -> tuple[str, bool]:
+    """(публичная фраза источников, True если есть non-eurostat ряды)."""
+    labels = [
+        _source_label(getattr(ind, "source", None), getattr(ind, "provider", None))
+        for ind in inds
+    ]
+    has_national = any(
+        (getattr(ind, "provider", None) or "").strip().lower() not in ("", "eurostat")
+        for ind in inds
+    )
+    return _join_sources_ru(labels), has_national
 
 
 def _period_label(d: date | None, frequency: str | None) -> str:
@@ -459,39 +527,69 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
     n_ind = len(inds)
     gen = _genitive(country)
     n_phrase = _n_indicators_phrase(n_ind)
+    source_phrase, has_national = _country_source_phrase(inds)
     title = f"Экономика {gen}: статистика и показатели"
-    desc = (
-        f"{country.name_ru}: {n_phrase} Евростата — цены, ВВП, "
-        f"рынок труда, торговля и финансы. Графики и последние значения "
-        f"на Forecast Economy."
-    )
-    figure_alt = (
-        f"Экономика {gen} — сводка ключевых показателей, "
-        f"источник Евростат"
-    )
+    if has_national:
+        desc = (
+            f"{country.name_ru}: {n_phrase} — цены, ВВП, "
+            f"рынок труда, торговля и финансы. Источник: {source_phrase}. "
+            f"Графики и последние значения на Forecast Economy."
+        )
+        figure_alt = (
+            f"Экономика {gen} — сводка ключевых показателей, "
+            f"источник {source_phrase}"
+        )
+        eyebrow = f"Национальная статистика — {country.name_ru}"
+        lead = (
+            f"Официальные национальные ряды для {escape(gen)}: "
+            f"{n_phrase} в {len(by_cat)} разделах — цены, ВВП, рынок труда, "
+            f"внешняя торговля, финансы и другие темы. У каждого показателя — график "
+            f"динамики, таблица значений и ссылка на первоисточник."
+        )
+        source_section = (
+            f"Данные публикует {escape(source_phrase)}. На сайте ряды приведены "
+            f"в единицах источника; дата последнего значения указана у каждого "
+            f"показателя."
+        )
+    else:
+        desc = (
+            f"{country.name_ru}: {n_phrase} Евростата — цены, ВВП, "
+            f"рынок труда, торговля и финансы. Графики и последние значения "
+            f"на Forecast Economy."
+        )
+        figure_alt = (
+            f"Экономика {gen} — сводка ключевых показателей, "
+            f"источник Евростат"
+        )
+        eyebrow = f"Статистика Евростата — {country.name_ru}"
+        lead = (
+            f"Официальные ряды Евростата для {escape(gen)}: "
+            f"{n_phrase} в {len(by_cat)} разделах — цены, ВВП, рынок труда, "
+            f"внешняя торговля, финансы и другие темы. У каждого показателя — график "
+            f"динамики, таблица значений и ссылка на первоисточник."
+        )
+        source_section = (
+            f"Данные публикует {_SOURCE_PUBLIC}. На сайте ряды приведены в единицах "
+            f"источника; дата последнего значения указана у каждого показателя."
+        )
     figure_html = (
         f'<figure class="seo-chart"><img src="{escape(og_path)}" '
         f'alt="{escape(figure_alt)}" width="1200" height="630" loading="eager">'
         f"<figcaption>Ключевые показатели экономики {escape(gen)}. "
-        f"Источник: {_SOURCE_PUBLIC}. forecasteconomy.com</figcaption></figure>"
+        f"Источник: {escape(source_phrase)}. forecasteconomy.com</figcaption></figure>"
     )
 
-    n_sections = len(by_cat)
     body = f"""<div class="seo-page">
 <nav><a href="/">Главная</a> → <a href="/world">Мировая экономика</a> → {escape(country.name_ru)}</nav>
-<p class="seo-eyebrow">Статистика Евростата — {escape(country.name_ru)}</p>
+<p class="seo-eyebrow">{escape(eyebrow)}</p>
 <h1>Экономика {escape(gen)}: статистика и показатели</h1>
-<p>Официальные ряды Евростата для {escape(gen)}:
-{n_phrase} в {n_sections} разделах — цены, ВВП, рынок труда,
-внешняя торговля, финансы и другие темы. У каждого показателя — график
-динамики, таблица значений и ссылка на первоисточник.</p>
+<p>{lead}</p>
 {figure_html}
 <section class="seo-section"><h2>Ключевые показатели</h2>{key_table}</section>
 {''.join(sections)}
 {neighbors_html}
 <section class="seo-section"><h2>Источник данных</h2>
-<p>Данные публикует {_SOURCE_PUBLIC}. На сайте ряды приведены в единицах
-источника; дата последнего значения указана у каждого показателя.</p></section>
+<p>{source_section}</p></section>
 <section class="seo-section"><h2>Россия</h2>
 <p>Сопоставить с российскими рядами можно в
 <a href="/compare">сравнении индикаторов</a> и на
@@ -566,7 +664,7 @@ async def render_world_indicator_html(
     last_date, last_value = series[-1]
     unit = _unit_of(indicator)
     unit_sfx = _unit_sfx(unit)
-    source = _source_label(indicator.source)
+    source = _source_label(indicator.source, indicator.provider)
     display = _display_name(indicator)
     period = _date_range_ru(first_date, last_date) or (
         f"{first_date.year}–{last_date.year}"
@@ -580,7 +678,7 @@ async def render_world_indicator_html(
     desc_text = (indicator.description or "").strip()
     if not desc_text:
         desc_text = (
-            f"{display} в {prep} — официальный ряд {_SOURCE_PUBLIC}. "
+            f"{display} в {prep} — официальный ряд {source}. "
             f"На графике — динамика показателя за доступный период наблюдений"
             + (f"; значения приведены в единицах: {unit}" if unit else "")
             + "."

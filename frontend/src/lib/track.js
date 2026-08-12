@@ -201,6 +201,7 @@ export const events = {
   HOME_COUNTRIES_METRIC: 'home_countries_metric',
   HOME_COUNTRIES_MACROREGION: 'home_countries_macroregion',
   HOME_COUNTRIES_CTA: 'home_countries_cta',
+  HOME_COUNTRIES_MAP_SELECT: 'home_countries_map_select',
 
   CATEGORY_TILE_CLICK: 'category_tile_click',
   RELATED_INDICATOR_CLICK: 'related_indicator_click',

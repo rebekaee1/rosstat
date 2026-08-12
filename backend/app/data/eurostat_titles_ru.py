@@ -170,10 +170,18 @@ _SEX_RU: dict[str, str] = {
 # Измерения, сужающие смысл ряда и обязанные быть в name_ru.
 # TOTAL-коды не требуют отражения. Прочие SDMX-измерения (indic, nace…)
 # разделяют card_key через extra_dims; имя для них — зона курации, не авто-unlist.
-_NARROWING_NAME_DIMS = frozenset({"age", "sex"})
+_NARROWING_NAME_DIMS = frozenset({
+    "age", "sex", "hhcomp", "nace_r2", "nace_r1", "coicop", "coicop18",
+    "isced11", "isced11f", "wstatus", "citizen", "deg_urb", "worktime",
+    "statinfo", "stk_flow", "duration", "partner", "marsta", "sizeclas",
+    "siec", "nrg_bal", "na_item",
+})
 _NARROWING_DIM_TOTALS: dict[str, frozenset[str]] = {
     "age": frozenset({"", "TOTAL", "T", "Y15-74"}),
     "sex": frozenset({"", "T", "TOTAL"}),
+    "hhcomp": frozenset({"", "TOTAL"}),
+    "coicop": frozenset({"", "TOTAL", "CP00"}),
+    "coicop18": frozenset({"", "TOTAL", "CP00"}),
 }
 
 # ---------------------------------------------------------------------------
@@ -259,6 +267,33 @@ SUBJECT_TERMS: list[tuple[str, Term]] = [
     ("pupils and students enrolled", _t("численность учащихся и студентов")),
     ("pupils and students", _t("учащиеся и студенты")),
     ("passenger cars", _t("легковые автомобили")),
+    ("national road freight transport", _t("автомобильные грузоперевозки")),
+    ("road freight transport", _t("автомобильные грузоперевозки")),
+    ("mean and median income", _t("средний и медианный доход")),
+    ("distribution of income", _t("распределение доходов")),
+    ("household final consumption expenditure", _t("конечное потребление домохозяйств")),
+    ("final consumption expenditure of households", _t("конечное потребление домохозяйств")),
+    ("nights spent at tourist accommodation establishments", _t("ночёвки в средствах размещения")),
+    ("arrivals at tourist accommodation establishments", _t("прибытия в средства размещения")),
+    ("establishments, bedrooms and bed-places in tourist accommodation", _t("средства размещения: объекты, комнаты и койко-места")),
+    ("supplementary indicators on labour market slack", _t("дополнительные показатели недоиспользования рабочей силы")),
+    ("labour market slack", _t("недоиспользование рабочей силы")),
+    ("crude oil imports", _t("импорт сырой нефти")),
+    ("energy productivity", _t("энергопроизводительность")),
+    ("energy self-reliance", _t("энергетическая самообеспеченность")),
+    ("diversity index of final energy consumption", _t("индекс диверсификации конечного потребления энергии")),
+    ("diversity index of energy supply", _t("индекс диверсификации энергоснабжения")),
+    ("duration of working life", _t("продолжительность трудовой жизни")),
+    ("early leavers from education and training", _t("рано покинувшие образование и обучение")),
+    ("adult participation in learning", _t("участие взрослых в обучении")),
+    ("service producer prices", _t("цены производителей в сфере услуг")),
+    ("motor coaches, buses and trolley buses", _t("автобусы и троллейбусы")),
+    ("mopeds and motorcycles", _t("мопеды и мотоциклы")),
+    ("motorcycles", _t("мотоциклы")),
+    ("physicians", _t("врачи")),
+    ("hospital beds", _t("больничные койки")),
+    ("hospital discharges and length of stay", _t("выписка из стационара и длительность пребывания")),
+    ("consultation of a dentist", _t("обращения к стоматологу")),
     ("unemployment", _t("безработица")),
     ("employment", _t("занятость")),
     ("employees", _t("наёмные работники")),
@@ -300,6 +335,28 @@ SUBJECT_TERMS: list[tuple[str, Term]] = [
 ]
 
 DIM_TERMS: list[tuple[str, Term]] = [
+    ("age group, sex and nuts 2 region", _t("возрастная группа, пол и регион", "возрастным группам, полу и регионам")),
+    ("age group, sex and nuts 3 region", _t("возрастная группа, пол и регион", "возрастным группам, полу и регионам")),
+    ("broad age group, sex and nuts 3 region", _t("укрупнённая возрастная группа, пол и регион", "укрупнённым возрастным группам, полу и регионам")),
+    ("broad age group, sex and nuts 2 region", _t("укрупнённая возрастная группа, пол и регион", "укрупнённым возрастным группам, полу и регионам")),
+    ("age, sex and nuts 2 region", _t("возраст, пол и регион", "возрасту, полу и регионам")),
+    ("age, sex and nuts 3 region", _t("возраст, пол и регион", "возрасту, полу и регионам")),
+    ("sex, age and nuts 2 region", _t("пол, возраст и регион", "полу, возрасту и регионам")),
+    ("sex, age and nuts 3 region", _t("пол, возраст и регион", "полу, возрасту и регионам")),
+    ("sex and age and nuts 2 region", _t("пол, возраст и регион", "полу, возрасту и регионам")),
+    ("mother's age and nuts 2 region", _t("возраст матери и регион", "возрасту матери и регионам")),
+    ("age and nuts 2 region", _t("возраст и регион", "возрасту и регионам")),
+    ("sex and nuts 2 region", _t("пол и регион", "полу и регионам")),
+    ("distance class and type of transport", _t("дальность и тип перевозки", "дальности и типу перевозки")),
+    ("ability to make ends meet", _t("способность сводить концы с концами", "способности сводить концы с концами")),
+    ("household composition", _t("состав домохозяйства", "составу домохозяйства")),
+    ("tenure status", _t("статус владения жильём", "статусу владения жильём")),
+    ("field of production", _t("месторождение добычи", "месторождениям добычи")),
+    ("main fuel groups and operator", _t("группы топлива и оператор", "группам топлива и оператору")),
+    ("type of plant and operator", _t("тип станции и оператор", "типу станции и оператору")),
+    ("type of vehicles", _t("тип транспорта", "типу транспорта")),
+    ("type of vehicle", _t("тип транспорта", "типу транспорта")),
+    ("engine size", _t("объём двигателя", "объёму двигателя")),
     ("sex and age", _t("пол и возраст", "полу и возрасту")),
     ("age and sex", _t("возраст и пол", "возрасту и полу")),
     ("type of building", _t("тип здания", "типам зданий")),
@@ -334,6 +391,9 @@ DIM_TERMS: list[tuple[str, Term]] = [
     ("size class", _t("размер предприятия", "размеру предприятий")),
     ("enterprise size class", _t("размер предприятия", "размеру предприятий")),
     ("mother's age", _t("возраст матери", "возрасту матери")),
+    ("durability", _t("долговечность товаров", "долговечности товаров")),
+    ("purpose", _t("цель потребления", "целям потребления")),
+    ("category", _t("категория", "категориям")),
     ("age", _t("возраст", "возрасту")),
     ("sex", _t("пол", "полу")),
     ("country", _t("страна", "странам")),
@@ -655,6 +715,169 @@ WORD_TERMS: dict[str, Term] = {
     "childhood": _t("детство"),
     "school": _t("школа"),
     "work": _t("труд"),
+    # Аудит непокрытых EN-токенов (composed unlock + leftover after by-шаблона)
+    "distribution": _t("распределение"),
+    "internet": _t("интернет"),
+    "road": _t("автомобильный"),
+    "afford": _t("позволять себе"),
+    "disability": _t("инвалидность"),
+    "children": _t("дети"),
+    "freight": _t("грузоперевозки"),
+    "nuts": _t("регион"),
+    "quintile": _t("квинтиль"),
+    "nace": _t("вид деятельности"),
+    "health": _t("здравоохранение"),
+    "care": _t("уход"),
+    "who": _t("которые"),
+    "urbanisation": _t("урбанизация"),
+    "limitation": _t("ограничение"),
+    "cannot": _t("не могут"),
+    "added": _t("добавленная"),
+    "hicp": _t("ГИПЦ"),
+    "people": _t("люди"),
+    "very": _t("очень"),
+    "their": _t("их"),
+    "low": _t("низкий"),
+    "personal": _t("личный"),
+    "ict": _t("ИКТ"),
+    "volumes": _t("объёмы"),
+    "transitions": _t("переходы"),
+    "individuals": _t("лица"),
+    "tkm": _t("т·км"),
+    "tenure": _t("владение жильём"),
+    "experimental": _t("экспериментальный"),
+    "statistics": _t("статистика"),
+    "pensions": _t("пенсии"),
+    "capital": _t("капитал"),
+    "vehicle": _t("транспортное средство"),
+    "orientation": _t("ориентация"),
+    "graduates": _t("выпускники"),
+    "tourist": _t("туристский"),
+    "establishments": _t("учреждения"),
+    "eu": _t("ЕС"),
+    "spent": _t("проведённые"),
+    "mobile": _t("мобильный"),
+    "least": _t("наименьший"),
+    "home": _t("дом"),
+    "parents": _t("родители"),
+    "excluding": _t("исключая"),
+    "nights": _t("ночёвки"),
+    "corresponding": _t("соответствующий"),
+    "selected": _t("выбранный"),
+    "abroad": _t("за рубежом"),
+    "self-reported": _t("самооценка"),
+    "unmet": _t("неудовлетворённый"),
+    "severe": _t("тяжёлый"),
+    "before": _t("до"),
+    "buses": _t("автобусы"),
+    "formal": _t("формальный"),
+    "than": _t("чем"),
+    "needs": _t("потребности"),
+    "disposable": _t("располагаемый"),
+    "reason": _t("причина"),
+    "onwards": _t("и далее"),
+    "declared": _t("заявленный"),
+    "situation": _t("ситуация"),
+    "strategy": _t("стратегия"),
+    "technology": _t("технологии"),
+    "information": _t("информация"),
+    "traffic": _t("движение"),
+    "teachers": _t("учителя"),
+    "overcrowding": _t("перенаселённость"),
+    "in-work": _t("работающие"),
+    "surveys": _t("опросы"),
+    "benefits": _t("пособия"),
+    "specialists": _t("специалисты"),
+    "communications": _t("связь"),
+    "bed-places": _t("койко-места"),
+    "transition": _t("переход"),
+    "self-perceived": _t("самооценка"),
+    "inability": _t("неспособность"),
+    "most": _t("большинство"),
+    "fixed": _t("фиксированный"),
+    "supplementary": _t("дополнительный"),
+    "derived": _t("производный"),
+    "combustible": _t("горючий"),
+    "non-combustible": _t("негорючий"),
+    "fuels": _t("топливо"),
+    "operator": _t("оператор"),
+    "motorcycles": _t("мотоциклы"),
+    "engine": _t("двигатель"),
+    "coaches": _t("автобусы"),
+    "trolley": _t("троллейбусы"),
+    "trams": _t("трамваи"),
+    "inhabitants": _t("жители"),
+    "inhabitant": _t("житель"),
+    "consultation": _t("обращение"),
+    "dentist": _t("стоматолог"),
+    "bedrooms": _t("комнаты"),
+    "net": _t("чистый"),
+    "greenhouse": _t("парниковый"),
+    "emissions": _t("выбросы"),
+    "land": _t("земля"),
+    "forestry": _t("лесное хозяйство"),
+    "self-reliance": _t("самообеспеченность"),
+    "diversity": _t("диверсификация"),
+    "supply": _t("предложение"),
+    "available": _t("доступный"),
+    "hospitals": _t("больницы"),
+    "seats": _t("места"),
+    "berths": _t("спальные места"),
+    "durability": _t("долговечность"),
+    "nursing": _t("сестринский"),
+    "residential": _t("стационарный"),
+    "long-term": _t("долгосрочный"),
+    "facilities": _t("учреждения"),
+    "remaining": _t("остаточный"),
+    "working": _t("рабочий"),
+    "issue": _t("выпуск"),
+    "accounts": _t("счета"),
+    "aggregates": _t("агрегаты"),
+    "arrivals": _t("прибытия"),
+    "stocks": _t("запасы"),
+    "stock": _t("запас"),
+    "asset": _t("актив"),
+    "based": _t("на основе"),
+    "purpose": _t("цель"),
+    "threshold": _t("порог"),
+    "excluded": _t("исключённые"),
+    "ability": _t("способность"),
+    "make": _t("сводить"),
+    "ends": _t("концы"),
+    "meet": _t("концами"),
+    "composition": _t("состав"),
+    "distance": _t("дальность"),
+    "field": _t("месторождение"),
+    "over": _t("старше"),
+    "per": _t("на"),
+    "as": _t("как"),
+    "starting": _t("начало"),
+    "old": _t("лет"),
+    "under": _t("младше"),
+    "lower": _t("основной"),
+    "upper": _t("старший"),
+    "adult": _t("взрослый"),
+    "vocational": _t("профессиональный"),
+    "programmes": _t("программы"),
+    "completion": _t("завершение"),
+    "trains": _t("поезда"),
+    "inland": _t("внутренний"),
+    "passenger": _t("пассажирский"),
+    "leavers": _t("покинувшие"),
+    "training": _t("обучение"),
+    "learning": _t("обучение"),
+    "ratio": _t("соотношение"),
+    "non-financial": _t("нефинансовый"),
+    "productivity": _t("производительность"),
+    "discharges": _t("выписка"),
+    "inpatient": _t("стационарный"),
+    "curative": _t("лечебный"),
+    "ownership": _t("собственность"),
+    "mopeds": _t("мопеды"),
+    "pumps": _t("насосы"),
+    "ambient": _t("окружающий"),
+    "heat": _t("тепло"),
+    "rev": _t(""),
 }
 
 FREQ_SUFFIX = {
@@ -671,10 +894,15 @@ PAREN_RULES: list[tuple[re.Pattern[str], str | None]] = [
     (re.compile(r"^\d{4}\s*[-–]\s*\d{2,4}$"), None),
     (re.compile(r"^nace rev\.?\s*2$", re.I), None),
     (re.compile(r"^ecoicop", re.I), None),
+    (re.compile(r"^coicop", re.I), None),
     (re.compile(r"^bpm6$", re.I), None),
     (re.compile(r"^sitc", re.I), None),
     (re.compile(r"^bec", re.I), None),
     (re.compile(r"^ebops", re.I), None),
+    (re.compile(r"^tkm$", re.I), None),
+    (re.compile(r"^lulucf$", re.I), None),
+    (re.compile(r"^eu-silc", re.I), None),
+    (re.compile(r"^echp", re.I), None),
     (re.compile(r"^brussels\s*=", re.I), None),
     (re.compile(r"^\d{4}\s*=\s*100$", re.I), None),
     (re.compile(r"^index$", re.I), "индекс"),
@@ -777,39 +1005,60 @@ def _slice_qualifiers_ru(slice_json: dict | None) -> list[str]:
     siec = (slice_json.get("siec") or "").strip().upper()
     if siec and siec in _SIEC_RU:
         bits.append(_SIEC_RU[siec])
+    hh = (slice_json.get("hhcomp") or "").strip().upper()
+    if hh and hh not in {"TOTAL"}:
+        from app.data.eurostat_dim_labels_ru import label_for_dim_member
+        label = label_for_dim_member("hhcomp", hh)
+        if label:
+            bits.append(label)
+    # прочие предметные dims — через общий словарь
+    from app.data.eurostat_dim_labels_ru import label_for_dim_member
+    for dim in (
+        "nace_r2", "nace_r1", "coicop", "coicop18", "isced11", "wstatus",
+        "citizen", "deg_urb", "worktime", "statinfo", "stk_flow", "duration",
+        "partner", "marsta", "sizeclas", "siec", "nrg_bal", "na_item",
+    ):
+        raw = slice_json.get(dim)
+        if raw is None:
+            continue
+        label = label_for_dim_member(dim, str(raw))
+        if label and label not in bits:
+            bits.append(label)
     return bits
 
 
 def narrowing_slice_labels(slice_json: dict | None) -> tuple[list[str], list[str]]:
-    """Вернуть (известные_лейблы, неизвестные_коды) для age/sex.
+    """Вернуть (известные_лейблы, неизвестные_коды) для сужающих измерений.
 
     Неизвестный код = срез сужает смысл, но мы не умеем назвать его по-русски
     → карточку нельзя честно листинговать.
     """
+    from app.data.eurostat_dim_labels_ru import label_for_dim_member, is_dim_totalish
+
     if not slice_json:
         return [], []
     known: list[str] = []
     unknown: list[str] = []
     for dim in _NARROWING_NAME_DIMS:
-        totals = _NARROWING_DIM_TOTALS[dim]
+        totals = _NARROWING_DIM_TOTALS.get(dim, frozenset({"", "TOTAL", "T", "ALL", "NSP"}))
         raw = slice_json.get(dim)
         if raw is None:
             continue
         val = str(raw).strip().upper()
-        if not val or val in totals:
+        if not val or val in totals or is_dim_totalish(dim, val):
             continue
+        # age/sex legacy maps + общий словарь
+        label = None
         if dim == "age":
-            label = _AGE_RU.get(val)
-            if label:
-                known.append(label)
-            else:
-                unknown.append(f"age={val}")
+            label = _AGE_RU.get(val) or label_for_dim_member("age", val)
         elif dim == "sex":
-            label = _SEX_RU.get(val)
-            if label:
-                known.append(label)
-            else:
-                unknown.append(f"sex={val}")
+            label = _SEX_RU.get(val) or label_for_dim_member("sex", val)
+        else:
+            label = label_for_dim_member(dim, val)
+        if label:
+            known.append(label)
+        else:
+            unknown.append(f"{dim}={val}")
     return known, unknown
 
 
@@ -1005,14 +1254,17 @@ def _tokenize_subject(subject: str) -> tuple[str | None, list[str]]:
         head_hit = _match_longest(head, SUBJECT_TERMS)
         dim_hit = _match_longest(dims, DIM_TERMS)
         if head_hit and dim_hit:
-            # check leftover tokens in head/dims beyond matched phrases
+            # leftover beyond matched phrases: only harmless noise, иначе raw
+            # (иначе «by sex, age and NUTS…» матчило только «sex» → «по полу»).
+            _rest_ok = frozenset({"and", "of", "the", "a", "an", "rev", "2"})
             head_rest = head[len(head_hit[0]) :].strip(" ,;-")
             dim_rest = dims[len(dim_hit[0]) :].strip(" ,;-")
-            for rest, bag in ((head_rest, head), (dim_rest, dims)):
-                if rest:
-                    for w in re.findall(r"[a-z][a-z0-9\-']*", rest):
-                        if w not in WORD_TERMS and w not in ("rev", "2"):
-                            uncovered.append(w)
+            for rest in (head_rest, dim_rest):
+                if not rest:
+                    continue
+                for w in re.findall(r"[a-z][a-z0-9\-']*", rest):
+                    if w not in _rest_ok:
+                        uncovered.append(w)
             if uncovered:
                 return None, uncovered
             prep = dim_hit[1].get("prep") or dim_hit[1]["nom"]
@@ -1028,29 +1280,14 @@ def _tokenize_subject(subject: str) -> tuple[str | None, list[str]]:
                     uncovered.append(w)
         return None, uncovered or ["by-template-miss"]
 
-    # Plain subject phrase
+    # Plain subject phrase — только точное совпадение фразы.
+    # Свободный WORD-хвост давал грамматический мусор («… на житель»).
     hit = _match_longest(low, SUBJECT_TERMS)
     if hit:
         rest = low[len(hit[0]) :].strip(" ,;-")
-        # allow trailing adjectives covered by WORD_TERMS
         if rest:
             tokens = re.findall(r"[a-z][a-z0-9\-']*", rest)
-            for w in tokens:
-                if w not in WORD_TERMS and w not in {t[0].split()[0] for t in SUBJECT_TERMS}:
-                    # try multi-word remainder against subjects again
-                    rem_hit = _match_longest(rest, SUBJECT_TERMS)
-                    if rem_hit:
-                        continue
-                    uncovered.append(w)
-            if uncovered:
-                return None, uncovered
-            # compose: subject + covered trailing words in nom
-            bits = [hit[1]["nom"]]
-            for w in tokens:
-                term = WORD_TERMS.get(w)
-                if term and term["nom"]:
-                    bits.append(term["nom"])
-            return " ".join(bits), []
+            return None, tokens[:8] or ["trailing-after-subject"]
         return hit[1]["nom"], []
 
     # Token-cover attempt (emergency — not a recognized template → raw)
@@ -1258,6 +1495,74 @@ def public_seo_title(
     return title
 
 
+# Короткое «что это» для наборов, где одно имя без контекста путает экономиста.
+DATASET_EXPLAINERS_RU: dict[str, str] = {
+    "prc_hpi_cow": (
+        "Это не цена жилья, а вес страны в европейском агрегате индекса цен "
+        "на жильё для собственников: доля расходов страны в сумме по группе стран."
+    ),
+    "prc_hpi_oocow": (
+        "Вес страны в европейском агрегате индекса цен жилья, занимаемого "
+        "владельцами (доля в сумме весов группы стран)."
+    ),
+    "prc_hpi_inw": (
+        "Структура весов категорий внутри национального индекса цен на жильё "
+        "(не уровень цен и не темп изменения)."
+    ),
+    "prc_hpi_ooinw": (
+        "Структура весов категорий внутри индекса цен жилья, занимаемого "
+        "владельцами (не уровень цен)."
+    ),
+    "prc_hpi_q": (
+        "Индекс цен на жильё по сделкам с жилой недвижимостью; база и темпы "
+        "читаются в выбранном режиме карточки."
+    ),
+    "prc_hpi_a": (
+        "Годовой индекс цен на жильё по сделкам с жилой недвижимостью."
+    ),
+    "prc_hpi_ooq": (
+        "Индекс цен на жильё, которое занимают собственники (owner-occupied), "
+        "а не арендный индекс."
+    ),
+    "lfsq_sup_age": (
+        "Дополнительные показатели недоиспользования рабочей силы: не только "
+        "классическая безработица, но и связанные формы слабой занятости по возрасту."
+    ),
+    "nrg_ind_ep": (
+        "Энергопроизводительность — отношение валового внутреннего продукта "
+        "к валовому внутреннему потреблению энергии, а не выработка электростанций."
+    ),
+    "nrg_ind_esr": (
+        "Энергетическая самообеспеченность показывает, какую долю потребления "
+        "покрывает собственная добыча и производство энергоресурсов."
+    ),
+    "road_eqs_carhab": (
+        "Это обеспеченность легковыми автомобилями на тысячу жителей, "
+        "а не абсолютный парк автомобилей в стране."
+    ),
+    "ilc_li10": (
+        "Доля населения под риском бедности, рассчитанная до социальных "
+        "трансфертов, причём пенсии не входят в состав трансфертов."
+    ),
+    "ilc_pnp2": (
+        "Отношение медианного располагаемого дохода лиц 65 лет и старше "
+        "к медианному доходу лиц младше 65 лет, а не доля бедных."
+    ),
+    "nama_10_fcs": (
+        "Конечное потребление домохозяйств в разбивке по долговечности товаров "
+        "(товары длительного пользования, полудлительные, краткосрочные и услуги)."
+    ),
+    "sdg_13_10": (
+        "Чистые выбросы парниковых газов внутри страны без учёта международного "
+        "авиационного и морского транспорта."
+    ),
+    "lfsi_dwl_a": (
+        "Ожидаемая продолжительность трудовой жизни — сколько лет в среднем "
+        "человек проводит в составе рабочей силы за жизнь, а не возраст выхода на пенсию."
+    ),
+}
+
+
 def public_description(
     name_ru: str,
     frequency: str | None = None,
@@ -1268,6 +1573,7 @@ def public_description(
     history_start=None,
     history_end=None,
     available_frequencies: list[str] | tuple[str, ...] | None = None,
+    dataset_id: str = "",
 ) -> str:
     """Живое описание карточки: показатель × страна × период × источник."""
     subject, _ = split_freq_suffix(name_ru)
@@ -1286,6 +1592,10 @@ def public_description(
         parts = [f"{subject}{where}: данные за {start_s}."]
     else:
         parts = [f"{subject}{where}: данные Евростата."]
+
+    explainer = DATASET_EXPLAINERS_RU.get((dataset_id or "").lower().strip())
+    if explainer:
+        parts.append(explainer)
 
     unit = (unit_ru or "").strip()
     if unit and unit.lower() not in subject.lower():
@@ -1329,9 +1639,12 @@ def public_methodology(
     unit_ru: str = "",
     *,
     available_frequencies: list[str] | tuple[str, ...] | None = None,
+    dataset_id: str = "",
 ) -> str:
     """Методология карточки: источник, единица, честная оговорка о частоте."""
     freqs = _normalize_freq_list(frequency, available_frequencies)
+    explainer = DATASET_EXPLAINERS_RU.get((dataset_id or "").lower().strip())
+
     freq_adj = {
         "monthly": "месячная",
         "quarterly": "квартальная",
@@ -1368,9 +1681,11 @@ def public_methodology(
         if unit_ru
         else ""
     )
+    explainer_bit = f"{explainer} " if explainer else ""
     return (
-        f"Источник данных — Евростат. Ряд формируется по гармонизированной "
-        f"методологии для стран Европы. {freq_part}{unit_bit} "
+        f"Источник данных — Евростат. {explainer_bit}"
+        f"Ряд формируется по гармонизированной методологии для стран Европы. "
+        f"{freq_part}{unit_bit} "
         f"На графике показан наиболее общий доступный срез показателя."
     )
 

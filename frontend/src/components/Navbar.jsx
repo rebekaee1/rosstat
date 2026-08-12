@@ -262,13 +262,6 @@ export default function Navbar() {
           Мировая экономика
         </NavLink>
         <NavLink
-          to="/calendar"
-          className={(p) => cn(linkClass(p), 'hidden xl:block')}
-          onClick={closeAll}
-        >
-          Календарь
-        </NavLink>
-        <NavLink
           to="/compare"
           className={(p) => cn(linkClass(p), 'hidden xl:block')}
           onClick={closeAll}
@@ -328,7 +321,7 @@ export default function Navbar() {
           onClick={() => { setMobileOpen(!mobileOpen); track(events.NAV_MOBILE_TOGGLE); }}
           className={cn(
             FOCUS_RING,
-            'rounded-xl text-text-secondary hover:text-text-primary transition-colors p-1.5'
+            'flex min-h-11 min-w-11 items-center justify-center rounded-xl p-2.5 text-text-secondary transition-colors hover:text-text-primary'
           )}
           aria-expanded={mobileOpen}
           aria-label={mobileOpen ? 'Закрыть меню' : 'Открыть меню'}
@@ -372,9 +365,6 @@ export default function Navbar() {
             </NavLink>
             <NavLink to="/demographics" className={linkClass} onClick={closeAll}>
               Возрастная структура
-            </NavLink>
-            <NavLink to="/calendar" className={linkClass} onClick={closeAll}>
-              Календарь
             </NavLink>
             <NavLink to="/compare" className={linkClass} onClick={closeAll}>
               Сравнение

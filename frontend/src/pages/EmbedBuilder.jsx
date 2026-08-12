@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
+import { useState, useMemo, useRef, useCallback, useEffect, useDeferredValue } from 'react';
 import { Check, Copy, Code2, Image, ChevronDown, Search, BarChart3, CreditCard, Table2, ScrollText, GitCompare, Shield } from 'lucide-react';
 import { useIndicators } from '../lib/hooks';
 import { CATEGORIES, isIndicatorListed } from '../lib/categories';
@@ -6,6 +6,7 @@ import { cn } from '../lib/format';
 import useDocumentMeta from '../lib/useMeta';
 import { PERIODS } from '../embed/useEmbedParams';
 import { track, events } from '../lib/track';
+import useSearchTracking from '../lib/useSearchTracking';
 
 const WIDGET_TYPES = [
   { key: 'chart', label: 'График', icon: BarChart3, desc: 'Интерактивный AreaChart с данными и прогнозом' },
@@ -30,6 +31,7 @@ function escHtml(s) {
 function IndicatorCombobox({ indicators, value, onChange }) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
+  const deferredSearch = useDeferredValue(search);
   const ref = useRef(null);
 
   useEffect(() => {
@@ -39,7 +41,7 @@ function IndicatorCombobox({ indicators, value, onChange }) {
   }, []);
 
   const grouped = useMemo(() => {
-    const q = search.toLowerCase();
+    const q = deferredSearch.toLowerCase();
     const filtered = indicators?.filter(i =>
       isIndicatorListed(i) &&
       (i.name.toLowerCase().includes(q) || i.code.includes(q) || (i.name_en || '').toLowerCase().includes(q))
@@ -47,7 +49,13 @@ function IndicatorCombobox({ indicators, value, onChange }) {
     return CATEGORIES
       .map(cat => ({ ...cat, items: filtered.filter(i => i.category === cat.apiCategory) }))
       .filter(g => g.items.length > 0);
-  }, [indicators, search]);
+  }, [indicators, deferredSearch]);
+
+  const resultCount = useMemo(
+    () => grouped.reduce((n, g) => n + g.items.length, 0),
+    [grouped],
+  );
+  useSearchTracking('embed-builder', open ? deferredSearch : '', resultCount);
 
   const selected = indicators?.find(i => i.code === value);
 

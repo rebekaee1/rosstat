@@ -117,7 +117,7 @@ export default function HomeCountriesPanel() {
               }`}
             >
               {m.label}
-              {!m.available ? ' · скоро' : ''}
+              {!m.available ? ' — скоро' : ''}
             </button>
           ))}
         </div>

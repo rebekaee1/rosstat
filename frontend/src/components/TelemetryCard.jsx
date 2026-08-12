@@ -81,7 +81,9 @@ export default function TelemetryCard({
         )}>
           {formatValue(value, unitDigits(unit))}
         </span>
-        <span className="text-xs font-medium text-text-tertiary shrink-0 whitespace-nowrap">{unitSuffix(unit)}</span>
+        <span className="min-w-0 text-[11px] font-medium leading-snug text-text-tertiary break-words line-clamp-1 sm:shrink-0 sm:text-xs sm:line-clamp-2">
+          {unitSuffix(unit)}
+        </span>
       </div>
 
       <div className="flex flex-col gap-1 sm:gap-1.5 mt-2 sm:mt-4 pt-2 sm:pt-4 border-t border-border-subtle/50">

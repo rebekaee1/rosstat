@@ -32,10 +32,23 @@ api.interceptors.response.use(
   (res) => res,
   async (error) => {
     const { config, response } = error;
-    if (!response || !config) return Promise.reject(error);
+    if (!config) return Promise.reject(error);
     // Не ретраим auth-эндпоинты: иначе при 429 повторно зашлём креды/мутации.
     const isAuth = (config.url || '').startsWith('/auth');
+    const method = (config.method || 'get').toLowerCase();
     config.__retryCount = config.__retryCount || 0;
+
+    // Сеть / Empty reply / рестарт backend — ретрай только безопасных GET.
+    const networkMiss = !response && method === 'get' && !isAuth
+      && config.__retryCount < RETRY_LIMIT;
+    if (networkMiss) {
+      config.__retryCount += 1;
+      await new Promise((r) => setTimeout(r, 2 ** config.__retryCount * 250));
+      return api(config);
+    }
+
+    if (!response) return Promise.reject(error);
+
     if (!isAuth && (response.status === 429 || response.status === 503) && config.__retryCount < RETRY_LIMIT) {
       config.__retryCount += 1;
       const retryAfter = parseInt(response.headers['retry-after'] || '1', 10);

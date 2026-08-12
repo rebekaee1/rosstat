@@ -1,0 +1,32 @@
+---
+description: UI мировых карточек (/world) обязан совпадать с дизайном российских макрокарточек
+globs: frontend/src/pages/World*.jsx,frontend/src/components/World*.jsx
+alwaysApply: true
+---
+
+# World UI = эталон российских карточек
+
+Директива владельца (2026-08-12, ветка Europe): дизайн раздела `/world` берём
+**с карточек макропоказателей России**, не с «быстрых» SSR-страниц (`/today`,
+growth hubs) и не с отдельного «мирового» визуального языка.
+
+## Эталон
+
+Смотреть живую российскую карточку (`IndicatorDetail` / `GenericIndicatorView`):
+
+- сетка `TelemetryCard` (текущее / предыдущее / максимум / среднее);
+- переключатели режимов как `CpiViewModePicker`: кнопки `rounded-xl`,
+  активная `bg-champagne/15 text-champagne`, неактивная
+  `bg-obsidian-lighter text-text-secondary hover:text-champagne`,
+  подпись секции `text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary`;
+- заголовок как у России: частота-пилл, H1 display, name_en —
+  без passport-hero «быстрых» страниц (градиентная плашка «последнее значение»).
+
+## Жёстко
+
+- При правке `WorldIndicatorPage`, `WorldViewModePicker`, `WorldChartSection`,
+  `WorldCountry` — сначала сверять с российским аналогом, потом менять.
+- Не изобретать segmented-control «белый active на obsidian-pill» для world.
+- Улучшения дизайна допустимы только как эволюция **общего** эталона
+  (Россия + мир), не как отдельный стиль мира.
+- Публичные тексты — `.cursor/rules/methodology-language.mdc`.

@@ -7,19 +7,19 @@ import {
   groupModesFromApi,
 } from '../lib/worldViewModes';
 
+/** Эталон кнопок — CpiViewModePicker / GenericViewModePicker (Россия). */
 const btnCls = (active) => cn(
-  'rounded-lg px-3.5 py-2 text-xs font-medium transition-all',
+  'shrink-0 rounded-xl px-3 py-2 text-xs font-medium transition-colors',
   active
-    ? 'bg-white text-text-primary shadow-sm ring-1 ring-black/[0.04]'
-    : 'text-text-secondary hover:bg-white/70 hover:text-text-primary',
+    ? 'bg-champagne/15 text-champagne'
+    : 'bg-obsidian-lighter text-text-secondary hover:text-champagne',
 );
 
 const btnDisabledCls = 'cursor-not-allowed opacity-45 hover:text-text-secondary';
 
 /**
- * Двухуровневый переключатель мировой карточки (эталон — CpiViewModePicker).
- * Верх — тип представления; низ — частота. Недоступные ячейки видны, но disabled
- * (как у ИПЦ): пользователь видит матрицу полноты, а не «пропавшую» кнопку.
+ * Двухуровневый переключатель мировой карточки.
+ * Визуально = российские макрокарточки (не segmented-control «быстрых» страниц).
  */
 export default function WorldViewModePicker({
   modes,
@@ -83,10 +83,12 @@ export default function WorldViewModePicker({
 
   const body = (
     <>
-      <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">
+      <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
         {title}
       </p>
-      <div className="inline-flex max-w-full flex-wrap gap-1 rounded-xl bg-obsidian-light p-1">
+      {/* Как CpiViewModePicker: wrap, не горизонтальный скролл —
+          иначе подпись «Уровень» (w-full) выталкивает частоты за край. */}
+      <div className="flex flex-wrap gap-2">
         {groups.map((group) => (
           <button
             key={group.id}
@@ -101,12 +103,17 @@ export default function WorldViewModePicker({
       {subModes.length > 0 && (
         <div
           className={cn(
-            'mt-4 gap-1 rounded-xl bg-obsidian-light p-1',
+            'mt-3 gap-2 border-t border-border-subtle pt-3',
             compact
-              ? 'flex overflow-x-auto pb-0.5 -mx-1 px-1 scrollbar-thin'
+              ? 'flex overflow-x-auto overscroll-x-contain pb-0.5 -mx-1 px-1 scrollbar-hide'
               : 'flex flex-wrap',
           )}
         >
+          {!compact && (
+            <span className="mb-0 w-full text-[10px] font-mono uppercase tracking-[0.15em] text-text-tertiary">
+              {expanded.label}
+            </span>
+          )}
           {subModes.map((item) => (
             <button
               key={`${expanded.id}-${item.mode}`}
@@ -122,7 +129,7 @@ export default function WorldViewModePicker({
             >
               {item.label}
               {item.disabled && item.hint ? (
-                <span className="ml-1.5 inline-block h-1.5 w-1.5 rounded-full bg-text-tertiary/50 align-middle" aria-label={item.hint} />
+                <span className="ml-1 text-[10px] opacity-70">{item.hint}</span>
               ) : null}
             </button>
           ))}
@@ -140,7 +147,7 @@ export default function WorldViewModePicker({
   }
 
   return (
-    <section className="mb-8 rounded-[1.5rem] border border-border-subtle bg-surface p-4 shadow-[0_12px_35px_rgba(35,30,16,0.04)] sm:p-5">
+    <section className="mb-6 min-w-0 rounded-[1.25rem] border border-border-subtle bg-surface p-3.5 shadow-sm sm:mb-8 sm:rounded-[1.5rem] sm:p-5">
       {body}
     </section>
   );

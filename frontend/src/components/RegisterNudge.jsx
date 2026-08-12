@@ -10,7 +10,8 @@ import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 
 // Не показываем на этих маршрутах: там целевое действие и так на виду.
-const HIDDEN_PATHS = ['/login', '/register', '/account'];
+// Главная — отдельный кейс: плавающая кнопка наезжает на блок «Инструменты».
+const HIDDEN_PATHS = ['/', '/login', '/register', '/account'];
 
 // Два режима одного плавающего окна:
 //   guest    — приглашение зарегистрироваться (открыть скачивание);
@@ -105,14 +106,17 @@ export default function RegisterNudge() {
         <button
           type="button"
           onClick={expand}
+          aria-label={variant.pill}
           className={cn(
             FOCUS_RING,
-            'flex items-center gap-2.5 rounded-full pl-4 pr-5 py-3 shadow-xl',
+            'flex items-center gap-2 rounded-full shadow-xl',
             'bg-champagne text-white font-medium text-sm hover:bg-champagne-muted transition-colors',
+            'pl-3.5 pr-4 py-3 sm:gap-2.5 sm:pl-4 sm:pr-5',
           )}
         >
           <Sparkles className="w-4 h-4 shrink-0" />
-          {variant.pill}
+          <span className="sm:hidden">Регистрация</span>
+          <span className="hidden sm:inline">{variant.pill}</span>
           <ChevronUp className="w-4 h-4 shrink-0 opacity-80" />
         </button>
       ) : (

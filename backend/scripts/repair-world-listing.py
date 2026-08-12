@@ -4,8 +4,9 @@
 1. Удаляет исключённые geo.
 2. Пересобирает name_ru / unit_ru / seo_*.
 3. Базовые предохранители (quality / unit / sensitive / depth).
-4. Дефекты: региональный дубль, срез не в имени, мёртвые ряды, короткие annual.
-5. Склейка частот по строгому card_key → is_listed только у primary.
+4. Редакторские режимы датасета (full_ok / headline_ok / no).
+5. Дефекты: региональный дубль, срез не в имени, мёртвые ряды, короткие annual.
+6. Склейка частот по строгому card_key → is_listed только у primary.
 
 Запуск::
 
@@ -26,13 +27,16 @@ sys.path.insert(0, "/app")
 from app.core.cache import bump_namespaces  # noqa: E402
 from app.data.eurostat_listing import (  # noqa: E402
     card_key,
+    is_headline_aggregate_slice,
     is_short_annual_singleton,
     is_stale_history,
     listing_rank_tuple,
     listing_semantic_key,
+    load_listing_decisions,
     meets_listing_depth,
     national_counterpart_dataset,
     normalize_frequency,
+    varying_narrowing_dims,
 )
 from app.data.eurostat_titles_ru import (  # noqa: E402
     build_public_name,
@@ -51,7 +55,10 @@ from app.data.eurostat_units_ru import (  # noqa: E402
     unit_is_listable,
 )
 from app.data.eurostat_country_visibility import (  # noqa: E402
-    country_passes_vitrine_threshold,
+    country_passes_vitrine,
+    indicator_counts_toward_national_core,
+    is_eurostat_listing_pipeline_target,
+    is_eurostat_retitle_target,
 )
 from app.database import async_session  # noqa: E402
 from app.models import WorldCountry, WorldDataPoint, WorldIndicator  # noqa: E402
@@ -139,7 +146,14 @@ async def retitle_all() -> tuple[int, dict[str, int]]:
             ind_card_key[ind.id] = key
 
         updated = 0
+        skipped = 0
         for ind in inds:
+            # National passport / curated — не трогать Eurostat-композитором.
+            if not is_eurostat_retitle_target(ind):
+                skipped += 1
+                reasons["skipped-non-eurostat-or-curated"] += 1
+                continue
+
             en = catalog.get(ind.dataset_id) or ind.name_en or ""
             title = resolve_dataset_title(ind.dataset_id, en)
             unit = ind.unit or (ind.slice_json or {}).get("unit") or ""
@@ -221,6 +235,11 @@ async def retitle_all() -> tuple[int, dict[str, int]]:
             ind.is_listed = ok
             updated += 1
 
+        if skipped:
+            log.info(
+                "retitle skipped %d non-eurostat/curated indicator(s)",
+                skipped,
+            )
         await db.commit()
         return updated, dict(reasons)
 
@@ -235,6 +254,72 @@ def _rank(x: WorldIndicator) -> tuple:
     )
 
 
+async def apply_editorial_listing_modes() -> dict[str, int]:
+    """Редакторские режимы: no → off; headline_ok → TOTAL/ключ; full_ok → без доп. фильтра.
+
+    Решения — ``eurostat_listing_decisions.json``. Датасеты вне файла не трогаем.
+    """
+    decisions = load_listing_decisions()
+    counts: dict[str, int] = defaultdict(int)
+    if not decisions:
+        log.warning("editorial decisions file empty/missing — skip")
+        return dict(counts)
+
+    async with async_session() as db:
+        inds = (await db.execute(select(WorldIndicator))).scalars().all()
+        by_ds: dict[str, list[WorldIndicator]] = defaultdict(list)
+        for ind in inds:
+            if not is_eurostat_listing_pipeline_target(ind):
+                continue
+            ds = (ind.dataset_id or "").strip().lower()
+            if ds in decisions:
+                by_ds[ds].append(ind)
+
+        for ds, members in by_ds.items():
+            mode = decisions[ds]["mode"]
+            if mode == "no":
+                for ind in members:
+                    if ind.is_listed:
+                        ind.is_listed = False
+                        counts["editorial_no"] += 1
+                counts["datasets_no"] += 1
+                continue
+
+            if mode == "full_ok":
+                counts["datasets_full_ok"] += 1
+                continue
+
+            # headline_ok
+            counts["datasets_headline_ok"] += 1
+            varying = varying_narrowing_dims([m.slice_json for m in members])
+            by_country: dict[int, list[WorldIndicator]] = defaultdict(list)
+            for ind in members:
+                if ind.is_listed:
+                    by_country[ind.country_id].append(ind)
+
+            for _country_id, cands in by_country.items():
+                keep = [
+                    i
+                    for i in cands
+                    if is_headline_aggregate_slice(
+                        i.slice_json, varying_dims=varying
+                    )
+                ]
+                if not keep:
+                    keep = [max(cands, key=_rank)]
+                    counts["editorial_headline_fallback"] += 1
+                keep_ids = {i.id for i in keep}
+                for ind in cands:
+                    if ind.id in keep_ids:
+                        counts["editorial_headline_keep"] += 1
+                    else:
+                        ind.is_listed = False
+                        counts["editorial_headline_trim"] += 1
+
+        await db.commit()
+        return dict(counts)
+
+
 async def apply_defect_filters() -> dict[str, int]:
     """Снять с кандидатов: срез не в имени, региональный дубль, stale, правдоподобие."""
     counts: dict[str, int] = defaultdict(int)
@@ -245,6 +330,8 @@ async def apply_defect_filters() -> dict[str, int]:
 
         # 1) срез не отражён в имени / противоречие понятия
         for ind in inds:
+            if not is_eurostat_listing_pipeline_target(ind):
+                continue
             if not slice_reflected_in_name(ind.name_ru, ind.slice_json or {}):
                 ind.is_listed = False
                 counts["slice_not_in_name"] += 1
@@ -253,6 +340,8 @@ async def apply_defect_filters() -> dict[str, int]:
         for ind in inds:
             if not ind.is_listed:
                 continue
+            if not is_eurostat_listing_pipeline_target(ind):
+                continue
             if is_stale_history(ind.history_end):
                 ind.is_listed = False
                 counts["stale_history"] += 1
@@ -260,11 +349,13 @@ async def apply_defect_filters() -> dict[str, int]:
         # 3) региональный дубль национального
         by_ds: dict[tuple[int, str], list[WorldIndicator]] = defaultdict(list)
         for ind in inds:
-            if ind.is_listed:
+            if ind.is_listed and is_eurostat_listing_pipeline_target(ind):
                 by_ds[(ind.country_id, (ind.dataset_id or "").lower())].append(ind)
 
         for ind in inds:
             if not ind.is_listed:
+                continue
+            if not is_eurostat_listing_pipeline_target(ind):
                 continue
             national = national_counterpart_dataset(ind.dataset_id)
             if not national:
@@ -282,7 +373,10 @@ async def apply_defect_filters() -> dict[str, int]:
                 counts["regional_duplicate"] += 1
 
         # 4) правдоподобие значений (предохранитель) — батч точек
-        listed_ids = [i.id for i in inds if i.is_listed]
+        listed_ids = [
+            i.id for i in inds
+            if i.is_listed and is_eurostat_listing_pipeline_target(i)
+        ]
         values_by_id: dict[int, list[float]] = defaultdict(list)
         if listed_ids:
             # чанками, чтобы не раздувать память одним огромным IN
@@ -305,6 +399,8 @@ async def apply_defect_filters() -> dict[str, int]:
         for ind in inds:
             if not ind.is_listed:
                 continue
+            if not is_eurostat_listing_pipeline_target(ind):
+                continue
             vals = values_by_id.get(ind.id) or []
             if not is_plausible_for_listing(
                 name_ru=ind.name_ru,
@@ -322,13 +418,15 @@ async def apply_defect_filters() -> dict[str, int]:
 
 
 async def apply_country_visibility() -> dict[str, int]:
-    """Проставить ``WorldCountry.is_active`` по порогу и согласовать is_listed.
+    """Проставить ``WorldCountry.is_active`` по витрине и согласовать is_listed.
 
     Единая точка истины витрины стран — флаг ``is_active`` в БД (не
-    пересчёт в каждом потребителе). Идемпотентно: повторный прогон даёт
-    тот же набор. Индикаторы скрытой страны снимаются с листинга
-    (``is_listed=false``), данные остаются; при возврате страны поверх
-    порога следующий fold снова выставит listed у qualifying рядов.
+    пересчёт в каждом потребителе). Путь: Eurostat-порог ИЛИ national_core
+    (свежий компактный паспорт / нац. провайдер / ISO-allowlist).
+    Идемпотентно: повторный прогон даёт тот же набор. Индикаторы скрытой
+    страны снимаются с листинга (``is_listed=false``), данные остаются;
+    при возврате страны поверх порога следующий fold снова выставит
+    listed у qualifying рядов.
     """
     import statistics
 
@@ -341,24 +439,33 @@ async def apply_country_visibility() -> dict[str, int]:
             by_country[ind.country_id].append(ind)
 
         listed_counts: list[int] = []
-        meta: list[tuple[WorldCountry, int, int]] = []
+        # (country, n_listed, n_cats, fresh_listed, has_non_eurostat)
+        meta: list[tuple[WorldCountry, int, int, int, bool]] = []
         for c in countries:
             members = by_country.get(c.id) or []
             listed = [i for i in members if i.is_listed]
             cats = {i.category_ru for i in listed if i.category_ru}
             n_listed = len(listed)
+            fresh = [i for i in listed if indicator_counts_toward_national_core(i)]
+            has_non_eurostat = any(
+                (getattr(i, "provider", None) or "").lower() != "eurostat"
+                for i in fresh
+            )
             listed_counts.append(n_listed)
-            meta.append((c, n_listed, len(cats)))
+            meta.append((c, n_listed, len(cats), len(fresh), has_non_eurostat))
 
         median_listed = float(statistics.median(listed_counts)) if listed_counts else 0.0
         stats["median_listed"] = int(round(median_listed))
 
         active_ids: set[int] = set()
-        for c, n_listed, n_cats in meta:
-            ok = country_passes_vitrine_threshold(
+        for c, n_listed, n_cats, n_fresh, has_non_eurostat in meta:
+            ok = country_passes_vitrine(
                 listed_cards=n_listed,
                 category_count=n_cats,
                 median_listed=median_listed,
+                country_code=c.code,
+                fresh_listed_count=n_fresh,
+                has_non_eurostat=has_non_eurostat,
             )
             if ok:
                 active_ids.add(c.id)
@@ -366,12 +473,20 @@ async def apply_country_visibility() -> dict[str, int]:
                 c.is_active = False
                 stats["deactivated"] += 1
                 log.info(
-                    "hide country %s (%s): listed=%d cats=%d median=%.0f",
-                    c.code, c.slug, n_listed, n_cats, median_listed,
+                    "hide country %s (%s): listed=%d cats=%d fresh=%d "
+                    "non_eurostat=%s median=%.0f",
+                    c.code, c.slug, n_listed, n_cats, n_fresh,
+                    has_non_eurostat, median_listed,
                 )
             elif (not c.is_active) and ok:
                 c.is_active = True
                 stats["reactivated"] += 1
+                log.info(
+                    "show country %s (%s): listed=%d cats=%d fresh=%d "
+                    "non_eurostat=%s median=%.0f",
+                    c.code, c.slug, n_listed, n_cats, n_fresh,
+                    has_non_eurostat, median_listed,
+                )
             elif ok:
                 stats["kept_active"] += 1
             else:
@@ -389,12 +504,52 @@ async def apply_country_visibility() -> dict[str, int]:
         return dict(stats)
 
 
-async def dedupe_same_frequency() -> int:
+# Страны с national-core YAML: eurostat не должен снова всплывать на витрину
+# после fold_frequency_cards / defect filters.
+_NATIONAL_PASSPORT_CODES: frozenset[str] = frozenset({
+    "CA", "AU", "UK", "GB", "US", "JP", "CN", "IN", "BR", "MX", "KR",
+})
+
+
+async def unlist_eurostat_on_national_passports() -> dict[str, int]:
+    """National-first: снять eurostat leftovers с listed у passport-стран."""
+    from collections import Counter
+
+    async with async_session() as db:
+        countries = (
+            await db.execute(
+                select(WorldCountry).where(
+                    WorldCountry.code.in_(sorted(_NATIONAL_PASSPORT_CODES))
+                )
+            )
+        ).scalars().all()
+        ids = {c.id: c.code for c in countries}
+        if not ids:
+            return {}
+        inds = (
+            await db.execute(
+                select(WorldIndicator).where(
+                    WorldIndicator.country_id.in_(list(ids)),
+                    WorldIndicator.is_listed.is_(True),
+                )
+            )
+        ).scalars().all()
+        counts: Counter[str] = Counter()
+        for ind in inds:
+            if (ind.provider or "").lower() != "eurostat":
+                continue
+            ind.is_listed = False
+            counts[ids[ind.country_id]] += 1
+        await db.commit()
+        return dict(counts)
+
     """Внутри одной частоты: смысловой ключ → самый глубокий."""
     async with async_session() as db:
         inds = (
             await db.execute(select(WorldIndicator).where(WorldIndicator.is_listed.is_(True)))
         ).scalars().all()
+        # Только Eurostat non-curated — национальный паспорт не схлопываем.
+        inds = [i for i in inds if is_eurostat_listing_pipeline_target(i)]
 
         def _collapse(groups: dict) -> int:
             n = 0
@@ -438,8 +593,12 @@ async def fold_frequency_cards() -> dict[str, int]:
     stats: dict[str, int] = defaultdict(int)
     async with async_session() as db:
         all_inds = (await db.execute(select(WorldIndicator))).scalars().all()
+        # National passport: is_listed остаётся как в БД (не eurostat fold).
+        eurostat_inds = [
+            i for i in all_inds if is_eurostat_listing_pipeline_target(i)
+        ]
         quality_ok = [
-            i for i in all_inds
+            i for i in eurostat_inds
             if (i.name_quality or "") in ("curated", "composed")
             and not is_sensitive_topic(i.dataset_id)
             and unit_is_listable(i.unit_ru or "")
@@ -481,8 +640,15 @@ async def fold_frequency_cards() -> dict[str, int]:
                 )
             ].append(ind)
 
-        for ind in all_inds:
+        # Сбрасываем только Eurostat; national passport не трогаем.
+        for ind in eurostat_inds:
             ind.is_listed = False
+        stats["preserved_non_eurostat"] = len(all_inds) - len(eurostat_inds)
+
+        # Не возвращать eurostat на витрину стран с national-core YAML.
+        country_by_id = {c.id: c.code for c in (
+            await db.execute(select(WorldCountry))
+        ).scalars().all()}
 
         multi_freq = 0
         members_in_multi = 0
@@ -490,6 +656,14 @@ async def fold_frequency_cards() -> dict[str, int]:
         shallow_members_kept = 0
 
         for _key, members in groups.items():
+            sample = members[0]
+            cc = country_by_id.get(sample.country_id, "")
+            if cc in _NATIONAL_PASSPORT_CODES:
+                stats["national_passport_eurostat_skipped"] = (
+                    stats.get("national_passport_eurostat_skipped", 0) + 1
+                )
+                continue
+
             primary = pick_primary(members, listing_substance_score)
             if primary is None:
                 stats["no_primary_depth"] = stats.get("no_primary_depth", 0) + 1
@@ -529,6 +703,51 @@ async def fold_frequency_cards() -> dict[str, int]:
         return dict(stats)
 
 
+async def dedupe_same_frequency() -> int:
+    """Внутри одной частоты: смысловой ключ → самый глубокий."""
+    async with async_session() as db:
+        inds = (
+            await db.execute(select(WorldIndicator).where(WorldIndicator.is_listed.is_(True)))
+        ).scalars().all()
+        inds = [i for i in inds if is_eurostat_listing_pipeline_target(i)]
+
+        def _collapse(groups: dict) -> int:
+            n = 0
+            for members in groups.values():
+                if len(members) < 2:
+                    continue
+                ranked = sorted(members, key=_rank, reverse=True)
+                for other in ranked[1:]:
+                    if other.is_listed:
+                        other.is_listed = False
+                        n += 1
+            return n
+
+        by_sem: dict[tuple, list[WorldIndicator]] = defaultdict(list)
+        for ind in inds:
+            by_sem[
+                listing_semantic_key(
+                    country_id=ind.country_id,
+                    dataset_id=ind.dataset_id,
+                    name_ru=ind.name_ru or "",
+                    frequency=ind.frequency,
+                    unit=ind.unit,
+                    unit_ru=ind.unit_ru,
+                    slice_json=ind.slice_json or {},
+                )
+            ].append(ind)
+        unlisted = _collapse(by_sem)
+
+        by_name: dict[tuple, list[WorldIndicator]] = defaultdict(list)
+        for ind in inds:
+            if ind.is_listed:
+                by_name[(ind.country_id, ind.name_ru)].append(ind)
+        unlisted += _collapse(by_name)
+
+        await db.commit()
+        return unlisted
+
+
 async def dedupe_display_names() -> int:
     """Схлопнуть одинаковые отображаемые имена внутри страны (после plausibility)."""
     from app.services.world_cards import display_name
@@ -537,6 +756,8 @@ async def dedupe_display_names() -> int:
         inds = (
             await db.execute(select(WorldIndicator).where(WorldIndicator.is_listed.is_(True)))
         ).scalars().all()
+        # Eurostat-эвристика имён: national passport не unlist'им.
+        inds = [i for i in inds if is_eurostat_listing_pipeline_target(i)]
         by_disp: dict[tuple, list[WorldIndicator]] = defaultdict(list)
         for ind in inds:
             by_disp[(ind.country_id, display_name(ind.name_ru))].append(ind)
@@ -558,13 +779,17 @@ async def main() -> int:
 
     n_purge = await purge_excluded_geos()
     n_upd, base_reasons = await retitle_all()
+    editorial = await apply_editorial_listing_modes()
     defect = await apply_defect_filters()
     n_dedupe = await dedupe_same_frequency()
     fold = await fold_frequency_cards()
     # правдоподобие ещё раз после fold (primary могли смениться)
     defect2 = await apply_defect_filters()
+    # headline/no могли снова всплыть через fold sibling — закрепить ещё раз
+    editorial2 = await apply_editorial_listing_modes()
     n_disp = await dedupe_display_names()
     country_vis = await apply_country_visibility()
+    nat_eu = await unlist_eurostat_on_national_passports()
 
     try:
         await bump_namespaces("world")
@@ -574,12 +799,15 @@ async def main() -> int:
     after = await _stats()
     log.info("purge_countries=%d retitled=%d", n_purge, n_upd)
     log.info("base_unlist_reasons=%s", base_reasons)
+    log.info("editorial=%s", editorial)
     log.info("defects=%s", defect)
     log.info("dedupe_same_freq=%d", n_dedupe)
     log.info("fold=%s", fold)
     log.info("defects_after_fold=%s", defect2)
+    log.info("editorial_after_fold=%s", editorial2)
     log.info("display_name_deduped=%d", n_disp)
     log.info("country_visibility=%s", country_vis)
+    log.info("national_passport_eurostat_unlisted=%s", nat_eu)
     log.info("AFTER %s", after)
 
     # аудит ключа: нет ли групп с разными stem (не должно быть)

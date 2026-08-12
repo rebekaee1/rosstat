@@ -165,6 +165,11 @@ DATASET_UNIT_RU: dict[str, str] = {
     "hlth_rs_grd2": "человек",
     "hlth_rs_prs2": "человек",
     "prc_hpi_hsnq": "сделок",
+    # Веса HPI/OOHPI: Eurostat unit PM = per mille share of total (не «смертность»)
+    "prc_hpi_cow": "‰ от суммарных весов стран ЕС",
+    "prc_hpi_inw": "‰ от суммарных весов категорий",
+    "prc_hpi_oocow": "‰ от суммарных весов стран ЕС",
+    "prc_hpi_ooinw": "‰ от суммарных весов категорий",
     "nrg_chdd_m": "градусо-сутки",
     "nrg_chdd_a": "градусо-сутки",
     "nrg_chddr2_m": "градусо-сутки",

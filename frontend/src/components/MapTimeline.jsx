@@ -1,7 +1,7 @@
 // Ползунок времени для карты регионов: прокрутка показателя по годам.
 // Год — controlled с родителя (URL ?year= + раскраска карты); play/pause
 // живут внутри. Движение ползунка и запуск — в аналитику (region_map_timeline).
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Play, Pause, RotateCcw } from 'lucide-react';
 import { track, events } from '../lib/track';
 
@@ -11,12 +11,17 @@ export default function MapTimeline({ years, year, onYearChange, metric }) {
   const [playing, setPlaying] = useState(false);
   const trackTimer = useRef(null);
 
-  const min = years[0];
-  const max = years[years.length - 1];
-  const atEnd = year >= max;
+  const list = useMemo(
+    () => (Array.isArray(years) ? years.filter((y) => y != null) : []),
+    [years],
+  );
+  const ready = list.length >= 2 && year != null && typeof onYearChange === 'function';
+  const min = ready ? list[0] : 0;
+  const max = ready ? list[list.length - 1] : 0;
+  const atEnd = ready ? year >= max : false;
 
   const setYearBoth = useCallback((y) => {
-    onYearChange(y);
+    if (typeof onYearChange === 'function') onYearChange(y);
   }, [onYearChange]);
 
   const emit = useCallback((action, y) => {
@@ -24,51 +29,59 @@ export default function MapTimeline({ years, year, onYearChange, metric }) {
   }, [metric]);
 
   useEffect(() => {
-    if (!playing) return undefined;
-    const i = years.indexOf(year);
-    if (i >= years.length - 1) return undefined;
+    if (!ready || !playing) return undefined;
+    const i = list.indexOf(year);
+    if (i < 0 || i >= list.length - 1) return undefined;
     const t = setTimeout(() => {
-      const next = years[i + 1];
+      const next = list[i + 1];
       setYearBoth(next);
-      if (i + 1 >= years.length - 1) { setPlaying(false); emit('complete', next); }
+      if (i + 1 >= list.length - 1) { setPlaying(false); emit('complete', next); }
     }, STEP_MS);
     return () => clearTimeout(t);
-  }, [playing, year, years, emit, setYearBoth]);
+  }, [ready, playing, year, list, emit, setYearBoth]);
 
   const togglePlay = useCallback(() => {
+    if (!ready) return;
     if (playing) { setPlaying(false); return; }
-    if (atEnd) setYearBoth(years[0]);
+    if (atEnd) setYearBoth(list[0]);
     setPlaying(true);
-    emit('play', atEnd ? years[0] : year);
-  }, [playing, atEnd, years, year, setYearBoth, emit]);
+    emit('play', atEnd ? list[0] : year);
+  }, [ready, playing, atEnd, list, year, setYearBoth, emit]);
 
   const handleSlider = useCallback((e) => {
+    if (!ready) return;
     setPlaying(false);
     const y = Number(e.target.value);
     setYearBoth(y);
     if (trackTimer.current) clearTimeout(trackTimer.current);
     trackTimer.current = setTimeout(() => emit('scrub', y), 600);
-  }, [setYearBoth, emit]);
+  }, [ready, setYearBoth, emit]);
 
   useEffect(() => () => {
     if (trackTimer.current) clearTimeout(trackTimer.current);
   }, []);
 
+  useEffect(() => {
+    if (!ready && playing) setPlaying(false);
+  }, [ready, playing]);
+
+  if (!ready) return null;
+
   const pct = max === min ? 100 : ((year - min) / (max - min)) * 100;
 
   return (
-    <div className="mt-3 flex items-center gap-3">
+    <div className="mt-1 flex items-center gap-3">
       <button
         type="button"
         onClick={togglePlay}
         aria-label={playing ? 'Пауза' : 'Проиграть по годам'}
         title={playing ? 'Пауза' : 'Проиграть по годам'}
-        className="shrink-0 w-9 h-9 flex items-center justify-center rounded-full bg-champagne text-white hover:bg-champagne-muted transition-colors shadow-sm"
+        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-champagne text-white shadow-sm transition-colors hover:bg-champagne-muted"
       >
         {playing ? <Pause size={15} /> : atEnd ? <RotateCcw size={14} /> : <Play size={15} className="translate-x-[1px]" />}
       </button>
 
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <input
           type="range"
           min={min}
@@ -82,15 +95,15 @@ export default function MapTimeline({ years, year, onYearChange, metric }) {
             background: `linear-gradient(to right, #B8942F 0%, #B8942F ${pct}%, rgba(26,26,46,0.10) ${pct}%, rgba(26,26,46,0.10) 100%)`,
           }}
         />
-        <div className="mt-1 flex justify-between text-[10px] text-text-tertiary font-mono tabular-nums">
+        <div className="mt-1 flex justify-between font-mono text-[10px] tabular-nums text-text-tertiary">
           <span>{min}</span>
           <span>{max}</span>
         </div>
       </div>
 
-      <div className="shrink-0 w-16 text-right">
-        <span className="font-mono text-lg font-bold text-champagne tabular-nums">{year}</span>
-        <span className="block text-[10px] text-text-tertiary -mt-0.5">год</span>
+      <div className="w-16 shrink-0 text-right">
+        <span className="font-mono text-lg font-bold tabular-nums text-champagne">{year}</span>
+        <span className="-mt-0.5 block text-[10px] text-text-tertiary">год</span>
       </div>
     </div>
   );

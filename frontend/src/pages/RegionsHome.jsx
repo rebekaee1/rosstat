@@ -18,6 +18,7 @@ import {
 } from '../lib/regionsApi';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import { SkeletonBox } from '../components/Skeleton';
+import MobileNavSelect from '../components/MobileNavSelect';
 import { exportNodeToPng } from '../lib/chartImage';
 import { buildRegionsMapGif, downloadBlob } from '../lib/regionsMapGif';
 import {
@@ -194,19 +195,19 @@ function RegionCard({ region }) {
   return (
     <Link
       to={`/region/${region.slug}`}
-      className="group flex items-center justify-between gap-3 bg-surface border border-border-subtle rounded-xl px-4 py-3.5 hover:border-border-champagne hover:shadow-sm transition-all"
+      className="group flex items-center justify-between gap-2.5 rounded-xl border border-border-subtle bg-surface px-3.5 py-3 transition-all hover:border-border-champagne hover:shadow-sm sm:gap-3 sm:px-4 sm:py-3.5"
     >
       <div className="min-w-0">
-        <div className="font-medium text-text-primary text-[15px] leading-snug truncate group-hover:text-champagne transition-colors">
+        <div className="truncate text-[14px] font-medium leading-snug text-text-primary transition-colors group-hover:text-champagne sm:text-[15px]">
           {region.name}
         </div>
-        <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-text-secondary font-mono">
+        <div className="mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 font-mono text-[11px] text-text-secondary sm:gap-x-3 sm:text-xs">
           {pop && <span>{formatRegionValue(pop.value)} тыс чел.</span>}
           {wage && <span>{formatRegionValue(wage.value)} ₽</span>}
           {unemp && <span>безраб. {formatRegionValue(unemp.value)}%</span>}
         </div>
       </div>
-      <ChevronRight size={16} className="shrink-0 text-text-tertiary group-hover:text-champagne transition-colors" />
+      <ChevronRight size={16} className="hidden shrink-0 text-text-tertiary transition-colors group-hover:text-champagne sm:block" />
     </Link>
   );
 }
@@ -368,11 +369,12 @@ export default function RegionsHome() {
   const filtered = useMemo(() => {
     if (!data) return [];
     const q = normalize(deferredQuery);
+    const searching = q.length > 0;
     return data.districts
-      .filter((d) => !activeDistrict || d.slug === activeDistrict)
+      .filter((d) => searching || !activeDistrict || d.slug === activeDistrict)
       .map((d) => ({
         ...d,
-        regions: q
+        regions: searching
           ? d.regions.filter((r) => normalize(r.name).includes(q))
           : d.regions,
       }))
@@ -424,16 +426,16 @@ export default function RegionsHome() {
   const gifAvailable = !!(activeMapCode && seriesYears && seriesYears.length > 1 && series.data);
 
   return (
-    <div className="max-w-5xl mx-auto px-4 pt-24 pb-20">
+    <div className="mx-auto w-full max-w-7xl overflow-x-hidden px-4 pb-24 pt-24 sm:px-6">
       <div className="mb-8">
         <div className="flex items-center gap-2 text-champagne text-xs font-mono uppercase tracking-widest mb-3">
           <MapPin size={14} />
           Региональная статистика
         </div>
-        <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary leading-tight">
+        <h1 className="font-display text-[1.75rem] font-bold leading-tight text-text-primary sm:text-4xl">
           Регионы России
         </h1>
-        <p className="mt-3 text-text-secondary text-[15px] leading-relaxed max-w-2xl">
+        <p className="mt-3 max-w-2xl text-[14px] leading-relaxed text-text-secondary sm:text-[15px]">
           Социально-экономические показатели 85 субъектов Российской Федерации:
           население, зарплаты, валовой региональный продукт, инвестиции, цены —
           официальные данные Росстата с 1990 года.
@@ -488,7 +490,7 @@ export default function RegionsHome() {
                   }}
                   title="Показать другую пару показателей"
                   aria-label="Другая пара показателей"
-                  className="text-text-tertiary hover:text-champagne transition-colors p-0.5 -m-0.5"
+                  className="p-2 -m-1 text-text-tertiary transition-colors hover:text-champagne"
                 >
                   <RefreshCw size={13} />
                 </button>
@@ -499,71 +501,125 @@ export default function RegionsHome() {
             </div>
           )}
 
-          <div className="sticky top-14 z-10 -mx-4 px-4 py-2 bg-obsidian/95 backdrop-blur-sm">
-            <div className="relative">
-              <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
-              <input
-                type="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Найти регион: Севастополь, Татарстан, Приморский…"
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-surface border border-border-subtle text-[15px] text-text-primary placeholder:text-text-tertiary focus:outline-none focus:border-border-champagne focus:ring-2 focus:ring-champagne/10 transition-all"
-                aria-label="Поиск региона"
-              />
-            </div>
-            <div className="mt-2 flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide" role="tablist" aria-label="Федеральные округа">
-              <button
-                onClick={() => setActiveDistrict(null)}
-                className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                  !activeDistrict
-                    ? 'bg-champagne/15 text-champagne'
-                    : 'bg-surface border border-border-subtle text-text-secondary hover:text-text-primary'
-                }`}
-              >
-                Все округа
-              </button>
-              {(data?.districts || []).map((d) => (
-                <button
-                  key={d.slug}
-                  onClick={() => setActiveDistrict(activeDistrict === d.slug ? null : d.slug)}
-                  className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                    activeDistrict === d.slug
-                      ? 'bg-champagne/15 text-champagne'
-                      : 'bg-surface border border-border-subtle text-text-secondary hover:text-text-primary'
-                  }`}
-                >
-                  {DISTRICT_SHORT[d.slug] || d.name}
-                </button>
-              ))}
-            </div>
+          <div className="relative mb-6">
+            <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Найти регион: Севастополь, Татарстан, Приморский…"
+              className="w-full rounded-xl border border-border-subtle bg-surface py-3 pl-10 pr-4 text-sm text-text-primary shadow-sm placeholder:text-text-tertiary focus:border-border-champagne focus:outline-none"
+              aria-label="Поиск региона"
+            />
           </div>
 
           {isError && <ApiRetryBanner onRetry={refetch} retrying={isFetching} />}
 
           {isLoading && (
-            <div className="mt-6 grid gap-2 sm:grid-cols-2">
+            <div className="grid gap-2 sm:grid-cols-2">
               {Array.from({ length: 10 }).map((_, i) => <SkeletonBox key={i} className="h-16 rounded-xl" />)}
             </div>
           )}
 
-          <div className="mt-6 space-y-8">
-            {filtered.map((d) => (
-              <section key={d.slug} aria-labelledby={`district-${d.slug}`}>
-                <h2 id={`district-${d.slug}`} className="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-3 flex items-baseline gap-2">
-                  {d.name}
-                  <span className="font-mono text-xs text-text-tertiary normal-case tracking-normal">{d.regions.length}</span>
-                </h2>
-                <div className="grid gap-2 sm:grid-cols-2">
-                  {d.regions.map((r) => <RegionCard key={r.slug} region={r} />)}
+          {!isLoading && (() => {
+            const searching = normalize(deferredQuery).length > 0;
+            const districtNav = data?.districts || [];
+            const resolvedDistrict = activeDistrict
+              && districtNav.some((d) => d.slug === activeDistrict)
+              ? activeDistrict
+              : null;
+            const totalRegions = districtNav.reduce((n, d) => n + d.regions.length, 0);
+
+            return (
+              <>
+                {!searching && (
+                  <MobileNavSelect
+                    label="Округа"
+                    value={resolvedDistrict || ''}
+                    onChange={(v) => setActiveDistrict(v || null)}
+                    options={[
+                      { value: '', label: 'Все округа', count: totalRegions },
+                      ...districtNav.map((d) => ({
+                        value: d.slug,
+                        label: DISTRICT_SHORT[d.slug] || d.name,
+                        count: d.regions.length,
+                      })),
+                    ]}
+                  />
+                )}
+
+                <div className={searching
+                  ? 'min-w-0 space-y-8'
+                  : 'grid min-w-0 gap-6 lg:grid-cols-[250px_minmax(0,1fr)]'}
+                >
+                  {!searching && (
+                    <aside className="hidden min-w-0 lg:sticky lg:top-24 lg:block lg:self-start" aria-label="Федеральные округа">
+                      <div className="mb-2 px-2 text-[10px] font-mono uppercase tracking-[0.18em] text-text-tertiary">
+                        Округа
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setActiveDistrict(null)}
+                          className={[
+                            'flex items-center justify-between gap-4 rounded-xl px-3.5 py-2.5 text-left text-sm transition-colors',
+                            !resolvedDistrict
+                              ? 'bg-champagne/12 font-medium text-champagne'
+                              : 'bg-surface text-text-secondary hover:bg-surface-hover hover:text-text-primary',
+                          ].join(' ')}
+                        >
+                          <span>Все округа</span>
+                          <span className="font-mono text-[10px] opacity-60">{totalRegions}</span>
+                        </button>
+                        {districtNav.map((d) => (
+                          <button
+                            key={d.slug}
+                            type="button"
+                            onClick={() => setActiveDistrict(d.slug)}
+                            className={[
+                              'flex items-center justify-between gap-4 rounded-xl px-3.5 py-2.5 text-left text-sm transition-colors',
+                              resolvedDistrict === d.slug
+                                ? 'bg-champagne/12 font-medium text-champagne'
+                                : 'bg-surface text-text-secondary hover:bg-surface-hover hover:text-text-primary',
+                            ].join(' ')}
+                          >
+                            <span className="min-w-0 truncate">{DISTRICT_SHORT[d.slug] || d.name}</span>
+                            <span className="shrink-0 font-mono text-[10px] opacity-60">{d.regions.length}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </aside>
+                  )}
+
+                  <div className="min-w-0 space-y-8">
+                    {filtered.map((d) => (
+                      <section key={d.slug} aria-labelledby={`district-${d.slug}`}>
+                        <div className="mb-3 flex items-end justify-between gap-3 sm:mb-4 sm:gap-4">
+                          <div className="min-w-0">
+                            <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">
+                              {searching ? 'Результаты поиска' : 'Регионы'}
+                            </div>
+                            <h2 id={`district-${d.slug}`} className="mt-1 font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">
+                              {d.name}
+                            </h2>
+                          </div>
+                          <span className="shrink-0 font-mono text-xs text-text-tertiary">{d.regions.length}</span>
+                        </div>
+                        <div className="grid gap-2 sm:grid-cols-2 sm:gap-2.5">
+                          {d.regions.map((r) => <RegionCard key={r.slug} region={r} />)}
+                        </div>
+                      </section>
+                    ))}
+                    {totalShown === 0 && searching && (
+                      <div className="rounded-2xl border border-border-subtle bg-surface p-5 text-center text-sm text-text-secondary sm:p-6">
+                        По запросу «{query}» регионов не найдено
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </section>
-            ))}
-            {!isLoading && totalShown === 0 && (
-              <div className="text-center py-16 text-text-secondary">
-                По запросу «{query}» регионов не найдено
-              </div>
-            )}
-          </div>
+              </>
+            );
+          })()}
         </>
       )}
 
@@ -576,7 +632,7 @@ export default function RegionsHome() {
                 aria-selected={isOverview}
                 onClick={selectOverview}
                 title="Клик по региону открывает его карточку со всеми показателями"
-                className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                className={`min-h-9 shrink-0 rounded-full px-3.5 py-2 text-xs font-medium transition-colors ${
                   isOverview
                     ? 'bg-champagne/15 text-champagne'
                     : 'bg-surface border border-border-subtle text-text-secondary hover:text-text-primary'
@@ -592,7 +648,7 @@ export default function RegionsHome() {
                     role="tab"
                     aria-selected={selected}
                     onClick={() => selectPreset(m)}
-                    className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                    className={`min-h-9 shrink-0 rounded-full px-3.5 py-2 text-xs font-medium transition-colors ${
                       selected
                         ? 'bg-champagne/15 text-champagne'
                         : 'bg-surface border border-border-subtle text-text-secondary hover:text-text-primary'
@@ -632,7 +688,7 @@ export default function RegionsHome() {
                   onClick={handlePng}
                   title={isAuthed ? 'Скачать карту картинкой' : 'Скачивание доступно после регистрации'}
                   aria-label="Скачать карту картинкой"
-                  className="text-xs px-2 py-1 rounded-full border border-border-subtle text-text-tertiary hover:text-champagne hover:border-border-champagne transition-colors inline-flex items-center gap-1 disabled:opacity-50"
+                  className="inline-flex min-h-9 items-center gap-1 rounded-full border border-border-subtle px-3 py-2 text-xs text-text-tertiary transition-colors hover:border-border-champagne hover:text-champagne disabled:opacity-50"
                 >
                   <ImageIcon size={12} /> PNG
                 </button>
@@ -646,7 +702,7 @@ export default function RegionsHome() {
                       : (isAuthed ? 'Скачать GIF по годам' : 'Скачивание доступно после регистрации')
                   }
                   aria-label="Скачать GIF по годам"
-                  className="text-xs px-2 py-1 rounded-full border border-border-subtle text-text-tertiary hover:text-champagne hover:border-border-champagne transition-colors inline-flex items-center gap-1 disabled:opacity-50"
+                  className="inline-flex min-h-9 items-center gap-1 rounded-full border border-border-subtle px-3 py-2 text-xs text-text-tertiary transition-colors hover:border-border-champagne hover:text-champagne disabled:opacity-50"
                 >
                   <Film size={12} /> {exportingGif ? 'GIF…' : 'GIF'}
                 </button>

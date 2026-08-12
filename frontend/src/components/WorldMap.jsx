@@ -25,17 +25,31 @@ const WORLD_OUTSIDE = '#F4F5F2';
 const WORLD_GRATICULE = geoGraticule10();
 
 const ISO_NUMERIC_TO_ALPHA2 = {
-  '008': 'AL', '036': 'AU', '040': 'AT', '056': 'BE', '070': 'BA',
-  '076': 'BR', '100': 'BG', '124': 'CA', '156': 'CN', '191': 'HR',
-  '196': 'CY', '203': 'CZ', '208': 'DK', '233': 'EE', '246': 'FI',
-  '250': 'FR', '268': 'GE', '276': 'DE', '300': 'EL', '348': 'HU',
-  '352': 'IS', '356': 'IN', '372': 'IE', '380': 'IT', '383': 'XK',
-  '392': 'JP', '410': 'KR', '428': 'LV', '440': 'LT', '442': 'LU',
-  '470': 'MT', '498': 'MD', '499': 'ME', '528': 'NL', '578': 'NO',
-  '616': 'PL', '620': 'PT', '642': 'RO', '643': 'RU', '688': 'RS',
-  '703': 'SK', '705': 'SI', '724': 'ES', '752': 'SE', '756': 'CH',
-  '792': 'TR', '807': 'MK', '826': 'GB', '840': 'US',
+  '008': 'AL', '031': 'AZ', '036': 'AU', '040': 'AT', '051': 'AM',
+  '056': 'BE', '070': 'BA', '076': 'BR', '100': 'BG', '124': 'CA',
+  '152': 'CL', '156': 'CN', '170': 'CO', '191': 'HR', '196': 'CY',
+  '203': 'CZ', '208': 'DK', '233': 'EE', '246': 'FI', '250': 'FR',
+  '268': 'GE', '276': 'DE', '300': 'EL', '348': 'HU', '352': 'IS',
+  '356': 'IN', '360': 'ID', '372': 'IE', '376': 'IL', '380': 'IT',
+  '383': 'XK', '392': 'JP', '410': 'KR', '428': 'LV', '440': 'LT',
+  '442': 'LU', '458': 'MY', '470': 'MT', '484': 'MX', '498': 'MD',
+  '499': 'ME', '528': 'NL', '554': 'NZ', '578': 'NO', '586': 'PK',
+  '604': 'PE', '608': 'PH', '616': 'PL', '620': 'PT', '642': 'RO',
+  '643': 'RU', '682': 'SA', '688': 'RS', '702': 'SG', '703': 'SK',
+  '704': 'VN', '705': 'SI', '710': 'ZA', '724': 'ES', '752': 'SE',
+  '756': 'CH', '764': 'TH', '792': 'TR', '804': 'UA', '807': 'MK',
+  // world-atlas / ISO uses GB; наша БД и API — UK (как Eurostat GEO).
+  '826': 'UK', '840': 'US',
 };
+
+/** Resolve API/DB country code from a map feature code (GB↔UK). */
+function resolveCountry(countryByCode, code) {
+  if (!code) return null;
+  return countryByCode.get(code)
+    || (code === 'GB' ? countryByCode.get('UK') : null)
+    || (code === 'UK' ? countryByCode.get('GB') : null)
+    || null;
+}
 const WORLD_FEATURES = feature(worldTopology, worldTopology.objects.countries).features;
 
 function numericId(raw) {
@@ -75,9 +89,10 @@ export default function WorldMap({
   metricName = '',
   periodLabel = '',
   colorMode = 'auto',
+  defaultScope = 'world',
   onSelect,
 }) {
-  const [scope, setScope] = useState('europe');
+  const [scope, setScope] = useState(defaultScope === 'europe' ? 'europe' : 'world');
   const [hover, setHover] = useState(null);
   const [view, setView] = useState({ k: 1, tx: 0, ty: 0 });
   const panRef = useRef(null);
@@ -116,10 +131,12 @@ export default function WorldMap({
   );
   const extent = useMemo(() => valueExtent(valuesByCode), [valuesByCode]);
   const hoverGeometry = useMemo(
-    () => (hover ? features.find(
-      (geometry) => ISO_NUMERIC_TO_ALPHA2[numericId(geometry.id)] === hover.country.code,
-    ) : null),
-    [features, hover],
+    () => (hover ? features.find((geometry) => {
+      const code = ISO_NUMERIC_TO_ALPHA2[numericId(geometry.id)];
+      const country = resolveCountry(countryByCode, code);
+      return country?.code === hover.country.code;
+    }) : null),
+    [countryByCode, features, hover],
   );
 
   const clampView = useCallback((next) => {
@@ -204,7 +221,7 @@ export default function WorldMap({
                 setHover(null);
               }}
               className={[
-                'inline-flex items-center gap-1 rounded-md px-2.5 py-1.5 text-[11px] transition-colors',
+                'inline-flex min-h-9 items-center gap-1 rounded-md px-3 py-2 text-[11px] transition-colors',
                 scope === id ? 'bg-white text-text-primary shadow-sm' : 'text-text-tertiary hover:text-text-primary',
               ].join(' ')}
             >
@@ -254,8 +271,9 @@ export default function WorldMap({
             />
             {features.map((geometry) => {
               const code = ISO_NUMERIC_TO_ALPHA2[numericId(geometry.id)];
-              const country = code ? countryByCode.get(code) : null;
-              const value = code ? collectionValue(valuesByCode, code) : null;
+              const country = resolveCountry(countryByCode, code);
+              const valueKey = country?.code || code;
+              const value = valueKey ? collectionValue(valuesByCode, valueKey) : null;
               const active = Boolean(country);
               const hasValue = value != null && Number.isFinite(Number(value));
               return (
@@ -273,7 +291,7 @@ export default function WorldMap({
                   onMouseEnter={() => active && setHover({
                     country,
                     value,
-                    detail: detailsByCode?.get(code) || null,
+                    detail: detailsByCode?.get(valueKey) || detailsByCode?.get(code) || null,
                   })}
                   onMouseLeave={() => setHover(null)}
                   role={active ? 'button' : undefined}
@@ -345,13 +363,15 @@ export default function WorldMap({
           <div className="mb-2.5 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
             <div className="text-[10px] font-medium text-text-secondary">
               {metricName || 'Распределение показателя'}
-              {periodLabel ? <span className="font-mono text-text-tertiary"> · {periodLabel}</span> : null}
+              {periodLabel ? (
+                <span className="font-mono text-text-tertiary"> — {periodLabel}</span>
+              ) : null}
             </div>
             <div className="text-[9px] uppercase tracking-[0.13em] text-text-tertiary">
               {colorModel.kind === 'diverging' ? 'Отклонение от нуля' : 'Положение относительно медианы'}
             </div>
           </div>
-          <div className="mx-auto grid max-w-[46rem] grid-cols-7 gap-1.5">
+          <div className="mx-auto grid max-w-[46rem] grid-cols-4 gap-1.5 sm:grid-cols-7">
             {colorModel.bins.map((bin, index) => (
               <div
                 key={`${bin.color}-${index}`}
@@ -371,8 +391,8 @@ export default function WorldMap({
           <div className="mt-2.5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[10px] text-text-tertiary">
             <span className="font-medium text-text-secondary">
               {colorModel.kind === 'diverging'
-                ? 'Бордовый — ниже нуля · светлый — около нуля · зелёный — выше нуля'
-                : 'Синий — ниже медианы · светлый — около медианы · золотой — выше медианы'}
+                ? 'Бордовый — ниже нуля; светлый — около нуля; зелёный — выше нуля'
+                : 'Синий — ниже медианы; светлый — около медианы; золотой — выше медианы'}
             </span>
             {colorModel.median != null && (
               <span>
@@ -441,7 +461,7 @@ export function CountrySilhouette({
   const frequencyLabel = frequencies
     .map((frequency) => SILHOUETTE_FREQ[frequency] || frequency)
     .filter(Boolean)
-    .join(' · ');
+    .join(', ');
   return (
     <div
       className="relative min-h-[250px] overflow-hidden rounded-2xl border border-white/10 bg-[#191A20] shadow-[0_20px_45px_rgba(24,24,31,0.18)]"

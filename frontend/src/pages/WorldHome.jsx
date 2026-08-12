@@ -7,15 +7,24 @@ import {
   CalendarRange, SlidersHorizontal,
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
+import { useIndicators } from '../lib/hooks';
 import {
   useWorldCountries, useWorldCompareCatalog, useWorldMapSeries,
   groupCountriesByRegion, pluralRu, formatWorldValue,
 } from '../lib/worldApi';
+import {
+  HOME_MAP_RUSSIA_COUNTRY,
+  withRussiaOnHomeMap,
+  worldRankingFromYearItems,
+} from '../lib/homeWorkbench';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import { SkeletonBox } from '../components/Skeleton';
 import useSearchTracking from '../lib/useSearchTracking';
 import WorldMap from '../components/WorldMap';
 import MapTimeline from '../components/MapTimeline';
+
+/** Клик по РФ на карте/в рейтинге → российские категории на главной. */
+const RUSSIA_CATEGORIES_HREF = '/#russia-categories';
 
 const MAP_CONCEPT_SHORT = {
   'hicp-index': 'Потребительские цены',
@@ -41,34 +50,42 @@ function CountryMark({ country, large = false }) {
   );
 }
 
-function CountryCard({ country, featured = false }) {
+function CountryCard({ country, featured = false, to = null }) {
   return (
     <Link
-      to={`/world/${country.slug}`}
+      to={to || `/world/${country.slug}`}
       className={[
-        'group flex items-center gap-3 border border-border-subtle bg-surface transition-all hover:-translate-y-0.5 hover:border-border-champagne hover:shadow-[0_18px_45px_rgba(38,33,20,0.08)]',
-        featured ? 'rounded-2xl p-5' : 'rounded-xl px-4 py-3.5',
+        'group flex items-center gap-2.5 border border-border-subtle bg-surface transition-all hover:-translate-y-0.5 hover:border-border-champagne hover:shadow-[0_18px_45px_rgba(38,33,20,0.08)] sm:gap-3',
+        featured ? 'rounded-2xl p-4 sm:p-5' : 'rounded-xl px-3.5 py-3 sm:px-4 sm:py-3.5',
       ].join(' ')}
     >
       <CountryMark country={country} large={featured} />
       <div className="min-w-0 flex-1">
-        <div className="font-medium text-text-primary text-[15px] leading-snug truncate group-hover:text-champagne transition-colors">
+        <div className="truncate text-[14px] font-medium leading-snug text-text-primary transition-colors group-hover:text-champagne sm:text-[15px]">
           {country.name}
         </div>
-        <div className="mt-0.5 text-[11px] text-text-tertiary font-mono">
+        <div className="mt-0.5 font-mono text-[11px] text-text-tertiary">
           {country.name_en}
         </div>
       </div>
-      <div className="shrink-0 text-right">
-        <div className="font-mono text-[13px] font-semibold tabular-nums text-text-primary">
-          {formatWorldValue(country.indicators_count, 0)}
-        </div>
-        <div className="text-[10px] text-text-tertiary">
-          {pluralRu(country.indicators_count, ['ряд', 'ряда', 'рядов'])}
-        </div>
+      <div className="w-auto min-w-[3.25rem] shrink-0 text-right sm:min-w-[3.5rem]">
+        {country.indicators_count > 0 ? (
+          <>
+            <div className="font-mono text-[13px] font-semibold tabular-nums text-text-primary">
+              {formatWorldValue(country.indicators_count, 0)}
+            </div>
+            <div className="text-[10px] text-text-tertiary">
+              {pluralRu(country.indicators_count, ['ряд', 'ряда', 'рядов'])}
+            </div>
+          </>
+        ) : (
+          <div className="text-[11px] text-text-tertiary">
+            Категории РФ
+          </div>
+        )}
       </div>
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-obsidian-light transition-colors group-hover:bg-champagne/12">
-        <ChevronRight size={14} className="text-text-tertiary group-hover:text-champagne transition-colors" />
+      <div className="hidden h-8 w-8 shrink-0 items-center justify-center rounded-full bg-obsidian-light transition-colors group-hover:bg-champagne/12 sm:flex">
+        <ChevronRight size={14} className="text-text-tertiary transition-colors group-hover:text-champagne" />
       </div>
     </Link>
   );
@@ -77,6 +94,7 @@ function CountryCard({ country, featured = false }) {
 export default function WorldHome() {
   const navigate = useNavigate();
   const { data, isLoading, isError, refetch, isFetching } = useWorldCountries();
+  const { data: indicators = [] } = useIndicators();
   const compareCatalog = useWorldCompareCatalog();
   const [query, setQuery] = useState('');
   const [mapConcept, setMapConcept] = useState('unemployment-rate');
@@ -85,9 +103,9 @@ export default function WorldHome() {
   const mapSeries = useWorldMapSeries(mapConcept);
 
   useDocumentMeta({
-    title: 'Экономика стран Европы — показатели по данным Евростата',
+    title: 'Мировая экономика — страны, карта и показатели',
     description:
-      'Макроэкономические показатели 39 стран Европы: цены, рынок труда, национальные счета. Официальные данные Евростата, графики и история.',
+      'Макроэкономические показатели стран Европы и мира, включая Россию: цены, рынок труда, национальные счета. Официальные данные, графики и история.',
     path: '/world',
   });
 
@@ -101,10 +119,18 @@ export default function WorldHome() {
       || normalize(c.code).includes(q));
   }, [data, deferredQuery]);
 
-  useSearchTracking('world-countries', deferredQuery, filtered.length);
+  const showRussiaInList = useMemo(() => {
+    const q = normalize(deferredQuery);
+    if (!q) return true;
+    return normalize(HOME_MAP_RUSSIA_COUNTRY.name).includes(q)
+      || normalize(HOME_MAP_RUSSIA_COUNTRY.name_en).includes(q)
+      || normalize(HOME_MAP_RUSSIA_COUNTRY.code).includes(q);
+  }, [deferredQuery]);
+
+  useSearchTracking('world-countries', deferredQuery, filtered.length + (showRussiaInList ? 1 : 0));
 
   const byRegion = useMemo(() => groupCountriesByRegion(filtered), [filtered]);
-  const total = data?.total ?? filtered.length;
+  const total = (data?.total ?? filtered.length) + 1;
   const totalIndicators = useMemo(
     () => (data?.countries || []).reduce((sum, country) => sum + Number(country.indicators_count || 0), 0),
     [data],
@@ -123,12 +149,32 @@ export default function WorldHome() {
     return [...seen.values()];
   }, [compareCatalog.data]);
   const years = mapSeries.data?.years || [];
-  const activeMapYear = years.includes(mapYear) ? mapYear : years[years.length - 1];
-  const activeYearItems = useMemo(
+  const activeMapYear = (() => {
+    if (years.includes(mapYear)) return mapYear;
+    const byYear = mapSeries.data?.values_by_year;
+    if (byYear) {
+      for (let i = years.length - 1; i >= 0; i -= 1) {
+        const n = Object.keys(byYear[String(years[i])] || {}).length;
+        if (n >= 8) return years[i];
+      }
+    }
+    return years[years.length - 1];
+  })();
+  const baseYearItems = useMemo(
     () => (activeMapYear
       ? (mapSeries.data?.values_by_year?.[String(activeMapYear)] || {})
       : {}),
     [activeMapYear, mapSeries.data],
+  );
+  const { countries: mapCountries, yearItems: activeYearItems } = useMemo(
+    () => withRussiaOnHomeMap({
+      countries: data?.countries || [],
+      yearItems: baseYearItems,
+      indicators,
+      conceptSlug: mapConcept,
+      activeYear: activeMapYear,
+    }),
+    [data?.countries, baseYearItems, indicators, mapConcept, activeMapYear],
   );
   const valuesByCode = useMemo(
     () => new Map(Object.entries(activeYearItems).map(([countryCode, item]) => [countryCode, item.value])),
@@ -139,7 +185,7 @@ export default function WorldHome() {
     [activeYearItems],
   );
   const ranking = useMemo(
-    () => Object.values(activeYearItems).sort((a, b) => b.value - a.value),
+    () => worldRankingFromYearItems(activeYearItems, 12),
     [activeYearItems],
   );
   const benchmark = activeMapYear
@@ -147,26 +193,38 @@ export default function WorldHome() {
     : null;
   const fromMock = data?._fromMock;
 
+  const openCountry = (country, detail) => {
+    if (country?.code === 'RU' || country?.slug === 'russia') {
+      navigate(RUSSIA_CATEGORIES_HREF);
+      return;
+    }
+    if (detail?.indicator_code && country?.slug) {
+      navigate(`/world/${country.slug}/${detail.indicator_code}`);
+      return;
+    }
+    if (country?.slug) navigate(`/world/${country.slug}`);
+  };
+
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 pb-24 pt-24 sm:px-6">
-      <section className="relative mb-10 overflow-hidden rounded-[2rem] border border-border-subtle bg-surface px-6 py-8 shadow-[0_24px_80px_rgba(35,30,16,0.07)] sm:px-10 sm:py-11">
+    <div className="mx-auto w-full max-w-7xl overflow-x-hidden px-4 pb-24 pt-24 sm:px-6">
+      <section className="relative mb-8 overflow-hidden rounded-[1.5rem] border border-border-subtle bg-surface px-4 py-6 shadow-[0_24px_80px_rgba(35,30,16,0.07)] sm:mb-10 sm:rounded-[2rem] sm:px-10 sm:py-11">
         <div className="pointer-events-none absolute -right-24 -top-28 h-80 w-80 rounded-full bg-champagne/10 blur-3xl" />
         <div className="pointer-events-none absolute bottom-0 right-[28%] h-32 w-32 rounded-full bg-champagne/5 blur-2xl" />
-        <div className="relative grid gap-10 lg:grid-cols-[1.35fr_0.65fr] lg:items-end">
+        <div className="relative grid gap-6 lg:grid-cols-[1.35fr_0.65fr] lg:items-end lg:gap-10">
           <div>
-            <div className="mb-4 flex items-center gap-2 text-[11px] font-mono uppercase tracking-[0.22em] text-champagne">
+            <div className="mb-3 flex items-center gap-2 text-[11px] font-mono uppercase tracking-[0.22em] text-champagne sm:mb-4">
               <Globe2 size={15} />
-              Европейская экономика
+              Мировая экономика
             </div>
-            <h1 className="max-w-3xl font-display text-4xl font-bold leading-[1.04] text-text-primary sm:text-5xl lg:text-[3.6rem]">
+            <h1 className="max-w-3xl font-display text-[1.75rem] font-bold leading-[1.08] text-text-primary sm:text-5xl lg:text-[3.6rem]">
               Страны в одной системе координат
             </h1>
-            <p className="mt-5 max-w-2xl text-[15px] leading-7 text-text-secondary sm:text-base">
-              Официальные данные Евростата: цены, рынок труда, производство,
-              национальные счета и демография. Открывайте страну или сопоставляйте
-              методологически одинаковые ряды на одном графике.
+            <p className="mt-4 max-w-2xl text-[14px] leading-6 text-text-secondary sm:mt-5 sm:text-base sm:leading-7">
+              Официальные данные по странам Европы и мира. Россия открывает
+              макроэкономические категории платформы; зарубежные страны — национальные
+              и европейские ряды на одной карте и в сравнении.
             </p>
-            <div className="mt-7 flex flex-wrap gap-3">
+            <div className="mt-5 flex flex-wrap gap-2.5 sm:mt-7 sm:gap-3">
               <a href="#countries" className="magnetic-btn inline-flex items-center gap-2 rounded-xl bg-champagne px-4 py-2.5 text-sm font-semibold text-white shadow-sm">
                 Выбрать страну
                 <ArrowRight size={15} />
@@ -212,10 +270,10 @@ export default function WorldHome() {
 
       {!isLoading && !isError && (
         <section className="mb-12">
-          <div className="mb-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.8fr)] lg:items-end">
+          <div className="mb-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(min(100%,20rem),0.8fr)] lg:items-end">
             <div>
               <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">Срез по странам</div>
-              <h2 className="mt-1 font-display text-2xl font-bold text-text-primary">Карта и рейтинг</h2>
+              <h2 className="mt-1 font-display text-xl font-bold text-text-primary sm:text-2xl">Карта и рейтинг</h2>
               <p className="mt-2 max-w-xl text-xs leading-5 text-text-secondary">
                 Выберите показатель и год. Карта показывает последнее опубликованное
                 значение внутри выбранного календарного года.
@@ -243,25 +301,22 @@ export default function WorldHome() {
             </label>
           </div>
 
-          <div className="grid gap-4 lg:grid-cols-[minmax(0,1.65fr)_minmax(280px,0.75fr)]">
-            <div className="rounded-[1.5rem] border border-border-subtle bg-surface p-4 shadow-[0_16px_45px_rgba(35,30,16,0.05)] sm:p-5">
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,1.65fr)_minmax(min(100%,17.5rem),0.75fr)]">
+            <div className="rounded-[1.25rem] border border-border-subtle bg-surface p-3 shadow-[0_16px_45px_rgba(35,30,16,0.05)] sm:rounded-[1.5rem] sm:p-5">
               {mapSeries.isLoading ? (
                 <SkeletonBox className="aspect-[2/1] w-full rounded-2xl" />
               ) : (
                 <>
                   <WorldMap
-                    countries={data?.countries || []}
+                    countries={mapCountries}
                     valuesByCode={valuesByCode}
                     detailsByCode={detailsByCode}
                     unit={mapSeries.data?.concept?.unit || ''}
                     metricName={MAP_CONCEPT_SHORT[mapConcept] || mapSeries.data?.concept?.name || ''}
                     periodLabel={activeMapYear ? String(activeMapYear) : ''}
                     colorMode={mapConcept === 'budget-balance-gdp' ? 'diverging' : 'auto'}
-                    onSelect={(country, detail) => navigate(
-                      detail?.indicator_code
-                        ? `/world/${country.slug}/${detail.indicator_code}`
-                        : `/world/${country.slug}`,
-                    )}
+                    defaultScope="world"
+                    onSelect={openCountry}
                   />
                   {years.length > 1 && activeMapYear && (
                     <MapTimeline
@@ -275,11 +330,11 @@ export default function WorldHome() {
               )}
             </div>
 
-            <div className="rounded-[1.5rem] border border-border-subtle bg-surface p-5 shadow-[0_16px_45px_rgba(35,30,16,0.05)]">
+            <div className="rounded-[1.25rem] border border-border-subtle bg-surface p-4 shadow-[0_16px_45px_rgba(35,30,16,0.05)] sm:rounded-[1.5rem] sm:p-5">
               <div className="mb-4 flex items-start justify-between gap-3">
-                <div>
+                <div className="min-w-0">
                   <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">Последние данные</div>
-                  <h3 className="mt-1 text-base font-semibold leading-snug text-text-primary">
+                  <h3 className="mt-1 text-sm font-semibold leading-snug text-text-primary sm:text-base">
                     {MAP_CONCEPT_SHORT[mapConcept] || mapSeries.data?.concept?.name || 'Рейтинг стран'}
                   </h3>
                   {activeMapYear && (
@@ -301,28 +356,37 @@ export default function WorldHome() {
               )}
 
               <div className="space-y-1">
-                {ranking.slice(0, 8).map((item, index) => (
-                  <Link
-                    key={item.country_slug}
-                    to={item.indicator_code
-                      ? `/world/${item.country_slug}/${item.indicator_code}`
-                      : `/world/${item.country_slug}`}
-                    className="group flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-surface-hover"
-                  >
-                    <span className="w-5 font-mono text-[10px] text-text-tertiary">{index + 1}</span>
-                    <span className="min-w-0 flex-1 truncate text-sm text-text-primary group-hover:text-champagne">
-                      {item.country_name}
-                    </span>
-                    <span className="font-mono text-xs font-semibold text-text-primary">
-                      {formatWorldValue(item.value)}
-                    </span>
-                  </Link>
-                ))}
+                {ranking.slice(0, 8).map((item, index) => {
+                  const isRussia = item.country_code === 'RU' || item.country_slug === 'russia';
+                  return (
+                    <Link
+                      key={item.country_slug || item.country_code || index}
+                      to={isRussia
+                        ? RUSSIA_CATEGORIES_HREF
+                        : (item.indicator_code
+                          ? `/world/${item.country_slug}/${item.indicator_code}`
+                          : `/world/${item.country_slug}`)}
+                      className="group flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-surface-hover"
+                    >
+                      <span className="w-5 font-mono text-[10px] text-text-tertiary">{index + 1}</span>
+                      <span className="min-w-0 flex-1 truncate text-sm text-text-primary group-hover:text-champagne">
+                        {item.country_name}
+                      </span>
+                      <span className="font-mono text-xs font-semibold text-text-primary">
+                        {formatWorldValue(item.value)}
+                      </span>
+                    </Link>
+                  );
+                })}
               </div>
-              {ranking.length >= 2 && (
+              {ranking.filter((item) => item.country_code !== 'RU').length >= 2 && (
                 <Link
                   to={`/compare?codes=${encodeURIComponent(
-                    ranking.slice(0, 2).map((item) => `w:${item.country_slug}:${mapConcept}`).join(','),
+                    ranking
+                      .filter((item) => item.country_code !== 'RU')
+                      .slice(0, 2)
+                      .map((item) => `w:${item.country_slug}:${mapConcept}`)
+                      .join(','),
                   )}`}
                   className="mt-4 inline-flex items-center gap-1 text-xs text-champagne hover:underline"
                 >
@@ -371,7 +435,7 @@ export default function WorldHome() {
         </div>
       )}
 
-      {!isLoading && !isError && filtered.length === 0 && (
+      {!isLoading && !isError && filtered.length === 0 && !showRussiaInList && (
         <div className="rounded-2xl border border-border-subtle bg-surface p-8 text-center">
           <p className="text-text-secondary mb-4">
             По запросу «{query}» страны не найдены.
@@ -379,18 +443,37 @@ export default function WorldHome() {
           <Link to="/" className="text-champagne hover:underline text-sm">
             На главную
           </Link>
-          {' · '}
+          <span className="mx-2 text-text-tertiary">—</span>
           <Link to="/regions" className="text-champagne hover:underline text-sm">
             Регионы России
           </Link>
         </div>
       )}
 
+      {!isLoading && showRussiaInList && (
+        <section className="mb-8">
+          <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-text-primary">
+            Россия
+            <span className="font-mono text-[11px] font-normal text-text-tertiary">макроэкономика</span>
+          </h2>
+          <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+            <CountryCard
+              country={{
+                ...HOME_MAP_RUSSIA_COUNTRY,
+                indicators_count: 0,
+              }}
+              featured
+              to={RUSSIA_CATEGORIES_HREF}
+            />
+          </div>
+        </section>
+      )}
+
       {!isLoading && byRegion.map(({ region, countries }) => (
         <section key={region} className="mb-8">
-          <h2 className="text-sm font-semibold text-text-primary mb-3 flex items-center gap-2">
+          <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-text-primary">
             {region}
-            <span className="font-mono text-[11px] text-text-tertiary font-normal">
+            <span className="font-mono text-[11px] font-normal text-text-tertiary">
               {countries.length}
             </span>
           </h2>

@@ -50,6 +50,9 @@ from app.data.eurostat_units_ru import (  # noqa: E402
     resolve_public_unit,
     unit_is_listable,
 )
+from app.data.eurostat_country_visibility import (  # noqa: E402
+    EUROSTAT_SUPPRESS_LISTED_CODES,
+)
 from app.services.eurostat_parser import (  # noqa: E402
     EXCLUDED_GEO_CODES,
     WORLD_COUNTRIES,
@@ -288,6 +291,9 @@ async def upsert_indicator_meta(
         listed = False
     if listed and not meets_listing_depth(result.frequency, len(points)):
         listed = False
+    # National passport countries: eurostat stays in DB but off the vitrine.
+    if listed and country_code.strip().upper() in EUROSTAT_SUPPRESS_LISTED_CODES:
+        listed = False
     category = category_for_dataset(result.dataset_id)
     hs = points[0][0] if points else None
     he = points[-1][0] if points else None
@@ -303,11 +309,13 @@ async def upsert_indicator_meta(
         history_start=hs,
         history_end=he,
         available_frequencies=[result.frequency] if result.frequency else None,
+        dataset_id=result.dataset_id or "",
     )
     meth = public_methodology(
         result.frequency,
         unit_ru,
         available_frequencies=[result.frequency] if result.frequency else None,
+        dataset_id=result.dataset_id or "",
     )
     seo_title = public_seo_title(
         name_ru, country_prep=prep, country_name_ru=country_name_ru
@@ -397,15 +405,8 @@ def _parse_one(
     use_cache: bool,
 ) -> list[DatasetParseResult] | Exception:
     try:
-        if dataset_id.lower() in DEEP_DATASET_SLICES:
-            return fetch_deep_slices(dataset_id, use_cache=use_cache)
-        return [
-            fetch_and_parse_dataset(
-                dataset_id,
-                catalog_freq=catalog_freq,
-                use_cache=use_cache,
-            )
-        ]
+        # Всегда через deep-expand: manual DEEP ∪ независимые разрезы ∪ headline.
+        return fetch_deep_slices(dataset_id, use_cache=use_cache)
     except Exception as exc:  # noqa: BLE001
         return exc
 

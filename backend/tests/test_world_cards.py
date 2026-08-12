@@ -490,3 +490,153 @@ def test_api_legacy_mode_still_works(world_card_client):
     assert data.status_code == 200
     assert data.json()["mode"] == "step-monthly"
     assert data.json()["aggregated"] is False
+
+
+def test_variant_label_nace_without_age_not_all_ages():
+    """sts_rb: нет age в срезе → нельзя подменять подпись на «Все возраста»."""
+    from app.services.world_cards import variant_label
+
+    base = dict(
+        code="fr-sts_rb_q-reg-k-n-sca-i15",
+        name_ru="Регистрация предприятий и банкротства, индекс (2015 = 100)",
+        unit="I15",
+        unit_ru="индекс",
+        provider="eurostat",
+    )
+    kn = variant_label(_Ind(
+        **base,
+        slice_json={"freq": "Q", "unit": "I15", "s_adj": "SCA", "nace_r2": "K-N", "indic_bt": "REG"},
+    ))
+    assert kn != "Все возраста"
+    assert "финансы" in kn.lower() or "K-N" in kn
+    assert "регистрация" in kn.lower()
+
+    market = variant_label(_Ind(
+        code="fr-sts_rb_q-reg-b-s-x-o-s94-sca-i15",
+        name_ru=base["name_ru"],
+        unit="I15",
+        unit_ru="индекс",
+        provider="eurostat",
+        slice_json={
+            "freq": "Q", "unit": "I15", "s_adj": "SCA",
+            "nace_r2": "B-S_X_O_S94", "indic_bt": "REG",
+        },
+    ))
+    assert market != "Все возраста"
+    assert "рыночн" in market.lower()
+
+
+def test_variant_label_reg_vs_bkrt_distinct():
+    from app.services.world_cards import variant_label
+
+    common = dict(
+        name_ru="Регистрация предприятий и банкротства, индекс (2015 = 100), строительство",
+        unit="I15", unit_ru="индекс", provider="eurostat",
+    )
+    reg = variant_label(_Ind(
+        code="fr-sts_rb_q-reg-f-sca-i15",
+        slice_json={"freq": "Q", "unit": "I15", "nace_r2": "F", "indic_bt": "REG"},
+        **common,
+    ))
+    bkrt = variant_label(_Ind(
+        code="fr-sts_rb_q-bkrt-f-sca-i15",
+        slice_json={"freq": "Q", "unit": "I15", "nace_r2": "F", "indic_bt": "BKRT"},
+        **common,
+    ))
+    assert reg != bkrt
+    assert "строительство" in reg.lower()
+    assert "строительство" in bkrt.lower()
+    assert "регистрация" in reg.lower()
+    assert "банкрот" in bkrt.lower()
+
+
+def test_variant_label_age_total_still_all_ages():
+    """une_rt: age=TOTAL в срезе → «Все возраста» остаётся честным якорем."""
+    from app.services.world_cards import variant_label
+
+    label = variant_label(_Ind(
+        code="de-une_rt_m-total",
+        name_ru="Уровень безработицы",
+        unit="PC_ACT",
+        unit_ru="% экономически активного населения",
+        provider="eurostat",
+        slice_json={"freq": "M", "unit": "PC_ACT", "age": "TOTAL", "sex": "T", "s_adj": "SA"},
+    ))
+    assert label.startswith("Все возраста")
+
+
+def test_variant_label_bssi_indic_distinct():
+    """ei_bssi: срезы отличаются indic — не общий title датасета."""
+    from app.services.world_cards import variant_label
+
+    common = dict(
+        name_ru="Индексы экономической активности и уверенности по секторам",
+        unit="BAL", unit_ru="сальдо", provider="eurostat",
+    )
+    csmci = variant_label(_Ind(
+        code="es-ei_bssi_m_r2-bs-csmci-bal-sa",
+        slice_json={"freq": "M", "indic": "BS-CSMCI-BAL", "s_adj": "SA"},
+        **common,
+    ))
+    cci = variant_label(_Ind(
+        code="es-ei_bssi_m_r2-bs-cci-bal-sa",
+        slice_json={"freq": "M", "indic": "BS-CCI-BAL", "s_adj": "SA"},
+        **common,
+    ))
+    assert "потребител" in csmci.lower()
+    assert "строительств" in cci.lower()
+    assert csmci != cci
+    assert "Индексы экономической" not in csmci
+
+
+def test_variant_label_building_permits_readable():
+    """sts_cobp: BPRM + тип здания — читаемые русские подписи, без сырых кодов."""
+    from app.services.world_cards import variant_label, build_variants
+
+    common = dict(
+        name_ru="Разрешения на строительство по типам зданий, индекс (2015 = 100)",
+        unit="I15", unit_ru="индекс", provider="eurostat", country_id=1,
+        dataset_id="sts_cobp_m",
+    )
+    inds = [
+        _Ind(
+            code="x-sqm",
+            slice_json={
+                "freq": "M", "unit": "I15", "s_adj": "SCA",
+                "cpa2_1": "CPA_F41001_41002", "indic_bt": "BPRM_SQM",
+            },
+            **common,
+        ),
+        _Ind(
+            code="x-dw-1",
+            slice_json={
+                "freq": "M", "unit": "I15", "s_adj": "SCA",
+                "cpa2_1": "CPA_F410011", "indic_bt": "BPRM_DW",
+            },
+            **common,
+        ),
+        _Ind(
+            code="x-dw-2",
+            slice_json={
+                "freq": "M", "unit": "I15", "s_adj": "SCA",
+                "cpa2_1": "CPA_F410012_410013", "indic_bt": "BPRM_DW",
+            },
+            **common,
+        ),
+        _Ind(
+            code="x-dw-res",
+            slice_json={
+                "freq": "M", "unit": "I15", "s_adj": "SCA",
+                "cpa2_1": "CPA_F41001_X_410014", "indic_bt": "BPRM_DW",
+            },
+            **common,
+        ),
+    ]
+    labels = [variant_label(i) for i in inds]
+    assert all("BPRM" not in lab for lab in labels)
+    assert len(set(labels)) == 4
+    assert any("площад" in lab.lower() for lab in labels)
+    assert any("жилищ" in lab.lower() for lab in labels)
+    assert any("одноквартир" in lab.lower() for lab in labels)
+    variants = build_variants(inds[0], inds)
+    assert len({v["label"] for v in variants}) == 4

@@ -206,18 +206,18 @@ export default function RegionIndicatorPage() {
   );
 
   return (
-    <div className="max-w-5xl mx-auto px-4 pt-24 pb-20">
+    <div className="mx-auto w-full max-w-7xl px-4 pb-24 pt-24 sm:px-6">
       {/* Хлебные крошки */}
-      <nav className="flex items-center gap-1.5 text-xs text-text-tertiary mb-4 overflow-hidden" aria-label="Хлебные крошки">
-        <Link to="/regions" className="hover:text-champagne transition-colors shrink-0">Регионы</Link>
+      <nav className="mb-4 flex items-center gap-1.5 overflow-hidden text-xs text-text-tertiary" aria-label="Хлебные крошки">
+        <Link to="/regions" className="shrink-0 transition-colors hover:text-champagne">Регионы</Link>
         <ChevronRight size={12} className="shrink-0" />
         {regionName && (
-          <Link to={`/region/${slug}`} className="hover:text-champagne transition-colors shrink-0 truncate max-w-[45%]">
+          <Link to={`/region/${slug}`} className="max-w-[40%] shrink-0 truncate transition-colors hover:text-champagne sm:max-w-[45%]">
             {regionName}
           </Link>
         )}
         <ChevronRight size={12} className="shrink-0" />
-        <span className="text-text-secondary truncate">{indName || '…'}</span>
+        <span className="truncate text-text-secondary">{indName || '…'}</span>
       </nav>
 
       {isError && <ApiRetryBanner onRetry={refetch} retrying={isFetching} />}
@@ -235,11 +235,11 @@ export default function RegionIndicatorPage() {
             <div className="text-champagne text-xs font-mono uppercase tracking-widest mb-2">
               {data.indicator.section_name}
             </div>
-            <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2 mb-1">
-              <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary leading-tight flex-1 min-w-[12rem]">
+            <div className="mb-5 flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
+              <h1 className="min-w-0 flex-1 font-display text-[1.35rem] font-bold leading-tight text-text-primary sm:text-3xl">
                 {indName}
               </h1>
-              <span className="text-sm text-text-secondary shrink-0 pt-1 sm:pt-1.5">{regionName}</span>
+              <span className="shrink-0 pt-0.5 text-sm text-text-secondary sm:pt-1.5">{regionName}</span>
             </div>
             {ABORTION_SIBLING[code] && (
               <p className="mt-1 text-xs text-text-tertiary">
@@ -255,7 +255,7 @@ export default function RegionIndicatorPage() {
             )}
 
             <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <span className="font-mono text-3xl font-bold text-text-primary">
+              <span className="font-mono text-2xl font-bold text-text-primary sm:text-3xl">
                 {formatRegionValue(last.value)}
               </span>
               <span className="text-sm text-text-secondary">{data.indicator.unit}</span>
@@ -456,14 +456,14 @@ export default function RegionIndicatorPage() {
               <ChevronDown size={16} className={`text-text-tertiary transition-transform ${showTable ? 'rotate-180' : ''}`} />
             </button>
             {showTable && (
-              <div className="border-t border-border-subtle max-h-96 overflow-y-auto">
-                <table className="w-full text-[13px]">
+              <div className="max-h-96 overflow-auto border-t border-border-subtle">
+                <table className="w-full min-w-[18rem] text-[13px]">
                   <thead className="sticky top-0 bg-surface">
                     <tr className="text-left text-text-tertiary">
-                      <th className="px-4 py-2 font-medium">Год</th>
-                      <th className="px-4 py-2 font-medium text-right">{regionName}</th>
+                      <th className="px-3 py-2 font-medium sm:px-4">Год</th>
+                      <th className="px-3 py-2 text-right font-medium sm:px-4">{regionName}</th>
                       {data.russia_series?.length > 0 && (
-                        <th className="px-4 py-2 font-medium text-right">Россия</th>
+                        <th className="px-3 py-2 text-right font-medium sm:px-4">Россия</th>
                       )}
                     </tr>
                   </thead>
@@ -472,10 +472,10 @@ export default function RegionIndicatorPage() {
                       const rf = data.russia_series?.find(r => r.year === p.year);
                       return (
                         <tr key={p.year} className="border-t border-border-subtle">
-                          <td className="px-4 py-1.5 font-mono text-text-secondary">{p.year}</td>
-                          <td className="px-4 py-1.5 font-mono text-right text-text-primary">{formatRegionValue(p.value)}</td>
+                          <td className="px-3 py-1.5 font-mono text-text-secondary sm:px-4">{p.year}</td>
+                          <td className="px-3 py-1.5 text-right font-mono text-text-primary sm:px-4">{formatRegionValue(p.value)}</td>
                           {data.russia_series?.length > 0 && (
-                            <td className="px-4 py-1.5 font-mono text-right text-text-tertiary">
+                            <td className="px-3 py-1.5 text-right font-mono text-text-tertiary sm:px-4">
                               {rf ? formatRegionValue(rf.value) : '—'}
                             </td>
                           )}

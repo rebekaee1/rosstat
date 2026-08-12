@@ -324,16 +324,16 @@ export default function WorldChartSection({
   };
 
   return (
-    <section data-block="chart" className="mb-16">
-      <div className="flex items-center justify-between mb-6 border-b border-border-subtle pb-4 flex-wrap gap-3">
-        <div className="flex items-center gap-4 min-w-0">
-          <Terminal className="w-4 h-4 text-champagne shrink-0" />
-          <span className="text-[11px] font-mono uppercase tracking-widest text-text-tertiary truncate">
+    <section data-block="chart" className="mb-10 sm:mb-16">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-border-subtle pb-3 sm:mb-6 sm:pb-4">
+        <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+          <Terminal className="h-4 w-4 shrink-0 text-champagne" />
+          <span className="min-w-0 break-words text-xs leading-snug text-text-secondary line-clamp-3 sm:font-mono sm:text-[11px] sm:uppercase sm:tracking-widest sm:text-text-tertiary sm:line-clamp-2">
             {title}
           </span>
         </div>
 
-        <div className="flex items-center gap-3" data-no-export="true">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3" data-no-export="true">
           <div className="relative group/forecast">
             <label className={cn(
               'flex select-none items-center gap-2.5',
@@ -380,7 +380,7 @@ export default function WorldChartSection({
       {pickerOptions.length > 0 && (
         <div className="mb-4 rounded-2xl border border-border-subtle bg-surface p-4 shadow-[0_10px_30px_rgba(35,30,16,0.04)]">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-            <div className="min-w-[11rem]">
+            <div className="min-w-0 sm:min-w-[11rem]">
               <div className="flex items-center gap-2 text-xs font-medium text-text-primary">
                 <GitCompare size={14} className="text-champagne" />
                 Сравнение стран
