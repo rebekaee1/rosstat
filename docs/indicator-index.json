@@ -103,7 +103,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4568,
+          "line": 4572,
           "kind": "seed"
         },
         {
@@ -565,12 +565,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3464,
+          "line": 3468,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3473,
+          "line": 3477,
           "kind": "seed"
         },
         {
@@ -680,17 +680,17 @@
       "files": [
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 252,
+          "line": 260,
           "kind": "other"
         },
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 286,
+          "line": 321,
           "kind": "other"
         },
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 583,
+          "line": 643,
           "kind": "other"
         },
         {
@@ -745,12 +745,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3436,
+          "line": 3440,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3445,
+          "line": 3449,
           "kind": "seed"
         },
         {
@@ -1017,7 +1017,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4054,
+          "line": 4058,
           "kind": "seed"
         },
         {
@@ -1143,11 +1143,6 @@
         {
           "file": "docs/adr/0006-indicator-card-unification.md",
           "line": 117,
-          "kind": "other"
-        },
-        {
-          "file": "docs/backlog.md",
-          "line": 3,
           "kind": "other"
         },
         {
@@ -1700,7 +1695,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3811,
+          "line": 3815,
           "kind": "seed"
         },
         {
@@ -1746,11 +1741,6 @@
         {
           "file": "docs/adr/0006-indicator-card-unification.md",
           "line": 117,
-          "kind": "other"
-        },
-        {
-          "file": "docs/backlog.md",
-          "line": 3,
           "kind": "other"
         },
         {
@@ -1816,7 +1806,7 @@
       "files": [
         {
           "file": "backend/tests/test_forecast_catch_up.py",
-          "line": 214,
+          "line": 213,
           "kind": "tests"
         },
         {
@@ -2733,12 +2723,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3254,
+          "line": 3258,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4568,
+          "line": 4572,
           "kind": "seed"
         },
         {
@@ -3115,12 +3105,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3225,
+          "line": 3229,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4568,
+          "line": 4572,
           "kind": "seed"
         },
         {
@@ -3613,7 +3603,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4569,
+          "line": 4573,
           "kind": "seed"
         },
         {
@@ -4028,7 +4018,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3594,
+          "line": 3598,
           "kind": "seed"
         },
         {
@@ -4900,7 +4890,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4241,
+          "line": 4245,
           "kind": "seed"
         },
         {
@@ -5427,12 +5417,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3572,
+          "line": 3576,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4580,
+          "line": 4584,
           "kind": "seed"
         },
         {
@@ -5785,7 +5775,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4569,
+          "line": 4573,
           "kind": "seed"
         },
         {
@@ -6214,12 +6204,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4086,
+          "line": 4090,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4092,
+          "line": 4096,
           "kind": "seed"
         },
         {
@@ -6712,7 +6702,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4025,
+          "line": 4029,
           "kind": "seed"
         },
         {
@@ -7517,22 +7507,22 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4878,
+          "line": 4882,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4879,
+          "line": 4883,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4880,
+          "line": 4884,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4891,
+          "line": 4895,
           "kind": "seed"
         },
         {
@@ -7777,22 +7767,22 @@
         },
         {
           "file": "backend/tests/test_forecast_catch_up.py",
-          "line": 62,
+          "line": 61,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_forecast_catch_up.py",
-          "line": 84,
+          "line": 83,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_forecast_catch_up.py",
-          "line": 96,
+          "line": 95,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_forecast_catch_up.py",
-          "line": 140,
+          "line": 139,
           "kind": "tests"
         },
         {
@@ -8377,17 +8367,17 @@
         },
         {
           "file": "frontend/src/components/WorldChartSection.jsx",
-          "line": 495,
+          "line": 506,
           "kind": "other"
         },
         {
           "file": "frontend/src/components/WorldChartSection.jsx",
-          "line": 504,
+          "line": 515,
           "kind": "other"
         },
         {
           "file": "frontend/src/components/home/HomeWorkbench.component.test.jsx",
-          "line": 20,
+          "line": 21,
           "kind": "other"
         },
         {
@@ -8727,7 +8717,12 @@
         },
         {
           "file": "frontend/src/lib/homeWorkbench.js",
-          "line": 21,
+          "line": 11,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/homeWorkbench.js",
+          "line": 20,
           "kind": "other"
         },
         {
@@ -8743,6 +8738,11 @@
         {
           "file": "frontend/src/lib/homeWorkbench.js",
           "line": 48,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/homeWorkbench.js",
+          "line": 85,
           "kind": "other"
         },
         {
@@ -8907,12 +8907,12 @@
         },
         {
           "file": "frontend/src/pages/EmbedBuilder.jsx",
-          "line": 134,
+          "line": 142,
           "kind": "other"
         },
         {
           "file": "frontend/src/pages/EmbedBuilder.jsx",
-          "line": 144,
+          "line": 152,
           "kind": "other"
         },
         {
@@ -8932,7 +8932,7 @@
         },
         {
           "file": "frontend/src/pages/WorldIndicatorPage.jsx",
-          "line": 262,
+          "line": 305,
           "kind": "other"
         },
         {
@@ -9544,7 +9544,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4755,
+          "line": 4759,
           "kind": "seed"
         },
         {
@@ -10221,7 +10221,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4756,
+          "line": 4760,
           "kind": "seed"
         },
         {
@@ -11036,7 +11036,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4757,
+          "line": 4761,
           "kind": "seed"
         },
         {
@@ -11543,7 +11543,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4570,
+          "line": 4574,
           "kind": "seed"
         },
         {
@@ -11973,7 +11973,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4570,
+          "line": 4574,
           "kind": "seed"
         },
         {
@@ -12398,7 +12398,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4570,
+          "line": 4574,
           "kind": "seed"
         },
         {
@@ -12848,7 +12848,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4571,
+          "line": 4575,
           "kind": "seed"
         },
         {
@@ -13278,7 +13278,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4571,
+          "line": 4575,
           "kind": "seed"
         },
         {
@@ -13703,7 +13703,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4571,
+          "line": 4575,
           "kind": "seed"
         },
         {
@@ -14618,7 +14618,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 590,
+          "line": 592,
           "kind": "other"
         },
         {
@@ -14787,12 +14787,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3478,
+          "line": 3482,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3487,
+          "line": 3491,
           "kind": "seed"
         },
         {
@@ -14902,12 +14902,12 @@
       "files": [
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 285,
+          "line": 320,
           "kind": "other"
         },
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 584,
+          "line": 644,
           "kind": "other"
         },
         {
@@ -14962,12 +14962,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3450,
+          "line": 3454,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3459,
+          "line": 3463,
           "kind": "seed"
         },
         {
@@ -15185,7 +15185,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4572,
+          "line": 4576,
           "kind": "seed"
         },
         {
@@ -15510,7 +15510,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4572,
+          "line": 4576,
           "kind": "seed"
         },
         {
@@ -15920,7 +15920,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4572,
+          "line": 4576,
           "kind": "seed"
         },
         {
@@ -16520,7 +16520,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4573,
+          "line": 4577,
           "kind": "seed"
         },
         {
@@ -16940,7 +16940,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4573,
+          "line": 4577,
           "kind": "seed"
         },
         {
@@ -17337,7 +17337,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3650,
+          "line": 3654,
           "kind": "seed"
         },
         {
@@ -17462,7 +17462,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3679,
+          "line": 3683,
           "kind": "seed"
         },
         {
@@ -17598,52 +17598,52 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 547,
-          "kind": "other"
-        },
-        {
-          "file": "CONTEXT.md",
           "line": 549,
           "kind": "other"
         },
         {
+          "file": "CONTEXT.md",
+          "line": 551,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/data/eurostat_listing.py",
-          "line": 209,
+          "line": 213,
           "kind": "other"
         },
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 205,
+          "line": 213,
           "kind": "other"
         },
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 208,
+          "line": 216,
           "kind": "other"
         },
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 211,
+          "line": 219,
           "kind": "other"
         },
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 212,
+          "line": 220,
           "kind": "other"
         },
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 263,
+          "line": 298,
           "kind": "other"
         },
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 315,
+          "line": 372,
           "kind": "other"
         },
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 427,
+          "line": 487,
           "kind": "other"
         },
         {
@@ -17663,7 +17663,7 @@
         },
         {
           "file": "backend/app/data/eurostat_units_ru.py",
-          "line": 303,
+          "line": 308,
           "kind": "other"
         },
         {
@@ -17718,12 +17718,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3174,
+          "line": 3178,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4573,
+          "line": 4577,
           "kind": "seed"
         },
         {
@@ -18100,18 +18100,13 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3844,
+          "line": 3848,
           "kind": "seed"
         },
         {
           "file": "backend/tests/test_market_history_backfill.py",
           "line": 3,
           "kind": "tests"
-        },
-        {
-          "file": "docs/backlog.md",
-          "line": 3,
-          "kind": "other"
         },
         {
           "file": "docs/data_sources.md",
@@ -19248,12 +19243,12 @@
         },
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 271,
+          "line": 306,
           "kind": "other"
         },
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 453,
+          "line": 513,
           "kind": "other"
         },
         {
@@ -19408,7 +19403,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4722,
+          "line": 4726,
           "kind": "seed"
         },
         {
@@ -19448,22 +19443,22 @@
         },
         {
           "file": "backend/tests/test_forecast_catch_up.py",
-          "line": 125,
+          "line": 124,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_forecast_catch_up.py",
-          "line": 161,
+          "line": 160,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_forecast_catch_up.py",
+          "line": 181,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_forecast_catch_up.py",
           "line": 182,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_forecast_catch_up.py",
-          "line": 183,
           "kind": "tests"
         },
         {
@@ -19862,7 +19857,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4574,
+          "line": 4578,
           "kind": "seed"
         },
         {
@@ -20260,7 +20255,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3409,
+          "line": 3413,
           "kind": "seed"
         },
         {
@@ -20387,7 +20382,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4736,
+          "line": 4740,
           "kind": "seed"
         },
         {
@@ -20397,7 +20392,7 @@
         },
         {
           "file": "backend/tests/test_forecast_catch_up.py",
-          "line": 131,
+          "line": 130,
           "kind": "tests"
         },
         {
@@ -20615,7 +20610,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2766,
+          "line": 2770,
           "kind": "seed"
         },
         {
@@ -20961,12 +20956,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3378,
+          "line": 3382,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3396,
+          "line": 3400,
           "kind": "seed"
         },
         {
@@ -21238,7 +21233,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4303,
+          "line": 4307,
           "kind": "seed"
         },
         {
@@ -21322,7 +21317,7 @@
       "files": [
         {
           "file": "backend/seed_data.py",
-          "line": 4326,
+          "line": 4330,
           "kind": "seed"
         },
         {
@@ -21725,7 +21720,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4335,
+          "line": 4339,
           "kind": "seed"
         },
         {
@@ -22197,7 +22192,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4364,
+          "line": 4368,
           "kind": "seed"
         },
         {
@@ -22652,7 +22647,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3035,
+          "line": 3039,
           "kind": "seed"
         },
         {
@@ -22947,7 +22942,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3071,
+          "line": 3075,
           "kind": "seed"
         },
         {
@@ -23227,7 +23222,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3108,
+          "line": 3112,
           "kind": "seed"
         },
         {
@@ -23707,7 +23702,7 @@
         },
         {
           "file": "backend/tests/test_forecast_catch_up.py",
-          "line": 206,
+          "line": 205,
           "kind": "tests"
         },
         {
@@ -23893,11 +23888,6 @@
         {
           "file": "frontend/public/sitemap.xml",
           "line": 238,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/components/home/HomeWorkbench.component.test.jsx",
-          "line": 37,
           "kind": "other"
         },
         {
@@ -24195,12 +24185,12 @@
         },
         {
           "file": "backend/tests/test_forecast_catch_up.py",
-          "line": 202,
+          "line": 201,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_forecast_catch_up.py",
-          "line": 233,
+          "line": 232,
           "kind": "tests"
         },
         {
@@ -24520,6 +24510,11 @@
           "kind": "other"
         },
         {
+          "file": "frontend/src/lib/homeWorkbench.js",
+          "line": 86,
+          "kind": "other"
+        },
+        {
           "file": "frontend/src/lib/indicatorVariants.js",
           "line": 21,
           "kind": "variants"
@@ -24698,6 +24693,11 @@
         {
           "file": "docs/indicator-family-playbook.md",
           "line": 562,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/homeWorkbench.js",
+          "line": 87,
           "kind": "other"
         },
         {
@@ -25226,7 +25226,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3778,
+          "line": 3782,
           "kind": "seed"
         },
         {
@@ -25336,7 +25336,12 @@
         },
         {
           "file": "frontend/src/lib/homeWorkbench.js",
-          "line": 24,
+          "line": 14,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/homeWorkbench.js",
+          "line": 23,
           "kind": "other"
         },
         {
@@ -25843,7 +25848,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3665,
+          "line": 3669,
           "kind": "seed"
         },
         {
@@ -25991,7 +25996,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 547,
+          "line": 549,
           "kind": "other"
         },
         {
@@ -26026,12 +26031,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4588,
+          "line": 4592,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4590,
+          "line": 4594,
           "kind": "seed"
         },
         {
@@ -26041,12 +26046,12 @@
         },
         {
           "file": "backend/tests/test_forecast_catch_up.py",
-          "line": 210,
+          "line": 209,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_forecast_catch_up.py",
-          "line": 233,
+          "line": 232,
           "kind": "tests"
         },
         {
@@ -26387,7 +26392,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4588,
+          "line": 4592,
           "kind": "seed"
         },
         {
@@ -26911,7 +26916,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2968,
+          "line": 2972,
           "kind": "seed"
         },
         {
@@ -26977,7 +26982,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3001,
+          "line": 3005,
           "kind": "seed"
         },
         {
@@ -27071,12 +27076,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3628,
+          "line": 3632,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4574,
+          "line": 4578,
           "kind": "seed"
         },
         {
@@ -27459,17 +27464,17 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2900,
+          "line": 2904,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2929,
+          "line": 2933,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2992,
+          "line": 2996,
           "kind": "seed"
         },
         {
@@ -27770,12 +27775,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2959,
+          "line": 2963,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3025,
+          "line": 3029,
           "kind": "seed"
         },
         {
@@ -27956,7 +27961,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2909,
+          "line": 2913,
           "kind": "seed"
         },
         {
@@ -28118,7 +28123,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2879,
+          "line": 2883,
           "kind": "seed"
         },
         {
@@ -28199,7 +28204,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2938,
+          "line": 2942,
           "kind": "seed"
         },
         {
@@ -28324,7 +28329,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3909,
+          "line": 3913,
           "kind": "seed"
         },
         {
@@ -28349,7 +28354,12 @@
         },
         {
           "file": "frontend/src/lib/homeWorkbench.js",
-          "line": 23,
+          "line": 13,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/homeWorkbench.js",
+          "line": 22,
           "kind": "other"
         },
         {
@@ -28858,12 +28868,17 @@
         },
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 272,
+          "line": 281,
           "kind": "other"
         },
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 455,
+          "line": 307,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/data/eurostat_titles_ru.py",
+          "line": 515,
           "kind": "other"
         },
         {
@@ -29003,7 +29018,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4723,
+          "line": 4727,
           "kind": "seed"
         },
         {
@@ -29252,7 +29267,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4574,
+          "line": 4578,
           "kind": "seed"
         },
         {
@@ -29570,7 +29585,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3422,
+          "line": 3426,
           "kind": "seed"
         },
         {
@@ -29687,7 +29702,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4736,
+          "line": 4740,
           "kind": "seed"
         },
         {
@@ -29824,7 +29839,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4754,
+          "line": 4758,
           "kind": "seed"
         },
         {
@@ -30163,11 +30178,6 @@
           "kind": "tests"
         },
         {
-          "file": "backend/tests/test_forecast_catch_up.py",
-          "line": 276,
-          "kind": "tests"
-        },
-        {
           "file": "backend/tests/test_forecast_policy.py",
           "line": 141,
           "kind": "tests"
@@ -30315,21 +30325,6 @@
           "file": "backend/seed_data.py",
           "line": 1997,
           "kind": "seed"
-        },
-        {
-          "file": "backend/tests/test_forecast_catch_up.py",
-          "line": 239,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_forecast_catch_up.py",
-          "line": 244,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_forecast_catch_up.py",
-          "line": 283,
-          "kind": "tests"
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
@@ -30609,7 +30604,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3721,
+          "line": 3725,
           "kind": "seed"
         },
         {
@@ -31365,17 +31360,17 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4580,
+          "line": 4584,
           "kind": "seed"
         },
         {
           "file": "backend/tests/test_forecast_catch_up.py",
-          "line": 39,
+          "line": 38,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_forecast_catch_up.py",
-          "line": 43,
+          "line": 42,
           "kind": "tests"
         },
         {
@@ -31451,11 +31446,6 @@
         {
           "file": "frontend/public/sitemap.xml",
           "line": 298,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/components/home/HomeWorkbench.component.test.jsx",
-          "line": 41,
           "kind": "other"
         },
         {
@@ -31653,7 +31643,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4583,
+          "line": 4587,
           "kind": "seed"
         },
         {
@@ -32095,7 +32085,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4583,
+          "line": 4587,
           "kind": "seed"
         },
         {
@@ -32470,7 +32460,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4583,
+          "line": 4587,
           "kind": "seed"
         },
         {
@@ -32907,7 +32897,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4583,
+          "line": 4587,
           "kind": "seed"
         },
         {
@@ -33654,12 +33644,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4706,
+          "line": 4710,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4709,
+          "line": 4713,
           "kind": "seed"
         },
         {
@@ -33699,12 +33689,12 @@
         },
         {
           "file": "backend/tests/test_forecast_catch_up.py",
-          "line": 110,
+          "line": 109,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_forecast_catch_up.py",
-          "line": 146,
+          "line": 145,
           "kind": "tests"
         },
         {
@@ -33943,11 +33933,6 @@
           "kind": "other"
         },
         {
-          "file": "frontend/src/components/home/HomeWorkbench.component.test.jsx",
-          "line": 25,
-          "kind": "other"
-        },
-        {
           "file": "frontend/src/embed/EmbedTicker.jsx",
           "line": 44,
           "kind": "other"
@@ -33964,7 +33949,12 @@
         },
         {
           "file": "frontend/src/lib/homeWorkbench.js",
-          "line": 20,
+          "line": 10,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/homeWorkbench.js",
+          "line": 19,
           "kind": "other"
         },
         {
@@ -34034,12 +34024,12 @@
         },
         {
           "file": "frontend/src/pages/EmbedBuilder.jsx",
-          "line": 135,
+          "line": 143,
           "kind": "other"
         },
         {
           "file": "frontend/src/pages/EmbedBuilder.jsx",
-          "line": 144,
+          "line": 152,
           "kind": "other"
         },
         {
@@ -34561,12 +34551,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 547,
+          "line": 549,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 549,
+          "line": 551,
           "kind": "other"
         },
         {
@@ -34606,12 +34596,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3145,
+          "line": 3149,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4575,
+          "line": 4579,
           "kind": "seed"
         },
         {
@@ -34994,7 +34984,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4575,
+          "line": 4579,
           "kind": "seed"
         },
         {
@@ -35439,7 +35429,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4575,
+          "line": 4579,
           "kind": "seed"
         },
         {
@@ -35834,17 +35824,17 @@
         },
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 985,
+          "line": 1234,
           "kind": "other"
         },
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 986,
+          "line": 1235,
           "kind": "other"
         },
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 987,
+          "line": 1236,
           "kind": "other"
         },
         {
@@ -35919,7 +35909,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4575,
+          "line": 4579,
           "kind": "seed"
         },
         {
@@ -35929,12 +35919,12 @@
         },
         {
           "file": "backend/tests/test_forecast_catch_up.py",
-          "line": 28,
+          "line": 27,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_forecast_catch_up.py",
-          "line": 43,
+          "line": 42,
           "kind": "tests"
         },
         {
@@ -36341,12 +36331,12 @@
       "files": [
         {
           "file": "backend/tests/test_forecast_catch_up.py",
-          "line": 32,
+          "line": 31,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_forecast_catch_up.py",
-          "line": 43,
+          "line": 42,
           "kind": "tests"
         },
         {
@@ -36523,7 +36513,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3939,
+          "line": 3943,
           "kind": "seed"
         },
         {
@@ -37027,7 +37017,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4575,
+          "line": 4579,
           "kind": "seed"
         },
         {
@@ -37456,12 +37446,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4148,
+          "line": 4152,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4154,
+          "line": 4158,
           "kind": "seed"
         },
         {
@@ -37963,12 +37953,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3534,
+          "line": 3538,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3543,
+          "line": 3547,
           "kind": "seed"
         },
         {
@@ -38179,12 +38169,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3520,
+          "line": 3524,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3529,
+          "line": 3533,
           "kind": "seed"
         },
         {
@@ -38355,12 +38345,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3506,
+          "line": 3510,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3515,
+          "line": 3519,
           "kind": "seed"
         },
         {
@@ -38501,32 +38491,32 @@
         },
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 235,
+          "line": 243,
           "kind": "other"
         },
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 236,
+          "line": 244,
           "kind": "other"
         },
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 237,
+          "line": 245,
           "kind": "other"
         },
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 238,
+          "line": 246,
           "kind": "other"
         },
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 265,
+          "line": 300,
           "kind": "other"
         },
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 435,
+          "line": 495,
           "kind": "other"
         },
         {
@@ -38606,12 +38596,12 @@
         },
         {
           "file": "backend/app/data/eurostat_units_ru.py",
-          "line": 301,
+          "line": 306,
           "kind": "other"
         },
         {
           "file": "backend/app/data/eurostat_units_ru.py",
-          "line": 302,
+          "line": 307,
           "kind": "other"
         },
         {
@@ -38637,6 +38627,11 @@
         {
           "file": "backend/app/data/wages_historical.py",
           "line": 45,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/data/world_concept_national.py",
+          "line": 24,
           "kind": "other"
         },
         {
@@ -38855,6 +38850,11 @@
           "kind": "other"
         },
         {
+          "file": "frontend/src/lib/homeWorkbench.js",
+          "line": 88,
+          "kind": "other"
+        },
+        {
           "file": "frontend/src/lib/viewModelFamilies.generated.json",
           "line": 9158,
           "kind": "other"
@@ -38886,7 +38886,7 @@
         },
         {
           "file": "frontend/src/pages/WorldHome.jsx",
-          "line": 26,
+          "line": 35,
           "kind": "other"
         },
         {
@@ -39505,17 +39505,17 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2808,
+          "line": 2812,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2833,
+          "line": 2837,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2870,
+          "line": 2874,
           "kind": "seed"
         },
         {
@@ -39881,7 +39881,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2847,
+          "line": 2851,
           "kind": "seed"
         },
         {
@@ -39972,7 +39972,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2817,
+          "line": 2821,
           "kind": "seed"
         },
         {
@@ -40048,7 +40048,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2796,
+          "line": 2800,
           "kind": "seed"
         },
         {
@@ -40182,7 +40182,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3693,
+          "line": 3697,
           "kind": "seed"
         },
         {
@@ -40348,7 +40348,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3707,
+          "line": 3711,
           "kind": "seed"
         },
         {
@@ -40539,12 +40539,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3549,
+          "line": 3553,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4580,
+          "line": 4584,
           "kind": "seed"
         },
         {
@@ -40896,7 +40896,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3997,
+          "line": 4001,
           "kind": "seed"
         },
         {
@@ -41389,7 +41389,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3969,
+          "line": 3973,
           "kind": "seed"
         },
         {
@@ -42566,17 +42566,17 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3283,
+          "line": 3287,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3296,
+          "line": 3300,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3348,
+          "line": 3352,
           "kind": "seed"
         },
         {
@@ -42700,22 +42700,22 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3301,
+          "line": 3305,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3332,
+          "line": 3336,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3345,
+          "line": 3349,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4576,
+          "line": 4580,
           "kind": "seed"
         },
         {
@@ -43202,17 +43202,17 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3307,
+          "line": 3311,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3320,
+          "line": 3324,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3371,
+          "line": 3375,
           "kind": "seed"
         },
         {
@@ -43341,22 +43341,22 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3325,
+          "line": 3329,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3355,
+          "line": 3359,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3368,
+          "line": 3372,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4576,
+          "line": 4580,
           "kind": "seed"
         },
         {
@@ -43837,12 +43837,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4117,
+          "line": 4121,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4123,
+          "line": 4127,
           "kind": "seed"
         },
         {
@@ -44328,7 +44328,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3760,
+          "line": 3764,
           "kind": "seed"
         },
         {
@@ -44469,18 +44469,13 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3877,
+          "line": 3881,
           "kind": "seed"
         },
         {
           "file": "backend/tests/test_market_history_backfill.py",
           "line": 94,
           "kind": "tests"
-        },
-        {
-          "file": "docs/backlog.md",
-          "line": 3,
-          "kind": "other"
         },
         {
           "file": "docs/data_sources.md",
@@ -44977,12 +44972,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4210,
+          "line": 4214,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4216,
+          "line": 4220,
           "kind": "seed"
         },
         {
@@ -45480,7 +45475,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4272,
+          "line": 4276,
           "kind": "seed"
         },
         {
@@ -45966,7 +45961,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3740,
+          "line": 3744,
           "kind": "seed"
         },
         {
@@ -46234,7 +46229,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4724,
+          "line": 4728,
           "kind": "seed"
         },
         {
@@ -46508,7 +46503,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4577,
+          "line": 4581,
           "kind": "seed"
         },
         {
@@ -46889,7 +46884,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 590,
+          "line": 592,
           "kind": "other"
         },
         {
@@ -47053,12 +47048,12 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 568,
+          "line": 570,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 588,
+          "line": 590,
           "kind": "other"
         },
         {
@@ -47068,32 +47063,32 @@
         },
         {
           "file": "backend/app/data/eurostat_listing.py",
-          "line": 207,
+          "line": 211,
           "kind": "other"
         },
         {
           "file": "backend/app/data/eurostat_listing.py",
-          "line": 243,
+          "line": 247,
           "kind": "other"
         },
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 223,
+          "line": 231,
           "kind": "other"
         },
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 262,
+          "line": 297,
           "kind": "other"
         },
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 314,
+          "line": 371,
           "kind": "other"
         },
         {
           "file": "backend/app/data/eurostat_titles_ru.py",
-          "line": 426,
+          "line": 486,
           "kind": "other"
         },
         {
@@ -47233,7 +47228,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4577,
+          "line": 4581,
           "kind": "seed"
         },
         {
@@ -47358,7 +47353,7 @@
         },
         {
           "file": "frontend/src/components/home/HomeWorkbench.component.test.jsx",
-          "line": 33,
+          "line": 26,
           "kind": "other"
         },
         {
@@ -47403,7 +47398,12 @@
         },
         {
           "file": "frontend/src/lib/homeWorkbench.js",
-          "line": 22,
+          "line": 12,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/homeWorkbench.js",
+          "line": 21,
           "kind": "other"
         },
         {
@@ -47420,6 +47420,21 @@
           "file": "frontend/src/lib/homeWorkbench.js",
           "line": 51,
           "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/homeWorkbench.js",
+          "line": 84,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/homeWorkbench.test.js",
+          "line": 91,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/homeWorkbench.test.js",
+          "line": 97,
+          "kind": "tests"
         },
         {
           "file": "frontend/src/lib/indicatorVariants.js",
@@ -47559,7 +47574,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 590,
+          "line": 592,
           "kind": "other"
         },
         {
@@ -47876,7 +47891,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 590,
+          "line": 592,
           "kind": "other"
         },
         {
@@ -48363,11 +48378,6 @@
           "kind": "other"
         },
         {
-          "file": "frontend/src/components/home/HomeWorkbench.component.test.jsx",
-          "line": 29,
-          "kind": "other"
-        },
-        {
           "file": "frontend/src/embed/EmbedTicker.jsx",
           "line": 44,
           "kind": "other"
@@ -48394,7 +48404,12 @@
         },
         {
           "file": "frontend/src/lib/homeWorkbench.js",
-          "line": 19,
+          "line": 9,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/homeWorkbench.js",
+          "line": 18,
           "kind": "other"
         },
         {
@@ -48449,7 +48464,7 @@
         },
         {
           "file": "frontend/src/pages/EmbedBuilder.jsx",
-          "line": 144,
+          "line": 152,
           "kind": "other"
         }
       ]
@@ -49096,12 +49111,12 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 557,
+          "line": 559,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 568,
+          "line": 570,
           "kind": "other"
         },
         {
@@ -49276,12 +49291,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3214,
+          "line": 3218,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4577,
+          "line": 4581,
           "kind": "seed"
         },
         {
@@ -49565,7 +49580,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 557,
+          "line": 559,
           "kind": "other"
         },
         {
@@ -50084,7 +50099,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4592,
+          "line": 4596,
           "kind": "seed"
         },
         {
@@ -50437,12 +50452,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3202,
+          "line": 3206,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4401,
+          "line": 4405,
           "kind": "seed"
         },
         {
@@ -50557,12 +50572,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4179,
+          "line": 4183,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4185,
+          "line": 4189,
           "kind": "seed"
         },
         {
@@ -51064,12 +51079,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3492,
+          "line": 3496,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3501,
+          "line": 3505,
           "kind": "seed"
         },
         {

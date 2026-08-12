@@ -642,6 +642,7 @@ async def render_world_indicator_html(
             select(WorldIndicator).where(
                 WorldIndicator.country_id == country.id,
                 WorldIndicator.code == code,
+                WorldIndicator.is_listed.is_(True),
             )
         )
     ).scalar_one_or_none()
@@ -657,9 +658,6 @@ async def render_world_indicator_html(
     ).all()
     if not rows:
         return 404, "<h1>Нет данных</h1>"
-    # Unlisted без сигнала (все нули) — не индексируем и не отдаём SSR-карточку.
-    if not indicator.is_listed and not any(float(v) != 0 for _, v in rows):
-        return 404, "<h1>Показатель не найден</h1>"
 
     series = [(d, float(v)) for d, v in rows]
     first_date, first_value = series[0]

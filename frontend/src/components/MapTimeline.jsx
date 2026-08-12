@@ -61,10 +61,6 @@ export default function MapTimeline({ years, year, onYearChange, metric }) {
     if (trackTimer.current) clearTimeout(trackTimer.current);
   }, []);
 
-  useEffect(() => {
-    if (!ready && playing) setPlaying(false);
-  }, [ready, playing]);
-
   if (!ready) return null;
 
   const pct = max === min ? 100 : ((year - min) / (max - min)) * 100;

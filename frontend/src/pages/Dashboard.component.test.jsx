@@ -46,9 +46,9 @@ describe('Dashboard', () => {
 
     expect(await screen.findByRole('heading', { level: 1 })).toBeTruthy();
     expect(screen.getByText('Россия сегодня')).toBeTruthy();
-    expect(screen.getByRole('tablist', { name: 'Плоскости данных' })).toBeTruthy();
-    expect(screen.getByRole('tab', { name: 'Страны' })).toBeTruthy();
-    expect(screen.getByText('Категории')).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'Страны и показатели' })).toBeTruthy();
+    expect(screen.getByRole('navigation', { name: 'Переходы по разделам' })).toBeTruthy();
+    expect(screen.getByText('Категории России')).toBeTruthy();
     expect(screen.getByText('Инструменты')).toBeTruthy();
   });
 });

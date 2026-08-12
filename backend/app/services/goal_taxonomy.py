@@ -109,6 +109,7 @@ _ENGAGEMENT = {
     "home_countries_metric",
     "home_countries_macroregion",
     "home_countries_cta",
+    "home_countries_map_select",
     "nav_category_open",
     "nav_link_click",
     "nav_mobile_toggle",

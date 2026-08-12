@@ -4,7 +4,7 @@ from __future__ import annotations
 import asyncio
 import os
 import tempfile
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 
 _SAMPLE_PAYLOAD = {
     "data": {
@@ -90,13 +90,15 @@ def test_mart_partner_revenue(monkeypatch):
     async def scenario(maker):
         async with maker() as db:
             now = datetime.now(timezone.utc).replace(tzinfo=None)
+            d0 = date.today() - timedelta(days=3)
+            d1 = date.today() - timedelta(days=2)
             db.add_all([
                 PartnerRevenue(
-                    day=date(2026, 7, 10), shows=100, hits=2,
+                    day=d0, shows=100, hits=2,
                     revenue_rub=5.0, synced_at=now,
                 ),
                 PartnerRevenue(
-                    day=date(2026, 7, 11), shows=200, hits=4,
+                    day=d1, shows=200, hits=4,
                     revenue_rub=7.5, synced_at=now,
                 ),
             ])
