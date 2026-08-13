@@ -1440,11 +1440,11 @@ export default function ComparePage() {
               )}
               style={{ touchAction: 'pan-y' }}
             >
-              {/* Водяной знак — всегда на экране (как на карточке индикатора):
-                  каждый скриншот несёт бренд. Экспорт добавляет ещё тайловый
-                  знак из canvas — см. handleExport. */}
+              {/* Бренд на экране; в PNG зарегистрированным не попадает
+                  (data-no-export + watermark:false в exportNodeToPng). */}
               <div
                 aria-hidden="true"
+                data-no-export="true"
                 className="pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 -rotate-6 select-none whitespace-nowrap text-3xl font-display font-bold tracking-[0.18em] text-text-primary opacity-[0.055] md:text-5xl"
               >
                 forecasteconomy.com

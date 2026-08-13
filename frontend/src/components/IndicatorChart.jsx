@@ -597,8 +597,11 @@ export default function IndicatorChart({
         )}
         style={{ touchAction: 'pan-y' }}
       >
+        {/* На экране бренд остаётся; в PNG-экспорт не попадает (data-no-export).
+            Зарегистрированным watermark в файле не ставим — правило 2026-07-08. */}
         <div
           aria-hidden="true"
+          data-no-export="true"
           className="pointer-events-none absolute left-1/2 top-[46%] z-10 -translate-x-1/2 -translate-y-1/2 -rotate-6 select-none whitespace-nowrap text-3xl font-display font-bold tracking-[0.18em] text-text-primary opacity-[0.055] md:text-5xl"
         >
           Forecast Economy
