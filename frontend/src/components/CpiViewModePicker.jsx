@@ -1,6 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { cn } from '../lib/format';
 import { track, events } from '../lib/track';
+import { useLocale, useT } from '../i18n';
+import { localizeViewModeLabel } from '../i18n/viewModeLabels';
 import {
   cpiTopGroupsForCode,
   defaultSubModeForGroup,
@@ -29,6 +31,8 @@ export default function CpiViewModePicker({
   code = null,
   compact = false,
 }) {
+  const t = useT();
+  const { locale } = useLocale();
   const [expandedGroup, setExpandedGroup] = useState(
     () => expandedGroupForMode(currentMode),
   );
@@ -73,15 +77,31 @@ export default function CpiViewModePicker({
     trackMode(item.mode, groupId);
   };
 
-  const topGroups = cpiTopGroupsForCode(code);
+  const topGroups = useMemo(() => (
+    cpiTopGroupsForCode(code).map((g) => ({
+      ...g,
+      label: localizeViewModeLabel(g.label, locale),
+      modes: g.modes?.map((m) => ({
+        ...m,
+        label: localizeViewModeLabel(m.label, locale),
+      })),
+    }))
+  ), [code, locale]);
   const expanded = expandedGroup ? getTopGroup(expandedGroup, code) : null;
-  const subModes = expanded?.modes ?? [];
+  const subModes = useMemo(
+    () => (expanded?.modes ?? []).map((m) => ({
+      ...m,
+      label: localizeViewModeLabel(m.label, locale),
+    })),
+    [expanded, locale],
+  );
   const activeTopGroup = highlightedTopGroup(expandedGroup, currentMode);
+  const expandedLabel = localizeViewModeLabel(expanded?.label, locale);
 
   const body = (
     <>
       <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-        Режим инфляции
+        {t('indicator.picker.inflation')}
       </p>
       <div className="flex flex-wrap gap-2">
         {topGroups.map((group) => {
@@ -109,7 +129,7 @@ export default function CpiViewModePicker({
         >
           {!compact && (
             <span className="w-full text-[10px] font-mono uppercase tracking-[0.15em] text-text-tertiary">
-              {expanded.label}
+              {expandedLabel}
             </span>
           )}
           {subModes.map((item) => (

@@ -4,12 +4,22 @@
 `seo_content.py` и `seo_world.py`. Этот модуль сериализует их в JSON-зеркало
 для React (`pageMeta.generated.json`), чтобы CSR не перетирал SSR другими
 строками (ADR-0003).
+
+EN twins (если заполнены контент-агентом в `data/i18n/seo_en.py`) кладутся
+в blob["en"] — каркас; пустой dict пока EN не готов.
 """
 
 from __future__ import annotations
 
 from typing import Any
 
+from app.data.i18n.seo_en import (
+    CATEGORY_META_EN,
+    PAGE_META_EN,
+    WORLD_HOME_DESC_EN,
+    WORLD_HOME_H1_EN,
+    WORLD_HOME_TITLE_EN,
+)
 from app.services.seo_content import CATEGORY_META, PAGE_META
 from app.services.seo_world import (
     COUNTRY_GENITIVE,
@@ -19,8 +29,8 @@ from app.services.seo_world import (
 )
 
 
-def build_page_meta_blob() -> dict[str, Any]:
-    pages = {
+def _serialize_pages(pages: dict) -> dict[str, Any]:
+    return {
         slug: {
             "slug": page.slug,
             "path": page.path,
@@ -29,9 +39,12 @@ def build_page_meta_blob() -> dict[str, Any]:
             "h1": page.h1,
             "intro": page.intro,
         }
-        for slug, page in PAGE_META.items()
+        for slug, page in pages.items()
     }
-    categories = {
+
+
+def _serialize_categories(categories: dict) -> dict[str, Any]:
+    return {
         slug: {
             "slug": meta.slug,
             "name": meta.name,
@@ -40,11 +53,14 @@ def build_page_meta_blob() -> dict[str, Any]:
             "h1": meta.title,
             "intro": meta.intro,
         }
-        for slug, meta in CATEGORY_META.items()
+        for slug, meta in categories.items()
     }
-    return {
-        "pages": pages,
-        "categories": categories,
+
+
+def build_page_meta_blob() -> dict[str, Any]:
+    blob: dict[str, Any] = {
+        "pages": _serialize_pages(PAGE_META),
+        "categories": _serialize_categories(CATEGORY_META),
         "world": {
             "home": {
                 "path": "/world",
@@ -64,3 +80,16 @@ def build_page_meta_blob() -> dict[str, Any]:
             "countryGenitive": dict(sorted(COUNTRY_GENITIVE.items())),
         },
     }
+    blob["en"] = {
+        "pages": _serialize_pages(PAGE_META_EN),
+        "categories": _serialize_categories(CATEGORY_META_EN),
+        "world": {
+            "home": {
+                "path": "/world",
+                "title": WORLD_HOME_TITLE_EN,
+                "description": WORLD_HOME_DESC_EN,
+                "h1": WORLD_HOME_H1_EN,
+            },
+        },
+    }
+    return blob

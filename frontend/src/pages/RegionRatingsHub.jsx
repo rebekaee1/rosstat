@@ -10,20 +10,21 @@ import useDocumentMeta from '../lib/useMeta';
 import { regionRatingHubTrail } from '../lib/breadcrumbs';
 import { regionRatingHubPath, regionRatingPath } from '../lib/sitePaths';
 import { useRegionsCatalog } from '../lib/regionsApi';
+import { useLocale } from '../i18n';
 
 export default function RegionRatingsHub() {
+  const { t } = useLocale();
   const crumbs = useMemo(() => regionRatingHubTrail(), []);
   const { data, isLoading, isError, refetch, isFetching } = useRegionsCatalog();
 
   const sections = useMemo(() => {
     const secs = data?.sections || [];
-    return secs.map((s) => [s.name || 'Показатели', s.indicators || []]);
-  }, [data]);
+    return secs.map((s) => [s.name || t('regions.indicators'), s.indicators || []]);
+  }, [data, t]);
 
   useDocumentMeta({
-    title: 'Рейтинги регионов России по показателям Росстата — Forecast Economy',
-    description:
-      'Сравнение субъектов Российской Федерации по социально-экономическим показателям: полные таблицы мест, лидеры и аутсайдеры.',
+    title: `${t('regions.ratingHubTitle')} — Forecast Economy`,
+    description: t('regions.ratingHubDesc'),
     path: regionRatingHubPath(),
   });
 
@@ -32,7 +33,7 @@ export default function RegionRatingsHub() {
       <Breadcrumbs items={crumbs} className="mb-6" />
       <header className="mb-8 max-w-3xl">
         <h1 className="font-display text-3xl font-bold text-text-primary sm:text-4xl">
-          Рейтинги регионов России
+          {t('regions.ratingHubH1')}
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-text-secondary sm:text-base">
           Выберите показатель, чтобы увидеть полный рейтинг субъектов РФ за последний

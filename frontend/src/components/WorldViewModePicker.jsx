@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { cn } from '../lib/format';
 import { track, events } from '../lib/track';
+import { useT } from '../i18n';
 import {
   defaultModeForWorldGroup,
   expandedGroupForWorldMode,
@@ -26,9 +27,11 @@ export default function WorldViewModePicker({
   currentMode,
   onChange,
   trackContext,
-  title = 'Режим показателя',
+  title,
   compact = false,
 }) {
+  const t = useT();
+  const sectionTitle = title || t('indicator.picker.mode');
   const groups = useMemo(() => groupModesFromApi(modes), [modes]);
   const [expandedGroup, setExpandedGroup] = useState(
     () => expandedGroupForWorldMode(groups, currentMode),
@@ -84,7 +87,7 @@ export default function WorldViewModePicker({
   const body = (
     <>
       <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-        {title}
+        {sectionTitle}
       </p>
       {/* Как CpiViewModePicker: wrap, не горизонтальный скролл —
           иначе подпись «Уровень» (w-full) выталкивает частоты за край. */}
@@ -119,7 +122,7 @@ export default function WorldViewModePicker({
               key={`${expanded.id}-${item.mode}`}
               type="button"
               disabled={item.disabled}
-              title={item.disabled ? item.hint : (!item.official ? 'Пересчёт от другого ряда' : undefined)}
+              title={item.disabled ? item.hint : (!item.official ? t('indicator.picker.derivedRecalc') : undefined)}
               onClick={() => onSubClick(expanded.id, item)}
               className={cn(
                 btnCls(!item.disabled && item.mode === currentMode),

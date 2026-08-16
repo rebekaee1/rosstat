@@ -15,6 +15,7 @@ import { colorsBySlug, valueExtent, MAP_SCALE, MAP_NO_DATA } from '../lib/region
 import {
   regionPath,
 } from '../lib/sitePaths';
+import { useLocale } from '../i18n';
 
 const ZOOM_MAX = 8;
 const ZOOM_STEP = 1.6;
@@ -27,6 +28,7 @@ export default function RegionsMap({
   transitionMs = 150,       // длительность перехода цвета (плавность анимации по годам)
   brandMark = false,        // тонкий бренд в углу live-UI (в экспорт не попадает)
 }) {
+  const { t } = useLocale();
   const navigate = useNavigate();
   const [hover, setHover] = useState(null); // { slug, x, y }
 
@@ -131,7 +133,7 @@ export default function RegionsMap({
           viewBox={mapData.viewBox}
           className={`w-full h-auto ${k > 1 ? 'cursor-grab active:cursor-grabbing' : ''}`}
           role="group"
-          aria-label="Карта регионов России"
+          aria-label={t('regions.mapAria')}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
@@ -232,8 +234,8 @@ export default function RegionsMap({
             type="button"
             onClick={() => zoomBy(ZOOM_STEP)}
             disabled={k >= ZOOM_MAX}
-            aria-label="Приблизить карту"
-            title="Приблизить"
+            aria-label={t('regions.zoomIn')}
+            title={t('regions.zoomIn')}
             className="w-8 h-8 flex items-center justify-center rounded-lg bg-surface border border-border-subtle text-text-secondary hover:text-champagne hover:border-border-champagne transition-colors shadow-sm disabled:opacity-40"
           >
             <Plus size={15} />
@@ -242,8 +244,8 @@ export default function RegionsMap({
             type="button"
             onClick={() => zoomBy(1 / ZOOM_STEP)}
             disabled={k <= 1}
-            aria-label="Отдалить карту"
-            title="Отдалить"
+            aria-label={t('regions.zoomOut')}
+            title={t('regions.zoomOut')}
             className="w-8 h-8 flex items-center justify-center rounded-lg bg-surface border border-border-subtle text-text-secondary hover:text-champagne hover:border-border-champagne transition-colors shadow-sm disabled:opacity-40"
           >
             <Minus size={15} />
@@ -252,8 +254,8 @@ export default function RegionsMap({
             <button
               type="button"
               onClick={() => setView({ k: 1, tx: 0, ty: 0 })}
-              aria-label="Показать всю карту"
-              title="Вся карта"
+              aria-label={t('regions.zoomReset')}
+              title={t('regions.zoomReset')}
               className="w-8 h-8 flex items-center justify-center rounded-lg bg-surface border border-border-subtle text-text-secondary hover:text-champagne hover:border-border-champagne transition-colors shadow-sm"
             >
               <Maximize2 size={14} />

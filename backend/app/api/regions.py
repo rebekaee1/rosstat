@@ -22,6 +22,8 @@ from app.data.region_indicator_polarity import (
 )
 from app.database import get_db
 from app.models import Region, RegionDataPoint, RegionIndicator
+from app.services.locale import get_locale
+from app.services.seo_i18n import region_display_name, region_indicator_copy
 from app.services.seo_regional import MACRO_BY_TABLE
 
 router = APIRouter(prefix="/regions", tags=["regions"])
@@ -38,6 +40,17 @@ HEADLINE_TABLES = {
     "3.12": "Бедность",
 }
 
+HEADLINE_TABLES_EN = {
+    "1.1": "Population",
+    "3.4": "Average wage",
+    "2.10.1": "Unemployment",
+    "8.1": "GRP",
+    "8.2": "GRP per capita",
+    "10.1": "Investment",
+    "20.1": "Inflation",
+    "3.12": "Poverty",
+}
+
 # Ряды, где источник публикует индекс к предыдущему году (100 = цены не
 # изменились), а карточка обязана показать прирост: «Инфляция — 110,1 %»
 # читается как рост цен в 2,1 раза. Ключ — table_code, значение — единица
@@ -46,12 +59,36 @@ HEADLINE_INDEX_TO_GROWTH = {
     "20.1": ("%", "декабрь к декабрю предыдущего года"),
 }
 
+HEADLINE_INDEX_TO_GROWTH_EN = {
+    "20.1": ("%", "December to December of the previous year"),
+}
+
 # На лендинге у каждой карточки региона — эти три числа.
 LANDING_TABLES = ("1.1", "3.4", "2.10.1")
 
 
 def _fmt(v: float) -> float:
     return round(v, 4)
+
+
+def _rname(slug: str, name_ru: str) -> str:
+    return region_display_name(slug, name_ru)
+
+
+def _icopy(ind: RegionIndicator) -> dict[str, str | None]:
+    return region_indicator_copy(
+        ind.code,
+        name_ru=ind.name,
+        unit_ru=ind.unit or "",
+        note_ru=ind.note,
+        section_ru=ind.section_name,
+    )
+
+
+def _headline_label(table_code: str) -> str:
+    if get_locale() == "en":
+        return HEADLINE_TABLES_EN.get(table_code) or HEADLINE_TABLES[table_code]
+    return HEADLINE_TABLES[table_code]
 
 
 async def _region_or_404(slug: str, db: AsyncSession) -> Region:
@@ -93,7 +130,7 @@ async def _latest_values(db: AsyncSession, indicator_ids: list[int],
 
 @router.get("")
 async def regions_landing(db: AsyncSession = Depends(get_db)):
-    cache_key = "fe:regions:landing"
+    cache_key = f"fe:regions:landing:{get_locale()}"
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -118,7 +155,7 @@ async def regions_landing(db: AsyncSession = Depends(get_db)):
     district_map = {}
     for r in regions:
         if r.kind == "district":
-            entry = {"slug": r.slug, "name": r.name, "regions": []}
+            entry = {"slug": r.slug, "name": _rname(r.slug, r.name), "regions": []}
             districts.append(entry)
             district_map[r.slug] = entry
 
@@ -130,7 +167,12 @@ async def regions_landing(db: AsyncSession = Depends(get_db)):
                 continue
             got = latest.get((ind.id, r.id))
             if got:
-                out[tc] = {"year": got[0], "value": _fmt(got[1]), "unit": ind.unit}
+                copy = _icopy(ind)
+                out[tc] = {
+                    "year": got[0],
+                    "value": _fmt(got[1]),
+                    "unit": copy["unit"],
+                }
         return out
 
     for r in regions:
@@ -140,14 +182,17 @@ async def regions_landing(db: AsyncSession = Depends(get_db)):
         if entry is None:
             continue
         entry["regions"].append({
-            "slug": r.slug, "name": r.name, "stats": stats_for(r),
+            "slug": r.slug, "name": _rname(r.slug, r.name), "stats": stats_for(r),
         })
 
     country = next((r for r in regions if r.kind == "country"), None)
     result = {
         "districts": districts,
-        "russia": {"slug": "russia", "name": "Российская Федерация",
-                   "stats": stats_for(country)} if country else None,
+        "russia": {
+            "slug": "russia",
+            "name": _rname("russia", "Российская Федерация"),
+            "stats": stats_for(country),
+        } if country else None,
         "totals": {
             "regions": sum(len(d["regions"]) for d in districts),
             "indicators": n_indicators,
@@ -161,7 +206,7 @@ async def regions_landing(db: AsyncSession = Depends(get_db)):
 @router.get("/catalog")
 async def regions_catalog(db: AsyncSession = Depends(get_db)):
     """Каталог показателей по разделам — одинаков для всех регионов."""
-    cache_key = "fe:regions:catalog"
+    cache_key = f"fe:regions:catalog:{get_locale()}"
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -174,18 +219,18 @@ async def regions_catalog(db: AsyncSession = Depends(get_db)):
 
     sections: dict[int, dict] = {}
     for i in inds:
+        copy = _icopy(i)
         sec = sections.setdefault(i.section_num, {
-            "num": i.section_num, "name": i.section_name, "indicators": [],
+            "num": i.section_num,
+            "name": copy["section"] or i.section_name,
+            "indicators": [],
         })
         sec["indicators"].append({
-            "code": i.code, "name": i.name, "unit": i.unit,
+            "code": i.code, "name": copy["name"], "unit": copy["unit"],
             "year_min": i.year_min, "year_max": i.year_max,
             # мост в макроблок: код общероссийского индикатора-аналога
             "macro_code": MACRO_BY_TABLE.get(i.table_code or ""),
         })
-    # сортировка внутри раздела по табличному коду источника
-    def _tc_key(code_entry):
-        return code_entry["code"]
     result = {"sections": [sections[k] for k in sorted(sections)]}
     await cache_set(cache_key, result, settings.cache_ttl_data)
     return result
@@ -197,7 +242,7 @@ async def regions_heatmap(code: str, db: AsyncSession = Depends(get_db)):
 
     Роут объявлен до `/{slug}` — иначе «heatmap» перехватится как slug региона.
     """
-    cache_key = f"fe:regions:heatmap:v2:{code}"
+    cache_key = f"fe:regions:heatmap:v2:{code}:{get_locale()}"
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -226,13 +271,17 @@ async def regions_heatmap(code: str, db: AsyncSession = Depends(get_db)):
     )).all()
 
     polarity = region_rating_meta(indicator.code, indicator.table_code)
+    copy = _icopy(indicator)
     result = {
-        "indicator": {"code": indicator.code, "name": indicator.name,
-                      "unit": indicator.unit},
+        "indicator": {
+            "code": indicator.code,
+            "name": copy["name"],
+            "unit": copy["unit"],
+        },
         "year": last_year,
         **polarity,
         "values": [
-            {"slug": s, "name": n, "value": _fmt(float(v)), "raw": float(v)}
+            {"slug": s, "name": _rname(s, n), "value": _fmt(float(v)), "raw": float(v)}
             for s, n, v in rows
         ],
     }
@@ -250,7 +299,7 @@ async def regions_heatmap_series(code: str, db: AsyncSession = Depends(get_db)):
     показывает относительную позицию региона в этом году, а не абсолютный рост
     во времени. Роут — до `/{slug}`, иначе перехватится как slug региона.
     """
-    cache_key = f"fe:regions:heatmap-series:{code}"
+    cache_key = f"fe:regions:heatmap-series:{code}:{get_locale()}"
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -276,9 +325,13 @@ async def regions_heatmap_series(code: str, db: AsyncSession = Depends(get_db)):
         values_by_year.setdefault(str(year), {})[slug] = _fmt(float(value))
 
     years = sorted(int(y) for y in values_by_year)
+    copy = _icopy(indicator)
     result = {
-        "indicator": {"code": indicator.code, "name": indicator.name,
-                      "unit": indicator.unit},
+        "indicator": {
+            "code": indicator.code,
+            "name": copy["name"],
+            "unit": copy["unit"],
+        },
         "years": years,
         "first_year": years[0],
         "last_year": years[-1],
@@ -295,7 +348,7 @@ async def regions_compare(slug_a: str, slug_b: str, db: AsyncSession = Depends(g
     """Сравнение двух регионов по ключевым показателям — JSON для SPA /region-vs/*."""
     from app.services.region_compare_data import build_region_compare_payload
 
-    cache_key = f"fe:regions:vs:{slug_a}:{slug_b}"
+    cache_key = f"fe:regions:vs:{slug_a}:{slug_b}:{get_locale()}"
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -310,7 +363,7 @@ async def regions_compare(slug_a: str, slug_b: str, db: AsyncSession = Depends(g
 
 @router.get("/{slug}")
 async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
-    cache_key = f"fe:regions:profile:{slug}"
+    cache_key = f"fe:regions:profile:{slug}:{get_locale()}"
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -319,9 +372,11 @@ async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
 
     district_name = None
     if region.district_slug:
-        district_name = (await db.execute(
+        district_name_ru = (await db.execute(
             select(Region.name).where(Region.slug == region.district_slug)
         )).scalar_one_or_none()
+        if district_name_ru is not None:
+            district_name = _rname(region.district_slug, district_name_ru)
 
     inds = (await db.execute(
         select(RegionIndicator)
@@ -355,25 +410,31 @@ async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
 
     sections: dict[int, dict] = {}
     headline = {}
+    growth_map = (
+        HEADLINE_INDEX_TO_GROWTH_EN if get_locale() == "en" else HEADLINE_INDEX_TO_GROWTH
+    )
     for i in inds:
         got = latest.get(i.id)
         if got is None:
             continue
         year, value = got
         p = prev.get(i.id)
+        copy = _icopy(i)
         item = {
-            "code": i.code, "name": i.name, "unit": i.unit,
+            "code": i.code, "name": copy["name"], "unit": copy["unit"],
             "year": year, "value": _fmt(value),
             "prev_year": p[0] if p else None,
             "prev_value": _fmt(p[1]) if p else None,
         }
         sec = sections.setdefault(i.section_num, {
-            "num": i.section_num, "name": i.section_name, "indicators": [],
+            "num": i.section_num,
+            "name": copy["section"] or i.section_name,
+            "indicators": [],
         })
         sec["indicators"].append(item)
         if i.table_code in HEADLINE_TABLES:
-            card = {**item, "label": HEADLINE_TABLES[i.table_code]}
-            growth = HEADLINE_INDEX_TO_GROWTH.get(i.table_code)
+            card = {**item, "label": _headline_label(i.table_code)}
+            growth = growth_map.get(i.table_code)
             if growth is not None:
                 unit_out, period = growth
                 card["value"] = _fmt(card["value"] - 100)
@@ -385,8 +446,11 @@ async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
 
     result = {
         "region": {
-            "slug": region.slug, "name": region.name, "kind": region.kind,
-            "district_slug": region.district_slug, "district_name": district_name,
+            "slug": region.slug,
+            "name": _rname(region.slug, region.name),
+            "kind": region.kind,
+            "district_slug": region.district_slug,
+            "district_name": district_name,
         },
         "headline": headline,
         "sections": [sections[k] for k in sorted(sections)],
@@ -400,7 +464,7 @@ async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
 
 @router.get("/{slug}/i/{code}")
 async def region_indicator_detail(slug: str, code: str, db: AsyncSession = Depends(get_db)):
-    cache_key = f"fe:regions:detail:v2:{slug}:{code}"
+    cache_key = f"fe:regions:detail:v2:{slug}:{code}:{get_locale()}"
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -450,8 +514,8 @@ async def region_indicator_detail(slug: str, code: str, db: AsyncSession = Depen
     )).all()
     rank = None
     total_ranked = len(rank_rows)
-    top = [{"slug": s, "name": n, "value": _fmt(float(v))} for s, n, v in rank_rows[:5]]
-    bottom = [{"slug": s, "name": n, "value": _fmt(float(v))} for s, n, v in rank_rows[-3:]]
+    top = [{"slug": s, "name": _rname(s, n), "value": _fmt(float(v))} for s, n, v in rank_rows[:5]]
+    bottom = [{"slug": s, "name": _rname(s, n), "value": _fmt(float(v))} for s, n, v in rank_rows[-3:]]
     for pos, (s, _n, _v) in enumerate(rank_rows, 1):
         if s == region.slug:
             rank = pos
@@ -459,20 +523,29 @@ async def region_indicator_detail(slug: str, code: str, db: AsyncSession = Depen
 
     # соседние показатели раздела (для блока «В этом разделе»)
     siblings = (await db.execute(
-        select(RegionIndicator.code, RegionIndicator.name, RegionIndicator.unit)
+        select(RegionIndicator)
         .where(RegionIndicator.section_num == indicator.section_num,
                RegionIndicator.code != indicator.code,
                RegionIndicator.is_listed.is_(True))
         .order_by(RegionIndicator.code)
         .limit(12)
-    )).all()
+    )).scalars().all()
 
+    copy = _icopy(indicator)
     result = {
-        "region": {"slug": region.slug, "name": region.name, "kind": region.kind},
+        "region": {
+            "slug": region.slug,
+            "name": _rname(region.slug, region.name),
+            "kind": region.kind,
+        },
         "indicator": {
-            "code": indicator.code, "name": indicator.name, "unit": indicator.unit,
-            "note": indicator.note, "section_num": indicator.section_num,
-            "section_name": indicator.section_name, "table_code": indicator.table_code,
+            "code": indicator.code,
+            "name": copy["name"],
+            "unit": copy["unit"],
+            "note": copy["note"],
+            "section_num": indicator.section_num,
+            "section_name": copy["section"] or indicator.section_name,
+            "table_code": indicator.table_code,
             "macro_code": MACRO_BY_TABLE.get(indicator.table_code or ""),
         },
         "series": series,
@@ -481,7 +554,14 @@ async def region_indicator_detail(slug: str, code: str, db: AsyncSession = Depen
             "position": rank, "total": total_ranked, "year": last_year,
             "top": top, "bottom": bottom, **polarity,
         } if rank else None,
-        "siblings": [{"code": c, "name": n, "unit": u} for c, n, u in siblings],
+        "siblings": [
+            {
+                "code": s.code,
+                "name": _icopy(s)["name"],
+                "unit": _icopy(s)["unit"],
+            }
+            for s in siblings
+        ],
     }
     await cache_set(cache_key, result, settings.cache_ttl_data)
     return result

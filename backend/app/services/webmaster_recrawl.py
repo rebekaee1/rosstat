@@ -8,6 +8,10 @@ URL из единого реестра (`site_urls.collect_all_paths`, поря�
 Состояние «что уже подавали» — Redis-set в state-DB (переживает деплойный
 FLUSHDB кэша). Когда весь реестр пройден, множество очищается и цикл
 начинается заново — повторный обход раз в N месяцев полезен.
+
+Языковой сплит: ``origin`` / ``host_id`` / ``submitted_key`` — для второго
+свойства Вебмастера (`ru.`). Дефолт = текущий apex. Не подавать `ru.` пока
+хост не добавлен в Вебмастер и DNS/TLS не живы.
 """
 
 from __future__ import annotations
@@ -33,8 +37,21 @@ async def _alert_recrawl(text: str) -> None:
         logger.warning("Recrawl alert failed", exc_info=True)
 
 
-async def recrawl_daily_job() -> dict[str, int]:
-    """Подать в переобход следующую порцию приоритетных URL (до квоты)."""
+async def recrawl_daily_job(
+    *,
+    origin: str | None = None,
+    host_id: str | None = None,
+    submitted_key: str | None = None,
+) -> dict[str, int]:
+    """Подать в переобход следующую порцию приоритетных URL (до квоты).
+
+    Для второго хоста после cutover:
+      await recrawl_daily_job(
+          origin="https://ru.forecasteconomy.com",
+          host_id=settings.webmaster_host_id_for("ru.forecasteconomy.com"),
+          submitted_key="wm:recrawl:submitted:ru.forecasteconomy.com",
+      )
+    """
     if not settings.yandex_webmaster_token:
         logger.info("Recrawl job skipped: no webmaster token")
         return {"submitted": 0, "quota": 0}
@@ -52,11 +69,15 @@ async def recrawl_daily_job() -> dict[str, int]:
         )
         return {"submitted": 0, "quota": 0, "blocked": "live_writes_disabled"}
 
+    base = (origin or DOMAIN).rstrip("/")
+    wm_host_id = host_id or settings.webmaster_host_id
+    cursor_key = submitted_key or _SUBMITTED_KEY
+
     client = YandexWebmasterClient()
     try:
         user = await client.user()
         user_id = user.data["user_id"]
-        quota_resp = await client.recrawl_quota(user_id, settings.webmaster_host_id)
+        quota_resp = await client.recrawl_quota(user_id, wm_host_id)
         remaining = int(quota_resp.data.get("quota_remainder", 0))
     except Exception as exc:
         # Н-24: живой токен + недоступный API = дневная квота переобхода
@@ -83,27 +104,27 @@ async def recrawl_daily_job() -> dict[str, int]:
     redis = await get_state_redis()
     if skipped:
         # Batch SADD — junk из прошлых циклов / query-варианты не блокируют прогресс.
-        await redis.sadd(_SUBMITTED_KEY, *skipped)
+        await redis.sadd(cursor_key, *skipped)
 
     submitted = 0
     wrapped_around = False
     for path in eligible:
         if submitted >= remaining:
             break
-        if await redis.sismember(_SUBMITTED_KEY, path):
+        if await redis.sismember(cursor_key, path):
             continue
-        url = f"{DOMAIN}{path}"
+        url = f"{base}{path}"
         try:
-            await client.submit_recrawl(user_id, settings.webmaster_host_id, url, approved=True)
+            await client.submit_recrawl(user_id, wm_host_id, url, approved=True)
             submitted += 1
-            await redis.sadd(_SUBMITTED_KEY, path)
+            await redis.sadd(cursor_key, path)
         except YandexApiError as exc:
             err = str(exc.payload)[:200].upper()
             if "QUOTA" in err:
                 logger.info("Recrawl job: quota hit mid-run after %d", submitted)
                 break
             # URL_ALREADY_ADDED и прочие мягкие отказы — помечаем и идём дальше.
-            await redis.sadd(_SUBMITTED_KEY, path)
+            await redis.sadd(cursor_key, path)
             logger.warning("Recrawl submit %s rejected: %s", url, err)
         except Exception:
             logger.exception("Recrawl submit failed for %s", url)
@@ -111,14 +132,19 @@ async def recrawl_daily_job() -> dict[str, int]:
     else:
         # Прошли весь eligible-реестр — все URL уже подавались. Начинаем новый цикл.
         if submitted < remaining:
-            await redis.delete(_SUBMITTED_KEY)
+            await redis.delete(cursor_key)
             wrapped_around = True
 
-    total_submitted = 0 if wrapped_around else int(await redis.scard(_SUBMITTED_KEY))
+    total_submitted = 0 if wrapped_around else int(await redis.scard(cursor_key))
     logger.info(
         "Recrawl job: submitted %d URL(s) (quota %d), skipped_noncanonical %d, "
-        "cursor at %d/%d%s",
-        submitted, remaining, len(skipped), total_submitted, len(eligible),
+        "cursor at %d/%d host_id=%s%s",
+        submitted,
+        remaining,
+        len(skipped),
+        total_submitted,
+        len(eligible),
+        wm_host_id,
         ", cycle restarted" if wrapped_around else "",
     )
     return {
@@ -127,4 +153,5 @@ async def recrawl_daily_job() -> dict[str, int]:
         "cursor": total_submitted,
         "skipped_noncanonical": len(skipped),
         "eligible": len(eligible),
+        "origin": base,
     }

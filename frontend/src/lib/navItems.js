@@ -12,9 +12,9 @@ export const WORLD_RATING_TO = '/world/rating/unemployment-rate';
  * (чтобы /world/rating/... не подсвечивал «Мировая экономика»).
  */
 export const PRIMARY_NAV = [
-  { id: 'world-rating', to: WORLD_RATING_TO, match: '/world/rating', label: 'Рейтинг стран' },
-  { id: 'world', to: '/world', match: '/world', label: 'Мировая экономика' },
-  { id: 'compare', to: '/compare', match: '/compare', label: 'Сравнение', desktopOnlyXl: true },
+  { id: 'world-rating', to: WORLD_RATING_TO, match: '/world/rating', labelKey: 'nav.worldRating' },
+  { id: 'world', to: '/world', match: '/world', labelKey: 'nav.world' },
+  { id: 'compare', to: '/compare', match: '/compare', labelKey: 'nav.compare', desktopOnlyXl: true },
 ];
 
 /** Самый длинный совпавший префикс среди пунктов; граница сегмента обязательна. */

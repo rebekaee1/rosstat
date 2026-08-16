@@ -13,6 +13,7 @@ import {
   regionIndicatorPath,
   regionRatingPath,
 } from '../lib/sitePaths';
+import { useLocale } from '../i18n';
 
 function ButtonClass(active) {
   return [
@@ -24,6 +25,7 @@ function ButtonClass(active) {
 }
 
 export default function RegionRatingPage() {
+  const { t } = useLocale();
   const { code } = useParams();
   const navigate = useNavigate();
   const { data, isLoading, isError, refetch, isFetching } = useRegionsHeatmap(code);
@@ -58,22 +60,21 @@ export default function RegionRatingPage() {
     return Object.fromEntries(data.values.map((v) => [v.slug, v.name]));
   }, [data]);
 
-  const bestLabel = achievement ? 'Лучшее значение' : 'Наибольшее значение';
-  const worstLabel = achievement ? 'Наихудшее значение' : 'Наименьшее значение';
+  const bestLabel = achievement ? t('regions.rating.best') : t('regions.rating.highest');
+  const worstLabel = achievement ? t('regions.rating.worst') : t('regions.rating.lowest');
   const listTitle = achievement
-    ? `Полный рейтинг (${ranked.length} регионов)`
-    : `Список регионов по величине показателя (${ranked.length})`;
-  const tableCol = achievement ? 'Место' : '№';
+    ? t('regions.rating.listAchievement', { n: ranked.length })
+    : t('regions.rating.listNeutral', { n: ranked.length });
+  const tableCol = achievement ? t('regions.rating.place') : '№';
 
   useDocumentMeta(data ? {
     title: achievement
-      ? `Рейтинг регионов России: ${data.indicator.name} (${data.year})`
-      : `${data.indicator.name} по регионам России (${data.year})`,
+      ? t('regions.rating.titleAchievement', { name: data.indicator.name, year: data.year })
+      : t('regions.rating.titleNeutral', { name: data.indicator.name, year: data.year }),
     description:
-      `${data.indicator.name} по регионам России за ${data.year} год: `
-      + `${ranked.length} субъектов РФ.`
-      + (top ? ` ${bestLabel} — ${top.name}.` : '')
-      + ' Полная таблица, данные Росстата.',
+      `${data.indicator.name} (${data.year}): `
+      + `${ranked.length}.`
+      + (top ? ` ${bestLabel} — ${top.name}.` : ''),
     path: regionRatingPath(code),
   } : null);
 
@@ -98,7 +99,7 @@ export default function RegionRatingPage() {
       {data && ranked.length >= 10 && (
         <>
           <p className="text-champagne text-xs font-mono uppercase tracking-widest mb-2">
-            {achievement ? 'Рейтинг регионов' : 'Сравнение регионов'}
+            {achievement ? t('regions.rating.eyebrowAchievement') : t('regions.rating.eyebrowNeutral')}
             {' — '}
             {data.year}
             {' '}
@@ -108,10 +109,10 @@ export default function RegionRatingPage() {
             {data.indicator.name}
             :
             {' '}
-            {achievement ? 'рейтинг регионов России' : 'сравнение регионов России'}
+            {achievement ? t('regions.rating.h1Achievement') : t('regions.rating.h1Neutral')}
           </h1>
           <p className="text-text-secondary mb-4 max-w-3xl">
-            {achievement ? 'Рейтинг' : 'Сравнение'}
+            {achievement ? t('regions.rating.eyebrowAchievement') : t('regions.rating.eyebrowNeutral')}
             {' '}
             {ranked.length}
             {' '}

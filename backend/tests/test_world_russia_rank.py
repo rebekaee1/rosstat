@@ -50,6 +50,24 @@ def test_russia_notes_are_public_language():
         assert "парсер" not in link.note_ru.lower()
         assert "ADR" not in link.note_ru
         assert meta["note"] == link.note_ru
+        assert (link.note_en or "").strip()
+        assert "парсер" not in link.note_en.lower()
+        assert "ADR" not in link.note_en
+
+
+def test_russia_notes_en_locale():
+    from app.services.locale import reset_locale, set_locale
+
+    token = set_locale("en")
+    try:
+        for slug, link in RUSSIA_CONCEPT_LINKS.items():
+            meta = russia_meta_for_concept(slug)
+            assert meta["note"] == link.note_en
+            assert "Росстат" not in meta["note"]
+            assert not meta["note"].startswith("Для России")
+            assert meta["country"]["name"] == "Russia"
+    finally:
+        reset_locale(token)
 
 
 def test_world_rating_title_matches_ssr_contract():

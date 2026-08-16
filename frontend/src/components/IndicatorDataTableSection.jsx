@@ -1,35 +1,9 @@
 import DataTable from './DataTable';
 
 import { resolveDateFormat, chartValueDigits } from '../lib/format';
-import { getCpiTableTitle } from '../lib/cpiViewModeContent';
-import { getHousingTableTitle } from '../lib/housingViewModeContent';
-import { getPpiTableTitle } from '../lib/ppiViewModeContent';
-import { getCbrTermSliceTableTitle } from '../lib/cbrTermSliceRateContent';
-import { getUnemploymentTableTitle } from '../lib/unemploymentViewModeContent';
 import { chartSeriesForViewMode } from '../lib/chartSeriesForViewMode';
-
-function tableTitle({
-  chartMode, isPriceCategory, isHousingFamily, isPpiFamily,
-  isCbrTermSliceFamily, isUnemploymentFamily,
-  indicator, safeViewMode,
-}) {
-  if (isUnemploymentFamily) {
-    return getUnemploymentTableTitle(chartMode);
-  }
-  if (isPpiFamily) {
-    return getPpiTableTitle(chartMode, safeViewMode);
-  }
-  if (isCbrTermSliceFamily) {
-    return getCbrTermSliceTableTitle(chartMode, indicator?.code);
-  }
-  if (isHousingFamily && indicator?.code) {
-    return getHousingTableTitle(chartMode, indicator.code, safeViewMode);
-  }
-  if (isPriceCategory && indicator?.code) {
-    return getCpiTableTitle(chartMode, indicator.code, safeViewMode);
-  }
-  return `Исторические данные — ${indicator?.name || 'ряд'}`;
-}
+import { useLocale } from '../i18n';
+import { resolveTableTitle } from '../i18n/resolveViewModeCopy';
 
 /**
  * Финальная секция страницы — таблица всех исторических точек выбранного
@@ -56,6 +30,7 @@ export default function IndicatorDataTableSection({
   periodMonthlyDataPoints,
   periodWeeklyDataPoints,
 }) {
+  const { locale } = useLocale();
   const data = chartMode === 'inflation'
     ? (inflationResp?.actuals || [])
     : chartSeriesForViewMode({
@@ -77,7 +52,7 @@ export default function IndicatorDataTableSection({
       <DataTable
         key={`${indicator?.code}-${chartMode}`}
         data={data}
-        title={tableTitle({
+        title={resolveTableTitle(locale, {
           chartMode, isPriceCategory, isHousingFamily, isPpiFamily,
           isCbrTermSliceFamily, isUnemploymentFamily,
           indicator, safeViewMode,

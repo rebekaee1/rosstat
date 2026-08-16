@@ -3,13 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '../../lib/format';
 import { FOCUS_RING_SURFACE } from '../../lib/uiTokens';
 import { track, events as trackEvents } from '../../lib/track';
-
-const WEEKDAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
-
-const MONTHS_NOM = [
-  'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
-  'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь',
-];
+import { useT } from '../../i18n';
 
 const SOURCE_DOT = {
   cbr: 'bg-blue-500',
@@ -43,6 +37,7 @@ export default function CalendarGrid({
   selectedDate, onSelectDate,
   source, onSourceChange,
 }) {
+  const t = useT();
   const todayStr = useMemo(() => {
     const n = new Date();
     return fmt(n.getFullYear(), n.getMonth(), n.getDate());
@@ -59,11 +54,21 @@ export default function CalendarGrid({
     return map;
   }, [events]);
 
+  const weekdays = [
+    t('calendar.weekday.0'),
+    t('calendar.weekday.1'),
+    t('calendar.weekday.2'),
+    t('calendar.weekday.3'),
+    t('calendar.weekday.4'),
+    t('calendar.weekday.5'),
+    t('calendar.weekday.6'),
+  ];
+
   const sourceButtons = [
-    { value: '', label: 'Все' },
-    { value: 'cbr', label: 'ЦБ', dot: 'bg-blue-500' },
-    { value: 'rosstat', label: 'Росстат', dot: 'bg-emerald-500' },
-    { value: 'minfin', label: 'Минфин', dot: 'bg-amber-500' },
+    { value: '', label: t('calendar.source.all') },
+    { value: 'cbr', label: t('calendar.source.cbr'), dot: 'bg-blue-500' },
+    { value: 'rosstat', label: t('calendar.source.rosstat'), dot: 'bg-emerald-500' },
+    { value: 'minfin', label: t('calendar.source.minfin'), dot: 'bg-amber-500' },
   ];
 
   return (
@@ -72,19 +77,19 @@ export default function CalendarGrid({
         <button
           type="button" onClick={() => { onPrev(); track(trackEvents.CALENDAR_MONTH_NAV, { direction: 'prev' }); }}
           className={cn(FOCUS_RING_SURFACE, 'p-1.5 rounded-lg hover:bg-surface-hover transition-colors')}
-          aria-label="Предыдущий месяц"
+          aria-label={t('calendar.prevMonth')}
         >
           <ChevronLeft className="w-5 h-5 text-text-secondary" />
         </button>
 
         <h2 className="text-base font-semibold text-text-primary select-none">
-          {MONTHS_NOM[month]} {year}
+          {t(`calendar.month.${month}`)} {year}
         </h2>
 
         <button
           type="button" onClick={() => { onNext(); track(trackEvents.CALENDAR_MONTH_NAV, { direction: 'next' }); }}
           className={cn(FOCUS_RING_SURFACE, 'p-1.5 rounded-lg hover:bg-surface-hover transition-colors')}
-          aria-label="Следующий месяц"
+          aria-label={t('calendar.nextMonth')}
         >
           <ChevronRight className="w-5 h-5 text-text-secondary" />
         </button>
@@ -111,7 +116,7 @@ export default function CalendarGrid({
       </div>
 
       <div className="grid grid-cols-7">
-        {WEEKDAYS.map((wd) => (
+        {weekdays.map((wd) => (
           <div key={wd} className="text-center text-[11px] font-medium text-text-tertiary uppercase tracking-wider py-2">
             {wd}
           </div>
@@ -177,11 +182,11 @@ export default function CalendarGrid({
 
       <div className="flex items-center justify-between px-4 py-2 text-[11px] text-text-tertiary border-t border-border-subtle">
         <div className="flex items-center gap-3">
-          <span className="inline-flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-blue-500" /> ЦБ</span>
-          <span className="inline-flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-500" /> Росстат</span>
-          <span className="inline-flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500" /> Минфин</span>
+          <span className="inline-flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-blue-500" /> {t('calendar.source.cbr')}</span>
+          <span className="inline-flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-500" /> {t('calendar.source.rosstat')}</span>
+          <span className="inline-flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500" /> {t('calendar.source.minfin')}</span>
         </div>
-        <span>{events.length} событий</span>
+        <span>{t('calendar.eventsCount', { n: events.length })}</span>
       </div>
     </div>
   );

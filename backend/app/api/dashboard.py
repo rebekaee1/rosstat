@@ -5,6 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.models import Indicator, IndicatorData
 from app.core.cache import cache_get, cache_set, versioned_key
+from app.services.locale import get_locale
+from app.services.seo_i18n import public_indicator_fields
 
 router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 
@@ -26,7 +28,7 @@ CACHE_TTL = 1800
 
 @router.get("/sparklines")
 async def dashboard_sparklines(db: AsyncSession = Depends(get_db)):
-    cache_key = await versioned_key("dashboard", "sparklines")
+    cache_key = await versioned_key("dashboard", f"sparklines:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -34,7 +36,13 @@ async def dashboard_sparklines(db: AsyncSession = Depends(get_db)):
     codes = [v["code"] for v in FLAGSHIP_MAP.values()]
 
     ind_q = await db.execute(
-        select(Indicator.id, Indicator.code, Indicator.name, Indicator.unit)
+        select(
+            Indicator.id,
+            Indicator.code,
+            Indicator.name,
+            Indicator.name_en,
+            Indicator.unit,
+        )
         .where(Indicator.code.in_(codes))
     )
     indicators = {row.code: row for row in ind_q.all()}
@@ -74,8 +82,6 @@ async def dashboard_sparklines(db: AsyncSession = Depends(get_db)):
     for row in rows:
         by_ind_id.setdefault(row.indicator_id, []).append(row)
 
-    id_to_code = {row.id: row.code for row in indicators.values()}
-
     result = {}
     for cat_slug, cfg in FLAGSHIP_MAP.items():
         code = cfg["code"]
@@ -104,10 +110,16 @@ async def dashboard_sparklines(db: AsyncSession = Depends(get_db)):
             elif change < 0:
                 trend = "down"
 
+        fields = public_indicator_fields(
+            code,
+            name_ru=ind.name,
+            name_en=ind.name_en,
+            unit_ru=ind.unit,
+        )
         result[cat_slug] = {
             "code": code,
-            "name": ind.name,
-            "unit": ind.unit,
+            "name": fields["name"] or ind.name,
+            "unit": fields.get("unit") or ind.unit,
             "points": points,
             "current_value": current_value,
             "previous_value": previous_value,

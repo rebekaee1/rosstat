@@ -63,7 +63,9 @@ export function setTrackedIdentity({ authed, userId } = {}) {
  */
 export function categorySlugFromApi(apiCategory) {
   if (!apiCategory) return null;
-  const c = CATEGORIES.find((cat) => cat.apiCategory === apiCategory);
+  const c = CATEGORIES.find(
+    (cat) => cat.apiCategory === apiCategory || cat.nameEn === apiCategory || cat.name === apiCategory,
+  );
   return c?.slug ?? null;
 }
 

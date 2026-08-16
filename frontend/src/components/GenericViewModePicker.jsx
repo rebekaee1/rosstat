@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { cn } from '../lib/format';
 import { track, events } from '../lib/track';
+import { useLocale, useT } from '../i18n';
+import { localizeViewModeLabel } from '../i18n/viewModeLabels';
 import {
   buildViewModeGroups,
   defaultSubModeForGroup,
@@ -29,10 +31,23 @@ export default function GenericViewModePicker({
   currentMode,
   onChange,
   trackContext,
-  title = 'Режим показателя',
+  title,
   compact = false,
 }) {
-  const groups = useMemo(() => buildViewModeGroups(family), [family]);
+  const t = useT();
+  const { locale } = useLocale();
+  const sectionTitle = title || t('indicator.picker.generic');
+  const groups = useMemo(() => {
+    const raw = buildViewModeGroups(family);
+    return raw.map((g) => ({
+      ...g,
+      label: localizeViewModeLabel(g.label, locale),
+      modes: g.modes?.map((m) => ({
+        ...m,
+        label: localizeViewModeLabel(m.label, locale),
+      })),
+    }));
+  }, [family, locale]);
   const [expandedGroup, setExpandedGroup] = useState(
     () => expandedGroupForMode(family, currentMode),
   );
@@ -83,7 +98,7 @@ export default function GenericViewModePicker({
   const body = (
     <>
       <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-        {title}
+        {sectionTitle}
       </p>
       <div className="flex flex-wrap gap-2">
         {groups.map((group) => (

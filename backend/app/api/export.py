@@ -22,6 +22,7 @@ from app.database import get_db
 from app.models import User
 from app.security.auth import get_optional_user
 from app.security import download_quota as dq
+from app.services.api_i18n import api_detail
 from app.services.display import format_number_ru, today_msk
 
 logger = logging.getLogger(__name__)
@@ -257,7 +258,10 @@ async def export_table(
                 status_code=403,
                 detail={
                     "code": "download_limit",
-                    "message": "Лимит бесплатных выгрузок исчерпан. Войдите в аккаунт для безлимитного скачивания.",
+                    "message": api_detail(
+                        "Лимит бесплатных выгрузок исчерпан. Войдите в аккаунт для безлимитного скачивания.",
+                        "Free download limit reached. Sign in for unlimited downloads.",
+                    ),
                 },
             )
 

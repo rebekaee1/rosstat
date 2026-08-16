@@ -12,6 +12,7 @@ from app.database import get_db
 from app.models import EconomicEvent, Indicator
 from app.schemas import CalendarEventOut, CalendarResponse
 from app.core.cache import cache_get, cache_set
+from app.services.locale import get_locale
 
 router = APIRouter(prefix="/calendar", tags=["calendar"])
 
@@ -50,9 +51,11 @@ def _effective_status(ev: EconomicEvent) -> str:
 
 
 def _build_event_out(ev: EconomicEvent, indicator: Indicator | None) -> CalendarEventOut:
+    from app.services.seo_i18n import event_public_title
+
     return CalendarEventOut(
         id=ev.id,
-        title=ev.title,
+        title=event_public_title(ev.title, ev.title_en),
         title_en=ev.title_en,
         event_type=ev.event_type,
         source=ev.source,
@@ -92,7 +95,11 @@ async def list_events(
     if not to_date:
         to_date = from_date + timedelta(days=60)
 
-    cache_key = f"fe:calendar:sourcebound:{from_date}:{to_date}:{source}:{importance}:{event_type}:{limit}:{offset}"
+    # Locale in key: event.title is localized via event_public_title (RU/EN race otherwise).
+    cache_key = (
+        f"fe:calendar:sourcebound:{get_locale()}:{from_date}:{to_date}:"
+        f"{source}:{importance}:{event_type}:{limit}:{offset}"
+    )
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -141,7 +148,9 @@ async def upcoming_events(
     limit: int = Query(10, ge=1, le=50),
     importance_min: int = Query(1, ge=1, le=3),
 ):
-    cache_key = f"fe:calendar:upcoming:sourcebound:{limit}:{importance_min}"
+    cache_key = (
+        f"fe:calendar:upcoming:sourcebound:{get_locale()}:{limit}:{importance_min}"
+    )
     cached = await cache_get(cache_key)
     if cached:
         return cached

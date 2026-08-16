@@ -1,11 +1,13 @@
 import { Link, useParams } from 'react-router-dom';
 import { Activity } from 'lucide-react';
-import { CATEGORIES } from '../lib/categories';
+import { findCategoryByApiLabel } from '../lib/categories';
 import { indicatorDetailHeaderMobileLines } from '../lib/indicatorVariants';
 import { SkeletonBox } from './Skeleton';
 import Breadcrumbs from './Breadcrumbs';
 import { russiaIndicatorTrail, russiaIndicatorYearTrail } from '../lib/breadcrumbs';
 import { russiaCategoryPath } from '../lib/sitePaths';
+import { useLocale } from '../i18n';
+import { localizeViewModeLabel } from '../i18n/viewModeLabels';
 
 const FREQ_MAP = {
   monthly: 'Помесячно',
@@ -43,21 +45,32 @@ export default function IndicatorDetailHeader({
   headerRef,
   displayFrequency,
 }) {
+  const { locale } = useLocale();
   const { year } = useParams();
   const effectiveFrequency = displayFrequency ?? indicator?.frequency;
-  const category = indicator?.category
-    ? CATEGORIES.find((c) => c.apiCategory === indicator.category)
-    : null;
+  const category = findCategoryByApiLabel(
+    indicator?.category_ru || indicator?.category,
+  );
+  const categoryCrumbName = locale === 'en'
+    ? (category?.nameEn || category?.name)
+    : category?.name;
+  const categoryLinkName = locale === 'en'
+    ? (category?.nameEn || category?.name || indicator?.category)
+    : indicator?.category;
   const title = indicator?.name || code;
   const crumbs = year
     ? russiaIndicatorYearTrail(
-      category?.name,
+      categoryCrumbName,
       category?.slug,
       title,
       code,
       year,
     )
-    : russiaIndicatorTrail(category?.name, category?.slug, title, code);
+    : russiaIndicatorTrail(categoryCrumbName, category?.slug, title, code);
+  const freqLabel = localizeViewModeLabel(
+    FREQ_MAP[effectiveFrequency] || effectiveFrequency,
+    locale,
+  );
 
   return (
     <div ref={headerRef} className="mb-5 md:mb-16 max-w-4xl">
@@ -76,14 +89,14 @@ export default function IndicatorDetailHeader({
           <div data-animate className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2.5 md:mb-4">
             <span className="px-2.5 sm:px-3 py-1 rounded-full border border-border-subtle bg-obsidian-light text-[10px] font-mono uppercase tracking-widest text-text-secondary flex items-center gap-2">
               <Activity className="w-3 h-3 text-champagne" />
-              {FREQ_MAP[effectiveFrequency] || effectiveFrequency}
+              {freqLabel}
             </span>
             {category ? (
               <Link
                 to={russiaCategoryPath(category.slug)}
                 className="hidden sm:inline text-xs font-mono text-text-tertiary hover:text-champagne transition-colors"
               >
-                {indicator.category}
+                {categoryLinkName}
               </Link>
             ) : indicator?.category ? (
               <span className="hidden sm:inline text-xs font-mono text-text-tertiary">

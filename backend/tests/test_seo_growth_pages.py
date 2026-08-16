@@ -39,6 +39,13 @@ def test_render_urlset_shape():
     assert "<loc>https://forecasteconomy.com/russia/today</loc>" in xml
     assert "<priority>0.7</priority>" in xml
 
+    ru_xml = _render_urlset(
+        [SiteUrl("/russia/today", "2026-07-04", "daily", "0.9")],
+        origin="https://ru.forecasteconomy.com",
+    )
+    assert "<loc>https://ru.forecasteconomy.com/russia/today</loc>" in ru_xml
+    assert "https://forecasteconomy.com/russia/today" not in ru_xml
+
 
 def test_indexnow_batches_split(monkeypatch):
     """Список длиннее 10k должен разбиваться на несколько POST."""
@@ -72,6 +79,51 @@ def test_indexnow_batches_split(monkeypatch):
     ok = asyncio.run(inx.ping_urls(paths))
     assert ok is True
     assert calls == [10_000, 10_000, 5_000]
+
+
+def test_indexnow_accepts_second_host_origin(monkeypatch):
+    """Каркас второго хоста: origin/host уходят в payload, прод не трогаем."""
+    import app.services.indexnow as inx
+
+    captured = {}
+
+    class _FakeResponse:
+        status_code = 202
+        text = ""
+
+    class _FakeClient:
+        def __init__(self, *a, **k):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *a):
+            return False
+
+        async def post(self, url, json=None):
+            captured["payload"] = json
+            return _FakeResponse()
+
+    monkeypatch.setattr(inx.httpx, "AsyncClient", _FakeClient)
+    monkeypatch.setattr(inx.settings, "indexnow_enabled", True)
+    monkeypatch.setattr(inx.settings, "indexnow_key", "k" * 32)
+
+    ok = asyncio.run(
+        inx.ping_urls(
+            ["/russia/indicator/cpi"],
+            origin="https://ru.forecasteconomy.com",
+            host="ru.forecasteconomy.com",
+        )
+    )
+    assert ok is True
+    assert captured["payload"]["host"] == "ru.forecasteconomy.com"
+    assert captured["payload"]["urlList"] == [
+        "https://ru.forecasteconomy.com/russia/indicator/cpi"
+    ]
+    assert captured["payload"]["keyLocation"].startswith(
+        "https://ru.forecasteconomy.com/"
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -356,6 +408,85 @@ def test_sitemap_sections(seeded_env):
         assert "/russia/region/map/chislennost-naseleniya" in maps.text
 
         assert tc.get("/sitemap-nope.xml").status_code == 404
+
+
+def test_sitemap_locs_follow_request_host(seeded_env):
+    """Host-aware sitemap: ru. Host → absolute loc on ru.; default Host → DOMAIN."""
+    with TestClient(seeded_env["app"]) as tc:
+        apex = tc.get("/sitemap.xml")
+        assert apex.status_code == 200
+        assert "https://forecasteconomy.com/sitemap-core.xml" in apex.text
+
+        ru = tc.get(
+            "/sitemap.xml",
+            headers={"host": "ru.forecasteconomy.com"},
+        )
+        assert ru.status_code == 200
+        assert "https://ru.forecasteconomy.com/sitemap-core.xml" in ru.text
+        assert "https://forecasteconomy.com/sitemap-core.xml" not in ru.text
+
+        ru_core = tc.get(
+            "/sitemap-core.xml",
+            headers={"host": "ru.forecasteconomy.com"},
+        )
+        assert ru_core.status_code == 200
+        assert "https://ru.forecasteconomy.com/russia/" in ru_core.text
+        assert "https://forecasteconomy.com/russia/" not in ru_core.text
+
+
+def test_rss_robots_llms_follow_request_host(seeded_env):
+    """RSS / robots.txt / llms.txt absolute URLs follow request Host."""
+    with TestClient(seeded_env["app"]) as tc:
+        apex_feed = tc.get("/feed.xml")
+        assert apex_feed.status_code == 200
+        assert "https://forecasteconomy.com/feed.xml" in apex_feed.text
+        assert "https://forecasteconomy.com/russia/indicator/" in apex_feed.text
+
+        ru_feed = tc.get(
+            "/feed.xml",
+            headers={"host": "ru.forecasteconomy.com"},
+        )
+        assert ru_feed.status_code == 200
+        assert "https://ru.forecasteconomy.com/feed.xml" in ru_feed.text
+        assert "https://ru.forecasteconomy.com/russia/indicator/" in ru_feed.text
+        assert "https://forecasteconomy.com/feed.xml" not in ru_feed.text
+
+        apex_robots = tc.get("/robots.txt")
+        assert apex_robots.status_code == 200
+        assert "Host: https://forecasteconomy.com" in apex_robots.text
+        assert "Sitemap: https://forecasteconomy.com/sitemap.xml" in apex_robots.text
+
+        ru_robots = tc.get(
+            "/robots.txt",
+            headers={"host": "ru.forecasteconomy.com"},
+        )
+        assert ru_robots.status_code == 200
+        assert "Host: https://ru.forecasteconomy.com" in ru_robots.text
+        assert "Sitemap: https://ru.forecasteconomy.com/sitemap.xml" in ru_robots.text
+        assert "https://forecasteconomy.com/sitemap.xml" not in ru_robots.text
+
+        apex_llms = tc.get("/llms.txt")
+        assert apex_llms.status_code == 200
+        assert "https://forecasteconomy.com/sitemap.xml" in apex_llms.text
+
+        ru_llms = tc.get(
+            "/llms.txt",
+            headers={"host": "ru.forecasteconomy.com"},
+        )
+        assert ru_llms.status_code == 200
+        assert "https://ru.forecasteconomy.com/sitemap.xml" in ru_llms.text
+        assert "https://forecasteconomy.com/sitemap.xml" not in ru_llms.text
+
+
+def test_seo_static_templates_match_frontend_public():
+    """Backend templates stay byte-identical to frontend/public placeholders."""
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[2]
+    for name in ("robots.txt", "llms.txt"):
+        backend = (root / "backend/app/data/seo_static" / name).read_text(encoding="utf-8")
+        frontend = (root / "frontend/public" / name).read_text(encoding="utf-8")
+        assert backend == frontend, f"{name} drifted between backend and frontend"
 
 
 def _unique_internal_beyond_nav(html: str) -> set[str]:

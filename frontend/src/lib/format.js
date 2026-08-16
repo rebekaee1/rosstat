@@ -1,37 +1,56 @@
-const monthsShort = [
-  'янв', 'фев', 'мар', 'апр', 'май', 'июн',
-  'июл', 'авг', 'сен', 'окт', 'ноя', 'дек',
-];
+import { resolveBrowserLocale } from '../i18n/locale';
 
-const monthsFull = [
-  'январь', 'февраль', 'март', 'апрель', 'май', 'июнь',
-  'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь',
-];
+const MONTHS_SHORT = {
+  ru: ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'],
+  en: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+};
 
-const monthsGenitive = [
-  'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
-  'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря',
-];
+const MONTHS_FULL = {
+  ru: [
+    'январь', 'февраль', 'март', 'апрель', 'май', 'июнь',
+    'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь',
+  ],
+  en: [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December',
+  ],
+};
+
+/** RU: родительный («15 января»); EN: то же, что полное имя месяца. */
+const MONTHS_DAY = {
+  ru: [
+    'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+    'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря',
+  ],
+  en: MONTHS_FULL.en,
+};
+
+function resolveFormatLocale(locale) {
+  if (locale === 'en' || locale === 'ru') return locale;
+  if (typeof window !== 'undefined') return resolveBrowserLocale();
+  return 'ru';
+}
 
 /**
  * Короткая подпись даты на оси графика (не tooltip/таблица).
  * multiYear: при окне >1 года добавляем двузначный год, иначе только день+месяц.
  */
-export function formatChartAxisDate(dateStr, format = 'short', { multiYear = false } = {}) {
+export function formatChartAxisDate(dateStr, format = 'short', { multiYear = false, locale } = {}) {
   if (!dateStr) return '';
   const d = new Date(dateStr);
   if (isNaN(d.getTime())) return '';
+  const loc = resolveFormatLocale(locale);
   const day = d.getUTCDate();
-  const month = monthsShort[d.getUTCMonth()];
+  const month = MONTHS_SHORT[loc][d.getUTCMonth()];
   const year = d.getUTCFullYear();
 
   if (format === 'day' || format === 'weekly') {
     return multiYear ? `${day} ${month} '${String(year).slice(-2)}` : `${day} ${month}`;
   }
   if (format === 'quarterly' || format === 'annual') {
-    return formatDate(dateStr, format);
+    return formatDate(dateStr, format, loc);
   }
-  return formatDate(dateStr, format === 'full' ? 'short' : format);
+  return formatDate(dateStr, format === 'full' ? 'short' : format, loc);
 }
 
 /** JetBrains Mono 11px: чуть консервативнее реальной ширины кириллицы. */
@@ -356,23 +375,31 @@ export function resolveDateFormat({ chartMode, frequency, safeViewMode } = {}) {
   return 'full';
 }
 
-export function formatDate(dateStr, format = 'short') {
+/**
+ * Locale-aware date label. Default locale = browser/preview (`resolveBrowserLocale`).
+ * ru: «январь 2020», «15 января 2020», «I кв. 2020»
+ * en: «January 2020», «15 January 2020», «Q1 2020» (no mid-dot)
+ */
+export function formatDate(dateStr, format = 'short', locale) {
   if (!dateStr) return '—';
   const d = new Date(dateStr);
   if (isNaN(d.getTime())) return '—';
+  const loc = resolveFormatLocale(locale);
   const year = d.getUTCFullYear();
   if (format === 'annual') return year.toString();
   if (format === 'quarterly') {
     const q = Math.ceil((d.getUTCMonth() + 1) / 3);
+    if (loc === 'en') return `Q${q} ${year}`;
     const roman = ['I', 'II', 'III', 'IV'][q - 1];
     return `${roman} кв. ${year}`;
   }
   const month = d.getUTCMonth();
   const day = d.getUTCDate();
-  if (format === 'day') return `${day} ${monthsGenitive[month]} ${year}`;
-  if (format === 'weekly') return `${day} ${monthsGenitive[month]} ${year}`;
-  if (format === 'full') return `${monthsFull[month]} ${year}`;
-  return `${monthsShort[month]} ${year}`;
+  if (format === 'day' || format === 'weekly') {
+    return `${day} ${MONTHS_DAY[loc][month]} ${year}`;
+  }
+  if (format === 'full') return `${MONTHS_FULL[loc][month]} ${year}`;
+  return `${MONTHS_SHORT[loc][month]} ${year}`;
 }
 
 const UNIT_CONFIG = {

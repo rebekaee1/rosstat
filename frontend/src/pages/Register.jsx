@@ -3,11 +3,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import useDocumentMeta from '../lib/useMeta';
 import { useAuth } from '../context/authContext';
 import { registerUser } from '../lib/api';
+import { apiErrorMessage } from '../lib/apiErrorMessage';
 import OAuthButtons from '../components/OAuthButtons';
 import { track, events } from '../lib/track';
+import { useT } from '../i18n';
 
 export default function Register() {
-  useDocumentMeta({ title: 'Регистрация — Forecast Economy', path: '/register', robots: 'noindex, nofollow' });
+  const t = useT();
+  useDocumentMeta({ title: t('auth.register.metaTitle'), path: '/register', robots: 'noindex, nofollow' });
   const navigate = useNavigate();
   const { setUser } = useAuth();
   const [email, setEmail] = useState('');
@@ -21,7 +24,7 @@ export default function Register() {
     e.preventDefault();
     setError(null);
     if (!consent) {
-      setError('Необходимо согласие на обработку персональных данных');
+      setError(t('auth.register.consentRequired'));
       return;
     }
     setBusy(true);
@@ -32,7 +35,7 @@ export default function Register() {
       if (newsletter) track(events.NEWSLETTER_OPT_IN, { channel: 'email' });
       navigate('/account');
     } catch (err) {
-      setError(err?.response?.data?.detail || 'Не удалось зарегистрироваться');
+      setError(apiErrorMessage(err, t, 'auth.register.error'));
     } finally {
       setBusy(false);
     }
@@ -41,16 +44,16 @@ export default function Register() {
   return (
     <div className="max-w-md mx-auto px-4 pt-28 pb-24">
       <div className="rounded-2xl border border-border-subtle bg-surface p-6 sm:p-8 shadow-md ring-1 ring-black/[0.04]">
-      <h1 className="text-2xl font-display font-bold text-text-primary mb-1 text-center">Регистрация</h1>
+      <h1 className="text-2xl font-display font-bold text-text-primary mb-1 text-center">{t('auth.register.title')}</h1>
       <p className="text-sm text-text-secondary mb-6 text-center">
-        Аккаунт открывает безлимитную выгрузку данных за любой период. Контент платформы остаётся бесплатным.
+        {t('auth.register.subtitle')}
       </p>
 
-      <OAuthButtons intent="login" dividerLabel="или по email" />
+      <OAuthButtons intent="login" dividerLabel={t('auth.oauth.divider')} />
 
       <form onSubmit={submit} className="space-y-4">
         <div>
-          <label className="block text-sm text-text-secondary mb-1.5" htmlFor="email">Email</label>
+          <label className="block text-sm text-text-secondary mb-1.5" htmlFor="email">{t('common.email')}</label>
           <input
             id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
             autoComplete="email"
@@ -58,26 +61,27 @@ export default function Register() {
           />
         </div>
         <div>
-          <label className="block text-sm text-text-secondary mb-1.5" htmlFor="password">Пароль</label>
+          <label className="block text-sm text-text-secondary mb-1.5" htmlFor="password">{t('common.password')}</label>
           <input
             id="password" type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)}
             autoComplete="new-password"
             className="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-lighter/50 border border-border-subtle text-text-primary focus:outline-none focus:border-champagne/50"
           />
-          <p className="text-xs text-text-tertiary mt-1">Не короче 8 символов.</p>
+          <p className="text-xs text-text-tertiary mt-1">{t('auth.register.passwordHint')}</p>
         </div>
         <label className="flex items-start gap-2.5 text-sm text-text-secondary cursor-pointer">
           <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-0.5 accent-[#B8942F]" />
           <span>
-            Я ознакомлен с{' '}
-            <Link to="/terms" className="text-champagne hover:underline">пользовательским соглашением</Link>{' '}
-            и согласен на обработку персональных данных согласно{' '}
-            <Link to="/privacy" className="text-champagne hover:underline">политике конфиденциальности</Link>.
+            {t('auth.oauth.policyBefore')}{' '}
+            <Link to="/terms" className="text-champagne hover:underline">{t('auth.oauth.terms')}</Link>{' '}
+            {t('auth.oauth.policyMid')}{' '}
+            <Link to="/privacy" className="text-champagne hover:underline">{t('auth.oauth.privacy')}</Link>
+            {t('auth.oauth.policyAfter')}
           </span>
         </label>
         <label className="flex items-start gap-2.5 text-sm text-text-secondary cursor-pointer">
           <input type="checkbox" checked={newsletter} onChange={(e) => setNewsletter(e.target.checked)} className="mt-0.5 accent-[#B8942F]" />
-          <span>Согласен на информационную рассылку об обновлениях данных и аналитике.</span>
+          <span>{t('auth.oauth.newsletter')}</span>
         </label>
 
         {error && <div className="text-sm text-negative">{error}</div>}
@@ -86,12 +90,12 @@ export default function Register() {
           type="submit" disabled={busy}
           className="w-full py-2.5 rounded-xl bg-champagne/15 text-champagne font-medium hover:bg-champagne/25 transition-colors disabled:opacity-50"
         >
-          {busy ? 'Создаём…' : 'Зарегистрироваться'}
+          {busy ? t('auth.register.busy') : t('auth.register.submitAlt')}
         </button>
       </form>
 
       <p className="text-sm text-text-secondary mt-6 text-center">
-        Уже есть аккаунт? <Link to="/login" className="text-champagne hover:underline">Войти</Link>
+        {t('auth.register.haveAccount')} <Link to="/login" className="text-champagne hover:underline">{t('common.login')}</Link>
       </p>
       </div>
     </div>

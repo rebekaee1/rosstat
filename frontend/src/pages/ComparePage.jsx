@@ -15,6 +15,7 @@ import api from '../lib/api';
 import { useRegionsLanding, useRegionsCatalog } from '../lib/regionsApi';
 import { fetchWorldCompareSeries, useWorldCompareCatalog } from '../lib/worldApi';
 import { useAuth } from '../context/authContext';
+import { useT, useLocale } from '../i18n';
 import {
   formatDate, formatChartAxisDate, formatAxisTick, formatValueWithUnit,
   unitSuffix, unitDigits, cn, pickChartAxisTicks, chartAxisTickBudget,
@@ -42,10 +43,10 @@ import {
 } from '../lib/sitePaths';
 
 const RANGE_OPTIONS = [
-  { key: '3y', label: '3 года', months: 36 },
-  { key: '5y', label: '5 лет', months: 60 },
-  { key: '10y', label: '10 лет', months: 120 },
-  { key: 'all', label: 'Все', months: null },
+  { key: '3y', labelKey: 'compare.range.3y', months: 36 },
+  { key: '5y', labelKey: 'compare.range.5y', months: 60 },
+  { key: '10y', labelKey: 'compare.range.10y', months: 120 },
+  { key: 'all', labelKey: 'compare.range.all', months: null },
 ];
 
 // До 10 рядов — палитра различимых цветов (тёмный фон карточки графика).
@@ -57,8 +58,8 @@ const PALETTE = [
 // «Общая база» вместо «Индекс», чтобы не путать со ЗНАЧЕНИЕМ представления
 // «Индекс» (уровень индекса цен ИПЦ/ИЦП) у отдельного ряда — это разные вещи.
 const SCALE_OPTIONS = [
-  { key: 'values', label: 'Исходные значения' },
-  { key: 'index', label: 'Общая база (=100)' },
+  { key: 'values', labelKey: 'compare.scale.values' },
+  { key: 'index', labelKey: 'compare.scale.index' },
 ];
 
 const GUEST_MAX = 2;
@@ -67,10 +68,10 @@ const USER_MAX = 10;
 // Шаг временной сетки: месячный ряд рядом с годовым выглядит «лесенкой» —
 // приведение к общему шагу усредняет значения за период (созвон «На правки 13»).
 const STEP_OPTIONS = [
-  { key: 'auto', label: 'Авто' },
-  { key: 'month', label: 'Месяц' },
-  { key: 'quarter', label: 'Квартал' },
-  { key: 'year', label: 'Год' },
+  { key: 'auto', labelKey: 'compare.step.auto' },
+  { key: 'month', labelKey: 'compare.step.month' },
+  { key: 'quarter', labelKey: 'compare.step.quarter' },
+  { key: 'year', labelKey: 'compare.step.year' },
 ];
 
 function pearsonCorrelation(pairs) {
@@ -118,16 +119,18 @@ function aggregateToStep(points, step) {
 }
 
 const FREQ_LABEL = {
-  daily: 'ежедневно',
-  weekly: 'еженедельно',
-  monthly: 'ежемесячно',
-  quarterly: 'ежеквартально',
-  annual: 'ежегодно',
-  yearly: 'ежегодно',
+  daily: 'compare.freq.daily',
+  weekly: 'compare.freq.weekly',
+  monthly: 'compare.freq.monthly',
+  quarterly: 'compare.freq.quarterly',
+  annual: 'compare.freq.annual',
+  yearly: 'compare.freq.annual',
 };
 
-function freqLabel(freq) {
-  return FREQ_LABEL[freq] || freq || '';
+function freqLabel(freq, t) {
+  const key = FREQ_LABEL[freq];
+  if (!key) return freq || '';
+  return t ? t(key) : key;
 }
 
 /** Формат подписи даты на оси/в тултипе — по более «мелкой» частоте набора. */
@@ -191,14 +194,14 @@ async function fetchRegionSeries(code, { signal }) {
       name: `${d.indicator.name} — ${d.region.name}`,
       unit: d.indicator.unit,
       frequency: 'annual',
-      category: 'Регионы',
+      category: 'compare.category.regions',
     },
   };
 }
 
 async function fetchWorldSeries(code, { signal }) {
   const parsed = parseWorldCompareCode(code);
-  if (!parsed) throw new Error('Некорректный код мирового ряда');
+  if (!parsed) throw new Error('compare.error.worldCode');
   const payload = await fetchWorldCompareSeries(parsed.countrySlug, parsed.conceptSlug, { signal });
   return {
     data: payload.data,
@@ -207,7 +210,7 @@ async function fetchWorldSeries(code, { signal }) {
       name: `${payload.meta.concept_name} — ${payload.meta.country_name}`,
       unit: payload.meta.unit,
       frequency: payload.meta.frequency,
-      category: 'Мировая экономика',
+      category: 'compare.category.world',
       conceptSlug: payload.meta.concept_slug,
     },
   };
@@ -241,7 +244,10 @@ function AddCardHeader({ icon, title, hint }) {
  * скроллится), фильтруется вводом. Поддерживает группы (секции показателей).
  * Один визуальный язык с макро-поиском (`AddIndicator`).
  */
-function ComboSelect({ groups, value, onChange, placeholder, searchPlaceholder, ariaLabel, disabled, trackContext }) {
+function ComboSelect({
+  groups, value, onChange, placeholder, searchPlaceholder, ariaLabel, disabled, trackContext,
+}) {
+  const t = useT();
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const boxRef = useRef(null);
@@ -294,7 +300,7 @@ function ComboSelect({ groups, value, onChange, placeholder, searchPlaceholder, 
         {value && !open ? (
           <button
             type="button"
-            aria-label="Очистить"
+            aria-label={t('common.clear')}
             onMouseDown={(e) => { e.preventDefault(); onChange(''); setQuery(''); }}
             className="shrink-0 text-text-tertiary hover:text-text-primary"
           >
@@ -308,7 +314,7 @@ function ComboSelect({ groups, value, onChange, placeholder, searchPlaceholder, 
       {open && !disabled && (
         <div className="absolute z-40 mt-2 max-h-72 w-full overflow-auto rounded-xl border border-border-subtle bg-surface shadow-2xl">
           {total === 0 ? (
-            <div className="px-4 py-3 text-sm text-text-tertiary">Ничего не найдено</div>
+            <div className="px-4 py-3 text-sm text-text-tertiary">{t('compare.nothingFound')}</div>
           ) : (
             filtered.map((g) => (
               <div key={g.label || '_'}>
@@ -348,6 +354,7 @@ function ComboSelect({ groups, value, onChange, placeholder, searchPlaceholder, 
 function AddRegionSeries({
   selected, onAdd, atCap, capHint, compatibilityFor,
 }) {
+  const t = useT();
   const landing = useRegionsLanding();
   const catalog = useRegionsCatalog();
   const [regionSlug, setRegionSlug] = useState('');
@@ -391,17 +398,17 @@ function AddRegionSeries({
     <div className="rounded-xl border border-border-subtle bg-surface p-3">
       <AddCardHeader
         icon={MapPin}
-        title="Добавить региональный индикатор"
-        hint="Регион + показатель — например, зарплата в вашем регионе"
+        title={t('compare.addRegionTitle')}
+        hint={t('compare.addRegionHint')}
       />
       <div className="flex flex-col gap-2">
         <ComboSelect
           groups={regionGroups}
           value={regionSlug}
           onChange={setRegionSlug}
-          ariaLabel="Регион"
-          placeholder="Выберите или найдите регион…"
-          searchPlaceholder="Название региона…"
+          ariaLabel={t('compare.regionAria')}
+          placeholder={t('compare.regionPlaceholder')}
+          searchPlaceholder={t('compare.regionSearch')}
           disabled={atCap}
           trackContext="compare-region"
         />
@@ -409,9 +416,9 @@ function AddRegionSeries({
           groups={indicatorGroups}
           value={indCode}
           onChange={setIndCode}
-          ariaLabel="Показатель региона"
-          placeholder="Выберите или найдите показатель…"
-          searchPlaceholder="Название показателя…"
+          ariaLabel={t('compare.regionIndicatorAria')}
+          placeholder={t('compare.regionIndicatorPlaceholder')}
+          searchPlaceholder={t('compare.regionIndicatorSearch')}
           disabled={atCap || !regionSlug}
           trackContext="compare-region-indicator"
         />
@@ -422,7 +429,7 @@ function AddRegionSeries({
           title={atCap
             ? capHint
             : already
-              ? 'Этот ряд уже добавлен'
+              ? t('compare.alreadyAdded')
               : compatibility.reason || undefined}
           className={cn(
             'inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
@@ -432,7 +439,7 @@ function AddRegionSeries({
           )}
         >
           <Plus className="h-3.5 w-3.5" />
-          {already ? 'Уже добавлен' : 'Добавить региональный ряд'}
+          {already ? t('compare.alreadyAddedShort') : t('compare.addRegionSeries')}
         </button>
       </div>
     </div>
@@ -442,6 +449,7 @@ function AddRegionSeries({
 function AddIndicator({
   indicators, selected, onAdd, atCap, capHint, compatibilityFor,
 }) {
+  const t = useT();
   const [query, setQuery] = useState('');
   const [openList, setOpenList] = useState(false);
   // Директория сравнения: показываем ВСЕ показатели (минус уже выбранные),
@@ -461,18 +469,19 @@ function AddIndicator({
     });
   }, [indicators, selected, query, compatibilityFor]);
 
-  // Спрос-аналитика поиска сравнения (как в основном поиске): фиксируем
-  // введённый запрос с числом результатов через debounce. Запрос с 0
-  // результатов = карта пробелов каталога. Сырые keystroke'и не шлём.
+  // Dual-write спрос-аналитики (даже без клика по результату):
+  // 1) легаси compare_search — Пульс/BI уже читают этот канал;
+  // 2) единый search_query (context=compare-macro) — общий контур всех поисков.
   const resultsCount = results.length;
   useEffect(() => {
     const q = query.trim();
     if (q.length < 2) return undefined;
-    const t = setTimeout(() => {
+    const timer = setTimeout(() => {
       track(events.COMPARE_SEARCH, { q: q.slice(0, 40), results: resultsCount });
     }, 900);
-    return () => clearTimeout(t);
+    return () => clearTimeout(timer);
   }, [query, resultsCount]);
+  useSearchTracking('compare-macro', query, resultsCount);
 
   return (
     <div className="relative">
@@ -488,7 +497,7 @@ function AddIndicator({
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setOpenList(true)}
           onBlur={() => setTimeout(() => setOpenList(false), 150)}
-          placeholder={atCap ? capHint : 'Найдите или выберите макроиндикатор…'}
+          placeholder={atCap ? capHint : t('compare.macroPlaceholder')}
           className="flex-1 bg-transparent text-sm text-text-primary outline-none placeholder:text-text-tertiary disabled:cursor-not-allowed"
         />
         <ChevronDown className="w-4 h-4 shrink-0 text-text-tertiary" />
@@ -522,6 +531,7 @@ function AddIndicator({
 function AddWorldCountrySeries({
   items, countrySlug, selected, onAdd, atCap, capHint, compatibilityFor,
 }) {
+  const t = useT();
   const [conceptSlug, setConceptSlug] = useState('');
 
   const conceptItems = useMemo(() => {
@@ -530,10 +540,10 @@ function AddWorldCountrySeries({
       if (item.country_slug !== countrySlug) continue;
       if (map.has(item.concept_slug)) continue;
       const freq = item.frequency === 'monthly'
-        ? 'месяц'
+        ? t('compare.freq.monthShort')
         : item.frequency === 'quarterly'
-          ? 'квартал'
-          : 'год';
+          ? t('compare.freq.quarterShort')
+          : t('compare.freq.yearShort');
       map.set(item.concept_slug, {
         value: item.concept_slug,
         label: item.concept_name,
@@ -542,7 +552,7 @@ function AddWorldCountrySeries({
       });
     }
     return [...map.values()].sort((a, b) => a.label.localeCompare(b.label, 'ru'));
-  }, [items, countrySlug]);
+  }, [items, countrySlug, t]);
 
   const selectedConcept = conceptItems.find((item) => item.value === conceptSlug);
   const code = selectedConcept?.code || null;
@@ -555,12 +565,12 @@ function AddWorldCountrySeries({
   return (
     <div className="grid gap-2">
       <ComboSelect
-        groups={[{ label: 'Показатель', items: conceptItems }]}
+        groups={[{ label: t('compare.conceptGroup'), items: conceptItems }]}
         value={conceptSlug}
         onChange={setConceptSlug}
-        placeholder="Выберите показатель…"
-        searchPlaceholder="Найти показатель…"
-        ariaLabel="Показатель страны"
+        placeholder={t('compare.conceptPlaceholder')}
+        searchPlaceholder={t('compare.conceptSearch')}
+        ariaLabel={t('compare.conceptAria')}
         disabled={atCap || conceptItems.length === 0}
         trackContext="compare-world-concept"
       />
@@ -571,7 +581,7 @@ function AddWorldCountrySeries({
         title={atCap
           ? capHint
           : already
-            ? 'Этот ряд уже добавлен'
+            ? t('compare.alreadyAdded')
             : compatibility.reason || undefined}
         className={cn(
           'inline-flex min-h-10 w-full items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium transition-colors',
@@ -581,7 +591,7 @@ function AddWorldCountrySeries({
         )}
       >
         <Plus className="h-3.5 w-3.5" />
-        {already ? 'Уже добавлен' : 'Добавить'}
+        {already ? t('compare.alreadyAddedShort') : t('common.add')}
       </button>
       {code && !already && !atCap && !compatibility.allowed && (
         <p className="text-xs leading-relaxed text-text-tertiary">
@@ -590,7 +600,7 @@ function AddWorldCountrySeries({
       )}
       {!conceptItems.length && (
         <p className="text-xs leading-relaxed text-text-tertiary">
-          Для этой страны пока нет рядов, доступных для сравнения.
+          {t('compare.noCountrySeries')}
         </p>
       )}
     </div>
@@ -624,6 +634,7 @@ function PickerBack({ label, onClick }) {
 function CompareSeriesPicker({
   indicators, worldItems, selected, onAdd, atCap, capHint, compatibilityFor,
 }) {
+  const t = useT();
   const [countryKey, setCountryKey] = useState(null);
   const [russiaBranch, setRussiaBranch] = useState(null);
   const [countryQuery, setCountryQuery] = useState('');
@@ -642,16 +653,23 @@ function CompareSeriesPicker({
 
   const filteredCountries = useMemo(() => {
     const q = countryQuery.trim().toLowerCase();
-    const russia = { key: 'russia', label: 'Россия' };
+    const russia = { key: 'russia', label: t('compare.russia') };
     const rest = q
       ? countries.filter((c) => c.label.toLowerCase().includes(q))
       : countries;
-    const showRussia = !q || 'россия'.includes(q) || russia.label.toLowerCase().includes(q);
+    const showRussia = !q || 'россия'.includes(q) || 'russia'.includes(q) || russia.label.toLowerCase().includes(q);
     return showRussia ? [russia, ...rest] : rest;
-  }, [countries, countryQuery]);
+  }, [countries, countryQuery, t]);
+
+  // Поиск страны в дереве сравнения — без клика по результату.
+  useSearchTracking(
+    'compare-country',
+    countryKey ? '' : countryQuery,
+    filteredCountries.length,
+  );
 
   const selectedCountry = countryKey === 'russia'
-    ? { key: 'russia', label: 'Россия' }
+    ? { key: 'russia', label: t('compare.russia') }
     : countries.find((c) => c.key === countryKey) || null;
 
   const resetCountry = () => {
@@ -669,16 +687,16 @@ function CompareSeriesPicker({
   return (
     <div className="overflow-visible rounded-2xl border border-border-subtle bg-surface p-4 shadow-[0_16px_45px_rgba(35,30,16,0.05)] sm:p-5">
       <div className="mb-5 border-b border-border-subtle pb-4">
-        <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">Добавить ряд</div>
+        <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">{t('compare.addSeries')}</div>
         <div className="mt-1 text-sm text-text-secondary">
-          Сначала выберите страну, затем показатель
+          {t('compare.pickCountryFirst')}
         </div>
       </div>
 
       {!countryKey && (
         <div>
           <div className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-            Страна
+            {t('compare.country')}
           </div>
           <div className={cn(FIELD_CLS, 'mb-3 border-border-subtle focus-within:border-champagne/40')}>
             <Search className="h-4 w-4 shrink-0 text-text-tertiary" />
@@ -686,14 +704,14 @@ function CompareSeriesPicker({
               type="text"
               value={countryQuery}
               onChange={(e) => setCountryQuery(e.target.value)}
-              placeholder="Найдите страну…"
-              aria-label="Поиск страны"
+              placeholder={t('compare.findCountry')}
+              aria-label={t('compare.findCountryAria')}
               className="min-w-0 flex-1 bg-transparent text-sm text-text-primary outline-none placeholder:text-text-tertiary"
             />
             {countryQuery && (
               <button
                 type="button"
-                aria-label="Очистить"
+                aria-label={t('common.clear')}
                 onClick={() => setCountryQuery('')}
                 className="shrink-0 text-text-tertiary hover:text-text-primary"
               >
@@ -703,7 +721,7 @@ function CompareSeriesPicker({
           </div>
           <div className="max-h-80 overflow-auto rounded-xl border border-border-subtle bg-obsidian-light/45">
             {filteredCountries.length === 0 ? (
-              <div className="px-4 py-3 text-sm text-text-tertiary">Ничего не найдено</div>
+              <div className="px-4 py-3 text-sm text-text-tertiary">{t('compare.nothingFound')}</div>
             ) : (
               filteredCountries.map((c) => (
                 <button
@@ -725,9 +743,9 @@ function CompareSeriesPicker({
 
       {countryKey === 'russia' && !russiaBranch && (
         <div>
-          <PickerBack label="К выбору страны" onClick={resetCountry} />
+          <PickerBack label={t('compare.backToCountry')} onClick={resetCountry} />
           <div className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-            Россия — что добавить
+            {t('compare.russiaWhat')}
           </div>
           <div className="grid gap-2 sm:grid-cols-2">
             <button
@@ -737,10 +755,10 @@ function CompareSeriesPicker({
             >
               <span className="flex items-center gap-2">
                 <Landmark className="h-4 w-4 shrink-0" />
-                Макропоказатели
+                {t('compare.macro')}
               </span>
               <span className="mt-1 block text-[11px] font-normal text-text-tertiary">
-                Федеральные ряды
+                {t('compare.macroHint')}
               </span>
             </button>
             <button
@@ -750,10 +768,10 @@ function CompareSeriesPicker({
             >
               <span className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 shrink-0" />
-                Регионы
+                {t('compare.regionsBranch')}
               </span>
               <span className="mt-1 block text-[11px] font-normal text-text-tertiary">
-                Один регион на общий график
+                {t('compare.regionsBranchHint')}
               </span>
             </button>
           </div>
@@ -762,9 +780,9 @@ function CompareSeriesPicker({
 
       {countryKey === 'russia' && russiaBranch === 'macro' && (
         <div>
-          <PickerBack label="К выбору в России" onClick={() => setRussiaBranch(null)} />
+          <PickerBack label={t('compare.backToRussia')} onClick={() => setRussiaBranch(null)} />
           <div className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-            Макропоказатели России
+            {t('compare.macroRussia')}
           </div>
           <div className="rounded-xl border border-border-subtle bg-obsidian-light/45 p-3">
             <AddIndicator
@@ -781,9 +799,9 @@ function CompareSeriesPicker({
 
       {countryKey === 'russia' && russiaBranch === 'regions' && (
         <div>
-          <PickerBack label="К выбору в России" onClick={() => setRussiaBranch(null)} />
+          <PickerBack label={t('compare.backToRussia')} onClick={() => setRussiaBranch(null)} />
           <div className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-            Региональный ряд
+            {t('compare.regionalSeries')}
           </div>
           <AddRegionSeries
             selected={selected}
@@ -793,9 +811,9 @@ function CompareSeriesPicker({
             compatibilityFor={compatibilityFor}
           />
           <p className="mt-3 text-xs leading-relaxed text-text-tertiary">
-            Сравнить два региона целиком —{' '}
+            {t('compare.compareRegionsCta')}{' '}
             <Link to={regionHubPath()} className="text-champagne hover:underline">
-              в разделе регионов
+              {t('compare.regionsSection')}
             </Link>
           </p>
         </div>
@@ -803,9 +821,9 @@ function CompareSeriesPicker({
 
       {countryKey && countryKey !== 'russia' && selectedCountry && (
         <div>
-          <PickerBack label="К выбору страны" onClick={resetCountry} />
+          <PickerBack label={t('compare.backToCountry')} onClick={resetCountry} />
           <div className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-            {selectedCountry.label} — показатель
+            {t('compare.countryIndicator', { country: selectedCountry.label })}
           </div>
           <div className="rounded-xl border border-border-subtle bg-obsidian-light/45 p-3">
             <AddWorldCountrySeries
@@ -825,6 +843,7 @@ function CompareSeriesPicker({
 }
 
 function UpsellModal({ open, onClose }) {
+  const t = useT();
   if (!open) return null;
   return (
     <div
@@ -842,23 +861,21 @@ function UpsellModal({ open, onClose }) {
             <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-champagne/15">
               <Sparkles className="w-5 h-5 text-champagne" />
             </div>
-            <h2 className="text-lg font-display font-bold text-text-primary">Сравнивайте до 10 показателей</h2>
+            <h2 className="text-lg font-display font-bold text-text-primary">{t('compare.upsellTitle')}</h2>
           </div>
-          <button type="button" onClick={onClose} className="rounded-md p-1 text-text-tertiary hover:text-text-primary" aria-label="Закрыть">
+          <button type="button" onClick={onClose} className="rounded-md p-1 text-text-tertiary hover:text-text-primary" aria-label={t('common.close')}>
             <X className="w-5 h-5" />
           </button>
         </div>
         <p className="text-sm text-text-secondary leading-relaxed mb-5">
-          Гость может сравнить до двух показателей. Зарегистрируйтесь бесплатно —
-          добавляйте до 10 рядов на один график, включая региональные, и скачивайте
-          данные и изображения без ограничений.
+          {t('compare.upsellBody')}
         </p>
         <div className="flex items-center gap-3">
           <Link to="/register" onClick={onClose} className="flex-1 text-center rounded-xl bg-champagne text-white text-sm font-semibold py-2.5 hover:bg-champagne-muted transition-colors">
-            Зарегистрироваться
+            {t('compare.upsellRegister')}
           </Link>
           <Link to="/login" onClick={onClose} className="flex-1 text-center rounded-xl border border-border-subtle text-text-primary text-sm font-medium py-2.5 hover:border-champagne/40 transition-colors">
-            Войти
+            {t('common.login')}
           </Link>
         </div>
       </div>
@@ -887,6 +904,8 @@ function CompareTooltip({ active, payload, label, dateFormat = 'short' }) {
 }
 
 export default function ComparePage() {
+  const t = useT();
+  const { locale } = useLocale();
   const [searchParams, setSearchParams] = useSearchParams();
   const [range, setRange] = useState('5y');
   const [scale, setScale] = useState('values');
@@ -924,7 +943,7 @@ export default function ComparePage() {
     [compatibleCodes, isAuthed],
   );
 
-  const compareSeo = getPageSeo('compare');
+  const compareSeo = getPageSeo('compare', locale);
   useDocumentMeta({
     title: compareSeo.title,
     description: compareSeo.description,
@@ -1033,7 +1052,7 @@ export default function ComparePage() {
         : REP_LEVEL;
       return {
         code, ind: null, repId,
-        repLabel: options.find((item) => item.id === repId)?.label || 'Значение',
+        repLabel: options.find((item) => item.id === repId)?.label || t('common.value'),
         fetchCode: code,
         transform: worldCompareTransformFor(repId, meta?.frequency),
         unit: repId === REP_LEVEL ? meta?.unit : '%',
@@ -1044,14 +1063,14 @@ export default function ComparePage() {
     // метаданные приходят вместе с данными (__regionMeta), резолвер не нужен.
     if (isRegionCode(code)) {
       return {
-        code, ind: null, repId: REP_LEVEL, repLabel: 'Значение',
+        code, ind: null, repId: REP_LEVEL, repLabel: t('common.value'),
         fetchCode: code, transform: null, unit: null, isRegion: true,
       };
     }
     const ind = indicators?.find((x) => x.code === code);
     const repId = repByCode[code] || REP_LEVEL;
     const spec = resolveCompareSeries(ind || { code }, repId)
-      || { code, transform: null, unit: ind?.unit, repId: REP_LEVEL, label: 'Значение' };
+      || { code, transform: null, unit: ind?.unit, repId: REP_LEVEL, label: t('common.value') };
     // Третий слой (compareRepresentation.js::resolveStepOverride): «Шаг»
     // переключает на реальный более глубокий ряд вместо клиентского
     // усреднения, если он есть у показателя на этой частоте.
@@ -1172,7 +1191,7 @@ export default function ComparePage() {
     const nonIndexableKeys = new Set(
       indexed ? series.filter((_, i) => !indexable[i]).map((s) => s.key) : [],
     );
-    const idxUnit = 'пунктов (старт = 100)';
+    const idxUnit = t('compare.indexUnit');
 
     // В-13 (CTO-аудит 2026-07-06): значение пишется в строку ТОЛЬКО на датах,
     // где у ряда есть реальная точка. Раньше carry-forward (LOCF) протягивал
@@ -1343,11 +1362,11 @@ export default function ComparePage() {
 
   const atCap = codes.length >= cap;
   const capHint = isAuthed
-    ? `Максимум ${USER_MAX} показателей`
-    : 'Хотите сравнить больше двух индикаторов — зарегистрируйтесь';
+    ? t('compare.capAuthed', { n: USER_MAX })
+    : t('compare.capGuest');
   const title = series.length
-    ? `Сравнение: ${series.map((s) => s.ind?.name || s.code).join(' — ')}`
-    : 'Сравнение показателей';
+    ? `${t('compare.badge')}: ${series.map((s) => s.ind?.name || s.code).join(' — ')}`
+    : t('compare.title');
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24 md:pb-28">
@@ -1359,23 +1378,21 @@ export default function ComparePage() {
           className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-text-tertiary hover:text-champagne transition-colors mb-8 lift-hover group"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-          Главная
+          {t('common.home')}
         </Link>
 
         <div className="flex items-center gap-3 mb-4">
           <span className="px-3 py-1 rounded-full border border-border-subtle bg-obsidian-light text-[10px] font-mono uppercase tracking-widest text-text-secondary flex items-center gap-2">
             <GitCompare className="w-3 h-3 text-champagne" />
-            Сравнение
+            {t('compare.badge')}
           </span>
         </div>
 
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight mb-4 leading-tight">
-          Сравнение показателей
+          {t('compare.title')}
         </h1>
         <p className="text-sm md:text-base text-text-tertiary max-w-2xl">
-          Сначала выбираете страну, затем показатель. Для России доступны
-          федеральные ряды и ряды регионов. Два региона между собой сравниваются
-          в разделе регионов.
+          {t('compare.subtitle')}
         </p>
       </div>
 
@@ -1398,11 +1415,11 @@ export default function ComparePage() {
 
         <div className="mt-3 flex items-center text-xs text-text-tertiary">
           {isAuthed
-            ? `Выбрано ${codes.length} из ${USER_MAX}.`
-            : `Выбрано ${codes.length} из ${GUEST_MAX} (гость). `}
+            ? t('compare.selectedAuthed', { n: codes.length, max: USER_MAX })
+            : `${t('compare.selectedGuest', { n: codes.length, max: GUEST_MAX })} `}
           {!isAuthed && (
             <button type="button" onClick={() => { setUpsellOpen(true); track(events.REGISTER_NUDGE_EXPAND, { from: 'compare' }); }} className="ml-1 text-champagne hover:underline">
-              Хотите больше двух — зарегистрируйтесь →
+              {t('compare.wantMore')}
             </button>
           )}
         </div>
@@ -1443,7 +1460,7 @@ export default function ComparePage() {
                       ))}
                     </div>
                   )}
-                  <button type="button" onClick={() => removeCode(s.code)} className="ml-auto text-text-tertiary hover:text-text-primary" aria-label="Убрать">
+                  <button type="button" onClick={() => removeCode(s.code)} className="ml-auto text-text-tertiary hover:text-text-primary" aria-label={t('common.remove')}>
                     <X className="w-4 h-4" />
                   </button>
                 </div>
@@ -1461,8 +1478,8 @@ export default function ComparePage() {
       {hasError && (
         <div className="mb-6 rounded-2xl border border-champagne/35 bg-warn-surface px-4 py-4 text-sm shadow-md" role="alert">
           <p className="text-text-primary">
-            <span className="font-semibold">Не удалось загрузить часть данных.</span>{' '}
-            Попробуйте выбрать другие показатели или обновите страницу.
+            <span className="font-semibold">{t('compare.loadPartial')}</span>{' '}
+            {t('compare.loadPartialHint')}
           </p>
         </div>
       )}
@@ -1470,7 +1487,7 @@ export default function ComparePage() {
       <section data-block="compare-chart" className="mb-8">
         <div className="flex items-center gap-4 border-b border-border-subtle pb-4 mb-6 flex-wrap">
           <Activity className="w-4 h-4 text-champagne" />
-          <span className="text-[11px] font-mono uppercase tracking-widest text-text-tertiary">Период</span>
+          <span className="text-[11px] font-mono uppercase tracking-widest text-text-tertiary">{t('compare.periodLabel')}</span>
           <div className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle">
             {RANGE_OPTIONS.map((opt) => (
               <button
@@ -1481,16 +1498,16 @@ export default function ComparePage() {
                   range === opt.key ? 'bg-champagne/15 text-champagne' : 'text-text-tertiary hover:text-text-secondary',
                 )}
               >
-                {opt.label}
+                {t(opt.labelKey)}
               </button>
             ))}
           </div>
 
           <span
             className="text-[11px] font-mono uppercase tracking-widest text-text-tertiary md:ml-4"
-            title="Приведение рядов к общему шагу времени. Если у показателя есть отдельный ряд на этой частоте (например, годовой) — используется он целиком, иначе значения усредняются"
+            title={t('compare.stepTitle')}
           >
-            Шаг
+            {t('compare.stepLabel')}
           </span>
           <div className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle">
             {STEP_OPTIONS.map((opt) => (
@@ -1498,19 +1515,19 @@ export default function ComparePage() {
                 key={opt.key}
                 disabled={hasWorldSeries && opt.key !== 'auto'}
                 onClick={() => { setStep(opt.key); setPanOffset(0); track(events.COMPARE_RANGE, { step: opt.key }); }}
-                title={hasWorldSeries && opt.key !== 'auto' ? 'Мировые ряды показываются только на официальной частоте' : undefined}
+                title={hasWorldSeries && opt.key !== 'auto' ? t('compare.worldOfficialOnly') : undefined}
                 className={cn(
                   'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
                   step === opt.key ? 'bg-champagne/15 text-champagne' : 'text-text-tertiary hover:text-text-secondary',
                   hasWorldSeries && opt.key !== 'auto' && 'cursor-not-allowed opacity-45 hover:text-text-tertiary',
                 )}
               >
-                {opt.label}
+                {t(opt.labelKey)}
               </button>
             ))}
           </div>
 
-          <span className="text-[11px] font-mono uppercase tracking-widest text-text-tertiary md:ml-4">Шкала</span>
+          <span className="text-[11px] font-mono uppercase tracking-widest text-text-tertiary md:ml-4">{t('compare.scaleLabel')}</span>
           <div className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle">
             {SCALE_OPTIONS.map((opt) => {
               const disabled = forceIndex && opt.key === 'values';
@@ -1519,7 +1536,7 @@ export default function ComparePage() {
                   key={opt.key}
                   disabled={disabled}
                   onClick={() => { setScale(opt.key); track(events.COMPARE_RANGE, { scale: opt.key }); }}
-                  title={disabled ? 'При 3+ разных единицах доступна только общая база' : undefined}
+                  title={disabled ? t('compare.indexOnlyUnits') : undefined}
                   className={cn(
                     'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
                     (indexed ? opt.key === 'index' : range && scale === opt.key && !forceIndex)
@@ -1527,7 +1544,7 @@ export default function ComparePage() {
                     disabled && 'opacity-40 cursor-not-allowed',
                   )}
                 >
-                  {opt.label}
+                  {t(opt.labelKey)}
                 </button>
               );
             })}
@@ -1541,19 +1558,16 @@ export default function ComparePage() {
               'ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-mono uppercase tracking-wider transition-colors',
               hasData ? 'border-border-subtle text-text-tertiary hover:text-champagne hover:border-champagne/30' : 'border-border-subtle/50 text-text-tertiary/40 cursor-not-allowed',
             )}
-            title="Скачать график картинкой"
+            title={t('compare.downloadChart')}
           >
             <ImageDown className="w-3.5 h-3.5" />
-            Картинка
+            {t('compare.imageButton')}
           </button>
         </div>
 
         {forceIndex && (
           <p className="-mt-3 mb-6 text-xs text-text-tertiary">
-            Выбрано 3+ разных единиц измерения — график доступен только в режиме
-            «Общая база». Чтобы вернуть исходные значения на общую ось, приведите
-            ряды к одному представлению (например, «К прошлому году» — тогда все
-            они станут процентами).
+            {t('compare.forceIndexHint')}
           </p>
         )}
 
@@ -1564,8 +1578,8 @@ export default function ComparePage() {
             <GitCompare className="w-10 h-10 mb-4 opacity-20" />
             <p className="text-sm text-center max-w-md">
               {codes.length === 0
-                ? 'Найдите и добавьте показатели для построения графика.'
-                : 'Данные загружаются или отсутствуют для выбранных показателей.'}
+                ? t('compare.emptyAdd')
+                : t('compare.emptyData')}
             </p>
           </div>
         ) : (
@@ -1575,9 +1589,9 @@ export default function ComparePage() {
             </h2>
             <p className="text-center text-xs text-text-tertiary mb-4">
               {indexed
-                ? 'Приведение к общей базе — 100 в начале периода, единая шкала.'
-                : 'Значения в исходных единицах, у каждого ряда своя ось.'}
-              {` Период: ${RANGE_OPTIONS.find((r) => r.key === range)?.label.toLowerCase()}`}
+                ? t('compare.hintIndex')
+                : t('compare.hintValues')}
+              {` ${t('compare.periodLabel')}: ${t(RANGE_OPTIONS.find((r) => r.key === range)?.labelKey || 'compare.range.all').toLowerCase()}`}
             </p>
 
             <div className="mb-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-mono border-b border-border-subtle pb-4">
@@ -1589,10 +1603,10 @@ export default function ComparePage() {
                     <span style={{ color: s.color }}>{s.ind?.name || s.code}</span>
                     <span className="text-text-tertiary">
                       ({s.repLabel}{dropped
-                        ? ', не приводится к базе'
+                        ? t('compare.notRebased')
                         : indexed
-                          ? ', старт = 100'
-                          : `, ${unitSuffix(s.unit)}${s.ind?.frequency ? `, ${freqLabel(s.ind.frequency)}` : ''}, ${axisFor(i) === 'left' ? 'левая ось' : 'правая ось'}`})
+                          ? t('compare.start100')
+                          : `, ${unitSuffix(s.unit)}${s.ind?.frequency ? `, ${freqLabel(s.ind.frequency, t)}` : ''}, ${axisFor(i) === 'left' ? t('compare.axisLeft') : t('compare.axisRight')}`})
                     </span>
                   </span>
                 );
@@ -1601,9 +1615,7 @@ export default function ComparePage() {
 
             {nonIndexableNames.length > 0 && (
               <p className="mb-4 -mt-1 text-center text-[11px] text-text-tertiary">
-                К общей базе не приводятся знакопеременные и процентные ряды
-                ({nonIndexableNames.join(', ')}). Выберите для них представление
-                «Значение» либо переключите шкалу на «Исходные значения».
+              {t('compare.nonIndexableNote', { names: nonIndexableNames.join(', ') })}
               </p>
             )}
 
@@ -1641,7 +1653,7 @@ export default function ComparePage() {
                     interval={0}
                     tickMargin={8}
                     height={36}
-                    label={{ value: 'Период', position: 'insideBottom', offset: -2, fill: 'rgba(0,0,0,0.5)', fontSize: 11, fontFamily: 'monospace' }}
+                    label={{ value: t('compare.periodLabel'), position: 'insideBottom', offset: -2, fill: 'rgba(0,0,0,0.5)', fontSize: 11, fontFamily: 'monospace' }}
                   />
                   <YAxis
                     yAxisId="left"
@@ -1690,7 +1702,7 @@ export default function ComparePage() {
                   max={maxPan}
                   value={maxPan - Math.min(panOffset, maxPan)}
                   onChange={(e) => setPanOffset(maxPan - Number(e.target.value))}
-                  aria-label="Позиция окна по времени"
+                  aria-label={t('compare.panAria')}
                   className="w-full h-1.5 appearance-none bg-obsidian-lighter rounded-full
                     [&::-webkit-slider-thumb]:appearance-none
                     [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4
@@ -1703,7 +1715,7 @@ export default function ComparePage() {
                 <div className="flex justify-between text-[10px] font-mono text-text-tertiary mt-1">
                   <span>{chartRows[0] ? formatDate(chartRows[0].date, compareDateFmt) : ''}</span>
                   <span className="hidden sm:inline text-text-tertiary/70 normal-case">
-                    перетащите график мышью или двигайте ползунок
+                    {t('compare.panHint')}
                   </span>
                   <span>{chartRows.length ? formatDate(chartRows[chartRows.length - 1].date, compareDateFmt) : ''}</span>
                 </div>
@@ -1718,20 +1730,20 @@ export default function ComparePage() {
           <div className="mb-5 flex flex-col gap-2 border-b border-border-subtle pb-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">
-                Аналитическая сводка
+                {t('compare.analysis.eyebrow')}
               </div>
               <h2 className="mt-1 font-display text-2xl font-bold text-text-primary">
-                Что изменилось за выбранный период
+                {t('compare.analysis.title')}
               </h2>
             </div>
             <div className="text-[11px] leading-5 text-text-tertiary">
-              Расчёты используют только опубликованные точки без заполнения пропусков
+              {t('compare.analysis.note')}
             </div>
           </div>
 
           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {analysisSummary.metrics.filter((metric) => metric.last).map((metric) => {
-              const displayUnit = indexed ? 'пунктов' : (metric.item.unit || '%');
+              const displayUnit = indexed ? t('compare.points') : (metric.item.unit || '%');
               return (
                 <div key={metric.item.code} className="rounded-2xl border border-border-subtle bg-obsidian-light p-4">
                   <div className="flex items-start gap-2">
@@ -1742,13 +1754,13 @@ export default function ComparePage() {
                   </div>
                   <div className="mt-4 grid grid-cols-2 gap-3">
                     <div>
-                      <div className="text-[10px] uppercase tracking-wide text-text-tertiary">Последнее</div>
+                      <div className="text-[10px] uppercase tracking-wide text-text-tertiary">{t('compare.analysis.last')}</div>
                       <div className="mt-1 font-mono text-lg font-semibold text-text-primary">
                         {formatValueWithUnit(metric.last.value, displayUnit)}
                       </div>
                     </div>
                     <div>
-                      <div className="text-[10px] uppercase tracking-wide text-text-tertiary">Изменение</div>
+                      <div className="text-[10px] uppercase tracking-wide text-text-tertiary">{t('compare.analysis.change')}</div>
                       <div className={cn(
                         'mt-1 font-mono text-lg font-semibold',
                         metric.change > 0 ? 'text-positive' : metric.change < 0 ? 'text-negative' : 'text-text-primary',
@@ -1760,7 +1772,7 @@ export default function ComparePage() {
                   </div>
                   <div className="mt-3 flex items-center justify-between border-t border-border-subtle pt-2.5 font-mono text-[10px] text-text-tertiary">
                     <span>{formatDate(metric.first.date, compareDateFmt)} → {formatDate(metric.last.date, compareDateFmt)}</span>
-                    <span>{metric.points.length} точек</span>
+                    <span>{t('compare.analysis.pointsCount', { n: metric.points.length })}</span>
                   </div>
                 </div>
               );
@@ -1771,7 +1783,7 @@ export default function ComparePage() {
             <div className="mt-5 rounded-2xl border border-champagne/15 bg-champagne/[0.05] p-4">
               <div className="flex items-center gap-2 text-xs font-semibold text-text-primary">
                 <Sparkles size={14} className="text-champagne" />
-                Синхронность с первым рядом
+                {t('compare.analysis.sync')}
               </div>
               <div className="mt-3 grid gap-2 sm:grid-cols-2">
                 {analysisSummary.correlations.map((result) => (
@@ -1786,9 +1798,9 @@ export default function ComparePage() {
                 ))}
               </div>
               <p className="mt-3 text-[10px] leading-4 text-text-tertiary">
-                Коэффициент Пирсона рассчитан только по совпадающим датам
-                ({analysisSummary.correlations.map((item) => item.observations).join(', ')} наблюдений).
-                Связь динамики не означает причинную зависимость.
+                {t('compare.analysis.pearson', {
+                  counts: analysisSummary.correlations.map((item) => item.observations).join(', '),
+                })}
               </p>
             </div>
           )}

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { LOCALE_HEADER, resolveBrowserLocale } from '../i18n/locale';
 
 const api = axios.create({
   baseURL: '/api/v1',
@@ -16,12 +17,15 @@ function readCookie(name) {
   return m ? decodeURIComponent(m[1]) : null;
 }
 
-// Double-submit CSRF: кладём X-XSRF-TOKEN из cookie на мутирующие запросы.
+// Locale for public_indicator_fields (EN overlay) + CSRF on mutations.
 api.interceptors.request.use((config) => {
+  config.headers = config.headers || {};
+  if (!config.headers[LOCALE_HEADER]) {
+    config.headers[LOCALE_HEADER] = resolveBrowserLocale();
+  }
   if (MUTATING.has((config.method || '').toLowerCase())) {
     const token = readCookie('XSRF-TOKEN');
     if (token) {
-      config.headers = config.headers || {};
       config.headers['X-XSRF-TOKEN'] = token;
     }
   }
@@ -189,7 +193,7 @@ export const exportTable = async ({ format, filename, valueLabel, points }) => {
         const text = await blob.text();
         const parsed = JSON.parse(text);
         const detail = parsed?.detail || parsed;
-        const e = new Error(detail?.message || 'Лимит выгрузок исчерпан');
+        const e = new Error(detail?.message || 'download_limit');
         e.code = detail?.code || 'download_limit';
         throw e;
       } catch (parseErr) {

@@ -13,6 +13,7 @@ from app.config import settings
 from app.database import get_db
 from app.models import User
 from app.services import session as session_svc
+from app.services.api_i18n import api_detail
 from app.services.identity.service import get_user
 
 
@@ -69,7 +70,10 @@ async def get_current_user(
 ) -> User:
     user = await get_optional_user(request, db)
     if user is None:
-        raise HTTPException(status_code=401, detail="Не авторизован")
+        raise HTTPException(
+            status_code=401,
+            detail=api_detail("Не авторизован", "Not authenticated"),
+        )
     return user
 
 
@@ -77,7 +81,13 @@ async def require_csrf(request: Request) -> None:
     """Double-submit: заголовок X-XSRF-TOKEN обязан совпасть с csrf сессии."""
     sess = await current_session(request)
     if not sess:
-        raise HTTPException(status_code=401, detail="Не авторизован")
+        raise HTTPException(
+            status_code=401,
+            detail=api_detail("Не авторизован", "Not authenticated"),
+        )
     header = request.headers.get(session_svc.CSRF_HEADER)
     if not header or header != sess.get("csrf"):
-        raise HTTPException(status_code=403, detail="CSRF-токен недействителен")
+        raise HTTPException(
+            status_code=403,
+            detail=api_detail("CSRF-токен недействителен", "Invalid CSRF token"),
+        )

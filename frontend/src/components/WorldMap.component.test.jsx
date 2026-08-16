@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import WorldMap, { CountrySilhouette } from './WorldMap';
+import { LocaleProvider } from '../i18n';
+
+function renderMap(ui) {
+  return render(<LocaleProvider>{ui}</LocaleProvider>);
+}
 
 const pathLength = (label) => screen.getByRole('img', { name: label })
   .querySelector('path')
@@ -9,7 +14,7 @@ const pathLength = (label) => screen.getByRole('img', { name: label })
 
 describe('CountrySilhouette', () => {
   it('показывает контур сразу и уточняет его после подгрузки', async () => {
-    render(<CountrySilhouette code="AT" name="Австрия" />);
+    renderMap(<CountrySilhouette code="AT" name="Австрия" />);
     const initial = pathLength('Карта страны: Австрия');
     expect(initial).toBeGreaterThan(0);
     await waitFor(() => {
@@ -18,26 +23,26 @@ describe('CountrySilhouette', () => {
   });
 
   it('дотягивает контур государства-крохи до читаемого', async () => {
-    render(<CountrySilhouette code="MT" name="Мальта" />);
+    renderMap(<CountrySilhouette code="MT" name="Мальта" />);
     await waitFor(() => {
       expect(pathLength('Карта страны: Мальта')).toBeGreaterThan(400);
     }, { timeout: 15000 });
   });
 
   it('понимает и UK, и GB', async () => {
-    render(<CountrySilhouette code="GB" name="Великобритания" />);
+    renderMap(<CountrySilhouette code="GB" name="Великобритания" />);
     await waitFor(() => {
       expect(pathLength('Карта страны: Великобритания')).toBeGreaterThan(0);
     });
   });
 
   it('ничего не рисует для неизвестного кода', () => {
-    const { container } = render(<CountrySilhouette code="ZZ" name="Нигде" />);
+    const { container } = renderMap(<CountrySilhouette code="ZZ" name="Нигде" />);
     expect(container.innerHTML).toBe('');
   });
 
   it('подписывает частоты по-русски', () => {
-    render(
+    renderMap(
       <CountrySilhouette
         code="AT"
         name="Австрия"
@@ -51,7 +56,7 @@ describe('CountrySilhouette', () => {
   });
 
   it('показывает площадь и население с русской типографикой', () => {
-    render(
+    renderMap(
       <CountrySilhouette
         code="AT"
         name="Австрия"
@@ -85,7 +90,7 @@ describe('CountrySilhouette', () => {
   });
 
   it('без площади и населения не ломается и не рисует пустые строки', () => {
-    render(<CountrySilhouette code="AT" name="Австрия" region="Европа" />);
+    renderMap(<CountrySilhouette code="AT" name="Австрия" region="Европа" />);
     expect(screen.getByText('Профиль территории')).toBeTruthy();
     expect(screen.queryByText('Площадь')).toBeNull();
     expect(screen.queryByText('Население')).toBeNull();
@@ -97,7 +102,7 @@ describe('WorldMap tooltip', () => {
   const countries = [{ code: 'DE', slug: 'germany', name: 'Германия' }];
 
   it('показывает дату наблюдения по-русски', async () => {
-    render(
+    renderMap(
       <WorldMap
         countries={countries}
         valuesByCode={new Map([['DE', 3.2]])}
@@ -111,7 +116,7 @@ describe('WorldMap tooltip', () => {
   });
 
   it('подсвечивает страну контуром геометрии без прямоугольной рамки', async () => {
-    const { container } = render(
+    const { container } = renderMap(
       <WorldMap
         countries={countries}
         valuesByCode={new Map([['DE', 3.2]])}

@@ -11,6 +11,7 @@ import {
   isConsentCurrent,
   saveConsent,
 } from '../lib/consent';
+import { useT } from '../i18n';
 
 /**
  * Cookie-баннер (152-ФЗ): информирование о подразумеваемом согласии.
@@ -24,22 +25,22 @@ import {
  * политики) показывает баннер заново.
  */
 
-const CATEGORIES = [
+const CATEGORY_DEFS = [
   {
     id: 'necessary',
-    name: 'Необходимые',
-    description: 'Настройки интерфейса и работа сайта. Не передаются третьим лицам.',
+    nameKey: 'cookie.cat.necessary',
+    descKey: 'cookie.cat.necessaryDesc',
     locked: true,
   },
   {
     id: 'analytics',
-    name: 'Аналитические',
-    description: 'Яндекс Метрика: статистика посещений для улучшения сайта.',
+    nameKey: 'cookie.cat.analytics',
+    descKey: 'cookie.cat.analyticsDesc',
   },
   {
     id: 'ads',
-    name: 'Рекламные',
-    description: 'Рекламная сеть Яндекса: показ рекламных блоков на сайте.',
+    nameKey: 'cookie.cat.ads',
+    descKey: 'cookie.cat.adsDesc',
   },
 ];
 
@@ -49,6 +50,7 @@ const btnBase = cn(
 );
 
 export default function CookieConsent() {
+  const t = useT();
   const { pathname } = useLocation();
   const [visible, setVisible] = useState(() => !isConsentCurrent(getConsent()));
   const [expanded, setExpanded] = useState(false);
@@ -96,28 +98,25 @@ export default function CookieConsent() {
     <div
       role="dialog"
       aria-modal="false"
-      aria-label="Настройки cookie"
+      aria-label={t('cookie.aria')}
       className="fixed inset-x-0 bottom-0 z-[80] pointer-events-none sm:p-4"
     >
       <div className="pointer-events-auto mx-auto sm:mx-0 sm:max-w-md bg-obsidian border border-border-subtle sm:rounded-2xl rounded-t-2xl shadow-[0_-8px_40px_rgba(26,26,46,0.12)] sm:shadow-[0_12px_40px_rgba(26,26,46,0.16)] p-5 consent-enter">
         <div className="flex items-start gap-3 mb-3">
           <Cookie className="w-5 h-5 text-champagne shrink-0 mt-0.5" aria-hidden="true" />
           <div className="flex-1">
-            <p className="text-sm font-semibold text-text-primary mb-1">Cookie на сайте</p>
+            <p className="text-sm font-semibold text-text-primary mb-1">{t('cookie.title')}</p>
             <p className="text-xs text-text-secondary leading-relaxed">
-              Продолжая пользоваться сайтом, вы соглашаетесь на использование cookie, включая
-              аналитические (Яндекс Метрика) и рекламные (Рекламная сеть Яндекса). Это помогает
-              нам вести статистику и поддерживать сайт. Отказаться или настроить можно в любой
-              момент. Подробнее — в{' '}
+              {t('cookie.bodyBefore')}{' '}
               <Link to="/privacy" className="text-champagne hover:underline">
-                политике конфиденциальности
+                {t('cookie.privacyLink')}
               </Link>
               .
             </p>
           </div>
           <button
             type="button"
-            aria-label="Закрыть"
+            aria-label={t('common.close')}
             onClick={() => commit(true, true, 'dismiss')}
             className={cn(FOCUS_RING, 'rounded-md p-1 text-text-tertiary hover:text-text-primary transition-colors')}
           >
@@ -127,7 +126,7 @@ export default function CookieConsent() {
 
         {expanded && (
           <div className="mb-4 space-y-2">
-            {CATEGORIES.map((cat) => {
+            {CATEGORY_DEFS.map((cat) => {
               const checked = cat.locked ? true : choices[cat.id];
               return (
                 <label
@@ -148,15 +147,15 @@ export default function CookieConsent() {
                   />
                   <span className="flex-1">
                     <span className="block text-xs font-semibold text-text-primary">
-                      {cat.name}
+                      {t(cat.nameKey)}
                       {cat.locked && (
                         <span className="ml-2 text-[10px] uppercase tracking-wider text-text-tertiary font-medium">
-                          всегда активны
+                          {t('cookie.alwaysOn')}
                         </span>
                       )}
                     </span>
                     <span className="block text-[11px] text-text-tertiary leading-relaxed mt-0.5">
-                      {cat.description}
+                      {t(cat.descKey)}
                     </span>
                   </span>
                 </label>
@@ -173,14 +172,14 @@ export default function CookieConsent() {
                 onClick={() => commit(choices.analytics, choices.ads, 'custom')}
                 className={cn(btnBase, 'flex-1 bg-champagne text-white hover:bg-champagne-muted')}
               >
-                Сохранить выбор
+                {t('cookie.save')}
               </button>
               <button
                 type="button"
                 onClick={() => commit(true, true, 'accept_all')}
                 className={cn(btnBase, 'flex-1 border border-border-subtle text-text-secondary hover:text-text-primary hover:border-border-champagne')}
               >
-                Принять все
+                {t('cookie.acceptAll')}
               </button>
             </>
           ) : (
@@ -190,14 +189,14 @@ export default function CookieConsent() {
                 onClick={() => commit(true, true, 'accept_all')}
                 className={cn(btnBase, 'flex-1 bg-champagne text-white hover:bg-champagne-muted')}
               >
-                Хорошо
+                {t('cookie.accept')}
               </button>
               <button
                 type="button"
                 onClick={() => setExpanded(true)}
                 className={cn(btnBase, 'sm:flex-none border border-border-subtle text-text-secondary hover:text-text-primary hover:border-border-champagne')}
               >
-                Настроить
+                {t('cookie.customize')}
               </button>
             </>
           )}

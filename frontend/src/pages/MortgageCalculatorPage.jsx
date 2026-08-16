@@ -13,36 +13,22 @@ import { getPageSeo } from '../lib/pageMeta';
 import { cn } from '../lib/format';
 import { formatCompactTick, compactTickAxisWidth } from '../lib/regionsApi';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
-import { formatRubles, parseAmount, formatInput, fmtPct } from '../lib/calcFormat';
+import { formatRubles, parseAmount, formatInput, fmtPct, loanYearOrdinal } from '../lib/calcFormat';
 import { track, events } from '../lib/track';
 import useScrollDepth from '../lib/useScrollDepth';
 import FaqAccordion from '../components/FaqAccordion';
 import CalcSlider from '../components/CalcSlider';
+import { useLocale, useT } from '../i18n';
 import {
   russiaIndicatorPath,
 } from '../lib/sitePaths';
 
-const FAQ_ITEMS = [
-  {
-    q: 'Как рассчитывается ежемесячный платёж?',
-    a: 'Используется аннуитетная формула — самый распространённый тип платежа в российских банках: одинаковая сумма каждый месяц, внутри которой доля процентов постепенно уменьшается, а доля основного долга растёт.',
-  },
-  {
-    q: 'Что такое переплата по ипотеке?',
-    a: 'Переплата — это сумма всех процентов за весь срок кредита. При ставке 18% и сроке 30 лет переплата может превышать стоимость самой квартиры в два-три раза. Сократить её можно бóльшим первоначальным взносом, меньшим сроком или досрочными погашениями.',
-  },
-  {
-    q: 'Какая сейчас ставка по ипотеке?',
-    a: 'Рыночная ставка следует за ключевой ставкой Банка России: обычно она на 2–5 процентных пунктов выше. Льготные программы (семейная, IT-ипотека) фиксируют ставку ниже рыночной. Актуальная ключевая ставка отображается над полем ставки.',
-  },
-  {
-    q: 'Аннуитетный или дифференцированный платёж — что выгоднее?',
-    a: 'Дифференцированный платёж даёт меньшую переплату, но первые платежи заметно больше. Аннуитет удобнее для планирования бюджета и чаще одобряется банками. Этот калькулятор считает аннуитет.',
-  },
-  {
-    q: 'Как повлияет досрочное погашение?',
-    a: 'Досрочные платежи в первые годы дают максимальный эффект: они уменьшают тело долга, на которое начисляются проценты. Сокращение срока обычно выгоднее уменьшения платежа.',
-  },
+const FAQ_KEYS = [
+  { q: 'calc.mortgage.faq.q1', a: 'calc.mortgage.faq.a1' },
+  { q: 'calc.mortgage.faq.q2', a: 'calc.mortgage.faq.a2' },
+  { q: 'calc.mortgage.faq.q3', a: 'calc.mortgage.faq.a3' },
+  { q: 'calc.mortgage.faq.q4', a: 'calc.mortgage.faq.a4' },
+  { q: 'calc.mortgage.faq.q5', a: 'calc.mortgage.faq.a5' },
 ];
 
 function StatPill({ label, value, accent }) {
@@ -55,13 +41,16 @@ function StatPill({ label, value, accent }) {
 }
 
 export default function MortgageCalculatorPage() {
+  const t = useT();
+  const { locale } = useLocale();
+  const faqItems = FAQ_KEYS.map((item) => ({ q: t(item.q), a: t(item.a) }));
   const containerRef = useRef(null);
   const [price, setPrice] = useState(8000000);
   const [downPct, setDownPct] = useState(20);
   const [rate, setRate] = useState(18);
   const [years, setYears] = useState(20);
 
-  const mortgageSeo = getPageSeo('calculator-mortgage');
+  const mortgageSeo = getPageSeo('calculator-mortgage', locale);
   useDocumentMeta({
     title: mortgageSeo.title,
     description: mortgageSeo.description,
@@ -152,12 +141,12 @@ export default function MortgageCalculatorPage() {
       <nav data-animate className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-text-tertiary mb-8">
         <Link to="/" className="hover:text-champagne transition-colors inline-flex items-center gap-1.5 group">
           <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
-          Главная
+          {t('common.home')}
         </Link>
         <span className="text-text-tertiary/40">/</span>
-        <Link to="/calculator" className="hover:text-champagne transition-colors">Калькуляторы</Link>
+        <Link to="/calculator" className="hover:text-champagne transition-colors">{t('calc.breadcrumb')}</Link>
         <span className="text-text-tertiary/40">/</span>
-        <span className="text-text-secondary">Ипотека</span>
+        <span className="text-text-secondary">{t('calc.inflation.mortgage')}</span>
       </nav>
 
       <header data-animate className="mb-10">
@@ -166,22 +155,21 @@ export default function MortgageCalculatorPage() {
             <Home className="w-5 h-5 text-champagne" />
           </div>
           <span className="text-[10px] uppercase tracking-[0.3em] text-champagne font-semibold">
-            Аннуитетный платёж{keyRate != null && ` — ключевая ставка ЦБ ${keyRate}%`}
+            {t('calc.mortgage.eyebrow')}{keyRate != null && ` — ${t('calc.mortgage.keyRate', { rate: keyRate })}`}
           </span>
         </div>
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold tracking-tight text-text-primary leading-tight mb-3">
-          Ипотечный калькулятор
+          {t('calc.mortgage.title')}
         </h1>
         <p className="text-base text-text-secondary leading-relaxed max-w-xl">
-          Рассчитайте ежемесячный платёж, полную стоимость кредита и переплату.
-          График показывает, как гасится долг и сколько процентов накапливается за срок.
+          {t('calc.mortgage.subtitle')}
         </p>
       </header>
 
       <section data-animate className="rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6 space-y-6">
         <div>
           <label htmlFor="mortgage-price" className="block text-[10px] uppercase tracking-[0.2em] font-medium text-text-tertiary mb-2">
-            Стоимость недвижимости
+            {t('calc.mortgage.price')}
           </label>
           <div className="relative">
             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-text-tertiary font-display pointer-events-none" aria-hidden>₽</span>
@@ -202,12 +190,12 @@ export default function MortgageCalculatorPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-5">
           <CalcSlider
-            label="Первый взнос"
+            label={t('calc.mortgage.down')}
             value={downPct} onChange={setDownPct} min={0} max={90}
             display={`${downPct}% — ${result ? formatCompactTick(result.down) : 0}\u00A0₽`}
           />
-          <CalcSlider label="Ставка, % годовых" value={rate} onChange={setRate} min={0.1} max={30} step={0.1} suffix="%" />
-          <CalcSlider label="Срок, лет" value={years} onChange={setYears} min={1} max={30} />
+          <CalcSlider label={t('calc.mortgage.rate')} value={rate} onChange={setRate} min={0.1} max={30} step={0.1} suffix="%" />
+          <CalcSlider label={t('calc.mortgage.term')} value={years} onChange={setYears} min={1} max={30} />
         </div>
       </section>
 
@@ -216,15 +204,15 @@ export default function MortgageCalculatorPage() {
           <section data-animate className="rounded-[2rem] bg-surface border border-border-champagne p-6 md:p-8 mb-6" aria-live="polite">
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-center">
               <div>
-                <p className="text-sm text-text-secondary mb-2">Ежемесячный платёж</p>
+                <p className="text-sm text-text-secondary mb-2">{t('calc.mortgage.payment')}</p>
                 <p className="font-display font-bold tracking-tight text-text-primary text-4xl md:text-5xl lg:text-6xl mb-6">
                   {formatRubles(result.payment)}
                 </p>
                 <div className="flex flex-wrap gap-3">
-                  <StatPill label="Сумма кредита" value={formatRubles(result.principal)} />
-                  <StatPill label="Переплата" value={formatRubles(result.overpay)} accent />
-                  <StatPill label="Всего выплат" value={formatRubles(result.total)} />
-                  <StatPill label="Переплата к кредиту" value={fmtPct(result.principal ? (result.overpay / result.principal) * 100 : 0)} />
+                  <StatPill label={t('calc.mortgage.principal')} value={formatRubles(result.principal)} />
+                  <StatPill label={t('calc.mortgage.overpay')} value={formatRubles(result.overpay)} accent />
+                  <StatPill label={t('calc.mortgage.total')} value={formatRubles(result.total)} />
+                  <StatPill label={t('calc.mortgage.overpayRatio')} value={fmtPct(result.principal ? (result.overpay / result.principal) * 100 : 0)} />
                 </div>
               </div>
 
@@ -234,8 +222,8 @@ export default function MortgageCalculatorPage() {
                     <PieChart>
                       <Pie
                         data={[
-                          { name: 'Тело кредита', value: result.principal },
-                          { name: 'Переплата', value: result.overpay },
+                          { name: t('calc.mortgage.principalShort'), value: result.principal },
+                          { name: t('calc.mortgage.overpay'), value: result.overpay },
                         ]}
                         dataKey="value" nameKey="name"
                         innerRadius={54} outerRadius={78}
@@ -252,7 +240,7 @@ export default function MortgageCalculatorPage() {
                     </PieChart>
                   </ResponsiveContainer>
                   <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                    <span className="text-[10px] uppercase tracking-wider text-text-tertiary">Переплата</span>
+                    <span className="text-[10px] uppercase tracking-wider text-text-tertiary">{t('calc.mortgage.overpay')}</span>
                     <span className="text-xl font-mono font-bold text-text-primary tabular-nums">
                       {fmtPct(result.principal ? (result.overpay / result.principal) * 100 : 0)}
                     </span>
@@ -260,10 +248,10 @@ export default function MortgageCalculatorPage() {
                 </div>
                 <div className="flex gap-4 mt-3 text-[11px]">
                   <span className="flex items-center gap-1.5 text-text-secondary">
-                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: '#B8942F' }} />Кредит
+                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: '#B8942F' }} />{t('calc.mortgage.credit')}
                   </span>
                   <span className="flex items-center gap-1.5 text-text-secondary">
-                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: '#1A1A2E', opacity: 0.85 }} />Переплата
+                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: '#1A1A2E', opacity: 0.85 }} />{t('calc.mortgage.overpay')}
                   </span>
                 </div>
               </div>
@@ -272,7 +260,7 @@ export default function MortgageCalculatorPage() {
 
           <section data-animate className="rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-5 md:p-6 mb-6">
             <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-5">
-              Остаток долга и накопленные проценты по годам
+              {t('calc.mortgage.chartTitle')}
             </h3>
             <ResponsiveContainer width="100%" height={300}>
               <AreaChart data={result.series} margin={{ top: 5, right: 10, bottom: 5, left: 0 }}>
@@ -293,15 +281,15 @@ export default function MortgageCalculatorPage() {
                   tickLine={false} axisLine={false} tickFormatter={formatCompactTick}
                   width={compactTickAxisWidth(result.series.flatMap((p) => [p.balance, p.interest]))} />
                 <Tooltip
-                  formatter={(v, name) => [formatRubles(v), name === 'balance' ? 'Остаток долга' : 'Проценты накоплено']}
-                  labelFormatter={(v) => `Год ${v}`}
+                  formatter={(v, name) => [formatRubles(v), name === 'balance' ? t('calc.mortgage.balance') : t('calc.mortgage.interestAccum')]}
+                  labelFormatter={(v) => t('calc.yearN', { n: v })}
                 />
                 <Area dataKey="balance" name="balance" stroke="#B8942F" strokeWidth={2} fill="url(#mortBal)" dot={false} isAnimationActive={false} />
                 <Area dataKey="interest" name="interest" stroke="#1A1A2E" strokeWidth={1.4} fill="url(#mortInt)" dot={false} isAnimationActive={false} />
               </AreaChart>
             </ResponsiveContainer>
             <p className="mt-3 text-[12px] text-text-tertiary">
-              По горизонтали — годы с начала кредита, по вертикали — рубли. Золотая линия — остаток долга, тёмная — накопленные проценты.
+              {t('calc.mortgage.chartHint')}
             </p>
           </section>
 
@@ -310,21 +298,24 @@ export default function MortgageCalculatorPage() {
               <div className="flex items-center gap-2 mb-1">
                 <PieIcon className="w-4 h-4 text-champagne" />
                 <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
-                  Из чего состоит платёж в конкретный год
+                  {t('calc.mortgage.yearBreakdownTitle')}
                 </h3>
               </div>
               <p className="text-[12px] text-text-tertiary mb-4">
-                Сумма ежемесячного платежа не меняется, но со временем в ней падает доля процентов и растёт доля тела долга.
+                {t('calc.mortgage.yearBreakdownHint')}
               </p>
               <CalcSlider
-                label="Год кредита"
+                label={t('calc.mortgage.loanYear')}
                 value={clampedYear} onChange={setSelectedYear} min={1} max={yearCount}
-                display={`${clampedYear}-й из ${yearCount}`}
+                display={t('calc.mortgage.yearOf', {
+                  year: loanYearOrdinal(clampedYear, locale),
+                  total: yearCount,
+                })}
               />
               <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <StatPill label="Проценты за год" value={formatRubles(yearBreakdown.interestPaid)} accent />
-                <StatPill label="Тело долга за год" value={formatRubles(yearBreakdown.principalPaid)} />
-                <StatPill label="Остаток долга на конец года" value={formatRubles(yearBreakdown.balance)} />
+                <StatPill label={t('calc.mortgage.interestYear')} value={formatRubles(yearBreakdown.interestPaid)} accent />
+                <StatPill label={t('calc.mortgage.principalYear')} value={formatRubles(yearBreakdown.principalPaid)} />
+                <StatPill label={t('calc.mortgage.balanceYearEnd')} value={formatRubles(yearBreakdown.balance)} />
               </div>
               <div className="mt-4 h-3 rounded-full overflow-hidden bg-obsidian border border-border-subtle flex">
                 <div
@@ -333,17 +324,17 @@ export default function MortgageCalculatorPage() {
                     width: `${(yearBreakdown.interestPaid / (yearBreakdown.interestPaid + yearBreakdown.principalPaid || 1)) * 100}%`,
                     backgroundColor: '#1A1A2E', opacity: 0.85,
                   }}
-                  title="Проценты"
+                  title={t('calc.mortgage.interest')}
                 />
                 <div
                   className="h-full flex-1 transition-all duration-300"
                   style={{ backgroundColor: '#B8942F' }}
-                  title="Тело долга"
+                  title={t('calc.mortgage.principalBody')}
                 />
               </div>
               <div className="flex justify-between mt-1.5 text-[11px] text-text-tertiary">
-                <span>Проценты — {fmtPct((yearBreakdown.interestPaid / (yearBreakdown.interestPaid + yearBreakdown.principalPaid || 1)) * 100)}</span>
-                <span>Тело долга — {fmtPct((yearBreakdown.principalPaid / (yearBreakdown.interestPaid + yearBreakdown.principalPaid || 1)) * 100)}</span>
+                <span>{t('calc.mortgage.splitInterest', { pct: fmtPct((yearBreakdown.interestPaid / (yearBreakdown.interestPaid + yearBreakdown.principalPaid || 1)) * 100) })}</span>
+                <span>{t('calc.mortgage.splitPrincipal', { pct: fmtPct((yearBreakdown.principalPaid / (yearBreakdown.interestPaid + yearBreakdown.principalPaid || 1)) * 100) })}</span>
               </div>
             </section>
           )}
@@ -352,19 +343,22 @@ export default function MortgageCalculatorPage() {
             <div className="flex items-start gap-3 p-3.5 rounded-xl bg-obsidian-light/70 border border-border-subtle">
               <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-champagne/8 shrink-0 mt-0.5"><Percent className="w-3.5 h-3.5 text-champagne" /></div>
               <p className="text-[13px] leading-relaxed text-text-secondary">
-                Каждый процентный пункт ставки на этом сроке меняет переплату примерно на {formatRubles(result.principal * years / 100 * 0.55)}
+                {t('calc.mortgage.insight.ratePoint', { amount: formatRubles(result.principal * years / 100 * 0.55) })}
               </p>
             </div>
             <div className="flex items-start gap-3 p-3.5 rounded-xl bg-obsidian-light/70 border border-border-subtle">
               <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-champagne/8 shrink-0 mt-0.5"><Clock className="w-3.5 h-3.5 text-champagne" /></div>
               <p className="text-[13px] leading-relaxed text-text-secondary">
-                За первый год в счёт долга уйдёт лишь {formatRubles(Math.max(0, result.series[0].balance - (result.series[1]?.balance ?? 0)))} из {formatRubles(result.payment * 12)} платежей
+                {t('calc.mortgage.insight.firstYear', {
+                  toDebt: formatRubles(Math.max(0, result.series[0].balance - (result.series[1]?.balance ?? 0))),
+                  paid: formatRubles(result.payment * 12),
+                })}
               </p>
             </div>
             <div className="flex items-start gap-3 p-3.5 rounded-xl bg-obsidian-light/70 border border-border-subtle sm:col-span-2">
               <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-champagne/8 shrink-0 mt-0.5"><Wallet className="w-3.5 h-3.5 text-champagne" /></div>
               <p className="text-[13px] leading-relaxed text-text-secondary">
-                Банки обычно требуют, чтобы платёж не превышал 40–50% дохода: для этого кредита комфортный доход — от {formatRubles(result.payment / 0.45)} в месяц
+                {t('calc.mortgage.insight.income', { income: formatRubles(result.payment / 0.45) })}
               </p>
             </div>
           </section>
@@ -372,27 +366,25 @@ export default function MortgageCalculatorPage() {
       )}
 
       <section data-animate className="rounded-[2rem] bg-obsidian-light border border-border-subtle p-6 md:p-8 mb-8">
-        <h3 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-4">Методология расчёта</h3>
+        <h3 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-4">{t('calc.methodologyHeading')}</h3>
         <div className="space-y-3 text-sm text-text-secondary leading-relaxed">
           <p>
-            Калькулятор использует аннуитетную схему: одинаковый ежемесячный платёж на весь срок.
-            Проценты начисляются на остаток долга, поэтому в начале срока их доля в платеже максимальна.
+            {t('calc.mortgage.method.p1')}
           </p>
           <p className="font-mono text-[11px] text-text-tertiary border-l-2 border-champagne/30 pl-4">
-            Платёж = Кредит × r / (1 − (1 + r)⁻ⁿ), где r — месячная ставка (годовая / 12 / 100), n — число месяцев.
+            {t('calc.mortgage.method.p2')}
           </p>
           <p>
-            Расчёт справочный: банк дополнительно учитывает страховку, комиссии и индивидуальные условия.
-            Динамика ключевой ставки, от которой зависят ипотечные ставки, — на странице{' '}
-            <Link to={russiaIndicatorPath('key-rate')} className="text-champagne hover:underline">ключевой ставки Банка России</Link>.
+            {t('calc.mortgage.method.p3before')}{' '}
+            <Link to={russiaIndicatorPath('key-rate')} className="text-champagne hover:underline">{t('calc.mortgage.method.keyRateLink')}</Link>.
           </p>
         </div>
       </section>
 
       <section data-animate className="mb-8">
-        <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-6">Частые вопросы</h2>
+        <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-6">{t('calc.faqHeading')}</h2>
         <FaqAccordion
-          items={FAQ_ITEMS}
+          items={faqItems}
           onToggle={({ title, open }) => { if (open) track(events.FAQ_TOGGLE, { question: title }); }}
         />
       </section>

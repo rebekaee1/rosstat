@@ -12,6 +12,8 @@ import {
   regionPath,
   regionRatingPath,
 } from '../lib/sitePaths';
+import { useLocale } from '../i18n';
+import { resolveBrowserLocale } from '../i18n/locale';
 
 function parsePair(raw) {
   if (!raw) return null;
@@ -22,7 +24,7 @@ function parsePair(raw) {
 
 function useRegionCompare(slugA, slugB) {
   return useQuery({
-    queryKey: ['region-compare', slugA, slugB],
+    queryKey: ['region-compare', slugA, slugB, resolveBrowserLocale()],
     queryFn: ({ signal }) =>
       api.get(`/regions/vs/${slugA}/${slugB}`, { signal }).then((r) => r.data),
     enabled: !!slugA && !!slugB,
@@ -31,16 +33,19 @@ function useRegionCompare(slugA, slugB) {
 }
 
 export default function RegionComparePage() {
+  const { t } = useLocale();
   const { pair } = useParams();
   const parsed = parsePair(pair);
   const [slugA, slugB] = parsed || [null, null];
   const { data, isLoading, isError, refetch, isFetching } = useRegionCompare(slugA, slugB);
 
   useDocumentMeta(data ? {
-    title: `${data.region_a.name} или ${data.region_b.name}: сравнение регионов`,
-    description:
-      `Сравнение регионов ${data.region_a.name} и ${data.region_b.name} по ключевым показателям `
-      + `Росстата: ${(data.summary_bits || []).slice(0, 3).join('; ')}.`,
+    title: t('regions.compareTitle', { a: data.region_a.name, b: data.region_b.name }),
+    description: t('regions.compareMetaDesc', {
+      a: data.region_a.name,
+      b: data.region_b.name,
+      bits: (data.summary_bits || []).slice(0, 3).join('; '),
+    }),
     path: data.canonical_path,
   } : null);
 
@@ -52,13 +57,13 @@ export default function RegionComparePage() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 pt-24 pb-20">
-      <nav className="flex items-center gap-1.5 text-xs text-text-tertiary mb-4 overflow-hidden" aria-label="Хлебные крошки">
-        <Link to="/" className="hover:text-champagne transition-colors shrink-0">Главная</Link>
+      <nav className="flex items-center gap-1.5 text-xs text-text-tertiary mb-4 overflow-hidden" aria-label={t('crumb.aria')}>
+        <Link to="/" className="hover:text-champagne transition-colors shrink-0">{t('common.home')}</Link>
         <ChevronRight size={12} className="shrink-0" />
-        <Link to={regionHubPath()} className="hover:text-champagne transition-colors shrink-0">Регионы</Link>
+        <Link to={regionHubPath()} className="hover:text-champagne transition-colors shrink-0">{t('regions.regionsLabel')}</Link>
         <ChevronRight size={12} className="shrink-0" />
         <span className="text-text-secondary truncate">
-          {data ? `${data.region_a.name} vs ${data.region_b.name}` : 'Сравнение'}
+          {data ? `${data.region_a.name} vs ${data.region_b.name}` : t('regions.compareCrumb')}
         </span>
       </nav>
 
@@ -74,24 +79,25 @@ export default function RegionComparePage() {
       {data && (
         <>
           <p className="text-champagne text-xs font-mono uppercase tracking-widest mb-2">
-            Сравнение регионов России
+            {t('regions.compareEyebrow')}
           </p>
           <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary mb-3">
-            {data.region_a.name} и {data.region_b.name}
+            {t('regions.compareH1', { a: data.region_a.name, b: data.region_b.name })}
           </h1>
           <p className="text-text-secondary mb-8 max-w-3xl">
-            Официальные данные Росстата по двум субъектам РФ: население, заработная плата,
-            безработица, валовой региональный продукт, инвестиции, цены и доходы.
+            {t('regions.compareIntro')}
           </p>
 
           <section className="mb-8">
-            <h2 className="font-display text-lg font-semibold text-text-primary mb-3">Сводная таблица</h2>
+            <h2 className="font-display text-lg font-semibold text-text-primary mb-3">
+              {t('regions.compareTableTitle')}
+            </h2>
             <div className="overflow-x-auto rounded-xl border border-border-subtle">
               <table className="w-full text-sm min-w-[32rem]">
                 <thead>
                   <tr className="bg-obsidian-light/50 text-left text-[11px] uppercase tracking-wide text-text-tertiary">
-                    <th className="px-4 py-2.5 font-medium">Показатель</th>
-                    <th className="px-4 py-2.5 font-medium">Год</th>
+                    <th className="px-4 py-2.5 font-medium">{t('regions.compareColIndicator')}</th>
+                    <th className="px-4 py-2.5 font-medium">{t('common.year')}</th>
                     <th className="px-4 py-2.5 font-medium">{data.region_a.name}</th>
                     <th className="px-4 py-2.5 font-medium">{data.region_b.name}</th>
                   </tr>
@@ -123,17 +129,17 @@ export default function RegionComparePage() {
                 {data.region_a.name}: <strong className="font-mono text-text-primary">{formatRegionValue(row.a.value)} {shortUnit(row.unit)}</strong>
                 {'; '}
                 {data.region_b.name}: <strong className="font-mono text-text-primary">{formatRegionValue(row.b.value)} {shortUnit(row.unit)}</strong>.
-                {' '}Показатель {row.verdict}.
+                {' '}{t('regions.compareVerdict', { verdict: row.verdict })}
               </p>
               <div className="flex flex-wrap gap-3 text-xs">
                 <Link to={regionIndicatorPath(row.a.slug, row.code)} className="text-champagne hover:underline">
-                  Динамика — {data.region_a.name}
+                  {t('regions.compareDynamics', { name: data.region_a.name })}
                 </Link>
                 <Link to={regionIndicatorPath(row.b.slug, row.code)} className="text-champagne hover:underline">
-                  Динамика — {data.region_b.name}
+                  {t('regions.compareDynamics', { name: data.region_b.name })}
                 </Link>
                 <Link to={regionRatingPath(row.code)} className="text-champagne hover:underline">
-                  Рейтинг всех регионов
+                  {t('regions.compareAllRating')}
                 </Link>
               </div>
             </section>
@@ -141,15 +147,15 @@ export default function RegionComparePage() {
 
           <section className="bg-surface border border-border-subtle rounded-xl p-5">
             <h2 className="font-display text-base font-semibold text-text-primary mb-2 flex items-center gap-2">
-              <GitCompare size={16} className="text-champagne" /> Профили регионов
+              <GitCompare size={16} className="text-champagne" /> {t('regions.compareProfiles')}
             </h2>
             <p className="text-sm text-text-secondary">
-              Все показатели каждого региона:{' '}
+              {t('regions.compareProfilesLead')}{' '}
               <Link to={regionPath(data.region_a.slug)} className="text-champagne hover:underline">{data.region_a.name}</Link>
               {', '}
               <Link to={regionPath(data.region_b.slug)} className="text-champagne hover:underline">{data.region_b.name}</Link>.
-              {' '}Интерактивное сравнение любых рядов — в разделе{' '}
-              <Link to="/compare" className="text-champagne hover:underline">«Сравнение»</Link>.
+              {' '}{t('regions.compareProfilesTail')}{' '}
+              <Link to="/compare" className="text-champagne hover:underline">{t('regions.compareSection')}</Link>.
             </p>
           </section>
         </>

@@ -6,6 +6,7 @@ import {
   ArrowLeft, ArrowUpRight, Activity,
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
+import { getSiteOrigin } from '../lib/siteOrigin';
 import {
   useWorldIndicator, useWorldIndicatorData, useWorldCountry, formatWorldValue,
 } from '../lib/worldApi';
@@ -38,6 +39,7 @@ import {
   countryPath,
   indicatorPath,
 } from '../lib/sitePaths';
+import { useLocale, useT } from '../i18n';
 
 const FREQ_RU = {
   daily: 'По дням',
@@ -82,6 +84,8 @@ export default function WorldIndicatorPage() {
   const slug = countrySlug || slugParam;
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const t = useT();
+  const { locale } = useLocale();
   const urlMode = searchParams.get('mode');
 
   const metaQ = useWorldIndicator(slug, code);
@@ -198,6 +202,9 @@ export default function WorldIndicatorPage() {
   const country = metaQ.data?.country;
   const indicator = metaQ.data?.indicator;
   const displayName = stripFrequencySuffix(indicator?.name || '');
+  const countryName = (locale === 'en' && country?.name_en)
+    ? country.name_en
+    : (country?.name || '');
   const notFound = metaQ.isError && metaQ.error?.response?.status === 404;
 
   const variantGroup = useMemo(
@@ -231,16 +238,30 @@ export default function WorldIndicatorPage() {
           : activeFreq === 'monthly' ? 'Предыдущий месяц'
             : 'Предыдущее значение';
 
+  const sourceLabel = indicator?.source || t('world.indicator.sourceFallback');
+  const valuePart = `${formatWorldValue(last?.value)}${unitBesideValue ? ` ${unitBesideValue}` : ''}`;
   useDocumentMeta(indicator && country ? {
-    title: `${displayName} — ${country.name}: график и данные`,
-    description:
-      `${displayName} (${country.name}): последнее значение ${formatWorldValue(last?.value)}${unitBesideValue ? ` ${unitBesideValue}` : ''}`
-      + (last?.date ? ` на ${formatDate(last.date, 'full')}` : '')
-      + `. Источник: ${indicator.source || 'официальная статистика'}.`,
+    title: t('world.indicator.metaTitle', { name: displayName, country: countryName }),
+    description: last?.date
+      ? t('world.indicator.metaDesc', {
+        name: displayName,
+        country: countryName,
+        value: valuePart,
+        unit: '',
+        date: formatDate(last.date, 'full'),
+        source: sourceLabel,
+      })
+      : t('world.indicator.metaDescNoDate', {
+        name: displayName,
+        country: countryName,
+        value: valuePart,
+        unit: '',
+        source: sourceLabel,
+      }),
     path: indicatorPath(slug, code),
   } : {
-    title: notFound ? 'Показатель не найден' : 'Мировая экономика',
-    description: 'Макроэкономические показатели стран Европы.',
+    title: notFound ? t('world.indicator.notFoundTitle') : t('world.eyebrow'),
+    description: t('world.coverageNote'),
     path: indicatorPath(slug, code),
   });
 
@@ -252,7 +273,7 @@ export default function WorldIndicatorPage() {
       name: `${displayName} — ${country.name}`,
       description: indicator.description || `${displayName}, ${country.name}. Источник: ${indicator.source || 'официальная статистика'}.`,
       creator: { '@type': 'Organization', name: indicator.source || 'Официальный источник' },
-      publisher: { '@type': 'Organization', name: 'Forecast Economy', url: 'https://forecasteconomy.com' },
+      publisher: { '@type': 'Organization', name: 'Forecast Economy', url: getSiteOrigin() },
     };
     const script = document.createElement('script');
     script.type = 'application/ld+json';
@@ -321,7 +342,7 @@ export default function WorldIndicatorPage() {
     <div className="mx-auto w-full max-w-7xl overflow-x-hidden px-4 pb-24 pt-24 sm:px-6 md:px-8 md:pt-28 md:pb-28">
       <Breadcrumbs
         items={worldIndicatorTrail(
-          country?.name || '…',
+          countryName || country?.name || '…',
           slug,
           displayName || '…',
           code,
@@ -331,19 +352,19 @@ export default function WorldIndicatorPage() {
 
       {notFound && (
         <div className="mt-8 rounded-2xl border border-border-subtle bg-surface p-8 text-center">
-          <h1 className="mb-3 font-display text-2xl font-bold text-text-primary">Показатель не найден</h1>
+          <h1 className="mb-3 font-display text-2xl font-bold text-text-primary">{t('world.indicator.notFoundTitle')}</h1>
           <p className="mb-6 text-text-secondary">
-            Такого показателя для этой страны нет в каталоге. Вернитесь к списку или откройте другой раздел.
+            {t('world.indicator.notFoundBody')}
           </p>
           <div className="flex flex-wrap justify-center gap-3 text-sm">
             <Link to={countryPath(slug)} className="rounded-xl bg-champagne/10 px-4 py-2 text-champagne transition-colors hover:bg-champagne/20">
-              К стране
+              {t('world.indicator.backToCountry')}
             </Link>
             <Link to="/world" className="rounded-xl border border-border-subtle px-4 py-2 text-text-secondary transition-colors hover:text-champagne">
-              Все страны
+              {t('world.indicator.allCountries')}
             </Link>
             <Link to="/" className="rounded-xl border border-border-subtle px-4 py-2 text-text-secondary transition-colors hover:text-champagne">
-              Главная
+              {t('world.indicator.home')}
             </Link>
           </div>
         </div>
@@ -351,7 +372,7 @@ export default function WorldIndicatorPage() {
 
       {(metaQ.isError && !notFound) && (
         <ApiRetryBanner onRetry={metaQ.refetch} isFetching={metaQ.isFetching} className="mb-6">
-          Не удалось загрузить карточку показателя.
+          {t('world.indicator.loadError')}
         </ApiRetryBanner>
       )}
 
@@ -375,12 +396,12 @@ export default function WorldIndicatorPage() {
                 <Activity className="h-3 w-3 text-champagne" />
                 {FREQ_RU[activeFreq] || '—'}
               </span>
-              {country?.name && (
+              {countryName && (
                 <Link
                   to={countryPath(slug)}
                   className="hidden font-mono text-xs text-text-tertiary transition-colors hover:text-champagne sm:inline"
                 >
-                  {country.name}
+                  {countryName}
                 </Link>
               )}
               {indicator.category && (

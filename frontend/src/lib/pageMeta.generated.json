@@ -97,6 +97,228 @@
       "title": "Внешняя торговля России"
     }
   },
+  "en": {
+    "categories": {
+      "business": {
+        "description": "Industrial production index (mining, manufacturing, energy, water supply), retail trade, and investment — Rosstat data.",
+        "h1": "Business and investment in Russia",
+        "intro": "Business and investment indicators help assess industrial activity and fixed capital formation. The industrial production index is also available by section: mining, manufacturing, electricity and gas supply, and water supply and waste management.",
+        "name": "Business and investment",
+        "slug": "business",
+        "title": "Business and investment in Russia"
+      },
+      "commodities": {
+        "description": "Brent crude, natural gas, gold, copper, wheat — global commodity prices from official sources.",
+        "h1": "Commodity prices and markets",
+        "intro": "Global prices for key commodities: oil, precious and industrial metals, energy, and agricultural products.",
+        "name": "Commodities",
+        "slug": "commodities",
+        "title": "Commodity prices and markets"
+      },
+      "currencies": {
+        "description": "USD, EUR, and CNY against the ruble — official daily rates from the Bank of Russia.",
+        "h1": "Bank of Russia exchange rates",
+        "intro": "Official daily exchange rates of major currencies against the ruble, set by the Bank of Russia.",
+        "name": "Currencies",
+        "slug": "currencies",
+        "title": "Bank of Russia exchange rates"
+      },
+      "finance": {
+        "description": "Money supply, reserves, credit, deposits, and the budget — Bank of Russia and Ministry of Finance data.",
+        "h1": "Money and budget in Russia",
+        "intro": "Dynamics of money supply, credit, deposits, reserves, and public finances.",
+        "name": "Money and budget",
+        "slug": "finance",
+        "title": "Money and budget in Russia"
+      },
+      "gdp": {
+        "description": "GDP, consumption, government spending, and investment — quarterly Rosstat data.",
+        "h1": "GDP and economic growth in Russia",
+        "intro": "Economic growth, nominal GDP, and derived rates of change for the Russian economy.",
+        "name": "GDP and growth",
+        "slug": "gdp",
+        "title": "GDP and economic growth in Russia"
+      },
+      "indices": {
+        "description": "MOEX, RTS, RGBI, and bond indices — daily data from Moscow Exchange.",
+        "h1": "Russian market indices",
+        "intro": "Major Russian market indices: MOEX and RTS equity indices, total return, and government and corporate bond indices.",
+        "name": "Market indices",
+        "slug": "indices",
+        "title": "Russian market indices"
+      },
+      "labor": {
+        "description": "Unemployment, wages, and employment — monthly Rosstat data.",
+        "h1": "Labor market in Russia",
+        "intro": "Employment, unemployment, and wage dynamics in Russia.",
+        "name": "Labor market",
+        "slug": "labor",
+        "title": "Labor market in Russia"
+      },
+      "population": {
+        "description": "Population size, births, deaths, and pensioners — Rosstat demographic data.",
+        "h1": "Population of Russia",
+        "intro": "Demographic indicators cover population size, natural change, and migration.",
+        "name": "Population",
+        "slug": "population",
+        "title": "Population of Russia"
+      },
+      "prices": {
+        "description": "CPI, inflation, and housing prices — Rosstat data and forecasts.",
+        "h1": "Prices and inflation in Russia",
+        "intro": "This section covers consumer prices, inflation, and housing prices. CPI dynamics, annual and quarterly changes, and related indices for major groups of goods and services.",
+        "name": "Prices and inflation",
+        "slug": "prices",
+        "title": "Prices and inflation in Russia"
+      },
+      "rates": {
+        "description": "Key rate, RUONIA, mortgage and deposit rates — Bank of Russia data.",
+        "h1": "Interest rates in Russia",
+        "intro": "This section brings together the key rate, money-market rates, and rates on bank products.",
+        "name": "Interest rates",
+        "slug": "rates",
+        "title": "Interest rates in Russia"
+      },
+      "science": {
+        "description": "Postgraduate students, R&D organizations, and innovation activity — Rosstat data.",
+        "h1": "Science and education in Russia",
+        "intro": "Indicators of science, education, and innovation activity.",
+        "name": "Science and education",
+        "slug": "science",
+        "title": "Science and education in Russia"
+      },
+      "trade": {
+        "description": "Exports, imports, trade balance, and the current account — quarterly Bank of Russia data.",
+        "h1": "Foreign trade of Russia",
+        "intro": "External economic flows and balance-of-payments indicators.",
+        "name": "Foreign trade",
+        "slug": "trade",
+        "title": "Foreign trade of Russia"
+      }
+    },
+    "pages": {
+      "about": {
+        "description": "Analytics platform for official economic data on Russia, regions, and available countries: charts, tables, comparisons, and forecasts.",
+        "h1": "About Forecast Economy",
+        "intro": "Forecast Economy is an analytics project on the economy of Russia, its regions, and available countries. We present official indicators in a comparable form: charts, tables, sources, analysis modes, and quality-checked forecasts.",
+        "path": "/about",
+        "slug": "about",
+        "title": "About Forecast Economy"
+      },
+      "calculator": {
+        "description": "Estimate the loss of purchasing power over any period. Rosstat CPI data since 1991.",
+        "h1": "Inflation calculator",
+        "intro": "The calculator shows how the purchasing power of the ruble changed over the selected period using the consumer price index.",
+        "path": "/calculator",
+        "slug": "calculator",
+        "title": "Inflation calculator for Russia"
+      },
+      "calculator-compound": {
+        "description": "Estimate savings growth with compound interest: capitalization, monthly contributions, and an inflation adjustment.",
+        "h1": "Compound interest calculator",
+        "intro": "The calculator shows how capital grows when interest is reinvested and contributions are regular, and what its real value is after inflation.",
+        "path": "/calculator/compound",
+        "slug": "calculator-compound",
+        "title": "Compound interest calculator — capital growth with contributions"
+      },
+      "calculator-mortgage": {
+        "description": "Estimate the monthly mortgage payment, total cost of credit, and overpayment. Annuity formula; reference — Bank of Russia key rate.",
+        "h1": "Mortgage calculator",
+        "intro": "The calculator computes an annuity mortgage payment, total overpayment, and an annual amortization schedule.",
+        "path": "/calculator/mortgage",
+        "slug": "calculator-mortgage",
+        "title": "Mortgage calculator — payment, overpayment, amortization schedule"
+      },
+      "calendar": {
+        "description": "Schedule of macroeconomic data releases: Rosstat, Bank of Russia, Ministry of Finance.",
+        "h1": "Economic release calendar",
+        "intro": "The calendar helps track release dates for macroeconomic data and updates from official sources.",
+        "path": "/russia/calendar",
+        "slug": "calendar",
+        "title": "Russia economic release calendar"
+      },
+      "compare": {
+        "description": "Compare country and Russian indicators on one chart: federal series, regions, and comparable indicators for other countries.",
+        "h1": "Compare indicators",
+        "intro": "First choose a country, then an indicator. For Russia, federal series and regional series are available. Two regions are compared in the regions section.",
+        "path": "/compare",
+        "slug": "compare",
+        "title": "Compare indicators"
+      },
+      "demographics": {
+        "description": "Children, working-age, and above working-age — Rosstat data since 1990.",
+        "h1": "Age structure of Russia's population",
+        "intro": "This page shows the distribution of Russia's population by age group and helps analyze demographic dependency.",
+        "path": "/russia/demographics",
+        "slug": "demographics",
+        "title": "Age structure of Russia's population"
+      },
+      "home": {
+        "description": "Official macroeconomic indicators for countries, Russia, and its regions: charts, tables, comparisons, and forecasts from statistical agencies and central banks.",
+        "h1": "Official macroeconomic indicators in one place",
+        "intro": "Forecast Economy collects macroeconomic indicators for countries from national statistical agencies, central banks, and Eurostat. Russia and its regions are covered with deep historical series. Data come only from official primary sources and are shown as charts, tables, comparisons, and forecasts. Viewing is open to everyone; downloads require free registration.",
+        "path": "/",
+        "slug": "home",
+        "title": "Forecast Economy — macroeconomic indicators for countries and Russia"
+      },
+      "methodology": {
+        "description": "How forecasts of economic indicators for Russia and other countries are built: series preparation, historical validation, statistical models, intervals, updates, and limitations.",
+        "h1": "Forecast methodology",
+        "intro": "Every forecast on Forecast Economy is produced by a statistical model trained on the official historical series of the indicator. We do not fit results to expectations or add expert assumptions: the forecast is determined by the source data and the algorithm. Below is the full calculation path — from series preparation to the confidence interval — and the indicators we deliberately do not forecast.",
+        "path": "/methodology",
+        "slug": "methodology",
+        "title": "Forecast methodology for economic indicators — Forecast Economy"
+      },
+      "privacy": {
+        "description": "Personal data processing policy for forecasteconomy.com: operator, data categories, cookies, and user rights.",
+        "h1": "Privacy and personal data processing policy",
+        "intro": "The operator is IIMPACT PLUS LLC, tax ID (INN) 9705243471. This page describes which data are processed when you use the site, how to manage cookie consent, and what rights visitors have.",
+        "path": "/privacy",
+        "slug": "privacy",
+        "title": "Privacy policy"
+      },
+      "russia": {
+        "description": "Russia country card: macroeconomic indicators, categories, regional statistics, release calendar, and a current snapshot.",
+        "h1": "Russia",
+        "intro": "The Russia section brings together macroeconomic indicators from official sources, regional statistics by federal subject, and the release calendar. The platform home page remains the shared entry point; this is the entry to Russian Federation data.",
+        "path": "/russia",
+        "slug": "russia",
+        "title": "Russia — macroeconomics, regions, and calendar"
+      },
+      "russia-categories": {
+        "description": "Catalog of Russia's macroeconomic categories: prices, GDP, labor market, currencies, finance, trade, and other official statistics sections.",
+        "h1": "Russia indicator categories",
+        "intro": "Sections of Russia's macroeconomy: from prices and FX to GDP, the labor market, and demographics. Each category contains official series with charts and tables.",
+        "path": "/russia/category",
+        "slug": "russia-categories",
+        "title": "Russia indicator categories — Forecast Economy"
+      },
+      "terms": {
+        "description": "Terms of use for forecasteconomy.com: materials, widgets, and liability limitations.",
+        "h1": "Terms of use",
+        "intro": "Terms of use for the Forecast Economy analytics platform: how materials and widgets may be used, the nature of the information, and the parties' liability.",
+        "path": "/terms",
+        "slug": "terms",
+        "title": "Terms of use"
+      },
+      "widgets": {
+        "description": "Embeddable charts, cards, and tickers for your website.",
+        "h1": "Forecast Economy widgets",
+        "intro": "Widgets let you embed Forecast Economy charts and cards on an external site.",
+        "path": "/widgets",
+        "slug": "widgets",
+        "title": "Forecast Economy widgets"
+      }
+    },
+    "world": {
+      "home": {
+        "description": "Official country statistics: prices, GDP, labor market, trade, and finance. Charts and tables from Eurostat, national statistical agencies, and central banks.",
+        "h1": "World economy: country statistics",
+        "path": "/world",
+        "title": "World economy — country statistics"
+      }
+    }
+  },
   "pages": {
     "about": {
       "description": "Аналитическая платформа официальных экономических данных России, регионов и доступных стран: графики, таблицы, сравнения и прогнозы.",

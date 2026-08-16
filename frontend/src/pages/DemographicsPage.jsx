@@ -4,7 +4,7 @@ import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis,
   Tooltip, CartesianGrid,
 } from 'recharts';
-import { ChevronRight, Users, Download, ArrowRight } from 'lucide-react';
+import { Users, Download, ArrowRight } from 'lucide-react';
 import { useDemographicsStructure } from '../lib/hooks';
 import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
@@ -18,30 +18,50 @@ import {
   russiaCategoryPath,
   russiaIndicatorPath,
 } from '../lib/sitePaths';
+import { useLocale, useT } from '../i18n';
 
 const GROUPS = [
   // В-30: границы трудоспособного возраста менялись (пенсионная реформа
   // 2019–2028 поэтапно сдвигает верхнюю границу) — в коротких подписях
   // конкретные возрасты не фиксируем — группы определяются методологией
   // Росстата на каждый год.
-  { key: 'pop-under-working-age', color: '#D4A574', colorMuted: '#D4A574', label: 'Моложе трудоспособного', short: 'Дети (0–15)' },
-  { key: 'working-age-population', color: '#B8942F', colorMuted: '#B8942F', label: 'Трудоспособные', short: 'Трудоспособные' },
-  { key: 'pop-over-working-age', color: '#8B7A6B', colorMuted: '#8B7A6B', label: 'Старше трудоспособного', short: 'Старше трудоспособного' },
+  {
+    key: 'pop-under-working-age',
+    color: '#D4A574',
+    colorMuted: '#D4A574',
+    labelKey: 'demo.group.underWorking',
+    shortKey: 'demo.group.underWorkingShort',
+  },
+  {
+    key: 'working-age-population',
+    color: '#B8942F',
+    colorMuted: '#B8942F',
+    labelKey: 'demo.group.working',
+    shortKey: 'demo.group.workingShort',
+  },
+  {
+    key: 'pop-over-working-age',
+    color: '#8B7A6B',
+    colorMuted: '#8B7A6B',
+    labelKey: 'demo.group.overWorking',
+    shortKey: 'demo.group.overWorkingShort',
+  },
 ];
 
 function StructureTooltip({ active, payload, label }) {
+  const t = useT();
   if (!active || !payload?.length) return null;
   const total = payload.reduce((s, p) => s + (p.value || 0), 0);
   return (
     <div className="glass-surface rounded-xl border border-border-subtle px-4 py-3 shadow-2xl min-w-[220px]">
-      <p className="text-xs font-mono text-text-tertiary mb-2">{label} г.</p>
+      <p className="text-xs font-mono text-text-tertiary mb-2">{t('demo.tooltip.year', { year: label })}</p>
       {payload.map((p) => {
         const g = GROUPS.find(g => g.key === p.dataKey);
         return (
           <div key={p.dataKey} className="flex items-center justify-between gap-4 mb-1">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full" style={{ background: g?.color }} />
-              <span className="text-xs text-text-secondary">{g?.label}</span>
+              <span className="text-xs text-text-secondary">{g ? t(g.labelKey) : p.dataKey}</span>
             </div>
             <span className="text-sm font-mono font-semibold text-text-primary">
               {p.value?.toFixed(1).replace('.', ',')}
@@ -50,9 +70,9 @@ function StructureTooltip({ active, payload, label }) {
         );
       })}
       <div className="mt-2 pt-2 border-t border-border-subtle flex justify-between">
-        <span className="text-xs text-text-tertiary">Всего</span>
+        <span className="text-xs text-text-tertiary">{t('demo.tooltip.total')}</span>
         <span className="text-sm font-mono font-semibold text-text-primary">
-          {total.toFixed(1).replace('.', ',')} млн
+          {total.toFixed(1).replace('.', ',')} {t('demo.tooltip.mln')}
         </span>
       </div>
     </div>
@@ -60,17 +80,18 @@ function StructureTooltip({ active, payload, label }) {
 }
 
 function PercentTooltip({ active, payload, label }) {
+  const t = useT();
   if (!active || !payload?.length) return null;
   return (
     <div className="glass-surface rounded-xl border border-border-subtle px-4 py-3 shadow-2xl min-w-[200px]">
-      <p className="text-xs font-mono text-text-tertiary mb-2">{label} г.</p>
+      <p className="text-xs font-mono text-text-tertiary mb-2">{t('demo.tooltip.year', { year: label })}</p>
       {payload.map((p) => {
         const g = GROUPS.find(g => g.key === p.dataKey);
         return (
           <div key={p.dataKey} className="flex items-center justify-between gap-4 mb-1">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full" style={{ background: g?.color }} />
-              <span className="text-xs text-text-secondary">{g?.label}</span>
+              <span className="text-xs text-text-secondary">{g ? t(g.labelKey) : p.dataKey}</span>
             </div>
             <span className="text-sm font-mono font-semibold text-text-primary">
               {p.value?.toFixed(1).replace('.', ',')}%
@@ -83,6 +104,7 @@ function PercentTooltip({ active, payload, label }) {
 }
 
 function StructureBar({ latest }) {
+  const t = useT();
   if (!latest) return null;
   const total = GROUPS.reduce((s, g) => s + (latest[g.key] || 0), 0);
   if (!total) return null;
@@ -123,12 +145,12 @@ function StructureBar({ latest }) {
             >
               <div className="flex items-center justify-center gap-2 mb-2">
                 <span className="w-2 h-2 rounded-full" style={{ background: g.color }} />
-                <span className="text-[11px] text-text-tertiary uppercase tracking-wider">{g.short}</span>
+                <span className="text-[11px] text-text-tertiary uppercase tracking-wider">{t(g.shortKey)}</span>
               </div>
               <p className="text-2xl font-display font-bold text-text-primary tracking-tight">
                 {val.toFixed(1).replace('.', ',')}
               </p>
-              <p className="text-xs text-text-tertiary font-mono mt-0.5">млн чел., {pct}%</p>
+              <p className="text-xs text-text-tertiary font-mono mt-0.5">{t('demo.bar.mlnPct', { pct })}</p>
             </Link>
           );
         })}
@@ -137,9 +159,9 @@ function StructureBar({ latest }) {
   );
 }
 
-function downloadStructureCSV(series) {
+function downloadStructureCSV(series, t) {
   if (!series?.length) return;
-  const header = ['Год', ...GROUPS.map(g => g.label), 'Всего'];
+  const header = [t('demo.csv.year'), ...GROUPS.map(g => t(g.labelKey)), t('demo.csv.total')];
   const rows = [header.join(';')];
   for (const row of series) {
     const total = GROUPS.reduce((s, g) => s + (row[g.key] || 0), 0);
@@ -162,6 +184,8 @@ function downloadStructureCSV(series) {
 }
 
 export default function DemographicsPage() {
+  const t = useT();
+  const { locale } = useLocale();
   const { data, isLoading, isError, refetch, isFetching } = useDemographicsStructure();
   const [chartType, setChartType] = useState('stacked');
 
@@ -169,12 +193,16 @@ export default function DemographicsPage() {
   const latest = series.length > 0 ? series[series.length - 1] : null;
   const firstYear = series.length > 0 ? series[0].year : null;
 
-  const demoSeo = getPageSeo('demographics');
+  const demoSeo = getPageSeo('demographics', locale);
   useDocumentMeta({
-    title: demoSeo.title,
-    description: demoSeo.description,
-    path: demoSeo.path,
+    title: demoSeo?.title,
+    description: demoSeo?.description,
+    path: demoSeo?.path,
   });
+
+  const totalLatest = latest
+    ? GROUPS.reduce((s, g) => s + (latest[g.key] || 0), 0).toFixed(1).replace('.', ',')
+    : null;
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 pt-20 pb-24">
@@ -184,30 +212,26 @@ export default function DemographicsPage() {
         <div className="flex items-center gap-3 mb-4">
           <Users className="w-7 h-7 text-champagne" />
           <h1 className="font-display text-3xl md:text-[2.15rem] font-bold text-text-primary tracking-tight">
-            Возрастная структура населения
+            {t('demo.title')}
           </h1>
         </div>
         <p className="text-text-secondary leading-relaxed">
-          Три возрастные группы по классификации Росстата: моложе трудоспособного возраста (0–15 лет),
-          в трудоспособном возрасте и старше трудоспособного. Границы трудоспособного возраста
-          определяются законодательством на каждый год: до 2019 года — мужчины 16–59 лет и
-          женщины 16–54 года, с 2019 года верхняя граница поэтапно повышается в рамках
-          пенсионной реформы.
-          {firstYear && <> Источник: данные Росстата с {firstYear} года.</>}
+          {t('demo.intro')}
+          {firstYear && t('demo.sourceFrom', { year: firstYear })}
         </p>
       </header>
 
       {isError && (
         <ApiRetryBanner className="mb-6" onRetry={() => refetch()} isFetching={isFetching}>
-          <span className="font-semibold">Данные о возрастной структуре недоступны.</span>{' '}
-          Нажмите «Повторить» через пару секунд.
+          <span className="font-semibold">{t('demo.errorTitle')}</span>{' '}
+          {t('demo.errorBody')}
         </ApiRetryBanner>
       )}
 
       {isLoading && (
         <section
           aria-busy="true"
-          aria-label="Загрузка структуры населения"
+          aria-label={t('demo.loadingAria')}
           className="rounded-[2rem] border border-border-subtle bg-surface p-6 shadow-md ring-1 ring-black/[0.06] md:p-8 mb-8"
         >
           <div className="flex items-center justify-between mb-6">
@@ -231,10 +255,10 @@ export default function DemographicsPage() {
         <section className="rounded-[2rem] border border-border-subtle bg-surface p-6 shadow-md ring-1 ring-black/[0.06] md:p-8 mb-8">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-text-primary/70">
-              Структура на {latest.year} г.
+              {t('demo.structureYear', { year: latest.year })}
             </h2>
             <span className="text-sm font-mono text-text-tertiary">
-              {GROUPS.reduce((s, g) => s + (latest[g.key] || 0), 0).toFixed(1).replace('.', ',')} млн чел.
+              {t('demo.totalMln', { n: totalLatest })}
             </span>
           </div>
           <StructureBar latest={latest} />
@@ -244,27 +268,27 @@ export default function DemographicsPage() {
       <section className="rounded-[2rem] border border-border-subtle bg-surface p-6 shadow-md ring-1 ring-black/[0.06] md:p-8 mb-8">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
           <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-text-primary/70">
-            {firstYear ? `Динамика с ${firstYear} года` : 'Динамика'}
+            {firstYear ? t('demo.dynamicsFrom', { year: firstYear }) : t('demo.dynamics')}
           </h2>
           <div className="flex items-center gap-2">
-            {['stacked', 'percent'].map((t) => (
+            {['stacked', 'percent'].map((mode) => (
               <button
-                key={t}
-                onClick={() => { setChartType(t); track(events.DEMOGRAPHICS_CHART_TYPE, { type: t }); }}
+                key={mode}
+                onClick={() => { setChartType(mode); track(events.DEMOGRAPHICS_CHART_TYPE, { type: mode }); }}
                 className={cn(
                   'px-3 py-1.5 rounded-lg text-xs font-medium transition-colors',
-                  chartType === t
+                  chartType === mode
                     ? 'bg-champagne/15 text-champagne'
                     : 'text-text-tertiary hover:text-text-secondary hover:bg-obsidian-lighter',
                 )}
               >
-                {t === 'stacked' ? 'Абсолютно' : '%'}
+                {mode === 'stacked' ? t('demo.chartAbsolute') : t('demo.chartPercent')}
               </button>
             ))}
             <button
-              onClick={() => downloadStructureCSV(series)}
+              onClick={() => downloadStructureCSV(series, t)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-text-tertiary hover:text-champagne hover:bg-champagne/10 transition-colors"
-              title="Скачать CSV"
+              title={t('demo.downloadCsv')}
             >
               <Download className="w-3.5 h-3.5" />
               CSV
@@ -275,7 +299,7 @@ export default function DemographicsPage() {
         {isLoading ? (
           <SkeletonBox className="h-[360px] w-full rounded-2xl" />
         ) : series.length === 0 ? (
-          <p className="text-text-secondary py-12 text-center">Нет данных для отображения</p>
+          <p className="text-text-secondary py-12 text-center">{t('demo.noData')}</p>
         ) : (
           <div className="h-[360px] w-full overflow-hidden">
             <ResponsiveContainer width="100%" height="100%">
@@ -310,7 +334,7 @@ export default function DemographicsPage() {
                   tickLine={false}
                   tickFormatter={v => chartType === 'percent' ? `${v.toFixed(0)}%` : `${v.toFixed(0)}`}
                   width={44}
-                  label={chartType !== 'percent' ? { value: 'млн', position: 'top', offset: -4, style: { fontSize: 10, fill: 'rgba(26,26,46,0.35)', fontFamily: 'JetBrains Mono, monospace' } } : undefined}
+                  label={chartType !== 'percent' ? { value: t('demo.axis.mln'), position: 'top', offset: -4, style: { fontSize: 10, fill: 'rgba(26,26,46,0.35)', fontFamily: 'JetBrains Mono, monospace' } } : undefined}
                 />
                 <Tooltip content={chartType === 'percent' ? <PercentTooltip /> : <StructureTooltip />} />
                 {GROUPS.map((g) => (
@@ -335,7 +359,7 @@ export default function DemographicsPage() {
             {GROUPS.map((g) => (
               <div key={g.key} className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full" style={{ background: g.color }} />
-                <span className="text-xs text-text-tertiary">{g.label}</span>
+                <span className="text-xs text-text-tertiary">{t(g.labelKey)}</span>
               </div>
             ))}
           </div>
@@ -347,7 +371,7 @@ export default function DemographicsPage() {
           to={russiaCategoryPath('population')}
           className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-border-subtle bg-surface text-text-secondary hover:text-champagne hover:border-champagne/30 transition-colors text-sm font-medium shadow-sm"
         >
-          Все демографические индикаторы
+          {t('demo.allIndicators')}
           <ArrowRight className="w-4 h-4" />
         </Link>
       </div>

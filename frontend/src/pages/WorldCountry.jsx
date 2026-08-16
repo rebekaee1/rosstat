@@ -30,32 +30,32 @@ import {
   indicatorPath,
   regionHubPath,
 } from '../lib/sitePaths';
+import { useLocale, useT } from '../i18n';
 
 function normalize(s) {
   return (s || '').toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim();
 }
 
-const FREQ_LABEL = {
-  daily: 'день',
-  weekly: 'нед.',
-  monthly: 'мес.',
-  quarterly: 'кв.',
-  annual: 'год',
-};
-
-function formatIndicatorDate(dateStr, frequency) {
+function formatIndicatorDate(dateStr, frequency, locale) {
   if (!dateStr) return '—';
-  if (frequency === 'annual') return formatDate(dateStr, 'annual');
-  if (frequency === 'quarterly') return formatDate(dateStr, 'quarterly');
-  return formatDate(dateStr, 'full');
+  if (frequency === 'annual') return formatDate(dateStr, 'annual', locale);
+  if (frequency === 'quarterly') return formatDate(dateStr, 'quarterly', locale);
+  return formatDate(dateStr, 'full', locale);
 }
 
-function formatFreqList(item) {
+function formatFreqList(item, t) {
   const freqs = Array.isArray(item.frequencies)
     ? item.frequencies.map((f) => (typeof f === 'string' ? f : f.freq)).filter(Boolean)
     : (item.frequency ? [item.frequency] : []);
   if (!freqs.length) return '';
-  return freqs.map((f) => FREQ_LABEL[f]).filter(Boolean).join(', ');
+  return freqs
+    .map((f) => {
+      const key = `world.freq.${f}`;
+      const label = t(key);
+      return label !== key ? label : f;
+    })
+    .filter(Boolean)
+    .join(', ');
 }
 
 function CompactChange({ change }) {
@@ -71,8 +71,10 @@ function CompactChange({ change }) {
 }
 
 function IndicatorRow({ item, slug }) {
+  const t = useT();
+  const { locale } = useLocale();
   const name = stripFrequencySuffix(item.name);
-  const freqLine = formatFreqList(item);
+  const freqLine = formatFreqList(item, t);
   return (
     <Link
       to={indicatorPath(slug, item.code)}
@@ -94,7 +96,7 @@ function IndicatorRow({ item, slug }) {
         <div className="flex items-center gap-1.5">
           <CompactChange change={item.change} />
           <span className="font-mono text-[10px] text-text-tertiary">
-            {formatIndicatorDate(item.last_date, item.frequency)}
+            {formatIndicatorDate(item.last_date, item.frequency, locale)}
           </span>
         </div>
       </div>
@@ -103,6 +105,8 @@ function IndicatorRow({ item, slug }) {
 }
 
 export default function WorldCountry() {
+  const t = useT();
+  const { locale } = useLocale();
   const { countrySlug, slug: slugParam } = useParams();
   const slug = countrySlug || slugParam;
   const { data, isLoading, isError, refetch, isFetching, error } = useWorldCountry(slug);
@@ -268,11 +272,17 @@ export default function WorldCountry() {
                   {countryMeta?.h1 || countryName}
                 </h1>
                 <p className="mt-3 max-w-2xl text-sm leading-6 text-text-secondary sm:mt-4">
-                  {totalIndicators} {pluralRu(totalIndicators, ['показатель', 'показателя', 'показателей'])}
-                  {' '}в {data.categories.length} {pluralRu(data.categories.length, ['тематическом разделе', 'тематических разделах', 'тематических разделах'])}
-                  {data.coverage?.history_start
-                    ? `; доступная история начинается с ${formatDate(data.coverage.history_start, 'annual')} года.`
-                    : '.'}
+                  {t('world.country.coverage', {
+                    indicators: `${totalIndicators} ${locale === 'en'
+                      ? (totalIndicators === 1 ? t('world.unit.indicator_one') : t('world.unit.indicator_many'))
+                      : pluralRu(totalIndicators, [t('world.unit.indicator_one'), t('world.unit.indicator_few'), t('world.unit.indicator_many')])}`,
+                    sections: `${data.categories.length} ${locale === 'en'
+                      ? (data.categories.length === 1 ? t('world.unit.section_one') : t('world.unit.section_many'))
+                      : pluralRu(data.categories.length, [t('world.unit.section_one'), t('world.unit.section_few'), t('world.unit.section_many')])}`,
+                    history: data.coverage?.history_start
+                      ? t('world.country.historyFrom', { year: formatDate(data.coverage.history_start, 'annual', locale) })
+                      : '.',
+                  })}
                 </p>
               </div>
               <div>
@@ -293,7 +303,7 @@ export default function WorldCountry() {
                   className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-champagne px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-transform hover:-translate-y-0.5"
                 >
                   <BarChart3 size={15} />
-                  Сравнить показатели
+                  {t('world.country.compareCta')}
                   <ArrowUpRight size={14} />
                 </Link>
               </div>
@@ -316,13 +326,13 @@ export default function WorldCountry() {
                     {item.name}
                   </div>
                   <div className="mt-1 truncate font-mono text-[9px] text-text-tertiary">
-                    {formatIndicatorDate(item.date, item.frequency)}
+                    {formatIndicatorDate(item.date, item.frequency, locale)}
                   </div>
                 </Link>
               ))}
               {!data.overview?.length && (
                 <div className="text-xs text-text-tertiary sm:col-span-3">
-                  {totalIndicators} показателей — {data.categories.length} разделов — официальные источники
+                  {t('world.country.coverage', { indicators: String(totalIndicators), sections: String(data.categories.length), history: '' })}
                 </div>
               )}
             </div>
@@ -334,8 +344,8 @@ export default function WorldCountry() {
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Найти показатель…"
-              aria-label="Поиск по показателям страны"
+              placeholder={t('world.country.findIndicator')}
+              aria-label={t('world.country.findIndicatorAria')}
               className="w-full rounded-xl border border-border-subtle bg-surface py-3 pl-10 pr-4 text-sm text-text-primary shadow-sm placeholder:text-text-tertiary focus:border-border-champagne focus:outline-none"
             />
           </div>
@@ -366,7 +376,7 @@ export default function WorldCountry() {
 
           {!searching && (
             <MobileNavSelect
-              label="Темы"
+              label={t('world.country.themes')}
               value={resolvedActiveCategory}
               onChange={setActiveCategory}
               options={filteredCategories.map((cat) => ({
@@ -384,7 +394,7 @@ export default function WorldCountry() {
             {!searching && (
               <aside className="hidden min-w-0 lg:sticky lg:top-24 lg:block lg:self-start">
                 <div className="mb-2 px-2 text-[10px] font-mono uppercase tracking-[0.18em] text-text-tertiary">
-                  Темы
+                  {t('world.country.themes')}
                 </div>
                 <div className="flex flex-col gap-2">
                   {filteredCategories.map((cat) => (
@@ -413,7 +423,7 @@ export default function WorldCountry() {
                   <div className="mb-3 flex items-end justify-between gap-3 sm:mb-4 sm:gap-4">
                     <div className="min-w-0">
                       <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">
-                        {searching ? 'Результаты поиска' : 'Показатели'}
+                        {searching ? t('regions.searchResults') : t('world.country.indicators')}
                       </div>
                       <h2 className="mt-1 font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">{cat.name}</h2>
                     </div>

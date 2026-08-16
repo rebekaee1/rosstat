@@ -1,8 +1,24 @@
 /** @vitest-environment jsdom */
-import { describe, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
+import { fireEvent, render, screen, act } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { LocaleProvider } from '../i18n';
 import WorldConceptPicker from './WorldConceptPicker';
+
+vi.mock('../lib/track', () => ({
+  track: vi.fn(),
+  events: { SEARCH_QUERY: 'search_query' },
+}));
+
+import { track } from '../lib/track';
+
+function renderPicker(ui) {
+  return render(
+    <LocaleProvider>
+      <MemoryRouter>{ui}</MemoryRouter>
+    </LocaleProvider>,
+  );
+}
 
 const CONCEPTS = [
   { slug: 'unemployment-rate', name: 'Уровень безработицы' },
@@ -23,16 +39,23 @@ const MANY = [
 ];
 
 describe('WorldConceptPicker', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    track.mockClear();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('течёт плашками в одном потоке с подписями групп и фильтрует поиском', () => {
     const onChange = vi.fn();
-    render(
-      <MemoryRouter>
-        <WorldConceptPicker
-          concepts={CONCEPTS}
-          value="unemployment-rate"
-          onChange={onChange}
-        />
-      </MemoryRouter>,
+    renderPicker(
+      <WorldConceptPicker
+        concepts={CONCEPTS}
+        value="unemployment-rate"
+        onChange={onChange}
+      />,
     );
     expect(screen.getByText('Рынок труда')).toBeTruthy();
     expect(screen.getByText('Цены')).toBeTruthy();
@@ -42,15 +65,33 @@ describe('WorldConceptPicker', () => {
     expect(screen.queryByRole('button', { name: 'Безработица' })).toBeNull();
   });
 
+  it('при query ≥2 через debounce пишет search_query world-concept-picker', () => {
+    renderPicker(
+      <WorldConceptPicker
+        concepts={CONCEPTS}
+        value="unemployment-rate"
+        onChange={vi.fn()}
+      />,
+    );
+    fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'насел' } });
+    expect(track).not.toHaveBeenCalled();
+    act(() => {
+      vi.advanceTimersByTime(900);
+    });
+    expect(track).toHaveBeenCalledWith('search_query', {
+      q: 'насел',
+      results: 1,
+      context: 'world-concept-picker',
+    });
+  });
+
   it('при большом каталоге сворачивается в выпадающий список', () => {
-    render(
-      <MemoryRouter>
-        <WorldConceptPicker
-          concepts={MANY}
-          value="unemployment-rate"
-          onChange={vi.fn()}
-        />
-      </MemoryRouter>,
+    renderPicker(
+      <WorldConceptPicker
+        concepts={MANY}
+        value="unemployment-rate"
+        onChange={vi.fn()}
+      />,
     );
     const trigger = screen.getByRole('button', { name: /Безработица/ });
     expect(trigger.getAttribute('aria-expanded')).toBe('false');

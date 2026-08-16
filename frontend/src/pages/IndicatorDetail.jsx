@@ -37,7 +37,9 @@ import {
   viewModeCanonicalTarget as engineViewModeCanonicalTarget,
 } from '../lib/viewModeEngine';
 import GenericIndicatorView from '../components/GenericIndicatorView';
-import { getViewModeContent } from '../lib/cpiViewModeContent';
+import { useLocale, useT } from '../i18n';
+import { localizeViewModeLabel } from '../i18n/viewModeLabels';
+import { resolveViewModeContent } from '../i18n/resolveViewModeCopy';
 import { HOUSING_CODES, housingCanonicalTarget } from '../lib/housingViewModeResolve';
 import { PPI_CODES, ppiCanonicalTarget } from '../lib/ppiViewModeResolve';
 import { CBR_TERM_SLICE_CODES } from '../lib/cbrTermSliceRateResolve';
@@ -93,6 +95,8 @@ function writeSavedViewMode(code, mode) {
 export default function IndicatorDetail() {
   const { code } = useParams();
   const navigate = useNavigate();
+  const { locale } = useLocale();
+  const t = useT();
   const headerRef = useRef(null);
   const [showForecast, setShowForecast] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -403,10 +407,11 @@ export default function IndicatorDetail() {
       };
     }
     if (dailyAggGranularity) {
-      const aggLabel = viewMode === 'weekly' ? 'среднее по неделям'
+      const aggLabelRu = viewMode === 'weekly' ? 'среднее по неделям'
         : viewMode === 'monthly' ? 'среднее по месяцам'
           : viewMode === 'quarterly' ? 'среднее по кварталам'
             : viewMode === 'annual' ? 'среднее по годам' : 'среднее за период';
+      const aggLabel = localizeViewModeLabel(aggLabelRu, locale);
       return {
         ...indicator,
         frequency: DAILY_AGG_FREQUENCY[dailyAggGranularity] ?? indicator.frequency,
@@ -414,7 +419,7 @@ export default function IndicatorDetail() {
       };
     }
     return indicator;
-  }, [indicator, isFamily, familyMode, familyModeMeta, isUnemploymentCanonical, unemploymentSafeMode, dailyAggGranularity, viewMode]);
+  }, [indicator, isFamily, familyMode, familyModeMeta, isUnemploymentCanonical, unemploymentSafeMode, dailyAggGranularity, viewMode, locale]);
 
   const adj = useCallback((v) => {
     if (v == null || !shouldSubtract100) return v;
@@ -497,7 +502,7 @@ export default function IndicatorDetail() {
   ]);
 
   const apiBannerFetching = fetchingInd || fetchingData;
-  const viewModeContent = getViewModeContent({
+  const viewModeContent = resolveViewModeContent(locale, {
     chartMode, safeViewMode, isPriceCategory, isHousingFamily, isPpiFamily,
     isCbrTermSliceFamily,
     isUnemploymentFamily,
@@ -753,7 +758,7 @@ export default function IndicatorDetail() {
         <section data-block="related" className="mt-16">
           <div className="flex items-center gap-4 mb-6 flex-wrap">
             <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold">
-              Похожие индикаторы
+              {t('indicator.related')}
             </h2>
             <div className="h-[1px] flex-1 bg-border-subtle" />
             <Link
@@ -766,7 +771,7 @@ export default function IndicatorDetail() {
               className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-champagne hover:text-champagne-muted transition-colors"
             >
               <GitCompare className="w-3.5 h-3.5" />
-              Сравнить
+              {t('common.compare')}
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">

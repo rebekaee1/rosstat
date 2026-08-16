@@ -52,4 +52,12 @@ describe('categories', () => {
     expect(countInCategory(ind, 'Цены')).toBe(1);
     expect(countInCategory(null, 'Цены')).toBe(0);
   });
+
+  it('countInCategory prefers category_ru when category is localized', () => {
+    const ind = [
+      { category: 'Prices and inflation', category_ru: 'Цены', code: 'cpi', is_listed: true },
+      { category: 'Prices and inflation', category_ru: 'Цены', code: 'hidden', is_listed: false },
+    ];
+    expect(countInCategory(ind, 'Цены')).toBe(1);
+  });
 });

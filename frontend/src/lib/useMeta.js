@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import { SITE_ORIGIN } from './siteOrigin';
-
-const BASE = SITE_ORIGIN;
+import { resolveBrowserLocale } from '../i18n/locale';
+import { getPageSeo } from './pageMeta';
+import { getSiteOrigin } from './siteOrigin';
 
 // Title без бренд-суффикса: backend SSR (seo_renderer.py::build_document) кладёт
 // в <title> ровно тот же текст, что и API возвращает в indicator.seo_title /
@@ -9,12 +9,9 @@ const BASE = SITE_ORIGIN;
 // после React-гидратации Yandex/Google увидят другой title и расценят страницу
 // как изменившуюся → удаление и повторное добавление в индексе. См. инцидент
 // 2026-04-29 «страницы добавляются и удаляются» в Webmaster.
-const DEFAULTS = {
-  title: 'Forecast Economy — аналитика экономики России',
-  description:
-    'Forecast Economy — бесплатная платформа экономической аналитики России. ' +
-    '100+ макроиндикаторов и 489 региональных показателей: ВВП, цены, ставки, валюты, рынок труда, регионы. ' +
-    'Данные Росстата и ЦБ РФ, графики и прогнозы.',
+const KEYWORDS = {
+  ru: 'экономика России, макроэкономические данные, Росстат, Банк России, ВВП, инфляция, ставки, валюты',
+  en: 'Russia economy, macroeconomic data, Rosstat, Bank of Russia, GDP, inflation, interest rates, currencies',
 };
 
 function setMeta(name, content) {
@@ -61,13 +58,15 @@ export default function useDocumentMeta(options) {
   useEffect(() => {
     if (skip) return;
 
-    const fullTitle = title || DEFAULTS.title;
-    const desc = description || DEFAULTS.description;
-    const url = `${BASE}${path}`;
+    const locale = resolveBrowserLocale();
+    const home = getPageSeo('home', locale);
+    const fullTitle = title || home?.title || 'Forecast Economy';
+    const desc = description || home?.description || '';
+    const url = `${getSiteOrigin()}${path}`;
 
     document.title = fullTitle;
     setMeta('description', desc);
-    setMeta('keywords', 'экономика России, макроэкономические данные, Росстат, Банк России, ВВП, инфляция, ставки, валюты');
+    setMeta('keywords', KEYWORDS[locale] || KEYWORDS.ru);
     setCanonical(url);
     setProperty('og:title', fullTitle);
     setProperty('og:description', desc);

@@ -27,6 +27,7 @@ class RussiaConceptLink:
     # Множитель к сырому значению (население Росстата — млн чел. → человек).
     scale: float = 1.0
     note_ru: str = ""
+    note_en: str = ""
 
 
 # Только честно сопоставимые по смыслу и приводимые к единице таблицы.
@@ -41,6 +42,12 @@ RUSSIA_CONCEPT_LINKS: dict[str, RussiaConceptLink] = {
             "безработных среди экономически активного населения), но возрастная "
             "база и детали обследования могут отличаться."
         ),
+        note_en=(
+            "For Russia the ranking uses the unemployment rate from Rosstat’s "
+            "labour force survey. Foreign values follow Eurostat’s harmonised "
+            "methodology. Both measures are close in meaning (share of unemployed "
+            "in the labour force), but age coverage and survey details may differ."
+        ),
     ),
     "hicp-index": RussiaConceptLink(
         indicator_code="cpi-yoy",
@@ -53,6 +60,13 @@ RUSSIA_CONCEPT_LINKS: dict[str, RussiaConceptLink] = {
             "относительное изменение за год, а не уровень индекса и не изменение "
             "к предыдущему месяцу."
         ),
+        note_en=(
+            "For Russia the comparison uses year-on-year consumer price change "
+            "from Rosstat (the consumer price index); for other countries — "
+            "Eurostat’s harmonised index or a national price index. Basket "
+            "compositions differ; the ranking compares the relative change over "
+            "the year, not the index level and not the month-on-month change."
+        ),
     ),
     "population": RussiaConceptLink(
         indicator_code="population",
@@ -63,6 +77,11 @@ RUSSIA_CONCEPT_LINKS: dict[str, RussiaConceptLink] = {
             "ведомства ряд ведётся в миллионах человек; в таблице приведена "
             "численность в человеках). Для зарубежных стран — данные их "
             "статистических ведомств или Евростата."
+        ),
+        note_en=(
+            "Russia’s population is from Rosstat (the agency publishes the series "
+            "in millions of people; the table shows headcount in persons). For "
+            "other countries — their national statistical offices or Eurostat."
         ),
     ),
     # gdp-volume-* — национальная валюта, rating-поверхности нет.

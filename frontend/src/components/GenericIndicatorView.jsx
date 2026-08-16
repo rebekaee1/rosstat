@@ -19,6 +19,7 @@ import { track, events } from '../lib/track';
 import {
   russiaIndicatorPath,
 } from '../lib/sitePaths';
+import { useT } from '../i18n';
 
 /**
  * Generic (config-driven) карточка индикатора для семей из
@@ -75,6 +76,7 @@ export default function GenericIndicatorView({
   loadingInd,
   headerRef,
 }) {
+  const t = useT();
   const [showForecast, setShowForecast] = useState(true);
   const [fullChartData, setFullChartData] = useState([]);
 
@@ -212,7 +214,7 @@ export default function GenericIndicatorView({
         <section data-block="related" className="mt-16">
           <div className="flex items-center gap-4 mb-6 flex-wrap">
             <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold">
-              Похожие индикаторы
+              {t('indicator.related')}
             </h2>
             <div className="h-[1px] flex-1 bg-border-subtle" />
             <Link
@@ -223,7 +225,7 @@ export default function GenericIndicatorView({
               className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-champagne hover:text-champagne-muted transition-colors"
             >
               <GitCompare className="w-3.5 h-3.5" />
-              Сравнить
+              {t('common.compare')}
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">

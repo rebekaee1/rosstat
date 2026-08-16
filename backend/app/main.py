@@ -810,6 +810,32 @@ app = FastAPI(
     openapi_url="/api/openapi.json" if settings.debug else None,
 )
 
+class LocaleMiddleware(BaseHTTPMiddleware):
+    """Bind request locale + origin (host / X-FE-Locale / ?preview_locale)."""
+
+    async def dispatch(self, request: Request, call_next):
+        from app.services.locale import (
+            resolve_locale_from_request,
+            resolve_request_origin,
+            reset_locale,
+            reset_request_origin,
+            set_locale,
+            set_request_origin,
+        )
+
+        host = request.headers.get("x-forwarded-host") or request.headers.get("host")
+        locale = resolve_locale_from_request(request)
+        token = set_locale(locale)
+        origin_token = set_request_origin(resolve_request_origin(host))
+        try:
+            response = await call_next(request)
+            response.headers.setdefault("Content-Language", locale)
+            return response
+        finally:
+            reset_request_origin(origin_token)
+            reset_locale(token)
+
+
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 app.add_middleware(RateLimitMiddleware)
 app.add_middleware(HttpStatusCounterMiddleware)
@@ -818,6 +844,8 @@ app.add_middleware(
     allow_origins=[
         settings.public_origin,
         f"https://www.{settings.public_host}",
+        # Prepared for language split (ADR-0013 §F); unused until DNS/Caddy for ru.
+        f"https://ru.{(settings.public_host or 'forecasteconomy.com').removeprefix('www.')}",
         "http://localhost:5173",
         "http://localhost:5174",
         "http://localhost:3000",
@@ -826,6 +854,8 @@ app.add_middleware(
     allow_methods=["GET", "OPTIONS"],
     allow_headers=["*"],
 )
+# Outermost: locale available to SEO + API handlers.
+app.add_middleware(LocaleMiddleware)
 
 app.include_router(api_router)
 

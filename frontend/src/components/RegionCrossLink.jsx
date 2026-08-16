@@ -12,8 +12,10 @@ import {
   regionMapPath,
   regionRatingPath,
 } from '../lib/sitePaths';
+import { useT } from '../i18n';
 
 export default function RegionCrossLink({ macroCode }) {
+  const t = useT();
   const { data } = useRegionsCatalog(!!macroCode);
 
   const regionInd = useMemo(() => {
@@ -32,11 +34,13 @@ export default function RegionCrossLink({ macroCode }) {
       <div className="rounded-2xl border border-border-subtle bg-surface p-5">
         <div className="flex items-center gap-2 text-champagne text-xs font-mono uppercase tracking-widest mb-2">
           <MapPin size={13} />
-          Разрез по регионам
+          {t('indicator.regionCross.eyebrow')}
         </div>
         <p className="text-sm text-text-secondary leading-relaxed mb-3 max-w-2xl">
-          Показатель «{regionInd.name}» доступен по всем субъектам РФ: карта России,
-          рейтинг регионов и динамика каждого региона с {regionInd.year_min} года.
+          {t('indicator.regionCross.body', {
+            name: regionInd.name,
+            year: regionInd.year_min,
+          })}
         </p>
         <div className="flex flex-wrap gap-2">
           <Link
@@ -44,28 +48,28 @@ export default function RegionCrossLink({ macroCode }) {
             onClick={() => track(events.REGION_CROSSLINK_CLICK, { from: macroCode, to: 'regions-map' })}
             className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-champagne/10 text-champagne text-[13px] font-medium hover:bg-champagne/20 transition-colors"
           >
-            Карта регионов <ArrowUpRight size={13} />
+            {t('indicator.regionCross.map')} <ArrowUpRight size={13} />
           </Link>
           <Link
             to={regionRatingPath(regionInd.code)}
             onClick={() => track(events.REGION_CROSSLINK_CLICK, { from: macroCode, to: `rating:${regionInd.code}` })}
             className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-border-subtle text-text-secondary text-[13px] font-medium hover:text-champagne hover:border-border-champagne transition-colors"
           >
-            Рейтинг регионов <ArrowUpRight size={13} />
+            {t('indicator.regionCross.rating')} <ArrowUpRight size={13} />
           </Link>
           <Link
             to={regionIndicatorPath('moskva', regionInd.code)}
             onClick={() => track(events.REGION_CROSSLINK_CLICK, { from: macroCode, to: `region:moskva:${regionInd.code}` })}
             className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-border-subtle text-text-secondary text-[13px] font-medium hover:text-champagne hover:border-border-champagne transition-colors"
           >
-            Пример: Москва <ArrowUpRight size={13} />
+            {t('indicator.regionCross.example')} <ArrowUpRight size={13} />
           </Link>
           <Link
             to={`/compare?codes=${macroCode},r:moskva:${regionInd.code}`}
             onClick={() => track(events.REGION_CROSSLINK_CLICK, { from: macroCode, to: 'compare-macro-region' })}
             className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-border-subtle text-text-secondary text-[13px] font-medium hover:text-champagne hover:border-border-champagne transition-colors"
           >
-            Россия и регион на одном графике <ArrowUpRight size={13} />
+            {t('indicator.regionCross.compare')} <ArrowUpRight size={13} />
           </Link>
         </div>
       </div>

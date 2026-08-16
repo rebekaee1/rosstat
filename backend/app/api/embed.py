@@ -22,7 +22,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.models import Indicator, IndicatorData
 from app.core.cache import cache_get, cache_set, get_redis, versioned_key
-from app.services.display import display_value, format_month_ru, is_cpi_index
+from app.services.display import display_value, format_month_year, is_cpi_index, localize_unit
+from app.services.i18n_display import public_name
+from app.services.locale import get_locale
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/embed", tags=["embed"])
@@ -124,7 +126,7 @@ def _fmt_value(v: float, digits: int = 2) -> str:
 
 
 def _period_stamp(ind, dt) -> str:
-    """Компактная подпись периода значения: «май 2026» / «30.06.2026».
+    """Compact period label: «май 2026» / «May 2026» / «30.06.2026».
 
     Embed живёт на чужих сайтах — число без даты периода вводит в заблуждение
     (В-24): посетитель не знает, «за когда» это значение.
@@ -132,7 +134,7 @@ def _period_stamp(ind, dt) -> str:
     if dt is None:
         return ""
     if (ind.frequency or "").lower() in ("monthly", "quarterly"):
-        return format_month_ru(dt)
+        return format_month_year(dt)
     return dt.strftime("%d.%m.%Y")
 
 
@@ -226,7 +228,9 @@ async def card_svg(
     db: AsyncSession = Depends(get_db),
 ):
     _validate_code(code)
-    ck = await versioned_key(code, f"embed:card:{w}:{h}:{theme}:{period}")
+    ck = await versioned_key(
+        code, f"embed:card:{w}:{h}:{theme}:{period}:{get_locale()}"
+    )
     cached = await cache_get(ck)
     if cached:
         return _svg_response(cached)
@@ -242,6 +246,7 @@ async def card_svg(
     prev = display_value(code, rows[-2].value) if len(rows) > 1 else None
     change = round(cur - prev, 4) if cur is not None and prev is not None else None
     stamp = _period_stamp(ind, rows[-1].date if rows else None)
+    display_label = public_name(ind.name, ind.name_en)
 
     dark = theme == "dark"
     bg = "#1a1a1e" if dark else "#FFFFFF"
@@ -253,7 +258,7 @@ async def card_svg(
     pos_c, neg_c = "#22c55e", "#ef4444"
 
     val_str = ("+" if cpi and cur is not None and cur > 0 else "") + _fmt_value(cur) if cur is not None else "—"
-    unit = _xml(ind.unit or "")
+    unit = _xml(localize_unit(ind.unit) or "")
 
     chg_arrow, chg_str, chg_color = "", "", t2
     if change is not None:
@@ -276,10 +281,10 @@ async def card_svg(
     p = [
         f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"'
         f' viewBox="0 0 {w} {h}" width="{w}" height="{h}"'
-        f' role="img" aria-label="{_xml(ind.name)}: {val_str} {unit}">',
+        f' role="img" aria-label="{_xml(display_label)}: {val_str} {unit}">',
         f'<rect width="{w}" height="{h}" rx="12" fill="{bg}" stroke="{border}" stroke-width="1"/>',
         f'<text x="16" y="24" font-family="{FONT}" font-size="11" fill="{t2}"'
-        f' font-weight="500">{_xml(ind.name)}</text>',
+        f' font-weight="500">{_xml(display_label)}</text>',
         f'<text x="16" y="54" font-family="{MONO}" font-size="26" fill="{t1}"'
         f' font-weight="700">{val_str}'
         f'<tspan font-size="12" fill="{t2}"> {unit}</tspan></text>',
@@ -338,7 +343,7 @@ async def badge_svg(
 ):
     """shields.io-compatible badge: ``label | value  ▲change``."""
     _validate_code(code)
-    ck = await versioned_key(code, f"embed:badge:{theme}:{period}")
+    ck = await versioned_key(code, f"embed:badge:{theme}:{period}:{get_locale()}")
     cached = await cache_get(ck)
     if cached:
         return _svg_response(cached)
@@ -354,10 +359,10 @@ async def badge_svg(
     prev = display_value(code, rows[-2].value) if len(rows) > 1 else None
     change = round(cur - prev, 4) if cur is not None and prev is not None else None
     val_str = ("+" if cpi and cur is not None and cur > 0 else "") + _fmt_value(cur) if cur is not None else "—"
-    unit_str = (ind.unit or "").strip()
+    unit_str = (localize_unit(ind.unit) or "").strip()
     stamp = _period_stamp(ind, rows[-1].date if rows else None)
 
-    label_raw = (ind.name or "")[:40]
+    label_raw = (public_name(ind.name, ind.name_en) or "")[:40]
     label = _xml(label_raw)
     vt_raw = f"{val_str} {unit_str}".strip()
     if change is not None:

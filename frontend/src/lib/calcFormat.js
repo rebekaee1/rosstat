@@ -33,6 +33,23 @@ export function years(n) {
   return `${n} ${plural(n, 'год', 'года', 'лет')}`;
 }
 
+/** Порядковый номер года кредита для слайдера: «3-й» / «3rd». */
+export function loanYearOrdinal(n, locale = 'ru') {
+  const num = Math.round(Number(n));
+  if (!Number.isFinite(num) || num < 1) return String(n);
+  if (locale === 'en') {
+    const v = num % 100;
+    if (v >= 11 && v <= 13) return `${num}th`;
+    switch (num % 10) {
+      case 1: return `${num}st`;
+      case 2: return `${num}nd`;
+      case 3: return `${num}rd`;
+      default: return `${num}th`;
+    }
+  }
+  return `${num}-й`;
+}
+
 export function fmtPct(v, sign = false) {
   if (v == null || !Number.isFinite(v)) return '—';
   const s = sign && v > 0 ? '+' : '';

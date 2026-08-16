@@ -8,9 +8,11 @@ import { track, events } from '../lib/track';
 import IndicatorSearch from './IndicatorSearch';
 import { useAuth } from '../context/authContext';
 import { PRIMARY_NAV, resolveActiveNavId } from '../lib/navItems';
+import { useT } from '../i18n';
 
 function AuthCluster({ mobile = false, onNavigate }) {
   const { isAuthed, isLoading } = useAuth();
+  const t = useT();
   // Анти-фликер: пока первый /me грузится — нейтральный плейсхолдер фикс. ширины,
   // чтобы кнопки не прыгали и не было layout shift (ADR-0007).
   if (isLoading) {
@@ -32,7 +34,7 @@ function AuthCluster({ mobile = false, onNavigate }) {
           mobile && 'w-full text-center',
         )}
       >
-        Кабинет
+        {t('common.account')}
       </Link>
     );
   }
@@ -47,7 +49,7 @@ function AuthCluster({ mobile = false, onNavigate }) {
           mobile && 'flex-1 text-center border border-border-subtle',
         )}
       >
-        Войти
+        {t('common.login')}
       </Link>
       <Link
         to="/register"
@@ -58,21 +60,20 @@ function AuthCluster({ mobile = false, onNavigate }) {
           mobile ? 'flex-1 text-center' : 'whitespace-nowrap',
         )}
       >
-        Регистрация
+        {t('common.register')}
       </Link>
     </div>
   );
 }
 
-// Пункт «Калькуляторы» раскрывается как категория (просьба руководителя
-// 2026-07-05: освободить место в верхнем меню).
-const CALCULATORS = [
-  { to: '/calculator', label: 'Калькулятор инфляции' },
-  { to: '/calculator/mortgage', label: 'Ипотечный калькулятор' },
-  { to: '/calculator/compound', label: 'Сложные проценты' },
+const CALCULATOR_ITEMS = [
+  { to: '/calculator', labelKey: 'nav.calc.inflation' },
+  { to: '/calculator/mortgage', labelKey: 'nav.calc.mortgage' },
+  { to: '/calculator/compound', labelKey: 'nav.calc.compound' },
 ];
 
 export default function Navbar() {
+  const t = useT();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [calcOpen, setCalcOpen] = useState(false);
@@ -155,7 +156,7 @@ export default function Navbar() {
         onClick={closeAll}
         aria-current={isActive ? 'page' : undefined}
       >
-        {item.label}
+        {t(item.labelKey)}
       </Link>
     );
   };
@@ -190,8 +191,8 @@ export default function Navbar() {
         to="/"
         className={cn(FOCUS_RING, 'flex items-center gap-2 shrink-0 rounded-xl')}
         onClick={closeAll}
-        aria-label="Forecast Economy — на главную"
-        title="На главную"
+        aria-label={t('nav.homeAria')}
+        title={t('nav.homeTitle')}
       >
         <TrendingUp className="w-5 h-5 text-champagne" aria-hidden="true" />
         <span className="text-base font-bold tracking-tight text-text-primary">
@@ -219,7 +220,7 @@ export default function Navbar() {
             aria-expanded={calcOpen}
             aria-haspopup="menu"
           >
-            Калькуляторы
+            {t('nav.calculators')}
             <ChevronDown className={cn('w-4 h-4 transition-transform', calcOpen && 'rotate-180')} />
           </button>
           {calcOpen && (
@@ -227,7 +228,7 @@ export default function Navbar() {
               className="absolute right-0 top-full z-[110] mt-2 min-w-[240px] rounded-2xl border border-border-subtle bg-surface py-2 shadow-2xl ring-1 ring-black/[0.08]"
               role="menu"
             >
-              {CALCULATORS.map((c) => (
+              {CALCULATOR_ITEMS.map((c) => (
                 <NavLink
                   key={c.to}
                   to={c.to}
@@ -238,7 +239,7 @@ export default function Navbar() {
                   onClick={closeAll}
                   role="menuitem"
                 >
-                  {c.label}
+                  {t(c.labelKey)}
                 </NavLink>
               ))}
             </div>
@@ -263,7 +264,7 @@ export default function Navbar() {
             'flex min-h-11 min-w-11 items-center justify-center rounded-xl p-2.5 text-text-secondary transition-colors hover:text-text-primary'
           )}
           aria-expanded={mobileOpen}
-          aria-label={mobileOpen ? 'Закрыть меню' : 'Открыть меню'}
+          aria-label={mobileOpen ? t('nav.closeMenu') : t('nav.openMenu')}
         >
           {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
@@ -273,19 +274,19 @@ export default function Navbar() {
         <div className="absolute left-0 right-0 top-full z-[110] mt-2 max-h-[min(80vh,520px)] overflow-y-auto rounded-2xl border border-border-subtle bg-surface p-4 shadow-2xl ring-1 ring-black/[0.08] lg:hidden">
           <div className="flex flex-col gap-1">
             <Link to="/" className={navItemClass(pathname === '/')} onClick={closeAll} aria-current={pathname === '/' ? 'page' : undefined}>
-              Главная
+              {t('common.home')}
             </Link>
             {PRIMARY_NAV.map((item) => renderPrimaryLink(item))}
             <p className="text-[10px] uppercase tracking-wider text-text-tertiary px-2 pt-3 pb-1">
-              Калькуляторы
+              {t('nav.calculators')}
             </p>
-            {CALCULATORS.map((c) => (
+            {CALCULATOR_ITEMS.map((c) => (
               <NavLink key={c.to} to={c.to} end className={({ isActive }) => navItemClass(isActive)} onClick={closeAll}>
-                {c.label}
+                {t(c.labelKey)}
               </NavLink>
             ))}
             <NavLink to="/about" className={({ isActive }) => navItemClass(isActive)} onClick={closeAll}>
-              О проекте
+              {t('nav.about')}
             </NavLink>
             <div className="mx-2 my-1 h-px bg-border-subtle" />
             <div className="px-2 pt-2">

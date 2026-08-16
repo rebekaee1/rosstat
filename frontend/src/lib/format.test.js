@@ -27,13 +27,22 @@ function tickIndices(points, ticks, dateKey = 'date') {
 
 describe('format', () => {
   it('formatDate full month in Russian', () => {
-    expect(formatDate('2024-01-15', 'full')).toContain('2024');
-    expect(formatDate('2024-01-15', 'full')).toContain('январ');
+    expect(formatDate('2024-01-15', 'full', 'ru')).toContain('2024');
+    expect(formatDate('2024-01-15', 'full', 'ru')).toContain('январ');
+  });
+
+  it('formatDate full month in English', () => {
+    expect(formatDate('2020-01-15', 'full', 'en')).toBe('January 2020');
+    expect(formatDate('2024-03-01', 'full', 'en')).toBe('March 2024');
   });
 
   it('formatDate day format includes day number in genitive', () => {
-    expect(formatDate('2024-01-15', 'day')).toBe('15 января 2024');
-    expect(formatDate('2024-02-03', 'day')).toBe('3 февраля 2024');
+    expect(formatDate('2024-01-15', 'day', 'ru')).toBe('15 января 2024');
+    expect(formatDate('2024-02-03', 'day', 'ru')).toBe('3 февраля 2024');
+  });
+
+  it('formatDate day format in English', () => {
+    expect(formatDate('2024-01-15', 'day', 'en')).toBe('15 January 2024');
   });
 
   it('formatDate annual returns year only', () => {
@@ -41,15 +50,21 @@ describe('format', () => {
   });
 
   it('formatDate quarterly returns roman quarter and year', () => {
-    expect(formatDate('2024-01-15', 'quarterly')).toBe('I кв. 2024');
-    expect(formatDate('2024-04-15', 'quarterly')).toBe('II кв. 2024');
-    expect(formatDate('2024-07-15', 'quarterly')).toBe('III кв. 2024');
-    expect(formatDate('2024-10-15', 'quarterly')).toBe('IV кв. 2024');
+    expect(formatDate('2024-01-15', 'quarterly', 'ru')).toBe('I кв. 2024');
+    expect(formatDate('2024-04-15', 'quarterly', 'ru')).toBe('II кв. 2024');
+    expect(formatDate('2024-07-15', 'quarterly', 'ru')).toBe('III кв. 2024');
+    expect(formatDate('2024-10-15', 'quarterly', 'ru')).toBe('IV кв. 2024');
+  });
+
+  it('formatDate quarterly in English uses Qn', () => {
+    expect(formatDate('2024-01-15', 'quarterly', 'en')).toBe('Q1 2024');
+    expect(formatDate('2024-10-15', 'quarterly', 'en')).toBe('Q4 2024');
   });
 
   it('formatChartAxisDate shortens daily labels for dense charts', () => {
-    expect(formatChartAxisDate('2024-01-15', 'day', { multiYear: false })).toBe('15 янв');
-    expect(formatChartAxisDate('2024-01-15', 'day', { multiYear: true })).toBe("15 янв '24");
+    expect(formatChartAxisDate('2024-01-15', 'day', { multiYear: false, locale: 'ru' })).toBe('15 янв');
+    expect(formatChartAxisDate('2024-01-15', 'day', { multiYear: true, locale: 'ru' })).toBe("15 янв '24");
+    expect(formatChartAxisDate('2024-01-15', 'day', { multiYear: false, locale: 'en' })).toBe('15 Jan');
   });
 
   it('estimateAxisLabelWidthPx scales with RU string length', () => {

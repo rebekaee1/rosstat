@@ -23,6 +23,7 @@ import { cleanPathWithSearch } from './lib/cleanUrl';
 import { behaviorInit, behaviorRouteChange } from './lib/behavior';
 import { isVariantSiblingNavigation } from './lib/indicatorVariants';
 import { AuthProvider } from './context/AuthProvider';
+import { LocaleProvider, LocalePreviewBanner, useT } from './i18n';
 import Dashboard from './pages/Dashboard';
 import {
   RUSSIA,
@@ -144,36 +145,44 @@ function WorldIndicatorRoute() {
 
 function RedirectTo({ build }) {
   const params = useParams();
-  return <Navigate to={build(params)} replace />;
+  const { search } = useLocation();
+  return <Navigate to={`${build(params)}${search}`} replace />;
+}
+
+/** Legacy path redirect that keeps ?preview_locale= and other query args. */
+function NavigateKeepSearch({ to }) {
+  const { search } = useLocation();
+  return <Navigate to={`${to}${search}`} replace />;
 }
 
 function NotFound() {
+  const t = useT();
   useDocumentMeta({
-    title: 'Страница не найдена — Forecast Economy',
-    description: 'Такой страницы нет или она переехала. Перейдите к индикаторам, сводке на сегодня, регионам или статистике стран.',
+    title: t('notFound.metaTitle'),
+    description: t('notFound.metaDesc'),
     path: '/404',
     robots: 'noindex, follow',
   });
 
   const links = [
-    { to: '/', label: 'Все экономические индикаторы России' },
-    { to: todayPath(), label: 'Ключевые показатели на сегодня' },
-    { to: regionHubPath(), label: 'Статистика по регионам России' },
-    { to: worldHubPath(), label: 'Статистика по странам' },
-    { to: '/compare', label: 'Сравнение показателей' },
-    { to: calendarPath(), label: 'Календарь публикаций статистики' },
+    { to: '/', labelKey: 'notFound.link.home' },
+    { to: todayPath(), labelKey: 'notFound.link.today' },
+    { to: regionHubPath(), labelKey: 'notFound.link.regions' },
+    { to: worldHubPath(), labelKey: 'notFound.link.world' },
+    { to: '/compare', labelKey: 'notFound.link.compare' },
+    { to: calendarPath(), labelKey: 'notFound.link.calendar' },
   ];
 
   return (
     <div className="max-w-3xl mx-auto px-4 pt-28 pb-24">
       <p className="text-[10px] uppercase tracking-[0.3em] text-champagne font-semibold mb-4">
-        Ошибка 404
+        {t('notFound.eyebrow')}
       </p>
       <h1 className="font-display text-3xl md:text-4xl font-bold text-text-primary mb-4 leading-tight">
-        Страница не найдена
+        {t('notFound.title')}
       </h1>
       <p className="text-text-secondary mb-8 leading-relaxed">
-        Такой страницы нет или она переехала. Вот с чего можно продолжить — или откройте поиск в шапке.
+        {t('notFound.body')}
       </p>
       <ul className="space-y-2.5 mb-10">
         {links.map((item) => (
@@ -182,7 +191,7 @@ function NotFound() {
               to={item.to}
               className="text-champagne hover:underline font-medium"
             >
-              {item.label}
+              {t(item.labelKey)}
             </Link>
           </li>
         ))}
@@ -191,7 +200,7 @@ function NotFound() {
         to="/"
         className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-champagne/10 text-champagne font-medium hover:bg-champagne/20 transition-colors"
       >
-        На главную
+        {t('common.backHome')}
       </Link>
     </div>
   );
@@ -232,7 +241,9 @@ function AppRoutes() {
   }
 
   return (
+    <LocaleProvider>
     <AuthProvider>
+      <LocalePreviewBanner />
       <ScrollToTop />
       <YandexMetrikaHit />
       <YandexRSY />
@@ -297,12 +308,12 @@ function AppRoutes() {
             {/* Legacy → канон (клиентский safety; nginx 301 на проде) */}
             <Route path="/category/:slug" element={<RedirectTo build={({ slug }) => russiaCategoryPath(slug)} />} />
             <Route path="/indicator/:code" element={<RedirectTo build={({ code }) => russiaIndicatorPath(code)} />} />
-            <Route path="/today" element={<Navigate to={todayPath()} replace />} />
+            <Route path="/today" element={<NavigateKeepSearch to={todayPath()} />} />
             <Route path="/today/:code" element={<RedirectTo build={({ code }) => todayPath(code)} />} />
-            <Route path="/calendar" element={<Navigate to={calendarPath()} replace />} />
+            <Route path="/calendar" element={<NavigateKeepSearch to={calendarPath()} />} />
             <Route path="/calendar/:year/:month" element={<RedirectTo build={({ year, month }) => calendarPath(year, month)} />} />
-            <Route path="/demographics" element={<Navigate to={demographicsPath()} replace />} />
-            <Route path="/regions" element={<Navigate to={regionHubPath()} replace />} />
+            <Route path="/demographics" element={<NavigateKeepSearch to={demographicsPath()} />} />
+            <Route path="/regions" element={<NavigateKeepSearch to={regionHubPath()} />} />
             <Route path="/regions/map/:code" element={<RedirectTo build={({ code }) => regionMapPath(code)} />} />
             <Route path="/region/:slug" element={<RedirectTo build={({ slug }) => regionPath(slug)} />} />
             <Route path="/region/:slug/:code" element={<RedirectTo build={({ slug, code }) => regionIndicatorPath(slug, code)} />} />
@@ -326,6 +337,7 @@ function AppRoutes() {
       <RegisterNudge />
       <DownloadLimitModal />
     </AuthProvider>
+    </LocaleProvider>
   );
 }
 

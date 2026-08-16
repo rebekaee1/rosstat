@@ -6,6 +6,8 @@ import { track, events } from '../lib/track';
 import { openConsentSettings } from '../lib/consent';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
+import { useLocale } from '../i18n';
+import { PrivacyBodyEn } from '../i18n/legalPages.en';
 
 /**
  * Политика конфиденциальности и обработки персональных данных.
@@ -35,7 +37,8 @@ function CookieRow({ name, purpose, consent }) {
 }
 
 export default function Privacy() {
-  const seo = getPageSeo('privacy');
+  const { locale, t } = useLocale();
+  const seo = getPageSeo('privacy', locale) || getPageSeo('privacy');
   useDocumentMeta({
     title: seo.title,
     description: seo.description,
@@ -45,6 +48,10 @@ export default function Privacy() {
   return (
     <div className="max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-20 md:pb-24">
       <article className="prose prose-sm max-w-none">
+        {locale === 'en' ? (
+          <PrivacyBodyEn t={t} h1={seo.h1 || 'Privacy and personal data processing policy'} />
+        ) : (
+          <>
         <p className="text-[10px] uppercase tracking-[0.3em] text-champagne font-semibold mb-4">
           Правовая информация
         </p>
@@ -256,6 +263,8 @@ export default function Privacy() {
           Почтовый адрес Оператора: 123557, г. Москва, ул. Пресненский Вал, д. 21, помещ. 172,
           ООО «ИИМПАКТ ПЛЮС».
         </p>
+          </>
+        )}
       </article>
     </div>
   );

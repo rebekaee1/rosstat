@@ -13,14 +13,15 @@ import {
   groupCountriesByRegion, pluralRu, formatWorldValue, ratingHref,
 } from '../lib/worldApi';
 import {
-  HOME_COUNTRY_CONCEPT_SHORT,
   HOME_MAP_RUSSIA_COUNTRY,
+  homeConceptLabel,
   resolveActiveMapYear,
   withRussiaOnHomeMap,
   worldRankingFromYearItems,
 } from '../lib/homeWorkbench';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import Breadcrumbs from '../components/Breadcrumbs';
+import { useLocale, useT } from '../i18n';
 import { SkeletonBox } from '../components/Skeleton';
 import useSearchTracking from '../lib/useSearchTracking';
 import WorldConceptPicker from '../components/WorldConceptPicker';
@@ -55,6 +56,13 @@ function CountryMark({ country, large = false }) {
 }
 
 function CountryCard({ country, featured = false, to = null }) {
+  const t = useT();
+  const { locale } = useLocale();
+  const n = country.indicators_count || 0;
+  const seriesLabel = locale === 'en'
+    ? (n === 1 ? t('world.unit.series_one') : t('world.unit.series_many'))
+    : pluralRu(n, [t('world.unit.series_one'), t('world.unit.series_few'), t('world.unit.series_many')]);
+
   return (
     <Link
       to={to || countryPath(country.slug)}
@@ -73,18 +81,18 @@ function CountryCard({ country, featured = false, to = null }) {
         </div>
       </div>
       <div className="w-auto min-w-[3.25rem] shrink-0 text-right sm:min-w-[3.5rem]">
-        {country.indicators_count > 0 ? (
+        {n > 0 ? (
           <>
             <div className="font-mono text-[13px] font-semibold tabular-nums text-text-primary">
-              {formatWorldValue(country.indicators_count, 0)}
+              {formatWorldValue(n, 0)}
             </div>
             <div className="text-[10px] text-text-tertiary">
-              {pluralRu(country.indicators_count, ['ряд', 'ряда', 'рядов'])}
+              {seriesLabel}
             </div>
           </>
         ) : (
           <div className="text-[11px] text-text-tertiary">
-            Категории РФ
+            {t('world.russiaCategories')}
           </div>
         )}
       </div>
@@ -96,6 +104,8 @@ function CountryCard({ country, featured = false, to = null }) {
 }
 
 export default function WorldHome() {
+  const t = useT();
+  const { locale } = useLocale();
   const navigate = useNavigate();
   const { data, isLoading, isError, refetch, isFetching } = useWorldCountries();
   const compareCatalog = useWorldCompareCatalog();
@@ -107,7 +117,7 @@ export default function WorldHome() {
   const ratingConcepts = useWorldRatingConcepts();
   const fullRatingHref = ratingHref(mapConcept, ratingConcepts.data?.concepts);
 
-  const worldSeo = getWorldHomeSeo();
+  const worldSeo = getWorldHomeSeo(locale);
   useDocumentMeta({
     title: worldSeo.title,
     description: worldSeo.description,
@@ -216,7 +226,7 @@ export default function WorldHome() {
           <div>
             <div className="mb-2 flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.2em] text-champagne sm:mb-3">
               <Globe2 size={14} />
-              Мировая экономика
+              {t('world.eyebrow')}
             </div>
             <h1 className="max-w-3xl font-display text-2xl font-bold leading-tight text-text-primary sm:text-4xl lg:text-[2.75rem]">
               {worldSeo.h1}
@@ -226,12 +236,12 @@ export default function WorldHome() {
             </p>
             <div className="mt-4 flex flex-wrap gap-2.5 sm:mt-5 sm:gap-3">
               <a href="#countries" className="magnetic-btn inline-flex items-center gap-2 rounded-xl bg-champagne px-4 py-2.5 text-sm font-semibold text-white shadow-sm">
-                Выбрать страну
+                {t('world.selectCountry')}
                 <ArrowRight size={15} />
               </a>
               <Link to="/compare" className="inline-flex items-center gap-2 rounded-xl border border-border-subtle bg-white/70 px-4 py-2.5 text-sm font-medium text-text-primary transition-colors hover:border-border-champagne hover:text-champagne">
                 <BarChart3 size={15} />
-                Сравнить страны
+                {t('world.compareCountries')}
               </Link>
             </div>
           </div>
@@ -239,14 +249,14 @@ export default function WorldHome() {
           <div className="rounded-[1.5rem] border border-champagne/15 bg-gradient-to-br from-champagne/[0.08] to-white/75 p-4 sm:p-5">
             <div className="mb-4 flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">
               <Database size={13} />
-              Покрытие платформы
+              {t('world.coverage')}
             </div>
             <div className="grid grid-cols-2 gap-2.5">
               {[
-                [Globe2, total || 39, pluralRu(total || 39, ['страна', 'страны', 'стран'])],
-                [Database, formatWorldValue(totalIndicators, 0), 'публичных рядов'],
-                [Layers3, mapConcepts.length || 6, 'сопоставимых показателей'],
-                [CalendarRange, years.length ? `${years[0]}–${years[years.length - 1]}` : '—', 'период карты'],
+                [Globe2, total || 39, locale === 'en' ? (total === 1 ? t('world.unit.country_one') : t('world.unit.country_many')) : pluralRu(total || 39, [t('world.unit.country_one'), t('world.unit.country_few'), t('world.unit.country_many')])],
+                [Database, formatWorldValue(totalIndicators, 0), t('world.stat.series')],
+                [Layers3, mapConcepts.length || 6, t('world.stat.concepts')],
+                [CalendarRange, years.length ? `${years[0]}–${years[years.length - 1]}` : '—', t('world.stat.mapPeriod')],
               ].map(([Icon, value, label]) => (
                 <div key={label} className="rounded-xl border border-white/80 bg-white/65 px-3 py-3 shadow-sm">
                   {createElement(Icon, { className: 'mb-2 h-3.5 w-3.5 text-champagne' })}
@@ -256,14 +266,13 @@ export default function WorldHome() {
               ))}
             </div>
             <div className="mt-3 border-t border-champagne/10 pt-3 text-[11px] leading-5 text-text-secondary">
-              От обзора страны можно перейти к динамике, режимам показателя и
-              сопоставлению на одном графике.
+              {t('world.coverageNote')}
             </div>
           </div>
         </div>
         {fromMock && (
           <p className="mt-2 text-[12px] text-text-tertiary font-mono">
-            Демо-данные (API ещё не подключён)
+            {t('world.mockData')}
           </p>
         )}
       </section>
@@ -271,11 +280,10 @@ export default function WorldHome() {
       {!isLoading && !isError && (
         <section className="mb-12">
           <div className="mb-4 min-w-0">
-            <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">Срез по странам</div>
-            <h2 className="mt-1 font-display text-xl font-bold text-text-primary sm:text-2xl">Карта и рейтинг</h2>
+            <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">{t('world.mapSlice')}</div>
+            <h2 className="mt-1 font-display text-xl font-bold text-text-primary sm:text-2xl">{t('world.mapTitle')}</h2>
             <p className="mt-2 max-w-2xl text-xs leading-5 text-text-secondary">
-              Выберите показатель и год. Карта показывает последнее опубликованное
-              значение внутри выбранного календарного года.
+              {t('world.mapHint')}
             </p>
             <div className="mt-3">
               <WorldConceptPicker
@@ -285,7 +293,7 @@ export default function WorldHome() {
                   setMapConcept(slug);
                   setMapYear(null);
                 }}
-                label="Показатель карты"
+                label={t('world.mapMetric')}
               />
             </div>
           </div>
@@ -301,7 +309,7 @@ export default function WorldHome() {
                     valuesByCode={valuesByCode}
                     detailsByCode={detailsByCode}
                     unit={mapSeries.data?.concept?.unit || ''}
-                    metricName={HOME_COUNTRY_CONCEPT_SHORT[mapConcept] || mapSeries.data?.concept?.name || ''}
+                    metricName={homeConceptLabel(mapConcept, t, mapSeries.data?.concept?.name || '')}
                     periodLabel={activeMapYear ? String(activeMapYear) : ''}
                     colorMode={mapConcept === 'budget-balance-gdp' ? 'diverging' : 'auto'}
                     defaultScope="world"
@@ -322,12 +330,12 @@ export default function WorldHome() {
             <div className="rounded-[1.25rem] border border-border-subtle bg-surface p-4 shadow-[0_16px_45px_rgba(35,30,16,0.05)] sm:rounded-[1.5rem] sm:p-5">
               <div className="mb-4 flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">Последние данные</div>
+                  <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">{t('world.latestData')}</div>
                   <h3 className="mt-1 text-sm font-semibold leading-snug text-text-primary sm:text-base">
-                    {HOME_COUNTRY_CONCEPT_SHORT[mapConcept] || mapSeries.data?.concept?.name || 'Рейтинг стран'}
+                    {homeConceptLabel(mapConcept, t, mapSeries.data?.concept?.name || t('world.ratingFallback'))}
                   </h3>
                   <div className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-0.5 font-mono text-[10px] text-text-tertiary">
-                    {activeMapYear && <span>{activeMapYear} год</span>}
+                    {activeMapYear && <span>{t('world.yearLabel', { year: activeMapYear })}</span>}
                     {mapSeries.data?.concept?.unit ? <span>{mapSeries.data.concept.unit}</span> : null}
                   </div>
                 </div>
@@ -373,7 +381,7 @@ export default function WorldHome() {
                     to={fullRatingHref}
                     className="inline-flex items-center gap-1 text-xs text-champagne hover:underline"
                   >
-                    Все страны в рейтинге
+                    {t('world.fullRating')}
                     <ChevronRight size={12} />
                   </Link>
                 )}
@@ -388,7 +396,7 @@ export default function WorldHome() {
                     )}`}
                     className="inline-flex items-center gap-1 text-xs text-champagne hover:underline"
                   >
-                    Сравнить страны
+                    {t('world.compareCountries')}
                     <ChevronRight size={12} />
                   </Link>
                 )}
@@ -401,8 +409,8 @@ export default function WorldHome() {
       <section id="countries" className="scroll-mt-24">
       <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">Каталог</div>
-          <h2 className="mt-1 font-display text-2xl font-bold text-text-primary">Все страны</h2>
+          <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">{t('world.catalog')}</div>
+          <h2 className="mt-1 font-display text-2xl font-bold text-text-primary">{t('world.allCountries')}</h2>
         </div>
         <div className="relative w-full sm:max-w-md">
         <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
@@ -410,8 +418,8 @@ export default function WorldHome() {
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Найти страну…"
-          aria-label="Поиск по странам"
+          placeholder={t('world.findCountry')}
+          aria-label={t('world.findCountryAria')}
           className="w-full rounded-xl border border-border-subtle bg-surface py-3 pl-10 pr-4 text-sm text-text-primary shadow-sm placeholder:text-text-tertiary focus:border-border-champagne focus:outline-none"
         />
       </div>
@@ -419,7 +427,7 @@ export default function WorldHome() {
 
       {isError && (
         <ApiRetryBanner onRetry={refetch} isFetching={isFetching} className="mb-6">
-          Не удалось загрузить список стран. Проверьте соединение и попробуйте снова.
+          {t('world.loadError')}
         </ApiRetryBanner>
       )}
 
@@ -437,14 +445,14 @@ export default function WorldHome() {
       {!isLoading && !isError && filtered.length === 0 && !showRussiaInList && (
         <div className="rounded-2xl border border-border-subtle bg-surface p-8 text-center">
           <p className="text-text-secondary mb-4">
-            По запросу «{query}» страны не найдены.
+            {t('world.noResults', { query })}
           </p>
           <Link to="/" className="text-champagne hover:underline text-sm">
-            На главную
+            {t('common.home')}
           </Link>
           <span className="mx-2 text-text-tertiary">—</span>
           <Link to={regionHubPath()} className="text-champagne hover:underline text-sm">
-            Регионы России
+            {t('footer.regions')}
           </Link>
         </div>
       )}
@@ -452,8 +460,8 @@ export default function WorldHome() {
       {!isLoading && showRussiaInList && (
         <section className="mb-8">
           <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-text-primary">
-            Россия
-            <span className="font-mono text-[11px] font-normal text-text-tertiary">макроэкономика</span>
+            {t('world.russia')}
+            <span className="font-mono text-[11px] font-normal text-text-tertiary">{t('world.macroTag')}</span>
           </h2>
           <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
             <CountryCard
@@ -486,16 +494,16 @@ export default function WorldHome() {
 
       {!isLoading && total > 0 && (
         <p className="text-[12px] text-text-tertiary font-mono mt-4">
-          {total} {pluralRu(total, ['страна', 'страны', 'стран'])}
+          {total} {locale === 'en' ? (total === 1 ? t('world.unit.country_one') : t('world.unit.country_many')) : pluralRu(total, [t('world.unit.country_one'), t('world.unit.country_few'), t('world.unit.country_many')])}
         </p>
       )}
       </section>
 
       <div className="mt-10 pt-6 border-t border-border-subtle flex flex-wrap gap-x-4 gap-y-2 text-sm text-text-secondary">
-        <Link to={regionHubPath()} className="hover:text-champagne transition-colors">Регионы России</Link>
-        <Link to="/compare" className="hover:text-champagne transition-colors">Сравнение</Link>
-        <Link to={calendarPath()} className="hover:text-champagne transition-colors">Календарь</Link>
-        <Link to="/" className="hover:text-champagne transition-colors">Главная</Link>
+        <Link to={regionHubPath()} className="hover:text-champagne transition-colors">{t('footer.regions')}</Link>
+        <Link to="/compare" className="hover:text-champagne transition-colors">{t('nav.compare')}</Link>
+        <Link to={calendarPath()} className="hover:text-champagne transition-colors">{t('crumb.calendar')}</Link>
+        <Link to="/" className="hover:text-champagne transition-colors">{t('common.home')}</Link>
       </div>
     </div>
   );

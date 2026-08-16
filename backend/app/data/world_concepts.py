@@ -27,6 +27,8 @@ class WorldConcept:
     # Provider aliases одного экономического понятия задаются только вручную
     # после методологической сверки. `dataset_ids` — Eurostat legacy shorthand.
     provider_dataset_ids: Mapping[str, frozenset[str]] | None = None
+    name_en: str = ""
+    unit_en: str = ""
 
 
 _RATING_SURFACES = frozenset({"resolve", "compare", "rating"})
@@ -42,6 +44,8 @@ WORLD_CONCEPTS: tuple[WorldConcept, ...] = (
         frequency_policy="official_then_calculated",
         aggregation_policy="mean",
         enabled_surfaces=_RATING_SURFACES,
+        name_en="Harmonised index of consumer prices",
+        unit_en="index 2015=100",
     ),
     WorldConcept(
         slug="unemployment-rate",
@@ -53,6 +57,8 @@ WORLD_CONCEPTS: tuple[WorldConcept, ...] = (
         frequency_policy="official_then_calculated",
         aggregation_policy="mean",
         enabled_surfaces=_RATING_SURFACES,
+        name_en="Unemployment rate",
+        unit_en="% of the labour force",
     ),
     # Единицы национальные (евро, доллары, юани и т.п.) — рейтинг ждёт
     # пересчёта в доллары США; поверхность rating не включаем.
@@ -63,6 +69,8 @@ WORLD_CONCEPTS: tuple[WorldConcept, ...] = (
         dataset_ids=frozenset({"namq_10_gdp"}),
         measure="CLV15_MEUR",
         required_slice={"na_item": "B1GQ", "s_adj": "SCA"},
+        name_en="Gross domestic product at constant prices, quarterly",
+        unit_en="chain-linked volumes, 2015, million euro",
     ),
     # Единицы национальные — рейтинг ждёт пересчёта в доллары США.
     WorldConcept(
@@ -73,6 +81,8 @@ WORLD_CONCEPTS: tuple[WorldConcept, ...] = (
         measure="CLV15_MEUR",
         required_slice={"na_item": "B1GQ"},
         frequency_policy="official_only",
+        name_en="Gross domestic product at constant prices, annual",
+        unit_en="chain-linked volumes, 2015, million euro",
     ),
     WorldConcept(
         slug="budget-balance-gdp",
@@ -83,6 +93,8 @@ WORLD_CONCEPTS: tuple[WorldConcept, ...] = (
         required_slice={"na_item": "B9", "sector": "S13"},
         frequency_policy="official_only",
         enabled_surfaces=_RATING_SURFACES,
+        name_en="General government budget balance",
+        unit_en="% of GDP",
     ),
     WorldConcept(
         slug="population",
@@ -93,6 +105,8 @@ WORLD_CONCEPTS: tuple[WorldConcept, ...] = (
         required_slice={"age": "TOTAL", "sex": "T"},
         frequency_policy="official_only",
         enabled_surfaces=_RATING_SURFACES,
+        name_en="Population",
+        unit_en="persons",
     ),
     # Доходность длинных госбумаг по критерию конвергенции — одна единица (%).
     WorldConcept(
@@ -105,6 +119,8 @@ WORLD_CONCEPTS: tuple[WorldConcept, ...] = (
         frequency_policy="official_then_calculated",
         aggregation_policy="mean",
         enabled_surfaces=_RATING_SURFACES,
+        name_en="Long-term government bond yield",
+        unit_en="%",
     ),
     # Уровень экономической активности 15–64 лет — доля населения, %.
     WorldConcept(
@@ -116,6 +132,8 @@ WORLD_CONCEPTS: tuple[WorldConcept, ...] = (
         required_slice={"age": "Y15-64", "sex": "T", "indic_em": "ACT"},
         frequency_policy="official_only",
         enabled_surfaces=_RATING_SURFACES,
+        name_en="Activity rate",
+        unit_en="% of population",
     ),
     # ВВП на душу относительно среднего по ЕС — относительный индекс, не валюта.
     WorldConcept(
@@ -127,8 +145,30 @@ WORLD_CONCEPTS: tuple[WorldConcept, ...] = (
         required_slice={"na_item": "B1GQ"},
         frequency_policy="official_only",
         enabled_surfaces=_RATING_SURFACES,
+        name_en="GDP per capita relative to the EU average",
+        unit_en="% of EU average per capita",
     ),
 )
+
+
+def concept_public_name(concept: WorldConcept, *, locale: str | None = None) -> str:
+    """Locale-facing concept name (EN prefers name_en)."""
+    from app.services.locale import get_locale
+
+    loc = locale or get_locale()
+    if loc == "en" and (concept.name_en or "").strip():
+        return concept.name_en
+    return concept.name_ru
+
+
+def concept_public_unit(concept: WorldConcept, *, locale: str | None = None) -> str:
+    """Locale-facing concept unit (EN prefers unit_en)."""
+    from app.services.locale import get_locale
+
+    loc = locale or get_locale()
+    if loc == "en" and (concept.unit_en or "").strip():
+        return concept.unit_en
+    return concept.unit_ru
 
 CONCEPT_BY_SLUG = {concept.slug: concept for concept in WORLD_CONCEPTS}
 _NON_SEMANTIC_SLICE_KEYS = frozenset({"freq", "unit", "time", "geo"})

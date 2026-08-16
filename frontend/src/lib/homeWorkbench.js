@@ -22,11 +22,11 @@ import {
  * там нужна дневная частота. Крипта, кроме биткоина, в срез не идёт.
  */
 export const HOME_MARKET_PULSE = Object.freeze([
-  { code: 'btc-usd', label: 'Биткоин', unitShort: '$' },
-  { code: 'brent', label: 'Нефть Brent', unitShort: '$/барр.' },
-  { code: 'usd-index', label: 'Индекс доллара', unitShort: 'пунктов' },
-  { code: 'ust-10y', label: 'Гособлигации США', unitShort: '%, 10 лет' },
-  { code: 'natural-gas', label: 'Природный газ', unitShort: '$/млн БТЕ' },
+  { code: 'btc-usd', labelKey: 'home.pulse.label.btc-usd', unitKey: 'home.pulse.unit.btc-usd' },
+  { code: 'brent', labelKey: 'home.pulse.label.brent', unitKey: 'home.pulse.unit.brent' },
+  { code: 'usd-index', labelKey: 'home.pulse.label.usd-index', unitKey: 'home.pulse.unit.usd-index' },
+  { code: 'ust-10y', labelKey: 'home.pulse.label.ust-10y', unitKey: 'home.pulse.unit.ust-10y' },
+  { code: 'natural-gas', labelKey: 'home.pulse.label.natural-gas', unitKey: 'home.pulse.unit.natural-gas' },
 ]);
 
 /** Коды среза — производные от HOME_MARKET_PULSE (не дублировать вручную). */
@@ -34,13 +34,23 @@ export const HOME_TODAY_CODES = Object.freeze(
   HOME_MARKET_PULSE.map((item) => item.code),
 );
 
-export const HOME_TODAY_LABELS = Object.freeze(
-  Object.fromEntries(HOME_MARKET_PULSE.map((item) => [item.code, item.label])),
+const HOME_PULSE_BY_CODE = Object.freeze(
+  Object.fromEntries(HOME_MARKET_PULSE.map((item) => [item.code, item])),
 );
 
-export const HOME_TODAY_UNIT_SHORT = Object.freeze(
-  Object.fromEntries(HOME_MARKET_PULSE.map((item) => [item.code, item.unitShort])),
-);
+/** Подпись среза через messages; фолбэк — name/name_en с API. */
+export function homePulseLabel(code, t, indicator) {
+  const item = HOME_PULSE_BY_CODE[code];
+  if (item?.labelKey && typeof t === 'function') return t(item.labelKey);
+  return indicator?.name || code || '';
+}
+
+/** Короткая единица среза через messages; фолбэк — unit из pulse/API. */
+export function homePulseUnitShort(code, t, fallback = '') {
+  const item = HOME_PULSE_BY_CODE[code];
+  if (item?.unitKey && typeof t === 'function') return t(item.unitKey);
+  return fallback;
+}
 
 /** Флагманы (если понадобится отдельный список РФ). */
 export const HOME_RUSSIA_FLAGSHIP_CODES = Object.freeze([
@@ -67,16 +77,30 @@ export const HOME_SPARKLINE_BY_CODE = Object.freeze({
 export const HOME_REGION_METRICS = Object.freeze([
   {
     code: 'srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy',
-    label: 'Зарплата',
+    labelKey: 'regions.metric.wages',
   },
-  { code: 'chislennost-naseleniya', label: 'Население' },
-  { code: 'uroven-bezrabotitsy', label: 'Безработица', betterIsLow: true },
-  { code: 'valovoy-regionalnyy-produkt-na-dushu-naseleniya', label: 'ВРП на душу' },
-  { code: 'investitsii-v-osnovnoy-kapital', label: 'Инвестиции' },
+  { code: 'chislennost-naseleniya', labelKey: 'regions.metric.population' },
+  { code: 'uroven-bezrabotitsy', labelKey: 'regions.metric.unemployment', betterIsLow: true },
+  { code: 'valovoy-regionalnyy-produkt-na-dushu-naseleniya', labelKey: 'regions.metric.grpPerCapita' },
+  { code: 'investitsii-v-osnovnoy-kapital', labelKey: 'regions.metric.investment' },
 ]);
 
 export const DEFAULT_HOME_REGION_METRIC = HOME_REGION_METRICS[0].code;
 
+/** Message keys for map/rating concept short labels (values live in messages.*.js). */
+export const HOME_COUNTRY_CONCEPT_LABEL_KEYS = Object.freeze({
+  'hicp-index': 'home.concept.hicp-index',
+  'unemployment-rate': 'home.concept.unemployment-rate',
+  'gdp-volume-quarterly': 'home.concept.gdp-volume-quarterly',
+  'gdp-volume-annual': 'home.concept.gdp-volume-annual',
+  'budget-balance-gdp': 'home.concept.budget-balance-gdp',
+  population: 'home.concept.population',
+  'long-term-interest-rate': 'home.concept.long-term-interest-rate',
+  'activity-rate': 'home.concept.activity-rate',
+  'gdp-per-capita-eu': 'home.concept.gdp-per-capita-eu',
+});
+
+/** @deprecated use HOME_COUNTRY_CONCEPT_LABEL_KEYS + t(); kept for non-UI callers expecting strings. */
 export const HOME_COUNTRY_CONCEPT_SHORT = Object.freeze({
   'hicp-index': 'Цены, изменение за год',
   'unemployment-rate': 'Безработица',
@@ -91,27 +115,60 @@ export const HOME_COUNTRY_CONCEPT_SHORT = Object.freeze({
 
 export const DEFAULT_HOME_COUNTRY_CONCEPT = 'unemployment-rate';
 
+/** Short concept label via messages; falls back to API name / slug. */
+export function homeConceptLabel(slug, t, fallback = '') {
+  const key = HOME_COUNTRY_CONCEPT_LABEL_KEYS[slug];
+  if (key && typeof t === 'function') return t(key);
+  return HOME_COUNTRY_CONCEPT_SHORT[slug] || fallback || slug || '';
+}
+
+export const HOME_COUNTRY_MACROREGIONS = Object.freeze([
+  {
+    id: 'europe',
+    labelKey: 'home.macro.europe',
+    available: true,
+    coverageNoteKey: 'home.macro.europeCoverage',
+  },
+  { id: 'americas', labelKey: 'home.macro.americas', available: false },
+  { id: 'asia', labelKey: 'home.macro.asia', available: false },
+]);
+
+export const DEFAULT_HOME_COUNTRY_MACROREGION = 'europe';
+
+export function availableCountryMacroregions(macros = HOME_COUNTRY_MACROREGIONS) {
+  return macros.filter((m) => m.available);
+}
+
+export function resolveCountryMacroregion(id, macros = HOME_COUNTRY_MACROREGIONS) {
+  const hit = macros.find((m) => m.id === id && m.available);
+  return hit?.id || DEFAULT_HOME_COUNTRY_MACROREGION;
+}
+
+export function countryCoverageNoteKey(macroId, macros = HOME_COUNTRY_MACROREGIONS) {
+  const hit = macros.find((m) => m.id === macroId);
+  return hit?.coverageNoteKey || 'home.macro.defaultCoverage';
+}
 /**
  * Темы для выбора показателя (карта / рейтинг). Одна точка для пикера —
- * не плодить три ленты чипов.
+ * не плодить три ленты чипов. Подписи — labelKey → messages.*.js.
  */
 export const WORLD_CONCEPT_GROUPS = Object.freeze([
-  { id: 'prices', label: 'Цены', slugs: Object.freeze(['hicp-index']) },
+  { id: 'prices', labelKey: 'home.conceptGroup.prices', slugs: Object.freeze(['hicp-index']) },
   {
     id: 'labor',
-    label: 'Рынок труда',
+    labelKey: 'home.conceptGroup.labor',
     slugs: Object.freeze(['unemployment-rate', 'activity-rate']),
   },
   {
     id: 'gdp',
-    label: 'ВВП',
+    labelKey: 'home.conceptGroup.gdp',
     slugs: Object.freeze(['gdp-per-capita-eu']),
   },
-  { id: 'budget', label: 'Бюджет', slugs: Object.freeze(['budget-balance-gdp']) },
-  { id: 'population', label: 'Население', slugs: Object.freeze(['population']) },
+  { id: 'budget', labelKey: 'home.conceptGroup.budget', slugs: Object.freeze(['budget-balance-gdp']) },
+  { id: 'population', labelKey: 'home.conceptGroup.population', slugs: Object.freeze(['population']) },
   {
     id: 'rates',
-    label: 'Ставки',
+    labelKey: 'home.conceptGroup.rates',
     slugs: Object.freeze(['long-term-interest-rate']),
   },
 ]);
@@ -136,8 +193,8 @@ export const WORLD_CONCEPT_REGION_RATING = Object.freeze({
 });
 
 /**
- * Фоллбэк оговорки, если API ещё не отдал concept.russia.note.
- * Канон текстов — backend `world_concept_russia.py`.
+ * Фоллбэк оговорки (RU), если нет t() / ключа.
+ * Канон текстов — backend `world_concept_russia.py`; EN — messages.en.js.
  */
 export const WORLD_CONCEPT_RUSSIA_NOTE = Object.freeze({
   'unemployment-rate':
@@ -156,7 +213,13 @@ export const WORLD_CONCEPT_RUSSIA_NOTE = Object.freeze({
     + 'данные их статистических ведомств или Евростата.',
 });
 
-/** Родительный падеж для заголовка «Рейтинг стран по …» — зеркало backend. */
+export const WORLD_CONCEPT_RUSSIA_NOTE_KEYS = Object.freeze({
+  'unemployment-rate': 'world.rating.russiaNote.unemployment-rate',
+  'hicp-index': 'world.rating.russiaNote.hicp-index',
+  population: 'world.rating.russiaNote.population',
+});
+
+/** Родительный падеж для заголовка «Рейтинг стран по …» — зеркало backend (RU). */
 export const WORLD_RATING_QUERY_NAMES = Object.freeze({
   'hicp-index': 'изменению потребительских цен за год',
   'unemployment-rate': 'уровню безработицы',
@@ -167,9 +230,37 @@ export const WORLD_RATING_QUERY_NAMES = Object.freeze({
   'gdp-per-capita-eu': 'ВВП на душу относительно среднего по ЕС',
 });
 
-export function worldRatingTitle(conceptSlug, publicName, year) {
-  const queryName = WORLD_RATING_QUERY_NAMES[conceptSlug]
-    || String(publicName || conceptSlug).toLowerCase();
+export const WORLD_RATING_QUERY_NAME_KEYS = Object.freeze({
+  'hicp-index': 'world.rating.query.hicp-index',
+  'unemployment-rate': 'world.rating.query.unemployment-rate',
+  'budget-balance-gdp': 'world.rating.query.budget-balance-gdp',
+  population: 'world.rating.query.population',
+  'long-term-interest-rate': 'world.rating.query.long-term-interest-rate',
+  'activity-rate': 'world.rating.query.activity-rate',
+  'gdp-per-capita-eu': 'world.rating.query.gdp-per-capita-eu',
+});
+
+/**
+ * Заголовок рейтинга стран. С t() — locale-aware (зеркало SSR EN/RU).
+ * Без t — прежний RU-контракт для тестов и non-UI callers.
+ */
+export function worldRatingTitle(conceptSlug, publicName, year, t) {
+  const queryKey = WORLD_RATING_QUERY_NAME_KEYS[conceptSlug];
+  const queryName = (queryKey && typeof t === 'function')
+    ? t(queryKey)
+    : (WORLD_RATING_QUERY_NAMES[conceptSlug]
+      || String(publicName || conceptSlug).toLowerCase());
+
+  if (typeof t === 'function') {
+    const head = t('world.rating.titleHead', { query: queryName });
+    if (year == null) return head;
+    const yoyStyle = conceptSlug === 'hicp-index'
+      || String(queryName).trimEnd().endsWith('за год')
+      || String(queryName).includes('year-over-year');
+    if (yoyStyle) return t('world.rating.titleYearComma', { head, year });
+    return t('world.rating.titleYearFor', { head, year });
+  }
+
   const head = `Рейтинг стран по ${queryName}`;
   if (year == null) return head;
   if (queryName.trimEnd().endsWith('за год')) return `${head}, ${year}`;
@@ -189,24 +280,25 @@ export const HOME_MAP_RUSSIA_COUNTRY = Object.freeze({
 /**
  * Боковые переходы у карты. «Европа» и «Мир» раньше дублировали /world;
  * отдельный URL-режим Европы на /world пока не поддерживается (карта WorldHome).
+ * Подписи — через labelKey/descriptionKey → messages.*.js.
  */
 export const HOME_MAP_SIDE_LINKS = Object.freeze([
   {
     id: 'russia-macro',
-    label: 'Показатели России',
-    description: 'Макроэкономика РФ',
+    labelKey: 'home.side.russiaMacro',
+    descriptionKey: 'home.side.russiaMacroDesc',
     to: russiaHomePath(),
   },
   {
     id: 'regions',
-    label: 'Регионы России',
-    description: '85 субъектов, 489 показателей',
+    labelKey: 'home.side.regions',
+    descriptionKey: 'home.side.regionsDesc',
     to: regionHubPath(),
   },
   {
     id: 'world',
-    label: 'Страны',
-    description: 'Каталог стран и показателей',
+    labelKey: 'home.side.world',
+    descriptionKey: 'home.side.worldDesc',
     to: worldHubPath(),
   },
 ]);
@@ -317,7 +409,9 @@ export function regionRatingCodeForConcept(conceptSlug) {
   return WORLD_CONCEPT_REGION_RATING[conceptSlug] || null;
 }
 
-export function russiaNoteForConcept(conceptSlug) {
+export function russiaNoteForConcept(conceptSlug, t) {
+  const key = WORLD_CONCEPT_RUSSIA_NOTE_KEYS[conceptSlug];
+  if (key && typeof t === 'function') return t(key);
   return WORLD_CONCEPT_RUSSIA_NOTE[conceptSlug] || null;
 }
 
@@ -353,9 +447,9 @@ export function withRussiaOnHomeMap({
       list.push({
         code: shell.code || 'RU',
         slug: shell.slug || 'russia',
-        name: shell.name_ru || shell.name || 'Россия',
+        name: shell.name || shell.name_en || shell.name_ru || 'Russia',
         name_en: shell.name_en || 'Russia',
-        region: shell.region_ru || shell.region || 'Европа',
+        region: shell.region || shell.region_ru || 'Europe',
         indicators_count: shell.indicators_count || 0,
         is_active: true,
       });

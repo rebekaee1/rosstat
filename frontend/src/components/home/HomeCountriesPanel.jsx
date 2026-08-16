@@ -4,10 +4,10 @@ import { ArrowRight, Globe2 } from 'lucide-react';
 import {
   DEFAULT_HOME_COUNTRY_CONCEPT,
   DEFAULT_HOME_COUNTRY_MACROREGION,
-  HOME_COUNTRY_CONCEPT_SHORT,
   HOME_COUNTRY_MACROREGIONS,
   availableCountryMacroregions,
-  countryCoverageNote,
+  countryCoverageNoteKey,
+  homeConceptLabel,
   resolveActiveMapYear,
   resolveCountryMacroregion,
   worldRankingFromYearItems,
@@ -28,11 +28,13 @@ import {
   countryPath,
   indicatorPath,
 } from '../../lib/sitePaths';
+import { useT } from '../../i18n';
 
 const WorldMap = lazy(() => import('../WorldMap'));
 const MapTimeline = lazy(() => import('../MapTimeline'));
 
 export default function HomeCountriesPanel() {
+  const t = useT();
   const navigate = useNavigate();
   const [macroregion, setMacroregion] = useState(DEFAULT_HOME_COUNTRY_MACROREGION);
   const [concept, setConcept] = useState(DEFAULT_HOME_COUNTRY_CONCEPT);
@@ -45,8 +47,13 @@ export default function HomeCountriesPanel() {
   const fullRatingHref = ratingHref(concept, ratingConcepts.data?.concepts);
 
   const activeMacro = resolveCountryMacroregion(macroregion);
-  const coverage = countryCoverageNote(activeMacro);
+  const coverage = t(countryCoverageNoteKey(activeMacro));
   const macros = availableCountryMacroregions();
+  const conceptName = homeConceptLabel(
+    concept,
+    t,
+    mapSeries.data?.concept?.name || t('home.map.metricFallback'),
+  );
 
   const mapConcepts = useMemo(() => {
     const seen = new Map();
@@ -82,10 +89,9 @@ export default function HomeCountriesPanel() {
     <div data-block="home-workbench-countries">
       <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h3 className="text-base font-semibold text-text-primary">Страны</h3>
+          <h3 className="text-base font-semibold text-text-primary">{t('home.countries.title')}</h3>
           <p className="mt-1 max-w-xl text-xs leading-5 text-text-secondary">
-            Выберите показатель, год и страну на карте или перейдите к лидерам рейтинга.
-            Сейчас доступно европейское покрытие.
+            {t('home.countries.subtitle')}
           </p>
         </div>
         <Link
@@ -94,7 +100,7 @@ export default function HomeCountriesPanel() {
           className="inline-flex items-center gap-1 text-xs text-champagne hover:underline"
         >
           <Globe2 size={12} />
-          Каталог стран
+          {t('home.countries.catalog')}
           <ArrowRight size={12} />
         </Link>
       </div>
@@ -104,13 +110,13 @@ export default function HomeCountriesPanel() {
       </div>
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        <div className="flex flex-wrap gap-1" role="group" aria-label="Макрорегион">
+        <div className="flex flex-wrap gap-1" role="group" aria-label={t('home.countries.macroAria')}>
           {HOME_COUNTRY_MACROREGIONS.map((m) => (
             <button
               key={m.id}
               type="button"
               disabled={!m.available}
-              title={m.available ? m.coverageNote : 'Данные макрорегиона пока не опубликованы на платформе'}
+              title={m.available ? t(m.coverageNoteKey || 'home.macro.defaultCoverage') : t('home.countries.macroUnavailable')}
               onClick={() => {
                 if (!m.available) return;
                 setMacroregion(m.id);
@@ -124,13 +130,13 @@ export default function HomeCountriesPanel() {
                     : 'cursor-not-allowed border border-border-subtle/60 bg-surface/50 text-text-tertiary opacity-60'
               }`}
             >
-              {m.label}
-              {!m.available ? ' — скоро' : ''}
+              {t(m.labelKey)}
+              {!m.available ? t('home.macro.soonSuffix') : ''}
             </button>
           ))}
         </div>
         <label className="min-w-[12rem] flex-1 sm:max-w-xs">
-          <span className="sr-only">Показатель карты стран</span>
+          <span className="sr-only">{t('home.countries.metricAria')}</span>
           <select
             value={concept}
             onChange={(e) => {
@@ -140,9 +146,12 @@ export default function HomeCountriesPanel() {
             }}
             className="w-full rounded-xl border border-border-subtle bg-surface px-3 py-2 text-sm text-text-primary outline-none focus:border-border-champagne"
           >
-            {(mapConcepts.length ? mapConcepts : [{ slug: concept, name: HOME_COUNTRY_CONCEPT_SHORT[concept] || concept }]).map((c) => (
+            {(mapConcepts.length
+              ? mapConcepts
+              : [{ slug: concept, name: conceptName }]
+            ).map((c) => (
               <option key={c.slug} value={c.slug}>
-                {HOME_COUNTRY_CONCEPT_SHORT[c.slug] || c.name}
+                {homeConceptLabel(c.slug, t, c.name)}
               </option>
             ))}
           </select>
@@ -158,7 +167,7 @@ export default function HomeCountriesPanel() {
           }}
           isFetching={countries.isFetching || mapSeries.isFetching}
         >
-          Не удалось загрузить срез по странам.
+          {t('home.countries.loadError')}
         </ApiRetryBanner>
       )}
 
@@ -167,14 +176,14 @@ export default function HomeCountriesPanel() {
           <div className="mb-3 flex items-start justify-between gap-2">
             <div>
               <div className="text-[10px] font-mono uppercase tracking-[0.16em] text-champagne">
-                Рейтинг
+                {t('home.map.rating')}
               </div>
               <div className="mt-1 text-sm font-semibold text-text-primary">
-                {HOME_COUNTRY_CONCEPT_SHORT[concept] || mapSeries.data?.concept?.name || 'Показатель'}
+                {conceptName}
               </div>
               {activeYear != null && (
                 <div className="mt-0.5 font-mono text-[10px] text-text-tertiary">
-                  {activeYear} год
+                  {t('world.yearLabel', { year: activeYear })}
                 </div>
               )}
             </div>
@@ -222,7 +231,7 @@ export default function HomeCountriesPanel() {
                 onClick={() => track(events.HOME_COUNTRIES_CTA, { target: 'rating', concept })}
                 className="inline-flex items-center gap-1 text-xs text-champagne hover:underline"
               >
-                Все страны в рейтинге
+                {t('world.fullRating')}
                 <ArrowRight size={12} />
               </Link>
             )}
@@ -234,7 +243,7 @@ export default function HomeCountriesPanel() {
                 onClick={() => track(events.HOME_COUNTRIES_CTA, { target: 'compare', concept })}
                 className="inline-flex items-center gap-1 text-xs text-champagne hover:underline"
               >
-                Сравнить страны
+                {t('home.countries.compare')}
                 <ArrowRight size={12} />
               </Link>
             )}
@@ -251,7 +260,7 @@ export default function HomeCountriesPanel() {
                 valuesByCode={valuesByCode}
                 detailsByCode={detailsByCode}
                 unit={mapSeries.data?.concept?.unit || ''}
-                metricName={HOME_COUNTRY_CONCEPT_SHORT[concept] || mapSeries.data?.concept?.name || ''}
+                metricName={conceptName}
                 periodLabel={activeYear ? String(activeYear) : ''}
                 colorMode={concept === 'budget-balance-gdp' ? 'diverging' : 'auto'}
                 onSelect={(country, detail) => {
@@ -279,8 +288,7 @@ export default function HomeCountriesPanel() {
           )}
           {macros.length === 1 && (
             <p className="mt-3 text-[11px] leading-5 text-text-tertiary">
-              Америка и Азия появятся после подключения и проверки официальных
-              национальных первоисточников.
+              {t('home.countries.comingSoonNote')}
             </p>
           )}
         </div>

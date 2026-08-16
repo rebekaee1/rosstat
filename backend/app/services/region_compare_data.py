@@ -7,6 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.services import site_paths as paths
 from app.models import Region, RegionDataPoint, RegionIndicator
+from app.services.locale import get_locale
+from app.services.seo_i18n import region_display_name, region_indicator_copy
 from app.services.seo_regional import MACRO_BY_TABLE, _fmt, _region
 
 _KEY_TABLE_CODES = tuple(MACRO_BY_TABLE) + ("5.1",)
@@ -23,6 +25,9 @@ async def build_region_compare_payload(
     region_b = await _region(db, canon_b)
     if not region_a or not region_b or region_a.kind != "region" or region_b.kind != "region":
         return None
+
+    name_a = region_display_name(region_a.slug, region_a.name)
+    name_b = region_display_name(region_b.slug, region_b.name)
 
     indicators = (await db.execute(
         select(RegionIndicator)
@@ -47,6 +52,7 @@ async def build_region_compare_payload(
 
     rows = []
     summary_bits = []
+    en = get_locale() == "en"
     for ind in indicators:
         by_year = points.get(ind.id, {})
         common_year = max(
@@ -61,39 +67,56 @@ async def build_region_compare_payload(
         if va is None or vb is None:
             continue
         va, vb = float(va), float(vb)
-        unit = ind.unit or ""
+        copy = region_indicator_copy(
+            ind.code,
+            name_ru=ind.name,
+            unit_ru=ind.unit or "",
+            note_ru=ind.note,
+            section_ru=ind.section_name,
+        )
+        unit = copy["unit"] or ""
+        ind_name = copy["name"] or ind.name
 
         if abs(va - vb) < 1e-12:
-            verdict = "значения совпадают"
+            verdict = "values are equal" if en else "значения совпадают"
             leader_slug = None
         else:
             leader = region_a if va > vb else region_b
+            leader_name = name_a if leader.slug == canon_a else name_b
             leader_slug = leader.slug
             hi, lo = max(va, vb), min(va, vb)
             diff_pct = (hi - lo) / abs(lo) * 100 if lo else None
-            verdict = f"выше в регионе {leader.name}"
-            if diff_pct is not None and diff_pct < 200:
-                verdict += f" — на {_fmt(round(diff_pct, 1))}%"
+            if en:
+                verdict = f"higher in {leader_name}"
+                if diff_pct is not None and diff_pct < 200:
+                    verdict += f" — by {_fmt(round(diff_pct, 1))}%"
+            else:
+                verdict = f"выше в регионе {leader_name}"
+                if diff_pct is not None and diff_pct < 200:
+                    verdict += f" — на {_fmt(round(diff_pct, 1))}%"
 
         rows.append({
             "code": ind.code,
-            "name": ind.name,
+            "name": ind_name,
             "unit": unit,
             "year": int(common_year),
-            "a": {"slug": canon_a, "name": region_a.name, "value": va},
-            "b": {"slug": canon_b, "name": region_b.name, "value": vb},
+            "a": {"slug": canon_a, "name": name_a, "value": va},
+            "b": {"slug": canon_b, "name": name_b, "value": vb},
             "verdict": verdict,
             "leader_slug": leader_slug,
         })
-        summary_bits.append(f"{ind.name.lower()} — {verdict}")
+        summary_bits.append(
+            f"{ind_name.lower()} — {verdict}" if not en
+            else f"{ind_name} — {verdict}"
+        )
 
     if not rows:
         return None
 
     return {
         "canonical_path": paths.region_vs(canon_a, canon_b),
-        "region_a": {"slug": canon_a, "name": region_a.name},
-        "region_b": {"slug": canon_b, "name": region_b.name},
+        "region_a": {"slug": canon_a, "name": name_a},
+        "region_b": {"slug": canon_b, "name": name_b},
         "rows": rows,
         "summary_bits": summary_bits,
     }

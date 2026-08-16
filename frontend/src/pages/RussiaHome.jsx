@@ -7,7 +7,10 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, CalendarDays, MapPinned, Users } from 'lucide-react';
 import { useIndicators } from '../lib/hooks';
 import useDocumentMeta from '../lib/useMeta';
+import { getPageSeo } from '../lib/pageMeta';
+import { useLocale } from '../i18n';
 import { CATEGORIES, countInCategory } from '../lib/categories';
+
 import CategoryBlock from '../components/CategoryBlock';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { TileSkeleton } from '../components/Skeleton';
@@ -50,6 +53,7 @@ const QUICK_LINKS = [
 ];
 
 export default function RussiaHome() {
+  const { locale } = useLocale();
   const { data: indicators, isLoading, isError, refetch, isFetching } = useIndicators();
 
   const counts = useMemo(() => {
@@ -60,11 +64,11 @@ export default function RussiaHome() {
     return m;
   }, [indicators]);
 
+  const russiaSeo = getPageSeo('russia', locale);
   useDocumentMeta({
-    title: 'Россия — экономические показатели — Forecast Economy',
-    description:
-      'Макроэкономика России: категории показателей, сводка на сегодня, регионы, календарь публикаций и демография. Официальные данные Росстата, Банка России и Минфина.',
-    path: russiaHomePath(),
+    title: russiaSeo.title,
+    description: russiaSeo.description,
+    path: russiaSeo.path || russiaHomePath(),
   });
 
   const crumbs = russiaHomeTrail();

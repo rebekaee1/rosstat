@@ -5,39 +5,41 @@ import {
   regionHubPath,
   worldHubPath,
 } from '../../lib/sitePaths';
+import { useT } from '../../i18n';
 
 const TOOLS = [
   {
     to: '/compare',
-    title: 'Сравнение',
-    desc: 'Страны и показатели России на одном графике',
+    titleKey: 'home.tools.compare.title',
+    descKey: 'home.tools.compare.desc',
     icon: BarChart3,
   },
   {
     to: regionHubPath(),
-    title: 'Регионы',
-    desc: '489 показателей по 85 субъектам РФ',
+    titleKey: 'home.tools.regions.title',
+    descKey: 'home.tools.regions.desc',
     icon: MapPin,
   },
   {
     to: worldHubPath(),
-    title: 'Страны',
-    desc: 'Европейское покрытие и каталог стран',
+    titleKey: 'home.tools.countries.title',
+    descKey: 'home.tools.countries.desc',
     icon: Globe2,
   },
 ];
 
 export default function HomeTools() {
+  const t = useT();
   return (
     <section data-block="home-tools" className="mb-10 md:mb-12" aria-labelledby="home-tools-title">
       <div className="mb-4 flex items-center gap-4">
         <h2 id="home-tools-title" className="text-xs font-semibold uppercase tracking-[0.2em] text-text-secondary">
-          Инструменты
+          {t('home.tools.title')}
         </h2>
         <div className="h-px flex-1 bg-border-subtle" />
       </div>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {TOOLS.map(({ to, title, desc, icon }) => (
+        {TOOLS.map(({ to, titleKey, descKey, icon }) => (
           <Link
             key={to}
             to={to}
@@ -48,10 +50,10 @@ export default function HomeTools() {
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1 text-sm font-semibold text-text-primary group-hover:text-champagne">
-                {title}
+                {t(titleKey)}
                 <ArrowRight size={12} className="opacity-0 transition-opacity group-hover:opacity-100" />
               </div>
-              <p className="mt-0.5 text-[12px] leading-snug text-text-secondary">{desc}</p>
+              <p className="mt-0.5 text-[12px] leading-snug text-text-secondary">{t(descKey)}</p>
             </div>
           </Link>
         ))}

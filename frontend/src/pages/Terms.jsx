@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
 import { track, events } from '../lib/track';
+import { useLocale } from '../i18n';
+import { TermsBodyEn } from '../i18n/legalPages.en';
 
 /**
  * Пользовательское соглашение: условия использования Сайта и его материалов.
@@ -16,7 +18,8 @@ const p = 'text-text-secondary leading-relaxed mb-4';
 const li = 'text-text-secondary leading-relaxed';
 
 export default function Terms() {
-  const seo = getPageSeo('terms');
+  const { locale, t } = useLocale();
+  const seo = getPageSeo('terms', locale) || getPageSeo('terms');
   useDocumentMeta({
     title: seo.title,
     description: seo.description,
@@ -26,6 +29,10 @@ export default function Terms() {
   return (
     <div className="max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-20 md:pb-24">
       <article className="prose prose-sm max-w-none">
+        {locale === 'en' ? (
+          <TermsBodyEn t={t} h1={seo.h1 || 'Terms of use'} />
+        ) : (
+          <>
         <p className="text-[10px] uppercase tracking-[0.3em] text-champagne font-semibold mb-4">
           Правовая информация
         </p>
@@ -157,6 +164,8 @@ export default function Terms() {
           </a>
           .
         </p>
+          </>
+        )}
       </article>
     </div>
   );

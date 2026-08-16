@@ -18,11 +18,19 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import Region, RegionDataPoint, RegionIndicator
 from app.services.region_compare_data import build_region_compare_payload
+from app.services.seo_i18n import regional_template
 from app.services.seo_regional import _fmt
-from app.services.seo_renderer import DOMAIN, _breadcrumbs, _breadcrumbs_nav, build_document
+from app.services.seo_renderer import _absolute, _breadcrumbs, _breadcrumbs_nav, build_document
 
 _POPULATION_TABLE = "1.1"
 TOP_REGIONS_LIMIT = 20
+
+
+def _rt(key: str, **kwargs) -> str | None:
+    tpl = regional_template(key)
+    if not tpl:
+        return None
+    return tpl.format(**kwargs) if kwargs else tpl
 
 
 async def _top_region_slugs(db: AsyncSession) -> list[str]:
@@ -78,6 +86,8 @@ async def render_region_vs_html(
 
     sections = []
     table_rows = []
+    dynamics_tpl = _rt("region_vs.section_dynamics")
+    rating_link = _rt("region_vs.rating_link") or "Рейтинг всех регионов"
     for row in payload["rows"]:
         unit = row["unit"]
         va, vb = row["a"]["value"], row["b"]["value"]
@@ -85,79 +95,149 @@ async def render_region_vs_html(
         ind_name = row["name"]
         ind_code = row["code"]
         verdict = row["verdict"]
+        dyn_a = (
+            dynamics_tpl.format(region=region_a["name"])
+            if dynamics_tpl
+            else f"Динамика — {region_a['name']}"
+        )
+        dyn_b = (
+            dynamics_tpl.format(region=region_b["name"])
+            if dynamics_tpl
+            else f"Динамика — {region_b['name']}"
+        )
         sections.append(
             f"<section class=\"seo-section\"><h2>{escape(ind_name)} ({common_year})</h2>"
             f"<p>{escape(region_a['name'])}: <strong>{escape(_vu(va, unit))}</strong>; "
             f"{escape(region_b['name'])}: <strong>{escape(_vu(vb, unit))}</strong>. "
-            f"Показатель {escape(verdict)}.</p>"
-            f"<p><a href=\"{escape(paths.region_indicator(canon_a, ind_code))}\">Динамика — {escape(region_a['name'])}</a>, "
-            f"<a href=\"{escape(paths.region_indicator(canon_b, ind_code))}\">Динамика — {escape(region_b['name'])}</a>, "
-            f"<a href=\"{escape(paths.region_rating(ind_code))}\">Рейтинг всех регионов</a></p></section>"
+            f"{escape(verdict) + '.' if dynamics_tpl else 'Показатель ' + escape(verdict) + '.'}</p>"
+            f"<p><a href=\"{escape(paths.region_indicator(canon_a, ind_code))}\">{escape(dyn_a)}</a>, "
+            f"<a href=\"{escape(paths.region_indicator(canon_b, ind_code))}\">{escape(dyn_b)}</a>, "
+            f"<a href=\"{escape(paths.region_rating(ind_code))}\">{escape(rating_link)}</a></p></section>"
         )
         table_rows.append(
             f"<tr><td>{escape(ind_name)}</td><td>{common_year}</td>"
             f"<td>{escape(_vu(va, unit))}</td><td>{escape(_vu(vb, unit))}</td></tr>"
         )
 
-    title = f"{region_a['name']} или {region_b['name']}: сравнение регионов — зарплата, население, цены"
-    desc = (
+    title = _rt(
+        "region_vs.title",
+        region_a=region_a["name"],
+        region_b=region_b["name"],
+    ) or (
+        f"{region_a['name']} или {region_b['name']}: сравнение регионов — зарплата, население, цены"
+    )
+    desc = _rt(
+        "region_vs.description",
+        region_a=region_a["name"],
+        region_b=region_b["name"],
+    ) or (
         f"Сравнение регионов {region_a['name']} и {region_b['name']} по ключевым показателям "
         f"Росстата: {'; '.join(payload['summary_bits'][:3])}. Данные по годам, таблицы и графики."
     )
+    h1 = _rt(
+        "region_vs.h1",
+        region_a=region_a["name"],
+        region_b=region_b["name"],
+    ) or (
+        f"{region_a['name']} и {region_b['name']}: сравнение по ключевым показателям"
+    )
 
+    th_ind = _rt("region_vs.th_indicator") or "Показатель"
+    th_year = _rt("region_vs.th_year") or "Год"
     compare_table = (
-        f'<div class="seo-scroll"><table><thead><tr><th>Показатель</th><th>Год</th>'
+        f'<div class="seo-scroll"><table><thead><tr><th>{escape(th_ind)}</th><th>{escape(th_year)}</th>'
         f"<th>{escape(region_a['name'])}</th><th>{escape(region_b['name'])}</th></tr></thead>"
         f"<tbody>{''.join(table_rows)}</tbody></table></div>"
     )
 
     og_path = paths.og_region_vs(canon_a, canon_b)
-    vs_alt = (f"Сравнение регионов {region_a['name']} и {region_b['name']}: "
-              f"население, зарплата, ВРП, безработица — данные Росстата")
+    vs_alt = _rt(
+        "region_vs.alt",
+        region_a=region_a["name"],
+        region_b=region_b["name"],
+    ) or (
+        f"Сравнение регионов {region_a['name']} и {region_b['name']}: "
+        f"население, зарплата, ВРП, безработица — данные Росстата"
+    )
+    caption = _rt(
+        "region_vs.caption",
+        region_a=region_a["name"],
+        region_b=region_b["name"],
+    ) or (
+        f"{region_a['name']} и {region_b['name']}: ключевые показатели. "
+        f"Источник: Росстат. forecasteconomy.com"
+    )
     figure_html = (
         f'<figure class="seo-chart"><img src="{escape(og_path)}" alt="{escape(vs_alt)}" '
         f'width="1200" height="630" loading="eager">'
-        f"<figcaption>{escape(region_a['name'])} и {escape(region_b['name'])}: ключевые показатели. "
-        f"Источник: Росстат. forecasteconomy.com</figcaption></figure>"
+        f"<figcaption>{escape(caption)}</figcaption></figure>"
     )
 
     vs_label = f"{region_a['name']} vs {region_b['name']}"
     vs_trail = crumbs.region_vs_trail(vs_label, canonical)
+    eyebrow = _rt("region_vs.eyebrow") or "Сравнение регионов России"
+    intro = _rt("region_vs.intro") or (
+        "Официальные данные Росстата по двум субъектам РФ: население, заработная плата, безработица, "
+        "валовой региональный продукт, инвестиции, цены и доходы. По каждому показателю — значения за "
+        "последний доступный год и вывод, где значение выше."
+    )
+    table_h2 = _rt("region_vs.table_h2") or "Сводная таблица"
+    profiles_h2 = _rt("region_vs.profiles_h2") or "Профили регионов"
+    profiles_p = _rt(
+        "region_vs.profiles_p",
+        href_a=escape(paths.region(canon_a)),
+        href_b=escape(paths.region(canon_b)),
+        region_a=escape(region_a["name"]),
+        region_b=escape(region_b["name"]),
+    ) or (
+        f'Все показатели каждого региона: <a href="{escape(paths.region(canon_a))}">{escape(region_a["name"])}</a>, '
+        f'<a href="{escape(paths.region(canon_b))}">{escape(region_b["name"])}</a>. '
+        f'Интерактивное сравнение любых рядов — в разделе <a href="/compare">«Сравнение»</a>.'
+    )
     body = f"""<div class="seo-page">
 {_breadcrumbs_nav(vs_trail)}
-<p class="seo-eyebrow">Сравнение регионов России</p>
-<h1>{escape(region_a['name'])} и {escape(region_b['name'])}: сравнение по ключевым показателям</h1>
-<p>Официальные данные Росстата по двум субъектам РФ: население, заработная плата, безработица,
-валовой региональный продукт, инвестиции, цены и доходы. По каждому показателю — значения за
-последний доступный год и вывод, где значение выше.</p>
+<p class="seo-eyebrow">{escape(eyebrow)}</p>
+<h1>{escape(h1)}</h1>
+<p>{escape(intro)}</p>
 {figure_html}
-<section class="seo-section"><h2>Сводная таблица</h2>{compare_table}</section>
+<section class="seo-section"><h2>{escape(table_h2)}</h2>{compare_table}</section>
 {''.join(sections)}
-<section class="seo-section"><h2>Профили регионов</h2>
-<p>Все показатели каждого региона: <a href="{escape(paths.region(canon_a))}">{escape(region_a['name'])}</a>,
-<a href="{escape(paths.region(canon_b))}">{escape(region_b['name'])}</a>.
-Интерактивное сравнение любых рядов — в разделе <a href="/compare">«Сравнение»</a>.</p></section>
+<section class="seo-section"><h2>{escape(profiles_h2)}</h2>
+<p>{profiles_p}</p></section>
 </div>"""
+
+    from app.services.locale import in_language
 
     json_ld = [
         _breadcrumbs(vs_trail),
         {
             "@context": "https://schema.org",
             "@type": "Dataset",
-            "name": f"Сравнение регионов: {region_a['name']} и {region_b['name']}",
+            "name": _rt(
+                "region_vs.jsonld_name",
+                region_a=region_a["name"],
+                region_b=region_b["name"],
+            ) or f"Сравнение регионов: {region_a['name']} и {region_b['name']}",
             "description": desc,
-            "url": f"{DOMAIN}{canonical}",
-            "inLanguage": "ru-RU",
-            "creator": {"@type": "Organization", "name": "Росстат"},
+            "url": _absolute(canonical),
+            "inLanguage": in_language(),
+            "creator": {
+                "@type": "Organization",
+                "name": "Rosstat" if _rt("region_vs.intro") else "Росстат",
+            },
             "spatialCoverage": f"{region_a['name']}; {region_b['name']}",
-            "image": f"{DOMAIN}{og_path}",
+            "image": _absolute(og_path),
         },
         {
             "@context": "https://schema.org",
             "@type": "ImageObject",
-            "contentUrl": f"{DOMAIN}{og_path}",
-            "url": f"{DOMAIN}{og_path}",
-            "name": f"{region_a['name']} и {region_b['name']} — сравнение регионов",
+            "contentUrl": _absolute(og_path),
+            "url": _absolute(og_path),
+            "name": _rt(
+                "region_vs.image_name",
+                region_a=region_a["name"],
+                region_b=region_b["name"],
+            ) or f"{region_a['name']} и {region_b['name']} — сравнение регионов",
             "description": vs_alt,
             "representativeOfPage": True,
             "width": 1200,
@@ -171,10 +251,14 @@ async def render_region_vs_html(
         canonical_path=canonical,
         body=body,
         json_ld=json_ld,
-        keywords=(
+        keywords=_rt(
+            "region_vs.keywords",
+            region_a=region_a["name"],
+            region_b=region_b["name"],
+        ) or (
             f"{region_a['name']} или {region_b['name']}, сравнение {region_a['name']} {region_b['name']}, "
             f"{region_a['name']} {region_b['name']} зарплата, {region_a['name']} {region_b['name']} уровень жизни"
         ),
-        og_image=f"{DOMAIN}{og_path}",
+        og_image=_absolute(og_path),
     )
     return 200, html

@@ -12,12 +12,15 @@ import {
   fetchDashboardSparklines,
   fetchDemographicsStructure,
 } from './api';
+import { useLocale } from '../i18n';
 
 export function useIndicators(options = {}) {
+  const { locale } = useLocale();
   const { category, includeInactive, includeUnlisted, enabled = true } = options;
   return useQuery({
     queryKey: [
       'indicators',
+      locale,
       category ?? 'all',
       includeInactive ? 'with_inactive' : 'active_only',
       includeUnlisted ? 'with_unlisted' : 'listed_only',
@@ -30,8 +33,9 @@ export function useIndicators(options = {}) {
 }
 
 export function useIndicator(code) {
+  const { locale } = useLocale();
   return useQuery({
-    queryKey: ['indicator', code],
+    queryKey: ['indicator', code, locale],
     queryFn: ({ signal }) => fetchIndicator(code, { signal }),
     enabled: !!code,
     staleTime: 5 * 60 * 1000,

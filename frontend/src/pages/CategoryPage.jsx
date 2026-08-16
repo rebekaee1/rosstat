@@ -15,6 +15,8 @@ import {
   breadcrumbJsonLd,
   russiaCategoryTrail,
 } from '../lib/breadcrumbs';
+import { getCategorySeo } from '../lib/pageMeta';
+import { useLocale } from '../i18n';
 import {
   demographicsPath,
   russiaCategoryPath,
@@ -31,7 +33,9 @@ const CATEGORY_FEATURES = {
 
 export default function CategoryPage() {
   const { slug } = useParams();
+  const { locale } = useLocale();
   const cat = getCategoryBySlug(slug);
+  const catSeo = getCategorySeo(slug, locale);
 
   const { data: indicators, isLoading, isError, refetch, isFetching } = useIndicators({
     category: cat?.apiCategory ?? undefined,
@@ -39,9 +43,9 @@ export default function CategoryPage() {
     enabled: !!cat?.apiCategory,
   });
 
-  useDocumentMeta(cat ? {
-    title: cat.seoTitle,
-    description: cat.seoDescription,
+  useDocumentMeta(cat && catSeo ? {
+    title: catSeo.title,
+    description: catSeo.description,
     path: russiaCategoryPath(slug),
   } : null);
 
@@ -118,7 +122,9 @@ export default function CategoryPage() {
     );
   }
 
-  const allIndicators = (indicators ?? []).filter((i) => i.category === cat.apiCategory);
+  const allIndicators = (indicators ?? []).filter(
+    (i) => (i.category_ru || i.category) === cat.apiCategory,
+  );
   const filtered = allIndicators.filter(isIndicatorListed);
 
   return (

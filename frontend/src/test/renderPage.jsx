@@ -7,6 +7,7 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { vi } from 'vitest';
 import api from '../lib/api';
 import { AuthProvider } from '../context/AuthProvider';
+import { LocaleProvider } from '../i18n';
 
 export function mockApiGet(routes) {
   return vi.spyOn(api, 'get').mockImplementation((url) => {
@@ -28,13 +29,15 @@ export function renderPage(ui, { path = '/', route = '/' } = {}) {
   });
   return render(
     <QueryClientProvider client={qc}>
-      <AuthProvider>
-        <MemoryRouter initialEntries={[route]}>
-          <Routes>
-            <Route path={path} element={ui} />
-          </Routes>
-        </MemoryRouter>
-      </AuthProvider>
+      <LocaleProvider>
+        <AuthProvider>
+          <MemoryRouter initialEntries={[route]}>
+            <Routes>
+              <Route path={path} element={ui} />
+            </Routes>
+          </MemoryRouter>
+        </AuthProvider>
+      </LocaleProvider>
     </QueryClientProvider>,
   );
 }

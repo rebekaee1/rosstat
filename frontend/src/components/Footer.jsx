@@ -13,6 +13,7 @@ import {
   russiaCategoryPath,
   worldHubPath,
 } from '../lib/sitePaths';
+import { useT, useLocale } from '../i18n';
 
 const footLink = cn(
   FOCUS_RING,
@@ -20,6 +21,10 @@ const footLink = cn(
 );
 
 export default function Footer() {
+  const t = useT();
+  const { locale } = useLocale();
+  const categoryLabel = (c) => (locale === 'en' && c.nameEn ? c.nameEn : c.name);
+
   return (
     <footer className="mt-auto bg-obsidian-light rounded-t-[3rem] border-t border-border-subtle">
       <div className="max-w-6xl mx-auto px-6 py-10">
@@ -30,28 +35,27 @@ export default function Footer() {
               <span className="text-base font-bold">Forecast Economy</span>
             </div>
             <p className="text-sm text-text-secondary leading-relaxed max-w-xs">
-              Бесплатная аналитическая платформа: экономика России, регионы и доступная статистика
-              стран. Официальные источники, графики и прогнозы.
+              {t('footer.tagline')}
             </p>
           </div>
 
           <div>
             <h4 className="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-medium">
               <Link to={russiaCategoriesPath()} className={footLink}>
-                Категории
+                {t('footer.categories')}
               </Link>
             </h4>
             <ul className="space-y-2 text-sm text-text-secondary">
               {CATEGORIES.filter((c) => c.apiCategory).map((c) => (
                 <li key={c.slug}>
                   <Link to={russiaCategoryPath(c.slug)} className={footLink}>
-                    {c.name}
+                    {categoryLabel(c)}
                   </Link>
                 </li>
               ))}
               {CATEGORIES.filter((c) => !c.apiCategory).map((c) => (
                 <li key={c.slug} className="text-text-tertiary/80">
-                  {c.name} <span className="text-[10px] uppercase">скоро</span>
+                  {categoryLabel(c)} <span className="text-[10px] uppercase">{t('common.soon')}</span>
                 </li>
               ))}
             </ul>
@@ -59,27 +63,27 @@ export default function Footer() {
 
           <div>
             <h4 className="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-medium">
-              Источники
+              {t('footer.sources')}
             </h4>
             <ul className="space-y-2 text-sm text-text-secondary">
               <li>
                 <a href="https://rosstat.gov.ru" target="_blank" rel="noopener noreferrer" className={footLink} onClick={() => trackOutbound('https://rosstat.gov.ru')}>
-                  Росстат
+                  {t('footer.rosstat')}
                 </a>
               </li>
               <li>
                 <a href="https://cbr.ru" target="_blank" rel="noopener noreferrer" className={footLink} onClick={() => trackOutbound('https://cbr.ru')}>
-                  Банк России
+                  {t('footer.cbr')}
                 </a>
               </li>
               <li>
                 <a href="https://minfin.gov.ru" target="_blank" rel="noopener noreferrer" className={footLink} onClick={() => trackOutbound('https://minfin.gov.ru')}>
-                  Минфин России
+                  {t('footer.minfin')}
                 </a>
               </li>
               <li>
                 <a href="https://ec.europa.eu/eurostat" target="_blank" rel="noopener noreferrer" className={footLink} onClick={() => trackOutbound('https://ec.europa.eu/eurostat')}>
-                  Евростат
+                  {t('footer.eurostat')}
                 </a>
               </li>
             </ul>
@@ -87,47 +91,47 @@ export default function Footer() {
 
           <div>
             <h4 className="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-medium">
-              Инструменты
+              {t('footer.tools')}
             </h4>
             <ul className="space-y-2 text-sm text-text-secondary">
               <li>
                 <Link to={worldHubPath()} className={footLink}>
-                  Мировая экономика
+                  {t('footer.world')}
                 </Link>
               </li>
               <li>
                 <Link to={demographicsPath()} className={footLink}>
-                  Демография
+                  {t('footer.demographics')}
                 </Link>
               </li>
               <li>
                 <Link to={regionHubPath()} className={footLink}>
-                  Регионы России
+                  {t('footer.regions')}
                 </Link>
               </li>
               <li>
                 <Link to={calendarPath()} className={footLink}>
-                  Календарь публикаций
+                  {t('footer.calendar')}
                 </Link>
               </li>
               <li>
                 <Link to="/compare" className={footLink}>
-                  Сравнение индикаторов
+                  {t('footer.compare')}
                 </Link>
               </li>
               <li>
                 <Link to="/calculator" className={footLink}>
-                  Калькулятор инфляции
+                  {t('footer.calcInflation')}
                 </Link>
               </li>
               <li>
                 <Link to="/calculator/mortgage" className={footLink}>
-                  Ипотечный калькулятор
+                  {t('footer.calcMortgage')}
                 </Link>
               </li>
               <li>
                 <Link to="/calculator/compound" className={footLink}>
-                  Сложные проценты
+                  {t('footer.calcCompound')}
                 </Link>
               </li>
             </ul>
@@ -135,32 +139,32 @@ export default function Footer() {
 
           <div>
             <h4 className="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-medium">
-              Информация
+              {t('footer.info')}
             </h4>
             <ul className="space-y-2 text-sm text-text-secondary">
               <li>
                 <Link to="/about" className={footLink}>
-                  О проекте
+                  {t('footer.about')}
                 </Link>
               </li>
               <li>
                 <Link to="/methodology" className={footLink}>
-                  Методология прогнозов
+                  {t('footer.methodology')}
                 </Link>
               </li>
               <li>
                 <Link to="/privacy" className={footLink}>
-                  Политика конфиденциальности
+                  {t('footer.privacy')}
                 </Link>
               </li>
               <li>
                 <Link to="/terms" className={footLink}>
-                  Пользовательское соглашение
+                  {t('footer.terms')}
                 </Link>
               </li>
               <li>
                 <button type="button" onClick={openConsentSettings} className={cn(footLink, 'text-left')}>
-                  Настройки cookie
+                  {t('footer.cookies')}
                 </button>
               </li>
               <li>
@@ -176,16 +180,16 @@ export default function Footer() {
           <div className="flex items-center gap-2">
             <Activity className="w-3 h-3 text-positive pulse-dot" />
             <span className="text-xs font-mono text-text-tertiary">
-              Система работает
+              {t('footer.systemOk')}
             </span>
           </div>
 
           <div className="text-xs text-text-tertiary text-center md:text-right max-w-lg space-y-1">
             <p>
-              &copy; {new Date().getFullYear()} Forecast Economy. Материалы носят информационный характер и не являются инвестиционной рекомендацией.
+              &copy; {new Date().getFullYear()} Forecast Economy. {t('footer.disclaimer')}
             </p>
             <p>
-              Оператор персональных данных: ООО «ИИМПАКТ ПЛЮС», ИНН 9705243471, ОГРН 1257700255196. 123557, г. Москва, ул. Пресненский Вал, д. 21, помещ. 172
+              {t('footer.operator')}
             </p>
           </div>
         </div>

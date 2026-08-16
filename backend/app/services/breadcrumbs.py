@@ -11,33 +11,39 @@ from app.services import site_paths as paths
 Crumb = tuple[str, str]  # (path, name)
 
 
+def _en() -> bool:
+    from app.services.locale import get_locale
+
+    return get_locale() == "en"
+
+
 def home() -> Crumb:
-    return ("/", "Главная")
+    return ("/", "Home" if _en() else "Главная")
 
 
 def russia() -> Crumb:
-    return (paths.russia_home(), "Россия")
+    return (paths.russia_home(), "Russia" if _en() else "Россия")
 
 
 def russia_categories() -> Crumb:
-    return (paths.russia_categories(), "Категории")
+    return (paths.russia_categories(), "Categories" if _en() else "Категории")
 
 
 def regions() -> Crumb:
-    return (paths.region_hub(), "Регионы")
+    return (paths.region_hub(), "Regions" if _en() else "Регионы")
 
 
 def region_ratings() -> Crumb:
-    return (paths.region_rating_hub(), "Рейтинг")
+    return (paths.region_rating_hub(), "Rankings" if _en() else "Рейтинг")
 
 
 def countries() -> Crumb:
     """Хаб межстрановой статистики — публичная подпись «Страны»."""
-    return (paths.world_hub(), "Страны")
+    return (paths.world_hub(), "Countries" if _en() else "Страны")
 
 
 def world_ratings() -> Crumb:
-    return (paths.world_rating(), "Рейтинг")
+    return (paths.world_rating(), "Rankings" if _en() else "Рейтинг")
 
 
 def trail(*items: Crumb) -> list[Crumb]:
@@ -126,23 +132,39 @@ def region_vs_trail(label: str, vs_path: str) -> list[Crumb]:
 
 
 def today_trail() -> list[Crumb]:
-    return trail(home(), russia(), (paths.today(), "Сегодня"))
+    return trail(home(), russia(), (paths.today(), "Today" if _en() else "Сегодня"))
 
 
 def today_indicator_trail(label: str, path: str) -> list[Crumb]:
-    return trail(home(), russia(), (paths.today(), "Сегодня"), (path, label))
+    return trail(
+        home(),
+        russia(),
+        (paths.today(), "Today" if _en() else "Сегодня"),
+        (path, label),
+    )
 
 
 def calendar_trail() -> list[Crumb]:
-    return trail(home(), russia(), (paths.calendar(), "Календарь"))
+    return trail(
+        home(), russia(), (paths.calendar(), "Calendar" if _en() else "Календарь")
+    )
 
 
 def calendar_month_trail(label: str, month_path: str) -> list[Crumb]:
-    return trail(home(), russia(), (paths.calendar(), "Календарь"), (month_path, label))
+    return trail(
+        home(),
+        russia(),
+        (paths.calendar(), "Calendar" if _en() else "Календарь"),
+        (month_path, label),
+    )
 
 
 def demographics_trail() -> list[Crumb]:
-    return trail(home(), russia(), (paths.demographics(), "Демография"))
+    return trail(
+        home(),
+        russia(),
+        (paths.demographics(), "Demographics" if _en() else "Демография"),
+    )
 
 
 def world_home_trail() -> list[Crumb]:

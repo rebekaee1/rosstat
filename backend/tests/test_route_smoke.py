@@ -153,6 +153,31 @@ def test_indicators_list_category_filter(route_client):
     ).json() == []
 
 
+def test_indicators_category_localized_en(route_client):
+    """X-FE-Locale: en → display category EN; category_ru keeps DB key."""
+    listed = route_client.get(
+        "/api/v1/indicators",
+        headers={"X-FE-Locale": "en"},
+    )
+    assert listed.status_code == 200
+    cpi_list = next(x for x in listed.json() if x["code"] == "cpi")
+    assert cpi_list["category"] == "Prices and inflation"
+    assert cpi_list["category_ru"] == "Цены"
+
+    detail = route_client.get(
+        "/api/v1/indicators/cpi",
+        headers={"X-FE-Locale": "en"},
+    )
+    assert detail.status_code == 200
+    body = detail.json()
+    assert body["category"] == "Prices and inflation"
+    assert body["category_ru"] == "Цены"
+
+    ru = route_client.get("/api/v1/indicators/cpi")
+    assert ru.json()["category"] == "Цены"
+    assert ru.json()["category_ru"] == "Цены"
+
+
 def test_indicator_detail_and_errors(route_client):
     r = route_client.get("/api/v1/indicators/cpi")
     assert r.status_code == 200
@@ -196,6 +221,57 @@ def test_calendar_upcoming_and_ical(route_client):
     assert ical.status_code == 200
     assert "BEGIN:VCALENDAR" in ical.text
     assert "не публиковать" not in ical.text
+
+
+def test_calendar_cache_scoped_by_locale(route_client, auth_env):
+    """RU and EN must not share one Redis hit — titles come from event_public_title."""
+    import asyncio
+
+    from sqlalchemy import select
+
+    async def _set_title_en():
+        async with auth_env["session_maker"]() as db:
+            ev = (
+                await db.execute(
+                    select(EconomicEvent).where(EconomicEvent.title == "Публикация ИПЦ")
+                )
+            ).scalar_one()
+            ev.title_en = "CPI release"
+            await db.commit()
+
+    loop = asyncio.new_event_loop()
+    try:
+        loop.run_until_complete(_set_title_en())
+    finally:
+        loop.close()
+
+    params = {
+        "from": str(date.today() - timedelta(days=1)),
+        "to": str(date.today() + timedelta(days=30)),
+    }
+    ru = route_client.get("/api/v1/calendar", params=params, headers={"X-FE-Locale": "ru"})
+    en = route_client.get("/api/v1/calendar", params=params, headers={"X-FE-Locale": "en"})
+    assert ru.status_code == 200 and en.status_code == 200
+
+    ru_titles = {e["title"] for e in ru.json()["events"]}
+    en_titles = {e["title"] for e in en.json()["events"]}
+    assert "Публикация ИПЦ" in ru_titles
+    assert "CPI release" in en_titles
+    assert "Публикация ИПЦ" not in en_titles
+
+    up_ru = route_client.get(
+        "/api/v1/calendar/upcoming", headers={"X-FE-Locale": "ru"}
+    ).json()
+    up_en = route_client.get(
+        "/api/v1/calendar/upcoming", headers={"X-FE-Locale": "en"}
+    ).json()
+    assert up_ru["events"][0]["title"] == "Публикация ИПЦ"
+    assert up_en["events"][0]["title"] == "CPI release"
+
+    # Same locale second hit still locale-correct (cache hit, not cross-locale).
+    en2 = route_client.get("/api/v1/calendar", params=params, headers={"X-FE-Locale": "en"})
+    assert "CPI release" in {e["title"] for e in en2.json()["events"]}
+    assert "Публикация ИПЦ" not in {e["title"] for e in en2.json()["events"]}
 
 
 # ── Т-5: embed SVG (живут на чужих сайтах) ───────────────────────────

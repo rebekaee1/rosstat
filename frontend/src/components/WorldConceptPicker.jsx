@@ -2,9 +2,11 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronDown, Search } from 'lucide-react';
 import {
-  HOME_COUNTRY_CONCEPT_SHORT,
+  homeConceptLabel,
   WORLD_CONCEPT_GROUPS,
 } from '../lib/homeWorkbench';
+import { useT } from '../i18n';
+import useSearchTracking from '../lib/useSearchTracking';
 
 /** Выше порога — свёрнутый триггер + панель с поиском (рост до 20+). */
 const COLLAPSE_AT = 12;
@@ -18,10 +20,8 @@ function chipClass(active) {
   ].join(' ');
 }
 
-function labelFor(slug, conceptsBySlug) {
-  return HOME_COUNTRY_CONCEPT_SHORT[slug]
-    || conceptsBySlug.get(slug)?.name
-    || slug;
+function labelFor(slug, conceptsBySlug, t) {
+  return homeConceptLabel(slug, t, conceptsBySlug.get(slug)?.name || slug);
 }
 
 function normalize(text) {
@@ -33,27 +33,28 @@ function normalize(text) {
     .trim();
 }
 
-function buildGroups(available, conceptsBySlug, q) {
+function buildGroups(available, conceptsBySlug, q, t) {
   const result = [];
   const used = new Set();
   for (const group of WORLD_CONCEPT_GROUPS) {
+    const groupLabel = t(group.labelKey);
     const slugs = group.slugs.filter((slug) => {
       if (!available.has(slug)) return false;
       if (!q) return true;
-      const hay = normalize(`${labelFor(slug, conceptsBySlug)} ${slug} ${group.label}`);
+      const hay = normalize(`${labelFor(slug, conceptsBySlug, t)} ${slug} ${groupLabel}`);
       return hay.includes(q);
     });
     if (!slugs.length) continue;
     slugs.forEach((slug) => used.add(slug));
-    result.push({ ...group, slugs });
+    result.push({ ...group, label: groupLabel, slugs });
   }
   const orphan = [...available].filter((slug) => {
     if (used.has(slug)) return false;
     if (!q) return true;
-    return normalize(`${labelFor(slug, conceptsBySlug)} ${slug}`).includes(q);
+    return normalize(`${labelFor(slug, conceptsBySlug, t)} ${slug}`).includes(q);
   });
   if (orphan.length) {
-    result.push({ id: 'other', label: 'Другие', slugs: orphan });
+    result.push({ id: 'other', label: t('home.conceptGroup.other'), slugs: orphan });
   }
   return result;
 }
@@ -98,8 +99,10 @@ export default function WorldConceptPicker({
   onChange,
   mode = 'button',
   linkForSlug = null,
-  label = 'Показатель',
+  label,
 }) {
+  const t = useT();
+  const sectionLabel = label || t('home.map.metricFallback');
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const rootRef = useRef(null);
@@ -114,10 +117,20 @@ export default function WorldConceptPicker({
   const collapsed = available.size > COLLAPSE_AT;
   const q = normalize(query);
   const groups = useMemo(
-    () => buildGroups(available, conceptsBySlug, q),
-    [available, conceptsBySlug, q],
+    () => buildGroups(available, conceptsBySlug, q, t),
+    [available, conceptsBySlug, q, t],
   );
-  const activeLabel = labelFor(value, conceptsBySlug);
+  const matchCount = useMemo(
+    () => groups.reduce((n, group) => n + group.slugs.length, 0),
+    [groups],
+  );
+  // Поле видимо всегда в развёрнутом режиме; в свёртке — только при open.
+  useSearchTracking(
+    'world-concept-picker',
+    collapsed && !open ? '' : query,
+    matchCount,
+  );
+  const activeLabel = labelFor(value, conceptsBySlug, t);
 
   useEffect(() => {
     if (!open) return undefined;
@@ -146,7 +159,7 @@ export default function WorldConceptPicker({
               key={slug}
               slug={slug}
               active={slug === value}
-              text={labelFor(slug, conceptsBySlug)}
+              text={labelFor(slug, conceptsBySlug, t)}
               mode={mode}
               linkForSlug={linkForSlug}
               onChange={onChange}
@@ -156,14 +169,14 @@ export default function WorldConceptPicker({
         </span>
       ))}
       {groups.length === 0 && (
-        <span className="text-xs text-text-tertiary">Ничего не найдено</span>
+        <span className="text-xs text-text-tertiary">{t('common.noData')}</span>
       )}
     </div>
   );
 
   const searchField = (
     <label className="relative block min-w-0">
-      <span className="sr-only">Поиск показателя</span>
+      <span className="sr-only">{t('common.search')}</span>
       <Search
         size={12}
         className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-text-tertiary"
@@ -172,7 +185,7 @@ export default function WorldConceptPicker({
         type="search"
         value={query}
         onChange={(event) => setQuery(event.target.value)}
-        placeholder="Найти"
+        placeholder={t('common.search')}
         className="h-8 w-full max-w-[11rem] rounded-lg border border-border-subtle bg-obsidian-light py-0 pl-7 pr-2 text-xs text-text-primary outline-none focus:border-border-champagne sm:max-w-[13rem]"
       />
     </label>
@@ -183,7 +196,7 @@ export default function WorldConceptPicker({
       <div ref={rootRef} className="relative min-w-0">
         <div className="mb-1.5 flex flex-wrap items-center justify-between gap-2">
           <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-            {label}
+            {sectionLabel}
           </p>
         </div>
         <button
@@ -213,7 +226,7 @@ export default function WorldConceptPicker({
     <div ref={rootRef} className="min-w-0">
       <div className="mb-1.5 flex flex-wrap items-center gap-x-3 gap-y-1.5">
         <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-          {label}
+          {sectionLabel}
         </p>
         {searchField}
       </div>

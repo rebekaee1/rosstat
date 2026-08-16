@@ -48,6 +48,7 @@ RESERVED_FIRST_SEGMENTS: frozenset[str] = frozenset({
     "fonts",
     "feed.xml",
     "robots.txt",
+    "llms.txt",
     "consent.js",
     "sitemap.xml",
     # Легаси-корни до path-cut (остаются зарезервированными, чтобы слаг

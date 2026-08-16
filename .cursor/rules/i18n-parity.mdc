@@ -1,0 +1,43 @@
+# Языковая витрина: parity RU ↔ EN (каркас)
+
+Директива владельца (2026-08-16): целевой сплит — apex `forecasteconomy.com` = en,
+`ru.forecasteconomy.com` = ru; пути path-identical (ADR-0013 §F).
+**До cutover** (`RUSTATS_APEX_LOCALE_EN` / `VITE_APEX_LOCALE_EN` = true) production
+apex остаётся **ru** — иначе деплой i18n переключит весь `.com` на EN и убьёт Яндекс.
+Localhost и не-apex хосты = **ru**; EN — через `en.*`, header или `?preview_locale=`.
+
+## Разделение ролей
+
+| Зона | Кто |
+|------|-----|
+| Locale resolver, LocaleProvider, SSR `lang`/`og:locale`, API `name`/`name_en`, parity-guard | каркас-агент |
+| Тексты UI / SEO / регионы / seed | контент-агенты |
+
+**Не** править копирайт Navbar/Footer/страниц в каркасе — только словари и хуки.
+
+## Файлы контента (заполняют другие агенты)
+
+| Файл | Содержимое |
+|------|------------|
+| `frontend/src/i18n/messages.ru.js` | UI chrome RU |
+| `frontend/src/i18n/messages.en.js` | UI chrome EN (те же ключи) |
+| `backend/app/data/i18n/seo_en.py` | `PAGE_META_EN`, `CATEGORY_META_EN`, world/regional templates |
+| `backend/app/data/i18n/regions_en.py` | `REGIONS_EN` slug→name |
+| `backend/app/data/i18n/region_indicators_en.py` | региональные name/unit/note EN |
+| `backend/app/data/i18n/indicator_copy_en.py` | макро `INDICATOR_COPY_EN` |
+| `backend/app/data/i18n/glossary_en.py` | термины (расширять осторожно) |
+
+Загрузчик UI: `frontend/src/i18n/messages.js`. Хуки SSR: `app.services.seo_i18n`.
+
+## Правило parity
+
+Любой новый user-visible RU ключ/slug обязан иметь EN-близнец в том же PR.
+Guard: `backend/tests/test_i18n_parity.py`, `frontend/src/i18n/messages.parity.test.js`
+(ru ⊆ en для словарей; ключи PAGE_META ⊆ PAGE_META_EN когда EN-словарь непустой).
+
+## Locale = host (не ?lang=)
+
+- `backend/app/services/locale.py`, `frontend/src/i18n/locale.js`
+- EN: `X-FE-Locale: en` и/или хост `en.*`; apex→en только при `APEX_LOCALE_EN=true`
+- Vite-превью: `?preview_locale=en` — noindex, не канон
+- hreflang только после cutover-флага и если путь в `en_catalog.has_en_path`

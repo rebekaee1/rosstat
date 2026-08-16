@@ -70,16 +70,16 @@ describe('public product claims', () => {
   });
 
   it('RegisterNudge не обещает «снять лимит» гостю', () => {
-    const text = read('frontend/src/components/RegisterNudge.jsx');
+    const text = read('frontend/src/i18n/messages.ru.js');
     expect(text).toMatch(/Просмотр графиков и таблиц бесплатен без аккаунта/);
     expect(text).toMatch(/открывает скачивание/);
     expect(text).not.toMatch(/снимает лимит/);
   });
 
   it('Footer и llms позиционируют РФ + регионы + доступную статистику стран', () => {
-    const footer = read('frontend/src/components/Footer.jsx');
-    expect(footer).toMatch(/доступная статистика\s+стран/);
-    expect(footer).toMatch(/России/);
+    const footerCopy = read('frontend/src/i18n/messages.ru.js');
+    expect(footerCopy).toMatch(/доступная статистика\s+стран/);
+    expect(footerCopy).toMatch(/России/);
 
     const llms = read('frontend/public/llms.txt');
     expect(llms).toMatch(/доступная статистика (отдельных )?стран/i);

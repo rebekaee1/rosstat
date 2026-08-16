@@ -10,6 +10,10 @@ class Settings(BaseSettings):
     # Публичный origin сайта (canonical, SSR, sitemap, robots Host, IndexNow, CORS).
     # Единая точка истины для домена; дефолт = текущий прод.
     public_base_url: str = "https://forecasteconomy.com"
+    # Языковой сплит (ADR-0013 §F): apex отдаёт EN только когда флаг включён
+    # (ru. уже канон RU, EN-волна живая). Пока False — forecasteconomy.com = ru,
+    # иначе деплой i18n убьёт индекс Яндекса (весь .com станет английским).
+    apex_locale_en: bool = False
 
     # Database
     database_url: str = "postgresql+asyncpg://rustats:rustats@localhost:5432/rustats"
@@ -234,7 +238,12 @@ class Settings(BaseSettings):
     @property
     def webmaster_host_id(self) -> str:
         """host_id Яндекс.Вебмастера: схема через одно двоеточие + :443."""
-        return f"https:{self.public_host}:443"
+        return self.webmaster_host_id_for(self.public_host)
+
+    def webmaster_host_id_for(self, host: str) -> str:
+        """host_id Вебмастера для произвольного хоста (apex или ``ru.``)."""
+        h = (host or "").split(":", 1)[0].strip().lower().removeprefix("www.")
+        return f"https:{h}:443"
 
 
 settings = Settings()

@@ -12,9 +12,12 @@ import { track, events } from './track';
  * Debounce отсекает сырые keystroke'и: фиксируем то, что человек реально
  * искал, а не каждую букву.
  *
- * context — короткий идентификатор поля: 'global' | 'compare-macro' |
- * 'compare-region' | 'compare-region-indicator' | 'regions-list' |
- * 'map-metric' | 'region-profile' | 'table'.
+ * context — короткий идентификатор поля: 'global' | 'compare-combo' |
+ * 'compare-macro' | 'compare-region' | 'compare-region-indicator' |
+ * 'compare-country' | 'compare-world-concept' | 'regions-list' |
+ * 'map-metric' | 'region-profile' | 'world-countries' |
+ * 'world-country-indicators' | 'world-concept-picker' |
+ * 'world-chart-countries' | 'embed-builder'.
  */
 export default function useSearchTracking(context, query, resultsCount, { minLen = 2, delay = 900 } = {}) {
   useEffect(() => {

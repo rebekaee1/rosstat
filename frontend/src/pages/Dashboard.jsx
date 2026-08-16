@@ -9,8 +9,11 @@ import ApiRetryBanner from '../components/ApiRetryBanner';
 import HomeHero from '../components/home/HomeHero';
 import HomeWorkbench from '../components/home/HomeWorkbench';
 import HomeTools from '../components/home/HomeTools';
+import { useLocale, useT } from '../i18n';
 
 export default function Dashboard() {
+  const t = useT();
+  const { locale } = useLocale();
   const { data: indicators, isLoading, isError, refetch, isFetching } = useIndicators();
 
   const counts = useMemo(() => {
@@ -21,7 +24,7 @@ export default function Dashboard() {
     return m;
   }, [indicators]);
 
-  const homeSeo = getPageSeo('home');
+  const homeSeo = getPageSeo('home', locale);
   useDocumentMeta({
     title: homeSeo.title,
     description: homeSeo.description,
@@ -51,13 +54,13 @@ export default function Dashboard() {
         <div className="mb-6 flex flex-wrap items-end gap-x-4 gap-y-2">
           <div className="min-w-0">
             <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">
-              Макроэкономика РФ
+              {t('home.categories.eyebrow')}
             </div>
             <h2
               id="russia-categories-title"
               className="mt-1 text-xs font-semibold uppercase tracking-[0.2em] text-text-secondary"
             >
-              Категории России
+              {t('home.categories.title')}
             </h2>
           </div>
           <div className="mb-1.5 h-px min-w-[4rem] flex-1 bg-border-subtle" />
@@ -69,8 +72,8 @@ export default function Dashboard() {
             onRetry={() => refetch()}
             isFetching={isFetching}
           >
-            <span className="font-semibold">Данные о показателях сейчас не подгрузились.</span>{' '}
-            Разделы ниже по-прежнему открываются; счётчики обновятся, когда соединение с сервером восстановится.
+            <span className="font-semibold">{t('home.categories.errorTitle')}</span>{' '}
+            {t('home.categories.errorBody')}
           </ApiRetryBanner>
         )}
 

@@ -23,6 +23,7 @@ from app.security import lockout
 from app.security.auth import (
     get_current_user, require_csrf, set_session_cookies, clear_session_cookies,
 )
+from app.services.api_i18n import api_detail
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -43,16 +44,19 @@ class RegisterIn(BaseModel):
     def _email_ok(cls, v: str) -> str:
         v = (v or "").strip()
         if not _EMAIL_RE.match(v):
-            raise ValueError("Некорректный email")
+            raise ValueError(api_detail("Некорректный email", "Invalid email"))
         return v
 
     @field_validator("password")
     @classmethod
     def _password_ok(cls, v: str) -> str:
         if v is None or len(v) < 8:
-            raise ValueError("Пароль не короче 8 символов")
+            raise ValueError(api_detail(
+                "Пароль не короче 8 символов",
+                "Password must be at least 8 characters",
+            ))
         if len(v) > 256:
-            raise ValueError("Слишком длинный пароль")
+            raise ValueError(api_detail("Слишком длинный пароль", "Password is too long"))
         return v
 
 
@@ -105,11 +109,23 @@ async def _serialize_with_admin(db: AsyncSession, user: User) -> dict:
 @router.post("/register", status_code=201)
 async def register(body: RegisterIn, request: Request, response: Response, db: AsyncSession = Depends(get_db)):
     if not body.consent:
-        raise HTTPException(status_code=422, detail="Требуется согласие на обработку персональных данных")
+        raise HTTPException(
+            status_code=422,
+            detail=api_detail(
+                "Требуется согласие на обработку персональных данных",
+                "Consent to personal data processing is required",
+            ),
+        )
     try:
         user = await register_email(db, body.email, body.password)
     except EmailAlreadyExists:
-        raise HTTPException(status_code=409, detail="Пользователь с таким email уже существует")
+        raise HTTPException(
+            status_code=409,
+            detail=api_detail(
+                "Пользователь с таким email уже существует",
+                "An account with this email already exists",
+            ),
+        )
     ua = (request.headers.get("user-agent") or "")[:500]
     ip = _client_ip(request)
     db.add(Consent(
@@ -140,13 +156,28 @@ async def login(body: LoginIn, request: Request, response: Response, db: AsyncSe
     ident = normalize_email(body.email)
     ip = _client_ip(request)
     if await lockout.is_locked("login", ident, ip):
-        raise HTTPException(status_code=423, detail="Слишком много попыток. Повторите позже")
+        raise HTTPException(
+            status_code=423,
+            detail=api_detail(
+                "Слишком много попыток. Повторите позже",
+                "Too many attempts. Try again later",
+            ),
+        )
     user = await authenticate_email(db, body.email, body.password)
     if user is None:
         await lockout.record_failure("login", ident, ip)
-        raise HTTPException(status_code=401, detail="Неверный email или пароль")
+        raise HTTPException(
+            status_code=401,
+            detail=api_detail(
+                "Неверный email или пароль",
+                "Invalid email or password",
+            ),
+        )
     if user.status != "active":
-        raise HTTPException(status_code=403, detail="Аккаунт недоступен")
+        raise HTTPException(
+            status_code=403,
+            detail=api_detail("Аккаунт недоступен", "Account unavailable"),
+        )
     await lockout.reset("login", ident, ip)
     await audit(db, user.id, "login", request)
     await db.commit()
@@ -188,9 +219,12 @@ class SetPasswordIn(BaseModel):
     @classmethod
     def _ok(cls, v: str) -> str:
         if v is None or len(v) < 8:
-            raise ValueError("Пароль не короче 8 символов")
+            raise ValueError(api_detail(
+                "Пароль не короче 8 символов",
+                "Password must be at least 8 characters",
+            ))
         if len(v) > 256:
-            raise ValueError("Слишком длинный пароль")
+            raise ValueError(api_detail("Слишком длинный пароль", "Password is too long"))
         return v
 
 
@@ -210,10 +244,16 @@ async def set_password(body: SetPasswordIn, request: Request, user: User = Depen
         )
         email = normalize_email(ident.email) if ident and ident.email else None
     if not email:
-        raise HTTPException(status_code=422, detail="Укажите email")
+        raise HTTPException(
+            status_code=422,
+            detail=api_detail("Укажите email", "Email is required"),
+        )
     taken = await db.scalar(select(EmailCredential).where(EmailCredential.email == email))
     if taken is not None:
-        raise HTTPException(status_code=409, detail="Этот email уже используется")
+        raise HTTPException(
+            status_code=409,
+            detail=api_detail("Этот email уже используется", "This email is already in use"),
+        )
     db.add(EmailCredential(user_id=user.id, email=email, password_hash=hash_password(body.password), email_verified=False))
     await audit(db, user.id, "set_password", request)
     await db.commit()
@@ -230,9 +270,18 @@ async def _login_methods_count(db: AsyncSession, user_id) -> int:
 async def unlink_identity(identity_id: int, request: Request, user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
     ident = await db.get(OAuthIdentity, identity_id)
     if ident is None or ident.user_id != user.id:
-        raise HTTPException(status_code=404, detail="Способ входа не найден")
+        raise HTTPException(
+            status_code=404,
+            detail=api_detail("Способ входа не найден", "Sign-in method not found"),
+        )
     if await _login_methods_count(db, user.id) <= 1:
-        raise HTTPException(status_code=400, detail="Нельзя удалить последний способ входа")
+        raise HTTPException(
+            status_code=400,
+            detail=api_detail(
+                "Нельзя удалить последний способ входа",
+                "Cannot remove the last sign-in method",
+            ),
+        )
     await db.delete(ident)
     await audit(db, user.id, "unlink", request, detail=ident.provider)
     await db.commit()
@@ -259,9 +308,15 @@ class FeedbackIn(BaseModel):
     def _msg_ok(cls, v: str) -> str:
         v = (v or "").strip()
         if len(v) < 5:
-            raise ValueError("Сообщение слишком короткое")
+            raise ValueError(api_detail(
+                "Сообщение слишком короткое",
+                "Message is too short",
+            ))
         if len(v) > 4000:
-            raise ValueError("Сообщение слишком длинное")
+            raise ValueError(api_detail(
+                "Сообщение слишком длинное",
+                "Message is too long",
+            ))
         return v
 
     @field_validator("contact")
@@ -303,7 +358,10 @@ class ProfileIn(BaseModel):
     def _name_ok(cls, v: str | None) -> str | None:
         v = (v or "").strip()
         if len(v) > 120:
-            raise ValueError("Имя не длиннее 120 символов")
+            raise ValueError(api_detail(
+                "Имя не длиннее 120 символов",
+                "Name must be at most 120 characters",
+            ))
         return v or None
 
 

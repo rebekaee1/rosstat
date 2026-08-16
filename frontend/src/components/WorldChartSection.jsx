@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { resolveDateFormat, cn } from '../lib/format';
 import { track, events } from '../lib/track';
+import useSearchTracking from '../lib/useSearchTracking';
 import { useDownloadAccess } from '../lib/useDownloadAccess';
 import { exportNodeToPng } from '../lib/chartImage';
 import IndicatorChart from './IndicatorChart';
@@ -17,6 +18,7 @@ import {
   useWorldCompareCatalog,
 } from '../lib/worldApi';
 import { rebaseWorldComparison } from '../lib/worldComparison';
+import { useLocale, useT } from '../i18n';
 
 const AVERAGE_CONCEPTS = new Set(['hicp-index', 'unemployment-rate', 'budget-balance-gdp']);
 const COMPARISON_COLORS = ['#397C8C', '#7856A8', '#C86B5B', '#4D8A64'];
@@ -27,7 +29,19 @@ function isAbsoluteLevel(unit, modeMeta) {
   return modeMeta?.type === 'level'
     && !normalized.includes('%')
     && !normalized.includes('индекс')
+    && !normalized.includes('index')
     && !normalized.includes('п.п.');
+}
+
+function averageCountryLabel(conceptSlug, locale) {
+  if (conceptSlug === 'hicp-index') {
+    return locale === 'en'
+      ? 'Median across countries with data'
+      : 'Медиана по странам с данными';
+  }
+  return locale === 'en'
+    ? 'Average across countries with data'
+    : 'Среднее по странам с данными';
 }
 
 function ComparisonPicker({
@@ -43,6 +57,7 @@ function ComparisonPicker({
     !query.trim()
     || option.country_name.toLowerCase().includes(query.trim().toLowerCase())
   ));
+  useSearchTracking('world-chart-countries', open ? query : '', filtered.length);
   return (
     <div className="relative min-w-0 flex-1">
       <Search size={14} className="pointer-events-none absolute left-3 top-1/2 z-10 -translate-y-1/2 text-text-tertiary" />
@@ -101,6 +116,7 @@ function ComparisonPicker({
  * исторических данных и по явному переключателю пользователя.
  */
 function DownloadButton({ label, onDownload, blocked, hint }) {
+  const t = useT();
   const handleClick = () => {
     if (blocked) {
       window.dispatchEvent(new CustomEvent('fe:download-limit'));
@@ -108,7 +124,7 @@ function DownloadButton({ label, onDownload, blocked, hint }) {
     }
     onDownload?.();
   };
-  const tooltip = blocked ? 'Скачивание данных — после бесплатной регистрации' : hint;
+  const tooltip = blocked ? t('download.dataBlocked') : hint;
   return (
     <div className="relative group/dl">
       <button
@@ -121,7 +137,7 @@ function DownloadButton({ label, onDownload, blocked, hint }) {
             ? 'border-border-subtle/60 text-text-tertiary/50 cursor-pointer'
             : 'border-border-subtle text-text-tertiary hover:text-champagne hover:border-champagne/30',
         )}
-        title={blocked ? 'Скачивание данных — после бесплатной регистрации' : `Скачать ${label}`}
+        title={blocked ? t('download.dataBlocked') : t('download.downloadLabel', { label })}
       >
         {blocked ? <Lock className="w-3.5 h-3.5" /> : <Download className="w-3.5 h-3.5" />}
         {label}
@@ -136,9 +152,10 @@ function DownloadButton({ label, onDownload, blocked, hint }) {
 }
 
 function ImageButton({ onDownload, authed }) {
+  const t = useT();
   const tooltip = authed
-    ? 'Скачать график картинкой (PNG)'
-    : 'Скачивание графика — после бесплатной регистрации';
+    ? t('download.chartPng')
+    : t('download.chartBlocked');
   return (
     <div className="relative group/img" data-no-export="true">
       <button
@@ -185,6 +202,8 @@ export default function WorldChartSection({
   comparisonPeers = [],
 }) {
   const { blocked: downloadBlocked, isAuthed: downloadAuthed } = useDownloadAccess();
+  const { locale } = useLocale();
+  const t = useT();
   const chartRef = useRef(null);
   const unit = unitOverride || modeMeta?.unit || indicator?.unit || '';
   const activeFreq = frequency || modeMeta?.freq || indicator?.frequency;
@@ -214,13 +233,11 @@ export default function WorldChartSection({
     if (AVERAGE_CONCEPTS.has(conceptSlug)) {
       result.unshift({
         code: 'average',
-        country_name: conceptSlug === 'hicp-index'
-          ? 'Медиана по странам с данными'
-          : 'Среднее по странам с данными',
+        country_name: averageCountryLabel(conceptSlug, locale),
       });
     }
     return result;
-  }, [comparisonOptions, conceptSlug]);
+  }, [comparisonOptions, conceptSlug, locale]);
   const activeComparisonIds = comparisonIds.filter((id) => (
     pickerOptions.some((option) => option.code === id)
   ));
@@ -258,7 +275,9 @@ export default function WorldChartSection({
       return {
         id,
         option,
-        label: payload?.meta?.country_name || option?.country_name || 'Сравнение',
+        label: payload?.meta?.country_name
+          || option?.country_name
+          || (locale === 'en' ? 'Comparison' : 'Сравнение'),
         color: COMPARISON_COLORS[index],
         data: payload?.points || payload?.data || [],
       };
@@ -266,7 +285,7 @@ export default function WorldChartSection({
     // Query payload objects are stable in TanStack Query; fixed slots keep the
     // resulting series stable and prevent chart → onFullData render loops.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [comparisonIdsKey, pickerOptions, queryData[0], queryData[1], queryData[2], queryData[3]],
+    [comparisonIdsKey, pickerOptions, locale, queryData[0], queryData[1], queryData[2], queryData[3]],
   );
   const loadedComparisonSeries = useMemo(
     () => selectedComparisons.filter((item) => item.data.length > 0),
@@ -336,7 +355,7 @@ export default function WorldChartSection({
           <div className="relative group/help">
             <Link
               to="/methodology"
-              aria-label="Как рассчитывается прогноз"
+              aria-label={t('chart.methodologyAria')}
               onClick={() => track(events.METHODOLOGY_CLICK, {
                 indicator: code,
                 indicatorCategory: indicator?.category,
@@ -347,7 +366,7 @@ export default function WorldChartSection({
               <HelpCircle className="h-4 w-4" />
             </Link>
             <div className="pointer-events-none absolute right-0 top-full z-50 mt-2 whitespace-nowrap rounded-xl border border-border-subtle bg-obsidian px-3 py-2 text-xs text-text-secondary opacity-0 shadow-xl transition-opacity group-hover/help:opacity-100">
-              Хотите узнать, как рассчитывается прогноз?
+              {t('chart.methodologyHint')}
             </div>
           </div>
           <div className="relative group/forecast">

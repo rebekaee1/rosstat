@@ -1,5 +1,6 @@
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { cn } from '../lib/format';
+import { useT } from '../i18n';
 import MobileNavSelect from './MobileNavSelect';
 
 /**
@@ -18,6 +19,7 @@ export default function VariantGroupPicker({
   embedded = false,
   basePath = '/russia/indicator',
 }) {
+  const t = useT();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   if (!group) return null;
@@ -25,16 +27,21 @@ export default function VariantGroupPicker({
   const suffix = modeParam ? `?mode=${encodeURIComponent(modeParam)}` : '';
   const root = (basePath || '/russia/indicator').replace(/\/$/, '');
   const useMobileSelect = group.codes.length >= 3;
+  const groupLabel = group.labelKey ? t(group.labelKey) : group.label;
+  const codeOptions = group.codes.map((item) => ({
+    ...item,
+    displayLabel: item.labelKey ? t(item.labelKey) : item.label,
+  }));
 
   const body = (
     <>
       {useMobileSelect ? (
         <MobileNavSelect
-          label={group.label}
+          label={groupLabel}
           value={currentCode}
-          options={group.codes.map((item) => ({
+          options={codeOptions.map((item) => ({
             value: item.code,
-            label: item.label,
+            label: item.displayLabel,
           }))}
           onChange={(code) => {
             navigate(`${root}/${code}${suffix}`, { preventScrollReset: true });
@@ -43,16 +50,16 @@ export default function VariantGroupPicker({
         />
       ) : (
         <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary lg:hidden">
-          {group.label}
+          {groupLabel}
         </p>
       )}
 
       <div className={useMobileSelect ? 'hidden lg:block' : undefined}>
         <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-          {group.label}
+          {groupLabel}
         </p>
         <div className="flex flex-wrap gap-2">
-          {group.codes.map((item) => (
+          {codeOptions.map((item) => (
             <Link
               key={item.code}
               to={`${root}/${item.code}${suffix}`}
@@ -64,7 +71,7 @@ export default function VariantGroupPicker({
                   : 'bg-obsidian-lighter text-text-secondary hover:text-champagne',
               )}
             >
-              {item.label}
+              {item.displayLabel}
             </Link>
           ))}
         </div>

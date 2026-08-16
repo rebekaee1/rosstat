@@ -48,9 +48,8 @@ async def render_calendar_month_html(
     if not (2000 <= year <= 2100 and 1 <= month <= 12):
         return 404, "Not found"
 
-    # В-7: тот же provenance-фильтр, что у публичного API (ADR-0005) — иначе
-    # legacy-строка без event_key/source_hash показалась бы только в SSR.
     from app.api.calendar import _public_calendar_conditions
+    from app.services.seo_i18n import calendar_month_name, calendar_template, event_public_title
 
     events = (await db.execute(
         select(EconomicEvent)
@@ -69,26 +68,73 @@ async def render_calendar_month_html(
     today = today_msk()
     is_future = (year, month) >= (today.year, today.month)
 
+    en_month = calendar_month_name(month)
+    month_display = en_month or month_nom
+    month_gen_display = en_month or month_gen
+
+    source_names = {
+        "rosstat": calendar_template("source_rosstat") or _SOURCE_NAMES["rosstat"],
+        "cbr": calendar_template("source_cbr") or _SOURCE_NAMES["cbr"],
+        "minfin": calendar_template("source_minfin") or _SOURCE_NAMES["minfin"],
+    }
+    status_expected = calendar_template("status_expected") or "ожидается"
+    status_dash = calendar_template("status_dash") or "—"
+    actual_prefix = calendar_template("actual_prefix")
+
     rows_html = []
     for ev in events:
         d = ev.scheduled_date
-        src = _SOURCE_NAMES.get(ev.source, ev.source)
+        src = source_names.get(ev.source, ev.source)
         period = f" ({escape(ev.reference_period)})" if ev.reference_period else ""
         value = ""
         if ev.actual_value:
-            value = f" Факт: {escape(ev.actual_value)}."
+            if actual_prefix:
+                value = escape(actual_prefix.format(value=ev.actual_value))
+            else:
+                value = f" Факт: {escape(ev.actual_value)}."
+        day_label = (
+            f"{d.day} {escape(en_month)}" if en_month else f"{d.day} {escape(month_gen)}"
+        )
+        pub_title = event_public_title(ev.title, ev.title_en)
         rows_html.append(
-            f"<tr><td>{d.day} {escape(month_gen)}</td>"
-            f"<td>{escape(ev.title)}{period}</td>"
-            f"<td>{escape(src)}</td><td>{value or ('ожидается' if is_future else '—')}</td></tr>"
+            f"<tr><td>{day_label}</td>"
+            f"<td>{escape(pub_title)}{period}</td>"
+            f"<td>{escape(src)}</td>"
+            f"<td>{value or (status_expected if is_future else status_dash)}</td></tr>"
         )
 
     verb = "выйдут" if is_future else "вышли"
-    title = f"Календарь экономической статистики — {month_nom} {year}: даты публикаций"
+    en_title = calendar_template("title")
+    en_desc = calendar_template("desc_future" if is_future else "desc_past")
+    en_h1 = calendar_template("h1")
+    en_intro = calendar_template("intro")
+    title = (
+        en_title.format(month=month_display, year=year)
+        if en_title
+        else f"Календарь экономической статистики — {month_nom} {year}: даты публикаций"
+    )
     desc = (
-        f"Какие данные по экономике России {verb} в {month_gen} {year} года: "
-        f"{len(events)} публикаций Росстата, Банка России и Минфина с точными датами — "
-        f"инфляция, ставка, ВВП и другие показатели."
+        en_desc.format(month_gen=month_gen_display, year=year, n=len(events))
+        if en_desc
+        else (
+            f"Какие данные по экономике России {verb} в {month_gen} {year} года: "
+            f"{len(events)} публикаций Росстата, Банка России и Минфина с точными датами — "
+            f"инфляция, ставка, ВВП и другие показатели."
+        )
+    )
+    h1_text = (
+        en_h1.format(month=month_display, year=year)
+        if en_h1
+        else f"Календарь статистики: {month_nom} {year}"
+    )
+    intro = (
+        en_intro.format(month_gen=month_gen_display, year=year)
+        if en_intro
+        else (
+            f"Официальные даты публикаций экономической статистики России в "
+            f"{month_gen} {year} года. "
+            f"Даты — официальные, из графиков раскрытия информации самих ведомств."
+        )
     )
     canonical = paths.calendar(year, month)
 
@@ -97,27 +143,51 @@ async def render_calendar_month_html(
 
     n_rosstat = sum(1 for e in events if e.source == "rosstat")
     n_cbr = sum(1 for e in events if e.source == "cbr")
-    month_label = f"{month_nom.capitalize()} {year}"
+    month_label = f"{(en_month or month_nom).capitalize()} {year}"
     month_trail = crumbs.calendar_month_trail(month_label, paths.calendar(year, month))
+    prev_label = calendar_month_name(prev_m) or _MONTHS_NOM[prev_m - 1]
+    next_label = calendar_month_name(next_m) or _MONTHS_NOM[next_m - 1]
+
+    eyebrow = calendar_template("eyebrow") or "Календарь публикаций"
+    tile_pub = calendar_template("tile_publications") or "Публикаций"
+    tile_rosstat = calendar_template("tile_rosstat") or "Росстат"
+    tile_cbr = calendar_template("tile_cbr") or "Банк России"
+    tile_other = calendar_template("tile_other") or "Минфин и другие"
+    h2_month = calendar_template("h2_month") or "Публикации месяца"
+    h2_neighbors = calendar_template("h2_neighbors") or "Соседние месяцы"
+    th_date = calendar_template("th_date") or "Дата"
+    th_pub = calendar_template("th_publication") or "Публикация"
+    th_agency = calendar_template("th_agency") or "Ведомство"
+    th_status = calendar_template("th_status") or "Статус"
+    interactive = calendar_template("interactive") or "Интерактивный календарь"
+    en_kw = calendar_template("keywords")
+    keywords = (
+        en_kw.format(month=month_display, year=year)
+        if en_kw
+        else (
+            f"календарь статистики {month_nom} {year}, когда выйдет инфляция {month_nom} {year}, "
+            f"публикации росстата {month_nom} {year}, календарь цб {year}"
+        )
+    )
+
     body = f"""<main class="seo-page">
 {_breadcrumbs_nav(month_trail)}
-<p class="seo-eyebrow">Календарь публикаций</p>
-<h1>Календарь статистики: {escape(month_nom)} {year}</h1>
-<p>Официальные даты публикаций экономической статистики России в {escape(month_gen)} {year} года.
-Даты — официальные, из графиков раскрытия информации самих ведомств.</p>
+<p class="seo-eyebrow">{escape(eyebrow)}</p>
+<h1>{escape(h1_text)}</h1>
+<p>{escape(intro)}</p>
 <div class="seo-tiles">
-<div class="seo-tile"><span>Публикаций</span><b>{len(events)}</b></div>
-<div class="seo-tile"><span>Росстат</span><b>{n_rosstat}</b></div>
-<div class="seo-tile"><span>Банк России</span><b>{n_cbr}</b></div>
-<div class="seo-tile"><span>Минфин и другие</span><b>{len(events) - n_rosstat - n_cbr}</b></div>
+<div class="seo-tile"><span>{escape(tile_pub)}</span><b>{len(events)}</b></div>
+<div class="seo-tile"><span>{escape(tile_rosstat)}</span><b>{n_rosstat}</b></div>
+<div class="seo-tile"><span>{escape(tile_cbr)}</span><b>{n_cbr}</b></div>
+<div class="seo-tile"><span>{escape(tile_other)}</span><b>{len(events) - n_rosstat - n_cbr}</b></div>
 </div>
-<section><h2>Публикации месяца</h2>
-<div class="seo-scroll"><table><thead><tr><th>Дата</th><th>Публикация</th><th>Ведомство</th><th>Статус</th></tr></thead>
+<section><h2>{escape(h2_month)}</h2>
+<div class="seo-scroll"><table><thead><tr><th>{escape(th_date)}</th><th>{escape(th_pub)}</th><th>{escape(th_agency)}</th><th>{escape(th_status)}</th></tr></thead>
 <tbody>{''.join(rows_html)}</tbody></table></div></section>
-<section><h2>Соседние месяцы</h2>
-<ul class="seo-pills"><li><a href="{paths.calendar(prev_y, prev_m)}">← {escape(_MONTHS_NOM[prev_m - 1].capitalize())} {prev_y}</a></li>
-<li><a href="{paths.calendar(next_y, next_m)}">{escape(_MONTHS_NOM[next_m - 1].capitalize())} {next_y} →</a></li>
-<li><a href="{paths.calendar()}">Интерактивный календарь</a></li></ul></section>
+<section><h2>{escape(h2_neighbors)}</h2>
+<ul class="seo-pills"><li><a href="{paths.calendar(prev_y, prev_m)}">← {escape(prev_label.capitalize())} {prev_y}</a></li>
+<li><a href="{paths.calendar(next_y, next_m)}">{escape(next_label.capitalize())} {next_y} →</a></li>
+<li><a href="{paths.calendar()}">{escape(interactive)}</a></li></ul></section>
 </main>"""
 
     json_ld = [
@@ -130,9 +200,6 @@ async def render_calendar_month_html(
         canonical_path=canonical,
         body=body,
         json_ld=json_ld,
-        keywords=(
-            f"календарь статистики {month_nom} {year}, когда выйдет инфляция {month_nom} {year}, "
-            f"публикации росстата {month_nom} {year}, календарь цб {year}"
-        ),
+        keywords=keywords,
     )
     return 200, html

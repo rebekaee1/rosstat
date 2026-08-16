@@ -157,9 +157,14 @@ def apply_mode(series: Series, mode: str) -> Series:
     return fn(series)
 
 
-def mode_unit(mode: str, base_unit: str) -> str:
+def mode_unit(mode: str, base_unit: str, *, locale: str | None = None) -> str:
     if mode in ("mom", "qoq", "yoy"):
         return "%"
     if mode == "index_first":
-        return "индекс"
+        loc = locale
+        if loc is None:
+            from app.services.locale import get_locale
+
+            loc = get_locale()
+        return "index" if loc == "en" else "индекс"
     return base_unit or ""

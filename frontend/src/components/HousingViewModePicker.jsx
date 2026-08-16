@@ -1,6 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { cn } from '../lib/format';
 import { track, events } from '../lib/track';
+import { useLocale, useT } from '../i18n';
+import { localizeViewModeLabel } from '../i18n/viewModeLabels';
 import {
   HOUSING_TOP_GROUPS,
   defaultSubModeForGroup,
@@ -25,6 +27,8 @@ export default function HousingViewModePicker({
   trackContext,
   compact = false,
 }) {
+  const t = useT();
+  const { locale } = useLocale();
   const [expandedGroup, setExpandedGroup] = useState(
     () => expandedGroupForMode(currentMode),
   );
@@ -66,17 +70,33 @@ export default function HousingViewModePicker({
     trackMode(item.mode, groupId);
   };
 
+  const topGroups = useMemo(() => (
+    HOUSING_TOP_GROUPS.map((g) => ({
+      ...g,
+      label: localizeViewModeLabel(g.label, locale),
+      modes: g.modes?.map((m) => ({
+        ...m,
+        label: localizeViewModeLabel(m.label, locale),
+      })),
+    }))
+  ), [locale]);
   const expanded = expandedGroup ? getTopGroup(expandedGroup) : null;
-  const subModes = expanded?.modes ?? [];
+  const subModes = useMemo(
+    () => (expanded?.modes ?? []).map((m) => ({
+      ...m,
+      label: localizeViewModeLabel(m.label, locale),
+    })),
+    [expanded, locale],
+  );
   const activeTopGroup = highlightedTopGroup(expandedGroup, currentMode);
 
   const body = (
     <>
       <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-        Режим динамики цен
+        {t('indicator.picker.housing')}
       </p>
       <div className="flex flex-wrap gap-2">
-        {HOUSING_TOP_GROUPS.map((group) => {
+        {topGroups.map((group) => {
           const active = group.id === activeTopGroup;
           return (
             <button

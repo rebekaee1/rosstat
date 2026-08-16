@@ -11,36 +11,37 @@ import {
 } from '../lib/format';
 import { track, events } from '../lib/track';
 import { mergeActualForecastChartSeries } from '../lib/chartForecastMerge';
+import { useT } from '../i18n';
 
 const RANGE_PRESETS = {
   default: [
-    { key: '3y', label: '3 года', months: 36 },
-    { key: '5y', label: '5 лет', months: 60 },
-    { key: '10y', label: '10 лет', months: 120 },
-    { key: 'all', label: 'Все', months: null },
+    { key: '3y', labelKey: 'compare.range.3y', months: 36 },
+    { key: '5y', labelKey: 'compare.range.5y', months: 60 },
+    { key: '10y', labelKey: 'compare.range.10y', months: 120 },
+    { key: 'all', labelKey: 'compare.range.all', months: null },
   ],
   annual: [
-    { key: '10y', label: '10 лет', months: 120 },
-    { key: '25y', label: '25 лет', months: 300 },
-    { key: 'all', label: 'Все', months: null },
+    { key: '10y', labelKey: 'compare.range.10y', months: 120 },
+    { key: '25y', labelKey: 'chart.range.25y', months: 300 },
+    { key: 'all', labelKey: 'compare.range.all', months: null },
   ],
   quarterly: [
-    { key: '5y', label: '5 лет', months: 60 },
-    { key: '10y', label: '10 лет', months: 120 },
-    { key: '25y', label: '25 лет', months: 300 },
-    { key: 'all', label: 'Все', months: null },
+    { key: '5y', labelKey: 'compare.range.5y', months: 60 },
+    { key: '10y', labelKey: 'compare.range.10y', months: 120 },
+    { key: '25y', labelKey: 'chart.range.25y', months: 300 },
+    { key: 'all', labelKey: 'compare.range.all', months: null },
   ],
   weekly: [
-    { key: '6m', label: '6 мес', months: 6 },
-    { key: '1y', label: '1 год', months: 12 },
-    { key: '3y', label: '3 года', months: 36 },
-    { key: 'all', label: 'Все', months: null },
+    { key: '6m', labelKey: 'chart.range.6m', months: 6 },
+    { key: '1y', labelKey: 'chart.range.1y', months: 12 },
+    { key: '3y', labelKey: 'compare.range.3y', months: 36 },
+    { key: 'all', labelKey: 'compare.range.all', months: null },
   ],
   daily: [
-    { key: '1y', label: '1 год', months: 12 },
-    { key: '3y', label: '3 года', months: 36 },
-    { key: '5y', label: '5 лет', months: 60 },
-    { key: 'all', label: 'Все', months: null },
+    { key: '1y', labelKey: 'chart.range.1y', months: 12 },
+    { key: '3y', labelKey: 'compare.range.3y', months: 36 },
+    { key: '5y', labelKey: 'compare.range.5y', months: 60 },
+    { key: 'all', labelKey: 'compare.range.all', months: null },
   ],
 };
 
@@ -177,10 +178,14 @@ export default function IndicatorChart({
   comparisonSeries = null,
   actualSeriesLabel = '',
 }) {
+  const t = useT();
   const digits = chartValueDigits(unit, chartMode ?? mode);
   const ref = useRef(null);
   const chartAreaRef = useRef(null);
-  const rangeOptions = RANGE_PRESETS[rangePreset] || RANGE_PRESETS.default;
+  const rangeOptions = (RANGE_PRESETS[rangePreset] || RANGE_PRESETS.default).map((opt) => ({
+    ...opt,
+    label: t(opt.labelKey),
+  }));
   const defaultRange = RANGE_DEFAULTS[rangePreset] || RANGE_DEFAULTS.default;
   const [range, setRange] = useState(defaultRange);
   const [windowOverride, setWindowOverride] = useState(null);
@@ -524,12 +529,12 @@ export default function IndicatorChart({
           <div
             className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle"
             role="radiogroup"
-            aria-label="Тип графика"
+            aria-label={t('chart.typeAria')}
           >
             {[
-              { key: 'area', label: 'Линия с заливкой', icon: AreaIcon },
-              { key: 'line', label: 'Линия', icon: LineIcon },
-              { key: 'bar', label: 'Столбцы', icon: BarChart3 },
+              { key: 'area', label: t('chart.type.area'), icon: AreaIcon },
+              { key: 'line', label: t('chart.type.line'), icon: LineIcon },
+              { key: 'bar', label: t('chart.type.bar'), icon: BarChart3 },
             ].map((opt) => {
               const IconComp = opt.icon;
               return (
@@ -813,11 +818,11 @@ export default function IndicatorChart({
         <div className="flex items-center gap-5 mt-4 pt-3 border-t border-border-subtle">
           <div className="flex items-center gap-2">
             <span className="w-5 h-0.5 bg-champagne rounded-full" />
-            <span className="text-[11px] text-text-tertiary">Факт</span>
+            <span className="text-[11px] text-text-tertiary">{t('chart.legend.actual')}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="w-5 h-0.5 rounded-full" style={{ background: '#7C3AED', opacity: 0.8 }} />
-            <span className="text-[11px] text-text-tertiary">Прогноз</span>
+            <span className="text-[11px] text-text-tertiary">{t('common.forecast')}</span>
           </div>
         </div>
       )}

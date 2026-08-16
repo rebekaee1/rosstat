@@ -14,8 +14,10 @@ import { track, events } from '../../lib/track';
 import {
   russiaIndicatorPath,
 } from '../../lib/sitePaths';
+import { useLocale, useT } from '../../i18n';
 
 function FlagshipRow({ indicator, spark }) {
+  const { locale } = useLocale();
   const pulse = displayPulseValue(indicator);
   const dateFmt = resolveDateFormat({ frequency: indicator.frequency });
 
@@ -35,8 +37,8 @@ function FlagshipRow({ indicator, spark }) {
         </div>
         <div className="mt-0.5 text-[11px] text-text-tertiary">
           {indicator.current_date
-            ? formatDate(indicator.current_date, dateFmt)
-            : (spark?.last_date ? formatDate(spark.last_date, dateFmt) : '—')}
+            ? formatDate(indicator.current_date, dateFmt, locale)
+            : (spark?.last_date ? formatDate(spark.last_date, dateFmt, locale) : '—')}
         </div>
       </div>
       <div className="hidden sm:block">
@@ -77,6 +79,7 @@ function FlagshipRow({ indicator, spark }) {
 }
 
 export default function HomeRussiaPanel({ indicators, isLoading }) {
+  const t = useT();
   const sparklines = useDashboardSparklines();
   const rows = pickIndicatorsByCodes(indicators, HOME_RUSSIA_FLAGSHIP_CODES);
 
@@ -84,13 +87,13 @@ export default function HomeRussiaPanel({ indicators, isLoading }) {
     <div data-block="home-workbench-russia">
       <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h3 className="text-base font-semibold text-text-primary">Флагманские показатели</h3>
+          <h3 className="text-base font-semibold text-text-primary">{t('home.russia.title')}</h3>
           <p className="mt-1 max-w-xl text-xs leading-5 text-text-secondary">
-            Национальный срез без карты: уровень и короткая динамика. Полная история — в карточке.
+            {t('home.russia.subtitle')}
           </p>
         </div>
         <Link to="/compare" className="inline-flex items-center gap-1 text-xs text-champagne hover:underline">
-          Сравнить показатели
+          {t('home.russia.compare')}
           <ArrowRight size={12} />
         </Link>
       </div>

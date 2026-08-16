@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
-  ArrowUpDown, BarChart3, ChevronRight, Globe2, MapPinned, SlidersHorizontal, Table2,
+  ArrowUpDown, BarChart3, Globe2, MapPinned, SlidersHorizontal, Table2,
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import {
@@ -13,7 +13,7 @@ import {
 } from '../lib/worldApi';
 import {
   DEFAULT_HOME_COUNTRY_CONCEPT,
-  HOME_COUNTRY_CONCEPT_SHORT,
+  homeConceptLabel,
   resolveActiveMapYear,
   russiaDeepLinksForConcept,
   russiaNoteForConcept,
@@ -28,6 +28,7 @@ import { SkeletonBox } from '../components/Skeleton';
 import Breadcrumbs from '../components/Breadcrumbs';
 import TelemetryCard from '../components/TelemetryCard';
 import WorldConceptPicker from '../components/WorldConceptPicker';
+import { useLocale, useT } from '../i18n';
 import WorldMap from '../components/WorldMap';
 import MapTimeline from '../components/MapTimeline';
 import { worldRatingTrail } from '../lib/breadcrumbs';
@@ -69,7 +70,16 @@ function rowHref(item, russiaLinks) {
   return countryPath(item.country_slug);
 }
 
+function pluralUnit(n, base, t, locale) {
+  if (locale === 'en') {
+    return n === 1 ? t(`${base}_one`) : t(`${base}_many`);
+  }
+  return pluralRu(n, [t(`${base}_one`), t(`${base}_few`), t(`${base}_many`)]);
+}
+
 export default function WorldRatingPage() {
+  const t = useT();
+  const { locale } = useLocale();
   const { conceptSlug } = useParams();
   const navigate = useNavigate();
   const activeConcept = conceptSlug || DEFAULT_HOME_COUNTRY_CONCEPT;
@@ -103,8 +113,12 @@ export default function WorldRatingPage() {
   const concept = useMemo(
     () => concepts.find((item) => item.slug === activeConcept)
       || mapSeriesQ.data?.concept
-      || { slug: activeConcept, name: HOME_COUNTRY_CONCEPT_SHORT[activeConcept] || 'Рейтинг стран', unit: '' },
-    [activeConcept, concepts, mapSeriesQ.data],
+      || {
+        slug: activeConcept,
+        name: homeConceptLabel(activeConcept, t, t('world.ratingFallback')),
+        unit: '',
+      },
+    [activeConcept, concepts, mapSeriesQ.data, t],
   );
   const knownConceptLoaded = !catalogQ.isLoading && concepts.length > 0;
   const unknownConcept = knownConceptLoaded && !concepts.some((item) => item.slug === activeConcept);
@@ -130,8 +144,9 @@ export default function WorldRatingPage() {
     () => russiaDeepLinksForConcept(activeConcept),
     [activeConcept],
   );
-  const russiaNote = mapSeriesQ.data?.concept?.russia?.note
-    || russiaNoteForConcept(activeConcept);
+  // Messages first: API note is still RU-only while SPA locale may be EN.
+  const russiaNote = russiaNoteForConcept(activeConcept, t)
+    || mapSeriesQ.data?.concept?.russia?.note;
   const russiaInRanking = Boolean(yearItems.RU?.value != null);
   const valuesByCode = useMemo(
     () => new Map(Object.entries(yearItems).map(([countryCode, item]) => [countryCode, item.value])),
@@ -158,10 +173,10 @@ export default function WorldRatingPage() {
     return units.size === 1 ? [...units][0] : null;
   }, [ranked, concept.unit]);
   const valueHeader = useMemo(() => {
-    if (!sharedUnit) return 'Значение';
-    if (sharedUnit.startsWith('%')) return `Значение, ${sharedUnit}`;
+    if (!sharedUnit) return t('common.value');
+    if (sharedUnit.startsWith('%')) return t('world.rating.valueWithUnit', { unit: sharedUnit });
     return sharedUnit[0].toUpperCase() + sharedUnit.slice(1);
-  }, [sharedUnit]);
+  }, [sharedUnit, t]);
   // Месячный ряд относится к месяцу целиком: «1 декабря 2025» врёт про день замера.
   const periodGranularity = useMemo(() => {
     const dates = ranked.map((item) => item.date).filter(Boolean);
@@ -179,13 +194,11 @@ export default function WorldRatingPage() {
     mapSeriesQ.refetch();
   };
 
-  const shortName = HOME_COUNTRY_CONCEPT_SHORT[activeConcept] || concept.name;
-  const pageTitle = worldRatingTitle(activeConcept, concept.name || shortName, activeYear);
+  const shortName = homeConceptLabel(activeConcept, t, concept.name);
+  const pageTitle = worldRatingTitle(activeConcept, concept.name || shortName, activeYear, t);
   useDocumentMeta({
     title: pageTitle,
-    description:
-      `${pageTitle}: полная таблица, карта и выбор порядка сортировки. `
-      + 'Официальные источники, данные в единицах публикации.',
+    description: t('world.rating.metaDesc', { title: pageTitle }),
     path: worldRatingPath(activeConcept),
   });
 
@@ -201,41 +214,42 @@ export default function WorldRatingPage() {
     if (country?.slug) navigate(countryPath(country.slug));
   };
 
+  const countryWord = (n) => pluralUnit(n, 'world.unit.country', t, locale);
+  const yearWord = (n) => pluralUnit(n, 'world.unit.year', t, locale);
+
   return (
     <div className="mx-auto w-full max-w-7xl px-4 pb-24 pt-24 sm:px-6">
       <Breadcrumbs
-        items={worldRatingTrail(shortName || concept.name || 'Рейтинг', activeConcept)}
+        items={worldRatingTrail(shortName || concept.name || t('crumb.rating'), activeConcept)}
       />
 
       <header className="mb-4">
         <div className="mb-2 flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">
           <Globe2 size={14} />
-          Рейтинг стран
+          {t('nav.worldRating')}
         </div>
         <h1 className="max-w-4xl font-display text-2xl font-bold leading-tight text-text-primary sm:text-3xl lg:text-4xl">
           {pageTitle}
         </h1>
         <p className="mt-2 max-w-3xl text-xs leading-5 text-text-secondary sm:text-sm sm:leading-6">
-          Выберите показатель и год. Для цен на карте и в таблице — изменение за год
-          в процентах, а не уровень индекса. Карта показывает пространственный срез,
-          таблица ниже — все страны с опубликованным значением за выбранный год.
+          {t('world.rating.intro')}
         </p>
       </header>
 
       {error && (
         <ApiRetryBanner onRetry={retry} retrying={countriesQ.isFetching || catalogQ.isFetching || mapSeriesQ.isFetching} className="mb-6">
-          Не удалось загрузить рейтинг стран. Проверьте соединение и попробуйте снова.
+          {t('world.rating.loadError')}
         </ApiRetryBanner>
       )}
 
       {unknownConcept && (
         <div className="mb-8 rounded-2xl border border-border-subtle bg-surface p-6">
-          <h2 className="font-display text-xl font-semibold text-text-primary">Показатель не найден</h2>
+          <h2 className="font-display text-xl font-semibold text-text-primary">{t('world.rating.notFoundTitle')}</h2>
           <p className="mt-2 text-sm text-text-secondary">
-            Для рейтингов доступны только курируемые межстрановые показатели.
+            {t('world.rating.notFoundBody')}
           </p>
           <Link to={worldRatingPath(DEFAULT_HOME_COUNTRY_CONCEPT)} className="mt-4 inline-flex rounded-xl bg-champagne px-4 py-2.5 text-sm font-semibold text-white">
-            Открыть рейтинг по безработице
+            {t('world.rating.openUnemployment')}
           </Link>
         </div>
       )}
@@ -248,7 +262,7 @@ export default function WorldRatingPage() {
               value={activeConcept}
               mode="link"
               linkForSlug={(slug) => worldRatingPath(slug)}
-              label="Показатель рейтинга"
+              label={t('world.rating.conceptLabel')}
             />
             {loading && concepts.length === 0 && (
               <div className="mt-2 flex flex-wrap gap-1.5">
@@ -261,7 +275,7 @@ export default function WorldRatingPage() {
               <label className="block min-w-[8rem] flex-1 sm:max-w-[11rem]">
                 <span className="mb-1 flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.16em] text-text-tertiary">
                   <SlidersHorizontal size={11} className="text-champagne" />
-                  Год
+                  {t('common.year')}
                 </span>
                 <select
                   value={activeYear || ''}
@@ -276,14 +290,14 @@ export default function WorldRatingPage() {
               </label>
               <div className="min-w-0">
                 <p className="mb-1 text-[10px] font-mono uppercase tracking-[0.16em] text-text-tertiary">
-                  Порядок
+                  {t('world.rating.sortOrder')}
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   <button type="button" className={ButtonClass(sortDirection === 'desc')} onClick={() => setSortDirection('desc')}>
-                    По убыванию
+                    {t('world.rating.sortDesc')}
                   </button>
                   <button type="button" className={ButtonClass(sortDirection === 'asc')} onClick={() => setSortDirection('asc')}>
-                    По возрастанию
+                    {t('world.rating.sortAsc')}
                   </button>
                 </div>
               </div>
@@ -323,24 +337,26 @@ export default function WorldRatingPage() {
               <div className="mb-4 flex items-start gap-3">
                 <BarChart3 size={18} className="mt-1 shrink-0 text-champagne" />
                 <div>
-                  <p className="text-[10px] font-mono uppercase tracking-[0.18em] text-text-tertiary">Сводка</p>
+                  <p className="text-[10px] font-mono uppercase tracking-[0.18em] text-text-tertiary">{t('world.rating.summary')}</p>
                   <h2 className="mt-1 font-display text-xl font-semibold text-text-primary">
                     {shortName}{activeYear ? `, ${activeYear}` : ''}
                   </h2>
                 </div>
               </div>
               <p className="text-sm leading-6 text-text-secondary">
-                В таблице участвуют {ranked.length} {pluralRu(ranked.length, ['страна', 'страны', 'стран'])}
-                {' '}из {countries.length}. Страны без значения за выбранный год показаны отдельным списком
-                ниже, чтобы охват рейтинга был виден сразу.
+                {t('world.rating.summaryBody', {
+                  ranked: ranked.length,
+                  countryWord: countryWord(ranked.length),
+                  total: countries.length,
+                })}
                 {russiaInRanking
-                  ? ' Россия включена по национальному ряду того же смысла.'
-                  : ' России в этом рейтинге нет: сопоставимого ряда в той же единице нет.'}
+                  ? t('world.rating.summaryRussiaIn')
+                  : t('world.rating.summaryRussiaOut')}
               </p>
               <div className="mt-4 rounded-xl bg-obsidian-light px-3.5 py-3 text-xs leading-5 text-text-secondary">
                 {activeConcept === 'hicp-index' || mapSeriesQ.data?.concept?.value_mode === 'yoy'
-                  ? 'Для потребительских цен сравнивается изменение за год в процентах: базовые периоды национальных индексов при делении сокращаются, поэтому страны сопоставимы. Денежные ряды в национальных валютах в рейтинг не входят.'
-                  : 'В рейтинг попадают только показатели, которые можно честно сравнить между странами в одной единице. Денежные ряды в национальных валютах сюда не входят.'}
+                  ? t('world.rating.noteYoy')
+                  : t('world.rating.noteDefault')}
               </div>
               {russiaNote && (
                 <div className="mt-3 rounded-xl border border-border-subtle bg-white/60 px-3.5 py-3 text-xs leading-5 text-text-secondary">
@@ -349,7 +365,7 @@ export default function WorldRatingPage() {
               )}
               <div className="mt-4 space-y-2 border-t border-border-subtle pt-4">
                 <p className="text-[10px] font-mono uppercase tracking-[0.16em] text-text-tertiary">
-                  Россия и регионы
+                  {t('world.rating.russiaRegions')}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   <Link
@@ -357,21 +373,23 @@ export default function WorldRatingPage() {
                     className="inline-flex items-center gap-1.5 rounded-xl bg-champagne/15 px-3 py-2 text-xs font-medium text-champagne"
                   >
                     <Globe2 size={13} />
-                    {russiaIndicatorCode ? 'Показатель России' : 'Раздел России'}
+                    {russiaIndicatorCode
+                      ? t('world.rating.russiaIndicator')
+                      : t('world.rating.russiaSection')}
                   </Link>
                   <Link
                     to={russiaLinks.regionsHref}
                     className="inline-flex items-center gap-1.5 rounded-xl bg-obsidian-lighter px-3 py-2 text-xs font-medium text-text-secondary hover:text-champagne"
                   >
                     <MapPinned size={13} />
-                    Регионы России
+                    {t('world.rating.russiaRegionsLink')}
                   </Link>
                   {russiaLinks.regionRatingHref && (
                     <Link
                       to={russiaLinks.regionRatingHref}
                       className="inline-flex items-center gap-1.5 rounded-xl bg-obsidian-lighter px-3 py-2 text-xs font-medium text-text-secondary hover:text-champagne"
                     >
-                      Региональный рейтинг
+                      {t('world.rating.regionRatingLink')}
                     </Link>
                   )}
                 </div>
@@ -380,36 +398,66 @@ export default function WorldRatingPage() {
           </section>
 
           <section className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4 md:gap-4">
-            <TelemetryCard label="Стран с данными" value={ranked.length} unit={pluralRu(ranked.length, ['страна', 'страны', 'стран'])} valueDigits={0} meta={activeYear ? `${activeYear} ГОД` : undefined} delay={0} />
-            <TelemetryCard label="Без данных" value={withoutData.length} unit={pluralRu(withoutData.length, ['страна', 'страны', 'стран'])} valueDigits={0} meta="В ВЫБРАННОМ ГОДУ" delay={1} />
-            <TelemetryCard label="Всего стран" value={countries.length} unit={pluralRu(countries.length, ['страна', 'страны', 'стран'])} valueDigits={0} meta="В МИРОВОМ КАТАЛОГЕ" delay={2} />
-            <TelemetryCard label="Доступно лет" value={years.length} unit={pluralRu(years.length, ['год', 'года', 'лет'])} valueDigits={0} meta={years.length ? `${years[0]}–${years[years.length - 1]}` : undefined} delay={3} />
+            <TelemetryCard
+              label={t('world.rating.telemetry.withData')}
+              value={ranked.length}
+              unit={countryWord(ranked.length)}
+              valueDigits={0}
+              meta={activeYear ? t('world.rating.telemetry.metaYear', { year: activeYear }) : undefined}
+              delay={0}
+            />
+            <TelemetryCard
+              label={t('world.rating.telemetry.withoutData')}
+              value={withoutData.length}
+              unit={countryWord(withoutData.length)}
+              valueDigits={0}
+              meta={t('world.rating.telemetry.metaSelectedYear')}
+              delay={1}
+            />
+            <TelemetryCard
+              label={t('world.rating.telemetry.totalCountries')}
+              value={countries.length}
+              unit={countryWord(countries.length)}
+              valueDigits={0}
+              meta={t('world.rating.telemetry.metaCatalog')}
+              delay={2}
+            />
+            <TelemetryCard
+              label={t('world.rating.telemetry.yearsAvailable')}
+              value={years.length}
+              unit={yearWord(years.length)}
+              valueDigits={0}
+              meta={years.length ? `${years[0]}–${years[years.length - 1]}` : undefined}
+              delay={3}
+            />
           </section>
 
           <section className="mb-8">
             <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
               <div>
                 <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-                  Полная таблица
+                  {t('world.rating.fullTable')}
                 </p>
                 <h2 className="mt-1 font-display text-2xl font-bold text-text-primary">
-                  Все страны с данными ({ranked.length})
+                  {t('world.rating.allWithData', { n: ranked.length })}
                 </h2>
               </div>
               <div className="inline-flex items-center gap-2 rounded-xl bg-obsidian-light px-3 py-2 text-xs text-text-secondary">
                 <ArrowUpDown size={14} className="text-champagne" />
-                {sortDirection === 'desc' ? 'Значение по убыванию' : 'Значение по возрастанию'}
+                {sortDirection === 'desc'
+                  ? t('world.rating.sortDescHint')
+                  : t('world.rating.sortAscHint')}
               </div>
             </div>
             <div className="overflow-x-auto rounded-2xl border border-border-subtle bg-surface">
               <table className="w-full min-w-[52rem] text-sm">
                 <thead className="sticky top-0 z-10 bg-obsidian-light/95 backdrop-blur-sm">
                   <tr className="text-left text-[11px] uppercase tracking-wide text-text-tertiary">
-                    <th className="w-20 px-4 py-3 font-medium">Место</th>
-                    <th className="px-4 py-3 font-medium">Страна</th>
+                    <th className="w-20 px-4 py-3 font-medium">{t('world.rating.col.rank')}</th>
+                    <th className="px-4 py-3 font-medium">{t('world.rating.col.country')}</th>
                     <th className="px-4 py-3 text-right font-medium">{valueHeader}</th>
-                    {!sharedUnit && <th className="px-4 py-3 font-medium">Единица</th>}
-                    <th className="px-4 py-3 font-medium">Период</th>
+                    {!sharedUnit && <th className="px-4 py-3 font-medium">{t('world.rating.col.unit')}</th>}
+                    <th className="px-4 py-3 font-medium">{t('common.period')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -426,7 +474,7 @@ export default function WorldRatingPage() {
                       </td>
                       {!sharedUnit && (
                         <td className="px-4 py-3 text-xs text-text-secondary">
-                          {item.unit || concept.unit || 'единицы источника'}
+                          {item.unit || concept.unit || t('world.rating.fallbackUnit')}
                         </td>
                       )}
                       <td className="px-4 py-3 font-mono text-xs text-text-tertiary">
@@ -437,7 +485,7 @@ export default function WorldRatingPage() {
                   {!loading && ranked.length === 0 && (
                     <tr>
                       <td colSpan={sharedUnit ? 4 : 5} className="px-4 py-8 text-center text-text-secondary">
-                        За выбранный год нет данных для рейтинга.
+                        {t('world.rating.emptyYear')}
                       </td>
                     </tr>
                   )}
@@ -450,7 +498,10 @@ export default function WorldRatingPage() {
             <div className="mb-3 flex items-center gap-2">
               <Table2 size={17} className="text-champagne" />
               <h2 className="font-display text-xl font-semibold text-text-primary">
-                Страны без данных за {activeYear || 'выбранный год'} ({withoutData.length})
+                {t('world.rating.withoutDataTitle', {
+                  year: activeYear || t('world.rating.selectedYear'),
+                  n: withoutData.length,
+                })}
               </h2>
             </div>
             {withoutData.length > 0 ? (
@@ -467,7 +518,7 @@ export default function WorldRatingPage() {
               </div>
             ) : (
               <p className="text-sm text-text-secondary">
-                Все страны мирового каталога имеют значение за выбранный год.
+                {t('world.rating.allHaveData')}
               </p>
             )}
           </section>

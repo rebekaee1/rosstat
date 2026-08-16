@@ -4,17 +4,36 @@
  * Не дублировать строки здесь — править seo_content.py / seo_world.py и
  * перегенерировать зеркало.
  */
+import { resolveBrowserLocale } from '../i18n/locale';
 import pageMeta from './pageMeta.generated.json';
 
-export function getPageSeo(slug) {
+/** @param {'ru'|'en'|undefined} locale — omit → browser (?preview_locale / host). */
+function resolvePageMetaLocale(locale) {
+  if (locale === 'en' || locale === 'ru') return locale;
+  return resolveBrowserLocale();
+}
+
+/** @param {'ru'|'en'} [locale] — EN twin from pageMeta.en when filled. */
+export function getPageSeo(slug, locale) {
+  if (resolvePageMetaLocale(locale) === 'en') {
+    return pageMeta.en?.pages?.[slug] || pageMeta.pages[slug] || null;
+  }
   return pageMeta.pages[slug] || null;
 }
 
-export function getCategorySeo(slug) {
+/** @param {'ru'|'en'} [locale] */
+export function getCategorySeo(slug, locale) {
+  if (resolvePageMetaLocale(locale) === 'en') {
+    return pageMeta.en?.categories?.[slug] || pageMeta.categories[slug] || null;
+  }
   return pageMeta.categories[slug] || null;
 }
 
-export function getWorldHomeSeo() {
+/** @param {'ru'|'en'} [locale] */
+export function getWorldHomeSeo(locale) {
+  if (resolvePageMetaLocale(locale) === 'en' && pageMeta.en?.world?.home) {
+    return pageMeta.en.world.home;
+  }
   return pageMeta.world.home;
 }
 

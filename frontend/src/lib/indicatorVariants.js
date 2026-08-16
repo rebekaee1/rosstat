@@ -7,14 +7,17 @@
  * Вторичные коды (YoY, QoQ, квартальные агрегаты) скрыты из листинга категории
  * через INDICATOR_HIDDEN_FROM_LISTING в backend/app/data/indicator_seo.py.
  */
+import { t } from '../i18n/messages';
+
 export const VARIANT_GROUPS = [
   {
     label: 'Состав индекса потребительских цен',
+    labelKey: 'variant.cpi.group',
     codes: [
-      { code: 'cpi', label: 'Все товары и услуги' },
-      { code: 'cpi-food', label: 'Продовольствие' },
-      { code: 'cpi-nonfood', label: 'Непродовольственные' },
-      { code: 'cpi-services', label: 'Услуги' },
+      { code: 'cpi', label: 'Все товары и услуги', labelKey: 'variant.cpi.all' },
+      { code: 'cpi-food', label: 'Продовольствие', labelKey: 'variant.cpi.food' },
+      { code: 'cpi-nonfood', label: 'Непродовольственные', labelKey: 'variant.cpi.nonfood' },
+      { code: 'cpi-services', label: 'Услуги', labelKey: 'variant.cpi.services' },
     ],
   },
   // gdp-nominal — режимы на /russia/indicator/gdp-nominal?mode=… (gdpNominalViewMode*).
@@ -208,18 +211,20 @@ export function relatedIndicatorCardCopy(code, fallbackName, fallbackUnit) {
   const group = findVariantGroup(code);
   const member = group?.codes.find((item) => item.code === code);
   if (member && group) {
+    const groupLabel = group.labelKey ? t(group.labelKey) : group.label;
+    const memberLabel = member.labelKey ? t(member.labelKey) : member.label;
     const groupContext =
-      group.label === 'Состав индекса потребительских цен'
-        ? 'Индекс потребительских цен'
-        : group.label;
+      group.labelKey === 'variant.cpi.group'
+        ? t('variant.cpi.context')
+        : groupLabel;
     if (GENERIC_VARIANT_MEMBER_LABELS.has(member.label)) {
       return {
-        title: group.label,
-        subtitle: member.label,
+        title: groupLabel,
+        subtitle: memberLabel,
       };
     }
     return {
-      title: member.label,
+      title: memberLabel,
       subtitle: groupContext,
     };
   }

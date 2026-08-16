@@ -18,6 +18,7 @@ import { calendarTrail } from '../lib/breadcrumbs';
 import {
   calendarPath,
 } from '../lib/sitePaths';
+import { useT, useLocale } from '../i18n';
 
 const MONTHS_NOM = [
   'январь', 'февраль', 'март', 'апрель', 'май', 'июнь',
@@ -69,22 +70,15 @@ function CalendarSkeleton() {
   );
 }
 
-const FAQ_ITEMS = [
-  {
-    q: 'Когда следующее заседание ЦБ по ключевой ставке?',
-    a: 'Банк России проводит 8 заседаний в год. Расписание публикуется в январе на весь год. Пресс-релиз выходит в 13:30 МСК, пресс-конференция — в 15:00 МСК.',
-  },
-  {
-    q: 'Когда Росстат публикует данные по инфляции (ИПЦ)?',
-    a: 'Индекс потребительских цен (ИПЦ) за предыдущий месяц обычно публикуется 5–7 числа следующего месяца в соответствии с Advance Release Calendar МВФ.',
-  },
-  {
-    q: 'Что такое Advance Release Calendar?',
-    a: 'Advance Release Calendar (ARC) — стандарт МВФ SDDS, обязывающий страны публиковать расписание выхода статистических данных. Россия публикует ARC через Минфин.',
-  },
+const FAQ_KEYS = [
+  { q: 'calendar.faq.q1', a: 'calendar.faq.a1' },
+  { q: 'calendar.faq.q2', a: 'calendar.faq.a2' },
+  { q: 'calendar.faq.q3', a: 'calendar.faq.a3' },
 ];
 
 export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
+  const t = useT();
+  const { locale } = useLocale();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [initYear] = useState(() => fixedYear ?? new Date().getFullYear());
@@ -103,7 +97,7 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
   const [selectedDate, setSelectedDate] = useState(null);
   const navigate = useNavigate();
 
-  const calendarSeo = getPageSeo('calendar');
+  const calendarSeo = getPageSeo('calendar', locale);
   useDocumentMeta({
     title: seoPath
       ? `Календарь экономической статистики — ${MONTHS_NOM[month]} ${year}: даты публикаций`
@@ -315,20 +309,20 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
             download
           >
             <Download className="w-4 h-4" />
-            Экспорт в iCal
+            {t('calendar.exportIcal')}
           </a>
         </div>
       )}
 
       <section data-block="faq" className="mt-16">
         <h2 className="font-display text-xl font-bold text-text-primary mb-6">
-          Частые вопросы
+          {t('calendar.faqHeading')}
         </h2>
         <dl className="space-y-4">
-          {FAQ_ITEMS.map((item, i) => (
-            <div key={i} className="rounded-2xl border border-border-subtle bg-surface p-5">
-              <dt className="font-semibold text-text-primary text-sm mb-2">{item.q}</dt>
-              <dd className="text-sm text-text-secondary leading-relaxed">{item.a}</dd>
+          {FAQ_KEYS.map((item) => (
+            <div key={item.q} className="rounded-2xl border border-border-subtle bg-surface p-5">
+              <dt className="font-semibold text-text-primary text-sm mb-2">{t(item.q)}</dt>
+              <dd className="text-sm text-text-secondary leading-relaxed">{t(item.a)}</dd>
             </div>
           ))}
         </dl>

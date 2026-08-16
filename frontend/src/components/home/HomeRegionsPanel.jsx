@@ -17,10 +17,12 @@ import {
   regionIndicatorPath,
   regionRatingPath,
 } from '../../lib/sitePaths';
+import { useT } from '../../i18n';
 
 const RegionsMap = lazy(() => import('../RegionsMap'));
 
 export default function HomeRegionsPanel() {
+  const t = useT();
   const navigate = useNavigate();
   const [metricCode, setMetricCode] = useState(DEFAULT_HOME_REGION_METRIC);
   const metric = HOME_REGION_METRICS.find((m) => m.code === metricCode) || HOME_REGION_METRICS[0];
@@ -47,10 +49,9 @@ export default function HomeRegionsPanel() {
     <div data-block="home-workbench-regions">
       <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h3 className="text-base font-semibold text-text-primary">Регионы России</h3>
+          <h3 className="text-base font-semibold text-text-primary">{t('home.regions.title')}</h3>
           <p className="mt-1 max-w-xl text-xs leading-5 text-text-secondary">
-            Компактный рейтинг субъектов и карта выбранного показателя.
-            Полный каталог — в разделе регионов.
+            {t('home.regions.subtitle')}
           </p>
         </div>
         <Link
@@ -59,12 +60,12 @@ export default function HomeRegionsPanel() {
           className="inline-flex items-center gap-1 text-xs text-champagne hover:underline"
         >
           <MapPin size={12} />
-          Открыть регионы
+          {t('home.regions.open')}
           <ArrowRight size={12} />
         </Link>
       </div>
 
-      <div className="mb-4 flex flex-wrap gap-1.5" role="group" aria-label="Показатель рейтинга">
+      <div className="mb-4 flex flex-wrap gap-1.5" role="group" aria-label={t('home.regions.metricAria')}>
         {HOME_REGION_METRICS.map((m) => (
           <button
             key={m.code}
@@ -76,26 +77,27 @@ export default function HomeRegionsPanel() {
                 : 'border border-border-subtle bg-surface text-text-secondary hover:text-text-primary'
             }`}
           >
-            {m.label}
+            {t(m.labelKey)}
           </button>
         ))}
       </div>
 
       {heat.isError && (
         <ApiRetryBanner className="mb-4" onRetry={() => heat.refetch()} isFetching={heat.isFetching}>
-          Не удалось загрузить рейтинг регионов.
+          {t('home.regions.loadError')}
         </ApiRetryBanner>
       )}
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
-        {/* Mobile first: таблица/карточки выше карты */}
         <div className="order-1 rounded-2xl border border-border-subtle bg-surface p-4">
           <div className="mb-3 flex items-baseline justify-between gap-2">
             <div className="text-[10px] font-mono uppercase tracking-[0.16em] text-champagne">
-              Рейтинг
+              {t('home.map.rating')}
             </div>
             {year != null && (
-              <div className="font-mono text-[10px] text-text-tertiary">{year} год</div>
+              <div className="font-mono text-[10px] text-text-tertiary">
+                {t('world.yearLabel', { year })}
+              </div>
             )}
           </div>
           {heat.isLoading ? (
@@ -129,7 +131,7 @@ export default function HomeRegionsPanel() {
             onClick={() => track(events.HOME_REGIONS_CTA, { target: 'rating', indicator: metric.code })}
             className="mt-3 inline-flex items-center gap-1 text-xs text-champagne hover:underline"
           >
-            Полный рейтинг
+            {t('home.map.fullRating')}
             <ArrowRight size={12} />
           </Link>
         </div>

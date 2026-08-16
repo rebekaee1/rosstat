@@ -3,13 +3,14 @@ import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { Search, X } from 'lucide-react';
 import { useIndicators } from '../lib/hooks';
-import { CATEGORIES } from '../lib/categories';
+import { CATEGORIES, findCategoryByApiLabel } from '../lib/categories';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { track, events } from '../lib/track';
 import {
   russiaIndicatorPath,
 } from '../lib/sitePaths';
+import { useT } from '../i18n';
 
 // Поиск — это директория: список скроллится (`max-h-[60vh] overflow-y-auto`) и
 // поддерживает клавиатурную навигацию. Жёсткого «топ-12» больше нет (звонок
@@ -48,6 +49,7 @@ const SEARCH_MIN_LEN = 2;
  * варианты: помесячно, квартально, к г/г, к кварталу.
  */
 export default function IndicatorSearch({ className, variant = 'icon', inlinePlaceholder }) {
+  const t = useT();
   const navigate = useNavigate();
   // Каталог нужен только при открытии палитры. Раньше полный список
   // (include_unlisted, ~290 мс) тянулся на КАЖДОЙ странице, т.к. компонент
@@ -162,7 +164,11 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
     const t = setTimeout(() => {
       if (q === lastSentRef.current) return;
       lastSentRef.current = q;
-      track(events.SEARCH_QUERY, { q: q.slice(0, 120), results: count });
+      track(events.SEARCH_QUERY, {
+        q: q.slice(0, 120),
+        results: count,
+        context: 'global',
+      });
     }, SEARCH_TRACK_DEBOUNCE_MS);
     return () => clearTimeout(t);
   }, [query, open, results.length]);
@@ -207,7 +213,8 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
     return /Mac OS X|Macintosh|iPhone|iPad|iPod/i.test(ua);
   })();
 
-  const placeholder = inlinePlaceholder || 'Найдите индикатор — например, инфляция, ВВП или ключевая ставка';
+  const mod = isAppleModKey ? '⌘' : 'Ctrl';
+  const placeholder = inlinePlaceholder || t('home.searchPlaceholder');
 
   return (
     <>
@@ -224,12 +231,12 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
             'flex items-center gap-2 rounded-full pl-3 pr-3.5 py-1.5 bg-obsidian-lighter/50 border border-border-subtle text-text-secondary hover:text-text-primary hover:border-champagne/30 transition-colors',
             className,
           )}
-          aria-label={`Открыть поиск индикаторов (${isAppleModKey ? '⌘' : 'Ctrl'}+K)`}
-          title={`Поиск индикаторов (${isAppleModKey ? '⌘' : 'Ctrl'}+K)`}
+          aria-label={t('search.openAriaMod', { mod })}
+          title={t('search.titleMod', { mod })}
         >
           <Search className="w-4 h-4 shrink-0" aria-hidden="true" />
           {/* На 1024–1280px подпись скрыта — экономим ширину навбара. */}
-          <span className="text-sm font-medium hidden xl:inline">Поиск</span>
+          <span className="text-sm font-medium hidden xl:inline">{t('common.search')}</span>
         </button>
       ) : variant === 'inline' ? (
         <button
@@ -243,7 +250,7 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
             'shadow-sm hover:border-champagne/40 transition-colors',
             className,
           )}
-          aria-label="Открыть поиск индикаторов"
+          aria-label={t('search.openAria')}
         >
           <Search className="w-4 h-4 text-text-tertiary shrink-0 group-hover:text-champagne transition-colors" aria-hidden="true" />
           <span className="flex-1 text-sm text-text-tertiary truncate">{placeholder}</span>
@@ -262,8 +269,8 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
             'rounded-xl flex items-center justify-center p-1.5 bg-obsidian-lighter/50 border border-border-subtle text-text-secondary hover:text-text-primary hover:bg-obsidian-lighter/80 transition-colors',
             className,
           )}
-          aria-label={`Открыть поиск индикаторов (${isAppleModKey ? '⌘' : 'Ctrl'}+K)`}
-          title={`Поиск индикаторов (${isAppleModKey ? '⌘' : 'Ctrl'}+K)`}
+          aria-label={t('search.openAriaMod', { mod })}
+          title={t('search.titleMod', { mod })}
         >
           <Search className="w-3.5 h-3.5" aria-hidden="true" />
         </button>
@@ -274,11 +281,11 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
           className="fixed inset-0 z-[200] flex items-start justify-center pt-[10vh] px-4"
           role="dialog"
           aria-modal="true"
-          aria-label="Поиск индикаторов"
+          aria-label={t('search.dialogAria')}
         >
           <button
             type="button"
-            aria-label="Закрыть"
+            aria-label={t('common.close')}
             className="absolute inset-0 bg-text-primary/30 backdrop-blur-[2px]"
             onClick={close}
           />
@@ -291,15 +298,15 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
                 value={query}
                 onChange={(e) => onQueryChange(e.target.value)}
                 onKeyDown={handleListKey}
-                placeholder="Поиск индикатора по названию или категории…"
+                placeholder={t('search.placeholder')}
                 className="flex-1 bg-transparent outline-none text-base text-text-primary placeholder:text-text-tertiary"
-                aria-label="Поисковый запрос"
+                aria-label={t('search.queryAria')}
               />
               <button
                 type="button"
                 onClick={close}
                 className={cn(FOCUS_RING, 'rounded-lg p-1 text-text-tertiary hover:text-text-primary')}
-                aria-label="Закрыть"
+                aria-label={t('common.close')}
               >
                 <X className="w-4 h-4" />
               </button>
@@ -314,7 +321,7 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
                 </div>
               ) : (
                 results.map((ind, i) => {
-                  const cat = CATEGORIES.find((c) => c.apiCategory === ind.category);
+                  const cat = findCategoryByApiLabel(ind.category_ru || ind.category);
                   const active = i === hi;
                   return (
                     <button

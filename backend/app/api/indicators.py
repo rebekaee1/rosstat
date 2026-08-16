@@ -11,6 +11,13 @@ from app.models import Indicator, IndicatorData
 from app.schemas import IndicatorSummary, IndicatorDetail, IndicatorStats, DataPointOut, DataResponse
 from app.core.cache import cache_get, cache_set, versioned_key
 from app.config import settings
+from app.services.locale import get_locale
+from app.services.seo_i18n import (
+    localize_category_name,
+    localize_hero_label,
+    public_indicator_fields,
+    public_indicator_seo,
+)
 
 router = APIRouter(prefix="/indicators", tags=["indicators"])
 
@@ -150,7 +157,8 @@ async def list_indicators(
         "indicators",
         f"list:{category or 'all'}:"
         f"{'all' if include_inactive else 'active'}:"
-        f"{'all' if include_unlisted else 'listed'}",
+        f"{'all' if include_unlisted else 'listed'}:"
+        f"{get_locale()}",
     )
     cached = await cache_get(cache_key)
     if cached:
@@ -253,15 +261,25 @@ async def list_indicators(
 
         ind_mcfg = ind.model_config_json or {}
 
+        fields = public_indicator_fields(
+            ind.code,
+            name_ru=ind.name,
+            name_en=ind.name_en,
+            unit_ru=ind.unit,
+        )
         out.append(IndicatorSummary(
-            code=ind.code, name=ind.name, name_en=ind.name_en,
-            unit=ind.unit, category=ind.category, frequency=ind.frequency,
+            code=ind.code, name=fields["name"] or ind.name, name_en=ind.name_en,
+            unit=fields.get("unit") or ind.unit,
+            category=localize_category_name(ind.category),
+            category_ru=ind.category,
+            frequency=ind.frequency,
             is_active=ind.is_active,
             is_listed=ind.is_listed,
             current_value=float(current_val) if current_val is not None else None,
             current_date=current_dt, previous_value=float(prev_val) if prev_val is not None else None,
             change=change,
-            hero_value=hero_value, hero_unit=hero_unit, hero_label=hero_label,
+            hero_value=hero_value, hero_unit=hero_unit,
+            hero_label=localize_hero_label(hero_label),
             hero_change=hero_change,
             seo_keywords=ind.seo_keywords,
             alternate_frequencies=ind_mcfg.get("alternate_frequencies") or None,
@@ -284,7 +302,7 @@ def _validate_code(code: str) -> None:
 @router.get("/{code}", response_model=IndicatorDetail)
 async def get_indicator(code: str, db: AsyncSession = Depends(get_db)):
     _validate_code(code)
-    detail_key = await versioned_key(code, "detail")
+    detail_key = await versioned_key(code, f"detail:{get_locale()}")
     cached = await cache_get(detail_key)
     if cached:
         return cached
@@ -325,23 +343,55 @@ async def get_indicator(code: str, db: AsyncSession = Depends(get_db)):
             db, indicator.id, indicator.frequency, current_val,
         )
 
+    fields = public_indicator_seo(
+        indicator.code,
+        name_ru=indicator.name,
+        name_en=indicator.name_en,
+        description_ru=indicator.description,
+        methodology_ru=indicator.methodology,
+        unit_ru=indicator.unit,
+        source_ru=indicator.source,
+        seo_title_ru=indicator.seo_title,
+        seo_description_ru=indicator.seo_description,
+        seo_blocks_ru=indicator.seo_blocks,
+        frequency=indicator.frequency,
+    )
+    from types import SimpleNamespace
+
+    from app.services.seo_renderer import _enrich_description
+
+    seo_desc = fields.get("seo_description") or indicator.seo_description
+    if current_val is not None and current_dt is not None:
+        seo_desc = _enrich_description(
+            seo_desc or "",
+            SimpleNamespace(value=current_val, date=current_dt),
+            fields.get("unit") or indicator.unit,
+            code=indicator.code,
+            frequency=indicator.frequency,
+        )
     detail = IndicatorDetail(
-        code=indicator.code, name=indicator.name, name_en=indicator.name_en,
-        unit=indicator.unit, category=indicator.category, is_active=indicator.is_active,
+        code=indicator.code,
+        name=fields["name"] or indicator.name,
+        name_en=indicator.name_en,
+        unit=fields["unit"] or indicator.unit,
+        category=localize_category_name(indicator.category),
+        category_ru=indicator.category,
+        is_active=indicator.is_active,
         is_listed=indicator.is_listed,
-        frequency=indicator.frequency, source=indicator.source,
-        source_url=indicator.source_url, description=indicator.description,
-        methodology=indicator.methodology,
-        seo_title=indicator.seo_title,
-        seo_description=indicator.seo_description,
-        seo_blocks=indicator.seo_blocks,
+        frequency=indicator.frequency, source=fields.get("source") or indicator.source,
+        source_url=indicator.source_url, description=fields["description"],
+        methodology=fields["methodology"],
+        seo_title=fields.get("seo_title") or indicator.seo_title,
+        seo_description=seo_desc,
+        seo_blocks=fields.get("seo_blocks") if fields.get("seo_blocks") is not None else indicator.seo_blocks,
         current_value=float(current_val) if current_val is not None else None,
         current_date=current_dt, previous_value=float(prev_val) if prev_val is not None else None,
         change=change, data_count=count, first_date=first_dt, last_date=last_dt,
         updated_at=indicator.updated_at,
         alternate_frequencies=alt_freq,
         primary_indicator_code=primary_code,
-        hero_value=hero_value, hero_unit=hero_unit, hero_label=hero_label,
+        hero_value=hero_value, hero_unit=hero_unit,
+        hero_label=localize_hero_label(hero_label),
         hero_change=hero_change,
     )
 

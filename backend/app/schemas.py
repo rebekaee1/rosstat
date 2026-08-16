@@ -9,7 +9,10 @@ class IndicatorSummary(BaseModel):
     name: str
     name_en: str | None = None
     unit: str
+    # Locale-facing category label (EN via CATEGORY_META_EN / localize_category_name).
     category: str | None = None
+    # Storage/api key — Russian Indicator.category; use for filters and CATEGORIES.apiCategory.
+    category_ru: str | None = None
     # Частота нужна listing-карточке для формата даты (квартальный ряд → «I кв.
     # 2026», годовой → «2026», а не всегда месяц).
     frequency: str | None = None

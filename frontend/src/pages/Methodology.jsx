@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
+import { useLocale } from '../i18n';
 
 const CARD = 'rounded-2xl bg-surface border border-border-subtle p-5 md:p-6';
 const H2 = 'font-display text-2xl md:text-3xl font-bold text-text-primary mb-4 leading-tight';
@@ -23,7 +24,8 @@ function Step({ n, title, children }) {
 }
 
 export default function Methodology() {
-  const seo = getPageSeo('methodology');
+  const { locale } = useLocale();
+  const seo = getPageSeo('methodology', locale);
   useDocumentMeta({
     title: seo.title,
     description: seo.description,

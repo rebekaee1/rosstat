@@ -15,62 +15,46 @@ import { getPageSeo } from '../lib/pageMeta';
 import useInflationCalc from '../lib/useInflationCalc';
 import { formatDate, formatAxisTick, cn } from '../lib/format';
 import { formatRubles, parseAmount, formatInput, fmtPct, years as yearsPhrase } from '../lib/calcFormat';
+import { getSiteOrigin } from '../lib/siteOrigin';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
 import { SkeletonBox } from '../components/Skeleton';
 import { track, events } from '../lib/track';
 import { buildShareUrl } from '../lib/utm';
 import useScrollDepth from '../lib/useScrollDepth';
 import FaqAccordion from '../components/FaqAccordion';
+import { useLocale, useT } from '../i18n';
 
 /* ─── Constants ─── */
 
 const PRESETS = [
-  { label: '1 год', offset: 1 },
-  { label: '5 лет', offset: 5 },
-  { label: '10 лет', offset: 10 },
-  { label: 'С 2000', from: 2000 },
-  { label: 'Всё время', from: null },
+  { labelKey: 'calc.inflation.preset.1y', offset: 1 },
+  { labelKey: 'calc.inflation.preset.5y', offset: 5 },
+  { labelKey: 'calc.inflation.preset.10y', offset: 10 },
+  { labelKey: 'calc.inflation.preset.from2000', from: 2000 },
+  { labelKey: 'calc.inflation.preset.all', from: null },
 ];
 
 const MILESTONES = [
-  { year: 1998, label: 'Дефолт' },
-  { year: 2008, label: 'Кризис' },
-  { year: 2014, label: 'Санкции' },
-  { year: 2020, label: 'COVID' },
-  { year: 2022, label: 'Санкции' },
+  { year: 1998, labelKey: 'calc.inflation.milestone.default' },
+  { year: 2008, labelKey: 'calc.inflation.milestone.crisis' },
+  { year: 2014, labelKey: 'calc.inflation.milestone.sanctions' },
+  { year: 2020, labelKey: 'calc.inflation.milestone.covid' },
+  { year: 2022, labelKey: 'calc.inflation.milestone.sanctions' },
 ];
 
-const FAQ_ITEMS = [
-  {
-    q: 'Как рассчитывается инфляция?',
-    a: 'Инфляция рассчитывается на основе индекса потребительских цен (ИПЦ), который ежемесячно публикует Росстат. ИПЦ показывает, на сколько процентов изменилась стоимость фиксированной потребительской корзины из ~500 товаров и услуг.',
-  },
-  {
-    q: 'Что такое ИПЦ?',
-    a: 'ИПЦ (индекс потребительских цен) — основной показатель инфляции. Значение 100,73 означает рост цен на 0,73% за месяц. Росстат публикует ИПЦ отдельно для продуктов, непродовольственных товаров и услуг.',
-  },
-  {
-    q: 'Почему моя личная инфляция отличается от официальной?',
-    a: 'Официальный ИПЦ рассчитывается по усреднённой корзине. Ваша структура расходов может отличаться: если тратите больше на еду — ваша инфляция будет ближе к продовольственному ИПЦ, который обычно выше общего.',
-  },
-  {
-    q: 'Как защитить сбережения от инфляции?',
-    a: 'Основные инструменты: банковские вклады (ставки обычно близки к инфляции), ОФЗ-ИН (индексируются на инфляцию), недвижимость, акции. Хранение наличных — гарантированная потеря покупательной способности.',
-  },
-  {
-    q: 'Какой была максимальная инфляция в России?',
-    a: '2 508% в 1992 году (переход к рыночной экономике). В более позднее время: 131% в 1995, 84% в 1998 (дефолт), 12% в 2022. Цель ЦБ РФ — 4% в год.',
-  },
-  {
-    q: 'Откуда берутся данные?',
-    a: 'Все данные — официальные значения ИПЦ Росстата (Федеральной службы государственной статистики) с января 1991 года по текущий месяц. Обновляются по мере публикации Росстата.',
-  },
+const FAQ_KEYS = [
+  { q: 'calc.inflation.faq.q1', a: 'calc.inflation.faq.a1' },
+  { q: 'calc.inflation.faq.q2', a: 'calc.inflation.faq.a2' },
+  { q: 'calc.inflation.faq.q3', a: 'calc.inflation.faq.a3' },
+  { q: 'calc.inflation.faq.q4', a: 'calc.inflation.faq.a4' },
+  { q: 'calc.inflation.faq.q5', a: 'calc.inflation.faq.a5' },
+  { q: 'calc.inflation.faq.q6', a: 'calc.inflation.faq.a6' },
 ];
 
 const CATEGORY_META = [
-  { key: 'food', label: 'Продовольственные', icon: ShoppingCart },
-  { key: 'nonfood', label: 'Непродовольственные', icon: Package },
-  { key: 'services', label: 'Услуги', icon: Wrench },
+  { key: 'food', labelKey: 'calc.inflation.cat.food', icon: ShoppingCart },
+  { key: 'nonfood', labelKey: 'calc.inflation.cat.nonfood', icon: Package },
+  { key: 'services', labelKey: 'calc.inflation.cat.services', icon: Wrench },
 ];
 
 /* ─── Sub-components ─── */
@@ -144,8 +128,10 @@ function InsightCard(props) {
 }
 
 function CategoryBars({ result }) {
-  const categories = CATEGORY_META.map(c => ({
+  const t = useT();
+  const categories = CATEGORY_META.map((c) => ({
     ...c,
+    label: t(c.labelKey),
     rate: result[c.key],
   })).sort((a, b) => b.rate - a.rate);
 
@@ -190,6 +176,7 @@ function CategoryBars({ result }) {
 }
 
 function YearlyBreakdownTable({ breakdown }) {
+  const t = useT();
   const [expanded, setExpanded] = useState(false);
   if (!breakdown?.length) return null;
 
@@ -203,10 +190,10 @@ function YearlyBreakdownTable({ breakdown }) {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border-subtle">
-              <th className="text-left text-[10px] uppercase tracking-wider text-text-tertiary font-medium py-2 px-1 w-16">Год</th>
-              <th className="text-left text-[10px] uppercase tracking-wider text-text-tertiary font-medium py-2 px-1">Годовая</th>
-              <th className="text-right text-[10px] uppercase tracking-wider text-text-tertiary font-medium py-2 px-1 w-20">Нак.</th>
-              <th className="text-right text-[10px] uppercase tracking-wider text-text-tertiary font-medium py-2 px-1 hidden sm:table-cell">Покуп. способность</th>
+              <th className="text-left text-[10px] uppercase tracking-wider text-text-tertiary font-medium py-2 px-1 w-16">{t('calc.inflation.table.year')}</th>
+              <th className="text-left text-[10px] uppercase tracking-wider text-text-tertiary font-medium py-2 px-1">{t('calc.inflation.table.annual')}</th>
+              <th className="text-right text-[10px] uppercase tracking-wider text-text-tertiary font-medium py-2 px-1 w-20">{t('calc.inflation.table.cum')}</th>
+              <th className="text-right text-[10px] uppercase tracking-wider text-text-tertiary font-medium py-2 px-1 hidden sm:table-cell">{t('calc.inflation.table.purchasing')}</th>
             </tr>
           </thead>
           <tbody>
@@ -260,7 +247,7 @@ function YearlyBreakdownTable({ breakdown }) {
           className="mt-3 flex items-center gap-1 text-xs text-champagne hover:text-champagne-muted transition-colors font-medium"
         >
           <ChevronRight className={cn('w-3.5 h-3.5 transition-transform', expanded && 'rotate-90')} />
-          {expanded ? 'Свернуть' : `Показать все ${breakdown.length} лет`}
+          {expanded ? t('calc.inflation.collapse') : t('calc.inflation.showAllYears', { n: breakdown.length })}
         </button>
       )}
     </div>
@@ -270,6 +257,8 @@ function YearlyBreakdownTable({ breakdown }) {
 /* ─── Main Page ─── */
 
 export default function CalculatorPage() {
+  const t = useT();
+  const { locale } = useLocale();
   const [searchParams, setSearchParams] = useSearchParams();
   const currentYear = new Date().getFullYear();
   const containerRef = useRef(null);
@@ -300,7 +289,7 @@ export default function CalculatorPage() {
     return formatDate(lastAvailableDate, 'full');
   }, [lastAvailableDate]);
 
-  const calcSeo = getPageSeo('calculator');
+  const calcSeo = getPageSeo('calculator', locale);
   useDocumentMeta({
     title: calcSeo.title,
     description: calcSeo.description,
@@ -360,19 +349,31 @@ export default function CalculatorPage() {
   const handleCopyText = useCallback(async () => {
     if (!result) return;
     track(events.CALC_COPY_RESULT);
-    const f = result.effectiveFrom ?? fromYear;
-    const t = result.effectiveTo ?? toYear;
+    const fromY = result.effectiveFrom ?? fromYear;
+    const toY = result.effectiveTo ?? toYear;
     const text = reversed
-      ? `${formatInput(amount)} ₽ в ${t} году — это было ${formatRubles(result.purchasing)} в ${f} году (инфляция ${fmtPct(result.totalInflation)}). Рассчитано на forecasteconomy.com/calculator`
-      : `${formatInput(amount)} ₽ в ${f} году эквивалентны ${formatRubles(result.equivalent)} в ${t} году (инфляция ${fmtPct(result.totalInflation)}). Рассчитано на forecasteconomy.com/calculator`;
+      ? t('calc.inflation.shareReverse', {
+        amount: formatInput(amount),
+        to: toY,
+        value: formatRubles(result.purchasing),
+        from: fromY,
+        inflation: fmtPct(result.totalInflation),
+      })
+      : t('calc.inflation.shareForward', {
+        amount: formatInput(amount),
+        from: fromY,
+        value: formatRubles(result.equivalent),
+        to: toY,
+        inflation: fmtPct(result.totalInflation),
+      });
     try { await navigator.clipboard.writeText(text); } catch { /* ok */ }
-  }, [result, amount, fromYear, toYear, reversed]);
+  }, [result, amount, fromYear, toYear, reversed, t]);
 
   const heroValue = reversed ? result?.purchasing : result?.equivalent;
   const heroPrefix = reversed
-    ? `${formatInput(amount)} ₽ в ${dispTo} году — это было`
-    : `${formatInput(amount)} ₽ в ${dispFrom} году — это`;
-  const heroSuffix = reversed ? `в ${dispFrom} году` : `в ${dispTo} году`;
+    ? t('calc.inflation.heroWas', { amount: formatInput(amount), year: dispTo })
+    : t('calc.inflation.heroIs', { amount: formatInput(amount), year: dispFrom });
+  const heroSuffix = t('calc.inflation.inYear', { year: reversed ? dispFrom : dispTo });
 
   const chartData = useMemo(() => {
     if (!result?.series?.length) return [];
@@ -424,65 +425,87 @@ export default function CalculatorPage() {
     const items = [];
     const periodYears = Math.round(result.months / 12);
     const lossPercent = (1 - 1 / result.multiplier) * 100;
+    const yearsLabel = locale === 'en' ? t('calc.years', { n: periodYears }) : yearsPhrase(periodYears);
 
     items.push({
       icon: TrendingDown,
-      text: `Рубль потерял ${lossPercent.toFixed(0)}% покупательной способности за ${yearsPhrase(periodYears)}`,
+      text: t('calc.inflation.insight.loss', { pct: lossPercent.toFixed(0), years: yearsLabel }),
     });
 
-    const cats = CATEGORY_META.map(c => ({ ...c, rate: result[c.key] })).sort((a, b) => b.rate - a.rate);
+    const cats = CATEGORY_META.map((c) => ({ ...c, label: t(c.labelKey), rate: result[c.key] })).sort((a, b) => b.rate - a.rate);
     if (cats[0].rate > 0) {
       const diff = cats[0].rate - cats[cats.length - 1].rate;
       items.push({
         icon: BarChart3,
-        text: `Больше всего подорожали ${cats[0].label.toLowerCase()} (+${cats[0].rate.toFixed(0)}%), на ${diff.toFixed(0)} п.п. больше самой дешёвой категории`,
+        text: t('calc.inflation.insight.topCat', {
+          cat: cats[0].label.toLowerCase(),
+          pct: cats[0].rate.toFixed(0),
+          diff: diff.toFixed(0),
+        }),
       });
     }
 
     if (result.peakYear && result.yearlyBreakdown.length > 2) {
       const ratio = result.peakYear.rate / result.avgAnnual;
+      const peakExtra = ratio > 1.5
+        ? t('calc.inflation.insight.peakRatio', { ratio: ratio.toFixed(1).replace('.', ',') })
+        : '';
       items.push({
         icon: Flame,
-        text: `Пиковая инфляция: ${result.peakYear.year} год — ${fmtPct(result.peakYear.rate)}${ratio > 1.5 ? ` (в ${ratio.toFixed(1).replace('.', ',')}× больше средней)` : ''}`,
+        text: t('calc.inflation.insight.peak', {
+          year: result.peakYear.year,
+          rate: fmtPct(result.peakYear.rate),
+        }) + peakExtra,
       });
     }
 
     items.push({
       icon: Target,
-      text: `Для сохранения покупательной способности доходы должны были расти минимум на ${fmtPct(result.avgAnnual)} ежегодно`,
+      text: t('calc.inflation.insight.income', { rate: fmtPct(result.avgAnnual) }),
     });
 
     if (result.doublingYears && result.doublingYears < 100) {
       items.push({
         icon: Clock,
-        text: `При средней инфляции ${fmtPct(result.avgAnnual)} цены удваиваются каждые ${result.doublingYears} лет`,
+        text: t('calc.inflation.insight.double', {
+          rate: fmtPct(result.avgAnnual),
+          years: result.doublingYears,
+        }),
       });
     }
 
     return items;
-  }, [result]);
+  }, [result, t, locale]);
 
   /* ── JSON-LD ── */
+  const faqItems = useMemo(
+    () => FAQ_KEYS.map((item) => ({ q: t(item.q), a: t(item.a) })),
+    [t],
+  );
+
   const faqJsonLd = useMemo(() => ({
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: FAQ_ITEMS.map(item => ({
+    mainEntity: faqItems.map((item) => ({
       '@type': 'Question', name: item.q,
       acceptedAnswer: { '@type': 'Answer', text: item.a },
     })),
-  }), []);
+  }), [faqItems]);
 
-  const webAppJsonLd = useMemo(() => ({
-    '@context': 'https://schema.org',
-    '@type': 'WebApplication',
-    name: 'Калькулятор инфляции в России',
-    url: 'https://forecasteconomy.com/calculator',
-    description: 'Рассчитайте кумулятивную инфляцию и покупательную способность рубля с 1991 года по данным ИПЦ Росстата.',
-    applicationCategory: 'FinanceApplication',
-    operatingSystem: 'All',
-    offers: { '@type': 'Offer', price: '0', priceCurrency: 'RUB' },
-    creator: { '@type': 'Organization', name: 'Forecast Economy', url: 'https://forecasteconomy.com' },
-  }), []);
+  const webAppJsonLd = useMemo(() => {
+    const origin = getSiteOrigin();
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      name: t('calc.inflation.jsonLdName'),
+      url: `${origin}/calculator`,
+      description: t('calc.inflation.jsonLdDesc'),
+      applicationCategory: 'FinanceApplication',
+      operatingSystem: 'All',
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'RUB' },
+      creator: { '@type': 'Organization', name: 'Forecast Economy', url: origin },
+    };
+  }, [t]);
 
   useEffect(() => {
     let faqScript = document.getElementById('calc-faq-ld');
@@ -503,10 +526,10 @@ export default function CalculatorPage() {
       <nav data-animate className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-text-tertiary mb-8">
         <Link to="/" className="hover:text-champagne transition-colors lift-hover inline-flex items-center gap-1.5 group">
           <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
-          Главная
+          {t('common.home')}
         </Link>
         <span className="text-text-tertiary/40">/</span>
-        <span className="text-text-secondary">Калькулятор</span>
+        <span className="text-text-secondary">{t('calc.inflation.crumb')}</span>
       </nav>
 
       {/* Hero */}
@@ -516,15 +539,14 @@ export default function CalculatorPage() {
             <Calculator className="w-5 h-5 text-champagne" />
           </div>
           <span className="text-[10px] uppercase tracking-[0.3em] text-champagne font-semibold">
-            Данные ИПЦ Росстата с 1991 года
+            {t('calc.inflation.eyebrow')}
           </span>
         </div>
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold tracking-tight text-text-primary leading-tight mb-3">
-          Калькулятор инфляции
+          {t('calc.inflation.title')}
         </h1>
         <p className="text-base text-text-secondary leading-relaxed max-w-xl">
-          Узнайте, как изменилась покупательная способность рубля. Мгновенный расчёт
-          по официальным данным Росстата с годовой разбивкой и анализом по категориям.
+          {t('calc.inflation.subtitle')}
         </p>
       </header>
 
@@ -534,7 +556,7 @@ export default function CalculatorPage() {
         {/* Reverse mode toggle */}
         <div className="flex items-center justify-between mb-5">
           <label htmlFor="calc-amount" className="text-[10px] uppercase tracking-[0.2em] font-medium text-text-tertiary">
-            Сумма
+            {t('calc.inflation.amount')}
           </label>
           <button
             type="button"
@@ -548,7 +570,7 @@ export default function CalculatorPage() {
             )}
           >
             <ArrowUpDown className="w-3 h-3" />
-            {reversed ? 'Обратный расчёт' : 'Прямой расчёт'}
+            {reversed ? t('calc.inflation.reverse') : t('calc.inflation.forward')}
           </button>
         </div>
 
@@ -574,22 +596,22 @@ export default function CalculatorPage() {
           </div>
           {reversed && (
             <p className="mt-2 text-xs text-champagne/80">
-              Введите сумму в ценах {toYear} года — калькулятор покажет, сколько это было в {fromYear}
+              {t('calc.inflation.reverseHint', { to: toYear, from: fromYear })}
             </p>
           )}
         </div>
 
         {/* Year Sliders */}
         <div className="grid grid-cols-2 gap-6 mb-6">
-          <YearSlider label="Из года" value={fromYear} min={effectiveMin} max={effectiveMax - 1} onChange={handleFromYear} ariaLabel="Начальный год" />
-          <YearSlider label="В год" value={toYear} min={effectiveMin + 1} max={effectiveMax} onChange={handleToYear} ariaLabel="Конечный год" />
+          <YearSlider label={t('calc.inflation.fromYear')} value={fromYear} min={effectiveMin} max={effectiveMax - 1} onChange={handleFromYear} ariaLabel={t('calc.inflation.fromYearAria')} />
+          <YearSlider label={t('calc.inflation.toYear')} value={toYear} min={effectiveMin + 1} max={effectiveMax} onChange={handleToYear} ariaLabel={t('calc.inflation.toYearAria')} />
         </div>
 
         {/* Presets */}
         <div className="flex flex-wrap gap-2">
-          {PRESETS.map(p => (
+          {PRESETS.map((p) => (
             <button
-              key={p.label} type="button"
+              key={t(p.labelKey)} type="button"
               onClick={() => handlePreset(p)}
               className={cn(
                 FOCUS_RING_SURFACE,
@@ -599,12 +621,12 @@ export default function CalculatorPage() {
                   : 'bg-obsidian border border-border-subtle text-text-tertiary hover:text-text-secondary hover:border-champagne/15'
               )}
             >
-              {p.label}
+              {t(p.labelKey)}
             </button>
           ))}
           {lastDateFormatted && (
             <span className="ml-auto text-[10px] text-text-tertiary self-center font-mono">
-              Данные до {lastDateFormatted}
+              {t('calc.inflation.dataUntil', { date: lastDateFormatted })}
             </span>
           )}
         </div>
@@ -622,7 +644,7 @@ export default function CalculatorPage() {
       {/* Error */}
       {isError && !isLoading && (
         <div className="rounded-[2rem] bg-warn-surface border border-champagne/35 p-6 mb-6 text-sm text-warn-text">
-          Не удалось загрузить данные ИПЦ. Проверьте соединение и обновите страницу.
+          {t('calc.inflation.loadError')}
         </div>
       )}
 
@@ -654,29 +676,36 @@ export default function CalculatorPage() {
                 означает с января 2000 по последний доступный месяц 2026. */}
             {result.periodFrom && result.periodTo && (
               <p className="text-xs text-text-tertiary mb-6 -mt-4">
-                Период расчёта: с {formatDate(result.periodFrom, 'full')} по {formatDate(result.periodTo, 'full')}.
+                {t('calc.inflation.periodLabel', {
+                  from: formatDate(result.periodFrom, 'full'),
+                  to: formatDate(result.periodTo, 'full'),
+                })}
               </p>
             )}
 
             {result.clamped && (
               <p className="text-xs text-text-tertiary mb-6 -mt-4">
-                Данные ИПЦ доступны с {effectiveMin} по {effectiveMax} год — расчёт выполнен
-                за {dispFrom}–{dispTo}.
+                {t('calc.inflation.clampedNote', {
+                  min: effectiveMin,
+                  max: effectiveMax,
+                  from: dispFrom,
+                  to: dispTo,
+                })}
               </p>
             )}
 
             {/* Stat pills */}
             <div className="flex flex-wrap gap-3 mb-6">
               <div className="px-4 py-2.5 rounded-xl bg-obsidian border border-border-subtle">
-                <p className="text-[10px] uppercase tracking-[0.15em] text-text-tertiary font-medium mb-0.5">Инфляция</p>
+                <p className="text-[10px] uppercase tracking-[0.15em] text-text-tertiary font-medium mb-0.5">{t('calc.inflation.statInflation')}</p>
                 <p className="text-base font-mono font-bold text-text-primary tabular-nums">{fmtPct(result.totalInflation, true)}</p>
               </div>
               <div className="px-4 py-2.5 rounded-xl bg-obsidian border border-border-subtle">
-                <p className="text-[10px] uppercase tracking-[0.15em] text-text-tertiary font-medium mb-0.5">Среднегодовая</p>
+                <p className="text-[10px] uppercase tracking-[0.15em] text-text-tertiary font-medium mb-0.5">{t('calc.inflation.statAvgAnnual')}</p>
                 <p className="text-base font-mono font-bold text-text-primary tabular-nums">{fmtPct(result.avgAnnual)}</p>
               </div>
               <div className="px-4 py-2.5 rounded-xl bg-obsidian border border-border-subtle">
-                <p className="text-[10px] uppercase tracking-[0.15em] text-text-tertiary font-medium mb-0.5">Множитель</p>
+                <p className="text-[10px] uppercase tracking-[0.15em] text-text-tertiary font-medium mb-0.5">{t('calc.inflation.multiplier')}</p>
                 <p className="text-base font-mono font-bold text-text-primary tabular-nums">×{result.multiplier.toFixed(2).replace('.', ',')}</p>
               </div>
             </div>
@@ -691,7 +720,7 @@ export default function CalculatorPage() {
                   : 'bg-obsidian border border-border-subtle text-text-secondary hover:text-champagne hover:border-champagne/20'
               )}>
                 {copied ? <Check className="w-3.5 h-3.5" /> : <Share2 className="w-3.5 h-3.5" />}
-                {copied ? 'Ссылка скопирована' : 'Поделиться ссылкой'}
+                {copied ? t('calc.inflation.shareCopied') : t('calc.inflation.shareLink')}
               </button>
               <button type="button" onClick={handleCopyText} className={cn(
                 FOCUS_RING_SURFACE,
@@ -699,7 +728,7 @@ export default function CalculatorPage() {
                 'bg-obsidian border border-border-subtle text-text-secondary hover:text-champagne hover:border-champagne/20 transition-all'
               )}>
                 <Copy className="w-3.5 h-3.5" />
-                Скопировать текст
+                {t('calc.inflation.copyText')}
               </button>
             </div>
           </section>
@@ -718,19 +747,19 @@ export default function CalculatorPage() {
             <section data-animate className="rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-5 md:p-6 mb-6">
               <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
                 <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
-                  {chartMode === 'purchasing' ? 'Покупательная способность' : 'Эквивалент суммы'}
+                  {chartMode === 'purchasing' ? t('calc.inflation.chartPurchasing') : t('calc.inflation.chartEquivalent')}
                 </h3>
                 <div className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle">
                   {[
-                    { key: 'purchasing', label: 'Покуп. способность' },
-                    { key: 'equivalent', label: 'Рост суммы' },
+                    { key: 'purchasing', label: t('calc.inflation.modePurchasing') },
+                    { key: 'equivalent', label: t('calc.inflation.modeEquivalent') },
                   ].map(m => (
                     <button key={m.key} type="button" onClick={() => { setChartMode(m.key); track(events.CALC_CHART_MODE, { mode: m.key }); }}
                       className={cn(
                         'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
                         chartMode === m.key ? 'bg-champagne/15 text-champagne' : 'text-text-tertiary hover:text-text-secondary'
                       )}>
-                      {m.label}
+                      {t(m.labelKey)}
                     </button>
                   ))}
                 </div>
@@ -789,7 +818,7 @@ export default function CalculatorPage() {
           {/* ── Category Breakdown ── */}
           <section data-animate className="rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6">
             <h3 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-5">
-              Инфляция по категориям за период
+              {t('calc.inflation.catsTitle')}
             </h3>
             <CategoryBars result={result} />
           </section>
@@ -798,7 +827,7 @@ export default function CalculatorPage() {
           {result.yearlyBreakdown?.length > 1 && (
             <section data-animate className="rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6">
               <h3 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-5">
-                Инфляция по годам
+                {t('calc.inflation.yearsTitle')}
               </h3>
               <YearlyBreakdownTable breakdown={result.yearlyBreakdown} />
             </section>
@@ -808,29 +837,25 @@ export default function CalculatorPage() {
 
       {/* ── Methodology ── */}
       <section data-animate data-block="calc-methodology" className="rounded-[2rem] bg-obsidian-light border border-border-subtle p-6 md:p-8 mb-8">
-        <h3 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-4">Методология расчёта</h3>
+        <h3 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-4">{t('calc.methodologyHeading')}</h3>
         <div className="space-y-3 text-sm text-text-secondary leading-relaxed">
           <p>
-            Калькулятор использует официальные ежемесячные значения ИПЦ (индекса потребительских цен) Росстата с января 1991 года.
-            ИПЦ отражает изменение стоимости фиксированной корзины из ~500 товаров и услуг.
+            {t('calc.inflation.method.p1')}
           </p>
           <p className="font-mono text-[11px] text-text-tertiary border-l-2 border-champagne/30 pl-4">
-            Формула: amount × ∏(CPI_i / 100) для i от начального до конечного месяца,
-            где CPI_i — индекс потребительских цен за i-й месяц (напр. 100.73 = рост на 0.73%).
+            {t('calc.inflation.method.p2')}
           </p>
           <p>
-            Разбивка по категориям рассчитывается аналогично с использованием отдельных индексов:
-            ИПЦ на продовольственные товары, непродовольственные товары и платные услуги населению.
-            Годовая разбивка показывает инфляцию за каждый календарный год в выбранном периоде.
+            {t('calc.inflation.method.p3')}
           </p>
         </div>
       </section>
 
       {/* ── FAQ ── */}
       <section data-animate className="mb-8">
-        <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-6">Частые вопросы</h2>
+        <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-6">{t('calc.faqHeading')}</h2>
         <FaqAccordion
-          items={FAQ_ITEMS}
+          items={faqItems}
           onToggle={({ title, open }) => {
             if (open) track(events.FAQ_TOGGLE, { question: title });
           }}
@@ -839,15 +864,15 @@ export default function CalculatorPage() {
 
       {/* ── Другие калькуляторы ── */}
       <section data-animate>
-        <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-4">Другие калькуляторы</h2>
+        <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-4">{t('calc.otherHeading')}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Link to="/calculator/mortgage" className="group rounded-2xl bg-surface border border-border-subtle p-4 hover:border-champagne/30 transition-colors">
-            <p className="text-sm font-semibold text-text-primary group-hover:text-champagne transition-colors mb-1">Ипотечный калькулятор</p>
-            <p className="text-[13px] text-text-secondary">Ежемесячный платёж, переплата и график погашения кредита.</p>
+            <p className="text-sm font-semibold text-text-primary group-hover:text-champagne transition-colors mb-1">{t('calc.inflation.otherMortgageTitle')}</p>
+            <p className="text-[13px] text-text-secondary">{t('calc.inflation.otherMortgageDesc')}</p>
           </Link>
           <Link to="/calculator/compound" className="group rounded-2xl bg-surface border border-border-subtle p-4 hover:border-champagne/30 transition-colors">
-            <p className="text-sm font-semibold text-text-primary group-hover:text-champagne transition-colors mb-1">Сложные проценты</p>
-            <p className="text-[13px] text-text-secondary">Рост капитала с пополнениями и поправкой на инфляцию.</p>
+            <p className="text-sm font-semibold text-text-primary group-hover:text-champagne transition-colors mb-1">{t('calc.inflation.otherCompoundTitle')}</p>
+            <p className="text-[13px] text-text-secondary">{t('calc.inflation.otherCompoundDesc')}</p>
           </Link>
         </div>
       </section>

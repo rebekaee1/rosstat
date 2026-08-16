@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { plural, years } from './calcFormat';
+import { plural, years, loanYearOrdinal } from './calcFormat';
 
 describe('calcFormat — склонения', () => {
   it('годы склоняются по русским правилам, включая второй десяток', () => {
@@ -21,5 +21,26 @@ describe('calcFormat — склонения', () => {
     expect(plural(1, 'месяц', 'месяца', 'месяцев')).toBe('месяц');
     expect(plural(3, 'месяц', 'месяца', 'месяцев')).toBe('месяца');
     expect(plural(13, 'месяц', 'месяца', 'месяцев')).toBe('месяцев');
+  });
+});
+
+describe('loanYearOrdinal', () => {
+  it('русская форма с -й', () => {
+    expect(loanYearOrdinal(1)).toBe('1-й');
+    expect(loanYearOrdinal(3, 'ru')).toBe('3-й');
+    expect(loanYearOrdinal(21)).toBe('21-й');
+  });
+
+  it('английские ordinal-суффиксы', () => {
+    expect(loanYearOrdinal(1, 'en')).toBe('1st');
+    expect(loanYearOrdinal(2, 'en')).toBe('2nd');
+    expect(loanYearOrdinal(3, 'en')).toBe('3rd');
+    expect(loanYearOrdinal(4, 'en')).toBe('4th');
+    expect(loanYearOrdinal(11, 'en')).toBe('11th');
+    expect(loanYearOrdinal(12, 'en')).toBe('12th');
+    expect(loanYearOrdinal(13, 'en')).toBe('13th');
+    expect(loanYearOrdinal(21, 'en')).toBe('21st');
+    expect(loanYearOrdinal(22, 'en')).toBe('22nd');
+    expect(loanYearOrdinal(23, 'en')).toBe('23rd');
   });
 });

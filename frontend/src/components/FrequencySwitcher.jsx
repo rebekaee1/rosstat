@@ -5,6 +5,7 @@ import { buildFrequencyItems } from '../lib/frequencySwitcher';
 import {
   russiaIndicatorPath,
 } from '../lib/sitePaths';
+import { useT } from '../i18n';
 
 /**
  * Frequency-switcher между парами индикаторов разной частоты.
@@ -17,6 +18,12 @@ import {
  * SEO-friendly. Switcher = два router Link, не state. Визуально работает как
  * tabs над графиком (рядом с VariantGroupPicker / CpiViewModePicker).
  */
+function frequencyLabel(t, freq, fallback) {
+  if (!freq) return '—';
+  const key = `indicator.freq.${freq}`;
+  return t(key, fallback);
+}
+
 export default function FrequencySwitcher({
   currentCode,
   currentFrequency,
@@ -24,6 +31,7 @@ export default function FrequencySwitcher({
   primaryIndicatorCode,
   indicatorCategory,
 }) {
+  const t = useT();
   const items = buildFrequencyItems({
     currentCode,
     currentFrequency,
@@ -35,7 +43,7 @@ export default function FrequencySwitcher({
   return (
     <section className="mb-8 rounded-[1.5rem] border border-border-subtle bg-surface p-4 shadow-sm">
       <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-        Периодичность
+        {t('indicator.picker.frequency')}
       </p>
       <div className="flex flex-wrap gap-2">
         {items.map((item) => {
@@ -61,7 +69,7 @@ export default function FrequencySwitcher({
                   : 'bg-obsidian-lighter text-text-secondary hover:text-champagne'
               )}
             >
-              {item.label}
+              {frequencyLabel(t, item.frequency, item.label)}
             </Link>
           );
         })}

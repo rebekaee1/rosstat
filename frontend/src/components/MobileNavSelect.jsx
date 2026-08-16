@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { Check, ChevronDown } from 'lucide-react';
 import { cn } from '../lib/format';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
+import { useT } from '../i18n';
 
 function optionText(opt) {
   return opt.count != null ? `${opt.label} (${opt.count})` : opt.label;
@@ -15,12 +16,14 @@ function optionText(opt) {
  * На lg+ скрыт — там остаётся боковой список или чипы.
  */
 export default function MobileNavSelect({
-  label = 'Раздел',
+  label,
   value,
   options,
   onChange,
   className = '',
 }) {
+  const t = useT();
+  const sectionLabel = label || t('mobile.section');
   const [open, setOpen] = useState(false);
   const titleId = useId();
   const closeBtnRef = useRef(null);
@@ -55,7 +58,7 @@ export default function MobileNavSelect({
       >
         <button
           type="button"
-          aria-label="Закрыть"
+          aria-label={t('common.close')}
           className="absolute inset-0 bg-text-primary/35 backdrop-blur-[2px]"
           onClick={() => setOpen(false)}
         />
@@ -72,10 +75,10 @@ export default function MobileNavSelect({
                 id={titleId}
                 className="text-[10px] font-mono uppercase tracking-[0.18em] text-text-tertiary"
               >
-                {label}
+                {sectionLabel}
               </p>
               <p className="mt-0.5 truncate text-sm font-medium text-text-primary">
-                Выберите раздел
+                {t('mobile.pickSection')}
               </p>
             </div>
             <button
@@ -87,7 +90,7 @@ export default function MobileNavSelect({
                 'shrink-0 rounded-xl px-3 py-2 text-sm font-medium text-champagne bg-champagne/10 hover:bg-champagne/15',
               )}
             >
-              Готово
+              {t('mobile.done')}
             </button>
           </div>
           <ul className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-2 py-2 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
@@ -131,7 +134,7 @@ export default function MobileNavSelect({
   return (
     <div className={cn('mb-4 block lg:hidden', className)}>
       <p className="mb-2 block px-0.5 text-[10px] font-mono uppercase tracking-[0.18em] text-text-tertiary">
-        {label}
+        {sectionLabel}
       </p>
       <button
         type="button"
@@ -145,10 +148,10 @@ export default function MobileNavSelect({
         )}
       >
         <span className="min-w-0 flex-1 truncate text-sm font-medium text-text-primary">
-          {selected ? optionText(selected) : 'Выбрать…'}
+          {selected ? optionText(selected) : t('common.selectEllipsis')}
         </span>
         <span className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-obsidian-lighter px-2 py-1 text-[11px] font-medium text-text-secondary">
-          Сменить
+          {t('common.change')}
           <ChevronDown className="h-3.5 w-3.5" />
         </span>
       </button>

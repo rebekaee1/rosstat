@@ -23,11 +23,19 @@ DEFAULT_YEAR_COVERAGE_SHARE = 0.5
 DEFAULT_YEAR_MIN_COUNTRIES = 8
 
 _YOY_UNIT = "изменение за год, %"
+_YOY_UNIT_EN = "year-over-year change, %"
 _YOY_PERIOD_METHOD = (
     "Изменение к тому же периоду прошлого года; "
     "для каждого календарного года — последнее доступное наблюдение"
 )
+_YOY_PERIOD_METHOD_EN = (
+    "Change versus the same period of the previous year; "
+    "for each calendar year — the latest available observation"
+)
 _LEVEL_PERIOD_METHOD = "Последнее опубликованное значение в каждом календарном году"
+_LEVEL_PERIOD_METHOD_EN = "Latest published value in each calendar year"
+_HICP_YOY_NAME_RU = "Изменение потребительских цен за год"
+_HICP_YOY_NAME_EN = "Year-over-year change in consumer prices"
 
 # Цены: даже при одинаковой базе Евростата на карте/в рейтинге показываем
 # инфляцию — это то, что ищут, и это остаётся верным после подмешивания
@@ -162,19 +170,44 @@ def ranking_value_mode(
     return "level"
 
 
-def ranking_public_unit(mode: RankMode, concept_unit: str) -> str:
+def ranking_public_unit(
+    mode: RankMode, concept_unit: str, *, locale: str | None = None
+) -> str:
     if mode == "yoy":
-        return _YOY_UNIT
+        loc = locale
+        if loc is None:
+            from app.services.locale import get_locale
+
+            loc = get_locale()
+        return _YOY_UNIT_EN if loc == "en" else _YOY_UNIT
     return concept_unit
 
 
-def ranking_period_method(mode: RankMode) -> str:
+def ranking_period_method(mode: RankMode, *, locale: str | None = None) -> str:
+    loc = locale
+    if loc is None:
+        from app.services.locale import get_locale
+
+        loc = get_locale()
+    if loc == "en":
+        return _YOY_PERIOD_METHOD_EN if mode == "yoy" else _LEVEL_PERIOD_METHOD_EN
     return _YOY_PERIOD_METHOD if mode == "yoy" else _LEVEL_PERIOD_METHOD
 
 
-def ranking_display_name(mode: RankMode, concept_slug: str, concept_name: str) -> str:
+def ranking_display_name(
+    mode: RankMode,
+    concept_slug: str,
+    concept_name: str,
+    *,
+    locale: str | None = None,
+) -> str:
     if mode == "yoy" and concept_slug == "hicp-index":
-        return "Изменение потребительских цен за год"
+        loc = locale
+        if loc is None:
+            from app.services.locale import get_locale
+
+            loc = get_locale()
+        return _HICP_YOY_NAME_EN if loc == "en" else _HICP_YOY_NAME_RU
     return concept_name
 
 
@@ -189,9 +222,75 @@ WORLD_RATING_QUERY_NAMES: dict[str, str] = {
     "gdp-per-capita-eu": "ВВП на душу относительно среднего по ЕС",
 }
 
+# English (nominative) for «Country ranking by …».
+WORLD_RATING_QUERY_NAMES_EN: dict[str, str] = {
+    "hicp-index": "year-over-year change in consumer prices",
+    "unemployment-rate": "unemployment rate",
+    "budget-balance-gdp": "budget balance",
+    "population": "population",
+    "long-term-interest-rate": "long-term government bond yield",
+    "activity-rate": "activity rate",
+    "gdp-per-capita-eu": "GDP per capita relative to the EU average",
+}
 
-def world_rating_title(concept_slug: str, public_name: str, year: int | None) -> str:
+_WORLD_REGION_EN = {
+    "Европа": "Europe",
+    "Азия": "Asia",
+    "Америка": "Americas",
+    "Африка": "Africa",
+    "Океания": "Oceania",
+}
+
+
+def world_region_display(region_ru: str | None, *, locale: str | None = None) -> str:
+    """Locale-facing world country region label."""
+    raw = (region_ru or "").strip()
+    if not raw:
+        return ""
+    loc = locale
+    if loc is None:
+        from app.services.locale import get_locale
+
+        loc = get_locale()
+    if loc == "en":
+        return _WORLD_REGION_EN.get(raw, raw)
+    return raw
+
+
+def world_rating_title(
+    concept_slug: str,
+    public_name: str,
+    year: int | None,
+    *,
+    locale: str | None = None,
+) -> str:
     """Единый заголовок SSR и CSR для страницы рейтинга."""
+    loc = locale
+    if loc is None:
+        from app.services.locale import get_locale
+
+        loc = get_locale()
+    if loc == "en":
+        from app.services.seo_i18n import world_template
+
+        query_name = WORLD_RATING_QUERY_NAMES_EN.get(concept_slug, public_name)
+        if year is None:
+            tpl = world_template("rating_title", locale="en")
+            return (
+                tpl.format(query_name=query_name)
+                if tpl
+                else f"Country ranking by {query_name}"
+            )
+        key = (
+            "rating_title_year"
+            if concept_slug == "hicp-index"
+            else "rating_title_for_year"
+        )
+        tpl = world_template(key, locale="en")
+        if tpl:
+            return tpl.format(query_name=query_name, year=year)
+        return f"Country ranking by {query_name} for {year}"
+
     query_name = WORLD_RATING_QUERY_NAMES.get(concept_slug, public_name.lower())
     head = f"Рейтинг стран по {query_name}"
     if year is None:

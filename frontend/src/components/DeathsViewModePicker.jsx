@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { cn } from '../lib/format';
 import { track, events } from '../lib/track';
+import { useT } from '../i18n';
 import {
   DEATHS_TOP_GROUPS,
   highlightedTopGroup,
@@ -19,6 +20,7 @@ export default function DeathsViewModePicker({
   trackContext,
   compact = false,
 }) {
+  const t = useT();
   const trackMode = useCallback((mode, groupId) => {
     track(events.CHART_MODE_CHANGE, {
       mode,
@@ -33,7 +35,7 @@ export default function DeathsViewModePicker({
   const body = (
     <>
       <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-        Режим показателя
+        {t('indicator.picker.mode')}
       </p>
       <div className="flex flex-wrap gap-2">
         {DEATHS_TOP_GROUPS.map((group) => {

@@ -2,13 +2,18 @@
 // Отдельно от макро-hooks: своя ось (регион × показатель × год).
 import { useQuery } from '@tanstack/react-query';
 import api from './api';
+import { resolveBrowserLocale } from '../i18n/locale';
 
 const STALE = 10 * 60 * 1000;
 const GC = 30 * 60 * 1000;
 
+function localeKey() {
+  return resolveBrowserLocale();
+}
+
 export function useRegionsLanding() {
   return useQuery({
-    queryKey: ['regions-landing'],
+    queryKey: ['regions-landing', localeKey()],
     queryFn: ({ signal }) => api.get('/regions', { signal }).then(r => r.data),
     staleTime: STALE,
     gcTime: GC,
@@ -17,7 +22,7 @@ export function useRegionsLanding() {
 
 export function useRegionsCatalog(enabled = true) {
   return useQuery({
-    queryKey: ['regions-catalog'],
+    queryKey: ['regions-catalog', localeKey()],
     queryFn: ({ signal }) => api.get('/regions/catalog', { signal }).then(r => r.data),
     staleTime: STALE,
     gcTime: GC,
@@ -27,7 +32,7 @@ export function useRegionsCatalog(enabled = true) {
 
 export function useRegionProfile(slug) {
   return useQuery({
-    queryKey: ['region-profile', slug],
+    queryKey: ['region-profile', slug, localeKey()],
     queryFn: ({ signal }) => api.get(`/regions/${slug}`, { signal }).then(r => r.data),
     enabled: !!slug,
     staleTime: STALE,
@@ -37,7 +42,7 @@ export function useRegionProfile(slug) {
 
 export function useRegionIndicator(slug, code) {
   return useQuery({
-    queryKey: ['region-indicator', slug, code],
+    queryKey: ['region-indicator', slug, code, localeKey()],
     queryFn: ({ signal }) =>
       api.get(`/regions/${slug}/i/${code}`, { signal }).then(r => r.data),
     enabled: !!slug && !!code,
@@ -49,7 +54,7 @@ export function useRegionIndicator(slug, code) {
 /** Значения показателя по всем регионам за последний год — для карты. */
 export function useRegionsHeatmap(code, enabled = true) {
   return useQuery({
-    queryKey: ['regions-heatmap', code],
+    queryKey: ['regions-heatmap', code, localeKey()],
     queryFn: ({ signal }) =>
       api.get(`/regions/heatmap/${code}`, { signal }).then(r => r.data),
     enabled: !!code && enabled,
@@ -61,7 +66,7 @@ export function useRegionsHeatmap(code, enabled = true) {
 /** Значения показателя по всем регионам за ВСЕ годы — для карты-таймлайна. */
 export function useRegionsHeatmapSeries(code, enabled = true) {
   return useQuery({
-    queryKey: ['regions-heatmap-series', code],
+    queryKey: ['regions-heatmap-series', code, localeKey()],
     queryFn: ({ signal }) =>
       api.get(`/regions/heatmap-series/${code}`, { signal }).then(r => r.data),
     enabled: !!code && enabled,
@@ -138,6 +143,11 @@ export function pluralRu(n, [one, few, many]) {
 export function shortUnit(unit = '') {
   const u = unit.trim().toLowerCase();
   const map = [
+    [/^million rubles/, 'mln ₽'],
+    [/^billion rubles/, 'bln ₽'],
+    [/^thousand rubles/, 'thous. ₽'],
+    [/^thousand people/, 'thous. people'],
+    [/^million people/, 'mln people'],
     [/^миллионов рублей/, 'млн ₽'],
     [/^миллиардов рублей/, 'млрд ₽'],
     [/^тысяч рублей/, 'тыс ₽'],
@@ -150,6 +160,7 @@ export function shortUnit(unit = '') {
     [/^в процентах/, '%'],
     [/^процентов/, '%'],
     [/^%$/, '%'],
+    [/^thousand hectares/, 'thous. ha'],
     [/^тысяч гектаров/, 'тыс га'],
     [/^тысяч тонн/, 'тыс т'],
     [/^миллионов тонн/, 'млн т'],

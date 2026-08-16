@@ -1,13 +1,14 @@
 import { describe, expect, it } from 'vitest';
+import { translate } from '../i18n/messages';
 import {
   HOME_MAP_SIDE_LINKS,
   HOME_MARKET_PULSE,
   HOME_TODAY_CODES,
-  HOME_TODAY_LABELS,
-  HOME_TODAY_UNIT_SHORT,
   WORLD_CONCEPT_GROUPS,
   displayPulseValue,
   heatmapValuesBySlug,
+  homePulseLabel,
+  homePulseUnitShort,
   pickIndicatorsByCodes,
   rankHeatmapValues,
   resolveActiveMapYear,
@@ -25,7 +26,8 @@ describe('homeWorkbench', () => {
       'russia-macro', 'regions', 'world',
     ]);
     for (const link of HOME_MAP_SIDE_LINKS) {
-      expect(link.label.includes('·')).toBe(false);
+      expect(link.labelKey).toBeTruthy();
+      expect(link.descriptionKey).toBeTruthy();
       expect(link.to.startsWith('/')).toBe(true);
     }
     expect(HOME_MAP_SIDE_LINKS.filter((l) => l.to === '/world')).toHaveLength(1);
@@ -44,11 +46,14 @@ describe('homeWorkbench', () => {
     expect(HOME_TODAY_CODES).not.toContain('silver');
     expect(HOME_TODAY_CODES).not.toContain('copper');
     for (const item of HOME_MARKET_PULSE) {
-      expect(HOME_TODAY_LABELS[item.code]).toBe(item.label);
-      expect(HOME_TODAY_UNIT_SHORT[item.code]).toBe(item.unitShort);
-      expect(item.unitShort.includes('фнт')).toBe(false);
+      expect(item.labelKey).toBeTruthy();
+      expect(item.unitKey).toBeTruthy();
+      expect(homePulseLabel(item.code, (k) => translate(k, undefined, 'ru'))).toBeTruthy();
+      expect(homePulseUnitShort(item.code, (k) => translate(k, undefined, 'en'))).toBeTruthy();
     }
-    expect(HOME_TODAY_UNIT_SHORT['natural-gas']).toBe('$/млн БТЕ');
+    expect(homePulseLabel('btc-usd', (k) => translate(k, undefined, 'en'))).toBe('Bitcoin');
+    expect(homePulseUnitShort('natural-gas', (k) => translate(k, undefined, 'ru'))).toBe('$/млн БТЕ');
+    expect(homePulseUnitShort('natural-gas', (k) => translate(k, undefined, 'en'))).toBe('$/mmBtu');
     const list = [
       { code: 'btc-usd', current_value: 90000 },
       { code: 'brent', current_value: 80 },
@@ -118,6 +123,13 @@ describe('homeWorkbench', () => {
     );
     expect(worldRatingTitle('hicp-index', 'Изменение потребительских цен за год', 2025)).toBe(
       'Рейтинг стран по изменению потребительских цен за год, 2025',
+    );
+    const tEn = (key, vars) => translate(key, vars, 'en');
+    expect(worldRatingTitle('unemployment-rate', 'Unemployment rate', 2026, tEn)).toBe(
+      'Country ranking by unemployment rate for 2026',
+    );
+    expect(worldRatingTitle('hicp-index', 'YoY CPI', 2025, tEn)).toBe(
+      'Country ranking by year-over-year change in consumer prices, 2025',
     );
 
     const overlay = withRussiaOnHomeMap({
@@ -197,6 +209,7 @@ describe('homeWorkbench', () => {
     expect(links.regionsHref).toBe('/russia/region');
     expect(links.regionRatingHref).toBe('/russia/region-rating/uroven-bezrabotitsy');
     expect(russiaNoteForConcept('unemployment-rate')).toMatch(/Росстата/);
+    expect(russiaNoteForConcept('unemployment-rate', (k) => translate(k, undefined, 'en'))).toMatch(/Rosstat/);
     expect(russiaNoteForConcept('budget-balance-gdp')).toBeNull();
     expect(WORLD_CONCEPT_GROUPS.length).toBeGreaterThanOrEqual(5);
   });

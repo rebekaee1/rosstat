@@ -21,6 +21,8 @@ import {
   worldHubPath,
   worldRatingPath,
 } from './sitePaths';
+import { getSiteOrigin } from './siteOrigin';
+import { t } from '../i18n/messages';
 
 /** @typedef {{ path: string, name: string }} Crumb */
 
@@ -29,31 +31,31 @@ export function crumb(path, name) {
 }
 
 export function homeCrumb() {
-  return crumb('/', 'Главная');
+  return crumb('/', t('crumb.home'));
 }
 
 export function russiaCrumb() {
-  return crumb(russiaHomePath(), 'Россия');
+  return crumb(russiaHomePath(), t('crumb.russia'));
 }
 
 export function russiaCategoriesCrumb() {
-  return crumb(russiaCategoriesPath(), 'Категории');
+  return crumb(russiaCategoriesPath(), t('crumb.categories'));
 }
 
 export function regionsCrumb() {
-  return crumb(regionHubPath(), 'Регионы');
+  return crumb(regionHubPath(), t('crumb.regions'));
 }
 
 export function regionRatingsCrumb() {
-  return crumb(regionRatingHubPath(), 'Рейтинг');
+  return crumb(regionRatingHubPath(), t('crumb.rating'));
 }
 
 export function countriesCrumb() {
-  return crumb(worldHubPath(), 'Страны');
+  return crumb(worldHubPath(), t('crumb.countries'));
 }
 
 export function worldRatingsCrumb() {
-  return crumb(worldRatingPath(), 'Рейтинг');
+  return crumb(worldRatingPath(), t('crumb.rating'));
 }
 
 export function russiaHomeTrail() {
@@ -137,33 +139,33 @@ export function regionVsTrail(label, vsPath) {
 }
 
 export function todayTrail() {
-  return [homeCrumb(), russiaCrumb(), crumb(todayPath(), 'Сегодня')];
+  return [homeCrumb(), russiaCrumb(), crumb(todayPath(), t('crumb.today'))];
 }
 
 export function todayIndicatorTrail(label, code) {
   return [
     homeCrumb(),
     russiaCrumb(),
-    crumb(todayPath(), 'Сегодня'),
+    crumb(todayPath(), t('crumb.today')),
     crumb(todayPath(code), label),
   ];
 }
 
 export function calendarTrail() {
-  return [homeCrumb(), russiaCrumb(), crumb(calendarPath(), 'Календарь')];
+  return [homeCrumb(), russiaCrumb(), crumb(calendarPath(), t('crumb.calendar'))];
 }
 
 export function calendarMonthTrail(label, year, month) {
   return [
     homeCrumb(),
     russiaCrumb(),
-    crumb(calendarPath(), 'Календарь'),
+    crumb(calendarPath(), t('crumb.calendar')),
     crumb(calendarPath(year, month), label),
   ];
 }
 
 export function demographicsTrail() {
-  return [homeCrumb(), russiaCrumb(), crumb(demographicsPath(), 'Демография')];
+  return [homeCrumb(), russiaCrumb(), crumb(demographicsPath(), t('crumb.demographics'))];
 }
 
 export function worldHomeTrail() {
@@ -205,7 +207,7 @@ export function toolTrail(name, path) {
 }
 
 /** JSON-LD BreadcrumbList из trail (для CSR-страниц без SSR). */
-export function breadcrumbJsonLd(items, origin = 'https://forecasteconomy.com') {
+export function breadcrumbJsonLd(items, origin = getSiteOrigin()) {
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',

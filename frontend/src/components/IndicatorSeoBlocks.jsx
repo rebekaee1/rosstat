@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import FaqAccordion from './FaqAccordion';
 import { track, events } from '../lib/track';
+import { useT } from '../i18n';
 
 /**
  * SEO-блоки на странице индикатора (правка D2 из звонка 2026-05-21).
@@ -16,6 +17,7 @@ import { track, events } from '../lib/track';
  * свёрнутом состоянии (см. FaqAccordion). Для rich results — FAQPage JSON-LD.
  */
 export default function IndicatorSeoBlocks({ blocks, indicatorCode }) {
+  const t = useT();
   const items = useMemo(
     () => (Array.isArray(blocks) ? blocks.filter((b) => b?.title && b?.body) : []),
     [blocks],
@@ -56,7 +58,7 @@ export default function IndicatorSeoBlocks({ blocks, indicatorCode }) {
     <section data-block="about" className="mt-16 mb-12 w-full">
       <div className="flex items-center gap-4 mb-8">
         <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold">
-          О показателе
+          {t('indicator.about')}
         </h2>
         <div className="h-[1px] flex-1 bg-border-subtle" />
       </div>

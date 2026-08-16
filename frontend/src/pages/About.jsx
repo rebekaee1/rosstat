@@ -1,9 +1,11 @@
 import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
+import { useLocale } from '../i18n';
 import { track, trackOutbound, events } from '../lib/track';
 
 export default function About() {
-  const seo = getPageSeo('about');
+  const { locale } = useLocale();
+  const seo = getPageSeo('about', locale);
   useDocumentMeta({
     title: seo.title,
     description: seo.description,

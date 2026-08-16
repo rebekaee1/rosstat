@@ -3,8 +3,9 @@ import logging
 from datetime import date, datetime, timezone
 from email.utils import format_datetime
 from html import escape
+from urllib.parse import urlparse
 
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends, Request, Response
 from sqlalchemy import desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -46,10 +47,32 @@ def _sitemap_lastmod(last_data: date | None, fallback: date) -> str:
 _SITEMAP_TTL = 6 * 3600
 
 
-def _render_urlset(urls) -> str:
+def _request_sitemap_origin(request: Request) -> str:
+    """Host-aware absolute origin for sitemap ``<loc>`` (ADR-0013 §F).
+
+    Flag off + apex Host → ``settings.public_origin`` (current prod path).
+    Host ``ru.*`` → ``https://ru.{apex}`` even before cutover.
+    """
+    from app.services.locale import get_request_origin, resolve_request_origin
+
+    # Prefer middleware-bound origin; fall back if middleware skipped in tests.
+    bound = get_request_origin()
+    host = request.headers.get("x-forwarded-host") or request.headers.get("host")
+    resolved = resolve_request_origin(host)
+    return resolved if host else bound
+
+
+def _sitemap_cache_key(kind: str, origin: str) -> str:
+    host = urlparse(origin).hostname or "default"
+    return f"fe:sitemap:{kind}:{host}"
+
+
+def _render_urlset(urls, *, origin: str | None = None) -> str:
+    """Render urlset with absolute ``<loc>`` on the given origin (default DOMAIN)."""
+    base = (origin or DOMAIN).rstrip("/")
     entries = "\n".join(
         f"  <url>\n"
-        f"    <loc>{DOMAIN}{u.path}</loc>\n"
+        f"    <loc>{base}{u.path}</loc>\n"
         f"    <lastmod>{u.lastmod}</lastmod>\n"
         f"    <changefreq>{u.changefreq}</changefreq>\n"
         f"    <priority>{u.priority}</priority>\n"
@@ -65,16 +88,22 @@ def _render_urlset(urls) -> str:
 
 
 @router.api_route("/sitemap.xml", methods=["GET", "HEAD"], include_in_schema=False)
-async def sitemap_index(db: AsyncSession = Depends(get_db)):
+async def sitemap_index(request: Request, db: AsyncSession = Depends(get_db)):
     """Sitemap-индекс: секции по типам страниц, регионы — чанками по ~10k.
 
     Секционирование даёт per-file статистику обхода в Вебмастере и честный
     lastmod на каждую часть (регионы обновляются раз в год, «сегодня» — ежедневно).
+
+    ``<loc>`` абсолютные URL — на хосте запроса (apex vs ``ru.``). Пока
+    ``apex_locale_en=false`` и трафик на apex — тот же русский sitemap на
+    ``DOMAIN``, что и раньше.
     """
     from app.core.cache import cache_get, cache_set
     from app.services.site_urls import collect_url_sections
 
-    cached = await cache_get("fe:sitemap:index")
+    origin = _request_sitemap_origin(request)
+    cache_key = _sitemap_cache_key("index", origin)
+    cached = await cache_get(cache_key)
     if cached:
         return Response(content=cached, media_type="application/xml")
 
@@ -82,7 +111,7 @@ async def sitemap_index(db: AsyncSession = Depends(get_db)):
     today = date.today().isoformat()
     entries = "\n".join(
         f"  <sitemap>\n"
-        f"    <loc>{DOMAIN}/sitemap-{name}.xml</loc>\n"
+        f"    <loc>{origin}/sitemap-{name}.xml</loc>\n"
         f"    <lastmod>{max((u.lastmod for u in urls), default=today)}</lastmod>\n"
         f"  </sitemap>"
         for name, urls in sections.items()
@@ -94,16 +123,19 @@ async def sitemap_index(db: AsyncSession = Depends(get_db)):
         + entries
         + "\n</sitemapindex>"
     )
-    await cache_set("fe:sitemap:index", xml, _SITEMAP_TTL)
+    await cache_set(cache_key, xml, _SITEMAP_TTL)
     return Response(content=xml, media_type="application/xml")
 
 
 @router.api_route("/sitemap-{section}.xml", methods=["GET", "HEAD"], include_in_schema=False)
-async def sitemap_section(section: str, db: AsyncSession = Depends(get_db)):
+async def sitemap_section(
+    section: str, request: Request, db: AsyncSession = Depends(get_db)
+):
     from app.core.cache import cache_get, cache_set
     from app.services.site_urls import collect_url_sections
 
-    cache_key = f"fe:sitemap:section:{section}"
+    origin = _request_sitemap_origin(request)
+    cache_key = _sitemap_cache_key(f"section:{section}", origin)
     cached = await cache_get(cache_key)
     if cached:
         return Response(content=cached, media_type="application/xml")
@@ -124,8 +156,8 @@ async def sitemap_section(section: str, db: AsyncSession = Depends(get_db)):
         if not urls:
             continue
         names.append(name)
-        xml = _render_urlset(urls)
-        await cache_set(f"fe:sitemap:section:{name}", xml, _SITEMAP_TTL)
+        xml = _render_urlset(urls, origin=origin)
+        await cache_set(_sitemap_cache_key(f"section:{name}", origin), xml, _SITEMAP_TTL)
         if name == section:
             requested_xml = xml
     await cache_set("fe:sitemap:known-sections", names, _SITEMAP_TTL)
@@ -134,13 +166,59 @@ async def sitemap_section(section: str, db: AsyncSession = Depends(get_db)):
     return Response(content=requested_xml, media_type="application/xml")
 
 
+def _render_seo_static(name: str, *, origin: str) -> str:
+    """Substitute request origin into robots.txt / llms.txt templates."""
+    from pathlib import Path
+
+    path = Path(__file__).resolve().parents[1] / "data" / "seo_static" / name
+    text = path.read_text(encoding="utf-8")
+    base = origin.rstrip("/")
+    host = urlparse(base).hostname or "forecasteconomy.com"
+    return text.replace("__PUBLIC_ORIGIN__", base).replace("__PUBLIC_HOST__", host)
+
+
+@router.api_route("/robots.txt", methods=["GET", "HEAD"], include_in_schema=False)
+async def robots_txt(request: Request):
+    """Host-aware robots.txt (Host + Sitemap on request origin)."""
+    origin = _request_sitemap_origin(request)
+    body = _render_seo_static("robots.txt", origin=origin)
+    return Response(
+        content=body,
+        media_type="text/plain; charset=utf-8",
+        headers={
+            "Cache-Control": "public, max-age=86400",
+            "Vary": "Host",
+        },
+    )
+
+
+@router.api_route("/llms.txt", methods=["GET", "HEAD"], include_in_schema=False)
+async def llms_txt(request: Request):
+    """Host-aware llms.txt for AI crawlers (absolute URLs on request origin)."""
+    origin = _request_sitemap_origin(request)
+    body = _render_seo_static("llms.txt", origin=origin)
+    return Response(
+        content=body,
+        media_type="text/plain; charset=utf-8",
+        headers={
+            "Cache-Control": "public, max-age=86400",
+            "Vary": "Host",
+        },
+    )
+
+
 @router.api_route("/feed.xml", methods=["GET", "HEAD"], include_in_schema=False)
-async def rss_feed(db: AsyncSession = Depends(get_db)):
+async def rss_feed(request: Request, db: AsyncSession = Depends(get_db)):
     """RSS 2.0 — последние обновления данных по listed-индикаторам.
 
     Item на индикатор: имя + актуальное значение, pubDate = дата последней
     точки. Поисковики и агрегаторы узнают об обновлениях без переобхода.
+
+    Absolute links follow request Host (apex vs ``ru.``), same as sitemap.
     """
+    from app.services import site_paths as paths
+
+    origin = _request_sitemap_origin(request)
     last_point = (
         select(
             IndicatorData.indicator_id,
@@ -174,7 +252,7 @@ async def rss_feed(db: AsyncSession = Depends(get_db)):
             f"{ind.name} — значение {shown} на {format_date_ru(dt)}. "
             f"Источник: {ind.source}."
         )
-        link = f"{DOMAIN}/indicator/{ind.code}"
+        link = f"{origin}{paths.russia_indicator(ind.code)}"
         items.append(
             f"  <item>\n"
             f"    <title>{title}</title>\n"
@@ -190,18 +268,18 @@ async def rss_feed(db: AsyncSession = Depends(get_db)):
         '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n'
         "<channel>\n"
         "  <title>Forecast Economy — обновления экономических данных России</title>\n"
-        f"  <link>{DOMAIN}</link>\n"
+        f"  <link>{origin}</link>\n"
         "  <description>Последние обновления макроэкономических индикаторов России: "
         "Росстат, Банк России, Минфин.</description>\n"
         "  <language>ru</language>\n"
-        f'  <atom:link href="{DOMAIN}/feed.xml" rel="self" type="application/rss+xml"/>\n'
+        f'  <atom:link href="{origin}/feed.xml" rel="self" type="application/rss+xml"/>\n'
         + "\n".join(items)
         + "\n</channel>\n</rss>"
     )
     return Response(
         content=xml,
         media_type="application/rss+xml; charset=utf-8",
-        headers={"Cache-Control": "public, max-age=1800"},
+        headers={"Cache-Control": "public, max-age=1800", "Vary": "Host"},
     )
 
 

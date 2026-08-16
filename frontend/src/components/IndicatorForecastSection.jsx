@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Activity } from 'lucide-react';
 import ForecastTable from './ForecastTable';
 import { track, events } from '../lib/track';
+import { useT } from '../i18n';
 
 const EMPTY_BOX_CLS = 'h-full min-h-[300px] rounded-[2rem] bg-surface border border-border-subtle border-dashed flex flex-col items-center justify-center gap-3 text-text-tertiary p-8';
 
@@ -85,6 +86,7 @@ export default function IndicatorForecastSection({
   showForecast,
   hasForecastData,
 }) {
+  const t = useT();
   const viewRef = useForecastView({
     indicatorCode: indicator?.code,
     indicatorCategory: indicator?.category,
@@ -121,7 +123,7 @@ export default function IndicatorForecastSection({
         <div className="h-full min-h-[300px] rounded-[2rem] bg-surface border border-border-subtle border-dashed flex flex-col items-center justify-center text-text-tertiary p-8">
           <Activity className="w-8 h-8 mb-4 opacity-20" />
           <p className="text-xs font-mono uppercase tracking-widest text-center">
-            Включите переключатель «Прогноз», чтобы показать таблицу прогноза
+            {t('forecast.enableToggle')}
           </p>
         </div>
       </section>
@@ -133,10 +135,10 @@ export default function IndicatorForecastSection({
       <div className={EMPTY_BOX_CLS}>
         <Activity className="w-8 h-8 mb-1 opacity-20" />
         <p className="text-sm font-medium text-text-secondary text-center max-w-md">
-          Прогноз для этого показателя не рассчитан или недоступен
+          {t('forecast.emptyTitle')}
         </p>
         <p className="text-xs text-center max-w-lg leading-relaxed text-text-tertiary">
-          Некоторые режимы показывают только официальный исторический ряд. Если прогноз появится, переключатель станет активным автоматически.
+          {t('forecast.emptyBody')}
         </p>
       </div>
     </section>

@@ -2,19 +2,13 @@ import { formatDate, resolveDateFormat, chartValueDigits } from '../lib/format';
 import { dataModeForUrlMode } from '../lib/cpiViewModeResolve';
 import { dataModeForHousingUrlMode } from '../lib/housingViewModeResolve';
 import { dataModeForPpiUrlMode } from '../lib/ppiViewModeResolve';
+import { useT } from '../i18n';
 import TelemetryCard from './TelemetryCard';
 import { SkeletonBox } from './Skeleton';
 
 /**
  * Сетка из 4 телеметрических карточек на странице индикатора:
  *   текущее значение, предыдущее, абсолютный максимум, среднее.
- *
- * Карточки максимума и среднего показываются только если для текущего
- * режима известно значение (или из агрегированной статистики `stats`).
- *
- * `viewStats` — это объект с полями {currentValue, previousValue, change,
- * highest, average, dataCount, ...}, посчитанный в текущем режиме.
- * Если в режиме статистики нет — берём fallback из API-полей индикатора.
  */
 export default function IndicatorTelemetryGrid({
   indicator,
@@ -29,17 +23,12 @@ export default function IndicatorTelemetryGrid({
   adj,
   loading,
 }) {
-  // Формат даты в карточках = гранулярность отображаемого ряда (тот же
-  // резолвер, что у оси графика и таблицы). Квартальный ряд → «I кв. 2026»,
-  // годовой → «2026», дневной → «12 марта 2026», месячный → «март 2026».
+  const t = useT();
   const dateFmt = resolveDateFormat({
     chartMode,
     frequency: indicator?.frequency,
     safeViewMode,
   });
-  // На режиме «Индекс» CPI-семьи показываем уровень накопленного индекса
-  // (значения 100…1000+) — без `%`. Для прочих режимов используем
-  // официальную единицу индикатора.
   const dataMode = isPriceCategory
     ? dataModeForUrlMode(safeViewMode)
     : isHousingFamily
@@ -48,21 +37,20 @@ export default function IndicatorTelemetryGrid({
         ? dataModeForPpiUrlMode(safeViewMode)
         : safeViewMode;
 
-  // Режимы, чей отображаемый ряд — процент изменения, а не уровень индекса.
   const PCT_VIEW_MODES = new Set([
     'yoy', 'annual', 'qoq', 'mom', 'quarterly', 'inflation',
     'step-monthly', 'step-weekly', 'period-monthly', 'period-weekly',
   ]);
-  const unit = String(safeViewMode).startsWith('index')
-    && (isPriceCategory || isHousingFamily || isPpiFamily)
+  const isIndexUnit = String(safeViewMode).startsWith('index')
+    && (isPriceCategory || isHousingFamily || isPpiFamily);
+  const unit = isIndexUnit
     ? 'индекс'
-    // Процентные режимы у индекс-индикаторов (ИПЦ/ИЦП/жильё) — это проценты,
-    // а не уровень индекса: единица «%», иначе значения 10.8 / 8.7 шли без знака.
     : PCT_VIEW_MODES.has(safeViewMode) && (isPriceCategory || isHousingFamily || isPpiFamily)
       ? '%'
       : (safeViewMode === 'yoy' && indicator?.hero_value != null)
         ? '%'
         : (indicator?.unit || '%');
+  const displayUnit = isIndexUnit ? t('indicator.telemetry.unitIndex') : unit;
 
   if (loading) {
     return (
@@ -76,68 +64,66 @@ export default function IndicatorTelemetryGrid({
     );
   }
 
-  // Hero override: backend подставил YoY% (model_config_json.hero_view = "yoy_pct"),
-  // потому что для индексных индикаторов абсолютное значение (например IPP 112)
-  // не несёт смысловой нагрузки, а изменение г/г (+1.2%) — несёт. Применяем
-  // только в режиме «год к году» (это режим по умолчанию у этих карточек):
-  // в режимах «индекс»/«м/м»/«к/к» hero не подменяем, иначе верхняя цифра
-  // не совпадала бы с графиком.
   const heroOverride = indicator?.hero_value != null && safeViewMode === 'yoy';
 
-  const currentLabel = heroOverride ? (indicator.hero_label || 'Изменение г/г')
-    : safeViewMode === 'yoy' || safeViewMode === 'annual' ? 'Год к году'
-      : safeViewMode === 'mom' ? 'Месяц к месяцу'
-        : safeViewMode === 'qoq' ? 'Квартал к кварталу'
-        : safeViewMode === 'period-monthly' ? 'Рост за месяц'
-          : safeViewMode === 'period-weekly' ? 'С начала месяца'
-            : safeViewMode === 'step-monthly' ? 'Изменение м/м'
-              : safeViewMode === 'step-weekly' ? 'Изменение н/н'
-                : dataMode === 'weekly' ? 'Инфляция за неделю'
-                  : dataMode === 'cpi' && isPriceCategory ? 'Прирост за месяц'
-                    : 'Текущее значение';
+  const currentLabel = heroOverride
+    ? (indicator.hero_label || t('indicator.telemetry.heroYoy'))
+    : safeViewMode === 'yoy' || safeViewMode === 'annual' ? t('indicator.telemetry.yoy')
+      : safeViewMode === 'mom' ? t('indicator.telemetry.mom')
+        : safeViewMode === 'qoq' ? t('indicator.telemetry.qoq')
+          : safeViewMode === 'period-monthly' ? t('indicator.telemetry.periodMonth')
+            : safeViewMode === 'period-weekly' ? t('indicator.telemetry.periodWeek')
+              : safeViewMode === 'step-monthly' ? t('indicator.telemetry.stepMom')
+                : safeViewMode === 'step-weekly' ? t('indicator.telemetry.stepWow')
+                  : dataMode === 'weekly' ? t('indicator.telemetry.weekInflation')
+                    : dataMode === 'cpi' && isPriceCategory ? t('indicator.telemetry.monthGrowth')
+                      : t('indicator.telemetry.current');
 
   const previousLabel = dataMode === 'weekly' || safeViewMode === 'step-weekly'
     || safeViewMode === 'period-weekly'
-    ? 'Предыдущая неделя'
-    : safeViewMode === 'qoq' ? 'Предыдущий квартал'
-      : safeViewMode === 'mom' ? 'Предыдущий месяц'
-        // В режиме г/г вторая карточка — это предыдущая точка того же (г/г) ряда.
-        // У ИПЦ/ИЦП Г/г разрешается в годовой ряд «декабрь к декабрю»
-        // (chartMode === 'annual') — предыдущая точка там всегда предыдущий год.
+    ? t('indicator.telemetry.prevWeek')
+    : safeViewMode === 'qoq' ? t('indicator.telemetry.prevQuarter')
+      : safeViewMode === 'mom' ? t('indicator.telemetry.prevMonth')
         : safeViewMode === 'yoy'
-          ? (chartMode === 'annual' || indicator?.frequency === 'annual' ? 'Предыдущий год'
-            : indicator?.frequency === 'quarterly' ? 'Предыдущий квартал'
-              : 'Предыдущий месяц')
-        : safeViewMode === 'quarterly' ? 'Предыдущий квартал'
-          : safeViewMode === 'annual' ? 'Предыдущий год'
-            : isHousingFamily ? 'Предыдущий квартал'
-              : isPriceCategory ? 'Предыдущий месяц' : 'Предыдущее значение';
+          ? (chartMode === 'annual' || indicator?.frequency === 'annual'
+            ? t('indicator.telemetry.prevYear')
+            : indicator?.frequency === 'quarterly'
+              ? t('indicator.telemetry.prevQuarter')
+              : t('indicator.telemetry.prevMonth'))
+          : safeViewMode === 'quarterly' ? t('indicator.telemetry.prevQuarter')
+            : safeViewMode === 'annual' ? t('indicator.telemetry.prevYear')
+              : isHousingFamily ? t('indicator.telemetry.prevQuarter')
+                : isPriceCategory ? t('indicator.telemetry.prevMonth')
+                  : t('indicator.telemetry.prev');
 
-  const deltaSuffix = safeViewMode === 'qoq' ? 'к пред. кварталу'
-    : safeViewMode === 'mom' ? 'к пред. месяцу'
-      : safeViewMode === 'yoy' ? 'к пред. году'
-      : safeViewMode === 'quarterly' ? 'к пред. кварталу'
-        : safeViewMode === 'annual' ? 'к пред. году'
-          : dataMode === 'weekly' || safeViewMode === 'step-weekly' ? 'к пред. неделе'
-            : safeViewMode === 'period-weekly' ? 'к прошлому отчёту'
-            : indicator?.frequency === 'quarterly' ? 'к пред. кварталу'
-              : isPriceCategory ? 'к пред. месяцу' : 'к пред. значению';
+  const deltaSuffix = safeViewMode === 'qoq' ? t('indicator.telemetry.delta.prevQuarter')
+    : safeViewMode === 'mom' ? t('indicator.telemetry.delta.prevMonth')
+      : safeViewMode === 'yoy' ? t('indicator.telemetry.delta.prevYear')
+        : safeViewMode === 'quarterly' ? t('indicator.telemetry.delta.prevQuarter')
+          : safeViewMode === 'annual' ? t('indicator.telemetry.delta.prevYear')
+            : dataMode === 'weekly' || safeViewMode === 'step-weekly'
+              ? t('indicator.telemetry.delta.prevWeek')
+              : safeViewMode === 'period-weekly'
+                ? t('indicator.telemetry.delta.prevReport')
+                : indicator?.frequency === 'quarterly'
+                  ? t('indicator.telemetry.delta.prevQuarter')
+                  : isPriceCategory
+                    ? t('indicator.telemetry.delta.prevMonth')
+                    : t('indicator.telemetry.delta.prevValue');
 
   const currentValue = heroOverride ? indicator.hero_value
     : (s?.currentValue ?? adj(indicator?.current_value));
-  const heroUnit = heroOverride ? (indicator.hero_unit || '%') : unit;
+  const heroUnit = heroOverride ? (indicator.hero_unit || '%') : displayUnit;
   const valueDigits = chartValueDigits(unit, safeViewMode === 'step-weekly' ? 'step-weekly' : dataMode);
   const previousValue = s?.previousValue ?? indicator?.previous_value;
-  // Относительная дельта в % уместна только для уровня индекса; для
-  // %-рядов (г/г, кв/кв и т.п.) показываем абсолютную разницу (п.п.).
   const pctChange = unit === 'индекс' && previousValue && !heroOverride
     ? +(((s?.currentValue ?? adj(indicator?.current_value)) - previousValue) / previousValue * 100).toFixed(2)
     : undefined;
 
   const currentDate = s?.currentDate ?? indicator?.current_date;
   const currentMeta = dataMode === 'weekly' && Number(s?.currentValue) === 0
-    ? `ДАТА: ${formatDate(currentDate, dateFmt)} — ЦЕНЫ БЕЗ ИЗМЕНЕНИЙ`
-    : `ДАТА: ${formatDate(currentDate, dateFmt)}`;
+    ? t('indicator.telemetry.dateFlat', { date: formatDate(currentDate, dateFmt) })
+    : t('indicator.telemetry.date', { date: formatDate(currentDate, dateFmt) });
 
   return (
     <section className="mb-6 md:mb-12">
@@ -156,28 +142,34 @@ export default function IndicatorTelemetryGrid({
         <TelemetryCard
           label={previousLabel}
           value={s?.previousValue ?? adj(indicator?.previous_value)}
-          unit={unit}
+          unit={displayUnit}
           valueDigits={valueDigits}
-          meta={`ДАТА: ${formatDate(s?.previousDate ?? cpiPrevDate, dateFmt)}`}
+          meta={t('indicator.telemetry.date', {
+            date: formatDate(s?.previousDate ?? cpiPrevDate, dateFmt),
+          })}
           delay={1}
         />
         {(s?.highest || stats?.highest) && (
           <TelemetryCard
-            label="Абсолютный максимум"
+            label={t('indicator.telemetry.max')}
             value={s?.highest?.value ?? adj(stats?.highest?.value)}
-            unit={unit}
+            unit={displayUnit}
             valueDigits={valueDigits}
-            meta={`ПИК: ${formatDate(s?.highest?.date ?? stats?.highest?.date, dateFmt)}`}
+            meta={t('indicator.telemetry.peak', {
+              date: formatDate(s?.highest?.date ?? stats?.highest?.date, dateFmt),
+            })}
             delay={2}
           />
         )}
         {(s?.average != null || stats?.average != null) && (
           <TelemetryCard
-            label="Среднее значение"
+            label={t('indicator.telemetry.avg')}
             value={s?.average ?? adj(stats?.average)}
-            unit={unit}
+            unit={displayUnit}
             valueDigits={valueDigits}
-            meta={`НАБЛ.: ${s?.dataCount ?? stats?.data_count} ПЕРИОД.`}
+            meta={t('indicator.telemetry.obs', {
+              count: s?.dataCount ?? stats?.data_count,
+            })}
             delay={3}
           />
         )}

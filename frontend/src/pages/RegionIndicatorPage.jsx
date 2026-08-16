@@ -9,6 +9,7 @@ import {
   Download, Image as ImageIcon, GitCompare,
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
+import { getSiteOrigin } from '../lib/siteOrigin';
 import {
   useRegionIndicator, useRegionsLanding, formatRegionValue, shortUnit, yearDelta,
 } from '../lib/regionsApi';
@@ -186,7 +187,7 @@ export default function RegionIndicatorPage() {
       temporalCoverage: `${first.year}/${last.year}`,
       spatialCoverage: regionName,
       creator: { '@type': 'Organization', name: 'Росстат' },
-      publisher: { '@type': 'Organization', name: 'Forecast Economy', url: 'https://forecasteconomy.com' },
+      publisher: { '@type': 'Organization', name: 'Forecast Economy', url: getSiteOrigin() },
     };
     const script = document.createElement('script');
     script.type = 'application/ld+json';

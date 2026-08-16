@@ -250,7 +250,7 @@
 | Что мы НЕ извлекаем из источников? | [`docs/missed_data_audit.md`](docs/missed_data_audit.md) — TOP-25 P0-индикаторов, доступных без новых источников |
 | Какие правки в работе прямо сейчас? | [`docs/backlog.md`](docs/backlog.md) — живой бэклог: ID/затронутые файлы/риски/приоритет. Источник — звонки с Никитой |
 | Как довести **семейство** индикаторов (не один код)? | **[`docs/indicator-family-playbook.md`](docs/indicator-family-playbook.md)** — продуктовая модель + фазы A–G; эталоны **ИПЦ** (макс.) и **жильё** (variant + custom view-mode); ADR-0006 + `AGENTS.md::Шаг 4` для отдельных кодов |
-| Как делать прод-деплой? | `docs/workflow.md::Прод-деплой` + `enterprise_resilience.md` |
+| Как устроены RU/EN словари и locale? | [`.cursor/rules/i18n-parity.mdc`](.cursor/rules/i18n-parity.mdc) + `app/services/locale.py` + `frontend/src/i18n/` |
 
 ---
 

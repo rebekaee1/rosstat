@@ -24,6 +24,31 @@ describe('pageMeta single source', () => {
     expect(getWorldHomeSeo().title).toContain('Мировая экономика');
   });
 
+  it('demographics EN twin comes from PAGE_META_EN mirror', () => {
+    const en = getPageSeo('demographics', 'en');
+    expect(en.title).toBe("Age structure of Russia's population");
+    expect(en.title).not.toMatch(/[А-Яа-яЁё]/);
+    expect(getPageSeo('demographics', 'ru').title).toContain('Возрастная структура');
+  });
+
+  it('home and category EN titles come from PAGE_META_EN (preview_locale path)', () => {
+    const homeEn = getPageSeo('home', 'en');
+    expect(homeEn.title).toBe(
+      'Forecast Economy — macroeconomic indicators for countries and Russia',
+    );
+    expect(homeEn.title).not.toMatch(/[А-Яа-яЁё]/);
+    expect(homeEn.description).not.toMatch(/[А-Яа-яЁё]/);
+    expect(getPageSeo('home', 'ru').title).toContain('макроэкономические');
+
+    const pricesEn = getCategorySeo('prices', 'en');
+    expect(pricesEn.title).toBe('Prices and inflation in Russia');
+    expect(pricesEn.title).not.toMatch(/[А-Яа-яЁё]/);
+
+    const worldEn = getWorldHomeSeo('en');
+    expect(worldEn.title).toContain('World economy');
+    expect(worldEn.title).not.toMatch(/[А-Яа-яЁё]/);
+  });
+
   it('CATEGORIES seo fields match generated CATEGORY_META', () => {
     for (const cat of CATEGORIES) {
       const seo = getCategorySeo(cat.slug);

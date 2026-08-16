@@ -354,6 +354,69 @@ def test_enrich_description_adds_latest_value():
     # Русская типографика: запятая в дроби, дата словами (В-22)
     assert "13,96" in out
     assert "10 июня 2026" in out
+    assert out.startswith("Актуальное значение")
+
+
+def test_enrich_description_en_latest_value_quarter():
+    from datetime import date
+    from types import SimpleNamespace
+
+    from app.services.locale import reset_locale, set_locale
+    from app.services.seo_renderer import _enrich_description
+
+    current = SimpleNamespace(value=5.32, date=date(2025, 6, 1))
+    token = set_locale("en")
+    try:
+        out = _enrich_description(
+            "GDP growth.",
+            current,
+            "%",
+            code="gdp-yoy",
+            frequency="quarterly",
+        )
+    finally:
+        reset_locale(token)
+    assert out.startswith("Latest value")
+    assert "in Q2 2025" in out
+    assert "Актуальное" not in out
+    assert "квартал" not in out
+    assert "5.32" in out
+    assert ",5" not in out and "5,32" not in out
+
+
+def test_enrich_description_en_gdp_nominal_no_ru_decimal():
+    from datetime import date
+    from types import SimpleNamespace
+
+    from app.services.locale import reset_locale, set_locale
+    from app.services.seo_renderer import _enrich_description
+
+    current = SimpleNamespace(value=49869.5, date=date(2026, 3, 1))
+    token = set_locale("en")
+    try:
+        out = _enrich_description(
+            "Nominal GDP.",
+            current,
+            "млрд руб.",
+            code="gdp-nominal",
+            frequency="quarterly",
+        )
+    finally:
+        reset_locale(token)
+    assert "49,869.5 bln RUB" in out
+    assert "in Q1 2026" in out
+    assert ",5" not in out
+    assert "\u202f" not in out
+    assert "млрд" not in out
+
+
+def test_value_period_phrase_en_quarter():
+    from datetime import date
+
+    from app.services.display import value_period_phrase
+
+    assert value_period_phrase(date(2025, 3, 1), "quarterly", locale="en") == "in Q1 2025"
+    assert value_period_phrase(date(2025, 3, 1), "quarterly", locale="ru") == "за 1 квартал 2025"
 
 
 def test_enrich_description_cpi_shows_change_not_raw_index():
@@ -589,7 +652,12 @@ def test_ssr_chrome_topnav_keeps_hub_deep_links():
     получает — там отдельный блок seo-platform-nav (см. соседний тест)."""
     import re
 
-    from app.services.seo_renderer import _SSR_CHROME_HEADER
+    from app.services.locale import reset_locale, set_locale
+    from app.services.seo_renderer import (
+        _SSR_CHROME_HEADER,
+        _ssr_chrome_header,
+        _ssr_platform_deep_links,
+    )
 
     m = re.search(r'<nav class="seo-topnav">(.*?)</nav>', _SSR_CHROME_HEADER, re.S)
     assert m, "seo-topnav отсутствует в _SSR_CHROME_HEADER"
@@ -597,6 +665,24 @@ def test_ssr_chrome_topnav_keeps_hub_deep_links():
     for href in ("/russia/region", "/russia/today", "/world", "/russia/calendar"):
         assert f'href="{href}"' in topnav, f"в seo-topnav нет ссылки на {href}"
     assert "Демограф" not in topnav
+
+    token = set_locale("en")
+    try:
+        en_header = _ssr_chrome_header()
+        assert "Indicators" in en_header
+        assert "Today" in en_header
+        assert "Regions" in en_header
+        assert "Countries" in en_header
+        assert "Calendar" in en_header
+        assert "Индикаторы" not in en_header
+        en_nav = _ssr_platform_deep_links()
+        assert "Platform sections" in en_nav
+        assert "Разделы платформы" not in en_nav
+    finally:
+        reset_locale(token)
+
+    assert "Индикаторы" in _ssr_chrome_header()
+    assert "Разделы платформы" in _ssr_platform_deep_links()
 
 
 def test_spa_ssr_gets_platform_deep_links():
@@ -606,6 +692,7 @@ def test_spa_ssr_gets_platform_deep_links():
     Pure-SSR с chrome этот блок не дублирует."""
     import asyncio
 
+    from app.services.locale import reset_locale, set_locale
     from app.services.seo_renderer import build_document
 
     spa = asyncio.run(
@@ -620,6 +707,23 @@ def test_spa_ssr_gets_platform_deep_links():
     assert 'class="seo-section seo-platform-nav"' in spa
     for href in ("/russia/region", "/russia/today", "/world", "/russia/calendar", "/compare", "/"):
         assert f'href="{href}"' in spa
+    assert "Разделы платформы" in spa
+
+    token = set_locale("en")
+    try:
+        spa_en = asyncio.run(
+            build_document(
+                title="Test",
+                description="Test",
+                canonical_path="/russia/today/cpi",
+                body='<main class="seo-page"><h1>x</h1></main>',
+                include_app=True,
+            )
+        )
+    finally:
+        reset_locale(token)
+    assert "Platform sections" in spa_en
+    assert "Разделы платформы" not in spa_en
 
     pure = asyncio.run(
         build_document(

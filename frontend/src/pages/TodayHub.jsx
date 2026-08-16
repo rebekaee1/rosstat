@@ -13,21 +13,35 @@ import {
   regionHubPath,
   todayPath,
 } from '../lib/sitePaths';
+import { useLocale, useT } from '../i18n';
 
-const MONTHS_GEN = [
-  'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
-  'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря',
-];
+function todayLabel(code, t) {
+  const key = `today.spec.${code}`;
+  const translated = t(key);
+  if (translated && translated !== key) return translated;
+  return TODAY_SPECS[code]?.query || code;
+}
 
-function ruDate(d = new Date()) {
-  return `${d.getDate()} ${MONTHS_GEN[d.getMonth()]} ${d.getFullYear()} года`;
+function formatTodayDate(d, locale) {
+  try {
+    return new Intl.DateTimeFormat(locale === 'en' ? 'en-GB' : 'ru-RU', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    }).format(d);
+  } catch {
+    return d.toISOString().slice(0, 10);
+  }
 }
 
 function TodayCard({ code }) {
+  const t = useT();
+  const { locale } = useLocale();
   const spec = TODAY_SPECS[code];
   const seriesCode = spec.series || code;
   const { data: indicator } = useIndicator(seriesCode);
   const { data: rows, isLoading, isError } = useIndicatorData(seriesCode, { limit: 2 });
+  const query = todayLabel(code, t);
 
   const last = rows?.data?.[rows.data.length - 1];
   const prev = rows?.data?.length > 1 ? rows.data[rows.data.length - 2] : null;
@@ -39,12 +53,12 @@ function TodayCard({ code }) {
       className="group bg-surface border border-border-subtle rounded-xl p-4 hover:border-border-champagne hover:shadow-sm transition-all flex flex-col gap-2"
     >
       <div className="text-[11px] text-text-tertiary uppercase tracking-wide font-mono">
-        {spec.query} сегодня
+        {t('today.cardToday', { query })}
       </div>
       {isLoading ? (
         <SkeletonBox className="h-8 w-32" />
       ) : isError || !last ? (
-        <span className="text-sm text-text-tertiary">Нет данных</span>
+        <span className="text-sm text-text-tertiary">{t('common.noData')}</span>
       ) : (
         <>
           <div className="font-mono text-2xl font-bold text-text-primary leading-none">
@@ -59,25 +73,30 @@ function TodayCard({ code }) {
                 {formatChange(change, indicator?.unit)}
               </span>
             )}
-            <span>{formatDate(last.date, indicator?.frequency === 'daily' ? 'full' : 'monthly')}</span>
+            <span>
+              {formatDate(
+                last.date,
+                indicator?.frequency === 'daily' ? 'full' : 'monthly',
+                locale,
+              )}
+            </span>
           </div>
         </>
       )}
       <span className="text-xs text-champagne group-hover:underline mt-auto inline-flex items-center gap-1">
-        Подробнее <ArrowRight size={12} />
+        {t('common.more')} <ArrowRight size={12} />
       </span>
     </Link>
   );
 }
 
 export default function TodayHub() {
-  const today = ruDate();
+  const t = useT();
+  const { locale } = useLocale();
+  const today = formatTodayDate(new Date(), locale);
   useDocumentMeta({
-    title: `Экономика России сегодня, ${today}: курсы, ставка, инфляция, цены`,
-    description:
-      'Ключевые экономические показатели России на сегодня: курс доллара, евро и юаня, '
-      + 'ключевая ставка ЦБ, инфляция, цена золота и топлива, индекс МосБиржи. '
-      + 'Официальные данные, обновление ежедневно.',
+    title: t('today.metaTitle', { date: today }),
+    description: t('today.metaDesc'),
     path: todayPath(),
   });
 
@@ -86,19 +105,18 @@ export default function TodayHub() {
       <Breadcrumbs items={todayTrail()} />
 
       <p className="text-champagne text-xs font-mono uppercase tracking-widest mb-2">
-        Сводка на {today}
+        {t('today.eyebrow', { date: today })}
       </p>
       <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary mb-3">
-        Экономика России сегодня
+        {t('today.h1')}
       </h1>
       <p className="text-text-secondary max-w-2xl mb-8">
-        Актуальные значения ключевых показателей. Каждая карточка — последнее значение,
-        график и таблица; полная история и прогноз — на карточках индикаторов.
+        {t('today.intro')}
       </p>
 
       <section className="mb-10">
         <h2 className="font-display text-lg font-semibold text-text-primary mb-4">
-          Показатели на сегодня
+          {t('today.sectionTitle')}
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {TODAY_CODES.map((code) => (
@@ -108,14 +126,21 @@ export default function TodayHub() {
       </section>
 
       <section className="bg-surface border border-border-subtle rounded-xl p-5">
-        <h2 className="font-display text-base font-semibold text-text-primary mb-2">Больше данных</h2>
+        <h2 className="font-display text-base font-semibold text-text-primary mb-2">
+          {t('today.moreTitle')}
+        </h2>
         <p className="text-sm text-text-secondary">
-          Более 100 макроэкономических индикаторов — на{' '}
-          <Link to="/" className="text-champagne hover:underline">главной странице</Link>
-          ; региональная статистика — в разделе{' '}
-          <Link to={regionHubPath()} className="text-champagne hover:underline">Регионы России</Link>
-          ; даты публикаций — в{' '}
-          <Link to={calendarPath()} className="text-champagne hover:underline">календаре статистики</Link>.
+          {t('today.moreBody.beforeHome')}
+          <Link to="/" className="text-champagne hover:underline">{t('today.moreBody.home')}</Link>
+          {t('today.moreBody.beforeRegions')}
+          <Link to={regionHubPath()} className="text-champagne hover:underline">
+            {t('today.moreBody.regions')}
+          </Link>
+          {t('today.moreBody.beforeCalendar')}
+          <Link to={calendarPath()} className="text-champagne hover:underline">
+            {t('today.moreBody.calendar')}
+          </Link>
+          {t('today.moreBody.after')}
         </p>
       </section>
     </div>

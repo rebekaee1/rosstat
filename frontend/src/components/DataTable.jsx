@@ -3,13 +3,16 @@ import gsap from 'gsap';
 import { ChevronDown, ChevronUp, Search } from 'lucide-react';
 import { formatDate, formatValue, formatValueWithUnit, unitSuffix, cn } from '../lib/format';
 import { track, events } from '../lib/track';
+import { useT } from '../i18n';
 
 const PAGE_SIZE = 20;
 
 export default function DataTable({
-  data, title = 'Исторические данные', dateFormat = 'full', unit = '%', valueDigits,
+  data, title, dateFormat = 'full', unit = '%', valueDigits,
   showUnitInValues = true,
 }) {
+  const t = useT();
+  const resolvedTitle = title ?? t('table.historicalDefault');
   const ref = useRef(null);
   const [page, setPage] = useState(0);
   const [sortAsc, setSortAsc] = useState(false);
@@ -30,10 +33,17 @@ export default function DataTable({
     const timer = setTimeout(() => {
       setSearch(searchInput);
       setPage(0);
-      if (searchInput) track(events.TABLE_SEARCH, { query: searchInput });
+      if (searchInput) {
+        const q = searchInput.toLowerCase();
+        const results = (data || []).filter((r) => (
+          formatDate(r.date, dateFormat).toLowerCase().includes(q)
+          || String(r.value).includes(q)
+        )).length;
+        track(events.TABLE_SEARCH, { query: searchInput, results });
+      }
     }, 250);
     return () => clearTimeout(timer);
-  }, [searchInput]);
+  }, [searchInput, data, dateFormat]);
 
   const filtered = useMemo(() => {
     let rows = [...(data || [])];
@@ -59,7 +69,7 @@ export default function DataTable({
     <div ref={ref} className="rounded-[2rem] bg-surface border border-border-subtle overflow-hidden">
       <div className="p-5 flex items-center justify-between flex-wrap gap-3">
         <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
-          {title}
+          {resolvedTitle}
           <span className="ml-2 text-text-tertiary font-mono text-xs">
             ({filtered.length})
           </span>
@@ -68,7 +78,7 @@ export default function DataTable({
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-tertiary" />
           <input
             type="text"
-            placeholder="Поиск..."
+            placeholder={t('table.searchPlaceholder')}
             value={searchInput}
             onChange={e => setSearchInput(e.target.value)}
             className="pl-8 pr-3 py-1.5 text-sm bg-obsidian-lighter border border-border-subtle rounded-lg text-text-primary placeholder:text-text-tertiary focus:outline-none focus:border-champagne/30 w-40"
@@ -85,12 +95,12 @@ export default function DataTable({
                 onClick={() => { const next = !sortAsc; setSortAsc(next); track(events.TABLE_SORT, { order: next ? 'asc' : 'desc' }); }}
               >
                 <span className="inline-flex items-center gap-1">
-                  Дата
+                  {t('table.date')}
                   {sortAsc ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
                 </span>
               </th>
               <th className="text-right px-5 py-3 text-xs font-medium text-text-tertiary uppercase tracking-wider">
-                Значение{tableUnit ? ` (${tableUnit})` : ''}
+                {tableUnit ? t('table.valueWithUnit', { unit: tableUnit }) : t('table.value')}
               </th>
             </tr>
           </thead>
@@ -101,7 +111,7 @@ export default function DataTable({
                   colSpan={2}
                   className="px-5 py-12 text-center text-sm text-text-tertiary"
                 >
-                  Нет строк для отображения — сузьте поиск или дождитесь загрузки ряда с API.
+                  {t('table.empty')}
                 </td>
               </tr>
             ) : (
@@ -135,7 +145,7 @@ export default function DataTable({
             disabled={page === 0}
             className="px-3 py-1.5 text-xs font-medium text-text-secondary hover:text-text-primary disabled:text-text-tertiary disabled:cursor-not-allowed rounded-lg bg-obsidian-lighter border border-border-subtle transition-colors magnetic-btn"
           >
-            Назад
+            {t('table.prev')}
           </button>
           <span className="text-xs text-text-tertiary font-mono">
             {page + 1} / {totalPages}
@@ -145,7 +155,7 @@ export default function DataTable({
             disabled={page >= totalPages - 1}
             className="px-3 py-1.5 text-xs font-medium text-text-secondary hover:text-text-primary disabled:text-text-tertiary disabled:cursor-not-allowed rounded-lg bg-obsidian-lighter border border-border-subtle transition-colors magnetic-btn"
           >
-            Вперёд
+            {t('table.next')}
           </button>
         </div>
       )}

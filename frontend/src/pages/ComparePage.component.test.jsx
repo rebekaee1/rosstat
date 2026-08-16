@@ -1,11 +1,21 @@
 // Т-13: ComparePage — smoke: страница монтируется, дерево «сначала страна»,
 // без трёх плоских колонок-пикера.
-import { describe, it, expect, afterEach, vi } from 'vitest';
-import { screen } from '@testing-library/react';
+import { describe, it, expect, afterEach, beforeEach, vi } from 'vitest';
+import { act, fireEvent, screen } from '@testing-library/react';
 import ComparePage from './ComparePage';
 import { renderPage, mockApiGet } from '../test/renderPage';
 
-afterEach(() => vi.restoreAllMocks());
+vi.mock('../lib/track', async (importOriginal) => {
+  const actual = await importOriginal();
+  return { ...actual, track: vi.fn() };
+});
+
+import { track } from '../lib/track';
+
+afterEach(() => {
+  vi.useRealTimers();
+  vi.restoreAllMocks();
+});
 
 const INDICATORS = [
   {
@@ -56,11 +66,38 @@ function mockCompareApis() {
 }
 
 describe('ComparePage', () => {
+  beforeEach(() => {
+    track.mockClear();
+  });
+
   it('монтируется и показывает заголовок сравнения', async () => {
     mockCompareApis();
     renderPage(<ComparePage />, { path: '/compare', route: '/compare' });
     const heading = await screen.findByRole('heading', { level: 1 });
     expect(heading.textContent).toBe('Сравнение показателей');
+  });
+
+  it('AddIndicator dual-write: compare_search и search_query(compare-macro)', async () => {
+    mockCompareApis();
+    renderPage(<ComparePage />, { path: '/compare', route: '/compare' });
+    fireEvent.click(await screen.findByRole('button', { name: 'Россия' }));
+    fireEvent.click(await screen.findByRole('button', { name: /Макропоказатели/ }));
+    const input = await screen.findByPlaceholderText('Найдите или выберите макроиндикатор…');
+
+    track.mockClear();
+    vi.useFakeTimers();
+    fireEvent.change(input, { target: { value: 'cpi' } });
+    expect(track).not.toHaveBeenCalled();
+    act(() => {
+      vi.advanceTimersByTime(900);
+    });
+
+    expect(track).toHaveBeenCalledWith('compare_search', { q: 'cpi', results: 1 });
+    expect(track).toHaveBeenCalledWith('search_query', {
+      q: 'cpi',
+      results: 1,
+      context: 'compare-macro',
+    });
   });
 
   it('показывает шаг выбора страны с Россией первой', async () => {

@@ -1,18 +1,15 @@
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Terminal, Download, Lock, Image as ImageIcon, HelpCircle } from 'lucide-react';
-import { unitSuffix, resolveDateFormat, cn } from '../lib/format';
+import { resolveDateFormat, cn } from '../lib/format';
 import { track, events } from '../lib/track';
 import { useDownloadAccess } from '../lib/useDownloadAccess';
 import { exportNodeToPng } from '../lib/chartImage';
 import IndicatorChart from './IndicatorChart';
 import { ChartSkeleton } from './Skeleton';
-import { getCpiChartTitle } from '../lib/cpiViewModeContent';
-import { getHousingChartTitle } from '../lib/housingViewModeContent';
-import { getPpiChartTitle } from '../lib/ppiViewModeContent';
-import { getCbrTermSliceChartTitle } from '../lib/cbrTermSliceRateContent';
-import { getUnemploymentChartTitle } from '../lib/unemploymentViewModeContent';
 import { chartSeriesForViewMode } from '../lib/chartSeriesForViewMode';
+import { useLocale, useT } from '../i18n';
+import { resolveChartTitle } from '../i18n/resolveViewModeCopy';
 
 /* ── Mode-зависимые подписи ──
    chartMode принимает значения: 'cpi' (default для всех некоммодити-индикаторов),
@@ -29,46 +26,8 @@ const FREQUENCY_LABEL = {
   annual: 'год.',
 };
 
-const FREQUENCY_LONG = {
-  daily: 'днев.',
-  weekly: 'недельная',
-  monthly: 'помесячно',
-  quarterly: 'квартально',
-  annual: 'годовая',
-};
-
 function freqLabel(indicator) {
   return FREQUENCY_LABEL[indicator?.frequency] || '';
-}
-
-function freqLong(indicator) {
-  return FREQUENCY_LONG[indicator?.frequency] || '';
-}
-
-function chartTitle({
-  chartMode, isPriceCategory, isHousingFamily, isPpiFamily,
-  isCbrTermSliceFamily, isUnemploymentFamily,
-  indicator, safeViewMode,
-}) {
-  if (isUnemploymentFamily) {
-    return getUnemploymentChartTitle(chartMode);
-  }
-  if (isPpiFamily) {
-    return getPpiChartTitle(chartMode, safeViewMode);
-  }
-  if (isCbrTermSliceFamily) {
-    return getCbrTermSliceChartTitle(chartMode, indicator?.code);
-  }
-  if (isHousingFamily && indicator?.code) {
-    return getHousingChartTitle(chartMode, indicator.code, safeViewMode);
-  }
-  if (isPriceCategory && indicator?.code) {
-    return getCpiChartTitle(chartMode, indicator.code, safeViewMode);
-  }
-  const suffix = unitSuffix(indicator?.unit);
-  const freq = freqLong(indicator);
-  const baseTitle = `${indicator?.name || 'Показатель'}${suffix ? ` (${suffix})` : ''}`;
-  return freq ? `${baseTitle} — ${freq}` : baseTitle;
 }
 
 function levelTooltipLabel({
@@ -135,6 +94,7 @@ function ruYears(n) {
 }
 
 function DownloadButton({ label, onDownload, blocked, hint }) {
+  const t = useT();
   const handleClick = () => {
     if (blocked) {
       window.dispatchEvent(new CustomEvent('fe:download-limit'));
@@ -142,7 +102,7 @@ function DownloadButton({ label, onDownload, blocked, hint }) {
     }
     onDownload?.();
   };
-  const tooltip = blocked ? 'Скачивание данных — после бесплатной регистрации' : hint;
+  const tooltip = blocked ? t('download.dataBlocked') : hint;
   return (
     <div className="relative group/dl">
       <button
@@ -154,7 +114,7 @@ function DownloadButton({ label, onDownload, blocked, hint }) {
             ? 'border-border-subtle/60 text-text-tertiary/50 cursor-pointer'
             : 'border-border-subtle text-text-tertiary hover:text-champagne hover:border-champagne/30 magnetic-btn',
         )}
-        title={blocked ? 'Скачивание данных — после бесплатной регистрации' : `Скачать ${label}`}
+        title={blocked ? t('download.dataBlocked') : t('download.downloadLabel', { label })}
       >
         {blocked ? <Lock className="w-3.5 h-3.5" /> : <Download className="w-3.5 h-3.5" />}
         {label}
@@ -174,9 +134,10 @@ function DownloadButton({ label, onDownload, blocked, hint }) {
  * скачивает чистый PNG текущего вида (без водяного знака).
  */
 function ImageButton({ onDownload, authed }) {
+  const t = useT();
   const tooltip = authed
-    ? 'Скачать график картинкой (PNG)'
-    : 'Скачивание графика — после бесплатной регистрации';
+    ? t('download.chartPng')
+    : t('download.chartBlocked');
   return (
     <div className="relative group/img" data-no-export="true">
       <button
@@ -252,11 +213,26 @@ export default function IndicatorChartSection({
   onDownloadCsv,
   onDownloadExcel,
 }) {
+  const { locale } = useLocale();
+  const t = useT();
   const { blocked: downloadBlocked, isAuthed: downloadAuthed, historyYears } = useDownloadAccess();
+  const guestYearsLabel = locale === 'en'
+    ? t('calc.years', { n: historyYears })
+    : ruYears(historyYears);
   const guestHistoryHint = !downloadAuthed && !downloadBlocked && historyYears > 0
-    ? `Гостям — последние ${ruYears(historyYears)}. Весь период истории — после входа`
+    ? t('download.guestHistory', { years: guestYearsLabel })
     : null;
   const chartRef = useRef(null);
+  const cpiChartTitle = resolveChartTitle(locale, {
+    chartMode, isPriceCategory, isHousingFamily, isPpiFamily,
+    isCbrTermSliceFamily, isUnemploymentFamily,
+    indicator, safeViewMode,
+  });
+  const chartSectionLabel = (isPriceCategory || isHousingFamily || isPpiFamily
+    || isCbrTermSliceFamily || isUnemploymentFamily
+    || chartMode !== 'cpi')
+    ? t('indicator.chartModeLabel')
+    : t('indicator.chartDynamicsLabel');
 
   // Скачивание графика картинкой. Единое правило по всему сайту (пересмотрено
   // 2026-07-08, созвон «На правки 13»): гость → гейт регистрации (скачать
@@ -329,11 +305,7 @@ export default function IndicatorChartSection({
         <div className="flex items-center gap-4">
           <Terminal className="w-4 h-4 text-champagne" />
           <span className="text-[11px] font-mono uppercase tracking-widest text-text-tertiary">
-            {(isPriceCategory || isHousingFamily || isPpiFamily
-              || isCbrTermSliceFamily || isUnemploymentFamily
-              || chartMode !== 'cpi')
-              ? 'График выбранного режима'
-              : 'Динамика показателя'}
+            {chartSectionLabel}
           </span>
         </div>
 
@@ -345,14 +317,14 @@ export default function IndicatorChartSection({
           <div className="relative group/help">
             <Link
               to="/methodology"
-              aria-label="Как рассчитывается прогноз"
+              aria-label={t('chart.methodologyAria')}
               onClick={() => track(events.METHODOLOGY_CLICK, { indicator: code, indicatorCategory: indicator?.category })}
               className="text-text-tertiary hover:text-champagne transition-colors"
             >
               <HelpCircle className="w-4 h-4" />
             </Link>
             <div className="absolute top-full right-0 mt-2 px-3 py-2 rounded-xl bg-obsidian border border-border-subtle text-xs text-text-secondary whitespace-nowrap opacity-0 group-hover/help:opacity-100 transition-opacity duration-200 pointer-events-none shadow-xl z-50">
-              Хотите узнать, как рассчитывается прогноз?
+              {t('chart.methodologyHint')}
             </div>
           </div>
 
@@ -362,12 +334,12 @@ export default function IndicatorChartSection({
               forecastEnabled ? 'cursor-pointer' : 'cursor-not-allowed opacity-50',
             )}>
               <span className="text-[10px] font-mono uppercase tracking-widest text-text-tertiary group-hover:text-text-secondary transition-colors">
-                Прогноз
+                {t('common.forecast')}
               </span>
               <div
                 role="switch"
                 aria-checked={forecastEnabled && showForecast}
-                aria-label="Показать прогноз"
+                aria-label={t('chart.forecastAria')}
                 tabIndex={forecastEnabled ? 0 : -1}
                 onClick={handleForecastToggle}
                 onKeyDown={handleForecastKeyDown}
@@ -387,7 +359,7 @@ export default function IndicatorChartSection({
             </label>
             {!forecastEnabled && (
               <div className="absolute top-full right-0 mt-2 px-3 py-2 rounded-xl bg-obsidian border border-border-subtle text-xs text-text-secondary whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-xl z-50">
-                Прогноз для этого режима недоступен
+                {t('chart.forecastUnavailable')}
               </div>
             )}
           </div>
@@ -416,11 +388,7 @@ export default function IndicatorChartSection({
             onFullData={onFullData}
             onRangeChange={onRangeChange}
             referenceLineY={(isPriceCategory || isHousingFamily || isPpiFamily) && chartMode !== 'index' ? 0 : null}
-            cpiChartTitle={chartTitle({
-              chartMode, isPriceCategory, isHousingFamily, isPpiFamily,
-              isCbrTermSliceFamily, isUnemploymentFamily,
-              indicator, safeViewMode,
-            })}
+            cpiChartTitle={cpiChartTitle}
             levelTooltipLabel={levelTooltipLabel({
               chartMode, isPriceCategory, isHousingFamily, isPpiFamily,
               isCbrTermSliceFamily,

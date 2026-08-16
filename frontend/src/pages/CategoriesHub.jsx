@@ -11,12 +11,14 @@ import { TileSkeleton } from '../components/Skeleton';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import IndicatorSearch from '../components/IndicatorSearch';
 import { getPageSeo } from '../lib/pageMeta';
+import { useLocale } from '../i18n';
 import { russiaCategoriesTrail, breadcrumbJsonLd } from '../lib/breadcrumbs';
 import { russiaCategoriesPath } from '../lib/sitePaths';
 
 export default function CategoriesHub() {
+  const { locale } = useLocale();
   const { data: indicators, isLoading, isError, refetch, isFetching } = useIndicators();
-  const seo = getPageSeo('russia-categories');
+  const seo = getPageSeo('russia-categories', locale);
   const crumbs = useMemo(() => russiaCategoriesTrail(), []);
 
   const counts = useMemo(() => {
@@ -31,12 +33,7 @@ export default function CategoriesHub() {
     title: seo.title,
     description: seo.description,
     path: russiaCategoriesPath(),
-  } : {
-    title: 'Категории показателей России — Forecast Economy',
-    description:
-      'Каталог макроэкономических категорий России: цены, ВВП, рынок труда, валюты, финансы и другие разделы официальной статистики.',
-    path: russiaCategoriesPath(),
-  });
+  } : null);
 
   useEffect(() => {
     const jsonLd = breadcrumbJsonLd(crumbs);

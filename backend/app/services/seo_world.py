@@ -26,10 +26,21 @@ from app.data.legacy_redirects import (
     world_card_siblings,
 )
 from app.data.world_concept_national import national_codes_for_concept
-from app.data.world_concepts import CONCEPT_BY_SLUG, WORLD_CONCEPTS, WorldConcept, concept_for_indicator
+from app.data.world_concepts import (
+    CONCEPT_BY_SLUG,
+    WORLD_CONCEPTS,
+    WorldConcept,
+    concept_for_indicator,
+    concept_public_name,
+    concept_public_unit,
+)
 from app.models import WorldCountry, WorldDataPoint, WorldIndicator
-from app.services.display import format_date_ru, format_month_ru, format_number_ru
-from app.services.seo_renderer import DOMAIN, _breadcrumbs, _breadcrumbs_nav, build_document
+from app.services.display import (
+    format_date_locale,
+    format_month_year,
+    format_number_ru,
+)
+from app.services.seo_renderer import _absolute, _breadcrumbs, _breadcrumbs_nav, build_document
 from app.services.world_rank_values import (
     money_unit_compatible,
     ranking_display_name,
@@ -38,7 +49,9 @@ from app.services.world_rank_values import (
     ranking_value_mode,
     resolve_default_coverage_year,
     world_rating_title,
+    world_region_display,
     WORLD_RATING_QUERY_NAMES,
+    WORLD_RATING_QUERY_NAMES_EN,
     yearly_last_points,
 )
 from app.services.world_russia_rank import (
@@ -130,9 +143,24 @@ def _prep(country: WorldCountry) -> str:
     return country_prepositional(country.slug, country.name_ru)
 
 
+def _country_label(country: WorldCountry) -> str:
+    """Locale-facing country name (EN prefers name_en)."""
+    from app.services.locale import get_locale
+
+    if get_locale() == "en" and (country.name_en or "").strip():
+        return country.name_en
+    return country.name_ru
+
+
 def _n_indicators_phrase(n: int) -> str:
-    """«1 показатель» / «22 показателя» / «105 показателей»."""
+    """«1 показатель» / «22 показателя» / «105 показателей» (EN: indicator/s)."""
+    from app.services.seo_i18n import world_template
+
     n = abs(int(n))
+    en_key = "n_indicators_one" if n == 1 else "n_indicators_many"
+    en_tpl = world_template(en_key)
+    if en_tpl:
+        return en_tpl.format(n=n)
     mod10, mod100 = n % 10, n % 100
     if mod10 == 1 and mod100 != 11:
         word = "показатель"
@@ -151,6 +179,14 @@ _FREQ_RU = {
     "weekly": "еженедельно",
 }
 
+_FREQ_EN = {
+    "monthly": "monthly",
+    "quarterly": "quarterly",
+    "annual": "annually",
+    "daily": "daily",
+    "weekly": "weekly",
+}
+
 # Категории, которые поднимаем в «ключевые» на странице страны.
 _KEY_CATEGORY_ORDER = (
     "Цены",
@@ -165,7 +201,17 @@ _KEY_CATEGORY_ORDER = (
 
 
 def _display_name(ind: WorldIndicator) -> str:
+    from app.services.locale import get_locale
+
+    if get_locale() == "en" and (ind.name_en or "").strip():
+        return strip_world_frequency_suffix(ind.name_en) or ind.name_en
     return strip_world_frequency_suffix(ind.name_ru) or ind.name_ru
+
+
+def _category_label(category_ru: str | None, *, fallback: str | None = None) -> str:
+    from app.services.seo_i18n import localize_category_name
+
+    return localize_category_name(category_ru, fallback=fallback)
 
 
 def _pick_card_primaries(inds: list[WorldIndicator]) -> list[WorldIndicator]:
@@ -193,13 +239,39 @@ def _pick_card_primaries(inds: list[WorldIndicator]) -> list[WorldIndicator]:
     return out
 
 
-_FREQ_LINK_LABEL = {
+_FREQ_LINK_LABEL_RU = {
     "monthly": "по месяцам",
     "quarterly": "по кварталам",
     "annual": "по годам",
     "weekly": "по неделям",
     "daily": "по дням",
 }
+
+_FREQ_LINK_LABEL_EN = {
+    "monthly": "monthly",
+    "quarterly": "quarterly",
+    "annual": "annual",
+    "weekly": "weekly",
+    "daily": "daily",
+}
+
+
+def _freq_adverb(freq: str | None) -> str:
+    from app.services.locale import get_locale
+
+    key = (freq or "").lower()
+    if get_locale() == "en":
+        return _FREQ_EN.get(key, "")
+    return _FREQ_RU.get(key, "")
+
+
+def _freq_link_label(freq: str | None) -> str:
+    from app.services.locale import get_locale
+
+    key = (freq or "").lower()
+    if get_locale() == "en":
+        return _FREQ_LINK_LABEL_EN.get(key, key or "")
+    return _FREQ_LINK_LABEL_RU.get(key, key or "")
 
 
 def _fmt(value: float | None) -> str:
@@ -212,26 +284,34 @@ async def _frequency_links_html(
     db, slug: str, indicator: WorldIndicator
 ) -> str:
     from app.data.eurostat_listing import normalize_frequency
+    from app.services.locale import get_locale
+    from app.services.seo_i18n import world_template
+
+    en = get_locale() == "en"
+    h2_single = world_template("freq_h2") or ("Frequency" if en else "Частота")
+    h2_multi = world_template("freq_h2_observations") or (
+        "Observation frequency" if en else "Частота наблюдений"
+    )
 
     siblings = await world_card_siblings(db, indicator)
     if len(siblings) < 2:
         freq = normalize_frequency(indicator.frequency)
-        label = _FREQ_LINK_LABEL.get(freq or "", freq or "")
+        label = _freq_link_label(freq)
         if not label:
             return ""
         return (
-            f'<section class="seo-section"><h2>Частота</h2>'
+            f'<section class="seo-section"><h2>{escape(h2_single)}</h2>'
             f"<p>{escape(label.capitalize())}.</p></section>"
         )
     primary = min(siblings, key=world_card_primary_rank)
     links = []
     for sib in sorted(siblings, key=world_card_primary_rank):
         freq = normalize_frequency(sib.frequency) or "monthly"
-        label = _FREQ_LINK_LABEL.get(freq, freq)
+        label = _freq_link_label(freq)
         href = f"{escape(paths.indicator(slug, primary.code))}?mode=level-{escape(freq)}"
         links.append(f'<li><a href="{href}">{escape(label.capitalize())}</a></li>')
     return (
-        '<section class="seo-section"><h2>Частота наблюдений</h2>'
+        f'<section class="seo-section"><h2>{escape(h2_multi)}</h2>'
         f'<ul class="seo-pills">{"".join(links)}</ul></section>'
     )
 
@@ -450,8 +530,17 @@ async def build_world_rating_payload(
     countries = await _world_rating_countries(db)
     members = await _world_rating_members(db, concept)
     mode = ranking_value_mode(concept.slug, members)
-    public_unit = ranking_public_unit(mode, concept.unit_ru)
-    public_name = ranking_display_name(mode, concept.slug, concept.name_ru)
+    from app.services.locale import get_locale
+
+    loc = get_locale()
+    base_unit = concept_public_unit(concept, locale=loc)
+    public_unit = ranking_public_unit(mode, base_unit, locale=loc)
+    public_name = ranking_display_name(
+        mode,
+        concept.slug,
+        concept_public_name(concept, locale=loc),
+        locale=loc,
+    )
 
     values_by_year: dict[str, dict[str, dict]] = {}
     ids = [indicator.id for _, indicator in members]
@@ -471,6 +560,11 @@ async def build_world_rating_payload(
         for indicator_id, point_date, value in rows:
             series_by_id.setdefault(indicator_id, []).append((point_date, float(value)))
 
+    def _item_country_name(country: WorldCountry) -> str:
+        if loc == "en" and (country.name_en or "").strip():
+            return country.name_en
+        return country.name_ru
+
     for country, indicator in members:
         for point_year, (point_date, value) in yearly_last_points(
             series_by_id.get(indicator.id, []), mode
@@ -479,7 +573,7 @@ async def build_world_rating_payload(
             bucket[country.code] = {
                 "country_code": country.code,
                 "country_slug": country.slug,
-                "country_name": country.name_ru,
+                "country_name": _item_country_name(country),
                 "indicator_code": indicator.code,
                 "date": point_date.isoformat(),
                 "frequency": indicator.frequency,
@@ -509,9 +603,13 @@ async def build_world_rating_payload(
         {
             "code": country.code,
             "slug": country.slug,
-            "name": country.name_ru,
+            "name": (
+                country.name_en
+                if loc == "en" and (country.name_en or "").strip()
+                else country.name_ru
+            ),
             "name_en": country.name_en,
-            "region": country.region_ru,
+            "region": world_region_display(country.region_ru, locale=loc),
         }
         for country in countries
         if country.code not in with_data_codes
@@ -522,9 +620,9 @@ async def build_world_rating_payload(
         without_data.append({
             "code": ru["code"],
             "slug": ru["slug"],
-            "name": ru["name_ru"],
+            "name": ru["name_en"] if loc == "en" else ru["name_ru"],
             "name_en": ru["name_en"],
-            "region": ru["region_ru"],
+            "region": world_region_display(ru["region_ru"], locale=loc),
         })
     russia_in_total = 1 if russia_meta is not None else 0
     source_labels = _join_sources_ru([item["source"] for item in active_items])
@@ -561,13 +659,20 @@ async def build_world_rating_payload(
 
 def _period_label(d: date | None, frequency: str | None) -> str:
     if d is None:
-        return "нет данных"
+        from app.services.locale import get_locale
+
+        return "no data" if get_locale() == "en" else "нет данных"
     freq = (frequency or "").lower()
     if freq == "annual":
+        from app.services.locale import get_locale
+        from app.services.seo_i18n import world_template
+
+        if get_locale() == "en":
+            return (world_template("period_year") or "{year}").format(year=d.year)
         return f"{d.year} год"
     if freq in ("monthly", "quarterly", "weekly"):
-        return format_month_ru(d) or format_date_ru(d)
-    return format_date_ru(d)
+        return format_month_year(d) or format_date_locale(d)
+    return format_date_locale(d)
 
 
 def _date_range_ru(start: date | None, end: date | None) -> str:
@@ -615,45 +720,85 @@ async def render_world_home_html(db: AsyncSession) -> tuple[int, str]:
     n_countries = sum(1 for _c, cnt in rows if int(cnt or 0) > 0)
 
     links = "".join(
-        f'<li><a href="{escape(paths.country(c.slug))}">{escape(c.name_ru)}</a>'
+        f'<li><a href="{escape(paths.country(c.slug))}">{escape(_country_label(c))}</a>'
         f" — {_n_indicators_phrase(int(cnt or 0))}</li>"
         for c, cnt in rows
         if int(cnt or 0) > 0
     )
 
+    from app.services.seo_i18n import (
+        world_home_description,
+        world_home_h1,
+        world_home_title,
+        world_template,
+    )
+
+    home_title = world_home_title() or WORLD_HOME_TITLE
+    home_desc = world_home_description() or WORLD_HOME_DESC
+    home_h1 = world_home_h1() or WORLD_HOME_H1
+
+    en_eyebrow = world_template("home_eyebrow")
+    en_lead = world_template("home_lead")
+    en_h2_c = world_template("home_h2_countries")
+    en_h2_r = world_template("home_h2_russia")
+    en_russia = world_template("home_russia_p")
+    en_kw = world_template("keywords_home")
+    if en_lead:
+        lead = en_lead.format(
+            n_countries=n_countries,
+            n_phrase=_n_indicators_phrase(n_listed),
+        )
+        eyebrow = en_eyebrow or "Official country statistics"
+        h2_countries = en_h2_c or "Countries"
+        h2_russia = en_h2_r or "Russia and comparison"
+        russia_p = (en_russia or "").format(
+            prices=paths.russia_category("prices"),
+            gdp=paths.russia_category("gdp"),
+            labor=paths.russia_category("labor"),
+        )
+    else:
+        eyebrow = "Официальная статистика по странам"
+        lead = (
+            f"Раздел собирает официальные ряды по странам — цены, валовой внутренний "
+            f"продукт, рынок труда, внешняя торговля и финансы. Сейчас доступны данные по "
+            f"{n_countries} странам и {_n_indicators_phrase(n_listed)} с графиками динамики "
+            f"и таблицами значений. Основа европейской части — Евростат; показатели по "
+            f"странам за пределами Европы приходят от их национальных статистических "
+            f"ведомств и центральных банков."
+        )
+        h2_countries = "Страны"
+        h2_russia = "Россия и сравнение"
+        russia_p = (
+            f'Макроэкономика России — в разделе <a href="/">главной витрины</a> и каталоге '
+            f'<a href="{paths.russia_category("prices")}">цен</a>, '
+            f'<a href="{paths.russia_category("gdp")}">ВВП</a> и '
+            f'<a href="{paths.russia_category("labor")}">рынка труда</a>. '
+            f'Сопоставить ряды можно на странице '
+            f'<a href="/compare">сравнения индикаторов</a>.'
+        )
+
     body = f"""<div class="seo-page">
 {_breadcrumbs_nav(crumbs.world_home_trail())}
-<p class="seo-eyebrow">Официальная статистика по странам</p>
-<h1>{escape(WORLD_HOME_H1)}</h1>
-<p>Раздел собирает официальные ряды по странам — цены, валовой внутренний
-продукт, рынок труда, внешняя торговля и финансы. Сейчас доступны данные по
-{n_countries} странам и {_n_indicators_phrase(n_listed)} с графиками динамики
-и таблицами значений. Основа европейской части — Евростат; показатели по
-странам за пределами Европы приходят от их национальных статистических
-ведомств и центральных банков.</p>
-<section class="seo-section"><h2>Страны</h2><ul>{links}</ul></section>
-<section class="seo-section"><h2>Россия и сравнение</h2>
-<p>Макроэкономика России — в разделе
-<a href="/">главной витрины</a> и каталоге
-<a href="{paths.russia_category('prices')}">цен</a>,
-<a href="{paths.russia_category('gdp')}">ВВП</a> и
-<a href="{paths.russia_category('labor')}">рынка труда</a>.
-Сопоставить ряды можно на странице
-<a href="/compare">сравнения индикаторов</a>.</p></section>
+<p class="seo-eyebrow">{escape(eyebrow)}</p>
+<h1>{escape(home_h1)}</h1>
+<p>{lead}</p>
+<section class="seo-section"><h2>{escape(h2_countries)}</h2><ul>{links}</ul></section>
+<section class="seo-section"><h2>{escape(h2_russia)}</h2>
+<p>{russia_p}</p></section>
 </div>"""
 
     json_ld = [_breadcrumbs(crumbs.world_home_trail())]
     html = await build_document(
-        title=WORLD_HOME_TITLE,
-        description=WORLD_HOME_DESC,
+        title=home_title,
+        description=home_desc,
         canonical_path=paths.world_hub(),
         body=body,
         json_ld=json_ld,
-        keywords=(
+        keywords=en_kw or (
             "мировая экономика статистика, экономика стран, "
             "евростат данные, инфляция по странам, ввп стран"
         ),
-        og_image=f"{DOMAIN}/og-image-v2.png",
+        og_image=_absolute("/og-image-v2.png"),
     )
     return 200, html
 
@@ -680,6 +825,9 @@ async def render_world_rating_html(
     without_data = payload["coverage"]["without_data"]
     sources = payload["sources"]
     last_date = payload["last_date"]
+    from app.services.locale import get_locale
+    from app.services.seo_i18n import world_template
+
     query_name = WORLD_RATING_QUERY_NAMES.get(concept_slug, name.lower())
     order_uri = (
         "https://schema.org/ItemListOrderAscending"
@@ -696,7 +844,7 @@ async def render_world_rating_html(
 
     def _date_text(raw: str | None, frequency: str | None = None) -> str:
         if not raw:
-            return "нет данных"
+            return world_template("rating_no_data") or "нет данных"
         # Месячный индекс относится к месяцу целиком: «1 декабря 2025» создаёт
         # ложное впечатление замера на конкретный день.
         return _period_label(date.fromisoformat(raw), frequency)
@@ -715,38 +863,89 @@ async def render_world_rating_html(
 
     first = items[0]
     last = items[-1]
-    title = concept.get("title") or world_rating_title(concept_slug, name, active_year)
+    en = get_locale() == "en"
+    # EN title/desc from WORLD_TEMPLATES_EN; RU keeps world_rating_title.
+    if en:
+        qn = WORLD_RATING_QUERY_NAMES_EN.get(concept_slug, name)
+        en_yoy = WORLD_RATING_QUERY_NAMES_EN.get("hicp-index", "")
+        if active_year is None:
+            en_tpl = world_template("rating_title")
+            title = (
+                en_tpl.format(query_name=qn)
+                if en_tpl
+                else world_rating_title(concept_slug, name, active_year)
+            )
+        else:
+            key = (
+                "rating_title_year"
+                if qn == en_yoy or query_name.rstrip().endswith("за год")
+                else "rating_title_for_year"
+            )
+            en_tpl = world_template(key)
+            title = (
+                en_tpl.format(query_name=qn, year=active_year)
+                if en_tpl
+                else world_rating_title(concept_slug, name, active_year)
+            )
+    else:
+        title = concept.get("title") or world_rating_title(concept_slug, name, active_year)
     # Перечень ведомств живёт в теле страницы: в meta он раздувает описание до
     # обрезки и вытесняет то, ради чего посетитель кликает.
-    desc = (
-        f"{title}: полная таблица "
-        f"{_countries_phrase(with_data)} из {total}, карта и ссылки на карточки стран. "
-        f"Официальная статистика национальных ведомств и Евростата."
-    )
-    intro = (
-        f"Рейтинг стран по показателю «{name}» за {active_year} год. "
-        f"В таблице {_countries_phrase(with_data)} с опубликованным значением; ещё "
-        f"{_countries_phrase(without_data)} мирового каталога не имеют значения за этот год. "
-        f"Порядок таблицы нейтральный: пользователь может переключить сортировку "
-        f"по возрастанию или убыванию значения."
-    )
+    en_desc = world_template("rating_desc")
+    if en_desc and en:
+        desc = en_desc.format(title=title, N=with_data, total=total)
+    else:
+        desc = (
+            f"{title}: полная таблица "
+            f"{_countries_phrase(with_data)} из {total}, карта и ссылки на карточки стран. "
+            f"Официальная статистика национальных ведомств и Евростата."
+        )
+    en_intro = world_template("rating_intro")
+    if en_intro and en:
+        with_tpl = world_template("rating_with_data") or "{n} countries with a published value"
+        without_tpl = world_template("rating_without_data") or (
+            "{n} in the world catalogue have no value for this year"
+        )
+        intro = en_intro.format(
+            name=name,
+            year=active_year,
+            with_data=with_tpl.format(n=with_data),
+            without_data=without_tpl.format(n=without_data),
+        )
+    else:
+        intro = (
+            f"Рейтинг стран по показателю «{name}» за {active_year} год. "
+            f"В таблице {_countries_phrase(with_data)} с опубликованным значением; ещё "
+            f"{_countries_phrase(without_data)} мирового каталога не имеют значения за этот год. "
+            f"Порядок таблицы нейтральный: пользователь может переключить сортировку "
+            f"по возрастанию или убыванию значения."
+        )
     if concept["money_unit_guard"]:
         intro += (
-            " Денежные показатели не пересчитываются в другую валюту: в рейтинг "
-            "попадают только ряды, уже опубликованные в сопоставимой единице."
+            world_template("rating_money_guard")
+            if en and world_template("rating_money_guard")
+            else (
+                " Денежные показатели не пересчитываются в другую валюту: в рейтинг "
+                "попадают только ряды, уже опубликованные в сопоставимой единице."
+            )
         )
     if concept.get("index_base_guard"):
         intro += (
-            " Сравнивается изменение потребительских цен за год в процентах: "
-            "базовые периоды национальных индексов при таком расчёте сокращаются, "
-            "и величины сопоставимы между странами."
+            world_template("rating_index_guard")
+            if en and world_template("rating_index_guard")
+            else (
+                " Сравнивается изменение потребительских цен за год в процентах: "
+                "базовые периоды национальных индексов при таком расчёте сокращаются, "
+                "и величины сопоставимы между странами."
+            )
         )
     russia_note = (concept.get("russia") or {}).get("note")
     if russia_note:
         intro += f" {russia_note}"
 
     concept_links = "".join(
-        f'<li><a href="{escape(paths.world_rating(c.slug))}">{escape(c.name_ru)}</a></li>'
+        f'<li><a href="{escape(paths.world_rating(c.slug))}">'
+        f'{escape(concept_public_name(c))}</a></li>'
         for c in WORLD_CONCEPTS
         if "rating" in c.enabled_surfaces
     )
@@ -755,16 +954,23 @@ async def render_world_rating_html(
         for y in payload["years"][-12:]
     )
 
+    unit_fallback = world_template("rating_unit_fallback") or "единицы источника"
+    th_rank = world_template("rating_th_rank") or "Место"
+    th_country = world_template("rating_th_country") or "Страна"
+    th_unit = world_template("rating_th_unit") or "Единица"
+    th_period = world_template("rating_th_period") or "Период"
+    th_value_plain = world_template("rating_th_value") or "Значение"
+
     # Колонка единицы нужна, только когда единицы у стран разные: при общей
     # единице она повторяет одно и то же в каждой строке и выносится в шапку.
     row_units = {(item.get("unit") or unit or "").strip() for item in items}
     shared_unit = row_units.pop() if len(row_units) == 1 else None
-    unit_head = "" if shared_unit is not None else "<th>Единица</th>"
+    unit_head = "" if shared_unit is not None else f"<th>{escape(th_unit)}</th>"
 
     def _unit_cell(item: dict) -> str:
         if shared_unit is not None:
             return ""
-        return f"<td>{escape(item.get('unit') or unit or 'единицы источника')}</td>"
+        return f"<td>{escape(item.get('unit') or unit or unit_fallback)}</td>"
 
     rows_html = "".join(
         f"<tr><td>{item['rank']}</td>"
@@ -776,16 +982,17 @@ async def render_world_rating_html(
         for item in items
     )
     if not shared_unit:
-        value_head = "Значение"
+        value_head = escape(th_value_plain)
     elif shared_unit.startswith("%"):
-        value_head = f"Значение, {escape(shared_unit)}"
+        value_head = f"{escape(th_value_plain)}, {escape(shared_unit)}"
     else:
         # «изменение за год, %» само описывает колонку: «Значение, изменение
         # за год, %» распадается на три запятых и не читается.
         value_head = escape(shared_unit[0].upper() + shared_unit[1:])
     table_html = (
         '<div class="seo-scroll"><table><thead><tr>'
-        f"<th>Место</th><th>Страна</th><th>{value_head}</th>{unit_head}<th>Период</th>"
+        f"<th>{escape(th_rank)}</th><th>{escape(th_country)}</th>"
+        f"<th>{value_head}</th>{unit_head}<th>{escape(th_period)}</th>"
         f"</tr></thead><tbody>{rows_html}</tbody></table></div>"
     )
 
@@ -796,22 +1003,45 @@ async def render_world_rating_html(
             f'<li><a href="{escape(paths.country(country["slug"]))}">{escape(country["name"])}</a></li>'
             for country in missing
         )
+        h2_missing = (
+            world_template("rating_h2_missing") or "Страны без данных за {year} год"
+        ).format(year=active_year)
+        missing_p = (
+            world_template("rating_missing_p")
+            or (
+                "У этих стран нет опубликованного значения по выбранному показателю "
+                "за {year} год."
+            )
+        ).format(year=active_year)
         missing_html = (
-            f'<section class="seo-section"><h2>Страны без данных за {active_year} год</h2>'
-            f'<p>У этих стран нет опубликованного значения по выбранному показателю '
-            f"за {active_year} год.</p><ul class=\"seo-pills\">{missing_items}</ul></section>"
+            f'<section class="seo-section"><h2>{escape(h2_missing)}</h2>'
+            f'<p>{escape(missing_p)}</p>'
+            f'<ul class="seo-pills">{missing_items}</ul></section>'
         )
 
     og_path = paths.og_world_rating(concept_slug)
-    figure_alt = (
-        f"{name} по странам — рейтинг {active_year} года, "
-        f"первое значение в текущем порядке: {first['country_name']} ({_value_text(first)})"
-    )
+    if en:
+        figure_alt = (
+            f"{name} by country — ranking {active_year}, "
+            f"first value in current order: {first['country_name']} ({_value_text(first)})"
+        )
+        figcaption = (
+            f"{name} by country, {active_year}. "
+            f"Source: {sources}. forecasteconomy.com"
+        )
+    else:
+        figure_alt = (
+            f"{name} по странам — рейтинг {active_year} года, "
+            f"первое значение в текущем порядке: {first['country_name']} ({_value_text(first)})"
+        )
+        figcaption = (
+            f"{name} по странам, {active_year} год. "
+            f"Источник: {sources}. forecasteconomy.com"
+        )
     figure_html = (
         f'<figure class="seo-chart"><img src="{escape(og_path)}" alt="{escape(figure_alt)}" '
         f'width="1200" height="630" loading="eager">'
-        f"<figcaption>{escape(name)} по странам, {active_year} год. "
-        f"Источник: {escape(sources)}. forecasteconomy.com</figcaption></figure>"
+        f"<figcaption>{escape(figcaption)}</figcaption></figure>"
     )
 
     canonical = paths.world_rating(concept_slug)
@@ -825,7 +1055,7 @@ async def render_world_rating_html(
             "@type": "ItemList",
             "name": title,
             "description": desc,
-            "url": f"{DOMAIN}{canonical}",
+            "url": _absolute(canonical),
             "itemListOrder": order_uri,
             "numberOfItems": with_data,
             "itemListElement": [
@@ -833,11 +1063,11 @@ async def render_world_rating_html(
                     "@type": "ListItem",
                     "position": item["rank"],
                     "name": item["country_name"],
-                    "url": f"{DOMAIN}{paths.indicator(item['country_slug'], item['indicator_code'])}",
+                    "url": _absolute(paths.indicator(item['country_slug'], item['indicator_code'])),
                     "item": {
                         "@type": "Country",
                         "name": item["country_name"],
-                        "url": f"{DOMAIN}{paths.country(item['country_slug'])}",
+                        "url": _absolute(paths.country(item['country_slug'])),
                     },
                 }
                 for item in items
@@ -846,35 +1076,72 @@ async def render_world_rating_html(
         {
             "@context": "https://schema.org",
             "@type": "ImageObject",
-            "contentUrl": f"{DOMAIN}{og_path}",
-            "url": f"{DOMAIN}{og_path}",
+            "contentUrl": _absolute(og_path),
+            "url": _absolute(og_path),
             "width": 1200,
             "height": 630,
-            "name": f"{name} — рейтинг стран, {active_year}",
+            "name": (
+                f"{name} — country ranking, {active_year}" if en
+                else f"{name} — рейтинг стран, {active_year}"
+            ),
             "caption": figure_alt,
             "representativeOfPage": True,
         },
     ]
 
+    eyebrow = world_template("rating_eyebrow") or "Сопоставимые показатели стран"
+    tile_first = (
+        world_template("rating_tile_first")
+        or "Первое значение в текущем порядке — {country}"
+    ).format(country=first["country_name"])
+    tile_last = (
+        world_template("rating_tile_last")
+        or "Последнее значение в текущем порядке — {country}"
+    ).format(country=last["country_name"])
+    tile_with = world_template("rating_tile_with_data") or "Стран с данными"
+    tile_date = world_template("rating_tile_last_date") or "Последняя дата в срезе"
+    of_total = (
+        world_template("rating_of_total") or "{with_data} из {total}"
+    ).format(with_data=with_data, total=total)
+    h2_full = world_template("rating_h2_full") or "Полный рейтинг стран"
+    h2_other = world_template("rating_h2_other") or "Другие показатели рейтинга"
+    h2_years = world_template("rating_h2_years") or "Другие годы"
+    h2_source = world_template("rating_h2_source") or "Источник данных"
+    source_p = (
+        world_template("rating_source_p")
+        or (
+            "{sources}. Единицы измерения: {unit}. "
+            "Для каждого календарного года берётся последнее опубликованное значение внутри года."
+        )
+    ).format(sources=sources, unit=unit or unit_fallback)
+    en_kw = world_template("keywords_rating")
+    keywords = (
+        en_kw.format(name=name, year=active_year)
+        if en_kw
+        else (
+            f"{name} по странам, рейтинг стран по {name}, "
+            f"{name} {active_year}, мировая экономика рейтинг"
+        )
+    )
+
     body = f"""<div class="seo-page">
 {_breadcrumbs_nav(crumbs.world_rating_trail(name, paths.world_rating(concept_slug)))}
-<p class="seo-eyebrow">Сопоставимые показатели стран</p>
+<p class="seo-eyebrow">{escape(eyebrow)}</p>
 <h1>{escape(title)}</h1>
 <p>{escape(intro)}</p>
 {figure_html}
 <div class="seo-tiles">
-<div class="seo-tile"><span>Первое значение в текущем порядке — {escape(first["country_name"])}</span><b>{escape(_value_text(first))}</b></div>
-<div class="seo-tile"><span>Последнее значение в текущем порядке — {escape(last["country_name"])}</span><b>{escape(_value_text(last))}</b></div>
-<div class="seo-tile"><span>Стран с данными</span><b>{with_data} из {total}</b></div>
-<div class="seo-tile"><span>Последняя дата в срезе</span><b>{escape(_date_text(last_date))}</b></div>
+<div class="seo-tile"><span>{escape(tile_first)}</span><b>{escape(_value_text(first))}</b></div>
+<div class="seo-tile"><span>{escape(tile_last)}</span><b>{escape(_value_text(last))}</b></div>
+<div class="seo-tile"><span>{escape(tile_with)}</span><b>{escape(of_total)}</b></div>
+<div class="seo-tile"><span>{escape(tile_date)}</span><b>{escape(_date_text(last_date))}</b></div>
 </div>
-<section class="seo-section"><h2>Полный рейтинг стран</h2>{table_html}</section>
+<section class="seo-section"><h2>{escape(h2_full)}</h2>{table_html}</section>
 {missing_html}
-<section class="seo-section"><h2>Другие показатели рейтинга</h2><ul class="seo-pills">{concept_links}</ul></section>
-<section class="seo-section"><h2>Другие годы</h2><ul class="seo-pills">{year_links}</ul></section>
-<section class="seo-section"><h2>Источник данных</h2>
-<p>{escape(sources)}. Единицы измерения: {escape(unit or 'единицы источника')}.
-Для каждого календарного года берётся последнее опубликованное значение внутри года.</p></section>
+<section class="seo-section"><h2>{escape(h2_other)}</h2><ul class="seo-pills">{concept_links}</ul></section>
+<section class="seo-section"><h2>{escape(h2_years)}</h2><ul class="seo-pills">{year_links}</ul></section>
+<section class="seo-section"><h2>{escape(h2_source)}</h2>
+<p>{escape(source_p)}</p></section>
 </div>"""
 
     html = await build_document(
@@ -883,11 +1150,8 @@ async def render_world_rating_html(
         canonical_path=canonical,
         body=body,
         json_ld=json_ld,
-        keywords=(
-            f"{name} по странам, рейтинг стран по {name}, "
-            f"{name} {active_year}, мировая экономика рейтинг"
-        ),
-        og_image=f"{DOMAIN}{og_path}",
+        keywords=keywords,
+        og_image=_absolute(og_path),
     )
     return 200, html
 
@@ -962,9 +1226,14 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
         )
         for ind in key_inds
     )
+    from app.services.seo_i18n import world_template as _wt_early
+
+    th_ind = _wt_early("th_indicator") or "Показатель"
+    th_val = _wt_early("th_value") or "Значение"
+    th_per = _wt_early("th_period") or "Дата"
     key_table = (
         '<div class="seo-scroll"><table><thead><tr>'
-        "<th>Показатель</th><th>Значение</th><th>Дата</th>"
+        f"<th>{escape(th_ind)}</th><th>{escape(th_val)}</th><th>{escape(th_per)}</th>"
         "</tr></thead><tbody>"
         + key_rows
         + "</tbody></table></div>"
@@ -977,8 +1246,9 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
         by_cat.setdefault(ind.category_ru or "Прочее", []).append(ind)
 
     sections = []
-    for cat in sorted(by_cat.keys(), key=lambda c: (cat_rank.get(c, 99), c)):
-        items = by_cat[cat]
+    for cat_ru in sorted(by_cat.keys(), key=lambda c: (cat_rank.get(c, 99), c)):
+        items = by_cat[cat_ru]
+        cat_label = _category_label(cat_ru)
         links = "".join(
             f'<li><a href="{escape(paths.indicator(slug, ind.code))}">'
             f"{escape(_display_name(ind))}</a></li>"
@@ -990,7 +1260,7 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
             else ""
         )
         sections.append(
-            f'<section class="seo-section"><h2>{escape(cat)}</h2>'
+            f'<section class="seo-section"><h2>{escape(cat_label)}</h2>'
             f"<ul>{links}</ul>{more}</section>"
         )
 
@@ -1007,42 +1277,51 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
     ).scalars().all()
     neighbors_html = ""
     if neighbors:
+        from app.services.seo_i18n import world_template as _wt
+
+        n_h2 = _wt("country_h2_neighbors") or "Другие страны"
         nlinks = "".join(
-            f'<li><a href="{escape(paths.country(n.slug))}">{escape(n.name_ru)}</a></li>'
+            f'<li><a href="{escape(paths.country(n.slug))}">'
+            f'{escape(_country_label(n))}</a></li>'
             for n in neighbors
         )
         neighbors_html = (
-            '<section class="seo-section"><h2>Другие страны</h2>'
+            f'<section class="seo-section"><h2>{escape(n_h2)}</h2>'
             f'<ul class="seo-pills">{nlinks}</ul></section>'
         )
 
     og_path = paths.og_country(slug)
     n_ind = len(inds)
     gen = _genitive(country)
+    country_label = _country_label(country)
     n_phrase = _n_indicators_phrase(n_ind)
     source_phrase, has_national = _country_source_phrase(inds)
-    title = f"Экономика {gen}: статистика и показатели"
-    if has_national:
+    from app.services.seo_i18n import world_template
+
+    en_title = world_template("country_title")
+    en_h1 = world_template("country_h1")
+    en_desc_key = "country_desc_national" if has_national else "country_desc_eurostat"
+    en_desc = world_template(en_desc_key)
+    if en_title:
+        title = en_title.format(country=country_label)
+    else:
+        title = f"Экономика {gen}: статистика и показатели"
+    h1_text = (
+        en_h1.format(country=country_label)
+        if en_h1
+        else f"Экономика {gen}: статистика и показатели"
+    )
+    if en_desc:
+        desc = en_desc.format(
+            country=country_label,
+            n_phrase=n_phrase,
+            source_phrase=source_phrase,
+        )
+    elif has_national:
         desc = (
             f"{country.name_ru}: {n_phrase} — цены, ВВП, "
             f"рынок труда, торговля и финансы. Источник: {source_phrase}. "
             f"Графики и последние значения на Forecast Economy."
-        )
-        figure_alt = (
-            f"Экономика {gen} — сводка ключевых показателей, "
-            f"источник {source_phrase}"
-        )
-        eyebrow = f"Национальная статистика — {country.name_ru}"
-        lead = (
-            f"Официальные национальные ряды для {escape(gen)}: "
-            f"{n_phrase} в {len(by_cat)} разделах — цены, ВВП, рынок труда, "
-            f"внешняя торговля, финансы и другие темы. У каждого показателя — график "
-            f"динамики, таблица значений и ссылка на первоисточник."
-        )
-        source_section = (
-            f"Данные публикует {escape(source_phrase)}. На сайте ряды приведены "
-            f"в единицах источника; дата последнего значения указана у каждого "
-            f"показателя."
         )
     else:
         desc = (
@@ -1050,20 +1329,78 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
             f"рынок труда, торговля и финансы. Графики и последние значения "
             f"на Forecast Economy."
         )
+    if has_national:
         figure_alt = (
-            f"Экономика {gen} — сводка ключевых показателей, "
-            f"источник Евростат"
+            f"Economy of {country_label} — key indicators summary, "
+            f"source {source_phrase}"
+            if world_template("country_lead_national")
+            else (
+                f"Экономика {gen} — сводка ключевых показателей, "
+                f"источник {source_phrase}"
+            )
         )
-        eyebrow = f"Статистика Евростата — {country.name_ru}"
+        eyebrow = (
+            world_template("country_eyebrow_national") or "Национальная статистика — {country}"
+        ).format(country=country_label)
+        lead_tpl = world_template("country_lead_national")
         lead = (
-            f"Официальные ряды Евростата для {escape(gen)}: "
-            f"{n_phrase} в {len(by_cat)} разделах — цены, ВВП, рынок труда, "
-            f"внешняя торговля, финансы и другие темы. У каждого показателя — график "
-            f"динамики, таблица значений и ссылка на первоисточник."
+            lead_tpl.format(
+                country=escape(country_label),
+                n_phrase=n_phrase,
+                n_sections=len(by_cat),
+            )
+            if lead_tpl
+            else (
+                f"Официальные национальные ряды для {escape(gen)}: "
+                f"{n_phrase} в {len(by_cat)} разделах — цены, ВВП, рынок труда, "
+                f"внешняя торговля, финансы и другие темы. У каждого показателя — график "
+                f"динамики, таблица значений и ссылка на первоисточник."
+            )
         )
         source_section = (
-            f"Данные публикует {_SOURCE_PUBLIC}. На сайте ряды приведены в единицах "
-            f"источника; дата последнего значения указана у каждого показателя."
+            (world_template("country_source_national") or "").format(
+                source_phrase=escape(source_phrase)
+            )
+            if world_template("country_source_national")
+            else (
+                f"Данные публикует {escape(source_phrase)}. На сайте ряды приведены "
+                f"в единицах источника; дата последнего значения указана у каждого "
+                f"показателя."
+            )
+        )
+    else:
+        figure_alt = (
+            f"Economy of {country_label} — key indicators summary, source Eurostat"
+            if world_template("country_lead_eurostat")
+            else (
+                f"Экономика {gen} — сводка ключевых показателей, "
+                f"источник Евростат"
+            )
+        )
+        eyebrow = (
+            world_template("country_eyebrow_eurostat") or "Статистика Евростата — {country}"
+        ).format(country=country_label)
+        lead_tpl = world_template("country_lead_eurostat")
+        lead = (
+            lead_tpl.format(
+                country=escape(country_label),
+                n_phrase=n_phrase,
+                n_sections=len(by_cat),
+            )
+            if lead_tpl
+            else (
+                f"Официальные ряды Евростата для {escape(gen)}: "
+                f"{n_phrase} в {len(by_cat)} разделах — цены, ВВП, рынок труда, "
+                f"внешняя торговля, финансы и другие темы. У каждого показателя — график "
+                f"динамики, таблица значений и ссылка на первоисточник."
+            )
+        )
+        source_section = (
+            world_template("country_source_eurostat")
+            or (
+                f"Данные публикует {_SOURCE_PUBLIC}. На сайте ряды приведены в единицах "
+                f"источника; дата последнего значения указана у каждого показателя."
+            )
         )
     figure_html = (
         f'<figure class="seo-chart"><img src="{escape(og_path)}" '
@@ -1072,30 +1409,37 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
         f"Источник: {escape(source_phrase)}. forecasteconomy.com</figcaption></figure>"
     )
 
+    h2_key = world_template("country_h2_key") or "Ключевые показатели"
+    h2_source = world_template("country_h2_source") or "Источник данных"
+    h2_russia = world_template("country_h2_russia") or "Россия"
+    russia_p = world_template("country_russia_p") or (
+        "Сопоставить с российскими рядами можно в "
+        '<a href="/compare">сравнении индикаторов</a> и на '
+        '<a href="/">главной витрине</a> Forecast Economy.'
+    )
+
     body = f"""<div class="seo-page">
-{_breadcrumbs_nav(crumbs.world_country_trail(country.name_ru, paths.country(slug)))}
+{_breadcrumbs_nav(crumbs.world_country_trail(country_label, paths.country(slug)))}
 <p class="seo-eyebrow">{escape(eyebrow)}</p>
-<h1>Экономика {escape(gen)}: статистика и показатели</h1>
+<h1>{escape(h1_text)}</h1>
 <p>{lead}</p>
 {figure_html}
-<section class="seo-section"><h2>Ключевые показатели</h2>{key_table}</section>
+<section class="seo-section"><h2>{escape(h2_key)}</h2>{key_table}</section>
 {''.join(sections)}
 {neighbors_html}
-<section class="seo-section"><h2>Источник данных</h2>
+<section class="seo-section"><h2>{escape(h2_source)}</h2>
 <p>{source_section}</p></section>
-<section class="seo-section"><h2>Россия</h2>
-<p>Сопоставить с российскими рядами можно в
-<a href="/compare">сравнении индикаторов</a> и на
-<a href="/">главной витрине</a> Forecast Economy.</p></section>
+<section class="seo-section"><h2>{escape(h2_russia)}</h2>
+<p>{russia_p}</p></section>
 </div>"""
 
     json_ld = [
-        _breadcrumbs(crumbs.world_country_trail(country.name_ru, paths.country(slug))),
+        _breadcrumbs(crumbs.world_country_trail(country_label, paths.country(slug))),
         {
             "@context": "https://schema.org",
             "@type": "ImageObject",
-            "contentUrl": f"{DOMAIN}{og_path}",
-            "url": f"{DOMAIN}{og_path}",
+            "contentUrl": _absolute(og_path),
+            "url": _absolute(og_path),
             "width": 1200,
             "height": 630,
             "name": f"Экономика {gen} — сводка показателей",
@@ -1103,18 +1447,24 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
             "representativeOfPage": True,
         },
     ]
+    en_kw = world_template("keywords_country")
+    keywords = (
+        en_kw.format(country=country_label)
+        if en_kw
+        else (
+            f"{country.name_ru} экономика, {country.name_ru} статистика, "
+            f"{country.name_ru} ввп, {country.name_ru} инфляция, "
+            f"{country.name_ru} безработица"
+        )
+    )
     html = await build_document(
         title=title,
         description=desc,
         canonical_path=paths.country(slug),
         body=body,
         json_ld=json_ld,
-        keywords=(
-            f"{country.name_ru} экономика, {country.name_ru} статистика, "
-            f"{country.name_ru} ввп, {country.name_ru} инфляция, "
-            f"{country.name_ru} безработица"
-        ),
-        og_image=f"{DOMAIN}{og_path}",
+        keywords=keywords,
+        og_image=_absolute(og_path),
     )
     return 200, html
 
@@ -1164,35 +1514,93 @@ async def render_world_indicator_html(
     multi_freq = len(siblings) >= 2
 
     prep = _prep(country)
-    desc_text = (indicator.description or "").strip()
-    if not desc_text:
-        desc_text = (
-            f"{display} в {prep} — официальный ряд {source}. "
-            f"На графике — динамика показателя за доступный период наблюдений"
-            + (f"; значения приведены в единицах: {unit}" if unit else "")
-            + "."
-        )
+    country_label = _country_label(country)
+    from app.services.locale import get_locale as _gl_ind
+    from app.services.seo_i18n import world_template as _wt_ind
 
-    period_line = f"Период наблюдений: {escape(period)}. Источник — {escape(source)}."
-    if not multi_freq:
-        freq_ru = _FREQ_RU.get((indicator.frequency or "").lower(), "")
-        if freq_ru:
-            period_line = (
-                f"Период наблюдений: {escape(period)}, "
-                f"публикация — {escape(freq_ru)}. Источник — {escape(source)}."
+    loc = _gl_ind()
+    place = country_label if loc == "en" else prep
+
+    desc_text = (indicator.description or "").strip()
+    if loc == "en" and desc_text and any(
+        ch in desc_text
+        for ch in "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя"
+    ):
+        desc_text = ""
+    if not desc_text:
+        en_fb = _wt_ind("indicator_desc_fallback")
+        if en_fb:
+            unit_clause = ""
+            if unit:
+                unit_clause = (_wt_ind("indicator_unit_clause") or "").format(unit=unit)
+            desc_text = en_fb.format(
+                display=display,
+                country=place,
+                source=source,
+                unit_clause=unit_clause,
+            )
+        else:
+            desc_text = (
+                f"{display} в {prep} — официальный ряд {source}. "
+                f"На графике — динамика показателя за доступный период наблюдений"
+                + (f"; значения приведены в единицах: {unit}" if unit else "")
+                + "."
             )
 
-    paragraphs = [
-        (
+    freq_label = _freq_adverb(indicator.frequency)
+    en_period = _wt_ind("indicator_period_line")
+    en_period_freq = _wt_ind("indicator_period_line_freq")
+    if en_period:
+        if not multi_freq and freq_label and en_period_freq:
+            period_line = en_period_freq.format(
+                period=escape(period), freq=escape(freq_label), source=escape(source),
+            )
+        else:
+            period_line = en_period.format(
+                period=escape(period), source=escape(source),
+            )
+    else:
+        period_line = f"Период наблюдений: {escape(period)}. Источник — {escape(source)}."
+        if not multi_freq and freq_label:
+            period_line = (
+                f"Период наблюдений: {escape(period)}, "
+                f"публикация — {escape(freq_label)}. Источник — {escape(source)}."
+            )
+
+    last_value_text = _fmt(last_value)
+    en_lead = _wt_ind("indicator_lead")
+    if en_lead:
+        lead_p = escape(
+            en_lead.format(
+                display=display,
+                country=place,
+                last_value=last_value_text,
+                unit_sfx=unit_sfx,
+                last_label=last_label,
+            )
+        )
+    else:
+        lead_p = (
             f"{escape(display)} в {escape(prep)}: "
-            f"последнее значение {_fmt(last_value)}{escape(unit_sfx)} "
+            f"последнее значение {last_value_text}{escape(unit_sfx)} "
             f"на {escape(last_label)}."
-        ),
+        )
+
+    paragraphs = [
+        lead_p,
         escape(desc_text),
         period_line,
     ]
     if indicator.methodology and indicator.methodology.strip():
-        paragraphs.append(escape(indicator.methodology.strip()))
+        method = indicator.methodology.strip()
+        if not (
+            loc == "en"
+            and any(
+                ch in method
+                for ch in "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя"
+            )
+        ):
+            paragraphs.append(escape(method))
 
     paragraphs_html = "".join(f"<p>{p}</p>" for p in paragraphs)
 
@@ -1202,30 +1610,52 @@ async def render_world_indicator_html(
         f"<td>{_fmt(v)}</td></tr>"
         for d, v in recent
     )
+    table_h2 = _wt_ind("indicator_table_h2") or "Последние значения"
+    th_period = _wt_ind("th_period") or "Период"
+    th_value = unit or (_wt_ind("th_value") or "Значение")
     table_html = (
-        f"<h2>Последние значения</h2>"
-        f'<div class="seo-scroll"><table><thead><tr><th>Период</th>'
-        f"<th>{escape(unit or 'Значение')}</th></tr></thead>"
+        f"<h2>{escape(table_h2)}</h2>"
+        f'<div class="seo-scroll"><table><thead><tr><th>{escape(th_period)}</th>'
+        f"<th>{escape(th_value)}</th></tr></thead>"
         f"<tbody>{table_rows}</tbody></table></div>"
     )
 
     og_path = paths.og_indicator(slug, code)
-    alt = (
-        f"{display} в {prep}: график динамики {period}, "
-        f"последнее значение {_fmt(last_value)}{unit_sfx}".strip()
-        + f", источник {source}"
-    )
+    en_alt = _wt_ind("indicator_alt")
+    if en_alt:
+        alt = en_alt.format(
+            display=display,
+            country=place,
+            period=period,
+            last_value=last_value_text,
+            unit_sfx=unit_sfx,
+            source=source,
+        ).strip()
+    else:
+        alt = (
+            f"{display} в {prep}: график динамики {period}, "
+            f"последнее значение {last_value_text}{unit_sfx}".strip()
+            + f", источник {source}"
+        )
+    en_cap = _wt_ind("indicator_figcaption")
+    if en_cap:
+        figcaption = en_cap.format(
+            display=display, country=place, period=period, source=source,
+        )
+    else:
+        figcaption = (
+            f"{display} в {prep}, {period}. Источник: {source}."
+        )
     figure_html = (
         f'<figure class="seo-chart"><img src="{escape(og_path)}" '
         f'alt="{escape(alt)}" width="1200" height="630" loading="eager">'
-        f"<figcaption>{escape(display)} в {escape(prep)}, "
-        f"{escape(period)}. Источник: {escape(source)}.</figcaption></figure>"
+        f"<figcaption>{escape(figcaption)}</figcaption></figure>"
     )
 
     # Тот же срез у других стран (dataset + slice_hash).
     peers = (
         await db.execute(
-            select(WorldCountry.slug, WorldCountry.name_ru, WorldIndicator.code)
+            select(WorldCountry.slug, WorldCountry.name_ru, WorldCountry.name_en, WorldIndicator.code)
             .join(WorldIndicator, WorldIndicator.country_id == WorldCountry.id)
             .where(
                 WorldIndicator.provider == indicator.provider,
@@ -1243,11 +1673,12 @@ async def render_world_indicator_html(
     if peers:
         items = "".join(
             f'<li><a href="{escape(paths.indicator(s, c))}">'
-            f"{escape(display)} — {escape(n)}</a></li>"
-            for s, n, c in peers
+            f"{escape(display)} — {escape((ne if loc == 'en' and (ne or '').strip() else n))}</a></li>"
+            for s, n, ne, c in peers
         )
+        peers_h2 = _wt_ind("indicator_h2_peers") or "Этот показатель в других странах"
         peers_html = (
-            '<section class="seo-section"><h2>Этот показатель в других странах</h2>'
+            f'<section class="seo-section"><h2>{escape(peers_h2)}</h2>'
             f"<ul>{items}</ul></section>"
         )
 
@@ -1274,89 +1705,161 @@ async def render_world_indicator_html(
             f"{escape(_display_name(s))}</a></li>"
             for s in cat_siblings
         )
-        cat = indicator.category_ru or "разделе"
+        cat = _category_label(indicator.category_ru, fallback="разделе")
+        sib_h2_tpl = _wt_ind("indicator_h2_siblings")
+        if sib_h2_tpl:
+            sib_h2 = sib_h2_tpl.format(category=cat, country=country_label)
+        else:
+            sib_h2 = f"Ещё в разделе «{cat}» — {country_label}"
         siblings_html = (
-            f'<section class="seo-section"><h2>Ещё в разделе «{escape(cat)}» '
-            f"— {escape(country.name_ru)}</h2>"
+            f'<section class="seo-section"><h2>{escape(sib_h2)}</h2>'
             f'<ul class="seo-pills">{items}</ul></section>'
         )
 
     source_url = (indicator.source_url or "").strip()
+    open_src = _wt_ind("indicator_open_source")
+    if open_src:
+        open_label = open_src.format(source=_SOURCE_PUBLIC)
+    else:
+        open_label = f"Открыть ряд на сайте {_SOURCE_PUBLIC}"
     source_link = (
         f'<p><a href="{escape(source_url)}" rel="noopener noreferrer">'
-        f"Открыть ряд на сайте {_SOURCE_PUBLIC}</a></p>"
+        f"{escape(open_label)}</a></p>"
         if source_url
         else ""
     )
 
-    title = (
-        f"{display} в {prep}: {_fmt(last_value)}{unit_sfx} ({last_label})"
-    ).strip()
-    meta_desc = (
-        f"{display} в {prep}: {_fmt(last_value)}{unit_sfx} на {last_label}. "
-        f"Динамика {period}, график и таблица. Источник: {source}."
-    ).strip()
+    from app.services.seo_i18n import world_template
+
+    en_title = world_template("indicator_title")
+    en_desc = world_template("indicator_desc")
+    en_h1 = world_template("indicator_h1")
+    if en_title:
+        title = en_title.format(
+            display=display,
+            country=country_label,
+            last_value=last_value_text,
+            unit_sfx=unit_sfx,
+            last_label=last_label,
+        ).strip()
+    else:
+        title = (
+            f"{display} в {prep}: {last_value_text}{unit_sfx} ({last_label})"
+        ).strip()
+    if en_desc:
+        meta_desc = en_desc.format(
+            display=display,
+            country=country_label,
+            last_value=last_value_text,
+            unit_sfx=unit_sfx,
+            last_label=last_label,
+            period=period,
+            source=source,
+        ).strip()
+    else:
+        meta_desc = (
+            f"{display} в {prep}: {last_value_text}{unit_sfx} на {last_label}. "
+            f"Динамика {period}, график и таблица. Источник: {source}."
+        ).strip()
+    h1_text = (
+        en_h1.format(display=display, country=country_label)
+        if en_h1
+        else f"{display} в {prep}"
+    )
+
+    unit_part = f" ({unit})" if unit else ""
+    en_ds = _wt_ind("indicator_dataset_desc")
+    if en_ds:
+        dataset_desc = en_ds.format(
+            display=display,
+            unit_part=unit_part,
+            country=country_label,
+            period=period,
+            source=source,
+        )
+    else:
+        dataset_desc = (
+            f"{display}"
+            + unit_part
+            + f" в {prep}, {period}. Источник: {source}."
+        )
 
     json_ld = [
         _breadcrumbs(crumbs.world_indicator_trail(
-            country.name_ru, paths.country(slug), display, paths.indicator(slug, code),
+            country_label, paths.country(slug), display, paths.indicator(slug, code),
         )),
         {
             "@context": "https://schema.org",
             "@type": "Dataset",
-            "name": f"{display} в {prep}",
-            "description": (
-                f"{display}"
-                + (f" ({unit})" if unit else "")
-                + f" в {prep}, {period}. Источник: {source}."
-            ),
-            "url": f"{DOMAIN}{paths.indicator(slug, code)}",
+            "name": h1_text,
+            "description": dataset_desc,
+            "url": _absolute(paths.indicator(slug, code)),
             "temporalCoverage": f"{first_date.isoformat()}/{last_date.isoformat()}",
-            "spatialCoverage": country.name_ru,
+            "spatialCoverage": country_label,
             "creator": {"@type": "Organization", "name": source},
             "license": "https://creativecommons.org/licenses/by/4.0/",
-            "image": f"{DOMAIN}{og_path}",
+            "image": _absolute(og_path),
         },
         {
             "@context": "https://schema.org",
             "@type": "ImageObject",
-            "contentUrl": f"{DOMAIN}{og_path}",
-            "url": f"{DOMAIN}{og_path}",
+            "contentUrl": _absolute(og_path),
+            "url": _absolute(og_path),
             "width": 1200,
             "height": 630,
-            "name": f"{display} в {prep}: график",
+            "name": f"{h1_text}: chart" if loc == "en" else f"{h1_text}: график",
             "caption": alt,
             "representativeOfPage": True,
         },
     ]
 
+    tile_last = _wt_ind("indicator_tile_last") or "Последнее значение"
+    tile_date = _wt_ind("indicator_tile_date") or "Дата"
+    tile_period = _wt_ind("indicator_tile_period") or "Период"
+    tile_source = _wt_ind("indicator_tile_source") or "Источник"
+    h2_source = _wt_ind("indicator_h2_source") or "Источник данных"
+    unit_fb = _wt_ind("indicator_unit_fallback") or "единицы источника"
+    source_p_tpl = _wt_ind("indicator_source_p")
+    if source_p_tpl:
+        source_p = source_p_tpl.format(
+            source=source, unit=(unit or unit_fb), period=period,
+        )
+    else:
+        source_p = (
+            f"{source}. Единицы: {unit or unit_fb}. "
+            f"Период наблюдений: {period}."
+        )
+    h2_russia = _wt_ind("indicator_h2_russia") or "Россия"
+    russia_p = _wt_ind("indicator_russia_p") or (
+        "Российские макропоказатели — на "
+        '<a href="/">главной</a> и в '
+        '<a href="/compare">сравнении</a>.'
+    )
+
     body = f"""<div class="seo-page">
 {_breadcrumbs_nav(crumbs.world_indicator_trail(
-    country.name_ru, paths.country(slug), display, paths.indicator(slug, code),
+    country_label, paths.country(slug), display, paths.indicator(slug, code),
 ))}
-<p class="seo-eyebrow">{escape(indicator.category_ru or 'Статистика')} — {escape(country.name_ru)}</p>
-<h1>{escape(display)} в {escape(prep)}</h1>
+<p class="seo-eyebrow">{escape(_category_label(indicator.category_ru or 'Статистика'))} — {escape(country_label)}</p>
+<h1>{escape(h1_text)}</h1>
 {figure_html}
 <div class="seo-tiles">
-<div class="seo-tile"><span>Последнее значение</span><b>{_fmt(last_value)}{escape(unit_sfx)}</b></div>
-<div class="seo-tile"><span>Дата</span><b>{escape(last_label)}</b></div>
-<div class="seo-tile"><span>Период</span><b>{escape(period)}</b></div>
-<div class="seo-tile"><span>Источник</span><b>{escape(source)}</b></div>
+<div class="seo-tile"><span>{escape(tile_last)}</span><b>{last_value_text}{escape(unit_sfx)}</b></div>
+<div class="seo-tile"><span>{escape(tile_date)}</span><b>{escape(last_label)}</b></div>
+<div class="seo-tile"><span>{escape(tile_period)}</span><b>{escape(period)}</b></div>
+<div class="seo-tile"><span>{escape(tile_source)}</span><b>{escape(source)}</b></div>
 </div>
 {paragraphs_html}
 {freq_links_html}
 {table_html}
 {peers_html}
 {siblings_html}
-<section class="seo-section"><h2>Источник данных</h2>
-<p>{escape(source)}. Единицы: {escape(unit or 'единицы источника')}.
-Период наблюдений: {escape(period)}.</p>
+<section class="seo-section"><h2>{escape(h2_source)}</h2>
+<p>{source_p}</p>
 {source_link}
 </section>
-<section class="seo-section"><h2>Россия</h2>
-<p>Российские макропоказатели — на
-<a href="/">главной</a> и в
-<a href="/compare">сравнении</a>.</p></section>
+<section class="seo-section"><h2>{escape(h2_russia)}</h2>
+<p>{russia_p}</p></section>
 </div>"""
 
     html = await build_document(
@@ -1366,9 +1869,15 @@ async def render_world_indicator_html(
         body=body,
         json_ld=json_ld,
         keywords=(
-            f"{display} {country.name_ru}, {country.name_ru} "
-            f"{display} график, {country.name_ru} статистика"
+            (world_template("keywords_indicator") or "").format(
+                display=display, country=country_label,
+            )
+            if world_template("keywords_indicator")
+            else (
+                f"{display} {country.name_ru}, {country.name_ru} "
+                f"{display} график, {country.name_ru} статистика"
+            )
         ),
-        og_image=f"{DOMAIN}{og_path}",
+        og_image=_absolute(og_path),
     )
     return 200, html

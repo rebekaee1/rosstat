@@ -1,0 +1,40 @@
+# robots.txt — __PUBLIC_HOST__
+# Не запрещаем /assets/ — роботам нужны JS/CSS для рендеринга.
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /embed/
+Disallow: /__spa-index.html
+Disallow: /login
+Disallow: /register
+Disallow: /account
+
+User-agent: Yandex
+Allow: /
+Disallow: /api/
+Disallow: /embed/
+Disallow: /__spa-index.html
+Disallow: /login
+Disallow: /register
+Disallow: /account
+Host: __PUBLIC_ORIGIN__
+
+User-agent: Googlebot
+Allow: /
+Disallow: /api/
+Disallow: /embed/
+Disallow: /__spa-index.html
+Disallow: /login
+Disallow: /register
+Disallow: /account
+
+# Clean-param — межсекционная директива Яндекса (Yandex.Webmaster → «Найдены страницы-дубли с GET-параметрами»).
+# Сообщает роботу, какие GET-параметры считать незначащими, чтобы не индексировать дубли и склеить сигналы на канонической странице.
+# mode= НЕ включён: у view-mode семей (ИПЦ, RUONIA, жильё) каждый режим — отдельная каноническая страница.
+# Лимит длины правила — 500 символов; разбиваем на несколько строк.
+Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content&utm_referrer
+Clean-param: yclid&gclid&fbclid&etext&ybaip&_openstat&clid&yandex_referrer
+Clean-param: from&ref&ref_src&source&mc_cid&mc_eid&igshid&_ga
+
+Sitemap: __PUBLIC_ORIGIN__/sitemap.xml

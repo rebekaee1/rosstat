@@ -17,6 +17,7 @@ from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.cache import cache_get, cache_set, versioned_key
+from app.services.locale import get_locale
 from app.data.eurostat_listing import (
     dataset_stem,
     is_stale_history,
@@ -25,7 +26,13 @@ from app.data.eurostat_listing import (
 )
 from app.data.eurostat_titles_ru import listing_substance_score
 from app.data.eurostat_units_ru import unit_suffix
-from app.data.world_concepts import CONCEPT_BY_SLUG, WORLD_CONCEPTS, concept_for_indicator
+from app.data.world_concepts import (
+    CONCEPT_BY_SLUG,
+    WORLD_CONCEPTS,
+    concept_for_indicator,
+    concept_public_name,
+    concept_public_unit,
+)
 from app.data.world_concept_national import national_codes_for_concept
 from app.data.world_country_area import area_payload
 from app.data.world_country_population import population_payload as curated_population_payload
@@ -77,13 +84,56 @@ def _fmt_date(d: date | None) -> str | None:
     return d.isoformat() if d else None
 
 
+def _country_display_name(c: WorldCountry) -> str:
+    """Locale-facing country label (EN prefers name_en)."""
+    if get_locale() == "en" and (c.name_en or "").strip():
+        return c.name_en
+    return c.name_ru
+
+
+def _region_display(region_ru: str | None) -> str:
+    from app.services.world_rank_values import world_region_display
+
+    return world_region_display(region_ru)
+
+
+def _indicator_display_name(ind: WorldIndicator) -> str:
+    """Locale-facing indicator title for country catalog / card."""
+    from app.data.legacy_redirects import strip_world_frequency_suffix
+
+    if get_locale() == "en" and (ind.name_en or "").strip():
+        return strip_world_frequency_suffix(ind.name_en) or ind.name_en
+    return display_name(ind.name_ru, ind.code)
+
+
+def _indicator_public_unit(indicator: WorldIndicator) -> str:
+    """Locale-facing unit for world indicator rows."""
+    ru = (indicator.unit_ru or indicator.unit or "").strip()
+    if get_locale() != "en":
+        return ru
+    concept = concept_for_indicator(indicator)
+    if concept is not None:
+        return concept_public_unit(concept) or ru
+    from app.data.eurostat_units_ru import unit_label_en_for_code
+    from app.services.display import localize_unit
+
+    en_label = (unit_label_en_for_code(indicator.unit) or "").strip()
+    vague = {
+        "rate", "number", "average", "person", "persons", "index", "ratio",
+        "score", "total", "value", "unit", "percentage",
+    }
+    if en_label and en_label.lower() not in vague:
+        return en_label
+    return localize_unit(ru, locale="en") or ru
+
+
 def _country_payload(c: WorldCountry, indicators_count: int | None = None) -> dict:
     out = {
         "code": c.code,
         "slug": c.slug,
-        "name": c.name_ru,
+        "name": _country_display_name(c),
         "name_en": c.name_en,
-        "region": c.region_ru,
+        "region": _region_display(c.region_ru),
     }
     if indicators_count is not None:
         out["indicators_count"] = indicators_count
@@ -165,7 +215,9 @@ async def _population_payload(
             numeric = float(value)
             return {
                 "value": int(numeric) if numeric.is_integer() else round(numeric, 4),
-                "unit": indicator.unit_ru or indicator.unit or "человек",
+                "unit": _indicator_public_unit(indicator) or (
+                    "persons" if get_locale() == "en" else "человек"
+                ),
                 "date": point_date.isoformat(),
                 "year": point_date.year,
                 "source": indicator.source,
@@ -372,11 +424,11 @@ def _compare_series_payload(country: WorldCountry, indicator: WorldIndicator, co
         "code": f"w:{country.slug}:{concept.slug}",
         "indicator_code": indicator.code,
         "country_slug": country.slug,
-        "country_name": country.name_ru,
+        "country_name": _country_display_name(country),
         "concept_slug": concept.slug,
-        "concept_name": concept.name_ru,
+        "concept_name": concept_public_name(concept),
         "frequency": normalize_frequency(indicator.frequency),
-        "unit": concept.unit_ru,
+        "unit": concept_public_unit(concept),
     }
 
 
@@ -404,8 +456,35 @@ def _benchmark_value(concept_slug: str, values: list[float]) -> float:
 
 
 def _benchmark_label(concept_slug: str, count: int) -> str:
+    """Locale-facing average/median chip (snapshot / map-series / average)."""
+    if get_locale() == "en":
+        metric = "Median" if concept_slug == "hicp-index" else "Average"
+        return f"{metric} across {count} countries with data"
     metric = "Медиана" if concept_slug == "hicp-index" else "Среднее"
     return f"{metric} по {count} странам с данными"
+
+
+def _average_series_copy(concept_slug: str) -> dict[str, str]:
+    """User-visible meta for /compare/average (legend + methodology)."""
+    if get_locale() == "en":
+        if concept_slug == "hicp-index":
+            return {
+                "country_name": "Median across countries with data",
+                "methodology": "Median across countries with data on each date",
+            }
+        return {
+            "country_name": "Average across countries with data",
+            "methodology": "Unweighted average across countries with data on each date",
+        }
+    if concept_slug == "hicp-index":
+        return {
+            "country_name": "Медиана по странам с данными",
+            "methodology": "Медиана по странам с данными на каждую дату",
+        }
+    return {
+        "country_name": "Среднее по странам с данными",
+        "methodology": "Невзвешенное среднее по странам с данными на каждую дату",
+    }
 
 
 async def _concept_members(
@@ -492,7 +571,7 @@ async def list_countries(db: AsyncSession = Depends(get_db)):
     именем. Страны с нулём после отсева скрываем — каталог не обещает пустые
     страницы.
     """
-    cache_key = await versioned_key("world", "countries:v3")
+    cache_key = await versioned_key("world", f"countries:v3:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -574,10 +653,14 @@ async def world_rating_concepts():
     payload_concepts = []
     for concept in concepts:
         mode = ranking_value_mode(concept.slug, [])
+        public_name = ranking_display_name(
+            mode, concept.slug, concept_public_name(concept),
+        )
+        public_unit = ranking_public_unit(mode, concept_public_unit(concept))
         payload_concepts.append({
             "slug": concept.slug,
-            "name": ranking_display_name(mode, concept.slug, concept.name_ru),
-            "unit": ranking_public_unit(mode, concept.unit_ru),
+            "name": public_name,
+            "unit": public_unit,
             "value_mode": mode,
             "default_sort": world_rating_default_sort(concept.slug),
         })
@@ -590,7 +673,7 @@ async def world_rating_concepts():
 @router.get("/compare/catalog")
 async def world_compare_catalog(db: AsyncSession = Depends(get_db)):
     """Только курируемые и семантически совместимые фактические world-ряды."""
-    cache_key = await versioned_key("world", "compare:catalog:v3")
+    cache_key = await versioned_key("world", f"compare:catalog:v4:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -666,14 +749,16 @@ async def world_compare_snapshot(
     concept = CONCEPT_BY_SLUG.get(concept_slug)
     if concept is None or "compare" not in concept.enabled_surfaces:
         raise HTTPException(404, "Понятие для сравнения не найдено")
-    cache_key = await versioned_key("world", f"compare:snapshot:v4:{concept_slug}")
+    cache_key = await versioned_key(
+        "world", f"compare:snapshot:v5:{concept_slug}:{get_locale()}"
+    )
     cached = await cache_get(cache_key)
     if cached:
         return cached
 
     members = await _concept_members(db, concept)
     mode = ranking_value_mode(concept.slug, members)
-    public_unit = ranking_public_unit(mode, concept.unit_ru)
+    public_unit = ranking_public_unit(mode, concept_public_unit(concept))
     series_by_id = await _load_points_by_ids(db, [ind.id for _, ind in members])
     items = []
     for country, indicator in members:
@@ -684,7 +769,7 @@ async def world_compare_snapshot(
         items.append({
             "country_code": country.code,
             "country_slug": country.slug,
-            "country_name": country.name_ru,
+            "country_name": _country_display_name(country),
             "date": point_date.isoformat(),
             "value": round(value, 4),
             "unit": public_unit,
@@ -701,7 +786,9 @@ async def world_compare_snapshot(
             _benchmark_value(concept_slug, [item["value"] for item in items]),
             4,
         )
-    public_name = ranking_display_name(mode, concept.slug, concept.name_ru)
+    public_name = ranking_display_name(
+        mode, concept.slug, concept_public_name(concept),
+    )
     payload = {
         "concept": {
             "slug": concept.slug,
@@ -732,14 +819,16 @@ async def world_compare_map_series(
     concept = CONCEPT_BY_SLUG.get(concept_slug)
     if concept is None or "compare" not in concept.enabled_surfaces:
         raise HTTPException(404, "Понятие для карты не найдено")
-    cache_key = await versioned_key("world", f"compare:map-series:v4:{concept_slug}")
+    cache_key = await versioned_key(
+        "world", f"compare:map-series:v5:{concept_slug}:{get_locale()}"
+    )
     cached = await cache_get(cache_key)
     if cached:
         return cached
 
     members = await _concept_members(db, concept)
     mode = ranking_value_mode(concept.slug, members)
-    public_unit = ranking_public_unit(mode, concept.unit_ru)
+    public_unit = ranking_public_unit(mode, concept_public_unit(concept))
     series_by_id = await _load_points_by_ids(db, [ind.id for _, ind in members])
 
     values_by_year: dict[str, dict[str, dict]] = {}
@@ -751,7 +840,7 @@ async def world_compare_map_series(
             year_values[country.code] = {
                 "country_code": country.code,
                 "country_slug": country.slug,
-                "country_name": country.name_ru,
+                "country_name": _country_display_name(country),
                 "indicator_code": indicator.code,
                 "date": point_date.isoformat(),
                 "value": round(value, 4),
@@ -782,7 +871,9 @@ async def world_compare_map_series(
                 "countries_count": len(items),
             }
 
-    public_name = ranking_display_name(mode, concept.slug, concept.name_ru)
+    public_name = ranking_display_name(
+        mode, concept.slug, concept_public_name(concept),
+    )
     payload = {
         "concept": {
             "slug": concept.slug,
@@ -811,7 +902,10 @@ async def world_compare_average_series(
     concept = CONCEPT_BY_SLUG.get(concept_slug)
     if concept is None or concept_slug not in _AVERAGE_CONCEPTS:
         raise HTTPException(404, "Средний межстрановой ряд для этого показателя недоступен")
-    cache_key = await versioned_key("world", f"compare:average:v3:{concept_slug}:{mode or 'native'}")
+    cache_key = await versioned_key(
+        "world",
+        f"compare:average:v3:{concept_slug}:{mode or 'native'}:{get_locale()}",
+    )
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -870,23 +964,16 @@ async def world_compare_average_series(
         for point_date, values in sorted(by_date.items())
         if len(values) >= minimum_coverage
     ]
+    copy = _average_series_copy(concept_slug)
     payload = {
         "meta": {
             "code": f"w:average:{concept.slug}",
             "concept_slug": concept.slug,
-            "concept_name": concept.name_ru,
-            "country_name": (
-                "Медиана по странам с данными"
-                if concept_slug == "hicp-index"
-                else "Среднее по странам с данными"
-            ),
+            "concept_name": concept_public_name(concept),
+            "country_name": copy["country_name"],
             "frequency": resolved_frequency,
-            "unit": concept.unit_ru,
-            "methodology": (
-                "Медиана по странам с данными на каждую дату"
-                if concept_slug == "hicp-index"
-                else "Невзвешенное среднее по странам с данными на каждую дату"
-            ),
+            "unit": concept_public_unit(concept),
+            "methodology": copy["methodology"],
         },
         "data": points,
     }
@@ -896,7 +983,7 @@ async def world_compare_average_series(
 
 @router.get("/countries/{slug}")
 async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
-    cache_key = await versioned_key("world", f"country:v7:{slug}")
+    cache_key = await versioned_key("world", f"country:v8:{slug}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -961,21 +1048,24 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
         for f in sorted(by_freq.keys()):
             if f not in freqs_sorted:
                 freqs_sorted.append(f)
-        name = display_name(ind.name_ru, ind.code)
-        if not is_public_catalog_name(name):
+        name = _indicator_display_name(ind)
+        catalog_name = display_name(ind.name_ru, ind.code)
+        if not is_public_catalog_name(catalog_name):
             # Нельзя осмысленно назвать по-русски — не обещаем в каталоге.
             continue
         primary_freq = normalize_frequency(ind.frequency) or (
             freqs_sorted[0] if freqs_sorted else None
         )
+        unit = _indicator_public_unit(ind)
         item = {
             "code": ind.code,
-            "name_ru": name,
-            "name": name,  # compat
+            "name_ru": catalog_name,
+            "name": name,  # compat / locale-facing
             "unit_ru": ind.unit_ru or ind.unit,
-            "unit": ind.unit_ru or ind.unit,
-            "unit_suffix": unit_suffix(ind.unit_ru or ind.unit),
+            "unit": unit,
+            "unit_suffix": unit_suffix(unit),
             "category_ru": ind.category_ru,
+            "category": ind.category_ru,
             "frequency": primary_freq,
             "frequencies": freqs_sorted,
             "last_value": round(last[1], 4) if last else None,
@@ -987,8 +1077,20 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
         }
         by_cat.setdefault(ind.category_ru or "Прочее", []).append(item)
 
+    from app.services.seo_i18n import localize_category_name
+
+    for items in by_cat.values():
+        for item in items:
+            raw_cat = item.get("category_ru") or "Прочее"
+            item["category"] = localize_category_name(raw_cat)
+            # category_ru stays the storage/api key (Russian); category is locale-facing.
+
     categories = [
-        {"name": name, "count": len(items), "indicators": items}
+        {
+            "name": localize_category_name(name),
+            "count": len(items),
+            "indicators": items,
+        }
         for name, items in sorted(by_cat.items(), key=lambda kv: kv[0])
     ]
     overview_candidates = []
@@ -1038,8 +1140,8 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
             continue
         overview.append({
             "concept_slug": concept.slug,
-            "name": concept.name_ru,
-            "unit": concept.unit_ru,
+            "name": concept_public_name(concept),
+            "unit": concept_public_unit(concept),
             "indicator_code": indicator.code,
             "frequency": normalize_frequency(indicator.frequency),
             "date": latest[0].isoformat(),
@@ -1088,7 +1190,9 @@ async def _card_context(
 
 @router.get("/indicators/{slug}/{code}")
 async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db)):
-    cache_key = await versioned_key("world", f"ind:v9:{slug}:{code}")
+    cache_key = await versioned_key(
+        "world", f"ind:v9:{slug}:{code}:{get_locale()}"
+    )
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -1108,7 +1212,7 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
     for freq_ind in by_freq.values():
         series_by_code[freq_ind.code] = await _load_points(db, freq_ind.id)
 
-    unit = ind.unit_ru or ind.unit or ""
+    unit = _indicator_public_unit(ind)
     modes = build_modes_matrix(
         by_freq=by_freq,
         series_by_code=series_by_code,
@@ -1173,7 +1277,7 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
         peers.append({
             "country_code": peer_country.code,
             "country_slug": peer_country.slug,
-            "country_name": peer_country.name_ru,
+            "country_name": _country_display_name(peer_country),
             "indicator_code": peer_primary.code,
             "frequency": normalize_frequency(peer_primary.frequency),
         })
@@ -1188,19 +1292,22 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
         )
     ))
 
+    from app.services.seo_i18n import localize_category_name
+
+    cat_disp = localize_category_name(ind.category_ru)
     payload = {
         "country": _country_payload(country),
         "indicator": {
             "code": ind.code,
             "provider": ind.provider,
-            "name": display_name(ind.name_ru, ind.code),
+            "name": _indicator_display_name(ind),
             "name_ru": display_name(ind.name_ru, ind.code),
             "name_en": ind.name_en,
             "unit": unit,
-            "unit_ru": unit,
+            "unit_ru": ind.unit_ru or ind.unit or "",
             "unit_suffix": unit_suffix(unit),
             "frequency": normalize_frequency(ind.frequency),
-            "category": ind.category_ru,
+            "category": cat_disp,
             "category_ru": ind.category_ru,
             "source": ind.source,
             "source_url": ind.source_url,
@@ -1240,7 +1347,8 @@ async def indicator_data(
 ):
     cache_key = await versioned_key(
         "world",
-        f"data:v4:{slug}:{code}:{mode}:{int(include_forecast)}:{date_from}:{date_to}",
+        f"data:v4:{slug}:{code}:{mode}:{int(include_forecast)}:"
+        f"{date_from}:{date_to}:{get_locale()}",
     )
     cached = await cache_get(cache_key)
     if cached:
@@ -1404,7 +1512,12 @@ async def indicator_data(
                 if date.fromisoformat(point["date"]) <= date_to
             ]
 
-    unit = source.unit_ru or source.unit or ""
+    concept = concept_for_indicator(source)
+    unit = (
+        concept_public_unit(concept)
+        if concept is not None
+        else _indicator_public_unit(source)
+    )
     mode_unit = mode_unit_for(parsed, unit, signed)
     payload = {
         "mode": parsed.id,
@@ -1459,14 +1572,16 @@ async def search_world(
 
     rows = (await db.execute(stmt)).all()
     signal = await _ids_with_nonzero_signal(db, [ind.id for ind, _c in rows])
+    from app.services.seo_i18n import localize_category_name
+
     results = [
         {
             "code": ind.code,
             "name": display_name(ind.name_ru, ind.code),
             "name_ru": display_name(ind.name_ru, ind.code),
             "country_slug": c.slug,
-            "country_name": c.name_ru,
-            "category": ind.category_ru,
+            "country_name": _country_display_name(c),
+            "category": localize_category_name(ind.category_ru),
             "frequency": normalize_frequency(ind.frequency),
         }
         for ind, c in rows

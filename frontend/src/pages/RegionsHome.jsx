@@ -33,28 +33,29 @@ import {
   regionIndicatorPath,
   regionPath,
 } from '../lib/sitePaths';
+import { useLocale } from '../i18n';
 
 const RegionsMap = lazy(() => import('../components/RegionsMap'));
 const MapTimeline = lazy(() => import('../components/MapTimeline'));
 
-const DISTRICT_SHORT = {
-  cfo: 'Центральный',
-  szfo: 'Северо-Западный',
-  'ufo-south': 'Южный',
-  skfo: 'Северо-Кавказский',
-  pfo: 'Приволжский',
-  urfo: 'Уральский',
-  sfo: 'Сибирский',
-  dfo: 'Дальневосточный',
+const DISTRICT_SHORT_KEYS = {
+  cfo: 'regions.district.cfo',
+  szfo: 'regions.district.szfo',
+  'ufo-south': 'regions.district.ufo-south',
+  skfo: 'regions.district.skfo',
+  pfo: 'regions.district.pfo',
+  urfo: 'regions.district.urfo',
+  sfo: 'regions.district.sfo',
+  dfo: 'regions.district.dfo',
 };
 
 const MAP_METRICS = [
-  { code: 'srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy', label: 'Зарплата' },
-  { code: 'chislennost-naseleniya', label: 'Население' },
-  { code: 'uroven-bezrabotitsy', label: 'Безработица' },
-  { code: 'valovoy-regionalnyy-produkt-na-dushu-naseleniya', label: 'ВРП на душу' },
-  { code: 'investitsii-v-osnovnoy-kapital', label: 'Инвестиции' },
-  { code: 'chislennost-naseleniya-s-denezhnymi-dohodami-nizhe-granitsy', label: 'Бедность' },
+  { code: 'srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy', labelKey: 'regions.metric.wages' },
+  { code: 'chislennost-naseleniya', labelKey: 'regions.metric.population' },
+  { code: 'uroven-bezrabotitsy', labelKey: 'regions.metric.unemployment' },
+  { code: 'valovoy-regionalnyy-produkt-na-dushu-naseleniya', labelKey: 'regions.metric.grpPerCapita' },
+  { code: 'investitsii-v-osnovnoy-kapital', labelKey: 'regions.metric.investment' },
+  { code: 'chislennost-naseleniya-s-denezhnymi-dohodami-nizhe-granitsy', labelKey: 'regions.metric.poverty' },
 ];
 
 const PRESET_CODES = new Set(MAP_METRICS.map((m) => m.code));
@@ -64,6 +65,7 @@ function normalize(s) {
 }
 
 function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
+  const { t } = useLocale();
   const catalog = useRegionsCatalog();
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
@@ -94,20 +96,20 @@ function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
         <input
           type="text"
           value={open ? query : (isCustom ? activeName : '')}
-          placeholder="Свой показатель…"
+          placeholder={t('regions.map.customPlaceholder')}
           onFocus={() => openWith('')}
           onClick={() => { if (!open) openWith(''); }}
           onBlur={() => setTimeout(() => setOpen(false), 150)}
           onChange={(e) => { if (!open) setOpen(true); setQuery(e.target.value); }}
           className="min-w-0 flex-1 bg-transparent outline-none placeholder:text-text-tertiary"
-          aria-label="Найти показатель для карты"
+          aria-label={t('regions.map.customAria')}
           role="combobox"
           aria-expanded={open}
         />
         {isCustom && !open && (
           <button
             type="button"
-            aria-label="Сбросить показатель"
+            aria-label={t('regions.map.clearMetric')}
             onMouseDown={(e) => { e.preventDefault(); onClear(); }}
             className="shrink-0 text-champagne/70 hover:text-champagne"
           >
@@ -143,17 +145,18 @@ function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
 }
 
 const CONTRAST_METRICS = [
-  { code: 'srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy', label: 'Зарплата' },
-  { code: 'uroven-bezrabotitsy', label: 'Безработица', betterIsLow: true },
-  { code: 'valovoy-regionalnyy-produkt-na-dushu-naseleniya', label: 'ВРП на душу' },
-  { code: 'chislennost-naseleniya-s-denezhnymi-dohodami-nizhe-granitsy', label: 'Бедность', betterIsLow: true },
-  { code: 'investitsii-v-osnovnoy-kapital', label: 'Инвестиции' },
-  { code: 'chislennost-naseleniya', label: 'Население' },
+  { code: 'srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy', labelKey: 'regions.metric.wages' },
+  { code: 'uroven-bezrabotitsy', labelKey: 'regions.metric.unemployment', betterIsLow: true },
+  { code: 'valovoy-regionalnyy-produkt-na-dushu-naseleniya', labelKey: 'regions.metric.grpPerCapita' },
+  { code: 'chislennost-naseleniya-s-denezhnymi-dohodami-nizhe-granitsy', labelKey: 'regions.metric.poverty', betterIsLow: true },
+  { code: 'investitsii-v-osnovnoy-kapital', labelKey: 'regions.metric.investment' },
+  { code: 'chislennost-naseleniya', labelKey: 'regions.metric.population' },
 ];
 const CONTRAST_PAGE_SIZE = 2;
 const CONTRAST_PAGES = Math.ceil(CONTRAST_METRICS.length / CONTRAST_PAGE_SIZE);
 
 function ContrastRow({ heat, metricLabel, betterIsLow = false }) {
+  const { t, locale } = useLocale();
   const rows = heat?.data?.values;
   if (!rows?.length) return null;
   const sorted = [...rows].sort((a, b) => b.value - a.value);
@@ -163,14 +166,14 @@ function ContrastRow({ heat, metricLabel, betterIsLow = false }) {
   const second = betterIsLow ? hi : lo;
   const code = heat.data.indicator.code;
   const unit = heat.data.indicator.unit || '';
-  const short = /процент/.test(unit) ? '%'
-    : /миллионов рублей/.test(unit) ? 'млн ₽'
-    : unit === 'рублей' ? '₽'
-    : /тысяч человек/.test(unit) ? 'тыс. чел.'
+  const short = /процент|percent/i.test(unit) ? '%'
+    : /миллионов рублей|million rubles/i.test(unit) ? (locale === 'en' ? 'mln ₽' : 'млн ₽')
+    : /рубл|ruble/i.test(unit) ? '₽'
+    : /тысяч человек|thousand people/i.test(unit) ? (locale === 'en' ? 'ths people' : 'тыс. чел.')
     : '';
   const ratio = second.value ? Math.abs(first.value / second.value) : null;
   const ratioLabel = ratio && ratio >= 1.05
-    ? `× ${ratio.toLocaleString('ru-RU', { maximumFractionDigits: 1 })}`
+    ? `× ${ratio.toLocaleString(locale === 'en' ? 'en-US' : 'ru-RU', { maximumFractionDigits: 1 })}`
     : null;
   return (
     <div className="flex flex-col sm:flex-row sm:items-center gap-x-3 gap-y-0.5 text-[13px]">
@@ -179,12 +182,12 @@ function ContrastRow({ heat, metricLabel, betterIsLow = false }) {
         <Link to={regionIndicatorPath(first.slug, code)} className="text-text-primary hover:text-champagne transition-colors">
           {first.name} <span className="font-mono text-positive">{formatRegionValue(first.value)} {short}</span>
         </Link>
-        <span className="text-text-tertiary">против</span>
+        <span className="text-text-tertiary">{t('common.vs')}</span>
         <Link to={regionIndicatorPath(second.slug, code)} className="text-text-primary hover:text-champagne transition-colors">
           {second.name} <span className="font-mono text-negative">{formatRegionValue(second.value)} {short}</span>
         </Link>
         {ratioLabel && (
-          <span className="text-[11px] font-mono text-champagne/70" title="Во сколько раз лидер превосходит аутсайдера">
+          <span className="text-[11px] font-mono text-champagne/70" title={t('regions.contrasts.ratioTitle')}>
             {ratioLabel}
           </span>
         )}
@@ -194,6 +197,7 @@ function ContrastRow({ heat, metricLabel, betterIsLow = false }) {
 }
 
 function RegionCard({ region }) {
+  const { t } = useLocale();
   const pop = region.stats['1.1'];
   const wage = region.stats['3.4'];
   const unemp = region.stats['2.10.1'];
@@ -207,9 +211,11 @@ function RegionCard({ region }) {
           {region.name}
         </div>
         <div className="mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 font-mono text-[11px] text-text-secondary sm:gap-x-3 sm:text-xs">
-          {pop && <span>{formatRegionValue(pop.value)} тыс чел.</span>}
+          {pop && <span>{formatRegionValue(pop.value)} {pop.unit || ''}</span>}
           {wage && <span>{formatRegionValue(wage.value)} ₽</span>}
-          {unemp && <span>безраб. {formatRegionValue(unemp.value)}%</span>}
+          {unemp && (
+            <span>{t('regions.card.unemp', { value: formatRegionValue(unemp.value) })}</span>
+          )}
         </div>
       </div>
       <ChevronRight size={16} className="hidden shrink-0 text-text-tertiary transition-colors group-hover:text-champagne sm:block" />
@@ -218,6 +224,7 @@ function RegionCard({ region }) {
 }
 
 export default function RegionsHome() {
+  const { t, locale } = useLocale();
   const { isAuthed } = useAuth();
   const { data, isLoading, isError, refetch, isFetching } = useRegionsLanding();
   const catalog = useRegionsCatalog();
@@ -331,7 +338,7 @@ export default function RegionsHome() {
 
   const selectPreset = (m) => {
     syncMapUrl({ view: 'map', indicator: m.code });
-    track(events.REGIONS_MAP_METRIC, { metric: m.label });
+    track(events.REGIONS_MAP_METRIC, { metric: t(m.labelKey) });
   };
 
   const selectCustom = (i) => {
@@ -357,17 +364,15 @@ export default function RegionsHome() {
   }, [data]);
 
   const mapMetaTitle = series.data?.indicator?.name
-    ? `${series.data.indicator.name} на карте регионов России`
+    ? t('regions.mapTitle', { name: series.data.indicator.name })
     : isOverview
-      ? 'Карта регионов России — обзор субъектов РФ'
-      : 'Регионы России — социально-экономические показатели 85 субъектов РФ';
-  const mapMetaDesc = series.data?.indicator?.name
-    ? `${series.data.indicator.name} по 85 субъектам РФ на карте: динамика по годам, данные Росстата. Сравните регионы и откройте карточку показателя.`
-    : 'Статистика по 85 регионам России: население, зарплаты, ВРП, безработица, инвестиции, цены — 489 показателей Росстата с 1990 года. Графики, рейтинги регионов, сравнение с общероссийским уровнем.';
+      ? t('regions.mapOverviewTitle')
+      : t('regions.hubTitle');
+  const mapMetaDesc = t('regions.hubDesc');
 
   useDocumentMeta({
-    title: view === 'map' ? mapMetaTitle : 'Регионы России — социально-экономические показатели 85 субъектов РФ',
-    description: view === 'map' ? mapMetaDesc : 'Статистика по 85 регионам России: население, зарплаты, ВРП, безработица, инвестиции, цены — 489 показателей Росстата с 1990 года. Графики, рейтинги регионов, сравнение с общероссийским уровнем.',
+    title: view === 'map' ? mapMetaTitle : t('regions.hubTitle'),
+    description: mapMetaDesc,
     path: view === 'map'
       ? buildRegionsMapHref({
         view: 'map',
@@ -441,29 +446,29 @@ export default function RegionsHome() {
       <div className="mb-8">
         <div className="flex items-center gap-2 text-champagne text-xs font-mono uppercase tracking-widest mb-3">
           <MapPin size={14} />
-          Региональная статистика
+          {t('regions.eyebrow')}
         </div>
         <h1 className="font-display text-[1.75rem] font-bold leading-tight text-text-primary sm:text-4xl">
-          Регионы России
+          {t('regions.h1')}
         </h1>
         <p className="mt-3 max-w-2xl text-[14px] leading-relaxed text-text-secondary sm:text-[15px]">
-          Социально-экономические показатели 85 субъектов Российской Федерации:
-          население, зарплаты, валовой региональный продукт, инвестиции, цены —
-          официальные данные Росстата с 1990 года.
+          {t('regions.intro')}
         </p>
         {data && (
           <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-xs font-mono text-text-tertiary">
             <span className="inline-flex items-center gap-1.5">
               <Database size={12} />
-              {data.totals.points.toLocaleString('ru-RU')} значений
+              {t('regions.stat.values', {
+                n: data.totals.points.toLocaleString(locale === 'en' ? 'en-US' : 'ru-RU'),
+              })}
             </span>
-            <span>{data.totals.indicators} показателей</span>
-            <span>{data.totals.regions} регионов</span>
+            <span>{t('regions.stat.indicators', { n: data.totals.indicators })}</span>
+            <span>{t('regions.stat.regions', { n: data.totals.regions })}</span>
           </div>
         )}
       </div>
 
-      <div className="flex items-center gap-1 mb-2 bg-surface border border-border-subtle rounded-xl p-1 w-fit" role="tablist" aria-label="Режим просмотра">
+      <div className="flex items-center gap-1 mb-2 bg-surface border border-border-subtle rounded-xl p-1 w-fit" role="tablist" aria-label={t('regions.viewAria')}>
         <button
           role="tab"
           aria-selected={view === 'list'}
@@ -472,7 +477,7 @@ export default function RegionsHome() {
             view === 'list' ? 'bg-champagne/15 text-champagne' : 'text-text-secondary hover:text-text-primary'
           }`}
         >
-          <List size={15} /> Список
+          <List size={15} /> {t('regions.view.list')}
         </button>
         <button
           role="tab"
@@ -482,7 +487,7 @@ export default function RegionsHome() {
             view === 'map' ? 'bg-champagne/15 text-champagne' : 'text-text-secondary hover:text-text-primary'
           }`}
         >
-          <MapIcon size={15} /> Карта
+          <MapIcon size={15} /> {t('regions.view.map')}
         </button>
       </div>
 
@@ -491,7 +496,9 @@ export default function RegionsHome() {
           {contrastVisible.some((m) => m.heat.data) && (
             <div data-block="contrasts" className="mb-4 bg-surface border border-border-subtle rounded-xl p-4 space-y-2">
               <div className="flex items-center justify-between mb-1">
-                <span className="text-xs font-mono uppercase tracking-widest text-champagne">Контрасты России</span>
+                <span className="text-xs font-mono uppercase tracking-widest text-champagne">
+                  {t('regions.contrasts')}
+                </span>
                 <button
                   type="button"
                   onClick={() => {
@@ -499,15 +506,15 @@ export default function RegionsHome() {
                     setContrastPage(next);
                     track(events.REGIONS_CONTRASTS_SHUFFLE, { page: next });
                   }}
-                  title="Показать другую пару показателей"
-                  aria-label="Другая пара показателей"
+                  title={t('regions.contrasts.shuffleTitle')}
+                  aria-label={t('regions.contrasts.shuffleAria')}
                   className="p-2 -m-1 text-text-tertiary transition-colors hover:text-champagne"
                 >
                   <RefreshCw size={13} />
                 </button>
               </div>
               {contrastVisible.map((m) => (
-                <ContrastRow key={m.code} heat={m.heat} metricLabel={m.label} betterIsLow={m.betterIsLow} />
+                <ContrastRow key={m.code} heat={m.heat} metricLabel={t(m.labelKey)} betterIsLow={m.betterIsLow} />
               ))}
             </div>
           )}
@@ -518,9 +525,9 @@ export default function RegionsHome() {
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Найти регион: Севастополь, Татарстан, Приморский…"
+              placeholder={t('regions.searchPlaceholder')}
               className="w-full rounded-xl border border-border-subtle bg-surface py-3 pl-10 pr-4 text-sm text-text-primary shadow-sm placeholder:text-text-tertiary focus:border-border-champagne focus:outline-none"
-              aria-label="Поиск региона"
+              aria-label={t('regions.searchAria')}
             />
           </div>
 
@@ -545,14 +552,16 @@ export default function RegionsHome() {
               <>
                 {!searching && (
                   <MobileNavSelect
-                    label="Округа"
+                    label={t('regions.districts')}
                     value={resolvedDistrict || ''}
                     onChange={(v) => setActiveDistrict(v || null)}
                     options={[
-                      { value: '', label: 'Все округа', count: totalRegions },
+                      { value: '', label: t('regions.allDistricts'), count: totalRegions },
                       ...districtNav.map((d) => ({
                         value: d.slug,
-                        label: DISTRICT_SHORT[d.slug] || d.name,
+                        label: locale === 'en'
+                          ? d.name
+                          : (DISTRICT_SHORT_KEYS[d.slug] ? t(DISTRICT_SHORT_KEYS[d.slug]) : d.name),
                         count: d.regions.length,
                       })),
                     ]}
@@ -564,9 +573,9 @@ export default function RegionsHome() {
                   : 'grid min-w-0 gap-6 lg:grid-cols-[250px_minmax(0,1fr)]'}
                 >
                   {!searching && (
-                    <aside className="hidden min-w-0 lg:sticky lg:top-24 lg:block lg:self-start" aria-label="Федеральные округа">
+                    <aside className="hidden min-w-0 lg:sticky lg:top-24 lg:block lg:self-start" aria-label={t('regions.districts')}>
                       <div className="mb-2 px-2 text-[10px] font-mono uppercase tracking-[0.18em] text-text-tertiary">
-                        Округа
+                        {t('regions.districts')}
                       </div>
                       <div className="flex flex-col gap-2">
                         <button
@@ -579,7 +588,7 @@ export default function RegionsHome() {
                               : 'bg-surface text-text-secondary hover:bg-surface-hover hover:text-text-primary',
                           ].join(' ')}
                         >
-                          <span>Все округа</span>
+                          <span>{t('regions.allDistricts')}</span>
                           <span className="font-mono text-[10px] opacity-60">{totalRegions}</span>
                         </button>
                         {districtNav.map((d) => (
@@ -594,7 +603,11 @@ export default function RegionsHome() {
                                 : 'bg-surface text-text-secondary hover:bg-surface-hover hover:text-text-primary',
                             ].join(' ')}
                           >
-                            <span className="min-w-0 truncate">{DISTRICT_SHORT[d.slug] || d.name}</span>
+                            <span className="min-w-0 truncate">
+                              {locale === 'en'
+                                ? d.name
+                                : (DISTRICT_SHORT_KEYS[d.slug] ? t(DISTRICT_SHORT_KEYS[d.slug]) : d.name)}
+                            </span>
                             <span className="shrink-0 font-mono text-[10px] opacity-60">{d.regions.length}</span>
                           </button>
                         ))}
@@ -608,7 +621,7 @@ export default function RegionsHome() {
                         <div className="mb-3 flex items-end justify-between gap-3 sm:mb-4 sm:gap-4">
                           <div className="min-w-0">
                             <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">
-                              {searching ? 'Результаты поиска' : 'Регионы'}
+                              {searching ? t('regions.searchResults') : t('regions.regionsLabel')}
                             </div>
                             <h2 id={`district-${d.slug}`} className="mt-1 font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">
                               {d.name}
@@ -637,7 +650,7 @@ export default function RegionsHome() {
       {view === 'map' && (
         <div className="mt-4">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center mb-3">
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-hide min-w-0" role="tablist" aria-label="Показатель карты">
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-hide min-w-0" role="tablist" aria-label={t('regions.map.metricAria')}>
               <button
                 role="tab"
                 aria-selected={isOverview}
@@ -649,7 +662,7 @@ export default function RegionsHome() {
                     : 'bg-surface border border-border-subtle text-text-secondary hover:text-text-primary'
                 }`}
               >
-                Обзор
+                {t('regions.map.overview')}
               </button>
               {MAP_METRICS.map((m) => {
                 const selected = !isOverview && !isCustomMetric && activeMapCode === m.code;
@@ -665,7 +678,7 @@ export default function RegionsHome() {
                         : 'bg-surface border border-border-subtle text-text-secondary hover:text-text-primary'
                     }`}
                   >
-                    {m.label}
+                    {t(m.labelKey)}
                   </button>
                 );
               })}
@@ -697,8 +710,8 @@ export default function RegionsHome() {
                   type="button"
                   disabled={exportingMap}
                   onClick={handlePng}
-                  title={isAuthed ? 'Скачать карту картинкой' : 'Скачивание доступно после регистрации'}
-                  aria-label="Скачать карту картинкой"
+                  title={isAuthed ? t('download.mapPng') : t('download.afterRegister')}
+                  aria-label={t('download.mapPng')}
                   className="inline-flex min-h-9 items-center gap-1 rounded-full border border-border-subtle px-3 py-2 text-xs text-text-tertiary transition-colors hover:border-border-champagne hover:text-champagne disabled:opacity-50"
                 >
                   <ImageIcon size={12} /> PNG
@@ -709,13 +722,13 @@ export default function RegionsHome() {
                   onClick={handleGif}
                   title={
                     !gifAvailable
-                      ? 'GIF доступен, когда выбран показатель с историей по годам'
-                      : (isAuthed ? 'Скачать GIF по годам' : 'Скачивание доступно после регистрации')
+                      ? t('download.mapGifNeedHistory')
+                      : (isAuthed ? t('download.mapGif') : t('download.afterRegister'))
                   }
-                  aria-label="Скачать GIF по годам"
+                  aria-label={t('download.mapGif')}
                   className="inline-flex min-h-9 items-center gap-1 rounded-full border border-border-subtle px-3 py-2 text-xs text-text-tertiary transition-colors hover:border-border-champagne hover:text-champagne disabled:opacity-50"
                 >
-                  <Film size={12} /> {exportingGif ? 'GIF…' : 'GIF'}
+                  <Film size={12} /> {exportingGif ? t('download.mapGifBusy') : 'GIF'}
                 </button>
               </div>
             </div>

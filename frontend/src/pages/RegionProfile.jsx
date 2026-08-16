@@ -20,6 +20,7 @@ import {
   regionIndicatorPath,
   regionPath,
 } from '../lib/sitePaths';
+import { useLocale } from '../i18n';
 
 function normalize(s) {
   return (s || '').toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim();
@@ -85,6 +86,7 @@ function IndicatorRow({ item, slug }) {
 }
 
 export default function RegionProfile() {
+  const { t } = useLocale();
   const { slug } = useParams();
   const { data, isLoading, isError, refetch, isFetching } = useRegionProfile(slug);
   const [query, setQuery] = useState('');
@@ -94,9 +96,8 @@ export default function RegionProfile() {
 
   const regionName = data?.region?.name;
   useDocumentMeta(regionName ? {
-    title: `${regionName} — статистика региона: население, зарплата, ВРП, цены`,
-    description:
-      `${regionName}: ${data.sections.reduce((n, s) => n + s.indicators.length, 0)} социально-экономических показателей Росстата с 1990 года — население, зарплаты, безработица, ВРП, инвестиции, строительство, цены. Графики и место региона в рейтингах России.`,
+    title: t('regions.profileTitle', { name: regionName }),
+    description: t('regions.profileDesc', { name: regionName }),
     path: regionPath(slug),
   } : null);
 
@@ -187,9 +188,9 @@ export default function RegionProfile() {
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Найти показатель: зарплата, жильё, урожайность…"
+              placeholder={t('regions.profileSearchPlaceholder')}
               className="w-full rounded-xl border border-border-subtle bg-surface py-3 pl-10 pr-4 text-sm text-text-primary shadow-sm placeholder:text-text-tertiary focus:border-border-champagne focus:outline-none"
-              aria-label="Поиск показателя в регионе"
+              aria-label={t('regions.profileSearchAria')}
             />
           </div>
 
@@ -205,7 +206,7 @@ export default function RegionProfile() {
 
           {!searching && (
             <MobileNavSelect
-              label="Темы"
+              label={t('regions.themes')}
               value={String(resolvedActive)}
               onChange={(v) => setActiveSection(Number(v))}
               options={filteredSections.map((sec) => ({
@@ -252,7 +253,7 @@ export default function RegionProfile() {
                   <div className="mb-3 flex items-end justify-between gap-3 sm:mb-4 sm:gap-4">
                     <div className="min-w-0">
                       <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">
-                        {searching ? 'Результаты поиска' : 'Показатели'}
+                        {searching ? t('regions.searchResults') : t('regions.indicators')}
                       </div>
                       <h2 className="mt-1 font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">{sec.name}</h2>
                     </div>

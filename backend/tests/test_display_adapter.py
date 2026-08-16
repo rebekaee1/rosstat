@@ -46,20 +46,94 @@ def test_value_text_for_level_series():
     assert display_value_text("cpi", None, "%") == "нет данных"
 
 
+def test_localize_unit_and_value_text_en():
+    from app.services.display import localize_unit
+    from app.services.locale import reset_locale, set_locale
+
+    assert localize_unit("млрд руб.", locale="en") == "bln RUB"
+    assert localize_unit("руб.", locale="en") == "RUB"
+    assert localize_unit("млрд руб.", locale="ru") == "млрд руб."
+    assert display_value_text(
+        "gdp-nominal", 17624.3, "млрд руб.", "quarterly", locale="en"
+    ) == "17,624.3 bln RUB"
+    assert display_value_text(
+        "gdp-nominal", 49869.5, "млрд руб.", "quarterly", locale="en"
+    ) == "49,869.5 bln RUB"
+    assert display_value_text("cpi", 100.17, "%", "monthly", locale="en") == (
+        "+0.17 % over the month"
+    )
+    token = set_locale("en")
+    try:
+        assert display_value_text("cpi", None, "%") == "no data"
+        # Economist English: period decimal, comma thousands.
+        assert display_value_text("key-rate", 16.5, "%") == "16.5 %"
+        assert "," not in display_value_text("key-rate", 16.5, "%")
+        assert format_number_ru(49869.5) == "49,869.5"
+    finally:
+        reset_locale(token)
+
+
+def test_localize_category_name_en():
+    from app.services.seo_i18n import localize_category_name
+
+    assert localize_category_name("Цены", locale="en") == "Prices and inflation"
+    assert localize_category_name("Рынок труда", locale="en") == "Labor market"
+    assert localize_category_name("Прочее", locale="en") == "Other"
+    assert localize_category_name("Общество", locale="en") == "Society"
+    assert localize_category_name("Цены", locale="ru") == "Цены"
+
+
+def test_event_public_title_en():
+    from app.services.seo_i18n import event_public_title
+
+    assert event_public_title("ИПЦ", "Consumer Price Index", locale="en") == (
+        "Consumer Price Index"
+    )
+    assert event_public_title("ИПЦ", None, locale="en") == "ИПЦ"
+    assert event_public_title("ИПЦ", "CPI", locale="ru") == "ИПЦ"
+
+
 def test_ru_number_format():
-    assert format_number_ru(15.35) == "15,35"
+    assert format_number_ru(15.35, locale="ru") == "15,35"
     # Хвостовой ноль — ложная точность: источник даёт один знак, показываем один.
-    assert format_number_ru(1234567.8) == "1\u202f234\u202f567,8"
-    assert format_number_ru(1234567.85) == "1\u202f234\u202f567,85"
-    assert format_number_ru(85_664_944) == "85\u202f664\u202f944"
-    assert format_number_ru(5) == "5"
-    assert format_number_ru(None) == "нет данных"
+    assert format_number_ru(1234567.8, locale="ru") == "1\u202f234\u202f567,8"
+    assert format_number_ru(1234567.85, locale="ru") == "1\u202f234\u202f567,85"
+    assert format_number_ru(85_664_944, locale="ru") == "85\u202f664\u202f944"
+    assert format_number_ru(5, locale="ru") == "5"
+    assert format_number_ru(None, locale="ru") == "нет данных"
+    assert format_number_ru(15.35, locale="en") == "15.35"
+    assert format_number_ru(1234567.8, locale="en") == "1,234,567.8"
+    assert format_number_ru(85_664_944, locale="en") == "85,664,944"
+    assert format_number_ru(None, locale="en") == "no data"
 
 
 def test_ru_dates():
     assert format_date_ru(date(2026, 5, 1)) == "1 мая 2026"
     assert format_date_ru(None) == "нет данных"
     assert format_month_ru(date(2026, 5, 1)) == "май 2026"
+
+
+def test_format_month_year_locale():
+    from app.services.display import format_month_year
+    from app.services.locale import reset_locale, set_locale
+
+    d = date(2025, 12, 1)
+    assert format_month_year(d, locale="ru") == "декабрь 2025"
+    assert format_month_year(d, locale="en") == "December 2025"
+    token = set_locale("en")
+    try:
+        assert format_month_year(d) == "December 2025"
+    finally:
+        reset_locale(token)
+
+
+def test_concept_public_name_en():
+    from app.data.world_concepts import CONCEPT_BY_SLUG, concept_public_name
+
+    c = CONCEPT_BY_SLUG["unemployment-rate"]
+    assert concept_public_name(c, locale="ru") == "Уровень безработицы"
+    assert concept_public_name(c, locale="en") == "Unemployment rate"
+    assert "Уровень" not in concept_public_name(c, locale="en")
 
 
 def test_annual_summary_kinds():

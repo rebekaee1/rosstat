@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { cn } from '../lib/format';
 import { track, events } from '../lib/track';
+import { useT } from '../i18n';
 
 /**
  * Единый UI хлебных крошек: шеврон, кликабельны все кроме текущего.
@@ -16,6 +17,7 @@ export default function Breadcrumbs({
   /** denser mono style (карточки индикаторов) */
   variant = 'default',
 }) {
+  const t = useT();
   if (!items?.length) return null;
 
   const isMono = variant === 'mono';
@@ -29,7 +31,7 @@ export default function Breadcrumbs({
           : 'mb-4 gap-x-2 text-xs text-text-tertiary sm:text-sm',
         className,
       )}
-      aria-label="Хлебные крошки"
+      aria-label={t('crumb.aria')}
     >
       {items.map((item, index) => {
         const isLast = index === items.length - 1;

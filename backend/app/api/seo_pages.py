@@ -10,12 +10,15 @@ no-cache для браузеров, но conditional-запросы ботов �
 
 HTML-кэш (П-14/П-15, риск Р-5): готовый SSR HTML кэшируется в Redis.
 Бот-прожиг каталога (40k региональных URL) перестаёт стоить полного
-рендера на каждый запрос. Два trap'а закрыты конструкцией ключа:
+рендера на каждый запрос. Три trap'а закрыты конструкцией ключа:
 - stale-данные: ключи индикаторных страниц живут в namespace `fe:{code}:*`,
   который ETL инвалидирует при любом изменении данных ряда; страницы
   с «сегодняшней» датой включают текущую дату в ключ;
 - asset-hash trap: ключ включает подпись Vite-ассетов — после rebuild
-  фронта закэшированный HTML со старыми чанками не отдаётся.
+  фронта закэшированный HTML со старыми чанками не отдаётся;
+- host/locale trap: ключ включает request origin host + locale — иначе
+  ответ с ``ru.`` Host отравляет apex (и наоборот) absolute URL в
+  canonical / OG / JSON-LD.
 """
 
 import asyncio
@@ -28,6 +31,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.cache import cache_get, cache_set, versioned_key
 from app.services import site_paths as paths
+from app.services.locale import get_locale
 from app.data.legacy_redirects import (
     LEGACY_REGION_SLUG_PREFIXES,
     resolve_legacy_indicator,
@@ -85,9 +89,20 @@ async def _asset_sig() -> str:
 
 async def _ssr_key(namespace: str, variant: str, sig: str) -> str:
     """`namespace` для индикаторных страниц = код индикатора — версия namespace
-    бампается ETL-инвалидацией `cache_invalidate_indicator` (П-11, без SCAN)."""
+    бампается ETL-инвалидацией `cache_invalidate_indicator` (П-11, без SCAN).
+
+    Variant folds locale + request-origin host so host-aware absolute URLs
+    (canonical / OG / JSON-LD) cannot cross-contaminate apex vs ``ru.``.
+    """
+    from urllib.parse import urlparse
+
+    from app.services.locale import get_locale, get_request_origin
+
+    loc = get_locale()
+    host = urlparse(get_request_origin()).hostname or "default"
+    folded = f"{variant}|{loc}|{host}"
     return await versioned_key(
-        namespace, f"ssr:{hashlib.md5(variant.encode()).hexdigest()[:16]}:{sig}"
+        namespace, f"ssr:{hashlib.md5(folded.encode()).hexdigest()[:16]}:{sig}"
     )
 
 
@@ -145,7 +160,10 @@ def _html_response(status_code: int, html: str, request: Request | None = None) 
         # наружу всегда уходит брендовая 404 с навигацией, не сырой текст.
         from app.services.seo_renderer import render_not_found_html
         text = re.sub(r"<[^>]+>", "", html).strip()
-        html = render_not_found_html(text if text and text != "Not found" else "Страница не найдена")
+        # Empty / generic "Not found" → locale-aware default message.
+        html = render_not_found_html(
+            text if text and text not in ("Not found", "Страница не найдена") else None
+        )
     if status_code == 200:
         etag = f'W/"{hashlib.md5(html.encode()).hexdigest()}"'
         headers["ETag"] = etag
@@ -208,7 +226,7 @@ async def seo_indicator(
             dest = f"{dest}?mode={mode}"
         return _permanent_redirect(dest)
     status, html = await _cached_html(
-        code, f"indicator:{code}:{mode or ''}", _SSR_TTL_INDICATOR,
+        code, f"indicator:{code}:{mode or ''}:{get_locale()}", _SSR_TTL_INDICATOR,
         lambda: render_indicator_html(code, db, mode=mode),
     )
     return _html_response(status, html, request)
@@ -235,7 +253,7 @@ async def seo_regions_map(code: str, request: Request, db: AsyncSession = Depend
     year_raw = request.query_params.get("year")
     year = int(year_raw) if year_raw and re.fullmatch(r"\d{4}", year_raw) else None
     status, html = await _cached_html(
-        "ssr-region", f"regions-map:{code}:{year or ''}", _SSR_TTL_REGIONAL,
+        "ssr-region", f"regions-map:{code}:{year or ''}:{get_locale()}", _SSR_TTL_REGIONAL,
         lambda: render_regions_map_html(code, db, year=year),
     )
     return _html_response(status, html, request)
@@ -259,7 +277,7 @@ async def _canonical_region_slug(slug: str, db: AsyncSession) -> str | None:
 @router.api_route("/seo/region/{slug}", methods=["GET", "HEAD"], include_in_schema=False)
 async def seo_region(slug: str, request: Request, db: AsyncSession = Depends(get_db)):
     status, html = await _cached_html(
-        "ssr-region", f"region:{slug}", _SSR_TTL_REGIONAL,
+        "ssr-region", f"region:{slug}:{get_locale()}", _SSR_TTL_REGIONAL,
         lambda: render_region_html(slug, db),
     )
     if status == 404:
@@ -274,7 +292,7 @@ async def seo_region_indicator(
     slug: str, code: str, request: Request, db: AsyncSession = Depends(get_db)
 ):
     status, html = await _cached_html(
-        "ssr-region", f"region:{slug}:{code}", _SSR_TTL_REGIONAL,
+        "ssr-region", f"region:{slug}:{code}:{get_locale()}", _SSR_TTL_REGIONAL,
         lambda: render_region_indicator_html(slug, code, db),
     )
     if status == 404:
@@ -287,7 +305,7 @@ async def seo_region_indicator(
 @router.api_route("/seo/region-rating", methods=["GET", "HEAD"], include_in_schema=False)
 async def seo_region_ratings_hub(request: Request, db: AsyncSession = Depends(get_db)):
     status, html = await _cached_html(
-        "ssr-region", "region-rating-hub", _SSR_TTL_REGIONAL,
+        "ssr-region", f"region-rating-hub:{get_locale()}", _SSR_TTL_REGIONAL,
         lambda: render_region_ratings_hub_html(db),
     )
     return _html_response(status, html, request)
@@ -296,7 +314,7 @@ async def seo_region_ratings_hub(request: Request, db: AsyncSession = Depends(ge
 @router.api_route("/seo/region-rating/{code}", methods=["GET", "HEAD"], include_in_schema=False)
 async def seo_region_rating(code: str, request: Request, db: AsyncSession = Depends(get_db)):
     status, html = await _cached_html(
-        "ssr-region", f"region-rating:{code}", _SSR_TTL_REGIONAL,
+        "ssr-region", f"region-rating:{code}:{get_locale()}", _SSR_TTL_REGIONAL,
         lambda: render_region_rating_html(code, db),
     )
     return _html_response(status, html, request)
@@ -307,7 +325,7 @@ async def seo_region_vs(
     slug_a: str, slug_b: str, request: Request, db: AsyncSession = Depends(get_db)
 ):
     status, html = await _cached_html(
-        "ssr-region", f"region-vs:{slug_a}:{slug_b}", _SSR_TTL_REGIONAL,
+        "ssr-region", f"region-vs:{slug_a}:{slug_b}:{get_locale()}", _SSR_TTL_REGIONAL,
         lambda: render_region_vs_html(slug_a, slug_b, db),
     )
     return _html_response(status, html, request)
@@ -324,7 +342,7 @@ async def seo_today_indicator(code: str, request: Request, db: AsyncSession = De
     # «Сегодня» в заголовке: текущая дата в variant — смена суток гарантированно
     # инвалидирует, даже без ETL (freshness-guard В-4 не должен кэшем ломаться).
     status, html = await _cached_html(
-        code, f"today:{code}:{_date.today().isoformat()}", _SSR_TTL_INDICATOR,
+        code, f"today:{code}:{_date.today().isoformat()}:{get_locale()}", _SSR_TTL_INDICATOR,
         lambda: render_today_indicator_html(code, db),
     )
     return _html_response(status, html, request)
@@ -358,7 +376,7 @@ async def seo_indicator_year(
     if request.headers.get("x-path-cut-legacy") == "1":
         return _permanent_redirect(paths.russia_indicator_year(code, year))
     status, html = await _cached_html(
-        code, f"indicator-year:{code}:{year}", _SSR_TTL_INDICATOR,
+        code, f"indicator-year:{code}:{year}:{get_locale()}", _SSR_TTL_INDICATOR,
         lambda: render_indicator_year_html(code, year, db),
     )
     return _html_response(status, html, request)
@@ -367,7 +385,7 @@ async def seo_indicator_year(
 @router.api_route("/seo/world", methods=["GET", "HEAD"], include_in_schema=False)
 async def seo_world_home(request: Request, db: AsyncSession = Depends(get_db)):
     status, html = await _cached_html(
-        "ssr-world", "world-home", _SSR_TTL_WORLD,
+        "ssr-world", f"world-home:{get_locale()}", _SSR_TTL_WORLD,
         lambda: render_world_home_html(db),
     )
     return _html_response(status, html, request)
@@ -385,7 +403,7 @@ async def seo_world_rating(
     year_raw = request.query_params.get("year")
     year = int(year_raw) if year_raw and re.fullmatch(r"\d{4}", year_raw) else None
     status, html = await _cached_html(
-        "ssr-world", f"world-rating:{concept_slug}:{year or ''}", _SSR_TTL_WORLD,
+        "ssr-world", f"world-rating:{concept_slug}:{year or ''}:{get_locale()}", _SSR_TTL_WORLD,
         lambda: render_world_rating_html(concept_slug, db, year=year),
     )
     return _html_response(status, html, request)
@@ -398,7 +416,7 @@ async def seo_world_country(
     if request.headers.get("x-path-cut-legacy") == "1":
         return _permanent_redirect(paths.country(slug))
     status, html = await _cached_html(
-        "ssr-world", f"world:{slug}", _SSR_TTL_WORLD,
+        "ssr-world", f"world:{slug}:{get_locale()}", _SSR_TTL_WORLD,
         lambda: render_world_country_html(slug, db),
     )
     return _html_response(status, html, request)
@@ -419,7 +437,7 @@ async def seo_world_indicator(
             dest = f"{dest}?mode={mode}"
         return _permanent_redirect(dest)
     status, html = await _cached_html(
-        "ssr-world", f"world:{slug}:{code}", _SSR_TTL_WORLD,
+        "ssr-world", f"world:{slug}:{code}:{get_locale()}", _SSR_TTL_WORLD,
         lambda: render_world_indicator_html(slug, code, db),
     )
     return _html_response(status, html, request)

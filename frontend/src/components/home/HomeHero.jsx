@@ -2,9 +2,9 @@ import { Link } from 'react-router-dom';
 import {
   HOME_MARKET_PULSE,
   HOME_TODAY_CODES,
-  HOME_TODAY_LABELS,
-  HOME_TODAY_UNIT_SHORT,
   displayPulseValue,
+  homePulseLabel,
+  homePulseUnitShort,
   pickIndicatorsByCodes,
 } from '../../lib/homeWorkbench';
 import { formatChange, formatDate, formatValue, resolveDateFormat } from '../../lib/format';
@@ -14,11 +14,17 @@ import IndicatorSearch from '../IndicatorSearch';
 import {
   russiaIndicatorPath,
 } from '../../lib/sitePaths';
+import { useLocale, useT } from '../../i18n';
 
 function PulseCard({ indicator }) {
+  const t = useT();
+  const { locale } = useLocale();
   const pulse = displayPulseValue(indicator);
-  const label = HOME_TODAY_LABELS[indicator.code] || indicator.name;
-  const unitShort = HOME_TODAY_UNIT_SHORT[indicator.code]
+  const apiName = locale === 'en' && indicator.name_en
+    ? indicator.name_en
+    : indicator.name;
+  const label = homePulseLabel(indicator.code, t, { name: apiName }) || apiName;
+  const unitShort = homePulseUnitShort(indicator.code, t)
     || (pulse?.unit ? String(pulse.unit).replace(/\s+/g, '\u00A0') : '');
   const dateFmt = resolveDateFormat({ frequency: indicator.frequency });
 
@@ -55,13 +61,14 @@ function PulseCard({ indicator }) {
           </div>
         </>
       ) : (
-        <span className="mt-2 text-sm text-text-tertiary">Нет данных</span>
+        <span className="mt-2 text-sm text-text-tertiary">{t('common.noData')}</span>
       )}
     </Link>
   );
 }
 
 function MarketsPulsePanel({ indicators, isLoading }) {
+  const t = useT();
   const cards = pickIndicatorsByCodes(indicators, HOME_TODAY_CODES);
 
   return (
@@ -72,10 +79,10 @@ function MarketsPulsePanel({ indicators, isLoading }) {
     >
       <div className="mb-3 min-w-0">
         <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">
-          Оперативный срез
+          {t('home.pulse.eyebrow')}
         </div>
         <h2 id="home-markets-pulse-title" className="mt-1 text-base font-semibold text-text-primary">
-          Мировые рынки
+          {t('home.pulse.title')}
         </h2>
       </div>
 
@@ -97,25 +104,24 @@ function MarketsPulsePanel({ indicators, isLoading }) {
 }
 
 export default function HomeHero({ indicators, isLoading }) {
+  const t = useT();
   return (
     <header data-block="home-hero" className="mb-10 md:mb-12">
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)] lg:gap-8">
         <div className="min-w-0">
           <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.28em] text-champagne">
-            Бесплатная аналитическая платформа экономических данных
+            {t('home.hero.eyebrow')}
           </p>
           <h1 className="max-w-3xl text-2xl font-semibold leading-[1.2] tracking-tight text-text-primary md:text-3xl lg:text-[2rem]">
-            Официальные макроэкономические индикаторы в одной рабочей среде
+            {t('home.hero.title')}
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-text-secondary md:text-[15px]">
-            Макроэкономические индикаторы по данным национальных статистических ведомств,
-            центральных банков и Евростата: актуальные значения, сравнение стран и
-            статистические прогнозы. Россия и её регионы — с максимальной глубиной истории.
+            {t('home.hero.subtitle')}
           </p>
           <div className="mt-6">
             <IndicatorSearch
               variant="inline"
-              inlinePlaceholder="Найти показатель — инфляция, ВВП, ставка, безработица…"
+              inlinePlaceholder={t('home.searchPlaceholder')}
             />
           </div>
         </div>

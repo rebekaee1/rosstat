@@ -242,6 +242,6 @@ describe('WorldRatingPage', () => {
     expect(screen.getByRole('link', { name: 'Региональный рейтинг' }).getAttribute('href'))
       .toBe('/russia/region-rating/uroven-bezrabotitsy');
     expect(screen.getByText(/Росстата/)).toBeTruthy();
-    expect(screen.getByRole('searchbox', { name: /Поиск показателя/i })).toBeTruthy();
+    expect(screen.getByRole('searchbox', { name: /Поиск/i })).toBeTruthy();
   });
 });

@@ -3,11 +3,12 @@ import { oauthStartUrl, fetchOAuthProviders } from '../lib/api';
 import { track, events } from '../lib/track';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
+import { useT } from '../i18n';
 
 // Фирменные кнопки в цветах провайдеров (Яндекс ID — красный, VK ID — синий).
 const PROVIDER_UI = {
   yandex: {
-    label: 'Войти с Яндекс ID',
+    labelKey: 'auth.oauth.yandex',
     className: 'bg-[#FC3F1D] hover:bg-[#e5380f] text-white',
     logo: (
       <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white text-[#FC3F1D] text-[13px] font-bold leading-none">
@@ -16,7 +17,7 @@ const PROVIDER_UI = {
     ),
   },
   vk: {
-    label: 'Войти через VK ID',
+    labelKey: 'auth.oauth.vk',
     className: 'bg-[#0077FF] hover:bg-[#0a6ae0] text-white',
     logo: (
       <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white" aria-hidden="true">
@@ -27,9 +28,13 @@ const PROVIDER_UI = {
 };
 
 const ORDER = ['yandex', 'vk'];
-const PROVIDER_NAME = { yandex: 'Яндекс ID', vk: 'VK ID' };
+const PROVIDER_NAME_KEY = {
+  yandex: 'auth.oauth.provider.yandex',
+  vk: 'auth.oauth.provider.vk',
+};
 
 export default function OAuthButtons({ intent = 'login', next = '/account', dividerLabel = null }) {
+  const t = useT();
   const [providers, setProviders] = useState(null); // null = ещё грузим
   // Согласие перед редиректом на провайдера (звонок 2026-06-19): пользователь
   // обязан подтвердить пользовательское соглашение, рассылка — по умолчанию вкл.
@@ -95,7 +100,7 @@ export default function OAuthButtons({ intent = 'login', next = '/account', divi
               )}
             >
               {ui.logo}
-              {ui.label}
+              {t(ui.labelKey)}
             </button>
           );
         })}
@@ -115,18 +120,17 @@ export default function OAuthButtons({ intent = 'login', next = '/account', divi
           onClick={() => setPending(null)}
           role="dialog"
           aria-modal="true"
-          aria-label="Подтверждение перед входом"
+          aria-label={t('auth.oauth.dialogAria')}
         >
           <div
             className="w-full max-w-md rounded-2xl border border-border-subtle bg-surface shadow-2xl ring-1 ring-black/10 p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-lg font-display font-bold text-text-primary mb-1">
-              Вход через {PROVIDER_NAME[pending] || pending}
+              {t('auth.oauth.via', { provider: t(PROVIDER_NAME_KEY[pending] || pending) })}
             </h3>
             <p className="text-sm text-text-secondary mb-5">
-              Перед продолжением подтвердите согласие. Мы получим имя, электронную почту
-              и телефон из вашего профиля провайдера.
+              {t('auth.oauth.consentIntro')}
             </p>
 
             <label className="flex items-start gap-2.5 text-sm text-text-secondary cursor-pointer mb-3">
@@ -137,10 +141,11 @@ export default function OAuthButtons({ intent = 'login', next = '/account', divi
                 className="mt-0.5 accent-[#B8942F]"
               />
               <span>
-                Я ознакомлен с{' '}
-                <a href="/terms" target="_blank" rel="noreferrer" className="text-champagne hover:underline">пользовательским соглашением</a>{' '}
-                и согласен на обработку персональных данных согласно{' '}
-                <a href="/privacy" target="_blank" rel="noreferrer" className="text-champagne hover:underline">политике конфиденциальности</a>.
+                {t('auth.oauth.policyBefore')}{' '}
+                <a href="/terms" target="_blank" rel="noreferrer" className="text-champagne hover:underline">{t('auth.oauth.terms')}</a>{' '}
+                {t('auth.oauth.policyMid')}{' '}
+                <a href="/privacy" target="_blank" rel="noreferrer" className="text-champagne hover:underline">{t('auth.oauth.privacy')}</a>
+                {t('auth.oauth.policyAfter')}
               </span>
             </label>
 
@@ -151,7 +156,7 @@ export default function OAuthButtons({ intent = 'login', next = '/account', divi
                 onChange={(e) => setNewsletter(e.target.checked)}
                 className="mt-0.5 accent-[#B8942F]"
               />
-              <span>Согласен на информационную рассылку об обновлениях данных и аналитике.</span>
+              <span>{t('auth.oauth.newsletter')}</span>
             </label>
 
             <div className="flex items-center gap-3">
@@ -166,14 +171,14 @@ export default function OAuthButtons({ intent = 'login', next = '/account', divi
                   !policy && 'opacity-50 cursor-not-allowed',
                 )}
               >
-                Продолжить
+                {t('common.continue')}
               </button>
               <button
                 type="button"
                 onClick={() => setPending(null)}
                 className={cn(FOCUS_RING, 'rounded-xl px-4 py-2.5 text-sm font-medium text-text-secondary border border-border-subtle hover:border-champagne/40 transition-colors')}
               >
-                Отмена
+                {t('common.cancel')}
               </button>
             </div>
           </div>

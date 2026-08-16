@@ -25,6 +25,7 @@ import { track, events } from '../lib/track';
 import {
   russiaCategoryPath,
 } from '../lib/sitePaths';
+import { useLocale, useT } from '../i18n';
 
 const CATEGORY_ICONS = {
   TrendingUp,
@@ -52,10 +53,16 @@ export default function CategoryBlock({
   /** false, если список индикаторов с API не загрузился — не показываем «0 показ.» */
   countsKnown = true,
 }) {
+  const t = useT();
+  const { locale } = useLocale();
   const IconComponent = CATEGORY_ICONS[category.icon] || LayoutGrid;
   const isPlanned = category.status === 'planned' && !category.apiCategory;
   const hasData = category.apiCategory && indicatorCount > 0;
   const soon = category.apiCategory && indicatorCount === 0 && countsKnown;
+  const title = locale === 'en' && category.nameEn ? category.nameEn : category.name;
+  const description = locale === 'en' && category.descriptionEn
+    ? category.descriptionEn
+    : category.description;
 
   return (
     <Link
@@ -92,31 +99,33 @@ export default function CategoryBlock({
         {category.apiCategory && (
           <span
             className="text-xs font-mono text-text-tertiary"
-            title={!countsKnown ? 'Число показателей не обновилось — нет ответа от сервера данных' : undefined}
+            title={!countsKnown ? t('category.countsUnavailable') : undefined}
           >
             {!countsKnown
               ? '—'
               : hasData || soon
-                ? `${indicatorCount} показ.`
+                ? t('category.count', { n: indicatorCount })
                 : isPlanned
-                  ? 'Скоро'
+                  ? t('common.soonCap')
                   : ''}
           </span>
         )}
-        {isPlanned && <span className="text-xs font-mono text-champagne/80">Скоро</span>}
+        {isPlanned && (
+          <span className="text-xs font-mono text-champagne/80">{t('common.soonCap')}</span>
+        )}
       </div>
 
-      <h3 className="text-lg font-semibold text-text-primary mb-2 pr-6">{category.name}</h3>
-      <p className="text-sm text-text-secondary leading-relaxed line-clamp-3 flex-1">{category.description}</p>
+      <h3 className="text-lg font-semibold text-text-primary mb-2 pr-6">{title}</h3>
+      <p className="text-sm text-text-secondary leading-relaxed line-clamp-3 flex-1">{description}</p>
 
       <div className="mt-4 flex items-center gap-2 text-sm font-medium text-champagne opacity-0 group-hover:opacity-100 transition-opacity">
         {category.apiCategory ? (
           <>
-            <span>Открыть</span>
+            <span>{t('common.open')}</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
           </>
         ) : (
-          <span className="text-text-tertiary">В разработке</span>
+          <span className="text-text-tertiary">{t('common.inDevelopment')}</span>
         )}
       </div>
     </Link>

@@ -8,6 +8,7 @@ import { useAuth } from '../context/authContext';
 import { track, events } from '../lib/track';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
+import { useT } from '../i18n';
 
 // Не показываем на этих маршрутах: там целевое действие и так на виду.
 // Главная — отдельный кейс: плавающая кнопка наезжает на блок «Инструменты».
@@ -18,15 +19,15 @@ const HIDDEN_PATHS = ['/', '/login', '/register', '/account'];
 //   feedback — для авторизованных: позвать оставить обратную связь.
 const REGISTER_VARIANT = {
   storageKey: 'fe_nudge_dismissed',
-  pill: 'Скачивание — после регистрации',
-  title: 'Зачем регистрироваться',
-  benefits: [
-    { icon: Download, text: 'Скачивание данных в Excel и CSV без ограничений' },
-    { icon: CalendarRange, text: 'Выгрузка рядов за любой период истории' },
-    { icon: Bell, text: 'Рассылка об обновлениях данных и аналитике' },
+  pillKey: 'nudge.register.pill',
+  titleKey: 'nudge.register.title',
+  benefitKeys: [
+    { icon: Download, textKey: 'nudge.register.benefit.download' },
+    { icon: CalendarRange, textKey: 'nudge.register.benefit.history' },
+    { icon: Bell, textKey: 'nudge.register.benefit.mail' },
   ],
-  note: 'Просмотр графиков и таблиц бесплатен без аккаунта. Регистрация бесплатна и открывает скачивание и рассылку.',
-  ctaText: 'Зарегистрироваться',
+  noteKey: 'nudge.register.note',
+  ctaKey: 'nudge.register.cta',
   ctaTo: '/register',
   ev: {
     view: events.REGISTER_NUDGE_VIEW,
@@ -37,15 +38,15 @@ const REGISTER_VARIANT = {
 
 const FEEDBACK_VARIANT = {
   storageKey: 'fe_feedback_nudge_dismissed',
-  pill: 'Помогите сделать сервис лучше',
-  title: 'Ваше мнение важно',
-  benefits: [
-    { icon: MessageSquare, text: 'Подскажите, каких данных или функций не хватает' },
-    { icon: AlertCircle, text: 'Сообщите об ошибке или неточности в данных' },
-    { icon: Lightbulb, text: 'Предложите улучшение — мы читаем каждое сообщение' },
+  pillKey: 'nudge.feedback.pill',
+  titleKey: 'nudge.feedback.title',
+  benefitKeys: [
+    { icon: MessageSquare, textKey: 'nudge.feedback.benefit.missing' },
+    { icon: AlertCircle, textKey: 'nudge.feedback.benefit.bug' },
+    { icon: Lightbulb, textKey: 'nudge.feedback.benefit.idea' },
   ],
-  note: 'Форма обратной связи — в личном кабинете. Это займёт минуту.',
-  ctaText: 'Оставить отзыв',
+  noteKey: 'nudge.feedback.note',
+  ctaKey: 'nudge.feedback.cta',
   ctaTo: '/account#feedback',
   ev: {
     view: events.FEEDBACK_NUDGE_VIEW,
@@ -59,9 +60,11 @@ function readDismissed(key) {
 }
 
 export default function RegisterNudge() {
+  const t = useT();
   const { isAuthed, isLoading } = useAuth();
   const location = useLocation();
   const variant = isAuthed ? FEEDBACK_VARIANT : REGISTER_VARIANT;
+  const pill = t(variant.pillKey);
 
   const [dismissed, setDismissed] = useState(() => readDismissed(variant.storageKey));
   const [expanded, setExpanded] = useState(false);
@@ -106,7 +109,7 @@ export default function RegisterNudge() {
         <button
           type="button"
           onClick={expand}
-          aria-label={variant.pill}
+          aria-label={pill}
           className={cn(
             FOCUS_RING,
             'flex items-center gap-2 rounded-full shadow-xl',
@@ -115,8 +118,8 @@ export default function RegisterNudge() {
           )}
         >
           <Sparkles className="w-4 h-4 shrink-0" />
-          <span className="sm:hidden">Регистрация</span>
-          <span className="hidden sm:inline">{variant.pill}</span>
+          <span className="sm:hidden">{t('common.register')}</span>
+          <span className="hidden sm:inline">{pill}</span>
           <ChevronUp className="w-4 h-4 shrink-0 opacity-80" />
         </button>
       ) : (
@@ -124,43 +127,43 @@ export default function RegisterNudge() {
           <div className="flex items-start justify-between gap-3 px-5 pt-4 pb-2">
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-champagne" />
-              <h3 className="text-sm font-semibold text-text-primary">{variant.title}</h3>
+              <h3 className="text-sm font-semibold text-text-primary">{t(variant.titleKey)}</h3>
             </div>
             <button
               type="button"
               onClick={() => setExpanded(false)}
               className={cn(FOCUS_RING, 'rounded-md p-1 text-text-tertiary hover:text-text-primary')}
-              aria-label="Свернуть"
+              aria-label={t('nudge.register.collapse')}
             >
               <X className="w-4 h-4" />
             </button>
           </div>
           <ul className="px-5 py-2 space-y-2.5">
-            {variant.benefits.map((b, i) => {
+            {variant.benefitKeys.map((b, i) => {
               const Icon = b.icon;
               return (
                 <li key={i} className="flex items-start gap-2.5 text-sm text-text-secondary">
                   <Icon className="w-4 h-4 text-champagne shrink-0 mt-0.5" />
-                  <span>{b.text}</span>
+                  <span>{t(b.textKey)}</span>
                 </li>
               );
             })}
           </ul>
-          <p className="px-5 pb-3 text-xs text-text-tertiary">{variant.note}</p>
+          <p className="px-5 pb-3 text-xs text-text-tertiary">{t(variant.noteKey)}</p>
           <div className="flex items-center gap-3 px-5 py-3 border-t border-border-subtle bg-obsidian-lighter/30">
             <Link
               to={variant.ctaTo}
               onClick={() => track(variant.ev.cta)}
               className={cn(FOCUS_RING, 'flex-1 text-center rounded-xl bg-champagne text-white text-sm font-semibold py-2 hover:bg-champagne-muted transition-colors')}
             >
-              {variant.ctaText}
+              {t(variant.ctaKey)}
             </Link>
             <button
               type="button"
               onClick={dismiss}
               className={cn(FOCUS_RING, 'text-xs text-text-tertiary hover:text-text-secondary whitespace-nowrap')}
             >
-              Не показывать больше
+              {t('nudge.register.dismiss')}
             </button>
           </div>
         </div>

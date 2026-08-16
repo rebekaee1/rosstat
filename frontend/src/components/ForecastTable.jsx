@@ -1,8 +1,10 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { formatDate, formatValueWithUnit, unitSuffix, chartValueDigits } from '../lib/format';
+import { useT } from '../i18n';
 
 export default function ForecastTable({ mode = 'inflation', inflation, forecastData, unit = '%', dateFormat = 'full' }) {
+  const t = useT();
   const ref = useRef(null);
 
   useEffect(() => {
@@ -24,17 +26,22 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
 
   if (!rows.length) return null;
 
-  const period = dateFormat === 'quarterly' ? 'ежеквартально' : dateFormat === 'annual' ? 'ежегодно' : dateFormat === 'weekly' ? 'еженедельно' : 'помесячно';
-  const title = mode === 'inflation' ? 'Прогноз инфляции (12 мес.)' : `Прогноз (${period})`;
+  const periodKey = dateFormat === 'quarterly' ? 'forecast.period.quarterly'
+    : dateFormat === 'annual' ? 'forecast.period.annual'
+      : dateFormat === 'weekly' ? 'forecast.period.weekly'
+        : 'forecast.period.monthly';
+  const title = mode === 'inflation'
+    ? t('forecast.title.inflation')
+    : t('forecast.title.period', { period: t(periodKey) });
   const suffix = unitSuffix(unit);
   const valueDigits = chartValueDigits(unit, mode);
   const valueLabel = mode === 'inflation'
-    ? 'Инфляция (12 мес.)'
-    : mode === 'quarterly' ? 'Квартальная (%)'
-      : mode === 'annual' ? 'Годовая (%)'
-        : mode === 'weekly' ? 'Недельная (%)'
-          : mode === 'index' ? 'Индекс ИПЦ'
-            : (suffix ? `Значение (${suffix})` : 'Значение');
+    ? t('forecast.value.inflation')
+    : mode === 'quarterly' ? t('forecast.value.quarterly')
+      : mode === 'annual' ? t('forecast.value.annual')
+        : mode === 'weekly' ? t('forecast.value.weekly')
+          : mode === 'index' ? t('forecast.value.index')
+            : (suffix ? t('forecast.value.withUnit', { unit: suffix }) : t('forecast.value.generic'));
 
   return (
     <div ref={ref} className="rounded-[2rem] bg-surface border border-border-subtle overflow-hidden">
@@ -49,7 +56,7 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
           <thead>
             <tr className="border-t border-border-subtle">
               <th className="text-left px-5 py-3 text-xs font-medium text-text-tertiary uppercase tracking-wider">
-                На дату
+                {t('forecast.asOf')}
               </th>
               <th className="text-right px-5 py-3 text-xs font-medium text-text-tertiary uppercase tracking-wider">
                 {valueLabel}

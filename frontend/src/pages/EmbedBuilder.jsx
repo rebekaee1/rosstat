@@ -10,6 +10,7 @@ import { track, events } from '../lib/track';
 import useSearchTracking from '../lib/useSearchTracking';
 import { SITE_ORIGIN } from '../lib/siteOrigin';
 import { russiaIndicatorPath } from '../lib/sitePaths';
+import { useLocale } from '../i18n';
 
 const WIDGET_TYPES = [
   { key: 'chart', label: 'График', icon: BarChart3, desc: 'Интерактивный AreaChart с данными и прогнозом' },
@@ -50,7 +51,10 @@ function IndicatorCombobox({ indicators, value, onChange }) {
       (i.name.toLowerCase().includes(q) || i.code.includes(q) || (i.name_en || '').toLowerCase().includes(q))
     ) || [];
     return CATEGORIES
-      .map(cat => ({ ...cat, items: filtered.filter(i => i.category === cat.apiCategory) }))
+      .map(cat => ({
+        ...cat,
+        items: filtered.filter((i) => (i.category_ru || i.category) === cat.apiCategory),
+      }))
       .filter(g => g.items.length > 0);
   }, [indicators, deferredSearch]);
 
@@ -133,7 +137,8 @@ function CopyButton({ text, onCopy }) {
 }
 
 export default function EmbedBuilder() {
-  const widgetsSeo = getPageSeo('widgets');
+  const { locale } = useLocale();
+  const widgetsSeo = getPageSeo('widgets', locale);
   useDocumentMeta({
     title: widgetsSeo.title,
     description: widgetsSeo.description,

@@ -10,11 +10,29 @@ function resolvePublicOrigin(env) {
   return (env.VITE_PUBLIC_BASE_URL || DEFAULT_PUBLIC_ORIGIN).replace(/\/$/, '')
 }
 
+/** Mirror backend resolve_request_origin: Host ru.* → https://ru.{apex}. */
+function originFromRequestHost(reqHost, fallbackOrigin) {
+  const host = (reqHost || '').split(',')[0].trim().toLowerCase().split(':')[0]
+  let apex
+  try {
+    apex = new URL(fallbackOrigin).hostname.replace(/^www\./, '')
+  } catch {
+    apex = 'forecasteconomy.com'
+  }
+  if (host.startsWith('ru.') || host === `ru.${apex}`) {
+    return `https://ru.${apex}`
+  }
+  return fallbackOrigin
+}
+
 /** Подставляет origin/host в index.html + public/robots.txt + public/llms.txt. */
 function publicOriginPlugin(origin) {
-  const host = new URL(origin).hostname
-  const rewrite = (code) =>
-    code.replaceAll('__PUBLIC_ORIGIN__', origin).replaceAll('__PUBLIC_HOST__', host)
+  const rewrite = (code, activeOrigin = origin) => {
+    const host = new URL(activeOrigin).hostname
+    return code
+      .replaceAll('__PUBLIC_ORIGIN__', activeOrigin)
+      .replaceAll('__PUBLIC_HOST__', host)
+  }
 
   const rewriteDistFile = (outDir, name) => {
     const filePath = resolve(outDir, name)
@@ -29,17 +47,24 @@ function publicOriginPlugin(origin) {
     },
     configureServer(server) {
       // Vite отдаёт public/ as-is; без middleware robots/llms останутся с плейсхолдерами.
+      // Host-aware: ru.* → ru origin (prod nginx proxies these to backend).
       server.middlewares.use((req, res, next) => {
         const url = req.url?.split('?')[0]
         if (url !== '/robots.txt' && url !== '/llms.txt') return next()
         const filePath = resolve(process.cwd(), 'public', url.slice(1))
         if (!existsSync(filePath)) return next()
+        const active = originFromRequestHost(
+          req.headers['x-forwarded-host'] || req.headers.host,
+          origin,
+        )
         res.setHeader('Content-Type', 'text/plain; charset=utf-8')
-        res.end(rewrite(readFileSync(filePath, 'utf8')))
+        res.setHeader('Vary', 'Host')
+        res.end(rewrite(readFileSync(filePath, 'utf8'), active))
       })
     },
     writeBundle(options) {
       const outDir = options.dir || resolve(process.cwd(), 'dist')
+      // Dist fallback stays apex; production nginx proxies robots/llms to backend.
       rewriteDistFile(outDir, 'robots.txt')
       rewriteDistFile(outDir, 'llms.txt')
     },
@@ -70,6 +95,15 @@ export default defineConfig(({ mode }) => {
         target: apiTarget,
         changeOrigin: true,
         secure: true,
+        configure: (proxy) => {
+          // Vite EN preview: forward ?preview_locale= from Referer so API
+          // returns name_en in `name` without touching production hosts.
+          proxy.on('proxyReq', (proxyReq, req) => {
+            const referer = req.headers.referer || ''
+            const m = /[?&]preview_locale=(en|ru)\b/i.exec(referer)
+            if (m) proxyReq.setHeader('X-FE-Locale', m[1].toLowerCase())
+          })
+        },
       },
     },
   },

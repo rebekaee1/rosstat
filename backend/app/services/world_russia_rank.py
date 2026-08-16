@@ -26,17 +26,27 @@ from app.services.world_rank_values import (
 
 def russia_country_public() -> dict[str, Any]:
     """Публичный каркас страны для каталога карты (без значения)."""
-    return dict(RUSSIA_COUNTRY_PAYLOAD)
+    from app.services.locale import get_locale
+
+    payload = dict(RUSSIA_COUNTRY_PAYLOAD)
+    if get_locale() == "en":
+        payload["name"] = (payload.get("name_en") or "Russia").strip() or "Russia"
+    return payload
 
 
 def russia_meta_for_concept(concept_slug: str) -> dict[str, Any] | None:
+    from app.services.locale import get_locale
+
     link = russia_link_for_concept(concept_slug)
     if link is None:
         return None
+    note = link.note_ru
+    if get_locale() == "en" and (link.note_en or "").strip():
+        note = link.note_en
     return {
         "eligible": True,
         "indicator_code": link.indicator_code,
-        "note": link.note_ru,
+        "note": note,
         "country": russia_country_public(),
     }
 
@@ -98,17 +108,25 @@ async def russia_yearly_by_code(
     _indicator, series = loaded
     series = _scaled_series(series, link)
     mode = _rank_mode_for_link(link, concept_mode)
+    from app.services.locale import get_locale
+    from app.services.seo_i18n import translate_source
+
+    loc = get_locale()
+    country_name = "Russia" if loc == "en" else "Россия"
+    source = translate_source("Росстат", loc) or (
+        "Rosstat" if loc == "en" else "Росстат"
+    )
     out: dict[str, dict[str, Any]] = {}
     for year, (point_date, value) in yearly_last_points(series, mode).items():
         out[str(year)] = {
             "country_code": "RU",
             "country_slug": "russia",
-            "country_name": "Россия",
+            "country_name": country_name,
             "indicator_code": link.indicator_code,
             "date": point_date.isoformat(),
             "value": round(float(value), 4),
             "unit": public_unit,
-            "source": "Росстат",
+            "source": source,
             "frequency": getattr(_indicator, "frequency", None),
         }
     return out

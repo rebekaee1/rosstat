@@ -22,6 +22,7 @@ import {
 import {
   buildWorldColorModel, WORLD_NO_DATA,
 } from '../lib/worldMapColors';
+import { useT } from '../i18n';
 
 const WIDTH = 960;
 const HEIGHT = 480;
@@ -102,6 +103,7 @@ export default function WorldMap({
   defaultScope = 'world',
   onSelect,
 }) {
+  const t = useT();
   const [scope, setScope] = useState(defaultScope === 'europe' ? 'europe' : 'world');
   const [hover, setHover] = useState(null);
   const [view, setView] = useState({ k: 1, tx: 0, ty: 0 });
@@ -248,12 +250,12 @@ export default function WorldMap({
     <div className="select-none">
       <div className="mb-3 flex items-center justify-between gap-3">
         <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-text-tertiary">
-          Выберите страну на карте
+          {t('world.map.pickCountry')}
         </div>
         <div className="inline-flex gap-1.5">
           {[
-            ['europe', MapIcon, 'Европа'],
-            ['world', Globe2, 'Мир'],
+            ['europe', MapIcon, t('home.map.scopeEurope')],
+            ['world', Globe2, t('home.map.scopeWorld')],
           ].map(([id, Icon, label]) => (
             <button
               key={id}
@@ -283,7 +285,7 @@ export default function WorldMap({
           viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
           className={`block h-auto w-full ${k > 1 ? 'cursor-grab active:cursor-grabbing' : ''}`}
           role="group"
-          aria-label="Интерактивная карта стран"
+          aria-label={t('world.map.aria')}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
@@ -351,7 +353,11 @@ export default function WorldMap({
                   })}
                   onBlur={() => setHover(null)}
                   role={active ? 'button' : undefined}
-                  aria-label={active ? `${country.name}${hasValue ? `: ${formatWorldValue(value)} ${unit}` : ': нет данных'}` : undefined}
+                  aria-label={active
+                    ? (hasValue
+                      ? t('world.map.countryValue', { name: country.name, value: formatWorldValue(value), unit: unit || '' })
+                      : t('world.map.countryNoData', { name: country.name }))
+                    : undefined}
                   tabIndex={active ? 0 : undefined}
                   onKeyDown={(event) => {
                     if (active && (event.key === 'Enter' || event.key === ' ')) {
@@ -395,7 +401,7 @@ export default function WorldMap({
           <div className="pointer-events-none absolute bottom-3 left-3 z-10 max-w-[calc(100%-5rem)] rounded-xl border border-border-subtle bg-white/95 px-3.5 py-3 text-xs shadow-xl backdrop-blur-sm">
             <div className="font-semibold text-text-primary">{hover.country.name}</div>
             <div className="mt-1 font-mono text-base font-semibold text-champagne">
-              {hover.value != null ? formatWorldValue(hover.value) : 'Нет данных'}
+              {hover.value != null ? formatWorldValue(hover.value) : t('common.noData')}
             </div>
             {hover.value != null && unit && <div className="mt-0.5 text-[10px] text-text-tertiary">{unit}</div>}
             {hover.value != null && colorModel.describe(hover.value) && (
@@ -419,13 +425,13 @@ export default function WorldMap({
         <div className="mt-4 rounded-xl border border-border-subtle bg-obsidian-light/45 px-3 py-3">
           <div className="mb-2.5 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
             <div className="text-[10px] font-medium text-text-secondary">
-              {metricName || 'Распределение показателя'}
+              {metricName || t('world.map.distribution')}
               {periodLabel ? (
                 <span className="font-mono text-text-tertiary"> — {periodLabel}</span>
               ) : null}
             </div>
             <div className="text-[9px] uppercase tracking-[0.13em] text-text-tertiary">
-              {colorModel.kind === 'diverging' ? 'Отклонение от нуля' : 'Положение относительно медианы'}
+              {colorModel.kind === 'diverging' ? t('world.map.scaleZero') : t('world.map.scaleMedian')}
             </div>
           </div>
           <div className="mx-auto grid max-w-[46rem] grid-cols-4 gap-1.5 sm:grid-cols-7">
@@ -448,19 +454,22 @@ export default function WorldMap({
           <div className="mt-2.5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[10px] text-text-tertiary">
             <span className="font-medium text-text-secondary">
               {colorModel.kind === 'diverging'
-                ? 'Бордовый — ниже нуля; светлый — около нуля; зелёный — выше нуля'
-                : 'Синий — ниже медианы; светлый — около медианы; золотой — выше медианы'}
+                ? t('world.map.legendZero')
+                : t('world.map.legendMedian')}
             </span>
             {colorModel.median != null && (
               <span>
-                Медиана: {formatWorldValue(colorModel.median)}
+                {t('world.map.median', { value: formatWorldValue(colorModel.median) })}
                 {unit ? ` ${unit}` : ''}
               </span>
             )}
-            {colorModel.sampleSize > 0 && <span>Стран с данными: {colorModel.sampleSize}</span>}
+            {colorModel.sampleSize > 0 && <span>{t('world.map.withData', { n: colorModel.sampleSize })}</span>}
             {extent && (
               <span>
-                Диапазон: {formatWorldValue(extent.min)}–{formatWorldValue(extent.max)}
+                {t('world.map.range', {
+                  min: formatWorldValue(extent.min),
+                  max: formatWorldValue(extent.max),
+                })}
                 {unit ? ` ${unit}` : ''}
               </span>
             )}
@@ -472,7 +481,7 @@ export default function WorldMap({
                   backgroundImage: 'repeating-linear-gradient(35deg, transparent 0, transparent 3px, rgba(122,132,130,0.2) 3px, rgba(122,132,130,0.2) 5px)',
                 }}
               />
-              Нет данных
+              {t('world.map.noDataSwatch')}
             </span>
           </div>
         </div>
@@ -480,14 +489,6 @@ export default function WorldMap({
     </div>
   );
 }
-
-const SILHOUETTE_FREQ = {
-  daily: 'день',
-  weekly: 'нед.',
-  monthly: 'мес.',
-  quarterly: 'кв.',
-  annual: 'год',
-};
 
 // Ниже этого числа вершин контур в кадре карточки читается как многоугольник:
 // столько остаётся у Мальты, Кипра, Люксембурга и подобных. Только им догружаем
@@ -546,6 +547,7 @@ export function CountrySilhouette({
   area = null,
   population = null,
 }) {
+  const t = useT();
   const geometry = useCountryOutline(code);
   const hasFacts = area?.value != null || population?.value != null;
   const countryPath = useMemo(() => {
@@ -561,15 +563,19 @@ export function CountrySilhouette({
     ? `${String(historyStart).slice(0, 4)}–${String(historyEnd || historyStart).slice(0, 4)}`
     : '';
   const frequencyLabel = frequencies
-    .map((frequency) => SILHOUETTE_FREQ[frequency] || frequency)
+    .map((frequency) => {
+      const key = `world.freq.${frequency}`;
+      const label = t(key);
+      return label !== key ? label : frequency;
+    })
     .filter(Boolean)
     .join(', ');
   const areaValue = area?.value != null
-    ? `${formatValue(area.value, Number.isInteger(Number(area.value)) ? 0 : 1)} ${area.unit || 'км²'}`
+    ? `${formatValue(area.value, Number.isInteger(Number(area.value)) ? 0 : 1)} ${area.unit || t('world.unit.km2')}`
     : '';
   const areaYear = area?.year ? String(area.year) : '';
   const populationValue = population?.value != null
-    ? `${formatValue(population.value, 0)} ${population.unit || 'человек'}`
+    ? `${formatValue(population.value, 0)} ${population.unit || t('world.unit.people')}`
     : '';
   const populationYear = population?.year
     || (population?.date ? String(population.date).slice(0, 4) : '');
@@ -585,7 +591,7 @@ export function CountrySilhouette({
   return (
     <div
       className="relative min-h-[250px] overflow-hidden rounded-2xl border border-white/10 bg-[#191A20] shadow-[0_20px_45px_rgba(24,24,31,0.18)]"
-      aria-label={`Контур территории: ${name}`}
+      aria-label={t('world.map.outlineAria', { name })}
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_72%_28%,rgba(207,180,95,0.2),transparent_47%)]" />
       <div
@@ -601,7 +607,7 @@ export function CountrySilhouette({
       )}
       <div className="absolute left-4 top-3 z-10 max-w-[48%]">
         <div className="text-[9px] font-mono uppercase tracking-[0.2em] text-white/45">
-          Профиль территории
+          {t('world.territory.profile')}
         </div>
         {region && <div className="mt-1 text-[10px] text-[#d8c58b]">{region}</div>}
         {(areaValue || populationValue) && (
@@ -609,7 +615,7 @@ export function CountrySilhouette({
             {areaValue && (
               <div>
                 <div className="text-[9px] font-mono uppercase tracking-[0.16em] text-white/40">
-                  Площадь
+                  {t('world.territory.area')}
                 </div>
                 <div className="mt-0.5 text-xs font-medium text-white/90">
                   {areaValue}
@@ -624,7 +630,7 @@ export function CountrySilhouette({
             {populationValue && (
               <div>
                 <div className="text-[9px] font-mono uppercase tracking-[0.16em] text-white/40">
-                  Население
+                  {t('world.territory.population')}
                 </div>
                 <div className="mt-0.5 text-xs font-medium text-white/90">
                   {populationValue}
@@ -640,7 +646,7 @@ export function CountrySilhouette({
               <div className="space-y-0.5 pt-0.5 text-[9px] text-white/45">
                 {sources.map((item) => (
                   <div key={`${item.kind}-${item.label}`}>
-                    Источник:{' '}
+                    {t('common.source')}:{' '}
                     {item.url ? (
                       <a
                         href={item.url}
@@ -660,7 +666,7 @@ export function CountrySilhouette({
           </div>
         )}
       </div>
-      <svg viewBox="0 0 360 240" className="relative block h-auto w-full" role="img" aria-label={`Карта страны: ${name}`}>
+      <svg viewBox="0 0 360 240" className="relative block h-auto w-full" role="img" aria-label={t('world.map.countryMapAria', { name })}>
         <path
           d={countryPath}
           fill="#D8C177"
