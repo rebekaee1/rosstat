@@ -77,7 +77,7 @@ UNIT_FALLBACK_BY_CODE: dict[str, str] = {
     "organizatsii-vypolnyavshie-nauchnye-issledovaniya-i-razrabotki": _UNITS_COUNT,
     "razrabotannye-peredovye-proizvodstvennye-tehnologii": _UNITS_COUNT,
     "ispolzuemye-peredovye-proizvodstvennye-tehnologii": _UNITS_COUNT,
-    "sredstva-vklady-fizicheskih-lits-na-valyutnyh-schetah": "млн руб.",
+    "sredstva-vklady-fizicheskih-lits-na-valyutnyh-schetah": "миллионов рублей",
     "chislennost-gosudarstvennyh-grazhdanskih-sluzhaschih-territorialnyh-organov-federalnyh": "человек",
 }
 

@@ -257,7 +257,9 @@ def main(src_dir: str):
             # В-8: 79 таблиц публикуются без единицы в шапке — кураторский
             # фолбэк, чтобы пересборка артефакта не потеряла заполненные unit.
             from unit_fallbacks import fill_unit
+            from unit_normalize import normalize_unit
             unit = fill_unit(slug, unit)
+            unit, note = normalize_unit(slug, unit, note, name)
 
             n_points_before = len(points)
             years_present = set()

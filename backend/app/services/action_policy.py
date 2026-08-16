@@ -88,18 +88,22 @@ def _target_allowed(payload: dict[str, Any]) -> tuple[bool, str]:
     if host:
         normalized = str(host).lower()
         # Поддерживаем и обычный URL, и host_id Яндекс.Вебмастера
-        # (`https:forecasteconomy.com:443` — схема через одинарное двоеточие).
+        # (`https:host:443` — схема через одинарное двоеточие).
         for prefix in ("https://", "http://", "https:", "http:"):
             if normalized.startswith(prefix):
                 normalized = normalized.removeprefix(prefix)
                 break
         normalized = normalized.strip("/")
         normalized = re.sub(r":\d+$", "", normalized)
-        if normalized not in allowed_hosts() and not normalized.endswith(".forecasteconomy.com"):
+        public_host = settings.public_host.lower()
+        if normalized not in allowed_hosts() and not (
+            public_host and normalized.endswith(f".{public_host}")
+        ):
             return False, f"host {host!r} is not in analytics allowlist"
 
     url = payload.get("url")
-    if url and "forecasteconomy.com" not in str(url).lower():
+    public_host = settings.public_host.lower()
+    if url and public_host and public_host not in str(url).lower():
         return False, f"url {url!r} is not in analytics allowlist"
 
     return True, "target is allowed"

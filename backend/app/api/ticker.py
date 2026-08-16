@@ -4,6 +4,10 @@
 `ticker_worker` in Redis. Lightweight (Redis read only, no external API
 hops), suitable for client polling at 3-5 second cadence.
 
+FX and BTC are live (MOEX / CBR / Binance). Brent and gold are the same
+daily series as their indicator cards (`brent`, `gold-price`), with
+`market_open=false` and `as_of_date`.
+
 Response shape:
 {
   "snapshots": [
@@ -14,6 +18,15 @@ Response shape:
       "market_open": true,
       "fetched_at": "2026-05-22T08:40:26+00:00",
       "source": "MOEX"
+    },
+    {
+      "code": "brent",
+      "price": 93.26,
+      "change_pct": -0.5,
+      "market_open": false,
+      "fetched_at": "2026-08-15T12:00:00+00:00",
+      "source": "EIA",
+      "as_of_date": "2026-08-14"
     },
     ...
   ],

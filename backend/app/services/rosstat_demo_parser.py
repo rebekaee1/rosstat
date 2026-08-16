@@ -1,10 +1,17 @@
 """
-Parsers for Rosstat demographic data:
-- demo21_YYYY.xlsx → births, deaths, birth rate, death rate
-- demo14.xlsx → working-age population
-- Sp_2.1_YYYY.xlsx → pensioners
+Parsers for Rosstat demographic data.
 
-All files: rosstat.gov.ru/storage/mediabank/
+Catalog pages (устойчивый discovery имён файлов):
+  - https://rosstat.gov.ru/folder/12781 — демография
+    * demo21_{YYYY}.xlsx|xls — рождаемость/смертность (годовая таблица)
+    * demo14.xlsx — возрастные группы (трудоспособное население)
+    * Edn_12-{YYYY}_t1.xlsx — оперативные итоги ЕДН за полный календарный год
+      (дополняет demo21, пока годовая таблица не обновлена)
+  - Pensioners: Sp_2.1_{YYYY}.xlsx (probe + fallback)
+
+Internals: только секция «Все население» в demo21 (город/село отбрасываются
+через first-seen year). Единицы: births/deaths — тыс. чел. (абсолют в файле
+в чел. → /1000); rates — на 1000 чел. населения.
 """
 
 from __future__ import annotations
@@ -22,11 +29,18 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.models import Indicator, FetchLog
-from app.services.http_client import create_session
 from app.services.base_parser import BaseParser
+from app.services.http_client import create_session
+from app.services.rosstat_sdds_fetcher import (
+    download_mediabank_bytes,
+    list_mediabank_filenames_from_page,
+    pick_mediabank_filename,
+    resolve_mediabank_file,
+)
 
 logger = logging.getLogger(__name__)
 
+DEMOGRAPHY_CATALOG_URL = "https://rosstat.gov.ru/folder/12781"
 BASE_URL = "https://rosstat.gov.ru/storage/mediabank/"
 
 
@@ -61,7 +75,11 @@ def _to_float(cell) -> float | None:
 
 
 def parse_demo21_xlsx(content: bytes) -> dict[str, list[DataPoint]]:
-    """Parse demo21_YYYY.xlsx → births, deaths, birth_rate, death_rate."""
+    """Parse demo21_YYYY.xlsx → births, deaths, birth_rate, death_rate.
+
+    Файл содержит три блока (всё / город / село) с повторяющимися годами.
+    Берём только первое вхождение каждого года — это блок «Все население».
+    """
     wb = openpyxl.load_workbook(io.BytesIO(content), data_only=True, read_only=True)
     try:
         ws = wb.worksheets[0]
@@ -70,12 +88,13 @@ def parse_demo21_xlsx(content: bytes) -> dict[str, list[DataPoint]]:
         wb.close()
 
     births, deaths, birth_rate, death_rate = [], [], [], []
+    seen_years: set[int] = set()
 
     for row in rows_data:
         if not row or len(row) < 7:
             continue
         year = _extract_year(row[0])
-        if year is None or year < 1990:
+        if year is None or year < 1990 or year in seen_years:
             continue
 
         d = date(year, 1, 1)
@@ -83,6 +102,12 @@ def parse_demo21_xlsx(content: bytes) -> dict[str, list[DataPoint]]:
         de = _to_float(row[2])
         br = _to_float(row[4])
         dr = _to_float(row[5])
+
+        # Пропуск строк-заголовков секций без чисел.
+        if b is None and de is None and br is None and dr is None:
+            continue
+
+        seen_years.add(year)
 
         if b is not None:
             births.append(DataPoint(date=d, value=round(b / 1000, 1)))
@@ -99,6 +124,61 @@ def parse_demo21_xlsx(content: bytes) -> dict[str, list[DataPoint]]:
         "birth-rate": sorted(birth_rate, key=lambda p: p.date),
         "death-rate": sorted(death_rate, key=lambda p: p.date),
     }
+
+
+def parse_edn_annual_t1_xlsx(content: bytes) -> dict[str, DataPoint] | None:
+    """Parse Edn_12-{YYYY}_t1.xlsx — оперативные итоги РФ за полный календарный год.
+
+    Births/deaths в файле уже в тысячах; коэффициенты — на 1000 населения.
+    Отчётный год — первая метка «YYYY г.» в шапке (колонка текущего года).
+    """
+    wb = openpyxl.load_workbook(io.BytesIO(content), data_only=True, read_only=True)
+    try:
+        ws = wb.worksheets[0]
+        rows_data = [list(row) for row in ws.iter_rows(values_only=True)]
+    finally:
+        wb.close()
+
+    year: int | None = None
+    for row in rows_data[:10]:
+        years_in_row = []
+        for cell in row:
+            m = re.search(r"(20\d{2})\s*г", str(cell or ""), re.I)
+            if m:
+                years_in_row.append(int(m.group(1)))
+        if years_in_row:
+            year = years_in_row[0]
+            break
+
+    if year is None:
+        return None
+
+    births = deaths = birth_rate = death_rate = None
+    for row in rows_data:
+        if not row:
+            continue
+        label = str(row[0] or "").strip().lower().replace("\xa0", " ")
+        if label.startswith("родившихся") and "из них" not in label:
+            births = _to_float(row[1])
+            birth_rate = _to_float(row[4]) if len(row) > 4 else None
+        elif label.startswith("умерших") and "из них" not in label and "детей" not in label:
+            deaths = _to_float(row[1])
+            death_rate = _to_float(row[4]) if len(row) > 4 else None
+
+    if births is None and deaths is None and birth_rate is None and death_rate is None:
+        return None
+
+    d = date(year, 1, 1)
+    out: dict[str, DataPoint] = {}
+    if births is not None:
+        out["births"] = DataPoint(date=d, value=round(births, 1))
+    if deaths is not None:
+        out["deaths"] = DataPoint(date=d, value=round(deaths, 1))
+    if birth_rate is not None:
+        out["birth-rate"] = DataPoint(date=d, value=birth_rate)
+    if death_rate is not None:
+        out["death-rate"] = DataPoint(date=d, value=death_rate)
+    return out
 
 
 def parse_demo14_xlsx(content: bytes) -> dict[str, list[DataPoint]]:
@@ -206,19 +286,88 @@ DEMO_FILES = {
 }
 
 
-def _try_download(session, filename: str) -> bytes | None:
-    url = BASE_URL + filename
-    try:
-        resp = session.get(url, timeout=60)
-        ct = resp.headers.get("content-type", "")
-        if "html" in ct.lower() and resp.status_code == 200:
-            logger.warning("Got HTML instead of XLSX from %s", url)
-            return None
-        if resp.status_code == 200 and resp.content[:4] == b"PK\x03\x04":
-            return resp.content
-    except Exception as e:
-        logger.debug("Download failed for %s: %s", url, e)
-    return None
+def _merge_edn_full_year(
+    series: dict[str, list[DataPoint]],
+    session,
+) -> str | None:
+    """Дополнить demo21 оперативным полным годом из Edn_12-{YYYY}_t1.xlsx.
+
+    Годовая таблица demo21 обновляется с лагом; ЕДН за декабрь уже даёт
+    календарный итог РФ. Добавляем только годы строго новее max(demo21).
+    """
+    max_year = 0
+    for pts in series.values():
+        for p in pts:
+            if p.date.year > max_year:
+                max_year = p.date.year
+
+    current_year = datetime.now().year
+    # Полный год N публикуется как EDN_12-N; пробуем N=current-1..max_year+1.
+    candidates_years = list(range(current_year - 1, max_year, -1))
+    if not candidates_years:
+        # всё же проверим, нет ли на каталоге более свежего декабря
+        candidates_years = [current_year - 1]
+
+    page_files = list_mediabank_filenames_from_page(DEMOGRAPHY_CATALOG_URL, session=session)
+    used_url = None
+
+    for year in candidates_years:
+        if year <= max_year:
+            continue
+        patterns = [
+            rf"(?i)Edn_12-{year}_t1\.xlsx",
+            rf"(?i)EDN_12-{year}_t1\.xlsx",
+            rf"(?i)edn_12-{year}_t1\.xlsx",
+        ]
+        name = pick_mediabank_filename(page_files, patterns)
+        fallback = [f"Edn_12-{year}_t1.xlsx", f"EDN_12-{year}_t1.xlsx"]
+        content = None
+        url = None
+        for cand in ([name] if name else []) + fallback:
+            if not cand:
+                continue
+            got = download_mediabank_bytes(cand, session=session)
+            if got:
+                content, url = got
+                break
+        if not content:
+            continue
+
+        edn = parse_edn_annual_t1_xlsx(content)
+        if not edn or next(iter(edn.values())).date.year <= max_year:
+            continue
+
+        for key, point in edn.items():
+            if key not in series:
+                continue
+            existing_years = {p.date.year for p in series[key]}
+            if point.date.year in existing_years:
+                continue
+            series[key].append(point)
+            series[key] = sorted(series[key], key=lambda p: p.date)
+        used_url = url
+        logger.info("demo21: merged EDN full-year %s from %s", year, url)
+        break
+
+    return used_url
+
+
+def _fetch_demo21(session) -> tuple[dict[str, list[DataPoint]], str]:
+    current_year = datetime.now().year
+    # openpyxl читает только .xlsx; .xls оставляем вне candidates.
+    fallback = [f"demo21_{y}.xlsx" for y in range(current_year + 1, current_year - 10, -1)]
+
+    content, url = resolve_mediabank_file(
+        catalog_urls=[DEMOGRAPHY_CATALOG_URL],
+        name_patterns=[r"(?i)demo21[_-](\d{4})\.xlsx"],
+        fallback_filenames=fallback,
+        session=session,
+    )
+    series = parse_demo21_xlsx(content)
+    edn_url = _merge_edn_full_year(series, session)
+    if edn_url:
+        url = f"{url}; {edn_url}"
+    return series, url
 
 
 class RosstatDemoParser(BaseParser):
@@ -233,43 +382,39 @@ class RosstatDemoParser(BaseParser):
     ) -> tuple[list, str]:
         code = indicator.code
         file_type = cfg.get("demo_file", "demo21")
-        current_year = datetime.now().year
 
         session = create_session()
         try:
             session.verify = settings.rosstat_ca_cert
 
             if file_type == "demo21":
-                filenames = [f"demo21_{y}.xlsx" for y in range(current_year + 1, current_year - 7, -1)]
-                content = None
-                used_url = ""
-                for fn in filenames:
-                    content = _try_download(session, fn)
-                    if content:
-                        used_url = BASE_URL + fn
-                        break
-                if not content:
-                    raise ValueError(f"demo21 XLSX not found (tried {filenames})")
-
-                result = parse_demo21_xlsx(content)
+                result, used_url = _fetch_demo21(session)
                 series_key = cfg.get("demo_series", code)
                 return result.get(series_key, []), used_url
 
             if file_type == "demo14":
-                content = _try_download(session, "demo14.xlsx")
-                if not content:
-                    raise ValueError("demo14.xlsx not found")
+                content, used_url = resolve_mediabank_file(
+                    catalog_urls=[DEMOGRAPHY_CATALOG_URL],
+                    name_patterns=[r"(?i)demo14\.xlsx", r"(?i)demo_14\.xlsx"],
+                    fallback_filenames=["demo14.xlsx"],
+                    session=session,
+                )
                 result = parse_demo14_xlsx(content)
                 series_key = cfg.get("demo_series", code)
-                return result.get(series_key, []), BASE_URL + "demo14.xlsx"
+                return result.get(series_key, []), used_url
 
             if file_type == "pensioners":
-                filenames = [f"Sp_2.1_{y}.xlsx" for y in range(current_year + 1, current_year - 7, -1)]
-                for fn in filenames:
-                    content = _try_download(session, fn)
-                    if content:
-                        return parse_pensioners_xlsx(content), BASE_URL + fn
-                raise ValueError("Pensioners XLSX not found")
+                current_year = datetime.now().year
+                fallback = [
+                    f"Sp_2.1_{y}.xlsx" for y in range(current_year + 1, current_year - 7, -1)
+                ]
+                content, used_url = resolve_mediabank_file(
+                    catalog_urls=[DEMOGRAPHY_CATALOG_URL],
+                    name_patterns=[r"(?i)Sp_2\.1_(\d{4})\.xlsx"],
+                    fallback_filenames=fallback,
+                    session=session,
+                )
+                return parse_pensioners_xlsx(content), used_url
 
             raise ValueError(f"Unknown demo_file type: {file_type}")
         finally:
@@ -282,5 +427,8 @@ class RosstatDemoParser(BaseParser):
             if isinstance(p.value, (int, float)) and not math.isnan(p.value)
         ]
         if len(valid) < len(points):
-            logger.warning("Filtered out %d invalid (NaN/non-numeric) demographic values", len(points) - len(valid))
+            logger.warning(
+                "Filtered out %d invalid (NaN/non-numeric) demographic values",
+                len(points) - len(valid),
+            )
         return valid

@@ -123,14 +123,18 @@ def parse_sheet(path: str, sheet: str, sec_num: int, sec_name: str,
     for col, y in sorted(years_by_col.items()):
         seen_years.setdefault(y, col)
     unit = extract_unit(note, str(rows[title_idx][0]) if title_idx is not None else "")
-    is_pct = bool(re.search(r"процент|%", (unit + " " + note + " " + name).lower()))
-
+    from unit_fallbacks import fill_unit
+    from unit_normalize import normalize_unit
     base_slug = translit_slug(name) or f"tab-{table_code.replace('.', '-')}"
     slug = base_slug
     if slug in existing_slugs:
         slug = f"{base_slug}-{table_code.replace('.', '-')}"
     if slug in existing_slugs:
         slug = f"{slug}-{edition}"
+    unit = fill_unit(slug, unit)
+    # Публичное note для discontinued — отдельно; оговорки из шапки вложим туда же.
+    unit, note_norm = normalize_unit(slug, unit, note, name)
+    is_pct = bool(re.search(r"процент|%", (unit + " " + note + " " + name).lower()))
 
     points, years_present = [], set()
     any_region = False
@@ -163,6 +167,9 @@ def parse_sheet(path: str, sheet: str, sec_num: int, sec_name: str,
     if not points:
         return None, [], f"{sheet}: 0 точек"
 
+    pub_note = DISCONTINUED_NOTE.format(ed=edition)
+    if note_norm:
+        pub_note = f"{pub_note} {note_norm}"
     ind = {
         "code": slug,
         "table_code": table_code,
@@ -170,7 +177,7 @@ def parse_sheet(path: str, sheet: str, sec_num: int, sec_name: str,
         "section_name": sec_name,
         "name": name,
         "unit": unit,
-        "note": DISCONTINUED_NOTE.format(ed=edition),
+        "note": pub_note,
         "source_sheet": f"{os.path.basename(path)} ({edition}) / {target}",
         "year_min": min(years_present),
         "year_max": max(years_present),

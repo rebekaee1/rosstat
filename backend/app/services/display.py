@@ -100,7 +100,14 @@ def format_number_ru(value, *, signed: bool = False) -> str:
         return "нет данных"
     number = float(value)
     if abs(number) >= 1000:
-        text = f"{number:,.2f}".replace(",", "\u202f").replace(".", ",")
+        # Счётные величины (население, число организаций) целые по природе:
+        # «85 664 944,00 человек» выглядит как ошибка округления.
+        digits = 0 if float(number).is_integer() else 2
+        text = f"{number:,.{digits}f}"
+        if digits:
+            # «1 222,40 тыс. чел.» — хвостовой ноль читается как ложная точность.
+            text = text.rstrip("0").rstrip(".")
+        text = text.replace(",", "\u202f").replace(".", ",")
     else:
         text = f"{number:.4f}".rstrip("0").rstrip(".").replace(".", ",")
     if signed and number > 0:
@@ -126,6 +133,25 @@ def format_date_ru(value: date | None) -> str:
     if value is None:
         return "нет данных"
     return f"{value.day} {_RU_MONTHS_GEN[value.month - 1]} {value.year}"
+
+
+def value_period_phrase(value: date | None, frequency: str | None) -> str:
+    """Подпись периода с предлогом: «за июль 2026», «на 11 августа 2026».
+
+    Месячное и годовое значение относится к периоду целиком: «на 1 июля 2026»
+    у месячного ряда читается как замер конкретного дня, а «на 1 января 2024»
+    у годового — как данные на начало года вместо итога за год.
+    """
+    if value is None:
+        return "нет данных"
+    freq = (frequency or "").lower()
+    if freq.startswith("annual") or freq.startswith("year"):
+        return f"за {value.year} год"
+    if freq.startswith("quarter"):
+        return f"за {(value.month - 1) // 3 + 1} квартал {value.year}"
+    if freq.startswith("month"):
+        return f"за {_RU_MONTHS_NOM[value.month - 1]} {value.year}"
+    return f"на {format_date_ru(value)}"
 
 
 def format_month_ru(value: date | None) -> str:

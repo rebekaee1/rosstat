@@ -1,48 +1,23 @@
-"""ETL parser for daily commodity / market history (Yahoo Finance chart API).
+"""ETL parser for legacy Yahoo Finance chart API (daily futures closes).
 
-Source: Yahoo Finance unofficial API. The upstream ticker is config-driven
-via ``model_config_json.yahoo_symbol`` (default ``BZ=F`` for Brent), so the
-same parser serves the whole commodities desk:
+Historically this parser served the commodities desk via
+``model_config_json.yahoo_symbol``. As of 2026-08-16 the live desk moved to
+official sources:
 
-  brent        BZ=F   Brent Crude front-month (ICE Europe), USD/bbl
-  copper       HG=F   COMEX copper, USD/lb
-  silver       SI=F   COMEX silver, USD/troy oz
-  wheat        ZW=F   CBOT wheat, US¢/bushel
-  natural-gas  NG=F   NYMEX Henry Hub, USD/MMBtu
-  coal         MTF=F  ICE Rotterdam coal, USD/t
-  steel        HRC=F  CME US Midwest HRC steel, USD/short ton
-  soybean      ZS=F   CBOT soybeans, US¢/bushel
+  natural-gas  → EIA Henry Hub spot via ``fred_csv`` (``DHHNGSP``)
+  coal/copper/silver/wheat/soybean → World Bank Pink Sheet monthly
+      (``world_bank_pink_sheet``)
+  brent        → EIA Europe Brent spot via ``fred_csv`` (``DCOILBRENTEU``)
+  steel        → deactivated (no free redistributable official HRC series)
 
-Public, no API key. Returns daily OHLC for the rolled-forward front
-contract, which is the standard reference series used by financial press.
-Backfill start is config-driven via ``model_config_json.backfill_from``
-(ISO date, default 2015-01-01).
+The class remains registered as ``parser_type = moex_brent_daily`` for
+backward-compatible tests and any leftover inactive seed rows. Do not wire
+new listed indicators to Yahoo: it is an unofficial aggregator and breaks the
+platform promise of official primary sources.
 
-Endpoint format:
-  GET https://query1.finance.yahoo.com/v8/finance/chart/BZ=F
+Endpoint format (legacy):
+  GET https://query1.finance.yahoo.com/v8/finance/chart/<symbol>
        ?period1=<unix_ts_from>&period2=<unix_ts_to>&interval=1d
-
-Response shape:
-  result[0].timestamp     — array of unix-seconds for each daily bar
-  result[0].indicators.quote[0].close  — close prices (may contain nulls
-                                          for non-trading days)
-
-Why Yahoo vs FRED (DCOILBRENTEU spot):
-  - We tried FRED first; from the Docker network FRED's HTTPS endpoint
-    intermittently times out on multi-year windows (one-shot ad-hoc
-    requests succeed; ETL re-runs fail). Yahoo's chart API serves 1300+
-    daily points in a single 0.5s call.
-  - Yahoo BZ=F is futures, FRED is spot — they track within ~0.5% on a
-    daily basis; for a market-overview indicator the choice is
-    acceptable and matches the live source (MOEX FORTS BR-X.Y).
-  - The class name stays `BrentDailyFredParser` only for git-history
-    continuity; rename in a follow-up if it bothers anyone.
-
-Why we keep `parser_type = "moex_brent_daily"` despite using Yahoo:
-  - This is the slot in `model_config_json` already wired up for the
-    `brent` indicator; switching the actual upstream provider should not
-    cascade into a DB migration. The contract is "give me daily Brent
-    closes"; the source is an implementation detail.
 """
 from __future__ import annotations
 

@@ -41,14 +41,17 @@ def test_value_text_for_cpi_has_sign_and_period():
 
 def test_value_text_for_level_series():
     assert display_value_text("gdp-nominal", 17624.3, "млрд руб.", "quarterly") == (
-        "17\u202f624,30 млрд руб."
+        "17\u202f624,3 млрд руб."
     )
     assert display_value_text("cpi", None, "%") == "нет данных"
 
 
 def test_ru_number_format():
     assert format_number_ru(15.35) == "15,35"
-    assert format_number_ru(1234567.8) == "1\u202f234\u202f567,80"
+    # Хвостовой ноль — ложная точность: источник даёт один знак, показываем один.
+    assert format_number_ru(1234567.8) == "1\u202f234\u202f567,8"
+    assert format_number_ru(1234567.85) == "1\u202f234\u202f567,85"
+    assert format_number_ru(85_664_944) == "85\u202f664\u202f944"
     assert format_number_ru(5) == "5"
     assert format_number_ru(None) == "нет данных"
 

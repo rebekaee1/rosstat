@@ -2,14 +2,21 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { cn } from '../lib/format';
+import {
+  russiaIndicatorPath,
+} from '../lib/sitePaths';
 
+/**
+ * Мета ленты. linkTo — только если ведёт на ту же карточку/ряд, что и число.
+ * Нет карточки → linkTo: null (не кликаем на чужой показатель).
+ */
 const TICKER_META = {
-  'usd-rub-live':  { label: 'USD/RUB', linkTo: '/indicator/usd-rub', decimals: 4 },
-  'eur-rub-live':  { label: 'EUR/RUB', linkTo: '/indicator/eur-rub', decimals: 4 },
-  'cny-rub-live':  { label: 'CNY/RUB', linkTo: '/indicator/cny-rub', decimals: 4 },
-  'btc-usd':       { label: 'BTC/USD', linkTo: '/indicator/btc-usd', decimals: 0 },
-  'brent':         { label: 'Brent',   linkTo: '/indicator/brent',   decimals: 2 },
-  'gold-rub-live': { label: 'Золото',  linkTo: '/indicator/gold-price', decimals: 2 },
+  'usd-rub-live':  { label: 'USD/RUB', linkTo: russiaIndicatorPath('usd-rub'), decimals: 4 },
+  'eur-rub-live':  { label: 'EUR/RUB', linkTo: russiaIndicatorPath('eur-rub'), decimals: 4 },
+  'cny-rub-live':  { label: 'CNY/RUB', linkTo: russiaIndicatorPath('cny-rub'), decimals: 4 },
+  'btc-usd':       { label: 'BTC/USD', linkTo: russiaIndicatorPath('btc-usd'), decimals: 0 },
+  'brent':         { label: 'Brent',   linkTo: russiaIndicatorPath('brent'),   decimals: 2 },
+  'gold-rub-live': { label: 'Золото',  linkTo: russiaIndicatorPath('gold-price'), decimals: 1 },
 };
 
 const POLL_INTERVAL_MS = 4000;
@@ -25,23 +32,60 @@ function formatPct(pct) {
   return `${sign}${pct.toFixed(2).replace('.', ',')}%`;
 }
 
+/** Компактная дата значения для не-внутридневных элементов: «15.08». */
+function formatAsOfShort(isoDate) {
+  if (!isoDate) return null;
+  const d = isoDate.includes('T')
+    ? new Date(isoDate)
+    : new Date(`${isoDate}T12:00:00`);
+  if (Number.isNaN(d.getTime())) return null;
+  // Для ISO-даты ряда — календарный день как есть; для timestamp — МСК.
+  if (!isoDate.includes('T')) {
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    return `${dd}.${mm}`;
+  }
+  return d.toLocaleDateString('ru-RU', {
+    day: '2-digit',
+    month: '2-digit',
+    timeZone: 'Europe/Moscow',
+  });
+}
+
+function formatAsOfTitle(isoDate) {
+  if (!isoDate) return null;
+  const d = isoDate.includes('T')
+    ? new Date(isoDate)
+    : new Date(`${isoDate}T12:00:00`);
+  if (Number.isNaN(d.getTime())) return null;
+  return d.toLocaleDateString('ru-RU', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: isoDate.includes('T') ? 'Europe/Moscow' : undefined,
+  });
+}
+
+function resolveAsOfRaw(snapshot) {
+  if (snapshot.as_of_date) return snapshot.as_of_date;
+  if (snapshot.fetched_at) return snapshot.fetched_at;
+  return null;
+}
+
 function TickerCell({ snapshot, nowMs }) {
   // Хуки должны вызываться в стабильном порядке на каждом рендере (React rules-of-hooks);
   // ранний return ставим **после** объявления хуков, иначе ESLint roof-of-hooks ошибка.
   const meta = TICKER_META[snapshot.code];
+  const isIntraday = Boolean(snapshot.market_open);
 
-  // Flash-эффект на изменение цены (зелёное/красное подсвечивание на 600мс).
-  // Pattern: сравниваем входящую цену с «последней увиденной» через useState,
-  // чтобы соблюсти оба правила (react-hooks/refs запрещает ref-in-render;
-  // react-hooks/set-state-in-effect запрещает setState в useEffect).
-  // setState вызывается **во время render**, что разрешено когда новое значение
-  // зависит от prop (React сам ребатчит ререндер) — это документированный
-  // pattern «Adjusting state in response to a prop change», см.
-  // https://react.dev/learn/you-might-not-need-an-effect#adjusting-state-when-a-prop-changes
+  // Flash только у внутридневных котировок. Дневные ряды карточек не мигают —
+  // цена стабильна между ETL, иначе создаётся ложное ощущение «живой» биржи.
   const [lastSeenPrice, setLastSeenPrice] = useState(snapshot.price);
   const [flash, setFlash] = useState(null); // 'up' | 'down' | null
-  if (lastSeenPrice !== snapshot.price) {
+  if (isIntraday && lastSeenPrice !== snapshot.price) {
     setFlash(snapshot.price > lastSeenPrice ? 'up' : 'down');
+    setLastSeenPrice(snapshot.price);
+  } else if (!isIntraday && lastSeenPrice !== snapshot.price) {
     setLastSeenPrice(snapshot.price);
   }
   useEffect(() => {
@@ -52,56 +96,81 @@ function TickerCell({ snapshot, nowMs }) {
 
   if (!meta) return null;
 
-  // Визуально лента — единая строка котировок. Источник (MOEX live vs ЦБ daily)
-  // не должен ломать типографику: цвет/жирность цены идентичны для всех
-  // инструментов. Различие источника — только в title-тултипе.
   const pct = snapshot.change_pct;
   const positive = pct !== null && pct !== undefined && pct > 0;
   const negative = pct !== null && pct !== undefined && pct < 0;
   const hasPrice = snapshot.price > 0;
 
-  // В-17: старая котировка не выдаётся за живую. Если снапшот не обновлялся
-  // дольше 15 минут — приглушаем ячейку и подписываем время данных в тултипе.
-  // «Сейчас» — момент прихода ответа (dataUpdatedAt из React Query, проп),
-  // а не Date.now() в рендере: поллинг каждые POLL_INTERVAL_MS освежает его.
   const fetchedMs = snapshot.fetched_at ? new Date(snapshot.fetched_at).getTime() : null;
-  const isStale = fetchedMs !== null && nowMs - fetchedMs > 15 * 60 * 1000;
-  const asOf = fetchedMs !== null
+  const isStale = isIntraday && fetchedMs !== null && nowMs - fetchedMs > 15 * 60 * 1000;
+  const asOfRaw = !isIntraday ? resolveAsOfRaw(snapshot) : null;
+  const asOfShort = formatAsOfShort(asOfRaw);
+  const asOfTitle = formatAsOfTitle(asOfRaw);
+  const asOfClock = fetchedMs !== null
     ? new Date(fetchedMs).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Moscow' })
     : null;
-  const titleParts = [`Источник: ${snapshot.source}`];
-  if (!snapshot.market_open) titleParts.push('торги закрыты');
-  if (asOf) titleParts.push(isStale ? `данные на ${asOf} МСК (обновление недоступно)` : `данные на ${asOf} МСК`);
 
-  return (
-    <Link
-      to={meta.linkTo}
-      className={cn(
-        'flex shrink-0 items-center gap-1.5 px-2 py-1 rounded-md whitespace-nowrap',
-        'sm:gap-2 sm:px-3',
-        'transition-colors duration-200 hover:bg-champagne/10',
-        'border border-transparent',
-        flash === 'up' && 'bg-positive/10 border-positive/30',
-        flash === 'down' && 'bg-negative/10 border-negative/30',
-        isStale && 'opacity-60',
-      )}
-      title={titleParts.join(' · ')}
-    >
+  const titleParts = [`Источник: ${snapshot.source}`];
+  if (!isIntraday) {
+    if (asOfTitle) titleParts.push(`значение на ${asOfTitle}`);
+  } else {
+    if (!snapshot.market_open) titleParts.push('торги закрыты');
+    if (asOfClock) {
+      titleParts.push(
+        isStale
+          ? `данные на ${asOfClock} МСК (обновление недоступно)`
+          : `данные на ${asOfClock} МСК`,
+      );
+    }
+  }
+
+  const cellClass = cn(
+    'flex shrink-0 items-center gap-1 px-1.5 py-1 rounded-md whitespace-nowrap',
+    'sm:gap-1.5 sm:px-2.5 md:gap-2 md:px-3',
+    'transition-colors duration-200',
+    meta.linkTo && 'hover:bg-champagne/10',
+    'border border-transparent',
+    flash === 'up' && 'bg-positive/10 border-positive/30',
+    flash === 'down' && 'bg-negative/10 border-negative/30',
+    isStale && 'opacity-60',
+  );
+
+  const body = (
+    <>
       <span className="text-[9px] uppercase tracking-wide text-text-secondary font-medium sm:text-[11px]">
         {meta.label}
       </span>
       <span className="text-xs font-semibold tabular-nums text-text-primary sm:text-sm">
         {hasPrice ? formatPrice(snapshot.price, meta.decimals) : '—'}
       </span>
+      {asOfShort ? (
+        <span className="text-[9px] font-mono tabular-nums text-text-tertiary sm:text-[10px]">
+          {asOfShort}
+        </span>
+      ) : null}
       <span className={cn(
-        'hidden text-[11px] font-medium tabular-nums sm:inline',
+        'hidden text-[11px] font-medium tabular-nums xl:inline',
         positive && 'text-positive',
         negative && 'text-negative',
         !positive && !negative && 'text-text-secondary'
       )}>
         {formatPct(pct)}
       </span>
-    </Link>
+    </>
+  );
+
+  if (meta.linkTo) {
+    return (
+      <Link to={meta.linkTo} className={cellClass} title={titleParts.join(' — ')}>
+        {body}
+      </Link>
+    );
+  }
+
+  return (
+    <span className={cellClass} title={titleParts.join(' — ')}>
+      {body}
+    </span>
   );
 }
 
@@ -112,8 +181,8 @@ async function fetchLiveTicker() {
 }
 
 export default function LiveTicker() {
-  // Тикер показываем на всех ширинах: на мобиле — статичный компактный ряд
-  // (без анимации/карусели, чтобы не отвлекал), на десктопе — полная строка.
+  // Тикер на всех ширинах: на мобиле — компактный ряд со скроллом,
+  // на широких — полная строка. justify-center на узкой ширине обрезает края.
   const { data, dataUpdatedAt } = useQuery({
     queryKey: ['ticker', 'live'],
     queryFn: fetchLiveTicker,
@@ -131,9 +200,9 @@ export default function LiveTicker() {
 
   return (
     <div className="fixed top-0 inset-x-0 z-[110] h-9 bg-[#faf7f0] border-b border-champagne/15 shadow-sm">
-      <div className="max-w-7xl mx-auto h-full px-1 sm:px-4">
+      <div className="mx-auto h-full max-w-7xl px-1 sm:px-3 md:px-4">
         <div
-          className="flex h-full w-full items-center gap-2 overflow-x-auto scrollbar-hide sm:justify-center sm:gap-4"
+          className="scrollbar-hide flex h-full w-full items-center gap-0.5 overflow-x-auto sm:gap-1 md:gap-1.5 xl:justify-center xl:gap-3"
           aria-label="Котировки"
         >
           {snapshots.map((s) => (

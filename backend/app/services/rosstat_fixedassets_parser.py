@@ -1,8 +1,10 @@
 """
 Parser for Rosstat fixed assets depreciation rate: St_izn_of_YYYY.xlsx.
 
-Source: rosstat.gov.ru/storage/mediabank/St_izn_of_YYYY.xlsx
-Structure: Sheet "1", row 4+ = [year, percentage]
+Source discovery:
+  - catalog https://rosstat.gov.ru/folder/11186 (эффективность экономики)
+  - fallback probe mediabank/St_izn_of_{YYYY}.xlsx
+Structure: Sheet "1" (не «Содержание»), row = [year, percentage]
 """
 
 from __future__ import annotations
@@ -22,9 +24,11 @@ from app.config import settings
 from app.models import Indicator, FetchLog
 from app.services.http_client import create_session
 from app.services.base_parser import BaseParser
+from app.services.rosstat_sdds_fetcher import resolve_mediabank_file
 
 logger = logging.getLogger(__name__)
 
+FIXED_ASSETS_CATALOG_URL = "https://rosstat.gov.ru/folder/11186"
 BASE_URL = "https://rosstat.gov.ru/storage/mediabank/"
 
 
@@ -81,33 +85,22 @@ class RosstatFixedAssetsParser(BaseParser):
         fetch_log: FetchLog,
     ) -> tuple[list, str]:
         current_year = datetime.now().year
+        fallback = [
+            f"St_izn_of_{year}.xlsx"
+            for year in range(current_year + 1, current_year - 7, -1)
+        ]
 
         session = create_session()
         try:
             session.verify = settings.rosstat_ca_cert
-            content = None
-            used_url = ""
-            for year in range(current_year + 1, current_year - 7, -1):
-                fn = f"St_izn_of_{year}.xlsx"
-                url = BASE_URL + fn
-                try:
-                    resp = session.get(url, timeout=60)
-                    ct = resp.headers.get("content-type", "")
-                    if "html" in ct.lower() and resp.status_code == 200:
-                        logger.warning("Got HTML instead of XLSX from %s", url)
-                        continue
-                    if resp.status_code == 200 and resp.content[:4] == b"PK\x03\x04":
-                        content = resp.content
-                        used_url = url
-                        break
-                except Exception as e:
-                    logger.debug("Download failed for %s: %s", url, e)
-                    continue
+            content, used_url = resolve_mediabank_file(
+                catalog_urls=[FIXED_ASSETS_CATALOG_URL],
+                name_patterns=[r"(?i)St_izn_of_(\d{4})\.xlsx"],
+                fallback_filenames=fallback,
+                session=session,
+            )
         finally:
             session.close()
-
-        if not content:
-            raise ValueError("St_izn_of XLSX not found")
 
         return parse_depreciation_xlsx(content), used_url
 

@@ -1,16 +1,19 @@
-"""Регрессии для live-тикера (MOEX ISS + CBR fallback).
+"""Регрессии для live-тикера (MOEX ISS FX + ряды карточек для Brent/золота).
 
-Цель — зафиксировать поведение `fetch_all`, из-за которого тикер «мигал» на
-проде: источники тянутся конкурентно и одно падение (brent/gold/MOEX FX) не
-обнуляет остальные снапшоты, а недоступный MOEX FX подменяется курсом ЦБ.
+Цель — зафиксировать поведение `fetch_all` / `ticker_pull_job`: источники
+тянутся конкурентно, одно падение FX не обнуляет остальные снапшоты, а
+Brent/золото всегда берутся из рядов карточек (не с MOEX), иначе лента
+противоречит витрине.
 """
 from __future__ import annotations
 
 import asyncio
+import json
+from datetime import date
 
 import pytest
 
-from app.services.ticker_sources import moex_iss
+from app.services.ticker_sources import TickerSnapshot, moex_iss, utcnow
 
 
 def _run(coro):
@@ -21,18 +24,6 @@ def test_fetch_all_uses_moex_when_available(monkeypatch):
     async def fake_fx(client, code, secid):
         return 90.0, 0.5
 
-    async def fake_brent(client):
-        return moex_iss.TickerSnapshot(
-            code="brent", price=76.0, change_pct=-0.1,
-            market_open=True, fetched_at=moex_iss.utcnow(), source="MOEX",
-        )
-
-    async def fake_gold(client):
-        return moex_iss.TickerSnapshot(
-            code="gold-rub-live", price=9000.0, change_pct=0.2,
-            market_open=True, fetched_at=moex_iss.utcnow(), source="MOEX",
-        )
-
     cbr_calls = {"n": 0}
 
     async def fake_cbr(client):
@@ -40,16 +31,15 @@ def test_fetch_all_uses_moex_when_available(monkeypatch):
         return {}
 
     monkeypatch.setattr(moex_iss, "_fetch_fx_one", fake_fx)
-    monkeypatch.setattr(moex_iss, "_fetch_brent", fake_brent)
-    monkeypatch.setattr(moex_iss, "_fetch_gold", fake_gold)
     monkeypatch.setattr(moex_iss, "_fetch_cbr_daily", fake_cbr)
 
     snaps = _run(moex_iss.fetch_all())
     by_code = {s.code: s for s in snaps}
 
-    # 3 FX + brent + gold
-    assert {"usd-rub-live", "eur-rub-live", "cny-rub-live", "brent", "gold-rub-live"} <= set(by_code)
-    assert all(by_code[c].source == "MOEX" for c in ("usd-rub-live", "brent"))
+    assert {"usd-rub-live", "eur-rub-live", "cny-rub-live"} <= set(by_code)
+    assert "brent" not in by_code
+    assert "gold-rub-live" not in by_code
+    assert all(by_code[c].source == "MOEX" for c in ("usd-rub-live", "eur-rub-live", "cny-rub-live"))
     # CBR не дёргается, когда MOEX отдал все FX.
     assert cbr_calls["n"] == 0
 
@@ -58,19 +48,11 @@ def test_fetch_all_falls_back_to_cbr_when_moex_fx_dead(monkeypatch):
     async def dead_fx(client, code, secid):
         return None, None
 
-    async def fake_brent(client):
-        return None
-
-    async def fake_gold(client):
-        return None
-
     async def fake_cbr(client):
         # Ключи = CBR Valute ID из _FX_INSTRUMENTS.
         return {"R01235": (78.0, 0.1), "R01239": (85.0, -0.2), "R01375": (10.9, 0.0)}
 
     monkeypatch.setattr(moex_iss, "_fetch_fx_one", dead_fx)
-    monkeypatch.setattr(moex_iss, "_fetch_brent", fake_brent)
-    monkeypatch.setattr(moex_iss, "_fetch_gold", fake_gold)
     monkeypatch.setattr(moex_iss, "_fetch_cbr_daily", fake_cbr)
 
     snaps = _run(moex_iss.fetch_all())
@@ -81,55 +63,63 @@ def test_fetch_all_falls_back_to_cbr_when_moex_fx_dead(monkeypatch):
     assert all(by_code[c].market_open is False for c in ("usd-rub-live", "eur-rub-live", "cny-rub-live"))
 
 
-def test_fetch_all_survives_source_exceptions(monkeypatch):
-    """Падение brent/gold не должно ронять весь тик (иначе тикер мигает)."""
-    async def fake_fx(client, code, secid):
+def test_fetch_all_survives_fx_exceptions(monkeypatch):
+    """Падение одного FX-запроса не должно ронять весь тик."""
+    async def mixed_fx(client, code, secid):
+        if code == "eur-rub-live":
+            raise RuntimeError("MOEX EUR down")
         return 90.0, 0.5
 
-    async def boom_brent(client):
-        raise RuntimeError("MOEX forts down")
-
-    async def boom_gold(client):
-        raise RuntimeError("MOEX selt down")
-
     async def fake_cbr(client):
-        return {}
+        return {"R01239": (85.0, -0.2)}
 
-    monkeypatch.setattr(moex_iss, "_fetch_fx_one", fake_fx)
-    monkeypatch.setattr(moex_iss, "_fetch_brent", boom_brent)
-    monkeypatch.setattr(moex_iss, "_fetch_gold", boom_gold)
+    monkeypatch.setattr(moex_iss, "_fetch_fx_one", mixed_fx)
     monkeypatch.setattr(moex_iss, "_fetch_cbr_daily", fake_cbr)
 
     snaps = _run(moex_iss.fetch_all())
     by_code = {s.code: s for s in snaps}
 
-    # FX выжили, несмотря на упавшие brent/gold.
-    assert {"usd-rub-live", "eur-rub-live", "cny-rub-live"} <= set(by_code)
-    assert "brent" not in by_code
-    assert "gold-rub-live" not in by_code
+    assert by_code["usd-rub-live"].source == "MOEX"
+    assert by_code["eur-rub-live"].source == "ЦБ РФ"
+    assert by_code["eur-rub-live"].price == 85.0
 
 
-def test_pull_job_uses_brent_db_fallback_when_moex_brent_missing(monkeypatch):
-    """Когда MOEX не отдал Brent, воркер должен подставить его из БД."""
+def test_pull_job_uses_card_series_for_brent_and_gold(monkeypatch):
+    """Brent/золото всегда из рядов карточек; live-MOEX для них отбрасывается."""
     from app.tasks import ticker_worker
 
-    usd = moex_iss.TickerSnapshot(
+    usd = TickerSnapshot(
         code="usd-rub-live", price=78.0, change_pct=0.1,
-        market_open=False, fetched_at=moex_iss.utcnow(), source="ЦБ РФ",
+        market_open=False, fetched_at=utcnow(), source="ЦБ РФ",
     )
-    brent_fb = moex_iss.TickerSnapshot(
-        code="brent", price=76.25, change_pct=-0.5,
-        market_open=False, fetched_at=moex_iss.utcnow(), source="Рыночные котировки",
+    # Легаси: если MOEX всё же отдал brent — воркер обязан выкинуть.
+    moex_brent = TickerSnapshot(
+        code="brent", price=88.68, change_pct=0.5,
+        market_open=True, fetched_at=utcnow(), source="MOEX",
+    )
+    brent_card = TickerSnapshot(
+        code="brent", price=93.26, change_pct=-0.5,
+        market_open=False, fetched_at=utcnow(), source="EIA",
+        as_of_date=date(2026, 8, 14),
+    )
+    gold_card = TickerSnapshot(
+        code="gold-rub-live", price=11886.6, change_pct=0.1,
+        market_open=False, fetched_at=utcnow(), source="Банк России",
+        as_of_date=date(2026, 8, 15),
     )
 
     async def fake_moex():
-        return [usd]  # без brent
+        return [usd, moex_brent]
 
     async def fake_binance():
         return []
 
-    async def fake_brent_fb():
-        return brent_fb
+    async def fake_series(indicator_code, ticker_code, source):
+        if indicator_code == "brent":
+            return brent_card
+        if indicator_code == "gold-price":
+            return gold_card
+        return None
 
     written: dict[str, str] = {}
 
@@ -149,37 +139,43 @@ def test_pull_job_uses_brent_db_fallback_when_moex_brent_missing(monkeypatch):
 
     monkeypatch.setattr(ticker_worker, "moex_fetch_all", fake_moex)
     monkeypatch.setattr(ticker_worker, "binance_fetch_all", fake_binance)
-    monkeypatch.setattr(ticker_worker, "_brent_db_fallback", fake_brent_fb)
+    monkeypatch.setattr(ticker_worker, "_series_db_snapshot", fake_series)
     monkeypatch.setattr(ticker_worker, "get_redis", fake_get_redis)
 
     _run(ticker_worker.ticker_pull_job())
 
-    assert "ticker:brent" in written
     assert "ticker:usd-rub-live" in written
+    brent = json.loads(written["ticker:brent"])
+    gold = json.loads(written["ticker:gold-rub-live"])
+    assert brent["price"] == 93.26
+    assert brent["source"] == "EIA"
+    assert brent["market_open"] is False
+    assert brent["as_of_date"] == "2026-08-14"
+    assert gold["price"] == 11886.6
+    assert gold["source"] == "Банк России"
+    assert gold["as_of_date"] == "2026-08-15"
 
 
-def test_fetch_all_survives_fx_gather_failure(monkeypatch):
-    """Если весь FX-gather упал — brent/gold всё равно отдаются."""
+def test_snapshot_as_dict_omits_as_of_when_none():
+    snap = TickerSnapshot(
+        code="btc-usd", price=100.0, change_pct=1.0,
+        market_open=True, fetched_at=utcnow(), source="Binance",
+    )
+    d = snap.as_dict()
+    assert "as_of_date" not in d
+    assert d["market_open"] is True
+
+
+def test_fetch_all_survives_all_fx_failures(monkeypatch):
+    """Если весь FX упал — fetch_all возвращает пустой список, не исключение."""
     async def boom_fx(client, code, secid):
         raise RuntimeError("connection reset")
-
-    async def fake_brent(client):
-        return moex_iss.TickerSnapshot(
-            code="brent", price=76.0, change_pct=None,
-            market_open=True, fetched_at=moex_iss.utcnow(), source="MOEX",
-        )
-
-    async def fake_gold(client):
-        return None
 
     async def empty_cbr(client):
         return {}
 
     monkeypatch.setattr(moex_iss, "_fetch_fx_one", boom_fx)
-    monkeypatch.setattr(moex_iss, "_fetch_brent", fake_brent)
-    monkeypatch.setattr(moex_iss, "_fetch_gold", fake_gold)
     monkeypatch.setattr(moex_iss, "_fetch_cbr_daily", empty_cbr)
 
     snaps = _run(moex_iss.fetch_all())
-    by_code = {s.code: s for s in snaps}
-    assert "brent" in by_code
+    assert snaps == []

@@ -1,19 +1,22 @@
 """
 Parsers for Rosstat Science & Education indicators (.xls files).
 
-Source: rosstat.gov.ru/storage/mediabank/
-Files:
-  - Kadry_VO.xls → grad students (sheet '1'), doctoral students (sheet '4')
-  - Nauka_1.xls → R&D organizations (sheet '1', row 6)
-  - nauka_2.xls → R&D personnel (sheet '1', row 6)
-  - innov_1_YYYY.xls → innovation activity level (sheet '1')
-  - innov_2_YYYY.xls → tech innovation share (sheet '1')
-  - innov-mp_1.xls → small business innovation (sheet '5')
+Catalog pages (устойчивый discovery имён файлов):
+  - https://rosstat.gov.ru/statistics/science — наука и инновации
+    * Nauka_1.xls — число организаций, выполнявших НИР
+    * nauka_2.xls — численность персонала, занятого НИР
+    * innov_1_{YYYY}.xls — уровень инновационной активности
+    * innov_2_{YYYY}.xls — удельный вес организаций с технологическими инновациями
+    * Innov_mp_1.xls (ранее innov-mp_1.xls) — инновации малых предприятий
+  - https://rosstat.gov.ru/statistics/education — образование
+    * Kadry-VO.xls (ранее Kadry_VO.xls) — аспиранты / докторанты
+
+Fallback: прямые probe-имена, если страница раздела временно недоступна.
+Методологический пол инноваций (Осло 3→4): min_year=2018 в SCIENCE_CONFIG.
 """
 
 from __future__ import annotations
 
-import io
 import logging
 import math
 import re
@@ -26,11 +29,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.models import Indicator, FetchLog
-from app.services.http_client import create_session
 from app.services.base_parser import BaseParser
+from app.services.http_client import create_session
+from app.services.rosstat_sdds_fetcher import resolve_mediabank_file
 
 logger = logging.getLogger(__name__)
 
+SCIENCE_CATALOG_URL = "https://rosstat.gov.ru/statistics/science"
+EDUCATION_CATALOG_URL = "https://rosstat.gov.ru/statistics/education"
 BASE_URL = "https://rosstat.gov.ru/storage/mediabank/"
 
 
@@ -69,7 +75,7 @@ def _parse_year_row_xls(ws, row_idx: int) -> list[tuple[int, int]]:
 
 
 def parse_kadry_xls(content: bytes, sheet_idx: int) -> list[DataPoint]:
-    """Parse Kadry_VO.xls → total count from specified sheet.
+    """Parse Kadry_VO / Kadry-VO.xls → total count from specified sheet.
 
     Structure: years vertical in col 0, total count in col 1.
     Sheet 1 = grad students, Sheet 4 = doctoral students.
@@ -136,7 +142,11 @@ def parse_nauka_total_xls(content: bytes, sheet_name: str = "1") -> list[DataPoi
                 total_row = r
                 break
         if total_row is None:
-            logger.warning("Nauka: keyword row not found after row %d, falling back to row %d", year_row, year_row + 2)
+            logger.warning(
+                "Nauka: keyword row not found after row %d, falling back to row %d",
+                year_row,
+                year_row + 2,
+            )
             total_row = year_row + 2
 
         points = []
@@ -182,7 +192,11 @@ def parse_innov_russia_xls(content: bytes, sheet_name: str = "1") -> list[DataPo
                 russia_row = r
                 break
         if russia_row is None:
-            logger.warning("Innov: keyword row not found after row %d, falling back to row %d", year_row, year_row + 2)
+            logger.warning(
+                "Innov: keyword row not found after row %d, falling back to row %d",
+                year_row,
+                year_row + 2,
+            )
             russia_row = year_row + 2
 
         points = []
@@ -197,44 +211,36 @@ def parse_innov_russia_xls(content: bytes, sheet_name: str = "1") -> list[DataPo
     return sorted(points, key=lambda p: p.date)
 
 
-def _try_download_xls(session, filename: str) -> bytes | None:
-    url = BASE_URL + filename
-    try:
-        resp = session.get(url, timeout=60)
-        ct = resp.headers.get("content-type", "")
-        if "html" in ct.lower() and resp.status_code == 200:
-            logger.warning("Got HTML instead of XLS from %s", url)
-            return None
-        if resp.status_code == 200 and len(resp.content) > 100:
-            return resp.content
-    except Exception as e:
-        logger.debug("Download failed for %s: %s", url, e)
-    return None
-
-
-def _dynamic_year_filenames(template: str) -> list[str]:
-    """Generate filenames with dynamic year range."""
+def _year_fallbacks(template: str) -> list[str]:
     current_year = datetime.now().year
     return [template.format(y=y) for y in range(current_year + 1, current_year - 7, -1)]
 
 
 SCIENCE_CONFIG = {
     "grad-students": {
-        "files": ["Kadry_VO.xls"],
+        "catalog_urls": [EDUCATION_CATALOG_URL],
+        "name_patterns": [r"(?i)Kadry[-_]VO\.xls"],
+        "fallback_filenames": ["Kadry-VO.xls", "Kadry_VO.xls"],
         "parser": "kadry",
         "sheet_idx": 1,
     },
     "doctoral-students": {
-        "files": ["Kadry_VO.xls"],
+        "catalog_urls": [EDUCATION_CATALOG_URL],
+        "name_patterns": [r"(?i)Kadry[-_]VO\.xls"],
+        "fallback_filenames": ["Kadry-VO.xls", "Kadry_VO.xls"],
         "parser": "kadry",
         "sheet_idx": 4,
     },
     "rd-organizations": {
-        "files": ["Nauka_1.xls"],
+        "catalog_urls": [SCIENCE_CATALOG_URL],
+        "name_patterns": [r"(?i)Nauka_1\.xls"],
+        "fallback_filenames": ["Nauka_1.xls"],
         "parser": "nauka_total",
     },
     "rd-personnel": {
-        "files": ["nauka_2.xls"],
+        "catalog_urls": [SCIENCE_CATALOG_URL],
+        "name_patterns": [r"(?i)nauka_2\.xls"],
+        "fallback_filenames": ["nauka_2.xls"],
         "parser": "nauka_total",
     },
     # Методологический разрыв Росстата (Руководство Осло 3-я → 4-я редакция,
@@ -244,17 +250,23 @@ SCIENCE_CONFIG = {
     # 3-й редакции — обрезаем ряд до первого полного года новой методики (2018),
     # чтобы график не показывал ложный вертикальный «обрыв». См. data_sources.md.
     "innovation-activity": {
-        "files_template": "innov_1_{y}.xls",
+        "catalog_urls": [SCIENCE_CATALOG_URL],
+        "name_patterns": [r"(?i)innov_1_(\d{4})\.xls"],
+        "fallback_filenames_template": "innov_1_{y}.xls",
         "parser": "innov_russia",
         "min_year": 2018,
     },
     "tech-innovation-share": {
-        "files_template": "innov_2_{y}.xls",
+        "catalog_urls": [SCIENCE_CATALOG_URL],
+        "name_patterns": [r"(?i)innov_2_(\d{4})\.xls"],
+        "fallback_filenames_template": "innov_2_{y}.xls",
         "parser": "innov_russia",
         "min_year": 2018,
     },
     "small-business-innovation": {
-        "files": ["innov-mp_1.xls"],
+        "catalog_urls": [SCIENCE_CATALOG_URL],
+        "name_patterns": [r"(?i)Innov[_-]mp_1\.xls", r"(?i)innov-mp_1\.xls"],
+        "fallback_filenames": ["Innov_mp_1.xls", "innov-mp_1.xls"],
         "parser": "innov_russia",
         "sheet": "5",
     },
@@ -276,27 +288,31 @@ class RosstatScienceParser(BaseParser):
         if not sci_cfg:
             raise ValueError(f"No science config for {code}")
 
-        file_list = sci_cfg.get("files")
-        if not file_list and "files_template" in sci_cfg:
-            file_list = _dynamic_year_filenames(sci_cfg["files_template"])
-        if not file_list:
-            raise ValueError(f"No file list resolved for {code}")
+        fallback = list(sci_cfg.get("fallback_filenames") or [])
+        if not fallback and "fallback_filenames_template" in sci_cfg:
+            fallback = _year_fallbacks(sci_cfg["fallback_filenames_template"])
+        # legacy keys from older configs
+        if not fallback and sci_cfg.get("files"):
+            fallback = list(sci_cfg["files"])
+        if not fallback and sci_cfg.get("files_template"):
+            fallback = _year_fallbacks(sci_cfg["files_template"])
+
+        catalog_urls = list(sci_cfg.get("catalog_urls") or [SCIENCE_CATALOG_URL])
+        name_patterns = list(sci_cfg.get("name_patterns") or [])
+        if not name_patterns and fallback:
+            name_patterns = [re.escape(fallback[0])]
 
         session = create_session()
         try:
             session.verify = settings.rosstat_ca_cert
-            content = None
-            used_file = ""
-            for fn in file_list:
-                content = _try_download_xls(session, fn)
-                if content:
-                    used_file = fn
-                    break
+            content, used_url = resolve_mediabank_file(
+                catalog_urls=catalog_urls,
+                name_patterns=name_patterns,
+                fallback_filenames=fallback,
+                session=session,
+            )
         finally:
             session.close()
-
-        if not content:
-            raise ValueError(f"Science XLS not found for {code}: {file_list}")
 
         parser_kind = sci_cfg.get("parser", "nauka_total")
         if parser_kind == "kadry":
@@ -308,12 +324,11 @@ class RosstatScienceParser(BaseParser):
         else:
             raise ValueError(f"Unknown science parser: {parser_kind}")
 
-        # Обрезка методологически несопоставимой истории (Осло 3→4, см. SCIENCE_CONFIG).
         min_year = sci_cfg.get("min_year")
         if min_year:
             points = [p for p in points if p.date.year >= min_year]
 
-        return points, BASE_URL + used_file
+        return points, used_url
 
     def _validate(self, points: list, cfg: dict) -> list:
         valid = [
@@ -321,5 +336,8 @@ class RosstatScienceParser(BaseParser):
             if isinstance(p.value, (int, float)) and not math.isnan(p.value)
         ]
         if len(valid) < len(points):
-            logger.warning("Filtered out %d invalid (NaN/non-numeric) science values", len(points) - len(valid))
+            logger.warning(
+                "Filtered out %d invalid (NaN/non-numeric) science values",
+                len(points) - len(valid),
+            )
         return valid

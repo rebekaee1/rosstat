@@ -59,11 +59,31 @@ def test_parse_demo21():
         ["2020", 1436514, 2138586, None, 9.8, 14.6, None],
         ["2021", 1398253, 2441594, None, 9.6, 16.7, None],
         ["всего", "мусор", None, None, None, None, None],
+        [None, "Городское население", None, None, None, None, None],
+        ["2020", 999999, 888888, None, 1.0, 2.0, None],  # дубль года (город) → игнор
     ]
     out = parse_demo21_xlsx(_xlsx_bytes(rows))
     assert [p.value for p in out["births"]] == [1436.5, 1398.3]  # тыс.
     assert out["death-rate"][0].value == 14.6
     assert len(out["deaths"]) == 2
+
+
+def test_parse_edn_annual_t1():
+    from app.services.rosstat_demo_parser import parse_edn_annual_t1_xlsx
+
+    rows = [
+        ["Оперативные данные"],
+        [None, "Тысяч", None, None, "На 1000"],
+        [None, "январь-декабрь", None, None, "январь-декабрь"],
+        [None, "2024 г.", "2023 г.", None, "2024 г.", "2023 г."],
+        ["Родившихся", 1222.4, 1264.9, -42.5, 8.4, 8.7],
+        ["Умерших", 1818.6, 1760.2, 58.4, 12.5, 12.0],
+    ]
+    out = parse_edn_annual_t1_xlsx(_xlsx_bytes(rows))
+    assert out is not None
+    assert out["births"].date == date(2024, 1, 1)
+    assert out["births"].value == 1222.4
+    assert out["death-rate"].value == 12.5
 
 
 def test_parse_demo14():

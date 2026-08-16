@@ -11681,6 +11681,188 @@
     "unit": "%",
     "variantAxis": null
   },
+  "usd-index": {
+    "base": "usd-index",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "На конец периода",
+        "leaf": false
+      },
+      {
+        "id": "avg",
+        "label": "Средняя за период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "usd-index",
+        "forecastable": true,
+        "frequency": "daily",
+        "group": "level",
+        "isNative": true,
+        "label": "По дням",
+        "mode": "level",
+        "unit": "пунктов"
+      },
+      {
+        "code": "usd-index-eop-week",
+        "forecastable": false,
+        "frequency": "weekly",
+        "group": "level",
+        "isNative": false,
+        "label": "По неделям",
+        "mode": "eop-week",
+        "unit": "пунктов"
+      },
+      {
+        "code": "usd-index-eop-month",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "level",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "eop-month",
+        "unit": "пунктов"
+      },
+      {
+        "code": "usd-index-eop-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "eop-quarter",
+        "unit": "пунктов"
+      },
+      {
+        "code": "usd-index-eop-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "eop-year",
+        "unit": "пунктов"
+      },
+      {
+        "code": "usd-index-avg-week",
+        "forecastable": false,
+        "frequency": "weekly",
+        "group": "avg",
+        "isNative": false,
+        "label": "По неделям",
+        "mode": "avg-week",
+        "unit": "пунктов"
+      },
+      {
+        "code": "usd-index-avg-month",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "avg",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "avg-month",
+        "unit": "пунктов"
+      },
+      {
+        "code": "usd-index-avg-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "avg",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "avg-quarter",
+        "unit": "пунктов"
+      },
+      {
+        "code": "usd-index-avg-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "avg",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "avg-year",
+        "unit": "пунктов"
+      },
+      {
+        "code": "usd-index-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "usd-index-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "usd-index-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "usd-index-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "usd-index-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "usd-index-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Индекс доллара США",
+    "template": "T1",
+    "unit": "пунктов",
+    "variantAxis": null
+  },
   "usd-rub": {
     "base": "usd-rub",
     "defaultMode": "level",
@@ -11861,6 +12043,188 @@
     "name": "Курс доллара США",
     "template": "T1",
     "unit": "руб.",
+    "variantAxis": null
+  },
+  "ust-10y": {
+    "base": "ust-10y",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "На конец периода",
+        "leaf": false
+      },
+      {
+        "id": "avg",
+        "label": "Средняя за период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "ust-10y",
+        "forecastable": true,
+        "frequency": "daily",
+        "group": "level",
+        "isNative": true,
+        "label": "По дням",
+        "mode": "level",
+        "unit": "%"
+      },
+      {
+        "code": "ust-10y-eop-week",
+        "forecastable": false,
+        "frequency": "weekly",
+        "group": "level",
+        "isNative": false,
+        "label": "По неделям",
+        "mode": "eop-week",
+        "unit": "%"
+      },
+      {
+        "code": "ust-10y-eop-month",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "level",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "eop-month",
+        "unit": "%"
+      },
+      {
+        "code": "ust-10y-eop-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "eop-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "ust-10y-eop-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "eop-year",
+        "unit": "%"
+      },
+      {
+        "code": "ust-10y-avg-week",
+        "forecastable": false,
+        "frequency": "weekly",
+        "group": "avg",
+        "isNative": false,
+        "label": "По неделям",
+        "mode": "avg-week",
+        "unit": "%"
+      },
+      {
+        "code": "ust-10y-avg-month",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "avg",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "avg-month",
+        "unit": "%"
+      },
+      {
+        "code": "ust-10y-avg-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "avg",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "avg-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "ust-10y-avg-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "avg",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "avg-year",
+        "unit": "%"
+      },
+      {
+        "code": "ust-10y-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "п.п."
+      },
+      {
+        "code": "ust-10y-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "п.п."
+      },
+      {
+        "code": "ust-10y-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "п.п."
+      },
+      {
+        "code": "ust-10y-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "п.п."
+      },
+      {
+        "code": "ust-10y-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "п.п."
+      },
+      {
+        "code": "ust-10y-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "п.п."
+      }
+    ],
+    "name": "Доходность 10-летних гособлигаций США",
+    "template": "T1",
+    "unit": "%",
     "variantAxis": null
   },
   "wages-nominal": {

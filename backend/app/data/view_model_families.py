@@ -456,9 +456,10 @@ def _build_avg_level(f: "FamilyDef") -> Family:
     Г/г.
     """
     base, unit, ov = f.base, f.unit, f.overrides
+    fc = f.forecastable
     modes: list[Mode] = [Mode(
         mode="level", group="avg", label=GRAN_LABEL["month"],
-        code=base, pipeline=(), unit=unit, frequency="monthly", forecastable=True,
+        code=base, pipeline=(), unit=unit, frequency="monthly", forecastable=fc,
     )]
     for g in ("quarter", "year"):
         token = f"avg-{g}"
@@ -466,7 +467,7 @@ def _build_avg_level(f: "FamilyDef") -> Family:
             mode=token, group="avg", label=GRAN_LABEL[g],
             code=_code(base, token, ov),
             pipeline=(("period_avg", {"granularity": g}),),
-            unit=unit, frequency=GRAN_FREQUENCY[g], forecastable=True,
+            unit=unit, frequency=GRAN_FREQUENCY[g], forecastable=fc,
         ))
     modes.append(Mode(
         mode="mom", group="pop", label="М/м",
@@ -690,13 +691,20 @@ _FAMILY_DEFS: list[FamilyDef] = [
     FamilyDef("cny-rub", "Курс юаня", "T1", "руб.", "Валюты", "daily"),
     FamilyDef("brent", "Нефть Brent", "T1", "USD/баррель", "Товарные рынки", "daily"),
     FamilyDef("gold-price", "Цена золота (ЦБ)", "T1", "руб./г", "Товарные рынки", "daily"),
-    FamilyDef("copper", "Медь", "T1", "USD/фунт", "Товарные рынки", "daily"),
-    FamilyDef("silver", "Серебро", "T1", "USD/унция", "Товарные рынки", "daily"),
-    FamilyDef("natural-gas", "Природный газ", "T1", "USD/MMBtu", "Товарные рынки", "daily"),
-    FamilyDef("wheat", "Пшеница", "T1", "US¢/бушель", "Товарные рынки", "daily"),
-    FamilyDef("soybean", "Соевые бобы", "T1", "US¢/бушель", "Товарные рынки", "daily"),
-    FamilyDef("coal", "Уголь", "T1", "USD/т", "Товарные рынки", "daily"),
-    FamilyDef("steel", "Сталь", "T1", "USD/т", "Товарные рынки", "daily"),
+    # Месячные бенчмарки Pink Sheet Всемирного банка (не дневные Yahoo-фьючерсы).
+    FamilyDef("copper", "Медь", "T8", "USD/т", "Товарные рынки", "monthly",
+              forecastable=False),
+    FamilyDef("silver", "Серебро", "T8", "USD/унция", "Товарные рынки", "monthly",
+              forecastable=False),
+    FamilyDef("natural-gas", "Природный газ", "T1", "USD/млн БТЕ", "Товарные рынки", "daily"),
+    FamilyDef("wheat", "Пшеница", "T8", "USD/т", "Товарные рынки", "monthly",
+              forecastable=False),
+    FamilyDef("soybean", "Соевые бобы", "T8", "USD/т", "Товарные рынки", "monthly",
+              forecastable=False),
+    FamilyDef("coal", "Уголь", "T8", "USD/т", "Товарные рынки", "monthly",
+              forecastable=False),
+    # steel снят с витрины: нет свободного официального ценового ряда без
+    # коммерческой лицензии биржи/агрегатора (см. docs/data_sources.md).
     FamilyDef("btc-usd", "Биткоин (BTC/USD)", "T1", "USD", "Валюты", "daily"),
     FamilyDef("eth-usd", "Эфириум (ETH/USD)", "T1", "USD", "Валюты", "daily"),
     FamilyDef("sol-usd", "Солана (SOL/USD)", "T1", "USD", "Валюты", "daily"),
@@ -705,6 +713,9 @@ _FAMILY_DEFS: list[FamilyDef] = [
     FamilyDef("rtsi", "Индекс РТС", "T1", "пунктов", "Индексы", "daily"),
     FamilyDef("rgbi", "Индекс гособлигаций (RGBI)", "T1", "пунктов", "Индексы", "daily"),
     FamilyDef("corp-bond-index", "Индекс корпоративных облигаций МосБиржи", "T1", "пунктов", "Индексы", "daily"),
+    FamilyDef("usd-index", "Индекс доллара США", "T1", "пунктов", "Индексы", "daily"),
+    FamilyDef("ust-10y", "Доходность 10-летних гособлигаций США", "T1", "%", "Индексы", "daily",
+              abs_delta=True, yoy_unit="п.п."),
     # T2y — месячные ставки/доли: На конец периода + Средняя + Г/г (п.п.)
     FamilyDef("mortgage-rate", "Ставка по ипотеке", "T2y", "%", "Финансы", "monthly", yoy_unit="п.п."),
     FamilyDef("auto-loan-rate", "Ставка по автокредитам", "T2y", "%", "Финансы", "monthly", yoy_unit="п.п."),

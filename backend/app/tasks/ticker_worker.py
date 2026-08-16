@@ -1,9 +1,13 @@
 """Live ticker worker: APScheduler-driven, runs every 5 seconds.
 
-Pulls live FX/Brent quotes from MOEX ISS and BTC/USD from Binance, persists
+Pulls live FX quotes from MOEX ISS and BTC/USD from Binance, persists
 the result in Redis under `ticker:<code>` with TTL 30 seconds. The frontend
 hits `GET /api/v1/ticker/live`, which reads these keys atomically (no per-
 request external API call, no rate-limit issues at scale).
+
+Brent and gold always come from the same DB series as their indicator cards
+(`brent`, `gold-price`). Live MOEX futures/spot must not appear in the bar —
+that contradicted the cards on the home page (P0).
 
 Design notes:
   - One worker per backend process. Each tick is bounded by the 10s timeout
@@ -24,6 +28,7 @@ from __future__ import annotations
 import json
 import logging
 import time
+from datetime import date
 
 from app.core.cache import get_redis
 from app.services.ticker_sources.binance import fetch_all as binance_fetch_all
@@ -34,12 +39,27 @@ logger = logging.getLogger(__name__)
 REDIS_KEY_PREFIX = "ticker:"
 REDIS_TTL_SECONDS = 90
 
+# Дневные ряды карточек → код в ленте. Не подмешиваем live-биржу.
+_SERIES_TICKER_SPECS: tuple[tuple[str, str, str], ...] = (
+    # (indicator_code, ticker_code, source_label)
+    ("brent", "brent", "EIA"),
+    ("gold-price", "gold-rub-live", "Банк России"),
+)
 
-async def _brent_db_fallback():
-    """Последняя дневная котировка Brent из нашей БД (ряд `brent`).
+# Воркер тикает каждые 5 секунд, а дневной ряд обновляется раз в сутки:
+# без памяти это ~17 тысяч одинаковых запросов к БД в день.
+_SERIES_CACHE_TTL_SECONDS = 300
+_series_cache: dict[str, tuple[float, object]] = {}
 
-    Используется, когда MOEX FORTS недоступен. Возвращает `TickerSnapshot`
-    с `market_open=False` (значение дневное, не live) или None.
+
+async def _series_db_snapshot(
+    indicator_code: str,
+    ticker_code: str,
+    source: str,
+):
+    """Последняя точка ряда карточки + % к предыдущей точке.
+
+    Возвращает `TickerSnapshot` с `market_open=False` и `as_of_date`, либо None.
     """
     from sqlalchemy import desc, select
 
@@ -47,43 +67,59 @@ async def _brent_db_fallback():
     from app.models import Indicator, IndicatorData
     from app.services.ticker_sources import TickerSnapshot, utcnow
 
+    cached = _series_cache.get(indicator_code)
+    if cached is not None and time.monotonic() - cached[0] < _SERIES_CACHE_TTL_SECONDS:
+        return cached[1]
+
     try:
         async with async_session() as db:
             ind = (
-                await db.execute(select(Indicator).where(Indicator.code == "brent"))
+                await db.execute(select(Indicator).where(Indicator.code == indicator_code))
             ).scalar_one_or_none()
             if ind is None:
                 return None
             rows = (
                 await db.execute(
-                    select(IndicatorData.value)
+                    select(IndicatorData.date, IndicatorData.value)
                     .where(IndicatorData.indicator_id == ind.id)
                     .order_by(desc(IndicatorData.date))
                     .limit(2)
                 )
-            ).scalars().all()
+            ).all()
             if not rows:
                 return None
-            last = float(rows[0])
+            last_date, last_val = rows[0]
+            last = float(last_val)
             chg = None
-            if len(rows) >= 2 and float(rows[1]):
-                prev = float(rows[1])
+            if len(rows) >= 2 and float(rows[1][1]):
+                prev = float(rows[1][1])
                 chg = round((last - prev) / prev * 100, 2)
-            return TickerSnapshot(
-                code="brent",
+            as_of: date | None = last_date if isinstance(last_date, date) else None
+            snapshot = TickerSnapshot(
+                code=ticker_code,
                 price=last,
                 change_pct=chg,
                 market_open=False,
                 fetched_at=utcnow(),
-                source="Рыночные котировки",
+                source=source,
+                as_of_date=as_of,
             )
+            _series_cache[indicator_code] = (time.monotonic(), snapshot)
+            return snapshot
     except Exception:
-        logger.exception("ticker_pull_job: brent DB fallback failed")
+        logger.exception(
+            "ticker_pull_job: series DB snapshot failed for %s", indicator_code,
+        )
         return None
 
 
+# Совместимость со старыми тестами / импортами.
+async def _brent_db_fallback():
+    return await _series_db_snapshot("brent", "brent", "EIA")
+
+
 async def ticker_pull_job() -> None:
-    """Fetch all sources concurrently and write snapshots to Redis."""
+    """Fetch live sources + card series; write snapshots to Redis."""
     import asyncio
 
     try:
@@ -99,21 +135,30 @@ async def ticker_pull_job() -> None:
     snapshots = []
     for name, src in (("moex", moex), ("binance", binance)):
         if isinstance(src, list):
-            snapshots.extend(src)
+            # На случай легаси-кода, который ещё тянет brent/gold с MOEX —
+            # выкидываем: в ленте только ряды карточек.
+            snapshots.extend(
+                s for s in src
+                if s.code not in {"brent", "gold-rub-live"}
+            )
             if src:
                 _source_last_ok[name] = time.monotonic()
         elif isinstance(src, Exception):
             logger.warning("ticker_pull_job: source failed: %s", src)
         _check_source_staleness(name)
 
-    # Brent fallback: MOEX FORTS периодически недоступен с сервера (block по IP,
-    # ConnectTimeout). У FX/золота есть fallback на ЦБ, у Brent его нет — без
-    # этого инструмент исчезает с бара. Подставляем последнюю дневную котировку
-    # из нашего ряда `brent` (ежедневный ETL), чтобы тикер всегда был полным.
-    if not any(s.code == "brent" for s in snapshots):
-        fb = await _brent_db_fallback()
-        if fb is not None:
-            snapshots.append(fb)
+    series_snaps = await asyncio.gather(
+        *[_series_db_snapshot(ind, tick, src) for ind, tick, src in _SERIES_TICKER_SPECS],
+        return_exceptions=True,
+    )
+    for spec, snap in zip(_SERIES_TICKER_SPECS, series_snaps):
+        if isinstance(snap, Exception):
+            logger.warning(
+                "ticker_pull_job: series %s failed: %s", spec[0], snap,
+            )
+            continue
+        if snap is not None:
+            snapshots.append(snap)
 
     if not snapshots:
         logger.info("ticker_pull_job: no snapshots fetched, skipping Redis write")

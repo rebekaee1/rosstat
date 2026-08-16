@@ -81,8 +81,10 @@ from app.services.rosstat_fixedassets_parser import RosstatFixedAssetsParser
 from app.services.binance_btcusdt_parser import BinanceBtcUsdtParser
 from app.services.brent_fred_parser import BrentDailyFredParser
 from app.services.cbr_monetary_agg_parser import CbrMonetaryAggParser
+from app.services.fred_parser import FredCsvParser
 from app.services.moex_index_parser import MoexIndexParser
 from app.services.rosstat_weekly_price_parser import RosstatWeeklyPriceParser
+from app.services.world_bank_pink_sheet_parser import WorldBankPinkSheetParser
 
 PARSER_REGISTRY: dict[str, type[BaseParser]] = {
     RosstatCpiParser.parser_type: RosstatCpiParser,
@@ -112,6 +114,8 @@ PARSER_REGISTRY: dict[str, type[BaseParser]] = {
     RosstatFixedAssetsParser.parser_type: RosstatFixedAssetsParser,
     BinanceBtcUsdtParser.parser_type: BinanceBtcUsdtParser,
     BrentDailyFredParser.parser_type: BrentDailyFredParser,
+    FredCsvParser.parser_type: FredCsvParser,
+    WorldBankPinkSheetParser.parser_type: WorldBankPinkSheetParser,
     CbrMonetaryAggParser.parser_type: CbrMonetaryAggParser,
     MoexIndexParser.parser_type: MoexIndexParser,
     RosstatWeeklyPriceParser.parser_type: RosstatWeeklyPriceParser,
