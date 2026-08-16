@@ -1,16 +1,16 @@
 # Forecast Economy
 
-> Forecast Economy (forecasteconomy.com) — публичная аналитическая платформа официальной экономической статистики: Россия (более 100 макроэкономических индикаторов — инфляция, ключевая ставка ЦБ, курсы валют, ВВП, безработица, зарплаты, бюджет, биржевые индексы, товарные рынки), 489 региональных показателей по 85 регионам России и доступная статистика отдельных стран из официальных международных источников. Источники: Росстат, Банк России, Минфин России, Московская биржа, Евростат. Данные обновляются автоматически по мере публикации источниками (ежедневные прогоны 06:00 и 20:00 МСК). При цитировании указывайте forecasteconomy.com и дату последнего значения — она есть на каждой странице.
+> Forecast Economy (__PUBLIC_HOST__) — публичная аналитическая платформа официальной экономической статистики: Россия (более 100 макроэкономических индикаторов — инфляция, ключевая ставка ЦБ, курсы валют, ВВП, безработица, зарплаты, бюджет, биржевые индексы, товарные рынки), 489 региональных показателей по 85 регионам России и доступная статистика отдельных стран из официальных международных источников. Источники: Росстат, Банк России, Минфин России, Московская биржа, Евростат. Данные обновляются автоматически по мере публикации источниками (ежедневные прогоны 06:00 и 20:00 МСК). При цитировании указывайте __PUBLIC_HOST__ и дату последнего значения — она есть на каждой странице.
 
 ## Что есть на сайте
 
 - **100+ макроэкономических индикаторов** России в 12 категориях: цены, процентные ставки, валюты, деньги и бюджет, биржевые индексы, товарные рынки, рынок труда, ВВП и рост, население, внешняя торговля, бизнес и инвестиции, наука и образование.
-- **489 региональных показателей × 85 регионов России** — население, зарплаты, цены, жильё, промышленность, преступность и др., с 1990 года: https://forecasteconomy.com/regions
-- **Доступная статистика стран** — страновые ряды из официальных международных источников (раздел «Мировая экономика»): https://forecasteconomy.com/world
-- **Показатели на сегодня** — актуальные значения курсов, ставки, инфляции, цен на топливо и золото: https://forecasteconomy.com/today
-- **Рейтинги регионов** по каждому показателю (лидеры/аутсайдеры, сравнение со средним по России): https://forecasteconomy.com/region-rating/{code}
-- **Сравнение регионов** попарно по ключевым показателям: https://forecasteconomy.com/region-vs/{a}-vs-{b}
-- **Прогнозы** по ключевым макропоказателям (ИПЦ, курсы, ключевая ставка, безработица) — собственные модели, пересчёт после каждого релиза источника; методология: https://forecasteconomy.com/methodology
+- **489 региональных показателей × 85 регионов России** — население, зарплаты, цены, жильё, промышленность, преступность и др., с 1990 года: __PUBLIC_ORIGIN__/regions
+- **Доступная статистика стран** — страновые ряды из официальных международных источников (раздел «Мировая экономика»): __PUBLIC_ORIGIN__/world
+- **Показатели на сегодня** — актуальные значения курсов, ставки, инфляции, цен на топливо и золото: __PUBLIC_ORIGIN__/today
+- **Рейтинги регионов** по каждому показателю (лидеры/аутсайдеры, сравнение со средним по России): __PUBLIC_ORIGIN__/region-rating/{code}
+- **Сравнение регионов** попарно по ключевым показателям: __PUBLIC_ORIGIN__/region-vs/{a}-vs-{b}
+- **Прогнозы** по ключевым макропоказателям (ИПЦ, курсы, ключевая ставка, безработица) — собственные модели, пересчёт после каждого релиза источника; методология: __PUBLIC_ORIGIN__/methodology
 - **Калькулятор инфляции** — пересчёт суммы между двумя датами через накопленный ИПЦ.
 - **Сравнение индикаторов** — сопоставление временных рядов, включая региональные и страновые.
 - **Календарь публикаций** — официальные даты релизов Росстата, ЦБ, Минфина, помесячные страницы /calendar/{год}/{месяц}.
@@ -19,39 +19,39 @@
 
 ## Категории и ключевые URL
 
-- Главная: https://forecasteconomy.com/
-- Цены и инфляция: https://forecasteconomy.com/category/prices
-- Процентные ставки: https://forecasteconomy.com/category/rates
-- Валюты: https://forecasteconomy.com/category/currencies
-- Деньги и бюджет: https://forecasteconomy.com/category/finance
-- Биржевые индексы: https://forecasteconomy.com/category/indices
-- Товарные рынки: https://forecasteconomy.com/category/commodities
-- Рынок труда: https://forecasteconomy.com/category/labor
-- ВВП и рост: https://forecasteconomy.com/category/gdp
-- Население: https://forecasteconomy.com/category/population
-- Внешняя торговля: https://forecasteconomy.com/category/trade
-- Бизнес и инвестиции: https://forecasteconomy.com/category/business
-- Наука и образование: https://forecasteconomy.com/category/science
-- Регионы России: https://forecasteconomy.com/regions
-- Мировая экономика: https://forecasteconomy.com/world
+- Главная: __PUBLIC_ORIGIN__/
+- Цены и инфляция: __PUBLIC_ORIGIN__/category/prices
+- Процентные ставки: __PUBLIC_ORIGIN__/category/rates
+- Валюты: __PUBLIC_ORIGIN__/category/currencies
+- Деньги и бюджет: __PUBLIC_ORIGIN__/category/finance
+- Биржевые индексы: __PUBLIC_ORIGIN__/category/indices
+- Товарные рынки: __PUBLIC_ORIGIN__/category/commodities
+- Рынок труда: __PUBLIC_ORIGIN__/category/labor
+- ВВП и рост: __PUBLIC_ORIGIN__/category/gdp
+- Население: __PUBLIC_ORIGIN__/category/population
+- Внешняя торговля: __PUBLIC_ORIGIN__/category/trade
+- Бизнес и инвестиции: __PUBLIC_ORIGIN__/category/business
+- Наука и образование: __PUBLIC_ORIGIN__/category/science
+- Регионы России: __PUBLIC_ORIGIN__/regions
+- Мировая экономика: __PUBLIC_ORIGIN__/world
 
 ## Топ-страницы (наиболее востребованные)
 
-- Экономика России сегодня (сводка): https://forecasteconomy.com/today
-- Курс доллара сегодня: https://forecasteconomy.com/today/usd-rub
-- Ключевая ставка ЦБ сегодня: https://forecasteconomy.com/today/key-rate
-- Инфляция в России сейчас: https://forecasteconomy.com/today/cpi
-- Индекс потребительских цен (ИПЦ): https://forecasteconomy.com/indicator/cpi
-- Ключевая ставка ЦБ РФ: https://forecasteconomy.com/indicator/key-rate
-- Курс доллара к рублю (USD/RUB): https://forecasteconomy.com/indicator/usd-rub
-- Курс евро к рублю (EUR/RUB): https://forecasteconomy.com/indicator/eur-rub
-- Уровень безработицы: https://forecasteconomy.com/indicator/unemployment
-- ВВП России (номинальный): https://forecasteconomy.com/indicator/gdp-nominal
-- Средняя заработная плата: https://forecasteconomy.com/indicator/wages-nominal
-- Численность населения: https://forecasteconomy.com/indicator/population
-- Индекс МосБиржи: https://forecasteconomy.com/indicator/imoex
-- Цены на бензин: https://forecasteconomy.com/indicator/fuel-ai95
-- Рейтинг регионов по населению: https://forecasteconomy.com/region-rating/chislennost-naseleniya
+- Экономика России сегодня (сводка): __PUBLIC_ORIGIN__/today
+- Курс доллара сегодня: __PUBLIC_ORIGIN__/today/usd-rub
+- Ключевая ставка ЦБ сегодня: __PUBLIC_ORIGIN__/today/key-rate
+- Инфляция в России сейчас: __PUBLIC_ORIGIN__/today/cpi
+- Индекс потребительских цен (ИПЦ): __PUBLIC_ORIGIN__/indicator/cpi
+- Ключевая ставка ЦБ РФ: __PUBLIC_ORIGIN__/indicator/key-rate
+- Курс доллара к рублю (USD/RUB): __PUBLIC_ORIGIN__/indicator/usd-rub
+- Курс евро к рублю (EUR/RUB): __PUBLIC_ORIGIN__/indicator/eur-rub
+- Уровень безработицы: __PUBLIC_ORIGIN__/indicator/unemployment
+- ВВП России (номинальный): __PUBLIC_ORIGIN__/indicator/gdp-nominal
+- Средняя заработная плата: __PUBLIC_ORIGIN__/indicator/wages-nominal
+- Численность населения: __PUBLIC_ORIGIN__/indicator/population
+- Индекс МосБиржи: __PUBLIC_ORIGIN__/indicator/imoex
+- Цены на бензин: __PUBLIC_ORIGIN__/indicator/fuel-ai95
+- Рейтинг регионов по населению: __PUBLIC_ORIGIN__/region-rating/chislennost-naseleniya
 
 ## Структура страниц (для программного доступа)
 
@@ -74,10 +74,10 @@
 
 ## Дополнительно
 
-- О проекте: https://forecasteconomy.com/about
-- Методология прогнозов: https://forecasteconomy.com/methodology
-- Sitemap: https://forecasteconomy.com/sitemap.xml
-- RSS обновлений данных: https://forecasteconomy.com/feed.xml
+- О проекте: __PUBLIC_ORIGIN__/about
+- Методология прогнозов: __PUBLIC_ORIGIN__/methodology
+- Sitemap: __PUBLIC_ORIGIN__/sitemap.xml
+- RSS обновлений данных: __PUBLIC_ORIGIN__/feed.xml
 
 ## Контакт
 

@@ -5,10 +5,13 @@ import { TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
 import { formatValue, formatChange, formatDate, resolveDateFormat, cn, isCpiIndex, relativeTime } from '../lib/format';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
 import { track, events } from '../lib/track';
+import {
+  russiaIndicatorPath,
+} from '../lib/sitePaths';
 
 /**
  * Listing-карточка индикатора. Используется и на главной (где это
- * `home_indicator_click`), и на /category/:slug (где это `category_tile_click`).
+ * `home_indicator_click`), и на /russia/category/:slug (где это `category_tile_click`).
  * `surface` различает источник клика — нужен для funnel-анализа в Метрике
  * (Webvisor показывает category→indicator как отдельную ось, без surface
  * мы потеряем контекст).
@@ -73,7 +76,7 @@ export default function IndicatorTile({ indicator, delay = 0, displayOverride, s
   return (
     <Link
       ref={ref}
-      to={isActive ? `/indicator/${indicator.code}` : '#'}
+      to={isActive ? russiaIndicatorPath(indicator.code) : '#'}
       onClick={handleClick}
       onMouseMove={handleMouseMove}
       className={cn(

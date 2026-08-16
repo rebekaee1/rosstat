@@ -4,6 +4,9 @@ import { describe, it, expect, afterEach, vi } from 'vitest';
 import { screen } from '@testing-library/react';
 import IndicatorDetail from './IndicatorDetail';
 import { renderPage, mockApiGet } from '../test/renderPage';
+import {
+  russiaIndicatorPath,
+} from '../lib/sitePaths';
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -42,7 +45,7 @@ describe('IndicatorDetail', () => {
   it('рендерит карточку с именем индикатора', async () => {
     mockApiGet(ROUTES);
     renderPage(<IndicatorDetail />, {
-      path: '/indicator/:code', route: '/indicator/pensioners',
+      path: russiaIndicatorPath(':code'), route: russiaIndicatorPath('pensioners'),
     });
     const names = await screen.findAllByText(/Численность пенсионеров/);
     expect(names.length).toBeGreaterThan(0);
@@ -51,7 +54,7 @@ describe('IndicatorDetail', () => {
   it('не падает на неизвестном коде (все запросы 404)', async () => {
     mockApiGet([['/auth/me', { user: null }]]);
     renderPage(<IndicatorDetail />, {
-      path: '/indicator/:code', route: '/indicator/no-such-code',
+      path: russiaIndicatorPath(':code'), route: russiaIndicatorPath('no-such-code'),
     });
     // Достаточно того, что рендер не бросил и что-то показал (loading/error UI).
     expect(document.body.textContent.length).toBeGreaterThan(0);

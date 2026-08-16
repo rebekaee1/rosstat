@@ -9,6 +9,7 @@ import { ArrowLeft, Home, Percent, Wallet, Clock, PieChart as PieIcon } from 'lu
 import { useQuery } from '@tanstack/react-query';
 import api from '../lib/api';
 import useDocumentMeta from '../lib/useMeta';
+import { getPageSeo } from '../lib/pageMeta';
 import { cn } from '../lib/format';
 import { formatCompactTick, compactTickAxisWidth } from '../lib/regionsApi';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
@@ -17,6 +18,9 @@ import { track, events } from '../lib/track';
 import useScrollDepth from '../lib/useScrollDepth';
 import FaqAccordion from '../components/FaqAccordion';
 import CalcSlider from '../components/CalcSlider';
+import {
+  russiaIndicatorPath,
+} from '../lib/sitePaths';
 
 const FAQ_ITEMS = [
   {
@@ -57,10 +61,11 @@ export default function MortgageCalculatorPage() {
   const [rate, setRate] = useState(18);
   const [years, setYears] = useState(20);
 
+  const mortgageSeo = getPageSeo('calculator-mortgage');
   useDocumentMeta({
-    title: 'Ипотечный калькулятор — рассчитать платёж по ипотеке',
-    description: 'Рассчитайте ежемесячный платёж, переплату и график погашения ипотеки. Аннуитетная формула, актуальная ключевая ставка Банка России.',
-    path: '/calculator/mortgage',
+    title: mortgageSeo.title,
+    description: mortgageSeo.description,
+    path: mortgageSeo.path,
   });
   useScrollDepth({ key: 'calc-mortgage', page: 'calculator-mortgage' });
 
@@ -96,7 +101,11 @@ export default function MortgageCalculatorPage() {
     const n = years * 12;
     const r = rate / 12 / 100;
     if (principal <= 0 || n <= 0) return null;
-    const payment = r > 0 ? principal * r / (1 - Math.pow(1 + r, -n)) : principal / n;
+    // Платёж округляем до рубля до всех производных сумм: посетитель проверяет
+    // калькулятор умножением платежа на число месяцев, и «итого» обязано
+    // сойтись с этой арифметикой, иначе выглядит как ошибка расчёта.
+    const exact = r > 0 ? principal * r / (1 - Math.pow(1 + r, -n)) : principal / n;
+    const payment = Math.round(exact);
     const total = payment * n;
     const overpay = total - principal;
 
@@ -157,7 +166,7 @@ export default function MortgageCalculatorPage() {
             <Home className="w-5 h-5 text-champagne" />
           </div>
           <span className="text-[10px] uppercase tracking-[0.3em] text-champagne font-semibold">
-            Аннуитетный платёж{keyRate != null && ` · ключевая ставка ЦБ ${keyRate}%`}
+            Аннуитетный платёж{keyRate != null && ` — ключевая ставка ЦБ ${keyRate}%`}
           </span>
         </div>
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold tracking-tight text-text-primary leading-tight mb-3">
@@ -195,7 +204,7 @@ export default function MortgageCalculatorPage() {
           <CalcSlider
             label="Первый взнос"
             value={downPct} onChange={setDownPct} min={0} max={90}
-            display={`${downPct}% · ${result ? formatCompactTick(result.down) : 0}\u00A0₽`}
+            display={`${downPct}% — ${result ? formatCompactTick(result.down) : 0}\u00A0₽`}
           />
           <CalcSlider label="Ставка, % годовых" value={rate} onChange={setRate} min={0.1} max={30} step={0.1} suffix="%" />
           <CalcSlider label="Срок, лет" value={years} onChange={setYears} min={1} max={30} />
@@ -375,7 +384,7 @@ export default function MortgageCalculatorPage() {
           <p>
             Расчёт справочный: банк дополнительно учитывает страховку, комиссии и индивидуальные условия.
             Динамика ключевой ставки, от которой зависят ипотечные ставки, — на странице{' '}
-            <Link to="/indicator/key-rate" className="text-champagne hover:underline">ключевой ставки Банка России</Link>.
+            <Link to={russiaIndicatorPath('key-rate')} className="text-champagne hover:underline">ключевой ставки Банка России</Link>.
           </p>
         </div>
       </section>

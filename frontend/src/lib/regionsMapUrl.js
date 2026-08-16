@@ -1,13 +1,15 @@
-// URL-схема карты регионов:
-//   Канон:  /regions/map/{code}           — показатель на карте
-//           /regions/map/{code}?year=YYYY — выбранный год ползунка
-//           /regions/map/overview         — режим «Обзор»
-//   Список: /regions
+// URL-схема карты регионов (ADR-0013):
+//   Канон:  /russia/region/map/{code}
+//           /russia/region/map/{code}?year=YYYY
+//           /russia/region/map/overview
+//   Список: /russia/region
 //
-// Legacy (prod 9226c77, SSR 301 → канон):
-//   /regions?view=map&indicator=<code|overview>&year=YYYY
+// Legacy (клиентский Navigate / nginx 301):
+//   /regions, /regions/map/{code}, /regions?view=map&indicator=…
 //
-// /region-rating/{code} — другая поверхность (таблица мест), не путать.
+// /russia/region-rating/{code} — другая поверхность (таблица мест), не путать.
+
+import { regionHubPath, regionMapPath } from './sitePaths';
 
 export const MAP_OVERVIEW = 'overview';
 
@@ -32,17 +34,26 @@ export function parseRegionsMapParams(searchParams) {
 }
 
 /**
- * Парсит канон /regions/map/:code и legacy query на /regions.
+ * Парсит канон /russia/region/map/:code и legacy /regions(/map/:code).
  * @param {string} pathname
  * @param {URLSearchParams} searchParams
  */
 export function parseRegionsMapLocation(pathname, searchParams) {
   const year = parseYear(searchParams);
-  const m = pathname.match(/^\/regions\/map\/([a-z0-9-]+)\/?$/i);
-  if (m) {
-    return { view: 'map', indicator: m[1], year };
+  const canon = pathname.match(/^\/russia\/region\/map\/([a-z0-9-]+)\/?$/i);
+  if (canon) {
+    return { view: 'map', indicator: canon[1], year };
   }
-  if (pathname === '/regions' || pathname === '/regions/') {
+  const legacyMap = pathname.match(/^\/regions\/map\/([a-z0-9-]+)\/?$/i);
+  if (legacyMap) {
+    return { view: 'map', indicator: legacyMap[1], year };
+  }
+  if (
+    pathname === '/russia/region'
+    || pathname === '/russia/region/'
+    || pathname === '/regions'
+    || pathname === '/regions/'
+  ) {
     return parseRegionsMapParams(searchParams);
   }
   return { view: 'list', indicator: null, year: null };
@@ -58,7 +69,7 @@ export function buildRegionsMapLocation({
   year = null,
 } = {}) {
   if (view !== 'map') {
-    return { pathname: '/regions', search: '' };
+    return { pathname: regionHubPath(), search: '' };
   }
   const code = indicator || DEFAULT_MAP_CODE;
   const p = new URLSearchParams();
@@ -67,7 +78,7 @@ export function buildRegionsMapLocation({
   }
   const qs = p.toString();
   return {
-    pathname: `/regions/map/${code}`,
+    pathname: regionMapPath(code),
     search: qs ? `?${qs}` : '',
   };
 }

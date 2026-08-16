@@ -1,4 +1,4 @@
-forecasteconomy.com {
+{$PUBLIC_HOST:forecasteconomy.com} {
 	# О-16: границы на edge — тело запроса и таймауты проксирования.
 	# Стандартная сборка Caddy без rate-limit-плагина; лимит запросов живёт
 	# в backend-middleware (по /api/), SSR-прожиг сдерживают Redis HTML-кэш
@@ -48,6 +48,6 @@ forecasteconomy.com {
 	}
 }
 
-www.forecasteconomy.com {
-	redir https://forecasteconomy.com{uri} permanent
+www.{$PUBLIC_HOST:forecasteconomy.com} {
+	redir https://{$PUBLIC_HOST:forecasteconomy.com}{uri} permanent
 }

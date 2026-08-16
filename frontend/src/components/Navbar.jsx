@@ -3,11 +3,11 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 import { TrendingUp, Menu, X, ChevronDown } from 'lucide-react';
 import gsap from 'gsap';
 import { cn } from '../lib/format';
-import { CATEGORIES } from '../lib/categories';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { track, events } from '../lib/track';
 import IndicatorSearch from './IndicatorSearch';
 import { useAuth } from '../context/authContext';
+import { PRIMARY_NAV, resolveActiveNavId } from '../lib/navItems';
 
 function AuthCluster({ mobile = false, onNavigate }) {
   const { isAuthed, isLoading } = useAuth();
@@ -75,19 +75,17 @@ const CALCULATORS = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [catOpen, setCatOpen] = useState(false);
   const [calcOpen, setCalcOpen] = useState(false);
   const navRef = useRef(null);
-  const catWrapRef = useRef(null);
   const calcWrapRef = useRef(null);
   const { pathname } = useLocation();
   // Служебный раздел /admin/*: fixed-пилюля наезжала на карточки BI при
   // скролле (обход BI 2.1, этап 4а) — показываем шапку только вверху страницы.
   const isAdmin = pathname.startsWith('/admin');
+  const activeNavId = resolveActiveNavId(pathname);
 
   const closeAll = () => {
     setMobileOpen(false);
-    setCatOpen(false);
     setCalcOpen(false);
   };
 
@@ -102,11 +100,8 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    if (!catOpen && !mobileOpen && !calcOpen) return;
+    if (!mobileOpen && !calcOpen) return;
     const onDoc = (e) => {
-      if (catOpen && catWrapRef.current && !catWrapRef.current.contains(e.target)) {
-        setCatOpen(false);
-      }
       if (calcOpen && calcWrapRef.current && !calcWrapRef.current.contains(e.target)) {
         setCalcOpen(false);
       }
@@ -120,7 +115,7 @@ export default function Navbar() {
       document.removeEventListener('mousedown', onDoc);
       document.removeEventListener('keydown', onKey);
     };
-  }, [catOpen, mobileOpen, calcOpen]);
+  }, [mobileOpen, calcOpen]);
 
   useEffect(() => {
     if (!navRef.current) return;
@@ -132,7 +127,7 @@ export default function Navbar() {
     return () => tween.kill();
   }, []);
 
-  const linkClass = ({ isActive }) => cn(
+  const navItemClass = (isActive) => cn(
     FOCUS_RING,
     'rounded-lg text-sm font-medium transition-colors duration-200 px-0.5 py-0.5 -mx-0.5 whitespace-nowrap',
     isActive
@@ -145,7 +140,25 @@ export default function Navbar() {
     'rounded-xl block px-4 py-2.5 text-sm text-left transition-colors hover:bg-obsidian-lighter/80'
   );
 
-  const menuOpen = catOpen || mobileOpen || calcOpen;
+  const menuOpen = mobileOpen || calcOpen;
+
+  const renderPrimaryLink = (item, { desktop = false } = {}) => {
+    const isActive = activeNavId === item.id;
+    return (
+      <Link
+        key={`${desktop ? 'd' : 'm'}-${item.id}`}
+        to={item.to}
+        className={cn(
+          navItemClass(isActive),
+          desktop && item.desktopOnlyXl && 'hidden xl:block',
+        )}
+        onClick={closeAll}
+        aria-current={isActive ? 'page' : undefined}
+      >
+        {item.label}
+      </Link>
+    );
+  };
 
   return (
     <>
@@ -193,85 +206,11 @@ export default function Navbar() {
           пунктов режется по брейкпоинтам, а «Главная» и «О проекте» на
           десктопе живут в футере и мобильном меню. */}
       <div className="hidden lg:flex items-center gap-1 xl:gap-2 flex-1 justify-end min-w-0">
-        <div className="relative" ref={catWrapRef}>
-          <button
-            type="button"
-            onClick={() => { setCatOpen((o) => !o); track(events.NAV_CATEGORY_OPEN); }}
-            className={cn(
-              FOCUS_RING,
-              'flex items-center gap-1 text-sm font-medium transition-colors px-2 py-1 rounded-xl',
-              catOpen ? 'text-champagne' : 'text-text-secondary hover:text-text-primary'
-            )}
-            aria-expanded={catOpen}
-            aria-haspopup="menu"
-          >
-            Категории
-            <ChevronDown className={cn('w-4 h-4 transition-transform', catOpen && 'rotate-180')} />
-          </button>
-          {catOpen && (
-            <div
-              className="absolute left-0 top-full z-[110] mt-2 max-h-[min(80vh,560px)] w-[min(100vw-2rem,480px)] overflow-y-auto rounded-2xl border border-border-subtle bg-surface py-2 shadow-2xl ring-1 ring-black/[0.08]"
-              role="menu"
-            >
-              {/* Две колонки: все 12 категорий видны сразу, без скрытого скролла
-                  (раньше max-h 420px обрезал хвост списка на невидимом overflow). */}
-              <div className="grid grid-cols-2">
-                {CATEGORIES.map((c) =>
-                  c.apiCategory ? (
-                    <NavLink
-                      key={c.slug}
-                      to={`/category/${c.slug}`}
-                      className={({ isActive }) =>
-                        cn(itemClass, isActive ? 'text-champagne bg-champagne/5' : 'text-text-primary')
-                      }
-                      onClick={closeAll}
-                      role="menuitem"
-                    >
-                      {c.name}
-                    </NavLink>
-                  ) : (
-                    <div
-                      key={c.slug}
-                      className={cn(itemClass, 'cursor-default text-text-secondary')}
-                    >
-                      {c.name}
-                      <span className="ml-2 text-[10px] uppercase font-mono">скоро</span>
-                    </div>
-                  )
-                )}
-              </div>
-              <div className="mx-4 my-1 h-px bg-border-subtle" />
-              <NavLink
-                to="/demographics"
-                className={({ isActive }) =>
-                  cn(itemClass, isActive ? 'text-champagne bg-champagne/5' : 'text-text-primary')
-                }
-                onClick={closeAll}
-                role="menuitem"
-              >
-                Возрастная структура
-              </NavLink>
-            </div>
-          )}
-        </div>
-
-        <NavLink to="/regions" className={linkClass} onClick={closeAll}>
-          Регионы
-        </NavLink>
-        <NavLink to="/world" className={linkClass} onClick={closeAll}>
-          Мировая экономика
-        </NavLink>
-        <NavLink
-          to="/compare"
-          className={(p) => cn(linkClass(p), 'hidden xl:block')}
-          onClick={closeAll}
-        >
-          Сравнение
-        </NavLink>
+        {PRIMARY_NAV.map((item) => renderPrimaryLink(item, { desktop: true }))}
         <div className="relative hidden xl:block" ref={calcWrapRef}>
           <button
             type="button"
-            onClick={() => { setCalcOpen((o) => !o); setCatOpen(false); }}
+            onClick={() => { setCalcOpen((o) => !o); }}
             className={cn(
               FOCUS_RING,
               'flex items-center gap-1 text-sm font-medium transition-colors px-2 py-1 rounded-xl',
@@ -333,51 +272,19 @@ export default function Navbar() {
       {mobileOpen && (
         <div className="absolute left-0 right-0 top-full z-[110] mt-2 max-h-[min(80vh,520px)] overflow-y-auto rounded-2xl border border-border-subtle bg-surface p-4 shadow-2xl ring-1 ring-black/[0.08] lg:hidden">
           <div className="flex flex-col gap-1">
-            <NavLink to="/" end className={linkClass} onClick={closeAll}>
+            <Link to="/" className={navItemClass(pathname === '/')} onClick={closeAll} aria-current={pathname === '/' ? 'page' : undefined}>
               Главная
-            </NavLink>
-            <p className="text-[10px] uppercase tracking-wider text-text-tertiary px-2 pt-3 pb-1">
-              Категории
-            </p>
-            {CATEGORIES.map((c) =>
-              c.apiCategory ? (
-                <NavLink
-                  key={c.slug}
-                  to={`/category/${c.slug}`}
-                  className={linkClass}
-                  onClick={closeAll}
-                >
-                  {c.name}
-                </NavLink>
-              ) : (
-                <span key={c.slug} className="text-sm text-text-tertiary/90 px-2 py-1">
-                  {c.name}{' '}
-                  <span className="text-[10px] uppercase font-mono">скоро</span>
-                </span>
-              )
-            )}
-            <div className="mx-2 my-1 h-px bg-border-subtle" />
-            <NavLink to="/regions" className={linkClass} onClick={closeAll}>
-              Регионы России
-            </NavLink>
-            <NavLink to="/world" className={linkClass} onClick={closeAll}>
-              Мировая экономика
-            </NavLink>
-            <NavLink to="/demographics" className={linkClass} onClick={closeAll}>
-              Возрастная структура
-            </NavLink>
-            <NavLink to="/compare" className={linkClass} onClick={closeAll}>
-              Сравнение
-            </NavLink>
+            </Link>
+            {PRIMARY_NAV.map((item) => renderPrimaryLink(item))}
             <p className="text-[10px] uppercase tracking-wider text-text-tertiary px-2 pt-3 pb-1">
               Калькуляторы
             </p>
             {CALCULATORS.map((c) => (
-              <NavLink key={c.to} to={c.to} end className={linkClass} onClick={closeAll}>
+              <NavLink key={c.to} to={c.to} end className={({ isActive }) => navItemClass(isActive)} onClick={closeAll}>
                 {c.label}
               </NavLink>
             ))}
-            <NavLink to="/about" className={linkClass} onClick={closeAll}>
+            <NavLink to="/about" className={({ isActive }) => navItemClass(isActive)} onClick={closeAll}>
               О проекте
             </NavLink>
             <div className="mx-2 my-1 h-px bg-border-subtle" />

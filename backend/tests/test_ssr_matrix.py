@@ -44,14 +44,14 @@ def _jsonld_blocks(html: str) -> list[dict]:
 MATRIX = [
     # (путь SSR, ожидаемый canonical-путь; для главной canonical — домен без слэша)
     ("/seo/page/home", ""),
-    ("/seo/category/prices", "/category/prices"),
-    ("/seo/indicator/cpi", "/indicator/cpi"),
-    ("/seo/regions", "/regions"),
-    ("/seo/regions/map/naselenie", "/regions/map/naselenie"),
-    ("/seo/region/moskva", "/region/moskva"),
-    ("/seo/region/moskva/naselenie", "/region/moskva/naselenie"),
-    ("/seo/region-rating/naselenie", "/region-rating/naselenie"),
-    ("/seo/region-vs/moskva-vs-tulskaya-oblast", "/region-vs/moskva-vs-tulskaya-oblast"),
+    ("/seo/category/prices", "/russia/category/prices"),
+    ("/seo/indicator/cpi", "/russia/indicator/cpi"),
+    ("/seo/regions", "/russia/region"),
+    ("/seo/regions/map/naselenie", "/russia/region/map/naselenie"),
+    ("/seo/region/moskva", "/russia/region/moskva"),
+    ("/seo/region/moskva/naselenie", "/russia/region/moskva/naselenie"),
+    ("/seo/region-rating/naselenie", "/russia/region-rating/naselenie"),
+    ("/seo/region-vs/moskva-vs-tulskaya-oblast", "/russia/region-vs/moskva-vs-tulskaya-oblast"),
 ]
 
 
@@ -77,7 +77,7 @@ def test_ssr_page_contract(route_client, path, canonical_path):
 def test_ssr_indicator_visible_chart_img(route_client):
     html = _get(route_client, "/seo/indicator/cpi")
     # Видимый график в DOM — ключ к картинке в Алисе/Нейро.
-    assert re.search(r'<img[^>]+src="[^"]*/og/cpi\.png"', html), "нет видимого <img> графика"
+    assert re.search(r'<img[^>]+src="[^"]*/og/russia/cpi\.png"', html), "нет видимого <img> графика"
     # ImageObject в JSON-LD.
     assert any(
         "ImageObject" in json.dumps(b) for b in _jsonld_blocks(html)
@@ -93,10 +93,10 @@ def test_ssr_indicator_year_page(route_client):
     r = route_client.get("/seo/indicator-year/cpi/2025")
     assert r.status_code == 200
     html = r.text
-    assert _canonical(html) == f"{DOMAIN}/indicator/cpi/2025"
+    assert _canonical(html) == f"{DOMAIN}/russia/indicator/cpi/2025"
     assert "2025" in html
 
 
 def test_ssr_today_page(route_client):
     html = _get(route_client, "/seo/today")
-    assert _canonical(html) == f"{DOMAIN}/today"
+    assert _canonical(html) == f"{DOMAIN}/russia/today"

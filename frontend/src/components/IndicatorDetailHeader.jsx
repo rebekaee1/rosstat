@@ -1,8 +1,11 @@
-import { Link } from 'react-router-dom';
-import { ArrowLeft, Activity } from 'lucide-react';
+import { Link, useParams } from 'react-router-dom';
+import { Activity } from 'lucide-react';
 import { CATEGORIES } from '../lib/categories';
 import { indicatorDetailHeaderMobileLines } from '../lib/indicatorVariants';
 import { SkeletonBox } from './Skeleton';
+import Breadcrumbs from './Breadcrumbs';
+import { russiaIndicatorTrail, russiaIndicatorYearTrail } from '../lib/breadcrumbs';
+import { russiaCategoryPath } from '../lib/sitePaths';
 
 const FREQ_MAP = {
   monthly: 'Помесячно',
@@ -31,18 +34,7 @@ function MobileTitle({ title }) {
 
 /**
  * Хедер страницы карточки индикатора:
- *   хлебные крошки (Главная → Категория) + бейдж периодичности +
- *   название + английское название.
- *
- * `headerRef` пробрасывается из родителя для GSAP-анимации появления
- * (родитель ищет внутри элементы с `data-animate`).
- *
- * `displayFrequency` — override родительской `indicator.frequency`
- * для пиллки. Используется в view-mode family режимах, когда активный
- * sibling имеет другую частоту (например, wages-nominal?mode=annual →
- * wages-nominal-annual с frequency=annual). `indicator.name` остаётся
- * родительским, чтобы H1/breadcrumbs не дёргались. Если override не
- * задан — fallback на `indicator.frequency`.
+ *   хлебные крошки + бейдж периодичности + название + английское название.
  */
 export default function IndicatorDetailHeader({
   indicator,
@@ -51,31 +43,27 @@ export default function IndicatorDetailHeader({
   headerRef,
   displayFrequency,
 }) {
+  const { year } = useParams();
   const effectiveFrequency = displayFrequency ?? indicator?.frequency;
   const category = indicator?.category
     ? CATEGORIES.find((c) => c.apiCategory === indicator.category)
     : null;
   const title = indicator?.name || code;
+  const crumbs = year
+    ? russiaIndicatorYearTrail(
+      category?.name,
+      category?.slug,
+      title,
+      code,
+      year,
+    )
+    : russiaIndicatorTrail(category?.name, category?.slug, title, code);
 
   return (
     <div ref={headerRef} className="mb-5 md:mb-16 max-w-4xl">
-      <nav data-animate className="flex items-center gap-2 text-[11px] md:text-xs font-mono uppercase tracking-widest text-text-tertiary mb-3 md:mb-8">
-        <Link
-          to="/"
-          className="hover:text-champagne transition-colors lift-hover inline-flex items-center gap-1.5 group"
-        >
-          <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
-          Главная
-        </Link>
-        {category && (
-          <>
-            <span className="text-text-tertiary/40">/</span>
-            <Link to={`/category/${category.slug}`} className="hover:text-champagne transition-colors line-clamp-1">
-              {category.name}
-            </Link>
-          </>
-        )}
-      </nav>
+      <div data-animate>
+        <Breadcrumbs items={crumbs} variant="mono" />
+      </div>
 
       {loading ? (
         <div className="space-y-4">
@@ -92,7 +80,7 @@ export default function IndicatorDetailHeader({
             </span>
             {category ? (
               <Link
-                to={`/category/${category.slug}`}
+                to={russiaCategoryPath(category.slug)}
                 className="hidden sm:inline text-xs font-mono text-text-tertiary hover:text-champagne transition-colors"
               >
                 {indicator.category}

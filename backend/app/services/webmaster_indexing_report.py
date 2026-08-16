@@ -22,7 +22,8 @@ from app.services.yandex_webmaster_client import YandexWebmasterClient
 logger = logging.getLogger(__name__)
 
 _SNAPSHOT_KEY = "wm:index_report:last"
-_HOST_ID = "https:forecasteconomy.com:443"
+# Alias для pulse._seo_snapshot и прочих импортов; значение = settings.webmaster_host_id.
+_HOST_ID = settings.webmaster_host_id
 
 
 def _delta(current: int | None, previous: int | None) -> str:
@@ -59,7 +60,7 @@ async def build_indexing_report() -> str | None:
     try:
         user = await client.user()
         user_id = user.data["user_id"]
-        summary = (await client.summary(user_id, _HOST_ID)).data
+        summary = (await client.summary(user_id, settings.webmaster_host_id)).data
     except Exception:
         logger.exception("Indexing report: summary fetch failed")
         return None
@@ -91,7 +92,7 @@ async def build_indexing_report() -> str | None:
 
     # Обход за неделю по HTTP-кодам: всплеск 4xx/5xx = мы сами мешаем роботу (А-1).
     try:
-        history = (await client.indexing_history(user_id, _HOST_ID)).data
+        history = (await client.indexing_history(user_id, settings.webmaster_host_id)).data
         totals = _http_breakdown(history)
         if totals:
             crawl = ", ".join(

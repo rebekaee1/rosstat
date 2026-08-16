@@ -12,13 +12,22 @@ import {
 } from '../../lib/homeWorkbench';
 import {
   formatWorldValue,
+  ratingHref,
   useWorldCompareCatalog,
   useWorldCountries,
   useWorldMapSeries,
+  useWorldRatingConcepts,
 } from '../../lib/worldApi';
 import { SkeletonBox } from '../Skeleton';
 import ApiRetryBanner from '../ApiRetryBanner';
+import WorldConceptPicker from '../WorldConceptPicker';
 import { track, events } from '../../lib/track';
+import {
+  countryPath,
+  indicatorPath,
+  russiaIndicatorPath,
+  todayPath,
+} from '../../lib/sitePaths';
 
 const WorldMap = lazy(() => import('../WorldMap'));
 const MapTimeline = lazy(() => import('../MapTimeline'));
@@ -26,7 +35,6 @@ const MapTimeline = lazy(() => import('../MapTimeline'));
 const SIDE_ICONS = {
   'russia-macro': Landmark,
   regions: MapPinned,
-  europe: Globe2,
   world: Globe2,
 };
 
@@ -42,8 +50,18 @@ export default function HomeWorkbench({ indicators = [] }) {
   const countriesQ = useWorldCountries();
   const catalog = useWorldCompareCatalog();
   const mapSeries = useWorldMapSeries(concept);
+  const ratingConcepts = useWorldRatingConcepts();
+  const fullRatingHref = ratingHref(concept, ratingConcepts.data?.concepts);
 
   const mapConcepts = useMemo(() => {
+    const fromRating = ratingConcepts.data?.concepts || [];
+    if (fromRating.length) {
+      return fromRating.map((item) => ({
+        slug: item.slug,
+        name: item.name,
+        unit: item.unit,
+      }));
+    }
     const seen = new Map();
     for (const item of catalog.data?.items || []) {
       if (!seen.has(item.concept_slug)) {
@@ -55,7 +73,7 @@ export default function HomeWorkbench({ indicators = [] }) {
       }
     }
     return [...seen.values()];
-  }, [catalog.data]);
+  }, [catalog.data, ratingConcepts.data]);
 
   const years = mapSeries.data?.years || [];
   const activeYear = resolveActiveMapYear(years, mapYear, mapSeries.data?.values_by_year);
@@ -68,14 +86,13 @@ export default function HomeWorkbench({ indicators = [] }) {
     () => withRussiaOnHomeMap({
       countries: countriesQ.data?.countries || [],
       yearItems: baseYearItems,
-      indicators,
-      conceptSlug: concept,
-      activeYear,
+      mapSeries: mapSeries.data,
     }),
-    [countriesQ.data, baseYearItems, indicators, concept, activeYear],
+    [countriesQ.data, baseYearItems, mapSeries.data],
   );
 
   const ranking = useMemo(() => worldRankingFromYearItems(yearItems, 8), [yearItems]);
+  const conceptUnit = mapSeries.data?.concept?.unit || '';
   const valuesByCode = useMemo(
     () => new Map(Object.entries(yearItems).map(([code, item]) => [code, item.value])),
     [yearItems],
@@ -94,18 +111,18 @@ export default function HomeWorkbench({ indicators = [] }) {
     if (country?.code === 'RU') {
       const code = detail?.indicator_code || russiaIndicatorCode;
       if (code) {
-        navigate(`/indicator/${code}`);
+        navigate(russiaIndicatorPath(code));
         return;
       }
-      navigate('/today');
+      navigate(todayPath());
       return;
     }
     if (detail?.indicator_code && country?.slug) {
-      navigate(`/world/${country.slug}/${detail.indicator_code}`);
+      navigate(indicatorPath(country.slug, detail.indicator_code));
       return;
     }
     if (country?.slug) {
-      navigate(`/world/${country.slug}`);
+      navigate(countryPath(country.slug));
     }
   };
 
@@ -115,49 +132,33 @@ export default function HomeWorkbench({ indicators = [] }) {
       className="mb-10 md:mb-12"
       aria-labelledby="home-world-map-title"
     >
-      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
-        <div className="min-w-0">
-          <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">
-            Карта мира
-          </div>
-          <h2 id="home-world-map-title" className="mt-1 text-base font-semibold text-text-primary sm:text-lg">
-            Страны и показатели
-          </h2>
-          <p className="mt-1 max-w-2xl text-xs leading-5 text-text-secondary">
-            Выберите показатель и год, откройте страну на карте. Россия включена
-            в срез по национальным рядам; зарубежные страны — по официальным
-            источникам раздела «Мир».
-          </p>
+      <div className="mb-3 min-w-0">
+        <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">
+          Карта мира
         </div>
-        <label className="relative block w-full min-w-0 sm:max-w-xs sm:min-w-[12rem]">
-          <span className="sr-only">Показатель карты</span>
-          <select
-            value={concept}
-            onChange={(e) => {
-              setConcept(e.target.value);
-              setMapYear(null);
-              track(events.HOME_COUNTRIES_METRIC, { concept: e.target.value });
-            }}
-            className="h-10 w-full appearance-none rounded-xl border border-border-subtle bg-surface py-0 pl-3 pr-9 text-sm leading-none text-text-primary outline-none focus:border-border-champagne"
-          >
-            {(mapConcepts.length
-              ? mapConcepts
-              : [{ slug: concept, name: HOME_COUNTRY_CONCEPT_SHORT[concept] || concept }]
-            ).map((c) => (
-              <option key={c.slug} value={c.slug}>
-                {HOME_COUNTRY_CONCEPT_SHORT[c.slug] || c.name}
-              </option>
-            ))}
-          </select>
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-text-tertiary"
-          >
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-              <path d="M2.5 4.5L6 8l3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </span>
-        </label>
+        <h2 id="home-world-map-title" className="mt-1 text-base font-semibold text-text-primary sm:text-lg">
+          Страны и показатели
+        </h2>
+        <p className="mt-1 max-w-2xl text-xs leading-5 text-text-secondary">
+          Выберите показатель и год, откройте страну на карте. Россия включена
+          в срез по национальным рядам; зарубежные страны — по официальным
+          источникам раздела «Мир».
+        </p>
+      </div>
+
+      <div className="mb-4 min-w-0">
+        <WorldConceptPicker
+          concepts={mapConcepts.length
+            ? mapConcepts
+            : [{ slug: concept, name: HOME_COUNTRY_CONCEPT_SHORT[concept] || concept }]}
+          value={concept}
+          onChange={(slug) => {
+            setConcept(slug);
+            setMapYear(null);
+            track(events.HOME_COUNTRIES_METRIC, { concept: slug });
+          }}
+          label="Показатель карты"
+        />
       </div>
 
       {(countriesQ.isError || mapSeries.isError) && (
@@ -173,7 +174,7 @@ export default function HomeWorkbench({ indicators = [] }) {
         </ApiRetryBanner>
       )}
 
-      <div className="grid gap-4 lg:grid-cols-[14rem_minmax(0,1fr)] lg:items-start lg:gap-5">
+      <div className="grid gap-4 lg:grid-cols-[16rem_minmax(0,1fr)] lg:items-start lg:gap-5">
         <div className="order-1 min-w-0 overflow-hidden rounded-2xl border border-border-subtle bg-surface p-2.5 sm:p-4 lg:order-2">
           {(countriesQ.isLoading || mapSeries.isLoading) ? (
             <SkeletonBox className="h-[18rem] w-full rounded-2xl sm:h-[28rem]" />
@@ -183,7 +184,7 @@ export default function HomeWorkbench({ indicators = [] }) {
                 countries={countries}
                 valuesByCode={valuesByCode}
                 detailsByCode={detailsByCode}
-                unit={mapSeries.data?.concept?.unit || ''}
+                unit={conceptUnit}
                 metricName={HOME_COUNTRY_CONCEPT_SHORT[concept] || mapSeries.data?.concept?.name || ''}
                 periodLabel={activeYear ? String(activeYear) : ''}
                 colorMode={concept === 'budget-balance-gdp' ? 'diverging' : 'auto'}
@@ -256,11 +257,10 @@ export default function HomeWorkbench({ indicators = [] }) {
             <div className="mt-1 text-xs font-semibold text-text-primary">
               {HOME_COUNTRY_CONCEPT_SHORT[concept] || mapSeries.data?.concept?.name || 'Показатель'}
             </div>
-            {activeYear != null && (
-              <div className="mt-0.5 font-mono text-[10px] text-text-tertiary">
-                {activeYear} год
-              </div>
-            )}
+            <div className="mt-0.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5 font-mono text-[10px] text-text-tertiary">
+              {activeYear != null && <span>{activeYear} год</span>}
+              {conceptUnit ? <span>{conceptUnit}</span> : null}
+            </div>
             {benchmark?.value != null && (
               <div className="mt-2 rounded-lg bg-champagne/[0.08] px-2.5 py-1.5">
                 <div className="text-[10px] text-text-tertiary">{benchmark.label}</div>
@@ -269,7 +269,7 @@ export default function HomeWorkbench({ indicators = [] }) {
                 </div>
               </div>
             )}
-            <ol className="mt-2 space-y-1.5">
+            <ol className="mt-2 space-y-1">
               {ranking.length === 0 && (
                 <li className="text-[11px] text-text-tertiary">Нет данных за год</li>
               )}
@@ -285,19 +285,29 @@ export default function HomeWorkbench({ indicators = [] }) {
                       },
                       item,
                     )}
-                    className="flex w-full items-baseline justify-between gap-2 rounded-lg px-1 py-0.5 text-left hover:bg-champagne/10"
+                    className="grid w-full grid-cols-[1.5rem_minmax(0,1fr)_auto] items-baseline gap-1.5 rounded-lg px-1 py-0.5 text-left hover:bg-champagne/10"
                   >
-                    <span className="min-w-0 truncate text-[11px] text-text-secondary">
-                      <span className="font-mono text-text-tertiary">{idx + 1}.</span>{' '}
+                    <span className="font-mono text-[11px] text-text-tertiary">{idx + 1}.</span>
+                    <span className="min-w-0 text-[11px] leading-snug text-text-secondary">
                       {item.country_name}
                     </span>
-                    <span className="shrink-0 font-mono text-[11px] font-semibold tabular-nums text-text-primary">
+                    <span className="font-mono text-[11px] font-semibold tabular-nums text-text-primary">
                       {formatWorldValue(item.value)}
                     </span>
                   </button>
                 </li>
               ))}
             </ol>
+            {fullRatingHref && (
+              <Link
+                to={fullRatingHref}
+                onClick={() => track(events.HOME_COUNTRIES_CTA, { target: 'rating', concept })}
+                className="mt-2 inline-flex items-center gap-1 text-[11px] font-medium text-champagne hover:underline"
+              >
+                Полный рейтинг
+                <ArrowRight size={12} />
+              </Link>
+            )}
           </div>
         </div>
       </div>

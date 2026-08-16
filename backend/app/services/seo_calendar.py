@@ -1,4 +1,4 @@
-"""SSR-посадочные календаря статистики: /calendar/{year}/{month}.
+"""SSR-посадочные календаря статистики: /russia/calendar/{year}/{month}.
 
 Под запросы «когда выйдет инфляция за июль», «календарь росстата август 2026».
 Показываются только официальные даты с provenance (ADR-0005) — estimated
@@ -6,6 +6,9 @@
 """
 
 from __future__ import annotations
+
+from app.services import breadcrumbs as crumbs
+from app.services import site_paths as paths
 
 from datetime import date
 
@@ -18,6 +21,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import EconomicEvent
 from app.services.seo_renderer import (
     _breadcrumbs,
+    _breadcrumbs_nav,
     _site_json_ld,
     build_document,
 )
@@ -86,15 +90,17 @@ async def render_calendar_month_html(
         f"{len(events)} публикаций Росстата, Банка России и Минфина с точными датами — "
         f"инфляция, ставка, ВВП и другие показатели."
     )
-    canonical = f"/calendar/{year}/{month:02d}"
+    canonical = paths.calendar(year, month)
 
     prev_y, prev_m = (year - 1, 12) if month == 1 else (year, month - 1)
     next_y, next_m = (year + 1, 1) if month == 12 else (year, month + 1)
 
     n_rosstat = sum(1 for e in events if e.source == "rosstat")
     n_cbr = sum(1 for e in events if e.source == "cbr")
+    month_label = f"{month_nom.capitalize()} {year}"
+    month_trail = crumbs.calendar_month_trail(month_label, paths.calendar(year, month))
     body = f"""<main class="seo-page">
-<nav aria-label="Хлебные крошки"><a href="/">Главная</a> / <a href="/calendar">Календарь</a> / {escape(month_nom.capitalize())} {year}</nav>
+{_breadcrumbs_nav(month_trail)}
 <p class="seo-eyebrow">Календарь публикаций</p>
 <h1>Календарь статистики: {escape(month_nom)} {year}</h1>
 <p>Официальные даты публикаций экономической статистики России в {escape(month_gen)} {year} года.
@@ -109,17 +115,14 @@ async def render_calendar_month_html(
 <div class="seo-scroll"><table><thead><tr><th>Дата</th><th>Публикация</th><th>Ведомство</th><th>Статус</th></tr></thead>
 <tbody>{''.join(rows_html)}</tbody></table></div></section>
 <section><h2>Соседние месяцы</h2>
-<ul class="seo-pills"><li><a href="/calendar/{prev_y}/{prev_m:02d}">← {escape(_MONTHS_NOM[prev_m - 1].capitalize())} {prev_y}</a></li>
-<li><a href="/calendar/{next_y}/{next_m:02d}">{escape(_MONTHS_NOM[next_m - 1].capitalize())} {next_y} →</a></li>
-<li><a href="/calendar">Интерактивный календарь</a></li></ul></section>
+<ul class="seo-pills"><li><a href="{paths.calendar(prev_y, prev_m)}">← {escape(_MONTHS_NOM[prev_m - 1].capitalize())} {prev_y}</a></li>
+<li><a href="{paths.calendar(next_y, next_m)}">{escape(_MONTHS_NOM[next_m - 1].capitalize())} {next_y} →</a></li>
+<li><a href="{paths.calendar()}">Интерактивный календарь</a></li></ul></section>
 </main>"""
 
     json_ld = [
         _site_json_ld(),
-        _breadcrumbs([
-            ("/", "Главная"), ("/calendar", "Календарь статистики"),
-            (canonical, f"{month_nom.capitalize()} {year}"),
-        ]),
+        _breadcrumbs(month_trail),
     ]
     html = await build_document(
         title=title,

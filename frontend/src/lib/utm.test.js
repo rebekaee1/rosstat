@@ -12,7 +12,7 @@ describe('buildShareUrl', () => {
   });
 
   it('appends utm_content / utm_term when provided', () => {
-    const url = buildShareUrl('https://forecasteconomy.com/indicator/cpi', {
+    const url = buildShareUrl('https://forecasteconomy.com/russia/indicator/cpi', {
       source: 'self',
       medium: 'share-link',
       campaign: 'indicator-share',

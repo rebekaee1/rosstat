@@ -14,6 +14,8 @@ RUN npm ci --no-audit --no-fund \
     --fetch-retry-maxtimeout=120000 \
     --fetch-timeout=300000
 COPY . .
+ARG VITE_PUBLIC_BASE_URL=https://forecasteconomy.com
+ENV VITE_PUBLIC_BASE_URL=$VITE_PUBLIC_BASE_URL
 RUN npm run build
 
 # Stage 2: Production

@@ -208,7 +208,7 @@ function Card({ title, icon: Icon, insight, children, span, source, window: wind
   // windowMeta — period.to_meta() витрины: подпись окна, если оно отличается
   // от глобального периода дашборда (например, «Надёжность» = хвост 7 дней).
   const windowLabel = windowMeta?.label
-    ? (windowMeta.from === windowMeta.to ? windowMeta.label : `${windowMeta.label} · МСК`)
+    ? (windowMeta.from === windowMeta.to ? windowMeta.label : `${windowMeta.label} — МСК`)
     : null;
   return (
     <section className={`rounded-2xl bg-surface border border-border-subtle p-5 ${span || ''}`}>
@@ -295,7 +295,7 @@ function Donut({ data, height = 240, centerLabel }) {
             <Pie data={rows} dataKey="value" nameKey="name" innerRadius="62%" outerRadius="92%" paddingAngle={1.5} stroke="none">
               {rows.map((d, i) => <Cell key={d.name} fill={d.color || PALETTE[i % PALETTE.length]} />)}
             </Pie>
-            <Tooltip {...TT_STYLE} formatter={(v, n) => [`${fmtInt(v)} · ${Math.round(v / total * 100)}%`, n]} />
+            <Tooltip {...TT_STYLE} formatter={(v, n) => [`${fmtInt(v)} — ${Math.round(v / total * 100)}%`, n]} />
           </PieChart>
         </ResponsiveContainer>
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
@@ -493,7 +493,7 @@ function WeekPulse({ cells }) {
         ))}
         <span>больше — сессии нашего счётчика</span>
         <span className="w-4 h-4 rounded ml-2" style={{ background: 'rgba(124,58,237,0.5)' }} />
-        <span>только Метрика (наш слой ещё не накопился) · время московское</span>
+        <span>только Метрика (наш слой ещё не накопился) — время московское</span>
       </div>
     </div>
   );
@@ -510,7 +510,7 @@ function TreemapCell({ x, y, width, height, name, views, share, index }) {
       {showText && (
         <>
           <text x={x + 8} y={y + 18} fontSize={12} fontWeight={600} fill="#fff">{clip(name, Math.floor(width / 7.5))}</text>
-          <text x={x + 8} y={y + 34} fontSize={11} fill="rgba(255,255,255,0.9)">{fmtInt(views)} · {share}%</text>
+          <text x={x + 8} y={y + 34} fontSize={11} fill="rgba(255,255,255,0.9)">{fmtInt(views)} — {share}%</text>
         </>
       )}
     </g>
@@ -563,7 +563,7 @@ function TransitionMatrix({ transitions }) {
                       }}
                       title={`${r} → ${c}: ${fmtInt(v)} переходов`}
                     >
-                      {v || '·'}
+                      {v || '—'}
                     </div>
                   </td>
                 );
@@ -729,7 +729,7 @@ function AcquisitionTab({ d }) {
                 <span className="font-medium text-text-primary">{c.campaign}</span>
                 <span className="tabular-nums text-text-secondary">{fmtInt(c.visits)} визитов</span>
                 <span className="tabular-nums text-text-secondary">с целью {fmtInt(c.goal_visits)} ({c.goal_rate_pct}%)</span>
-                <span className="tabular-nums text-text-tertiary">отказы {c.bounce_pct}% · среднее время {c.avg_duration_sec} с</span>
+                <span className="tabular-nums text-text-tertiary">отказы {c.bounce_pct}% — среднее время {c.avg_duration_sec} с</span>
               </div>
             ))}
             <p className="text-[11.5px] text-text-tertiary pt-1">Диаграмма-скаттер включится, когда кампаний станет три и больше.</p>
@@ -750,8 +750,8 @@ function AcquisitionTab({ d }) {
                   return (
                     <div style={TT_STYLE.contentStyle}>
                       <div style={{ fontWeight: 600, marginBottom: 2 }}>{p.campaign}</div>
-                      <div>Визиты: {fmtInt(p.visits)} · с целью: {fmtInt(p.goal_visits)} ({p.goal_rate_pct}%)</div>
-                      <div>Отказы: {p.bounce_pct}% · среднее время: {p.avg_duration_sec} с</div>
+                      <div>Визиты: {fmtInt(p.visits)} — с целью: {fmtInt(p.goal_visits)} ({p.goal_rate_pct}%)</div>
+                      <div>Отказы: {p.bounce_pct}% — среднее время: {p.avg_duration_sec} с</div>
                     </div>
                   );
                 }} />
@@ -881,7 +881,7 @@ function FunnelTab({ d }) {
                     </span>
                   </div>
                   <span className={`w-24 shrink-0 text-right text-[12px] tabular-nums font-medium ${good ? 'text-positive' : mid ? 'text-champagne' : 'text-text-tertiary'}`}>
-                    {small ? 'мало данных' : `${l.goal_pct}% · ${fmtInt(l.goal_visits)}`}
+                    {small ? 'мало данных' : `${l.goal_pct}% — ${fmtInt(l.goal_visits)}`}
                   </span>
                 </div>
               );
@@ -929,7 +929,7 @@ function CohortTable({ rows, keyField, offsetsField, cols, colPrefix }) {
                       style={{ background: `rgba(184,148,47,${Math.min(0.85, pct * 2 + (v ? 0.08 : 0))})`, color: pct > 0.25 ? '#fff' : 'rgba(26,26,46,0.7)' }}
                       title={`${v} чел. = ${Math.round(pct * 100)}% когорты`}
                     >
-                      {v || '·'}
+                      {v || '—'}
                     </span>
                   </td>
                 );
@@ -1058,7 +1058,7 @@ function PagesTab({ d }) {
                     return (
                       <div style={TT_STYLE.contentStyle}>
                         <div style={{ fontWeight: 600, marginBottom: 2 }}>{p.name}</div>
-                        <div>{fmtInt(p.views)} просмотров · {p.share}%</div>
+                        <div>{fmtInt(p.views)} просмотров — {p.share}%</div>
                         {sec?.top_pages?.slice(0, 3).map((tp) => (
                           <div key={tp.page} style={{ color: 'rgba(26,26,46,0.6)' }}>{clip(tp.page, 34)} — {fmtInt(tp.views)}</div>
                         ))}
@@ -1120,8 +1120,8 @@ function PagesTab({ d }) {
                     <div style={TT_STYLE.contentStyle}>
                       <div style={{ fontWeight: 600, marginBottom: 2 }}>{p.page}</div>
                       <div>Просмотры: {fmtInt(p.pageviews)}</div>
-                      <div>Время: {p.avg_dwell_sec ?? '—'} с · прокрутка {p.avg_scroll_pct ?? '—'}%</div>
-                      <div>Пустые клики: {fmtInt(p.dead_clicks)} · серии: {fmtInt(p.rage_clicks)} · отказы {p.bounce_pct ?? '—'}%</div>
+                      <div>Время: {p.avg_dwell_sec ?? '—'} с — прокрутка {p.avg_scroll_pct ?? '—'}%</div>
+                      <div>Пустые клики: {fmtInt(p.dead_clicks)} — серии: {fmtInt(p.rage_clicks)} — отказы {p.bounce_pct ?? '—'}%</div>
                     </div>
                   );
                 }} />
@@ -1174,7 +1174,7 @@ function DemandTab({ d }) {
                   return (
                     <div style={TT_STYLE.contentStyle}>
                       <div style={{ fontWeight: 600, marginBottom: 2 }}>{p.query}</div>
-                      <div>Показы: {fmtInt(p.impressions)} · клики: {fmtInt(p.clicks)}</div>
+                      <div>Показы: {fmtInt(p.impressions)} — клики: {fmtInt(p.clicks)}</div>
                       <div>Средняя позиция: {p.avg_position}</div>
                     </div>
                   );
@@ -1412,7 +1412,7 @@ function EventsTab({ d }) {
                     <div style={TT_STYLE.contentStyle}>
                       <div style={{ fontWeight: 600, marginBottom: 2 }}>{p.label}</div>
                       <div style={{ color: 'rgba(26,26,46,0.55)', fontFamily: 'monospace', fontSize: 11 }}>{p.name}</div>
-                      <div>Всего: {fmtInt(p.total)} · зарегистрированные: {fmtInt(p.authed)} · гости: {fmtInt(p.guest)}</div>
+                      <div>Всего: {fmtInt(p.total)} — зарегистрированные: {fmtInt(p.authed)} — гости: {fmtInt(p.guest)}</div>
                     </div>
                   );
                 }} />
@@ -1490,8 +1490,8 @@ function HypothesesTab({ d, onOpenSlices }) {
               <div className="text-[14px] text-text-primary">{h.statement}</div>
               {h.rationale && <div className="text-[12px] text-text-secondary mt-1">{h.rationale}</div>}
               <div className="text-[11px] text-text-tertiary mt-1">
-                {h.confidence != null && `уверенность ${Math.round(h.confidence * 100)}% · `}
-                {h.source} · {h.updated_at?.slice(0, 10)}
+                {h.confidence != null && `уверенность ${Math.round(h.confidence * 100)}% — `}
+                {h.source} — {h.updated_at?.slice(0, 10)}
               </div>
             </div>
             {onOpenSlices && (
@@ -1673,8 +1673,8 @@ function DriverNode({ node }) {
           )}
           {node.key === 'conversion' && (
             <>
-              <div className="flex justify-between"><span>Микро-цели (сессий)</span><span className="tabular-nums">{fmtInt(det.micro_sessions)} · {det.micro_rate_pct}%</span></div>
-              <div className="flex justify-between"><span>Макро-цели (сессий)</span><span className="tabular-nums">{fmtInt(det.macro_sessions)} · {det.macro_rate_pct}%</span></div>
+              <div className="flex justify-between"><span>Микро-цели (сессий)</span><span className="tabular-nums">{fmtInt(det.micro_sessions)} — {det.micro_rate_pct}%</span></div>
+              <div className="flex justify-between"><span>Макро-цели (сессий)</span><span className="tabular-nums">{fmtInt(det.macro_sessions)} — {det.macro_rate_pct}%</span></div>
               <div className="flex justify-between text-text-tertiary"><span>Цель макро</span><span className="tabular-nums">{det.macro_target_pct}%</span></div>
             </>
           )}
@@ -1734,7 +1734,7 @@ function MetricTreeTab({ d }) {
       <section className="rounded-2xl bg-surface border border-border-subtle p-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <div className="text-[13px] text-text-tertiary">{ns.label || 'Сессии в день'} · North Star · наш счётчик</div>
+            <div className="text-[13px] text-text-tertiary">{ns.label || 'Сессии в день'} — North Star — наш счётчик</div>
             <div className="flex items-baseline gap-3 mt-1">
               <span className="text-4xl font-bold tabular-nums text-text-primary">{fmtInt(Math.round(ns.value || 0))}</span>
               {ns.wow_pct != null && (
@@ -1744,7 +1744,7 @@ function MetricTreeTab({ d }) {
               )}
             </div>
             <div className="flex flex-wrap items-center gap-2 mt-1.5 text-[12px] text-text-secondary">
-              <span className="tabular-nums">{fmtInt(ns.sessions_total || 0)} сессий · {fmtInt(ns.visitors_total || 0)} посетителей за период</span>
+              <span className="tabular-nums">{fmtInt(ns.sessions_total || 0)} сессий — {fmtInt(ns.visitors_total || 0)} посетителей за период</span>
               {ns.metrika_visits_total != null && (
                 <span className="px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[11px] tabular-nums"
                   title="Сверочный слой: визиты Яндекс.Метрики за тот же период (лаг до суток)">
@@ -1809,7 +1809,7 @@ function FunnelSteps({ steps, color = GOLD }) {
             <div className="flex justify-between text-[12px] mb-0.5">
               <span className="text-text-primary">{s.step}</span>
               <span className="text-text-secondary tabular-nums">
-                {fmtInt(s.count)}{conv != null && <span className="text-text-tertiary"> · {conv}% от шага выше</span>}
+                {fmtInt(s.count)}{conv != null && <span className="text-text-tertiary"> — {conv}% от шага выше</span>}
               </span>
             </div>
             <div className="h-5 rounded-md bg-obsidian overflow-hidden">
@@ -1872,7 +1872,7 @@ function GoalReconciliationCard({ d }) {
           {(gr.metrika_only || []).length > 0 && (
             <div className="mt-3 pt-3 border-t border-dashed border-border-subtle text-[12px] text-text-secondary">
               <span className="font-medium">Только в Метрике (без нашего события): </span>
-              {gr.metrika_only.map((g) => `${g.goal} — ${fmtInt(g.visits)}`).join(' · ')}
+              {gr.metrika_only.map((g) => `${g.goal} — ${fmtInt(g.visits)}`).join(', ')}
             </div>
           )}
           <p className="text-[11px] text-text-tertiary mt-2">
@@ -2092,7 +2092,7 @@ function PeopleCard({ d }) {
                   <td className="py-1.5 pr-2 text-right tabular-nums">{p.micro_goals}/{p.macro_goals}</td>
                   {hasPortrait && (
                     <td className="py-1.5 pr-2 text-text-secondary">
-                      {[p.device && deviceLabel(p.device), p.browser, p.city && cityLabel(p.city), p.channel && channelLabel(p.channel)].filter(Boolean).join(' · ') || '—'}
+                      {[p.device && deviceLabel(p.device), p.browser, p.city && cityLabel(p.city), p.channel && channelLabel(p.channel)].filter(Boolean).join(', ') || '—'}
                     </td>
                   )}
                   {hasInterests && <td className="py-1.5 text-text-secondary">{(p.interests || []).join(', ') || '—'}</td>}
@@ -2171,7 +2171,7 @@ function ProductLoopTab({ d, onOpenSlices }) {
                 return (
                   <div style={TT_STYLE.contentStyle}>
                     <div style={{ fontWeight: 600 }}>{p.section} — {p.quadrant}</div>
-                    <div>Просмотры: {fmtInt(p.views)} · активное чтение: {p.avg_active_sec} с</div>
+                    <div>Просмотры: {fmtInt(p.views)} — активное чтение: {p.avg_active_sec} с</div>
                     <div>Dead-клики: {fmtInt(p.dead_clicks)}</div>
                   </div>
                 );
@@ -2294,7 +2294,7 @@ function SlicesTab() {
       : String(v ?? '') || '(не определён)'
   );
   const chartRows = rows.slice(0, 14).map((r) => ({
-    name: [dim1 && dimValue(dim1, r[dim1]), dim2 && dimValue(dim2, r[dim2])].filter(Boolean).join(' · ') || '—',
+    name: [dim1 && dimValue(dim1, r[dim1]), dim2 && dimValue(dim2, r[dim2])].filter(Boolean).join(', ') || '—',
     value: r.value,
   }));
 
@@ -2395,7 +2395,7 @@ function ReliabilityTab({ d }) {
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         {['LCP', 'INP', 'CLS', 'FCP', 'TTFB'].map((m) => (
           <div key={m} className="rounded-xl bg-surface border border-border-subtle px-4 py-3">
-            <div className="text-[12px] text-text-tertiary">{m} · p75</div>
+            <div className="text-[12px] text-text-tertiary">{m} — p75</div>
             <div className="text-xl font-bold tabular-nums" style={{ color: vitalStatus(m, vitals[m]) }}>
               {vitals[m] != null ? (m === 'CLS' ? vitals[m] : `${fmtInt(Math.round(vitals[m]))} мс`) : '—'}
             </div>
@@ -2600,7 +2600,7 @@ function AcquisitionFullTab({ d }) {
 
       <Card title="Доход РСЯ (партнёрка)" icon={Megaphone} source="own"
         insight={rev.connected
-          ? `Доход за окно: ${fmtRub(rev.total_revenue_rub)} · показов ${fmtInt(rev.total_shows)} · кликов по блокам ${fmtInt(rev.total_hits)}.`
+          ? `Доход за окно: ${fmtRub(rev.total_revenue_rub)} — показов ${fmtInt(rev.total_shows)} — кликов по блокам ${fmtInt(rev.total_hits)}.`
           : rev.note || 'Доход РСЯ появится после синка Partner Statistics.'}
         hint="Вознаграждение площадки без НДС по дням (Partner Statistics). Это доход от рекламных блоков на сайте, не расход Директа.">
         {rev.connected && revDays.length ? (
@@ -2645,7 +2645,7 @@ function AcquisitionFullTab({ d }) {
 
       <Card title="Расход Директа: CPA" icon={Target} source="metrika"
         insight={costs.connected
-          ? `Расход за окно: ${fmtInt(Math.round(costs.total_cost_rub || 0))} ₽ · макро-целей: ${fmtInt(costs.macro_goals_window)} · CPA ${costs.cpa_macro_rub != null ? `${fmtInt(Math.round(costs.cpa_macro_rub))} ₽` : '—'}.`
+          ? `Расход за окно: ${fmtInt(Math.round(costs.total_cost_rub || 0))} ₽ — макро-целей: ${fmtInt(costs.macro_goals_window)} — CPA ${costs.cpa_macro_rub != null ? `${fmtInt(Math.round(costs.cpa_macro_rub))} ₽` : '—'}.`
           : costs.note || 'Коннектор Директа (расход) ждёт отдельный API-токен.'}
         hint="Расход рекламных кампаний Яндекс.Директа против макро-целей (CPA). Не путать с доходом РСЯ выше.">
         {costs.connected && (costs.campaigns || []).length ? (
@@ -2830,8 +2830,8 @@ export default function AdminBI() {
         {data?.period?.label && (
           <span className="text-[12px] text-text-tertiary" title="Окно данных, время московское">
             {data.period.from === data.period.to
-              ? `${data.period.label} · ${data.period.from}`
-              : `${data.period.label} · ${data.period.from} — ${data.period.to}`}
+              ? `${data.period.label} — ${data.period.from}`
+              : `${data.period.label} — ${data.period.from} — ${data.period.to}`}
           </span>
         )}
         <button
@@ -2841,7 +2841,7 @@ export default function AdminBI() {
         >
           <RefreshCw size={13} className={isFetching ? 'animate-spin' : ''} />
           {dataUpdatedAt ? `обновлено ${new Date(dataUpdatedAt).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}` : ''}
-          <span className="hidden sm:inline">· автообновление каждые 15 мин</span>
+          <span className="hidden sm:inline"> — автообновление каждые 15 мин</span>
         </button>
       </div>
 

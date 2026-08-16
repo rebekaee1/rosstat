@@ -1,12 +1,13 @@
 import useDocumentMeta from '../lib/useMeta';
+import { getPageSeo } from '../lib/pageMeta';
 import { track, trackOutbound, events } from '../lib/track';
 
 export default function About() {
+  const seo = getPageSeo('about');
   useDocumentMeta({
-    title: 'О проекте Forecast Economy',
-    description:
-      'Бесплатная аналитическая платформа: экономика России, регионы и доступная статистика стран. Более 100 макроиндикаторов и 489 региональных показателей по 85 регионам. Данные Росстата, Банка России, Минфина и Евростата.',
-    path: '/about',
+    title: seo.title,
+    description: seo.description,
+    path: seo.path,
   });
 
   return (
@@ -16,14 +17,14 @@ export default function About() {
           О проекте
         </p>
         <h1 className="font-display text-3xl md:text-4xl font-bold text-text-primary mb-6 leading-tight">
-          Forecast Economy — аналитика экономики России, регионов и стран
+          {seo.h1}
         </h1>
         <p className="text-text-secondary leading-relaxed mb-6">
           <strong className="text-text-primary">Forecast Economy</strong> — веб-платформа для работы с официальной
           экономической статистикой. Основа — Россия: инфляция и цены, ключевая ставка и ставки рынка, ВВП и
           промышленное производство, рынок труда, внешняя торговля,
-          бюджет, биржевые индексы и товарные рынки. Плюс региональные ряды по субъектам РФ и доступная
-          статистика отдельных стран из официальных национальных и международных первоисточников.
+          бюджет, биржевые индексы и товарные рынки. Плюс региональные ряды по субъектам РФ и доступная статистика
+          отдельных стран из официальных национальных и международных первоисточников.
           Мы собираем данные из первичных источников —
           {' '}<a href="https://rosstat.gov.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer" onClick={() => trackOutbound('https://rosstat.gov.ru')}>Росстат</a>,
           {' '}<a href="https://cbr.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer" onClick={() => trackOutbound('https://cbr.ru')}>Банк России</a>,

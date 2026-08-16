@@ -2,6 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Calendar as CalendarIcon } from 'lucide-react';
 import gsap from 'gsap';
+import {
+  russiaIndicatorPath,
+} from '../../lib/sitePaths';
 
 
 function CountdownUnit({ value, label }) {
@@ -82,7 +85,7 @@ export default function CalendarHero({ nextEvent }) {
           </p>
           {nextEvent.indicator_code && (
             <Link
-              to={`/indicator/${nextEvent.indicator_code}`}
+              to={russiaIndicatorPath(nextEvent.indicator_code)}
               className="inline-flex items-center gap-1 mt-2 text-sm text-champagne hover:text-champagne-muted transition-colors"
             >
               {nextEvent.indicator_name || nextEvent.indicator_code}

@@ -16,6 +16,9 @@ import IndicatorSeoBlocks from './IndicatorSeoBlocks';
 import { relatedIndicatorCardCopy } from '../lib/indicatorVariants';
 import { downloadExcel, downloadCSV } from '../lib/excel';
 import { track, events } from '../lib/track';
+import {
+  russiaIndicatorPath,
+} from '../lib/sitePaths';
 
 /**
  * Generic (config-driven) карточка индикатора для семей из
@@ -229,7 +232,7 @@ export default function GenericIndicatorView({
               return (
                 <Link
                   key={rel.code}
-                  to={`/indicator/${rel.code}`}
+                  to={russiaIndicatorPath(rel.code)}
                   onClick={() => track(events.RELATED_INDICATOR_CLICK, {
                     from: code, to: rel.code, indicatorCategory: indicator?.category, surface: 'indicator-related',
                   })}

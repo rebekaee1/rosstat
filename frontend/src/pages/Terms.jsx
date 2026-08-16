@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import useDocumentMeta from '../lib/useMeta';
+import { getPageSeo } from '../lib/pageMeta';
 import { track, events } from '../lib/track';
 
 /**
@@ -15,11 +16,11 @@ const p = 'text-text-secondary leading-relaxed mb-4';
 const li = 'text-text-secondary leading-relaxed';
 
 export default function Terms() {
+  const seo = getPageSeo('terms');
   useDocumentMeta({
-    title: 'Пользовательское соглашение',
-    description:
-      'Условия использования сайта forecasteconomy.com: материалы, виджеты, ограничения ответственности.',
-    path: '/terms',
+    title: seo.title,
+    description: seo.description,
+    path: seo.path,
   });
 
   return (

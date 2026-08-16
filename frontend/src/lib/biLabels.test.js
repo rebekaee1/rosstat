@@ -43,10 +43,10 @@ describe('biLabels — словарь ярлыков BI', () => {
   });
 
   it('разделы страниц — зеркало page_section бэкенда', () => {
-    expect(pageSectionRu('/indicator/cpi?mode=weekly')).toBe('Индикаторы');
-    expect(pageSectionRu('/region/moskva/1')).toBe('Карточки регионов');
+    expect(pageSectionRu('/russia/indicator/cpi?mode=weekly')).toBe('Индикаторы');
+    expect(pageSectionRu('/russia/region/moskva/1')).toBe('Карточки регионов');
     expect(pageSectionRu('/regions?view=map')).toBe('Каталог регионов');
-    expect(pageSectionRu('/regions/map/uroven-bezrabotitsy')).toBe('Карта регионов');
+    expect(pageSectionRu('/russia/region/map/uroven-bezrabotitsy')).toBe('Карта регионов');
     expect(pageSectionRu('/')).toBe('Главная');
   });
 

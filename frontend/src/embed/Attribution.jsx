@@ -1,9 +1,10 @@
 import { ExternalLink } from 'lucide-react';
+import { russiaIndicatorPath } from '../lib/sitePaths';
 
 export default function Attribution({ code, dark = false }) {
   return (
     <a
-      href={`https://forecasteconomy.com/indicator/${code || ''}`}
+      href={`https://forecasteconomy.com${code ? russiaIndicatorPath(code) : '/'}`}
       target="_blank"
       rel="noopener"
       className="flex items-center justify-end gap-1 px-3 py-1.5 no-underline transition-opacity hover:opacity-80"

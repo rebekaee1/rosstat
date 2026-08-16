@@ -3,17 +3,17 @@
  *
  * apiCategory — точное значение Indicator.category в БД.
  *
- * seoTitle/seoDescription — ровно те же тексты, что backend SEO-renderer
- * (`seo_content.py::CATEGORY_META.title/description`) кладёт в SSR-HTML.
- * Если эти строки разойдутся, Yandex/Google после JS-rendering увидят другой
- * <title>/<meta description> и расценят страницу как изменённую → удаление и
- * повторное добавление в индекс. Любые правки делать в обоих местах разом.
+ * seoTitle / seoDescription / seoH1 / name подтягиваются из серверного
+ * CATEGORY_META через withCategorySeo. UI-описание карточки
+ * (`description`) и иконки остаются здесь.
  *
  * relatedSlugs — соседи в смысле «о чём ещё посмотреть». Используется на
- * /category/:slug в нижнем блоке «Связанные категории». Симметрия НЕ
+ * /russia/category/:slug в нижнем блоке «Связанные категории». Симметрия НЕ
  * требуется: A → B не обязывает B → A. Решает product-смысл, не граф-структура.
  */
-export const CATEGORIES = [
+import { withCategorySeo } from './pageMeta';
+
+const CATEGORY_DEFS = [
   {
     slug: 'prices',
     name: 'Цены и инфляция',
@@ -25,8 +25,6 @@ export const CATEGORIES = [
     sentiment: 'inverse',
     description:
       'Индекс потребительских цен на товары и услуги. Индекс цен производителей. Цены на недвижимость.',
-    seoTitle: 'Цены и инфляция в России',
-    seoDescription: 'ИПЦ, инфляция, цены на жильё — данные Росстата и прогнозы.',
     relatedSlugs: ['rates', 'finance', 'labor'],
   },
   {
@@ -39,8 +37,6 @@ export const CATEGORIES = [
     flagshipCode: 'key-rate',
     sentiment: 'neutral',
     description: 'Ключевая ставка ЦБ, RUONIA. Ставки по вкладам, автокредитам и ипотеке.',
-    seoTitle: 'Процентные ставки в России',
-    seoDescription: 'Ключевая ставка ЦБ, RUONIA, ипотека, депозиты — данные Банка России.',
     relatedSlugs: ['prices', 'finance', 'business'],
   },
   {
@@ -53,8 +49,6 @@ export const CATEGORIES = [
     flagshipCode: 'usd-rub',
     sentiment: 'inverse',
     description: 'Официальные курсы доллара, евро и юаня к рублю — ежедневные котировки Банка России.',
-    seoTitle: 'Курсы валют ЦБ РФ',
-    seoDescription: 'Курсы доллара, евро и юаня к рублю — официальные ежедневные данные Банка России.',
     relatedSlugs: ['finance', 'rates', 'trade'],
   },
   {
@@ -67,8 +61,6 @@ export const CATEGORIES = [
     flagshipCode: 'm2',
     sentiment: 'neutral',
     description: 'Денежные агрегаты М0, М1, М2. Резервы, внешний долг, кредиты, депозиты, бюджет.',
-    seoTitle: 'Деньги и бюджет России',
-    seoDescription: 'Денежная масса, резервы, кредиты, депозиты, бюджет — данные ЦБ РФ и Минфина.',
     relatedSlugs: ['currencies', 'rates', 'trade'],
   },
   {
@@ -81,8 +73,6 @@ export const CATEGORIES = [
     flagshipCode: 'imoex',
     sentiment: 'positive',
     description: 'Индекс МосБиржи и РТС, индекс полной доходности, индексы государственных и корпоративных облигаций.',
-    seoTitle: 'Биржевые индексы России',
-    seoDescription: 'Индекс МосБиржи, РТС, RGBI, индексы облигаций — ежедневные данные Московской биржи.',
     relatedSlugs: ['currencies', 'finance', 'rates'],
   },
   {
@@ -94,9 +84,7 @@ export const CATEGORIES = [
     status: 'active',
     flagshipCode: 'brent',
     sentiment: 'neutral',
-    description: 'Нефть, золото, серебро, медь, природный газ, уголь, сталь, пшеница и соя — мировые цены на сырьё.',
-    seoTitle: 'Цены на сырьё и товарные рынки',
-    seoDescription: 'Нефть Brent, золото, медь, газ, пшеница — ежедневные мировые цены на сырьевые товары.',
+    description: 'Нефть, природный газ, уголь, золото, серебро, медь, пшеница и соя — мировые цены на сырьё.',
     relatedSlugs: ['indices', 'currencies', 'trade'],
   },
   {
@@ -109,8 +97,6 @@ export const CATEGORIES = [
     flagshipCode: 'unemployment',
     sentiment: 'inverse',
     description: 'Уровень безработицы, реальные и номинальные заработные платы. Рабочая сила и занятость.',
-    seoTitle: 'Рынок труда России',
-    seoDescription: 'Безработица, зарплаты, занятость — ежемесячные данные Росстата.',
     relatedSlugs: ['population', 'gdp', 'business'],
   },
   {
@@ -123,8 +109,6 @@ export const CATEGORIES = [
     flagshipCode: 'gdp-nominal',
     sentiment: 'positive',
     description: 'Валовой внутренний продукт, госрасходы, расходы домохозяйств. Темпы роста экономики.',
-    seoTitle: 'ВВП и экономический рост России',
-    seoDescription: 'ВВП, потребление, госрасходы, инвестиции — квартальные данные Росстата.',
     relatedSlugs: ['business', 'trade', 'labor'],
   },
   {
@@ -137,8 +121,6 @@ export const CATEGORIES = [
     flagshipCode: 'population',
     sentiment: 'positive',
     description: 'Численность населения, рождаемость, смертность, численность пенсионеров, трудоспособное население.',
-    seoTitle: 'Население России',
-    seoDescription: 'Численность, рождаемость, смертность, пенсионеры — демографические данные Росстата.',
     relatedSlugs: ['labor', 'science', 'gdp'],
   },
   {
@@ -151,8 +133,6 @@ export const CATEGORIES = [
     flagshipCode: 'current-account',
     sentiment: 'neutral',
     description: 'Экспорт товаров и услуг, импорт товаров и услуг, сальдо торгового баланса, сальдо текущего счёта.',
-    seoTitle: 'Внешняя торговля России',
-    seoDescription: 'Экспорт, импорт, торговый баланс, текущий счёт — квартальные данные Банка России.',
     relatedSlugs: ['finance', 'gdp', 'business'],
   },
   {
@@ -165,8 +145,6 @@ export const CATEGORIES = [
     flagshipCode: 'ipi',
     sentiment: 'positive',
     description: 'Индекс промышленного производства и его разделы: добыча, обрабатывающие производства, энергетика, водоснабжение. Розничная торговля, износ основных фондов, инвестиции.',
-    seoTitle: 'Бизнес и инвестиции в России',
-    seoDescription: 'Индекс промышленного производства (добыча, обработка, энергетика, водоснабжение), розничная торговля, инвестиции — данные Росстата.',
     relatedSlugs: ['gdp', 'rates', 'trade'],
   },
   {
@@ -179,11 +157,11 @@ export const CATEGORIES = [
     flagshipCode: 'rd-personnel',
     sentiment: 'positive',
     description: 'Аспиранты, докторанты. Число организаций НИР. Инновационная активность предприятий.',
-    seoTitle: 'Наука и образование в России',
-    seoDescription: 'Аспиранты, организации НИР, инновационная активность — данные Росстата.',
     relatedSlugs: ['population', 'business', 'labor'],
   },
 ];
+
+export const CATEGORIES = withCategorySeo(CATEGORY_DEFS);
 
 export function getCategoryBySlug(slug) {
   return CATEGORIES.find((c) => c.slug === slug);

@@ -1,10 +1,15 @@
 from pydantic_settings import BaseSettings
 from pathlib import Path
+from urllib.parse import urlparse
 
 
 class Settings(BaseSettings):
     app_name: str = "Forecast Economy API"
     debug: bool = False
+
+    # Публичный origin сайта (canonical, SSR, sitemap, robots Host, IndexNow, CORS).
+    # Единая точка истины для домена; дефолт = текущий прод.
+    public_base_url: str = "https://forecasteconomy.com"
 
     # Database
     database_url: str = "postgresql+asyncpg://rustats:rustats@localhost:5432/rustats"
@@ -124,6 +129,8 @@ class Settings(BaseSettings):
     analytics_scheduler_cron_hour: int = 7
     analytics_scheduler_cron_minute: int = 20
     analytics_api_token: str = ""
+    # По умолчанию совпадает с public_base_url; отдельный override — если
+    # аналитический crawl ходит на другой origin (стейджинг и т.п.).
     analytics_base_url: str = "https://forecasteconomy.com"
     analytics_allowed_counter_ids: str = "107136069"
     analytics_allowed_hosts: str = "forecasteconomy.com"
@@ -213,6 +220,21 @@ class Settings(BaseSettings):
     admin_emails: str = "admin_forecasteconomy@forecasteconomy.com"
 
     model_config = {"env_prefix": "RUSTATS_", "env_file": ".env", "extra": "ignore"}
+
+    @property
+    def public_origin(self) -> str:
+        """Origin без завершающего слэша: https://forecasteconomy.com."""
+        return self.public_base_url.rstrip("/")
+
+    @property
+    def public_host(self) -> str:
+        """Hostname без схемы: forecasteconomy.com."""
+        return urlparse(self.public_base_url).hostname or ""
+
+    @property
+    def webmaster_host_id(self) -> str:
+        """host_id Яндекс.Вебмастера: схема через одно двоеточие + :443."""
+        return f"https:{self.public_host}:443"
 
 
 settings = Settings()

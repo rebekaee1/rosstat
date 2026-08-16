@@ -236,7 +236,10 @@ const BLOCK_RU = {
   'calc-methodology': 'Методология калькулятора',
   about: 'О проекте',
   'home-hero': 'Hero главной',
+  // Историческая метка: блок «Россия сегодня» заменён мировым срезом 2026-08-16,
+  // но события с прежним именем остаются в behavior_events.
   'home-russia-today': 'Россия сегодня',
+  'home-markets-pulse-panel': 'Оперативный срез: мировые рынки',
   'home-workbench': 'Рабочий стол главной',
   'home-workbench-russia': 'Вкладка Россия на главной',
   'home-workbench-regions': 'Вкладка Регионы на главной',
@@ -257,6 +260,16 @@ export function blockLabel(slug) {
 /* ---------- Разделы сайта (зеркало page_section бэкенда) ---------- */
 
 const SECTION_RULES = [
+  ['/russia/indicator', 'Индикаторы'],
+  ['/russia/category', 'Категории'],
+  ['/russia/region-rating', 'Рейтинги регионов'],
+  ['/russia/region-vs', 'Сравнение регионов'],
+  ['/russia/region/map', 'Карта регионов'],
+  ['/russia/region/', 'Карточки регионов'],
+  ['/russia/region', 'Каталог регионов'],
+  ['/russia/calendar', 'Календарь'],
+  ['/russia/today', 'Страницы «сегодня»'],
+  ['/russia/demographics', 'Демография'],
   ['/indicator', 'Индикаторы'],
   ['/category', 'Категории'],
   ['/region-rating', 'Рейтинги регионов'],

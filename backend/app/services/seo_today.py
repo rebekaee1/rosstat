@@ -1,4 +1,4 @@
-"""SSR-страницы «на сегодня»: /today и /today/{code}.
+"""SSR-страницы «на сегодня»: /russia/today и /russia/today/{code}.
 
 Горячий высокочастотный спрос «курс доллара сегодня», «ключевая ставка сегодня»,
 «инфляция сейчас». Страница не дублирует карточку индикатора: собственный
@@ -8,6 +8,9 @@ canonical, интент «актуальное значение прямо се�
 """
 
 from __future__ import annotations
+
+from app.services import breadcrumbs as crumbs
+from app.services import site_paths as paths
 
 from dataclasses import dataclass
 from datetime import date
@@ -22,6 +25,7 @@ from app.models import Indicator, IndicatorData
 from app.services.seo_renderer import (
     DOMAIN,
     _breadcrumbs,
+    _breadcrumbs_nav,
     _site_json_ld,
     build_document,
 )
@@ -218,8 +222,8 @@ async def render_today_indicator_html(code: str, db: AsyncSession) -> tuple[int,
         ],
     }
 
-    og_path = f"/og/{spec.series_code}.png"
-    canonical = f"/today/{code}"
+    og_path = paths.og_indicator(paths.RUSSIA, spec.series_code)
+    canonical = paths.today(code)
     badge = _change_badge(float(last.value), float(prev.value), unit)
     eyebrow = "Последнее доступное значение" if stale else "Показатель на сегодня"
     h1_text = f"{spec.query} — последнее значение" if stale else f"{spec.query} сегодня"
@@ -228,12 +232,12 @@ async def render_today_indicator_html(code: str, db: AsyncSession) -> tuple[int,
         f'доступное значение на {escape(_ru_date(last.date))}.</p>' if stale else ""
     )
     body = f"""<main class="seo-page">
-<nav aria-label="Хлебные крошки"><a href="/">Главная</a> / <a href="/today">Сегодня</a> / {escape(spec.query)}</nav>
+{_breadcrumbs_nav(crumbs.today_indicator_trail(spec.query, paths.today(code)))}
 <p class="seo-eyebrow">{escape(eyebrow)}</p>
 <h1>{escape(h1_text)}</h1>
 <div class="seo-hero">
 <div class="seo-hero-value">{escape(_format_number(last.value))}<small>{escape(unit)}</small></div>
-<div class="seo-hero-meta">{badge}<span>на {escape(_ru_date(last.date))}</span><span>· источник: {escape(indicator.source)}</span></div>
+<div class="seo-hero-meta">{badge}<span>на {escape(_ru_date(last.date))}</span><span>источник: {escape(indicator.source)}</span></div>
 </div>
 {stale_note}
 <div class="seo-tiles">
@@ -245,21 +249,19 @@ async def render_today_indicator_html(code: str, db: AsyncSession) -> tuple[int,
 <p>Актуальное значение на {escape(_ru_date(last.date))}: <strong>{escape(value_text)}</strong> — {escape(_dot(change))}
 Данные официального источника ({escape(indicator.source)}); страница обновляется автоматически по мере выхода новых значений.</p>
 <figure class="seo-chart"><img src="{escape(og_path)}" width="1200" height="630" alt="{escape(spec.query)} сегодня — график, последнее значение {escape(value_text)}, источник {escape(indicator.source)}" loading="eager"><figcaption>{escape(spec.query)}: динамика. Источник: {escape(indicator.source)}. forecasteconomy.com</figcaption></figure>
-<p><a class="seo-linkbtn" href="/indicator/{escape(spec.code)}">Интерактивный график и прогноз →</a></p>
+<p><a class="seo-linkbtn" href="{escape(paths.russia_indicator(spec.code))}">Интерактивный график и прогноз →</a></p>
 <section><h2>Последние значения</h2>
 <div class="seo-scroll"><table><thead><tr><th>Дата</th><th>{escape(unit or 'Значение')}</th></tr></thead><tbody>{table_rows}</tbody></table></div>
 <p>{escape(_dot(f"Диапазон последних {len(rows)} наблюдений: от {_format_number(vmin)} до {_format_number(vmax)} {unit}".rstrip()))}</p></section>
 {faq_html}
 <section><h2>Полная история и прогноз</h2>
 <p>Интерактивный график с историей с первого доступного года, режимы представления и прогноз — на странице
-<a href="/indicator/{escape(spec.code)}">{escape(indicator.name)}</a>.</p></section>
+<a href="{escape(paths.russia_indicator(spec.code))}">{escape(indicator.name)}</a>.</p></section>
 </main>"""
 
     json_ld = [
         _site_json_ld(),
-        _breadcrumbs([
-            ("/", "Главная"), ("/today", "Сегодня"), (canonical, spec.query),
-        ]),
+        _breadcrumbs(crumbs.today_indicator_trail(spec.query, paths.today(code))),
         faq_json_ld,
         {
             "@context": "https://schema.org",
@@ -301,7 +303,7 @@ async def render_today_hub_html(db: AsyncSession) -> tuple[int, str]:
         if len(rows) > 1:
             badge = _change_badge(float(rows[0].value), float(rows[1].value), unit)
         items_html.append(
-            f'<li><a class="seo-item" href="/today/{escape(code)}">'
+            f'<li><a class="seo-item" href="{escape(paths.today(code))}">'
             f'<div class="seo-item-name">{escape(spec.query)} сегодня</div>'
             f'<div class="seo-item-value">{escape(_format_number(rows[0].value))}'
             f"<small>{escape(unit)}</small></div>"
@@ -312,7 +314,7 @@ async def render_today_hub_html(db: AsyncSession) -> tuple[int, str]:
             "@type": "ListItem",
             "position": i,
             "name": f"{spec.query} сегодня",
-            "url": f"{DOMAIN}/today/{code}",
+            "url": f"{DOMAIN}{paths.today(code)}",
         })
 
     if not items_html:
@@ -326,11 +328,11 @@ async def render_today_hub_html(db: AsyncSession) -> tuple[int, str]:
         "ключевая ставка ЦБ, инфляция, цена золота и топлива, индекс МосБиржи. "
         "Официальные данные, обновление по мере публикации источников."
     )
-    og_path = "/og/today.png"
+    og_path = paths.og_today()
     hub_alt = (f"Экономика России сегодня, {_ru_date(today)}: курс доллара, евро и юаня, "
                f"ключевая ставка, инфляция, цена золота и топлива, индекс МосБиржи")
     body = f"""<main class="seo-page">
-<nav aria-label="Хлебные крошки"><a href="/">Главная</a> / Сегодня</nav>
+{_breadcrumbs_nav(crumbs.today_trail())}
 <p class="seo-eyebrow">Сводка на {escape(_ru_date(today))}</p>
 <h1>Экономика России сегодня</h1>
 <p>Актуальные значения ключевых показателей. Каждая карточка ведёт на
@@ -339,13 +341,13 @@ async def render_today_hub_html(db: AsyncSession) -> tuple[int, str]:
 <figure class="seo-chart"><img src="{escape(og_path)}" width="1200" height="630" alt="{escape(hub_alt)}" loading="eager"><figcaption>Ключевые показатели экономики России на {escape(_ru_date(today))}. forecasteconomy.com</figcaption></figure>
 <section><h2>Показатели на сегодня</h2><ul class="seo-grid">{''.join(items_html)}</ul></section>
 <section><h2>Больше данных</h2><p>Более 100 макроэкономических индикаторов — на <a href="/">главной странице</a>;
-региональная статистика — в разделе <a href="/regions">Регионы России</a>;
-даты будущих публикаций — в <a href="/calendar">календаре статистики</a>.</p></section>
+региональная статистика — в разделе <a href="{paths.region_hub()}">Регионы России</a>;
+даты будущих публикаций — в <a href="{paths.calendar()}">календаре статистики</a>.</p></section>
 </main>"""
 
     json_ld = [
         _site_json_ld(),
-        _breadcrumbs([("/", "Главная"), ("/today", "Сегодня")]),
+        _breadcrumbs(crumbs.today_trail()),
         {"@context": "https://schema.org", "@type": "ItemList", "itemListElement": list_items},
         {
             "@context": "https://schema.org",
@@ -362,7 +364,7 @@ async def render_today_hub_html(db: AsyncSession) -> tuple[int, str]:
     html = await build_document(
         title=title,
         description=desc_text,
-        canonical_path="/today",
+        canonical_path=paths.today(),
         body=body,
         json_ld=json_ld,
         keywords=(

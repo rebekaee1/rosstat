@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
+import { SITE_ORIGIN } from './siteOrigin';
 
-const BASE = 'https://forecasteconomy.com';
+const BASE = SITE_ORIGIN;
 
 // Title без бренд-суффикса: backend SSR (seo_renderer.py::build_document) кладёт
 // в <title> ровно тот же текст, что и API возвращает в indicator.seo_title /

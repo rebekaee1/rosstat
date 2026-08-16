@@ -1,4 +1,4 @@
-"""SSR-страницы сравнения двух регионов: /region-vs/{slugA}-vs-{slugB}.
+"""SSR-страницы сравнения двух регионов: /russia/region-vs/{slugA}-vs-{slugB}.
 
 Под спрос вида «зарплата москва или санкт-петербург», «сравнить регионы».
 Пары — сочетания топ-регионов по численности населения (спрос концентрируется
@@ -8,6 +8,9 @@
 
 from __future__ import annotations
 
+from app.services import breadcrumbs as crumbs
+from app.services import site_paths as paths
+
 from html import escape
 
 from sqlalchemy import func, select
@@ -16,7 +19,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import Region, RegionDataPoint, RegionIndicator
 from app.services.region_compare_data import build_region_compare_payload
 from app.services.seo_regional import _fmt
-from app.services.seo_renderer import DOMAIN, _breadcrumbs, build_document
+from app.services.seo_renderer import DOMAIN, _breadcrumbs, _breadcrumbs_nav, build_document
 
 _POPULATION_TABLE = "1.1"
 TOP_REGIONS_LIMIT = 20
@@ -84,12 +87,12 @@ async def render_region_vs_html(
         verdict = row["verdict"]
         sections.append(
             f"<section class=\"seo-section\"><h2>{escape(ind_name)} ({common_year})</h2>"
-            f"<p>{escape(region_a['name'])}: <strong>{escape(_vu(va, unit))}</strong> · "
+            f"<p>{escape(region_a['name'])}: <strong>{escape(_vu(va, unit))}</strong>; "
             f"{escape(region_b['name'])}: <strong>{escape(_vu(vb, unit))}</strong>. "
             f"Показатель {escape(verdict)}.</p>"
-            f"<p><a href=\"/region/{escape(canon_a)}/{escape(ind_code)}\">Динамика — {escape(region_a['name'])}</a> · "
-            f"<a href=\"/region/{escape(canon_b)}/{escape(ind_code)}\">Динамика — {escape(region_b['name'])}</a> · "
-            f"<a href=\"/region-rating/{escape(ind_code)}\">Рейтинг всех регионов</a></p></section>"
+            f"<p><a href=\"{escape(paths.region_indicator(canon_a, ind_code))}\">Динамика — {escape(region_a['name'])}</a>, "
+            f"<a href=\"{escape(paths.region_indicator(canon_b, ind_code))}\">Динамика — {escape(region_b['name'])}</a>, "
+            f"<a href=\"{escape(paths.region_rating(ind_code))}\">Рейтинг всех регионов</a></p></section>"
         )
         table_rows.append(
             f"<tr><td>{escape(ind_name)}</td><td>{common_year}</td>"
@@ -108,7 +111,7 @@ async def render_region_vs_html(
         f"<tbody>{''.join(table_rows)}</tbody></table></div>"
     )
 
-    og_path = f"/og/region-vs/{canon_a}-vs-{canon_b}.png"
+    og_path = paths.og_region_vs(canon_a, canon_b)
     vs_alt = (f"Сравнение регионов {region_a['name']} и {region_b['name']}: "
               f"население, зарплата, ВРП, безработица — данные Росстата")
     figure_html = (
@@ -118,8 +121,10 @@ async def render_region_vs_html(
         f"Источник: Росстат. forecasteconomy.com</figcaption></figure>"
     )
 
+    vs_label = f"{region_a['name']} vs {region_b['name']}"
+    vs_trail = crumbs.region_vs_trail(vs_label, canonical)
     body = f"""<div class="seo-page">
-<nav><a href="/">Главная</a> → <a href="/regions">Регионы</a> → {escape(region_a['name'])} vs {escape(region_b['name'])}</nav>
+{_breadcrumbs_nav(vs_trail)}
 <p class="seo-eyebrow">Сравнение регионов России</p>
 <h1>{escape(region_a['name'])} и {escape(region_b['name'])}: сравнение по ключевым показателям</h1>
 <p>Официальные данные Росстата по двум субъектам РФ: население, заработная плата, безработица,
@@ -129,16 +134,13 @@ async def render_region_vs_html(
 <section class="seo-section"><h2>Сводная таблица</h2>{compare_table}</section>
 {''.join(sections)}
 <section class="seo-section"><h2>Профили регионов</h2>
-<p>Все показатели каждого региона: <a href="/region/{escape(canon_a)}">{escape(region_a['name'])}</a> ·
-<a href="/region/{escape(canon_b)}">{escape(region_b['name'])}</a>.
+<p>Все показатели каждого региона: <a href="{escape(paths.region(canon_a))}">{escape(region_a['name'])}</a>,
+<a href="{escape(paths.region(canon_b))}">{escape(region_b['name'])}</a>.
 Интерактивное сравнение любых рядов — в разделе <a href="/compare">«Сравнение»</a>.</p></section>
 </div>"""
 
     json_ld = [
-        _breadcrumbs([
-            ("/", "Главная"), ("/regions", "Регионы"),
-            (canonical, f"{region_a['name']} vs {region_b['name']}"),
-        ]),
+        _breadcrumbs(vs_trail),
         {
             "@context": "https://schema.org",
             "@type": "Dataset",

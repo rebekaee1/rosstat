@@ -11,6 +11,9 @@ import { useDashboardSparklines } from '../../lib/hooks';
 import Sparkline, { SparklineSkeleton } from '../Sparkline';
 import { SkeletonBox } from '../Skeleton';
 import { track, events } from '../../lib/track';
+import {
+  russiaIndicatorPath,
+} from '../../lib/sitePaths';
 
 function FlagshipRow({ indicator, spark }) {
   const pulse = displayPulseValue(indicator);
@@ -18,7 +21,7 @@ function FlagshipRow({ indicator, spark }) {
 
   return (
     <Link
-      to={`/indicator/${indicator.code}`}
+      to={russiaIndicatorPath(indicator.code)}
       onClick={() => track(events.HOME_INDICATOR_CLICK, {
         indicator: indicator.code,
         indicatorCategory: indicator.category,

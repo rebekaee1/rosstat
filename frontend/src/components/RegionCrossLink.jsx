@@ -7,6 +7,11 @@ import { Link } from 'react-router-dom';
 import { MapPin, ArrowUpRight } from 'lucide-react';
 import { useRegionsCatalog } from '../lib/regionsApi';
 import { track, events } from '../lib/track';
+import {
+  regionIndicatorPath,
+  regionMapPath,
+  regionRatingPath,
+} from '../lib/sitePaths';
 
 export default function RegionCrossLink({ macroCode }) {
   const { data } = useRegionsCatalog(!!macroCode);
@@ -35,21 +40,21 @@ export default function RegionCrossLink({ macroCode }) {
         </p>
         <div className="flex flex-wrap gap-2">
           <Link
-            to={`/regions/map/${regionInd.code}`}
+            to={regionMapPath(regionInd.code)}
             onClick={() => track(events.REGION_CROSSLINK_CLICK, { from: macroCode, to: 'regions-map' })}
             className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-champagne/10 text-champagne text-[13px] font-medium hover:bg-champagne/20 transition-colors"
           >
             Карта регионов <ArrowUpRight size={13} />
           </Link>
           <Link
-            to={`/region-rating/${regionInd.code}`}
+            to={regionRatingPath(regionInd.code)}
             onClick={() => track(events.REGION_CROSSLINK_CLICK, { from: macroCode, to: `rating:${regionInd.code}` })}
             className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-border-subtle text-text-secondary text-[13px] font-medium hover:text-champagne hover:border-border-champagne transition-colors"
           >
             Рейтинг регионов <ArrowUpRight size={13} />
           </Link>
           <Link
-            to={`/region/moskva/${regionInd.code}`}
+            to={regionIndicatorPath('moskva', regionInd.code)}
             onClick={() => track(events.REGION_CROSSLINK_CLICK, { from: macroCode, to: `region:moskva:${regionInd.code}` })}
             className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-border-subtle text-text-secondary text-[13px] font-medium hover:text-champagne hover:border-border-champagne transition-colors"
           >

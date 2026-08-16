@@ -15,13 +15,19 @@ import {
 } from '../../lib/homeWorkbench';
 import {
   formatWorldValue,
+  ratingHref,
   useWorldCompareCatalog,
   useWorldCountries,
   useWorldMapSeries,
+  useWorldRatingConcepts,
 } from '../../lib/worldApi';
 import { SkeletonBox } from '../Skeleton';
 import ApiRetryBanner from '../ApiRetryBanner';
 import { track, events } from '../../lib/track';
+import {
+  countryPath,
+  indicatorPath,
+} from '../../lib/sitePaths';
 
 const WorldMap = lazy(() => import('../WorldMap'));
 const MapTimeline = lazy(() => import('../MapTimeline'));
@@ -35,6 +41,8 @@ export default function HomeCountriesPanel() {
   const countries = useWorldCountries();
   const catalog = useWorldCompareCatalog();
   const mapSeries = useWorldMapSeries(concept);
+  const ratingConcepts = useWorldRatingConcepts();
+  const fullRatingHref = ratingHref(concept, ratingConcepts.data?.concepts);
 
   const activeMacro = resolveCountryMacroregion(macroregion);
   const coverage = countryCoverageNote(activeMacro);
@@ -55,7 +63,7 @@ export default function HomeCountriesPanel() {
   }, [catalog.data]);
 
   const years = mapSeries.data?.years || [];
-  const activeYear = resolveActiveMapYear(years, mapYear);
+  const activeYear = resolveActiveMapYear(years, mapYear, mapSeries.data?.values_by_year);
   const yearItems = useMemo(
     () => worldYearItems(mapSeries.data, activeYear),
     [mapSeries.data, activeYear],
@@ -191,8 +199,8 @@ export default function HomeCountriesPanel() {
                 <li key={item.country_slug}>
                   <Link
                     to={item.indicator_code
-                      ? `/world/${item.country_slug}/${item.indicator_code}`
-                      : `/world/${item.country_slug}`}
+                      ? indicatorPath(item.country_slug, item.indicator_code)
+                      : countryPath(item.country_slug)}
                     className="group flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-surface-hover"
                   >
                     <span className="w-5 font-mono text-[10px] text-text-tertiary">{index + 1}</span>
@@ -207,18 +215,30 @@ export default function HomeCountriesPanel() {
               ))}
             </ol>
           )}
-          {ranking.length >= 2 && (
-            <Link
-              to={`/compare?codes=${encodeURIComponent(
-                ranking.slice(0, 2).map((item) => `w:${item.country_slug}:${concept}`).join(','),
-              )}`}
-              onClick={() => track(events.HOME_COUNTRIES_CTA, { target: 'compare', concept })}
-              className="mt-3 inline-flex items-center gap-1 text-xs text-champagne hover:underline"
-            >
-              Сравнить страны
-              <ArrowRight size={12} />
-            </Link>
-          )}
+          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+            {fullRatingHref && (
+              <Link
+                to={fullRatingHref}
+                onClick={() => track(events.HOME_COUNTRIES_CTA, { target: 'rating', concept })}
+                className="inline-flex items-center gap-1 text-xs text-champagne hover:underline"
+              >
+                Все страны в рейтинге
+                <ArrowRight size={12} />
+              </Link>
+            )}
+            {ranking.length >= 2 && (
+              <Link
+                to={`/compare?codes=${encodeURIComponent(
+                  ranking.slice(0, 2).map((item) => `w:${item.country_slug}:${concept}`).join(','),
+                )}`}
+                onClick={() => track(events.HOME_COUNTRIES_CTA, { target: 'compare', concept })}
+                className="inline-flex items-center gap-1 text-xs text-champagne hover:underline"
+              >
+                Сравнить страны
+                <ArrowRight size={12} />
+              </Link>
+            )}
+          </div>
         </div>
 
         <div className="order-2 rounded-2xl border border-border-subtle bg-surface p-3 sm:p-4">
@@ -242,8 +262,8 @@ export default function HomeCountriesPanel() {
                   });
                   navigate(
                     detail?.indicator_code
-                      ? `/world/${country.slug}/${detail.indicator_code}`
-                      : `/world/${country.slug}`,
+                      ? indicatorPath(country.slug, detail.indicator_code)
+                      : countryPath(country.slug),
                   );
                 }}
               />

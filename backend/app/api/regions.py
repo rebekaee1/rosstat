@@ -16,6 +16,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.core.cache import cache_get, cache_set
+from app.data.region_indicator_polarity import (
+    region_rating_meta,
+    region_rating_order_by,
+)
 from app.database import get_db
 from app.models import Region, RegionDataPoint, RegionIndicator
 from app.services.seo_regional import MACRO_BY_TABLE
@@ -32,6 +36,14 @@ HEADLINE_TABLES = {
     "10.1": "Инвестиции",
     "20.1": "Инфляция",
     "3.12": "Бедность",
+}
+
+# Ряды, где источник публикует индекс к предыдущему году (100 = цены не
+# изменились), а карточка обязана показать прирост: «Инфляция — 110,1 %»
+# читается как рост цен в 2,1 раза. Ключ — table_code, значение — единица
+# результата и уточнение периода сравнения.
+HEADLINE_INDEX_TO_GROWTH = {
+    "20.1": ("%", "декабрь к декабрю предыдущего года"),
 }
 
 # На лендинге у каждой карточки региона — эти три числа.
@@ -185,7 +197,7 @@ async def regions_heatmap(code: str, db: AsyncSession = Depends(get_db)):
 
     Роут объявлен до `/{slug}` — иначе «heatmap» перехватится как slug региона.
     """
-    cache_key = f"fe:regions:heatmap:{code}"
+    cache_key = f"fe:regions:heatmap:v2:{code}"
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -213,10 +225,12 @@ async def regions_heatmap(code: str, db: AsyncSession = Depends(get_db)):
                Region.kind == "region")
     )).all()
 
+    polarity = region_rating_meta(indicator.code, indicator.table_code)
     result = {
         "indicator": {"code": indicator.code, "name": indicator.name,
                       "unit": indicator.unit},
         "year": last_year,
+        **polarity,
         "values": [
             {"slug": s, "name": n, "value": _fmt(float(v)), "raw": float(v)}
             for s, n, v in rows
@@ -358,7 +372,16 @@ async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
         })
         sec["indicators"].append(item)
         if i.table_code in HEADLINE_TABLES:
-            headline[i.table_code] = {**item, "label": HEADLINE_TABLES[i.table_code]}
+            card = {**item, "label": HEADLINE_TABLES[i.table_code]}
+            growth = HEADLINE_INDEX_TO_GROWTH.get(i.table_code)
+            if growth is not None:
+                unit_out, period = growth
+                card["value"] = _fmt(card["value"] - 100)
+                if card["prev_value"] is not None:
+                    card["prev_value"] = _fmt(card["prev_value"] - 100)
+                card["unit"] = unit_out
+                card["note"] = period
+            headline[i.table_code] = card
 
     result = {
         "region": {
@@ -377,7 +400,7 @@ async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
 
 @router.get("/{slug}/i/{code}")
 async def region_indicator_detail(slug: str, code: str, db: AsyncSession = Depends(get_db)):
-    cache_key = f"fe:regions:detail:{slug}:{code}"
+    cache_key = f"fe:regions:detail:v2:{slug}:{code}"
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -414,13 +437,16 @@ async def region_indicator_detail(slug: str, code: str, db: AsyncSession = Depen
 
     # рейтинг среди субъектов по последнему году ряда данного региона
     last_year = series[-1]["year"]
+    polarity = region_rating_meta(indicator.code, indicator.table_code)
     rank_rows = (await db.execute(
         select(Region.slug, Region.name, RegionDataPoint.value)
         .join(Region, Region.id == RegionDataPoint.region_id)
         .where(RegionDataPoint.indicator_id == indicator.id,
                RegionDataPoint.year == last_year,
                Region.kind == "region")
-        .order_by(RegionDataPoint.value.desc())
+        .order_by(region_rating_order_by(
+            RegionDataPoint.value, indicator.code, indicator.table_code
+        ))
     )).all()
     rank = None
     total_ranked = len(rank_rows)
@@ -451,8 +477,10 @@ async def region_indicator_detail(slug: str, code: str, db: AsyncSession = Depen
         },
         "series": series,
         "russia_series": russia_series,
-        "rank": {"position": rank, "total": total_ranked, "year": last_year,
-                 "top": top, "bottom": bottom} if rank else None,
+        "rank": {
+            "position": rank, "total": total_ranked, "year": last_year,
+            "top": top, "bottom": bottom, **polarity,
+        } if rank else None,
         "siblings": [{"code": c, "name": n, "unit": u} for c, n, u in siblings],
     }
     await cache_set(cache_key, result, settings.cache_ttl_data)

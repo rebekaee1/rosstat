@@ -6,6 +6,12 @@ import api from '../lib/api';
 import { formatRegionValue, shortUnit } from '../lib/regionsApi';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import { SkeletonBox } from '../components/Skeleton';
+import {
+  regionHubPath,
+  regionIndicatorPath,
+  regionPath,
+  regionRatingPath,
+} from '../lib/sitePaths';
 
 function parsePair(raw) {
   if (!raw) return null;
@@ -38,10 +44,10 @@ export default function RegionComparePage() {
     path: data.canonical_path,
   } : null);
 
-  if (!parsed) return <Navigate to="/regions" replace />;
+  if (!parsed) return <Navigate to={regionHubPath()} replace />;
 
   if (!isLoading && !data && !isError) {
-    return <Navigate to="/regions" replace />;
+    return <Navigate to={regionHubPath()} replace />;
   }
 
   return (
@@ -49,7 +55,7 @@ export default function RegionComparePage() {
       <nav className="flex items-center gap-1.5 text-xs text-text-tertiary mb-4 overflow-hidden" aria-label="Хлебные крошки">
         <Link to="/" className="hover:text-champagne transition-colors shrink-0">Главная</Link>
         <ChevronRight size={12} className="shrink-0" />
-        <Link to="/regions" className="hover:text-champagne transition-colors shrink-0">Регионы</Link>
+        <Link to={regionHubPath()} className="hover:text-champagne transition-colors shrink-0">Регионы</Link>
         <ChevronRight size={12} className="shrink-0" />
         <span className="text-text-secondary truncate">
           {data ? `${data.region_a.name} vs ${data.region_b.name}` : 'Сравнение'}
@@ -115,18 +121,18 @@ export default function RegionComparePage() {
               </h2>
               <p className="text-sm text-text-secondary mb-3">
                 {data.region_a.name}: <strong className="font-mono text-text-primary">{formatRegionValue(row.a.value)} {shortUnit(row.unit)}</strong>
-                {' · '}
+                {'; '}
                 {data.region_b.name}: <strong className="font-mono text-text-primary">{formatRegionValue(row.b.value)} {shortUnit(row.unit)}</strong>.
                 {' '}Показатель {row.verdict}.
               </p>
               <div className="flex flex-wrap gap-3 text-xs">
-                <Link to={`/region/${row.a.slug}/${row.code}`} className="text-champagne hover:underline">
+                <Link to={regionIndicatorPath(row.a.slug, row.code)} className="text-champagne hover:underline">
                   Динамика — {data.region_a.name}
                 </Link>
-                <Link to={`/region/${row.b.slug}/${row.code}`} className="text-champagne hover:underline">
+                <Link to={regionIndicatorPath(row.b.slug, row.code)} className="text-champagne hover:underline">
                   Динамика — {data.region_b.name}
                 </Link>
-                <Link to={`/region-rating/${row.code}`} className="text-champagne hover:underline">
+                <Link to={regionRatingPath(row.code)} className="text-champagne hover:underline">
                   Рейтинг всех регионов
                 </Link>
               </div>
@@ -139,9 +145,9 @@ export default function RegionComparePage() {
             </h2>
             <p className="text-sm text-text-secondary">
               Все показатели каждого региона:{' '}
-              <Link to={`/region/${data.region_a.slug}`} className="text-champagne hover:underline">{data.region_a.name}</Link>
-              {' · '}
-              <Link to={`/region/${data.region_b.slug}`} className="text-champagne hover:underline">{data.region_b.name}</Link>.
+              <Link to={regionPath(data.region_a.slug)} className="text-champagne hover:underline">{data.region_a.name}</Link>
+              {', '}
+              <Link to={regionPath(data.region_b.slug)} className="text-champagne hover:underline">{data.region_b.name}</Link>.
               {' '}Интерактивное сравнение любых рядов — в разделе{' '}
               <Link to="/compare" className="text-champagne hover:underline">«Сравнение»</Link>.
             </p>

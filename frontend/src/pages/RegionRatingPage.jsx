@@ -1,23 +1,51 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { ChevronRight, Trophy } from 'lucide-react';
+import { Trophy } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import { useRegionsHeatmap, formatRegionValue, shortUnit } from '../lib/regionsApi';
 import RegionsMap from '../components/RegionsMap';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
+import { regionRatingTrail } from '../lib/breadcrumbs';
+import {
+  regionHubPath,
+  regionIndicatorPath,
+  regionRatingPath,
+} from '../lib/sitePaths';
+
+function ButtonClass(active) {
+  return [
+    'rounded-xl px-3 py-2 text-xs font-medium transition-colors',
+    active
+      ? 'bg-champagne/15 text-champagne'
+      : 'bg-obsidian-lighter text-text-secondary hover:text-champagne',
+  ].join(' ');
+}
 
 export default function RegionRatingPage() {
   const { code } = useParams();
   const navigate = useNavigate();
   const { data, isLoading, isError, refetch, isFetching } = useRegionsHeatmap(code);
+  const achievement = Boolean(data?.rank_as_achievement);
+  const serverSort = data?.default_sort === 'asc' ? 'asc' : 'desc';
+  // null = ещё не трогали переключатель → берём направление с сервера.
+  const [sortOverride, setSortOverride] = useState(null);
+  const sortDirection = sortOverride ?? serverSort;
+
+  useEffect(() => {
+    setSortOverride(null);
+  }, [code]);
 
   const ranked = useMemo(() => {
     if (!data?.values?.length) return [];
-    return [...data.values]
-      .sort((a, b) => (b.raw ?? b.value) - (a.raw ?? a.value))
-      .map((row, i) => ({ ...row, rank: i + 1 }));
-  }, [data]);
+    const rows = [...data.values].sort((a, b) => {
+      const av = a.raw ?? a.value;
+      const bv = b.raw ?? b.value;
+      return sortDirection === 'asc' ? av - bv : bv - av;
+    });
+    return rows.map((row, i) => ({ ...row, rank: i + 1 }));
+  }, [data, sortDirection]);
 
   const top = ranked[0];
   const bottom = ranked[ranked.length - 1];
@@ -30,25 +58,33 @@ export default function RegionRatingPage() {
     return Object.fromEntries(data.values.map((v) => [v.slug, v.name]));
   }, [data]);
 
+  const bestLabel = achievement ? 'Лучшее значение' : 'Наибольшее значение';
+  const worstLabel = achievement ? 'Наихудшее значение' : 'Наименьшее значение';
+  const listTitle = achievement
+    ? `Полный рейтинг (${ranked.length} регионов)`
+    : `Список регионов по величине показателя (${ranked.length})`;
+  const tableCol = achievement ? 'Место' : '№';
+
   useDocumentMeta(data ? {
-    title: `Рейтинг регионов России: ${data.indicator.name} (${data.year})`,
+    title: achievement
+      ? `Рейтинг регионов России: ${data.indicator.name} (${data.year})`
+      : `${data.indicator.name} по регионам России (${data.year})`,
     description:
-      `${data.indicator.name} по регионам России за ${data.year} год: рейтинг всех `
+      `${data.indicator.name} по регионам России за ${data.year} год: `
       + `${ranked.length} субъектов РФ.`
-      + (top ? ` Наибольшее значение — ${top.name}.` : '')
+      + (top ? ` ${bestLabel} — ${top.name}.` : '')
       + ' Полная таблица, данные Росстата.',
-    path: `/region-rating/${code}`,
+    path: regionRatingPath(code),
   } : null);
 
   return (
     <div className="max-w-5xl mx-auto px-4 pt-24 pb-20">
-      <nav className="flex items-center gap-1.5 text-xs text-text-tertiary mb-4 overflow-hidden" aria-label="Хлебные крошки">
-        <Link to="/" className="hover:text-champagne transition-colors shrink-0">Главная</Link>
-        <ChevronRight size={12} className="shrink-0" />
-        <Link to="/regions" className="hover:text-champagne transition-colors shrink-0">Регионы</Link>
-        <ChevronRight size={12} className="shrink-0" />
-        <span className="text-text-secondary truncate">Рейтинг: {data?.indicator?.name || '…'}</span>
-      </nav>
+      <Breadcrumbs
+        items={regionRatingTrail(
+          achievement ? `Рейтинг: ${data?.indicator?.name || '…'}` : (data?.indicator?.name || '…'),
+          code,
+        )}
+      />
 
       {isError && <ApiRetryBanner onRetry={refetch} retrying={isFetching} />}
 
@@ -62,37 +98,83 @@ export default function RegionRatingPage() {
       {data && ranked.length >= 10 && (
         <>
           <p className="text-champagne text-xs font-mono uppercase tracking-widest mb-2">
-            Рейтинг регионов · {data.year} год
+            {achievement ? 'Рейтинг регионов' : 'Сравнение регионов'}
+            {' — '}
+            {data.year}
+            {' '}
+            год
           </p>
           <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary mb-3">
-            {data.indicator.name}: рейтинг регионов России
+            {data.indicator.name}
+            :
+            {' '}
+            {achievement ? 'рейтинг регионов России' : 'сравнение регионов России'}
           </h1>
-          <p className="text-text-secondary mb-6 max-w-3xl">
-            Рейтинг {ranked.length} субъектов Российской Федерации по показателю «{data.indicator.name}»
-            за {data.year} год. Наибольшее значение у региона {top.name} — {formatRegionValue(top.raw ?? top.value)}{' '}
+          <p className="text-text-secondary mb-4 max-w-3xl">
+            {achievement ? 'Рейтинг' : 'Сравнение'}
+            {' '}
+            {ranked.length}
+            {' '}
+            субъектов Российской Федерации по показателю «
+            {data.indicator.name}
+            » за
+            {' '}
+            {data.year}
+            {' '}
+            год.
+            {' '}
+            {bestLabel}
+            {' '}
+            у региона
+            {' '}
+            {top.name}
+            {' — '}
+            {formatRegionValue(top.raw ?? top.value)}
+            {' '}
             {shortUnit(data.indicator.unit)}.
           </p>
+
+          <div className="mb-6 flex flex-wrap items-center gap-2">
+            <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary mr-1">
+              Сортировка
+            </span>
+            <button type="button" className={ButtonClass(sortDirection === 'desc')} onClick={() => setSortOverride('desc')}>
+              По убыванию
+            </button>
+            <button type="button" className={ButtonClass(sortDirection === 'asc')} onClick={() => setSortOverride('asc')}>
+              По возрастанию
+            </button>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
             <div className="bg-surface border border-border-subtle rounded-xl p-3.5">
               <div className="text-[11px] text-text-tertiary uppercase tracking-wide flex items-center gap-1">
-                <Trophy size={12} className="text-champagne" /> Наибольшее значение
+                {achievement && <Trophy size={12} className="text-champagne" />}
+                {bestLabel}
               </div>
               <div className="mt-1 font-semibold text-text-primary">{top.name}</div>
               <div className="font-mono text-sm text-text-secondary">
-                {formatRegionValue(top.raw ?? top.value)} {shortUnit(data.indicator.unit)}
+                {formatRegionValue(top.raw ?? top.value)}
+                {' '}
+                {shortUnit(data.indicator.unit)}
               </div>
             </div>
             <div className="bg-surface border border-border-subtle rounded-xl p-3.5">
-              <div className="text-[11px] text-text-tertiary uppercase tracking-wide">Наименьшее значение</div>
+              <div className="text-[11px] text-text-tertiary uppercase tracking-wide">{worstLabel}</div>
               <div className="mt-1 font-semibold text-text-primary">{bottom.name}</div>
               <div className="font-mono text-sm text-text-secondary">
-                {formatRegionValue(bottom.raw ?? bottom.value)} {shortUnit(data.indicator.unit)}
+                {formatRegionValue(bottom.raw ?? bottom.value)}
+                {' '}
+                {shortUnit(data.indicator.unit)}
               </div>
             </div>
             <div className="bg-surface border border-border-subtle rounded-xl p-3.5">
               <div className="text-[11px] text-text-tertiary uppercase tracking-wide">Данные за</div>
-              <div className="mt-1 font-mono font-semibold text-text-primary">{data.year} год</div>
+              <div className="mt-1 font-mono font-semibold text-text-primary">
+                {data.year}
+                {' '}
+                год
+              </div>
             </div>
           </div>
 
@@ -101,19 +183,19 @@ export default function RegionRatingPage() {
               valuesBySlug={mapValues}
               unit={data.indicator.unit}
               nameBySlug={nameBySlug}
-              onSelect={(slug) => navigate(`/region/${slug}/${code}`)}
+              onSelect={(slug) => navigate(regionIndicatorPath(slug, code))}
             />
           </div>
 
           <section className="mb-8">
             <h2 className="font-display text-lg font-semibold text-text-primary mb-3">
-              Полный рейтинг ({ranked.length} регионов)
+              {listTitle}
             </h2>
             <div className="overflow-x-auto rounded-xl border border-border-subtle max-h-[32rem]">
               <table className="w-full text-sm">
                 <thead className="sticky top-0 bg-obsidian-light/95 backdrop-blur-sm z-10">
                   <tr className="text-left text-[11px] uppercase tracking-wide text-text-tertiary">
-                    <th className="px-4 py-2.5 font-medium w-16">Место</th>
+                    <th className="px-4 py-2.5 font-medium w-16">{tableCol}</th>
                     <th className="px-4 py-2.5 font-medium">Регион</th>
                     <th className="px-4 py-2.5 font-medium text-right">{data.indicator.unit || 'Значение'}</th>
                   </tr>
@@ -124,7 +206,7 @@ export default function RegionRatingPage() {
                       <td className="px-4 py-2 font-mono text-text-tertiary">{row.rank}</td>
                       <td className="px-4 py-2">
                         <Link
-                          to={`/region/${row.slug}/${code}`}
+                          to={regionIndicatorPath(row.slug, code)}
                           className="text-text-primary hover:text-champagne transition-colors"
                         >
                           {row.name}
@@ -144,7 +226,11 @@ export default function RegionRatingPage() {
             <h2 className="font-display text-base font-semibold text-text-primary mb-2">Источник данных</h2>
             <p className="text-sm text-text-secondary">
               Сборник Росстата «Регионы России. Социально-экономические показатели».
-              Значения за {data.year} год. По каждому региону — страница с полной динамикой с 1990 года.
+              Значения за
+              {' '}
+              {data.year}
+              {' '}
+              год. По каждому региону — страница с полной динамикой с 1990 года.
             </p>
           </section>
         </>

@@ -365,7 +365,7 @@ async def badge_svg(
         chg_str = f'{"+" if change >= 0 else ""}{_fmt_value(change)}'
         vt_raw += f"  {arrow}{chg_str}"
     if stamp:
-        vt_raw += f" · {stamp}"
+        vt_raw += f" — {stamp}"
     value_text = _xml(vt_raw)
 
     dark = theme == "dark"

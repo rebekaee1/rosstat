@@ -23,7 +23,6 @@ from app.services.yandex_webmaster_client import YandexWebmasterClient
 logger = logging.getLogger(__name__)
 
 _SUBMITTED_KEY = "wm:recrawl:submitted"
-_HOST_ID = "https:forecasteconomy.com:443"
 
 
 async def _alert_recrawl(text: str) -> None:
@@ -57,7 +56,7 @@ async def recrawl_daily_job() -> dict[str, int]:
     try:
         user = await client.user()
         user_id = user.data["user_id"]
-        quota_resp = await client.recrawl_quota(user_id, _HOST_ID)
+        quota_resp = await client.recrawl_quota(user_id, settings.webmaster_host_id)
         remaining = int(quota_resp.data.get("quota_remainder", 0))
     except Exception as exc:
         # Н-24: живой токен + недоступный API = дневная квота переобхода
@@ -95,7 +94,7 @@ async def recrawl_daily_job() -> dict[str, int]:
             continue
         url = f"{DOMAIN}{path}"
         try:
-            await client.submit_recrawl(user_id, _HOST_ID, url, approved=True)
+            await client.submit_recrawl(user_id, settings.webmaster_host_id, url, approved=True)
             submitted += 1
             await redis.sadd(_SUBMITTED_KEY, path)
         except YandexApiError as exc:

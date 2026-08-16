@@ -2,6 +2,9 @@ import { Link } from 'react-router-dom';
 import { cn } from '../lib/format';
 import { track, events } from '../lib/track';
 import { buildFrequencyItems } from '../lib/frequencySwitcher';
+import {
+  russiaIndicatorPath,
+} from '../lib/sitePaths';
 
 /**
  * Frequency-switcher между парами индикаторов разной частоты.
@@ -40,7 +43,7 @@ export default function FrequencySwitcher({
           return (
             <Link
               key={item.frequency}
-              to={`/indicator/${item.code}`}
+              to={russiaIndicatorPath(item.code)}
               onClick={() => {
                 if (active) return;
                 track(events.FREQUENCY_SWITCH, {

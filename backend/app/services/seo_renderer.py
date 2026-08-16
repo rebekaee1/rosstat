@@ -49,7 +49,10 @@ from app.services.display import (
     format_date_ru,
     format_number_ru,
     is_cpi_index,
+    value_period_phrase,
 )
+from app.services import breadcrumbs as crumbs
+from app.services import site_paths as paths
 from app.services.seo_content import (
     CATEGORIES,
     CATEGORY_META,
@@ -61,6 +64,7 @@ from app.services.seo_content import (
     PageSeo,
     SeoBlock,
 )
+from app.services.site_urls import YEAR_LANDING_MIN_POINTS
 
 logger = logging.getLogger(__name__)
 
@@ -126,6 +130,18 @@ def clean_text(value: str | None, fallback: str = "") -> str:
     return re.sub(r"\s+", " ", value).strip()
 
 
+def truncate_meta(value: str, limit: int) -> str:
+    """Обрезка meta по границе слова: посетитель видит текст в выдаче, и
+    оборванное посередине слово выглядит как сбой сайта."""
+    if len(value) <= limit:
+        return value
+    head = value[:limit].rstrip()
+    cut = max(head.rfind(" "), head.rfind("—"), head.rfind(","))
+    if cut > limit * 0.6:
+        head = head[:cut]
+    return head.rstrip(" ,;:—-") + "…"
+
+
 def _format_date(value: date | None) -> str:
     """Человекочитаемая русская дата («1 мая 2026») — для видимого текста."""
     return format_date_ru(value)
@@ -151,6 +167,22 @@ def _link(path: str, label: str) -> str:
     return f'<a href="{escape(path)}">{escape(label)}</a>'
 
 
+def _breadcrumbs_nav(items: list[tuple[str, str]]) -> str:
+    """Видимые крошки: шеврон « / », последний узел без ссылки."""
+    if not items:
+        return ""
+    parts: list[str] = []
+    last = len(items) - 1
+    for index, (path, name) in enumerate(items):
+        if index:
+            parts.append(" / ")
+        if index == last:
+            parts.append(escape(name))
+        else:
+            parts.append(_link(path, name))
+    return f'<nav aria-label="Хлебные крошки">{"".join(parts)}</nav>'
+
+
 def _links_list(links: Iterable[tuple[str, str]]) -> str:
     items = [f"<li>{_link(path, label)}</li>" for path, label in links]
     return "<ul>" + "".join(items) + "</ul>" if items else ""
@@ -162,7 +194,7 @@ def _category_rich_list(categories: dict[str, CategorySeo]) -> str:
     for slug, meta in categories.items():
         desc = escape(clean_text(meta.description))
         items.append(
-            f'<li>{_link(f"/category/{slug}", meta.name)}'
+            f'<li>{_link(paths.russia_category(slug), meta.name)}'
             f'<span class="seo-cat-desc"> — {desc}</span></li>'
         )
     return "<ul>" + "".join(items) + "</ul>"
@@ -224,7 +256,7 @@ def _enrich_description(desc: str, current, unit: str,
         return desc
     snippet = (
         f"Актуальное значение — {display_value_text(code, current.value, unit, frequency)} "
-        f"на {format_date_ru(current.date)}."
+        f"{value_period_phrase(current.date, frequency)}."
     )
     if snippet.lower()[:20] in desc.lower():
         return desc
@@ -391,19 +423,43 @@ body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:"DM Sans",system-ui,s
 
 # Брендовый «хром» чистых SSR-страниц (include_app=False): единая шапка с
 # навигацией и CTA-футер на главную. Одна точка правки для всех программатик-
-# семейств (/today, /region-rating, /region-vs, /calendar/{y}/{m}, годовые
-# landing'и) — страницы ведут посетителя вглубь сайта, а не остаются тупиком.
-_SSR_CHROME_HEADER = """<header class="seo-topbar"><div class="seo-topbar-in">
+# семейств без React-bundle (годовые landing'и + брендовая 404).
+#
+# Состав seo-topnav ≠ клиентская Navbar: здесь перелинковка для робота.
+# Обязательны хабы /russia/today, /russia/region, /world, /russia/calendar.
+# Клиентскую шапку «пункт в пункт» не синхронизировать.
+#
+# Масштаб (site_urls, 2026-08): chrome видят только ~2,5k годовых landing'ов;
+# ~77k URL — SPA-SSR (include_app=True) без chrome. Для них — блок
+# `_SSR_PLATFORM_DEEP_LINKS` внутри body (бот читает; React заменит #root).
+_SSR_CHROME_HEADER = f"""<header class="seo-topbar"><div class="seo-topbar-in">
 <a class="seo-brand" href="/">Forecast<em>Economy</em></a>
-<nav class="seo-topnav"><a href="/">Индикаторы</a><a href="/today">Сегодня</a><a href="/regions">Регионы</a><a href="/world">Страны</a><a href="/calendar">Календарь</a><a href="/compare">Сравнение</a></nav>
+<nav class="seo-topnav"><a href="/">Индикаторы</a><a href="{paths.today()}">Сегодня</a><a href="{paths.region_hub()}">Регионы</a><a href="{paths.world_hub()}">Страны</a><a href="{paths.world_rating("unemployment-rate")}">Рейтинг стран</a><a href="{paths.calendar()}">Календарь</a><a href="/compare">Сравнение</a><a href="/calculator">Калькуляторы</a></nav>
 </div></header>"""
 
 _SSR_CHROME_FOOTER = f"""<div class="seo-cta"><div class="seo-cta-in">
 <p><strong>Интерактивные графики, сравнения и проверенные прогнозы</strong> — для показателей России, регионов и доступных стран. Просмотр открыт всем, скачивание — после бесплатной регистрации.</p>
 <a class="seo-btn" href="/">Открыть платформу</a>
 </div></div>
-<footer class="seo-foot">Данные — только официальные первоисточники: государственные статистические ведомства, центральные банки и официальные биржи. Обновляются по мере публикации. © Forecast Economy · <a href="{DOMAIN}">forecasteconomy.com</a></footer>
+<footer class="seo-foot">Данные — только официальные первоисточники: государственные статистические ведомства, центральные банки и официальные биржи. Обновляются по мере публикации. © Forecast Economy — <a href="{DOMAIN}">forecasteconomy.com</a></footer>
 <script type="module" src="/assets/behavior-standalone.js" defer></script>"""
+
+# Единый выход вглубь платформы для SPA-SSR (include_app=True): без chrome
+# тонкие страницы (/today/*, /calendar/*) оставляли боту только крошки.
+# Класс seo-platform-nav — маркер «блок уже есть», чтобы не дублировать.
+_SSR_PLATFORM_DEEP_LINKS = f"""
+<section class="seo-section seo-platform-nav" aria-label="Разделы платформы">
+<h2>Разделы платформы</h2>
+<ul class="seo-pills">
+<li><a href="/">Индикаторы России</a></li>
+<li><a href="{paths.today()}">Экономика сегодня</a></li>
+<li><a href="{paths.region_hub()}">Регионы России</a></li>
+<li><a href="{paths.world_hub()}">Статистика по странам</a></li>
+<li><a href="{paths.calendar()}">Календарь публикаций</a></li>
+<li><a href="/compare">Сравнение показателей</a></li>
+</ul>
+</section>
+"""
 
 FREQUENCY_LABELS_RU = {
     "daily": "ежедневно",
@@ -439,7 +495,7 @@ async def build_document(
     assets = await get_app_assets()
     url = _absolute(canonical_path)
     safe_title = escape(title)
-    safe_desc = escape(clean_text(description)[:300])
+    safe_desc = escape(truncate_meta(clean_text(description), 300))
     safe_keywords = escape(clean_text(keywords or DEFAULT_KEYWORDS)[:400])
     structured = "\n".join(_json_script(item) for item in (json_ld or []))
     extras = extra_head or ""
@@ -452,6 +508,11 @@ async def build_document(
         # платформу + футер об источниках. React-страницы — нет (гидратация
         # заменит #root своим layout'ом).
         body = f"{_SSR_CHROME_HEADER}\n{body}\n{_SSR_CHROME_FOOTER}"
+    elif "seo-platform-nav" not in body:
+        # SPA-SSR без chrome: бот видит только prerender в #root. Единый блок
+        # выхода в хабы — иначе тонкие семейства (/today/*, /calendar/*) —
+        # тупики с одними крошками. React при гидратации заменит #root.
+        body = f"{body.rstrip()}\n{_SSR_PLATFORM_DEEP_LINKS}"
     return f"""<!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -494,13 +555,18 @@ async def build_document(
 
 
 def render_not_found_html(message: str = "Страница не найдена") -> str:
-    """Брендовая 404 для SSR-роутов вместо голого «Not found».
+    """Брендовая 404 для SSR-роутов и nginx catch-all.
 
     Самодостаточный документ (без asset-fetch и БД): critical CSS + хром +
     навигация по основным разделам. noindex — чтобы поисковики не тащили
-    404-страницы в выдачу.
+    404-страницы в выдачу. Не тупик: ведём в каталог, сегодня, регионы,
+    страны, сравнение и поиск на главной.
     """
     safe = escape(message)
+    category_links = "".join(
+        f'<li><a href="{escape(paths.russia_category(slug))}">{escape(meta.name)}</a></li>'
+        for slug, meta in list(CATEGORY_META.items())[:6]
+    )
     return f"""<!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -517,10 +583,17 @@ def render_not_found_html(message: str = "Страница не найдена")
 <p>Такой страницы нет или она переехала. Вот с чего можно продолжить:</p>
 <ul>
 <li><a href="/">Все экономические индикаторы России</a></li>
-<li><a href="/today">Ключевые показатели на сегодня</a></li>
-<li><a href="/regions">Статистика по регионам России</a></li>
-<li><a href="/calendar">Календарь публикаций статистики</a></li>
+<li><a href="{paths.today()}">Ключевые показатели на сегодня</a></li>
+<li><a href="{paths.region_hub()}">Статистика по регионам России</a></li>
+<li><a href="{paths.world_hub()}">Статистика по странам</a></li>
+<li><a href="/compare">Сравнение показателей</a></li>
+<li><a href="{paths.calendar()}">Календарь публикаций статистики</a></li>
+<li><a href="/">Поиск по платформе</a> — откройте главную и воспользуйтесь поиском в шапке</li>
 </ul>
+<section><h2>Разделы каталога</h2>
+<ul>
+{category_links}
+</ul></section>
 </main>
 {_SSR_CHROME_FOOTER}
 </body>
@@ -559,7 +632,7 @@ def _autolink(text_escaped: str, *, current_code: str | None = None) -> str:
 
         def _wrap(match: re.Match) -> str:
             linked_codes.add(code)
-            return f'<a href="/indicator/{code}">{match.group(0)}</a>'
+            return f'<a href="{paths.russia_indicator(code)}">{match.group(0)}</a>'
 
         new_text, n = re.subn(pattern, _wrap, text_escaped, count=1)
         if n:
@@ -616,13 +689,37 @@ def _indicator_blocks_from_db(indicator: Indicator) -> tuple[SeoBlock, ...]:
     return tuple(out)
 
 
-def _page_body(page: PageSeo) -> str:
+def _page_trail(page_slug: str, page: PageSeo) -> list[tuple[str, str]]:
+    if page_slug == "russia":
+        return crumbs.russia_home_trail()
+    if page_slug == "russia-categories":
+        return crumbs.russia_categories_trail()
+    if page_slug == "calendar":
+        return crumbs.calendar_trail()
+    if page_slug == "demographics":
+        return crumbs.demographics_trail()
+    if page_slug in {
+        "compare",
+        "calculator",
+        "calculator-mortgage",
+        "calculator-compound",
+        "widgets",
+        "about",
+        "methodology",
+        "privacy",
+        "terms",
+    }:
+        return crumbs.tool_trail(page.h1, page.path)
+    return crumbs.trail(crumbs.home(), (page.path, page.h1))
+
+
+def _page_body(page: PageSeo, trail: list[tuple[str, str]]) -> str:
     return f"""<main class="seo-page">
-<nav aria-label="Хлебные крошки">{_link("/", "Главная")}</nav>
+{_breadcrumbs_nav(trail)}
 <h1>{escape(page.h1)}</h1>
 <p>{escape(page.intro)}</p>
 {_blocks_html(page.blocks)}
-<section><h2>Связанные разделы</h2>{_links_list(page.links or tuple((f"/category/{slug}", meta.name) for slug, meta in CATEGORY_META.items()))}</section>
+<section><h2>Связанные разделы</h2>{_links_list(page.links or tuple((paths.russia_category(slug), meta.name) for slug, meta in CATEGORY_META.items()))}</section>
 </main>"""
 
 
@@ -630,9 +727,10 @@ async def render_page_html(page_slug: str) -> tuple[int, str]:
     page = PAGE_META.get(page_slug)
     if not page:
         return 404, "Not found"
+    trail = _page_trail(page_slug, page)
     json_ld = [
         _site_json_ld(),
-        _breadcrumbs([("/", "Главная"), (page.path, page.h1)]),
+        _breadcrumbs(trail),
         {
             "@context": "https://schema.org",
             "@type": "WebPage",
@@ -647,7 +745,7 @@ async def render_page_html(page_slug: str) -> tuple[int, str]:
         title=page.title,
         description=page.description,
         canonical_path=page.path,
-        body=_page_body(page),
+        body=_page_body(page, trail),
         json_ld=json_ld,
         keywords=page.keywords or None,
     )
@@ -656,7 +754,7 @@ async def render_page_html(page_slug: str) -> tuple[int, str]:
 
 async def render_home_html(db: AsyncSession) -> str:
     flagships = await _indicators_by_codes(db, FLAGSHIP_CODES)
-    flagship_links = tuple((f"/indicator/{ind.code}", ind.name) for ind in flagships)
+    flagship_links = tuple((paths.russia_indicator(ind.code), ind.name) for ind in flagships)
     page = PAGE_META["home"]
     body = f"""<main class="seo-page">
 <p class="seo-eyebrow">Официальные данные России, регионов и стран</p>
@@ -672,7 +770,7 @@ async def render_home_html(db: AsyncSession) -> str:
             "@type": "ListItem",
             "position": index + 1,
             "name": meta.name,
-            "url": _absolute(f"/category/{slug}"),
+            "url": _absolute(paths.russia_category(slug)),
         }
         for index, (slug, meta) in enumerate(CATEGORY_META.items())
     ]
@@ -703,7 +801,7 @@ async def render_home_html(db: AsyncSession) -> str:
                     "@type": "ListItem",
                     "position": index + 1,
                     "name": ind.name,
-                    "url": _absolute(f"/indicator/{ind.code}"),
+                    "url": _absolute(paths.russia_indicator(ind.code)),
                 }
                 for index, ind in enumerate(flagships)
             ],
@@ -760,6 +858,54 @@ async def _active_indicators(
     return list(result.scalars().all())
 
 
+async def render_categories_hub_html(db: AsyncSession) -> tuple[int, str]:
+    """Хаб /russia/category — список категорий России."""
+    page = PAGE_META.get("russia-categories")
+    if not page:
+        return 404, "Not found"
+    trail = crumbs.russia_categories_trail()
+    links = tuple(
+        (paths.russia_category(slug), meta.name)
+        for slug, meta in CATEGORY_META.items()
+    )
+    body = f"""<main class="seo-page">
+{_breadcrumbs_nav(trail)}
+<h1>{escape(page.h1)}</h1>
+<p>{escape(page.intro)}</p>
+{_blocks_html(page.blocks)}
+<section><h2>Категории</h2>{_category_rich_list(CATEGORY_META)}</section>
+<section><h2>Связанные разделы</h2>{_links_list(page.links or links[:6])}</section>
+</main>"""
+    json_ld = [
+        _site_json_ld(),
+        _breadcrumbs(trail),
+        {
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "name": page.title,
+            "description": page.description,
+            "url": _absolute(paths.russia_categories()),
+            "mainEntity": [
+                {
+                    "@type": "Thing",
+                    "name": meta.name,
+                    "url": _absolute(paths.russia_category(slug)),
+                }
+                for slug, meta in list(CATEGORY_META.items())[:12]
+            ],
+        },
+    ]
+    html = await build_document(
+        title=page.title,
+        description=page.description,
+        canonical_path=paths.russia_categories(),
+        body=body,
+        json_ld=json_ld,
+        keywords=page.keywords or None,
+    )
+    return 200, html
+
+
 async def render_category_html(slug: str, db: AsyncSession) -> tuple[int, str]:
     category = CATEGORY_META.get(slug)
     if not category:
@@ -768,9 +914,10 @@ async def render_category_html(slug: str, db: AsyncSession) -> tuple[int, str]:
         db, category=category.api_category, listed_only=True
     )
     indicators = _sort_indicators_for_seo(indicators, category)
-    links = tuple((f"/indicator/{ind.code}", ind.name) for ind in indicators)
+    links = tuple((paths.russia_indicator(ind.code), ind.name) for ind in indicators)
+    trail = crumbs.russia_category_trail(category.name, paths.russia_category(slug))
     body = f"""<main class="seo-page">
-<nav aria-label="Хлебные крошки">{_link("/", "Главная")} / {escape(category.name)}</nav>
+{_breadcrumbs_nav(trail)}
 <h1>{escape(category.title)}</h1>
 <p>{escape(category.intro)}</p>
 {_blocks_html(category.blocks)}
@@ -779,15 +926,15 @@ async def render_category_html(slug: str, db: AsyncSession) -> tuple[int, str]:
 </main>"""
     json_ld = [
         _site_json_ld(),
-        _breadcrumbs([("/", "Главная"), (f"/category/{slug}", category.name)]),
+        _breadcrumbs(trail),
         {
             "@context": "https://schema.org",
             "@type": "CollectionPage",
             "name": category.title,
             "description": category.description,
-            "url": _absolute(f"/category/{slug}"),
+            "url": _absolute(paths.russia_category(slug)),
             "mainEntity": [
-                {"@type": "Dataset", "name": ind.name, "url": _absolute(f"/indicator/{ind.code}")}
+                {"@type": "Dataset", "name": ind.name, "url": _absolute(paths.russia_indicator(ind.code))}
                 for ind in indicators[:12]
             ],
         },
@@ -795,7 +942,7 @@ async def render_category_html(slug: str, db: AsyncSession) -> tuple[int, str]:
     html = await build_document(
         title=category.title,
         description=category.description,
-        canonical_path=f"/category/{slug}",
+        canonical_path=paths.russia_category(slug),
         body=body,
         json_ld=json_ld,
         keywords=category.keywords or None,
@@ -805,7 +952,7 @@ async def render_category_html(slug: str, db: AsyncSession) -> tuple[int, str]:
 
 def _related_categories(current_slug: str) -> tuple[tuple[str, str], ...]:
     return tuple(
-        (f"/category/{slug}", meta.name)
+        (paths.russia_category(slug), meta.name)
         for slug, meta in CATEGORY_META.items()
         if slug != current_slug
     )[:6]
@@ -888,25 +1035,27 @@ async def render_indicator_html(
         data_years=data_years,
         forecast_ssr=forecast_ssr,
     )
-    canonical_path = f"/indicator/{indicator.code}"
+    canonical_path = paths.russia_indicator(indicator.code)
     if resolved_mode and resolved_mode.mode != family.default_mode:
         canonical_path = f"{canonical_path}?mode={resolved_mode.mode}"
-    # OG-картинка и видимый график — от ряда ВЫБРАННОГО режима (data_indicator),
-    # а не базового: раньше mode-страница писала «годовая сумма», а картинка
-    # показывала квартальный базовый ряд (В-2).
-    og_path = f"{DOMAIN}/og/{data_indicator.code}.png"
+    # OG-картинка и видимый график — код карточки (URL), не sibling-режима:
+    # /og/{base}.png всегда существует; /og/{base}-yoy.png на проде часто 404
+    # (unlisted derived ещё без превью). Смысл режима остаётся в title/Dataset.
+    og_path = f"{DOMAIN}{paths.og_indicator(paths.RUSSIA, indicator.code)}"
     image_name = (
         forecast_ssr_image_name(display_name)
         if forecast_ssr
         else f"{display_name} — график динамики ({indicator.source})"
     )
+    crumb_trail = crumbs.russia_indicator_trail(
+        category.name if category else None,
+        paths.russia_category(category.slug) if category else None,
+        display_name,
+        canonical_path.split("?")[0],
+    )
     json_ld = [
         _site_json_ld(),
-        _breadcrumbs([
-            ("/", "Главная"),
-            (f"/category/{category.slug}", category.name) if category else ("/", "Индикаторы"),
-            (canonical_path, display_name),
-        ]),
+        _breadcrumbs(crumb_trail),
         {
             "@context": "https://schema.org",
             "@type": "Dataset",
@@ -963,25 +1112,253 @@ async def render_indicator_html(
 
 
 async def indicator_data_years(db: AsyncSession, indicator_id: int) -> list[int]:
-    """Годы, за которые у индикатора есть >= 2 точек (для landing-страниц)."""
+    """Годы с достаточным числом точек для годовой landing-страницы."""
     year_expr = func.extract("year", IndicatorData.date)
     result = await db.execute(
         select(year_expr.label("y"), func.count(IndicatorData.id))
         .where(IndicatorData.indicator_id == indicator_id)
         .group_by(year_expr)
-        .having(func.count(IndicatorData.id) >= 2)
+        .having(func.count(IndicatorData.id) >= YEAR_LANDING_MIN_POINTS)
         .order_by(year_expr)
     )
     return [int(y) for y, _cnt in result.all()]
 
 
+async def yearly_last_points(
+    db: AsyncSession, indicator_id: int,
+) -> list[tuple[int, float, date]]:
+    """Последняя точка каждого календарного года (для годовых рядов — единственная)."""
+    result = await db.execute(
+        select(IndicatorData.date, IndicatorData.value)
+        .where(IndicatorData.indicator_id == indicator_id)
+        .order_by(IndicatorData.date)
+    )
+    by_year: dict[int, tuple[int, float, date]] = {}
+    for dt, raw in result.all():
+        if dt is None or raw is None:
+            continue
+        by_year[int(dt.year)] = (int(dt.year), float(raw), dt)
+    return [by_year[y] for y in sorted(by_year)]
+
+
+def neighbor_year_window(
+    series: list[tuple[int, float, date]],
+    year: int,
+    *,
+    size: int = 10,
+) -> list[tuple[int, float, date]]:
+    """Окно соседних лет вокруг выбранного (до `size` точек)."""
+    if not series:
+        return []
+    years = [y for y, _v, _d in series]
+    if year in years:
+        idx = years.index(year)
+    else:
+        idx = min(range(len(years)), key=lambda i: abs(years[i] - year))
+    half = size // 2
+    start = max(0, idx - half)
+    end = min(len(series), start + size)
+    start = max(0, end - size)
+    return series[start:end]
+
+
+def year_change_lines(
+    *,
+    year: int,
+    value: float,
+    prev_value: float | None,
+    prev_year: int | None,
+    code: str,
+    unit: str,
+) -> list[str]:
+    """Строки «значение» и «изменение к прошлому году» для одноточечной страницы."""
+    cpi_mode = is_cpi_index(code)
+    shown = display_value(code, value)
+    unit_suffix = f" {unit}" if unit and not cpi_mode else (" %" if cpi_mode else "")
+    lines = [
+        f"Значение: {format_number_ru(shown, signed=cpi_mode)}{unit_suffix}",
+    ]
+    if prev_value is None or prev_year is None:
+        lines.append("Изменение к предыдущему году: нет сопоставимого значения")
+        return lines
+    prev_shown = display_value(code, prev_value)
+    if shown is None or prev_shown is None:
+        lines.append(f"Изменение к {prev_year} году: нет данных")
+        return lines
+    delta = shown - prev_shown
+    abs_text = format_number_ru(delta, signed=True)
+    if prev_shown == 0:
+        pct_text = "не рассчитывается (база равна нулю)"
+        lines.append(
+            f"Изменение к {prev_year} году: {abs_text}{unit_suffix} "
+            f"({pct_text})"
+        )
+    else:
+        pct = round((delta / abs(prev_shown)) * 100.0, 2)
+        lines.append(
+            f"Изменение к {prev_year} году: {abs_text}{unit_suffix} "
+            f"({format_number_ru(pct, signed=True)} %)"
+        )
+    return lines
+
+
+def year_history_position_lines(
+    *,
+    year: int,
+    value: float,
+    series: list[tuple[int, float, date]],
+    code: str,
+    unit: str,
+) -> list[str]:
+    """Положение значения в истории ряда: среднее, рекорд, давность экстремума."""
+    if len(series) < 2:
+        return ["Положение в истории: недостаточно соседних лет для сравнения"]
+    cpi_mode = is_cpi_index(code)
+    unit_suffix = f" {unit}" if unit and not cpi_mode else (" %" if cpi_mode else "")
+    shown_pairs = [
+        (y, display_value(code, v))
+        for y, v, _d in series
+        if display_value(code, v) is not None
+    ]
+    if not shown_pairs:
+        return ["Положение в истории: нет данных"]
+    shown_map = {y: s for y, s in shown_pairs}
+    current = shown_map.get(year)
+    if current is None:
+        current = display_value(code, value)
+    if current is None:
+        return ["Положение в истории: нет данных"]
+    values = [s for _y, s in shown_pairs]
+    mean = sum(values) / len(values)
+    n_years = len(shown_pairs)
+    if current > mean:
+        vs_mean = f"выше среднего за {n_years} лет"
+    elif current < mean:
+        vs_mean = f"ниже среднего за {n_years} лет"
+    else:
+        vs_mean = f"на уровне среднего за {n_years} лет"
+    lines = [
+        f"Положение в истории: {vs_mean} "
+        f"(среднее — {format_number_ru(mean, signed=cpi_mode)}{unit_suffix})",
+    ]
+    vmax = max(values)
+    vmin = min(values)
+    max_years = sorted(y for y, s in shown_pairs if s == vmax)
+    min_years = sorted(y for y, s in shown_pairs if s == vmin)
+    if current == vmax and year in max_years:
+        if len(max_years) == 1:
+            lines.append(f"Это максимум за всю доступную историю ряда ({n_years} лет)")
+        else:
+            lines.append(
+                f"Это один из максимумов истории ряда "
+                f"({format_number_ru(vmax, signed=cpi_mode)}{unit_suffix})"
+            )
+    else:
+        peak_year = max_years[-1]
+        gap = year - peak_year
+        gap_text = (
+            f"{gap} год назад" if gap == 1
+            else f"{gap} года назад" if 2 <= gap % 10 <= 4 and not 12 <= gap % 100 <= 14
+            else f"{gap} лет назад"
+        )
+        lines.append(
+            f"Максимум истории — {format_number_ru(vmax, signed=cpi_mode)}"
+            f"{unit_suffix} в {peak_year} году"
+            + (f" ({gap_text})" if gap > 0 else "")
+        )
+    if current == vmin and year in min_years:
+        if len(min_years) == 1:
+            lines.append(f"Это минимум за всю доступную историю ряда ({n_years} лет)")
+        else:
+            lines.append(
+                f"Это один из минимумов истории ряда "
+                f"({format_number_ru(vmin, signed=cpi_mode)}{unit_suffix})"
+            )
+    else:
+        floor_year = min_years[-1]
+        gap = year - floor_year
+        if gap > 0:
+            gap_text = (
+                f"{gap} год назад" if gap == 1
+                else f"{gap} года назад" if 2 <= gap % 10 <= 4 and not 12 <= gap % 100 <= 14
+                else f"{gap} лет назад"
+            )
+            lines.append(
+                f"Минимум истории — {format_number_ru(vmin, signed=cpi_mode)}"
+                f"{unit_suffix} в {floor_year} году ({gap_text})"
+            )
+        else:
+            lines.append(
+                f"Минимум истории — {format_number_ru(vmin, signed=cpi_mode)}"
+                f"{unit_suffix} в {floor_year} году"
+            )
+    return lines
+
+
+def _year_page_title_desc(
+    *,
+    name: str,
+    year: int,
+    frequency: str | None,
+    n_rows: int,
+    current_year: bool,
+    period_note: str,
+    summary_label: str,
+    summary_text: str,
+    source: str,
+) -> tuple[str, str]:
+    """Заголовок и description с учётом частоты и числа точек за год."""
+    freq = (frequency or "").lower()
+    if freq == "annual":
+        title = (
+            f"{name} в {year} году — актуальное годовое значение"
+            if current_year
+            else f"{name} в {year} году — значение и динамика"
+        )
+        summary_bit = summary_text.rstrip(".")
+        desc = (
+            f"{name} в {year} году{period_note}: {summary_label.lower()} — {summary_bit}. "
+            f"Сравнение с прошлым годом и положение в истории ряда. "
+            f"Официальные данные — {source}."
+        )
+        return title, desc
+    if current_year:
+        title = f"{name} в {year} году — данные с начала года"
+    elif n_rows == 1:
+        title = f"{name} в {year} году — значение и динамика"
+    elif freq == "quarterly":
+        title = f"{name} в {year} году — данные по кварталам и итоги"
+    elif freq == "weekly":
+        title = f"{name} в {year} году — данные по неделям и итоги"
+    elif freq == "daily":
+        title = f"{name} в {year} году — дневные данные и итоги"
+    else:
+        title = f"{name} в {year} году — данные по месяцам и итоги"
+    summary_bit = summary_text.rstrip(".")
+    if n_rows == 1:
+        desc = (
+            f"{name} в {year} году{period_note}: {summary_label.lower()} — {summary_bit}. "
+            f"Сравнение с прошлым годом и положение в истории ряда. "
+            f"Официальные данные — {source}."
+        )
+    else:
+        desc = (
+            f"{name} в {year} году{period_note}: {n_rows} значений, "
+            f"{summary_label.lower()} — {summary_bit}. Официальные данные — {source}."
+        )
+    return title, desc
+
+
 async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> tuple[int, str]:
-    """Годовая landing-страница `/indicator/{code}/{year}`.
+    """Годовая landing-страница `/russia/indicator/{code}/{year}`.
 
     Чистый SSR без React-bundle (include_app=False): у SPA-роутера нет такого
     маршрута. Контент полностью data-driven: точки за год, итоги, навигация
     по соседним годам, ссылка на живую карточку. Под long-tail запросы вида
-    «инфляция в 2024 году», «курс доллара 2023».
+    «инфляция в 2024 году», «население России 2025».
+
+    Порог — YEAR_LANDING_MIN_POINTS (согласован с sitemap). При одной точке
+    за год страница обогащается YoY, положением в истории и таблицей соседних лет.
     """
     q = await db.execute(
         select(Indicator).where(Indicator.code == code, Indicator.is_active.is_(True))
@@ -999,7 +1376,7 @@ async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> 
         .order_by(IndicatorData.date)
     )
     rows = list(rows_q.scalars().all())
-    if len(rows) < 2:
+    if len(rows) < YEAR_LANDING_MIN_POINTS:
         return 404, "Not found"
 
     years = await indicator_data_years(db, indicator.id)
@@ -1007,7 +1384,6 @@ async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> 
     first, last = rows[0], rows[-1]
     unit = indicator.unit or ""
     category = _category_for_api(indicator.category)
-    category_link = _link(f"/category/{category.slug}", category.name) if category else "Индикаторы"
 
     name = indicator.name
     # Семантика значений и итога — через display-adapter: CPI-индекс людям
@@ -1022,43 +1398,105 @@ async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> 
     # «с начала года», итог — «на дату последнего значения».
     current_year = today_msk().year == year
     period_note = f" (данные с начала года по {_format_date(last.date)})" if current_year else ""
-    totals_head = f"{name} в {year} году: данные с начала года" if current_year else f"Итоги {year} года"
+    # Годовой ряд / одна точка: «среднее за год» звучит неестественно.
+    freq = (indicator.frequency or "").lower()
+    if len(rows) == 1 and not is_cpi_index(code):
+        summary_label = "Годовое значение" if freq == "annual" else "Значение"
+        summary_text = display_value_text(code, last.value, unit, indicator.frequency)
     if current_year:
         summary_label = f"{summary_label} (на {_format_date(last.date)})"
-    range_label = (
-        "Минимальное и максимальное изменение за период"
-        if cpi_mode else "Минимум и максимум"
-    )
     unit_suffix = f" {escape(unit)}" if unit and not cpi_mode else (" %" if cpi_mode else "")
-    title = (
-        f"{name} в {year} году — данные с начала года"
-        if current_year else f"{name} в {year} году — данные по месяцам и итоги"
-    )
-    desc = (
-        f"{name} в {year} году{period_note or ''}: {len(rows)} значений, "
-        f"{summary_label.lower()} — {summary_text}. Официальные данные — {indicator.source}."
+    title, desc = _year_page_title_desc(
+        name=name,
+        year=year,
+        frequency=indicator.frequency,
+        n_rows=len(rows),
+        current_year=current_year,
+        period_note=period_note,
+        summary_label=summary_label,
+        summary_text=summary_text,
+        source=indicator.source or "официальный источник",
     )
 
+    series = await yearly_last_points(db, indicator.id)
+    series_by_year = {y: (v, d) for y, v, d in series}
+    prev_year = year - 1 if (year - 1) in series_by_year else None
+    prev_value = series_by_year[prev_year][0] if prev_year is not None else None
+    neighbors = neighbor_year_window(series, year, size=10)
     value_head = "Изменение цен, %" if cpi_mode else (f"Значение, {escape(unit)}" if unit else "Значение")
-    data_rows = "".join(
-        f"<tr><td>{escape(_format_date(r.date))}</td>"
-        f"<td>{escape(format_number_ru(display_value(code, r.value), signed=cpi_mode))}</td></tr>"
-        for r in rows
-    )
-    year_links = _links_list(
-        tuple(
-            (f"/indicator/{code}/{y}", f"{name} в {y} году")
-            for y in years
-            if y != year
-        )[-12:]
-    )
-    canonical_path = f"/indicator/{code}/{year}"
-    body = f"""<main class="seo-page">
-<nav aria-label="Хлебные крошки">{_link("/", "Главная")} / {category_link} / {_link(f"/indicator/{code}", name)} / {year}</nav>
-<h1>{escape(title.split(" — ")[0])}</h1>
-<p>{escape(desc)}</p>
-<figure class="seo-chart"><img src="{DOMAIN}/og/{escape(code)}/{year}.png" width="1200" height="630" alt="{escape(name)} в {year} году — график, {escape(summary_label.lower())} {escape(summary_text)}, источник {escape(indicator.source)}" loading="lazy"><figcaption>{escape(name)} в {year} году — график динамики. Источник: {escape(indicator.source)}. forecasteconomy.com</figcaption></figure>
-<section><h2>{escape(totals_head)}</h2>
+
+    single_point = len(rows) == 1
+    if single_point:
+        totals_head = (
+            f"{name} в {year} году"
+            if not current_year
+            else f"{name} в {year} году: данные на {_format_date(last.date)}"
+        )
+        change_lines = year_change_lines(
+            year=year,
+            value=float(last.value),
+            prev_value=prev_value,
+            prev_year=prev_year,
+            code=code,
+            unit=unit,
+        )
+        history_lines = year_history_position_lines(
+            year=year,
+            value=float(last.value),
+            series=series,
+            code=code,
+            unit=unit,
+        )
+        context_items = "".join(
+            f"<li>{escape(line)}</li>" for line in (change_lines + history_lines)
+        )
+        context_items += (
+            f"<li>Дата значения: {escape(_format_date(last.date))}</li>"
+            f"<li>Источник: {escape(indicator.source)}</li>"
+        )
+        neighbor_rows = "".join(
+            (
+                f"<tr><td><strong>{y}</strong></td>"
+                f"<td><strong>{escape(format_number_ru(display_value(code, v), signed=cpi_mode))}</strong></td></tr>"
+                if y == year
+                else (
+                    f"<tr><td>{y}</td>"
+                    f"<td>{escape(format_number_ru(display_value(code, v), signed=cpi_mode))}</td></tr>"
+                )
+            )
+            for y, v, _d in neighbors
+        )
+        data_section = f"""<section><h2>{escape(totals_head)}</h2>
+<ul>
+{context_items}
+</ul></section>
+<section><h2>Динамика соседних лет</h2>
+<table><thead><tr><th>Год</th><th>{value_head}</th></tr></thead>
+<tbody>{neighbor_rows}</tbody></table></section>"""
+        chart_caption = (
+            f"{name} в {year} году — значение в контексте соседних лет. "
+            f"Источник: {indicator.source}. forecasteconomy.com"
+        )
+        chart_alt = (
+            f"{name} в {year} году — график соседних лет, "
+            f"{summary_label.lower()} {summary_text}, источник {indicator.source}"
+        )
+        image_caption = f"{name} в {year} году — значение и динамика"
+    else:
+        totals_head = (
+            f"{name} в {year} году: данные с начала года"
+            if current_year else f"Итоги {year} года"
+        )
+        range_label = (
+            "Минимальное и максимальное изменение за период"
+            if cpi_mode else "Минимум и максимум"
+        )
+        data_rows = "".join(
+            f"<tr><td>{escape(_format_date(r.date))}</td>"
+            f"<td>{escape(format_number_ru(display_value(code, r.value), signed=cpi_mode))}</td></tr>"
+            for r in rows
+        )
+        data_section = f"""<section><h2>{escape(totals_head)}</h2>
 <ul>
 <li>{escape(summary_label)}: {escape(summary_text)}</li>
 <li>Значение на начало года: {escape(format_number_ru(display_value(code, first.value), signed=cpi_mode))}{unit_suffix} ({escape(_format_date(first.date))})</li>
@@ -1067,19 +1505,51 @@ async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> 
 <li>Количество наблюдений: {len(rows)}</li>
 <li>Источник: {escape(indicator.source)}</li>
 </ul></section>
-<section><h2>Все значения за {year} год</h2><table><thead><tr><th>Дата</th><th>{value_head}</th></tr></thead><tbody>{data_rows}</tbody></table></section>
-<section><h2>График и прогноз</h2><p>Полная история, интерактивный график и прогноз — на странице {_link(f"/indicator/{code}", name)}.</p></section>
+<section><h2>Все значения за {year} год</h2><table><thead><tr><th>Дата</th><th>{value_head}</th></tr></thead><tbody>{data_rows}</tbody></table></section>"""
+        chart_caption = (
+            f"{name} в {year} году — график динамики. "
+            f"Источник: {indicator.source}. forecasteconomy.com"
+        )
+        chart_alt = (
+            f"{name} в {year} году — график, "
+            f"{summary_label.lower()} {summary_text}, источник {indicator.source}"
+        )
+        image_caption = f"{name} в {year} году — график и итоги"
+
+    year_links = _links_list(
+        tuple(
+            (paths.russia_indicator_year(code, y), f"{name} в {y} году")
+            for y in years
+            if y != year
+        )[-12:]
+    )
+    canonical_path = paths.russia_indicator_year(code, year)
+    year_trail = crumbs.russia_indicator_year_trail(
+        category.name if category else None,
+        paths.russia_category(category.slug) if category else None,
+        name,
+        paths.russia_indicator(code),
+        year,
+        canonical_path,
+    )
+    body = f"""<main class="seo-page">
+{_breadcrumbs_nav(year_trail)}
+<h1>{escape(title.split(" — ")[0])}</h1>
+<p>{escape(desc)}</p>
+<figure class="seo-chart"><img src="{DOMAIN}{escape(paths.og_indicator(paths.RUSSIA, code, year))}" width="1200" height="630" alt="{escape(chart_alt)}" loading="lazy"><figcaption>{escape(chart_caption)}</figcaption></figure>
+{data_section}
+<section><h2>График и прогноз</h2><p>Полная история, интерактивный график и прогноз — на странице {_link(paths.russia_indicator(code), name)}.</p></section>
 <section><h2>Другие годы</h2>{year_links}</section>
 </main>"""
     # temporalCoverage — по факту, не «до 31 декабря» для незакрытого года (В-26).
-    coverage_end = _iso_date(last.date) if current_year else f"{year}-12-31"
+    # Для годового ряда с одной точкой покрытие — дата этой точки.
+    if single_point:
+        coverage_end = _iso_date(last.date)
+    else:
+        coverage_end = _iso_date(last.date) if current_year else f"{year}-12-31"
     json_ld = [
         _site_json_ld(),
-        _breadcrumbs([
-            ("/", "Главная"),
-            (f"/indicator/{code}", name),
-            (canonical_path, f"{name} в {year} году"),
-        ]),
+        _breadcrumbs(year_trail),
         {
             "@context": "https://schema.org",
             "@type": "Dataset",
@@ -1090,14 +1560,14 @@ async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> 
             "creator": {"@type": "Organization", "name": indicator.source},
             "temporalCoverage": f"{_iso_date(first.date)}/{coverage_end}",
             "variableMeasured": name,
-            "image": f"{DOMAIN}/og/{code}/{year}.png",
+            "image": f"{DOMAIN}{paths.og_indicator(paths.RUSSIA, code, year)}",
         },
         {
             "@context": "https://schema.org",
             "@type": "ImageObject",
-            "contentUrl": f"{DOMAIN}/og/{code}/{year}.png",
-            "url": f"{DOMAIN}/og/{code}/{year}.png",
-            "caption": f"{name} в {year} году — график и итоги",
+            "contentUrl": f"{DOMAIN}{paths.og_indicator(paths.RUSSIA, code, year)}",
+            "url": f"{DOMAIN}{paths.og_indicator(paths.RUSSIA, code, year)}",
+            "caption": image_caption,
             "width": 1200,
             "height": 630,
             "representativeOfPage": True,
@@ -1110,7 +1580,7 @@ async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> 
         body=body,
         json_ld=json_ld,
         keywords=f"{name} {year}, {name} {year} год, {indicator.seo_keywords or name}",
-        og_image=f"{DOMAIN}/og/{code}/{year}.png",
+        og_image=f"{DOMAIN}{paths.og_indicator(paths.RUSSIA, code, year)}",
         include_app=False,
     )
     return 200, html
@@ -1131,11 +1601,11 @@ def _indicator_alt_freq_links(indicator: Indicator) -> str:
         for _freq_key, alt_code in alt_freqs.items():
             if not alt_code:
                 continue
-            href = escape(_absolute(f"/indicator/{alt_code}"))
+            href = escape(_absolute(paths.russia_indicator(alt_code)))
             links.append(f'<link rel="alternate" hreflang="ru-RU" href="{href}">')
     primary_code = cfg.get("primary_indicator_code")
     if primary_code:
-        href = escape(_absolute(f"/indicator/{primary_code}"))
+        href = escape(_absolute(paths.russia_indicator(primary_code)))
         links.append(f'<link rel="alternate" hreflang="ru-RU" href="{href}">')
     return "\n".join(links)
 
@@ -1207,7 +1677,12 @@ def _indicator_body(
     # (data_code режима), а не базовой карточкой.
     value_code = data_code or indicator.code
     current = latest_rows[0] if latest_rows else None
-    category_link = _link(f"/category/{category.slug}", category.name) if category else "Индикаторы"
+    crumb_trail = crumbs.russia_indicator_trail(
+        category.name if category else None,
+        paths.russia_category(category.slug) if category else None,
+        name,
+        paths.russia_indicator(indicator.code),
+    )
     # CPI-индекс (~100.xx) людям показывается как изменение цен в % — как в
     # React-слое; сырой индекс в SSR был воспроизведённым инцидентом «100,2%».
     cpi_mode = is_cpi_index(value_code)
@@ -1218,7 +1693,7 @@ def _indicator_body(
         for row in latest_rows
     )
     source_link = _link(indicator.source_url, indicator.source) if indicator.source_url else escape(indicator.source)
-    related_links = tuple((f"/indicator/{ind.code}", ind.name) for ind in related)
+    related_links = tuple((paths.russia_indicator(ind.code), ind.name) for ind in related)
     custom_blocks = _indicator_blocks_from_db(indicator)
     # Индикаторы с собственными seo_blocks — без GLOBAL (иначе два блока
     # «Источник и обновление» в SSR: generic + предметный).
@@ -1235,7 +1710,7 @@ def _indicator_body(
             f"{current_text}, источник {indicator.source}"
         )
     )
-    og_code = data_code or indicator.code
+    og_code = indicator.code
     # V4: видимый абзац под графиком (только пилот с реальным прогнозом).
     forecast_note = ""
     if forecast_ssr:
@@ -1247,15 +1722,15 @@ def _indicator_body(
     years_section = ""
     if data_years:
         year_links = _links_list(tuple(
-            (f"/indicator/{indicator.code}/{y}", f"{name} в {y} году")
+            (paths.russia_indicator_year(indicator.code, y), f"{name} в {y} году")
             for y in sorted(data_years, reverse=True)[:12]
         ))
         years_section = f"<section><h2>{escape(name)} по годам</h2>{year_links}</section>\n"
     return f"""<main class="seo-page">
-<nav aria-label="Хлебные крошки">{_link("/", "Главная")} / {category_link} / {escape(name)}</nav>
+{_breadcrumbs_nav(crumb_trail)}
 <h1>{escape(name)}</h1>
 <p>{escape(clean_text(indicator.description, f"{name}: официальный экономический индикатор с историей значений и графиком."))}</p>
-<figure class="seo-chart"><img src="{DOMAIN}/og/{escape(og_code)}.png" width="1200" height="630" alt="{escape(chart_alt)}" loading="lazy"><figcaption>{escape(name)} — график динамики по данным {escape(indicator.source)}. Источник: forecasteconomy.com</figcaption></figure>
+<figure class="seo-chart"><img src="{DOMAIN}{escape(paths.og_indicator(paths.RUSSIA, og_code))}" width="1200" height="630" alt="{escape(chart_alt)}" loading="lazy"><figcaption>{escape(name)} — график динамики по данным {escape(indicator.source)}. Источник: forecasteconomy.com</figcaption></figure>
 {forecast_note}<section><h2>Текущее значение</h2>
 <ul>
 <li>Последнее значение: {escape(current_text)}</li>
@@ -1268,5 +1743,5 @@ def _indicator_body(
 {_blocks_html(blocks, current_code=indicator.code)}
 <section><h2>Методология</h2><p>{escape(clean_text(indicator.methodology, "Методология показателя указана по данным официального источника и используется для интерпретации ряда."))}</p></section>
 <section><h2>Последние данные</h2><table><thead><tr><th>Дата</th><th>{escape(value_head)}</th></tr></thead><tbody>{data_rows}</tbody></table></section>
-{years_section}<section><h2>Связанные индикаторы</h2>{_links_list(related_links or ((f"/category/{category.slug}", category.name),) if category else tuple())}</section>
+{years_section}<section><h2>Связанные индикаторы</h2>{_links_list(related_links or ((paths.russia_category(category.slug), category.name),) if category else tuple())}</section>
 </main>"""

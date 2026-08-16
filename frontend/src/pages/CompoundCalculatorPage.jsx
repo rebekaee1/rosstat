@@ -9,14 +9,18 @@ import { ArrowLeft, TrendingUp, Flame, PiggyBank } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import api from '../lib/api';
 import useDocumentMeta from '../lib/useMeta';
+import { getPageSeo } from '../lib/pageMeta';
 import { cn } from '../lib/format';
 import { formatCompactTick, compactTickAxisWidth } from '../lib/regionsApi';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
-import { formatRubles, parseAmount, formatInput, fmtPct } from '../lib/calcFormat';
+import { formatRubles, parseAmount, formatInput, fmtPct, years as yearsPhrase } from '../lib/calcFormat';
 import { track, events } from '../lib/track';
 import useScrollDepth from '../lib/useScrollDepth';
 import FaqAccordion from '../components/FaqAccordion';
 import CalcSlider from '../components/CalcSlider';
+import {
+  russiaIndicatorPath,
+} from '../lib/sitePaths';
 
 const FAQ_ITEMS = [
   {
@@ -58,10 +62,11 @@ export default function CompoundCalculatorPage() {
   const [years, setYears] = useState(10);
   const [inflation, setInflation] = useState(6);
 
+  const compoundSeo = getPageSeo('calculator-compound');
   useDocumentMeta({
-    title: 'Калькулятор сложных процентов — рост капитала с пополнениями',
-    description: 'Рассчитайте рост накоплений со сложным процентом, ежемесячными пополнениями и поправкой на инфляцию.',
-    path: '/calculator/compound',
+    title: compoundSeo.title,
+    description: compoundSeo.description,
+    path: compoundSeo.path,
   });
   useScrollDepth({ key: 'calc-compound', page: 'calculator-compound' });
 
@@ -137,7 +142,7 @@ export default function CompoundCalculatorPage() {
             <TrendingUp className="w-5 h-5 text-champagne" />
           </div>
           <span className="text-[10px] uppercase tracking-[0.3em] text-champagne font-semibold">
-            Ежемесячная капитализация{keyRate != null && ` · ключевая ставка ЦБ ${keyRate}%`}
+            Ежемесячная капитализация{keyRate != null && ` — ключевая ставка ЦБ ${keyRate}%`}
           </span>
         </div>
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold tracking-tight text-text-primary leading-tight mb-3">
@@ -197,7 +202,7 @@ export default function CompoundCalculatorPage() {
       {result && (
         <>
           <section data-animate className="rounded-[2rem] bg-surface border border-border-champagne p-6 md:p-8 mb-6" aria-live="polite">
-            <p className="text-sm text-text-secondary mb-2">Накопится через {years} {years === 1 ? 'год' : years < 5 ? 'года' : 'лет'}</p>
+            <p className="text-sm text-text-secondary mb-2">Накопится через {yearsPhrase(years)}</p>
             <p className="font-display font-bold tracking-tight text-text-primary text-4xl md:text-5xl lg:text-6xl mb-6">
               {formatRubles(result.balance)}
             </p>
@@ -275,8 +280,8 @@ export default function CompoundCalculatorPage() {
             Баланс(m) = Баланс(m−1) × (1 + r) + Пополнение, где r — годовая ставка / 12 / 100.
           </p>
           <p>
-            Ориентиры доходности: <Link to="/indicator/key-rate" className="text-champagne hover:underline">ключевая ставка Банка России</Link>,{' '}
-            <Link to="/indicator/ruonia" className="text-champagne hover:underline">ставка RUONIA</Link>; историческая инфляция — в{' '}
+            Ориентиры доходности: <Link to={russiaIndicatorPath('key-rate')} className="text-champagne hover:underline">ключевая ставка Банка России</Link>,{' '}
+            <Link to={russiaIndicatorPath('ruonia')} className="text-champagne hover:underline">ставка RUONIA</Link>; историческая инфляция — в{' '}
             <Link to="/calculator" className="text-champagne hover:underline">калькуляторе инфляции</Link>.
           </p>
         </div>

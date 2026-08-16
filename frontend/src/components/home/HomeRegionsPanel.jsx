@@ -12,6 +12,11 @@ import { formatRegionValue, useRegionsHeatmap } from '../../lib/regionsApi';
 import { SkeletonBox } from '../Skeleton';
 import ApiRetryBanner from '../ApiRetryBanner';
 import { track, events } from '../../lib/track';
+import {
+  regionHubPath,
+  regionIndicatorPath,
+  regionRatingPath,
+} from '../../lib/sitePaths';
 
 const RegionsMap = lazy(() => import('../RegionsMap'));
 
@@ -49,7 +54,7 @@ export default function HomeRegionsPanel() {
           </p>
         </div>
         <Link
-          to="/regions"
+          to={regionHubPath()}
           onClick={() => track(events.HOME_REGIONS_CTA, { target: 'regions' })}
           className="inline-flex items-center gap-1 text-xs text-champagne hover:underline"
         >
@@ -104,7 +109,7 @@ export default function HomeRegionsPanel() {
               {ranking.map((row, index) => (
                 <li key={row.slug}>
                   <Link
-                    to={`/region/${row.slug}/${metric.code}`}
+                    to={regionIndicatorPath(row.slug, metric.code)}
                     className="group flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-surface-hover"
                   >
                     <span className="w-5 font-mono text-[10px] text-text-tertiary">{index + 1}</span>
@@ -120,7 +125,7 @@ export default function HomeRegionsPanel() {
             </ol>
           )}
           <Link
-            to={`/region-rating/${metric.code}`}
+            to={regionRatingPath(metric.code)}
             onClick={() => track(events.HOME_REGIONS_CTA, { target: 'rating', indicator: metric.code })}
             className="mt-3 inline-flex items-center gap-1 text-xs text-champagne hover:underline"
           >
@@ -140,7 +145,7 @@ export default function HomeRegionsPanel() {
                 nameBySlug={nameBySlug}
                 onSelect={(slug) => {
                   track(events.HOME_REGIONS_CTA, { target: 'map', region: slug, indicator: metric.code });
-                  navigate(`/region/${slug}/${metric.code}`);
+                  navigate(regionIndicatorPath(slug, metric.code));
                 }}
               />
             </Suspense>

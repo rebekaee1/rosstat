@@ -1,4 +1,4 @@
-import { createElement, useState, useMemo, useCallback, useEffect, useRef } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useQueries } from '@tanstack/react-query';
 import {
@@ -20,6 +20,7 @@ import {
   unitSuffix, unitDigits, cn, pickChartAxisTicks, chartAxisTickBudget,
 } from '../lib/format';
 import useDocumentMeta from '../lib/useMeta';
+import { getPageSeo } from '../lib/pageMeta';
 import { ChartSkeleton } from '../components/Skeleton';
 import { track, events } from '../lib/track';
 import useSearchTracking from '../lib/useSearchTracking';
@@ -36,6 +37,9 @@ import {
   parseWorldCompareCode,
   sanitizeCompareCodes,
 } from '../lib/compareCompatibility';
+import {
+  regionHubPath,
+} from '../lib/sitePaths';
 
 const RANGE_OPTIONS = [
   { key: '3y', label: '3 года', months: 36 },
@@ -511,89 +515,310 @@ function AddIndicator({
   );
 }
 
-function AddWorldSeries({
-  items, selected, onAdd, atCap, capHint, compatibilityFor,
+/**
+ * Показатель выбранной страны (страна уже зафиксирована в дереве пикера).
+ * Код ряда — `w:{slug}:{concept}`.
+ */
+function AddWorldCountrySeries({
+  items, countrySlug, selected, onAdd, atCap, capHint, compatibilityFor,
 }) {
-  const concepts = useMemo(() => {
+  const [conceptSlug, setConceptSlug] = useState('');
+
+  const conceptItems = useMemo(() => {
     const map = new Map();
     for (const item of items || []) {
-      if (!map.has(item.concept_slug)) {
-        map.set(item.concept_slug, {
-          value: item.concept_slug,
-          label: item.concept_name,
-        });
-      }
+      if (item.country_slug !== countrySlug) continue;
+      if (map.has(item.concept_slug)) continue;
+      const freq = item.frequency === 'monthly'
+        ? 'месяц'
+        : item.frequency === 'quarterly'
+          ? 'квартал'
+          : 'год';
+      map.set(item.concept_slug, {
+        value: item.concept_slug,
+        label: item.concept_name,
+        hint: freq,
+        code: item.code,
+      });
     }
     return [...map.values()].sort((a, b) => a.label.localeCompare(b.label, 'ru'));
-  }, [items]);
-  const [concept, setConcept] = useState('');
-  const [countryCode, setCountryCode] = useState('');
+  }, [items, countrySlug]);
 
-  const activeConcept = concepts.some((item) => item.value === concept)
-    ? concept
-    : (concepts[0]?.value || '');
-
-  const countryItems = useMemo(
-    () => (items || [])
-      .filter((item) => item.concept_slug === activeConcept)
-      .map((item) => ({
-        value: item.code,
-        label: `${item.country_name} · ${item.frequency === 'monthly' ? 'месяц' : item.frequency === 'quarterly' ? 'квартал' : 'год'}`,
-      }))
-      .sort((a, b) => a.label.localeCompare(b.label, 'ru')),
-    [items, activeConcept],
-  );
-  const already = selected.includes(countryCode);
-  const compatibility = countryCode
-    ? compatibilityFor(countryCode)
+  const selectedConcept = conceptItems.find((item) => item.value === conceptSlug);
+  const code = selectedConcept?.code || null;
+  const already = code && selected.includes(code);
+  const compatibility = code
+    ? compatibilityFor(code)
     : { allowed: false, reason: null };
-  const canAdd = countryCode && !already && !atCap && compatibility.allowed;
+  const canAdd = code && !already && !atCap && compatibility.allowed;
 
   return (
     <div className="grid gap-2">
       <ComboSelect
-        groups={[{ label: 'Показатель', items: concepts }]}
-        value={activeConcept}
-        onChange={(value) => { setConcept(value); setCountryCode(''); }}
+        groups={[{ label: 'Показатель', items: conceptItems }]}
+        value={conceptSlug}
+        onChange={setConceptSlug}
         placeholder="Выберите показатель…"
         searchPlaceholder="Найти показатель…"
-        ariaLabel="Мировой показатель"
-        disabled={atCap}
+        ariaLabel="Показатель страны"
+        disabled={atCap || conceptItems.length === 0}
         trackContext="compare-world-concept"
-      />
-      <ComboSelect
-        groups={[{ label: 'Страны', items: countryItems }]}
-        value={countryCode}
-        onChange={setCountryCode}
-        placeholder="Выберите страну…"
-        searchPlaceholder="Найти страну…"
-        ariaLabel="Страна мирового показателя"
-        disabled={atCap || !activeConcept}
-        trackContext="compare-world-country"
       />
       <button
         type="button"
         disabled={!canAdd}
-        onClick={() => { if (canAdd) { onAdd(countryCode); setCountryCode(''); } }}
+        onClick={() => { if (canAdd) { onAdd(code); setConceptSlug(''); } }}
         title={atCap
           ? capHint
           : already
-            ? 'Эта страна уже добавлена'
+            ? 'Этот ряд уже добавлен'
             : compatibility.reason || undefined}
         className={cn(
           'inline-flex min-h-10 w-full items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium transition-colors',
           canAdd
-            ? 'bg-champagne text-white hover:bg-champagne-muted'
+            ? 'bg-champagne/15 text-champagne hover:bg-champagne/25'
             : 'cursor-not-allowed bg-obsidian-lighter text-text-tertiary',
         )}
       >
         <Plus className="h-3.5 w-3.5" />
-        Добавить
+        {already ? 'Уже добавлен' : 'Добавить'}
       </button>
-      {countryCode && !already && !atCap && !compatibility.allowed && (
+      {code && !already && !atCap && !compatibility.allowed && (
         <p className="text-xs leading-relaxed text-text-tertiary">
           {compatibility.reason}
         </p>
+      )}
+      {!conceptItems.length && (
+        <p className="text-xs leading-relaxed text-text-tertiary">
+          Для этой страны пока нет рядов, доступных для сравнения.
+        </p>
+      )}
+    </div>
+  );
+}
+
+const BRANCH_BTN = (active) => cn(
+  'rounded-xl px-3 py-2.5 text-sm font-medium transition-colors text-left',
+  active
+    ? 'bg-champagne/15 text-champagne'
+    : 'bg-obsidian-lighter text-text-secondary hover:text-champagne',
+);
+
+/** Шаг назад в дереве пикера. */
+function PickerBack({ label, onClick }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="mb-3 inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-widest text-text-tertiary hover:text-champagne transition-colors"
+    >
+      <ArrowLeft className="h-3.5 w-3.5" />
+      {label}
+    </button>
+  );
+}
+
+/**
+ * Дерево «сначала страна»: Россия → макро | регионы; другая страна → показатель.
+ */
+function CompareSeriesPicker({
+  indicators, worldItems, selected, onAdd, atCap, capHint, compatibilityFor,
+}) {
+  const [countryKey, setCountryKey] = useState(null);
+  const [russiaBranch, setRussiaBranch] = useState(null);
+  const [countryQuery, setCountryQuery] = useState('');
+
+  const countries = useMemo(() => {
+    const map = new Map();
+    for (const item of worldItems || []) {
+      if (!item.country_slug || map.has(item.country_slug)) continue;
+      map.set(item.country_slug, {
+        key: item.country_slug,
+        label: item.country_name,
+      });
+    }
+    return [...map.values()].sort((a, b) => a.label.localeCompare(b.label, 'ru'));
+  }, [worldItems]);
+
+  const filteredCountries = useMemo(() => {
+    const q = countryQuery.trim().toLowerCase();
+    const russia = { key: 'russia', label: 'Россия' };
+    const rest = q
+      ? countries.filter((c) => c.label.toLowerCase().includes(q))
+      : countries;
+    const showRussia = !q || 'россия'.includes(q) || russia.label.toLowerCase().includes(q);
+    return showRussia ? [russia, ...rest] : rest;
+  }, [countries, countryQuery]);
+
+  const selectedCountry = countryKey === 'russia'
+    ? { key: 'russia', label: 'Россия' }
+    : countries.find((c) => c.key === countryKey) || null;
+
+  const resetCountry = () => {
+    setCountryKey(null);
+    setRussiaBranch(null);
+    setCountryQuery('');
+  };
+
+  const selectCountry = (key) => {
+    setCountryKey(key);
+    setRussiaBranch(null);
+    setCountryQuery('');
+  };
+
+  return (
+    <div className="overflow-visible rounded-2xl border border-border-subtle bg-surface p-4 shadow-[0_16px_45px_rgba(35,30,16,0.05)] sm:p-5">
+      <div className="mb-5 border-b border-border-subtle pb-4">
+        <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">Добавить ряд</div>
+        <div className="mt-1 text-sm text-text-secondary">
+          Сначала выберите страну, затем показатель
+        </div>
+      </div>
+
+      {!countryKey && (
+        <div>
+          <div className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+            Страна
+          </div>
+          <div className={cn(FIELD_CLS, 'mb-3 border-border-subtle focus-within:border-champagne/40')}>
+            <Search className="h-4 w-4 shrink-0 text-text-tertiary" />
+            <input
+              type="text"
+              value={countryQuery}
+              onChange={(e) => setCountryQuery(e.target.value)}
+              placeholder="Найдите страну…"
+              aria-label="Поиск страны"
+              className="min-w-0 flex-1 bg-transparent text-sm text-text-primary outline-none placeholder:text-text-tertiary"
+            />
+            {countryQuery && (
+              <button
+                type="button"
+                aria-label="Очистить"
+                onClick={() => setCountryQuery('')}
+                className="shrink-0 text-text-tertiary hover:text-text-primary"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
+          <div className="max-h-80 overflow-auto rounded-xl border border-border-subtle bg-obsidian-light/45">
+            {filteredCountries.length === 0 ? (
+              <div className="px-4 py-3 text-sm text-text-tertiary">Ничего не найдено</div>
+            ) : (
+              filteredCountries.map((c) => (
+                <button
+                  key={c.key}
+                  type="button"
+                  onClick={() => selectCountry(c.key)}
+                  className="flex w-full items-center gap-3 px-4 py-2.5 text-left hover:bg-obsidian-lighter transition-colors border-b border-border-subtle/60 last:border-b-0"
+                >
+                  {c.key === 'russia'
+                    ? <Landmark className="h-4 w-4 shrink-0 text-champagne" />
+                    : <Globe2 className="h-4 w-4 shrink-0 text-champagne" />}
+                  <span className="truncate text-sm text-text-primary">{c.label}</span>
+                </button>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+
+      {countryKey === 'russia' && !russiaBranch && (
+        <div>
+          <PickerBack label="К выбору страны" onClick={resetCountry} />
+          <div className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+            Россия — что добавить
+          </div>
+          <div className="grid gap-2 sm:grid-cols-2">
+            <button
+              type="button"
+              onClick={() => setRussiaBranch('macro')}
+              className={BRANCH_BTN(false)}
+            >
+              <span className="flex items-center gap-2">
+                <Landmark className="h-4 w-4 shrink-0" />
+                Макропоказатели
+              </span>
+              <span className="mt-1 block text-[11px] font-normal text-text-tertiary">
+                Федеральные ряды
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setRussiaBranch('regions')}
+              className={BRANCH_BTN(false)}
+            >
+              <span className="flex items-center gap-2">
+                <MapPin className="h-4 w-4 shrink-0" />
+                Регионы
+              </span>
+              <span className="mt-1 block text-[11px] font-normal text-text-tertiary">
+                Один регион на общий график
+              </span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {countryKey === 'russia' && russiaBranch === 'macro' && (
+        <div>
+          <PickerBack label="К выбору в России" onClick={() => setRussiaBranch(null)} />
+          <div className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+            Макропоказатели России
+          </div>
+          <div className="rounded-xl border border-border-subtle bg-obsidian-light/45 p-3">
+            <AddIndicator
+              indicators={indicators}
+              selected={selected}
+              onAdd={onAdd}
+              atCap={atCap}
+              capHint={capHint}
+              compatibilityFor={compatibilityFor}
+            />
+          </div>
+        </div>
+      )}
+
+      {countryKey === 'russia' && russiaBranch === 'regions' && (
+        <div>
+          <PickerBack label="К выбору в России" onClick={() => setRussiaBranch(null)} />
+          <div className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+            Региональный ряд
+          </div>
+          <AddRegionSeries
+            selected={selected}
+            onAdd={onAdd}
+            atCap={atCap}
+            capHint={capHint}
+            compatibilityFor={compatibilityFor}
+          />
+          <p className="mt-3 text-xs leading-relaxed text-text-tertiary">
+            Сравнить два региона целиком —{' '}
+            <Link to={regionHubPath()} className="text-champagne hover:underline">
+              в разделе регионов
+            </Link>
+          </p>
+        </div>
+      )}
+
+      {countryKey && countryKey !== 'russia' && selectedCountry && (
+        <div>
+          <PickerBack label="К выбору страны" onClick={resetCountry} />
+          <div className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+            {selectedCountry.label} — показатель
+          </div>
+          <div className="rounded-xl border border-border-subtle bg-obsidian-light/45 p-3">
+            <AddWorldCountrySeries
+              items={worldItems}
+              countrySlug={countryKey}
+              selected={selected}
+              onAdd={onAdd}
+              atCap={atCap}
+              capHint={capHint}
+              compatibilityFor={compatibilityFor}
+            />
+          </div>
+        </div>
       )}
     </div>
   );
@@ -699,10 +924,11 @@ export default function ComparePage() {
     [compatibleCodes, isAuthed],
   );
 
+  const compareSeo = getPageSeo('compare');
   useDocumentMeta({
-    title: 'Сравнение индикаторов',
-    description: 'Сравнение макроэкономических индикаторов России, регионов и методологически сопоставимых показателей стран Европы.',
-    path: '/compare',
+    title: compareSeo.title,
+    description: compareSeo.description,
+    path: compareSeo.path,
   });
 
   useEffect(() => {
@@ -935,7 +1161,11 @@ export default function ComparePage() {
     // приводятся: деление на ~0 → выброс, отрицательная база → переворот знака,
     // «инфляция 5% = 100 пунктов» — смысловой мусор. Такие ряды в режиме общей
     // базы исключаем и подписываем, а не рисуем.
-    const indexable = series.map((s, i) => isIndexableBase(base[i], { unit: s.unit, repId: s.rep }));
+    const indexable = series.map((s, i) => isIndexableBase(base[i], {
+      unit: s.unit,
+      repId: s.rep,
+      values: dates.map((d) => maps[i].get(d)),
+    }));
     const nonIndexableNames = indexed
       ? series.filter((_, i) => !indexable[i]).map((s) => s.ind?.name || s.code)
       : [];
@@ -1143,73 +1373,22 @@ export default function ComparePage() {
           Сравнение показателей
         </h1>
         <p className="text-sm md:text-base text-text-tertiary max-w-2xl">
-          Сопоставляйте показатели России, регионов и стран. Межстрановые ряды
-          объединяются по единой методологии, а смешанные наборы доступны только
-          для заранее проверенных показателей.
+          Сначала выбираете страну, затем показатель. Для России доступны
+          федеральные ряды и ряды регионов. Два региона между собой сравниваются
+          в разделе регионов.
         </p>
       </div>
 
       <section data-block="compare-add" className="mb-6">
-        <div className="overflow-visible rounded-2xl border border-border-subtle bg-surface p-4 shadow-[0_16px_45px_rgba(35,30,16,0.05)] sm:p-5">
-          <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-border-subtle pb-4">
-            <div>
-              <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">Добавить ряд</div>
-              <div className="mt-1 text-sm text-text-secondary">
-                Россия, регионы и страны доступны одновременно; несовместимые сочетания блокируются
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-1.5 text-[10px] font-mono text-text-tertiary">
-              {[['Россия', Landmark], ['Регионы', MapPin], ['Страны', Globe2]].map(([label, Icon]) => (
-                <span key={label} className="inline-flex items-center gap-1 rounded-full bg-obsidian-light px-2.5 py-1.5">
-                  {createElement(Icon, { className: 'h-3 w-3 text-champagne' })}
-                  {label}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid gap-3 xl:grid-cols-3">
-            <div className="rounded-xl border border-border-subtle bg-obsidian-light/45 p-3">
-              <AddCardHeader
-                icon={Landmark}
-                title="Россия"
-                hint="Федеральный макроэкономический ряд"
-              />
-              <AddIndicator
-                indicators={indicators}
-                selected={codes}
-                onAdd={addCode}
-                atCap={atCap}
-                capHint={capHint}
-                compatibilityFor={(code) => compareCompatibility(codes, code)}
-              />
-            </div>
-
-            <AddRegionSeries
-              selected={codes}
-              onAdd={addCode}
-              atCap={atCap}
-              capHint={capHint}
-              compatibilityFor={(code) => compareCompatibility(codes, code)}
-            />
-
-            <div className="rounded-xl border border-border-subtle bg-obsidian-light/45 p-3">
-              <AddCardHeader
-                icon={Globe2}
-                title="Страны"
-                hint="Единый показатель, затем страна"
-              />
-              <AddWorldSeries
-                items={worldCompareItems}
-                selected={codes}
-                onAdd={addCode}
-                atCap={atCap}
-                capHint={capHint}
-                compatibilityFor={(code) => compareCompatibility(codes, code)}
-              />
-            </div>
-          </div>
-        </div>
+        <CompareSeriesPicker
+          indicators={indicators}
+          worldItems={worldCompareItems}
+          selected={codes}
+          onAdd={addCode}
+          atCap={atCap}
+          capHint={capHint}
+          compatibilityFor={(code) => compareCompatibility(codes, code)}
+        />
 
         {compatibilityMessage && (
           <div className="mt-3 rounded-xl border border-champagne/25 bg-champagne/[0.06] px-3.5 py-2.5 text-xs leading-relaxed text-text-secondary" role="status">

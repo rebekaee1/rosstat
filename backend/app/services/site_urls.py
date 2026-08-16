@@ -10,8 +10,10 @@
 очередью переобхода (150 URL/день) как приоритет.
 
 Инвариант индексации: в реестр не попадают URL, которые SSR отвечает 301
-(unlisted view-mode siblings → `/indicator/{base}?mode=…`, легаси-коды).
+(unlisted view-mode siblings → `/russia/indicator/{base}?mode=…`, легаси-коды).
 Иначе Вебмастер тратит квоту переобхода (~150/день) на NOT_CANONICAL.
+
+Пути строятся только через `app.services.site_paths` (ADR-0013 path-cut).
 """
 
 from __future__ import annotations
@@ -35,11 +37,15 @@ from app.models import (
     WorldDataPoint,
     WorldIndicator,
 )
+from app.services import site_paths as paths
 from app.services.seo_content import CATEGORIES, STATIC_PAGES
 
 # Лимит протокола sitemap — 50 000 URL на файл; держим с запасом.
 REGIONAL_CHUNK = 10_000
 WORLD_CHUNK = 10_000
+
+# Годовая посадочная `/russia/indicator/{code}/{year}`: минимум точек за календарный год.
+YEAR_LANDING_MIN_POINTS = 1
 
 
 @dataclass(frozen=True)
@@ -59,7 +65,7 @@ def _sitemap_priority(*, listed: bool) -> str:
 
 
 def is_redirect_only_indicator(code: str) -> bool:
-    """Код, у которого `/indicator/{code}` — только 301 на канон (не индексировать)."""
+    """Код, у которого карточка — только 301 на канон (не индексировать)."""
     from app.data.legacy_redirects import (
         resolve_legacy_indicator,
         resolve_unlisted_indicator,
@@ -69,20 +75,15 @@ def is_redirect_only_indicator(code: str) -> bool:
 
 
 def is_recrawl_eligible(path: str) -> bool:
-    """Путь можно подавать в переобход Вебмастера (остаётся в поиске).
-
-    Отсекаем:
-    - query-варианты (`/compare?*`, `?year=`, legacy `?view=map`…) — неканон;
-    - bare `/indicator/{sibling}` / year-landing легаси-кодов, которые 301.
-    Канонические карточки, регионы, рейтинги, карты, /today, годы listed — ок.
-    """
+    """Путь можно подавать в переобход Вебмастера (остаётся в поиске)."""
     if "?" in path:
         return False
-    if path.startswith("/indicator/"):
-        rest = path[len("/indicator/"):]
-        code = rest.split("/", 1)[0]
-        if code and is_redirect_only_indicator(code):
-            return False
+    for prefix in (f"/{paths.RUSSIA}/indicator/", "/indicator/"):
+        if path.startswith(prefix):
+            rest = path[len(prefix):]
+            code = rest.split("/", 1)[0]
+            if code and is_redirect_only_indicator(code):
+                return False
     return True
 
 
@@ -91,8 +92,11 @@ async def _core_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
         _u(path, today.isoformat(), freq, priority)
         for path, freq, priority in STATIC_PAGES
     ]
+    urls.append(_u(paths.russia_home(), today.isoformat(), "daily", "0.95"))
+    urls.append(_u(paths.russia_categories(), today.isoformat(), "weekly", "0.85"))
+    urls.append(_u(paths.region_rating_hub(), today.isoformat(), "weekly", "0.7"))
     urls.extend(
-        _u(f"/category/{slug}", today.isoformat(), "weekly", "0.8")
+        _u(paths.russia_category(slug), today.isoformat(), "weekly", "0.8")
         for slug in CATEGORIES
     )
     stmt = (
@@ -107,12 +111,10 @@ async def _core_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
         .order_by(Indicator.is_listed.desc(), Indicator.code)
     )
     for code, listed, last_data in (await db.execute(stmt)).all():
-        # Unlisted view-mode siblings и легаси-коды → 301; в sitemap/IndexNow
-        # / recrawl не кладём (иначе NOT_CANONICAL жжёт квоту Вебмастера).
         if is_redirect_only_indicator(code):
             continue
         urls.append(_u(
-            f"/indicator/{code}",
+            paths.russia_indicator(code),
             (last_data or today).isoformat(),
             "daily",
             _sitemap_priority(listed=listed),
@@ -127,7 +129,7 @@ async def _year_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
         .join(IndicatorData, IndicatorData.indicator_id == Indicator.id)
         .where(Indicator.is_active.is_(True), Indicator.is_listed.is_(True))
         .group_by(Indicator.code, year_expr)
-        .having(func.count(IndicatorData.id) >= 2)
+        .having(func.count(IndicatorData.id) >= YEAR_LANDING_MIN_POINTS)
         .order_by(year_expr.desc(), Indicator.code)
     )
     urls = []
@@ -137,7 +139,7 @@ async def _year_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
         year = int(year)
         freq = "weekly" if year == today.year else "yearly"
         urls.append(_u(
-            f"/indicator/{code}/{year}",
+            paths.russia_indicator_year(code, year),
             (last_data or today).isoformat(),
             freq,
             "0.4",
@@ -146,11 +148,7 @@ async def _year_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
 
 
 async def _region_hub_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
-    """Региональные данные годовые — lastmod «сегодня» обманывал краулера (В-32).
-
-    Честный lastmod хаба региона — конец последнего года его данных.
-    """
-    urls = [_u("/regions", today.isoformat(), "weekly", "0.9")]
+    urls = [_u(paths.region_hub(), today.isoformat(), "weekly", "0.9")]
     region_rows = (await db.execute(
         select(Region.slug, func.max(RegionDataPoint.year))
         .outerjoin(RegionDataPoint, RegionDataPoint.region_id == Region.id)
@@ -160,7 +158,7 @@ async def _region_hub_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
     )).all()
     urls.extend(
         _u(
-            f"/region/{slug}",
+            paths.region(slug),
             f"{int(last_year)}-12-31" if last_year else today.isoformat(),
             "monthly",
             "0.8",
@@ -182,12 +180,11 @@ async def _regional_pair_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
     urls = []
     for rslug, icode, last_year in (await db.execute(stmt)).all():
         lastmod = f"{int(last_year)}-12-31" if last_year else today.isoformat()
-        urls.append(_u(f"/region/{rslug}/{icode}", lastmod, "monthly", "0.5"))
+        urls.append(_u(paths.region_indicator(rslug, icode), lastmod, "monthly", "0.5"))
     return urls
 
 
 async def _rating_eligible_codes(db: AsyncSession) -> list[tuple[str, int]]:
-    """Listed показатели с ≥ 10 регионами за max-год (рейтинг и карта)."""
     last_year_sub = (
         select(
             RegionDataPoint.indicator_id.label("iid"),
@@ -213,25 +210,15 @@ async def _rating_eligible_codes(db: AsyncSession) -> list[tuple[str, int]]:
 
 
 async def _rating_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
-    """Рейтинги регионов: listed показатели с >= 10 регионами за последний год.
-
-    Порог согласован с рендером `render_region_rating_html` (иначе URL из
-    sitemap отдавал бы 404): считаем регионы именно за max-год показателя.
-    """
     return [
-        _u(f"/region-rating/{code}", f"{y}-12-31", "monthly", "0.7")
+        _u(paths.region_rating(code), f"{y}-12-31", "monthly", "0.7")
         for code, y in await _rating_eligible_codes(db)
     ]
 
 
 async def _map_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
-    """Карта регионов по показателю: /regions/map/{code} (без year в sitemap).
-
-    Тот же пул, что у рейтингов: map SSR требует ≥ 10 регионов на срезе.
-    Год в query — только для shareable deep-link, в индекс не раздуваем.
-    """
     return [
-        _u(f"/regions/map/{code}", f"{y}-12-31", "monthly", "0.65")
+        _u(paths.region_map(code), f"{y}-12-31", "monthly", "0.65")
         for code, y in await _rating_eligible_codes(db)
     ]
 
@@ -244,17 +231,15 @@ async def _today_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
             Indicator.code.in_(list(TODAY_CODES)), Indicator.is_active.is_(True)
         )
     )).scalars().all()
-    urls = [_u("/today", today.isoformat(), "daily", "0.9")]
+    urls = [_u(paths.today(), today.isoformat(), "daily", "0.9")]
     urls.extend(
-        _u(f"/today/{code}", today.isoformat(), "daily", "0.8")
+        _u(paths.today(code), today.isoformat(), "daily", "0.8")
         for code in sorted(codes, key=list(TODAY_CODES).index)
     )
     return urls
 
 
 async def _calendar_month_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
-    # Считаем только события, которые SSR-страница реально покажет (тот же
-    # provenance-фильтр, В-7) — иначе sitemap ссылался бы на 404-месяцы.
     from app.api.calendar import _public_calendar_conditions
 
     stmt = (
@@ -274,7 +259,7 @@ async def _calendar_month_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
         y, m = int(y), int(m)
         is_current = (y, m) >= (today.year, today.month)
         urls.append(_u(
-            f"/calendar/{y}/{m:02d}",
+            paths.calendar(y, m),
             today.isoformat() if is_current else f"{y}-{m:02d}-28",
             "daily" if is_current else "monthly",
             "0.6" if is_current else "0.4",
@@ -285,24 +270,36 @@ async def _calendar_month_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
 async def _region_vs_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
     from app.services.seo_region_compare import top_region_pairs
 
-    # В-32: данные пар годовые — честный lastmod общий по датасету, не «сегодня».
     last_year = (await db.execute(
         select(func.max(RegionDataPoint.year))
     )).scalar_one_or_none()
     lastmod = f"{int(last_year)}-12-31" if last_year else today.isoformat()
     pairs = await top_region_pairs(db)
     return [
-        _u(f"/region-vs/{a}-vs-{b}", lastmod, "monthly", "0.6")
+        _u(paths.region_vs(a, b), lastmod, "monthly", "0.6")
         for a, b in pairs
     ]
 
 
-async def _world_hub_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
-    """Хаб /world + страницы стран с listed-показателями.
+async def _world_rating_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
+    from app.data.world_concepts import WORLD_CONCEPTS
+    from app.services.seo_world import build_world_rating_payload
 
-    lastmod страны — дата последней точки её listed-рядов (не «сегодня»).
-    """
-    urls = [_u("/world", today.isoformat(), "weekly", "0.9")]
+    urls: list[SiteUrl] = []
+    for concept in WORLD_CONCEPTS:
+        if "rating" not in concept.enabled_surfaces:
+            continue
+        payload = await build_world_rating_payload(concept.slug, db)
+        if not payload or not payload["items"]:
+            continue
+        lastmod = payload["last_date"] or today.isoformat()
+        urls.append(_u(paths.world_rating(concept.slug), lastmod, "weekly", "0.7"))
+    return urls
+
+
+async def _world_hub_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
+    """Хаб /world + карточки стран /{slug}."""
+    urls = [_u(paths.world_hub(), today.isoformat(), "weekly", "0.9")]
     last_sub = (
         select(
             WorldIndicator.country_id.label("cid"),
@@ -323,7 +320,7 @@ async def _world_hub_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
     ).all()
     for slug, last_data in rows:
         urls.append(_u(
-            f"/world/{slug}",
+            paths.country(slug),
             (last_data or today).isoformat(),
             "weekly",
             "0.8",
@@ -332,11 +329,7 @@ async def _world_hub_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
 
 
 async def _world_indicator_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
-    """Карточки listed-индикаторов: /world/{slug}/{code}.
-
-    Только primary частоты каждой card_key-группы (вторичные M/Q/A → 301,
-    в индекс не идут). Unlisted в индекс не идут.
-    """
+    """Карточки listed-индикаторов: /{slug}/indicator/{code}."""
     from app.data.legacy_redirects import world_card_primary_rank
     from app.data.eurostat_listing import card_key
 
@@ -357,7 +350,6 @@ async def _world_indicator_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
     )
     rows = (await db.execute(stmt)).all()
 
-    # slug → card_key → best (ind, last_data)
     best: dict[tuple, tuple] = {}
     for cslug, ind, last_data in rows:
         key = (cslug, card_key(
@@ -376,7 +368,7 @@ async def _world_indicator_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
         best.items(), key=lambda kv: (kv[0][0], kv[1][0].code)
     ):
         urls.append(_u(
-            f"/world/{cslug}/{ind.code}",
+            paths.indicator(cslug, ind.code),
             (last_data or today).isoformat(),
             "weekly",
             "0.5",
@@ -385,11 +377,6 @@ async def _world_indicator_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
 
 
 async def collect_url_sections(db: AsyncSession) -> dict[str, list[SiteUrl]]:
-    """Все публичные URL сайта, сгруппированные по секциям sitemap-индекса.
-
-    Порядок секций и URL внутри — приоритет обхода (используется очередью
-    переобхода Вебмастера).
-    """
     today = today_msk()
     sections: dict[str, list[SiteUrl]] = {
         "core": await _core_urls(db, today),
@@ -398,6 +385,7 @@ async def collect_url_sections(db: AsyncSession) -> dict[str, list[SiteUrl]]:
         "maps": await _map_urls(db, today),
         "regions": await _region_hub_urls(db, today),
         "region-vs": await _region_vs_urls(db, today),
+        "world-ratings": await _world_rating_urls(db, today),
         "world": await _world_hub_urls(db, today),
         "calendar": await _calendar_month_urls(db, today),
         "years": await _year_urls(db, today),
@@ -414,24 +402,22 @@ async def collect_url_sections(db: AsyncSession) -> dict[str, list[SiteUrl]]:
 
 
 async def collect_all_paths(db: AsyncSession, sections: list[str] | None = None) -> list[str]:
-    """Плоский список путей (для IndexNow и очереди переобхода), с сохранением приоритета."""
     grouped = await collect_url_sections(db)
     result: list[str] = []
     for name, urls in grouped.items():
         if sections is not None and name not in sections and not (
             (name.startswith("regional-") and "regional" in sections)
-            or (name.startswith("world-indicators-") and "world" in sections)
+            or (name.startswith("world-") and "world" in sections)
         ):
             continue
         result.extend(u.path for u in urls)
     return result
 
 
-def filter_recrawl_paths(paths: list[str]) -> tuple[list[str], list[str]]:
-    """Разделить реестр на eligible / skip (для skip-on-submit без траты квоты)."""
+def filter_recrawl_paths(paths_list: list[str]) -> tuple[list[str], list[str]]:
     eligible: list[str] = []
     skipped: list[str] = []
-    for path in paths:
+    for path in paths_list:
         if is_recrawl_eligible(path):
             eligible.append(path)
         else:

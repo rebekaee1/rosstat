@@ -1,20 +1,23 @@
-"""301-карта легаси-URL (А-2/А-3, Волна 4.5 CTO-аудита).
+"""301-карта легаси-URL (А-2/А-3, Волна 4.5 CTO-аудита + ADR-0013 path-cut).
 
 Одна точка истины для серверных редиректов SSR-слоя. Робот Яндекса продолжает
 обходить URL, которых больше нет (переименованные коды, старые слаги регионов,
 unlisted sibling-ряды из старых sitemap) — каждый 404 по ранее известному URL
 минусует траст домена, 301 передаёт накопленный вес каноническому адресу.
 
+Инвариант path-cut: каждый резолвер возвращает **уже финальный** путь
+(`site_paths`), не старый канон. Иначе цепочка legacy → старый → новый.
+
 Четыре источника редиректов:
 1. `LEGACY_INDICATOR_REDIRECTS` — переименованные/удалённые коды из выгрузок
    Вебмастера (06.07.2026): точечная ручная карта.
 2. `resolve_unlisted_indicator()` — unlisted sibling generic-семьи → канонический
-   `/indicator/{base}?mode={mode}` (данные те же, карточка одна). Плюс bespoke
-   легаси-ряды (unemployment-*, *-yoy-abs), которых нет в generic-реестре.
+   `/russia/indicator/{base}?mode={mode}` (данные те же, карточка одна). Плюс
+   bespoke легаси-ряды (unemployment-*, *-yoy-abs), которых нет в generic-реестре.
 3. `LEGACY_REGION_SLUG_PREFIXES` — старые короткие слаги регионов
    («tatarstan» → «respublika-tatarstan»): проверяется в SSR-роуте по БД.
 4. `resolve_world_frequency_sibling()` — квартальный/годовой близнец мировой
-   карточки → `/world/{slug}/{primary}?mode=level-{freq}` (частота в query).
+   карточки → `/{slug}/indicator/{primary}?mode=level-{freq}` (частота в query).
 """
 
 from __future__ import annotations
@@ -25,23 +28,36 @@ from functools import lru_cache
 from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.services import site_paths as paths
+
 # Переименованные/исчезнувшие коды (подтверждено выгрузкой Вебмастера).
 LEGACY_INDICATOR_REDIRECTS: dict[str, str] = {
-    "inflation": "/indicator/cpi",
-    "gasoline-ai92": "/indicator/fuel-ai92",
-    "gasoline-ai95": "/indicator/fuel-ai95",
-    "gdp-deflator": "/indicator/gdp-nominal",
-    "refinancing-rate": "/indicator/key-rate",
+    "inflation": paths.russia_indicator("cpi"),
+    "gasoline-ai92": paths.russia_indicator("fuel-ai92"),
+    "gasoline-ai95": paths.russia_indicator("fuel-ai95"),
+    "gdp-deflator": paths.russia_indicator("gdp-nominal"),
+    "refinancing-rate": paths.russia_indicator("key-rate"),
+    # Сталь снята с витрины: свободного официального ряда котировок нет,
+    # держать мёртвый ряд с биржевого агрегатора нельзя. URL были в sitemap.
+    "steel": paths.russia_category("commodities"),
 }
 
 # Bespoke-ряды вне generic-реестра, державшиеся только на клиентском
 # canonical-редиректе (ЭСКАЛАЦИЯ-зона AGENTS.md: их SSR-404 = тихая просадка).
 _BESPOKE_UNLISTED_CANONICAL: dict[str, str] = {
-    "unemployment-quarterly": "/indicator/unemployment?mode=quarterly",
-    "unemployment-annual": "/indicator/unemployment?mode=annual",
-    "trade-balance-yoy-abs": "/indicator/trade-balance?mode=yoy_abs",
-    "current-account-yoy-abs": "/indicator/current-account?mode=yoy_abs",
+    "unemployment-quarterly": f"{paths.russia_indicator('unemployment')}?mode=quarterly",
+    "unemployment-annual": f"{paths.russia_indicator('unemployment')}?mode=annual",
+    "trade-balance-yoy-abs": f"{paths.russia_indicator('trade-balance')}?mode=yoy_abs",
+    "current-account-yoy-abs": f"{paths.russia_indicator('current-account')}?mode=yoy_abs",
 }
+
+# Суффиксы sibling-рядов generic-семей: длинные раньше коротких, иначе
+# «-yoy-year» срежется как «-yoy» и база получится с хвостом «-year».
+_SIBLING_SUFFIXES: tuple[str, ...] = (
+    "-avg-week", "-eop-week", "-avg-month", "-eop-month",
+    "-avg-quarter", "-eop-quarter", "-avg-year", "-eop-year",
+    "-yoy-quarter", "-yoy-year", "-mom", "-qoq", "-yoy",
+)
 
 # Старые короткие слаги регионов: пробуем канонический с префиксом.
 LEGACY_REGION_SLUG_PREFIXES = ("respublika-",)
@@ -68,7 +84,7 @@ def _generic_sibling_index() -> dict[str, str]:
     for fam in FAMILIES:
         for mode in fam.modes:
             if mode.code != fam.base:
-                index[mode.code] = f"/indicator/{fam.base}?mode={mode.mode}"
+                index[mode.code] = f"{paths.russia_indicator(fam.base)}?mode={mode.mode}"
     return index
 
 
@@ -79,7 +95,32 @@ def resolve_legacy_indicator(code: str) -> str | None:
 
 def resolve_unlisted_indicator(code: str) -> str | None:
     """Канонический путь для unlisted sibling-ряда (generic или bespoke)."""
-    return _BESPOKE_UNLISTED_CANONICAL.get(code) or _generic_sibling_index().get(code)
+    return (
+        _BESPOKE_UNLISTED_CANONICAL.get(code)
+        or _generic_sibling_index().get(code)
+        or _resolve_retired_sibling(code)
+    )
+
+
+def _resolve_retired_sibling(code: str) -> str | None:
+    """Sibling, исчезнувший при смене семьи ряда (дневная → месячная и т.п.).
+
+    Такие URL годами были в sitemap: недельные и месячные срезы меди, угля,
+    зерна пережили перевод базовых рядов на месячную сводку. Ведём их на живую
+    карточку базы, а не в 404.
+    """
+    from app.data.view_model_families import FAMILIES
+
+    for suffix in _SIBLING_SUFFIXES:
+        if not code.endswith(suffix):
+            continue
+        base = code[: -len(suffix)]
+        if any(fam.base == base for fam in FAMILIES):
+            return paths.russia_indicator(base)
+        retired = LEGACY_INDICATOR_REDIRECTS.get(base)
+        if retired:
+            return retired
+    return None
 
 
 def strip_world_frequency_suffix(name: str | None) -> str:
@@ -188,7 +229,7 @@ async def resolve_world_frequency_sibling(
     freq = normalize_frequency(indicator.frequency) or "monthly"
     if freq not in ("monthly", "quarterly", "annual"):
         freq = "monthly"
-    return f"/world/{slug}/{primary.code}?mode=level-{freq}"
+    return f"{paths.indicator(slug, primary.code)}?mode=level-{freq}"
 
 
 async def resolve_world_unlisted_indicator(
@@ -242,4 +283,4 @@ async def resolve_world_unlisted_indicator(
     ).first()
     if has_signal is not None:
         return None
-    return f"/world/{slug}"
+    return paths.country(slug)

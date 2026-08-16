@@ -138,6 +138,18 @@ describe('compareRepresentation — index base guard', () => {
     expect(isIndexableBase(Infinity)).toBe(false);
   });
 
+  it('знакопеременный ряд не индексируется даже при плюсовой базе', () => {
+    // Дефицит бюджета: база в профицитном квартале, дальше минус — деление
+    // переворачивает знак и рисует «минус 230 пунктов от старта».
+    expect(isIndexableBase(701.3, {
+      unit: 'млрд руб.', repId: REP_LEVEL, values: [701.3, 210.5, -1616.4],
+    })).toBe(false);
+    // Ряд одного знака индексируется как прежде.
+    expect(isIndexableBase(701.3, {
+      unit: 'млрд руб.', repId: REP_LEVEL, values: [701.3, 210.5, 980.1],
+    })).toBe(true);
+  });
+
   it('В-12: %-ряды и темповые представления не индексируются к базе-100', () => {
     // Инфляция 5% — темп, а не уровень: «= 100 пунктов» смыслово неверно.
     expect(isIndexableBase(5, { unit: '%', repId: REP_LEVEL })).toBe(false);

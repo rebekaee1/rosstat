@@ -1,5 +1,6 @@
 import { CATEGORIES } from './categories';
 import { visitorId } from './behavior';
+import { SITE_ORIGIN } from './siteOrigin';
 
 const COUNTER_ID = 107136069;
 const EVENT_COLLECTOR_PATH = '/api/v1/analytics/events';
@@ -124,7 +125,7 @@ export function sendEvent(eventName, params) {
 }
 
 export function trackFile(filename) {
-  ym(COUNTER_ID, 'file', `https://forecasteconomy.com/downloads/${filename}`);
+  ym(COUNTER_ID, 'file', `${SITE_ORIGIN}/downloads/${filename}`);
 }
 
 export function trackOutbound(url) {

@@ -7,15 +7,15 @@ import {
 
 describe('isVariantSiblingNavigation', () => {
   it('cpi → cpi-food is sibling', () => {
-    expect(isVariantSiblingNavigation('/indicator/cpi', '/indicator/cpi-food')).toBe(true);
+    expect(isVariantSiblingNavigation('/russia/indicator/cpi', '/russia/indicator/cpi-food')).toBe(true);
   });
 
   it('cpi → exports is not sibling', () => {
-    expect(isVariantSiblingNavigation('/indicator/cpi', '/indicator/exports')).toBe(false);
+    expect(isVariantSiblingNavigation('/russia/indicator/cpi', '/russia/indicator/exports')).toBe(false);
   });
 
   it('same code is not sibling', () => {
-    expect(isVariantSiblingNavigation('/indicator/cpi', '/indicator/cpi')).toBe(false);
+    expect(isVariantSiblingNavigation('/russia/indicator/cpi', '/russia/indicator/cpi')).toBe(false);
   });
 });
 
@@ -64,8 +64,8 @@ describe('relatedIndicatorCardCopy', () => {
 
   it('housing primary ↔ secondary are variant siblings', () => {
     expect(isVariantSiblingNavigation(
-      '/indicator/housing-price-primary',
-      '/indicator/housing-price-secondary',
+      '/russia/indicator/housing-price-primary',
+      '/russia/indicator/housing-price-secondary',
     )).toBe(true);
   });
 

@@ -1,5 +1,13 @@
 import { useEffect, useRef, lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, useParams, useLocation, Link } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useParams,
+  useLocation,
+  Link,
+} from 'react-router-dom';
 import Navbar from './components/Navbar';
 import LiveTicker from './components/LiveTicker';
 import YandexRSY from './components/YandexRSY';
@@ -16,6 +24,24 @@ import { behaviorInit, behaviorRouteChange } from './lib/behavior';
 import { isVariantSiblingNavigation } from './lib/indicatorVariants';
 import { AuthProvider } from './context/AuthProvider';
 import Dashboard from './pages/Dashboard';
+import {
+  RUSSIA,
+  calendarPath,
+  countryPath,
+  demographicsPath,
+  indicatorPath,
+  isReservedFirstSegment,
+  regionHubPath,
+  regionIndicatorPath,
+  regionMapPath,
+  regionPath,
+  regionRatingPath,
+  regionVsPath,
+  russiaCategoryPath,
+  russiaIndicatorPath,
+  todayPath,
+  worldHubPath,
+} from './lib/sitePaths';
 
 const IndicatorDetail = lazy(() => import('./pages/IndicatorDetail'));
 const About = lazy(() => import('./pages/About'));
@@ -23,6 +49,8 @@ const Methodology = lazy(() => import('./pages/Methodology'));
 const Privacy = lazy(() => import('./pages/Privacy'));
 const Terms = lazy(() => import('./pages/Terms'));
 const CategoryPage = lazy(() => import('./pages/CategoryPage'));
+const CategoriesHub = lazy(() => import('./pages/CategoriesHub'));
+const RegionRatingsHub = lazy(() => import('./pages/RegionRatingsHub'));
 const ComparePage = lazy(() => import('./pages/ComparePage'));
 const CalendarPage = lazy(() => import('./pages/CalendarPage'));
 const EmbedBuilder = lazy(() => import('./pages/EmbedBuilder'));
@@ -37,8 +65,10 @@ const RegionsHome = lazy(() => import('./pages/RegionsHome'));
 const RegionProfile = lazy(() => import('./pages/RegionProfile'));
 const RegionIndicatorPage = lazy(() => import('./pages/RegionIndicatorPage'));
 const WorldHome = lazy(() => import('./pages/WorldHome'));
+const WorldRatingPage = lazy(() => import('./pages/WorldRatingPage'));
 const WorldCountry = lazy(() => import('./pages/WorldCountry'));
 const WorldIndicatorPage = lazy(() => import('./pages/WorldIndicatorPage'));
+const RussiaHome = lazy(() => import('./pages/RussiaHome'));
 const TodayHub = lazy(() => import('./pages/TodayHub'));
 const TodayIndicatorPage = lazy(() => import('./pages/TodayIndicatorPage'));
 const RegionRatingPage = lazy(() => import('./pages/RegionRatingPage'));
@@ -94,17 +124,69 @@ function IndicatorDetailKeyed() {
   return <IndicatorDetail key={code} />;
 }
 
+/** Мировая карточка страны: /:countrySlug (не russia, не reserved). */
+function WorldCountryRoute() {
+  const { countrySlug } = useParams();
+  if (isReservedFirstSegment(countrySlug) || countrySlug === RUSSIA) {
+    return <NotFound />;
+  }
+  return <WorldCountry />;
+}
+
+/** Мировой индикатор: /:countrySlug/indicator/:code (не russia). */
+function WorldIndicatorRoute() {
+  const { countrySlug } = useParams();
+  if (isReservedFirstSegment(countrySlug) || countrySlug === RUSSIA) {
+    return <NotFound />;
+  }
+  return <WorldIndicatorPage />;
+}
+
+function RedirectTo({ build }) {
+  const params = useParams();
+  return <Navigate to={build(params)} replace />;
+}
+
 function NotFound() {
   useDocumentMeta({
-    title: '404 — Страница не найдена',
-    description: 'Запрашиваемая страница не существует.',
+    title: 'Страница не найдена — Forecast Economy',
+    description: 'Такой страницы нет или она переехала. Перейдите к индикаторам, сводке на сегодня, регионам или статистике стран.',
     path: '/404',
+    robots: 'noindex, follow',
   });
 
+  const links = [
+    { to: '/', label: 'Все экономические индикаторы России' },
+    { to: todayPath(), label: 'Ключевые показатели на сегодня' },
+    { to: regionHubPath(), label: 'Статистика по регионам России' },
+    { to: worldHubPath(), label: 'Статистика по странам' },
+    { to: '/compare', label: 'Сравнение показателей' },
+    { to: calendarPath(), label: 'Календарь публикаций статистики' },
+  ];
+
   return (
-    <div className="max-w-2xl mx-auto px-4 pt-32 pb-24 text-center">
-      <h1 className="text-6xl font-display font-bold text-text-primary mb-4">404</h1>
-      <p className="text-lg text-text-secondary mb-8">Страница не найдена</p>
+    <div className="max-w-3xl mx-auto px-4 pt-28 pb-24">
+      <p className="text-[10px] uppercase tracking-[0.3em] text-champagne font-semibold mb-4">
+        Ошибка 404
+      </p>
+      <h1 className="font-display text-3xl md:text-4xl font-bold text-text-primary mb-4 leading-tight">
+        Страница не найдена
+      </h1>
+      <p className="text-text-secondary mb-8 leading-relaxed">
+        Такой страницы нет или она переехала. Вот с чего можно продолжить — или откройте поиск в шапке.
+      </p>
+      <ul className="space-y-2.5 mb-10">
+        {links.map((item) => (
+          <li key={item.to}>
+            <Link
+              to={item.to}
+              className="text-champagne hover:underline font-medium"
+            >
+              {item.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
       <Link
         to="/"
         className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-champagne/10 text-champagne font-medium hover:bg-champagne/20 transition-colors"
@@ -172,31 +254,69 @@ function AppRoutes() {
             <Route path="/methodology" element={<Methodology />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
-            <Route path="/category/:slug" element={<CategoryPage />} />
             <Route path="/compare" element={<ComparePage />} />
-            <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/widgets" element={<EmbedBuilder />} />
             <Route path="/calculator" element={<CalculatorPage />} />
             <Route path="/calculator/mortgage" element={<MortgageCalculatorPage />} />
             <Route path="/calculator/compound" element={<CompoundCalculatorPage />} />
-            <Route path="/demographics" element={<DemographicsPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/account" element={<Account />} />
-            <Route path="/indicator/:code" element={<IndicatorDetailKeyed />} />
-            <Route path="/today" element={<TodayHub />} />
-            <Route path="/today/:code" element={<TodayIndicatorPage />} />
-            <Route path="/region-rating/:code" element={<RegionRatingPage />} />
-            <Route path="/region-vs/:pair" element={<RegionComparePage />} />
-            <Route path="/calendar/:year/:month" element={<CalendarMonthPage />} />
-            <Route path="/regions" element={<RegionsHome />} />
-            <Route path="/regions/map/:code" element={<RegionsHome />} />
-            <Route path="/region/:slug" element={<RegionProfile />} />
-            <Route path="/region/:slug/:code" element={<RegionIndicatorPage />} />
-            <Route path="/world" element={<WorldHome />} />
-            <Route path="/world/:slug" element={<WorldCountry />} />
-            <Route path="/world/:slug/:code" element={<WorldIndicatorPage />} />
             <Route path="/admin/bi" element={<AdminBI />} />
+
+            {/* Мир: хаб и рейтинги до country catch-all */}
+            <Route path="/world" element={<WorldHome />} />
+            <Route path="/world/rating" element={<WorldRatingPage />} />
+            <Route path="/world/rating/:conceptSlug" element={<WorldRatingPage />} />
+
+            {/* Россия — явные префиксы */}
+            <Route path="/russia" element={<RussiaHome />} />
+            <Route path="/russia/category" element={<CategoriesHub />} />
+            <Route path="/russia/category/:slug" element={<CategoryPage />} />
+            <Route path="/russia/indicator/:code" element={<IndicatorDetailKeyed />} />
+            <Route path="/russia/indicator/:code/:year" element={<IndicatorDetailKeyed />} />
+            <Route path="/russia/today" element={<TodayHub />} />
+            <Route path="/russia/today/:code" element={<TodayIndicatorPage />} />
+            <Route path="/russia/calendar" element={<CalendarPage />} />
+            <Route path="/russia/calendar/:year/:month" element={<CalendarMonthPage />} />
+            <Route path="/russia/demographics" element={<DemographicsPage />} />
+            <Route path="/russia/region/map/:code" element={<RegionsHome />} />
+            <Route path="/russia/region" element={<RegionsHome />} />
+            <Route path="/russia/region/:slug" element={<RegionProfile />} />
+            <Route path="/russia/region/:slug/:code" element={<RegionIndicatorPage />} />
+            <Route path="/russia/region-rating" element={<RegionRatingsHub />} />
+            <Route path="/russia/region-rating/:code" element={<RegionRatingPage />} />
+            <Route path="/russia/region-vs/:pair" element={<RegionComparePage />} />
+
+            {/* Другие страны: /{slug}/indicator/{code} и /{slug} */}
+            <Route path="/:countrySlug/indicator/:code/:year" element={<WorldIndicatorRoute />} />
+            <Route path="/:countrySlug/indicator/:code" element={<WorldIndicatorRoute />} />
+            <Route path="/:countrySlug/category/:slug" element={<NotFound />} />
+            <Route path="/:countrySlug" element={<WorldCountryRoute />} />
+
+            {/* Legacy → канон (клиентский safety; nginx 301 на проде) */}
+            <Route path="/category/:slug" element={<RedirectTo build={({ slug }) => russiaCategoryPath(slug)} />} />
+            <Route path="/indicator/:code" element={<RedirectTo build={({ code }) => russiaIndicatorPath(code)} />} />
+            <Route path="/today" element={<Navigate to={todayPath()} replace />} />
+            <Route path="/today/:code" element={<RedirectTo build={({ code }) => todayPath(code)} />} />
+            <Route path="/calendar" element={<Navigate to={calendarPath()} replace />} />
+            <Route path="/calendar/:year/:month" element={<RedirectTo build={({ year, month }) => calendarPath(year, month)} />} />
+            <Route path="/demographics" element={<Navigate to={demographicsPath()} replace />} />
+            <Route path="/regions" element={<Navigate to={regionHubPath()} replace />} />
+            <Route path="/regions/map/:code" element={<RedirectTo build={({ code }) => regionMapPath(code)} />} />
+            <Route path="/region/:slug" element={<RedirectTo build={({ slug }) => regionPath(slug)} />} />
+            <Route path="/region/:slug/:code" element={<RedirectTo build={({ slug, code }) => regionIndicatorPath(slug, code)} />} />
+            <Route path="/region-rating/:code" element={<RedirectTo build={({ code }) => regionRatingPath(code)} />} />
+            <Route path="/region-vs/:pair" element={<RedirectTo build={({ pair }) => {
+              const m = String(pair || '').match(/^(.+)-vs-(.+)$/);
+              return m ? regionVsPath(m[1], m[2]) : regionHubPath();
+            }} />} />
+            <Route path="/world/:slug/:code" element={<RedirectTo build={({ slug, code }) => indicatorPath(slug, code)} />} />
+            <Route path="/world/:slug" element={<RedirectTo build={({ slug }) => {
+              if (slug === 'rating') return '/world/rating';
+              return countryPath(slug);
+            }} />} />
+
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>

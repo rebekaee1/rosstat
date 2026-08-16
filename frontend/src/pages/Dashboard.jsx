@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useIndicators } from '../lib/hooks';
 import useDocumentMeta from '../lib/useMeta';
+import { getPageSeo } from '../lib/pageMeta';
 import { CATEGORIES, countInCategory } from '../lib/categories';
 import CategoryBlock from '../components/CategoryBlock';
 import { TileSkeleton } from '../components/Skeleton';
@@ -20,11 +21,11 @@ export default function Dashboard() {
     return m;
   }, [indicators]);
 
+  const homeSeo = getPageSeo('home');
   useDocumentMeta({
-    title: 'Forecast Economy — экономика России и мира',
-    description:
-      'Официальные экономические данные России, регионов и стран: графики, таблицы, сравнения и статистические прогнозы.',
-    path: '/',
+    title: homeSeo.title,
+    description: homeSeo.description,
+    path: homeSeo.path,
   });
 
   useEffect(() => {

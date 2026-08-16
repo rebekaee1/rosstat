@@ -27,6 +27,7 @@ from fastapi import APIRouter, Depends, Request, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.cache import cache_get, cache_set, versioned_key
+from app.services import site_paths as paths
 from app.data.legacy_redirects import (
     LEGACY_REGION_SLUG_PREFIXES,
     resolve_legacy_indicator,
@@ -41,20 +42,25 @@ from app.services.seo_regional import (
     render_region_html,
     render_region_indicator_html,
     render_region_rating_html,
+    render_region_ratings_hub_html,
     render_regions_home_html,
     render_regions_map_html,
 )
 from app.services.seo_today import render_today_hub_html, render_today_indicator_html
 from app.services.seo_world import (
+    WORLD_RATING_DEFAULT_CONCEPT,
     render_world_country_html,
     render_world_home_html,
     render_world_indicator_html,
+    render_world_rating_html,
 )
 from app.services.seo_renderer import (
+    render_categories_hub_html,
     render_category_html,
     render_home_html,
     render_indicator_html,
     render_indicator_year_html,
+    render_not_found_html,
     render_page_html,
 )
 
@@ -117,12 +123,18 @@ async def _cached_html(namespace: str, variant: str, ttl: int, render_coro_facto
 
 
 def _permanent_redirect(path: str) -> Response:
-    """301 на канонический публичный URL (А-2/А-3): абсолютный Location —
-    ответ уходит роботу через nginx-proxy, относительный путь двусмыслен."""
-    from app.services.seo_renderer import DOMAIN
+    """301 на канонический публичный путь (А-2/А-3 + path-cut).
+
+    Location — относительный (`/russia/indicator/cpi`), без хоста и схемы:
+    браузер и робот резолвят против текущего запроса (localhost:3000 и
+    https://forecasteconomy.com одинаково; нет потери порта и даунгрейда HTTPS).
+    Абсолютный канон живёт в `<link rel="canonical">` целевой страницы.
+    """
+    if not path.startswith("/"):
+        path = f"/{path}"
     return Response(
         status_code=301,
-        headers={"Location": f"{DOMAIN}{path}", "Cache-Control": "no-cache"},
+        headers={"Location": path, "Cache-Control": "no-cache"},
     )
 
 
@@ -149,6 +161,12 @@ def _html_response(status_code: int, html: str, request: Request | None = None) 
 
 # methods GET+HEAD: роботы (и curl -I) проверяют страницы HEAD-запросом —
 # чистый @router.get отвечал бы 405.
+@router.api_route("/seo/not-found", methods=["GET", "HEAD"], include_in_schema=False)
+async def seo_not_found():
+    """Брендовая 404 для nginx catch-all (unknown URL → error_page)."""
+    return _html_response(404, render_not_found_html())
+
+
 @router.api_route("/seo/page/home", methods=["GET", "HEAD"], include_in_schema=False)
 async def seo_home(request: Request, db: AsyncSession = Depends(get_db)):
     return _html_response(200, await render_home_html(db), request)
@@ -157,6 +175,12 @@ async def seo_home(request: Request, db: AsyncSession = Depends(get_db)):
 @router.api_route("/seo/page/{page}", methods=["GET", "HEAD"], include_in_schema=False)
 async def seo_page(page: str, request: Request):
     status, html = await render_page_html(page)
+    return _html_response(status, html, request)
+
+
+@router.api_route("/seo/category", methods=["GET", "HEAD"], include_in_schema=False)
+async def seo_categories_hub(request: Request, db: AsyncSession = Depends(get_db)):
+    status, html = await render_categories_hub_html(db)
     return _html_response(status, html, request)
 
 
@@ -173,14 +197,16 @@ async def seo_indicator(
     mode: str | None = None,
     db: AsyncSession = Depends(get_db),
 ):
-    # А-2: переименованные коды → 301 на актуальную карточку.
-    # А-3: unlisted sibling-ряды (generic-режимы, bespoke-легаси) → 301 на
-    # канонический URL семьи вместо 404 — робот не выбрасывает старый URL.
-    # Variant-члены групп (топливо, разделы ИПП) резолвером не покрываются
-    # намеренно: у них собственные живые карточки.
+    # А-2/А-3 + path-cut: резолвер уже отдаёт финальный /russia/… путь.
     target = resolve_legacy_indicator(code) or resolve_unlisted_indicator(code)
     if target:
         return _permanent_redirect(target)
+    # Старый публичный /indicator/{code} (X-Path-Cut-Legacy) → канон /russia/…
+    if request.headers.get("x-path-cut-legacy") == "1":
+        dest = paths.russia_indicator(code)
+        if mode:
+            dest = f"{dest}?mode={mode}"
+        return _permanent_redirect(dest)
     status, html = await _cached_html(
         code, f"indicator:{code}:{mode or ''}", _SSR_TTL_INDICATOR,
         lambda: render_indicator_html(code, db, mode=mode),
@@ -191,11 +217,11 @@ async def seo_indicator(
 @router.api_route("/seo/regions", methods=["GET", "HEAD"], include_in_schema=False)
 async def seo_regions(request: Request, db: AsyncSession = Depends(get_db)):
     # Legacy share URLs (prod 9226c77): /regions?view=map&indicator=&year=
-    # → канон /regions/map/{code}?year=
+    # → канон /russia/region/map/{code}?year=
     if request.query_params.get("view") == "map":
         raw = request.query_params.get("indicator") or DEFAULT_MAP_CODE
         code = raw if re.fullmatch(r"[a-z0-9-]+", raw, re.I) else DEFAULT_MAP_CODE
-        target = f"/regions/map/{code}"
+        target = paths.region_map(code)
         year = request.query_params.get("year")
         if year and re.fullmatch(r"\d{4}", year):
             target = f"{target}?year={year}"
@@ -239,7 +265,7 @@ async def seo_region(slug: str, request: Request, db: AsyncSession = Depends(get
     if status == 404:
         canonical = await _canonical_region_slug(slug, db)
         if canonical:
-            return _permanent_redirect(f"/region/{canonical}")
+            return _permanent_redirect(paths.region(canonical))
     return _html_response(status, html, request)
 
 
@@ -254,7 +280,16 @@ async def seo_region_indicator(
     if status == 404:
         canonical = await _canonical_region_slug(slug, db)
         if canonical:
-            return _permanent_redirect(f"/region/{canonical}/{code}")
+            return _permanent_redirect(paths.region_indicator(canonical, code))
+    return _html_response(status, html, request)
+
+
+@router.api_route("/seo/region-rating", methods=["GET", "HEAD"], include_in_schema=False)
+async def seo_region_ratings_hub(request: Request, db: AsyncSession = Depends(get_db)):
+    status, html = await _cached_html(
+        "ssr-region", "region-rating-hub", _SSR_TTL_REGIONAL,
+        lambda: render_region_ratings_hub_html(db),
+    )
     return _html_response(status, html, request)
 
 
@@ -316,7 +351,12 @@ async def seo_indicator_year(
     target = resolve_legacy_indicator(code) or resolve_unlisted_indicator(code)
     if target:
         base_path = target.split("?")[0]
+        # Категория (снятый ряд) — без годового хвоста.
+        if "/category/" in base_path:
+            return _permanent_redirect(target.split("?")[0])
         return _permanent_redirect(f"{base_path}/{year}")
+    if request.headers.get("x-path-cut-legacy") == "1":
+        return _permanent_redirect(paths.russia_indicator_year(code, year))
     status, html = await _cached_html(
         code, f"indicator-year:{code}:{year}", _SSR_TTL_INDICATOR,
         lambda: render_indicator_year_html(code, year, db),
@@ -333,10 +373,30 @@ async def seo_world_home(request: Request, db: AsyncSession = Depends(get_db)):
     return _html_response(status, html, request)
 
 
+@router.api_route("/seo/world/rating", methods=["GET", "HEAD"], include_in_schema=False)
+async def seo_world_rating_default():
+    return _permanent_redirect(paths.world_rating(WORLD_RATING_DEFAULT_CONCEPT))
+
+
+@router.api_route("/seo/world/rating/{concept_slug}", methods=["GET", "HEAD"], include_in_schema=False)
+async def seo_world_rating(
+    concept_slug: str, request: Request, db: AsyncSession = Depends(get_db)
+):
+    year_raw = request.query_params.get("year")
+    year = int(year_raw) if year_raw and re.fullmatch(r"\d{4}", year_raw) else None
+    status, html = await _cached_html(
+        "ssr-world", f"world-rating:{concept_slug}:{year or ''}", _SSR_TTL_WORLD,
+        lambda: render_world_rating_html(concept_slug, db, year=year),
+    )
+    return _html_response(status, html, request)
+
+
 @router.api_route("/seo/world/{slug}", methods=["GET", "HEAD"], include_in_schema=False)
 async def seo_world_country(
     slug: str, request: Request, db: AsyncSession = Depends(get_db)
 ):
+    if request.headers.get("x-path-cut-legacy") == "1":
+        return _permanent_redirect(paths.country(slug))
     status, html = await _cached_html(
         "ssr-world", f"world:{slug}", _SSR_TTL_WORLD,
         lambda: render_world_country_html(slug, db),
@@ -348,13 +408,16 @@ async def seo_world_country(
 async def seo_world_indicator(
     slug: str, code: str, request: Request, db: AsyncSession = Depends(get_db)
 ):
-    # Вторичные частоты (квартал/год) → 301 на primary?mode=level-{freq},
-    # как resolve_unlisted_indicator для российских sibling-рядов.
+    # Вторичные частоты → финальный /{slug}/indicator/{primary}?mode=…
     target = await resolve_world_frequency_sibling(db, slug, code)
     if target:
         return _permanent_redirect(target)
-    # Нулевые/скрытые ряды не редиректим на страну — просто 404.
-    # Исключение из выбора (listing/variants) делается в API/repair.
+    if request.headers.get("x-path-cut-legacy") == "1":
+        mode = request.query_params.get("mode")
+        dest = paths.indicator(slug, code)
+        if mode:
+            dest = f"{dest}?mode={mode}"
+        return _permanent_redirect(dest)
     status, html = await _cached_html(
         "ssr-world", f"world:{slug}:{code}", _SSR_TTL_WORLD,
         lambda: render_world_indicator_html(slug, code, db),

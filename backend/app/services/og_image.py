@@ -174,7 +174,7 @@ def render_indicator_og(
     draw.text((margin, 44), eyebrow, font=eyebrow_font, fill=CHAMPAGNE)
     if period_text:
         ew = draw.textlength(eyebrow, font=eyebrow_font)
-        draw.text((margin + ew + 18, 44), f"· {period_text}", font=eyebrow_font, fill=TEXT_SECONDARY)
+        draw.text((margin + ew + 18, 44), f"— {period_text}", font=eyebrow_font, fill=TEXT_SECONDARY)
 
     name_font = _font(50, bold=True)
     lines = _wrap_text(draw, name, name_font, WIDTH - margin * 2)
@@ -183,13 +183,13 @@ def render_indicator_og(
         draw.text((margin, y), line, font=name_font, fill=TEXT_PRIMARY)
         y += 60
 
-    # Компактная строка: последнее значение · дата (вместо гигантского числа,
+    # Компактная строка: последнее значение — дата (вместо гигантского числа,
     # чтобы график занимал основную площадь — вид «скачанного PNG»).
     value_font = _font(46, bold=True)
     draw.text((margin, 212), value_text, font=value_font, fill=TEXT_PRIMARY)
     vw = draw.textlength(value_text, font=value_font)
     date_font = _font(28)
-    draw.text((margin + vw + 18, 226), f"· {date_text}", font=date_font, fill=TEXT_SECONDARY)
+    draw.text((margin + vw + 18, 226), f"— {date_text}", font=date_font, fill=TEXT_SECONDARY)
 
     # Большой area-график. Левый гаттер (margin..px0) — под подписи значений,
     # нижний гаттер (py1..) — под даты. Так подписи не пересекаются с линией.
@@ -222,7 +222,7 @@ def _brand_header(draw: ImageDraw.ImageDraw, eyebrow_extra: str | None = None) -
     draw.text((margin, 44), eyebrow, font=eyebrow_font, fill=CHAMPAGNE)
     if eyebrow_extra:
         ew = draw.textlength(eyebrow, font=eyebrow_font)
-        draw.text((margin + ew + 18, 44), f"· {eyebrow_extra}", font=eyebrow_font, fill=TEXT_SECONDARY)
+        draw.text((margin + ew + 18, 44), f"— {eyebrow_extra}", font=eyebrow_font, fill=TEXT_SECONDARY)
 
 
 def _brand_footer(draw: ImageDraw.ImageDraw, note: str = "") -> None:
@@ -240,11 +240,12 @@ def render_rating_og(
     unit: str,
     rows: list[tuple[str, float]],
     total: int,
+    order_label: str = "наибольшие значения",
 ) -> bytes:
     """Рейтинг регионов: горизонтальный барчарт топ-8 + бренд (для /region-rating).
 
-    Самодостаточная картинка под Алису/Нейро: заголовок, год, лидеры со
-    значениями, счётчик «из N регионов», домен.
+    Самодостаточная картинка под Алису/Нейро: заголовок, год, первые строки
+    текущего порядка со значениями, счётчик «из N регионов», домен.
     """
     img = Image.new("RGB", (WIDTH, HEIGHT), BG)
     draw = ImageDraw.Draw(img, "RGBA")
@@ -281,9 +282,64 @@ def render_rating_og(
                       _fmt_axis(value), font=val_font, fill=TEXT_PRIMARY)
             row_y += row_h
 
-    note = f"топ-{len(top)} из {total} регионов"
+    note = f"{order_label} — {len(top)} из {total} регионов"
     if unit:
-        note += f" · {unit}"
+        note += f" — {unit}"
+    _brand_footer(draw, note)
+
+    buf = io.BytesIO()
+    img.save(buf, format="PNG", optimize=True)
+    return buf.getvalue()
+
+
+def render_world_rating_og(
+    *,
+    name: str,
+    year: int,
+    unit: str,
+    rows: list[tuple[str, float]],
+    total: int,
+    order_label: str,
+) -> bytes:
+    """Рейтинг стран: горизонтальный барчарт первых строк текущего порядка."""
+    img = Image.new("RGB", (WIDTH, HEIGHT), BG)
+    draw = ImageDraw.Draw(img, "RGBA")
+    margin = 64
+    _brand_header(draw, f"{year} год")
+
+    name_font = _font(44, bold=True)
+    lines = _wrap_text(draw, f"{name}: рейтинг стран", name_font, WIDTH - margin * 2)
+    y = 88
+    for line in lines:
+        draw.text((margin, y), line, font=name_font, fill=TEXT_PRIMARY)
+        y += 52
+
+    top = rows[:8]
+    if top:
+        vmax = max(abs(v) for _n, v in top) or 1.0
+        bar_font = _font(24)
+        val_font = _font(24, bold=True)
+        bar_area_x0 = margin + 330
+        bar_area_x1 = WIDTH - margin - 170
+        row_y = y + 20
+        row_h = (HEIGHT - 70 - row_y) // len(top)
+        bar_h = min(30, row_h - 12)
+        for country_name, value in top:
+            label = country_name if len(country_name) <= 24 else country_name[:23] + "…"
+            draw.text((margin, row_y + (row_h - 26) // 2), label, font=bar_font, fill=TEXT_PRIMARY)
+            w = int((bar_area_x1 - bar_area_x0) * abs(value) / vmax)
+            by = row_y + (row_h - bar_h) // 2
+            draw.rounded_rectangle(
+                [bar_area_x0, by, bar_area_x0 + max(w, 6), by + bar_h],
+                radius=6, fill=(184, 148, 47, 200),
+            )
+            draw.text((bar_area_x0 + max(w, 6) + 14, row_y + (row_h - 26) // 2),
+                      _fmt_axis(value), font=val_font, fill=TEXT_PRIMARY)
+            row_y += row_h
+
+    note = f"{order_label} — {len(top)} из {total} стран"
+    if unit:
+        note += f" — {unit}"
     _brand_footer(draw, note)
 
     buf = io.BytesIO()
@@ -317,7 +373,7 @@ def render_today_hub_og(*, date_text: str, items: list[tuple[str, str]]) -> byte
         draw.text((cx + 22, cy + 14), label, font=label_font, fill=TEXT_SECONDARY)
         draw.text((cx + 22, cy + 46), value_text, font=value_font, fill=TEXT_PRIMARY)
 
-    _brand_footer(draw, "официальные данные · обновляется ежедневно")
+    _brand_footer(draw, "официальные данные — обновляется ежедневно")
     buf = io.BytesIO()
     img.save(buf, format="PNG", optimize=True)
     return buf.getvalue()
@@ -338,7 +394,7 @@ def render_region_vs_og(
     name_b: str,
     rows: list[tuple[str, str, str]],
 ) -> bytes:
-    """Сравнение двух регионов: таблица «показатель · A · B» (для /region-vs).
+    """Сравнение двух регионов: таблица «показатель — A — B» (для /region-vs).
 
     Колонки не наезжают друг на друга: подписи и значения обрезаются по
     фактической пиксельной ширине колонки (единицы измерения компактизирует
@@ -406,7 +462,7 @@ def render_world_country_og(
     sub_font = _font(26)
     draw.text(
         (margin, y + 4),
-        f"{indicators_count} показателей · Евростат",
+        f"{indicators_count} показателей — Евростат",
         font=sub_font,
         fill=TEXT_SECONDARY,
     )

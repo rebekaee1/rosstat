@@ -1,19 +1,28 @@
 import { useEffect, useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ChevronRight, Users, ArrowRight } from 'lucide-react';
+import { Users, ArrowRight } from 'lucide-react';
 import { useIndicators, useInflation } from '../lib/hooks';
 import useDocumentMeta from '../lib/useMeta';
 import IndicatorTile from '../components/IndicatorTile';
+import Breadcrumbs from '../components/Breadcrumbs';
 import { TileSkeleton } from '../components/Skeleton';
 import { CATEGORIES, getCategoryBySlug, isIndicatorListed } from '../lib/categories';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import IndicatorSearch from '../components/IndicatorSearch';
 import { track, events } from '../lib/track';
 import useScrollDepth from '../lib/useScrollDepth';
+import {
+  breadcrumbJsonLd,
+  russiaCategoryTrail,
+} from '../lib/breadcrumbs';
+import {
+  demographicsPath,
+  russiaCategoryPath,
+} from '../lib/sitePaths';
 
 const CATEGORY_FEATURES = {
   population: {
-    to: '/demographics',
+    to: demographicsPath(),
     icon: Users,
     title: 'Возрастная структура населения',
     description: 'Визуализация трёх возрастных групп: дети, трудоспособные, старше трудоспособного. Данные Росстата.',
@@ -33,7 +42,7 @@ export default function CategoryPage() {
   useDocumentMeta(cat ? {
     title: cat.seoTitle,
     description: cat.seoDescription,
-    path: `/category/${slug}`,
+    path: russiaCategoryPath(slug),
   } : null);
 
   useScrollDepth({ key: `category:${slug}`, page: 'category', category: slug });
@@ -45,33 +54,23 @@ export default function CategoryPage() {
       .filter((c) => c && c.apiCategory);
   }, [cat]);
 
+  const crumbs = useMemo(
+    () => (cat ? russiaCategoryTrail(cat.name, slug) : null),
+    [cat, slug],
+  );
+
   useEffect(() => {
-    if (!cat) return;
-    const jsonLd = {
-      '@context': 'https://schema.org',
-      '@type': 'BreadcrumbList',
-      itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://forecasteconomy.com/' },
-        { '@type': 'ListItem', position: 2, name: cat.name, item: `https://forecasteconomy.com/category/${slug}` },
-      ],
-    };
+    if (!crumbs) return undefined;
     const script = document.createElement('script');
     script.type = 'application/ld+json';
-    script.textContent = JSON.stringify(jsonLd);
+    script.textContent = JSON.stringify(breadcrumbJsonLd(crumbs));
     script.id = 'breadcrumb-jsonld';
-    const old = document.getElementById('breadcrumb-jsonld');
-    if (old) old.remove();
+    document.getElementById('breadcrumb-jsonld')?.remove();
     document.head.appendChild(script);
     return () => script.remove();
-  }, [cat, slug]);
+  }, [crumbs]);
 
   const isPricesCategory = cat?.apiCategory === 'Цены';
-  // Карточки CPI-семьи (cpi / cpi-food / cpi-nonfood / cpi-services) показывают
-  // rolling-12M — тот же показатель, что страница индикатора в дефолтном
-  // режиме. До 2026-05-06 для общей `cpi` подставляли значение из
-  // `inflation-annual`, но после переделки в декабрь-к-декабрю оно даёт цифру
-  // за прошлый календарный год (~5.6%) с датой последней публикации
-  // (март 2026) — расхождение цифры и периода. Унифицируем все 4 карточки.
   const { data: cpiInflResp } = useInflation('cpi', { enabled: isPricesCategory });
   const { data: foodInflResp } = useInflation('cpi-food', { enabled: isPricesCategory });
   const { data: nonfoodInflResp } = useInflation('cpi-nonfood', { enabled: isPricesCategory });
@@ -124,23 +123,11 @@ export default function CategoryPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 pt-20 pb-24">
-      <nav
-        className="flex items-center gap-2 text-sm text-text-tertiary mb-8"
-        aria-label="Хлебные крошки"
-      >
-        <Link
-          to="/"
-          className="hover:text-champagne transition-colors rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-champagne/40 focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian"
-        >
-          Главная
-        </Link>
-        <ChevronRight className="w-4 h-4 shrink-0 opacity-60" />
-        <span className="text-text-primary font-medium">{cat.name}</span>
-      </nav>
+      <Breadcrumbs items={crumbs} className="mb-8" />
 
       <header className="mb-12 max-w-3xl">
         <h1 className="font-display text-3xl md:text-[2.15rem] font-bold text-text-primary tracking-tight mb-4">
-          {cat.name}
+          {cat.seoH1 || cat.seoTitle}
         </h1>
         <p className="text-text-secondary leading-relaxed text-[1.02rem]">{cat.description}</p>
       </header>
@@ -218,7 +205,7 @@ export default function CategoryPage() {
             {relatedCategories.map((rel) => (
               <Link
                 key={rel.slug}
-                to={`/category/${rel.slug}`}
+                to={russiaCategoryPath(rel.slug)}
                 onClick={() => track(events.RELATED_LINK_CLICK, {
                   from: slug,
                   to: rel.slug,

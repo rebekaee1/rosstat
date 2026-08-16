@@ -4,6 +4,7 @@ import {
   Sigma, Ban, Eye,
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
+import { getPageSeo } from '../lib/pageMeta';
 
 const CARD = 'rounded-2xl bg-surface border border-border-subtle p-5 md:p-6';
 const H2 = 'font-display text-2xl md:text-3xl font-bold text-text-primary mb-4 leading-tight';
@@ -22,11 +23,11 @@ function Step({ n, title, children }) {
 }
 
 export default function Methodology() {
+  const seo = getPageSeo('methodology');
   useDocumentMeta({
-    title: 'Методология прогнозирования — Forecast Economy',
-    description:
-      'Как рассчитываются прогнозы экономических показателей России и других стран: подготовка ряда, историческая проверка, статистические модели, обновление и ограничения.',
-    path: '/methodology',
+    title: seo.title,
+    description: seo.description,
+    path: seo.path,
   });
 
   return (
@@ -35,7 +36,7 @@ export default function Methodology() {
         Методология
       </p>
       <h1 className="font-display text-3xl md:text-5xl font-bold text-text-primary mb-6 leading-[1.1]">
-        Как мы рассчитываем прогнозы
+        {seo.h1}
       </h1>
       <p className="text-lg text-text-secondary leading-relaxed mb-4">
         Каждый прогноз на Forecast Economy строится статистической моделью, обученной на

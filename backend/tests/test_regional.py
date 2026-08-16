@@ -67,6 +67,59 @@ class TestArtifact:
         empty = [i["code"] for i in indicators if not (i.get("unit") or "").strip()]
         assert not empty, f"показатели без unit: {empty[:10]}"
 
+    def test_units_have_no_defective_templates(self, artifact):
+        """P1: unit — единица измерения, не момент учёта и не голое «тысяч».
+
+        Ловит: пустое существительное («тысяч»), «на конец/начало года» в unit,
+        «тысяча гектаров», «в процентах» / длинные «в процентах …», «тысяч га»,
+        ед.ч. «гектар»/«килограмм», сокращение «млн руб.».
+        """
+        import sys
+
+        regional_scripts = Path(__file__).resolve().parents[2] / "scripts" / "regional"
+        sys.path.insert(0, str(regional_scripts))
+        from unit_normalize import unit_defect  # noqa: E402
+
+        _, indicators, _ = artifact
+        bad = [
+            (i["code"], i["unit"], unit_defect(i["unit"]))
+            for i in indicators
+            if unit_defect(i.get("unit") or "")
+        ]
+        assert not bad, f"дефектные unit ({len(bad)}): {bad[:12]}"
+
+    def test_timing_caveats_live_in_note_not_unit(self, artifact):
+        """Момент учёта сохраняется в note, а unit — счётная единица."""
+        _, indicators, _ = artifact
+        by_code = {i["code"]: i for i in indicators}
+        org = by_code["chislo-organizatsiy"]
+        assert org["unit"] == "единиц"
+        assert "на конец года" in (org.get("note") or "")
+        unemployed = by_code["chislennost-nezanyatyh-grazhdan-sostoyaschih-na-uchete-v"]
+        assert unemployed["unit"] == "тысяч человек"
+        assert "на конец года" in (unemployed.get("note") or "")
+        families = by_code[
+            "predostavlenie-grazhdanam-zhilyh-pomescheniy-chislo-semey-sostoyavshih"
+        ]
+        assert families["unit"] == "тысяч семей"
+        assert "на конец года" in (families.get("note") or "")
+
+    def test_percent_unit_is_percent_sign(self, artifact):
+        """SSR печатает «1,5 %», а не «1,5 в процентах»."""
+        _, indicators, _ = artifact
+        urban = next(
+            i for i in indicators
+            if i["code"] == "udelnyy-ves-gorodskogo-naseleniya-v-obschey-chislennosti"
+        )
+        assert urban["unit"] == "%"
+        yoy = next(
+            i for i in indicators
+            if i["code"] == "izmenenie-srednegodovoy-chislennosti-zanyatyh"
+        )
+        assert yoy["unit"] == "% к предыдущему году"
+        # Как собирается публичная фраза в seo_regional.
+        assert f"{_fmt(1.5)} {urban['unit']}" == "1,5 %"
+
     def test_points_reference_known_metadata(self, artifact):
         regions, indicators, points = artifact
         known_codes = {i["code"] for i in indicators}
@@ -135,4 +188,7 @@ class TestSeoTypography:
         # не хвалит регион за нежелательные метрики (преступность, аборты).
         assert "наибольш" in _rank_phrase(1, 85)
         assert "лидер" not in _rank_phrase(1, 85).lower()
-        assert "85" in _rank_phrase(85, 85)
+        assert "положен" in _rank_phrase(85, 85)
+        # Curated lower_better — язык достижений без слова «лидер».
+        assert "лучших" in _rank_phrase(1, 85, achievement=True)
+        assert "место" in _rank_phrase(40, 85, achievement=True)

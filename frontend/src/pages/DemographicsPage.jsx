@@ -7,10 +7,17 @@ import {
 import { ChevronRight, Users, Download, ArrowRight } from 'lucide-react';
 import { useDemographicsStructure } from '../lib/hooks';
 import useDocumentMeta from '../lib/useMeta';
+import { getPageSeo } from '../lib/pageMeta';
 import { cn } from '../lib/format';
 import { SkeletonBox } from '../components/Skeleton';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+import Breadcrumbs from '../components/Breadcrumbs';
 import { track, trackFile, events } from '../lib/track';
+import { demographicsTrail } from '../lib/breadcrumbs';
+import {
+  russiaCategoryPath,
+  russiaIndicatorPath,
+} from '../lib/sitePaths';
 
 const GROUPS = [
   // В-30: границы трудоспособного возраста менялись (пенсионная реформа
@@ -111,7 +118,7 @@ function StructureBar({ latest }) {
           return (
             <Link
               key={g.key}
-              to={`/indicator/${g.key}`}
+              to={russiaIndicatorPath(g.key)}
               className="group text-center rounded-2xl p-4 -m-1 hover:bg-obsidian-lighter/60 transition-colors"
             >
               <div className="flex items-center justify-center gap-2 mb-2">
@@ -162,31 +169,16 @@ export default function DemographicsPage() {
   const latest = series.length > 0 ? series[series.length - 1] : null;
   const firstYear = series.length > 0 ? series[0].year : null;
 
+  const demoSeo = getPageSeo('demographics');
   useDocumentMeta({
-    title: 'Возрастная структура населения России',
-    description: 'Дети, трудоспособные, старше трудоспособного — данные Росстата с 1990 года.',
-    path: '/demographics',
+    title: demoSeo.title,
+    description: demoSeo.description,
+    path: demoSeo.path,
   });
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 pt-20 pb-24">
-      <nav className="flex items-center gap-2 text-sm text-text-tertiary mb-8" aria-label="Хлебные крошки">
-        <Link
-          to="/"
-          className="hover:text-champagne transition-colors rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-champagne/40 focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian"
-        >
-          Главная
-        </Link>
-        <ChevronRight className="w-4 h-4 shrink-0 opacity-60" />
-        <Link
-          to="/category/population"
-          className="hover:text-champagne transition-colors rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-champagne/40"
-        >
-          Население
-        </Link>
-        <ChevronRight className="w-4 h-4 shrink-0 opacity-60" />
-        <span className="text-text-primary font-medium">Возрастная структура</span>
-      </nav>
+      <Breadcrumbs items={demographicsTrail()} className="mb-8" />
 
       <header className="mb-10 max-w-3xl">
         <div className="flex items-center gap-3 mb-4">
@@ -352,7 +344,7 @@ export default function DemographicsPage() {
 
       <div className="flex justify-center">
         <Link
-          to="/category/population"
+          to={russiaCategoryPath('population')}
           className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-border-subtle bg-surface text-text-secondary hover:text-champagne hover:border-champagne/30 transition-colors text-sm font-medium shadow-sm"
         >
           Все демографические индикаторы

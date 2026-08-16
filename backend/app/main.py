@@ -816,8 +816,8 @@ app.add_middleware(HttpStatusCounterMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://forecasteconomy.com",
-        "https://www.forecasteconomy.com",
+        settings.public_origin,
+        f"https://www.{settings.public_host}",
         "http://localhost:5173",
         "http://localhost:5174",
         "http://localhost:3000",

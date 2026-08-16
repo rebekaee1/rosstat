@@ -7,6 +7,9 @@ import { CATEGORIES } from '../lib/categories';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { track, events } from '../lib/track';
+import {
+  russiaIndicatorPath,
+} from '../lib/sitePaths';
 
 // Поиск — это директория: список скроллится (`max-h-[60vh] overflow-y-auto`) и
 // поддерживает клавиатурную навигацию. Жёсткого «топ-12» больше нет (звонок
@@ -103,7 +106,7 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
     // что ранжирование каталога не совпадает со спросом.
     track(events.SEARCH_SELECT, { q: q.slice(0, 120), code, ...(position ? { position } : {}) });
     close();
-    navigate(`/indicator/${code}`);
+    navigate(russiaIndicatorPath(code));
   }, [close, navigate]);
 
   // Cmd+K / Ctrl+K — открыть; Escape — закрыть; '/' — открыть (если не в инпуте)
@@ -189,7 +192,20 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
     }
   };
 
-  const isMac = typeof navigator !== 'undefined' && /Mac/i.test(navigator.platform || '');
+  // navigator.platform устарел и в части сред врёт; сначала Client Hints,
+  // затем явный Win/Linux/Android в UA, и только потом platform/UA Macintosh.
+  const isAppleModKey = (() => {
+    if (typeof navigator === 'undefined') return false;
+    const hint = navigator.userAgentData?.platform;
+    if (hint) return /mac|iphone|ipad|ipod/i.test(hint);
+    const ua = navigator.userAgent || '';
+    if (/Windows|Android|CrOS|Linux/i.test(ua) && !/Android.*Macintosh/i.test(ua)) {
+      return false;
+    }
+    const platform = navigator.platform || '';
+    if (platform) return /Mac|iPhone|iPad|iPod/i.test(platform);
+    return /Mac OS X|Macintosh|iPhone|iPad|iPod/i.test(ua);
+  })();
 
   const placeholder = inlinePlaceholder || 'Найдите индикатор — например, инфляция, ВВП или ключевая ставка';
 
@@ -208,8 +224,8 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
             'flex items-center gap-2 rounded-full pl-3 pr-3.5 py-1.5 bg-obsidian-lighter/50 border border-border-subtle text-text-secondary hover:text-text-primary hover:border-champagne/30 transition-colors',
             className,
           )}
-          aria-label={`Открыть поиск индикаторов (${isMac ? '⌘' : 'Ctrl'}+K)`}
-          title={`Поиск индикаторов (${isMac ? '⌘' : 'Ctrl'}+K)`}
+          aria-label={`Открыть поиск индикаторов (${isAppleModKey ? '⌘' : 'Ctrl'}+K)`}
+          title={`Поиск индикаторов (${isAppleModKey ? '⌘' : 'Ctrl'}+K)`}
         >
           <Search className="w-4 h-4 shrink-0" aria-hidden="true" />
           {/* На 1024–1280px подпись скрыта — экономим ширину навбара. */}
@@ -232,7 +248,7 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
           <Search className="w-4 h-4 text-text-tertiary shrink-0 group-hover:text-champagne transition-colors" aria-hidden="true" />
           <span className="flex-1 text-sm text-text-tertiary truncate">{placeholder}</span>
           <kbd className="hidden sm:inline text-[10px] font-mono text-text-tertiary border border-border-subtle rounded px-1.5 py-0.5">
-            {isMac ? '⌘K' : 'Ctrl+K'}
+            {isAppleModKey ? '⌘K' : 'Ctrl+K'}
           </kbd>
         </button>
       ) : (
@@ -246,8 +262,8 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
             'rounded-xl flex items-center justify-center p-1.5 bg-obsidian-lighter/50 border border-border-subtle text-text-secondary hover:text-text-primary hover:bg-obsidian-lighter/80 transition-colors',
             className,
           )}
-          aria-label={`Открыть поиск индикаторов (${isMac ? '⌘' : 'Ctrl'}+K)`}
-          title={`Поиск индикаторов (${isMac ? '⌘' : 'Ctrl'}+K)`}
+          aria-label={`Открыть поиск индикаторов (${isAppleModKey ? '⌘' : 'Ctrl'}+K)`}
+          title={`Поиск индикаторов (${isAppleModKey ? '⌘' : 'Ctrl'}+K)`}
         >
           <Search className="w-3.5 h-3.5" aria-hidden="true" />
         </button>

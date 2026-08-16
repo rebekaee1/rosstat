@@ -11,9 +11,10 @@ import {
   ArrowUpDown, Flame, Target, Clock, BarChart3, ChevronRight,
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
+import { getPageSeo } from '../lib/pageMeta';
 import useInflationCalc from '../lib/useInflationCalc';
 import { formatDate, formatAxisTick, cn } from '../lib/format';
-import { formatRubles, parseAmount, formatInput, fmtPct } from '../lib/calcFormat';
+import { formatRubles, parseAmount, formatInput, fmtPct, years as yearsPhrase } from '../lib/calcFormat';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
 import { SkeletonBox } from '../components/Skeleton';
 import { track, events } from '../lib/track';
@@ -46,7 +47,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Что такое ИПЦ?',
-    a: 'ИПЦ (индекс потребительских цен) — основной показатель инфляции. Значение 100.73 означает рост цен на 0.73% за месяц. Росстат публикует ИПЦ отдельно для продуктов, непродовольственных товаров и услуг.',
+    a: 'ИПЦ (индекс потребительских цен) — основной показатель инфляции. Значение 100,73 означает рост цен на 0,73% за месяц. Росстат публикует ИПЦ отдельно для продуктов, непродовольственных товаров и услуг.',
   },
   {
     q: 'Почему моя личная инфляция отличается от официальной?',
@@ -299,10 +300,11 @@ export default function CalculatorPage() {
     return formatDate(lastAvailableDate, 'full');
   }, [lastAvailableDate]);
 
+  const calcSeo = getPageSeo('calculator');
   useDocumentMeta({
-    title: 'Калькулятор инфляции в России',
-    description: 'Рассчитайте обесценивание денег за любой период. Данные ИПЦ Росстата с 1991 года.',
-    path: '/calculator',
+    title: calcSeo.title,
+    description: calcSeo.description,
+    path: calcSeo.path,
   });
 
   useScrollDepth({ key: 'calculator', page: 'calculator' });
@@ -425,7 +427,7 @@ export default function CalculatorPage() {
 
     items.push({
       icon: TrendingDown,
-      text: `Рубль потерял ${lossPercent.toFixed(0)}% покупательной способности за ${periodYears} ${periodYears === 1 ? 'год' : periodYears < 5 ? 'года' : 'лет'}`,
+      text: `Рубль потерял ${lossPercent.toFixed(0)}% покупательной способности за ${yearsPhrase(periodYears)}`,
     });
 
     const cats = CATEGORY_META.map(c => ({ ...c, rate: result[c.key] })).sort((a, b) => b.rate - a.rate);

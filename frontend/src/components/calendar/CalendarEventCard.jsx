@@ -5,6 +5,9 @@ import gsap from 'gsap';
 import { cn } from '../../lib/format';
 import { FOCUS_RING_SURFACE } from '../../lib/uiTokens';
 import { trackOutbound } from '../../lib/track';
+import {
+  russiaIndicatorPath,
+} from '../../lib/sitePaths';
 
 const SOURCE_STYLES = {
   cbr: {
@@ -137,7 +140,7 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0 })
         <ImportanceDots level={1} />
         {linkedIndicators.length === 1 ? (
           <Link
-            to={`/indicator/${linkedIndicators[0].code}`}
+            to={russiaIndicatorPath(linkedIndicators[0].code)}
             className={cn(FOCUS_RING_SURFACE, 'text-champagne hover:text-champagne-muted rounded-md')}
             title={linkedIndicators[0].name}
             aria-label={`Перейти к ${linkedIndicators[0].name}`}
@@ -222,7 +225,7 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0 })
           {linkedIndicators.map((ind) => (
             <Link
               key={ind.code}
-              to={`/indicator/${ind.code}`}
+              to={russiaIndicatorPath(ind.code)}
               className={cn(
                 FOCUS_RING_SURFACE,
                 'inline-flex items-center gap-1.5 text-xs font-medium text-champagne hover:text-champagne-muted rounded-lg transition-colors',

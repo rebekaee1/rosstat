@@ -1,6 +1,6 @@
 /**
  * Standalone-сборка поведенческого сбора для ЧИСТЫХ SSR-страниц
- * (/today*, /region-rating/*, /region-vs/*, /calendar/*, годовые landing'и) —
+ * (/today*, /russia/region-rating/*, /russia/region-vs/*, /calendar/*, годовые landing'и) —
  * там React-бандл не грузится, и без этого файла ~43k URL SEO-программы были
  * слепой зоной собственного счётчика (их видела только Метрика).
  *

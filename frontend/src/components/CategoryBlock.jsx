@@ -22,6 +22,9 @@ import {
 import { cn } from '../lib/format';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
 import { track, events } from '../lib/track';
+import {
+  russiaCategoryPath,
+} from '../lib/sitePaths';
 
 const CATEGORY_ICONS = {
   TrendingUp,
@@ -56,7 +59,7 @@ export default function CategoryBlock({
 
   return (
     <Link
-      to={category.apiCategory ? `/category/${category.slug}` : '#'}
+      to={category.apiCategory ? russiaCategoryPath(category.slug) : '#'}
       onClick={(e) => {
         if (!category.apiCategory) {
           e.preventDefault();

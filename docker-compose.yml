@@ -103,6 +103,7 @@ services:
       # First-party приём событий фронта (питает «Пульс»). По умолчанию ON и
       # НЕ зависит от ANALYTICS_ENABLED — иначе на проде телеметрия не пишется.
       RUSTATS_FRONTEND_EVENTS_ENABLED: ${RUSTATS_FRONTEND_EVENTS_ENABLED:-true}
+      RUSTATS_PUBLIC_BASE_URL: ${RUSTATS_PUBLIC_BASE_URL:-https://forecasteconomy.com}
       RUSTATS_ANALYTICS_ENABLED: ${RUSTATS_ANALYTICS_ENABLED:-false}
       RUSTATS_ANALYTICS_SCHEDULER_ENABLED: ${RUSTATS_ANALYTICS_SCHEDULER_ENABLED:-false}
       RUSTATS_ANALYTICS_API_TOKEN: ${RUSTATS_ANALYTICS_API_TOKEN:-}
@@ -189,6 +190,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        VITE_PUBLIC_BASE_URL: ${VITE_PUBLIC_BASE_URL:-https://forecasteconomy.com}
     ports:
       - "127.0.0.1:3000:80"
     logging:

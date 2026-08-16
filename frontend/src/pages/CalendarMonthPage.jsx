@@ -1,5 +1,8 @@
 import { Navigate, useParams } from 'react-router-dom';
 import CalendarPage from './CalendarPage';
+import {
+  calendarPath,
+} from '../lib/sitePaths';
 
 /** SSR-посадочная /calendar/{year}/{month} — тот же UI, что интерактивный календарь. */
 export default function CalendarMonthPage() {
@@ -7,7 +10,7 @@ export default function CalendarMonthPage() {
   const y = parseInt(year, 10);
   const m = parseInt(month, 10);
   if (!Number.isFinite(y) || !Number.isFinite(m) || m < 1 || m > 12 || y < 2000 || y > 2100) {
-    return <Navigate to="/calendar" replace />;
+    return <Navigate to={calendarPath()} replace />;
   }
   const mm = String(m).padStart(2, '0');
   return (
@@ -15,7 +18,7 @@ export default function CalendarMonthPage() {
       key={`${y}-${mm}`}
       fixedYear={y}
       fixedMonth={m - 1}
-      seoPath={`/calendar/${y}/${mm}`}
+      seoPath={calendarPath(y, mm)}
     />
   );
 }

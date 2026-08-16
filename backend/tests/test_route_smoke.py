@@ -237,6 +237,9 @@ def test_regions_heatmap(route_client):
     assert body["year"] == 2024
     slugs = {v["slug"] for v in body["values"]}
     assert {"moskva", "tulskaya-oblast"} <= slugs and len(slugs) == 12
+    assert body["default_sort"] == "desc"
+    assert body["rank_as_achievement"] is False
+    assert body["polarity"] is None
     assert route_client.get("/api/v1/regions/heatmap/no-such").status_code == 404
 
 
@@ -247,6 +250,11 @@ def test_region_profile_vs_and_indicator(route_client):
     assert vs.status_code == 200
     detail = route_client.get("/api/v1/regions/moskva/i/naselenie")
     assert detail.status_code == 200
+    body = detail.json()
+    assert body["rank"]["default_sort"] == "desc"
+    assert body["rank"]["rank_as_achievement"] is False
+    assert body["rank"]["position"] == 1
+    assert body["rank"]["top"][0]["slug"] == "moskva"
     assert route_client.get("/api/v1/regions/no-such-region").status_code == 404
 
 

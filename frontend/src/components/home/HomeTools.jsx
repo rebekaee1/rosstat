@@ -1,22 +1,26 @@
 import { createElement } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, BarChart3, Globe2, MapPin } from 'lucide-react';
+import {
+  regionHubPath,
+  worldHubPath,
+} from '../../lib/sitePaths';
 
 const TOOLS = [
   {
     to: '/compare',
     title: 'Сравнение',
-    desc: 'Россия, регионы и страны на одном графике',
+    desc: 'Страны и показатели России на одном графике',
     icon: BarChart3,
   },
   {
-    to: '/regions',
+    to: regionHubPath(),
     title: 'Регионы',
     desc: '489 показателей по 85 субъектам РФ',
     icon: MapPin,
   },
   {
-    to: '/world',
+    to: worldHubPath(),
     title: 'Страны',
     desc: 'Европейское покрытие и каталог стран',
     icon: Globe2,

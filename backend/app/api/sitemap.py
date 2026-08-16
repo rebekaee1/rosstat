@@ -15,6 +15,7 @@ from app.services.display import (
     display_value,
     display_value_text,
     format_date_ru,
+    format_number_ru,
 )
 # CATEGORIES/PAGE_META/STATIC_PAGES реэкспортируются для тестов
 # (test_sitemap_static_pages_constant) — сама генерация живёт в site_urls.py.
@@ -271,11 +272,16 @@ async def og_image_indicator(code: str, db: AsyncSession = Depends(get_db)):
 async def og_image_indicator_year(code: str, year: int, db: AsyncSession = Depends(get_db)):
     """PNG-превью индикатора за конкретный год для годовой landing-страницы.
 
-    Спарклайн строится по точкам именно этого года, в шапке — метка «{year} год».
-    Это «полезный материал» для Алисы/Нейро: на запрос «инфляция в 2024» поиск
-    Яндекса может показать карточку с графиком за нужный год.
+    При ≥2 точках за год — спарклайн внутри года. При одной точке (годовые ряды)
+    рисуем окно соседних лет: одна точка на графике бессмысленна, а контекст
+    истории остаётся содержательным для Алисы/Нейро.
     """
     from app.services.og_image import cached_og, render_indicator_og, store_og
+    from app.services.seo_renderer import (
+        neighbor_year_window,
+        yearly_last_points,
+    )
+    from app.services.site_urls import YEAR_LANDING_MIN_POINTS
 
     cache_key = f"{code}:{year}"
     png = cached_og(cache_key)
@@ -295,7 +301,7 @@ async def og_image_indicator_year(code: str, year: int, db: AsyncSession = Depen
             .order_by(IndicatorData.date)
         )
         rows = rows_q.all()
-        if len(rows) < 2:
+        if len(rows) < YEAR_LANDING_MIN_POINTS:
             return Response(status_code=404)
         raw_values = [float(v) for v, _ in rows]
         first_date = rows[0][1]
@@ -305,13 +311,44 @@ async def og_image_indicator_year(code: str, year: int, db: AsyncSession = Depen
         # (CPI — изменение цен), годовой итог — по природе ряда (сумма для
         # потоков, конец года для запасов, цепной рост для CPI), а не
         # «среднее за год» для всего подряд.
-        values = [
-            v if (v := display_value(code, raw)) is not None else 0.0
-            for raw in raw_values
-        ]
-        value_text = display_value_text(code, last_value, unit, indicator.frequency)
         summary_label, summary_text = annual_summary(code, raw_values, unit)
+        value_text = display_value_text(code, last_value, unit, indicator.frequency)
         date_text = f"{summary_label.lower()} — {summary_text}"
+
+        if len(rows) >= 2:
+            values = [
+                v if (v := display_value(code, raw)) is not None else 0.0
+                for raw in raw_values
+            ]
+            x_labels = (first_date.strftime("%d.%m"), last_date.strftime("%d.%m"))
+        else:
+            # Одна точка за год: график соседних лет (иначе area-chart пустой).
+            series = await yearly_last_points(db, indicator.id)
+            window = neighbor_year_window(series, year, size=10)
+            if len(window) < 2:
+                # Крайний случай — совсем короткая история: дублируем точку,
+                # чтобы превью не 404ило (страница при этом уже 200).
+                shown = display_value(code, float(last_value))
+                values = [shown if shown is not None else 0.0] * 2
+                x_labels = (str(year), str(year))
+            else:
+                values = [
+                    v if (v := display_value(code, raw)) is not None else 0.0
+                    for _y, raw, _d in window
+                ]
+                x_labels = (str(window[0][0]), str(window[-1][0]))
+            # Подпись даты — изменение к прошлому году, если есть.
+            prev = next((raw for y, raw, _d in series if y == year - 1), None)
+            if prev is not None:
+                cur_s = display_value(code, float(last_value))
+                prev_s = display_value(code, float(prev))
+                if cur_s is not None and prev_s is not None and prev_s != 0:
+                    pct = ((cur_s - prev_s) / abs(prev_s)) * 100.0
+                    date_text = (
+                        f"к {year - 1} году — "
+                        f"{format_number_ru(pct, signed=True)} %"
+                    )
+
         png = render_indicator_og(
             code=code,
             name=indicator.name,
@@ -319,7 +356,7 @@ async def og_image_indicator_year(code: str, year: int, db: AsyncSession = Depen
             date_text=date_text,
             values=values,
             period_text=f"{year} год",
-            x_labels=(first_date.strftime("%d.%m"), last_date.strftime("%d.%m")),
+            x_labels=x_labels,
         )
         store_og(cache_key, png)
     return Response(
@@ -377,10 +414,14 @@ async def og_image_region_indicator(slug: str, code: str, db: AsyncSession = Dep
 @router.get("/api/v1/og-image/region-rating/{code}.png", include_in_schema=False)
 async def og_image_region_rating(code: str, db: AsyncSession = Depends(get_db)):
     """PNG-барчарт рейтинга регионов: og:image + видимый <img> на /region-rating."""
+    from app.data.region_indicator_polarity import (
+        region_rating_is_achievement,
+        region_rating_order_by,
+    )
     from app.models import Region, RegionDataPoint, RegionIndicator
     from app.services.og_image import cached_og, render_rating_og, store_og
 
-    cache_key = f"rating:{code}"
+    cache_key = f"rating:v2:{code}"
     png = cached_og(cache_key)
     if png is None:
         indicator = (await db.execute(
@@ -401,16 +442,22 @@ async def og_image_region_rating(code: str, db: AsyncSession = Depends(get_db)):
             .where(RegionDataPoint.indicator_id == indicator.id,
                    RegionDataPoint.year == last_year,
                    Region.kind == "region")
-            .order_by(RegionDataPoint.value.desc())
+            .order_by(region_rating_order_by(
+                RegionDataPoint.value, indicator.code, indicator.table_code
+            ))
         )).all()
         if len(rows) < 5:
             return Response(status_code=404)
+        achievement = region_rating_is_achievement(indicator.code, indicator.table_code)
         png = render_rating_og(
             name=indicator.name,
             year=int(last_year),
             unit=(indicator.unit or "").strip(),
             rows=[(n, float(v)) for n, v in rows],
             total=len(rows),
+            order_label=(
+                "лучшие значения" if achievement else "наибольшие значения"
+            ),
         )
         store_og(cache_key, png)
     return Response(
@@ -589,6 +636,45 @@ async def og_image_world_country(slug: str, db: AsyncSession = Depends(get_db)):
             country_name=_genitive(country),
             indicators_count=int(n_listed),
             items=items,
+        )
+        store_og(cache_key, png)
+    return Response(
+        content=png,
+        media_type="image/png",
+        headers={"Cache-Control": "public, max-age=3600"},
+    )
+
+
+@router.get("/api/v1/og-image/world-rating/{concept_slug}.png", include_in_schema=False)
+async def og_image_world_rating(concept_slug: str, db: AsyncSession = Depends(get_db)):
+    """PNG-барчарт рейтинга стран: og:image + видимый <img> на /world/rating."""
+    from app.data.eurostat_units_ru import unit_suffix
+    from app.services.og_image import cached_og, render_world_rating_og, store_og
+    from app.services.seo_world import build_world_rating_payload
+
+    cache_key = f"world-rating:{concept_slug}"
+    png = cached_og(cache_key)
+    if png is None:
+        payload = await build_world_rating_payload(concept_slug, db)
+        if not payload or not payload["items"]:
+            return Response(status_code=404)
+        concept = payload["concept"]
+        order_label = (
+            "по возрастанию"
+            if concept["default_sort"] == "asc"
+            else "по убыванию"
+        )
+        unit = unit_suffix(concept["unit"]) or concept["unit"]
+        png = render_world_rating_og(
+            name=concept["name"],
+            year=int(payload["active_year"]),
+            unit=unit,
+            rows=[
+                (item["country_name"], float(item["value"]))
+                for item in payload["items"]
+            ],
+            total=int(payload["coverage"]["with_data"]),
+            order_label=order_label,
         )
         store_og(cache_key, png)
     return Response(

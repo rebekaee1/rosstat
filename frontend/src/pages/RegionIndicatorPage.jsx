@@ -1,4 +1,4 @@
-// Детальная страница показателя региона: /region/{slug}/{code}
+// Детальная страница показателя региона: /russia/region/{slug}/{code}
 // График + рейтинг среди регионов + сравнение с РФ + таблица значений +
 // выгрузка CSV/Excel/PNG (только для зарегистрированных, PNG — без watermark,
 // см. правило 2026-07-08 в IndicatorChartSection.jsx).
@@ -14,11 +14,19 @@ import {
 } from '../lib/regionsApi';
 import RegionAnnualChart from '../components/RegionAnnualChart';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
 import { useAuth } from '../context/authContext';
 import { exportTable } from '../lib/api';
 import { exportNodeToPng } from '../lib/chartImage';
 import { track, events } from '../lib/track';
+import { regionIndicatorTrail } from '../lib/breadcrumbs';
+import {
+  regionHubPath,
+  regionIndicatorPath,
+  regionPath,
+  russiaIndicatorPath,
+} from '../lib/sitePaths';
 
 // Годовой ряд → изменения год к году, % (кнопка «% г/г», созвон «На правки 13»).
 function toYoYSeries(series) {
@@ -160,8 +168,12 @@ export default function RegionIndicatorPage() {
     description:
       `${indName} в регионе ${regionName}: ${formatRegionValue(last.value)} ${data.indicator.unit} в ${last.year} году. ` +
       `Динамика с ${first.year} года по данным Росстата, график по годам` +
-      (data.rank ? `, ${data.rank.position}-е место среди ${data.rank.total} регионов России.` : '.'),
-    path: `/region/${slug}/${code}`,
+      (data.rank
+        ? (data.rank.rank_as_achievement
+          ? `, ${data.rank.position}-е место среди ${data.rank.total} регионов России.`
+          : `, ${data.rank.position}-е положение в списке по величине среди ${data.rank.total} регионов России.`)
+        : '.'),
+    path: regionIndicatorPath(slug, code),
   } : null);
 
   useEffect(() => {
@@ -207,18 +219,14 @@ export default function RegionIndicatorPage() {
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 pb-24 pt-24 sm:px-6">
-      {/* Хлебные крошки */}
-      <nav className="mb-4 flex items-center gap-1.5 overflow-hidden text-xs text-text-tertiary" aria-label="Хлебные крошки">
-        <Link to="/regions" className="shrink-0 transition-colors hover:text-champagne">Регионы</Link>
-        <ChevronRight size={12} className="shrink-0" />
-        {regionName && (
-          <Link to={`/region/${slug}`} className="max-w-[40%] shrink-0 truncate transition-colors hover:text-champagne sm:max-w-[45%]">
-            {regionName}
-          </Link>
+      <Breadcrumbs
+        items={regionIndicatorTrail(
+          regionName || '…',
+          slug,
+          indName || '…',
+          code,
         )}
-        <ChevronRight size={12} className="shrink-0" />
-        <span className="truncate text-text-secondary">{indName || '…'}</span>
-      </nav>
+      />
 
       {isError && <ApiRetryBanner onRetry={refetch} retrying={isFetching} />}
       {isLoading && (
@@ -245,7 +253,7 @@ export default function RegionIndicatorPage() {
               <p className="mt-1 text-xs text-text-tertiary">
                 Другой срез того же показателя Росстата —{' '}
                 <Link
-                  to={`/region/${slug}/${ABORTION_SIBLING[code].code}`}
+                  to={regionIndicatorPath(slug, ABORTION_SIBLING[code].code)}
                   className="text-champagne hover:underline"
                 >
                   {ABORTION_SIBLING[code].label}
@@ -385,10 +393,21 @@ export default function RegionIndicatorPage() {
           {/* Рейтинг + статистика */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6">
             {data.rank?.position && (
-              <StatCell label={`Место в России, ${data.rank.year}`}>
+              <StatCell label={
+                data.rank.rank_as_achievement
+                  ? `Место в России, ${data.rank.year}`
+                  : `Положение в списке, ${data.rank.year}`
+              }
+              >
                 <span className="inline-flex items-center gap-1.5">
-                  <Trophy size={14} className="text-champagne" />
-                  {data.rank.position} из {data.rank.total}
+                  {data.rank.rank_as_achievement && (
+                    <Trophy size={14} className="text-champagne" />
+                  )}
+                  {data.rank.position}
+                  {' '}
+                  из
+                  {' '}
+                  {data.rank.total}
                 </span>
               </StatCell>
             )}
@@ -412,13 +431,15 @@ export default function RegionIndicatorPage() {
           {data.rank?.top?.length > 0 && (
             <div data-block="region-rating" className="bg-surface border border-border-subtle rounded-xl p-4 mb-6">
               <h2 className="text-sm font-semibold text-text-primary mb-3">
-                Наибольшие значения по регионам, {data.rank.year}
+                {data.rank.rank_as_achievement
+                  ? `Лучшие значения по регионам, ${data.rank.year}`
+                  : `Наибольшие значения по регионам, ${data.rank.year}`}
               </h2>
               <ol className="space-y-1.5">
                 {data.rank.top.map((r, i) => (
                   <li key={r.slug}>
                     <Link
-                      to={`/region/${r.slug}/${code}`}
+                      to={regionIndicatorPath(r.slug, code)}
                       className={`flex items-center justify-between gap-2 text-[13px] rounded-lg px-2 py-1.5 -mx-2 hover:bg-surface-hover transition-colors ${r.slug === slug ? 'bg-champagne/5' : ''}`}
                     >
                       <span className="flex items-center gap-2 min-w-0">
@@ -501,7 +522,7 @@ export default function RegionIndicatorPage() {
               </p>
               <div className="flex flex-wrap gap-2">
                 <Link
-                  to={`/indicator/${data.indicator.macro_code}`}
+                  to={russiaIndicatorPath(data.indicator.macro_code)}
                   onClick={() => track(events.REGION_CROSSLINK_CLICK, { from: `region:${slug}:${code}`, to: data.indicator.macro_code })}
                   className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-champagne/10 text-champagne text-[13px] font-medium hover:bg-champagne/20 transition-colors"
                 >
@@ -528,7 +549,7 @@ export default function RegionIndicatorPage() {
                 {data.siblings.map(s => (
                   <Link
                     key={s.code}
-                    to={`/region/${slug}/${s.code}`}
+                    to={regionIndicatorPath(slug, s.code)}
                     className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-surface border border-border-subtle text-[13px] text-text-secondary hover:text-champagne hover:border-border-champagne transition-colors"
                   >
                     {s.name.length > 60 ? `${s.name.slice(0, 57)}…` : s.name}

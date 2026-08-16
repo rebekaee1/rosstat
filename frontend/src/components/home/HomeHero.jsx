@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
 import {
+  HOME_MARKET_PULSE,
   HOME_TODAY_CODES,
   HOME_TODAY_LABELS,
   HOME_TODAY_UNIT_SHORT,
@@ -11,6 +11,9 @@ import { formatChange, formatDate, formatValue, resolveDateFormat } from '../../
 import { SkeletonBox } from '../Skeleton';
 import { track, events } from '../../lib/track';
 import IndicatorSearch from '../IndicatorSearch';
+import {
+  russiaIndicatorPath,
+} from '../../lib/sitePaths';
 
 function PulseCard({ indicator }) {
   const pulse = displayPulseValue(indicator);
@@ -21,11 +24,11 @@ function PulseCard({ indicator }) {
 
   return (
     <Link
-      to={`/indicator/${indicator.code}`}
+      to={russiaIndicatorPath(indicator.code)}
       onClick={() => track(events.HOME_TODAY_CLICK, { indicator: indicator.code })}
       className="group flex min-h-[4.75rem] flex-col justify-between rounded-xl border border-border-subtle bg-surface px-3 py-2.5 transition-all hover:border-border-champagne hover:shadow-sm"
     >
-      <div className="truncate text-[10px] font-medium uppercase tracking-wide text-text-tertiary">
+      <div className="text-[10px] font-medium uppercase leading-snug tracking-wide text-text-tertiary">
         {label}
       </div>
       {pulse ? (
@@ -58,37 +61,28 @@ function PulseCard({ indicator }) {
   );
 }
 
-function RussiaTodayPanel({ indicators, isLoading }) {
+function MarketsPulsePanel({ indicators, isLoading }) {
   const cards = pickIndicatorsByCodes(indicators, HOME_TODAY_CODES);
 
   return (
     <aside
-      data-block="home-russia-today-panel"
+      data-block="home-markets-pulse-panel"
       className="rounded-2xl border border-border-subtle bg-champagne/[0.06] p-4 md:p-5"
-      aria-labelledby="home-russia-today-title"
+      aria-labelledby="home-markets-pulse-title"
     >
-      <div className="mb-3 flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">
-            Оперативный срез
-          </div>
-          <h2 id="home-russia-today-title" className="mt-1 text-base font-semibold text-text-primary">
-            Россия сегодня
-          </h2>
+      <div className="mb-3 min-w-0">
+        <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">
+          Оперативный срез
         </div>
-        <Link
-          to="/today"
-          className="mt-0.5 inline-flex shrink-0 items-center gap-1 text-[11px] text-champagne hover:underline"
-        >
-          Все на сегодня
-          <ArrowRight size={12} />
-        </Link>
+        <h2 id="home-markets-pulse-title" className="mt-1 text-base font-semibold text-text-primary">
+          Мировые рынки
+        </h2>
       </div>
 
       {isLoading ? (
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-          {HOME_TODAY_CODES.map((code) => (
-            <SkeletonBox key={code} className="h-[4.75rem] rounded-xl" />
+          {HOME_MARKET_PULSE.map((item) => (
+            <SkeletonBox key={item.code} className="h-[4.75rem] rounded-xl" />
           ))}
         </div>
       ) : (
@@ -111,12 +105,12 @@ export default function HomeHero({ indicators, isLoading }) {
             Бесплатная аналитическая платформа экономических данных
           </p>
           <h1 className="max-w-3xl text-2xl font-semibold leading-[1.2] tracking-tight text-text-primary md:text-3xl lg:text-[2rem]">
-            Официальная статистика России и мира — в одной рабочей среде
+            Официальные макроэкономические индикаторы в одной рабочей среде
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-text-secondary md:text-[15px]">
-            Макроэкономика Российской Федерации, субъекты и зарубежные страны по данным
-            национальных статистических ведомств и Евростата. Актуальные значения,
-            сравнения и переход к полной карточке показателя.
+            Макроэкономические индикаторы по данным национальных статистических ведомств,
+            центральных банков и Евростата: актуальные значения, сравнение стран и
+            статистические прогнозы. Россия и её регионы — с максимальной глубиной истории.
           </p>
           <div className="mt-6">
             <IndicatorSearch
@@ -126,7 +120,7 @@ export default function HomeHero({ indicators, isLoading }) {
           </div>
         </div>
 
-        <RussiaTodayPanel indicators={indicators} isLoading={isLoading} />
+        <MarketsPulsePanel indicators={indicators} isLoading={isLoading} />
       </div>
     </header>
   );

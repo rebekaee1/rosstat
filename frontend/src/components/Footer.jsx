@@ -5,6 +5,14 @@ import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { track, trackOutbound, events } from '../lib/track';
 import { openConsentSettings } from '../lib/consent';
+import {
+  calendarPath,
+  demographicsPath,
+  regionHubPath,
+  russiaCategoriesPath,
+  russiaCategoryPath,
+  worldHubPath,
+} from '../lib/sitePaths';
 
 const footLink = cn(
   FOCUS_RING,
@@ -29,12 +37,14 @@ export default function Footer() {
 
           <div>
             <h4 className="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-medium">
-              Категории
+              <Link to={russiaCategoriesPath()} className={footLink}>
+                Категории
+              </Link>
             </h4>
             <ul className="space-y-2 text-sm text-text-secondary">
               {CATEGORIES.filter((c) => c.apiCategory).map((c) => (
                 <li key={c.slug}>
-                  <Link to={`/category/${c.slug}`} className={footLink}>
+                  <Link to={russiaCategoryPath(c.slug)} className={footLink}>
                     {c.name}
                   </Link>
                 </li>
@@ -81,17 +91,22 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2 text-sm text-text-secondary">
               <li>
-                <Link to="/world" className={footLink}>
+                <Link to={worldHubPath()} className={footLink}>
                   Мировая экономика
                 </Link>
               </li>
               <li>
-                <Link to="/regions" className={footLink}>
+                <Link to={demographicsPath()} className={footLink}>
+                  Демография
+                </Link>
+              </li>
+              <li>
+                <Link to={regionHubPath()} className={footLink}>
                   Регионы России
                 </Link>
               </li>
               <li>
-                <Link to="/calendar" className={footLink}>
+                <Link to={calendarPath()} className={footLink}>
                   Календарь публикаций
                 </Link>
               </li>

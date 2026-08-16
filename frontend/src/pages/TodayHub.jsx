@@ -1,11 +1,18 @@
 import { Link } from 'react-router-dom';
-import { ChevronRight, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import { useIndicator, useIndicatorData } from '../lib/hooks';
 import { TODAY_CODES, TODAY_SPECS } from '../lib/todaySpecs';
 import { formatValue, formatDate, formatChange } from '../lib/format';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
+import { todayTrail } from '../lib/breadcrumbs';
+import {
+  calendarPath,
+  regionHubPath,
+  todayPath,
+} from '../lib/sitePaths';
 
 const MONTHS_GEN = [
   'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
@@ -28,7 +35,7 @@ function TodayCard({ code }) {
 
   return (
     <Link
-      to={`/today/${code}`}
+      to={todayPath(code)}
       className="group bg-surface border border-border-subtle rounded-xl p-4 hover:border-border-champagne hover:shadow-sm transition-all flex flex-col gap-2"
     >
       <div className="text-[11px] text-text-tertiary uppercase tracking-wide font-mono">
@@ -71,16 +78,12 @@ export default function TodayHub() {
       'Ключевые экономические показатели России на сегодня: курс доллара, евро и юаня, '
       + 'ключевая ставка ЦБ, инфляция, цена золота и топлива, индекс МосБиржи. '
       + 'Официальные данные, обновление ежедневно.',
-    path: '/today',
+    path: todayPath(),
   });
 
   return (
     <div className="max-w-5xl mx-auto px-4 pt-24 pb-20">
-      <nav className="flex items-center gap-1.5 text-xs text-text-tertiary mb-4" aria-label="Хлебные крошки">
-        <Link to="/" className="hover:text-champagne transition-colors">Главная</Link>
-        <ChevronRight size={12} />
-        <span className="text-text-secondary">Сегодня</span>
-      </nav>
+      <Breadcrumbs items={todayTrail()} />
 
       <p className="text-champagne text-xs font-mono uppercase tracking-widest mb-2">
         Сводка на {today}
@@ -110,9 +113,9 @@ export default function TodayHub() {
           Более 100 макроэкономических индикаторов — на{' '}
           <Link to="/" className="text-champagne hover:underline">главной странице</Link>
           ; региональная статистика — в разделе{' '}
-          <Link to="/regions" className="text-champagne hover:underline">Регионы России</Link>
+          <Link to={regionHubPath()} className="text-champagne hover:underline">Регионы России</Link>
           ; даты публикаций — в{' '}
-          <Link to="/calendar" className="text-champagne hover:underline">календаре статистики</Link>.
+          <Link to={calendarPath()} className="text-champagne hover:underline">календаре статистики</Link>.
         </p>
       </section>
     </div>

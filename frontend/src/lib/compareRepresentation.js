@@ -153,10 +153,17 @@ export function resolveCompareSeries(indicator, repId) {
  * в режиме общей базы исключаются и подписываются нотой. Единая точка истины
  * решения «индексируется/нет» — здесь (используется ComparePage и тестом).
  */
-export function isIndexableBase(base, { unit, repId } = {}) {
+export function isIndexableBase(base, { unit, repId, values } = {}) {
   if (unit === '%' || unit === '‰') return false;
   if (repId === REP_POP || repId === REP_YOY) return false;
-  return typeof base === 'number' && Number.isFinite(base) && base > 0;
+  if (!(typeof base === 'number' && Number.isFinite(base) && base > 0)) return false;
+  // Положительной базы мало: у знакопеременного ряда (дефицит бюджета, сальдо)
+  // база может оказаться в плюсовом квартале, а минусовые точки после деления
+  // переворачиваются в «минус 230 пунктов от старта» — график лжёт.
+  if (Array.isArray(values) && values.some((v) => typeof v === 'number' && Number.isFinite(v) && v < 0)) {
+    return false;
+  }
+  return true;
 }
 
 /** Значение ряда, приведённое к базе-100. Вызывать только при isIndexableBase(base). */

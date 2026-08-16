@@ -91,7 +91,7 @@ def test_og_category_prices(client, monkeypatch):
         return 200, (
             '<html><head><title>Цены и инфляция в России — Forecast Economy</title>'
             '<meta name="description" content="ИПЦ, инфляция, цены">'
-            '<link rel="canonical" href="https://forecasteconomy.com/category/prices">'
+            '<link rel="canonical" href="https://forecasteconomy.com/russia/category/prices">'
             '</head><body><h1>Цены</h1></body></html>'
         )
 
@@ -99,7 +99,7 @@ def test_og_category_prices(client, monkeypatch):
     r = client.get("/api/v1/og/category/prices")
     assert r.status_code == 200
     assert "Цены" in r.text
-    assert '<link rel="canonical" href="https://forecasteconomy.com/category/prices"' in r.text
+    assert '<link rel="canonical" href="https://forecasteconomy.com/russia/category/prices"' in r.text
 
 
 def test_og_category_unknown_404(client, monkeypatch):
@@ -124,7 +124,7 @@ def test_universal_seo_page_home(client, monkeypatch):
             '<link rel="canonical" href="https://forecasteconomy.com">'
             '<script type="application/ld+json">{"@type":"WebSite"}</script>'
             '</head><body><div id="root"><h1>Forecast Economy</h1>'
-            '<a href="/category/prices">Цены</a><a href="/indicator/cpi">ИПЦ</a>'
+            '<a href="/russia/category/prices">Цены</a><a href="/russia/indicator/cpi">ИПЦ</a>'
             '</div></body></html>'
         )
 
@@ -145,10 +145,10 @@ def test_universal_seo_indicator_contract(client, monkeypatch):
         return 200, (
             '<html><head><title>ИПЦ — данные, график и прогноз</title>'
             '<meta name="description" content="ИПЦ России: данные Росстата">'
-            '<link rel="canonical" href="https://forecasteconomy.com/indicator/cpi">'
+            '<link rel="canonical" href="https://forecasteconomy.com/russia/indicator/cpi">'
             '<script type="application/ld+json">{"@type":"Dataset"}</script>'
             '</head><body><div id="root"><h1>ИПЦ</h1>'
-            '<a href="/category/prices">Цены</a><a href="/indicator/cpi-food">Продовольствие</a>'
+            '<a href="/russia/category/prices">Цены</a><a href="/russia/indicator/cpi-food">Продовольствие</a>'
             '</div></body></html>'
         )
 
@@ -189,7 +189,8 @@ def test_sitemap_static_pages_constant():
     assert "/calculator" in paths
     assert "/calculator/mortgage" in paths
     assert "/calculator/compound" in paths
-    assert "/demographics" in paths
+    assert "/russia/demographics" in paths
+    assert "/russia/calendar" in paths
     assert "/methodology" in paths
 
     # Twelve categories × 1 indicator-grid page each (D5: split «Финансы и
@@ -312,7 +313,7 @@ def test_category_rich_list_includes_descriptions():
     from app.services.seo_renderer import _category_rich_list
 
     html = _category_rich_list(CATEGORY_META)
-    assert 'href="/category/prices"' in html
+    assert 'href="/russia/category/prices"' in html
     assert "seo-cat-desc" in html
     assert "ИПЦ" in html
 
@@ -443,11 +444,11 @@ def test_autolink_terms_in_seo_blocks():
     text = escape("Обычно RUONIA торгуется в коридоре вокруг ключевой ставки. RUONIA — рыночная.")
     out = _autolink(text, current_code="ruonia")
     # self-ссылка на ruonia не ставится
-    assert 'href="/indicator/ruonia"' not in out
-    assert '<a href="/indicator/key-rate">ключевой ставки</a>' in out
+    assert 'href="/russia/indicator/ruonia"' not in out
+    assert '<a href="/russia/indicator/key-rate">ключевой ставки</a>' in out
     # второе вхождение RUONIA тоже не линкуется (без current_code линкуется только первое)
     out2 = _autolink(text, current_code=None)
-    assert out2.count('href="/indicator/ruonia"') == 1
+    assert out2.count('href="/russia/indicator/ruonia"') == 1
 
 
 def test_autolink_does_not_double_link():
@@ -458,7 +459,7 @@ def test_autolink_does_not_double_link():
     text = escape("ИПЦ растёт, индекс потребительских цен — основной измеритель.")
     out = _autolink(text)
     # оба паттерна ведут на cpi — линкуется только один
-    assert out.count('href="/indicator/cpi"') == 1
+    assert out.count('href="/russia/indicator/cpi"') == 1
 
 
 def test_og_image_renders_png():
@@ -514,7 +515,7 @@ def test_indexnow_payload(monkeypatch):
     assert ok
     urls = captured["payload"]["urlList"]
     assert "https://forecasteconomy.com/" in urls
-    assert "https://forecasteconomy.com/indicator/cpi" in urls
+    assert "https://forecasteconomy.com/russia/indicator/cpi" in urls
     # дубликаты схлопнуты
     assert len(urls) == len(set(urls))
     assert captured["payload"]["key"] == indexnow.settings.indexnow_key
@@ -566,7 +567,7 @@ def test_build_document_year_page_excludes_app(client):
         build_document(
             title="ИПЦ в 2024 году",
             description="Тест",
-            canonical_path="/indicator/cpi/2024",
+            canonical_path="/russia/indicator/cpi/2024",
             body='<main class="seo-page"><h1>ИПЦ в 2024 году</h1></main>',
             include_app=False,
         )
@@ -580,6 +581,60 @@ def test_build_document_year_page_excludes_app(client):
     assert "module" not in body_without_collector
 
 
+def test_ssr_chrome_topnav_keeps_hub_deep_links():
+    """seo-topnav на pure-SSR (годовые landing'и + 404) обязан держать хабы.
+
+    Срезать /russia/region|/russia/today|/world|/russia/calendar нельзя: это единственная
+    серверная шапка для страниц без React. SPA-SSR (~77k URL) chrome не
+    получает — там отдельный блок seo-platform-nav (см. соседний тест)."""
+    import re
+
+    from app.services.seo_renderer import _SSR_CHROME_HEADER
+
+    m = re.search(r'<nav class="seo-topnav">(.*?)</nav>', _SSR_CHROME_HEADER, re.S)
+    assert m, "seo-topnav отсутствует в _SSR_CHROME_HEADER"
+    topnav = m.group(1)
+    for href in ("/russia/region", "/russia/today", "/world", "/russia/calendar"):
+        assert f'href="{href}"' in topnav, f"в seo-topnav нет ссылки на {href}"
+    assert "Демограф" not in topnav
+
+
+def test_spa_ssr_gets_platform_deep_links():
+    """SPA-SSR (include_app=True) без chrome обязан получить блок выхода в хабы.
+
+    Иначе тонкие семейства (/russia/today/*, /russia/calendar/*) оставляют боту одни крошки.
+    Pure-SSR с chrome этот блок не дублирует."""
+    import asyncio
+
+    from app.services.seo_renderer import build_document
+
+    spa = asyncio.run(
+        build_document(
+            title="Тест",
+            description="Тест",
+            canonical_path="/russia/today/cpi",
+            body='<main class="seo-page"><nav><a href="/">Главная</a></nav><h1>x</h1></main>',
+            include_app=True,
+        )
+    )
+    assert 'class="seo-section seo-platform-nav"' in spa
+    for href in ("/russia/region", "/russia/today", "/world", "/russia/calendar", "/compare", "/"):
+        assert f'href="{href}"' in spa
+
+    pure = asyncio.run(
+        build_document(
+            title="Год",
+            description="Тест",
+            canonical_path="/russia/indicator/cpi/2024",
+            body='<main class="seo-page"><h1>2024</h1></main>',
+            include_app=False,
+        )
+    )
+    assert 'class="seo-topnav"' in pure
+    # chrome уже даёт хабы — platform-nav не дублируем
+    assert "seo-platform-nav" not in pure
+
+
 def test_build_document_og_image_override():
     import asyncio
 
@@ -589,12 +644,12 @@ def test_build_document_og_image_override():
         build_document(
             title="Тест",
             description="Тест",
-            canonical_path="/indicator/cpi",
+            canonical_path="/russia/indicator/cpi",
             body="<main><h1>x</h1></main>",
-            og_image="https://forecasteconomy.com/og/cpi.png",
+            og_image="https://forecasteconomy.com/og/russia/cpi.png",
         )
     )
-    assert 'og:image" content="https://forecasteconomy.com/og/cpi.png"' in html
+    assert 'og:image" content="https://forecasteconomy.com/og/russia/cpi.png"' in html
     assert "og-image-v2.png" not in html
 
 

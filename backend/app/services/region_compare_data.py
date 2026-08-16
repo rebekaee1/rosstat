@@ -5,6 +5,7 @@ from __future__ import annotations
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.services import site_paths as paths
 from app.models import Region, RegionDataPoint, RegionIndicator
 from app.services.seo_regional import MACRO_BY_TABLE, _fmt, _region
 
@@ -90,7 +91,7 @@ async def build_region_compare_payload(
         return None
 
     return {
-        "canonical_path": f"/region-vs/{canon_a}-vs-{canon_b}",
+        "canonical_path": paths.region_vs(canon_a, canon_b),
         "region_a": {"slug": canon_a, "name": region_a.name},
         "region_b": {"slug": canon_b, "name": region_b.name},
         "rows": rows,

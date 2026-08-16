@@ -4,7 +4,7 @@
 // всем 489), тап по региону — карточка показателя; режим «Обзор» — профиль
 // региона. Зум/пан — созвон «На правки 13». PNG/GIF-выгрузка карты — только для
 // зарегистрированных, без watermark (правило 2026-07-08). Состояние карты в URL:
-// /regions/map/{code}?year=YYYY (legacy query → 301/client replace на канон).
+// /russia/region/map/{code}?year=YYYY (legacy query → 301/client replace на канон).
 import { useMemo, useState, useRef, useDeferredValue, useCallback, useEffect, lazy, Suspense } from 'react';
 import { Link, useNavigate, useSearchParams, useLocation, useParams } from 'react-router-dom';
 import {
@@ -28,6 +28,11 @@ import {
 import { track, events } from '../lib/track';
 import useSearchTracking from '../lib/useSearchTracking';
 import { useAuth } from '../context/authContext';
+import {
+  regionHubPath,
+  regionIndicatorPath,
+  regionPath,
+} from '../lib/sitePaths';
 
 const RegionsMap = lazy(() => import('../components/RegionsMap'));
 const MapTimeline = lazy(() => import('../components/MapTimeline'));
@@ -171,11 +176,11 @@ function ContrastRow({ heat, metricLabel, betterIsLow = false }) {
     <div className="flex flex-col sm:flex-row sm:items-center gap-x-3 gap-y-0.5 text-[13px]">
       <span className="text-text-tertiary w-28 shrink-0">{metricLabel}</span>
       <span className="flex flex-wrap items-center gap-x-3 gap-y-0.5">
-        <Link to={`/region/${first.slug}/${code}`} className="text-text-primary hover:text-champagne transition-colors">
+        <Link to={regionIndicatorPath(first.slug, code)} className="text-text-primary hover:text-champagne transition-colors">
           {first.name} <span className="font-mono text-positive">{formatRegionValue(first.value)} {short}</span>
         </Link>
         <span className="text-text-tertiary">против</span>
-        <Link to={`/region/${second.slug}/${code}`} className="text-text-primary hover:text-champagne transition-colors">
+        <Link to={regionIndicatorPath(second.slug, code)} className="text-text-primary hover:text-champagne transition-colors">
           {second.name} <span className="font-mono text-negative">{formatRegionValue(second.value)} {short}</span>
         </Link>
         {ratioLabel && (
@@ -194,7 +199,7 @@ function RegionCard({ region }) {
   const unemp = region.stats['2.10.1'];
   return (
     <Link
-      to={`/region/${region.slug}`}
+      to={regionPath(region.slug)}
       className="group flex items-center justify-between gap-2.5 rounded-xl border border-border-subtle bg-surface px-3.5 py-3 transition-all hover:border-border-champagne hover:shadow-sm sm:gap-3 sm:px-4 sm:py-3.5"
     >
       <div className="min-w-0">
@@ -229,9 +234,15 @@ export default function RegionsHome() {
     searchParams,
   );
 
-  // Legacy query на /regions?view=map… → канон /regions/map/{code}?year=
+  // Legacy query на /regions?view=map… → канон /russia/region/map/{code}?year=
   useEffect(() => {
-    if (location.pathname !== '/regions' && location.pathname !== '/regions/') return;
+    const hub = regionHubPath();
+    if (
+      location.pathname !== hub
+      && location.pathname !== `${hub}/`
+      && location.pathname !== '/regions'
+      && location.pathname !== '/regions/'
+    ) return;
     if (searchParams.get('view') !== 'map') return;
     const next = buildRegionsMapLocation({
       view: 'map',
@@ -363,7 +374,7 @@ export default function RegionsHome() {
         indicator: mapIndicatorParam,
         year: activeMapCode && urlYear != null ? urlYear : null,
       })
-      : '/regions',
+      : regionHubPath(),
   });
 
   const filtered = useMemo(() => {
@@ -717,7 +728,7 @@ export default function RegionsHome() {
                 brandMark
                 onSelect={(slug) => {
                   track(events.REGIONS_MAP_SELECT, { region: slug, metric: activeMapCode || 'overview' });
-                  navigate(activeMapCode ? `/region/${slug}/${activeMapCode}` : `/region/${slug}`);
+                  navigate(activeMapCode ? regionIndicatorPath(slug, activeMapCode) : regionPath(slug));
                 }}
               />
             </Suspense>

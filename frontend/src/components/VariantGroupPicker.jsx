@@ -8,21 +8,22 @@ import MobileNavSelect from './MobileNavSelect';
  * `?mode=` берём из текущего URL (источник правды), чтобы при переходе на sibling
  * сохранялся выбранный «Режим инфляции» (месячная, недельная, …).
  *
- * `basePath` — префикс URL без кода: `/indicator` (дефолт) или `/world/{slug}`.
+ * `basePath` — префикс URL без кода: `/russia/indicator` (дефолт) или
+ * `/{country}/indicator` для мира (ADR-0013).
  * На &lt;lg при 3+ срезах — нативный select (как темы у страны/региона).
  */
 export default function VariantGroupPicker({
   group,
   currentCode,
   embedded = false,
-  basePath = '/indicator',
+  basePath = '/russia/indicator',
 }) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   if (!group) return null;
   const modeParam = searchParams.get('mode');
   const suffix = modeParam ? `?mode=${encodeURIComponent(modeParam)}` : '';
-  const root = (basePath || '/indicator').replace(/\/$/, '');
+  const root = (basePath || '/russia/indicator').replace(/\/$/, '');
   const useMobileSelect = group.codes.length >= 3;
 
   const body = (

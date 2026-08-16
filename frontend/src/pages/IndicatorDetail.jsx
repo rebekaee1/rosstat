@@ -52,6 +52,9 @@ import { downloadExcel, downloadCSV } from '../lib/excel';
 import { track, events } from '../lib/track';
 import useScrollDepth from '../lib/useScrollDepth';
 import { isIndicatorListed } from '../lib/categories';
+import {
+  russiaIndicatorPath,
+} from '../lib/sitePaths';
 
 // Правка №16 (звонок 2026-05-21): на карточке ИПП по умолчанию показываем
 // г/г %, не уровень индекса 2018=100 (raw 105.2 без контекста бессмыслен).
@@ -111,13 +114,13 @@ export default function IndicatorDetail() {
           const savedMode = readSavedViewMode(targetCanon.base);
           const mode = savedMode || targetCanon.mode;
           navigate(
-            `/indicator/${targetCanon.base}?mode=${encodeURIComponent(mode)}`,
+            `${russiaIndicatorPath(targetCanon.base)}?mode=${encodeURIComponent(mode)}`,
             { replace: true },
           );
         }
         return;
       }
-      navigate(`/indicator/${target}`, { replace: true });
+      navigate(russiaIndicatorPath(target), { replace: true });
       return;
     }
     // Config-driven канонизация: derived sibling (m2-yoy) → base?mode=yoy.
@@ -126,7 +129,7 @@ export default function IndicatorDetail() {
       const fam = getViewModeFamily(engineCanon.base);
       const isDefault = engineCanon.mode === fam?.defaultMode;
       const suffix = isDefault ? '' : `?mode=${encodeURIComponent(engineCanon.mode)}`;
-      navigate(`/indicator/${engineCanon.base}${suffix}`, { replace: true });
+      navigate(`${russiaIndicatorPath(engineCanon.base)}${suffix}`, { replace: true });
       return;
     }
     const canon = viewModeCanonicalTarget(code)
@@ -140,7 +143,7 @@ export default function IndicatorDetail() {
         || (isHousingParent && canon.mode === 'yoy')
         || (isPpiParent && canon.mode === 'yoy');
       const suffix = omitMode ? '' : `?mode=${encodeURIComponent(canon.mode)}`;
-      navigate(`/indicator/${canon.parentCode}${suffix}`, { replace: true });
+      navigate(`${russiaIndicatorPath(canon.parentCode)}${suffix}`, { replace: true });
     }
   }, [code, navigate, searchParams]);
   // viewMode хранится в URL (?mode=…) — сохраняется при смене состава/среза.
@@ -208,7 +211,7 @@ export default function IndicatorDetail() {
   useDocumentMeta(indicator ? {
     title: indicator.seo_title || indicator.name,
     description: indicator.seo_description,
-    path: `/indicator/${code}`,
+    path: russiaIndicatorPath(code),
   } : null);
 
   const { data: stats } = useIndicatorStats(code);
@@ -216,7 +219,7 @@ export default function IndicatorDetail() {
   // Соседи по той же категории — нижний CTA-блок «Похожие индикаторы».
   // Загружается лениво (после того как мы знаем category), потому что
   // useIndicators({ category }) приходит из общего react-query-кэша и обычно
-  // уже прогрет на /category/:slug страницей-родителем.
+  // уже прогрет на /russia/category/:slug страницей-родителем.
   const { data: siblings } = useIndicators({
     category: indicator?.category,
     includeInactive: false,
@@ -772,7 +775,7 @@ export default function IndicatorDetail() {
               return (
               <Link
                 key={rel.code}
-                to={`/indicator/${rel.code}`}
+                to={russiaIndicatorPath(rel.code)}
                 onClick={() => track(events.RELATED_INDICATOR_CLICK, {
                   from: code,
                   to: rel.code,

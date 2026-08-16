@@ -2,6 +2,7 @@ import { useState, useMemo, useCallback } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { ChevronRight, Download, X } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
+import { getPageSeo } from '../lib/pageMeta';
 import { useCalendarEvents, useCalendarUpcoming } from '../lib/hooks';
 import { cn } from '../lib/format';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
@@ -10,8 +11,13 @@ import CalendarGrid from '../components/calendar/CalendarGrid';
 import CalendarEventCard from '../components/calendar/CalendarEventCard';
 import { SkeletonBox } from '../components/Skeleton';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+import Breadcrumbs from '../components/Breadcrumbs';
 import { track, events } from '../lib/track';
 import { groupSimilarEvents } from '../lib/calendarGrouping';
+import { calendarTrail } from '../lib/breadcrumbs';
+import {
+  calendarPath,
+} from '../lib/sitePaths';
 
 const MONTHS_NOM = [
   'январь', 'февраль', 'март', 'апрель', 'май', 'июнь',
@@ -97,14 +103,15 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
   const [selectedDate, setSelectedDate] = useState(null);
   const navigate = useNavigate();
 
+  const calendarSeo = getPageSeo('calendar');
   useDocumentMeta({
     title: seoPath
       ? `Календарь экономической статистики — ${MONTHS_NOM[month]} ${year}: даты публикаций`
-      : 'Экономический календарь России',
+      : calendarSeo.title,
     description: seoPath
       ? `Какие данные по экономике России выходят в ${MONTHS_GENITIVE[month]} ${year} года: публикации Росстата, Банка России и Минфина.`
-      : 'Расписание публикации макроэкономических данных: Росстат, ЦБ РФ, Минфин.',
-    path: seoPath || '/calendar',
+      : calendarSeo.description,
+    path: seoPath || calendarSeo.path,
   });
 
   const syncParams = useCallback((y, m, src) => {
@@ -123,7 +130,7 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
     else if (newMonth < 0) { newMonth = 11; newYear--; }
     if (seoPath) {
       const mm = String(newMonth + 1).padStart(2, '0');
-      navigate(`/calendar/${newYear}/${mm}`);
+      navigate(calendarPath(newYear, mm));
       return;
     }
     setMonth(newMonth);
@@ -190,11 +197,7 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
 
   return (
     <div className="max-w-4xl mx-auto px-4 md:px-8 pt-20 pb-24">
-      <nav className="flex items-center gap-2 text-sm text-text-tertiary mb-6" aria-label="Хлебные крошки">
-        <Link to="/" className="hover:text-champagne transition-colors rounded-sm">Главная</Link>
-        <ChevronRight className="w-4 h-4 shrink-0 opacity-60" />
-        <span className="text-text-primary font-medium">Календарь</span>
-      </nav>
+      <Breadcrumbs items={calendarTrail()} className="mb-6" />
 
       <header className="mb-6">
         <h1 className="font-display text-3xl md:text-[2.4rem] font-bold text-text-primary tracking-tight mb-3">

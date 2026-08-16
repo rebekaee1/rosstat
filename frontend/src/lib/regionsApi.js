@@ -145,9 +145,11 @@ export function shortUnit(unit = '') {
     [/^тысяч человек/, 'тыс чел.'],
     [/^миллионов человек/, 'млн чел.'],
     [/^человек/, 'чел.'],
+    [/^% к предыдущему году/, '% г/г'],
     [/^в процентах к предыдущему году/, '% г/г'],
     [/^в процентах/, '%'],
     [/^процентов/, '%'],
+    [/^%$/, '%'],
     [/^тысяч гектаров/, 'тыс га'],
     [/^тысяч тонн/, 'тыс т'],
     [/^миллионов тонн/, 'млн т'],
@@ -177,3 +179,14 @@ export function yearDelta(value, prevValue) {
   if (!Number.isFinite(pct)) return null;
   return { pct, up: pct > 0.005, down: pct < -0.005 };
 }
+
+// Публичные SPA-пути регионального блока (ADR-0013). API выше — /api/v1/regions*.
+export {
+  regionHubPath,
+  regionPath,
+  regionIndicatorPath,
+  regionMapPath,
+  regionRatingPath,
+  regionVsPath,
+} from './sitePaths';
+

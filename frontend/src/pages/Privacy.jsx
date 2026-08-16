@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Settings2 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
+import { getPageSeo } from '../lib/pageMeta';
 import { track, events } from '../lib/track';
 import { openConsentSettings } from '../lib/consent';
 import { cn } from '../lib/format';
@@ -34,11 +35,11 @@ function CookieRow({ name, purpose, consent }) {
 }
 
 export default function Privacy() {
+  const seo = getPageSeo('privacy');
   useDocumentMeta({
-    title: 'Политика конфиденциальности',
-    description:
-      'Политика обработки персональных данных сайта forecasteconomy.com: оператор, состав данных, cookie, права пользователей.',
-    path: '/privacy',
+    title: seo.title,
+    description: seo.description,
+    path: seo.path,
   });
 
   return (

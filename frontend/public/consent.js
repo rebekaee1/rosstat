@@ -26,12 +26,26 @@
 
   // --- URL hygiene: выполняется всегда, до любых хитов ---
   var TRACKING = ['etext', 'ybaip', 'yclid', 'ysclid', 'gclid', 'fbclid', '_openstat', 'openstat', 'clid', 'yandex_referrer', '_ga', 'utm_referrer', 'from', 'ref', 'ref_src', 'source', 'mc_cid', 'mc_eid', 'igshid'];
+  // Часть «меток» совпадает с рабочими параметрами страниц: у калькуляторов
+  // from/to — это годы периода. Вырезать их — значит ломать любую
+  // расшаренную ссылку, поэтому на таких путях они неприкосновенны.
+  var FUNCTIONAL_PARAMS = [
+    { prefix: '/calculator', keep: ['from', 'to'] },
+  ];
   var search = window.location.search;
   var cleanedSearch = search;
   if (search && search.length > 1) {
+    var path = window.location.pathname;
+    var keep = [];
+    for (var f = 0; f < FUNCTIONAL_PARAMS.length; f++) {
+      if (path.indexOf(FUNCTIONAL_PARAMS[f].prefix) === 0) {
+        keep = keep.concat(FUNCTIONAL_PARAMS[f].keep);
+      }
+    }
     var params = new URLSearchParams(search);
     var changed = false;
     for (var i = 0; i < TRACKING.length; i++) {
+      if (keep.indexOf(TRACKING[i]) !== -1) continue;
       if (params.has(TRACKING[i])) { params.delete(TRACKING[i]); changed = true; }
     }
     if (changed) {

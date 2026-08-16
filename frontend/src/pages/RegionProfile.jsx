@@ -1,4 +1,4 @@
-// Страница региона: /region/{slug}
+// Страница региона: /russia/region/{slug}
 // Как у стран: темы слева, сетка показателей справа.
 import { useEffect, useMemo, useState, useDeferredValue } from 'react';
 import { Link, useParams } from 'react-router-dom';
@@ -10,9 +10,16 @@ import {
   useRegionProfile, formatRegionValue, shortUnit, yearDelta, pluralRu,
 } from '../lib/regionsApi';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
 import MobileNavSelect from '../components/MobileNavSelect';
 import useSearchTracking from '../lib/useSearchTracking';
+import { regionTrail, breadcrumbJsonLd } from '../lib/breadcrumbs';
+import {
+  regionHubPath,
+  regionIndicatorPath,
+  regionPath,
+} from '../lib/sitePaths';
 
 function normalize(s) {
   return (s || '').toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim();
@@ -34,7 +41,7 @@ function DeltaBadge({ value, prevValue }) {
 function HeadlineCard({ item, slug }) {
   return (
     <Link
-      to={`/region/${slug}/${item.code}`}
+      to={regionIndicatorPath(slug, item.code)}
       className="group rounded-xl border border-border-subtle bg-surface p-3.5 transition-all hover:border-border-champagne hover:shadow-sm"
     >
       <div className="text-[11px] uppercase tracking-wide text-text-tertiary">{item.label}</div>
@@ -53,7 +60,7 @@ function HeadlineCard({ item, slug }) {
 function IndicatorRow({ item, slug }) {
   return (
     <Link
-      to={`/region/${slug}/${item.code}`}
+      to={regionIndicatorPath(slug, item.code)}
       className="group flex flex-col gap-2 rounded-xl border border-border-subtle bg-white px-3.5 py-3 transition-all hover:border-border-champagne hover:shadow-[0_12px_30px_rgba(35,30,16,0.06)] sm:min-h-[84px] sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-3.5"
     >
       <div className="min-w-0 flex-1">
@@ -90,24 +97,15 @@ export default function RegionProfile() {
     title: `${regionName} — статистика региона: население, зарплата, ВРП, цены`,
     description:
       `${regionName}: ${data.sections.reduce((n, s) => n + s.indicators.length, 0)} социально-экономических показателей Росстата с 1990 года — население, зарплаты, безработица, ВРП, инвестиции, строительство, цены. Графики и место региона в рейтингах России.`,
-    path: `/region/${slug}`,
+    path: regionPath(slug),
   } : null);
 
   useEffect(() => {
     if (!regionName) return undefined;
-    const jsonLd = {
-      '@context': 'https://schema.org',
-      '@type': 'BreadcrumbList',
-      itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://forecasteconomy.com/' },
-        { '@type': 'ListItem', position: 2, name: 'Регионы', item: 'https://forecasteconomy.com/regions' },
-        { '@type': 'ListItem', position: 3, name: regionName, item: `https://forecasteconomy.com/region/${slug}` },
-      ],
-    };
     const script = document.createElement('script');
     script.type = 'application/ld+json';
     script.id = 'region-breadcrumb-jsonld';
-    script.textContent = JSON.stringify(jsonLd);
+    script.textContent = JSON.stringify(breadcrumbJsonLd(regionTrail(regionName, slug)));
     document.getElementById('region-breadcrumb-jsonld')?.remove();
     document.head.appendChild(script);
     return () => script.remove();
@@ -139,17 +137,7 @@ export default function RegionProfile() {
 
   return (
     <div className="mx-auto w-full max-w-7xl overflow-x-hidden px-4 pb-24 pt-24 sm:px-6">
-      <nav className="mb-4 flex min-w-0 items-center gap-1.5 overflow-hidden text-xs text-text-tertiary" aria-label="Хлебные крошки">
-        <Link to="/" className="shrink-0 transition-colors hover:text-champagne">Главная</Link>
-        <ChevronRight size={12} className="shrink-0" />
-        <Link to="/regions" className="shrink-0 transition-colors hover:text-champagne">Регионы</Link>
-        {regionName && (
-          <>
-            <ChevronRight size={12} className="shrink-0" />
-            <span className="min-w-0 truncate text-text-secondary">{regionName}</span>
-          </>
-        )}
-      </nav>
+      <Breadcrumbs items={regionTrail(regionName || '…', slug)} />
 
       {isError && <ApiRetryBanner onRetry={refetch} retrying={isFetching} />}
       {isLoading && (

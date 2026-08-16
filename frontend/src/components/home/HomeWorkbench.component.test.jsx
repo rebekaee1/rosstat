@@ -39,10 +39,18 @@ describe('HomeWorkbench', () => {
         ],
         total: 1,
       }],
-      ['/world/compare/catalog', {
+      [/^\/world\/compare\/catalog/, {
         items: [{
           concept_slug: 'unemployment-rate',
           concept_name: 'Уровень безработицы',
+          unit: '%',
+        }],
+        total: 1,
+      }],
+      [/^\/world\/rating\/concepts/, {
+        concepts: [{
+          slug: 'unemployment-rate',
+          name: 'Уровень безработицы',
           unit: '%',
         }],
         total: 1,
@@ -73,8 +81,9 @@ describe('HomeWorkbench', () => {
     expect(screen.queryByText(/Россия · Регионы/)).toBeNull();
     expect(screen.getByRole('navigation', { name: 'Переходы по разделам' })).toBeTruthy();
     expect(screen.getByRole('link', { name: /Регионы России/i })).toBeTruthy();
-    expect(screen.getByRole('link', { name: /^Европа/i })).toBeTruthy();
-    expect(screen.getByRole('link', { name: /^Мир/i })).toBeTruthy();
+    expect(screen.getByRole('link', { name: /^Страны/i })).toBeTruthy();
+    expect(screen.queryByRole('link', { name: /^Европа/i })).toBeNull();
+    expect(screen.queryByRole('link', { name: /^Мир$/i })).toBeNull();
     expect(screen.getByRole('link', { name: /Показатели России/i })).toBeTruthy();
 
     await waitFor(() => {
@@ -83,5 +92,16 @@ describe('HomeWorkbench', () => {
     const timeline = screen.getByTestId('map-timeline-stub');
     expect(timeline).toBeTruthy();
     expect(timeline.textContent).toContain('timeline:2024,2025:2025:function');
+
+    await waitFor(() => {
+      expect(screen.getByText(/3,10/)).toBeTruthy();
+    });
+    const rankingBtn = screen.getByRole('button', { name: /Германия/ });
+    expect(rankingBtn.textContent).toMatch(/Германия/);
+    expect(rankingBtn.textContent).toMatch(/3,10/);
+    // Единица один раз в шапке блока, не в каждой строке.
+    expect(rankingBtn.textContent).not.toMatch(/% экономически/);
+    expect(screen.getByText('%')).toBeTruthy();
+    expect(screen.queryByText(/\.\.\.|…/)).toBeNull();
   });
 });

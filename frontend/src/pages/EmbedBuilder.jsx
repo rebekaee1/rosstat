@@ -4,9 +4,12 @@ import { useIndicators } from '../lib/hooks';
 import { CATEGORIES, isIndicatorListed } from '../lib/categories';
 import { cn } from '../lib/format';
 import useDocumentMeta from '../lib/useMeta';
+import { getPageSeo } from '../lib/pageMeta';
 import { PERIODS } from '../embed/useEmbedParams';
 import { track, events } from '../lib/track';
 import useSearchTracking from '../lib/useSearchTracking';
+import { SITE_ORIGIN } from '../lib/siteOrigin';
+import { russiaIndicatorPath } from '../lib/sitePaths';
 
 const WIDGET_TYPES = [
   { key: 'chart', label: 'График', icon: BarChart3, desc: 'Интерактивный AreaChart с данными и прогнозом' },
@@ -22,7 +25,7 @@ const SIZE_PRESETS = [
   { label: 'Большой', w: 800, h: 500 },
 ];
 
-const EMBED_ORIGIN = 'https://forecasteconomy.com';
+const EMBED_ORIGIN = SITE_ORIGIN;
 
 function escHtml(s) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -130,10 +133,11 @@ function CopyButton({ text, onCopy }) {
 }
 
 export default function EmbedBuilder() {
+  const widgetsSeo = getPageSeo('widgets');
   useDocumentMeta({
-    title: 'Виджеты Forecast Economy',
-    description: 'Встраиваемые графики, карточки и тикеры для вашего сайта.',
-    path: '/widgets',
+    title: widgetsSeo.title,
+    description: widgetsSeo.description,
+    path: widgetsSeo.path,
   });
 
   const { data: indicators } = useIndicators();
@@ -250,46 +254,46 @@ export default function EmbedBuilder() {
       if (type === 'ticker') {
         return tickerCodes.split(',').filter(Boolean).map(c => {
           const n = indicators?.find(i => i.code === c.trim())?.name || c.trim();
-          return `[![${n}](${EMBED_ORIGIN}/api/v1/embed/badge/${c.trim()}.svg?theme=${theme})](${EMBED_ORIGIN}/indicator/${c.trim()})`;
+          return `[![${n}](${EMBED_ORIGIN}/api/v1/embed/badge/${c.trim()}.svg?theme=${theme})](${EMBED_ORIGIN}${russiaIndicatorPath(c.trim())})`;
         }).join(' ');
       }
       if (type === 'compare') {
         const nameB = indicators?.find(i => i.code === codeB)?.name || codeB;
-        return `[![${name}](${EMBED_ORIGIN}/api/v1/embed/spark/${code}.svg?period=${period}&w=300&h=80)](${EMBED_ORIGIN}/indicator/${code}) [![${nameB}](${EMBED_ORIGIN}/api/v1/embed/spark/${codeB}.svg?period=${period}&w=300&h=80)](${EMBED_ORIGIN}/indicator/${codeB})`;
+        return `[![${name}](${EMBED_ORIGIN}/api/v1/embed/spark/${code}.svg?period=${period}&w=300&h=80)](${EMBED_ORIGIN}${russiaIndicatorPath(code)}) [![${nameB}](${EMBED_ORIGIN}/api/v1/embed/spark/${codeB}.svg?period=${period}&w=300&h=80)](${EMBED_ORIGIN}${russiaIndicatorPath(codeB)})`;
       }
-      if (type === 'card') return `[![${name}](${EMBED_ORIGIN}/api/v1/embed/card/${code}.svg?theme=${theme})](${EMBED_ORIGIN}/indicator/${code})`;
-      return `[![${name}](${EMBED_ORIGIN}/api/v1/embed/spark/${code}.svg?period=${period}&w=600&h=100)](${EMBED_ORIGIN}/indicator/${code})`;
+      if (type === 'card') return `[![${name}](${EMBED_ORIGIN}/api/v1/embed/card/${code}.svg?theme=${theme})](${EMBED_ORIGIN}${russiaIndicatorPath(code)})`;
+      return `[![${name}](${EMBED_ORIGIN}/api/v1/embed/spark/${code}.svg?period=${period}&w=600&h=100)](${EMBED_ORIGIN}${russiaIndicatorPath(code)})`;
     }
 
     if (codeTab === 'svg') {
       const cw = Math.min(w, 600);
       const ch = Math.min(h, 400);
-      if (type === 'card') return `<a href="${EMBED_ORIGIN}/indicator/${code}" target="_blank">\n  <img src="${EMBED_ORIGIN}/api/v1/embed/card/${code}.svg?theme=${theme}&w=${cw}&h=${ch}"\n    alt="${escHtml(name)}" width="${cw}" height="${ch}">\n</a>`;
+      if (type === 'card') return `<a href="${EMBED_ORIGIN}${russiaIndicatorPath(code)}" target="_blank">\n  <img src="${EMBED_ORIGIN}/api/v1/embed/card/${code}.svg?theme=${theme}&w=${cw}&h=${ch}"\n    alt="${escHtml(name)}" width="${cw}" height="${ch}">\n</a>`;
       if (type === 'ticker') {
         return tickerCodes.split(',').filter(Boolean).map(c => {
           const n = indicators?.find(i => i.code === c.trim())?.name || c.trim();
-          return `<a href="${EMBED_ORIGIN}/indicator/${c.trim()}" target="_blank"><img src="${EMBED_ORIGIN}/api/v1/embed/badge/${c.trim()}.svg?theme=${theme}" alt="${escHtml(n)}"></a>`;
+          return `<a href="${EMBED_ORIGIN}${russiaIndicatorPath(c.trim())}" target="_blank"><img src="${EMBED_ORIGIN}/api/v1/embed/badge/${c.trim()}.svg?theme=${theme}" alt="${escHtml(n)}"></a>`;
         }).join('\n');
       }
       if (type === 'compare') {
         const nameB = indicators?.find(i => i.code === codeB)?.name || codeB;
-        return `<a href="${EMBED_ORIGIN}/indicator/${code}" target="_blank">\n  <img src="${EMBED_ORIGIN}/api/v1/embed/spark/${code}.svg?period=${period}&w=${cw}&h=60"\n    alt="${escHtml(name)}" width="${cw}" height="60">\n</a>\n<a href="${EMBED_ORIGIN}/indicator/${codeB}" target="_blank">\n  <img src="${EMBED_ORIGIN}/api/v1/embed/spark/${codeB}.svg?period=${period}&w=${cw}&h=60"\n    alt="${escHtml(nameB)}" width="${cw}" height="60">\n</a>`;
+        return `<a href="${EMBED_ORIGIN}${russiaIndicatorPath(code)}" target="_blank">\n  <img src="${EMBED_ORIGIN}/api/v1/embed/spark/${code}.svg?period=${period}&w=${cw}&h=60"\n    alt="${escHtml(name)}" width="${cw}" height="60">\n</a>\n<a href="${EMBED_ORIGIN}${russiaIndicatorPath(codeB)}" target="_blank">\n  <img src="${EMBED_ORIGIN}/api/v1/embed/spark/${codeB}.svg?period=${period}&w=${cw}&h=60"\n    alt="${escHtml(nameB)}" width="${cw}" height="60">\n</a>`;
       }
-      return `<a href="${EMBED_ORIGIN}/indicator/${code}" target="_blank">\n  <img src="${EMBED_ORIGIN}/api/v1/embed/spark/${code}.svg?period=${period}&w=${cw}&h=60"\n    alt="${escHtml(name)}" width="${cw}" height="60">\n</a>`;
+      return `<a href="${EMBED_ORIGIN}${russiaIndicatorPath(code)}" target="_blank">\n  <img src="${EMBED_ORIGIN}/api/v1/embed/spark/${code}.svg?period=${period}&w=${cw}&h=60"\n    alt="${escHtml(name)}" width="${cw}" height="60">\n</a>`;
     }
 
     if (codeTab === 'badge') {
       if (type === 'ticker') {
         return tickerCodes.split(',').filter(Boolean).map(c => {
           const n = indicators?.find(i => i.code === c.trim())?.name || c.trim();
-          return `[![${n}](${EMBED_ORIGIN}/api/v1/embed/badge/${c.trim()}.svg?theme=${theme})](${EMBED_ORIGIN}/indicator/${c.trim()})`;
+          return `[![${n}](${EMBED_ORIGIN}/api/v1/embed/badge/${c.trim()}.svg?theme=${theme})](${EMBED_ORIGIN}${russiaIndicatorPath(c.trim())})`;
         }).join('\n');
       }
       if (type === 'compare') {
         const nameB = indicators?.find(i => i.code === codeB)?.name || codeB;
-        return `[![${name}](${EMBED_ORIGIN}/api/v1/embed/badge/${code}.svg?theme=${theme})](${EMBED_ORIGIN}/indicator/${code})\n[![${nameB}](${EMBED_ORIGIN}/api/v1/embed/badge/${codeB}.svg?theme=${theme})](${EMBED_ORIGIN}/indicator/${codeB})`;
+        return `[![${name}](${EMBED_ORIGIN}/api/v1/embed/badge/${code}.svg?theme=${theme})](${EMBED_ORIGIN}${russiaIndicatorPath(code)})\n[![${nameB}](${EMBED_ORIGIN}/api/v1/embed/badge/${codeB}.svg?theme=${theme})](${EMBED_ORIGIN}${russiaIndicatorPath(codeB)})`;
       }
-      return `[![${name}](${EMBED_ORIGIN}/api/v1/embed/badge/${code}.svg?theme=${theme})](${EMBED_ORIGIN}/indicator/${code})`;
+      return `[![${name}](${EMBED_ORIGIN}/api/v1/embed/badge/${code}.svg?theme=${theme})](${EMBED_ORIGIN}${russiaIndicatorPath(code)})`;
     }
 
     return '';

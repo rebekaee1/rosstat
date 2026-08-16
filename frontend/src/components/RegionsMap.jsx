@@ -12,6 +12,9 @@ import { Plus, Minus, Maximize2 } from 'lucide-react';
 import mapData from '../lib/regionsMap.json';
 import { formatRegionValue } from '../lib/regionsApi';
 import { colorsBySlug, valueExtent, MAP_SCALE, MAP_NO_DATA } from '../lib/regionsMapColors';
+import {
+  regionPath,
+} from '../lib/sitePaths';
 
 const ZOOM_MAX = 8;
 const ZOOM_STEP = 1.6;
@@ -79,7 +82,7 @@ export default function RegionsMap({
   const handleSelect = useCallback((slug) => {
     if (panRef.current?.moved) return;
     if (onSelect) onSelect(slug);
-    else navigate(`/region/${slug}`);
+    else navigate(regionPath(slug));
   }, [onSelect, navigate]);
 
   const handleMove = useCallback((e, slug) => {

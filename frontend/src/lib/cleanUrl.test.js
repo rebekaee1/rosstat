@@ -35,7 +35,7 @@ describe('cleanSearch', () => {
 
 describe('cleanPathWithSearch', () => {
   it('combines clean path with cleaned search', () => {
-    expect(cleanPathWithSearch('/category/prices', '?etext=foo&utm_source=ya')).toBe('/category/prices');
+    expect(cleanPathWithSearch('/russia/category/prices', '?etext=foo&utm_source=ya')).toBe('/russia/category/prices');
   });
 
   it('preserves meaningful query params', () => {

@@ -17,8 +17,8 @@ export const VARIANT_GROUPS = [
       { code: 'cpi-services', label: 'Услуги' },
     ],
   },
-  // gdp-nominal — режимы на /indicator/gdp-nominal?mode=… (gdpNominalViewMode*).
-  // gdp-real — режимы на /indicator/gdp-real?mode=… (gdpRealViewMode*).
+  // gdp-nominal — режимы на /russia/indicator/gdp-nominal?mode=… (gdpNominalViewMode*).
+  // gdp-real — режимы на /russia/indicator/gdp-real?mode=… (gdpRealViewMode*).
   {
     label: 'ВВП по использованию',
     codes: [
@@ -27,7 +27,7 @@ export const VARIANT_GROUPS = [
       { code: 'gdp-investment', label: 'Инвестиции' },
     ],
   },
-  // ИЦП: режимы на /indicator/ppi?mode=… (ppiViewMode*), не variant-URL.
+  // ИЦП: режимы на /russia/indicator/ppi?mode=… (ppiViewMode*), не variant-URL.
   // ИПП: общий индекс + четыре раздела ОКВЭД2 (добыча / обработка / энергетика /
   // водоснабжение) — это РАЗНЫЕ ряды (variant), у каждого свой ViewModePicker
   // (Г/г / М/м / средние / уровень). Не путать со старой группой `ipi-yoy + ipi`
@@ -57,8 +57,8 @@ export const VARIANT_GROUPS = [
       { code: 'fuel-diesel', label: 'Дизельное топливо' },
     ],
   },
-  // unemployment — режимы на /indicator/unemployment?mode=… (unemploymentViewMode*).
-  // wages-nominal — режимы на /indicator/wages-nominal?mode=… (wagesNominalViewMode*).
+  // unemployment — режимы на /russia/indicator/unemployment?mode=… (unemploymentViewMode*).
+  // wages-nominal — режимы на /russia/indicator/wages-nominal?mode=… (wagesNominalViewMode*).
   // Внешняя торговля (созвон B_diarized): объединяем парные ряды в variant-группы
   // (экспорт↔импорт товаров, экспорт↔импорт услуг, торговый баланс↔сальдо
   // текущего счёта). Каждый — самостоятельный индикатор со своим рядом и полной
@@ -229,7 +229,7 @@ export function relatedIndicatorCardCopy(code, fallbackName, fallbackUnit) {
   };
 }
 
-const INDICATOR_PATH_RE = /^\/indicator\/([a-z0-9-]+)\/?$/;
+const INDICATOR_PATH_RE = /^\/(?:russia\/)?indicator\/([a-z0-9-]+)\/?$/;
 
 /**
  * Переход между sibling-карточками одной variant-группы (cpi → cpi-food, gdp-nominal → gdp-yoy).
