@@ -1,17 +1,24 @@
 import {
-  createElement, useCallback, useId, useMemo, useRef, useState,
+  createElement, useCallback, useEffect, useId, useMemo, useRef, useState,
 } from 'react';
 import {
   geoGraticule10, geoMercator, geoNaturalEarth1, geoPath,
 } from 'd3-geo';
-import { feature } from 'topojson-client';
-import worldTopology from 'world-atlas/countries-110m.json';
 import {
   Globe2, Map as MapIcon, Maximize2, Minus, Plus,
 } from 'lucide-react';
 import { valueExtent } from '../lib/regionsMapColors';
+import { formatValue } from '../lib/format';
 import { formatWorldValue } from '../lib/worldApi';
-import { displayWorldGeometry } from '../lib/worldMapGeometry';
+import {
+  displayWorldGeometry, mainlandWorldGeometry, outlinePointCount,
+} from '../lib/worldMapGeometry';
+import {
+  formatWorldPeriod, resolveWorldPeriodFormat, worldPeriodDates,
+} from '../lib/worldMapPeriod';
+import {
+  loadWorldFeatures, numericId, WORLD_FEATURE_BY_ID, WORLD_FEATURES,
+} from '../lib/worldTopology';
 import {
   buildWorldColorModel, WORLD_NO_DATA,
 } from '../lib/worldMapColors';
@@ -50,11 +57,14 @@ function resolveCountry(countryByCode, code) {
     || (code === 'UK' ? countryByCode.get('GB') : null)
     || null;
 }
-const WORLD_FEATURES = feature(worldTopology, worldTopology.objects.countries).features;
 
-function numericId(raw) {
-  return String(raw).padStart(3, '0');
-}
+const NUMERIC_ID_BY_ALPHA2 = (() => {
+  const byCode = new Map();
+  for (const [id, alpha2] of Object.entries(ISO_NUMERIC_TO_ALPHA2)) byCode.set(alpha2, id);
+  byCode.set('GB', byCode.get('UK'));
+  byCode.set('GR', byCode.get('EL'));
+  return byCode;
+})();
 
 function collectionValue(values, key) {
   if (!values) return null;
@@ -95,6 +105,7 @@ export default function WorldMap({
   const [scope, setScope] = useState(defaultScope === 'europe' ? 'europe' : 'world');
   const [hover, setHover] = useState(null);
   const [view, setView] = useState({ k: 1, tx: 0, ty: 0 });
+  const [detailById, setDetailById] = useState(null);
   const panRef = useRef(null);
   const svgRef = useRef(null);
   const noDataPatternId = `world-no-data-${useId().replaceAll(':', '')}`;
@@ -102,12 +113,29 @@ export default function WorldMap({
     () => new Map(countries.map((country) => [country.code, country])),
     [countries],
   );
+
+  // Сразу 110m (лёгкий), затем 50m лениво — береговая линия читается достойно,
+  // без утяжеления первого бандла на 740 КБ.
+  useEffect(() => {
+    let active = true;
+    loadWorldFeatures('detailed').then((byId) => {
+      if (!active || !byId) return;
+      setDetailById(byId);
+    });
+    return () => { active = false; };
+  }, []);
+
   const features = useMemo(
-    () => WORLD_FEATURES.map((geometry) => {
-      const code = ISO_NUMERIC_TO_ALPHA2[numericId(geometry.id)];
-      return displayWorldGeometry(geometry, code);
-    }),
-    [],
+    () => {
+      const source = detailById
+        ? [...detailById.values()]
+        : WORLD_FEATURES;
+      return source.map((geometry) => {
+        const code = ISO_NUMERIC_TO_ALPHA2[numericId(geometry.id)];
+        return displayWorldGeometry(geometry, code);
+      });
+    },
+    [detailById],
   );
   const projection = useMemo(() => {
     if (scope === 'europe') {
@@ -125,11 +153,25 @@ export default function WorldMap({
     );
   }, [features, scope]);
   const path = useMemo(() => geoPath(projection), [projection]);
+  // Строки контуров не зависят от данных и ховера: без этого каждый ховер
+  // пересчитывал бы path для всех стран сразу.
+  const shapes = useMemo(
+    () => features.map((geometry, index) => ({
+      key: `${geometry.id ?? 'x'}-${index}`,
+      code: ISO_NUMERIC_TO_ALPHA2[numericId(geometry.id)],
+      d: path(geometry) || '',
+    })),
+    [features, path],
+  );
   const colorModel = useMemo(
     () => buildWorldColorModel(valuesByCode, { mode: colorMode }),
     [valuesByCode, colorMode],
   );
   const extent = useMemo(() => valueExtent(valuesByCode), [valuesByCode]);
+  const periodFormat = useMemo(
+    () => resolveWorldPeriodFormat(worldPeriodDates(detailsByCode)),
+    [detailsByCode],
+  );
   const hoverGeometry = useMemo(
     () => (hover ? features.find((geometry) => {
       const code = ISO_NUMERIC_TO_ALPHA2[numericId(geometry.id)];
@@ -200,6 +242,7 @@ export default function WorldMap({
   }, [detailsByCode, onSelect]);
 
   const { k, tx, ty } = view;
+  const hoverPeriod = formatWorldPeriod(hover?.detail?.date, periodFormat) || periodLabel;
 
   return (
     <div className="select-none">
@@ -207,7 +250,7 @@ export default function WorldMap({
         <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-text-tertiary">
           Выберите страну на карте
         </div>
-        <div className="inline-flex rounded-lg bg-obsidian-light p-0.5">
+        <div className="inline-flex gap-1.5">
           {[
             ['europe', MapIcon, 'Европа'],
             ['world', Globe2, 'Мир'],
@@ -221,8 +264,10 @@ export default function WorldMap({
                 setHover(null);
               }}
               className={[
-                'inline-flex min-h-9 items-center gap-1 rounded-md px-3 py-2 text-[11px] transition-colors',
-                scope === id ? 'bg-white text-text-primary shadow-sm' : 'text-text-tertiary hover:text-text-primary',
+                'inline-flex min-h-9 items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-medium transition-colors',
+                scope === id
+                  ? 'bg-champagne/15 text-champagne'
+                  : 'bg-obsidian-lighter text-text-secondary hover:text-champagne',
               ].join(' ')}
             >
               {createElement(Icon, { size: 12 })}
@@ -269,24 +314,29 @@ export default function WorldMap({
               pointerEvents="none"
               aria-hidden="true"
             />
-            {features.map((geometry) => {
-              const code = ISO_NUMERIC_TO_ALPHA2[numericId(geometry.id)];
+            {shapes.map(({ key, code, d }) => {
               const country = resolveCountry(countryByCode, code);
               const valueKey = country?.code || code;
               const value = valueKey ? collectionValue(valuesByCode, valueKey) : null;
               const active = Boolean(country);
               const hasValue = value != null && Number.isFinite(Number(value));
+              const isHover = Boolean(hover && country && hover.country.code === country.code);
               return (
                 <path
-                  key={geometry.id}
-                  d={path(geometry) || ''}
+                  key={key}
+                  d={d}
                   fill={hasValue
                     ? colorModel.colorFor(value)
                     : active ? `url(#${noDataPatternId})` : WORLD_OUTSIDE}
                   stroke={active ? 'rgba(24,70,67,0.52)' : 'rgba(62,74,82,0.16)'}
                   strokeWidth={active ? 0.9 : 0.45}
                   vectorEffect="non-scaling-stroke"
-                  className={active ? 'cursor-pointer transition-[filter,opacity] hover:brightness-[0.96]' : ''}
+                  className={active
+                    ? 'cursor-pointer outline-none focus-visible:outline-none'
+                    : 'outline-none'}
+                  style={isHover ? {
+                    filter: 'brightness(0.92) drop-shadow(0 0 1.2px rgba(181,141,39,0.85))',
+                  } : undefined}
                   onClick={() => active && selectCountry(country)}
                   onMouseEnter={() => active && setHover({
                     country,
@@ -294,6 +344,12 @@ export default function WorldMap({
                     detail: detailsByCode?.get(valueKey) || detailsByCode?.get(code) || null,
                   })}
                   onMouseLeave={() => setHover(null)}
+                  onFocus={() => active && setHover({
+                    country,
+                    value,
+                    detail: detailsByCode?.get(valueKey) || detailsByCode?.get(code) || null,
+                  })}
+                  onBlur={() => setHover(null)}
                   role={active ? 'button' : undefined}
                   aria-label={active ? `${country.name}${hasValue ? `: ${formatWorldValue(value)} ${unit}` : ': нет данных'}` : undefined}
                   tabIndex={active ? 0 : undefined}
@@ -309,12 +365,13 @@ export default function WorldMap({
             {hoverGeometry && (
               <path
                 d={path(hoverGeometry) || ''}
-                fill="none"
+                fill="rgba(181,141,39,0.22)"
                 stroke="#B58D27"
-                strokeWidth={2.2}
+                strokeWidth={1.35}
                 vectorEffect="non-scaling-stroke"
                 pointerEvents="none"
                 aria-hidden="true"
+                style={{ filter: 'drop-shadow(0 0 2px rgba(181,141,39,0.55))' }}
               />
             )}
           </g>
@@ -349,9 +406,9 @@ export default function WorldMap({
                 {colorModel.describe(hover.value)}
               </div>
             )}
-            {(hover.detail?.date || periodLabel) && (
+            {hoverPeriod && (
               <div className="mt-1.5 border-t border-border-subtle pt-1.5 font-mono text-[10px] text-text-tertiary">
-                {hover.detail?.date || periodLabel}
+                {hoverPeriod}
               </div>
             )}
           </div>
@@ -425,12 +482,59 @@ export default function WorldMap({
 }
 
 const SILHOUETTE_FREQ = {
-  daily: 'D',
-  weekly: 'W',
-  monthly: 'M',
-  quarterly: 'Q',
-  annual: 'A',
+  daily: 'день',
+  weekly: 'нед.',
+  monthly: 'мес.',
+  quarterly: 'кв.',
+  annual: 'год',
 };
+
+// Ниже этого числа вершин контур в кадре карточки читается как многоугольник:
+// столько остаётся у Мальты, Кипра, Люксембурга и подобных. Только им догружаем
+// самый тяжёлый уровень.
+const FINE_OUTLINE_MIN_POINTS = 100;
+
+/**
+ * Контур страны: сразу грубый из основного бандла, затем подробный, когда
+ * догрузится его чанк, и только государствам-крохам — самый подробный. Если
+ * чанк не приехал или страны в нём нет, остаёмся на том, что уже есть:
+ * карточка не пустеет и не прыгает.
+ */
+function useCountryOutline(code) {
+  const [atlases, setAtlases] = useState({});
+  const id = NUMERIC_ID_BY_ALPHA2.get(code) || null;
+
+  useEffect(() => {
+    let active = true;
+    loadWorldFeatures('detailed').then((byId) => {
+      if (active && byId) setAtlases((previous) => ({ ...previous, detailed: byId }));
+    });
+    return () => { active = false; };
+  }, []);
+
+  const detailed = (id && atlases.detailed?.get(id)) || null;
+  const needsFine = useMemo(
+    () => Boolean(detailed) && outlinePointCount(detailed) < FINE_OUTLINE_MIN_POINTS,
+    [detailed],
+  );
+
+  useEffect(() => {
+    if (!needsFine) return undefined;
+    let active = true;
+    loadWorldFeatures('fine').then((byId) => {
+      if (active && byId) setAtlases((previous) => ({ ...previous, fine: byId }));
+    });
+    return () => { active = false; };
+  }, [needsFine]);
+
+  return useMemo(() => {
+    if (!id) return null;
+    const item = (needsFine ? atlases.fine?.get(id) : null)
+      || detailed
+      || WORLD_FEATURE_BY_ID.get(id);
+    return item ? mainlandWorldGeometry(item) : null;
+  }, [atlases.fine, detailed, id, needsFine]);
+}
 
 export function CountrySilhouette({
   code,
@@ -439,21 +543,19 @@ export function CountrySilhouette({
   historyStart = '',
   historyEnd = '',
   frequencies = [],
+  area = null,
+  population = null,
 }) {
-  const geometry = useMemo(
-    () => {
-      const item = WORLD_FEATURES.find(
-        (featureItem) => ISO_NUMERIC_TO_ALPHA2[numericId(featureItem.id)] === code,
-      );
-      return item ? displayWorldGeometry(item, code) : null;
-    },
-    [code],
-  );
+  const geometry = useCountryOutline(code);
+  const hasFacts = area?.value != null || population?.value != null;
   const countryPath = useMemo(() => {
     if (!geometry) return null;
-    const projection = geoMercator().fitExtent([[24, 24], [336, 216]], geometry);
+    // С блоком фактов силуэт уходит в правую часть: слева остаётся колонка
+    // под площадь, население и источники, чтобы текст не ложился на контур.
+    const extent = hasFacts ? [[152, 26], [344, 212]] : [[24, 24], [336, 216]];
+    const projection = geoMercator().fitExtent(extent, geometry);
     return geoPath(projection)(geometry);
-  }, [geometry]);
+  }, [geometry, hasFacts]);
   if (!countryPath) return null;
   const history = historyStart
     ? `${String(historyStart).slice(0, 4)}–${String(historyEnd || historyStart).slice(0, 4)}`
@@ -462,6 +564,24 @@ export function CountrySilhouette({
     .map((frequency) => SILHOUETTE_FREQ[frequency] || frequency)
     .filter(Boolean)
     .join(', ');
+  const areaValue = area?.value != null
+    ? `${formatValue(area.value, Number.isInteger(Number(area.value)) ? 0 : 1)} ${area.unit || 'км²'}`
+    : '';
+  const areaYear = area?.year ? String(area.year) : '';
+  const populationValue = population?.value != null
+    ? `${formatValue(population.value, 0)} ${population.unit || 'человек'}`
+    : '';
+  const populationYear = population?.year
+    || (population?.date ? String(population.date).slice(0, 4) : '');
+  const sources = [];
+  if (area?.source) {
+    sources.push({ label: area.source, url: area.source_url || '', kind: 'area' });
+  }
+  if (population?.source && population.source !== area?.source) {
+    sources.push({ label: population.source, url: population.source_url || '', kind: 'population' });
+  } else if (!area?.source && population?.source) {
+    sources.push({ label: population.source, url: population.source_url || '', kind: 'population' });
+  }
   return (
     <div
       className="relative min-h-[250px] overflow-hidden rounded-2xl border border-white/10 bg-[#191A20] shadow-[0_20px_45px_rgba(24,24,31,0.18)]"
@@ -476,11 +596,69 @@ export function CountrySilhouette({
           backgroundSize: '32px 32px',
         }}
       />
-      <div className="absolute left-4 top-3 z-10">
+      {hasFacts && (
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-[5] w-[52%] bg-gradient-to-r from-[#191A20] via-[#191A20]/92 to-transparent" />
+      )}
+      <div className="absolute left-4 top-3 z-10 max-w-[48%]">
         <div className="text-[9px] font-mono uppercase tracking-[0.2em] text-white/45">
           Профиль территории
         </div>
         {region && <div className="mt-1 text-[10px] text-[#d8c58b]">{region}</div>}
+        {(areaValue || populationValue) && (
+          <div className="mt-2 space-y-1.5">
+            {areaValue && (
+              <div>
+                <div className="text-[9px] font-mono uppercase tracking-[0.16em] text-white/40">
+                  Площадь
+                </div>
+                <div className="mt-0.5 text-xs font-medium text-white/90">
+                  {areaValue}
+                  {areaYear ? (
+                    <span className="ml-1.5 font-mono text-[10px] font-normal text-white/50">
+                      {areaYear}
+                    </span>
+                  ) : null}
+                </div>
+              </div>
+            )}
+            {populationValue && (
+              <div>
+                <div className="text-[9px] font-mono uppercase tracking-[0.16em] text-white/40">
+                  Население
+                </div>
+                <div className="mt-0.5 text-xs font-medium text-white/90">
+                  {populationValue}
+                  {populationYear ? (
+                    <span className="ml-1.5 font-mono text-[10px] font-normal text-white/50">
+                      {populationYear}
+                    </span>
+                  ) : null}
+                </div>
+              </div>
+            )}
+            {sources.length > 0 && (
+              <div className="space-y-0.5 pt-0.5 text-[9px] text-white/45">
+                {sources.map((item) => (
+                  <div key={`${item.kind}-${item.label}`}>
+                    Источник:{' '}
+                    {item.url ? (
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#d8c58b] underline-offset-2 hover:underline"
+                      >
+                        {item.label}
+                      </a>
+                    ) : (
+                      <span className="text-white/60">{item.label}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
       <svg viewBox="0 0 360 240" className="relative block h-auto w-full" role="img" aria-label={`Карта страны: ${name}`}>
         <path
@@ -492,7 +670,7 @@ export function CountrySilhouette({
           style={{ filter: 'drop-shadow(0 12px 18px rgba(0,0,0,0.28))' }}
         />
       </svg>
-      <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-3 border-t border-white/10 pt-3">
+      <div className="absolute bottom-3 left-4 right-4 z-10 flex items-end justify-between gap-3 border-t border-white/10 pt-3">
         <div>
           <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/50">{code}</div>
           <div className="mt-0.5 max-w-[11rem] truncate text-xs font-medium text-white/90">{name}</div>

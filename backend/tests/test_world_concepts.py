@@ -19,13 +19,31 @@ def _indicator(dataset_id, unit, slice_json, unit_ru=""):
 
 def test_concept_catalog_is_small_and_explicitly_surface_gated():
     assert len(WORLD_CONCEPTS) <= 30
-    assert all(concept.enabled_surfaces == {"resolve", "compare"} for concept in WORLD_CONCEPTS)
+    rating_slugs = {
+        "hicp-index",
+        "unemployment-rate",
+        "budget-balance-gdp",
+        "population",
+        "long-term-interest-rate",
+        "activity-rate",
+        "gdp-per-capita-eu",
+    }
+    for concept in WORLD_CONCEPTS:
+        assert "resolve" in concept.enabled_surfaces
+        assert "compare" in concept.enabled_surfaces
+        if concept.slug in rating_slugs:
+            assert "rating" in concept.enabled_surfaces
+        else:
+            assert "rating" not in concept.enabled_surfaces
     assert CONCEPT_BY_SLUG["hicp-index"].aggregation_policy == "mean"
     assert CONCEPT_BY_SLUG["hicp-index"].frequency_policy == "official_then_calculated"
     assert CONCEPT_BY_SLUG["unemployment-rate"].aggregation_policy == "mean"
     assert CONCEPT_BY_SLUG["unemployment-rate"].frequency_policy == "official_then_calculated"
     assert CONCEPT_BY_SLUG["gdp-volume-quarterly"].aggregation_policy is None
     assert CONCEPT_BY_SLUG["population"].frequency_policy == "official_only"
+    assert CONCEPT_BY_SLUG["long-term-interest-rate"].required_slice["int_rt"] == "MCBY"
+    assert CONCEPT_BY_SLUG["activity-rate"].required_slice["indic_em"] == "ACT"
+    assert CONCEPT_BY_SLUG["gdp-per-capita-eu"].required_slice["na_item"] == "B1GQ"
 
 
 def test_unemployment_requires_rate_total_population_slice():

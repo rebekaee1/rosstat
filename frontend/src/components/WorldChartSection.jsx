@@ -2,7 +2,7 @@ import { useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQueries } from '@tanstack/react-query';
 import {
-  Terminal, Download, Lock, Image as ImageIcon, GitCompare, X, Search, Check,
+  Terminal, Download, Lock, Image as ImageIcon, GitCompare, X, Search, Check, HelpCircle,
 } from 'lucide-react';
 import { resolveDateFormat, cn } from '../lib/format';
 import { track, events } from '../lib/track';
@@ -97,8 +97,8 @@ function ComparisonPicker({
 
 /**
  * Секция графика мировой карточки.
- * Переиспользует IndicatorChart; прогноз отображается только после
- * rolling-origin quality gate и по явному переключателю пользователя.
+ * Переиспользует IndicatorChart; прогноз — только после проверки на
+ * исторических данных и по явному переключателю пользователя.
  */
 function DownloadButton({ label, onDownload, blocked, hint }) {
   const handleClick = () => {
@@ -169,7 +169,6 @@ export default function WorldChartSection({
   modeMeta,
   dataPoints,
   forecastData = [],
-  forecastMeta,
   forecastEnabled = false,
   showForecast = false,
   onToggleForecast,
@@ -334,6 +333,23 @@ export default function WorldChartSection({
         </div>
 
         <div className="flex flex-wrap items-center gap-2 sm:gap-3" data-no-export="true">
+          <div className="relative group/help">
+            <Link
+              to="/methodology"
+              aria-label="Как рассчитывается прогноз"
+              onClick={() => track(events.METHODOLOGY_CLICK, {
+                indicator: code,
+                indicatorCategory: indicator?.category,
+                world: true,
+              })}
+              className="text-text-tertiary transition-colors hover:text-champagne"
+            >
+              <HelpCircle className="h-4 w-4" />
+            </Link>
+            <div className="pointer-events-none absolute right-0 top-full z-50 mt-2 whitespace-nowrap rounded-xl border border-border-subtle bg-obsidian px-3 py-2 text-xs text-text-secondary opacity-0 shadow-xl transition-opacity group-hover/help:opacity-100">
+              Хотите узнать, как рассчитывается прогноз?
+            </div>
+          </div>
           <div className="relative group/forecast">
             <label className={cn(
               'flex select-none items-center gap-2.5',
@@ -365,11 +381,11 @@ export default function WorldChartSection({
                 />
               </button>
             </label>
-            <div className="pointer-events-none absolute right-0 top-full z-50 mt-2 w-72 rounded-xl border border-border-subtle bg-obsidian px-3 py-2 text-[11px] leading-4 text-text-secondary opacity-0 shadow-xl transition-opacity group-hover/forecast:opacity-100">
-              {forecastEnabled
-                ? 'Прогноз публикуется только если модель обошла сезонный ориентир на исторической проверке.'
-                : 'Для этого ряда модель не прошла проверку качества или история недостаточна.'}
-            </div>
+            {!forecastEnabled && (
+              <div className="pointer-events-none absolute right-0 top-full z-50 mt-2 w-72 rounded-xl border border-border-subtle bg-obsidian px-3 py-2 text-[11px] leading-4 text-text-secondary opacity-0 shadow-xl transition-opacity group-hover/forecast:opacity-100">
+                Прогноз публикуется только если модель проходит проверку на исторических данных. Для этого ряда — нет.
+              </div>
+            )}
           </div>
           <DownloadButton label="CSV" onDownload={onDownloadCsv} blocked={downloadBlocked} />
           <DownloadButton label="Excel" onDownload={onDownloadExcel} blocked={downloadBlocked} />
@@ -471,16 +487,22 @@ export default function WorldChartSection({
         </p>
       )}
 
+      {!forecastEnabled && (
+        <p className="mb-3 text-[12px] leading-5 text-text-secondary">
+          Прогноз публикуется только если модель проходит проверку на исторических данных.
+          {' '}Для этого ряда — нет.
+          {' '}
+          <Link to="/methodology" className="text-champagne hover:underline">
+            Методология
+          </Link>
+        </p>
+      )}
+
       {showForecast && forecastEnabled && !rebased && (
         <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-text-tertiary">
           <span>
             Прогноз начинается после последнего официального наблюдения.
           </span>
-          {forecastMeta?.quality?.mase != null && (
-            <span className="font-mono">
-              MASE {Number(forecastMeta.quality.mase).toFixed(2)}
-            </span>
-          )}
           <Link to="/methodology" className="text-champagne hover:underline">
             Методология
           </Link>

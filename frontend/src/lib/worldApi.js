@@ -11,6 +11,11 @@ import {
   getWorldMockData,
   getWorldMockSearch,
 } from './worldMocks';
+import {
+  countryPath,
+  indicatorPath,
+  worldRatingPath,
+} from './sitePaths';
 
 const STALE = 10 * 60 * 1000;
 const GC = 30 * 60 * 1000;
@@ -163,6 +168,39 @@ export function useWorldCompareCatalog({ enabled = true } = {}) {
     staleTime: STALE,
     gcTime: GC,
   });
+}
+
+/**
+ * Показатели рейтинга стран: сервер отдаёт только курируемые понятия.
+ * Денежные абсолюты в нацвалютах не входят, пока нет пересчёта.
+ * Индексы цен с разными базами ранжируются как изменение за год (%).
+ */
+export function useWorldRatingConcepts({ enabled = true } = {}) {
+  return useQuery({
+    queryKey: ['world-rating-concepts'],
+    queryFn: async ({ signal }) => (await api.get('/world/rating/concepts', { signal })).data,
+    enabled,
+    staleTime: STALE,
+    gcTime: GC,
+  });
+}
+
+
+/** Ссылка на полный рейтинг, либо null, если показатель в рейтинг не идёт. */
+export function ratingHref(conceptSlug, ratingConcepts) {
+  if (!conceptSlug || !ratingConcepts?.length) return null;
+  return ratingConcepts.some((item) => item.slug === conceptSlug)
+    ? worldRatingPath(conceptSlug)
+    : null;
+}
+
+/** Публичные пути карточки страны / индикатора (ADR-0013). */
+export function worldCountryHref(countrySlug) {
+  return countryPath(countrySlug);
+}
+
+export function worldIndicatorHref(countrySlug, indicatorCode) {
+  return indicatorPath(countrySlug, indicatorCode);
 }
 
 export async function fetchWorldCompareSeries(countrySlug, conceptSlug, { signal } = {}) {

@@ -4,36 +4,40 @@ import { createElement, useMemo, useState, useDeferredValue } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Search, Globe2, ChevronRight, ArrowRight, BarChart3, Database, Layers3,
-  CalendarRange, SlidersHorizontal,
+  CalendarRange,
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
-import { useIndicators } from '../lib/hooks';
+import { getWorldHomeSeo } from '../lib/pageMeta';
 import {
-  useWorldCountries, useWorldCompareCatalog, useWorldMapSeries,
-  groupCountriesByRegion, pluralRu, formatWorldValue,
+  useWorldCountries, useWorldCompareCatalog, useWorldMapSeries, useWorldRatingConcepts,
+  groupCountriesByRegion, pluralRu, formatWorldValue, ratingHref,
 } from '../lib/worldApi';
 import {
+  HOME_COUNTRY_CONCEPT_SHORT,
   HOME_MAP_RUSSIA_COUNTRY,
+  resolveActiveMapYear,
   withRussiaOnHomeMap,
   worldRankingFromYearItems,
 } from '../lib/homeWorkbench';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
 import useSearchTracking from '../lib/useSearchTracking';
+import WorldConceptPicker from '../components/WorldConceptPicker';
 import WorldMap from '../components/WorldMap';
 import MapTimeline from '../components/MapTimeline';
+import { worldHomeTrail } from '../lib/breadcrumbs';
+import {
+  calendarPath,
+  countryPath,
+  indicatorPath,
+  regionHubPath,
+  russiaHomePath,
+} from '../lib/sitePaths';
 
-/** Клик по РФ на карте/в рейтинге → российские категории на главной. */
-const RUSSIA_CATEGORIES_HREF = '/#russia-categories';
+/** Клик по РФ на карте/в рейтинге → карточка страны /russia. */
+const RUSSIA_CATEGORIES_HREF = russiaHomePath();
 
-const MAP_CONCEPT_SHORT = {
-  'hicp-index': 'Потребительские цены',
-  'unemployment-rate': 'Безработица',
-  'gdp-volume-quarterly': 'ВВП, квартал',
-  'gdp-volume-annual': 'ВВП, год',
-  'budget-balance-gdp': 'Баланс бюджета',
-  population: 'Население',
-};
 
 function normalize(s) {
   return (s || '').toLowerCase().replace(/ё/g, 'е').replace(/[^а-яa-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
@@ -53,7 +57,7 @@ function CountryMark({ country, large = false }) {
 function CountryCard({ country, featured = false, to = null }) {
   return (
     <Link
-      to={to || `/world/${country.slug}`}
+      to={to || countryPath(country.slug)}
       className={[
         'group flex items-center gap-2.5 border border-border-subtle bg-surface transition-all hover:-translate-y-0.5 hover:border-border-champagne hover:shadow-[0_18px_45px_rgba(38,33,20,0.08)] sm:gap-3',
         featured ? 'rounded-2xl p-4 sm:p-5' : 'rounded-xl px-3.5 py-3 sm:px-4 sm:py-3.5',
@@ -94,19 +98,20 @@ function CountryCard({ country, featured = false, to = null }) {
 export default function WorldHome() {
   const navigate = useNavigate();
   const { data, isLoading, isError, refetch, isFetching } = useWorldCountries();
-  const { data: indicators = [] } = useIndicators();
   const compareCatalog = useWorldCompareCatalog();
   const [query, setQuery] = useState('');
   const [mapConcept, setMapConcept] = useState('unemployment-rate');
   const [mapYear, setMapYear] = useState(null);
   const deferredQuery = useDeferredValue(query);
   const mapSeries = useWorldMapSeries(mapConcept);
+  const ratingConcepts = useWorldRatingConcepts();
+  const fullRatingHref = ratingHref(mapConcept, ratingConcepts.data?.concepts);
 
+  const worldSeo = getWorldHomeSeo();
   useDocumentMeta({
-    title: 'Мировая экономика — страны, карта и показатели',
-    description:
-      'Макроэкономические показатели стран Европы и мира, включая Россию: цены, рынок труда, национальные счета. Официальные данные, графики и история.',
-    path: '/world',
+    title: worldSeo.title,
+    description: worldSeo.description,
+    path: worldSeo.path,
   });
 
   const filtered = useMemo(() => {
@@ -136,6 +141,14 @@ export default function WorldHome() {
     [data],
   );
   const mapConcepts = useMemo(() => {
+    const fromRating = ratingConcepts.data?.concepts || [];
+    if (fromRating.length) {
+      return fromRating.map((item) => ({
+        slug: item.slug,
+        name: item.name,
+        unit: item.unit,
+      }));
+    }
     const seen = new Map();
     for (const item of compareCatalog.data?.items || []) {
       if (!seen.has(item.concept_slug)) {
@@ -147,19 +160,9 @@ export default function WorldHome() {
       }
     }
     return [...seen.values()];
-  }, [compareCatalog.data]);
+  }, [compareCatalog.data, ratingConcepts.data]);
   const years = mapSeries.data?.years || [];
-  const activeMapYear = (() => {
-    if (years.includes(mapYear)) return mapYear;
-    const byYear = mapSeries.data?.values_by_year;
-    if (byYear) {
-      for (let i = years.length - 1; i >= 0; i -= 1) {
-        const n = Object.keys(byYear[String(years[i])] || {}).length;
-        if (n >= 8) return years[i];
-      }
-    }
-    return years[years.length - 1];
-  })();
+  const activeMapYear = resolveActiveMapYear(years, mapYear, mapSeries.data?.values_by_year);
   const baseYearItems = useMemo(
     () => (activeMapYear
       ? (mapSeries.data?.values_by_year?.[String(activeMapYear)] || {})
@@ -170,11 +173,9 @@ export default function WorldHome() {
     () => withRussiaOnHomeMap({
       countries: data?.countries || [],
       yearItems: baseYearItems,
-      indicators,
-      conceptSlug: mapConcept,
-      activeYear: activeMapYear,
+      mapSeries: mapSeries.data,
     }),
-    [data?.countries, baseYearItems, indicators, mapConcept, activeMapYear],
+    [data?.countries, baseYearItems, mapSeries.data],
   );
   const valuesByCode = useMemo(
     () => new Map(Object.entries(activeYearItems).map(([countryCode, item]) => [countryCode, item.value])),
@@ -199,32 +200,31 @@ export default function WorldHome() {
       return;
     }
     if (detail?.indicator_code && country?.slug) {
-      navigate(`/world/${country.slug}/${detail.indicator_code}`);
+      navigate(indicatorPath(country.slug, detail.indicator_code));
       return;
     }
-    if (country?.slug) navigate(`/world/${country.slug}`);
+    if (country?.slug) navigate(countryPath(country.slug));
   };
 
   return (
     <div className="mx-auto w-full max-w-7xl overflow-x-hidden px-4 pb-24 pt-24 sm:px-6">
-      <section className="relative mb-8 overflow-hidden rounded-[1.5rem] border border-border-subtle bg-surface px-4 py-6 shadow-[0_24px_80px_rgba(35,30,16,0.07)] sm:mb-10 sm:rounded-[2rem] sm:px-10 sm:py-11">
+      <Breadcrumbs items={worldHomeTrail()} className="mb-4" />
+      <section className="relative mb-5 overflow-hidden rounded-[1.5rem] border border-border-subtle bg-surface px-4 py-5 shadow-[0_24px_80px_rgba(35,30,16,0.07)] sm:mb-6 sm:rounded-[2rem] sm:px-8 sm:py-7">
         <div className="pointer-events-none absolute -right-24 -top-28 h-80 w-80 rounded-full bg-champagne/10 blur-3xl" />
         <div className="pointer-events-none absolute bottom-0 right-[28%] h-32 w-32 rounded-full bg-champagne/5 blur-2xl" />
-        <div className="relative grid gap-6 lg:grid-cols-[1.35fr_0.65fr] lg:items-end lg:gap-10">
+        <div className="relative grid gap-5 lg:grid-cols-[1.35fr_0.65fr] lg:items-end lg:gap-8">
           <div>
-            <div className="mb-3 flex items-center gap-2 text-[11px] font-mono uppercase tracking-[0.22em] text-champagne sm:mb-4">
-              <Globe2 size={15} />
+            <div className="mb-2 flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.2em] text-champagne sm:mb-3">
+              <Globe2 size={14} />
               Мировая экономика
             </div>
-            <h1 className="max-w-3xl font-display text-[1.75rem] font-bold leading-[1.08] text-text-primary sm:text-5xl lg:text-[3.6rem]">
-              Страны в одной системе координат
+            <h1 className="max-w-3xl font-display text-2xl font-bold leading-tight text-text-primary sm:text-4xl lg:text-[2.75rem]">
+              {worldSeo.h1}
             </h1>
-            <p className="mt-4 max-w-2xl text-[14px] leading-6 text-text-secondary sm:mt-5 sm:text-base sm:leading-7">
-              Официальные данные по странам Европы и мира. Россия открывает
-              макроэкономические категории платформы; зарубежные страны — национальные
-              и европейские ряды на одной карте и в сравнении.
+            <p className="mt-3 max-w-2xl text-[13px] leading-5 text-text-secondary sm:mt-4 sm:text-sm sm:leading-6">
+              {worldSeo.description}
             </p>
-            <div className="mt-5 flex flex-wrap gap-2.5 sm:mt-7 sm:gap-3">
+            <div className="mt-4 flex flex-wrap gap-2.5 sm:mt-5 sm:gap-3">
               <a href="#countries" className="magnetic-btn inline-flex items-center gap-2 rounded-xl bg-champagne px-4 py-2.5 text-sm font-semibold text-white shadow-sm">
                 Выбрать страну
                 <ArrowRight size={15} />
@@ -270,35 +270,24 @@ export default function WorldHome() {
 
       {!isLoading && !isError && (
         <section className="mb-12">
-          <div className="mb-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(min(100%,20rem),0.8fr)] lg:items-end">
-            <div>
-              <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">Срез по странам</div>
-              <h2 className="mt-1 font-display text-xl font-bold text-text-primary sm:text-2xl">Карта и рейтинг</h2>
-              <p className="mt-2 max-w-xl text-xs leading-5 text-text-secondary">
-                Выберите показатель и год. Карта показывает последнее опубликованное
-                значение внутри выбранного календарного года.
-              </p>
-            </div>
-            <label className="rounded-2xl border border-border-subtle bg-surface p-3 shadow-sm">
-              <span className="mb-2 flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.16em] text-text-tertiary">
-                <SlidersHorizontal size={12} className="text-champagne" />
-                Показатель карты
-              </span>
-              <select
+          <div className="mb-4 min-w-0">
+            <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">Срез по странам</div>
+            <h2 className="mt-1 font-display text-xl font-bold text-text-primary sm:text-2xl">Карта и рейтинг</h2>
+            <p className="mt-2 max-w-2xl text-xs leading-5 text-text-secondary">
+              Выберите показатель и год. Карта показывает последнее опубликованное
+              значение внутри выбранного календарного года.
+            </p>
+            <div className="mt-3">
+              <WorldConceptPicker
+                concepts={mapConcepts}
                 value={mapConcept}
-                onChange={(event) => {
-                  setMapConcept(event.target.value);
+                onChange={(slug) => {
+                  setMapConcept(slug);
                   setMapYear(null);
                 }}
-                className="w-full rounded-xl border border-border-subtle bg-obsidian-light px-3 py-2.5 text-sm font-medium text-text-primary outline-none transition-colors focus:border-border-champagne"
-              >
-                {mapConcepts.map((concept) => (
-                  <option key={concept.slug} value={concept.slug}>
-                    {MAP_CONCEPT_SHORT[concept.slug] || concept.name}
-                  </option>
-                ))}
-              </select>
-            </label>
+                label="Показатель карты"
+              />
+            </div>
           </div>
 
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1.65fr)_minmax(min(100%,17.5rem),0.75fr)]">
@@ -312,7 +301,7 @@ export default function WorldHome() {
                     valuesByCode={valuesByCode}
                     detailsByCode={detailsByCode}
                     unit={mapSeries.data?.concept?.unit || ''}
-                    metricName={MAP_CONCEPT_SHORT[mapConcept] || mapSeries.data?.concept?.name || ''}
+                    metricName={HOME_COUNTRY_CONCEPT_SHORT[mapConcept] || mapSeries.data?.concept?.name || ''}
                     periodLabel={activeMapYear ? String(activeMapYear) : ''}
                     colorMode={mapConcept === 'budget-balance-gdp' ? 'diverging' : 'auto'}
                     defaultScope="world"
@@ -335,13 +324,12 @@ export default function WorldHome() {
                 <div className="min-w-0">
                   <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">Последние данные</div>
                   <h3 className="mt-1 text-sm font-semibold leading-snug text-text-primary sm:text-base">
-                    {MAP_CONCEPT_SHORT[mapConcept] || mapSeries.data?.concept?.name || 'Рейтинг стран'}
+                    {HOME_COUNTRY_CONCEPT_SHORT[mapConcept] || mapSeries.data?.concept?.name || 'Рейтинг стран'}
                   </h3>
-                  {activeMapYear && (
-                    <div className="mt-1 font-mono text-[10px] text-text-tertiary">
-                      {activeMapYear} год
-                    </div>
-                  )}
+                  <div className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-0.5 font-mono text-[10px] text-text-tertiary">
+                    {activeMapYear && <span>{activeMapYear} год</span>}
+                    {mapSeries.data?.concept?.unit ? <span>{mapSeries.data.concept.unit}</span> : null}
+                  </div>
                 </div>
                 <BarChart3 size={16} className="mt-1 shrink-0 text-champagne" />
               </div>
@@ -364,36 +352,47 @@ export default function WorldHome() {
                       to={isRussia
                         ? RUSSIA_CATEGORIES_HREF
                         : (item.indicator_code
-                          ? `/world/${item.country_slug}/${item.indicator_code}`
-                          : `/world/${item.country_slug}`)}
-                      className="group flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-surface-hover"
+                          ? indicatorPath(item.country_slug, item.indicator_code)
+                          : countryPath(item.country_slug))}
+                      className="group grid grid-cols-[1.25rem_minmax(0,1fr)_auto] items-baseline gap-2 rounded-lg px-2 py-2 transition-colors hover:bg-surface-hover"
                     >
-                      <span className="w-5 font-mono text-[10px] text-text-tertiary">{index + 1}</span>
-                      <span className="min-w-0 flex-1 truncate text-sm text-text-primary group-hover:text-champagne">
+                      <span className="font-mono text-[10px] text-text-tertiary">{index + 1}</span>
+                      <span className="min-w-0 text-sm leading-snug text-text-primary group-hover:text-champagne">
                         {item.country_name}
                       </span>
-                      <span className="font-mono text-xs font-semibold text-text-primary">
+                      <span className="font-mono text-xs font-semibold tabular-nums text-text-primary">
                         {formatWorldValue(item.value)}
                       </span>
                     </Link>
                   );
                 })}
               </div>
-              {ranking.filter((item) => item.country_code !== 'RU').length >= 2 && (
-                <Link
-                  to={`/compare?codes=${encodeURIComponent(
-                    ranking
-                      .filter((item) => item.country_code !== 'RU')
-                      .slice(0, 2)
-                      .map((item) => `w:${item.country_slug}:${mapConcept}`)
-                      .join(','),
-                  )}`}
-                  className="mt-4 inline-flex items-center gap-1 text-xs text-champagne hover:underline"
-                >
-                  Сравнить страны
-                  <ChevronRight size={12} />
-                </Link>
-              )}
+              <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+                {fullRatingHref && (
+                  <Link
+                    to={fullRatingHref}
+                    className="inline-flex items-center gap-1 text-xs text-champagne hover:underline"
+                  >
+                    Все страны в рейтинге
+                    <ChevronRight size={12} />
+                  </Link>
+                )}
+                {ranking.filter((item) => item.country_code !== 'RU').length >= 2 && (
+                  <Link
+                    to={`/compare?codes=${encodeURIComponent(
+                      ranking
+                        .filter((item) => item.country_code !== 'RU')
+                        .slice(0, 2)
+                        .map((item) => `w:${item.country_slug}:${mapConcept}`)
+                        .join(','),
+                    )}`}
+                    className="inline-flex items-center gap-1 text-xs text-champagne hover:underline"
+                  >
+                    Сравнить страны
+                    <ChevronRight size={12} />
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         </section>
@@ -444,7 +443,7 @@ export default function WorldHome() {
             На главную
           </Link>
           <span className="mx-2 text-text-tertiary">—</span>
-          <Link to="/regions" className="text-champagne hover:underline text-sm">
+          <Link to={regionHubPath()} className="text-champagne hover:underline text-sm">
             Регионы России
           </Link>
         </div>
@@ -493,9 +492,9 @@ export default function WorldHome() {
       </section>
 
       <div className="mt-10 pt-6 border-t border-border-subtle flex flex-wrap gap-x-4 gap-y-2 text-sm text-text-secondary">
-        <Link to="/regions" className="hover:text-champagne transition-colors">Регионы России</Link>
+        <Link to={regionHubPath()} className="hover:text-champagne transition-colors">Регионы России</Link>
         <Link to="/compare" className="hover:text-champagne transition-colors">Сравнение</Link>
-        <Link to="/calendar" className="hover:text-champagne transition-colors">Календарь</Link>
+        <Link to={calendarPath()} className="hover:text-champagne transition-colors">Календарь</Link>
         <Link to="/" className="hover:text-champagne transition-colors">Главная</Link>
       </div>
     </div>

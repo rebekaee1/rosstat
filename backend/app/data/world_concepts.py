@@ -29,6 +29,8 @@ class WorldConcept:
     provider_dataset_ids: Mapping[str, frozenset[str]] | None = None
 
 
+_RATING_SURFACES = frozenset({"resolve", "compare", "rating"})
+
 WORLD_CONCEPTS: tuple[WorldConcept, ...] = (
     WorldConcept(
         slug="hicp-index",
@@ -39,6 +41,7 @@ WORLD_CONCEPTS: tuple[WorldConcept, ...] = (
         required_slice={"coicop": "CP00"},
         frequency_policy="official_then_calculated",
         aggregation_policy="mean",
+        enabled_surfaces=_RATING_SURFACES,
     ),
     WorldConcept(
         slug="unemployment-rate",
@@ -49,19 +52,23 @@ WORLD_CONCEPTS: tuple[WorldConcept, ...] = (
         required_slice={"age": "TOTAL", "sex": "T", "s_adj": "SA"},
         frequency_policy="official_then_calculated",
         aggregation_policy="mean",
+        enabled_surfaces=_RATING_SURFACES,
     ),
+    # Единицы национальные (евро, доллары, юани и т.п.) — рейтинг ждёт
+    # пересчёта в доллары США; поверхность rating не включаем.
     WorldConcept(
         slug="gdp-volume-quarterly",
         name_ru="Валовой внутренний продукт в постоянных ценах, квартал",
-        unit_ru="млн евро в постоянных ценах",
+        unit_ru="в постоянных ценах 2015 года, млн евро",
         dataset_ids=frozenset({"namq_10_gdp"}),
         measure="CLV15_MEUR",
         required_slice={"na_item": "B1GQ", "s_adj": "SCA"},
     ),
+    # Единицы национальные — рейтинг ждёт пересчёта в доллары США.
     WorldConcept(
         slug="gdp-volume-annual",
         name_ru="Валовой внутренний продукт в постоянных ценах, год",
-        unit_ru="млн евро в постоянных ценах",
+        unit_ru="в постоянных ценах 2015 года, млн евро",
         dataset_ids=frozenset({"nama_10_gdp"}),
         measure="CLV15_MEUR",
         required_slice={"na_item": "B1GQ"},
@@ -75,6 +82,7 @@ WORLD_CONCEPTS: tuple[WorldConcept, ...] = (
         measure="PC_GDP",
         required_slice={"na_item": "B9", "sector": "S13"},
         frequency_policy="official_only",
+        enabled_surfaces=_RATING_SURFACES,
     ),
     WorldConcept(
         slug="population",
@@ -84,6 +92,41 @@ WORLD_CONCEPTS: tuple[WorldConcept, ...] = (
         measure="NR",
         required_slice={"age": "TOTAL", "sex": "T"},
         frequency_policy="official_only",
+        enabled_surfaces=_RATING_SURFACES,
+    ),
+    # Доходность длинных госбумаг по критерию конвергенции — одна единица (%).
+    WorldConcept(
+        slug="long-term-interest-rate",
+        name_ru="Доходность долгосрочных государственных облигаций",
+        unit_ru="%",
+        dataset_ids=frozenset({"irt_lt_mcby_m"}),
+        measure="PC",
+        required_slice={"int_rt": "MCBY"},
+        frequency_policy="official_then_calculated",
+        aggregation_policy="mean",
+        enabled_surfaces=_RATING_SURFACES,
+    ),
+    # Уровень экономической активности 15–64 лет — доля населения, %.
+    WorldConcept(
+        slug="activity-rate",
+        name_ru="Уровень экономической активности",
+        unit_ru="% населения",
+        dataset_ids=frozenset({"lfsi_emp_a"}),
+        measure="PC_POP",
+        required_slice={"age": "Y15-64", "sex": "T", "indic_em": "ACT"},
+        frequency_policy="official_only",
+        enabled_surfaces=_RATING_SURFACES,
+    ),
+    # ВВП на душу относительно среднего по ЕС — относительный индекс, не валюта.
+    WorldConcept(
+        slug="gdp-per-capita-eu",
+        name_ru="ВВП на душу населения относительно среднего по ЕС",
+        unit_ru="% от среднего по ЕС на душу населения",
+        dataset_ids=frozenset({"nama_10_pc"}),
+        measure="PC_POP",
+        required_slice={"na_item": "B1GQ"},
+        frequency_policy="official_only",
+        enabled_surfaces=_RATING_SURFACES,
     ),
 )
 

@@ -21,7 +21,7 @@ from app.data.eurostat_listing import (
     normalize_sex_code,
     variant_group_key,
 )
-from app.data.eurostat_titles_ru import split_freq_suffix
+from app.data.world_indicator_titles_ru import public_indicator_name
 from app.data.world_aggregation import aggregate_series, aggregation_policy_for
 from app.services.world_view_modes import (
     apply_mode,
@@ -86,10 +86,9 @@ class ResolvedSeries:
     aggregation_policy: str | None = None
 
 
-def display_name(name_ru: str | None) -> str:
-    """Имя карточки без частотного хвоста."""
-    subject, _ = split_freq_suffix(name_ru or "")
-    return subject or (name_ru or "")
+def display_name(name_ru: str | None, code: str | None = None) -> str:
+    """Имя карточки без частотного хвоста и без латинского жаргона."""
+    return public_indicator_name(name_ru, code)
 
 
 def indicator_card_key(ind: Any) -> tuple:

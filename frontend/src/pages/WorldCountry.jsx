@@ -3,20 +3,33 @@
 import { useEffect, useMemo, useState, useDeferredValue } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
-  ChevronRight, Search, Globe2, BarChart3, ArrowUpRight,
-  CalendarRange, TrendingUp,
+  ChevronRight, Search, Globe2, BarChart3, ArrowUpRight, TrendingUp,
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
+import {
+  worldCountryDescription,
+  worldCountryTitle,
+} from '../lib/pageMeta';
 import {
   useWorldCountry, formatWorldValue, pluralRu,
 } from '../lib/worldApi';
 import { collapseCountryIndicators, stripFrequencySuffix } from '../lib/worldViewModes';
 import { formatChange, formatDate } from '../lib/format';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
 import MobileNavSelect from '../components/MobileNavSelect';
 import useSearchTracking from '../lib/useSearchTracking';
 import { CountrySilhouette } from '../components/WorldMap';
+import {
+  breadcrumbJsonLd,
+  worldCountryTrail,
+} from '../lib/breadcrumbs';
+import {
+  countryPath,
+  indicatorPath,
+  regionHubPath,
+} from '../lib/sitePaths';
 
 function normalize(s) {
   return (s || '').toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim();
@@ -30,12 +43,19 @@ const FREQ_LABEL = {
   annual: 'год',
 };
 
+function formatIndicatorDate(dateStr, frequency) {
+  if (!dateStr) return '—';
+  if (frequency === 'annual') return formatDate(dateStr, 'annual');
+  if (frequency === 'quarterly') return formatDate(dateStr, 'quarterly');
+  return formatDate(dateStr, 'full');
+}
+
 function formatFreqList(item) {
   const freqs = Array.isArray(item.frequencies)
     ? item.frequencies.map((f) => (typeof f === 'string' ? f : f.freq)).filter(Boolean)
     : (item.frequency ? [item.frequency] : []);
   if (!freqs.length) return '';
-  return freqs.map((f) => FREQ_LABEL[f] || f).join(', ');
+  return freqs.map((f) => FREQ_LABEL[f]).filter(Boolean).join(', ');
 }
 
 function CompactChange({ change }) {
@@ -55,7 +75,7 @@ function IndicatorRow({ item, slug }) {
   const freqLine = formatFreqList(item);
   return (
     <Link
-      to={`/world/${slug}/${item.code}`}
+      to={indicatorPath(slug, item.code)}
       className="group flex flex-col gap-2 rounded-xl border border-border-subtle bg-white px-3.5 py-3 transition-all hover:border-border-champagne hover:shadow-[0_12px_30px_rgba(35,30,16,0.06)] sm:min-h-[92px] sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-3.5"
     >
       <div className="min-w-0 flex-1">
@@ -74,7 +94,7 @@ function IndicatorRow({ item, slug }) {
         <div className="flex items-center gap-1.5">
           <CompactChange change={item.change} />
           <span className="font-mono text-[10px] text-text-tertiary">
-            {item.last_date ? formatDate(item.last_date, item.frequency === 'annual' ? 'annual' : 'full') : '—'}
+            {formatIndicatorDate(item.last_date, item.frequency)}
           </span>
         </div>
       </div>
@@ -83,7 +103,8 @@ function IndicatorRow({ item, slug }) {
 }
 
 export default function WorldCountry() {
-  const { slug } = useParams();
+  const { countrySlug, slug: slugParam } = useParams();
+  const slug = countrySlug || slugParam;
   const { data, isLoading, isError, refetch, isFetching, error } = useWorldCountry(slug);
   const [query, setQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('');
@@ -93,32 +114,50 @@ export default function WorldCountry() {
   const countryName = data?.country?.name;
   const notFound = isError && error?.response?.status === 404;
 
-  useDocumentMeta(countryName ? {
-    title: `${countryName} — макроэкономические показатели`,
-    description:
-      `${countryName}: показатели Евростата — цены, рынок труда, национальные счета. Графики и история на Forecast Economy.`,
-    path: `/world/${slug}`,
-  } : {
-    title: notFound ? 'Страна не найдена' : 'Мировая экономика',
-    description: 'Макроэкономические показатели стран Европы.',
-    path: `/world/${slug}`,
-  });
+  const countryMeta = useMemo(() => {
+    if (!countryName || !data) return null;
+    const flat = (data.categories || []).flatMap((c) => c.indicators || []);
+    const total = flat.length || Number(data.indicators_count) || 0;
+    const hasNational = flat.some((ind) => {
+      const prov = String(ind.provider || '').trim().toLowerCase();
+      return prov && prov !== 'eurostat';
+    });
+    const sources = [...new Set(
+      flat.map((ind) => ind.source).filter(Boolean),
+    )];
+    let sourcePhrase = 'Евростат';
+    if (sources.length === 1) sourcePhrase = sources[0];
+    else if (sources.length === 2) sourcePhrase = `${sources[0]} и ${sources[1]}`;
+    else if (sources.length > 2) {
+      sourcePhrase = `${sources.slice(0, -1).join(', ')} и ${sources[sources.length - 1]}`;
+    }
+    const title = worldCountryTitle(slug, countryName);
+    return {
+      title,
+      description: worldCountryDescription(slug, countryName, total, {
+        hasNational,
+        sourcePhrase,
+      }),
+      h1: title,
+    };
+  }, [countryName, data, slug]);
+
+  useDocumentMeta(countryMeta ? {
+    title: countryMeta.title,
+    description: countryMeta.description,
+    path: countryPath(slug),
+  } : (notFound ? {
+    title: 'Страна не найдена',
+    description: 'Запрашиваемая страница страны не найдена.',
+    path: countryPath(slug),
+  } : null));
 
   useEffect(() => {
     if (!countryName) return undefined;
-    const jsonLd = {
-      '@context': 'https://schema.org',
-      '@type': 'BreadcrumbList',
-      itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://forecasteconomy.com/' },
-        { '@type': 'ListItem', position: 2, name: 'Мировая экономика', item: 'https://forecasteconomy.com/world' },
-        { '@type': 'ListItem', position: 3, name: countryName, item: `https://forecasteconomy.com/world/${slug}` },
-      ],
-    };
     const script = document.createElement('script');
     script.type = 'application/ld+json';
     script.id = 'world-country-jsonld';
-    script.textContent = JSON.stringify(jsonLd);
+    script.textContent = JSON.stringify(breadcrumbJsonLd(worldCountryTrail(countryName, slug)));
     document.getElementById('world-country-jsonld')?.remove();
     document.head.appendChild(script);
     return () => script.remove();
@@ -171,11 +210,7 @@ export default function WorldCountry() {
 
   return (
     <div className="mx-auto w-full max-w-7xl overflow-x-hidden px-4 pb-24 pt-24 sm:px-6">
-      <nav className="mb-4 flex min-w-0 items-center gap-1.5 overflow-hidden text-xs text-text-tertiary" aria-label="Хлебные крошки">
-        <Link to="/world" className="shrink-0 transition-colors hover:text-champagne">Мировая экономика</Link>
-        <ChevronRight size={12} className="shrink-0" />
-        <span className="min-w-0 truncate text-text-secondary">{countryName || '…'}</span>
-      </nav>
+      <Breadcrumbs items={worldCountryTrail(countryName || '…', slug)} />
 
       {notFound && (
         <div className="mt-8 rounded-2xl border border-border-subtle bg-surface p-8 text-center">
@@ -187,7 +222,7 @@ export default function WorldCountry() {
             <Link to="/world" className="rounded-xl bg-champagne/10 px-4 py-2 text-champagne transition-colors hover:bg-champagne/20">
               Все страны
             </Link>
-            <Link to="/regions" className="rounded-xl border border-border-subtle px-4 py-2 text-text-secondary transition-colors hover:text-champagne">
+            <Link to={regionHubPath()} className="rounded-xl border border-border-subtle px-4 py-2 text-text-secondary transition-colors hover:text-champagne">
               Регионы России
             </Link>
             <Link to="/" className="rounded-xl border border-border-subtle px-4 py-2 text-text-secondary transition-colors hover:text-champagne">
@@ -230,7 +265,7 @@ export default function WorldCountry() {
                   </div>
                 </div>
                 <h1 className="font-display text-[1.65rem] font-bold leading-tight text-text-primary sm:text-5xl">
-                  {countryName}: экономика и показатели
+                  {countryMeta?.h1 || countryName}
                 </h1>
                 <p className="mt-3 max-w-2xl text-sm leading-6 text-text-secondary sm:mt-4">
                   {totalIndicators} {pluralRu(totalIndicators, ['показатель', 'показателя', 'показателей'])}
@@ -248,6 +283,8 @@ export default function WorldCountry() {
                   historyStart={data.coverage?.history_start}
                   historyEnd={data.coverage?.history_end}
                   frequencies={data.coverage?.frequencies}
+                  area={data.area}
+                  population={data.population}
                 />
                 <Link
                   to={data.overview?.[0]
@@ -266,7 +303,7 @@ export default function WorldCountry() {
               {(data.overview || []).slice(0, 3).map((item) => (
                 <Link
                   key={item.concept_slug}
-                  to={`/world/${slug}/${item.indicator_code}`}
+                  to={indicatorPath(slug, item.indicator_code)}
                   className="group min-w-0 rounded-xl bg-obsidian-light/65 px-3 py-3 transition-colors hover:bg-champagne/[0.08]"
                 >
                   <div className="flex items-start justify-between gap-2">
@@ -279,7 +316,7 @@ export default function WorldCountry() {
                     {item.name}
                   </div>
                   <div className="mt-1 truncate font-mono text-[9px] text-text-tertiary">
-                    {formatDate(item.date, item.frequency === 'annual' ? 'annual' : 'full')}
+                    {formatIndicatorDate(item.date, item.frequency)}
                   </div>
                 </Link>
               ))}
@@ -290,53 +327,6 @@ export default function WorldCountry() {
               )}
             </div>
           </section>
-
-          {data.overview?.length > 0 && (
-            <section className="mb-8" data-block="country-overview">
-              <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                  <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">
-                    Экономический профиль
-                  </div>
-                  <h2 className="mt-1 font-display text-2xl font-bold text-text-primary">
-                    Ключевые показатели
-                  </h2>
-                </div>
-                {data.coverage?.frequencies?.length > 0 && (
-                  <div className="flex items-center gap-2 text-[11px] text-text-tertiary">
-                    <CalendarRange size={13} className="text-champagne" />
-                    {data.coverage.frequencies.map((frequency) => FREQ_LABEL[frequency] || frequency).join(', ')}
-                  </div>
-                )}
-              </div>
-              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                {data.overview.slice(0, 6).map((item) => (
-                  <Link
-                    key={item.concept_slug}
-                    to={`/world/${slug}/${item.indicator_code}`}
-                    className="group rounded-2xl border border-border-subtle bg-surface p-4 shadow-[0_10px_30px_rgba(35,30,16,0.04)] transition-all hover:-translate-y-0.5 hover:border-border-champagne hover:shadow-[0_16px_35px_rgba(35,30,16,0.07)]"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="text-[12px] leading-5 text-text-secondary group-hover:text-text-primary">
-                        {item.name}
-                      </div>
-                      <TrendingUp size={14} className="mt-0.5 shrink-0 text-champagne" />
-                    </div>
-                    <div className="mt-4 font-mono text-2xl font-semibold tabular-nums text-text-primary">
-                      {formatWorldValue(item.value)}
-                    </div>
-                    <div className="mt-1 line-clamp-2 text-[10px] leading-4 text-text-tertiary">
-                      {item.unit}
-                    </div>
-                    <div className="mt-3 flex items-center justify-between border-t border-border-subtle pt-2.5 font-mono text-[10px] text-text-tertiary">
-                      <span>{formatDate(item.date, item.frequency === 'annual' ? 'annual' : 'full')}</span>
-                      <ChevronRight size={12} className="transition-transform group-hover:translate-x-0.5" />
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </section>
-          )}
 
           <div className="relative mb-6">
             <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
@@ -352,11 +342,25 @@ export default function WorldCountry() {
 
           {filteredCategories.length === 0 && (
             <div className="rounded-2xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
-              По запросу «{query}» ничего не найдено.
-              {' '}
-              <button type="button" onClick={() => setQuery('')} className="text-champagne hover:underline">
-                Сбросить поиск
-              </button>
+              {searching ? (
+                <>
+                  По запросу «{query}» ничего не найдено.
+                  {' '}
+                  <button type="button" onClick={() => setQuery('')} className="text-champagne hover:underline">
+                    Сбросить поиск
+                  </button>
+                </>
+              ) : (
+                <>
+                  Пока нет опубликованных показателей по этой стране.
+                  {' '}
+                  Данные появятся после проверки официальных рядов.
+                  {' '}
+                  <Link to="/world" className="text-champagne hover:underline">
+                    К каталогу стран
+                  </Link>
+                </>
+              )}
             </div>
           )}
 

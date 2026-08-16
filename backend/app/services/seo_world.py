@@ -1,4 +1,4 @@
-"""SSR-рендер раздела «Мировая экономика»: /world, /world/{slug}, /world/{slug}/{code}.
+"""SSR-рендер раздела «Мировая экономика»: /world, /{slug}, /{slug}/indicator/{code}.
 
 По образцу seo_regional.py (ADR-0003): видимый контент + meta + JSON-LD +
 картинка-график тремя путями (og:image, ImageObject, <img class="seo-chart">).
@@ -9,10 +9,13 @@
 
 from __future__ import annotations
 
+from app.services import breadcrumbs as crumbs
+from app.services import site_paths as paths
+
 from datetime import date
 from html import escape
 
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.data.eurostat_titles_ru import country_prepositional
@@ -22,21 +25,45 @@ from app.data.legacy_redirects import (
     world_card_primary_rank,
     world_card_siblings,
 )
+from app.data.world_concept_national import national_codes_for_concept
+from app.data.world_concepts import CONCEPT_BY_SLUG, WORLD_CONCEPTS, WorldConcept, concept_for_indicator
 from app.models import WorldCountry, WorldDataPoint, WorldIndicator
 from app.services.display import format_date_ru, format_month_ru, format_number_ru
-from app.services.seo_renderer import DOMAIN, _breadcrumbs, build_document
+from app.services.seo_renderer import DOMAIN, _breadcrumbs, _breadcrumbs_nav, build_document
+from app.services.world_rank_values import (
+    money_unit_compatible,
+    ranking_display_name,
+    ranking_period_method,
+    ranking_public_unit,
+    ranking_value_mode,
+    resolve_default_coverage_year,
+    world_rating_title,
+    WORLD_RATING_QUERY_NAMES,
+    yearly_last_points,
+)
+from app.services.world_russia_rank import (
+    merge_russia_into_values_by_year,
+    russia_country_public,
+    russia_meta_for_concept,
+)
 
 _SOURCE_PUBLIC = "Евростат"
+WORLD_RATING_DEFAULT_CONCEPT = "unemployment-rate"
+_WORLD_RATING_LOW_FIRST = frozenset({"unemployment-rate", "long-term-interest-rate"})
+_WORLD_RATING_MONEY_CONCEPTS = frozenset({"gdp-volume-quarterly", "gdp-volume-annual"})
 
-_WORLD_TITLE = "Мировая экономика — статистика стран Европы"
-_WORLD_DESC = (
-    "Официальная статистика по странам Европы: цены, ВВП, рынок труда, "
-    "торговля и финансы. Графики и таблицы по данным Евростата на Forecast Economy."
+# Публичные константы хаба /world — зеркалятся в pageMeta.generated.json (ADR-0003).
+WORLD_HOME_TITLE = "Мировая экономика — статистика по странам"
+WORLD_HOME_DESC = (
+    "Официальная статистика по странам: цены, ВВП, рынок труда, торговля и "
+    "финансы. Графики и таблицы по данным Евростата, национальных "
+    "статистических ведомств и центральных банков."
 )
+WORLD_HOME_H1 = "Мировая экономика: статистика по странам"
 
 # Родительный падеж для заголовков «Экономика {страны}».
 # Nominative в БД (name_ru); для публичных фраз нужен genitive.
-_COUNTRY_GENITIVE: dict[str, str] = {
+COUNTRY_GENITIVE: dict[str, str] = {
     "austria": "Австрии",
     "belgium": "Бельгии",
     "bulgaria": "Болгарии",
@@ -96,7 +123,7 @@ _COUNTRY_GENITIVE: dict[str, str] = {
 
 
 def _genitive(country: WorldCountry) -> str:
-    return _COUNTRY_GENITIVE.get(country.slug, country.name_ru)
+    return COUNTRY_GENITIVE.get(country.slug, country.name_ru)
 
 
 def _prep(country: WorldCountry) -> str:
@@ -201,7 +228,7 @@ async def _frequency_links_html(
     for sib in sorted(siblings, key=world_card_primary_rank):
         freq = normalize_frequency(sib.frequency) or "monthly"
         label = _FREQ_LINK_LABEL.get(freq, freq)
-        href = f"/world/{escape(slug)}/{escape(primary.code)}?mode=level-{escape(freq)}"
+        href = f"{escape(paths.indicator(slug, primary.code))}?mode=level-{escape(freq)}"
         links.append(f'<li><a href="{href}">{escape(label.capitalize())}</a></li>')
     return (
         '<section class="seo-section"><h2>Частота наблюдений</h2>'
@@ -302,6 +329,236 @@ def _country_source_phrase(inds: list[WorldIndicator]) -> tuple[str, bool]:
     return _join_sources_ru(labels), has_national
 
 
+def world_rating_default_sort(concept_slug: str) -> str:
+    return "asc" if concept_slug in _WORLD_RATING_LOW_FIRST else "desc"
+
+
+def _is_money_rating(concept: WorldConcept) -> bool:
+    return concept.slug in _WORLD_RATING_MONEY_CONCEPTS
+
+
+def _same_public_unit(indicator: WorldIndicator, concept: WorldConcept) -> bool:
+    """Денежные рейтинги строятся только в одной уже опубликованной единице."""
+    if not _is_money_rating(concept):
+        return True
+    return money_unit_compatible(concept.measure, indicator.unit, indicator.unit_ru)
+
+
+def _concept_allowed_datasets(concept: WorldConcept) -> set[str]:
+    allowed = {str(ds).lower() for ds in concept.dataset_ids}
+    if concept.provider_dataset_ids:
+        for ids in concept.provider_dataset_ids.values():
+            allowed.update(str(ds).lower() for ds in ids)
+    return allowed
+
+
+async def _world_rating_countries(db: AsyncSession) -> list[WorldCountry]:
+    counts_q = (
+        select(
+            WorldIndicator.country_id,
+            func.count().label("cnt"),
+        )
+        .where(WorldIndicator.is_listed.is_(True))
+        .group_by(WorldIndicator.country_id)
+        .subquery()
+    )
+    rows = (
+        await db.execute(
+            select(WorldCountry, counts_q.c.cnt)
+            .outerjoin(counts_q, WorldCountry.id == counts_q.c.country_id)
+            .where(WorldCountry.is_active.is_(True))
+            .order_by(WorldCountry.sort_order, WorldCountry.name_ru)
+        )
+    ).all()
+    return [country for country, cnt in rows if int(cnt or 0) > 0]
+
+
+async def _world_rating_members(
+    db: AsyncSession,
+    concept: WorldConcept,
+) -> list[tuple[WorldCountry, WorldIndicator]]:
+    """Одна страна — один сопоставимый ряд для рейтинга."""
+    allowed = _concept_allowed_datasets(concept)
+    national_codes = national_codes_for_concept(concept.slug)
+    rows = (
+        await db.execute(
+            select(WorldCountry, WorldIndicator)
+            .join(WorldIndicator, WorldIndicator.country_id == WorldCountry.id)
+            .where(
+                WorldCountry.is_active.is_(True),
+                WorldIndicator.is_listed.is_(True),
+                (
+                    or_(
+                        func.lower(WorldIndicator.dataset_id).in_(sorted(allowed)),
+                        WorldIndicator.code.in_(sorted(national_codes)),
+                    )
+                    if national_codes
+                    else func.lower(WorldIndicator.dataset_id).in_(sorted(allowed))
+                ),
+            )
+            .order_by(WorldCountry.sort_order, WorldCountry.name_ru, WorldIndicator.code)
+        )
+    ).all()
+    matched: list[tuple[WorldCountry, WorldIndicator]] = []
+    for country, indicator in rows:
+        if indicator.code in national_codes:
+            if _same_public_unit(indicator, concept):
+                matched.append((country, indicator))
+            continue
+        if concept_for_indicator(indicator) == concept and _same_public_unit(indicator, concept):
+            matched.append((country, indicator))
+
+    by_country: dict[int, tuple[WorldCountry, WorldIndicator]] = {}
+    for country, indicator in matched:
+        prev = by_country.get(country.id)
+        if prev is None:
+            by_country[country.id] = (country, indicator)
+            continue
+        prev_is_national = prev[1].code in national_codes
+        cur_is_national = indicator.code in national_codes
+        if cur_is_national and not prev_is_national:
+            by_country[country.id] = (country, indicator)
+        elif prev_is_national == cur_is_national:
+            # Оставляем первый по стабильному order_by: стране нужен один ряд рейтинга,
+            # а не исчезновение из-за дубля частоты/публикации.
+            continue
+    return list(by_country.values())
+
+
+def _resolve_rating_year(
+    years: list[int],
+    preferred: int | None,
+    values_by_year: dict[str, dict[str, dict]],
+) -> int | None:
+    if not years:
+        return None
+    if preferred in years:
+        return preferred
+    return resolve_default_coverage_year(years, values_by_year)
+
+
+async def build_world_rating_payload(
+    concept_slug: str,
+    db: AsyncSession,
+    *,
+    year: int | None = None,
+) -> dict | None:
+    concept = CONCEPT_BY_SLUG.get(concept_slug)
+    if concept is None or "rating" not in concept.enabled_surfaces:
+        return None
+
+    countries = await _world_rating_countries(db)
+    members = await _world_rating_members(db, concept)
+    mode = ranking_value_mode(concept.slug, members)
+    public_unit = ranking_public_unit(mode, concept.unit_ru)
+    public_name = ranking_display_name(mode, concept.slug, concept.name_ru)
+
+    values_by_year: dict[str, dict[str, dict]] = {}
+    ids = [indicator.id for _, indicator in members]
+    series_by_id: dict[int, list[tuple[date, float]]] = {}
+    if ids:
+        rows = (
+            await db.execute(
+                select(
+                    WorldDataPoint.indicator_id,
+                    WorldDataPoint.date,
+                    WorldDataPoint.value,
+                )
+                .where(WorldDataPoint.indicator_id.in_(ids))
+                .order_by(WorldDataPoint.indicator_id, WorldDataPoint.date)
+            )
+        ).all()
+        for indicator_id, point_date, value in rows:
+            series_by_id.setdefault(indicator_id, []).append((point_date, float(value)))
+
+    for country, indicator in members:
+        for point_year, (point_date, value) in yearly_last_points(
+            series_by_id.get(indicator.id, []), mode
+        ).items():
+            bucket = values_by_year.setdefault(str(point_year), {})
+            bucket[country.code] = {
+                "country_code": country.code,
+                "country_slug": country.slug,
+                "country_name": country.name_ru,
+                "indicator_code": indicator.code,
+                "date": point_date.isoformat(),
+                "frequency": indicator.frequency,
+                "value": round(value, 4),
+                "unit": public_unit,
+                "source": _source_label(indicator.source, indicator.provider),
+            }
+
+    russia_meta = await merge_russia_into_values_by_year(
+        db,
+        concept.slug,
+        values_by_year,
+        concept_mode=mode,
+        public_unit=public_unit,
+    )
+
+    years = sorted(int(y) for y, items in values_by_year.items() if items)
+    active_year = _resolve_rating_year(years, year, values_by_year)
+    active_items = list(values_by_year.get(str(active_year), {}).values()) if active_year else []
+    reverse = world_rating_default_sort(concept.slug) == "desc"
+    active_items.sort(key=lambda item: item["value"], reverse=reverse)
+    for i, item in enumerate(active_items, 1):
+        item["rank"] = i
+
+    with_data_codes = {item["country_code"] for item in active_items}
+    without_data = [
+        {
+            "code": country.code,
+            "slug": country.slug,
+            "name": country.name_ru,
+            "name_en": country.name_en,
+            "region": country.region_ru,
+        }
+        for country in countries
+        if country.code not in with_data_codes
+    ]
+    # Россия в каталоге покрытия только если ряд сопоставим по смыслу.
+    if russia_meta is not None and "RU" not in with_data_codes:
+        ru = russia_country_public()
+        without_data.append({
+            "code": ru["code"],
+            "slug": ru["slug"],
+            "name": ru["name_ru"],
+            "name_en": ru["name_en"],
+            "region": ru["region_ru"],
+        })
+    russia_in_total = 1 if russia_meta is not None else 0
+    source_labels = _join_sources_ru([item["source"] for item in active_items])
+    last_date = max((item["date"] for item in active_items), default=None)
+    page_title = world_rating_title(concept.slug, public_name, active_year)
+
+    return {
+        "concept": {
+            "slug": concept.slug,
+            "name": public_name,
+            "unit": public_unit,
+            "value_mode": mode,
+            "default_sort": world_rating_default_sort(concept.slug),
+            "period_method": ranking_period_method(mode),
+            "money_unit_guard": _is_money_rating(concept),
+            "index_base_guard": mode == "yoy" and concept.slug == "hicp-index",
+            "title": page_title,
+            "russia": russia_meta,
+        },
+        "years": years,
+        "active_year": active_year,
+        "items": active_items,
+        "countries_without_data": without_data,
+        "coverage": {
+            "with_data": len(active_items),
+            "without_data": len(without_data),
+            "total": len(countries) + russia_in_total,
+        },
+        "sources": source_labels,
+        "last_date": last_date,
+        "values_by_year": values_by_year,
+    }
+
+
 def _period_label(d: date | None, frequency: str | None) -> str:
     if d is None:
         return "нет данных"
@@ -358,43 +615,279 @@ async def render_world_home_html(db: AsyncSession) -> tuple[int, str]:
     n_countries = sum(1 for _c, cnt in rows if int(cnt or 0) > 0)
 
     links = "".join(
-        f'<li><a href="/world/{escape(c.slug)}">{escape(c.name_ru)}</a>'
+        f'<li><a href="{escape(paths.country(c.slug))}">{escape(c.name_ru)}</a>'
         f" — {_n_indicators_phrase(int(cnt or 0))}</li>"
         for c, cnt in rows
         if int(cnt or 0) > 0
     )
 
     body = f"""<div class="seo-page">
-<nav><a href="/">Главная</a> → Мировая экономика</nav>
-<p class="seo-eyebrow">Официальная статистика стран Европы</p>
-<h1>Мировая экономика: статистика по странам Европы</h1>
-<p>Раздел собирает официальные ряды Евростата по странам Европы —
-цены, валовой внутренний продукт, рынок труда, внешняя торговля и финансы.
-Сейчас доступны данные по {n_countries} странам и {_n_indicators_phrase(n_listed)}
-с графиками динамики и таблицами значений. Источник — Евростат.</p>
+{_breadcrumbs_nav(crumbs.world_home_trail())}
+<p class="seo-eyebrow">Официальная статистика по странам</p>
+<h1>{escape(WORLD_HOME_H1)}</h1>
+<p>Раздел собирает официальные ряды по странам — цены, валовой внутренний
+продукт, рынок труда, внешняя торговля и финансы. Сейчас доступны данные по
+{n_countries} странам и {_n_indicators_phrase(n_listed)} с графиками динамики
+и таблицами значений. Основа европейской части — Евростат; показатели по
+странам за пределами Европы приходят от их национальных статистических
+ведомств и центральных банков.</p>
 <section class="seo-section"><h2>Страны</h2><ul>{links}</ul></section>
 <section class="seo-section"><h2>Россия и сравнение</h2>
 <p>Макроэкономика России — в разделе
 <a href="/">главной витрины</a> и каталоге
-<a href="/category/prices">цен</a>,
-<a href="/category/gdp">ВВП</a> и
-<a href="/category/labor">рынка труда</a>.
+<a href="{paths.russia_category('prices')}">цен</a>,
+<a href="{paths.russia_category('gdp')}">ВВП</a> и
+<a href="{paths.russia_category('labor')}">рынка труда</a>.
 Сопоставить ряды можно на странице
 <a href="/compare">сравнения индикаторов</a>.</p></section>
 </div>"""
 
-    json_ld = [_breadcrumbs([("/", "Главная"), ("/world", "Мировая экономика")])]
+    json_ld = [_breadcrumbs(crumbs.world_home_trail())]
     html = await build_document(
-        title=_WORLD_TITLE,
-        description=_WORLD_DESC,
-        canonical_path="/world",
+        title=WORLD_HOME_TITLE,
+        description=WORLD_HOME_DESC,
+        canonical_path=paths.world_hub(),
         body=body,
         json_ld=json_ld,
         keywords=(
-            "мировая экономика статистика, экономика стран европы, "
-            "евростат данные, инфляция европы, ввп стран европы"
+            "мировая экономика статистика, экономика стран, "
+            "евростат данные, инфляция по странам, ввп стран"
         ),
-        og_image=f"{DOMAIN}/og.png",
+        og_image=f"{DOMAIN}/og-image-v2.png",
+    )
+    return 200, html
+
+
+async def render_world_rating_html(
+    concept_slug: str,
+    db: AsyncSession,
+    *,
+    year: int | None = None,
+) -> tuple[int, str]:
+    payload = await build_world_rating_payload(concept_slug, db, year=year)
+    if payload is None:
+        return 404, "<h1>Показатель рейтинга не найден</h1>"
+    active_year = payload["active_year"]
+    items = payload["items"]
+    if active_year is None or not items:
+        return 404, "<h1>Нет данных для рейтинга</h1>"
+
+    concept = payload["concept"]
+    name = concept["name"]
+    unit = concept["unit"]
+    total = payload["coverage"]["total"]
+    with_data = payload["coverage"]["with_data"]
+    without_data = payload["coverage"]["without_data"]
+    sources = payload["sources"]
+    last_date = payload["last_date"]
+    query_name = WORLD_RATING_QUERY_NAMES.get(concept_slug, name.lower())
+    order_uri = (
+        "https://schema.org/ItemListOrderAscending"
+        if concept["default_sort"] == "asc"
+        else "https://schema.org/ItemListOrderDescending"
+    )
+
+    def _value_text(item: dict, with_unit: bool = True) -> str:
+        if not with_unit:
+            return format_number_ru(item["value"])
+        row_unit = item.get("unit") or unit
+        suffix = unit_suffix(row_unit)
+        return f"{format_number_ru(item['value'])} {suffix}".strip()
+
+    def _date_text(raw: str | None, frequency: str | None = None) -> str:
+        if not raw:
+            return "нет данных"
+        # Месячный индекс относится к месяцу целиком: «1 декабря 2025» создаёт
+        # ложное впечатление замера на конкретный день.
+        return _period_label(date.fromisoformat(raw), frequency)
+
+    def _countries_phrase(n: int) -> str:
+        n = int(n)
+        tail = n % 100
+        if 11 <= tail <= 14:
+            return f"{n} стран"
+        last = n % 10
+        if last == 1:
+            return f"{n} страна"
+        if last in (2, 3, 4):
+            return f"{n} страны"
+        return f"{n} стран"
+
+    first = items[0]
+    last = items[-1]
+    title = concept.get("title") or world_rating_title(concept_slug, name, active_year)
+    # Перечень ведомств живёт в теле страницы: в meta он раздувает описание до
+    # обрезки и вытесняет то, ради чего посетитель кликает.
+    desc = (
+        f"{title}: полная таблица "
+        f"{_countries_phrase(with_data)} из {total}, карта и ссылки на карточки стран. "
+        f"Официальная статистика национальных ведомств и Евростата."
+    )
+    intro = (
+        f"Рейтинг стран по показателю «{name}» за {active_year} год. "
+        f"В таблице {_countries_phrase(with_data)} с опубликованным значением; ещё "
+        f"{_countries_phrase(without_data)} мирового каталога не имеют значения за этот год. "
+        f"Порядок таблицы нейтральный: пользователь может переключить сортировку "
+        f"по возрастанию или убыванию значения."
+    )
+    if concept["money_unit_guard"]:
+        intro += (
+            " Денежные показатели не пересчитываются в другую валюту: в рейтинг "
+            "попадают только ряды, уже опубликованные в сопоставимой единице."
+        )
+    if concept.get("index_base_guard"):
+        intro += (
+            " Сравнивается изменение потребительских цен за год в процентах: "
+            "базовые периоды национальных индексов при таком расчёте сокращаются, "
+            "и величины сопоставимы между странами."
+        )
+    russia_note = (concept.get("russia") or {}).get("note")
+    if russia_note:
+        intro += f" {russia_note}"
+
+    concept_links = "".join(
+        f'<li><a href="{escape(paths.world_rating(c.slug))}">{escape(c.name_ru)}</a></li>'
+        for c in WORLD_CONCEPTS
+        if "rating" in c.enabled_surfaces
+    )
+    year_links = "".join(
+        f'<li><a href="{escape(paths.world_rating(concept_slug))}?year={y}">{y}</a></li>'
+        for y in payload["years"][-12:]
+    )
+
+    # Колонка единицы нужна, только когда единицы у стран разные: при общей
+    # единице она повторяет одно и то же в каждой строке и выносится в шапку.
+    row_units = {(item.get("unit") or unit or "").strip() for item in items}
+    shared_unit = row_units.pop() if len(row_units) == 1 else None
+    unit_head = "" if shared_unit is not None else "<th>Единица</th>"
+
+    def _unit_cell(item: dict) -> str:
+        if shared_unit is not None:
+            return ""
+        return f"<td>{escape(item.get('unit') or unit or 'единицы источника')}</td>"
+
+    rows_html = "".join(
+        f"<tr><td>{item['rank']}</td>"
+        f'<td><a href="{escape(paths.indicator(item["country_slug"], item["indicator_code"]))}">'
+        f'{escape(item["country_name"])}</a></td>'
+        f"<td>{escape(_value_text(item, with_unit=shared_unit is None))}</td>"
+        f"{_unit_cell(item)}"
+        f"<td>{escape(_date_text(item.get('date'), item.get('frequency')))}</td></tr>"
+        for item in items
+    )
+    if not shared_unit:
+        value_head = "Значение"
+    elif shared_unit.startswith("%"):
+        value_head = f"Значение, {escape(shared_unit)}"
+    else:
+        # «изменение за год, %» само описывает колонку: «Значение, изменение
+        # за год, %» распадается на три запятых и не читается.
+        value_head = escape(shared_unit[0].upper() + shared_unit[1:])
+    table_html = (
+        '<div class="seo-scroll"><table><thead><tr>'
+        f"<th>Место</th><th>Страна</th><th>{value_head}</th>{unit_head}<th>Период</th>"
+        f"</tr></thead><tbody>{rows_html}</tbody></table></div>"
+    )
+
+    missing = payload["countries_without_data"]
+    missing_html = ""
+    if missing:
+        missing_items = "".join(
+            f'<li><a href="{escape(paths.country(country["slug"]))}">{escape(country["name"])}</a></li>'
+            for country in missing
+        )
+        missing_html = (
+            f'<section class="seo-section"><h2>Страны без данных за {active_year} год</h2>'
+            f'<p>У этих стран нет опубликованного значения по выбранному показателю '
+            f"за {active_year} год.</p><ul class=\"seo-pills\">{missing_items}</ul></section>"
+        )
+
+    og_path = paths.og_world_rating(concept_slug)
+    figure_alt = (
+        f"{name} по странам — рейтинг {active_year} года, "
+        f"первое значение в текущем порядке: {first['country_name']} ({_value_text(first)})"
+    )
+    figure_html = (
+        f'<figure class="seo-chart"><img src="{escape(og_path)}" alt="{escape(figure_alt)}" '
+        f'width="1200" height="630" loading="eager">'
+        f"<figcaption>{escape(name)} по странам, {active_year} год. "
+        f"Источник: {escape(sources)}. forecasteconomy.com</figcaption></figure>"
+    )
+
+    canonical = paths.world_rating(concept_slug)
+    if year is not None and year == active_year:
+        canonical = f"{canonical}?year={year}"
+
+    json_ld = [
+        _breadcrumbs(crumbs.world_rating_trail(name, paths.world_rating(concept_slug))),
+        {
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "name": title,
+            "description": desc,
+            "url": f"{DOMAIN}{canonical}",
+            "itemListOrder": order_uri,
+            "numberOfItems": with_data,
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": item["rank"],
+                    "name": item["country_name"],
+                    "url": f"{DOMAIN}{paths.indicator(item['country_slug'], item['indicator_code'])}",
+                    "item": {
+                        "@type": "Country",
+                        "name": item["country_name"],
+                        "url": f"{DOMAIN}{paths.country(item['country_slug'])}",
+                    },
+                }
+                for item in items
+            ],
+        },
+        {
+            "@context": "https://schema.org",
+            "@type": "ImageObject",
+            "contentUrl": f"{DOMAIN}{og_path}",
+            "url": f"{DOMAIN}{og_path}",
+            "width": 1200,
+            "height": 630,
+            "name": f"{name} — рейтинг стран, {active_year}",
+            "caption": figure_alt,
+            "representativeOfPage": True,
+        },
+    ]
+
+    body = f"""<div class="seo-page">
+{_breadcrumbs_nav(crumbs.world_rating_trail(name, paths.world_rating(concept_slug)))}
+<p class="seo-eyebrow">Сопоставимые показатели стран</p>
+<h1>{escape(title)}</h1>
+<p>{escape(intro)}</p>
+{figure_html}
+<div class="seo-tiles">
+<div class="seo-tile"><span>Первое значение в текущем порядке — {escape(first["country_name"])}</span><b>{escape(_value_text(first))}</b></div>
+<div class="seo-tile"><span>Последнее значение в текущем порядке — {escape(last["country_name"])}</span><b>{escape(_value_text(last))}</b></div>
+<div class="seo-tile"><span>Стран с данными</span><b>{with_data} из {total}</b></div>
+<div class="seo-tile"><span>Последняя дата в срезе</span><b>{escape(_date_text(last_date))}</b></div>
+</div>
+<section class="seo-section"><h2>Полный рейтинг стран</h2>{table_html}</section>
+{missing_html}
+<section class="seo-section"><h2>Другие показатели рейтинга</h2><ul class="seo-pills">{concept_links}</ul></section>
+<section class="seo-section"><h2>Другие годы</h2><ul class="seo-pills">{year_links}</ul></section>
+<section class="seo-section"><h2>Источник данных</h2>
+<p>{escape(sources)}. Единицы измерения: {escape(unit or 'единицы источника')}.
+Для каждого календарного года берётся последнее опубликованное значение внутри года.</p></section>
+</div>"""
+
+    html = await build_document(
+        title=title,
+        description=desc,
+        canonical_path=canonical,
+        body=body,
+        json_ld=json_ld,
+        keywords=(
+            f"{name} по странам, рейтинг стран по {name}, "
+            f"{name} {active_year}, мировая экономика рейтинг"
+        ),
+        og_image=f"{DOMAIN}{og_path}",
     )
     return 200, html
 
@@ -462,7 +955,7 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
 
     key_rows = "".join(
         (
-            f"<tr><td><a href=\"/world/{escape(slug)}/{escape(ind.code)}\">"
+            f"<tr><td><a href=\"{escape(paths.indicator(slug, ind.code))}\">"
             f"{escape(_display_name(ind))}</a></td>"
             f"<td>{_fmt(latest[ind.id][1])}{escape(_unit_sfx(_unit_of(ind)))}</td>"
             f"<td>{escape(_period_label(latest[ind.id][0], ind.frequency))}</td></tr>"
@@ -487,7 +980,7 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
     for cat in sorted(by_cat.keys(), key=lambda c: (cat_rank.get(c, 99), c)):
         items = by_cat[cat]
         links = "".join(
-            f'<li><a href="/world/{escape(slug)}/{escape(ind.code)}">'
+            f'<li><a href="{escape(paths.indicator(slug, ind.code))}">'
             f"{escape(_display_name(ind))}</a></li>"
             for ind in items[:40]
         )
@@ -515,7 +1008,7 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
     neighbors_html = ""
     if neighbors:
         nlinks = "".join(
-            f'<li><a href="/world/{escape(n.slug)}">{escape(n.name_ru)}</a></li>'
+            f'<li><a href="{escape(paths.country(n.slug))}">{escape(n.name_ru)}</a></li>'
             for n in neighbors
         )
         neighbors_html = (
@@ -523,7 +1016,7 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
             f'<ul class="seo-pills">{nlinks}</ul></section>'
         )
 
-    og_path = f"/og/world/{slug}.png"
+    og_path = paths.og_country(slug)
     n_ind = len(inds)
     gen = _genitive(country)
     n_phrase = _n_indicators_phrase(n_ind)
@@ -580,7 +1073,7 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
     )
 
     body = f"""<div class="seo-page">
-<nav><a href="/">Главная</a> → <a href="/world">Мировая экономика</a> → {escape(country.name_ru)}</nav>
+{_breadcrumbs_nav(crumbs.world_country_trail(country.name_ru, paths.country(slug)))}
 <p class="seo-eyebrow">{escape(eyebrow)}</p>
 <h1>Экономика {escape(gen)}: статистика и показатели</h1>
 <p>{lead}</p>
@@ -597,11 +1090,7 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
 </div>"""
 
     json_ld = [
-        _breadcrumbs([
-            ("/", "Главная"),
-            ("/world", "Мировая экономика"),
-            (f"/world/{slug}", country.name_ru),
-        ]),
+        _breadcrumbs(crumbs.world_country_trail(country.name_ru, paths.country(slug))),
         {
             "@context": "https://schema.org",
             "@type": "ImageObject",
@@ -617,7 +1106,7 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
     html = await build_document(
         title=title,
         description=desc,
-        canonical_path=f"/world/{slug}",
+        canonical_path=paths.country(slug),
         body=body,
         json_ld=json_ld,
         keywords=(
@@ -720,7 +1209,7 @@ async def render_world_indicator_html(
         f"<tbody>{table_rows}</tbody></table></div>"
     )
 
-    og_path = f"/og/world/{slug}/{code}.png"
+    og_path = paths.og_indicator(slug, code)
     alt = (
         f"{display} в {prep}: график динамики {period}, "
         f"последнее значение {_fmt(last_value)}{unit_sfx}".strip()
@@ -753,7 +1242,7 @@ async def render_world_indicator_html(
     peers_html = ""
     if peers:
         items = "".join(
-            f'<li><a href="/world/{escape(s)}/{escape(c)}">'
+            f'<li><a href="{escape(paths.indicator(s, c))}">'
             f"{escape(display)} — {escape(n)}</a></li>"
             for s, n, c in peers
         )
@@ -781,7 +1270,7 @@ async def render_world_indicator_html(
     siblings_html = ""
     if cat_siblings:
         items = "".join(
-            f'<li><a href="/world/{escape(slug)}/{escape(s.code)}">'
+            f'<li><a href="{escape(paths.indicator(slug, s.code))}">'
             f"{escape(_display_name(s))}</a></li>"
             for s in cat_siblings
         )
@@ -809,12 +1298,9 @@ async def render_world_indicator_html(
     ).strip()
 
     json_ld = [
-        _breadcrumbs([
-            ("/", "Главная"),
-            ("/world", "Мировая экономика"),
-            (f"/world/{slug}", country.name_ru),
-            (f"/world/{slug}/{code}", display),
-        ]),
+        _breadcrumbs(crumbs.world_indicator_trail(
+            country.name_ru, paths.country(slug), display, paths.indicator(slug, code),
+        )),
         {
             "@context": "https://schema.org",
             "@type": "Dataset",
@@ -824,7 +1310,7 @@ async def render_world_indicator_html(
                 + (f" ({unit})" if unit else "")
                 + f" в {prep}, {period}. Источник: {source}."
             ),
-            "url": f"{DOMAIN}/world/{slug}/{code}",
+            "url": f"{DOMAIN}{paths.indicator(slug, code)}",
             "temporalCoverage": f"{first_date.isoformat()}/{last_date.isoformat()}",
             "spatialCoverage": country.name_ru,
             "creator": {"@type": "Organization", "name": source},
@@ -845,7 +1331,9 @@ async def render_world_indicator_html(
     ]
 
     body = f"""<div class="seo-page">
-<nav><a href="/">Главная</a> → <a href="/world">Мировая экономика</a> → <a href="/world/{escape(slug)}">{escape(country.name_ru)}</a> → {escape(display)}</nav>
+{_breadcrumbs_nav(crumbs.world_indicator_trail(
+    country.name_ru, paths.country(slug), display, paths.indicator(slug, code),
+))}
 <p class="seo-eyebrow">{escape(indicator.category_ru or 'Статистика')} — {escape(country.name_ru)}</p>
 <h1>{escape(display)} в {escape(prep)}</h1>
 {figure_html}
@@ -874,7 +1362,7 @@ async def render_world_indicator_html(
     html = await build_document(
         title=title,
         description=meta_desc,
-        canonical_path=f"/world/{slug}/{code}",
+        canonical_path=paths.indicator(slug, code),
         body=body,
         json_ld=json_ld,
         keywords=(

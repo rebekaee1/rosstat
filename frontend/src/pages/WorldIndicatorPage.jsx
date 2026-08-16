@@ -31,7 +31,13 @@ import IndicatorMethodologyPanel from '../components/IndicatorMethodologyPanel';
 import DataTable from '../components/DataTable';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import TelemetryCard from '../components/TelemetryCard';
+import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
+import { worldIndicatorTrail } from '../lib/breadcrumbs';
+import {
+  countryPath,
+  indicatorPath,
+} from '../lib/sitePaths';
 
 const FREQ_RU = {
   daily: 'По дням',
@@ -72,7 +78,8 @@ function computeWorldTelemetry(points) {
 }
 
 export default function WorldIndicatorPage() {
-  const { slug, code } = useParams();
+  const { countrySlug, slug: slugParam, code } = useParams();
+  const slug = countrySlug || slugParam;
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const urlMode = searchParams.get('mode');
@@ -160,7 +167,7 @@ export default function WorldIndicatorPage() {
         urlMode,
         metaQ.data.indicator?.frequency || 'monthly',
       );
-      navigate(`/world/${slug}/${primary}?mode=${encodeURIComponent(mode)}`, {
+      navigate(`${indicatorPath(slug, primary)}?mode=${encodeURIComponent(mode)}`, {
         replace: true,
       });
     }
@@ -230,11 +237,11 @@ export default function WorldIndicatorPage() {
       `${displayName} (${country.name}): последнее значение ${formatWorldValue(last?.value)}${unitBesideValue ? ` ${unitBesideValue}` : ''}`
       + (last?.date ? ` на ${formatDate(last.date, 'full')}` : '')
       + `. Источник: ${indicator.source || 'официальная статистика'}.`,
-    path: `/world/${slug}/${code}`,
+    path: indicatorPath(slug, code),
   } : {
     title: notFound ? 'Показатель не найден' : 'Мировая экономика',
     description: 'Макроэкономические показатели стран Европы.',
-    path: `/world/${slug}/${code}`,
+    path: indicatorPath(slug, code),
   });
 
   useEffect(() => {
@@ -312,23 +319,15 @@ export default function WorldIndicatorPage() {
 
   return (
     <div className="mx-auto w-full max-w-7xl overflow-x-hidden px-4 pb-24 pt-24 sm:px-6 md:px-8 md:pt-28 md:pb-28">
-      <nav className="mb-3 flex min-w-0 items-center gap-2 overflow-hidden text-[11px] font-mono uppercase tracking-widest text-text-tertiary md:mb-8 md:text-xs" aria-label="Хлебные крошки">
-        <Link
-          to="/world"
-          className="group inline-flex shrink-0 items-center gap-1.5 transition-colors hover:text-champagne"
-        >
-          <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
-          Мировая экономика
-        </Link>
-        {country && (
-          <>
-            <span className="shrink-0 text-text-tertiary/40">/</span>
-            <Link to={`/world/${slug}`} className="min-w-0 truncate transition-colors hover:text-champagne">
-              {country.name}
-            </Link>
-          </>
+      <Breadcrumbs
+        items={worldIndicatorTrail(
+          country?.name || '…',
+          slug,
+          displayName || '…',
+          code,
         )}
-      </nav>
+        variant="mono"
+      />
 
       {notFound && (
         <div className="mt-8 rounded-2xl border border-border-subtle bg-surface p-8 text-center">
@@ -337,7 +336,7 @@ export default function WorldIndicatorPage() {
             Такого показателя для этой страны нет в каталоге. Вернитесь к списку или откройте другой раздел.
           </p>
           <div className="flex flex-wrap justify-center gap-3 text-sm">
-            <Link to={`/world/${slug}`} className="rounded-xl bg-champagne/10 px-4 py-2 text-champagne transition-colors hover:bg-champagne/20">
+            <Link to={countryPath(slug)} className="rounded-xl bg-champagne/10 px-4 py-2 text-champagne transition-colors hover:bg-champagne/20">
               К стране
             </Link>
             <Link to="/world" className="rounded-xl border border-border-subtle px-4 py-2 text-text-secondary transition-colors hover:text-champagne">
@@ -374,11 +373,11 @@ export default function WorldIndicatorPage() {
             <div className="mb-2.5 flex flex-wrap items-center gap-2 sm:gap-3 md:mb-4">
               <span className="flex items-center gap-2 rounded-full border border-border-subtle bg-obsidian-light px-2.5 py-1 font-mono text-[10px] uppercase tracking-widest text-text-secondary sm:px-3">
                 <Activity className="h-3 w-3 text-champagne" />
-                {FREQ_RU[activeFreq] || activeFreq || '—'}
+                {FREQ_RU[activeFreq] || '—'}
               </span>
               {country?.name && (
                 <Link
-                  to={`/world/${slug}`}
+                  to={countryPath(slug)}
                   className="hidden font-mono text-xs text-text-tertiary transition-colors hover:text-champagne sm:inline"
                 >
                   {country.name}
@@ -393,11 +392,6 @@ export default function WorldIndicatorPage() {
             <h1 className="mb-1.5 text-pretty font-display text-[1.3rem] font-bold leading-[1.28] tracking-tight text-text-primary sm:text-3xl md:mb-4 md:text-5xl md:leading-tight lg:text-6xl">
               {displayName}
             </h1>
-            {indicator.name_en && (
-              <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-text-tertiary sm:text-sm md:text-base md:normal-case md:tracking-normal">
-                {indicator.name_en}
-              </p>
-            )}
             {metaQ.data._fromMock && (
               <p className="mt-2 font-mono text-[12px] text-text-tertiary">
                 Демо-данные (API ещё не подключён)
@@ -464,7 +458,7 @@ export default function WorldIndicatorPage() {
             <VariantGroupPicker
               group={variantGroup}
               currentCode={code}
-              basePath={`/world/${slug}`}
+              basePath={`${countryPath(slug)}/indicator`}
             />
           )}
 
@@ -489,7 +483,6 @@ export default function WorldIndicatorPage() {
             modeMeta={modeMeta}
             dataPoints={points}
             forecastData={forecastPoints}
-            forecastMeta={dataQ.data?.forecast}
             forecastEnabled={forecastAvailable}
             showForecast={showForecast}
             onToggleForecast={() => setShowForecast((current) => !current)}
@@ -519,7 +512,7 @@ export default function WorldIndicatorPage() {
                 <div>
                   <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-tertiary">Частота</dt>
                   <dd className="font-mono text-text-primary">
-                    {FREQ_RU[activeFreq] || activeFreq || '—'}
+                    {FREQ_RU[activeFreq] || '—'}
                   </dd>
                 </div>
                 <div>
@@ -540,10 +533,20 @@ export default function WorldIndicatorPage() {
                     {dataQ.data?.count ?? indicator.points_count ?? '—'}
                   </dd>
                 </div>
+                {indicator.name_en && (
+                  <div className="sm:col-span-2">
+                    <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-tertiary">
+                      Наименование в источнике
+                    </dt>
+                    <dd className="text-[13px] leading-5 text-text-secondary">
+                      {indicator.name_en}
+                    </dd>
+                  </div>
+                )}
               </dl>
               <div className="mt-6 flex flex-wrap gap-2 border-t border-border-subtle pt-4">
                 <Link
-                  to={`/world/${slug}`}
+                  to={countryPath(slug)}
                   className="inline-flex items-center gap-1 rounded-full border border-border-subtle px-3 py-1.5 text-[13px] text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne"
                 >
                   Все показатели {country?.name}

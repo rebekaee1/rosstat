@@ -27,6 +27,9 @@ from app.data.eurostat_titles_ru import listing_substance_score
 from app.data.eurostat_units_ru import unit_suffix
 from app.data.world_concepts import CONCEPT_BY_SLUG, WORLD_CONCEPTS, concept_for_indicator
 from app.data.world_concept_national import national_codes_for_concept
+from app.data.world_country_area import area_payload
+from app.data.world_country_population import population_payload as curated_population_payload
+from app.data.world_indicator_titles_ru import is_public_catalog_name
 from app.database import get_db
 from app.models import (
     WorldCountry,
@@ -36,6 +39,21 @@ from app.models import (
     WorldIndicator,
 )
 from app.services.world_view_modes import is_signed_or_zero_crossing
+from app.services.world_rank_values import (
+    latest_rank_point,
+    money_unit_compatible,
+    ranking_display_name,
+    ranking_period_method,
+    ranking_public_unit,
+    ranking_value_mode,
+    world_rating_title,
+    yearly_last_points,
+)
+from app.services.world_russia_rank import (
+    merge_russia_into_values_by_year,
+    russia_latest_snapshot_item,
+    russia_meta_for_concept,
+)
 from app.services.world_cards import (
     apply_resolved,
     build_modes_matrix,
@@ -70,6 +88,90 @@ def _country_payload(c: WorldCountry, indicators_count: int | None = None) -> di
     if indicators_count is not None:
         out["indicators_count"] = indicators_count
     return out
+
+
+def _population_indicator(
+    country: WorldCountry,
+    indicators: list[WorldIndicator],
+) -> WorldIndicator | None:
+    """Ряд населения страны: national crosswalk, иначе курируемый concept."""
+    concept = CONCEPT_BY_SLUG.get("population")
+    if concept is None:
+        return None
+    national_codes = national_codes_for_concept(concept.slug)
+    national_match = next(
+        (ind for ind in indicators if ind.code in national_codes),
+        None,
+    )
+    if national_match is not None:
+        return national_match
+    matches = [
+        ind for ind in indicators
+        if concept_for_indicator(ind) == concept
+    ]
+    if len(matches) != 1:
+        return None
+    return matches[0]
+
+
+async def _load_population_indicator(
+    db: AsyncSession,
+    country: WorldCountry,
+) -> WorldIndicator | None:
+    """Точечная выборка ряда населения — без полной выгрузки индикаторов страны."""
+    concept = CONCEPT_BY_SLUG.get("population")
+    if concept is None:
+        return None
+    national_codes = national_codes_for_concept(concept.slug)
+    allowed = {str(ds).lower() for ds in concept.dataset_ids}
+    if concept.provider_dataset_ids:
+        for ids in concept.provider_dataset_ids.values():
+            allowed.update(str(ds).lower() for ds in ids)
+    rows = list(
+        (
+            await db.execute(
+                select(WorldIndicator).where(
+                    WorldIndicator.country_id == country.id,
+                    or_(
+                        func.lower(WorldIndicator.dataset_id).in_(sorted(allowed)),
+                        WorldIndicator.code.in_(sorted(national_codes)),
+                    ) if national_codes else (
+                        func.lower(WorldIndicator.dataset_id).in_(sorted(allowed))
+                    ),
+                )
+            )
+        ).scalars().all()
+    )
+    return _population_indicator(country, rows)
+
+
+async def _population_payload(
+    db: AsyncSession,
+    country: WorldCountry,
+) -> dict | None:
+    """Последнее значение ряда населения; иначе курируемый справочник ведомства."""
+    indicator = await _load_population_indicator(db, country)
+    if indicator is not None:
+        row = (
+            await db.execute(
+                select(WorldDataPoint.date, WorldDataPoint.value)
+                .where(WorldDataPoint.indicator_id == indicator.id)
+                .order_by(WorldDataPoint.date.desc())
+                .limit(1)
+            )
+        ).first()
+        if row is not None:
+            point_date, value = row
+            numeric = float(value)
+            return {
+                "value": int(numeric) if numeric.is_integer() else round(numeric, 4),
+                "unit": indicator.unit_ru or indicator.unit or "человек",
+                "date": point_date.isoformat(),
+                "year": point_date.year,
+                "source": indicator.source,
+                "source_url": indicator.source_url,
+            }
+    return curated_population_payload(country.code)
 
 
 async def _country_by_slug(db: AsyncSession, slug: str) -> WorldCountry:
@@ -118,6 +220,29 @@ async def _load_points(
         q = q.where(WorldDataPoint.date <= date_to)
     rows = (await db.execute(q)).all()
     return [(d, float(v)) for d, v in rows]
+
+
+async def _load_points_by_ids(
+    db: AsyncSession,
+    indicator_ids: list[int],
+) -> dict[int, list[tuple[date, float]]]:
+    if not indicator_ids:
+        return {}
+    rows = (
+        await db.execute(
+            select(
+                WorldDataPoint.indicator_id,
+                WorldDataPoint.date,
+                WorldDataPoint.value,
+            )
+            .where(WorldDataPoint.indicator_id.in_(indicator_ids))
+            .order_by(WorldDataPoint.indicator_id, WorldDataPoint.date)
+        )
+    ).all()
+    out: dict[int, list[tuple[date, float]]] = defaultdict(list)
+    for indicator_id, point_date, value in rows:
+        out[indicator_id].append((point_date, float(value)))
+    return out
 
 
 async def _ids_with_nonzero_signal(
@@ -184,6 +309,10 @@ async def _country_indicators_for_listing(
 
     Полный `_country_indicators` на DE/FR/ES тянет тысячи ORM-объектов и на
     холодном кэше/рестарте backend давал Empty reply / таймаут фронта (15 с).
+
+    Stem сравниваем без учёта регистра: у национальных провайдеров dataset_id
+    часто в верхнем регистре (FM01, CPIAUCSL), а ``dataset_stem`` канонизирует
+    в lower — иначе карточка страны обнулялась при ненулевом списке.
     """
     listed = list(
         (
@@ -205,8 +334,10 @@ async def _country_indicators_for_listing(
 
     clauses = []
     for stem in stems:
-        clauses.append(WorldIndicator.dataset_id == stem)
-        clauses.append(WorldIndicator.dataset_id.like(f"{stem}\\_%", escape="\\"))
+        clauses.append(func.lower(WorldIndicator.dataset_id) == stem)
+        clauses.append(
+            func.lower(WorldIndicator.dataset_id).like(f"{stem}\\_%", escape="\\")
+        )
 
     return list(
         (
@@ -228,6 +359,14 @@ def _compare_concepts():
     ]
 
 
+def _rating_concepts():
+    return [
+        concept
+        for concept in WORLD_CONCEPTS
+        if "rating" in concept.enabled_surfaces
+    ]
+
+
 def _compare_series_payload(country: WorldCountry, indicator: WorldIndicator, concept) -> dict:
     return {
         "code": f"w:{country.slug}:{concept.slug}",
@@ -242,6 +381,20 @@ def _compare_series_payload(country: WorldCountry, indicator: WorldIndicator, co
 
 
 _AVERAGE_CONCEPTS = frozenset({"hicp-index", "unemployment-rate", "budget-balance-gdp"})
+_MONEY_COMPARE_CONCEPTS = frozenset({"gdp-volume-quarterly", "gdp-volume-annual"})
+
+
+def _indicator_unit(indicator: WorldIndicator) -> str:
+    return (indicator.unit_ru or indicator.unit or "").strip()
+
+
+def _concept_unit_compatible(concept, indicator: WorldIndicator) -> bool:
+    if concept.slug not in _MONEY_COMPARE_CONCEPTS:
+        return True
+    # Класс меры (CLV15_MEUR и т.п.), не дословный unit_ru: формулировки
+    # «млн евро в постоянных ценах» и «в постоянных ценах 2015 года, млн евро»
+    # — одна и та же сопоставимая единица.
+    return money_unit_compatible(concept.measure, indicator.unit, indicator.unit_ru)
 
 
 def _benchmark_value(concept_slug: str, values: list[float]) -> float:
@@ -289,9 +442,13 @@ async def _concept_members(
     members: list[tuple[WorldCountry, WorldIndicator]] = []
     for country, indicator in rows:
         if indicator.code in national_codes:
-            members.append((country, indicator))
+            if _concept_unit_compatible(concept, indicator):
+                members.append((country, indicator))
             continue
-        if concept_for_indicator(indicator) == concept:
+        if (
+            concept_for_indicator(indicator) == concept
+            and _concept_unit_compatible(concept, indicator)
+        ):
             members.append((country, indicator))
     # Одна страна — один ряд: national имеет приоритет над eurostat-дублем.
     by_country: dict[int, tuple[WorldCountry, WorldIndicator]] = {}
@@ -305,8 +462,8 @@ async def _concept_members(
         if cur_is_national and not prev_is_national:
             by_country[country.id] = (country, indicator)
         elif prev_is_national == cur_is_national:
-            # Два eurostat match — страна неоднозначна, выкидываем оба.
-            by_country.pop(country.id, None)
+            # Держим первый по стабильному order_by, чтобы страна не исчезала из среза.
+            continue
     return list(by_country.values())
 
 
@@ -329,52 +486,105 @@ def _primary_of_card(
 
 @router.get("/countries")
 async def list_countries(db: AsyncSession = Depends(get_db)):
-    cache_key = await versioned_key("world", "countries")
+    """Каталог стран: счётчик = то, что увидит посетитель на карточке страны.
+
+    Считаем только ``is_listed`` с ненулевым сигналом и публичным русским
+    именем. Страны с нулём после отсева скрываем — каталог не обещает пустые
+    страницы.
+    """
+    cache_key = await versioned_key("world", "countries:v3")
     cached = await cache_get(cache_key)
     if cached:
         return cached
 
-    counts_q = (
-        select(
-            WorldIndicator.country_id,
-            func.count().label("cnt"),
-        )
-        .where(WorldIndicator.is_listed.is_(True))
-        .group_by(WorldIndicator.country_id)
+    # JOIN вместо IN(...): listed-рядов десятки тысяч, asyncpg лимит 32767.
+    signal_ids = (
+        select(WorldDataPoint.indicator_id)
+        .where(WorldDataPoint.value != 0)
+        .distinct()
         .subquery()
     )
-    rows = (
+    listed_rows = (
         await db.execute(
-            select(WorldCountry, counts_q.c.cnt)
-            .outerjoin(counts_q, WorldCountry.id == counts_q.c.country_id)
-            .where(WorldCountry.is_active.is_(True))
-            .order_by(WorldCountry.sort_order, WorldCountry.name_ru)
+            select(
+                WorldIndicator.country_id,
+                WorldIndicator.id,
+                WorldIndicator.code,
+                WorldIndicator.name_ru,
+            )
+            .join(signal_ids, WorldIndicator.id == signal_ids.c.indicator_id)
+            .where(WorldIndicator.is_listed.is_(True))
         )
     ).all()
+    counts: dict[int, int] = defaultdict(int)
+    for country_id, _iid, code, name_ru in listed_rows:
+        name = display_name(name_ru, code)
+        if not is_public_catalog_name(name):
+            continue
+        counts[int(country_id)] += 1
+
+    rows = list(
+        (
+            await db.execute(
+                select(WorldCountry)
+                .where(WorldCountry.is_active.is_(True))
+                .order_by(WorldCountry.sort_order, WorldCountry.name_ru)
+            )
+        ).scalars().all()
+    )
 
     countries = [
-        _country_payload(c, int(cnt or 0))
-        for c, cnt in rows
-        if (cnt or 0) > 0
+        _country_payload(c, counts[c.id])
+        for c in rows
+        if counts.get(c.id, 0) > 0
     ]
-    any_listed = any(c["indicators_count"] > 0 for c in countries)
-    if not any_listed:
-        all_counts = (
+    if not countries:
+        # Dev/empty DB: без сигнала показываем сырой listed-count.
+        raw_counts = (
             await db.execute(
                 select(WorldIndicator.country_id, func.count())
+                .where(WorldIndicator.is_listed.is_(True))
                 .group_by(WorldIndicator.country_id)
             )
         ).all()
-        cnt_map = {cid: n for cid, n in all_counts}
+        cnt_map = {int(cid): int(n) for cid, n in raw_counts}
         countries = [
-            _country_payload(c, int(cnt_map.get(c.id, 0)))
-            for c, _ in rows
+            _country_payload(c, cnt_map[c.id])
+            for c in rows
             if cnt_map.get(c.id, 0) > 0
         ]
 
     payload = {"countries": countries, "total": len(countries)}
     await cache_set(cache_key, payload, ttl=_CACHE_TTL)
     return payload
+
+
+@router.get("/rating/concepts")
+async def world_rating_concepts():
+    """Курируемые понятия с поверхностью rating — список для UI рейтинга стран."""
+    from app.services.seo_world import world_rating_default_sort
+    from app.services.world_rank_values import (
+        ranking_display_name,
+        ranking_public_unit,
+        ranking_value_mode,
+    )
+
+    concepts = _rating_concepts()
+    # Для каталога рейтинга базы неизвестны до members; цены всегда yoy.
+    payload_concepts = []
+    for concept in concepts:
+        mode = ranking_value_mode(concept.slug, [])
+        payload_concepts.append({
+            "slug": concept.slug,
+            "name": ranking_display_name(mode, concept.slug, concept.name_ru),
+            "unit": ranking_public_unit(mode, concept.unit_ru),
+            "value_mode": mode,
+            "default_sort": world_rating_default_sort(concept.slug),
+        })
+    return {
+        "concepts": payload_concepts,
+        "total": len(payload_concepts),
+    }
 
 
 @router.get("/compare/catalog")
@@ -456,42 +666,19 @@ async def world_compare_snapshot(
     concept = CONCEPT_BY_SLUG.get(concept_slug)
     if concept is None or "compare" not in concept.enabled_surfaces:
         raise HTTPException(404, "Понятие для сравнения не найдено")
-    cache_key = await versioned_key("world", f"compare:snapshot:v2:{concept_slug}")
+    cache_key = await versioned_key("world", f"compare:snapshot:v4:{concept_slug}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
 
     members = await _concept_members(db, concept)
-    ids = [indicator.id for _, indicator in members]
-    if not ids:
-        return {"concept": concept_slug, "items": [], "average": None}
-    ranked = (
-        select(
-            WorldDataPoint.indicator_id.label("indicator_id"),
-            WorldDataPoint.date.label("date"),
-            WorldDataPoint.value.label("value"),
-            func.row_number().over(
-                partition_by=WorldDataPoint.indicator_id,
-                order_by=WorldDataPoint.date.desc(),
-            ).label("rn"),
-        )
-        .where(WorldDataPoint.indicator_id.in_(ids))
-        .subquery()
-    )
-    latest_rows = (
-        await db.execute(
-            select(ranked.c.indicator_id, ranked.c.date, ranked.c.value)
-            .where(ranked.c.rn == 1)
-        )
-    ).all()
-    latest_by_id = {
-        indicator_id: (point_date, float(value))
-        for indicator_id, point_date, value in latest_rows
-    }
+    mode = ranking_value_mode(concept.slug, members)
+    public_unit = ranking_public_unit(mode, concept.unit_ru)
+    series_by_id = await _load_points_by_ids(db, [ind.id for _, ind in members])
     items = []
     for country, indicator in members:
-        latest = latest_by_id.get(indicator.id)
-        if latest is None or latest[1] == 0:
+        latest = latest_rank_point(series_by_id.get(indicator.id, []), mode)
+        if latest is None:
             continue
         point_date, value = latest
         items.append({
@@ -499,19 +686,31 @@ async def world_compare_snapshot(
             "country_slug": country.slug,
             "country_name": country.name_ru,
             "date": point_date.isoformat(),
-            "value": value,
+            "value": round(value, 4),
+            "unit": public_unit,
         })
+    ru_item = await russia_latest_snapshot_item(
+        db, concept.slug, concept_mode=mode, public_unit=public_unit,
+    )
+    if ru_item is not None:
+        items.append(ru_item)
+    russia_meta = russia_meta_for_concept(concept.slug)
     average = None
     if concept_slug in _AVERAGE_CONCEPTS and len(items) >= 3:
         average = round(
             _benchmark_value(concept_slug, [item["value"] for item in items]),
             4,
         )
+    public_name = ranking_display_name(mode, concept.slug, concept.name_ru)
     payload = {
         "concept": {
             "slug": concept.slug,
-            "name": concept.name_ru,
-            "unit": concept.unit_ru,
+            "name": public_name,
+            "unit": public_unit,
+            "value_mode": mode,
+            "period_method": ranking_period_method(mode),
+            "russia": russia_meta,
+            "title": world_rating_title(concept.slug, public_name, None),
         },
         "items": items,
         "average": average,
@@ -529,51 +728,43 @@ async def world_compare_map_series(
     concept_slug: str,
     db: AsyncSession = Depends(get_db),
 ):
-    """Годовые срезы для карты: последнее опубликованное значение каждого года."""
+    """Годовые срезы для карты: последнее сопоставимое значение каждого года."""
     concept = CONCEPT_BY_SLUG.get(concept_slug)
     if concept is None or "compare" not in concept.enabled_surfaces:
         raise HTTPException(404, "Понятие для карты не найдено")
-    cache_key = await versioned_key("world", f"compare:map-series:v2:{concept_slug}")
+    cache_key = await versioned_key("world", f"compare:map-series:v4:{concept_slug}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
 
     members = await _concept_members(db, concept)
-    member_by_id = {
-        indicator.id: (country, indicator)
-        for country, indicator in members
-    }
-    ids = list(member_by_id)
-    rows = (
-        await db.execute(
-            select(
-                WorldDataPoint.indicator_id,
-                WorldDataPoint.date,
-                WorldDataPoint.value,
-            )
-            .where(WorldDataPoint.indicator_id.in_(ids))
-            .order_by(WorldDataPoint.indicator_id, WorldDataPoint.date)
-        )
-    ).all() if ids else []
+    mode = ranking_value_mode(concept.slug, members)
+    public_unit = ranking_public_unit(mode, concept.unit_ru)
+    series_by_id = await _load_points_by_ids(db, [ind.id for _, ind in members])
 
     values_by_year: dict[str, dict[str, dict]] = {}
-    for indicator_id, point_date, raw_value in rows:
-        member = member_by_id.get(indicator_id)
-        if member is None:
-            continue
-        country, indicator = member
-        year_values = values_by_year.setdefault(str(point_date.year), {})
-        previous = year_values.get(country.code)
-        if previous is not None and previous["date"] >= point_date.isoformat():
-            continue
-        year_values[country.code] = {
-            "country_code": country.code,
-            "country_slug": country.slug,
-            "country_name": country.name_ru,
-            "indicator_code": indicator.code,
-            "date": point_date.isoformat(),
-            "value": round(float(raw_value), 4),
-        }
+    for country, indicator in members:
+        for year, (point_date, value) in yearly_last_points(
+            series_by_id.get(indicator.id, []), mode
+        ).items():
+            year_values = values_by_year.setdefault(str(year), {})
+            year_values[country.code] = {
+                "country_code": country.code,
+                "country_slug": country.slug,
+                "country_name": country.name_ru,
+                "indicator_code": indicator.code,
+                "date": point_date.isoformat(),
+                "value": round(value, 4),
+                "unit": public_unit,
+            }
+
+    russia_meta = await merge_russia_into_values_by_year(
+        db,
+        concept.slug,
+        values_by_year,
+        concept_mode=mode,
+        public_unit=public_unit,
+    )
 
     years = sorted(int(year) for year, items in values_by_year.items() if items)
     benchmark_by_year: dict[str, dict] = {}
@@ -591,12 +782,16 @@ async def world_compare_map_series(
                 "countries_count": len(items),
             }
 
+    public_name = ranking_display_name(mode, concept.slug, concept.name_ru)
     payload = {
         "concept": {
             "slug": concept.slug,
-            "name": concept.name_ru,
-            "unit": concept.unit_ru,
-            "period_method": "Последнее опубликованное значение в каждом календарном году",
+            "name": public_name,
+            "unit": public_unit,
+            "value_mode": mode,
+            "period_method": ranking_period_method(mode),
+            "russia": russia_meta,
+            "title": world_rating_title(concept.slug, public_name, None),
         },
         "years": years,
         "values_by_year": values_by_year,
@@ -701,7 +896,7 @@ async def world_compare_average_series(
 
 @router.get("/countries/{slug}")
 async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
-    cache_key = await versioned_key("world", f"country:v4:{slug}")
+    cache_key = await versioned_key("world", f"country:v7:{slug}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -766,14 +961,22 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
         for f in sorted(by_freq.keys()):
             if f not in freqs_sorted:
                 freqs_sorted.append(f)
+        name = display_name(ind.name_ru, ind.code)
+        if not is_public_catalog_name(name):
+            # Нельзя осмысленно назвать по-русски — не обещаем в каталоге.
+            continue
+        primary_freq = normalize_frequency(ind.frequency) or (
+            freqs_sorted[0] if freqs_sorted else None
+        )
         item = {
             "code": ind.code,
-            "name_ru": display_name(ind.name_ru),
-            "name": display_name(ind.name_ru),  # compat
+            "name_ru": name,
+            "name": name,  # compat
             "unit_ru": ind.unit_ru or ind.unit,
             "unit": ind.unit_ru or ind.unit,
             "unit_suffix": unit_suffix(ind.unit_ru or ind.unit),
             "category_ru": ind.category_ru,
+            "frequency": primary_freq,
             "frequencies": freqs_sorted,
             "last_value": round(last[1], 4) if last else None,
             "last_date": _fmt_date(last[0]) if last else None,
@@ -850,6 +1053,8 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
         for indicator in all_inds
         if normalize_frequency(indicator.frequency)
     })
+    area = area_payload(country.code)
+    population = await _population_payload(db, country)
     payload = {
         "country": _country_payload(country, sum(c["count"] for c in categories)),
         "categories": categories,
@@ -860,6 +1065,10 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
             "frequencies": official_frequencies,
         },
     }
+    if area is not None:
+        payload["area"] = area
+    if population is not None:
+        payload["population"] = population
     await cache_set(cache_key, payload, ttl=_CACHE_TTL)
     return payload
 
@@ -984,8 +1193,8 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
         "indicator": {
             "code": ind.code,
             "provider": ind.provider,
-            "name": display_name(ind.name_ru),
-            "name_ru": display_name(ind.name_ru),
+            "name": display_name(ind.name_ru, ind.code),
+            "name_ru": display_name(ind.name_ru, ind.code),
             "name_en": ind.name_en,
             "unit": unit,
             "unit_ru": unit,
@@ -1253,8 +1462,8 @@ async def search_world(
     results = [
         {
             "code": ind.code,
-            "name": display_name(ind.name_ru),
-            "name_ru": display_name(ind.name_ru),
+            "name": display_name(ind.name_ru, ind.code),
+            "name_ru": display_name(ind.name_ru, ind.code),
             "country_slug": c.slug,
             "country_name": c.name_ru,
             "category": ind.category_ru,

@@ -214,7 +214,11 @@ def world_client(auth_env):
                 code="FR", slug="france", name_ru="Франция",
                 name_en="France", region_ru="Европа", sort_order=2,
             )
-            db.add_all([de, fr])
+            xx = WorldCountry(
+                code="XX", slug="testland", name_ru="Тестланд",
+                name_en="Testland", region_ru="Тест", sort_order=99,
+            )
+            db.add_all([de, fr, xx])
             await db.flush()
             ind = WorldIndicator(
                 country_id=de.id,
@@ -278,7 +282,47 @@ def world_client(auth_env):
                 points_count=100,
                 is_listed=True,
             )
-            db.add_all([ind, raw, fr_ind])
+            population = WorldIndicator(
+                country_id=de.id,
+                code="de-demo_pjan-total-t",
+                dataset_id="demo_pjan",
+                slice_json={"age": "TOTAL", "sex": "T", "unit": "NR", "freq": "A"},
+                slice_hash="pop-de",
+                name_ru="Численность населения",
+                name_en="Population on 1 January",
+                name_quality="curated",
+                unit="NR",
+                unit_ru="человек",
+                frequency="annual",
+                category_ru="Население",
+                source="Евростат",
+                source_url="https://ec.europa.eu/eurostat/databrowser/view/demo_pjan",
+                description="Численность населения Германии по данным Евростата.",
+                methodology="Источник данных — Евростат. Частота публикации — годовая.",
+                history_start=date(2023, 1, 1),
+                history_end=date(2025, 1, 1),
+                points_count=3,
+                is_listed=False,
+            )
+            xx_ind = WorldIndicator(
+                country_id=xx.id,
+                code="xx-zz_listed_dummy",
+                dataset_id="zz_dummy",
+                slice_json={},
+                slice_hash="xx-dummy",
+                name_ru="Тестовый показатель",
+                name_quality="curated",
+                unit="",
+                unit_ru="",
+                frequency="annual",
+                category_ru="Прочее",
+                source="Евростат",
+                history_start=date(2024, 1, 1),
+                history_end=date(2024, 6, 1),
+                points_count=2,
+                is_listed=True,
+            )
+            db.add_all([ind, raw, fr_ind, population, xx_ind])
             await db.flush()
             for i in range(18):
                 y = 2024 + (i // 12)
@@ -293,6 +337,11 @@ def world_client(auth_env):
                 WorldDataPoint(indicator_id=fr_ind.id, date=date(2025, 1, 1), value=103.0),
                 WorldDataPoint(indicator_id=fr_ind.id, date=date(2025, 6, 1), value=104.0),
                 WorldDataPoint(indicator_id=fr_ind.id, date=date(2026, 6, 1), value=105.0),
+                WorldDataPoint(indicator_id=population.id, date=date(2023, 1, 1), value=83_000_000.0),
+                WorldDataPoint(indicator_id=population.id, date=date(2024, 1, 1), value=83_100_000.0),
+                WorldDataPoint(indicator_id=population.id, date=date(2025, 1, 1), value=83_200_000.0),
+                WorldDataPoint(indicator_id=xx_ind.id, date=date(2024, 1, 1), value=100.0),
+                WorldDataPoint(indicator_id=xx_ind.id, date=date(2024, 6, 1), value=101.0),
             ])
             forecast = WorldForecast(
                 world_indicator_id=ind.id,
@@ -353,6 +402,123 @@ def test_world_country_detail_hides_raw(world_client):
     assert "de-zz_raw" not in codes
     assert body["overview"][0]["concept_slug"] == "hicp-index"
     assert body["coverage"]["history_start"] == "2024-01-01"
+
+
+def test_world_country_detail_area_and_population(world_client):
+    de = world_client.get("/api/v1/world/countries/germany").json()
+    assert de["area"]["value"] == 357569
+    assert de["area"]["unit"] == "км²"
+    assert de["area"]["year"] == 2026
+    assert de["area"]["source"] == "Евростат"
+    assert "reg_area3" in de["area"]["source_url"]
+    assert de["population"]["value"] == 83_200_000
+    assert de["population"]["unit"] == "человек"
+    assert de["population"]["date"] == "2025-01-01"
+    assert de["population"]["year"] == 2025
+    assert de["population"]["source"] == "Евростат"
+    assert "demo_pjan" in de["population"]["source_url"]
+
+    bare = world_client.get("/api/v1/world/countries/testland").json()
+    assert "area" not in bare
+    assert "population" not in bare
+
+
+def test_world_country_area_registry_lookup():
+    from app.data.world_country_area import area_for_country, area_payload
+
+    assert area_for_country("de").km2 == 357569
+    assert area_payload("ZZ") is None
+    assert area_payload(None) is None
+
+
+def test_world_country_population_registry_lookup():
+    from app.data.world_country_population import (
+        WORLD_COUNTRY_POPULATION,
+        population_for_country,
+        population_payload,
+    )
+
+    assert population_for_country("jp").people == 123_049_524
+    assert population_payload("US")["year"] == 2025
+    assert population_payload("ZZ") is None
+    assert "JP" in WORLD_COUNTRY_POPULATION
+    assert "US" in WORLD_COUNTRY_POPULATION
+    assert "CN" in WORLD_COUNTRY_POPULATION
+    assert "BR" in WORLD_COUNTRY_POPULATION
+    assert "AU" in WORLD_COUNTRY_POPULATION
+
+
+def test_world_country_population_sources_are_public_ready():
+    import re
+
+    from app.data.world_country_population import WORLD_COUNTRY_POPULATION
+
+    for code, entry in WORLD_COUNTRY_POPULATION.items():
+        assert entry.source_url.startswith("https://"), code
+        latin_words = re.findall(r"\b[A-Za-z]*[a-z]{2,}[A-Za-z]*\b", entry.source)
+        assert not latin_words, f"{code}: непереведённое название — {latin_words}"
+        assert re.search(r"[А-Яа-я]", entry.source), code
+        assert entry.people > 0, code
+
+
+def test_world_public_indicator_titles_strip_latin_jargon():
+    from app.data.world_indicator_titles_ru import (
+        is_public_catalog_name,
+        public_indicator_name,
+    )
+
+    assert public_indicator_name(
+        "Индекс потребительских цен IPCA (к предыдущему месяцу)", "br-cpi-ipca",
+    ) == "Индекс потребительских цен к предыдущему месяцу"
+    assert public_indicator_name("Ставка SHIBOR овернайт", "cn-shibor-on") == (
+        "Межбанковская ставка овернайт"
+    )
+    cleaned = public_indicator_name(
+        "Конечное потребление домохозяйств (COICOP 2018), % ВВП",
+    )
+    assert "COICOP" not in cleaned
+    assert is_public_catalog_name(cleaned)
+    assert not is_public_catalog_name("GDP volume index")
+
+
+def test_world_country_detail_exposes_primary_frequency(world_client):
+    body = world_client.get("/api/v1/world/countries/germany").json()
+    item = body["categories"][0]["indicators"][0]
+    assert item["frequency"] in {"monthly", "quarterly", "annual", "daily", "weekly"}
+    assert isinstance(item["frequencies"], list)
+
+
+def test_world_country_area_sources_are_public_ready():
+    """Подпись источника видит посетитель: по-русски и со ссылкой на ведомство."""
+    import re
+
+    from app.data.world_country_area import WORLD_COUNTRY_AREA
+
+    for code, entry in WORLD_COUNTRY_AREA.items():
+        assert entry.source_url.startswith("https://"), code
+        # Латиница допустима только аббревиатурами ведомств (IBGE, INEGI):
+        # строчные латинские буквы означают непереведённое название.
+        latin_words = re.findall(r"\b[A-Za-z]*[a-z]{2,}[A-Za-z]*\b", entry.source)
+        assert not latin_words, f"{code}: непереведённое название — {latin_words}"
+        assert re.search(r"[А-Яа-я]", entry.source), code
+
+
+def test_world_country_population_is_public_ready():
+    """Цифру населения и подпись источника видит посетитель профиля страны."""
+    import re
+    from datetime import date
+
+    from app.data.world_country_population import WORLD_COUNTRY_POPULATION
+
+    for code, entry in WORLD_COUNTRY_POPULATION.items():
+        assert entry.source_url.startswith("https://"), code
+        latin_words = re.findall(r"\b[A-Za-z]*[a-z]{2,}[A-Za-z]*\b", entry.source)
+        assert not latin_words, f"{code}: непереведённое название — {latin_words}"
+        assert re.search(r"[А-Яа-я]", entry.source), code
+        # Год не из будущего и не из прошлого века: подпись «данные за год»
+        # должна выдерживать проверку читателем.
+        assert 1990 <= entry.as_of_year <= date.today().year, code
+        assert 10_000 < entry.people < 2_000_000_000, code
 
 
 def test_world_indicator_modes_and_data(world_client):
@@ -423,17 +589,22 @@ def test_world_compare_contract_and_snapshot(world_client):
     assert snapshot.status_code == 200
     payload = snapshot.json()
     assert payload["concept"]["slug"] == "hicp-index"
-    assert payload["items"][0]["country_slug"] == "germany"
-    assert payload["items"][0]["value"] == 117.0
-    assert payload["average"] is None  # два ряда не выдаются за устойчивый benchmark
+    assert payload["concept"]["value_mode"] == "yoy"
+    assert payload["concept"]["unit"] == "изменение за год, %"
+    # DE: 2025-06=117 vs 2024-06=105 → +11.43%
+    by_slug = {row["country_slug"]: row for row in payload["items"]}
+    assert by_slug["germany"]["value"] == 11.43
+    assert by_slug["germany"]["date"] == "2025-06-01"
 
     map_series = world_client.get("/api/v1/world/compare/map-series/hicp-index")
     assert map_series.status_code == 200
     map_payload = map_series.json()
-    assert map_payload["years"] == [2024, 2025, 2026]
-    assert map_payload["values_by_year"]["2024"]["DE"]["value"] == 111.0
-    assert map_payload["values_by_year"]["2024"]["FR"]["value"] == 99.0
+    assert map_payload["concept"]["value_mode"] == "yoy"
+    assert map_payload["years"] == [2025, 2026]
+    assert map_payload["values_by_year"]["2025"]["DE"]["value"] == 11.43
     assert map_payload["values_by_year"]["2025"]["DE"]["date"] == "2025-06-01"
+    # FR: 2025-01 YoY (103/99-1)*100 = 4.04; в 2025 нет пары для июня.
+    assert map_payload["values_by_year"]["2025"]["FR"]["value"] == 4.04
 
 
 def test_world_search_and_404(world_client):
