@@ -2,7 +2,7 @@
 
 > Генерируется `scripts/build-indicator-index.py`. НЕ редактировать руками. Полная машинная версия — `docs/indicator-index.json`. Подробности по каждому коду (files/derived_siblings) — в JSON.
 
-**Сгенерировано:** 2026-08-12
+**Сгенерировано:** 2026-08-16
 
 ## Как пользоваться (для агента)
 
@@ -24,13 +24,17 @@
 
 ## Сводка
 
-- Всего кодов: **907**
+- Всего кодов: **892**
 - in_both_viewmode_systems (дубль легаси+generic): **14**
 - shadowed_legacy (мёртвая легаси-ветка): **24**
-- unresolved (нет ui_stack): **0**
+- unresolved (нет ui_stack): **1**
 - derived_not_seeded: **0**
 
-По стекам: `cpi`=32, `generic`=863, `housing`=8, `ppi`=4
+По стекам: `cpi`=32, `generic`=847, `housing`=8, `null`=1, `ppi`=4
+
+### Unresolved (ui_stack=null)
+
+`steel`
 
 ## Все индикаторы
 
@@ -132,15 +136,9 @@
 | `cny-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
 | `cny-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
 | `cny-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
-| `coal` | Товарные рынки | daily | `generic` | — | ✓ | — |
-| `coal-avg-month` | Товарные рынки | monthly | `generic` | — | — | — |
+| `coal` | Товарные рынки | monthly | `generic` | — | ✓ | — |
 | `coal-avg-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
-| `coal-avg-week` | Товарные рынки | weekly | `generic` | — | — | — |
 | `coal-avg-year` | Товарные рынки | annual | `generic` | — | — | — |
-| `coal-eop-month` | Товарные рынки | monthly | `generic` | — | — | — |
-| `coal-eop-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
-| `coal-eop-week` | Товарные рынки | weekly | `generic` | — | — | — |
-| `coal-eop-year` | Товарные рынки | annual | `generic` | — | — | — |
 | `coal-mom` | Товарные рынки | monthly | `generic` | — | — | — |
 | `coal-qoq` | Товарные рынки | quarterly | `generic` | — | — | — |
 | `coal-yoy` | Товарные рынки | monthly | `generic` | — | — | — |
@@ -164,15 +162,9 @@
 | `consumer-credit-yoy` | Финансы | monthly | `generic` | derived_from_source | — | — |
 | `consumer-credit-yoy-quarter` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `consumer-credit-yoy-year` | Финансы | annual | `generic` | derived_from_source | — | — |
-| `copper` | Товарные рынки | daily | `generic` | — | ✓ | — |
-| `copper-avg-month` | Товарные рынки | monthly | `generic` | — | — | — |
+| `copper` | Товарные рынки | monthly | `generic` | — | ✓ | — |
 | `copper-avg-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
-| `copper-avg-week` | Товарные рынки | weekly | `generic` | — | — | — |
 | `copper-avg-year` | Товарные рынки | annual | `generic` | — | — | — |
-| `copper-eop-month` | Товарные рынки | monthly | `generic` | — | — | — |
-| `copper-eop-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
-| `copper-eop-week` | Товарные рынки | weekly | `generic` | — | — | — |
-| `copper-eop-year` | Товарные рынки | annual | `generic` | — | — | — |
 | `copper-mom` | Товарные рынки | monthly | `generic` | — | — | — |
 | `copper-qoq` | Товарные рынки | quarterly | `generic` | — | — | — |
 | `copper-yoy` | Товарные рынки | monthly | `generic` | — | — | — |
@@ -809,15 +801,9 @@
 | `services-imports-sum-year` | Торговля | annual | `generic` | derived_from_source | — | — |
 | `services-imports-yoy` | Торговля | quarterly | `generic` | derived_from_source | — | — |
 | `services-imports-yoy-year` | Торговля | annual | `generic` | derived_from_source | — | — |
-| `silver` | Товарные рынки | daily | `generic` | — | ✓ | — |
-| `silver-avg-month` | Товарные рынки | monthly | `generic` | — | — | — |
+| `silver` | Товарные рынки | monthly | `generic` | — | ✓ | — |
 | `silver-avg-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
-| `silver-avg-week` | Товарные рынки | weekly | `generic` | — | — | — |
 | `silver-avg-year` | Товарные рынки | annual | `generic` | — | — | — |
-| `silver-eop-month` | Товарные рынки | monthly | `generic` | — | — | — |
-| `silver-eop-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
-| `silver-eop-week` | Товарные рынки | weekly | `generic` | — | — | — |
-| `silver-eop-year` | Товарные рынки | annual | `generic` | — | — | — |
 | `silver-mom` | Товарные рынки | monthly | `generic` | — | — | — |
 | `silver-qoq` | Товарные рынки | quarterly | `generic` | — | — | — |
 | `silver-yoy` | Товарные рынки | monthly | `generic` | — | — | — |
@@ -839,34 +825,15 @@
 | `sol-usd-yoy` | Валюты | monthly | `generic` | — | — | — |
 | `sol-usd-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
 | `sol-usd-yoy-year` | Валюты | annual | `generic` | — | — | — |
-| `soybean` | Товарные рынки | daily | `generic` | — | ✓ | — |
-| `soybean-avg-month` | Товарные рынки | monthly | `generic` | — | — | — |
+| `soybean` | Товарные рынки | monthly | `generic` | — | ✓ | — |
 | `soybean-avg-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
-| `soybean-avg-week` | Товарные рынки | weekly | `generic` | — | — | — |
 | `soybean-avg-year` | Товарные рынки | annual | `generic` | — | — | — |
-| `soybean-eop-month` | Товарные рынки | monthly | `generic` | — | — | — |
-| `soybean-eop-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
-| `soybean-eop-week` | Товарные рынки | weekly | `generic` | — | — | — |
-| `soybean-eop-year` | Товарные рынки | annual | `generic` | — | — | — |
 | `soybean-mom` | Товарные рынки | monthly | `generic` | — | — | — |
 | `soybean-qoq` | Товарные рынки | quarterly | `generic` | — | — | — |
 | `soybean-yoy` | Товарные рынки | monthly | `generic` | — | — | — |
 | `soybean-yoy-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
 | `soybean-yoy-year` | Товарные рынки | annual | `generic` | — | — | — |
-| `steel` | Товарные рынки | daily | `generic` | — | ✓ | — |
-| `steel-avg-month` | Товарные рынки | monthly | `generic` | — | — | — |
-| `steel-avg-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
-| `steel-avg-week` | Товарные рынки | weekly | `generic` | — | — | — |
-| `steel-avg-year` | Товарные рынки | annual | `generic` | — | — | — |
-| `steel-eop-month` | Товарные рынки | monthly | `generic` | — | — | — |
-| `steel-eop-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
-| `steel-eop-week` | Товарные рынки | weekly | `generic` | — | — | — |
-| `steel-eop-year` | Товарные рынки | annual | `generic` | — | — | — |
-| `steel-mom` | Товарные рынки | monthly | `generic` | — | — | — |
-| `steel-qoq` | Товарные рынки | quarterly | `generic` | — | — | — |
-| `steel-yoy` | Товарные рынки | monthly | `generic` | — | — | — |
-| `steel-yoy-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
-| `steel-yoy-year` | Товарные рынки | annual | `generic` | — | — | — |
+| `steel` | Товарные рынки | daily | `null` | — | — | no-stack |
 | `tech-innovation-share` | Наука | annual | `generic` | — | ✓ | — |
 | `tech-innovation-share-yoy` | Наука | annual | `generic` | derived_from_source | — | — |
 | `trade-balance` | Торговля | quarterly | `generic` | derived_from_source | ✓ | both, shadowed |
@@ -895,6 +862,20 @@
 | `unemployment-yoy` | Рынок труда | monthly | `generic` | derived_from_source | — | — |
 | `unemployment-yoy-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `unemployment-yoy-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
+| `usd-index` | Индексы | daily | `generic` | — | ✓ | — |
+| `usd-index-avg-month` | Индексы | monthly | `generic` | — | — | — |
+| `usd-index-avg-quarter` | Индексы | quarterly | `generic` | — | — | — |
+| `usd-index-avg-week` | Индексы | weekly | `generic` | — | — | — |
+| `usd-index-avg-year` | Индексы | annual | `generic` | — | — | — |
+| `usd-index-eop-month` | Индексы | monthly | `generic` | — | — | — |
+| `usd-index-eop-quarter` | Индексы | quarterly | `generic` | — | — | — |
+| `usd-index-eop-week` | Индексы | weekly | `generic` | — | — | — |
+| `usd-index-eop-year` | Индексы | annual | `generic` | — | — | — |
+| `usd-index-mom` | Индексы | monthly | `generic` | — | — | — |
+| `usd-index-qoq` | Индексы | quarterly | `generic` | — | — | — |
+| `usd-index-yoy` | Индексы | monthly | `generic` | — | — | — |
+| `usd-index-yoy-quarter` | Индексы | quarterly | `generic` | — | — | — |
+| `usd-index-yoy-year` | Индексы | annual | `generic` | — | — | — |
 | `usd-rub` | Валюты | daily | `generic` | — | ✓ | — |
 | `usd-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
 | `usd-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
@@ -909,6 +890,20 @@
 | `usd-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
 | `usd-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
 | `usd-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
+| `ust-10y` | Индексы | daily | `generic` | — | ✓ | — |
+| `ust-10y-avg-month` | Индексы | monthly | `generic` | — | — | — |
+| `ust-10y-avg-quarter` | Индексы | quarterly | `generic` | — | — | — |
+| `ust-10y-avg-week` | Индексы | weekly | `generic` | — | — | — |
+| `ust-10y-avg-year` | Индексы | annual | `generic` | — | — | — |
+| `ust-10y-eop-month` | Индексы | monthly | `generic` | — | — | — |
+| `ust-10y-eop-quarter` | Индексы | quarterly | `generic` | — | — | — |
+| `ust-10y-eop-week` | Индексы | weekly | `generic` | — | — | — |
+| `ust-10y-eop-year` | Индексы | annual | `generic` | — | — | — |
+| `ust-10y-mom` | Индексы | monthly | `generic` | — | — | — |
+| `ust-10y-qoq` | Индексы | quarterly | `generic` | — | — | — |
+| `ust-10y-yoy` | Индексы | monthly | `generic` | — | — | — |
+| `ust-10y-yoy-quarter` | Индексы | quarterly | `generic` | — | — | — |
+| `ust-10y-yoy-year` | Индексы | annual | `generic` | — | — | — |
 | `wages-index` | Рынок труда | monthly | `generic` | — | — | — |
 | `wages-nominal` | Рынок труда | monthly | `generic` | monthly_auto | ✓ | — |
 | `wages-nominal-annual` | Рынок труда | annual | `generic` | derived_from_source | — | — |
@@ -926,15 +921,9 @@
 | `wages-real-yoy-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `wages-real-yoy-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
 | `wages-yoy` | Рынок труда | monthly | `generic` | derived_from_source | — | — |
-| `wheat` | Товарные рынки | daily | `generic` | — | ✓ | — |
-| `wheat-avg-month` | Товарные рынки | monthly | `generic` | — | — | — |
+| `wheat` | Товарные рынки | monthly | `generic` | — | ✓ | — |
 | `wheat-avg-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
-| `wheat-avg-week` | Товарные рынки | weekly | `generic` | — | — | — |
 | `wheat-avg-year` | Товарные рынки | annual | `generic` | — | — | — |
-| `wheat-eop-month` | Товарные рынки | monthly | `generic` | — | — | — |
-| `wheat-eop-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
-| `wheat-eop-week` | Товарные рынки | weekly | `generic` | — | — | — |
-| `wheat-eop-year` | Товарные рынки | annual | `generic` | — | — | — |
 | `wheat-mom` | Товарные рынки | monthly | `generic` | — | — | — |
 | `wheat-qoq` | Товарные рынки | quarterly | `generic` | — | — | — |
 | `wheat-yoy` | Товарные рынки | monthly | `generic` | — | — | — |
@@ -954,7 +943,7 @@
 - **Тип** (верх, эталон — переключатель ИПЦ): `value` Уровень/значение · `pop` К прошлому периоду · `yoy` К соотв. периоду пред. года · `index` Индекс
 - **Частота** (низ): `day` дн · `week` нед · `month` мес · `quarter` кв · `year` год
 
-Корней-семейств: **112** · с полной матрицей: **100** · с пробелами: **12**. Покрытие: {'bespoke': 7, 'bespoke-data': 4, 'generic': 101}.
+Корней-семейств: **114** · с полной матрицей: **101** · с пробелами: **13**. Покрытие: {'bespoke': 7, 'bespoke-data': 4, 'generic': 102, 'orphan': 1}.
 
 ## Систематические пробелы по типам
 
@@ -966,7 +955,7 @@
 | bespoke/CPI | index | month | 4 | `yoy:quarter`, `yoy:year` |
 | bespoke/HOUSING | index | quarter | 2 | `pop:year` |
 | bespoke/PPI | index | month | 1 | `yoy:quarter`, `yoy:year` |
-| generic/T1 | rate | day | 22 | — |
+| generic/T1 | rate | day | 18 | — |
 | generic/T10 | annual-count | year | 11 | — |
 | generic/T10a | annual-signed | year | 9 | — |
 | generic/T12 | ratio-index | month | 2 | — |
@@ -977,10 +966,11 @@
 | generic/T5 | stock | week | 4 | — |
 | generic/T6 | flow | month | 10 | — |
 | generic/T7 | signed-flow | month | 1 | — |
-| generic/T8 | avg-level | month | 3 | — |
+| generic/T8 | avg-level | month | 8 | — |
 | generic/T8 | index | month | 1 | `pop:year` |
 | generic/T9 | gdp | quarter | 10 | — |
 | generic/T9s | signed-flow | quarter | 3 | — |
+| orphan/- | avg-level | day | 1 | `pop:month`, `pop:quarter`, `value:month`, `value:quarter`, `value:week`, `value:year`, `yoy:month`, `yoy:quarter`, `yoy:year` |
 
 ## Корни с пробелами матрицы
 
@@ -990,6 +980,7 @@
 | `inflation-weekly-food` | bespoke-data/CPI-weekly | index | week | 0.0 | `value:week`, `pop:month`, `pop:quarter`, `pop:year`, `yoy:month`, `yoy:quarter`, `yoy:year`, `index:month`, `index:quarter`, `index:year` | partial | yes | curated |
 | `inflation-weekly-nonfood` | bespoke-data/CPI-weekly | index | week | 0.0 | `value:week`, `pop:month`, `pop:quarter`, `pop:year`, `yoy:month`, `yoy:quarter`, `yoy:year`, `index:month`, `index:quarter`, `index:year` | partial | yes | curated |
 | `inflation-weekly-services` | bespoke-data/CPI-weekly | index | week | 0.0 | `value:week`, `pop:month`, `pop:quarter`, `pop:year`, `yoy:month`, `yoy:quarter`, `yoy:year`, `index:month`, `index:quarter`, `index:year` | partial | yes | curated |
+| `steel` | orphan/- | avg-level | day | 0.1 | `value:week`, `value:month`, `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
 | `cpi` | bespoke/CPI | index | month | 0.8 | `yoy:quarter`, `yoy:year` | full | yes | curated |
 | `cpi-food` | bespoke/CPI | index | month | 0.8 | `yoy:quarter`, `yoy:year` | partial | yes | curated |
 | `cpi-nonfood` | bespoke/CPI | index | month | 0.8 | `yoy:quarter`, `yoy:year` | partial | yes | curated |
@@ -1001,7 +992,7 @@
 
 ## Измерения паспорта (агрегат)
 
-- **Без полных текстов** (42): `birth-rate`, `births`, `cpi-food`, `cpi-nonfood`, `cpi-services`, `current-account`, `death-rate`, `deaths`, `deposit-rate`, `deposits-business`, `depreciation-rate`, `doctoral-students`, `exports`, `exports-monthly`, `fdi-net`, `grad-students`, `housing-commissioned`, `imports`, `imports-monthly`, `inflation-weekly`, `inflation-weekly-food`, `inflation-weekly-nonfood`, `inflation-weekly-services`, `innovation-activity`, `pensioners`, `pop-over-working-age`, `pop-under-working-age`, `population-migration`, `population-natural-growth`, `population-total-growth`, `rd-organizations`, `rd-personnel`, `retail-trade`, `services-exports`, `services-exports-monthly`, `services-imports`, `services-imports-monthly`, `small-business-innovation`, `tech-innovation-share`, `trade-balance`, `trade-balance-monthly`, `working-age-population`
-- **Без прогноза** (3): `fuel-ai92`, `fuel-ai95`, `fuel-diesel`
+- **Без полных текстов** (40): `birth-rate`, `cpi-food`, `cpi-nonfood`, `cpi-services`, `current-account`, `death-rate`, `deposit-rate`, `deposits-business`, `depreciation-rate`, `doctoral-students`, `exports`, `exports-monthly`, `fdi-net`, `grad-students`, `housing-commissioned`, `imports`, `imports-monthly`, `inflation-weekly`, `inflation-weekly-food`, `inflation-weekly-nonfood`, `inflation-weekly-services`, `innovation-activity`, `pensioners`, `pop-over-working-age`, `pop-under-working-age`, `population-migration`, `population-natural-growth`, `population-total-growth`, `rd-organizations`, `rd-personnel`, `retail-trade`, `services-exports`, `services-exports-monthly`, `services-imports`, `services-imports-monthly`, `small-business-innovation`, `tech-innovation-share`, `trade-balance`, `trade-balance-monthly`, `working-age-population`
+- **Без прогноза** (9): `coal`, `copper`, `fuel-ai92`, `fuel-ai95`, `fuel-diesel`, `silver`, `soybean`, `steel`, `wheat`
 - **SEO не curated** (9): `deposit-rate-long`, `deposit-rate-medium`, `exports-monthly`, `housing-affordability`, `housing-affordability-primary`, `imports-monthly`, `services-exports-monthly`, `services-imports-monthly`, `trade-balance-monthly`
 

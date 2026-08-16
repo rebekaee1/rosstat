@@ -1,12 +1,13 @@
 # Data sources — точная карта индикатор → файл/endpoint
 
-**World extension last verified:** 2026-08-06 (Eurostat catalogue/dissemination API; multi-provider official-first contract ADR-0012).
+**World extension last verified:** 2026-08-16 (country area registry `world_country_area.py`;
+Eurostat `reg_area3` Total area + national statistical/cadastre sources).
 
-**Last updated:** 2026-07-06 (CTO-аудит, Волна 5: счётчик source-индикаторов актуализирован — 109 (было заявлено 75); добавленные с 2026-05-31 семейства покрыты соответствующими разделами ниже и docstrings парсеров: демография (`rosstat_demo`), наука/инновации (`rosstat_science`), основные фонды (`rosstat_fixed_assets`), ИПП-разделы (`rosstat_ind`), крипта BTC/ETH/SOL (`binance_btcusdt`), биржевые индексы и товарные MOEX (`moex_index`, `moex_brent_daily`), недельные цены топлива (`rosstat_weekly_price`), денежные агрегаты M0/M1/M2 (`cbr_monetary_agg`). Два parser_type зарегистрированы, но в seed не используются (задел): `cbr_dataservice_sum` — суммирование нескольких DataService-элементов по дате, `cbr_monetary_html` — HTML-таблицы денежной статистики ЦБ; не удалять без ревизии прод-БД. Ранее 2026-05-31: T13 — данный файл стал основным местом хранения технических деталей источников — имена файлов, листы, строки/колонки, API-id; публичные `methodology` поля индикаторов в `seed_data.py` не выдают этих внутренностей, см. правило [`.cursor/rules/methodology-language.mdc`](../.cursor/rules/methodology-language.mdc).)
+**Last updated:** 2026-08-16 (демография/наука: discovery со страниц разделов + EDN_12 для лагов demo21; сырьё: Yahoo desk снят с витрины — `natural-gas` → EIA `DHHNGSP` через `fred_csv`; `coal`/`copper`/`silver`/`wheat`/`soybean` → World Bank Pink Sheet monthly `world_bank_pink_sheet`; `steel` деактивирован / unlisted. Ранее тем же днём: FRED CSV `fred_csv` для `usd-index`/`ust-10y`/`brent`; `gold-usd` не заведён — нет свободного дневного ряда). Ранее 2026-07-06 (CTO-аудит, Волна 5: счётчик source-индикаторов актуализирован — 109 (было заявлено 75); добавленные с 2026-05-31 семейства покрыты соответствующими разделами ниже и docstrings парсеров: демография (`rosstat_demo`), наука/инновации (`rosstat_science`), основные фонды (`rosstat_fixed_assets`), ИПП-разделы (`rosstat_ind`), крипта BTC/ETH/SOL (`binance_btcusdt`), биржевые индексы и товарные MOEX (`moex_index`, `moex_brent_daily`), недельные цены топлива (`rosstat_weekly_price`), денежные агрегаты M0/M1/M2 (`cbr_monetary_agg`). Два parser_type зарегистрированы, но в seed не используются (задел): `cbr_dataservice_sum` — суммирование нескольких DataService-элементов по дате, `cbr_monetary_html` — HTML-таблицы денежной статистики ЦБ; не удалять без ревизии прод-БД. Ранее 2026-05-31: T13 — данный файл стал основным местом хранения технических деталей источников — имена файлов, листы, строки/колонки, API-id; публичные `methodology` поля индикаторов в `seed_data.py` не выдают этих внутренностей, см. правило [`.cursor/rules/methodology-language.mdc`](../.cursor/rules/methodology-language.mdc).)
 **Part of:** [`AGENTS.md`](../AGENTS.md), [`CONTEXT.md`](../CONTEXT.md).
 **Related:** docstrings парсеров `backend/app/services/{cbr_*,minfin_*,rosstat_*}_parser.py` (per-parser internals: traps, схема `model_config_json`, особенности формата), [`docs/adr/0004`](adr/0004-rosstat-russian-canonical-sdds-deprecated.md) (Rosstat русский canonical).
 
-> **Single source of truth** для актуальных URL/файлов, откуда тянется каждый из 109 source-индикаторов. Если меняется источник в коде парсера или `seed_data.py` — **обязательно** актуализировать этот файл (см. [`AGENTS.md::Шаг 4`](../AGENTS.md#шаг-4--протокол-актуализации-документации-критично)).
+> **Single source of truth** для актуальных URL/файлов, откуда тянется каждый из 111 source-индикаторов. Если меняется источник в коде парсера или `seed_data.py` — **обязательно** актуализировать этот файл (см. [`AGENTS.md::Шаг 4`](../AGENTS.md#шаг-4--протокол-актуализации-документации-критично)).
 >
 > Derived-индикаторы (28) не входят — они не имеют внешнего источника, считаются из source через `DERIVED_SPECS`.
 
@@ -94,20 +95,36 @@ Endpoint: `cbr.ru/scripts/XML_dynamic.asp?date_req1={from}&date_req2={to}&VAL_NM
 | `eth-usd` | то же, `symbol=ETHUSDT`. | 2016-05-18 → (Coinbase ETH-USD до 2017-08-16, дальше Binance) |
 | `sol-usd` | то же, `symbol=SOLUSDT`. | 2020-08-11 → (Binance; монета запущена 2020-03, раньше первоисточника нет) |
 
-## Yahoo chart — commodities daily (BrentDailyFredParser, `parser_type=moex_brent_daily`)
+## World Bank Pink Sheet monthly (`WorldBankPinkSheetParser`, `parser_type=world_bank_pink_sheet`)
 
-Один парсер на весь товарный desk: тикер config-driven через `model_config_json.yahoo_symbol` (дефолт `BZ=F`), старт бэкфилла — `backfill_from` (дефолт `2015-01-01`). Прогноз не строится, категория «Товарные рынки». Endpoint: `query1.finance.yahoo.com/v8/finance/chart/<symbol>?interval=1d`, поле `close`. С 2026-08-05 парсер self-healing: при `earliest > backfill_from` дозапрашивает окно `[backfill_from, earliest)`.
+Официальная месячная сводка цен на сырьё Всемирного банка (Commodity Markets / Pink Sheet). URL xlsx **меняется каждый месяц** — парсер открывает `worldbank.org/en/research/commodity-markets` и ищет ссылку `CMO-Historical-Data-Monthly.xlsx`. Лист `Monthly Prices`: строка имён, строка единиц, строки `YYYYMmm`. Колонка — `model_config_json.pink_sheet_column`. `replace_series=True` (полный снимок, срезает хвост старого Yahoo daily). Лицензия: CC-BY 4.0 Всемирного банка (attribution); публичное поле `source` = «Всемирный банк». Прогноз не строится; семья view-mode — T8 (месячный уровень).
 
-| Индикатор | yahoo_symbol | Заметки |
-|-----------|--------------|---------|
-| `brent` | `BZ=F` | Brent front-month (ICE). История с 2007-07-30 (пол Yahoo BZ=F). Live-тикер — MOEX FORTS `BR-*` через `ticker_sources/moex_iss.py`. |
-| `copper` | `HG=F` | COMEX, USD/lb. |
-| `silver` | `SI=F` | COMEX, USD/oz. |
-| `natural-gas` | `NG=F` | NYMEX Henry Hub, USD/MMBtu. |
-| `wheat` | `ZW=F` | CBOT, US¢/bushel. |
-| `soybean` | `ZS=F` | CBOT, US¢/bushel. |
-| `coal` | `MTF=F` | ICE Rotterdam, USD/t. **Источник стоит ≈ с 2025-12-26** (контракт на Yahoo перестал обновляться); фронт-месяц-замены на Yahoo нет — это лимит источника, история до конца 2025 полная (~2721 точки). |
-| `steel` | `HRC=F` | CME US Midwest HRC, USD/short ton. |
+| Индикатор | pink_sheet_column | Единица | Заметки |
+|-----------|-------------------|---------|---------|
+| `coal` | `Coal, Australian` | USD/т | Бенчмарк Ньюкасл; с 1970M01. Ранее Yahoo ICE Rotterdam `MTF=F` (мёртв с 2025-12-26). |
+| `copper` | `Copper` | USD/т | Было USD/фунт daily Yahoo `HG=F`. |
+| `silver` | `Silver` | USD/унция | Было daily Yahoo `SI=F`. |
+| `wheat` | `Wheat, US HRW` | USD/т | Было US¢/бушель Yahoo `ZW=F`. |
+| `soybean` | `Soybeans` | USD/т | Было US¢/бушель Yahoo `ZS=F`. |
+
+**Снято с витрины:** `steel` (`is_active=False`, в `INDICATOR_HIDDEN_FROM_LISTING`) — нет свободного официального ряда HRC: CME/LME требуют коммерческой лицензии на историю; в Pink Sheet колонки HRC нет; индекс BLS PPI — не цена в USD/т.
+
+**Legacy:** `parser_type=moex_brent_daily` (Yahoo chart) оставлен в реестре для тестов и неактивного `steel`; новые listed-ряды на Yahoo не заводить.
+
+## FRED graph CSV (`FredCsvParser`, `parser_type=fred_csv`)
+
+Публичный CSV без API-ключа: `fred.stlouisfed.org/graph/fredgraph.csv?id={fred_series_id}`. Заголовок `observation_date` (алиас `DATE`); пропуски — `.` (строки пропускаются). `backfill_from` обрезает более ранние точки после parse. Полная история приходит одним ответом; upsert идемпотентен (ADR-0002). `replace_series=True`. Канал доставки — FRED; публичное поле `source` называет **первоисточник** (ФРС / Минфин США / EIA), не St. Louis Fed.
+
+Правовое основание для рядов ниже: данные ведомств США в public domain (EIA Copyrights and Reuse; Fed/Treasury H.10/H.15). FRED — redistributor. Ряды IMF Primary Commodity Prices на FRED (`PCOPPUSDM` и др.) **не используем** для витрины: copyright IMF, нужна отдельная лицензия на commercial redistribution — вместо них Pink Sheet напрямую от Всемирного банка.
+
+| Индикатор | fred_series_id | Первоисточник (публичное поле) | Заметки |
+|-----------|----------------|--------------------------------|---------|
+| `usd-index` | `DTWEXBGS` | ФРС, релиз H.10 | Nominal Broad U.S. Dollar Index, база янв. 2006 = 100; с 2006-01-02. |
+| `ust-10y` | `DGS10` | Минфин США | Доходность 10-летних Treasury; с 1962-01-02. |
+| `brent` | `DCOILBRENTEU` | EIA | Europe Brent Spot Price FOB, USD/bbl; с 1987-05-20. Ранее Yahoo `BZ=F`. |
+| `natural-gas` | `DHHNGSP` | EIA | Henry Hub Natural Gas Spot Price, USD/млн БТЕ; с 1997-01-07. Ранее Yahoo `NG=F`. |
+
+Официального свободного дневного ряда цены золота (USD/унция) на FRED/ЕЦБ/LBMA без лицензии нет: `gold-usd` не заведён. Месячный ряд золота есть в Pink Sheet (`Gold`, $/troy oz) — отдельная задача, в оперативный срез главной не ставится.
 
 ## MOEX ISS — биржевые индексы daily (MoexIndexParser, `parser_type=moex_index_daily`)
 
@@ -294,20 +311,31 @@ Chain MoM% из двух XLSX (база 2018 + база 2023).
 
 | Индикатор | File template |
 |-----------|---------------|
-| `depreciation-rate` | `mediabank/St_izn_of_{YYYY}.xlsx` (probe last N years for latest) |
+| `depreciation-rate` | discovery: `folder/11186` → `St_izn_of_{YYYY}.xlsx` (fallback year-probe) |
 
 ## Росстат — демография (RosstatDemoParser)
 
+Каталог раздела: `https://rosstat.gov.ru/folder/12781`. Имена файлов резолвятся
+со страницы (regex), затем fallback year-probe — Росстат периодически меняет
+точное имя (`demo21_2023.xlsx` и т.п.).
+
 | Индикатор | demo_file | File |
 |-----------|-----------|------|
-| `births` | `demo21` | `mediabank/demo21_{YYYY}.xlsx` |
-| `deaths` | `demo21` | `mediabank/demo21_{YYYY}.xlsx` |
-| `birth-rate` | `demo21` | `mediabank/demo21_{YYYY}.xlsx` |
-| `death-rate` | `demo21` | `mediabank/demo21_{YYYY}.xlsx` |
+| `births` | `demo21` | `mediabank/demo21_{YYYY}.xlsx` + при лаге годовой таблицы — полный год из `Edn_12-{YYYY}_t1.xlsx` (оперативные итоги ЕДН) |
+| `deaths` | `demo21` | то же |
+| `birth-rate` | `demo21` | то же |
+| `death-rate` | `demo21` | то же |
 | `working-age-population` | `demo14` | `mediabank/demo14.xlsx` |
 | `pop-under-working-age` | `demo14` | `mediabank/demo14.xlsx` |
 | `pop-over-working-age` | `demo14` | `mediabank/demo14.xlsx` |
 | `pensioners` | `pensioners` | `mediabank/Sp_2.1_{YYYY}.xlsx` |
+
+> **demo21:** в файле три блока (всё / город / село) с повторяющимися годами —
+> парсер берёт первое вхождение каждого года (= «Все население»). Годовая
+> таблица на август 2026 опубликована как `demo21_2023.xlsx` (ряд до 2023);
+> календарный 2024 подтягивается из оперативного ЕДН за декабрь, пока Росстат
+> не выложит `demo21_2024.xlsx`. Возрастные группы `demo14` — последний год
+> источника 2023 (естественный лаг публикации).
 
 ## Росстат — население (RosstatPopulationParser)
 
@@ -316,21 +344,25 @@ Multi-source merge: история (1897+) + components (1990+) + latest акт�
 | Индикатор | Files |
 |-----------|-------|
 | `population` | `mediabank/Popul_1897+.xlsx` + `mediabank/Popul components_1990+.xlsx` + `mediabank/OkPopul_Comp{YYYY}_Site.xlsx` |
-| `population-total-growth` | `mediabank/Popul components_1990+.xlsx` |
+| `population-total-growth` | `mediabank/Popul components_1990+.xlsx` (обновлено 25.04.2025, последний год ряда — 2024) |
 | `population-natural-growth` | `mediabank/Popul components_1990+.xlsx` |
 | `population-migration` | `mediabank/Popul components_1990+.xlsx` |
 
 ## Росстат — наука и инновации (RosstatScienceParser)
 
+Каталоги: `https://rosstat.gov.ru/statistics/science`, кадры ВО —
+`https://rosstat.gov.ru/statistics/education`. Discovery по regex со страницы
+раздела (устойчиво к `Kadry_VO`↔`Kadry-VO`, `innov-mp_1`↔`Innov_mp_1`).
+
 | Индикатор | File | Sheet/Row |
 |-----------|------|-----------|
-| `grad-students` | `mediabank/Kadry_VO.xls` | sheet 1 |
-| `doctoral-students` | `mediabank/Kadry_VO.xls` | sheet 4 |
+| `grad-students` | `mediabank/Kadry-VO.xls` (fallback `Kadry_VO.xls`) | sheet 1 |
+| `doctoral-students` | то же | sheet 4 |
 | `rd-organizations` | `mediabank/Nauka_1.xls` | sheet 1, "всего" row |
 | `rd-personnel` | `mediabank/nauka_2.xls` | sheet 1, "всего" row |
 | `innovation-activity` | `mediabank/innov_1_{YYYY}.xls` | sheet 1, RF row; `min_year=2018` |
 | `tech-innovation-share` | `mediabank/innov_2_{YYYY}.xls` | sheet 1, RF row; `min_year=2018` |
-| `small-business-innovation` | `mediabank/innov-mp_1.xls` | sheet 5, RF row |
+| `small-business-innovation` | `mediabank/Innov_mp_1.xls` (fallback `innov-mp_1.xls`) | sheet 5, RF row |
 
 > **Методологический разрыв (Осло 3→4, приказ Росстата № 788).** С перерасчёта
 > за 2017 показатели инноваций считаются по 4-й редакции Руководства Осло и
@@ -358,6 +390,20 @@ Multi-source merge: история (1897+) + components (1990+) + latest акт�
 dimensions, единицу и частоту. `world_dataset_state` хранит версии источника по
 паре `provider × dataset_id`. Parser internals Eurostat — docstrings
 `app/services/eurostat_parser.py`, обновление — `world_eurostat_ingest.py`.
+
+**Площадь территории (карточка страны):** курируемый справочник
+`backend/app/data/world_country_area.py` — не ETL и не таблица БД. Для стран
+ЕС/ЕАСТ/кандидатов с покрытием Eurostat — dataset `reg_area3`, мера Total area
+(`landuse=TOTAL`, км²), ссылка на databrowser. Для остальных — национальное
+статистическое ведомство или картография/кадастр (SORS, BHAS, BNS Moldova,
+Geostat, US Census Bureau, NRCan Atlas, GSI/Statistics Bureau Japan, NBS China,
+India.gov/Survey of India, IBGE, INEGI «Mexico at a glance» (замер территории
+1998, публикация 2014), Geoscience Australia). Публичная подпись `source` —
+по-русски, латиница допускается только аббревиатурой ведомства; guard —
+`test_world_country_area_sources_are_public_ready`. Китай — единственное
+округление: ведомство публикует «около 9,6 млн км²». Население на карточке —
+последнее значение курируемого concept `population` из `world_data_points`
+(источник и URL берутся с `WorldIndicator`).
 
 **Инвариант источника:** национальная статистика берётся прежде всего из
 официального национального ведомства, центрального банка, таможни или

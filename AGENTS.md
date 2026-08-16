@@ -227,7 +227,7 @@
  - `0010-analytics-contour-identity-goals-marts-olap.md` — аналитический контур поверх сырья: идентичность (visitor_id + identity_links + мост `_ym_uid`), гео по IP своими силами, серверная сессионизация (правило 30 мин), таксономия целей macro/micro/engagement/technical (`goal_taxonomy.py`), rollup-таблицы, единый слой витрин `analytics_marts` (BI + Пульс + бот читают одни функции), BI 10 разделов с деревом метрик, OLAP-копия ClickHouse (вторична, деградация без влияния на сайт), realtime-алерты аномалий.
  - `0011-world-eurostat-data-plane.md` — мировой Eurostat как отдельный TOC-driven data plane: shadow/provenance, curated concepts и fail-closed агрегации частот.
  - `0012-world-multi-provider-official-first-forecasts.md` — multi-provider world: только официальные первоисточники, provider-aware identity, единый adapter contract и quality-gated M/Q прогнозы.
- - `0011-world-eurostat-data-plane.md` — отдельный TOC-driven контур Eurostat: shadow/provenance, изоляция от российского ETL и fail-closed synthetic частоты.
+ - `0013-country-first-url-architecture.md` — страна = первый сегмент URL; регионы внутри `/russia`; path-cut на `.com`, затем path-identical переезд на `.ru` (Proposed; карта — `docs/backlog.md`).
 
 После этих файлов агент способен ответить на ~90% вопросов и делать осмысленные правки.
 
