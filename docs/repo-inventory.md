@@ -2,9 +2,9 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Сгенерировано:** 2026-08-12
+**Сгенерировано:** 2026-08-16
 
-**Файлов:** 707  ·  **Строк:** 181 007  ·  **Токенов (≈):** 1 861 623
+**Файлов:** 707  ·  **Строк:** 181 010  ·  **Токенов (≈):** 1 861 666
 
 ## По верхним папкам
 
@@ -15,7 +15,7 @@
 | `backend` | 374 | 104 043 | 1 016 125 |
 | `clickhouse` | 2 | 36 | 445 |
 | `docs` | 36 | 10 362 | 179 061 |
-| `frontend` | 237 | 52 448 | 497 945 |
+| `frontend` | 237 | 52 451 | 497 988 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 46 | 12 025 | 121 018 |
 
@@ -33,7 +33,7 @@
 | `backend/app/data/eurostat_titles_curated.json` | 1 451 | 31 070 |
 | `CONTEXT.md` | 618 | 21 760 |
 | `scripts/metrika_daily_report.py` | 1 915 | 19 522 |
-| `frontend/src/pages/ComparePage.jsx` | 1 620 | 17 299 |
+| `frontend/src/pages/ComparePage.jsx` | 1 620 | 17 292 |
 | `frontend/src/lib/regionsMap.json` | 1 | 16 837 |
 | `backend/app/models.py` | 1 268 | 16 335 |
 | `backend/app/data/eurostat_titles_ru.py` | 1 728 | 16 036 |
@@ -57,7 +57,7 @@
 | `backend/app/services/calendar_sources/official_calendar.py` | 767 | 8 453 |
 | `frontend/src/pages/IndicatorDetail.jsx` | 803 | 8 410 |
 | `scripts/audit-seo-title-dupes.py` | 909 | 8 178 |
-| `frontend/src/components/IndicatorChart.jsx` | 823 | 7 980 |
+| `frontend/src/components/IndicatorChart.jsx` | 826 | 8 030 |
 | `backend/app/services/eurostat_parser.py` | 838 | 7 832 |
 | `docs/research/_fpsr_raw/agent04.json` | 630 | 7 617 |
 | `docs/indicator-family-playbook.md` | 621 | 7 578 |
