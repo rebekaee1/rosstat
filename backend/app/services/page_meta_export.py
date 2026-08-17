@@ -19,6 +19,7 @@ from app.data.i18n.seo_en import (
     WORLD_HOME_DESC_EN,
     WORLD_HOME_H1_EN,
     WORLD_HOME_TITLE_EN,
+    WORLD_TEMPLATES_EN,
 )
 from app.services.seo_content import CATEGORY_META, PAGE_META
 from app.services.seo_world import (
@@ -90,6 +91,12 @@ def build_page_meta_blob() -> dict[str, Any]:
                 "description": WORLD_HOME_DESC_EN,
                 "h1": WORLD_HOME_H1_EN,
             },
+            # Placeholders: {country}, {n_phrase}, {source_phrase} — см. WORLD_TEMPLATES_EN.
+            "countryTitleTemplate": WORLD_TEMPLATES_EN["country_title"],
+            "countryDescEurostatTemplate": WORLD_TEMPLATES_EN["country_desc_eurostat"],
+            "countryDescNationalTemplate": WORLD_TEMPLATES_EN["country_desc_national"],
+            "nIndicatorsOne": WORLD_TEMPLATES_EN["n_indicators_one"],
+            "nIndicatorsMany": WORLD_TEMPLATES_EN["n_indicators_many"],
         },
     }
     return blob

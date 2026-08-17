@@ -204,7 +204,10 @@ def _display_name(ind: WorldIndicator) -> str:
     from app.services.locale import get_locale
 
     if get_locale() == "en" and (ind.name_en or "").strip():
-        return strip_world_frequency_suffix(ind.name_en) or ind.name_en
+        from app.data.eurostat_dim_labels_en import append_en_slice_to_title
+
+        base = strip_world_frequency_suffix(ind.name_en) or ind.name_en
+        return append_en_slice_to_title(base, ind.slice_json)
     return strip_world_frequency_suffix(ind.name_ru) or ind.name_ru
 
 
@@ -324,9 +327,15 @@ def _unit_sfx(unit: str) -> str:
     """Единица справа от числа: у безразмерных величин — ничего (не «12,4 индекс»).
 
     Возвращает plain text — экранировать на месте вставки в разметку.
+    На EN — через ``localize_unit`` (п.п. → pp, пунктов → points).
     """
+    from app.services.display import localize_unit
+
     sfx = unit_suffix(unit)
-    return f" {sfx}" if sfx else ""
+    if not sfx:
+        return ""
+    sfx = localize_unit(sfx) or sfx
+    return f" {sfx}"
 
 
 # Публичные имена национальных источников (provider → русский).
@@ -355,30 +364,40 @@ _SOURCE_BY_PROVIDER: dict[str, str] = {
 
 
 def _source_label(raw: str | None, provider: str | None = None) -> str:
-    """Публичное имя источника без латиницы/жаргона.
+    """Публичное имя источника (RU canon; EN via glossary).
 
-    Eurostat → «Евростат». Национальный provider → кириллическое имя ведомства.
+    Eurostat → «Евростат» / Eurostat. Национальный provider → имя ведомства.
     Иначе — кириллический ``source`` из БД.
     """
+    from app.services.seo_i18n import translate_source
+
     prov = (provider or "").strip().lower()
     if prov:
         mapped = _SOURCE_BY_PROVIDER.get(prov)
         if mapped:
-            return mapped
+            return translate_source(mapped) or mapped
     if not raw:
-        return _SOURCE_PUBLIC
+        return translate_source(_SOURCE_PUBLIC) or _SOURCE_PUBLIC
     low = raw.strip().lower()
     if low in ("eurostat", "евростат"):
-        return _SOURCE_PUBLIC
+        return translate_source(_SOURCE_PUBLIC) or _SOURCE_PUBLIC
     # Уже русское публичное имя (национальный passport пишет кириллицу).
     if any("\u0400" <= ch <= "\u04FF" for ch in raw):
+        text = raw.strip()
+        return translate_source(text) or text
+    # Латиница без известного provider — не светим сырой жаргон на RU;
+    # на EN оставляем, если уже латиница (Eurostat и т.п.).
+    from app.services.locale import get_locale
+
+    if get_locale() == "en" and raw.strip():
         return raw.strip()
-    # Латиница без известного provider — не светим наружу.
-    return _SOURCE_PUBLIC
+    return translate_source(_SOURCE_PUBLIC) or _SOURCE_PUBLIC
 
 
-def _join_sources_ru(labels: list[str]) -> str:
-    """«A» / «A и B» / «A, B и C»."""
+def _join_sources(labels: list[str]) -> str:
+    """«A» / «A и B» / «A, B и C» (EN: and)."""
+    from app.services.locale import get_locale
+
     uniq: list[str] = []
     seen: set[str] = set()
     for label in labels:
@@ -387,13 +406,15 @@ def _join_sources_ru(labels: list[str]) -> str:
             continue
         seen.add(text)
         uniq.append(text)
+    fallback = _source_label(None, "eurostat")
     if not uniq:
-        return _SOURCE_PUBLIC
+        return fallback
     if len(uniq) == 1:
         return uniq[0]
+    conj = " and " if get_locale() == "en" else " и "
     if len(uniq) == 2:
-        return f"{uniq[0]} и {uniq[1]}"
-    return f"{', '.join(uniq[:-1])} и {uniq[-1]}"
+        return f"{uniq[0]}{conj}{uniq[1]}"
+    return f"{', '.join(uniq[:-1])}{conj}{uniq[-1]}"
 
 
 def _country_source_phrase(inds: list[WorldIndicator]) -> tuple[str, bool]:
@@ -406,7 +427,7 @@ def _country_source_phrase(inds: list[WorldIndicator]) -> tuple[str, bool]:
         (getattr(ind, "provider", None) or "").strip().lower() not in ("", "eurostat")
         for ind in inds
     )
-    return _join_sources_ru(labels), has_national
+    return _join_sources(labels), has_national
 
 
 def world_rating_default_sort(concept_slug: str) -> str:
@@ -625,7 +646,7 @@ async def build_world_rating_payload(
             "region": world_region_display(ru["region_ru"], locale=loc),
         })
     russia_in_total = 1 if russia_meta is not None else 0
-    source_labels = _join_sources_ru([item["source"] for item in active_items])
+    source_labels = _join_sources([item["source"] for item in active_items])
     last_date = max((item["date"] for item in active_items), default=None)
     page_title = world_rating_title(concept.slug, public_name, active_year)
 
@@ -1254,11 +1275,13 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
             f"{escape(_display_name(ind))}</a></li>"
             for ind in items[:40]
         )
-        more = (
-            f"<p>Всего в разделе — {len(items)} показателей.</p>"
-            if len(items) > 40
-            else ""
-        )
+        more = ""
+        if len(items) > 40:
+            more_tpl = _wt_early("country_section_total")
+            if more_tpl:
+                more = f"<p>{escape(more_tpl.format(n=len(items)))}</p>"
+            else:
+                more = f"<p>Всего в разделе — {len(items)} показателей.</p>"
         sections.append(
             f'<section class="seo-section"><h2>{escape(cat_label)}</h2>'
             f"<ul>{links}</ul>{more}</section>"
@@ -1402,11 +1425,21 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
                 f"источника; дата последнего значения указана у каждого показателя."
             )
         )
+    fig_tpl = world_template("country_figcaption")
+    if fig_tpl:
+        figcaption = fig_tpl.format(
+            country=escape(country_label),
+            source_phrase=escape(source_phrase),
+        )
+    else:
+        figcaption = (
+            f"Ключевые показатели экономики {escape(gen)}. "
+            f"Источник: {escape(source_phrase)}. forecasteconomy.com"
+        )
     figure_html = (
         f'<figure class="seo-chart"><img src="{escape(og_path)}" '
         f'alt="{escape(figure_alt)}" width="1200" height="630" loading="eager">'
-        f"<figcaption>Ключевые показатели экономики {escape(gen)}. "
-        f"Источник: {escape(source_phrase)}. forecasteconomy.com</figcaption></figure>"
+        f"<figcaption>{figcaption}</figcaption></figure>"
     )
 
     h2_key = world_template("country_h2_key") or "Ключевые показатели"
@@ -1442,7 +1475,11 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
             "url": _absolute(og_path),
             "width": 1200,
             "height": 630,
-            "name": f"Экономика {gen} — сводка показателей",
+            "name": (
+                (world_template("country_image_name") or "").format(country=country_label)
+                if world_template("country_image_name")
+                else f"Экономика {gen} — сводка показателей"
+            ),
             "caption": figure_alt,
             "representativeOfPage": True,
         },

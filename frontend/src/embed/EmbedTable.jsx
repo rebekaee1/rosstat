@@ -1,3 +1,4 @@
+import { useT } from '../i18n';
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useIndicator, useIndicatorData } from '../lib/hooks';
@@ -6,6 +7,7 @@ import { useEmbedParams, useEmbedImpression, useEmbedAutoHeight, THEME_COLORS } 
 import Attribution from './Attribution';
 
 export default function EmbedTable() {
+  const t = useT();
   const { code } = useParams();
   const { theme, limit, showTitle } = useEmbedParams();
   const colors = THEME_COLORS[theme];
@@ -41,28 +43,28 @@ export default function EmbedTable() {
 
       {isLoading ? (
         <div style={{ padding: 24, textAlign: 'center', color: colors.textTertiary, fontSize: 13 }}>
-          Загрузка…
+          {t('embed.loading')}
         </div>
       ) : isError ? (
         <div style={{ padding: 24, textAlign: 'center', color: colors.textTertiary, fontSize: 13 }}>
-          Ошибка загрузки данных
+          {t('embed.loadError')}
         </div>
       ) : rows.length === 0 ? (
         <div style={{ padding: 24, textAlign: 'center', color: colors.textTertiary, fontSize: 13 }}>
-          Нет данных
+          {t('embed.noData')}
         </div>
       ) : (
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
           <thead>
             <tr style={{ borderBottom: `1px solid ${colors.border}` }}>
               <th style={{ padding: '6px 16px', textAlign: 'left', fontWeight: 500, color: colors.textTertiary, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                Дата
+                {t('embed.date')}
               </th>
               <th style={{ padding: '6px 16px', textAlign: 'right', fontWeight: 500, color: colors.textTertiary, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                Значение
+                {t('embed.value')}
               </th>
               <th style={{ padding: '6px 16px', textAlign: 'right', fontWeight: 500, color: colors.textTertiary, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                Изм.
+                {t('embed.change')}
               </th>
             </tr>
           </thead>

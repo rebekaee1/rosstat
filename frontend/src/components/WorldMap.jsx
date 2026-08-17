@@ -22,7 +22,10 @@ import {
 import {
   buildWorldColorModel, WORLD_NO_DATA,
 } from '../lib/worldMapColors';
-import { useT } from '../i18n';
+import { useLocale, useT } from '../i18n';
+import { t as translateStandalone } from '../i18n/messages';
+import { resolveBrowserLocale } from '../i18n/locale';
+import { localizeSource } from '../i18n/viewModeLabels';
 
 const WIDTH = 960;
 const HEIGHT = 480;
@@ -74,15 +77,17 @@ function collectionValue(values, key) {
 
 function formatLegendValue(value) {
   if (value == null || !Number.isFinite(Number(value))) return '—';
+  const locale = resolveBrowserLocale();
   const numeric = Number(value);
   const abs = Math.abs(numeric);
-  const compact = (divisor, suffix) => `${(numeric / divisor).toLocaleString('ru-RU', {
+  const numberLocale = locale === 'en' ? 'en-US' : 'ru-RU';
+  const compact = (divisor, suffix) => `${(numeric / divisor).toLocaleString(numberLocale, {
     maximumFractionDigits: 1,
   })}\u00A0${suffix}`;
-  if (abs >= 1e9) return compact(1e9, 'млрд');
-  if (abs >= 1e6) return compact(1e6, 'млн');
-  if (abs >= 1e4) return compact(1e3, 'тыс');
-  return numeric.toLocaleString('ru-RU', { maximumFractionDigits: abs < 10 ? 1 : 0 });
+  if (abs >= 1e9) return compact(1e9, translateStandalone('map.compact.billion'));
+  if (abs >= 1e6) return compact(1e6, translateStandalone('map.compact.million'));
+  if (abs >= 1e4) return compact(1e3, translateStandalone('map.compact.thousand'));
+  return numeric.toLocaleString(numberLocale, { maximumFractionDigits: abs < 10 ? 1 : 0 });
 }
 
 function legendBinLabel(bin) {
@@ -384,14 +389,14 @@ export default function WorldMap({
         </svg>
 
         <div className="absolute right-3 top-3 flex flex-col gap-1" data-no-export="true">
-          <button type="button" onClick={() => zoomBy(ZOOM_STEP)} disabled={k >= ZOOM_MAX} aria-label="Приблизить карту" className="flex h-9 w-9 items-center justify-center rounded-lg border border-border-subtle bg-white/95 text-text-secondary shadow-sm transition-colors hover:border-border-champagne hover:text-champagne disabled:opacity-35">
+          <button type="button" onClick={() => zoomBy(ZOOM_STEP)} disabled={k >= ZOOM_MAX} aria-label={t('map.zoomIn')} className="flex h-9 w-9 items-center justify-center rounded-lg border border-border-subtle bg-white/95 text-text-secondary shadow-sm transition-colors hover:border-border-champagne hover:text-champagne disabled:opacity-35">
             <Plus size={15} />
           </button>
-          <button type="button" onClick={() => zoomBy(1 / ZOOM_STEP)} disabled={k <= 1} aria-label="Отдалить карту" className="flex h-9 w-9 items-center justify-center rounded-lg border border-border-subtle bg-white/95 text-text-secondary shadow-sm transition-colors hover:border-border-champagne hover:text-champagne disabled:opacity-35">
+          <button type="button" onClick={() => zoomBy(1 / ZOOM_STEP)} disabled={k <= 1} aria-label={t('map.zoomOut')} className="flex h-9 w-9 items-center justify-center rounded-lg border border-border-subtle bg-white/95 text-text-secondary shadow-sm transition-colors hover:border-border-champagne hover:text-champagne disabled:opacity-35">
             <Minus size={15} />
           </button>
           {k > 1 && (
-            <button type="button" onClick={() => setView({ k: 1, tx: 0, ty: 0 })} aria-label="Показать всю карту" className="flex h-9 w-9 items-center justify-center rounded-lg border border-border-subtle bg-white/95 text-text-secondary shadow-sm transition-colors hover:border-border-champagne hover:text-champagne">
+            <button type="button" onClick={() => setView({ k: 1, tx: 0, ty: 0 })} aria-label={t('map.zoomReset')} className="flex h-9 w-9 items-center justify-center rounded-lg border border-border-subtle bg-white/95 text-text-secondary shadow-sm transition-colors hover:border-border-champagne hover:text-champagne">
               <Maximize2 size={14} />
             </button>
           )}
@@ -548,6 +553,7 @@ export function CountrySilhouette({
   population = null,
 }) {
   const t = useT();
+  const { locale } = useLocale();
   const geometry = useCountryOutline(code);
   const hasFacts = area?.value != null || population?.value != null;
   const countryPath = useMemo(() => {
@@ -570,23 +576,48 @@ export function CountrySilhouette({
     })
     .filter(Boolean)
     .join(', ');
+  const areaUnitRaw = (area?.unit || '').trim();
+  const areaUnit = (!areaUnitRaw || areaUnitRaw === 'км²' || areaUnitRaw === 'km²' || areaUnitRaw === 'км2')
+    ? t('world.unit.km2')
+    : areaUnitRaw;
   const areaValue = area?.value != null
-    ? `${formatValue(area.value, Number.isInteger(Number(area.value)) ? 0 : 1)} ${area.unit || t('world.unit.km2')}`
+    ? `${formatValue(area.value, Number.isInteger(Number(area.value)) ? 0 : 1)} ${areaUnit}`
     : '';
   const areaYear = area?.year ? String(area.year) : '';
+  const popUnitRaw = (population?.unit || '').trim();
+  const popUnit = (
+    !popUnitRaw
+    || popUnitRaw === 'человек'
+    || popUnitRaw === 'people'
+    || popUnitRaw === 'persons'
+  )
+    ? t('world.unit.people')
+    : popUnitRaw;
   const populationValue = population?.value != null
-    ? `${formatValue(population.value, 0)} ${population.unit || t('world.unit.people')}`
+    ? `${formatValue(population.value, 0)} ${popUnit}`
     : '';
   const populationYear = population?.year
     || (population?.date ? String(population.date).slice(0, 4) : '');
   const sources = [];
   if (area?.source) {
-    sources.push({ label: area.source, url: area.source_url || '', kind: 'area' });
+    sources.push({
+      label: localizeSource(area.source, locale),
+      url: area.source_url || '',
+      kind: 'area',
+    });
   }
   if (population?.source && population.source !== area?.source) {
-    sources.push({ label: population.source, url: population.source_url || '', kind: 'population' });
+    sources.push({
+      label: localizeSource(population.source, locale),
+      url: population.source_url || '',
+      kind: 'population',
+    });
   } else if (!area?.source && population?.source) {
-    sources.push({ label: population.source, url: population.source_url || '', kind: 'population' });
+    sources.push({
+      label: localizeSource(population.source, locale),
+      url: population.source_url || '',
+      kind: 'population',
+    });
   }
   return (
     <div

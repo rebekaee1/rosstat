@@ -488,6 +488,106 @@ def test_world_country_detail_exposes_primary_frequency(world_client):
     assert isinstance(item["frequencies"], list)
 
 
+def test_world_country_detail_locale_en_uses_name_en(world_client):
+    """EN locale: card titles from name_en / Eurostat original, not RU overlay."""
+    import re
+
+    r = world_client.get(
+        "/api/v1/world/countries/germany",
+        headers={"X-FE-Locale": "en"},
+    )
+    assert r.status_code == 200
+    body = r.json()
+    names = [
+        i["name"]
+        for cat in body["categories"]
+        for i in cat["indicators"]
+    ]
+    assert names
+    for name in names:
+        assert not re.search(r"[А-Яа-яЁё]", name), name
+    hicp = next(
+        i
+        for cat in body["categories"]
+        for i in cat["indicators"]
+        if i["code"] == "de-prc_hicp_midx-cp00-i15"
+    )
+    assert "HICP" in hicp["name"] or "consumer" in hicp["name"].lower()
+    assert "Гармонизированный" not in hicp["name"]
+    # RU path unchanged
+    ru = world_client.get("/api/v1/world/countries/germany").json()
+    ru_hicp = next(
+        i
+        for cat in ru["categories"]
+        for i in cat["indicators"]
+        if i["code"] == "de-prc_hicp_midx-cp00-i15"
+    )
+    assert "Гармонизированный" in ru_hicp["name"]
+
+
+def test_append_en_slice_to_title_nace():
+    from app.data.eurostat_dim_labels_en import append_en_slice_to_title
+
+    out = append_en_slice_to_title(
+        "Production in services index by NACE Rev. 2 activity",
+        {"nace_r2": "I", "indic_bt": "PRD"},
+    )
+    assert out == (
+        "Production in services index: accommodation and food service activities"
+    )
+    assert "NACE" not in out
+    plain = append_en_slice_to_title("Unemployment rate", {"age": "Y15-74"})
+    assert plain == "Unemployment rate"
+
+
+def test_variant_label_locale_en_nace_no_cyrillic():
+    """EN locale: variant pills use Eurostat EN dim labels, not RU overlay."""
+    import re
+
+    from app.services.locale import reset_locale, set_locale
+    from app.services.world_cards import variant_label
+
+    ind = _Ind(
+        code="se-ei_issp_m-prd-j-sca-i21",
+        name_ru="Производство услуг: информация и связь",
+        name_en="Production in services index by NACE Rev. 2 activity - monthly data",
+        unit="I21",
+        unit_ru="индекс (2021 = 100)",
+        provider="eurostat",
+        slice_json={"freq": "M", "unit": "I21", "s_adj": "SCA", "nace_r2": "J", "indic_bt": "PRD"},
+    )
+    token = set_locale("en")
+    try:
+        label = variant_label(ind)
+    finally:
+        reset_locale(token)
+    assert not re.search(r"[А-Яа-яЁё]", label), label
+    assert "information and communication" in label.lower()
+    assert "production" in label.lower()
+
+    token = set_locale("ru")
+    try:
+        ru = variant_label(ind)
+    finally:
+        reset_locale(token)
+    assert "информация" in ru.lower() or "связь" in ru.lower()
+
+
+def test_world_search_locale_en_uses_name_en(world_client):
+    import re
+
+    r = world_client.get(
+        "/api/v1/world/search",
+        params={"q": "HICP", "country": "germany"},
+        headers={"X-FE-Locale": "en"},
+    )
+    assert r.status_code == 200
+    results = r.json()["results"]
+    assert results
+    for row in results:
+        assert not re.search(r"[А-Яа-яЁё]", row["name"]), row["name"]
+
+
 def test_world_country_area_sources_are_public_ready():
     """Подпись источника видит посетитель: по-русски и со ссылкой на ведомство."""
     import re

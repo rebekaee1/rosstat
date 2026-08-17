@@ -1,0 +1,39 @@
+# robots.txt — __PUBLIC_HOST__
+# /assets/ is allowed — crawlers need JS/CSS to render pages.
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /embed/
+Disallow: /__spa-index.html
+Disallow: /login
+Disallow: /register
+Disallow: /account
+
+User-agent: Yandex
+Allow: /
+Disallow: /api/
+Disallow: /embed/
+Disallow: /__spa-index.html
+Disallow: /login
+Disallow: /register
+Disallow: /account
+Host: __PUBLIC_ORIGIN__
+
+User-agent: Googlebot
+Allow: /
+Disallow: /api/
+Disallow: /embed/
+Disallow: /__spa-index.html
+Disallow: /login
+Disallow: /register
+Disallow: /account
+
+# Clean-param — Yandex directive for non-significant GET parameters (duplicate URLs).
+# mode= is NOT listed: each view-mode URL is a canonical page for CPI/housing/etc.
+# Rule length limit is 500 characters; split across lines.
+Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content&utm_referrer
+Clean-param: yclid&gclid&fbclid&etext&ybaip&_openstat&clid&yandex_referrer
+Clean-param: from&ref&ref_src&source&mc_cid&mc_eid&igshid&_ga
+
+Sitemap: __PUBLIC_ORIGIN__/sitemap.xml

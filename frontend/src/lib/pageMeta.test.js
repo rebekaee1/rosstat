@@ -47,6 +47,16 @@ describe('pageMeta single source', () => {
     const worldEn = getWorldHomeSeo('en');
     expect(worldEn.title).toContain('World economy');
     expect(worldEn.title).not.toMatch(/[А-Яа-яЁё]/);
+
+    const russiaEn = getPageSeo('russia', 'en');
+    expect(russiaEn.h1).toBe('Russia');
+    expect(russiaEn.intro).not.toMatch(/[А-Яа-яЁё]/);
+    expect(getPageSeo('russia', 'ru').h1).toBe('Россия');
+
+    const catsEn = getPageSeo('russia-categories', 'en');
+    expect(catsEn.h1).toBe('Russia indicator categories');
+    expect(catsEn.intro).not.toMatch(/[А-Яа-яЁё]/);
+    expect(getPageSeo('russia-categories', 'ru').h1).toContain('Категории');
   });
 
   it('CATEGORIES seo fields match generated CATEGORY_META', () => {
@@ -63,8 +73,29 @@ describe('pageMeta single source', () => {
     expect(worldCountryTitle('germany', 'Германия')).toBe(
       'Экономика Германии: статистика и показатели',
     );
+    expect(worldCountryTitle('germany', 'Германия', 'ru')).toBe(
+      'Экономика Германии: статистика и показатели',
+    );
     expect(worldIndicatorsPhrase(22)).toBe('22 показателя');
     expect(worldCountryDescription('germany', 'Германия', 22)).toContain('Евростата');
+  });
+
+  it('world country EN title for Sweden has no Cyrillic', () => {
+    const title = worldCountryTitle('sweden', 'Sweden', 'en');
+    expect(title).toBe('Economy of Sweden: statistics and indicators');
+    expect(title).not.toMatch(/[А-Яа-яЁё]/);
+    expect(worldCountryTitle('sweden', 'Швеция', 'ru')).toBe(
+      'Экономика Швеции: статистика и показатели',
+    );
+    const desc = worldCountryDescription('sweden', 'Sweden', 22, {
+      locale: 'en',
+      sourcePhrase: 'Eurostat',
+    });
+    expect(desc).toContain('Sweden');
+    expect(desc).toContain('Eurostat');
+    expect(desc).not.toMatch(/[А-Яа-яЁё]/);
+    expect(worldIndicatorsPhrase(1, 'en')).toBe('1 indicator');
+    expect(worldIndicatorsPhrase(22, 'en')).toBe('22 indicators');
   });
 });
 

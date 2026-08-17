@@ -1,7 +1,9 @@
+import { useT } from '../i18n';
 import { ExternalLink } from 'lucide-react';
 import { russiaIndicatorPath } from '../lib/sitePaths';
 
 export default function Attribution({ code, dark = false }) {
+  const t = useT();
   return (
     <a
       href={`https://forecasteconomy.com${code ? russiaIndicatorPath(code) : '/'}`}
@@ -15,7 +17,7 @@ export default function Attribution({ code, dark = false }) {
         lineHeight: 1,
       }}
     >
-      <span>Данные: Forecast Economy</span>
+      <span>{t('embed.attribution')}</span>
       <ExternalLink size={9} strokeWidth={2} />
     </a>
   );

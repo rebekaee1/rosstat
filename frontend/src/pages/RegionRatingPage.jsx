@@ -13,7 +13,7 @@ import {
   regionIndicatorPath,
   regionRatingPath,
 } from '../lib/sitePaths';
-import { useLocale } from '../i18n';
+import { useLocale, useT } from '../i18n';
 
 function ButtonClass(active) {
   return [
@@ -25,7 +25,8 @@ function ButtonClass(active) {
 }
 
 export default function RegionRatingPage() {
-  const { t } = useLocale();
+  const t = useT();
+  const { locale } = useLocale();
   const { code } = useParams();
   const navigate = useNavigate();
   const { data, isLoading, isError, refetch, isFetching } = useRegionsHeatmap(code);
@@ -103,7 +104,7 @@ export default function RegionRatingPage() {
             {' — '}
             {data.year}
             {' '}
-            год
+            {t('common.year').toLowerCase()}
           </p>
           <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary mb-3">
             {data.indicator.name}
@@ -116,17 +117,11 @@ export default function RegionRatingPage() {
             {' '}
             {ranked.length}
             {' '}
-            субъектов Российской Федерации по показателю «
-            {data.indicator.name}
-            » за
-            {' '}
-            {data.year}
-            {' '}
-            год.
+            {t('regions.rating.subjectsOf', { name: data.indicator.name, year: data.year })}
             {' '}
             {bestLabel}
             {' '}
-            у региона
+            {t('regions.rating.atRegion')}
             {' '}
             {top.name}
             {' — '}
@@ -137,13 +132,13 @@ export default function RegionRatingPage() {
 
           <div className="mb-6 flex flex-wrap items-center gap-2">
             <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary mr-1">
-              Сортировка
+              {t('regions.rating.sort')}
             </span>
             <button type="button" className={ButtonClass(sortDirection === 'desc')} onClick={() => setSortOverride('desc')}>
-              По убыванию
+              {t('regions.rating.sortDesc')}
             </button>
             <button type="button" className={ButtonClass(sortDirection === 'asc')} onClick={() => setSortOverride('asc')}>
-              По возрастанию
+              {t('regions.rating.sortAsc')}
             </button>
           </div>
 
@@ -170,7 +165,7 @@ export default function RegionRatingPage() {
               </div>
             </div>
             <div className="bg-surface border border-border-subtle rounded-xl p-3.5">
-              <div className="text-[11px] text-text-tertiary uppercase tracking-wide">Данные за</div>
+              <div className="text-[11px] text-text-tertiary uppercase tracking-wide">{t('regions.rating.dataFor')}</div>
               <div className="mt-1 font-mono font-semibold text-text-primary">
                 {data.year}
                 {' '}
@@ -197,8 +192,8 @@ export default function RegionRatingPage() {
                 <thead className="sticky top-0 bg-obsidian-light/95 backdrop-blur-sm z-10">
                   <tr className="text-left text-[11px] uppercase tracking-wide text-text-tertiary">
                     <th className="px-4 py-2.5 font-medium w-16">{tableCol}</th>
-                    <th className="px-4 py-2.5 font-medium">Регион</th>
-                    <th className="px-4 py-2.5 font-medium text-right">{data.indicator.unit || 'Значение'}</th>
+                    <th className="px-4 py-2.5 font-medium">{t('regions.rating.colRegion')}</th>
+                    <th className="px-4 py-2.5 font-medium text-right">{data.indicator.unit || t('regions.rating.colValue')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -224,7 +219,7 @@ export default function RegionRatingPage() {
           </section>
 
           <section className="bg-surface border border-border-subtle rounded-xl p-5">
-            <h2 className="font-display text-base font-semibold text-text-primary mb-2">Источник данных</h2>
+            <h2 className="font-display text-base font-semibold text-text-primary mb-2">{t('regions.rating.sourceHeading')}</h2>
             <p className="text-sm text-text-secondary">
               Сборник Росстата «Регионы России. Социально-экономические показатели».
               Значения за
@@ -238,7 +233,7 @@ export default function RegionRatingPage() {
       )}
 
       {!isLoading && !isError && data && ranked.length < 10 && (
-        <p className="text-text-secondary">Недостаточно данных для рейтинга по этому показателю.</p>
+        <p className="text-text-secondary">{t('regions.rating.empty')}</p>
       )}
     </div>
   );

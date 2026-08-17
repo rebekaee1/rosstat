@@ -1,25 +1,7 @@
 import { Filter, X } from 'lucide-react';
 import { cn } from '../../lib/format';
 import { FOCUS_RING_SURFACE } from '../../lib/uiTokens';
-
-const SOURCE_OPTIONS = [
-  { value: '', label: 'Все источники' },
-  { value: 'cbr', label: 'ЦБ РФ' },
-  { value: 'rosstat', label: 'Росстат' },
-  { value: 'minfin', label: 'Минфин' },
-];
-
-const IMPORTANCE_OPTIONS = [
-  { value: '', label: 'Любая важность' },
-  { value: '3', label: '●●● Высокая' },
-  { value: '2,3', label: '●●  Средняя+' },
-];
-
-const PERIOD_OPTIONS = [
-  { value: 'week', label: 'Неделя' },
-  { value: 'month', label: 'Месяц' },
-  { value: 'quarter', label: '3 месяца' },
-];
+import { useT } from '../../i18n';
 
 function Pill({ active, onClick, children, className }) {
   return (
@@ -45,7 +27,27 @@ export default function CalendarFilters({
   importance, onImportanceChange,
   period, onPeriodChange,
 }) {
+  const t = useT();
   const hasFilters = source || importance;
+
+  const sourceOptions = [
+    { value: '', label: t('calendar.filter.allSources') },
+    { value: 'cbr', label: t('calendar.filter.cbr') },
+    { value: 'rosstat', label: t('calendar.filter.rosstat') },
+    { value: 'minfin', label: t('calendar.filter.minfin') },
+  ];
+
+  const importanceOptions = [
+    { value: '', label: t('calendar.filter.anyImportance') },
+    { value: '3', label: t('calendar.filter.high') },
+    { value: '2,3', label: t('calendar.filter.mediumPlus') },
+  ];
+
+  const periodOptions = [
+    { value: 'week', label: t('calendar.filter.week') },
+    { value: 'month', label: t('calendar.filter.month') },
+    { value: 'quarter', label: t('calendar.filter.quarter') },
+  ];
 
   const clearFilters = () => {
     onSourceChange('');
@@ -58,9 +60,9 @@ export default function CalendarFilters({
         <Filter className="w-4 h-4 text-text-tertiary shrink-0 hidden sm:block" />
 
         <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
-          {SOURCE_OPTIONS.map((opt) => (
+          {sourceOptions.map((opt) => (
             <Pill
-              key={opt.value}
+              key={opt.value || 'all'}
               active={source === opt.value}
               onClick={() => onSourceChange(opt.value)}
             >
@@ -69,12 +71,12 @@ export default function CalendarFilters({
           ))}
         </div>
 
-        <span className="w-px h-5 bg-border-subtle hidden sm:block" />
+        <span className="hidden sm:inline w-px h-5 bg-border-subtle mx-1" />
 
         <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
-          {IMPORTANCE_OPTIONS.map((opt) => (
+          {importanceOptions.map((opt) => (
             <Pill
-              key={opt.value}
+              key={opt.value || 'any'}
               active={importance === opt.value}
               onClick={() => onImportanceChange(opt.value)}
             >
@@ -83,10 +85,10 @@ export default function CalendarFilters({
           ))}
         </div>
 
-        <span className="w-px h-5 bg-border-subtle hidden sm:block" />
+        <span className="hidden sm:inline w-px h-5 bg-border-subtle mx-1" />
 
         <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
-          {PERIOD_OPTIONS.map((opt) => (
+          {periodOptions.map((opt) => (
             <Pill
               key={opt.value}
               active={period === opt.value}
@@ -104,7 +106,7 @@ export default function CalendarFilters({
             className="inline-flex items-center gap-1 text-xs text-text-tertiary hover:text-text-primary transition-colors ml-auto"
           >
             <X className="w-3 h-3" />
-            Сбросить
+            {t('calendar.filter.clear')}
           </button>
         )}
       </div>

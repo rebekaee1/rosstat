@@ -40,14 +40,8 @@ import {
   indicatorPath,
 } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
+import { localizeSource } from '../i18n/viewModeLabels';
 
-const FREQ_RU = {
-  daily: 'По дням',
-  weekly: 'Еженедельно',
-  monthly: 'Помесячно',
-  quarterly: 'Ежеквартально',
-  annual: 'Ежегодно',
-};
 const EMPTY_POINTS = [];
 
 function computeWorldTelemetry(points) {
@@ -201,6 +195,7 @@ export default function WorldIndicatorPage() {
 
   const country = metaQ.data?.country;
   const indicator = metaQ.data?.indicator;
+  // API locale-facing `name` (EN: name_en + slice overlay). Never prefer name_ru.
   const displayName = stripFrequencySuffix(indicator?.name || '');
   const countryName = (locale === 'en' && country?.name_en)
     ? country.name_en
@@ -208,8 +203,8 @@ export default function WorldIndicatorPage() {
   const notFound = metaQ.isError && metaQ.error?.response?.status === 404;
 
   const variantGroup = useMemo(
-    () => worldVariantsToPickerGroup(metaQ.data?.variants),
-    [metaQ.data?.variants],
+    () => worldVariantsToPickerGroup(metaQ.data?.variants, t('world.indicator.slice')),
+    [metaQ.data?.variants, t],
   );
 
   // Стабильная ссылка обязательна: IndicatorChart сообщает объединённый ряд
@@ -219,27 +214,38 @@ export default function WorldIndicatorPage() {
   const empty = !dataQ.isLoading && isEmptySeries(points);
   const last = points.length ? points[points.length - 1] : null;
   const telemetry = useMemo(() => computeWorldTelemetry(points), [points]);
-  const displayUnit = dataQ.data?.unit_ru || dataQ.data?.unit
-    || modeMeta?.unit || indicator?.unit || '';
+  // Prefer locale-facing `unit` (API resolves EN); unit_ru is storage/RU.
+  const displayUnit = dataQ.data?.unit || dataQ.data?.unit_ru
+    || modeMeta?.unit || indicator?.unit || indicator?.unit_ru || '';
   const unitBesideValue = dataQ.data?.unit_suffix ?? indicator?.unit_suffix ?? '';
   const activeFreq = dataQ.data?.frequency || modeParsed?.freq || indicator?.frequency;
   const aggregated = Boolean(dataQ.data?.aggregated)
     || (modeMeta && modeMeta.official === false);
   const valueDigits = chartValueDigits(displayUnit);
-  const deltaSuffix = activeFreq === 'quarterly' ? 'к пред. кварталу'
-    : activeFreq === 'annual' ? 'к пред. году'
-      : activeFreq === 'weekly' ? 'к пред. неделе'
-        : activeFreq === 'daily' ? 'к пред. дню'
-          : 'к пред. значению';
-  const previousLabel = activeFreq === 'quarterly' ? 'Предыдущий квартал'
-    : activeFreq === 'annual' ? 'Предыдущий год'
-      : activeFreq === 'weekly' ? 'Предыдущая неделя'
-        : activeFreq === 'daily' ? 'Предыдущий день'
-          : activeFreq === 'monthly' ? 'Предыдущий месяц'
-            : 'Предыдущее значение';
+  const deltaSuffix = activeFreq === 'quarterly' ? t('indicator.telemetry.delta.prevQuarter')
+    : activeFreq === 'annual' ? t('indicator.telemetry.delta.prevYear')
+      : activeFreq === 'weekly' ? t('indicator.telemetry.delta.prevWeek')
+        : activeFreq === 'daily' ? t('indicator.telemetry.delta.prevValue')
+          : t('indicator.telemetry.delta.prevValue');
+  const previousLabel = activeFreq === 'quarterly' ? t('indicator.telemetry.prevQuarter')
+    : activeFreq === 'annual' ? t('indicator.telemetry.prevYear')
+      : activeFreq === 'weekly' ? t('indicator.telemetry.prevWeek')
+        : activeFreq === 'daily' ? t('indicator.telemetry.prev')
+          : activeFreq === 'monthly' ? t('indicator.telemetry.prevMonth')
+            : t('indicator.telemetry.prev');
+  const FREQ_KEYS = {
+    daily: 'world.indicator.freq.daily',
+    weekly: 'world.indicator.freq.weekly',
+    monthly: 'world.indicator.freq.monthly',
+    quarterly: 'world.indicator.freq.quarterly',
+    annual: 'world.indicator.freq.annual',
+  };
+  const freqLabel = FREQ_KEYS[activeFreq] ? t(FREQ_KEYS[activeFreq]) : (activeFreq || '—');
 
-  const sourceLabel = indicator?.source || t('world.indicator.sourceFallback');
-  const valuePart = `${formatWorldValue(last?.value)}${unitBesideValue ? ` ${unitBesideValue}` : ''}`;
+  const sourceLabel = localizeSource(
+    indicator?.source || t('world.indicator.sourceFallback'),
+    locale,
+  );  const valuePart = `${formatWorldValue(last?.value)}${unitBesideValue ? ` ${unitBesideValue}` : ''}`;
   useDocumentMeta(indicator && country ? {
     title: t('world.indicator.metaTitle', { name: displayName, country: countryName }),
     description: last?.date
@@ -248,7 +254,7 @@ export default function WorldIndicatorPage() {
         country: countryName,
         value: valuePart,
         unit: '',
-        date: formatDate(last.date, 'full'),
+        date: formatDate(last.date, 'full', locale),
         source: sourceLabel,
       })
       : t('world.indicator.metaDescNoDate', {
@@ -267,12 +273,13 @@ export default function WorldIndicatorPage() {
 
   useEffect(() => {
     if (!indicator || !country) return undefined;
+    const source = indicator.source || t('world.indicator.sourceFallback');
     const jsonLd = {
       '@context': 'https://schema.org',
       '@type': 'Dataset',
-      name: `${displayName} — ${country.name}`,
-      description: indicator.description || `${displayName}, ${country.name}. Источник: ${indicator.source || 'официальная статистика'}.`,
-      creator: { '@type': 'Organization', name: indicator.source || 'Официальный источник' },
+      name: `${displayName} — ${countryName}`,
+      description: indicator.description || `${displayName}, ${countryName}. ${source}.`,
+      creator: { '@type': 'Organization', name: source },
       publisher: { '@type': 'Organization', name: 'Forecast Economy', url: getSiteOrigin() },
     };
     const script = document.createElement('script');
@@ -282,7 +289,7 @@ export default function WorldIndicatorPage() {
     document.getElementById('world-dataset-jsonld')?.remove();
     document.head.appendChild(script);
     return () => script.remove();
-  }, [indicator, country, displayName]);
+  }, [indicator, country, countryName, displayName, t]);
 
   useEffect(() => {
     if (!indicator) return;
@@ -305,9 +312,9 @@ export default function WorldIndicatorPage() {
     return {
       ...indicator,
       name: displayName,
-      source: indicator.source || 'Официальный источник',
+      source: sourceLabel,
     };
-  }, [indicator, displayName]);
+  }, [indicator, displayName, sourceLabel]);
 
   const downloadMeta = useMemo(() => ({
     name: displayName,
@@ -394,7 +401,7 @@ export default function WorldIndicatorPage() {
             <div className="mb-2.5 flex flex-wrap items-center gap-2 sm:gap-3 md:mb-4">
               <span className="flex items-center gap-2 rounded-full border border-border-subtle bg-obsidian-light px-2.5 py-1 font-mono text-[10px] uppercase tracking-widest text-text-secondary sm:px-3">
                 <Activity className="h-3 w-3 text-champagne" />
-                {FREQ_RU[activeFreq] || '—'}
+                {freqLabel}
               </span>
               {countryName && (
                 <Link
@@ -415,7 +422,7 @@ export default function WorldIndicatorPage() {
             </h1>
             {metaQ.data._fromMock && (
               <p className="mt-2 font-mono text-[12px] text-text-tertiary">
-                Демо-данные (API ещё не подключён)
+                {t('world.mockData')}
               </p>
             )}
           </header>
@@ -430,13 +437,13 @@ export default function WorldIndicatorPage() {
             ) : (
               <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 md:gap-6">
                 <TelemetryCard
-                  label="Текущее значение"
+                  label={t('indicator.telemetry.current')}
                   value={telemetry?.currentValue}
                   unit={displayUnit}
                   valueDigits={valueDigits}
                   change={telemetry?.change}
                   meta={telemetry?.currentDate
-                    ? `ДАТА: ${formatDate(telemetry.currentDate, dateFormat)}`
+                    ? t('indicator.telemetry.date', { date: formatDate(telemetry.currentDate, dateFormat, locale) })
                     : undefined}
                   delay={0}
                   deltaSuffix={deltaSuffix}
@@ -447,27 +454,27 @@ export default function WorldIndicatorPage() {
                   unit={displayUnit}
                   valueDigits={valueDigits}
                   meta={telemetry?.previousDate
-                    ? `ДАТА: ${formatDate(telemetry.previousDate, dateFormat)}`
+                    ? t('indicator.telemetry.date', { date: formatDate(telemetry.previousDate, dateFormat, locale) })
                     : undefined}
                   delay={1}
                 />
                 {telemetry?.highest && (
                   <TelemetryCard
-                    label="Абсолютный максимум"
+                    label={t('indicator.telemetry.max')}
                     value={telemetry.highest.value}
                     unit={displayUnit}
                     valueDigits={valueDigits}
-                    meta={`ПИК: ${formatDate(telemetry.highest.date, dateFormat)}`}
+                    meta={t('indicator.telemetry.peak', { date: formatDate(telemetry.highest.date, dateFormat, locale) })}
                     delay={2}
                   />
                 )}
                 {telemetry?.average != null && (
                   <TelemetryCard
-                    label="Среднее значение"
+                    label={t('indicator.telemetry.avg')}
                     value={telemetry.average}
                     unit={displayUnit}
                     valueDigits={valueDigits}
-                    meta={`НАБЛ.: ${telemetry.dataCount} ПЕРИОД.`}
+                    meta={t('indicator.telemetry.obs', { count: telemetry.dataCount })}
                     delay={3}
                   />
                 )}
@@ -494,7 +501,7 @@ export default function WorldIndicatorPage() {
 
           {dataQ.isError && (
             <ApiRetryBanner onRetry={dataQ.refetch} isFetching={dataQ.isFetching} className="mb-6">
-              Не удалось загрузить ряд данных. Попробуйте другой режим или повторите запрос.
+              {t('world.indicator.dataLoadError')}
             </ApiRetryBanner>
           )}
 
@@ -508,7 +515,7 @@ export default function WorldIndicatorPage() {
             showForecast={showForecast}
             onToggleForecast={() => setShowForecast((current) => !current)}
             chartLoading={dataQ.isLoading}
-            emptyHint={empty ? 'Для этого режима пока нет точек. Выберите другой режим или вернитесь позже.' : undefined}
+            emptyHint={empty ? t('world.indicator.emptyMode') : undefined}
             onFullData={setFullChartData}
             onDownloadCsv={handleDownloadCSV}
             onDownloadExcel={handleDownloadExcel}
@@ -527,29 +534,29 @@ export default function WorldIndicatorPage() {
             />
             <div className="rounded-[1.5rem] border border-border-subtle bg-obsidian-light p-5 sm:rounded-[2rem] sm:p-8 lg:col-span-2">
               <h3 className="mb-4 text-xs font-mono uppercase tracking-[0.2em] text-text-secondary">
-                О ряде
+                {t('world.indicator.aboutSeries')}
               </h3>
               <dl className="grid gap-4 text-sm sm:grid-cols-2">
                 <div>
-                  <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-tertiary">Частота</dt>
+                  <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-tertiary">{t('world.indicator.field.freq')}</dt>
                   <dd className="font-mono text-text-primary">
-                    {FREQ_RU[activeFreq] || '—'}
+                    {freqLabel}
                   </dd>
                 </div>
                 <div>
-                  <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-tertiary">Единица</dt>
+                  <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-tertiary">{t('world.indicator.field.unit')}</dt>
                   <dd className="font-mono text-text-primary">{displayUnit || '—'}</dd>
                 </div>
                 <div>
-                  <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-tertiary">История</dt>
+                  <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-tertiary">{t('world.indicator.field.history')}</dt>
                   <dd className="font-mono text-text-primary">
                     {indicator.history_start && indicator.history_end
-                      ? `${formatDate(indicator.history_start, 'annual')}–${formatDate(indicator.history_end, 'annual')}`
+                      ? `${formatDate(indicator.history_start, 'annual', locale)}–${formatDate(indicator.history_end, 'annual', locale)}`
                       : '—'}
                   </dd>
                 </div>
                 <div>
-                  <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-tertiary">Точек</dt>
+                  <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-tertiary">{t('world.indicator.field.points')}</dt>
                   <dd className="font-mono text-text-primary">
                     {dataQ.data?.count ?? indicator.points_count ?? '—'}
                   </dd>
@@ -557,7 +564,7 @@ export default function WorldIndicatorPage() {
                 {indicator.name_en && (
                   <div className="sm:col-span-2">
                     <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-tertiary">
-                      Наименование в источнике
+                      {t('world.indicator.field.sourceName')}
                     </dt>
                     <dd className="text-[13px] leading-5 text-text-secondary">
                       {indicator.name_en}
@@ -570,14 +577,14 @@ export default function WorldIndicatorPage() {
                   to={countryPath(slug)}
                   className="inline-flex items-center gap-1 rounded-full border border-border-subtle px-3 py-1.5 text-[13px] text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne"
                 >
-                  Все показатели {country?.name}
+                  {t('world.indicator.allOfCountry', { country: countryName || country?.name || '' })}
                   <ArrowUpRight size={12} />
                 </Link>
                 <Link
                   to="/world"
                   className="inline-flex items-center gap-1 rounded-full border border-border-subtle px-3 py-1.5 text-[13px] text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne"
                 >
-                  Другие страны
+                  {t('world.indicator.allCountries')}
                   <ArrowUpRight size={12} />
                 </Link>
               </div>
@@ -588,7 +595,7 @@ export default function WorldIndicatorPage() {
             <DataTable
               key={`${code}-${activeMode}`}
               data={points}
-              title={`Исторические данные — ${displayName}`}
+              title={t('table.historical', { name: displayName })}
               dateFormat={dateFormat}
               unit={displayUnit}
               valueDigits={chartValueDigits(displayUnit)}

@@ -3,12 +3,17 @@
 import { useQuery } from '@tanstack/react-query';
 import api from './api';
 import { resolveBrowserLocale } from '../i18n/locale';
+import { t } from '../i18n/messages';
 
 const STALE = 10 * 60 * 1000;
 const GC = 30 * 60 * 1000;
 
 function localeKey() {
   return resolveBrowserLocale();
+}
+
+function numberLocale(locale = localeKey()) {
+  return locale === 'en' ? 'en-US' : 'ru-RU';
 }
 
 export function useRegionsLanding() {
@@ -76,39 +81,42 @@ export function useRegionsHeatmapSeries(code, enabled = true) {
 }
 
 /** Форматирование чисел региональных рядов: большие — с разрядами, малые — с дробью. */
-export function formatRegionValue(value) {
+export function formatRegionValue(value, locale) {
   if (value == null || Number.isNaN(value)) return '—';
+  const loc = (locale === 'en' || locale === 'ru') ? locale : localeKey();
   const abs = Math.abs(value);
   let digits;
   if (abs >= 10000) digits = 0;
   else if (abs >= 100) digits = 1;
   else digits = abs < 1 ? 2 : 1;
-  const formatted = value.toLocaleString('ru-RU', {
+  return value.toLocaleString(numberLocale(loc), {
     minimumFractionDigits: 0,
     maximumFractionDigits: digits,
   });
-  return formatted;
 }
 
 /**
- * Компактный тик оси Y: большие числа сокращаются («1,2 млн», «120 тыс»),
+ * Компактный тик оси Y: большие числа сокращаются («1,2 млн» / «1.2 mln»),
  * остальные — с разрядными пробелами. Сокращается ЧИСЛО (не единица ряда):
  * ось всегда в единицах индикатора. Пробелы неразрывные — иначе SVG-текст
- * recharts переносит «тыс» на вторую строку и подпись обрезается.
+ * recharts переносит суффикс на вторую строку и подпись обрезается.
  */
-export function formatCompactTick(value, { narrow = false } = {}) {
+export function formatCompactTick(value, { narrow = false, locale = localeKey() } = {}) {
   if (value == null || !Number.isFinite(Number(value))) return '';
   const num = Number(value);
   const abs = Math.abs(num);
+  const loc = numberLocale(locale);
   const short = (v, suffix) => {
-    const s = v.toLocaleString('ru-RU', { minimumFractionDigits: 0, maximumFractionDigits: 1 });
+    const s = v.toLocaleString(loc, { minimumFractionDigits: 0, maximumFractionDigits: 1 });
     return `${s}\u00A0${suffix}`;
   };
-  if (abs >= 1e9) return short(num / 1e9, narrow ? 'млрд' : 'млрд');
-  if (abs >= 1e6) return short(num / 1e6, 'млн');
-  if (abs >= 1e5) return short(num / 1e3, narrow ? 'т' : 'тыс');
+  if (abs >= 1e9) return short(num / 1e9, t('map.compact.billion'));
+  if (abs >= 1e6) return short(num / 1e6, t('map.compact.million'));
+  if (abs >= 1e5) {
+    return short(num / 1e3, narrow ? t('regions.home.compact.thsNarrow') : t('map.compact.thousand'));
+  }
   return num
-    .toLocaleString('ru-RU', { maximumFractionDigits: abs < 10 ? 1 : 0 })
+    .toLocaleString(loc, { maximumFractionDigits: abs < 10 ? 1 : 0 })
     .replace(/\s/g, '\u00A0');
 }
 

@@ -73,7 +73,15 @@ const FREQUENCY_LONG = {
   annual: 'по годам',
 };
 
-const FREQ_SUFFIX_RE = /,\s*(помесячно|поквартально|за год|понедельно|по дням)\s*$/i;
+const FREQUENCY_LONG_EN = {
+  daily: 'daily',
+  weekly: 'weekly',
+  monthly: 'monthly',
+  quarterly: 'quarterly',
+  annual: 'annual',
+};
+
+const FREQ_SUFFIX_RE = /(?:,\s*(помесячно|поквартально|за год|понедельно|по дням)|\s*[-–—]\s*(monthly|quarterly|annual|yearly|weekly|daily)\s+data)\s*$/i;
 
 /** Убрать суффикс частоты из публичного имени (частота живёт в переключателе). */
 export function stripFrequencySuffix(name) {
@@ -375,17 +383,38 @@ export function isEmptySeries(points) {
   return !Array.isArray(points) || points.length === 0;
 }
 
+/** Minimal RU→EN for chart title groups (mirrors viewModeLabels). */
+const LABELS_EN_INLINE = {
+  'Уровень': 'Level',
+  'К прошлому периоду': 'Vs previous period',
+  'К году': 'Year on year',
+  'Индекс': 'Index',
+  'По месяцам': 'Monthly',
+  'По кварталам': 'Quarterly',
+  'По годам': 'Annual',
+  'М/м': 'MoM',
+  'Кв/кв': 'QoQ',
+  'Кв/Кв': 'QoQ',
+  'Г/г': 'YoY',
+};
+
 /**
  * Заголовок графика: имя (без частоты) + режим + частота активного ряда.
  * @param {{ name?: string, frequency?: string }|null} indicator
  * @param {WorldMode|null} mode
  * @param {string} [activeFreq]
+ * @param {'ru'|'en'} [locale='ru']
  */
-export function worldChartTitle(indicator, mode, activeFreq) {
-  const name = stripFrequencySuffix(indicator?.name || 'Показатель');
-  const modeLabel = mode?.group || mode?.label;
+export function worldChartTitle(indicator, mode, activeFreq, locale = 'ru') {
+  const fallback = locale === 'en' ? 'Indicator' : 'Показатель';
+  const name = stripFrequencySuffix(indicator?.name || fallback);
+  const modeLabelRaw = mode?.group || mode?.label;
+  const modeLabel = locale === 'en' && modeLabelRaw
+    ? (LABELS_EN_INLINE[modeLabelRaw] || modeLabelRaw)
+    : modeLabelRaw;
   const freqKey = activeFreq || mode?.freq || indicator?.frequency;
-  const freq = FREQUENCY_LONG[freqKey] || '';
+  const freqMap = locale === 'en' ? FREQUENCY_LONG_EN : FREQUENCY_LONG;
+  const freq = freqMap[freqKey] || '';
   const parts = [name];
   if (modeLabel) parts.push(modeLabel);
   const base = parts.join(' — ');
@@ -412,9 +441,11 @@ const FREQ_RANK = { monthly: 0, quarterly: 1, annual: 2, weekly: 3, daily: 4 };
 export function collapseCountryIndicators(indicators) {
   if (!Array.isArray(indicators) || indicators.length === 0) return [];
   if (indicators.some((i) => Array.isArray(i.frequencies))) {
+    // Prefer locale-facing `name` (API already resolved RU/EN). Never fall
+    // back to name_ru first — that forced Russian titles under preview_locale=en.
     return indicators.map((i) => ({
       ...i,
-      name: stripFrequencySuffix(i.name_ru || i.name),
+      name: stripFrequencySuffix(i.name || i.name_ru),
       name_ru: undefined,
     }));
   }

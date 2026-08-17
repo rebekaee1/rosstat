@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { cn } from '../lib/format';
 import { track, events } from '../lib/track';
-import { useT } from '../i18n';
+import { useLocale, useT } from '../i18n';
+import { localizeViewModeLabel } from '../i18n/viewModeLabels';
 import {
   defaultModeForWorldGroup,
   expandedGroupForWorldMode,
@@ -31,8 +32,19 @@ export default function WorldViewModePicker({
   compact = false,
 }) {
   const t = useT();
+  const { locale } = useLocale();
   const sectionTitle = title || t('indicator.picker.mode');
-  const groups = useMemo(() => groupModesFromApi(modes), [modes]);
+  const groups = useMemo(() => {
+    const raw = groupModesFromApi(modes);
+    return raw.map((g) => ({
+      ...g,
+      label: localizeViewModeLabel(g.label, locale),
+      modes: g.modes?.map((m) => ({
+        ...m,
+        label: localizeViewModeLabel(m.label, locale),
+      })),
+    }));
+  }, [modes, locale]);
   const [expandedGroup, setExpandedGroup] = useState(
     () => expandedGroupForWorldMode(groups, currentMode),
   );

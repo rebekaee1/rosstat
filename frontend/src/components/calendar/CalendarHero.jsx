@@ -5,6 +5,7 @@ import gsap from 'gsap';
 import {
   russiaIndicatorPath,
 } from '../../lib/sitePaths';
+import { useLocale, useT } from '../../i18n';
 
 
 function CountdownUnit({ value, label }) {
@@ -22,7 +23,15 @@ function Separator() {
   return <span className="text-xl text-text-tertiary/40 font-light self-start mt-1">:</span>;
 }
 
+function pluralDay(n, t) {
+  if (n === 1) return t('calendar.countdown.day_one');
+  if (n >= 2 && n <= 4) return t('calendar.countdown.day_few');
+  return t('calendar.countdown.day_many');
+}
+
 export default function CalendarHero({ nextEvent }) {
+  const t = useT();
+  const { locale } = useLocale();
   const ref = useRef(null);
   const [remaining, setRemaining] = useState(null);
 
@@ -57,6 +66,8 @@ export default function CalendarHero({ nextEvent }) {
 
   if (!nextEvent || !remaining) return null;
 
+  const dateLocale = locale === 'en' ? 'en-US' : 'ru-RU';
+
   return (
     <div
       ref={ref}
@@ -69,18 +80,18 @@ export default function CalendarHero({ nextEvent }) {
           <div className="flex items-center gap-2 mb-3">
             <CalendarIcon className="w-4 h-4 text-champagne" />
             <span className="text-xs uppercase tracking-widest text-champagne font-semibold">
-              Ближайшее событие
+              {t('calendar.hero.nextEvent')}
             </span>
           </div>
           <h2 className="text-lg md:text-xl font-semibold text-text-primary leading-snug mb-2 line-clamp-2">
             {nextEvent.title}
           </h2>
           <p className="text-sm text-text-secondary">
-            {new Date(nextEvent.scheduled_date).toLocaleDateString('ru-RU', {
+            {new Date(nextEvent.scheduled_date).toLocaleDateString(dateLocale, {
               weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
             })}
             {nextEvent.scheduled_time && (
-              <span className="ml-1 font-mono">{nextEvent.scheduled_time} МСК</span>
+              <span className="ml-1 font-mono">{nextEvent.scheduled_time} {t('calendar.hero.msk')}</span>
             )}
           </p>
           {nextEvent.indicator_code && (
@@ -97,17 +108,17 @@ export default function CalendarHero({ nextEvent }) {
         <div className="flex items-center gap-3 md:gap-4 shrink-0">
           {remaining.d > 0 && (
             <>
-              <CountdownUnit value={remaining.d} label={remaining.d === 1 ? 'день' : remaining.d < 5 ? 'дня' : 'дней'} />
+              <CountdownUnit value={remaining.d} label={pluralDay(remaining.d, t)} />
               <Separator />
             </>
           )}
-          <CountdownUnit value={remaining.h} label="час." />
+          <CountdownUnit value={remaining.h} label={t('calendar.countdown.hour')} />
           <Separator />
-          <CountdownUnit value={remaining.m} label="мин." />
+          <CountdownUnit value={remaining.m} label={t('calendar.countdown.min')} />
           {remaining.d === 0 && (
             <>
               <Separator />
-              <CountdownUnit value={remaining.s} label="сек." />
+              <CountdownUnit value={remaining.s} label={t('calendar.countdown.sec')} />
             </>
           )}
         </div>

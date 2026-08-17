@@ -4,10 +4,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Play, Pause, RotateCcw } from 'lucide-react';
 import { track, events } from '../lib/track';
+import { useT } from '../i18n';
 
 const STEP_MS = 900;
 
 export default function MapTimeline({ years, year, onYearChange, metric }) {
+  const t = useT();
   const [playing, setPlaying] = useState(false);
   const trackTimer = useRef(null);
 
@@ -70,8 +72,8 @@ export default function MapTimeline({ years, year, onYearChange, metric }) {
       <button
         type="button"
         onClick={togglePlay}
-        aria-label={playing ? 'Пауза' : 'Проиграть по годам'}
-        title={playing ? 'Пауза' : 'Проиграть по годам'}
+        aria-label={playing ? t('map.timeline.pause') : t('map.timeline.play')}
+        title={playing ? t('map.timeline.pause') : t('map.timeline.play')}
         className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-champagne text-white shadow-sm transition-colors hover:bg-champagne-muted"
       >
         {playing ? <Pause size={15} /> : atEnd ? <RotateCcw size={14} /> : <Play size={15} className="translate-x-[1px]" />}
@@ -85,7 +87,7 @@ export default function MapTimeline({ years, year, onYearChange, metric }) {
           step={1}
           value={year}
           onChange={handleSlider}
-          aria-label="Год на карте"
+          aria-label={t('map.timeline.yearOnMap')}
           className="map-timeline w-full"
           style={{
             background: `linear-gradient(to right, #B8942F 0%, #B8942F ${pct}%, rgba(26,26,46,0.10) ${pct}%, rgba(26,26,46,0.10) 100%)`,
@@ -99,7 +101,7 @@ export default function MapTimeline({ years, year, onYearChange, metric }) {
 
       <div className="w-16 shrink-0 text-right">
         <span className="font-mono text-lg font-bold tabular-nums text-champagne">{year}</span>
-        <span className="-mt-0.5 block text-[10px] text-text-tertiary">год</span>
+        <span className="-mt-0.5 block text-[10px] text-text-tertiary">{t('common.year').toLowerCase()}</span>
       </div>
     </div>
   );

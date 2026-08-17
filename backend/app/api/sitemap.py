@@ -167,10 +167,22 @@ async def sitemap_section(
 
 
 def _render_seo_static(name: str, *, origin: str) -> str:
-    """Substitute request origin into robots.txt / llms.txt templates."""
+    """Substitute request origin into robots.txt / llms.txt templates.
+
+    Locale=en → ``*.en.txt`` twin when present (AI crawlers / bots with X-FE-Locale).
+    """
     from pathlib import Path
 
-    path = Path(__file__).resolve().parents[1] / "data" / "seo_static" / name
+    from app.services.locale import get_locale
+
+    base_dir = Path(__file__).resolve().parents[1] / "data" / "seo_static"
+    loc = get_locale()
+    if loc == "en":
+        en_name = name.replace(".txt", ".en.txt") if name.endswith(".txt") else f"{name}.en"
+        en_path = base_dir / en_name
+        path = en_path if en_path.is_file() else base_dir / name
+    else:
+        path = base_dir / name
     text = path.read_text(encoding="utf-8")
     base = origin.rstrip("/")
     host = urlparse(base).hostname or "forecasteconomy.com"

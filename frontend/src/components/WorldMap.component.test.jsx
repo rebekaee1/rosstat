@@ -89,6 +89,44 @@ describe('CountrySilhouette', () => {
     expect(source.getAttribute('href')).toContain('reg_area3');
   });
 
+  it('на EN показывает Eurostat и km²', () => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('preview_locale', 'en');
+    window.history.pushState({}, '', url.toString());
+    try {
+      renderMap(
+        <CountrySilhouette
+          code="SE"
+          name="Sweden"
+          area={{
+            value: 447424,
+            unit: 'км²',
+            year: 2026,
+            source: 'Евростат',
+            source_url: 'https://ec.europa.eu/eurostat/databrowser/view/reg_area3',
+          }}
+          population={{
+            value: 10500000,
+            unit: 'человек',
+            year: 2025,
+            source: 'Евростат',
+            source_url: 'https://ec.europa.eu/eurostat/databrowser/view/demo_pjan',
+          }}
+        />,
+      );
+      const panel = screen.getByLabelText('Territory outline: Sweden');
+      const normalized = panel.textContent.replace(/\u00A0/g, ' ').replace(/,/g, ' ');
+      expect(normalized).toMatch(/447[\s]?424 km²/);
+      expect(screen.getByRole('link', { name: 'Eurostat' })).toBeTruthy();
+      expect(screen.queryByText('Евростат')).toBeNull();
+      expect(screen.queryByText(/км²/)).toBeNull();
+    } finally {
+      const reset = new URL(window.location.href);
+      reset.searchParams.delete('preview_locale');
+      window.history.pushState({}, '', reset.toString());
+    }
+  });
+
   it('без площади и населения не ломается и не рисует пустые строки', () => {
     renderMap(<CountrySilhouette code="AT" name="Австрия" region="Европа" />);
     expect(screen.getByText('Профиль территории')).toBeTruthy();

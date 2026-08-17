@@ -31,6 +31,7 @@ import {
   regionHubPath,
 } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
+import { localizeSource } from '../i18n/viewModeLabels';
 
 function normalize(s) {
   return (s || '').toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim();
@@ -128,31 +129,33 @@ export default function WorldCountry() {
     });
     const sources = [...new Set(
       flat.map((ind) => ind.source).filter(Boolean),
-    )];
-    let sourcePhrase = 'Евростат';
+    )].map((src) => localizeSource(src, locale));
+    const conj = locale === 'en' ? ' and ' : ' и ';
+    let sourcePhrase = locale === 'en' ? 'Eurostat' : 'Евростат';
     if (sources.length === 1) sourcePhrase = sources[0];
-    else if (sources.length === 2) sourcePhrase = `${sources[0]} и ${sources[1]}`;
+    else if (sources.length === 2) sourcePhrase = `${sources[0]}${conj}${sources[1]}`;
     else if (sources.length > 2) {
-      sourcePhrase = `${sources.slice(0, -1).join(', ')} и ${sources[sources.length - 1]}`;
+      sourcePhrase = `${sources.slice(0, -1).join(', ')}${conj}${sources[sources.length - 1]}`;
     }
-    const title = worldCountryTitle(slug, countryName);
+    const title = worldCountryTitle(slug, countryName, locale);
     return {
       title,
       description: worldCountryDescription(slug, countryName, total, {
         hasNational,
         sourcePhrase,
+        locale,
       }),
       h1: title,
     };
-  }, [countryName, data, slug]);
+  }, [countryName, data, slug, locale]);
 
   useDocumentMeta(countryMeta ? {
     title: countryMeta.title,
     description: countryMeta.description,
     path: countryPath(slug),
   } : (notFound ? {
-    title: 'Страна не найдена',
-    description: 'Запрашиваемая страница страны не найдена.',
+    title: t('world.country.notFoundTitle'),
+    description: t('world.country.notFoundMetaDesc'),
     path: countryPath(slug),
   } : null));
 
@@ -218,19 +221,19 @@ export default function WorldCountry() {
 
       {notFound && (
         <div className="mt-8 rounded-2xl border border-border-subtle bg-surface p-8 text-center">
-          <h1 className="mb-3 font-display text-2xl font-bold text-text-primary">Страна не найдена</h1>
+          <h1 className="mb-3 font-display text-2xl font-bold text-text-primary">{t('world.country.notFoundTitle')}</h1>
           <p className="mb-6 text-text-secondary">
-            Страницы с адресом «{slug}» в каталоге нет. Выберите страну из списка или перейдите в другой раздел.
+            {t('world.country.notFoundBody', { slug })}
           </p>
           <div className="flex flex-wrap justify-center gap-3 text-sm">
             <Link to="/world" className="rounded-xl bg-champagne/10 px-4 py-2 text-champagne transition-colors hover:bg-champagne/20">
-              Все страны
+              {t('world.country.allCountries')}
             </Link>
             <Link to={regionHubPath()} className="rounded-xl border border-border-subtle px-4 py-2 text-text-secondary transition-colors hover:text-champagne">
-              Регионы России
+              {t('world.country.russiaRegions')}
             </Link>
             <Link to="/" className="rounded-xl border border-border-subtle px-4 py-2 text-text-secondary transition-colors hover:text-champagne">
-              Главная
+              {t('world.country.home')}
             </Link>
           </div>
         </div>
@@ -238,7 +241,7 @@ export default function WorldCountry() {
 
       {isError && !notFound && (
         <ApiRetryBanner onRetry={refetch} isFetching={isFetching} className="mb-6">
-          Не удалось загрузить данные страны. Попробуйте ещё раз.
+          {t('world.country.loadError')}
         </ApiRetryBanner>
       )}
 

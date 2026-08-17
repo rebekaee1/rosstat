@@ -423,32 +423,33 @@ function groupThousands(str) {
   return str.replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0');
 }
 
-// Десятичный разделитель — русская запятая (В-11): тысячи уже отделялись
-// NBSP по-русски, дробная часть оставалась с английской точкой. CSV/Excel-
-// экспорт не затронут — файлы собирает бэкенд из сырых значений.
-function formatFixed(num, digits) {
+// Десятичный разделитель: RU — запятая (В-11), EN — точка. Тысячи — NBSP.
+// CSV/Excel-экспорт не затронут — файлы собирает бэкенд из сырых значений.
+function formatFixed(num, digits, locale) {
+  const loc = resolveFormatLocale(locale);
+  const dec = loc === 'en' ? '.' : ',';
   const fixed = num.toFixed(digits);
   const [intPart, decPart] = fixed.split('.');
   const sign = intPart.startsWith('-') ? '-' : '';
   const abs = intPart.replace('-', '');
   const grouped = groupThousands(abs);
-  return decPart !== undefined ? `${sign}${grouped},${decPart}` : `${sign}${grouped}`;
+  return decPart !== undefined ? `${sign}${grouped}${dec}${decPart}` : `${sign}${grouped}`;
 }
 
-export function formatValue(val, digits = 2) {
+export function formatValue(val, digits = 2, locale) {
   if (val == null) return '—';
   const num = Number(val);
   if (!Number.isFinite(num)) return '—';
-  return formatFixed(num, digits);
+  return formatFixed(num, digits, locale);
 }
 
-export function formatValueWithUnit(val, unit = '%', digits) {
+export function formatValueWithUnit(val, unit = '%', digits, locale) {
   if (val == null) return '—';
   const num = Number(val);
   if (!Number.isFinite(num)) return '—';
   const cfg = UNIT_CONFIG[unit] || { digits: 2, suffix: ` ${unit}`, space: false };
   const d = digits ?? cfg.digits;
-  return `${formatFixed(num, d)}${cfg.suffix}`;
+  return `${formatFixed(num, d, locale)}${cfg.suffix}`;
 }
 
 export function unitSuffix(unit = '%') {
@@ -469,10 +470,12 @@ export function chartValueDigits(unit = '%') {
   return unitDigits(unit);
 }
 
-export function formatAxisTick(val, digits = 2) {
+export function formatAxisTick(val, digits = 2, locale) {
   if (val == null) return '';
   const num = Number(val);
   if (!Number.isFinite(num)) return '';
+  const loc = resolveFormatLocale(locale);
+  const dec = loc === 'en' ? '.' : ',';
   const fixed = num.toFixed(digits);
   // Обрезаем только дробный хвост `.0+` (Р-25). Без точки `\.?0+$` съедал
   // нули целой части: digits=0 → 15000.toFixed(0)="15000" → "15".
@@ -483,15 +486,15 @@ export function formatAxisTick(val, digits = 2) {
   const sign = intPart.startsWith('-') ? '-' : '';
   const abs = intPart.replace('-', '');
   const grouped = groupThousands(abs);
-  return decPart ? `${sign}${grouped},${decPart}` : `${sign}${grouped}`;
+  return decPart ? `${sign}${grouped}${dec}${decPart}` : `${sign}${grouped}`;
 }
 
-export function formatChange(val) {
+export function formatChange(val, locale) {
   if (val == null) return null;
   const num = Number(val);
   if (!Number.isFinite(num)) return null;
   const sign = num >= 0 ? '+' : '';
-  return `${sign}${formatFixed(num, 2)}`;
+  return `${sign}${formatFixed(num, 2, locale)}`;
 }
 
 export function cn(...classes) {

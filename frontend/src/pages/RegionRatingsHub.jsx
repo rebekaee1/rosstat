@@ -10,7 +10,7 @@ import useDocumentMeta from '../lib/useMeta';
 import { regionRatingHubTrail } from '../lib/breadcrumbs';
 import { regionRatingHubPath, regionRatingPath } from '../lib/sitePaths';
 import { useRegionsCatalog } from '../lib/regionsApi';
-import { useLocale } from '../i18n';
+import { useLocale, useT } from '../i18n';
 
 export default function RegionRatingsHub() {
   const { t } = useLocale();
@@ -36,14 +36,13 @@ export default function RegionRatingsHub() {
           {t('regions.ratingHubH1')}
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-text-secondary sm:text-base">
-          Выберите показатель, чтобы увидеть полный рейтинг субъектов РФ за последний
-          доступный год: место каждого региона, лидеры и аутсайдеры.
+          {t('regions.ratingHub.intro')}
         </p>
       </header>
 
       {isError && (
         <ApiRetryBanner onRetry={refetch} retrying={isFetching} className="mb-6">
-          Не удалось загрузить каталог показателей.
+          {t('regions.ratingHub.loadError')}
         </ApiRetryBanner>
       )}
 

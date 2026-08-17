@@ -218,11 +218,14 @@ async def render_today_indicator_html(code: str, db: AsyncSession) -> tuple[int,
     if indicator is None or len(rows) < 2:
         return 404, "Not found"
 
-    from app.services.seo_i18n import today_template
+    from app.services.seo_i18n import today_template, translate_source
+    from app.services.i18n_display import public_name
 
     query, question = _today_query_question(spec)
     last, prev = rows[0], rows[1]
     unit = _public_unit(indicator)
+    source = translate_source(indicator.source) or indicator.source or ""
+    ind_display = public_name(indicator.name, indicator.name_en)
     today = today_msk()
     value_text = f"{_format_number(last.value)} {unit}".strip()
     change = _change_phrase(float(last.value), float(prev.value), unit)
@@ -257,7 +260,7 @@ async def render_today_indicator_html(code: str, db: AsyncSession) -> tuple[int,
             value_text=value_text,
             fresh_frame=fresh_frame,
             change=change,
-            source=indicator.source,
+            source=source,
         )
     else:
         fresh_frame = (
@@ -290,7 +293,7 @@ async def render_today_indicator_html(code: str, db: AsyncSession) -> tuple[int,
         faq_q2 = today_template("faq_freq_q") or "Как часто обновляются данные?"
         faq_a2 = (
             today_template("faq_freq_a") or ""
-        ).format(source=indicator.source) or (
+        ).format(source=source) or (
             f"Данные обновляются по мере публикации источником ({indicator.source}); "
             f"страница всегда показывает последнее доступное значение."
         )
@@ -360,7 +363,7 @@ async def render_today_indicator_html(code: str, db: AsyncSession) -> tuple[int,
     tile_updated = today_template("tile_updated") or "Обновлено"
     on_date = (today_template("on_date") or "на {date}").format(date=date_last)
     source_meta = (today_template("source_meta") or "источник: {source}").format(
-        source=indicator.source
+        source=source
     )
     body_lead_tpl = today_template("body_lead")
     if body_lead_tpl:
@@ -368,7 +371,7 @@ async def render_today_indicator_html(code: str, db: AsyncSession) -> tuple[int,
             date=escape(date_last),
             value=escape(value_text),
             change=escape(_dot(change)),
-            source=escape(indicator.source),
+            source=escape(source),
         )
     else:
         body_lead = (
@@ -379,11 +382,11 @@ async def render_today_indicator_html(code: str, db: AsyncSession) -> tuple[int,
         )
     chart_alt = (
         today_template("chart_alt") or "{query} сегодня — график, последнее значение {value}, источник {source}"
-    ).format(query=query, value=value_text, source=indicator.source)
+    ).format(query=query, value=value_text, source=source)
     chart_caption = (
         today_template("chart_caption")
         or "{query}: динамика. Источник: {source}. forecasteconomy.com"
-    ).format(query=query, source=indicator.source)
+    ).format(query=query, source=source)
     cta = today_template("cta_chart") or "Интерактивный график и прогноз →"
     table_h2 = today_template("table_h2") or "Последние значения"
     range_note = (
@@ -400,7 +403,7 @@ async def render_today_indicator_html(code: str, db: AsyncSession) -> tuple[int,
     if history_tpl:
         history_p = history_tpl.format(
             href=escape(paths.russia_indicator(spec.code)),
-            name=escape(indicator.name),
+            name=escape(ind_display),
         )
     else:
         history_p = (
@@ -447,22 +450,22 @@ async def render_today_indicator_html(code: str, db: AsyncSession) -> tuple[int,
             "description": desc_text,
             "url": _absolute(canonical),
             "inLanguage": in_language(),
-            "creator": {"@type": "Organization", "name": indicator.source},
+            "creator": {"@type": "Organization", "name": source},
             "image": _absolute(og_path),
         },
     ]
     en_kw = today_template("keywords")
-    keywords = (
-        en_kw.format(
+    if en_kw:
+        # Never fall through to Russian seo_keywords from DB.
+        keywords = en_kw.format(
             query_lower=query.lower(),
-            seo_keywords=indicator.seo_keywords or indicator.name,
+            seo_keywords=query,
         )
-        if en_kw
-        else (
+    else:
+        keywords = (
             f"{query.lower()} сегодня, {query.lower()} сейчас, "
             f"{query.lower()} на сегодня, {indicator.seo_keywords or indicator.name}"
         )
-    )
     html = await build_document(
         title=title,
         description=desc_text,

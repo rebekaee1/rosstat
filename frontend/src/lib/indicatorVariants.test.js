@@ -1,9 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import {
+  VARIANT_GROUPS,
   indicatorDetailHeaderMobileLines,
   isVariantSiblingNavigation,
   relatedIndicatorCardCopy,
 } from './indicatorVariants';
+import { translate } from '../i18n/messages';
 
 describe('isVariantSiblingNavigation', () => {
   it('cpi → cpi-food is sibling', () => {
@@ -69,4 +71,21 @@ describe('relatedIndicatorCardCopy', () => {
     )).toBe(true);
   });
 
+  it('EN locale: housing / IPI / wages group labels via labelKey', () => {
+    expect(translate('variant.housing.group', undefined, 'en')).toBe('Housing market');
+    expect(translate('variant.ipi.group', undefined, 'en')).toBe('Industrial production composition');
+    expect(translate('variant.wages.nominal', undefined, 'en')).toBe('Nominal');
+    expect(translate('variant.fuel.ai92', undefined, 'en')).toMatch(/AI-92|gasoline/i);
+  });
+});
+
+describe('VARIANT_GROUPS i18n keys', () => {
+  it('every group and member has labelKey', () => {
+    for (const group of VARIANT_GROUPS) {
+      expect(group.labelKey, group.label).toBeTruthy();
+      for (const member of group.codes) {
+        expect(member.labelKey, member.code).toBeTruthy();
+      }
+    }
+  });
 });

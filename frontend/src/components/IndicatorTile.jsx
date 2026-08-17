@@ -8,6 +8,8 @@ import { track, events } from '../lib/track';
 import {
   russiaIndicatorPath,
 } from '../lib/sitePaths';
+import { useLocale, useT } from '../i18n';
+import { findCategoryByApiLabel } from '../lib/categories';
 
 /**
  * Listing-карточка индикатора. Используется и на главной (где это
@@ -17,6 +19,8 @@ import {
  * мы потеряем контекст).
  */
 export default function IndicatorTile({ indicator, delay = 0, displayOverride, surface = 'home' }) {
+  const t = useT();
+  const { locale } = useLocale();
   const ref = useRef(null);
   const glowRef = useRef(null);
 
@@ -102,11 +106,11 @@ export default function IndicatorTile({ indicator, delay = 0, displayOverride, s
       <div className="relative z-10 flex flex-col h-full">
         <div className="flex items-center justify-between mb-5 sm:mb-8">
           <span className="text-[10px] uppercase tracking-[0.2em] font-medium text-text-tertiary">
-            {indicator.category || 'Метрика'}
+            {(locale === 'en' ? (findCategoryByApiLabel(indicator.category_ru || indicator.category)?.nameEn) : null) || indicator.category || t('tile.metric')}
           </span>
           {!isActive && (
             <span className="text-[9px] uppercase tracking-widest px-2.5 py-1 rounded-full bg-obsidian border border-border-subtle text-text-tertiary font-medium">
-              Ожидается
+              {t('tile.pending')}
             </span>
           )}
           {isActive && (
@@ -118,11 +122,15 @@ export default function IndicatorTile({ indicator, delay = 0, displayOverride, s
 
         <div className="mt-auto">
           <h3 className="text-sm font-semibold text-text-primary mb-1 group-hover:text-champagne transition-colors duration-300">
-            {indicator.name}
+            {locale === 'en' && indicator.name_en ? indicator.name_en : indicator.name}
           </h3>
-          {indicator.name_en && (
-            <p className="text-xs text-text-tertiary mb-6 font-mono">{indicator.name_en}</p>
-          )}
+          {locale === 'en'
+            ? (indicator.name && indicator.name_en && (
+              <p className="text-xs text-text-tertiary mb-6 font-mono">{indicator.name}</p>
+            ))
+            : (indicator.name_en && (
+              <p className="text-xs text-text-tertiary mb-6 font-mono">{indicator.name_en}</p>
+            ))}
 
           <div className="flex items-end justify-between gap-x-3 gap-y-2 flex-wrap">
             <div className="min-w-0">
@@ -140,7 +148,7 @@ export default function IndicatorTile({ indicator, delay = 0, displayOverride, s
                 <div className="flex items-center gap-2 flex-wrap">
                   <p className="text-[10px] uppercase tracking-widest text-text-tertiary font-mono">
                     {formatDate(indicator.current_date, dateFmt)}
-                    {hasHero ? ' (Г/Г)' : ''}
+                    {hasHero ? ` ${t('tile.yoy')}` : ''}
                   </p>
                   {relativeTime(indicator.current_date) && (
                     <span className="text-[9px] text-text-tertiary/60 font-mono">

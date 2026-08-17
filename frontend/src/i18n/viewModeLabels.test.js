@@ -18,9 +18,12 @@ describe('localizeSource', () => {
     expect(localizeSource('Росстат', 'en')).toBe('Rosstat');
     expect(localizeSource('Банк России', 'en')).toBe('Bank of Russia');
     expect(localizeSource('Минфин', 'en')).toBe('Ministry of Finance');
+    expect(localizeSource('Евростат', 'en')).toBe('Eurostat');
+    expect(localizeSource('Банк Японии', 'en')).toBe('Bank of Japan');
   });
 
   it('keeps Russian on ru', () => {
     expect(localizeSource('Росстат', 'ru')).toBe('Росстат');
+    expect(localizeSource('Евростат', 'ru')).toBe('Евростат');
   });
 });

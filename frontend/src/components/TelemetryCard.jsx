@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import { formatValue, formatChange, unitSuffix, unitDigits, cn } from '../lib/format';
+import { useT } from '../i18n';
 
 /**
  * Карточка одного телеметрического значения на странице индикатора.
@@ -17,9 +18,11 @@ import { formatValue, formatChange, unitSuffix, unitDigits, cn } from '../lib/fo
  */
 export default function TelemetryCard({
   label, value, unit, change, pctChange, meta, delay = 0,
-  deltaSuffix = 'к пред. месяцу',
+  deltaSuffix,
   valueDigits,
 }) {
+  const t = useT();
+  const resolvedDelta = deltaSuffix ?? t('indicator.telemetry.delta.prevMonth');
   const ref = useRef(null);
   const valRef = useRef(null);
   const animated = useRef(false);
@@ -98,7 +101,7 @@ export default function TelemetryCard({
             {isDown && <TrendingDown className="w-3.5 h-3.5 shrink-0" />}
             <span>{pctChange != null ? `${formatChange(pctChange)}%` : `Δ ${formatChange(changeNum)}`}</span>
             <span className="text-text-tertiary text-[9px] sm:text-[10px] uppercase tracking-wider ml-0.5 sm:ml-1">
-              {deltaSuffix}
+              {resolvedDelta}
             </span>
           </div>
         )}

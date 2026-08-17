@@ -74,6 +74,20 @@ _UNIT_EN = {
     "руб./г": "RUB/g",
     "тыс. руб.": "ths RUB",
     "тыс. руб": "ths RUB",
+    "км²": "km²",
+    "км2": "km²",
+    "человек": "people",
+    "чел. на км²": "people per km²",
+    "п.п.": "pp",
+    "п.п": "pp",
+    "п. п.": "pp",
+    "пункт": "point",
+    "пункты": "points",
+    "пунктов": "points",
+    "изменение за месяц, п.п.": "monthly change, pp",
+    "изменение за месяц": "monthly change",
+    "изменение за квартал, п.п.": "quarterly change, pp",
+    "изменение за год, п.п.": "annual change, pp",
 }
 
 _RU_MONTHS_GEN = (

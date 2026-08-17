@@ -256,7 +256,7 @@
       "home": {
         "description": "Official macroeconomic indicators for countries, Russia, and its regions: charts, tables, comparisons, and forecasts from statistical agencies and central banks.",
         "h1": "Official macroeconomic indicators in one place",
-        "intro": "Forecast Economy collects macroeconomic indicators for countries from national statistical agencies, central banks, and Eurostat. Russia and its regions are covered with deep historical series. Data come only from official primary sources and are shown as charts, tables, comparisons, and forecasts. Viewing is open to everyone; downloads require free registration.",
+        "intro": "Forecast Economy collects macroeconomic indicators for countries from national statistical agencies, central banks, and Eurostat. Data come only from official primary sources and are shown as charts, tables, comparisons, and forecasts. Viewing is open to everyone; downloads require free registration.",
         "path": "/",
         "slug": "home",
         "title": "Forecast Economy — macroeconomic indicators for countries and Russia"
@@ -311,12 +311,17 @@
       }
     },
     "world": {
+      "countryDescEurostatTemplate": "{country}: {n_phrase} from Eurostat — prices, GDP, labor market, trade, and finance. Charts and latest values on Forecast Economy.",
+      "countryDescNationalTemplate": "{country}: {n_phrase} — prices, GDP, labor market, trade, and finance. Source: {source_phrase}. Charts and latest values on Forecast Economy.",
+      "countryTitleTemplate": "Economy of {country}: statistics and indicators",
       "home": {
         "description": "Official country statistics: prices, GDP, labor market, trade, and finance. Charts and tables from Eurostat, national statistical agencies, and central banks.",
         "h1": "World economy: country statistics",
         "path": "/world",
         "title": "World economy — country statistics"
-      }
+      },
+      "nIndicatorsMany": "{n} indicators",
+      "nIndicatorsOne": "{n} indicator"
     }
   },
   "pages": {
@@ -379,7 +384,7 @@
     "home": {
       "description": "Официальные макроэкономические индикаторы по странам, России и её регионам: графики, таблицы, сравнения и статистические прогнозы по данным ведомств статистики и центральных банков.",
       "h1": "Официальные макроэкономические индикаторы в одной рабочей среде",
-      "intro": "Forecast Economy собирает макроэкономические индикаторы стран по данным национальных статистических ведомств, центральных банков и Евростата. Россия и её регионы представлены с максимальной глубиной истории. Данные поступают только из официальных первоисточников и показаны в виде графиков, таблиц, сравнений и прогнозов. Просмотр открыт всем; скачивание доступно после бесплатной регистрации.",
+      "intro": "Forecast Economy собирает макроэкономические индикаторы стран по данным национальных статистических ведомств, центральных банков и Евростата. Данные поступают только из официальных первоисточников и показаны в виде графиков, таблиц, сравнений и прогнозов. Просмотр открыт всем; скачивание доступно после бесплатной регистрации.",
       "path": "/",
       "slug": "home",
       "title": "Forecast Economy — макроэкономические индикаторы стран и России"

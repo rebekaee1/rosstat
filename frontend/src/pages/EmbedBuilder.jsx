@@ -10,20 +10,20 @@ import { track, events } from '../lib/track';
 import useSearchTracking from '../lib/useSearchTracking';
 import { SITE_ORIGIN } from '../lib/siteOrigin';
 import { russiaIndicatorPath } from '../lib/sitePaths';
-import { useLocale } from '../i18n';
+import { useLocale, useT } from '../i18n';
 
 const WIDGET_TYPES = [
-  { key: 'chart', label: 'График', icon: BarChart3, desc: 'Интерактивный AreaChart с данными и прогнозом' },
-  { key: 'card', label: 'Карточка', icon: CreditCard, desc: 'Компактная карточка: значение + sparkline' },
-  { key: 'table', label: 'Таблица', icon: Table2, desc: 'Последние N значений индикатора' },
-  { key: 'ticker', label: 'Тикер', icon: ScrollText, desc: 'Бегущая строка для шапки сайта' },
-  { key: 'compare', label: 'Сравнение', icon: GitCompare, desc: 'Два индикатора на одном графике' },
+  { key: 'chart', labelKey: 'embed.type.chart', descKey: 'embed.type.chartDesc', icon: BarChart3 },
+  { key: 'card', labelKey: 'embed.type.card', descKey: 'embed.type.cardDesc', icon: CreditCard },
+  { key: 'table', labelKey: 'embed.type.table', descKey: 'embed.type.tableDesc', icon: Table2 },
+  { key: 'ticker', labelKey: 'embed.type.ticker', descKey: 'embed.type.tickerDesc', icon: ScrollText },
+  { key: 'compare', labelKey: 'embed.type.compare', descKey: 'embed.type.compareDesc', icon: GitCompare },
 ];
 
 const SIZE_PRESETS = [
-  { label: 'Малый', w: 360, h: 240 },
-  { label: 'Средний', w: 600, h: 400 },
-  { label: 'Большой', w: 800, h: 500 },
+  { labelKey: 'embed.size.small', w: 360, h: 240 },
+  { labelKey: 'embed.size.medium', w: 600, h: 400 },
+  { labelKey: 'embed.size.large', w: 800, h: 500 },
 ];
 
 const EMBED_ORIGIN = SITE_ORIGIN;
@@ -33,6 +33,8 @@ function escHtml(s) {
 }
 
 function IndicatorCombobox({ indicators, value, onChange }) {
+  const t = useT();
+  const { locale } = useLocale();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
   const deferredSearch = useDeferredValue(search);
@@ -70,7 +72,7 @@ function IndicatorCombobox({ indicators, value, onChange }) {
     <div ref={ref} className="relative">
       <button type="button" onClick={() => setOpen(o => !o)}
         className="w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl border border-border-subtle bg-surface text-sm text-text-primary hover:border-champagne/40 transition-colors text-left">
-        <span className="truncate">{selected?.name || 'Выберите индикатор…'}</span>
+        <span className="truncate">{selected?.name || t('embed.pickIndicator')}</span>
         <ChevronDown className={cn('w-4 h-4 text-text-tertiary transition-transform', open && 'rotate-180')} />
       </button>
       {open && (
@@ -79,7 +81,7 @@ function IndicatorCombobox({ indicators, value, onChange }) {
             <div className="relative">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-tertiary" />
               <input type="text" value={search} onChange={e => setSearch(e.target.value)}
-                placeholder="Поиск…" autoFocus
+                placeholder={t('embed.search')} autoFocus
                 className="w-full pl-8 pr-3 py-2 bg-obsidian-lighter rounded-lg text-sm text-text-primary placeholder:text-text-tertiary border-none outline-none focus:ring-1 focus:ring-champagne/30" />
             </div>
           </div>
@@ -87,7 +89,7 @@ function IndicatorCombobox({ indicators, value, onChange }) {
             {grouped.map(cat => (
               <div key={cat.slug}>
                 <div className="px-3 py-1.5 text-[10px] uppercase tracking-widest text-text-tertiary font-medium bg-obsidian/50 sticky top-0">
-                  {cat.name}
+                  {locale === 'en' && cat.nameEn ? cat.nameEn : cat.name}
                 </div>
                 {cat.items.map(ind => (
                   <button key={ind.code} type="button"
@@ -103,7 +105,7 @@ function IndicatorCombobox({ indicators, value, onChange }) {
               </div>
             ))}
             {grouped.length === 0 && (
-              <div className="px-3 py-6 text-center text-sm text-text-tertiary">Ничего не найдено</div>
+              <div className="px-3 py-6 text-center text-sm text-text-tertiary">{t('embed.nothingFound')}</div>
             )}
           </div>
         </div>
@@ -113,6 +115,7 @@ function IndicatorCombobox({ indicators, value, onChange }) {
 }
 
 function CopyButton({ text, onCopy }) {
+  const t = useT();
   const [copied, setCopied] = useState(false);
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(text).then(() => {
@@ -131,13 +134,14 @@ function CopyButton({ text, onCopy }) {
           : 'bg-champagne/10 text-champagne hover:bg-champagne/20'
       )}>
       {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-      {copied ? 'Скопировано' : 'Копировать код'}
+      {copied ? t('embed.copied') : t('embed.copyCode')}
     </button>
   );
 }
 
 export default function EmbedBuilder() {
   const { locale } = useLocale();
+  const t = useT();
   const widgetsSeo = getPageSeo('widgets', locale);
   useDocumentMeta({
     title: widgetsSeo.title,
@@ -225,14 +229,14 @@ export default function EmbedBuilder() {
         prodParams.set('limit', limit.toString());
         src = `${EMBED_ORIGIN}/embed/table/${code}?${prodParams}`;
         iframeW = w; iframeH = Math.max(200, limit * 40 + 80);
-        title = `${name} — таблица`;
+        title = t('embed.tableTitle', { name });
         break;
       case 'ticker':
         prodParams.set('codes', tickerCodes);
         prodParams.set('speed', speed);
         src = `${EMBED_ORIGIN}/embed/ticker?${prodParams}`;
         iframeW = '100%'; iframeH = 40;
-        title = 'Экономические индикаторы — Forecast Economy';
+        title = t('embed.defaultTitle');
         break;
       case 'compare': {
         const metaB = indicators?.find(i => i.code === codeB);
@@ -317,11 +321,10 @@ export default function EmbedBuilder() {
     <div className="max-w-7xl mx-auto px-4 pt-24 md:pt-28 pb-16">
       <div className="text-center mb-10">
         <h1 className="text-3xl md:text-4xl font-display font-bold text-text-primary mb-3">
-          Конструктор виджетов
+          {t('embed.constructor')}
         </h1>
         <p className="text-text-secondary max-w-xl mx-auto">
-          Встройте графики экономических данных России на&nbsp;ваш сайт. Бесплатно, с&nbsp;обязательной ссылкой на&nbsp;источник.
-        </p>
+          {t('embed.intro')}</p>
       </div>
 
       {/* Widget type tabs */}
@@ -344,12 +347,12 @@ export default function EmbedBuilder() {
         {/* Settings panel */}
         <div className="space-y-5">
           <div className="p-5 rounded-2xl bg-surface border border-border-subtle space-y-4">
-            <h2 className="text-xs uppercase tracking-widest text-text-tertiary font-medium">Настройки</h2>
+            <h2 className="text-xs uppercase tracking-widest text-text-tertiary font-medium">{t('embed.settings')}</h2>
 
             {/* Indicator selector */}
             {needsIndicator && (
               <div>
-                <label className="block text-xs text-text-secondary mb-1.5 font-medium">Индикатор</label>
+                <label className="block text-xs text-text-secondary mb-1.5 font-medium">{t('embed.indicator')}</label>
                 <IndicatorCombobox indicators={indicators} value={code} onChange={(c) => { setCode(c); track(events.EMBED_INDICATOR_SELECT, { code: c }); }} />
               </div>
             )}
@@ -357,7 +360,7 @@ export default function EmbedBuilder() {
             {/* Second indicator for compare */}
             {needsSecondIndicator && (
               <div>
-                <label className="block text-xs text-text-secondary mb-1.5 font-medium">Второй индикатор</label>
+                <label className="block text-xs text-text-secondary mb-1.5 font-medium">{t('embed.indicatorB')}</label>
                 <IndicatorCombobox indicators={indicators} value={codeB} onChange={(c) => { setCodeB(c); track(events.EMBED_INDICATOR_SELECT, { code: c, position: 'b' }); }} />
               </div>
             )}
@@ -365,14 +368,14 @@ export default function EmbedBuilder() {
             {/* Ticker codes */}
             {needsTicker && (
               <div>
-                <label className="block text-xs text-text-secondary mb-1.5 font-medium">Коды индикаторов (через запятую)</label>
+                <label className="block text-xs text-text-secondary mb-1.5 font-medium">{t('embed.codesCsv')}</label>
                 <input type="text" value={tickerCodes} onChange={e => setTickerCodes(e.target.value)}
                   className="w-full px-3 py-2 rounded-xl border border-border-subtle bg-obsidian-lighter text-sm text-text-primary font-mono focus:ring-1 focus:ring-champagne/30 outline-none" />
                 <div className="flex gap-2 mt-2 flex-wrap">
                   {['slow', 'normal', 'fast'].map(s => (
                     <button key={s} type="button" onClick={() => setSpeed(s)}
                       className={cn('px-3 py-1 rounded-lg text-xs font-medium transition-all', speed === s ? 'bg-champagne/10 text-champagne' : 'text-text-tertiary hover:text-text-secondary')}>
-                      {s === 'slow' ? 'Медленно' : s === 'normal' ? 'Обычно' : 'Быстро'}
+                      {s === 'slow' ? t('embed.speed.slow') : s === 'normal' ? t('embed.speed.normal') : t('embed.speed.fast')}
                     </button>
                   ))}
                 </div>
@@ -382,7 +385,7 @@ export default function EmbedBuilder() {
             {/* Period */}
             {needsPeriod && (
               <div>
-                <label className="block text-xs text-text-secondary mb-1.5 font-medium">Период</label>
+                <label className="block text-xs text-text-secondary mb-1.5 font-medium">{t('embed.period')}</label>
                 <div className="flex gap-1 flex-wrap">
                   {PERIODS.map(p => (
                     <button key={p.key} type="button" onClick={() => { setPeriod(p.key); track(events.EMBED_PERIOD_CHANGE, { period: p.key }); }}
@@ -396,9 +399,9 @@ export default function EmbedBuilder() {
 
             {/* Theme */}
             <div>
-              <label className="block text-xs text-text-secondary mb-1.5 font-medium">Тема</label>
+              <label className="block text-xs text-text-secondary mb-1.5 font-medium">{t('embed.theme')}</label>
               <div className="flex gap-2">
-                {[['light', 'Светлая'], ['dark', 'Тёмная'], ['auto', 'Авто']].map(([k, l]) => (
+                {[['light', t('embed.theme.light')], ['dark', t('embed.theme.dark')], ['auto', t('embed.theme.auto')]].map(([k, l]) => (
                   <button key={k} type="button" onClick={() => { setTheme(k); track(events.EMBED_THEME_CHANGE, { theme: k }); }}
                     className={cn('flex-1 py-2 rounded-xl text-xs font-medium transition-all border', theme === k ? 'bg-champagne/10 border-champagne/30 text-champagne' : 'border-border-subtle text-text-tertiary hover:text-text-secondary')}>
                     {l}
@@ -410,7 +413,7 @@ export default function EmbedBuilder() {
             {/* Size */}
             {needsSize && (
               <div>
-                <label className="block text-xs text-text-secondary mb-1.5 font-medium">Размер</label>
+                <label className="block text-xs text-text-secondary mb-1.5 font-medium">{t('embed.size')}</label>
                 <div className="flex gap-1 flex-wrap mb-2">
                   {SIZE_PRESETS.map((sp, i) => (
                     <button key={i} type="button" onClick={() => { setSizePreset(i); track(events.EMBED_SIZE_CHANGE, { size: sp.label }); }}
@@ -420,7 +423,7 @@ export default function EmbedBuilder() {
                   ))}
                   <button type="button" onClick={() => { setSizePreset(-1); setCustomW(w); setCustomH(h); }}
                     className={cn('px-3 py-1.5 rounded-lg text-xs font-medium transition-all', isCustom ? 'bg-champagne/10 text-champagne' : 'text-text-tertiary hover:text-text-secondary')}>
-                    Свой
+                    {t('embed.size.custom')}
                   </button>
                 </div>
                 {isCustom && (
@@ -439,7 +442,7 @@ export default function EmbedBuilder() {
             {/* Table limit */}
             {needsLimit && (
               <div>
-                <label className="block text-xs text-text-secondary mb-1.5 font-medium">Количество строк</label>
+                <label className="block text-xs text-text-secondary mb-1.5 font-medium">{t('embed.rowCount')}</label>
                 <input type="number" value={limit} onChange={e => setLimit(Math.max(1, Math.min(50, +e.target.value)))} min={1} max={50}
                   className="w-20 px-2 py-1 rounded-lg border border-border-subtle bg-obsidian-lighter text-sm text-text-primary font-mono text-center outline-none focus:ring-1 focus:ring-champagne/30" />
               </div>
@@ -450,13 +453,13 @@ export default function EmbedBuilder() {
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" checked={showTitle} onChange={e => { setShowTitle(e.target.checked); track(events.EMBED_OPTION_TOGGLE, { option: 'title', value: e.target.checked }); }}
                   className="w-4 h-4 rounded border-border-subtle text-champagne focus:ring-champagne/30" />
-                <span className="text-xs text-text-secondary">Показать заголовок</span>
+                <span className="text-xs text-text-secondary">{t('embed.showTitle')}</span>
               </label>
               {needsForecast && (
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input type="checkbox" checked={showForecast} onChange={e => { setShowForecast(e.target.checked); track(events.EMBED_OPTION_TOGGLE, { option: 'forecast', value: e.target.checked }); }}
                     className="w-4 h-4 rounded border-border-subtle text-champagne focus:ring-champagne/30" />
-                  <span className="text-xs text-text-secondary">Показать прогноз</span>
+                  <span className="text-xs text-text-secondary">{t('embed.showForecast')}</span>
                 </label>
               )}
             </div>
@@ -464,9 +467,9 @@ export default function EmbedBuilder() {
 
           {/* Terms */}
           <div className="p-4 rounded-xl bg-obsidian-lighter border border-border-subtle">
-            <p className="text-[10px] uppercase tracking-widest text-text-tertiary font-medium mb-1">Условия</p>
+            <p className="text-[10px] uppercase tracking-widest text-text-tertiary font-medium mb-1">{t('embed.terms')}</p>
             <p className="text-xs text-text-secondary leading-relaxed">
-              Виджеты бесплатны для любого использования с&nbsp;сохранением ссылки «Данные: Forecast Economy» на&nbsp;источник. Подробнее&nbsp;— <a href="/about" className="text-champagne hover:underline">О&nbsp;проекте</a>.
+              {t('embed.termsBody')} <a href="/about" className="text-champagne hover:underline">{t('embed.termsAbout')}</a>.
             </p>
           </div>
         </div>

@@ -16,8 +16,10 @@ from app.data.i18n.regions_en import REGIONS_EN
 from app.data.i18n.seo_en import (
     CALENDAR_TEMPLATES_EN,
     CATEGORY_META_EN,
+    HOME_TEMPLATES_EN,
     INDICATOR_TEMPLATES_EN,
     PAGE_META_EN,
+    PAGE_TEMPLATES_EN,
     REGIONAL_TEMPLATES_EN,
     TODAY_HUB_DESC_EN,
     TODAY_HUB_H1_EN,
@@ -142,6 +144,22 @@ def get_category_seo(slug: str, locale: Locale | None = None) -> CategorySeo | N
         if meta is not None:
             return meta
     return CATEGORY_META.get(slug)
+
+
+def home_template(key: str, locale: Locale | None = None) -> str | None:
+    """EN twin for apex homepage SSR fragments. Missing key → None (RU caller)."""
+    loc = locale or get_locale()
+    if loc == "en":
+        return HOME_TEMPLATES_EN.get(key)
+    return None
+
+
+def page_template(key: str, locale: Locale | None = None) -> str | None:
+    """EN twin for PAGE_META SSR section headings. Missing key → None (RU caller)."""
+    loc = locale or get_locale()
+    if loc == "en":
+        return PAGE_TEMPLATES_EN.get(key)
+    return None
 
 
 def world_home_title(locale: Locale | None = None) -> str | None:
@@ -269,6 +287,55 @@ def calendar_month_name(month: int, locale: Locale | None = None) -> str | None:
     return None
 
 
+_RU_MONTH_TO_EN = {
+    "января": "January",
+    "февраля": "February",
+    "марта": "March",
+    "апреля": "April",
+    "мая": "May",
+    "июня": "June",
+    "июля": "July",
+    "августа": "August",
+    "сентября": "September",
+    "октября": "October",
+    "ноября": "November",
+    "декабря": "December",
+    "январь": "January",
+    "февраль": "February",
+    "март": "March",
+    "апрель": "April",
+    "май": "May",
+    "июнь": "June",
+    "июль": "July",
+    "август": "August",
+    "сентябрь": "September",
+    "октябрь": "October",
+    "ноябрь": "November",
+    "декабрь": "December",
+}
+
+
+def localize_reference_period(
+    period: str | None,
+    *,
+    locale: Locale | None = None,
+) -> str | None:
+    """Translate Russian month tokens in calendar ``reference_period`` (e.g. «июль 2026»)."""
+    if not period:
+        return period
+    loc = locale or get_locale()
+    if loc != "en":
+        return period
+    out = period
+    for ru, en in sorted(_RU_MONTH_TO_EN.items(), key=lambda kv: len(kv[0]), reverse=True):
+        if ru in out.lower():
+            # Case-insensitive replace preserving surrounding text.
+            import re
+
+            out = re.sub(re.escape(ru), en, out, flags=re.IGNORECASE)
+    return out
+
+
 def indicator_copy_en(code: str) -> dict | None:
     """Raw EN overlay for a macro indicator code, or None."""
     return INDICATOR_COPY_EN.get(code)
@@ -350,6 +417,25 @@ def translate_source(source: str | None, locale: Locale | None = None) -> str | 
         if ru in source:
             return source.replace(ru, en)
     return source
+
+
+def localize_territory_fact(payload: dict | None, locale: Locale | None = None) -> dict | None:
+    """EN twin for area/population API fragments (unit + source)."""
+    if not payload:
+        return payload
+    loc = locale or get_locale()
+    if loc != "en":
+        return payload
+    from app.services.display import localize_unit
+
+    out = dict(payload)
+    unit = out.get("unit")
+    if unit:
+        out["unit"] = localize_unit(unit, locale="en") or unit
+    src = out.get("source")
+    if src:
+        out["source"] = translate_source(src, "en") or src
+    return out
 
 
 def localize_view_mode_label(label: str | None, locale: Locale | None = None) -> str | None:

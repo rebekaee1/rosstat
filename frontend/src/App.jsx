@@ -219,6 +219,7 @@ function EmbedSpinner() {
 
 function EmbedRoutes() {
   return (
+    <LocaleProvider>
     <ErrorBoundary>
       <Suspense fallback={<EmbedSpinner />}>
         <Routes>
@@ -230,6 +231,7 @@ function EmbedRoutes() {
         </Routes>
       </Suspense>
     </ErrorBoundary>
+    </LocaleProvider>
   );
 }
 

@@ -13,13 +13,14 @@ import {
 } from 'recharts';
 import { formatRegionValue, formatCompactTick, compactTickAxisWidth } from '../lib/regionsApi';
 import { pickChartAxisTicks, chartAxisTickBudget } from '../lib/format';
+import { useLocale } from '../i18n';
 
 // Порог несопоставимости масштабов: если maxРФ/maxРегион больше — вторая ось.
 const DUAL_AXIS_RATIO = 3;
 
 const COMPARE_COLOR = '#5B7DA8';
 
-function RegionTooltip({ active, payload, label, unit, regionName, compareName }) {
+function RegionTooltip({ active, payload, label, unit, regionName, compareName, russiaLabel }) {
   if (!active || !payload?.length) return null;
   const region = payload.find(p => p.dataKey === 'value' && p.value != null);
   const compare = payload.find(p => p.dataKey === 'compare' && p.value != null);
@@ -29,17 +30,17 @@ function RegionTooltip({ active, payload, label, unit, regionName, compareName }
       <div className="text-text-tertiary font-mono mb-1">{label}</div>
       {region && (
         <div className="font-mono font-semibold text-champagne">
-          {regionName}: {formatRegionValue(region.value, unit)}
+          {regionName}: {formatRegionValue(region.value)}
         </div>
       )}
       {compare && (
         <div className="font-mono font-semibold mt-0.5" style={{ color: COMPARE_COLOR }}>
-          {compareName}: {formatRegionValue(compare.value, unit)}
+          {compareName}: {formatRegionValue(compare.value)}
         </div>
       )}
       {russia && (
         <div className="font-mono text-text-secondary mt-0.5">
-          Россия: {formatRegionValue(russia.value, unit)}
+          {russiaLabel}: {formatRegionValue(russia.value)}
         </div>
       )}
     </div>
@@ -57,6 +58,7 @@ export default function RegionAnnualChart({
   regionName = '',
   height = 320,
 }) {
+  const { t } = useLocale();
   const wrapRef = useRef(null);
   const [plotWidth, setPlotWidth] = useState(0);
 
@@ -137,6 +139,7 @@ export default function RegionAnnualChart({
     left: isNarrow ? 0 : 4,
   };
   const chartHeight = isNarrow ? Math.min(height, 260) : height;
+  const russiaLabel = t('regions.ind.russia');
 
   return (
     <div>
@@ -144,7 +147,11 @@ export default function RegionAnnualChart({
         ref={wrapRef}
         style={{ width: '100%', height: chartHeight }}
         role="img"
-        aria-label={`График: ${regionName}, ${data[0].year}–${data[data.length - 1].year}`}
+        aria-label={t('regions.ind.chartAria', {
+          region: regionName,
+          from: data[0].year,
+          to: data[data.length - 1].year,
+        })}
       >
         <ResponsiveContainer>
           <ComposedChart data={data} margin={chartMargin}>
@@ -194,7 +201,16 @@ export default function RegionAnnualChart({
                 domain={['auto', 'auto']}
               />
             )}
-            <Tooltip content={<RegionTooltip unit={unit} regionName={regionName} compareName={compareName} />} />
+            <Tooltip
+              content={(
+                <RegionTooltip
+                  unit={unit}
+                  regionName={regionName}
+                  compareName={compareName}
+                  russiaLabel={russiaLabel}
+                />
+              )}
+            />
             <Area
               yAxisId="region"
               type="monotone"
@@ -237,11 +253,11 @@ export default function RegionAnnualChart({
         <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-text-tertiary px-1">
           <span className="inline-flex items-center gap-1.5">
             <span className="inline-block w-4 h-0.5 rounded bg-champagne" />
-            {regionName} — левая ось
+            {t('regions.ind.axisRegion', { region: regionName })}
           </span>
           <span className="inline-flex items-center gap-1.5">
             <span className="inline-block w-4 border-t-2 border-dashed border-[#3A3A50]" />
-            Россия — правая ось
+            {t('regions.ind.axisRussia')}
           </span>
         </div>
       )}

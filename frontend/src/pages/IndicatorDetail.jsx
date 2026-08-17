@@ -479,16 +479,13 @@ export default function IndicatorDetail() {
 
   const chartEmptyHint = useMemo(() => {
     if (dataError) {
-      return 'Не удалось получить исторический ряд. Нажмите «Повторить» выше или проверьте backend / прокси Vite.';
+      return t('indicator.empty.seriesFetch');
     }
     if (!loadingData && (dataPoints?.length ?? 0) === 0) {
-      return (
-        'В API пока нет точек для этого кода — например, прод ещё без backfill ключевой ставки, или локальный backend не запущен. '
-        + 'После появления данных график заполнится автоматически.'
-      );
+      return t('indicator.empty.noPoints');
     }
     return undefined;
-  }, [dataError, loadingData, dataPoints]);
+  }, [dataError, loadingData, dataPoints, t]);
 
   const refetchIndicatorPage = useCallback(() => {
     refetchInd();
@@ -541,13 +538,13 @@ export default function IndicatorDetail() {
           >
             {indError && (
               <span className="block">
-                Карточка индикатора не загрузилась
+                {t('indicator.error.cardLoad')}
                 {indErr?.message ? ` (${indErr.message})` : ''}.
               </span>
             )}
             {dataError && (
               <span className="block">
-                Исторические данные недоступны — график и таблица без ряда.
+                {t('indicator.error.dataUnavailable')}
               </span>
             )}
           </ApiRetryBanner>
@@ -643,7 +640,7 @@ export default function IndicatorDetail() {
       {isFamily && !isHousingFamily && !isPpiFamily
         && !isCbrTermSliceFamily && !isUnemploymentFamily && (
         <ViewModePicker
-          title="Режим отображения"
+          title={t('indicator.picker.display')}
           modes={viewFamily.modes.map((m) => ({ mode: m.mode, label: m.label }))}
           currentMode={familyMode}
           onChange={setViewMode}
@@ -655,7 +652,7 @@ export default function IndicatorDetail() {
       {!isFamily && !isUnemploymentFamily
         && indicator?.frequency === 'daily' && (
         <ViewModePicker
-          title="Частота отображения"
+          title={t('indicator.picker.displayFrequency')}
           modes={[
             { mode: 'level', label: 'Ежедневно' },
             { mode: 'weekly', label: 'Понедельно' },

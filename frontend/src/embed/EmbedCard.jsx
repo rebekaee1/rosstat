@@ -1,3 +1,4 @@
+import { useT } from '../i18n';
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { TrendingUp, TrendingDown } from 'lucide-react';
@@ -40,6 +41,7 @@ function MiniSparkline({ data, width = 140, height = 36, color = '#B8942F' }) {
 }
 
 export default function EmbedCard() {
+  const t = useT();
   const { code } = useParams();
   const { theme } = useEmbedParams();
   const colors = THEME_COLORS[theme];
@@ -67,7 +69,7 @@ export default function EmbedCard() {
   if (metaError || !meta) {
     return (
       <div style={{ background: colors.bg, borderRadius: 16, border: `1px solid ${colors.border}`, height: 160, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'system-ui', fontSize: 13, color: colors.textTertiary }}>
-        {metaError ? 'Ошибка загрузки' : 'Нет данных'}
+        {metaError ? t('embed.tickerLoadError') : t('embed.noData')}
       </div>
     );
   }

@@ -16,9 +16,15 @@ import {
   indicatorPath,
   worldRatingPath,
 } from './sitePaths';
+import { resolveBrowserLocale } from '../i18n/locale';
 
 const STALE = 10 * 60 * 1000;
 const GC = 30 * 60 * 1000;
+
+/** Locale in queryKey — иначе preview_locale=en оставляет RU payload в кэше. */
+function localeKey() {
+  return resolveBrowserLocale();
+}
 
 /**
  * Фолбэк на фикстуры — ТОЛЬКО в dev, пока backend /world не подключён.
@@ -46,7 +52,7 @@ async function withMockFallback(request, mockFactory) {
 
 export function useWorldCountries() {
   return useQuery({
-    queryKey: ['world-countries'],
+    queryKey: ['world-countries', localeKey()],
     queryFn: ({ signal }) =>
       withMockFallback(
         () => api.get('/world/countries', { signal }),
@@ -59,7 +65,7 @@ export function useWorldCountries() {
 
 export function useWorldCountry(slug, { enabled = true } = {}) {
   return useQuery({
-    queryKey: ['world-country', slug],
+    queryKey: ['world-country', slug, localeKey()],
     queryFn: ({ signal }) =>
       withMockFallback(
         () => api.get(`/world/countries/${slug}`, { signal }),
@@ -87,7 +93,7 @@ export function useWorldCountry(slug, { enabled = true } = {}) {
 
 export function useWorldIndicator(slug, code) {
   return useQuery({
-    queryKey: ['world-indicator', slug, code],
+    queryKey: ['world-indicator', slug, code, localeKey()],
     queryFn: ({ signal }) =>
       withMockFallback(
         () => api.get(`/world/indicators/${slug}/${code}`, { signal }),
@@ -125,7 +131,7 @@ export function useWorldIndicatorData(
 ) {
   const dataCode = requestCode || code;
   return useQuery({
-    queryKey: ['world-indicator-data', slug, dataCode, mode, includeForecast, from, to],
+    queryKey: ['world-indicator-data', slug, dataCode, mode, includeForecast, from, to, localeKey()],
     queryFn: ({ signal }) => {
       const params = {};
       if (mode) params.mode = mode;
@@ -145,7 +151,7 @@ export function useWorldIndicatorData(
 
 export function useWorldSearch(q, { country, limit = 50, enabled = true } = {}) {
   return useQuery({
-    queryKey: ['world-search', q, country, limit],
+    queryKey: ['world-search', q, country, limit, localeKey()],
     queryFn: ({ signal }) => {
       const params = { q, limit };
       if (country) params.country = country;
@@ -162,7 +168,7 @@ export function useWorldSearch(q, { country, limit = 50, enabled = true } = {}) 
 
 export function useWorldCompareCatalog({ enabled = true } = {}) {
   return useQuery({
-    queryKey: ['world-compare-catalog'],
+    queryKey: ['world-compare-catalog', localeKey()],
     queryFn: async ({ signal }) => (await api.get('/world/compare/catalog', { signal })).data,
     enabled,
     staleTime: STALE,
@@ -177,7 +183,7 @@ export function useWorldCompareCatalog({ enabled = true } = {}) {
  */
 export function useWorldRatingConcepts({ enabled = true } = {}) {
   return useQuery({
-    queryKey: ['world-rating-concepts'],
+    queryKey: ['world-rating-concepts', localeKey()],
     queryFn: async ({ signal }) => (await api.get('/world/rating/concepts', { signal })).data,
     enabled,
     staleTime: STALE,
@@ -218,7 +224,7 @@ export async function fetchWorldIndicatorMode(countrySlug, indicatorCode, mode, 
 
 export function useWorldCompareSnapshot(conceptSlug) {
   return useQuery({
-    queryKey: ['world-compare-snapshot', conceptSlug],
+    queryKey: ['world-compare-snapshot', conceptSlug, localeKey()],
     queryFn: async ({ signal }) => (
       await api.get(`/world/compare/snapshot/${conceptSlug}`, { signal })
     ).data,
@@ -230,7 +236,7 @@ export function useWorldCompareSnapshot(conceptSlug) {
 
 export function useWorldMapSeries(conceptSlug) {
   return useQuery({
-    queryKey: ['world-map-series', conceptSlug],
+    queryKey: ['world-map-series', conceptSlug, localeKey()],
     queryFn: async ({ signal }) => (
       await api.get(`/world/compare/map-series/${conceptSlug}`, { signal })
     ).data,

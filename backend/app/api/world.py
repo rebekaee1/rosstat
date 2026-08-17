@@ -102,7 +102,10 @@ def _indicator_display_name(ind: WorldIndicator) -> str:
     from app.data.legacy_redirects import strip_world_frequency_suffix
 
     if get_locale() == "en" and (ind.name_en or "").strip():
-        return strip_world_frequency_suffix(ind.name_en) or ind.name_en
+        from app.data.eurostat_dim_labels_en import append_en_slice_to_title
+
+        base = strip_world_frequency_suffix(ind.name_en) or ind.name_en
+        return append_en_slice_to_title(base, ind.slice_json)
     return display_name(ind.name_ru, ind.code)
 
 
@@ -213,7 +216,9 @@ async def _population_payload(
         if row is not None:
             point_date, value = row
             numeric = float(value)
-            return {
+            from app.services.seo_i18n import localize_territory_fact
+
+            return localize_territory_fact({
                 "value": int(numeric) if numeric.is_integer() else round(numeric, 4),
                 "unit": _indicator_public_unit(indicator) or (
                     "persons" if get_locale() == "en" else "человек"
@@ -222,8 +227,10 @@ async def _population_payload(
                 "year": point_date.year,
                 "source": indicator.source,
                 "source_url": indicator.source_url,
-            }
-    return curated_population_payload(country.code)
+            })
+    from app.services.seo_i18n import localize_territory_fact
+
+    return localize_territory_fact(curated_population_payload(country.code))
 
 
 async def _country_by_slug(db: AsyncSession, slug: str) -> WorldCountry:
@@ -983,7 +990,7 @@ async def world_compare_average_series(
 
 @router.get("/countries/{slug}")
 async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
-    cache_key = await versioned_key("world", f"country:v8:{slug}:{get_locale()}")
+    cache_key = await versioned_key("world", f"country:v9:{slug}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -1167,8 +1174,10 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
             "frequencies": official_frequencies,
         },
     }
+    from app.services.seo_i18n import localize_territory_fact
+
     if area is not None:
-        payload["area"] = area
+        payload["area"] = localize_territory_fact(area)
     if population is not None:
         payload["population"] = population
     await cache_set(cache_key, payload, ttl=_CACHE_TTL)
@@ -1191,7 +1200,7 @@ async def _card_context(
 @router.get("/indicators/{slug}/{code}")
 async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db)):
     cache_key = await versioned_key(
-        "world", f"ind:v9:{slug}:{code}:{get_locale()}"
+        "world", f"ind:v11:{slug}:{code}:{get_locale()}"
     )
     cached = await cache_get(cache_key)
     if cached:
@@ -1577,7 +1586,7 @@ async def search_world(
     results = [
         {
             "code": ind.code,
-            "name": display_name(ind.name_ru, ind.code),
+            "name": _indicator_display_name(ind),
             "name_ru": display_name(ind.name_ru, ind.code),
             "country_slug": c.slug,
             "country_name": _country_display_name(c),

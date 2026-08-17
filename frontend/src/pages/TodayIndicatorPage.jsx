@@ -19,6 +19,7 @@ import {
   russiaIndicatorPath,
   todayPath,
 } from '../lib/sitePaths';
+import { useLocale, useT } from '../i18n';
 
 function ruDateShort(iso) {
   if (!iso) return '';
@@ -35,6 +36,8 @@ function rangePreset(frequency) {
 }
 
 export default function TodayIndicatorPage() {
+  const t = useT();
+  const { locale } = useLocale();
   const { code } = useParams();
   const spec = getTodaySpec(code);
   const seriesCode = todaySeriesCode(code);
@@ -107,15 +110,15 @@ export default function TodayIndicatorPage() {
       {!isLoading && last && indicator && (
         <>
           <p className="text-champagne text-xs font-mono uppercase tracking-widest mb-2">
-            Показатель на сегодня
+            {t('today.page.eyebrow')}
           </p>
           <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary mb-4">
-            {spec.query} сегодня
+            {t('today.page.h1', { query: locale === 'en' ? (t(`today.spec.${code}`) || spec.query) : spec.query })}
           </h1>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
             <div className="bg-surface border border-border-subtle rounded-xl p-3.5 col-span-2 lg:col-span-1">
-              <div className="text-[11px] text-text-tertiary uppercase tracking-wide">Сейчас</div>
+              <div className="text-[11px] text-text-tertiary uppercase tracking-wide">{t('today.page.now')}</div>
               <div className="mt-1 font-mono text-2xl font-bold text-text-primary">
                 {formatTodayNumber(last.value)}
                 <span className="ml-1 text-sm font-normal text-text-secondary">{unitSuffix(indicator.unit)}</span>
@@ -124,18 +127,18 @@ export default function TodayIndicatorPage() {
             </div>
             {prev && (
               <div className="bg-surface border border-border-subtle rounded-xl p-3.5">
-                <div className="text-[11px] text-text-tertiary uppercase tracking-wide">Предыдущее</div>
+                <div className="text-[11px] text-text-tertiary uppercase tracking-wide">{t('today.page.prev')}</div>
                 <div className="mt-1 font-mono font-semibold text-text-primary">{formatTodayNumber(prev.value)}</div>
               </div>
             )}
             {stats && (
               <>
                 <div className="bg-surface border border-border-subtle rounded-xl p-3.5">
-                  <div className="text-[11px] text-text-tertiary uppercase tracking-wide">Минимум</div>
+                  <div className="text-[11px] text-text-tertiary uppercase tracking-wide">{t('today.page.min')}</div>
                   <div className="mt-1 font-mono font-semibold text-text-primary">{formatTodayNumber(stats.min)}</div>
                 </div>
                 <div className="bg-surface border border-border-subtle rounded-xl p-3.5">
-                  <div className="text-[11px] text-text-tertiary uppercase tracking-wide">Максимум</div>
+                  <div className="text-[11px] text-text-tertiary uppercase tracking-wide">{t('today.page.max')}</div>
                   <div className="mt-1 font-mono font-semibold text-text-primary">{formatTodayNumber(stats.max)}</div>
                 </div>
               </>
@@ -160,10 +163,12 @@ export default function TodayIndicatorPage() {
               indicatorCode={seriesCode}
               indicatorCategory={indicator.category}
               defaultChartType="area"
-              cpiChartTitle={`${spec.query} — динамика`}
+              cpiChartTitle={t('today.page.dynamics', {
+                query: locale === 'en' ? (t(`today.spec.${code}`) || spec.query) : spec.query,
+              })}
             />
             <p className="mt-2 text-[11px] text-text-tertiary font-mono">
-              Источник: {indicator.source}
+              {t('today.page.source', { source: indicator.source })}
             </p>
           </div>
 
@@ -171,18 +176,18 @@ export default function TodayIndicatorPage() {
             to={russiaIndicatorPath(spec.code)}
             className="inline-flex items-center gap-2 mb-8 px-4 py-2.5 rounded-xl bg-champagne/10 text-champagne font-medium hover:bg-champagne/20 transition-colors"
           >
-            Интерактивный график и прогноз
+            {t('today.page.openCard')}
             <ArrowRight size={16} />
           </Link>
 
           <section className="mb-8">
-            <h2 className="font-display text-lg font-semibold text-text-primary mb-3">Последние значения</h2>
+            <h2 className="font-display text-lg font-semibold text-text-primary mb-3">{t('today.page.recent')}</h2>
             <div className="overflow-x-auto rounded-xl border border-border-subtle">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-obsidian-light/50 text-left text-[11px] uppercase tracking-wide text-text-tertiary">
-                    <th className="px-4 py-2.5 font-medium">Дата</th>
-                    <th className="px-4 py-2.5 font-medium">{indicator.unit || 'Значение'}</th>
+                    <th className="px-4 py-2.5 font-medium">{t('today.page.colDate')}</th>
+                    <th className="px-4 py-2.5 font-medium">{indicator.unit || t('today.page.colValue')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -198,10 +203,14 @@ export default function TodayIndicatorPage() {
           </section>
 
           <section className="bg-surface border border-border-subtle rounded-xl p-5">
-            <h2 className="font-display text-base font-semibold text-text-primary mb-2">Полная история и прогноз</h2>
+            <h2 className="font-display text-base font-semibold text-text-primary mb-2">{t('today.page.fullHistoryTitle')}</h2>
             <p className="text-sm text-text-secondary">
-              Интерактивный график с историей с первого доступного года, режимы представления и прогноз — на странице{' '}
-              <Link to={russiaIndicatorPath(spec.code)} className="text-champagne hover:underline">{indicator.name}</Link>.
+              {t('today.page.fullHistoryBody')}
+              {' '}
+              <Link to={russiaIndicatorPath(spec.code)} className="text-champagne hover:underline">
+                {locale === 'en' && indicator.name_en ? indicator.name_en : indicator.name}
+              </Link>
+              .
             </p>
           </section>
         </>

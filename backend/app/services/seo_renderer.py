@@ -374,6 +374,16 @@ DEFAULT_KEYWORDS = (
     "экономика России, макроэкономические данные, Росстат, Банк России, "
     "ВВП, инфляция, ставки, валюты"
 )
+DEFAULT_KEYWORDS_EN = (
+    "Russia economy, macroeconomic data, Rosstat, Bank of Russia, "
+    "GDP, inflation, interest rates, FX"
+)
+
+
+def _default_keywords() -> str:
+    from app.services.locale import get_locale
+
+    return DEFAULT_KEYWORDS_EN if get_locale() == "en" else DEFAULT_KEYWORDS
 
 # Inline critical CSS для SSR-контента (.seo-page): без него при hard refresh
 # виден «голый» HTML до гидратации React — Tailwind bundle не стилизует .seo-page.
@@ -629,7 +639,7 @@ async def build_document(
     url = _absolute(canonical_path)
     safe_title = escape(title)
     safe_desc = escape(truncate_meta(clean_text(description), 300))
-    safe_keywords = escape(clean_text(keywords or DEFAULT_KEYWORDS)[:400])
+    safe_keywords = escape(clean_text(keywords or _default_keywords())[:400])
     structured = "\n".join(_json_script(item) for item in (json_ld or []))
     extras = extra_head or ""
     hreflang = _hreflang_head(canonical_path)
@@ -880,12 +890,25 @@ def _page_trail(page_slug: str, page: PageSeo) -> list[tuple[str, str]]:
 
 
 def _page_body(page: PageSeo, trail: list[tuple[str, str]]) -> str:
+    from app.services.seo_i18n import get_category_seo, page_template
+
+    h2_related = page_template("h2_related") or "Связанные разделы"
+    if page.links:
+        related_links = page.links
+    else:
+        related_links = tuple(
+            (
+                paths.russia_category(slug),
+                (get_category_seo(slug) or meta).name,
+            )
+            for slug, meta in CATEGORY_META.items()
+        )
     return f"""<main class="seo-page">
 {_breadcrumbs_nav(trail)}
 <h1>{escape(page.h1)}</h1>
 <p>{escape(page.intro)}</p>
 {_blocks_html(page.blocks)}
-<section><h2>Связанные разделы</h2>{_links_list(page.links or tuple((paths.russia_category(slug), meta.name) for slug, meta in CATEGORY_META.items()))}</section>
+<section><h2>{escape(h2_related)}</h2>{_links_list(related_links)}</section>
 </main>"""
 
 
@@ -923,7 +946,7 @@ async def render_page_html(page_slug: str) -> tuple[int, str]:
 
 async def render_home_html(db: AsyncSession) -> str:
     from app.services.locale import in_language
-    from app.services.seo_i18n import get_page_seo
+    from app.services.seo_i18n import get_category_seo, get_page_seo, home_template
 
     flagships = await _indicators_by_codes(db, FLAGSHIP_CODES)
     from app.services.i18n_display import public_name
@@ -935,14 +958,30 @@ async def render_home_html(db: AsyncSession) -> str:
     page = get_page_seo("home")
     if page is None:
         page = PAGE_META["home"]
+    categories = {
+        slug: get_category_seo(slug) or meta
+        for slug, meta in CATEGORY_META.items()
+    }
+    eyebrow = home_template("eyebrow") or "Официальные данные России, регионов и стран"
+    h2_categories = home_template("h2_categories") or "Категории показателей"
+    h2_flagships = home_template("h2_flagships") or "Ключевые индикаторы"
+    h2_tools = home_template("h2_tools") or "Инструменты и разделы"
+    itemlist_categories = (
+        home_template("itemlist_categories")
+        or "Категории макроэкономических показателей России"
+    )
+    itemlist_flagships = (
+        home_template("itemlist_flagships")
+        or "Ключевые макроэкономические индикаторы"
+    )
     body = f"""<main class="seo-page">
-<p class="seo-eyebrow">Официальные данные России, регионов и стран</p>
+<p class="seo-eyebrow">{escape(eyebrow)}</p>
 <h1>{escape(page.h1)}</h1>
 <p>{escape(page.intro)}</p>
 {_blocks_html(page.blocks)}
-<section><h2>Категории показателей</h2>{_category_rich_list(CATEGORY_META)}</section>
-<section><h2>Ключевые индикаторы</h2>{_links_list(flagship_links)}</section>
-<section><h2>Инструменты и разделы</h2>{_links_list(page.links)}</section>
+<section><h2>{escape(h2_categories)}</h2>{_category_rich_list(categories)}</section>
+<section><h2>{escape(h2_flagships)}</h2>{_links_list(flagship_links)}</section>
+<section><h2>{escape(h2_tools)}</h2>{_links_list(page.links)}</section>
 </main>"""
     category_items = [
         {
@@ -951,7 +990,7 @@ async def render_home_html(db: AsyncSession) -> str:
             "name": meta.name,
             "url": _absolute(paths.russia_category(slug)),
         }
-        for index, (slug, meta) in enumerate(CATEGORY_META.items())
+        for index, (slug, meta) in enumerate(categories.items())
     ]
     json_ld = [
         _site_json_ld(),
@@ -968,13 +1007,13 @@ async def render_home_html(db: AsyncSession) -> str:
         {
             "@context": "https://schema.org",
             "@type": "ItemList",
-            "name": "Категории макроэкономических показателей России",
+            "name": itemlist_categories,
             "itemListElement": category_items,
         },
         {
             "@context": "https://schema.org",
             "@type": "ItemList",
-            "name": "Ключевые макроэкономические индикаторы",
+            "name": itemlist_flagships,
             "itemListElement": [
                 {
                     "@type": "ListItem",
@@ -1040,7 +1079,7 @@ async def _active_indicators(
 async def render_categories_hub_html(db: AsyncSession) -> tuple[int, str]:
     """Хаб /russia/category — список категорий России."""
     from app.services.locale import in_language
-    from app.services.seo_i18n import get_category_seo, get_page_seo
+    from app.services.seo_i18n import get_category_seo, get_page_seo, page_template
 
     page = get_page_seo("russia-categories")
     if not page:
@@ -1054,13 +1093,15 @@ async def render_categories_hub_html(db: AsyncSession) -> tuple[int, str]:
         (paths.russia_category(slug), meta.name)
         for slug, meta in categories.items()
     )
+    h2_categories = page_template("h2_categories") or "Категории"
+    h2_related = page_template("h2_related") or "Связанные разделы"
     body = f"""<main class="seo-page">
 {_breadcrumbs_nav(trail)}
 <h1>{escape(page.h1)}</h1>
 <p>{escape(page.intro)}</p>
 {_blocks_html(page.blocks)}
-<section><h2>Категории</h2>{_category_rich_list(categories)}</section>
-<section><h2>Связанные разделы</h2>{_links_list(page.links or links[:6])}</section>
+<section><h2>{escape(h2_categories)}</h2>{_category_rich_list(categories)}</section>
+<section><h2>{escape(h2_related)}</h2>{_links_list(page.links or links[:6])}</section>
 </main>"""
     json_ld = [
         _site_json_ld(),
@@ -1096,7 +1137,7 @@ async def render_categories_hub_html(db: AsyncSession) -> tuple[int, str]:
 async def render_category_html(slug: str, db: AsyncSession) -> tuple[int, str]:
     from app.services.i18n_display import public_name
     from app.services.locale import in_language
-    from app.services.seo_i18n import get_category_seo
+    from app.services.seo_i18n import get_category_seo, page_template
 
     category = get_category_seo(slug)
     if not category:
@@ -1110,13 +1151,15 @@ async def render_category_html(slug: str, db: AsyncSession) -> tuple[int, str]:
         for ind in indicators
     )
     trail = crumbs.russia_category_trail(category.name, paths.russia_category(slug))
+    h2_indicators = page_template("h2_section_indicators") or "Индикаторы раздела"
+    h2_related = page_template("h2_related") or "Связанные разделы"
     body = f"""<main class="seo-page">
 {_breadcrumbs_nav(trail)}
 <h1>{escape(category.title)}</h1>
 <p>{escape(category.intro)}</p>
 {_blocks_html(category.blocks)}
-<section><h2>Индикаторы раздела</h2>{_links_list(links)}</section>
-<section><h2>Связанные разделы</h2>{_links_list(_related_categories(slug))}</section>
+<section><h2>{escape(h2_indicators)}</h2>{_links_list(links)}</section>
+<section><h2>{escape(h2_related)}</h2>{_links_list(_related_categories(slug))}</section>
 </main>"""
     json_ld = [
         _site_json_ld(),
@@ -1150,8 +1193,13 @@ async def render_category_html(slug: str, db: AsyncSession) -> tuple[int, str]:
 
 
 def _related_categories(current_slug: str) -> tuple[tuple[str, str], ...]:
+    from app.services.seo_i18n import get_category_seo
+
     return tuple(
-        (paths.russia_category(slug), meta.name)
+        (
+            paths.russia_category(slug),
+            (get_category_seo(slug) or meta).name,
+        )
         for slug, meta in CATEGORY_META.items()
         if slug != current_slug
     )[:6]
@@ -1321,7 +1369,17 @@ async def render_indicator_html(
             "temporalCoverage": f"{_iso_date(first_dt)}/{_iso_date(last_dt)}",
             "variableMeasured": display_name,
             "dateModified": _iso_date(last_dt),
-            "keywords": clean_text(indicator.seo_keywords or "", display_name),
+            "keywords": clean_text(
+                (
+                    (
+                        indicator_template("keywords", loc)
+                        or "{name}, {name} chart, {name} Russia, economic statistics"
+                    ).format(name=display_name)
+                    if loc == "en"
+                    else (indicator.seo_keywords or "")
+                ),
+                display_name,
+            ),
             "isAccessibleForFree": True,
             "license": "https://creativecommons.org/publicdomain/zero/1.0/",
             "distribution": [
@@ -1366,7 +1424,14 @@ async def render_indicator_html(
         canonical_path=canonical_path,
         body=body,
         json_ld=json_ld,
-        keywords=indicator.seo_keywords or None,
+        keywords=(
+            (
+                indicator_template("keywords", loc)
+                or "{name}, {name} chart, {name} Russia, economic statistics"
+            ).format(name=display_name)
+            if loc == "en"
+            else (indicator.seo_keywords or None)
+        ),
         extra_head=extra_head or None,
         og_image=og_path,
     )

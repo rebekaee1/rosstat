@@ -1,3 +1,4 @@
+import { useT } from '../i18n';
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
@@ -12,6 +13,7 @@ import { useEmbedParams, useEmbedImpression, useEmbedAutoHeight, PERIODS, THEME_
 import Attribution from './Attribution';
 
 function EmbedTooltip({ active, payload, label, unit, colors }) {
+  const t = useT();
   if (!active || !payload?.length) return null;
   const actual = payload.find(p => p.dataKey === 'actual' && p.value != null && !isNaN(p.value));
   const forecast = payload.find(p => p.dataKey === 'forecast' && p.value != null && !isNaN(p.value));
@@ -29,12 +31,12 @@ function EmbedTooltip({ active, payload, label, unit, colors }) {
       {/* В-18: на чужом сайте без легенды цвет ничего не говорит — подписываем словами. */}
       {actual && (
         <div style={{ color: '#B8942F', fontWeight: 600, fontFamily: 'ui-monospace, monospace' }}>
-          Факт: {formatValueWithUnit(actual.value, unit)}
+          {t('embed.actual', { value: formatValueWithUnit(actual.value, unit) })}
         </div>
       )}
       {forecast && !actual && (
         <div style={{ color: '#7C3AED', fontWeight: 600, fontFamily: 'ui-monospace, monospace' }}>
-          Прогноз: {formatValueWithUnit(forecast.value, unit)}
+          {t('embed.forecast', { value: formatValueWithUnit(forecast.value, unit) })}
         </div>
       )}
     </div>
@@ -42,6 +44,7 @@ function EmbedTooltip({ active, payload, label, unit, colors }) {
 }
 
 export default function EmbedChart() {
+  const t = useT();
   const { code } = useParams();
   const { theme, height, period: initPeriod, showTitle, showForecast } = useEmbedParams();
   const [period, setPeriod] = useState(initPeriod);
@@ -122,7 +125,7 @@ export default function EmbedChart() {
             {/* В-18: hero-значение без даты вводит в заблуждение на чужом сайте. */}
             {meta.current_date && (
               <div style={{ fontSize: 10, color: colors.textTertiary, fontFamily: 'ui-monospace, monospace' }}>
-                на {formatDate(meta.current_date)}
+                {t('embed.asOf', { date: formatDate(meta.current_date) })}
               </div>
             )}
           </div>
@@ -151,11 +154,11 @@ export default function EmbedChart() {
           </div>
         ) : isError ? (
           <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: colors.textTertiary, fontSize: 13, fontFamily: 'system-ui' }}>
-            Ошибка загрузки данных
+            {t('embed.loadError')}
           </div>
         ) : chartData.length === 0 ? (
           <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: colors.textTertiary, fontSize: 13, fontFamily: 'system-ui' }}>
-            Нет данных
+            {t('embed.noData')}
           </div>
         ) : (
           <ResponsiveContainer width="100%" height={Math.max(120, chartH)}>

@@ -120,10 +120,10 @@ function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
       {open && (
         <div className="absolute right-0 sm:left-0 sm:right-auto z-30 mt-2 w-[min(calc(100vw-2rem),26rem)] max-h-72 overflow-auto rounded-xl border border-border-subtle bg-surface shadow-2xl">
           {catalog.isLoading ? (
-            <div className="px-3.5 py-3 text-[13px] text-text-tertiary">Загрузка каталога…</div>
+            <div className="px-3.5 py-3 text-[13px] text-text-tertiary">{t('regions.home.loadingCatalog')}</div>
           ) : results.length === 0 ? (
             <div className="px-3.5 py-3 text-[13px] text-text-tertiary">
-              По запросу «{query}» ничего не найдено. Попробуйте короче: «зарплата», «врач», «жильё».
+              {t('regions.home.nothingFound', { query })}
             </div>
           ) : (
             results.map((i) => (
@@ -167,9 +167,9 @@ function ContrastRow({ heat, metricLabel, betterIsLow = false }) {
   const code = heat.data.indicator.code;
   const unit = heat.data.indicator.unit || '';
   const short = /процент|percent/i.test(unit) ? '%'
-    : /миллионов рублей|million rubles/i.test(unit) ? (locale === 'en' ? 'mln ₽' : 'млн ₽')
+    : /миллионов рублей|million rubles/i.test(unit) ? t('regions.home.unit.mlnRub')
     : /рубл|ruble/i.test(unit) ? '₽'
-    : /тысяч человек|thousand people/i.test(unit) ? (locale === 'en' ? 'ths people' : 'тыс. чел.')
+    : /тысяч человек|thousand people/i.test(unit) ? t('regions.home.unit.thousPeople')
     : '';
   const ratio = second.value ? Math.abs(first.value / second.value) : null;
   const ratioLabel = ratio && ratio >= 1.05
@@ -333,7 +333,7 @@ export default function RegionsHome() {
 
   const selectOverview = () => {
     syncMapUrl({ view: 'map', indicator: MAP_OVERVIEW });
-    track(events.REGIONS_MAP_METRIC, { metric: 'Обзор' });
+    track(events.REGIONS_MAP_METRIC, { metric: 'overview' });
   };
 
   const selectPreset = (m) => {
@@ -636,7 +636,7 @@ export default function RegionsHome() {
                     ))}
                     {totalShown === 0 && searching && (
                       <div className="rounded-2xl border border-border-subtle bg-surface p-5 text-center text-sm text-text-secondary sm:p-6">
-                        По запросу «{query}» регионов не найдено
+                        {t('regions.home.noRegions', { query })}
                       </div>
                     )}
                   </div>
@@ -655,7 +655,7 @@ export default function RegionsHome() {
                 role="tab"
                 aria-selected={isOverview}
                 onClick={selectOverview}
-                title="Клик по региону открывает его карточку со всеми показателями"
+                title={t('regions.home.mapClickTitle')}
                 className={`min-h-9 shrink-0 rounded-full px-3.5 py-2 text-xs font-medium transition-colors ${
                   isOverview
                     ? 'bg-champagne/15 text-champagne'
@@ -695,14 +695,15 @@ export default function RegionsHome() {
             <div className="mb-2 flex flex-wrap items-start justify-between gap-2">
               <div className="text-xs text-text-tertiary min-w-0">
                 {activeMapCode && series.data ? (
-                  <>
-                    {series.data.indicator.name}
-                    {mapYear != null ? `, ${mapYear} год` : ''}
-                    {series.data.indicator.unit ? `, ${series.data.indicator.unit}` : ''}.
-                    {' '}Нажмите на регион, чтобы открыть его показатель.
-                  </>
+                  t('regions.home.mapCaptionMetric', {
+                    name: series.data.indicator.name,
+                    yearBit: mapYear != null ? t('regions.home.mapYearBit', { year: mapYear }) : '',
+                    unitBit: series.data.indicator.unit
+                      ? t('regions.home.mapUnitBit', { unit: series.data.indicator.unit })
+                      : '',
+                  })
                 ) : (
-                  'Нажмите на регион, чтобы открыть его карточку со всеми показателями.'
+                  t('regions.home.mapCaptionOverview')
                 )}
               </div>
               <div className="shrink-0 flex items-center gap-1.5" data-no-export="true">
@@ -760,10 +761,9 @@ export default function RegionsHome() {
           </div>
           <p className="mt-3 text-xs text-text-tertiary leading-relaxed">
             {activeMapCode
-              ? 'Интенсивность цвета — позиция региона относительно других в выбранном году (шкала пересчитывается для каждого года). Двигайте ползунок или нажмите «play», чтобы увидеть, как менялась расстановка регионов по годам. '
-              : 'Режим обзора: клик по региону открывает его профиль. '}
-            Москва, Санкт-Петербург и Севастополь показаны точками. Кнопки «+»/«−»
-            приближают карту, в приближении её можно перетаскивать.
+              ? t('regions.home.mapHintMetric')
+              : t('regions.home.mapHintOverview')}
+            {t('regions.home.mapHintCities')}
           </p>
         </div>
       )}

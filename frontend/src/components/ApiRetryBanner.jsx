@@ -1,11 +1,13 @@
 import { FOCUS_RING } from '../lib/uiTokens';
 import { cn } from '../lib/format';
 import { track, events } from '../lib/track';
+import { useT } from '../i18n';
 
 /**
  * Единый блок «данные не пришли» — непрозрачный фон, контрастная кнопка (не сливается с баннером).
  */
 export default function ApiRetryBanner({ children, onRetry, isFetching, className }) {
+  const t = useT();
   return (
     <div
       className={cn(
@@ -24,7 +26,7 @@ export default function ApiRetryBanner({ children, onRetry, isFetching, classNam
           'shrink-0 rounded-xl bg-champagne px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-[opacity,transform] hover:opacity-95 active:scale-[0.98] disabled:opacity-60'
         )}
       >
-        {isFetching ? 'Загрузка…' : 'Повторить'}
+        {isFetching ? t('common.loading') : t('common.retry')}
       </button>
     </div>
   );

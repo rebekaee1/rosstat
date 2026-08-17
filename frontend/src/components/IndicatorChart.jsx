@@ -73,6 +73,7 @@ function CustomTooltip({
   dateFormat = 'full', unit = '%', valueDigits = 2, visible = true,
   numericTooltipOnly = false, comparisonSeries = [], actualSeriesLabel = '',
 }) {
+  const t = useT();
   if (!visible || !active || !payload?.length) return null;
 
   const actual = payload.find(p => p.dataKey === 'actual' && p.value != null && !isNaN(p.value));
@@ -87,10 +88,10 @@ function CustomTooltip({
     .filter((series) => series.payload);
 
   const actualLabel = mode === 'cpi'
-    ? (levelTooltipLabel || 'ИПЦ к пред. месяцу')
-    : 'Инфляция (12 мес.)';
+    ? (levelTooltipLabel || t('chart.tooltip.cpiMom'))
+    : t('chart.tooltip.inflation12m');
   const forecastLabel = forecastTooltipLabel
-    || (mode === 'cpi' ? 'Прогноз' : 'Прогноз (12 мес.)');
+    || (mode === 'cpi' ? t('common.forecast') : t('chart.tooltip.forecast12m'));
   const compactNumeric = numericTooltipOnly && comparisons.length === 0;
 
   return (
@@ -137,7 +138,7 @@ function CustomTooltip({
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full" style={{ backgroundColor: series.color }} />
             <span className="max-w-[150px] truncate text-xs text-text-tertiary">
-              {series.label || 'Сравнение'}
+              {series.label || t('chart.compareSeries')}
             </span>
           </div>
           <span className="font-mono text-sm font-semibold" style={{ color: series.color }}>
@@ -212,12 +213,12 @@ export default function IndicatorChart({
       return [{
         data: comparisonData,
         dataKey: 'comparison_0',
-        label: comparisonLabel || 'Сравнение',
+        label: comparisonLabel || t('chart.compareSeries'),
         color: '#397C8C',
       }];
     }
     return [];
-  }, [comparisonSeries, comparisonData, comparisonLabel]);
+  }, [comparisonSeries, comparisonData, comparisonLabel, t]);
 
   useEffect(() => { onChartDataRef.current = onChartData; }, [onChartData]);
   useEffect(() => { onFullDataRef.current = onFullData; }, [onFullData]);
@@ -487,8 +488,8 @@ export default function IndicatorChart({
 
   const title = cpiChartTitle
     ?? (mode === 'cpi'
-      ? 'ИПЦ (к предыдущему месяцу, %)'
-      : 'Инфляция (скользящие 12 месяцев)');
+      ? t('chart.title.cpiMom')
+      : t('chart.title.inflation12m'));
 
   const baselineY = referenceLineY !== undefined
     ? referenceLineY
@@ -508,9 +509,9 @@ export default function IndicatorChart({
           <Activity className="w-7 h-7 text-champagne/80" aria-hidden />
         </div>
         <div className="max-w-md space-y-2">
-          <p className="text-sm font-semibold text-text-primary">Нет данных для графика</p>
+          <p className="text-sm font-semibold text-text-primary">{t('chart.emptyTitle')}</p>
           <p className="text-sm text-text-tertiary leading-relaxed">
-            {emptyHint || 'Загрузите ряд с сервера или проверьте доступность API. Если данные только что добавлены на backend — обновите страницу.'}
+            {emptyHint || t('chart.emptyHint')}
           </p>
         </div>
       </div>
@@ -563,9 +564,9 @@ export default function IndicatorChart({
               type="button"
               onClick={() => { setWindowOverride(null); setOffset(0); track(events.CHART_ZOOM, { action: 'reset', indicator: indicatorCode, indicatorCategory }); }}
               className="px-2 py-1.5 text-[10px] font-mono uppercase tracking-wider text-text-tertiary hover:text-champagne transition-colors"
-              title="Сбросить зум"
+              title={t('chart.resetZoomTitle')}
             >
-              Сброс
+              {t('chart.resetZoom')}
             </button>
           )}
           <div className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle">
@@ -767,7 +768,7 @@ export default function IndicatorChart({
           <div className="mt-1 flex justify-end pr-3">
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-obsidian/70 backdrop-blur-sm border border-border-subtle/50 pointer-events-none opacity-60 transition-opacity">
               <ZoomIn className="w-3 h-3 text-text-tertiary" />
-              <span className="text-[10px] font-mono text-text-tertiary">Ctrl + scroll — зум, drag — сдвиг</span>
+              <span className="text-[10px] font-mono text-text-tertiary">{t('chart.zoomHint')}</span>
             </div>
           </div>
         )}
@@ -782,7 +783,7 @@ export default function IndicatorChart({
             max={maxOffset}
             value={sliderValue}
             onChange={handleSlider}
-            aria-label="Позиция окна по времени"
+            aria-label={t('chart.windowAria')}
             className="w-full h-1.5 appearance-none bg-obsidian-lighter rounded-full
               [&::-webkit-slider-thumb]:appearance-none
               [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4
@@ -803,7 +804,7 @@ export default function IndicatorChart({
         <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border-subtle pt-3">
           <div className="flex items-center gap-2">
             <span className="h-0.5 w-5 rounded-full bg-champagne" />
-            <span className="text-[11px] text-text-tertiary">{actualSeriesLabel || 'Основной ряд'}</span>
+            <span className="text-[11px] text-text-tertiary">{actualSeriesLabel || t('chart.primarySeries')}</span>
           </div>
           {resolvedComparisonSeries.map((series) => (
             <div key={series.dataKey} className="flex min-w-0 items-center gap-2">

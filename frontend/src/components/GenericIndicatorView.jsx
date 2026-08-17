@@ -130,7 +130,7 @@ export default function GenericIndicatorView({
   }, [fullChartData, resolved, code, downloadMeta, indicator]);
 
   const chartEmptyHint = !isLoading && (dataPoints?.length ?? 0) === 0
-    ? 'В API пока нет точек для этого режима — ряд появится после ближайшего пересчёта.'
+    ? t('indicator.empty.recalc')
     : undefined;
 
   return (

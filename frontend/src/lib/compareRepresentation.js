@@ -22,6 +22,7 @@
 import { getViewModeFamily } from './viewModeEngine';
 import { applyMoMTransform } from './viewModeFamilies';
 import { buildCumulativeIndex } from './cpiCumulativeIndex';
+import { t } from '../i18n/messages';
 
 export const REP_LEVEL = 'level';
 export const REP_POP = 'pop';
@@ -33,19 +34,21 @@ export const REP_ORDER = [REP_LEVEL, REP_POP, REP_YOY];
 // Подсказки к кнопкам представления — та же формулировка, что на карточке
 // индикатора (группа «К соотв. периоду пред. года», см. view_model_families.py).
 export const REP_HINT = {
-  [REP_LEVEL]: 'Исходные значения ряда в его единицах измерения',
-  [REP_POP]: 'Изменение к предыдущему месяцу или кварталу, в процентах',
-  [REP_YOY]: 'Изменение к соответствующему периоду год назад (Г/г), в процентах',
+  get [REP_LEVEL]() { return t('compare.rep.levelHint'); },
+  get [REP_POP]() { return t('compare.rep.popHint'); },
+  get [REP_YOY]() { return t('compare.rep.yoyHint'); },
 };
 
-const LABEL_POP = 'К прошлому периоду';
-const LABEL_YOY = 'К прошлому году';
+const LABEL_POP = () => t('compare.rep.pop');
+const LABEL_YOY = () => t('compare.rep.yoy');
 
 const CPI_CODES = ['cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services'];
 const HOUSING_CODES = ['housing-price-primary', 'housing-price-secondary'];
 
 function levelLabel(unit) {
-  return unit === 'индекс' ? 'Индекс' : 'Значение';
+  return unit === 'индекс' || unit === 'index'
+    ? t('compare.rep.index')
+    : t('compare.rep.value');
 }
 
 /**
@@ -58,26 +61,26 @@ function buildRepMap(indicator) {
 
   if (CPI_CODES.includes(code)) {
     return {
-      level: { code, transform: 'cpiCumulative', unit: 'индекс', label: 'Индекс' },
-      pop: { code, transform: 'sub100', unit: '%', label: LABEL_POP },
-      yoy: { code: `${code}-yoy`, transform: null, unit: '%', label: LABEL_YOY },
+      level: { code, transform: 'cpiCumulative', unit: 'индекс', label: t('compare.rep.index') },
+      pop: { code, transform: 'sub100', unit: '%', label: LABEL_POP() },
+      yoy: { code: `${code}-yoy`, transform: null, unit: '%', label: LABEL_YOY() },
     };
   }
 
   if (code === 'ppi') {
     return {
-      level: { code: 'ppi', transform: null, unit: 'индекс', label: 'Индекс' },
-      pop: { code: 'ppi', transform: 'mom', unit: '%', label: LABEL_POP },
-      yoy: { code: 'ppi-yoy', transform: null, unit: '%', label: LABEL_YOY },
+      level: { code: 'ppi', transform: null, unit: 'индекс', label: t('compare.rep.index') },
+      pop: { code: 'ppi', transform: 'mom', unit: '%', label: LABEL_POP() },
+      yoy: { code: 'ppi-yoy', transform: null, unit: '%', label: LABEL_YOY() },
     };
   }
 
   if (HOUSING_CODES.includes(code)) {
     const slice = code.endsWith('secondary') ? 'secondary' : 'primary';
     return {
-      level: { code, transform: null, unit: 'индекс', label: 'Индекс' },
-      pop: { code: `housing-qoq-${slice}`, transform: null, unit: '%', label: LABEL_POP },
-      yoy: { code: `housing-yoy-${slice}`, transform: null, unit: '%', label: LABEL_YOY },
+      level: { code, transform: null, unit: 'индекс', label: t('compare.rep.index') },
+      pop: { code: `housing-qoq-${slice}`, transform: null, unit: '%', label: LABEL_POP() },
+      yoy: { code: `housing-yoy-${slice}`, transform: null, unit: '%', label: LABEL_YOY() },
     };
   }
 
@@ -94,8 +97,8 @@ function buildRepMap(indicator) {
         label: levelLabel(native.unit),
       },
     };
-    if (pop) map.pop = { code: pop.code, transform: null, unit: pop.unit || '%', label: LABEL_POP };
-    if (yoy) map.yoy = { code: yoy.code, transform: null, unit: yoy.unit || '%', label: LABEL_YOY };
+    if (pop) map.pop = { code: pop.code, transform: null, unit: pop.unit || '%', label: LABEL_POP() };
+    if (yoy) map.yoy = { code: yoy.code, transform: null, unit: yoy.unit || '%', label: LABEL_YOY() };
     return map;
   }
 
@@ -114,11 +117,11 @@ export function compareRepresentationsFor(indicator) {
 }
 
 export function worldCompareRepresentationsFor(meta) {
-  const options = [{ id: REP_LEVEL, label: 'Значение' }];
+  const options = [{ id: REP_LEVEL, label: t('compare.rep.value') }];
   if (!meta?.frequency || meta?.conceptSlug === 'budget-balance-gdp') return options;
   options.push(
-    { id: REP_POP, label: LABEL_POP },
-    { id: REP_YOY, label: LABEL_YOY },
+    { id: REP_POP, label: LABEL_POP() },
+    { id: REP_YOY, label: LABEL_YOY() },
   );
   return options;
 }

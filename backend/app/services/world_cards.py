@@ -363,13 +363,49 @@ def frequencies_payload(by_freq: dict[str, Any]) -> list[dict]:
 
 
 def variant_label(ind: Any) -> str:
-    """Подпись variant-pill: русские лейблы отличающихся измерений среза.
+    """Подпись variant-pill по отличающимся измерениям среза.
 
-    Инвариант: age/hhcomp-якоря («Все возраста» / «Все домохозяйства») —
+    Locale-facing: RU dim-labels / якоря на ru; EN — eurostat_dim_labels_en.
+    Инвариант: age/hhcomp-якоря («Все возраста» / «All ages») —
     только если соответствующее измерение реально есть в slice_json.
     Отсутствие age никогда не мапится в TOTAL через normalize_age_code.
     """
-    from app.data.eurostat_dim_labels_ru import label_for_dim_member, is_dim_totalish
+    from app.data.eurostat_dim_labels_ru import (
+        is_dim_totalish,
+        label_for_dim_member as label_ru,
+    )
+    from app.services.locale import get_locale
+
+    en = get_locale() == "en"
+    if en:
+        from app.data.eurostat_dim_labels_en import (
+            label_for_dim_member as label_en,
+        )
+        label_for = label_en
+        all_ages = "All ages"
+        all_hh = "All households"
+        all_industries = "All industries"
+        age_lt25 = "15–24 years"
+        age_2574 = "25–74 years"
+        ths_people = "ths persons"
+        pc_act = "% of active population"
+        age_present = lambda b: ("years" in b) or b.startswith("under")
+        total_prefix = "All "
+        fallback_slice = "slice"
+        measure_totalish = {ths_people, pc_act}
+    else:
+        label_for = label_ru
+        all_ages = "Все возраста"
+        all_hh = "Все домохозяйства"
+        all_industries = "Все отрасли"
+        age_lt25 = "15–24 лет"
+        age_2574 = "25–74 лет"
+        ths_people = "тыс. человек"
+        pc_act = "% ЭАН"
+        age_present = lambda b: ("лет" in b) or b.startswith("младше")
+        total_prefix = "Все "
+        fallback_slice = "срез"
+        measure_totalish = {ths_people, pc_act}
 
     sl = ind.slice_json or {}
     bits: list[str] = []
@@ -397,7 +433,7 @@ def variant_label(ind: Any) -> str:
         totalish = is_dim_totalish(dim, code)
         if totalish and not (dim == "age" and code.strip().upper() == "Y15-74"):
             continue
-        label = label_for_dim_member(dim, code)
+        label = label_for(dim, code)
         if label:
             bits.append(label)
         else:
@@ -407,35 +443,38 @@ def variant_label(ind: Any) -> str:
     # Явные возрастные срезы — только если age реально в срезе.
     if "age" in sl:
         age = normalize_age_code(sl.get("age"))
-        age_bit_present = any(
-            ("лет" in b) or b.startswith("младше") for b in bits
-        )
+        age_bit_present = any(age_present(b) for b in bits)
         if not age_bit_present:
             if age == "Y_LT25":
-                bits.insert(0, "15–24 лет")
+                bits.insert(0, age_lt25)
             elif age == "Y25-74":
-                bits.insert(0, "25–74 лет")
+                bits.insert(0, age_2574)
             elif age == "TOTAL" and not bits:
-                bits.append("Все возраста")
+                bits.append(all_ages)
 
     measure = (ind.unit_ru or ind.unit or "").strip()
     if "тысяч" in measure.lower() or (ind.unit or "").upper() in {"THS_PER", "THS"}:
-        bits.append("тыс. человек")
+        bits.append(ths_people)
     elif (ind.unit or "").upper() == "PC_ACT" or ("%" in measure and "активн" in measure.lower()):
-        bits.append("% ЭАН")
+        bits.append(pc_act)
 
     if not bits:
         # TOTAL-якоря — только по реально присутствующему измерению.
         if "hhcomp" in sl and str(sl.get("hhcomp") or "").upper() in {"", "TOTAL"}:
-            return "Все домохозяйства"
+            return all_hh
         if "age" in sl and normalize_age_code(sl.get("age")) == "TOTAL":
-            return "Все возраста"
+            return all_ages
         if "nace_r2" in sl and is_dim_totalish("nace_r2", str(sl.get("nace_r2"))):
-            return "Все отрасли"
+            return all_industries
         if "nace_r1" in sl and is_dim_totalish("nace_r1", str(sl.get("nace_r1"))):
-            return "Все отрасли"
+            return all_industries
+        if en:
+            name_en = (getattr(ind, "name_en", None) or "").strip()
+            if name_en:
+                return name_en.split(",")[-1].strip()[:48]
+            return ind.code or fallback_slice
         name = (getattr(ind, "name_ru", None) or "").strip()
-        return name.split(",")[-1].strip()[:48] if name else (ind.code or "срез")
+        return name.split(",")[-1].strip()[:48] if name else (ind.code or fallback_slice)
 
     # TOTAL-якорь домохозяйств — только если bits ещё не отражают срез hhcomp
     # и нет других содержательных подписей (иначе затирали бы nace/indic).
@@ -444,11 +483,11 @@ def variant_label(ind: Any) -> str:
         and str(sl.get("hhcomp") or "").upper() == "TOTAL"
         and bits
         and all(
-            b in {"тыс. человек", "% ЭАН"} or b.startswith("Все ")
+            b in measure_totalish or b.startswith(total_prefix)
             for b in bits
         )
     ):
-        return "Все домохозяйства"
+        return all_hh
 
     text = ", ".join(bits)
     return text[:1].upper() + text[1:] if text else text
@@ -459,6 +498,8 @@ def build_variants(
     siblings: Iterable[Any],
 ) -> list[dict]:
     """Список variant-pill'ов; [] если в группе один ряд."""
+    from app.services.locale import get_locale
+
     provider = getattr(current, "provider", "eurostat")
     vg = variant_group_key(country_id=current.country_id, dataset_id=current.dataset_id)
     if vg is None:
@@ -478,8 +519,9 @@ def build_variants(
             "label": variant_label(ind),
             "current": ind.code == current.code,
         })
+    total_prefix = "All " if get_locale() == "en" else "Все"
     items.sort(key=lambda x: (
-        0 if x["label"].startswith("Все") else 1,
+        0 if x["label"].startswith(total_prefix) else 1,
         x["label"],
     ))
     return items if len(items) > 1 else []

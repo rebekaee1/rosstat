@@ -27,14 +27,18 @@ function normalize(s) {
 }
 
 function DeltaBadge({ value, prevValue }) {
+  const { locale } = useLocale();
   const d = yearDelta(value, prevValue);
   if (!d) return null;
   const Icon = d.up ? TrendingUp : d.down ? TrendingDown : Minus;
   const cls = d.up ? 'text-positive' : d.down ? 'text-negative' : 'text-text-tertiary';
+  const dec = locale === 'en' ? '.' : ',';
   return (
     <span className={`inline-flex items-center gap-0.5 font-mono text-[10px] tabular-nums ${cls}`}>
       <Icon size={10} />
-      {Math.abs(d.pct) >= 0.1 ? `${Math.abs(d.pct).toFixed(1).replace('.', ',')}%` : '<0,1%'}
+      {Math.abs(d.pct) >= 0.1
+        ? `${Math.abs(d.pct).toFixed(1).replace('.', dec)}%`
+        : `<0${dec}1%`}
     </span>
   );
 }
@@ -85,8 +89,19 @@ function IndicatorRow({ item, slug }) {
   );
 }
 
+function indicatorWord(n, t, locale) {
+  if (locale === 'en') {
+    return n === 1 ? t('regions.profile.indicator_one') : t('regions.profile.indicator_many');
+  }
+  return pluralRu(n, [
+    t('regions.profile.indicator_one'),
+    t('regions.profile.indicator_few'),
+    t('regions.profile.indicator_many'),
+  ]);
+}
+
 export default function RegionProfile() {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const { slug } = useParams();
   const { data, isLoading, isError, refetch, isFetching } = useRegionProfile(slug);
   const [query, setQuery] = useState('');
@@ -166,12 +181,22 @@ export default function RegionProfile() {
               {(() => {
                 const catalog = data.catalog_total ?? data.sections.reduce((acc, s) => acc + s.indicators.length, 0);
                 const available = data.available_total ?? catalog;
-                const catalogWord = pluralRu(catalog, ['показатель', 'показателя', 'показателей']);
-                const availableWord = pluralRu(available, ['показатель', 'показателя', 'показателей']);
+                const catalogWord = indicatorWord(catalog, t, locale);
+                const availableWord = indicatorWord(available, t, locale);
                 if (available < catalog) {
-                  return `Официальная статистика Росстата: ${catalog} ${catalogWord} в каталоге; по региону — данные по ${available} ${availableWord} в ${data.sections.length} разделах, с 1990 года.`;
+                  return t('regions.profile.introPartial', {
+                    catalog,
+                    catalogWord,
+                    available,
+                    availableWord,
+                    sections: data.sections.length,
+                  });
                 }
-                return `Официальная статистика Росстата по региону: ${catalog} ${catalogWord} в ${data.sections.length} разделах, данные с 1990 года.`;
+                return t('regions.profile.introFull', {
+                  catalog,
+                  catalogWord,
+                  sections: data.sections.length,
+                });
               })()}
             </p>
           </div>
@@ -196,10 +221,10 @@ export default function RegionProfile() {
 
           {searching && filteredSections.length === 0 && (
             <div className="rounded-2xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
-              По запросу «{query}» показателей не найдено.
+              {t('regions.profile.nothingFound', { query })}
               {' '}
               <button type="button" onClick={() => setQuery('')} className="text-champagne hover:underline">
-                Сбросить поиск
+                {t('regions.profile.resetSearch')}
               </button>
             </div>
           )}
@@ -224,7 +249,7 @@ export default function RegionProfile() {
             {!searching && (
               <aside className="hidden min-w-0 lg:sticky lg:top-24 lg:block lg:self-start">
                 <div className="mb-2 px-2 text-[10px] font-mono uppercase tracking-[0.18em] text-text-tertiary">
-                  Темы
+                  {t('regions.profile.themes')}
                 </div>
                 <div className="flex flex-col gap-2">
                   {filteredSections.map((sec) => (

@@ -5,7 +5,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
-  ChevronRight, Trophy, Table2, ChevronDown, ArrowUpRight,
+  Trophy, Table2, ChevronDown, ArrowUpRight,
   Download, Image as ImageIcon, GitCompare,
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
@@ -23,13 +23,12 @@ import { exportNodeToPng } from '../lib/chartImage';
 import { track, events } from '../lib/track';
 import { regionIndicatorTrail } from '../lib/breadcrumbs';
 import {
-  regionHubPath,
   regionIndicatorPath,
-  regionPath,
   russiaIndicatorPath,
 } from '../lib/sitePaths';
+import { useLocale } from '../i18n';
 
-// Годовой ряд → изменения год к году, % (кнопка «% г/г», созвон «На правки 13»).
+// Годовой ряд → изменения год к году, % (кнопка YoY / «% г/г»).
 function toYoYSeries(series) {
   if (!series?.length) return [];
   const byYear = new Map(series.map(p => [p.year, p.value]));
@@ -65,15 +64,16 @@ function StatCell({ label, children }) {
 const ABORTION_SIBLING = {
   'beremennosti-s-abortivnym-ishodom-na-100-rodov': {
     code: 'beremennosti-s-abortivnym-ishodom-na-1000-zhenschin',
-    label: 'на 1000 женщин 15–49 лет',
+    labelKey: 'regions.ind.abortionPer1000',
   },
   'beremennosti-s-abortivnym-ishodom-na-1000-zhenschin': {
     code: 'beremennosti-s-abortivnym-ishodom-na-100-rodov',
-    label: 'на 100 родов',
+    labelKey: 'regions.ind.abortionPer100',
   },
 };
 
 export default function RegionIndicatorPage() {
+  const { t, locale } = useLocale();
   const { slug, code } = useParams();
   const { data, isLoading, isError, refetch, isFetching } = useRegionIndicator(slug, code);
   const [showTable, setShowTable] = useState(false);
@@ -93,8 +93,8 @@ export default function RegionIndicatorPage() {
     if (!landing.data) return [];
     return landing.data.districts.flatMap(d => d.regions.map(r => ({ slug: r.slug, name: r.name })))
       .filter(r => r.slug !== slug)
-      .sort((a, b) => a.name.localeCompare(b.name, 'ru'));
-  }, [landing.data, slug]);
+      .sort((a, b) => a.name.localeCompare(b.name, locale === 'en' ? 'en' : 'ru'));
+  }, [landing.data, slug, locale]);
 
   // Выгрузка данных региона — только для зарегистрированных: гостю показываем
   // гейт регистрации (то же окно, что в макроблоке). PNG — без watermark.
@@ -165,15 +165,29 @@ export default function RegionIndicatorPage() {
   const first = data?.series?.[0];
 
   useDocumentMeta(data ? {
-    title: `${indName} — ${regionName}: ${formatRegionValue(last.value)} ${shortUnit(data.indicator.unit)} (${last.year})`,
-    description:
-      `${indName} в регионе ${regionName}: ${formatRegionValue(last.value)} ${data.indicator.unit} в ${last.year} году. ` +
-      `Динамика с ${first.year} года по данным Росстата, график по годам` +
-      (data.rank
-        ? (data.rank.rank_as_achievement
-          ? `, ${data.rank.position}-е место среди ${data.rank.total} регионов России.`
-          : `, ${data.rank.position}-е положение в списке по величине среди ${data.rank.total} регионов России.`)
-        : '.'),
+    title: t('regions.ind.metaTitle', {
+      name: indName,
+      region: regionName,
+      value: formatRegionValue(last.value),
+      unit: shortUnit(data.indicator.unit),
+      year: last.year,
+    }),
+    description: t('regions.ind.metaDesc', {
+      name: indName,
+      region: regionName,
+      value: formatRegionValue(last.value),
+      unit: data.indicator.unit,
+      year: last.year,
+      from: first.year,
+      rank: data.rank
+        ? t(
+          data.rank.rank_as_achievement
+            ? 'regions.ind.metaRankAchieve'
+            : 'regions.ind.metaRankNeutral',
+          { position: data.rank.position, total: data.rank.total },
+        )
+        : '.',
+    }),
     path: regionIndicatorPath(slug, code),
   } : null);
 
@@ -183,10 +197,16 @@ export default function RegionIndicatorPage() {
       '@context': 'https://schema.org',
       '@type': 'Dataset',
       name: `${indName} — ${regionName}`,
-      description: `${indName} (${data.indicator.unit}), ${regionName}, ${first.year}–${last.year}. Источник: Росстат.`,
+      description: t('regions.ind.jsonLdDesc', {
+        name: indName,
+        unit: data.indicator.unit,
+        region: regionName,
+        from: first.year,
+        to: last.year,
+      }),
       temporalCoverage: `${first.year}/${last.year}`,
       spatialCoverage: regionName,
-      creator: { '@type': 'Organization', name: 'Росстат' },
+      creator: { '@type': 'Organization', name: t('regions.ind.creatorRosstat') },
       publisher: { '@type': 'Organization', name: 'Forecast Economy', url: getSiteOrigin() },
     };
     const script = document.createElement('script');
@@ -196,7 +216,7 @@ export default function RegionIndicatorPage() {
     document.getElementById('region-dataset-jsonld')?.remove();
     document.head.appendChild(script);
     return () => script.remove();
-  }, [data, indName, regionName, first, last]);
+  }, [data, indName, regionName, first, last, t]);
 
   const delta = last && data?.series?.length > 1
     ? yearDelta(last.value, data.series[data.series.length - 2].value)
@@ -217,6 +237,8 @@ export default function RegionIndicatorPage() {
     () => (data?.series ? [...data.series].reverse() : []),
     [data],
   );
+
+  const abortion = ABORTION_SIBLING[code];
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 pb-24 pt-24 sm:px-6">
@@ -239,7 +261,6 @@ export default function RegionIndicatorPage() {
 
       {data && (
         <>
-          {/* Шапка */}
           <div className="mb-5">
             <div className="text-champagne text-xs font-mono uppercase tracking-widest mb-2">
               {data.indicator.section_name}
@@ -250,14 +271,15 @@ export default function RegionIndicatorPage() {
               </h1>
               <span className="shrink-0 pt-0.5 text-sm text-text-secondary sm:pt-1.5">{regionName}</span>
             </div>
-            {ABORTION_SIBLING[code] && (
+            {abortion && (
               <p className="mt-1 text-xs text-text-tertiary">
-                Другой срез того же показателя Росстата —{' '}
+                {t('regions.ind.abortionLead')}
+                {' '}
                 <Link
-                  to={regionIndicatorPath(slug, ABORTION_SIBLING[code].code)}
+                  to={regionIndicatorPath(slug, abortion.code)}
                   className="text-champagne hover:underline"
                 >
-                  {ABORTION_SIBLING[code].label}
+                  {t(abortion.labelKey)}
                 </Link>
                 .
               </p>
@@ -271,17 +293,18 @@ export default function RegionIndicatorPage() {
               <span className="font-mono text-sm text-text-tertiary">{last.year}</span>
               {delta && (
                 <span className={`font-mono text-sm ${delta.up ? 'text-positive' : delta.down ? 'text-negative' : 'text-text-tertiary'}`}>
-                  {delta.up ? '+' : ''}{delta.pct.toFixed(1).replace('.', ',')}% за год
+                  {t('regions.ind.deltaYoY', {
+                    pct: `${delta.up ? '+' : ''}${delta.pct.toFixed(1).replace('.', locale === 'en' ? '.' : ',')}`,
+                  })}
                 </span>
               )}
             </div>
           </div>
 
-          {/* График */}
           <div data-block="region-chart" className="bg-surface border border-border-subtle rounded-xl p-3 sm:p-4 mb-4" ref={chartRef}>
             <div className="flex flex-col gap-2 mb-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
               <div className="text-xs text-text-tertiary font-mono">
-                {first.year}–{last.year}, {showYoY ? 'изменение к предыдущему году, %' : data.indicator.unit}
+                {first.year}–{last.year}, {showYoY ? t('regions.ind.yoyUnit') : data.indicator.unit}
               </div>
               <div className="flex flex-wrap items-center gap-1.5" data-no-export="true">
                 <label
@@ -298,10 +321,10 @@ export default function RegionIndicatorPage() {
                       setCompareSlug(e.target.value);
                       if (e.target.value) track(events.REGION_COMPARE_ADD, { region: slug, compare: e.target.value, indicator: code });
                     }}
-                    aria-label="Сравнить с другим регионом"
+                    aria-label={t('regions.ind.compareOther')}
                     className="min-w-0 flex-1 bg-transparent text-xs text-inherit border-0 p-0 pr-0.5 cursor-pointer focus:outline-none appearance-auto"
                   >
-                    <option value="">Сравнить с регионом</option>
+                    <option value="">{t('regions.ind.comparePlaceholder')}</option>
                     {regionOptions.map(r => (
                       <option key={r.slug} value={r.slug}>{r.name}</option>
                     ))}
@@ -316,27 +339,27 @@ export default function RegionIndicatorPage() {
                         : 'border-border-subtle text-text-tertiary hover:text-text-secondary'
                     }`}
                   >
-                    {showRussia ? '— Россия' : '+ Россия'}
+                    {showRussia ? t('regions.ind.vsRussia') : t('regions.ind.addRussia')}
                   </button>
                 )}
                 {data.series.length > 2 && !isNegativeCapable(data.series) && (
                   <button
                     onClick={() => setShowYoY(v => !v)}
-                    title="Изменения к предыдущему году, в процентах"
+                    title={t('regions.ind.yoyTitle')}
                     className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
                       showYoY
                         ? 'border-border-champagne text-champagne bg-champagne/5'
                         : 'border-border-subtle text-text-tertiary hover:text-text-secondary'
                     }`}
                   >
-                    % г/г
+                    {t('regions.ind.yoyBtn')}
                   </button>
                 )}
                 <button
                   onClick={() => handleExportTable('csv')}
                   disabled={exporting}
-                  title="Скачать CSV"
-                  aria-label="Скачать CSV"
+                  title={t('regions.ind.downloadCsv')}
+                  aria-label={t('regions.ind.downloadCsv')}
                   className="text-xs px-2 py-1 rounded-full border border-border-subtle text-text-tertiary hover:text-champagne hover:border-border-champagne transition-colors inline-flex items-center gap-1 disabled:opacity-50"
                 >
                   <Download size={12} /> CSV
@@ -344,8 +367,8 @@ export default function RegionIndicatorPage() {
                 <button
                   onClick={() => handleExportTable('xlsx')}
                   disabled={exporting}
-                  title="Скачать Excel"
-                  aria-label="Скачать Excel"
+                  title={t('regions.ind.downloadExcel')}
+                  aria-label={t('regions.ind.downloadExcel')}
                   className="text-xs px-2 py-1 rounded-full border border-border-subtle text-text-tertiary hover:text-champagne hover:border-border-champagne transition-colors inline-flex items-center gap-1 disabled:opacity-50"
                 >
                   <Download size={12} /> Excel
@@ -353,8 +376,8 @@ export default function RegionIndicatorPage() {
                 <button
                   onClick={handleExportPng}
                   disabled={exporting}
-                  title="Скачать график картинкой"
-                  aria-label="Скачать график картинкой"
+                  title={t('regions.ind.downloadPng')}
+                  aria-label={t('regions.ind.downloadPng')}
                   className="text-xs px-2 py-1 rounded-full border border-border-subtle text-text-tertiary hover:text-champagne hover:border-border-champagne transition-colors inline-flex items-center gap-1 disabled:opacity-50"
                 >
                   <ImageIcon size={12} /> PNG
@@ -370,7 +393,7 @@ export default function RegionIndicatorPage() {
                 ? (showYoY ? toYoYSeries(compare.data?.series) : (compare.data?.series || null))
                 : null}
               compareName={compareSlug ? (compare.data?.region?.name || '') : ''}
-              unit={showYoY ? '% г/г' : data.indicator.unit}
+              unit={showYoY ? t('regions.ind.yoyShort') : data.indicator.unit}
               regionName={regionName}
               height={300}
             />
@@ -385,19 +408,21 @@ export default function RegionIndicatorPage() {
                   {compare.data.region.name}
                 </span>
                 <button onClick={() => setCompareSlug('')} className="text-text-tertiary underline hover:text-text-secondary">
-                  убрать сравнение
+                  {t('regions.ind.removeCompare')}
                 </button>
               </div>
             )}
           </div>
 
-          {/* Рейтинг + статистика */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6">
             {data.rank?.position && (
               <StatCell label={
-                data.rank.rank_as_achievement
-                  ? `Место в России, ${data.rank.year}`
-                  : `Положение в списке, ${data.rank.year}`
+                t(
+                  data.rank.rank_as_achievement
+                    ? 'regions.ind.rankAchieve'
+                    : 'regions.ind.rankNeutral',
+                  { year: data.rank.year },
+                )
               }
               >
                 <span className="inline-flex items-center gap-1.5">
@@ -406,7 +431,7 @@ export default function RegionIndicatorPage() {
                   )}
                   {data.rank.position}
                   {' '}
-                  из
+                  {t('regions.ind.of')}
                   {' '}
                   {data.rank.total}
                 </span>
@@ -414,27 +439,28 @@ export default function RegionIndicatorPage() {
             )}
             {stats && (
               <>
-                <StatCell label={`Максимум (${stats.maxYear})`}>
+                <StatCell label={t('regions.ind.max', { year: stats.maxYear })}>
                   {formatRegionValue(stats.max)}
                 </StatCell>
-                <StatCell label={`Минимум (${stats.minYear})`}>
+                <StatCell label={t('regions.ind.min', { year: stats.minYear })}>
                   {formatRegionValue(stats.min)}
                 </StatCell>
               </>
             )}
-            <StatCell label="Период данных">
+            <StatCell label={t('regions.ind.period')}>
               {first.year}–{last.year}
             </StatCell>
           </div>
 
-          {/* Верх рейтинга (В-31: не «лидеры» — для смертности/безработицы
-              максимум не достижение, нейтральная формулировка) */}
           {data.rank?.top?.length > 0 && (
             <div data-block="region-rating" className="bg-surface border border-border-subtle rounded-xl p-4 mb-6">
               <h2 className="text-sm font-semibold text-text-primary mb-3">
-                {data.rank.rank_as_achievement
-                  ? `Лучшие значения по регионам, ${data.rank.year}`
-                  : `Наибольшие значения по регионам, ${data.rank.year}`}
+                {t(
+                  data.rank.rank_as_achievement
+                    ? 'regions.ind.topAchieve'
+                    : 'regions.ind.topNeutral',
+                  { year: data.rank.year },
+                )}
               </h2>
               <ol className="space-y-1.5">
                 {data.rank.top.map((r, i) => (
@@ -464,7 +490,6 @@ export default function RegionIndicatorPage() {
             </div>
           )}
 
-          {/* Таблица значений */}
           <div className="bg-surface border border-border-subtle rounded-xl overflow-hidden mb-6">
             <button
               onClick={() => setShowTable(v => !v)}
@@ -473,7 +498,7 @@ export default function RegionIndicatorPage() {
             >
               <span className="flex items-center gap-2 text-sm font-medium text-text-primary">
                 <Table2 size={15} className="text-text-tertiary" />
-                Таблица значений по годам
+                {t('regions.ind.tableToggle')}
               </span>
               <ChevronDown size={16} className={`text-text-tertiary transition-transform ${showTable ? 'rotate-180' : ''}`} />
             </button>
@@ -482,10 +507,10 @@ export default function RegionIndicatorPage() {
                 <table className="w-full min-w-[18rem] text-[13px]">
                   <thead className="sticky top-0 bg-surface">
                     <tr className="text-left text-text-tertiary">
-                      <th className="px-3 py-2 font-medium sm:px-4">Год</th>
+                      <th className="px-3 py-2 font-medium sm:px-4">{t('regions.ind.colYear')}</th>
                       <th className="px-3 py-2 text-right font-medium sm:px-4">{regionName}</th>
                       {data.russia_series?.length > 0 && (
-                        <th className="px-3 py-2 text-right font-medium sm:px-4">Россия</th>
+                        <th className="px-3 py-2 text-right font-medium sm:px-4">{t('regions.ind.russia')}</th>
                       )}
                     </tr>
                   </thead>
@@ -510,16 +535,13 @@ export default function RegionIndicatorPage() {
             )}
           </div>
 
-          {/* Мост в макроблок: общероссийская карточка + сравнение */}
           {data.indicator.macro_code && (
             <div className="bg-surface border border-border-champagne/40 rounded-xl p-4 mb-6">
               <h2 className="text-sm font-semibold text-text-primary mb-2">
-                Показатель по России в целом
+                {t('regions.ind.macroTitle')}
               </h2>
               <p className="text-[13px] text-text-secondary leading-relaxed mb-3">
-                У этого показателя есть общероссийская карточка с более частым
-                обновлением и прогнозом, а в разделе сравнения можно наложить
-                регион и федеральный уровень на один график.
+                {t('regions.ind.macroBody')}
               </p>
               <div className="flex flex-wrap gap-2">
                 <Link
@@ -527,24 +549,23 @@ export default function RegionIndicatorPage() {
                   onClick={() => track(events.REGION_CROSSLINK_CLICK, { from: `region:${slug}:${code}`, to: data.indicator.macro_code })}
                   className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-champagne/10 text-champagne text-[13px] font-medium hover:bg-champagne/20 transition-colors"
                 >
-                  Открыть индикатор России <ArrowUpRight size={13} />
+                  {t('regions.ind.openRussia')} <ArrowUpRight size={13} />
                 </Link>
                 <Link
                   to={`/compare?codes=${data.indicator.macro_code},r:${slug}:${code}`}
                   onClick={() => track(events.REGION_CROSSLINK_CLICK, { from: `region:${slug}:${code}`, to: 'compare' })}
                   className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-border-subtle text-text-secondary text-[13px] font-medium hover:text-champagne hover:border-border-champagne transition-colors"
                 >
-                  <GitCompare size={13} /> Сравнить с Россией
+                  <GitCompare size={13} /> {t('regions.ind.compareRussia')}
                 </Link>
               </div>
             </div>
           )}
 
-          {/* Другие показатели раздела */}
           {data.siblings?.length > 0 && (
             <div>
               <h2 className="text-sm font-semibold text-text-primary mb-3">
-                Ещё в разделе «{data.indicator.section_name}»
+                {t('regions.ind.moreInSection', { section: data.indicator.section_name })}
               </h2>
               <div className="flex flex-wrap gap-2">
                 {data.siblings.map(s => (

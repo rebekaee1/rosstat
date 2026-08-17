@@ -16,7 +16,7 @@ import {
   russiaCategoryTrail,
 } from '../lib/breadcrumbs';
 import { getCategorySeo } from '../lib/pageMeta';
-import { useLocale } from '../i18n';
+import { useLocale, useT } from '../i18n';
 import {
   demographicsPath,
   russiaCategoryPath,
@@ -26,14 +26,15 @@ const CATEGORY_FEATURES = {
   population: {
     to: demographicsPath(),
     icon: Users,
-    title: 'Возрастная структура населения',
-    description: 'Визуализация трёх возрастных групп: дети, трудоспособные, старше трудоспособного. Данные Росстата.',
+    titleKey: 'category.feature.population.title',
+    descKey: 'category.feature.population.desc',
   },
 };
 
 export default function CategoryPage() {
   const { slug } = useParams();
   const { locale } = useLocale();
+  const t = useT();
   const cat = getCategoryBySlug(slug);
   const catSeo = getCategorySeo(slug, locale);
 
@@ -103,9 +104,9 @@ export default function CategoryPage() {
     return (
       <div className="max-w-2xl mx-auto px-4 pt-32 pb-24 text-center">
         <h1 className="text-6xl font-display font-bold text-text-primary mb-4">404</h1>
-        <p className="text-lg text-text-secondary mb-8">Категория не найдена</p>
+        <p className="text-lg text-text-secondary mb-8">{t('category.notFound')}</p>
         <Link to="/" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-champagne/10 text-champagne font-medium hover:bg-champagne/20 transition-colors">
-          На главную
+          {t('common.backHome')}
         </Link>
       </div>
     );
@@ -116,7 +117,7 @@ export default function CategoryPage() {
       <div className="max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-20 text-center">
         <p className="text-text-secondary mb-6">{cat.description}</p>
         <Link to="/" className="text-champagne hover:underline">
-          На главную
+          {t('common.backHome')}
         </Link>
       </div>
     );
@@ -150,8 +151,8 @@ export default function CategoryPage() {
               <Icon className="w-6 h-6 text-champagne" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-text-primary mb-0.5">{feat.title}</p>
-              <p className="text-xs text-text-secondary leading-relaxed">{feat.description}</p>
+              <p className="text-sm font-semibold text-text-primary mb-0.5">{t(feat.titleKey)}</p>
+              <p className="text-xs text-text-secondary leading-relaxed">{t(feat.descKey)}</p>
             </div>
             <ArrowRight className="w-5 h-5 text-champagne shrink-0 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
           </Link>
@@ -159,12 +160,12 @@ export default function CategoryPage() {
       })()}
 
       <div className="mb-8">
-        <IndicatorSearch variant="inline" inlinePlaceholder="Искать индикатор по всем категориям — например, инфляция или ВВП" />
+        <IndicatorSearch variant="inline" inlinePlaceholder={t('category.searchPlaceholder')} />
       </div>
 
       <section data-block="category-list" className="rounded-[2rem] border border-border-subtle bg-surface p-3 shadow-md ring-1 ring-black/[0.06] sm:p-6 md:p-8">
         <h2 className="mb-6 text-xs font-semibold uppercase tracking-[0.2em] text-text-primary/70">
-          Индикаторы
+          {t('category.indicatorsHeading')}
         </h2>
         {isError && (
           <ApiRetryBanner
@@ -172,8 +173,8 @@ export default function CategoryPage() {
             onRetry={() => refetch()}
             isFetching={isFetching}
           >
-            <span className="font-semibold">Список индикаторов сейчас недоступен.</span>{' '}
-            Чуть позже данные обычно подтягиваются — нажмите «Повторить».
+            <span className="font-semibold">{t('category.listUnavailable')}</span>{' '}
+            {t('category.retryHint')}
           </ApiRetryBanner>
         )}
         {isLoading ? (
@@ -183,7 +184,7 @@ export default function CategoryPage() {
             ))}
           </div>
         ) : isError ? null : filtered.length === 0 ? (
-          <p className="text-text-secondary">В этой категории пока нет показателей в базе.</p>
+          <p className="text-text-secondary">{t('category.empty')}</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {filtered.map((ind, i) => (
@@ -203,7 +204,7 @@ export default function CategoryPage() {
         <section data-block="related-categories" className="mt-12">
           <div className="flex items-center gap-4 mb-6">
             <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold">
-              Связанные категории
+              {t('category.related')}
             </h2>
             <div className="h-[1px] flex-1 bg-border-subtle" />
           </div>

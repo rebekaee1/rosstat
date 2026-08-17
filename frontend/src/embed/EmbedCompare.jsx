@@ -1,3 +1,4 @@
+import { useT } from '../i18n';
 import { useMemo, useState } from 'react';
 import {
   ResponsiveContainer, ComposedChart, Line, XAxis, YAxis,
@@ -37,6 +38,7 @@ function CompareTooltip({ active, payload, label, unitA, unitB, nameA, nameB, co
 }
 
 export default function EmbedCompare() {
+  const t = useT();
   const { theme, height, period: initPeriod, codeA, codeB, showTitle } = useEmbedParams();
   const [period, setPeriod] = useState(initPeriod);
   const colors = THEME_COLORS[theme];
@@ -102,11 +104,11 @@ export default function EmbedCompare() {
           </div>
         ) : isError ? (
           <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: colors.textTertiary, fontSize: 13, fontFamily: 'system-ui' }}>
-            Ошибка загрузки данных
+            {t('embed.loadError')}
           </div>
         ) : chartData.length === 0 ? (
           <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: colors.textTertiary, fontSize: 13 }}>
-            Нет данных
+            {t('embed.noData')}
           </div>
         ) : (
           <ResponsiveContainer width="100%" height={Math.max(120, chartH)}>

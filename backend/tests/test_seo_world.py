@@ -407,6 +407,21 @@ def test_seo_world_country(world_seo_client):
     assert crumbs[0] == "Главная"
 
 
+def test_seo_world_country_locale_en(world_seo_client):
+    r = world_seo_client.get("/seo/world/germany?preview_locale=en")
+    assert r.status_code == 200
+    html = r.text
+    title = re.search(r"<title>([^<]+)</title>", html).group(1)
+    assert title == "Economy of Germany: statistics and indicators"
+    assert not re.search(r"[А-Яа-яЁё]", title)
+    assert "<h1>Economy of Germany: statistics and indicators</h1>" in html
+    assert "Eurostat" in html
+    assert "Евростат" not in re.search(r"<h1>[^<]+</h1>", html).group(0)
+    # RU regression intact without preview
+    r_ru = world_seo_client.get("/seo/world/germany")
+    assert "Экономика Германии" in r_ru.text
+
+
 def test_seo_world_indicator(world_seo_client):
     code = "de-prc_hicp_midx-cp00-i15"
     r = world_seo_client.get(f"/seo/world/germany/{code}")

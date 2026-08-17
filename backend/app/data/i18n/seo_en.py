@@ -2,6 +2,8 @@
 
 Framework imports:
   - ``seo_i18n.get_page_seo`` / ``get_category_seo`` → ``PAGE_META_EN`` / ``CATEGORY_META_EN``
+  - ``seo_i18n.home_template`` → ``HOME_TEMPLATES_EN`` (apex homepage SSR fragments)
+  - ``seo_i18n.page_template`` → ``PAGE_TEMPLATES_EN`` (PAGE_META section headings)
   - ``seo_i18n.world_home_*`` → ``WORLD_HOME_*_EN``
   - ``seo_i18n.regional_template(key)`` → ``REGIONAL_TEMPLATES_EN``
 
@@ -277,7 +279,6 @@ PAGE_META_EN: dict[str, PageSeo] = {
         intro=(
             "Forecast Economy collects macroeconomic indicators for countries from "
             "national statistical agencies, central banks, and Eurostat. "
-            "Russia and its regions are covered with deep historical series. "
             "Data come only from official primary sources and are shown as charts, "
             "tables, comparisons, and forecasts. Viewing is open to everyone; "
             "downloads require free registration."
@@ -664,6 +665,32 @@ PAGE_META_EN: dict[str, PageSeo] = {
 }
 
 # ---------------------------------------------------------------------------
+# Apex homepage SSR fragments (eyebrow / section h2 / ItemList names)
+# Used by seo_renderer.render_home_html when locale=en.
+# PAGE_TEMPLATES_EN — section h2 for PAGE_META SSR (/russia, /russia/category, …).
+# ---------------------------------------------------------------------------
+
+HOME_TEMPLATES_EN: dict[str, str] = {
+    "eyebrow": "Official data for Russia, regions, and countries",
+    "h2_categories": "Indicator categories",
+    "h2_flagships": "Key indicators",
+    "h2_tools": "Tools and sections",
+    "itemlist_categories": "Categories of Russian macroeconomic indicators",
+    "itemlist_flagships": "Key macroeconomic indicators",
+}
+
+# ---------------------------------------------------------------------------
+# Static PAGE_META SSR section headings (russia hub, categories hub, …)
+# Used by seo_renderer._page_body / render_categories_hub_html / render_category_html.
+# ---------------------------------------------------------------------------
+
+PAGE_TEMPLATES_EN: dict[str, str] = {
+    "h2_related": "Related sections",
+    "h2_categories": "Categories",
+    "h2_section_indicators": "Indicators in this section",
+}
+
+# ---------------------------------------------------------------------------
 # World hub constants
 # ---------------------------------------------------------------------------
 
@@ -805,7 +832,13 @@ WORLD_TEMPLATES_EN: dict[str, str] = {
         "Data are published by Eurostat. Series on this site use the source units; "
         "the date of the latest value is shown for each indicator."
     ),
+    "country_figcaption": (
+        "Key economic indicators for {country}. Source: {source_phrase}. "
+        "forecasteconomy.com"
+    ),
     "country_h2_neighbors": "Other countries",
+    "country_image_name": "Economy of {country} — indicator summary",
+    "country_section_total": "Total in this section — {n} indicators.",
     "country_h2_russia": "Russia",
     "country_russia_p": (
         "Compare with Russian series in "
@@ -1083,15 +1116,164 @@ REGIONAL_TEMPLATES_EN: dict[str, str] = {
     'regions_hub.title': 'Regions of Russia — socio-economic indicators for 85 federal subjects',
     'regions_hub.description': 'Statistics for 85 regions of Russia: population, wages, GRP, unemployment, investment, prices — 489 Rosstat indicators from 1990. Charts, regional rankings, and comparison with the national level.',
     'regions_hub.h1': 'Regions of Russia',
+    'regions_hub.eyebrow': 'Rosstat regional statistics',
+    'regions_hub.lead': (
+        'Official statistics for {n_regions} federal subjects of the Russian Federation: '
+        'population, employment and wages, living standards, gross regional product, '
+        'investment, industry, agriculture, construction, trade, transport, science and prices. '
+        'In total {n_ind} indicators since 1990 from the Rosstat yearbook '
+        '"Regions of Russia. Socio-economic indicators".'
+    ),
+    'regions_hub.ratings_h2': 'Rankings and regional map',
+    'regions_hub.ratings_p': (
+        'All federal subjects by indicator value: a full ranking table '
+        'or an interactive map with a year selector.'
+    ),
+    'regions_hub.ratings_h3': 'Rankings',
+    'regions_hub.map_h3': 'Map',
+    'regions_hub.keywords': (
+        'regions of russia statistics, regional economy, federal subject indicators'
+    ),
     'region_profile.title': '{region} — regional statistics: population, wages, GRP, prices',
     'region_profile.description': "Official Rosstat data for {region}: population, labour market, wages, GRP, investment, construction, prices. Charts and the region's place in Russia-wide rankings.",
     'region_profile.h1': '{region}: socio-economic indicators',
+    'region_profile.eyebrow': 'Rosstat regional statistics',
+    'region_profile.lead': (
+        'Official Rosstat data for {region}: {catalog_line} across {n_sections} sections — '
+        'from population and wages to gross regional product, investment and consumer prices. '
+        'Series since 1990; each indicator has a dynamics chart and the region’s place among '
+        'federal subjects.'
+    ),
+    'region_profile.catalog_partial': (
+        '{n_catalog} indicators in the catalogue; regional data for {n_present}'
+    ),
+    'region_profile.catalog_full': '{n_catalog} indicators',
+    'region_profile.see_also': 'See also',
+    'region_profile.all_regions': 'All regions of Russia',
+    'region_profile.russia_summary': '{russia} — aggregate figures',
+    'region_profile.keywords': (
+        '{region} statistics, {region} economy, {region} population, '
+        '{region} wages, {region} GRP'
+    ),
     'region_indicator.title': '{indicator} — {region}: {value} ({year})',
     'region_indicator.description': '{indicator} in {region}: {value} {unit} in {year}. Dynamics since the 1990s, comparison with Russia, and place among federal subjects.',
     'region_indicator.h1': '{indicator} in {region}',
+    'region_indicator.p1': (
+        '{indicator} in {region} in {year}: {value}{unit}.'
+    ),
+    'region_indicator.p1_change': ' Over the year the indicator {change}.',
+    'region_indicator.p2_5y': (
+        'Over five years (since {year}) the indicator {change}.'
+    ),
+    'region_indicator.p2_full': (
+        ' Since {first_year}, the start of the available series, the indicator {change} '
+        '(from {first_value} to {last_value}{unit}).'
+    ),
+    'region_indicator.p3': (
+        'By this indicator {region} {rank} in {year}{rating_ref}.'
+    ),
+    'region_indicator.p3_rf': (
+        ' The Russia-wide figure is {rf_value}{unit}: the region is {rel} the national average.'
+    ),
+    'region_indicator.rel_above': 'above',
+    'region_indicator.rel_below': 'below',
+    'region_indicator.rel_level': 'in line with',
+    'region_indicator.rating_full': 'full regional ranking',
+    'region_indicator.rating_table': 'table for all regions',
+    'region_indicator.p4': (
+        'Maximum over the full observation period — {vmax}{unit} in {ymax}, '
+        'minimum — {vmin}{unit} in {ymin}. '
+        'Data are updated annually as Rosstat releases the yearbook.'
+    ),
+    'region_indicator.checkpoints_h2': '{indicator} in {region} at checkpoint years',
+    'region_indicator.checkpoint_item': '{year} — {value}{unit}',
+    'region_indicator.faq_h2': 'Questions and answers',
+    'region_indicator.faq_value_q': 'What is “{indicator}” in {region}?',
+    'region_indicator.faq_value_a': 'According to Rosstat for {year} — {value} {unit}.',
+    'region_indicator.faq_rank_q': (
+        'What place does {region} hold for this indicator among Russian regions?'
+    ),
+    'region_indicator.faq_rank_a': (
+        '{position} of {total} federal subjects as of {year}.'
+    ),
+    'region_indicator.faq_list_q': (
+        'Where does {region} sit in the list by indicator magnitude?'
+    ),
+    'region_indicator.faq_list_a': (
+        '{position} of {total} federal subjects when ordered by descending value for {year}.'
+    ),
+    'region_indicator.faq_change_q': 'How did the indicator change over the last year?',
+    'region_indicator.faq_change_a': (
+        'From {prev_year} to {year} the indicator {change}.'
+    ),
+    'region_indicator.faq_source_q': 'Where do the data come from and how often are they updated?',
+    'region_indicator.faq_source_a': (
+        'Source — the official Rosstat yearbook "Regions of Russia. Socio-economic indicators". '
+        'Figures are annual and update after each new yearbook release.'
+    ),
+    'region_indicator.macro_h2': 'Russia-wide indicator',
+    'region_indicator.macro_p': (
+        'Russia-wide dynamics with more frequent updates and a forecast — on the '
+        '<a href="{href}">national indicator</a> page. Compare the region with the federal '
+        'level in <a href="{compare}">Compare</a>.'
+    ),
+    'region_indicator.neighbors_h2': 'This indicator in neighbouring regions of the district',
+    'region_indicator.table_h2': '{indicator} by year',
+    'region_indicator.th_year': 'Year',
+    'region_indicator.th_value': 'Value',
+    'region_indicator.alt': (
+        '{indicator} — {region}: dynamics chart {first}–{last}, '
+        'latest value {value} {unit}'
+    ),
+    'region_indicator.caption': (
+        '{indicator} in {region}, {first}–{last}. Source: Rosstat.'
+    ),
+    'region_indicator.siblings_h2': 'More in “{section}”',
+    'region_indicator.rank_bit_achievement': (
+        ', place {position} among {total} Russian regions.'
+    ),
+    'region_indicator.rank_bit_list': (
+        ', position {position} by magnitude among {total} Russian regions.'
+    ),
+    'region_indicator.rank_bit_none': '. Rosstat data.',
+    'region_indicator.keywords': (
+        '{indicator} {region}, {region} {indicator} by year, '
+        '{indicator} {region} chart, {region} statistics'
+    ),
+    'region_indicator.pct_flat': 'was virtually unchanged',
+    'region_indicator.pct_up': 'rose',
+    'region_indicator.pct_down': 'fell',
+    'region_indicator.pct_by': ' by {pct}%',
+    'region_indicator.pct_times': ' {times}',
+    'region_indicator.times_word': '{n} times',
+    'region_indicator.rank_top3': 'ranks in the top three among {total} federal subjects',
+    'region_indicator.rank_top10': 'ranks in the top ten among {total} federal subjects',
+    'region_indicator.rank_bottom': 'is near the bottom of the ranking — place {position} of {total}',
+    'region_indicator.rank_place': 'holds place {position} of {total}',
+    'region_indicator.list_top3': (
+        'is among the three regions with the largest values among {total} federal subjects'
+    ),
+    'region_indicator.list_top10': (
+        'is among the ten regions with the largest values among {total} federal subjects'
+    ),
+    'region_indicator.list_bottom': (
+        'is near the end of the list by magnitude — position {position} of {total}'
+    ),
+    'region_indicator.list_place': (
+        'holds position {position} in the list by magnitude out of {total}'
+    ),
     'region_rating_hub.title': 'Rankings of Russian regions by Rosstat indicators',
     'region_rating_hub.description': 'Compare federal subjects of the Russian Federation on socio-economic indicators: full ranking tables, top and bottom of each ranking. Rosstat data.',
     'region_rating_hub.h1': 'Rankings of Russian regions',
+    'region_rating_hub.eyebrow': 'Rosstat regional statistics',
+    'region_rating_hub.lead': (
+        'Choose an indicator to see the full ranking of federal subjects for the latest '
+        'available year: each region’s place, leaders and laggards, and links to regional series.'
+    ),
+    'region_rating_hub.keywords': (
+        'russian region rankings, compare federal subjects, '
+        'top regions by indicator, rosstat regions'
+    ),
     'region_rating.title': 'Ranking of Russian regions: {indicator} ({year})',
     'region_rating.description': "{indicator} across regions of Russia in {year}: full ranking of federal subjects, top and bottom of the table, links to each region's time series.",
     'region_rating.h1': '{indicator}: ranking of regions, {year}',
@@ -1164,9 +1346,65 @@ REGIONAL_TEMPLATES_EN: dict[str, str] = {
     'region_rating.image_name': '{indicator} — {rank_word} of Russian regions, {year}',
     'region_rating.siblings_rankings': 'Other rankings in «{section}»',
     'region_rating.siblings_indicators': 'Other indicators in «{section}»',
+    'region_rating.source_label': 'Source: Rosstat.',
     'region_map.title': 'Map of Russian regions: {indicator} ({year})',
     'region_map.description': '{indicator} on the map of Russian regions for {year}. Spatial view of 85 federal subjects with links to rankings and regional cards.',
     'region_map.h1': '{indicator} on the map of Russian regions, {year}',
+    'region_map.eyebrow': '{section} — regions map',
+    'region_map.lead': (
+        'Interactive map of {total} federal subjects of the Russian Federation for '
+        '«{indicator}»{year_note}. Region colour reflects the value relative to other '
+        'subjects; the on-page slider switches years from {first_year} to {last_year}. '
+        'Data — Rosstat yearbook "Regions of Russia. Socio-economic indicators".'
+    ),
+    'region_map.year_note': ' for {year}',
+    'region_map.year_note_stale': ' for {year} (latest available — {last_year})',
+    'region_map.tile_year': 'Year on the map',
+    'region_map.tile_regions': 'Regions in the slice',
+    'region_map.leaders_h2': '{label} {year}',
+    'region_map.rating_h2': 'Full table',
+    'region_map.rating_p': 'Full table — <a href="{href}">{label}</a>.',
+    'region_map.rating_label_achievement': 'regional ranking for «{indicator}»',
+    'region_map.rating_label_list': 'regional table for «{indicator}»',
+    'region_map.years_h2': 'Other years',
+    'region_map.source_h2': 'Source',
+    'region_map.source_p': (
+        'Rosstat, units: {unit}. After the page loads, an interactive map is available '
+        'with year selection and links to regional cards.'
+    ),
+    'region_map.caption': (
+        '{indicator} by region, {year}. Source: Rosstat. forecasteconomy.com'
+    ),
+    'region_map.alt': (
+        '{indicator} across Russian regions — map, {year}, '
+        '{best_label} — {top_name} ({top_value})'
+    ),
+    'region_map.crumb': 'Map: {indicator}',
+    'region_map.overview_title': 'Map of Russian regions — overview of federal subjects',
+    'region_map.overview_desc': (
+        'Interactive map of 85 federal subjects of the Russian Federation: open a region '
+        'profile or pick a Rosstat indicator for a colour scale by year. Forecast Economy.'
+    ),
+    'region_map.overview_h1': 'Map of Russian regions',
+    'region_map.overview_eyebrow': 'Interactive map of federal subjects',
+    'region_map.overview_lead': (
+        'Overview mode: click a subject to open its regional profile with all Rosstat '
+        'yearbook indicators. Choose an indicator on the page to see a colour map and '
+        'year-by-year dynamics.'
+    ),
+    'region_map.overview_popular_h2': 'Popular map slices',
+    'region_map.overview_rankings_h2': 'Rankings',
+    'region_map.overview_rankings_p': (
+        'See the place table for an indicator in the '
+        '<a href="{href}">regional rankings</a> section.'
+    ),
+    'region_map.overview_keywords': (
+        'map of russian regions, federal subjects on the map, russia regions statistics'
+    ),
+    'region_map.keywords': (
+        '{indicator} regions map, {indicator} by russian regions, '
+        'federal subjects map {indicator}, {indicator} {year}'
+    ),
 }
 
 # ---------------------------------------------------------------------------
@@ -1334,6 +1572,7 @@ INDICATOR_TEMPLATES_EN: dict[str, str] = {
     "th_value": "Value",
     "th_value_unit": "Value, {unit}",
     "th_cpi_change": "Price change, %",
+    "keywords": "{name}, {name} chart, {name} Russia, economic statistics",
     "forecast_desc_tail": (
         "Latest figures and a model forecast for the near term."
     ),

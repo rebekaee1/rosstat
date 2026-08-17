@@ -6,6 +6,8 @@
  *
  * Вторичные коды (YoY, QoQ, квартальные агрегаты) скрыты из листинга категории
  * через INDICATOR_HIDDEN_FROM_LISTING в backend/app/data/indicator_seo.py.
+ *
+ * label — RU fallback; labelKey — messages.ru/en (VariantGroupPicker / related cards).
  */
 import { t } from '../i18n/messages';
 
@@ -24,156 +26,142 @@ export const VARIANT_GROUPS = [
   // gdp-real — режимы на /russia/indicator/gdp-real?mode=… (gdpRealViewMode*).
   {
     label: 'ВВП по использованию',
+    labelKey: 'variant.gdpUse.group',
     codes: [
-      { code: 'gdp-consumption', label: 'Домохозяйства' },
-      { code: 'gdp-government', label: 'Государство' },
-      { code: 'gdp-investment', label: 'Инвестиции' },
+      { code: 'gdp-consumption', label: 'Домохозяйства', labelKey: 'variant.gdpUse.households' },
+      { code: 'gdp-government', label: 'Государство', labelKey: 'variant.gdpUse.government' },
+      { code: 'gdp-investment', label: 'Инвестиции', labelKey: 'variant.gdpUse.investment' },
     ],
   },
   // ИЦП: режимы на /russia/indicator/ppi?mode=… (ppiViewMode*), не variant-URL.
-  // ИПП: общий индекс + четыре раздела ОКВЭД2 (добыча / обработка / энергетика /
-  // водоснабжение) — это РАЗНЫЕ ряды (variant), у каждого свой ViewModePicker
-  // (Г/г / М/м / средние / уровень). Не путать со старой группой `ipi-yoy + ipi`
-  // (один ряд, разные представления = view-mode) — та была удалена. Эта же —
-  // легитимный variant, как первичное/вторичное жильё (звонок 2026-06-25:
-  // «объединить все индикаторы про Индекс производства»). Дефолт-редирект
-  // ipi→?mode=yoy сохраняется; pill'ы ведут на sibling-коды.
+  // ИПП: общий индекс + четыре раздела ОКВЭД2 — РАЗНЫЕ ряды (variant).
   {
     label: 'Состав промышленного производства',
+    labelKey: 'variant.ipi.group',
     codes: [
-      { code: 'ipi', label: 'Все отрасли' },
-      { code: 'ipi-mining', label: 'Добыча' },
-      { code: 'ipi-manufacturing', label: 'Обработка' },
-      { code: 'ipi-energy', label: 'Энергетика' },
-      { code: 'ipi-water', label: 'Водоснабжение' },
+      { code: 'ipi', label: 'Все отрасли', labelKey: 'variant.ipi.all' },
+      { code: 'ipi-mining', label: 'Добыча', labelKey: 'variant.ipi.mining' },
+      { code: 'ipi-manufacturing', label: 'Обработка', labelKey: 'variant.ipi.manufacturing' },
+      { code: 'ipi-energy', label: 'Энергетика', labelKey: 'variant.ipi.energy' },
+      { code: 'ipi-water', label: 'Водоснабжение', labelKey: 'variant.ipi.water' },
     ],
   },
-  // Цены на топливо (звонок 2026-06-25: «объединить АИ-92, АИ-95, дизель»).
-  // Три разных продукта = три ряда (variant), каждый с недельным ViewModePicker
-  // (неделя / средние по периодам). В каталоге показываем АИ-92; АИ-95 и дизель
-  // скрыты из листинга, доступны через pill.
   {
     label: 'Цены на топливо',
+    labelKey: 'variant.fuel.group',
     codes: [
-      { code: 'fuel-ai92', label: 'Бензин АИ-92' },
-      { code: 'fuel-ai95', label: 'Бензин АИ-95' },
-      { code: 'fuel-diesel', label: 'Дизельное топливо' },
+      { code: 'fuel-ai92', label: 'Бензин АИ-92', labelKey: 'variant.fuel.ai92' },
+      { code: 'fuel-ai95', label: 'Бензин АИ-95', labelKey: 'variant.fuel.ai95' },
+      { code: 'fuel-diesel', label: 'Дизельное топливо', labelKey: 'variant.fuel.diesel' },
     ],
   },
-  // unemployment — режимы на /russia/indicator/unemployment?mode=… (unemploymentViewMode*).
-  // wages-nominal — режимы на /russia/indicator/wages-nominal?mode=… (wagesNominalViewMode*).
-  // Внешняя торговля (созвон B_diarized): объединяем парные ряды в variant-группы
-  // (экспорт↔импорт товаров, экспорт↔импорт услуг, торговый баланс↔сальдо
-  // текущего счёта). Каждый — самостоятельный индикатор со своим рядом и полной
-  // матрицей режимов (ViewModePicker остаётся). Частоту (квартал/месяц) держит
-  // отдельный FrequencySwitcher.
   {
     label: 'Внешняя торговля товарами',
+    labelKey: 'variant.tradeGoods.group',
     codes: [
-      { code: 'exports', label: 'Экспорт товаров' },
-      { code: 'imports', label: 'Импорт товаров' },
+      { code: 'exports', label: 'Экспорт товаров', labelKey: 'variant.tradeGoods.exports' },
+      { code: 'imports', label: 'Импорт товаров', labelKey: 'variant.tradeGoods.imports' },
     ],
   },
   {
     label: 'Внешняя торговля услугами',
+    labelKey: 'variant.tradeServices.group',
     codes: [
-      { code: 'services-exports', label: 'Экспорт услуг' },
-      { code: 'services-imports', label: 'Импорт услуг' },
+      { code: 'services-exports', label: 'Экспорт услуг', labelKey: 'variant.tradeServices.exports' },
+      { code: 'services-imports', label: 'Импорт услуг', labelKey: 'variant.tradeServices.imports' },
     ],
   },
   {
     label: 'Внешний баланс',
+    labelKey: 'variant.extBalance.group',
     codes: [
-      { code: 'trade-balance', label: 'Торговый баланс' },
-      { code: 'current-account', label: 'Сальдо текущего счёта' },
+      { code: 'trade-balance', label: 'Торговый баланс', labelKey: 'variant.extBalance.trade' },
+      { code: 'current-account', label: 'Сальдо текущего счёта', labelKey: 'variant.extBalance.current' },
     ],
   },
-  // Phase 3 (ADR-0006): первичное/вторичное — разные ряды (variant).
-  // Режимы «Индекс / г/г» — ViewModePicker на карточке parent (?mode=yoy),
-  // не отдельные URL (housing-yoy-* скрыты из листинга).
   {
     label: 'Рынок жилья',
+    labelKey: 'variant.housing.group',
     codes: [
-      { code: 'housing-price-primary', label: 'Первичное жильё' },
-      { code: 'housing-price-secondary', label: 'Вторичное жильё' },
+      { code: 'housing-price-primary', label: 'Первичное жильё', labelKey: 'variant.housing.primary' },
+      { code: 'housing-price-secondary', label: 'Вторичное жильё', labelKey: 'variant.housing.secondary' },
     ],
   },
-  // Индекс доступности жилья: первичный/вторичный рынок — разные ряды (variant),
-  // одинаковый набор режимов (T12). В каталоге показываем вторичный; первичный
-  // скрыт из листинга (housing-affordability-primary), доступен через pill.
   {
     label: 'Доступность жилья',
+    labelKey: 'variant.afford.group',
     codes: [
-      { code: 'housing-affordability', label: 'Вторичное жильё' },
-      { code: 'housing-affordability-primary', label: 'Первичное жильё' },
+      { code: 'housing-affordability', label: 'Вторичное жильё', labelKey: 'variant.afford.secondary' },
+      { code: 'housing-affordability-primary', label: 'Первичное жильё', labelKey: 'variant.afford.primary' },
     ],
   },
   {
     label: 'Ставки по кредитам юридическим лицам',
+    labelKey: 'variant.creditCorp.group',
     codes: [
-      { code: 'credit-rate-corp-short', label: 'До 1 года' },
-      { code: 'credit-rate-corp-1to3y', label: 'От 1 до 3 лет' },
-      { code: 'credit-rate-corp-over3y', label: 'Свыше 3 лет' },
+      { code: 'credit-rate-corp-short', label: 'До 1 года', labelKey: 'variant.term.short' },
+      { code: 'credit-rate-corp-1to3y', label: 'От 1 до 3 лет', labelKey: 'variant.term.1to3' },
+      { code: 'credit-rate-corp-over3y', label: 'Свыше 3 лет', labelKey: 'variant.term.over3' },
     ],
   },
   {
     label: 'Ставки по кредитам физическим лицам',
+    labelKey: 'variant.creditInd.group',
     codes: [
-      { code: 'credit-rate-ind-short', label: 'До 1 года' },
-      { code: 'credit-rate-ind-1to3y', label: 'От 1 до 3 лет' },
-      { code: 'credit-rate-ind-over3y', label: 'Свыше 3 лет' },
+      { code: 'credit-rate-ind-short', label: 'До 1 года', labelKey: 'variant.term.short' },
+      { code: 'credit-rate-ind-1to3y', label: 'От 1 до 3 лет', labelKey: 'variant.term.1to3' },
+      { code: 'credit-rate-ind-over3y', label: 'Свыше 3 лет', labelKey: 'variant.term.over3' },
     ],
   },
   {
     label: 'Ставки по вкладам физических лиц',
+    labelKey: 'variant.deposit.group',
     codes: [
-      { code: 'deposit-rate', label: 'До 1 года' },
-      { code: 'deposit-rate-medium', label: 'От 1 до 3 лет' },
-      { code: 'deposit-rate-long', label: 'Свыше 3 лет' },
+      { code: 'deposit-rate', label: 'До 1 года', labelKey: 'variant.term.short' },
+      { code: 'deposit-rate-medium', label: 'От 1 до 3 лет', labelKey: 'variant.term.1to3' },
+      { code: 'deposit-rate-long', label: 'Свыше 3 лет', labelKey: 'variant.term.over3' },
     ],
   },
   {
     label: 'Федеральный бюджет',
+    labelKey: 'variant.budget.group',
     codes: [
-      { code: 'budget-revenue', label: 'Доходы' },
-      { code: 'budget-expenditure', label: 'Расходы' },
-      { code: 'budget-deficit', label: 'Дефицит/профицит' },
+      { code: 'budget-revenue', label: 'Доходы', labelKey: 'variant.budget.revenue' },
+      { code: 'budget-expenditure', label: 'Расходы', labelKey: 'variant.budget.expenditure' },
+      { code: 'budget-deficit', label: 'Дефицит/профицит', labelKey: 'variant.budget.deficit' },
     ],
   },
   {
     label: 'Кредиты и вклады населения',
+    labelKey: 'variant.creditDeposit.group',
     codes: [
-      { code: 'consumer-credit', label: 'Кредиты физлицам' },
-      { code: 'deposits-individual', label: 'Вклады физлицам' },
+      { code: 'consumer-credit', label: 'Кредиты физлицам', labelKey: 'variant.creditDeposit.credit' },
+      { code: 'deposits-individual', label: 'Вклады физлицам', labelKey: 'variant.creditDeposit.deposits' },
     ],
   },
   {
     label: 'Денежные агрегаты',
+    labelKey: 'variant.money.group',
     codes: [
-      { code: 'm0', label: 'М0' },
-      { code: 'm1', label: 'М1' },
-      { code: 'm2', label: 'М2' },
+      { code: 'm0', label: 'М0', labelKey: 'variant.money.m0' },
+      { code: 'm1', label: 'М1', labelKey: 'variant.money.m1' },
+      { code: 'm2', label: 'М2', labelKey: 'variant.money.m2' },
     ],
   },
   {
     label: 'Рынок труда: занятость',
+    labelKey: 'variant.labor.group',
     codes: [
-      { code: 'labor-force', label: 'Рабочая сила' },
-      { code: 'employment', label: 'Занятое население' },
+      { code: 'labor-force', label: 'Рабочая сила', labelKey: 'variant.labor.force' },
+      { code: 'employment', label: 'Занятое население', labelKey: 'variant.labor.employment' },
     ],
   },
-  // Заработная плата (звонок 2026-06-25: «объединить реальную со средней»).
-  // Номинальная (₽) и реальная (индекс покупательной способности 2015=100) —
-  // разные ряды и разные единицы → variant (pill), а не view-mode. У каждого
-  // полная матрица режимов (свой ViewModePicker). Обе карточки ПОКАЗАНЫ в
-  // каталоге «Рынок труда» (уточнение звонка 2026-06-25: реальная зарплата
-  // должна быть видна отдельной плиткой, а не только внутри номинальной), и
-  // при этом связаны переключателем «Номинальная / Реальная».
   {
     label: 'Заработная плата',
+    labelKey: 'variant.wages.group',
     codes: [
-      { code: 'wages-nominal', label: 'Номинальная' },
-      { code: 'wages-real', label: 'Реальная' },
+      { code: 'wages-nominal', label: 'Номинальная', labelKey: 'variant.wages.nominal' },
+      { code: 'wages-real', label: 'Реальная', labelKey: 'variant.wages.real' },
     ],
   },
 ];

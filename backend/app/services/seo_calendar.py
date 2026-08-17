@@ -49,7 +49,7 @@ async def render_calendar_month_html(
         return 404, "Not found"
 
     from app.api.calendar import _public_calendar_conditions
-    from app.services.seo_i18n import calendar_month_name, calendar_template, event_public_title
+    from app.services.seo_i18n import calendar_month_name, calendar_template, event_public_title, localize_reference_period
 
     events = (await db.execute(
         select(EconomicEvent)
@@ -85,7 +85,8 @@ async def render_calendar_month_html(
     for ev in events:
         d = ev.scheduled_date
         src = source_names.get(ev.source, ev.source)
-        period = f" ({escape(ev.reference_period)})" if ev.reference_period else ""
+        ref = localize_reference_period(ev.reference_period)
+        period = f" ({escape(ref)})" if ref else ""
         value = ""
         if ev.actual_value:
             if actual_prefix:

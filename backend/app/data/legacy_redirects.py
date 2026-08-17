@@ -63,7 +63,11 @@ _SIBLING_SUFFIXES: tuple[str, ...] = (
 LEGACY_REGION_SLUG_PREFIXES = ("respublika-",)
 
 _WORLD_FREQ_SUFFIX_RE = re.compile(
-    r",\s*(помесячно|поквартально|за год|понедельно|по дням)\s*$",
+    r"(?:"
+    r",\s*(помесячно|поквартально|за год|понедельно|по дням)"
+    r"|"
+    r"\s*[-–—]\s*(monthly|quarterly|annual|yearly|weekly|daily)\s+data"
+    r")\s*$",
     re.I,
 )
 _WORLD_FREQ_RANK = {

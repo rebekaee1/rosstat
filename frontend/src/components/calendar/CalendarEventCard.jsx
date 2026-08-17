@@ -8,6 +8,7 @@ import { trackOutbound } from '../../lib/track';
 import {
   russiaIndicatorPath,
 } from '../../lib/sitePaths';
+import { useT } from '../../i18n';
 
 const SOURCE_STYLES = {
   cbr: {
@@ -15,34 +16,36 @@ const SOURCE_STYLES = {
     bg: 'bg-blue-50',
     text: 'text-blue-700',
     dot: 'bg-blue-500',
-    label: 'ЦБ РФ',
+    labelKey: 'calendar.filter.cbr',
   },
   rosstat: {
     border: 'border-l-emerald-500',
     bg: 'bg-emerald-50',
     text: 'text-emerald-700',
     dot: 'bg-emerald-500',
-    label: 'Росстат',
+    labelKey: 'calendar.filter.rosstat',
   },
   minfin: {
     border: 'border-l-amber-500',
     bg: 'bg-amber-50',
     text: 'text-amber-700',
     dot: 'bg-amber-500',
-    label: 'Минфин',
+    labelKey: 'calendar.filter.minfin',
   },
 };
 
 const IMPORTANCE_CONFIG = {
-  3: { dots: 3, label: 'Высокая', color: 'text-red-500' },
-  2: { dots: 2, label: 'Средняя', color: 'text-champagne' },
-  1: { dots: 1, label: 'Низкая', color: 'text-text-tertiary' },
+  3: { dots: 3, labelKey: 'calendar.event.importance.high', color: 'text-red-500' },
+  2: { dots: 2, labelKey: 'calendar.event.importance.medium', color: 'text-champagne' },
+  1: { dots: 1, labelKey: 'calendar.event.importance.low', color: 'text-text-tertiary' },
 };
 
 function ImportanceDots({ level }) {
+  const t = useT();
   const cfg = IMPORTANCE_CONFIG[level] || IMPORTANCE_CONFIG[2];
+  const levelLabel = t(cfg.labelKey);
   return (
-    <span className={cn('inline-flex gap-0.5', cfg.color)} title={cfg.label + ' важность'}>
+    <span className={cn('inline-flex gap-0.5', cfg.color)} title={t('calendar.event.importance', { level: levelLabel })}>
       {[1, 2, 3].map((i) => (
         <span
           key={i}
@@ -67,10 +70,11 @@ function ValueCell({ label, value, className }) {
 }
 
 function ActualValueCell({ value, previous, forecast }) {
+  const t = useT();
   if (!value && value !== 0) {
     return (
       <div className="text-center">
-        <div className="text-[10px] uppercase tracking-wider text-text-tertiary mb-0.5">Факт</div>
+        <div className="text-[10px] uppercase tracking-wider text-text-tertiary mb-0.5">{t('calendar.event.fact')}</div>
         <div className="text-sm text-text-tertiary">—</div>
       </div>
     );
@@ -88,7 +92,7 @@ function ActualValueCell({ value, previous, forecast }) {
 
   return (
     <div className="text-center">
-      <div className="text-[10px] uppercase tracking-wider text-text-tertiary mb-0.5">Факт</div>
+      <div className="text-[10px] uppercase tracking-wider text-text-tertiary mb-0.5">{t('calendar.event.fact')}</div>
       <div className={cn('text-sm font-bold tabular-nums', color)}>
         {value}{arrow}
       </div>
@@ -97,8 +101,10 @@ function ActualValueCell({ value, previous, forecast }) {
 }
 
 export default function CalendarEventCard({ event, isPast, isToday, index = 0 }) {
+  const t = useT();
   const ref = useRef(null);
   const src = SOURCE_STYLES[event.source] || SOURCE_STYLES.cbr;
+  const sourceLabel = t(src.labelKey);
   const isHigh = event.importance === 3;
   const isLow = event.importance === 1;
   const hasValues = event.previous_value != null || event.forecast_value != null || event.actual_value != null;
@@ -143,12 +149,12 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0 })
             to={russiaIndicatorPath(linkedIndicators[0].code)}
             className={cn(FOCUS_RING_SURFACE, 'text-champagne hover:text-champagne-muted rounded-md')}
             title={linkedIndicators[0].name}
-            aria-label={`Перейти к ${linkedIndicators[0].name}`}
+            aria-label={t('calendar.event.goTo', { name: linkedIndicators[0].name })}
           >
             <ArrowUpRight className="w-3.5 h-3.5" />
           </Link>
         ) : (
-          <span className="text-xs text-text-tertiary shrink-0">{linkedIndicators.length} рядов</span>
+          <span className="text-xs text-text-tertiary shrink-0">{t('calendar.event.seriesCount', { n: linkedIndicators.length })}</span>
         )}
       </div>
     );
@@ -173,10 +179,10 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0 })
               'inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wider',
               src.bg, src.text,
             )}>
-              {src.label}
+              {sourceLabel}
             </span>
             <ImportanceDots level={event.importance} />
-            <span className="text-[10px] text-text-tertiary">официально</span>
+            <span className="text-[10px] text-text-tertiary">{t('calendar.event.official')}</span>
           </div>
           {event.scheduled_time && (
             <span className="text-sm font-mono text-text-secondary shrink-0">

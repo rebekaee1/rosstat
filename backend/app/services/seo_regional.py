@@ -105,6 +105,9 @@ def _fmt(value: float) -> str:
 def _times_word(times: float) -> str:
     """«в 2,5 раза» / «в 45 раз» — согласование с дробностью и величиной."""
     rounded = round(times, 1)
+    en = _rt("region_indicator.times_word")
+    if en:
+        return en.format(n=_fmt(rounded))
     word = "раза" if rounded != int(rounded) or int(rounded) in (2, 3, 4) else "раз"
     return f"в {_fmt(rounded)} {word}"
 
@@ -114,16 +117,62 @@ def _pct(cur: float, base: float) -> str | None:
     if base is None or cur is None or base == 0:
         return None
     pct = (cur - base) / abs(base) * 100
+    flat = _rt("region_indicator.pct_flat")
     if abs(pct) < 0.05:
-        return "практически не изменился"
-    verb = "вырос" if pct > 0 else "снизился"
+        return flat or "практически не изменился"
+    up = _rt("region_indicator.pct_up") or "вырос"
+    down = _rt("region_indicator.pct_down") or "снизился"
+    verb = up if pct > 0 else down
     if pct >= 200 and base > 0:
-        return f"{verb} {_times_word(cur / base)}"
-    return f"{verb} на {_fmt(round(abs(pct), 1))}%"
+        times_tpl = _rt("region_indicator.pct_times") or " {times}"
+        return f"{verb}{times_tpl.format(times=_times_word(cur / base))}"
+    by_tpl = _rt("region_indicator.pct_by") or " на {pct}%"
+    return f"{verb}{by_tpl.format(pct=_fmt(round(abs(pct), 1)))}"
 
 
 async def _region(db: AsyncSession, slug: str) -> Region | None:
     return (await db.execute(select(Region).where(Region.slug == slug))).scalar_one_or_none()
+
+
+def _rank_phrase(
+    position: int,
+    total: int,
+    *,
+    achievement: bool = False,
+) -> str:
+    """Фраза места региона. Для неизвестной полярности — нейтрально по величине."""
+    if achievement:
+        if position <= 3:
+            return (_rt("region_indicator.rank_top3") or (
+                f"входит в тройку лучших среди {total} субъектов РФ"
+            )).format(total=total)
+        if position <= 10:
+            return (_rt("region_indicator.rank_top10") or (
+                f"входит в десятку лучших среди {total} субъектов РФ"
+            )).format(total=total)
+        if position > total - 5:
+            return (_rt("region_indicator.rank_bottom") or (
+                f"находится в конце рейтинга — {position}-е место из {total}"
+            )).format(position=position, total=total)
+        return (_rt("region_indicator.rank_place") or (
+            f"занимает {position}-е место из {total}"
+        )).format(position=position, total=total)
+    if position <= 3:
+        return (_rt("region_indicator.list_top3") or (
+            f"входит в тройку регионов с наибольшим значением среди {total} субъектов РФ"
+        )).format(total=total)
+    if position <= 10:
+        return (_rt("region_indicator.list_top10") or (
+            f"входит в десятку регионов с наибольшим значением среди {total} субъектов РФ"
+        )).format(total=total)
+    if position > total - 5:
+        return (_rt("region_indicator.list_bottom") or (
+            f"находится в конце списка по величине показателя — "
+            f"{position}-е положение из {total}"
+        )).format(position=position, total=total)
+    return (_rt("region_indicator.list_place") or (
+        f"занимает {position}-е положение в списке по величине показателя из {total}"
+    )).format(position=position, total=total)
 
 
 async def render_regions_home_html(db: AsyncSession) -> tuple[int, str]:
@@ -172,26 +221,34 @@ async def render_regions_home_html(db: AsyncSession) -> tuple[int, str]:
             for ind in rating_inds
         )
         ratings_html = (
-            f"<section class=\"seo-section\"><h2>Рейтинги и карта регионов</h2>"
-            f"<p>Все субъекты РФ по значению показателя: полная таблица мест "
-            f"или интерактивная карта с выбором года.</p>"
-            f"<h3>Рейтинги</h3><ul>{rating_items}</ul>"
-            f"<h3>Карта</h3><ul>{map_items}</ul></section>"
+            f"<section class=\"seo-section\"><h2>{escape(_rt('regions_hub.ratings_h2') or 'Рейтинги и карта регионов')}</h2>"
+            f"<p>{escape(_rt('regions_hub.ratings_p') or ('Все субъекты РФ по значению показателя: полная таблица мест '
+            'или интерактивная карта с выбором года.'))}</p>"
+            f"<h3>{escape(_rt('regions_hub.ratings_h3') or 'Рейтинги')}</h3><ul>{rating_items}</ul>"
+            f"<h3>{escape(_rt('regions_hub.map_h3') or 'Карта')}</h3><ul>{map_items}</ul></section>"
         )
 
     title = _rt("regions_hub.title") or _REGIONS_TITLE
     desc = _rt("regions_hub.description") or _REGIONS_DESC
     h1 = _rt("regions_hub.h1") or "Регионы России: социально-экономические показатели"
+    eyebrow = _rt("regions_hub.eyebrow") or "Региональная статистика Росстата"
+    lead = _rt(
+        "regions_hub.lead",
+        n_regions=n_regions,
+        n_ind=n_ind,
+    ) or (
+        f"Официальная статистика по {n_regions} субъектам Российской Федерации: "
+        f"население, занятость и зарплаты, уровень жизни, валовой региональный продукт, "
+        f"инвестиции, промышленность, сельское хозяйство, строительство, торговля, "
+        f"транспорт, наука и цены. Всего {n_ind} показателей с 1990 года по данным "
+        f"сборника Росстата «Регионы России. Социально-экономические показатели»."
+    )
 
     body = f"""<div class="seo-page">
 {_breadcrumbs_nav(crumbs.regions_trail())}
-<p class="seo-eyebrow">Региональная статистика Росстата</p>
+<p class="seo-eyebrow">{escape(eyebrow)}</p>
 <h1>{escape(h1)}</h1>
-<p>Официальная статистика по {n_regions} субъектам Российской Федерации:
-население, занятость и зарплаты, уровень жизни, валовой региональный продукт,
-инвестиции, промышленность, сельское хозяйство, строительство, торговля,
-транспорт, наука и цены. Всего {n_ind} показателей с 1990 года по данным
-сборника Росстата «Регионы России. Социально-экономические показатели».</p>
+<p>{escape(lead)}</p>
 {ratings_html}
 {''.join(sections)}
 </div>"""
@@ -203,7 +260,9 @@ async def render_regions_home_html(db: AsyncSession) -> tuple[int, str]:
         canonical_path=paths.region_hub(),
         body=body,
         json_ld=json_ld,
-        keywords="регионы россии статистика, экономика регионов, показатели субъектов рф",
+        keywords=_rt("regions_hub.keywords") or (
+            "регионы россии статистика, экономика регионов, показатели субъектов рф"
+        ),
     )
     return 200, html
 
@@ -275,9 +334,13 @@ async def render_region_html(slug: str, db: AsyncSession) -> tuple[int, str]:
         f"{region_name}: социально-экономические показатели"
     )
     catalog_line = (
-        f"{n_catalog} показателей в каталоге; по региону — данные по {n_present}"
+        (_rt("region_profile.catalog_partial") or (
+            "{n_catalog} показателей в каталоге; по региону — данные по {n_present}"
+        )).format(n_catalog=n_catalog, n_present=n_present)
         if n_present < n_catalog
-        else f"{n_catalog} показателей"
+        else (_rt("region_profile.catalog_full") or "{n_catalog} показателей").format(
+            n_catalog=n_catalog
+        )
     )
     # Выход к РФ и флагманским рейтингам: профиль иначе замыкается на свои
     # показатели и не отдаёт боту путь «регион → Россия / рейтинг».
@@ -291,29 +354,40 @@ async def render_region_html(slug: str, db: AsyncSession) -> tuple[int, str]:
         .limit(6)
     )).scalars().all()
     cross_items = [
-        f'<li><a href="{paths.region_hub()}">Все регионы России</a></li>',
+        f'<li><a href="{paths.region_hub()}">'
+        f'{escape(_rt("region_profile.all_regions") or "Все регионы России")}</a></li>',
     ]
     if slug != "russia":
+        russia_label = _rname("russia", "Российская Федерация")
         cross_items.append(
             f'<li><a href="{paths.region("russia")}">'
-            f'{escape(_rname("russia", "Российская Федерация"))} — сводные показатели</a></li>'
+            f'{escape((_rt("region_profile.russia_summary") or "{russia} — сводные показатели").format(russia=russia_label))}</a></li>'
         )
     cross_items.extend(
         f'<li><a href="{escape(paths.region_rating(ind.code))}">{escape(_icopy(ind)["name"] or ind.name)}</a></li>'
         for ind in flagship
     )
     cross_html = (
-        '<section class="seo-section"><h2>Смотрите также</h2>'
+        f'<section class="seo-section"><h2>{escape(_rt("region_profile.see_also") or "Смотрите также")}</h2>'
         f'<ul>{"".join(cross_items)}</ul></section>'
+    )
+    eyebrow = _rt("region_profile.eyebrow") or "Региональная статистика Росстата"
+    lead = _rt(
+        "region_profile.lead",
+        region=region_name,
+        catalog_line=catalog_line,
+        n_sections=len(sections),
+    ) or (
+        f"Официальные данные Росстата по региону {region_name}: {catalog_line} "
+        f"в {len(sections)} разделах — от численности населения и заработной платы до валового "
+        f"регионального продукта, инвестиций и потребительских цен. Ряды с 1990 года, "
+        f"по каждому показателю — график динамики и место региона среди субъектов РФ."
     )
     body = f"""<div class="seo-page">
 {_breadcrumbs_nav(crumbs.region_trail(region_name, paths.region(slug)))}
-<p class="seo-eyebrow">Региональная статистика Росстата</p>
+<p class="seo-eyebrow">{escape(eyebrow)}</p>
 <h1>{escape(h1)}</h1>
-<p>Официальные данные Росстата по региону {escape(region_name)}: {catalog_line}
-в {len(sections)} разделах — от численности населения и заработной платы до валового
-регионального продукта, инвестиций и потребительских цен. Ряды с 1990 года,
-по каждому показателю — график динамики и место региона среди субъектов РФ.</p>
+<p>{escape(lead)}</p>
 {section_html}
 {cross_html}
 </div>"""
@@ -327,39 +401,12 @@ async def render_region_html(slug: str, db: AsyncSession) -> tuple[int, str]:
         canonical_path=paths.region(slug),
         body=body,
         json_ld=json_ld,
-        keywords=(
+        keywords=_rt("region_profile.keywords", region=region_name) or (
             f"{region_name} статистика, {region_name} экономика, {region_name} население, "
             f"{region_name} зарплата, {region_name} врп"
         ),
     )
     return 200, html
-
-
-def _rank_phrase(
-    position: int,
-    total: int,
-    *,
-    achievement: bool = False,
-) -> str:
-    """Фраза места региона. Для неизвестной полярности — нейтрально по величине."""
-    if achievement:
-        if position <= 3:
-            return f"входит в тройку лучших среди {total} субъектов РФ"
-        if position <= 10:
-            return f"входит в десятку лучших среди {total} субъектов РФ"
-        if position > total - 5:
-            return f"находится в конце рейтинга — {position}-е место из {total}"
-        return f"занимает {position}-е место из {total}"
-    if position <= 3:
-        return f"входит в тройку регионов с наибольшим значением среди {total} субъектов РФ"
-    if position <= 10:
-        return f"входит в десятку регионов с наибольшим значением среди {total} субъектов РФ"
-    if position > total - 5:
-        return (
-            f"находится в конце списка по величине показателя — "
-            f"{position}-е положение из {total}"
-        )
-    return f"занимает {position}-е положение в списке по величине показателя из {total}"
 
 
 def _rating_copy(*, achievement: bool) -> dict[str, str]:
@@ -821,13 +868,17 @@ async def render_region_ratings_hub_html(db: AsyncSession) -> tuple[int, str]:
         "показателям: полные таблицы мест, лидеры и аутсайдеры. Данные Росстата."
     )
     h1 = _rt("region_rating_hub.h1") or "Рейтинги регионов России"
+    eyebrow = _rt("region_rating_hub.eyebrow") or "Региональная статистика Росстата"
+    lead = _rt("region_rating_hub.lead") or (
+        "Выберите показатель, чтобы увидеть полный рейтинг субъектов РФ за последний "
+        "доступный год: место каждого региона, лидеры и аутсайдеры, ссылки на динамику "
+        "по субъектам."
+    )
     body = f"""<div class="seo-page">
 {_breadcrumbs_nav(trail)}
-<p class="seo-eyebrow">Региональная статистика Росстата</p>
+<p class="seo-eyebrow">{escape(eyebrow)}</p>
 <h1>{escape(h1)}</h1>
-<p>Выберите показатель, чтобы увидеть полный рейтинг субъектов РФ за последний
-доступный год: место каждого региона, лидеры и аутсайдеры, ссылки на динамику
-по субъектам.</p>
+<p>{escape(lead)}</p>
 {''.join(sections)}
 </div>"""
     html = await build_document(
@@ -836,7 +887,7 @@ async def render_region_ratings_hub_html(db: AsyncSession) -> tuple[int, str]:
         canonical_path=paths.region_rating_hub(),
         body=body,
         json_ld=[_breadcrumbs(trail)],
-        keywords=(
+        keywords=_rt("region_rating_hub.keywords") or (
             "рейтинг регионов россии, сравнение субъектов рф, "
             "топ регионов по показателям, росстат регионы"
         ),
@@ -854,34 +905,59 @@ async def render_regions_map_html(
     рейтинга — отдельный map-PNG не заводим (минимальный корректный SEO).
     """
     if code == MAP_OVERVIEW_CODE:
-        title = "Карта регионов России — обзор субъектов РФ"
-        desc = (
+        title = _rt("region_map.overview_title") or "Карта регионов России — обзор субъектов РФ"
+        desc = _rt("region_map.overview_desc") or (
             "Интерактивная карта 85 субъектов Российской Федерации: откройте "
             "профиль региона или выберите показатель Росстата для цветовой шкалы "
             "по годам. Forecast Economy."
         )
+        crumb_map = "Map" if _rt("region_map.overview_h1") else "Карта"
         map_overview_trail = crumbs.trail(
             crumbs.home(),
             crumbs.russia(),
             crumbs.regions(),
-            (paths.region_map("overview"), "Карта"),
+            (paths.region_map("overview"), crumb_map),
+        )
+        # Popular slice labels from EN indicator overlay when locale=en.
+        from app.services.seo_i18n import region_indicator_copy
+        wage_name = region_indicator_copy(
+            DEFAULT_MAP_CODE, name_ru="Среднемесячная заработная плата", unit_ru="",
+        )["name"]
+        pop_name = region_indicator_copy(
+            "chislennost-naseleniya", name_ru="Численность населения", unit_ru="",
+        )["name"]
+        unemp_name = region_indicator_copy(
+            "uroven-bezrabotitsy", name_ru="Уровень безработицы", unit_ru="",
+        )["name"]
+        eyebrow = _rt("region_map.overview_eyebrow") or "Интерактивная карта субъектов РФ"
+        h1 = _rt("region_map.overview_h1") or "Карта регионов России"
+        lead = _rt("region_map.overview_lead") or (
+            "Обзорный режим: клик по субъекту открывает профиль региона со всеми "
+            "показателями сборника Росстата. Выберите показатель на странице, чтобы "
+            "увидеть цветовую карту и динамику по годам."
+        )
+        pop_h2 = _rt("region_map.overview_popular_h2") or "Популярные срезы на карте"
+        rank_h2 = _rt("region_map.overview_rankings_h2") or "Рейтинги"
+        rank_p = _rt(
+            "region_map.overview_rankings_p",
+            href=paths.region_rating_hub(),
+        ) or (
+            f"Таблицу мест по показателю смотрите в разделе "
+            f'<a href="{paths.region_rating_hub()}">рейтингов регионов</a>.'
         )
         body = f"""<div class="seo-page">
 {_breadcrumbs_nav(map_overview_trail)}
-<p class="seo-eyebrow">Интерактивная карта субъектов РФ</p>
-<h1>Карта регионов России</h1>
-<p>Обзорный режим: клик по субъекту открывает профиль региона со всеми
-показателями сборника Росстата. Выберите показатель на странице, чтобы
-увидеть цветовую карту и динамику по годам.</p>
-<section class="seo-section"><h2>Популярные срезы на карте</h2>
+<p class="seo-eyebrow">{escape(eyebrow)}</p>
+<h1>{escape(h1)}</h1>
+<p>{escape(lead)}</p>
+<section class="seo-section"><h2>{escape(pop_h2)}</h2>
 <ul>
-<li><a href="{escape(paths.region_map(DEFAULT_MAP_CODE))}">Среднемесячная заработная плата</a></li>
-<li><a href="{paths.region_map('chislennost-naseleniya')}">Численность населения</a></li>
-<li><a href="{paths.region_map('uroven-bezrabotitsy')}">Уровень безработицы</a></li>
+<li><a href="{escape(paths.region_map(DEFAULT_MAP_CODE))}">{escape(wage_name)}</a></li>
+<li><a href="{paths.region_map('chislennost-naseleniya')}">{escape(pop_name)}</a></li>
+<li><a href="{paths.region_map('uroven-bezrabotitsy')}">{escape(unemp_name)}</a></li>
 </ul></section>
-<section class="seo-section"><h2>Рейтинги</h2>
-<p>Таблицу мест по показателю смотрите в разделе
-<a href="{paths.region_rating_hub()}">рейтингов регионов</a>.</p></section>
+<section class="seo-section"><h2>{escape(rank_h2)}</h2>
+<p>{rank_p}</p></section>
 </div>"""
         json_ld = [_breadcrumbs(map_overview_trail)]
         html = await build_document(
@@ -890,7 +966,9 @@ async def render_regions_map_html(
             canonical_path=paths.region_map("overview"),
             body=body,
             json_ld=json_ld,
-            keywords="карта регионов россии, субъекты рф на карте, регионы россии статистика",
+            keywords=_rt("region_map.overview_keywords") or (
+                "карта регионов россии, субъекты рф на карте, регионы россии статистика"
+            ),
         )
         return 200, html
 
@@ -944,11 +1022,12 @@ async def render_regions_map_html(
     def _vu(v) -> str:
         return f"{_fmt(float(v))} {unit}".strip()
 
-    year_note = (
-        f" за {map_year} год"
-        if map_year == last_year
-        else f" за {map_year} год (последний доступный — {last_year})"
-    )
+    if map_year == last_year:
+        year_note = (_rt("region_map.year_note") or " за {year} год").format(year=map_year)
+    else:
+        year_note = (_rt("region_map.year_note_stale") or (
+            " за {year} год (последний доступный — {last_year})"
+        )).format(year=map_year, last_year=last_year)
     title = _rt("region_map.title", indicator=ind_name, year=map_year) or (
         f"Карта регионов России: {ind_name} ({map_year})"
     )
@@ -967,15 +1046,27 @@ async def render_regions_map_html(
         canonical = f"{canonical}?year={year}"
 
     og_path = paths.og_region_rating(code)
-    map_alt = (
+    map_alt = _rt(
+        "region_map.alt",
+        indicator=ind_name,
+        year=map_year,
+        best_label=copy["desc_best"].lower(),
+        top_name=top[0][1],
+        top_value=_vu(top[0][2]),
+    ) or (
         f"{ind_name} по регионам России — карта, {map_year} год, "
         f"{copy['desc_best'].lower()} — {top[0][1]} ({_vu(top[0][2])})"
+    )
+    caption = _rt(
+        "region_map.caption", indicator=ind_name, year=map_year,
+    ) or (
+        f"{ind_name} по регионам, {map_year} год. "
+        f"Источник: Росстат. forecasteconomy.com"
     )
     figure_html = (
         f'<figure class="seo-chart"><img src="{escape(og_path)}" alt="{escape(map_alt)}" '
         f'width="1200" height="630" loading="eager">'
-        f"<figcaption>{escape(ind_name)} по регионам, {map_year} год. "
-        f"Источник: Росстат. forecasteconomy.com</figcaption></figure>"
+        f"<figcaption>{escape(caption)}</figcaption></figure>"
     )
 
     leaders = "".join(
@@ -988,13 +1079,15 @@ async def render_regions_map_html(
         for y in years_list[-8:]
     )
 
+    crumb_label = (_rt("region_map.crumb") or "Карта: {indicator}").format(indicator=ind_name)
+    map_trail = crumbs.trail(
+        crumbs.home(),
+        crumbs.russia(),
+        crumbs.regions(),
+        (paths.region_map(code), crumb_label),
+    )
     json_ld = [
-        _breadcrumbs(crumbs.trail(
-            crumbs.home(),
-            crumbs.russia(),
-            crumbs.regions(),
-            (paths.region_map(code), f"Карта: {ind_name}"),
-        )),
+        _breadcrumbs(map_trail),
         {
             "@context": "https://schema.org",
             "@type": "WebApplication",
@@ -1004,14 +1097,18 @@ async def render_regions_map_html(
             "applicationCategory": "BusinessApplication",
             "operatingSystem": "Any",
             "isAccessibleForFree": True,
-            "inLanguage": "ru-RU",
+            "inLanguage": "en" if _rt("region_map.lead") else "ru-RU",
         },
         {
             "@context": "https://schema.org",
             "@type": "ImageObject",
             "contentUrl": _absolute(og_path),
             "url": _absolute(og_path),
-            "name": f"{ind_name} — карта регионов, {map_year}",
+            "name": (
+                f"{ind_name} — regions map, {map_year}"
+                if _rt("region_map.lead")
+                else f"{ind_name} — карта регионов, {map_year}"
+            ),
             "description": map_alt,
             "representativeOfPage": True,
             "width": 1200,
@@ -1020,40 +1117,67 @@ async def render_regions_map_html(
     ]
 
     rating_link_label = (
-        f"рейтинг регионов по «{escape(ind_name)}»"
+        (_rt("region_map.rating_label_achievement") or "рейтинг регионов по «{indicator}»")
         if achievement
-        else f"таблица регионов по «{escape(ind_name)}»"
+        else (_rt("region_map.rating_label_list") or "таблица регионов по «{indicator}»")
+    ).format(indicator=ind_name)
+    eyebrow = (_rt("region_map.eyebrow") or "{section} — карта регионов").format(
+        section=section_name
     )
-    map_trail = crumbs.trail(
-        crumbs.home(),
-        crumbs.russia(),
-        crumbs.regions(),
-        (paths.region_map(code), f"Карта: {ind_name}"),
+    lead = _rt(
+        "region_map.lead",
+        total=total,
+        indicator=ind_name,
+        year_note=year_note,
+        first_year=years_list[0],
+        last_year=last_year,
+    ) or (
+        f"Интерактивная карта {total} субъектов Российской Федерации по показателю "
+        f"«{ind_name}»{year_note}. Цвет региона отражает значение "
+        f"относительно других субъектов; ползунок на странице переключает годы "
+        f"с {years_list[0]} по {last_year}. Данные — сборник Росстата "
+        f"«Регионы России. Социально-экономические показатели»."
+    )
+    tile_year = _rt("region_map.tile_year") or "Год на карте"
+    tile_regions = _rt("region_map.tile_regions") or "Регионов на срезе"
+    leaders_h2 = (_rt("region_map.leaders_h2") or "{label} {year} года").format(
+        label=copy["map_leaders_h2"], year=map_year,
+    )
+    rating_p = _rt(
+        "region_map.rating_p",
+        href=escape(paths.region_rating(code)),
+        label=escape(rating_link_label),
+    ) or (
+        f"Полная таблица — "
+        f'<a href="{escape(paths.region_rating(code))}">{escape(rating_link_label)}</a>.'
+    )
+    years_h2 = _rt("region_map.years_h2") or "Другие годы"
+    source_h2 = _rt("region_map.source_h2") or "Источник"
+    source_p = _rt(
+        "region_map.source_p",
+        unit=unit or ("source units" if _rt("region_map.source_p") else "единицы источника"),
+    ) or (
+        f"Росстат, единицы: {unit or 'единицы источника'}. После загрузки страницы "
+        f"доступна интерактивная карта с выбором года и переходом в карточку региона."
     )
     body = f"""<div class="seo-page">
 {_breadcrumbs_nav(map_trail)}
-<p class="seo-eyebrow">{escape(section_name)} — карта регионов</p>
+<p class="seo-eyebrow">{escape(eyebrow)}</p>
 <h1>{escape(h1)}</h1>
-<p>Интерактивная карта {total} субъектов Российской Федерации по показателю
-«{escape(ind_name)}»{escape(year_note)}. Цвет региона отражает значение
-относительно других субъектов; ползунок на странице переключает годы
-с {years_list[0]} по {last_year}. Данные — сборник Росстата
-«Регионы России. Социально-экономические показатели».</p>
+<p>{escape(lead)}</p>
 {figure_html}
 <div class="seo-tiles">
 <div class="seo-tile"><span>{escape(copy["best_tile"])} — {escape(top[0][1])}</span><b>{escape(_vu(top[0][2]))}</b></div>
 <div class="seo-tile"><span>{escape(copy["worst_tile"])} — {escape(bottom[-1][1])}</span><b>{escape(_vu(bottom[-1][2]))}</b></div>
-<div class="seo-tile"><span>Год на карте</span><b>{map_year}</b></div>
-<div class="seo-tile"><span>Регионов на срезе</span><b>{total}</b></div>
+<div class="seo-tile"><span>{escape(tile_year)}</span><b>{map_year}</b></div>
+<div class="seo-tile"><span>{escape(tile_regions)}</span><b>{total}</b></div>
 </div>
-<section class="seo-section"><h2>{escape(copy["map_leaders_h2"])} {map_year} года</h2><ol>{leaders}</ol>
-<p>Полная таблица —
-<a href="{escape(paths.region_rating(code))}">{rating_link_label}</a>.</p>
+<section class="seo-section"><h2>{escape(leaders_h2)}</h2><ol>{leaders}</ol>
+<p>{rating_p}</p>
 </section>
-<section class="seo-section"><h2>Другие годы</h2><ul class="seo-pills">{year_links}</ul></section>
-<section class="seo-section"><h2>Источник</h2>
-<p>Росстат, единицы: {escape(unit or 'единицы источника')}. После загрузки страницы
-доступна интерактивная карта с выбором года и переходом в карточку региона.</p>
+<section class="seo-section"><h2>{escape(years_h2)}</h2><ul class="seo-pills">{year_links}</ul></section>
+<section class="seo-section"><h2>{escape(source_h2)}</h2>
+<p>{escape(source_p)}</p>
 </section>
 </div>"""
 
@@ -1063,7 +1187,9 @@ async def render_regions_map_html(
         canonical_path=canonical,
         body=body,
         json_ld=json_ld,
-        keywords=(
+        keywords=_rt(
+            "region_map.keywords", indicator=ind_name, year=map_year,
+        ) or (
             f"{ind_name} карта регионов, {ind_name} по регионам россии, "
             f"карта субъектов рф {ind_name}, {ind_name} {map_year}"
         ),
@@ -1135,14 +1261,22 @@ async def render_region_indicator_html(
 
     # --- уникальный автоконтент ---
     paragraphs = []
-    p1 = (
-        f"{escape(ind_name)} в регионе {escape(region_name)} "
-        f"в {last_year} году: {_fmt(last_value)}{unit_sfx}."
-    )
+    p1_tpl = _rt("region_indicator.p1")
+    if p1_tpl:
+        p1 = p1_tpl.format(
+            indicator=escape(ind_name), region=escape(region_name), year=last_year,
+            value=_fmt(last_value), unit=unit_sfx,
+        )
+    else:
+        p1 = (
+            f"{escape(ind_name)} в регионе {escape(region_name)} "
+            f"в {last_year} году: {_fmt(last_value)}{unit_sfx}."
+        )
     prev = by_year.get(last_year - 1)
     ch1 = _pct(last_value, prev)
     if ch1:
-        p1 += f" За год показатель {ch1}."
+        ch_tpl = _rt("region_indicator.p1_change")
+        p1 += (ch_tpl.format(change=ch1) if ch_tpl else f" За год показатель {ch1}.")
     paragraphs.append(p1)
 
     base5 = by_year.get(last_year - 5)
@@ -1150,94 +1284,155 @@ async def render_region_indicator_html(
     chfull = _pct(last_value, first_value)
     p2 = ""
     if ch5:
-        p2 += f"За пять лет (с {last_year - 5} года) показатель {ch5}."
+        p2_tpl = _rt("region_indicator.p2_5y")
+        p2 += (
+            p2_tpl.format(year=last_year - 5, change=ch5)
+            if p2_tpl
+            else f"За пять лет (с {last_year - 5} года) показатель {ch5}."
+        )
     if chfull and first_year < last_year - 5:
-        p2 += (f" С {first_year} года, начала доступного ряда, показатель {chfull} "
-               f"(с {_fmt(first_value)} до {_fmt(last_value)}{unit_sfx}).")
+        full_tpl = _rt("region_indicator.p2_full")
+        p2 += (
+            full_tpl.format(
+                first_year=first_year, change=chfull,
+                first_value=_fmt(first_value), last_value=_fmt(last_value), unit=unit_sfx,
+            )
+            if full_tpl
+            else (
+                f" С {first_year} года, начала доступного ряда, показатель {chfull} "
+                f"(с {_fmt(first_value)} до {_fmt(last_value)}{unit_sfx})."
+            )
+        )
     if p2:
         paragraphs.append(p2)
 
     if position and region.kind == "region":
-        # Ссылка на рейтинг — только когда страница рейтинга существует
-        # (у неё порог >= 10 регионов с данными за последний год).
+        rating_label = (
+            (_rt("region_indicator.rating_full") or "полный рейтинг регионов")
+            if achievement
+            else (_rt("region_indicator.rating_table") or "таблица по всем регионам")
+        )
         rating_ref = (
-            f" (<a href=\"{escape(paths.region_rating(code))}\">"
-            f"{'полный рейтинг регионов' if achievement else 'таблица по всем регионам'}"
-            f"</a>)"
+            f' (<a href="{escape(paths.region_rating(code))}">{escape(rating_label)}</a>)'
             if len(rank_rows) >= 10 else ""
         )
-        p3 = (f"По значению этого показателя {escape(region_name)} "
-              f"{_rank_phrase(position, len(rank_rows), achievement=achievement)} "
-              f"в {last_year} году{rating_ref}.")
+        p3_tpl = _rt("region_indicator.p3")
+        rank_phrase = _rank_phrase(position, len(rank_rows), achievement=achievement)
+        if p3_tpl:
+            p3 = p3_tpl.format(
+                region=escape(region_name), rank=rank_phrase,
+                year=last_year, rating_ref=rating_ref,
+            )
+        else:
+            p3 = (
+                f"По значению этого показателя {escape(region_name)} "
+                f"{rank_phrase} в {last_year} году{rating_ref}."
+            )
         if rf_last is not None:
-            rel = "выше" if last_value > float(rf_last) else "ниже"
             if abs(last_value - float(rf_last)) / (abs(float(rf_last)) or 1) < 0.005:
-                rel = "на уровне"
-            p3 += (f" Общероссийское значение — {_fmt(float(rf_last))}{unit_sfx}: "
-                   f"регион {rel} среднего по стране.")
+                rel = _rt("region_indicator.rel_level") or "на уровне"
+            elif last_value > float(rf_last):
+                rel = _rt("region_indicator.rel_above") or "выше"
+            else:
+                rel = _rt("region_indicator.rel_below") or "ниже"
+            rf_tpl = _rt("region_indicator.p3_rf")
+            if rf_tpl:
+                p3 += rf_tpl.format(
+                    rf_value=_fmt(float(rf_last)), unit=unit_sfx, rel=rel,
+                )
+            else:
+                p3 += (
+                    f" Общероссийское значение — {_fmt(float(rf_last))}{unit_sfx}: "
+                    f"регион {rel} среднего по стране."
+                )
         paragraphs.append(p3)
 
     values_desc = [v for _y, v in series]
     vmax = max(values_desc); vmin = min(values_desc)
     ymax = series[[v for _y, v in series].index(vmax)][0]
     ymin = series[[v for _y, v in series].index(vmin)][0]
-    paragraphs.append(
-        f"Максимум за весь период наблюдений — {_fmt(vmax)}{unit_sfx} в {ymax} году, "
-        f"минимум — {_fmt(vmin)}{unit_sfx} в {ymin} году. "
-        f"Данные обновляются ежегодно по мере публикации сборника Росстата."
-    )
+    p4_tpl = _rt("region_indicator.p4")
+    if p4_tpl:
+        paragraphs.append(p4_tpl.format(
+            vmax=_fmt(vmax), vmin=_fmt(vmin), ymax=ymax, ymin=ymin, unit=unit_sfx,
+        ))
+    else:
+        paragraphs.append(
+            f"Максимум за весь период наблюдений — {_fmt(vmax)}{unit_sfx} в {ymax} году, "
+            f"минимум — {_fmt(vmin)}{unit_sfx} в {ymin} году. "
+            f"Данные обновляются ежегодно по мере публикации сборника Росстата."
+        )
 
     paragraphs_html = "".join(f"<p>{p}</p>" for p in paragraphs)
 
-    # Контрольные годы: плотная факт-выжимка для поисковиков и ИИ-ассистентов —
-    # ответ на запросы вида «X в Y в 2010 году» без чтения полной таблицы.
     checkpoint_years = [y for y in range(1990, last_year, 5) if y in by_year]
     checkpoints_html = ""
     if len(checkpoint_years) >= 3:
+        cp_item_tpl = _rt("region_indicator.checkpoint_item") or "{year} год — {value}{unit}"
         cp_items = "".join(
-            f"<li>{y} год — {_fmt(by_year[y])}{unit_sfx}</li>" for y in checkpoint_years
+            f"<li>{cp_item_tpl.format(year=y, value=_fmt(by_year[y]), unit=unit_sfx)}</li>"
+            for y in checkpoint_years
         )
-        cp_items += f"<li>{last_year} год — {_fmt(last_value)}{unit_sfx}</li>"
+        cp_items += (
+            f"<li>{cp_item_tpl.format(year=last_year, value=_fmt(last_value), unit=unit_sfx)}</li>"
+        )
+        cp_h2 = (_rt("region_indicator.checkpoints_h2") or (
+            "{indicator} в регионе {region} по контрольным годам"
+        )).format(indicator=ind_name, region=region_name)
         checkpoints_html = (
-            f"<section class=\"seo-section\"><h2>{escape(ind_name)} "
-            f"в регионе {escape(region_name)} по контрольным годам</h2>"
+            f'<section class="seo-section"><h2>{escape(cp_h2)}</h2>'
             f"<ul>{cp_items}</ul></section>"
         )
 
-    # FAQ: видимый блок + FAQPage JSON-LD (одинаковый контент — требование
-    # поисковиков). Вопросы повторяют реальные формулировки пользователей.
     faq: list[tuple[str, str]] = []
     faq.append((
-        f"Какое значение показателя «{ind_name}» в регионе {region_name}?",
-        f"По данным Росстата за {last_year} год — {_fmt(last_value)} {unit}".strip() + ".",
+        (_rt("region_indicator.faq_value_q") or (
+            "Какое значение показателя «{indicator}» в регионе {region}?"
+        )).format(indicator=ind_name, region=region_name),
+        (_rt("region_indicator.faq_value_a") or (
+            "По данным Росстата за {year} год — {value} {unit}."
+        )).format(year=last_year, value=_fmt(last_value), unit=unit).strip(),
     ))
     if position and region.kind == "region":
         if achievement:
             faq.append((
-                f"Какое место занимает {region_name} по этому показателю среди регионов России?",
-                f"{position}-е место из {len(rank_rows)} субъектов РФ по итогам {last_year} года.",
+                (_rt("region_indicator.faq_rank_q") or (
+                    "Какое место занимает {region} по этому показателю среди регионов России?"
+                )).format(region=region_name),
+                (_rt("region_indicator.faq_rank_a") or (
+                    "{position}-е место из {total} субъектов РФ по итогам {year} года."
+                )).format(position=position, total=len(rank_rows), year=last_year),
             ))
         else:
             faq.append((
-                f"Какое положение в списке по величине показателя занимает {region_name}?",
-                f"{position}-е из {len(rank_rows)} субъектов РФ при упорядочивании "
-                f"по убыванию значения за {last_year} год.",
+                (_rt("region_indicator.faq_list_q") or (
+                    "Какое положение в списке по величине показателя занимает {region}?"
+                )).format(region=region_name),
+                (_rt("region_indicator.faq_list_a") or (
+                    "{position}-е из {total} субъектов РФ при упорядочивании "
+                    "по убыванию значения за {year} год."
+                )).format(position=position, total=len(rank_rows), year=last_year),
             ))
     if ch1:
         faq.append((
-            "Как изменился показатель за последний год?",
-            f"С {last_year - 1} по {last_year} год показатель {ch1}.",
+            _rt("region_indicator.faq_change_q") or "Как изменился показатель за последний год?",
+            (_rt("region_indicator.faq_change_a") or (
+                "С {prev_year} по {year} год показатель {change}."
+            )).format(prev_year=last_year - 1, year=last_year, change=ch1),
         ))
     faq.append((
-        "Откуда взяты данные и как часто они обновляются?",
-        "Источник — официальный сборник Росстата «Регионы России. Социально-экономические "
-        "показатели». Данные годовые, обновляются после выхода нового выпуска сборника.",
+        _rt("region_indicator.faq_source_q") or (
+            "Откуда взяты данные и как часто они обновляются?"
+        ),
+        _rt("region_indicator.faq_source_a") or (
+            "Источник — официальный сборник Росстата «Регионы России. Социально-экономические "
+            "показатели». Данные годовые, обновляются после выхода нового выпуска сборника."
+        ),
     ))
+    faq_h2 = _rt("region_indicator.faq_h2") or "Вопросы и ответы"
     faq_html = (
-        "<section class=\"seo-section\"><h2>Вопросы и ответы</h2>"
-        + "".join(
-            f"<h3>{escape(q)}</h3><p>{escape(a)}</p>" for q, a in faq
-        )
+        f'<section class="seo-section"><h2>{escape(faq_h2)}</h2>'
+        + "".join(f"<h3>{escape(q)}</h3><p>{escape(a)}</p>" for q, a in faq)
         + "</section>"
     )
     faq_json_ld = {
@@ -1253,21 +1448,26 @@ async def render_region_indicator_html(
         ],
     }
 
-    # Мост в макроблок: у ключевых показателей есть общероссийская карточка
-    # с месячной/квартальной частотой и прогнозом.
     macro_code = MACRO_BY_TABLE.get(indicator.table_code or "")
     macro_html = ""
     if macro_code:
-        macro_html = (
-            f"<section class=\"seo-section\"><h2>Общероссийский показатель</h2>"
-            f"<p>Динамика по России в целом, с более частым обновлением и прогнозом — "
+        macro_h2 = _rt("region_indicator.macro_h2") or "Общероссийский показатель"
+        macro_p = _rt(
+            "region_indicator.macro_p",
+            href=escape(paths.russia_indicator(macro_code)),
+            compare=escape(f"/compare?codes={macro_code},r:{slug}:{code}"),
+        ) or (
+            f"Динамика по России в целом, с более частым обновлением и прогнозом — "
             f"на странице <a href=\"{escape(paths.russia_indicator(macro_code))}\">общероссийского "
             f"индикатора</a>. Сравнить регион с федеральным уровнем можно в разделе "
             f"<a href=\"/compare?codes={escape(macro_code)},r:{escape(slug)}:{escape(code)}\">"
-            f"«Сравнение»</a>.</p></section>"
+            f"«Сравнение»</a>."
+        )
+        macro_html = (
+            f'<section class="seo-section"><h2>{escape(macro_h2)}</h2>'
+            f"<p>{macro_p}</p></section>"
         )
 
-    # Тот же показатель у соседей по федеральному округу.
     district_html = ""
     if region.kind == "region" and region.district_slug:
         neighbors = (await db.execute(
@@ -1280,36 +1480,52 @@ async def render_region_indicator_html(
         if neighbors:
             items = "".join(
                 f'<li><a href="{escape(paths.region_indicator(s, code))}">'
-                f"{escape(ind_name)} — {escape(n)}</a></li>"
+                f"{escape(ind_name)} — {escape(_rname(s, n))}</a></li>"
                 for s, n in neighbors
             )
+            n_h2 = _rt("region_indicator.neighbors_h2") or (
+                "Этот показатель у соседей по округу"
+            )
             district_html = (
-                f"<section class=\"seo-section\"><h2>Этот показатель у соседей "
-                f"по округу</h2><ul>{items}</ul></section>"
+                f'<section class="seo-section"><h2>{escape(n_h2)}</h2>'
+                f"<ul>{items}</ul></section>"
             )
 
-    # таблица всех значений (полный контент для индексации)
+    table_h2 = (_rt("region_indicator.table_h2") or "{indicator} по годам").format(
+        indicator=ind_name
+    )
+    th_year = _rt("region_indicator.th_year") or "Год"
+    th_value = unit or (_rt("region_indicator.th_value") or "Значение")
     table_rows = "".join(
         f"<tr><td>{y}</td><td>{_fmt(v)}</td></tr>" for y, v in reversed(series)
     )
     table_html = (
-        f"<h2>{escape(ind_name)} по годам</h2>"
-        f"<table><thead><tr><th>Год</th><th>{escape(unit or 'Значение')}</th></tr></thead>"
+        f"<h2>{escape(table_h2)}</h2>"
+        f"<table><thead><tr><th>{escape(th_year)}</th>"
+        f"<th>{escape(th_value)}</th></tr></thead>"
         f"<tbody>{table_rows}</tbody></table>"
     )
 
-    # видимый график — ключ к Яндекс.Картинкам и Алисе
     og_path = paths.og_region(slug, code)
-    alt = (f"{ind_name} — {region_name}: график динамики {first_year}–{last_year}, "
-           f"последнее значение {_fmt(last_value)} {unit}".strip())
+    alt = (_rt("region_indicator.alt") or (
+        "{indicator} — {region}: график динамики {first}–{last}, "
+        "последнее значение {value} {unit}"
+    )).format(
+        indicator=ind_name, region=region_name,
+        first=first_year, last=last_year,
+        value=_fmt(last_value), unit=unit,
+    ).strip()
+    caption = (_rt("region_indicator.caption") or (
+        "{indicator} в регионе {region}, {first}–{last}. Источник: Росстат."
+    )).format(
+        indicator=ind_name, region=region_name, first=first_year, last=last_year,
+    )
     figure_html = (
         f'<figure class="seo-chart"><img src="{escape(og_path)}" alt="{escape(alt)}" '
         f'width="1200" height="630" loading="eager">'
-        f"<figcaption>{escape(ind_name)} в регионе {escape(region_name)}, "
-        f"{first_year}–{last_year}. Источник: Росстат.</figcaption></figure>"
+        f"<figcaption>{escape(caption)}</figcaption></figure>"
     )
 
-    # соседние показатели раздела
     siblings = (await db.execute(
         select(RegionIndicator)
         .where(RegionIndicator.section_num == indicator.section_num,
@@ -1325,9 +1541,12 @@ async def render_region_indicator_html(
             f'{escape(_icopy(sib)["name"] or sib.name)}</a></li>'
             for sib in siblings
         )
+        sib_h2 = (_rt("region_indicator.siblings_h2") or (
+            "Ещё в разделе «{section}»"
+        )).format(section=section_name)
         siblings_html = (
-            f"<section class=\"seo-section\"><h2>Ещё в разделе "
-            f"«{escape(section_name)}»</h2><ul>{items}</ul></section>"
+            f'<section class="seo-section"><h2>{escape(sib_h2)}</h2>'
+            f"<ul>{items}</ul></section>"
         )
 
     title = _rt(
@@ -1339,14 +1558,16 @@ async def render_region_indicator_html(
     ) or (f"{ind_name} — {region_name}: {_fmt(last_value)} "
              f"{unit} ({last_year})").strip()
     if position and achievement:
-        rank_bit = f", {position}-е место среди {len(rank_rows)} регионов России."
+        rank_bit = (_rt("region_indicator.rank_bit_achievement") or (
+            ", {position}-е место среди {total} регионов России."
+        )).format(position=position, total=len(rank_rows))
     elif position:
-        rank_bit = (
-            f", {position}-е положение в списке по величине среди "
-            f"{len(rank_rows)} регионов России."
-        )
+        rank_bit = (_rt("region_indicator.rank_bit_list") or (
+            ", {position}-е положение в списке по величине среди "
+            "{total} регионов России."
+        )).format(position=position, total=len(rank_rows))
     else:
-        rank_bit = ". Данные Росстата."
+        rank_bit = _rt("region_indicator.rank_bit_none") or ". Данные Росстата."
     desc = _rt(
         "region_indicator.description",
         indicator=ind_name,
@@ -1370,12 +1591,17 @@ async def render_region_indicator_html(
             "@context": "https://schema.org",
             "@type": "Dataset",
             "name": f"{ind_name} — {region_name}",
-            "description": (f"{ind_name} ({unit}), {region_name}, "
-                            f"{first_year}–{last_year}. Источник: Росстат."),
+            "description": (
+                f"{ind_name} ({unit}), {region_name}, {first_year}–{last_year}. "
+                f"{'Source: Rosstat.' if _rt('region_indicator.faq_source_a') else 'Источник: Росстат.'}"
+            ),
             "url": _absolute(paths.region_indicator(slug, code)),
             "temporalCoverage": f"{first_year}/{last_year}",
             "spatialCoverage": region_name,
-            "creator": {"@type": "Organization", "name": "Росстат"},
+            "creator": {
+                "@type": "Organization",
+                "name": "Rosstat" if _rt("region_indicator.faq_source_a") else "Росстат",
+            },
             "license": "https://creativecommons.org/licenses/by/4.0/",
             "image": _absolute(og_path),
         },
@@ -1386,7 +1612,11 @@ async def render_region_indicator_html(
             "url": _absolute(og_path),
             "width": 1200,
             "height": 630,
-            "name": f"{ind_name} — {region_name}: график",
+            "name": (
+                f"{ind_name} — {region_name}: chart"
+                if _rt("region_indicator.alt")
+                else f"{ind_name} — {region_name}: график"
+            ),
             "caption": alt,
             "representativeOfPage": True,
         },
@@ -1394,6 +1624,18 @@ async def render_region_indicator_html(
 
     h1 = _rt("region_indicator.h1", indicator=ind_name, region=region_name) or (
         f"{ind_name} — {region_name}"
+    )
+    source_h2 = _rt("region_rating.source_h2") or "Источник данных"
+    source_p = _rt(
+        "region_rating.source_p",
+        year=f"{first_year}–{last_year}",
+        unit=unit or (
+            "source units" if _rt("region_rating.source_p") else "единицы источника"
+        ),
+    ) or (
+        f"Сборник Росстата «Регионы России. Социально-экономические показатели». "
+        f"Значения приведены в единицах: {unit or 'единицы источника'}. "
+        f"Период наблюдений: {first_year}–{last_year}."
     )
     body = f"""<div class="seo-page">
 {_breadcrumbs_nav(crumbs.region_indicator_trail(
@@ -1410,10 +1652,8 @@ async def render_region_indicator_html(
 {macro_html}
 {district_html}
 {siblings_html}
-<section class="seo-section"><h2>Источник данных</h2>
-<p>Сборник Росстата «Регионы России. Социально-экономические показатели».
-Значения приведены в единицах: {escape(unit or 'единицы источника')}.
-Период наблюдений: {first_year}–{last_year}.</p></section>
+<section class="seo-section"><h2>{escape(source_h2)}</h2>
+<p>{escape(source_p)}</p></section>
 </div>"""
 
     html = await build_document(
@@ -1422,7 +1662,11 @@ async def render_region_indicator_html(
         canonical_path=paths.region_indicator(slug, code),
         body=body,
         json_ld=json_ld,
-        keywords=(
+        keywords=_rt(
+            "region_indicator.keywords",
+            indicator=ind_name,
+            region=region_name,
+        ) or (
             f"{ind_name} {region_name}, {region_name} {ind_name} по годам, "
             f"{ind_name} {region_name} график, {region_name} статистика"
         ),

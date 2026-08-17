@@ -14,6 +14,7 @@ import {
   worldModeToLegacyDataToken,
   expandedGroupForWorldMode,
   defaultModeForWorldGroup,
+  worldVariantsToPickerGroup,
 } from './worldViewModes';
 import { formatWorldValue } from './worldApi';
 import {
@@ -185,6 +186,20 @@ describe('collapseCountryIndicators', () => {
     expect(collapseCountryIndicators(input)).toHaveLength(1);
     expect(collapseCountryIndicators(input)[0].frequencies).toEqual(['monthly', 'quarterly']);
   });
+
+  it('для схлопнутого API предпочитает locale-facing name, не name_ru', () => {
+    const input = [{
+      code: 'se-ei_issp_m-prd-i-sca-i21',
+      name: 'Production in services index by NACE Rev. 2 activity - monthly data',
+      name_ru: 'Производство услуг: гостиницы и общественное питание',
+      unit: 'Index, 2021=100',
+      frequencies: ['monthly'],
+    }];
+    const [row] = collapseCountryIndicators(input);
+    expect(row.name).toBe('Production in services index by NACE Rev. 2 activity');
+    expect(row.name).not.toMatch(/[А-Яа-яЁё]/);
+    expect(row.name).not.toMatch(/monthly data/i);
+  });
 });
 
 describe('isEmptySeries', () => {
@@ -200,6 +215,30 @@ describe('formatWorldValue', () => {
     expect(formatWorldValue(null)).toBe('—');
     expect(formatWorldValue(128.4)).toBe('128,4');
     expect(nbspToSpace(formatWorldValue(1054321, 0))).toBe('1 054 321');
+  });
+});
+
+describe('worldVariantsToPickerGroup', () => {
+  it('пробрасывает locale-facing groupLabel и pill labels', () => {
+    const group = worldVariantsToPickerGroup(
+      [
+        { code: 'a', label: 'accommodation and food service activities, production' },
+        { code: 'b', label: 'information and communication, production' },
+      ],
+      'Slice',
+    );
+    expect(group.label).toBe('Slice');
+    expect(group.codes).toHaveLength(2);
+    expect(group.codes[0].label).not.toMatch(/[А-Яа-яЁё]/);
+    expect(group.codes[1].label).toContain('information');
+  });
+
+  it('по умолчанию RU groupLabel', () => {
+    const group = worldVariantsToPickerGroup([
+      { code: 'a', label: 'x' },
+      { code: 'b', label: 'y' },
+    ]);
+    expect(group.label).toBe('Срез');
   });
 });
 

@@ -10,7 +10,7 @@ import { track, events } from '../lib/track';
 import {
   russiaIndicatorPath,
 } from '../lib/sitePaths';
-import { useT } from '../i18n';
+import { useLocale, useT } from '../i18n';
 
 // Поиск — это директория: список скроллится (`max-h-[60vh] overflow-y-auto`) и
 // поддерживает клавиатурную навигацию. Жёсткого «топ-12» больше нет (звонок
@@ -50,6 +50,7 @@ const SEARCH_MIN_LEN = 2;
  */
 export default function IndicatorSearch({ className, variant = 'icon', inlinePlaceholder }) {
   const t = useT();
+  const { locale } = useLocale();
   const navigate = useNavigate();
   // Каталог нужен только при открытии палитры. Раньше полный список
   // (include_unlisted, ~290 мс) тянулся на КАЖДОЙ странице, т.к. компонент
@@ -316,13 +317,20 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
               {results.length === 0 ? (
                 <div className="px-4 py-6 text-sm text-text-tertiary">
                   {query.trim()
-                    ? `Ничего не нашли по запросу «${query.trim()}».`
-                    : 'Начните вводить название индикатора.'}
+                    ? t('search.nothingFound', { query: query.trim() })
+                    : t('search.empty')}
                 </div>
               ) : (
                 results.map((ind, i) => {
                   const cat = findCategoryByApiLabel(ind.category_ru || ind.category);
                   const active = i === hi;
+                  const displayName = locale === 'en' && ind.name_en ? ind.name_en : ind.name;
+                  const secondaryName = locale === 'en'
+                    ? (ind.name_en ? ind.name : null)
+                    : ind.name_en;
+                  const catLabel = locale === 'en'
+                    ? (cat?.nameEn || cat?.name)
+                    : cat?.name;
                   return (
                     <button
                       key={ind.code}
@@ -338,16 +346,16 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
                       aria-selected={active}
                     >
                       <div className="flex-1 min-w-0">
-                        <div className="text-sm text-text-primary truncate">{ind.name}</div>
-                        {ind.name_en && (
+                        <div className="text-sm text-text-primary truncate">{displayName}</div>
+                        {secondaryName && (
                           <div className="text-[11px] font-mono text-text-tertiary truncate">
-                            {ind.name_en}
+                            {secondaryName}
                           </div>
                         )}
                       </div>
-                      {cat && (
+                      {catLabel && (
                         <span className="text-[10px] uppercase tracking-wider font-mono text-text-tertiary shrink-0">
-                          {cat.name}
+                          {catLabel}
                         </span>
                       )}
                     </button>
@@ -357,9 +365,9 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
             </div>
 
             <div className="px-4 py-2 border-t border-border-subtle flex items-center gap-4 text-[11px] font-mono text-text-tertiary">
-              <span><kbd className="px-1 py-0.5 rounded border border-border-subtle">↑</kbd> <kbd className="px-1 py-0.5 rounded border border-border-subtle">↓</kbd> навигация</span>
-              <span><kbd className="px-1 py-0.5 rounded border border-border-subtle">Enter</kbd> открыть</span>
-              <span><kbd className="px-1 py-0.5 rounded border border-border-subtle">Esc</kbd> закрыть</span>
+              <span><kbd className="px-1 py-0.5 rounded border border-border-subtle">↑</kbd> <kbd className="px-1 py-0.5 rounded border border-border-subtle">↓</kbd> {t('search.hint.nav')}</span>
+              <span><kbd className="px-1 py-0.5 rounded border border-border-subtle">Enter</kbd> {t('search.hint.open')}</span>
+              <span><kbd className="px-1 py-0.5 rounded border border-border-subtle">Esc</kbd> {t('search.hint.close')}</span>
             </div>
           </div>
         </div>,

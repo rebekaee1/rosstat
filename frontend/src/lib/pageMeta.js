@@ -59,8 +59,15 @@ export function worldCountryGenitive(slug, nameRu) {
 }
 
 /** «1 показатель» / «22 показателя» / «105 показателей» — как seo_world._n_indicators_phrase. */
-export function worldIndicatorsPhrase(n) {
+export function worldIndicatorsPhrase(n, locale) {
   const count = Math.abs(Number(n) || 0);
+  if (resolvePageMetaLocale(locale) === 'en') {
+    const worldEn = pageMeta.en?.world || {};
+    const tpl = count === 1
+      ? (worldEn.nIndicatorsOne || '{n} indicator')
+      : (worldEn.nIndicatorsMany || '{n} indicators');
+    return tpl.replace('{n}', String(count));
+  }
   const mod10 = count % 10;
   const mod100 = count % 100;
   let word = 'показателей';
@@ -69,21 +76,53 @@ export function worldIndicatorsPhrase(n) {
   return `${count} ${word}`;
 }
 
-export function worldCountryTitle(slug, nameRu) {
-  const genitive = worldCountryGenitive(slug, nameRu);
+/**
+ * H1 / document.title страницы страны.
+ * EN: WORLD_TEMPLATES_EN.country_title («Economy of {country}: …»).
+ * RU: родительный шаблон countryTitleTemplate.
+ * @param {string} slug
+ * @param {string} name — locale-facing имя (EN: name_en / API name)
+ * @param {'ru'|'en'} [locale]
+ */
+export function worldCountryTitle(slug, name, locale) {
+  const loc = resolvePageMetaLocale(locale);
+  if (loc === 'en') {
+    const tpl = pageMeta.en?.world?.countryTitleTemplate
+      || 'Economy of {country}: statistics and indicators';
+    return tpl.replace('{country}', name || '');
+  }
+  const genitive = worldCountryGenitive(slug, name);
   return pageMeta.world.countryTitleTemplate.replace('{genitive}', genitive);
 }
 
 /**
  * Описание страницы страны — те же шаблоны, что SSR в seo_world.
  * hasNational + sourcePhrase: если есть non-eurostat ряды.
+ * @param {'ru'|'en'} [opts.locale]
  */
 export function worldCountryDescription(slug, nameRu, indicatorCount, {
   hasNational = false,
   sourcePhrase = 'Евростат',
+  locale,
 } = {}) {
+  const loc = resolvePageMetaLocale(locale);
   const name = nameRu || '';
-  const nPhrase = worldIndicatorsPhrase(indicatorCount);
+  const nPhrase = worldIndicatorsPhrase(indicatorCount, loc);
+  if (loc === 'en') {
+    const worldEn = pageMeta.en?.world || {};
+    const template = hasNational
+      ? (worldEn.countryDescNationalTemplate
+        || '{country}: {n_phrase} — prices, GDP, labor market, trade, and finance. '
+          + 'Source: {source_phrase}. Charts and latest values on Forecast Economy.')
+      : (worldEn.countryDescEurostatTemplate
+        || '{country}: {n_phrase} from Eurostat — prices, GDP, labor market, trade, '
+          + 'and finance. Charts and latest values on Forecast Economy.');
+    return template
+      .replace('{country}', name)
+      .replace('{name}', name)
+      .replace('{n_phrase}', nPhrase)
+      .replace('{source_phrase}', sourcePhrase);
+  }
   const template = hasNational
     ? pageMeta.world.countryDescNationalTemplate
     : pageMeta.world.countryDescEurostatTemplate;

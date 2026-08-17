@@ -1,3 +1,4 @@
+import { useT } from '../i18n';
 import { useMemo } from 'react';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import { useIndicators } from '../lib/hooks';
@@ -46,6 +47,7 @@ const DEFAULT_CODES = [
 ];
 
 export default function EmbedTicker() {
+  const t = useT();
   const { theme, codes, speed } = useEmbedParams();
   const colors = THEME_COLORS[theme];
   const dur = SPEED_MAP[speed] || SPEED_MAP.normal;
@@ -64,9 +66,9 @@ export default function EmbedTicker() {
 
   const statusStyle = { background: colors.bg, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', color: colors.textTertiary, fontSize: 12, fontFamily: 'system-ui' };
 
-  if (isLoading) return <div style={statusStyle}>Загрузка…</div>;
-  if (isError) return <div style={statusStyle}>Ошибка загрузки</div>;
-  if (!items.length) return <div style={statusStyle}>Нет данных</div>;
+  if (isLoading) return <div style={statusStyle}>{t('embed.loading')}</div>;
+  if (isError) return <div style={statusStyle}>{t('embed.tickerLoadError')}</div>;
+  if (!items.length) return <div style={statusStyle}>{t('embed.noData')}</div>;
 
   return (
     <div style={{

@@ -10,6 +10,7 @@ import { ChartSkeleton } from './Skeleton';
 import { chartSeriesForViewMode } from '../lib/chartSeriesForViewMode';
 import { useLocale, useT } from '../i18n';
 import { resolveChartTitle } from '../i18n/resolveViewModeCopy';
+import { forecastTooltipLabel, levelTooltipLabel } from '../i18n/chartTooltipLabels';
 
 /* ── Mode-зависимые подписи ──
    chartMode принимает значения: 'cpi' (default для всех некоммодити-индикаторов),
@@ -17,50 +18,6 @@ import { resolveChartTitle } from '../i18n/resolveViewModeCopy';
    Для не-CPI индикаторов важен `indicator.frequency` — он задаёт ритм ряда
    (daily/weekly/monthly/quarterly/annual). Прогноз идёт в том же ритме —
    подписи tooltip/легенды/заголовка отражают это. */
-
-const FREQUENCY_LABEL = {
-  daily: 'днев.',
-  weekly: 'нед.',
-  monthly: 'мес.',
-  quarterly: 'кв.',
-  annual: 'год.',
-};
-
-function freqLabel(indicator) {
-  return FREQUENCY_LABEL[indicator?.frequency] || '';
-}
-
-function levelTooltipLabel({
-  chartMode, isPriceCategory, isHousingFamily, isPpiFamily,
-  isCbrTermSliceFamily,
-  indicator,
-}) {
-  if (isCbrTermSliceFamily && chartMode === 'level') return 'Ставка';
-  if ((isHousingFamily || isPpiFamily) && chartMode === 'index') return 'Индекс';
-  if (isPpiFamily && chartMode === 'mom') return 'М/м';
-  if (isHousingFamily && chartMode === 'annual') return 'Г/г';
-  if (chartMode === 'quarterly') return 'Кв. инфляция';
-  if (chartMode === 'annual') return 'Год. инфляция';
-  if (chartMode === 'weekly') return 'Нед. ИПЦ';
-  if (chartMode === 'yoy') return 'Г/г';
-  if (chartMode === 'qoq') return 'Кв/Кв';
-  if (chartMode === 'period-weekly') return 'С нач. мес.';
-  if (chartMode === 'period-monthly') return 'За месяц';
-  if (chartMode === 'index') return 'ИПЦ';
-  if (isPriceCategory) return 'Прирост';
-  const freq = freqLabel(indicator);
-  return freq ? `Факт (${freq})` : 'Значение';
-}
-
-function forecastTooltipLabel({ chartMode, indicator }) {
-  if (chartMode === 'quarterly') return 'Прогноз (кв.)';
-  if (chartMode === 'annual') return 'Прогноз (год.)';
-  if (chartMode === 'weekly') return 'Прогноз (нед.)';
-  if (chartMode === 'inflation') return 'Прогноз (12 мес.)';
-  if (chartMode === 'index') return 'Прогноз (мес. ИПЦ)';
-  const freq = freqLabel(indicator);
-  return freq ? `Прогноз (${freq})` : 'Прогноз';
-}
 
 function rangePresetFor({ chartMode, indicator }) {
   /* Mode-driven для CPI семьи (annual mode → 10y/25y/all). */
@@ -389,12 +346,12 @@ export default function IndicatorChartSection({
             onRangeChange={onRangeChange}
             referenceLineY={(isPriceCategory || isHousingFamily || isPpiFamily) && chartMode !== 'index' ? 0 : null}
             cpiChartTitle={cpiChartTitle}
-            levelTooltipLabel={levelTooltipLabel({
+            levelTooltipLabel={levelTooltipLabel(t, {
               chartMode, isPriceCategory, isHousingFamily, isPpiFamily,
               isCbrTermSliceFamily,
               indicator,
             })}
-            forecastTooltipLabel={forecastTooltipLabel({ chartMode, indicator })}
+            forecastTooltipLabel={forecastTooltipLabel(t, { chartMode, indicator })}
             emptyHint={emptyHint}
             dateFormat={resolveDateFormat({ chartMode, frequency: indicator?.frequency, safeViewMode })}
             unit={chartMode === 'index' ? 'индекс' : ((isPpiFamily || isHousingFamily) && chartMode !== 'index' ? '%' : (indicator?.unit || '%'))}

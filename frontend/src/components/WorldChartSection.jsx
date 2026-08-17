@@ -33,15 +33,9 @@ function isAbsoluteLevel(unit, modeMeta) {
     && !normalized.includes('п.п.');
 }
 
-function averageCountryLabel(conceptSlug, locale) {
-  if (conceptSlug === 'hicp-index') {
-    return locale === 'en'
-      ? 'Median across countries with data'
-      : 'Медиана по странам с данными';
-  }
-  return locale === 'en'
-    ? 'Average across countries with data'
-    : 'Среднее по странам с данными';
+function averageCountryLabel(conceptSlug, t) {
+  if (conceptSlug === 'hicp-index') return t('world.chart.medianCountries');
+  return t('world.chart.averageCountries');
 }
 
 function ComparisonPicker({
@@ -50,6 +44,7 @@ function ComparisonPicker({
   onToggle,
   onOpen,
 }) {
+  const t = useT();
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const selected = new Set(selectedIds);
@@ -74,8 +69,8 @@ function ComparisonPicker({
           setOpen(true);
           onOpen();
         }}
-        placeholder={selectedIds.length ? 'Добавить ещё страну…' : 'Найти страну…'}
-        aria-label="Поиск страны для сравнения"
+        placeholder={selectedIds.length ? t('world.chart.addCountry') : t('world.findCountry')}
+        aria-label={t('world.chart.searchCompareAria')}
         className="w-full rounded-xl border border-border-subtle bg-obsidian-light py-2.5 pl-9 pr-3 text-xs text-text-primary outline-none transition-colors placeholder:text-text-tertiary focus:border-border-champagne"
       />
       {open && (
@@ -102,7 +97,7 @@ function ComparisonPicker({
               </button>
             );
           }) : (
-            <div className="px-3 py-5 text-center text-xs text-text-tertiary">Страна не найдена</div>
+            <div className="px-3 py-5 text-center text-xs text-text-tertiary">{t('world.chart.countryNotFound')}</div>
           )}
         </div>
       )}
@@ -207,7 +202,7 @@ export default function WorldChartSection({
   const chartRef = useRef(null);
   const unit = unitOverride || modeMeta?.unit || indicator?.unit || '';
   const activeFreq = frequency || modeMeta?.freq || indicator?.frequency;
-  const title = worldChartTitle(indicator, modeMeta, activeFreq);
+  const title = worldChartTitle(indicator, modeMeta, activeFreq, locale);
   const [comparisonPickerActive, setComparisonPickerActive] = useState(false);
   // Meta карточки уже несёт строго совместимых peers. Общий каталог нужен
   // только старым карточкам без peers и загружается по первому намерению сравнить.
@@ -233,7 +228,7 @@ export default function WorldChartSection({
     if (AVERAGE_CONCEPTS.has(conceptSlug)) {
       result.unshift({
         code: 'average',
-        country_name: averageCountryLabel(conceptSlug, locale),
+        country_name: averageCountryLabel(conceptSlug, t),
       });
     }
     return result;
@@ -243,7 +238,7 @@ export default function WorldChartSection({
   ));
   const comparisonQueries = useQueries({
     queries: activeComparisonIds.map((id) => ({
-      queryKey: ['world-card-comparison', id, conceptSlug, modeMeta?.id],
+      queryKey: ['world-card-comparison', id, conceptSlug, modeMeta?.id, locale],
       queryFn: async ({ signal }) => {
         if (id === 'average') {
           return fetchWorldAverageSeries(conceptSlug, modeMeta?.id, { signal });
@@ -277,7 +272,7 @@ export default function WorldChartSection({
         option,
         label: payload?.meta?.country_name
           || option?.country_name
-          || (locale === 'en' ? 'Comparison' : 'Сравнение'),
+          || t('chart.compareSeries'),
         color: COMPARISON_COLORS[index],
         data: payload?.points || payload?.data || [],
       };
@@ -299,8 +294,8 @@ export default function WorldChartSection({
   );
   const displayedDataPoints = rebased?.base || dataPoints;
   const displayedComparisonSeries = rebased?.series || loadedComparisonSeries;
-  const displayedUnit = rebased ? 'индекс, общая база = 100' : unit;
-  const displayedTitle = rebased ? `${title} — динамика, общая база = 100` : title;
+  const displayedUnit = rebased ? t('world.chart.rebasedUnit') : unit;
+  const displayedTitle = rebased ? t('world.chart.rebasedTitle', { title }) : title;
   const effectiveShowForecast = forecastEnabled && showForecast && !rebased;
   const toggleComparison = (id) => {
     if (
@@ -375,13 +370,13 @@ export default function WorldChartSection({
               forecastEnabled ? 'cursor-pointer' : 'cursor-not-allowed opacity-45',
             )}>
               <span className="text-[10px] font-mono uppercase tracking-widest text-text-tertiary">
-                Прогноз
+                {t('common.forecast')}
               </span>
               <button
                 type="button"
                 role="switch"
                 aria-checked={effectiveShowForecast}
-                aria-label="Показать прогноз"
+                aria-label={t('chart.forecastAria')}
                 disabled={!forecastEnabled}
                 onClick={onToggleForecast}
                 className={cn(
@@ -402,7 +397,7 @@ export default function WorldChartSection({
             </label>
             {!forecastEnabled && (
               <div className="pointer-events-none absolute right-0 top-full z-50 mt-2 w-72 rounded-xl border border-border-subtle bg-obsidian px-3 py-2 text-[11px] leading-4 text-text-secondary opacity-0 shadow-xl transition-opacity group-hover/forecast:opacity-100">
-                Прогноз публикуется только если модель проходит проверку на исторических данных. Для этого ряда — нет.
+                {t('world.chart.forecastGate')}
               </div>
             )}
           </div>
@@ -418,10 +413,10 @@ export default function WorldChartSection({
             <div className="min-w-0 sm:min-w-[11rem]">
               <div className="flex items-center gap-2 text-xs font-medium text-text-primary">
                 <GitCompare size={14} className="text-champagne" />
-                Сравнение стран
+                {t('world.chart.compare')}
               </div>
               <div className="mt-1 text-[10px] text-text-tertiary">
-                До {MAX_COMPARISONS} сопоставимых рядов
+                {t('world.chart.compareLimit', { n: MAX_COMPARISONS })}
               </div>
             </div>
             <ComparisonPicker
@@ -433,8 +428,8 @@ export default function WorldChartSection({
             {activeComparisonIds.length > 0 && (
               <div className="inline-flex shrink-0 rounded-lg bg-obsidian-light p-0.5">
                 {[
-                  ['values', 'Значения'],
-                  ['index', 'Динамика (=100)'],
+                  ['values', t('world.chart.scaleValues')],
+                  ['index', t('world.chart.scaleIndex')],
                 ].map(([id, label]) => (
                   <button
                     key={id}
@@ -457,12 +452,12 @@ export default function WorldChartSection({
                   type="button"
                   onClick={() => toggleComparison(item.id)}
                   className="inline-flex max-w-full items-center gap-2 rounded-full border border-border-subtle bg-obsidian-light px-2.5 py-1.5 text-[11px] text-text-secondary transition-colors hover:border-border-champagne hover:text-text-primary"
-                  title="Убрать ряд"
+                  title={t('world.chart.removeSeries')}
                 >
                   <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: COMPARISON_COLORS[index] }} />
                   <span className="truncate">{item.label}</span>
                   {comparisonQueries[index]?.isLoading && <span className="text-text-tertiary">…</span>}
-                  {comparisonQueries[index]?.isError && <span className="text-danger">нет данных</span>}
+                  {comparisonQueries[index]?.isError && <span className="text-danger">{t('common.noData')}</span>}
                   <X size={11} className="shrink-0 text-text-tertiary" />
                 </button>
               ))}
@@ -473,7 +468,7 @@ export default function WorldChartSection({
                   )}`}
                   className="ml-auto text-xs text-champagne hover:underline"
                 >
-                  Открыть полное сравнение
+                  {t('world.chart.openFullCompare')}
                 </Link>
               )}
             </div>
@@ -481,12 +476,12 @@ export default function WorldChartSection({
 
           {rebased && (
             <p className="mt-3 text-[10px] leading-4 text-text-tertiary">
-              Общая база 100 на {rebased.startDate}: сравнивается динамика, а не абсолютный размер показателя.
+              {t('world.chart.rebaseNote', { date: rebased.startDate })}
             </p>
           )}
           {comparisonScale === 'index' && loadedComparisonSeries.length > 0 && !rebased && (
             <p className="mt-3 text-[10px] text-text-secondary">
-              Общую базу нельзя построить: у рядов нет общей положительной даты.
+              {t('world.chart.rebaseFail')}
             </p>
           )}
         </div>
@@ -494,25 +489,24 @@ export default function WorldChartSection({
 
       {comparisonQueries.some((query) => query.isError) && (
         <p className="mb-3 text-[12px] text-text-secondary">
-          Для части выбранных стран этот режим недоступен. Остальные ряды продолжают отображаться.
+          {t('world.chart.modePartial')}
         </p>
       )}
 
       {aggregated && (
         <p className="mb-3 text-[12px] text-text-secondary">
-          Ряд получен пересчётом на сайте, а не отдельной публикацией
-          {' '}{indicator?.source || 'официального источника'}
-          с этой частотой.
+          {t('world.chart.aggregated', {
+            source: indicator?.source || t('world.chart.sourceFallback'),
+          })}
         </p>
       )}
 
       {!forecastEnabled && (
         <p className="mb-3 text-[12px] leading-5 text-text-secondary">
-          Прогноз публикуется только если модель проходит проверку на исторических данных.
-          {' '}Для этого ряда — нет.
+          {t('world.chart.forecastGate')}
           {' '}
           <Link to="/methodology" className="text-champagne hover:underline">
-            Методология
+            {t('common.methodology')}
           </Link>
         </p>
       )}
@@ -520,21 +514,21 @@ export default function WorldChartSection({
       {showForecast && forecastEnabled && !rebased && (
         <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-text-tertiary">
           <span>
-            Прогноз начинается после последнего официального наблюдения.
+            {t('world.chart.forecastStarts')}
           </span>
           <Link to="/methodology" className="text-champagne hover:underline">
-            Методология
+            {t('common.methodology')}
           </Link>
         </div>
       )}
       {showForecast && forecastEnabled && forecastData.length === 0 && (
         <p className="mb-3 text-[11px] text-text-tertiary">
-          Для выбранного преобразования нет полного прогнозного периода.
+          {t('world.chart.forecastIncomplete')}
         </p>
       )}
       {showForecast && rebased && (
         <p className="mb-3 text-[11px] text-text-tertiary">
-          Прогноз скрыт при сравнении в общей базе 100.
+          {t('world.chart.forecastHiddenRebase')}
         </p>
       )}
 
@@ -550,8 +544,8 @@ export default function WorldChartSection({
             showForecast={effectiveShowForecast}
             onFullData={onFullData}
             cpiChartTitle={displayedTitle}
-            levelTooltipLabel={modeMeta?.label || modeMeta?.group || 'Значение'}
-            forecastTooltipLabel="Прогноз"
+            levelTooltipLabel={modeMeta?.label || modeMeta?.group || t('chart.tooltip.value')}
+            forecastTooltipLabel={t('common.forecast')}
             emptyHint={emptyHint}
             dateFormat={resolveDateFormat({ frequency: activeFreq, chartMode: 'cpi' })}
             unit={displayedUnit}

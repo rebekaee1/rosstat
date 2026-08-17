@@ -20,19 +20,17 @@ import {
 } from '../lib/sitePaths';
 import { useT, useLocale } from '../i18n';
 
-const MONTHS_NOM = [
-  'январь', 'февраль', 'март', 'апрель', 'май', 'июнь',
-  'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь',
+const WEEKDAY_KEYS = [
+  'calendar.weekday.sun',
+  'calendar.weekday.mon',
+  'calendar.weekday.tue',
+  'calendar.weekday.wed',
+  'calendar.weekday.thu',
+  'calendar.weekday.fri',
+  'calendar.weekday.sat',
 ];
 
-const MONTHS_GENITIVE = [
-  'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
-  'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря',
-];
-
-const WEEKDAYS_RU = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
-
-function formatDayLabel(dateStr) {
+function formatDayLabel(dateStr, t) {
   const d = new Date(dateStr + 'T12:00:00');
   const today = new Date();
   today.setHours(12, 0, 0, 0);
@@ -42,14 +40,13 @@ function formatDayLabel(dateStr) {
   eventDate.setHours(12, 0, 0, 0);
 
   const day = d.getDate();
-  const month = MONTHS_GENITIVE[d.getMonth()];
+  const month = t(`calendar.monthGen.${d.getMonth()}`);
   const year = d.getFullYear();
-  const weekday = WEEKDAYS_RU[d.getDay()];
-  const cap = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+  const weekday = t(WEEKDAY_KEYS[d.getDay()]);
 
-  if (eventDate.getTime() === today.getTime()) return `Сегодня, ${day} ${month}`;
-  if (eventDate.getTime() === tomorrow.getTime()) return `Завтра, ${day} ${month}`;
-  return `${cap}, ${day} ${month} ${year}`;
+  if (eventDate.getTime() === today.getTime()) return `${t('calendar.today')}, ${day} ${month}`;
+  if (eventDate.getTime() === tomorrow.getTime()) return `${t('calendar.tomorrow')}, ${day} ${month}`;
+  return `${weekday}, ${day} ${month} ${year}`;
 }
 
 function monthRange(year, month) {
@@ -98,12 +95,14 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
   const navigate = useNavigate();
 
   const calendarSeo = getPageSeo('calendar', locale);
+  const monthLabel = t(`calendar.month.${month}`);
+  const monthGenLabel = t(`calendar.monthGen.${month}`);
   useDocumentMeta({
     title: seoPath
-      ? `Календарь экономической статистики — ${MONTHS_NOM[month]} ${year}: даты публикаций`
+      ? t('calendar.seoMonthTitle', { month: monthLabel, year })
       : calendarSeo.title,
     description: seoPath
-      ? `Какие данные по экономике России выходят в ${MONTHS_GENITIVE[month]} ${year} года: публикации Росстата, Банка России и Минфина.`
+      ? t('calendar.seoMonthDesc', { month: monthGenLabel, year })
       : calendarSeo.description,
     path: seoPath || calendarSeo.path,
   });
@@ -184,7 +183,7 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
         if (a.importance !== b.importance) return b.importance - a.importance;
         return (a.scheduled_time || '').localeCompare(b.scheduled_time || '');
       }),
-      label: formatDayLabel(dateStr),
+      label: formatDayLabel(dateStr, t),
       isToday: dateStr === todayStr,
     }));
   }, [visibleEvents, todayStr]);
@@ -231,7 +230,7 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
           {selectedDate && (
             <div className="flex items-center gap-2 mb-4">
               <h2 className="text-sm font-semibold text-text-primary">
-                {formatDayLabel(selectedDate)}
+                {formatDayLabel(selectedDate, t)}
               </h2>
               <button
                 type="button"

@@ -5,6 +5,7 @@ export default {
 
   'common.download': 'Скачать',
   'common.forecast': 'Прогноз',
+  'common.methodology': 'Методология',
   'common.compare': 'Сравнить',
   'common.login': 'Войти',
   'common.register': 'Регистрация',
@@ -89,7 +90,7 @@ export default {
   'home.hero.eyebrow': 'Бесплатная аналитическая платформа экономических данных',
   'home.hero.title': 'Официальные макроэкономические индикаторы в одной рабочей среде',
   'home.hero.subtitle':
-    'Макроэкономические индикаторы по данным национальных статистических ведомств, центральных банков и Евростата: актуальные значения, сравнение стран и статистические прогнозы. Россия и её регионы — с максимальной глубиной истории.',
+    'Макроэкономические индикаторы по данным национальных статистических ведомств, центральных банков и Евростата: актуальные значения, сравнение стран и статистические прогнозы.',
   'home.searchPlaceholder': 'Найти показатель — инфляция, ВВП, ставка, безработица…',
   'home.pulse.eyebrow': 'Оперативный срез',
   'home.pulse.title': 'Мировые рынки',
@@ -183,6 +184,26 @@ export default {
   'home.macro.europeCoverage': 'Текущее покрытие — страны Европы по данным Евростата',
   'home.macro.defaultCoverage': 'Текущее покрытие — доступные страны официальной статистики',
   'home.macro.soonSuffix': ' — скоро',
+
+  'russia.eyebrow': 'Страна',
+  'russia.sections': 'Разделы',
+  'russia.link.today.title': 'Сегодня',
+  'russia.link.today.desc': 'Ключевые показатели на текущую дату',
+  'russia.link.regions.title': 'Регионы',
+  'russia.link.regions.desc': '489 показателей по 85 субъектам РФ',
+  'russia.link.calendar.title': 'Календарь',
+  'russia.link.calendar.desc': 'Даты публикаций официальной статистики',
+  'russia.link.demographics.title': 'Демография',
+  'russia.link.demographics.desc': 'Возрастная структура населения',
+  'russia.macro.eyebrow': 'Макроэкономика',
+  'russia.categories.title': 'Категории показателей',
+  'russia.categories.all': 'Все категории',
+
+  'russiaCategories.h1': 'Категории показателей России',
+  'russiaCategories.intro':
+    'Разделы макроэкономики России: от цен и валют до ВВП, рынка труда и демографии. Внутри каждой категории — официальные ряды с графиками и таблицами.',
+  'russiaCategories.searchPlaceholder':
+    'Искать индикатор по всем категориям — например, инфляция или ВВП',
 
   'world.eyebrow': 'Мировая экономика',
   'world.selectCountry': 'Выбрать страну',
@@ -884,6 +905,32 @@ export default {
   'world.indicator.allCountries': 'Все страны',
   'world.indicator.home': 'Главная',
   'world.indicator.loadError': 'Не удалось загрузить карточку показателя.',
+  'world.chart.compare': 'Сравнение стран',
+  'world.chart.compareLimit': 'До {n} сопоставимых рядов',
+  'world.chart.modePartial':
+    'Для части выбранных стран этот режим недоступен. Остальные ряды продолжают отображаться.',
+  'world.chart.sourceFallback': 'официального источника',
+  'world.chart.aggregated':
+    'Ряд получен пересчётом на сайте, а не отдельной публикацией {source} с этой частотой.',
+  'world.chart.forecastGate':
+    'Прогноз публикуется только если модель проходит проверку на исторических данных. Для этого ряда — нет.',
+  'world.chart.forecastStarts': 'Прогноз начинается после последнего официального наблюдения.',
+  'world.chart.forecastIncomplete': 'Для выбранного преобразования нет полного прогнозного периода.',
+  'world.chart.forecastHiddenRebase': 'Прогноз скрыт при сравнении в общей базе 100.',
+  'world.chart.addCountry': 'Добавить ещё страну…',
+  'world.chart.searchCompareAria': 'Поиск страны для сравнения',
+  'world.chart.countryNotFound': 'Страна не найдена',
+  'world.chart.scaleValues': 'Значения',
+  'world.chart.scaleIndex': 'Динамика (=100)',
+  'world.chart.removeSeries': 'Убрать ряд',
+  'world.chart.openFullCompare': 'Открыть полное сравнение',
+  'world.chart.rebaseNote':
+    'Общая база 100 на {date}: сравнивается динамика, а не абсолютный размер показателя.',
+  'world.chart.rebaseFail': 'Общую базу нельзя построить: у рядов нет общей положительной даты.',
+  'world.chart.rebasedUnit': 'индекс, общая база = 100',
+  'world.chart.rebasedTitle': '{title} — динамика, общая база = 100',
+  'world.chart.medianCountries': 'Медиана по странам с данными',
+  'world.chart.averageCountries': 'Среднее по странам с данными',
 
   'calendar.month.0': 'Январь',
   'calendar.month.1': 'Февраль',
@@ -933,6 +980,81 @@ export default {
   'variant.cpi.nonfood': 'Непродовольственные',
   'variant.cpi.services': 'Услуги',
 
+  'variant.gdpUse.group': 'ВВП по использованию',
+  'variant.gdpUse.households': 'Домохозяйства',
+  'variant.gdpUse.government': 'Государство',
+  'variant.gdpUse.investment': 'Инвестиции',
+
+  'variant.ipi.group': 'Состав промышленного производства',
+  'variant.ipi.all': 'Все отрасли',
+  'variant.ipi.mining': 'Добыча',
+  'variant.ipi.manufacturing': 'Обработка',
+  'variant.ipi.energy': 'Энергетика',
+  'variant.ipi.water': 'Водоснабжение',
+
+  'variant.fuel.group': 'Цены на топливо',
+  'variant.fuel.ai92': 'Бензин АИ-92',
+  'variant.fuel.ai95': 'Бензин АИ-95',
+  'variant.fuel.diesel': 'Дизельное топливо',
+
+  'variant.tradeGoods.group': 'Внешняя торговля товарами',
+  'variant.tradeGoods.exports': 'Экспорт товаров',
+  'variant.tradeGoods.imports': 'Импорт товаров',
+
+  'variant.tradeServices.group': 'Внешняя торговля услугами',
+  'variant.tradeServices.exports': 'Экспорт услуг',
+  'variant.tradeServices.imports': 'Импорт услуг',
+
+  'variant.extBalance.group': 'Внешний баланс',
+  'variant.extBalance.trade': 'Торговый баланс',
+  'variant.extBalance.current': 'Сальдо текущего счёта',
+
+  'variant.housing.group': 'Рынок жилья',
+  'variant.housing.primary': 'Первичное жильё',
+  'variant.housing.secondary': 'Вторичное жильё',
+
+  'variant.afford.group': 'Доступность жилья',
+  'variant.afford.secondary': 'Вторичное жильё',
+  'variant.afford.primary': 'Первичное жильё',
+
+  'variant.creditCorp.group': 'Ставки по кредитам юридическим лицам',
+  'variant.creditInd.group': 'Ставки по кредитам физическим лицам',
+  'variant.deposit.group': 'Ставки по вкладам физических лиц',
+  'variant.term.short': 'До 1 года',
+  'variant.term.1to3': 'От 1 до 3 лет',
+  'variant.term.over3': 'Свыше 3 лет',
+
+  'variant.budget.group': 'Федеральный бюджет',
+  'variant.budget.revenue': 'Доходы',
+  'variant.budget.expenditure': 'Расходы',
+  'variant.budget.deficit': 'Дефицит/профицит',
+
+  'variant.creditDeposit.group': 'Кредиты и вклады населения',
+  'variant.creditDeposit.credit': 'Кредиты физлицам',
+  'variant.creditDeposit.deposits': 'Вклады физлицам',
+
+  'variant.money.group': 'Денежные агрегаты',
+  'variant.money.m0': 'М0',
+  'variant.money.m1': 'М1',
+  'variant.money.m2': 'М2',
+
+  'variant.labor.group': 'Рынок труда: занятость',
+  'variant.labor.force': 'Рабочая сила',
+  'variant.labor.employment': 'Занятое население',
+
+  'variant.wages.group': 'Заработная плата',
+  'variant.wages.nominal': 'Номинальная',
+  'variant.wages.real': 'Реальная',
+
+  'indicator.picker.displayFrequency': 'Частота отображения',
+  'indicator.error.cardLoad': 'Карточка индикатора не загрузилась',
+  'indicator.error.dataUnavailable':
+    'Исторические данные недоступны — график и таблица без ряда.',
+  'indicator.empty.seriesFetch':
+    'Не удалось получить исторический ряд. Нажмите «Повторить» выше или проверьте доступность API.',
+  'indicator.empty.noPoints':
+    'В API пока нет точек для этого кода. После появления данных график заполнится автоматически.',
+
   'chart.typeAria': 'Тип графика',
   'chart.type.area': 'Линия с заливкой',
   'chart.type.line': 'Линия',
@@ -945,6 +1067,44 @@ export default {
   'chart.forecastAria': 'Показать прогноз',
   'chart.methodologyHint': 'Хотите узнать, как рассчитывается прогноз?',
   'chart.methodologyAria': 'Как рассчитывается прогноз',
+  'chart.freq.daily': 'днев.',
+  'chart.freq.weekly': 'нед.',
+  'chart.freq.monthly': 'мес.',
+  'chart.freq.quarterly': 'кв.',
+  'chart.freq.annual': 'год.',
+  'chart.tooltip.rate': 'Ставка',
+  'chart.tooltip.index': 'Индекс',
+  'chart.tooltip.mom': 'М/м',
+  'chart.tooltip.yoy': 'Г/г',
+  'chart.tooltip.qoq': 'Кв/Кв',
+  'chart.tooltip.quarterlyInflation': 'Кв. инфляция',
+  'chart.tooltip.annualInflation': 'Год. инфляция',
+  'chart.tooltip.weeklyCpi': 'Нед. ИПЦ',
+  'chart.tooltip.periodWeekly': 'С нач. мес.',
+  'chart.tooltip.periodMonthly': 'За месяц',
+  'chart.tooltip.cpi': 'ИПЦ',
+  'chart.tooltip.growth': 'Прирост',
+  'chart.tooltip.value': 'Значение',
+  'chart.tooltip.actualFreq': 'Факт ({freq})',
+  'chart.tooltip.forecastFreq': 'Прогноз ({freq})',
+  'chart.tooltip.forecastQuarter': 'Прогноз (кв.)',
+  'chart.tooltip.forecastYear': 'Прогноз (год.)',
+  'chart.tooltip.forecastWeek': 'Прогноз (нед.)',
+  'chart.tooltip.forecast12m': 'Прогноз (12 мес.)',
+  'chart.tooltip.forecastCpiMonth': 'Прогноз (мес. ИПЦ)',
+  'chart.tooltip.cpiMom': 'ИПЦ к пред. месяцу',
+  'chart.tooltip.inflation12m': 'Инфляция (12 мес.)',
+  'chart.title.cpiMom': 'ИПЦ (к предыдущему месяцу, %)',
+  'chart.title.inflation12m': 'Инфляция (скользящие 12 месяцев)',
+  'chart.zoomHint': 'Ctrl + scroll — зум, drag — сдвиг',
+  'chart.windowAria': 'Позиция окна по времени',
+  'chart.resetZoom': 'Сброс',
+  'chart.resetZoomTitle': 'Сбросить зум',
+  'chart.emptyTitle': 'Нет данных для графика',
+  'chart.emptyHint':
+    'Загрузите ряд с сервера или проверьте доступность API. Если данные только что добавлены — обновите страницу.',
+  'chart.compareSeries': 'Сравнение',
+  'chart.primarySeries': 'Основной ряд',
 
   'download.dataBlocked': 'Скачивание данных — после бесплатной регистрации',
   'download.chartBlocked': 'Скачивание графика — после бесплатной регистрации',
@@ -988,6 +1148,7 @@ export default {
   'table.valueWithUnit': 'Значение ({unit})',
   'table.empty': 'Нет строк для отображения — сузьте поиск или дождитесь загрузки ряда с API.',
   'table.historicalDefault': 'Исторические данные',
+  'table.historical': 'Исторические данные — {name}',
 
   'indicator.related': 'Похожие индикаторы',
   'indicator.regionCross.eyebrow': 'Разрез по регионам',
@@ -1145,6 +1306,7 @@ export default {
   'world.unit.km2': 'км²',
   'world.unit.people': 'человек',
   'world.country.compareCta': 'Сравнить показатели',
+  'world.country.loadError': 'Не удалось загрузить данные страны. Попробуйте ещё раз.',
   'world.country.findIndicator': 'Найти показатель…',
   'world.country.findIndicatorAria': 'Поиск по показателям страны',
   'world.country.themes': 'Темы',
@@ -1158,10 +1320,443 @@ export default {
   'world.unit.section_few': 'тематических разделах',
   'world.unit.section_many': 'тематических разделах',
   'world.country.historyFrom': '; доступная история начинается с {year} года.',
+  'world.country.notFoundTitle': 'Страна не найдена',
+  'world.country.notFoundMetaDesc': 'Запрашиваемая страница страны не найдена.',
+  'world.country.notFoundBody':
+    'Страницы с адресом «{slug}» в каталоге нет. Выберите страну из списка или перейдите в другой раздел.',
+  'world.country.allCountries': 'Все страны',
+  'world.country.russiaRegions': 'Регионы России',
+  'world.country.home': 'Главная',
 
   'forecast.emptyTitle': 'Прогноз для этого показателя не рассчитан или недоступен',
   'forecast.emptyBody':
     'Некоторые режимы показывают только официальный исторический ряд. Если прогноз появится, переключатель станет активным автоматически.',
   'forecast.enableToggle': 'Включите переключатель «Прогноз», чтобы показать таблицу прогноза',
+  'common.retry': 'Повторить',
+  'error.boundary.title': 'Произошла ошибка',
+  'error.boundary.body': 'Что-то пошло не так. Попробуйте обновить страницу.',
+  'error.boundary.reload': 'Обновить страницу',
+  'search.empty': 'Начните вводить название индикатора.',
+  'search.nothingFound': 'Ничего не нашли по запросу «{query}».',
+  'search.hint.nav': 'навигация',
+  'search.hint.open': 'открыть',
+  'search.hint.close': 'закрыть',
+  'indicator.empty.recalc': 'В API пока нет точек для этого режима — ряд появится после ближайшего пересчёта.',
+  'world.indicator.emptyMode': 'Для этого режима пока нет точек. Выберите другой режим или вернитесь позже.',
+  'world.indicator.dataLoadError': 'Не удалось загрузить ряд данных. Попробуйте другой режим или повторите запрос.',
+  'world.indicator.aboutSeries': 'О ряде',
+  'world.indicator.field.freq': 'Частота',
+  'world.indicator.field.unit': 'Единица',
+  'world.indicator.field.history': 'История',
+  'world.indicator.field.points': 'Точек',
+  'world.indicator.field.sourceName': 'Наименование в источнике',
+  'world.indicator.allOfCountry': 'Все показатели {country}',
+  'world.indicator.worldHub': 'Мировая экономика',
+  'world.indicator.freq.daily': 'По дням',
+  'world.indicator.freq.weekly': 'Еженедельно',
+  'world.indicator.freq.monthly': 'Помесячно',
+  'world.indicator.freq.quarterly': 'Ежеквартально',
+  'world.indicator.freq.annual': 'Ежегодно',
+  'world.indicator.slice': 'Срез',
+  'calendar.filter.allSources': 'Все источники',
+  'calendar.filter.cbr': 'ЦБ РФ',
+  'calendar.filter.rosstat': 'Росстат',
+  'calendar.filter.minfin': 'Минфин',
+  'calendar.filter.anyImportance': 'Любая важность',
+  'calendar.filter.high': '●●● Высокая',
+  'calendar.filter.mediumPlus': '●●  Средняя+',
+  'calendar.filter.week': 'Неделя',
+  'calendar.filter.month': 'Месяц',
+  'calendar.filter.quarter': '3 месяца',
+  'calendar.filter.clear': 'Сбросить',
+  'calendar.hero.nextEvent': 'Ближайшее событие',
+  'calendar.hero.msk': 'МСК',
+  'calendar.event.fact': 'Факт',
+  'calendar.event.official': 'официально',
+  'calendar.event.importance': '{level} важность',
+  'calendar.event.importance.high': 'Высокая',
+  'calendar.event.importance.medium': 'Средняя',
+  'calendar.event.importance.low': 'Низкая',
+  'calendar.event.goTo': 'Перейти к {name}',
+  'calendar.event.seriesCount': '{n} рядов',
+  'calendar.countdown.day_one': 'день',
+  'calendar.countdown.day_few': 'дня',
+  'calendar.countdown.day_many': 'дней',
+  'calendar.countdown.hour': 'час.',
+  'calendar.countdown.min': 'мин.',
+  'calendar.countdown.sec': 'сек.',
+  'embed.type.chart': 'График',
+  'embed.type.chartDesc': 'Интерактивный график с данными и прогнозом',
+  'embed.type.card': 'Карточка',
+  'embed.type.cardDesc': 'Компактная карточка: значение и мини-график',
+  'embed.type.table': 'Таблица',
+  'embed.type.tableDesc': 'Последние N значений индикатора',
+  'embed.type.ticker': 'Тикер',
+  'embed.type.tickerDesc': 'Бегущая строка для шапки сайта',
+  'embed.type.compare': 'Сравнение',
+  'embed.type.compareDesc': 'Два индикатора на одном графике',
+  'embed.size.small': 'Малый',
+  'embed.size.medium': 'Средний',
+  'embed.size.large': 'Большой',
+  'embed.pickIndicator': 'Выберите индикатор…',
+  'embed.search': 'Поиск…',
+  'embed.loading': 'Загрузка…',
+  'embed.loadError': 'Ошибка загрузки данных',
+  'embed.noData': 'Нет данных',
+  'embed.date': 'Дата',
+  'embed.value': 'Значение',
+  'embed.change': 'Изм.',
+  'embed.actual': 'Факт: {value}',
+  'embed.forecast': 'Прогноз: {value}',
+  'embed.asOf': 'на {date}',
+  'embed.attribution': 'Данные: Forecast Economy',
+  'embed.tickerLoadError': 'Ошибка загрузки',
+  'map.zoomIn': 'Приблизить карту',
+  'map.zoomOut': 'Отдалить карту',
+  'map.zoomReset': 'Показать всю карту',
+  'map.timeline.pause': 'Пауза',
+  'map.timeline.play': 'Проиграть по годам',
+  'map.timeline.yearOnMap': 'Год на карте',
+  'map.compact.billion': 'млрд',
+  'map.compact.million': 'млн',
+  'map.compact.thousand': 'тыс',
+  'today.page.eyebrow': 'Показатель на сегодня',
+  'today.page.h1': '{query} сегодня',
+  'today.page.now': 'Сейчас',
+  'today.page.prev': 'Предыдущее',
+  'today.page.min': 'Минимум',
+  'today.page.max': 'Максимум',
+  'regions.rating.sort': 'Сортировка',
+  'regions.rating.sortDesc': 'По убыванию',
+  'regions.rating.sortAsc': 'По возрастанию',
+  'regions.rating.dataFor': 'Данные за',
+  'regions.rating.colRegion': 'Регион',
+  'regions.rating.colValue': 'Значение',
+  'regions.rating.sourceHeading': 'Источник данных',
+  'regions.rating.empty': 'Недостаточно данных для рейтинга по этому показателю.',
+  'regions.rating.subjectsOf': 'субъектов Российской Федерации по показателю «{name}» за {year} год.',
+  'regions.rating.atRegion': 'у региона',
+  'regions.ratingHub.intro': 'Выберите показатель, чтобы увидеть полный рейтинг субъектов РФ за последний доступный год: место каждого региона, лидеры и аутсайдеры.',
+  'regions.ratingHub.loadError': 'Не удалось загрузить каталог показателей.',
+  'regions.profile.resetSearch': 'Сбросить поиск',
+  'regions.profile.nothingFound': 'По запросу «{query}» показателей не найдено.',
+  'regions.profile.themes': 'Темы',
+  'regions.profile.introFull':
+    'Официальная статистика Росстата по региону: {catalog} {catalogWord} в {sections} разделах, данные с 1990 года.',
+  'regions.profile.introPartial':
+    'Официальная статистика Росстата: {catalog} {catalogWord} в каталоге; по региону — данные по {available} {availableWord} в {sections} разделах, с 1990 года.',
+  'regions.profile.indicator_one': 'показатель',
+  'regions.profile.indicator_few': 'показателя',
+  'regions.profile.indicator_many': 'показателей',
+  'regions.ind.compareOther': 'Сравнить с другим регионом',
+  'regions.ind.comparePlaceholder': 'Сравнить с регионом',
+  'regions.ind.vsRussia': '— Россия',
+  'regions.ind.addRussia': '+ Россия',
+  'regions.ind.russia': 'Россия',
+  'regions.ind.yoyTitle': 'Изменения к предыдущему году, в процентах',
+  'regions.ind.yoyUnit': 'изменение к предыдущему году, %',
+  'regions.ind.yoyBtn': '% г/г',
+  'regions.ind.yoyShort': '% г/г',
+  'regions.ind.downloadCsv': 'Скачать CSV',
+  'regions.ind.downloadExcel': 'Скачать Excel',
+  'regions.ind.downloadPng': 'Скачать график картинкой',
+  'regions.ind.removeCompare': 'убрать сравнение',
+  'regions.ind.chartAria': 'График: {region}, {from}–{to}',
+  'regions.ind.axisRegion': '{region} — левая ось',
+  'regions.ind.axisRussia': 'Россия — правая ось',
+  'regions.ind.deltaYoY': '{pct}% за год',
+  'regions.ind.rankAchieve': 'Место в России, {year}',
+  'regions.ind.rankNeutral': 'Положение в списке, {year}',
+  'regions.ind.of': 'из',
+  'regions.ind.max': 'Максимум ({year})',
+  'regions.ind.min': 'Минимум ({year})',
+  'regions.ind.period': 'Период данных',
+  'regions.ind.topAchieve': 'Лучшие значения по регионам, {year}',
+  'regions.ind.topNeutral': 'Наибольшие значения по регионам, {year}',
+  'regions.ind.tableToggle': 'Таблица значений по годам',
+  'regions.ind.colYear': 'Год',
+  'regions.ind.macroTitle': 'Показатель по России в целом',
+  'regions.ind.macroBody':
+    'У этого показателя есть общероссийская карточка с более частым обновлением и прогнозом, а в разделе сравнения можно наложить регион и федеральный уровень на один график.',
+  'regions.ind.openRussia': 'Открыть индикатор России',
+  'regions.ind.compareRussia': 'Сравнить с Россией',
+  'regions.ind.moreInSection': 'Ещё в разделе «{section}»',
+  'regions.ind.abortionLead': 'Другой срез того же показателя Росстата —',
+  'regions.ind.abortionPer1000': 'на 1000 женщин 15–49 лет',
+  'regions.ind.abortionPer100': 'на 100 родов',
+  'regions.ind.metaTitle':
+    '{name} — {region}: {value} {unit} ({year})',
+  'regions.ind.metaDesc':
+    '{name} в регионе {region}: {value} {unit} в {year} году. Динамика с {from} года по данным Росстата, график по годам{rank}.',
+  'regions.ind.metaRankAchieve':
+    ', {position}-е место среди {total} регионов России.',
+  'regions.ind.metaRankNeutral':
+    ', {position}-е положение в списке по величине среди {total} регионов России.',
+  'regions.ind.jsonLdDesc':
+    '{name} ({unit}), {region}, {from}–{to}. Источник: Росстат.',
+  'regions.ind.creatorRosstat': 'Росстат',
+  'regions.home.loadingCatalog': 'Загрузка каталога…',
+  'regions.home.nothingFound':
+    'По запросу «{query}» ничего не найдено. Попробуйте короче: «зарплата», «врач», «жильё».',
+  'regions.home.noRegions': 'По запросу «{query}» регионов не найдено',
+  'regions.home.unit.mlnRub': 'млн ₽',
+  'regions.home.unit.thousPeople': 'тыс. чел.',
+  'regions.home.mapClickTitle': 'Клик по региону открывает его карточку со всеми показателями',
+  'regions.home.mapCaptionMetric':
+    '{name}{yearBit}{unitBit}. Нажмите на регион, чтобы открыть его показатель.',
+  'regions.home.mapCaptionOverview':
+    'Нажмите на регион, чтобы открыть его карточку со всеми показателями.',
+  'regions.home.mapYearBit': ', {year} год',
+  'regions.home.mapUnitBit': ', {unit}',
+  'regions.home.mapHintMetric':
+    'Интенсивность цвета — позиция региона относительно других в выбранном году (шкала пересчитывается для каждого года). Двигайте ползунок или нажмите «play», чтобы увидеть, как менялась расстановка регионов по годам. ',
+  'regions.home.mapHintOverview': 'Режим обзора: клик по региону открывает его профиль. ',
+  'regions.home.mapHintCities':
+    'Москва, Санкт-Петербург и Севастополь показаны точками. Кнопки «+»/«−» приближают карту, в приближении её можно перетаскивать.',
+  'regions.home.compact.bln': 'млрд',
+  'regions.home.compact.mln': 'млн',
+  'regions.home.compact.thsNarrow': 'т',
+  'regions.home.compact.ths': 'тыс',
+  'category.notFound': 'Категория не найдена',
+  'category.searchPlaceholder': 'Искать индикатор по всем категориям — например, инфляция или ВВП',
+  'category.indicatorsHeading': 'Индикаторы',
+  'category.listUnavailable': 'Список индикаторов сейчас недоступен.',
+  'category.retryHint': 'Чуть позже данные обычно подтягиваются — нажмите «Повторить».',
+  'category.empty': 'В этой категории пока нет показателей в базе.',
+  'category.related': 'Связанные категории',
+  'compare.rep.levelHint': 'Исходные значения ряда в его единицах измерения',
+  'compare.rep.popHint': 'Изменение к предыдущему месяцу или кварталу, в процентах',
+  'compare.rep.yoyHint': 'Изменение к соответствующему периоду год назад (Г/г), в процентах',
+  'compare.rep.pop': 'К прошлому периоду',
+  'compare.rep.yoy': 'К прошлому году',
+  'compare.rep.index': 'Индекс',
+  'compare.rep.indexLower': 'индекс',
+  'compare.rep.value': 'Значение',
+  'about.eyebrow': 'О проекте',
+  'about.intro.p1': 'Forecast Economy — веб-платформа для работы с официальной экономической статистикой. Основа — Россия: инфляция и цены, ключевая ставка и ставки рынка, ВВП и промышленное производство, рынок труда, внешняя торговля, бюджет, биржевые индексы и товарные рынки. Плюс региональные ряды по субъектам РФ и доступная статистика отдельных стран из официальных национальных и международных первоисточников.',
+  'about.intro.p2before': 'Мы собираем данные из первичных источников —',
+  'about.intro.p2after': '— показываем длинные исторические ряды по более чем 100 макроэкономическим индикаторам и 489 региональным показателям по 85 регионам России, и строим',
+  'about.intro.forecast': 'прогноз',
+  'about.intro.p2end': 'там, где это оправдано характером ряда.',
+  'about.audienceTitle': 'Для кого этот сервис',
+  'about.audience.1': 'аналитикам и экономистам, которым нужны ряды, сравнения и прогноз в одном месте;',
+  'about.audience.2': 'инвесторам и финансистам — отслеживать инфляцию, ставки, валюту, биржевые индексы и товарные рынки;',
+  'about.audience.3': 'предпринимателям — следить за спросом, ценами и промышленной активностью;',
+  'about.audience.4': 'журналистам, преподавателям и студентам — текущая ситуация по экономике России и доступным страновым рядам;',
+  'about.audience.5before': 'всем, кто хочет видеть',
+  'about.audience.5strong': 'официальные данные',
+  'about.audience.5after': ', а не только заголовки новостей.',
+  'about.diffTitle': 'Чем мы отличаемся',
+  'about.diff.1strong': 'Прогноз с методологией.',
+  'about.diff.1': 'Модель и окна обучения описаны в интерфейсе; прогноз — оценка по истории ряда, а не «мнение редакции».',
+  'about.diff.2strong': 'Бесплатный просмотр.',
+  'about.diff.2': 'Графики, таблицы и прогнозы доступны без регистрации. Скачивание данных и изображений графиков — после бесплатной регистрации.',
+  'about.trustTitle': 'Доверие и ограничения',
+  'about.trust.1before': 'Материалы носят',
+  'about.trust.1strong': 'исключительно информационный характер',
+  'about.trust.1after': 'и не являются индивидуальной инвестиционной рекомендацией, финансовым или юридическим советом. Прогнозы отражают статистическую экстраполяцию прошлых данных и могут расходиться с фактической динамикой из-за шоков, смены политики и пересмотра рядов.',
+  'about.trust.2': 'По вопросам сотрудничества и замечаний по данным:',
+  'tile.metric': 'Метрика',
+  'tile.pending': 'Ожидается',
+  'tile.yoy': '(Г/Г)',
+  'world.map.band.p15': 'Нижние 15% стран',
+  'world.map.band.belowStrong': 'Заметно ниже медианы',
+  'world.map.band.below': 'Ниже медианы',
+  'world.map.band.median': 'Около медианы',
+  'world.map.band.above': 'Выше медианы',
+  'world.map.band.aboveStrong': 'Заметно выше медианы',
+  'world.map.band.p85': 'Верхние 15% стран',
+  'world.map.signed.strongNeg': 'Сильно ниже нуля',
+  'world.map.signed.modNeg': 'Умеренно ниже нуля',
+  'world.map.signed.nearNeg': 'Ниже нуля, близко к нулю',
+  'world.map.signed.nearZero': 'Около нуля',
+  'world.map.signed.nearPos': 'Выше нуля, близко к нулю',
+  'world.map.signed.modPos': 'Умеренно выше нуля',
+  'world.map.signed.strongPos': 'Сильно выше нуля',
+  'world.map.bandWithPct': '{label}, {rank}-й процентиль',
+  'embed.copied': 'Скопировано',
+  'embed.copyCode': 'Копировать код',
+  'embed.nothingFound': 'Ничего не найдено',
+  'embed.constructor': 'Конструктор виджетов',
+  'embed.intro': 'Встройте графики экономических данных России на ваш сайт. Бесплатно, с обязательной ссылкой на источник.',
+  'embed.settings': 'Настройки',
+  'embed.indicator': 'Индикатор',
+  'embed.indicatorB': 'Второй индикатор',
+  'embed.codesCsv': 'Коды индикаторов (через запятую)',
+  'embed.speed.slow': 'Медленно',
+  'embed.speed.normal': 'Обычно',
+  'embed.speed.fast': 'Быстро',
+  'embed.period': 'Период',
+  'embed.theme': 'Тема',
+  'embed.theme.light': 'Светлая',
+  'embed.theme.dark': 'Тёмная',
+  'embed.theme.auto': 'Авто',
+  'embed.size': 'Размер',
+  'embed.size.custom': 'Свой',
+  'embed.rowCount': 'Количество строк',
+  'embed.showTitle': 'Показать заголовок',
+  'embed.showForecast': 'Показать прогноз',
+  'embed.terms': 'Условия',
+  'embed.tableTitle': '{name} — таблица',
+  'embed.defaultTitle': 'Экономические индикаторы — Forecast Economy',
+  'embed.termsBody': 'Виджеты бесплатны для любого использования с сохранением ссылки «Данные: Forecast Economy» на источник. Подробнее —',
+  'embed.termsAbout': 'О проекте',
+  'category.feature.population.title': 'Возрастная структура населения',
+  'category.feature.population.desc': 'Визуализация трёх возрастных групп: дети, трудоспособные, старше трудоспособного. Данные Росстата.',
+  'today.page.dynamics': '{query} — динамика',
+  'today.page.source': 'Источник: {source}',
+  'today.page.openCard': 'Интерактивный график и прогноз',
+  'today.page.recent': 'Последние значения',
+  'today.page.colDate': 'Дата',
+  'today.page.colValue': 'Значение',
+  'today.page.fullHistoryTitle': 'Полная история и прогноз',
+  'today.page.fullHistoryBody': 'Интерактивный график с историей с первого доступного года, режимы представления и прогноз — на странице',
+  'calendar.today': 'Сегодня',
+  'calendar.tomorrow': 'Завтра',
+  'calendar.weekday.sun': 'Воскресенье',
+  'calendar.weekday.mon': 'Понедельник',
+  'calendar.weekday.tue': 'Вторник',
+  'calendar.weekday.wed': 'Среда',
+  'calendar.weekday.thu': 'Четверг',
+  'calendar.weekday.fri': 'Пятница',
+  'calendar.weekday.sat': 'Суббота',
+  'calendar.monthGen.0': 'января',
+  'calendar.monthGen.1': 'февраля',
+  'calendar.monthGen.2': 'марта',
+  'calendar.monthGen.3': 'апреля',
+  'calendar.monthGen.4': 'мая',
+  'calendar.monthGen.5': 'июня',
+  'calendar.monthGen.6': 'июля',
+  'calendar.monthGen.7': 'августа',
+  'calendar.monthGen.8': 'сентября',
+  'calendar.monthGen.9': 'октября',
+  'calendar.monthGen.10': 'ноября',
+  'calendar.monthGen.11': 'декабря',
+  'calendar.seoMonthTitle': 'Календарь экономической статистики — {month} {year}: даты публикаций',
+  'calendar.seoMonthDesc': 'Какие данные по экономике России выходят в {month} {year} года: публикации Росстата, Банка России и Минфина.',
+
+  'meth.eyebrow': 'Методология',
+  'meth.intro.p1':
+    'Каждый прогноз на Forecast Economy строится статистической моделью, обученной на '
+    + 'официальном историческом ряде показателя. Мы не подгоняем результат под ожидания и не '
+    + 'добавляем экспертных допущений: прогнозное значение определяют исходные данные и '
+    + 'алгоритм, описанный на этой странице.',
+  'meth.intro.p2':
+    'Ниже разобран весь путь расчёта — от подготовки исходного ряда до обучения модели. '
+    + 'Отдельно перечислены показатели, которые мы сознательно не прогнозируем, и объяснено почему.',
+  'meth.intro.p3':
+    'Методология подчинена одному требованию: любое прогнозное значение должно '
+    + 'воспроизводиться из опубликованных данных по описанной процедуре. Именно это отличает '
+    + 'статистический расчёт от экспертного суждения и позволяет проверить результат независимо.',
+  'meth.principlesTitle': 'Принципы',
+  'meth.p.officialTitle': 'Только официальные данные',
+  'meth.p.officialBody':
+    'Источником служат публикации Росстата, Банка России и Минфина. Новостные сводки и '
+    + 'данные агрегаторов мы не используем. Первоисточник указан на карточке каждого '
+    + 'показателя, и его можно сверить напрямую.',
+  'meth.p.reproTitle': 'Воспроизводимость',
+  'meth.p.reproBody':
+    'Прогноз получается из истории ряда по фиксированному алгоритму. При одних и тех же '
+    + 'данных результат всегда одинаков и не зависит от того, кто и когда запустил расчёт.',
+  'meth.p.uncertTitle': 'Оценка неопределённости',
+  'meth.p.uncertBody':
+    'Помимо центрального значения мы приводим диапазон, в котором показатель окажется с '
+    + 'высокой вероятностью. С удлинением горизонта диапазон закономерно расширяется, и '
+    + 'это видно прямо на графике.',
+  'meth.p.limitsTitle': 'Границы применимости',
+  'meth.p.limitsBody':
+    'Там, где статистический прогноз недостоверен по своей природе — биржевые '
+    + 'котировки, валютные курсы внутри дня, ежедневные цены, — мы его не публикуем и '
+    + 'указываем причину.',
+  'meth.stepsTitle': 'Этапы расчёта',
+  'meth.stepsIntro':
+    'Каждый показатель проходит одну и ту же последовательность — от подготовки ряда до '
+    + 'восстановления будущих значений и оценки их точности.',
+  'meth.step.1title': 'Подготовка и сверка ряда',
+  'meth.step.1body':
+    'Исторические значения сверяются с публикацией источника и приводятся к единому '
+    + 'формату. Разрывы, вызванные сменой методологии счёта, учитываются отдельно. Ряд '
+    + 'рассматривается на своей естественной частоте — месячной, квартальной или годовой.',
+  'meth.step.2title': 'Диагностика ряда',
+  'meth.step.2body':
+    'Перед выбором модели ряд исследуется на наличие тренда, сезонности и устойчивости '
+    + 'колебаний во времени. Стационарность проверяется расширенным тестом Дики — Фуллера.',
+  'meth.step.3title': 'Обучение модели',
+  'meth.step.3body':
+    'На подготовленном ряде оценивается статистическая модель. Её основу составляет '
+    + 'регрессия по прошлым значениям с несколькими окнами обучения; ряды с выраженной '
+    + 'сезонностью в основном описываются сезонными моделями авторегрессии. Единой модели '
+    + 'на все случаи не существует — семейство моделей подбирается под особенности '
+    + 'показателя, его частоту и сезонность.',
+  'meth.step.4title': 'Взвешивание и возврат в единицы показателя',
+  'meth.step.4body':
+    'Оценки, полученные на разных окнах обучения, объединяются с весами, рассчитанными '
+    + 'согласно авторской методике нашей команды. После этого прогноз переводится обратно в '
+    + 'исходные единицы — рубли, проценты или пункты индекса.',
+  'meth.worldTitle': 'Проверка прогнозов по странам',
+  'meth.world.p1':
+    'Для месячных и квартальных рядов других стран используется отдельная процедура '
+    + 'контроля качества. Модель продолжает сезонный профиль и оценивает устойчивое изменение '
+    + 'относительно сопоставимого месяца или квартала прошлого года. Короткие, нерегулярные и '
+    + 'давно не обновлявшиеся ряды исключаются до расчёта.',
+  'meth.world.p2':
+    'Качество проверяется последовательно на нескольких прошлых датах: на каждом шаге модель '
+    + 'видит только ту историю, которая была доступна к этому моменту. Ошибка сравнивается с '
+    + 'сезонным ориентиром, который переносит последнее сопоставимое значение без изменений. '
+    + 'Прогноз появляется на карточке, только если средняя масштабированная абсолютная ошибка '
+    + 'ниже единицы и модель устойчиво точнее этого ориентира.',
+  'meth.world.p3':
+    'Проверка выполняется отдельно для каждого ряда, поэтому наличие прогноза у одного '
+    + 'показателя не означает автоматического допуска остальных показателей той же страны. '
+    + 'Производные режимы — годовые итоги и темпы изменения — рассчитываются из уже '
+    + 'проверенного прогноза исходного ряда.',
+  'meth.updateTitle': 'Обновление прогноза',
+  'meth.update.modelTitle': 'Модель следует за данными',
+  'meth.update.modelBody':
+    'Как только источник публикует новое наблюдение, ряд дополняется, а модель '
+    + 'переоценивается на расширенной истории. Прогнозная линия сдвигается вперёд без '
+    + 'ручного вмешательства.',
+  'meth.update.derivedTitle': 'Пересчёт производных рядов',
+  'meth.update.derivedBody':
+    'Обновление базового ряда автоматически запускает пересчёт всех зависящих от него '
+    + 'показателей — годовых итогов и относительных изменений.',
+  'meth.skipTitle': 'Что мы не прогнозируем',
+  'meth.skipIntro':
+    'Для части показателей мы намеренно не публикуем прогноз. Статистическая экстраполяция '
+    + 'опирается на инерцию ряда, а на коротких и рыночных данных динамику определяют текущие '
+    + 'новости и настроение участников, поэтому прошлое почти не помогает предсказать будущее.',
+  'meth.skip.1title': 'Биржевые котировки и индексы',
+  'meth.skip.1body':
+    'Курсы валют, акции и биржевые товары реагируют на новости мгновенно; вчерашняя динамика '
+    + 'почти ничего не говорит о завтрашней.',
+  'meth.skip.2title': 'Криптовалюты',
+  'meth.skip.2body':
+    'Высокая волатильность и спекулятивная природа рынка делают статистическую оценку ненадёжной.',
+  'meth.skip.3title': 'Ежедневные и внутринедельные ряды',
+  'meth.skip.3body':
+    'На горизонте нескольких дней преобладает шум; содержательный прогноз становится возможен '
+    + 'начиная с месячной частоты.',
+  'meth.skipOutro':
+    'Для таких показателей мы приводим полную историю без прогнозной линии, а переключатель '
+    + 'прогноза на карточке остаётся неактивным.',
+  'meth.readTitle': 'Как читать прогноз на графике',
+  'meth.read.p1':
+    'Сплошная линия — фактические данные источника. Пунктирная линия — прогноз. '
+    + 'Полупрозрачная полоса вокруг пунктира — наиболее вероятный диапазон будущих значений, '
+    + 'который расширяется по мере удаления в будущее.',
+  'meth.read.p2':
+    'Те же прогнозные значения продублированы в таблице под графиком вместе с границами '
+    + 'диапазона. Их можно выгрузить и использовать в собственных расчётах.',
+  'meth.disclaimerTitle': 'Ограничения и ответственность',
+  'meth.disclaimer.p1':
+    'Прогноз опирается на устойчивые закономерности прошлого и может расходиться с '
+    + 'фактом при экономических шоках, изменении денежно-кредитной или бюджетной политики, '
+    + 'а также при пересмотре исторических данных самим источником. Чем дальше горизонт, '
+    + 'тем выше неопределённость оценки.',
+  'meth.disclaimer.p2':
+    'Все материалы носят информационный характер и не являются индивидуальной '
+    + 'инвестиционной рекомендацией, финансовой или юридической консультацией.',
+  'meth.cta.indicators': 'Смотреть индикаторы',
+  'meth.cta.about': 'О проекте',
 };
 

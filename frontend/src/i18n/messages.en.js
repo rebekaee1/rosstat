@@ -5,6 +5,7 @@ export default {
 
   'common.download': 'Download',
   'common.forecast': 'Forecast',
+  'common.methodology': 'Methodology',
   'common.compare': 'Compare',
   'common.login': 'Sign in',
   'common.register': 'Sign up',
@@ -89,7 +90,7 @@ export default {
   'home.hero.eyebrow': 'Free economic data platform',
   'home.hero.title': 'Official macroeconomic indicators in one workspace',
   'home.hero.subtitle':
-    'Macro indicators from national statistical offices, central banks, and Eurostat: latest readings, cross-country comparison, and statistical forecasts. Russia and its regions — with the deepest available history.',
+    'Macro indicators from national statistical offices, central banks, and Eurostat: latest readings, cross-country comparison, and statistical forecasts.',
   'home.searchPlaceholder': 'Find an indicator — inflation, GDP, rates, unemployment…',
   'home.pulse.eyebrow': 'Market pulse',
   'home.pulse.title': 'Global markets',
@@ -183,6 +184,27 @@ export default {
   'home.macro.europeCoverage': 'Current coverage — European countries via Eurostat',
   'home.macro.defaultCoverage': 'Current coverage — countries available from official statistics',
   'home.macro.soonSuffix': ' — soon',
+
+  'russia.eyebrow': 'Country',
+  'russia.sections': 'Sections',
+  'russia.link.today.title': 'Today',
+  'russia.link.today.desc': 'Key indicators for the current date',
+  'russia.link.regions.title': 'Regions',
+  'russia.link.regions.desc':
+    '489 indicators across 85 subjects of the Russian Federation',
+  'russia.link.calendar.title': 'Calendar',
+  'russia.link.calendar.desc': 'Official statistics release dates',
+  'russia.link.demographics.title': 'Demographics',
+  'russia.link.demographics.desc': 'Age structure of the population',
+  'russia.macro.eyebrow': 'Macroeconomics',
+  'russia.categories.title': 'Indicator categories',
+  'russia.categories.all': 'All categories',
+
+  'russiaCategories.h1': 'Russia indicator categories',
+  'russiaCategories.intro':
+    'Sections of Russia’s macroeconomy: from prices and FX to GDP, the labor market, and demographics. Each category contains official series with charts and tables.',
+  'russiaCategories.searchPlaceholder':
+    'Search indicators across all categories — for example, inflation or GDP',
 
   'world.eyebrow': 'World economy',
   'world.selectCountry': 'Select country',
@@ -883,6 +905,32 @@ export default {
   'world.indicator.allCountries': 'All countries',
   'world.indicator.home': 'Home',
   'world.indicator.loadError': 'Could not load the indicator card.',
+  'world.chart.compare': 'Compare countries',
+  'world.chart.compareLimit': 'Up to {n} comparable series',
+  'world.chart.modePartial':
+    'This view is unavailable for some of the selected countries. The remaining series are still shown.',
+  'world.chart.sourceFallback': 'the official source',
+  'world.chart.aggregated':
+    'This series is recalculated on the site, not a separate {source} release at this frequency.',
+  'world.chart.forecastGate':
+    'A forecast is published only if the model passes a historical-data check. This series does not.',
+  'world.chart.forecastStarts': 'The forecast starts after the last official observation.',
+  'world.chart.forecastIncomplete': 'The selected transformation has no complete forecast period.',
+  'world.chart.forecastHiddenRebase': 'The forecast is hidden when comparing on a common base of 100.',
+  'world.chart.addCountry': 'Add another country…',
+  'world.chart.searchCompareAria': 'Search for a country to compare',
+  'world.chart.countryNotFound': 'Country not found',
+  'world.chart.scaleValues': 'Values',
+  'world.chart.scaleIndex': 'Change (=100)',
+  'world.chart.removeSeries': 'Remove series',
+  'world.chart.openFullCompare': 'Open full comparison',
+  'world.chart.rebaseNote':
+    'Common base 100 on {date}: this compares change, not the absolute size of the indicator.',
+  'world.chart.rebaseFail': 'A common base cannot be built: the series share no positive date.',
+  'world.chart.rebasedUnit': 'index, common base = 100',
+  'world.chart.rebasedTitle': '{title} — change, common base = 100',
+  'world.chart.medianCountries': 'Median across countries with data',
+  'world.chart.averageCountries': 'Average across countries with data',
 
   'calendar.month.0': 'January',
   'calendar.month.1': 'February',
@@ -932,6 +980,80 @@ export default {
   'variant.cpi.nonfood': 'Non-food',
   'variant.cpi.services': 'Services',
 
+  'variant.gdpUse.group': 'GDP by expenditure',
+  'variant.gdpUse.households': 'Households',
+  'variant.gdpUse.government': 'Government',
+  'variant.gdpUse.investment': 'Investment',
+
+  'variant.ipi.group': 'Industrial production composition',
+  'variant.ipi.all': 'All industries',
+  'variant.ipi.mining': 'Mining',
+  'variant.ipi.manufacturing': 'Manufacturing',
+  'variant.ipi.energy': 'Energy',
+  'variant.ipi.water': 'Water supply',
+
+  'variant.fuel.group': 'Fuel prices',
+  'variant.fuel.ai92': 'AI-92 gasoline',
+  'variant.fuel.ai95': 'AI-95 gasoline',
+  'variant.fuel.diesel': 'Diesel fuel',
+
+  'variant.tradeGoods.group': 'Merchandise trade',
+  'variant.tradeGoods.exports': 'Goods exports',
+  'variant.tradeGoods.imports': 'Goods imports',
+
+  'variant.tradeServices.group': 'Trade in services',
+  'variant.tradeServices.exports': 'Services exports',
+  'variant.tradeServices.imports': 'Services imports',
+
+  'variant.extBalance.group': 'External balance',
+  'variant.extBalance.trade': 'Trade balance',
+  'variant.extBalance.current': 'Current account balance',
+
+  'variant.housing.group': 'Housing market',
+  'variant.housing.primary': 'Primary housing',
+  'variant.housing.secondary': 'Secondary housing',
+
+  'variant.afford.group': 'Housing affordability',
+  'variant.afford.secondary': 'Secondary housing',
+  'variant.afford.primary': 'Primary housing',
+
+  'variant.creditCorp.group': 'Corporate lending rates',
+  'variant.creditInd.group': 'Household lending rates',
+  'variant.deposit.group': 'Household deposit rates',
+  'variant.term.short': 'Up to 1 year',
+  'variant.term.1to3': '1 to 3 years',
+  'variant.term.over3': 'Over 3 years',
+
+  'variant.budget.group': 'Federal budget',
+  'variant.budget.revenue': 'Revenue',
+  'variant.budget.expenditure': 'Expenditure',
+  'variant.budget.deficit': 'Deficit / surplus',
+  'variant.creditDeposit.group': 'Household credit and deposits',
+  'variant.creditDeposit.credit': 'Household credit',
+  'variant.creditDeposit.deposits': 'Household deposits',
+
+  'variant.money.group': 'Monetary aggregates',
+  'variant.money.m0': 'M0',
+  'variant.money.m1': 'M1',
+  'variant.money.m2': 'M2',
+
+  'variant.labor.group': 'Labour market: employment',
+  'variant.labor.force': 'Labour force',
+  'variant.labor.employment': 'Employed population',
+
+  'variant.wages.group': 'Wages',
+  'variant.wages.nominal': 'Nominal',
+  'variant.wages.real': 'Real',
+
+  'indicator.picker.displayFrequency': 'Display frequency',
+  'indicator.error.cardLoad': 'Could not load the indicator card',
+  'indicator.error.dataUnavailable':
+    'Historical data is unavailable — the chart and table have no series.',
+  'indicator.empty.seriesFetch':
+    'Could not fetch the historical series. Press Retry above or check that the API is available.',
+  'indicator.empty.noPoints':
+    'No data points for this code in the API yet. The chart will fill in automatically once data appears.',
+
   'chart.typeAria': 'Chart type',
   'chart.type.area': 'Area',
   'chart.type.line': 'Line',
@@ -944,6 +1066,44 @@ export default {
   'chart.forecastAria': 'Show forecast',
   'chart.methodologyHint': 'Want to learn how the forecast is calculated?',
   'chart.methodologyAria': 'How the forecast is calculated',
+  'chart.freq.daily': 'd',
+  'chart.freq.weekly': 'wk',
+  'chart.freq.monthly': 'mo',
+  'chart.freq.quarterly': 'qtr',
+  'chart.freq.annual': 'yr',
+  'chart.tooltip.rate': 'Rate',
+  'chart.tooltip.index': 'Index',
+  'chart.tooltip.mom': 'M/M',
+  'chart.tooltip.yoy': 'Y/Y',
+  'chart.tooltip.qoq': 'Q/Q',
+  'chart.tooltip.quarterlyInflation': 'Qtr. inflation',
+  'chart.tooltip.annualInflation': 'Annual inflation',
+  'chart.tooltip.weeklyCpi': 'Weekly CPI',
+  'chart.tooltip.periodWeekly': 'MTD',
+  'chart.tooltip.periodMonthly': 'During month',
+  'chart.tooltip.cpi': 'CPI',
+  'chart.tooltip.growth': 'Change',
+  'chart.tooltip.value': 'Value',
+  'chart.tooltip.actualFreq': 'Actual ({freq})',
+  'chart.tooltip.forecastFreq': 'Forecast ({freq})',
+  'chart.tooltip.forecastQuarter': 'Forecast (qtr)',
+  'chart.tooltip.forecastYear': 'Forecast (yr)',
+  'chart.tooltip.forecastWeek': 'Forecast (wk)',
+  'chart.tooltip.forecast12m': 'Forecast (12 mo)',
+  'chart.tooltip.forecastCpiMonth': 'Forecast (mo. CPI)',
+  'chart.tooltip.cpiMom': 'CPI vs previous month',
+  'chart.tooltip.inflation12m': 'Inflation (12 mo)',
+  'chart.title.cpiMom': 'CPI (vs previous month, %)',
+  'chart.title.inflation12m': 'Inflation (trailing 12 months)',
+  'chart.zoomHint': 'Ctrl + scroll — zoom, drag — pan',
+  'chart.windowAria': 'Time window position',
+  'chart.resetZoom': 'Reset',
+  'chart.resetZoomTitle': 'Reset zoom',
+  'chart.emptyTitle': 'No data for this chart',
+  'chart.emptyHint':
+    'Load the series from the server or check that the API is available. If the data were just added, refresh the page.',
+  'chart.compareSeries': 'Comparison',
+  'chart.primarySeries': 'Primary series',
 
   'download.dataBlocked': 'Data download — after free registration',
   'download.chartBlocked': 'Chart download — after free registration',
@@ -987,6 +1147,7 @@ export default {
   'table.valueWithUnit': 'Value ({unit})',
   'table.empty': 'No rows to display — refine the search or wait for the series to load from the API.',
   'table.historicalDefault': 'Historical data',
+  'table.historical': 'Historical data — {name}',
 
   'indicator.related': 'Related indicators',
   'indicator.regionCross.eyebrow': 'Regional breakdown',
@@ -1143,6 +1304,7 @@ export default {
   'world.unit.km2': 'km²',
   'world.unit.people': 'people',
   'world.country.compareCta': 'Compare indicators',
+  'world.country.loadError': 'Could not load country data. Please try again.',
   'world.country.findIndicator': 'Find an indicator…',
   'world.country.findIndicatorAria': 'Search country indicators',
   'world.country.themes': 'Themes',
@@ -1156,10 +1318,438 @@ export default {
   'world.unit.section_few': 'thematic sections',
   'world.unit.section_many': 'thematic sections',
   'world.country.historyFrom': '; available history starts in {year}.',
+  'world.country.notFoundTitle': 'Country not found',
+  'world.country.notFoundMetaDesc': 'The requested country page was not found.',
+  'world.country.notFoundBody':
+    'There is no page for “{slug}” in the catalogue. Pick a country from the list or go to another section.',
+  'world.country.allCountries': 'All countries',
+  'world.country.russiaRegions': 'Regions of Russia',
+  'world.country.home': 'Home',
 
   'forecast.emptyTitle': 'No forecast calculated for this indicator, or it is unavailable',
   'forecast.emptyBody':
     'Some views show only the official historical series. If a forecast appears, the toggle will activate automatically.',
   'forecast.enableToggle': 'Turn on the Forecast toggle to show the forecast table',
+  'common.retry': 'Retry',
+  'error.boundary.title': 'Something went wrong',
+  'error.boundary.body': 'An unexpected error occurred. Try refreshing the page.',
+  'error.boundary.reload': 'Refresh page',
+  'search.empty': 'Start typing an indicator name.',
+  'search.nothingFound': 'Nothing found for “{query}”.',
+  'search.hint.nav': 'navigate',
+  'search.hint.open': 'open',
+  'search.hint.close': 'close',
+  'indicator.empty.recalc': 'No data points for this mode yet — the series will appear after the next recalculation.',
+  'world.indicator.emptyMode': 'No data points for this mode yet. Choose another mode or check back later.',
+  'world.indicator.dataLoadError': 'Could not load the series. Try another mode or retry.',
+  'world.indicator.aboutSeries': 'About the series',
+  'world.indicator.field.freq': 'Frequency',
+  'world.indicator.field.unit': 'Unit',
+  'world.indicator.field.history': 'History',
+  'world.indicator.field.points': 'Points',
+  'world.indicator.field.sourceName': 'Name in the source',
+  'world.indicator.allOfCountry': 'All indicators for {country}',
+  'world.indicator.worldHub': 'World economy',
+  'world.indicator.freq.daily': 'Daily',
+  'world.indicator.freq.weekly': 'Weekly',
+  'world.indicator.freq.monthly': 'Monthly',
+  'world.indicator.freq.quarterly': 'Quarterly',
+  'world.indicator.freq.annual': 'Annual',
+  'world.indicator.slice': 'Slice',
+  'calendar.filter.allSources': 'All sources',
+  'calendar.filter.cbr': 'Bank of Russia',
+  'calendar.filter.rosstat': 'Rosstat',
+  'calendar.filter.minfin': 'Ministry of Finance',
+  'calendar.filter.anyImportance': 'Any importance',
+  'calendar.filter.high': '●●● High',
+  'calendar.filter.mediumPlus': '●●  Medium+',
+  'calendar.filter.week': 'Week',
+  'calendar.filter.month': 'Month',
+  'calendar.filter.quarter': '3 months',
+  'calendar.filter.clear': 'Clear',
+  'calendar.hero.nextEvent': 'Next event',
+  'calendar.hero.msk': 'MSK',
+  'calendar.event.fact': 'Actual',
+  'calendar.event.official': 'official',
+  'calendar.event.importance': '{level} importance',
+  'calendar.event.importance.high': 'High',
+  'calendar.event.importance.medium': 'Medium',
+  'calendar.event.importance.low': 'Low',
+  'calendar.event.goTo': 'Go to {name}',
+  'calendar.event.seriesCount': '{n} series',
+  'calendar.countdown.day_one': 'day',
+  'calendar.countdown.day_few': 'days',
+  'calendar.countdown.day_many': 'days',
+  'calendar.countdown.hour': 'hr',
+  'calendar.countdown.min': 'min',
+  'calendar.countdown.sec': 'sec',
+  'embed.type.chart': 'Chart',
+  'embed.type.chartDesc': 'Interactive chart with data and forecast',
+  'embed.type.card': 'Card',
+  'embed.type.cardDesc': 'Compact card: value and sparkline',
+  'embed.type.table': 'Table',
+  'embed.type.tableDesc': 'Latest N values of an indicator',
+  'embed.type.ticker': 'Ticker',
+  'embed.type.tickerDesc': 'Scrolling strip for a site header',
+  'embed.type.compare': 'Compare',
+  'embed.type.compareDesc': 'Two indicators on one chart',
+  'embed.size.small': 'Small',
+  'embed.size.medium': 'Medium',
+  'embed.size.large': 'Large',
+  'embed.pickIndicator': 'Select an indicator…',
+  'embed.search': 'Search…',
+  'embed.loading': 'Loading…',
+  'embed.loadError': 'Failed to load data',
+  'embed.noData': 'No data',
+  'embed.date': 'Date',
+  'embed.value': 'Value',
+  'embed.change': 'Chg.',
+  'embed.actual': 'Actual: {value}',
+  'embed.forecast': 'Forecast: {value}',
+  'embed.asOf': 'as of {date}',
+  'embed.attribution': 'Data: Forecast Economy',
+  'embed.tickerLoadError': 'Load error',
+  'map.zoomIn': 'Zoom in',
+  'map.zoomOut': 'Zoom out',
+  'map.zoomReset': 'Show full map',
+  'map.timeline.pause': 'Pause',
+  'map.timeline.play': 'Play by year',
+  'map.timeline.yearOnMap': 'Year on map',
+  'map.compact.billion': 'bn',
+  'map.compact.million': 'm',
+  'map.compact.thousand': 'k',
+  'today.page.eyebrow': 'Indicator today',
+  'today.page.h1': '{query} today',
+  'today.page.now': 'Now',
+  'today.page.prev': 'Previous',
+  'today.page.min': 'Minimum',
+  'today.page.max': 'Maximum',
+  'regions.rating.sort': 'Sort',
+  'regions.rating.sortDesc': 'Descending',
+  'regions.rating.sortAsc': 'Ascending',
+  'regions.rating.dataFor': 'Data for',
+  'regions.rating.colRegion': 'Region',
+  'regions.rating.colValue': 'Value',
+  'regions.rating.sourceHeading': 'Data source',
+  'regions.rating.empty': 'Not enough data to rank regions for this indicator.',
+  'regions.rating.subjectsOf': 'of the constituent entities of the Russian Federation by “{name}” for {year}.',
+  'regions.rating.atRegion': 'for the region',
+  'regions.ratingHub.intro': 'Choose an indicator to see the full ranking of Russian regions for the latest available year: each region’s place, leaders and laggards.',
+  'regions.ratingHub.loadError': 'Could not load the indicator catalog.',
+  'regions.profile.resetSearch': 'Clear search',
+  'regions.profile.nothingFound': 'No indicators found for “{query}”.',
+  'regions.profile.themes': 'Themes',
+  'regions.profile.introFull':
+    'Official Rosstat statistics for the region: {catalog} {catalogWord} across {sections} sections, data from 1990.',
+  'regions.profile.introPartial':
+    'Official Rosstat statistics: {catalog} {catalogWord} in the catalog; for this region — data for {available} {availableWord} across {sections} sections, from 1990.',
+  'regions.profile.indicator_one': 'indicator',
+  'regions.profile.indicator_few': 'indicators',
+  'regions.profile.indicator_many': 'indicators',
+  'regions.ind.compareOther': 'Compare with another region',
+  'regions.ind.comparePlaceholder': 'Compare with a region',
+  'regions.ind.vsRussia': '— Russia',
+  'regions.ind.addRussia': '+ Russia',
+  'regions.ind.russia': 'Russia',
+  'regions.ind.yoyTitle': 'Year-on-year change, percent',
+  'regions.ind.yoyUnit': 'change vs previous year, %',
+  'regions.ind.yoyBtn': '% YoY',
+  'regions.ind.yoyShort': '% YoY',
+  'regions.ind.downloadCsv': 'Download CSV',
+  'regions.ind.downloadExcel': 'Download Excel',
+  'regions.ind.downloadPng': 'Download chart as image',
+  'regions.ind.removeCompare': 'remove comparison',
+  'regions.ind.chartAria': 'Chart: {region}, {from}–{to}',
+  'regions.ind.axisRegion': '{region} — left axis',
+  'regions.ind.axisRussia': 'Russia — right axis',
+  'regions.ind.deltaYoY': '{pct}% YoY',
+  'regions.ind.rankAchieve': 'Rank in Russia, {year}',
+  'regions.ind.rankNeutral': 'Position in the list, {year}',
+  'regions.ind.of': 'of',
+  'regions.ind.max': 'Maximum ({year})',
+  'regions.ind.min': 'Minimum ({year})',
+  'regions.ind.period': 'Data period',
+  'regions.ind.topAchieve': 'Best regional values, {year}',
+  'regions.ind.topNeutral': 'Highest regional values, {year}',
+  'regions.ind.tableToggle': 'Values by year',
+  'regions.ind.colYear': 'Year',
+  'regions.ind.macroTitle': 'Russia-wide indicator',
+  'regions.ind.macroBody':
+    'This indicator has a Russia-wide card with more frequent updates and a forecast; in Compare you can overlay the region and the national series on one chart.',
+  'regions.ind.openRussia': 'Open Russia indicator',
+  'regions.ind.compareRussia': 'Compare with Russia',
+  'regions.ind.moreInSection': 'More in “{section}”',
+  'regions.ind.abortionLead': 'Another cut of the same Rosstat indicator —',
+  'regions.ind.abortionPer1000': 'per 1,000 women aged 15–49',
+  'regions.ind.abortionPer100': 'per 100 births',
+  'regions.ind.metaTitle':
+    '{name} — {region}: {value} {unit} ({year})',
+  'regions.ind.metaDesc':
+    '{name} in {region}: {value} {unit} in {year}. History from {from} based on Rosstat, annual chart{rank}.',
+  'regions.ind.metaRankAchieve':
+    ', ranked {position} of {total} Russian regions.',
+  'regions.ind.metaRankNeutral':
+    ', {position}th by magnitude among {total} Russian regions.',
+  'regions.ind.jsonLdDesc':
+    '{name} ({unit}), {region}, {from}–{to}. Source: Rosstat.',
+  'regions.ind.creatorRosstat': 'Rosstat',
+  'regions.home.loadingCatalog': 'Loading catalog…',
+  'regions.home.nothingFound':
+    'Nothing found for “{query}”. Try a shorter query: “wages”, “doctor”, “housing”.',
+  'regions.home.noRegions': 'No regions found for “{query}”',
+  'regions.home.unit.mlnRub': 'mln ₽',
+  'regions.home.unit.thousPeople': 'thous. people',
+  'regions.home.mapClickTitle': 'Click a region to open its full indicator card',
+  'regions.home.mapCaptionMetric':
+    '{name}{yearBit}{unitBit}. Click a region to open its series.',
+  'regions.home.mapCaptionOverview':
+    'Click a region to open its card with all indicators.',
+  'regions.home.mapYearBit': ', {year}',
+  'regions.home.mapUnitBit': ', {unit}',
+  'regions.home.mapHintMetric':
+    'Color intensity is the region’s position relative to others in the selected year (the scale is recalculated each year). Drag the slider or press play to see how the ranking shifted over time. ',
+  'regions.home.mapHintOverview': 'Overview mode: click a region to open its profile. ',
+  'regions.home.mapHintCities':
+    'Moscow, Saint Petersburg and Sevastopol are shown as dots. The +/− buttons zoom the map; when zoomed, you can pan by dragging.',
+  'regions.home.compact.bln': 'bln',
+  'regions.home.compact.mln': 'mln',
+  'regions.home.compact.thsNarrow': 'k',
+  'regions.home.compact.ths': 'ths',
+  'category.notFound': 'Category not found',
+  'category.searchPlaceholder': 'Search indicators across categories — e.g. inflation or GDP',
+  'category.indicatorsHeading': 'Indicators',
+  'category.listUnavailable': 'The indicator list is unavailable right now.',
+  'category.retryHint': 'Data usually comes back shortly — press Retry.',
+  'category.empty': 'No indicators in this category yet.',
+  'category.related': 'Related categories',
+  'compare.rep.levelHint': 'Raw series values in their unit of measure',
+  'compare.rep.popHint': 'Change vs the previous month or quarter, percent',
+  'compare.rep.yoyHint': 'Change vs the same period a year ago (YoY), percent',
+  'compare.rep.pop': 'Vs previous period',
+  'compare.rep.yoy': 'Vs previous year',
+  'compare.rep.index': 'Index',
+  'compare.rep.indexLower': 'index',
+  'compare.rep.value': 'Value',
+  'about.eyebrow': 'About',
+  'about.intro.p1': 'Forecast Economy is a web platform for working with official economic statistics. The core is Russia: inflation and prices, the policy rate and market rates, GDP and industrial production, the labor market, foreign trade, the budget, equity indices and commodity markets. Plus regional series for Russia’s regions and available country statistics from official national and international primary sources.',
+  'about.intro.p2before': 'We collect data from primary sources —',
+  'about.intro.p2after': '— show long historical series for more than 100 macroeconomic indicators and 489 regional indicators across 85 Russian regions, and build a',
+  'about.intro.forecast': 'forecast',
+  'about.intro.p2end': 'where the nature of the series justifies it.',
+  'about.audienceTitle': 'Who this service is for',
+  'about.audience.1': 'analysts and economists who need series, comparisons and forecasts in one place;',
+  'about.audience.2': 'investors and finance professionals — to track inflation, rates, FX, equity indices and commodity markets;',
+  'about.audience.3': 'entrepreneurs — to follow demand, prices and industrial activity;',
+  'about.audience.4': 'journalists, teachers and students — the current picture of Russia’s economy and available country series;',
+  'about.audience.5before': 'anyone who wants to see',
+  'about.audience.5strong': 'official data',
+  'about.audience.5after': ', not just news headlines.',
+  'about.diffTitle': 'How we differ',
+  'about.diff.1strong': 'Forecast with methodology.',
+  'about.diff.1': 'The model and training windows are described in the UI; the forecast is an estimate from the series history, not an editorial opinion.',
+  'about.diff.2strong': 'Free viewing.',
+  'about.diff.2': 'Charts, tables and forecasts are available without registration. Downloading data and chart images requires a free account.',
+  'about.trustTitle': 'Trust and limitations',
+  'about.trust.1before': 'Materials are',
+  'about.trust.1strong': 'for information only',
+  'about.trust.1after': 'and are not individual investment advice or financial or legal counsel. Forecasts reflect statistical extrapolation of past data and may diverge from actual outcomes due to shocks, policy changes and series revisions.',
+  'about.trust.2': 'For partnership inquiries and data feedback:',
+  'tile.metric': 'Metric',
+  'tile.pending': 'Pending',
+  'tile.yoy': '(YoY)',
+  'world.map.band.p15': 'Bottom 15% of countries',
+  'world.map.band.belowStrong': 'Well below the median',
+  'world.map.band.below': 'Below the median',
+  'world.map.band.median': 'Around the median',
+  'world.map.band.above': 'Above the median',
+  'world.map.band.aboveStrong': 'Well above the median',
+  'world.map.band.p85': 'Top 15% of countries',
+  'world.map.signed.strongNeg': 'Strongly below zero',
+  'world.map.signed.modNeg': 'Moderately below zero',
+  'world.map.signed.nearNeg': 'Below zero, near zero',
+  'world.map.signed.nearZero': 'Around zero',
+  'world.map.signed.nearPos': 'Above zero, near zero',
+  'world.map.signed.modPos': 'Moderately above zero',
+  'world.map.signed.strongPos': 'Strongly above zero',
+  'world.map.bandWithPct': '{label}, {rank}th percentile',
+  'embed.copied': 'Copied',
+  'embed.copyCode': 'Copy code',
+  'embed.nothingFound': 'Nothing found',
+  'embed.constructor': 'Widget builder',
+  'embed.intro': 'Embed charts of Russian economic data on your site. Free, with a required attribution link.',
+  'embed.settings': 'Settings',
+  'embed.indicator': 'Indicator',
+  'embed.indicatorB': 'Second indicator',
+  'embed.codesCsv': 'Indicator codes (comma-separated)',
+  'embed.speed.slow': 'Slow',
+  'embed.speed.normal': 'Normal',
+  'embed.speed.fast': 'Fast',
+  'embed.period': 'Period',
+  'embed.theme': 'Theme',
+  'embed.theme.light': 'Light',
+  'embed.theme.dark': 'Dark',
+  'embed.theme.auto': 'Auto',
+  'embed.size': 'Size',
+  'embed.size.custom': 'Custom',
+  'embed.rowCount': 'Number of rows',
+  'embed.showTitle': 'Show title',
+  'embed.showForecast': 'Show forecast',
+  'embed.terms': 'Terms',
+  'embed.tableTitle': '{name} — table',
+  'embed.defaultTitle': 'Economic indicators — Forecast Economy',
+  'embed.termsBody': 'Widgets are free for any use that keeps the “Data: Forecast Economy” attribution link. More in',
+  'embed.termsAbout': 'About',
+  'category.feature.population.title': 'Age structure of the population',
+  'category.feature.population.desc': 'Three age groups visualized: children, working age, and above working age. Rosstat data.',
+  'today.page.dynamics': '{query} — chart',
+  'today.page.source': 'Source: {source}',
+  'today.page.openCard': 'Interactive chart and forecast',
+  'today.page.recent': 'Latest values',
+  'today.page.colDate': 'Date',
+  'today.page.colValue': 'Value',
+  'today.page.fullHistoryTitle': 'Full history and forecast',
+  'today.page.fullHistoryBody': 'Interactive chart with history from the earliest available year, display modes and forecast — on the page',
+  'calendar.today': 'Today',
+  'calendar.tomorrow': 'Tomorrow',
+  'calendar.weekday.sun': 'Sunday',
+  'calendar.weekday.mon': 'Monday',
+  'calendar.weekday.tue': 'Tuesday',
+  'calendar.weekday.wed': 'Wednesday',
+  'calendar.weekday.thu': 'Thursday',
+  'calendar.weekday.fri': 'Friday',
+  'calendar.weekday.sat': 'Saturday',
+  'calendar.monthGen.0': 'January',
+  'calendar.monthGen.1': 'February',
+  'calendar.monthGen.2': 'March',
+  'calendar.monthGen.3': 'April',
+  'calendar.monthGen.4': 'May',
+  'calendar.monthGen.5': 'June',
+  'calendar.monthGen.6': 'July',
+  'calendar.monthGen.7': 'August',
+  'calendar.monthGen.8': 'September',
+  'calendar.monthGen.9': 'October',
+  'calendar.monthGen.10': 'November',
+  'calendar.monthGen.11': 'December',
+  'calendar.seoMonthTitle': 'Economic statistics calendar — {month} {year}: release dates',
+  'calendar.seoMonthDesc': 'Which Russian economic releases come out in {month} {year}: Rosstat, Bank of Russia and Ministry of Finance publications.',
+
+  'meth.eyebrow': 'Methodology',
+  'meth.intro.p1':
+    'Every forecast on Forecast Economy is produced by a statistical model trained on the '
+    + 'official historical series for the indicator. We do not fit the result to expectations '
+    + 'or add expert assumptions: the forecast value is determined by the source data and the '
+    + 'procedure described on this page.',
+  'meth.intro.p2':
+    'Below we walk through the full calculation path — from preparing the source series to '
+    + 'fitting the model. We also list the indicators we deliberately do not forecast, and why.',
+  'meth.intro.p3':
+    'The methodology follows one requirement: any forecast value must be reproducible from '
+    + 'published data using the described procedure. That is what separates a statistical '
+    + 'estimate from an expert judgment and allows an independent check of the result.',
+  'meth.principlesTitle': 'Principles',
+  'meth.p.officialTitle': 'Official data only',
+  'meth.p.officialBody':
+    'Sources are publications by Rosstat, the Bank of Russia and the Ministry of Finance. '
+    + 'We do not use news digests or aggregator feeds. The primary source is shown on each '
+    + 'indicator card and can be verified directly.',
+  'meth.p.reproTitle': 'Reproducibility',
+  'meth.p.reproBody':
+    'The forecast is obtained from the series history by a fixed algorithm. With the same '
+    + 'data the result is always the same and does not depend on who ran the calculation or when.',
+  'meth.p.uncertTitle': 'Uncertainty bands',
+  'meth.p.uncertBody':
+    'Alongside the central value we show a range in which the indicator is likely to fall. '
+    + 'As the horizon lengthens the band widens, and that is visible on the chart.',
+  'meth.p.limitsTitle': 'Limits of applicability',
+  'meth.p.limitsBody':
+    'Where a statistical forecast is unreliable by nature — exchange quotes, intraday FX, '
+    + 'daily prices — we do not publish one and state the reason.',
+  'meth.stepsTitle': 'Calculation steps',
+  'meth.stepsIntro':
+    'Every indicator follows the same sequence — from preparing the series to recovering '
+    + 'future values and assessing their accuracy.',
+  'meth.step.1title': 'Prepare and reconcile the series',
+  'meth.step.1body':
+    'Historical values are checked against the source publication and brought to a common '
+    + 'format. Breaks caused by a change in statistical methodology are treated separately. '
+    + 'The series is used at its natural frequency — monthly, quarterly or annual.',
+  'meth.step.2title': 'Series diagnostics',
+  'meth.step.2body':
+    'Before choosing a model the series is examined for trend, seasonality and how stable '
+    + 'its fluctuations are over time. Stationarity is checked with an augmented Dickey–Fuller test.',
+  'meth.step.3title': 'Fit the model',
+  'meth.step.3body':
+    'A statistical model is estimated on the prepared series. Its core is regression on past '
+    + 'values with several training windows; series with strong seasonality are mainly described '
+    + 'by seasonal autoregressive models. There is no single model for every case — the model '
+    + 'family is chosen for the indicator’s features, frequency and seasonality.',
+  'meth.step.4title': 'Weighting and return to indicator units',
+  'meth.step.4body':
+    'Estimates from different training windows are combined with weights from our team’s '
+    + 'method. The forecast is then converted back to the original units — rubles, percent '
+    + 'or index points.',
+  'meth.worldTitle': 'Country forecast quality checks',
+  'meth.world.p1':
+    'For monthly and quarterly series of other countries a separate quality-control procedure '
+    + 'is used. The model continues the seasonal profile and estimates a stable change versus '
+    + 'the comparable month or quarter of the previous year. Short, irregular and long-stale '
+    + 'series are excluded before calculation.',
+  'meth.world.p2':
+    'Quality is checked sequentially on several past dates: at each step the model sees only '
+    + 'the history that was available at that time. The error is compared with a seasonal '
+    + 'benchmark that carries forward the last comparable value unchanged. A forecast appears '
+    + 'on the card only if the mean scaled absolute error is below one and the model is '
+    + 'consistently more accurate than that benchmark.',
+  'meth.world.p3':
+    'The check runs per series, so a forecast for one indicator does not automatically admit '
+    + 'other indicators for the same country. Derived modes — annual totals and rates of change '
+    + '— are calculated from the already validated forecast of the source series.',
+  'meth.updateTitle': 'Updating the forecast',
+  'meth.update.modelTitle': 'The model follows the data',
+  'meth.update.modelBody':
+    'As soon as the source publishes a new observation, the series is extended and the model '
+    + 'is re-estimated on the longer history. The forecast line moves forward without manual '
+    + 'intervention.',
+  'meth.update.derivedTitle': 'Recalculating derived series',
+  'meth.update.derivedBody':
+    'Updating the base series automatically triggers recalculation of all dependent indicators '
+    + '— annual totals and relative changes.',
+  'meth.skipTitle': 'What we do not forecast',
+  'meth.skipIntro':
+    'For some indicators we deliberately do not publish a forecast. Statistical extrapolation '
+    + 'relies on series inertia, while on short and market data the path is driven by current '
+    + 'news and participant sentiment, so the past barely helps predict the future.',
+  'meth.skip.1title': 'Exchange quotes and indices',
+  'meth.skip.1body':
+    'FX rates, equities and exchange commodities react to news instantly; yesterday’s path '
+    + 'says almost nothing about tomorrow’s.',
+  'meth.skip.2title': 'Cryptocurrencies',
+  'meth.skip.2body':
+    'High volatility and the speculative nature of the market make a statistical estimate unreliable.',
+  'meth.skip.3title': 'Daily and intra-week series',
+  'meth.skip.3body':
+    'Over a horizon of a few days noise dominates; a meaningful forecast becomes possible '
+    + 'from monthly frequency onward.',
+  'meth.skipOutro':
+    'For such indicators we show the full history without a forecast line, and the forecast '
+    + 'toggle on the card stays inactive.',
+  'meth.readTitle': 'How to read the forecast on the chart',
+  'meth.read.p1':
+    'The solid line is the source fact series. The dashed line is the forecast. The translucent '
+    + 'band around the dashed line is the most likely range of future values, which widens '
+    + 'further into the future.',
+  'meth.read.p2':
+    'The same forecast values are repeated in the table under the chart together with the '
+    + 'range bounds. They can be downloaded and used in your own calculations.',
+  'meth.disclaimerTitle': 'Limitations and liability',
+  'meth.disclaimer.p1':
+    'The forecast rests on stable patterns in the past and may diverge from the outcome under '
+    + 'economic shocks, changes in monetary or fiscal policy, or revisions of historical data '
+    + 'by the source itself. The further the horizon, the higher the uncertainty.',
+  'meth.disclaimer.p2':
+    'All materials are for information only and are not individual investment advice or '
+    + 'financial or legal counsel.',
+  'meth.cta.indicators': 'Browse indicators',
+  'meth.cta.about': 'About',
 };
 
