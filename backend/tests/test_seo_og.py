@@ -531,9 +531,13 @@ def test_og_image_renders_png():
     png = render_indicator_og(
         code="cpi",
         name="Индекс потребительских цен на товары и услуги",
-        value_text="0.21 %",
-        date_text="на 2026-05-01",
+        value_text="+0,21",
+        date_text="на 1 мая 2026",
         values=[0.5, 0.3, 0.4, 0.2, 0.25, 0.21],
+        subtitle="индекс потребительских цен, изменение за месяц",
+        context_pill="Годовая инфляция — 6,0%",
+        unit_suffix="%",
+        x_labels=("май 2024", "май 2026"),
     )
     assert png[:4] == b"\x89PNG"
     assert len(png) > 5000

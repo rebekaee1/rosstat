@@ -23,7 +23,7 @@
   --color-warn-text: #2c2618;
   --color-warn-muted: rgba(44, 38, 24, 0.72);
   --font-sans: "DM Sans", system-ui, sans-serif;
-  --font-display: "Playfair Display", Georgia, serif;
+  --font-display: "DM Sans", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 }
 

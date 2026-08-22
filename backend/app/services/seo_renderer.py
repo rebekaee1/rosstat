@@ -175,6 +175,30 @@ def _link(path: str, label: str) -> str:
     return f'<a href="{escape(path)}">{escape(label)}</a>'
 
 
+def _seo_chart_figure(
+    og_path: str,
+    alt: str,
+    caption: str,
+    *,
+    href: str | None = None,
+    loading: str = "lazy",
+) -> str:
+    """Видимый график: относительный src (работает на локали и на проде)
+    + клик ведёт на карточку индикатора к якорю #chart."""
+    img = (
+        f'<img src="{escape(og_path)}" width="1200" height="630" '
+        f'alt="{escape(alt)}" loading="{loading}">'
+    )
+    if href:
+        img = (
+            f'<a class="seo-chart-link" href="{escape(href)}#chart">{img}</a>'
+        )
+    return (
+        f'<figure class="seo-chart">{img}'
+        f'<figcaption>{escape(caption)}</figcaption></figure>'
+    )
+
+
 def _breadcrumbs_nav(items: list[tuple[str, str]]) -> str:
     """Видимые крошки: шеврон « / », последний узел без ссылки."""
     if not items:
@@ -414,6 +438,8 @@ body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:"DM Sans",system-ui,s
 .seo-page td:last-child,.seo-page th:last-child{text-align:right;font-variant-numeric:tabular-nums}
 .seo-chart{margin:1.25rem 0 .75rem;border:1px solid rgba(0,0,0,.08);border-radius:1rem;overflow:hidden;background:#fff;box-shadow:0 1px 3px rgba(26,26,46,.04)}
 .seo-chart img{display:block;width:100%;height:auto}
+.seo-chart-link{display:block;text-decoration:none!important;color:inherit}
+.seo-chart-link:hover{opacity:.97}
 .seo-chart figcaption{font-size:.8125rem;color:rgba(26,26,46,.6);padding:.5rem .75rem;border-top:1px solid rgba(0,0,0,.06)}
 .seo-forecast-note{margin:0 0 1.5rem;font-size:.9375rem;line-height:1.55;color:rgba(26,26,46,.72)}
 .seo-topbar{position:sticky;top:0;z-index:10;background:rgba(248,249,252,.92);backdrop-filter:blur(8px);border-bottom:1px solid rgba(0,0,0,.07)}
@@ -2096,7 +2122,7 @@ async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> 
 {_breadcrumbs_nav(year_trail)}
 <h1>{escape(h1_text)}</h1>
 <p>{escape(desc)}</p>
-<figure class="seo-chart"><img src="{escape(_absolute(paths.og_indicator(paths.RUSSIA, code, year)))}" width="1200" height="630" alt="{escape(chart_alt)}" loading="lazy"><figcaption>{escape(chart_caption)}</figcaption></figure>
+{_seo_chart_figure(paths.og_indicator(paths.RUSSIA, code, year), chart_alt, chart_caption, href=paths.russia_indicator(code))}
 {data_section}
 <section><h2>{escape(chart_h2)}</h2><p>{chart_p}</p></section>
 <section><h2>{escape(other_h2)}</h2>{year_links}</section>
@@ -2429,7 +2455,7 @@ def _indicator_body(
 {_breadcrumbs_nav(crumb_trail)}
 <h1>{escape(name)}</h1>
 <p>{escape(clean_text(desc_text, intro_fb))}</p>
-<figure class="seo-chart"><img src="{escape(_absolute(paths.og_indicator(paths.RUSSIA, og_code)))}" width="1200" height="630" alt="{escape(chart_alt)}" loading="lazy"><figcaption>{escape(chart_caption)}</figcaption></figure>
+{_seo_chart_figure(paths.og_indicator(paths.RUSSIA, og_code), chart_alt, chart_caption, href=paths.russia_indicator(og_code))}
 {forecast_note}<section><h2>{escape(section_current)}</h2>
 <ul>
 <li>{escape(li_latest_tpl.format(value=current_text))}</li>

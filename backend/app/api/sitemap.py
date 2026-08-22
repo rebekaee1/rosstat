@@ -17,6 +17,13 @@ from app.services.display import (
     display_value_text,
     format_date_ru,
     format_number_ru,
+    is_cpi_index,
+)
+from app.services.og_image import (
+    fmt_signed,
+    fmt_yoy,
+    ru_period_lines,
+    window_x_labels,
 )
 # CATEGORIES/PAGE_META/STATIC_PAGES реэкспортируются для тестов
 # (test_sitemap_static_pages_constant) — сама генерация живёт в site_urls.py.
@@ -300,7 +307,7 @@ async def og_image_indicator(code: str, db: AsyncSession = Depends(get_db)):
     """PNG-превью индикатора для og:image (спарклайн + актуальное значение)."""
     from app.services.og_image import cached_og, render_indicator_og, store_og
 
-    png = cached_og(code)
+    png = cached_og(f"j6:{code}")
     if png is None:
         q = await db.execute(
             select(Indicator).where(Indicator.code == code, Indicator.is_active.is_(True))
@@ -314,43 +321,52 @@ async def og_image_indicator(code: str, db: AsyncSession = Depends(get_db)):
             .order_by(IndicatorData.date)  # старое → новое, вся история
         )
         rows = rows_q.all()
-        # Превью «representativeOfPage»: вся история, прореженная до ~180 точек
-        # (для дневных индексов last-120 показывало бы лишь ~4 месяца и дублировало
-        # бы год на обеих X-метках). Форма ряда сохраняется, последняя точка — всегда.
-        ordered = rows
-        _MAXP = 180
-        if len(ordered) > _MAXP:
-            step = len(ordered) / _MAXP
-            idx = sorted({int(i * step) for i in range(_MAXP)} | {len(ordered) - 1})
-            ordered = [ordered[i] for i in idx]
-        # CPI-индекс на картинке показывается изменением цен, не сырыми
-        # «100.17 %» (инцидент «инфляция 100,2%» — картинка уходит в Алису
-        # и Яндекс.Картинки); даты — по-русски.
-        values = [
-            v if (v := display_value(code, raw)) is not None else 0.0
-            for raw, _ in ordered
-        ]
         current_value, current_date = (rows[-1] if rows else (None, None))
         unit = (indicator.unit or "").strip()
         value_text = display_value_text(code, current_value, unit, indicator.frequency)
         date_text = f"на {format_date_ru(current_date)}" if current_date else ""
+        # Окно ленты — последние 24 точки (не вся история с 1991: иначе
+        # недавняя динамика схлопывается в прямую).
+        window = rows[-24:] if len(rows) > 24 else rows
+        values = [
+            v if (v := display_value(code, raw)) is not None else 0.0
+            for raw, _ in window
+        ]
         x_labels = None
-        if len(ordered) >= 2:
-            first_d, last_d = ordered[0][1], ordered[-1][1]
-            x_labels = (
-                (str(first_d.year), str(last_d.year))
-                if first_d.year != last_d.year
-                else (first_d.strftime("%m.%Y"), last_d.strftime("%m.%Y"))
-            )
+        if len(window) >= 2:
+            x_labels = window_x_labels(window[0][1], window[-1][1])
+        shown_last = display_value(code, current_value)
+        core_number = (
+            fmt_signed(shown_last) if shown_last is not None else value_text
+        )
+        unit_suffix = "%" if (unit == "%" or is_cpi_index(code)) else None
+        period_text = None
+        subtitle = None
+        context_pill = None
+        if is_cpi_index(code) and len(rows) >= 13:
+            prev_date = rows[-2][1]
+            period_line, _compare = ru_period_lines(current_date, prev_date)
+            period_text = period_line
+            subtitle = "индекс потребительских цен, изменение за месяц"
+            yoy = 1.0
+            for _raw, _ in rows[-12:]:
+                yoy *= float(_raw) / 100.0
+            context_pill = f"Годовая инфляция — {fmt_yoy((yoy - 1.0) * 100.0)}%"
+        elif current_date:
+            period_text, _ = ru_period_lines(current_date)
         png = render_indicator_og(
             code=code,
             name=indicator.name,
-            value_text=value_text,
+            value_text=core_number,
             date_text=date_text,
             values=values,
             x_labels=x_labels,
+            period_text=period_text,
+            subtitle=subtitle,
+            context_pill=context_pill,
+            unit_suffix=unit_suffix,
         )
-        store_og(code, png)
+        store_og(f"j6:{code}", png)
     return Response(
         content=png,
         media_type="image/png",
@@ -373,7 +389,7 @@ async def og_image_indicator_year(code: str, year: int, db: AsyncSession = Depen
     )
     from app.services.site_urls import YEAR_LANDING_MIN_POINTS
 
-    cache_key = f"{code}:{year}"
+    cache_key = f"j6:{code}:{year}"
     png = cached_og(cache_key)
     if png is None:
         q = await db.execute(
@@ -439,14 +455,26 @@ async def og_image_indicator_year(code: str, year: int, db: AsyncSession = Depen
                         f"{format_number_ru(pct, signed=True)} %"
                     )
 
+        shown_last = display_value(code, last_value)
+        year_number = fmt_signed(shown_last) if shown_last is not None else value_text
+        year_unit = "%" if (unit == "%" or is_cpi_index(code)) else None
+        year_pill = None
+        if is_cpi_index(code) and len(raw_values) >= 2:
+            yoy = 1.0
+            for raw in raw_values:
+                yoy *= float(raw) / 100.0
+            year_pill = f"За {year} год — {fmt_yoy((yoy - 1.0) * 100.0)}%"
         png = render_indicator_og(
             code=code,
             name=indicator.name,
-            value_text=value_text,
+            value_text=year_number,
             date_text=date_text,
             values=values,
             period_text=f"{year} год",
             x_labels=x_labels,
+            subtitle="индекс потребительских цен, изменение за месяц" if is_cpi_index(code) else None,
+            context_pill=year_pill,
+            unit_suffix=year_unit,
         )
         store_og(cache_key, png)
     return Response(

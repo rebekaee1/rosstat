@@ -338,7 +338,7 @@ export default function WorldChartSection({
   };
 
   return (
-    <section data-block="chart" className="mb-10 sm:mb-16">
+    <section id="chart" data-block="chart" className="mb-10 sm:mb-16 scroll-mt-24">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-border-subtle pb-3 sm:mb-6 sm:pb-4">
         <div className="flex min-w-0 items-center gap-3 sm:gap-4">
           <Terminal className="h-4 w-4 shrink-0 text-champagne" />

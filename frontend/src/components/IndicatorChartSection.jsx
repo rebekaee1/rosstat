@@ -1,5 +1,5 @@
-import { useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { Terminal, Download, Lock, Image as ImageIcon, HelpCircle } from 'lucide-react';
 import { resolveDateFormat, cn } from '../lib/format';
 import { track, events } from '../lib/track';
@@ -180,6 +180,13 @@ export default function IndicatorChartSection({
     ? t('download.guestHistory', { years: guestYearsLabel })
     : null;
   const chartRef = useRef(null);
+  const { hash } = useLocation();
+  useEffect(() => {
+    if (hash !== '#chart') return;
+    const node = document.getElementById('chart');
+    if (!node) return;
+    node.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [hash, chartLoading]);
   const cpiChartTitle = resolveChartTitle(locale, {
     chartMode, isPriceCategory, isHousingFamily, isPpiFamily,
     isCbrTermSliceFamily, isUnemploymentFamily,
@@ -257,7 +264,7 @@ export default function IndicatorChartSection({
   };
 
   return (
-    <section data-block="chart" className="mb-16">
+    <section id="chart" data-block="chart" className="mb-16 scroll-mt-24">
       <div className="flex items-center justify-between mb-6 border-b border-border-subtle pb-4 flex-wrap gap-3">
         <div className="flex items-center gap-4">
           <Terminal className="w-4 h-4 text-champagne" />

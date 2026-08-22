@@ -78,6 +78,8 @@ def test_ssr_indicator_visible_chart_img(route_client):
     html = _get(route_client, "/seo/indicator/cpi")
     # Видимый график в DOM — ключ к картинке в Алисе/Нейро.
     assert re.search(r'<img[^>]+src="[^"]*/og/russia/cpi\.png"', html), "нет видимого <img> графика"
+    assert 'href="/russia/indicator/cpi#chart"' in html
+    assert 'https://forecasteconomy.com/og/' not in html.split("<figure")[1].split("</figure>")[0]
     # ImageObject в JSON-LD.
     assert any(
         "ImageObject" in json.dumps(b) for b in _jsonld_blocks(html)
