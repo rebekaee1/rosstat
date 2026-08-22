@@ -66,18 +66,28 @@ function parseColsParam(searchParams) {
   return slugs;
 }
 
-function lookupExtraValue(yearItems, row) {
-  if (!yearItems || !row) return null;
-  const direct = yearItems[row.country_code];
-  if (direct?.value != null) return direct.value;
-  for (const item of Object.values(yearItems)) {
-    if (!item) continue;
-    if (row.country_slug && item.country_slug === row.country_slug && item.value != null) {
-      return item.value;
+function lookupExtraValue(seriesData, activeYear, row) {
+  if (!seriesData || !row) return null;
+  const byYear = seriesData.values_by_year || {};
+  // Точный год базового показателя; если у доп. показателя этот год ещё не
+  // публиковался (население — до 2025, база — 2026), берём ближайший год
+  // с данными по стране, а не рисуем «—».
+  const candidates = [String(activeYear), ...Object.keys(byYear).sort((a, b) => Math.abs(Number(b) - Number(activeYear)) - Math.abs(Number(a) - Number(activeYear)))];
+  for (const year of candidates) {
+    const yearItems = byYear[year];
+    if (!yearItems) continue;
+    const direct = yearItems[row.country_code];
+    if (direct?.value != null) return { value: direct.value, date: direct.date };
+    for (const item of Object.values(yearItems)) {
+      if (!item) continue;
+      if (row.country_slug && item.country_slug === row.country_slug && item.value != null) {
+        return { value: item.value, date: item.date };
+      }
+      if (row.country_code === 'RU' && item.country_code === 'RU' && item.value != null) {
+        return { value: item.value, date: item.date };
+      }
     }
-    if (row.country_code === 'RU' && item.country_code === 'RU' && item.value != null) {
-      return item.value;
-    }
+    break;
   }
   return null;
 }
@@ -215,9 +225,9 @@ export default function WorldRatingPage() {
     return {
       slug,
       label: extraColumnLabel(slug, concepts, seriesData, t),
-      yearItems: worldYearItems(seriesData, activeYear),
+      seriesData,
     };
-  }), [extraSlugs, concepts, extraSeries0.data, extraSeries1.data, extraSeries2.data, activeYear, t]);
+  }), [extraSlugs, concepts, extraSeries0.data, extraSeries1.data, extraSeries2.data, t]);
   const baseYearItems = useMemo(
     () => worldYearItems(mapSeriesQ.data, activeYear),
     [mapSeriesQ.data, activeYear],
@@ -653,7 +663,7 @@ export default function WorldRatingPage() {
                           key={col.slug}
                           className="px-4 py-3 text-right font-mono tabular-nums text-text-primary"
                         >
-                          {formatWorldValue(lookupExtraValue(col.yearItems, item))}
+                          {formatWorldValue(lookupExtraValue(col.seriesData, activeYear, item)?.value)}
                         </td>
                       ))}
                       {!sharedUnit && (

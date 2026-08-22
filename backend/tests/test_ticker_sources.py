@@ -179,3 +179,18 @@ def test_fetch_all_survives_all_fx_failures(monkeypatch):
 
     snaps = _run(moex_iss.fetch_all())
     assert snaps == []
+
+
+def test_ticker_lanes_keep_ecb_crosses_on_world_strip():
+    from app.api.ticker import TICKER_SET_RUSSIA, TICKER_SET_WORLD
+
+    assert TICKER_SET_WORLD == (
+        "eur-usd",
+        "gbp-usd",
+        "usd-cny",
+        "btc-usd",
+        "brent",
+    )
+    assert "gold-rub-live" not in TICKER_SET_WORLD
+    assert "usd-rub-live" in TICKER_SET_RUSSIA
+    assert "eur-usd" not in TICKER_SET_RUSSIA

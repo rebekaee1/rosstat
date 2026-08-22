@@ -150,6 +150,22 @@ RUSSIA_COUNTRY_PAYLOAD = {
 }
 
 
+def russia_list_country_payload(indicators_count: int, *, locale: str) -> dict:
+    """Карточка России в каталоге стран: тот же счётчик «рядов», что у остальных.
+
+    ``region`` подставляет вызывающий через ту же локализацию, что и Eurostat-страны.
+    """
+    n = int(indicators_count or 0)
+    en = (locale or "").strip().lower() == "en"
+    return {
+        "code": RUSSIA_COUNTRY_PAYLOAD["code"],
+        "slug": RUSSIA_COUNTRY_PAYLOAD["slug"],
+        "name": RUSSIA_COUNTRY_PAYLOAD["name_en"] if en else RUSSIA_COUNTRY_PAYLOAD["name"],
+        "name_en": RUSSIA_COUNTRY_PAYLOAD["name_en"],
+        "indicators_count": n,
+    }
+
+
 def russia_link_for_concept(concept_slug: str) -> RussiaConceptLink | None:
     return RUSSIA_CONCEPT_LINKS.get(concept_slug)
 

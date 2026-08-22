@@ -34,7 +34,7 @@ function CountryCard({ country }) {
     <Link
       to={country.slug === 'russia' ? russiaHomePath() : countryPath(country.slug)}
       onClick={() => track(events.HOME_COUNTRIES_CTA, { target: 'country', code: country.code })}
-      className="group flex items-center gap-2.5 rounded-xl border border-border-subtle bg-surface px-3.5 py-3 transition-all hover:border-border-champagne hover:shadow-sm sm:gap-3"
+      className="group flex items-center gap-2 rounded-xl border border-border-subtle bg-surface px-3 py-3 transition-all hover:border-border-champagne hover:shadow-sm sm:gap-2.5"
     >
       <CountryMark code={country.code} />
       <div className="min-w-0 flex-1">
@@ -45,17 +45,11 @@ function CountryCard({ country }) {
           {country.name_en}
         </div>
       </div>
-      <div className="shrink-0 text-right">
-        {n > 0 ? (
-          <>
-            <div className="font-mono text-[13px] font-semibold tabular-nums text-text-primary">
-              {formatWorldValue(n, 0)}
-            </div>
-            <div className="text-[10px] text-text-tertiary">{seriesLabel}</div>
-          </>
-        ) : (
-          <div className="text-[11px] text-text-tertiary">{t('home.countries.russiaHint')}</div>
-        )}
+      <div className="w-12 shrink-0 text-right sm:w-14">
+        <div className="font-mono text-[13px] font-semibold tabular-nums text-text-primary">
+          {n > 0 ? formatWorldValue(n, 0) : '—'}
+        </div>
+        <div className="text-[10px] text-text-tertiary">{seriesLabel}</div>
       </div>
       <ChevronRight size={14} className="hidden shrink-0 text-text-tertiary transition-colors group-hover:text-champagne sm:block" />
     </Link>
@@ -106,7 +100,7 @@ function RegionSection({ group, open, onToggle }) {
  * чтобы до Океании не приходилось листать всю Европу.
  * Россия входит в Европу — карточка ведёт в российский раздел.
  */
-export default function HomeCountryList() {
+export default function HomeCountryList({ russiaSeriesCount = 0 }) {
   const t = useT();
   const { locale } = useLocale();
   const { data, isLoading, isError, refetch, isFetching } = useWorldCountries();
@@ -114,15 +108,22 @@ export default function HomeCountryList() {
   const [openRegions, setOpenRegions] = useState(null);
 
   const groups = useMemo(() => {
-    const list = [...(data?.countries || [])];
+    const listed = Number(russiaSeriesCount) || 0;
+    const list = [...(data?.countries || [])].map((country) => {
+      if ((country.slug === 'russia' || country.code === 'RU') && !Number(country.indicators_count) && listed > 0) {
+        return { ...country, indicators_count: listed };
+      }
+      return country;
+    });
     if (!list.some((c) => c.slug === 'russia' || c.code === 'RU')) {
       list.push({
         ...HOME_MAP_RUSSIA_COUNTRY,
+        indicators_count: listed,
         name: locale === 'en' ? HOME_MAP_RUSSIA_COUNTRY.name_en : HOME_MAP_RUSSIA_COUNTRY.name,
       });
     }
     return groupCountriesByRegion(list, { locale });
-  }, [data?.countries, locale]);
+  }, [data?.countries, locale, russiaSeriesCount]);
 
   const expanded = openRegions ?? new Set(groups.length ? [groups[0].id] : []);
 

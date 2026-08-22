@@ -243,7 +243,7 @@ describe('WorldRatingPage', () => {
     expect(screen.getByRole('link', { name: 'Региональный рейтинг' }).getAttribute('href'))
       .toBe('/russia/region-rating/uroven-bezrabotitsy');
     expect(screen.getByText(/Росстата/)).toBeTruthy();
-    expect(screen.getByRole('searchbox', { name: /Поиск/i })).toBeTruthy();
+    expect(screen.queryByRole('searchbox')).toBeNull();
   });
 
   function ratingMocks({ user = null } = {}) {
@@ -354,5 +354,116 @@ describe('WorldRatingPage', () => {
     expect(within(screen.getAllByRole('row')[0]).getAllByRole('columnheader')).toHaveLength(4);
     expect(screen.queryByRole('button', { name: 'Убрать колонку' })).toBeNull();
     expect(screen.getByRole('link', { name: 'Инфляция' })).toBeTruthy();
+  });
+
+  it('доп. колонка берёт ближайший опубликованный год, если за базовый год данных нет', async () => {
+    const mocks = [
+      ['/auth/me', { user: { id: 1, email: 't@example.com' } }],
+      [/^\/indicators/, []],
+      [/^\/world\/countries/, {
+        countries: [
+          { code: 'DE', slug: 'germany', name: 'Германия', name_en: 'Germany', indicators_count: 10 },
+          { code: 'FR', slug: 'france', name: 'Франция', name_en: 'France', indicators_count: 10 },
+        ],
+        total: 2,
+      }],
+      [/^\/world\/rating\/concepts/, {
+        concepts: [
+          {
+            slug: 'unemployment-rate',
+            name: 'Уровень безработицы',
+            unit: '% экономически активного населения',
+            default_sort: 'desc',
+          },
+          {
+            slug: 'hicp-index',
+            name: 'Гармонизированный индекс потребительских цен',
+            unit: '%',
+            default_sort: 'desc',
+          },
+        ],
+        total: 2,
+      }],
+      // База — безработица 2026; доп. колонка «Инфляция» публикуется до 2025.
+      [/^\/world\/compare\/map-series\/unemployment-rate/, {
+        concept: {
+          slug: 'unemployment-rate',
+          name: 'Уровень безработицы',
+          unit: '% экономически активного населения',
+        },
+        years: [2025, 2026],
+        values_by_year: {
+          2026: {
+            DE: {
+              country_code: 'DE',
+              country_slug: 'germany',
+              country_name: 'Германия',
+              indicator_code: 'de-une',
+              date: '2026-06-01',
+              value: 3.4,
+              unit: '% экономически активного населения',
+            },
+            FR: {
+              country_code: 'FR',
+              country_slug: 'france',
+              country_name: 'Франция',
+              indicator_code: 'fr-une',
+              date: '2026-06-01',
+              value: 7.0,
+              unit: '% экономически активного населения',
+            },
+          },
+        },
+        benchmark_by_year: {},
+      }],
+      [/^\/world\/compare\/map-series\/hicp-index/, {
+        concept: { slug: 'hicp-index', name: 'Гармонизированный индекс потребительских цен', unit: '%' },
+        years: [2024, 2025],
+        values_by_year: {
+          2025: {
+            DE: {
+              country_code: 'DE',
+              country_slug: 'germany',
+              country_name: 'Германия',
+              indicator_code: 'de-hicp',
+              date: '2025-12-01',
+              value: 2.2,
+              unit: '%',
+            },
+            FR: {
+              country_code: 'FR',
+              country_slug: 'france',
+              country_name: 'Франция',
+              indicator_code: 'fr-hicp',
+              date: '2025-12-01',
+              value: 1.1,
+              unit: '%',
+            },
+          },
+        },
+        benchmark_by_year: {},
+      }],
+    ];
+
+    mockApiGet(mocks);
+
+    renderPage(
+      <WorldRatingPage />,
+      {
+        path: '/world/rating/:conceptSlug',
+        route: '/world/rating/unemployment-rate?cols=hicp-index',
+      },
+    );
+
+    await waitFor(() => expect(dataRows()).toHaveLength(2));
+    const head = screen.getAllByRole('row')[0];
+    expect(within(head).getAllByRole('columnheader')).toHaveLength(5);
+    // Значения инфляции взяты из 2025 — ближайшего опубликованного года к базе 2026
+    // (сортировка по безработице desc: Франция 7,0 выше Германии 3,4).
+    expect(within(dataRows()[0]).getByText('Франция')).toBeTruthy();
+    await waitFor(() => {
+      expect(dataRows()[0].textContent).toMatch(/1[.,]10/);
+      expect(dataRows()[1].textContent).toMatch(/2[.,]20/);
+    });
   });
 });

@@ -2164,6 +2164,11 @@ def _indicator_alt_freq_links(indicator: Indicator) -> str:
     `primary_indicator_code` (см. T3 plan, FrequencySwitcher на frontend).
     Поисковики таким образом понимают семантическую связь между парой URLs
     (`/indicator/exports` ↔ `/indicator/exports-monthly`).
+
+    M-6: это НЕ языковые альтернативы — оба URL русскоязычные страницы одного
+    показателя на разных частотах, поэтому без `hreflang`. `hreflang="ru-RU"`
+    здесь лгал бы поисковику (частотный двойник не «русская версия» страницы),
+    а plain `rel="alternate"` семантику пары передаёт без ложного сигнала.
     """
     cfg = indicator.model_config_json or {}
     links: list[str] = []
@@ -2173,11 +2178,11 @@ def _indicator_alt_freq_links(indicator: Indicator) -> str:
             if not alt_code:
                 continue
             href = escape(_absolute(paths.russia_indicator(alt_code)))
-            links.append(f'<link rel="alternate" hreflang="ru-RU" href="{href}">')
+            links.append(f'<link rel="alternate" href="{href}">')
     primary_code = cfg.get("primary_indicator_code")
     if primary_code:
         href = escape(_absolute(paths.russia_indicator(primary_code)))
-        links.append(f'<link rel="alternate" hreflang="ru-RU" href="{href}">')
+        links.append(f'<link rel="alternate" href="{href}">')
     return "\n".join(links)
 
 

@@ -156,6 +156,39 @@ def test_sibling_metadata_complete():
         assert meta["parent"] in vmf.FAMILY_BY_BASE
 
 
+def test_sibling_name_en_suffix_covers_all_tokens():
+    """Каждый sibling несёт EN-суффикс для name_en на английской витрине.
+
+    Seed собирает `f"{parent.name_en} — {name_en_suffix}"`; пустой суффикс
+    оставил бы русское имя на EN-странице режима (M-аудит EN-покрытия).
+    """
+    for meta in vmf.iter_sibling_indicators():
+        suffix = meta.get("name_en_suffix")
+        assert suffix, f"{meta['code']}: нет EN-суффикса имени"
+        assert not any(
+            ch in suffix for ch in "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
+        ), f"{meta['code']}: кириллица в EN-суффиксе ({suffix!r})"
+
+
+def test_seed_writes_name_en_for_siblings_with_curated_parent():
+    """Sibling семьи с name_en у родителя получает составное EN-имя.
+
+    Родители без name_en (легаси gdp-*/wages-*) покрыты оверлеем
+    INDICATOR_COPY_EN и здесь не проверяются.
+    """
+    import seed_data
+
+    parent = seed_data._PARENT_META["usd-rub"]
+    assert (parent.get("name_en") or "").strip()
+    sibling = next(
+        i for i in seed_data.INDICATORS if i["code"] == "usd-rub-avg-quarter"
+    )
+    name_en = sibling.get("name_en") or ""
+    assert name_en.startswith("USD/RUB Exchange Rate")
+    assert "quarter average" in name_en
+    assert "—" in name_en
+
+
 def test_only_monthly_sources_get_partial_bucket_nowcasts():
     """Quarterly source already has a published fact for its quarter.
 

@@ -34,6 +34,10 @@ from app.data.world_concepts import (
     concept_public_unit,
 )
 from app.data.world_concept_national import national_codes_for_concept
+from app.data.world_concept_russia import (
+    RUSSIA_COUNTRY_PAYLOAD,
+    russia_list_country_payload,
+)
 from app.data.global_market_indicators import market_indicator_codes_for_country
 from app.data.world_country_area import area_payload
 from app.data.world_country_population import population_payload as curated_population_payload
@@ -627,7 +631,7 @@ async def list_countries(db: AsyncSession = Depends(get_db)):
     """
     # v4: EXISTS по listed-рядам вместо DISTINCT по всей world_data_points
     # (на полном датасете ~8M точек DISTINCT убивал воркеры → 504/500).
-    cache_key = await versioned_key("world", f"countries:v4:{get_locale()}")
+    cache_key = await versioned_key("world", f"countries:v5:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -693,6 +697,23 @@ async def list_countries(db: AsyncSession = Depends(get_db)):
             for c in rows
             if cnt_map.get(c.id, 0) > 0
         ]
+
+    ru_listed = int(
+        (
+            await db.execute(
+                select(func.count())
+                .select_from(Indicator)
+                .where(Indicator.is_listed.is_(True), Indicator.is_active.is_(True))
+            )
+        ).scalar()
+        or 0
+    )
+    if ru_listed > 0 and not any(
+        (c.get("code") == "RU" or c.get("slug") == "russia") for c in countries
+    ):
+        ru_row = russia_list_country_payload(ru_listed, locale=get_locale())
+        ru_row["region"] = _region_display(RUSSIA_COUNTRY_PAYLOAD["region_ru"])
+        countries.append(ru_row)
 
     payload = {"countries": countries, "total": len(countries)}
     await cache_set(cache_key, payload, ttl=_CACHE_TTL)

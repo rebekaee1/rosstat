@@ -144,6 +144,30 @@ _SUFFIX_NAME: dict[str, str] = {
     "rolling-12m": "скользящая средняя за 12 месяцев",
 }
 
+# EN-двойники суффиксов для имён sibling-рядов на английской витрине
+# («Key rate — quarter average»). Порядок и ключи зеркалят _SUFFIX_NAME;
+# используется iter_sibling_indicators (name_en в seed) — не UI-лейблы.
+_SUFFIX_NAME_EN: dict[str, str] = {
+    "eop-week": "end of week",
+    "eop-month": "end of month",
+    "eop-quarter": "end of quarter",
+    "eop-year": "end of year",
+    "avg-week": "week average",
+    "avg-month": "month average",
+    "avg-quarter": "quarter average",
+    "avg-year": "year average",
+    "sum-month": "monthly sum",
+    "sum-quarter": "quarterly sum",
+    "sum-year": "annual sum",
+    "mom": "vs previous month",
+    "qoq": "vs previous quarter",
+    "yoy": "vs same period last year",
+    "yoy-quarter": "vs same quarter last year",
+    "yoy-year": "vs previous year",
+    "index": "index (first period = 100)",
+    "rolling-12m": "rolling 12-month average",
+}
+
 
 # --- Сборка режимов по шаблонам ----------------------------------------------
 
@@ -1105,6 +1129,7 @@ def iter_sibling_indicators():
             yield {
                 "code": m.code,
                 "name": f"{fam.name} — {suffix}",
+                "name_en_suffix": _SUFFIX_NAME_EN.get(token, m.label),
                 "unit": m.unit,
                 "frequency": m.frequency,
                 "parent": fam.base,

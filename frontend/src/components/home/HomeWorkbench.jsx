@@ -142,7 +142,6 @@ export default function HomeWorkbench({ ratingConcepts }) {
             track(events.HOME_COUNTRIES_METRIC, { concept: slug });
           }}
           label={t('home.map.metricLabel')}
-          searchable={false}
           hint={fullRatingHref ? (
             <Link
               to={fullRatingHref}
@@ -240,7 +239,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
                     },
                     item,
                   )}
-                  className="grid w-full grid-cols-[1.5rem_minmax(0,1fr)_auto] items-baseline gap-1.5 rounded-lg px-1 py-0.5 text-left hover:bg-champagne/10"
+                  className="grid w-full grid-cols-[1.15rem_minmax(0,1fr)_auto] items-baseline gap-1 rounded-lg px-0.5 py-0.5 text-left hover:bg-champagne/10"
                 >
                   <span className="font-mono text-[11px] text-text-tertiary">{idx + 1}.</span>
                   <span className="min-w-0 truncate text-[11px] leading-snug text-text-secondary">

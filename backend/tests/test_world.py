@@ -197,6 +197,7 @@ def world_client(auth_env):
     import asyncio
     from fastapi.testclient import TestClient
     from app.models import (
+        Indicator,
         WorldCountry,
         WorldDataPoint,
         WorldForecast,
@@ -323,6 +324,29 @@ def world_client(auth_env):
                 is_listed=True,
             )
             db.add_all([ind, raw, fr_ind, population, xx_ind])
+            db.add_all([
+                Indicator(
+                    code="cpi",
+                    name="Индекс потребительских цен",
+                    name_en="CPI",
+                    unit="%",
+                    frequency="monthly",
+                    source="Росстат",
+                    parser_type="rosstat_cpi_xlsx",
+                    is_active=True,
+                    is_listed=True,
+                ),
+                Indicator(
+                    code="cpi-food-quarterly",
+                    name="ИПЦ продовольствие квартально",
+                    unit="%",
+                    frequency="quarterly",
+                    source="Росстат",
+                    parser_type="derived",
+                    is_active=True,
+                    is_listed=False,
+                ),
+            ])
             await db.flush()
             for i in range(18):
                 y = 2024 + (i // 12)
@@ -387,6 +411,23 @@ def test_world_countries(world_client):
     assert body["total"] >= 1
     assert body["countries"][0]["slug"] == "germany"
     assert "indicators_count" in body["countries"][0]
+    by_slug = {c["slug"]: c for c in body["countries"]}
+    assert by_slug["russia"]["code"] == "RU"
+    assert by_slug["russia"]["indicators_count"] == 1
+    assert by_slug["russia"]["name"] == "Россия"
+
+
+def test_russia_list_country_payload_exposes_series_count():
+    from app.data.world_concept_russia import russia_list_country_payload
+
+    ru = russia_list_country_payload(120, locale="ru")
+    assert ru["slug"] == "russia"
+    assert ru["code"] == "RU"
+    assert ru["indicators_count"] == 120
+    assert ru["name"] == "Россия"
+    en = russia_list_country_payload(3, locale="en")
+    assert en["name"] == "Russia"
+    assert en["indicators_count"] == 3
 
 
 def test_world_country_detail_hides_raw(world_client):

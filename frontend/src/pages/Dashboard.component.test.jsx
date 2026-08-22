@@ -27,6 +27,10 @@ const INDICATORS = [
     frequency: 'daily', is_active: true, is_listed: true, current_value: 4.2,
   },
   {
+    code: 'eur-usd', name: 'Курс евро к доллару', unit: 'USD', category: 'Валюты',
+    frequency: 'daily', is_active: true, is_listed: true, current_value: 1.17,
+  },
+  {
     code: 'eth-usd', name: 'Эфириум (ETH/USD)', unit: 'USD', category: 'Валюты',
     frequency: 'daily', is_active: true, is_listed: true, current_value: 3400,
   },

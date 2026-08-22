@@ -4848,7 +4848,14 @@ for _meta in _iter_vmf_siblings():
         }
     else:
         _model_cfg = {"forecast_steps": 0}
-    INDICATORS.append({
+    # EN-имя сиблинга: EN-имя родителя + EN-суффикс режима. У части легаси-родителей
+    # (gdp-*, wages-*) своего name_en нет — оверлей INDICATOR_COPY_EN их покрывает,
+    # поэтому фолбэк на RU-имя не создаёт дыры (public_indicator_fields берёт оверлей).
+    _parent_name_en = _parent.get("name_en") or ""
+    _sibling_name_en = (
+        f"{_parent_name_en} — {_meta['name_en_suffix']}" if _parent_name_en else ""
+    )
+    _sibling_entry = {
         "code": _meta["code"],
         "name": _meta["name"],
         "unit": _meta["unit"],
@@ -4861,7 +4868,10 @@ for _meta in _iter_vmf_siblings():
         "model_config_json": _model_cfg,
         "is_active": True,
         "category": _meta["category"],
-    })
+    }
+    if _sibling_name_en:
+        _sibling_entry["name_en"] = _sibling_name_en
+    INDICATORS.append(_sibling_entry)
     _generated_sibling_codes.append(_meta["code"])
     _EXISTING_CODES.add(_meta["code"])
 

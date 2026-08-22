@@ -90,7 +90,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 727,
+          "line": 751,
           "kind": "derived"
         },
         {
@@ -115,7 +115,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4882,
+          "line": 4892,
           "kind": "seed"
         },
         {
@@ -567,7 +567,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 843,
+          "line": 867,
           "kind": "derived"
         },
         {
@@ -787,7 +787,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 832,
+          "line": 856,
           "kind": "derived"
         },
         {
@@ -1094,7 +1094,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 692,
+          "line": 716,
           "kind": "derived"
         },
         {
@@ -1250,6 +1250,11 @@
         {
           "file": "backend/tests/test_ticker_sources.py",
           "line": 153,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_ticker_sources.py",
+          "line": 192,
           "kind": "tests"
         },
         {
@@ -1912,7 +1917,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 708,
+          "line": 732,
           "kind": "derived"
         },
         {
@@ -1973,6 +1978,11 @@
         {
           "file": "backend/tests/test_ticker_sources.py",
           "line": 161,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_ticker_sources.py",
+          "line": 191,
           "kind": "tests"
         },
         {
@@ -2569,7 +2579,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 785,
+          "line": 809,
           "kind": "derived"
         },
         {
@@ -2644,7 +2654,7 @@
         },
         {
           "file": "backend/tests/test_view_model_families.py",
-          "line": 181,
+          "line": 214,
           "kind": "tests"
         },
         {
@@ -3045,7 +3055,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 773,
+          "line": 797,
           "kind": "derived"
         },
         {
@@ -3075,7 +3085,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4882,
+          "line": 4892,
           "kind": "seed"
         },
         {
@@ -3422,7 +3432,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 772,
+          "line": 796,
           "kind": "derived"
         },
         {
@@ -3462,7 +3472,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4882,
+          "line": 4892,
           "kind": "seed"
         },
         {
@@ -3532,27 +3542,27 @@
         },
         {
           "file": "backend/tests/test_view_model_families.py",
-          "line": 185,
+          "line": 218,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_view_model_families.py",
-          "line": 187,
+          "line": 220,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_view_model_families.py",
-          "line": 191,
+          "line": 224,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_view_model_families.py",
-          "line": 192,
+          "line": 225,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_view_model_families.py",
-          "line": 196,
+          "line": 229,
           "kind": "tests"
         },
         {
@@ -3715,7 +3725,7 @@
         },
         {
           "file": "backend/tests/test_view_model_families.py",
-          "line": 191,
+          "line": 224,
           "kind": "tests"
         },
         {
@@ -3935,7 +3945,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 745,
+          "line": 769,
           "kind": "derived"
         },
         {
@@ -3960,7 +3970,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4883,
+          "line": 4893,
           "kind": "seed"
         },
         {
@@ -4365,7 +4375,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 821,
+          "line": 845,
           "kind": "derived"
         },
         {
@@ -4687,7 +4697,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 691,
+          "line": 715,
           "kind": "derived"
         },
         {
@@ -5334,7 +5344,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 704,
+          "line": 728,
           "kind": "derived"
         },
         {
@@ -5700,7 +5710,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 775,
+          "line": 799,
           "kind": "derived"
         },
         {
@@ -5730,7 +5740,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4894,
+          "line": 4904,
           "kind": "seed"
         },
         {
@@ -6063,7 +6073,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 746,
+          "line": 770,
           "kind": "derived"
         },
         {
@@ -6088,7 +6098,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4883,
+          "line": 4893,
           "kind": "seed"
         },
         {
@@ -6531,7 +6541,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 695,
+          "line": 719,
           "kind": "derived"
         },
         {
@@ -6888,7 +6898,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 715,
+          "line": 739,
           "kind": "derived"
         },
         {
@@ -7763,22 +7773,22 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5232,
+          "line": 5242,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5233,
+          "line": 5243,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5234,
+          "line": 5244,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5245,
+          "line": 5255,
           "kind": "seed"
         },
         {
@@ -8647,6 +8657,11 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_world.py",
+          "line": 329,
+          "kind": "tests"
+        },
+        {
           "file": "docs/adr/0001-derived-indicators-engine-shape.md",
           "line": 35,
           "kind": "other"
@@ -8798,7 +8813,7 @@
         },
         {
           "file": "frontend/nginx.conf",
-          "line": 183,
+          "line": 184,
           "kind": "other"
         },
         {
@@ -10375,7 +10390,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5107,
+          "line": 5117,
           "kind": "seed"
         },
         {
@@ -10645,6 +10660,11 @@
         {
           "file": "backend/tests/test_forecast_policy.py",
           "line": 207,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_world.py",
+          "line": 340,
           "kind": "tests"
         },
         {
@@ -11097,7 +11117,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5108,
+          "line": 5118,
           "kind": "seed"
         },
         {
@@ -11972,7 +11992,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5109,
+          "line": 5119,
           "kind": "seed"
         },
         {
@@ -12529,7 +12549,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 734,
+          "line": 758,
           "kind": "derived"
         },
         {
@@ -12554,7 +12574,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4884,
+          "line": 4894,
           "kind": "seed"
         },
         {
@@ -12969,7 +12989,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 735,
+          "line": 759,
           "kind": "derived"
         },
         {
@@ -12994,7 +13014,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4884,
+          "line": 4894,
           "kind": "seed"
         },
         {
@@ -13409,7 +13429,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 729,
+          "line": 753,
           "kind": "derived"
         },
         {
@@ -13429,7 +13449,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4884,
+          "line": 4894,
           "kind": "seed"
         },
         {
@@ -13874,7 +13894,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 736,
+          "line": 760,
           "kind": "derived"
         },
         {
@@ -13899,7 +13919,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4885,
+          "line": 4895,
           "kind": "seed"
         },
         {
@@ -14314,7 +14334,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 737,
+          "line": 761,
           "kind": "derived"
         },
         {
@@ -14339,7 +14359,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4885,
+          "line": 4895,
           "kind": "seed"
         },
         {
@@ -14754,7 +14774,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 730,
+          "line": 754,
           "kind": "derived"
         },
         {
@@ -14774,7 +14794,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4885,
+          "line": 4895,
           "kind": "seed"
         },
         {
@@ -15255,7 +15275,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 828,
+          "line": 852,
           "kind": "derived"
         },
         {
@@ -15883,7 +15903,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 844,
+          "line": 868,
           "kind": "derived"
         },
         {
@@ -16103,7 +16123,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 831,
+          "line": 855,
           "kind": "derived"
         },
         {
@@ -16391,12 +16411,12 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 728,
+          "line": 752,
           "kind": "derived"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 731,
+          "line": 755,
           "kind": "derived"
         },
         {
@@ -16421,7 +16441,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4886,
+          "line": 4896,
           "kind": "seed"
         },
         {
@@ -16746,7 +16766,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 739,
+          "line": 763,
           "kind": "derived"
         },
         {
@@ -16761,7 +16781,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4886,
+          "line": 4896,
           "kind": "seed"
         },
         {
@@ -17166,7 +17186,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 738,
+          "line": 762,
           "kind": "derived"
         },
         {
@@ -17181,7 +17201,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4886,
+          "line": 4896,
           "kind": "seed"
         },
         {
@@ -17746,7 +17766,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 748,
+          "line": 772,
           "kind": "derived"
         },
         {
@@ -17786,7 +17806,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4887,
+          "line": 4897,
           "kind": "seed"
         },
         {
@@ -18171,7 +18191,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 747,
+          "line": 771,
           "kind": "derived"
         },
         {
@@ -18211,7 +18231,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4887,
+          "line": 4897,
           "kind": "seed"
         },
         {
@@ -18608,7 +18628,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 848,
+          "line": 872,
           "kind": "derived"
         },
         {
@@ -18733,7 +18753,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 838,
+          "line": 862,
           "kind": "derived"
         },
         {
@@ -19054,7 +19074,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 752,
+          "line": 776,
           "kind": "derived"
         },
         {
@@ -19094,7 +19114,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4887,
+          "line": 4897,
           "kind": "seed"
         },
         {
@@ -19511,7 +19531,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 709,
+          "line": 733,
           "kind": "derived"
         },
         {
@@ -19561,7 +19581,7 @@
         },
         {
           "file": "frontend/src/pages/Dashboard.component.test.jsx",
-          "line": 30,
+          "line": 34,
           "kind": "other"
         }
       ]
@@ -20054,7 +20074,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 690,
+          "line": 714,
           "kind": "derived"
         },
         {
@@ -20714,7 +20734,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 719,
+          "line": 743,
           "kind": "derived"
         },
         {
@@ -20736,6 +20756,16 @@
           "file": "backend/seed_data.py",
           "line": 4143,
           "kind": "seed"
+        },
+        {
+          "file": "backend/tests/test_ticker_sources.py",
+          "line": 188,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_ticker_sources.py",
+          "line": 196,
+          "kind": "tests"
         },
         {
           "file": "docs/adr/0001-derived-indicators-engine-shape.md",
@@ -20781,6 +20811,11 @@
           "file": "frontend/src/lib/homeWorkbench.test.js",
           "line": 62,
           "kind": "tests"
+        },
+        {
+          "file": "frontend/src/pages/Dashboard.component.test.jsx",
+          "line": 30,
+          "kind": "other"
         }
       ]
     },
@@ -21301,7 +21336,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 822,
+          "line": 846,
           "kind": "derived"
         },
         {
@@ -21416,7 +21451,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5074,
+          "line": 5084,
           "kind": "seed"
         },
         {
@@ -21870,7 +21905,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 779,
+          "line": 803,
           "kind": "derived"
         },
         {
@@ -21915,7 +21950,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4888,
+          "line": 4898,
           "kind": "seed"
         },
         {
@@ -22445,7 +22480,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5088,
+          "line": 5098,
           "kind": "seed"
         },
         {
@@ -22663,7 +22698,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 754,
+          "line": 778,
           "kind": "derived"
         },
         {
@@ -22830,12 +22865,12 @@
       "files": [
         {
           "file": "backend/tests/test_view_model_families.py",
-          "line": 171,
+          "line": 204,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_view_model_families.py",
-          "line": 172,
+          "line": 205,
           "kind": "tests"
         },
         {
@@ -22871,12 +22906,12 @@
       "files": [
         {
           "file": "backend/tests/test_view_model_families.py",
-          "line": 165,
+          "line": 198,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_view_model_families.py",
-          "line": 170,
+          "line": 203,
           "kind": "tests"
         },
         {
@@ -23009,7 +23044,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 829,
+          "line": 853,
           "kind": "derived"
         },
         {
@@ -23301,7 +23336,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 765,
+          "line": 789,
           "kind": "derived"
         },
         {
@@ -23838,7 +23873,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 767,
+          "line": 791,
           "kind": "derived"
         },
         {
@@ -24345,7 +24380,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 769,
+          "line": 793,
           "kind": "derived"
         },
         {
@@ -24887,7 +24922,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 721,
+          "line": 745,
           "kind": "derived"
         },
         {
@@ -24908,6 +24943,11 @@
         {
           "file": "backend/tests/test_calculation_engine.py",
           "line": 40,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_ticker_sources.py",
+          "line": 189,
           "kind": "tests"
         },
         {
@@ -25313,7 +25353,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 817,
+          "line": 841,
           "kind": "derived"
         },
         {
@@ -25613,7 +25653,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 818,
+          "line": 842,
           "kind": "derived"
         },
         {
@@ -25908,7 +25948,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 819,
+          "line": 843,
           "kind": "derived"
         },
         {
@@ -26268,12 +26308,12 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 796,
+          "line": 820,
           "kind": "derived"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 813,
+          "line": 837,
           "kind": "derived"
         },
         {
@@ -26734,7 +26774,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 814,
+          "line": 838,
           "kind": "derived"
         },
         {
@@ -26911,7 +26951,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 814,
+          "line": 838,
           "kind": "derived"
         },
         {
@@ -27062,7 +27102,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 815,
+          "line": 839,
           "kind": "derived"
         },
         {
@@ -27378,7 +27418,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 816,
+          "line": 840,
           "kind": "derived"
         },
         {
@@ -27509,7 +27549,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 816,
+          "line": 840,
           "kind": "derived"
         },
         {
@@ -27615,7 +27655,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 816,
+          "line": 840,
           "kind": "derived"
         },
         {
@@ -27757,7 +27797,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 814,
+          "line": 838,
           "kind": "derived"
         },
         {
@@ -27987,7 +28027,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 693,
+          "line": 717,
           "kind": "derived"
         },
         {
@@ -28674,7 +28714,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 839,
+          "line": 863,
           "kind": "derived"
         },
         {
@@ -28852,7 +28892,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 870,
+          "line": 894,
           "kind": "derived"
         },
         {
@@ -28872,12 +28912,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4902,
+          "line": 4912,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4904,
+          "line": 4914,
           "kind": "seed"
         },
         {
@@ -29223,7 +29263,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 872,
+          "line": 896,
           "kind": "derived"
         },
         {
@@ -29238,7 +29278,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4902,
+          "line": 4912,
           "kind": "seed"
         },
         {
@@ -29907,7 +29947,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 776,
+          "line": 800,
           "kind": "derived"
         },
         {
@@ -29937,7 +29977,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4888,
+          "line": 4898,
           "kind": "seed"
         },
         {
@@ -31240,7 +31280,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 711,
+          "line": 735,
           "kind": "derived"
         },
         {
@@ -31944,7 +31984,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 823,
+          "line": 847,
           "kind": "derived"
         },
         {
@@ -32049,7 +32089,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5075,
+          "line": 5085,
           "kind": "seed"
         },
         {
@@ -32308,7 +32348,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 780,
+          "line": 804,
           "kind": "derived"
         },
         {
@@ -32343,7 +32383,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4888,
+          "line": 4898,
           "kind": "seed"
         },
         {
@@ -32788,7 +32828,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5088,
+          "line": 5098,
           "kind": "seed"
         },
         {
@@ -32930,7 +32970,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5106,
+          "line": 5116,
           "kind": "seed"
         },
         {
@@ -33720,7 +33760,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 849,
+          "line": 873,
           "kind": "derived"
         },
         {
@@ -33884,12 +33924,12 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 406,
+          "line": 430,
           "kind": "derived"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 756,
+          "line": 780,
           "kind": "derived"
         },
         {
@@ -34461,7 +34501,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 855,
+          "line": 879,
           "kind": "derived"
         },
         {
@@ -34501,7 +34541,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4894,
+          "line": 4904,
           "kind": "seed"
         },
         {
@@ -34854,7 +34894,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 863,
+          "line": 887,
           "kind": "derived"
         },
         {
@@ -34864,7 +34904,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4897,
+          "line": 4907,
           "kind": "seed"
         },
         {
@@ -35301,7 +35341,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 861,
+          "line": 885,
           "kind": "derived"
         },
         {
@@ -35311,7 +35351,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4897,
+          "line": 4907,
           "kind": "seed"
         },
         {
@@ -35681,7 +35721,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 859,
+          "line": 883,
           "kind": "derived"
         },
         {
@@ -35691,7 +35731,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4897,
+          "line": 4907,
           "kind": "seed"
         },
         {
@@ -36123,7 +36163,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 865,
+          "line": 889,
           "kind": "derived"
         },
         {
@@ -36133,7 +36173,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4897,
+          "line": 4907,
           "kind": "seed"
         },
         {
@@ -36493,12 +36533,12 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 854,
+          "line": 878,
           "kind": "derived"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 856,
+          "line": 880,
           "kind": "derived"
         },
         {
@@ -36820,7 +36860,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 685,
+          "line": 709,
           "kind": "derived"
         },
         {
@@ -36935,12 +36975,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5058,
+          "line": 5068,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5061,
+          "line": 5071,
           "kind": "seed"
         },
         {
@@ -37887,7 +37927,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 751,
+          "line": 775,
           "kind": "derived"
         },
         {
@@ -37912,7 +37952,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4889,
+          "line": 4899,
           "kind": "seed"
         },
         {
@@ -38275,7 +38315,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 742,
+          "line": 766,
           "kind": "derived"
         },
         {
@@ -38300,7 +38340,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4889,
+          "line": 4899,
           "kind": "seed"
         },
         {
@@ -38725,7 +38765,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 743,
+          "line": 767,
           "kind": "derived"
         },
         {
@@ -38765,7 +38805,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4889,
+          "line": 4899,
           "kind": "seed"
         },
         {
@@ -39215,7 +39255,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 744,
+          "line": 768,
           "kind": "derived"
         },
         {
@@ -39270,7 +39310,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4889,
+          "line": 4899,
           "kind": "seed"
         },
         {
@@ -39300,7 +39340,7 @@
         },
         {
           "file": "backend/tests/test_view_model_families.py",
-          "line": 180,
+          "line": 213,
           "kind": "tests"
         },
         {
@@ -39671,7 +39711,7 @@
       "files": [
         {
           "file": "backend/tests/test_view_model_families.py",
-          "line": 169,
+          "line": 202,
           "kind": "tests"
         },
         {
@@ -39889,7 +39929,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 712,
+          "line": 736,
           "kind": "derived"
         },
         {
@@ -40383,7 +40423,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 726,
+          "line": 750,
           "kind": "derived"
         },
         {
@@ -40403,7 +40443,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4889,
+          "line": 4899,
           "kind": "seed"
         },
         {
@@ -40842,7 +40882,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 699,
+          "line": 723,
           "kind": "derived"
         },
         {
@@ -41449,7 +41489,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 837,
+          "line": 861,
           "kind": "derived"
         },
         {
@@ -41695,7 +41735,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 835,
+          "line": 859,
           "kind": "derived"
         },
         {
@@ -41876,7 +41916,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 836,
+          "line": 860,
           "kind": "derived"
         },
         {
@@ -42047,27 +42087,27 @@
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 154,
+          "line": 158,
           "kind": "other"
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 178,
+          "line": 182,
           "kind": "other"
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 1299,
+          "line": 1320,
           "kind": "other"
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 1315,
+          "line": 1336,
           "kind": "other"
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 1316,
+          "line": 1337,
           "kind": "other"
         },
         {
@@ -43062,7 +43102,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 833,
+          "line": 857,
           "kind": "derived"
         },
         {
@@ -43342,62 +43382,62 @@
         },
         {
           "file": "backend/tests/test_world.py",
-          "line": 285,
+          "line": 286,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_world.py",
-          "line": 325,
+          "line": 326,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_world.py",
-          "line": 340,
+          "line": 364,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_world.py",
-          "line": 341,
+          "line": 365,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_world.py",
-          "line": 342,
+          "line": 366,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_world.py",
-          "line": 414,
+          "line": 455,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_world.py",
-          "line": 415,
+          "line": 456,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_world.py",
-          "line": 416,
+          "line": 457,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_world.py",
-          "line": 417,
+          "line": 458,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_world.py",
-          "line": 418,
+          "line": 459,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_world.py",
-          "line": 419,
+          "line": 460,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_world.py",
-          "line": 423,
+          "line": 464,
           "kind": "tests"
         },
         {
@@ -43502,17 +43542,12 @@
         },
         {
           "file": "frontend/src/components/WorldConceptPicker.component.test.jsx",
-          "line": 27,
+          "line": 25,
           "kind": "other"
         },
         {
           "file": "frontend/src/components/WorldConceptPicker.component.test.jsx",
-          "line": 73,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/components/WorldConceptPicker.component.test.jsx",
-          "line": 75,
+          "line": 62,
           "kind": "other"
         },
         {
@@ -44006,7 +44041,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 846,
+          "line": 870,
           "kind": "derived"
         },
         {
@@ -44145,7 +44180,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 845,
+          "line": 869,
           "kind": "derived"
         },
         {
@@ -44279,7 +44314,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 847,
+          "line": 871,
           "kind": "derived"
         },
         {
@@ -45253,7 +45288,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 840,
+          "line": 864,
           "kind": "derived"
         },
         {
@@ -45424,7 +45459,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 841,
+          "line": 865,
           "kind": "derived"
         },
         {
@@ -45605,7 +45640,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 777,
+          "line": 801,
           "kind": "derived"
         },
         {
@@ -45640,7 +45675,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4894,
+          "line": 4904,
           "kind": "seed"
         },
         {
@@ -45997,7 +46032,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 714,
+          "line": 738,
           "kind": "derived"
         },
         {
@@ -46495,7 +46530,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 713,
+          "line": 737,
           "kind": "derived"
         },
         {
@@ -47003,7 +47038,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 687,
+          "line": 711,
           "kind": "derived"
         },
         {
@@ -47682,7 +47717,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 824,
+          "line": 848,
           "kind": "derived"
         },
         {
@@ -47826,7 +47861,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 781,
+          "line": 805,
           "kind": "derived"
         },
         {
@@ -47861,7 +47896,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4890,
+          "line": 4900,
           "kind": "seed"
         },
         {
@@ -48328,7 +48363,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 825,
+          "line": 849,
           "kind": "derived"
         },
         {
@@ -48477,7 +48512,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 782,
+          "line": 806,
           "kind": "derived"
         },
         {
@@ -48512,7 +48547,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4890,
+          "line": 4900,
           "kind": "seed"
         },
         {
@@ -48992,7 +49027,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 697,
+          "line": 721,
           "kind": "derived"
         },
         {
@@ -49332,7 +49367,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 850,
+          "line": 874,
           "kind": "derived"
         },
         {
@@ -49488,7 +49523,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 710,
+          "line": 734,
           "kind": "derived"
         },
         {
@@ -49533,7 +49568,7 @@
         },
         {
           "file": "frontend/src/pages/Dashboard.component.test.jsx",
-          "line": 34,
+          "line": 38,
           "kind": "other"
         }
       ]
@@ -50015,7 +50050,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 702,
+          "line": 726,
           "kind": "derived"
         },
         {
@@ -50338,7 +50373,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 706,
+          "line": 730,
           "kind": "derived"
         },
         {
@@ -50436,7 +50471,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 851,
+          "line": 875,
           "kind": "derived"
         },
         {
@@ -50629,7 +50664,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 827,
+          "line": 851,
           "kind": "derived"
         },
         {
@@ -50719,7 +50754,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5076,
+          "line": 5086,
           "kind": "seed"
         },
         {
@@ -50963,7 +50998,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 783,
+          "line": 807,
           "kind": "derived"
         },
         {
@@ -50998,7 +51033,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4891,
+          "line": 4901,
           "kind": "seed"
         },
         {
@@ -51563,7 +51598,7 @@
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 1712,
+          "line": 1733,
           "kind": "other"
         },
         {
@@ -51728,7 +51763,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 740,
+          "line": 764,
           "kind": "derived"
         },
         {
@@ -51833,7 +51868,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4891,
+          "line": 4901,
           "kind": "seed"
         },
         {
@@ -52929,7 +52964,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 723,
+          "line": 747,
           "kind": "derived"
         },
         {
@@ -52950,6 +52985,11 @@
         {
           "file": "backend/tests/test_calculation_engine.py",
           "line": 41,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_ticker_sources.py",
+          "line": 190,
           "kind": "tests"
         },
         {
@@ -53364,7 +53404,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 716,
+          "line": 740,
           "kind": "derived"
         },
         {
@@ -54032,7 +54072,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 689,
+          "line": 713,
           "kind": "derived"
         },
         {
@@ -54158,6 +54198,11 @@
         {
           "file": "backend/tests/test_usd_rub_seo.py",
           "line": 29,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_view_model_families.py",
+          "line": 181,
           "kind": "tests"
         },
         {
@@ -54367,6 +54412,11 @@
         "in_seed_no_ui_stack": false
       },
       "files": [
+        {
+          "file": "backend/tests/test_view_model_families.py",
+          "line": 184,
+          "kind": "tests"
+        },
         {
           "file": "frontend/src/lib/viewModelFamilies.generated.json",
           "line": 11963,
@@ -54795,7 +54845,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 717,
+          "line": 741,
           "kind": "derived"
         },
         {
@@ -55392,7 +55442,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 788,
+          "line": 812,
           "kind": "derived"
         },
         {
@@ -55627,17 +55677,17 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 805,
+          "line": 829,
           "kind": "derived"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 889,
+          "line": 913,
           "kind": "derived"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 893,
+          "line": 917,
           "kind": "derived"
         },
         {
@@ -55782,7 +55832,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4891,
+          "line": 4901,
           "kind": "seed"
         },
         {
@@ -56086,12 +56136,12 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 791,
+          "line": 815,
           "kind": "derived"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 808,
+          "line": 832,
           "kind": "derived"
         },
         {
@@ -56332,12 +56382,12 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 797,
+          "line": 821,
           "kind": "derived"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 809,
+          "line": 833,
           "kind": "derived"
         },
         {
@@ -56570,17 +56620,17 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 811,
+          "line": 835,
           "kind": "derived"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 889,
+          "line": 913,
           "kind": "derived"
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 893,
+          "line": 917,
           "kind": "derived"
         },
         {
@@ -56595,7 +56645,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4906,
+          "line": 4916,
           "kind": "seed"
         },
         {
@@ -56938,7 +56988,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 807,
+          "line": 831,
           "kind": "derived"
         },
         {
@@ -57249,7 +57299,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 700,
+          "line": 724,
           "kind": "derived"
         },
         {
@@ -57590,7 +57640,7 @@
         },
         {
           "file": "backend/app/data/view_model_families.py",
-          "line": 834,
+          "line": 858,
           "kind": "derived"
         },
         {

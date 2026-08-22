@@ -38,7 +38,7 @@ export default function Dashboard() {
       <HomeHero indicators={indicators} isLoading={isLoading} />
       <HomeWorkbench ratingConcepts={ratingConcepts} />
       <HomeCoverage />
-      <HomeCountryList />
+      <HomeCountryList russiaSeriesCount={indicators?.length || 0} />
     </div>
   );
 }
