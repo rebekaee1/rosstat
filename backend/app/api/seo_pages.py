@@ -54,7 +54,6 @@ from app.services.seo_today import render_today_hub_html, render_today_indicator
 from app.services.seo_world import (
     WORLD_RATING_DEFAULT_CONCEPT,
     render_world_country_html,
-    render_world_home_html,
     render_world_indicator_html,
     render_world_rating_html,
 )
@@ -383,12 +382,13 @@ async def seo_indicator_year(
 
 
 @router.api_route("/seo/world", methods=["GET", "HEAD"], include_in_schema=False)
-async def seo_world_home(request: Request, db: AsyncSession = Depends(get_db)):
-    status, html = await _cached_html(
-        "ssr-world", f"world-home:{get_locale()}", _SSR_TTL_WORLD,
-        lambda: render_world_home_html(db),
-    )
-    return _html_response(status, html, request)
+async def seo_world_home():
+    """Витрина мира переехала на главную: карта, рейтинг и каталог стран теперь там.
+
+    Отдельная страница дублировала главную один в один, поэтому она снята,
+    а ссылочный вес адреса передаётся постоянным перенаправлением.
+    """
+    return _permanent_redirect(paths.home())
 
 
 @router.api_route("/seo/world/rating", methods=["GET", "HEAD"], include_in_schema=False)

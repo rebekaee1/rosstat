@@ -281,7 +281,7 @@ PAGE_META: dict[str, PageSeo] = {
             (paths.today(), "Экономика сегодня: курсы, ставка, инфляция"),
             (paths.russia_indicator("cpi"), "Индекс потребительских цен"),
             (paths.region_hub(), "Регионы России"),
-            ("/world", "Статистика стран"),
+            (paths.world_rating("unemployment-rate"), "Рейтинг стран"),
             (paths.demographics(), "Возрастная структура населения"),
             ("/calculator", "Калькулятор инфляции"),
             ("/compare", "Сравнение индикаторов"),
@@ -560,7 +560,7 @@ PAGE_META: dict[str, PageSeo] = {
             (paths.region_hub(), "Регионы"),
             (paths.calendar(), "Календарь"),
             (paths.demographics(), "Демография"),
-            ("/world", "Страны мира"),
+            (paths.world_rating("unemployment-rate"), "Рейтинг стран"),
         ),
     ),
     "russia-categories": PageSeo(

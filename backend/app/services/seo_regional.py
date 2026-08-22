@@ -91,11 +91,22 @@ def _rt(key: str, **kwargs) -> str | None:
 
 
 def _fmt(value: float) -> str:
-    """Русская типографика: пробел-разряды, запятая-дробь, без хвостовых нулей."""
+    """Русская типографика: пробел-разряды, запятая-дробь, без хвостовых нулей.
+
+    Знаки после запятой — по природе величины, не по коду показателя:
+    крупные счётные без дроби, десятки–сотни — один знак, коэффициенты
+    порядка единиц (суммарная рождаемость 1,152 vs 1,195) — до трёх.
+    """
     if value is None:
         return "—"
     v = float(value)
-    digits = 0 if abs(v) >= 1000 else (1 if abs(v) >= 1 else 2)
+    abs_v = abs(v)
+    if abs_v >= 1000:
+        digits = 0
+    elif abs_v >= 10:
+        digits = 1
+    else:
+        digits = 3
     text = f"{v:,.{digits}f}".replace(",", "\u202f").replace(".", ",")
     if "," in text:
         text = text.rstrip("0").rstrip(",")

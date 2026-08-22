@@ -131,6 +131,8 @@ backend/app/services/calculation_engine.py
 - **Persistence layer extraction**: общий `bulk_upsert` уже есть. ADR не вводит нового.
 - **Cleanup of orphaned ops (выполнено 2026-06-24)**: `annual_inflation` (вытеснена `december_to_december`), квартальный `affordability_index` (вытеснен `affordability_index_monthly`) и `rebase_to_index(base_year)` (вытеснен `rebase_to_index_with_base`) удалены из `derived_ops.py` вместе с их тестами — ни один `DerivedSpec` их не вызывал. Исторический нарратив выше (op-список, ASCII-схема) намеренно не переписан.
 
+- **2026-08-22 — `series_ratio` для справочных кросс-курсов ЕЦБ.** Новая чистая op: поточечное отношение двух дневных рядов с join по дате (ноль в знаменателе пропускается). Specs: `gbp-usd = eur-usd / gbp-eur`, `usd-cny = cny-eur / eur-usd`. Ноги — `ecb_fx` (SDMX EXR vs евро); кросс не фетчится отдельно. Прогноз не строится.
+
 ## Implementation checklist (исторический)
 
 1. Add 7 pure-function unit tests with known input/output (snapshot from current production CPI/GDP/wages). ✅

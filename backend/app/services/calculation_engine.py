@@ -131,6 +131,10 @@ DERIVED_SPECS: list[DerivedSpec] = [
     # Wages: nominal × CPI → real wage index.
     DerivedSpec("wages-real", ("wages-nominal", "cpi"), ops.wages_real),
 
+    # Справочные кросс-курсы ЕЦБ: фунт/доллар и доллар/юань из двух ног vs евро.
+    DerivedSpec("gbp-usd", ("eur-usd", "gbp-eur"), ops.series_ratio),
+    DerivedSpec("usd-cny", ("cny-eur", "eur-usd"), ops.series_ratio),
+
     # Годовой ряд зарплаты 1991+ = immutable исторический хвост (1991-2014,
     # Росстат-архив в `wages_historical.py`) + annual mean месячного ряда
     # (2015+). Заменяет ручной one-shot backfill-скрипт: движок продолжает

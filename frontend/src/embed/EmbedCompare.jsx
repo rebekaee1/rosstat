@@ -141,7 +141,7 @@ export default function EmbedCompare() {
             {PERIODS.map(p => (
               <button key={p.key} onClick={() => setPeriod(p.key)}
                 style={{ border: 'none', cursor: 'pointer', fontSize: 10, fontWeight: 500, fontFamily: 'system-ui', padding: '3px 8px', borderRadius: 6, background: period === p.key ? 'rgba(184,148,47,0.12)' : 'transparent', color: period === p.key ? '#B8942F' : colors.textTertiary }}>
-                {p.label}
+                {t(p.labelKey)}
               </button>
             ))}
           </div>

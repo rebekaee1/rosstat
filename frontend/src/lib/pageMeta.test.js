@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest';
 import pageMeta, {
   getPageSeo,
   getCategorySeo,
-  getWorldHomeSeo,
   worldCountryTitle,
   worldCountryDescription,
   worldIndicatorsPhrase,
@@ -21,7 +20,6 @@ describe('pageMeta single source', () => {
     expect(getPageSeo('about').h1).toBe('О проекте Forecast Economy');
     expect(getPageSeo('methodology').h1).toBe('Методология прогнозирования');
     expect(getCategorySeo('prices').h1).toBe('Цены и инфляция в России');
-    expect(getWorldHomeSeo().title).toContain('Мировая экономика');
   });
 
   it('demographics EN twin comes from PAGE_META_EN mirror', () => {
@@ -43,10 +41,6 @@ describe('pageMeta single source', () => {
     const pricesEn = getCategorySeo('prices', 'en');
     expect(pricesEn.title).toBe('Prices and inflation in Russia');
     expect(pricesEn.title).not.toMatch(/[А-Яа-яЁё]/);
-
-    const worldEn = getWorldHomeSeo('en');
-    expect(worldEn.title).toContain('World economy');
-    expect(worldEn.title).not.toMatch(/[А-Яа-яЁё]/);
 
     const russiaEn = getPageSeo('russia', 'en');
     expect(russiaEn.h1).toBe('Russia');

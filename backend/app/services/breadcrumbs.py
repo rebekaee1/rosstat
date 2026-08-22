@@ -37,13 +37,14 @@ def region_ratings() -> Crumb:
     return (paths.region_rating_hub(), "Rankings" if _en() else "Рейтинг")
 
 
-def countries() -> Crumb:
-    """Хаб межстрановой статистики — публичная подпись «Страны»."""
-    return (paths.world_hub(), "Countries" if _en() else "Страны")
-
-
 def world_ratings() -> Crumb:
-    return (paths.world_rating(), "Rankings" if _en() else "Рейтинг")
+    """Рейтинг стран. Ведёт на конкретный показатель: /world/rating без него — 301."""
+    from app.services.seo_world import WORLD_RATING_DEFAULT_CONCEPT
+
+    return (
+        paths.world_rating(WORLD_RATING_DEFAULT_CONCEPT),
+        "Country rankings" if _en() else "Рейтинг стран",
+    )
 
 
 def trail(*items: Crumb) -> list[Crumb]:
@@ -75,6 +76,24 @@ def russia_indicator_trail(
     return items
 
 
+def global_market_indicator_trail(
+    category_name: str | None,
+    category_path: str | None,
+    indicator_name: str,
+    indicator_path: str,
+) -> list[Crumb]:
+    """Мировой рыночный ряд: Главная / [категория] / показатель.
+
+    Без узла «Россия» — ряд не относится к российской статистике, даже если
+    URL лежит в общем каталоге `/russia/indicator/...`.
+    """
+    items = [home()]
+    if category_name and category_path:
+        items.append((category_path, category_name))
+    items.append((indicator_path, indicator_name))
+    return items
+
+
 def russia_indicator_year_trail(
     category_name: str | None,
     category_path: str | None,
@@ -84,6 +103,21 @@ def russia_indicator_year_trail(
     year_path: str,
 ) -> list[Crumb]:
     items = russia_indicator_trail(
+        category_name, category_path, indicator_name, indicator_path
+    )
+    items.append((year_path, str(year)))
+    return items
+
+
+def global_market_indicator_year_trail(
+    category_name: str | None,
+    category_path: str | None,
+    indicator_name: str,
+    indicator_path: str,
+    year: int | str,
+    year_path: str,
+) -> list[Crumb]:
+    items = global_market_indicator_trail(
         category_name, category_path, indicator_name, indicator_path
     )
     items.append((year_path, str(year)))
@@ -167,12 +201,8 @@ def demographics_trail() -> list[Crumb]:
     )
 
 
-def world_home_trail() -> list[Crumb]:
-    return trail(home(), countries())
-
-
 def world_country_trail(country_name: str, country_path: str) -> list[Crumb]:
-    return trail(home(), countries(), (country_path, country_name))
+    return trail(home(), (country_path, country_name))
 
 
 def world_indicator_trail(
@@ -183,18 +213,17 @@ def world_indicator_trail(
 ) -> list[Crumb]:
     return trail(
         home(),
-        countries(),
         (country_path, country_name),
         (indicator_path, indicator_name),
     )
 
 
 def world_rating_hub_trail() -> list[Crumb]:
-    return trail(home(), countries(), world_ratings())
+    return trail(home(), world_ratings())
 
 
 def world_rating_trail(name: str, rating_path: str) -> list[Crumb]:
-    return trail(home(), countries(), world_ratings(), (rating_path, name))
+    return trail(home(), world_ratings(), (rating_path, name))
 
 
 def tool_trail(name: str, path: str) -> list[Crumb]:

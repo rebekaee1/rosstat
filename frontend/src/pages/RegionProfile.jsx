@@ -16,7 +16,6 @@ import MobileNavSelect from '../components/MobileNavSelect';
 import useSearchTracking from '../lib/useSearchTracking';
 import { regionTrail, breadcrumbJsonLd } from '../lib/breadcrumbs';
 import {
-  regionHubPath,
   regionIndicatorPath,
   regionPath,
 } from '../lib/sitePaths';

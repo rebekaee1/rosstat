@@ -2,7 +2,7 @@
 // Отдельно от макро/регионов: своя ось (страна × индикатор × mode).
 // Факты и quality-gated прогнозы остаются в отдельном world API.
 import { useQuery } from '@tanstack/react-query';
-import api from './api';
+import api, { fetchWorldSearch } from './api';
 import { formatValue } from './format';
 import {
   WORLD_MOCK_COUNTRIES,
@@ -17,6 +17,9 @@ import {
   worldRatingPath,
 } from './sitePaths';
 import { resolveBrowserLocale } from '../i18n/locale';
+
+/** Лимит выдачи для глобальной палитры ⌘K (Россия + мир). */
+export const WORLD_GLOBAL_SEARCH_LIMIT = 100;
 
 const STALE = 10 * 60 * 1000;
 const GC = 30 * 60 * 1000;
@@ -150,17 +153,15 @@ export function useWorldIndicatorData(
 }
 
 export function useWorldSearch(q, { country, limit = 50, enabled = true } = {}) {
+  const needle = (q || '').trim();
   return useQuery({
-    queryKey: ['world-search', q, country, limit, localeKey()],
-    queryFn: ({ signal }) => {
-      const params = { q, limit };
-      if (country) params.country = country;
-      return withMockFallback(
-        () => api.get('/world/search', { signal, params }),
-        () => getWorldMockSearch(q, country, limit),
-      );
-    },
-    enabled: enabled && !!q && q.trim().length >= 1,
+    queryKey: ['world-search', needle, country, limit, localeKey()],
+    queryFn: ({ signal }) =>
+      withMockFallback(
+        async () => ({ data: await fetchWorldSearch(needle, { country, limit }, { signal }) }),
+        () => getWorldMockSearch(needle, country, limit),
+      ),
+    enabled: enabled && needle.length >= 1,
     staleTime: 60 * 1000,
     gcTime: GC,
   });
@@ -211,6 +212,21 @@ export function worldIndicatorHref(countrySlug, indicatorCode) {
 
 export async function fetchWorldCompareSeries(countrySlug, conceptSlug, { signal } = {}) {
   return (await api.get(`/world/compare/series/${countrySlug}/${conceptSlug}`, { signal })).data;
+}
+
+/** Официальный ряд curated-понятия (карточка страны / сравнение / калькулятор). */
+export function useWorldCompareSeries(countrySlug, conceptSlug, { enabled = true } = {}) {
+  return useQuery({
+    queryKey: ['world-compare-series', countrySlug, conceptSlug, localeKey()],
+    queryFn: ({ signal }) => fetchWorldCompareSeries(countrySlug, conceptSlug, { signal }),
+    enabled: enabled && !!countrySlug && !!conceptSlug,
+    staleTime: STALE,
+    gcTime: GC,
+    retry: (count, err) => {
+      if (err?.response?.status === 404) return false;
+      return count < 1;
+    },
+  });
 }
 
 export async function fetchWorldIndicatorMode(countrySlug, indicatorCode, mode, { signal } = {}) {
@@ -281,19 +297,56 @@ export function pluralRu(n, [one, few, many]) {
   return many;
 }
 
-export function groupCountriesByRegion(countries) {
-  const order = [];
+/**
+ * Стабильный id региона по подписи, которую отдал API. Подпись приходит уже на
+ * языке страницы, поэтому карта покрывает оба написания: id нужен только для
+ * порядка секций и якорей, наружу показывается сама подпись.
+ */
+const REGION_ID_BY_LABEL = Object.freeze({
+  Европа: 'europe',
+  Europe: 'europe',
+  Америка: 'americas',
+  Americas: 'americas',
+  Азия: 'asia',
+  Asia: 'asia',
+  Африка: 'africa',
+  Africa: 'africa',
+  Океания: 'oceania',
+  Oceania: 'oceania',
+});
+
+/** Порядок секций: Европа первой — там наибольшая глубина истории. */
+const REGION_ORDER = Object.freeze(['europe', 'americas', 'asia', 'africa', 'oceania']);
+
+export function countryRegionId(country) {
+  if (country?.slug === 'russia' || country?.code === 'RU') return 'europe';
+  return REGION_ID_BY_LABEL[String(country?.region || '').trim()] || 'other';
+}
+
+/**
+ * Страны по регионам в фиксированном порядке. Россия относится к Европе:
+ * в мировом каталоге её нет, каркас подмешивается поверх и без явного
+ * отнесения попадал бы в «прочие».
+ */
+export function groupCountriesByRegion(countries, { locale = 'ru' } = {}) {
+  const collator = new Intl.Collator(locale === 'en' ? 'en' : 'ru');
   const map = new Map();
-  for (const c of countries || []) {
-    const region = c.region || 'Другие';
-    if (!map.has(region)) {
-      map.set(region, []);
-      order.push(region);
-    }
-    map.get(region).push(c);
+  for (const country of countries || []) {
+    const id = countryRegionId(country);
+    if (!map.has(id)) map.set(id, { id, region: '', countries: [] });
+    const bucket = map.get(id);
+    if (!bucket.region && country?.region) bucket.region = country.region;
+    bucket.countries.push(country);
   }
-  for (const list of map.values()) {
-    list.sort((a, b) => a.name.localeCompare(b.name, 'ru'));
-  }
-  return order.map((region) => ({ region, countries: map.get(region) }));
+  const rank = (id) => {
+    const index = REGION_ORDER.indexOf(id);
+    return index === -1 ? REGION_ORDER.length : index;
+  };
+  return [...map.values()]
+    .map((group) => ({
+      ...group,
+      region: group.region || group.id,
+      countries: [...group.countries].sort((a, b) => collator.compare(a.name || '', b.name || '')),
+    }))
+    .sort((a, b) => rank(a.id) - rank(b.id) || collator.compare(a.region, b.region));
 }

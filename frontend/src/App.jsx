@@ -41,8 +41,8 @@ import {
   russiaCategoryPath,
   russiaIndicatorPath,
   todayPath,
-  worldHubPath,
 } from './lib/sitePaths';
+import { WORLD_RATING_TO } from './lib/navItems';
 
 const IndicatorDetail = lazy(() => import('./pages/IndicatorDetail'));
 const About = lazy(() => import('./pages/About'));
@@ -65,7 +65,6 @@ const Account = lazy(() => import('./pages/Account'));
 const RegionsHome = lazy(() => import('./pages/RegionsHome'));
 const RegionProfile = lazy(() => import('./pages/RegionProfile'));
 const RegionIndicatorPage = lazy(() => import('./pages/RegionIndicatorPage'));
-const WorldHome = lazy(() => import('./pages/WorldHome'));
 const WorldRatingPage = lazy(() => import('./pages/WorldRatingPage'));
 const WorldCountry = lazy(() => import('./pages/WorldCountry'));
 const WorldIndicatorPage = lazy(() => import('./pages/WorldIndicatorPage'));
@@ -168,7 +167,7 @@ function NotFound() {
     { to: '/', labelKey: 'notFound.link.home' },
     { to: todayPath(), labelKey: 'notFound.link.today' },
     { to: regionHubPath(), labelKey: 'notFound.link.regions' },
-    { to: worldHubPath(), labelKey: 'notFound.link.world' },
+    { to: WORLD_RATING_TO, labelKey: 'notFound.link.worldRating' },
     { to: '/compare', labelKey: 'notFound.link.compare' },
     { to: calendarPath(), labelKey: 'notFound.link.calendar' },
   ];
@@ -278,7 +277,6 @@ function AppRoutes() {
             <Route path="/admin/bi" element={<AdminBI />} />
 
             {/* Мир: хаб и рейтинги до country catch-all */}
-            <Route path="/world" element={<WorldHome />} />
             <Route path="/world/rating" element={<WorldRatingPage />} />
             <Route path="/world/rating/:conceptSlug" element={<WorldRatingPage />} />
 

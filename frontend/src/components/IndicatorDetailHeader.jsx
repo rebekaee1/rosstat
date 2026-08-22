@@ -4,7 +4,13 @@ import { findCategoryByApiLabel } from '../lib/categories';
 import { indicatorDetailHeaderMobileLines } from '../lib/indicatorVariants';
 import { SkeletonBox } from './Skeleton';
 import Breadcrumbs from './Breadcrumbs';
-import { russiaIndicatorTrail, russiaIndicatorYearTrail } from '../lib/breadcrumbs';
+import {
+  globalMarketIndicatorTrail,
+  globalMarketIndicatorYearTrail,
+  russiaIndicatorTrail,
+  russiaIndicatorYearTrail,
+} from '../lib/breadcrumbs';
+import { isGlobalMarketIndicator } from '../lib/globalMarketIndicators';
 import { russiaCategoryPath } from '../lib/sitePaths';
 import { useLocale } from '../i18n';
 import { localizeViewModeLabel } from '../i18n/viewModeLabels';
@@ -58,15 +64,26 @@ export default function IndicatorDetailHeader({
     ? (category?.nameEn || category?.name || indicator?.category)
     : indicator?.category;
   const title = indicator?.name || code;
+  const globalMarket = isGlobalMarketIndicator(code);
   const crumbs = year
-    ? russiaIndicatorYearTrail(
-      categoryCrumbName,
-      category?.slug,
-      title,
-      code,
-      year,
-    )
-    : russiaIndicatorTrail(categoryCrumbName, category?.slug, title, code);
+    ? (globalMarket
+      ? globalMarketIndicatorYearTrail(
+        categoryCrumbName,
+        category?.slug,
+        title,
+        code,
+        year,
+      )
+      : russiaIndicatorYearTrail(
+        categoryCrumbName,
+        category?.slug,
+        title,
+        code,
+        year,
+      ))
+    : (globalMarket
+      ? globalMarketIndicatorTrail(categoryCrumbName, category?.slug, title, code)
+      : russiaIndicatorTrail(categoryCrumbName, category?.slug, title, code));
   const freqLabel = localizeViewModeLabel(
     FREQ_MAP[effectiveFrequency] || effectiveFrequency,
     locale,

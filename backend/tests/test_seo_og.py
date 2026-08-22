@@ -662,26 +662,26 @@ def test_ssr_chrome_topnav_keeps_hub_deep_links():
     m = re.search(r'<nav class="seo-topnav">(.*?)</nav>', _SSR_CHROME_HEADER, re.S)
     assert m, "seo-topnav отсутствует в _SSR_CHROME_HEADER"
     topnav = m.group(1)
-    for href in ("/russia/region", "/russia/today", "/world", "/russia/calendar"):
+    for href in ("/russia", "/russia/region", "/russia/today", "/#countries", "/russia/calendar"):
         assert f'href="{href}"' in topnav, f"в seo-topnav нет ссылки на {href}"
     assert "Демограф" not in topnav
 
     token = set_locale("en")
     try:
         en_header = _ssr_chrome_header()
-        assert "Indicators" in en_header
+        assert "Home" in en_header
         assert "Today" in en_header
         assert "Regions" in en_header
         assert "Countries" in en_header
         assert "Calendar" in en_header
-        assert "Индикаторы" not in en_header
+        assert "Главная" not in en_header
         en_nav = _ssr_platform_deep_links()
         assert "Platform sections" in en_nav
         assert "Разделы платформы" not in en_nav
     finally:
         reset_locale(token)
 
-    assert "Индикаторы" in _ssr_chrome_header()
+    assert "Главная" in _ssr_chrome_header()
     assert "Разделы платформы" in _ssr_platform_deep_links()
 
 
@@ -705,9 +705,13 @@ def test_spa_ssr_gets_platform_deep_links():
         )
     )
     assert 'class="seo-section seo-platform-nav"' in spa
-    for href in ("/russia/region", "/russia/today", "/world", "/russia/calendar", "/compare", "/"):
+    for href in ("/russia/region", "/russia/today", "/#countries", "/russia/calendar", "/compare", "/"):
         assert f'href="{href}"' in spa
     assert "Разделы платформы" in spa
+    # Браузер с JS не должен видеть SEO-тело как «сломанный сайт» до гидратации.
+    assert 'classList.add("fe-js")' in spa
+    assert "html.fe-js #root > .seo-page" in spa
+    assert 'type="module"' in spa
 
     token = set_locale("en")
     try:
@@ -735,8 +739,11 @@ def test_spa_ssr_gets_platform_deep_links():
         )
     )
     assert 'class="seo-topnav"' in pure
-    # chrome уже даёт хабы — platform-nav не дублируем
-    assert "seo-platform-nav" not in pure
+    # chrome уже даёт хабы — platform-nav не дублируем в body
+    assert 'class="seo-section seo-platform-nav"' not in pure
+    # Pure-SSR без React-app: SEO видим, нет fe-js hide и нет SPA main bundle.
+    assert 'classList.add("fe-js")' not in pure
+    assert "/assets/main-" not in pure
 
 
 def test_build_document_og_image_override():

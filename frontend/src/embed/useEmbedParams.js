@@ -69,12 +69,12 @@ export function useEmbedAutoHeight() {
 }
 
 export const PERIODS = [
-  { key: '1m', label: '1М', months: 1 },
-  { key: '3m', label: '3М', months: 3 },
-  { key: '6m', label: '6М', months: 6 },
-  { key: '1y', label: '1Г', months: 12 },
-  { key: '5y', label: '5Л', months: 60 },
-  { key: 'max', label: 'Макс', months: null },
+  { key: '1m', labelKey: 'embed.periodLabel.1m', months: 1 },
+  { key: '3m', labelKey: 'embed.periodLabel.3m', months: 3 },
+  { key: '6m', labelKey: 'embed.periodLabel.6m', months: 6 },
+  { key: '1y', labelKey: 'embed.periodLabel.1y', months: 12 },
+  { key: '5y', labelKey: 'embed.periodLabel.5y', months: 60 },
+  { key: 'max', labelKey: 'embed.periodLabel.max', months: null },
 ];
 
 export const THEME_COLORS = {

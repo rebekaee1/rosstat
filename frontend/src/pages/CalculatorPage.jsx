@@ -13,8 +13,9 @@ import {
 import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
 import useInflationCalc from '../lib/useInflationCalc';
+import { formatCalcAmount, RUSSIA_SLUG } from '../lib/inflationCalc';
 import { formatDate, formatAxisTick, cn } from '../lib/format';
-import { formatRubles, parseAmount, formatInput, fmtPct, years as yearsPhrase } from '../lib/calcFormat';
+import { parseAmount, formatInput, fmtPct, years as yearsPhrase } from '../lib/calcFormat';
 import { getSiteOrigin } from '../lib/siteOrigin';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
 import { SkeletonBox } from '../components/Skeleton';
@@ -22,6 +23,8 @@ import { track, events } from '../lib/track';
 import { buildShareUrl } from '../lib/utm';
 import useScrollDepth from '../lib/useScrollDepth';
 import FaqAccordion from '../components/FaqAccordion';
+import CalcCountryPicker from '../components/CalcCountryPicker';
+import { localizeSource } from '../i18n/viewModeLabels';
 import { useLocale, useT } from '../i18n';
 
 /* ─── Constants ─── */
@@ -42,6 +45,11 @@ const MILESTONES = [
   { year: 2022, labelKey: 'calc.inflation.milestone.sanctions' },
 ];
 
+const WORLD_FAQ_KEYS = [
+  { q: 'calc.inflation.faq.world.q1', a: 'calc.inflation.faq.world.a1' },
+  { q: 'calc.inflation.faq.world.q2', a: 'calc.inflation.faq.world.a2' },
+];
+
 const FAQ_KEYS = [
   { q: 'calc.inflation.faq.q1', a: 'calc.inflation.faq.a1' },
   { q: 'calc.inflation.faq.q2', a: 'calc.inflation.faq.a2' },
@@ -59,7 +67,7 @@ const CATEGORY_META = [
 
 /* ─── Sub-components ─── */
 
-function AnimatedNumber({ value, className }) {
+function AnimatedNumber({ value, className, withRuble = true }) {
   const ref = useRef(null);
   const prevRef = useRef(value);
 
@@ -67,7 +75,7 @@ function AnimatedNumber({ value, className }) {
     if (!ref.current || value == null) return;
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReduced) {
-      ref.current.textContent = formatRubles(value);
+      ref.current.textContent = formatCalcAmount(value, { withRuble });
       return;
     }
     const counter = { v: prevRef.current ?? 0 };
@@ -76,14 +84,14 @@ function AnimatedNumber({ value, className }) {
       duration: prevRef.current === 0 || prevRef.current == null ? 1.2 : 0.5,
       ease: 'power2.out',
       onUpdate() {
-        if (ref.current) ref.current.textContent = formatRubles(Math.round(counter.v));
+        if (ref.current) ref.current.textContent = formatCalcAmount(Math.round(counter.v), { withRuble });
       },
     });
     prevRef.current = value;
     return () => tween.kill();
-  }, [value]);
+  }, [value, withRuble]);
 
-  return <span ref={ref} className={className}>{formatRubles(value)}</span>;
+  return <span ref={ref} className={className}>{formatCalcAmount(value, { withRuble })}</span>;
 }
 
 function YearSlider({ value, onChange, min, max, label, ariaLabel }) {
@@ -103,14 +111,14 @@ function YearSlider({ value, onChange, min, max, label, ariaLabel }) {
   );
 }
 
-function ChartTooltip({ active, payload, label }) {
+function ChartTooltip({ active, payload, label, withRuble = true }) {
   if (!active || !payload?.length) return null;
   const p = payload[0];
   if (p?.value == null) return null;
   return (
     <div className="glass-surface rounded-xl border border-border-subtle px-4 py-3 shadow-2xl min-w-[180px]">
       <p className="text-xs font-mono text-text-tertiary mb-1.5">{formatDate(label, 'full')}</p>
-      <p className="text-sm font-mono font-semibold text-champagne">{formatRubles(p.value)}</p>
+      <p className="text-sm font-mono font-semibold text-champagne">{formatCalcAmount(p.value, { withRuble })}</p>
     </div>
   );
 }
@@ -175,7 +183,7 @@ function CategoryBars({ result }) {
   );
 }
 
-function YearlyBreakdownTable({ breakdown }) {
+function YearlyBreakdownTable({ breakdown, withRuble = true }) {
   const t = useT();
   const [expanded, setExpanded] = useState(false);
   if (!breakdown?.length) return null;
@@ -231,7 +239,7 @@ function YearlyBreakdownTable({ breakdown }) {
                     {fmtPct(row.cumulativeRate, true)}
                   </td>
                   <td className="py-2 px-1 text-right font-mono text-xs text-text-secondary tabular-nums hidden sm:table-cell">
-                    {formatRubles(row.purchasingPower)}
+                    {formatCalcAmount(row.purchasingPower, { withRuble })}
                   </td>
                 </tr>
               );
@@ -275,14 +283,32 @@ export default function CalculatorPage() {
     const p = searchParams.get('to');
     return p ? parseInt(p, 10) || currentYear : currentYear;
   });
+  const [countrySlug, setCountrySlug] = useState(() => {
+    const p = (searchParams.get('country') || RUSSIA_SLUG).trim().toLowerCase();
+    return p || RUSSIA_SLUG;
+  });
   const [copied, setCopied] = useState(false);
   const [chartMode, setChartMode] = useState('purchasing');
   const [reversed, setReversed] = useState(false);
 
-  const { result, isLoading, isError, lastAvailableYear, minYear, lastAvailableDate } = useInflationCalc(amount, fromYear, toYear);
+  const {
+    result, isLoading, isError, lastAvailableYear, minYear, lastAvailableDate,
+    countries, source, countryName, seriesStartYear, isRussia,
+  } = useInflationCalc(amount, fromYear, toYear, countrySlug);
+
+  const withRuble = isRussia;
+  const sourceLabel = source ? localizeSource(source, locale) : '';
 
   const effectiveMax = lastAvailableYear || currentYear;
   const effectiveMin = minYear || 1991;
+  const sliderFrom = Math.min(
+    Math.max(fromYear, effectiveMin),
+    Math.max(effectiveMin, effectiveMax - 1),
+  );
+  const sliderTo = Math.max(
+    sliderFrom + 1,
+    Math.min(Math.max(toYear, effectiveMin + 1), effectiveMax),
+  );
 
   const lastDateFormatted = useMemo(() => {
     if (!lastAvailableDate) return null;
@@ -321,8 +347,13 @@ export default function CalculatorPage() {
     track(events.CALC_PRESET, { preset: preset.label });
   }, [effectiveMin, effectiveMax]);
 
+  const handleCountryChange = useCallback((slug) => {
+    setCountrySlug(slug || RUSSIA_SLUG);
+  }, []);
+
   const handleShare = useCallback(async () => {
     const params = new URLSearchParams({ amount: String(amount), from: String(fromYear), to: String(toYear) });
+    if (countrySlug && countrySlug !== RUSSIA_SLUG) params.set('country', countrySlug);
     setSearchParams(params, { replace: true });
     // share-ссылка всегда уходит наружу с UTM, чтобы возвратный трафик
     // отделялся от Direct в Метрике (см. docs/utm_taxonomy.md::Internal share).
@@ -332,13 +363,13 @@ export default function CalculatorPage() {
       campaign: 'calc-share',
       content: `${fromYear}-${toYear}`,
     });
-    track(events.CALC_SHARE, { from: fromYear, to: toYear, amount });
+    track(events.CALC_SHARE, { from: fromYear, to: toYear, amount, country: countrySlug });
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch { /* clipboard unavailable */ }
-  }, [amount, fromYear, toYear, setSearchParams]);
+  }, [amount, fromYear, toYear, countrySlug, setSearchParams]);
 
   // В-28: hero и share-текст показывают ФАКТИЧЕСКИ посчитанный период
   // (клэмп к доступным данным), а не введённые годы — иначе «?from=1990»
@@ -352,27 +383,27 @@ export default function CalculatorPage() {
     const fromY = result.effectiveFrom ?? fromYear;
     const toY = result.effectiveTo ?? toYear;
     const text = reversed
-      ? t('calc.inflation.shareReverse', {
+      ? t(withRuble ? 'calc.inflation.shareReverse' : 'calc.inflation.shareReversePlain', {
         amount: formatInput(amount),
         to: toY,
-        value: formatRubles(result.purchasing),
+        value: formatCalcAmount(result.purchasing, { withRuble }),
         from: fromY,
         inflation: fmtPct(result.totalInflation),
       })
-      : t('calc.inflation.shareForward', {
+      : t(withRuble ? 'calc.inflation.shareForward' : 'calc.inflation.shareForwardPlain', {
         amount: formatInput(amount),
         from: fromY,
-        value: formatRubles(result.equivalent),
+        value: formatCalcAmount(result.equivalent, { withRuble }),
         to: toY,
         inflation: fmtPct(result.totalInflation),
       });
     try { await navigator.clipboard.writeText(text); } catch { /* ok */ }
-  }, [result, amount, fromYear, toYear, reversed, t]);
+  }, [result, amount, fromYear, toYear, reversed, t, withRuble]);
 
   const heroValue = reversed ? result?.purchasing : result?.equivalent;
   const heroPrefix = reversed
-    ? t('calc.inflation.heroWas', { amount: formatInput(amount), year: dispTo })
-    : t('calc.inflation.heroIs', { amount: formatInput(amount), year: dispFrom });
+    ? t(withRuble ? 'calc.inflation.heroWas' : 'calc.inflation.heroWasPlain', { amount: formatInput(amount), year: dispTo })
+    : t(withRuble ? 'calc.inflation.heroIs' : 'calc.inflation.heroIsPlain', { amount: formatInput(amount), year: dispFrom });
   const heroSuffix = t('calc.inflation.inYear', { year: reversed ? dispFrom : dispTo });
 
   const chartData = useMemo(() => {
@@ -407,8 +438,10 @@ export default function CalculatorPage() {
   }, [chartData, amount, chartMode]);
 
   const visibleMilestones = useMemo(() => (
-    MILESTONES.filter(m => m.year > fromYear && m.year < toYear)
-  ), [fromYear, toYear]);
+    isRussia
+      ? MILESTONES.filter((m) => m.year > fromYear && m.year < toYear)
+      : []
+  ), [fromYear, toYear, isRussia]);
 
   const isActivePreset = useCallback((preset) => {
     const target = preset.from != null
@@ -429,11 +462,14 @@ export default function CalculatorPage() {
 
     items.push({
       icon: TrendingDown,
-      text: t('calc.inflation.insight.loss', { pct: lossPercent.toFixed(0), years: yearsLabel }),
+      text: t(isRussia ? 'calc.inflation.insight.loss' : 'calc.inflation.insight.lossWorld', {
+        pct: lossPercent.toFixed(0),
+        years: yearsLabel,
+      }),
     });
 
     const cats = CATEGORY_META.map((c) => ({ ...c, label: t(c.labelKey), rate: result[c.key] })).sort((a, b) => b.rate - a.rate);
-    if (cats[0].rate > 0) {
+    if (isRussia && cats[0].rate > 0) {
       const diff = cats[0].rate - cats[cats.length - 1].rate;
       items.push({
         icon: BarChart3,
@@ -475,12 +511,12 @@ export default function CalculatorPage() {
     }
 
     return items;
-  }, [result, t, locale]);
+  }, [result, t, locale, isRussia]);
 
   /* ── JSON-LD ── */
   const faqItems = useMemo(
-    () => FAQ_KEYS.map((item) => ({ q: t(item.q), a: t(item.a) })),
-    [t],
+    () => (isRussia ? FAQ_KEYS : WORLD_FAQ_KEYS).map((item) => ({ q: t(item.q), a: t(item.a) })),
+    [t, isRussia],
   );
 
   const faqJsonLd = useMemo(() => ({
@@ -497,15 +533,19 @@ export default function CalculatorPage() {
     return {
       '@context': 'https://schema.org',
       '@type': 'WebApplication',
-      name: t('calc.inflation.jsonLdName'),
+      name: isRussia
+        ? t('calc.inflation.jsonLdName')
+        : t('calc.inflation.jsonLdNameWorld', { country: countryName || countrySlug }),
       url: `${origin}/calculator`,
-      description: t('calc.inflation.jsonLdDesc'),
+      description: isRussia
+        ? t('calc.inflation.jsonLdDesc')
+        : t('calc.inflation.jsonLdDescWorld', { country: countryName || countrySlug }),
       applicationCategory: 'FinanceApplication',
       operatingSystem: 'All',
       offers: { '@type': 'Offer', price: '0', priceCurrency: 'RUB' },
       creator: { '@type': 'Organization', name: 'Forecast Economy', url: origin },
     };
-  }, [t]);
+  }, [t, isRussia, countryName, countrySlug]);
 
   useEffect(() => {
     let faqScript = document.getElementById('calc-faq-ld');
@@ -539,19 +579,30 @@ export default function CalculatorPage() {
             <Calculator className="w-5 h-5 text-champagne" />
           </div>
           <span className="text-[10px] uppercase tracking-[0.3em] text-champagne font-semibold">
-            {t('calc.inflation.eyebrow')}
+            {isRussia
+              ? t('calc.inflation.eyebrow')
+              : t('calc.inflation.eyebrowWorld', { country: countryName || '', source: sourceLabel })}
           </span>
         </div>
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold tracking-tight text-text-primary leading-tight mb-3">
           {t('calc.inflation.title')}
         </h1>
         <p className="text-base text-text-secondary leading-relaxed max-w-xl">
-          {t('calc.inflation.subtitle')}
+          {isRussia
+            ? t('calc.inflation.subtitle')
+            : t('calc.inflation.subtitleWorld', { country: countryName || '' })}
         </p>
       </header>
 
       {/* Calculator Card */}
       <section data-animate data-block="calc-form" className="rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6">
+
+        <CalcCountryPicker
+          countries={countries}
+          value={countrySlug}
+          onChange={handleCountryChange}
+          russiaLabel={t('calc.country.russia')}
+        />
 
         {/* Reverse mode toggle */}
         <div className="flex items-center justify-between mb-5">
@@ -577,7 +628,9 @@ export default function CalculatorPage() {
         {/* Amount input */}
         <div className="mb-6">
           <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-text-tertiary font-display pointer-events-none" aria-hidden>₽</span>
+            {withRuble && (
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-text-tertiary font-display pointer-events-none" aria-hidden>₽</span>
+            )}
             <input
               id="calc-amount"
               type="text"
@@ -587,7 +640,8 @@ export default function CalculatorPage() {
               placeholder="100 000"
               className={cn(
                 FOCUS_RING_SURFACE,
-                'w-full pl-10 pr-4 py-4 rounded-2xl bg-obsidian border border-border-subtle',
+                'w-full pr-4 py-4 rounded-2xl bg-obsidian border border-border-subtle',
+                withRuble ? 'pl-10' : 'pl-4',
                 'text-2xl md:text-3xl font-display font-bold text-text-primary tabular-nums',
                 'placeholder:text-text-tertiary/40 placeholder:font-normal',
                 'transition-colors hover:border-champagne/20'
@@ -603,8 +657,8 @@ export default function CalculatorPage() {
 
         {/* Year Sliders */}
         <div className="grid grid-cols-2 gap-6 mb-6">
-          <YearSlider label={t('calc.inflation.fromYear')} value={fromYear} min={effectiveMin} max={effectiveMax - 1} onChange={handleFromYear} ariaLabel={t('calc.inflation.fromYearAria')} />
-          <YearSlider label={t('calc.inflation.toYear')} value={toYear} min={effectiveMin + 1} max={effectiveMax} onChange={handleToYear} ariaLabel={t('calc.inflation.toYearAria')} />
+          <YearSlider label={t('calc.inflation.fromYear')} value={sliderFrom} min={effectiveMin} max={Math.max(effectiveMin, effectiveMax - 1)} onChange={handleFromYear} ariaLabel={t('calc.inflation.fromYearAria')} />
+          <YearSlider label={t('calc.inflation.toYear')} value={sliderTo} min={Math.min(effectiveMin + 1, effectiveMax)} max={effectiveMax} onChange={handleToYear} ariaLabel={t('calc.inflation.toYearAria')} />
         </div>
 
         {/* Presets */}
@@ -644,7 +698,7 @@ export default function CalculatorPage() {
       {/* Error */}
       {isError && !isLoading && (
         <div className="rounded-[2rem] bg-warn-surface border border-champagne/35 p-6 mb-6 text-sm text-warn-text">
-          {t('calc.inflation.loadError')}
+          {t(isRussia ? 'calc.inflation.loadError' : 'calc.inflation.loadErrorWorld')}
         </div>
       )}
 
@@ -663,6 +717,7 @@ export default function CalculatorPage() {
             <p className="text-sm text-text-secondary mb-2">{heroPrefix}</p>
             <AnimatedNumber
               value={heroValue}
+              withRuble={withRuble}
               className={cn(
                 'block font-display font-bold tracking-tight mb-1',
                 extremeInflation
@@ -685,12 +740,23 @@ export default function CalculatorPage() {
 
             {result.clamped && (
               <p className="text-xs text-text-tertiary mb-6 -mt-4">
-                {t('calc.inflation.clampedNote', {
-                  min: effectiveMin,
-                  max: effectiveMax,
-                  from: dispFrom,
-                  to: dispTo,
-                })}
+                {t(
+                  isRussia ? 'calc.inflation.clampedNote' : 'calc.inflation.shortSeries',
+                  {
+                    min: effectiveMin,
+                    max: effectiveMax,
+                    from: dispFrom,
+                    to: dispTo,
+                    year: seriesStartYear || effectiveMin,
+                    country: countryName || '',
+                  },
+                )}
+              </p>
+            )}
+
+            {sourceLabel && (
+              <p className="text-xs text-text-tertiary mb-6 -mt-4">
+                {t('calc.inflation.source', { source: sourceLabel })}
               </p>
             )}
 
@@ -759,7 +825,7 @@ export default function CalculatorPage() {
                         'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
                         chartMode === m.key ? 'bg-champagne/15 text-champagne' : 'text-text-tertiary hover:text-text-secondary'
                       )}>
-                      {t(m.labelKey)}
+                      {m.label}
                     </button>
                   ))}
                 </div>
@@ -782,7 +848,7 @@ export default function CalculatorPage() {
                     tickLine={false} axisLine={false} domain={yDomain} ticks={yTicks}
                     tickFormatter={v => formatAxisTick(v, 0)} width={yWidth}
                   />
-                  <Tooltip content={<ChartTooltip />} cursor={{ stroke: 'rgba(0,0,0,0.15)', strokeWidth: 1 }} />
+                  <Tooltip content={<ChartTooltip withRuble={withRuble} />} cursor={{ stroke: 'rgba(0,0,0,0.15)', strokeWidth: 1 }} />
 
                   {/* Reference line: initial amount */}
                   <ReferenceLine
@@ -790,7 +856,7 @@ export default function CalculatorPage() {
                     stroke="rgba(0,0,0,0.15)"
                     strokeDasharray="6 4"
                     label={{
-                      value: `${formatInput(amount)} ₽`,
+                      value: formatCalcAmount(amount, { withRuble }),
                       position: 'right',
                       fill: 'rgba(0,0,0,0.3)',
                       fontSize: 10,
@@ -801,7 +867,7 @@ export default function CalculatorPage() {
                   {visibleMilestones.map(m => (
                     <ReferenceLine key={m.year} x={`${m.year}-01-01`}
                       stroke="rgba(0,0,0,0.12)" strokeDasharray="4 4"
-                      label={{ value: m.label, position: 'insideTopRight', fill: 'rgba(0,0,0,0.3)', fontSize: 10, fontFamily: 'JetBrains Mono' }}
+                      label={{ value: t(m.labelKey), position: 'insideTopRight', fill: 'rgba(0,0,0,0.3)', fontSize: 10, fontFamily: 'JetBrains Mono' }}
                     />
                   ))}
 
@@ -816,12 +882,14 @@ export default function CalculatorPage() {
           )}
 
           {/* ── Category Breakdown ── */}
-          <section data-animate className="rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6">
-            <h3 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-5">
-              {t('calc.inflation.catsTitle')}
-            </h3>
-            <CategoryBars result={result} />
-          </section>
+          {isRussia && (
+            <section data-animate className="rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6">
+              <h3 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-5">
+                {t('calc.inflation.catsTitle')}
+              </h3>
+              <CategoryBars result={result} />
+            </section>
+          )}
 
           {/* ── Yearly Breakdown ── */}
           {result.yearlyBreakdown?.length > 1 && (
@@ -829,7 +897,7 @@ export default function CalculatorPage() {
               <h3 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-5">
                 {t('calc.inflation.yearsTitle')}
               </h3>
-              <YearlyBreakdownTable breakdown={result.yearlyBreakdown} />
+              <YearlyBreakdownTable breakdown={result.yearlyBreakdown} withRuble={withRuble} />
             </section>
           )}
         </>
@@ -840,13 +908,13 @@ export default function CalculatorPage() {
         <h3 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-4">{t('calc.methodologyHeading')}</h3>
         <div className="space-y-3 text-sm text-text-secondary leading-relaxed">
           <p>
-            {t('calc.inflation.method.p1')}
+            {t(isRussia ? 'calc.inflation.method.p1' : 'calc.inflation.method.world.p1')}
           </p>
           <p className="font-mono text-[11px] text-text-tertiary border-l-2 border-champagne/30 pl-4">
-            {t('calc.inflation.method.p2')}
+            {t(isRussia ? 'calc.inflation.method.p2' : 'calc.inflation.method.world.p2')}
           </p>
           <p>
-            {t('calc.inflation.method.p3')}
+            {t(isRussia ? 'calc.inflation.method.p3' : 'calc.inflation.method.world.p3')}
           </p>
         </div>
       </section>

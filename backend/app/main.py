@@ -477,7 +477,7 @@ async def lifespan(app: FastAPI):
             replace_existing=True,
         )
 
-        from app.tasks.scheduler import late_minfin_etl_job
+        from app.tasks.scheduler import late_fred_etl_job, late_minfin_etl_job
 
         scheduler.add_job(
             locked_job(late_minfin_etl_job, "late_minfin_etl", ttl_seconds=3600),
@@ -486,6 +486,17 @@ async def lifespan(app: FastAPI):
             ),
             id="late_minfin_etl",
             name="Late Minfin ETL pass (catches in-place CSV content updates)",
+            replace_existing=True,
+        )
+        scheduler.add_job(
+            locked_job(late_fred_etl_job, "late_fred_etl", ttl_seconds=3600),
+            trigger=CronTrigger(
+                hour=settings.scheduler_late_fred_hour,
+                minute=settings.scheduler_late_fred_minute,
+                timezone="Europe/Moscow",
+            ),
+            id="late_fred_etl",
+            name="Late FRED ETL pass (same-day US market closes)",
             replace_existing=True,
         )
 

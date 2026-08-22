@@ -1,4 +1,4 @@
-import { useLocale } from './LocaleProvider';
+import { useLocale } from './localeContext';
 
 /** Dev / local EN preview banner. Not used for SEO hosts. */
 export default function LocalePreviewBanner() {

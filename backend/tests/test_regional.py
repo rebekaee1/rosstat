@@ -167,7 +167,10 @@ class TestSeoTypography:
     def test_fmt_russian(self):
         assert _fmt(146980.061) == "146\u202f980"
         assert _fmt(45.34) == "45,3"
-        assert _fmt(0.567) == "0,57"
+        assert _fmt(0.567) == "0,567"
+        assert _fmt(1.152) == "1,152"
+        assert _fmt(1.195) == "1,195"
+        assert _fmt(1.4) == "1,4"
         assert _fmt(None) == "—"
         assert _fmt(1000.0) == "1\u202f000"
 

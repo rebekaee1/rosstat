@@ -243,6 +243,64 @@ def world_seo_client(auth_env):
                 points_count=2,
                 is_listed=True,
             )
+            debt = WorldIndicator(
+                country_id=de.id,
+                code="de-gov_10dd_edpt1-gd-s13-pc-gdp",
+                dataset_id="gov_10dd_edpt1",
+                slice_json={"unit": "PC_GDP", "na_item": "GD", "sector": "S13"},
+                slice_hash="debt1",
+                name_ru="Государственный долг сектора государственного управления",
+                name_quality="curated",
+                unit="PC_GDP",
+                unit_ru="% ВВП",
+                frequency="annual",
+                category_ru="Финансы",
+                source="Евростат",
+                history_start=date(2024, 1, 1),
+                history_end=date(2025, 1, 1),
+                points_count=2,
+                is_listed=True,
+            )
+            weo_gdp = WorldIndicator(
+                country_id=de.id,
+                provider="imf",
+                code="de-weo-ngdpd",
+                dataset_id="WEO",
+                slice_json={"weo_code": "NGDPD"},
+                slice_hash="weo-ngdpd",
+                name_ru="Валовой внутренний продукт в текущих ценах",
+                name_quality="curated",
+                unit="BN_USD",
+                unit_ru="млрд $",
+                frequency="annual",
+                category_ru="Национальные счета",
+                source="Международный валютный фонд",
+                source_url="https://www.imf.org/en/Publications/WEO",
+                history_start=date(2023, 1, 1),
+                history_end=date(2025, 1, 1),
+                points_count=3,
+                is_listed=True,
+            )
+            weo_pc = WorldIndicator(
+                country_id=de.id,
+                provider="imf",
+                code="de-weo-ngdpdpc",
+                dataset_id="WEO",
+                slice_json={"weo_code": "NGDPDPC"},
+                slice_hash="weo-ngdpdpc",
+                name_ru="Валовой внутренний продукт на душу населения в текущих ценах",
+                name_quality="curated",
+                unit="USD_PC",
+                unit_ru="$ на человека",
+                frequency="annual",
+                category_ru="Национальные счета",
+                source="Международный валютный фонд",
+                source_url="https://www.imf.org/en/Publications/WEO",
+                history_start=date(2023, 1, 1),
+                history_end=date(2025, 1, 1),
+                points_count=3,
+                is_listed=True,
+            )
             gdp_pc_eu = WorldIndicator(
                 country_id=de.id,
                 code="de-nama_10_pc-b1gq-pc-eu27-2020-hab-meur-cp",
@@ -285,7 +343,8 @@ def world_seo_client(auth_env):
             )
             db.add_all([
                 listed, listed_q, une_m, une_q, peer, no_year_value,
-                population, budget, gdp_annual, long_rate, activity, gdp_pc_eu, raw,
+                population, budget, debt, gdp_annual, long_rate, activity,
+                gdp_pc_eu, weo_gdp, weo_pc, raw,
             ])
             await db.flush()
             for ind in (listed, peer):
@@ -328,6 +387,9 @@ def world_seo_client(auth_env):
                 (gdp_annual, (3_200_000.0, 3_250_000.0)),
                 (activity, (78.1, 78.4)),
                 (gdp_pc_eu, (122.0, 123.5)),
+                (debt, (63.7, 62.5)),
+                (weo_gdp, (4563.5, 4684.2, 5048.1)),
+                (weo_pc, (54500.0, 55800.0, 60100.0)),
             ):
                 for i, value in enumerate(values):
                     db.add(WorldDataPoint(
@@ -377,18 +439,11 @@ def _visible_root(html: str) -> str:
     return visible
 
 
-def test_seo_world_home(world_seo_client):
-    r = world_seo_client.get("/seo/world")
-    assert r.status_code == 200
-    html = r.text
-    assert "Мировая экономика" in html
-    assert "Германия" in html
-    assert "Евростат" in html
-    assert 'canonical" href="https://forecasteconomy.com/world"' in html
-    assert _breadcrumb_names(html) == ["Главная", "Страны"]
-    visible = _visible_root(html)
-    for leak in ("Eurostat", "SDMX", "dataflow"):
-        assert leak not in visible
+def test_seo_world_home_redirects_to_apex(world_seo_client):
+    """Витрина мира снята: карта, рейтинг и каталог стран живут на главной."""
+    r = world_seo_client.get("/seo/world", follow_redirects=False)
+    assert r.status_code == 301
+    assert r.headers["location"] == "/"
 
 
 def test_seo_world_country(world_seo_client):
@@ -403,7 +458,7 @@ def test_seo_world_country(world_seo_client):
     assert 'src="/og/world/germany.png"' in html
     assert any("ImageObject" in json.dumps(b) for b in _jsonld(html))
     crumbs = _breadcrumb_names(html)
-    assert crumbs == ["Главная", "Страны", "Германия"]
+    assert crumbs == ["Главная", "Германия"]
     assert crumbs[0] == "Главная"
 
 
@@ -445,9 +500,8 @@ def test_seo_world_indicator(world_seo_client):
     assert "temporalCoverage" in ds
     crumbs = _breadcrumb_names(html)
     assert crumbs[0] == "Главная"
-    assert crumbs[1] == "Страны"
-    assert crumbs[2] == "Германия"
-    assert "потребительских цен" in crumbs[3]
+    assert crumbs[1] == "Германия"
+    assert "потребительских цен" in crumbs[2]
     assert 'href="/france"' in html or "/france/" in html
     visible = _visible_root(html)
     for leak in ("Eurostat", "SDMX", "dataflow"):
@@ -499,8 +553,7 @@ def test_seo_world_rating(world_seo_client):
     assert "Германия" in item_list["itemListElement"][0]["name"]
     assert _breadcrumb_names(html) == [
         "Главная",
-        "Страны",
-        "Рейтинг",
+        "Рейтинг стран",
         "Изменение потребительских цен за год",
     ]
 
@@ -528,10 +581,13 @@ def test_world_rating_surface_nonempty_and_gated(world_seo_client):
         "hicp-index",
         "unemployment-rate",
         "budget-balance-gdp",
+        "government-debt-gdp",
         "population",
         "long-term-interest-rate",
         "activity-rate",
         "gdp-per-capita-eu",
+        "gdp-usd",
+        "gdp-per-capita-usd",
     }
     assert "gdp-volume-annual" not in rating_slugs
     assert "gdp-volume-quarterly" not in rating_slugs
@@ -568,7 +624,6 @@ def test_world_sitemap_listed_only(world_seo_client):
 
     world = world_seo_client.get("/sitemap-world.xml")
     assert world.status_code == 200
-    assert "https://forecasteconomy.com/world</loc>" in world.text
     assert "https://forecasteconomy.com/germany" in world.text
     assert "https://forecasteconomy.com/france" in world.text
 
@@ -578,9 +633,12 @@ def test_world_sitemap_listed_only(world_seo_client):
     assert "https://forecasteconomy.com/world/rating/unemployment-rate" in ratings.text
     assert "https://forecasteconomy.com/world/rating/population" in ratings.text
     assert "https://forecasteconomy.com/world/rating/budget-balance-gdp" in ratings.text
+    assert "https://forecasteconomy.com/world/rating/government-debt-gdp" in ratings.text
     assert "https://forecasteconomy.com/world/rating/long-term-interest-rate" in ratings.text
     assert "https://forecasteconomy.com/world/rating/activity-rate" in ratings.text
     assert "https://forecasteconomy.com/world/rating/gdp-per-capita-eu" in ratings.text
+    assert "https://forecasteconomy.com/world/rating/gdp-usd" in ratings.text
+    assert "https://forecasteconomy.com/world/rating/gdp-per-capita-usd" in ratings.text
     assert "gdp-volume-annual" not in ratings.text
     assert "gdp-volume-quarterly" not in ratings.text
 

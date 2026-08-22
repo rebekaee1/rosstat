@@ -14,10 +14,10 @@
 | [`README.md`](README.md) | Высокоуровневая карта стека, API, indicators, deploy |
 | [`docs/workflow.md`](docs/workflow.md) | Модель работы, локальный dev, прод-деплой, smoke C |
 | [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md) | Rate-limit, CSP, asset-hash trap, бэкапы, чеклист канарейки |
-| [`docs/data_sources.md`](docs/data_sources.md) | Точная карта «индикатор → файл/endpoint» для всех 111 source-индикаторов. Single source of truth — обязательно обновлять при правке источника |
+| [`docs/data_sources.md`](docs/data_sources.md) | Точная карта «индикатор → файл/endpoint» для всех 116 source-индикаторов. Single source of truth — обязательно обновлять при правке источника |
 | `backend/app/services/*_parser.py` docstrings | Parser internals (CBR / Минфин / Rosstat): source URL, лист, row/col mapping, `model_config_json` schema, traps. Канонично живёт рядом с кодом |
 | [`docs/analytics_api_inventory/`](docs/analytics_api_inventory/) | Инвентарь Yandex API (Metrika, Webmaster) + статус реализации |
-| [`docs/adr/0001`](docs/adr/0001-derived-indicators-engine-shape.md) | Engine shape: 781 derived через `DERIVED_SPECS` (41 ручных + 740 generic) + 27 чистых ops |
+| [`docs/adr/0001`](docs/adr/0001-derived-indicators-engine-shape.md) | Engine shape: 822 derived через `DERIVED_SPECS` (43 ручных + 779 generic) + 28 чистых ops |
 | [`docs/adr/0002`](docs/adr/0002-derived-always-reflects-source.md) | Инвариант: derived всегда отражает source (`bulk_upsert` идемпотентен) |
 | [`docs/adr/0003`](docs/adr/0003-seo-single-source-server-rendered.md) | SEO single-source: backend SSR через `__spa-index.html` + Vite asset discovery |
 | [`docs/adr/0004`](docs/adr/0004-rosstat-russian-canonical-sdds-deprecated.md) | Rosstat русский canonical, SDDS English deprecated. Pilot: gdp-nominal end-to-end 2026-05-10 |
@@ -64,7 +64,7 @@
   - `seo_blocks` — JSON-массив `{title, body}` дополнительных секций под графиком.
   - `is_listed` — boolean: показывать ли карточку индикатора в листинге категории. По умолчанию `true`. `false` — индикатор доступен только через `VariantGroupPicker` внутри родительского индикатора (например, `cpi-food-quarterly` скрыт, виден только при выборе «Состав индекса → продовольственные → квартально» на странице `cpi`).
 
-Хранится в таблице `Indicator`. **Текущее количество (2026-08-16):** 892 ряда в seed; точное число — в `seed_data.py` и `/api/v1/system/status`. Из них 111 source-индикаторов (через 32 парсер-типа) и 781 derived (через `DERIVED_SPECS`: 41 ручных + 740 сгенерированных generic view-mode-семьями, см. `view_model_families.py`).
+Хранится в таблице `Indicator`. **Текущее количество (2026-08-22):** 938 рядов в seed; точное число — в `seed_data.py` и `/api/v1/system/status`. Из них 116 source-индикаторов (через 34 парсер-типа) и 822 derived (через `DERIVED_SPECS`: 43 ручных + 779 сгенерированных generic view-mode-семьями, см. `view_model_families.py`).
 
 ### DataPoint
 
@@ -90,7 +90,7 @@
 
 Конкретная реализация ETL для одного формата источника. Базовый класс `BaseParser` (`backend/app/services/base_parser.py`) — **template-method**: финальный `run()` оркеструет fetch → parse → validate → upsert → forecast retrain → cache invalidate в одном месте. Дочерние классы реализуют `_fetch_and_parse(db, indicator, cfg, fetch_log) -> (points, source_url)` (обязательно) + опциональные hooks `_validate(points, cfg)`, `_post_upsert(...)`, `_handle_forecasts(...)`. Это устранило ~1100 строк boilerplate, унифицировало статусы `fetch_log` и каскад retrain'а.
 
-**Текущее количество (2026-08-16):** 32 парсер-типа в `PARSER_REGISTRY` (см. `rosstat_cpi_parser.py`, регистрируется как singleton-импорт из исторических соображений — артефакт). Включают Rosstat-парсеры (`rosstat_*_parser.py`, в т.ч. demo/ind/science/fixed_assets/weekly_price), CBR (`cbr_*_parser.py` + `cbr_keyrate.py` helper), Минфин (`minfin_budget_parser.py`), Binance (`BinanceBtcUsdtParser`, BTC/ETH/SOL), MOEX (`MoexIndexParser` — индексы и товарные, `BrentDailyFredParser` — legacy-имя, источник MOEX ISS), FRED-CSV (`fred_csv` — публичные ряды первоисточников без ключа: спотовый Brent Управления энергетической информации США, индекс доллара и доходность десятилетних госбумаг Федрезерва). Два типа зарегистрированы, но в seed не используются (задел, не удалять без ревизии прод-БД): `cbr_dataservice_sum`, `cbr_monetary_html`. Файл `rosstat_sdds_fetcher.py` существует, но в PARSER_REGISTRY не зарегистрирован — deprecated (ADR-0004). Один парсер обычно обслуживает несколько индикаторов одного источника: CbrFxParser → 3 валюты; RosstatCpiParser → 4 листа CPI; CbrDataServiceParser → 16+ ставок и агрегатов ЦБ.
+**Текущее количество (2026-08-22):** 34 парсер-типа в `PARSER_REGISTRY` (см. `rosstat_cpi_parser.py`, регистрируется как singleton-импорт из исторических соображений — артефакт). Включают Rosstat-парсеры (`rosstat_*_parser.py`, в т.ч. demo/ind/science/fixed_assets/weekly_price), CBR (`cbr_*_parser.py` + `cbr_keyrate.py` helper), Минфин (`minfin_budget_parser.py`), Binance (`BinanceBtcUsdtParser`, BTC/ETH/SOL), MOEX (`MoexIndexParser` — индексы и товарные, `BrentDailyFredParser` — legacy-имя, источник MOEX ISS), FRED-CSV (`fred_csv` — публичные ряды первоисточников без ключа: спотовый Brent Управления энергетической информации США, индекс доллара и доходность десятилетних госбумаг Федрезерва). Два типа зарегистрированы, но в seed не используются (задел, не удалять без ревизии прод-БД): `cbr_dataservice_sum`, `cbr_monetary_html`. Файл `rosstat_sdds_fetcher.py` существует, но в PARSER_REGISTRY не зарегистрирован — deprecated (ADR-0004). Один парсер обычно обслуживает несколько индикаторов одного источника: CbrFxParser → 3 валюты; RosstatCpiParser → 4 листа CPI; CbrDataServiceParser → 16+ ставок и агрегатов ЦБ.
 
 ### Derived indicator
 
@@ -100,7 +100,7 @@
 
 **Граница инварианта.** Инвариант односторонний: `bulk_upsert`-only. Если source-точка **удаляется** вручную (DELETE из IndicatorData), соответствующая derived-точка остаётся в БД как осиротевшая — engine не знает, что нужно её удалить. Это явный compromise (см. ADR-0002): автоматическое удаление derived создавало бы риск массовой потери данных при ошибке pure op. Ручные коррекции source требуют ручной чистки derived или прогона `scripts/rebuild-all-derived.py`.
 
-Реестр операций (`backend/app/services/derived_ops.py`) — **27 публичных чистых функций** без `db`/`async` (актуализация 2026-07-06; полный список — сам модуль; orphaned `annual_inflation` / `affordability_index` / `rebase_to_index` удалены в чистке 2026-06-24). Ядро:
+Реестр операций (`backend/app/services/derived_ops.py`) — **28 публичных чистых функций** без `db`/`async` (актуализация 2026-08-22; полный список — сам модуль; orphaned `annual_inflation` / `affordability_index` / `rebase_to_index` удалены в чистке 2026-06-24; 2026-08-22 добавлен `series_ratio` для кросс-курсов ЕЦБ). Ядро:
 - `quarterly_index` — chained product 3 месячных индексов CPI (для `*-quarterly`).
 - `december_to_december` — годовая инфляция «Dec_Y / Dec_{Y-1} − 1» (для CPI-семьи и PPI `*-annual`; пришла на смену rolling-12M в 2026-05-06, см. ADR-0001 «Subsequent additions»).
 - `annual_sum` — сумма квартальных или 12 месячных значений (для `gdp-{nominal,real}-annual`).
@@ -109,7 +109,7 @@
 - `quarterly_avg`, `rolling_avg` — для unemployment.
 - `wages_real` — особая, 2 источника (`wages-nominal`, `cpi`).
 
-Реестр спецификаций (`calculation_engine.DERIVED_SPECS`) — **781 entry** (41 ручных + 740 из `view_model_families.iter_derived_specs()`). Ручное ядро:
+Реестр спецификаций (`calculation_engine.DERIVED_SPECS`) — **822 entries** (43 ручных + 779 из `view_model_families.iter_derived_specs()`). Ручное ядро:
 
 - **CPI семейство:** `inflation-quarterly` ← `cpi`, `inflation-annual` ← `cpi`, и аналоги для `cpi-food/nonfood/services` (8 spec'ов).
 - **PPI:** `ppi-yoy`, `ppi-annual`.

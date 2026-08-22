@@ -9,6 +9,7 @@ import {
   indicatorPath,
   indicatorYearPath,
   isReservedFirstSegment,
+  isRussiaSectionPath,
   regionHubPath,
   regionIndicatorPath,
   regionMapPath,
@@ -52,5 +53,17 @@ describe('sitePaths', () => {
     expect(RESERVED_FIRST_SEGMENTS).toContain('compare');
     expect(RESERVED_FIRST_SEGMENTS).toContain('world');
     expect(isReservedFirstSegment('sitemap-core.xml')).toBe(true);
+  });
+
+  it('отличает раздел России от остального сайта для ленты котировок', () => {
+    expect(isRussiaSectionPath('/russia')).toBe(true);
+    expect(isRussiaSectionPath('/russia/indicator/cpi')).toBe(true);
+    expect(isRussiaSectionPath('/russia/region/tatarstan')).toBe(true);
+    expect(isRussiaSectionPath('/russia/today')).toBe(true);
+    expect(isRussiaSectionPath('/today')).toBe(true);
+    expect(isRussiaSectionPath('/')).toBe(false);
+    expect(isRussiaSectionPath('/germany')).toBe(false);
+    expect(isRussiaSectionPath('/world/rating/unemployment-rate')).toBe(false);
+    expect(isRussiaSectionPath('/compare')).toBe(false);
   });
 });

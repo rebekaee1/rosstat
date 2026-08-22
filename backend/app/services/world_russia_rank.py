@@ -113,9 +113,14 @@ async def russia_yearly_by_code(
 
     loc = get_locale()
     country_name = "Russia" if loc == "en" else "Россия"
-    source = translate_source("Росстат", loc) or (
-        "Rosstat" if loc == "en" else "Росстат"
-    )
+    if loc == "en" and (link.source_en or "").strip():
+        source = link.source_en
+    elif (link.source_ru or "").strip():
+        source = translate_source(link.source_ru, loc) or link.source_ru
+    else:
+        source = translate_source("Росстат", loc) or (
+            "Rosstat" if loc == "en" else "Росстат"
+        )
     out: dict[str, dict[str, Any]] = {}
     for year, (point_date, value) in yearly_last_points(series, mode).items():
         out[str(year)] = {

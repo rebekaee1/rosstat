@@ -77,6 +77,16 @@ def is_reserved_first_segment(segment: str) -> bool:
     return False
 
 
+def home() -> str:
+    """Главная: карта мира, рейтинг стран и каталог стран."""
+    return "/"
+
+
+def compare() -> str:
+    """Сравнение показателей."""
+    return "/compare"
+
+
 def country(slug: str) -> str:
     """Карточка страны: /{slug}."""
     return f"/{_slug(slug)}"
@@ -169,6 +179,7 @@ def demographics() -> str:
 
 
 def world_hub() -> str:
+    """Снятая витрина мира: 301 на главную. Оставлено для карты легаси-URL."""
     return "/world"
 
 

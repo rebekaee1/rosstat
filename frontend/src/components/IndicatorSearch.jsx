@@ -3,14 +3,23 @@ import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { Search, X } from 'lucide-react';
 import { useIndicators } from '../lib/hooks';
-import { CATEGORIES, findCategoryByApiLabel } from '../lib/categories';
+import { findCategoryByApiLabel } from '../lib/categories';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { track, events } from '../lib/track';
 import {
   russiaIndicatorPath,
+  indicatorPath,
 } from '../lib/sitePaths';
+import {
+  useWorldSearch,
+  WORLD_GLOBAL_SEARCH_LIMIT,
+} from '../lib/worldApi';
 import { useLocale, useT } from '../i18n';
+import {
+  expandSearchQuery,
+  filterSearchIndicators,
+} from '../lib/searchSynonyms';
 
 // Поиск — это директория: список скроллится (`max-h-[60vh] overflow-y-auto`) и
 // поддерживает клавиатурную навигацию. Жёсткого «топ-12» больше нет (звонок
@@ -19,13 +28,12 @@ import { useLocale, useT } from '../i18n';
 // Две стадии (чтобы пустой запрос не вываливал ~900 авто-сиблингов режимов вида
 // `cpi-food-yoy`, `corp-bond-index-mom` — это выглядело бы как «сделано
 // студентом»):
-//   • пустой запрос → чистая витрина: только листинговые индикаторы (is_listed),
-//     листается целиком;
-//   • введён запрос → ищем по ВСЕМУ каталогу (включая скрытые срезы и режимы),
-//     чтобы «экспорт квартал», «ИПЦ г/г» находили нужный sibling.
-// Бэкенд отдаёт все active-индикаторы (include_unlisted), поэтому любой новый
-// индикатор попадает в поиск автоматически — без правок здесь.
-// MAX_RESULTS — только страховка от патологического рендера на коротком запросе.
+//   • пустой запрос → чистая витрина: только листинговые индикаторы России
+//     (is_listed), листается целиком;
+//   • введён запрос → Россия (весь каталог, включая скрытые срезы) + мир
+//     через /world/search; сначала российские, затем мировые с меткой страны.
+// MAX_RESULTS — страховка от патологического рендера на коротком запросе
+// (только российская часть; мир ограничен WORLD_GLOBAL_SEARCH_LIMIT).
 const MAX_RESULTS = 600;
 const SEARCH_TRACK_DEBOUNCE_MS = 900;
 const SEARCH_MIN_LEN = 2;
@@ -39,14 +47,9 @@ const SEARCH_MIN_LEN = 2;
  * открывают modal из любой точки приложения. На мобильных — full-screen
  * sheet (тот же компонент, breakpoint в стилях).
  *
- * Источник данных — React-Query `useIndicators()`. Фильтр — substring без
- * учёта регистра по name + name_en + category + code.
- *
- * Звонок 2026-05-22: показываем ВСЕ active-индикаторы, включая скрытые
- * из листинга каталога (exports-monthly, exports-yoy, services-*-monthly,
- * deposit-rate-medium, и т.д.). Логика: каталог — это **витрина**, поиск —
- * **директория**. Пользователь набирает «экспорт» и ожидает увидеть все
- * варианты: помесячно, квартально, к г/г, к кварталу.
+ * Источники: React-Query `useIndicators()` (Россия) + `useWorldSearch`
+ * (мир, при непустом запросе). Клик: Россия → `/russia/indicator/{code}`,
+ * мир → `/{country}/indicator/{code}`.
  */
 export default function IndicatorSearch({ className, variant = 'icon', inlinePlaceholder }) {
   const t = useT();
@@ -73,23 +76,56 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
   const resultsCountRef = useRef(0);  // число результатов для него
   const selectedRef = useRef(false);  // был ли выбран результат (иначе abandon)
 
+  const qTrim = query.trim();
+  const worldNeedle = expandSearchQuery(qTrim);
+  const { data: worldSearch } = useWorldSearch(worldNeedle, {
+    limit: WORLD_GLOBAL_SEARCH_LIMIT,
+    enabled: shouldLoad && open && worldNeedle.length >= 1,
+  });
+
   const results = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) {
-      // Витрина: только листинговые индикаторы (чистый каталог), листается целиком.
-      return indicators.filter((ind) => ind.is_listed !== false);
+    if (!qTrim) {
+      // Витрина: только листинговые индикаторы России, листается целиком.
+      return indicators
+        .filter((ind) => ind.is_listed !== false)
+        .map((ind) => ({
+          kind: 'russia',
+          key: `ru:${ind.code}`,
+          code: ind.code,
+          name: ind.name,
+          name_en: ind.name_en,
+          category: ind.category,
+          category_ru: ind.category_ru,
+          seo_keywords: ind.seo_keywords,
+        }));
     }
-    return indicators
-      .filter((ind) => {
-        // seo_keywords содержит синонимы/корни («зарплата», «оплата труда»,
-        // «инфляция», «ИПЦ» и т.д.) — критично для substring-поиска,
-        // потому что name «Средняя заработная плата» не содержит подстроку
-        // «зарпл» (нужны keywords с разными формами слова).
-        const haystack = `${ind.name || ''} ${ind.name_en || ''} ${ind.category || ''} ${ind.code || ''} ${ind.seo_keywords || ''}`.toLowerCase();
-        return haystack.includes(q);
-      })
-      .slice(0, MAX_RESULTS);
-  }, [query, indicators]);
+
+    // Подстрока + синонимы + fuzzy (опечатки). seo_keywords по-прежнему
+    // в haystack: «зарплата» находит «Средняя заработная плата».
+    const russiaHits = filterSearchIndicators(indicators, qTrim, { limit: MAX_RESULTS })
+      .map((ind) => ({
+        kind: 'russia',
+        key: `ru:${ind.code}`,
+        code: ind.code,
+        name: ind.name,
+        name_en: ind.name_en,
+        category: ind.category,
+        category_ru: ind.category_ru,
+      }));
+
+    const worldHits = (worldSearch?.results || []).map((row) => ({
+      kind: 'world',
+      key: `world:${row.country_slug}:${row.code}`,
+      code: row.code,
+      name: row.name || row.name_ru,
+      name_en: row.name_en,
+      category: row.category,
+      country_slug: row.country_slug,
+      country_name: row.country_name,
+    }));
+
+    return [...russiaHits, ...worldHits];
+  }, [qTrim, indicators, worldSearch]);
 
   const close = useCallback(() => {
     // Брошенный запрос (закрыли без выбора) — сигнал спроса не хуже выбранного.
@@ -102,14 +138,24 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
     setHi(0);
   }, []);
 
-  const go = useCallback((code, position = null) => {
+  const go = useCallback((item, position = null) => {
+    if (!item?.code) return;
     const q = (queryRef.current || '').trim();
     selectedRef.current = true;
     // position — номер строки в выдаче (1-based): клики по хвосту = сигнал,
     // что ранжирование каталога не совпадает со спросом.
-    track(events.SEARCH_SELECT, { q: q.slice(0, 120), code, ...(position ? { position } : {}) });
+    track(events.SEARCH_SELECT, {
+      q: q.slice(0, 120),
+      code: item.code,
+      ...(item.kind === 'world' ? { country: item.country_slug, scope: 'world' } : { scope: 'russia' }),
+      ...(position ? { position } : {}),
+    });
     close();
-    navigate(russiaIndicatorPath(code));
+    if (item.kind === 'world' && item.country_slug) {
+      navigate(indicatorPath(item.country_slug, item.code));
+    } else {
+      navigate(russiaIndicatorPath(item.code));
+    }
   }, [close, navigate]);
 
   // Cmd+K / Ctrl+K — открыть; Escape — закрыть; '/' — открыть (если не в инпуте)
@@ -189,13 +235,13 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
   const handleListKey = (e) => {
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      setHi((i) => Math.min(i + 1, results.length - 1));
+      setHi((i) => Math.min(i + 1, Math.max(results.length - 1, 0)));
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       setHi((i) => Math.max(i - 1, 0));
     } else if (e.key === 'Enter' && results[hi]) {
       e.preventDefault();
-      go(results[hi].code, hi + 1);
+      go(results[hi], hi + 1);
     }
   };
 
@@ -321,23 +367,30 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
                     : t('search.empty')}
                 </div>
               ) : (
-                results.map((ind, i) => {
-                  const cat = findCategoryByApiLabel(ind.category_ru || ind.category);
+                results.map((item, i) => {
+                  const isWorld = item.kind === 'world';
+                  const cat = !isWorld
+                    ? findCategoryByApiLabel(item.category_ru || item.category)
+                    : null;
                   const active = i === hi;
-                  const displayName = locale === 'en' && ind.name_en ? ind.name_en : ind.name;
-                  const secondaryName = locale === 'en'
-                    ? (ind.name_en ? ind.name : null)
-                    : ind.name_en;
-                  const catLabel = locale === 'en'
-                    ? (cat?.nameEn || cat?.name)
-                    : cat?.name;
+                  const displayName = locale === 'en' && item.name_en ? item.name_en : item.name;
+                  const secondaryName = isWorld
+                    ? null
+                    : (locale === 'en'
+                      ? (item.name_en ? item.name : null)
+                      : item.name_en);
+                  const rightLabel = isWorld
+                    ? (item.country_name || item.country_slug)
+                    : (locale === 'en'
+                      ? (cat?.nameEn || cat?.name)
+                      : cat?.name);
                   return (
                     <button
-                      key={ind.code}
+                      key={item.key}
                       type="button"
                       data-row={i}
                       onMouseEnter={() => setHi(i)}
-                      onClick={() => go(ind.code, i + 1)}
+                      onClick={() => go(item, i + 1)}
                       className={cn(
                         'w-full text-left px-4 py-2.5 flex items-center gap-3 transition-colors',
                         active ? 'bg-champagne/10' : 'hover:bg-obsidian-lighter/60',
@@ -352,10 +405,15 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
                             {secondaryName}
                           </div>
                         )}
+                        {isWorld && item.category && (
+                          <div className="text-[11px] text-text-tertiary truncate">
+                            {item.category}
+                          </div>
+                        )}
                       </div>
-                      {catLabel && (
+                      {rightLabel && (
                         <span className="text-[10px] uppercase tracking-wider font-mono text-text-tertiary shrink-0">
-                          {catLabel}
+                          {rightLabel}
                         </span>
                       )}
                     </button>

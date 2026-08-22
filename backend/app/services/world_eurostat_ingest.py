@@ -328,10 +328,19 @@ async def world_eurostat_ingest_job(*, shadow: bool | None = None) -> dict[str, 
         run.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
         await db.commit()
 
-    return {
+    result = {
         "run_id": run_id,
         "selected": len(changed),
         "succeeded": succeeded,
         "failed": failed,
         "shadow": int(shadow),
     }
+    if not shadow:
+        try:
+            from app.services.world_imf_ingest import run_imf_weo_ingest
+
+            result["imf"] = await run_imf_weo_ingest()
+        except Exception:  # noqa: BLE001
+            logger.exception("IMF WEO ingest after Eurostat run failed")
+            result["imf_error"] = 1
+    return result

@@ -29,7 +29,7 @@ const INDICATORS = [
 ];
 
 describe('HomeWorkbench', () => {
-  it('рисует карту мира, боковые переходы и без mid-dot в заголовке', async () => {
+  it('рисует карту, рейтинг и подсказку на полный рейтинг вместо боковых переходов', async () => {
     mockApiGet([
       ['/auth/me', { user: null }],
       [/^\/indicators/, INDICATORS],
@@ -73,18 +73,24 @@ describe('HomeWorkbench', () => {
     ]);
 
     renderPage(
-      <HomeWorkbench indicators={INDICATORS} />,
+      <HomeWorkbench
+        ratingConcepts={{
+          data: {
+            concepts: [{ slug: 'unemployment-rate', name: 'Уровень безработицы', unit: '%' }],
+          },
+        }}
+      />,
       { path: '/', route: '/' },
     );
 
     expect(screen.getByRole('heading', { name: 'Страны и показатели' })).toBeTruthy();
-    expect(screen.queryByText(/Россия · Регионы/)).toBeNull();
-    expect(screen.getByRole('navigation', { name: 'Переходы по разделам' })).toBeTruthy();
-    expect(screen.getByRole('link', { name: /Регионы России/i })).toBeTruthy();
-    expect(screen.getByRole('link', { name: /^Страны/i })).toBeTruthy();
-    expect(screen.queryByRole('link', { name: /^Европа/i })).toBeNull();
-    expect(screen.queryByRole('link', { name: /^Мир$/i })).toBeNull();
-    expect(screen.getByRole('link', { name: /Показатели России/i })).toBeTruthy();
+    // Боковые переходы сняты: разделы живут в меню, на главной остаётся витрина.
+    expect(screen.queryByRole('navigation', { name: 'Переходы по разделам' })).toBeNull();
+    expect(screen.queryByRole('link', { name: /Регионы России/i })).toBeNull();
+    expect(screen.queryByRole('link', { name: /Показатели России/i })).toBeNull();
+    // Поиск по показателям на главной не нужен — есть подсказка на полный рейтинг.
+    expect(screen.queryByPlaceholderText(/Поиск/i)).toBeNull();
+    expect(screen.getByRole('link', { name: /больше показателей/i })).toBeTruthy();
 
     await waitFor(() => {
       expect(screen.getByTestId('world-map-stub')).toBeTruthy();

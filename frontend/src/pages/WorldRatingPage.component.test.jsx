@@ -94,8 +94,9 @@ describe('WorldRatingPage', () => {
     expect((await screen.findByTestId('map-timeline-stub')).textContent).toContain('timeline:2024,2025:2025:function');
 
     expect(screen.getByRole('link', { name: 'Безработица' })).toBeTruthy();
-    expect(screen.getByRole('link', { name: 'Цены, изменение за год' })).toBeTruthy();
-    expect(screen.queryByRole('link', { name: 'ВВП, год' })).toBeNull();
+    // Правка 16: изменение потребительских цен на витрине называется инфляцией.
+    expect(screen.getByRole('link', { name: 'Инфляция' })).toBeTruthy();
+    expect(screen.queryByRole('link', { name: /изменение за год/i })).toBeNull();
 
     await waitFor(() => {
       const rows = dataRows();
@@ -243,5 +244,115 @@ describe('WorldRatingPage', () => {
       .toBe('/russia/region-rating/uroven-bezrabotitsy');
     expect(screen.getByText(/Росстата/)).toBeTruthy();
     expect(screen.getByRole('searchbox', { name: /Поиск/i })).toBeTruthy();
+  });
+
+  function ratingMocks({ user = null } = {}) {
+    return [
+      ['/auth/me', { user }],
+      [/^\/indicators/, []],
+      [/^\/world\/countries/, {
+        countries: [
+          { code: 'DE', slug: 'germany', name: 'Германия', name_en: 'Germany', indicators_count: 10 },
+          { code: 'FR', slug: 'france', name: 'Франция', name_en: 'France', indicators_count: 10 },
+        ],
+        total: 2,
+      }],
+      [/^\/world\/rating\/concepts/, {
+        concepts: [
+          {
+            slug: 'unemployment-rate',
+            name: 'Уровень безработицы',
+            unit: '% экономически активного населения',
+            default_sort: 'asc',
+          },
+          {
+            slug: 'hicp-index',
+            name: 'Гармонизированный индекс потребительских цен',
+            unit: 'индекс 2015=100',
+            default_sort: 'desc',
+          },
+        ],
+        total: 2,
+      }],
+      [/^\/world\/compare\/map-series\/unemployment-rate/, {
+        concept: {
+          slug: 'unemployment-rate',
+          name: 'Уровень безработицы',
+          unit: '% экономически активного населения',
+        },
+        years: [2025],
+        values_by_year: {
+          2025: {
+            DE: {
+              country_code: 'DE',
+              country_slug: 'germany',
+              country_name: 'Германия',
+              indicator_code: 'de-une',
+              date: '2025-06-01',
+              value: 3.1,
+              unit: '% экономически активного населения',
+            },
+            FR: {
+              country_code: 'FR',
+              country_slug: 'france',
+              country_name: 'Франция',
+              indicator_code: 'fr-une',
+              date: '2025-06-01',
+              value: 7.2,
+              unit: '% экономически активного населения',
+            },
+          },
+        },
+        benchmark_by_year: {},
+      }],
+      [/^\/world\/compare\/map-series\/hicp-index/, {
+        concept: { slug: 'hicp-index', name: 'Гармонизированный индекс потребительских цен', unit: '%' },
+        years: [2025],
+        values_by_year: {},
+        benchmark_by_year: {},
+      }],
+    ];
+  }
+
+  it('гость: «Добавить показатель» не создаёт колонку и зовёт зарегистрироваться', async () => {
+    mockApiGet(ratingMocks());
+
+    renderPage(
+      <WorldRatingPage />,
+      { path: '/world/rating/:conceptSlug', route: '/world/rating/unemployment-rate' },
+    );
+
+    await waitFor(() => expect(dataRows()).toHaveLength(2));
+    expect(screen.getByRole('button', { name: 'Добавить показатель' })).toBeTruthy();
+    expect(screen.queryByRole('link', { name: 'Создать аккаунт' })).toBeNull();
+
+    const headBefore = screen.getAllByRole('row')[0];
+    expect(within(headBefore).getAllByRole('columnheader')).toHaveLength(4);
+    expect(within(headBefore).queryByRole('button', { name: 'Убрать колонку' })).toBeNull();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Добавить показатель' }));
+
+    expect(screen.getByRole('link', { name: 'Создать аккаунт' }).getAttribute('href')).toBe('/register');
+    expect(screen.getByRole('link', { name: 'Войти' }).getAttribute('href')).toBe('/login');
+    expect(within(screen.getAllByRole('row')[0]).getAllByRole('columnheader')).toHaveLength(4);
+    expect(screen.queryByRole('button', { name: 'Убрать колонку' })).toBeNull();
+    expect(within(dataRows()[0]).getByRole('link', { name: 'Германия' })).toBeTruthy();
+  });
+
+  it('гость игнорирует cols в URL и не рисует лишние колонки', async () => {
+    mockApiGet(ratingMocks());
+
+    renderPage(
+      <WorldRatingPage />,
+      {
+        path: '/world/rating/:conceptSlug',
+        route: '/world/rating/unemployment-rate?cols=hicp-index',
+      },
+    );
+
+    await waitFor(() => expect(dataRows()).toHaveLength(2));
+    expect(within(screen.getAllByRole('row')[0]).getAllByRole('columnheader')).toHaveLength(4);
+    expect(screen.queryByRole('button', { name: 'Убрать колонку' })).toBeNull();
+    expect(screen.getByRole('link', { name: 'Инфляция' })).toBeTruthy();
   });
 });

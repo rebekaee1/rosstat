@@ -1,0 +1,52 @@
+{
+  "meta": {},
+  "data": {
+    "dataSets": [
+      {
+        "structure": 0,
+        "action": "Replace",
+        "series": {
+          "0:0:0": {
+            "attributes": [0, 0, 0, "9/30/2025"],
+            "observations": {
+              "0": ["2857325000000"],
+              "1": ["27811500000000"],
+              "2": ["29298025000000"],
+              "3": ["30767075000000"]
+            }
+          }
+        }
+      }
+    ],
+    "structures": [
+      {
+        "dimensions": {
+          "series": [
+            {"id": "COUNTRY", "keyPosition": 0, "values": [{"id": "USA"}]},
+            {"id": "INDICATOR", "keyPosition": 1, "values": [{"id": "NGDPD"}]},
+            {"id": "FREQUENCY", "keyPosition": 2, "values": [{"id": "A"}]}
+          ],
+          "observation": [
+            {
+              "id": "TIME_PERIOD",
+              "values": [
+                {"value": "1980"},
+                {"value": "2023"},
+                {"value": "2024"},
+                {"value": "2025"}
+              ]
+            }
+          ]
+        },
+        "attributes": {
+          "series": [
+            {"id": "SCALE", "values": [{"id": "9"}]},
+            {"id": "DECIMALS_DISPLAYED", "values": [{"id": "3"}]},
+            {"id": "OVERLAP", "values": [{"id": "OL"}]},
+            {"id": "COUNTRY_UPDATE_DATE"}
+          ]
+        }
+      }
+    ]
+  }
+}

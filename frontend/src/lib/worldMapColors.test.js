@@ -18,20 +18,37 @@ describe('buildWorldColorModel', () => {
     expect(model.colorFor(35)).toBe(WORLD_RELATIVE_SCALE[6]);
     expect(model.median).toBe(18);
     expect(model.sampleSize).toBe(35);
-    expect(model.describe(1)).toBe('Нижние 15% стран, 1-й процентиль');
-    expect(model.describe(18)).toBe('Около медианы, 50-й процентиль');
-    expect(model.describe(35)).toBe('Верхние 15% стран, 99-й процентиль');
+    // Модуль отдаёт ключ словаря и процентиль: текст собирает компонент.
+    expect(model.describe(1)).toEqual({ key: 'world.map.band.rel0', rank: 1 });
+    expect(model.describe(18)).toEqual({ key: 'world.map.band.rel3', rank: 50 });
+    expect(model.describe(35)).toEqual({ key: 'world.map.band.rel6', rank: 99 });
+    expect(model.bins[0].labelKey).toBe('world.map.band.rel0');
   });
 
-  it('uses a zero-centred diverging scale for signed values', () => {
-    const model = buildWorldColorModel({ deficit: -9, neutral: 0, surplus: 9 });
+  it('centres on zero only when the caller asks for it', () => {
+    const model = buildWorldColorModel(
+      { deficit: -9, neutral: 0, surplus: 9 },
+      { mode: 'diverging' },
+    );
 
     expect(model.kind).toBe('diverging');
     expect(model.colorFor(-9)).toBe(WORLD_DIVERGING_SCALE[0]);
     expect(model.colorFor(0)).toBe(WORLD_DIVERGING_SCALE[3]);
     expect(model.colorFor(9)).toBe(WORLD_DIVERGING_SCALE[6]);
-    expect(model.describe(-9)).toBe('Сильно ниже нуля');
-    expect(model.describe(9)).toBe('Сильно выше нуля');
+    expect(model.describe(-9)).toEqual({ key: 'world.map.band.zero0', rank: null });
+    expect(model.describe(9)).toEqual({ key: 'world.map.band.zero6', rank: null });
+  });
+
+  it('keeps one palette and one anchoring regardless of the values in the slice', () => {
+    // Год без дефляции и год с дефляцией на одном показателе должны выглядеть
+    // одинаково: раньше второй срез переключал карту на другую гамму.
+    const positiveYear = buildWorldColorModel({ a: 1.2, b: 2.4, c: 8.1 });
+    const yearWithDeflation = buildWorldColorModel({ a: -1.8, b: 2.4, c: 8.1 });
+
+    expect(positiveYear.kind).toBe('relative');
+    expect(yearWithDeflation.kind).toBe('relative');
+    expect(yearWithDeflation.scale).toEqual(positiveYear.scale);
+    expect(WORLD_DIVERGING_SCALE).toEqual(WORLD_RELATIVE_SCALE);
   });
 
   it('can preserve deficit semantics when every observed value is negative', () => {
@@ -41,7 +58,7 @@ describe('buildWorldColorModel', () => {
     );
     expect(model.kind).toBe('diverging');
     expect(model.colorFor(-8)).toBe(WORLD_DIVERGING_SCALE[0]);
-    expect(model.describe(-1)).toBe('Ниже нуля, близко к нулю');
+    expect(model.describe(-1)).toEqual({ key: 'world.map.band.zero2', rank: null });
   });
 
   it('keeps missing and non-numeric values neutral', () => {

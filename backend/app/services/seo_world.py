@@ -63,16 +63,14 @@ from app.services.world_russia_rank import (
 _SOURCE_PUBLIC = "Евростат"
 WORLD_RATING_DEFAULT_CONCEPT = "unemployment-rate"
 _WORLD_RATING_LOW_FIRST = frozenset({"unemployment-rate", "long-term-interest-rate"})
-_WORLD_RATING_MONEY_CONCEPTS = frozenset({"gdp-volume-quarterly", "gdp-volume-annual"})
+_WORLD_RATING_MONEY_CONCEPTS = frozenset({
+    "gdp-volume-quarterly",
+    "gdp-volume-annual",
+    "gdp-usd",
+    "gdp-per-capita-usd",
+})
 
 # Публичные константы хаба /world — зеркалятся в pageMeta.generated.json (ADR-0003).
-WORLD_HOME_TITLE = "Мировая экономика — статистика по странам"
-WORLD_HOME_DESC = (
-    "Официальная статистика по странам: цены, ВВП, рынок труда, торговля и "
-    "финансы. Графики и таблицы по данным Евростата, национальных "
-    "статистических ведомств и центральных банков."
-)
-WORLD_HOME_H1 = "Мировая экономика: статистика по странам"
 
 # Родительный падеж для заголовков «Экономика {страны}».
 # Nominative в БД (name_ru); для публичных фраз нужен genitive.
@@ -360,6 +358,7 @@ _SOURCE_BY_PROVIDER: dict[str, str] = {
     "cfets": "Китайская система валютных торгов",
     "mospi": "Министерство статистики и программной реализации Индии",
     "rbi": "Резервный банк Индии",
+    "imf": "Международный валютный фонд",
 }
 
 
@@ -716,7 +715,11 @@ async def _country(db: AsyncSession, slug: str) -> WorldCountry | None:
     ).scalar_one_or_none()
 
 
-async def render_world_home_html(db: AsyncSession) -> tuple[int, str]:
+async def listed_country_links(db: AsyncSession) -> tuple[tuple[str, str], ...]:
+    """Карточки стран с данными: [(путь, «Швеция — 42 показателя»)].
+
+    Каталог стран живёт на главной; список нужен и её SSR-копии, и sitemap-логике.
+    """
     counts_q = (
         select(
             WorldIndicator.country_id,
@@ -734,94 +737,14 @@ async def render_world_home_html(db: AsyncSession) -> tuple[int, str]:
             .order_by(WorldCountry.sort_order, WorldCountry.name_ru)
         )
     ).all()
-    if not rows:
-        return 404, "<h1>Страны не найдены</h1>"
-
-    n_listed = sum(int(cnt or 0) for _c, cnt in rows)
-    n_countries = sum(1 for _c, cnt in rows if int(cnt or 0) > 0)
-
-    links = "".join(
-        f'<li><a href="{escape(paths.country(c.slug))}">{escape(_country_label(c))}</a>'
-        f" — {_n_indicators_phrase(int(cnt or 0))}</li>"
-        for c, cnt in rows
+    return tuple(
+        (
+            paths.country(country.slug),
+            f"{_country_label(country)} — {_n_indicators_phrase(int(cnt or 0))}",
+        )
+        for country, cnt in rows
         if int(cnt or 0) > 0
     )
-
-    from app.services.seo_i18n import (
-        world_home_description,
-        world_home_h1,
-        world_home_title,
-        world_template,
-    )
-
-    home_title = world_home_title() or WORLD_HOME_TITLE
-    home_desc = world_home_description() or WORLD_HOME_DESC
-    home_h1 = world_home_h1() or WORLD_HOME_H1
-
-    en_eyebrow = world_template("home_eyebrow")
-    en_lead = world_template("home_lead")
-    en_h2_c = world_template("home_h2_countries")
-    en_h2_r = world_template("home_h2_russia")
-    en_russia = world_template("home_russia_p")
-    en_kw = world_template("keywords_home")
-    if en_lead:
-        lead = en_lead.format(
-            n_countries=n_countries,
-            n_phrase=_n_indicators_phrase(n_listed),
-        )
-        eyebrow = en_eyebrow or "Official country statistics"
-        h2_countries = en_h2_c or "Countries"
-        h2_russia = en_h2_r or "Russia and comparison"
-        russia_p = (en_russia or "").format(
-            prices=paths.russia_category("prices"),
-            gdp=paths.russia_category("gdp"),
-            labor=paths.russia_category("labor"),
-        )
-    else:
-        eyebrow = "Официальная статистика по странам"
-        lead = (
-            f"Раздел собирает официальные ряды по странам — цены, валовой внутренний "
-            f"продукт, рынок труда, внешняя торговля и финансы. Сейчас доступны данные по "
-            f"{n_countries} странам и {_n_indicators_phrase(n_listed)} с графиками динамики "
-            f"и таблицами значений. Основа европейской части — Евростат; показатели по "
-            f"странам за пределами Европы приходят от их национальных статистических "
-            f"ведомств и центральных банков."
-        )
-        h2_countries = "Страны"
-        h2_russia = "Россия и сравнение"
-        russia_p = (
-            f'Макроэкономика России — в разделе <a href="/">главной витрины</a> и каталоге '
-            f'<a href="{paths.russia_category("prices")}">цен</a>, '
-            f'<a href="{paths.russia_category("gdp")}">ВВП</a> и '
-            f'<a href="{paths.russia_category("labor")}">рынка труда</a>. '
-            f'Сопоставить ряды можно на странице '
-            f'<a href="/compare">сравнения индикаторов</a>.'
-        )
-
-    body = f"""<div class="seo-page">
-{_breadcrumbs_nav(crumbs.world_home_trail())}
-<p class="seo-eyebrow">{escape(eyebrow)}</p>
-<h1>{escape(home_h1)}</h1>
-<p>{lead}</p>
-<section class="seo-section"><h2>{escape(h2_countries)}</h2><ul>{links}</ul></section>
-<section class="seo-section"><h2>{escape(h2_russia)}</h2>
-<p>{russia_p}</p></section>
-</div>"""
-
-    json_ld = [_breadcrumbs(crumbs.world_home_trail())]
-    html = await build_document(
-        title=home_title,
-        description=home_desc,
-        canonical_path=paths.world_hub(),
-        body=body,
-        json_ld=json_ld,
-        keywords=en_kw or (
-            "мировая экономика статистика, экономика стран, "
-            "евростат данные, инфляция по странам, ввп стран"
-        ),
-        og_image=_absolute("/og-image-v2.png"),
-    )
-    return 200, html
 
 
 async def render_world_rating_html(

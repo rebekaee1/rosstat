@@ -90,6 +90,15 @@ function formatLegendValue(value) {
   return numeric.toLocaleString(numberLocale, { maximumFractionDigits: abs < 10 ? 1 : 0 });
 }
 
+/** Подпись полосы шкалы: ключ словаря плюс процентиль, если он посчитан. */
+function bandText(band, t) {
+  if (!band?.key) return '';
+  const label = t(band.key);
+  return band.rank == null
+    ? label
+    : t('world.map.bandRank', { band: label, rank: band.rank });
+}
+
 function legendBinLabel(bin) {
   if (bin.zero) return '0';
   if (bin.min == null) return `≤ ${formatLegendValue(bin.max)}`;
@@ -104,7 +113,7 @@ export default function WorldMap({
   unit = '',
   metricName = '',
   periodLabel = '',
-  colorMode = 'auto',
+  colorMode = 'relative',
   defaultScope = 'world',
   onSelect,
 }) {
@@ -409,12 +418,12 @@ export default function WorldMap({
               {hover.value != null ? formatWorldValue(hover.value) : t('common.noData')}
             </div>
             {hover.value != null && unit && <div className="mt-0.5 text-[10px] text-text-tertiary">{unit}</div>}
-            {hover.value != null && colorModel.describe(hover.value) && (
+            {hover.value != null && bandText(colorModel.describe(hover.value), t) && (
               <div
                 className="mt-1 text-[10px] font-medium"
                 style={{ color: colorModel.labelColorFor(hover.value) }}
               >
-                {colorModel.describe(hover.value)}
+                {bandText(colorModel.describe(hover.value), t)}
               </div>
             )}
             {hoverPeriod && (
@@ -444,7 +453,7 @@ export default function WorldMap({
               <div
                 key={`${bin.color}-${index}`}
                 className="min-w-0 text-center"
-                title={bin.label}
+                title={t(bin.labelKey)}
               >
                 <div
                   className="h-3.5 rounded-[4px] border border-black/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.32)]"

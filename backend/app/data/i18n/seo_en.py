@@ -294,7 +294,7 @@ PAGE_META_EN: dict[str, PageSeo] = {
             (paths.today(), "Economy today: FX, key rate, inflation"),
             (paths.russia_indicator("cpi"), "Consumer Price Index"),
             (paths.region_hub(), "Regions of Russia"),
-            ("/world", "Country statistics"),
+            ("/world/rating/unemployment-rate", "Country rankings"),
             (paths.demographics(), "Age structure of the population"),
             ("/calculator", "Inflation calculator"),
             ("/compare", "Compare indicators"),
@@ -635,7 +635,7 @@ PAGE_META_EN: dict[str, PageSeo] = {
             (paths.region_hub(), "Regions"),
             (paths.calendar(), "Calendar"),
             (paths.demographics(), "Demographics"),
-            ("/world", "World countries"),
+            ("/world/rating/unemployment-rate", "Country rankings"),
         ),
     ),
     "russia-categories": PageSeo(
@@ -672,10 +672,10 @@ PAGE_META_EN: dict[str, PageSeo] = {
 
 HOME_TEMPLATES_EN: dict[str, str] = {
     "eyebrow": "Official data for Russia, regions, and countries",
-    "h2_categories": "Indicator categories",
+    "h2_countries": "Countries",
     "h2_flagships": "Key indicators",
     "h2_tools": "Tools and sections",
-    "itemlist_categories": "Categories of Russian macroeconomic indicators",
+    "itemlist_countries": "Countries with official statistics on the platform",
     "itemlist_flagships": "Key macroeconomic indicators",
 }
 
@@ -691,15 +691,8 @@ PAGE_TEMPLATES_EN: dict[str, str] = {
 }
 
 # ---------------------------------------------------------------------------
-# World hub constants
+# World templates
 # ---------------------------------------------------------------------------
-
-WORLD_HOME_TITLE_EN: str = "World economy — country statistics"
-WORLD_HOME_DESC_EN: str = (
-    "Official country statistics: prices, GDP, labor market, trade, and finance. "
-    "Charts and tables from Eurostat, national statistical agencies, and central banks."
-)
-WORLD_HOME_H1_EN: str = "World economy: country statistics"
 
 # Placeholders: {country}, {gen} (genitive-style “of X” / English uses “in X”),
 # {prep}, {n_phrase}, {source_phrase}, {display}, {last_value}, {unit_sfx},
@@ -736,10 +729,6 @@ WORLD_TEMPLATES_EN: dict[str, str] = {
     "n_indicators_one": "{n} indicator",
     "n_indicators_many": "{n} indicators",
     # Body / keywords
-    "keywords_home": (
-        "world economy statistics, country economy, eurostat data, "
-        "inflation by country, gdp by country"
-    ),
     "keywords_rating": (
         "{name} by country, country ranking by {name}, {name} {year}, "
         "world economy ranking"
@@ -750,25 +739,6 @@ WORLD_TEMPLATES_EN: dict[str, str] = {
     ),
     "keywords_indicator": (
         "{display} {country}, {country} {display} chart, {country} statistics"
-    ),
-    "home_eyebrow": "Official country statistics",
-    "home_lead": (
-        "This section collects official series by country — prices, gross domestic "
-        "product, labour market, foreign trade, and finance. Data are currently "
-        "available for {n_countries} countries and {n_phrase} with charts and value "
-        "tables. The European core is Eurostat; series outside Europe come from "
-        "national statistical agencies and central banks."
-    ),
-    "home_h2_countries": "Countries",
-    "home_h2_russia": "Russia and comparison",
-    "home_russia_p": (
-        "Russia’s macroeconomy is on the "
-        '<a href="/">home showcase</a> and in the '
-        '<a href="{prices}">prices</a>, '
-        '<a href="{gdp}">GDP</a>, and '
-        '<a href="{labor}">labour market</a> catalogues. '
-        "Compare series on the "
-        '<a href="/compare">indicator comparison</a> page.'
     ),
     "rating_eyebrow": "Comparable country indicators",
     "rating_th_rank": "Rank",

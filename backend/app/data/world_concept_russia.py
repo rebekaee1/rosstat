@@ -28,6 +28,9 @@ class RussiaConceptLink:
     scale: float = 1.0
     note_ru: str = ""
     note_en: str = ""
+    # Пусто — «Росстат». Для МВФ-оверлея задаём явно, чтобы рейтинг не врал.
+    source_ru: str | None = None
+    source_en: str | None = None
 
 
 # Только честно сопоставимые по смыслу и приводимые к единице таблицы.
@@ -84,10 +87,53 @@ RUSSIA_CONCEPT_LINKS: dict[str, RussiaConceptLink] = {
             "other countries — their national statistical offices or Eurostat."
         ),
     ),
+    "gdp-usd": RussiaConceptLink(
+        indicator_code="weo-gdp-usd",
+        value_kind="level",
+        source_ru="Международный валютный фонд",
+        source_en="International Monetary Fund",
+        note_ru=(
+            "Для России в рейтинг входит годовая оценка валового внутреннего "
+            "продукта в текущих долларах США из публикации «Перспективы "
+            "развития мировой экономики» Международного валютного фонда. "
+            "Тот же выпуск используется для зарубежных стран. Это не оценка "
+            "Росстата в рублях и не пересчёт национальной валюты по курсу "
+            "Банка России."
+        ),
+        note_en=(
+            "For Russia the ranking uses the IMF World Economic Outlook "
+            "annual estimate of GDP in current US dollars. Other countries "
+            "come from the same publication. This is not Rosstat’s ruble "
+            "national-accounts series and not a conversion of local currency "
+            "at the Bank of Russia exchange rate."
+        ),
+    ),
+    "gdp-per-capita-usd": RussiaConceptLink(
+        indicator_code="weo-gdp-per-capita-usd",
+        value_kind="level",
+        source_ru="Международный валютный фонд",
+        source_en="International Monetary Fund",
+        note_ru=(
+            "Для России в рейтинг входит годовая оценка валового внутреннего "
+            "продукта на душу населения в текущих долларах США из публикации "
+            "«Перспективы развития мировой экономики» Международного валютного "
+            "фонда. Тот же выпуск используется для зарубежных стран. Это не "
+            "ряд Росстата и не пересчёт рублей по курсу Банка России."
+        ),
+        note_en=(
+            "For Russia the ranking uses the IMF World Economic Outlook "
+            "annual estimate of GDP per capita in current US dollars. Other "
+            "countries come from the same publication. This is not a Rosstat "
+            "series and not a conversion of rubles at the Bank of Russia "
+            "exchange rate."
+        ),
+    ),
     # gdp-volume-* — национальная валюта, rating-поверхности нет.
     # budget-balance-gdp — % ВВП Евростата vs млрд руб. Минфина: не смешиваем.
+    # government-debt-gdp — единица и охват S.13 не совпадают с рядом Минфина.
     # long-term-interest-rate — доходность облигаций ≠ ключевая ставка ЦБ.
     # activity-rate / gdp-per-capita-eu — нет честного отечественного аналога.
+    # gdp-nominal российского каталога — рубли Росстата, не этот концепт.
 }
 
 

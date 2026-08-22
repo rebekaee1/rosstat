@@ -216,10 +216,13 @@ WORLD_RATING_QUERY_NAMES: dict[str, str] = {
     "hicp-index": "изменению потребительских цен за год",
     "unemployment-rate": "уровню безработицы",
     "budget-balance-gdp": "сальдо бюджета",
+    "government-debt-gdp": "государственному долгу к ВВП",
     "population": "численности населения",
     "long-term-interest-rate": "доходности долгосрочных государственных облигаций",
     "activity-rate": "уровню экономической активности",
     "gdp-per-capita-eu": "ВВП на душу относительно среднего по ЕС",
+    "gdp-usd": "ВВП в текущих долларах США",
+    "gdp-per-capita-usd": "ВВП на душу населения в текущих долларах США",
 }
 
 # English (nominative) for «Country ranking by …».
@@ -227,10 +230,13 @@ WORLD_RATING_QUERY_NAMES_EN: dict[str, str] = {
     "hicp-index": "year-over-year change in consumer prices",
     "unemployment-rate": "unemployment rate",
     "budget-balance-gdp": "budget balance",
+    "government-debt-gdp": "government debt to GDP",
     "population": "population",
     "long-term-interest-rate": "long-term government bond yield",
     "activity-rate": "activity rate",
     "gdp-per-capita-eu": "GDP per capita relative to the EU average",
+    "gdp-usd": "GDP in current US dollars",
+    "gdp-per-capita-usd": "GDP per capita in current US dollars",
 }
 
 _WORLD_REGION_EN = {

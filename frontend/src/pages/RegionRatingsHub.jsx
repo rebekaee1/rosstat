@@ -10,7 +10,7 @@ import useDocumentMeta from '../lib/useMeta';
 import { regionRatingHubTrail } from '../lib/breadcrumbs';
 import { regionRatingHubPath, regionRatingPath } from '../lib/sitePaths';
 import { useRegionsCatalog } from '../lib/regionsApi';
-import { useLocale, useT } from '../i18n';
+import { useLocale } from '../i18n';
 
 export default function RegionRatingsHub() {
   const { t } = useLocale();

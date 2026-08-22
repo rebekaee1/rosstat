@@ -11,6 +11,7 @@ import {
   fetchCalendarUpcoming,
   fetchDashboardSparklines,
   fetchDemographicsStructure,
+  fetchCoverage,
 } from './api';
 import { useLocale } from '../i18n';
 
@@ -105,6 +106,15 @@ export function useCalendarEvents(params = {}, options = {}) {
     enabled,
     staleTime: 5 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
+  });
+}
+
+export function useCoverage() {
+  return useQuery({
+    queryKey: ['dashboard-coverage'],
+    queryFn: ({ signal }) => fetchCoverage({ signal }),
+    staleTime: 6 * 60 * 60 * 1000,
+    gcTime: 12 * 60 * 60 * 1000,
   });
 }
 

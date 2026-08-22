@@ -51,23 +51,40 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/ticker", tags=["ticker"])
 
-# Fixed display order for the UI bar. Order = importance for our audience.
-TICKER_CODES = [
+# Два набора ленты (правка созвона): внутри /russia — рублевые пары и
+# учётное золото ЦБ; везде остальном — справочные курсы ЕЦБ к доллару.
+# Золото в долларах за унцию в ленту не ставим: дневной LBMA-ряд нельзя
+# перепубликовать без лицензии IBA.
+TICKER_SET_RUSSIA = (
     "usd-rub-live",
     "eur-rub-live",
     "cny-rub-live",
     "btc-usd",
     "brent",
     "gold-rub-live",
-]
+)
+TICKER_SET_WORLD = (
+    "eur-usd",
+    "gbp-usd",
+    "usd-cny",
+    "btc-usd",
+    "brent",
+)
+TICKER_SETS = {
+    "russia": TICKER_SET_RUSSIA,
+    "world": TICKER_SET_WORLD,
+}
+# Совместимость: старый импорт ждал плоский список российского набора.
+TICKER_CODES = list(TICKER_SET_RUSSIA)
 
 
 @router.get("/live")
-async def get_live_ticker() -> dict:
+async def get_live_ticker(lane: str = "world") -> dict:
+    codes = TICKER_SETS.get(lane, TICKER_SET_WORLD)
     snapshots: list[dict] = []
     try:
         r = await get_redis()
-        keys = [f"{REDIS_KEY_PREFIX}{c}" for c in TICKER_CODES]
+        keys = [f"{REDIS_KEY_PREFIX}{c}" for c in codes]
         raw_values = await r.mget(*keys)
         for raw in raw_values:
             if raw is None:

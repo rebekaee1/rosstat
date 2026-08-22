@@ -716,6 +716,12 @@ _FAMILY_DEFS: list[FamilyDef] = [
     FamilyDef("usd-index", "Индекс доллара США", "T1", "пунктов", "Индексы", "daily"),
     FamilyDef("ust-10y", "Доходность 10-летних гособлигаций США", "T1", "%", "Индексы", "daily",
               abs_delta=True, yoy_unit="п.п."),
+    FamilyDef("eur-usd", "Курс евро к доллару", "T1", "USD", "Валюты", "daily",
+              forecastable=False),
+    FamilyDef("gbp-usd", "Курс фунта стерлингов к доллару", "T1", "USD", "Валюты", "daily",
+              forecastable=False),
+    FamilyDef("usd-cny", "Курс доллара к юаню", "T1", "CNY", "Валюты", "daily",
+              forecastable=False),
     # T2y — месячные ставки/доли: На конец периода + Средняя + Г/г (п.п.)
     FamilyDef("mortgage-rate", "Ставка по ипотеке", "T2y", "%", "Финансы", "monthly", yoy_unit="п.п."),
     FamilyDef("auto-loan-rate", "Ставка по автокредитам", "T2y", "%", "Финансы", "monthly", yoy_unit="п.п."),

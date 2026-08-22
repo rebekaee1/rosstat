@@ -16,17 +16,11 @@ from typing import Any
 from app.data.i18n.seo_en import (
     CATEGORY_META_EN,
     PAGE_META_EN,
-    WORLD_HOME_DESC_EN,
-    WORLD_HOME_H1_EN,
-    WORLD_HOME_TITLE_EN,
     WORLD_TEMPLATES_EN,
 )
 from app.services.seo_content import CATEGORY_META, PAGE_META
 from app.services.seo_world import (
     COUNTRY_GENITIVE,
-    WORLD_HOME_DESC,
-    WORLD_HOME_H1,
-    WORLD_HOME_TITLE,
 )
 
 
@@ -63,12 +57,6 @@ def build_page_meta_blob() -> dict[str, Any]:
         "pages": _serialize_pages(PAGE_META),
         "categories": _serialize_categories(CATEGORY_META),
         "world": {
-            "home": {
-                "path": "/world",
-                "title": WORLD_HOME_TITLE,
-                "description": WORLD_HOME_DESC,
-                "h1": WORLD_HOME_H1,
-            },
             "countryTitleTemplate": "Экономика {genitive}: статистика и показатели",
             "countryDescEurostatTemplate": (
                 "{name}: {n_phrase} Евростата — цены, ВВП, рынок труда, торговля "
@@ -85,12 +73,6 @@ def build_page_meta_blob() -> dict[str, Any]:
         "pages": _serialize_pages(PAGE_META_EN),
         "categories": _serialize_categories(CATEGORY_META_EN),
         "world": {
-            "home": {
-                "path": "/world",
-                "title": WORLD_HOME_TITLE_EN,
-                "description": WORLD_HOME_DESC_EN,
-                "h1": WORLD_HOME_H1_EN,
-            },
             # Placeholders: {country}, {n_phrase}, {source_phrase} — см. WORLD_TEMPLATES_EN.
             "countryTitleTemplate": WORLD_TEMPLATES_EN["country_title"],
             "countryDescEurostatTemplate": WORLD_TEMPLATES_EN["country_desc_eurostat"],

@@ -216,13 +216,14 @@ export default function WorldChartSection({
       ...item,
       code: `peer:${item.country_slug}:${item.indicator_code}`,
     }));
+    const byName = (a, b) => a.country_name.localeCompare(b.country_name, locale);
     if (strictPeers.length) {
-      return strictPeers.sort((a, b) => a.country_name.localeCompare(b.country_name, 'ru'));
+      return strictPeers.sort(byName);
     }
     return (compareCatalog.data?.items || [])
       .filter((item) => item.concept_slug === conceptSlug && item.country_slug !== country?.slug)
-      .sort((a, b) => a.country_name.localeCompare(b.country_name, 'ru'));
-  }, [comparisonPeers, compareCatalog.data, conceptSlug, country?.slug]);
+      .sort(byName);
+  }, [comparisonPeers, compareCatalog.data, conceptSlug, country?.slug, locale]);
   const pickerOptions = useMemo(() => {
     const result = [...comparisonOptions];
     if (AVERAGE_CONCEPTS.has(conceptSlug)) {
@@ -232,7 +233,7 @@ export default function WorldChartSection({
       });
     }
     return result;
-  }, [comparisonOptions, conceptSlug, locale]);
+  }, [comparisonOptions, conceptSlug, t]);
   const activeComparisonIds = comparisonIds.filter((id) => (
     pickerOptions.some((option) => option.code === id)
   ));

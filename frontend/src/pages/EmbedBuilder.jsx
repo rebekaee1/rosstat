@@ -306,7 +306,7 @@ export default function EmbedBuilder() {
     }
 
     return '';
-  }, [type, code, codeB, period, theme, w, h, showTitle, showForecast, limit, tickerCodes, speed, codeTab, indicators]);
+  }, [type, code, codeB, period, theme, w, h, showTitle, showForecast, limit, tickerCodes, speed, codeTab, indicators, t]);
 
   const needsSecondIndicator = type === 'compare';
   const needsPeriod = type === 'chart' || type === 'compare';
@@ -338,10 +338,14 @@ export default function EmbedBuilder() {
                 : 'bg-surface border-border-subtle text-text-secondary hover:border-champagne/20 hover:text-text-primary'
             )}>
             <wt.icon className="w-4 h-4" />
-            {wt.label}
+            {t(wt.labelKey)}
           </button>
         ))}
       </div>
+
+      <p className="-mt-6 mb-8 text-center text-sm text-text-tertiary">
+        {t(WIDGET_TYPES.find((wt) => wt.key === type)?.descKey ?? 'embed.type.chartDesc')}
+      </p>
 
       <div className="grid lg:grid-cols-[340px_1fr] gap-6">
         {/* Settings panel */}
@@ -390,7 +394,7 @@ export default function EmbedBuilder() {
                   {PERIODS.map(p => (
                     <button key={p.key} type="button" onClick={() => { setPeriod(p.key); track(events.EMBED_PERIOD_CHANGE, { period: p.key }); }}
                       className={cn('px-3 py-1.5 rounded-lg text-xs font-medium transition-all', period === p.key ? 'bg-champagne/10 text-champagne' : 'text-text-tertiary hover:text-text-secondary')}>
-                      {p.label}
+                      {t(p.labelKey)}
                     </button>
                   ))}
                 </div>
@@ -416,9 +420,9 @@ export default function EmbedBuilder() {
                 <label className="block text-xs text-text-secondary mb-1.5 font-medium">{t('embed.size')}</label>
                 <div className="flex gap-1 flex-wrap mb-2">
                   {SIZE_PRESETS.map((sp, i) => (
-                    <button key={i} type="button" onClick={() => { setSizePreset(i); track(events.EMBED_SIZE_CHANGE, { size: sp.label }); }}
+                    <button key={i} type="button" onClick={() => { setSizePreset(i); track(events.EMBED_SIZE_CHANGE, { size: SIZE_PRESETS[i].labelKey }); }}
                       className={cn('px-3 py-1.5 rounded-lg text-xs font-medium transition-all', sizePreset === i ? 'bg-champagne/10 text-champagne' : 'text-text-tertiary hover:text-text-secondary')}>
-                      {sp.label}
+                      {t(sp.labelKey)}
                     </button>
                   ))}
                   <button type="button" onClick={() => { setSizePreset(-1); setCustomW(w); setCustomH(h); }}

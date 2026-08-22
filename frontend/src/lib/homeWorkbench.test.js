@@ -1,12 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import { translate } from '../i18n/messages';
 import {
-  HOME_MAP_SIDE_LINKS,
+  DEFAULT_HOME_COUNTRY_CONCEPT,
+  HOME_MAP_CONCEPT_ORDER,
   HOME_MARKET_PULSE,
+  HOME_RATING_LIMIT,
   HOME_TODAY_CODES,
-  WORLD_CONCEPT_GROUPS,
   displayPulseValue,
+  homeMapConcepts,
+  resolveHomeConcept,
   heatmapValuesBySlug,
+  homeConceptLabel,
   homePulseLabel,
   homePulseUnitShort,
   pickIndicatorsByCodes,
@@ -16,27 +20,46 @@ import {
   russiaNoteForConcept,
   withRussiaOnHomeMap,
   worldRankingFromYearItems,
+  defaultSortForConcept,
   worldRatingTitle,
   worldYearItems,
 } from './homeWorkbench';
 
 describe('homeWorkbench', () => {
-  it('держит боковые переходы карты без mid-dot и без дубля Европа/Мир', () => {
-    expect(HOME_MAP_SIDE_LINKS.map((l) => l.id)).toEqual([
-      'russia-macro', 'regions', 'world',
+  it('набор показателей главной закрыт и идёт заданным порядком', () => {
+    expect(HOME_MAP_CONCEPT_ORDER).toEqual([
+      'gdp-usd',
+      'gdp-per-capita-usd',
+      'unemployment-rate',
+      'hicp-index',
+      'population',
+      'policy-rate',
+      'budget-balance-gdp',
+      'government-debt-gdp',
     ]);
-    for (const link of HOME_MAP_SIDE_LINKS) {
-      expect(link.labelKey).toBeTruthy();
-      expect(link.descriptionKey).toBeTruthy();
-      expect(link.to.startsWith('/')).toBe(true);
+    for (const slug of HOME_MAP_CONCEPT_ORDER) {
+      expect(homeConceptLabel(slug, (k) => translate(k, undefined, 'ru'))).toBeTruthy();
+      expect(homeConceptLabel(slug, (k) => translate(k, undefined, 'en'))).toBeTruthy();
     }
-    expect(HOME_MAP_SIDE_LINKS.filter((l) => l.to === '/world')).toHaveLength(1);
+    // Порядок API игнорируется: показываем свой, лишние показатели отсекаем.
+    const api = [
+      { slug: 'activity-rate', name: 'Экономическая активность' },
+      { slug: 'unemployment-rate', name: 'Безработица' },
+      { slug: 'gdp-usd', name: 'ВВП' },
+    ];
+    expect(homeMapConcepts(api).map((c) => c.slug)).toEqual(['gdp-usd', 'unemployment-rate']);
+    expect(resolveHomeConcept(api)).toBe(DEFAULT_HOME_COUNTRY_CONCEPT);
+    // Нет предпочтённого — берём первый доступный, а не пустоту.
+    expect(resolveHomeConcept([{ slug: 'gdp-usd' }])).toBe('gdp-usd');
+    // Ни одного «нашего» — отдаём список как есть, чтобы карта не осталась без выбора.
+    expect(homeMapConcepts([{ slug: 'activity-rate' }]).map((c) => c.slug)).toEqual(['activity-rate']);
+    expect(HOME_RATING_LIMIT).toBe(20);
   });
 
   it('собирает мировой рыночный срез из одного массива объектов', () => {
     expect(HOME_TODAY_CODES).toEqual(HOME_MARKET_PULSE.map((i) => i.code));
     expect(HOME_TODAY_CODES).toEqual([
-      'btc-usd', 'brent', 'usd-index', 'ust-10y', 'natural-gas',
+      'btc-usd', 'brent', 'eur-usd', 'usd-index', 'ust-10y', 'natural-gas',
     ]);
     // gold-price — руб./г от ЦБ, не мировая мера; альткоины — не мировые рынки.
     // Месячные Pink Sheet (silver/copper) в оперативный срез не входят.
@@ -117,11 +140,17 @@ describe('homeWorkbench', () => {
     })).toBe(2024);
     const items = worldYearItems(series, 2024);
     expect(worldRankingFromYearItems(items, 1)[0].country_slug).toBe('france');
+    // Направление задаёт каталог: у безработицы первое место — минимум.
+    expect(worldRankingFromYearItems(items, 1, 'asc')[0].country_slug).toBe('germany');
+    expect(defaultSortForConcept('unemployment-rate', [])).toBe('asc');
+    expect(defaultSortForConcept('gdp-usd', [])).toBe('desc');
+    expect(defaultSortForConcept('gdp-usd', [{ slug: 'gdp-usd', default_sort: 'asc' }])).toBe('asc');
 
-    expect(worldRatingTitle('unemployment-rate', 'Уровень безработицы', 2026)).toBe(
+    const tRu = (key, vars) => translate(key, vars, 'ru');
+    expect(worldRatingTitle('unemployment-rate', 'Уровень безработицы', 2026, tRu)).toBe(
       'Рейтинг стран по уровню безработицы за 2026 год',
     );
-    expect(worldRatingTitle('hicp-index', 'Изменение потребительских цен за год', 2025)).toBe(
+    expect(worldRatingTitle('hicp-index', 'Изменение потребительских цен за год', 2025, tRu)).toBe(
       'Рейтинг стран по изменению потребительских цен за год, 2025',
     );
     const tEn = (key, vars) => translate(key, vars, 'en');
@@ -208,9 +237,9 @@ describe('homeWorkbench', () => {
     expect(links.countryHref).toBe('/russia/indicator/unemployment');
     expect(links.regionsHref).toBe('/russia/region');
     expect(links.regionRatingHref).toBe('/russia/region-rating/uroven-bezrabotitsy');
-    expect(russiaNoteForConcept('unemployment-rate')).toMatch(/Росстата/);
+    const tRu = (k) => translate(k, undefined, 'ru');
+    expect(russiaNoteForConcept('unemployment-rate', tRu)).toMatch(/Росстата/);
     expect(russiaNoteForConcept('unemployment-rate', (k) => translate(k, undefined, 'en'))).toMatch(/Rosstat/);
-    expect(russiaNoteForConcept('budget-balance-gdp')).toBeNull();
-    expect(WORLD_CONCEPT_GROUPS.length).toBeGreaterThanOrEqual(5);
+    expect(russiaNoteForConcept('budget-balance-gdp', tRu)).toBeNull();
   });
 });

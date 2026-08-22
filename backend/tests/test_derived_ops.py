@@ -32,6 +32,7 @@ from app.services.derived_ops import (
     weekly_mtd_in_calendar_month,
     yoy,
     yoy_abs,
+    series_ratio,
 )
 
 
@@ -616,3 +617,17 @@ def test_annual_mean_with_prefix_drops_incomplete_trailing_year():
     )
     out = annual_mean_with_prefix(monthly, prefix={2014: 50.0})
     assert out == [(date(2014, 1, 1), 50.0), (date(2015, 1, 1), 100.0)]
+
+
+def test_series_ratio_joins_on_date_and_skips_zero_denominator():
+    num = [
+        (date(2026, 8, 19), 1.16),
+        (date(2026, 8, 20), 1.17),
+        (date(2026, 8, 21), 1.18),
+    ]
+    den = [
+        (date(2026, 8, 20), 0.85),
+        (date(2026, 8, 21), 0.0),
+        (date(2026, 8, 22), 0.86),
+    ]
+    assert series_ratio(num, den) == [(date(2026, 8, 20), round(1.17 / 0.85, 6))]

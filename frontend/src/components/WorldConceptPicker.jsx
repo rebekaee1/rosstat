@@ -1,10 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronDown, Search } from 'lucide-react';
-import {
-  homeConceptLabel,
-  WORLD_CONCEPT_GROUPS,
-} from '../lib/homeWorkbench';
+import { homeConceptLabel } from '../lib/homeWorkbench';
 import { useT } from '../i18n';
 import useSearchTracking from '../lib/useSearchTracking';
 
@@ -33,30 +30,14 @@ function normalize(text) {
     .trim();
 }
 
-function buildGroups(available, conceptsBySlug, q, t) {
-  const result = [];
-  const used = new Set();
-  for (const group of WORLD_CONCEPT_GROUPS) {
-    const groupLabel = t(group.labelKey);
-    const slugs = group.slugs.filter((slug) => {
-      if (!available.has(slug)) return false;
-      if (!q) return true;
-      const hay = normalize(`${labelFor(slug, conceptsBySlug, t)} ${slug} ${groupLabel}`);
-      return hay.includes(q);
-    });
-    if (!slugs.length) continue;
-    slugs.forEach((slug) => used.add(slug));
-    result.push({ ...group, label: groupLabel, slugs });
-  }
-  const orphan = [...available].filter((slug) => {
-    if (used.has(slug)) return false;
-    if (!q) return true;
-    return normalize(`${labelFor(slug, conceptsBySlug, t)} ${slug}`).includes(q);
-  });
-  if (orphan.length) {
-    result.push({ id: 'other', label: t('home.conceptGroup.other'), slugs: orphan });
-  }
-  return result;
+/**
+ * Поисковая база показателя: подпись, код и синонимы из реестра понятий
+ * (`keywords` приходит с API). Благодаря синонимам «дефицит бюджета» находит
+ * сальдо бюджета, а «цены» — инфляцию.
+ */
+function haystack(concept, slug, conceptsBySlug, t) {
+  const keywords = Array.isArray(concept?.keywords) ? concept.keywords.join(' ') : '';
+  return normalize(`${labelFor(slug, conceptsBySlug, t)} ${concept?.name || ''} ${slug} ${keywords}`);
 }
 
 function ConceptChip({
@@ -90,8 +71,9 @@ function ConceptChip({
 }
 
 /**
- * Плотный выбор показателя: плашки текут в одном flex-wrap потоке,
- * подпись группы — слева в той же строке. При 12+ — свёртка в выпадающий список.
+ * Плотный выбор показателя: плашки одним потоком, без подписей групп.
+ * Поиск включается только там, где список длинный (рейтинг стран); на главной
+ * набор закрытый, вместо поиска — подсказка со ссылкой на полный список.
  */
 export default function WorldConceptPicker({
   concepts = [],
@@ -100,35 +82,30 @@ export default function WorldConceptPicker({
   mode = 'button',
   linkForSlug = null,
   label,
+  searchable = true,
+  hint = null,
 }) {
   const t = useT();
   const sectionLabel = label || t('home.map.metricFallback');
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const rootRef = useRef(null);
+  const list = useMemo(() => (concepts || []).filter((item) => item?.slug), [concepts]);
   const conceptsBySlug = useMemo(
-    () => new Map((concepts || []).map((item) => [item.slug, item])),
-    [concepts],
+    () => new Map(list.map((item) => [item.slug, item])),
+    [list],
   );
-  const available = useMemo(
-    () => new Set((concepts || []).map((item) => item.slug)),
-    [concepts],
-  );
-  const collapsed = available.size > COLLAPSE_AT;
-  const q = normalize(query);
-  const groups = useMemo(
-    () => buildGroups(available, conceptsBySlug, q, t),
-    [available, conceptsBySlug, q, t],
-  );
-  const matchCount = useMemo(
-    () => groups.reduce((n, group) => n + group.slugs.length, 0),
-    [groups],
-  );
+  const collapsed = searchable && list.length > COLLAPSE_AT;
+  const q = searchable ? normalize(query) : '';
+  const matches = useMemo(() => {
+    if (!q) return list;
+    return list.filter((item) => haystack(item, item.slug, conceptsBySlug, t).includes(q));
+  }, [list, conceptsBySlug, q, t]);
   // Поле видимо всегда в развёрнутом режиме; в свёртке — только при open.
   useSearchTracking(
     'world-concept-picker',
     collapsed && !open ? '' : query,
-    matchCount,
+    matches.length,
   );
   const activeLabel = labelFor(value, conceptsBySlug, t);
 
@@ -142,34 +119,23 @@ export default function WorldConceptPicker({
   }, [open]);
 
   const chipStream = (
-    <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1.5">
-      {groups.map((group, index) => (
-        <span key={group.id} className="inline-flex flex-wrap items-center gap-1.5">
-          {index > 0 && (
-            <span
-              aria-hidden="true"
-              className="mx-0.5 hidden h-3.5 w-px shrink-0 bg-border-subtle sm:inline-block"
-            />
-          )}
-          <span className="hidden shrink-0 text-[9px] font-mono uppercase tracking-[0.14em] text-text-tertiary sm:inline">
-            {group.label}
-          </span>
-          {group.slugs.map((slug) => (
-            <ConceptChip
-              key={slug}
-              slug={slug}
-              active={slug === value}
-              text={labelFor(slug, conceptsBySlug, t)}
-              mode={mode}
-              linkForSlug={linkForSlug}
-              onChange={onChange}
-              onPick={() => setOpen(false)}
-            />
-          ))}
-        </span>
+    <div className="flex flex-wrap items-center gap-1.5">
+      {matches.map((item) => (
+        <ConceptChip
+          key={item.slug}
+          slug={item.slug}
+          active={item.slug === value}
+          text={labelFor(item.slug, conceptsBySlug, t)}
+          mode={mode}
+          linkForSlug={linkForSlug}
+          onChange={onChange}
+          onPick={() => setOpen(false)}
+        />
       ))}
-      {groups.length === 0 && (
-        <span className="text-xs text-text-tertiary">{t('common.noData')}</span>
+      {matches.length === 0 && (
+        <span className="text-xs text-text-tertiary">
+          {q ? t('home.map.conceptNotFound', { query }) : t('common.noData')}
+        </span>
       )}
     </div>
   );
@@ -228,9 +194,10 @@ export default function WorldConceptPicker({
         <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
           {sectionLabel}
         </p>
-        {searchField}
+        {searchable ? searchField : null}
       </div>
       {chipStream}
+      {hint ? <div className="mt-1.5">{hint}</div> : null}
     </div>
   );
 }

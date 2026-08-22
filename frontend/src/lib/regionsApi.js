@@ -80,18 +80,27 @@ export function useRegionsHeatmapSeries(code, enabled = true) {
   });
 }
 
+/**
+ * Число знаков дробной части по природе величины (не по коду показателя).
+ * Крупные счётные (население, рубли) — целые; десятки–сотни — один знак;
+ * величины порядка единиц и доли (коэффициенты, индексы) — до трёх,
+ * иначе 1,152 и 1,195 оба становятся «1,2» при разной геометрии графика.
+ */
+export function regionValueDigits(value) {
+  const abs = Math.abs(Number(value));
+  if (!Number.isFinite(abs)) return 0;
+  if (abs >= 10000) return 0;
+  if (abs >= 10) return 1;
+  return 3;
+}
+
 /** Форматирование чисел региональных рядов: большие — с разрядами, малые — с дробью. */
 export function formatRegionValue(value, locale) {
   if (value == null || Number.isNaN(value)) return '—';
   const loc = (locale === 'en' || locale === 'ru') ? locale : localeKey();
-  const abs = Math.abs(value);
-  let digits;
-  if (abs >= 10000) digits = 0;
-  else if (abs >= 100) digits = 1;
-  else digits = abs < 1 ? 2 : 1;
-  return value.toLocaleString(numberLocale(loc), {
+  return Number(value).toLocaleString(numberLocale(loc), {
     minimumFractionDigits: 0,
-    maximumFractionDigits: digits,
+    maximumFractionDigits: regionValueDigits(value),
   });
 }
 

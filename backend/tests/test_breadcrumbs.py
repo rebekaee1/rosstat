@@ -19,21 +19,44 @@ def test_russia_indicator_trail():
     assert [name for _, name in trail] == ["Главная", "Россия", "Цены", "ИПЦ"]
 
 
-def test_world_country_uses_strany():
+def test_global_market_indicator_trail_skips_russia():
+    trail = b.global_market_indicator_trail(
+        "Индексы",
+        paths.russia_category("indices"),
+        "Доходность 10-летних гособлигаций США",
+        paths.russia_indicator("ust-10y"),
+    )
+    assert [name for _, name in trail] == [
+        "Главная",
+        "Индексы",
+        "Доходность 10-летних гособлигаций США",
+    ]
+    assert "Россия" not in [name for _, name in trail]
+
+
+def test_world_country_trail_has_no_hub_node():
+    """Витрина /world снята — карточка страны висит прямо на главной."""
     trail = b.world_country_trail("Германия", paths.country("germany"))
-    assert [name for _, name in trail] == ["Главная", "Страны", "Германия"]
-    assert trail[1][0] == paths.world_hub()
+    assert [name for _, name in trail] == ["Главная", "Германия"]
+    assert trail[1][0] == paths.country("germany")
 
 
-def test_breadcrumbs_en_home_and_countries():
+def test_world_rating_crumb_points_at_concept_not_redirect():
+    from app.services.seo_world import WORLD_RATING_DEFAULT_CONCEPT
+
+    trail = b.world_rating_trail("Безработица", paths.world_rating("unemployment-rate"))
+    assert [name for _, name in trail] == ["Главная", "Рейтинг стран", "Безработица"]
+    assert trail[1][0] == paths.world_rating(WORLD_RATING_DEFAULT_CONCEPT)
+
+
+def test_breadcrumbs_en_home_and_rating():
     from app.services.locale import reset_locale, set_locale
 
     token = set_locale("en")
     try:
-        trail = b.world_home_trail()
-        assert [name for _, name in trail] == ["Home", "Countries"]
+        trail = b.world_rating_hub_trail()
+        assert [name for _, name in trail] == ["Home", "Country rankings"]
         assert b.home()[1] == "Home"
-        assert b.countries()[1] == "Countries"
     finally:
         reset_locale(token)
 
@@ -50,9 +73,9 @@ def test_world_crumbs_en_locale():
     token = set_locale("en")
     try:
         trail = b.world_country_trail("Germany", paths.country("germany"))
-        assert [name for _, name in trail] == ["Home", "Countries", "Germany"]
+        assert [name for _, name in trail] == ["Home", "Germany"]
         assert b.home()[1] == "Home"
-        assert b.countries()[1] == "Countries"
+        assert b.world_ratings()[1] == "Country rankings"
         assert b.russia()[1] == "Russia"
     finally:
         reset_locale(token)

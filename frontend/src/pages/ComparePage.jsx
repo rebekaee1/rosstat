@@ -1080,7 +1080,7 @@ export default function ComparePage() {
       fetchCode: stepAlt || spec.code, transform: stepAlt ? null : spec.transform,
       unit: spec.unit, stepDeep: !!stepAlt,
     };
-  }), [codes, indicators, repByCode, step, worldMetaByCode]);
+  }), [codes, indicators, repByCode, step, worldMetaByCode, t]);
 
   const results = useQueries({
     queries: resolved.map((r) => ({
@@ -1214,7 +1214,7 @@ export default function ComparePage() {
       return row;
     });
     return { rows, nonIndexableNames, nonIndexableKeys, maxPan };
-  }, [series, range, indexed, step, panOffset]);
+  }, [series, range, indexed, step, panOffset, t]);
 
   const chartRows = chartData.rows;
   const { nonIndexableNames, nonIndexableKeys, maxPan } = chartData;

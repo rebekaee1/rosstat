@@ -331,6 +331,16 @@ async def late_minfin_etl_job():
     await run_etl_for_parser_type("minfin_budget_csv")
 
 
+async def late_fred_etl_job():
+    """23:30 MSK pass — ловит same-day закрытия США на FRED.
+
+    Вечерний полный ETL (20:00 MSK) раньше закрытия NYSE и типичной
+    публикации H.15 / EIA на FRED. Без этого прогона оперативный срез на
+    главной остаётся на предыдущем торговом дне до утреннего 06:00.
+    """
+    await run_etl_for_parser_type("fred_csv")
+
+
 # ---------------------------------------------------------------------------
 #  Staleness-мониторинг (Н-3): «источник молча умер» виден не через failed,
 #  а через вечный no_new_data. Ежедневная сверка max(data.date) с SLA частоты.

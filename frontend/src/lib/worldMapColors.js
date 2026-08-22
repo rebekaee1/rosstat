@@ -1,7 +1,15 @@
-// Двусторонняя rank-шкала без оценочного смысла «хорошо/плохо»:
-// холодные тона = ниже медианы, светлый центр = около медианы,
-// фирменные золотые тона = выше медианы.
-export const WORLD_RELATIVE_SCALE = [
+/**
+ * Единственная палитра карты мира: холодные синие тона на одном конце,
+ * фирменные золотисто-коричневые на другом, светлый центр посередине.
+ * Без оценочного смысла «хорошо/плохо».
+ *
+ * Палитра одна для всех показателей и всех лет. Раньше шкала выбиралась по
+ * данным выбранного года: если срез пересекал ноль, включалась отдельная
+ * бордово-зелёная гамма — и при перетаскивании ползунка лет карта меняла цвет
+ * на том же показателе. Меняется только привязка центра (медиана или ноль),
+ * цвета остаются те же.
+ */
+export const WORLD_MAP_SCALE = [
   '#315A7D',
   '#648DAA',
   '#AFC8D7',
@@ -11,36 +19,31 @@ export const WORLD_RELATIVE_SCALE = [
   '#87591F',
 ];
 
-export const WORLD_DIVERGING_SCALE = [
-  '#7B293B',
-  '#B55262',
-  '#D99A9E',
-  '#F1EADD',
-  '#9CCABC',
-  '#4B9485',
-  '#1B6259',
-];
+export const WORLD_RELATIVE_SCALE = WORLD_MAP_SCALE;
+export const WORLD_DIVERGING_SCALE = WORLD_MAP_SCALE;
 
 export const WORLD_NO_DATA = '#E5E7E5';
 
+// Модуль остаётся без текстов: подписи полос живут в словарях, иначе
+// англоязычная версия карты показывала бы русскую легенду.
 const RELATIVE_LABELS = [
-  'Нижние 15% стран',
-  'Заметно ниже медианы',
-  'Ниже медианы',
-  'Около медианы',
-  'Выше медианы',
-  'Заметно выше медианы',
-  'Верхние 15% стран',
+  'world.map.band.rel0',
+  'world.map.band.rel1',
+  'world.map.band.rel2',
+  'world.map.band.rel3',
+  'world.map.band.rel4',
+  'world.map.band.rel5',
+  'world.map.band.rel6',
 ];
 
 const DIVERGING_LABELS = [
-  'Сильно ниже нуля',
-  'Умеренно ниже нуля',
-  'Ниже нуля, близко к нулю',
-  'Около нуля',
-  'Выше нуля, близко к нулю',
-  'Умеренно выше нуля',
-  'Сильно выше нуля',
+  'world.map.band.zero0',
+  'world.map.band.zero1',
+  'world.map.band.zero2',
+  'world.map.band.zero3',
+  'world.map.band.zero4',
+  'world.map.band.zero5',
+  'world.map.band.zero6',
 ];
 
 function numericValues(valuesByCode) {
@@ -92,7 +95,7 @@ function relativeModel(values) {
       color,
       min: index === 0 ? null : thresholds[index - 1],
       max: index === WORLD_RELATIVE_SCALE.length - 1 ? null : thresholds[index],
-      label: RELATIVE_LABELS[index],
+      labelKey: RELATIVE_LABELS[index],
     })),
     colorFor: (value) => {
       const band = bandFor(value);
@@ -107,9 +110,8 @@ function relativeModel(values) {
     },
     describe: (value) => {
       const band = bandFor(value);
-      if (band < 0) return '';
-      const rank = percentile(values, value);
-      return `${RELATIVE_LABELS[band]}, ${rank}-й процентиль`;
+      if (band < 0) return null;
+      return { key: RELATIVE_LABELS[band], rank: percentile(values, value) };
     },
   };
 }
@@ -136,13 +138,13 @@ function divergingModel(values) {
     median: quantile(values, 0.5),
     sampleSize: values.length,
     bins: [
-      { color: WORLD_DIVERGING_SCALE[0], min: null, max: -twoThirds, label: DIVERGING_LABELS[0] },
-      { color: WORLD_DIVERGING_SCALE[1], min: -twoThirds, max: -third, label: DIVERGING_LABELS[1] },
-      { color: WORLD_DIVERGING_SCALE[2], min: -third, max: 0, label: DIVERGING_LABELS[2] },
-      { color: WORLD_DIVERGING_SCALE[3], min: 0, max: 0, zero: true, label: DIVERGING_LABELS[3] },
-      { color: WORLD_DIVERGING_SCALE[4], min: 0, max: third, label: DIVERGING_LABELS[4] },
-      { color: WORLD_DIVERGING_SCALE[5], min: third, max: twoThirds, label: DIVERGING_LABELS[5] },
-      { color: WORLD_DIVERGING_SCALE[6], min: twoThirds, max: null, label: DIVERGING_LABELS[6] },
+      { color: WORLD_DIVERGING_SCALE[0], min: null, max: -twoThirds, labelKey: DIVERGING_LABELS[0] },
+      { color: WORLD_DIVERGING_SCALE[1], min: -twoThirds, max: -third, labelKey: DIVERGING_LABELS[1] },
+      { color: WORLD_DIVERGING_SCALE[2], min: -third, max: 0, labelKey: DIVERGING_LABELS[2] },
+      { color: WORLD_DIVERGING_SCALE[3], min: 0, max: 0, zero: true, labelKey: DIVERGING_LABELS[3] },
+      { color: WORLD_DIVERGING_SCALE[4], min: 0, max: third, labelKey: DIVERGING_LABELS[4] },
+      { color: WORLD_DIVERGING_SCALE[5], min: third, max: twoThirds, labelKey: DIVERGING_LABELS[5] },
+      { color: WORLD_DIVERGING_SCALE[6], min: twoThirds, max: null, labelKey: DIVERGING_LABELS[6] },
     ],
     colorFor: (value) => {
       const band = bandFor(value);
@@ -151,23 +153,24 @@ function divergingModel(values) {
     labelColorFor: (value) => {
       const band = bandFor(value);
       if (band < 0) return '#6F746F';
-      if (band <= 2) return '#8A3345';
-      if (band >= 4) return '#1E655D';
+      if (band <= 2) return '#315A7D';
+      if (band >= 4) return '#87591F';
       return '#6F685A';
     },
     describe: (value) => {
       const band = bandFor(value);
-      return band < 0 ? '' : DIVERGING_LABELS[band];
+      return band < 0 ? null : { key: DIVERGING_LABELS[band], rank: null };
     },
   };
 }
 
 /**
- * Для обычных показателей цвет показывает квантиль среди стран выбранного года.
- * Если срез пересекает ноль, шкала становится дивергентной: знак нельзя прятать
- * в одном последовательном градиенте.
+ * Привязка центра шкалы задаётся показателем, а не данными года:
+ * `relative` — центр по медиане стран, `diverging` — центр по нулю (для
+ * показателей, где знак содержателен: сальдо бюджета, приток капитала).
+ * Выбор по значениям убран намеренно — он «перекрашивал» карту между годами.
  */
-export function buildWorldColorModel(valuesByCode, { mode = 'auto' } = {}) {
+export function buildWorldColorModel(valuesByCode, { mode = 'relative' } = {}) {
   const values = numericValues(valuesByCode);
   if (!values.length) {
     return {
@@ -178,10 +181,8 @@ export function buildWorldColorModel(valuesByCode, { mode = 'auto' } = {}) {
       bins: [],
       colorFor: () => WORLD_NO_DATA,
       labelColorFor: () => '#6F746F',
-      describe: () => '',
+      describe: () => null,
     };
   }
-  return mode === 'diverging' || (values[0] < 0 && values.at(-1) > 0)
-    ? divergingModel(values)
-    : relativeModel(values);
+  return mode === 'diverging' ? divergingModel(values) : relativeModel(values);
 }

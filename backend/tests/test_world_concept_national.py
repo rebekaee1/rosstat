@@ -19,6 +19,22 @@ def test_gdp_volume_has_no_national_absolute_alias():
     assert national_codes_for_concept("gdp-volume-annual") == frozenset()
 
 
+def test_hicp_national_uses_level_indices_only():
+    # hicp-index всегда считает изменение за год от уровня индекса.
+    # CN `cn-cpi-all` — уже «тот же месяц прошлого года = 100», не уровень.
+    # BR: `br-cpi-ipca` — % м/м; `br-cpi-ipca-yoy` — уже готовый YoY.
+    # JP — национального CPI-ряда нет.
+    mapping = NATIONAL_CONCEPT_INDICATOR_CODES["hicp-index"]
+    codes = national_codes_for_concept("hicp-index")
+    assert mapping["US"] == "us-cpi-all"
+    assert "cn-cpi-all" not in codes
+    assert "br-cpi-ipca" not in codes
+    assert "br-cpi-ipca-yoy" not in codes
+    assert "CN" not in mapping
+    assert "BR" not in mapping
+    assert "JP" not in mapping
+
+
 def test_all_mapped_codes_unique_per_concept():
     for slug, mapping in NATIONAL_CONCEPT_INDICATOR_CODES.items():
         values = list(mapping.values())

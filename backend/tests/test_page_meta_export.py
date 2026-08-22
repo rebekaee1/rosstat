@@ -30,7 +30,5 @@ def test_page_meta_covers_static_pages_and_categories():
         assert page["title"] and page["description"] and page["h1"]
     assert "prices" in blob["categories"]
     assert blob["categories"]["prices"]["h1"] == blob["categories"]["prices"]["title"]
-    world = blob["world"]["home"]
-    assert "Мировая экономика" in world["title"]
-    assert world["h1"]
+    assert "home" not in blob["world"], "витрина /world снята — метаданных быть не должно"
     assert "germany" in blob["world"]["countryGenitive"]

@@ -26,9 +26,6 @@ from app.data.i18n.seo_en import (
     TODAY_HUB_TITLE_EN,
     TODAY_SPECS_EN,
     TODAY_TEMPLATES_EN,
-    WORLD_HOME_DESC_EN,
-    WORLD_HOME_H1_EN,
-    WORLD_HOME_TITLE_EN,
     WORLD_TEMPLATES_EN,
     YEAR_TEMPLATES_EN,
 )
@@ -159,27 +156,6 @@ def page_template(key: str, locale: Locale | None = None) -> str | None:
     loc = locale or get_locale()
     if loc == "en":
         return PAGE_TEMPLATES_EN.get(key)
-    return None
-
-
-def world_home_title(locale: Locale | None = None) -> str | None:
-    loc = locale or get_locale()
-    if loc == "en" and WORLD_HOME_TITLE_EN:
-        return WORLD_HOME_TITLE_EN
-    return None
-
-
-def world_home_description(locale: Locale | None = None) -> str | None:
-    loc = locale or get_locale()
-    if loc == "en" and WORLD_HOME_DESC_EN:
-        return WORLD_HOME_DESC_EN
-    return None
-
-
-def world_home_h1(locale: Locale | None = None) -> str | None:
-    loc = locale or get_locale()
-    if loc == "en" and WORLD_HOME_H1_EN:
-        return WORLD_HOME_H1_EN
     return None
 
 

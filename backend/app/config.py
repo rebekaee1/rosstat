@@ -51,6 +51,12 @@ class Settings(BaseSettings):
     # публикуют данные в течение дня — утренний прогон их не застаёт.
     scheduler_evening_hour: int = 20
     scheduler_evening_minute: int = 0
+    # Late FRED pass: US market close ~16:00 ET ≈ 23:00 MSK (EDT). Evening
+    # full ETL at 20:00 MSK is too early for same-day Treasury / EIA / Fed
+    # points that land on FRED after the US afternoon. This pass is insurance
+    # so the home market pulse shows the latest trading day overnight.
+    scheduler_late_fred_hour: int = 23
+    scheduler_late_fred_minute: int = 30
     ticker_pull_interval_seconds: int = 8
     # Eurostat world block — отдельный opt-in job. До двух успешных shadow
     # прогонов не меняет world_*; не смешивается с daily_update_job России.

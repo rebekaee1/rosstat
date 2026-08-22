@@ -85,6 +85,8 @@ from app.services.fred_parser import FredCsvParser
 from app.services.moex_index_parser import MoexIndexParser
 from app.services.rosstat_weekly_price_parser import RosstatWeeklyPriceParser
 from app.services.world_bank_pink_sheet_parser import WorldBankPinkSheetParser
+from app.services.ecb_fx_parser import EcbFxParser
+from app.services.imf_weo_parser import ImfWeoParser
 
 PARSER_REGISTRY: dict[str, type[BaseParser]] = {
     RosstatCpiParser.parser_type: RosstatCpiParser,
@@ -116,6 +118,8 @@ PARSER_REGISTRY: dict[str, type[BaseParser]] = {
     BrentDailyFredParser.parser_type: BrentDailyFredParser,
     FredCsvParser.parser_type: FredCsvParser,
     WorldBankPinkSheetParser.parser_type: WorldBankPinkSheetParser,
+    EcbFxParser.parser_type: EcbFxParser,
+    ImfWeoParser.parser_type: ImfWeoParser,
     CbrMonetaryAggParser.parser_type: CbrMonetaryAggParser,
     MoexIndexParser.parser_type: MoexIndexParser,
     RosstatWeeklyPriceParser.parser_type: RosstatWeeklyPriceParser,

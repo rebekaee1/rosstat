@@ -18,7 +18,7 @@ import {
   russiaIndicatorPath,
   russiaIndicatorYearPath,
   todayPath,
-  worldHubPath,
+  WORLD_RATING_DEFAULT_CONCEPT,
   worldRatingPath,
 } from './sitePaths';
 import { getSiteOrigin } from './siteOrigin';
@@ -50,12 +50,9 @@ export function regionRatingsCrumb() {
   return crumb(regionRatingHubPath(), t('crumb.rating'));
 }
 
-export function countriesCrumb() {
-  return crumb(worldHubPath(), t('crumb.countries'));
-}
-
+/** Рейтинг стран. Ведёт на конкретный показатель: /world/rating без него — 301. */
 export function worldRatingsCrumb() {
-  return crumb(worldRatingPath(), t('crumb.rating'));
+  return crumb(worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT), t('crumb.worldRating'));
 }
 
 export function russiaHomeTrail() {
@@ -84,6 +81,21 @@ export function russiaIndicatorTrail(categoryName, categorySlug, indicatorName, 
   return items;
 }
 
+/** Мировой рыночный ряд: без «Россия» — Главная / [категория] / показатель. */
+export function globalMarketIndicatorTrail(
+  categoryName,
+  categorySlug,
+  indicatorName,
+  indicatorCode,
+) {
+  const items = [homeCrumb()];
+  if (categoryName && categorySlug) {
+    items.push(crumb(russiaCategoryPath(categorySlug), categoryName));
+  }
+  items.push(crumb(russiaIndicatorPath(indicatorCode), indicatorName));
+  return items;
+}
+
 export function russiaIndicatorYearTrail(
   categoryName,
   categorySlug,
@@ -93,6 +105,19 @@ export function russiaIndicatorYearTrail(
 ) {
   return [
     ...russiaIndicatorTrail(categoryName, categorySlug, indicatorName, indicatorCode),
+    crumb(russiaIndicatorYearPath(indicatorCode, year), String(year)),
+  ];
+}
+
+export function globalMarketIndicatorYearTrail(
+  categoryName,
+  categorySlug,
+  indicatorName,
+  indicatorCode,
+  year,
+) {
+  return [
+    ...globalMarketIndicatorTrail(categoryName, categorySlug, indicatorName, indicatorCode),
     crumb(russiaIndicatorYearPath(indicatorCode, year), String(year)),
   ];
 }
@@ -168,35 +193,25 @@ export function demographicsTrail() {
   return [homeCrumb(), russiaCrumb(), crumb(demographicsPath(), t('crumb.demographics'))];
 }
 
-export function worldHomeTrail() {
-  return [homeCrumb(), countriesCrumb()];
-}
-
 export function worldCountryTrail(countryName, countrySlug) {
-  return [
-    homeCrumb(),
-    countriesCrumb(),
-    crumb(countryPath(countrySlug), countryName),
-  ];
+  return [homeCrumb(), crumb(countryPath(countrySlug), countryName)];
 }
 
 export function worldIndicatorTrail(countryName, countrySlug, indicatorName, indicatorCode) {
   return [
     homeCrumb(),
-    countriesCrumb(),
     crumb(countryPath(countrySlug), countryName),
     crumb(indicatorPath(countrySlug, indicatorCode), indicatorName),
   ];
 }
 
 export function worldRatingHubTrail() {
-  return [homeCrumb(), countriesCrumb(), worldRatingsCrumb()];
+  return [homeCrumb(), worldRatingsCrumb()];
 }
 
 export function worldRatingTrail(name, conceptSlug) {
   return [
     homeCrumb(),
-    countriesCrumb(),
     worldRatingsCrumb(),
     crumb(worldRatingPath(conceptSlug), name),
   ];

@@ -48,7 +48,7 @@ describe('WorldConceptPicker', () => {
     vi.useRealTimers();
   });
 
-  it('течёт плашками в одном потоке с подписями групп и фильтрует поиском', () => {
+  it('течёт плашками одним потоком без подписей групп и фильтрует поиском', () => {
     const onChange = vi.fn();
     renderPicker(
       <WorldConceptPicker
@@ -57,12 +57,43 @@ describe('WorldConceptPicker', () => {
         onChange={onChange}
       />,
     );
-    expect(screen.getByText('Рынок труда')).toBeTruthy();
-    expect(screen.getByText('Цены')).toBeTruthy();
+    // Группы сняты: показатель ищут поиском, а не разбором рубрик.
+    expect(screen.queryByText('Рынок труда')).toBeNull();
     expect(screen.getByRole('button', { name: 'Безработица' }).getAttribute('aria-pressed')).toBe('true');
     fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'насел' } });
     expect(screen.getByRole('button', { name: 'Население' })).toBeTruthy();
     expect(screen.queryByRole('button', { name: 'Безработица' })).toBeNull();
+  });
+
+  it('ищет по синонимам показателя, а не только по подписи', () => {
+    renderPicker(
+      <WorldConceptPicker
+        concepts={[
+          { slug: 'budget-balance-gdp', name: 'Сальдо бюджета', keywords: ['дефицит бюджета', 'профицит'] },
+          { slug: 'population', name: 'Население' },
+        ]}
+        value="population"
+        onChange={vi.fn()}
+      />,
+    );
+    fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'дефицит' } });
+    expect(screen.getByRole('button', { name: 'Баланс бюджета' })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'Население' })).toBeNull();
+  });
+
+  it('без поиска (главная) поле скрыто и виден весь закрытый набор', () => {
+    renderPicker(
+      <WorldConceptPicker
+        concepts={CONCEPTS}
+        value="unemployment-rate"
+        onChange={vi.fn()}
+        searchable={false}
+        hint={<span>подсказка</span>}
+      />,
+    );
+    expect(screen.queryByRole('searchbox')).toBeNull();
+    expect(screen.getByText('подсказка')).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Население' })).toBeTruthy();
   });
 
   it('при query ≥2 через debounce пишет search_query world-concept-picker', () => {

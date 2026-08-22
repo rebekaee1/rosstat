@@ -13,7 +13,7 @@ from datetime import date
 from statistics import median
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import func, or_, select
+from sqlalchemy import case, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.cache import cache_get, cache_set, versioned_key
@@ -34,11 +34,14 @@ from app.data.world_concepts import (
     concept_public_unit,
 )
 from app.data.world_concept_national import national_codes_for_concept
+from app.data.global_market_indicators import market_indicator_codes_for_country
 from app.data.world_country_area import area_payload
 from app.data.world_country_population import population_payload as curated_population_payload
 from app.data.world_indicator_titles_ru import is_public_catalog_name
 from app.database import get_db
 from app.models import (
+    Indicator,
+    IndicatorData,
     WorldCountry,
     WorldDataPoint,
     WorldForecast,
@@ -304,6 +307,45 @@ async def _load_points_by_ids(
     return out
 
 
+async def _load_yearly_last_by_ids(
+    db: AsyncSession,
+    indicator_ids: list[int],
+) -> dict[int, list[tuple[date, float]]]:
+    """Последняя точка каждого календарного года — для карты/рейтинга в level.
+
+    Не тянем миллионы месячных точек в Python: DISTINCT ON по году + индекс
+    ``(indicator_id, date)``.
+    """
+    if not indicator_ids:
+        return {}
+    year_expr = func.extract("year", WorldDataPoint.date)
+    rows = (
+        await db.execute(
+            select(
+                WorldDataPoint.indicator_id,
+                WorldDataPoint.date,
+                WorldDataPoint.value,
+            )
+            .where(WorldDataPoint.indicator_id.in_(indicator_ids))
+            .distinct(WorldDataPoint.indicator_id, year_expr)
+            .order_by(
+                WorldDataPoint.indicator_id,
+                year_expr,
+                WorldDataPoint.date.desc(),
+            )
+        )
+    ).all()
+    out: dict[int, list[tuple[date, float]]] = defaultdict(list)
+    # DISTINCT ON вернул desc по дате внутри года; для yearly_last_points
+    # сортируем по возрастанию даты.
+    tmp: dict[int, list[tuple[date, float]]] = defaultdict(list)
+    for indicator_id, point_date, value in rows:
+        tmp[indicator_id].append((point_date, float(value)))
+    for indicator_id, pts in tmp.items():
+        out[indicator_id] = sorted(pts, key=lambda p: p[0])
+    return out
+
+
 async def _ids_with_nonzero_signal(
     db: AsyncSession, indicator_ids: list[int],
 ) -> set[int]:
@@ -440,7 +482,12 @@ def _compare_series_payload(country: WorldCountry, indicator: WorldIndicator, co
 
 
 _AVERAGE_CONCEPTS = frozenset({"hicp-index", "unemployment-rate", "budget-balance-gdp"})
-_MONEY_COMPARE_CONCEPTS = frozenset({"gdp-volume-quarterly", "gdp-volume-annual"})
+_MONEY_COMPARE_CONCEPTS = frozenset({
+    "gdp-volume-quarterly",
+    "gdp-volume-annual",
+    "gdp-usd",
+    "gdp-per-capita-usd",
+})
 
 
 def _indicator_unit(indicator: WorldIndicator) -> str:
@@ -578,17 +625,22 @@ async def list_countries(db: AsyncSession = Depends(get_db)):
     именем. Страны с нулём после отсева скрываем — каталог не обещает пустые
     страницы.
     """
-    cache_key = await versioned_key("world", f"countries:v3:{get_locale()}")
+    # v4: EXISTS по listed-рядам вместо DISTINCT по всей world_data_points
+    # (на полном датасете ~8M точек DISTINCT убивал воркеры → 504/500).
+    cache_key = await versioned_key("world", f"countries:v4:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
 
-    # JOIN вместо IN(...): listed-рядов десятки тысяч, asyncpg лимит 32767.
-    signal_ids = (
+    # Коррелированный EXISTS: индекс (indicator_id, date) → O(listed), не O(все точки).
+    has_signal = (
         select(WorldDataPoint.indicator_id)
-        .where(WorldDataPoint.value != 0)
-        .distinct()
-        .subquery()
+        .where(
+            WorldDataPoint.indicator_id == WorldIndicator.id,
+            WorldDataPoint.value != 0,
+        )
+        .correlate(WorldIndicator)
+        .exists()
     )
     listed_rows = (
         await db.execute(
@@ -598,8 +650,10 @@ async def list_countries(db: AsyncSession = Depends(get_db)):
                 WorldIndicator.code,
                 WorldIndicator.name_ru,
             )
-            .join(signal_ids, WorldIndicator.id == signal_ids.c.indicator_id)
-            .where(WorldIndicator.is_listed.is_(True))
+            .where(
+                WorldIndicator.is_listed.is_(True),
+                has_signal,
+            )
         )
     ).all()
     counts: dict[int, int] = defaultdict(int)
@@ -757,7 +811,7 @@ async def world_compare_snapshot(
     if concept is None or "compare" not in concept.enabled_surfaces:
         raise HTTPException(404, "Понятие для сравнения не найдено")
     cache_key = await versioned_key(
-        "world", f"compare:snapshot:v5:{concept_slug}:{get_locale()}"
+        "world", f"compare:snapshot:v6:{concept_slug}:{get_locale()}"
     )
     cached = await cache_get(cache_key)
     if cached:
@@ -766,7 +820,13 @@ async def world_compare_snapshot(
     members = await _concept_members(db, concept)
     mode = ranking_value_mode(concept.slug, members)
     public_unit = ranking_public_unit(mode, concept_public_unit(concept))
-    series_by_id = await _load_points_by_ids(db, [ind.id for _, ind in members])
+    member_ids = [ind.id for _, ind in members]
+    # level: годовой срез в SQL; yoy: нужна полная история для transform_yoy.
+    series_by_id = (
+        await _load_yearly_last_by_ids(db, member_ids)
+        if mode == "level"
+        else await _load_points_by_ids(db, member_ids)
+    )
     items = []
     for country, indicator in members:
         latest = latest_rank_point(series_by_id.get(indicator.id, []), mode)
@@ -827,7 +887,7 @@ async def world_compare_map_series(
     if concept is None or "compare" not in concept.enabled_surfaces:
         raise HTTPException(404, "Понятие для карты не найдено")
     cache_key = await versioned_key(
-        "world", f"compare:map-series:v5:{concept_slug}:{get_locale()}"
+        "world", f"compare:map-series:v6:{concept_slug}:{get_locale()}"
     )
     cached = await cache_get(cache_key)
     if cached:
@@ -836,7 +896,12 @@ async def world_compare_map_series(
     members = await _concept_members(db, concept)
     mode = ranking_value_mode(concept.slug, members)
     public_unit = ranking_public_unit(mode, concept_public_unit(concept))
-    series_by_id = await _load_points_by_ids(db, [ind.id for _, ind in members])
+    member_ids = [ind.id for _, ind in members]
+    series_by_id = (
+        await _load_yearly_last_by_ids(db, member_ids)
+        if mode == "level"
+        else await _load_points_by_ids(db, member_ids)
+    )
 
     values_by_year: dict[str, dict[str, dict]] = {}
     for country, indicator in members:
@@ -988,9 +1053,77 @@ async def world_compare_average_series(
     return payload
 
 
+async def _country_market_indicators(db: AsyncSession, slug: str) -> list[dict]:
+    """Рыночные ряды общего каталога, привязанные к стране (может быть пусто)."""
+    codes = market_indicator_codes_for_country(slug)
+    if not codes:
+        return []
+
+    rows = (
+        await db.execute(
+            select(Indicator).where(
+                Indicator.code.in_(codes),
+                Indicator.is_active.is_(True),
+            )
+        )
+    ).scalars().all()
+    by_code = {row.code: row for row in rows}
+    last_map: dict[int, tuple[date, float]] = {}
+    if rows:
+        ranked = (
+            select(
+                IndicatorData.indicator_id.label("indicator_id"),
+                IndicatorData.date.label("date"),
+                IndicatorData.value.label("value"),
+                func.row_number().over(
+                    partition_by=IndicatorData.indicator_id,
+                    order_by=IndicatorData.date.desc(),
+                ).label("rn"),
+            )
+            .where(IndicatorData.indicator_id.in_([row.id for row in rows]))
+            .subquery()
+        )
+        last_rows = (
+            await db.execute(
+                select(ranked.c.indicator_id, ranked.c.date, ranked.c.value)
+                .where(ranked.c.rn == 1)
+            )
+        ).all()
+        last_map = {
+            indicator_id: (point_date, float(value))
+            for indicator_id, point_date, value in last_rows
+        }
+
+    from app.services.seo_i18n import indicator_copy_en, public_indicator_fields
+
+    items: list[dict] = []
+    for code in codes:
+        indicator = by_code.get(code)
+        if indicator is None:
+            continue
+        fields = public_indicator_fields(
+            code,
+            name_ru=indicator.name,
+            name_en=indicator.name_en,
+            unit_ru=indicator.unit,
+        )
+        en_name = (indicator_copy_en(code) or {}).get("name") or indicator.name_en or indicator.name
+        last = last_map.get(indicator.id)
+        items.append({
+            "code": code,
+            "name": fields["name"],
+            "name_en": en_name,
+            "unit": fields["unit"],
+            "last_value": round(last[1], 4) if last else None,
+            "last_date": _fmt_date(last[0]) if last else None,
+            "frequency": indicator.frequency,
+        })
+    return items
+
+
 @router.get("/countries/{slug}")
 async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
-    cache_key = await versioned_key("world", f"country:v9:{slug}:{get_locale()}")
+    cache_key = await versioned_key("world", f"country:v10:{slug}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -1173,6 +1306,7 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
             "history_end": max(history_ends).isoformat() if history_ends else None,
             "frequencies": official_frequencies,
         },
+        "market_indicators": await _country_market_indicators(db, country.slug),
     }
     from app.services.seo_i18n import localize_territory_fact
 
@@ -1557,22 +1691,48 @@ async def search_world(
     if not needle:
         return {"results": [], "total": 0}
 
+    # LIKE-метасимволы в запросе — литералы, иначе «100%» совпадёт со всем.
+    like_needle = (
+        needle.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+    )
+    pattern = f"%{like_needle}%"
+    code_match = WorldIndicator.code.ilike(pattern, escape="\\")
+    name_match = or_(
+        WorldIndicator.name_ru.ilike(pattern, escape="\\"),
+        WorldIndicator.name_en.ilike(pattern, escape="\\"),
+    )
+    keywords_match = WorldIndicator.seo_keywords.ilike(pattern, escape="\\")
+    country_match = or_(
+        WorldCountry.name_ru.ilike(pattern, escape="\\"),
+        WorldCountry.name_en.ilike(pattern, escape="\\"),
+        WorldCountry.slug.ilike(pattern, escape="\\"),
+        WorldCountry.code.ilike(pattern, escape="\\"),
+    )
+    # Код (`us-unemployment-rate`) выше длинных eurostat name_en-совпадений,
+    # иначе «unemployment» тонет в сотнях EU-срезов до лимита.
+    relevance = case(
+        (code_match, 0),
+        (name_match, 1),
+        (keywords_match, 2),
+        else_=3,
+    )
+    # Oversample: после отсева нулевого сигнала часть кандидатов отпадёт.
+    candidate_limit = min(200, max(limit * 3, limit))
+
     stmt = (
         select(WorldIndicator, WorldCountry)
         .join(WorldCountry, WorldIndicator.country_id == WorldCountry.id)
         .where(
             WorldIndicator.is_listed.is_(True),
             WorldCountry.is_active.is_(True),
-            or_(
-                WorldIndicator.name_ru.ilike(f"%{needle}%"),
-                WorldIndicator.name_en.ilike(f"%{needle}%"),
-                WorldIndicator.code.ilike(f"%{needle}%"),
-                WorldIndicator.seo_keywords.ilike(f"%{needle}%"),
-                WorldCountry.name_ru.ilike(f"%{needle}%"),
-            ),
+            or_(code_match, name_match, keywords_match, country_match),
         )
-        .order_by(WorldIndicator.name_ru)
-        .limit(limit)
+        .order_by(
+            relevance,
+            func.length(WorldIndicator.code),
+            WorldIndicator.name_ru,
+        )
+        .limit(candidate_limit)
     )
     if country:
         stmt = stmt.where(
@@ -1595,5 +1755,5 @@ async def search_world(
         }
         for ind, c in rows
         if ind.id in signal
-    ]
+    ][:limit]
     return {"results": results, "total": len(results)}

@@ -356,6 +356,9 @@ def test_ticker_live_empty_redis(route_client):
     assert r.status_code == 200
     body = r.json()
     assert body["snapshots"] == [] and "server_time" in body
+    assert route_client.get("/api/v1/ticker/live?lane=russia").status_code == 200
+    assert route_client.get("/api/v1/ticker/live?lane=world").status_code == 200
+    assert route_client.get("/api/v1/ticker/live?lane=unknown").status_code == 200
 
 
 def test_forecast_route(route_client):

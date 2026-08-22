@@ -19,7 +19,6 @@ EN_EXACT_PATHS: frozenset[str] = frozenset({
     "/calculator",
     "/calculator/mortgage",
     "/calculator/compound",
-    "/world",
     "/russia",
     "/russia/category",
     "/russia/today",

@@ -205,7 +205,7 @@ export default function EmbedChart() {
                   background: period === p.key ? 'rgba(184,148,47,0.12)' : 'transparent',
                   color: period === p.key ? '#B8942F' : colors.textTertiary,
                 }}>
-                {p.label}
+                {t(p.labelKey)}
               </button>
             ))}
           </div>

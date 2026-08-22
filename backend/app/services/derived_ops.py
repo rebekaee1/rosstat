@@ -822,3 +822,19 @@ def weekly_mtd_in_calendar_month(weekly: Series) -> Series:
             growth = product * 100.0 - 100.0
             points.append((d, round(growth, 4)))
     return points
+
+
+def series_ratio(numerator: Series, denominator: Series) -> Series:
+    """Поточечное отношение двух дневных рядов с совпадающей датой.
+
+    Пропускает даты, где знаменатель ноль или отсутствует. Округление до
+    6 знаков: этого хватает для валютных кроссов (EUR/USD порядка единиц).
+    """
+    denom = {d: float(v) for d, v in denominator}
+    out: Series = []
+    for d, num in numerator:
+        den = denom.get(d)
+        if den is None or den == 0:
+            continue
+        out.append((d, round(float(num) / den, 6)))
+    return out

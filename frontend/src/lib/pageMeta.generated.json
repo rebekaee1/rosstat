@@ -314,12 +314,6 @@
       "countryDescEurostatTemplate": "{country}: {n_phrase} from Eurostat — prices, GDP, labor market, trade, and finance. Charts and latest values on Forecast Economy.",
       "countryDescNationalTemplate": "{country}: {n_phrase} — prices, GDP, labor market, trade, and finance. Source: {source_phrase}. Charts and latest values on Forecast Economy.",
       "countryTitleTemplate": "Economy of {country}: statistics and indicators",
-      "home": {
-        "description": "Official country statistics: prices, GDP, labor market, trade, and finance. Charts and tables from Eurostat, national statistical agencies, and central banks.",
-        "h1": "World economy: country statistics",
-        "path": "/world",
-        "title": "World economy — country statistics"
-      },
       "nIndicatorsMany": "{n} indicators",
       "nIndicatorsOne": "{n} indicator"
     }
@@ -498,12 +492,6 @@
       "united-kingdom": "Великобритании",
       "united-states": "США"
     },
-    "countryTitleTemplate": "Экономика {genitive}: статистика и показатели",
-    "home": {
-      "description": "Официальная статистика по странам: цены, ВВП, рынок труда, торговля и финансы. Графики и таблицы по данным Евростата, национальных статистических ведомств и центральных банков.",
-      "h1": "Мировая экономика: статистика по странам",
-      "path": "/world",
-      "title": "Мировая экономика — статистика по странам"
-    }
+    "countryTitleTemplate": "Экономика {genitive}: статистика и показатели"
   }
 }

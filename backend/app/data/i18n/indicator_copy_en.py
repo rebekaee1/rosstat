@@ -487,13 +487,13 @@ INDICATOR_COPY_EN: dict[str, IndicatorCopyEn] = {
     },
     "btc-usd": {
         "name": "Bitcoin (BTC/USD)",
-        "description": "Bitcoin price in US dollars from a major cryptocurrency exchange (Binance). Bitcoin is the first and largest cryptocurrency by market capitalisation; for Russian investors it is watched as an alternative asset alongside gold and foreign currency.",
+        "description": "Bitcoin price in US dollars from a major cryptocurrency exchange (Binance). Bitcoin is the first and largest cryptocurrency by market capitalisation; the series is used as a risk-appetite benchmark alongside gold, foreign exchange and commodity prices.",
         "methodology": "Daily bitcoin spot price in US dollars on Binance: each point is the calendar-day close. The market trades around the clock, including weekends. The series offers the daily path and averages over week, month, quarter and year computed from the same daily closes.",
         "unit": "USD",
     },
     "eth-usd": {
         "name": "Ethereum (ETH/USD)",
-        "description": "Ethereum price in US dollars from a major cryptocurrency exchange (Binance). Ethereum is the second-largest cryptocurrency by market capitalisation and the leading smart-contract platform; for Russian investors it ranks among alternative assets alongside bitcoin.",
+        "description": "Ethereum price in US dollars from a major cryptocurrency exchange (Binance). Ethereum is the second-largest cryptocurrency by market capitalisation and the leading smart-contract platform; the series is compared with bitcoin and other dollar-denominated assets.",
         "methodology": "Daily ether spot price in US dollars on Binance: each point is the calendar-day close. The market trades around the clock, including weekends. The series offers the daily path and averages over week, month, quarter and year computed from the same daily closes.",
         "unit": "USD",
     },
@@ -539,21 +539,51 @@ INDICATOR_COPY_EN: dict[str, IndicatorCopyEn] = {
         "methodology": "Daily nominal broad US dollar index from the Federal Reserve Board H.10 release. Each point is a business-day value; weekends and holidays are excluded. The card offers the daily level and averages over week, month, quarter and year from the same series; no forecast is produced.",
         "unit": "points",
     },
+    "eur-usd": {
+        "name": "EUR/USD exchange rate",
+        "description": "ECB euro foreign exchange reference rate: US dollars per one euro. Published each euro-area working day around 16:00 CET. This is a reference value, not a transaction rate.",
+        "methodology": "Daily ECB reference rate, US dollars per one euro. Each point is a TARGET working day; weekends and euro-area holidays have no observations. The card offers the daily value and averages over week, month, quarter and year from the same series; no forecast is produced.",
+        "unit": "USD",
+    },
+    "gbp-eur": {
+        "name": "GBP per euro",
+        "description": "ECB reference rate: pounds sterling per one euro. Used to obtain the pound–dollar cross from two ECB rates.",
+        "methodology": "Daily ECB reference rate, pounds per one euro. Each point is a TARGET working day. The series is not listed as a standalone card.",
+        "unit": "GBP",
+    },
+    "cny-eur": {
+        "name": "CNY per euro",
+        "description": "ECB reference rate: Chinese yuan per one euro. Used to obtain the dollar–yuan cross from two ECB rates.",
+        "methodology": "Daily ECB reference rate, yuan per one euro. Each point is a TARGET working day. The series is not listed as a standalone card.",
+        "unit": "CNY",
+    },
+    "gbp-usd": {
+        "name": "GBP/USD exchange rate",
+        "description": "Reference cross rate of the pound sterling against the US dollar: dollars per one pound, from two ECB euro reference rates. This is not a Bank of England official rate and not a transaction price.",
+        "methodology": "Ratio of the ECB dollar-per-euro rate to the ECB pound-per-euro rate on the same TARGET working day. Each point is US dollars per one pound. The card offers the daily value and period averages from the same series; no forecast is produced.",
+        "unit": "USD",
+    },
+    "usd-cny": {
+        "name": "USD/CNY exchange rate",
+        "description": "Reference cross rate of the US dollar against the Chinese yuan: yuan per one dollar, from two ECB euro reference rates. This is not the PBOC central parity and not a transaction price.",
+        "methodology": "Ratio of the ECB yuan-per-euro rate to the ECB dollar-per-euro rate on the same TARGET working day. Each point is yuan per one US dollar. The card offers the daily value and period averages from the same series; no forecast is produced.",
+        "unit": "CNY",
+    },
     "ust-10y": {
         "name": "U.S. 10-year Treasury yield",
-        "description": "Yield on 10-year US Treasury securities — a global benchmark for long-term rates. Rising yields usually mean tighter financial conditions; falling yields mean easier conditions. For a Russian audience the series is useful alongside the dollar exchange rate and commodity prices.",
+        "description": "Yield on 10-year US Treasury securities — a global benchmark for long-term rates. Rising yields usually mean tighter financial conditions; falling yields mean easier conditions. The series is compared with the dollar index and commodity prices.",
         "methodology": "Daily yield on constant-maturity 10-year US Treasury securities from the US Department of the Treasury. Each point is the trading-day value in percent per annum; weekends and holidays have no points. The card offers the daily value and period averages from the same series; no forecast is produced.",
         "unit": "%",
     },
     "brent": {
         "name": "Brent crude oil",
-        "description": "Spot price of Europe Brent crude in US dollars per barrel at the end of each trading day. Brent is a key global oil benchmark; for Russia its path is linked to budget revenues, the ruble exchange rate and the balance of payments.",
+        "description": "Spot price of Europe Brent crude in US dollars per barrel at the end of each trading day. Brent is a key global oil benchmark; its path is compared with other commodity benchmarks, exchange rates and interest rates.",
         "methodology": "Official daily Europe Brent spot price FOB in US dollars per barrel from the U.S. Energy Information Administration. Each point is the value for the calendar publication day; weekends and holidays are excluded. The card offers the daily level and averages over week, month, quarter and year computed from the same series for trend comparison.",
         "unit": "USD/bbl",
     },
     "copper": {
         "name": "Copper",
-        "description": "World copper price in US dollars per metric tonne — monthly average from the World Bank commodity price data. Copper is a key industrial metal; its price is treated as a leading indicator of the global economy and matters for Russian commodity exports.",
+        "description": "World copper price in US dollars per metric tonne — monthly average from the World Bank commodity price data. Copper is a key industrial metal; its price is treated as a leading indicator of the global economy and the commodity cycle.",
         "methodology": "Monthly average copper price in dollars per tonne from the World Bank commodity price data. Each point is a calendar month. The card offers the monthly value and quarterly and annual averages from the same series; no forecast is produced.",
         "unit": "USD/t",
     },
@@ -583,7 +613,7 @@ INDICATOR_COPY_EN: dict[str, IndicatorCopyEn] = {
     },
     "coal": {
         "name": "Coal (Australia, Newcastle)",
-        "description": "World thermal coal price in US dollars per metric tonne on the Australian Newcastle benchmark — monthly average from the World Bank commodity price data. Coal is a sizeable item in Russian commodity exports, especially to Asia.",
+        "description": "World thermal coal price in US dollars per metric tonne on the Australian Newcastle benchmark — monthly average from the World Bank commodity price data. Coal is a key energy commodity in global raw-material trade.",
         "methodology": "Monthly average price of Australian thermal coal (Newcastle) in dollars per tonne from the World Bank commodity price data. Each point is a calendar month. The card offers the monthly value and quarterly and annual averages from the same series; no forecast is produced.",
         "unit": "USD/t",
     },
@@ -953,6 +983,34 @@ INDICATOR_COPY_EN: dict[str, IndicatorCopyEn] = {
         "name": "Diesel fuel",
         "methodology": "Average retail price of diesel fuel, rubles per litre. Weekly Rosstat; same fuel family as AI-92.",
         "unit": "RUB/l",
+    },
+    "weo-gdp-usd": {
+        "name": "GDP in current US dollars",
+        "description": (
+            "Annual estimate of Russia’s GDP at current prices, billions of US dollars, "
+            "from the IMF World Economic Outlook. This is not Rosstat’s ruble series "
+            "and not a conversion at the Bank of Russia exchange rate."
+        ),
+        "methodology": (
+            "Annual GDP estimate in current US dollars. "
+            "Source: International Monetary Fund, World Economic Outlook. "
+            "The series contains published IMF values and estimates; no forecast is produced on the card."
+        ),
+        "unit": "billion $",
+    },
+    "weo-gdp-per-capita-usd": {
+        "name": "GDP per capita in current US dollars",
+        "description": (
+            "Annual estimate of Russia’s GDP per capita in current US dollars "
+            "from the IMF World Economic Outlook. This is not a Rosstat series "
+            "and not a conversion of rubles at the Bank of Russia exchange rate."
+        ),
+        "methodology": (
+            "Annual GDP per capita estimate in current US dollars. "
+            "Source: International Monetary Fund, World Economic Outlook. "
+            "The series contains published IMF values and estimates; no forecast is produced on the card."
+        ),
+        "unit": "$ per person",
     },
 }
 

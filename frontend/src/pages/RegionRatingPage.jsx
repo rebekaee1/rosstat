@@ -9,11 +9,10 @@ import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
 import { regionRatingTrail } from '../lib/breadcrumbs';
 import {
-  regionHubPath,
   regionIndicatorPath,
   regionRatingPath,
 } from '../lib/sitePaths';
-import { useLocale, useT } from '../i18n';
+import { useT } from '../i18n';
 
 function ButtonClass(active) {
   return [
@@ -26,7 +25,6 @@ function ButtonClass(active) {
 
 export default function RegionRatingPage() {
   const t = useT();
-  const { locale } = useLocale();
   const { code } = useParams();
   const navigate = useNavigate();
   const { data, isLoading, isError, refetch, isFetching } = useRegionsHeatmap(code);

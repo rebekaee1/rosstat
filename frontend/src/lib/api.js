@@ -74,6 +74,16 @@ export const fetchIndicators = (params = {}, { signal } = {}) => {
   return api.get(`/indicators${q ? `?${q}` : ''}`, { signal }).then((r) => r.data);
 };
 
+/**
+ * Глобальный поиск по мировым индикаторам (все страны).
+ * Backend: GET /api/v1/world/search — listed + ненулевой сигнал.
+ */
+export const fetchWorldSearch = (q, { country, limit = 50 } = {}, { signal } = {}) => {
+  const params = { q, limit };
+  if (country) params.country = country;
+  return api.get('/world/search', { signal, params }).then((r) => r.data);
+};
+
 /** Алиас для списка индикаторов по категории (план Фазы 1). */
 export const fetchIndicatorsByCategory = (category, opts = {}) =>
   fetchIndicators({ category, ...opts });
@@ -116,6 +126,9 @@ export const fetchCalendarUpcoming = (params = {}, { signal } = {}) => {
   const q = search.toString();
   return api.get(`/calendar/upcoming${q ? `?${q}` : ''}`, { signal }).then((r) => r.data);
 };
+
+export const fetchCoverage = ({ signal } = {}) =>
+  api.get('/dashboard/coverage', { signal }).then((r) => r.data);
 
 export const fetchDashboardSparklines = ({ signal } = {}) =>
   api.get('/dashboard/sparklines', { signal }).then((r) => r.data);

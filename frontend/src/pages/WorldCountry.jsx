@@ -28,6 +28,7 @@ import {
 import {
   countryPath,
   indicatorPath,
+  russiaIndicatorPath,
   regionHubPath,
 } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
@@ -71,14 +72,14 @@ function CompactChange({ change }) {
   );
 }
 
-function IndicatorRow({ item, slug }) {
+function IndicatorRow({ item, slug, to }) {
   const t = useT();
   const { locale } = useLocale();
   const name = stripFrequencySuffix(item.name);
   const freqLine = formatFreqList(item, t);
   return (
     <Link
-      to={indicatorPath(slug, item.code)}
+      to={to || indicatorPath(slug, item.code)}
       className="group flex flex-col gap-2 rounded-xl border border-border-subtle bg-white px-3.5 py-3 transition-all hover:border-border-champagne hover:shadow-[0_12px_30px_rgba(35,30,16,0.06)] sm:min-h-[92px] sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-3.5"
     >
       <div className="min-w-0 flex-1">
@@ -226,7 +227,7 @@ export default function WorldCountry() {
             {t('world.country.notFoundBody', { slug })}
           </p>
           <div className="flex flex-wrap justify-center gap-3 text-sm">
-            <Link to="/world" className="rounded-xl bg-champagne/10 px-4 py-2 text-champagne transition-colors hover:bg-champagne/20">
+            <Link to="/#countries" className="rounded-xl bg-champagne/10 px-4 py-2 text-champagne transition-colors hover:bg-champagne/20">
               {t('world.country.allCountries')}
             </Link>
             <Link to={regionHubPath()} className="rounded-xl border border-border-subtle px-4 py-2 text-text-secondary transition-colors hover:text-champagne">
@@ -353,24 +354,50 @@ export default function WorldCountry() {
             />
           </div>
 
+          {(data.market_indicators || []).length > 0 && (
+            <section className="mb-8" data-testid="country-market-indicators">
+              <div className="mb-3 flex items-end justify-between gap-3 sm:mb-4 sm:gap-4">
+                <div className="min-w-0">
+                  <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">
+                    {t('world.country.markets')}
+                  </div>
+                  <h2 className="mt-1 font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">
+                    {t('world.country.markets')}
+                  </h2>
+                </div>
+                <span className="shrink-0 font-mono text-xs text-text-tertiary">
+                  {data.market_indicators.length}
+                </span>
+              </div>
+              <div className="grid gap-2 sm:gap-2.5 xl:grid-cols-2">
+                {data.market_indicators.map((ind) => (
+                  <IndicatorRow
+                    key={ind.code}
+                    item={ind}
+                    slug={slug}
+                    to={russiaIndicatorPath(ind.code)}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
           {filteredCategories.length === 0 && (
             <div className="rounded-2xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
               {searching ? (
                 <>
-                  По запросу «{query}» ничего не найдено.
+                  {t('world.country.emptySearch', { query })}
                   {' '}
                   <button type="button" onClick={() => setQuery('')} className="text-champagne hover:underline">
-                    Сбросить поиск
+                    {t('world.country.emptySearchReset')}
                   </button>
                 </>
               ) : (
                 <>
-                  Пока нет опубликованных показателей по этой стране.
+                  {t('world.country.emptyCatalog')}
                   {' '}
-                  Данные появятся после проверки официальных рядов.
-                  {' '}
-                  <Link to="/world" className="text-champagne hover:underline">
-                    К каталогу стран
+                  <Link to="/#countries" className="text-champagne hover:underline">
+                    {t('world.country.toCountries')}
                   </Link>
                 </>
               )}

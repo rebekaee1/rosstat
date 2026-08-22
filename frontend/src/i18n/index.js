@@ -7,5 +7,6 @@ export {
   PREVIEW_QUERY,
   LOCALE_HEADER,
 } from './locale';
-export { LocaleProvider, useLocale, useT } from './LocaleProvider';
+export { LocaleProvider } from './LocaleProvider';
+export { useLocale, useT } from './localeContext';
 export { default as LocalePreviewBanner } from './LocalePreviewBanner';

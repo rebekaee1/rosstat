@@ -18,6 +18,11 @@ Used by daily Fed/Treasury/EIA series redistributed on FRED
 (``DTWEXBGS``, ``DGS10``, ``DCOILBRENTEU``, ``DHHNGSP``, …). Full history comes in one
 response, so each ETL run fetches the whole CSV and relies on ADR-0002
 idempotent upsert.
+
+Не всякий ряд на FRED можно переопубликовать: у серий индексных провайдеров
+(``SP500`` и другие серии S&P Dow Jones Indices, бывшие серии Wilshire) в
+примечаниях стоит прямой запрет воспроизведения без письменного разрешения
+правообладателя. Такие ряды в каталог не заводим.
 """
 from __future__ import annotations
 

@@ -12,10 +12,14 @@ const ROOT = resolve(import.meta.dirname, '../../..');
 const SURFACES = [
   'backend/app/services/seo_content.py',
   'backend/app/services/seo_renderer.py',
+  // После i18n публичные тексты SPA живут в словарях, а не в компонентах.
+  'frontend/src/i18n/messages.ru.js',
+  'frontend/src/i18n/messages.en.js',
   'frontend/src/pages/Dashboard.jsx',
   'frontend/src/components/home/HomeHero.jsx',
-  'frontend/src/components/home/HomeCountriesPanel.jsx',
-  'frontend/src/components/home/HomeTools.jsx',
+  'frontend/src/components/home/HomeCountryList.jsx',
+  'frontend/src/components/home/HomeCoverage.jsx',
+  'frontend/src/components/home/HomeWorkbench.jsx',
   'frontend/src/pages/About.jsx',
   'frontend/src/pages/Privacy.jsx',
   'frontend/src/pages/Terms.jsx',
@@ -53,7 +57,7 @@ describe('public product claims', () => {
   });
 
   it('About честно разделяет просмотр и скачивание', () => {
-    const text = read('frontend/src/pages/About.jsx');
+    const text = read('frontend/src/i18n/messages.ru.js');
     expect(text).toMatch(/без регистрации/i);
     expect(text).toMatch(/после бесплатной регистрации/i);
     expect(text).toMatch(/доступная статистика/i);

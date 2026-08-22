@@ -298,8 +298,8 @@ async def _world_rating_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
 
 
 async def _world_hub_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
-    """Хаб /world + карточки стран /{slug}."""
-    urls = [_u(paths.world_hub(), today.isoformat(), "weekly", "0.9")]
+    """Карточки стран /{slug}. Хаба /world нет — витрина мира живёт на главной."""
+    urls: list[SiteUrl] = []
     last_sub = (
         select(
             WorldIndicator.country_id.label("cid"),

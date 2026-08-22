@@ -1,115 +1,51 @@
 import { useMemo } from 'react';
 import { useIndicatorData } from './hooks';
-
-function computeCumulative(points, fromDate, toDate) {
-  let product = 1;
-  const series = [];
-  let monthIdx = 0;
-
-  for (const p of points) {
-    if (p.date < fromDate || p.date > toDate) continue;
-    product *= p.value / 100;
-    monthIdx++;
-    series.push({ date: p.date, product, monthIdx });
-  }
-
-  return { product, series, months: monthIdx };
-}
-
-function buildPurchasingPowerSeries(amount, cpiPoints, fromDate, toDate) {
-  const series = [];
-  let cumProduct = 1;
-  let prevYear = null;
-
-  for (const p of cpiPoints) {
-    if (p.date < fromDate || p.date > toDate) continue;
-    cumProduct *= p.value / 100;
-    const year = new Date(p.date).getUTCFullYear();
-
-    series.push({
-      date: p.date,
-      purchasing: Math.round(amount / cumProduct),
-      equivalent: Math.round(amount * cumProduct),
-      year,
-      isJanuary: prevYear !== year,
-    });
-    prevYear = year;
-  }
-
-  return series;
-}
-
-function computeYearlyBreakdown(cpiPoints, fromDate, toDate, amount) {
-  const yearBuckets = new Map();
-
-  for (const p of cpiPoints) {
-    if (p.date < fromDate || p.date > toDate) continue;
-    const yr = new Date(p.date).getUTCFullYear();
-    if (!yearBuckets.has(yr)) yearBuckets.set(yr, []);
-    yearBuckets.get(yr).push(p.value);
-  }
-
-  const breakdown = [];
-  let runningProduct = 1;
-  let peakRate = -Infinity;
-  let peakIdx = 0;
-  let troughRate = Infinity;
-  let troughIdx = 0;
-
-  const sortedYears = [...yearBuckets.keys()].sort((a, b) => a - b);
-
-  for (let i = 0; i < sortedYears.length; i++) {
-    const year = sortedYears[i];
-    const values = yearBuckets.get(year);
-
-    let yearProduct = 1;
-    for (const v of values) yearProduct *= v / 100;
-    runningProduct *= yearProduct;
-
-    const annualRate = (yearProduct - 1) * 100;
-
-    if (annualRate > peakRate) { peakRate = annualRate; peakIdx = i; }
-    if (annualRate < troughRate) { troughRate = annualRate; troughIdx = i; }
-
-    breakdown.push({
-      year,
-      annualRate,
-      months: values.length,
-      cumulativeRate: (runningProduct - 1) * 100,
-      purchasingPower: Math.round(amount / runningProduct),
-      equivalent: Math.round(amount * runningProduct),
-    });
-  }
-
-  if (breakdown.length) {
-    breakdown[peakIdx].isPeak = true;
-    breakdown[troughIdx].isTrough = true;
-  }
-
-  const peakYear = breakdown.length
-    ? { year: breakdown[peakIdx].year, rate: peakRate }
-    : null;
-  const troughYear = breakdown.length
-    ? { year: breakdown[troughIdx].year, rate: troughRate }
-    : null;
-
-  return { breakdown, peakYear, troughYear };
-}
-
-function toDateStr(year, month = 1) {
-  return `${year}-${String(month).padStart(2, '0')}-01`;
-}
+import { useWorldCompareCatalog, useWorldCompareSeries, useWorldIndicator } from './worldApi';
+import { useLocale } from '../i18n';
+import {
+  annualYoyFromIndexPoints,
+  buildRussiaResult,
+  buildWorldResult,
+  inflationCountriesFromCatalog,
+  isRussiaCountry,
+  RUSSIA_SOURCE,
+  RUSSIA_SLUG,
+  HICP_CONCEPT,
+  yearOf,
+} from './inflationCalc';
 
 const CPI_QUERY_PARAMS = { limit: 5000 };
 
-export default function useInflationCalc(amount, fromYear, toYear) {
-  const qCpi = useIndicatorData('cpi', CPI_QUERY_PARAMS);
-  const qFood = useIndicatorData('cpi-food', CPI_QUERY_PARAMS);
-  const qNonfood = useIndicatorData('cpi-nonfood', CPI_QUERY_PARAMS);
-  const qServices = useIndicatorData('cpi-services', CPI_QUERY_PARAMS);
+export default function useInflationCalc(amount, fromYear, toYear, countrySlug = 'russia') {
+  const { locale } = useLocale();
 
-  const isLoading = qCpi.isLoading || qFood.isLoading || qNonfood.isLoading || qServices.isLoading;
-  const isError = qCpi.isError || qFood.isError || qNonfood.isError || qServices.isError;
+  const catalogQ = useWorldCompareCatalog();
+  const countries = useMemo(
+    () => inflationCountriesFromCatalog(catalogQ.data, { locale }),
+    [catalogQ.data, locale],
+  );
+  const resolvedSlug = useMemo(() => {
+    if (isRussiaCountry(countrySlug)) return RUSSIA_SLUG;
+    if (catalogQ.isLoading || !countries.length) return countrySlug;
+    return countries.some((c) => c.slug === countrySlug) ? countrySlug : RUSSIA_SLUG;
+  }, [countrySlug, countries, catalogQ.isLoading]);
+  const isRussia = isRussiaCountry(resolvedSlug);
+
+  const qCpi = useIndicatorData('cpi', CPI_QUERY_PARAMS, { enabled: isRussia });
+  const qFood = useIndicatorData('cpi-food', CPI_QUERY_PARAMS, { enabled: isRussia });
+  const qNonfood = useIndicatorData('cpi-nonfood', CPI_QUERY_PARAMS, { enabled: isRussia });
+  const qServices = useIndicatorData('cpi-services', CPI_QUERY_PARAMS, { enabled: isRussia });
+
+  const seriesQ = useWorldCompareSeries(
+    isRussia ? null : resolvedSlug,
+    HICP_CONCEPT,
+    { enabled: !isRussia && !!resolvedSlug },
+  );
+  const indicatorCode = seriesQ.data?.meta?.indicator_code;
+  const metaQ = useWorldIndicator(
+    isRussia ? null : resolvedSlug,
+    indicatorCode,
+  );
 
   const cpiAllRaw = qCpi.data?.data;
   const cpiFoodRaw = qFood.data?.data;
@@ -121,92 +57,118 @@ export default function useInflationCalc(amount, fromYear, toYear) {
   const cpiNonfood = useMemo(() => cpiNonfoodRaw || [], [cpiNonfoodRaw]);
   const cpiServices = useMemo(() => cpiServicesRaw || [], [cpiServicesRaw]);
 
+  const worldPoints = useMemo(
+    () => seriesQ.data?.data || [],
+    [seriesQ.data],
+  );
+
+  const worldYoy = useMemo(
+    () => annualYoyFromIndexPoints(worldPoints),
+    [worldPoints],
+  );
+
   const lastAvailableDate = useMemo(() => {
-    if (!cpiAll.length) return null;
-    return cpiAll[cpiAll.length - 1].date;
-  }, [cpiAll]);
+    if (isRussia) {
+      if (!cpiAll.length) return null;
+      return cpiAll[cpiAll.length - 1].date;
+    }
+    if (worldYoy.length) return worldYoy[worldYoy.length - 1].date;
+    if (!worldPoints.length) return null;
+    return worldPoints[worldPoints.length - 1].date;
+  }, [isRussia, cpiAll, worldYoy, worldPoints]);
 
   const lastAvailableYear = useMemo(() => {
     if (!lastAvailableDate) return new Date().getFullYear();
-    return new Date(lastAvailableDate).getUTCFullYear();
+    return yearOf(lastAvailableDate);
   }, [lastAvailableDate]);
 
   const minYear = useMemo(() => {
-    if (!cpiAll.length) return 1991;
-    return new Date(cpiAll[0].date).getUTCFullYear();
-  }, [cpiAll]);
+    if (isRussia) {
+      if (!cpiAll.length) return 1991;
+      return yearOf(cpiAll[0].date);
+    }
+    if (worldYoy.length) return worldYoy[0].year;
+    if (!worldPoints.length) return fromYear;
+    return yearOf(worldPoints[0].date);
+  }, [isRussia, cpiAll, worldYoy, worldPoints, fromYear]);
+
+  const seriesStartYear = useMemo(() => {
+    if (isRussia || !worldPoints.length) return null;
+    return yearOf(worldPoints[0].date);
+  }, [isRussia, worldPoints]);
+
+  const source = isRussia
+    ? RUSSIA_SOURCE
+    : (metaQ.data?.indicator?.source || '');
+
+  const countryName = isRussia
+    ? null
+    : (seriesQ.data?.meta?.country_name
+      || countries.find((c) => c.slug === countrySlug)?.name
+      || countrySlug);
+
+  const isLoading = isRussia
+    ? (qCpi.isLoading || qFood.isLoading || qNonfood.isLoading || qServices.isLoading)
+    : (seriesQ.isLoading || (Boolean(indicatorCode) && metaQ.isLoading));
+  const isError = isRussia
+    ? (qCpi.isError || qFood.isError || qNonfood.isError || qServices.isError)
+    : seriesQ.isError;
+
+  const countriesLoading = catalogQ.isLoading;
 
   return useMemo(() => {
-    const base = { isLoading, isError, lastAvailableYear, minYear, lastAvailableDate };
+    const base = {
+      isLoading,
+      isError,
+      lastAvailableYear,
+      minYear,
+      lastAvailableDate,
+      countries,
+      countriesLoading,
+      source,
+      countryName,
+      seriesStartYear,
+      isRussia,
+    };
 
-    if (isLoading || isError || !cpiAll.length || !amount || amount <= 0) {
+    if (isLoading || isError || !amount || amount <= 0) {
       return { ...base, result: null };
     }
 
-    // В-28: клэмп периода к доступным данным должен быть виден пользователю —
-    // hero и share-текст показывают effective-годы, а не введённые.
-    const effectiveFrom = Math.max(fromYear, minYear);
-    const effectiveTo = Math.min(toYear, lastAvailableYear);
-    const clamped = effectiveFrom !== fromYear || effectiveTo !== toYear;
-    if (effectiveFrom > effectiveTo) {
+    if (isRussia) {
+      if (!cpiAll.length) return { ...base, result: null };
       return {
         ...base,
-        result: {
-          equivalent: amount, purchasing: amount,
-          totalInflation: 0, avgAnnual: 0, multiplier: 1,
-          series: [], months: 0,
-          food: 0, nonfood: 0, services: 0,
-          yearlyBreakdown: [], peakYear: null, troughYear: null, doublingYears: null,
-          effectiveFrom, effectiveTo, clamped,
-        },
+        result: buildRussiaResult({
+          amount,
+          fromYear,
+          toYear,
+          cpiAll,
+          cpiFood,
+          cpiNonfood,
+          cpiServices,
+          minYear,
+          lastAvailableYear,
+          lastAvailableDate,
+        }),
       };
     }
 
-    const fromDate = toDateStr(effectiveFrom, 1);
-    const toDate = lastAvailableDate && effectiveTo === lastAvailableYear
-      ? lastAvailableDate
-      : toDateStr(effectiveTo, 12);
-
-    const { product, months } = computeCumulative(cpiAll, fromDate, toDate);
-    const series = buildPurchasingPowerSeries(amount, cpiAll, fromDate, toDate);
-
-    const totalInflation = (product - 1) * 100;
-    const years = months / 12;
-    const avgAnnual = years > 0 ? (Math.pow(product, 1 / years) - 1) * 100 : 0;
-
-    const foodCum = computeCumulative(cpiFood, fromDate, toDate);
-    const nonfoodCum = computeCumulative(cpiNonfood, fromDate, toDate);
-    const servicesCum = computeCumulative(cpiServices, fromDate, toDate);
-
-    const { breakdown, peakYear, troughYear } = computeYearlyBreakdown(cpiAll, fromDate, toDate, amount);
-
-    const doublingYears = avgAnnual > 0.5 ? Math.round(72 / avgAnnual) : null;
+    if (!worldPoints.length) return { ...base, result: null };
 
     return {
       ...base,
-      result: {
-        equivalent: Math.round(amount * product),
-        purchasing: Math.round(amount / product),
-        totalInflation,
-        avgAnnual,
-        multiplier: product,
-        series,
-        months,
-        food: (foodCum.product - 1) * 100,
-        nonfood: (nonfoodCum.product - 1) * 100,
-        services: (servicesCum.product - 1) * 100,
-        yearlyBreakdown: breakdown,
-        peakYear,
-        troughYear,
-        doublingYears,
-        effectiveFrom,
-        effectiveTo,
-        clamped,
-        // В-29: явные границы расчётного периода (с января from-года по
-        // последний доступный месяц to-года) — для подписи под результатом.
-        periodFrom: fromDate,
-        periodTo: toDate,
-      },
+      result: buildWorldResult({
+        amount,
+        fromYear,
+        toYear,
+        indexPoints: worldPoints,
+        seriesStartYear,
+      }),
     };
-  }, [amount, fromYear, toYear, cpiAll, cpiFood, cpiNonfood, cpiServices, isLoading, isError, lastAvailableYear, minYear, lastAvailableDate]);
+  }, [
+    amount, fromYear, toYear, cpiAll, cpiFood, cpiNonfood, cpiServices,
+    worldPoints, isLoading, isError, lastAvailableYear, minYear, lastAvailableDate,
+    countries, countriesLoading, source, countryName, seriesStartYear, isRussia,
+  ]);
 }

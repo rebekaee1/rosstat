@@ -11,8 +11,8 @@ import {
   regionHubPath,
   russiaCategoriesPath,
   russiaCategoryPath,
-  worldHubPath,
 } from '../lib/sitePaths';
+import { WORLD_RATING_TO } from '../lib/navItems';
 import { useT, useLocale } from '../i18n';
 
 const footLink = cn(
@@ -95,8 +95,13 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2 text-sm text-text-secondary">
               <li>
-                <Link to={worldHubPath()} className={footLink}>
-                  {t('footer.world')}
+                <Link to="/#countries" className={footLink}>
+                  {t('footer.countries')}
+                </Link>
+              </li>
+              <li>
+                <Link to={WORLD_RATING_TO} className={footLink}>
+                  {t('footer.worldRating')}
                 </Link>
               </li>
               <li>

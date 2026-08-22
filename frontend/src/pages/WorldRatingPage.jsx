@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
-  ArrowUpDown, BarChart3, Globe2, MapPinned, SlidersHorizontal, Table2,
+  ArrowUpDown, BarChart3, Globe2, MapPinned, SlidersHorizontal, Table2, X,
 } from 'lucide-react';
+import { useAuth } from '../context/authContext';
 import useDocumentMeta from '../lib/useMeta';
 import {
   formatWorldValue,
@@ -12,7 +13,9 @@ import {
   useWorldRatingConcepts,
 } from '../lib/worldApi';
 import {
+  conceptColorMode,
   DEFAULT_HOME_COUNTRY_CONCEPT,
+  defaultSortForConcept,
   homeConceptLabel,
   resolveActiveMapYear,
   russiaDeepLinksForConcept,
@@ -38,17 +41,7 @@ import {
   worldRatingPath,
 } from '../lib/sitePaths';
 
-// Направление сортировки по умолчанию приходит с сервера вместе со списком
-// показателей; локальный набор — только фолбэк на время загрузки списка.
-const SORT_ASC_CONCEPTS = new Set(['unemployment-rate', 'long-term-interest-rate']);
-
-function defaultSortForConcept(slug, concepts) {
-  const known = concepts?.find((item) => item.slug === slug);
-  if (known?.default_sort === 'asc' || known?.default_sort === 'desc') {
-    return known.default_sort;
-  }
-  return SORT_ASC_CONCEPTS.has(slug) ? 'asc' : 'desc';
-}
+const RATING_EXTRA_MAX = 3;
 
 function ButtonClass(active) {
   return [
@@ -59,11 +52,50 @@ function ButtonClass(active) {
   ].join(' ');
 }
 
+function parseColsParam(searchParams) {
+  const raw = searchParams.get('cols') || '';
+  if (!raw) return [];
+  const seen = new Set();
+  const slugs = [];
+  for (const part of raw.split(',')) {
+    const slug = part.trim();
+    if (!slug || seen.has(slug)) continue;
+    seen.add(slug);
+    slugs.push(slug);
+  }
+  return slugs;
+}
+
+function lookupExtraValue(yearItems, row) {
+  if (!yearItems || !row) return null;
+  const direct = yearItems[row.country_code];
+  if (direct?.value != null) return direct.value;
+  for (const item of Object.values(yearItems)) {
+    if (!item) continue;
+    if (row.country_slug && item.country_slug === row.country_slug && item.value != null) {
+      return item.value;
+    }
+    if (row.country_code === 'RU' && item.country_code === 'RU' && item.value != null) {
+      return item.value;
+    }
+  }
+  return null;
+}
+
+function extraColumnLabel(slug, concepts, seriesData, t) {
+  const fromCatalog = concepts.find((item) => item.slug === slug);
+  return homeConceptLabel(
+    slug,
+    t,
+    fromCatalog?.name || seriesData?.concept?.name || slug,
+  );
+}
+
 function rowHref(item, russiaLinks) {
   if (item?.country_code === 'RU' || item?.country_slug === 'russia') {
     return russiaLinks.countryHref;
   }
-  if (!item?.country_slug) return '/world';
+  if (!item?.country_slug) return '/';
   if (item.indicator_code) {
     return indicatorPath(item.country_slug, item.indicator_code);
   }
@@ -80,11 +112,17 @@ function pluralUnit(n, base, t, locale) {
 export default function WorldRatingPage() {
   const t = useT();
   const { locale } = useLocale();
+  const { isAuthed } = useAuth();
   const { conceptSlug } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const activeConcept = conceptSlug || DEFAULT_HOME_COUNTRY_CONCEPT;
   const [selectedYear, setSelectedYear] = useState(null);
-  const [sortDirection, setSortDirection] = useState(() => defaultSortForConcept(activeConcept));
+  // null = пользователь ещё не трогал переключатель → берём default с сервера.
+  // Нельзя писать sortDirection в useEffect от [concepts]: любой refetch каталога
+  // (новый объект при том же содержимом) мгновенно откатывал бы клик.
+  const [sortOverride, setSortOverride] = useState(null);
+  const [addOpen, setAddOpen] = useState(false);
 
   const countriesQ = useWorldCountries();
   const catalogQ = useWorldRatingConcepts();
@@ -106,9 +144,57 @@ export default function WorldRatingPage() {
     [catalogQ.data],
   );
 
+  const rawExtraCols = useMemo(() => parseColsParam(searchParams), [searchParams]);
+  // Гость не видит лишние колонки даже из URL — как GUEST_MAX на compare.
+  const extraSlugs = useMemo(() => {
+    if (!isAuthed) return [];
+    const known = new Set(concepts.map((item) => item.slug));
+    if (known.size === 0) return [];
+    const out = [];
+    const seen = new Set();
+    for (const slug of rawExtraCols) {
+      if (!slug || slug === activeConcept || seen.has(slug) || !known.has(slug)) continue;
+      seen.add(slug);
+      out.push(slug);
+      if (out.length >= RATING_EXTRA_MAX) break;
+    }
+    return out;
+  }, [isAuthed, rawExtraCols, concepts, activeConcept]);
+
+  const extraSeries0 = useWorldMapSeries(extraSlugs[0]);
+  const extraSeries1 = useWorldMapSeries(extraSlugs[1]);
+  const extraSeries2 = useWorldMapSeries(extraSlugs[2]);
+
+  const writeExtraCols = useCallback((next) => {
+    const params = new URLSearchParams(searchParams);
+    if (next.length) params.set('cols', next.join(','));
+    else params.delete('cols');
+    setSearchParams(params, { replace: true });
+  }, [searchParams, setSearchParams]);
+
+  const addExtra = useCallback((slug) => {
+    if (!isAuthed || !slug || slug === activeConcept) return;
+    if (extraSlugs.includes(slug)) return;
+    if (extraSlugs.length >= RATING_EXTRA_MAX) return;
+    writeExtraCols([...extraSlugs, slug]);
+    setAddOpen(false);
+  }, [isAuthed, activeConcept, extraSlugs, writeExtraCols]);
+
+  const removeExtra = useCallback((slug) => {
+    writeExtraCols(extraSlugs.filter((item) => item !== slug));
+  }, [extraSlugs, writeExtraCols]);
+
+  const addableConcepts = useMemo(
+    () => concepts.filter((item) => item.slug !== activeConcept && !extraSlugs.includes(item.slug)),
+    [concepts, activeConcept, extraSlugs],
+  );
+  const atExtraMax = extraSlugs.length >= RATING_EXTRA_MAX;
+
   useEffect(() => {
-    setSortDirection(defaultSortForConcept(activeConcept, concepts));
-  }, [activeConcept, concepts]);
+    setSortOverride(null);
+  }, [activeConcept]);
+
+  const sortDirection = sortOverride ?? defaultSortForConcept(activeConcept, concepts);
 
   const concept = useMemo(
     () => concepts.find((item) => item.slug === activeConcept)
@@ -124,6 +210,14 @@ export default function WorldRatingPage() {
   const unknownConcept = knownConceptLoaded && !concepts.some((item) => item.slug === activeConcept);
   const years = mapSeriesQ.data?.years || [];
   const activeYear = resolveActiveMapYear(years, selectedYear, mapSeriesQ.data?.values_by_year);
+  const extraColumns = useMemo(() => extraSlugs.map((slug, index) => {
+    const seriesData = [extraSeries0.data, extraSeries1.data, extraSeries2.data][index];
+    return {
+      slug,
+      label: extraColumnLabel(slug, concepts, seriesData, t),
+      yearItems: worldYearItems(seriesData, activeYear),
+    };
+  }), [extraSlugs, concepts, extraSeries0.data, extraSeries1.data, extraSeries2.data, activeYear, t]);
   const baseYearItems = useMemo(
     () => worldYearItems(mapSeriesQ.data, activeYear),
     [mapSeriesQ.data, activeYear],
@@ -157,8 +251,11 @@ export default function WorldRatingPage() {
     [yearItems],
   );
   const ranked = useMemo(() => {
-    const rows = worldRankingFromYearItems(yearItems, Number.MAX_SAFE_INTEGER);
-    if (sortDirection === 'asc') rows.reverse();
+    const rows = worldRankingFromYearItems(
+      yearItems,
+      Number.MAX_SAFE_INTEGER,
+      sortDirection,
+    );
     return rows.map((item, index) => ({ ...item, rank: index + 1 }));
   }, [yearItems, sortDirection]);
   const withoutData = useMemo(() => {
@@ -186,13 +283,17 @@ export default function WorldRatingPage() {
     return 'day';
   }, [ranked]);
 
-  const loading = countriesQ.isLoading || catalogQ.isLoading || mapSeriesQ.isLoading;
-  const error = countriesQ.isError || catalogQ.isError || mapSeriesQ.isError;
+  const loading = catalogQ.isLoading || mapSeriesQ.isLoading;
+  const error = catalogQ.isError || mapSeriesQ.isError;
   const retry = () => {
     countriesQ.refetch();
     catalogQ.refetch();
     mapSeriesQ.refetch();
+    extraSeries0.refetch();
+    extraSeries1.refetch();
+    extraSeries2.refetch();
   };
+  const colCount = (sharedUnit ? 4 : 5) + extraColumns.length;
 
   const shortName = homeConceptLabel(activeConcept, t, concept.name);
   const pageTitle = worldRatingTitle(activeConcept, concept.name || shortName, activeYear, t);
@@ -293,10 +394,10 @@ export default function WorldRatingPage() {
                   {t('world.rating.sortOrder')}
                 </p>
                 <div className="flex flex-wrap gap-1.5">
-                  <button type="button" className={ButtonClass(sortDirection === 'desc')} onClick={() => setSortDirection('desc')}>
+                  <button type="button" className={ButtonClass(sortDirection === 'desc')} onClick={() => setSortOverride('desc')}>
                     {t('world.rating.sortDesc')}
                   </button>
-                  <button type="button" className={ButtonClass(sortDirection === 'asc')} onClick={() => setSortDirection('asc')}>
+                  <button type="button" className={ButtonClass(sortDirection === 'asc')} onClick={() => setSortOverride('asc')}>
                     {t('world.rating.sortAsc')}
                   </button>
                 </div>
@@ -317,7 +418,7 @@ export default function WorldRatingPage() {
                     unit={concept.unit || mapSeriesQ.data?.concept?.unit || ''}
                     metricName={shortName}
                     periodLabel={activeYear ? String(activeYear) : ''}
-                    colorMode={activeConcept === 'budget-balance-gdp' ? 'diverging' : 'auto'}
+                    colorMode={conceptColorMode(activeConcept)}
                     defaultScope="world"
                     onSelect={openCountry}
                   />
@@ -442,12 +543,72 @@ export default function WorldRatingPage() {
                   {t('world.rating.allWithData', { n: ranked.length })}
                 </h2>
               </div>
-              <div className="inline-flex items-center gap-2 rounded-xl bg-obsidian-light px-3 py-2 text-xs text-text-secondary">
-                <ArrowUpDown size={14} className="text-champagne" />
-                {sortDirection === 'desc'
-                  ? t('world.rating.sortDescHint')
-                  : t('world.rating.sortAscHint')}
+              <div className="flex flex-wrap items-end gap-2">
+                <div className="inline-flex items-center gap-2 rounded-xl bg-obsidian-light px-3 py-2 text-xs text-text-secondary">
+                  <ArrowUpDown size={14} className="text-champagne" />
+                  {sortDirection === 'desc'
+                    ? t('world.rating.sortDescHint')
+                    : t('world.rating.sortAscHint')}
+                </div>
               </div>
+            </div>
+            <div className="mb-3">
+              <p className="mb-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+                {t('world.rating.addColumnHint')}
+              </p>
+              <button
+                type="button"
+                className={ButtonClass(addOpen)}
+                onClick={() => setAddOpen((prev) => !prev)}
+              >
+                {t('world.rating.addColumn')}
+              </button>
+              {addOpen && !isAuthed && (
+                <div className="mt-3 max-w-lg rounded-2xl border border-border-subtle bg-obsidian-light px-4 py-3.5">
+                  <h3 className="text-sm font-semibold text-text-primary">
+                    {t('world.rating.extraGuestTitle')}
+                  </h3>
+                  <p className="mt-1.5 text-xs leading-5 text-text-secondary">
+                    {t('world.rating.extraGuestBody')}
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Link
+                      to="/register"
+                      className="rounded-xl bg-champagne px-3 py-2 text-xs font-semibold text-white hover:bg-champagne-muted"
+                    >
+                      {t('world.rating.register')}
+                    </Link>
+                    <Link
+                      to="/login"
+                      className="rounded-xl border border-border-subtle px-3 py-2 text-xs font-medium text-text-primary hover:border-champagne/40"
+                    >
+                      {t('world.rating.login')}
+                    </Link>
+                  </div>
+                </div>
+              )}
+              {addOpen && isAuthed && (
+                <div className="mt-3 max-w-lg rounded-2xl border border-border-subtle bg-obsidian-light px-4 py-3.5">
+                  {atExtraMax ? (
+                    <p className="text-xs leading-5 text-text-secondary">
+                      {t('world.rating.extraMax')}
+                    </p>
+                  ) : (
+                    <div className="flex flex-wrap gap-1.5">
+                      {addableConcepts.map((item) => (
+                        <button
+                          key={item.slug}
+                          type="button"
+                          className={ButtonClass(false)}
+                          onClick={() => addExtra(item.slug)}
+                        >
+                          {homeConceptLabel(item.slug, t, item.name)}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
             <div className="overflow-x-auto rounded-2xl border border-border-subtle bg-surface">
               <table className="w-full min-w-[52rem] text-sm">
@@ -456,6 +617,21 @@ export default function WorldRatingPage() {
                     <th className="w-20 px-4 py-3 font-medium">{t('world.rating.col.rank')}</th>
                     <th className="px-4 py-3 font-medium">{t('world.rating.col.country')}</th>
                     <th className="px-4 py-3 text-right font-medium">{valueHeader}</th>
+                    {extraColumns.map((col) => (
+                      <th key={col.slug} className="px-4 py-3 text-right font-medium">
+                        <span className="inline-flex items-center justify-end gap-1.5">
+                          {col.label}
+                          <button
+                            type="button"
+                            className="rounded-lg p-0.5 text-text-tertiary hover:text-champagne"
+                            aria-label={t('world.rating.extraRemove')}
+                            onClick={() => removeExtra(col.slug)}
+                          >
+                            <X size={12} />
+                          </button>
+                        </span>
+                      </th>
+                    ))}
                     {!sharedUnit && <th className="px-4 py-3 font-medium">{t('world.rating.col.unit')}</th>}
                     <th className="px-4 py-3 font-medium">{t('common.period')}</th>
                   </tr>
@@ -472,6 +648,14 @@ export default function WorldRatingPage() {
                       <td className="px-4 py-3 text-right font-mono font-semibold tabular-nums text-text-primary">
                         {formatWorldValue(item.value)}
                       </td>
+                      {extraColumns.map((col) => (
+                        <td
+                          key={col.slug}
+                          className="px-4 py-3 text-right font-mono tabular-nums text-text-primary"
+                        >
+                          {formatWorldValue(lookupExtraValue(col.yearItems, item))}
+                        </td>
+                      ))}
                       {!sharedUnit && (
                         <td className="px-4 py-3 text-xs text-text-secondary">
                           {item.unit || concept.unit || t('world.rating.fallbackUnit')}
@@ -484,7 +668,7 @@ export default function WorldRatingPage() {
                   ))}
                   {!loading && ranked.length === 0 && (
                     <tr>
-                      <td colSpan={sharedUnit ? 4 : 5} className="px-4 py-8 text-center text-text-secondary">
+                      <td colSpan={colCount} className="px-4 py-8 text-center text-text-secondary">
                         {t('world.rating.emptyYear')}
                       </td>
                     </tr>

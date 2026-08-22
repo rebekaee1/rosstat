@@ -106,19 +106,19 @@ function MarketsPulsePanel({ indicators, isLoading }) {
 export default function HomeHero({ indicators, isLoading }) {
   const t = useT();
   return (
-    <header data-block="home-hero" className="mb-10 md:mb-12">
-      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)] lg:gap-8">
+    <header data-block="home-hero" className="mb-6 md:mb-8">
+      <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)] lg:gap-8">
         <div className="min-w-0">
-          <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.28em] text-champagne">
+          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-champagne">
             {t('home.hero.eyebrow')}
           </p>
           <h1 className="max-w-3xl text-2xl font-semibold leading-[1.2] tracking-tight text-text-primary md:text-3xl lg:text-[2rem]">
             {t('home.hero.title')}
           </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-text-secondary md:text-[15px]">
+          <p className="mt-2.5 max-w-2xl text-sm leading-relaxed text-text-secondary md:text-[15px]">
             {t('home.hero.subtitle')}
           </p>
-          <div className="mt-6">
+          <div className="mt-4">
             <IndicatorSearch
               variant="inline"
               inlinePlaceholder={t('home.searchPlaceholder')}

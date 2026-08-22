@@ -287,10 +287,10 @@ def test_category_meta_en_parity_when_populated():
 def test_home_templates_en_complete():
     required = {
         "eyebrow",
-        "h2_categories",
+        "h2_countries",
         "h2_flagships",
         "h2_tools",
-        "itemlist_categories",
+        "itemlist_countries",
         "itemlist_flagships",
     }
     assert required <= set(HOME_TEMPLATES_EN)
@@ -423,6 +423,11 @@ def test_render_home_html_locale_en_no_cyrillic_in_json_ld(monkeypatch):
 
     monkeypatch.setattr(seo_renderer, "get_app_assets", fake_assets)
 
+    async def fake_country_links(db):
+        return (("/sweden", "Sweden"),)
+
+    monkeypatch.setattr(seo_renderer, "_home_country_links", fake_country_links)
+
     cyrillic = re.compile(r"[А-Яа-яЁё]")
 
     def _json_ld_blobs(html: str) -> list[dict | list]:
@@ -452,11 +457,9 @@ def test_render_home_html_locale_en_no_cyrillic_in_json_ld(monkeypatch):
         assert PAGE_META_EN["home"].title in html_en
         assert '<html lang="en"' in html_en or "lang=\"en\"" in html_en
         assert "Official data for Russia, regions, and countries" in html_en
-        assert "Indicator categories" in html_en
-        assert "Prices and inflation" in html_en
+        assert ">Countries</h2>" in html_en
         assert "Официальные данные" not in html_en
-        assert "Категории макроэкономических" not in html_en
-        assert "Цены и инфляция" not in html_en
+        assert "Страны</h2>" not in html_en
 
         lists_en = _item_lists(_json_ld_blobs(html_en))
         assert len(lists_en) >= 2
@@ -465,7 +468,7 @@ def test_render_home_html_locale_en_no_cyrillic_in_json_ld(monkeypatch):
             for el in lst.get("itemListElement") or []:
                 assert not cyrillic.search(el.get("name") or ""), el
         assert any(
-            "Categories of Russian macroeconomic indicators" == lst["name"]
+            "Countries with official statistics on the platform" == lst["name"]
             for lst in lists_en
         )
         assert any(
@@ -479,8 +482,7 @@ def test_render_home_html_locale_en_no_cyrillic_in_json_ld(monkeypatch):
         html_ru = asyncio.run(seo_renderer.render_home_html(None))
         assert PAGE_META["home"].title in html_ru
         assert "Официальные данные России, регионов и стран" in html_ru
-        assert "Категории макроэкономических показателей России" in html_ru
-        assert "Цены и инфляция" in html_ru
+        assert "Страны с официальной статистикой на платформе" in html_ru
         assert "Official data for Russia, regions, and countries" not in html_ru
         lists_ru = _item_lists(_json_ld_blobs(html_ru))
         assert any(cyrillic.search(lst["name"] or "") for lst in lists_ru)
@@ -599,7 +601,7 @@ def test_ssr_chrome_locale_en():
     token = set_locale("en")
     try:
         header = _ssr_chrome_header()
-        assert ">Indicators<" in header
+        assert ">Home<" in header
         assert ">Today<" in header
         assert ">Regions<" in header
         assert ">Calendar<" in header
@@ -613,7 +615,7 @@ def test_ssr_chrome_locale_en():
 
         nf = render_not_found_html()
         assert "Page not found" in nf
-        assert ">Indicators<" in nf
+        assert ">Home<" in nf
         assert "Страница не найдена" not in nf
 
         spa = asyncio.run(
@@ -637,7 +639,7 @@ def test_ssr_chrome_locale_en():
                 include_app=False,
             )
         )
-        assert ">Indicators<" in pure
+        assert ">Home<" in pure
         assert "Open the platform" in pure
         assert "Открыть платформу" not in pure
     finally:
@@ -645,7 +647,7 @@ def test_ssr_chrome_locale_en():
 
     token_ru = set_locale("ru")
     try:
-        assert "Индикаторы" in _ssr_chrome_header()
+        assert "Главная" in _ssr_chrome_header()
         assert "Разделы платформы" in _ssr_platform_deep_links()
         assert "Страница не найдена" in render_not_found_html()
     finally:

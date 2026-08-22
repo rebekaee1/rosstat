@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { cn } from '../lib/format';
 import {
+  isRussiaSectionPath,
   russiaIndicatorPath,
 } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
@@ -15,6 +16,9 @@ const TICKER_META = {
   'usd-rub-live':  { label: 'USD/RUB', linkTo: russiaIndicatorPath('usd-rub'), decimals: 4 },
   'eur-rub-live':  { label: 'EUR/RUB', linkTo: russiaIndicatorPath('eur-rub'), decimals: 4 },
   'cny-rub-live':  { label: 'CNY/RUB', linkTo: russiaIndicatorPath('cny-rub'), decimals: 4 },
+  'eur-usd':       { label: 'EUR/USD', linkTo: russiaIndicatorPath('eur-usd'), decimals: 4 },
+  'gbp-usd':       { label: 'GBP/USD', linkTo: russiaIndicatorPath('gbp-usd'), decimals: 4 },
+  'usd-cny':       { label: 'USD/CNY', linkTo: russiaIndicatorPath('usd-cny'), decimals: 4 },
   'btc-usd':       { label: 'BTC/USD', linkTo: russiaIndicatorPath('btc-usd'), decimals: 0 },
   'brent':         { label: 'Brent',   linkTo: russiaIndicatorPath('brent'),   decimals: 2 },
   'gold-rub-live': { labelKey: 'ticker.gold', linkTo: russiaIndicatorPath('gold-price'), decimals: 1 },
@@ -194,19 +198,19 @@ function TickerCell({ snapshot, nowMs }) {
   );
 }
 
-async function fetchLiveTicker() {
-  const r = await fetch('/api/v1/ticker/live', { cache: 'no-store' });
+async function fetchLiveTicker(lane) {
+  const r = await fetch(`/api/v1/ticker/live?lane=${encodeURIComponent(lane)}`, { cache: 'no-store' });
   if (!r.ok) throw new Error(`Live ticker: HTTP ${r.status}`);
   return r.json();
 }
 
 export default function LiveTicker() {
   const t = useT();
-  // Тикер на всех ширинах: на мобиле — компактный ряд со скроллом,
-  // на широких — полная строка. justify-center на узкой ширине обрезает края.
+  const { pathname } = useLocation();
+  const lane = isRussiaSectionPath(pathname) ? 'russia' : 'world';
   const { data, dataUpdatedAt } = useQuery({
-    queryKey: ['ticker', 'live'],
-    queryFn: fetchLiveTicker,
+    queryKey: ['ticker', 'live', lane],
+    queryFn: () => fetchLiveTicker(lane),
     refetchInterval: POLL_INTERVAL_MS,
     refetchOnWindowFocus: false,
     staleTime: 0,

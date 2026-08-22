@@ -14,9 +14,9 @@
 import { withCategorySeo } from './pageMeta';
 
 /**
- * seoTitleEn / seoDescriptionEn must match CATEGORY_META_EN.title / .description
- * in backend/app/data/i18n/seo_en.py byte-for-byte (ADR-0003).
- * nameEn matches CATEGORY_META_EN.name.
+ * seoTitleEn / seoDescriptionEn обязаны совпадать побайтово с английскими
+ * CATEGORY_META в backend/app/data/i18n/seo_en.py, nameEn — с их name.
+ * Иначе SSR-мета разойдётся с клиентской, и поисковик переиндексирует страницу.
  */
 const CATEGORY_DEFS = [
   {
@@ -243,7 +243,7 @@ export function isIndicatorListed(indicator) {
 /** Подсчёт индикаторов по полю category в API (исключая скрытые карточки) */
 export function indicatorCategoryKey(indicator) {
   if (!indicator) return null;
-  // Prefer storage key; fall back to display label (legacy cache / older payloads).
+  // Приоритет — ключ хранения; подпись берём, только если ключа нет (старые ответы API).
   return indicator.category_ru || indicator.category || null;
 }
 

@@ -37,6 +37,8 @@ LEGACY_DERIVED = {
     # месячного (annual_mean_with_prefix). Ранее заливался one-shot скриптом,
     # теперь движок продолжает ряд сам при закрытии года (2026-07).
     "wages-nominal-annual",
+    "gbp-usd",
+    "usd-cny",
 }
 
 

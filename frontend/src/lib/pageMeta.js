@@ -29,14 +29,6 @@ export function getCategorySeo(slug, locale) {
   return pageMeta.categories[slug] || null;
 }
 
-/** @param {'ru'|'en'} [locale] */
-export function getWorldHomeSeo(locale) {
-  if (resolvePageMetaLocale(locale) === 'en' && pageMeta.en?.world?.home) {
-    return pageMeta.en.world.home;
-  }
-  return pageMeta.world.home;
-}
-
 /** Подмешивает SEO-поля CATEGORY_META в UI-карточки категорий. */
 export function withCategorySeo(defs) {
   return defs.map((def) => {

@@ -27,6 +27,7 @@ GLOSSARY_EN: dict[str, str] = {
     "Минфин России": "Ministry of Finance",
     "Московская биржа": "Moscow Exchange",
     "Евростат": "Eurostat",
+    "Международный валютный фонд": "International Monetary Fund",
     "Всемирный банк": "World Bank",
     "Рыночные котировки": "Market quotes",
     "Статистическое управление Канады": "Statistics Canada",

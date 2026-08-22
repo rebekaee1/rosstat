@@ -37,12 +37,20 @@ const INDICATORS = [
 ];
 
 describe('Dashboard', () => {
-  it('собирает hero, мировые рынки, workbench и категории', async () => {
+  it('собирает hero, мировые рынки, витрину стран, покрытие и каталог стран', async () => {
     mockApiGet([
       ['/auth/me', { user: null }],
       ['/dashboard/sparklines', {}],
+      ['/dashboard/coverage', {
+        countries: 48, series: 12000, regions: 85, year_from: 1897, year_to: 2026,
+      }],
       [/^\/indicators/, INDICATORS],
       ['/indicators', INDICATORS],
+      ['/world/countries', { countries: [], total: 0 }],
+      [/^\/world\/rating\/concepts/, { concepts: [], total: 0 }],
+      [/^\/world\/compare\/map-series\//, {
+        years: [], values_by_year: {}, concept: {}, benchmark_by_year: {},
+      }],
     ]);
 
     renderPage(<Dashboard />, { path: '/', route: '/' });
@@ -52,10 +60,14 @@ describe('Dashboard', () => {
       'Официальные макроэкономические индикаторы в одной рабочей среде',
     );
     expect(screen.getByText('Мировые рынки')).toBeTruthy();
-    expect(screen.queryByText('Россия сегодня')).toBeNull();
     expect(screen.getByRole('heading', { name: 'Страны и показатели' })).toBeTruthy();
-    expect(screen.getByRole('navigation', { name: 'Переходы по разделам' })).toBeTruthy();
-    expect(screen.getByText('Категории России')).toBeTruthy();
-    expect(screen.getByText('Инструменты')).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'Сколько данных доступно' })).toBeTruthy();
+    expect(await screen.findByRole('heading', { name: 'Страны' })).toBeTruthy();
+
+    // Блоки, снятые с главной по правкам 9 и 10: категории России и инструменты.
+    expect(screen.queryByText('Категории России')).toBeNull();
+    expect(screen.queryByText('Инструменты')).toBeNull();
+    expect(screen.queryByRole('navigation', { name: 'Переходы по разделам' })).toBeNull();
+    expect(screen.queryByText('Россия сегодня')).toBeNull();
   });
 });

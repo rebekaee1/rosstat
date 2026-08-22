@@ -40,6 +40,7 @@ from app.data.indicator_seo import (
     append_forecast_ssr_desc_tail,
     forecast_ssr_image_name,
 )
+from app.data.global_market_indicators import is_global_market_indicator
 from app.models import Indicator, IndicatorData
 from app.services.display import (
     today_msk,
@@ -461,7 +462,24 @@ body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:"DM Sans",system-ui,s
 .seo-foot a{color:inherit}
 .seo-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .seo-scroll table{min-width:26rem}
+/* SPA-SSR: пока грузится module-bundle, не показывать SEO-тело как «сайт».
+   Класс fe-js ставит inline-скрипт до paint; боты без JS видят контент как раньше.
+   React createRoot затем заменяет #root целиком. */
+html.fe-js #root > .seo-page,
+html.fe-js #root > .seo-section,
+html.fe-js #root > .seo-platform-nav{
+position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important
+}
 </style>"""
+
+# Мгновенно прячет prerender для браузеров с JS (до загрузки /assets/*.js).
+# Без этого при медленном/заблокированном bundle пользователь видит SEO-HTML
+# и воспринимает его как сломанный сайт (демо/туннель, корпоративные сети).
+_SPA_SSR_HIDE_SCRIPT = (
+    '<script>'
+    'document.documentElement.classList.add("fe-js");'
+    '</script>'
+)
 
 # Брендовый «хром» чистых SSR-страниц (include_app=False): единая шапка с
 # навигацией и CTA-футер на главную. Одна точка правки для всех программатик-
@@ -479,12 +497,12 @@ body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:"DM Sans",system-ui,s
 # `_ssr_chrome_*()` / `_ssr_platform_deep_links()` по get_locale().
 _SSR_CHROME_HEADER = f"""<header class="seo-topbar"><div class="seo-topbar-in">
 <a class="seo-brand" href="/">Forecast<em>Economy</em></a>
-<nav class="seo-topnav"><a href="/">Индикаторы</a><a href="{paths.today()}">Сегодня</a><a href="{paths.region_hub()}">Регионы</a><a href="{paths.world_hub()}">Страны</a><a href="{paths.world_rating("unemployment-rate")}">Рейтинг стран</a><a href="{paths.calendar()}">Календарь</a><a href="/compare">Сравнение</a><a href="/calculator">Калькуляторы</a><a href="/about">О проекте</a></nav>
+<nav class="seo-topnav"><a href="/">Главная</a><a href="{paths.russia_home()}">Россия</a><a href="{paths.today()}">Сегодня</a><a href="{paths.region_hub()}">Регионы</a><a href="/#countries">Страны</a><a href="{paths.world_rating("unemployment-rate")}">Рейтинг стран</a><a href="{paths.calendar()}">Календарь</a><a href="/compare">Сравнение</a><a href="/calculator">Калькуляторы</a><a href="/about">О проекте</a></nav>
 </div></header>"""
 
 _SSR_CHROME_HEADER_EN = f"""<header class="seo-topbar"><div class="seo-topbar-in">
 <a class="seo-brand" href="/">Forecast<em>Economy</em></a>
-<nav class="seo-topnav"><a href="/">Indicators</a><a href="{paths.today()}">Today</a><a href="{paths.region_hub()}">Regions</a><a href="{paths.world_hub()}">Countries</a><a href="{paths.world_rating("unemployment-rate")}">Country rankings</a><a href="{paths.calendar()}">Calendar</a><a href="/compare">Compare</a><a href="/calculator">Calculators</a><a href="/about">About</a></nav>
+<nav class="seo-topnav"><a href="/">Home</a><a href="{paths.russia_home()}">Russia</a><a href="{paths.today()}">Today</a><a href="{paths.region_hub()}">Regions</a><a href="/#countries">Countries</a><a href="{paths.world_rating("unemployment-rate")}">Country rankings</a><a href="{paths.calendar()}">Calendar</a><a href="/compare">Compare</a><a href="/calculator">Calculators</a><a href="/about">About</a></nav>
 </div></header>"""
 
 _SSR_CHROME_FOOTER = f"""<div class="seo-cta"><div class="seo-cta-in">
@@ -511,7 +529,7 @@ _SSR_PLATFORM_DEEP_LINKS = f"""
 <li><a href="/">Индикаторы России</a></li>
 <li><a href="{paths.today()}">Экономика сегодня</a></li>
 <li><a href="{paths.region_hub()}">Регионы России</a></li>
-<li><a href="{paths.world_hub()}">Статистика по странам</a></li>
+<li><a href="/#countries">Статистика по странам</a></li>
 <li><a href="{paths.calendar()}">Календарь публикаций</a></li>
 <li><a href="/compare">Сравнение показателей</a></li>
 </ul>
@@ -525,7 +543,7 @@ _SSR_PLATFORM_DEEP_LINKS_EN = f"""
 <li><a href="/">Russia indicators</a></li>
 <li><a href="{paths.today()}">Economy today</a></li>
 <li><a href="{paths.region_hub()}">Regions of Russia</a></li>
-<li><a href="{paths.world_hub()}">Country statistics</a></li>
+<li><a href="/#countries">Country statistics</a></li>
 <li><a href="{paths.calendar()}">Release calendar</a></li>
 <li><a href="/compare">Compare indicators</a></li>
 </ul>
@@ -654,16 +672,19 @@ async def build_document(
         else "Forecast Economy — обновления данных"
     )
     head_links = assets.head_links if include_app else _strip_preloads(assets.head_links)
+    spa_hide = ""
     if not include_app:
         # Чистые SSR-страницы получают брендовый хром: шапка-навигация + CTA на
         # платформу + футер об источниках. React-страницы — нет (гидратация
         # заменит #root своим layout'ом). Locale-aware: EN chrome на apex.
         body = f"{_ssr_chrome_header()}\n{body}\n{_ssr_chrome_footer()}"
-    elif "seo-platform-nav" not in body:
-        # SPA-SSR без chrome: бот видит только prerender в #root. Единый блок
-        # выхода в хабы — иначе тонкие семейства (/today/*, /calendar/*) —
-        # тупики с одними крошками. React при гидратации заменит #root.
-        body = f"{body.rstrip()}\n{_ssr_platform_deep_links()}"
+    else:
+        spa_hide = _SPA_SSR_HIDE_SCRIPT
+        if "seo-platform-nav" not in body:
+            # SPA-SSR без chrome: бот видит только prerender в #root. Единый блок
+            # выхода в хабы — иначе тонкие семейства (/today/*, /calendar/*) —
+            # тупики с одними крошками. React при гидратации заменит #root.
+            body = f"{body.rstrip()}\n{_ssr_platform_deep_links()}"
     return f"""<!DOCTYPE html>
 <html lang="{lang}">
 <head>
@@ -700,7 +721,7 @@ async def build_document(
 {structured}
 </head>
 <body>
-<div id="root">{body}</div>
+{spa_hide}<div id="root">{body}</div>
 {body_scripts}
 </body>
 </html>"""
@@ -730,20 +751,22 @@ def render_not_found_html(message: str | None = None) -> str:
     category_links = "".join(cats)
     if en:
         lead = "This page does not exist or has moved. Continue from here:"
-        links = f"""<li><a href="/">All Russia economic indicators</a></li>
+        links = f"""<li><a href="/">Home: world map and country rankings</a></li>
+<li><a href="{paths.russia_home()}">Russia: macroeconomic indicators</a></li>
 <li><a href="{paths.today()}">Key indicators for today</a></li>
 <li><a href="{paths.region_hub()}">Statistics by Russian regions</a></li>
-<li><a href="{paths.world_hub()}">Country statistics</a></li>
+<li><a href="/#countries">Country statistics</a></li>
 <li><a href="/compare">Compare indicators</a></li>
 <li><a href="{paths.calendar()}">Statistical release calendar</a></li>
 <li><a href="/">Search the platform</a> — open the home page and use search in the header</li>"""
         catalog_h2 = "Catalogue sections"
     else:
         lead = "Такой страницы нет или она переехала. Вот с чего можно продолжить:"
-        links = f"""<li><a href="/">Все экономические индикаторы России</a></li>
+        links = f"""<li><a href="/">Главная: карта мира и рейтинг стран</a></li>
+<li><a href="{paths.russia_home()}">Россия: макроэкономические показатели</a></li>
 <li><a href="{paths.today()}">Ключевые показатели на сегодня</a></li>
 <li><a href="{paths.region_hub()}">Статистика по регионам России</a></li>
-<li><a href="{paths.world_hub()}">Статистика по странам</a></li>
+<li><a href="/#countries">Статистика по странам</a></li>
 <li><a href="/compare">Сравнение показателей</a></li>
 <li><a href="{paths.calendar()}">Календарь публикаций статистики</a></li>
 <li><a href="/">Поиск по платформе</a> — откройте главную и воспользуйтесь поиском в шапке</li>"""
@@ -944,9 +967,20 @@ async def render_page_html(page_slug: str) -> tuple[int, str]:
     return 200, html
 
 
+async def _home_country_links(db: AsyncSession) -> tuple[tuple[str, str], ...]:
+    """Ссылки на карточки стран для SSR главной.
+
+    Отдельная косвенность: `seo_world` импортирует хелперы отсюда, поэтому
+    импорт только внутри вызова — и заодно эта точка подменяема в тестах.
+    """
+    from app.services.seo_world import listed_country_links
+
+    return await listed_country_links(db)
+
+
 async def render_home_html(db: AsyncSession) -> str:
     from app.services.locale import in_language
-    from app.services.seo_i18n import get_category_seo, get_page_seo, home_template
+    from app.services.seo_i18n import get_page_seo, home_template
 
     flagships = await _indicators_by_codes(db, FLAGSHIP_CODES)
     from app.services.i18n_display import public_name
@@ -955,20 +989,20 @@ async def render_home_html(db: AsyncSession) -> str:
         (paths.russia_indicator(ind.code), public_name(ind.name, ind.name_en))
         for ind in flagships
     )
+    # Каталог стран переехал с отдельной витрины на главную — её серверная
+    # копия обязана держать эти ссылки, иначе карточки стран теряют
+    # внутреннюю перелинковку.
+    country_links = await _home_country_links(db)
     page = get_page_seo("home")
     if page is None:
         page = PAGE_META["home"]
-    categories = {
-        slug: get_category_seo(slug) or meta
-        for slug, meta in CATEGORY_META.items()
-    }
     eyebrow = home_template("eyebrow") or "Официальные данные России, регионов и стран"
-    h2_categories = home_template("h2_categories") or "Категории показателей"
+    h2_countries = home_template("h2_countries") or "Страны"
     h2_flagships = home_template("h2_flagships") or "Ключевые индикаторы"
     h2_tools = home_template("h2_tools") or "Инструменты и разделы"
-    itemlist_categories = (
-        home_template("itemlist_categories")
-        or "Категории макроэкономических показателей России"
+    itemlist_countries = (
+        home_template("itemlist_countries")
+        or "Страны с официальной статистикой на платформе"
     )
     itemlist_flagships = (
         home_template("itemlist_flagships")
@@ -979,18 +1013,18 @@ async def render_home_html(db: AsyncSession) -> str:
 <h1>{escape(page.h1)}</h1>
 <p>{escape(page.intro)}</p>
 {_blocks_html(page.blocks)}
-<section><h2>{escape(h2_categories)}</h2>{_category_rich_list(categories)}</section>
 <section><h2>{escape(h2_flagships)}</h2>{_links_list(flagship_links)}</section>
+<section id="countries"><h2>{escape(h2_countries)}</h2>{_links_list(country_links)}</section>
 <section><h2>{escape(h2_tools)}</h2>{_links_list(page.links)}</section>
 </main>"""
-    category_items = [
+    country_items = [
         {
             "@type": "ListItem",
             "position": index + 1,
-            "name": meta.name,
-            "url": _absolute(paths.russia_category(slug)),
+            "name": name,
+            "url": _absolute(href),
         }
-        for index, (slug, meta) in enumerate(categories.items())
+        for index, (href, name) in enumerate(country_links)
     ]
     json_ld = [
         _site_json_ld(),
@@ -1007,8 +1041,8 @@ async def render_home_html(db: AsyncSession) -> str:
         {
             "@context": "https://schema.org",
             "@type": "ItemList",
-            "name": itemlist_categories,
-            "itemListElement": category_items,
+            "name": itemlist_countries,
+            "itemListElement": country_items,
         },
         {
             "@context": "https://schema.org",
@@ -1349,11 +1383,20 @@ async def render_indicator_html(
             indicator_template("image_name", loc)
             or "{name} — график динамики ({source})"
         ).format(name=display_name, source=source_label)
-    crumb_trail = crumbs.russia_indicator_trail(
-        category.name if category else None,
-        paths.russia_category(category.slug) if category else None,
-        display_name,
-        canonical_path.split("?")[0],
+    crumb_trail = (
+        crumbs.global_market_indicator_trail(
+            category.name if category else None,
+            paths.russia_category(category.slug) if category else None,
+            display_name,
+            canonical_path.split("?")[0],
+        )
+        if is_global_market_indicator(indicator.code)
+        else crumbs.russia_indicator_trail(
+            category.name if category else None,
+            paths.russia_category(category.slug) if category else None,
+            display_name,
+            canonical_path.split("?")[0],
+        )
     )
     json_ld = [
         _site_json_ld(),
@@ -1372,8 +1415,14 @@ async def render_indicator_html(
             "keywords": clean_text(
                 (
                     (
-                        indicator_template("keywords", loc)
-                        or "{name}, {name} chart, {name} Russia, economic statistics"
+                        (
+                            "{name}, {name} chart, global markets, economic statistics"
+                            if is_global_market_indicator(indicator.code)
+                            else (
+                                indicator_template("keywords", loc)
+                                or "{name}, {name} chart, {name} Russia, economic statistics"
+                            )
+                        )
                     ).format(name=display_name)
                     if loc == "en"
                     else (indicator.seo_keywords or "")
@@ -2025,7 +2074,12 @@ async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> 
         )[-12:]
     )
     canonical_path = paths.russia_indicator_year(code, year)
-    year_trail = crumbs.russia_indicator_year_trail(
+    year_trail_fn = (
+        crumbs.global_market_indicator_year_trail
+        if is_global_market_indicator(code)
+        else crumbs.russia_indicator_year_trail
+    )
+    year_trail = year_trail_fn(
         cat_name,
         paths.russia_category(category.slug) if category else None,
         name,
@@ -2226,11 +2280,20 @@ def _indicator_body(
     # (data_code режима), а не базовой карточкой.
     value_code = data_code or indicator.code
     current = latest_rows[0] if latest_rows else None
-    crumb_trail = crumbs.russia_indicator_trail(
-        category.name if category else None,
-        paths.russia_category(category.slug) if category else None,
-        name,
-        paths.russia_indicator(indicator.code),
+    crumb_trail = (
+        crumbs.global_market_indicator_trail(
+            category.name if category else None,
+            paths.russia_category(category.slug) if category else None,
+            name,
+            paths.russia_indicator(indicator.code),
+        )
+        if is_global_market_indicator(indicator.code)
+        else crumbs.russia_indicator_trail(
+            category.name if category else None,
+            paths.russia_category(category.slug) if category else None,
+            name,
+            paths.russia_indicator(indicator.code),
+        )
     )
     # CPI-индекс (~100.xx) людям показывается как изменение цен в % — как в
     # React-слое; сырой индекс в SSR был воспроизведённым инцидентом «100,2%».

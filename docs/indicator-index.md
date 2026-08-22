@@ -2,7 +2,7 @@
 
 > Генерируется `scripts/build-indicator-index.py`. НЕ редактировать руками. Полная машинная версия — `docs/indicator-index.json`. Подробности по каждому коду (files/derived_siblings) — в JSON.
 
-**Сгенерировано:** 2026-08-16
+**Сгенерировано:** 2026-08-22
 
 ## Как пользоваться (для агента)
 
@@ -24,17 +24,17 @@
 
 ## Сводка
 
-- Всего кодов: **892**
+- Всего кодов: **938**
 - in_both_viewmode_systems (дубль легаси+generic): **14**
 - shadowed_legacy (мёртвая легаси-ветка): **24**
-- unresolved (нет ui_stack): **1**
+- unresolved (нет ui_stack): **5**
 - derived_not_seeded: **0**
 
-По стекам: `cpi`=32, `generic`=847, `housing`=8, `null`=1, `ppi`=4
+По стекам: `cpi`=32, `generic`=889, `housing`=8, `null`=5, `ppi`=4
 
 ### Unresolved (ui_stack=null)
 
-`steel`
+`cny-eur`, `gbp-eur`, `steel`, `weo-gdp-per-capita-usd`, `weo-gdp-usd`
 
 ## Все индикаторы
 
@@ -122,6 +122,7 @@
 | `capital-investment-sum-year` | Бизнес | annual | `generic` | derived_from_source | — | — |
 | `capital-investment-yoy` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `capital-investment-yoy-year` | Бизнес | annual | `generic` | derived_from_source | — | — |
+| `cny-eur` | Валюты | daily | `null` | — | — | no-stack |
 | `cny-rub` | Валюты | daily | `generic` | — | ✓ | — |
 | `cny-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
 | `cny-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
@@ -372,6 +373,20 @@
 | `eur-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
 | `eur-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
 | `eur-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
+| `eur-usd` | Валюты | daily | `generic` | — | ✓ | — |
+| `eur-usd-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `eur-usd-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `eur-usd-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `eur-usd-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `eur-usd-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `eur-usd-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `eur-usd-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `eur-usd-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `eur-usd-mom` | Валюты | monthly | `generic` | — | — | — |
+| `eur-usd-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `eur-usd-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `eur-usd-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `eur-usd-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `exports` | Торговля | quarterly | `generic` | generic_quarterly | ✓ | both, shadowed |
 | `exports-monthly` | Торговля | monthly | `generic` | monthly_auto | — | both, shadowed |
 | `exports-monthly-mom` | Торговля | monthly | `generic` | derived_from_source | — | — |
@@ -432,6 +447,21 @@
 | `fuel-diesel-yoy` | Цены | monthly | `generic` | — | — | — |
 | `fuel-diesel-yoy-quarter` | Цены | quarterly | `generic` | — | — | — |
 | `fuel-diesel-yoy-year` | Цены | annual | `generic` | — | — | — |
+| `gbp-eur` | Валюты | daily | `null` | — | — | no-stack |
+| `gbp-usd` | Валюты | daily | `generic` | — | ✓ | — |
+| `gbp-usd-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `gbp-usd-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `gbp-usd-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `gbp-usd-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `gbp-usd-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `gbp-usd-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `gbp-usd-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `gbp-usd-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `gbp-usd-mom` | Валюты | monthly | `generic` | — | — | — |
+| `gbp-usd-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `gbp-usd-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `gbp-usd-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `gbp-usd-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `gdp-consumption` | ВВП | quarterly | `generic` | gdp_consumption_quarterly | ✓ | — |
 | `gdp-consumption-qoq` | ВВП | quarterly | `generic` | derived_from_source | — | — |
 | `gdp-consumption-sum-year` | ВВП | annual | `generic` | derived_from_source | — | — |
@@ -862,6 +892,20 @@
 | `unemployment-yoy` | Рынок труда | monthly | `generic` | derived_from_source | — | — |
 | `unemployment-yoy-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `unemployment-yoy-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
+| `usd-cny` | Валюты | daily | `generic` | — | ✓ | — |
+| `usd-cny-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `usd-cny-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `usd-cny-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `usd-cny-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `usd-cny-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `usd-cny-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `usd-cny-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `usd-cny-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `usd-cny-mom` | Валюты | monthly | `generic` | — | — | — |
+| `usd-cny-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `usd-cny-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `usd-cny-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `usd-cny-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `usd-index` | Индексы | daily | `generic` | — | ✓ | — |
 | `usd-index-avg-month` | Индексы | monthly | `generic` | — | — | — |
 | `usd-index-avg-quarter` | Индексы | quarterly | `generic` | — | — | — |
@@ -921,6 +965,8 @@
 | `wages-real-yoy-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `wages-real-yoy-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
 | `wages-yoy` | Рынок труда | monthly | `generic` | derived_from_source | — | — |
+| `weo-gdp-per-capita-usd` | ВВП | annual | `null` | — | — | no-stack |
+| `weo-gdp-usd` | ВВП | annual | `null` | — | — | no-stack |
 | `wheat` | Товарные рынки | monthly | `generic` | — | ✓ | — |
 | `wheat-avg-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
 | `wheat-avg-year` | Товарные рынки | annual | `generic` | — | — | — |
@@ -943,7 +989,7 @@
 - **Тип** (верх, эталон — переключатель ИПЦ): `value` Уровень/значение · `pop` К прошлому периоду · `yoy` К соотв. периоду пред. года · `index` Индекс
 - **Частота** (низ): `day` дн · `week` нед · `month` мес · `quarter` кв · `year` год
 
-Корней-семейств: **114** · с полной матрицей: **101** · с пробелами: **13**. Покрытие: {'bespoke': 7, 'bespoke-data': 4, 'generic': 102, 'orphan': 1}.
+Корней-семейств: **121** · с полной матрицей: **104** · с пробелами: **17**. Покрытие: {'bespoke': 7, 'bespoke-data': 4, 'generic': 105, 'orphan': 5}.
 
 ## Систематические пробелы по типам
 
@@ -955,7 +1001,7 @@
 | bespoke/CPI | index | month | 4 | `yoy:quarter`, `yoy:year` |
 | bespoke/HOUSING | index | quarter | 2 | `pop:year` |
 | bespoke/PPI | index | month | 1 | `yoy:quarter`, `yoy:year` |
-| generic/T1 | rate | day | 18 | — |
+| generic/T1 | rate | day | 21 | — |
 | generic/T10 | annual-count | year | 11 | — |
 | generic/T10a | annual-signed | year | 9 | — |
 | generic/T12 | ratio-index | month | 2 | — |
@@ -970,7 +1016,8 @@
 | generic/T8 | index | month | 1 | `pop:year` |
 | generic/T9 | gdp | quarter | 10 | — |
 | generic/T9s | signed-flow | quarter | 3 | — |
-| orphan/- | avg-level | day | 1 | `pop:month`, `pop:quarter`, `value:month`, `value:quarter`, `value:week`, `value:year`, `yoy:month`, `yoy:quarter`, `yoy:year` |
+| orphan/- | annual-count | year | 2 | `index:year`, `yoy:year` |
+| orphan/- | avg-level | day | 3 | `pop:month`, `pop:quarter`, `value:month`, `value:quarter`, `value:week`, `value:year`, `yoy:month`, `yoy:quarter`, `yoy:year` |
 
 ## Корни с пробелами матрицы
 
@@ -980,12 +1027,16 @@
 | `inflation-weekly-food` | bespoke-data/CPI-weekly | index | week | 0.0 | `value:week`, `pop:month`, `pop:quarter`, `pop:year`, `yoy:month`, `yoy:quarter`, `yoy:year`, `index:month`, `index:quarter`, `index:year` | partial | yes | curated |
 | `inflation-weekly-nonfood` | bespoke-data/CPI-weekly | index | week | 0.0 | `value:week`, `pop:month`, `pop:quarter`, `pop:year`, `yoy:month`, `yoy:quarter`, `yoy:year`, `index:month`, `index:quarter`, `index:year` | partial | yes | curated |
 | `inflation-weekly-services` | bespoke-data/CPI-weekly | index | week | 0.0 | `value:week`, `pop:month`, `pop:quarter`, `pop:year`, `yoy:month`, `yoy:quarter`, `yoy:year`, `index:month`, `index:quarter`, `index:year` | partial | yes | curated |
+| `cny-eur` | orphan/- | avg-level | day | 0.1 | `value:week`, `value:month`, `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
+| `gbp-eur` | orphan/- | avg-level | day | 0.1 | `value:week`, `value:month`, `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
 | `steel` | orphan/- | avg-level | day | 0.1 | `value:week`, `value:month`, `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
 | `cpi` | bespoke/CPI | index | month | 0.8 | `yoy:quarter`, `yoy:year` | full | yes | curated |
 | `cpi-food` | bespoke/CPI | index | month | 0.8 | `yoy:quarter`, `yoy:year` | partial | yes | curated |
 | `cpi-nonfood` | bespoke/CPI | index | month | 0.8 | `yoy:quarter`, `yoy:year` | partial | yes | curated |
 | `cpi-services` | bespoke/CPI | index | month | 0.8 | `yoy:quarter`, `yoy:year` | partial | yes | curated |
 | `ppi` | bespoke/PPI | index | month | 0.8 | `yoy:quarter`, `yoy:year` | full | yes | curated |
+| `weo-gdp-per-capita-usd` | orphan/- | annual-count | year | 0.333 | `yoy:year`, `index:year` | full | no | curated |
+| `weo-gdp-usd` | orphan/- | annual-count | year | 0.333 | `yoy:year`, `index:year` | full | no | curated |
 | `housing-price-primary` | bespoke/HOUSING | index | quarter | 0.857 | `pop:year` | full | yes | curated |
 | `housing-price-secondary` | bespoke/HOUSING | index | quarter | 0.857 | `pop:year` | full | yes | curated |
 | `wages-real` | generic/T8 | index | month | 0.9 | `pop:year` | full | yes | curated |
@@ -993,6 +1044,6 @@
 ## Измерения паспорта (агрегат)
 
 - **Без полных текстов** (40): `birth-rate`, `cpi-food`, `cpi-nonfood`, `cpi-services`, `current-account`, `death-rate`, `deposit-rate`, `deposits-business`, `depreciation-rate`, `doctoral-students`, `exports`, `exports-monthly`, `fdi-net`, `grad-students`, `housing-commissioned`, `imports`, `imports-monthly`, `inflation-weekly`, `inflation-weekly-food`, `inflation-weekly-nonfood`, `inflation-weekly-services`, `innovation-activity`, `pensioners`, `pop-over-working-age`, `pop-under-working-age`, `population-migration`, `population-natural-growth`, `population-total-growth`, `rd-organizations`, `rd-personnel`, `retail-trade`, `services-exports`, `services-exports-monthly`, `services-imports`, `services-imports-monthly`, `small-business-innovation`, `tech-innovation-share`, `trade-balance`, `trade-balance-monthly`, `working-age-population`
-- **Без прогноза** (9): `coal`, `copper`, `fuel-ai92`, `fuel-ai95`, `fuel-diesel`, `silver`, `soybean`, `steel`, `wheat`
-- **SEO не curated** (9): `deposit-rate-long`, `deposit-rate-medium`, `exports-monthly`, `housing-affordability`, `housing-affordability-primary`, `imports-monthly`, `services-exports-monthly`, `services-imports-monthly`, `trade-balance-monthly`
+- **Без прогноза** (13): `cny-eur`, `coal`, `copper`, `fuel-ai92`, `fuel-ai95`, `fuel-diesel`, `gbp-eur`, `silver`, `soybean`, `steel`, `weo-gdp-per-capita-usd`, `weo-gdp-usd`, `wheat`
+- **SEO не curated** (11): `cny-eur`, `deposit-rate-long`, `deposit-rate-medium`, `exports-monthly`, `gbp-eur`, `housing-affordability`, `housing-affordability-primary`, `imports-monthly`, `services-exports-monthly`, `services-imports-monthly`, `trade-balance-monthly`
 

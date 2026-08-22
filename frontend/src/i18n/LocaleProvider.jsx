@@ -2,7 +2,7 @@
  * LocaleProvider — binds document lang + t() from messages.ru/en.
  * Copy lives in messages.*.js (content agents); do not put strings here.
  */
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   htmlLang,
   isPreviewLocaleActive,
@@ -10,24 +10,17 @@ import {
   resolveBrowserLocale,
 } from './locale';
 import { translate } from './messages';
-
-const LocaleContext = createContext({
-  locale: 'ru',
-  t: (key) => key,
-  isPreview: false,
-  setPreviewLocale: () => {},
-});
+import { LocaleContext } from './localeContext';
 
 export function LocaleProvider({ children }) {
-  const [locale, setLocale] = useState(() => resolveBrowserLocale());
-  const [isPreview, setIsPreview] = useState(() => isPreviewLocaleActive());
+  // Локаль известна до первого рендера (хост или ?preview_locale), поэтому
+  // в эффекте только DOM: перезапись состояния давала каскадный рендер.
+  const [locale] = useState(() => resolveBrowserLocale());
+  const [isPreview] = useState(() => isPreviewLocaleActive());
 
   useEffect(() => {
-    const next = resolveBrowserLocale();
-    setLocale(next);
-    setIsPreview(isPreviewLocaleActive());
-    document.documentElement.lang = htmlLang(next);
-    if (isPreviewLocaleActive()) {
+    document.documentElement.lang = htmlLang(locale);
+    if (isPreview) {
       let robots = document.querySelector('meta[name="robots"]');
       if (!robots) {
         robots = document.createElement('meta');
@@ -36,7 +29,7 @@ export function LocaleProvider({ children }) {
       }
       robots.setAttribute('content', 'noindex, nofollow');
     }
-  }, []);
+  }, [locale, isPreview]);
 
   const value = useMemo(() => {
     const t = (key, varsOrFallback) => translate(key, varsOrFallback, locale);
@@ -53,12 +46,4 @@ export function LocaleProvider({ children }) {
   }, [locale, isPreview]);
 
   return <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>;
-}
-
-export function useLocale() {
-  return useContext(LocaleContext);
-}
-
-export function useT() {
-  return useLocale().t;
 }

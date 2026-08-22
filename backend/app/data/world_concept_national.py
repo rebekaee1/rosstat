@@ -25,6 +25,10 @@ NATIONAL_CONCEPT_INDICATOR_CODES: dict[str, dict[str, str]] = {
     },
     # Потребительские цены: национальные индексы с разными базами.
     # Карта/рейтинг отдают изменение за год (%), не уровень индекса.
+    # Движок hicp всегда считает YoY от уровня индекса (`transform_yoy`).
+    # CN `cn-cpi-all` — уже индекс «тот же месяц прошлого года = 100», не уровень.
+    # BR: `br-cpi-ipca` — % к предыдущему месяцу; `br-cpi-ipca-yoy` — уже YoY %.
+    # JP — национального CPI-ряда в world_indicators нет.
     "hicp-index": {
         "AU": "au-cpi-all",
         "CA": "ca-cpi-all",

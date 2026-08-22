@@ -43,6 +43,7 @@ function RegionTooltip({ active, payload, label, unit, regionName, compareName, 
           {russiaLabel}: {formatRegionValue(russia.value)}
         </div>
       )}
+      {unit ? <div className="mt-1 text-[10px] text-text-tertiary">{unit}</div> : null}
     </div>
   );
 }

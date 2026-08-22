@@ -85,7 +85,7 @@ export function apiErrorMessage(err, t, fallbackKey = 'common.networkError') {
   if (raw && DETAIL_TO_KEY[raw]) {
     return t(DETAIL_TO_KEY[raw]);
   }
-  if (raw && typeof raw === 'string' && !/^[\[{]/.test(raw)) {
+  if (raw && typeof raw === 'string' && !/^[[{]/.test(raw)) {
     // Backend already localized — show as-is.
     return raw;
   }

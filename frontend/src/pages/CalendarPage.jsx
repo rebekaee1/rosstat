@@ -186,7 +186,7 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
       label: formatDayLabel(dateStr, t),
       isToday: dateStr === todayStr,
     }));
-  }, [visibleEvents, todayStr]);
+  }, [visibleEvents, todayStr, t]);
 
   return (
     <div className="max-w-4xl mx-auto px-4 md:px-8 pt-20 pb-24">

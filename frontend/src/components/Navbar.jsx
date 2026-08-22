@@ -145,18 +145,22 @@ export default function Navbar() {
 
   const renderPrimaryLink = (item, { desktop = false } = {}) => {
     const isActive = activeNavId === item.id;
+    const full = t(item.labelKey);
+    const short = item.shortLabelKey ? t(item.shortLabelKey) : null;
     return (
       <Link
         key={`${desktop ? 'd' : 'm'}-${item.id}`}
         to={item.to}
-        className={cn(
-          navItemClass(isActive),
-          desktop && item.desktopOnlyXl && 'hidden xl:block',
-        )}
+        className={navItemClass(isActive)}
         onClick={closeAll}
         aria-current={isActive ? 'page' : undefined}
       >
-        {t(item.labelKey)}
+        {desktop && short ? (
+          <>
+            <span className="xl:hidden">{short}</span>
+            <span className="hidden xl:inline">{full}</span>
+          </>
+        ) : full}
       </Link>
     );
   };
@@ -203,12 +207,12 @@ export default function Navbar() {
       {/* justify-end: при переполнении лишнее выезжает ВЛЕВО, поверх логотипа
           (задвоенный логотип на скринах руководителя 2026-07-05 и 2026-07-27).
           scrollWidth такое переполнение не показывает — ловится только
-          сравнением боксов, см. scripts/e2e/navbar-overlap.mjs. Поэтому набор
-          пунктов режется по брейкпоинтам, а «Главная» и «О проекте» на
-          десктопе живут в футере и мобильном меню. */}
-      <div className="hidden lg:flex items-center gap-1 xl:gap-2 flex-1 justify-end min-w-0">
+          сравнением боксов, см. scripts/e2e/navbar-overlap.mjs. Поэтому до xl
+          длинные подписи заменяются короткими (`shortLabelKey`), а «О проекте»
+          на десктопе живёт в футере и мобильном меню. */}
+      <div className="hidden lg:flex items-center gap-3 xl:gap-5 flex-1 justify-end min-w-0">
         {PRIMARY_NAV.map((item) => renderPrimaryLink(item, { desktop: true }))}
-        <div className="relative hidden xl:block" ref={calcWrapRef}>
+        <div className="relative" ref={calcWrapRef}>
           <button
             type="button"
             onClick={() => { setCalcOpen((o) => !o); }}
@@ -273,9 +277,6 @@ export default function Navbar() {
       {mobileOpen && (
         <div className="absolute left-0 right-0 top-full z-[110] mt-2 max-h-[min(80vh,520px)] overflow-y-auto rounded-2xl border border-border-subtle bg-surface p-4 shadow-2xl ring-1 ring-black/[0.08] lg:hidden">
           <div className="flex flex-col gap-1">
-            <Link to="/" className={navItemClass(pathname === '/')} onClick={closeAll} aria-current={pathname === '/' ? 'page' : undefined}>
-              {t('common.home')}
-            </Link>
             {PRIMARY_NAV.map((item) => renderPrimaryLink(item))}
             <p className="text-[10px] uppercase tracking-wider text-text-tertiary px-2 pt-3 pb-1">
               {t('nav.calculators')}

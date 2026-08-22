@@ -71,5 +71,13 @@ def test_product_surfaces_listed_and_exist():
     ],
 )
 def test_about_has_honest_product_phrasing(needle: re.Pattern[str]):
-    text = (ROOT / "frontend/src/pages/About.jsx").read_text(encoding="utf-8")
+    """После i18n тексты «О проекте» живут в словаре, а не в компоненте."""
+    text = (ROOT / "frontend/src/i18n/messages.ru.js").read_text(encoding="utf-8")
     assert needle.search(text)
+
+
+def test_product_claim_surfaces_include_i18n_dictionaries():
+    """Словари — та поверхность, где теперь появляются product-claims."""
+    mod = _load_audit_module()
+    for rel in ("frontend/src/i18n/messages.ru.js", "frontend/src/i18n/messages.en.js"):
+        assert rel in mod.PRODUCT_CLAIM_ONLY_SURFACES

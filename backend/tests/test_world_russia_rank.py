@@ -23,10 +23,33 @@ def test_russia_links_cover_comparable_rating_concepts_only():
         "unemployment-rate",
         "hicp-index",
         "population",
+        "gdp-usd",
+        "gdp-per-capita-usd",
     }
     assert russia_link_for_concept("budget-balance-gdp") is None
+    assert russia_link_for_concept("government-debt-gdp") is None
     assert russia_link_for_concept("activity-rate") is None
     assert russia_link_for_concept("long-term-interest-rate") is None
+    assert russia_link_for_concept("gdp-nominal") is None
+    assert RUSSIA_CONCEPT_LINKS["gdp-usd"].indicator_code == "weo-gdp-usd"
+    assert RUSSIA_CONCEPT_LINKS["gdp-per-capita-usd"].indicator_code == (
+        "weo-gdp-per-capita-usd"
+    )
+    assert "budget-deficit" not in {
+        link.indicator_code for link in RUSSIA_CONCEPT_LINKS.values()
+    }
+    assert "gdp-nominal" not in {
+        link.indicator_code for link in RUSSIA_CONCEPT_LINKS.values()
+    }
+
+
+def test_weo_gdp_overlay_uses_imf_not_rosstat_or_nominal():
+    link = russia_link_for_concept("gdp-usd")
+    assert link.source_ru == "Международный валютный фонд"
+    assert link.source_en == "International Monetary Fund"
+    assert "Росстат" not in link.note_en
+    assert "gdp-nominal" not in link.indicator_code
+    assert russia_link_for_concept("budget-deficit") is None
 
 
 def test_hicp_uses_cpi_yoy_without_second_yoy():

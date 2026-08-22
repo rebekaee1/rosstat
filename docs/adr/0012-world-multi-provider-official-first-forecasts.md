@@ -2,7 +2,7 @@
 
 - **Status:** Accepted
 - **Date:** 2026-08-06
-- **Last verified:** 2026-08-06 (provider identity, adapter contract, отдельные forecast tables, rolling-origin MASE gate).
+- **Last verified:** 2026-08-22 (IMF WEO current-USD GDP concepts; provider identity, adapter contract, отдельные forecast tables, rolling-origin MASE gate).
 - **Part of:** [`AGENTS.md`](../../AGENTS.md), [`CONTEXT.md`](../../CONTEXT.md), [`ADR-0011`](0011-world-eurostat-data-plane.md), [`ADR-0003`](0003-seo-single-source-server-rendered.md).
 
 ---
@@ -71,3 +71,18 @@ Eurostat дал унифицированное европейское покры
   не дефектом карточки.
 - Смена официального источника требует явной миграции provenance и проверки
   overlap; молчаливое смешение двух ведомств в одном ряду запрещено.
+
+## Subsequent additions (after acceptance)
+
+### 2026-08-22 — IMF WEO current-USD GDP
+
+Официальный кросс-страновой ВВП в текущих долларах США: provider `imf`,
+dataset `WEO`, адаптер `ImfWeoAdapter` (SDMX 3.0 `IMF.RES/WEO`). Курируемые
+концепты `gdp-usd` / `gdp-per-capita-usd` через `provider_dataset_ids`
+(`{"imf": frozenset({"weo"})}`), Eurostat `dataset_ids` пустые. Россия не
+заводится как `WorldCountry`: overlay читает служебные unlisted ряды
+каталога `weo-gdp-usd` / `weo-gdp-per-capita-usd`. Оценка текущего календарного
+года хранится как наблюдение; среднесрочные проекции WEO (годы > текущего)
+отбрасываются на разборе SDMX, чтобы карта и рейтинг не принимали горизонт
+2031 за последнее значение. `forecast_steps: 0`, provider не добавлялся в
+`OFFICIAL_PROVIDER_POLICIES`.

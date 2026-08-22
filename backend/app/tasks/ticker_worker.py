@@ -44,6 +44,9 @@ _SERIES_TICKER_SPECS: tuple[tuple[str, str, str], ...] = (
     # (indicator_code, ticker_code, source_label)
     ("brent", "brent", "EIA"),
     ("gold-price", "gold-rub-live", "Банк России"),
+    ("eur-usd", "eur-usd", "ЕЦБ"),
+    ("gbp-usd", "gbp-usd", "ЕЦБ"),
+    ("usd-cny", "usd-cny", "ЕЦБ"),
 )
 
 # Воркер тикает каждые 5 секунд, а дневной ряд обновляется раз в сутки:

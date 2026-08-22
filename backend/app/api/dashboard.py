@@ -1,9 +1,17 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy import select, desc, func
+from sqlalchemy import distinct, select, desc, func, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
-from app.models import Indicator, IndicatorData
+from app.models import (
+    Indicator,
+    IndicatorData,
+    Region,
+    RegionDataPoint,
+    WorldCountry,
+    WorldDataPoint,
+    WorldIndicator,
+)
 from app.core.cache import cache_get, cache_set, versioned_key
 from app.services.locale import get_locale
 from app.services.seo_i18n import public_indicator_fields
@@ -24,6 +32,103 @@ FLAGSHIP_MAP: dict[str, dict] = {
 
 POINTS_LIMIT = 12
 CACHE_TTL = 1800
+COVERAGE_TTL = 21600
+
+
+@router.get("/coverage")
+async def dashboard_coverage(db: AsyncSession = Depends(get_db)):
+    """Сколько данных на платформе: страны, публичные ряды, период наблюдений.
+
+    Числа считаются по фактическому содержимому базы, а не задаются вручную:
+    иначе витрина расходится с данными при первом же обновлении каталога.
+    Россия учитывается отдельным слагаемым — в мировом каталоге её нет.
+    """
+    cache_key = await versioned_key("dashboard", "coverage:v1")
+    cached = await cache_get(cache_key)
+    if cached:
+        return cached
+
+    world_countries = int(
+        (
+            await db.execute(
+                select(func.count(distinct(WorldIndicator.country_id)))
+                .join(WorldCountry, WorldCountry.id == WorldIndicator.country_id)
+                .where(
+                    WorldIndicator.is_listed.is_(True),
+                    WorldCountry.is_active.is_(True),
+                )
+            )
+        ).scalar()
+        or 0
+    )
+    world_series = int(
+        (
+            await db.execute(
+                select(func.count()).select_from(WorldIndicator)
+                .where(WorldIndicator.is_listed.is_(True))
+            )
+        ).scalar()
+        or 0
+    )
+    russia_series = int(
+        (
+            await db.execute(
+                select(func.count()).select_from(Indicator)
+                .where(Indicator.is_listed.is_(True))
+            )
+        ).scalar()
+        or 0
+    )
+    # Региональный ряд = показатель × субъект: пара, а не показатель.
+    regional_series = int(
+        (
+            await db.execute(
+                text(
+                    "select count(*) from ("
+                    " select distinct d.indicator_id, d.region_id from region_data d"
+                    " join regions r on r.id = d.region_id and r.kind = 'region'"
+                    ") pairs"
+                )
+            )
+        ).scalar()
+        or 0
+    )
+    # Только субъекты: федеральные округа, РФ целиком и остатки — служебные
+    # строки артефакта, наружу их считать нельзя.
+    regions = int(
+        (
+            await db.execute(
+                select(func.count()).select_from(Region).where(Region.kind == "region")
+            )
+        ).scalar()
+        or 0
+    )
+
+    years: list[int] = []
+    for span_query in (
+        select(func.min(IndicatorData.date), func.max(IndicatorData.date)),
+        select(func.min(WorldDataPoint.date), func.max(WorldDataPoint.date)),
+    ):
+        span = (await db.execute(span_query)).first()
+        if span:
+            years.extend(int(v.year) for v in span if v is not None)
+    region_span = (
+        await db.execute(
+            select(func.min(RegionDataPoint.year), func.max(RegionDataPoint.year))
+        )
+    ).first()
+    if region_span:
+        years.extend(int(v) for v in region_span if v is not None)
+
+    payload = {
+        "countries": world_countries + (1 if russia_series else 0),
+        "series": world_series + russia_series + regional_series,
+        "regions": regions,
+        "year_from": min(years) if years else None,
+        "year_to": max(years) if years else None,
+    }
+    await cache_set(cache_key, payload, COVERAGE_TTL)
+    return payload
 
 
 @router.get("/sparklines")

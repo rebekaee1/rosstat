@@ -64,6 +64,14 @@ function code(value) {
   return s;
 }
 
+export function homePath() {
+  return '/';
+}
+
+export function comparePath() {
+  return '/compare';
+}
+
 export function countryPath(countrySlug) {
   return `/${slug(countrySlug)}`;
 }
@@ -82,6 +90,14 @@ export function categoryPath(countrySlug, categorySlug) {
 
 export function russiaHomePath() {
   return countryPath(RUSSIA);
+}
+
+/** Раздел России: главная страны, регионы, категории, сегодня. */
+export function isRussiaSectionPath(pathname) {
+  if (!pathname) return false;
+  if (pathname === `/${RUSSIA}` || pathname.startsWith(`/${RUSSIA}/`)) return true;
+  if (pathname === '/today' || pathname.startsWith('/today/')) return true;
+  return false;
 }
 
 export function russiaIndicatorPath(indicatorCode) {
@@ -142,9 +158,16 @@ export function demographicsPath() {
   return `/${RUSSIA}/demographics`;
 }
 
+/**
+ * Каталог стран живёт на главной; отдельная витрина `/world` снята и 301-ится.
+ * Путь оставлен для карты легаси-редиректов и тестов — новыми ссылками не пользуемся.
+ */
 export function worldHubPath() {
   return '/world';
 }
+
+/** Показатель рейтинга по умолчанию: `/world/rating` без него 301-ится сюда. */
+export const WORLD_RATING_DEFAULT_CONCEPT = 'unemployment-rate';
 
 export function worldRatingPath(concept) {
   return concept ? `/world/rating/${slug(concept)}` : '/world/rating';
