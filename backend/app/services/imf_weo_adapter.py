@@ -13,6 +13,8 @@ Verified live 2026-08-22:
 - ``NGDPD`` observations arrive in US dollars; series SCALE ``9`` means
   divide by 1e9 to store billions (WEO publication unit).
 - ``NGDPDPC`` SCALE ``0`` — already US dollars per person.
+- ``GGXCNL_NGDP`` (verified live 2026-08-22) — general government net
+  lending/borrowing, SCALE ``0``, values already in percent of GDP.
 
 Public fields must not mention API / SDMX / dataflow. Attribution:
 «Source: International Monetary Fund, World Economic Outlook».
@@ -59,9 +61,12 @@ _UA = "ForecastEconomy/1.0 (+https://forecasteconomy.com)"
 
 WEO_NGDPD = "NGDPD"
 WEO_NGDPDPC = "NGDPDPC"
+WEO_GGXCNL_NGDP = "GGXCNL_NGDP"
 
 # Identity + public units. Ranking compares measure_class(unit, unit_ru)
 # to WorldConcept.measure — keep these codes in lockstep with world_concepts.
+# Per-series public copy (desc_template / keywords / category) lives here so
+# the ingest builds no GDP-flavoured text for a fiscal series.
 WEO_SERIES: dict[str, dict[str, str]] = {
     WEO_NGDPD: {
         "unit": "BN_USD",
@@ -71,6 +76,12 @@ WEO_SERIES: dict[str, dict[str, str]] = {
         "name_en": "Gross domestic product at current prices",
         "code_suffix": "ngdpd",
         "russia_indicator_code": "weo-gdp-usd",
+        "category_ru": "Национальные счета",
+        "desc_ru": (
+            "{name} — годовая оценка Международного валютного фонда "
+            "в текущих долларах США ({unit})."
+        ),
+        "keywords_ru": "{name}, {country}, ВВП, доллары США",
     },
     WEO_NGDPDPC: {
         "unit": "USD_PC",
@@ -80,8 +91,67 @@ WEO_SERIES: dict[str, dict[str, str]] = {
         "name_en": "Gross domestic product per capita at current prices",
         "code_suffix": "ngdpdpc",
         "russia_indicator_code": "weo-gdp-per-capita-usd",
+        "category_ru": "Национальные счета",
+        "desc_ru": (
+            "{name} — годовая оценка Международного валютного фонда "
+            "в текущих долларах США ({unit})."
+        ),
+        "keywords_ru": "{name}, {country}, ВВП, доллары США",
+    },
+    # Общий баланс (чистое кредитование/заимствование) сектора государственного
+    # управления в % ВВП; SCALE=0 — значения приходят сразу в процентах.
+    WEO_GGXCNL_NGDP: {
+        "unit": "PC_GDP",
+        "unit_ru": "% ВВП",
+        "unit_en": "% of GDP",
+        "name_ru": "Баланс бюджета сектора государственного управления",
+        "name_en": "General government budget balance",
+        "code_suffix": "ggxcnl",
+        "russia_indicator_code": "weo-budget-balance-gdp",
+        "category_ru": "Государственные финансы",
+        "desc_ru": (
+            "{name} — годовая оценка Международного валютного фонда "
+            "в процентах от валового внутреннего продукта ({unit}); "
+            "положительное значение — профицит, отрицательное — дефицит."
+        ),
+        "keywords_ru": (
+            "{name}, {country}, баланс бюджета, дефицит бюджета, "
+            "профицит бюджета, % ВВП"
+        ),
     },
 }
+
+# Публичная методология per series (RU/EN): денежные ряды и процентный ряд
+# описываются по-разному.
+WEO_METHODOLOGY_BY_CODE: dict[str, tuple[str, str]] = {
+    WEO_NGDPD: (
+        "Годовая оценка в текущих долларах США. "
+        "Source: International Monetary Fund, World Economic Outlook.",
+        "Annual estimate in current US dollars. "
+        "Source: International Monetary Fund, World Economic Outlook.",
+    ),
+    WEO_NGDPDPC: (
+        "Годовая оценка в текущих долларах США. "
+        "Source: International Monetary Fund, World Economic Outlook.",
+        "Annual estimate in current US dollars. "
+        "Source: International Monetary Fund, World Economic Outlook.",
+    ),
+    WEO_GGXCNL_NGDP: (
+        "Сальдо доходов и расходов сектора государственного управления "
+        "за год, в процентах от валового внутреннего продукта. "
+        "Source: International Monetary Fund, World Economic Outlook.",
+        "General government net lending/borrowing for the year, "
+        "percent of GDP. "
+        "Source: International Monetary Fund, World Economic Outlook.",
+    ),
+}
+
+
+def weo_methodology(weo_code: str, *, locale: str = "ru") -> str:
+    ru, en = WEO_METHODOLOGY_BY_CODE[
+        (weo_code or "").strip().upper()
+    ]
+    return en if locale == "en" else ru
 
 # ISO2 (WorldCountry.code / RU overlay) → WEO COUNTRY (ISO3).
 # Kosovo has no WEO series; EL/GR and UK/GB share one WEO country.

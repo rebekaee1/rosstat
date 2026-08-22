@@ -128,8 +128,29 @@ RUSSIA_CONCEPT_LINKS: dict[str, RussiaConceptLink] = {
             "exchange rate."
         ),
     ),
+    "budget-balance-gdp": RussiaConceptLink(
+        indicator_code="weo-budget-balance-gdp",
+        value_kind="level",
+        source_ru="Международный валютный фонд",
+        source_en="International Monetary Fund",
+        note_ru=(
+            "Для России в рейтинг входит годовая оценка баланса бюджета "
+            "сектора государственного управления по методологии государственных "
+            "финансов Международного валютного фонда. Тот же выпуск используется "
+            "для зарубежных стран. Национальная статистика Минфина России ведёт "
+            "федеральный бюджет по кассовому исполнению и другой классификации, "
+            "поэтому значения не совпадают с оценкой фонда."
+        ),
+        note_en=(
+            "For Russia the ranking uses the IMF World Economic Outlook annual "
+            "estimate of the general government budget balance under the fund’s "
+            "public finance methodology. Other countries come from the same "
+            "publication. Russia’s national statistics from the Ministry of "
+            "Finance track the federal budget on a cash basis with a different "
+            "classification, so the figures do not coincide."
+        ),
+    ),
     # gdp-volume-* — национальная валюта, rating-поверхности нет.
-    # budget-balance-gdp — % ВВП Евростата vs млрд руб. Минфина: не смешиваем.
     # government-debt-gdp — единица и охват S.13 не совпадают с рядом Минфина.
     # long-term-interest-rate — доходность облигаций ≠ ключевая ставка ЦБ.
     # activity-rate / gdp-per-capita-eu — нет честного отечественного аналога.

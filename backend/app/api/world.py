@@ -46,6 +46,7 @@ from app.database import get_db
 from app.models import (
     Indicator,
     IndicatorData,
+    RegionIndicator,
     WorldCountry,
     WorldDataPoint,
     WorldForecast,
@@ -631,7 +632,7 @@ async def list_countries(db: AsyncSession = Depends(get_db)):
     """
     # v4: EXISTS по listed-рядам вместо DISTINCT по всей world_data_points
     # (на полном датасете ~8M точек DISTINCT убивал воркеры → 504/500).
-    cache_key = await versioned_key("world", f"countries:v5:{get_locale()}")
+    cache_key = await versioned_key("world", f"countries:v6:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -708,6 +709,17 @@ async def list_countries(db: AsyncSession = Depends(get_db)):
         ).scalar()
         or 0
     )
+    if ru_listed > 0:
+        # Счётчик России = вся платформа: макрокаталог + региональные ряды
+        # (489 показателей × 85 субъектов). Иначе карточка РФ обещает меньше,
+        # чем реально открывается с главной.
+        ru_region_indicators = int(
+            (
+                await db.execute(select(func.count(RegionIndicator.id)))
+            ).scalar()
+            or 0
+        )
+        ru_listed += ru_region_indicators
     if ru_listed > 0 and not any(
         (c.get("code") == "RU" or c.get("slug") == "russia") for c in countries
     ):

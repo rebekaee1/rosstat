@@ -234,6 +234,10 @@ export default {
     + 'населения в текущих долларах США из публикации «Перспективы развития мировой экономики» '
     + 'Международного валютного фонда. Тот же выпуск используется для зарубежных стран. '
     + 'Это не ряд Росстата и не пересчёт рублей по курсу Банка России.',
+  'world.rating.russiaNote.budget-balance-gdp':
+    'Для России рейтинг берёт оценку Международного валютного фонда по сектору '
+    + 'государственного управления; национальная статистика Минфина России использует '
+    + 'другую классификацию и охват.',
   'world.rating.intro':
     'Выберите показатель и год. Для цен на карте и в таблице — изменение за год '
     + 'в процентах, а не уровень индекса. Карта показывает пространственный срез, '
@@ -1794,7 +1798,20 @@ export default {
   'world.rating.extraRemove': 'Убрать колонку',
   'world.rating.login': 'Войти',
   'world.rating.register': 'Создать аккаунт',
-  'world.rating.extraMax': 'Можно добавить не больше трёх показателей',
+  'world.rating.extraMax': 'Можно добавить не больше четырёх дополнительных показателей',
+  'world.rating.compareTitle': 'Страны рядом',
+  'world.rating.compareHint': 'До пяти показателей по выбранным странам, одним взглядом.',
+  'world.rating.filtersLabel': 'Фильтр стран',
+  'world.rating.filterAdd': 'Добавить страны',
+  'world.rating.filterClear': 'Сбросить фильтр',
+  'world.rating.filterEmpty': 'В выбранных странах нет данных за этот год.',
+  'world.rating.filterShown': 'Показано {shown} из {total}',
+  'world.rating.filterSearch': 'Найти страну',
+  'world.rating.matrix.rowHeader': 'Показатель',
+  'world.rating.matrix.periodRow': 'Период',
+  'world.rating.matrix.guestCap': 'Гостю доступен один дополнительный показатель. Зарегистрируйтесь, чтобы сравнивать до пяти.',
+  'world.rating.matrix.bestHint': 'Выделено лучшее значение строки',
+  'world.rating.matrix.more': 'ещё {n}',
   'world.country.emptySearch': 'По запросу «{query}» ничего не найдено.',
   'world.country.emptySearchReset': 'Сбросить поиск',
   'world.country.emptyCatalog':

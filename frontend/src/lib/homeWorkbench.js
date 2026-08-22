@@ -156,6 +156,7 @@ export const WORLD_CONCEPT_RUSSIA_NOTE_KEYS = Object.freeze({
   population: 'world.rating.russiaNote.population',
   'gdp-usd': 'world.rating.russiaNote.gdp-usd',
   'gdp-per-capita-usd': 'world.rating.russiaNote.gdp-per-capita-usd',
+  'budget-balance-gdp': 'world.rating.russiaNote.budget-balance-gdp',
 });
 
 export const WORLD_RATING_QUERY_NAME_KEYS = Object.freeze({

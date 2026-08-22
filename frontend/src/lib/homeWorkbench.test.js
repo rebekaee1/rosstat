@@ -240,6 +240,9 @@ describe('homeWorkbench', () => {
     const tRu = (k) => translate(k, undefined, 'ru');
     expect(russiaNoteForConcept('unemployment-rate', tRu)).toMatch(/Росстата/);
     expect(russiaNoteForConcept('unemployment-rate', (k) => translate(k, undefined, 'en'))).toMatch(/Rosstat/);
-    expect(russiaNoteForConcept('budget-balance-gdp', tRu)).toBeNull();
+    expect(russiaNoteForConcept('budget-balance-gdp', tRu)).toMatch(/Международного валютного фонда/);
+    expect(
+      russiaNoteForConcept('budget-balance-gdp', (k) => translate(k, undefined, 'en')),
+    ).toMatch(/International Monetary Fund/);
   });
 });

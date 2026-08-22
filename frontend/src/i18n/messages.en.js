@@ -233,6 +233,10 @@ export default {
     'For Russia the ranking uses the IMF World Economic Outlook annual estimate of GDP per capita '
     + 'in current US dollars. Other countries come from the same publication. This is not a Rosstat '
     + 'series and not a conversion of rubles at the Bank of Russia exchange rate.',
+  'world.rating.russiaNote.budget-balance-gdp':
+    'For Russia the ranking takes the International Monetary Fund estimate for the general '
+    + 'government sector; Russia’s national statistics from the Ministry of Finance use a '
+    + 'different classification and coverage.',
   'world.rating.intro':
     'Choose an indicator and year. For prices on the map and in the table — year-over-year '
     + 'change in percent, not the index level. The map shows the spatial slice; the table below '
@@ -1786,7 +1790,20 @@ export default {
   'world.rating.extraRemove': 'Remove column',
   'world.rating.login': 'Sign in',
   'world.rating.register': 'Create account',
-  'world.rating.extraMax': 'You can add up to three indicators',
+  'world.rating.extraMax': 'You can add up to four extra indicators',
+  'world.rating.compareTitle': 'Countries side by side',
+  'world.rating.compareHint': 'Up to five indicators for selected countries at a glance.',
+  'world.rating.filtersLabel': 'Country filter',
+  'world.rating.filterAdd': 'Add countries',
+  'world.rating.filterClear': 'Clear filter',
+  'world.rating.filterEmpty': 'No data for the selected year in the filtered countries.',
+  'world.rating.filterShown': 'Showing {shown} of {total}',
+  'world.rating.filterSearch': 'Find a country',
+  'world.rating.matrix.rowHeader': 'Indicator',
+  'world.rating.matrix.periodRow': 'Period',
+  'world.rating.matrix.guestCap': 'Guests can add one extra indicator. Sign in to compare up to five.',
+  'world.rating.matrix.bestHint': 'The best value in the row is highlighted',
+  'world.rating.matrix.more': '+{n} more',
   'world.country.emptySearch': 'Nothing found for “{query}”.',
   'world.country.emptySearchReset': 'Clear search',
   'world.country.emptyCatalog':

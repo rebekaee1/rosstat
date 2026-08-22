@@ -10,6 +10,7 @@ import {
 import { formatChange, formatDate, formatValue, resolveDateFormat } from '../../lib/format';
 import { SkeletonBox } from '../Skeleton';
 import { track, events } from '../../lib/track';
+import IndicatorSearch from '../IndicatorSearch';
 import {
   russiaIndicatorPath,
 } from '../../lib/sitePaths';
@@ -117,6 +118,13 @@ export default function HomeHero({ indicators, isLoading }) {
           <p className="mt-2.5 max-w-2xl text-sm leading-relaxed text-text-secondary md:text-[15px]">
             {t('home.hero.subtitle')}
           </p>
+          <div className="mt-5 max-w-xl">
+            <IndicatorSearch
+              variant="inline"
+              className="border-champagne/35 bg-champagne/[0.07] py-4 shadow-[0_8px_24px_rgba(35,30,16,0.06)]"
+              inlinePlaceholder={t('home.searchPlaceholder')}
+            />
+          </div>
         </div>
 
         <MarketsPulsePanel indicators={indicators} isLoading={isLoading} />

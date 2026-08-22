@@ -25,8 +25,8 @@ def test_russia_links_cover_comparable_rating_concepts_only():
         "population",
         "gdp-usd",
         "gdp-per-capita-usd",
+        "budget-balance-gdp",
     }
-    assert russia_link_for_concept("budget-balance-gdp") is None
     assert russia_link_for_concept("government-debt-gdp") is None
     assert russia_link_for_concept("activity-rate") is None
     assert russia_link_for_concept("long-term-interest-rate") is None
@@ -35,6 +35,11 @@ def test_russia_links_cover_comparable_rating_concepts_only():
     assert RUSSIA_CONCEPT_LINKS["gdp-per-capita-usd"].indicator_code == (
         "weo-gdp-per-capita-usd"
     )
+    balance = RUSSIA_CONCEPT_LINKS["budget-balance-gdp"]
+    assert balance.indicator_code == "weo-budget-balance-gdp"
+    assert balance.source_ru == "Международный валютный фонд"
+    assert "Минфина" in balance.note_ru
+    assert "Ministry of Finance" in balance.note_en
     assert "budget-deficit" not in {
         link.indicator_code for link in RUSSIA_CONCEPT_LINKS.values()
     }
@@ -50,6 +55,11 @@ def test_weo_gdp_overlay_uses_imf_not_rosstat_or_nominal():
     assert "Росстат" not in link.note_en
     assert "gdp-nominal" not in link.indicator_code
     assert russia_link_for_concept("budget-deficit") is None
+    balance = russia_link_for_concept("budget-balance-gdp")
+    assert balance.source_ru == "Международный валютный фонд"
+    assert balance.source_en == "International Monetary Fund"
+    # Оверлей — ряд МВФ, а не российский бюджетный поток Минфина.
+    assert balance.indicator_code == "weo-budget-balance-gdp"
 
 
 def test_hicp_uses_cpi_yoy_without_second_yoy():

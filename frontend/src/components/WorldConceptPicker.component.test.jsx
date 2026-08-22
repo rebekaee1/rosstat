@@ -1,6 +1,6 @@
 /** @vitest-environment jsdom */
-import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
+import { fireEvent, render, screen, act } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { LocaleProvider } from '../i18n';
 import WorldConceptPicker from './WorldConceptPicker';
@@ -9,6 +9,8 @@ vi.mock('../lib/track', () => ({
   track: vi.fn(),
   events: { SEARCH_QUERY: 'search_query' },
 }));
+
+import { track } from '../lib/track';
 
 function renderPicker(ui) {
   return render(
@@ -28,12 +30,25 @@ const CONCEPTS = [
   { slug: 'gdp-per-capita-eu', name: 'ВВП к ЕС' },
 ];
 
+const MANY = [
+  ...CONCEPTS,
+  ...Array.from({ length: 10 }, (_, i) => ({
+    slug: `extra-${i}`,
+    name: `Доп ${i}`,
+  })),
+];
+
 describe('WorldConceptPicker', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.useFakeTimers();
+    track.mockClear();
   });
 
-  it('течёт плашками одним потоком без подписей групп и без поиска', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('течёт плашками одним потоком без подписей групп и фильтрует поиском', () => {
     const onChange = vi.fn();
     renderPicker(
       <WorldConceptPicker
@@ -42,11 +57,28 @@ describe('WorldConceptPicker', () => {
         onChange={onChange}
       />,
     );
-    // Группы и поиск сняты: показатель выбирают плашками.
+    // Группы сняты: показатель ищут поиском, а не разбором рубрик.
     expect(screen.queryByText('Рынок труда')).toBeNull();
-    expect(screen.queryByRole('searchbox')).toBeNull();
     expect(screen.getByRole('button', { name: 'Безработица' }).getAttribute('aria-pressed')).toBe('true');
+    fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'насел' } });
     expect(screen.getByRole('button', { name: 'Население' })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'Безработица' })).toBeNull();
+  });
+
+  it('ищет по синонимам показателя, а не только по подписи', () => {
+    renderPicker(
+      <WorldConceptPicker
+        concepts={[
+          { slug: 'budget-balance-gdp', name: 'Сальдо бюджета', keywords: ['дефицит бюджета', 'профицит'] },
+          { slug: 'population', name: 'Население' },
+        ]}
+        value="population"
+        onChange={vi.fn()}
+      />,
+    );
+    fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'дефицит' } });
+    expect(screen.getByRole('button', { name: 'Баланс бюджета' })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'Население' })).toBeNull();
   });
 
   it('переключает значение по клику на плашку', () => {
@@ -76,17 +108,53 @@ describe('WorldConceptPicker', () => {
     expect(active.getAttribute('href')).toBe('/world/rating/unemployment-rate');
   });
 
-  it('без поиска поле скрыто, виден весь набор и подсказка', () => {
+  it('без поиска (главная) поле скрыто и виден весь закрытый набор', () => {
     renderPicker(
       <WorldConceptPicker
         concepts={CONCEPTS}
         value="unemployment-rate"
         onChange={vi.fn()}
+        searchable={false}
         hint={<span>подсказка</span>}
       />,
     );
     expect(screen.queryByRole('searchbox')).toBeNull();
     expect(screen.getByText('подсказка')).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Население' })).toBeTruthy();
+  });
+
+  it('при query ≥2 через debounce пишет search_query world-concept-picker', () => {
+    renderPicker(
+      <WorldConceptPicker
+        concepts={CONCEPTS}
+        value="unemployment-rate"
+        onChange={vi.fn()}
+      />,
+    );
+    fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'насел' } });
+    expect(track).not.toHaveBeenCalled();
+    act(() => {
+      vi.advanceTimersByTime(900);
+    });
+    expect(track).toHaveBeenCalledWith('search_query', {
+      q: 'насел',
+      results: 1,
+      context: 'world-concept-picker',
+    });
+  });
+
+  it('при большом каталоге сворачивается в выпадающий список', () => {
+    renderPicker(
+      <WorldConceptPicker
+        concepts={MANY}
+        value="unemployment-rate"
+        onChange={vi.fn()}
+      />,
+    );
+    const trigger = screen.getByRole('button', { name: /Безработица/ });
+    expect(trigger.getAttribute('aria-expanded')).toBe('false');
+    fireEvent.click(trigger);
+    expect(trigger.getAttribute('aria-expanded')).toBe('true');
+    expect(screen.getByRole('listbox')).toBeTruthy();
   });
 });

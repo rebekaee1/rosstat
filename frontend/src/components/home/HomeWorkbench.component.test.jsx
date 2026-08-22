@@ -88,8 +88,8 @@ describe('HomeWorkbench', () => {
     expect(screen.queryByRole('navigation', { name: 'Переходы по разделам' })).toBeNull();
     expect(screen.queryByRole('link', { name: /Регионы России/i })).toBeNull();
     expect(screen.queryByRole('link', { name: /Показатели России/i })).toBeNull();
-    // Поиск по показателям на главной не нужен — есть подсказка на полный рейтинг.
-    expect(screen.queryByPlaceholderText(/Поиск/i)).toBeNull();
+    // Поиск по показателям возвращён: поле пикера видно рядом с подсказкой.
+    expect(screen.getByRole('searchbox')).toBeTruthy();
     expect(screen.getByRole('link', { name: /больше показателей/i })).toBeTruthy();
 
     await waitFor(() => {

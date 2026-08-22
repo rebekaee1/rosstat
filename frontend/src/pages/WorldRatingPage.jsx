@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   ArrowUpDown, BarChart3, Globe2, MapPinned, SlidersHorizontal, Table2, X,
 } from 'lucide-react';
 import { useAuth } from '../context/authContext';
 import useDocumentMeta from '../lib/useMeta';
+import { track, events } from '../lib/track';
 import {
   formatWorldValue,
   pluralRu,
@@ -41,7 +42,10 @@ import {
   worldRatingPath,
 } from '../lib/sitePaths';
 
-const RATING_EXTRA_MAX = 3;
+const RATING_EXTRA_MAX_AUTH = 4;
+// Гость может добавить один доп. показатель к базовому (2 колонки всего);
+// полный набор до 5 показателей — после регистрации (правка 22.1).
+const RATING_EXTRA_MAX_GUEST = 1;
 
 function ButtonClass(active) {
   return [
@@ -64,6 +68,20 @@ function parseColsParam(searchParams) {
     slugs.push(slug);
   }
   return slugs;
+}
+
+function parseCountriesParam(searchParams) {
+  const raw = searchParams.get('c') || '';
+  if (!raw) return [];
+  const seen = new Set();
+  const codes = [];
+  for (const part of raw.split(',')) {
+    const code = part.trim().toUpperCase();
+    if (!code || seen.has(code)) continue;
+    seen.add(code);
+    codes.push(code);
+  }
+  return codes;
 }
 
 function lookupExtraValue(seriesData, activeYear, row) {
@@ -119,6 +137,73 @@ function pluralUnit(n, base, t, locale) {
   return pluralRu(n, [t(`${base}_one`), t(`${base}_few`), t(`${base}_many`)]);
 }
 
+/**
+ * Поиск страны внутри рейтинга: подсказки по значениям базового показателя,
+ * выбор добавляет страну в фильтр/матрицу. Один компонент на фильтр-бар
+ * и матрицу «Страны рядом».
+ */
+function CountrySuggest({ ranked, excludeCodes, onPick, placeholder }) {
+  const [query, setQuery] = useState('');
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const onDoc = (event) => {
+      if (!rootRef.current?.contains(event.target)) setOpen(false);
+    };
+    document.addEventListener('mousedown', onDoc);
+    return () => document.removeEventListener('mousedown', onDoc);
+  }, [open]);
+
+  const q = query.trim().toLowerCase();
+  const matches = ranked
+    .filter((item) => !excludeCodes.has(item.country_code))
+    .filter((item) => {
+      if (!q) return true;
+      return `${item.country_name} ${item.country_slug || ''}`.toLowerCase().includes(q);
+    })
+    .slice(0, 8);
+
+  return (
+    <div ref={rootRef} className="relative min-w-0">
+      <label className="block">
+        <span className="sr-only">{placeholder}</span>
+        <input
+          type="search"
+          value={query}
+          onChange={(event) => { setQuery(event.target.value); setOpen(true); }}
+          onFocus={() => setOpen(true)}
+          placeholder={placeholder}
+          className="h-9 w-full max-w-[13rem] rounded-xl border border-border-subtle bg-obsidian-light px-3 text-xs text-text-primary outline-none transition-colors focus:border-border-champagne"
+        />
+      </label>
+      {open && matches.length > 0 && (
+        <div
+          role="listbox"
+          className="absolute left-0 z-30 mt-1.5 max-h-64 w-64 overflow-y-auto rounded-xl border border-border-subtle bg-surface p-1.5 shadow-lg"
+        >
+          {matches.map((item) => (
+            <button
+              key={item.country_code}
+              type="button"
+              role="option"
+              aria-selected={false}
+              onClick={() => { onPick(item); setQuery(''); setOpen(false); }}
+              className="flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-left text-sm text-text-primary transition-colors hover:bg-surface-hover hover:text-champagne"
+            >
+              <span className="min-w-0 truncate">{item.country_name}</span>
+              <span className="shrink-0 font-mono text-xs tabular-nums text-text-tertiary">
+                {formatWorldValue(item.value)}
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function WorldRatingPage() {
   const t = useT();
   const { locale } = useLocale();
@@ -155,9 +240,9 @@ export default function WorldRatingPage() {
   );
 
   const rawExtraCols = useMemo(() => parseColsParam(searchParams), [searchParams]);
-  // Гость не видит лишние колонки даже из URL — как GUEST_MAX на compare.
+  const extraMax = isAuthed ? RATING_EXTRA_MAX_AUTH : RATING_EXTRA_MAX_GUEST;
+  // Гость видит максимум один доп. показатель даже из URL — как GUEST_MAX на compare.
   const extraSlugs = useMemo(() => {
-    if (!isAuthed) return [];
     const known = new Set(concepts.map((item) => item.slug));
     if (known.size === 0) return [];
     const out = [];
@@ -166,14 +251,15 @@ export default function WorldRatingPage() {
       if (!slug || slug === activeConcept || seen.has(slug) || !known.has(slug)) continue;
       seen.add(slug);
       out.push(slug);
-      if (out.length >= RATING_EXTRA_MAX) break;
+      if (out.length >= extraMax) break;
     }
     return out;
-  }, [isAuthed, rawExtraCols, concepts, activeConcept]);
+  }, [rawExtraCols, concepts, activeConcept, extraMax]);
 
   const extraSeries0 = useWorldMapSeries(extraSlugs[0]);
   const extraSeries1 = useWorldMapSeries(extraSlugs[1]);
   const extraSeries2 = useWorldMapSeries(extraSlugs[2]);
+  const extraSeries3 = useWorldMapSeries(extraSlugs[3]);
 
   const writeExtraCols = useCallback((next) => {
     const params = new URLSearchParams(searchParams);
@@ -183,12 +269,13 @@ export default function WorldRatingPage() {
   }, [searchParams, setSearchParams]);
 
   const addExtra = useCallback((slug) => {
-    if (!isAuthed || !slug || slug === activeConcept) return;
+    if (!slug || slug === activeConcept) return;
     if (extraSlugs.includes(slug)) return;
-    if (extraSlugs.length >= RATING_EXTRA_MAX) return;
+    if (extraSlugs.length >= extraMax) return;
     writeExtraCols([...extraSlugs, slug]);
+    track(events.WORLD_RATING_COMPARE_ADD, { concept: activeConcept, added: slug, total: extraSlugs.length + 1 });
     setAddOpen(false);
-  }, [isAuthed, activeConcept, extraSlugs, writeExtraCols]);
+  }, [activeConcept, extraSlugs, extraMax, writeExtraCols]);
 
   const removeExtra = useCallback((slug) => {
     writeExtraCols(extraSlugs.filter((item) => item !== slug));
@@ -198,7 +285,33 @@ export default function WorldRatingPage() {
     () => concepts.filter((item) => item.slug !== activeConcept && !extraSlugs.includes(item.slug)),
     [concepts, activeConcept, extraSlugs],
   );
-  const atExtraMax = extraSlugs.length >= RATING_EXTRA_MAX;
+  const atExtraMax = extraSlugs.length >= extraMax;
+
+  // Фильтр стран (правка 22): кликабельные чипы стран в таблице рейтинга.
+  const rawCountryFilter = useMemo(() => parseCountriesParam(searchParams), [searchParams]);
+  const countryFilter = useMemo(
+    () => rawCountryFilter.filter((code) => countriesQ.data?.countries?.some((c) => c.code === code) || code === 'RU'),
+    [rawCountryFilter, countriesQ.data],
+  );
+
+  const toggleCountryFilter = useCallback((code) => {
+    if (!code) return;
+    const next = countryFilter.includes(code)
+      ? countryFilter.filter((item) => item !== code)
+      : [...countryFilter, code];
+    const params = new URLSearchParams(searchParams);
+    if (next.length) params.set('c', next.join(','));
+    else params.delete('c');
+    setSearchParams(params, { replace: true });
+    track(events.WORLD_RATING_FILTER, { concept: activeConcept, action: next.includes(code) ? 'add' : 'remove', n: next.length });
+  }, [countryFilter, searchParams, setSearchParams, activeConcept]);
+
+  const clearCountryFilter = useCallback(() => {
+    const params = new URLSearchParams(searchParams);
+    params.delete('c');
+    setSearchParams(params, { replace: true });
+    track(events.WORLD_RATING_FILTER, { concept: activeConcept, action: 'clear', n: 0 });
+  }, [searchParams, setSearchParams, activeConcept]);
 
   useEffect(() => {
     setSortOverride(null);
@@ -221,13 +334,13 @@ export default function WorldRatingPage() {
   const years = mapSeriesQ.data?.years || [];
   const activeYear = resolveActiveMapYear(years, selectedYear, mapSeriesQ.data?.values_by_year);
   const extraColumns = useMemo(() => extraSlugs.map((slug, index) => {
-    const seriesData = [extraSeries0.data, extraSeries1.data, extraSeries2.data][index];
+    const seriesData = [extraSeries0.data, extraSeries1.data, extraSeries2.data, extraSeries3.data][index];
     return {
       slug,
       label: extraColumnLabel(slug, concepts, seriesData, t),
       seriesData,
     };
-  }), [extraSlugs, concepts, extraSeries0.data, extraSeries1.data, extraSeries2.data, t]);
+  }), [extraSlugs, concepts, extraSeries0.data, extraSeries1.data, extraSeries2.data, extraSeries3.data, t]);
   const baseYearItems = useMemo(
     () => worldYearItems(mapSeriesQ.data, activeYear),
     [mapSeriesQ.data, activeYear],
@@ -268,6 +381,13 @@ export default function WorldRatingPage() {
     );
     return rows.map((item, index) => ({ ...item, rank: index + 1 }));
   }, [yearItems, sortDirection]);
+  // Фильтр стран применяется к отображению таблицы, но не к номерам мест:
+  // страна в фильтре сохраняет своё место в полном рейтинге.
+  const visibleRows = useMemo(() => {
+    if (!countryFilter.length) return ranked;
+    const wanted = new Set(countryFilter);
+    return ranked.filter((item) => wanted.has(item.country_code));
+  }, [ranked, countryFilter]);
   const withoutData = useMemo(() => {
     const withData = new Set(Object.values(yearItems).map((item) => item.country_code));
     return countries.filter((country) => !withData.has(country.code));
@@ -302,6 +422,7 @@ export default function WorldRatingPage() {
     extraSeries0.refetch();
     extraSeries1.refetch();
     extraSeries2.refetch();
+    extraSeries3.refetch();
   };
   const colCount = (sharedUnit ? 4 : 5) + extraColumns.length;
 
@@ -327,6 +448,69 @@ export default function WorldRatingPage() {
 
   const countryWord = (n) => pluralUnit(n, 'world.unit.country', t, locale);
   const yearWord = (n) => pluralUnit(n, 'world.unit.year', t, locale);
+
+  // Матрица «Страны рядом» (правка 22.1): строки — показатели (базовый + до
+  // четырёх доп.), колонки — страны из фильтра; лучшее значение строки
+  // выделено. Гость может добавить один доп. показатель, полный набор —
+  // после регистрации.
+  const matrixCountries = useMemo(() => {
+    const wanted = new Set(countryFilter);
+    if (wanted.size) return ranked.filter((item) => wanted.has(item.country_code));
+    // Без явного фильтра показываем топ-4 + Россию, если она в рейтинге.
+    const top = ranked.slice(0, 4);
+    if (!top.some((item) => item.country_code === 'RU')) {
+      const ru = ranked.find((item) => item.country_code === 'RU');
+      if (ru) top.push(ru);
+    }
+    return top;
+  }, [ranked, countryFilter]);
+
+  const matrixRows = useMemo(() => {
+    const base = {
+      slug: activeConcept,
+      label: shortName,
+      series: mapSeriesQ.data,
+      unit: concept.unit || mapSeriesQ.data?.concept?.unit || '',
+    };
+    const extras = extraColumns.map((col) => ({
+      slug: col.slug,
+      label: col.label,
+      series: col.seriesData,
+      unit: concepts.find((item) => item.slug === col.slug)?.unit || '',
+    }));
+    return [base, ...extras];
+  }, [activeConcept, shortName, mapSeriesQ.data, concept.unit, extraColumns, concepts]);
+
+  const matrixValueFor = useCallback((row, countryCode) => {
+    if (!row.series) return null;
+    if (row.slug === activeConcept) {
+      return yearItems[countryCode]?.value ?? null;
+    }
+    return lookupExtraValue(row.series, activeYear, { country_code: countryCode, country_slug: countryCode.toLowerCase() })?.value ?? null;
+  }, [activeConcept, activeYear, yearItems]);
+
+  // bestByRow: код страны с «лучшим» значением строки (по направлению сортировки
+  // базового концепта; для доп-строк направление то же — визуальная согласованность).
+  const bestByRow = useMemo(() => {
+    const out = new Map();
+    for (const row of matrixRows) {
+      let bestCode = null;
+      let bestVal = null;
+      for (const col of matrixCountries) {
+        const v = matrixValueFor(row, col.country_code);
+        if (v == null) continue;
+        if (
+          bestVal == null
+          || (sortDirection === 'asc' ? v < bestVal : v > bestVal)
+        ) {
+          bestVal = v;
+          bestCode = col.country_code;
+        }
+      }
+      if (bestCode != null && matrixCountries.length > 1) out.set(row.slug, bestCode);
+    }
+    return out;
+  }, [matrixRows, matrixCountries, matrixValueFor, sortDirection]);
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 pb-24 pt-24 sm:px-6">
@@ -543,7 +727,148 @@ export default function WorldRatingPage() {
             />
           </section>
 
-          <section className="mb-8">
+          <section className="mb-5">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+                  {t('world.rating.filtersLabel')}
+                </p>
+                <h2 className="mt-1 font-display text-xl font-bold text-text-primary sm:text-2xl">
+                  {t('world.rating.compareTitle')}
+                  {activeYear ? <span className="text-text-tertiary">, {activeYear}</span> : null}
+                </h2>
+                <p className="mt-1 max-w-2xl text-xs leading-5 text-text-secondary">
+                  {t('world.rating.compareHint')}
+                </p>
+              </div>
+              <CountrySuggest
+                ranked={ranked}
+                excludeCodes={new Set(countryFilter)}
+                placeholder={t('world.rating.filterSearch')}
+                onPick={(item) => toggleCountryFilter(item.country_code)}
+              />
+            </div>
+
+            <div className="mt-3 flex flex-wrap items-center gap-1.5">
+              {(countryFilter.length ? matrixCountries : ranked.slice(0, 12)).map((item) => {
+                const active = countryFilter.includes(item.country_code);
+                return (
+                  <button
+                    key={item.country_code}
+                    type="button"
+                    onClick={() => toggleCountryFilter(item.country_code)}
+                    aria-pressed={active}
+                    className={ButtonClass(active || countryFilter.includes(item.country_code))}
+                    title={`${item.country_name}: ${formatWorldValue(item.value)}`}
+                  >
+                    {item.country_name}
+                  </button>
+                );
+              })}
+              {!countryFilter.length && (
+                <span className="px-1 font-mono text-[11px] text-text-tertiary">
+                  {ranked.length > 12 ? t('world.rating.matrix.more', { n: ranked.length - 12 }) : ''}
+                </span>
+              )}
+              {countryFilter.length > 0 && (
+                <button
+                  type="button"
+                  onClick={clearCountryFilter}
+                  className="ml-1 inline-flex items-center gap-1 rounded-xl px-2.5 py-2 text-xs text-text-tertiary transition-colors hover:text-champagne"
+                >
+                  <X size={12} />
+                  {t('world.rating.filterClear')}
+                </button>
+              )}
+            </div>
+
+            <div id="compare-matrix" className="mt-4 overflow-x-auto rounded-2xl border border-border-subtle bg-surface">
+              <table className="w-full min-w-[40rem] text-sm">
+                <thead>
+                  <tr className="text-left text-[11px] uppercase tracking-wide text-text-tertiary">
+                    <th className="w-[16rem] px-4 py-3 font-medium">{t('world.rating.matrix.rowHeader')}</th>
+                    {matrixCountries.map((col) => (
+                      <th key={col.country_code} className="px-4 py-3 text-right font-medium">
+                        <button
+                          type="button"
+                          onClick={() => openCountry(col, col)}
+                          className="transition-colors hover:text-champagne"
+                          title={t('world.rating.col.country')}
+                        >
+                          {col.country_name}
+                          <span className="ml-1.5 font-mono text-[10px] normal-case text-text-tertiary">#{col.rank}</span>
+                        </button>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {matrixRows.map((row) => (
+                    <tr key={row.slug} className="border-t border-border-subtle">
+                      <td className="max-w-[16rem] truncate px-4 py-3">
+                        <Link
+                          to={
+                            row.slug === activeConcept
+                              ? '#rating-table'
+                              : worldRatingPath(row.slug)
+                          }
+                          onClick={(event) => {
+                            if (row.slug === activeConcept) event.preventDefault();
+                          }}
+                          className="font-medium text-text-primary transition-colors hover:text-champagne"
+                          title={row.label}
+                        >
+                          {row.label}
+                        </Link>
+                        {row.unit ? (
+                          <span className="ml-1.5 font-mono text-[10px] text-text-tertiary">{row.unit}</span>
+                        ) : null}
+                      </td>
+                      {matrixCountries.map((col) => {
+                        const v = matrixValueFor(row, col.country_code);
+                        const isBest = bestByRow.get(row.slug) === col.country_code;
+                        return (
+                          <td
+                            key={col.country_code}
+                            className={`px-4 py-3 text-right font-mono tabular-nums ${isBest ? 'font-semibold text-champagne' : 'text-text-primary'}`}
+                          >
+                            {v != null ? formatWorldValue(v) : '—'}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                  <tr className="border-t border-border-subtle">
+                    <td className="px-4 py-2.5 text-[11px] uppercase tracking-wide text-text-tertiary">
+                      {t('world.rating.matrix.periodRow')}
+                    </td>
+                    {matrixCountries.map((col) => (
+                      <td key={col.country_code} className="px-4 py-2.5 text-right font-mono text-[11px] text-text-tertiary">
+                        {yearItems[col.country_code]?.date
+                          ? formatDate(yearItems[col.country_code].date, periodGranularity)
+                          : '—'}
+                      </td>
+                    ))}
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            {!isAuthed && (
+              <div className="mt-3 rounded-2xl border border-border-subtle bg-obsidian-light px-4 py-3.5">
+                <p className="text-xs leading-5 text-text-secondary">{t('world.rating.matrix.guestCap')}</p>
+                <div className="mt-2.5 flex flex-wrap gap-2">
+                  <Link to="/register" className="rounded-xl bg-champagne px-3 py-2 text-xs font-semibold text-white hover:bg-champagne-muted">
+                    {t('world.rating.register')}
+                  </Link>
+                  <Link to="/login" className="rounded-xl border border-border-subtle px-3 py-2 text-xs font-medium text-text-primary hover:border-champagne/40">
+                    {t('world.rating.login')}
+                  </Link>
+                </div>
+              </div>
+            )}
+          </section>
+
+          <section id="rating-table" className="scroll-mt-24">
             <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
               <div>
                 <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
@@ -554,6 +879,14 @@ export default function WorldRatingPage() {
                 </h2>
               </div>
               <div className="flex flex-wrap items-end gap-2">
+                {countryFilter.length > 0 && (
+                  <div className="inline-flex items-center gap-2 rounded-xl bg-champagne/10 px-3 py-2 text-xs text-champagne">
+                    {t('world.rating.filterShown', {
+                      shown: visibleRows.length,
+                      total: ranked.length,
+                    })}
+                  </div>
+                )}
                 <div className="inline-flex items-center gap-2 rounded-xl bg-obsidian-light px-3 py-2 text-xs text-text-secondary">
                   <ArrowUpDown size={14} className="text-champagne" />
                   {sortDirection === 'desc'
@@ -579,7 +912,7 @@ export default function WorldRatingPage() {
                     {t('world.rating.extraGuestTitle')}
                   </h3>
                   <p className="mt-1.5 text-xs leading-5 text-text-secondary">
-                    {t('world.rating.extraGuestBody')}
+                    {t('world.rating.matrix.guestCap')}
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     <Link
@@ -595,6 +928,20 @@ export default function WorldRatingPage() {
                       {t('world.rating.login')}
                     </Link>
                   </div>
+                  {addableConcepts.length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-1.5">
+                      {addableConcepts.slice(0, RATING_EXTRA_MAX_GUEST).map((item) => (
+                        <button
+                          key={item.slug}
+                          type="button"
+                          className={ButtonClass(false)}
+                          onClick={() => addExtra(item.slug)}
+                        >
+                          {homeConceptLabel(item.slug, t, item.name)}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
               {addOpen && isAuthed && (
@@ -647,10 +994,23 @@ export default function WorldRatingPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {ranked.map((item) => (
+                  {visibleRows.map((item) => (
                     <tr key={item.country_code} className="border-t border-border-subtle transition-colors hover:bg-surface-hover">
                       <td className="px-4 py-3 font-mono text-text-tertiary">{item.rank}</td>
                       <td className="px-4 py-3">
+                        <button
+                          type="button"
+                          onClick={() => toggleCountryFilter(item.country_code)}
+                          aria-pressed={countryFilter.includes(item.country_code)}
+                          title={t('world.rating.filtersLabel')}
+                          className={`mr-2 hidden h-5 w-5 shrink-0 items-center justify-center rounded-md border align-middle transition-colors sm:inline-flex ${
+                            countryFilter.includes(item.country_code)
+                              ? 'border-champagne/60 bg-champagne/20 text-champagne'
+                              : 'border-border-subtle text-text-tertiary hover:border-border-champagne hover:text-champagne'
+                          }`}
+                        >
+                          {countryFilter.includes(item.country_code) ? '−' : '+'}
+                        </button>
                         <Link to={rowHref(item, russiaLinks)} className="font-medium text-text-primary transition-colors hover:text-champagne">
                           {item.country_name}
                         </Link>
@@ -676,10 +1036,12 @@ export default function WorldRatingPage() {
                       </td>
                     </tr>
                   ))}
-                  {!loading && ranked.length === 0 && (
+                  {!loading && visibleRows.length === 0 && (
                     <tr>
                       <td colSpan={colCount} className="px-4 py-8 text-center text-text-secondary">
-                        {t('world.rating.emptyYear')}
+                        {countryFilter.length
+                          ? t('world.rating.filterEmpty')
+                          : t('world.rating.emptyYear')}
                       </td>
                     </tr>
                   )}

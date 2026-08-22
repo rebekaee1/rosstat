@@ -7,6 +7,7 @@ from datetime import date
 from pathlib import Path
 
 from app.services.imf_weo_adapter import (
+    WEO_GGXCNL_NGDP,
     WEO_NGDPD,
     WEO_NGDPDPC,
     ImfWeoAdapter,
@@ -15,6 +16,8 @@ from app.services.imf_weo_adapter import (
     weo_data_url,
     weo_iso3_for,
     weo_max_observation_year,
+    weo_series_meta,
+    world_indicator_code,
 )
 
 
@@ -87,7 +90,11 @@ def test_adapter_lists_only_requested_weo_countries():
     asyncio.run(_collect())
     countries = {ref.country_code for ref in refs}
     assert countries == {"US", "DE", "RU"}
-    assert {ref.series_id for ref in refs} == {WEO_NGDPD, WEO_NGDPDPC}
+    assert {ref.series_id for ref in refs} == {
+        WEO_NGDPD,
+        WEO_NGDPDPC,
+        WEO_GGXCNL_NGDP,
+    }
     assert all(ref.provider == "imf" and ref.dataset_id == "WEO" for ref in refs)
     assert all(ref.frequency == "annual" for ref in refs)
 
@@ -130,7 +137,57 @@ def test_parse_drops_medium_term_weo_projection_years():
     assert weo_max_observation_year(date(2026, 8, 22)) == 2026
 
 
-def test_weo_key_order_and_iso_map():
+def test_parse_ggxcnl_ngdp_scale_zero_percent_values():
+    """Баланс бюджета: SCALE=0 — значения приходят сразу в процентах ВВП."""
+    payload = {
+        "data": {
+            "dataSets": [
+                {
+                    "series": {
+                        "0:0:0": {
+                            "attributes": [0],
+                            "observations": {"0": ["-2.39486"], "1": ["1.8"]},
+                        }
+                    }
+                }
+            ],
+            "structures": [
+                {
+                    "dimensions": {
+                        "series": [
+                            {"id": "COUNTRY", "values": [{"id": "RUS"}]},
+                            {"id": "INDICATOR", "values": [{"id": "GGXCNL_NGDP"}]},
+                            {"id": "FREQUENCY", "values": [{"id": "A"}]},
+                        ],
+                    },
+                    "attributes": {"series": [{"id": "SCALE", "values": [{"id": "0"}]}]},
+                }
+            ],
+        }
+    }
+    payload["data"]["structures"][0]["dimensions"]["observation"] = [
+        {"id": "TIME_PERIOD", "values": [{"value": "2024"}, {"value": "2025"}]}
+    ]
+    parsed = parse_imf_weo_sdmx(payload)
+    points = points_for_iso3(parsed, "RUS", "GGXCNL_NGDP")
+    assert points == [
+        (date(2024, 1, 1), -2.39486),
+        (date(2025, 1, 1), 1.8),
+    ]
+    assert all(item.scale == 0 for item in parsed)
+    from app.services.imf_weo_adapter import WEO_GGXCNL_NGDP, weo_methodology
+
+    meta = weo_series_meta(WEO_GGXCNL_NGDP)
+    assert meta["unit"] == "PC_GDP"
+    assert meta["unit_ru"] == "% ВВП"
+    assert meta["russia_indicator_code"] == "weo-budget-balance-gdp"
+    assert world_indicator_code("RU", WEO_GGXCNL_NGDP) == "ru-weo-ggxcnl"
+    assert "ВВП" not in weo_methodology(WEO_GGXCNL_NGDP).replace(
+        "валового внутреннего продукта", ""
+    )
+    assert "процентах от валового внутреннего продукта" in weo_methodology(
+        WEO_GGXCNL_NGDP
+    )
     assert weo_iso3_for("US") == "USA"
     assert weo_iso3_for("DE") == "DEU"
     assert weo_iso3_for("RU") == "RUS"

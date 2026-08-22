@@ -17,8 +17,11 @@ vi.mock('../components/MapTimeline', () => ({
 
 afterEach(() => vi.restoreAllMocks());
 
-function dataRows() {
-  return screen.getAllByRole('row').slice(1);
+/** Строки полной таблицы рейтинга (внутри #rating-table). */
+function dataRows(container = document.body) {
+  const table = container.querySelector('#rating-table');
+  const scope = table || document.body;
+  return screen.getAllByRole('row').filter((row) => scope.contains(row)).slice(1);
 }
 
 describe('WorldRatingPage', () => {
@@ -93,9 +96,9 @@ describe('WorldRatingPage', () => {
     expect(await screen.findByTestId('world-map-stub')).toBeTruthy();
     expect((await screen.findByTestId('map-timeline-stub')).textContent).toContain('timeline:2024,2025:2025:function');
 
-    expect(screen.getByRole('link', { name: 'Безработица' })).toBeTruthy();
+    expect(screen.getAllByRole('link', { name: 'Безработица' }).length).toBeGreaterThan(0);
     // Правка 16: изменение потребительских цен на витрине называется инфляцией.
-    expect(screen.getByRole('link', { name: 'Инфляция' })).toBeTruthy();
+    expect(screen.getAllByRole('link', { name: 'Инфляция' }).length).toBeGreaterThan(0);
     expect(screen.queryByRole('link', { name: /изменение за год/i })).toBeNull();
 
     await waitFor(() => {
@@ -161,15 +164,35 @@ describe('WorldRatingPage', () => {
 
     await waitFor(() => expect(dataRows()).toHaveLength(1));
 
-    const head = screen.getAllByRole('row')[0];
+    const head = screen.getAllByRole('row').filter(
+      (row) => document.querySelector('#rating-table')?.contains(row),
+    )[0];
     expect(within(head).queryByText('Единица')).toBeNull();
     expect(within(head).getByText(/Значение, %/)).toBeTruthy();
-    expect(within(head).getByText('Период')).toBeTruthy();
 
     const row = dataRows()[0];
     expect(within(row).queryByText('%')).toBeNull();
     expect(row.textContent).toContain('июнь 2025');
     expect(row.textContent).not.toContain('1 июня 2025');
+  });
+
+  it('фильтр стран оставляет выбранные страны с их местами в рейтинге', async () => {
+    mockApiGet(ratingMocks());
+
+    renderPage(
+      <WorldRatingPage />,
+      { path: '/world/rating/:conceptSlug', route: '/world/rating/unemployment-rate?c=FR' },
+    );
+
+    await waitFor(() => expect(dataRows()).toHaveLength(1));
+    expect(within(dataRows()[0]).getByRole('link', { name: 'Франция' })).toBeTruthy();
+    // Место сохраняется из полного рейтинга: Франция вторая по возрастанию.
+    expect(within(dataRows()[0]).getByText('2')).toBeTruthy();
+    expect(screen.getByText(/Показано 1 из 2/)).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Сбросить фильтр' })).toBeTruthy();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Сбросить фильтр' }));
+    await waitFor(() => expect(dataRows()).toHaveLength(2));
   });
 
   it('включает Россию в таблицу и даёт переход в регионы', async () => {
@@ -237,13 +260,13 @@ describe('WorldRatingPage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByRole('link', { name: 'Россия' })).toBeTruthy();
+      const ruLink = dataRows().flatMap((row) => within(row).queryAllByRole('link', { name: 'Россия' }))[0];
+      expect(ruLink).toBeTruthy();
     });
     expect(screen.getByRole('link', { name: 'Регионы России' })).toBeTruthy();
     expect(screen.getByRole('link', { name: 'Региональный рейтинг' }).getAttribute('href'))
       .toBe('/russia/region-rating/uroven-bezrabotitsy');
     expect(screen.getByText(/Росстата/)).toBeTruthy();
-    expect(screen.queryByRole('searchbox')).toBeNull();
   });
 
   function ratingMocks({ user = null } = {}) {
@@ -314,7 +337,7 @@ describe('WorldRatingPage', () => {
     ];
   }
 
-  it('гость: «Добавить показатель» не создаёт колонку и зовёт зарегистрироваться', async () => {
+  it('гость может добавить один показатель; полная матрица — после регистрации', async () => {
     mockApiGet(ratingMocks());
 
     renderPage(
@@ -324,36 +347,43 @@ describe('WorldRatingPage', () => {
 
     await waitFor(() => expect(dataRows()).toHaveLength(2));
     expect(screen.getByRole('button', { name: 'Добавить показатель' })).toBeTruthy();
-    expect(screen.queryByRole('link', { name: 'Создать аккаунт' })).toBeNull();
+    // Гейт регистрации живёт в матрице «Страны рядом» и виден сразу.
+    expect(screen.getAllByRole('link', { name: 'Создать аккаунт' }).length).toBeGreaterThan(0);
 
-    const headBefore = screen.getAllByRole('row')[0];
-    expect(within(headBefore).getAllByRole('columnheader')).toHaveLength(4);
-    expect(within(headBefore).queryByRole('button', { name: 'Убрать колонку' })).toBeNull();
+    const matrixBox = () => document.querySelector('#compare-matrix')?.parentElement;
+    await waitFor(() => {
+      expect(matrixBox().textContent).toContain('Страны рядом');
+    });
 
     fireEvent.click(screen.getByRole('button', { name: 'Добавить показатель' }));
+    // Гостю доступен один выбор — кнопка показателя активна.
+    fireEvent.click(screen.getByRole('button', { name: 'Инфляция' }));
 
-    expect(screen.getByRole('link', { name: 'Создать аккаунт' }).getAttribute('href')).toBe('/register');
-    expect(screen.getByRole('link', { name: 'Войти' }).getAttribute('href')).toBe('/login');
-    expect(within(screen.getAllByRole('row')[0]).getAllByRole('columnheader')).toHaveLength(4);
-    expect(screen.queryByRole('button', { name: 'Убрать колонку' })).toBeNull();
-    expect(within(dataRows()[0]).getByRole('link', { name: 'Германия' })).toBeTruthy();
+    await waitFor(() => {
+      expect(matrixBox().textContent).toContain('Инфляция');
+    });
+    // Второй добавить нельзя — достигнут гостевой лимит.
+    expect(within(matrixBox()).queryAllByRole('button', { name: 'Безработица' }).length).toBe(0);
   });
 
-  it('гость игнорирует cols в URL и не рисует лишние колонки', async () => {
-    mockApiGet(ratingMocks());
+  it('авторизованный добавляет колонки в таблицу и матрицу до пяти показателей', async () => {
+    mockApiGet(ratingMocks({ user: { id: 1, email: 't@example.com' } }));
 
     renderPage(
       <WorldRatingPage />,
-      {
-        path: '/world/rating/:conceptSlug',
-        route: '/world/rating/unemployment-rate?cols=hicp-index',
-      },
+      { path: '/world/rating/:conceptSlug', route: '/world/rating/unemployment-rate?cols=hicp-index' },
     );
 
-    await waitFor(() => expect(dataRows()).toHaveLength(2));
-    expect(within(screen.getAllByRole('row')[0]).getAllByRole('columnheader')).toHaveLength(4);
-    expect(screen.queryByRole('button', { name: 'Убрать колонку' })).toBeNull();
-    expect(screen.getByRole('link', { name: 'Инфляция' })).toBeTruthy();
+    await waitFor(() => {
+      const head = screen.getAllByRole('row').filter(
+        (row) => document.querySelector('#rating-table')?.contains(row),
+      )[0];
+      expect(within(head).getAllByRole('columnheader')).toHaveLength(5);
+    });
+    await waitFor(() => {
+      expect(document.querySelector('#compare-matrix').textContent).toContain('Инфляция');
+    });
+    expect(screen.queryByRole('link', { name: 'Создать аккаунт' })).toBeNull();
   });
 
   it('доп. колонка берёт ближайший опубликованный год, если за базовый год данных нет', async () => {
@@ -456,7 +486,9 @@ describe('WorldRatingPage', () => {
     );
 
     await waitFor(() => expect(dataRows()).toHaveLength(2));
-    const head = screen.getAllByRole('row')[0];
+    const head = screen.getAllByRole('row').filter(
+      (row) => document.querySelector('#rating-table')?.contains(row),
+    )[0];
     expect(within(head).getAllByRole('columnheader')).toHaveLength(5);
     // Значения инфляции взяты из 2025 — ближайшего опубликованного года к базе 2026
     // (сортировка по безработице desc: Франция 7,0 выше Германии 3,4).

@@ -1012,6 +1012,22 @@ INDICATOR_COPY_EN: dict[str, IndicatorCopyEn] = {
         ),
         "unit": "$ per person",
     },
+    "weo-budget-balance-gdp": {
+        "name": "General government budget balance",
+        "description": (
+            "Annual estimate of Russia’s general government budget balance, "
+            "percent of GDP, from the IMF World Economic Outlook. Positive values "
+            "mean a surplus and negative values a deficit. This is not the cash-based "
+            "budget execution reported by Russia’s Ministry of Finance: sector coverage "
+            "and budget classification differ."
+        ),
+        "methodology": (
+            "General government net lending/borrowing for the year, percent of GDP. "
+            "Source: International Monetary Fund, World Economic Outlook. "
+            "The series contains published IMF values and estimates; no forecast is produced on the card."
+        ),
+        "unit": "% of GDP",
+    },
 }
 
 

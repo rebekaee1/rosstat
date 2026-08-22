@@ -27,6 +27,10 @@ class WorldConcept:
     # Provider aliases одного экономического понятия задаются только вручную
     # после методологической сверки. `dataset_ids` — Eurostat legacy shorthand.
     provider_dataset_ids: Mapping[str, frozenset[str]] | None = None
+    # Pinned dimensions per provider: если у провайдера свой набор измерений
+    # среза (IMF weo_code vs Eurostat na_item/sector), матч идёт строго по
+    # набору своего провайдера вместо required_slice.
+    provider_required_slices: Mapping[str, Mapping[str, str]] | None = None
     name_en: str = ""
     unit_en: str = ""
 
@@ -93,6 +97,15 @@ WORLD_CONCEPTS: tuple[WorldConcept, ...] = (
         required_slice={"na_item": "B9", "sector": "S13"},
         frequency_policy="official_only",
         enabled_surfaces=_RATING_SURFACES,
+        provider_dataset_ids={
+            "eurostat": frozenset({"gov_10dd_edpt1"}),
+            "imf": frozenset({"weo"}),
+        },
+        # Pinned dimensions per provider: Eurostat и IMF описывают срез
+        # разными измерениями — матчим строго по набору своего провайдера.
+        provider_required_slices={
+            "imf": {"weo_code": "GGXCNL_NGDP"},
+        },
         name_en="General government budget balance",
         unit_en="% of GDP",
     ),
@@ -212,6 +225,13 @@ CONCEPT_BY_SLUG = {concept.slug: concept for concept in WORLD_CONCEPTS}
 _NON_SEMANTIC_SLICE_KEYS = frozenset({"freq", "unit", "time", "geo"})
 
 
+def _concept_pinned_slice(concept: WorldConcept, provider: str) -> Mapping[str, str]:
+    """Pinned dimensions для провайдера; по умолчанию — общий required_slice."""
+    per_provider = concept.provider_required_slices or {}
+    pinned = per_provider.get(provider)
+    return pinned if pinned is not None else concept.required_slice
+
+
 def concept_matches_indicator(concept: WorldConcept, indicator) -> bool:
     """Строгий match dataset + measure + pinned dimensions; никогда по имени."""
     provider = str(getattr(indicator, "provider", "eurostat") or "").lower()
@@ -224,15 +244,16 @@ def concept_matches_indicator(concept: WorldConcept, indicator) -> bool:
         return False
     if measure_class(indicator.unit, indicator.unit_ru) != concept.measure:
         return False
+    required_slice = _concept_pinned_slice(concept, provider)
     slice_json = indicator.slice_json or {}
-    configured_keys = {key.lower() for key in concept.required_slice}
+    configured_keys = {key.lower() for key in required_slice}
     for key, raw in slice_json.items():
         normalized_key = str(key).strip().lower()
         if not normalized_key or normalized_key in _NON_SEMANTIC_SLICE_KEYS:
             continue
         if normalized_key not in configured_keys and str(raw).strip():
             return False
-    for key, expected in concept.required_slice.items():
+    for key, expected in required_slice.items():
         actual = slice_json.get(key)
         if key == "age":
             actual = normalize_age_code(actual)

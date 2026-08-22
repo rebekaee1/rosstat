@@ -35,20 +35,18 @@ from app.models import (
 from app.services.imf_weo_adapter import (
     DATASET_ID,
     PROVIDER,
-    PUBLIC_METHODOLOGY,
     PUBLIC_SOURCE_NAME,
     PUBLIC_SOURCE_URL,
     WEO_SERIES,
     ImfWeoAdapter,
     make_weo_series_ref,
     weo_iso3_for,
+    weo_methodology,
     world_indicator_code,
 )
 from app.services.upsert import bulk_upsert, prune_indicator_dates_not_in
 
 logger = logging.getLogger(__name__)
-
-_CATEGORY_RU = "Национальные счета"
 
 
 async def _active_world_iso2(db: AsyncSession) -> list[str]:
@@ -88,10 +86,7 @@ async def _upsert_world_series(
         ).scalar_one_or_none()
         existing = by_code
     hs, he = points[0][0], points[-1][0]
-    desc = (
-        f"{meta['name_ru']} — годовая оценка Международного валютного фонда "
-        f"в текущих долларах США ({meta['unit_ru']})."
-    )
+    desc = meta["desc_ru"].format(name=meta["name_ru"], unit=meta["unit_ru"])
     fields = {
         "code": code,
         "provider": PROVIDER,
@@ -104,18 +99,20 @@ async def _upsert_world_series(
         "unit": meta["unit"],
         "unit_ru": meta["unit_ru"],
         "frequency": "annual",
-        "category_ru": _CATEGORY_RU,
+        "category_ru": meta["category_ru"],
         "source": PUBLIC_SOURCE_NAME,
         "source_url": PUBLIC_SOURCE_URL,
         "description": desc,
-        "methodology": PUBLIC_METHODOLOGY,
+        "methodology": weo_methodology(weo_code),
         "history_start": hs,
         "history_end": he,
         "points_count": len(points),
         "is_listed": True,
         "seo_title": f"{meta['name_ru']} — {country.name_ru}",
         "seo_description": desc,
-        "seo_keywords": f"{meta['name_ru']}, {country.name_ru}, ВВП, доллары США",
+        "seo_keywords": meta["keywords_ru"].format(
+            name=meta["name_ru"], country=country.name_ru
+        ),
     }
     if existing is None:
         indicator = WorldIndicator(country_id=country.id, **fields)
@@ -188,7 +185,7 @@ async def run_imf_weo_ingest(
     *,
     country_codes: list[str] | None = None,
 ) -> dict[str, int]:
-    """Загрузить NGDPD / NGDPDPC для active world countries и RU-overlay."""
+    """Загрузить NGDPD / NGDPDPC / GGXCNL_NGDP для active world countries и RU-overlay."""
     started_at = datetime.now(timezone.utc).replace(tzinfo=None)
     async with async_session() as db:
         run = WorldIngestRun(source=PROVIDER, is_shadow=False, started_at=started_at)

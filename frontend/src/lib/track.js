@@ -206,6 +206,10 @@ export const events = {
   HOME_COUNTRIES_CTA: 'home_countries_cta',
   HOME_COUNTRIES_MAP_SELECT: 'home_countries_map_select',
 
+  // Рейтинг стран: фильтр по странам и матрица «Страны рядом» (правка 22/22.1).
+  WORLD_RATING_FILTER: 'world_rating_filter',
+  WORLD_RATING_COMPARE_ADD: 'world_rating_compare_add',
+
   CATEGORY_TILE_CLICK: 'category_tile_click',
   RELATED_INDICATOR_CLICK: 'related_indicator_click',
   BREADCRUMB_CLICK: 'breadcrumb_click',
