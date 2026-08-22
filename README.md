@@ -156,7 +156,7 @@ Base URL: `/api/v1` (за исключением SSR-эндпоинтов `/seo/
 | `business` | Бизнес | ИПП (default YoY), розница, ввод жилья, индекс доступности жилья, основные фонды |
 | `science` | Наука | Аспиранты, докторанты, организации НИР, инновационная активность, R&D |
 
-Source-индикаторы (116) извлекаются через 34 парсер-типа в `PARSER_REGISTRY` (`backend/app/services/*_parser.py`; 32 используются в seed, `cbr_dataservice_sum`/`cbr_monetary_html` зарегистрированы про запас); derived рассчитываются движком `calculation_engine` через `DERIVED_SPECS` (822 спеков: 43 ручных + 779 сгенерированных view-mode-семьями) + 28 чистых ops из `derived_ops.py` (см. ADR-0001 и ADR-0002). Дублирующие карточки в каталоге объединены через 105 generic view-mode family (ADR-0006); всего в seed 938 рядов.
+Source-индикаторы (117) извлекаются через 34 парсер-типа в `PARSER_REGISTRY` (`backend/app/services/*_parser.py`; 32 используются в seed, `cbr_dataservice_sum`/`cbr_monetary_html` зарегистрированы про запас); derived рассчитываются движком `calculation_engine` через `DERIVED_SPECS` (822 спеков: 43 ручных + 779 сгенерированных view-mode-семьями) + 28 чистых ops из `derived_ops.py` (см. ADR-0001 и ADR-0002). Дублирующие карточки в каталоге объединены через 105 generic view-mode family (ADR-0006); всего в seed 939 рядов.
 
 ## Прогнозы
 
@@ -209,7 +209,7 @@ rosstat/
 ├── docs/
 │   ├── adr/                # архитектурные решения (нумерованные ADR-0001..0006)
 │   ├── analytics_api_inventory/  # инвентарь Yandex API (Metrika, Webmaster, …)
-│   ├── data_sources.md     # карта «индикатор → файл/endpoint» (116 source)
+│   ├── data_sources.md     # карта «индикатор → файл/endpoint» (117 source)
 │   ├── missed_data_audit.md  # reference: ещё не извлечённые поля в source-файлах
 │   ├── workflow.md         # dev процесс, smoke C, прод-деплой
 │   ├── enterprise_resilience.md  # rate limit / CSP / asset-hash trap / канарейка
@@ -237,7 +237,7 @@ rosstat/
 | Миграции БД | `entrypoint.sh` → `alembic upgrade head` при каждом старте |
 | Первичный seed | `entrypoint.sh` → идемпотентный `seed_data.py` |
 | Startup catch-up | `app/main.py::_catch_up_empty_indicators()` — после lifespan startup догоняет ETL для всех `is_active=true` индикаторов с 0 точками (новые индикаторы дотягиваются без ручного `run_etl_for_indicator`) |
-| Ежедневный ETL | APScheduler cron 06:00 и 20:00 MSK (все `is_active=true` source-индикаторы; 116 source через `PARSER_REGISTRY`) + late-Minfin 15:00 |
+| Ежедневный ETL | APScheduler cron 06:00 и 20:00 MSK (все `is_active=true` source-индикаторы; 117 source через `PARSER_REGISTRY`) + late-Minfin 15:00 |
 | Calendar refresh | APScheduler daily 03:00 MSK: official-source ingest, rolling 12 мес, public official-only |
 | Forecast retrain | После каждого изменения данных (если `records_added>0`) |
 | Derived recompute | Каскадно после ETL (если хотя бы один source-индикатор обновился) |

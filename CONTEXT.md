@@ -14,7 +14,7 @@
 | [`README.md`](README.md) | Высокоуровневая карта стека, API, indicators, deploy |
 | [`docs/workflow.md`](docs/workflow.md) | Модель работы, локальный dev, прод-деплой, smoke C |
 | [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md) | Rate-limit, CSP, asset-hash trap, бэкапы, чеклист канарейки |
-| [`docs/data_sources.md`](docs/data_sources.md) | Точная карта «индикатор → файл/endpoint» для всех 116 source-индикаторов. Single source of truth — обязательно обновлять при правке источника |
+| [`docs/data_sources.md`](docs/data_sources.md) | Точная карта «индикатор → файл/endpoint» для всех 117 source-индикаторов. Single source of truth — обязательно обновлять при правке источника |
 | `backend/app/services/*_parser.py` docstrings | Parser internals (CBR / Минфин / Rosstat): source URL, лист, row/col mapping, `model_config_json` schema, traps. Канонично живёт рядом с кодом |
 | [`docs/analytics_api_inventory/`](docs/analytics_api_inventory/) | Инвентарь Yandex API (Metrika, Webmaster) + статус реализации |
 | [`docs/adr/0001`](docs/adr/0001-derived-indicators-engine-shape.md) | Engine shape: 822 derived через `DERIVED_SPECS` (43 ручных + 779 generic) + 28 чистых ops |
@@ -64,7 +64,7 @@
   - `seo_blocks` — JSON-массив `{title, body}` дополнительных секций под графиком.
   - `is_listed` — boolean: показывать ли карточку индикатора в листинге категории. По умолчанию `true`. `false` — индикатор доступен только через `VariantGroupPicker` внутри родительского индикатора (например, `cpi-food-quarterly` скрыт, виден только при выборе «Состав индекса → продовольственные → квартально» на странице `cpi`).
 
-Хранится в таблице `Indicator`. **Текущее количество (2026-08-22):** 938 рядов в seed; точное число — в `seed_data.py` и `/api/v1/system/status`. Из них 116 source-индикаторов (через 34 парсер-типа) и 822 derived (через `DERIVED_SPECS`: 43 ручных + 779 сгенерированных generic view-mode-семьями, см. `view_model_families.py`).
+Хранится в таблице `Indicator`. **Текущее количество (2026-08-23):** 939 рядов в seed; точное число — в `seed_data.py` и `/api/v1/system/status`. Из них 117 source-индикаторов (через 34 парсер-типа) и 822 derived (через `DERIVED_SPECS`: 43 ручных + 779 сгенерированных generic view-mode-семьями, см. `view_model_families.py`).
 
 ### DataPoint
 
