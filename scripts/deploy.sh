@@ -27,6 +27,43 @@ git merge --ff-only origin/main || { echo "FAIL: ff-only merge невозмож�
 NEW_SHA=$(git rev-parse --short HEAD)
 echo "    ${PREV_SHA} -> ${NEW_SHA}"
 
+# ── 2b. Scope guard: выкатываем только одобренные SHA (инцидент 2026-08-27) ──
+# Прод ≠ main: ff-only тянет ВСЮ пачку коммитов между продом и целью, включая
+# фичи, которых владелец не заказывал. Деплой разрешён только если целевой SHA
+# внесён в deploy/approved-shas.txt (полные хэши, по одному на строку).
+# Пустой/отсутствующий файл = деплой запрещён. Пополнение списка — только
+# явным подтверждением владельца («деплой до <sha>»).
+APPROVED_FILE="$(cd "$(dirname "$0")/.." && pwd)/deploy/approved-shas.txt"
+FULL_SHA=$(git rev-parse HEAD)
+if [ ! -s "${APPROVED_FILE}" ]; then
+  echo "FAIL: deploy/approved-shas.txt пуст или отсутствует — скоуп деплоя не одобрен."
+  echo "      Владелец должен явно подтвердить цель деплоя (SHA ${NEW_SHA}), затем"
+  echo "      добавить её в deploy/approved-shas.txt. Пачка коммитов:"
+  git log --oneline "${PREV_SHA}..${NEW_SHA}" | head -40
+  git reset --hard "${PREV_SHA}" >/dev/null 2>&1
+  exit 1
+fi
+if ! sed 's/#.*//' "${APPROVED_FILE}" | sed 's/[[:space:]]*$//' | grep -qx "${FULL_SHA}"; then
+  echo "FAIL: SHA ${NEW_SHA} (${FULL_SHA}) нет в deploy/approved-shas.txt — деплой запрещён."
+  echo "      Пачка, которую потянуло бы (прод → цель):"
+  git log --oneline "${PREV_SHA}..${NEW_SHA}" | head -40
+  git reset --hard "${PREV_SHA}" >/dev/null 2>&1
+  exit 1
+fi
+echo "==> scope: ${NEW_SHA} в approved-shas — ок"
+
+# ── 2c. Migration-direction guard: downgrade схемой деплоя не делаем ────────
+# Разгон схемы необратим для отката кода: после него старый код не стартует.
+# Новые (up) миграции — ок, entrypoint сам прогонит alembic upgrade. А вот
+# если целевой коммит УДАЛЯЕТ файлы миграций, которые есть на проде — это
+# downgrade-путь, деплой abort (рецепт восстановления в CONTEXT.md::traps).
+for f in $(git diff --name-status "${PREV_SHA}" "${NEW_SHA}" -- backend/alembic/versions/ | awk '$1=="D" {print $2}'); do
+  echo "FAIL: коммит удаляет миграцию ${f} — это downgrade-путь, схемой деплоя не делаем."
+  echo "      Восстановление — CONTEXT.md::Deploy-scope trap. Откатываю merge."
+  git reset --hard "${PREV_SHA}" >/dev/null 2>&1
+  exit 1
+done
+
 # ── 3. Build: версионированные образы для отката (О-4) ────────────────
 echo "==> docker compose build (tag=${NEW_SHA})"
 docker compose build frontend backend
