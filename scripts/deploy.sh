@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Deploy forecasteconomy.com — backup, ff-only pull, build, smoke, rollback.
-# Usage: ssh root@<prod> 'bash /opt/rosstat/scripts/deploy.sh'
+# Usage: ssh -i ~/.ssh/id_ed25519_fe_prod root@201.51.11.170 'bash /opt/rosstat/scripts/deploy.sh'
 #
 # Волна 4 (О-2..О-7): preflight-бэкап БД (hard fail), git ff-only + dirty-guard,
 # версионированные образы (тег = SHA) с автооткатом при провале smoke,
@@ -49,6 +49,10 @@ rollback() {
 }
 
 # ── 4. Up + ожидание readiness (реальный /health/ready, Н-1) ──────────
+echo "==> anti-scrape: каталог логов nginx для fail2ban (uid 101 = nginx)"
+install -d -m 0755 /var/log/rosstat-nginx
+chown 101:101 /var/log/rosstat-nginx
+
 echo "==> docker compose up -d"
 docker compose up -d frontend backend
 

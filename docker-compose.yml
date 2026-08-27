@@ -194,6 +194,12 @@ services:
         VITE_PUBLIC_BASE_URL: ${VITE_PUBLIC_BASE_URL:-https://forecasteconomy.com}
     ports:
       - "127.0.0.1:3000:80"
+    volumes:
+      # Анти-скрейп (2026-08-27): security/honeypot логи nginx — на хост для
+      # fail2ban (jails: nginx-429, honeytrap). RW: логи пишет nginx (uid 101);
+      # каталог и владельца создаёт deploy-скрипт. Дефолтные access/error.log
+      # не трогаем — docker logs продолжает работать как раньше.
+      - /var/log/rosstat-nginx:/var/log/nginx/security:rw
     logging:
       driver: json-file
       options:

@@ -9,6 +9,7 @@ Disallow: /__spa-index.html
 Disallow: /login
 Disallow: /register
 Disallow: /account
+Disallow: /russia/util/
 
 User-agent: Yandex
 Allow: /
@@ -18,6 +19,7 @@ Disallow: /__spa-index.html
 Disallow: /login
 Disallow: /register
 Disallow: /account
+Disallow: /russia/util/
 Host: __PUBLIC_ORIGIN__
 
 User-agent: Googlebot
@@ -28,6 +30,18 @@ Disallow: /__spa-index.html
 Disallow: /login
 Disallow: /register
 Disallow: /account
+Disallow: /russia/util/
+
+# Агрессивные скрейперы без SEO-ценности: срезаем весь контент.
+# Решают только каталог/страницы, которые им и так не нужны.
+User-agent: Amazonbot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: Brightbot
+Disallow: /
 
 # Clean-param — межсекционная директива Яндекса (Yandex.Webmaster → «Найдены страницы-дубли с GET-параметрами»).
 # Сообщает роботу, какие GET-параметры считать незначащими, чтобы не индексировать дубли и склеить сигналы на канонической странице.

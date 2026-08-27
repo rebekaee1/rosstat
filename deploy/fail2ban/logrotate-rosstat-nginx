@@ -1,0 +1,12 @@
+/var/log/rosstat-nginx/*.log {
+    daily
+    rotate 14
+    missingok
+    notifempty
+    compress
+    delaycompress
+    # nginx в контейнере держит файловые дескрипторы; копировать и резать,
+    # потом сигналить docker-контейнеру перечитать (USR1) — без даунтайма.
+    copytruncate
+    su root root
+}

@@ -486,6 +486,10 @@ body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:"DM Sans",system-ui,s
 .seo-cta a.seo-btn:hover{background:#B8942F;color:#fff}
 .seo-foot{max-width:56rem;margin:1.25rem auto 0;padding:0 1rem 2.5rem;font-size:.8125rem;color:rgba(26,26,46,.55)}
 .seo-foot a{color:inherit}
+/* Ханипот-ссылка (анти-скрейп): визуально отсутствует, но есть в DOM.
+   Человек кликнуть не может (clip + tabindex=-1); клик = краулер, вытащивший
+   ссылку из футера. fail2ban банит по /russia/util/links-exchange (nginx). */
+.seo-honeylink{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .seo-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .seo-scroll table{min-width:26rem}
 /* SPA-SSR: пока грузится module-bundle, не показывать SEO-тело как «сайт».
@@ -536,6 +540,7 @@ _SSR_CHROME_FOOTER = f"""<div class="seo-cta"><div class="seo-cta-in">
 <a class="seo-btn" href="/">Открыть платформу</a>
 </div></div>
 <footer class="seo-foot">Данные — только официальные первоисточники: государственные статистические ведомства, центральные банки и официальные биржи. Обновляются по мере публикации. © Forecast Economy — <a href="/">forecasteconomy.com</a></footer>
+<a class="seo-honeylink" href="/russia/util/links-exchange" rel="nofollow" aria-hidden="true" tabindex="-1">Обмен ссылками</a>
 <script type="module" src="/assets/behavior-standalone.js" defer></script>"""
 
 _SSR_CHROME_FOOTER_EN = f"""<div class="seo-cta"><div class="seo-cta-in">
@@ -543,6 +548,7 @@ _SSR_CHROME_FOOTER_EN = f"""<div class="seo-cta"><div class="seo-cta-in">
 <a class="seo-btn" href="/">Open the platform</a>
 </div></div>
 <footer class="seo-foot">Data come only from official primary sources: national statistical offices, central banks, and official exchanges. Updated as publishers release. © Forecast Economy — <a href="/">forecasteconomy.com</a></footer>
+<a class="seo-honeylink" href="/russia/util/links-exchange" rel="nofollow" aria-hidden="true" tabindex="-1">Link exchange</a>
 <script type="module" src="/assets/behavior-standalone.js" defer></script>"""
 
 # Единый выход вглубь платформы для SPA-SSR (include_app=True): без chrome
@@ -559,6 +565,7 @@ _SSR_PLATFORM_DEEP_LINKS = f"""
 <li><a href="{paths.calendar()}">Календарь публикаций</a></li>
 <li><a href="/compare">Сравнение показателей</a></li>
 </ul>
+<a class="seo-honeylink" href="/russia/util/links-exchange" rel="nofollow" aria-hidden="true" tabindex="-1">Обмен ссылками</a>
 </section>
 """
 
@@ -573,6 +580,7 @@ _SSR_PLATFORM_DEEP_LINKS_EN = f"""
 <li><a href="{paths.calendar()}">Release calendar</a></li>
 <li><a href="/compare">Compare indicators</a></li>
 </ul>
+<a class="seo-honeylink" href="/russia/util/links-exchange" rel="nofollow" aria-hidden="true" tabindex="-1">Link exchange</a>
 </section>
 """
 

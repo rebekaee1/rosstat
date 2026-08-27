@@ -300,6 +300,17 @@ Eurostat — первый адаптер, а не универсальный и�
 
 Вещи, которые ломаются неочевидно. Каждый пункт — проверенный пост-мортем.
 
+### Anti-scrape stack (nginx + honeypot + fail2ban)
+
+2026-08-27: США ведут систематический скрейп региональных страниц (Cloudflare WARP UA «research/1.0» — 378 req/4 мин; Oracle Cloud stealth-Chrome ~6.5 r/s сутками; webdriver-сессии в behavior_sessions). Стек из четырёх эшелонов:
+
+1. **nginx UA-фильтр** (`$bad_bot` map → 403): короткие нон-браузерные UA (`research`, `scrapy`, `aiohttp`, `okhttp`, пустой UA). Список осознанно узкий: цель — мусорные клиенты, не рискуя ложными срабатываниями; поисковики и доброкачественные инструменты не затронуты.
+2. **Ханипот** `/russia/util/links-exchange`: ссылка в SSR-футере (`seo_renderer._SSR_CHROME_FOOTER`, класс `seo-honeylink`, CSS clip — невидима, `tabindex=-1`, `rel=nofollow`), `Disallow` в robots. Человек не попадает никогда; hit = бот. nginx location → 403 + лог `security/honeypot.log`. fail2ban jail `honeytrap`: 1 запрос = 48ч бан.
+3. **Строгий rate-limit**: зона `ssrstrict` (2 r/s burst 10) на `/russia/region/{slug}/{code}`, `/russia/region-rating/*`, `/russia/region-vs/*`, `/og/*`; база `ssr` (5 r/s burst 15) — остальные SSR. Поисковые боты исключены (пустой ключ). `limit_conn perip 8` — до 8 параллельных соединений на IP.
+4. **fail2ban на хосте** (jails `nginx-429` 30×429/10м → 24ч; `honeytrap` 1 hit → 48ч; `recidive` 2 бана/день → 1 неделя). Логи: nginx пишет `security.log`/`honeypot.log` в смонтированный `/var/log/rosstat-nginx` (compose volume). Ставится `deploy/fail2ban-install.sh` (однократно на хосте).
+
+**Правило:** новый скрейперский UA — добавить в `$bad_bot` (nginx.conf), не в fail2ban. Свой инструмент ходит с браузерным UA — не ломается. Проверка стека после деплоя: `docker compose logs frontend | grep 403` (UA-фильтр), `fail2ban-client status nginx-429` (429-джейл), `curl -A "Mozilla/5.0 research/1.0" -I https://forecasteconomy.com/` (ожидаем 403).
+
 ### Asset-hash mismatch trap
 
 После `docker compose build frontend` без перезапуска backend — backend SEO renderer возвращает HTML со ссылками на удалённые `/assets/*-OLD-HASH.js`. Причина: `seo_renderer._APP_ASSETS` кэширует discover'ные имена файлов в памяти процесса.

@@ -9,6 +9,7 @@ Disallow: /__spa-index.html
 Disallow: /login
 Disallow: /register
 Disallow: /account
+Disallow: /russia/util/
 
 User-agent: Yandex
 Allow: /
@@ -18,6 +19,7 @@ Disallow: /__spa-index.html
 Disallow: /login
 Disallow: /register
 Disallow: /account
+Disallow: /russia/util/
 Host: __PUBLIC_ORIGIN__
 
 User-agent: Googlebot
@@ -28,6 +30,17 @@ Disallow: /__spa-index.html
 Disallow: /login
 Disallow: /register
 Disallow: /account
+Disallow: /russia/util/
+
+# Aggressive scrapers with no SEO value: cut the whole site.
+User-agent: Amazonbot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: Brightbot
+Disallow: /
 
 # Clean-param — Yandex directive for non-significant GET parameters (duplicate URLs).
 # mode= is NOT listed: each view-mode URL is a canonical page for CPI/housing/etc.

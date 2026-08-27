@@ -91,6 +91,9 @@ tmp/
 # Выходные артефакты аудитов мирового блока (регенерируются scripts/audit-world-run-all.py)
 scripts/audit-world-out/
 
+# Дизайн-снимки быстрых страниц (локальные артефакты, не код)
+tmp-design/
+
 # Локальный кэш deep-ingest / listing-батчей Eurostat (не в git)
 backend/.cache/
 

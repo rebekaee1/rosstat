@@ -1,0 +1,58 @@
+# fail2ban: анти-скрейп forecasteconomy.com
+# Ставится скриптом deploy/fail2ban-install.sh (Ubuntu 24.04, хост 201.51.11.170).
+# Логи пишет nginx ВНУТРИ контейнера rosstat-frontend-1 в смонтированный
+# /var/log/nginx/security -> /var/log/rosstat-nginx на хосте.
+#
+# Канареечный принцип: ban только по явным сигналам (429 от лимитера, 403
+# ханипота, 403 от UA-фильтра). Поисковые боты не попадают: у них свой
+# whitelist по IP (see ignoreip comment) и они не генерят 429 массово.
+
+[DEFAULT]
+bantime  = 24h
+findtime = 10m
+maxretry = 5
+# Свои инфраструктуры не банить: докер-сеть, localhost, мониторинг.
+ignoreip = 127.0.0.1/8 ::1 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16
+
+# Бан через iptables напрямую (docker перекрывает часть цепочек, но
+# DOCKER-USER смотрит весь входящий трафик до контейнеров).
+banaction = iptables-multiport
+banaction_allports = iptables-allports
+
+# ---- Jail 1: rate-limit (429) ----
+# Порог: 30 ответов 429 за 10 минут. Легитимный клиент 429 не получает
+# вовсе (burst 15 хватает человеку с избытком); скрейпер набирает 30
+# за минуты. Каждое повторное нарушение — ban 24ч (recidive ниже ловит
+# рецидивистов на неделю).
+[nginx-429]
+enabled  = true
+port     = http,https
+filter   = nginx-429
+logpath  = /var/log/rosstat-nginx/security.log
+maxretry = 30
+findtime = 10m
+bantime  = 24h
+
+# ---- Jail 2: ханипот ----
+# Один запрос = бан: на /russia/util/links-exchange человек не попадает
+# никогда (ссылка невидима, tabindex=-1, robots Disallow). Любой hit —
+# это краулер, вытащивший ссылку из HTML.
+[honeytrap]
+enabled  = true
+port     = http,https
+filter   = honeytrap
+logpath  = /var/log/rosstat-nginx/honeypot.log
+maxretry = 1
+findtime = 1h
+bantime  = 48h
+
+# ---- Jail 3: рецидивисты ----
+# Дважды забаненный за сутки получает неделю.
+[recidive]
+enabled  = true
+filter   = recidive
+logpath  = /var/log/fail2ban.log
+banaction = iptables-allports
+bantime  = 1w
+findtime = 1d
+maxretry = 2
