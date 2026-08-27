@@ -94,6 +94,7 @@ const PPI_DERIVED_CODES = {
     yoy: 'ppi-yoy',
     qoq: 'ppi-qoq',
     annual: 'ppi-annual',
+    mom: 'ppi-mom',
   },
 };
 
@@ -292,6 +293,11 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
   const { data: qoqForecastResp } = useForecast(modeDerivedCodes.qoq, {
     enabled: !!modeDerivedCodes.qoq && chartMode === 'qoq',
   });
+  // ИЦП «М/м» — derived-ряд `ppi-mom` (факт + прогноз поверх месячного
+  // прогноза индекса); для не-ИЦП семей modeDerivedCodes.mom пуст.
+  const { data: momForecastResp } = useForecast(modeDerivedCodes.mom, {
+    enabled: !!modeDerivedCodes.mom && chartMode === 'mom',
+  });
   const { data: periodMonthlyForecastResp } = useForecast(modeDerivedCodes.periodMonthly, {
     enabled: !!modeDerivedCodes.periodMonthly && chartMode === 'period-monthly',
   });
@@ -453,6 +459,7 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
     [yoyForecastResp, ppiYoyBucket],
   );
   const qoqForecastData = useMemo(() => qoqForecastResp, [qoqForecastResp]);
+  const momForecastData = useMemo(() => momForecastResp, [momForecastResp]);
   const periodMonthlyForecastData = useMemo(
     () => periodMonthlyForecastResp,
     [periodMonthlyForecastResp],
@@ -567,11 +574,11 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
                     : chartMode === 'mom' && isPpiFamily ? loadingData
                       : loadingData;
 
-  const hasForecastData = chartMode === 'mom' && isPpiFamily
+  const hasForecastData = chartMode === 'weekly'
     ? false
-    // Недельный режим — официальный оперативный ряд без прогноза.
-    : chartMode === 'weekly'
-      ? false
+    // ИЦП «М/м» — прогноз derived-ряда `ppi-mom`; до его прогонов тоггл скрыт.
+    : chartMode === 'mom' && isPpiFamily
+      ? momForecastData?.forecast?.values?.length > 0
       : chartMode === 'quarterly'
         ? quarterlyForecastData?.forecast?.values?.length > 0
         : chartMode === 'annual'
@@ -617,6 +624,7 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
     annualForecastResp,
     yoyForecastData,
     qoqForecastData,
+    momForecastData,
     periodMonthlyForecastData,
     periodWeeklyForecastData,
 

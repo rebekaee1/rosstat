@@ -2,13 +2,13 @@
   "generated_by": "scripts/build-indicator-index.py",
   "do_not_edit": true,
   "summary": {
-    "total_codes": 939,
+    "total_codes": 940,
     "by_ui_stack": {
       "cpi": 32,
       "generic": 889,
       "housing": 8,
       "null": 6,
-      "ppi": 4
+      "ppi": 5
     },
     "in_both_viewmode_systems": 14,
     "shadowed_legacy": 24,
@@ -76,17 +76,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 131,
+          "line": 132,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 569,
+          "line": 570,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2127,
+          "line": 2133,
           "kind": "seo"
         },
         {
@@ -116,7 +116,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4926,
+          "line": 4955,
           "kind": "seed"
         },
         {
@@ -553,17 +553,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 383,
+          "line": 384,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1161,
+          "line": 1166,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6077,
+          "line": 6083,
           "kind": "seo"
         },
         {
@@ -588,12 +588,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3482,
+          "line": 3511,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3491,
+          "line": 3520,
           "kind": "seed"
         },
         {
@@ -773,17 +773,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 359,
+          "line": 360,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1153,
+          "line": 1158,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5915,
+          "line": 5921,
           "kind": "seo"
         },
         {
@@ -848,12 +848,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3440,
+          "line": 3469,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3456,
+          "line": 3485,
           "kind": "seed"
         },
         {
@@ -1080,17 +1080,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 287,
+          "line": 288,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1030,
+          "line": 1035,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2369,
+          "line": 2375,
           "kind": "seo"
         },
         {
@@ -1155,7 +1155,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4306,
+          "line": 4335,
           "kind": "seed"
         },
         {
@@ -1903,17 +1903,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 221,
+          "line": 222,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 925,
+          "line": 930,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2578,
+          "line": 2584,
           "kind": "seo"
         },
         {
@@ -1938,7 +1938,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3829,
+          "line": 3858,
           "kind": "seed"
         },
         {
@@ -2565,17 +2565,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 164,
+          "line": 165,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 717,
+          "line": 718,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4282,
+          "line": 4288,
           "kind": "seo"
         },
         {
@@ -2635,17 +2635,17 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 332,
+          "line": 333,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 334,
+          "line": 335,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 342,
+          "line": 343,
           "kind": "tests"
         },
         {
@@ -3041,17 +3041,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 172,
+          "line": 173,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 898,
+          "line": 903,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4453,
+          "line": 4459,
           "kind": "seo"
         },
         {
@@ -3081,12 +3081,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3258,
+          "line": 3287,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4926,
+          "line": 4955,
           "kind": "seed"
         },
         {
@@ -3101,7 +3101,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 339,
+          "line": 340,
           "kind": "tests"
         },
         {
@@ -3418,17 +3418,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 168,
+          "line": 169,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 891,
+          "line": 896,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4368,
+          "line": 4374,
           "kind": "seo"
         },
         {
@@ -3468,12 +3468,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3229,
+          "line": 3258,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4926,
+          "line": 4955,
           "kind": "seed"
         },
         {
@@ -3528,7 +3528,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 338,
+          "line": 339,
           "kind": "tests"
         },
         {
@@ -3931,17 +3931,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 188,
+          "line": 189,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 698,
+          "line": 699,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4536,
+          "line": 4542,
           "kind": "seo"
         },
         {
@@ -3971,7 +3971,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4927,
+          "line": 4956,
           "kind": "seed"
         },
         {
@@ -4361,17 +4361,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 363,
+          "line": 364,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1221,
+          "line": 1226,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7723,
+          "line": 7729,
           "kind": "seo"
         },
         {
@@ -4391,7 +4391,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3612,
+          "line": 3641,
           "kind": "seed"
         },
         {
@@ -4608,7 +4608,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1358,
+          "line": 1364,
           "kind": "seo"
         },
         {
@@ -4618,7 +4618,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4210,
+          "line": 4239,
           "kind": "seed"
         },
         {
@@ -4683,17 +4683,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 122,
+          "line": 123,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 529,
+          "line": 530,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3624,
+          "line": 3630,
           "kind": "seo"
         },
         {
@@ -5330,17 +5330,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 311,
+          "line": 312,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1131,
+          "line": 1136,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8572,
+          "line": 8578,
           "kind": "seo"
         },
         {
@@ -5360,7 +5360,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4494,
+          "line": 4523,
           "kind": "seed"
         },
         {
@@ -5696,17 +5696,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 362,
+          "line": 363,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1217,
+          "line": 1222,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8037,
+          "line": 8043,
           "kind": "seo"
         },
         {
@@ -5736,12 +5736,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3590,
+          "line": 3619,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4938,
+          "line": 4967,
           "kind": "seed"
         },
         {
@@ -6059,17 +6059,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 176,
+          "line": 177,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 690,
+          "line": 691,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5095,
+          "line": 5101,
           "kind": "seo"
         },
         {
@@ -6099,7 +6099,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4927,
+          "line": 4956,
           "kind": "seed"
         },
         {
@@ -6527,17 +6527,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 291,
+          "line": 292,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1096,
+          "line": 1101,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8482,
+          "line": 8488,
           "kind": "seo"
         },
         {
@@ -6552,7 +6552,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4340,
+          "line": 4369,
           "kind": "seed"
         },
         {
@@ -6884,17 +6884,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 249,
+          "line": 250,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 974,
+          "line": 979,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2979,
+          "line": 2985,
           "kind": "seo"
         },
         {
@@ -6904,7 +6904,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4043,
+          "line": 4072,
           "kind": "seed"
         },
         {
@@ -7554,12 +7554,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 492,
+          "line": 493,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1720,
+          "line": 1726,
           "kind": "seo"
         },
         {
@@ -7774,22 +7774,22 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5276,
+          "line": 5305,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5277,
+          "line": 5306,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5278,
+          "line": 5307,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5289,
+          "line": 5318,
           "kind": "seed"
         },
         {
@@ -8169,12 +8169,12 @@
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 203,
+          "line": 218,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 204,
+          "line": 219,
           "kind": "tests"
         },
         {
@@ -8434,62 +8434,62 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 581,
+          "line": 691,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 585,
+          "line": 695,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 595,
+          "line": 705,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 600,
+          "line": 710,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 606,
+          "line": 716,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 637,
+          "line": 747,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 706,
+          "line": 816,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 726,
+          "line": 836,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 740,
+          "line": 850,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 762,
+          "line": 872,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 764,
+          "line": 874,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 767,
+          "line": 877,
           "kind": "tests"
         },
         {
@@ -8889,12 +8889,12 @@
         },
         {
           "file": "frontend/src/components/IndicatorChartSection.jsx",
-          "line": 197,
+          "line": 198,
           "kind": "other"
         },
         {
           "file": "frontend/src/components/IndicatorChartSection.jsx",
-          "line": 344,
+          "line": 346,
           "kind": "other"
         },
         {
@@ -9619,17 +9619,17 @@
         },
         {
           "file": "frontend/src/lib/useIndicatorViewModeData.js",
-          "line": 219,
+          "line": 220,
           "kind": "family"
         },
         {
           "file": "frontend/src/lib/useIndicatorViewModeData.js",
-          "line": 509,
+          "line": 516,
           "kind": "family"
         },
         {
           "file": "frontend/src/lib/useIndicatorViewModeData.js",
-          "line": 549,
+          "line": 556,
           "kind": "family"
         },
         {
@@ -10000,12 +10000,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 496,
+          "line": 497,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1787,
+          "line": 1793,
           "kind": "seo"
         },
         {
@@ -10371,12 +10371,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 608,
+          "line": 609,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1245,
+          "line": 1250,
           "kind": "seo"
         },
         {
@@ -10396,7 +10396,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5151,
+          "line": 5180,
           "kind": "seed"
         },
         {
@@ -10406,7 +10406,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 113,
+          "line": 114,
           "kind": "tests"
         },
         {
@@ -10452,7 +10452,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1263,
+          "line": 1268,
           "kind": "seo"
         },
         {
@@ -10472,7 +10472,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 129,
+          "line": 130,
           "kind": "tests"
         }
       ]
@@ -10508,7 +10508,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1259,
+          "line": 1264,
           "kind": "seo"
         },
         {
@@ -10528,7 +10528,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 125,
+          "line": 126,
           "kind": "tests"
         }
       ]
@@ -10564,7 +10564,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1255,
+          "line": 1260,
           "kind": "seo"
         },
         {
@@ -10584,7 +10584,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 121,
+          "line": 122,
           "kind": "tests"
         },
         {
@@ -10635,7 +10635,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1244,
+          "line": 1249,
           "kind": "seo"
         },
         {
@@ -10665,7 +10665,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 207,
+          "line": 208,
           "kind": "tests"
         },
         {
@@ -10731,7 +10731,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1251,
+          "line": 1256,
           "kind": "seo"
         },
         {
@@ -10751,7 +10751,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 117,
+          "line": 118,
           "kind": "tests"
         },
         {
@@ -10827,12 +10827,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 500,
+          "line": 501,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1871,
+          "line": 1877,
           "kind": "seo"
         },
         {
@@ -11103,12 +11103,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 612,
+          "line": 613,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1247,
+          "line": 1252,
           "kind": "seo"
         },
         {
@@ -11123,7 +11123,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5152,
+          "line": 5181,
           "kind": "seed"
         },
         {
@@ -11133,7 +11133,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 114,
+          "line": 115,
           "kind": "tests"
         },
         {
@@ -11174,7 +11174,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1264,
+          "line": 1269,
           "kind": "seo"
         },
         {
@@ -11194,7 +11194,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 130,
+          "line": 131,
           "kind": "tests"
         }
       ]
@@ -11230,7 +11230,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1260,
+          "line": 1265,
           "kind": "seo"
         },
         {
@@ -11250,7 +11250,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 126,
+          "line": 127,
           "kind": "tests"
         }
       ]
@@ -11286,7 +11286,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1256,
+          "line": 1261,
           "kind": "seo"
         },
         {
@@ -11306,7 +11306,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 122,
+          "line": 123,
           "kind": "tests"
         },
         {
@@ -11352,7 +11352,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1246,
+          "line": 1251,
           "kind": "seo"
         },
         {
@@ -11382,7 +11382,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 208,
+          "line": 209,
           "kind": "tests"
         },
         {
@@ -11428,7 +11428,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1252,
+          "line": 1257,
           "kind": "seo"
         },
         {
@@ -11448,7 +11448,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 118,
+          "line": 119,
           "kind": "tests"
         }
       ]
@@ -11484,7 +11484,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1262,
+          "line": 1267,
           "kind": "seo"
         },
         {
@@ -11514,7 +11514,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 128,
+          "line": 129,
           "kind": "tests"
         },
         {
@@ -11555,7 +11555,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1258,
+          "line": 1263,
           "kind": "seo"
         },
         {
@@ -11575,7 +11575,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 124,
+          "line": 125,
           "kind": "tests"
         },
         {
@@ -11616,7 +11616,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1254,
+          "line": 1259,
           "kind": "seo"
         },
         {
@@ -11636,7 +11636,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 120,
+          "line": 121,
           "kind": "tests"
         },
         {
@@ -11702,12 +11702,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 504,
+          "line": 505,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1950,
+          "line": 1956,
           "kind": "seo"
         },
         {
@@ -11978,12 +11978,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 616,
+          "line": 617,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1249,
+          "line": 1254,
           "kind": "seo"
         },
         {
@@ -11998,7 +11998,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5153,
+          "line": 5182,
           "kind": "seed"
         },
         {
@@ -12008,7 +12008,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 115,
+          "line": 116,
           "kind": "tests"
         },
         {
@@ -12054,7 +12054,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1265,
+          "line": 1270,
           "kind": "seo"
         },
         {
@@ -12074,7 +12074,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 131,
+          "line": 132,
           "kind": "tests"
         }
       ]
@@ -12110,7 +12110,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1261,
+          "line": 1266,
           "kind": "seo"
         },
         {
@@ -12130,7 +12130,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 127,
+          "line": 128,
           "kind": "tests"
         }
       ]
@@ -12166,7 +12166,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1257,
+          "line": 1262,
           "kind": "seo"
         },
         {
@@ -12186,7 +12186,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 123,
+          "line": 124,
           "kind": "tests"
         },
         {
@@ -12232,7 +12232,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1248,
+          "line": 1253,
           "kind": "seo"
         },
         {
@@ -12267,7 +12267,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 209,
+          "line": 210,
           "kind": "tests"
         },
         {
@@ -12323,7 +12323,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1253,
+          "line": 1258,
           "kind": "seo"
         },
         {
@@ -12343,7 +12343,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 119,
+          "line": 120,
           "kind": "tests"
         }
       ]
@@ -12379,7 +12379,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1250,
+          "line": 1255,
           "kind": "seo"
         },
         {
@@ -12434,7 +12434,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 116,
+          "line": 117,
           "kind": "tests"
         },
         {
@@ -12535,22 +12535,22 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 139,
+          "line": 140,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 580,
+          "line": 581,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1304,
+          "line": 1310,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2235,
+          "line": 2241,
           "kind": "seo"
         },
         {
@@ -12580,7 +12580,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4928,
+          "line": 4957,
           "kind": "seed"
         },
         {
@@ -12975,22 +12975,22 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 143,
+          "line": 144,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 584,
+          "line": 585,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1305,
+          "line": 1311,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2239,
+          "line": 2245,
           "kind": "seo"
         },
         {
@@ -13020,7 +13020,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4928,
+          "line": 4957,
           "kind": "seed"
         },
         {
@@ -13420,17 +13420,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 135,
+          "line": 136,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 576,
+          "line": 577,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2231,
+          "line": 2237,
           "kind": "seo"
         },
         {
@@ -13455,7 +13455,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4928,
+          "line": 4957,
           "kind": "seed"
         },
         {
@@ -13880,22 +13880,22 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 151,
+          "line": 152,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 592,
+          "line": 593,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1306,
+          "line": 1312,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2247,
+          "line": 2253,
           "kind": "seo"
         },
         {
@@ -13925,7 +13925,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4929,
+          "line": 4958,
           "kind": "seed"
         },
         {
@@ -14320,22 +14320,22 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 154,
+          "line": 155,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 596,
+          "line": 597,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1307,
+          "line": 1313,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2251,
+          "line": 2257,
           "kind": "seo"
         },
         {
@@ -14365,7 +14365,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4929,
+          "line": 4958,
           "kind": "seed"
         },
         {
@@ -14765,17 +14765,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 147,
+          "line": 148,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 588,
+          "line": 589,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2243,
+          "line": 2249,
           "kind": "seo"
         },
         {
@@ -14800,7 +14800,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4929,
+          "line": 4958,
           "kind": "seed"
         },
         {
@@ -15256,22 +15256,22 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 449,
+          "line": 450,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 802,
+          "line": 803,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1321,
+          "line": 1327,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7491,
+          "line": 7497,
           "kind": "seo"
         },
         {
@@ -15286,7 +15286,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 208,
+          "line": 212,
           "kind": "derived"
         },
         {
@@ -15604,17 +15604,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 806,
+          "line": 807,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1318,
+          "line": 1324,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 205,
+          "line": 209,
           "kind": "derived"
         },
         {
@@ -15755,7 +15755,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1323,
+          "line": 1329,
           "kind": "seo"
         },
         {
@@ -15765,7 +15765,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 208,
+          "line": 212,
           "kind": "derived"
         },
         {
@@ -15894,17 +15894,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 387,
+          "line": 388,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1165,
+          "line": 1170,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6158,
+          "line": 6164,
           "kind": "seo"
         },
         {
@@ -15929,12 +15929,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3496,
+          "line": 3525,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3505,
+          "line": 3534,
           "kind": "seed"
         },
         {
@@ -16114,17 +16114,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 360,
+          "line": 361,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1157,
+          "line": 1162,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5998,
+          "line": 6004,
           "kind": "seo"
         },
         {
@@ -16194,12 +16194,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3461,
+          "line": 3490,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3477,
+          "line": 3506,
           "kind": "seed"
         },
         {
@@ -16402,17 +16402,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 163,
+          "line": 164,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 565,
+          "line": 566,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2255,
+          "line": 2261,
           "kind": "seo"
         },
         {
@@ -16447,7 +16447,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4930,
+          "line": 4959,
           "kind": "seed"
         },
         {
@@ -16757,17 +16757,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 160,
+          "line": 161,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1309,
+          "line": 1315,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2263,
+          "line": 2269,
           "kind": "seo"
         },
         {
@@ -16787,7 +16787,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4930,
+          "line": 4959,
           "kind": "seed"
         },
         {
@@ -17177,17 +17177,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 157,
+          "line": 158,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1308,
+          "line": 1314,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2259,
+          "line": 2265,
           "kind": "seo"
         },
         {
@@ -17207,7 +17207,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4930,
+          "line": 4959,
           "kind": "seed"
         },
         {
@@ -17757,17 +17757,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 475,
+          "line": 476,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 713,
+          "line": 714,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8268,
+          "line": 8274,
           "kind": "seo"
         },
         {
@@ -17812,7 +17812,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4931,
+          "line": 4960,
           "kind": "seed"
         },
         {
@@ -18182,17 +18182,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 180,
+          "line": 181,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 705,
+          "line": 706,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5203,
+          "line": 5209,
           "kind": "seo"
         },
         {
@@ -18237,7 +18237,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4931,
+          "line": 4960,
           "kind": "seed"
         },
         {
@@ -18619,17 +18619,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 371,
+          "line": 372,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1185,
+          "line": 1190,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8191,
+          "line": 8197,
           "kind": "seo"
         },
         {
@@ -18639,7 +18639,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3668,
+          "line": 3697,
           "kind": "seed"
         },
         {
@@ -18744,17 +18744,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 419,
+          "line": 420,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1193,
+          "line": 1198,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6862,
+          "line": 6868,
           "kind": "seo"
         },
         {
@@ -18769,7 +18769,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3697,
+          "line": 3726,
           "kind": "seed"
         },
         {
@@ -19065,17 +19065,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 352,
+          "line": 353,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 880,
+          "line": 885,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4930,
+          "line": 4936,
           "kind": "seo"
         },
         {
@@ -19115,12 +19115,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3178,
+          "line": 3207,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4931,
+          "line": 4960,
           "kind": "seed"
         },
         {
@@ -19522,17 +19522,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 225,
+          "line": 226,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 932,
+          "line": 937,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2664,
+          "line": 2670,
           "kind": "seo"
         },
         {
@@ -19542,7 +19542,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3862,
+          "line": 3891,
           "kind": "seed"
         },
         {
@@ -20055,17 +20055,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 121,
+          "line": 122,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 522,
+          "line": 523,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3533,
+          "line": 3539,
           "kind": "seo"
         },
         {
@@ -20730,12 +20730,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 263,
+          "line": 264,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1051,
+          "line": 1056,
           "kind": "seo"
         },
         {
@@ -20760,7 +20760,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4143,
+          "line": 4172,
           "kind": "seed"
         },
         {
@@ -21317,27 +21317,27 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 453,
+          "line": 454,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 818,
+          "line": 823,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1294,
+          "line": 1300,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1312,
+          "line": 1318,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5736,
+          "line": 5742,
           "kind": "seo"
         },
         {
@@ -21357,7 +21357,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 212,
+          "line": 216,
           "kind": "derived"
         },
         {
@@ -21412,7 +21412,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2192,
+          "line": 2201,
           "kind": "seo"
         },
         {
@@ -21457,7 +21457,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5118,
+          "line": 5147,
           "kind": "seed"
         },
         {
@@ -21532,12 +21532,12 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 320,
+          "line": 321,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 326,
+          "line": 327,
           "kind": "tests"
         },
         {
@@ -21906,7 +21906,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1295,
+          "line": 1301,
           "kind": "seo"
         },
         {
@@ -21936,7 +21936,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2192,
+          "line": 2201,
           "kind": "seo"
         },
         {
@@ -21956,7 +21956,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4932,
+          "line": 4961,
           "kind": "seed"
         },
         {
@@ -22339,22 +22339,22 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1145,
+          "line": 1150,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1315,
+          "line": 1321,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 212,
+          "line": 216,
           "kind": "derived"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3413,
+          "line": 3442,
           "kind": "seed"
         },
         {
@@ -22466,12 +22466,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 830,
+          "line": 835,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1314,
+          "line": 1320,
           "kind": "seo"
         },
         {
@@ -22486,7 +22486,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5132,
+          "line": 5161,
           "kind": "seed"
         },
         {
@@ -22501,7 +22501,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 161,
+          "line": 162,
           "kind": "tests"
         },
         {
@@ -22689,17 +22689,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 184,
+          "line": 185,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 846,
+          "line": 851,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5633,
+          "line": 5639,
           "kind": "seo"
         },
         {
@@ -23035,17 +23035,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 471,
+          "line": 472,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 913,
+          "line": 918,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7881,
+          "line": 7887,
           "kind": "seo"
         },
         {
@@ -23075,12 +23075,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3382,
+          "line": 3411,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3400,
+          "line": 3429,
           "kind": "seed"
         },
         {
@@ -23322,17 +23322,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 208,
+          "line": 209,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1009,
+          "line": 1014,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8789,
+          "line": 8795,
           "kind": "seo"
         },
         {
@@ -23362,12 +23362,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4651,
+          "line": 4680,
           "kind": "seed"
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 145,
+          "line": 146,
           "kind": "tests"
         },
         {
@@ -23471,7 +23471,7 @@
       "files": [
         {
           "file": "backend/seed_data.py",
-          "line": 4674,
+          "line": 4703,
           "kind": "seed"
         },
         {
@@ -23834,7 +23834,7 @@
       "files": [
         {
           "file": "backend/app/data/i18n/indicator_copy_en.py",
-          "line": 977,
+          "line": 982,
           "kind": "other"
         },
         {
@@ -23844,22 +23844,22 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 212,
+          "line": 213,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1016,
+          "line": 1021,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1291,
+          "line": 1297,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8790,
+          "line": 8796,
           "kind": "seo"
         },
         {
@@ -23894,7 +23894,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4683,
+          "line": 4712,
           "kind": "seed"
         },
         {
@@ -24356,7 +24356,7 @@
       "files": [
         {
           "file": "backend/app/data/i18n/indicator_copy_en.py",
-          "line": 982,
+          "line": 987,
           "kind": "other"
         },
         {
@@ -24366,22 +24366,22 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 216,
+          "line": 217,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1023,
+          "line": 1028,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1292,
+          "line": 1298,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8791,
+          "line": 8797,
           "kind": "seo"
         },
         {
@@ -24401,7 +24401,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4712,
+          "line": 4741,
           "kind": "seed"
         },
         {
@@ -24843,7 +24843,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1357,
+          "line": 1363,
           "kind": "seo"
         },
         {
@@ -24853,7 +24853,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4178,
+          "line": 4207,
           "kind": "seed"
         },
         {
@@ -24918,12 +24918,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 267,
+          "line": 268,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1058,
+          "line": 1063,
           "kind": "seo"
         },
         {
@@ -24943,7 +24943,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4242,
+          "line": 4271,
           "kind": "seed"
         },
         {
@@ -25344,17 +25344,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 327,
+          "line": 328,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 854,
+          "line": 859,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5421,
+          "line": 5427,
           "kind": "seo"
         },
         {
@@ -25374,7 +25374,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3039,
+          "line": 3068,
           "kind": "seed"
         },
         {
@@ -25389,7 +25389,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 186,
+          "line": 187,
           "kind": "tests"
         },
         {
@@ -25644,17 +25644,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 331,
+          "line": 332,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 862,
+          "line": 867,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5527,
+          "line": 5533,
           "kind": "seo"
         },
         {
@@ -25674,7 +25674,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3075,
+          "line": 3104,
           "kind": "seed"
         },
         {
@@ -25689,7 +25689,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 187,
+          "line": 188,
           "kind": "tests"
         },
         {
@@ -25939,17 +25939,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 379,
+          "line": 380,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 869,
+          "line": 874,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7802,
+          "line": 7808,
           "kind": "seo"
         },
         {
@@ -25959,7 +25959,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3112,
+          "line": 3141,
           "kind": "seed"
         },
         {
@@ -26284,17 +26284,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 319,
+          "line": 320,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 652,
+          "line": 653,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3227,
+          "line": 3233,
           "kind": "seo"
         },
         {
@@ -26489,22 +26489,22 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 184,
+          "line": 185,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 364,
+          "line": 365,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 367,
+          "line": 368,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 369,
+          "line": 370,
           "kind": "tests"
         },
         {
@@ -26765,17 +26765,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 320,
+          "line": 321,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 628,
+          "line": 629,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1270,
+          "line": 1276,
           "kind": "seo"
         },
         {
@@ -26820,7 +26820,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 372,
+          "line": 373,
           "kind": "tests"
         },
         {
@@ -26942,17 +26942,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 324,
+          "line": 325,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 670,
+          "line": 671,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1280,
+          "line": 1286,
           "kind": "seo"
         },
         {
@@ -26992,7 +26992,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 371,
+          "line": 372,
           "kind": "tests"
         },
         {
@@ -27093,17 +27093,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 321,
+          "line": 322,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 659,
+          "line": 660,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3332,
+          "line": 3338,
           "kind": "seo"
         },
         {
@@ -27223,17 +27223,17 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 185,
+          "line": 186,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 364,
+          "line": 365,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 373,
+          "line": 374,
           "kind": "tests"
         },
         {
@@ -27409,17 +27409,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 322,
+          "line": 323,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 624,
+          "line": 625,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1269,
+          "line": 1275,
           "kind": "seo"
         },
         {
@@ -27464,7 +27464,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 376,
+          "line": 377,
           "kind": "tests"
         },
         {
@@ -27540,17 +27540,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 326,
+          "line": 327,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 678,
+          "line": 679,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1272,
+          "line": 1278,
           "kind": "seo"
         },
         {
@@ -27580,7 +27580,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 375,
+          "line": 376,
           "kind": "tests"
         },
         {
@@ -27646,17 +27646,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 325,
+          "line": 326,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 674,
+          "line": 675,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1271,
+          "line": 1277,
           "kind": "seo"
         },
         {
@@ -27686,7 +27686,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 374,
+          "line": 375,
           "kind": "tests"
         },
         {
@@ -27788,17 +27788,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 323,
+          "line": 324,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 666,
+          "line": 667,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1279,
+          "line": 1285,
           "kind": "seo"
         },
         {
@@ -27868,7 +27868,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 370,
+          "line": 371,
           "kind": "tests"
         },
         {
@@ -28018,17 +28018,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 220,
+          "line": 221,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 917,
+          "line": 922,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2267,
+          "line": 2273,
           "kind": "seo"
         },
         {
@@ -28078,7 +28078,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3796,
+          "line": 3825,
           "kind": "seed"
         },
         {
@@ -28705,17 +28705,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 422,
+          "line": 423,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1189,
+          "line": 1194,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6784,
+          "line": 6790,
           "kind": "seo"
         },
         {
@@ -28730,7 +28730,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3683,
+          "line": 3712,
           "kind": "seed"
         },
         {
@@ -28888,12 +28888,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 484,
+          "line": 485,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8348,
+          "line": 8354,
           "kind": "seo"
         },
         {
@@ -28903,12 +28903,12 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 232,
+          "line": 236,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 336,
+          "line": 340,
           "kind": "derived"
         },
         {
@@ -28918,12 +28918,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4946,
+          "line": 4975,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4948,
+          "line": 4977,
           "kind": "seed"
         },
         {
@@ -29172,7 +29172,7 @@
       "files": [
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1348,
+          "line": 1354,
           "kind": "seo"
         },
         {
@@ -29259,12 +29259,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1344,
+          "line": 1350,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8428,
+          "line": 8434,
           "kind": "seo"
         },
         {
@@ -29274,7 +29274,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 238,
+          "line": 242,
           "kind": "derived"
         },
         {
@@ -29284,7 +29284,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4946,
+          "line": 4975,
           "kind": "seed"
         },
         {
@@ -29737,7 +29737,7 @@
       "files": [
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 337,
+          "line": 341,
           "kind": "derived"
         },
         {
@@ -29788,27 +29788,27 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 345,
+          "line": 346,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 770,
+          "line": 771,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1277,
+          "line": 1283,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 198,
+          "line": 202,
           "kind": "derived"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2972,
+          "line": 3001,
           "kind": "seed"
         },
         {
@@ -29859,27 +29859,27 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 346,
+          "line": 347,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 774,
+          "line": 775,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1278,
+          "line": 1284,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 199,
+          "line": 203,
           "kind": "derived"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3005,
+          "line": 3034,
           "kind": "seed"
         },
         {
@@ -29938,17 +29938,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 375,
+          "line": 376,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1181,
+          "line": 1186,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8114,
+          "line": 8120,
           "kind": "seo"
         },
         {
@@ -29978,12 +29978,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3646,
+          "line": 3675,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4932,
+          "line": 4961,
           "kind": "seed"
         },
         {
@@ -30311,37 +30311,37 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 335,
+          "line": 336,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 748,
+          "line": 749,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3877,
+          "line": 3883,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 186,
+          "line": 190,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 192,
+          "line": 196,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 198,
+          "line": 202,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 239,
+          "line": 243,
           "kind": "derived"
         },
         {
@@ -30376,17 +30376,17 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2904,
-          "kind": "seed"
-        },
-        {
-          "file": "backend/seed_data.py",
           "line": 2933,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2996,
+          "line": 2962,
+          "kind": "seed"
+        },
+        {
+          "file": "backend/seed_data.py",
+          "line": 3025,
           "kind": "seed"
         },
         {
@@ -30401,7 +30401,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 188,
+          "line": 189,
           "kind": "tests"
         },
         {
@@ -30652,42 +30652,42 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 339,
+          "line": 340,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 755,
+          "line": 756,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3959,
+          "line": 3965,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 187,
+          "line": 191,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 193,
+          "line": 197,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 199,
+          "line": 203,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 227,
+          "line": 231,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 233,
+          "line": 237,
           "kind": "derived"
         },
         {
@@ -30717,12 +30717,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2963,
+          "line": 2992,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3029,
+          "line": 3058,
           "kind": "seed"
         },
         {
@@ -30732,7 +30732,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 189,
+          "line": 190,
           "kind": "tests"
         },
         {
@@ -30903,17 +30903,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1275,
+          "line": 1281,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 192,
+          "line": 196,
           "kind": "derived"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2913,
+          "line": 2942,
           "kind": "seed"
         },
         {
@@ -30989,12 +30989,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1276,
+          "line": 1282,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 193,
+          "line": 197,
           "kind": "derived"
         },
         {
@@ -31065,27 +31065,27 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 343,
+          "line": 344,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 762,
+          "line": 763,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1273,
+          "line": 1279,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 186,
+          "line": 190,
           "kind": "derived"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2883,
+          "line": 2912,
           "kind": "seed"
         },
         {
@@ -31151,27 +31151,27 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 344,
+          "line": 345,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 766,
+          "line": 767,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1274,
+          "line": 1280,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 187,
+          "line": 191,
           "kind": "derived"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2942,
+          "line": 2971,
           "kind": "seed"
         },
         {
@@ -31261,17 +31261,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 233,
+          "line": 234,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 946,
+          "line": 951,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2832,
+          "line": 2838,
           "kind": "seo"
         },
         {
@@ -31321,7 +31321,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3927,
+          "line": 3956,
           "kind": "seed"
         },
         {
@@ -31965,27 +31965,27 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 457,
+          "line": 458,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 822,
+          "line": 827,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1294,
+          "line": 1300,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1312,
+          "line": 1318,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7334,
+          "line": 7340,
           "kind": "seo"
         },
         {
@@ -32000,7 +32000,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 213,
+          "line": 217,
           "kind": "derived"
         },
         {
@@ -32095,7 +32095,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5119,
+          "line": 5148,
           "kind": "seed"
         },
         {
@@ -32125,12 +32125,12 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 320,
+          "line": 321,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 327,
+          "line": 328,
           "kind": "tests"
         },
         {
@@ -32349,7 +32349,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1296,
+          "line": 1302,
           "kind": "seo"
         },
         {
@@ -32389,7 +32389,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4932,
+          "line": 4961,
           "kind": "seed"
         },
         {
@@ -32697,22 +32697,22 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1149,
+          "line": 1154,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1317,
+          "line": 1323,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 213,
+          "line": 217,
           "kind": "derived"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3426,
+          "line": 3455,
           "kind": "seed"
         },
         {
@@ -32814,12 +32814,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 834,
+          "line": 839,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1316,
+          "line": 1322,
           "kind": "seo"
         },
         {
@@ -32834,7 +32834,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5132,
+          "line": 5161,
           "kind": "seed"
         },
         {
@@ -32946,12 +32946,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 604,
+          "line": 605,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1238,
+          "line": 1243,
           "kind": "seo"
         },
         {
@@ -32961,7 +32961,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 195,
+          "line": 199,
           "kind": "derived"
         },
         {
@@ -32976,7 +32976,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5150,
+          "line": 5179,
           "kind": "seed"
         },
         {
@@ -32996,7 +32996,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 112,
+          "line": 113,
           "kind": "tests"
         },
         {
@@ -33077,12 +33077,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 600,
+          "line": 601,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1239,
+          "line": 1244,
           "kind": "seo"
         },
         {
@@ -33117,7 +33117,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 206,
+          "line": 207,
           "kind": "tests"
         },
         {
@@ -33251,12 +33251,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 724,
+          "line": 725,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1240,
+          "line": 1245,
           "kind": "seo"
         },
         {
@@ -33331,7 +33331,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 141,
+          "line": 142,
           "kind": "tests"
         },
         {
@@ -33440,12 +33440,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 728,
+          "line": 729,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1241,
+          "line": 1246,
           "kind": "seo"
         },
         {
@@ -33485,7 +33485,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 142,
+          "line": 143,
           "kind": "tests"
         },
         {
@@ -33549,12 +33549,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 732,
+          "line": 733,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1242,
+          "line": 1247,
           "kind": "seo"
         },
         {
@@ -33594,7 +33594,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 143,
+          "line": 144,
           "kind": "tests"
         },
         {
@@ -33653,12 +33653,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 736,
+          "line": 737,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1243,
+          "line": 1248,
           "kind": "seo"
         },
         {
@@ -33698,7 +33698,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 144,
+          "line": 145,
           "kind": "tests"
         },
         {
@@ -33751,17 +33751,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 425,
+          "line": 426,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1205,
+          "line": 1210,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7096,
+          "line": 7102,
           "kind": "seo"
         },
         {
@@ -33776,7 +33776,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3739,
+          "line": 3768,
           "kind": "seed"
         },
         {
@@ -33915,17 +33915,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 479,
+          "line": 480,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 838,
+          "line": 843,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5307,
+          "line": 5313,
           "kind": "seo"
         },
         {
@@ -34492,17 +34492,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 367,
+          "line": 368,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 778,
+          "line": 779,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4043,
+          "line": 4049,
           "kind": "seo"
         },
         {
@@ -34547,7 +34547,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4938,
+          "line": 4967,
           "kind": "seed"
         },
         {
@@ -34885,17 +34885,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 200,
+          "line": 201,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 995,
+          "line": 1000,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8700,
+          "line": 8706,
           "kind": "seo"
         },
         {
@@ -34910,7 +34910,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4941,
+          "line": 4970,
           "kind": "seed"
         },
         {
@@ -35332,17 +35332,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 196,
+          "line": 197,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 988,
+          "line": 993,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8691,
+          "line": 8697,
           "kind": "seo"
         },
         {
@@ -35357,7 +35357,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4941,
+          "line": 4970,
           "kind": "seed"
         },
         {
@@ -35712,17 +35712,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 192,
+          "line": 193,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 981,
+          "line": 986,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8682,
+          "line": 8688,
           "kind": "seo"
         },
         {
@@ -35737,7 +35737,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4941,
+          "line": 4970,
           "kind": "seed"
         },
         {
@@ -36154,17 +36154,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 204,
+          "line": 205,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1002,
+          "line": 1007,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8709,
+          "line": 8715,
           "kind": "seo"
         },
         {
@@ -36179,7 +36179,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4941,
+          "line": 4970,
           "kind": "seed"
         },
         {
@@ -36529,12 +36529,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 782,
+          "line": 783,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1283,
+          "line": 1289,
           "kind": "seo"
         },
         {
@@ -36569,7 +36569,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 110,
+          "line": 111,
           "kind": "tests"
         },
         {
@@ -36826,17 +36826,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 119,
+          "line": 120,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 508,
+          "line": 509,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3110,
+          "line": 3116,
           "kind": "seo"
         },
         {
@@ -36981,12 +36981,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5102,
+          "line": 5131,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5105,
+          "line": 5134,
           "kind": "seed"
         },
         {
@@ -37131,7 +37131,7 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 581,
+          "line": 691,
           "kind": "tests"
         },
         {
@@ -37918,17 +37918,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 348,
+          "line": 349,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 873,
+          "line": 878,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4980,
+          "line": 4986,
           "kind": "seo"
         },
         {
@@ -37953,12 +37953,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3149,
+          "line": 3178,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4933,
+          "line": 4962,
           "kind": "seed"
         },
         {
@@ -38306,17 +38306,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 128,
+          "line": 129,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 544,
+          "line": 545,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4638,
+          "line": 4644,
           "kind": "seo"
         },
         {
@@ -38346,7 +38346,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4933,
+          "line": 4962,
           "kind": "seed"
         },
         {
@@ -38756,17 +38756,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 483,
+          "line": 484,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 682,
+          "line": 683,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4736,
+          "line": 4742,
           "kind": "seo"
         },
         {
@@ -38811,7 +38811,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4933,
+          "line": 4962,
           "kind": "seed"
         },
         {
@@ -39246,17 +39246,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 129,
+          "line": 130,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 551,
+          "line": 552,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4832,
+          "line": 4838,
           "kind": "seo"
         },
         {
@@ -39316,7 +39316,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4933,
+          "line": 4962,
           "kind": "seed"
         },
         {
@@ -39920,17 +39920,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 237,
+          "line": 238,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 953,
+          "line": 958,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2871,
+          "line": 2877,
           "kind": "seo"
         },
         {
@@ -39940,7 +39940,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3957,
+          "line": 3986,
           "kind": "seed"
         },
         {
@@ -40414,17 +40414,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 130,
+          "line": 131,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 558,
+          "line": 559,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2029,
+          "line": 2035,
           "kind": "seo"
         },
         {
@@ -40449,7 +40449,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4933,
+          "line": 4962,
           "kind": "seed"
         },
         {
@@ -40873,17 +40873,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 299,
+          "line": 300,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1110,
+          "line": 1115,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8518,
+          "line": 8524,
           "kind": "seo"
         },
         {
@@ -40898,7 +40898,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4401,
+          "line": 4430,
           "kind": "seed"
         },
         {
@@ -41480,17 +41480,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 391,
+          "line": 392,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1173,
+          "line": 1178,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6705,
+          "line": 6711,
           "kind": "seo"
         },
         {
@@ -41515,12 +41515,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3552,
+          "line": 3581,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3561,
+          "line": 3590,
           "kind": "seed"
         },
         {
@@ -41726,17 +41726,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 395,
+          "line": 396,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1229,
+          "line": 1234,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6627,
+          "line": 6633,
           "kind": "seo"
         },
         {
@@ -41761,12 +41761,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3538,
+          "line": 3567,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3547,
+          "line": 3576,
           "kind": "seed"
         },
         {
@@ -41907,17 +41907,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 399,
+          "line": 400,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1225,
+          "line": 1230,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6552,
+          "line": 6558,
           "kind": "seo"
         },
         {
@@ -41942,12 +41942,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3524,
+          "line": 3553,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3533,
+          "line": 3562,
           "kind": "seed"
         },
         {
@@ -43053,17 +43053,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 358,
+          "line": 359,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 786,
+          "line": 787,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 5823,
+          "line": 5829,
           "kind": "seo"
         },
         {
@@ -43298,22 +43298,12 @@
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 173,
+          "line": 188,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 183,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 186,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 200,
+          "line": 198,
           "kind": "tests"
         },
         {
@@ -43323,7 +43313,7 @@
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 206,
+          "line": 215,
           "kind": "tests"
         },
         {
@@ -43333,22 +43323,32 @@
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 218,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_indicator_year_landing.py",
           "line": 221,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 223,
+          "line": 231,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 244,
+          "line": 233,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_indicator_year_landing.py",
+          "line": 236,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_indicator_year_landing.py",
+          "line": 238,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_indicator_year_landing.py",
+          "line": 259,
           "kind": "tests"
         },
         {
@@ -44042,17 +44042,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 407,
+          "line": 408,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 798,
+          "line": 799,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6315,
+          "line": 6321,
           "kind": "seo"
         },
         {
@@ -44181,17 +44181,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 411,
+          "line": 412,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 790,
+          "line": 791,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6238,
+          "line": 6244,
           "kind": "seo"
         },
         {
@@ -44315,17 +44315,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 415,
+          "line": 416,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 794,
+          "line": 795,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6395,
+          "line": 6401,
           "kind": "seo"
         },
         {
@@ -44461,6 +44461,7 @@
       "variant_group": null,
       "derived_siblings": [
         "ppi-annual",
+        "ppi-mom",
         "ppi-qoq",
         "ppi-yoy"
       ],
@@ -44527,13 +44528,38 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 810,
+          "line": 811,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3806,
+          "line": 3812,
           "kind": "seo"
+        },
+        {
+          "file": "backend/app/data/legacy_redirects.py",
+          "line": 52,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/data/legacy_redirects.py",
+          "line": 53,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/data/legacy_redirects.py",
+          "line": 54,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/data/legacy_redirects.py",
+          "line": 55,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/data/legacy_redirects.py",
+          "line": 56,
+          "kind": "other"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
@@ -44548,6 +44574,11 @@
         {
           "file": "backend/app/services/calculation_engine.py",
           "line": 183,
+          "kind": "derived"
+        },
+        {
+          "file": "backend/app/services/calculation_engine.py",
+          "line": 189,
           "kind": "derived"
         },
         {
@@ -44602,7 +44633,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2874,
+          "line": 2868,
+          "kind": "seed"
+        },
+        {
+          "file": "backend/seed_data.py",
+          "line": 2903,
           "kind": "seed"
         },
         {
@@ -44622,7 +44658,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 190,
+          "line": 191,
           "kind": "tests"
         },
         {
@@ -44802,7 +44838,22 @@
         },
         {
           "file": "frontend/src/lib/ppiViewModeGroups.test.js",
-          "line": 70,
+          "line": 67,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/ppiViewModeGroups.test.js",
+          "line": 68,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/ppiViewModeGroups.test.js",
+          "line": 72,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/ppiViewModeGroups.test.js",
+          "line": 77,
           "kind": "tests"
         },
         {
@@ -44818,6 +44869,16 @@
         {
           "file": "frontend/src/lib/ppiViewModeResolve.js",
           "line": 82,
+          "kind": "family"
+        },
+        {
+          "file": "frontend/src/lib/ppiViewModeResolve.js",
+          "line": 83,
+          "kind": "family"
+        },
+        {
+          "file": "frontend/src/lib/ppiViewModeResolve.js",
+          "line": 84,
           "kind": "family"
         },
         {
@@ -44973,23 +45034,28 @@
         },
         {
           "file": "backend/app/data/i18n/indicator_copy_en.py",
-          "line": 962,
+          "line": 967,
           "kind": "other"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 118,
+          "line": 119,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 620,
+          "line": 621,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1267,
+          "line": 1272,
           "kind": "seo"
+        },
+        {
+          "file": "backend/app/data/legacy_redirects.py",
+          "line": 56,
+          "kind": "other"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
@@ -44998,7 +45064,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2851,
+          "line": 2880,
           "kind": "seed"
         },
         {
@@ -45008,7 +45074,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 109,
+          "line": 110,
           "kind": "tests"
         },
         {
@@ -45054,6 +45120,102 @@
       ]
     },
     {
+      "code": "ppi-mom",
+      "title": "ИЦП (месяц к месяцу) — данные и прогноз",
+      "name": "ИЦП (изм. м/м)",
+      "category": "Цены",
+      "frequency": "monthly",
+      "source": "Росстат",
+      "parser_type": "derived",
+      "is_listed": false,
+      "is_derived": true,
+      "monthly_auto": false,
+      "forecast_strategy": "derived_from_source",
+      "forecast_strategy_source": "explicit",
+      "forecast_steps": 12,
+      "ui_stack": "ppi",
+      "redirect_parent": "ppi",
+      "variant_group": null,
+      "derived_siblings": [],
+      "flags": {
+        "in_both_viewmode_systems": false,
+        "shadowed_legacy": false,
+        "in_seed_no_ui_stack": false
+      },
+      "files": [
+        {
+          "file": "backend/app/data/i18n/indicator_copy_en.py",
+          "line": 962,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/data/indicator_seo.py",
+          "line": 118,
+          "kind": "seo"
+        },
+        {
+          "file": "backend/app/data/indicator_seo.py",
+          "line": 819,
+          "kind": "seo"
+        },
+        {
+          "file": "backend/app/data/indicator_seo.py",
+          "line": 1274,
+          "kind": "seo"
+        },
+        {
+          "file": "backend/app/data/legacy_redirects.py",
+          "line": 55,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/calculation_engine.py",
+          "line": 189,
+          "kind": "derived"
+        },
+        {
+          "file": "backend/seed_data.py",
+          "line": 2851,
+          "kind": "seed"
+        },
+        {
+          "file": "backend/tests/test_calculation_engine.py",
+          "line": 29,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_forecast_policy.py",
+          "line": 109,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/ppiViewModeGroups.test.js",
+          "line": 68,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/ppiViewModeResolve.js",
+          "line": 84,
+          "kind": "family"
+        },
+        {
+          "file": "frontend/src/lib/useIndicatorViewModeData.js",
+          "line": 97,
+          "kind": "family"
+        },
+        {
+          "file": "frontend/src/lib/useIndicatorViewModeData.js",
+          "line": 296,
+          "kind": "family"
+        },
+        {
+          "file": "frontend/src/lib/useIndicatorViewModeData.js",
+          "line": 579,
+          "kind": "family"
+        }
+      ]
+    },
+    {
       "code": "ppi-qoq",
       "title": "ИЦП (изм. кв/кв)",
       "name": "ИЦП (изм. кв/кв)",
@@ -45084,12 +45246,22 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1268,
+          "line": 1273,
           "kind": "seo"
+        },
+        {
+          "file": "backend/app/data/legacy_redirects.py",
+          "line": 54,
+          "kind": "other"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
           "line": 183,
+          "kind": "derived"
+        },
+        {
+          "file": "backend/app/services/calculation_engine.py",
+          "line": 188,
           "kind": "derived"
         },
         {
@@ -45106,6 +45278,16 @@
           "file": "backend/tests/test_forecast_policy.py",
           "line": 108,
           "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/ppiViewModeGroups.test.js",
+          "line": 67,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/ppiViewModeResolve.js",
+          "line": 83,
+          "kind": "family"
         },
         {
           "file": "frontend/src/lib/useIndicatorViewModeData.js",
@@ -45155,13 +45337,18 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 814,
+          "line": 815,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1266,
+          "line": 1271,
           "kind": "seo"
+        },
+        {
+          "file": "backend/app/data/legacy_redirects.py",
+          "line": 53,
+          "kind": "other"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
@@ -45289,17 +45476,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 429,
+          "line": 430,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1197,
+          "line": 1202,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6940,
+          "line": 6946,
           "kind": "seo"
         },
         {
@@ -45314,7 +45501,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3711,
+          "line": 3740,
           "kind": "seed"
         },
         {
@@ -45460,17 +45647,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 433,
+          "line": 434,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1201,
+          "line": 1206,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7017,
+          "line": 7023,
           "kind": "seo"
         },
         {
@@ -45490,7 +45677,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3725,
+          "line": 3754,
           "kind": "seed"
         },
         {
@@ -45641,17 +45828,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 361,
+          "line": 362,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1177,
+          "line": 1182,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7960,
+          "line": 7966,
           "kind": "seo"
         },
         {
@@ -45686,12 +45873,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3567,
+          "line": 3596,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4938,
+          "line": 4967,
           "kind": "seed"
         },
         {
@@ -46033,17 +46220,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 245,
+          "line": 246,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 967,
+          "line": 972,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2944,
+          "line": 2950,
           "kind": "seo"
         },
         {
@@ -46053,7 +46240,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4015,
+          "line": 4044,
           "kind": "seed"
         },
         {
@@ -46531,17 +46718,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 241,
+          "line": 242,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 960,
+          "line": 965,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2908,
+          "line": 2914,
           "kind": "seo"
         },
         {
@@ -46551,7 +46738,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3987,
+          "line": 4016,
           "kind": "seed"
         },
         {
@@ -47039,17 +47226,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 123,
+          "line": 124,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 536,
+          "line": 537,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3015,
+          "line": 3021,
           "kind": "seo"
         },
         {
@@ -47718,17 +47905,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 461,
+          "line": 462,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 905,
+          "line": 910,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7569,
+          "line": 7575,
           "kind": "seo"
         },
         {
@@ -47758,17 +47945,17 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3287,
+          "line": 3316,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3300,
+          "line": 3329,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3352,
+          "line": 3381,
           "kind": "seed"
         },
         {
@@ -47872,7 +48059,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1298,
+          "line": 1304,
           "kind": "seo"
         },
         {
@@ -47897,22 +48084,22 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3305,
+          "line": 3334,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3336,
+          "line": 3365,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3349,
+          "line": 3378,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4934,
+          "line": 4963,
           "kind": "seed"
         },
         {
@@ -48364,17 +48551,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 464,
+          "line": 465,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 909,
+          "line": 914,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7647,
+          "line": 7653,
           "kind": "seo"
         },
         {
@@ -48404,17 +48591,17 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3311,
+          "line": 3340,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3324,
+          "line": 3353,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3375,
+          "line": 3404,
           "kind": "seed"
         },
         {
@@ -48523,7 +48710,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1299,
+          "line": 1305,
           "kind": "seo"
         },
         {
@@ -48548,22 +48735,22 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3329,
+          "line": 3358,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3359,
+          "line": 3388,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3372,
+          "line": 3401,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4934,
+          "line": 4963,
           "kind": "seed"
         },
         {
@@ -49028,17 +49215,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 295,
+          "line": 296,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1103,
+          "line": 1108,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8500,
+          "line": 8506,
           "kind": "seo"
         },
         {
@@ -49063,7 +49250,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4371,
+          "line": 4400,
           "kind": "seed"
         },
         {
@@ -49368,17 +49555,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 437,
+          "line": 438,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1213,
+          "line": 1218,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7256,
+          "line": 7262,
           "kind": "seo"
         },
         {
@@ -49393,7 +49580,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3778,
+          "line": 3807,
           "kind": "seed"
         },
         {
@@ -49524,17 +49711,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 229,
+          "line": 230,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 939,
+          "line": 944,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2748,
+          "line": 2754,
           "kind": "seo"
         },
         {
@@ -49544,7 +49731,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3895,
+          "line": 3924,
           "kind": "seed"
         },
         {
@@ -50051,17 +50238,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 307,
+          "line": 308,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1124,
+          "line": 1129,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8555,
+          "line": 8561,
           "kind": "seo"
         },
         {
@@ -50076,7 +50263,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4463,
+          "line": 4492,
           "kind": "seed"
         },
         {
@@ -50359,27 +50546,27 @@
       "files": [
         {
           "file": "backend/app/data/i18n/indicator_copy_en.py",
-          "line": 972,
+          "line": 977,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/indicator_copy_en.py",
-          "line": 974,
+          "line": 979,
           "kind": "other"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 315,
+          "line": 316,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1138,
+          "line": 1143,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1356,
+          "line": 1362,
           "kind": "seo"
         },
         {
@@ -50399,7 +50586,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4526,
+          "line": 4555,
           "kind": "seed"
         },
         {
@@ -50472,17 +50659,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 441,
+          "line": 442,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1209,
+          "line": 1214,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7177,
+          "line": 7183,
           "kind": "seo"
         },
         {
@@ -50497,7 +50684,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3758,
+          "line": 3787,
           "kind": "seed"
         },
         {
@@ -50650,27 +50837,27 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 467,
+          "line": 468,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 826,
+          "line": 831,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1294,
+          "line": 1300,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1321,
+          "line": 1327,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 7413,
+          "line": 7419,
           "kind": "seo"
         },
         {
@@ -50685,7 +50872,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 209,
+          "line": 213,
           "kind": "derived"
         },
         {
@@ -50770,7 +50957,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5120,
+          "line": 5149,
           "kind": "seed"
         },
         {
@@ -50790,12 +50977,12 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 320,
+          "line": 321,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 322,
+          "line": 323,
           "kind": "tests"
         },
         {
@@ -51009,7 +51196,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1297,
+          "line": 1303,
           "kind": "seo"
         },
         {
@@ -51049,7 +51236,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4935,
+          "line": 4964,
           "kind": "seed"
         },
         {
@@ -51440,7 +51627,7 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1322,
+          "line": 1328,
           "kind": "seo"
         },
         {
@@ -51450,7 +51637,7 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 209,
+          "line": 213,
           "kind": "derived"
         },
         {
@@ -51724,27 +51911,27 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 347,
+          "line": 348,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 632,
+          "line": 633,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1349,
+          "line": 1355,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1351,
+          "line": 1357,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3432,
+          "line": 3438,
           "kind": "seo"
         },
         {
@@ -51884,7 +52071,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4935,
+          "line": 4964,
           "kind": "seed"
         },
         {
@@ -52375,17 +52562,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 744,
+          "line": 745,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1351,
+          "line": 1357,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1353,
+          "line": 1359,
           "kind": "seo"
         },
         {
@@ -52697,17 +52884,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 740,
+          "line": 741,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1350,
+          "line": 1356,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1352,
+          "line": 1358,
           "kind": "seo"
         },
         {
@@ -52970,12 +53157,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 271,
+          "line": 272,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1065,
+          "line": 1070,
           "kind": "seo"
         },
         {
@@ -52995,7 +53182,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4274,
+          "line": 4303,
           "kind": "seed"
         },
         {
@@ -53405,17 +53592,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 253,
+          "line": 254,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1037,
+          "line": 1042,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2459,
+          "line": 2465,
           "kind": "seo"
         },
         {
@@ -53425,7 +53612,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4072,
+          "line": 4101,
           "kind": "seed"
         },
         {
@@ -53450,12 +53637,12 @@
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 234,
+          "line": 249,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 238,
+          "line": 253,
           "kind": "tests"
         },
         {
@@ -53901,12 +54088,12 @@
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 239,
+          "line": 254,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 240,
+          "line": 255,
           "kind": "tests"
         },
         {
@@ -54053,17 +54240,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 120,
+          "line": 121,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 515,
+          "line": 516,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 3716,
+          "line": 3722,
           "kind": "seo"
         },
         {
@@ -54846,17 +55033,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 258,
+          "line": 259,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1044,
+          "line": 1049,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 2518,
+          "line": 2524,
           "kind": "seo"
         },
         {
@@ -54866,7 +55053,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4106,
+          "line": 4135,
           "kind": "seed"
         },
         {
@@ -55448,12 +55635,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1331,
+          "line": 1337,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1338,
+          "line": 1344,
           "kind": "seo"
         },
         {
@@ -55468,27 +55655,27 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 222,
+          "line": 226,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 227,
+          "line": 231,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 233,
+          "line": 237,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 239,
+          "line": 243,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 336,
+          "line": 340,
           "kind": "derived"
         },
         {
@@ -55668,17 +55855,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 445,
+          "line": 446,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 640,
+          "line": 641,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4130,
+          "line": 4136,
           "kind": "seo"
         },
         {
@@ -55748,17 +55935,17 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 200,
+          "line": 204,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 220,
+          "line": 224,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 222,
+          "line": 226,
           "kind": "derived"
         },
         {
@@ -55843,12 +56030,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3218,
+          "line": 3247,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4935,
+          "line": 4964,
           "kind": "seed"
         },
         {
@@ -56142,12 +56329,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1333,
+          "line": 1339,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1340,
+          "line": 1346,
           "kind": "seo"
         },
         {
@@ -56187,17 +56374,17 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 219,
+          "line": 223,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 222,
+          "line": 226,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 336,
+          "line": 340,
           "kind": "derived"
         },
         {
@@ -56388,12 +56575,12 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1334,
+          "line": 1340,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1341,
+          "line": 1347,
           "kind": "seo"
         },
         {
@@ -56616,22 +56803,22 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 357,
+          "line": 358,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 648,
+          "line": 649,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1329,
+          "line": 1335,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 4234,
+          "line": 4240,
           "kind": "seo"
         },
         {
@@ -56661,7 +56848,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4950,
+          "line": 4979,
           "kind": "seed"
         },
         {
@@ -56671,12 +56858,12 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 348,
+          "line": 349,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 354,
+          "line": 355,
           "kind": "tests"
         },
         {
@@ -56881,7 +57068,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 351,
+          "line": 352,
           "kind": "tests"
         },
         {
@@ -56984,22 +57171,22 @@
         },
         {
           "file": "backend/app/data/i18n/indicator_copy_en.py",
-          "line": 967,
+          "line": 972,
           "kind": "other"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 887,
+          "line": 892,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1331,
+          "line": 1337,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1339,
+          "line": 1345,
           "kind": "seo"
         },
         {
@@ -57009,22 +57196,22 @@
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 200,
+          "line": 204,
           "kind": "derived"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
-          "line": 250,
+          "line": 254,
           "kind": "derived"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3206,
+          "line": 3235,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4749,
+          "line": 4778,
           "kind": "seed"
         },
         {
@@ -57034,7 +57221,7 @@
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
-          "line": 111,
+          "line": 112,
           "kind": "tests"
         },
         {
@@ -57100,22 +57287,22 @@
       "files": [
         {
           "file": "backend/app/data/i18n/indicator_copy_en.py",
-          "line": 1015,
+          "line": 1020,
           "kind": "other"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 283,
+          "line": 284,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1088,
+          "line": 1093,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1362,
+          "line": 1368,
           "kind": "seo"
         },
         {
@@ -57130,7 +57317,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4617,
+          "line": 4646,
           "kind": "seed"
         },
         {
@@ -57147,6 +57334,16 @@
           "file": "backend/tests/test_world_russia_rank.py",
           "line": 62,
           "kind": "tests"
+        },
+        {
+          "file": "docs/data_sources.md",
+          "line": 7,
+          "kind": "other"
+        },
+        {
+          "file": "docs/data_sources.md",
+          "line": 388,
+          "kind": "other"
         }
       ]
     },
@@ -57176,22 +57373,22 @@
       "files": [
         {
           "file": "backend/app/data/i18n/indicator_copy_en.py",
-          "line": 1001,
+          "line": 1006,
           "kind": "other"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 279,
+          "line": 280,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1080,
+          "line": 1085,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1361,
+          "line": 1367,
           "kind": "seo"
         },
         {
@@ -57211,7 +57408,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4587,
+          "line": 4616,
           "kind": "seed"
         },
         {
@@ -57257,22 +57454,22 @@
       "files": [
         {
           "file": "backend/app/data/i18n/indicator_copy_en.py",
-          "line": 987,
+          "line": 992,
           "kind": "other"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 275,
+          "line": 276,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1072,
+          "line": 1077,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1360,
+          "line": 1366,
           "kind": "seo"
         },
         {
@@ -57292,7 +57489,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4556,
+          "line": 4585,
           "kind": "seed"
         },
         {
@@ -57376,17 +57573,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 303,
+          "line": 304,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1117,
+          "line": 1122,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 8537,
+          "line": 8543,
           "kind": "seo"
         },
         {
@@ -57401,7 +57598,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4432,
+          "line": 4461,
           "kind": "seed"
         },
         {
@@ -57717,17 +57914,17 @@
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 403,
+          "line": 404,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 1169,
+          "line": 1174,
           "kind": "seo"
         },
         {
           "file": "backend/app/data/indicator_seo.py",
-          "line": 6473,
+          "line": 6479,
           "kind": "seo"
         },
         {
@@ -57752,12 +57949,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3510,
+          "line": 3539,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3519,
+          "line": 3548,
           "kind": "seed"
         },
         {

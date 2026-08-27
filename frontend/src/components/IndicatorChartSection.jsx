@@ -155,6 +155,7 @@ export default function IndicatorChartSection({
   annualForecastResp,
   yoyForecastData,
   qoqForecastData,
+  momForecastData,
   periodMonthlyForecastData,
   periodWeeklyForecastData,
 
@@ -242,9 +243,10 @@ export default function IndicatorChartSection({
       : chartMode === 'weekly' ? null
         : chartMode === 'yoy' ? yoyForecastData
           : chartMode === 'qoq' ? qoqForecastData
-            : chartMode === 'period-weekly' ? periodWeeklyForecastData
-              : chartMode === 'period-monthly' ? periodMonthlyForecastData
-                : displayForecastData;
+            : chartMode === 'mom' ? momForecastData
+              : chartMode === 'period-weekly' ? periodWeeklyForecastData
+                : chartMode === 'period-monthly' ? periodMonthlyForecastData
+                  : displayForecastData;
 
   const handleForecastToggle = () => {
     if (!forecastEnabled) return;

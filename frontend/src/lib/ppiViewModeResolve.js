@@ -80,6 +80,8 @@ export function ppiCanonicalTarget(code) {
   const map = {
     'ppi-yoy': { parentCode: 'ppi', mode: 'yoy' },
     'ppi-annual': { parentCode: 'ppi', mode: 'annual' },
+    'ppi-qoq': { parentCode: 'ppi', mode: 'qoq' },
+    'ppi-mom': { parentCode: 'ppi', mode: 'mom' },
   };
   return map[code] ?? null;
 }

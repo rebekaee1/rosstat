@@ -64,6 +64,13 @@ describe('ppiViewModeGroups', () => {
   it('canonical redirect derived URL → карточка ppi с режимом', () => {
     expect(ppiCanonicalTarget('ppi-yoy')).toEqual({ parentCode: 'ppi', mode: 'yoy' });
     expect(ppiCanonicalTarget('ppi-annual')).toEqual({ parentCode: 'ppi', mode: 'annual' });
+    expect(ppiCanonicalTarget('ppi-qoq')).toEqual({ parentCode: 'ppi', mode: 'qoq' });
+    expect(ppiCanonicalTarget('ppi-mom')).toEqual({ parentCode: 'ppi', mode: 'mom' });
+  });
+
+  it('методология м/м упоминает прогноз (режим М/м прогнозируем)', () => {
+    const { methodology } = getPpiViewModeContent({ chartMode: 'mom', indicator: { code: 'ppi' } });
+    expect(methodology).toMatch(/прогноз/i);
   });
 
   it('контент инфляции за год про производителей, не про жильё', () => {

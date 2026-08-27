@@ -2,7 +2,7 @@
 
 > Генерируется `scripts/build-indicator-index.py`. НЕ редактировать руками. Полная машинная версия — `docs/indicator-index.json`. Подробности по каждому коду (files/derived_siblings) — в JSON.
 
-**Сгенерировано:** 2026-08-23
+**Сгенерировано:** 2026-08-27
 
 ## Как пользоваться (для агента)
 
@@ -24,13 +24,13 @@
 
 ## Сводка
 
-- Всего кодов: **939**
+- Всего кодов: **940**
 - in_both_viewmode_systems (дубль легаси+generic): **14**
 - shadowed_legacy (мёртвая легаси-ветка): **24**
 - unresolved (нет ui_stack): **6**
 - derived_not_seeded: **0**
 
-По стекам: `cpi`=32, `generic`=889, `housing`=8, `null`=6, `ppi`=4
+По стекам: `cpi`=32, `generic`=889, `housing`=8, `null`=6, `ppi`=5
 
 ### Unresolved (ui_stack=null)
 
@@ -747,6 +747,7 @@
 | `population-yoy` | Население | annual | `generic` | derived_from_source | — | — |
 | `ppi` | Цены | monthly | `ppi` | ppi_monthly | ✓ | — |
 | `ppi-annual` | Цены | annual | `ppi` | derived_from_source | — | — |
+| `ppi-mom` | Цены | monthly | `ppi` | derived_from_source | — | — |
 | `ppi-qoq` | Цены | quarterly | `ppi` | derived_from_source | — | — |
 | `ppi-yoy` | Цены | monthly | `ppi` | derived_from_source | — | — |
 | `rd-organizations` | Наука | annual | `generic` | — | ✓ | — |

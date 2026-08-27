@@ -2848,6 +2848,35 @@ INDICATORS = [
         "category": "Цены",
     },
     {
+        "code": "ppi-mom",
+        "name": "ИЦП (изм. м/м)",
+        "name_en": "Producer Price Index MoM",
+        "unit": "%",
+        "frequency": "monthly",
+        "source": "Росстат",
+        "description": "Изменение индекса цен производителей к предыдущему месяцу, в процентах.",
+        "methodology": (
+            "Процентное изменение индекса цен производителей промышленных товаров "
+            "к предыдущему календарному месяцу. Прогноз строится по месячным точкам "
+            "прогноза индекса — так же, как считается фактическое значение режима."
+        ),
+        "parser_type": "derived",
+        "model_config_json": {
+            "forecast_steps": 12,
+            "forecast_strategy": "derived_from_source",
+            "derived_forecast": {
+                "source_code": "ppi",
+                "operation": "pipeline",
+                "pipeline": [
+                    ["mom", {}],
+                ],
+                "model_name": "PPI-MoM-Derived",
+            },
+        },
+        "is_active": True,
+        "category": "Цены",
+    },
+    {
         "code": "ppi-annual",
         "name": "ИЦП годовой (декабрь к декабрю)",
         "name_en": "Producer Price Index Annual",

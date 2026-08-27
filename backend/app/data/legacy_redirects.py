@@ -49,6 +49,11 @@ _BESPOKE_UNLISTED_CANONICAL: dict[str, str] = {
     "unemployment-annual": f"{paths.russia_indicator('unemployment')}?mode=annual",
     "trade-balance-yoy-abs": f"{paths.russia_indicator('trade-balance')}?mode=yoy_abs",
     "current-account-yoy-abs": f"{paths.russia_indicator('current-account')}?mode=yoy_abs",
+    # ИЦП: bespoke-режимы карточки /russia/indicator/ppi?mode=… (ppiViewMode*).
+    "ppi-yoy": f"{paths.russia_indicator('ppi')}?mode=yoy",
+    "ppi-qoq": f"{paths.russia_indicator('ppi')}?mode=qoq",
+    "ppi-mom": f"{paths.russia_indicator('ppi')}?mode=mom",
+    "ppi-annual": f"{paths.russia_indicator('ppi')}?mode=annual",
 }
 
 # Суффиксы sibling-рядов generic-семей: длинные раньше коротких, иначе

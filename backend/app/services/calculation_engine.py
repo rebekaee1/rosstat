@@ -183,6 +183,10 @@ DERIVED_SPECS: list[DerivedSpec] = [
         "ppi-qoq", ("ppi",),
         partial(ops.period_over_period, granularity="quarter", method="last"),
     ),
+    # PPI month-over-month: % к предыдущему календарному месяцу (режим
+    # «К прошлому периоду → М/м» на карточке ИЦП; прогноз — та же op поверх
+    # месячного прогноза базы, как у ppi-qoq).
+    DerivedSpec("ppi-mom", ("ppi",), ops.mom),
     DerivedSpec("housing-yoy-primary", ("housing-price-primary",), ops.yoy),
     DerivedSpec("housing-yoy-secondary", ("housing-price-secondary",), ops.yoy),
     # QoQ жилья — cadence-aware: ранняя история индекса цен годовая (1998-2014),

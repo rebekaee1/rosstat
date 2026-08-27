@@ -26,7 +26,7 @@ LEGACY_DERIVED = {
     "gdp-nominal-annual", "gdp-real-annual",
     "unemployment-quarterly", "unemployment-annual",
     "ipi-yoy",
-    "exports-yoy", "imports-yoy", "ppi-yoy", "ppi-qoq", "wages-yoy",
+    "exports-yoy", "imports-yoy", "ppi-yoy", "ppi-qoq", "ppi-mom", "wages-yoy",
     "exports-qoq", "imports-qoq",
     "current-account-yoy-abs", "trade-balance-yoy-abs",
     "housing-yoy-primary", "housing-yoy-secondary",

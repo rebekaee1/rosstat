@@ -959,6 +959,11 @@ INDICATOR_COPY_EN: dict[str, IndicatorCopyEn] = {
         "methodology": "Quarter-on-quarter change in producer prices.",
         "unit": "%",
     },
+    "ppi-mom": {
+        "name": "Producer price index MoM",
+        "methodology": "Month-on-month change in producer prices.",
+        "unit": "%",
+    },
     "ppi-annual": {
         "name": "Producer price index annual",
         "methodology": "December-to-December change in producer prices.",

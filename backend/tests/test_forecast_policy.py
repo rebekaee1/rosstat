@@ -106,6 +106,7 @@ DERIVED_FROM_SOURCE_FORECAST_CODES = {
     "housing-annual-secondary",
     "ppi-yoy",
     "ppi-qoq",
+    "ppi-mom",
     "ppi-annual",
     "ipi-yoy",
     "wages-yoy",
