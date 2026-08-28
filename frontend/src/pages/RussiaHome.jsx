@@ -4,7 +4,6 @@
  * Единый формат страницы страны (эталон — WorldCountry, слой данных другой —
  * российский каталог через useIndicators): hero с картой территории и
  * обзорными чипами, sticky aside категорий, секции с плитками значений.
- * Главная `/` остаётся витриной платформы; здесь — вход в российский контур.
  */
 import { Suspense, lazy, useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';

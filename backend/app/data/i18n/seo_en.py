@@ -620,9 +620,8 @@ PAGE_META_EN: dict[str, PageSeo] = {
         h1="Russia",
         intro=(
             "The Russia section brings together macroeconomic indicators from official "
-            "sources, regional statistics by federal subject, and the release calendar. "
-            "The platform home page remains the shared entry point; this is the entry "
-            "to Russian Federation data."
+            "sources, regional statistics by federal subject, and the official "
+            "statistics release calendar."
         ),
         keywords=(
             "Russia economy, Russia macroeconomics, Russia statistics, "

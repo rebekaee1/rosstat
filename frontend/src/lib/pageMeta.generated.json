@@ -280,7 +280,7 @@
       "russia": {
         "description": "Russia country card: macroeconomic indicators, categories, regional statistics, release calendar, and a current snapshot.",
         "h1": "Russia",
-        "intro": "The Russia section brings together macroeconomic indicators from official sources, regional statistics by federal subject, and the release calendar. The platform home page remains the shared entry point; this is the entry to Russian Federation data.",
+        "intro": "The Russia section brings together macroeconomic indicators from official sources, regional statistics by federal subject, and the official statistics release calendar.",
         "path": "/russia",
         "slug": "russia",
         "title": "Russia — macroeconomics, regions, and calendar"
@@ -402,7 +402,7 @@
     "russia": {
       "description": "Карточка России: макроэкономические показатели, категории, региональная статистика, календарь публикаций и оперативный срез.",
       "h1": "Россия",
-      "intro": "Раздел России объединяет макроэкономические индикаторы официальных источников, региональную статистику по субъектам и календарь публикаций. Главная страница платформы остаётся общей витриной; здесь — вход в данные РФ.",
+      "intro": "Раздел России объединяет макроэкономические индикаторы официальных источников, региональную статистику по субъектам РФ и календарь публикаций статистики.",
       "path": "/russia",
       "slug": "russia",
       "title": "Россия — макроэкономика, регионы и календарь"
