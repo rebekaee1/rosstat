@@ -243,6 +243,15 @@ async def _persisted_rows(dataset_id: str, provider: str = "eurostat") -> int:
 async def world_eurostat_ingest_job(*, shadow: bool | None = None) -> dict[str, int]:
     """TOC-driven sequential ingest; shadow records delta but never writes data."""
     shadow = settings.world_eurostat_ingest_shadow if shadow is None else shadow
+    # Национальные ряды — быстрые (десятки HTTP-вызовов против тысяч dataset'ов
+    # Eurostat): обновляем их в начале прогона, чтобы часы Eurostat-очереди
+    # не отодвигали свежие точки Канады/Японии/США.
+    try:
+        from app.services.world_national_ingest import run_national_core_ingest
+
+        await run_national_core_ingest()
+    except Exception:  # noqa: BLE001
+        logger.exception("national-core ingest before Eurostat pass failed")
     started_at = datetime.now(timezone.utc).replace(tzinfo=None)
     async with async_session() as db:
         run = WorldIngestRun(

@@ -745,9 +745,11 @@ def test_spa_ssr_gets_platform_deep_links():
     assert 'class="seo-topnav"' in pure
     # chrome уже даёт хабы — platform-nav не дублируем в body
     assert 'class="seo-section seo-platform-nav"' not in pure
-    # Pure-SSR без React-app: SEO видим, нет fe-js hide и нет SPA main bundle.
+    # Pure-SSR без React-app: SEO видим, нет fe-js hide, нет SPA-скриптов и
+    # modulepreload'ов. Стилевой main-*.css остаётся (chrome стилизован им).
     assert 'classList.add("fe-js")' not in pure
-    assert "/assets/main-" not in pure
+    assert 'type="module" src="/assets/main-' not in pure
+    assert "modulepreload" not in pure
 
 
 def test_build_document_og_image_override():

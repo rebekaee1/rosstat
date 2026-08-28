@@ -821,7 +821,7 @@ WORLD_TEMPLATES_EN: dict[str, str] = {
     "indicator_tile_last": "Latest value",
     "indicator_tile_date": "Date",
     "indicator_tile_period": "Period",
-    "indicator_tile_source": "Source",
+    "indicator_tile_source": "Data source",
     "indicator_table_h2": "Latest values",
     "indicator_h2_source": "Data source",
     "indicator_source_p": (
@@ -1382,14 +1382,14 @@ REGIONAL_TEMPLATES_EN: dict[str, str] = {
 # ---------------------------------------------------------------------------
 
 YEAR_TEMPLATES_EN: dict[str, str] = {
-    "title_annual_current": "{name} in {year} — latest annual value",
-    "title_annual": "{name} in {year} — value and dynamics",
-    "title_ytd": "{name} in {year} — year-to-date data",
-    "title_single": "{name} in {year} — value and dynamics",
-    "title_quarterly": "{name} in {year} — quarterly data and totals",
-    "title_weekly": "{name} in {year} — weekly data and totals",
-    "title_daily": "{name} in {year} — daily data and totals",
-    "title_monthly": "{name} in {year} — monthly data and totals",
+    "title_annual_current": "{name} in {country}, {year} — latest annual value",
+    "title_annual": "{name} in {country}, {year} — value and dynamics",
+    "title_ytd": "{name} in {country}, {year} — year-to-date data",
+    "title_single": "{name} in {country}, {year} — value and dynamics",
+    "title_quarterly": "{name} in {country}, {year} — quarterly data and totals",
+    "title_weekly": "{name} in {country}, {year} — weekly data and totals",
+    "title_daily": "{name} in {country}, {year} — daily data and totals",
+    "title_monthly": "{name} in {country}, {year} — monthly data and totals",
     "desc_single": (
         "{name} in {year}{period_note}: {summary_label} — {summary_bit}. "
         "Comparison with the previous year and position in the series history. "

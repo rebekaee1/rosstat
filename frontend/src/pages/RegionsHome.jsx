@@ -442,7 +442,7 @@ export default function RegionsHome() {
   const gifAvailable = !!(activeMapCode && seriesYears && seriesYears.length > 1 && series.data);
 
   return (
-    <div className="mx-auto w-full max-w-7xl overflow-x-hidden px-4 pb-24 pt-24 sm:px-6">
+    <div className="mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
       <div className="mb-8">
         <div className="flex items-center gap-2 text-champagne text-xs font-mono uppercase tracking-widest mb-3">
           <MapPin size={14} />

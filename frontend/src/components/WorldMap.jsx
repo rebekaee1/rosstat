@@ -114,6 +114,7 @@ export default function WorldMap({
   metricName = '',
   periodLabel = '',
   colorMode = 'relative',
+  colorDirection = null,
   defaultScope = 'world',
   onSelect,
 }) {
@@ -180,8 +181,8 @@ export default function WorldMap({
     [features, path],
   );
   const colorModel = useMemo(
-    () => buildWorldColorModel(valuesByCode, { mode: colorMode }),
-    [valuesByCode, colorMode],
+    () => buildWorldColorModel(valuesByCode, { mode: colorMode, direction: colorDirection }),
+    [valuesByCode, colorMode, colorDirection],
   );
   const extent = useMemo(() => valueExtent(valuesByCode), [valuesByCode]);
   const periodFormat = useMemo(
@@ -577,14 +578,17 @@ export function CountrySilhouette({
   const history = historyStart
     ? `${String(historyStart).slice(0, 4)}–${String(historyEnd || historyStart).slice(0, 4)}`
     : '';
-  const frequencyLabel = frequencies
-    .map((frequency) => {
-      const key = `world.freq.${frequency}`;
+  // Одна метка вместо перечисления: самая короткая доступная частота —
+  // «день» покрывает и «неделю», и «месяц» читателя (более мелкая шагает чаще).
+  const FREQUENCY_PRIORITY = ['daily', 'weekly', 'monthly', 'quarterly', 'annual'];
+  const topFrequency = FREQUENCY_PRIORITY.find((f) => frequencies.includes(f));
+  const frequencyLabel = topFrequency
+    ? (() => {
+      const key = `world.freq.long.${topFrequency}`;
       const label = t(key);
-      return label !== key ? label : frequency;
-    })
-    .filter(Boolean)
-    .join(', ');
+      return label !== key ? label : topFrequency;
+    })()
+    : '';
   const areaUnitRaw = (area?.unit || '').trim();
   const areaUnit = (!areaUnitRaw || areaUnitRaw === 'км²' || areaUnitRaw === 'km²' || areaUnitRaw === 'км2')
     ? t('world.unit.km2')
@@ -645,13 +649,13 @@ export function CountrySilhouette({
       {hasFacts && (
         <div className="pointer-events-none absolute inset-y-0 left-0 z-[5] w-[52%] bg-gradient-to-r from-[#191A20] via-[#191A20]/92 to-transparent" />
       )}
-      <div className="absolute left-4 top-3 z-10 max-w-[48%]">
+      <div className="absolute left-4 top-3 z-10 max-w-[52%] pr-2">
         <div className="text-[9px] font-mono uppercase tracking-[0.2em] text-white/45">
           {t('world.territory.profile')}
         </div>
         {region && <div className="mt-1 text-[10px] text-[#d8c58b]">{region}</div>}
         {(areaValue || populationValue) && (
-          <div className="mt-2 space-y-1.5">
+          <div className="mt-2 space-y-1 sm:space-y-1.5">
             {areaValue && (
               <div>
                 <div className="text-[9px] font-mono uppercase tracking-[0.16em] text-white/40">
@@ -716,8 +720,8 @@ export function CountrySilhouette({
           style={{ filter: 'drop-shadow(0 12px 18px rgba(0,0,0,0.28))' }}
         />
       </svg>
-      <div className="absolute bottom-3 left-4 right-4 z-10 flex items-end justify-between gap-3 border-t border-white/10 pt-3">
-        <div>
+      <div className="absolute bottom-3 left-4 right-4 z-10 flex items-start justify-between gap-x-2 gap-y-1 border-t border-white/10 pt-3 sm:items-end sm:gap-3">
+        <div className="min-w-0">
           <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/50">{code}</div>
           <div className="mt-0.5 max-w-[11rem] truncate text-xs font-medium text-white/90">{name}</div>
         </div>

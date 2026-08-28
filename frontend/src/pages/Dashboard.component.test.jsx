@@ -41,7 +41,7 @@ const INDICATORS = [
 ];
 
 describe('Dashboard', () => {
-  it('собирает hero, мировые рынки, витрину стран, покрытие и каталог стран', async () => {
+  it('собирает hero с составом платформы, витрину стран, покрытие и каталог стран', async () => {
     mockApiGet([
       ['/auth/me', { user: null }],
       ['/dashboard/sparklines', {}],
@@ -63,7 +63,12 @@ describe('Dashboard', () => {
     expect(h1.textContent).toBe(
       'Официальные макроэкономические индикаторы в одной рабочей среде',
     );
-    expect(screen.getByText('Мировые рынки')).toBeTruthy();
+    // Карта России и поиск сняты с hero (переехали на /russia и в navbar).
+    expect(screen.queryByLabelText('Россия')).toBeNull();
+    expect(screen.queryByPlaceholderText(/Найти показатель/)).toBeNull();
+    // Вместо них — блок состава платформы.
+    expect(screen.getByRole('heading', { name: 'Что внутри платформы' })).toBeTruthy();
+    expect(screen.getByText('489')).toBeTruthy();
     expect(screen.getByRole('heading', { name: 'Страны и показатели' })).toBeTruthy();
     expect(screen.getByRole('heading', { name: 'Сколько данных доступно' })).toBeTruthy();
     expect(await screen.findByRole('heading', { name: 'Страны' })).toBeTruthy();

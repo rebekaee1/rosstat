@@ -44,13 +44,28 @@ const BANNED = [
   /скачиван\w*\s+без\s+регистрац/i,
 ];
 
+/**
+ * Квантифицированное покрытие витрины главной: «56» + «стран мира» в
+ * home.scope.stat.* — официальный факт, а не устаревшее обещание «весь мир».
+ * Число и подпись — соседние ключи i18n, поэтому строка подписи исключена
+ * из скана явно, а не правкой формулировки.
+ */
+const QUANTIFIED_LINE = /'home\.scope\.stat\./;
+
+function stripQuantifiedLines(text) {
+  return text
+    .split('\n')
+    .filter((line) => !QUANTIFIED_LINE.test(line))
+    .join('\n');
+}
+
 function read(rel) {
   return readFileSync(resolve(ROOT, rel), 'utf8');
 }
 
 describe('public product claims', () => {
   it.each(SURFACES)('%s без устаревших product-claims', (rel) => {
-    const text = read(rel);
+    const text = stripQuantifiedLines(read(rel));
     for (const re of BANNED) {
       expect(text, `${rel} matches ${re}`).not.toMatch(re);
     }

@@ -26,7 +26,7 @@ from app.data.region_indicator_polarity import (
     region_rating_is_achievement,
     region_rating_order_by,
 )
-from app.models import Region, RegionDataPoint, RegionIndicator
+from app.models import Region, RegionDataPoint, RegionIndicator, RegionMonthlyPoint
 from app.services import breadcrumbs as crumbs
 from app.services import site_paths as paths
 from app.services.seo_i18n import (
@@ -52,6 +52,12 @@ MACRO_BY_TABLE = {
     "20.1": "cpi",
     "8.1": "gdp-nominal",
     "10.1": "capital-investment",
+    # Помесячные цены на топливо (раздел 16) → федеральные карточки ЦБ Росстата
+    # (fuel-ai92/ai95/diesel); годовые опт/розница 16.23–16.25 — без моста:
+    # федерального аналога той же методологии нет.
+    "16.20": "fuel-ai92",
+    "16.21": "fuel-ai95",
+    "16.22": "fuel-diesel",
 }
 
 _REGIONS_TITLE = "Регионы России — социально-экономические показатели 85 субъектов РФ"
@@ -761,8 +767,10 @@ async def render_region_rating_html(code: str, db: AsyncSession) -> tuple[int, s
         f"{copy['desc_best'].lower()} — {top[0][1]} ({_vu(top[0][2])})"
     )
     figure_html = (
-        f'<figure class="seo-chart"><img src="{escape(og_path)}" alt="{escape(rating_alt)}" '
-        f'width="1200" height="630" loading="eager">'
+        f'<figure class="seo-chart"><a class="seo-chart-link" '
+        f'href="{escape(paths.region_rating(code))}#chart">'
+        f'<img src="{escape(og_path)}" alt="{escape(rating_alt)}" '
+        f'width="1200" height="630" loading="eager"></a>'
         f"<figcaption>{escape(ind_name)}: {escape(copy['figcaption'])}, {escape(year_label)}. "
         f"Источник: Росстат. forecasteconomy.com</figcaption></figure>"
     )
@@ -1075,8 +1083,10 @@ async def render_regions_map_html(
         f"Источник: Росстат. forecasteconomy.com"
     )
     figure_html = (
-        f'<figure class="seo-chart"><img src="{escape(og_path)}" alt="{escape(map_alt)}" '
-        f'width="1200" height="630" loading="eager">'
+        f'<figure class="seo-chart"><a class="seo-chart-link" '
+        f'href="{escape(paths.region_map(code))}#chart">'
+        f'<img src="{escape(og_path)}" alt="{escape(map_alt)}" '
+        f'width="1200" height="630" loading="eager"></a>'
         f"<figcaption>{escape(caption)}</figcaption></figure>"
     )
 
@@ -1209,6 +1219,349 @@ async def render_regions_map_html(
     return 200, html
 
 
+_MONTH_NAMES_GEN = (
+    "января", "февраля", "марта", "апреля", "мая", "июня",
+    "июля", "августа", "сентября", "октября", "ноября", "декабря",
+)
+
+
+def _month_label(month_int: int) -> str:
+    """YYYYMM → «май 2012» (для осей, таблиц, alt)."""
+    return f"{_MONTH_NAMES_GEN[month_int % 100 - 1]} {month_int // 100}"
+
+
+async def _render_region_indicator_monthly(
+    slug: str,
+    code: str,
+    region: Region,
+    indicator: RegionIndicator,
+    rows: list,
+    db: AsyncSession,
+) -> tuple[int, str]:
+    """SSR-карточка месячного показателя региона (цены на топливо, ЕМИСС).
+
+    Годовой рендер строит тексты вокруг «года»: контрольные годы, рейтинг по
+    последнему году, «за пять лет». Для месячного ряда своя аналогичная
+    обвязка: последний месяц, изменение к предыдущему месяцу и к тому же
+    месяцу прошлого года, полная таблица по месяцам. Рейтинг по цене региона
+    не строится — уровень цены зависит от структуры рынка и логистики,
+    «место в рейтинге цен» вводило бы в заблуждение.
+    """
+    series = [(int(m), float(v)) for m, v in rows]
+    first_period, first_value = series[0]
+    last_period, last_value = series[-1]
+    first_year = first_period // 100
+    last_year = last_period // 100
+    by_period = dict(series)
+    prev_value = series[-2][1] if len(series) > 1 else None
+    year_ago_value = by_period.get(last_period - 100)
+
+    region_name = _rname(region.slug, region.name)
+    icopy = _icopy(indicator)
+    ind_name = icopy["name"] or indicator.name
+    unit_loc = icopy["unit"] or (indicator.unit or "")
+    section_name = icopy["section"] or indicator.section_name
+
+    rf = None if region.slug == "russia" else await _region(db, "russia")
+    rf_last = None
+    if rf:
+        rf_last = (await db.execute(
+            select(RegionMonthlyPoint.value)
+            .where(RegionMonthlyPoint.indicator_id == indicator.id,
+                   RegionMonthlyPoint.region_id == rf.id,
+                   RegionMonthlyPoint.month == last_period)
+        )).scalar_one_or_none()
+
+    unit = unit_loc
+    unit_sfx = f" {escape(unit)}" if unit else ""
+    last_label = _month_label(last_period)
+    first_label = _month_label(first_period)
+
+    paragraphs = []
+    p1 = (
+        f"{escape(ind_name)} в регионе {escape(region_name)} "
+        f"в {escape(last_label)}: {_fmt(last_value)}{unit_sfx}."
+    )
+    mom = _pct(last_value, prev_value)
+    if mom:
+        p1 += f" К предыдущему месяцу показатель {mom}."
+    yoy = _pct(last_value, year_ago_value)
+    if yoy:
+        yoy_label = _month_label(last_period - 100)
+        p1 += f" К {escape(yoy_label)} — {yoy}."
+    paragraphs.append(p1)
+
+    p2 = (
+        f"Наблюдение ведётся с {escape(first_label)} — данные публикуются ежемесячно. "
+        f"Это средние потребительские цены отчётного месяца, а не котировка конкретной заправки."
+    )
+    paragraphs.append(p2)
+
+    if rf_last is not None:
+        if abs(last_value - float(rf_last)) / (abs(float(rf_last)) or 1) < 0.005:
+            rel = "на уровне"
+        elif last_value > float(rf_last):
+            rel = "выше"
+        else:
+            rel = "ниже"
+        p3 = (
+            f"Среднероссийская цена в {escape(last_label)} — "
+            f"{_fmt(float(rf_last))}{unit_sfx}: регион {rel} среднего по стране. "
+            f"Региональные цены различаются из-за логистики, структуры сети "
+            f"продаж и локальных акцизов и сборов."
+        )
+        paragraphs.append(p3)
+
+    values_desc = [v for _p, v in series]
+    vmax = max(values_desc)
+    vmin = min(values_desc)
+    p_at = series[values_desc.index(vmax)][0]
+    n_at = series[values_desc.index(vmin)][0]
+    paragraphs.append(
+        f"Максимум за весь период наблюдений — {_fmt(vmax)}{unit_sfx} "
+        f"({escape(_month_label(p_at))}), минимум — {_fmt(vmin)}{unit_sfx} "
+        f"({escape(_month_label(n_at))})."
+    )
+    paragraphs_html = "".join(f"<p>{p}</p>" for p in paragraphs)
+
+    # контрольные точки: январь каждого пятого года + последний месяц
+    checkpoint_periods = [
+        y * 100 + 1 for y in range(first_year, last_year, 5) if y * 100 + 1 in by_period
+    ]
+    checkpoints_html = ""
+    if len(checkpoint_periods) >= 3:
+        cp_items = "".join(
+            f"<li>{escape(_month_label(p))} — {_fmt(by_period[p])}{unit_sfx}</li>"
+            for p in checkpoint_periods
+        )
+        cp_items += (
+            f"<li>{escape(last_label)} — {_fmt(last_value)}{unit_sfx}</li>"
+        )
+        cp_h2 = f"{escape(ind_name)} в регионе {escape(region_name)} по контрольным месяцам"
+        checkpoints_html = (
+            f'<section class="seo-section"><h2>{cp_h2}</h2>'
+            f"<ul>{cp_items}</ul></section>"
+        )
+
+    faq: list[tuple[str, str]] = [
+        (
+            f"Какая цена на «{ind_name.split(',')[0].lower()}» в регионе {region_name}?",
+            f"В {last_label} — {_fmt(last_value)}{unit}. "
+            f"Это средняя потребительская цена по данным Росстата (ЕМИСС).",
+        ),
+        (
+            "Как изменилась цена за последний месяц?",
+            (
+                f"С {escape(_month_label(last_period - 100))} по {escape(last_label)} "
+                f"показатель {mom}."
+                if mom else
+                f"К предыдущему месяцу значение почти не изменилось."
+            ),
+        ),
+        (
+            "Откуда взяты данные и как часто они обновляются?",
+            "Источник — система показателей Росстата (ЕМИСС), средние "
+            "потребительские цены на топливо по субъектам РФ. Данные месячные, "
+            "обновляются ежемесячно после очередной публикации.",
+        ),
+    ]
+    faq_h2 = "Вопросы и ответы"
+    faq_html = (
+        f'<section class="seo-section"><h2>{escape(faq_h2)}</h2>'
+        + "".join(f"<h3>{escape(q)}</h3><p>{escape(a)}</p>" for q, a in faq)
+        + "</section>"
+    )
+    faq_json_ld = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": q,
+                "acceptedAnswer": {"@type": "Answer", "text": a},
+            }
+            for q, a in faq
+        ],
+    }
+
+    # соседи по округу
+    district_html = ""
+    if region.kind == "region" and region.district_slug:
+        neighbors = (await db.execute(
+            select(Region.slug, Region.name)
+            .where(Region.district_slug == region.district_slug,
+                   Region.kind == "region",
+                   Region.slug != region.slug)
+            .order_by(Region.sort_order)
+        )).all()
+        neighbor_periods = []
+        if neighbors:
+            n_slugs = [s for s, _n in neighbors]
+            n_ids = dict((await db.execute(
+                select(Region.slug, Region.id).where(Region.slug.in_(n_slugs))
+            )).all())
+            nb_rows = (await db.execute(
+                select(RegionMonthlyPoint.region_id, RegionMonthlyPoint.value)
+                .where(RegionMonthlyPoint.indicator_id == indicator.id,
+                       RegionMonthlyPoint.region_id.in_(set(n_ids.values())),
+                       RegionMonthlyPoint.month == last_period)
+            )).all()
+            nb_by_slug = {n_ids[rid]: v for rid, v in nb_rows if rid in n_ids}
+            neighbor_periods = [
+                (s, n, nb_by_slug.get(s)) for s, n in neighbors if s in nb_by_slug
+            ]
+        if neighbor_periods:
+            items = "".join(
+                f'<li><a href="{escape(paths.region_indicator(s, code))}">'
+                f"{escape(ind_name)} — {escape(_rname(s, n))}: "
+                f"{_fmt(v)}{unit_sfx}</a></li>"
+                for s, n, v in neighbor_periods
+            )
+            n_h2 = "Этот показатель у соседей по округу"
+            district_html = (
+                f'<section class="seo-section"><h2>{escape(n_h2)}</h2>'
+                f"<ul>{items}</ul></section>"
+            )
+
+    # таблица по месяцам (полная — 283 строки, помещается в скролл)
+    table_h2 = f"{ind_name} по месяцам"
+    th_month = "Месяц"
+    th_value = unit or "Значение"
+    table_rows = "".join(
+        f"<tr><td>{escape(_month_label(p))}</td><td>{_fmt(v)}</td></tr>"
+        for p, v in reversed(series)
+    )
+    table_html = (
+        f"<h2>{escape(table_h2)}</h2>"
+        f"<table><thead><tr><th>{escape(th_month)}</th>"
+        f"<th>{escape(th_value)}</th></tr></thead>"
+        f"<tbody>{table_rows}</tbody></table>"
+    )
+
+    og_path = paths.og_region(slug, code)
+    alt = (
+        f"{ind_name} — {region_name}: график динамики, "
+        f"{first_label} — {last_label}, последнее значение "
+        f"{_fmt(last_value)} {unit}"
+    )
+    caption = (
+        f"{ind_name} в регионе {region_name}, {first_year}–{last_year}. "
+        f"Источник: Росстат (ЕМИСС)."
+    )
+    figure_html = (
+        f'<figure class="seo-chart"><a class="seo-chart-link" '
+        f'href="{escape(paths.region_indicator(slug, code))}#chart">'
+        f'<img src="{escape(og_path)}" alt="{escape(alt)}" '
+        f'width="1200" height="630" loading="eager"></a>'
+        f"<figcaption>{escape(caption)}</figcaption></figure>"
+    )
+
+    siblings = (await db.execute(
+        select(RegionIndicator)
+        .where(RegionIndicator.section_num == indicator.section_num,
+               RegionIndicator.code != indicator.code,
+               RegionIndicator.is_listed.is_(True))
+        .order_by(RegionIndicator.code)
+        .limit(10)
+    )).scalars().all()
+    siblings_html = ""
+    if siblings:
+        items = "".join(
+            f'<li><a href="{escape(paths.region_indicator(slug, sib.code))}">'
+            f'{escape(_icopy(sib)["name"] or sib.name)}</a></li>'
+            for sib in siblings
+        )
+        sib_h2 = f"Ещё в разделе «{section_name}»"
+        siblings_html = (
+            f'<section class="seo-section"><h2>{escape(sib_h2)}</h2>'
+            f"<ul>{items}</ul></section>"
+        )
+
+    title = (
+        f"{ind_name} — {region_name}: {_fmt(last_value)} "
+        f"{unit} ({last_label})"
+    ).strip()
+    desc = (
+        f"{ind_name} в регионе {region_name}: {_fmt(last_value)} {unit} "
+        f"в {last_label}. Динамика с {first_year} года, график и таблица "
+        f"по месяцам, сравнение со среднероссийской ценой. "
+        f"Данные Росстата, обновление ежемесячное."
+    )
+
+    json_ld = [
+        _breadcrumbs(crumbs.region_indicator_trail(
+            region_name, paths.region(slug), ind_name,
+            paths.region_indicator(slug, code),
+        )),
+        faq_json_ld,
+        {
+            "@context": "https://schema.org",
+            "@type": "Dataset",
+            "name": f"{ind_name} — {region_name}",
+            "description": (
+                f"{ind_name} ({unit}), {region_name}, "
+                f"{first_year}–{last_year}, помесячно. Источник: Росстат (ЕМИСС)."
+            ),
+            "url": _absolute(paths.region_indicator(slug, code)),
+            "temporalCoverage": f"{first_year}/{last_year}",
+            "spatialCoverage": region_name,
+            "creator": {"@type": "Organization", "name": "Росстат"},
+            "license": "https://creativecommons.org/licenses/by/4.0/",
+            "image": _absolute(og_path),
+        },
+        {
+            "@context": "https://schema.org",
+            "@type": "ImageObject",
+            "contentUrl": _absolute(og_path),
+            "url": _absolute(og_path),
+            "width": 1200,
+            "height": 630,
+            "name": f"{ind_name} — {region_name}: график",
+            "caption": alt,
+            "representativeOfPage": True,
+        },
+    ]
+
+    h1 = f"{ind_name} — {region_name}"
+    source_h2 = "Источник данных"
+    source_p = (
+        f"Система показателей Росстата (ЕМИСС), средние потребительские цены. "
+        f"Значения приведены в единицах: {unit or 'единицы источника'}. "
+        f"Период наблюдений: {first_label} — {last_label}, обновление ежемесячное."
+    )
+    body = f"""<div class="seo-page">
+{_breadcrumbs_nav(crumbs.region_indicator_trail(
+    region_name, paths.region(slug), ind_name,
+    paths.region_indicator(slug, code),
+))}
+<p class="seo-eyebrow">{escape(section_name)} — {escape(region_name)}</p>
+<h1>{escape(h1)}</h1>
+{figure_html}
+{paragraphs_html}
+{checkpoints_html}
+{table_html}
+{faq_html}
+{district_html}
+{siblings_html}
+<section class="seo-section"><h2>{escape(source_h2)}</h2>
+<p>{escape(source_p)}</p></section>
+</div>"""
+
+    html = await build_document(
+        title=title,
+        description=desc,
+        canonical_path=paths.region_indicator(slug, code),
+        body=body,
+        json_ld=json_ld,
+        keywords=(
+            f"{ind_name} {region_name}, {region_name} цены на топливо, "
+            f"{ind_name} по месяцам, {region_name} бензин цена, статистика"
+        ),
+        og_image=_absolute(og_path),
+    )
+    return 200, html
+
+
 async def render_region_indicator_html(
     slug: str, code: str, db: AsyncSession
 ) -> tuple[int, str]:
@@ -1220,6 +1573,19 @@ async def render_region_indicator_html(
     )).scalar_one_or_none()
     if indicator is None:
         return 404, "<h1>Показатель не найден</h1>"
+
+    # Частота ряда: месячные витрины (цены на топливо) живут в
+    # region_monthly_data, годовые — в region_data. У показателя обычно
+    # заполнена только одна из двух таблиц.
+    monthly_rows = (await db.execute(
+        select(RegionMonthlyPoint.month, RegionMonthlyPoint.value)
+        .where(RegionMonthlyPoint.indicator_id == indicator.id,
+               RegionMonthlyPoint.region_id == region.id)
+        .order_by(RegionMonthlyPoint.month)
+    )).all()
+
+    if monthly_rows:
+        return await _render_region_indicator_monthly(slug, code, region, indicator, monthly_rows, db)
 
     rows = (await db.execute(
         select(RegionDataPoint.year, RegionDataPoint.value)
@@ -1532,8 +1898,10 @@ async def render_region_indicator_html(
         indicator=ind_name, region=region_name, first=first_year, last=last_year,
     )
     figure_html = (
-        f'<figure class="seo-chart"><img src="{escape(og_path)}" alt="{escape(alt)}" '
-        f'width="1200" height="630" loading="eager">'
+        f'<figure class="seo-chart"><a class="seo-chart-link" '
+        f'href="{escape(paths.region_indicator(slug, code))}#chart">'
+        f'<img src="{escape(og_path)}" alt="{escape(alt)}" '
+        f'width="1200" height="630" loading="eager"></a>'
         f"<figcaption>{escape(caption)}</figcaption></figure>"
     )
 

@@ -18,6 +18,7 @@ from app.data.eurostat_titles_ru import (
     build_public_name,
     compose_title,
     is_listed_for_quality,
+    resolve_dataset_title,
 )
 
 
@@ -154,6 +155,34 @@ def test_build_public_name_distinguishes_measures():
     assert "помесячно" not in yoy
     assert "Счёт текущих операций" in compose_title("", "teibp010").name_ru
     assert "Россия" not in compose_title("", "teibp010").name_ru
+
+
+def test_house_price_index_names_mark_reference_base():
+    """M3: два индекса цен на жильё (prc_hpi 2015=100 vs ei_hppi 2025=100).
+
+    Разные стемы не склеиваются штатно; curated-имя обязано маркировать
+    базу, чтобы экономист различал ряды в каталоге/поиске без открытия карточки.
+    """
+    for ds, unit, base in (
+        ("prc_hpi_q", "I15_Q", "2015"),
+        ("prc_hpi_a", "I15_A_AVG", "2015"),
+        ("ei_hppi_q", "I25_NSA", "2025"),
+    ):
+        title = resolve_dataset_title(ds, "")
+        assert title.quality == "curated", ds
+        name = build_public_name(title.name_ru, unit=unit, dataset_id=ds)
+        assert f"база {base} = 100" in name, (ds, name)
+
+    q = build_public_name(
+        "Индекс цен на жильё (база 2015 = 100)", unit="I15_Q", dataset_id="prc_hpi_q"
+    )
+    nsa = build_public_name(
+        "Индекс цен на жильё (база 2025 = 100)", unit="I25_NSA", dataset_id="ei_hppi_q"
+    )
+    assert q != nsa
+    # база из имени не дублируется unit-фразой вторым вхождением
+    assert q.count("2015") == 1, q
+    assert nsa.count("2025") == 1, nsa
 
 
 def test_public_texts_name_country_not_template():
@@ -741,7 +770,9 @@ def test_world_compare_contract_and_snapshot(world_client):
     assert map_series.status_code == 200
     map_payload = map_series.json()
     assert map_payload["concept"]["value_mode"] == "yoy"
-    assert map_payload["years"] == [2025, 2026]
+    # hicp-index — поточный концепт: незакрывшийся 2026-й (точка 2026-06)
+    # в годовые корзины рейтинга не попадает, даже если точка есть.
+    assert map_payload["years"] == [2025]
     assert map_payload["values_by_year"]["2025"]["DE"]["value"] == 11.43
     assert map_payload["values_by_year"]["2025"]["DE"]["date"] == "2025-06-01"
     # FR: 2025-01 YoY (103/99-1)*100 = 4.04; в 2025 нет пары для июня.

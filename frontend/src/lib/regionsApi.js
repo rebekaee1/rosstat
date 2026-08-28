@@ -56,6 +56,18 @@ export function useRegionIndicator(slug, code) {
   });
 }
 
+/** Помесячный ряд (цены на топливо и будущие месячные витрины). */
+export function useRegionIndicatorMonthly(slug, code, enabled = true) {
+  return useQuery({
+    queryKey: ['region-indicator-monthly', slug, code, localeKey()],
+    queryFn: ({ signal }) =>
+      api.get(`/regions/${slug}/i/${code}/monthly`, { signal }).then(r => r.data),
+    enabled: !!slug && !!code && enabled,
+    staleTime: STALE,
+    gcTime: GC,
+  });
+}
+
 /** Значения показателя по всем регионам за последний год — для карты. */
 export function useRegionsHeatmap(code, enabled = true) {
   return useQuery({

@@ -500,6 +500,45 @@ async def lifespan(app: FastAPI):
             replace_existing=True,
         )
 
+        # Помесячные региональные витрины ЕМИСС (цены на топливо, ADR-0008):
+        # Росстат публикует цены за отчётный месяц в середине следующего —
+        # 25-е число даёт запас на дозалив и ревизии задним числом.
+        from app.tasks.scheduler import emiss_regional_job as _emiss_regional
+
+        scheduler.add_job(
+            locked_job(_emiss_regional, "emiss_regional", ttl_seconds=2 * 3600),
+            trigger=CronTrigger(hour=7, minute=40, day=25, timezone="Europe/Moscow"),
+            id="emiss_regional",
+            name="Monthly EMISS regional fuel prices (region_monthly_data)",
+            replace_existing=True,
+            max_instances=1,
+            coalesce=True,
+        )
+
+        # World: национальные паспорта (19 официальных источников, ~90 рядов)
+        # обновляются ежедневно — данные пишут сразу, контур проверен живыми
+        # прогонами. Eurostat-часть (TOC-driven, часы работы) остаётся
+        # shadow до двух успешных прогонов и включается отдельным флагом.
+        from app.services.world_national_ingest import run_national_core_ingest
+
+        scheduler.add_job(
+            locked_job(
+                run_national_core_ingest,
+                "world_national_core",
+                ttl_seconds=3 * 3600,
+            ),
+            trigger=CronTrigger(
+                hour=settings.world_eurostat_ingest_hour,
+                minute=10,
+                timezone="Europe/Moscow",
+            ),
+            id="world_national_core",
+            name="World national-core ingest (19 providers)",
+            replace_existing=True,
+            max_instances=1,
+            coalesce=True,
+        )
+
         # World Eurostat — отдельный TOC-driven контур, по умолчанию выключен.
         # В shadow режиме журналирует changed-set без записи data points.
         if settings.world_eurostat_ingest_enabled:
@@ -826,23 +865,39 @@ class LocaleMiddleware(BaseHTTPMiddleware):
 
     async def dispatch(self, request: Request, call_next):
         from app.services.locale import (
+            LOCALE_HEADER,
+            PREVIEW_QUERY,
+            _normalize_locale_token,
+            preview_locale_from_referer,
+            reset_locale,
+            reset_preview_locale,
+            reset_request_origin,
             resolve_locale_from_request,
             resolve_request_origin,
-            reset_locale,
-            reset_request_origin,
             set_locale,
+            set_preview_locale,
             set_request_origin,
         )
 
         host = request.headers.get("x-forwarded-host") or request.headers.get("host")
+        header = request.headers.get(LOCALE_HEADER)
         locale = resolve_locale_from_request(request)
+        # Preview только когда явный override запроса совпал с активной локалью:
+        # иначе обычный трафик на gated-apex был бы помечен как preview.
+        explicit = (
+            _normalize_locale_token(request.query_params.get(PREVIEW_QUERY))
+            or _normalize_locale_token(preview_locale_from_referer(request.headers.get("referer")))
+            or _normalize_locale_token(header)
+        )
         token = set_locale(locale)
         origin_token = set_request_origin(resolve_request_origin(host))
+        preview_token = set_preview_locale(bool(explicit) and explicit == locale)
         try:
             response = await call_next(request)
             response.headers.setdefault("Content-Language", locale)
             return response
         finally:
+            reset_preview_locale(preview_token)
             reset_request_origin(origin_token)
             reset_locale(token)
 

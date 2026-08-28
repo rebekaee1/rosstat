@@ -194,6 +194,34 @@ def reset_locale(token) -> None:
     _locale_var.reset(token)
 
 
+_is_preview: ContextVar[bool] = ContextVar("fe_preview_locale", default=False)
+
+
+def is_preview_locale() -> bool:
+    """True when this request renders a preview locale (``?preview_locale=``).
+
+    Preview EN до кутовера — временная поверхность: боты не должны её
+    индексировать (head получает ``noindex,follow`` в build_document).
+    """
+    return _is_preview.get()
+
+
+def preview_enabled_for_locale(preview: str | None) -> bool:
+    """Разрешён ли preview-режим: только пока apex не перешёл на EN."""
+    if _normalize_locale_token(preview) is None:
+        return False
+    return not apex_locale_en_enabled()
+
+
+def set_preview_locale(value: bool):
+    """Bind the preview flag for the current async task. Returns token."""
+    return _is_preview.set(bool(value))
+
+
+def reset_preview_locale(token) -> None:
+    _is_preview.reset(token)
+
+
 def html_lang(locale: Locale | None = None) -> str:
     loc = locale or get_locale()
     return "en" if loc == "en" else "ru"

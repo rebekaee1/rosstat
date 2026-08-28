@@ -216,11 +216,19 @@ def _category_label(category_ru: str | None, *, fallback: str | None = None) -> 
 
 
 def _pick_card_primaries(inds: list[WorldIndicator]) -> list[WorldIndicator]:
-    """Одна карточка на card_key: только primary частоты."""
-    from app.data.eurostat_listing import card_key
+    """Одна карточка на catalog_merge_key: primary частоты, primary мера.
 
-    buckets: dict[tuple, list[WorldIndicator]] = {}
-    order: list[tuple] = []
+    Первый проход — card_key (primary частот в мере), затем слияние мер
+    одного смысла по merge-ключу с предпочтением «уровень > % > прочее» —
+    в синхроне с country_detail.
+    """
+    from app.data.eurostat_listing import (
+        card_key,
+        catalog_merge_key,
+        measure_preference_rank,
+    )
+
+    freq_buckets: dict[tuple, list[WorldIndicator]] = {}
     for ind in inds:
         key = card_key(
             country_id=ind.country_id,
@@ -229,15 +237,30 @@ def _pick_card_primaries(inds: list[WorldIndicator]) -> list[WorldIndicator]:
             unit_ru=ind.unit_ru,
             slice_json=ind.slice_json,
         )
-        if key not in buckets:
-            buckets[key] = []
-            order.append(key)
-        buckets[key].append(ind)
-    out: list[WorldIndicator] = []
-    for key in order:
-        members = buckets[key]
-        out.append(min(members, key=world_card_primary_rank))
-    return out
+        freq_buckets.setdefault(key, []).append(ind)
+    freq_primaries = [
+        min(members, key=world_card_primary_rank)
+        for members in freq_buckets.values()
+    ]
+
+    merged: dict[tuple, list[WorldIndicator]] = {}
+    order: list[tuple] = []
+    for ind in freq_primaries:
+        mkey = catalog_merge_key(
+            country_id=ind.country_id,
+            provider=getattr(ind, "provider", None),
+            dataset_id=ind.dataset_id,
+            unit=ind.unit,
+            unit_ru=ind.unit_ru,
+            slice_json=ind.slice_json,
+        )
+        if mkey not in merged:
+            order.append(mkey)
+        merged.setdefault(mkey, []).append(ind)
+    return [
+        min(merged[mkey], key=measure_preference_rank)
+        for mkey in order
+    ]
 
 
 _FREQ_LINK_LABEL_RU = {
@@ -359,6 +382,8 @@ _SOURCE_BY_PROVIDER: dict[str, str] = {
     "mospi": "Министерство статистики и программной реализации Индии",
     "rbi": "Резервный банк Индии",
     "imf": "Международный валютный фонд",
+    "census": "Бюро переписи населения США",
+    "ibge": "Бразильский институт географии и статистики (IBGE)",
 }
 
 
@@ -414,6 +439,105 @@ def _join_sources(labels: list[str]) -> str:
     if len(uniq) == 2:
         return f"{uniq[0]}{conj}{uniq[1]}"
     return f"{', '.join(uniq[:-1])}{conj}{uniq[-1]}"
+
+
+# Официальные сайты ведомств (веб-поиск подтверждает актуальность):
+# по одному адресу на организацию, без выдумывания путей к наборам.
+_SOURCE_SITE_BY_PROVIDER: dict[str, str] = {
+    "eurostat": "https://ec.europa.eu/eurostat",
+    "imf": "https://www.imf.org",
+    "statcan": "https://www.statcan.gc.ca",
+    "boc_valet": "https://www.bankofcanada.ca",
+    "abs": "https://www.abs.gov.au",
+    "rba": "https://www.rba.gov.au",
+    "ons": "https://www.ons.gov.uk",
+    "boe_iadb": "https://www.bankofengland.co.uk",
+    "fred": "https://fred.stlouisfed.org",
+    "census": "https://www.census.gov",
+    "ibge": "https://www.ibge.gov.br",
+    "bls": "https://www.bls.gov",
+    "bea": "https://www.bea.gov",
+    "boj": "https://www.boj.or.jp/en",
+    "estat": "https://www.stat.go.jp/english",
+    "ecos": "https://www.bok.or.kr/eng/main/contents.do",
+    "bcb_sgs": "https://www.bcb.gov.br/en",
+    "banxico_sie": "https://www.banxico.org.mx",
+    "nbs": "https://www.stats.gov.cn/english",
+    "cfets": "https://www.chinamoney.com.cn/english",
+    "mospi": "https://mospi.gov.in",
+    "rbi": "https://www.rbi.org.in",
+}
+
+# Русские подписи + EN для «Открыть … на сайте ведомства».
+from app.data.i18n.glossary_en import GLOSSARY_EN as _GLOSSARY_EN  # noqa: E402
+
+_PROVIDER_OPEN_LABEL: dict[str, dict[str, str]] = {
+    key: {"ru": value, "en": _GLOSSARY_EN.get(value) or value}
+    for key, value in _SOURCE_BY_PROVIDER.items()
+}
+
+
+def _source_links_html(
+    inds: list[WorldIndicator],
+) -> tuple[str, set[str]]:
+    """Кликабельные ссылки на официальные сайты ведомств из среза.
+
+    Возвращает (HTML-фрагмент ссылок через запятую, публичные имена
+    ведомств в ссылках). Рядам без provider возвращается Eurostat —
+    тот же фолбэк, что у _source_label. Пустая строка — когда ни один
+    ряд не сопоставлен известному ведомству (честно не выдумываем URL).
+    """
+    from app.services.locale import get_locale
+
+    en = get_locale() == "en"
+    linked: list[str] = []
+    seen_urls: set[str] = set()
+    names_in_links: set[str] = set()
+    for ind in inds:
+        prov = (getattr(ind, "provider", None) or "").strip().lower()
+        if not prov:
+            # Eurostat-ряды пишут provider пустым; source кириллицей.
+            raw = (getattr(ind, "source", None) or "").strip().lower()
+            prov = "eurostat" if raw in ("", "eurostat", "евростат") else ""
+        site = _SOURCE_SITE_BY_PROVIDER.get(prov)
+        if not site or site in seen_urls:
+            continue
+        seen_urls.add(site)
+        label = _PROVIDER_OPEN_LABEL.get(prov, {}).get(
+            "en" if en else "ru"
+        ) or _source_label(None, prov)
+        linked.append(f'<a href="{escape(site)}" rel="noopener noreferrer">{escape(label)}</a>')
+        names_in_links.add(_source_label(None, prov))
+    return ", ".join(linked), names_in_links
+
+
+def _source_links_phrase(labels: list[str], names_in_links: set[str]) -> str:
+    """Подписи ведомств без кликабельной ссылки (уже перечислены выше)."""
+    rest = [lab for lab in labels if lab not in names_in_links]
+    return _join_sources(rest)
+
+
+def _period_sentence(last_date_raw: str | None, *, freq: str | None = None) -> str:
+    """Единая формулировка даты среза для блока источников.
+
+    Месячные/квартальные ряды — «Данные на июнь 2025», годовые —
+    «Данные за 2025 год», EN параллельно. Дата та же, что в плитке
+    («Последняя дата в срезе» / «Дата») — переиспользуется рассчитанное
+    значение, логика не дублируется. Без дня: месяц задаёт срез публикации.
+    """
+    from app.services.display import format_month_year
+    from app.services.locale import get_locale
+
+    if not last_date_raw:
+        return ""
+    d = date.fromisoformat(last_date_raw)
+    en = get_locale() == "en"
+    if (freq or "").lower() == "annual":
+        return f"Data for {d.year}" if en else f"Данные за {d.year} год"
+    label = format_month_year(d)
+    if not label:
+        return ""
+    return f"Data as of {label}" if en else f"Данные на {label}"
 
 
 def _country_source_phrase(inds: list[WorldIndicator]) -> tuple[str, bool]:
@@ -587,7 +711,8 @@ async def build_world_rating_payload(
 
     for country, indicator in members:
         for point_year, (point_date, value) in yearly_last_points(
-            series_by_id.get(indicator.id, []), mode
+            series_by_id.get(indicator.id, []), mode,
+            concept_slug=concept.slug,
         ).items():
             bucket = values_by_year.setdefault(str(point_year), {})
             bucket[country.code] = {
@@ -760,6 +885,11 @@ async def render_world_rating_html(
     items = payload["items"]
     if active_year is None or not items:
         return 404, "<h1>Нет данных для рейтинга</h1>"
+    # Честная каноническая модель (Фаза 10): год без данных — 404, а не контент
+    # чужого года (софт-404). Path-канон дефолтного года уходит 301 на базу ещё
+    # в эндпоинте, поэтому здесь year is not None ⇒ это не-дефолтный год.
+    if year is not None and year not in payload["years"]:
+        return 404, "<h1>За этот год нет данных рейтинга</h1>"
 
     concept = payload["concept"]
     name = concept["name"]
@@ -893,8 +1023,9 @@ async def render_world_rating_html(
         for c in WORLD_CONCEPTS
         if "rating" in c.enabled_surfaces
     )
+    # Дефолтный год ведёт на базу (его path-канон 301 на неё), остальные — на path.
     year_links = "".join(
-        f'<li><a href="{escape(paths.world_rating(concept_slug))}?year={y}">{y}</a></li>'
+        f'<li><a href="{escape(paths.world_rating(concept_slug) if y == active_year else paths.world_rating_year(concept_slug, y))}">{y}</a></li>'
         for y in payload["years"][-12:]
     )
 
@@ -963,7 +1094,20 @@ async def render_world_rating_html(
             f'<ul class="seo-pills">{missing_items}</ul></section>'
         )
 
-    og_path = paths.og_world_rating(concept_slug)
+    # Канон (Фаза 10): не-дефолтный path-год канонизирует сам себя; без года
+    # (и для дефолтного года, который 301-ится сюда) канон — база.
+    canonical = (
+        paths.world_rating_year(concept_slug, year)
+        if year is not None
+        else paths.world_rating(concept_slug)
+    )
+    # Годовая страница получает OG-картинку СВОЕГО года (срез на картинке =
+    # срез в таблице); базовая — дефолтного года.
+    og_path = (
+        paths.og_world_rating_year(concept_slug, active_year)
+        if year is not None
+        else paths.og_world_rating(concept_slug)
+    )
     if en:
         figure_alt = (
             f"{name} by country — ranking {active_year}, "
@@ -983,14 +1127,12 @@ async def render_world_rating_html(
             f"Источник: {sources}. forecasteconomy.com"
         )
     figure_html = (
-        f'<figure class="seo-chart"><img src="{escape(og_path)}" alt="{escape(figure_alt)}" '
-        f'width="1200" height="630" loading="eager">'
+        f'<figure class="seo-chart"><a class="seo-chart-link" '
+        f'href="{escape(canonical)}#chart">'
+        f'<img src="{escape(og_path)}" alt="{escape(figure_alt)}" '
+        f'width="1200" height="630" loading="eager"></a>'
         f"<figcaption>{escape(figcaption)}</figcaption></figure>"
     )
-
-    canonical = paths.world_rating(concept_slug)
-    if year is not None and year == active_year:
-        canonical = f"{canonical}?year={year}"
 
     json_ld = [
         _breadcrumbs(crumbs.world_rating_trail(name, paths.world_rating(concept_slug))),
@@ -1058,6 +1200,24 @@ async def render_world_rating_html(
             "Для каждого календарного года берётся последнее опубликованное значение внутри года."
         )
     ).format(sources=sources, unit=unit or unit_fallback)
+    # Датированная срезка + кликабельные ведомства: тот же last_date, что в
+    # плитке «Последняя дата в срезе», и официальные сайты ведомств среза.
+    rating_members = await _world_rating_members(db, CONCEPT_BY_SLUG[concept_slug])
+    member_links_html, linked_names = _source_links_html(rating_members)
+    unlinked_phrase = _source_links_phrase(
+        [item["source"] for item in items], linked_names
+    )
+    date_sentence = _period_sentence(last_date)
+    source_parts: list[str] = [
+        f"<p>{escape(source_p)}</p>" if source_p else "",
+    ]
+    if date_sentence:
+        source_parts.append(f"<p>{escape(date_sentence)}</p>")
+    if member_links_html:
+        source_parts.append(f"<p>{member_links_html}</p>")
+    elif unlinked_phrase and unlinked_phrase != sources:
+        source_parts.append(f"<p>{escape(unlinked_phrase)}</p>")
+    source_extra_html = "".join(part for part in source_parts if part)
     en_kw = world_template("keywords_rating")
     keywords = (
         en_kw.format(name=name, year=active_year)
@@ -1085,7 +1245,7 @@ async def render_world_rating_html(
 <section class="seo-section"><h2>{escape(h2_other)}</h2><ul class="seo-pills">{concept_links}</ul></section>
 <section class="seo-section"><h2>{escape(h2_years)}</h2><ul class="seo-pills">{year_links}</ul></section>
 <section class="seo-section"><h2>{escape(h2_source)}</h2>
-<p>{escape(source_p)}</p></section>
+{source_extra_html}</section>
 </div>"""
 
     html = await build_document(
@@ -1360,13 +1520,28 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
             f"Источник: {escape(source_phrase)}. forecasteconomy.com"
         )
     figure_html = (
-        f'<figure class="seo-chart"><img src="{escape(og_path)}" '
-        f'alt="{escape(figure_alt)}" width="1200" height="630" loading="eager">'
+        f'<figure class="seo-chart"><a class="seo-chart-link" '
+        f'href="{escape(paths.country(slug))}#chart">'
+        f'<img src="{escape(og_path)}" '
+        f'alt="{escape(figure_alt)}" width="1200" height="630" loading="eager"></a>'
         f"<figcaption>{figcaption}</figcaption></figure>"
     )
 
     h2_key = world_template("country_h2_key") or "Ключевые показатели"
     h2_source = world_template("country_h2_source") or "Источник данных"
+    # Единый паттерн с рейтингом/индикатором: дата последнего среза (та же,
+    # что в плитке «Дата» ключевой таблицы) + кликабельные официальные сайты
+    # ведомств, публикующих ряды страны.
+    country_last_date = max((dt for dt, _ in latest.values()), default=None)
+    country_links_html, _country_linked_names = _source_links_html(list(inds))
+    date_sentence = _period_sentence(
+        country_last_date.isoformat() if country_last_date else None,
+    )
+    source_parts: list[str] = [f"<p>{source_section}</p>"]
+    if date_sentence:
+        source_parts.append(f"<p>{escape(date_sentence)}</p>")
+    if country_links_html:
+        source_parts.append(f"<p>{country_links_html}</p>")
     h2_russia = world_template("country_h2_russia") or "Россия"
     russia_p = world_template("country_russia_p") or (
         "Сопоставить с российскими рядами можно в "
@@ -1384,7 +1559,7 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
 {''.join(sections)}
 {neighbors_html}
 <section class="seo-section"><h2>{escape(h2_source)}</h2>
-<p>{source_section}</p></section>
+{''.join(source_parts)}</section>
 <section class="seo-section"><h2>{escape(h2_russia)}</h2>
 <p>{russia_p}</p></section>
 </div>"""
@@ -1607,8 +1782,10 @@ async def render_world_indicator_html(
             f"{display} в {prep}, {period}. Источник: {source}."
         )
     figure_html = (
-        f'<figure class="seo-chart"><img src="{escape(og_path)}" '
-        f'alt="{escape(alt)}" width="1200" height="630" loading="eager">'
+        f'<figure class="seo-chart"><a class="seo-chart-link" '
+        f'href="{escape(paths.indicator(slug, code))}#chart">'
+        f'<img src="{escape(og_path)}" '
+        f'alt="{escape(alt)}" width="1200" height="630" loading="eager"></a>'
         f"<figcaption>{escape(figcaption)}</figcaption></figure>"
     )
 
@@ -1776,7 +1953,7 @@ async def render_world_indicator_html(
     tile_last = _wt_ind("indicator_tile_last") or "Последнее значение"
     tile_date = _wt_ind("indicator_tile_date") or "Дата"
     tile_period = _wt_ind("indicator_tile_period") or "Период"
-    tile_source = _wt_ind("indicator_tile_source") or "Источник"
+    tile_source = _wt_ind("indicator_tile_source") or "Источник данных"
     h2_source = _wt_ind("indicator_h2_source") or "Источник данных"
     unit_fb = _wt_ind("indicator_unit_fallback") or "единицы источника"
     source_p_tpl = _wt_ind("indicator_source_p")
@@ -1789,6 +1966,10 @@ async def render_world_indicator_html(
             f"{source}. Единицы: {unit or unit_fb}. "
             f"Период наблюдений: {period}."
         )
+    # Единый паттерн с рейтингом и страной: датированная срезка в блоке
+    # источников — та же дата, что в плитке «Дата».
+    date_sentence = _period_sentence(last_date.isoformat(), freq=indicator.frequency)
+    date_sentence_p = f"<p>{escape(date_sentence)}</p>" if date_sentence else ""
     h2_russia = _wt_ind("indicator_h2_russia") or "Россия"
     russia_p = _wt_ind("indicator_russia_p") or (
         "Российские макропоказатели — на "
@@ -1816,7 +1997,7 @@ async def render_world_indicator_html(
 {siblings_html}
 <section class="seo-section"><h2>{escape(h2_source)}</h2>
 <p>{source_p}</p>
-{source_link}
+{date_sentence_p}{source_link}
 </section>
 <section class="seo-section"><h2>{escape(h2_russia)}</h2>
 <p>{russia_p}</p></section>

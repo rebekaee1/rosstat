@@ -42,6 +42,22 @@ _HICP_YOY_NAME_EN = "Year-over-year change in consumer prices"
 # национальных рядов с другой базой.
 _FORCE_YOY_CONCEPTS = frozenset({"hicp-index"})
 
+# Поточные показатели (год = итог за календарный год): незакрывшийся текущий
+# год не имеет годового значения — среднемесячное за неполный год не итог и
+# в рейтинге выглядело бы состоявшимся. Запасы (уровень на дату: население,
+# безработица, госдолг) — допустимо; официальные годовые ряды Евростата
+# (демография, относительный ВВП на душу) пользуются официальным годом.
+# Ряды МВФ и иных провайдеров, уже обрезанные по закрытым годам на стороне
+# инжеста, правило не задевает.
+_FLOW_RANK_CONCEPTS = frozenset({
+    "hicp-index",
+    "long-term-interest-rate",
+    "gdp-usd",
+    "gdp-per-capita-usd",
+    "budget-balance-gdp",
+    "activity-rate",
+})
+
 
 def looks_like_index(unit: str | None, unit_ru: str | None) -> bool:
     u = (unit or "").strip().upper().replace("-", "_")
@@ -219,7 +235,7 @@ WORLD_RATING_QUERY_NAMES: dict[str, str] = {
     "government-debt-gdp": "государственному долгу к ВВП",
     "population": "численности населения",
     "long-term-interest-rate": "доходности долгосрочных государственных облигаций",
-    "activity-rate": "уровню экономической активности",
+    "activity-rate": "уровню экономической активности населения",
     "gdp-per-capita-eu": "ВВП на душу относительно среднего по ЕС",
     "gdp-usd": "ВВП в текущих долларах США",
     "gdp-per-capita-usd": "ВВП на душу населения в текущих долларах США",
@@ -233,7 +249,7 @@ WORLD_RATING_QUERY_NAMES_EN: dict[str, str] = {
     "government-debt-gdp": "government debt to GDP",
     "population": "population",
     "long-term-interest-rate": "long-term government bond yield",
-    "activity-rate": "activity rate",
+    "activity-rate": "economic activity rate",
     "gdp-per-capita-eu": "GDP per capita relative to the EU average",
     "gdp-usd": "GDP in current US dollars",
     "gdp-per-capita-usd": "GDP per capita in current US dollars",
@@ -312,31 +328,43 @@ def apply_rank_series(series: Series, mode: RankMode) -> Series:
     return sorted(((d, float(v)) for d, v in series), key=lambda p: p[0])
 
 
-def latest_rank_point(series: Series, mode: RankMode) -> tuple[date, float] | None:
-    transformed = apply_rank_series(series, mode)
-    if not transformed:
-        return None
-    point_date, value = transformed[-1]
-    if mode == "level" and value == 0:
-        return None
-    return point_date, float(value)
-
-
 def yearly_last_points(
     series: Series,
     mode: RankMode,
+    *,
+    concept_slug: str | None = None,
 ) -> dict[int, tuple[date, float]]:
-    """Последняя точка каждого календарного года после применения режима."""
+    """Последняя точка каждого календарного года после применения режима.
+
+    Для поточных концептов (``concept_slug`` из ``_FLOW_RANK_CONCEPTS``)
+    незакрывшийся текущий календарный год исключается: годового итога по
+    нему ещё нет. Запасы (уровень на дату) остаются как есть.
+    """
     out: dict[int, tuple[date, float]] = {}
+    drop_running_year = concept_slug in _FLOW_RANK_CONCEPTS
     for point_date, value in apply_rank_series(series, mode):
         if mode == "level" and value == 0:
             continue
         year = point_date.year
+        if drop_running_year and year == date.today().year:
+            continue
         prev = out.get(year)
         if prev is not None and prev[0] >= point_date:
             continue
         out[year] = (point_date, float(value))
     return out
+
+
+def latest_rank_point(
+    series: Series,
+    mode: RankMode,
+    *,
+    concept_slug: str | None = None,
+) -> tuple[date, float] | None:
+    yearly = yearly_last_points(series, mode, concept_slug=concept_slug)
+    if not yearly:
+        return None
+    return yearly[max(yearly)]
 
 
 def resolve_default_coverage_year(

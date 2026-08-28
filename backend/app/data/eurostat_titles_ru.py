@@ -1130,7 +1130,9 @@ def build_public_name(
         if measure.lower() not in subj_l:
             extra: list[str] = []
             for part in measure.split(", "):
-                if part.lower() not in subj_l:
+                if part.lower() not in subj_l and not _base_year_already_in(
+                    part, subject
+                ):
                     extra.append(part)
             if extra:
                 subject = f"{subject}, {', '.join(extra)}"
@@ -1139,6 +1141,18 @@ def build_public_name(
     if name and name[0].islower():
         name = name[0].upper() + name[1:]
     return name
+
+
+def _base_year_already_in(part: str, subject: str) -> bool:
+    """Unit-фраза дублирует базу, уже названную в curated-имени.
+
+    «Индекс цен на жильё (база 2015 = 100)» + «индекс (2015 = 100)» —
+    год один и тот же: второй раз год в имя не добавляем (M3).
+    """
+    m = re.search(r"(\d{4})\s*=\s*100", subject or "")
+    if not m:
+        return False
+    return m.group(1) in (part or "")
 
 
 def listing_substance_score(

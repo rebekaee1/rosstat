@@ -26,7 +26,9 @@ COPY . .
 
 # /app/geoip — mountpoint тома geoip_data: создаём заранее, чтобы docker
 # проинициализировал том с владельцем appuser (иначе root и загрузка mmdb падает).
-RUN mkdir -p /app/geoip && chmod +x /app/entrypoint.sh && chown -R appuser:appuser /app
+# /app/og-cache — то же для дискового OG-кэша (П-16): пустой named volume при
+# первом маунте копирует владельца точки монтирования из образа.
+RUN mkdir -p /app/geoip /app/og-cache && chmod +x /app/entrypoint.sh && chown -R appuser:appuser /app
 
 USER appuser
 

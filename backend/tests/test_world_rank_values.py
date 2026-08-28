@@ -72,3 +72,58 @@ def test_default_year_uses_coverage_share():
         "2026": {"US": {}, "CA": {}, "IN": {}, "AU": {}, "MX": {}},
     }
     assert resolve_default_coverage_year(years, values) == 2025
+
+
+# --- незакрытый текущий год для поточных концептов (директива владельца) ----
+
+
+def _rank_series(running_year: int) -> list[tuple[date, float]]:
+    """Месячный ряд: закрытый 2025-й целиком + незакрытый текущий год."""
+    return [
+        (date(2024, 6, 1), 100.0),
+        (date(2024, 12, 1), 101.0),
+        (date(2025, 6, 1), 102.0),
+        (date(2025, 12, 1), 103.0),
+        (date(running_year, 1, 1), 104.0),
+        (date(running_year, 7, 1), 105.0),
+    ]
+
+
+def test_flow_concept_drops_running_year_from_rank_buckets():
+    """Поточный концепт: год = итог за календарный год, незакрывшийся не итог.
+
+    Среднемесячное за неполный год в рейтинге выглядело бы состоявшимся
+    значением («2026» при открытом 2026-м). Уровень поточного ряда пишется
+    в корзину только по закрытым годам; запасные концепты не задеваются.
+    """
+    running_year = date.today().year
+    series = _rank_series(running_year)
+
+    for slug in ("hicp-index", "activity-rate", "gdp-usd"):
+        by_year = yearly_last_points(series, "level", concept_slug=slug)
+        assert max(by_year) == 2025, (slug, by_year)
+        assert by_year[2025][1] == 103.0
+
+    # Запас: последняя доступная точка незакрытого года остаётся.
+    stock_by_year = yearly_last_points(
+        series, "level", concept_slug="population",
+    )
+    assert max(stock_by_year) == running_year
+    assert stock_by_year[running_year][1] == 105.0
+
+    # Без concept_slug — прежнее поведение (годовые корзины каталога).
+    assert max(yearly_last_points(series, "level")) == running_year
+
+    # YoY-режим поточного концепта: то же отсечение.
+    yoy_by_year = yearly_last_points(series, "yoy", concept_slug="hicp-index")
+    assert max(yoy_by_year) == 2025
+
+
+def test_latest_rank_point_honours_flow_concept():
+    running_year = date.today().year
+    series = _rank_series(running_year)
+
+    flow = latest_rank_point(series, "level", concept_slug="budget-balance-gdp")
+    assert flow == (date(2025, 12, 1), 103.0)
+    stock = latest_rank_point(series, "level", concept_slug="population")
+    assert stock == (date(running_year, 7, 1), 105.0)

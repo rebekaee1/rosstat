@@ -8,6 +8,7 @@ from datetime import date
 
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy import select
 
 
 @pytest.fixture
@@ -373,6 +374,65 @@ def world_seo_client(auth_env):
                     date=date(y, m, 1),
                     value=3.0 + i * 0.1,
                 ))
+            # 4 страны-пира безработицы: годовой срез 2024 (не-дефолтный) получает
+            # покрытие ≥ 5 (DE + 4 пира) и потому проходит порог sitemap, а 2025 —
+            # дефолт (path-URL 301 на базу, в карту не идёт). FR/IT уже созданы
+            # выше по фикстуре — переиспользуем их, ES/NL добавляем.
+            existing = {"germany": de, "france": fr, "italy": it}
+
+            def _ensure_country(code_, slug_, name_):
+                if slug_ in existing:
+                    return existing[slug_]
+                c = WorldCountry(
+                    code=code_, slug=slug_, name_ru=name_, name_en=name_.title(),
+                    region_ru="Европа", sort_order=10 + len(existing),
+                )
+                db.add(c)
+                existing[slug_] = c
+                return c
+
+            peer_unes = []
+            peers = [
+                ("FR", "france", "Франция", "fr-une_rt_m-total-sa-t-pc-act", 7.2),
+                ("IT", "italy", "Италия", "it-une_rt_m-total-sa-t-pc-act", 6.4),
+                ("ES", "spain", "Испания", "es-une_rt_m-total-sa-t-pc-act", 11.1),
+                ("NL", "netherlands", "Нидерланды", "nl-une_rt_m-total-sa-t-pc-act", 3.6),
+            ]
+            for code_, slug_, name_, ind_code, base in peers:
+                country = _ensure_country(code_, slug_, name_)
+                peer_unes.append((country, ind_code, base))
+            await db.flush()
+            for country, code, base in peer_unes:
+                db.add(WorldIndicator(
+                    country_id=country.id,
+                    code=code,
+                    dataset_id="une_rt_m",
+                    slice_json={"unit": "PC_ACT", "age": "TOTAL", "sex": "T", "s_adj": "SA"},
+                    slice_hash=f"{code}-h",
+                    name_ru="Безработица, % экономически активного населения, помесячно",
+                    name_quality="curated",
+                    unit="PC_ACT",
+                    unit_ru="% экономически активного населения",
+                    frequency="monthly",
+                    category_ru="Рынок труда",
+                    source="Евростат",
+                    history_start=date(2024, 1, 1),
+                    history_end=date(2025, 6, 1),
+                    points_count=18,
+                    is_listed=True,
+                ))
+                await db.flush()
+                ind = (await db.execute(
+                    select(WorldIndicator).where(WorldIndicator.code == code)
+                )).scalar_one()
+                for i in range(18):
+                    y = 2024 + (i // 12)
+                    m = (i % 12) + 1
+                    db.add(WorldDataPoint(
+                        indicator_id=ind.id,
+                        date=date(y, m, 1),
+                        value=base + i * 0.05,
+                    ))
             for i in range(18):
                 y = 2024 + (i // 12)
                 m = (i % 12) + 1
@@ -461,6 +521,16 @@ def test_seo_world_country(world_seo_client):
     assert crumbs == ["Главная", "Германия"]
     assert crumbs[0] == "Главная"
 
+    # S4: блок «Источник данных» — дата последнего значения + официальные
+    # сайты ведомств (Eurostat + IMF: у страны есть национальный WEO-ряд).
+    source_section = html.split("<h2>Источник данных</h2>", 1)[1].split("</section>", 1)[0]
+    assert "Данные на" in source_section
+    assert 'href="https://ec.europa.eu/eurostat"' in source_section
+    assert 'href="https://www.imf.org"' in source_section
+    # Датированная срезка в блоке: «Данные на <месяц> <год>» без дня —
+    # месячный индекс не привязан к конкретной дате.
+    assert re.search(r"Данные на [а-яё]+ \d{4}", source_section)
+
 
 def test_seo_world_country_locale_en(world_seo_client):
     r = world_seo_client.get("/seo/world/germany?preview_locale=en")
@@ -506,6 +576,13 @@ def test_seo_world_indicator(world_seo_client):
     visible = _visible_root(html)
     for leak in ("Eurostat", "SDMX", "dataflow"):
         assert leak not in visible
+
+    # S4: блок источников индикатора — датированная срезка (ежемесячный ряд:
+    # «Данные на …») + официальная ссылка на специфичный источник ряда
+    # (databrowser), подписи выровнены.
+    source_section = html.split("<h2>Источник данных</h2>", 1)[1].split("</section>", 1)[0]
+    assert "Данные на июнь 2025" in source_section
+    assert 'href="https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_midx"' in source_section
 
 
 def test_seo_world_unemployment_freq_links_and_301(world_seo_client):
@@ -561,11 +638,132 @@ def test_seo_world_rating(world_seo_client):
     for leak in ("Eurostat", "SDMX", "dataflow", "concept", "provider", "dataset"):
         assert leak not in visible
 
+    # S4: блок «Источник данных» — датированная срезка + официальный сайт
+    # ведомства (Eurostat-ряды среза), единый паттерн с уровнем страны/индикатора.
+    assert "<h2>Источник данных</h2>" in html
+    source_section = html.split("<h2>Источник данных</h2>", 1)[1]
+    source_section = source_section.split("</section>", 1)[0]
+    assert "Данные на" in source_section  # дата последнего среза (last_date)
+    assert 'href="https://ec.europa.eu/eurostat"' in source_section
+    assert "<h2>Источник</h2>" not in html  # подписи выровнены
+    # Датированная срезка блока — месяц плитки «Последняя дата в срезе»
+    # (в блоке источников без дня: месячный индекс не привязан к дате).
+    # «1 июня 2025» → родительный падеж в плитке vs именительный в подписи.
+    tile_date_text = re.search(
+        r"Последняя дата в срезе</span><b>([^<]+)</b>", html
+    ).group(1)
+    tile_year = tile_date_text.split()[-1]
+    assert f"2025" == tile_year or tile_year in source_section
+    assert re.search(r"Данные на [а-яё]+ \d{4}", source_section)
+
 
 def test_seo_world_rating_default_redirect(world_seo_client):
     r = world_seo_client.get("/seo/world/rating", follow_redirects=False)
     assert r.status_code == 301
     assert r.headers["location"].endswith("/world/rating/unemployment-rate")
+
+
+def test_seo_world_rating_year_query_301_to_path(world_seo_client):
+    """Легаси ?year= → 301 сразу в конечную точку (Фаза 10: один канон на год)."""
+    # hicp-index в фикстуре имеет единственный год 2025 (дефолт) → 301 на базу.
+    r = world_seo_client.get(
+        "/seo/world/rating/hicp-index?year=2025", follow_redirects=False
+    )
+    assert r.status_code == 301
+    assert r.headers["location"].endswith("/world/rating/hicp-index")
+    # Не-дефолтный год unemployment-rate → 301 на path-канон.
+    r2 = world_seo_client.get(
+        "/seo/world/rating/unemployment-rate?year=2024", follow_redirects=False
+    )
+    assert r2.status_code == 301
+    assert r2.headers["location"].endswith("/world/rating/unemployment-rate/2024")
+
+
+def test_seo_world_rating_year_path_default_301_to_base(world_seo_client):
+    """Path-URL дефолтного года — 301 на базу: база и есть его self-canonical."""
+    r = world_seo_client.get(
+        "/seo/world/rating/unemployment-rate/2025", follow_redirects=False
+    )
+    assert r.status_code == 301
+    assert r.headers["location"].endswith("/world/rating/unemployment-rate")
+
+
+def test_seo_world_rating_year_path_200(world_seo_client):
+    """Path-URL не-дефолтного года — 200 с self-canonical на path."""
+    r = world_seo_client.get("/seo/world/rating/unemployment-rate/2024")
+    assert r.status_code == 200
+    html = r.text
+    assert (
+        'canonical" href="https://forecasteconomy.com/world/rating/unemployment-rate/2024"'
+        in html
+    )
+    # Ссылки «Другие годы» — без ?year=.
+    assert "?year=" not in html
+
+
+def test_seo_world_rating_year_without_data_404(world_seo_client):
+    """Год без данных — честная 404, а не контент чужого года (софт-404)."""
+    r = world_seo_client.get("/seo/world/rating/hicp-index/2024")
+    assert r.status_code == 404
+    r2 = world_seo_client.get("/seo/world/rating/unemployment-rate/2019")
+    assert r2.status_code == 404
+
+
+def test_seo_world_rating_year_og_matches_year(world_seo_client):
+    """Годовая страница ссылается на OG-картинку своего года, база — на дефолт."""
+    page = world_seo_client.get("/seo/world/rating/unemployment-rate/2024")
+    assert page.status_code == 200
+    assert "/og/world/rating/unemployment-rate/2024.png" in page.text
+    base = world_seo_client.get("/seo/world/rating/unemployment-rate")
+    assert base.status_code == 200
+    assert "/og/world/rating/unemployment-rate.png" in base.text
+    # Годовая OG-картинка существует и отдаёт PNG; чужой год — 404.
+    og = world_seo_client.get("/api/v1/og-image/world-rating/unemployment-rate/2024.png")
+    assert og.status_code == 200
+    assert og.headers["content-type"] == "image/png"
+    og_missing = world_seo_client.get("/api/v1/og-image/world-rating/hicp-index/2024.png")
+    assert og_missing.status_code == 404
+
+
+def test_sitemap_includes_world_rating_years(world_seo_client):
+    """Годовые рейтинги в sitemap: не-дефолтные path-годы; дефолт не дублируется."""
+    r = world_seo_client.get("/sitemap-world-ratings.xml")
+    assert r.status_code == 200
+    # Дефолтный (свежий) год представлен базой, не path-URL.
+    assert "https://forecasteconomy.com/world/rating/hicp-index/2025" not in r.text
+    assert "https://forecasteconomy.com/world/rating/unemployment-rate/2024" in r.text
+    assert "https://forecasteconomy.com/world/rating/unemployment-rate/2025" not in r.text
+    assert "?year=" not in r.text
+
+
+def test_sitemap_rating_year_min_coverage(world_seo_client):
+    """Годы рейтинга с покрытием < 5 стран — тонкий контент, в sitemap не идут.
+
+    Нац. ряды (например, CPI Канады с 1914-го) дают срезы года с 1-2 странами;
+    страницы остаются честными 200 по прямому URL, но не навязываются поисковику.
+    """
+    from app.services.site_urls import _RATING_YEAR_MIN_COUNTRIES
+
+    assert _RATING_YEAR_MIN_COUNTRIES == 5
+    r = world_seo_client.get("/sitemap-world-ratings.xml")
+    assert r.status_code == 200
+    for m in re.finditer(
+        r"https://forecasteconomy\.com/world/rating/([a-z0-9-]+)/(\d{4})", r.text
+    ):
+        concept_slug, year = m.group(1), int(m.group(2))
+        page = world_seo_client.get(f"/seo/world/rating/{concept_slug}/{year}")
+        assert page.status_code == 200
+        # Строк таблицы рейтинга ≥ 5 (min coverage) — проверяем счётчик стран
+        # в ItemList JSON-LD (numberOfItems = число стран среза).
+        jsonld = _jsonld(page.text)
+        counts = [
+            b.get("numberOfItems")
+            for b in jsonld
+            if b.get("@type") == "ItemList"
+        ]
+        assert counts and all(c >= _RATING_YEAR_MIN_COUNTRIES for c in counts), (
+            concept_slug, year, counts,
+        )
 
 
 def test_world_rating_surface_nonempty_and_gated(world_seo_client):
@@ -671,3 +869,133 @@ def test_world_og_png(world_seo_client):
     assert world_seo_client.get(
         "/api/v1/og-image/world/germany/de-zz_raw_stub.png"
     ).status_code == 404
+
+
+def test_world_og_rating_locale_cache_and_labels(world_seo_client):
+    """EN-локализация OG-постеров: разные ключи кэша и разные подписи.
+
+    Регресс на залипание кэша: ключ world-rating раньше не включал локаль,
+    а имя концепта строилось по get_locale() — первый запрос «вымораживал»
+    язык картинки для всех последующих.
+    """
+    # Локаль bind'ится LocaleMiddleware на запрос: EN — заголовком X-FE-Locale.
+    ru = world_seo_client.get("/api/v1/og-image/world-rating/hicp-index.png")
+    assert ru.status_code == 200
+    en = world_seo_client.get(
+        "/api/v1/og-image/world-rating/hicp-index.png",
+        headers={"X-FE-Locale": "en"},
+    )
+    assert en.status_code == 200
+    assert en.content != ru.content  # не та же залитая картинка
+
+    # Подписи рендера по локали: RU «рейтинг стран», EN «country ranking»
+    from app.services.og_image import render_world_rating_og
+
+    rows = [("Germany", 101.4), ("France", 100.9), ("Italy", 100.2)]
+    png_ru = render_world_rating_og(
+        name="Гармонизированный индекс потребительских цен", year=2025,
+        unit="изменение за год, %", rows=rows, total=30,
+        order_label="по убыванию",
+    )
+    png_en = render_world_rating_og(
+        name="Harmonised index of consumer prices", year=2025,
+        unit="%, year-over-year change", rows=rows, total=30,
+        order_label="descending", locale="en",
+    )
+    assert png_ru != png_en
+
+    # Ключи кэша различаются по локали — картинка EN не перезаписывает RU.
+    from app.services.og_image import _CACHE
+
+    assert "world-rating:ru:hicp-index" in _CACHE
+    assert "world-rating:en:hicp-index" in _CACHE
+
+
+@pytest.fixture
+def russia_gdp_method_client(auth_env):
+    """Каталог с национальными рядами расчёта ВВП РФ + один Eurostat-ряд.
+
+    Мокает годовые ряды `gdp-nominal-annual`, `usd-rub-avg-year` и
+    `population` (indicators) — приоритет национального расчёта в рейтинге
+    gdp-usd/gdp-per-capita-usd перед МВФ-рядом (у МВФ-ряда России в этой
+    фикстуре нет вовсе).
+    """
+    import asyncio
+
+    from app.models import Indicator, IndicatorData
+
+    async def _seed():
+        async with auth_env["session_maker"]() as db:
+            rows = {
+                "gdp-nominal-annual": [
+                    (date(2024, 1, 1), 200_039.0),
+                    (date(2025, 1, 1), 214_261.1),
+                ],
+                "usd-rub-avg-year": [
+                    (date(2024, 1, 1), 92.6567),
+                    (date(2025, 1, 1), 83.2108),
+                ],
+                "population": [
+                    (date(2024, 1, 1), 146.15),
+                    (date(2025, 1, 1), 146.12),
+                ],
+            }
+            for code, points in rows.items():
+                ind = Indicator(
+                    code=code,
+                    name="Тестовый ряд расчёта",
+                    unit="млрд руб." if "gdp" in code else "руб. за долл.",
+                    frequency="annual",
+                    source="Росстат",
+                    parser_type="derived",
+                    is_active=True,
+                    is_listed=True,
+                )
+                db.add(ind)
+                await db.flush()
+                for d, value in points:
+                    db.add(IndicatorData(
+                        indicator_id=ind.id, date=d, value=value,
+                    ))
+            await db.commit()
+
+    asyncio.run(_seed())
+    with TestClient(auth_env["app"]) as tc:
+        yield tc
+
+
+def test_russia_gdp_ranking_uses_national_method(russia_gdp_method_client):
+    """ВВП России в рейтинге — национальный расчёт: млрд руб. / среднегодовой курс.
+
+    Значение = Росстат × курс Банка России, источник подписан российскими
+    ведомствами; незакрывшийся год не попадает в снапшот. МВФ-ряд России
+    в фикстуре нет — значение возникает только национальным расчётом.
+    """
+    from datetime import date as date_cls
+
+    snap = russia_gdp_method_client.get("/api/v1/world/compare/snapshot/gdp-usd")
+    assert snap.status_code == 200
+    ru = next(
+        (i for i in snap.json()["items"] if i["country_code"] == "RU"), None,
+    )
+    assert ru is not None
+    # Снапшот берёт последний завершённый год (2025): 214261,1 млрд руб. /
+    # 83,2108 руб. за доллар.
+    expected = 214_261.1 / 83.2108
+    assert ru["value"] == pytest.approx(expected, rel=1e-4)
+    assert ru["indicator_code"] == "gdp-nominal-annual"
+    assert ru["source"] == "Росстат, Банк России"
+    # Только завершённые годы: текущий год в снапшот не попадает.
+    assert date_cls.fromisoformat(ru["date"]).year == 2025
+    assert date_cls.fromisoformat(ru["date"]).year < date_cls.today().year
+
+    pc = russia_gdp_method_client.get(
+        "/api/v1/world/compare/snapshot/gdp-per-capita-usd"
+    )
+    assert pc.status_code == 200
+    ru_pc = next(
+        (i for i in pc.json()["items"] if i["country_code"] == "RU"), None,
+    )
+    assert ru_pc is not None
+    assert ru_pc["value"] == pytest.approx(expected * 1e9 / 146.12e6, rel=1e-3)
+    assert ru_pc["source"] == "Росстат, Банк России"

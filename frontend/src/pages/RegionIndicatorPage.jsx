@@ -3,7 +3,7 @@
 // выгрузка CSV/Excel/PNG (только для зарегистрированных, PNG — без watermark,
 // см. правило 2026-07-08 в IndicatorChartSection.jsx).
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useLocation } from 'react-router-dom';
 import {
   Trophy, Table2, ChevronDown, ArrowUpRight,
   Download, Image as ImageIcon, GitCompare,
@@ -11,7 +11,8 @@ import {
 import useDocumentMeta from '../lib/useMeta';
 import { getSiteOrigin } from '../lib/siteOrigin';
 import {
-  useRegionIndicator, useRegionsLanding, formatRegionValue, shortUnit, yearDelta,
+  useRegionIndicator, useRegionIndicatorMonthly, useRegionsLanding,
+  formatRegionValue, shortUnit, yearDelta,
 } from '../lib/regionsApi';
 import RegionAnnualChart from '../components/RegionAnnualChart';
 import ApiRetryBanner from '../components/ApiRetryBanner';
@@ -61,8 +62,12 @@ function StatCell({ label, children }) {
   );
 }
 
-const ABORTION_SIBLING = {
-  'beremennosti-s-abortivnym-ishodom-na-100-rodov': {
+const MONTH_NAMES_RU = [
+  'январь', 'февраль', 'март', 'апрель', 'май', 'июнь',
+  'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь',
+];
+
+const ABORTION_SIBLING = {  'beremennosti-s-abortivnym-ishodom-na-100-rodov': {
     code: 'beremennosti-s-abortivnym-ishodom-na-1000-zhenschin',
     labelKey: 'regions.ind.abortionPer1000',
   },
@@ -75,6 +80,10 @@ const ABORTION_SIBLING = {
 export default function RegionIndicatorPage() {
   const { t, locale } = useLocale();
   const { slug, code } = useParams();
+  // Месячный ряд тянется только для показателей, у которых он есть: годовой
+  // запрос отдаёт 404 «Нет месячных данных» — по нему и выключаем повторные попытки.
+  const monthly = useRegionIndicatorMonthly(slug, code);
+  const isMonthly = monthly.data?.frequency === 'monthly' && monthly.data?.series?.length > 0;
   const { data, isLoading, isError, refetch, isFetching } = useRegionIndicator(slug, code);
   const [showTable, setShowTable] = useState(false);
   const [showRussia, setShowRussia] = useState(true);
@@ -84,11 +93,21 @@ export default function RegionIndicatorPage() {
   const [exporting, setExporting] = useState(false);
   const { isAuthed } = useAuth();
   const chartRef = useRef(null);
+  // SSR-карточка-график ведёт на /russia/region/{slug}/{code}#chart: плавный
+  // скролл после загрузки данных, по эталону IndicatorChartSection.
+  const { hash } = useLocation();
+  useEffect(() => {
+    if (hash !== '#chart' || isLoading) return;
+    document.getElementById('chart')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [hash, isLoading]);
 
   // Сравнение с другим регионом: вторая линия на графике.
   const [compareSlug, setCompareSlug] = useState('');
   const landing = useRegionsLanding();
   const compare = useRegionIndicator(compareSlug || null, compareSlug ? code : null);
+  const compareMonthly = useRegionIndicatorMonthly(
+    compareSlug || null, compareSlug ? code : null, !!compareSlug && isMonthly,
+  );
   const regionOptions = useMemo(() => {
     if (!landing.data) return [];
     return landing.data.districts.flatMap(d => d.regions.map(r => ({ slug: r.slug, name: r.name })))
@@ -107,15 +126,19 @@ export default function RegionIndicatorPage() {
 
   const handleExportTable = async (format) => {
     const evt = format === 'csv' ? events.DOWNLOAD_CSV : events.DOWNLOAD_EXCEL;
-    if (!requireAuth(events.DOWNLOAD_LIMIT_HIT) || !data?.series?.length || exporting) return;
+    if (!requireAuth(events.DOWNLOAD_LIMIT_HIT) || !activeSeries.length || exporting) return;
     setExporting(true);
     try {
       const filename = `${slug}_${code}.${format}`;
       const { blob } = await exportTable({
         format,
         filename,
-        valueLabel: `${data.indicator.name} (${data.indicator.unit})`,
-        points: data.series.map(p => ({ date: `${p.year}-01-01`, actual: p.value, forecast: null })),
+        valueLabel: `${active.indicator.name} (${active.indicator.unit})`,
+        points: activeSeries.map(p => ({
+          date: isMonthly ? `${p.year}-${String(p.month).padStart(2, '0')}-01` : `${p.year}-01-01`,
+          actual: p.value,
+          forecast: null,
+        })),
       });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -144,47 +167,55 @@ export default function RegionIndicatorPage() {
     if (ok) track(events.CHART_IMAGE_DOWNLOAD, { indicator: `region:${slug}:${code}`, region: slug });
   };
 
-  // First-party просмотр карточки: один раз на связку регион+показатель,
-  // чтобы просмотры регионов попадали в «Пульс».
-  const viewedRef = useRef('');
+  // Активный ряд: месячный, если по показателю он пришёл; иначе годовой.
+  // Годовой запрос для месячных показателей отдаёт 404 — ждать его нельзя,
+  // карточка рендерится от активного ряда. Все производные — только ниже.
+  const active = isMonthly ? monthly.data : data;
+  const activeSeries = active?.series || [];
+  const regionName = active?.region?.name;
+  const indName = active?.indicator?.name;
+  const last = activeSeries[activeSeries.length - 1];
+  const first = activeSeries[0];
+  const lastLabel = last
+    ? (isMonthly ? `${MONTH_NAMES_RU[last.month - 1]} ${last.year}` : String(last.year))
+    : '';
+
+  // Карточка рендерится от активного ряда (месячного или годового).
+  const cardReady = isMonthly ? !!active : !!data;
+  const viewTrackedRef = useRef('');
   useEffect(() => {
-    if (!data?.indicator) return;
+    if (!active?.indicator) return;
     const key = `${slug}:${code}`;
-    if (viewedRef.current === key) return;
-    viewedRef.current = key;
+    if (viewTrackedRef.current === key) return;
+    viewTrackedRef.current = key;
     track(events.REGION_INDICATOR_VIEW, {
       indicator: `region:${slug}:${code}`,
       region: slug,
       code,
     });
-  }, [data?.indicator, slug, code]);
+  }, [active?.indicator, slug, code]);
 
-  const regionName = data?.region?.name;
-  const indName = data?.indicator?.name;
-  const last = data?.series?.[data.series.length - 1];
-  const first = data?.series?.[0];
-
-  useDocumentMeta(data ? {
-    title: t('regions.ind.metaTitle', {
+  useDocumentMeta(active ? {
+    title: t(isMonthly ? 'regions.ind.metaTitleMonthly' : 'regions.ind.metaTitle', {
       name: indName,
       region: regionName,
       value: formatRegionValue(last.value),
-      unit: shortUnit(data.indicator.unit),
-      year: last.year,
+      unit: shortUnit(active.indicator.unit),
+      year: isMonthly ? lastLabel : last.year,
     }),
-    description: t('regions.ind.metaDesc', {
+    description: t(isMonthly ? 'regions.ind.metaDescMonthly' : 'regions.ind.metaDesc', {
       name: indName,
       region: regionName,
       value: formatRegionValue(last.value),
-      unit: data.indicator.unit,
-      year: last.year,
+      unit: active.indicator.unit,
+      year: isMonthly ? lastLabel : last.year,
       from: first.year,
-      rank: data.rank
+      rank: active.rank
         ? t(
-          data.rank.rank_as_achievement
+          active.rank.rank_as_achievement
             ? 'regions.ind.metaRankAchieve'
             : 'regions.ind.metaRankNeutral',
-          { position: data.rank.position, total: data.rank.total },
+          { position: active.rank.position, total: active.rank.total },
         )
         : '.',
     }),
@@ -192,14 +223,14 @@ export default function RegionIndicatorPage() {
   } : null);
 
   useEffect(() => {
-    if (!data) return;
+    if (!active) return;
     const jsonLd = {
       '@context': 'https://schema.org',
       '@type': 'Dataset',
       name: `${indName} — ${regionName}`,
       description: t('regions.ind.jsonLdDesc', {
         name: indName,
-        unit: data.indicator.unit,
+        unit: active.indicator.unit,
         region: regionName,
         from: first.year,
         to: last.year,
@@ -216,26 +247,30 @@ export default function RegionIndicatorPage() {
     document.getElementById('region-dataset-jsonld')?.remove();
     document.head.appendChild(script);
     return () => script.remove();
-  }, [data, indName, regionName, first, last, t]);
+  }, [active, indName, regionName, first, last, t]);
 
-  const delta = last && data?.series?.length > 1
-    ? yearDelta(last.value, data.series[data.series.length - 2].value)
+  const delta = last && activeSeries.length > 1
+    ? yearDelta(last.value, activeSeries[activeSeries.length - 2].value)
     : null;
 
   const stats = useMemo(() => {
-    if (!data?.series?.length) return null;
-    const values = data.series.map(p => p.value);
+    if (!activeSeries.length) return null;
+    const values = activeSeries.map(p => p.value);
     const max = Math.max(...values);
     const min = Math.min(...values);
-    return {
-      max, maxYear: data.series[values.indexOf(max)].year,
-      min, minYear: data.series[values.indexOf(min)].year,
+    const at = (idx) => {
+      const p = activeSeries[idx];
+      return isMonthly ? MONTH_NAMES_RU[p.month - 1] + ' ' + p.year : p.year;
     };
-  }, [data]);
+    return {
+      max, maxAt: at(values.indexOf(max)),
+      min, minAt: at(values.indexOf(min)),
+    };
+  }, [activeSeries, isMonthly]);
 
   const tableRows = useMemo(
-    () => (data?.series ? [...data.series].reverse() : []),
-    [data],
+    () => (activeSeries.length ? [...activeSeries].reverse() : []),
+    [activeSeries],
   );
 
   const abortion = ABORTION_SIBLING[code];
@@ -251,19 +286,19 @@ export default function RegionIndicatorPage() {
         )}
       />
 
-      {isError && <ApiRetryBanner onRetry={refetch} retrying={isFetching} />}
-      {isLoading && (
+      {isError && !cardReady && <ApiRetryBanner onRetry={refetch} retrying={isFetching} />}
+      {!cardReady && (
         <div className="space-y-4">
           <SkeletonBox className="h-9 w-96 max-w-full" />
           <SkeletonBox className="h-72 rounded-xl" />
         </div>
       )}
 
-      {data && (
+      {cardReady && active && (
         <>
           <div className="mb-5">
             <div className="text-champagne text-xs font-mono uppercase tracking-widest mb-2">
-              {data.indicator.section_name}
+              {active.indicator.section_name}
             </div>
             <div className="mb-5 flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
               <h1 className="min-w-0 flex-1 font-display text-[1.35rem] font-bold leading-tight text-text-primary sm:text-3xl">
@@ -289,11 +324,11 @@ export default function RegionIndicatorPage() {
               <span className="font-mono text-2xl font-bold text-text-primary sm:text-3xl">
                 {formatRegionValue(last.value)}
               </span>
-              <span className="text-sm text-text-secondary">{data.indicator.unit}</span>
-              <span className="font-mono text-sm text-text-tertiary">{last.year}</span>
+              <span className="text-sm text-text-secondary">{active.indicator.unit}</span>
+              <span className="font-mono text-sm text-text-tertiary">{lastLabel}</span>
               {delta && (
                 <span className={`font-mono text-sm ${delta.up ? 'text-positive' : delta.down ? 'text-negative' : 'text-text-tertiary'}`}>
-                  {t('regions.ind.deltaYoY', {
+                  {t(isMonthly ? 'regions.ind.deltaMoM' : 'regions.ind.deltaYoY', {
                     pct: `${delta.up ? '+' : ''}${delta.pct.toFixed(1).replace('.', locale === 'en' ? '.' : ',')}`,
                   })}
                 </span>
@@ -301,10 +336,12 @@ export default function RegionIndicatorPage() {
             </div>
           </div>
 
-          <div data-block="region-chart" className="bg-surface border border-border-subtle rounded-xl p-3 sm:p-4 mb-4" ref={chartRef}>
+          <div id="chart" data-block="region-chart" className="bg-surface border border-border-subtle rounded-xl p-3 sm:p-4 mb-4 scroll-mt-24" ref={chartRef}>
             <div className="flex flex-col gap-2 mb-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
               <div className="text-xs text-text-tertiary font-mono">
-                {first.year}–{last.year}, {showYoY ? t('regions.ind.yoyUnit') : data.indicator.unit}
+                {isMonthly
+                  ? `${first.year}–${last.year}, помесячно — ${active.indicator.unit}`
+                  : `${first.year}–${last.year}, ${showYoY ? t('regions.ind.yoyUnit') : active.indicator.unit}`}
               </div>
               <div className="flex flex-wrap items-center gap-1.5" data-no-export="true">
                 <label
@@ -330,7 +367,7 @@ export default function RegionIndicatorPage() {
                     ))}
                   </select>
                 </label>
-                {data.russia_series?.length > 0 && (
+                {active.russia_series?.length > 0 && (
                   <button
                     onClick={() => setShowRussia(v => !v)}
                     className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
@@ -342,7 +379,7 @@ export default function RegionIndicatorPage() {
                     {showRussia ? t('regions.ind.vsRussia') : t('regions.ind.addRussia')}
                   </button>
                 )}
-                {data.series.length > 2 && !isNegativeCapable(data.series) && (
+                {!isMonthly && data.series.length > 2 && !isNegativeCapable(data.series) && (
                   <button
                     onClick={() => setShowYoY(v => !v)}
                     title={t('regions.ind.yoyTitle')}
@@ -385,19 +422,39 @@ export default function RegionIndicatorPage() {
               </div>
             </div>
             <RegionAnnualChart
-              series={showYoY ? toYoYSeries(data.series) : data.series}
+              frequency={isMonthly ? 'monthly' : 'annual'}
+              series={isMonthly ? activeSeries : (showYoY ? toYoYSeries(data.series) : data.series)}
               russiaSeries={showRussia
-                ? (showYoY ? toYoYSeries(data.russia_series) : data.russia_series)
+                ? (isMonthly
+                  ? active.russia_series
+                  : (showYoY ? toYoYSeries(data.russia_series) : data.russia_series))
                 : null}
               compareSeries={compareSlug
-                ? (showYoY ? toYoYSeries(compare.data?.series) : (compare.data?.series || null))
+                ? (isMonthly
+                  ? (compareMonthly.data?.series || null)
+                  : (showYoY ? toYoYSeries(compare.data?.series) : (compare.data?.series || null)))
                 : null}
               compareName={compareSlug ? (compare.data?.region?.name || '') : ''}
-              unit={showYoY ? t('regions.ind.yoyShort') : data.indicator.unit}
+              unit={showYoY ? t('regions.ind.yoyShort') : active.indicator.unit}
               regionName={regionName}
               height={300}
             />
-            {compareSlug && compare.data && (
+            {compareSlug && isMonthly && compareMonthly.data && (
+              <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-text-tertiary px-1" data-no-export="true">
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-block w-4 h-0.5 rounded bg-champagne" />
+                  {regionName}
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-block w-4 h-0.5 rounded" style={{ backgroundColor: '#5B7DA8' }} />
+                  {compareMonthly.data.region.name}
+                </span>
+                <button onClick={() => setCompareSlug('')} className="text-text-tertiary underline hover:text-text-secondary">
+                  {t('regions.ind.removeCompare')}
+                </button>
+              </div>
+            )}
+            {compareSlug && !isMonthly && compare.data && (
               <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-text-tertiary px-1" data-no-export="true">
                 <span className="inline-flex items-center gap-1.5">
                   <span className="inline-block w-4 h-0.5 rounded bg-champagne" />
@@ -415,34 +472,34 @@ export default function RegionIndicatorPage() {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6">
-            {data.rank?.position && (
+            {active.rank?.position && (
               <StatCell label={
                 t(
-                  data.rank.rank_as_achievement
+                  active.rank.rank_as_achievement
                     ? 'regions.ind.rankAchieve'
                     : 'regions.ind.rankNeutral',
-                  { year: data.rank.year },
+                  { year: active.rank.year },
                 )
               }
               >
                 <span className="inline-flex items-center gap-1.5">
-                  {data.rank.rank_as_achievement && (
+                  {active.rank.rank_as_achievement && (
                     <Trophy size={14} className="text-champagne" />
                   )}
-                  {data.rank.position}
+                  {active.rank.position}
                   {' '}
                   {t('regions.ind.of')}
                   {' '}
-                  {data.rank.total}
+                  {active.rank.total}
                 </span>
               </StatCell>
             )}
             {stats && (
               <>
-                <StatCell label={t('regions.ind.max', { year: stats.maxYear })}>
+                <StatCell label={t('regions.ind.max', { year: stats.maxAt })}>
                   {formatRegionValue(stats.max)}
                 </StatCell>
-                <StatCell label={t('regions.ind.min', { year: stats.minYear })}>
+                <StatCell label={t('regions.ind.min', { year: stats.minAt })}>
                   {formatRegionValue(stats.min)}
                 </StatCell>
               </>
@@ -452,18 +509,18 @@ export default function RegionIndicatorPage() {
             </StatCell>
           </div>
 
-          {data.rank?.top?.length > 0 && (
+          {active.rank?.top?.length > 0 && (
             <div data-block="region-rating" className="bg-surface border border-border-subtle rounded-xl p-4 mb-6">
               <h2 className="text-sm font-semibold text-text-primary mb-3">
                 {t(
-                  data.rank.rank_as_achievement
+                  active.rank.rank_as_achievement
                     ? 'regions.ind.topAchieve'
                     : 'regions.ind.topNeutral',
-                  { year: data.rank.year },
+                  { year: active.rank.year },
                 )}
               </h2>
               <ol className="space-y-1.5">
-                {data.rank.top.map((r, i) => (
+                {active.rank.top.map((r, i) => (
                   <li key={r.slug}>
                     <Link
                       to={regionIndicatorPath(r.slug, code)}
@@ -478,10 +535,10 @@ export default function RegionIndicatorPage() {
                   </li>
                 ))}
               </ol>
-              {data.rank.position > 5 && (
+              {active.rank.position > 5 && (
                 <div className="mt-2 pt-2 border-t border-border-subtle flex items-center justify-between text-[13px] px-2">
                   <span className="flex items-center gap-2">
-                    <span className="font-mono text-text-tertiary w-4 text-right">{data.rank.position}</span>
+                    <span className="font-mono text-text-tertiary w-4 text-right">{active.rank.position}</span>
                     <span className="text-champagne font-medium">{regionName}</span>
                   </span>
                   <span className="font-mono text-text-secondary">{formatRegionValue(last.value)}</span>
@@ -507,21 +564,26 @@ export default function RegionIndicatorPage() {
                 <table className="w-full min-w-[18rem] text-[13px]">
                   <thead className="sticky top-0 bg-surface">
                     <tr className="text-left text-text-tertiary">
-                      <th className="px-3 py-2 font-medium sm:px-4">{t('regions.ind.colYear')}</th>
+                      <th className="px-3 py-2 font-medium sm:px-4">
+                        {isMonthly ? t('regions.ind.colMonth') : t('regions.ind.colYear')}
+                      </th>
                       <th className="px-3 py-2 text-right font-medium sm:px-4">{regionName}</th>
-                      {data.russia_series?.length > 0 && (
+                      {active.russia_series?.length > 0 && (
                         <th className="px-3 py-2 text-right font-medium sm:px-4">{t('regions.ind.russia')}</th>
                       )}
                     </tr>
                   </thead>
                   <tbody>
                     {tableRows.map(p => {
-                      const rf = data.russia_series?.find(r => r.year === p.year);
+                      const pKey = isMonthly ? p.label : p.year;
+                      const rf = active.russia_series?.find(r => (isMonthly ? r.label === p.label : r.year === p.year));
                       return (
-                        <tr key={p.year} className="border-t border-border-subtle">
-                          <td className="px-3 py-1.5 font-mono text-text-secondary sm:px-4">{p.year}</td>
+                        <tr key={pKey} className="border-t border-border-subtle">
+                          <td className="px-3 py-1.5 font-mono text-text-secondary sm:px-4">
+                            {isMonthly ? `${MONTH_NAMES_RU[p.month - 1]} ${p.year}` : p.year}
+                          </td>
                           <td className="px-3 py-1.5 text-right font-mono text-text-primary sm:px-4">{formatRegionValue(p.value)}</td>
-                          {data.russia_series?.length > 0 && (
+                          {active.russia_series?.length > 0 && (
                             <td className="px-3 py-1.5 text-right font-mono text-text-tertiary sm:px-4">
                               {rf ? formatRegionValue(rf.value) : '—'}
                             </td>
@@ -535,7 +597,7 @@ export default function RegionIndicatorPage() {
             )}
           </div>
 
-          {data.indicator.macro_code && (
+          {active.indicator.macro_code && (
             <div className="bg-surface border border-border-champagne/40 rounded-xl p-4 mb-6">
               <h2 className="text-sm font-semibold text-text-primary mb-2">
                 {t('regions.ind.macroTitle')}
@@ -545,14 +607,14 @@ export default function RegionIndicatorPage() {
               </p>
               <div className="flex flex-wrap gap-2">
                 <Link
-                  to={russiaIndicatorPath(data.indicator.macro_code)}
-                  onClick={() => track(events.REGION_CROSSLINK_CLICK, { from: `region:${slug}:${code}`, to: data.indicator.macro_code })}
+                  to={russiaIndicatorPath(active.indicator.macro_code)}
+                  onClick={() => track(events.REGION_CROSSLINK_CLICK, { from: `region:${slug}:${code}`, to: active.indicator.macro_code })}
                   className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-champagne/10 text-champagne text-[13px] font-medium hover:bg-champagne/20 transition-colors"
                 >
                   {t('regions.ind.openRussia')} <ArrowUpRight size={13} />
                 </Link>
                 <Link
-                  to={`/compare?codes=${data.indicator.macro_code},r:${slug}:${code}`}
+                  to={`/compare?codes=${active.indicator.macro_code},r:${slug}:${code}`}
                   onClick={() => track(events.REGION_CROSSLINK_CLICK, { from: `region:${slug}:${code}`, to: 'compare' })}
                   className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-border-subtle text-text-secondary text-[13px] font-medium hover:text-champagne hover:border-border-champagne transition-colors"
                 >
@@ -562,13 +624,13 @@ export default function RegionIndicatorPage() {
             </div>
           )}
 
-          {data.siblings?.length > 0 && (
+          {active.siblings?.length > 0 && (
             <div>
               <h2 className="text-sm font-semibold text-text-primary mb-3">
-                {t('regions.ind.moreInSection', { section: data.indicator.section_name })}
+                {t('regions.ind.moreInSection', { section: active.indicator.section_name })}
               </h2>
               <div className="flex flex-wrap gap-2">
-                {data.siblings.map(s => (
+                {active.siblings.map(s => (
                   <Link
                     key={s.code}
                     to={regionIndicatorPath(slug, s.code)}

@@ -43,11 +43,30 @@ _CORE_SLICE_KEYS = frozenset({
     "freq", "age", "sex", "unit", "s_adj", "geo", "time",
 })
 
+# Измерения публикации (flash-оценки prc_hicp_fp: release=FIN/EST) — служебные:
+# различают волну выпуска, а не смысл ряда. В identity карточки не входят.
+_RELEASE_SLICE_KEYS = frozenset({"release"})
+
 # Суффикс частоты в dataset_id Евростата: une_rt_m / sts_inpr_q / …
 _DATASET_FREQ_SUFFIX = re.compile(r"_[mqawd]$", re.I)
 
 # Variant-группы: любой stem с >1 карточкой (build_variants сам вернёт [] при одном).
 VARIANT_WHITELIST_STEMS = frozenset()  # deprecated; variant_group_key больше не фильтрует
+
+# Кросс-стемовые variant-алиасы (M3, 2026-08-27): разные наборы Евростата
+# об одном показателе. Штатный ключ «страна × stem» разводит их в разные
+# карточки без переключателя; алиас склеивает в одну variant-группу.
+# Каждый член — frozenset стемов; ключ группировки = alias-группа или stem.
+VARIANT_STEM_ALIASES: tuple[frozenset[str], ...] = (
+    frozenset({"prc_hpi", "ei_hppi"}),  # индекс цен на жильё: основной ↔ быстрая оценка
+    # ГИПЦ, один смысл: месячный индекс / среднегодовой / быстрая оценка flash
+    # (release=FIN — измерение публикации, не смысла) / темп к предыдущему
+    # периоду (ei_cphi, RT1). prc_hicp_cind (постоянные налоги) — другой
+    # показатель, сознательно вне группы.
+    frozenset({
+        "prc_hicp_midx", "prc_hicp_aind", "prc_hicp_fp", "ei_cphi",
+    }),
+)
 
 
 FREQ_ORDER = ("monthly", "quarterly", "annual", "weekly", "daily")
@@ -162,16 +181,145 @@ def card_key(
     )
 
 
+# COICOP-код «все товары и услуги»: агрегат не сужает смысл карточки,
+# поэтому prc_hicp_* (coicop=CP00) и ei_cphi (без coicop) — один предмет.
+_ALL_ITEMS_COICOP = frozenset({"CP00", "TOT", "TOTAL", "T"})
+
+# Класс слияния «индекс/уровень-индекс»: только индексные I/INX-единицы.
+# ВАЖНО: THS_PER/EUR/NR/PC сюда НЕ входят — численность и уровень в % —
+# разные показатели, их слияние запрещено (une_rt: уровень vs численность).
+_INDEX_UNITS = frozenset({
+    "I15", "I15_Q", "I15_A_AVG", "I10", "I10_Q", "I10_A_AVG", "I05", "I96",
+    "I2015", "I2021", "I21", "I21_SCA", "I25", "I25_NSA", "INX", "INX_A_AVG",
+    "INDEX", "I20", "I2010", "I2015_SCA", "I16", "I16_Q", "I16_A_AVG",
+})
+
+# Производные меры одного предмета: темп/изменение — то же измерение,
+# другое представление. Сливаются с индексом (владелец, 2026-08-28:
+# «ИПЦ индекс» + «ИПЦ темп к предыдущему периоду» = одна карточка).
+_CHANGE_UNITS = frozenset({
+    "RCH_A", "RCH_M", "RCH_MV12MAVR", "RT1", "RT1-SCA", "RT_M_DIF",
+    "PCH_SM", "PCH_PRE", "PCH_SAME",
+})
+
+
+def catalog_measure_class(
+    unit: str | None,
+    unit_ru: str | None = None,
+) -> str:
+    """Класс единицы для слияния мер: IDX | сущностный measure_class.
+
+    Индекс и производные от него темпы → «IDX» (одно измерение, разные
+    представления). Остальные единицы — как есть (measure_class): человек,
+    евро, % ЭАН и т.п. сущностно различны и не сливаются.
+    """
+    u = (unit or "").strip().upper().replace("-", "_")
+    ru = (unit_ru or "").strip().lower()
+    if u in _INDEX_UNITS or u in _CHANGE_UNITS:
+        return "IDX"
+    if ru.startswith("индекс") or ru.startswith("темп изменения") or ru.startswith("изменение"):
+        return "IDX"
+    return measure_class(unit, unit_ru)
+
+
+def _catalog_extra_dims(slice_json: dict[str, Any] | None) -> tuple[tuple[str, str], ...]:
+    """Extra-измерения для каталога: coicop-итог «CP00» = отсутствие среза."""
+    out = []
+    for dim, code in extra_dims_frozen(slice_json):
+        if dim in _RELEASE_SLICE_KEYS:
+            continue
+        if dim in ("coicop", "coicop18") and code in _ALL_ITEMS_COICOP:
+            continue
+        out.append((dim, code))
+    return tuple(sorted(out))
+
+
+def catalog_merge_key(
+    *,
+    country_id: int,
+    provider: str | None,
+    dataset_id: str,
+    unit: str | None = None,
+    unit_ru: str | None = None,
+    slice_json: dict[str, Any] | None,
+) -> tuple:
+    """Ключ слияния каталога: меры/базы одного смысла схлопываются.
+
+    Отличие от ``card_key``: measure_class проходит через
+    catalog_measure_class (индекс и его темп — одна карточка), стемы —
+    по alias-группе (prc_hpi ↔ ei_hppi). Разные сущностные единицы
+    (уровень % vs численность), срезы (coicop FOOD vs CP00) и возрасты/полы
+    НЕ схлопываются.
+    """
+    sl = slice_json or {}
+    return (
+        int(country_id),
+        (provider or "eurostat").strip().lower(),
+        variant_stem_alias(dataset_stem(dataset_id)),
+        catalog_measure_class(unit or sl.get("unit"), unit_ru),
+        normalize_age_code(sl.get("age")),
+        normalize_sex_code(sl.get("sex")),
+        _catalog_extra_dims(sl),
+    )
+
+
+def _measure_preference_rank(
+    unit: str | None,
+    unit_ru: str | None = None,
+) -> int:
+    """Порядок меры для primary слитой карточки: уровень-индекс > % > прочее."""
+    from app.data.eurostat_titles_ru import _DERIVED_UNITS, _LEVEL_UNITS
+
+    u = (unit or "").strip().upper().replace("-", "_")
+    if u in _LEVEL_UNITS:
+        return 0
+    if u in _DERIVED_UNITS:
+        return 1
+    return 2
+
+
+def measure_preference_rank(ind: Any) -> tuple:
+    """Сортировочный ключ выбора главной меры: rank меры → глубина → код.
+
+    Меньше = лучше. При равном ранге меры берём самый глубокий ряд
+    (точки листинга — это качество), затем код для детерминизма.
+    """
+    return (
+        _measure_preference_rank(ind.unit, ind.unit_ru),
+        -int(ind.points_count or 0),
+        getattr(ind, "code", "") or "",
+    )
+
+
+def variant_stem_alias(stem: str) -> str:
+    """Alias-ключ stem'а для variant-группы (кросс-стемовые семьи, M3).
+
+    Стемы одной alias-группы (VARIANT_STEM_ALIASES) получают общий ключ;
+    остальные возвращаются как есть. Отдельные dataset_id внутри стема
+    (prc_hpi_q / prc_hpi_a / prc_hpi_ooq) остаются разными карточками.
+    """
+    s = (stem or "").strip().lower()
+    if not s:
+        return s
+    for group in VARIANT_STEM_ALIASES:
+        if s in group:
+            return "|".join(sorted(group))
+    return s
+
+
 def variant_group_key(
     *,
     country_id: int,
     dataset_id: str,
 ) -> tuple | None:
-    """Ключ variant-группы: страна × stem. Один срез → UI сам скроет picker."""
+    """Ключ variant-группы: страна × stem (с кросс-стемовыми алиасами).
+
+    Один срез → UI сам скроет picker.
+    """
     stem = dataset_stem(dataset_id)
     if not stem:
         return None
-    return (int(country_id), stem)
+    return (int(country_id), variant_stem_alias(stem))
 
 
 def national_counterpart_dataset(dataset_id: str | None) -> str | None:

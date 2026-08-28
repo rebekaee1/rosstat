@@ -17,7 +17,6 @@ import {
   rankHeatmapValues,
   resolveActiveMapYear,
   russiaDeepLinksForConcept,
-  russiaNoteForConcept,
   withRussiaOnHomeMap,
   worldRankingFromYearItems,
   defaultSortForConcept,
@@ -237,12 +236,5 @@ describe('homeWorkbench', () => {
     expect(links.countryHref).toBe('/russia/indicator/unemployment');
     expect(links.regionsHref).toBe('/russia/region');
     expect(links.regionRatingHref).toBe('/russia/region-rating/uroven-bezrabotitsy');
-    const tRu = (k) => translate(k, undefined, 'ru');
-    expect(russiaNoteForConcept('unemployment-rate', tRu)).toMatch(/Росстата/);
-    expect(russiaNoteForConcept('unemployment-rate', (k) => translate(k, undefined, 'en'))).toMatch(/Rosstat/);
-    expect(russiaNoteForConcept('budget-balance-gdp', tRu)).toMatch(/Международного валютного фонда/);
-    expect(
-      russiaNoteForConcept('budget-balance-gdp', (k) => translate(k, undefined, 'en')),
-    ).toMatch(/International Monetary Fund/);
   });
 });

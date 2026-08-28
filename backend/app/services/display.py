@@ -175,22 +175,27 @@ def format_number_ru(
     if value is None:
         return "no data" if loc == "en" else "нет данных"
     number = float(value)
-    if abs(number) >= 1000:
+    negative = number < 0
+    magnitude = abs(number)
+    if magnitude >= 1000:
         # Счётные величины (население, число организаций) целые по природе:
         # «85 664 944,00 человек» выглядит как ошибка округления.
-        digits = 0 if float(number).is_integer() else 2
-        text = f"{number:,.{digits}f}"
+        digits = 0 if magnitude.is_integer() else 2
+        text = f"{magnitude:,.{digits}f}"
         if digits:
             # «1 222,40 тыс. чел.» — хвостовой ноль читается как ложная точность.
             text = text.rstrip("0").rstrip(".")
         if loc != "en":
             text = text.replace(",", "\u202f").replace(".", ",")
     else:
-        text = f"{number:.4f}".rstrip("0").rstrip(".")
+        text = f"{magnitude:.4f}".rstrip("0").rstrip(".")
         if loc != "en":
             text = text.replace(".", ",")
-    if signed and number > 0:
+    if signed and not negative:
         text = f"+{text}"
+    # Типографский минус (−), не дефис: публичные числа читаются как в печати.
+    if negative:
+        text = f"\u2212{text}"
     return text
 
 

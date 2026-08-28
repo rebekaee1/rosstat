@@ -115,6 +115,108 @@ describe('WorldCountry market indicators', () => {
   });
 });
 
+describe('WorldCountry frequency badges', () => {
+  it('показывает один бейдж самой детальной частоты, остальные — в подсказке', async () => {
+    renderCountry('germany', {
+      ...GERMANY,
+      categories: [{
+        name: 'Рынок труда',
+        count: 1,
+        indicators: [{
+          code: 'de-une',
+          name: 'Уровень безработицы',
+          unit: '%',
+          frequency: 'monthly',
+          frequencies: ['monthly', 'quarterly'],
+          aggregated_frequencies: ['quarterly', 'annual'],
+          last_value: 3.1,
+          last_date: '2026-06-01',
+        }],
+      }],
+    });
+
+    const row = await screen.findByRole('link', { name: /Уровень безработицы/ });
+    const badges = Array.from(row.querySelectorAll('span.rounded-full'));
+    // Месячные данные — только «мес.»; кв./год перечислены в подсказке.
+    expect(badges.map((b) => b.textContent)).toEqual(['мес.']);
+    expect(badges[0].className).not.toContain('opacity-60');
+    expect(badges[0].getAttribute('title')).toBe('мес.; также: кв., ~год');
+  });
+
+  it('нет месячных среди официальных — показывается квартальный бейдж', async () => {
+    renderCountry('germany', {
+      ...GERMANY,
+      categories: [{
+        name: 'Национальные счета',
+        count: 1,
+        indicators: [{
+          code: 'de-gdp',
+          name: 'ВВП',
+          unit: '%',
+          frequency: 'quarterly',
+          frequencies: ['quarterly', 'annual'],
+          last_value: 0.3,
+          last_date: '2026-03-01',
+        }],
+      }],
+    });
+
+    const row = await screen.findByRole('link', { name: /ВВП/ });
+    const badges = Array.from(row.querySelectorAll('span.rounded-full'));
+    expect(badges.map((b) => b.textContent)).toEqual(['кв.']);
+    expect(badges[0].getAttribute('title')).toBe('кв.; также: год');
+  });
+
+  it('только расчётная частота — бейдж приглушён с тильдой', async () => {
+    renderCountry('germany', {
+      ...GERMANY,
+      categories: [{
+        name: 'Национальные счета',
+        count: 1,
+        indicators: [{
+          code: 'de-gdp-a',
+          name: 'ВВП годовой',
+          unit: '%',
+          frequency: 'annual',
+          frequencies: [],
+          aggregated_frequencies: ['annual'],
+          last_value: 1.2,
+          last_date: '2025-12-31',
+        }],
+      }],
+    });
+
+    const row = await screen.findByRole('link', { name: /ВВП годовой/ });
+    const badges = Array.from(row.querySelectorAll('span.rounded-full'));
+    expect(badges.map((b) => b.textContent)).toEqual(['~год']);
+    expect(badges[0].className).toContain('opacity-60');
+    expect(badges[0].getAttribute('title')).toBeNull();
+  });
+
+  it('без частот бейджей нет', async () => {
+    renderCountry('germany', {
+      ...GERMANY,
+      categories: [{
+        name: 'Прочее',
+        count: 1,
+        indicators: [{
+          code: 'de-x',
+          name: 'Без частоты',
+          unit: '',
+          frequency: null,
+          frequencies: [],
+          aggregated_frequencies: [],
+          last_value: 1,
+          last_date: '2026-01-01',
+        }],
+      }],
+    });
+
+    const row = await screen.findByRole('link', { name: /Без частоты/ });
+    expect(row.querySelectorAll('span.rounded-full').length).toBe(0);
+  });
+});
+
 describe('WorldCountry empty states', () => {
   it('пустой каталог ведёт к списку стран, а не на /world', async () => {
     renderCountry('germany', {
@@ -141,5 +243,39 @@ describe('WorldCountry empty states', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Сбросить поиск' }));
     expect(await screen.findByRole('heading', { name: 'Рынок труда' })).toBeTruthy();
+  });
+});
+
+describe('WorldCountry coverage copy', () => {
+  it('CTA «Сравнить показатели» на странице ровно один', async () => {
+    renderCountry('united-states', US_COUNTRY);
+
+    await screen.findByRole('heading', { name: 'Рынок труда' });
+    const cta = screen.getAllByRole('link', {
+      name: /Сравнить показатели|Compare indicators/,
+    });
+    expect(cta).toHaveLength(1);
+  });
+
+  it('пустой strip обзорных показателей не повторяет hero-абзац о покрытии', async () => {
+    renderCountry('germany', {
+      ...GERMANY,
+      overview: [],
+    });
+
+    await screen.findByRole('heading', { name: 'Рынок труда' });
+
+    // Hero-абзац «{N} в {M} …» на странице один — strip его не дублирует.
+    // Скоуп по абзацам: кастомный матчер по textContent в testing-library
+    // проходит и по body-обёрткам, что даёт ложные совпадения.
+    const heroParagraphs = Array.from(document.querySelectorAll('p'))
+      .filter((node) => /\d+ \S+ в \d+/.test(node.textContent));
+    expect(heroParagraphs).toHaveLength(1);
+    // Пустой strip несёт альтернативную строку (ключ world.country.coverageAlt;
+    // пока словарь параллельной правки не влит, t() отдаёт сырой ключ —
+    // принимаем оба состояния, дублирование hero-текста не допускается ни в каком).
+    const stripCopy = document.querySelector('div.sm\\:col-span-3')?.textContent || '';
+    expect(stripCopy).not.toMatch(/\d+ \S+ в \d+/);
+    expect(stripCopy.length).toBeGreaterThan(0);
   });
 });

@@ -1,0 +1,21 @@
+[
+  {
+    "NC": "Nível Territorial (Código)",
+    "NN": "Nível Territorial",
+    "MC": "Unidade de Medida (Código)",
+    "MN": "Unidade de Medida",
+    "V": "Valor",
+    "D1C": "Brasil (Código)",
+    "D1N": "Brasil",
+    "D2C": "Variável (Código)",
+    "D2N": "Variável",
+    "D3C": "Ano (Código)",
+    "D3N": "Ano"
+  },
+  {"NC": "1", "NN": "Brasil", "MC": "45", "MN": "Pessoas", "V": "119011000", "D1C": "1", "D1N": "Brasil", "D2C": "606", "D2N": "População residente", "D3C": "1980", "D3N": "1980"},
+  {"NC": "1", "NN": "Brasil", "MC": "45", "MN": "Pessoas", "V": "146825475", "D1C": "1", "D1N": "Brasil", "D2C": "606", "D2N": "População residente", "D3C": "1991", "D3N": "1991"},
+  {"NC": "1", "NN": "Brasil", "MC": "45", "MN": "Pessoas", "V": "169799170", "D1C": "1", "D1N": "Brasil", "D2C": "606", "D2N": "População residente", "D3C": "2000", "D3N": "2000"},
+  {"NC": "1", "NN": "Brasil", "MC": "45", "MN": "Pessoas", "V": "190755799", "D1C": "1", "D1N": "Brasil", "D2C": "606", "D2N": "População residente", "D3C": "2010", "D3N": "2010"},
+  {"NC": "1", "NN": "Brasil", "MC": "45", "MN": "Pessoas", "V": "203080756", "D1C": "1", "D1N": "Brasil", "D2C": "606", "D2N": "População residente", "D3C": "2022", "D3N": "2022"},
+  {"NC": "1", "NN": "Brasil", "MC": "45", "MN": "Pessoas", "V": "93095836", "D1C": "1", "D1N": "Brasil", "D2C": "606", "D2N": "População residente", "D3C": "1970", "D3N": "1970"}
+]

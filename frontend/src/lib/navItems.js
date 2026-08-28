@@ -35,6 +35,18 @@ export const PRIMARY_NAV = [
   },
 ];
 
+/**
+ * Primary-пункты для локали: на EN рубрика «Россия» скрыта — весь русский
+ * раздел (/russia, регионы, рейтинги) существует только в RU-витрине.
+ * Подсветка активного пункта (`resolveActiveNavId`) считается по ПОЛНОМУ
+ * PRIMARY_NAV, иначе скрытие ломало бы aria-current на страницах раздела.
+ */
+export function primaryNav(locale) {
+  return locale === 'en'
+    ? PRIMARY_NAV.filter((item) => item.id !== 'russia')
+    : PRIMARY_NAV;
+}
+
 /** Самый длинный совпавший префикс среди пунктов; граница сегмента обязательна. */
 export function resolveActiveNavId(pathname, items = PRIMARY_NAV) {
   let bestId = null;

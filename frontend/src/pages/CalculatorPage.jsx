@@ -13,19 +13,30 @@ import {
 import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
 import useInflationCalc from '../lib/useInflationCalc';
-import { formatCalcAmount, RUSSIA_SLUG } from '../lib/inflationCalc';
 import { formatDate, formatAxisTick, cn } from '../lib/format';
 import { parseAmount, formatInput, fmtPct, years as yearsPhrase } from '../lib/calcFormat';
 import { getSiteOrigin } from '../lib/siteOrigin';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
 import { SkeletonBox } from '../components/Skeleton';
-import { track, events } from '../lib/track';
+import { track, trackOutbound, events } from '../lib/track';
 import { buildShareUrl } from '../lib/utm';
 import useScrollDepth from '../lib/useScrollDepth';
 import FaqAccordion from '../components/FaqAccordion';
 import CalcCountryPicker from '../components/CalcCountryPicker';
 import { localizeSource } from '../i18n/viewModeLabels';
 import { useLocale, useT } from '../i18n';
+import {
+  defaultCountrySlug,
+  formatCalcAmount,
+  normalizePeriod,
+  RUSSIA_SLUG,
+} from '../lib/inflationCalc';
+import {
+  russiaIndicatorPath,
+  russiaHomePath,
+  regionHubPath,
+  demographicsPath,
+} from '../lib/sitePaths';
 
 /* ─── Constants ─── */
 
@@ -63,6 +74,28 @@ const CATEGORY_META = [
   { key: 'food', labelKey: 'calc.inflation.cat.food', icon: ShoppingCart },
   { key: 'nonfood', labelKey: 'calc.inflation.cat.nonfood', icon: Package },
   { key: 'services', labelKey: 'calc.inflation.cat.services', icon: Wrench },
+];
+
+/** Перелинковка «Смотреть дальше»: ключи i18n + дефолты на случай гонки агентов. */
+const WATCH_MORE_LINKS = [
+  {
+    key: 'world.calc.watchMore.regions',
+    fallbackRu: 'Регионы России',
+    fallbackEn: 'Regions of Russia',
+    to: regionHubPath(),
+  },
+  {
+    key: 'world.calc.watchMore.demography',
+    fallbackRu: 'Демография',
+    fallbackEn: 'Demographics',
+    to: demographicsPath(),
+  },
+  {
+    key: 'world.calc.watchMore.russia',
+    fallbackRu: 'Экономика России',
+    fallbackEn: 'Russia’s economy',
+    to: russiaHomePath(),
+  },
 ];
 
 /* ─── Sub-components ─── */
@@ -275,29 +308,57 @@ export default function CalculatorPage() {
     const p = searchParams.get('amount');
     return p ? parseInt(p, 10) || 100000 : 100000;
   });
-  const [fromYear, setFromYear] = useState(() => {
-    const p = searchParams.get('from');
-    return p ? parseInt(p, 10) || currentYear - 10 : currentYear - 10;
-  });
-  const [toYear, setToYear] = useState(() => {
-    const p = searchParams.get('to');
-    return p ? parseInt(p, 10) || currentYear : currentYear;
-  });
-  const [countrySlug, setCountrySlug] = useState(() => {
-    const p = (searchParams.get('country') || RUSSIA_SLUG).trim().toLowerCase();
-    return p || RUSSIA_SLUG;
-  });
+
+  // K4a: URL-период снимается один раз как неизменяемый референс — нормализация
+  // (перестановка from > to, клэмп к данным) выполняется в одной точке ниже.
+  const [initialPeriod] = useState(() => ({
+    from: parseInt(searchParams.get('from'), 10) || currentYear - 10,
+    to: parseInt(searchParams.get('to'), 10) || currentYear,
+  }));
+  const [rawFromYear, setRawFromYear] = useState(initialPeriod.from);
+  const [rawToYear, setRawToYear] = useState(initialPeriod.to);
+
+  // K1: дефолт страны — по локали (EN-витрина → США), и только когда ?country
+  // в URL нет; явный выбор пользователя всегда приоритетнее дефолта.
+  const [countryParam] = useState(() => (searchParams.get('country') || '').trim().toLowerCase());
+  const [countrySlug, setCountrySlug] = useState(
+    () => countryParam || defaultCountrySlug(locale),
+  );
   const [copied, setCopied] = useState(false);
   const [chartMode, setChartMode] = useState('purchasing');
   const [reversed, setReversed] = useState(false);
+  const [periodTouched, setPeriodTouched] = useState(false);
 
   const {
     result, isLoading, isError, lastAvailableYear, minYear, lastAvailableDate,
-    countries, source, countryName, seriesStartYear, isRussia,
-  } = useInflationCalc(amount, fromYear, toYear, countrySlug);
+    countries, source, sourceUrl, resolvedCountrySlug, countryName, seriesStartYear, isRussia,
+  } = useInflationCalc(amount, rawFromYear, rawToYear, countrySlug);
+
+  // K4a: канонизированный период — производное состояние, синхронизируемое во
+  // время рендера (порядок «raw → normalized» детерминирован и не зацикливается),
+  // без cascading-render эффекта. Пользовательские правки перезаписывают raw,
+  // и следующая нормализация их не искажает.
+  const [normalized, setNormalized] = useState(() => normalizePeriod(
+    initialPeriod.from, initialPeriod.to, minYear, lastAvailableYear,
+  ));
+  const derived = normalizePeriod(initialPeriod.from, initialPeriod.to, minYear, lastAvailableYear);
+  if (!periodTouched
+    && (derived.from !== normalized.from || derived.to !== normalized.to)) {
+    setNormalized(derived);
+  }
+  const fromYear = periodTouched ? rawFromYear : normalized.from;
+  const toYear = periodTouched ? rawToYear : normalized.to;
 
   const withRuble = isRussia;
   const sourceLabel = source ? localizeSource(source, locale) : '';
+  // K4b: у мировой ветки — прямая ссылка на источник ряда (metaQ), у России —
+  // внутренняя карточка ИПЦ; без URL показывается просто подпись.
+  const sourceHref = sourceUrl || null;
+
+  // K4a: URL-период шире данных — канонизация видна пользователю оговоркой,
+  // пока он сам не начал двигать слайдеры (тогда границы уже его выбор).
+  const urlPeriodClamped = !periodTouched
+    && (initialPeriod.from !== fromYear || initialPeriod.to !== toYear);
 
   const effectiveMax = lastAvailableYear || currentYear;
   const effectiveMin = minYear || 1991;
@@ -336,24 +397,34 @@ export default function CalculatorPage() {
     return () => tween.kill();
   }, []);
 
-  const handleFromYear = useCallback((v) => setFromYear(Math.min(v, toYear - 1)), [toYear]);
-  const handleToYear = useCallback((v) => setToYear(Math.max(v, fromYear + 1)), [fromYear]);
+  const handleFromYear = useCallback((v) => {
+    setPeriodTouched(true);
+    setRawFromYear(Math.min(v, toYear - 1));
+  }, [toYear]);
+  const handleToYear = useCallback((v) => {
+    setPeriodTouched(true);
+    setRawToYear(Math.max(v, fromYear + 1));
+  }, [fromYear]);
 
   const handlePreset = useCallback((preset) => {
-    if (preset.from != null) setFromYear(Math.max(preset.from, effectiveMin));
-    else if (preset.from === null) setFromYear(effectiveMin);
-    else setFromYear(Math.max(effectiveMax - preset.offset, effectiveMin));
-    setToYear(effectiveMax);
+    setPeriodTouched(true);
+    if (preset.from != null) setRawFromYear(Math.max(preset.from, effectiveMin));
+    else if (preset.from === null) setRawFromYear(effectiveMin);
+    else setRawFromYear(Math.max(effectiveMax - preset.offset, effectiveMin));
+    setRawToYear(effectiveMax);
     track(events.CALC_PRESET, { preset: preset.label });
   }, [effectiveMin, effectiveMax]);
 
   const handleCountryChange = useCallback((slug) => {
-    setCountrySlug(slug || RUSSIA_SLUG);
-  }, []);
+    // Явный выбор из пикера всегда валиден: кириллица/регистр нормализуются,
+    // пустой выбор означает возврат к дефолту локали (K1).
+    const normalized = String(slug || '').trim().toLowerCase();
+    setCountrySlug(normalized || defaultCountrySlug(locale));
+  }, [locale]);
 
   const handleShare = useCallback(async () => {
     const params = new URLSearchParams({ amount: String(amount), from: String(fromYear), to: String(toYear) });
-    if (countrySlug && countrySlug !== RUSSIA_SLUG) params.set('country', countrySlug);
+    if (resolvedCountrySlug && resolvedCountrySlug !== RUSSIA_SLUG) params.set('country', resolvedCountrySlug);
     setSearchParams(params, { replace: true });
     // share-ссылка всегда уходит наружу с UTM, чтобы возвратный трафик
     // отделялся от Direct в Метрике (см. docs/utm_taxonomy.md::Internal share).
@@ -363,13 +434,13 @@ export default function CalculatorPage() {
       campaign: 'calc-share',
       content: `${fromYear}-${toYear}`,
     });
-    track(events.CALC_SHARE, { from: fromYear, to: toYear, amount, country: countrySlug });
+    track(events.CALC_SHARE, { from: fromYear, to: toYear, amount, country: resolvedCountrySlug });
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch { /* clipboard unavailable */ }
-  }, [amount, fromYear, toYear, countrySlug, setSearchParams]);
+  }, [amount, fromYear, toYear, resolvedCountrySlug, setSearchParams]);
 
   // В-28: hero и share-текст показывают ФАКТИЧЕСКИ посчитанный период
   // (клэмп к доступным данным), а не введённые годы — иначе «?from=1990»
@@ -535,17 +606,17 @@ export default function CalculatorPage() {
       '@type': 'WebApplication',
       name: isRussia
         ? t('calc.inflation.jsonLdName')
-        : t('calc.inflation.jsonLdNameWorld', { country: countryName || countrySlug }),
+        : t('calc.inflation.jsonLdNameWorld', { country: countryName || resolvedCountrySlug }),
       url: `${origin}/calculator`,
       description: isRussia
         ? t('calc.inflation.jsonLdDesc')
-        : t('calc.inflation.jsonLdDescWorld', { country: countryName || countrySlug }),
+        : t('calc.inflation.jsonLdDescWorld', { country: countryName || resolvedCountrySlug }),
       applicationCategory: 'FinanceApplication',
       operatingSystem: 'All',
       offers: { '@type': 'Offer', price: '0', priceCurrency: 'RUB' },
       creator: { '@type': 'Organization', name: 'Forecast Economy', url: origin },
     };
-  }, [t, isRussia, countryName, countrySlug]);
+  }, [t, isRussia, countryName, resolvedCountrySlug]);
 
   useEffect(() => {
     let faqScript = document.getElementById('calc-faq-ld');
@@ -599,7 +670,7 @@ export default function CalculatorPage() {
 
         <CalcCountryPicker
           countries={countries}
-          value={countrySlug}
+          value={resolvedCountrySlug}
           onChange={handleCountryChange}
           russiaLabel={t('calc.country.russia')}
         />
@@ -738,7 +809,7 @@ export default function CalculatorPage() {
               </p>
             )}
 
-            {result.clamped && (
+            {(result.clamped || urlPeriodClamped) && (
               <p className="text-xs text-text-tertiary mb-6 -mt-4">
                 {t(
                   isRussia ? 'calc.inflation.clampedNote' : 'calc.inflation.shortSeries',
@@ -756,7 +827,25 @@ export default function CalculatorPage() {
 
             {sourceLabel && (
               <p className="text-xs text-text-tertiary mb-6 -mt-4">
-                {t('calc.inflation.source', { source: sourceLabel })}
+                {t('calc.inflation.source', { source: '' }).replace(/\s*$/, '')}{' '}
+                {sourceHref ? (
+                  <a
+                    href={sourceHref}
+                    target="_blank"
+                    rel="noopener"
+                    className="text-champagne hover:text-champagne-muted underline decoration-champagne/30 underline-offset-2 transition-colors"
+                    onClick={() => trackOutbound(sourceHref)}
+                  >
+                    {sourceLabel}
+                  </a>
+                ) : (
+                  <Link
+                    to={russiaIndicatorPath('cpi')}
+                    className="text-champagne hover:text-champagne-muted underline decoration-champagne/30 underline-offset-2 transition-colors"
+                  >
+                    {sourceLabel}
+                  </Link>
+                )}
               </p>
             )}
 
@@ -931,7 +1020,7 @@ export default function CalculatorPage() {
       </section>
 
       {/* ── Другие калькуляторы ── */}
-      <section data-animate>
+      <section data-animate className="mb-8">
         <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-4">{t('calc.otherHeading')}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Link to="/calculator/mortgage" className="group rounded-2xl bg-surface border border-border-subtle p-4 hover:border-champagne/30 transition-colors">
@@ -942,6 +1031,26 @@ export default function CalculatorPage() {
             <p className="text-sm font-semibold text-text-primary group-hover:text-champagne transition-colors mb-1">{t('calc.inflation.otherCompoundTitle')}</p>
             <p className="text-[13px] text-text-secondary">{t('calc.inflation.otherCompoundDesc')}</p>
           </Link>
+        </div>
+      </section>
+
+      {/* ── K5: Смотреть дальше — третий блок перелинковки вглубь платформы ── */}
+      <section data-animate>
+        <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-4">
+          {t('world.calc.watchMore.title', locale === 'en' ? 'Keep exploring' : 'Смотреть дальше')}
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {WATCH_MORE_LINKS.map((item) => (
+            <Link
+              key={item.key}
+              to={item.to}
+              className="group rounded-2xl bg-surface border border-border-subtle p-4 hover:border-champagne/30 transition-colors"
+            >
+              <p className="text-sm font-semibold text-text-primary group-hover:text-champagne transition-colors">
+                {t(item.key, locale === 'en' ? item.fallbackEn : item.fallbackRu)}
+              </p>
+            </Link>
+          ))}
         </div>
       </section>
     </div>

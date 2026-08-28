@@ -134,12 +134,17 @@ export const HOME_RATING_LIMIT = 20;
 /**
  * World concept → российский ряд только при честной сопоставимости единицы.
  * Значения в рейтинг/карту отдаёт сервер (`world_russia_rank`); здесь — только
- * коды для перелинковки на карточку РФ.
+ * коды для перелинковки на карточку РФ. WEO-ряды (МВФ) не карточка каталога,
+ * но у них есть валидные URL /russia/indicator/<code> — с карты главной Россия
+ * ведёт туда, а не в «Сегодня», по тем же концептам, что и note-оговорка.
  */
 export const HOME_MAP_RUSSIA_CONCEPT_CODES = Object.freeze({
   'unemployment-rate': 'unemployment',
   'hicp-index': 'cpi-yoy',
   population: 'population',
+  'gdp-usd': 'weo-gdp-usd',
+  'gdp-per-capita-usd': 'weo-gdp-per-capita-usd',
+  'budget-balance-gdp': 'weo-budget-balance-gdp',
 });
 
 /** World concept → код регионального рейтинга того же смысла (если есть). */
@@ -148,15 +153,6 @@ export const WORLD_CONCEPT_REGION_RATING = Object.freeze({
   population: 'chislennost-naseleniya',
   'hicp-index': 'indeksy-potrebitelskih-tsen',
   'activity-rate': 'uroven-zanyatosti-naseleniya',
-});
-
-export const WORLD_CONCEPT_RUSSIA_NOTE_KEYS = Object.freeze({
-  'unemployment-rate': 'world.rating.russiaNote.unemployment-rate',
-  'hicp-index': 'world.rating.russiaNote.hicp-index',
-  population: 'world.rating.russiaNote.population',
-  'gdp-usd': 'world.rating.russiaNote.gdp-usd',
-  'gdp-per-capita-usd': 'world.rating.russiaNote.gdp-per-capita-usd',
-  'budget-balance-gdp': 'world.rating.russiaNote.budget-balance-gdp',
 });
 
 export const WORLD_RATING_QUERY_NAME_KEYS = Object.freeze({
@@ -322,12 +318,6 @@ export function russiaIndicatorCodeForConcept(conceptSlug) {
 
 export function regionRatingCodeForConcept(conceptSlug) {
   return WORLD_CONCEPT_REGION_RATING[conceptSlug] || null;
-}
-
-/** Оговорка о сопоставимости российского ряда; null — если её нет. */
-export function russiaNoteForConcept(conceptSlug, t) {
-  const key = WORLD_CONCEPT_RUSSIA_NOTE_KEYS[conceptSlug];
-  return key ? t(key) : null;
 }
 
 /** Ссылки «из рейтинга в российский раздел» — не тупик. */

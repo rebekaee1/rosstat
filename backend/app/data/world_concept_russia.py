@@ -90,42 +90,46 @@ RUSSIA_CONCEPT_LINKS: dict[str, RussiaConceptLink] = {
     "gdp-usd": RussiaConceptLink(
         indicator_code="weo-gdp-usd",
         value_kind="level",
-        source_ru="Международный валютный фонд",
-        source_en="International Monetary Fund",
+        source_ru="Росстат, Банк России",
+        source_en="Rosstat, Bank of Russia",
         note_ru=(
-            "Для России в рейтинг входит годовая оценка валового внутреннего "
-            "продукта в текущих долларах США из публикации «Перспективы "
-            "развития мировой экономики» Международного валютного фонда. "
-            "Тот же выпуск используется для зарубежных стран. Это не оценка "
-            "Росстата в рублях и не пересчёт национальной валюты по курсу "
-            "Банка России."
+            "Значение России в рейтинге рассчитано платформой по национальным "
+            "данным: годовой объём валового внутреннего продукта Росстата "
+            "в рублях пересчитан в доллары США по среднегодовому официальному "
+            "курсу Банка России. Для зарубежных стран используется годовая "
+            "оценка из публикации «Перспективы развития мировой экономики» "
+            "Международного валютного фонда; у разных стран она может "
+            "опираться на собственные валютные пересчёты фонда."
         ),
         note_en=(
-            "For Russia the ranking uses the IMF World Economic Outlook "
-            "annual estimate of GDP in current US dollars. Other countries "
-            "come from the same publication. This is not Rosstat’s ruble "
-            "national-accounts series and not a conversion of local currency "
-            "at the Bank of Russia exchange rate."
+            "Russia’s value in the ranking is calculated by the platform from "
+            "national data: Rosstat’s annual GDP in rubles is converted to US "
+            "dollars at the Bank of Russia average annual official exchange "
+            "rate. Other countries use the annual estimate from the IMF World "
+            "Economic Outlook, which may rely on the fund’s own currency "
+            "conversions."
         ),
     ),
     "gdp-per-capita-usd": RussiaConceptLink(
         indicator_code="weo-gdp-per-capita-usd",
         value_kind="level",
-        source_ru="Международный валютный фонд",
-        source_en="International Monetary Fund",
+        source_ru="Росстат, Банк России",
+        source_en="Rosstat, Bank of Russia",
         note_ru=(
-            "Для России в рейтинг входит годовая оценка валового внутреннего "
-            "продукта на душу населения в текущих долларах США из публикации "
-            "«Перспективы развития мировой экономики» Международного валютного "
-            "фонда. Тот же выпуск используется для зарубежных стран. Это не "
-            "ряд Росстата и не пересчёт рублей по курсу Банка России."
+            "Значение России в рейтинге рассчитано платформой по национальным "
+            "данным: годовой объём валового внутреннего продукта Росстата "
+            "в рублях пересчитан в доллары США по среднегодовому официальному "
+            "курсу Банка России и делён на численность населения России. "
+            "Для зарубежных стран используется годовая оценка из публикации "
+            "«Перспективы развития мировой экономики» Международного "
+            "валютного фонда."
         ),
         note_en=(
-            "For Russia the ranking uses the IMF World Economic Outlook "
-            "annual estimate of GDP per capita in current US dollars. Other "
-            "countries come from the same publication. This is not a Rosstat "
-            "series and not a conversion of rubles at the Bank of Russia "
-            "exchange rate."
+            "Russia’s value in the ranking is calculated by the platform from "
+            "national data: Rosstat’s annual GDP in rubles is converted to US "
+            "dollars at the Bank of Russia average annual official exchange "
+            "rate and divided by Russia’s population. Other countries use the "
+            "annual estimate from the IMF World Economic Outlook."
         ),
     ),
     "budget-balance-gdp": RussiaConceptLink(
@@ -150,11 +154,22 @@ RUSSIA_CONCEPT_LINKS: dict[str, RussiaConceptLink] = {
             "classification, so the figures do not coincide."
         ),
     ),
+    # Россия не публикует долг всего сектора государственного управления
+    # в процентах ВВП национальным рядом: статистика Минфина ведёт федеральный
+    # бюджет в рублях по кассовому исполнению (иная единица и охват), внешний
+    # долг ЦБ — млрд долларов и другой смысл. Служебный МВФ-ряд нельзя завести
+    # без парной строки в seed_data.py (файл вне зоны этой правки), а смешение
+    # фондовых и национальных определений долга в одной строке рейтинга вводило
+    # бы читателя в заблуждение. Рейтинг долга идёт без России до появления
+    # честно сопоставимого отечественного ряда.
     # gdp-volume-* — национальная валюта, rating-поверхности нет.
-    # government-debt-gdp — единица и охват S.13 не совпадают с рядом Минфина.
     # long-term-interest-rate — доходность облигаций ≠ ключевая ставка ЦБ.
     # activity-rate / gdp-per-capita-eu — нет честного отечественного аналога.
     # gdp-nominal российского каталога — рубли Росстата, не этот концепт.
+    # weo-gdp-usd / weo-gdp-per-capita-usd остаются связанными рядами МВФ, но
+    # в рейтинге Россия считается национально (Росстат × курс Банка России,
+    # см. world_russia_rank::_gdp_usd_method_yearly_items): карточки МВФ
+    # работают как отдельные ряды каталога и как резерв для рейтинга.
 }
 
 

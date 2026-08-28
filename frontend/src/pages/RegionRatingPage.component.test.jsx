@@ -4,7 +4,7 @@ import RegionRatingPage from './RegionRatingPage';
 import { renderPage, mockApiGet } from '../test/renderPage';
 
 vi.mock('../components/RegionsMap', () => ({
-  default: () => <div data-testid="regions-map-stub">map</div>,
+  default: vi.fn(() => <div data-testid="regions-map-stub">map</div>),
 }));
 
 afterEach(() => vi.restoreAllMocks());
@@ -65,6 +65,43 @@ describe('RegionRatingPage', () => {
     });
   });
 
+  it('переключатель в шапке таблицы разворачивает направление и карту', async () => {
+    mockApiGet([
+      ['/auth/me', { user: null }],
+      [/^\/regions\/heatmap\/uroven-bezrabotitsy/, {
+        indicator: { code: 'uroven-bezrabotitsy', name: 'Уровень безработицы', unit: '%' },
+        year: 2024,
+        polarity: 'lower_better',
+        default_sort: 'asc',
+        rank_as_achievement: true,
+        values: makeValues(),
+      }],
+    ]);
+    const RegionsMap = (await import('../components/RegionsMap')).default;
+
+    renderPage(
+      <RegionRatingPage />,
+      { path: '/russia/region-rating/:code', route: '/russia/region-rating/uroven-bezrabotitsy' },
+    );
+
+    expect(await screen.findByTestId('regions-map-stub')).toBeTruthy();
+    expect(RegionsMap).toHaveBeenCalledWith(
+      expect.objectContaining({ colorDirection: 'asc' }),
+      undefined,
+    );
+
+    // Клик по заголовку колонки значений разворачивает направление —
+    // раскраска карты переворачивается вместе с порядком строк.
+    const valueHeader = screen
+      .getAllByRole('columnheader')
+      .find((node) => node.textContent.includes('%'));
+    fireEvent.click(within(valueHeader).getByRole('button'));
+    expect(RegionsMap).toHaveBeenLastCalledWith(
+      expect.objectContaining({ colorDirection: 'desc' }),
+      undefined,
+    );
+  });
+
   it('для неизвестной полярности — нейтральные подписи и убывание по умолчанию', async () => {
     const values = makeValues().map((row) => (
       row.slug === 'moskva'
@@ -93,7 +130,7 @@ describe('RegionRatingPage', () => {
     expect(await screen.findByRole('heading', { name: /сравнение регионов России/i })).toBeTruthy();
     expect(screen.getByText('Наибольшее значение')).toBeTruthy();
     expect(screen.queryByText('Лучшее значение')).toBeNull();
-    expect(screen.getByRole('columnheader', { name: '№' })).toBeTruthy();
+    expect(screen.getByRole('columnheader', { name: /тыс. человек/i })).toBeTruthy();
 
     await waitFor(() => {
       const rows = dataRows();

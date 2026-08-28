@@ -223,25 +223,46 @@ async def backfill_webmaster_search_queries(
     processed = 0
     try:
         for day in daterange(date_from, date_to):
-            try:
-                resp = await client.search_queries_popular(
-                    user_id, _WEBMASTER_HOST_ID,
-                    order_by="TOTAL_SHOWS",
-                    query_indicator=["TOTAL_SHOWS", "TOTAL_CLICKS",
-                                     "AVG_SHOW_POSITION", "AVG_CLICK_POSITION"],
-                    date_from=str(day), date_to=str(day), limit=100,
-                )
-            except Exception:  # noqa: BLE001 — свежие дни API ещё не отдаёт
-                continue
-            for q in (resp.data or {}).get("queries") or []:
-                text = (q.get("query_text") or "").strip()
-                if not text:
-                    continue
-                ind = q.get("indicators") or {}
-                shows = int(ind.get("TOTAL_SHOWS") or 0)
-                clicks = int(ind.get("TOTAL_CLICKS") or 0)
-                if not shows and not clicks:
-                    continue
+            # API отдаёт ТОП-3000 запросов за день постранично (limit ≤ 500).
+            # Проходов два: по показам и по кликам — сортировки дают разные срезы
+            # хвоста (запросы с кликами без показов в топ показов не попадают).
+            # Дедуп по тексту запроса: пересечение сортировок склеиваем.
+            fetched: dict[str, dict] = {}
+            for order_by in ("TOTAL_SHOWS", "TOTAL_CLICKS"):
+                offset = 0
+                while True:
+                    try:
+                        resp = await client.search_queries_popular(
+                            user_id, _WEBMASTER_HOST_ID,
+                            order_by=order_by,
+                            query_indicator=["TOTAL_SHOWS", "TOTAL_CLICKS",
+                                             "AVG_SHOW_POSITION", "AVG_CLICK_POSITION"],
+                            date_from=str(day), date_to=str(day),
+                            limit=500, offset=offset,
+                        )
+                    except Exception:  # noqa: BLE001 — свежие дни API ещё не отдаёт
+                        break
+                    queries = (resp.data or {}).get("queries") or []
+                    if not queries:
+                        break
+                    for q in queries:
+                        text = (q.get("query_text") or "").strip()
+                        if not text or text in fetched:
+                            continue
+                        ind = q.get("indicators") or {}
+                        shows = int(ind.get("TOTAL_SHOWS") or 0)
+                        clicks = int(ind.get("TOTAL_CLICKS") or 0)
+                        if not shows and not clicks:
+                            continue
+                        fetched[text] = {
+                            "shows": shows,
+                            "clicks": clicks,
+                            "position": ind.get("AVG_SHOW_POSITION"),
+                        }
+                    if len(queries) < 500:
+                        break
+                    offset += 500
+            for text, m in fetched.items():
                 existing = (await db.execute(
                     select(WebmasterSearchQuery).where(
                         WebmasterSearchQuery.host == _WEBMASTER_HOST_ID,
@@ -252,10 +273,10 @@ async def backfill_webmaster_search_queries(
                 )).scalar_one_or_none() or WebmasterSearchQuery(
                     host=_WEBMASTER_HOST_ID, date=day, query=text, url=None,
                 )
-                existing.impressions = shows
-                existing.clicks = clicks
-                existing.ctr = round(clicks / shows, 4) if shows else None
-                pos = ind.get("AVG_SHOW_POSITION")
+                existing.impressions = m["shows"]
+                existing.clicks = m["clicks"]
+                existing.ctr = round(m["clicks"] / m["shows"], 4) if m["shows"] else None
+                pos = m["position"]
                 existing.position = round(float(pos), 2) if pos is not None else None
                 db.add(existing)
                 processed += 1

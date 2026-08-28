@@ -40,3 +40,17 @@ def test_all_mapped_codes_unique_per_concept():
         values = list(mapping.values())
         assert len(values) == len(set(values)), slug
         assert len(mapping) == len(set(mapping.keys())), slug
+
+
+def test_activity_rate_national_participation_rates():
+    """AU/UK: национальный participation rate = уровень экономической активности.
+
+    Eurostat-срез lfsi_emp_a ACT (15–64) недоступен вне Eurostat-plane;
+    официальный национальный ряд доли экономически активного населения
+    в процентах сопоставим по смыслу и единице (возрастная база своя).
+    """
+    mapping = NATIONAL_CONCEPT_INDICATOR_CODES["activity-rate"]
+    assert mapping["AU"] == "au-participation-rate"
+    assert mapping["UK"] == "uk-participation-rate"
+    codes = national_codes_for_concept("activity-rate")
+    assert codes == frozenset({"au-participation-rate", "uk-participation-rate"})

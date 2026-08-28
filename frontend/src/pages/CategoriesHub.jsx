@@ -48,7 +48,7 @@ export default function CategoriesHub() {
   }, [crumbs]);
 
   return (
-    <div className="mx-auto max-w-7xl overflow-x-hidden px-4 pb-28 pt-24 md:px-8">
+    <div className="mx-auto max-w-7xl overflow-x-clip px-4 pb-28 pt-24 md:px-8">
       <Breadcrumbs items={crumbs} className="mb-8" />
 
       <header className="mb-10 max-w-3xl">

@@ -3,9 +3,12 @@ import {
   annualYoyFromIndexPoints,
   buildWorldResult,
   computeFromAnnualYoy,
+  defaultCountrySlug,
   formatCalcAmount,
   inflationCountriesFromCatalog,
+  normalizePeriod,
   RUSSIA_SLUG,
+  US_SLUG,
 } from './inflationCalc';
 
 describe('annualYoyFromIndexPoints', () => {
@@ -105,5 +108,31 @@ describe('formatCalcAmount', () => {
   it('для России добавляет рубль, для мира — нет', () => {
     expect(formatCalcAmount(100000, { withRuble: true })).toMatch(/₽/);
     expect(formatCalcAmount(100000, { withRuble: false })).not.toMatch(/₽/);
+  });
+});
+
+describe('defaultCountrySlug', () => {
+  it('EN-витрина по умолчанию считает США, русская — Россию', () => {
+    expect(defaultCountrySlug('en')).toBe(US_SLUG);
+    expect(defaultCountrySlug('en')).toBe('united-states');
+    expect(defaultCountrySlug('ru')).toBe(RUSSIA_SLUG);
+  });
+});
+
+describe('normalizePeriod', () => {
+  it('переставляет перепутанные границы URL (from > to)', () => {
+    expect(normalizePeriod(2020, 2010, 1991, 2026)).toEqual({ from: 2010, to: 2020 });
+  });
+
+  it('клэмпит период к доступному диапазону данных', () => {
+    expect(normalizePeriod(1980, 2100, 1991, 2026)).toEqual({ from: 1991, to: 2026 });
+  });
+
+  it('валидный период не меняет', () => {
+    expect(normalizePeriod(2000, 2015, 1991, 2026)).toEqual({ from: 2000, to: 2015 });
+  });
+
+  it('однолетний период сохраняется, а не схлопывается до перестановки', () => {
+    expect(normalizePeriod(2020, 2020, 1991, 2026)).toEqual({ from: 2020, to: 2020 });
   });
 });

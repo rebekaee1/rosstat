@@ -136,6 +136,36 @@ class RegionDataPoint(Base):
     region: Mapped["Region"] = relationship(back_populates="data_points")
 
 
+class RegionMonthlyPoint(Base):
+    """Помесячная точка регионального показателя ( bounded context ADR-0008).
+
+    Отдельная таблица, а не годовая сетка region_data: смешение частот в одной
+    таблице ловит trap «annual-in-monthly mixing» (CONTEXT.md). `month` хранится
+    как YYYYMM (202608) — сортировка совпадает с хронологией, диапазоны лет
+    выражаются сравнением целых.
+    """
+
+    __tablename__ = "region_monthly_data"
+    __table_args__ = (
+        UniqueConstraint("indicator_id", "region_id", "month", name="uq_region_monthly_point"),
+        Index("ix_region_monthly_indicator_month", "indicator_id", "month"),
+        Index("ix_region_monthly_region_indicator_month", "region_id", "indicator_id", "month"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    indicator_id: Mapped[int] = mapped_column(
+        ForeignKey("region_indicators.id", ondelete="CASCADE"), nullable=False
+    )
+    region_id: Mapped[int] = mapped_column(
+        ForeignKey("regions.id", ondelete="CASCADE"), nullable=False
+    )
+    month: Mapped[int] = mapped_column(Integer, nullable=False)  # YYYYMM
+    value: Mapped[float] = mapped_column(Numeric(18, 4), nullable=False)
+
+    indicator: Mapped["RegionIndicator"] = relationship()
+    region: Mapped["Region"] = relationship()
+
+
 # --- Мировой блок — отдельный multi-provider bounded context, по образцу ADR-0008 ---
 
 

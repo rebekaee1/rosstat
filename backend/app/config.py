@@ -58,8 +58,10 @@ class Settings(BaseSettings):
     scheduler_late_fred_hour: int = 23
     scheduler_late_fred_minute: int = 30
     ticker_pull_interval_seconds: int = 8
-    # Eurostat world block — отдельный opt-in job. До двух успешных shadow
-    # прогонов не меняет world_*; не смешивается с daily_update_job России.
+    # Eurostat world block — отдельный opt-in job. Eurostat-часть до двух
+    # успешных shadow прогонов не меняет world_*; национальные паспорта
+    # (world_national_core) пишут данные сразу и идут до длинной Eurostat-
+    # очереди. Не смешивается с daily_update_job России.
     world_eurostat_ingest_enabled: bool = False
     world_eurostat_ingest_shadow: bool = True
     world_eurostat_ingest_hour: int = 2
@@ -69,6 +71,12 @@ class Settings(BaseSettings):
     world_forecast_enabled: bool = False
     world_forecast_hour: int = 4
     world_forecast_minute: int = 20
+
+    # Официальный график публикаций Росстата («План выпуска публикаций»,
+    # Grafik_srochn_YYYY.docx): события date_confidence='official_explicit'
+    # с полным provenance. Выключен до выката — включается одной переменной
+    # CALENDAR_ROSSTAT_PLAN_ENABLED=true в .env.
+    calendar_rosstat_plan_enabled: bool = False
 
     # Alerting
     telegram_bot_token: str = ""

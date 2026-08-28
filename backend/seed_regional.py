@@ -26,7 +26,7 @@ from sqlalchemy.dialects.postgresql import insert as pg_insert
 sys.path.insert(0, str(Path(__file__).parent))
 
 from app.database import async_session
-from app.models import Region, RegionDataPoint, RegionIndicator
+from app.models import Region, RegionDataPoint, RegionIndicator, RegionMonthlyPoint
 
 DATA_DIR = Path(__file__).parent / "app" / "data" / "regional"
 CHUNK = 10_000
@@ -47,9 +47,35 @@ def iter_points():
             yield code, rslug, int(year), float(value)
 
 
+def iter_monthly_points():
+    """Стрим помесячных точек из fuel_points.csv (период YYYYMM).
+
+    Файл может отсутствовать — помесячный слой тогда просто пуст.
+    """
+    path = DATA_DIR / "fuel_points.csv"
+    if not path.exists():
+        return
+    with open(path, encoding="utf-8") as fh:
+        reader = csv.reader(fh, delimiter=";")
+        next(reader, None)
+        for code, rslug, period, value in reader:
+            if len(period) == 6 and period.isdigit():
+                yield code, rslug, int(period), float(value)
+
+
 def count_points() -> int:
     with gzip.open(DATA_DIR / "data.csv.gz", "rt", encoding="utf-8") as fh:
         return sum(1 for _ in fh) - 1  # минус заголовок
+
+
+def count_monthly_points() -> int:
+    path = DATA_DIR / "fuel_points.csv"
+    if not path.exists():
+        return 0
+    with open(path, encoding="utf-8") as fh:
+        reader = csv.reader(fh, delimiter=";")
+        next(reader, None)
+        return sum(1 for row in reader if len(row[2]) == 6 and row[2].isdigit())
 
 
 async def seed_regional() -> None:
@@ -97,16 +123,21 @@ async def seed_regional() -> None:
 
         # --- точки: пропуск, если счётчик совпадает ---
         n_db = (await db.execute(select(func.count()).select_from(RegionDataPoint))).scalar()
-        if n_db == n_artifact:
-            print(f"regional: {n_db} точек уже загружены — пропуск")
+        n_db_monthly = (
+            await db.execute(select(func.count()).select_from(RegionMonthlyPoint))
+        ).scalar()
+        n_artifact_monthly = count_monthly_points()
+        if n_db == n_artifact and n_db_monthly == n_artifact_monthly:
+            print(f"regional: {n_db}+{n_db_monthly} точек уже загружены — пропуск")
             return
 
-        print(f"regional: в БД {n_db}, в артефакте {n_artifact} — полная перезаливка")
+        print(f"regional: в БД {n_db}+{n_db_monthly}, в артефакте {n_artifact}+{n_artifact_monthly}"
+              " — полная перезаливка")
         rid = {s: i for s, i in (await db.execute(select(Region.slug, Region.id))).all()}
         iid = {c: i for c, i in
                (await db.execute(select(RegionIndicator.code, RegionIndicator.id))).all()}
 
-        await db.execute(text("TRUNCATE region_data RESTART IDENTITY"))
+        await db.execute(text("TRUNCATE region_data, region_monthly_data RESTART IDENTITY"))
         # О-10: COPY чанками через asyncpg вместо ~1M executemany-инсертов —
         # на порядок быстрее и без гигантского списка в памяти.
         raw = await (await db.connection()).get_raw_connection()
@@ -131,8 +162,30 @@ async def seed_regional() -> None:
                 columns=("indicator_id", "region_id", "year", "value"),
             )
             total += len(chunk)
+
+        total_m = 0
+        chunk = []
+        for c, r, m, v in iter_monthly_points():
+            ind_id, reg_id = iid.get(c), rid.get(r)
+            if ind_id is None or reg_id is None:
+                raise RuntimeError(f"regional-monthly: нет метаданных для {c!r}/{r!r}")
+            chunk.append((ind_id, reg_id, m, v))
+            if len(chunk) >= CHUNK:
+                await driver.copy_records_to_table(
+                    "region_monthly_data", records=chunk,
+                    columns=("indicator_id", "region_id", "month", "value"),
+                )
+                total_m += len(chunk)
+                chunk = []
+        if chunk:
+            await driver.copy_records_to_table(
+                "region_monthly_data", records=chunk,
+                columns=("indicator_id", "region_id", "month", "value"),
+            )
+            total_m += len(chunk)
+
         await db.commit()
-        print(f"regional: загружено {total} точек, "
+        print(f"regional: загружено {total} годовых + {total_m} месячных точек, "
               f"{len(indicators)} показателей, {len(regions)} территорий")
 
 

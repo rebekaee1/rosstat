@@ -35,8 +35,8 @@ def test_non_cpi_passes_through():
 def test_value_text_for_cpi_has_sign_and_period():
     assert display_value_text("cpi", 100.17, "%", "monthly") == "+0,17 % за месяц"
     assert display_value_text("inflation-weekly", 100.07, "%", "weekly") == "+0,07 % за неделю"
-    # Дефляция — с минусом
-    assert display_value_text("cpi", 99.83, "%", "monthly") == "-0,17 % за месяц"
+    # Дефляция — с типографским минусом (U+2212), как во всех публичных числах
+    assert display_value_text("cpi", 99.83, "%", "monthly") == "\u22120,17 % за месяц"
 
 
 def test_value_text_for_level_series():

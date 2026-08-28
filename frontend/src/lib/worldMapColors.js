@@ -75,7 +75,16 @@ function percentile(values, rawValue) {
   return Math.max(1, Math.min(99, Math.round((midpointRank / values.length) * 100)));
 }
 
-function relativeModel(values) {
+function shiftForDirection(band, direction, size) {
+  // Инверсия шкалы: при порядке «по возрастанию» лучшими становятся малые
+  // значения, поэтому они получают насыщенный край палитры, а крупные —
+  // противоположный. Направление не задано — привязка по возрастанию значения.
+  return direction === 'asc' ? size - 1 - band : band;
+}
+
+function relativeModel(values, { direction = null } = {}) {
+  const size = WORLD_RELATIVE_SCALE.length;
+  const colorIndexFor = (band) => shiftForDirection(band, direction, size);
   const thresholds = WORLD_RELATIVE_SCALE
     .slice(0, -1)
     .map((_, index) => quantile(values, (index + 1) / WORLD_RELATIVE_SCALE.length));
@@ -91,21 +100,22 @@ function relativeModel(values) {
     scale: WORLD_RELATIVE_SCALE,
     median: quantile(values, 0.5),
     sampleSize: values.length,
-    bins: WORLD_RELATIVE_SCALE.map((color, index) => ({
-      color,
+    bins: WORLD_RELATIVE_SCALE.map((_, index) => ({
+      color: WORLD_RELATIVE_SCALE[colorIndexFor(index)],
       min: index === 0 ? null : thresholds[index - 1],
       max: index === WORLD_RELATIVE_SCALE.length - 1 ? null : thresholds[index],
       labelKey: RELATIVE_LABELS[index],
     })),
     colorFor: (value) => {
       const band = bandFor(value);
-      return band < 0 ? WORLD_NO_DATA : WORLD_RELATIVE_SCALE[band];
+      return band < 0 ? WORLD_NO_DATA : WORLD_RELATIVE_SCALE[colorIndexFor(band)];
     },
     labelColorFor: (value) => {
       const band = bandFor(value);
       if (band < 0) return '#6F746F';
-      if (band <= 2) return '#315A7D';
-      if (band >= 4) return '#87591F';
+      const index = colorIndexFor(band);
+      if (index <= 2) return '#315A7D';
+      if (index >= 4) return '#87591F';
       return '#6F685A';
     },
     describe: (value) => {
@@ -116,7 +126,9 @@ function relativeModel(values) {
   };
 }
 
-function divergingModel(values) {
+function divergingModel(values, { direction = null } = {}) {
+  const size = WORLD_DIVERGING_SCALE.length;
+  const colorIndexFor = (band) => shiftForDirection(band, direction, size);
   const maxAbs = Math.max(...values.map(Math.abs), 1);
   const third = maxAbs / 3;
   const twoThirds = third * 2;
@@ -138,23 +150,24 @@ function divergingModel(values) {
     median: quantile(values, 0.5),
     sampleSize: values.length,
     bins: [
-      { color: WORLD_DIVERGING_SCALE[0], min: null, max: -twoThirds, labelKey: DIVERGING_LABELS[0] },
-      { color: WORLD_DIVERGING_SCALE[1], min: -twoThirds, max: -third, labelKey: DIVERGING_LABELS[1] },
-      { color: WORLD_DIVERGING_SCALE[2], min: -third, max: 0, labelKey: DIVERGING_LABELS[2] },
-      { color: WORLD_DIVERGING_SCALE[3], min: 0, max: 0, zero: true, labelKey: DIVERGING_LABELS[3] },
-      { color: WORLD_DIVERGING_SCALE[4], min: 0, max: third, labelKey: DIVERGING_LABELS[4] },
-      { color: WORLD_DIVERGING_SCALE[5], min: third, max: twoThirds, labelKey: DIVERGING_LABELS[5] },
-      { color: WORLD_DIVERGING_SCALE[6], min: twoThirds, max: null, labelKey: DIVERGING_LABELS[6] },
+      { color: WORLD_DIVERGING_SCALE[colorIndexFor(0)], min: null, max: -twoThirds, labelKey: DIVERGING_LABELS[0] },
+      { color: WORLD_DIVERGING_SCALE[colorIndexFor(1)], min: -twoThirds, max: -third, labelKey: DIVERGING_LABELS[1] },
+      { color: WORLD_DIVERGING_SCALE[colorIndexFor(2)], min: -third, max: 0, labelKey: DIVERGING_LABELS[2] },
+      { color: WORLD_DIVERGING_SCALE[colorIndexFor(3)], min: 0, max: 0, zero: true, labelKey: DIVERGING_LABELS[3] },
+      { color: WORLD_DIVERGING_SCALE[colorIndexFor(4)], min: 0, max: third, labelKey: DIVERGING_LABELS[4] },
+      { color: WORLD_DIVERGING_SCALE[colorIndexFor(5)], min: third, max: twoThirds, labelKey: DIVERGING_LABELS[5] },
+      { color: WORLD_DIVERGING_SCALE[colorIndexFor(6)], min: twoThirds, max: null, labelKey: DIVERGING_LABELS[6] },
     ],
     colorFor: (value) => {
       const band = bandFor(value);
-      return band < 0 ? WORLD_NO_DATA : WORLD_DIVERGING_SCALE[band];
+      return band < 0 ? WORLD_NO_DATA : WORLD_DIVERGING_SCALE[colorIndexFor(band)];
     },
     labelColorFor: (value) => {
       const band = bandFor(value);
       if (band < 0) return '#6F746F';
-      if (band <= 2) return '#315A7D';
-      if (band >= 4) return '#87591F';
+      const index = colorIndexFor(band);
+      if (index <= 2) return '#315A7D';
+      if (index >= 4) return '#87591F';
       return '#6F685A';
     },
     describe: (value) => {
@@ -169,8 +182,13 @@ function divergingModel(values) {
  * `relative` — центр по медиане стран, `diverging` — центр по нулю (для
  * показателей, где знак содержателен: сальдо бюджета, приток капитала).
  * Выбор по значениям убран намеренно — он «перекрашивал» карту между годами.
+ *
+ * `direction` привязывает шкалу к смыслу текущей сортировки: `desc` —
+ * насыщенный край палитры у максимальных значений (по умолчанию), `asc` —
+ * у минимальных. Так переключение порядка в таблице переворачивает раскраску
+ * карты: лидер нового порядка всегда акцентный, антилидер — бледный.
  */
-export function buildWorldColorModel(valuesByCode, { mode = 'relative' } = {}) {
+export function buildWorldColorModel(valuesByCode, { mode = 'relative', direction = null } = {}) {
   const values = numericValues(valuesByCode);
   if (!values.length) {
     return {
@@ -184,5 +202,6 @@ export function buildWorldColorModel(valuesByCode, { mode = 'relative' } = {}) {
       describe: () => null,
     };
   }
-  return mode === 'diverging' ? divergingModel(values) : relativeModel(values);
+  const options = { direction };
+  return mode === 'diverging' ? divergingModel(values, options) : relativeModel(values, options);
 }

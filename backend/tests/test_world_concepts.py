@@ -165,6 +165,55 @@ def test_budget_balance_matches_eurostat_b9_and_imf_weo_in_one_concept():
     assert concept_for_indicator(imf_ggxcnl).slug == "budget-balance-gdp"
 
 
+def test_government_debt_matches_eurostat_gd_and_imf_weo_in_one_concept():
+    """Долг: Eurostat GD/S13 (Маастрихт) и IMF GGXWDG_NGDP, без пересечений.
+
+    Провайдеры описывают срез разными измерениями: матч строго по пину
+    своего провайдера; баланс бюджета (B9) не пересекается с долгом (GD).
+    """
+    debt = CONCEPT_BY_SLUG["government-debt-gdp"]
+    balance = CONCEPT_BY_SLUG["budget-balance-gdp"]
+    eurostat_gd = _indicator(
+        "gov_10dd_edpt1",
+        "PC_GDP",
+        {"freq": "A", "unit": "PC_GDP", "sector": "S13", "na_item": "GD"},
+        "% ВВП",
+    )
+    eurostat_b9 = _indicator(
+        "gov_10dd_edpt1",
+        "PC_GDP",
+        {"freq": "A", "unit": "PC_GDP", "sector": "S13", "na_item": "B9"},
+        "% ВВП",
+    )
+    imf_debt = _indicator(
+        "WEO",
+        "PC_GDP",
+        {"weo_code": "GGXWDG_NGDP"},
+        "% ВВП",
+        provider="imf",
+    )
+    imf_balance = _indicator(
+        "WEO",
+        "PC_GDP",
+        {"weo_code": "GGXCNL_NGDP"},
+        "% ВВП",
+        provider="imf",
+    )
+    assert debt.provider_dataset_ids == {
+        "eurostat": frozenset({"gov_10dd_edpt1"}),
+        "imf": frozenset({"weo"}),
+    }
+    assert concept_matches_indicator(debt, eurostat_gd)
+    assert concept_matches_indicator(debt, imf_debt)
+    # IMF-ряд не сматчится по Eurostat-пину (na_item/sector) — и наоборот.
+    assert not concept_matches_indicator(debt, imf_balance)
+    assert not concept_matches_indicator(debt, eurostat_b9)
+    assert not concept_matches_indicator(balance, imf_debt)
+    assert concept_for_indicator(eurostat_gd).slug == "government-debt-gdp"
+    assert concept_for_indicator(imf_debt).slug == "government-debt-gdp"
+    assert concept_for_indicator(imf_balance).slug == "budget-balance-gdp"
+
+
 def test_imf_weo_gdp_matches_and_eurostat_b1gq_does_not():
     gdp = CONCEPT_BY_SLUG["gdp-usd"]
     pc = CONCEPT_BY_SLUG["gdp-per-capita-usd"]

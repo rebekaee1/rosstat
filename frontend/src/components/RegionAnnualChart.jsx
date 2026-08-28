@@ -20,14 +20,25 @@ const DUAL_AXIS_RATIO = 3;
 
 const COMPARE_COLOR = '#5B7DA8';
 
-function RegionTooltip({ active, payload, label, unit, regionName, compareName, russiaLabel }) {
+// Подпись месяца для оси/тултипа: «май 2012» / «May 2012».
+function monthTickLabel(p, locale) {
+  const loc = locale === 'en' ? 'en' : 'ru';
+  const names = loc === 'en'
+    ? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    : ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+  const m = (p.month ?? 1) - 1;
+  return `${names[m]} ${p.year}`;
+}
+
+function RegionTooltip({ active, payload, label, unit, regionName, compareName, russiaLabel, tickLabel }) {
   if (!active || !payload?.length) return null;
   const region = payload.find(p => p.dataKey === 'value' && p.value != null);
   const compare = payload.find(p => p.dataKey === 'compare' && p.value != null);
   const russia = payload.find(p => p.dataKey === 'russia' && p.value != null);
+  const periodLabel = tickLabel ? tickLabel(label) : label;
   return (
     <div className="bg-surface border border-border-subtle rounded-lg px-3 py-2 shadow-lg text-xs">
-      <div className="text-text-tertiary font-mono mb-1">{label}</div>
+      <div className="text-text-tertiary font-mono mb-1">{periodLabel}</div>
       {region && (
         <div className="font-mono font-semibold text-champagne">
           {regionName}: {formatRegionValue(region.value)}
@@ -58,8 +69,9 @@ export default function RegionAnnualChart({
   unit = '',
   regionName = '',
   height = 320,
+  frequency = 'annual',
 }) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const wrapRef = useRef(null);
   const [plotWidth, setPlotWidth] = useState(0);
 
@@ -74,16 +86,23 @@ export default function RegionAnnualChart({
     return () => ro.disconnect();
   }, []);
 
+  const monthly = frequency === 'monthly';
+  // Ключ точки: год (annual) или «YYYY-MM» (monthly) — join-ключ рядов РФ/сравнения.
+  const periodKey = (p) => (monthly ? (p.label || `${p.year}-${String(p.month).padStart(2, '0')}`) : p.year);
+
   const data = useMemo(() => {
-    const rfByYear = new Map((russiaSeries || []).map(p => [p.year, p.value]));
-    const cmpByYear = new Map((compareSeries || []).map(p => [p.year, p.value]));
+    const rfByPeriod = new Map((russiaSeries || []).map(p => [periodKey(p), p.value]));
+    const cmpByPeriod = new Map((compareSeries || []).map(p => [periodKey(p), p.value]));
     return (series || []).map(p => ({
+      period: periodKey(p),
       year: p.year,
+      label: monthly ? monthTickLabel(p, locale) : String(p.year),
       value: p.value,
-      compare: cmpByYear.get(p.year) ?? null,
-      russia: rfByYear.get(p.year) ?? null,
+      compare: cmpByPeriod.get(periodKey(p)) ?? null,
+      russia: rfByPeriod.get(periodKey(p)) ?? null,
     }));
-  }, [series, russiaSeries, compareSeries]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [series, russiaSeries, compareSeries, monthly, locale]);
 
   const showRussia = useMemo(
     () => data.some(d => d.russia != null),
@@ -118,18 +137,21 @@ export default function RegionAnnualChart({
       0,
       plotWidth - leftAxisWidth - (dualAxis ? rightAxisWidth : 0) - 24,
     );
-    let budget = chartAxisTickBudget(axisW, 4);
+    let budget = chartAxisTickBudget(axisW, monthly ? 7 : 4);
     // Dual-axis на узком экране: 4 года вместо 6 — иначе подписи года
     // визуально «прыгают» между плотными промежутками.
     if (isNarrow && dualAxis) budget = Math.min(budget, 4);
     else if (isNarrow) budget = Math.min(budget, 5);
     return pickChartAxisTicks(data, budget, {
-      dateKey: 'year',
-      cadence: 'annual',
+      dateKey: 'period',
+      cadence: monthly ? null : 'annual',
       plotWidthPx: axisW,
-      formatLabel: (y) => String(y),
+      formatLabel: (v) => {
+        const d = data.find((x) => String(x.period) === String(v));
+        return d ? d.label : String(v);
+      },
     });
-  }, [data, plotWidth, leftAxisWidth, rightAxisWidth, dualAxis, isNarrow]);
+  }, [data, plotWidth, leftAxisWidth, rightAxisWidth, dualAxis, isNarrow, monthly]);
 
   if (!data.length) return null;
 
@@ -150,8 +172,8 @@ export default function RegionAnnualChart({
         role="img"
         aria-label={t('regions.ind.chartAria', {
           region: regionName,
-          from: data[0].year,
-          to: data[data.length - 1].year,
+          from: data[0].label,
+          to: data[data.length - 1].label,
         })}
       >
         <ResponsiveContainer>
@@ -164,7 +186,7 @@ export default function RegionAnnualChart({
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" vertical={false} />
             <XAxis
-              dataKey="year"
+              dataKey="period"
               tick={tickStyle}
               tickLine={false}
               axisLine={false}
@@ -209,6 +231,10 @@ export default function RegionAnnualChart({
                   regionName={regionName}
                   compareName={compareName}
                   russiaLabel={russiaLabel}
+                  tickLabel={(v) => {
+                    const d = data.find((x) => String(x.period) === String(v));
+                    return d ? d.label : String(v);
+                  }}
                 />
               )}
             />

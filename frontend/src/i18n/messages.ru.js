@@ -134,7 +134,7 @@ export default {
   'home.concept.gdp-volume-quarterly': 'ВВП, квартал',
   'home.concept.gdp-volume-annual': 'ВВП, год',
   'home.concept.long-term-interest-rate': 'Доходность гособлигаций',
-  'home.concept.activity-rate': 'Экономическая активность',
+  'home.concept.activity-rate': 'Экономическая активность населения',
   'home.concept.gdp-per-capita-eu': 'ВВП на душу к ЕС',
 
   'home.coverage.eyebrow': 'Покрытие платформы',
@@ -149,7 +149,23 @@ export default {
   'home.countries.russiaHint': 'макроэкономика и регионы',
   'home.countries.loadError': 'Не удалось загрузить каталог стран.',
 
+  'home.scope.title': 'Что внутри платформы',
+  'home.scope.stat.macro.value': '100+',
+  'home.scope.stat.macro.label': 'макроиндикаторов России',
+  'home.scope.stat.regions.value': '489',
+  'home.scope.stat.regions.label': 'региональных показателей по 85 субъектам',
+  'home.scope.stat.countries.value': '56',
+  'home.scope.stat.countries.label': 'стран мира',
+  'home.scope.stat.pages.value': '1,7 млн+',
+  'home.scope.stat.pages.label': 'страниц с данными',
+  'home.scope.sources.label': 'Официальные источники данных',
+  'home.scope.sources.list': 'Росстат, Банк России, Минфин России, Евростат, МВФ',
+  'home.scope.update': 'Обновление данных — ежедневно, 06:00 и 20:00 МСК',
+
   'russia.eyebrow': 'Страна',
+  'russia.map.eyebrow': 'Территория и регионы',
+  'russia.map.caption': 'Карта субъектов Российской Федерации',
+  'russia.map.note': '85 субъектов — по каждому 489 региональных показателя',
   'russia.sections': 'Разделы',
   'russia.link.today.title': 'Сегодня',
   'russia.link.today.desc': 'Ключевые показатели на текущую дату',
@@ -206,38 +222,10 @@ export default {
   'world.rating.query.budget-balance-gdp': 'сальдо бюджета',
   'world.rating.query.population': 'численности населения',
   'world.rating.query.long-term-interest-rate': 'доходности долгосрочных государственных облигаций',
-  'world.rating.query.activity-rate': 'уровню экономической активности',
+  'world.rating.query.activity-rate': 'уровню экономической активности населения',
   'world.rating.query.gdp-per-capita-eu': 'ВВП на душу относительно среднего по ЕС',
   'world.rating.query.gdp-usd': 'ВВП в текущих долларах США',
   'world.rating.query.gdp-per-capita-usd': 'ВВП на душу населения в текущих долларах США',
-  'world.rating.russiaNote.unemployment-rate':
-    'Для России в рейтинг входит уровень безработицы по обследованию рабочей силы Росстата. '
-    + 'Зарубежные значения — по гармонизированной методологии Евростата. '
-    + 'Оба показателя близки по смыслу (доля безработных среди экономически активного населения), '
-    + 'но возрастная база и детали обследования могут отличаться.',
-  'world.rating.russiaNote.hicp-index':
-    'Для России сравнивается изменение потребительских цен за год по данным Росстата '
-    + '(индекс потребительских цен), для зарубежных стран — гармонизированный индекс Евростата '
-    + 'или национальный индекс цен. Составы потребительских корзин различаются; сравнивается '
-    + 'именно относительное изменение за год, а не уровень индекса и не изменение к предыдущему месяцу.',
-  'world.rating.russiaNote.population':
-    'Численность населения России — по данным Росстата (в публикации ведомства ряд ведётся '
-    + 'в миллионах человек; в таблице приведена численность в человеках). Для зарубежных стран — '
-    + 'данные их статистических ведомств или Евростата.',
-  'world.rating.russiaNote.gdp-usd':
-    'Для России в рейтинг входит годовая оценка валового внутреннего продукта в текущих '
-    + 'долларах США из публикации «Перспективы развития мировой экономики» Международного '
-    + 'валютного фонда. Тот же выпуск используется для зарубежных стран. Это не оценка '
-    + 'Росстата в рублях и не пересчёт национальной валюты по курсу Банка России.',
-  'world.rating.russiaNote.gdp-per-capita-usd':
-    'Для России в рейтинг входит годовая оценка валового внутреннего продукта на душу '
-    + 'населения в текущих долларах США из публикации «Перспективы развития мировой экономики» '
-    + 'Международного валютного фонда. Тот же выпуск используется для зарубежных стран. '
-    + 'Это не ряд Росстата и не пересчёт рублей по курсу Банка России.',
-  'world.rating.russiaNote.budget-balance-gdp':
-    'Для России рейтинг берёт оценку Международного валютного фонда по сектору '
-    + 'государственного управления; национальная статистика Минфина России использует '
-    + 'другую классификацию и охват.',
   'world.rating.intro':
     'Выберите показатель и год. Для цен на карте и в таблице — изменение за год '
     + 'в процентах, а не уровень индекса. Карта показывает пространственный срез, '
@@ -256,16 +244,12 @@ export default {
   'world.rating.summaryBody':
     'В таблице участвуют {ranked} {countryWord} из {total}. Страны без значения за выбранный год '
     + 'показаны отдельным списком ниже, чтобы охват рейтинга был виден сразу.',
-  'world.rating.summaryRussiaIn':
-    ' Россия включена по национальному ряду того же смысла.',
-  'world.rating.summaryRussiaOut':
-    ' России в этом рейтинге нет: сопоставимого ряда в той же единице нет.',
   'world.rating.noteYoy':
     'Для потребительских цен сравнивается изменение за год в процентах: базовые периоды '
     + 'национальных индексов при делении сокращаются, поэтому страны сопоставимы. '
     + 'Денежные ряды в национальных валютах в рейтинг не входят.',
   'world.rating.noteDefault':
-    'В рейтинг попадают только показатели, которые можно честно сравнить между странами '
+    'В рейтинг попадают только показатели, которые можно объективно сравнить между странами '
     + 'в одной единице. Денежные ряды в национальных валютах сюда не входят.',
   'world.rating.russiaRegions': 'Россия и регионы',
   'world.rating.russiaIndicator': 'Показатель России',
@@ -287,8 +271,11 @@ export default {
   'world.rating.col.country': 'Страна',
   'world.rating.col.unit': 'Единица',
   'world.rating.valueWithUnit': 'Значение, {unit}',
+  'world.rating.columnWithUnit': '{label}, {unit}',
   'world.rating.fallbackUnit': 'единицы источника',
   'world.rating.emptyYear': 'За выбранный год нет данных для рейтинга.',
+  'world.rating.slideLeft': 'Прокрутить таблицу влево',
+  'world.rating.slideRight': 'Прокрутить таблицу вправо',
   'world.rating.withoutDataTitle': 'Страны без данных за {year} ({n})',
   'world.rating.selectedYear': 'выбранный год',
   'world.rating.allHaveData':
@@ -1294,6 +1281,7 @@ export default {
   'world.map.countryNoData': '{name}: нет данных',
   'world.map.outlineAria': 'Контур территории: {name}',
   'world.map.countryMapAria': 'Карта страны: {name}',
+  'world.map.russiaOpen': 'Открыть Россию',
   'world.map.distribution': 'Распределение показателя',
   'world.map.band.rel0': 'Нижние 15% стран',
   'world.map.band.rel1': 'Заметно ниже медианы',
@@ -1329,9 +1317,15 @@ export default {
   'world.freq.monthly': 'мес.',
   'world.freq.quarterly': 'кв.',
   'world.freq.annual': 'год',
+  'world.freq.long.daily': 'день',
+  'world.freq.long.weekly': 'неделя',
+  'world.freq.long.monthly': 'месяц',
+  'world.freq.long.quarterly': 'квартал',
+  'world.freq.long.annual': 'год',
   'world.unit.km2': 'км²',
   'world.unit.people': 'человек',
   'world.country.compareCta': 'Сравнить показатели',
+  'world.country.coverageAlt': 'Ключевые показатели экономики — от цен и рынков труда до внешней торговли',
   'world.country.loadError': 'Не удалось загрузить данные страны. Попробуйте ещё раз.',
   'world.country.findIndicator': 'Найти показатель…',
   'world.country.findIndicatorAria': 'Поиск по показателям страны',
@@ -1498,6 +1492,7 @@ export default {
   'regions.ind.axisRegion': '{region} — левая ось',
   'regions.ind.axisRussia': 'Россия — правая ось',
   'regions.ind.deltaYoY': '{pct}% за год',
+  'regions.ind.deltaMoM': '{pct}% за месяц',
   'regions.ind.rankAchieve': 'Место в России, {year}',
   'regions.ind.rankNeutral': 'Положение в списке, {year}',
   'regions.ind.of': 'из',
@@ -1508,6 +1503,7 @@ export default {
   'regions.ind.topNeutral': 'Наибольшие значения по регионам, {year}',
   'regions.ind.tableToggle': 'Таблица значений по годам',
   'regions.ind.colYear': 'Год',
+  'regions.ind.colMonth': 'Месяц',
   'regions.ind.macroTitle': 'Показатель по России в целом',
   'regions.ind.macroBody':
     'У этого показателя есть общероссийская карточка с более частым обновлением и прогнозом, а в разделе сравнения можно наложить регион и федеральный уровень на один график.',
@@ -1521,6 +1517,10 @@ export default {
     '{name} — {region}: {value} {unit} ({year})',
   'regions.ind.metaDesc':
     '{name} в регионе {region}: {value} {unit} в {year} году. Динамика с {from} года по данным Росстата, график по годам{rank}.',
+  'regions.ind.metaTitleMonthly':
+    '{name} — {region}: {value} {unit} ({year})',
+  'regions.ind.metaDescMonthly':
+    '{name} в регионе {region}: {value} {unit} в {year} году. Помесячная динамика с января {from} года по данным Росстата, график по месяцам{rank}.',
   'regions.ind.metaRankAchieve':
     ', {position}-е место среди {total} регионов России.',
   'regions.ind.metaRankNeutral':
@@ -1792,26 +1792,13 @@ export default {
   'meth.cta.indicators': 'Смотреть индикаторы',
   'meth.cta.about': 'О проекте',
   'world.rating.addColumn': 'Добавить показатель',
-  'world.rating.addColumnHint': 'Сравните страны ещё по одному показателю за тот же год',
   'world.rating.extraGuestTitle': 'Дополнительные колонки — после входа',
   'world.rating.extraGuestBody': 'Гостю доступна одна колонка рейтинга. Войдите, чтобы добавить до трёх показателей.',
   'world.rating.extraRemove': 'Убрать колонку',
   'world.rating.login': 'Войти',
   'world.rating.register': 'Создать аккаунт',
   'world.rating.extraMax': 'Можно добавить не больше четырёх дополнительных показателей',
-  'world.rating.compareTitle': 'Страны рядом',
-  'world.rating.compareHint': 'До пяти показателей по выбранным странам, одним взглядом.',
-  'world.rating.filtersLabel': 'Фильтр стран',
-  'world.rating.filterAdd': 'Добавить страны',
-  'world.rating.filterClear': 'Сбросить фильтр',
-  'world.rating.filterEmpty': 'В выбранных странах нет данных за этот год.',
-  'world.rating.filterShown': 'Показано {shown} из {total}',
-  'world.rating.filterSearch': 'Найти страну',
-  'world.rating.matrix.rowHeader': 'Показатель',
-  'world.rating.matrix.periodRow': 'Период',
   'world.rating.matrix.guestCap': 'Гостю доступен один дополнительный показатель. Зарегистрируйтесь, чтобы сравнивать до пяти.',
-  'world.rating.matrix.bestHint': 'Выделено лучшее значение строки',
-  'world.rating.matrix.more': 'ещё {n}',
   'world.country.emptySearch': 'По запросу «{query}» ничего не найдено.',
   'world.country.emptySearchReset': 'Сбросить поиск',
   'world.country.emptyCatalog':

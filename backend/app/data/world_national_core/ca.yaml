@@ -1,0 +1,281 @@
+# Canada national-core passport (official StatCan WDS + BoC Valet).
+# Live-probed 2026-08-12. Loader: scripts/load-world-national.py --country ca
+# Expand with live-probed vectors; loader is idempotent and does not
+# touch existing eurostat rows for CA.
+
+country_code: CA
+
+series:
+  - code_suffix: cpi-all
+    name_ru: Индекс потребительских цен
+    name_en: Consumer Price Index (all items)
+    category_ru: Цены
+    unit: INDEX
+    unit_ru: индекс (2002 = 100)
+    frequency: monthly
+    provider: statcan
+    dataset_id: "18100004"
+    series_id: "41690973"
+    source_url: "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810000401"
+    analog_ru: ИПЦ
+    is_listed: true
+    description: >
+      Индекс потребительских цен Канады по всем товарам и услугам корзины.
+      Показывает, как меняется стоимость фиксированного набора товаров и услуг
+      относительно базового периода.
+    methodology: >
+      Ряд публикует Статистическое управление Канады. Частота публикации —
+      месячная. Единица измерения на графике — индекс (2002 = 100). На графике
+      показан официальный национальный ряд без дополнительных преобразований.
+
+  - code_suffix: unemployment-rate
+    name_ru: Уровень безработицы
+    name_en: Unemployment rate
+    category_ru: Рынок труда
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    provider: statcan
+    dataset_id: "14100287"
+    series_id: "2062815"
+    source_url: "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701"
+    analog_ru: Уровень безработицы
+    is_listed: true
+    description: >
+      Уровень безработицы в Канаде среди населения 15 лет и старше, с учётом
+      сезонной корректировки. Показывает долю безработных в экономически
+      активном населении.
+    methodology: >
+      Ряд публикует Статистическое управление Канады по обследованию рабочей
+      силы. Частота публикации — месячная. Единица измерения на графике —
+      процент. На графике — официальный сезонно скорректированный национальный
+      ряд.
+
+  - code_suffix: employment-rate
+    name_ru: Уровень занятости
+    name_en: Employment rate
+    category_ru: Рынок труда
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    provider: statcan
+    dataset_id: "14100287"
+    series_id: "2062817"
+    source_url: "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701"
+    analog_ru: Уровень занятости
+    is_listed: true
+    description: >
+      Уровень занятости в Канаде среди населения 15 лет и старше, с учётом
+      сезонной корректировки. Показывает долю занятых в общей численности
+      населения соответствующей возрастной группы.
+    methodology: >
+      Ряд публикует Статистическое управление Канады по обследованию рабочей
+      силы. Частота публикации — месячная. Единица измерения на графике —
+      процент. На графике — официальный сезонно скорректированный национальный
+      ряд.
+
+  - code_suffix: gdp-real
+    name_ru: Валовой внутренний продукт в постоянных ценах
+    name_en: Real GDP at market prices
+    category_ru: ВВП
+    unit: CAD_CHAINED
+    unit_ru: млн канадских долларов (цены 2017)
+    frequency: quarterly
+    provider: statcan
+    dataset_id: "36100104"
+    series_id: "62305752"
+    source_url: "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610010401"
+    analog_ru: ВВП реальный
+    is_listed: true
+    description: >
+      Реальный валовой внутренний продукт Канады в ценах 2017 года, с сезонной
+      корректировкой в пересчёте на год. Показывает объём экономики без влияния
+      изменения цен.
+    methodology: >
+      Ряд публикует Статистическое управление Канады в системе национальных
+      счетов. Частота публикации — квартальная. Единица измерения на графике —
+      миллионы канадских долларов в постоянных ценах 2017 года. Показан
+      официальный ряд без дополнительных преобразований.
+
+  - code_suffix: gdp-monthly
+    name_ru: ВВП по отраслям (все отрасли)
+    name_en: GDP at basic prices, all industries
+    category_ru: ВВП
+    unit: CAD_CHAINED
+    unit_ru: млн канадских долларов (цены 2017)
+    frequency: monthly
+    provider: statcan
+    dataset_id: "36100434"
+    series_id: "65201210"
+    source_url: "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610043401"
+    analog_ru: ВВП месячный
+    is_listed: true
+    description: >
+      Месячная оценка валового внутреннего продукта Канады в основных ценах по
+      всем отраслям, в постоянных ценах 2017 года, с сезонной корректировкой в
+      пересчёте на год. Показывает текущую динамику выпуска экономики между
+      квартальными публикациями.
+    methodology: >
+      Ряд публикует Статистическое управление Канады. Частота публикации —
+      месячная. Единица измерения на графике — миллионы канадских долларов в
+      постоянных ценах 2017 года. На графике — официальный национальный ряд по
+      всем отраслям.
+
+  - code_suffix: manufacturing-sales
+    name_ru: Отгрузки обрабатывающей промышленности
+    name_en: Manufacturing sales (shipments)
+    category_ru: Бизнес и инвестиции
+    unit: CAD
+    unit_ru: тыс. канадских долларов
+    frequency: monthly
+    provider: statcan
+    dataset_id: "16100047"
+    series_id: "800450"
+    source_url: "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1610004701"
+    analog_ru: Отгрузки промышленности
+    is_listed: true
+    description: >
+      Сезонно скорректированные продажи (отгрузки) товаров обрабатывающей
+      промышленности Канады. Показывает объём реализации продукции
+      производителей за месяц.
+    methodology: >
+      Ряд публикует Статистическое управление Канады по обследованию
+      обрабатывающей промышленности. Частота публикации — месячная. Единица
+      измерения на графике — тысячи канадских долларов. Национальный итог
+      берётся из таблицы по стране в целом (провинциальная таблица того же
+      обследования не содержит строки «Канада»).
+
+  - code_suffix: retail-sales
+    name_ru: Розничные продажи
+    name_en: Retail trade sales
+    category_ru: Бизнес и инвестиции
+    unit: CAD
+    unit_ru: тыс. канадских долларов
+    frequency: monthly
+    provider: statcan
+    dataset_id: "20100056"
+    series_id: "1446859483"
+    source_url: "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2010005601"
+    analog_ru: Розничный товарооборот
+    is_listed: true
+    description: >
+      Сезонно скорректированные розничные продажи в Канаде по всем видам
+      розничной торговли. Показывает стоимость товаров, реализованных
+      розничными продавцами за месяц.
+    methodology: >
+      Ряд публикует Статистическое управление Канады. Частота публикации —
+      месячная. Единица измерения на графике — тысячи канадских долларов. На
+      графике — официальный национальный итог без дополнительных
+      преобразований.
+
+  - code_suffix: merchandise-exports
+    name_ru: Товарный экспорт
+    name_en: Merchandise exports (BOP, SA)
+    category_ru: Внешняя торговля
+    unit: CAD_MN
+    unit_ru: млн канадских долларов
+    frequency: monthly
+    provider: statcan
+    dataset_id: "12100011"
+    series_id: "87008955"
+    source_url: "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1210001101"
+    analog_ru: Экспорт товаров
+    is_listed: true
+    description: >
+      Товарный экспорт Канады по методологии платёжного баланса, со всеми
+      странами, с сезонной корректировкой. Показывает стоимость вывезенных
+      товаров за месяц.
+    methodology: >
+      Ряд публикует Статистическое управление Канады. Частота публикации —
+      месячная. Единица измерения на графике — миллионы канадских долларов.
+      На графике — официальный национальный ряд по всем странам без
+      дополнительных преобразований.
+
+  - code_suffix: population
+    name_ru: Численность населения
+    name_en: Population estimate
+    category_ru: Население
+    unit: PERSONS
+    unit_ru: человек
+    frequency: quarterly
+    provider: statcan
+    dataset_id: "17100009"
+    series_id: "1"
+    source_url: "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1710000901"
+    analog_ru: Численность населения
+    is_listed: true
+    description: >
+      Оценка численности постоянного населения Канады на начало квартала.
+      Показывает, сколько человек проживает в стране по официальной оценке
+      статистического ведомства.
+    methodology: >
+      Ряд публикует Статистическое управление Канады. Частота публикации —
+      квартальная. Единица измерения на графике — человек. На графике —
+      официальная национальная оценка без дополнительных преобразований.
+
+  - code_suffix: policy-rate
+    name_ru: Целевая ставка овернайт
+    name_en: Target for the overnight rate
+    category_ru: Финансы
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: daily
+    provider: boc_valet
+    dataset_id: "V39079"
+    series_id: "V39079"
+    source_url: "https://www.bankofcanada.ca/valet/observations/V39079/json"
+    analog_ru: Ключевая ставка
+    is_listed: true
+    description: >
+      Целевая ставка овернайт Банка Канады — операционный ориентир
+      денежно-кредитной политики. Показывает уровень, к которому центральный
+      банк направляет однодневную ставку денежного рынка.
+    methodology: >
+      Ряд публикует Банк Канады. Частота публикации — дневная (рабочие дни).
+      Единица измерения на графике — процент годовых. Значения соответствуют
+      официальному ряду целевой ставки без пересчёта на стороне платформы.
+
+  - code_suffix: fx-usd-cad
+    name_ru: Курс доллара США к канадскому доллару
+    name_en: USD/CAD exchange rate
+    category_ru: Финансы
+    unit: CAD_PER_USD
+    unit_ru: канадских долларов за 1 доллар США
+    frequency: daily
+    provider: boc_valet
+    dataset_id: "FXUSDCAD"
+    series_id: "FXUSDCAD"
+    source_url: "https://www.bankofcanada.ca/valet/observations/FXUSDCAD/json"
+    analog_ru: Курс к доллару США
+    is_listed: true
+    description: >
+      Средний дневной обменный курс доллара США к канадскому доллару по данным
+      Банка Канады. Показывает, сколько канадских долларов приходится на один
+      доллар США.
+    methodology: >
+      Ряд публикует Банк Канады. Частота публикации — дневная (рабочие дни).
+      Единица измерения на графике — число канадских долларов за один доллар
+      США. Значения соответствуют официальному среднему дневному курсу.
+
+  - code_suffix: m2-plus
+    name_ru: Денежный агрегат M2+
+    name_en: M2+ (gross), seasonally adjusted
+    category_ru: Финансы
+    unit: CAD_MN
+    unit_ru: млн канадских долларов
+    frequency: monthly
+    provider: boc_valet
+    dataset_id: "V41552798"
+    series_id: "V41552798"
+    source_url: "https://www.bankofcanada.ca/valet/observations/V41552798/json"
+    analog_ru: Денежная масса
+    is_listed: true
+    description: >
+      Широкий денежный агрегат M2+ Банка Канады с сезонной корректировкой.
+      Показывает объём денежных средств и близких к ним инструментов в
+      экономике.
+    methodology: >
+      Ряд публикует Банк Канады. Частота публикации — месячная. Единица
+      измерения на графике — миллионы канадских долларов. Официальные ряды
+      международных резервов в Valet в этой сессии не подтверждены; в паспорт
+      включён денежный агрегат как замещающий денежный показатель.

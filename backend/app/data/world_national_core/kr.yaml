@@ -1,0 +1,182 @@
+# South Korea national-core passport (official Bank of Korea ECOS Open API).
+# Live-probed 2026-08-12 (sample key confirms codes; full history needs real key).
+# Loader: scripts/load-world-national.py --country kr
+# Provider: ecos → EcosBokAdapter (ecos.bok.or.kr/api, requires RUSTATS_ECOS_API_KEY).
+# KOSIS OpenAPI also requires a key (Korean ID verification); core macro for this
+# passport is taken from ECOS mirrors of MODS series where BoK republishes them.
+# Without RUSTATS_ECOS_API_KEY all series resolve to AdapterUnavailable.
+# Loader is idempotent and does not touch existing eurostat rows for KR.
+
+country_code: KR
+
+series:
+  - code_suffix: cpi-all
+    name_ru: Индекс потребительских цен
+    name_en: Consumer Price Index (all items, 2020=100)
+    category_ru: Цены
+    unit: INDEX
+    unit_ru: индекс (2020 = 100)
+    frequency: monthly
+    provider: ecos
+    dataset_id: "901Y009"
+    series_id: "0"
+    source_url: "https://ecos.bok.or.kr/#/SearchStat/901Y009"
+    analog_ru: ИПЦ
+    is_listed: true
+    description: >
+      Индекс потребительских цен Республики Корея по всем товарам и услугам
+      корзины. Показывает, как меняется стоимость фиксированного набора товаров
+      и услуг относительно базового периода 2020 года.
+    methodology: >
+      Ряд публикует Банк Кореи в системе ECOS (источник первичной методологии —
+      статистическое ведомство Республики Корея). Частота публикации — месячная.
+      Единица измерения на графике — индекс (2020 = 100).
+
+  - code_suffix: unemployment-rate
+    name_ru: Уровень безработицы
+    name_en: Unemployment rate (seasonally adjusted)
+    category_ru: Рынок труда
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    provider: ecos
+    dataset_id: "901Y027"
+    series_id: "I61BC/I28B"
+    source_url: "https://ecos.bok.or.kr/#/SearchStat/901Y027"
+    analog_ru: Уровень безработицы
+    is_listed: true
+    description: >
+      Уровень безработицы в Республике Корея с учётом сезонной корректировки.
+      Показывает долю безработных в экономически активном населении.
+    methodology: >
+      Ряд публикует Банк Кореи в системе ECOS по обследованию экономически
+      активного населения. Частота публикации — месячная. Единица измерения на
+      графике — процент. На графике — сезонно скорректированный ряд.
+
+  - code_suffix: gdp-real
+    name_ru: Валовой внутренний продукт в постоянных ценах
+    name_en: Real GDP at market prices (SA, chained 2020)
+    category_ru: ВВП
+    unit: KRW_BN
+    unit_ru: млрд вон (цены 2020)
+    frequency: quarterly
+    provider: ecos
+    dataset_id: "200Y104"
+    series_id: "1400"
+    source_url: "https://ecos.bok.or.kr/#/SearchStat/200Y104"
+    analog_ru: ВВП реальный
+    is_listed: true
+    description: >
+      Реальный валовой внутренний продукт Республики Корея в ценах 2020 года,
+      с сезонной корректировкой. Показывает объём экономики без влияния
+      изменения цен.
+    methodology: >
+      Ряд публикует Банк Кореи в системе национальных счетов ECOS. Частота
+      публикации — квартальная. Единица измерения на графике — миллиарды вон в
+      постоянных ценах 2020 года.
+
+  - code_suffix: gdp-nominal-annual
+    name_ru: Валовой внутренний продукт в текущих ценах
+    name_en: Nominal GDP (current prices, annual)
+    category_ru: ВВП
+    unit: KRW_BN
+    unit_ru: млрд вон
+    frequency: annual
+    provider: ecos
+    dataset_id: "200Y101"
+    series_id: "10101"
+    source_url: "https://ecos.bok.or.kr/#/SearchStat/200Y101"
+    analog_ru: ВВП номинальный
+    is_listed: true
+    description: >
+      Номинальный валовой внутренний продукт Республики Корея в текущих ценах
+      за календарный год. Показывает стоимость произведённых товаров и услуг
+      в ценах соответствующего года.
+    methodology: >
+      Ряд публикует Банк Кореи в системе ECOS. Частота публикации — годовая.
+      Единица измерения на графике — миллиарды вон.
+
+  - code_suffix: policy-rate
+    name_ru: Базовая ставка Банка Кореи
+    name_en: Bank of Korea Base Rate
+    category_ru: Финансы
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: daily
+    provider: ecos
+    dataset_id: "722Y001"
+    series_id: "0101000"
+    source_url: "https://ecos.bok.or.kr/#/SearchStat/722Y001"
+    analog_ru: Ключевая ставка
+    is_listed: true
+    description: >
+      Базовая ставка Банка Кореи — операционный ориентир денежно-кредитной
+      политики. Показывает целевой уровень ставки, к которому центральный банк
+      направляет денежный рынок.
+    methodology: >
+      Ряд публикует Банк Кореи. Частота публикации — дневная (событийный ряд:
+      значение действует до следующего решения). Единица измерения на графике —
+      процент годовых.
+
+  - code_suffix: fx-usd-krw
+    name_ru: Курс доллара США к воне
+    name_en: USD/KRW basic exchange rate
+    category_ru: Финансы
+    unit: KRW_PER_USD
+    unit_ru: вон за 1 доллар США
+    frequency: daily
+    provider: ecos
+    dataset_id: "731Y001"
+    series_id: "0000001"
+    source_url: "https://ecos.bok.or.kr/#/SearchStat/731Y001"
+    analog_ru: Курс к доллару США
+    is_listed: true
+    description: >
+      Базовый обменный курс доллара США к корейскому вону. Показывает, сколько
+      вон приходится на один доллар США.
+    methodology: >
+      Ряд публикует Банк Кореи. Частота публикации — дневная (рабочие дни).
+      Единица измерения на графике — число вон за один доллар США.
+
+  - code_suffix: current-account
+    name_ru: Сальдо текущего счёта
+    name_en: Current account balance
+    category_ru: Внешняя торговля
+    unit: USD_MN
+    unit_ru: млн долларов США
+    frequency: monthly
+    provider: ecos
+    dataset_id: "301Y013"
+    series_id: "000000"
+    source_url: "https://ecos.bok.or.kr/#/SearchStat/301Y013"
+    analog_ru: Текущий счёт
+    is_listed: true
+    description: >
+      Сальдо текущего счёта платёжного баланса Республики Корея. Показывает
+      разницу между поступлениями и платежами по внешней торговле товарами и
+      услугами, доходам и текущим трансфертам.
+    methodology: >
+      Ряд публикует Банк Кореи по методологии платёжного баланса. Частота
+      публикации — месячная. Единица измерения на графике — миллионы долларов
+      США. Значения могут быть отрицательными.
+
+  - code_suffix: international-reserves
+    name_ru: Международные резервы
+    name_en: International reserves (total)
+    category_ru: Финансы
+    unit: USD_THOU
+    unit_ru: тыс. долларов США
+    frequency: monthly
+    provider: ecos
+    dataset_id: "732Y001"
+    series_id: "99"
+    source_url: "https://ecos.bok.or.kr/#/SearchStat/732Y001"
+    analog_ru: Международные резервы
+    is_listed: true
+    description: >
+      Общий объём международных резервов Республики Корея. Показывает запас
+      ликвидных внешних активов центрального банка.
+    methodology: >
+      Ряд публикует Банк Кореи. Частота публикации — месячная. Единица
+      измерения на графике — тысячи долларов США. На графике — официальный
+      итоговый ряд.

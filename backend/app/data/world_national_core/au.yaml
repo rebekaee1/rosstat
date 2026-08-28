@@ -1,0 +1,280 @@
+# Australia national-core passport (official ABS Data API + RBA statistical CSVs).
+# Live-probed 2026-08-12. Loader: scripts/load-world-national.py --country au
+# Providers: abs → AbsDataAdapter (data.api.abs.gov.au SDMX);
+#            rba → RbaStatsAdapter (rba.gov.au/statistics/tables/csv).
+# RBA CSV endpoints return HTTP 403 from this environment (Akamai); series stay
+# in YAML with is_listed=false until the official CSV is reachable. Expand with live-probed series;
+# loader is idempotent and does not touch existing eurostat rows for AU.
+
+country_code: AU
+
+series:
+  - code_suffix: cpi-all
+    name_ru: Индекс потребительских цен
+    name_en: Consumer Price Index (all groups)
+    category_ru: Цены
+    unit: INDEX
+    unit_ru: индекс
+    frequency: quarterly
+    provider: abs
+    dataset_id: "CPI"
+    series_id: "1.10001.10.50.Q"
+    source_url: "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia"
+    analog_ru: ИПЦ
+    is_listed: true
+    description: >
+      Индекс потребительских цен Австралии по всем группам товаров и услуг
+      корзины. Показывает, как меняется стоимость фиксированного набора товаров
+      и услуг относительно базового периода.
+    methodology: >
+      Ряд публикует Австралийское бюро статистики. Частота публикации —
+      квартальная. Единица измерения на графике — индекс. На графике показан
+      официальный национальный ряд без дополнительных преобразований.
+
+  - code_suffix: cpi-monthly
+    name_ru: Месячный индикатор потребительских цен
+    name_en: Monthly Consumer Price Index Indicator (all groups)
+    category_ru: Цены
+    unit: INDEX
+    unit_ru: индекс
+    frequency: monthly
+    provider: abs
+    dataset_id: "CPI"
+    series_id: "1.10001.10.50.M"
+    source_url: "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/monthly-consumer-price-index-indicator"
+    analog_ru: ИПЦ месячный
+    is_listed: true
+    description: >
+      Месячный индикатор потребительских цен Австралии по всем группам товаров
+      и услуг. Показывает более частую динамику стоимости корзины между
+      квартальными публикациями основного индекса.
+    methodology: >
+      Ряд публикует Австралийское бюро статистики. Частота публикации —
+      месячная. Единица измерения на графике — индекс. На графике — официальный
+      национальный ряд без дополнительных преобразований.
+
+  - code_suffix: unemployment-rate
+    name_ru: Уровень безработицы
+    name_en: Unemployment rate
+    category_ru: Рынок труда
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    provider: abs
+    dataset_id: "LF"
+    series_id: "M13.3.1599.20.AUS.M"
+    source_url: "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia"
+    analog_ru: Уровень безработицы
+    is_listed: true
+    description: >
+      Уровень безработицы в Австралии среди гражданского населения, с учётом
+      сезонной корректировки. Показывает долю безработных в экономически
+      активном населении.
+    methodology: >
+      Ряд публикует Австралийское бюро статистики по обследованию рабочей силы.
+      Частота публикации — месячная. Единица измерения на графике — процент. На
+      графике — официальный сезонно скорректированный национальный ряд по всем
+      лицам (Persons).
+
+  - code_suffix: employment-rate
+    name_ru: Уровень занятости
+    name_en: Employment to population ratio
+    category_ru: Рынок труда
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    provider: abs
+    dataset_id: "LF"
+    series_id: "M16.3.1599.20.AUS.M"
+    source_url: "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia"
+    analog_ru: Уровень занятости
+    is_listed: true
+    description: >
+      Отношение занятых к численности гражданского населения Австралии, с учётом
+      сезонной корректировки. Показывает, какая доля населения соответствующего
+      возраста имеет работу.
+    methodology: >
+      Ряд публикует Австралийское бюро статистики по обследованию рабочей силы.
+      Частота публикации — месячная. Единица измерения на графике — процент. На
+      графике — официальный сезонно скорректированный национальный ряд.
+
+  - code_suffix: participation-rate
+    name_ru: Уровень участия в рабочей силе
+    name_en: Participation rate
+    category_ru: Рынок труда
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    provider: abs
+    dataset_id: "LF"
+    series_id: "M12.3.1599.20.AUS.M"
+    source_url: "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia"
+    analog_ru: Уровень участия
+    is_listed: true
+    description: >
+      Уровень участия населения Австралии в рабочей силе, с учётом сезонной
+      корректировки. Показывает долю экономически активного населения в общей
+      численности гражданского населения соответствующей возрастной группы.
+    methodology: >
+      Ряд публикует Австралийское бюро статистики по обследованию рабочей силы.
+      Частота публикации — месячная. Единица измерения на графике — процент. На
+      графике — официальный сезонно скорректированный национальный ряд.
+
+  - code_suffix: employed-persons
+    name_ru: Численность занятых
+    name_en: Employed persons
+    category_ru: Рынок труда
+    unit: THOUSANDS
+    unit_ru: тыс. человек
+    frequency: monthly
+    provider: abs
+    dataset_id: "LF"
+    series_id: "M3.3.1599.20.AUS.M"
+    source_url: "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia"
+    analog_ru: Занятость
+    is_listed: true
+    description: >
+      Численность занятых в Австралии, с учётом сезонной корректировки. Показывает
+      масштаб занятости в экономике в тысячах человек.
+    methodology: >
+      Ряд публикует Австралийское бюро статистики по обследованию рабочей силы.
+      Частота публикации — месячная. Единица измерения на графике — тысячи
+      человек. На графике — официальный сезонно скорректированный национальный
+      ряд.
+
+  - code_suffix: gdp-real
+    name_ru: Валовой внутренний продукт в постоянных ценах
+    name_en: Gross domestic product, chain volume measures
+    category_ru: ВВП
+    unit: AUD_CHAINED
+    unit_ru: млн австралийских долларов (цепные объёмы)
+    frequency: quarterly
+    provider: abs
+    dataset_id: "ANA_AGG"
+    series_id: "M1.GPM.20.AUS.Q"
+    source_url: "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product"
+    analog_ru: ВВП реальный
+    is_listed: true
+    description: >
+      Реальный валовой внутренний продукт Австралии в цепных объёмах, с сезонной
+      корректировкой. Показывает объём экономики без влияния изменения цен.
+    methodology: >
+      Ряд публикует Австралийское бюро статистики в системе национальных счетов.
+      Частота публикации — квартальная. Единица измерения на графике — миллионы
+      австралийских долларов в цепных объёмах. Показан официальный сезонно
+      скорректированный ряд без дополнительных преобразований.
+
+  - code_suffix: retail-sales
+    name_ru: Розничный товарооборот
+    name_en: Retail turnover (total)
+    category_ru: Бизнес и инвестиции
+    unit: AUD_MN
+    unit_ru: млн австралийских долларов
+    frequency: monthly
+    provider: abs
+    dataset_id: "RT"
+    series_id: "M1.20.20.AUS.M"
+    source_url: "https://www.abs.gov.au/statistics/industry/retail-and-wholesale-trade/retail-trade-australia"
+    analog_ru: Розничный товарооборот
+    is_listed: true
+    description: >
+      Сезонно скорректированный розничный товарооборот Австралии в текущих ценах
+      по всем видам розничной торговли. Показывает стоимость товаров,
+      реализованных розничными продавцами за месяц.
+    methodology: >
+      Ряд публикует Австралийское бюро статистики. Частота публикации —
+      месячная. Единица измерения на графике — миллионы австралийских долларов.
+      На графике — официальный национальный итог без дополнительных
+      преобразований.
+
+  - code_suffix: trade-balance-goods
+    name_ru: Сальдо внешней торговли товарами
+    name_en: Balance on goods
+    category_ru: Внешняя торговля
+    unit: AUD_MN
+    unit_ru: млн австралийских долларов
+    frequency: monthly
+    provider: abs
+    dataset_id: "ITGS"
+    series_id: "M1.170.20.AUS.M"
+    source_url: "https://www.abs.gov.au/statistics/economy/international-trade/international-trade-goods-and-services-australia"
+    analog_ru: Торговый баланс
+    is_listed: true
+    description: >
+      Сезонно скорректированное сальдо внешней торговли товарами Австралии в
+      текущих ценах. Положительное значение означает превышение экспорта товаров
+      над импортом, отрицательное — обратное соотношение.
+    methodology: >
+      Ряд публикует Австралийское бюро статистики. Частота публикации —
+      месячная. Единица измерения на графике — миллионы австралийских долларов.
+      На графике — официальный сезонно скорректированный национальный ряд.
+
+  - code_suffix: policy-rate
+    name_ru: Целевая ставка овернайт (кэш-рейт)
+    name_en: Cash Rate Target
+    category_ru: Финансы
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: daily
+    provider: rba
+    dataset_id: "F1"
+    series_id: "FIRMMCRTD"
+    source_url: "https://www.rba.gov.au/statistics/tables/"
+    analog_ru: Ключевая ставка
+    is_listed: false
+    description: >
+      Целевая ставка овернайт Резервного банка Австралии — операционный ориентир
+      денежно-кредитной политики. Показывает уровень, к которому центральный банк
+      направляет однодневную ставку денежного рынка.
+    methodology: >
+      Ряд публикует Резервный банк Австралии. Частота публикации — дневная
+      (рабочие дни). Единица измерения на графике — процент годовых. Значения
+      соответствуют официальному ряду целевой ставки без пересчёта на стороне
+      платформы.
+
+  - code_suffix: fx-aud-usd
+    name_ru: Курс австралийского доллара к доллару США
+    name_en: AUD/USD exchange rate
+    category_ru: Финансы
+    unit: USD_PER_AUD
+    unit_ru: долларов США за 1 австралийский доллар
+    frequency: daily
+    provider: rba
+    dataset_id: "F11.1"
+    series_id: "FXRUSD"
+    source_url: "https://www.rba.gov.au/statistics/tables/"
+    analog_ru: Курс к доллару США
+    is_listed: false
+    description: >
+      Дневной обменный курс австралийского доллара к доллару США по данным
+      Резервного банка Австралии. Показывает, сколько долларов США приходится на
+      один австралийский доллар.
+    methodology: >
+      Ряд публикует Резервный банк Австралии. Частота публикации — дневная
+      (рабочие дни). Единица измерения на графике — число долларов США за один
+      австралийский доллар. Значения соответствуют официальному дневному курсу.
+
+  - code_suffix: population
+    name_ru: Численность населения
+    name_en: Estimated resident population
+    category_ru: Население
+    unit: PERSONS
+    unit_ru: человек
+    frequency: quarterly
+    provider: abs
+    dataset_id: "ERP_COMP_Q"
+    series_id: "10.AUS.Q"
+    # ABS публикует ERP в тысячах человек; рейтинг концепта — в лицах.
+    value_scale: 1000
+    source_url: "https://www.abs.gov.au/statistics/people/population/national-state-and-territory-population/latest-release"
+    analog_ru: Численность населения
+    is_listed: true
+    description: >
+      Оценочная численность постоянного населения Австралии на конец квартала.
+      Показывает, сколько человек проживает в стране по официальной оценке
+      статистического ведомства с учётом естественного движения и миграции.
+    methodology: >
+      Ряд публикует Австралийское бюро статистики по квартальным оценкам
+      численности населения. Частота публикации — квартальная. Единица
+      измерения на графике — человек. На графике — официальная национальная
+      оценка без дополнительных преобразований.

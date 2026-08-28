@@ -13,7 +13,15 @@
   2. wages-nominal — из summary-блока на стр. 6-7
      "Среднемесячная начисленная заработная плата работников организаций ...
       номинальная, рублей  XXX XXX". Один new datapoint per ETL run для
-     reference-месяца PDF (определяется из URL: `osn-MM-YYYY.pdf`).
+      reference-месяца PDF (определяется из URL: `osn-MM-YYYY.pdf`).
+
+  2b. wages-nominal backfill — из Таблицы 3 «Динамика среднемесячной номинальной
+     и реальной начисленной заработной платы работников организаций» того же PDF.
+     Таблица содержит помесячные значения номинала за прошлый и текущий год,
+     включая месяцы, ещё не прошедшие через summary (кейс 2026-08: июльский
+     выпуск osn-07-2026 не выложен на сайт, июнь 2026 доступен только строкой
+     «Июнь» Таблицы 3 в osn-06-2026.pdf). Значения Таблицы 3 и summary —
+     один и тот же официальный ряд; при конфликте приоритет у summary.
 
 ADR-0004 path P (compat) — формат хранения и frontend не меняются. SDDS XLSX
 больше не используется.
@@ -191,6 +199,89 @@ def _parse_wages_summary(text: str, reference_month: date | None) -> list[DataPo
     return []
 
 
+_WAGES_TABLE_TITLE = "ДИНАМИКА СРЕДНЕМЕСЯЧНОЙ"
+_WAGES_TABLE_STOP = "СРЕДНЕМЕСЯЧНАЯ НАЧИСЛЕННАЯ ЗАРАБОТНАЯ ПЛАТА РАБОТНИКОВ ОРГАНИЗАЦИЙ"
+_AGG_ROW_RE = re.compile(r"^(?:I|II|III|IV)\s+квартал|Год\s|Январь-|I\s+полугодие", re.IGNORECASE)
+_MONTH_ROW_RE = re.compile(
+    r"^(Январь|Февраль|Март|Апрель|Май|Июнь|Июль|Август|Сентябрь|Октябрь|Ноябрь|Декабрь)\s+(\d[\d\s]*?)"
+    r"(?=\s+\d+[,.]\d)",
+)
+
+
+def _parse_wages_table(text: str) -> list[DataPoint]:
+    """Разобрать Таблицу 3 «Динамика среднемесячной номинальной и реальной
+    начисленной заработной платы» → помесячные номинальные значения (руб.).
+
+    Layout (pypdf-экстракция): блок «2025 г.» затем строки-месяцы
+    «    Январь 88 981 117,1 106,5» (значение, % к пред. году, % к пред. мес.),
+    квартальные/полугодовые/годовые строки (I квартал, Январь-май, Год) —
+    не месяцы и пропускаются. Заголовки таблицы повторяются на каждой странице
+    PDF-спуска — повторный вход в заголовок просто ресетит парсинг.
+    """
+    points: list[DataPoint] = []
+    current_year: int | None = None
+
+    start = text.find(_WAGES_TABLE_TITLE)
+    if start < 0:
+        return []
+    stop = text.find(_WAGES_TABLE_STOP, start)
+    if stop < 0:
+        stop = min(start + 200_000, len(text))
+
+    for raw_line in text[start:stop].splitlines():
+        line = re.sub(r"\s+", " ", raw_line).strip()
+        if not line:
+            continue
+        year_match = re.match(r"^(20\d{2})\s*г\.?\s*$", line)
+        if year_match:
+            current_year = int(year_match.group(1))
+            continue
+        if "ДИНАМИКА СРЕДНЕМЕСЯЧНОЙ" in line:
+            # Повторный заголовок таблицы на следующей странице — контекст сбрасываем.
+            current_year = None
+            continue
+        if current_year is None:
+            continue
+        if _AGG_ROW_RE.match(line):
+            continue
+        row = _MONTH_ROW_RE.match(line)
+        if not row:
+            continue
+        month_name, value_text = row.groups()
+        try:
+            value = _parse_float_ru(value_text)
+        except ValueError:
+            continue
+        if not 1_000 <= value <= 10_000_000:
+            continue
+        points.append(DataPoint(
+            date=date(current_year, MONTHS_RU[month_name], 1),
+            value=round(value, 2),
+        ))
+
+    return points
+
+
+def _merge_wages_points(
+    summary_points: list[DataPoint],
+    table_points: list[DataPoint],
+    reference_month: date | None,
+) -> list[DataPoint]:
+    """Склеить summary-точку (reference-месяц) с помесячным backfill Таблицы 3.
+
+    Это один и тот же официальный ряд Росстата; приоритет у summary-значения
+    при коллизии на reference-месяц, backfill закрывает месяцы, ещё не
+    прошедшие через summary (или выпуски, задержавшиеся на сайте).
+    """
+    by_date: dict[date, float] = {p.date: p.value for p in table_points}
+    for p in summary_points:
+        by_date[p.date] = p.value
+    merged = [DataPoint(date=d, value=v) for d, v in sorted(by_date.items())]
+    if reference_month is not None:
+        merged = [p for p in merged if p.date <= reference_month]
+    return merged
+
+
 def parse_labor_report_pdf(content: bytes, source_url: str) -> dict[str, list[DataPoint]]:
     """Parse Rosstat socioeconomic report PDF — все 4 labor-серии."""
     reader = PdfReader(io.BytesIO(content))
@@ -198,7 +289,11 @@ def parse_labor_report_pdf(content: bytes, source_url: str) -> dict[str, list[Da
 
     series = _parse_labor_force_table(text)
     reference_month = parse_report_month_from_url(source_url)
-    series["wages_nominal"] = _parse_wages_summary(text, reference_month)
+    series["wages_nominal"] = _merge_wages_points(
+        _parse_wages_summary(text, reference_month),
+        _parse_wages_table(text),
+        reference_month,
+    )
     return series
 
 

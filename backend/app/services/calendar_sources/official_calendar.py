@@ -372,6 +372,8 @@ async def refresh_official_calendar(
     candidates.extend(build_cbr_daily_rule_candidates(today=today, months_ahead=months_ahead))
     candidates.extend(build_cbr_monetary_policy_candidates(today=today, months_ahead=months_ahead))
     candidates.extend(fetch_cbr_calendar_candidates(today=today, months_ahead=months_ahead))
+    candidates.extend(fetch_rosstat_plan_candidates_safe(today=today, months_ahead=months_ahead))
+    candidates = prefer_explicit_plan_candidates(candidates)
 
     async def _persist(session: AsyncSession) -> int:
         from app.services.calendar_sources.enrichment import (
@@ -397,6 +399,65 @@ def build_rule_candidates(*, today: date, months_ahead: int) -> list[CalendarCan
     candidates.extend(build_rosstat_rule_candidates(today=today, months_ahead=months_ahead))
     candidates.extend(build_minfin_rule_candidates(today=today, months_ahead=months_ahead))
     return candidates
+
+
+def prefer_explicit_plan_candidates(candidates: list[CalendarCandidate]) -> list[CalendarCandidate]:
+    """Вытеснить rule-оценки дат официальными датами плана публикаций.
+
+    Для одного выпуска Росстата конвейер собирает два кандидата: rule
+    («N-й рабочий день следующего месяца», приблизительно) и explicit из
+    docx-графика (точная дата). На витрине должен остаться один — explicit:
+    точнее дата, выше класс provenance, и не создаётся второго ряда-дубликата
+    по (indicator, reference_period). Сопоставление — по (indicator_code,
+    reference_period) среди rosstat-кандидатов; события, чей ref-период
+    парсер плана не распознал (None), не участвуют в вытеснении, чтобы не
+    уронить rule-строку без замены.
+    """
+    explicit_refs: set[tuple[str, str]] = set()
+    for c in candidates:
+        if (
+            c.source == "rosstat"
+            and c.date_confidence == "official_explicit"
+            and c.indicator_code
+            and c.reference_period
+        ):
+            explicit_refs.add((c.indicator_code, c.reference_period))
+    if not explicit_refs:
+        return candidates
+    kept = []
+    for c in candidates:
+        is_shadowed_rule = (
+            c.source == "rosstat"
+            and c.date_confidence == "official_rule"
+            and c.indicator_code is not None
+            and c.reference_period is not None
+            and (c.indicator_code, c.reference_period) in explicit_refs
+        )
+        if not is_shadowed_rule:
+            kept.append(c)
+    return kept
+
+
+def fetch_rosstat_plan_candidates_safe(*, today: date, months_ahead: int) -> list[CalendarCandidate]:
+    """Кандидаты официального графика публикаций Росстата (official_explicit).
+
+    По умолчанию выключено (`calendar_rosstat_plan_enabled=false`): источник —
+    docx «График размещения срочных информаций и справок» со страницы «План
+    выпуска публикаций» rosstat.gov.ru/publications-plans. Включение —
+    CALENDAR_ROSSTAT_PLAN_ENABLED=true в .env. Прогон сети только при
+    включённом флаге; ошибка источника не ломает синхронизацию календаря.
+    """
+    from app.config import settings
+
+    if not settings.calendar_rosstat_plan_enabled:
+        return []
+    from app.services.calendar_sources.rosstat_plan import fetch_rosstat_plan_candidates
+
+    try:
+        return fetch_rosstat_plan_candidates(today=today, months_ahead=months_ahead)
+    except Exception:
+        logger.exception("Rosstat plan candidates fetch failed")
+        return []
 
 
 def build_rosstat_rule_candidates(*, today: date, months_ahead: int) -> list[CalendarCandidate]:

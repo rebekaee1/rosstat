@@ -45,21 +45,6 @@ function formatIndicatorDate(dateStr, frequency, locale) {
   return formatDate(dateStr, 'full', locale);
 }
 
-function formatFreqList(item, t) {
-  const freqs = Array.isArray(item.frequencies)
-    ? item.frequencies.map((f) => (typeof f === 'string' ? f : f.freq)).filter(Boolean)
-    : (item.frequency ? [item.frequency] : []);
-  if (!freqs.length) return '';
-  return freqs
-    .map((f) => {
-      const key = `world.freq.${f}`;
-      const label = t(key);
-      return label !== key ? label : f;
-    })
-    .filter(Boolean)
-    .join(', ');
-}
-
 function CompactChange({ change }) {
   if (change == null || !Number.isFinite(Number(change)) || Math.abs(Number(change)) < 1e-12) {
     return null;
@@ -72,11 +57,57 @@ function CompactChange({ change }) {
   );
 }
 
+/**
+ * Частота плитки — самая детальная из доступных: месячные данные показывают
+ * «мес.», квартальные (без месячных) — «кв.», только годовые — «год».
+ * Если частот несколько, остальные перечислены в подсказке бейджа.
+ */
+const FREQ_BADGE_PRIORITY = ['daily', 'weekly', 'monthly', 'quarterly', 'annual'];
+
+function FreqBadges({ item, t }) {
+  const officialFreqs = Array.isArray(item.frequencies)
+    ? item.frequencies.map((f) => (typeof f === 'string' ? f : f.freq)).filter(Boolean)
+    : (item.frequency ? [item.frequency] : []);
+  const aggregated = Array.isArray(item.aggregated_frequencies)
+    ? item.aggregated_frequencies.filter((f) => f && !officialFreqs.includes(f))
+    : [];
+  if (!officialFreqs.length && !aggregated.length) return null;
+
+  const toLabel = (f) => {
+    const key = `world.freq.${f}`;
+    const label = t(key);
+    return label !== key ? label : f;
+  };
+
+  const byPriority = (freqs) => FREQ_BADGE_PRIORITY.filter((f) => freqs.includes(f));
+  const shown = byPriority([...officialFreqs, ...aggregated]);
+  if (!shown.length) return null;
+  const primary = shown[0];
+  const primaryIsAggregated = !officialFreqs.includes(primary);
+  const restLabels = shown.slice(1).map(
+    (f) => `${officialFreqs.includes(f) ? '' : '~'}${toLabel(f)}`,
+  );
+  const title = restLabels.length
+    ? `${primaryIsAggregated ? '~' : ''}${toLabel(primary)}; также: ${restLabels.join(', ')}`
+    : undefined;
+
+  return (
+    <span
+      title={title}
+      className={
+        'cursor-help rounded-full bg-obsidian-light px-2 py-0.5 font-mono'
+        + (primaryIsAggregated ? ' opacity-60' : '')
+      }
+    >
+      {primaryIsAggregated ? '~' : ''}{toLabel(primary)}
+    </span>
+  );
+}
+
 function IndicatorRow({ item, slug, to }) {
   const t = useT();
   const { locale } = useLocale();
   const name = stripFrequencySuffix(item.name);
-  const freqLine = formatFreqList(item, t);
   return (
     <Link
       to={to || indicatorPath(slug, item.code)}
@@ -87,7 +118,7 @@ function IndicatorRow({ item, slug, to }) {
           {name}
         </div>
         <div className="mt-1 flex min-w-0 flex-wrap items-center gap-1.5 text-[10px] text-text-tertiary sm:mt-1.5">
-          {freqLine && <span className="rounded-full bg-obsidian-light px-2 py-0.5 font-mono">{freqLine}</span>}
+          <FreqBadges item={item} t={t} />
           {item.unit && <span className="line-clamp-1 break-all">{item.unit}</span>}
         </div>
       </div>
@@ -217,7 +248,7 @@ export default function WorldCountry() {
     : filteredCategories.filter((cat) => cat.name === resolvedActiveCategory);
 
   return (
-    <div className="mx-auto w-full max-w-7xl overflow-x-hidden px-4 pb-24 pt-24 sm:px-6">
+    <div className="mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
       <Breadcrumbs items={worldCountryTrail(countryName || '…', slug)} />
 
       {notFound && (
@@ -336,7 +367,7 @@ export default function WorldCountry() {
               ))}
               {!data.overview?.length && (
                 <div className="text-xs text-text-tertiary sm:col-span-3">
-                  {t('world.country.coverage', { indicators: String(totalIndicators), sections: String(data.categories.length), history: '' })}
+                  {t('world.country.coverageAlt')}
                 </div>
               )}
             </div>

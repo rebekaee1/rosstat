@@ -1,0 +1,203 @@
+# Japan national-core passport (official BoJ Time-Series API + e-Stat).
+# Live-probed 2026-08-12. Loader: scripts/load-world-national.py --country jp
+# Providers: boj → BojStatAdapter (stat-search.boj.or.jp/api/v1, no key);
+#            estat → EstatApiAdapter (api.e-stat.go.jp, requires RUSTATS_ESTAT_APP_ID).
+# Without RUSTATS_ESTAT_APP_ID estat series resolve to AdapterUnavailable; BoJ
+# series still load. Expand with live-probed e-Stat filters after appId is set.
+# Loader is idempotent and does not touch existing eurostat rows for JP.
+
+country_code: JP
+
+series:
+  - code_suffix: policy-rate
+    name_ru: Ставка овернайт на рынке коллов (без обеспечения)
+    name_en: Uncollateralized overnight call rate (daily average)
+    category_ru: Финансы
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: daily
+    provider: boj
+    dataset_id: "FM01"
+    series_id: "STRDCLUCON"
+    source_url: "https://www.stat-search.boj.or.jp/index_en.html"
+    analog_ru: Ключевая ставка
+    is_listed: true
+    description: >
+      Средняя дневная ставка овернайт без обеспечения на японском рынке коллов.
+      Показывает фактический уровень краткосрочных денежных ставок, к которому
+      тяготеет операционный ориентир денежно-кредитной политики Банка Японии.
+    methodology: >
+      Ряд публикует Банк Японии. Частота публикации — дневная (рабочие дни).
+      Единица измерения на графике — процент годовых. На графике — официальный
+      ряд средней ставки без дополнительных преобразований.
+
+  - code_suffix: basic-loan-rate
+    name_ru: Базовая учётная и ссудная ставка
+    name_en: Basic discount rate and basic loan rate
+    category_ru: Финансы
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: daily
+    provider: boj
+    dataset_id: "IR01"
+    series_id: "MADR1Z@D"
+    source_url: "https://www.stat-search.boj.or.jp/index_en.html"
+    analog_ru: Учётная ставка
+    is_listed: true
+    description: >
+      Базовая учётная и ссудная ставка Банка Японии. Показывает официальный
+      ориентир стоимости рефинансирования кредитных организаций.
+    methodology: >
+      Ряд публикует Банк Японии. Частота публикации — дневная. Единица
+      измерения на графике — процент годовых. Официальный ряд без пересчёта
+      на стороне платформы.
+
+  - code_suffix: fx-usd-jpy
+    name_ru: Курс доллара США к иене
+    name_en: USD/JPY spot rate (17:00 JST, Tokyo)
+    category_ru: Финансы
+    unit: JPY_PER_USD
+    unit_ru: иен за 1 доллар США
+    frequency: daily
+    provider: boj
+    dataset_id: "FM08"
+    series_id: "FXERD04"
+    source_url: "https://www.stat-search.boj.or.jp/index_en.html"
+    analog_ru: Курс к доллару США
+    is_listed: true
+    description: >
+      Спот-курс доллара США к японской иене на токийском рынке на 17:00 по
+      японскому времени. Показывает, сколько иен приходится на один доллар США.
+    methodology: >
+      Ряд публикует Банк Японии. Частота публикации — дневная (рабочие дни).
+      Единица измерения на графике — число иен за один доллар США. Значения
+      соответствуют официальному спот-курсу без пересчёта.
+
+  - code_suffix: monetary-base
+    name_ru: Денежная база
+    name_en: Monetary base (average amounts outstanding)
+    category_ru: Финансы
+    unit: JPY
+    unit_ru: иены
+    frequency: monthly
+    provider: boj
+    dataset_id: "MD01"
+    series_id: "MABS1AN11"
+    source_url: "https://www.stat-search.boj.or.jp/index_en.html"
+    analog_ru: Денежная база
+    is_listed: true
+    description: >
+      Денежная база Японии — средние остатки за месяц. Показывает объём
+      наличных денег в обращении и остатков на счетах в Банке Японии.
+    methodology: >
+      Ряд публикует Банк Японии. Частота публикации — месячная. Единица
+      измерения на графике — иены. Официальный ряд средних остатков без
+      дополнительных преобразований.
+
+  - code_suffix: m2
+    name_ru: Денежный агрегат M2
+    name_en: Money stock M2 (average amounts outstanding)
+    category_ru: Финансы
+    unit: JPY
+    unit_ru: иены
+    frequency: monthly
+    provider: boj
+    dataset_id: "MD02"
+    series_id: "MAM1NAM2M2MO"
+    source_url: "https://www.stat-search.boj.or.jp/index_en.html"
+    analog_ru: Денежная масса
+    is_listed: true
+    description: >
+      Денежный агрегат M2 Японии — средние остатки за месяц. Показывает объём
+      широкой денежной массы в национальной методологии Банка Японии.
+    methodology: >
+      Ряд публикует Банк Японии. Частота публикации — месячная. Единица
+      измерения на графике — иены. Официальный ряд без дополнительных
+      преобразований.
+
+  - code_suffix: m3
+    name_ru: Денежный агрегат M3
+    name_en: Money stock M3 (average amounts outstanding)
+    category_ru: Финансы
+    unit: JPY
+    unit_ru: иены
+    frequency: monthly
+    provider: boj
+    dataset_id: "MD02"
+    series_id: "MAM1NAM3M3MO"
+    source_url: "https://www.stat-search.boj.or.jp/index_en.html"
+    analog_ru: Денежная масса
+    is_listed: true
+    description: >
+      Денежный агрегат M3 Японии — средние остатки за месяц. Более широкий
+      денежный агрегат относительно M2 в методологии Банка Японии.
+    methodology: >
+      Ряд публикует Банк Японии. Частота публикации — месячная. Единица
+      измерения на графике — иены. Официальный ряд без дополнительных
+      преобразований.
+
+  - code_suffix: cpi-all
+    name_ru: Индекс потребительских цен
+    name_en: Consumer Price Index (all items)
+    category_ru: Цены
+    unit: INDEX
+    unit_ru: индекс
+    frequency: monthly
+    provider: estat
+    dataset_id: "0003427113"
+    series_id: "cpi-all-items"
+    source_url: "https://www.e-stat.go.jp/en/stat-search/files?toukei=00200573"
+    analog_ru: ИПЦ
+    is_listed: true
+    dimensions:
+      cdArea: "00000"
+    description: >
+      Индекс потребительских цен Японии по всем товарам и услугам корзины.
+      Показывает, как меняется стоимость фиксированного набора товаров и услуг
+      относительно базового периода.
+    methodology: >
+      Ряд публикует Статистическое бюро Японии через портал e-Stat. Частота
+      публикации — месячная. Единица измерения на графике — индекс. Для
+      загрузки ряда требуется ключ приложения e-Stat.
+
+  - code_suffix: unemployment-rate
+    name_ru: Уровень безработицы
+    name_en: Unemployment rate
+    category_ru: Рынок труда
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    provider: estat
+    dataset_id: "0003143513"
+    series_id: "unemployment-rate"
+    source_url: "https://www.e-stat.go.jp/en/stat-search/files?toukei=00200531"
+    analog_ru: Уровень безработицы
+    is_listed: true
+    description: >
+      Уровень безработицы в Японии по обследованию рабочей силы. Показывает
+      долю безработных в экономически активном населении.
+    methodology: >
+      Ряд публикует Статистическое бюро Японии через портал e-Stat. Частота
+      публикации — месячная. Единица измерения на графике — процент. Для
+      загрузки ряда требуется ключ приложения e-Stat.
+
+  - code_suffix: gdp-real
+    name_ru: Валовой внутренний продукт в постоянных ценах
+    name_en: Real GDP (national accounts)
+    category_ru: ВВП
+    unit: JPY_BN
+    unit_ru: млрд иен
+    frequency: quarterly
+    provider: estat
+    dataset_id: "0003411572"
+    series_id: "gdp-real"
+    source_url: "https://www.e-stat.go.jp/en/stat-search/files?toukei=00100409"
+    analog_ru: ВВП реальный
+    is_listed: true
+    description: >
+      Реальный валовой внутренний продукт Японии по системе национальных
+      счетов. Показывает объём экономики без влияния изменения цен.
+    methodology: >
+      Ряд публикует Кабинет министров Японии и доступен через портал e-Stat.
+      Частота публикации — квартальная. Единица измерения на графике —
+      миллиарды иен. Для загрузки ряда требуется ключ приложения e-Stat.

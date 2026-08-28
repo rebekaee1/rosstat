@@ -151,7 +151,7 @@ export default function RegionProfile() {
     : filteredSections.filter((s) => s.num === resolvedActive);
 
   return (
-    <div className="mx-auto w-full max-w-7xl overflow-x-hidden px-4 pb-24 pt-24 sm:px-6">
+    <div className="mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
       <Breadcrumbs items={regionTrail(regionName || '…', slug)} />
 
       {isError && <ApiRetryBanner onRetry={refetch} retrying={isFetching} />}

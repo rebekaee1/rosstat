@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { Trophy } from 'lucide-react';
+import { ArrowDown, ArrowUp, Trophy } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import { useRegionsHeatmap, formatRegionValue, shortUnit } from '../lib/regionsApi';
 import RegionsMap from '../components/RegionsMap';
@@ -177,6 +177,7 @@ export default function RegionRatingPage() {
               valuesBySlug={mapValues}
               unit={data.indicator.unit}
               nameBySlug={nameBySlug}
+              colorDirection={sortDirection}
               onSelect={(slug) => navigate(regionIndicatorPath(slug, code))}
             />
           </div>
@@ -191,7 +192,24 @@ export default function RegionRatingPage() {
                   <tr className="text-left text-[11px] uppercase tracking-wide text-text-tertiary">
                     <th className="px-4 py-2.5 font-medium w-16">{tableCol}</th>
                     <th className="px-4 py-2.5 font-medium">{t('regions.rating.colRegion')}</th>
-                    <th className="px-4 py-2.5 font-medium text-right">{data.indicator.unit || t('regions.rating.colValue')}</th>
+                    <th
+                      aria-sort={sortDirection === 'asc' ? 'ascending' : 'descending'}
+                      className="px-4 py-2.5 font-medium text-right"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => setSortOverride(sortDirection === 'asc' ? 'desc' : 'asc')}
+                        title={sortDirection === 'asc'
+                          ? t('regions.rating.sortAsc')
+                          : t('regions.rating.sortDesc')}
+                        className="inline-flex items-center gap-1 rounded-lg transition-colors hover:text-champagne"
+                      >
+                        {data.indicator.unit || t('regions.rating.colValue')}
+                        {sortDirection === 'asc'
+                          ? <ArrowUp size={12} aria-hidden="true" />
+                          : <ArrowDown size={12} aria-hidden="true" />}
+                      </button>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>

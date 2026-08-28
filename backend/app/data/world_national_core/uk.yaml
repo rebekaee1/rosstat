@@ -1,0 +1,300 @@
+# United Kingdom national-core passport (official ONS time-series JSON + BoE IADB CSV).
+# Live-probed 2026-08-12. Loader: scripts/load-world-national.py --country uk
+# Providers: ons → OnsTimeseriesAdapter (www.ons.gov.uk/…/timeseries/{cdid}/{dataset}/data);
+#            boe_iadb → BoeIadbAdapter (bankofengland.co.uk/boeapps/iadb CSV).
+# BoE default observation window starts 2000-01-01; on HTML/timeout the adapter
+# shortens to 2010 then 2020. Expand with live-probed series; loader is
+# idempotent and does not touch existing eurostat rows for UK.
+
+country_code: UK
+
+series:
+  - code_suffix: cpi-all
+    name_ru: Индекс потребительских цен
+    name_en: Consumer Price Index (all items)
+    category_ru: Цены
+    unit: INDEX
+    unit_ru: индекс (2015 = 100)
+    frequency: monthly
+    provider: ons
+    dataset_id: "MM23"
+    series_id: "D7BT"
+    dimensions:
+      uri_path: "economy/inflationandpriceindices/timeseries/d7bt/mm23"
+    source_url: "https://www.ons.gov.uk/economy/inflationandpriceindices/timeseries/d7bt/mm23"
+    analog_ru: ИПЦ
+    is_listed: true
+    description: >
+      Индекс потребительских цен Великобритании по всем товарам и услугам
+      корзины. Показывает, как меняется стоимость фиксированного набора товаров
+      и услуг относительно базового периода.
+    methodology: >
+      Ряд публикует Управление национальной статистики Великобритании. Частота
+      публикации — месячная. Единица измерения на графике — индекс (2015 = 100).
+      На графике показан официальный национальный ряд без дополнительных
+      преобразований.
+
+  - code_suffix: cpih-all
+    name_ru: Индекс потребительских цен с учётом жилищных расходов владельцев
+    name_en: CPIH (all items)
+    category_ru: Цены
+    unit: INDEX
+    unit_ru: индекс (2015 = 100)
+    frequency: monthly
+    provider: ons
+    dataset_id: "MM23"
+    series_id: "L522"
+    dimensions:
+      uri_path: "economy/inflationandpriceindices/timeseries/l522/mm23"
+    source_url: "https://www.ons.gov.uk/economy/inflationandpriceindices/timeseries/l522/mm23"
+    analog_ru: ИПЦ с жильём
+    is_listed: true
+    description: >
+      Индекс потребительских цен Великобритании с учётом жилищных расходов
+      владельцев жилья (CPIH) по всем товарам и услугам. Показывает изменение
+      стоимости расширенной потребительской корзины относительно базового периода.
+    methodology: >
+      Ряд публикует Управление национальной статистики Великобритании. Частота
+      публикации — месячная. Единица измерения на графике — индекс (2015 = 100).
+      На графике — официальный национальный ряд без дополнительных преобразований.
+
+  - code_suffix: unemployment-rate
+    name_ru: Уровень безработицы
+    name_en: Unemployment rate (aged 16 and over, SA)
+    category_ru: Рынок труда
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    provider: ons
+    dataset_id: "LMS"
+    series_id: "MGSX"
+    dimensions:
+      uri_path: "employmentandlabourmarket/peoplenotinwork/unemployment/timeseries/mgsx/lms"
+    source_url: "https://www.ons.gov.uk/employmentandlabourmarket/peoplenotinwork/unemployment/timeseries/mgsx/lms"
+    analog_ru: Уровень безработицы
+    is_listed: true
+    description: >
+      Уровень безработицы в Великобритании среди населения 16 лет и старше, с
+      учётом сезонной корректировки. Показывает долю безработных в экономически
+      активном населении.
+    methodology: >
+      Ряд публикует Управление национальной статистики Великобритании по
+      обследованию рабочей силы. Частота публикации — месячная. Единица измерения
+      на графике — процент. На графике — официальный сезонно скорректированный
+      национальный ряд.
+
+  - code_suffix: employment-rate
+    name_ru: Уровень занятости
+    name_en: Employment rate (aged 16 to 64, SA)
+    category_ru: Рынок труда
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    provider: ons
+    dataset_id: "LMS"
+    series_id: "LF24"
+    dimensions:
+      uri_path: "employmentandlabourmarket/peopleinwork/employmentandemployeetypes/timeseries/lf24/lms"
+    source_url: "https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/employmentandemployeetypes/timeseries/lf24/lms"
+    analog_ru: Уровень занятости
+    is_listed: true
+    description: >
+      Уровень занятости в Великобритании среди населения 16–64 лет, с учётом
+      сезонной корректировки. Показывает долю занятых в численности населения
+      соответствующей возрастной группы.
+    methodology: >
+      Ряд публикует Управление национальной статистики Великобритании по
+      обследованию рабочей силы. Частота публикации — месячная. Единица измерения
+      на графике — процент. На графике — официальный сезонно скорректированный
+      национальный ряд.
+
+  - code_suffix: participation-rate
+    name_ru: Уровень экономической активности
+    name_en: Economic activity rate (aged 16 and over, SA)
+    category_ru: Рынок труда
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    provider: ons
+    dataset_id: "LMS"
+    series_id: "MGWG"
+    dimensions:
+      uri_path: "employmentandlabourmarket/peopleinwork/employmentandemployeetypes/timeseries/mgwg/lms"
+    source_url: "https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/employmentandemployeetypes/timeseries/mgwg/lms"
+    analog_ru: Уровень участия
+    is_listed: true
+    description: >
+      Уровень экономической активности населения Великобритании 16 лет и старше,
+      с учётом сезонной корректировки. Показывает долю экономически активного
+      населения в общей численности соответствующей возрастной группы.
+    methodology: >
+      Ряд публикует Управление национальной статистики Великобритании по
+      обследованию рабочей силы. Частота публикации — месячная. Единица измерения
+      на графике — процент. На графике — официальный сезонно скорректированный
+      национальный ряд.
+
+  - code_suffix: employed-persons
+    name_ru: Численность занятых
+    name_en: Number of people in employment (aged 16 and over, SA)
+    category_ru: Рынок труда
+    unit: THOUSANDS
+    unit_ru: тыс. человек
+    frequency: monthly
+    provider: ons
+    dataset_id: "LMS"
+    series_id: "MGRZ"
+    dimensions:
+      uri_path: "employmentandlabourmarket/peopleinwork/employmentandemployeetypes/timeseries/mgrz/lms"
+    source_url: "https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/employmentandemployeetypes/timeseries/mgrz/lms"
+    analog_ru: Занятость
+    is_listed: true
+    description: >
+      Численность занятых в Великобритании среди населения 16 лет и старше, с
+      учётом сезонной корректировки. Показывает масштаб занятости в экономике.
+    methodology: >
+      Ряд публикует Управление национальной статистики Великобритании по
+      обследованию рабочей силы. Частота публикации — месячная. Единица измерения
+      на графике — тысячи человек. На графике — официальный сезонно
+      скорректированный национальный ряд.
+
+  - code_suffix: gdp-real
+    name_ru: Валовой внутренний продукт в постоянных ценах
+    name_en: Gross domestic product, chained volume measures (SA)
+    category_ru: ВВП
+    unit: GBP_MN
+    unit_ru: млн фунтов стерлингов (цепные объёмы)
+    frequency: quarterly
+    provider: ons
+    dataset_id: "QNA"
+    series_id: "ABMI"
+    dimensions:
+      uri_path: "economy/grossdomesticproductgdp/timeseries/abmi/qna"
+    source_url: "https://www.ons.gov.uk/economy/grossdomesticproductgdp/timeseries/abmi/qna"
+    analog_ru: ВВП реальный
+    is_listed: true
+    description: >
+      Реальный валовой внутренний продукт Великобритании в цепных объёмах, с
+      сезонной корректировкой. Показывает объём экономики без влияния изменения
+      цен.
+    methodology: >
+      Ряд публикует Управление национальной статистики Великобритании в системе
+      национальных счетов. Частота публикации — квартальная. Единица измерения на
+      графике — миллионы фунтов стерлингов в цепных объёмах. Показан официальный
+      сезонно скорректированный ряд без дополнительных преобразований.
+
+  - code_suffix: retail-sales
+    name_ru: Индекс розничного товарооборота
+    name_en: Retail sales volume index (all retailers incl. fuel, SA)
+    category_ru: Бизнес и инвестиции
+    unit: INDEX
+    unit_ru: индекс
+    frequency: monthly
+    provider: ons
+    dataset_id: "DRSI"
+    series_id: "J5EK"
+    dimensions:
+      uri_path: "businessindustryandtrade/retailindustry/timeseries/j5ek/drsi"
+    source_url: "https://www.ons.gov.uk/businessindustryandtrade/retailindustry/timeseries/j5ek/drsi"
+    analog_ru: Розничный товарооборот
+    is_listed: true
+    description: >
+      Сезонно скорректированный индекс объёма розничных продаж в Великобритании
+      по всем видам розничной торговли, включая топливо. Показывает изменение
+      физического объёма розничных продаж относительно базового периода.
+    methodology: >
+      Ряд публикует Управление национальной статистики Великобритании. Частота
+      публикации — месячная. Единица измерения на графике — индекс. На графике —
+      официальный национальный ряд без дополнительных преобразований.
+
+  - code_suffix: merchandise-exports
+    name_ru: Товарный и услуговый экспорт
+    name_en: Total trade exports (BOP, current prices, SA)
+    category_ru: Внешняя торговля
+    unit: GBP_MN
+    unit_ru: млн фунтов стерлингов
+    frequency: monthly
+    provider: ons
+    dataset_id: "MRET"
+    series_id: "IKBH"
+    dimensions:
+      uri_path: "economy/nationalaccounts/balanceofpayments/timeseries/ikbh/mret"
+    source_url: "https://www.ons.gov.uk/economy/nationalaccounts/balanceofpayments/timeseries/ikbh/mret"
+    analog_ru: Экспорт
+    is_listed: true
+    description: >
+      Экспорт товаров и услуг Великобритании по методологии платёжного баланса,
+      в текущих ценах, с сезонной корректировкой. Показывает стоимость вывезенных
+      товаров и оказанных нерезидентам услуг за месяц.
+    methodology: >
+      Ряд публикует Управление национальной статистики Великобритании. Частота
+      публикации — месячная. Единица измерения на графике — миллионы фунтов
+      стерлингов. На графике — официальный национальный ряд без дополнительных
+      преобразований.
+
+  - code_suffix: population
+    name_ru: Численность населения
+    name_en: United Kingdom population mid-year estimate
+    category_ru: Население
+    unit: PERSONS
+    unit_ru: человек
+    frequency: annual
+    provider: ons
+    dataset_id: "pop"
+    series_id: "UKPOP"
+    dimensions:
+      uri_path: "peoplepopulationandcommunity/populationandmigration/populationestimates/timeseries/ukpop/pop"
+    source_url: "https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/timeseries/ukpop/pop"
+    analog_ru: Численность населения
+    is_listed: true
+    description: >
+      Оценка численности постоянного населения Соединённого Королевства на
+      середину года. Показывает, сколько человек проживает в стране по
+      официальной оценке статистического ведомства.
+    methodology: >
+      Ряд публикует Управление национальной статистики Великобритании. Частота
+      публикации — годовая. Единица измерения на графике — человек. На графике —
+      официальная национальная оценка без дополнительных преобразований.
+
+  - code_suffix: policy-rate
+    name_ru: Официальная ключевая ставка Банка Англии
+    name_en: Official Bank Rate
+    category_ru: Финансы
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: daily
+    provider: boe_iadb
+    dataset_id: "IUDBEDR"
+    series_id: "IUDBEDR"
+    source_url: "https://www.bankofengland.co.uk/boeapps/database/Bank-Rate.asp"
+    analog_ru: Ключевая ставка
+    is_listed: true
+    description: >
+      Официальная ключевая ставка Банка Англии — операционный ориентир
+      денежно-кредитной политики. Показывает уровень, к которому центральный банк
+      направляет краткосрочные ставки денежного рынка.
+    methodology: >
+      Ряд публикует Банк Англии. Частота публикации — дневная (рабочие дни).
+      Единица измерения на графике — процент годовых. Значения соответствуют
+      официальному ряду ключевой ставки без пересчёта на стороне платформы.
+
+  - code_suffix: fx-gbp-usd
+    name_ru: Курс фунта стерлингов к доллару США
+    name_en: GBP/USD spot exchange rate (USD per GBP)
+    category_ru: Финансы
+    unit: USD_PER_GBP
+    unit_ru: долларов США за 1 фунт стерлингов
+    frequency: daily
+    provider: boe_iadb
+    dataset_id: "XUDLUSS"
+    series_id: "XUDLUSS"
+    source_url: "https://www.bankofengland.co.uk/boeapps/database/Rates.asp"
+    analog_ru: Курс к доллару США
+    is_listed: true
+    description: >
+      Дневной спот-курс фунта стерлингов к доллару США по данным Банка Англии.
+      Показывает, сколько долларов США приходится на один фунт стерлингов.
+    methodology: >
+      Ряд публикует Банк Англии. Частота публикации — дневная (рабочие дни).
+      Единица измерения на графике — число долларов США за один фунт стерлингов.
+      Значения соответствуют официальному дневному курсу из статистической базы
+      Банка Англии.

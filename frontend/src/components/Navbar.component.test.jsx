@@ -122,6 +122,31 @@ describe('Navbar H-4 menu', () => {
     expect(russia.getAttribute('aria-current')).toBe('page');
     expect(home.getAttribute('aria-current')).toBeNull();
   });
+
+  it('EN-версия: пункта «Россия»/«Russia» в навигации нет', () => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('preview_locale', 'en');
+    window.history.pushState({}, '', url.toString());
+    try {
+      renderShell('/russia/indicator/cpi');
+
+      const nav = screen.getByRole('navigation');
+      // Пункт скрыт даже на страницах русского раздела...
+      expect(within(nav).queryByRole('link', { name: 'Россия' })).toBeNull();
+      expect(within(nav).queryByRole('link', { name: 'Russia' })).toBeNull();
+      // ...но подсветка активной страницы /russia не ломается (resolveActiveNavId
+      // считает по полному массиву; сам пункт ни на что не указывает).
+      expect(within(nav).queryAllByRole('link', { name: 'Home' }).length).toBeGreaterThan(0);
+      expect(within(nav).queryByRole('link', { name: 'Country rankings' })).toBeTruthy();
+      for (const link of within(nav).queryAllByRole('link')) {
+        expect(link.getAttribute('aria-current')).toBeNull();
+      }
+    } finally {
+      const reset = new URL(window.location.href);
+      reset.searchParams.delete('preview_locale');
+      window.history.pushState({}, '', reset.toString());
+    }
+  });
 });
 
 describe('resolveActiveNavId', () => {

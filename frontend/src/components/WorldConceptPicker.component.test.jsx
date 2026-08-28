@@ -136,9 +136,10 @@ describe('WorldConceptPicker', () => {
     act(() => {
       vi.advanceTimersByTime(900);
     });
+    // «насел» матчится и в «Население», и в «Экономическая активность населения».
     expect(track).toHaveBeenCalledWith('search_query', {
       q: 'насел',
-      results: 1,
+      results: 2,
       context: 'world-concept-picker',
     });
   });

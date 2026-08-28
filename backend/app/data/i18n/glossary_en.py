@@ -50,6 +50,10 @@ GLOSSARY_EN: dict[str, str] = {
         "Ministry of Statistics and Programme Implementation"
     ),
     "Резервный банк Индии": "Reserve Bank of India",
+    "Бюро переписи населения США": "U.S. Census Bureau",
+    "Бразильский институт географии и статистики (IBGE)": (
+        "Brazilian Institute of Geography and Statistics (IBGE)"
+    ),
     "Россия": "Russia",
     "Регионы": "Regions",
     "Регионы России": "Regions of Russia",

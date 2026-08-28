@@ -51,8 +51,21 @@ describe('CountrySilhouette', () => {
         frequencies={['monthly', 'annual']}
       />,
     );
-    expect(screen.getByText('мес., год')).toBeTruthy();
+    // Одна метка вместо перечисления: самая мелкая доступная частота.
+    expect(screen.getByText('месяц')).toBeTruthy();
+    expect(screen.queryByText(/,/)).toBeNull();
     expect(screen.getByText('1996–2026')).toBeTruthy();
+  });
+
+  it('выбирает частоту по приоритету daily → annual', () => {
+    renderMap(
+      <CountrySilhouette
+        code="AT"
+        name="Австрия"
+        frequencies={['annual', 'quarterly', 'weekly']}
+      />,
+    );
+    expect(screen.getByText('неделя')).toBeTruthy();
   });
 
   it('показывает площадь и население с русской типографикой', () => {

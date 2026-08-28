@@ -606,12 +606,19 @@ def test_ssr_chrome_locale_en():
         assert ">Regions<" in header
         assert ">Calendar<" in header
         assert ">About<" in header
+        # EN-топнав без Russia-link (страна данных — не приглашающая поверхность).
+        assert ">Russia<" not in header
+        assert f'href="{paths.russia_home() if False else "/russia"}">Russia</a>' not in header
         assert "Индикаторы" not in header
         assert "О проекте" not in header
 
         deep = _ssr_platform_deep_links()
         assert "Platform sections" in deep
         assert "Разделы платформы" not in deep
+        # Deep-links EN переименованы без слова «Russia»; адреса прежние.
+        assert "Russia" not in deep
+        assert '<a href="/">Indicators</a>' in deep
+        assert 'href="/russia/region"' in deep
 
         nf = render_not_found_html()
         assert "Page not found" in nf
@@ -642,16 +649,129 @@ def test_ssr_chrome_locale_en():
         assert ">Home<" in pure
         assert "Open the platform" in pure
         assert "Открыть платформу" not in pure
+        # S2: EN-футер без «for Russia, its regions…».
+        assert "official statistics for national economies" in pure
+        assert "for Russia, its regions" not in pure
     finally:
         reset_locale(token)
 
     token_ru = set_locale("ru")
     try:
         assert "Главная" in _ssr_chrome_header()
+        assert "Россия</a>" in _ssr_chrome_header()
         assert "Разделы платформы" in _ssr_platform_deep_links()
+        assert "Индикаторы России</a>" in _ssr_platform_deep_links()
         assert "Страница не найдена" in render_not_found_html()
     finally:
         reset_locale(token_ru)
+
+
+def test_preview_locale_noindex(monkeypatch):
+    """S3: preview-EN до кутовера — noindex; обычные страницы — index."""
+    import asyncio
+
+    from app.config import settings
+    from app.services.locale import (
+        reset_locale,
+        reset_preview_locale,
+        set_locale,
+        set_preview_locale,
+    )
+    from app.services.seo_renderer import build_document
+
+    monkeypatch.setattr(settings, "apex_locale_en", False)
+
+    async def render():
+        return await build_document(
+            title="T",
+            description="D",
+            canonical_path="/russia/indicator/cpi",
+            body="<main>x</main>",
+            include_app=True,
+        )
+
+    # 1) Обычная EN-поверхность (X-FE-Locale/en. host, без preview): индексируется.
+    token = set_locale("en")
+    pt = set_preview_locale(False)
+    try:
+        html = asyncio.run(render())
+        assert '<meta name="robots" content="index, follow, max-snippet:-1' in html
+        assert "noindex" not in html
+    finally:
+        reset_preview_locale(pt)
+        reset_locale(token)
+
+    # 2) Preview EN (?preview_locale=en): noindex,follow.
+    token = set_locale("en")
+    pt = set_preview_locale(True)
+    try:
+        html = asyncio.run(render())
+        assert '<meta name="robots" content="noindex, follow">' in html
+        assert 'content="index, follow' not in html
+    finally:
+        reset_preview_locale(pt)
+        reset_locale(token)
+
+    # 3) RU по умолчанию: без noindex.
+    token = set_locale("ru")
+    pt = set_preview_locale(False)
+    try:
+        html = asyncio.run(render())
+        assert '<meta name="robots" content="index, follow, max-snippet:-1' in html
+        assert "noindex" not in html
+    finally:
+        reset_preview_locale(pt)
+        reset_locale(token)
+
+
+def test_locale_middleware_sets_preview_flag():
+    """Preview-флаг ставится middleware только при явном override=локали."""
+    from starlette.requests import Request
+
+    from app.services.locale import (
+        LOCALE_HEADER,
+        PREVIEW_QUERY,
+        _normalize_locale_token,
+        preview_locale_from_referer,
+        resolve_locale_from_request,
+    )
+
+    def explicit_override(qs: bytes, headers: list[tuple[bytes, bytes]]) -> str | None:
+        """Дублирует логику middleware: явный override запроса, если есть."""
+        request = Request({
+            "type": "http",
+            "asgi": {"version": "3.0"},
+            "http_version": "1.1",
+            "method": "GET",
+            "scheme": "http",
+            "path": "/",
+            "raw_path": b"/",
+            "query_string": qs,
+            "headers": headers + [(b"host", b"localhost:8000")],
+            "client": ("127.0.0.1", 123),
+            "server": ("localhost", 8000),
+        })
+        header = None
+        for key, value in headers:
+            if key.decode("latin-1").lower() == LOCALE_HEADER:
+                header = value.decode("latin-1")
+        return (
+            _normalize_locale_token(request.query_params.get(PREVIEW_QUERY))
+            or _normalize_locale_token(preview_locale_from_referer(request.headers.get("referer")))
+            or _normalize_locale_token(header)
+        )
+
+    # Обычный запрос без override — не preview.
+    assert explicit_override(b"", []) is None
+
+    # ?preview_locale=en → явный EN-preview.
+    assert explicit_override(b"preview_locale=en", []) == "en"
+
+    # X-FE-Locale=en (не query) — тоже явный override.
+    assert explicit_override(b"", [(b"x-fe-locale", b"en")]) == "en"
+
+    # ?preview_locale=мусор — не override.
+    assert explicit_override(b"preview_locale=xx", []) is None
 
 
 def test_localize_category_and_freq_en():
@@ -680,7 +800,7 @@ def test_year_template_title_shape():
     try:
         tpl = year_template("title_monthly")
         assert tpl is not None
-        assert "{name} in {year}" in tpl
+        assert "{name} in {country}, {year}" in tpl
         title, desc = _year_page_title_desc(
             name="Consumer price index",
             year=2024,
@@ -692,7 +812,7 @@ def test_year_template_title_shape():
             summary_text="101,2",
             source="Rosstat",
         )
-        assert title.startswith("Consumer price index in 2024")
+        assert title.startswith("Consumer price index in Russia, 2024")
         assert "в 2024" not in title
         assert "Consumer price index in 2024" in desc
         assert "значений" not in desc

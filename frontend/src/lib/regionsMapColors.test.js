@@ -25,4 +25,19 @@ describe('regionsMapColors', () => {
     expect(valueExtent({})).toBeNull();
     expect(valueExtent(null)).toBeNull();
   });
+
+  it('buildQuantiles инвертирует шкалу при направлении asc', () => {
+    const q = buildQuantiles([10, 20, 30, 40, 50], { direction: 'asc' });
+    expect(q(10)).toBe(MAP_SCALE[MAP_SCALE.length - 1]);
+    expect(q(50)).toBe(MAP_SCALE[0]);
+  });
+
+  it('colorsBySlug переворачивает раскраску при смене направления', () => {
+    const values = { a: 10, b: 50 };
+    const desc = colorsBySlug(values, { direction: 'desc' });
+    const asc = colorsBySlug(values, { direction: 'asc' });
+    // Лидер (максимум) при desc акцентный; при asc — бледный, и наоборот.
+    expect(asc.get('a')).toBe(desc.get('b'));
+    expect(asc.get('b')).toBe(desc.get('a'));
+  });
 });

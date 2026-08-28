@@ -4,7 +4,7 @@ import WorldRatingPage from './WorldRatingPage';
 import { renderPage, mockApiGet } from '../test/renderPage';
 
 vi.mock('../components/WorldMap', () => ({
-  default: () => <div data-testid="world-map-stub">map</div>,
+  default: vi.fn(() => <div data-testid="world-map-stub">map</div>),
 }));
 
 vi.mock('../components/MapTimeline', () => ({
@@ -17,15 +17,22 @@ vi.mock('../components/MapTimeline', () => ({
 
 afterEach(() => vi.restoreAllMocks());
 
-/** Строки полной таблицы рейтинга (внутри #rating-table). */
+/** Строки полной таблицы (внутри #rating-table). */
 function dataRows(container = document.body) {
   const table = container.querySelector('#rating-table');
-  const scope = table || document.body;
+  const scope = table || container;
   return screen.getAllByRole('row').filter((row) => scope.contains(row)).slice(1);
 }
 
+/** Шапка таблицы (первая строка внутри #rating-table). */
+function headRow() {
+  return screen.getAllByRole('row').filter(
+    (row) => document.querySelector('#rating-table')?.contains(row),
+  )[0];
+}
+
 describe('WorldRatingPage', () => {
-  it('показывает полный рейтинг, страны без данных и переключает сортировку', async () => {
+  it('показывает полный рейтинг, сортирует кликом по заголовку и глобальным переключателем', async () => {
     mockApiGet([
       ['/auth/me', { user: null }],
       [/^\/indicators/, []],
@@ -48,7 +55,7 @@ describe('WorldRatingPage', () => {
           {
             slug: 'hicp-index',
             name: 'Гармонизированный индекс потребительских цен',
-            unit: 'индекс 2015=100',
+            unit: '%',
             default_sort: 'desc',
           },
         ],
@@ -60,7 +67,7 @@ describe('WorldRatingPage', () => {
           name: 'Уровень безработицы',
           unit: '% экономически активного населения',
         },
-        years: [2024, 2025],
+        years: [2025],
         values_by_year: {
           2025: {
             DE: {
@@ -85,22 +92,49 @@ describe('WorldRatingPage', () => {
         },
         benchmark_by_year: {},
       }],
+      [/^\/world\/compare\/map-series\/hicp-index/, {
+        concept: { slug: 'hicp-index', name: 'Гармонизированный индекс потребительских цен', unit: '%' },
+        years: [2025],
+        values_by_year: {
+          2025: {
+            DE: {
+              country_code: 'DE',
+              country_slug: 'germany',
+              country_name: 'Германия',
+              indicator_code: 'de-hicp',
+              date: '2025-12-01',
+              value: 1.1,
+              unit: '%',
+            },
+            FR: {
+              country_code: 'FR',
+              country_slug: 'france',
+              country_name: 'Франция',
+              indicator_code: 'fr-hicp',
+              date: '2025-12-01',
+              value: 2.2,
+              unit: '%',
+            },
+          },
+        },
+        benchmark_by_year: {},
+      }],
     ]);
 
     renderPage(
       <WorldRatingPage />,
-      { path: '/world/rating/:conceptSlug', route: '/world/rating/unemployment-rate' },
+      { path: '/world/rating/:conceptSlug', route: '/world/rating/unemployment-rate?cols=hicp-index' },
     );
 
     expect(await screen.findByRole('heading', { name: /Рейтинг стран по уровню безработицы/i })).toBeTruthy();
     expect(await screen.findByTestId('world-map-stub')).toBeTruthy();
-    expect((await screen.findByTestId('map-timeline-stub')).textContent).toContain('timeline:2024,2025:2025:function');
 
     expect(screen.getAllByRole('link', { name: 'Безработица' }).length).toBeGreaterThan(0);
     // Правка 16: изменение потребительских цен на витрине называется инфляцией.
     expect(screen.getAllByRole('link', { name: 'Инфляция' }).length).toBeGreaterThan(0);
     expect(screen.queryByRole('link', { name: /изменение за год/i })).toBeNull();
 
+    // Смысловой порядок концепта: безработица asc — Германия (3,1) выше.
     await waitFor(() => {
       const rows = dataRows();
       expect(rows).toHaveLength(2);
@@ -111,12 +145,36 @@ describe('WorldRatingPage', () => {
     expect(screen.getByRole('heading', { name: /Страны без данных за 2025/i })).toBeTruthy();
     expect(screen.getByRole('link', { name: 'Италия' })).toBeTruthy();
 
-    fireEvent.click(screen.getByRole('button', { name: 'По убыванию' }));
+    // Первый клик по заголовку доп-колонки — смысловое направление её
+    // концепта (инфляция desc): Франция (2,2) поднимается наверх.
+    const extraTh = screen
+      .getAllByRole('columnheader')
+      .find((node) => node.textContent.includes('Инфляция'));
+    const extraHeader = within(extraTh).getAllByRole('button')[0];
+    fireEvent.click(extraHeader);
 
     await waitFor(() => {
       const rows = dataRows();
       expect(within(rows[0]).getByRole('link', { name: 'Франция' })).toBeTruthy();
       expect(within(rows[1]).getByRole('link', { name: 'Германия' })).toBeTruthy();
+      expect(rows[0].textContent).toMatch(/2[.,]20/);
+    });
+
+    // Второй клик разворачивает доп-колонку по возрастанию.
+    fireEvent.click(extraHeader);
+    await waitFor(() => {
+      expect(within(dataRows()[0]).getByRole('link', { name: 'Германия' })).toBeTruthy();
+    });
+
+    // Глобальный переключатель «Порядок» разворачивает активную колонку
+    // (после кликов активна доп-колонка asc → desc).
+    fireEvent.click(screen.getByRole('button', { name: 'По убыванию' }));
+    await waitFor(() => {
+      expect(within(dataRows()[0]).getByRole('link', { name: 'Франция' })).toBeTruthy();
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'По возрастанию' }));
+    await waitFor(() => {
+      expect(within(dataRows()[0]).getByRole('link', { name: 'Германия' })).toBeTruthy();
     });
   });
 
@@ -164,9 +222,7 @@ describe('WorldRatingPage', () => {
 
     await waitFor(() => expect(dataRows()).toHaveLength(1));
 
-    const head = screen.getAllByRole('row').filter(
-      (row) => document.querySelector('#rating-table')?.contains(row),
-    )[0];
+    const head = headRow();
     expect(within(head).queryByText('Единица')).toBeNull();
     expect(within(head).getByText(/Значение, %/)).toBeTruthy();
 
@@ -176,26 +232,26 @@ describe('WorldRatingPage', () => {
     expect(row.textContent).not.toContain('1 июня 2025');
   });
 
-  it('фильтр стран оставляет выбранные страны с их местами в рейтинге', async () => {
+  it('на рейтинге нет поиска страны, фильтра и матрицы «Страны рядом» (правка 16)', async () => {
     mockApiGet(ratingMocks());
 
     renderPage(
       <WorldRatingPage />,
-      { path: '/world/rating/:conceptSlug', route: '/world/rating/unemployment-rate?c=FR' },
+      { path: '/world/rating/:conceptSlug', route: '/world/rating/unemployment-rate' },
     );
 
-    await waitFor(() => expect(dataRows()).toHaveLength(1));
-    expect(within(dataRows()[0]).getByRole('link', { name: 'Франция' })).toBeTruthy();
-    // Место сохраняется из полного рейтинга: Франция вторая по возрастанию.
-    expect(within(dataRows()[0]).getByText('2')).toBeTruthy();
-    expect(screen.getByText(/Показано 1 из 2/)).toBeTruthy();
-    expect(screen.getByRole('button', { name: 'Сбросить фильтр' })).toBeTruthy();
-
-    fireEvent.click(screen.getByRole('button', { name: 'Сбросить фильтр' }));
     await waitFor(() => expect(dataRows()).toHaveLength(2));
+    expect(document.querySelector('#rating-table input[type="search"]')).toBeNull();
+    expect(screen.queryByPlaceholderText(/Найти страну/)).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Сбросить фильтр' })).toBeNull();
+    // Правка 16: секция «Страны рядом» удалена целиком.
+    expect(screen.queryByText('Страны рядом')).toBeNull();
+    expect(document.querySelector('#compare-matrix')).toBeNull();
+    // Плюсики добавления стран в таблицу убраны.
+    expect(document.querySelector('#rating-table').textContent).not.toContain('+');
   });
 
-  it('включает Россию в таблицу и даёт переход в регионы', async () => {
+  it('включает Россию в таблицу, блок ссылок только в ru-локали, серверная нота не рендерится', async () => {
     mockApiGet([
       ['/auth/me', { user: null }],
       [/^\/world\/countries/, {
@@ -263,10 +319,13 @@ describe('WorldRatingPage', () => {
       const ruLink = dataRows().flatMap((row) => within(row).queryAllByRole('link', { name: 'Россия' }))[0];
       expect(ruLink).toBeTruthy();
     });
+    // ru-локаль localhost: блок «Россия и регионы» отрисован с региональными ссылками…
+    expect(screen.getByText('Россия и регионы')).toBeTruthy();
     expect(screen.getByRole('link', { name: 'Регионы России' })).toBeTruthy();
     expect(screen.getByRole('link', { name: 'Региональный рейтинг' }).getAttribute('href'))
       .toBe('/russia/region-rating/uroven-bezrabotitsy');
-    expect(screen.getByText(/Росстата/)).toBeTruthy();
+    // …но серверная нота «Для России …» больше не рендерится нигде.
+    expect(screen.queryByText(/Росстата/)).toBeNull();
   });
 
   function ratingMocks({ user = null } = {}) {
@@ -291,7 +350,7 @@ describe('WorldRatingPage', () => {
           {
             slug: 'hicp-index',
             name: 'Гармонизированный индекс потребительских цен',
-            unit: 'индекс 2015=100',
+            unit: '%',
             default_sort: 'desc',
           },
         ],
@@ -337,7 +396,7 @@ describe('WorldRatingPage', () => {
     ];
   }
 
-  it('гость может добавить один показатель; полная матрица — после регистрации', async () => {
+  it('гость может открыть один показатель; полный набор — после регистрации', async () => {
     mockApiGet(ratingMocks());
 
     renderPage(
@@ -346,27 +405,22 @@ describe('WorldRatingPage', () => {
     );
 
     await waitFor(() => expect(dataRows()).toHaveLength(2));
-    expect(screen.getByRole('button', { name: 'Добавить показатель' })).toBeTruthy();
-    // Гейт регистрации живёт в матрице «Страны рядом» и виден сразу.
-    expect(screen.getAllByRole('link', { name: 'Создать аккаунт' }).length).toBeGreaterThan(0);
 
-    const matrixBox = () => document.querySelector('#compare-matrix')?.parentElement;
-    await waitFor(() => {
-      expect(matrixBox().textContent).toContain('Страны рядом');
-    });
-
+    // Гостю доступен один выбор — кнопка показателя в панели добавления.
     fireEvent.click(screen.getByRole('button', { name: 'Добавить показатель' }));
-    // Гостю доступен один выбор — кнопка показателя активна.
     fireEvent.click(screen.getByRole('button', { name: 'Инфляция' }));
 
+    // Колонки: место, страна, значение, инфляция, период.
     await waitFor(() => {
-      expect(matrixBox().textContent).toContain('Инфляция');
+      const head = headRow();
+      expect(within(head).getAllByRole('columnheader')).toHaveLength(5);
     });
     // Второй добавить нельзя — достигнут гостевой лимит.
-    expect(within(matrixBox()).queryAllByRole('button', { name: 'Безработица' }).length).toBe(0);
+    fireEvent.click(screen.getByRole('button', { name: 'Добавить показатель' }));
+    expect(within(document.body).queryAllByRole('button', { name: 'Безработица' }).length).toBe(0);
   });
 
-  it('авторизованный добавляет колонки в таблицу и матрицу до пяти показателей', async () => {
+  it('авторизованный открывает колонки в таблице до пяти показателей', async () => {
     mockApiGet(ratingMocks({ user: { id: 1, email: 't@example.com' } }));
 
     renderPage(
@@ -374,16 +428,42 @@ describe('WorldRatingPage', () => {
       { path: '/world/rating/:conceptSlug', route: '/world/rating/unemployment-rate?cols=hicp-index' },
     );
 
+    // Колонки: место, страна, значение, инфляция, период.
     await waitFor(() => {
-      const head = screen.getAllByRole('row').filter(
-        (row) => document.querySelector('#rating-table')?.contains(row),
-      )[0];
+      const head = headRow();
       expect(within(head).getAllByRole('columnheader')).toHaveLength(5);
     });
-    await waitFor(() => {
-      expect(document.querySelector('#compare-matrix').textContent).toContain('Инфляция');
-    });
     expect(screen.queryByRole('link', { name: 'Создать аккаунт' })).toBeNull();
+  });
+
+  it('переводит карту в текущее направление сортировки (colorDirection)', async () => {
+    mockApiGet(ratingMocks());
+    const WorldMap = (await import('../components/WorldMap')).default;
+
+    renderPage(
+      <WorldRatingPage />,
+      { path: '/world/rating/:conceptSlug', route: '/world/rating/unemployment-rate' },
+    );
+
+    await waitFor(() => expect(dataRows()).toHaveLength(2));
+
+    // Смысловой asc у безработицы → карта asc.
+    expect(WorldMap).toHaveBeenCalledWith(
+      expect.objectContaining({ colorDirection: 'asc' }),
+      undefined,
+    );
+
+    // Клик по базовой колонке: первый фиксирует смысловой порядок,
+    // второй разворачивает — карта инвертируется.
+    const baseHeader = screen
+      .getAllByRole('columnheader')
+      .find((node) => node.textContent.includes('Значение'));
+    fireEvent.click(within(baseHeader).getAllByRole('button')[0]);
+    fireEvent.click(within(baseHeader).getAllByRole('button')[0]);
+    expect(WorldMap).toHaveBeenLastCalledWith(
+      expect.objectContaining({ colorDirection: 'desc' }),
+      undefined,
+    );
   });
 
   it('доп. колонка берёт ближайший опубликованный год, если за базовый год данных нет', async () => {
@@ -486,10 +566,10 @@ describe('WorldRatingPage', () => {
     );
 
     await waitFor(() => expect(dataRows()).toHaveLength(2));
-    const head = screen.getAllByRole('row').filter(
-      (row) => document.querySelector('#rating-table')?.contains(row),
-    )[0];
+    const head = headRow();
     expect(within(head).getAllByRole('columnheader')).toHaveLength(5);
+    // Шапка доп-колонки несёт единицу измерения своего концепта.
+    expect(within(head).getByText(/Инфляция, %/)).toBeTruthy();
     // Значения инфляции взяты из 2025 — ближайшего опубликованного года к базе 2026
     // (сортировка по безработице desc: Франция 7,0 выше Германии 3,4).
     expect(within(dataRows()[0]).getByText('Франция')).toBeTruthy();

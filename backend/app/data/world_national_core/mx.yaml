@@ -1,0 +1,169 @@
+# Mexico national-core passport (official Banco de México SIE REST API).
+# Series ids confirmed from Banxico SIE catalog / API docs (2026-08-12).
+# Live HTTP from this environment timed out to banxico.org.mx / inegi.org.mx
+# (TCP connect); adapter + YAML stay ready for token-authenticated ingest.
+# Token: RUSTATS_BANXICO_API_TOKEN (https://www.banxico.org.mx/SieAPIRest/service/v1/token).
+# Loader: scripts/load-world-national.py --country mx
+# CPI/unemployment/GDP originate at INEGI and are republished in Banxico SIE.
+
+country_code: MX
+
+series:
+  - code_suffix: cpi-all
+    name_ru: Индекс потребительских цен
+    name_en: Consumer Price Index (INPC)
+    category_ru: Цены
+    unit: INDEX
+    unit_ru: индекс (2-я половина июля 2018 = 100)
+    frequency: monthly
+    provider: banxico_sie
+    dataset_id: "SP1"
+    series_id: "SP1"
+    source_url: "https://www.banxico.org.mx/SieAPIRest/service/v1/series/SP1/datos/oportuno"
+    analog_ru: ИПЦ
+    is_listed: true
+    description: >
+      Национальный индекс потребительских цен Мексики (INPC). Показывает, как
+      меняется стоимость фиксированного набора товаров и услуг относительно
+      базового периода.
+    methodology: >
+      Ряд публикует Банк Мексики в системе экономической информации. Исходную
+      оценку индекса готовит Национальный институт статистики и географии
+      Мексики. Частота публикации — месячная. Единица измерения на графике —
+      индекс (вторая половина июля 2018 года принята за 100). На графике —
+      официальный национальный ряд без дополнительных преобразований.
+
+  - code_suffix: unemployment-rate
+    name_ru: Уровень безработицы
+    name_en: Open unemployment rate (urban)
+    category_ru: Рынок труда
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    provider: banxico_sie
+    dataset_id: "SL1"
+    series_id: "SL1"
+    source_url: "https://www.banxico.org.mx/SieAPIRest/service/v1/series/SL1/datos/oportuno"
+    analog_ru: Уровень безработицы
+    # SL1 discontinued 2005-08 (ENE/ENOE predecessor). Current national rate is
+    # published by INEGI (ENOE), not republished as a live Banxico SIE series.
+    # Keep off the vitrine until an INEGI adapter lands.
+    is_listed: false
+    description: >
+      Уровень открытой безработицы в городских районах Мексики. Показывает долю
+      безработных в экономически активном населении соответствующего охвата
+      обследования.
+    methodology: >
+      Исторический ряд Банка Мексики по городской открытой безработице. Актуальная
+      национальная оценка публикуется Национальным институтом статистики и
+      географии Мексики по обследованию занятости. Частота публикации исходного
+      ряда — месячная. Единица измерения на графике — процент.
+
+  - code_suffix: gdp-real
+    name_ru: Валовой внутренний продукт в постоянных ценах
+    name_en: Real GDP at market prices (2018 base)
+    category_ru: ВВП
+    unit: MXN_MN
+    unit_ru: млн мексиканских песо (постоянные цены 2018)
+    frequency: quarterly
+    provider: banxico_sie
+    dataset_id: "SR17493"
+    series_id: "SR17493"
+    source_url: "https://www.banxico.org.mx/SieAPIRest/service/v1/series/SR17493/datos/oportuno"
+    analog_ru: ВВП реальный
+    is_listed: true
+    description: >
+      Реальный валовой внутренний продукт Мексики в рыночных ценах. Показывает
+      объём экономики без влияния изменения цен.
+    methodology: >
+      Ряд публикует Банк Мексики; исходную оценку готовит Национальный институт
+      статистики и географии Мексики в системе национальных счетов. База —
+      постоянные цены 2018 года. Частота публикации — квартальная. Единица
+      измерения на графике — миллионы мексиканских песо в постоянных ценах. На
+      графике — официальный национальный ряд без дополнительных преобразований.
+
+  - code_suffix: policy-rate
+    name_ru: Целевая процентная ставка
+    name_en: Target interest rate
+    category_ru: Финансы
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: daily
+    provider: banxico_sie
+    dataset_id: "SF61745"
+    series_id: "SF61745"
+    source_url: "https://www.banxico.org.mx/SieAPIRest/service/v1/series/SF61745/datos/oportuno"
+    analog_ru: Ключевая ставка
+    is_listed: true
+    description: >
+      Целевая процентная ставка Банка Мексики — операционный ориентир
+      денежно-кредитной политики. Показывает уровень, к которому центральный банк
+      направляет ставку денежного рынка.
+    methodology: >
+      Ряд публикует Банк Мексики. Частота публикации — дневная. Единица измерения
+      на графике — процент годовых. Значения соответствуют официальной целевой
+      ставке без пересчёта на стороне платформы.
+
+  - code_suffix: fx-usd-mxn
+    name_ru: Курс доллара США к мексиканскому песо
+    name_en: USD/MXN FIX exchange rate
+    category_ru: Финансы
+    unit: MXN_PER_USD
+    unit_ru: мексиканских песо за 1 доллар США
+    frequency: daily
+    provider: banxico_sie
+    dataset_id: "SF43718"
+    series_id: "SF43718"
+    source_url: "https://www.banxico.org.mx/SieAPIRest/service/v1/series/SF43718/datos/oportuno"
+    analog_ru: Курс к доллару США
+    is_listed: true
+    description: >
+      Обменный курс FIX доллара США к мексиканскому песо по данным Банка
+      Мексики. Показывает, сколько песо приходится на один доллар США на дату
+      определения курса.
+    methodology: >
+      Ряд публикует Банк Мексики. Частота публикации — дневная (рабочие дни).
+      Единица измерения на графике — число мексиканских песо за один доллар США.
+      Значения соответствуют официальному курсу FIX.
+
+  - code_suffix: tiie-28
+    name_ru: Ставка TIIE на 28 дней
+    name_en: 28-day TIIE interbank rate
+    category_ru: Финансы
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: daily
+    provider: banxico_sie
+    dataset_id: "SF60648"
+    series_id: "SF60648"
+    source_url: "https://www.banxico.org.mx/SieAPIRest/service/v1/series/SF60648/datos/oportuno"
+    analog_ru: Межбанковская ставка
+    is_listed: true
+    description: >
+      Межбанковская равновесная процентная ставка TIIE сроком 28 дней. Показывает
+      стоимость краткосрочных межбанковских заимствований в песо.
+    methodology: >
+      Ряд публикует Банк Мексики. Частота публикации — дневная. Единица измерения
+      на графике — процент годовых. На графике — официальный ряд без
+      дополнительных преобразований.
+
+  - code_suffix: international-reserves
+    name_ru: Международные резервы
+    name_en: International reserves
+    category_ru: Финансы
+    unit: USD_MN
+    unit_ru: млн долларов США
+    frequency: weekly
+    provider: banxico_sie
+    dataset_id: "SF43707"
+    series_id: "SF43707"
+    source_url: "https://www.banxico.org.mx/SieAPIRest/service/v1/series/SF43707/datos/oportuno"
+    analog_ru: Международные резервы
+    is_listed: true
+    description: >
+      Международные резервы Банка Мексики. Показывают объём официальных резервных
+      активов страны в долларовом выражении.
+    methodology: >
+      Ряд публикует Банк Мексики. Частота публикации — недельная. Единица
+      измерения на графике — миллионы долларов США. На графике — официальный ряд
+      без дополнительных преобразований.

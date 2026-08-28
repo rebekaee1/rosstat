@@ -169,11 +169,15 @@ async def _upsert_russia_catalog(
 ) -> int:
     if not points:
         return 0
-    code = WEO_SERIES[weo_code]["russia_indicator_code"]
+    meta = WEO_SERIES[weo_code]
+    code = meta["russia_indicator_code"]
     indicator = (
         await db.execute(select(Indicator).where(Indicator.code == code))
     ).scalar_one_or_none()
     if indicator is None:
+        # Серия без парной строки в seed_data.py (каталог не заполняет
+        # оверлей) — легитимный конфиг, а не сбой: RU в рейтинге этого
+        # концепта нет, остальные страны пишутся штатно.
         logger.warning("IMF WEO Russia overlay skipped: seed row %s missing", code)
         return 0
     added, updated = await bulk_upsert(db, indicator.id, points)
@@ -185,7 +189,14 @@ async def run_imf_weo_ingest(
     *,
     country_codes: list[str] | None = None,
 ) -> dict[str, int]:
-    """Загрузить NGDPD / NGDPDPC / GGXCNL_NGDP для active world countries и RU-overlay."""
+    """Загрузить NGDPD / NGDPDPC / GGXCNL_NGDP / GGXWDG_NGDP для active world countries и RU-overlay.
+
+    Политика года наблюдений применяется внутри разбора ответа:
+    ``parse_imf_weo_sdmx`` читает код серии из payload и отсекает годы по
+    ``weo_max_observation_year(weo_code)`` — поточные серии пишутся только
+    по закрытым годам. Повторный прогон идемпотентен: даты, отсутствующие
+    во входе, вычищаются из рядов.
+    """
     started_at = datetime.now(timezone.utc).replace(tzinfo=None)
     async with async_session() as db:
         run = WorldIngestRun(source=PROVIDER, is_shadow=False, started_at=started_at)

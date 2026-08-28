@@ -66,4 +66,24 @@ describe('buildWorldColorModel', () => {
     expect(model.colorFor(null)).toBe(WORLD_NO_DATA);
     expect(model.colorFor('not-a-number')).toBe(WORLD_NO_DATA);
   });
+
+  it('переворачивает шкалу при порядке по возрастанию (правка 16)', () => {
+    const values = Object.fromEntries(
+      Array.from({ length: 35 }, (_, index) => [`c${index}`, index + 1]),
+    );
+    const model = buildWorldColorModel(values, { direction: 'asc' });
+    // Лидер нового порядка (минимум) получает насыщенный край палитры,
+    // антилидер (максимум) — противоположный.
+    expect(model.colorFor(1)).toBe(WORLD_RELATIVE_SCALE[WORLD_RELATIVE_SCALE.length - 1]);
+    expect(model.colorFor(35)).toBe(WORLD_RELATIVE_SCALE[0]);
+  });
+
+  it('при порядке по убыванию лидер (максимум) — акцентный', () => {
+    const values = Object.fromEntries(
+      Array.from({ length: 35 }, (_, index) => [`c${index}`, index + 1]),
+    );
+    const model = buildWorldColorModel(values, { direction: 'desc' });
+    expect(model.colorFor(35)).toBe(WORLD_RELATIVE_SCALE[WORLD_RELATIVE_SCALE.length - 1]);
+    expect(model.colorFor(1)).toBe(WORLD_RELATIVE_SCALE[0]);
+  });
 });

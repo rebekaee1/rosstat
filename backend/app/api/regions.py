@@ -21,7 +21,7 @@ from app.data.region_indicator_polarity import (
     region_rating_order_by,
 )
 from app.database import get_db
-from app.models import Region, RegionDataPoint, RegionIndicator
+from app.models import Region, RegionDataPoint, RegionIndicator, RegionMonthlyPoint
 from app.services.locale import get_locale
 from app.services.seo_i18n import region_display_name, region_indicator_copy
 from app.services.seo_regional import MACRO_BY_TABLE
@@ -560,6 +560,108 @@ async def region_indicator_detail(slug: str, code: str, db: AsyncSession = Depen
                 "name": _icopy(s)["name"],
                 "unit": _icopy(s)["unit"],
             }
+            for s in siblings
+        ],
+    }
+    await cache_set(cache_key, result, settings.cache_ttl_data)
+    return result
+
+
+MONTH_NAMES_RU = (
+    "январь", "февраль", "март", "апрель", "май", "июнь",
+    "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь",
+)
+
+
+@router.get("/{slug}/i/{code}/monthly")
+async def region_indicator_monthly(slug: str, code: str, db: AsyncSession = Depends(get_db)):
+    """Помесячный ряд показателя в регионе (пока — цены на топливо, ЕМИСС).
+
+    Точки {year, month, value, label}; label — «2026-08» для оси/тултипа.
+    Сравнение с РФ строится, рейтинг — нет: цена зависит от структуры рынка
+    и логистики региона, «место в рейтинге цен» вводило бы в заблуждение.
+    """
+    cache_key = f"fe:regions:monthly:v1:{slug}:{code}:{get_locale()}"
+    cached = await cache_get(cache_key)
+    if cached:
+        return cached
+
+    region = await _region_or_404(slug, db)
+    indicator = (await db.execute(
+        select(RegionIndicator).where(RegionIndicator.code == code)
+    )).scalar_one_or_none()
+    if indicator is None:
+        raise HTTPException(404, "Показатель не найден")
+
+    rows = (await db.execute(
+        select(RegionMonthlyPoint.month, RegionMonthlyPoint.value)
+        .where(RegionMonthlyPoint.indicator_id == indicator.id,
+               RegionMonthlyPoint.region_id == region.id)
+        .order_by(RegionMonthlyPoint.month)
+    )).all()
+    if not rows:
+        raise HTTPException(404, "Нет месячных данных по этому показателю для региона")
+
+    # YYYYMM → (year, month); месяц внутри года = остаток от деления на 100
+    series = [
+        {
+            "year": m // 100,
+            "month": m % 100,
+            "value": _fmt(float(v)),
+            "label": f"{m // 100}-{m % 100:02d}",
+        }
+        for m, v in rows
+    ]
+
+    # ряд РФ для сравнения (russia — «РФ без учёта новых субъектов» витрины)
+    russia_series = []
+    if region.slug != "russia":
+        rf = (await db.execute(select(Region).where(Region.slug == "russia"))).scalar_one_or_none()
+        if rf:
+            rf_rows = (await db.execute(
+                select(RegionMonthlyPoint.month, RegionMonthlyPoint.value)
+                .where(RegionMonthlyPoint.indicator_id == indicator.id,
+                       RegionMonthlyPoint.region_id == rf.id)
+                .order_by(RegionMonthlyPoint.month)
+            )).all()
+            russia_series = [
+                {"year": m // 100, "month": m % 100, "value": _fmt(float(v)), "label": f"{m // 100}-{m % 100:02d}"}
+                for m, v in rf_rows
+            ]
+
+    # соседние показатели раздела + мост в макроблок — та же семантика, что
+    # у годового эндпоинта: карточка месяц-режима строит те же блоки.
+    siblings = (await db.execute(
+        select(RegionIndicator)
+        .where(RegionIndicator.section_num == indicator.section_num,
+               RegionIndicator.code != indicator.code,
+               RegionIndicator.is_listed.is_(True))
+        .order_by(RegionIndicator.code)
+        .limit(12)
+    )).scalars().all()
+
+    copy = _icopy(indicator)
+    result = {
+        "region": {
+            "slug": region.slug,
+            "name": _rname(region.slug, region.name),
+            "kind": region.kind,
+        },
+        "indicator": {
+            "code": indicator.code,
+            "name": copy["name"],
+            "unit": copy["unit"],
+            "note": copy["note"],
+            "section_num": indicator.section_num,
+            "section_name": copy["section"] or indicator.section_name,
+            "table_code": indicator.table_code,
+            "macro_code": MACRO_BY_TABLE.get(indicator.table_code or ""),
+        },
+        "frequency": "monthly",
+        "series": series,
+        "russia_series": russia_series,
+        "siblings": [
+            {"code": s.code, "name": _icopy(s)["name"], "unit": _icopy(s)["unit"]}
             for s in siblings
         ],
     }

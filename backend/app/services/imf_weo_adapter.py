@@ -15,13 +15,19 @@ Verified live 2026-08-22:
 - ``NGDPDPC`` SCALE ``0`` — already US dollars per person.
 - ``GGXCNL_NGDP`` (verified live 2026-08-22) — general government net
   lending/borrowing, SCALE ``0``, values already in percent of GDP.
+- ``GGXWDG_NGDP`` (verified live 2026-08-27) — general government gross debt,
+  SCALE ``0``, percent of GDP.
 
 Public fields must not mention API / SDMX / dataflow. Attribution:
 «Source: International Monetary Fund, World Economic Outlook».
-WEO published estimates for the current calendar year are observations.
-Medium-term projection years beyond the current year are dropped so the
-map and ranking do not treat a 2031 outlook as the latest value.
-They are never written to ``world_forecasts``.
+Observation-year policy: WEO publishes for the running year an estimate, not a
+closed calendar outcome. Flow series (GDP in dollars, budget balance, gross
+debt) are stored only through the last closed year; the running year is not an
+observation. ``weo_max_observation_year(weo_code)`` encodes this per series
+(flow → previous closed year; a future stock series may use the running year).
+Medium-term projection years beyond that bound are dropped so the map and
+ranking do not treat a far-outlook value as the latest one. They are never
+written to ``world_forecasts``.
 """
 
 from __future__ import annotations
@@ -62,6 +68,7 @@ _UA = "ForecastEconomy/1.0 (+https://forecasteconomy.com)"
 WEO_NGDPD = "NGDPD"
 WEO_NGDPDPC = "NGDPDPC"
 WEO_GGXCNL_NGDP = "GGXCNL_NGDP"
+WEO_GGXWDG_NGDP = "GGXWDG_NGDP"
 
 # Identity + public units. Ranking compares measure_class(unit, unit_ru)
 # to WorldConcept.measure — keep these codes in lockstep with world_concepts.
@@ -119,6 +126,30 @@ WEO_SERIES: dict[str, dict[str, str]] = {
             "профицит бюджета, % ВВП"
         ),
     },
+    # Валовый долг сектора государственного управления в % ВВП; SCALE=0 —
+    # значения приходят сразу в процентах. Для стран с полным покрытием
+    # Eurostat-направления государственных финансов рейтинг остаётся на
+    # национальных определениях; ряд МВФ закрывает страны вне того охвата.
+    WEO_GGXWDG_NGDP: {
+        "unit": "PC_GDP",
+        "unit_ru": "% ВВП",
+        "unit_en": "% of GDP",
+        "name_ru": "Государственный долг сектора государственного управления",
+        "name_en": "General government gross debt",
+        "code_suffix": "ggxwdg",
+        "russia_indicator_code": "weo-government-debt-gdp",
+        "category_ru": "Государственные финансы",
+        "desc_ru": (
+            "{name} — годовая оценка Международного валютного фонда "
+            "в процентах от валового внутреннего продукта ({unit}); "
+            "показывает объём накопленных обязательств сектора государственного "
+            "управления на конец года."
+        ),
+        "keywords_ru": (
+            "{name}, {country}, государственный долг, госдолг, "
+            "долг к ВВП, % ВВП"
+        ),
+    },
 }
 
 # Публичная методология per series (RU/EN): денежные ряды и процентный ряд
@@ -142,6 +173,21 @@ WEO_METHODOLOGY_BY_CODE: dict[str, tuple[str, str]] = {
         "Source: International Monetary Fund, World Economic Outlook.",
         "General government net lending/borrowing for the year, "
         "percent of GDP. "
+        "Source: International Monetary Fund, World Economic Outlook.",
+    ),
+    WEO_GGXWDG_NGDP: (
+        "Валовый долг сектора государственного управления на конец года, "
+        "в процентах от валового внутреннего продукта, по широкой "
+        "классификации государственных финансов Международного валютного "
+        "фонда. Для стран с полным покрытием европейского направления "
+        "государственных финансов в рейтинге используются национальные "
+        "определения долга; остальные страны отражены по оценкам фонда. "
+        "Source: International Monetary Fund, World Economic Outlook.",
+        "General government gross debt at the end of the year, percent of "
+        "GDP, under the fund's broad public finance definitions. For countries "
+        "fully covered by the European government finance framework the "
+        "ranking uses national debt definitions; other countries are shown by "
+        "the fund's estimates. "
         "Source: International Monetary Fund, World Economic Outlook.",
     ),
 }
@@ -227,9 +273,41 @@ class WeoParsedPoint:
     scale: int = 0
 
 
-def weo_max_observation_year(today: date | None = None) -> int:
-    """Последний год, который пишем как наблюдение (текущий календарный)."""
-    return (today or date.today()).year
+# Политика года наблюдений по коду серии (D1). Поточные показатели
+# получают наблюдения только по закрытым календарным годам: оценка МВФ за
+# текущий год ещё не годовой итог и в шапке рейтинга выглядела бы как
+# состоявшееся значение. Стоковые показатели (население, безработица) —
+# уровень на дату; их текущий год допустим. Новый код серии обязан явственно
+# выбрать политику: KeyError при добавлении серии без записи здесь —
+# осознанный предохранитель.
+WEO_YEAR_POLICY_BY_CODE: dict[str, str] = {
+    WEO_NGDPD: "closed",
+    WEO_NGDPDPC: "closed",
+    WEO_GGXCNL_NGDP: "closed",
+    WEO_GGXWDG_NGDP: "closed",
+}
+
+_YEAR_POLICY_CLOSED = "closed"
+_YEAR_POLICY_STOCK = "stock"
+
+
+def weo_max_observation_year(
+    weo_code: str | None = None, today: date | None = None
+) -> int:
+    """Последний год, который пишем как наблюдение для серии ``weo_code``.
+
+    Поточные серии ("closed") — только закрытые годы: today.year - 1.
+    Стоковые ("stock") — текущий год допустим. Дефолт ``weo_code=None``
+    возвращает today.year для обратной совместимости со старыми вызовами;
+    оба боевых вызова (ingest и парсер каталога) передают фактический код.
+    """
+    year = (today or date.today()).year
+    if weo_code is None:
+        return year
+    policy = WEO_YEAR_POLICY_BY_CODE.get((weo_code or "").strip().upper())
+    if policy is None:
+        raise KeyError(f"Unknown WEO year policy for series: {weo_code!r}")
+    return year - 1 if policy == _YEAR_POLICY_CLOSED else year
 
 
 def weo_iso3_for(iso2: str) -> str | None:
@@ -410,7 +488,7 @@ def parse_imf_weo_sdmx(payload: Mapping[str, Any]) -> list[WeoParsedPoint]:
                 value = _float_or_none(raw_value)
                 if period is None or value is None:
                     continue
-                if period.year > weo_max_observation_year():
+                if period.year > weo_max_observation_year(weo_code):
                     continue
                 out.append(
                     WeoParsedPoint(
@@ -527,14 +605,22 @@ class ImfWeoAdapter:
         )
 
     def fetch_weo_code(self, weo_code: str, iso3_codes: Iterable[str]) -> list[WeoParsedPoint]:
-        """Один HTTP на код WEO × набор ISO3 — для ingest, не для product-слоя."""
+        """Один HTTP на код WEO × набор ISO3 — для ingest, не для product-слоя.
+
+        Граница года наблюдений считается здесь по фактическому коду серии
+        (политика года из ``WEO_YEAR_POLICY_BY_CODE``): поточные серии не
+        получают наблюдений за незакрывшийся год даже если источник вернул
+        оценку текущего года.
+        """
         countries = [code.strip().upper() for code in iso3_codes if code and code.strip()]
         if not countries:
             return []
         url = weo_data_url(countries, weo_code)
         payload = self._fetch_json(url)
+        max_year = weo_max_observation_year(weo_code)
+        wanted = weo_code.strip().upper()
         return [
             item
             for item in parse_imf_weo_sdmx(payload)
-            if item.weo_code == weo_code.strip().upper()
+            if item.weo_code == wanted and item.period.year <= max_year
         ]

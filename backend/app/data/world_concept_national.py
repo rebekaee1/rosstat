@@ -20,8 +20,19 @@ NATIONAL_CONCEPT_INDICATOR_CODES: dict[str, dict[str, str]] = {
         "US": "us-unemployment-rate",
     },
     "population": {
+        "AU": "au-population",
         "CA": "ca-population",
         "UK": "uk-population",
+        "US": "us-population-census",
+        "BR": "br-population-ibge",
+    },
+    # Уровень экономической активности: у AU/UK национальное обследование
+    # рабочей силы публикует долю экономически активного населения
+    # (participation rate) в процентах — тот же смысл, что у Eurostat-среза
+    # lfsi_emp_a ACT; возрастная база национальная (AU: 15+, UK: 16+).
+    "activity-rate": {
+        "AU": "au-participation-rate",
+        "UK": "uk-participation-rate",
     },
     # Потребительские цены: национальные индексы с разными базами.
     # Карта/рейтинг отдают изменение за год (%), не уровень индекса.

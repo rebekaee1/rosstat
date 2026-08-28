@@ -118,6 +118,20 @@ WORLD_CONCEPTS: tuple[WorldConcept, ...] = (
         required_slice={"na_item": "GD", "sector": "S13"},
         frequency_policy="official_only",
         enabled_surfaces=_RATING_SURFACES,
+        # Eurostat — долг по национальным определениям стран с полным
+        # покрытием направления государственных финансов; IMF — оценка по
+        # широкой классификации фонда для остальных. Разные меры одного
+        # понятия, единица одна (% ВВП); смешение методологий оговаривается
+        # в публичной методологии рейтинга.
+        provider_dataset_ids={
+            "eurostat": frozenset({"gov_10dd_edpt1"}),
+            "imf": frozenset({"weo"}),
+        },
+        # Pinned dimensions per provider: Eurostat описывает срез измерениями
+        # na_item/sector, IMF — своим кодом серии.
+        provider_required_slices={
+            "imf": {"weo_code": "GGXWDG_NGDP"},
+        },
         name_en="General government gross debt",
         unit_en="% of GDP",
     ),
@@ -150,14 +164,14 @@ WORLD_CONCEPTS: tuple[WorldConcept, ...] = (
     # Уровень экономической активности 15–64 лет — доля населения, %.
     WorldConcept(
         slug="activity-rate",
-        name_ru="Уровень экономической активности",
+        name_ru="Уровень экономической активности населения",
         unit_ru="% населения",
         dataset_ids=frozenset({"lfsi_emp_a"}),
         measure="PC_POP",
         required_slice={"age": "Y15-64", "sex": "T", "indic_em": "ACT"},
         frequency_policy="official_only",
         enabled_surfaces=_RATING_SURFACES,
-        name_en="Activity rate",
+        name_en="Economic activity rate",
         unit_en="% of population",
     ),
     # ВВП на душу относительно среднего по ЕС — относительный индекс, не валюта.

@@ -427,7 +427,7 @@ async def render_today_indicator_html(code: str, db: AsyncSession) -> tuple[int,
 <div class="seo-tile"><span>{escape(tile_updated)}</span><b>{escape(_ru_date_short(last.date))}</b></div>
 </div>
 <p>{body_lead}</p>
-<figure class="seo-chart"><img src="{escape(og_path)}" width="1200" height="630" alt="{escape(chart_alt)}" loading="eager"><figcaption>{escape(chart_caption)}</figcaption></figure>
+<figure class="seo-chart"><a class="seo-chart-link" href="{escape(paths.russia_indicator(spec.code))}#chart"><img src="{escape(og_path)}" width="1200" height="630" alt="{escape(chart_alt)}" loading="eager"></a><figcaption>{escape(chart_caption)}</figcaption></figure>
 <p><a class="seo-linkbtn" href="{escape(paths.russia_indicator(spec.code))}">{escape(cta)}</a></p>
 <section><h2>{escape(table_h2)}</h2>
 <div class="seo-scroll"><table><thead><tr><th>{escape(th_date)}</th><th>{escape(th_value)}</th></tr></thead><tbody>{table_rows}</tbody></table></div>
@@ -581,7 +581,7 @@ async def render_today_hub_html(db: AsyncSession) -> tuple[int, str]:
 <p class="seo-eyebrow">{escape(eyebrow)}</p>
 <h1>{escape(hub_h1)}</h1>
 <p>{hub_lead}</p>
-<figure class="seo-chart"><img src="{escape(og_path)}" width="1200" height="630" alt="{escape(hub_alt)}" loading="eager"><figcaption>{escape(hub_caption)}</figcaption></figure>
+<figure class="seo-chart"><a class="seo-chart-link" href="{escape(paths.today())}#chart"><img src="{escape(og_path)}" width="1200" height="630" alt="{escape(hub_alt)}" loading="eager"></a><figcaption>{escape(hub_caption)}</figcaption></figure>
 <section><h2>{escape(hub_h2)}</h2><ul class="seo-grid">{''.join(items_html)}</ul></section>
 <section><h2>{escape(hub_more_h2)}</h2><p>{hub_more}</p></section>
 </main>"""

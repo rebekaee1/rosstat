@@ -134,7 +134,7 @@ export default {
   'home.concept.gdp-volume-quarterly': 'GDP, quarterly',
   'home.concept.gdp-volume-annual': 'GDP, annual',
   'home.concept.long-term-interest-rate': 'Government bond yield',
-  'home.concept.activity-rate': 'Labour force participation',
+  'home.concept.activity-rate': 'Economic activity rate',
   'home.concept.gdp-per-capita-eu': 'GDP per capita vs EU',
 
   'home.coverage.eyebrow': 'Platform coverage',
@@ -149,7 +149,23 @@ export default {
   'home.countries.russiaHint': 'macro and regions',
   'home.countries.loadError': 'Could not load the country catalogue.',
 
+  'home.scope.title': 'Inside the platform',
+  'home.scope.stat.macro.value': '100+',
+  'home.scope.stat.macro.label': 'Russian macro indicators',
+  'home.scope.stat.regions.value': '489',
+  'home.scope.stat.regions.label': 'regional indicators across 85 subjects',
+  'home.scope.stat.countries.value': '56',
+  'home.scope.stat.countries.label': 'countries worldwide',
+  'home.scope.stat.pages.value': '1.7M+',
+  'home.scope.stat.pages.label': 'pages with data',
+  'home.scope.sources.label': 'Official data sources',
+  'home.scope.sources.list': 'Rosstat, Bank of Russia, Ministry of Finance, Eurostat, IMF',
+  'home.scope.update': 'Data updated daily at 06:00 and 20:00 MSK',
+
   'russia.eyebrow': 'Country',
+  'russia.map.eyebrow': 'Territory and regions',
+  'russia.map.caption': 'Map of the subjects of the Russian Federation',
+  'russia.map.note': '85 subjects — 489 regional indicators each',
   'russia.sections': 'Sections',
   'russia.link.today.title': 'Today',
   'russia.link.today.desc': 'Key indicators for the current date',
@@ -207,36 +223,10 @@ export default {
   'world.rating.query.budget-balance-gdp': 'budget balance',
   'world.rating.query.population': 'population',
   'world.rating.query.long-term-interest-rate': 'long-term government bond yield',
-  'world.rating.query.activity-rate': 'activity rate',
+  'world.rating.query.activity-rate': 'economic activity rate',
   'world.rating.query.gdp-per-capita-eu': 'GDP per capita relative to the EU average',
   'world.rating.query.gdp-usd': 'GDP in current US dollars',
   'world.rating.query.gdp-per-capita-usd': 'GDP per capita in current US dollars',
-  'world.rating.russiaNote.unemployment-rate':
-    'For Russia the ranking uses the unemployment rate from Rosstat’s labour force survey. '
-    + 'Foreign values follow Eurostat’s harmonised methodology. Both measures are close in meaning '
-    + '(unemployed as a share of the economically active population), but age coverage and survey '
-    + 'details may differ.',
-  'world.rating.russiaNote.hicp-index':
-    'For Russia the comparison uses year-over-year consumer price change from Rosstat '
-    + '(consumer price index); for other countries — Eurostat’s harmonised index or a national '
-    + 'price index. Basket compositions differ; what is compared is the relative change over the year, '
-    + 'not the index level and not the change versus the previous month.',
-  'world.rating.russiaNote.population':
-    'Russia’s population is from Rosstat (the agency publishes the series in millions of people; '
-    + 'the table shows headcount in persons). For other countries — their statistical offices or Eurostat.',
-  'world.rating.russiaNote.gdp-usd':
-    'For Russia the ranking uses the IMF World Economic Outlook annual estimate of GDP in '
-    + 'current US dollars. Other countries come from the same publication. This is not Rosstat’s '
-    + 'ruble national-accounts series and not a conversion of local currency at the Bank of Russia '
-    + 'exchange rate.',
-  'world.rating.russiaNote.gdp-per-capita-usd':
-    'For Russia the ranking uses the IMF World Economic Outlook annual estimate of GDP per capita '
-    + 'in current US dollars. Other countries come from the same publication. This is not a Rosstat '
-    + 'series and not a conversion of rubles at the Bank of Russia exchange rate.',
-  'world.rating.russiaNote.budget-balance-gdp':
-    'For Russia the ranking takes the International Monetary Fund estimate for the general '
-    + 'government sector; Russia’s national statistics from the Ministry of Finance use a '
-    + 'different classification and coverage.',
   'world.rating.intro':
     'Choose an indicator and year. For prices on the map and in the table — year-over-year '
     + 'change in percent, not the index level. The map shows the spatial slice; the table below '
@@ -255,16 +245,12 @@ export default {
   'world.rating.summaryBody':
     'The table includes {ranked} {countryWord} out of {total}. Countries without a value for the '
     + 'selected year are listed separately below so ranking coverage is visible at a glance.',
-  'world.rating.summaryRussiaIn':
-    ' Russia is included via a national series of the same meaning.',
-  'world.rating.summaryRussiaOut':
-    ' Russia is not in this ranking: there is no comparable series in the same unit.',
   'world.rating.noteYoy':
     'For consumer prices the comparison uses year-over-year change in percent: national index '
     + 'base periods cancel out in the ratio, so countries are comparable. Monetary series in '
     + 'national currencies are not included.',
   'world.rating.noteDefault':
-    'Only indicators that can be compared fairly across countries in one unit enter the ranking. '
+    'Only indicators that can be compared objectively across countries in one unit enter the ranking. '
     + 'Monetary series in national currencies are not included.',
   'world.rating.russiaRegions': 'Russia and regions',
   'world.rating.russiaIndicator': 'Russia indicator',
@@ -286,8 +272,11 @@ export default {
   'world.rating.col.country': 'Country',
   'world.rating.col.unit': 'Unit',
   'world.rating.valueWithUnit': 'Value, {unit}',
+  'world.rating.columnWithUnit': '{label}, {unit}',
   'world.rating.fallbackUnit': 'source units',
   'world.rating.emptyYear': 'No ranking data for the selected year.',
+  'world.rating.slideLeft': 'Scroll table left',
+  'world.rating.slideRight': 'Scroll table right',
   'world.rating.withoutDataTitle': 'Countries without data for {year} ({n})',
   'world.rating.selectedYear': 'selected year',
   'world.rating.allHaveData':
@@ -1291,6 +1280,7 @@ export default {
   'world.map.countryNoData': '{name}: no data',
   'world.map.outlineAria': 'Territory outline: {name}',
   'world.map.countryMapAria': 'Country map: {name}',
+  'world.map.russiaOpen': 'Open Russia',
   'world.map.distribution': 'Indicator distribution',
   'world.map.band.rel0': 'Bottom 15% of countries',
   'world.map.band.rel1': 'Well below the median',
@@ -1326,9 +1316,15 @@ export default {
   'world.freq.monthly': 'mo',
   'world.freq.quarterly': 'qtr',
   'world.freq.annual': 'yr',
+  'world.freq.long.daily': 'day',
+  'world.freq.long.weekly': 'week',
+  'world.freq.long.monthly': 'month',
+  'world.freq.long.quarterly': 'quarter',
+  'world.freq.long.annual': 'year',
   'world.unit.km2': 'km²',
   'world.unit.people': 'people',
   'world.country.compareCta': 'Compare indicators',
+  'world.country.coverageAlt': 'Key indicators of the economy — from prices and labour markets to external trade',
   'world.country.loadError': 'Could not load country data. Please try again.',
   'world.country.findIndicator': 'Find an indicator…',
   'world.country.findIndicatorAria': 'Search country indicators',
@@ -1495,6 +1491,7 @@ export default {
   'regions.ind.axisRegion': '{region} — left axis',
   'regions.ind.axisRussia': 'Russia — right axis',
   'regions.ind.deltaYoY': '{pct}% YoY',
+  'regions.ind.deltaMoM': '{pct}% MoM',
   'regions.ind.rankAchieve': 'Rank in Russia, {year}',
   'regions.ind.rankNeutral': 'Position in the list, {year}',
   'regions.ind.of': 'of',
@@ -1505,6 +1502,7 @@ export default {
   'regions.ind.topNeutral': 'Highest regional values, {year}',
   'regions.ind.tableToggle': 'Values by year',
   'regions.ind.colYear': 'Year',
+  'regions.ind.colMonth': 'Month',
   'regions.ind.macroTitle': 'Russia-wide indicator',
   'regions.ind.macroBody':
     'This indicator has a Russia-wide card with more frequent updates and a forecast; in Compare you can overlay the region and the national series on one chart.',
@@ -1518,6 +1516,10 @@ export default {
     '{name} — {region}: {value} {unit} ({year})',
   'regions.ind.metaDesc':
     '{name} in {region}: {value} {unit} in {year}. History from {from} based on Rosstat, annual chart{rank}.',
+  'regions.ind.metaTitleMonthly':
+    '{name} — {region}: {value} {unit} ({year})',
+  'regions.ind.metaDescMonthly':
+    '{name} in {region}: {value} {unit} in {year}. Monthly history since January {from} based on Rosstat, monthly chart{rank}.',
   'regions.ind.metaRankAchieve':
     ', ranked {position} of {total} Russian regions.',
   'regions.ind.metaRankNeutral':
@@ -1784,26 +1786,13 @@ export default {
   'meth.cta.indicators': 'Browse indicators',
   'meth.cta.about': 'About',
   'world.rating.addColumn': 'Add indicator',
-  'world.rating.addColumnHint': 'Compare countries on another indicator for the same year',
   'world.rating.extraGuestTitle': 'Extra columns after you sign in',
   'world.rating.extraGuestBody': 'Guests see one ranking column. Sign in to add up to three indicators.',
   'world.rating.extraRemove': 'Remove column',
   'world.rating.login': 'Sign in',
   'world.rating.register': 'Create account',
   'world.rating.extraMax': 'You can add up to four extra indicators',
-  'world.rating.compareTitle': 'Countries side by side',
-  'world.rating.compareHint': 'Up to five indicators for selected countries at a glance.',
-  'world.rating.filtersLabel': 'Country filter',
-  'world.rating.filterAdd': 'Add countries',
-  'world.rating.filterClear': 'Clear filter',
-  'world.rating.filterEmpty': 'No data for the selected year in the filtered countries.',
-  'world.rating.filterShown': 'Showing {shown} of {total}',
-  'world.rating.filterSearch': 'Find a country',
-  'world.rating.matrix.rowHeader': 'Indicator',
-  'world.rating.matrix.periodRow': 'Period',
   'world.rating.matrix.guestCap': 'Guests can add one extra indicator. Sign in to compare up to five.',
-  'world.rating.matrix.bestHint': 'The best value in the row is highlighted',
-  'world.rating.matrix.more': '+{n} more',
   'world.country.emptySearch': 'Nothing found for “{query}”.',
   'world.country.emptySearchReset': 'Clear search',
   'world.country.emptyCatalog':

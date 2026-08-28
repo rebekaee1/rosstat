@@ -219,9 +219,28 @@ export function adaptWorldModes(meta) {
   );
 
   if (looksComposite) {
-    return raw
-      .map((m) => normalizeModeEntry(m, fallbackFreq))
-      .filter(Boolean);
+    const compositeOut = [];
+    const compositeSeen = new Set();
+    for (const entry of raw) {
+      const normalized = normalizeModeEntry(entry, fallbackFreq);
+      if (!normalized) continue;
+      // Легаси-id и составные токены в одном списке схлопываются в один
+      // канонический id (mom + step-monthly → step-monthly); приоритет у
+      // записи, чей id совпал с API без трансформации, иначе — у первой.
+      if (compositeSeen.has(normalized.id)) {
+        const prevIdx = compositeOut.findIndex((m) => m.id === normalized.id);
+        const prev = compositeOut[prevIdx];
+        const prevIsTransformed = !parseWorldModeToken(prev.apiRawId);
+        const curIsTransformed = !parseWorldModeToken(entry.id);
+        if (prevIsTransformed && !curIsTransformed) {
+          compositeOut[prevIdx] = { ...normalized, apiRawId: entry.id };
+        }
+        continue;
+      }
+      compositeSeen.add(normalized.id);
+      compositeOut.push({ ...normalized, apiRawId: entry.id });
+    }
+    return compositeOut.map(({ apiRawId: _apiRawId, ...rest }) => rest);
   }
 
   const byId = Object.fromEntries(raw.map((m) => [m.id, m]));

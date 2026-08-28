@@ -528,18 +528,23 @@ async def unlist_all_zero_series() -> dict[str, int]:
         if not listed_ids:
             return {"checked": 0, "unlisted": 0}
 
-        with_signal = set(
-            (
-                await db.execute(
-                    select(WorldDataPoint.indicator_id)
-                    .where(
-                        WorldDataPoint.indicator_id.in_(listed_ids),
-                        WorldDataPoint.value != 0,
+        # asyncpg не принимает > 32767 аргументов на запрос — чанкуем IN.
+        with_signal: set[int] = set()
+        chunk = 30000
+        for offset in range(0, len(listed_ids), chunk):
+            part = listed_ids[offset : offset + chunk]
+            with_signal.update(
+                (
+                    await db.execute(
+                        select(WorldDataPoint.indicator_id)
+                        .where(
+                            WorldDataPoint.indicator_id.in_(part),
+                            WorldDataPoint.value != 0,
+                        )
+                        .distinct()
                     )
-                    .distinct()
-                )
-            ).scalars().all()
-        )
+                ).scalars().all()
+            )
         dead = [i for i in listed_ids if i not in with_signal]
         if not dead:
             return {"checked": len(listed_ids), "unlisted": 0}

@@ -122,6 +122,25 @@ describe('adaptWorldModes (легаси → матрица)', () => {
     expect(modes.some((m) => m.id === 'yoy-annual')).toBe(true);
     expect(modes.every((m) => m.type && m.freq)).toBe(true);
   });
+
+  it('дедуплицирует смешанный список легаси-id и составных токенов по каноническому id', () => {
+    // Смешанный список: бэк отдаёт составные, легаси-id от старого контракта
+    // нормализуются в те же канонические id → в группе остаётся одна кнопка.
+    const modes = adaptWorldModes({
+      modes: [
+        { id: 'mom', label: 'М/м, %', group: 'К прошлому периоду', unit: '%' },
+        { id: 'step-monthly', label: 'По месяцам', group: 'К прошлому периоду', type: 'step', freq: 'monthly', unit: '%' },
+      ],
+      frequencies: [{ freq: 'monthly', official: true }],
+      indicator: { frequency: 'monthly' },
+    });
+    const stepModes = modes.filter((m) => m.id === 'step-monthly');
+    expect(stepModes).toHaveLength(1);
+    // Приоритет у записи, чей id пришёл с API без трансформации.
+    expect(stepModes[0].label).toBe('По месяцам');
+    expect(groupModesFromApi(modes).find((g) => g.id === 'К прошлому периоду').modes)
+      .toHaveLength(1);
+  });
 });
 
 describe('resolveWorldMode', () => {

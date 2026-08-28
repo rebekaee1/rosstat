@@ -19,8 +19,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.cache import cache_get, cache_set, versioned_key
 from app.services.locale import get_locale
 from app.data.eurostat_listing import (
+    catalog_merge_key,
     dataset_stem,
     is_stale_history,
+    measure_preference_rank,
     normalize_frequency,
     variant_group_key,
 )
@@ -38,6 +40,7 @@ from app.data.world_concept_russia import (
     RUSSIA_COUNTRY_PAYLOAD,
     russia_list_country_payload,
 )
+from app.data.world_aggregation import aggregation_policy_for
 from app.data.global_market_indicators import market_indicator_codes_for_country
 from app.data.world_country_area import area_payload
 from app.data.world_country_population import population_payload as curated_population_payload
@@ -85,6 +88,7 @@ from app.services.world_cards import (
 
 router = APIRouter(prefix="/world", tags=["world"])
 
+WORLD_GLOBAL_SEARCH_LIMIT = 200
 _CACHE_TTL = 600
 
 
@@ -616,6 +620,34 @@ def _card_members_map(
     return groups
 
 
+_AGGREGATION_SOURCE_TO_TARGET = {
+    "monthly": ("quarterly", "annual"),
+    "quarterly": ("annual",),
+}
+
+
+def _aggregated_frequencies_for_card(
+    members: list[WorldIndicator],
+) -> list[str]:
+    """Частоты, достижимые карточкой только агрегацией (не официальные ряды).
+
+    Зеркало resolve_series_for_mode из world_cards: quarterly ← monthly,
+    annual ← quarterly|monthly — но по курируемым политикам
+    world_aggregation.aggregation_policy_for, без I/O.
+    """
+    by_freq = members_by_freq(members)
+    official = set(by_freq)
+    aggregated: list[str] = []
+    for source_freq, targets in _AGGREGATION_SOURCE_TO_TARGET.items():
+        source_ind = by_freq.get(source_freq)
+        if source_ind is None or aggregation_policy_for(source_ind) is None:
+            continue
+        for target_freq in targets:
+            if target_freq not in official and target_freq not in aggregated:
+                aggregated.append(target_freq)
+    return aggregated
+
+
 def _primary_of_card(
     members: list[WorldIndicator],
 ) -> WorldIndicator | None:
@@ -766,7 +798,13 @@ async def world_rating_concepts():
 
 @router.get("/compare/catalog")
 async def world_compare_catalog(db: AsyncSession = Depends(get_db)):
-    """Только курируемые и семантически совместимые фактические world-ряды."""
+    """Только курируемые и семантически совместимые фактические world-ряды.
+
+    Вместе с eurostat-датасетами понятия в каталог попадают национальные
+    ряды явного crosswalk (`world_concept_national`): США/Австралия/Канада/
+    Британия/Индия/Мексика в калькуляторе инфляции отдают свой официальный
+    индекс цен с родными юнитом и источником, а не 404.
+    """
     cache_key = await versioned_key("world", f"compare:catalog:v4:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
@@ -774,11 +812,22 @@ async def world_compare_catalog(db: AsyncSession = Depends(get_db)):
 
     concepts = {concept.slug: concept for concept in _compare_concepts()}
     allowed_datasets: set[str] = set()
+    national_codes: set[str] = set()
+    national_code_to_concept: dict[str, str] = {}
     for concept in concepts.values():
         allowed_datasets.update(str(ds).lower() for ds in concept.dataset_ids)
         if concept.provider_dataset_ids:
             for ids in concept.provider_dataset_ids.values():
                 allowed_datasets.update(str(ds).lower() for ds in ids)
+        codes = national_codes_for_concept(concept.slug)
+        national_codes.update(codes)
+        for code in codes:
+            national_code_to_concept[code] = concept.slug
+    where_clauses = [
+        func.lower(WorldIndicator.dataset_id).in_(sorted(allowed_datasets)),
+    ]
+    if national_codes:
+        where_clauses.append(WorldIndicator.code.in_(sorted(national_codes)))
     rows = (
         await db.execute(
             select(WorldCountry, WorldIndicator)
@@ -786,17 +835,41 @@ async def world_compare_catalog(db: AsyncSession = Depends(get_db)):
             .where(
                 WorldCountry.is_active.is_(True),
                 WorldIndicator.is_listed.is_(True),
-                func.lower(WorldIndicator.dataset_id).in_(sorted(allowed_datasets)),
+                or_(*where_clauses),
             )
             .order_by(WorldCountry.sort_order, WorldCountry.name_ru, WorldIndicator.code)
         )
     ).all()
-    items = []
+
+    def is_national(indicator: WorldIndicator) -> bool:
+        return indicator.code in national_code_to_concept
+
+    # Одна страна — один ряд на понятие: национальный crosswalk имеет приоритет
+    # над eurostat-дублем (как в _concept_members).
+    by_country_concept: dict[tuple[str, str], dict] = {}
     for country, indicator in rows:
-        concept = concept_for_indicator(indicator)
-        if concept is None or concept.slug not in concepts:
+        if is_national(indicator):
+            concept = concepts.get(national_code_to_concept[indicator.code])
+            if concept is None or not _concept_unit_compatible(concept, indicator):
+                continue
+        else:
+            concept = concept_for_indicator(indicator)
+            if concept is None or concept.slug not in concepts:
+                continue
+        payload = _compare_series_payload(country, indicator, concept)
+        # Юнит национального ряда — родной из его метаданных (разные базы
+        # индекса у FRED/ABS/ONS не притворяются «2015=100»).
+        if is_national(indicator):
+            payload["unit"] = _indicator_public_unit(indicator)
+        prev = by_country_concept.get((concept.slug, country.slug))
+        if prev is None:
+            by_country_concept[(concept.slug, country.slug)] = payload
             continue
-        items.append(_compare_series_payload(country, indicator, concept))
+        prev_is_national = prev["indicator_code"] in national_code_to_concept
+        if is_national(indicator) and not prev_is_national:
+            by_country_concept[(concept.slug, country.slug)] = payload
+
+    items = list(by_country_concept.values())
 
     payload = {"items": items, "total": len(items)}
     await cache_set(cache_key, payload, ttl=_CACHE_TTL)
@@ -809,27 +882,51 @@ async def world_compare_series(
     concept_slug: str,
     db: AsyncSession = Depends(get_db),
 ):
-    """Фактический официальный ряд одной страны для curated compare concept."""
+    """Фактический официальный ряд одной страны для curated compare concept.
+
+    Матчит eurostat-срезы по dataset+measure+slice и национальные ряды явного
+    crosswalk (`world_concept_national`): у США/Австралии/Канады/Британии/
+    Индии/Мексики отдаётся их официальный индекс цен (или безработица) с
+    родным юнитом, а не 404. Неопределённость состава ряда — 409.
+    """
     concept = CONCEPT_BY_SLUG.get(concept_slug)
     if concept is None or "compare" not in concept.enabled_surfaces:
         raise HTTPException(404, "Понятие для сравнения не найдено")
 
     country = await _country_by_slug(db, country_slug)
     indicators = await _country_indicators(db, country.id)
+    national_codes = national_codes_for_concept(concept.slug)
     members = [
         indicator
         for indicator in indicators
         if concept_for_indicator(indicator) == concept
+        or (
+            indicator.code in national_codes
+            and _concept_unit_compatible(concept, indicator)
+        )
     ]
     if not members:
         raise HTTPException(404, "Для страны нет сопоставимого ряда")
+    if len(members) > 1 and any(
+        indicator.code in national_codes for indicator in members
+    ):
+        # Одна страна — один ряд: national crosswalk приоритетнее eurostat-дубля
+        # (инвариант _concept_members).
+        national_member = next(
+            indicator for indicator in members if indicator.code in national_codes
+        )
+        members = [national_member]
     if len(members) > 1:
         raise HTTPException(409, "Неоднозначный состав ряда для сравнения")
 
     indicator = members[0]
     points = await _load_points(db, indicator.id)
+    meta = _compare_series_payload(country, indicator, concept)
+    # Юнит национального ряда — родной из его метаданных.
+    if indicator.code in national_codes:
+        meta["unit"] = _indicator_public_unit(indicator)
     return {
-        "meta": _compare_series_payload(country, indicator, concept),
+        "meta": meta,
         "data": [{"date": d.isoformat(), "value": value} for d, value in points],
     }
 
@@ -862,7 +959,10 @@ async def world_compare_snapshot(
     )
     items = []
     for country, indicator in members:
-        latest = latest_rank_point(series_by_id.get(indicator.id, []), mode)
+        latest = latest_rank_point(
+            series_by_id.get(indicator.id, []), mode,
+            concept_slug=concept.slug,
+        )
         if latest is None:
             continue
         point_date, value = latest
@@ -939,7 +1039,8 @@ async def world_compare_map_series(
     values_by_year: dict[str, dict[str, dict]] = {}
     for country, indicator in members:
         for year, (point_date, value) in yearly_last_points(
-            series_by_id.get(indicator.id, []), mode
+            series_by_id.get(indicator.id, []), mode,
+            concept_slug=concept.slug,
         ).items():
             year_values = values_by_year.setdefault(str(year), {})
             year_values[country.code] = {
@@ -1156,6 +1257,14 @@ async def _country_market_indicators(db: AsyncSession, slug: str) -> list[dict]:
 
 @router.get("/countries/{slug}")
 async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
+    """Каталог страны по категориям.
+
+    ``frequencies`` — официальные частоты карточки (список строк-кодов,
+    формат стабилен). ``aggregated_frequencies`` — частоты, которых нет среди
+    официальных рядов, но карточка их отдаёт агрегацией по курируемой
+    политике (например annual у месячного индекса); клиент помечает такие
+    режимы как расчётные.
+    """
     cache_key = await versioned_key("world", f"country:v10:{slug}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
@@ -1177,6 +1286,25 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
     # Защита: all-zero не в каталоге страны (даже если is_listed ещё true).
     listed_signal = await _ids_with_nonzero_signal(db, [i.id for i in listed])
     listed = [i for i in listed if i.id in listed_signal]
+
+    # Второй уровень слияния: меры/базы одного смысла (уровень ↔ темп ↔
+    # среднегодовой) — одна карточка. Внутри merge-группы primary выбирается
+    # предпочтением меры (уровень-индекс > %-изменение > прочее), остальные
+    # primary уходят в merged_slices для SSR/фронта.
+    merged_groups: dict[tuple, list[WorldIndicator]] = defaultdict(list)
+    merged_order: list[tuple] = []
+    for ind in listed:
+        mkey = catalog_merge_key(
+            country_id=ind.country_id,
+            provider=getattr(ind, "provider", None),
+            dataset_id=ind.dataset_id,
+            unit=ind.unit,
+            unit_ru=ind.unit_ru,
+            slice_json=ind.slice_json,
+        )
+        if mkey not in merged_groups:
+            merged_order.append(mkey)
+        merged_groups[mkey].append(ind)
 
     last_map: dict[int, tuple[date, float]] = {}
     prev_map: dict[int, float] = {}
@@ -1208,9 +1336,11 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
                 prev_map[iid] = float(v)
 
     by_cat: dict[str, list] = {}
-    for ind in listed:
-        key = indicator_card_key(ind)
-        members = groups.get(key) or [ind]
+    for mkey in merged_order:
+        members_listed = merged_groups[mkey]
+        primary = min(members_listed, key=measure_preference_rank)
+        ind = primary
+        members = groups.get(indicator_card_key(ind)) or [ind]
         by_freq = members_by_freq(members)
         last = last_map.get(ind.id)
         prev_val = prev_map.get(ind.id)
@@ -1221,11 +1351,27 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
         for f in sorted(by_freq.keys()):
             if f not in freqs_sorted:
                 freqs_sorted.append(f)
+        # Расчётные частоты — отдельным полем: клиент пометит плитку как
+        # «расчётная», контракт frequencies (список строк) не ломается.
+        aggregated_freqs = _aggregated_frequencies_for_card(members)
         name = _indicator_display_name(ind)
         catalog_name = display_name(ind.name_ru, ind.code)
         if not is_public_catalog_name(catalog_name):
             # Нельзя осмысленно назвать по-русски — не обещаем в каталоге.
             continue
+        merged_slices = [
+            {
+                "code": other.code,
+                "unit": other.unit_ru or other.unit or "",
+            }
+            for other in sorted(
+                members_listed,
+                key=measure_preference_rank,
+            )
+            if other.id != ind.id and is_public_catalog_name(
+                display_name(other.name_ru, other.code)
+            )
+        ]
         primary_freq = normalize_frequency(ind.frequency) or (
             freqs_sorted[0] if freqs_sorted else None
         )
@@ -1241,12 +1387,18 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
             "category": ind.category_ru,
             "frequency": primary_freq,
             "frequencies": freqs_sorted,
+            # Частоты, доступные только через агрегационную политику (M4):
+            # отсутствуют в frequencies, но карточка их умеет считать.
+            "aggregated_frequencies": aggregated_freqs,
             "last_value": round(last[1], 4) if last else None,
             "last_date": _fmt_date(last[0]) if last else None,
             "prev_value": round(prev_val, 4) if prev_val is not None else None,
             "change": change,
             "points_count": ind.points_count,
             "archived": is_stale_history(ind.history_end),
+            # Остальные меры слитой карточки («в том числе: темп к предыдущему
+            # периоду»); каждый код — прямая ссылка на свой ряд.
+            "merged_slices": merged_slices,
         }
         by_cat.setdefault(ind.category_ru or "Прочее", []).append(item)
 
@@ -1717,9 +1869,19 @@ async def indicator_data(
 async def search_world(
     q: str = Query(..., min_length=1),
     country: str | None = Query(None),
-    limit: int = Query(50, ge=1, le=200),
+    limit: int = Query(WORLD_GLOBAL_SEARCH_LIMIT, ge=1, le=WORLD_GLOBAL_SEARCH_LIMIT),
     db: AsyncSession = Depends(get_db),
 ):
+    """Поиск по мировым индикаторам (listed + ненулевой сигнал).
+
+    Релевантность: точное совпадение кода → префикс кода → вхождение в код →
+    точное имя → префикс имени → вхождение в имя → keywords; совпадение только
+    по стране считается на уровне вхождения в имя. Совпадения ищутся двумя
+    запросами: по колонкам world_indicators (single-table OR — обслуживается
+    GIN pg_trgm индексом миграции 20260826_world_search_trgm; межтабличный OR
+    одним запросом уводит planner в Seq Scan ~250k строк) и по полям
+    world_countries (десятки строк, без индекса). Контракт ответа не менялся.
+    """
     needle = q.strip()
     if not needle:
         return {"results": [], "total": 0}
@@ -1742,51 +1904,141 @@ async def search_world(
         WorldCountry.code.ilike(pattern, escape="\\"),
     )
     # Код (`us-unemployment-rate`) выше длинных eurostat name_en-совпадений,
-    # иначе «unemployment» тонет в сотнях EU-срезов до лимита.
-    relevance = case(
-        (code_match, 0),
-        (name_match, 1),
-        (keywords_match, 2),
-        else_=3,
-    )
-    # Oversample: после отсева нулевого сигнала часть кандидатов отпадёт.
-    candidate_limit = min(200, max(limit * 3, limit))
+    # иначе «unemployment» тонет в сотнях EU-срезов до лимита. Префикс имени —
+    # сильнее вхождения: «инфля» поднимает «Инфляция …», а не «… инфляции …».
+    # Ранжирование пост-фактум в Python: точные/префиксные ILIKE-кванты дешёвые,
+    # но плодить по ним SELECT'ы дороже, чем один проход по кандидатам.
+    def relevance(indicator: WorldIndicator, matched_country_only: bool) -> int:
+        code = indicator.code or ""
+        names = (
+            (indicator.name_ru or "").strip(),
+            (indicator.name_en or "").strip(),
+        )
+        if code.casefold() == needle.casefold():
+            return 0
+        if code.casefold().startswith(needle.casefold()):
+            return 1
+        if needle.casefold() in code.casefold():
+            return 2
+        if any(name.casefold() == needle.casefold() for name in names if name):
+            return 3
+        if any(name.casefold().startswith(needle.casefold()) for name in names if name):
+            return 4
+        if matched_country_only:
+            return 5
+        if any(needle.casefold() in name.casefold() for name in names if name):
+            return 6
+        return 7
 
-    stmt = (
-        select(WorldIndicator, WorldCountry)
-        .join(WorldCountry, WorldIndicator.country_id == WorldCountry.id)
-        .where(
-            WorldIndicator.is_listed.is_(True),
-            WorldCountry.is_active.is_(True),
-            or_(code_match, name_match, keywords_match, country_match),
-        )
-        .order_by(
-            relevance,
-            func.length(WorldIndicator.code),
-            WorldIndicator.name_ru,
-        )
-        .limit(candidate_limit)
+    # Кандидаты по колонкам ряда: single-table OR → bitmap по pg_trgm.
+    ind_stmt = select(WorldIndicator).where(
+        WorldIndicator.is_listed.is_(True),
+        or_(code_match, name_match, keywords_match),
     )
+    country_filter = None
     if country:
-        stmt = stmt.where(
-            or_(WorldCountry.slug == country, WorldCountry.code == country.upper())
-        )
+        country_id_row = (
+            await db.execute(
+                select(WorldCountry.id).where(
+                    or_(
+                        WorldCountry.slug == country,
+                        WorldCountry.code == country.upper(),
+                    ),
+                    WorldCountry.is_active.is_(True),
+                )
+            )
+        ).scalar_one_or_none()
+        if country_id_row is None:
+            return {"results": [], "total": 0}
+        country_filter = country_id_row
+        ind_stmt = ind_stmt.where(WorldIndicator.country_id == country_filter)
 
-    rows = (await db.execute(stmt)).all()
-    signal = await _ids_with_nonzero_signal(db, [ind.id for ind, _c in rows])
+    # Оверсэмплинг кандидатов: короткие запросы по trgm-индексу могут вернуть
+    # десятки тысяч строк — без LIMIT уходим в 32k-лимит параметров asyncpg
+    # на пост-фильтре сигнала (и секундную задержку). Префикс кода сортировкой
+    # сохраняет качество ранжирования (короткие коды и так выигрывают в Python).
+    ind_stmt = ind_stmt.order_by(func.length(WorldIndicator.code)).limit(5 * limit)
+
+    ind_rows = list((await db.execute(ind_stmt)).scalars().all())
+    candidates: list[tuple[WorldIndicator, bool]] = [
+        (indicator, False) for indicator in ind_rows
+    ]
+
+    # Совпадения по полям страны: только свои ряды, ранг как «вхождение в имя».
+    if not country:
+        matched_countries = list(
+            (
+                await db.execute(
+                    select(WorldCountry).where(
+                        WorldCountry.is_active.is_(True),
+                        country_match,
+                    )
+                )
+            ).scalars().all()
+        )
+        if matched_countries:
+            country_rows = list(
+                (
+                    await db.execute(
+                        select(WorldIndicator)
+                        .where(
+                            WorldIndicator.is_listed.is_(True),
+                            WorldIndicator.country_id.in_(
+                                [c.id for c in matched_countries]
+                            ),
+                            or_(code_match, name_match, keywords_match),
+                        )
+                        .order_by(func.length(WorldIndicator.code))
+                        .limit(3 * limit)
+                    )
+                ).scalars().all()
+            )
+            candidates.extend((indicator, True) for indicator in country_rows)
+
+    signal = await _ids_with_nonzero_signal(db, [ind.id for ind, _m in candidates])
     from app.services.seo_i18n import localize_category_name
+
+    seen_ids: set[int] = set()
+    ranked: list[tuple[tuple, WorldIndicator]] = []
+    for indicator, matched_country_only in candidates:
+        if indicator.id in seen_ids or indicator.id not in signal:
+            continue
+        score = relevance(indicator, matched_country_only)
+        seen_ids.add(indicator.id)
+        ranked.append(
+            ((score, len(indicator.code or ""), indicator.name_ru or ""), indicator)
+        )
+    ranked.sort(key=lambda item: item[0])
+
+    # Карта стран для ответа: максимум по одному запросу на итоговую выборку.
+    result_country_ids = {
+        ind.country_id for _k, ind in ranked[:limit]
+    }
+    country_by_id: dict[int, WorldCountry] = {}
+    if result_country_ids:
+        for c_row in (
+            await db.execute(
+                select(WorldCountry).where(WorldCountry.id.in_(result_country_ids))
+            )
+        ).scalars().all():
+            country_by_id[c_row.id] = c_row
 
     results = [
         {
             "code": ind.code,
             "name": _indicator_display_name(ind),
             "name_ru": display_name(ind.name_ru, ind.code),
-            "country_slug": c.slug,
-            "country_name": _country_display_name(c),
+            "country_slug": (
+                country_by_id[ind.country_id].slug
+                if ind.country_id in country_by_id else ""
+            ),
+            "country_name": (
+                _country_display_name(country_by_id[ind.country_id])
+                if ind.country_id in country_by_id else ""
+            ),
             "category": localize_category_name(ind.category_ru),
             "frequency": normalize_frequency(ind.frequency),
         }
-        for ind, c in rows
-        if ind.id in signal
-    ][:limit]
+        for _sort_key, ind in ranked[:limit]
+    ]
     return {"results": results, "total": len(results)}

@@ -9,6 +9,7 @@ import {
   homeMapConcepts,
   resolveActiveMapYear,
   resolveHomeConcept,
+  russiaIndicatorCodeForConcept,
   withRussiaOnHomeMap,
   worldRankingFromYearItems,
   worldYearItems,
@@ -26,8 +27,8 @@ import { track, events } from '../../lib/track';
 import {
   countryPath,
   indicatorPath,
+  russiaHomePath,
   russiaIndicatorPath,
-  todayPath,
 } from '../../lib/sitePaths';
 import { useT } from '../../i18n';
 
@@ -98,12 +99,17 @@ export default function HomeWorkbench({ ratingConcepts }) {
       year: activeYear,
     });
     if (country?.code === 'RU') {
-      const code = detail?.indicator_code || russiaIndicatorCode;
+      // Сперва мету концепта (или код сервера), затем реестр сопоставимых кодов,
+      // и только после — раздел «Россия», не «Сегодня»: молчаливый today-фоллбек
+      // уводил клик по ВВП/бюджету с карты в несвязанный срез.
+      const code = detail?.indicator_code
+        || russiaIndicatorCode
+        || russiaIndicatorCodeForConcept(concept);
       if (code) {
         navigate(russiaIndicatorPath(code));
         return;
       }
-      navigate(todayPath());
+      navigate(russiaHomePath());
       return;
     }
     if (detail?.indicator_code && country?.slug) {

@@ -1,0 +1,203 @@
+# India national-core passport (MoSPI Open API + RBI via MoSPI / direct archive).
+# Live-probed 2026-08-12 from this environment:
+#   MoSPI CPI / IIP / WPI / NAS GDP / PLFS UR — LIVE (legacy TLS renegotiation)
+#   RBI FX monthly average via MoSPI /api/rbi — LIVE
+#   RBI repo policy archive (rbi.org.in) — timeout / unreachable abroad;
+#   kept with is_listed=false until reachable.
+# Loader: scripts/load-world-national.py --country in
+
+country_code: IN
+
+series:
+  - code_suffix: cpi-all
+    name_ru: Индекс потребительских цен
+    name_en: Consumer Price Index (General, Combined, All India)
+    category_ru: Цены
+    unit: INDEX
+    unit_ru: индекс (2012 = 100)
+    frequency: monthly
+    provider: mospi
+    dataset_id: CPI
+    series_id: cpi-general-combined
+    source_url: "https://api.mospi.gov.in/"
+    analog_ru: ИПЦ
+    is_listed: true
+    dimensions:
+      base_year: "2012"
+      series: Current
+      state_code: "99"
+      sector_code: "3"
+      group_name: General
+      subgroup_name: General-Overall
+      sector_name: Combined
+      state_name: All India
+    description: >
+      Индекс потребительских цен Индии по группе «Общий» для объединённого
+      сектора (город и село) по всей стране. Показывает, как меняется стоимость
+      фиксированного набора товаров и услуг относительно базового периода.
+    methodology: >
+      Ряд публикует Министерство статистики и программной реализации Индии.
+      Частота публикации — месячная. Единица измерения на графике — индекс
+      (2012 = 100). На графике — официальный национальный ряд без дополнительных
+      преобразований.
+
+  - code_suffix: iip-general
+    name_ru: Индекс промышленного производства
+    name_en: Index of Industrial Production (General)
+    category_ru: Бизнес и инвестиции
+    unit: INDEX
+    unit_ru: индекс (2011–12 = 100)
+    frequency: monthly
+    provider: mospi
+    dataset_id: IIP
+    series_id: iip-general
+    source_url: "https://api.mospi.gov.in/"
+    analog_ru: Промышленное производство
+    is_listed: true
+    dimensions:
+      base_year: "2011-12"
+      frequency: Monthly
+      category_name: General
+    description: >
+      Индекс промышленного производства Индии по общему охвату. Показывает
+      динамику выпуска добывающей, обрабатывающей промышленности и
+      электроэнергетики относительно базового периода.
+    methodology: >
+      Ряд публикует Министерство статистики и программной реализации Индии.
+      Частота публикации — месячная. Единица измерения на графике — индекс
+      (2011–12 = 100). На графике — официальный общий ряд без дополнительных
+      преобразований.
+
+  - code_suffix: wpi-all
+    name_ru: Индекс оптовых цен
+    name_en: Wholesale Price Index (all commodities)
+    category_ru: Цены
+    unit: INDEX
+    unit_ru: индекс (2011–12 = 100)
+    frequency: monthly
+    provider: mospi
+    dataset_id: WPI
+    series_id: wpi-all-commodities
+    source_url: "https://api.mospi.gov.in/"
+    analog_ru: Индекс оптовых цен
+    is_listed: true
+    dimensions:
+      base_year: "2011-12"
+      major_group_name: Wholesale price index
+    description: >
+      Индекс оптовых цен Индии по всем товарам. Показывает изменение оптовых цен
+      относительно базового периода.
+    methodology: >
+      Ряд публикует Министерство статистики и программной реализации Индии.
+      Частота публикации — месячная. Единица измерения на графике — индекс
+      (2011–12 = 100). На графике — официальный общий ряд без дополнительных
+      преобразований.
+
+  - code_suffix: gdp-real
+    name_ru: Валовой внутренний продукт в постоянных ценах
+    name_en: Gross Domestic Product at constant prices
+    category_ru: ВВП
+    unit: INR_CRORE
+    unit_ru: крор рупий
+    frequency: quarterly
+    provider: mospi
+    dataset_id: NAS
+    series_id: gdp-constant
+    source_url: "https://api.mospi.gov.in/"
+    analog_ru: ВВП реальный
+    is_listed: true
+    dimensions:
+      base_year: "2011-12"
+      series: Current
+      frequency_code: Quarterly
+      indicator_code: "5"
+      price: constant
+    description: >
+      Валовой внутренний продукт Индии в постоянных ценах по кварталам
+      финансового года. Показывает объём экономики без влияния изменения цен.
+    methodology: >
+      Ряд публикует Министерство статистики и программной реализации Индии в
+      системе национальных счетов. Частота публикации — квартальная. Единица
+      измерения на графике — кроры рупий в постоянных ценах. На графике —
+      официальный ряд ВВП без дополнительных преобразований.
+
+  - code_suffix: unemployment-rate
+    name_ru: Уровень безработицы
+    name_en: Unemployment rate (PLFS, CWS, all India)
+    category_ru: Рынок труда
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: annual
+    provider: mospi
+    dataset_id: PLFS
+    series_id: ur-annual
+    source_url: "https://api.mospi.gov.in/"
+    analog_ru: Уровень безработицы
+    is_listed: true
+    dimensions:
+      indicator_code: "3"
+      frequency_code: "1"
+      year_type_code: "1"
+      state_code: "99"
+      gender_code: "3"
+      age_code: "1"
+      sector_code: "3"
+    description: >
+      Уровень безработицы в Индии по периодическому обследованию рабочей силы
+      (PLFS) для населения 15 лет и старше, все сектора, все лица. Показывает
+      долю безработных в экономически активном населении.
+    methodology: >
+      Ряд публикует Министерство статистики и программной реализации Индии по
+      обследованию PLFS. Частота публикации — годовая (сельскохозяйственный /
+      финансовый год). Единица измерения на графике — процент. На графике —
+      официальный национальный ряд по обычному недельному статусу без
+      дополнительных преобразований.
+
+  - code_suffix: fx-usd-inr
+    name_ru: Курс индийской рупии к доллару США
+    name_en: INR per USD (monthly average)
+    category_ru: Финансы
+    unit: INR_PER_USD
+    unit_ru: рупий за 1 доллар США
+    frequency: monthly
+    provider: rbi
+    dataset_id: RBI
+    series_id: usd-inr-avg
+    source_url: "https://api.mospi.gov.in/"
+    analog_ru: Курс к доллару США
+    is_listed: true
+    dimensions:
+      sub_indicator_code: "36"
+      currency: US Dollar
+    description: >
+      Среднемесячный обменный курс индийской рупии к доллару США по данным
+      Резервного банка Индии. Показывает, сколько рупий приходится на один
+      доллар США в среднем за месяц.
+    methodology: >
+      Ряд публикует Резервный банк Индии и доступен через официальную платформу
+      открытых данных Министерства статистики Индии. Частота публикации —
+      месячная. Единица измерения на графике — число рупий за один доллар США.
+      Значения соответствуют официальному среднемесячному курсу без пересчёта.
+
+  - code_suffix: policy-rate
+    name_ru: Ставка репо
+    name_en: Policy repo rate
+    category_ru: Финансы
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: daily
+    provider: rbi
+    dataset_id: repo
+    series_id: repo-rate
+    source_url: "https://www.rbi.org.in/Scripts/BS_ViewPolicyInterestRateArchive.aspx"
+    analog_ru: Ключевая ставка
+    is_listed: false
+    description: >
+      Ставка репо Резервного банка Индии — операционный ориентир
+      денежно-кредитной политики. Показывает уровень, по которому центральный
+      банк предоставляет ликвидность банковской системе под залог.
+    methodology: >
+      Ряд публикует Резервный банк Индии. Частота публикации — по мере изменения
+      ставки (на графике — дневные точки на даты решений). Единица измерения на
+      графике — процент годовых. Значения соответствуют официальному ряду ставки
+      репо без пересчёта на стороне платформы.

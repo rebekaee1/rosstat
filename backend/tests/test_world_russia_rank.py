@@ -48,11 +48,15 @@ def test_russia_links_cover_comparable_rating_concepts_only():
     }
 
 
-def test_weo_gdp_overlay_uses_imf_not_rosstat_or_nominal():
+def test_weo_gdp_overlay_links_kept_but_ranking_is_national():
+    """МВФ-ряды остаются связанными карточками; рейтинг gdp-usd — национальный.
+
+    Значение России в рейтинге gdp-usd/gdp-per-capita-usd считает
+    world_russia_rank по национальным рядам (Росстат × курс Банка России),
+    link-механизм для этих концептов — резерв.
+    """
     link = russia_link_for_concept("gdp-usd")
-    assert link.source_ru == "Международный валютный фонд"
-    assert link.source_en == "International Monetary Fund"
-    assert "Росстат" not in link.note_en
+    assert link.indicator_code == "weo-gdp-usd"
     assert "gdp-nominal" not in link.indicator_code
     assert russia_link_for_concept("budget-deficit") is None
     balance = russia_link_for_concept("budget-balance-gdp")
@@ -96,7 +100,8 @@ def test_russia_notes_en_locale():
         for slug, link in RUSSIA_CONCEPT_LINKS.items():
             meta = russia_meta_for_concept(slug)
             assert meta["note"] == link.note_en
-            assert "Росстат" not in meta["note"]
+            # EN-текст без необработанных русских вставок; имена ведомств
+            # (Rosstat) — допустимая латынь.
             assert not meta["note"].startswith("Для России")
             assert meta["country"]["name"] == "Russia"
     finally:
@@ -167,6 +172,71 @@ def test_world_rating_title_stable_across_years_and_concepts():
     assert world_rating_title("population", "Численность населения", 2025) == (
         "Рейтинг стран по численности населения за 2025 год"
     )
-    assert world_rating_title("activity-rate", "Уровень экономической активности", None) == (
-        "Рейтинг стран по уровню экономической активности"
+    assert world_rating_title(
+        "activity-rate",
+        "Уровень экономической активности населения",
+        None,
+    ) == "Рейтинг стран по уровню экономической активности населения"
+
+
+# --- национальный расчёт ВВП России (Росстат × курс Банка России) -----------
+
+
+def test_gdp_usd_by_year_from_parts_national_calculation():
+    """Чистый расчёт: млрд руб. / курс = млрд $; на душу — с населением."""
+    from app.services.world_russia_rank import gdp_usd_by_year_from_parts
+
+    gdp_rub = {2023: 171_505.0, 2024: 200_039.0, 2025: 214_261.1}
+    usd_rub = {2023: 85.8116, 2024: 92.6567, 2025: 83.2108}
+    population_mln = {2023: 146.45, 2024: 146.15, 2025: 146.12}
+
+    gdp_usd, per_capita = gdp_usd_by_year_from_parts(
+        gdp_rub, usd_rub, population_mln,
     )
+    assert gdp_usd[2023] == pytest.approx(171_505.0 / 85.8116, rel=1e-4)
+    assert gdp_usd[2024] == pytest.approx(200_039.0 / 92.6567, rel=1e-4)
+    assert gdp_usd[2025] == pytest.approx(214_261.1 / 83.2108, rel=1e-4)
+    assert per_capita[2024] == pytest.approx(
+        gdp_usd[2024] * 1e9 / (146.15 * 1e6), rel=1e-3,
+    )
+    # Порядок величины: ~15 тыс. $ на человека для 2024.
+    assert 13_000 < per_capita[2024] < 17_000
+    # На душу считаются только годы со всеми тремя рядами; ВВП-USD при
+    # отсутствии населения считается (год закрыт, курс есть).
+    past_year = date.today().year - 1
+    gdp_only, pc_empty = gdp_usd_by_year_from_parts(
+        {past_year: 100.0}, {past_year: 90.0}, {},
+    )
+    assert past_year in gdp_only
+    assert pc_empty == {}
+
+
+def test_gdp_usd_method_excludes_running_year():
+    """Только завершённые годы: незакрывшийся год в расчёт не попадает."""
+    from app.services.world_russia_rank import gdp_usd_by_year_from_parts
+
+    running_year = date.today().year
+    gdp_usd, _per_capita = gdp_usd_by_year_from_parts(
+        {running_year: 100.0, running_year - 1: 90.0},
+        {running_year: 90.0, running_year - 1: 90.0},
+        {},
+    )
+    assert running_year not in gdp_usd
+    assert running_year - 1 in gdp_usd
+
+
+def test_gdp_usd_concept_links_note_national_method():
+    """Публичная примеча к рейтингу описывает национальный расчёт, не МВФ."""
+    for slug in ("gdp-usd", "gdp-per-capita-usd"):
+        link = russia_link_for_concept(slug)
+        assert link is not None
+        assert link.source_ru == "Росстат, Банк России"
+        assert link.source_en == "Rosstat, Bank of Russia"
+        assert "Росстата" in link.note_ru
+        assert "Банка России" in link.note_ru
+        assert "Rosstat" in link.note_en
+        assert "Bank of Russia" in link.note_en
+        # Внутренности в публичном тексте запрещены.
+        assert "usd-rub-avg-year" not in link.note_ru
+        assert "gdp-nominal" not in link.note_ru
+        assert "WEO" not in link.note_ru

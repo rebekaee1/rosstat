@@ -7,8 +7,8 @@ import { FOCUS_RING } from '../lib/uiTokens';
 import { track, events } from '../lib/track';
 import IndicatorSearch from './IndicatorSearch';
 import { useAuth } from '../context/authContext';
-import { PRIMARY_NAV, resolveActiveNavId } from '../lib/navItems';
-import { useT } from '../i18n';
+import { PRIMARY_NAV, primaryNav, resolveActiveNavId } from '../lib/navItems';
+import { useLocale, useT } from '../i18n';
 
 function AuthCluster({ mobile = false, onNavigate }) {
   const { isAuthed, isLoading } = useAuth();
@@ -74,6 +74,7 @@ const CALCULATOR_ITEMS = [
 
 export default function Navbar() {
   const t = useT();
+  const { locale } = useLocale();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [calcOpen, setCalcOpen] = useState(false);
@@ -84,6 +85,7 @@ export default function Navbar() {
   // скролле (обход BI 2.1, этап 4а) — показываем шапку только вверху страницы.
   const isAdmin = pathname.startsWith('/admin');
   const activeNavId = resolveActiveNavId(pathname);
+  const primaryItems = primaryNav(locale);
 
   const closeAll = () => {
     setMobileOpen(false);
@@ -211,7 +213,7 @@ export default function Navbar() {
           длинные подписи заменяются короткими (`shortLabelKey`), а «О проекте»
           на десктопе живёт в футере и мобильном меню. */}
       <div className="hidden lg:flex items-center gap-3 xl:gap-5 flex-1 justify-end min-w-0">
-        {PRIMARY_NAV.map((item) => renderPrimaryLink(item, { desktop: true }))}
+        {primaryItems.map((item) => renderPrimaryLink(item, { desktop: true }))}
         <div className="relative" ref={calcWrapRef}>
           <button
             type="button"
@@ -277,7 +279,7 @@ export default function Navbar() {
       {mobileOpen && (
         <div className="absolute left-0 right-0 top-full z-[110] mt-2 max-h-[min(80vh,520px)] overflow-y-auto rounded-2xl border border-border-subtle bg-surface p-4 shadow-2xl ring-1 ring-black/[0.08] lg:hidden">
           <div className="flex flex-col gap-1">
-            {PRIMARY_NAV.map((item) => renderPrimaryLink(item))}
+            {primaryItems.map((item) => renderPrimaryLink(item))}
             <p className="text-[10px] uppercase tracking-wider text-text-tertiary px-2 pt-3 pb-1">
               {t('nav.calculators')}
             </p>

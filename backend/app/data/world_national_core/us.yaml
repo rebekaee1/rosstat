@@ -1,0 +1,219 @@
+# United States national-core passport (official FRED CSV + optional BLS/BEA APIs).
+# Live-probed 2026-08-12 via FRED keyless graph CSV (fred.stlouisfed.org/graph/fredgraph.csv).
+# Loader: scripts/load-world-national.py --country us
+# Providers: fred → FredStLouisAdapter (St. Louis Fed; redistributes BLS/BEA/Census/Fed);
+#            bls  → BlsApiAdapter (needs RUSTATS_BLS_API_KEY when edge blocks keyless);
+#            bea  → BeaApiAdapter (needs RUSTATS_BEA_API_KEY).
+# Passport rows use fred so ingest works without API keys. Expand with live-probed
+# series; loader is idempotent and does not touch existing eurostat rows for US.
+
+country_code: US
+
+series:
+  - code_suffix: cpi-all
+    name_ru: Индекс потребительских цен
+    name_en: Consumer Price Index (all urban consumers)
+    category_ru: Цены
+    unit: INDEX
+    unit_ru: индекс (1982–84 = 100)
+    frequency: monthly
+    provider: fred
+    dataset_id: "CPIAUCSL"
+    series_id: "CPIAUCSL"
+    source_url: "https://fred.stlouisfed.org/series/CPIAUCSL"
+    analog_ru: ИПЦ
+    is_listed: true
+    description: >
+      Индекс потребительских цен США для всех городских потребителей по всем
+      товарам и услугам корзины, с сезонной корректировкой. Показывает, как
+      меняется стоимость фиксированного набора товаров и услуг относительно
+      базового периода.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      трудовой статистики США. Частота публикации — месячная. Единица
+      измерения на графике — индекс (1982–84 = 100). На графике — официальный
+      сезонно скорректированный национальный ряд без дополнительных
+      преобразований.
+
+  - code_suffix: unemployment-rate
+    name_ru: Уровень безработицы
+    name_en: Unemployment Rate
+    category_ru: Рынок труда
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    provider: fred
+    dataset_id: "UNRATE"
+    series_id: "UNRATE"
+    source_url: "https://fred.stlouisfed.org/series/UNRATE"
+    analog_ru: Уровень безработицы
+    is_listed: true
+    description: >
+      Уровень безработицы в США среди гражданского населения, с учётом
+      сезонной корректировки. Показывает долю безработных в экономически
+      активном населении.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      трудовой статистики США (обследование домохозяйств). Частота публикации —
+      месячная. Единица измерения на графике — процент. На графике — официальный
+      сезонно скорректированный национальный ряд.
+
+  - code_suffix: nonfarm-payrolls
+    name_ru: Занятость вне сельского хозяйства
+    name_en: All Employees, Total Nonfarm
+    category_ru: Рынок труда
+    unit: THOUSANDS
+    unit_ru: тыс. человек
+    frequency: monthly
+    provider: fred
+    dataset_id: "PAYEMS"
+    series_id: "PAYEMS"
+    source_url: "https://fred.stlouisfed.org/series/PAYEMS"
+    analog_ru: Численность занятых
+    is_listed: true
+    description: >
+      Число занятых в несельскохозяйственном секторе США, с сезонной
+      корректировкой. Показывает масштаб занятости на предприятиях и в
+      организациях по данным обследования заведений.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      трудовой статистики США. Частота публикации — месячная. Единица
+      измерения на графике — тысячи человек. На графике — официальный сезонно
+      скорректированный национальный ряд.
+
+  - code_suffix: gdp-real
+    name_ru: Валовой внутренний продукт в постоянных ценах
+    name_en: Real Gross Domestic Product
+    category_ru: ВВП
+    unit: USD_BN_CHAINED
+    unit_ru: млрд долларов США (цены 2017)
+    frequency: quarterly
+    provider: fred
+    dataset_id: "GDPC1"
+    series_id: "GDPC1"
+    source_url: "https://fred.stlouisfed.org/series/GDPC1"
+    analog_ru: ВВП реальный
+    is_listed: true
+    description: >
+      Реальный валовой внутренний продукт США в постоянных ценах 2017 года, с
+      сезонной корректировкой в пересчёте на год. Показывает объём экономики
+      без влияния изменения цен.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      экономического анализа США. Частота публикации — квартальная. Единица
+      измерения на графике — миллиарды долларов США в постоянных ценах 2017
+      года. На графике — официальный ряд без дополнительных преобразований.
+
+  - code_suffix: retail-sales
+    name_ru: Розничные продажи
+    name_en: "Advance Retail Sales: Retail Trade"
+    category_ru: Бизнес и инвестиции
+    unit: USD_MN
+    unit_ru: млн долларов США
+    frequency: monthly
+    provider: fred
+    dataset_id: "RSAFS"
+    series_id: "RSAFS"
+    source_url: "https://fred.stlouisfed.org/series/RSAFS"
+    analog_ru: Розничный товарооборот
+    is_listed: true
+    description: >
+      Сезонно скорректированные розничные продажи в США по сектору розничной
+      торговли. Показывает стоимость товаров, реализованных розничными
+      продавцами за месяц.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      переписи населения США. Частота публикации — месячная. Единица измерения
+      на графике — миллионы долларов США. На графике — официальный национальный
+      ряд без дополнительных преобразований.
+
+  - code_suffix: industrial-production
+    name_ru: Индекс промышленного производства
+    name_en: Industrial Production Index
+    category_ru: Бизнес и инвестиции
+    unit: INDEX
+    unit_ru: индекс (2017 = 100)
+    frequency: monthly
+    provider: fred
+    dataset_id: "INDPRO"
+    series_id: "INDPRO"
+    source_url: "https://fred.stlouisfed.org/series/INDPRO"
+    analog_ru: Индекс промышленного производства
+    is_listed: true
+    description: >
+      Индекс промышленного производства США с сезонной корректировкой.
+      Показывает динамику выпуска в обрабатывающей промышленности, добыче и
+      электроэнергетике относительно базового периода.
+    methodology: >
+      Ряд публикует Совет управляющих Федеральной резервной системы через
+      Федеральный резервный банк Сент-Луиса. Частота публикации — месячная.
+      Единица измерения на графике — индекс (2017 = 100). На графике —
+      официальный сезонно скорректированный ряд.
+
+  - code_suffix: policy-rate
+    name_ru: Эффективная ставка по федеральным фондам
+    name_en: Federal Funds Effective Rate
+    category_ru: Финансы
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    provider: fred
+    dataset_id: "FEDFUNDS"
+    series_id: "FEDFUNDS"
+    source_url: "https://fred.stlouisfed.org/series/FEDFUNDS"
+    analog_ru: Ключевая ставка
+    is_listed: true
+    description: >
+      Эффективная ставка по федеральным фондам — среднемесячная ставка
+      однодневных межбанковских кредитов в США. Показывает фактический уровень
+      денежного рынка, к которому привязана операционная цель ФРС.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Совета
+      управляющих Федеральной резервной системы. Частота публикации — месячная.
+      Единица измерения на графике — процент годовых. Значения соответствуют
+      официальному ряду эффективной ставки без пересчёта на стороне платформы.
+
+  - code_suffix: usd-broad
+    name_ru: Широкий индекс доллара США
+    name_en: "Trade Weighted U.S. Dollar Index (Broad)"
+    category_ru: Финансы
+    unit: INDEX
+    unit_ru: индекс
+    frequency: daily
+    provider: fred
+    dataset_id: "DTWEXBGS"
+    series_id: "DTWEXBGS"
+    source_url: "https://fred.stlouisfed.org/series/DTWEXBGS"
+    analog_ru: Индекс доллара
+    is_listed: true
+    description: >
+      Широкий торгово-взвешенный индекс доллара США к валютам основных
+      торговых партнёров (товары и услуги). Показывает изменение внешней
+      стоимости доллара относительно корзины валют.
+    methodology: >
+      Ряд публикует Совет управляющих Федеральной резервной системы через
+      Федеральный резервный банк Сент-Луиса. Частота публикации — дневная
+      (рабочие дни). Единица измерения на графике — индекс. На графике —
+      официальный ряд без дополнительных преобразований.
+
+  - code_suffix: fx-eur-usd
+    name_ru: Курс евро к доллару США
+    name_en: U.S. / Euro Foreign Exchange Rate
+    category_ru: Финансы
+    unit: USD_PER_EUR
+    unit_ru: долларов США за 1 евро
+    frequency: daily
+    provider: fred
+    dataset_id: "DEXUSEU"
+    series_id: "DEXUSEU"
+    source_url: "https://fred.stlouisfed.org/series/DEXUSEU"
+    analog_ru: Курс к евро
+    is_listed: true
+    description: >
+      Дневной обменный курс доллара США к евро. Показывает, сколько долларов
+      США приходится на один евро.
+    methodology: >
+      Ряд публикует Совет управляющих Федеральной резервной системы через
+      Федеральный резервный банк Сент-Луиса. Частота публикации — дневная
+      (рабочие дни). Единица измерения на графике — число долларов США за один
+      евро. Значения соответствуют официальному среднему дневному курсу.

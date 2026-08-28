@@ -1,10 +1,12 @@
 # Data sources — точная карта индикатор → файл/endpoint
 
-**World extension last verified:** 2026-08-23 (IMF WEO `NGDPD`/`NGDPDPC`/`GGXCNL_NGDP` via SDMX 3.0;
+**World extension last verified:** 2026-08-27 (IMF WEO `NGDPD`/`NGDPDPC`/`GGXCNL_NGDP`/`GGXWDG_NGDP`
+via SDMX 3.0; правило года наблюдений: поточные WEO-серии — только закрытые годы;
 country area registry `world_country_area.py`; Eurostat `reg_area3` Total area
-+ national statistical/cadastre sources).
++ national statistical/cadastre sources; население США/Бразилии — адаптеры
+`census` (PEP CSV) и `ibge` (SIDRA 6579+1209), инжест `world_pop_ingest`).
 
-**Last updated:** 2026-08-23 (IMF WEO: добавлен `GGXCNL_NGDP` — баланс бюджета сектора государственного управления, overlay `weo-budget-balance-gdp`; source 117 / seed 939). Ранее 2026-08-16 (демография/наука: discovery со страниц разделов + EDN_12 для лагов demo21; сырьё: Yahoo desk снят с витрины — `natural-gas` → EIA `DHHNGSP` через `fred_csv`; `coal`/`copper`/`silver`/`wheat`/`soybean` → World Bank Pink Sheet monthly `world_bank_pink_sheet`; `steel` деактивирован / unlisted. Ранее тем же днём: FRED CSV `fred_csv` для `usd-index`/`ust-10y`/`brent`; `gold-usd` не заведён — нет свободного дневного ряда). Ранее 2026-07-06 (CTO-аудит, Волна 5: счётчик source-индикаторов актуализирован — 109 (было заявлено 75); добавленные с 2026-05-31 семейства покрыты соответствующими разделами ниже и docstrings парсеров: демография (`rosstat_demo`), наука/инновации (`rosstat_science`), основные фонды (`rosstat_fixed_assets`), ИПП-разделы (`rosstat_ind`), крипта BTC/ETH/SOL (`binance_btcusdt`), биржевые индексы и товарные MOEX (`moex_index`, `moex_brent_daily`), недельные цены топлива (`rosstat_weekly_price`), денежные агрегаты M0/M1/M2 (`cbr_monetary_agg`). Два parser_type зарегистрированы, но в seed не используются (задел): `cbr_dataservice_sum` — суммирование нескольких DataService-элементов по дате, `cbr_monetary_html` — HTML-таблицы денежной статистики ЦБ; не удалять без ревизии прод-БД. Ранее 2026-05-31: T13 — данный файл стал основным местом хранения технических деталей источников — имена файлов, листы, строки/колонки, API-id; публичные `methodology` поля индикаторов в `seed_data.py` не выдают этих внутренностей, см. правило [`.cursor/rules/methodology-language.mdc`](../.cursor/rules/methodology-language.mdc).)
+**Last updated:** 2026-08-28 (мировой блок: национальные паспорта national-core перенесены из worktree в репозиторий как постоянный ежедневный ETL — 19 официальных провайдеров по 10 странам, job `world_national_core` 02:10 МСК, раздел «Национальные паспорта» ниже). Ранее 2026-08-27 (региональный блок: помесячные цены на топливо по субъектам — раздел «Региональный блок» ниже; ЕМИСС 31448/57699/59002). Ранее 2026-08-23 (IMF WEO: добавлен `GGXCNL_NGDP` — баланс бюджета сектора государственного управления, overlay `weo-budget-balance-gdp`; source 117 / seed 939). Ранее 2026-08-16 (демография/наука: discovery со страниц разделов + EDN_12 для лагов demo21; сырьё: Yahoo desk снят с витрины — `natural-gas` → EIA `DHHNGSP` через `fred_csv`; `coal`/`copper`/`silver`/`wheat`/`soybean` → World Bank Pink Sheet monthly `world_bank_pink_sheet`; `steel` деактивирован / unlisted. Ранее тем же днём: FRED CSV `fred_csv` для `usd-index`/`ust-10y`/`brent`; `gold-usd` не заведён — нет свободного дневного ряда). Ранее 2026-07-06 (CTO-аудит, Волна 5: счётчик source-индикаторов актуализирован — 109 (было заявлено 75); добавленные с 2026-05-31 семейства покрыты соответствующими разделами ниже и docstrings парсеров: демография (`rosstat_demo`), наука/инновации (`rosstat_science`), основные фонды (`rosstat_fixed_assets`), ИПП-разделы (`rosstat_ind`), крипта BTC/ETH/SOL (`binance_btcusdt`), биржевые индексы и товарные MOEX (`moex_index`, `moex_brent_daily`), недельные цены топлива (`rosstat_weekly_price`), денежные агрегаты M0/M1/M2 (`cbr_monetary_agg`). Два parser_type зарегистрированы, но в seed не используются (задел): `cbr_dataservice_sum` — суммирование нескольких DataService-элементов по дате, `cbr_monetary_html` — HTML-таблицы денежной статистики ЦБ; не удалять без ревизии прод-БД. Ранее 2026-05-31: T13 — данный файл стал основным местом хранения технических деталей источников — имена файлов, листы, строки/колонки, API-id; публичные `methodology` поля индикаторов в `seed_data.py` не выдают этих внутренностей, см. правило [`.cursor/rules/methodology-language.mdc`](../.cursor/rules/methodology-language.mdc).)
 **Part of:** [`AGENTS.md`](../AGENTS.md), [`CONTEXT.md`](../CONTEXT.md).
 **Related:** docstrings парсеров `backend/app/services/{cbr_*,minfin_*,rosstat_*}_parser.py` (per-parser internals: traps, схема `model_config_json`, особенности формата), [`docs/adr/0004`](adr/0004-rosstat-russian-canonical-sdds-deprecated.md) (Rosstat русский canonical).
 
@@ -385,13 +387,32 @@ Multi-source merge: история (1897+) + components (1990+) + latest акт�
 | Provider | Официальный источник | Каталог/версии | Наблюдения |
 |----------|----------------------|----------------|------------|
 | `eurostat` | Eurostat, Statistical Office of the European Union | `https://ec.europa.eu/eurostat/api/dissemination/catalogue/toc/txt?lang=en` (`last update of data`, `last table structure change`) | Eurostat Dissemination API; ссылка конкретного dataset хранится в `WorldIndicator.source_url` |
-| `imf` | International Monetary Fund, World Economic Outlook | SDMX 3.0 dataflow `IMF.RES/WEO` (latest), без ключа: `https://api.imf.org/external/sdmx/3.0` | Ряды `NGDPD` (ВВП в текущих $, млрд), `NGDPDPC` (ВВП на душу, $) и `GGXCNL_NGDP` (сальдо бюджета сектора государственного управления, % ВВП). Ключ COUNTRY.INDICATOR.FREQUENCY, например `USA.NGDPD.A`. Публичный `source_url`: `https://www.imf.org/en/Publications/WEO`. Ingest: `app.services.world_imf_ingest.run_imf_weo_ingest`. Россия в рейтинг — служебные unlisted ряды `weo-gdp-usd` / `weo-gdp-per-capita-usd` / `weo-budget-balance-gdp` (`parser_type=imf_weo`), не `WorldCountry` RU и не рубль×курс. WEO-оценка текущего года — наблюдение; годы > текущего календарного (среднесрочный outlook) не пишем; в `world_forecasts` не пишем. |
+| `census` | U.S. Census Bureau, Population Estimates Program | CSV-датасеты PEP на `www2.census.gov` (Data API `api.census.gov` требует ключ для любых data-запросов — не используется): винтаж 2020 (`2010-2020/national/totals/nst-est2020-alldata.csv`) + текущий винтаж (`2020-2025/state/totals/NST-EST2025-ALLDATA.csv`, национальная строка `SUMLEV=010`) | Широкие таблицы: колонка `POPESTIMATE{year}` = оценка на 1 июля, человек; винтажи объединяются, пересечённые годы — от свежего винтажа. Ряд `us-population-census` (annual, 2010–2025), инжест `app.services.world_pop_ingest.run_world_pop_ingest`, в концепт population — через `NATIONAL_CONCEPT_INDICATOR_CODES`. Публичный `source_url`: страница PEP на `census.gov`. |
+| `ibge` | Instituto Brasileiro de Geografia e Estatística (IBGE) | SIDRA values API `https://apisidra.ibge.gov.br/values` (v1 API `servicodados.ibge.gov.br/api/v1/populacao` нестабилен — 503): таблица 6579 `t/6579/n1/all/v/9324/p/all` (годовые оценки, 2001–2025; 2007/2010/2022/2023 отсутствуют — переписные годы) + таблица 1209 `t/1209/n1/all/v/606/p/all` (переписи, 1872–2022) | Оценки на 1 июля (6579) + переписные итоги (1209, с 1980); переписной год перекрывает оценку. **2023 года в ряде нет официально**: после переписи 2022 IBGE не публиковал межпереписную оценку 2023 ни в 6579, ни в переписных таблицах (проверено 2026-08-27; PNAD-таблицы 6407/7561 — опросные тысячи человек, не подставлять). Ряд `br-population-ibge` (annual, 1980–2025 кроме 2023), инжест и NATCON — как у `census`. Публичный `source_url`: страница оценок населения на `ibge.gov.br`. |
+| `imf` | International Monetary Fund, World Economic Outlook | SDMX 3.0 dataflow `IMF.RES/WEO` (latest), без ключа: `https://api.imf.org/external/sdmx/3.0` | Ряды `NGDPD` (ВВП в текущих $, млрд), `NGDPDPC` (ВВП на душу, $), `GGXCNL_NGDP` (сальдо бюджета сектора государственного управления, % ВВП) и `GGXWDG_NGDP` (валовый долг сектора государственного управления, % ВВП). Ключ COUNTRY.INDICATOR.FREQUENCY, например `USA.NGDPD.A`. Публичный `source_url`: `https://www.imf.org/en/Publications/WEO`. Ingest: `app.services.world_imf_ingest.run_imf_weo_ingest`. Россия в рейтинг — служебные unlisted ряды `weo-gdp-usd` / `weo-gdp-per-capita-usd` / `weo-budget-balance-gdp` (`parser_type=imf_weo`), не `WorldCountry` RU и не рубль×курс; для GGXWDG_NGDP парного RU-overlay-ряда нет (честно сопоставимого национального ряда долга к ВВП в каталоге не существует — см. комментарий в `world_concept_russia.py`). **Правило года наблюдений** (`weo_max_observation_year(weo_code)`, словарь `WEO_YEAR_POLICY_BY_CODE` в `imf_weo_adapter.py`): поточные серии (NGDPD/NGDPDPC/GGXCNL_NGDP/GGXWDG_NGDP, политика "closed") пишутся только по закрытым календарным годам — оценка текущего года наблюдением не является; годы за границей политики отбрасываются до записи. Стоковые серии будущего (население и т.п., политика "stock") допускают текущий год; новая серия обязана явно выбрать политику. Рейтинг долга живёт в одном концепте `government-debt-gdp`: Eurostat GD/S13 (национальные определения) + IMF GGXWDG_NGDP (оценка фонда по широкой классификации) — матчи по pinned-slice своего провайдера, как у баланса бюджета; смешение методологий оговорено в публичной методологии серии. В `world_forecasts` WEO-ряды не пишем. |
 
 Техническая identity ряда:
 `provider × country × dataset_id × slice_hash`; slice включает все значимые
 dimensions, единицу и частоту. `world_dataset_state` хранит версии источника по
 паре `provider × dataset_id`. Parser internals Eurostat — docstrings
 `app/services/eurostat_parser.py`, обновление — `world_eurostat_ingest.py`.
+
+**Национальные паспорта (national-core, ежедневный ETL).** Регулярный контур
+19 официальных провайдеров по 10 странам не из ЕС/ЕАСТ: StatCan + Банк Канады,
+ONS + Банк Англии, ABS + RBA, FRED/BLS/BEA (США), BOJ + e-Stat (Япония),
+ECOS Банка Кореи, BCB (Бразилия), Banxico (Мексика), NBS + CFETS (Китай),
+MOSPI + RBI (Индия). Курируемые pick-листы — `backend/app/data/world_national_core/<cc>.yaml`
+(код/имя/единица/частота/series-id/публичные тексты на каждый ряд); wire-протокол
+источника остаётся внутри адаптера `backend/app/services/world_adapters/<provider>.py`
+(контракт `WorldSourceAdapter`); оркестрация и upsert — `world_national_ingest.py`.
+Расписание: job `world_national_core` ежедневно 02:10 МСК (перед Eurostat-очередью),
+запись аудита — `world_ingest_runs.source='world_national_core'`. Ручной прогон:
+`docker compose exec backend python scripts/load-world-national.py --country ca`.
+Key-gated адаптеры (e-Stat Японии `RUSTATS_ESTAT_APP_ID`, ECOS Кореи
+`RUSTATS_ECOS_API_KEY`, RBA за 403 с нашего IP) падают изолированно по ряду,
+не вали остальные; их ряды помечены `world_dataset_state.status='error'` до
+появления ключей. Тесты — `test_world_national_core_job.py` + 17 файлов
+`test_world_<provider>_adapter.py`.
 
 **Площадь территории (карточка страны):** курируемый справочник
 `backend/app/data/world_country_area.py` — не ETL и не таблица БД. Для стран
@@ -428,6 +449,30 @@ golden-series теста и фиксации здесь.
 | `backfill_word.py` | Word-редакции: `TOM2.rar` (изд. 2003), `soc-pok18.rar` (изд. 2018), `soc-pok2019` (изд. 2019); .doc → .docx через LibreOffice headless | раздел «Правонарушения» (8.1/8.4/8.5, 1990–2018) + продление 24 рядов в 1990-е с кросс-сверкой на overlap (медиана расхождения ≤ 5%) |
 
 Ежегодное обновление: скачать новый архив приложения, прогнать три стадии по порядку, закоммитить артефакт, `seed_regional.py` подхватит на деплое. Денежные ряды глубже 1998 не продлеваются (деноминация).
+
+### Помесячные цены на топливо по субъектам (раздел 16, 2026-08)
+
+Первый помесячный слой regional bounded context: отдельная таблица `region_monthly_data` (модель `RegionMonthlyPoint`, месяц как YYYYMM), не годовая сетка `region_data` — смешение частот в одной таблице это trap (CONTEXT.md, annual-in-monthly mixing).
+
+| Код | Показатель | ЕМИСС dataset | Период | Частота |
+|-----|-----------|---------------|--------|---------|
+| `ceni-ai92` | Потребительские цены на бензин АИ-92, руб./л | `31448` (OKPD2 1700128) | 2003-01 → наст. | месячная |
+| `ceni-ai95` | Потребительские цены на бензин АИ-95, руб./л | `31448` (OKPD2 1700133) | 2003-01 → наст. | месячная |
+| `ceni-dt` | Потребительские цены на дизельное топливо, руб./л | `31448` (OKPD2 1700154) | 2006-01 → наст. | месячная |
+| `roznica-dt` | Розничные продажи дизтоплива, тыс. руб. | `57699` (OKPD2 1700657) | 2017–2021 | годовая |
+| `opt-benzin` | Оптовые продажи бензина, тыс. руб. | `59002` (OKPD2 1704128) | 2017 | годовая |
+| `opt-dt` | Оптовые продажи дизтоплива, тыс. руб. | `59002` (OKPD2 1692982) | 2017 | годовая |
+
+Территориальный охват — все субъекты РФ + сводка «Россия»: с 2023 это отдельная строка ЕМИСС «Российская Федерация без учета новых субъектов» (ОКАТО 1849012), до 2022 — канонический РФ-агрегат (1688487); фетчер сшивает оба ID в один slug `russia`.
+
+Механика:
+
+- Фетчер `scripts/regional/fetch_emiss_fuel.py`: POST `fedstat.ru/dataGrid.do` по схеме «год × месяц» (мульти-месяц в одном запросе ЕМИСС не отдаёт — возвращает только последний), 45 c timeout, 4 ретрая; карта ОКАТО→slug снапшотится в `emiss_okato_31448.json`, имена — в `emiss_dimnames.json`.
+- Помесячные точки → `backend/app/data/regional/fuel_points.csv` (73 740 точек), годовые (57699/59002) → `data.csv.gz` через `scripts/regional/append_fuel_to_artifact.py`.
+- Обновление помесячного слоя — раз в месяц после публикации ЕМИСС (обычно 5–8 число): `python3 scripts/regional/fetch_emiss_fuel.py --skip-annual`, затем пересборка backend-образа (артефакт вшит) и `seed_regional.py` на старте.
+- API: `/api/v1/regions/{slug}/i/{code}/monthly` (точки {year, month, value, label} + ряд РФ для сравнения; рейтинг цен по регионам не строится осознанно — «место в рейтинге цен» вводило бы в заблуждение).
+- SSR/OG: `seo_regional.py` рендерит месяц-карточку (таблица по месяцам, сравнение к прошлому месяцу и к году назад), `sitemap.py::og_image_region_indicator` рисует помесячный постер.
+- Мост в федеральный блок: `16.20/16.21/16.22` → `MACRO_BY_TABLE` → карточки `fuel-ai92`/`fuel-ai95`/`fuel-diesel`. Годовые опт/розница без моста — федерального аналога той же методологии нет.
 
 ---
 

@@ -41,6 +41,7 @@ from app.data.indicator_seo import (
     forecast_ssr_image_name,
 )
 from app.data.global_market_indicators import is_global_market_indicator
+from app.services.og_image import EN_MONTHS_NOM, RU_MONTH_NOM
 from app.models import Indicator, IndicatorData
 from app.services.display import (
     today_msk,
@@ -532,7 +533,7 @@ _SSR_CHROME_HEADER = f"""<header class="seo-topbar"><div class="seo-topbar-in">
 
 _SSR_CHROME_HEADER_EN = f"""<header class="seo-topbar"><div class="seo-topbar-in">
 <a class="seo-brand" href="/">Forecast<em>Economy</em></a>
-<nav class="seo-topnav"><a href="/">Home</a><a href="{paths.russia_home()}">Russia</a><a href="{paths.today()}">Today</a><a href="{paths.region_hub()}">Regions</a><a href="/#countries">Countries</a><a href="{paths.world_rating("unemployment-rate")}">Country rankings</a><a href="{paths.calendar()}">Calendar</a><a href="/compare">Compare</a><a href="/calculator">Calculators</a><a href="/about">About</a></nav>
+<nav class="seo-topnav"><a href="/">Home</a><a href="{paths.today()}">Today</a><a href="{paths.region_hub()}">Regions</a><a href="/#countries">Countries</a><a href="{paths.world_rating("unemployment-rate")}">Country rankings</a><a href="{paths.calendar()}">Calendar</a><a href="/compare">Compare</a><a href="/calculator">Calculators</a><a href="/about">About</a></nav>
 </div></header>"""
 
 _SSR_CHROME_FOOTER = f"""<div class="seo-cta"><div class="seo-cta-in">
@@ -544,7 +545,7 @@ _SSR_CHROME_FOOTER = f"""<div class="seo-cta"><div class="seo-cta-in">
 <script type="module" src="/assets/behavior-standalone.js" defer></script>"""
 
 _SSR_CHROME_FOOTER_EN = f"""<div class="seo-cta"><div class="seo-cta-in">
-<p><strong>Interactive charts, comparisons, and validated forecasts</strong> — for Russia, its regions, and available countries. Browsing is open to everyone; downloads require a free account.</p>
+<p><strong>Interactive charts, comparisons, and validated forecasts</strong> — official statistics for national economies, their regions, and available countries. Browsing is open to everyone; downloads require a free account.</p>
 <a class="seo-btn" href="/">Open the platform</a>
 </div></div>
 <footer class="seo-foot">Data come only from official primary sources: national statistical offices, central banks, and official exchanges. Updated as publishers release. © Forecast Economy — <a href="/">forecasteconomy.com</a></footer>
@@ -573,9 +574,9 @@ _SSR_PLATFORM_DEEP_LINKS_EN = f"""
 <section class="seo-section seo-platform-nav" aria-label="Platform sections">
 <h2>Platform sections</h2>
 <ul class="seo-pills">
-<li><a href="/">Russia indicators</a></li>
+<li><a href="/">Indicators</a></li>
 <li><a href="{paths.today()}">Economy today</a></li>
-<li><a href="{paths.region_hub()}">Regions of Russia</a></li>
+<li><a href="{paths.region_hub()}">Regions</a></li>
 <li><a href="/#countries">Country statistics</a></li>
 <li><a href="{paths.calendar()}">Release calendar</a></li>
 <li><a href="/compare">Compare indicators</a></li>
@@ -685,7 +686,7 @@ async def build_document(
     include_app=False — чистая HTML-страница без React-bundle (годовые
     landing'и: у SPA-роутера нет такого маршрута, гидратация показала бы 404).
     """
-    from app.services.locale import get_locale, html_lang, og_locale
+    from app.services.locale import get_locale, html_lang, is_preview_locale, og_locale
 
     assets = await get_app_assets()
     url = _absolute(canonical_path)
@@ -695,6 +696,15 @@ async def build_document(
     structured = "\n".join(_json_script(item) for item in (json_ld or []))
     extras = extra_head or ""
     hreflang = _hreflang_head(canonical_path)
+    # Preview-локаль (?preview_locale=en до кутовера) — временная поверхность:
+    # боты не должны засовывать её в индекс (ссылки в noindex-странице
+    # по-прежнему обходятся, canonical остаётся у «настоящей» страницы).
+    robots_content = (
+        "noindex, follow" if is_preview_locale() else (
+            "index, follow, max-snippet:-1, max-image-preview:large, "
+            "max-video-preview:-1"
+        )
+    )
     css_preload = _css_preload(assets.head_links)
     og_url = escape(og_image or _absolute("/og-image-v2.png"))
     body_scripts = assets.body_scripts if include_app else ""
@@ -731,7 +741,7 @@ async def build_document(
 <meta name="description" content="{safe_desc}">
 <meta name="keywords" content="{safe_keywords}">
 <meta name="author" content="Forecast Economy">
-<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="robots" content="{robots_content}">
 <meta name="theme-color" content="#F8F9FC">
 <meta name="yandex-verification" content="02b4966d46881470">
 <link rel="canonical" href="{escape(url)}">
@@ -1348,6 +1358,22 @@ async def render_indicator_html(
     # А-4: внутренняя перелинковка «по годам» — год-запросы («X в 2019»)
     # должны ранжировать годовые landing'и, а не карточку со сниппетом «сегодня».
     data_years = await indicator_data_years(db, indicator.id)
+    # Месячные срезы для перелинковки «по месяцам» (monthly-ряды): последние
+    # 12 существующих (год, месяц) пар — против выдуманных пустых лендингов.
+    data_month_pairs: list[tuple[int, int]] = []
+    if (indicator.frequency or "").startswith("month"):
+        month_rows_q = await db.execute(
+            select(
+                func.extract("year", IndicatorData.date).label("y"),
+                func.extract("month", IndicatorData.date).label("m"),
+            )
+            .where(IndicatorData.indicator_id == indicator.id)
+            .group_by("y", "m")
+            .order_by(func.extract("year", IndicatorData.date).desc(),
+                      func.extract("month", IndicatorData.date).desc())
+            .limit(12)
+        )
+        data_month_pairs = [(int(y), int(m)) for y, m in month_rows_q.all()]
     if loc == "en":
         # Always from display_name (includes mode suffix), never RU seo_title from DB.
         title = (
@@ -1393,6 +1419,7 @@ async def render_indicator_html(
         display_frequency=display_frequency,
         data_code=data_indicator.code,
         data_years=data_years,
+        data_month_pairs=data_month_pairs,
         forecast_ssr=forecast_ssr,
         description=overlay.get("description"),
         methodology=overlay.get("methodology"),
@@ -1792,7 +1819,9 @@ def _year_page_title_desc(
             title_key = "title_daily"
         else:
             title_key = "title_monthly"
-        title = yt(title_key).format(name=name, year=year)
+        # EN-формула включает {country} («Consumer price index in Russia, 2024»);
+        # РФ-лендинги подставляют константу, мир передаёт своё имя страны.
+        title = yt(title_key).format(name=name, year=year, country="Russia")
         desc_key = "desc_single" if (n_rows == 1 or freq == "annual") else "desc_multi"
         desc = yt(desc_key).format(
             name=name,
@@ -2282,6 +2311,7 @@ def _indicator_body(
     display_frequency: str | None = None,
     data_code: str | None = None,
     data_years: list[int] | None = None,
+    data_month_pairs: list[tuple[int, int]] | None = None,
     forecast_ssr: bool = False,
     description: str | None = None,
     methodology: str | None = None,
@@ -2458,6 +2488,31 @@ def _indicator_body(
             f"<section><h2>{escape(years_h2_tpl.format(name=name))}</h2>"
             f"{year_links}</section>\n"
         )
+    # А-4 (месяцы): у monthly-рядов перелинковка на месячные лендинги —
+    # срезы «X в июле 2026» ранжируют точный срез, не карточку.
+    # Пары (year, month) готовит async-вызывающий (data_month_pairs).
+    months_section = ""
+    if (indicator.frequency or "").startswith("month") and data_month_pairs:
+        months_tpl = indicator_template("section_months", loc)
+        month_link_tpl = indicator_template("month_link", loc)
+        months_h2_tpl = (months_tpl or
+                         ("{name} by month" if en else "{name} по месяцам")).format(
+            name=name,
+        )
+        m_link_tpl = month_link_tpl or (
+            "{name} в {month_year}" if not en else "{name} in {month_year}"
+        )
+        month_names = (EN_MONTHS_NOM if en else RU_MONTH_NOM)
+        month_links = _links_list(tuple(
+            (
+                paths.indicator_month(paths.RUSSIA, indicator.code, y, m),
+                m_link_tpl.format(name=name, month_year=f"{month_names[m - 1]} {y}"),
+            )
+            for y, m in data_month_pairs
+        ))
+        months_section = (
+            f"<section><h2>{escape(months_h2_tpl)}</h2>{month_links}</section>\n"
+        )
     chart_caption = chart_caption_tpl.format(name=name, source=src)
     return f"""<main class="seo-page">
 {_breadcrumbs_nav(crumb_trail)}
@@ -2476,5 +2531,5 @@ def _indicator_body(
 {_blocks_html(blocks, current_code=indicator.code)}
 <section><h2>{escape(section_method)}</h2><p>{escape(clean_text(method_text, method_fb))}</p></section>
 <section><h2>{escape(section_latest)}</h2><table><thead><tr><th>{escape(th_date)}</th><th>{escape(value_head)}</th></tr></thead><tbody>{data_rows}</tbody></table></section>
-{years_section}<section><h2>{escape(section_related)}</h2>{_links_list(related_links or ((paths.russia_category(category.slug), category.name),) if category else tuple())}</section>
+{years_section}{months_section}<section><h2>{escape(section_related)}</h2>{_links_list(related_links or ((paths.russia_category(category.slug), category.name),) if category else tuple())}</section>
 </main>"""

@@ -27,7 +27,11 @@ export default function RegionsMap({
   onSelect = null,          // клик по региону; по умолчанию — переход на профиль
   transitionMs = 150,       // длительность перехода цвета (плавность анимации по годам)
   brandMark = false,        // тонкий бренд в углу live-UI (в экспорт не попадает)
+  variant = 'full',         // compact — витрина без зум-контролов (hero, карточки)
+  colorDirection = null,    // 'asc'/'desc' — привязка шкалы к порядку сортировки рейтинга
+  className = '',           // доп. классы SVG-обёртки (например aspect-square)
 }) {
+  const compact = variant === 'compact';
   const { t } = useLocale();
   const navigate = useNavigate();
   const [hover, setHover] = useState(null); // { slug, x, y }
@@ -44,7 +48,10 @@ export default function RegionsMap({
 
   // Квантильная шкала по ТЕКУЩЕМУ срезу (год на ползунке): цвет отражает
   // относительную позицию региона среди других В ЭТОМ ГОДУ.
-  const colorBySlug = useMemo(() => colorsBySlug(valuesBySlug), [valuesBySlug]);
+  const colorBySlug = useMemo(
+    () => colorsBySlug(valuesBySlug, { direction: colorDirection }),
+    [valuesBySlug, colorDirection],
+  );
   const extent = useMemo(() => valueExtent(valuesBySlug), [valuesBySlug]);
   const colorFor = (slug) => colorBySlug.get(slug) ?? MAP_NO_DATA;
 
@@ -124,8 +131,18 @@ export default function RegionsMap({
   const hoverValue = hover && valuesBySlug ? valuesBySlug.get(hover.slug) : null;
   const { k, tx, ty } = view;
 
+  // Compact-тултип: одна строка «имя + значение», прижатая внутрь квадрата —
+  // контейнер витрины overflow-hidden, обычный перевод на -50% резал бы края.
+  const compactHover = compact && hover
+    ? {
+      ...hover,
+      x: Math.min(Math.max(hover.x, 14), 86),
+      y: Math.min(Math.max(hover.y, 16), 92),
+    }
+    : null;
+
   return (
-    <div className="select-none">
+    <div className={`select-none ${className}`.trim()}>
       {/* Обёртка только под SVG: бренд и зум привязаны к карте, не к легенде. */}
       <div className="relative">
         <svg
@@ -134,11 +151,11 @@ export default function RegionsMap({
           className={`w-full h-auto ${k > 1 ? 'cursor-grab active:cursor-grabbing' : ''}`}
           role="group"
           aria-label={t('regions.mapAria')}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-          onPointerCancel={onPointerUp}
-          style={{ touchAction: k > 1 ? 'none' : 'pan-y' }}
+          onPointerDown={compact ? undefined : onPointerDown}
+          onPointerMove={compact ? undefined : onPointerMove}
+          onPointerUp={compact ? undefined : onPointerUp}
+          onPointerCancel={compact ? undefined : onPointerUp}
+          style={{ touchAction: k > 1 && !compact ? 'none' : 'pan-y' }}
         >
           <g transform={`translate(${tx} ${ty}) scale(${k})`}>
             {/* Подложка-«шов»: обводка своим цветом фиксированной (не /k) толщины —
@@ -229,39 +246,41 @@ export default function RegionsMap({
           </g>
         </svg>
 
-        <div className="absolute right-2 top-2 flex flex-col gap-1" data-no-export="true">
-          <button
-            type="button"
-            onClick={() => zoomBy(ZOOM_STEP)}
-            disabled={k >= ZOOM_MAX}
-            aria-label={t('regions.zoomIn')}
-            title={t('regions.zoomIn')}
-            className="w-8 h-8 flex items-center justify-center rounded-lg bg-surface border border-border-subtle text-text-secondary hover:text-champagne hover:border-border-champagne transition-colors shadow-sm disabled:opacity-40"
-          >
-            <Plus size={15} />
-          </button>
-          <button
-            type="button"
-            onClick={() => zoomBy(1 / ZOOM_STEP)}
-            disabled={k <= 1}
-            aria-label={t('regions.zoomOut')}
-            title={t('regions.zoomOut')}
-            className="w-8 h-8 flex items-center justify-center rounded-lg bg-surface border border-border-subtle text-text-secondary hover:text-champagne hover:border-border-champagne transition-colors shadow-sm disabled:opacity-40"
-          >
-            <Minus size={15} />
-          </button>
-          {k > 1 && (
+        {!compact && (
+          <div className="absolute right-2 top-2 flex flex-col gap-1" data-no-export="true">
             <button
               type="button"
-              onClick={() => setView({ k: 1, tx: 0, ty: 0 })}
-              aria-label={t('regions.zoomReset')}
-              title={t('regions.zoomReset')}
-              className="w-8 h-8 flex items-center justify-center rounded-lg bg-surface border border-border-subtle text-text-secondary hover:text-champagne hover:border-border-champagne transition-colors shadow-sm"
+              onClick={() => zoomBy(ZOOM_STEP)}
+              disabled={k >= ZOOM_MAX}
+              aria-label={t('regions.zoomIn')}
+              title={t('regions.zoomIn')}
+              className="w-8 h-8 flex items-center justify-center rounded-lg bg-surface border border-border-subtle text-text-secondary hover:text-champagne hover:border-border-champagne transition-colors shadow-sm disabled:opacity-40"
             >
-              <Maximize2 size={14} />
+              <Plus size={15} />
             </button>
-          )}
-        </div>
+            <button
+              type="button"
+              onClick={() => zoomBy(1 / ZOOM_STEP)}
+              disabled={k <= 1}
+              aria-label={t('regions.zoomOut')}
+              title={t('regions.zoomOut')}
+              className="w-8 h-8 flex items-center justify-center rounded-lg bg-surface border border-border-subtle text-text-secondary hover:text-champagne hover:border-border-champagne transition-colors shadow-sm disabled:opacity-40"
+            >
+              <Minus size={15} />
+            </button>
+            {k > 1 && (
+              <button
+                type="button"
+                onClick={() => setView({ k: 1, tx: 0, ty: 0 })}
+                aria-label={t('regions.zoomReset')}
+                title={t('regions.zoomReset')}
+                className="w-8 h-8 flex items-center justify-center rounded-lg bg-surface border border-border-subtle text-text-secondary hover:text-champagne hover:border-border-champagne transition-colors shadow-sm"
+              >
+                <Maximize2 size={14} />
+              </button>
+            )}
+          </div>
+        )}
 
         {brandMark && (
           <div
@@ -275,7 +294,21 @@ export default function RegionsMap({
           </div>
         )}
 
-        {hover && (
+        {compact && compactHover && nameBySlug[hover.slug] && (
+          <div
+            className="absolute z-10 pointer-events-none rounded-lg border border-white/25 bg-[#1E1F26]/92 px-2.5 py-1 text-[11px] text-white shadow-lg whitespace-nowrap"
+            style={{ left: `${compactHover.x}%`, top: `${compactHover.y}%`, transform: 'translate(-50%, -50%)' }}
+          >
+            <span className="font-medium">{nameBySlug[hover.slug]}</span>
+            {hoverValue != null && (
+              <span className="ml-1.5 font-mono text-[#D8C177]">
+                {formatRegionValue(hoverValue)}{unit ? `\u00A0${unit}` : ''}
+              </span>
+            )}
+          </div>
+        )}
+
+        {!compact && hover && (
           <div
             className="absolute z-10 pointer-events-none bg-surface border border-border-subtle rounded-lg px-3 py-1.5 shadow-lg text-xs whitespace-nowrap -translate-x-1/2 -translate-y-full"
             style={{ left: `${hover.x}%`, top: `${Math.max(hover.y - 2, 0)}%` }}

@@ -6,6 +6,7 @@ import {
   annualYoyFromIndexPoints,
   buildRussiaResult,
   buildWorldResult,
+  defaultCountrySlug,
   inflationCountriesFromCatalog,
   isRussiaCountry,
   RUSSIA_SOURCE,
@@ -16,6 +17,16 @@ import {
 
 const CPI_QUERY_PARAMS = { limit: 5000 };
 
+/** Слаг страны калькулятора. Пустой/неизвестный слаг → дефолт локали. */
+export function resolveCalcCountrySlug(countrySlug, locale, { knownSlugs = null, catalogLoading = false } = {}) {
+  const fallback = defaultCountrySlug(locale);
+  const slug = String(countrySlug || '').trim().toLowerCase();
+  if (!slug) return fallback;
+  if (isRussiaCountry(slug)) return RUSSIA_SLUG;
+  if (catalogLoading || !knownSlugs?.length) return slug;
+  return knownSlugs.includes(slug) ? slug : fallback;
+}
+
 export default function useInflationCalc(amount, fromYear, toYear, countrySlug = 'russia') {
   const { locale } = useLocale();
 
@@ -24,11 +35,14 @@ export default function useInflationCalc(amount, fromYear, toYear, countrySlug =
     () => inflationCountriesFromCatalog(catalogQ.data, { locale }),
     [catalogQ.data, locale],
   );
-  const resolvedSlug = useMemo(() => {
-    if (isRussiaCountry(countrySlug)) return RUSSIA_SLUG;
-    if (catalogQ.isLoading || !countries.length) return countrySlug;
-    return countries.some((c) => c.slug === countrySlug) ? countrySlug : RUSSIA_SLUG;
-  }, [countrySlug, countries, catalogQ.isLoading]);
+  const knownSlugs = useMemo(() => countries.map((c) => c.slug), [countries]);
+  const resolvedSlug = useMemo(
+    () => resolveCalcCountrySlug(countrySlug, locale, {
+      knownSlugs,
+      catalogLoading: catalogQ.isLoading,
+    }),
+    [countrySlug, locale, knownSlugs, catalogQ.isLoading],
+  );
   const isRussia = isRussiaCountry(resolvedSlug);
 
   const qCpi = useIndicatorData('cpi', CPI_QUERY_PARAMS, { enabled: isRussia });
@@ -101,6 +115,9 @@ export default function useInflationCalc(amount, fromYear, toYear, countrySlug =
     ? RUSSIA_SOURCE
     : (metaQ.data?.indicator?.source || '');
 
+  /** Прямая ссылка на источник ряда (мировая ветка); у России ведём на карточку ИПЦ. */
+  const sourceUrl = isRussia ? null : (metaQ.data?.indicator?.source_url || null);
+
   const countryName = isRussia
     ? null
     : (seriesQ.data?.meta?.country_name
@@ -125,7 +142,10 @@ export default function useInflationCalc(amount, fromYear, toYear, countrySlug =
       lastAvailableDate,
       countries,
       countriesLoading,
+      /** Слаг после валидации каталога — пикер и share-ссылка держатся его, а не сырого URL-параметра. */
+      resolvedCountrySlug: resolvedSlug,
       source,
+      sourceUrl,
       countryName,
       seriesStartYear,
       isRussia,
@@ -169,6 +189,7 @@ export default function useInflationCalc(amount, fromYear, toYear, countrySlug =
   }, [
     amount, fromYear, toYear, cpiAll, cpiFood, cpiNonfood, cpiServices,
     worldPoints, isLoading, isError, lastAvailableYear, minYear, lastAvailableDate,
-    countries, countriesLoading, source, countryName, seriesStartYear, isRussia,
+    countries, countriesLoading, source, sourceUrl, countryName, seriesStartYear,
+    isRussia, resolvedSlug,
   ]);
 }

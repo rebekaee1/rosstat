@@ -1,0 +1,211 @@
+# Brazil national-core passport (official Banco Central do Brasil SGS API).
+# Live-probed 2026-08-12. Loader: scripts/load-world-national.py --country br
+# Provider: bcb_sgs → BcbSgsAdapter (api.bcb.gov.br/dados/serie/bcdata.sgs.*).
+# Several real-sector series originate at IBGE and are republished in SGS.
+# Expand with live-probed series; loader is idempotent and does not touch
+# existing eurostat rows for BR.
+
+country_code: BR
+
+series:
+  - code_suffix: cpi-ipca
+    name_ru: Индекс потребительских цен IPCA (к предыдущему месяцу)
+    name_en: IPCA consumer price index (month-on-month)
+    category_ru: Цены
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    provider: bcb_sgs
+    dataset_id: "433"
+    series_id: "433"
+    source_url: "https://api.bcb.gov.br/dados/serie/bcdata.sgs.433/dados?formato=json"
+    analog_ru: ИПЦ
+    is_listed: true
+    description: >
+      Широкий индекс потребительских цен Бразилии (IPCA) — изменение стоимости
+      фиксированной потребительской корзины к предыдущему месяцу. Показывает
+      месячную динамику потребительских цен по стране.
+    methodology: >
+      Ряд публикует Банк Бразилии в системе временных рядов. Исходную оценку
+      индекса готовит Бразильский институт географии и статистики. Частота
+      публикации — месячная. Единица измерения на графике — процент изменения
+      к предыдущему месяцу. На графике — официальный национальный ряд без
+      дополнительных преобразований.
+
+  - code_suffix: cpi-ipca-yoy
+    name_ru: Инфляция IPCA за 12 месяцев
+    name_en: IPCA 12-month accumulated change
+    category_ru: Цены
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    provider: bcb_sgs
+    dataset_id: "13522"
+    series_id: "13522"
+    source_url: "https://api.bcb.gov.br/dados/serie/bcdata.sgs.13522/dados?formato=json"
+    analog_ru: Инфляция за год
+    is_listed: true
+    description: >
+      Накопленное за последние 12 месяцев изменение индекса потребительских цен
+      IPCA. Показывает, на сколько процентов выросли потребительские цены за
+      скользящий год.
+    methodology: >
+      Ряд публикует Банк Бразилии. Частота публикации — месячная. Единица
+      измерения на графике — процент за 12 месяцев. На графике — официальный
+      национальный ряд без дополнительных преобразований.
+
+  - code_suffix: unemployment-rate
+    name_ru: Уровень безработицы
+    name_en: Unemployment rate
+    category_ru: Рынок труда
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    provider: bcb_sgs
+    dataset_id: "24369"
+    series_id: "24369"
+    source_url: "https://api.bcb.gov.br/dados/serie/bcdata.sgs.24369/dados?formato=json"
+    analog_ru: Уровень безработицы
+    is_listed: true
+    description: >
+      Уровень безработицы в Бразилии по непрерывному обследованию рабочей силы.
+      Показывает долю безработных в экономически активном населении.
+    methodology: >
+      Ряд публикует Банк Бразилии; исходную оценку готовит Бразильский институт
+      географии и статистики. Частота публикации — месячная. Единица измерения
+      на графике — процент. На графике — официальный национальный ряд без
+      дополнительных преобразований.
+
+  - code_suffix: gdp-real
+    name_ru: Валовой внутренний продукт в постоянных ценах
+    name_en: Real GDP chain index (seasonally adjusted)
+    category_ru: ВВП
+    unit: INDEX
+    unit_ru: индекс (среднее 1995 = 100)
+    frequency: quarterly
+    provider: bcb_sgs
+    dataset_id: "22109"
+    series_id: "22109"
+    source_url: "https://api.bcb.gov.br/dados/serie/bcdata.sgs.22109/dados?formato=json"
+    analog_ru: ВВП реальный
+    is_listed: true
+    description: >
+      Реальный валовой внутренний продукт Бразилии в виде цепного индекса со
+      сезонной корректировкой. Показывает динамику объёма экономики без влияния
+      изменения цен и сезонных факторов.
+    methodology: >
+      Ряд публикует Банк Бразилии; исходную оценку готовит Бразильский институт
+      географии и статистики в системе национальных счетов. Частота публикации —
+      квартальная. Единица измерения на графике — индекс (среднее 1995 года
+      принято за 100). На графике — официальный сезонно скорректированный ряд.
+
+  - code_suffix: gdp-ibc-br
+    name_ru: Индекс экономической активности IBC-Br
+    name_en: IBC-Br economic activity index (seasonally adjusted)
+    category_ru: ВВП
+    unit: INDEX
+    unit_ru: индекс
+    frequency: monthly
+    provider: bcb_sgs
+    dataset_id: "24364"
+    series_id: "24364"
+    source_url: "https://api.bcb.gov.br/dados/serie/bcdata.sgs.24364/dados?formato=json"
+    analog_ru: Индекс деловой активности
+    is_listed: true
+    description: >
+      Месячный индекс экономической активности Банка Бразилии (IBC-Br) с учётом
+      сезонной корректировки. Показывает текущую динамику выпуска экономики
+      между квартальными публикациями ВВП.
+    methodology: >
+      Ряд публикует Банк Бразилии. Частота публикации — месячная. Единица
+      измерения на графике — индекс. На графике — официальный сезонно
+      скорректированный ряд без дополнительных преобразований.
+
+  - code_suffix: policy-rate
+    name_ru: Целевая ставка Selic
+    name_en: Selic target rate
+    category_ru: Финансы
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: daily
+    provider: bcb_sgs
+    dataset_id: "432"
+    series_id: "432"
+    source_url: "https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados?formato=json"
+    analog_ru: Ключевая ставка
+    is_listed: true
+    description: >
+      Целевая ставка Selic — операционный ориентир денежно-кредитной политики
+      Банка Бразилии. Показывает уровень, к которому центральный банк направляет
+      базовую ставку денежного рынка.
+    methodology: >
+      Ряд публикует Банк Бразилии. Частота публикации — дневная. Единица
+      измерения на графике — процент годовых. Значения соответствуют официальной
+      целевой ставке без пересчёта на стороне платформы.
+
+  - code_suffix: fx-usd-brl
+    name_ru: Курс доллара США к бразильскому реалу
+    name_en: USD/BRL exchange rate
+    category_ru: Финансы
+    unit: BRL_PER_USD
+    unit_ru: бразильских реалов за 1 доллар США
+    frequency: daily
+    provider: bcb_sgs
+    dataset_id: "1"
+    series_id: "1"
+    source_url: "https://api.bcb.gov.br/dados/serie/bcdata.sgs.1/dados?formato=json"
+    analog_ru: Курс к доллару США
+    is_listed: true
+    description: >
+      Свободный обменный курс доллара США к бразильскому реалу (цена продажи) по
+      данным Банка Бразилии. Показывает, сколько реалов приходится на один доллар
+      США.
+    methodology: >
+      Ряд публикует Банк Бразилии. Частота публикации — дневная (рабочие дни).
+      Единица измерения на графике — число бразильских реалов за один доллар
+      США. Значения соответствуют официальному ряду курса продажи.
+
+  - code_suffix: industrial-production
+    name_ru: Индекс промышленного производства
+    name_en: Industrial production index
+    category_ru: Бизнес и инвестиции
+    unit: INDEX
+    unit_ru: индекс
+    frequency: monthly
+    provider: bcb_sgs
+    dataset_id: "21859"
+    series_id: "21859"
+    source_url: "https://api.bcb.gov.br/dados/serie/bcdata.sgs.21859/dados?formato=json"
+    analog_ru: Промышленное производство
+    is_listed: true
+    description: >
+      Индекс промышленного производства Бразилии. Показывает изменение физического
+      объёма выпуска промышленности относительно базового периода.
+    methodology: >
+      Ряд публикует Банк Бразилии; исходную оценку готовит Бразильский институт
+      географии и статистики. Частота публикации — месячная. Единица измерения на
+      графике — индекс. На графике — официальный национальный ряд без
+      дополнительных преобразований.
+
+  - code_suffix: retail-sales
+    name_ru: Индекс объёма розничных продаж
+    name_en: Retail sales volume index
+    category_ru: Бизнес и инвестиции
+    unit: INDEX
+    unit_ru: индекс
+    frequency: monthly
+    provider: bcb_sgs
+    dataset_id: "1455"
+    series_id: "1455"
+    source_url: "https://api.bcb.gov.br/dados/serie/bcdata.sgs.1455/dados?formato=json"
+    analog_ru: Розничный товарооборот
+    is_listed: true
+    description: >
+      Индекс физического объёма розничных продаж в Бразилии. Показывает, как
+      меняется объём реализации товаров розничной торговли относительно базового
+      периода.
+    methodology: >
+      Ряд публикует Банк Бразилии; исходную оценку готовит Бразильский институт
+      географии и статистики. Частота публикации — месячная. Единица измерения на
+      графике — индекс. На графике — официальный национальный ряд без
+      дополнительных преобразований.

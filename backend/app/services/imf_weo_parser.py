@@ -3,6 +3,9 @@
 Мировой рейтинг пишет те же точки через ``world_imf_ingest``. Этот парсер
 нужен daily ETL каталога ``indicators`` (``weo-gdp-usd`` /
 ``weo-gdp-per-capita-usd``). Одна страна: ISO ``RU`` / WEO ``RUS``.
+Политика года наблюдений (поточные серии — только закрытые годы)
+применяется внутри ``ImfWeoAdapter.fetch_weo_code`` по фактическому коду
+серии; сюда отдельная обрезка не дублируется.
 """
 
 from __future__ import annotations

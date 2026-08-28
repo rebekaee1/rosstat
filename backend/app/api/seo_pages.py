@@ -50,6 +50,7 @@ from app.services.seo_regional import (
     render_regions_home_html,
     render_regions_map_html,
 )
+from app.services.seo_indicator_month import render_indicator_month_html
 from app.services.seo_today import render_today_hub_html, render_today_indicator_html
 from app.services.seo_world import (
     WORLD_RATING_DEFAULT_CONCEPT,
@@ -57,6 +58,8 @@ from app.services.seo_world import (
     render_world_indicator_html,
     render_world_rating_html,
 )
+from app.services.seo_world_compare import render_world_vs_html
+from app.services.seo_regional_year import render_region_indicator_year_html
 from app.services.seo_renderer import (
     render_categories_hub_html,
     render_category_html,
@@ -66,6 +69,7 @@ from app.services.seo_renderer import (
     render_not_found_html,
     render_page_html,
 )
+from app.services.seo_world_year import render_world_indicator_year_html
 
 router = APIRouter(tags=["seo-pages"])
 
@@ -116,7 +120,17 @@ async def _cached_html(namespace: str, variant: str, ttl: int, render_coro_facto
 
     Кэшируются только 200-е ответы: 404 не должен «прилипать» на TTL
     (индикатор мог появиться после деплоя/seed).
+
+    Preview-локаль (``?preview_locale=`` / X-FE-Locale override) всегда
+    рендерится свежим ходом и в кэш не попадает: иначе страница с
+    ``robots noindex`` закэшировалась бы под обычным ключом и после
+    кутовера/на EN-хосте отдавалась каноническим ботам.
     """
+    from app.services.locale import is_preview_locale
+
+    if is_preview_locale():
+        return await render_coro_factory()
+
     sig = await _asset_sig()
     key = await _ssr_key(namespace, variant, sig)
     cached = await cache_get(key)
@@ -381,6 +395,22 @@ async def seo_indicator_year(
     return _html_response(status, html, request)
 
 
+@router.api_route(
+    "/seo/indicator-month/{code}/{period}",
+    methods=["GET", "HEAD"], include_in_schema=False,
+)
+async def seo_indicator_month(
+    code: str, period: str, request: Request, db: AsyncSession = Depends(get_db)
+):
+    if not re.fullmatch(r"(?:19|20)\d{2}-(?:0[1-9]|1[0-2])", period):
+        return _html_response(404, "Not found")
+    status, html = await _cached_html(
+        code, f"indicator-month:{code}:{period}:{get_locale()}", _SSR_TTL_INDICATOR,
+        lambda: render_indicator_month_html(code, int(period[:4]), int(period[5:]), db),
+    )
+    return _html_response(status, html, request)
+
+
 @router.api_route("/seo/world", methods=["GET", "HEAD"], include_in_schema=False)
 async def seo_world_home():
     """Витрина мира переехала на главную: карта, рейтинг и каталог стран теперь там.
@@ -396,15 +426,63 @@ async def seo_world_rating_default():
     return _permanent_redirect(paths.world_rating(WORLD_RATING_DEFAULT_CONCEPT))
 
 
+async def _rating_year_info(
+    concept_slug: str, db: AsyncSession
+) -> tuple[int | None, list[int]]:
+    """(дефолтный год, все годы с данными) рейтинга; (None, []) — нет рейтинга."""
+    from app.services.seo_world import build_world_rating_payload
+
+    try:
+        payload = await build_world_rating_payload(concept_slug, db)
+    except Exception:
+        return None, []
+    if not payload:
+        return None, []
+    return payload.get("active_year"), list(payload.get("years") or [])
+
+
 @router.api_route("/seo/world/rating/{concept_slug}", methods=["GET", "HEAD"], include_in_schema=False)
 async def seo_world_rating(
     concept_slug: str, request: Request, db: AsyncSession = Depends(get_db)
 ):
     year_raw = request.query_params.get("year")
-    year = int(year_raw) if year_raw and re.fullmatch(r"\d{4}", year_raw) else None
+    # Легаси ?year= — 301 сразу в конечную точку (Фаза 10): дефолтный год — на
+    # базу (она и есть его self-canonical), не-дефолтный — на path-канон.
+    if year_raw and re.fullmatch(r"\d{4}", year_raw):
+        default_year, years = await _rating_year_info(concept_slug, db)
+        requested = int(year_raw)
+        if requested in years:
+            if default_year is not None and requested == default_year:
+                return _permanent_redirect(paths.world_rating(concept_slug))
+            return _permanent_redirect(paths.world_rating_year(concept_slug, requested))
     status, html = await _cached_html(
-        "ssr-world", f"world-rating:{concept_slug}:{year or ''}:{get_locale()}", _SSR_TTL_WORLD,
-        lambda: render_world_rating_html(concept_slug, db, year=year),
+        "ssr-world", f"world-rating:{concept_slug}::{get_locale()}", _SSR_TTL_WORLD,
+        lambda: render_world_rating_html(concept_slug, db),
+    )
+    return _html_response(status, html, request)
+
+
+@router.api_route(
+    "/seo/world/rating/{concept_slug}/{year}",
+    methods=["GET", "HEAD"], include_in_schema=False,
+)
+async def seo_world_rating_year(
+    concept_slug: str, year: str, request: Request, db: AsyncSession = Depends(get_db)
+):
+    if not re.fullmatch(r"(?:19|20)\d{2}", year):
+        return _html_response(404, "Not found")
+    # Один контент — один URL (Фаза 10): path-канон дефолтного года уходит 301
+    # на базу (она и есть его self-canonical), год без данных — честная 404,
+    # а не подмена контента чужим годом (софт-404).
+    requested = int(year)
+    default_year, years = await _rating_year_info(concept_slug, db)
+    if requested not in years:
+        return _html_response(404, "Not found")
+    if default_year is not None and requested == default_year:
+        return _permanent_redirect(paths.world_rating(concept_slug))
+    status, html = await _cached_html(
+        "ssr-world", f"world-rating:{concept_slug}:{year}:{get_locale()}", _SSR_TTL_WORLD,
+        lambda: render_world_rating_html(concept_slug, db, year=requested),
     )
     return _html_response(status, html, request)
 
@@ -440,4 +518,77 @@ async def seo_world_indicator(
         "ssr-world", f"world:{slug}:{code}:{get_locale()}", _SSR_TTL_WORLD,
         lambda: render_world_indicator_html(slug, code, db),
     )
+    return _html_response(status, html, request)
+
+
+@router.api_route(
+    "/seo/world-indicator-year/{slug}/{code}/{year}",
+    methods=["GET", "HEAD"], include_in_schema=False,
+)
+async def seo_world_indicator_year(
+    slug: str, code: str, year: str, request: Request, db: AsyncSession = Depends(get_db)
+):
+    if not re.fullmatch(r"(?:19|20)\d{2}", year):
+        return _html_response(404, "Not found")
+    # Вторичные частоты → финальный /{slug}/indicator/{primary} (query отрезаем,
+    # годовой лендинг живёт только на primary-ряде).
+    target = await resolve_world_frequency_sibling(db, slug, code)
+    if target:
+        return _permanent_redirect(f"{target.split('?')[0]}/{year}")
+    if request.headers.get("x-path-cut-legacy") == "1":
+        return _permanent_redirect(paths.indicator_year(slug, code, year))
+    status, html = await _cached_html(
+        "ssr-world", f"world-year:{slug}:{code}:{year}:{get_locale()}", _SSR_TTL_WORLD,
+        lambda: render_world_indicator_year_html(slug, code, int(year), db),
+    )
+    return _html_response(status, html, request)
+
+
+@router.api_route("/seo/world-vs/{pair}/{concept}", methods=["GET", "HEAD"], include_in_schema=False)
+async def seo_world_vs(
+    pair: str, concept: str, request: Request, db: AsyncSession = Depends(get_db)
+):
+    # «-vs-» — внутренний разделитель пары, слаги стран сами содержат дефисы:
+    # разрез строго по последнему «-vs-» (слаг «united-states» не разъедается).
+    if "-vs-" not in pair:
+        return _html_response(404, "Not found")
+    slug_a, slug_b = pair.rsplit("-vs-", 1)
+    if not slug_a or not slug_b:
+        return _html_response(404, "Not found")
+    status, payload = await render_world_vs_html(slug_a, slug_b, concept, db)
+    if status == 301:
+        # Редирект до кэша: каноническая пара переезжает, не-канонический
+        # URL никогда не должен закэшироваться как содержимое.
+        return _permanent_redirect(payload)
+    if status == 200:
+        # Кэшируется только 200 (как в singleflight _cached_html): ключ —
+        # каноническая упорядоченная пара, рендер уже выполнен один раз.
+        sig = await _asset_sig()
+        key = await _ssr_key(
+            "ssr-world",
+            f"world-vs:{slug_a}:{slug_b}:{concept}:{get_locale()}", sig,
+        )
+        await cache_set(key, payload, _SSR_TTL_WORLD)
+    return _html_response(status, payload, request)
+
+
+@router.api_route(
+    "/seo/region-indicator-year/{slug}/{code}/{year}",
+    methods=["GET", "HEAD"], include_in_schema=False,
+)
+async def seo_region_indicator_year(
+    slug: str, code: str, year: str, request: Request, db: AsyncSession = Depends(get_db)
+):
+    if not re.fullmatch(r"(?:19|20)\d{2}", year):
+        return _html_response(404, "Not found")
+    status, html = await _cached_html(
+        "ssr-region", f"region-year:{slug}:{code}:{year}:{get_locale()}", _SSR_TTL_REGIONAL,
+        lambda: render_region_indicator_year_html(slug, code, int(year), db),
+    )
+    # А-2: короткий слаг региона → канонический с префиксом («tatarstan» →
+    # «respublika-tatarstan»), тот же guard, что у двухсегментной карточки.
+    if status == 404:
+        canonical = await _canonical_region_slug(slug, db)
+        if canonical:
+            return _permanent_redirect(paths.region_indicator(canonical, code) + f"/{year}")
     return _html_response(status, html, request)

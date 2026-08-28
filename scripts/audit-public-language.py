@@ -172,6 +172,11 @@ def collect_issues() -> list[tuple[str, str]]:
     for code, field, preview in scan_seed():
         found.append((f'seed_data.py:{code}:{field}', preview))
 
+    # Квантифицированные строки витрины главной (число + подпись в соседних
+    # ключах i18n, например «56» + «стран мира») — официальный факт, а не
+    # overclaim; синхронно с QUANTIFIED_LINE в publicProductClaims.test.js.
+    quantified = re.compile(r"'home\.scope\.stat\.")
+
     for rel in INTERNAL_SURFACES:
         p = ROOT / rel
         if not p.exists():
@@ -197,6 +202,8 @@ def collect_issues() -> list[tuple[str, str]]:
             found.append((rel, 'MISSING FILE'))
             continue
         for line_no, line in scan_file(p, PRODUCT_CLAIM_RE, strip_comments=True):
+            if rel.startswith('frontend/src/i18n/') and quantified.search(line):
+                continue
             found.append((f'{rel}:{line_no}:product-claim', line))
 
     return found

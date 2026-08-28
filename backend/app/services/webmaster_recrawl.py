@@ -94,10 +94,23 @@ async def recrawl_daily_job(
 
     async with async_session() as db:
         paths = await collect_all_paths(db)
+        # Приоритет спроса (2026-08-23): страницы, на которые больше всего
+        # «потерянных показов» из поиска Яндекса, идут первыми — переобход
+        # по спросу, а не только по порядку реестра.
+        try:
+            from app.services.demand_router import priority_recrawl_paths
+
+            demand = await priority_recrawl_paths(db, days=30, limit=remaining * 3)
+        except Exception:
+            logger.exception("Recrawl job: demand priority failed, fallback to registry")
+            demand = []
 
     # Защитный слой: даже если junk снова попадёт в реестр (или останется в
     # старом курсоре), помечаем skip без POST — квота не горит, курсор идёт дальше.
     eligible, skipped = filter_recrawl_paths(paths)
+    eligible_set = set(eligible)
+    # Спрос-страницы, которых нет в реестре (например, битый матчинг), не подаём.
+    demand_first = [p for p, _lost in demand if p in eligible_set]
 
     from app.services.yandex_client import YandexApiError
 
@@ -107,48 +120,68 @@ async def recrawl_daily_job(
         await redis.sadd(cursor_key, *skipped)
 
     submitted = 0
-    wrapped_around = False
-    for path in eligible:
-        if submitted >= remaining:
-            break
-        if await redis.sismember(cursor_key, path):
-            continue
+    demand_submitted = 0
+
+    demand_first_set = set(demand_first)
+
+    async def _submit(path: str) -> bool:
         url = f"{base}{path}"
         try:
             await client.submit_recrawl(user_id, wm_host_id, url, approved=True)
-            submitted += 1
             await redis.sadd(cursor_key, path)
+            return True
         except YandexApiError as exc:
             err = str(exc.payload)[:200].upper()
             if "QUOTA" in err:
                 logger.info("Recrawl job: quota hit mid-run after %d", submitted)
-                break
+                return False
             # URL_ALREADY_ADDED и прочие мягкие отказы — помечаем и идём дальше.
             await redis.sadd(cursor_key, path)
             logger.warning("Recrawl submit %s rejected: %s", url, err)
+            return True
         except Exception:
             logger.exception("Recrawl submit failed for %s", url)
+            return False
+
+    for path in demand_first:
+        if submitted >= remaining:
             break
+        if await redis.sismember(cursor_key, path):
+            continue
+        if not await _submit(path):
+            break
+        submitted += 1
+        demand_submitted += 1
+    for path in eligible:
+        if submitted >= remaining:
+            break
+        if path in demand_first_set:
+            continue
+        if await redis.sismember(cursor_key, path):
+            continue
+        if not await _submit(path):
+            break
+        submitted += 1
     else:
         # Прошли весь eligible-реестр — все URL уже подавались. Начинаем новый цикл.
         if submitted < remaining:
             await redis.delete(cursor_key)
-            wrapped_around = True
 
-    total_submitted = 0 if wrapped_around else int(await redis.scard(cursor_key))
+    total_submitted = int(await redis.scard(cursor_key))
     logger.info(
-        "Recrawl job: submitted %d URL(s) (quota %d), skipped_noncanonical %d, "
-        "cursor at %d/%d host_id=%s%s",
+        "Recrawl job: submitted %d URL(s) (quota %d), demand-priority %d, "
+        "skipped_noncanonical %d, cursor at %d/%d host_id=%s",
         submitted,
         remaining,
+        demand_submitted,
         len(skipped),
         total_submitted,
         len(eligible),
         wm_host_id,
-        ", cycle restarted" if wrapped_around else "",
     )
     return {
         "submitted": submitted,
+        "demand_priority": demand_submitted,
         "quota": remaining,
         "cursor": total_submitted,
         "skipped_noncanonical": len(skipped),

@@ -5,11 +5,34 @@
  */
 
 export const RUSSIA_SLUG = 'russia';
+export const US_SLUG = 'united-states';
 export const HICP_CONCEPT = 'hicp-index';
 export const RUSSIA_SOURCE = 'Росстат';
 
 export function isRussiaCountry(slug) {
   return !slug || slug === RUSSIA_SLUG;
+}
+
+/** Страна по умолчанию при отсутствии явного ?country: EN-витрина — США, русская — Россия. */
+export function defaultCountrySlug(locale) {
+  return locale === 'en' ? US_SLUG : RUSSIA_SLUG;
+}
+
+/**
+ * Канонический период расчёта: перестановка перепутанных границ URL (from > to)
+ * и клэмп к доступному диапазону данных. Явный однолетний период (from == to)
+ * сохраняется — математика считает один календарный год.
+ * Аргументы — конечные годы (инициализация страницы гарантирует finiteness).
+ */
+export function normalizePeriod(fromYear, toYear, minYear, maxYear) {
+  const min = Number.isFinite(minYear) ? minYear : -Infinity;
+  const max = Number.isFinite(maxYear) ? maxYear : Infinity;
+  let from = Number.isFinite(fromYear) ? fromYear : min;
+  let to = Number.isFinite(toYear) ? toYear : max;
+  if (from > to) [from, to] = [to, from];
+  from = Math.min(Math.max(from, min), max);
+  to = Math.min(Math.max(to, min), max);
+  return { from, to };
 }
 
 export function yearOf(dateStr) {

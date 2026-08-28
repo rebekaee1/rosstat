@@ -1,7 +1,7 @@
 // Карточка мирового индикатора: /world/{slug}/{code}?mode=
 // UI-эталон — российские макрокарточки (TelemetryCard + champagne/15 picker).
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   ArrowLeft, ArrowUpRight, Activity,
 } from 'lucide-react';
@@ -155,6 +155,16 @@ export default function WorldIndicatorPage() {
     includeForecast: forecastAvailable && showForecast,
   });
 
+  // #chart из SSR-ссылок (og:image → карточка): скролл к графику, когда
+  // данные загружены и секция смонтирована. Эталон — IndicatorChartSection.
+  const { hash } = useLocation();
+  useEffect(() => {
+    if (hash !== '#chart') return;
+    const node = document.getElementById('chart');
+    if (!node) return;
+    node.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [hash, dataQ.isLoading, dataQ.data]);
+
   const [fullChartData, setFullChartData] = useState([]);
 
   // Канон URL: primary_code + составной ?mode=
@@ -245,7 +255,10 @@ export default function WorldIndicatorPage() {
   const sourceLabel = localizeSource(
     indicator?.source || t('world.indicator.sourceFallback'),
     locale,
-  );  const valuePart = `${formatWorldValue(last?.value)}${unitBesideValue ? ` ${unitBesideValue}` : ''}`;
+  );
+  // Один расчёт издателя и на панели методологии, и в блоке «О ряде»
+  // (methodologyIndicator ниже переиспользует то же sourceLabel).
+  const valuePart = `${formatWorldValue(last?.value)}${unitBesideValue ? ` ${unitBesideValue}` : ''}`;
   useDocumentMeta(indicator && country ? {
     title: t('world.indicator.metaTitle', { name: displayName, country: countryName }),
     description: last?.date
@@ -316,6 +329,15 @@ export default function WorldIndicatorPage() {
     };
   }, [indicator, displayName, sourceLabel]);
 
+  // Блок «О ряде»: поле «источник» показывает издателя (тот же localizeSource,
+  // что идёт в панель методологии), а английский титул набора из источника —
+  // отдельной строкой, но только если он отличается от отображаемого имени.
+  const originalTitle = (indicator?.name_en || '').trim();
+  const showOriginalTitle = Boolean(originalTitle) && originalTitle !== displayName;
+  const originalTitleLabel = t('world.indicator.field.originalTitle', locale === 'en'
+    ? 'Original series title'
+    : 'Оригинальное название ряда');
+
   const downloadMeta = useMemo(() => ({
     name: displayName,
     unit: displayUnit,
@@ -346,7 +368,7 @@ export default function WorldIndicatorPage() {
   }, [indicator, displayName, activeFreq]);
 
   return (
-    <div className="mx-auto w-full max-w-7xl overflow-x-hidden px-4 pb-24 pt-24 sm:px-6 md:px-8 md:pt-28 md:pb-28">
+    <div className="mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6 md:px-8 md:pt-28 md:pb-28">
       <Breadcrumbs
         items={worldIndicatorTrail(
           countryName || country?.name || '…',
@@ -561,13 +583,19 @@ export default function WorldIndicatorPage() {
                     {dataQ.data?.count ?? indicator.points_count ?? '—'}
                   </dd>
                 </div>
-                {indicator.name_en && (
+                <div className="sm:col-span-2">
+                  <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-tertiary">{t('common.source')}</dt>
+                  <dd className="text-[13px] leading-5 text-text-secondary">
+                    {sourceLabel}
+                  </dd>
+                </div>
+                {showOriginalTitle && (
                   <div className="sm:col-span-2">
                     <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-tertiary">
-                      {t('world.indicator.field.sourceName')}
+                      {originalTitleLabel}
                     </dt>
                     <dd className="text-[13px] leading-5 text-text-secondary">
-                      {indicator.name_en}
+                      {originalTitle}
                     </dd>
                   </div>
                 )}

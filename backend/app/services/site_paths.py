@@ -18,6 +18,8 @@
 
 from __future__ import annotations
 
+import re
+
 # Канонический слаг России (не в world_countries — отдельный data plane).
 RUSSIA = "russia"
 
@@ -100,6 +102,11 @@ def indicator(country_slug: str, code: str) -> str:
 def indicator_year(country_slug: str, code: str, year: int | str) -> str:
     """Годовой лендинг: /{country}/indicator/{code}/{year}."""
     return f"{indicator(country_slug, code)}/{int(year)}"
+
+
+def indicator_month(country_slug: str, code: str, year: int, month: int) -> str:
+    """Месячный лендинг: /{country}/indicator/{code}/{year}-{mm}."""
+    return f"{indicator(country_slug, code)}/{int(year)}-{int(month):02d}"
 
 
 def category(country_slug: str, slug: str) -> str:
@@ -188,14 +195,48 @@ def world_rating(concept: str | None = None) -> str:
     return f"{base}/{_slug(concept)}" if concept else base
 
 
+def world_rating_year(concept: str, year: int | str) -> str:
+    """Канон года рейтинга: path-URL /world/rating/{concept}/{year}."""
+    return f"{world_rating(concept)}/{int(year)}"
+
+
 def og_indicator(country_slug: str, code: str, year: int | str | None = None) -> str:
-    """Публичный путь OG-картинки показателя."""
+    """Публичный путь OG-картинки показателя.
+
+    year — год (2025) или «год-месяц» месячного лендинга («2025-07»);
+    `_period` пропускает уже готовые строки вида YYYY-MM без потери валидации.
+    """
     base = f"/og/{_slug(country_slug)}/{_code(code)}"
-    return f"{base}/{int(year)}.png" if year is not None else f"{base}.png"
+    if year is None:
+        return f"{base}.png"
+    return f"{base}/{_period(year)}.png"
+
+
+def _period(year: int | str) -> str:
+    if isinstance(year, int):
+        return str(year)
+    text = str(year).strip()
+    if re.fullmatch(r"(?:19|20)\d{2}", text) or re.fullmatch(
+        r"(?:19|20)\d{2}-\d{2}", text
+    ):
+        return text
+    raise ValueError(f"bad og period: {year!r}")
 
 
 def og_region(slug: str, code: str) -> str:
     return f"/og/{RUSSIA}/region/{_slug(slug)}/{_code(code)}.png"
+
+
+def region_indicator_year(slug: str, code: str, year: int | str) -> str:
+    """Годовой лендинг региона: /russia/region/{slug}/{code}/{year}."""
+    return f"{region_indicator(slug, code)}/{int(year)}"
+
+
+def og_region_year(slug: str, code: str, year: int | str) -> str:
+    """OG-картинка годового лендинга региона."""
+    return (
+        f"/og/{RUSSIA}/region/{_slug(slug)}/{_code(code)}/{int(year)}.png"
+    )
 
 
 def og_region_rating(code: str) -> str:
@@ -220,6 +261,10 @@ def og_country(slug: str) -> str:
 
 def og_world_rating(concept: str) -> str:
     return f"/og/world/rating/{_slug(concept)}.png"
+
+
+def og_world_rating_year(concept: str, year: int | str) -> str:
+    return f"/og/world/rating/{_slug(concept)}/{int(year)}.png"
 
 
 def _slug(value: str) -> str:

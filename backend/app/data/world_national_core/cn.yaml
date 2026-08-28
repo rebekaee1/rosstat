@@ -1,0 +1,222 @@
+# China national-core passport (NBS + CFETS / China Money under PBOC).
+# Live-probed 2026-08-12:
+#   CFETS CCPR / LPR / SHIBOR — LIVE
+#   NBS EasyQuery — 403 UrlACL from abroad; stream/esData via NL SOCKS (socks5) LIVE
+#   for CPI YoY / urban unemployment / GDP real. Industrial VA UUID not yet mapped.
+# Loader: scripts/load-world-national.py --country cn
+# Ingest NBS with: ALL_PROXY=socks5://127.0.0.1:17888
+
+country_code: CN
+
+series:
+  - code_suffix: cpi-all
+    name_ru: Индекс потребительских цен
+    name_en: Consumer Price Index (same month previous year = 100)
+    category_ru: Цены
+    unit: INDEX
+    unit_ru: индекс (тот же месяц прошлого года = 100)
+    frequency: monthly
+    provider: nbs
+    dataset_id: hgyd
+    # Stream map key A01010G01 (YoY). Legacy A01030101 was MoM — do not use.
+    series_id: A01010G01
+    source_url: "https://data.stats.gov.cn/"
+    analog_ru: ИПЦ
+    is_listed: true
+    dimensions:
+      transport: stream
+      code_suffix: cpi-all
+    description: >
+      Индекс потребительских цен Китая по отношению к тому же месяцу прошлого
+      года. Показывает, как меняется стоимость потребительской корзины в годовом
+      сопоставлении.
+    methodology: >
+      Ряд публикует Национальное статистическое бюро Китая. Частота публикации —
+      месячная. Единица измерения на графике — индекс (тот же месяц прошлого года
+      равен 100). На графике — официальный национальный ряд без дополнительных
+      преобразований.
+
+  - code_suffix: industrial-production
+    name_ru: Добавленная стоимость промышленности (темп к прошлому году)
+    name_en: Industrial value added, year-on-year growth
+    category_ru: Бизнес и инвестиции
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    provider: nbs
+    dataset_id: hgyd
+    series_id: A020101
+    source_url: "https://data.stats.gov.cn/"
+    analog_ru: Промышленное производство
+    # UUID leaf for industrial VA YoY not yet confirmed in stream catalog.
+    is_listed: false
+    description: >
+      Темп прироста добавленной стоимости промышленности Китая к тому же месяцу
+      прошлого года. Показывает динамику выпуска промышленного сектора.
+    methodology: >
+      Ряд публикует Национальное статистическое бюро Китая. Частота публикации —
+      месячная. Единица измерения на графике — процент. На графике — официальный
+      национальный ряд без дополнительных преобразований.
+
+  - code_suffix: urban-unemployment
+    name_ru: Уровень обследуемой городской безработицы
+    name_en: Urban surveyed unemployment rate
+    category_ru: Рынок труда
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    provider: nbs
+    dataset_id: hgyd
+    series_id: A0E0101
+    source_url: "https://data.stats.gov.cn/"
+    analog_ru: Уровень безработицы
+    is_listed: true
+    dimensions:
+      transport: stream
+      code_suffix: urban-unemployment
+    description: >
+      Уровень обследуемой безработицы в городах Китая. Показывает долю
+      безработных в экономически активном городском населении по данным
+      выборочного обследования.
+    methodology: >
+      Ряд публикует Национальное статистическое бюро Китая. Частота публикации —
+      месячная. Единица измерения на графике — процент. На графике — официальный
+      национальный ряд без дополнительных преобразований.
+
+  - code_suffix: gdp-real
+    name_ru: Валовой внутренний продукт в постоянных ценах
+    name_en: Gross domestic product at constant prices (quarterly)
+    category_ru: ВВП
+    unit: CNY_YI
+    unit_ru: 100 млн юаней
+    frequency: quarterly
+    provider: nbs
+    dataset_id: hgjd
+    series_id: A0101
+    source_url: "https://data.stats.gov.cn/"
+    analog_ru: ВВП реальный
+    is_listed: true
+    dimensions:
+      transport: stream
+      code_suffix: gdp-real
+    description: >
+      Валовой внутренний продукт Китая в постоянных ценах (значение за квартал).
+      Показывает объём экономики без влияния изменения цен.
+    methodology: >
+      Ряд публикует Национальное статистическое бюро Китая. Частота публикации —
+      квартальная. Единица измерения на графике — 100 миллионов юаней (как в
+      официальной публикации ведомства). На графике — официальный национальный
+      ряд без дополнительных преобразований.
+
+  - code_suffix: fx-usd-cny
+    name_ru: Центральный паритет юаня к доллару США
+    name_en: USD/CNY central parity rate
+    category_ru: Финансы
+    unit: CNY_PER_USD
+    unit_ru: юаней за 1 доллар США
+    frequency: daily
+    provider: cfets
+    dataset_id: ccpr
+    series_id: USD/CNY
+    source_url: "https://www.chinamoney.com.cn/"
+    analog_ru: Курс к доллару США
+    is_listed: true
+    description: >
+      Центральный паритетный курс доллара США к китайскому юаню, публикуемый
+      Китайской системой валютных торгов. Показывает официальный ориентир курса
+      на торговый день.
+    methodology: >
+      Ряд публикует Китайская система валютных торгов (под эгидой Народного банка
+      Китая). Частота публикации — дневная (торговые дни). Единица измерения на
+      графике — число юаней за один доллар США. Значения соответствуют
+      официальному центральному паритету без пересчёта на стороне платформы.
+
+  - code_suffix: lpr-1y
+    name_ru: Базовая кредитная ставка LPR на 1 год
+    name_en: Loan Prime Rate (1Y)
+    category_ru: Финансы
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    provider: cfets
+    dataset_id: lpr
+    series_id: "1Y"
+    source_url: "https://www.chinamoney.com.cn/"
+    analog_ru: Ключевая ставка
+    is_listed: true
+    description: >
+      Однолетняя базовая кредитная ставка (Loan Prime Rate) — ориентир
+      ценообразования кредитов в Китае. Показывает уровень ставки, от которого
+      банки отталкиваются при кредитовании.
+    methodology: >
+      Ряд публикует Китайская система валютных торгов / Национальный центр
+      межбанковского финансирования. Частота публикации — месячная (в дни
+      объявления). Единица измерения на графике — процент годовых. Значения
+      соответствуют официальному ряду LPR без пересчёта.
+
+  - code_suffix: lpr-5y
+    name_ru: Базовая кредитная ставка LPR на 5 лет и более
+    name_en: Loan Prime Rate (5Y)
+    category_ru: Финансы
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    provider: cfets
+    dataset_id: lpr
+    series_id: "5Y"
+    source_url: "https://www.chinamoney.com.cn/"
+    analog_ru: Долгосрочная ключевая ставка
+    is_listed: true
+    description: >
+      Базовая кредитная ставка на срок 5 лет и более — ориентир для долгосрочных
+      кредитов, включая ипотечные. Показывает уровень долгосрочной базовой ставки.
+    methodology: >
+      Ряд публикует Китайская система валютных торгов / Национальный центр
+      межбанковского финансирования. Частота публикации — месячная (в дни
+      объявления). Единица измерения на графике — процент годовых. Значения
+      соответствуют официальному ряду LPR без пересчёта.
+
+  - code_suffix: shibor-on
+    name_ru: Ставка SHIBOR овернайт
+    name_en: SHIBOR overnight
+    category_ru: Финансы
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: daily
+    provider: cfets
+    dataset_id: shibor
+    # YAML 1.1: bare ON becomes boolean true — must be quoted.
+    series_id: "ON"
+    source_url: "https://www.chinamoney.com.cn/"
+    analog_ru: Ставка денежного рынка
+    is_listed: true
+    description: >
+      Шанхайская межбанковская ставка предложения овернайт (SHIBOR). Показывает
+      стоимость однодневных заимствований на межбанковском рынке Китая.
+    methodology: >
+      Ряд публикует Национальный центр межбанковского финансирования на портале
+      Китайской системы валютных торгов. Частота публикации — дневная (торговые
+      дни). Единица измерения на графике — процент годовых. На графике —
+      официальный ряд без дополнительных преобразований.
+
+  - code_suffix: shibor-1w
+    name_ru: Ставка SHIBOR на 1 неделю
+    name_en: SHIBOR 1-week
+    category_ru: Финансы
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: daily
+    provider: cfets
+    dataset_id: shibor
+    series_id: 1W
+    source_url: "https://www.chinamoney.com.cn/"
+    analog_ru: Ставка денежного рынка (неделя)
+    is_listed: true
+    description: >
+      Шанхайская межбанковская ставка предложения на срок одна неделя (SHIBOR).
+      Показывает стоимость недельных заимствований на межбанковском рынке Китая.
+    methodology: >
+      Ряд публикует Национальный центр межбанковского финансирования на портале
+      Китайской системы валютных торгов. Частота публикации — дневная (торговые
+      дни). Единица измерения на графике — процент годовых. На графике —
+      официальный ряд без дополнительных преобразований.

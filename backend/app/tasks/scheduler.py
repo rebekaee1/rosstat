@@ -341,6 +341,20 @@ async def late_fred_etl_job():
     await run_etl_for_parser_type("fred_csv")
 
 
+async def emiss_regional_job():
+    """Обновление помесячных региональных витрин ЕМИСС (цены на топливо).
+
+    Вне общего daily_update_job: regional bounded context (ADR-0008) живёт
+    своим артефактом/сидером, а эта витрина — единственная «живая» помесячная
+    (dataset 31448). Расписание в main.py, реализация —
+    app.services.emiss_regional_parser.
+    """
+    from app.services.emiss_regional_parser import emiss_regional_job as _job
+
+    await _job()
+
+
+
 # ---------------------------------------------------------------------------
 #  Staleness-мониторинг (Н-3): «источник молча умер» виден не через failed,
 #  а через вечный no_new_data. Ежедневная сверка max(data.date) с SLA частоты.

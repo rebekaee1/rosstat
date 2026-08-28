@@ -1,7 +1,10 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  ArrowUpDown, BarChart3, Globe2, MapPinned, SlidersHorizontal, Table2, X,
+  Link, useLocation, useNavigate, useParams, useSearchParams,
+} from 'react-router-dom';
+import {
+  ArrowDown, ArrowUp, ArrowUpDown, BarChart3, ChevronLeft, ChevronRight, Globe2,
+  MapPinned, SlidersHorizontal, Table2, X,
 } from 'lucide-react';
 import { useAuth } from '../context/authContext';
 import useDocumentMeta from '../lib/useMeta';
@@ -20,7 +23,6 @@ import {
   homeConceptLabel,
   resolveActiveMapYear,
   russiaDeepLinksForConcept,
-  russiaNoteForConcept,
   withRussiaOnHomeMap,
   worldRankingFromYearItems,
   worldRatingTitle,
@@ -43,9 +45,12 @@ import {
 } from '../lib/sitePaths';
 
 const RATING_EXTRA_MAX_AUTH = 4;
-// Гость может добавить один доп. показатель к базовому (2 колонки всего);
+// Гость может открыть один доп. показатель из URL (2 колонки всего);
 // полный набор до 5 показателей — после регистрации (правка 22.1).
 const RATING_EXTRA_MAX_GUEST = 1;
+
+/** Спец-код базовой колонки «Значение» в сортировке по заголовкам. */
+const SORT_BASE_COLUMN = '__base__';
 
 function ButtonClass(active) {
   return [
@@ -54,6 +59,53 @@ function ButtonClass(active) {
       ? 'bg-champagne/15 text-champagne'
       : 'bg-obsidian-lighter text-text-secondary hover:text-champagne',
   ].join(' ');
+}
+
+/**
+ * Шапка сортируемой колонки: подпись со стрелкой направления.
+ * Нейтральное состояние (↕) означает «применён смысловой порядок показателя»;
+ * первый клик фиксирует этот порядок, второй разворачивает.
+ */
+function SortableTh({
+  label, active, dir, onClick, onRemove = null, right = true, minWidth = false,
+}) {
+  const Icon = active ? (dir === 'asc' ? ArrowUp : ArrowDown) : ArrowUpDown;
+  const ariaSort = active ? (dir === 'asc' ? 'ascending' : 'descending') : undefined;
+  return (
+    <th
+      aria-sort={ariaSort}
+      className={[
+        'px-4 py-3 font-medium',
+        right ? 'text-right' : '',
+        minWidth ? 'min-w-[12rem]' : '',
+      ].join(' ')}
+    >
+      <span className="inline-flex max-w-full items-center justify-end gap-1">
+        <button
+          type="button"
+          onClick={onClick}
+          aria-label={typeof label === 'string' ? label : undefined}
+          className={[
+            'inline-flex min-w-0 items-center gap-1 rounded-lg transition-colors hover:text-champagne',
+            active ? 'text-champagne' : '',
+          ].join(' ')}
+        >
+          <span className="min-w-0 truncate">{label}</span>
+          <Icon size={12} aria-hidden="true" />
+        </button>
+        {onRemove && (
+          <button
+            type="button"
+            className="shrink-0 rounded-lg p-0.5 text-text-tertiary transition-colors hover:text-champagne"
+            aria-label={onRemove.label}
+            onClick={onRemove.onClick}
+          >
+            <X size={12} aria-hidden="true" />
+          </button>
+        )}
+      </span>
+    </th>
+  );
 }
 
 function parseColsParam(searchParams) {
@@ -68,20 +120,6 @@ function parseColsParam(searchParams) {
     slugs.push(slug);
   }
   return slugs;
-}
-
-function parseCountriesParam(searchParams) {
-  const raw = searchParams.get('c') || '';
-  if (!raw) return [];
-  const seen = new Set();
-  const codes = [];
-  for (const part of raw.split(',')) {
-    const code = part.trim().toUpperCase();
-    if (!code || seen.has(code)) continue;
-    seen.add(code);
-    codes.push(code);
-  }
-  return codes;
 }
 
 function lookupExtraValue(seriesData, activeYear, row) {
@@ -137,72 +175,8 @@ function pluralUnit(n, base, t, locale) {
   return pluralRu(n, [t(`${base}_one`), t(`${base}_few`), t(`${base}_many`)]);
 }
 
-/**
- * Поиск страны внутри рейтинга: подсказки по значениям базового показателя,
- * выбор добавляет страну в фильтр/матрицу. Один компонент на фильтр-бар
- * и матрицу «Страны рядом».
- */
-function CountrySuggest({ ranked, excludeCodes, onPick, placeholder }) {
-  const [query, setQuery] = useState('');
-  const [open, setOpen] = useState(false);
-  const rootRef = useRef(null);
-
-  useEffect(() => {
-    if (!open) return undefined;
-    const onDoc = (event) => {
-      if (!rootRef.current?.contains(event.target)) setOpen(false);
-    };
-    document.addEventListener('mousedown', onDoc);
-    return () => document.removeEventListener('mousedown', onDoc);
-  }, [open]);
-
-  const q = query.trim().toLowerCase();
-  const matches = ranked
-    .filter((item) => !excludeCodes.has(item.country_code))
-    .filter((item) => {
-      if (!q) return true;
-      return `${item.country_name} ${item.country_slug || ''}`.toLowerCase().includes(q);
-    })
-    .slice(0, 8);
-
-  return (
-    <div ref={rootRef} className="relative min-w-0">
-      <label className="block">
-        <span className="sr-only">{placeholder}</span>
-        <input
-          type="search"
-          value={query}
-          onChange={(event) => { setQuery(event.target.value); setOpen(true); }}
-          onFocus={() => setOpen(true)}
-          placeholder={placeholder}
-          className="h-9 w-full max-w-[13rem] rounded-xl border border-border-subtle bg-obsidian-light px-3 text-xs text-text-primary outline-none transition-colors focus:border-border-champagne"
-        />
-      </label>
-      {open && matches.length > 0 && (
-        <div
-          role="listbox"
-          className="absolute left-0 z-30 mt-1.5 max-h-64 w-64 overflow-y-auto rounded-xl border border-border-subtle bg-surface p-1.5 shadow-lg"
-        >
-          {matches.map((item) => (
-            <button
-              key={item.country_code}
-              type="button"
-              role="option"
-              aria-selected={false}
-              onClick={() => { onPick(item); setQuery(''); setOpen(false); }}
-              className="flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-left text-sm text-text-primary transition-colors hover:bg-surface-hover hover:text-champagne"
-            >
-              <span className="min-w-0 truncate">{item.country_name}</span>
-              <span className="shrink-0 font-mono text-xs tabular-nums text-text-tertiary">
-                {formatWorldValue(item.value)}
-              </span>
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
+/** Горизонтальный сдвиг шкалы карты при 5+ колонках: колонки 0-4 — без сдвига. */
+const TABLE_SHIFT_BY_COLUMN_COUNT = [0, 0, 0, 1, 1, 2];
 
 export default function WorldRatingPage() {
   const t = useT();
@@ -211,13 +185,14 @@ export default function WorldRatingPage() {
   const { conceptSlug } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { hash } = useLocation();
   const activeConcept = conceptSlug || DEFAULT_HOME_COUNTRY_CONCEPT;
   const [selectedYear, setSelectedYear] = useState(null);
-  // null = пользователь ещё не трогал переключатель → берём default с сервера.
-  // Нельзя писать sortDirection в useEffect от [concepts]: любой refetch каталога
-  // (новый объект при том же содержимом) мгновенно откатывал бы клик.
+  // Активная колонка сортировки: { slug, dir } | null. null = пользователь ещё
+  // не трогал переключатель → применяется смысловой порядок (лучшие сверху).
+  // Любой refetch каталога не должен откатывать клик, поэтому запись идёт
+  // только из обработчика клика и сброса при смене концепта.
   const [sortOverride, setSortOverride] = useState(null);
-  const [addOpen, setAddOpen] = useState(false);
 
   const countriesQ = useWorldCountries();
   const catalogQ = useWorldRatingConcepts();
@@ -261,63 +236,20 @@ export default function WorldRatingPage() {
   const extraSeries2 = useWorldMapSeries(extraSlugs[2]);
   const extraSeries3 = useWorldMapSeries(extraSlugs[3]);
 
-  const writeExtraCols = useCallback((next) => {
-    const params = new URLSearchParams(searchParams);
-    if (next.length) params.set('cols', next.join(','));
-    else params.delete('cols');
-    setSearchParams(params, { replace: true });
-  }, [searchParams, setSearchParams]);
-
-  const addExtra = useCallback((slug) => {
-    if (!slug || slug === activeConcept) return;
-    if (extraSlugs.includes(slug)) return;
-    if (extraSlugs.length >= extraMax) return;
-    writeExtraCols([...extraSlugs, slug]);
-    track(events.WORLD_RATING_COMPARE_ADD, { concept: activeConcept, added: slug, total: extraSlugs.length + 1 });
-    setAddOpen(false);
-  }, [activeConcept, extraSlugs, extraMax, writeExtraCols]);
-
-  const removeExtra = useCallback((slug) => {
-    writeExtraCols(extraSlugs.filter((item) => item !== slug));
-  }, [extraSlugs, writeExtraCols]);
-
-  const addableConcepts = useMemo(
-    () => concepts.filter((item) => item.slug !== activeConcept && !extraSlugs.includes(item.slug)),
-    [concepts, activeConcept, extraSlugs],
-  );
-  const atExtraMax = extraSlugs.length >= extraMax;
-
-  // Фильтр стран (правка 22): кликабельные чипы стран в таблице рейтинга.
-  const rawCountryFilter = useMemo(() => parseCountriesParam(searchParams), [searchParams]);
-  const countryFilter = useMemo(
-    () => rawCountryFilter.filter((code) => countriesQ.data?.countries?.some((c) => c.code === code) || code === 'RU'),
-    [rawCountryFilter, countriesQ.data],
-  );
-
-  const toggleCountryFilter = useCallback((code) => {
-    if (!code) return;
-    const next = countryFilter.includes(code)
-      ? countryFilter.filter((item) => item !== code)
-      : [...countryFilter, code];
-    const params = new URLSearchParams(searchParams);
-    if (next.length) params.set('c', next.join(','));
-    else params.delete('c');
-    setSearchParams(params, { replace: true });
-    track(events.WORLD_RATING_FILTER, { concept: activeConcept, action: next.includes(code) ? 'add' : 'remove', n: next.length });
-  }, [countryFilter, searchParams, setSearchParams, activeConcept]);
-
-  const clearCountryFilter = useCallback(() => {
-    const params = new URLSearchParams(searchParams);
-    params.delete('c');
-    setSearchParams(params, { replace: true });
-    track(events.WORLD_RATING_FILTER, { concept: activeConcept, action: 'clear', n: 0 });
-  }, [searchParams, setSearchParams, activeConcept]);
-
   useEffect(() => {
     setSortOverride(null);
   }, [activeConcept]);
 
-  const sortDirection = sortOverride ?? defaultSortForConcept(activeConcept, concepts);
+  // Смысловые направления («лучшие сверху») — из дефолта рейтинга концепта.
+  const baseDirection = useMemo(
+    () => defaultSortForConcept(activeConcept, concepts),
+    [activeConcept, concepts],
+  );
+  const semanticDirectionFor = useCallback((slug) => (
+    slug === SORT_BASE_COLUMN
+      ? baseDirection
+      : defaultSortForConcept(slug, concepts)
+  ), [baseDirection, concepts]);
 
   const concept = useMemo(
     () => concepts.find((item) => item.slug === activeConcept)
@@ -338,6 +270,7 @@ export default function WorldRatingPage() {
     return {
       slug,
       label: extraColumnLabel(slug, concepts, seriesData, t),
+      unit: concepts.find((item) => item.slug === slug)?.unit || seriesData?.concept?.unit || '',
       seriesData,
     };
   }), [extraSlugs, concepts, extraSeries0.data, extraSeries1.data, extraSeries2.data, extraSeries3.data, t]);
@@ -361,10 +294,6 @@ export default function WorldRatingPage() {
     () => russiaDeepLinksForConcept(activeConcept),
     [activeConcept],
   );
-  // Messages first: API note is still RU-only while SPA locale may be EN.
-  const russiaNote = russiaNoteForConcept(activeConcept, t)
-    || mapSeriesQ.data?.concept?.russia?.note;
-  const russiaInRanking = Boolean(yearItems.RU?.value != null);
   const valuesByCode = useMemo(
     () => new Map(Object.entries(yearItems).map(([countryCode, item]) => [countryCode, item.value])),
     [yearItems],
@@ -373,21 +302,17 @@ export default function WorldRatingPage() {
     () => new Map(Object.entries(yearItems)),
     [yearItems],
   );
+  // Полный рейтинг с местами считается по смысловому направлению концепта
+  // (лучшие сверху) и НЕ зависит от кликов по стрелкам: место страны в
+  // таблице остаётся честным независимо от текущего порядка колонок.
   const ranked = useMemo(() => {
     const rows = worldRankingFromYearItems(
       yearItems,
       Number.MAX_SAFE_INTEGER,
-      sortDirection,
+      baseDirection,
     );
     return rows.map((item, index) => ({ ...item, rank: index + 1 }));
-  }, [yearItems, sortDirection]);
-  // Фильтр стран применяется к отображению таблицы, но не к номерам мест:
-  // страна в фильтре сохраняет своё место в полном рейтинге.
-  const visibleRows = useMemo(() => {
-    if (!countryFilter.length) return ranked;
-    const wanted = new Set(countryFilter);
-    return ranked.filter((item) => wanted.has(item.country_code));
-  }, [ranked, countryFilter]);
+  }, [yearItems, baseDirection]);
   const withoutData = useMemo(() => {
     const withData = new Set(Object.values(yearItems).map((item) => item.country_code));
     return countries.filter((country) => !withData.has(country.code));
@@ -434,6 +359,15 @@ export default function WorldRatingPage() {
     path: worldRatingPath(activeConcept),
   });
 
+  // Доскролл к карте/графику из OG/SEO-ссылок вида …#chart — как на карточке
+  // индикатора; ждём появления блока после загрузки данных.
+  useEffect(() => {
+    if (hash !== '#chart') return;
+    const node = document.getElementById('chart');
+    if (!node) return;
+    node.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [hash, loading]);
+
   const openCountry = (country, detail) => {
     if (country?.code === 'RU' || country?.slug === 'russia') {
       navigate(russiaLinks.countryHref);
@@ -449,68 +383,98 @@ export default function WorldRatingPage() {
   const countryWord = (n) => pluralUnit(n, 'world.unit.country', t, locale);
   const yearWord = (n) => pluralUnit(n, 'world.unit.year', t, locale);
 
-  // Матрица «Страны рядом» (правка 22.1): строки — показатели (базовый + до
-  // четырёх доп.), колонки — страны из фильтра; лучшее значение строки
-  // выделено. Гость может добавить один доп. показатель, полный набор —
-  // после регистрации.
-  const matrixCountries = useMemo(() => {
-    const wanted = new Set(countryFilter);
-    if (wanted.size) return ranked.filter((item) => wanted.has(item.country_code));
-    // Без явного фильтра показываем топ-4 + Россию, если она в рейтинге.
-    const top = ranked.slice(0, 4);
-    if (!top.some((item) => item.country_code === 'RU')) {
-      const ru = ranked.find((item) => item.country_code === 'RU');
-      if (ru) top.push(ru);
-    }
-    return top;
-  }, [ranked, countryFilter]);
+  // Сортировка по заголовкам. Кликом управляется одна колонка; направление
+  // первого клика — смысловое («лучшие сверху»), второго — обратное.
+  const sortedColSlug = sortOverride
+    && (sortOverride.slug === SORT_BASE_COLUMN
+      || extraColumns.some((col) => col.slug === sortOverride.slug))
+    ? sortOverride.slug
+    : SORT_BASE_COLUMN;
+  const sortedColDir = sortOverride?.slug === sortedColSlug
+    ? sortOverride.dir
+    : semanticDirectionFor(sortedColSlug);
 
-  const matrixRows = useMemo(() => {
-    const base = {
-      slug: activeConcept,
-      label: shortName,
-      series: mapSeriesQ.data,
-      unit: concept.unit || mapSeriesQ.data?.concept?.unit || '',
-    };
-    const extras = extraColumns.map((col) => ({
-      slug: col.slug,
-      label: col.label,
-      series: col.seriesData,
-      unit: concepts.find((item) => item.slug === col.slug)?.unit || '',
-    }));
-    return [base, ...extras];
-  }, [activeConcept, shortName, mapSeriesQ.data, concept.unit, extraColumns, concepts]);
-
-  const matrixValueFor = useCallback((row, countryCode) => {
-    if (!row.series) return null;
-    if (row.slug === activeConcept) {
-      return yearItems[countryCode]?.value ?? null;
-    }
-    return lookupExtraValue(row.series, activeYear, { country_code: countryCode, country_slug: countryCode.toLowerCase() })?.value ?? null;
-  }, [activeConcept, activeYear, yearItems]);
-
-  // bestByRow: код страны с «лучшим» значением строки (по направлению сортировки
-  // базового концепта; для доп-строк направление то же — визуальная согласованность).
-  const bestByRow = useMemo(() => {
-    const out = new Map();
-    for (const row of matrixRows) {
-      let bestCode = null;
-      let bestVal = null;
-      for (const col of matrixCountries) {
-        const v = matrixValueFor(row, col.country_code);
-        if (v == null) continue;
-        if (
-          bestVal == null
-          || (sortDirection === 'asc' ? v < bestVal : v > bestVal)
-        ) {
-          bestVal = v;
-          bestCode = col.country_code;
-        }
+  const handleSortClick = useCallback((slug) => {
+    setSortOverride((prev) => {
+      if (prev && prev.slug === slug) {
+        return { slug, dir: prev.dir === 'asc' ? 'desc' : 'asc' };
       }
-      if (bestCode != null && matrixCountries.length > 1) out.set(row.slug, bestCode);
+      return { slug, dir: slug === SORT_BASE_COLUMN ? baseDirection : defaultSortForConcept(slug, concepts) };
+    });
+  }, [baseDirection, concepts]);
+
+  // Доп-колонки: добавление через селектор, снятие крестиком в шапке колонки.
+  const [addOpen, setAddOpen] = useState(false);
+  const writeExtraCols = useCallback((next) => {
+    const params = new URLSearchParams(searchParams);
+    if (next.length) params.set('cols', next.join(','));
+    else params.delete('cols');
+    setSearchParams(params, { replace: true });
+  }, [searchParams, setSearchParams]);
+
+  const addExtra = useCallback((slug) => {
+    if (!slug || slug === activeConcept) return;
+    if (extraSlugs.includes(slug)) return;
+    if (extraSlugs.length >= extraMax) return;
+    writeExtraCols([...extraSlugs, slug]);
+    track(events.WORLD_RATING_COMPARE_ADD, { concept: activeConcept, added: slug, total: extraSlugs.length + 1 });
+    setAddOpen(false);
+  }, [activeConcept, extraSlugs, extraMax, writeExtraCols]);
+
+  const removeExtra = useCallback((slug) => {
+    if (sortedColSlug === slug) setSortOverride(null);
+    writeExtraCols(extraSlugs.filter((item) => item !== slug));
+  }, [extraSlugs, writeExtraCols, sortedColSlug]);
+
+  const addableConcepts = useMemo(
+    () => concepts.filter((item) => item.slug !== activeConcept && !extraSlugs.includes(item.slug)),
+    [concepts, activeConcept, extraSlugs],
+  );
+  const atExtraMax = extraSlugs.length >= extraMax;
+
+  // Порядок строк таблицы: колонка сортируется той же функцией, которой
+  // рисуется ячейка (базовая — значение года, доп — lookupExtraValue).
+  // Пустые значения всегда внизу независимо от направления.
+  const displayRows = useMemo(() => {
+    const valueOf = (item) => {
+      if (sortedColSlug === SORT_BASE_COLUMN) return item.value ?? null;
+      const col = extraColumns.find((candidate) => candidate.slug === sortedColSlug);
+      return lookupExtraValue(col?.seriesData, activeYear, item)?.value ?? null;
+    };
+    const withValue = [];
+    const withoutValue = [];
+    for (const item of ranked) {
+      if (valueOf(item) == null) withoutValue.push(item);
+      else withValue.push(item);
     }
-    return out;
-  }, [matrixRows, matrixCountries, matrixValueFor, sortDirection]);
+    withValue.sort((a, b) => (sortedColDir === 'asc'
+      ? valueOf(a) - valueOf(b)
+      : valueOf(b) - valueOf(a)));
+    return [...withValue, ...withoutValue];
+  }, [ranked, sortedColSlug, sortedColDir, extraColumns, activeYear]);
+
+  const extraHeaderLabel = (col) => {
+    if (!col.unit) return col.label;
+    return t('world.rating.columnWithUnit', {
+      label: col.label,
+      unit: col.unit[0].toUpperCase() + col.unit.slice(1),
+    });
+  };
+
+  // Слайдер колонок (правка 16): при 3+ показателях таблица шире контейнера —
+  // разрешаем фиксированные сдвиги вправо, чтобы дотянуться до дальних колонок
+  // без горизонтального скролла всей страницы.
+  const columnCount = 1 + extraColumns.length;
+  const maxShift = TABLE_SHIFT_BY_COLUMN_COUNT[
+    Math.min(columnCount, TABLE_SHIFT_BY_COLUMN_COUNT.length - 1)
+  ] || 0;
+  const [tableShift, setTableShift] = useState(0);
+  useEffect(() => {
+    setTableShift((current) => Math.min(current, maxShift));
+  }, [maxShift]);
+  const tableStyle = maxShift > 0 && tableShift > 0
+    ? { transform: `translateX(-${tableShift * 15}%)` }
+    : undefined;
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 pb-24 pt-24 sm:px-6">
@@ -558,6 +522,7 @@ export default function WorldRatingPage() {
               mode="link"
               linkForSlug={(slug) => worldRatingPath(slug)}
               label={t('world.rating.conceptLabel')}
+              searchable={false}
             />
             {loading && concepts.length === 0 && (
               <div className="mt-2 flex flex-wrap gap-1.5">
@@ -588,10 +553,18 @@ export default function WorldRatingPage() {
                   {t('world.rating.sortOrder')}
                 </p>
                 <div className="flex flex-wrap gap-1.5">
-                  <button type="button" className={ButtonClass(sortDirection === 'desc')} onClick={() => setSortOverride('desc')}>
+                  <button
+                    type="button"
+                    className={ButtonClass(sortedColDir === 'desc')}
+                    onClick={() => setSortOverride({ slug: sortedColSlug, dir: 'desc' })}
+                  >
                     {t('world.rating.sortDesc')}
                   </button>
-                  <button type="button" className={ButtonClass(sortDirection === 'asc')} onClick={() => setSortOverride('asc')}>
+                  <button
+                    type="button"
+                    className={ButtonClass(sortedColDir === 'asc')}
+                    onClick={() => setSortOverride({ slug: sortedColSlug, dir: 'asc' })}
+                  >
                     {t('world.rating.sortAsc')}
                   </button>
                 </div>
@@ -599,7 +572,7 @@ export default function WorldRatingPage() {
             </div>
           </section>
 
-          <section className="mb-5 grid gap-4 lg:grid-cols-[minmax(0,1.55fr)_minmax(min(100%,24rem),0.85fr)]">
+          <section id="chart" className="mb-5 grid scroll-mt-24 gap-4 lg:grid-cols-[minmax(0,1.55fr)_minmax(min(100%,24rem),0.85fr)]">
             <div className="rounded-[1.5rem] border border-border-subtle bg-surface p-3 shadow-[0_16px_45px_rgba(35,30,16,0.05)] sm:p-5">
               {mapSeriesQ.isLoading ? (
                 <SkeletonBox className="aspect-[2/1] w-full rounded-2xl" />
@@ -613,6 +586,7 @@ export default function WorldRatingPage() {
                     metricName={shortName}
                     periodLabel={activeYear ? String(activeYear) : ''}
                     colorMode={conceptColorMode(activeConcept)}
+                    colorDirection={sortedColDir}
                     defaultScope="world"
                     onSelect={openCountry}
                   />
@@ -644,51 +618,45 @@ export default function WorldRatingPage() {
                   countryWord: countryWord(ranked.length),
                   total: countries.length,
                 })}
-                {russiaInRanking
-                  ? t('world.rating.summaryRussiaIn')
-                  : t('world.rating.summaryRussiaOut')}
               </p>
               <div className="mt-4 rounded-xl bg-obsidian-light px-3.5 py-3 text-xs leading-5 text-text-secondary">
                 {activeConcept === 'hicp-index' || mapSeriesQ.data?.concept?.value_mode === 'yoy'
                   ? t('world.rating.noteYoy')
                   : t('world.rating.noteDefault')}
               </div>
-              {russiaNote && (
-                <div className="mt-3 rounded-xl border border-border-subtle bg-white/60 px-3.5 py-3 text-xs leading-5 text-text-secondary">
-                  {russiaNote}
-                </div>
-              )}
-              <div className="mt-4 space-y-2 border-t border-border-subtle pt-4">
-                <p className="text-[10px] font-mono uppercase tracking-[0.16em] text-text-tertiary">
-                  {t('world.rating.russiaRegions')}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  <Link
-                    to={russiaLinks.countryHref}
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-champagne/15 px-3 py-2 text-xs font-medium text-champagne"
-                  >
-                    <Globe2 size={13} />
-                    {russiaIndicatorCode
-                      ? t('world.rating.russiaIndicator')
-                      : t('world.rating.russiaSection')}
-                  </Link>
-                  <Link
-                    to={russiaLinks.regionsHref}
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-obsidian-lighter px-3 py-2 text-xs font-medium text-text-secondary hover:text-champagne"
-                  >
-                    <MapPinned size={13} />
-                    {t('world.rating.russiaRegionsLink')}
-                  </Link>
-                  {russiaLinks.regionRatingHref && (
+              {locale === 'ru' && (
+                <div className="mt-4 space-y-2 border-t border-border-subtle pt-4">
+                  <p className="text-[10px] font-mono uppercase tracking-[0.16em] text-text-tertiary">
+                    {t('world.rating.russiaRegions')}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
                     <Link
-                      to={russiaLinks.regionRatingHref}
+                      to={russiaLinks.countryHref}
+                      className="inline-flex items-center gap-1.5 rounded-xl bg-champagne/15 px-3 py-2 text-xs font-medium text-champagne"
+                    >
+                      <Globe2 size={13} />
+                      {russiaIndicatorCode
+                        ? t('world.rating.russiaIndicator')
+                        : t('world.rating.russiaSection')}
+                    </Link>
+                    <Link
+                      to={russiaLinks.regionsHref}
                       className="inline-flex items-center gap-1.5 rounded-xl bg-obsidian-lighter px-3 py-2 text-xs font-medium text-text-secondary hover:text-champagne"
                     >
-                      {t('world.rating.regionRatingLink')}
+                      <MapPinned size={13} />
+                      {t('world.rating.russiaRegionsLink')}
                     </Link>
-                  )}
+                    {russiaLinks.regionRatingHref && (
+                      <Link
+                        to={russiaLinks.regionRatingHref}
+                        className="inline-flex items-center gap-1.5 rounded-xl bg-obsidian-lighter px-3 py-2 text-xs font-medium text-text-secondary hover:text-champagne"
+                      >
+                        {t('world.rating.regionRatingLink')}
+                      </Link>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
             </aside>
           </section>
 
@@ -727,148 +695,7 @@ export default function WorldRatingPage() {
             />
           </section>
 
-          <section className="mb-5">
-            <div className="flex flex-wrap items-end justify-between gap-3">
-              <div>
-                <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-                  {t('world.rating.filtersLabel')}
-                </p>
-                <h2 className="mt-1 font-display text-xl font-bold text-text-primary sm:text-2xl">
-                  {t('world.rating.compareTitle')}
-                  {activeYear ? <span className="text-text-tertiary">, {activeYear}</span> : null}
-                </h2>
-                <p className="mt-1 max-w-2xl text-xs leading-5 text-text-secondary">
-                  {t('world.rating.compareHint')}
-                </p>
-              </div>
-              <CountrySuggest
-                ranked={ranked}
-                excludeCodes={new Set(countryFilter)}
-                placeholder={t('world.rating.filterSearch')}
-                onPick={(item) => toggleCountryFilter(item.country_code)}
-              />
-            </div>
-
-            <div className="mt-3 flex flex-wrap items-center gap-1.5">
-              {(countryFilter.length ? matrixCountries : ranked.slice(0, 12)).map((item) => {
-                const active = countryFilter.includes(item.country_code);
-                return (
-                  <button
-                    key={item.country_code}
-                    type="button"
-                    onClick={() => toggleCountryFilter(item.country_code)}
-                    aria-pressed={active}
-                    className={ButtonClass(active || countryFilter.includes(item.country_code))}
-                    title={`${item.country_name}: ${formatWorldValue(item.value)}`}
-                  >
-                    {item.country_name}
-                  </button>
-                );
-              })}
-              {!countryFilter.length && (
-                <span className="px-1 font-mono text-[11px] text-text-tertiary">
-                  {ranked.length > 12 ? t('world.rating.matrix.more', { n: ranked.length - 12 }) : ''}
-                </span>
-              )}
-              {countryFilter.length > 0 && (
-                <button
-                  type="button"
-                  onClick={clearCountryFilter}
-                  className="ml-1 inline-flex items-center gap-1 rounded-xl px-2.5 py-2 text-xs text-text-tertiary transition-colors hover:text-champagne"
-                >
-                  <X size={12} />
-                  {t('world.rating.filterClear')}
-                </button>
-              )}
-            </div>
-
-            <div id="compare-matrix" className="mt-4 overflow-x-auto rounded-2xl border border-border-subtle bg-surface">
-              <table className="w-full min-w-[40rem] text-sm">
-                <thead>
-                  <tr className="text-left text-[11px] uppercase tracking-wide text-text-tertiary">
-                    <th className="w-[16rem] px-4 py-3 font-medium">{t('world.rating.matrix.rowHeader')}</th>
-                    {matrixCountries.map((col) => (
-                      <th key={col.country_code} className="px-4 py-3 text-right font-medium">
-                        <button
-                          type="button"
-                          onClick={() => openCountry(col, col)}
-                          className="transition-colors hover:text-champagne"
-                          title={t('world.rating.col.country')}
-                        >
-                          {col.country_name}
-                          <span className="ml-1.5 font-mono text-[10px] normal-case text-text-tertiary">#{col.rank}</span>
-                        </button>
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {matrixRows.map((row) => (
-                    <tr key={row.slug} className="border-t border-border-subtle">
-                      <td className="max-w-[16rem] truncate px-4 py-3">
-                        <Link
-                          to={
-                            row.slug === activeConcept
-                              ? '#rating-table'
-                              : worldRatingPath(row.slug)
-                          }
-                          onClick={(event) => {
-                            if (row.slug === activeConcept) event.preventDefault();
-                          }}
-                          className="font-medium text-text-primary transition-colors hover:text-champagne"
-                          title={row.label}
-                        >
-                          {row.label}
-                        </Link>
-                        {row.unit ? (
-                          <span className="ml-1.5 font-mono text-[10px] text-text-tertiary">{row.unit}</span>
-                        ) : null}
-                      </td>
-                      {matrixCountries.map((col) => {
-                        const v = matrixValueFor(row, col.country_code);
-                        const isBest = bestByRow.get(row.slug) === col.country_code;
-                        return (
-                          <td
-                            key={col.country_code}
-                            className={`px-4 py-3 text-right font-mono tabular-nums ${isBest ? 'font-semibold text-champagne' : 'text-text-primary'}`}
-                          >
-                            {v != null ? formatWorldValue(v) : '—'}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  ))}
-                  <tr className="border-t border-border-subtle">
-                    <td className="px-4 py-2.5 text-[11px] uppercase tracking-wide text-text-tertiary">
-                      {t('world.rating.matrix.periodRow')}
-                    </td>
-                    {matrixCountries.map((col) => (
-                      <td key={col.country_code} className="px-4 py-2.5 text-right font-mono text-[11px] text-text-tertiary">
-                        {yearItems[col.country_code]?.date
-                          ? formatDate(yearItems[col.country_code].date, periodGranularity)
-                          : '—'}
-                      </td>
-                    ))}
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            {!isAuthed && (
-              <div className="mt-3 rounded-2xl border border-border-subtle bg-obsidian-light px-4 py-3.5">
-                <p className="text-xs leading-5 text-text-secondary">{t('world.rating.matrix.guestCap')}</p>
-                <div className="mt-2.5 flex flex-wrap gap-2">
-                  <Link to="/register" className="rounded-xl bg-champagne px-3 py-2 text-xs font-semibold text-white hover:bg-champagne-muted">
-                    {t('world.rating.register')}
-                  </Link>
-                  <Link to="/login" className="rounded-xl border border-border-subtle px-3 py-2 text-xs font-medium text-text-primary hover:border-champagne/40">
-                    {t('world.rating.login')}
-                  </Link>
-                </div>
-              </div>
-            )}
-          </section>
-
-          <section id="rating-table" className="scroll-mt-24">
+          <section id="rating-table" className="mb-5 scroll-mt-24">
             <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
               <div>
                 <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
@@ -878,27 +705,6 @@ export default function WorldRatingPage() {
                   {t('world.rating.allWithData', { n: ranked.length })}
                 </h2>
               </div>
-              <div className="flex flex-wrap items-end gap-2">
-                {countryFilter.length > 0 && (
-                  <div className="inline-flex items-center gap-2 rounded-xl bg-champagne/10 px-3 py-2 text-xs text-champagne">
-                    {t('world.rating.filterShown', {
-                      shown: visibleRows.length,
-                      total: ranked.length,
-                    })}
-                  </div>
-                )}
-                <div className="inline-flex items-center gap-2 rounded-xl bg-obsidian-light px-3 py-2 text-xs text-text-secondary">
-                  <ArrowUpDown size={14} className="text-champagne" />
-                  {sortDirection === 'desc'
-                    ? t('world.rating.sortDescHint')
-                    : t('world.rating.sortAscHint')}
-                </div>
-              </div>
-            </div>
-            <div className="mb-3">
-              <p className="mb-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-                {t('world.rating.addColumnHint')}
-              </p>
               <button
                 type="button"
                 className={ButtonClass(addOpen)}
@@ -906,111 +712,92 @@ export default function WorldRatingPage() {
               >
                 {t('world.rating.addColumn')}
               </button>
-              {addOpen && !isAuthed && (
-                <div className="mt-3 max-w-lg rounded-2xl border border-border-subtle bg-obsidian-light px-4 py-3.5">
-                  <h3 className="text-sm font-semibold text-text-primary">
-                    {t('world.rating.extraGuestTitle')}
-                  </h3>
-                  <p className="mt-1.5 text-xs leading-5 text-text-secondary">
-                    {t('world.rating.matrix.guestCap')}
-                  </p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <Link
-                      to="/register"
-                      className="rounded-xl bg-champagne px-3 py-2 text-xs font-semibold text-white hover:bg-champagne-muted"
-                    >
-                      {t('world.rating.register')}
-                    </Link>
-                    <Link
-                      to="/login"
-                      className="rounded-xl border border-border-subtle px-3 py-2 text-xs font-medium text-text-primary hover:border-champagne/40"
-                    >
-                      {t('world.rating.login')}
-                    </Link>
-                  </div>
-                  {addableConcepts.length > 0 && (
-                    <div className="mt-3 flex flex-wrap gap-1.5">
-                      {addableConcepts.slice(0, RATING_EXTRA_MAX_GUEST).map((item) => (
-                        <button
-                          key={item.slug}
-                          type="button"
-                          className={ButtonClass(false)}
-                          onClick={() => addExtra(item.slug)}
-                        >
-                          {homeConceptLabel(item.slug, t, item.name)}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-              {addOpen && isAuthed && (
-                <div className="mt-3 max-w-lg rounded-2xl border border-border-subtle bg-obsidian-light px-4 py-3.5">
-                  {atExtraMax ? (
-                    <p className="text-xs leading-5 text-text-secondary">
-                      {t('world.rating.extraMax')}
-                    </p>
-                  ) : (
-                    <div className="flex flex-wrap gap-1.5">
-                      {addableConcepts.map((item) => (
-                        <button
-                          key={item.slug}
-                          type="button"
-                          className={ButtonClass(false)}
-                          onClick={() => addExtra(item.slug)}
-                        >
-                          {homeConceptLabel(item.slug, t, item.name)}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
             </div>
+            {addOpen && (
+              <div className="mb-3 max-w-lg rounded-2xl border border-border-subtle bg-obsidian-light px-4 py-3.5">
+                {!isAuthed && (
+                  <>
+                    <h3 className="text-sm font-semibold text-text-primary">
+                      {t('world.rating.extraGuestTitle')}
+                    </h3>
+                    <p className="mt-1.5 text-xs leading-5 text-text-secondary">
+                      {t('world.rating.matrix.guestCap')}
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <Link
+                        to="/register"
+                        className="rounded-xl bg-champagne px-3 py-2 text-xs font-semibold text-white hover:bg-champagne-muted"
+                      >
+                        {t('world.rating.register')}
+                      </Link>
+                      <Link
+                        to="/login"
+                        className="rounded-xl border border-border-subtle px-3 py-2 text-xs font-medium text-text-primary hover:border-champagne/40"
+                      >
+                        {t('world.rating.login')}
+                      </Link>
+                    </div>
+                  </>
+                )}
+                {isAuthed && atExtraMax && (
+                  <p className="text-xs leading-5 text-text-secondary">
+                    {t('world.rating.extraMax')}
+                  </p>
+                )}
+                {addableConcepts.length > 0 && !(isAuthed && atExtraMax) && (
+                  <div className={`flex flex-wrap ${isAuthed ? '' : 'mt-3'} gap-1.5`}>
+                    {addableConcepts
+                      .slice(0, isAuthed ? undefined : extraMax)
+                      .map((item) => (
+                        <button
+                          key={item.slug}
+                          type="button"
+                          className={ButtonClass(false)}
+                          onClick={() => addExtra(item.slug)}
+                        >
+                          {homeConceptLabel(item.slug, t, item.name)}
+                        </button>
+                      ))}
+                  </div>
+                )}
+              </div>
+            )}
             <div className="overflow-x-auto rounded-2xl border border-border-subtle bg-surface">
-              <table className="w-full min-w-[52rem] text-sm">
+              <div style={tableStyle} className="transition-transform duration-200">
+                <table className="w-full min-w-[52rem] text-sm">
                 <thead className="sticky top-0 z-10 bg-obsidian-light/95 backdrop-blur-sm">
                   <tr className="text-left text-[11px] uppercase tracking-wide text-text-tertiary">
                     <th className="w-20 px-4 py-3 font-medium">{t('world.rating.col.rank')}</th>
                     <th className="px-4 py-3 font-medium">{t('world.rating.col.country')}</th>
-                    <th className="px-4 py-3 text-right font-medium">{valueHeader}</th>
+                    <SortableTh
+                      label={valueHeader}
+                      active={sortedColSlug === SORT_BASE_COLUMN}
+                      dir={sortedColDir}
+                      onClick={() => handleSortClick(SORT_BASE_COLUMN)}
+                    />
                     {extraColumns.map((col) => (
-                      <th key={col.slug} className="px-4 py-3 text-right font-medium">
-                        <span className="inline-flex items-center justify-end gap-1.5">
-                          {col.label}
-                          <button
-                            type="button"
-                            className="rounded-lg p-0.5 text-text-tertiary hover:text-champagne"
-                            aria-label={t('world.rating.extraRemove')}
-                            onClick={() => removeExtra(col.slug)}
-                          >
-                            <X size={12} />
-                          </button>
-                        </span>
-                      </th>
+                      <SortableTh
+                        key={col.slug}
+                        minWidth
+                        label={extraHeaderLabel(col)}
+                        active={sortedColSlug === col.slug}
+                        dir={sortedColDir}
+                        onClick={() => handleSortClick(col.slug)}
+                        onRemove={{
+                          label: t('world.rating.extraRemove'),
+                          onClick: () => removeExtra(col.slug),
+                        }}
+                      />
                     ))}
                     {!sharedUnit && <th className="px-4 py-3 font-medium">{t('world.rating.col.unit')}</th>}
                     <th className="px-4 py-3 font-medium">{t('common.period')}</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {visibleRows.map((item) => (
+                  {displayRows.map((item) => (
                     <tr key={item.country_code} className="border-t border-border-subtle transition-colors hover:bg-surface-hover">
                       <td className="px-4 py-3 font-mono text-text-tertiary">{item.rank}</td>
                       <td className="px-4 py-3">
-                        <button
-                          type="button"
-                          onClick={() => toggleCountryFilter(item.country_code)}
-                          aria-pressed={countryFilter.includes(item.country_code)}
-                          title={t('world.rating.filtersLabel')}
-                          className={`mr-2 hidden h-5 w-5 shrink-0 items-center justify-center rounded-md border align-middle transition-colors sm:inline-flex ${
-                            countryFilter.includes(item.country_code)
-                              ? 'border-champagne/60 bg-champagne/20 text-champagne'
-                              : 'border-border-subtle text-text-tertiary hover:border-border-champagne hover:text-champagne'
-                          }`}
-                        >
-                          {countryFilter.includes(item.country_code) ? '−' : '+'}
-                        </button>
                         <Link to={rowHref(item, russiaLinks)} className="font-medium text-text-primary transition-colors hover:text-champagne">
                           {item.country_name}
                         </Link>
@@ -1036,18 +823,39 @@ export default function WorldRatingPage() {
                       </td>
                     </tr>
                   ))}
-                  {!loading && visibleRows.length === 0 && (
+                  {!loading && displayRows.length === 0 && (
                     <tr>
                       <td colSpan={colCount} className="px-4 py-8 text-center text-text-secondary">
-                        {countryFilter.length
-                          ? t('world.rating.filterEmpty')
-                          : t('world.rating.emptyYear')}
+                        {t('world.rating.emptyYear')}
                       </td>
                     </tr>
                   )}
                 </tbody>
               </table>
+              </div>
             </div>
+            {maxShift > 0 && (
+              <div className="mt-2 flex items-center justify-end gap-1.5" data-testid="table-shift">
+                <button
+                  type="button"
+                  aria-label={t('world.rating.slideLeft')}
+                  disabled={tableShift <= 0}
+                  onClick={() => setTableShift((current) => Math.max(0, current - 1))}
+                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-border-subtle bg-obsidian-light text-text-secondary transition-colors hover:text-champagne disabled:opacity-35"
+                >
+                  <ChevronLeft size={15} />
+                </button>
+                <button
+                  type="button"
+                  aria-label={t('world.rating.slideRight')}
+                  disabled={tableShift >= maxShift}
+                  onClick={() => setTableShift((current) => Math.min(maxShift, current + 1))}
+                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-border-subtle bg-obsidian-light text-text-secondary transition-colors hover:text-champagne disabled:opacity-35"
+                >
+                  <ChevronRight size={15} />
+                </button>
+              </div>
+            )}
           </section>
 
           <section className="rounded-[1.5rem] border border-border-subtle bg-surface p-5">

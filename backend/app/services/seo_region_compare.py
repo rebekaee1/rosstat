@@ -168,8 +168,10 @@ async def render_region_vs_html(
         f"Источник: Росстат. forecasteconomy.com"
     )
     figure_html = (
-        f'<figure class="seo-chart"><img src="{escape(og_path)}" alt="{escape(vs_alt)}" '
-        f'width="1200" height="630" loading="eager">'
+        f'<figure class="seo-chart"><a class="seo-chart-link" '
+        f'href="{escape(paths.region_vs(canon_a, canon_b))}#chart">'
+        f'<img src="{escape(og_path)}" alt="{escape(vs_alt)}" '
+        f'width="1200" height="630" loading="eager"></a>'
         f"<figcaption>{escape(caption)}</figcaption></figure>"
     )
 

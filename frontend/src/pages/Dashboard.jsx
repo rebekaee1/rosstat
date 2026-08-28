@@ -13,7 +13,7 @@ import { useLocale } from '../i18n';
 export default function Dashboard() {
   const { locale } = useLocale();
   const { hash } = useLocation();
-  const { data: indicators, isLoading } = useIndicators();
+  const { data: indicators } = useIndicators();
   const ratingConcepts = useWorldRatingConcepts();
 
   const homeSeo = getPageSeo('home', locale);
@@ -34,8 +34,8 @@ export default function Dashboard() {
   }, [hash]);
 
   return (
-    <div className="mx-auto max-w-7xl overflow-x-hidden px-4 pb-28 pt-24 md:px-8">
-      <HomeHero indicators={indicators} isLoading={isLoading} />
+    <div className="mx-auto max-w-7xl overflow-x-clip px-4 pb-28 pt-24 md:px-8">
+      <HomeHero />
       <HomeWorkbench ratingConcepts={ratingConcepts} />
       <HomeCoverage />
       <HomeCountryList russiaSeriesCount={indicators?.length || 0} />
