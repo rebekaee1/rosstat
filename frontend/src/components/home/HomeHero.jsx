@@ -1,10 +1,10 @@
+import IndicatorSearch from '../IndicatorSearch';
 import HomeDataScope from './HomeDataScope';
 import { useT } from '../../i18n';
 
 /**
- * Hero главной: слева заголовок и вводный текст, справа — состав платформы
- * в цифрах. Карта России переехала на /russia; поиск по индикатору с главной
- * снят — глобальный поиск живёт в navbar.
+ * Hero главной: слева заголовок, вводный текст и поиск по индикатору
+ * (как на страницах стран), справа — состав платформы в цифрах.
  */
 export default function HomeHero() {
   const t = useT();
@@ -21,6 +21,9 @@ export default function HomeHero() {
           <p className="mt-2.5 max-w-2xl text-sm leading-relaxed text-text-secondary md:text-[15px]">
             {t('home.hero.subtitle')}
           </p>
+          <div className="mt-5 max-w-xl">
+            <IndicatorSearch variant="inline" />
+          </div>
         </div>
 
         <HomeDataScope />

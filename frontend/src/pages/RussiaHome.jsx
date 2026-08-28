@@ -43,17 +43,16 @@ const RegionsMap = lazy(() => import('../components/RegionsMap'));
 
 function RussiaMapSkeleton() {
   return (
-    <div className="aspect-[1000/538] w-full rounded-2xl border border-border-subtle bg-surface">
-      <SkeletonBox className="h-full w-full rounded-2xl" />
+    <div className="aspect-[984/526] w-full bg-[#191A20]/40">
+      <SkeletonBox className="h-full w-full rounded-none bg-white/5" />
     </div>
   );
 }
 
 /**
- * Карта территории России в hero /russia — в едином формате со страницей
- * страны (WorldCountry): рамка-подпись сверху, подвал с брендом снизу.
- * Силуэт из локальной геометрии (variant="compact" — без зум-контролов);
- * клик по субъекту ведёт в его профиль.
+ * Карта территории России в hero /russia — тот же тёмный territory-card,
+ * что CountrySilhouette на /denmark: фон #191A20, сетка, шампань-силуэт.
+ * Регионы кликабельны (профиль субъекта), hover — имя во всплывашке.
  */
 function RussiaTerritoryCard() {
   const t = useT();
@@ -71,39 +70,49 @@ function RussiaTerritoryCard() {
   return (
     <aside
       data-block="russia-territory-card"
-      className="relative overflow-hidden rounded-2xl border border-border-subtle bg-surface shadow-[0_22px_70px_rgba(35,30,16,0.06)]"
+      className="relative min-h-[250px] overflow-hidden rounded-2xl border border-white/10 bg-[#191A20] shadow-[0_20px_45px_rgba(24,24,31,0.18)]"
       aria-label={t('russia.map.caption')}
     >
-      <div className="flex items-center justify-between gap-3 border-b border-border-subtle px-4 py-3">
-        <div>
-          <div className="text-[9px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-            {t('russia.map.eyebrow')}
-          </div>
-          <div className="mt-0.5 text-xs font-medium text-text-primary">
-            {t('russia.map.caption')}
-          </div>
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_72%_28%,rgba(207,180,95,0.2),transparent_47%)]" />
+      <div
+        className="pointer-events-none absolute inset-0 opacity-20"
+        style={{
+          backgroundImage:
+            'linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)',
+          backgroundSize: '32px 32px',
+        }}
+      />
+
+      <div className="absolute left-4 top-3 z-10 max-w-[60%] pr-2">
+        <div className="text-[9px] font-mono uppercase tracking-[0.2em] text-white/45">
+          {t('world.territory.profile')}
         </div>
-        <span className="shrink-0 rounded-md border border-border-subtle bg-obsidian-light px-2 py-1 font-mono text-[10px] text-text-secondary">
-          RU
-        </span>
+        <div className="mt-1 text-[10px] text-[#d8c58b]">
+          {t('russia.map.eyebrow')}
+        </div>
       </div>
 
-      <Suspense fallback={<RussiaMapSkeleton />}>
-        <RegionsMap
-          variant="compact"
-          valuesBySlug={null}
-          nameBySlug={nameBySlug}
-          className="aspect-[1000/538] bg-obsidian-light/40"
-        />
-      </Suspense>
+      <div className="relative pt-9 pb-14">
+        <Suspense fallback={<RussiaMapSkeleton />}>
+          <RegionsMap
+            variant="compact"
+            theme="dark"
+            valuesBySlug={null}
+            nameBySlug={nameBySlug}
+            className="bg-transparent"
+          />
+        </Suspense>
+      </div>
 
-      <div className="border-t border-border-subtle px-4 py-3">
-        <p className="flex items-center gap-1.5 text-[11px] leading-snug text-text-secondary">
-          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-champagne" aria-hidden="true" />
+      <div className="absolute bottom-3 left-4 right-4 z-10 flex items-start justify-between gap-x-2 gap-y-1 border-t border-white/10 pt-3 sm:items-end sm:gap-3">
+        <div className="min-w-0">
+          <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/50">RU</div>
+          <div className="mt-0.5 max-w-[11rem] truncate text-xs font-medium text-white/90">
+            {t('crumb.russia')}
+          </div>
+        </div>
+        <div className="max-w-[14rem] text-right text-[9px] leading-snug text-white/55">
           {t('russia.map.note')}
-        </p>
-        <div className="mt-2 text-right text-[9px] uppercase tracking-[0.18em] text-text-tertiary/70">
-          forecasteconomy.com
         </div>
       </div>
     </aside>

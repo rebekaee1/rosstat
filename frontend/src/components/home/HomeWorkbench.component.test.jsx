@@ -88,8 +88,9 @@ describe('HomeWorkbench', () => {
     expect(screen.queryByRole('navigation', { name: 'Переходы по разделам' })).toBeNull();
     expect(screen.queryByRole('link', { name: /Регионы России/i })).toBeNull();
     expect(screen.queryByRole('link', { name: /Показатели России/i })).toBeNull();
-    // Поиск по показателям возвращён: поле пикера видно рядом с подсказкой.
-    expect(screen.getByRole('searchbox')).toBeTruthy();
+    // Поиск показателей на карте снят (owner 2026-08-28): глобальный поиск
+    // живёт в navbar и в hero главной, пикер метрики карты — без поля.
+    expect(screen.queryByRole('searchbox')).toBeNull();
     expect(screen.getByRole('link', { name: /больше показателей/i })).toBeTruthy();
 
     await waitFor(() => {

@@ -1,16 +1,16 @@
-import { Database, Globe2, Landmark, Layers } from 'lucide-react';
+import { Database, Globe2, Landmark, Network } from 'lucide-react';
 import { useT } from '../../i18n';
 
 const SCOPE_STATS = [
   { key: 'macro', icon: Landmark },
-  { key: 'regions', icon: Layers },
-  { key: 'countries', icon: Globe2 },
+  { key: 'world', icon: Globe2 },
+  { key: 'countries', icon: Network },
   { key: 'pages', icon: Database },
 ];
 
 /**
  * Правая колонка hero главной: состав платформы в цифрах.
- * Официальная витрина масштаба: макроиндикаторы России, региональный блок,
+ * Официальная витрина масштаба: макроиндикаторы России, мировые показатели,
  * страны мира, объём страниц. Источники и режим обновления — снизу, как
  * гарантия достоверности, без маркетинговых оценок.
  */

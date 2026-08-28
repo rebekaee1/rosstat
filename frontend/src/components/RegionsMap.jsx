@@ -20,6 +20,16 @@ import { useLocale } from '../i18n';
 const ZOOM_MAX = 8;
 const ZOOM_STEP = 1.6;
 
+/** Тёмный режим витрины (hero /russia): шампань как у CountrySilhouette. */
+const DARK_FILL = '#D8C177';
+const DARK_NO_DATA = '#3A3B44';
+const DARK_STROKE = 'rgba(255,243,197,0.38)';
+const DARK_HOVER_STROKE = '#F3E6B0';
+const LIGHT_STROKE = 'rgba(26,26,46,0.18)';
+const LIGHT_HOVER_STROKE = '#B8942F';
+/** Плотный кадр без полей — геометрия почти вписана в исходный viewBox. */
+const COMPACT_VIEWBOX = '8 6 984 526';
+
 export default function RegionsMap({
   valuesBySlug = null,      // Map slug -> value (для choropleth) или null
   unit = '',
@@ -28,10 +38,12 @@ export default function RegionsMap({
   transitionMs = 150,       // длительность перехода цвета (плавность анимации по годам)
   brandMark = false,        // тонкий бренд в углу live-UI (в экспорт не попадает)
   variant = 'full',         // compact — витрина без зум-контролов (hero, карточки)
+  theme = 'light',          // dark — тёмная territory-карточка (champagne accents)
   colorDirection = null,    // 'asc'/'desc' — привязка шкалы к порядку сортировки рейтинга
   className = '',           // доп. классы SVG-обёртки (например aspect-square)
 }) {
   const compact = variant === 'compact';
+  const dark = theme === 'dark';
   const { t } = useLocale();
   const navigate = useNavigate();
   const [hover, setHover] = useState(null); // { slug, x, y }
@@ -41,9 +53,10 @@ export default function RegionsMap({
   const panRef = useRef(null); // { startX, startY, tx, ty, moved }
   const svgRef = useRef(null);
 
+  const viewBox = compact ? COMPACT_VIEWBOX : mapData.viewBox;
   const [, , vbW, vbH] = useMemo(
-    () => mapData.viewBox.split(' ').map(Number),
-    [],
+    () => viewBox.split(' ').map(Number),
+    [viewBox],
   );
 
   // Квантильная шкала по ТЕКУЩЕМУ срезу (год на ползунке): цвет отражает
@@ -53,7 +66,13 @@ export default function RegionsMap({
     [valuesBySlug, colorDirection],
   );
   const extent = useMemo(() => valueExtent(valuesBySlug), [valuesBySlug]);
-  const colorFor = (slug) => colorBySlug.get(slug) ?? MAP_NO_DATA;
+  const fallbackFill = dark
+    ? (valuesBySlug ? DARK_NO_DATA : DARK_FILL)
+    : MAP_NO_DATA;
+  const colorFor = (slug) => colorBySlug.get(slug) ?? fallbackFill;
+  const regionStroke = dark ? DARK_STROKE : LIGHT_STROKE;
+  const hoverStroke = dark ? DARK_HOVER_STROKE : LIGHT_HOVER_STROKE;
+  const regionStrokeWidth = dark ? 0.35 : 0.5;
 
   // Hover-outline берёт путь из той же mapData, что и fill — без отдельного
   // кэша геометрии (баг: при зуме обводка «отставала» от актуальных полигонов,
@@ -147,7 +166,7 @@ export default function RegionsMap({
       <div className="relative">
         <svg
           ref={svgRef}
-          viewBox={mapData.viewBox}
+          viewBox={viewBox}
           className={`w-full h-auto ${k > 1 ? 'cursor-grab active:cursor-grabbing' : ''}`}
           role="group"
           aria-label={t('regions.mapAria')}
@@ -166,7 +185,7 @@ export default function RegionsMap({
                 d={r.path}
                 fill={colorFor(r.slug)}
                 stroke={colorFor(r.slug)}
-                strokeWidth={1.4}
+                strokeWidth={dark ? 0.9 : 1.4}
                 style={{ transition: `fill ${transitionMs}ms ease, stroke ${transitionMs}ms ease` }}
                 pointerEvents="none"
                 aria-hidden="true"
@@ -179,8 +198,8 @@ export default function RegionsMap({
                 key={r.slug}
                 d={r.path}
                 fill={colorFor(r.slug)}
-                stroke="rgba(26,26,46,0.18)"
-                strokeWidth={0.5}
+                stroke={regionStroke}
+                strokeWidth={regionStrokeWidth}
                 vectorEffect="non-scaling-stroke"
                 style={{ transition: `fill ${transitionMs}ms ease` }}
                 className="cursor-pointer"
@@ -198,10 +217,10 @@ export default function RegionsMap({
                 key={m.slug}
                 cx={m.cx}
                 cy={m.cy}
-                r={7 / k}
+                r={(dark ? 5.5 : 7) / k}
                 fill={colorFor(m.slug)}
-                stroke="rgba(26,26,46,0.45)"
-                strokeWidth={1.4}
+                stroke={dark ? 'rgba(255,243,197,0.7)' : 'rgba(26,26,46,0.45)'}
+                strokeWidth={dark ? 1 : 1.4}
                 vectorEffect="non-scaling-stroke"
                 style={{ transition: `fill ${transitionMs}ms ease` }}
                 className="cursor-pointer"
@@ -221,8 +240,8 @@ export default function RegionsMap({
               <path
                 d={hoverRegion.path}
                 fill="none"
-                stroke="#B8942F"
-                strokeWidth={2}
+                stroke={hoverStroke}
+                strokeWidth={dark ? 1.6 : 2}
                 vectorEffect="non-scaling-stroke"
                 pointerEvents="none"
                 aria-hidden="true"
@@ -233,10 +252,10 @@ export default function RegionsMap({
               <circle
                 cx={hoverMarker.cx}
                 cy={hoverMarker.cy}
-                r={9 / k}
+                r={(dark ? 7.5 : 9) / k}
                 fill="none"
-                stroke="#B8942F"
-                strokeWidth={2}
+                stroke={hoverStroke}
+                strokeWidth={dark ? 1.6 : 2}
                 vectorEffect="non-scaling-stroke"
                 pointerEvents="none"
                 aria-hidden="true"

@@ -173,7 +173,7 @@ def collect_issues() -> list[tuple[str, str]]:
         found.append((f'seed_data.py:{code}:{field}', preview))
 
     # Квантифицированные строки витрины главной (число + подпись в соседних
-    # ключах i18n, например «56» + «стран мира») — официальный факт, а не
+    # ключах i18n, например «48» + «стран мира») — официальный факт, а не
     # overclaim; синхронно с QUANTIFIED_LINE в publicProductClaims.test.js.
     quantified = re.compile(r"'home\.scope\.stat\.")
 

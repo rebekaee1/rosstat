@@ -8,7 +8,7 @@ function renderScope() {
 }
 
 describe('HomeDataScope — состав платформы в hero главной', () => {
-  it('рендерится с заголовком блока и четырьмя ключевыми цифрами', () => {
+  it('рендерится с заголовком блока и общеплатформенными цифрами', () => {
     renderScope();
 
     expect(screen.getByRole('heading', { name: 'Что внутри платформы' })).toBeTruthy();
@@ -16,10 +16,10 @@ describe('HomeDataScope — состав платформы в hero главно
     expect(screen.getByText('100+')).toBeTruthy();
     expect(screen.getByText(/макроиндикаторов России/)).toBeTruthy();
 
-    expect(screen.getByText('489')).toBeTruthy();
-    expect(screen.getByText(/по 85 субъектам/)).toBeTruthy();
+    expect(screen.getByText('36 000+')).toBeTruthy();
+    expect(screen.getByText(/показателей по странам мира/)).toBeTruthy();
 
-    expect(screen.getByText('56')).toBeTruthy();
+    expect(screen.getByText('48')).toBeTruthy();
     expect(screen.getByText(/стран мира/)).toBeTruthy();
 
     expect(screen.getByText('1,7 млн+')).toBeTruthy();

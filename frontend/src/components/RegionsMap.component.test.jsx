@@ -47,6 +47,19 @@ describe('RegionsMap', () => {
     expect(outline.getAttribute('stroke')).toBe('#B8942F');
   });
 
+  it('dark compact: шампань-заливка, тонкие обводки, светлый hover-stroke', () => {
+    const target = mapData.regions[0];
+    const { container } = renderMap({ variant: 'compact', theme: 'dark' });
+    const svg = container.querySelector('svg');
+    expect(svg?.getAttribute('viewBox')).toBe('8 6 984 526');
+    const fillPath = container.querySelector(`svg path[data-region-slug="${target.slug}"]`);
+    expect(fillPath.getAttribute('fill')).toBe('#D8C177');
+    expect(fillPath.getAttribute('stroke-width')).toBe('0.35');
+    fireEvent.mouseMove(fillPath);
+    const outline = container.querySelector(`svg path[data-hover-outline="${target.slug}"]`);
+    expect(outline.getAttribute('stroke')).toBe('#F3E6B0');
+  });
+
   it('brandMark сидит в обёртке SVG, не уезжает к легенде', () => {
     const values = new Map([[mapData.regions[0].slug, 42]]);
     const { container } = renderMap({ valuesBySlug: values, brandMark: true });

@@ -148,6 +148,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
             track(events.HOME_COUNTRIES_METRIC, { concept: slug });
           }}
           label={t('home.map.metricLabel')}
+          searchable={false}
           hint={fullRatingHref ? (
             <Link
               to={fullRatingHref}

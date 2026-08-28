@@ -65,19 +65,33 @@ describe('RussiaHome hero и обзорные чипы', () => {
     expect(screen.getByText(/Раздел России объединяет макроэкономические индикаторы/)).toBeTruthy();
   });
 
-  it('карта территории России в hero — единый формат со страницей страны', async () => {
+  it('тёмная territory-карточка как у WorldCountry: кликабельная карта субъектов', async () => {
     mockApiGet([
       ['/auth/me', { user: null }],
       ['/indicators', LISTING],
-      ['/regions', { districts: [], russia: { slug: 'rossiyskaya-federaciya', name: 'Россия' } }],
+      ['/regions', {
+        districts: [{
+          code: 'cfo',
+          name: 'ЦФО',
+          regions: [{ slug: 'moskva', name: 'Москва' }],
+        }],
+        russia: { slug: 'rossiyskaya-federaciya', name: 'Россия' },
+      }],
     ]);
     renderPage(<RussiaHome />, { path: '/russia', route: '/russia' });
 
     await screen.findByRole('heading', { level: 1, name: 'Россия' });
 
     const card = await screen.findByLabelText('Карта субъектов Российской Федерации');
-    expect(card.textContent).toContain('Карта субъектов Российской Федерации');
+    expect(card.className).toContain('bg-[#191A20]');
+    expect(card.textContent).toContain('Профиль территории');
     expect(card.textContent).toContain('85 субъектов');
+    expect(card.textContent).toContain('RU');
+
+    // Карта монтируется лениво; path + marker города — оба кликабельны.
+    const regions = await screen.findAllByRole('button', { name: 'Москва' });
+    expect(regions.length).toBeGreaterThanOrEqual(1);
+    expect(regions.every((el) => el.getAttribute('data-region-slug') === 'moskva')).toBe(true);
   });
 
   it('три якорных чипа: ИПЦ (минус 100), ключевая ставка, безработица', async () => {
