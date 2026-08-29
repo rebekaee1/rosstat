@@ -91,9 +91,12 @@ describe('viewModeEngine — generic resolver', () => {
       expect(fam.modes.every((m) => m.frequency === 'annual')).toBe(true);
       expect(fam.modes.every((m) => !m.forecastable)).toBe(true);
     }
-    const budget = getViewModeFamily('weo-budget-balance-gdp');
-    expect(budget.template).toBe('T10a');
-    expect(budget.modes.map((m) => m.mode)).toEqual(['level', 'yoy']);
-    expect(budget.modes.every((m) => m.frequency === 'annual')).toBe(true);
+    for (const code of ['weo-budget-balance-gdp', 'weo-government-debt-gdp']) {
+      const fam = getViewModeFamily(code);
+      expect(fam.template).toBe('T10a');
+      expect(fam.modes.map((m) => m.mode)).toEqual(['level', 'yoy']);
+      expect(fam.modes.every((m) => m.frequency === 'annual')).toBe(true);
+      expect(fam.modes.every((m) => !m.forecastable)).toBe(true);
+    }
   });
 });

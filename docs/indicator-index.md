@@ -24,13 +24,13 @@
 
 ## Сводка
 
-- Всего кодов: **945**
+- Всего кодов: **947**
 - in_both_viewmode_systems (дубль легаси+generic): **14**
 - shadowed_legacy (мёртвая легаси-ветка): **24**
 - unresolved (нет ui_stack): **3**
 - derived_not_seeded: **0**
 
-По стекам: `cpi`=32, `generic`=897, `housing`=8, `null`=3, `ppi`=5
+По стекам: `cpi`=32, `generic`=899, `housing`=8, `null`=3, `ppi`=5
 
 ### Unresolved (ui_stack=null)
 
@@ -974,6 +974,8 @@
 | `weo-gdp-usd` | ВВП | annual | `generic` | — | ✓ | — |
 | `weo-gdp-usd-index` | ВВП | annual | `generic` | — | — | — |
 | `weo-gdp-usd-yoy` | ВВП | annual | `generic` | — | — | — |
+| `weo-government-debt-gdp` | Государственные финансы | annual | `generic` | — | ✓ | — |
+| `weo-government-debt-gdp-yoy` | Государственные финансы | annual | `generic` | — | — | — |
 | `wheat` | Товарные рынки | monthly | `generic` | — | ✓ | — |
 | `wheat-avg-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
 | `wheat-avg-year` | Товарные рынки | annual | `generic` | — | — | — |
@@ -996,7 +998,7 @@
 - **Тип** (верх, эталон — переключатель ИПЦ): `value` Уровень/значение · `pop` К прошлому периоду · `yoy` К соотв. периоду пред. года · `index` Индекс
 - **Частота** (низ): `day` дн · `week` нед · `month` мес · `quarter` кв · `year` год
 
-Корней-семейств: **122** · с полной матрицей: **107** · с пробелами: **15**. Покрытие: {'bespoke': 7, 'bespoke-data': 4, 'generic': 108, 'orphan': 3}.
+Корней-семейств: **123** · с полной матрицей: **108** · с пробелами: **15**. Покрытие: {'bespoke': 7, 'bespoke-data': 4, 'generic': 109, 'orphan': 3}.
 
 ## Систематические пробелы по типам
 
@@ -1010,7 +1012,7 @@
 | bespoke/PPI | index | month | 1 | `yoy:quarter`, `yoy:year` |
 | generic/T1 | rate | day | 21 | — |
 | generic/T10 | annual-count | year | 13 | — |
-| generic/T10a | annual-signed | year | 10 | — |
+| generic/T10a | annual-signed | year | 11 | — |
 | generic/T12 | ratio-index | month | 2 | — |
 | generic/T2y | rate | month | 12 | — |
 | generic/T3 | index | month | 5 | — |
@@ -1048,6 +1050,6 @@
 ## Измерения паспорта (агрегат)
 
 - **Без полных текстов** (40): `birth-rate`, `cpi-food`, `cpi-nonfood`, `cpi-services`, `current-account`, `death-rate`, `deposit-rate`, `deposits-business`, `depreciation-rate`, `doctoral-students`, `exports`, `exports-monthly`, `fdi-net`, `grad-students`, `housing-commissioned`, `imports`, `imports-monthly`, `inflation-weekly`, `inflation-weekly-food`, `inflation-weekly-nonfood`, `inflation-weekly-services`, `innovation-activity`, `pensioners`, `pop-over-working-age`, `pop-under-working-age`, `population-migration`, `population-natural-growth`, `population-total-growth`, `rd-organizations`, `rd-personnel`, `retail-trade`, `services-exports`, `services-exports-monthly`, `services-imports`, `services-imports-monthly`, `small-business-innovation`, `tech-innovation-share`, `trade-balance`, `trade-balance-monthly`, `working-age-population`
-- **Без прогноза** (14): `cny-eur`, `coal`, `copper`, `fuel-ai92`, `fuel-ai95`, `fuel-diesel`, `gbp-eur`, `silver`, `soybean`, `steel`, `weo-budget-balance-gdp`, `weo-gdp-per-capita-usd`, `weo-gdp-usd`, `wheat`
+- **Без прогноза** (15): `cny-eur`, `coal`, `copper`, `fuel-ai92`, `fuel-ai95`, `fuel-diesel`, `gbp-eur`, `silver`, `soybean`, `steel`, `weo-budget-balance-gdp`, `weo-gdp-per-capita-usd`, `weo-gdp-usd`, `weo-government-debt-gdp`, `wheat`
 - **SEO не curated** (11): `cny-eur`, `deposit-rate-long`, `deposit-rate-medium`, `exports-monthly`, `gbp-eur`, `housing-affordability`, `housing-affordability-primary`, `imports-monthly`, `services-exports-monthly`, `services-imports-monthly`, `trade-balance-monthly`
 

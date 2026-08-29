@@ -14,10 +14,10 @@
 | [`README.md`](README.md) | Высокоуровневая карта стека, API, indicators, deploy |
 | [`docs/workflow.md`](docs/workflow.md) | Модель работы, локальный dev, прод-деплой, smoke C |
 | [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md) | Rate-limit, CSP, asset-hash trap, бэкапы, чеклист канарейки |
-| [`docs/data_sources.md`](docs/data_sources.md) | Точная карта «индикатор → файл/endpoint» для всех 117 source-индикаторов. Single source of truth — обязательно обновлять при правке источника |
+| [`docs/data_sources.md`](docs/data_sources.md) | Точная карта «индикатор → файл/endpoint» для всех 118 source-индикаторов. Single source of truth — обязательно обновлять при правке источника |
 | `backend/app/services/*_parser.py` docstrings | Parser internals (CBR / Минфин / Rosstat): source URL, лист, row/col mapping, `model_config_json` schema, traps. Канонично живёт рядом с кодом |
 | [`docs/analytics_api_inventory/`](docs/analytics_api_inventory/) | Инвентарь Yandex API (Metrika, Webmaster) + статус реализации |
-| [`docs/adr/0001`](docs/adr/0001-derived-indicators-engine-shape.md) | Engine shape: 828 derived через `DERIVED_SPECS` (44 ручных + 784 generic) + 28 чистых ops |
+| [`docs/adr/0001`](docs/adr/0001-derived-indicators-engine-shape.md) | Engine shape: 829 derived через `DERIVED_SPECS` (44 ручных + 785 generic) + 28 чистых ops |
 | [`docs/adr/0002`](docs/adr/0002-derived-always-reflects-source.md) | Инвариант: derived всегда отражает source (`bulk_upsert` идемпотентен) |
 | [`docs/adr/0003`](docs/adr/0003-seo-single-source-server-rendered.md) | SEO single-source: backend SSR через `__spa-index.html` + Vite asset discovery |
 | [`docs/adr/0004`](docs/adr/0004-rosstat-russian-canonical-sdds-deprecated.md) | Rosstat русский canonical, SDDS English deprecated. Pilot: gdp-nominal end-to-end 2026-05-10 |
@@ -64,7 +64,7 @@
   - `seo_blocks` — JSON-массив `{title, body}` дополнительных секций под графиком.
   - `is_listed` — boolean: показывать ли карточку индикатора в листинге категории. По умолчанию `true`. `false` — индикатор доступен только через `VariantGroupPicker` внутри родительского индикатора (например, `cpi-food-quarterly` скрыт, виден только при выборе «Состав индекса → продовольственные → квартально» на странице `cpi`).
 
-Хранится в таблице `Indicator`. **Текущее количество (2026-08-29):** 945 рядов в seed; точное число — в `seed_data.py` и `/api/v1/system/status`. Из них 117 source-индикаторов (через 34 парсер-типа) и 828 derived (через `DERIVED_SPECS`: 44 ручных + 784 сгенерированных generic view-mode-семьями, см. `view_model_families.py`).
+Хранится в таблице `Indicator`. **Текущее количество (2026-08-29):** 947 рядов в seed; точное число — в `seed_data.py` и `/api/v1/system/status`. Из них 118 source-индикаторов (через 34 парсер-типа) и 829 derived (через `DERIVED_SPECS`: 44 ручных + 785 сгенерированных generic view-mode-семьями, см. `view_model_families.py`).
 
 ### DataPoint
 
@@ -109,7 +109,7 @@
 - `quarterly_avg`, `rolling_avg` — для unemployment.
 - `wages_real` — особая, 2 источника (`wages-nominal`, `cpi`).
 
-Реестр спецификаций (`calculation_engine.DERIVED_SPECS`) — **828 entries** (44 ручных + 784 из `view_model_families.iter_derived_specs()`). Ручное ядро:
+Реестр спецификаций (`calculation_engine.DERIVED_SPECS`) — **829 entries** (44 ручных + 785 из `view_model_families.iter_derived_specs()`). Ручное ядро:
 
 - **CPI семейство:** `inflation-quarterly` ← `cpi`, `inflation-annual` ← `cpi`, и аналоги для `cpi-food/nonfood/services` (8 spec'ов).
 - **PPI:** `ppi-yoy`, `ppi-annual`.

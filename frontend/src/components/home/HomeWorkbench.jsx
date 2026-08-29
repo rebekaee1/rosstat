@@ -103,10 +103,11 @@ export default function HomeWorkbench({ ratingConcepts }) {
   return (
     <section
       data-block="home-workbench"
-      className="mb-10 md:mb-12"
+      className="relative z-10 mb-10 md:mb-12 lg:-mt-28 xl:-mt-32"
       aria-labelledby="home-world-map-title"
     >
-      <div className="mb-3 min-w-0">
+      {/* Заголовок и пикер — под поиском слева; справа уходят под scope-карточку. */}
+      <div className="relative z-10 mb-3 min-w-0 lg:max-w-[calc(100%-min(22rem,38%))]">
         <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">
           {t('home.map.eyebrow')}
         </div>
@@ -115,7 +116,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
         </h2>
       </div>
 
-      <div className="mb-4 min-w-0">
+      <div className="relative z-10 mb-4 min-w-0 lg:max-w-[calc(100%-min(22rem,38%))]">
         <WorldConceptPicker
           concepts={mapConcepts.length
             ? mapConcepts
@@ -155,8 +156,9 @@ export default function HomeWorkbench({ ratingConcepts }) {
         </ApiRetryBanner>
       )}
 
-      <div className="grid gap-4 lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-stretch lg:gap-5">
-        <div className="order-1 min-w-0 overflow-hidden rounded-2xl border border-border-subtle bg-surface p-2.5 sm:p-4 lg:order-2">
+      {/* Карта задаёт высоту; рейтинг на lg абсолютен по её кромкам — без хвостов. */}
+      <div className="relative">
+        <div className="min-w-0 overflow-hidden rounded-2xl border border-border-subtle bg-surface p-2.5 sm:p-4 lg:ml-[calc(18rem+1.25rem)]">
           {(countriesQ.isLoading || mapSeries.isLoading) ? (
             <SkeletonBox className="h-[18rem] w-full rounded-2xl sm:h-[30rem]" />
           ) : (
@@ -187,14 +189,14 @@ export default function HomeWorkbench({ ratingConcepts }) {
           )}
         </div>
 
-        <div className="order-2 flex min-w-0 flex-col rounded-2xl border border-border-subtle bg-obsidian-light/40 px-3.5 py-3 lg:order-1">
-          <div className="text-[10px] font-mono uppercase tracking-[0.16em] text-champagne">
+        <div className="mt-4 flex max-h-none min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl border border-border-subtle bg-obsidian-light/40 px-3.5 py-3 lg:absolute lg:inset-y-0 lg:left-0 lg:mt-0 lg:w-[18rem]">
+          <div className="shrink-0 text-[10px] font-mono uppercase tracking-[0.16em] text-champagne">
             {t('home.map.rating')}
           </div>
-          <div className="mt-1 text-xs font-semibold text-text-primary">
+          <div className="mt-1 shrink-0 text-xs font-semibold text-text-primary">
             {conceptName}
           </div>
-          <div className="mt-0.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5 font-mono text-[10px] text-text-tertiary">
+          <div className="mt-0.5 flex shrink-0 flex-wrap items-baseline gap-x-2 gap-y-0.5 font-mono text-[10px] text-text-tertiary">
             {activeYear != null && <span>{t('world.yearLabel', { year: activeYear })}</span>}
             {conceptUnit ? <span>{conceptUnit}</span> : null}
             <span>
@@ -204,14 +206,14 @@ export default function HomeWorkbench({ ratingConcepts }) {
             </span>
           </div>
           {benchmark?.value != null && (
-            <div className="mt-2 rounded-lg bg-champagne/[0.08] px-2.5 py-1.5">
+            <div className="mt-2 shrink-0 rounded-lg bg-champagne/[0.08] px-2.5 py-1.5">
               <div className="text-[10px] text-text-tertiary">{benchmark.label}</div>
               <div className="font-mono text-sm font-semibold text-text-primary">
                 {formatWorldValue(benchmark.value)}
               </div>
             </div>
           )}
-          <ol className="mt-2 flex-1 space-y-0.5">
+          <ol className="mt-2 min-h-0 flex-1 space-y-0.5 overflow-y-auto overscroll-contain">
             {ranking.length === 0 && (
               <li className="text-[11px] text-text-tertiary">{t('home.map.noDataYear')}</li>
             )}
@@ -244,7 +246,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
             <Link
               to={fullRatingHref}
               onClick={() => track(events.HOME_COUNTRIES_CTA, { target: 'rating', concept })}
-              className="mt-3 inline-flex items-center gap-1 text-[11px] font-medium text-champagne hover:underline"
+              className="mt-3 inline-flex shrink-0 items-center gap-1 text-[11px] font-medium text-champagne hover:underline"
             >
               {t('home.map.fullRating')}
               <ArrowRight size={12} />

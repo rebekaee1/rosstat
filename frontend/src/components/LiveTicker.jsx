@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { cn } from '../lib/format';
-import {
-  isRussiaSectionPath,
-  russiaIndicatorPath,
-} from '../lib/sitePaths';
+import { russiaIndicatorPath } from '../lib/sitePaths';
+import { tickerLaneForLocale } from '../lib/tickerLane';
 import { useLocale, useT } from '../i18n';
 
 /**
@@ -206,8 +204,8 @@ async function fetchLiveTicker(lane) {
 
 export default function LiveTicker() {
   const t = useT();
-  const { pathname } = useLocation();
-  const lane = isRussiaSectionPath(pathname) ? 'russia' : 'world';
+  const { locale } = useLocale();
+  const lane = tickerLaneForLocale(locale);
   const { data, dataUpdatedAt } = useQuery({
     queryKey: ['ticker', 'live', lane],
     queryFn: () => fetchLiveTicker(lane),

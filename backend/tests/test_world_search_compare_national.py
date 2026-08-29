@@ -436,13 +436,40 @@ def test_crosswalk_codes_present_for_all_concepts():
     """Crosswalk-инвариант: известные concept'ы с национальными рядами."""
 
     for concept_slug, expected_members in (
-        ("hicp-index", {"us-cpi-all", "uk-cpi-all", "jp-cpi-all", "kr-cpi-all"}),
+        ("hicp-index", {"us-cpi-all", "uk-cpi-all", "jp-cpi-all", "kr-cpi-all", "cn-cpi-all", "br-cpi-ipca-yoy"}),
         ("unemployment-rate", {"us-unemployment-rate", "jp-unemployment-rate"}),
         ("population", {"au-population", "ca-population", "uk-population"}),
         ("activity-rate", {"au-participation-rate", "uk-participation-rate"}),
     ):
         codes = set(national_codes_for_concept(concept_slug))
         assert expected_members <= codes, concept_slug
+
+
+def test_concept_member_rank_prefers_unlisted_eurostat_over_imf():
+    from types import SimpleNamespace
+
+    from app.api.world import _concept_member_rank
+
+    national = frozenset({"jp-cpi-all"})
+    jp_nat = SimpleNamespace(code="jp-cpi-all", provider="estat", is_listed=True)
+    jp_eu = SimpleNamespace(
+        code="jp-une_rt_m-total-sa-t-pc-act",
+        provider="eurostat",
+        is_listed=False,
+    )
+    jp_imf = SimpleNamespace(code="jp-weo-lur", provider="imf", is_listed=True)
+    de_eu = SimpleNamespace(
+        code="de-une_rt_m-total-sa-t-pc-act",
+        provider="eurostat",
+        is_listed=True,
+    )
+    assert _concept_member_rank(jp_nat, national) == 0
+    assert _concept_member_rank(de_eu, national) == 1
+    assert _concept_member_rank(jp_eu, national) == 2
+    assert _concept_member_rank(jp_imf, national) == 3
+    assert _concept_member_rank(jp_eu, national) < _concept_member_rank(
+        jp_imf, national
+    )
 
 
 def test_map_series_uses_unlisted_eurostat_when_national_missing(auth_env):

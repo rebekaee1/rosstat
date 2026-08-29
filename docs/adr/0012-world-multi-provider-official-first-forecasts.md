@@ -101,3 +101,12 @@ Ingest `run_imf_weo_ingest` пишет ряды всем `world_countries`, не
 `is_active=true`: иначе партнёры без Eurostat-витрины (US/JP/CN/…) не попадают
 на карту `gdp-usd` / `government-debt-gdp`. После записи listed IMF-рядов
 `repair-world-listing` включает страну через `has_non_eurostat`.
+
+### 2026-08-29 — WEO LP / LUR / PCPIPCH на карту; RU-долг overlay
+
+Концепты `population` / `unemployment-rate` / `hicp-index` принимают IMF WEO
+как fallback после national-core и Eurostat (listed, затем unlisted того же
+среза). `LP` хранится в человеках без divisor SCALE; `LUR` — % экономически
+активного населения; `PCPIPCH` — уже изменение цен за год (карта hicp не
+считает повторный YoY). Российский overlay `weo-government-debt-gdp` — карточка
+каталога T10a, как баланс бюджета. e-Stat / ECOS по-прежнему key-gated.

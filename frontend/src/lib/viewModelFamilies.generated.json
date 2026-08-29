@@ -12701,6 +12701,48 @@
     "unit": "млрд $",
     "variantAxis": null
   },
+  "weo-government-debt-gdp": {
+    "base": "weo-government-debt-gdp",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "weo-government-debt-gdp",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "% ВВП"
+      },
+      {
+        "code": "weo-government-debt-gdp-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "п.п."
+      }
+    ],
+    "name": "Государственный долг сектора государственного управления",
+    "template": "T10a",
+    "unit": "% ВВП",
+    "variantAxis": null
+  },
   "wheat": {
     "base": "wheat",
     "defaultMode": "level",

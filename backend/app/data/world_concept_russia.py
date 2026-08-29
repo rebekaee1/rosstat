@@ -154,14 +154,31 @@ RUSSIA_CONCEPT_LINKS: dict[str, RussiaConceptLink] = {
             "classification, so the figures do not coincide."
         ),
     ),
-    # Россия не публикует долг всего сектора государственного управления
-    # в процентах ВВП национальным рядом: статистика Минфина ведёт федеральный
-    # бюджет в рублях по кассовому исполнению (иная единица и охват), внешний
-    # долг ЦБ — млрд долларов и другой смысл. Служебный МВФ-ряд нельзя завести
-    # без парной строки в seed_data.py (файл вне зоны этой правки), а смешение
-    # фондовых и национальных определений долга в одной строке рейтинга вводило
-    # бы читателя в заблуждение. Рейтинг долга идёт без России до появления
-    # честно сопоставимого отечественного ряда.
+    "government-debt-gdp": RussiaConceptLink(
+        indicator_code="weo-government-debt-gdp",
+        value_kind="level",
+        source_ru="Международный валютный фонд",
+        source_en="International Monetary Fund",
+        note_ru=(
+            "Для России в рейтинг входит годовая оценка валового долга сектора "
+            "государственного управления в процентах от валового внутреннего "
+            "продукта по методологии государственных финансов Международного "
+            "валютного фонда. Тот же выпуск используется для зарубежных стран "
+            "вне полного покрытия европейского направления государственных "
+            "финансов. Национальная статистика Минфина России и внешний долг "
+            "Банка России ведутся в иной единице и с другим охватом, поэтому "
+            "значения не совпадают с оценкой фонда."
+        ),
+        note_en=(
+            "For Russia the ranking uses the IMF World Economic Outlook annual "
+            "estimate of general government gross debt as a percent of GDP under "
+            "the fund’s public finance methodology. Other countries outside full "
+            "European government-finance coverage come from the same publication. "
+            "Russia’s national figures from the Ministry of Finance and the Bank "
+            "of Russia’s external debt statistics use different units and coverage, "
+            "so the figures do not coincide."
+        ),
+    ),
     # gdp-volume-* — национальная валюта, rating-поверхности нет.
     # long-term-interest-rate — доходность облигаций ≠ ключевая ставка ЦБ.
     # activity-rate / gdp-per-capita-eu — нет честного отечественного аналога.

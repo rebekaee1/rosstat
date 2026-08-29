@@ -9,8 +9,11 @@ from pathlib import Path
 from app.services.imf_weo_adapter import (
     WEO_GGXCNL_NGDP,
     WEO_GGXWDG_NGDP,
+    WEO_LP,
+    WEO_LUR,
     WEO_NGDPD,
     WEO_NGDPDPC,
+    WEO_PCPIPCH,
     ImfWeoAdapter,
     parse_imf_weo_sdmx,
     points_for_iso3,
@@ -97,6 +100,9 @@ def test_adapter_lists_only_requested_weo_countries():
         WEO_NGDPDPC,
         WEO_GGXCNL_NGDP,
         WEO_GGXWDG_NGDP,
+        WEO_LP,
+        WEO_LUR,
+        WEO_PCPIPCH,
     }
     assert all(ref.provider == "imf" and ref.dataset_id == "WEO" for ref in refs)
     assert all(ref.frequency == "annual" for ref in refs)
@@ -140,6 +146,9 @@ def test_parse_drops_medium_term_weo_projection_years():
     # Политика года поточной серии: последний закрытый год, не текущий.
     assert weo_max_observation_year(WEO_NGDPDPC, date(2026, 8, 22)) == 2025
     assert weo_max_observation_year(WEO_GGXWDG_NGDP, date(2026, 8, 22)) == 2025
+    assert weo_max_observation_year(WEO_LP, date(2026, 8, 22)) == 2026
+    assert weo_max_observation_year(WEO_LUR, date(2026, 8, 22)) == 2026
+    assert weo_max_observation_year(WEO_PCPIPCH, date(2026, 8, 22)) == 2025
 
 
 def test_flow_series_does_not_get_running_year_observation():
@@ -195,6 +204,17 @@ def test_flow_series_does_not_get_running_year_observation():
     assert [(item.period, item.value) for item in fetched] == [
         (date(last_closed_year, 1, 1), 55.5)
     ]
+
+
+def test_russia_overlay_binds_weo_series_meta():
+    """Overlay читает russia_indicator_code из WEO_SERIES, не из свободного meta."""
+    import inspect
+
+    from app.services.world_imf_ingest import _upsert_russia_catalog
+
+    src = inspect.getsource(_upsert_russia_catalog)
+    assert "meta = WEO_SERIES[weo_code]" in src
+    assert "meta.get(\"russia_indicator_code\")" in src
 
 
 def test_ggxwdg_debt_series_meta_public_copy():
@@ -270,3 +290,48 @@ def test_parse_ggxcnl_ngdp_scale_zero_percent_values():
     assert weo_iso3_for("RU") == "RUS"
     assert weo_iso3_for("XK") is None
     assert weo_data_url(["USA"], "NGDPD").endswith("/USA.NGDPD.A")
+
+
+def test_parse_lp_keeps_person_counts_despite_scale_six():
+    """Население: SCALE=6 — подпись витрины фонда, значения уже в человеках."""
+    payload = {
+        "data": {
+            "dataSets": [
+                {
+                    "series": {
+                        "0:0:0": {
+                            "attributes": [0],
+                            "observations": {"0": ["227621917"], "1": ["341784857"]},
+                        }
+                    }
+                }
+            ],
+            "structures": [
+                {
+                    "dimensions": {
+                        "series": [
+                            {"id": "COUNTRY", "values": [{"id": "USA"}]},
+                            {"id": "INDICATOR", "values": [{"id": "LP"}]},
+                            {"id": "FREQUENCY", "values": [{"id": "A"}]},
+                        ],
+                        "observation": [
+                            {
+                                "id": "TIME_PERIOD",
+                                "values": [{"value": "1980"}, {"value": "2024"}],
+                            }
+                        ],
+                    },
+                    "attributes": {"series": [{"id": "SCALE", "values": [{"id": "6"}]}]},
+                }
+            ],
+        }
+    }
+    points = points_for_iso3(parse_imf_weo_sdmx(payload), "USA", WEO_LP)
+    assert points == [
+        (date(1980, 1, 1), 227621917.0),
+        (date(2024, 1, 1), 341784857.0),
+    ]
+    meta = weo_series_meta(WEO_LP)
+    assert meta["scale_policy"] == "identity"
+    assert "russia_indicator_code" not in meta
+    assert "LP" not in weo_methodology(WEO_LP)

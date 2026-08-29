@@ -249,3 +249,34 @@ def test_imf_weo_gdp_matches_and_eurostat_b1gq_does_not():
     assert concept_for_indicator(imf_ngdpd).slug == "gdp-usd"
     assert concept_for_indicator(imf_pc).slug == "gdp-per-capita-usd"
     assert concept_for_indicator(eurostat_b1gq).slug == "gdp-volume-annual"
+
+
+def test_imf_lp_lur_pcpipch_match_population_unemployment_hicp():
+    hicp = CONCEPT_BY_SLUG["hicp-index"]
+    une = CONCEPT_BY_SLUG["unemployment-rate"]
+    pop = CONCEPT_BY_SLUG["population"]
+    imf_lp = _indicator(
+        "WEO", "NR", {"weo_code": "LP"}, "человек", provider="imf",
+    )
+    imf_lur = _indicator(
+        "WEO", "PC_ACT", {"weo_code": "LUR"},
+        "% экономически активного населения", provider="imf",
+    )
+    imf_inf = _indicator(
+        "WEO", "PC", {"weo_code": "PCPIPCH"},
+        "изменение за год, %", provider="imf",
+    )
+    euro_hicp = _indicator(
+        "prc_hicp_midx", "I15", {"coicop": "CP00"}, "индекс 2015=100",
+    )
+    assert hicp.provider_measures == {"imf": "PC"}
+    assert concept_matches_indicator(hicp, euro_hicp)
+    assert concept_matches_indicator(hicp, imf_inf)
+    assert not concept_matches_indicator(hicp, imf_lur)
+    assert concept_matches_indicator(une, imf_lur)
+    assert not concept_matches_indicator(une, imf_inf)
+    assert concept_matches_indicator(pop, imf_lp)
+    assert not concept_matches_indicator(pop, imf_lur)
+    assert concept_for_indicator(imf_lp).slug == "population"
+    assert concept_for_indicator(imf_lur).slug == "unemployment-rate"
+    assert concept_for_indicator(imf_inf).slug == "hicp-index"

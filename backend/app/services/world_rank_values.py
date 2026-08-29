@@ -14,6 +14,11 @@ from typing import Literal, Mapping, Sequence
 
 from app.services.world_view_modes import mode_unit, transform_yoy
 
+YOY_KIND_LEVEL = "level"
+YOY_KIND_INDEX_MINUS_100 = "index_minus_100"
+YOY_KIND_PASSTHROUGH = "passthrough"
+_WEO_INFLATION_CODE = "PCPIPCH"
+
 Series = list[tuple[date, float]]
 RankMode = Literal["level", "yoy"]
 
@@ -322,10 +327,40 @@ def world_rating_title(
     return f"{head} за {year} год"
 
 
-def apply_rank_series(series: Series, mode: RankMode) -> Series:
-    if mode == "yoy":
-        return transform_yoy(series)
-    return sorted(((d, float(v)) for d, v in series), key=lambda p: p[0])
+def rank_yoy_kind(indicator: object) -> str:
+    """Как считать YoY для ряда на карте/рейтинге hicp.
+
+    Уровень индекса → ``transform_yoy``. Национальный CN — индекс
+    «тот же месяц прошлого года = 100». BR IPCA-12m и IMF PCPIPCH —
+    уже процентное изменение за год.
+    """
+    from app.data.world_concept_national import hicp_national_yoy_kind
+
+    code = str(getattr(indicator, "code", "") or "")
+    kind = hicp_national_yoy_kind(code)
+    if kind != YOY_KIND_LEVEL:
+        return kind
+    slice_json = getattr(indicator, "slice_json", None) or {}
+    weo = str(slice_json.get("weo_code") or "").strip().upper()
+    if weo == _WEO_INFLATION_CODE:
+        return YOY_KIND_PASSTHROUGH
+    return YOY_KIND_LEVEL
+
+
+def apply_rank_series(
+    series: Series,
+    mode: RankMode,
+    *,
+    yoy_kind: str = YOY_KIND_LEVEL,
+) -> Series:
+    ordered = sorted(((d, float(v)) for d, v in series), key=lambda p: p[0])
+    if mode != "yoy":
+        return ordered
+    if yoy_kind == YOY_KIND_PASSTHROUGH:
+        return ordered
+    if yoy_kind == YOY_KIND_INDEX_MINUS_100:
+        return [(d, round(v - 100.0, 2)) for d, v in ordered]
+    return transform_yoy(series)
 
 
 def yearly_last_points(
@@ -333,6 +368,7 @@ def yearly_last_points(
     mode: RankMode,
     *,
     concept_slug: str | None = None,
+    yoy_kind: str = YOY_KIND_LEVEL,
 ) -> dict[int, tuple[date, float]]:
     """Последняя точка каждого календарного года после применения режима.
 
@@ -342,7 +378,7 @@ def yearly_last_points(
     """
     out: dict[int, tuple[date, float]] = {}
     drop_running_year = concept_slug in _FLOW_RANK_CONCEPTS
-    for point_date, value in apply_rank_series(series, mode):
+    for point_date, value in apply_rank_series(series, mode, yoy_kind=yoy_kind):
         if mode == "level" and value == 0:
             continue
         year = point_date.year
@@ -360,8 +396,11 @@ def latest_rank_point(
     mode: RankMode,
     *,
     concept_slug: str | None = None,
+    yoy_kind: str = YOY_KIND_LEVEL,
 ) -> tuple[date, float] | None:
-    yearly = yearly_last_points(series, mode, concept_slug=concept_slug)
+    yearly = yearly_last_points(
+        series, mode, concept_slug=concept_slug, yoy_kind=yoy_kind,
+    )
     if not yearly:
         return None
     return yearly[max(yearly)]

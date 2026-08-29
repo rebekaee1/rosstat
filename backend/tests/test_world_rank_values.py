@@ -64,6 +64,35 @@ def test_yoy_rank_points_cancel_index_base():
     assert yearly_last_points(series_a, "yoy")[2025][1] == 10.0
 
 
+def test_hicp_yoy_kinds_index_minus_100_and_passthrough():
+    from types import SimpleNamespace
+
+    from app.services.world_rank_values import apply_rank_series, rank_yoy_kind
+
+    cn_series = [
+        (date(2024, 6, 1), 100.5),
+        (date(2025, 6, 1), 102.3),
+    ]
+    out = apply_rank_series(cn_series, "yoy", yoy_kind="index_minus_100")
+    assert out == [
+        (date(2024, 6, 1), 0.5),
+        (date(2025, 6, 1), 2.3),
+    ]
+    br_series = [
+        (date(2024, 12, 1), 4.83),
+        (date(2025, 12, 1), 4.50),
+    ]
+    assert apply_rank_series(br_series, "yoy", yoy_kind="passthrough") == br_series
+    cn = SimpleNamespace(code="cn-cpi-all", slice_json={})
+    br = SimpleNamespace(code="br-cpi-ipca-yoy", slice_json={})
+    imf = SimpleNamespace(code="jp-weo-pcpipch", slice_json={"weo_code": "PCPIPCH"})
+    us = SimpleNamespace(code="us-cpi-all", slice_json={})
+    assert rank_yoy_kind(cn) == "index_minus_100"
+    assert rank_yoy_kind(br) == "passthrough"
+    assert rank_yoy_kind(imf) == "passthrough"
+    assert rank_yoy_kind(us) == "level"
+
+
 def test_default_year_uses_coverage_share():
     years = [2024, 2025, 2026]
     values = {

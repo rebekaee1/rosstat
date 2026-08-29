@@ -34,8 +34,11 @@ export default function Dashboard() {
 
   return (
     <div className="mx-auto max-w-7xl overflow-x-clip px-4 pb-28 pt-24 md:px-8">
-      <HomeHero />
-      <HomeWorkbench ratingConcepts={ratingConcepts} />
+      {/* Hero + workbench в одном stacking context: карта поднимается под scope. */}
+      <div className="relative">
+        <HomeHero />
+        <HomeWorkbench ratingConcepts={ratingConcepts} />
+      </div>
       <HomeCountryList russiaSeriesCount={indicators?.length || 0} />
     </div>
   );

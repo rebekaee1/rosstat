@@ -31,6 +31,8 @@ class WorldConcept:
     # среза (IMF weo_code vs Eurostat na_item/sector), матч идёт строго по
     # набору своего провайдера вместо required_slice.
     provider_required_slices: Mapping[str, Mapping[str, str]] | None = None
+    # Класс меры по провайдеру: Eurostat HICP — индекс, IMF PCPIPCH — уже %.
+    provider_measures: Mapping[str, str] | None = None
     name_en: str = ""
     unit_en: str = ""
 
@@ -48,6 +50,16 @@ WORLD_CONCEPTS: tuple[WorldConcept, ...] = (
         frequency_policy="official_then_calculated",
         aggregation_policy="mean",
         enabled_surfaces=_RATING_SURFACES,
+        provider_dataset_ids={
+            "eurostat": frozenset({"prc_hicp_midx"}),
+            "imf": frozenset({"weo"}),
+        },
+        provider_required_slices={
+            "imf": {"weo_code": "PCPIPCH"},
+        },
+        provider_measures={
+            "imf": "PC",
+        },
         name_en="Harmonised index of consumer prices",
         unit_en="index 2015=100",
     ),
@@ -61,6 +73,13 @@ WORLD_CONCEPTS: tuple[WorldConcept, ...] = (
         frequency_policy="official_then_calculated",
         aggregation_policy="mean",
         enabled_surfaces=_RATING_SURFACES,
+        provider_dataset_ids={
+            "eurostat": frozenset({"une_rt_m"}),
+            "imf": frozenset({"weo"}),
+        },
+        provider_required_slices={
+            "imf": {"weo_code": "LUR"},
+        },
         name_en="Unemployment rate",
         unit_en="% of the labour force",
     ),
@@ -144,6 +163,13 @@ WORLD_CONCEPTS: tuple[WorldConcept, ...] = (
         required_slice={"age": "TOTAL", "sex": "T"},
         frequency_policy="official_only",
         enabled_surfaces=_RATING_SURFACES,
+        provider_dataset_ids={
+            "eurostat": frozenset({"demo_pjan"}),
+            "imf": frozenset({"weo"}),
+        },
+        provider_required_slices={
+            "imf": {"weo_code": "LP"},
+        },
         name_en="Population",
         unit_en="persons",
     ),
@@ -256,7 +282,12 @@ def concept_matches_indicator(concept: WorldConcept, indicator) -> bool:
     )
     if (indicator.dataset_id or "").lower() not in allowed_datasets:
         return False
-    if measure_class(indicator.unit, indicator.unit_ru) != concept.measure:
+    expected_measure = (
+        (concept.provider_measures or {}).get(provider, concept.measure)
+        if concept.provider_measures is not None
+        else concept.measure
+    )
+    if measure_class(indicator.unit, indicator.unit_ru) != expected_measure:
         return False
     required_slice = _concept_pinned_slice(concept, provider)
     slice_json = indicator.slice_json or {}

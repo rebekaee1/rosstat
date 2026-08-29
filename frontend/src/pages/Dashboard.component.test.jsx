@@ -65,7 +65,9 @@ describe('Dashboard', () => {
     expect(screen.queryByPlaceholderText(/Найти показатель/)).toBeNull();
     // Вместо них — блок состава платформы.
     expect(screen.getByRole('heading', { name: 'Что внутри платформы' })).toBeTruthy();
-    expect(screen.getByText('42 075')).toBeTruthy();
+    expect(screen.getByText('495')).toBeTruthy();
+    expect(screen.getByText(/региональных показателей/)).toBeTruthy();
+    expect(screen.queryByText(/42\s*075/)).toBeNull();
     expect(screen.getByRole('heading', { name: 'Страны и показатели' })).toBeTruthy();
     expect(screen.queryByRole('heading', { name: 'Сколько данных доступно' })).toBeNull();
     expect(screen.queryByText('Покрытие платформы')).toBeNull();

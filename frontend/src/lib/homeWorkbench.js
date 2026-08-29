@@ -137,6 +137,27 @@ export function conceptColorMode(conceptSlug) {
 export const HOME_RATING_LIMIT = 32;
 
 /**
+ * Фоллбэк витрины «стран мира» в HomeDataScope, пока /world/countries
+ * не ответил (или ответил моком). Живое значение — длина active-каталога
+ * (включая РФ, если она уже в ответе API).
+ */
+export const HOME_SCOPE_COUNTRIES_FALLBACK = 55;
+
+/**
+ * Число стран для блока «Что внутри платформы»: active из
+ * `/world/countries`, без мок-данных. Россия на карте уже в каталоге API.
+ */
+export function homeScopeCountriesCount(payload, { allowMock = false } = {}) {
+  if (!payload || (payload._fromMock && !allowMock)) return null;
+  const list = Array.isArray(payload.countries) ? payload.countries : [];
+  const active = list.filter((c) => c && c.is_active !== false);
+  if (active.length > 0) return active.length;
+  const total = Number(payload.total);
+  if (Number.isFinite(total) && total > 0) return Math.trunc(total);
+  return null;
+}
+
+/**
  * World concept → российский ряд только при честной сопоставимости единицы.
  * Значения в рейтинг/карту отдаёт сервер (`world_russia_rank`); здесь — только
  * коды для перелинковки на карточку РФ. WEO-ряды (МВФ) — карточки каталога
@@ -150,6 +171,7 @@ export const HOME_MAP_RUSSIA_CONCEPT_CODES = Object.freeze({
   'gdp-usd': 'weo-gdp-usd',
   'gdp-per-capita-usd': 'weo-gdp-per-capita-usd',
   'budget-balance-gdp': 'weo-budget-balance-gdp',
+  'government-debt-gdp': 'weo-government-debt-gdp',
 });
 
 /**
@@ -361,6 +383,11 @@ export function russiaIndicatorCodeForConcept(conceptSlug) {
  * Клик по стране на карте и в рейтинге: карточка ряда, если сервер отдал
  * `indicator_code` в map-series; иначе страница страны. Россия — канон
  * `/russia/indicator/…`.
+ *
+ * Для концептов МВФ (WEO) клик по России всегда ведёт на карточку weo-*
+ * из HOME_MAP_RUSSIA_CONCEPT_CODES: значение на карте может считаться
+ * национальным мостом (Росстат × курс) и нести код ряда значения, но
+ * карточка клика — официальная оценка фонда в каталоге.
  */
 export function mapSelectHref(country, detail, {
   conceptSlug,
@@ -368,6 +395,10 @@ export function mapSelectHref(country, detail, {
 } = {}) {
   const isRussia = country?.code === 'RU' || country?.slug === 'russia';
   if (isRussia) {
+    if (isWeoMapConcept(conceptSlug)) {
+      const weoCode = russiaIndicatorCodeForConcept(conceptSlug);
+      return weoCode ? russiaIndicatorPath(weoCode) : russiaHomePath();
+    }
     const code = detail?.indicator_code
       || russiaIndicatorCode
       || russiaIndicatorCodeForConcept(conceptSlug);

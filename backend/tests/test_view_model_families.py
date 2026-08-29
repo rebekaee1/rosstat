@@ -244,13 +244,14 @@ def test_weo_gdp_families_are_annual_only():
 
 
 def test_weo_budget_family_is_signed_annual():
-    fam = vmf.FAMILY_BY_BASE["weo-budget-balance-gdp"]
-    assert fam.template == "T10a"
-    assert {m.frequency for m in fam.modes} == {"annual"}
-    by_mode = {m.mode: m for m in fam.modes}
-    assert set(by_mode) == {"level", "yoy"}
-    assert by_mode["yoy"].unit == "п.п."
-    assert not any(m.forecastable for m in fam.modes)
+    for code in ("weo-budget-balance-gdp", "weo-government-debt-gdp"):
+        fam = vmf.FAMILY_BY_BASE[code]
+        assert fam.template == "T10a"
+        assert {m.frequency for m in fam.modes} == {"annual"}
+        by_mode = {m.mode: m for m in fam.modes}
+        assert set(by_mode) == {"level", "yoy"}
+        assert by_mode["yoy"].unit == "п.п."
+        assert not any(m.forecastable for m in fam.modes)
 
 
 if __name__ == "__main__":

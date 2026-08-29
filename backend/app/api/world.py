@@ -60,6 +60,7 @@ from app.services.world_view_modes import is_signed_or_zero_crossing
 from app.services.world_rank_values import (
     latest_rank_point,
     money_unit_compatible,
+    rank_yoy_kind,
     ranking_display_name,
     ranking_period_method,
     ranking_public_unit,
@@ -128,7 +129,19 @@ def _indicator_public_unit(indicator: WorldIndicator) -> str:
         return ru
     concept = concept_for_indicator(indicator)
     if concept is not None:
-        return concept_public_unit(concept) or ru
+        from app.data.eurostat_listing import measure_class
+
+        expected = (
+            (concept.provider_measures or {}).get(
+                str(indicator.provider or "").lower(), concept.measure
+            )
+            if concept.provider_measures is not None
+            else concept.measure
+        )
+        if measure_class(indicator.unit, indicator.unit_ru) == expected:
+            # Только когда класс меры совпадает с витринным: IMF PCPIPCH
+            # (% за год) не подписываем как индекс 2015=100.
+            return concept_public_unit(concept) or ru
     from app.data.eurostat_units_ru import unit_label_en_for_code
     from app.services.display import localize_unit
 
@@ -566,12 +579,19 @@ def _average_series_copy(concept_slug: str) -> dict[str, str]:
 
 
 def _concept_member_rank(indicator: WorldIndicator, national_codes: frozenset[str]) -> int:
-    """National listed, then other listed, then unlisted eurostat fallback."""
+    """National, listed eurostat, unlisted eurostat, other listed, other unlisted.
+
+    Unlisted eurostat того же среза (national-passport suppress) должен
+    выигрывать у listed IMF: японская безработица une_rt_m глубже годовой
+    оценки фонда. Раньше равенство listed держалось на сортировке кодов.
+    """
     if indicator.code in national_codes:
         return 0
-    if indicator.is_listed:
-        return 1
-    return 2
+    provider = str(indicator.provider or "").lower()
+    listed = bool(indicator.is_listed)
+    if provider == "eurostat":
+        return 1 if listed else 2
+    return 3 if listed else 4
 
 
 async def _concept_members(
@@ -955,8 +975,8 @@ async def world_compare_series(
     indicator = members[0]
     points = await _load_points(db, indicator.id)
     meta = _compare_series_payload(country, indicator, concept)
-    # Юнит национального ряда — родной из его метаданных.
-    if indicator.code in national_codes:
+    # Юнит национального ряда и IMF-инфляции (уже %) — родной из метаданных.
+    if indicator.code in national_codes or rank_yoy_kind(indicator) != "level":
         meta["unit"] = _indicator_public_unit(indicator)
     return {
         "meta": meta,
@@ -974,7 +994,7 @@ async def world_compare_snapshot(
     if concept is None or "compare" not in concept.enabled_surfaces:
         raise HTTPException(404, "Понятие для сравнения не найдено")
     cache_key = await versioned_key(
-        "world", f"compare:snapshot:v7:{concept_slug}:{get_locale()}"
+        "world", f"compare:snapshot:v8:{concept_slug}:{get_locale()}"
     )
     cached = await cache_get(cache_key)
     if cached:
@@ -995,6 +1015,7 @@ async def world_compare_snapshot(
         latest = latest_rank_point(
             series_by_id.get(indicator.id, []), mode,
             concept_slug=concept.slug,
+            yoy_kind=rank_yoy_kind(indicator),
         )
         if latest is None:
             continue
@@ -1053,7 +1074,7 @@ async def world_compare_map_series(
     if concept is None or "compare" not in concept.enabled_surfaces:
         raise HTTPException(404, "Понятие для карты не найдено")
     cache_key = await versioned_key(
-        "world", f"compare:map-series:v7:{concept_slug}:{get_locale()}"
+        "world", f"compare:map-series:v8:{concept_slug}:{get_locale()}"
     )
     cached = await cache_get(cache_key)
     if cached:
@@ -1074,6 +1095,7 @@ async def world_compare_map_series(
         for year, (point_date, value) in yearly_last_points(
             series_by_id.get(indicator.id, []), mode,
             concept_slug=concept.slug,
+            yoy_kind=rank_yoy_kind(indicator),
         ).items():
             year_values = values_by_year.setdefault(str(year), {})
             year_values[country.code] = {

@@ -17,6 +17,14 @@ Verified live 2026-08-22:
   lending/borrowing, SCALE ``0``, values already in percent of GDP.
 - ``GGXWDG_NGDP`` (verified live 2026-08-27) — general government gross debt,
   SCALE ``0``, percent of GDP.
+- ``LP`` (verified live 2026-08-29) — population. SCALE ``6`` is display
+  metadata (millions); observation values arrive as person counts. Store as
+  persons, do not divide by 10^SCALE.
+- ``LUR`` (verified live 2026-08-29) — unemployment rate, SCALE ``0``,
+  percent of the labour force.
+- ``PCPIPCH`` (verified live 2026-08-29) — inflation, average consumer
+  prices, SCALE ``0``, already year-over-year percent. Ranking hicp uses
+  the series as-is (no second YoY).
 
 Public fields must not mention API / SDMX / dataflow. Attribution:
 «Source: International Monetary Fund, World Economic Outlook».
@@ -69,6 +77,9 @@ WEO_NGDPD = "NGDPD"
 WEO_NGDPDPC = "NGDPDPC"
 WEO_GGXCNL_NGDP = "GGXCNL_NGDP"
 WEO_GGXWDG_NGDP = "GGXWDG_NGDP"
+WEO_LP = "LP"
+WEO_LUR = "LUR"
+WEO_PCPIPCH = "PCPIPCH"
 
 # Identity + public units. Ranking compares measure_class(unit, unit_ru)
 # to WorldConcept.measure — keep these codes in lockstep with world_concepts.
@@ -150,6 +161,61 @@ WEO_SERIES: dict[str, dict[str, str]] = {
             "долг к ВВП, % ВВП"
         ),
     },
+    # Численность населения. SCALE=6 в SDMX — подпись «миллионы» для
+    # витрины фонда; сами наблюдения приходят уже в человеках.
+    WEO_LP: {
+        "unit": "NR",
+        "unit_ru": "человек",
+        "unit_en": "persons",
+        "name_ru": "Численность населения",
+        "name_en": "Population",
+        "code_suffix": "lp",
+        "category_ru": "Население",
+        "scale_policy": "identity",
+        "desc_ru": (
+            "{name} — годовая оценка Международного валютного фонда "
+            "({unit})."
+        ),
+        "keywords_ru": "{name}, {country}, население, численность населения",
+    },
+    # Уровень безработицы, % экономически активного населения. SCALE=0.
+    WEO_LUR: {
+        "unit": "PC_ACT",
+        "unit_ru": "% экономически активного населения",
+        "unit_en": "% of the labour force",
+        "name_ru": "Уровень безработицы",
+        "name_en": "Unemployment rate",
+        "code_suffix": "lur",
+        "category_ru": "Рынок труда",
+        "desc_ru": (
+            "{name} — годовая оценка Международного валютного фонда "
+            "({unit})."
+        ),
+        "keywords_ru": (
+            "{name}, {country}, безработица, уровень безработицы"
+        ),
+    },
+    # Среднегодовое изменение потребительских цен. Уже YoY %; карта hicp
+    # не считает повторный прирост. Россия и страны с национальным индексом
+    # закрываются crosswalk, не этим рядом.
+    WEO_PCPIPCH: {
+        "unit": "PC",
+        "unit_ru": "изменение за год, %",
+        "unit_en": "year-over-year change, %",
+        "name_ru": "Изменение потребительских цен за год",
+        "name_en": "Inflation, average consumer prices",
+        "code_suffix": "pcpipch",
+        "category_ru": "Цены",
+        "desc_ru": (
+            "{name} — годовая оценка Международного валютного фонда: "
+            "среднее изменение потребительских цен за календарный год "
+            "({unit})."
+        ),
+        "keywords_ru": (
+            "{name}, {country}, инфляция, потребительские цены, "
+            "изменение цен за год"
+        ),
+    },
 }
 
 # Публичная методология per series (RU/EN): денежные ряды и процентный ряд
@@ -188,6 +254,25 @@ WEO_METHODOLOGY_BY_CODE: dict[str, tuple[str, str]] = {
         "fully covered by the European government finance framework the "
         "ranking uses national debt definitions; other countries are shown by "
         "the fund's estimates. "
+        "Source: International Monetary Fund, World Economic Outlook.",
+    ),
+    WEO_LP: (
+        "Годовая оценка численности населения, человек. "
+        "Source: International Monetary Fund, World Economic Outlook.",
+        "Annual population estimate, persons. "
+        "Source: International Monetary Fund, World Economic Outlook.",
+    ),
+    WEO_LUR: (
+        "Уровень безработицы, доля безработных в экономически активном "
+        "населении. "
+        "Source: International Monetary Fund, World Economic Outlook.",
+        "Unemployment rate, percent of the labour force. "
+        "Source: International Monetary Fund, World Economic Outlook.",
+    ),
+    WEO_PCPIPCH: (
+        "Среднее изменение потребительских цен за календарный год. "
+        "Source: International Monetary Fund, World Economic Outlook.",
+        "Average consumer-price change over the calendar year. "
         "Source: International Monetary Fund, World Economic Outlook.",
     ),
 }
@@ -285,6 +370,9 @@ WEO_YEAR_POLICY_BY_CODE: dict[str, str] = {
     WEO_NGDPDPC: "closed",
     WEO_GGXCNL_NGDP: "closed",
     WEO_GGXWDG_NGDP: "closed",
+    WEO_LP: "stock",
+    WEO_LUR: "stock",
+    WEO_PCPIPCH: "closed",
 }
 
 _YEAR_POLICY_CLOSED = "closed"
@@ -473,7 +561,9 @@ def parse_imf_weo_sdmx(payload: Mapping[str, Any]) -> list[WeoParsedPoint]:
             if weo_code not in WEO_SERIES or not country:
                 continue
             scale = _series_scale(structure, series.get("attributes"))
-            divisor = 10.0 ** scale if scale else 1.0
+            meta = WEO_SERIES.get(weo_code) or {}
+            identity_scale = str(meta.get("scale_policy") or "") == "identity"
+            divisor = 1.0 if identity_scale else (10.0 ** scale if scale else 1.0)
             observations = series.get("observations") or {}
             if not isinstance(observations, Mapping):
                 continue

@@ -176,7 +176,9 @@ async def _upsert_russia_catalog(
     if not points:
         return 0
     meta = WEO_SERIES[weo_code]
-    code = meta["russia_indicator_code"]
+    code = meta.get("russia_indicator_code")
+    if not code:
+        return 0
     indicator = (
         await db.execute(select(Indicator).where(Indicator.code == code))
     ).scalar_one_or_none()
@@ -195,7 +197,8 @@ async def run_imf_weo_ingest(
     *,
     country_codes: list[str] | None = None,
 ) -> dict[str, int]:
-    """Загрузить NGDPD / NGDPDPC / GGXCNL_NGDP / GGXWDG_NGDP всем world_countries и RU-overlay.
+    """Загрузить NGDPD / NGDPDPC / GGXCNL_NGDP / GGXWDG_NGDP / LP / LUR / PCPIPCH
+    всем world_countries и RU-overlay (только ряды с russia_indicator_code).
 
     Политика года наблюдений применяется внутри разбора ответа:
     ``parse_imf_weo_sdmx`` читает код серии из payload и отсекает годы по

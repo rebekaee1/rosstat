@@ -7,7 +7,9 @@ import {
   HOME_RATING_LIMIT,
   HOME_TODAY_CODES,
   displayPulseValue,
+  HOME_SCOPE_COUNTRIES_FALLBACK,
   homeMapConcepts,
+  homeScopeCountriesCount,
   resolveHomeConcept,
   heatmapValuesBySlug,
   homeConceptLabel,
@@ -239,22 +241,44 @@ describe('homeWorkbench', () => {
 
   it('ведёт клик по ВВП на карточку ряда МВФ, Россию — на weo-gdp-usd', () => {
     expect(isWeoMapConcept('gdp-usd')).toBe(true);
+    expect(isWeoMapConcept('government-debt-gdp')).toBe(true);
     expect(isWeoMapConcept('unemployment-rate')).toBe(false);
     expect(mapSelectHref(
       { code: 'US', slug: 'united-states' },
       { indicator_code: 'us-ngdpd' },
       { conceptSlug: 'gdp-usd' },
     )).toBe('/united-states/indicator/us-ngdpd');
+    // Сервер может отдать код ряда значения (национальный мост) — клик всё
+    // равно на карточку МВФ в каталоге России.
+    expect(mapSelectHref(
+      { code: 'RU', slug: 'russia' },
+      { indicator_code: 'gdp-nominal-annual' },
+      {
+        conceptSlug: 'gdp-usd',
+        russiaIndicatorCode: 'gdp-nominal-annual',
+      },
+    )).toBe('/russia/indicator/weo-gdp-usd');
     expect(mapSelectHref(
       { code: 'RU', slug: 'russia' },
       { indicator_code: 'weo-gdp-usd' },
       { conceptSlug: 'gdp-usd' },
     )).toBe('/russia/indicator/weo-gdp-usd');
     expect(mapSelectHref(
+      { code: 'RU', slug: 'russia' },
+      {},
+      { conceptSlug: 'government-debt-gdp' },
+    )).toBe('/russia/indicator/weo-government-debt-gdp');
+    expect(mapSelectHref(
       { code: 'DE', slug: 'germany' },
       {},
       { conceptSlug: 'gdp-usd' },
     )).toBe('/germany');
+    // Не-WEO: по-прежнему берём indicator_code с сервера.
+    expect(mapSelectHref(
+      { code: 'RU', slug: 'russia' },
+      { indicator_code: 'unemployment' },
+      { conceptSlug: 'unemployment-rate' },
+    )).toBe('/russia/indicator/unemployment');
     const merged = mapSurfaceCountries(
       [{ code: 'DE', slug: 'germany', name: 'Германия' }],
       {
@@ -275,5 +299,34 @@ describe('homeWorkbench', () => {
     expect(links.countryHref).toBe('/russia/indicator/unemployment');
     expect(links.regionsHref).toBe('/russia/region');
     expect(links.regionRatingHref).toBe('/russia/region-rating/uroven-bezrabotitsy');
+    expect(russiaDeepLinksForConcept('gdp-usd').countryHref).toBe(
+      '/russia/indicator/weo-gdp-usd',
+    );
+    expect(russiaDeepLinksForConcept('government-debt-gdp').countryHref).toBe(
+      '/russia/indicator/weo-government-debt-gdp',
+    );
+  });
+
+  it('считает страны витрины из каталога API и игнорирует мок', () => {
+    expect(HOME_SCOPE_COUNTRIES_FALLBACK).toBe(55);
+    expect(homeScopeCountriesCount({
+      countries: [
+        { code: 'DE', is_active: true },
+        { code: 'RU', is_active: true },
+        { code: 'XX', is_active: false },
+      ],
+      total: 3,
+    })).toBe(2);
+    expect(homeScopeCountriesCount({
+      _fromMock: true,
+      countries: [{ code: 'DE' }],
+      total: 10,
+    })).toBeNull();
+    expect(homeScopeCountriesCount({
+      _fromMock: true,
+      countries: [{ code: 'DE' }],
+      total: 10,
+    }, { allowMock: true })).toBe(1);
+    expect(homeScopeCountriesCount({ total: 55, countries: [] })).toBe(55);
   });
 });

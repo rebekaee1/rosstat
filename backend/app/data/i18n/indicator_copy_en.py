@@ -1036,6 +1036,22 @@ INDICATOR_COPY_EN: dict[str, IndicatorCopyEn] = {
         ),
         "unit": "% of GDP",
     },
+    "weo-government-debt-gdp": {
+        "name": "General government gross debt",
+        "description": (
+            "Annual estimate of Russia’s general government gross debt, percent of "
+            "GDP, from the IMF World Economic Outlook. This is not the Bank of "
+            "Russia’s external debt series and not cash-based federal budget figures "
+            "from the Ministry of Finance: sector coverage and classification differ."
+        ),
+        "methodology": (
+            "General government gross debt at year-end, percent of GDP. "
+            "Source: International Monetary Fund, World Economic Outlook. "
+            "The series contains published values and fund estimates for closed "
+            "calendar years; the platform does not add a separate forecast line."
+        ),
+        "unit": "% of GDP",
+    },
 }
 
 

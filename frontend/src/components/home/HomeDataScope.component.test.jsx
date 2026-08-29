@@ -1,14 +1,29 @@
-import { describe, expect, it } from 'vitest';
-import { screen } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { screen, waitFor } from '@testing-library/react';
 import HomeDataScope from './HomeDataScope';
-import { renderPage } from '../../test/renderPage';
+import { mockApiGet, renderPage } from '../../test/renderPage';
 
-function renderScope() {
+afterEach(() => vi.restoreAllMocks());
+
+function renderScope(countriesPayload) {
+  mockApiGet([
+    ['/auth/me', { user: null }],
+    ['/world/countries', countriesPayload || {
+      countries: Array.from({ length: 55 }, (_, i) => ({
+        code: `C${i}`,
+        slug: `c-${i}`,
+        name: `Страна ${i}`,
+        name_en: `Country ${i}`,
+        indicators_count: 1,
+      })),
+      total: 55,
+    }],
+  ]);
   return renderPage(<HomeDataScope />, { path: '/', route: '/' });
 }
 
 describe('HomeDataScope — состав платформы в hero главной', () => {
-  it('рендерится с заголовком блока и общеплатформенными цифрами', () => {
+  it('рендерится с заголовком блока и общеплатформенными цифрами', async () => {
     renderScope();
 
     expect(screen.getByRole('heading', { name: 'Что внутри платформы' })).toBeTruthy();
@@ -19,14 +34,35 @@ describe('HomeDataScope — состав платформы в hero главно
     expect(screen.getByText('36 000+')).toBeTruthy();
     expect(screen.getByText(/показателей по странам мира/)).toBeTruthy();
 
-    expect(screen.getByText('48')).toBeTruthy();
+    await waitFor(() => {
+      expect(screen.getByText('55')).toBeTruthy();
+    });
     expect(screen.getByText(/стран мира/)).toBeTruthy();
 
-    expect(screen.getByText('42 075')).toBeTruthy();
-    expect(screen.getByText(/региональных рядов \(495 × 85 субъектов\)/)).toBeTruthy();
+    expect(screen.getByText('495')).toBeTruthy();
+    expect(screen.getByText(/региональных показателей/)).toBeTruthy();
+    expect(screen.queryByText(/42\s*075/)).toBeNull();
+    expect(screen.queryByText(/495\s*[×x]/)).toBeNull();
 
     expect(screen.getByText('1897–2026')).toBeTruthy();
     expect(screen.getByText(/период наблюдений/)).toBeTruthy();
+  });
+
+  it('берёт число стран с API, а не устаревший фоллбэк', async () => {
+    renderScope({
+      countries: Array.from({ length: 57 }, (_, i) => ({
+        code: `C${i}`,
+        slug: `c-${i}`,
+        name: `Страна ${i}`,
+        name_en: `Country ${i}`,
+        indicators_count: 1,
+      })),
+      total: 57,
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('57')).toBeTruthy();
+    });
   });
 
   it('показывает официальные источники в порядке международные — российские и режим обновления', () => {

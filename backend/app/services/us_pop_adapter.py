@@ -12,13 +12,17 @@ Verified live 2026-08-27:
   they are useless without the data query. No key is configured in this
   project, so the API path is not used.
 - The same Population Estimates are published as free CSV datasets on the
-  Census FTP2 server (no key, no auth). Two files cover the requested depth:
+  Census FTP2 server (no key, no auth). Three files cover the requested depth:
+    * Intercensal monthly national totals, April 2000–July 2010:
+      ``…/2000-2010/intercensal/national/us-est00int-tot.csv``
+      (the vintage-2010 wide table
+      ``…/2000-2010/national/totals/nst-est2010-alldata.csv`` 404s as of
+      2026-08-29; the intercensal national file is the official replacement).
+      Only July observations are kept — same reference date as PEP.
     * Vintage 2020 evaluation series, 2010-2020 national totals:
-      ``https://www2.census.gov/programs-surveys/popest/datasets/
-      2010-2020/national/totals/nst-est2020-alldata.csv``
+      ``…/2010-2020/national/totals/nst-est2020-alldata.csv``
     * Current-vintage annual series, 2020-2025:
-      ``https://www2.census.gov/programs-surveys/popest/datasets/
-      2020-2025/state/totals/NST-EST2025-ALLDATA.csv``
+      ``…/2020-2025/state/totals/NST-EST2025-ALLDATA.csv``
       (the "national totals" sibling path 404s; the state file ships the
       national row as ``SUMLEV=010``).
 - Both files are wide tables: one row per geography, one column per year
@@ -63,6 +67,12 @@ PUBLIC_SOURCE_URL = (
 PUBLIC_UNIT = "PERSONS"
 PUBLIC_UNIT_RU = "человек"
 
+# Intercensal national totals: April 2000–July 2010 (July kept).
+# Vintage-2010 wide table nst-est2010-alldata.csv 404s (probed 2026-08-29).
+CENSUS_2000_CSV_URL = (
+    "https://www2.census.gov/programs-surveys/popest/datasets/"
+    "2000-2010/intercensal/national/us-est00int-tot.csv"
+)
 # Vintage 2020 evaluation estimates: April 1, 2010 to July 1, 2020.
 HIST_CSV_URL = (
     "https://www2.census.gov/programs-surveys/popest/datasets/"
@@ -81,7 +91,9 @@ _POP_COLUMN_PREFIX = "POPESTIMATE"
 
 _UA = "ForecastEconomy/1.0 (+https://forecasteconomy.com)"
 
-NATIONAL_ROWS_URLS: tuple[str, ...] = (HIST_CSV_URL, LATEST_CSV_URL)
+NATIONAL_ROWS_URLS: tuple[str, ...] = (
+    CENSUS_2000_CSV_URL, HIST_CSV_URL, LATEST_CSV_URL,
+)
 
 SERIES_CODE = "us-population-census"
 
@@ -118,12 +130,15 @@ def _population_columns(fieldnames: Sequence[str]) -> dict[int, str]:
 def parse_census_pop_csv(text: str) -> dict[date, float]:
     """Чистый разбор CSV PEP → {1 июля года: человек}.
 
-    Несколько файлов подаются пачкой (vintage 2020 + текущий vintage):
-    национальная строка берётся из каждого, годы объединяются, при
-    пересечении побеждает поздний файл (свежий vintage). Файлы одного
-    vintage перезаписывают друг друга целиком — их нельзя смешивать
-    частично, каждый vintage пересматривает весь ряд.
+    Два layout'а: широкая таблица ``POPESTIMATE{year}`` (национальная
+    строка ``SUMLEV=010``) и месячный ряд ``YEAR,MONTH,TOT_POP``
+    (межпереписной national totals — берём только июль). Несколько
+    файлов лучше разбирать по одному и сливать снаружи: поздний файл
+    побеждает на пересечении лет.
     """
+    monthly = _parse_july_monthly_totals(text)
+    if monthly is not None:
+        return monthly
     merged: dict[int, float] = {}
     for block in _split_csv_documents(text):
         national = _national_row(block)
@@ -146,6 +161,32 @@ def parse_census_pop_csv(text: str) -> dict[date, float]:
     return {date(year, 7, 1): value for year, value in sorted(merged.items())}
 
 
+def _parse_july_monthly_totals(text: str) -> dict[date, float] | None:
+    """Межпереписной national totals: YEAR,MONTH,TOT_POP. None если не этот layout."""
+    header_line = next(
+        (line.strip() for line in text.splitlines() if line.strip()),
+        "",
+    )
+    fields = [part.strip().strip('"').upper() for part in header_line.split(",")]
+    if fields[:3] != ["YEAR", "MONTH", "TOT_POP"]:
+        return None
+    out: dict[date, float] = {}
+    reader = csv.DictReader(io.StringIO(text))
+    for row in reader:
+        year_raw = (row.get("YEAR") or "").strip()
+        month_raw = (row.get("MONTH") or "").strip()
+        pop_raw = (row.get("TOT_POP") or "").strip().replace(",", "")
+        if year_raw.isdigit() and month_raw == "7":
+            try:
+                value = float(pop_raw)
+            except ValueError:
+                continue
+            year = int(year_raw)
+            if value > 0 and 1900 <= year <= 2100:
+                out[date(year, 7, 1)] = value
+    return out
+
+
 def _split_csv_documents(text: str) -> list[str]:
     """CSV-файлы подаются склеенными (HIST + LATEST) одним текстом."""
     if "SUMLEV" not in text or text.count("SUMLEV") <= 1:
@@ -164,7 +205,11 @@ def _national_row(block: str) -> str | None:
     """Блок CSV, сведённый к национальной строке (SUMLEV=010) + заголовок."""
     lines = block.splitlines()
     header_index = next(
-        (i for i, line in enumerate(lines) if line.strip().startswith("SUMLEV")),
+        (
+            i
+            for i, line in enumerate(lines)
+            if line.strip().lstrip('"').startswith("SUMLEV")
+        ),
         None,
     )
     if header_index is None:
@@ -229,11 +274,10 @@ class UsCensusPopAdapter:
         date_to: date | None = None,
     ) -> WorldSeriesPayload:
         fetched_at = datetime.now(timezone.utc).replace(tzinfo=None)
-        text = "".join(self._fetch_csv(url) for url in self._urls)
-        points = parse_census_pop_csv(text)
+        points, blob = self._merged_points()
         observations = [
             WorldObservation(period=period, value=value)
-            for period, value in points.items()
+            for period, value in sorted(points.items())
             if (date_from is None or period >= date_from)
             and (date_to is None or period <= date_to)
         ]
@@ -241,10 +285,20 @@ class UsCensusPopAdapter:
             ref=series,
             observations=observations,
             fetched_at=fetched_at,
-            source_hash=_payload_hash(text),
+            source_hash=_payload_hash(blob),
         )
 
     def fetch_national_points(self) -> list[tuple[date, float]]:
         """Все национальные годовые точки (vintages merged) — для ingest."""
-        text = "".join(self._fetch_csv(url) for url in self._urls)
-        return list(parse_census_pop_csv(text).items())
+        points, _blob = self._merged_points()
+        return list(sorted(points.items()))
+
+    def _merged_points(self) -> tuple[dict[date, float], str]:
+        """Каждый CSV отдельно, потом merge: поздний URL побеждает на годе."""
+        merged: dict[date, float] = {}
+        parts: list[str] = []
+        for url in self._urls:
+            text = self._fetch_csv(url)
+            parts.append(text)
+            merged.update(parse_census_pop_csv(text))
+        return merged, "".join(parts)

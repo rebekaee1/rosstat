@@ -9,6 +9,7 @@ WEO_LISTED = (
     "weo-gdp-usd",
     "weo-gdp-per-capita-usd",
     "weo-budget-balance-gdp",
+    "weo-government-debt-gdp",
 )
 WEO_SIBLINGS = (
     "weo-gdp-usd-yoy",
@@ -16,6 +17,7 @@ WEO_SIBLINGS = (
     "weo-gdp-per-capita-usd-yoy",
     "weo-gdp-per-capita-usd-index",
     "weo-budget-balance-gdp-yoy",
+    "weo-government-debt-gdp-yoy",
 )
 
 
@@ -36,9 +38,16 @@ def test_weo_gdp_seed_category_and_no_platform_forecast():
         assert int(cfg.get("forecast_steps") or 0) == 0
         assert cfg.get("forecast_strategy") in (None, "")
         assert cfg.get("forecast_strategy") != "gdp_nominal_quarterly"
-    budget = by_code["weo-budget-balance-gdp"]
-    assert budget["category"] == "Государственные финансы"
-    assert int((budget.get("model_config_json") or {}).get("forecast_steps") or 0) == 0
+    for code in ("weo-budget-balance-gdp", "weo-government-debt-gdp"):
+        ind = by_code[code]
+        assert ind["category"] == "Государственные финансы"
+        cfg = ind.get("model_config_json") or {}
+        assert int(cfg.get("forecast_steps") or 0) == 0
+        assert cfg.get("forecast_strategy") in (None, "")
+        assert cfg.get("forecast_strategy") != "gdp_nominal_quarterly"
+    assert by_code["weo-government-debt-gdp"]["model_config_json"]["weo_code"] == (
+        "GGXWDG_NGDP"
+    )
 
 
 def test_weo_view_mode_siblings_hidden_without_quarterly_forecast():
@@ -59,5 +68,8 @@ def test_weo_seo_blocks_exist_and_public():
         assert len(titles) == len(set(titles))
         blob = " ".join(block["body"] for block in blocks)
         assert " · " not in blob
-        for token in ("парсер", "bulk_upsert", "ADR-", ".xlsx", "NGDPD", "GGXCNL"):
+        for token in (
+            "парсер", "bulk_upsert", "ADR-", ".xlsx",
+            "NGDPD", "GGXCNL", "GGXWDG",
+        ):
             assert token not in blob, (code, token)

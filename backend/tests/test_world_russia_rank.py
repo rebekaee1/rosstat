@@ -26,8 +26,8 @@ def test_russia_links_cover_comparable_rating_concepts_only():
         "gdp-usd",
         "gdp-per-capita-usd",
         "budget-balance-gdp",
+        "government-debt-gdp",
     }
-    assert russia_link_for_concept("government-debt-gdp") is None
     assert russia_link_for_concept("activity-rate") is None
     assert russia_link_for_concept("long-term-interest-rate") is None
     assert russia_link_for_concept("gdp-nominal") is None
@@ -40,6 +40,12 @@ def test_russia_links_cover_comparable_rating_concepts_only():
     assert balance.source_ru == "Международный валютный фонд"
     assert "Минфина" in balance.note_ru
     assert "Ministry of Finance" in balance.note_en
+    debt = RUSSIA_CONCEPT_LINKS["government-debt-gdp"]
+    assert debt.indicator_code == "weo-government-debt-gdp"
+    assert debt.source_ru == "Международный валютный фонд"
+    assert debt.source_en == "International Monetary Fund"
+    assert "Минфина" in debt.note_ru
+    assert "Ministry of Finance" in debt.note_en
     assert "budget-deficit" not in {
         link.indicator_code for link in RUSSIA_CONCEPT_LINKS.values()
     }
@@ -69,7 +75,12 @@ def test_weo_gdp_overlay_links_kept_but_ranking_is_national():
 def test_weo_overlay_codes_are_listed_catalogue_cards():
     from seed_data import INDICATOR_HIDDEN_FROM_LISTING
 
-    for slug in ("gdp-usd", "gdp-per-capita-usd", "budget-balance-gdp"):
+    for slug in (
+        "gdp-usd",
+        "gdp-per-capita-usd",
+        "budget-balance-gdp",
+        "government-debt-gdp",
+    ):
         code = RUSSIA_CONCEPT_LINKS[slug].indicator_code
         assert code not in INDICATOR_HIDDEN_FROM_LISTING
 

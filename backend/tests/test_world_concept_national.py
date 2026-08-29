@@ -2,6 +2,7 @@
 
 from app.data.world_concept_national import (
     NATIONAL_CONCEPT_INDICATOR_CODES,
+    hicp_national_yoy_kind,
     national_codes_for_concept,
 )
 
@@ -19,22 +20,22 @@ def test_gdp_volume_has_no_national_absolute_alias():
     assert national_codes_for_concept("gdp-volume-annual") == frozenset()
 
 
-def test_hicp_national_uses_level_indices_only():
-    # hicp-index всегда считает изменение за год от уровня индекса.
-    # CN `cn-cpi-all` — уже «тот же месяц прошлого года = 100», не уровень.
-    # BR: `br-cpi-ipca` — % м/м; `br-cpi-ipca-yoy` — уже готовый YoY.
-    # JP/KR — уровень индекса (e-Stat / ECOS), не готовый YoY; коды в
-    # crosswalk, чтобы карта подхватила ряд сразу после national ingest.
+def test_hicp_national_yoy_kinds():
+    # Уровень индекса — transform_yoy. CN — индекс «тот же месяц = 100».
+    # BR IPCA 12m — уже YoY %. MoM IPCA в рейтинг не входит.
     mapping = NATIONAL_CONCEPT_INDICATOR_CODES["hicp-index"]
     codes = national_codes_for_concept("hicp-index")
     assert mapping["US"] == "us-cpi-all"
+    assert mapping["CN"] == "cn-cpi-all"
+    assert mapping["BR"] == "br-cpi-ipca-yoy"
     assert mapping["JP"] == "jp-cpi-all"
     assert mapping["KR"] == "kr-cpi-all"
-    assert "cn-cpi-all" not in codes
+    assert "cn-cpi-all" in codes
+    assert "br-cpi-ipca-yoy" in codes
     assert "br-cpi-ipca" not in codes
-    assert "br-cpi-ipca-yoy" not in codes
-    assert "CN" not in mapping
-    assert "BR" not in mapping
+    assert hicp_national_yoy_kind("cn-cpi-all") == "index_minus_100"
+    assert hicp_national_yoy_kind("br-cpi-ipca-yoy") == "passthrough"
+    assert hicp_national_yoy_kind("us-cpi-all") == "level"
 
 
 def test_all_mapped_codes_unique_per_concept():

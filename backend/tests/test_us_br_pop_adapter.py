@@ -38,6 +38,12 @@ def test_parse_census_fixtures_merges_vintages():
     assert points[date(2010, 7, 1)] == 309327663
 
 
+def test_parse_quoted_sumlev_header_without_concat():
+    points = parse_census_pop_csv(_CENSUS_HIST.read_text(encoding="utf-8"))
+    assert points[date(2010, 7, 1)] == 309327663
+    assert points[date(2020, 7, 1)] == 329484123
+
+
 def test_parse_census_csv_skips_state_rows_and_garbage():
     text = (
         "SUMLEV,NAME,POPESTIMATE2023,POPESTIMATE2024\n"
@@ -49,6 +55,33 @@ def test_parse_census_csv_skips_state_rows_and_garbage():
         date(2024, 7, 1): 340110988,
     }
     assert parse_census_pop_csv("not a csv") == {}
+
+
+def test_parse_census_2000_vintage_columns():
+    text = (
+        "SUMLEV,NAME,POPESTIMATE2000,POPESTIMATE2009\n"
+        '"010","United States",282162411,306771529\n'
+    )
+    points = parse_census_pop_csv(text)
+    assert points[date(2000, 7, 1)] == 282162411
+    assert points[date(2009, 7, 1)] == 306771529
+
+
+def test_parse_census_intercensal_july_only():
+    text = (
+        "YEAR,MONTH,TOT_POP\n"
+        "2000,4,281424600\n"
+        "2000,7,282162411\n"
+        "2009,7,306771529\n"
+        "2010,4,308745538\n"
+        "2010,7,309349689\n"
+    )
+    points = parse_census_pop_csv(text)
+    assert points == {
+        date(2000, 7, 1): 282162411,
+        date(2009, 7, 1): 306771529,
+        date(2010, 7, 1): 309349689,
+    }
 
 
 def test_parse_ibge_fixtures_stitches_estimates_and_census():
@@ -96,9 +129,13 @@ def test_adapter_contract_and_filters():
         return [s async for s in adapter.list_series(None)]
 
     us = UsCensusPopAdapter(
-        fetch_csv=lambda url: _CENSUS_HIST.read_text(encoding="utf-8")
-        if "2010-2020" in url
-        else _CENSUS_LATEST.read_text(encoding="utf-8")
+        fetch_csv=lambda url: (
+            "YEAR,MONTH,TOT_POP\n2000,7,282162411\n2009,7,306771529\n2010,7,309349689\n"
+            if "2000-2010" in url
+            else _CENSUS_HIST.read_text(encoding="utf-8")
+            if "2010-2020" in url
+            else _CENSUS_LATEST.read_text(encoding="utf-8")
+        )
     )
     ibge = IbgePopAdapter(
         fetch_json=lambda url: _IBGE_ESTIMATES.read_text(encoding="utf-8")
@@ -131,6 +168,11 @@ def test_adapter_contract_and_filters():
     assert payload.observations[0].period >= date(2020, 1, 1)
     assert payload.observations[-1].period == date(2025, 7, 1)
     assert payload.source_hash
+    full_us = us.fetch_national_points()
+    years = {period.year for period, _value in full_us}
+    assert 2000 in years
+    assert 2009 in years
+    assert 2025 in years
 
     payload_br = asyncio.run(ibge.fetch_series(br_series[0]))
     assert payload_br.observations[0].period == date(1980, 1, 1)
