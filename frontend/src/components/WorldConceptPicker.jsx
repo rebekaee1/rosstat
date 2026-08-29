@@ -85,6 +85,8 @@ export default function WorldConceptPicker({
   searchable = true,
   hint = null,
   trailing = null,
+  /** Одна горизонтальная полоса без переноса (главная / мобилка). */
+  nowrap = false,
 }) {
   const t = useT();
   const sectionLabel = label || t('home.map.metricFallback');
@@ -120,7 +122,13 @@ export default function WorldConceptPicker({
   }, [open]);
 
   const chipStream = (
-    <div className="flex flex-wrap items-center gap-1.5">
+    <div
+      className={
+        nowrap
+          ? 'scrollbar-hide flex flex-nowrap items-center gap-1.5 overflow-x-auto overscroll-x-contain pb-0.5'
+          : 'flex flex-wrap items-center gap-1.5'
+      }
+    >
       {matches.map((item) => (
         <ConceptChip
           key={item.slug}

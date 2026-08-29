@@ -33,9 +33,8 @@ const WorldMap = lazy(() => import('../WorldMap'));
 const MapTimeline = lazy(() => import('../MapTimeline'));
 
 /**
- * Главная: hero + карта мира и рейтинг в одной сетке.
- * Левая колонка: заголовок, поиск, пикер показателя.
- * Правая: scope-карточка; карта поднимается только под её нижний край.
+ * Главная: hero | scope, затем полная полоса показателей, затем рейтинг|карта.
+ * Без отрицательных margin — чипы не наезжают на карту.
  */
 export default function HomeWorkbench({ ratingConcepts }) {
   const t = useT();
@@ -101,36 +100,9 @@ export default function HomeWorkbench({ ratingConcepts }) {
     if (href) navigate(href);
   };
 
-  const picker = (
-    <WorldConceptPicker
-      concepts={mapConcepts.length
-        ? mapConcepts
-        : [{ slug: concept, name: conceptName }]}
-      value={concept}
-      onChange={(slug) => {
-        setPicked(slug);
-        setMapYear(null);
-        track(events.HOME_COUNTRIES_METRIC, { concept: slug });
-      }}
-      label={t('home.map.metricLabel')}
-      searchable={false}
-      trailing={<WorldMapConceptNote conceptSlug={concept} />}
-      hint={fullRatingHref ? (
-        <Link
-          to={fullRatingHref}
-          onClick={() => track(events.HOME_COUNTRIES_CTA, { target: 'rating-hint', concept })}
-          className="inline-flex items-center gap-1 text-[11px] text-text-tertiary transition-colors hover:text-champagne"
-        >
-          {t('home.map.moreMetrics')}
-          <ArrowRight size={11} />
-        </Link>
-      ) : null}
-    />
-  );
-
   return (
     <>
-      <header data-block="home-hero" className="relative z-20 mb-4 md:mb-5">
+      <header data-block="home-hero" className="relative z-20 mb-5 md:mb-6">
         <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)] lg:gap-8">
           <div className="min-w-0">
             <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-champagne">
@@ -145,20 +117,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
             <div className="mt-5 max-w-xl">
               <IndicatorSearch variant="inline" />
             </div>
-
-            <div className="mt-6 mb-1">
-              <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">
-                {t('home.map.eyebrow')}
-              </div>
-              <h2 id="home-world-map-title" className="mt-1 text-base font-semibold text-text-primary sm:text-lg">
-                {t('home.map.title')}
-              </h2>
-              <div className="mt-3 max-w-full">
-                {picker}
-              </div>
-            </div>
           </div>
-
           <HomeDataScope />
         </div>
       </header>
@@ -168,6 +127,42 @@ export default function HomeWorkbench({ ratingConcepts }) {
         className="relative z-10 mb-10 md:mb-12"
         aria-labelledby="home-world-map-title"
       >
+        <div className="mb-4 min-w-0">
+          <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">
+            {t('home.map.eyebrow')}
+          </div>
+          <h2 id="home-world-map-title" className="mt-1 text-base font-semibold text-text-primary sm:text-lg">
+            {t('home.map.title')}
+          </h2>
+          <div className="mt-3 min-w-0">
+            <WorldConceptPicker
+              concepts={mapConcepts.length
+                ? mapConcepts
+                : [{ slug: concept, name: conceptName }]}
+              value={concept}
+              onChange={(slug) => {
+                setPicked(slug);
+                setMapYear(null);
+                track(events.HOME_COUNTRIES_METRIC, { concept: slug });
+              }}
+              label={t('home.map.metricLabel')}
+              searchable={false}
+              nowrap
+              trailing={<WorldMapConceptNote conceptSlug={concept} />}
+              hint={fullRatingHref ? (
+                <Link
+                  to={fullRatingHref}
+                  onClick={() => track(events.HOME_COUNTRIES_CTA, { target: 'rating-hint', concept })}
+                  className="inline-flex items-center gap-1 text-[11px] text-text-tertiary transition-colors hover:text-champagne"
+                >
+                  {t('home.map.moreMetrics')}
+                  <ArrowRight size={11} />
+                </Link>
+              ) : null}
+            />
+          </div>
+        </div>
+
         {(countriesQ.isError || mapSeries.isError) && (
           <ApiRetryBanner
             className="mb-4"
@@ -181,12 +176,8 @@ export default function HomeWorkbench({ ratingConcepts }) {
           </ApiRetryBanner>
         )}
 
-        {/*
-          Сетка: рейтинг ниже пикера (без -mt), карта справа поднимается
-          только под низ scope — чипы слева не перекрываются.
-        */}
-        <div className="grid items-stretch gap-4 lg:grid-cols-[18rem_minmax(0,1fr)] lg:gap-5">
-          <div className="relative z-10 flex min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl border border-border-subtle bg-obsidian-light/40 px-3.5 py-3 lg:min-h-[30rem]">
+        <div className="grid items-stretch gap-4 lg:grid-cols-[minmax(16rem,18rem)_minmax(0,1fr)] lg:gap-5">
+          <div className="relative z-10 order-2 flex max-h-[24rem] min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl border border-border-subtle bg-obsidian-light/40 px-3.5 py-3 sm:max-h-none lg:order-1 lg:min-h-[28rem]">
             <div className="shrink-0 text-[10px] font-mono uppercase tracking-[0.16em] text-champagne">
               {t('home.map.rating')}
             </div>
@@ -251,11 +242,11 @@ export default function HomeWorkbench({ ratingConcepts }) {
             )}
           </div>
 
-          <div className="relative z-0 min-w-0 overflow-hidden rounded-2xl border border-border-subtle bg-surface p-2.5 sm:p-4 lg:-mt-20 xl:-mt-24">
+          <div className="relative z-0 order-1 min-w-0 overflow-hidden rounded-2xl border border-border-subtle bg-surface p-2.5 sm:p-4 lg:order-2">
             {(countriesQ.isLoading || mapSeries.isLoading) ? (
-              <SkeletonBox className="h-[18rem] w-full rounded-2xl sm:h-[30rem]" />
+              <SkeletonBox className="h-[16rem] w-full rounded-2xl sm:h-[28rem]" />
             ) : (
-              <Suspense fallback={<SkeletonBox className="h-[18rem] w-full rounded-2xl sm:h-[30rem]" />}>
+              <Suspense fallback={<SkeletonBox className="h-[16rem] w-full rounded-2xl sm:h-[28rem]" />}>
                 <WorldMap
                   countries={countries}
                   valuesByCode={valuesByCode}
