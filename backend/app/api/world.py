@@ -611,6 +611,7 @@ async def _concept_members(
                     and_(
                         WorldIndicator.is_listed.is_(False),
                         WorldIndicator.points_count > 0,
+                        WorldIndicator.history_end >= date(2020, 1, 1),
                         func.lower(WorldIndicator.dataset_id).in_(allowed_list),
                     ),
                 ),
