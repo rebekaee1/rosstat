@@ -146,14 +146,14 @@ export default function HomeWorkbench({ ratingConcepts }) {
               <IndicatorSearch variant="inline" />
             </div>
 
-            <div className="mt-6">
+            <div className="mt-6 mb-1">
               <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">
                 {t('home.map.eyebrow')}
               </div>
               <h2 id="home-world-map-title" className="mt-1 text-base font-semibold text-text-primary sm:text-lg">
                 {t('home.map.title')}
               </h2>
-              <div className="mt-3">
+              <div className="mt-3 max-w-full">
                 {picker}
               </div>
             </div>
@@ -251,7 +251,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
             )}
           </div>
 
-          <div className="relative z-0 min-w-0 overflow-hidden rounded-2xl border border-border-subtle bg-surface p-2.5 sm:p-4 lg:-mt-28 xl:-mt-32">
+          <div className="relative z-0 min-w-0 overflow-hidden rounded-2xl border border-border-subtle bg-surface p-2.5 sm:p-4 lg:-mt-20 xl:-mt-24">
             {(countriesQ.isLoading || mapSeries.isLoading) ? (
               <SkeletonBox className="h-[18rem] w-full rounded-2xl sm:h-[30rem]" />
             ) : (
