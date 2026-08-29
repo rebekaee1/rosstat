@@ -3,7 +3,6 @@ import { useLocation } from 'react-router-dom';
 import { useIndicators } from '../lib/hooks';
 import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
-import HomeHero from '../components/home/HomeHero';
 import HomeWorkbench from '../components/home/HomeWorkbench';
 import HomeCountryList from '../components/home/HomeCountryList';
 import { useWorldRatingConcepts } from '../lib/worldApi';
@@ -34,9 +33,8 @@ export default function Dashboard() {
 
   return (
     <div className="mx-auto max-w-7xl overflow-x-clip px-4 pb-28 pt-24 md:px-8">
-      {/* Hero + workbench в одном stacking context: карта поднимается под scope. */}
+      {/* Hero (поиск + пикер) и карта — один HomeWorkbench, общая сетка. */}
       <div className="relative">
-        <HomeHero />
         <HomeWorkbench ratingConcepts={ratingConcepts} />
       </div>
       <HomeCountryList russiaSeriesCount={indicators?.length || 0} />

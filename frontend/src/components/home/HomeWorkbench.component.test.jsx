@@ -109,7 +109,8 @@ describe('HomeWorkbench', () => {
     // Единица один раз в шапке блока, не в каждой строке.
     expect(rankingBtn.textContent).not.toMatch(/% экономически/);
     expect(screen.getByText('%')).toBeTruthy();
-    expect(screen.queryByText(/\.\.\.|…/)).toBeNull();
+    // В строках рейтинга нет обрезанных имён (ellipsis в placeholder поиска — ок).
+    expect(rankingBtn.textContent).not.toMatch(/\.\.\.|…/);
   });
 
   it('для ВВП показывает справку МВФ и медиану с сервера, без выдуманного среднего', async () => {

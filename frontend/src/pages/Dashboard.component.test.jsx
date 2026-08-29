@@ -60,10 +60,9 @@ describe('Dashboard', () => {
     expect(h1.textContent).toBe(
       'Официальные макроэкономические индикаторы в одной рабочей среде',
     );
-    // Карта России и поиск сняты с hero (переехали на /russia и в navbar).
+    // Карта России снята с hero (переехала на /russia). Поиск — inline под заголовком.
     expect(screen.queryByLabelText('Россия')).toBeNull();
-    expect(screen.queryByPlaceholderText(/Найти показатель/)).toBeNull();
-    // Вместо них — блок состава платформы.
+    // Блок состава платформы.
     expect(screen.getByRole('heading', { name: 'Что внутри платформы' })).toBeTruthy();
     expect(screen.getByText('495')).toBeTruthy();
     expect(screen.getByText(/региональных показателей/)).toBeTruthy();

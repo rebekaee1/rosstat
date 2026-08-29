@@ -22,8 +22,10 @@ import {
 } from '../../lib/worldApi';
 import { SkeletonBox } from '../Skeleton';
 import ApiRetryBanner from '../ApiRetryBanner';
+import IndicatorSearch from '../IndicatorSearch';
 import WorldConceptPicker from '../WorldConceptPicker';
 import WorldMapConceptNote from '../WorldMapConceptNote';
+import HomeDataScope from './HomeDataScope';
 import { track, events } from '../../lib/track';
 import { useT } from '../../i18n';
 
@@ -31,8 +33,9 @@ const WorldMap = lazy(() => import('../WorldMap'));
 const MapTimeline = lazy(() => import('../MapTimeline'));
 
 /**
- * Главная: карта мира и рейтинг стран по выбранному показателю.
- * Россия накладывается поверх world API (её нет в Eurostat-plane).
+ * Главная: hero + карта мира и рейтинг в одной сетке.
+ * Левая колонка: заголовок, поиск, пикер показателя.
+ * Правая: scope-карточка; карта поднимается только под её нижний край.
  */
 export default function HomeWorkbench({ ratingConcepts }) {
   const t = useT();
@@ -65,8 +68,6 @@ export default function HomeWorkbench({ ratingConcepts }) {
     [countriesQ.data, baseYearItems, mapSeries.data],
   );
 
-  // Порядок берём тот же, что и полный рейтинг: у безработицы и доходностей
-  // «первое место» — минимум, а не максимум.
   const sortDirection = defaultSortForConcept(concept, ratingConcepts?.data?.concepts);
   const ranking = useMemo(
     () => worldRankingFromYearItems(yearItems, HOME_RATING_LIMIT, sortDirection),
@@ -100,167 +101,188 @@ export default function HomeWorkbench({ ratingConcepts }) {
     if (href) navigate(href);
   };
 
-  return (
-    <section
-      data-block="home-workbench"
-      className="relative z-10 mb-10 md:mb-12 lg:-mt-[11.5rem] xl:-mt-[12.5rem]"
-      aria-labelledby="home-world-map-title"
-    >
-      {/*
-        Поднимаем блок в воздух слева от scope (hero mb=0). Заголовок и пикер
-        в той же сетке, что HomeHero — только левая колонка, под scope не
-        заезжают. Карта+рейтинг ниже пикера пересекают низ scope справа.
-      */}
-      <div className="grid items-start gap-3 lg:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)] lg:gap-8">
-        <div className="relative z-20 min-w-0">
-          <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">
-            {t('home.map.eyebrow')}
-          </div>
-          <h2 id="home-world-map-title" className="mt-1 text-base font-semibold text-text-primary sm:text-lg">
-            {t('home.map.title')}
-          </h2>
-          <div className="mt-3">
-            <WorldConceptPicker
-              concepts={mapConcepts.length
-                ? mapConcepts
-                : [{ slug: concept, name: conceptName }]}
-              value={concept}
-              onChange={(slug) => {
-                setPicked(slug);
-                setMapYear(null);
-                track(events.HOME_COUNTRIES_METRIC, { concept: slug });
-              }}
-              label={t('home.map.metricLabel')}
-              searchable={false}
-              trailing={<WorldMapConceptNote conceptSlug={concept} />}
-              hint={fullRatingHref ? (
-                <Link
-                  to={fullRatingHref}
-                  onClick={() => track(events.HOME_COUNTRIES_CTA, { target: 'rating-hint', concept })}
-                  className="inline-flex items-center gap-1 text-[11px] text-text-tertiary transition-colors hover:text-champagne"
-                >
-                  {t('home.map.moreMetrics')}
-                  <ArrowRight size={11} />
-                </Link>
-              ) : null}
-            />
-          </div>
-        </div>
-        {/* Правая колонка на уровне пикера пустая — scope из hero выше по z. */}
-        <div className="hidden lg:block" aria-hidden="true" />
-      </div>
-
-      {(countriesQ.isError || mapSeries.isError) && (
-        <ApiRetryBanner
-          className="mt-4"
-          onRetry={() => {
-            countriesQ.refetch();
-            mapSeries.refetch();
-          }}
-          isFetching={countriesQ.isFetching || mapSeries.isFetching}
+  const picker = (
+    <WorldConceptPicker
+      concepts={mapConcepts.length
+        ? mapConcepts
+        : [{ slug: concept, name: conceptName }]}
+      value={concept}
+      onChange={(slug) => {
+        setPicked(slug);
+        setMapYear(null);
+        track(events.HOME_COUNTRIES_METRIC, { concept: slug });
+      }}
+      label={t('home.map.metricLabel')}
+      searchable={false}
+      trailing={<WorldMapConceptNote conceptSlug={concept} />}
+      hint={fullRatingHref ? (
+        <Link
+          to={fullRatingHref}
+          onClick={() => track(events.HOME_COUNTRIES_CTA, { target: 'rating-hint', concept })}
+          className="inline-flex items-center gap-1 text-[11px] text-text-tertiary transition-colors hover:text-champagne"
         >
-          {t('home.map.loadError')}
-        </ApiRetryBanner>
-      )}
+          {t('home.map.moreMetrics')}
+          <ArrowRight size={11} />
+        </Link>
+      ) : null}
+    />
+  );
 
-      {/* Карта задаёт высоту; рейтинг на lg абсолютен по её кромкам — без хвостов. */}
-      <div className="relative z-0 mt-4">
-        <div className="min-w-0 overflow-hidden rounded-2xl border border-border-subtle bg-surface p-2.5 sm:p-4 lg:ml-[calc(18rem+1.25rem)]">
-          {(countriesQ.isLoading || mapSeries.isLoading) ? (
-            <SkeletonBox className="h-[18rem] w-full rounded-2xl sm:h-[30rem]" />
-          ) : (
-            <Suspense fallback={<SkeletonBox className="h-[18rem] w-full rounded-2xl sm:h-[30rem]" />}>
-              <WorldMap
-                countries={countries}
-                valuesByCode={valuesByCode}
-                detailsByCode={detailsByCode}
-                unit={conceptUnit}
-                metricName={conceptName}
-                periodLabel={activeYear ? String(activeYear) : ''}
-                colorMode={conceptColorMode(concept)}
-                colorDirection={sortDirection}
-                defaultScope="world"
-                onSelect={onSelectCountry}
-              />
-              {years.length > 1 && activeYear != null && (
-                <div className="mt-3 px-0.5 sm:mt-4 sm:px-1">
-                  <MapTimeline
-                    years={years}
-                    year={activeYear}
-                    onYearChange={setMapYear}
-                    metric={`home-world:${concept}`}
-                  />
-                </div>
-              )}
-            </Suspense>
-          )}
-        </div>
+  return (
+    <>
+      <header data-block="home-hero" className="relative z-20 mb-4 md:mb-5">
+        <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)] lg:gap-8">
+          <div className="min-w-0">
+            <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-champagne">
+              {t('home.hero.eyebrow')}
+            </p>
+            <h1 className="max-w-3xl text-2xl font-semibold leading-[1.2] tracking-tight text-text-primary md:text-3xl lg:text-[2rem]">
+              {t('home.hero.title')}
+            </h1>
+            <p className="mt-2.5 max-w-2xl text-sm leading-relaxed text-text-secondary md:text-[15px]">
+              {t('home.hero.subtitle')}
+            </p>
+            <div className="mt-5 max-w-xl">
+              <IndicatorSearch variant="inline" />
+            </div>
 
-        <div className="relative z-10 mt-4 flex max-h-none min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl border border-border-subtle bg-obsidian-light/40 px-3.5 py-3 lg:absolute lg:inset-y-0 lg:left-0 lg:mt-0 lg:w-[18rem]">
-          <div className="shrink-0 text-[10px] font-mono uppercase tracking-[0.16em] text-champagne">
-            {t('home.map.rating')}
-          </div>
-          <div className="mt-1 shrink-0 text-xs font-semibold text-text-primary">
-            {conceptName}
-          </div>
-          <div className="mt-0.5 flex shrink-0 flex-wrap items-baseline gap-x-2 gap-y-0.5 font-mono text-[10px] text-text-tertiary">
-            {activeYear != null && <span>{t('world.yearLabel', { year: activeYear })}</span>}
-            {conceptUnit ? <span>{conceptUnit}</span> : null}
-            <span>
-              {sortDirection === 'asc'
-                ? t('world.rating.sortAscHint')
-                : t('world.rating.sortDescHint')}
-            </span>
-          </div>
-          {benchmark?.value != null && (
-            <div className="mt-2 shrink-0 rounded-lg bg-champagne/[0.08] px-2.5 py-1.5">
-              <div className="text-[10px] text-text-tertiary">{benchmark.label}</div>
-              <div className="font-mono text-sm font-semibold text-text-primary">
-                {formatWorldValue(benchmark.value)}
+            <div className="mt-6">
+              <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">
+                {t('home.map.eyebrow')}
+              </div>
+              <h2 id="home-world-map-title" className="mt-1 text-base font-semibold text-text-primary sm:text-lg">
+                {t('home.map.title')}
+              </h2>
+              <div className="mt-3">
+                {picker}
               </div>
             </div>
-          )}
-          <ol className="mt-2 min-h-0 flex-1 space-y-0.5 overflow-y-auto overscroll-contain">
-            {ranking.length === 0 && (
-              <li className="text-[11px] text-text-tertiary">{t('home.map.noDataYear')}</li>
-            )}
-            {ranking.map((item, idx) => (
-              <li key={item.country_code || item.country_slug || idx}>
-                <button
-                  type="button"
-                  onClick={() => onSelectCountry(
-                    {
-                      code: item.country_code,
-                      slug: item.country_slug,
-                      name: item.country_name,
-                    },
-                    item,
-                  )}
-                  className="grid w-full grid-cols-[1.15rem_minmax(0,1fr)_auto] items-baseline gap-1 rounded-lg px-0.5 py-0.5 text-left hover:bg-champagne/10"
-                >
-                  <span className="font-mono text-[11px] text-text-tertiary">{idx + 1}.</span>
-                  <span className="min-w-0 truncate text-[11px] leading-snug text-text-secondary">
-                    {item.country_name}
-                  </span>
-                  <span className="font-mono text-[11px] font-semibold tabular-nums text-text-primary">
-                    {formatWorldValue(item.value)}
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ol>
-          {fullRatingHref && (
-            <Link
-              to={fullRatingHref}
-              onClick={() => track(events.HOME_COUNTRIES_CTA, { target: 'rating', concept })}
-              className="mt-3 inline-flex shrink-0 items-center gap-1 text-[11px] font-medium text-champagne hover:underline"
-            >
-              {t('home.map.fullRating')}
-              <ArrowRight size={12} />
-            </Link>
-          )}
+          </div>
+
+          <HomeDataScope />
         </div>
-      </div>
-    </section>
+      </header>
+
+      <section
+        data-block="home-workbench"
+        className="relative z-10 mb-10 md:mb-12"
+        aria-labelledby="home-world-map-title"
+      >
+        {(countriesQ.isError || mapSeries.isError) && (
+          <ApiRetryBanner
+            className="mb-4"
+            onRetry={() => {
+              countriesQ.refetch();
+              mapSeries.refetch();
+            }}
+            isFetching={countriesQ.isFetching || mapSeries.isFetching}
+          >
+            {t('home.map.loadError')}
+          </ApiRetryBanner>
+        )}
+
+        {/*
+          Сетка: рейтинг ниже пикера (без -mt), карта справа поднимается
+          только под низ scope — чипы слева не перекрываются.
+        */}
+        <div className="grid items-stretch gap-4 lg:grid-cols-[18rem_minmax(0,1fr)] lg:gap-5">
+          <div className="relative z-10 flex min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl border border-border-subtle bg-obsidian-light/40 px-3.5 py-3 lg:min-h-[30rem]">
+            <div className="shrink-0 text-[10px] font-mono uppercase tracking-[0.16em] text-champagne">
+              {t('home.map.rating')}
+            </div>
+            <div className="mt-1 shrink-0 text-xs font-semibold text-text-primary">
+              {conceptName}
+            </div>
+            <div className="mt-0.5 flex shrink-0 flex-wrap items-baseline gap-x-2 gap-y-0.5 font-mono text-[10px] text-text-tertiary">
+              {activeYear != null && <span>{t('world.yearLabel', { year: activeYear })}</span>}
+              {conceptUnit ? <span>{conceptUnit}</span> : null}
+              <span>
+                {sortDirection === 'asc'
+                  ? t('world.rating.sortAscHint')
+                  : t('world.rating.sortDescHint')}
+              </span>
+            </div>
+            {benchmark?.value != null && (
+              <div className="mt-2 shrink-0 rounded-lg bg-champagne/[0.08] px-2.5 py-1.5">
+                <div className="text-[10px] text-text-tertiary">{benchmark.label}</div>
+                <div className="font-mono text-sm font-semibold text-text-primary">
+                  {formatWorldValue(benchmark.value)}
+                </div>
+              </div>
+            )}
+            <ol className="mt-2 min-h-0 flex-1 space-y-0.5 overflow-y-auto overscroll-contain">
+              {ranking.length === 0 && (
+                <li className="text-[11px] text-text-tertiary">{t('home.map.noDataYear')}</li>
+              )}
+              {ranking.map((item, idx) => (
+                <li key={item.country_code || item.country_slug || idx}>
+                  <button
+                    type="button"
+                    onClick={() => onSelectCountry(
+                      {
+                        code: item.country_code,
+                        slug: item.country_slug,
+                        name: item.country_name,
+                      },
+                      item,
+                    )}
+                    className="grid w-full grid-cols-[1.15rem_minmax(0,1fr)_auto] items-baseline gap-1 rounded-lg px-0.5 py-0.5 text-left hover:bg-champagne/10"
+                  >
+                    <span className="font-mono text-[11px] text-text-tertiary">{idx + 1}.</span>
+                    <span className="min-w-0 truncate text-[11px] leading-snug text-text-secondary">
+                      {item.country_name}
+                    </span>
+                    <span className="font-mono text-[11px] font-semibold tabular-nums text-text-primary">
+                      {formatWorldValue(item.value)}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ol>
+            {fullRatingHref && (
+              <Link
+                to={fullRatingHref}
+                onClick={() => track(events.HOME_COUNTRIES_CTA, { target: 'rating', concept })}
+                className="mt-3 inline-flex shrink-0 items-center gap-1 text-[11px] font-medium text-champagne hover:underline"
+              >
+                {t('home.map.fullRating')}
+                <ArrowRight size={12} />
+              </Link>
+            )}
+          </div>
+
+          <div className="relative z-0 min-w-0 overflow-hidden rounded-2xl border border-border-subtle bg-surface p-2.5 sm:p-4 lg:-mt-28 xl:-mt-32">
+            {(countriesQ.isLoading || mapSeries.isLoading) ? (
+              <SkeletonBox className="h-[18rem] w-full rounded-2xl sm:h-[30rem]" />
+            ) : (
+              <Suspense fallback={<SkeletonBox className="h-[18rem] w-full rounded-2xl sm:h-[30rem]" />}>
+                <WorldMap
+                  countries={countries}
+                  valuesByCode={valuesByCode}
+                  detailsByCode={detailsByCode}
+                  unit={conceptUnit}
+                  metricName={conceptName}
+                  periodLabel={activeYear ? String(activeYear) : ''}
+                  colorMode={conceptColorMode(concept)}
+                  colorDirection={sortDirection}
+                  defaultScope="world"
+                  onSelect={onSelectCountry}
+                />
+                {years.length > 1 && activeYear != null && (
+                  <div className="mt-3 px-0.5 sm:mt-4 sm:px-1">
+                    <MapTimeline
+                      years={years}
+                      year={activeYear}
+                      onYearChange={setMapYear}
+                      metric={`home-world:${concept}`}
+                    />
+                  </div>
+                )}
+              </Suspense>
+            )}
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
