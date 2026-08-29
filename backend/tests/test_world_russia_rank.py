@@ -66,6 +66,14 @@ def test_weo_gdp_overlay_links_kept_but_ranking_is_national():
     assert balance.indicator_code == "weo-budget-balance-gdp"
 
 
+def test_weo_overlay_codes_are_listed_catalogue_cards():
+    from seed_data import INDICATOR_HIDDEN_FROM_LISTING
+
+    for slug in ("gdp-usd", "gdp-per-capita-usd", "budget-balance-gdp"):
+        code = RUSSIA_CONCEPT_LINKS[slug].indicator_code
+        assert code not in INDICATOR_HIDDEN_FROM_LISTING
+
+
 def test_hicp_uses_cpi_yoy_without_second_yoy():
     link = russia_link_for_concept("hicp-index")
     assert link.indicator_code == "cpi-yoy"

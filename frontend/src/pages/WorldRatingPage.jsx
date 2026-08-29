@@ -18,9 +18,9 @@ import {
 } from '../lib/worldApi';
 import {
   conceptColorMode,
-  DEFAULT_HOME_COUNTRY_CONCEPT,
   defaultSortForConcept,
   homeConceptLabel,
+  mapSelectHref,
   resolveActiveMapYear,
   russiaDeepLinksForConcept,
   withRussiaOnHomeMap,
@@ -32,15 +32,15 @@ import { formatDate } from '../lib/format';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import { SkeletonBox } from '../components/Skeleton';
 import Breadcrumbs from '../components/Breadcrumbs';
-import TelemetryCard from '../components/TelemetryCard';
 import WorldConceptPicker from '../components/WorldConceptPicker';
+import WorldMapConceptNote from '../components/WorldMapConceptNote';
 import { useLocale, useT } from '../i18n';
 import WorldMap from '../components/WorldMap';
 import MapTimeline from '../components/MapTimeline';
 import { worldRatingTrail } from '../lib/breadcrumbs';
 import {
   countryPath,
-  indicatorPath,
+  WORLD_RATING_DEFAULT_CONCEPT,
   worldRatingPath,
 } from '../lib/sitePaths';
 
@@ -157,15 +157,15 @@ function extraColumnLabel(slug, concepts, seriesData, t) {
   );
 }
 
-function rowHref(item, russiaLinks) {
-  if (item?.country_code === 'RU' || item?.country_slug === 'russia') {
-    return russiaLinks.countryHref;
-  }
-  if (!item?.country_slug) return '/';
-  if (item.indicator_code) {
-    return indicatorPath(item.country_slug, item.indicator_code);
-  }
-  return countryPath(item.country_slug);
+function rowHref(item, { conceptSlug, russiaIndicatorCode } = {}) {
+  return mapSelectHref(
+    {
+      code: item?.country_code,
+      slug: item?.country_slug,
+    },
+    { indicator_code: item?.indicator_code },
+    { conceptSlug, russiaIndicatorCode },
+  ) || '/';
 }
 
 function pluralUnit(n, base, t, locale) {
@@ -186,7 +186,7 @@ export default function WorldRatingPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { hash } = useLocation();
-  const activeConcept = conceptSlug || DEFAULT_HOME_COUNTRY_CONCEPT;
+  const activeConcept = conceptSlug || WORLD_RATING_DEFAULT_CONCEPT;
   const [selectedYear, setSelectedYear] = useState(null);
   // Активная колонка сортировки: { slug, dir } | null. null = пользователь ещё
   // не трогал переключатель → применяется смысловой порядок (лучшие сверху).
@@ -200,7 +200,7 @@ export default function WorldRatingPage() {
 
   useEffect(() => {
     if (!conceptSlug) {
-      navigate(worldRatingPath(DEFAULT_HOME_COUNTRY_CONCEPT), { replace: true });
+      navigate(worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT), { replace: true });
     }
   }, [conceptSlug, navigate]);
 
@@ -369,19 +369,14 @@ export default function WorldRatingPage() {
   }, [hash, loading]);
 
   const openCountry = (country, detail) => {
-    if (country?.code === 'RU' || country?.slug === 'russia') {
-      navigate(russiaLinks.countryHref);
-      return;
-    }
-    if (detail?.indicator_code && country?.slug) {
-      navigate(indicatorPath(country.slug, detail.indicator_code));
-      return;
-    }
-    if (country?.slug) navigate(countryPath(country.slug));
+    const href = mapSelectHref(country, detail, {
+      conceptSlug: activeConcept,
+      russiaIndicatorCode,
+    });
+    if (href) navigate(href);
   };
 
   const countryWord = (n) => pluralUnit(n, 'world.unit.country', t, locale);
-  const yearWord = (n) => pluralUnit(n, 'world.unit.year', t, locale);
 
   // Сортировка по заголовкам. Кликом управляется одна колонка; направление
   // первого клика — смысловое («лучшие сверху»), второго — обратное.
@@ -507,7 +502,7 @@ export default function WorldRatingPage() {
           <p className="mt-2 text-sm text-text-secondary">
             {t('world.rating.notFoundBody')}
           </p>
-          <Link to={worldRatingPath(DEFAULT_HOME_COUNTRY_CONCEPT)} className="mt-4 inline-flex rounded-xl bg-champagne px-4 py-2.5 text-sm font-semibold text-white">
+          <Link to={worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)} className="mt-4 inline-flex rounded-xl bg-champagne px-4 py-2.5 text-sm font-semibold text-white">
             {t('world.rating.openUnemployment')}
           </Link>
         </div>
@@ -523,6 +518,7 @@ export default function WorldRatingPage() {
               linkForSlug={(slug) => worldRatingPath(slug)}
               label={t('world.rating.conceptLabel')}
               searchable={false}
+              trailing={<WorldMapConceptNote conceptSlug={activeConcept} />}
             />
             {loading && concepts.length === 0 && (
               <div className="mt-2 flex flex-wrap gap-1.5">
@@ -531,45 +527,6 @@ export default function WorldRatingPage() {
                 ))}
               </div>
             )}
-            <div className="mt-2.5 flex flex-wrap items-end gap-3 border-t border-border-subtle pt-2.5">
-              <label className="block min-w-[8rem] flex-1 sm:max-w-[11rem]">
-                <span className="mb-1 flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.16em] text-text-tertiary">
-                  <SlidersHorizontal size={11} className="text-champagne" />
-                  {t('common.year')}
-                </span>
-                <select
-                  value={activeYear || ''}
-                  onChange={(event) => setSelectedYear(Number(event.target.value))}
-                  disabled={!years.length}
-                  className="h-9 w-full rounded-xl border border-border-subtle bg-obsidian-light px-2.5 text-sm font-medium text-text-primary outline-none transition-colors focus:border-border-champagne"
-                >
-                  {years.map((year) => (
-                    <option key={year} value={year}>{year}</option>
-                  ))}
-                </select>
-              </label>
-              <div className="min-w-0">
-                <p className="mb-1 text-[10px] font-mono uppercase tracking-[0.16em] text-text-tertiary">
-                  {t('world.rating.sortOrder')}
-                </p>
-                <div className="flex flex-wrap gap-1.5">
-                  <button
-                    type="button"
-                    className={ButtonClass(sortedColDir === 'desc')}
-                    onClick={() => setSortOverride({ slug: sortedColSlug, dir: 'desc' })}
-                  >
-                    {t('world.rating.sortDesc')}
-                  </button>
-                  <button
-                    type="button"
-                    className={ButtonClass(sortedColDir === 'asc')}
-                    onClick={() => setSortOverride({ slug: sortedColSlug, dir: 'asc' })}
-                  >
-                    {t('world.rating.sortAsc')}
-                  </button>
-                </div>
-              </div>
-            </div>
           </section>
 
           <section id="chart" className="mb-5 grid scroll-mt-24 gap-4 lg:grid-cols-[minmax(0,1.55fr)_minmax(min(100%,24rem),0.85fr)]">
@@ -660,41 +617,6 @@ export default function WorldRatingPage() {
             </aside>
           </section>
 
-          <section className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4 md:gap-4">
-            <TelemetryCard
-              label={t('world.rating.telemetry.withData')}
-              value={ranked.length}
-              unit={countryWord(ranked.length)}
-              valueDigits={0}
-              meta={activeYear ? t('world.rating.telemetry.metaYear', { year: activeYear }) : undefined}
-              delay={0}
-            />
-            <TelemetryCard
-              label={t('world.rating.telemetry.withoutData')}
-              value={withoutData.length}
-              unit={countryWord(withoutData.length)}
-              valueDigits={0}
-              meta={t('world.rating.telemetry.metaSelectedYear')}
-              delay={1}
-            />
-            <TelemetryCard
-              label={t('world.rating.telemetry.totalCountries')}
-              value={countries.length}
-              unit={countryWord(countries.length)}
-              valueDigits={0}
-              meta={t('world.rating.telemetry.metaCatalog')}
-              delay={2}
-            />
-            <TelemetryCard
-              label={t('world.rating.telemetry.yearsAvailable')}
-              value={years.length}
-              unit={yearWord(years.length)}
-              valueDigits={0}
-              meta={years.length ? `${years[0]}–${years[years.length - 1]}` : undefined}
-              delay={3}
-            />
-          </section>
-
           <section id="rating-table" className="mb-5 scroll-mt-24">
             <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
               <div>
@@ -705,13 +627,52 @@ export default function WorldRatingPage() {
                   {t('world.rating.allWithData', { n: ranked.length })}
                 </h2>
               </div>
-              <button
-                type="button"
-                className={ButtonClass(addOpen)}
-                onClick={() => setAddOpen((prev) => !prev)}
-              >
-                {t('world.rating.addColumn')}
-              </button>
+              <div className="flex min-w-0 flex-wrap items-end gap-2.5">
+                <label className="block min-w-[7.5rem]">
+                  <span className="mb-1 flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.16em] text-text-tertiary">
+                    <SlidersHorizontal size={11} className="text-champagne" />
+                    {t('common.year')}
+                  </span>
+                  <select
+                    value={activeYear || ''}
+                    onChange={(event) => setSelectedYear(Number(event.target.value))}
+                    disabled={!years.length}
+                    className="h-9 w-full rounded-xl border border-border-subtle bg-obsidian-light px-2.5 text-sm font-medium text-text-primary outline-none transition-colors focus:border-border-champagne"
+                  >
+                    {years.map((year) => (
+                      <option key={year} value={year}>{year}</option>
+                    ))}
+                  </select>
+                </label>
+                <div className="min-w-0">
+                  <p className="mb-1 text-[10px] font-mono uppercase tracking-[0.16em] text-text-tertiary">
+                    {t('world.rating.sortOrder')}
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    <button
+                      type="button"
+                      className={ButtonClass(sortedColDir === 'desc')}
+                      onClick={() => setSortOverride({ slug: sortedColSlug, dir: 'desc' })}
+                    >
+                      {t('world.rating.sortDesc')}
+                    </button>
+                    <button
+                      type="button"
+                      className={ButtonClass(sortedColDir === 'asc')}
+                      onClick={() => setSortOverride({ slug: sortedColSlug, dir: 'asc' })}
+                    >
+                      {t('world.rating.sortAsc')}
+                    </button>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  className={`${ButtonClass(addOpen)} h-9`}
+                  onClick={() => setAddOpen((prev) => !prev)}
+                >
+                  {t('world.rating.addColumn')}
+                </button>
+              </div>
             </div>
             {addOpen && (
               <div className="mb-3 max-w-lg rounded-2xl border border-border-subtle bg-obsidian-light px-4 py-3.5">
@@ -798,7 +759,7 @@ export default function WorldRatingPage() {
                     <tr key={item.country_code} className="border-t border-border-subtle transition-colors hover:bg-surface-hover">
                       <td className="px-4 py-3 font-mono text-text-tertiary">{item.rank}</td>
                       <td className="px-4 py-3">
-                        <Link to={rowHref(item, russiaLinks)} className="font-medium text-text-primary transition-colors hover:text-champagne">
+                        <Link to={rowHref(item, { conceptSlug: activeConcept, russiaIndicatorCode })} className="font-medium text-text-primary transition-colors hover:text-champagne">
                           {item.country_name}
                         </Link>
                       </td>

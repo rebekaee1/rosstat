@@ -111,6 +111,19 @@ def test_policy_is_official_provider_and_freshness_fail_closed():
     unknown = SimpleNamespace(**{**base, "provider": "news_aggregator"})
     assert forecast_eligibility_for(unknown)[1] == "provider_not_approved"
 
+    imf_annual = SimpleNamespace(
+        **{
+            **base,
+            "provider": "imf",
+            "dataset_id": "WEO",
+            "unit": "BN_USD",
+            "frequency": "annual",
+            "points_count": 40,
+            "history_end": date(2024, 1, 1),
+        }
+    )
+    assert forecast_eligibility_for(imf_annual)[1] == "provider_not_approved"
+
     stale = SimpleNamespace(**{**base, "history_end": date(2025, 1, 1)})
     assert forecast_eligibility_for(stale, today=date(2026, 8, 6))[1] == "series_is_stale"
 

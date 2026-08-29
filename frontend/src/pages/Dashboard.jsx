@@ -5,7 +5,6 @@ import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
 import HomeHero from '../components/home/HomeHero';
 import HomeWorkbench from '../components/home/HomeWorkbench';
-import HomeCoverage from '../components/home/HomeCoverage';
 import HomeCountryList from '../components/home/HomeCountryList';
 import { useWorldRatingConcepts } from '../lib/worldApi';
 import { useLocale } from '../i18n';
@@ -37,7 +36,6 @@ export default function Dashboard() {
     <div className="mx-auto max-w-7xl overflow-x-clip px-4 pb-28 pt-24 md:px-8">
       <HomeHero />
       <HomeWorkbench ratingConcepts={ratingConcepts} />
-      <HomeCoverage />
       <HomeCountryList russiaSeriesCount={indicators?.length || 0} />
     </div>
   );

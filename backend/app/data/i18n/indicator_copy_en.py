@@ -999,7 +999,8 @@ INDICATOR_COPY_EN: dict[str, IndicatorCopyEn] = {
         "methodology": (
             "Annual GDP estimate in current US dollars. "
             "Source: International Monetary Fund, World Economic Outlook. "
-            "The series contains published IMF values and estimates; no forecast is produced on the card."
+            "The series contains published values and fund estimates for closed "
+            "calendar years; the platform does not add a separate forecast line."
         ),
         "unit": "billion $",
     },
@@ -1013,7 +1014,8 @@ INDICATOR_COPY_EN: dict[str, IndicatorCopyEn] = {
         "methodology": (
             "Annual GDP per capita estimate in current US dollars. "
             "Source: International Monetary Fund, World Economic Outlook. "
-            "The series contains published IMF values and estimates; no forecast is produced on the card."
+            "The series contains published values and fund estimates for closed "
+            "calendar years; the platform does not add a separate forecast line."
         ),
         "unit": "$ per person",
     },
@@ -1029,7 +1031,8 @@ INDICATOR_COPY_EN: dict[str, IndicatorCopyEn] = {
         "methodology": (
             "General government net lending/borrowing for the year, percent of GDP. "
             "Source: International Monetary Fund, World Economic Outlook. "
-            "The series contains published IMF values and estimates; no forecast is produced on the card."
+            "The series contains published values and fund estimates for closed "
+            "calendar years; the platform does not add a separate forecast line."
         ),
         "unit": "% of GDP",
     },

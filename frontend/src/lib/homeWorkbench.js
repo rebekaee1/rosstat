@@ -4,6 +4,8 @@
 
 import { isCpiIndex } from './format';
 import {
+  countryPath,
+  indicatorPath,
   regionHubPath,
   regionRatingPath,
   russiaHomePath,
@@ -89,7 +91,7 @@ export const HOME_MAP_CONCEPT_ORDER = Object.freeze([
   'government-debt-gdp',
 ]);
 
-export const DEFAULT_HOME_COUNTRY_CONCEPT = 'unemployment-rate';
+export const DEFAULT_HOME_COUNTRY_CONCEPT = 'gdp-usd';
 
 /**
  * Оставляет из ответа API только показатели главной и выстраивает их порядком
@@ -128,15 +130,18 @@ export function conceptColorMode(conceptSlug) {
   return WORLD_CONCEPT_ZERO_CENTRED.has(conceptSlug) ? 'diverging' : 'relative';
 }
 
-/** Сколько стран показывает рейтинг рядом с картой (высота колонки под карту). */
-export const HOME_RATING_LIMIT = 20;
+/**
+ * Сколько стран показывает рейтинг рядом с картой. Колонка тянется по высоте
+ * карты (~30rem + шкала лет): 32 строки заполняют её без длинного скролла.
+ */
+export const HOME_RATING_LIMIT = 32;
 
 /**
  * World concept → российский ряд только при честной сопоставимости единицы.
  * Значения в рейтинг/карту отдаёт сервер (`world_russia_rank`); здесь — только
- * коды для перелинковки на карточку РФ. WEO-ряды (МВФ) не карточка каталога,
- * но у них есть валидные URL /russia/indicator/<code> — с карты главной Россия
- * ведёт туда, а не в «Сегодня», по тем же концептам, что и note-оговорка.
+ * коды для перелинковки на карточку РФ. WEO-ряды (МВФ) — карточки каталога
+ * /russia/indicator/<code>; с карты главной Россия ведёт туда, а не в
+ * «Сегодня», по тем же концептам, что и note-оговорка.
  */
 export const HOME_MAP_RUSSIA_CONCEPT_CODES = Object.freeze({
   'unemployment-rate': 'unemployment',
@@ -146,6 +151,42 @@ export const HOME_MAP_RUSSIA_CONCEPT_CODES = Object.freeze({
   'gdp-per-capita-usd': 'weo-gdp-per-capita-usd',
   'budget-balance-gdp': 'weo-budget-balance-gdp',
 });
+
+/**
+ * Понятия карты, значения которых на срезе опираются на выпуск МВФ WEO
+ * (для зарубежных стран — ряд фонда; для России в рейтинге ВВП — мост
+ * Росстат × курс Банка России, карточка клика — ряд МВФ).
+ */
+export const WEO_MAP_CONCEPTS = Object.freeze(new Set([
+  'gdp-usd',
+  'gdp-per-capita-usd',
+  'budget-balance-gdp',
+  'government-debt-gdp',
+]));
+
+export function isWeoMapConcept(slug) {
+  return WEO_MAP_CONCEPTS.has(slug);
+}
+
+/**
+ * Концепты, для которых сервер считает межстрановой ориентир
+ * (`benchmark_by_year` / `/compare/average`). Зеркало backend
+ * `_AVERAGE_CONCEPTS`: ВВП — медиана (скошенное распределение), ставки и
+ * безработица — среднее. Клиент ориентир не считает.
+ */
+export const WORLD_RANKING_AVERAGE_CONCEPTS = Object.freeze(new Set([
+  'hicp-index',
+  'unemployment-rate',
+  'budget-balance-gdp',
+  'gdp-usd',
+  'gdp-per-capita-usd',
+]));
+
+export const WORLD_RANKING_MEDIAN_CONCEPTS = Object.freeze(new Set([
+  'hicp-index',
+  'gdp-usd',
+  'gdp-per-capita-usd',
+]));
 
 /** World concept → код регионального рейтинга того же смысла (если есть). */
 export const WORLD_CONCEPT_REGION_RATING = Object.freeze({
@@ -316,6 +357,29 @@ export function russiaIndicatorCodeForConcept(conceptSlug) {
   return HOME_MAP_RUSSIA_CONCEPT_CODES[conceptSlug] || null;
 }
 
+/**
+ * Клик по стране на карте и в рейтинге: карточка ряда, если сервер отдал
+ * `indicator_code` в map-series; иначе страница страны. Россия — канон
+ * `/russia/indicator/…`.
+ */
+export function mapSelectHref(country, detail, {
+  conceptSlug,
+  russiaIndicatorCode = null,
+} = {}) {
+  const isRussia = country?.code === 'RU' || country?.slug === 'russia';
+  if (isRussia) {
+    const code = detail?.indicator_code
+      || russiaIndicatorCode
+      || russiaIndicatorCodeForConcept(conceptSlug);
+    return code ? russiaIndicatorPath(code) : russiaHomePath();
+  }
+  if (detail?.indicator_code && country?.slug) {
+    return indicatorPath(country.slug, detail.indicator_code);
+  }
+  if (country?.slug) return countryPath(country.slug);
+  return null;
+}
+
 export function regionRatingCodeForConcept(conceptSlug) {
   return WORLD_CONCEPT_REGION_RATING[conceptSlug] || null;
 }
@@ -332,8 +396,32 @@ export function russiaDeepLinksForConcept(conceptSlug) {
 }
 
 /**
+ * Страны каталога плюс все коды годового среза map-series.
+ * Карта и рейтинг читают один `yearItems`: иначе страны WEO окрашены,
+ * но не кликабельны (их нет в `/world/countries`).
+ */
+export function mapSurfaceCountries(catalogCountries = [], yearItems = {}) {
+  const list = [...(catalogCountries || [])];
+  const seen = new Set(list.map((country) => country?.code).filter(Boolean));
+  for (const item of Object.values(yearItems || {})) {
+    const code = item?.country_code;
+    if (!code || seen.has(code)) continue;
+    seen.add(code);
+    list.push({
+      code,
+      slug: item.country_slug,
+      name: item.country_name,
+      name_en: item.country_name,
+      is_active: true,
+    });
+  }
+  return list;
+}
+
+/**
  * Подмешивает каркас РФ в список стран, если сервер пометил concept.russia.
  * Значения берутся только из map-series/snapshot — клиент их не считает.
+ * Затем дополняет каталог странами среза, чтобы карта и таблица совпадали.
  */
 export function withRussiaOnHomeMap({
   countries = [],
@@ -363,5 +451,9 @@ export function withRussiaOnHomeMap({
   const ruCode = russia?.indicator_code
     || items.RU?.indicator_code
     || null;
-  return { countries: list, yearItems: items, russiaIndicatorCode: ruCode };
+  return {
+    countries: mapSurfaceCountries(list, items),
+    yearItems: items,
+    russiaIndicatorCode: ruCode,
+  };
 }

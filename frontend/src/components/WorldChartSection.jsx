@@ -18,9 +18,12 @@ import {
   useWorldCompareCatalog,
 } from '../lib/worldApi';
 import { rebaseWorldComparison } from '../lib/worldComparison';
+import {
+  WORLD_RANKING_AVERAGE_CONCEPTS,
+  WORLD_RANKING_MEDIAN_CONCEPTS,
+} from '../lib/homeWorkbench';
 import { useLocale, useT } from '../i18n';
 
-const AVERAGE_CONCEPTS = new Set(['hicp-index', 'unemployment-rate', 'budget-balance-gdp']);
 const COMPARISON_COLORS = ['#397C8C', '#7856A8', '#C86B5B', '#4D8A64'];
 const MAX_COMPARISONS = COMPARISON_COLORS.length;
 
@@ -34,7 +37,9 @@ function isAbsoluteLevel(unit, modeMeta) {
 }
 
 function averageCountryLabel(conceptSlug, t) {
-  if (conceptSlug === 'hicp-index') return t('world.chart.medianCountries');
+  if (WORLD_RANKING_MEDIAN_CONCEPTS.has(conceptSlug)) {
+    return t('world.chart.medianCountries');
+  }
   return t('world.chart.averageCountries');
 }
 
@@ -226,7 +231,7 @@ export default function WorldChartSection({
   }, [comparisonPeers, compareCatalog.data, conceptSlug, country?.slug, locale]);
   const pickerOptions = useMemo(() => {
     const result = [...comparisonOptions];
-    if (AVERAGE_CONCEPTS.has(conceptSlug)) {
+    if (WORLD_RANKING_AVERAGE_CONCEPTS.has(conceptSlug)) {
       result.unshift({
         code: 'average',
         country_name: averageCountryLabel(conceptSlug, t),

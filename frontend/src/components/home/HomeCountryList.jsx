@@ -96,16 +96,15 @@ function RegionSection({ group, open, onToggle }) {
 }
 
 /**
- * Список стран внизу главной: разделы по регионам, свёрнутые по умолчанию,
- * чтобы до Океании не приходилось листать всю Европу.
+ * Список стран внизу главной: разделы по регионам, свёрнутые по умолчанию.
+ * Раскрывается по клику — иначе до Океании пришлось бы листать всю Европу.
  * Россия входит в Европу — карточка ведёт в российский раздел.
  */
 export default function HomeCountryList({ russiaSeriesCount = 0 }) {
   const t = useT();
   const { locale } = useLocale();
   const { data, isLoading, isError, refetch, isFetching } = useWorldCountries();
-  // Первый регион раскрыт: иначе главная заканчивается пятью пустыми полосами.
-  const [openRegions, setOpenRegions] = useState(null);
+  const [openRegions, setOpenRegions] = useState(() => new Set());
 
   const groups = useMemo(() => {
     const listed = Number(russiaSeriesCount) || 0;
@@ -125,11 +124,9 @@ export default function HomeCountryList({ russiaSeriesCount = 0 }) {
     return groupCountriesByRegion(list, { locale });
   }, [data?.countries, locale, russiaSeriesCount]);
 
-  const expanded = openRegions ?? new Set(groups.length ? [groups[0].id] : []);
-
   const toggle = (id) => {
     setOpenRegions((prev) => {
-      const next = new Set(prev ?? (groups.length ? [groups[0].id] : []));
+      const next = new Set(prev);
       if (next.has(id)) next.delete(id);
       else {
         next.add(id);
@@ -177,7 +174,7 @@ export default function HomeCountryList({ russiaSeriesCount = 0 }) {
             <RegionSection
               key={group.id}
               group={group}
-              open={expanded.has(group.id)}
+              open={openRegions.has(group.id)}
               onToggle={() => toggle(group.id)}
             />
           ))}

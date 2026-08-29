@@ -20,6 +20,7 @@ import {
   russiaCategoriesPath,
   russiaIndicatorPath,
   todayPath,
+  WORLD_RATING_DEFAULT_CONCEPT,
   worldHubPath,
   worldRatingPath,
 } from './sitePaths';
@@ -42,6 +43,8 @@ describe('sitePaths', () => {
     expect(calendarPath(2026, 8)).toBe('/russia/calendar/2026/08');
     expect(demographicsPath()).toBe('/russia/demographics');
     expect(worldHubPath()).toBe('/world');
+    expect(WORLD_RATING_DEFAULT_CONCEPT).toBe('gdp-usd');
+    expect(worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)).toBe('/world/rating/gdp-usd');
     expect(worldRatingPath('gdp')).toBe('/world/rating/gdp');
     expect(russiaCategoriesPath()).toBe('/russia/category');
     expect(regionRatingHubPath()).toBe('/russia/region-rating');

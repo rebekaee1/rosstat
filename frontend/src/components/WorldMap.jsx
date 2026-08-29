@@ -193,7 +193,11 @@ export default function WorldMap({
     () => (hover ? features.find((geometry) => {
       const code = ISO_NUMERIC_TO_ALPHA2[numericId(geometry.id)];
       const country = resolveCountry(countryByCode, code);
-      return country?.code === hover.country.code;
+      if (country?.code === hover.country.code) return true;
+      if (code === hover.country.code) return true;
+      if (code === 'GB' && hover.country.code === 'UK') return true;
+      if (code === 'UK' && hover.country.code === 'GB') return true;
+      return false;
     }) : null),
     [countryByCode, features, hover],
   );
@@ -332,9 +336,18 @@ export default function WorldMap({
               aria-hidden="true"
             />
             {shapes.map(({ key, code, d }) => {
-              const country = resolveCountry(countryByCode, code);
-              const valueKey = country?.code || code;
-              const value = valueKey ? collectionValue(valuesByCode, valueKey) : null;
+              const catalogCountry = resolveCountry(countryByCode, code);
+              const valueKey = catalogCountry?.code || code;
+              const detail = (valueKey && detailsByCode?.get(valueKey))
+                || (code && detailsByCode?.get(code))
+                || null;
+              const country = catalogCountry || (detail?.country_slug ? {
+                code: detail.country_code || code,
+                slug: detail.country_slug,
+                name: detail.country_name || code,
+              } : null);
+              const value = valueKey ? collectionValue(valuesByCode, valueKey)
+                : (code ? collectionValue(valuesByCode, code) : null);
               const active = Boolean(country);
               const hasValue = value != null && Number.isFinite(Number(value));
               const isHover = Boolean(hover && country && hover.country.code === country.code);

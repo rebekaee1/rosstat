@@ -84,6 +84,7 @@ export default function WorldConceptPicker({
   label,
   searchable = true,
   hint = null,
+  trailing = null,
 }) {
   const t = useT();
   const sectionLabel = label || t('home.map.metricFallback');
@@ -161,9 +162,12 @@ export default function WorldConceptPicker({
     return (
       <div ref={rootRef} className="relative min-w-0">
         <div className="mb-1.5 flex flex-wrap items-center justify-between gap-2">
-          <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-            {sectionLabel}
-          </p>
+          <div className="flex items-center gap-1.5">
+            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+              {sectionLabel}
+            </p>
+            {trailing}
+          </div>
         </div>
         <button
           type="button"
@@ -194,6 +198,7 @@ export default function WorldConceptPicker({
         <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
           {sectionLabel}
         </p>
+        {trailing}
         {searchable ? searchField : null}
       </div>
       {chipStream}

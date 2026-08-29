@@ -7,9 +7,9 @@ import {
   defaultSortForConcept,
   homeConceptLabel,
   homeMapConcepts,
+  mapSelectHref,
   resolveActiveMapYear,
   resolveHomeConcept,
-  russiaIndicatorCodeForConcept,
   withRussiaOnHomeMap,
   worldRankingFromYearItems,
   worldYearItems,
@@ -23,13 +23,8 @@ import {
 import { SkeletonBox } from '../Skeleton';
 import ApiRetryBanner from '../ApiRetryBanner';
 import WorldConceptPicker from '../WorldConceptPicker';
+import WorldMapConceptNote from '../WorldMapConceptNote';
 import { track, events } from '../../lib/track';
-import {
-  countryPath,
-  indicatorPath,
-  russiaHomePath,
-  russiaIndicatorPath,
-} from '../../lib/sitePaths';
 import { useT } from '../../i18n';
 
 const WorldMap = lazy(() => import('../WorldMap'));
@@ -98,27 +93,11 @@ export default function HomeWorkbench({ ratingConcepts }) {
       concept,
       year: activeYear,
     });
-    if (country?.code === 'RU') {
-      // Сперва мету концепта (или код сервера), затем реестр сопоставимых кодов,
-      // и только после — раздел «Россия», не «Сегодня»: молчаливый today-фоллбек
-      // уводил клик по ВВП/бюджету с карты в несвязанный срез.
-      const code = detail?.indicator_code
-        || russiaIndicatorCode
-        || russiaIndicatorCodeForConcept(concept);
-      if (code) {
-        navigate(russiaIndicatorPath(code));
-        return;
-      }
-      navigate(russiaHomePath());
-      return;
-    }
-    if (detail?.indicator_code && country?.slug) {
-      navigate(indicatorPath(country.slug, detail.indicator_code));
-      return;
-    }
-    if (country?.slug) {
-      navigate(countryPath(country.slug));
-    }
+    const href = mapSelectHref(country, detail, {
+      conceptSlug: concept,
+      russiaIndicatorCode,
+    });
+    if (href) navigate(href);
   };
 
   return (
@@ -149,6 +128,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
           }}
           label={t('home.map.metricLabel')}
           searchable={false}
+          trailing={<WorldMapConceptNote conceptSlug={concept} />}
           hint={fullRatingHref ? (
             <Link
               to={fullRatingHref}
@@ -189,6 +169,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
                 metricName={conceptName}
                 periodLabel={activeYear ? String(activeYear) : ''}
                 colorMode={conceptColorMode(concept)}
+                colorDirection={sortDirection}
                 defaultScope="world"
                 onSelect={onSelectCountry}
               />

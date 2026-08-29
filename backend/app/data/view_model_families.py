@@ -535,7 +535,8 @@ def _build_demography_annual(f: "FamilyDef") -> Family:
     base, unit = f.base, f.unit
     ov = f.overrides
     modes = [
-        Mode("level", "level", GRAN_LABEL["year"], base, (), unit, "annual", True),
+        Mode("level", "level", GRAN_LABEL["year"], base, (), unit, "annual",
+             f.forecastable),
         _yoy_mode(base, "annual", ov),
         Mode("index", "index", "Индекс", _code(base, "index", ov),
              (("rebase_to_first", {}),), "индекс", "annual", False),
@@ -608,7 +609,8 @@ def _build_annual_abs(f: "FamilyDef") -> Family:
     base, unit, ov = f.base, f.unit, f.overrides
     yoy_unit = f.yoy_unit or unit
     modes = [
-        Mode("level", "level", GRAN_LABEL["year"], base, (), unit, "annual", True),
+        Mode("level", "level", GRAN_LABEL["year"], base, (), unit, "annual",
+             f.forecastable),
         _yoy_abs_mode(base, "annual", yoy_unit, ov),
     ]
     return Family(base, f.name, "T10a", unit, f.category, "level",
@@ -895,6 +897,26 @@ _FAMILY_DEFS: list[FamilyDef] = [
               "T12", "индекс", "Цены", "monthly"),
     FamilyDef("housing-affordability-primary", "Индекс доступности жилья (первичное жильё)",
               "T12", "индекс", "Цены", "monthly"),
+    # T10 — годовые оценки МВФ (ВВП в текущих $): уровень + Г/г + индекс.
+    # Квартального ряда нет — только годовые режимы. Прогноз платформы не
+    # строится: в ряд уже входят опубликованные значения и оценки выпуска
+    # фонда (forecast_steps=0, IMF не в OFFICIAL_PROVIDER_POLICIES).
+    FamilyDef(
+        "weo-gdp-usd", "ВВП в текущих долларах США", "T10", "млрд $", "ВВП",
+        "annual", forecastable=False,
+    ),
+    FamilyDef(
+        "weo-gdp-per-capita-usd",
+        "ВВП на душу населения в текущих долларах США",
+        "T10", "$ на человека", "ВВП", "annual", forecastable=False,
+    ),
+    # T10a — знакопеременное сальдо: уровень + Г/г в процентных пунктах.
+    FamilyDef(
+        "weo-budget-balance-gdp",
+        "Баланс бюджета сектора государственного управления",
+        "T10a", "% ВВП", "Государственные финансы", "annual",
+        yoy_unit="п.п.", forecastable=False,
+    ),
 ]
 
 

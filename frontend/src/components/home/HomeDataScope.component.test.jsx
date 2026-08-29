@@ -22,13 +22,19 @@ describe('HomeDataScope — состав платформы в hero главно
     expect(screen.getByText('48')).toBeTruthy();
     expect(screen.getByText(/стран мира/)).toBeTruthy();
 
-    expect(screen.getByText('1,7 млн+')).toBeTruthy();
+    expect(screen.getByText('42 075')).toBeTruthy();
+    expect(screen.getByText(/региональных рядов \(495 × 85 субъектов\)/)).toBeTruthy();
+
+    expect(screen.getByText('1897–2026')).toBeTruthy();
+    expect(screen.getByText(/период наблюдений/)).toBeTruthy();
   });
 
-  it('показывает официальные источники и режим обновления', () => {
+  it('показывает официальные источники в порядке международные — российские и режим обновления', () => {
     renderScope();
 
-    expect(screen.getByText(/Росстат, Банк России, Минфин России/)).toBeTruthy();
+    expect(screen.getByText(
+      'Евростат, МВФ, национальные статистические ведомства, Росстат, Банк России, Минфин России',
+    )).toBeTruthy();
     expect(screen.getByText(/06:00 и 20:00 МСК/)).toBeTruthy();
   });
 

@@ -2,7 +2,7 @@
 
 - **Status:** Accepted
 - **Date:** 2026-08-06
-- **Last verified:** 2026-08-22 (IMF WEO current-USD GDP concepts; provider identity, adapter contract, отдельные forecast tables, rolling-origin MASE gate).
+- **Last verified:** 2026-08-29 (WEO Russia cards listed, T10/T10a annual modes, ingest all WorldCountry; IMF still not in OFFICIAL_PROVIDER_POLICIES).
 - **Part of:** [`AGENTS.md`](../../AGENTS.md), [`CONTEXT.md`](../../CONTEXT.md), [`ADR-0011`](0011-world-eurostat-data-plane.md), [`ADR-0003`](0003-seo-single-source-server-rendered.md).
 
 ---
@@ -86,3 +86,18 @@ dataset `WEO`, адаптер `ImfWeoAdapter` (SDMX 3.0 `IMF.RES/WEO`). Кури
 отбрасываются на разборе SDMX, чтобы карта и рейтинг не принимали горизонт
 2031 за последнее значение. `forecast_steps: 0`, provider не добавлялся в
 `OFFICIAL_PROVIDER_POLICIES`.
+
+### 2026-08-29 — WEO cards listed; ingest all WorldCountry
+
+Российские ряды `weo-gdp-usd` / `weo-gdp-per-capita-usd` / `weo-budget-balance-gdp`
+сняты с `INDICATOR_HIDDEN_FROM_LISTING`: это карточки каталога (категории
+«ВВП» и «Государственные финансы») с годовой семьёй T10 / T10a, без квартальных
+режимов. Прогноз платформы по-прежнему не строится (`forecast_steps: 0`);
+в ряд входят оценки выпуска фонда за закрытые годы. `imf` не добавлялся в
+`OFFICIAL_PROVIDER_POLICIES` — квартальные российские стратегии ВВП к годовому
+WEO не подключать.
+
+Ingest `run_imf_weo_ingest` пишет ряды всем `world_countries`, не только
+`is_active=true`: иначе партнёры без Eurostat-витрины (US/JP/CN/…) не попадают
+на карту `gdp-usd` / `government-debt-gdp`. После записи listed IMF-рядов
+`repair-world-listing` включает страну через `has_non_eurostat`.

@@ -1,11 +1,11 @@
 # Forecast Economy
 
-> Forecast Economy (__PUBLIC_HOST__) — a public analytics platform for official economic statistics: Russia (100+ macroeconomic indicators — inflation, the Bank of Russia key rate, FX rates, GDP, unemployment, wages, the budget, equity indices, commodity markets), 489 regional indicators across 85 Russian regions, and available country statistics from official international sources. Sources: Rosstat, Bank of Russia, Ministry of Finance of Russia, Moscow Exchange, Eurostat. Data update automatically as publishers release (daily runs at 06:00 and 20:00 Moscow time). When citing, give __PUBLIC_HOST__ and the date of the latest value — it appears on every page.
+> Forecast Economy (__PUBLIC_HOST__) — a public analytics platform for official economic statistics: Russia (100+ macroeconomic indicators — inflation, the Bank of Russia key rate, FX rates, GDP, unemployment, wages, the budget, equity indices, commodity markets), 495 regional indicators across 85 Russian regions, and available country statistics from official international sources. Sources: Rosstat, Bank of Russia, Ministry of Finance of Russia, Moscow Exchange, Eurostat. Data update automatically as publishers release (daily runs at 06:00 and 20:00 Moscow time). When citing, give __PUBLIC_HOST__ and the date of the latest value — it appears on every page.
 
 ## What is on the site
 
 - **100+ macroeconomic indicators** for Russia in 12 categories: prices, interest rates, currencies, money and the budget, equity indices, commodity markets, labour market, GDP and growth, population, foreign trade, business and investment, science and education.
-- **489 regional indicators × 85 regions of Russia** — population, wages, prices, housing, industry, crime and more, from 1990: __PUBLIC_ORIGIN__/regions
+- **495 regional indicators × 85 regions of Russia** — population, wages, prices, housing, industry, crime and more, from 1990: __PUBLIC_ORIGIN__/regions
 - **Available country statistics** — country series from official international sources (World economy section): __PUBLIC_ORIGIN__/world
 - **Indicators for today** — current FX rates, the key rate, inflation, fuel and gold prices: __PUBLIC_ORIGIN__/today
 - **Regional rankings** for each indicator (leaders/laggards, comparison with the Russia-wide average): __PUBLIC_ORIGIN__/region-rating/{code}

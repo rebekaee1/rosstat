@@ -261,6 +261,11 @@ def test_parse_ggxcnl_ngdp_scale_zero_percent_values():
         WEO_GGXCNL_NGDP
     )
     assert weo_iso3_for("US") == "USA"
+    assert weo_iso3_for("JP") == "JPN"
+    assert weo_iso3_for("CN") == "CHN"
+    assert weo_iso3_for("BR") == "BRA"
+    assert weo_iso3_for("CA") == "CAN"
+    assert weo_iso3_for("GB") == "GBR"
     assert weo_iso3_for("DE") == "DEU"
     assert weo_iso3_for("RU") == "RUS"
     assert weo_iso3_for("XK") is None

@@ -8,6 +8,7 @@ import {
   demographicsPath,
   regionHubPath,
   russiaHomePath,
+  todayPath,
 } from '../lib/sitePaths';
 
 vi.mock('gsap', () => ({
@@ -45,7 +46,7 @@ describe('Navbar H-4 menu', () => {
     expect(within(nav).queryByRole('link', { name: 'Мировая экономика' })).toBeNull();
 
     const rating = within(nav).getByRole('link', { name: 'Рейтинг стран' });
-    expect(rating.getAttribute('href')).toBe('/world/rating/unemployment-rate');
+    expect(rating.getAttribute('href')).toBe('/world/rating/gdp-usd');
 
     expect(within(nav).getByRole('link', { name: 'Главная' }).getAttribute('href')).toBe('/');
     expect(within(nav).getByRole('link', { name: 'Россия' }).getAttribute('href')).toBe(russiaHomePath());
@@ -70,7 +71,7 @@ describe('Navbar H-4 menu', () => {
       expect(links.length).toBe(2);
     }
     const ratingLinks = within(nav).getAllByRole('link', { name: 'Рейтинг стран' });
-    expect(ratingLinks.every((a) => a.getAttribute('href') === '/world/rating/unemployment-rate')).toBe(true);
+    expect(ratingLinks.every((a) => a.getAttribute('href') === '/world/rating/gdp-usd')).toBe(true);
     expect(within(nav).getAllByRole('link', { name: /Сравнение/ }).length).toBe(2);
 
     expect(within(nav).getByRole('link', { name: 'Калькулятор инфляции' })).toBeTruthy();
@@ -85,6 +86,16 @@ describe('Navbar H-4 menu', () => {
     const footer = screen.getByRole('contentinfo');
     const regions = within(footer).getByRole('link', { name: 'Регионы России' });
     expect(regions.getAttribute('href')).toBe(regionHubPath());
+  });
+
+  it('карточка России и «Сегодня» доступны из футера', () => {
+    renderShell();
+
+    const footer = screen.getByRole('contentinfo');
+    expect(within(footer).getByRole('link', { name: 'Россия' }).getAttribute('href'))
+      .toBe(russiaHomePath());
+    expect(within(footer).getByRole('link', { name: 'Сегодня' }).getAttribute('href'))
+      .toBe(todayPath());
   });
 
   it('демография не осиротела: ссылка есть в футере', () => {

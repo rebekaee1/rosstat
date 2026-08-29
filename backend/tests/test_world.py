@@ -791,3 +791,18 @@ def test_world_search_and_404(world_client):
     assert world_client.get(
         "/api/v1/world/indicators/germany/no-such-code/data"
     ).status_code == 404
+
+
+def test_gdp_ranking_benchmark_is_median_not_mean():
+    from app.api.world import (
+        _AVERAGE_CONCEPTS,
+        _MEDIAN_BENCHMARK_CONCEPTS,
+        _benchmark_value,
+    )
+
+    assert "gdp-usd" in _AVERAGE_CONCEPTS
+    assert "gdp-per-capita-usd" in _AVERAGE_CONCEPTS
+    assert "gdp-usd" in _MEDIAN_BENCHMARK_CONCEPTS
+    assert _benchmark_value("gdp-usd", [1.0, 2.0, 100.0]) == 2.0
+    assert _benchmark_value("unemployment-rate", [1.0, 2.0, 3.0]) == 2.0
+    assert _benchmark_value("hicp-index", [1.0, 2.0, 100.0]) == 2.0

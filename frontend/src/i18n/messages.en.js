@@ -60,11 +60,15 @@ export default {
   'nav.calc.compound': 'Compound interest',
 
   'footer.tagline':
-    'Free analytics platform: Russia’s economy, regions, and cross-country statistics. Official sources, charts, and forecasts.',
+    'Official statistics for Russia: macroeconomic indicators, regions, and available country data. Series from national statistical offices and central banks.',
   'footer.categories': 'Categories',
   'footer.sources': 'Sources',
   'footer.tools': 'Tools',
   'footer.info': 'Information',
+  'footer.section.russia': 'Russia',
+  'footer.section.world': 'World',
+  'footer.russia': 'Russia',
+  'footer.today': 'Today',
   'footer.countries': 'Countries',
   'footer.worldRating': 'Country rankings',
   'footer.demographics': 'Demographics',
@@ -122,6 +126,18 @@ export default {
   'home.map.metricFallback': 'Indicator',
   'home.map.noDataYear': 'No data for this year',
   'home.map.fullRating': 'Full ranking',
+  'home.map.weoNoteAria': 'How to read the GDP map',
+  'home.map.weoNote.p1':
+    'The map and hover tooltip show the platform’s comparable value for the cross-country '
+    + 'ranking. The calculation is described in the Methodology section.',
+  'home.map.weoNote.p2':
+    'Opening a country leads to the official International Monetary Fund series.',
+  'home.map.weoNote.p3':
+    'The year 2026 and other projection years on the map are estimates from the IMF World '
+    + 'Economic Outlook. Russia’s quarterly outturns are published by Rosstat and collected '
+    + 'in the GDP category of the Russia section.',
+  'home.map.weoNote.methodology': 'Methodology',
+  'home.map.weoNote.russiaGdp': 'Russia GDP',
 
   'home.concept.gdp-usd': 'GDP',
   'home.concept.gdp-per-capita-usd': 'GDP per capita',
@@ -137,13 +153,6 @@ export default {
   'home.concept.activity-rate': 'Economic activity rate',
   'home.concept.gdp-per-capita-eu': 'GDP per capita vs EU',
 
-  'home.coverage.eyebrow': 'Platform coverage',
-  'home.coverage.title': 'How much data is available',
-  'home.coverage.countries': 'countries',
-  'home.coverage.series': 'data series',
-  'home.coverage.regions': 'Russian regions',
-  'home.coverage.period': 'observation period',
-
   'home.countries.eyebrow': 'Catalogue',
   'home.countries.title': 'Countries',
   'home.countries.russiaHint': 'macro and regions',
@@ -156,22 +165,24 @@ export default {
   'home.scope.stat.world.label': 'indicators across world countries',
   'home.scope.stat.countries.value': '48',
   'home.scope.stat.countries.label': 'countries worldwide',
-  'home.scope.stat.pages.value': '1.7M+',
-  'home.scope.stat.pages.label': 'pages with data',
+  'home.scope.stat.regions.value': '42,075',
+  'home.scope.stat.regions.label': 'regional series (495 × 85 regions)',
+  'home.scope.period.value': '1897–2026',
+  'home.scope.period.label': 'observation period',
   'home.scope.sources.label': 'Official data sources',
-  'home.scope.sources.list': 'Rosstat, Bank of Russia, Ministry of Finance, Eurostat, IMF, national statistical agencies',
+  'home.scope.sources.list': 'Eurostat, IMF, national statistical agencies, Rosstat, Bank of Russia, Ministry of Finance',
   'home.scope.update': 'Data updated daily at 06:00 and 20:00 MSK',
 
   'russia.eyebrow': 'Country',
   'russia.map.eyebrow': 'Territory and regions',
   'russia.map.caption': 'Map of the subjects of the Russian Federation',
-  'russia.map.note': '85 subjects — 489 regional indicators each',
+  'russia.map.note': '85 subjects — 495 regional indicators each',
   'russia.sections': 'Sections',
   'russia.link.today.title': 'Today',
   'russia.link.today.desc': 'Key indicators for the current date',
   'russia.link.regions.title': 'Regions',
   'russia.link.regions.desc':
-    '489 indicators across 85 subjects of the Russian Federation',
+    '495 indicators across 85 subjects of the Russian Federation',
   'russia.link.calendar.title': 'Calendar',
   'russia.link.calendar.desc': 'Official statistics release dates',
   'russia.link.demographics.title': 'Demographics',
@@ -818,7 +829,7 @@ export default {
   'regions.metric.poverty': 'Poverty',
   'regions.hubTitle': 'Regions of Russia — socio-economic indicators for 85 federal subjects',
   'regions.hubDesc':
-    'Statistics for 85 regions of Russia: population, wages, GRP, unemployment, investment, prices — 489 Rosstat indicators from 1990. Charts, regional rankings, and comparison with the national level.',
+    'Statistics for 85 regions of Russia: population, wages, GRP, unemployment, investment, prices — 495 Rosstat indicators from 1990. Charts, regional rankings, and comparison with the national level.',
   'regions.mapTitle': '{name} on the map of Russian regions',
   'regions.mapOverviewTitle': 'Map of Russian regions — overview of federal subjects',
   'regions.profileTitle': '{name} — regional statistics: population, wages, GRP, prices',
@@ -1567,7 +1578,7 @@ export default {
   'about.eyebrow': 'About',
   'about.intro.p1': 'Forecast Economy is a web platform for working with official economic statistics. The core is Russia: inflation and prices, the policy rate and market rates, GDP and industrial production, the labor market, foreign trade, the budget, equity indices and commodity markets. Plus regional series for Russia’s regions and available country statistics from official national and international primary sources.',
   'about.intro.p2before': 'We collect data from primary sources —',
-  'about.intro.p2after': '— show long historical series for more than 100 macroeconomic indicators and 489 regional indicators across 85 Russian regions, and build a',
+  'about.intro.p2after': '— show long historical series for more than 100 macroeconomic indicators and 495 regional indicators across 85 Russian regions, and build a',
   'about.intro.forecast': 'forecast',
   'about.intro.p2end': 'where the nature of the series justifies it.',
   'about.audienceTitle': 'Who this service is for',
@@ -1738,6 +1749,21 @@ export default {
     'The check runs per series, so a forecast for one indicator does not automatically admit '
     + 'other indicators for the same country. Derived modes — annual totals and rates of change '
     + '— are calculated from the already validated forecast of the source series.',
+  'meth.worldRankTitle': 'Cross-country GDP ranking',
+  'meth.worldRank.p1':
+    'On the world map and in the country ranking, GDP and GDP per capita in current US '
+    + 'dollars for foreign countries come from the IMF World Economic Outlook annual '
+    + 'estimate. For Russia the ranking uses a platform calculation: Rosstat’s annual GDP '
+    + 'in rubles converted to US dollars at the Bank of Russia average annual official '
+    + 'exchange rate. That keeps units comparable; national definitions and the fund’s '
+    + 'own currency conversions for other countries may differ.',
+  'meth.worldRank.p2':
+    'Opening a country on the map leads to the fund’s official series for that country. '
+    + 'Years the fund publishes as projections, including the current calendar year, appear '
+    + 'on the map as Outlook estimates, not as a closed statistical outturn. Russia’s '
+    + 'quarterly actuals are published by Rosstat and collected in the GDP category of '
+    + 'the Russia section.',
+  'meth.worldRank.link': 'Russia GDP category',
   'meth.updateTitle': 'Updating the forecast',
   'meth.update.modelTitle': 'The model follows the data',
   'meth.update.modelBody':

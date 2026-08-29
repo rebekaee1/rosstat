@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import WorldMap, { CountrySilhouette } from './WorldMap';
 import { LocaleProvider } from '../i18n';
@@ -179,13 +179,33 @@ describe('WorldMap tooltip', () => {
     expect(countryPath.getAttribute('class') || '').toMatch(/outline-none/);
     fireEvent.mouseOver(countryPath);
     await waitFor(() => {
-      const overlay = container.querySelector('path[pointer-events="none"][aria-hidden="true"]');
-      // graticule тоже pointer-events none; ищем залитый champagne-оверлей
       const highlights = [...container.querySelectorAll('path[aria-hidden="true"]')]
         .filter((node) => (node.getAttribute('fill') || '').includes('181,141,39'));
       expect(highlights.length).toBeGreaterThan(0);
       expect(highlights[0].getAttribute('d')).toBeTruthy();
-      expect(overlay || highlights[0]).toBeTruthy();
     });
+  });
+
+  it('кликает страну из map-series, даже если её нет в каталоге', () => {
+    const onSelect = vi.fn();
+    renderMap(
+      <WorldMap
+        countries={[]}
+        valuesByCode={new Map([['US', 28]])}
+        detailsByCode={new Map([['US', {
+          country_code: 'US',
+          country_slug: 'united-states',
+          country_name: 'США',
+          indicator_code: 'us-ngdpd',
+          value: 28,
+        }]])}
+        onSelect={onSelect}
+      />,
+    );
+    const btn = screen.getByRole('button', { name: /США/ });
+    fireEvent.click(btn);
+    expect(onSelect).toHaveBeenCalled();
+    expect(onSelect.mock.calls[0][0].slug).toBe('united-states');
+    expect(onSelect.mock.calls[0][1].indicator_code).toBe('us-ngdpd');
   });
 });

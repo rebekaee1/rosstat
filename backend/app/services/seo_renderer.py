@@ -528,12 +528,12 @@ _SPA_SSR_HIDE_SCRIPT = (
 # `_ssr_chrome_*()` / `_ssr_platform_deep_links()` по get_locale().
 _SSR_CHROME_HEADER = f"""<header class="seo-topbar"><div class="seo-topbar-in">
 <a class="seo-brand" href="/">Forecast<em>Economy</em></a>
-<nav class="seo-topnav"><a href="/">Главная</a><a href="{paths.russia_home()}">Россия</a><a href="{paths.today()}">Сегодня</a><a href="{paths.region_hub()}">Регионы</a><a href="/#countries">Страны</a><a href="{paths.world_rating("unemployment-rate")}">Рейтинг стран</a><a href="{paths.calendar()}">Календарь</a><a href="/compare">Сравнение</a><a href="/calculator">Калькуляторы</a><a href="/about">О проекте</a></nav>
+<nav class="seo-topnav"><a href="/">Главная</a><a href="{paths.russia_home()}">Россия</a><a href="{paths.today()}">Сегодня</a><a href="{paths.region_hub()}">Регионы</a><a href="/#countries">Страны</a><a href="{paths.world_rating("gdp-usd")}">Рейтинг стран</a><a href="{paths.calendar()}">Календарь</a><a href="/compare">Сравнение</a><a href="/calculator">Калькуляторы</a><a href="/about">О проекте</a></nav>
 </div></header>"""
 
 _SSR_CHROME_HEADER_EN = f"""<header class="seo-topbar"><div class="seo-topbar-in">
 <a class="seo-brand" href="/">Forecast<em>Economy</em></a>
-<nav class="seo-topnav"><a href="/">Home</a><a href="{paths.today()}">Today</a><a href="{paths.region_hub()}">Regions</a><a href="/#countries">Countries</a><a href="{paths.world_rating("unemployment-rate")}">Country rankings</a><a href="{paths.calendar()}">Calendar</a><a href="/compare">Compare</a><a href="/calculator">Calculators</a><a href="/about">About</a></nav>
+<nav class="seo-topnav"><a href="/">Home</a><a href="{paths.today()}">Today</a><a href="{paths.region_hub()}">Regions</a><a href="/#countries">Countries</a><a href="{paths.world_rating("gdp-usd")}">Country rankings</a><a href="{paths.calendar()}">Calendar</a><a href="/compare">Compare</a><a href="/calculator">Calculators</a><a href="/about">About</a></nav>
 </div></header>"""
 
 _SSR_CHROME_FOOTER = f"""<div class="seo-cta"><div class="seo-cta-in">

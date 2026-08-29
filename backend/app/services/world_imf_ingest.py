@@ -7,7 +7,9 @@
       "import asyncio; from app.services.world_imf_ingest import run_imf_weo_ingest; \\
        print(asyncio.run(run_imf_weo_ingest(country_codes=['US','DE','RU'])))"
 
-Страны: active ``world_countries`` + RU в каталог ``indicators``.
+Страны: все ``world_countries`` (включая ``is_active=false``: иначе
+партнёры без Eurostat-витрины не получают ряды МВФ, и карта долга/ВВП
+остаётся европейской) + RU в каталог ``indicators``.
 WorldCountry для России не создаём.
 """
 
@@ -49,12 +51,16 @@ from app.services.upsert import bulk_upsert, prune_indicator_dates_not_in
 logger = logging.getLogger(__name__)
 
 
-async def _active_world_iso2(db: AsyncSession) -> list[str]:
-    rows = (
-        await db.execute(
-            select(WorldCountry.code).where(WorldCountry.is_active.is_(True))
-        )
-    ).scalars().all()
+async def _world_iso2_for_ingest(db: AsyncSession) -> list[str]:
+    """Все ISO-2 из ``world_countries``, не только витринные.
+
+    Партнёры сравнения (US/JP/CN/…) часто ``is_active=false`` до появления
+    national-core или рядов МВФ. Если ingest их пропускает, карта
+    ``government-debt-gdp`` / ``gdp-usd`` остаётся европейской. После записи
+    listed IMF-рядов ``repair-world-listing`` включает страну через
+    ``has_non_eurostat``.
+    """
+    rows = (await db.execute(select(WorldCountry.code))).scalars().all()
     return [str(code).strip().upper() for code in rows if code]
 
 
@@ -189,7 +195,7 @@ async def run_imf_weo_ingest(
     *,
     country_codes: list[str] | None = None,
 ) -> dict[str, int]:
-    """Загрузить NGDPD / NGDPDPC / GGXCNL_NGDP / GGXWDG_NGDP для active world countries и RU-overlay.
+    """Загрузить NGDPD / NGDPDPC / GGXCNL_NGDP / GGXWDG_NGDP всем world_countries и RU-overlay.
 
     Политика года наблюдений применяется внутри разбора ответа:
     ``parse_imf_weo_sdmx`` читает код серии из payload и отсекает годы по
@@ -205,13 +211,13 @@ async def run_imf_weo_ingest(
         await db.refresh(run)
         run_id = run.id
 
-        active = await _active_world_iso2(db)
+        catalog = await _world_iso2_for_ingest(db)
         requested = (
             {code.strip().upper() for code in country_codes if code and code.strip()}
             if country_codes is not None
             else None
         )
-        world_iso2 = [code for code in active if requested is None or code in requested]
+        world_iso2 = [code for code in catalog if requested is None or code in requested]
         include_ru = requested is None or "RU" in requested
         countries = {
             row.code: row

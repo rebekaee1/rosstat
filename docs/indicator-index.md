@@ -2,7 +2,7 @@
 
 > Генерируется `scripts/build-indicator-index.py`. НЕ редактировать руками. Полная машинная версия — `docs/indicator-index.json`. Подробности по каждому коду (files/derived_siblings) — в JSON.
 
-**Сгенерировано:** 2026-08-28
+**Сгенерировано:** 2026-08-29
 
 ## Как пользоваться (для агента)
 
@@ -24,17 +24,17 @@
 
 ## Сводка
 
-- Всего кодов: **940**
+- Всего кодов: **945**
 - in_both_viewmode_systems (дубль легаси+generic): **14**
 - shadowed_legacy (мёртвая легаси-ветка): **24**
-- unresolved (нет ui_stack): **6**
+- unresolved (нет ui_stack): **3**
 - derived_not_seeded: **0**
 
-По стекам: `cpi`=32, `generic`=889, `housing`=8, `null`=6, `ppi`=5
+По стекам: `cpi`=32, `generic`=897, `housing`=8, `null`=3, `ppi`=5
 
 ### Unresolved (ui_stack=null)
 
-`cny-eur`, `gbp-eur`, `steel`, `weo-budget-balance-gdp`, `weo-gdp-per-capita-usd`, `weo-gdp-usd`
+`cny-eur`, `gbp-eur`, `steel`
 
 ## Все индикаторы
 
@@ -966,9 +966,14 @@
 | `wages-real-yoy-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `wages-real-yoy-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
 | `wages-yoy` | Рынок труда | monthly | `generic` | derived_from_source | — | — |
-| `weo-budget-balance-gdp` | Государственные финансы | annual | `null` | — | — | no-stack |
-| `weo-gdp-per-capita-usd` | ВВП | annual | `null` | — | — | no-stack |
-| `weo-gdp-usd` | ВВП | annual | `null` | — | — | no-stack |
+| `weo-budget-balance-gdp` | Государственные финансы | annual | `generic` | — | ✓ | — |
+| `weo-budget-balance-gdp-yoy` | Государственные финансы | annual | `generic` | — | — | — |
+| `weo-gdp-per-capita-usd` | ВВП | annual | `generic` | — | ✓ | — |
+| `weo-gdp-per-capita-usd-index` | ВВП | annual | `generic` | — | — | — |
+| `weo-gdp-per-capita-usd-yoy` | ВВП | annual | `generic` | — | — | — |
+| `weo-gdp-usd` | ВВП | annual | `generic` | — | ✓ | — |
+| `weo-gdp-usd-index` | ВВП | annual | `generic` | — | — | — |
+| `weo-gdp-usd-yoy` | ВВП | annual | `generic` | — | — | — |
 | `wheat` | Товарные рынки | monthly | `generic` | — | ✓ | — |
 | `wheat-avg-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
 | `wheat-avg-year` | Товарные рынки | annual | `generic` | — | — | — |
@@ -991,7 +996,7 @@
 - **Тип** (верх, эталон — переключатель ИПЦ): `value` Уровень/значение · `pop` К прошлому периоду · `yoy` К соотв. периоду пред. года · `index` Индекс
 - **Частота** (низ): `day` дн · `week` нед · `month` мес · `quarter` кв · `year` год
 
-Корней-семейств: **122** · с полной матрицей: **104** · с пробелами: **18**. Покрытие: {'bespoke': 7, 'bespoke-data': 4, 'generic': 105, 'orphan': 6}.
+Корней-семейств: **122** · с полной матрицей: **107** · с пробелами: **15**. Покрытие: {'bespoke': 7, 'bespoke-data': 4, 'generic': 108, 'orphan': 3}.
 
 ## Систематические пробелы по типам
 
@@ -1004,8 +1009,8 @@
 | bespoke/HOUSING | index | quarter | 2 | `pop:year` |
 | bespoke/PPI | index | month | 1 | `yoy:quarter`, `yoy:year` |
 | generic/T1 | rate | day | 21 | — |
-| generic/T10 | annual-count | year | 11 | — |
-| generic/T10a | annual-signed | year | 9 | — |
+| generic/T10 | annual-count | year | 13 | — |
+| generic/T10a | annual-signed | year | 10 | — |
 | generic/T12 | ratio-index | month | 2 | — |
 | generic/T2y | rate | month | 12 | — |
 | generic/T3 | index | month | 5 | — |
@@ -1018,7 +1023,6 @@
 | generic/T8 | index | month | 1 | `pop:year` |
 | generic/T9 | gdp | quarter | 10 | — |
 | generic/T9s | signed-flow | quarter | 3 | — |
-| orphan/- | annual-count | year | 3 | `index:year`, `yoy:year` |
 | orphan/- | avg-level | day | 3 | `pop:month`, `pop:quarter`, `value:month`, `value:quarter`, `value:week`, `value:year`, `yoy:month`, `yoy:quarter`, `yoy:year` |
 
 ## Корни с пробелами матрицы
@@ -1037,9 +1041,6 @@
 | `cpi-nonfood` | bespoke/CPI | index | month | 0.8 | `yoy:quarter`, `yoy:year` | partial | yes | curated |
 | `cpi-services` | bespoke/CPI | index | month | 0.8 | `yoy:quarter`, `yoy:year` | partial | yes | curated |
 | `ppi` | bespoke/PPI | index | month | 0.8 | `yoy:quarter`, `yoy:year` | full | yes | curated |
-| `weo-budget-balance-gdp` | orphan/- | annual-count | year | 0.333 | `yoy:year`, `index:year` | full | no | curated |
-| `weo-gdp-per-capita-usd` | orphan/- | annual-count | year | 0.333 | `yoy:year`, `index:year` | full | no | curated |
-| `weo-gdp-usd` | orphan/- | annual-count | year | 0.333 | `yoy:year`, `index:year` | full | no | curated |
 | `housing-price-primary` | bespoke/HOUSING | index | quarter | 0.857 | `pop:year` | full | yes | curated |
 | `housing-price-secondary` | bespoke/HOUSING | index | quarter | 0.857 | `pop:year` | full | yes | curated |
 | `wages-real` | generic/T8 | index | month | 0.9 | `pop:year` | full | yes | curated |

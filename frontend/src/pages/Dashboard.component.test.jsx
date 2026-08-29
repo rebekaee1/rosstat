@@ -41,13 +41,10 @@ const INDICATORS = [
 ];
 
 describe('Dashboard', () => {
-  it('собирает hero с составом платформы, витрину стран, покрытие и каталог стран', async () => {
+  it('собирает hero с составом платформы, витрину стран и каталог стран', async () => {
     mockApiGet([
       ['/auth/me', { user: null }],
       ['/dashboard/sparklines', {}],
-      ['/dashboard/coverage', {
-        countries: 48, series: 12000, regions: 85, year_from: 1897, year_to: 2026,
-      }],
       [/^\/indicators/, INDICATORS],
       ['/indicators', INDICATORS],
       ['/world/countries', { countries: [], total: 0 }],
@@ -68,10 +65,13 @@ describe('Dashboard', () => {
     expect(screen.queryByPlaceholderText(/Найти показатель/)).toBeNull();
     // Вместо них — блок состава платформы.
     expect(screen.getByRole('heading', { name: 'Что внутри платформы' })).toBeTruthy();
-    expect(screen.getByText('489')).toBeTruthy();
+    expect(screen.getByText('42 075')).toBeTruthy();
     expect(screen.getByRole('heading', { name: 'Страны и показатели' })).toBeTruthy();
-    expect(screen.getByRole('heading', { name: 'Сколько данных доступно' })).toBeTruthy();
-    expect(await screen.findByRole('heading', { name: 'Страны' })).toBeTruthy();
+    expect(screen.queryByRole('heading', { name: 'Сколько данных доступно' })).toBeNull();
+    expect(screen.queryByText('Покрытие платформы')).toBeNull();
+    const europe = await screen.findByRole('button', { name: /Европа/ });
+    expect(europe.getAttribute('aria-expanded')).toBe('false');
+    expect(screen.getByRole('heading', { name: 'Страны' })).toBeTruthy();
 
     // Блоки, снятые с главной по правкам 9 и 10: категории России и инструменты.
     expect(screen.queryByText('Категории России')).toBeNull();

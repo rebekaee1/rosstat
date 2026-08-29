@@ -7,10 +7,13 @@ import { track, trackOutbound, events } from '../lib/track';
 import { openConsentSettings } from '../lib/consent';
 import {
   calendarPath,
+  comparePath,
   demographicsPath,
   regionHubPath,
   russiaCategoriesPath,
   russiaCategoryPath,
+  russiaHomePath,
+  todayPath,
 } from '../lib/sitePaths';
 import { WORLD_RATING_TO } from '../lib/navItems';
 import { useT, useLocale } from '../i18n';
@@ -20,6 +23,13 @@ const footLink = cn(
   'rounded-sm lift-hover inline-block hover:text-text-primary transition-colors'
 );
 
+const SOURCE_LINKS = [
+  { href: 'https://ec.europa.eu/eurostat', key: 'footer.eurostat' },
+  { href: 'https://rosstat.gov.ru', key: 'footer.rosstat' },
+  { href: 'https://cbr.ru', key: 'footer.cbr' },
+  { href: 'https://minfin.gov.ru', key: 'footer.minfin' },
+];
+
 export default function Footer() {
   const t = useT();
   const { locale } = useLocale();
@@ -28,15 +38,33 @@ export default function Footer() {
   return (
     <footer className="mt-auto bg-obsidian-light rounded-t-[3rem] border-t border-border-subtle">
       <div className="max-w-6xl mx-auto px-6 py-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
-          <div className="sm:col-span-2 lg:col-span-1">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+          <div>
             <div className="flex items-center gap-2 mb-3">
               <TrendingUp className="w-5 h-5 text-champagne" />
               <span className="text-base font-bold">Forecast Economy</span>
             </div>
-            <p className="text-sm text-text-secondary leading-relaxed max-w-xs">
+            <p className="text-sm text-text-secondary leading-relaxed">
               {t('footer.tagline')}
             </p>
+            <h4 className="mt-5 text-xs uppercase tracking-wider text-text-tertiary mb-2 font-medium">
+              {t('footer.sources')}
+            </h4>
+            <ul className="space-y-2 text-sm text-text-secondary">
+              {SOURCE_LINKS.map((item) => (
+                <li key={item.href}>
+                  <a
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={footLink}
+                    onClick={() => trackOutbound(item.href)}
+                  >
+                    {t(item.key)}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
 
           <div>
@@ -63,50 +91,17 @@ export default function Footer() {
 
           <div>
             <h4 className="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-medium">
-              {t('footer.sources')}
+              {t('footer.section.russia')}
             </h4>
             <ul className="space-y-2 text-sm text-text-secondary">
               <li>
-                <a href="https://rosstat.gov.ru" target="_blank" rel="noopener noreferrer" className={footLink} onClick={() => trackOutbound('https://rosstat.gov.ru')}>
-                  {t('footer.rosstat')}
-                </a>
-              </li>
-              <li>
-                <a href="https://cbr.ru" target="_blank" rel="noopener noreferrer" className={footLink} onClick={() => trackOutbound('https://cbr.ru')}>
-                  {t('footer.cbr')}
-                </a>
-              </li>
-              <li>
-                <a href="https://minfin.gov.ru" target="_blank" rel="noopener noreferrer" className={footLink} onClick={() => trackOutbound('https://minfin.gov.ru')}>
-                  {t('footer.minfin')}
-                </a>
-              </li>
-              <li>
-                <a href="https://ec.europa.eu/eurostat" target="_blank" rel="noopener noreferrer" className={footLink} onClick={() => trackOutbound('https://ec.europa.eu/eurostat')}>
-                  {t('footer.eurostat')}
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-medium">
-              {t('footer.tools')}
-            </h4>
-            <ul className="space-y-2 text-sm text-text-secondary">
-              <li>
-                <Link to="/#countries" className={footLink}>
-                  {t('footer.countries')}
+                <Link to={russiaHomePath()} className={footLink}>
+                  {t('footer.russia')}
                 </Link>
               </li>
               <li>
-                <Link to={WORLD_RATING_TO} className={footLink}>
-                  {t('footer.worldRating')}
-                </Link>
-              </li>
-              <li>
-                <Link to={demographicsPath()} className={footLink}>
-                  {t('footer.demographics')}
+                <Link to={todayPath()} className={footLink}>
+                  {t('footer.today')}
                 </Link>
               </li>
               <li>
@@ -120,7 +115,43 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/compare" className={footLink}>
+                <Link to={demographicsPath()} className={footLink}>
+                  {t('footer.demographics')}
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-medium">
+              {t('footer.section.world')}
+            </h4>
+            <ul className="space-y-2 text-sm text-text-secondary">
+              <li>
+                <Link to="/#countries" className={footLink}>
+                  {t('footer.countries')}
+                </Link>
+              </li>
+              <li>
+                <Link to={WORLD_RATING_TO} className={footLink}>
+                  {t('footer.worldRating')}
+                </Link>
+              </li>
+              <li>
+                <Link to={comparePath()} className={footLink}>
+                  {t('footer.compare')}
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-medium">
+              {t('footer.tools')}
+            </h4>
+            <ul className="space-y-2 text-sm text-text-secondary">
+              <li>
+                <Link to={comparePath()} className={footLink}>
                   {t('footer.compare')}
                 </Link>
               </li>

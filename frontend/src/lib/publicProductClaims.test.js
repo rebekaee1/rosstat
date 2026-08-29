@@ -18,7 +18,6 @@ const SURFACES = [
   'frontend/src/pages/Dashboard.jsx',
   'frontend/src/components/home/HomeHero.jsx',
   'frontend/src/components/home/HomeCountryList.jsx',
-  'frontend/src/components/home/HomeCoverage.jsx',
   'frontend/src/components/home/HomeWorkbench.jsx',
   'frontend/src/pages/About.jsx',
   'frontend/src/pages/Privacy.jsx',

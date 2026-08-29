@@ -436,10 +436,107 @@ def test_crosswalk_codes_present_for_all_concepts():
     """Crosswalk-инвариант: известные concept'ы с национальными рядами."""
 
     for concept_slug, expected_members in (
-        ("hicp-index", {"us-cpi-all", "uk-cpi-all"}),
-        ("unemployment-rate", {"us-unemployment-rate"}),
+        ("hicp-index", {"us-cpi-all", "uk-cpi-all", "jp-cpi-all", "kr-cpi-all"}),
+        ("unemployment-rate", {"us-unemployment-rate", "jp-unemployment-rate"}),
         ("population", {"au-population", "ca-population", "uk-population"}),
         ("activity-rate", {"au-participation-rate", "uk-participation-rate"}),
     ):
         codes = set(national_codes_for_concept(concept_slug))
         assert expected_members <= codes, concept_slug
+
+
+def test_map_series_uses_unlisted_eurostat_when_national_missing(auth_env):
+    """Карта: eurostat-срез без is_listed, если national-core ряда ещё нет.
+
+    JP unemployment живёт в une_rt_m, но unlist_eurostat_on_national_passports
+    снимает его с каталога страны до ingest e-Stat. Рейтинг/карта всё равно
+    должны показать Японию.
+    """
+    import asyncio
+    from datetime import date
+    from fastapi.testclient import TestClient
+    from app.models import WorldCountry, WorldDataPoint, WorldIndicator
+
+    async def _seed():
+        async with auth_env["session_maker"]() as db:
+            jp = WorldCountry(
+                code="JP", slug="japan", name_ru="Япония",
+                name_en="Japan", region_ru="Азия", sort_order=20,
+            )
+            de = WorldCountry(
+                code="DE", slug="germany", name_ru="Германия",
+                name_en="Germany", region_ru="Европа", sort_order=1,
+            )
+            db.add_all([jp, de])
+            await db.flush()
+            jp_une = WorldIndicator(
+                country_id=jp.id,
+                code="jp-une_rt_m-total-sa-t-pc-act",
+                provider="eurostat",
+                dataset_id="une_rt_m",
+                slice_json={
+                    "age": "TOTAL", "sex": "T", "s_adj": "SA",
+                    "unit": "PC_ACT", "freq": "M",
+                },
+                slice_hash="jp-une",
+                name_ru="Уровень безработицы",
+                name_en="Unemployment rate",
+                name_quality="curated",
+                unit="PC_ACT",
+                unit_ru="% экономически активного населения",
+                frequency="monthly",
+                category_ru="Рынок труда",
+                source="Евростат",
+                history_start=date(2024, 1, 1),
+                history_end=date(2025, 6, 1),
+                points_count=18,
+                is_listed=False,
+            )
+            de_une = WorldIndicator(
+                country_id=de.id,
+                code="de-une_rt_m-total-sa-t-pc-act",
+                provider="eurostat",
+                dataset_id="une_rt_m",
+                slice_json={
+                    "age": "TOTAL", "sex": "T", "s_adj": "SA",
+                    "unit": "PC_ACT", "freq": "M",
+                },
+                slice_hash="de-une",
+                name_ru="Уровень безработицы",
+                name_en="Unemployment rate",
+                name_quality="curated",
+                unit="PC_ACT",
+                unit_ru="% экономически активного населения",
+                frequency="monthly",
+                category_ru="Рынок труда",
+                source="Евростат",
+                history_start=date(2024, 1, 1),
+                history_end=date(2025, 6, 1),
+                points_count=18,
+                is_listed=True,
+            )
+            db.add_all([jp_une, de_une])
+            await db.flush()
+            for ind in (jp_une, de_une):
+                for i in range(18):
+                    db.add(WorldDataPoint(
+                        indicator_id=ind.id,
+                        date=date(2024 + i // 12, i % 12 + 1, 1),
+                        value=2.5 + i * 0.01,
+                    ))
+            await db.commit()
+
+    asyncio.run(_seed())
+    with TestClient(auth_env["app"]) as tc:
+        body = tc.get("/api/v1/world/compare/map-series/unemployment-rate").json()
+        year = str(max(body["years"]))
+        codes = set(body["values_by_year"][year])
+        assert "JP" in codes
+        assert "DE" in codes
+        jp_page = tc.get("/api/v1/world/countries/japan").json()
+        listed_codes = {
+            row["code"]
+            for cat in jp_page.get("categories") or []
+            for row in cat.get("indicators") or []
+        }
+        assert "jp-une_rt_m-total-sa-t-pc-act" not in listed_codes

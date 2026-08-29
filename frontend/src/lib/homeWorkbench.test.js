@@ -22,6 +22,9 @@ import {
   defaultSortForConcept,
   worldRatingTitle,
   worldYearItems,
+  mapSelectHref,
+  mapSurfaceCountries,
+  isWeoMapConcept,
 } from './homeWorkbench';
 
 describe('homeWorkbench', () => {
@@ -52,7 +55,10 @@ describe('homeWorkbench', () => {
     expect(resolveHomeConcept([{ slug: 'gdp-usd' }])).toBe('gdp-usd');
     // Ни одного «нашего» — отдаём список как есть, чтобы карта не осталась без выбора.
     expect(homeMapConcepts([{ slug: 'activity-rate' }]).map((c) => c.slug)).toEqual(['activity-rate']);
-    expect(HOME_RATING_LIMIT).toBe(20);
+    expect(DEFAULT_HOME_COUNTRY_CONCEPT).toBe('gdp-usd');
+    expect(HOME_RATING_LIMIT).toBe(32);
+    expect(HOME_RATING_LIMIT).toBeGreaterThanOrEqual(28);
+    expect(HOME_RATING_LIMIT).toBeLessThanOrEqual(36);
   });
 
   it('собирает мировой рыночный срез из одного массива объектов', () => {
@@ -229,6 +235,39 @@ describe('homeWorkbench', () => {
       },
     });
     expect(pop.yearItems.RU.value).toBeCloseTo(146_120_000);
+  });
+
+  it('ведёт клик по ВВП на карточку ряда МВФ, Россию — на weo-gdp-usd', () => {
+    expect(isWeoMapConcept('gdp-usd')).toBe(true);
+    expect(isWeoMapConcept('unemployment-rate')).toBe(false);
+    expect(mapSelectHref(
+      { code: 'US', slug: 'united-states' },
+      { indicator_code: 'us-ngdpd' },
+      { conceptSlug: 'gdp-usd' },
+    )).toBe('/united-states/indicator/us-ngdpd');
+    expect(mapSelectHref(
+      { code: 'RU', slug: 'russia' },
+      { indicator_code: 'weo-gdp-usd' },
+      { conceptSlug: 'gdp-usd' },
+    )).toBe('/russia/indicator/weo-gdp-usd');
+    expect(mapSelectHref(
+      { code: 'DE', slug: 'germany' },
+      {},
+      { conceptSlug: 'gdp-usd' },
+    )).toBe('/germany');
+    const merged = mapSurfaceCountries(
+      [{ code: 'DE', slug: 'germany', name: 'Германия' }],
+      {
+        US: {
+          country_code: 'US',
+          country_slug: 'united-states',
+          country_name: 'США',
+          value: 28,
+        },
+        DE: { country_code: 'DE', country_slug: 'germany', value: 4 },
+      },
+    );
+    expect(merged.map((c) => c.code)).toEqual(['DE', 'US']);
   });
 
   it('даёт перелинковку в регионы для сопоставимых концептов', () => {

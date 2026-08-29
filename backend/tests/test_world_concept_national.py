@@ -23,16 +23,18 @@ def test_hicp_national_uses_level_indices_only():
     # hicp-index всегда считает изменение за год от уровня индекса.
     # CN `cn-cpi-all` — уже «тот же месяц прошлого года = 100», не уровень.
     # BR: `br-cpi-ipca` — % м/м; `br-cpi-ipca-yoy` — уже готовый YoY.
-    # JP — национального CPI-ряда нет.
+    # JP/KR — уровень индекса (e-Stat / ECOS), не готовый YoY; коды в
+    # crosswalk, чтобы карта подхватила ряд сразу после national ingest.
     mapping = NATIONAL_CONCEPT_INDICATOR_CODES["hicp-index"]
     codes = national_codes_for_concept("hicp-index")
     assert mapping["US"] == "us-cpi-all"
+    assert mapping["JP"] == "jp-cpi-all"
+    assert mapping["KR"] == "kr-cpi-all"
     assert "cn-cpi-all" not in codes
     assert "br-cpi-ipca" not in codes
     assert "br-cpi-ipca-yoy" not in codes
     assert "CN" not in mapping
     assert "BR" not in mapping
-    assert "JP" not in mapping
 
 
 def test_all_mapped_codes_unique_per_concept():

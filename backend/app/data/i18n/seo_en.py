@@ -294,7 +294,7 @@ PAGE_META_EN: dict[str, PageSeo] = {
             (paths.today(), "Economy today: FX, key rate, inflation"),
             (paths.russia_indicator("cpi"), "Consumer Price Index"),
             (paths.region_hub(), "Regions of Russia"),
-            ("/world/rating/unemployment-rate", "Country rankings"),
+            ("/world/rating/gdp-usd", "Country rankings"),
             (paths.demographics(), "Age structure of the population"),
             ("/calculator", "Inflation calculator"),
             ("/compare", "Compare indicators"),
@@ -304,7 +304,7 @@ PAGE_META_EN: dict[str, PageSeo] = {
             SeoBlock(
                 "About the platform",
                 "The platform provides more than 100 Russian macroeconomic indicators, "
-                "489 regional indicators, and statistics for available countries. "
+                "495 regional indicators, and statistics for available countries. "
                 "Cards show history, view modes, tables, and comparable series; "
                 "forecasts appear only where the model has passed a quality check.",
             ),
@@ -402,6 +402,18 @@ PAGE_META_EN: dict[str, PageSeo] = {
                 "inertia, drive the path: exchange-traded quotes and indices, intraday FX, "
                 "cryptocurrencies, and daily or intra-week series. For those we publish "
                 "full history without a forecast line, and the forecast toggle stays inactive.",
+            ),
+            SeoBlock(
+                "Cross-country GDP ranking",
+                "On the world map and in the country ranking, GDP and GDP per capita in "
+                "current US dollars for foreign countries come from the IMF World Economic "
+                "Outlook annual estimate. For Russia the ranking uses a platform calculation: "
+                "Rosstat’s annual GDP in rubles converted to US dollars at the Bank of Russia "
+                "average annual official exchange rate. Opening a country leads to the fund’s "
+                "series. Years the fund publishes as projections, including the current "
+                "calendar year, appear on the map as Outlook estimates. Russia’s quarterly "
+                "actuals are published by Rosstat and collected in the GDP category of the "
+                "Russia section.",
             ),
             SeoBlock(
                 "Limitations",
@@ -634,7 +646,7 @@ PAGE_META_EN: dict[str, PageSeo] = {
             (paths.region_hub(), "Regions"),
             (paths.calendar(), "Calendar"),
             (paths.demographics(), "Demographics"),
-            ("/world/rating/unemployment-rate", "Country rankings"),
+            ("/world/rating/gdp-usd", "Country rankings"),
         ),
     ),
     "russia-categories": PageSeo(
@@ -1083,7 +1095,7 @@ CALENDAR_TEMPLATES_EN: dict[str, object] = {
 
 REGIONAL_TEMPLATES_EN: dict[str, str] = {
     'regions_hub.title': 'Regions of Russia — socio-economic indicators for 85 federal subjects',
-    'regions_hub.description': 'Statistics for 85 regions of Russia: population, wages, GRP, unemployment, investment, prices — 489 Rosstat indicators from 1990. Charts, regional rankings, and comparison with the national level.',
+    'regions_hub.description': 'Statistics for 85 regions of Russia: population, wages, GRP, unemployment, investment, prices — 495 Rosstat indicators from 1990. Charts, regional rankings, and comparison with the national level.',
     'regions_hub.h1': 'Regions of Russia',
     'regions_hub.eyebrow': 'Rosstat regional statistics',
     'regions_hub.lead': (

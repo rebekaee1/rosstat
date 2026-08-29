@@ -167,7 +167,7 @@ export function worldHubPath() {
 }
 
 /** Показатель рейтинга по умолчанию: `/world/rating` без него 301-ится сюда. */
-export const WORLD_RATING_DEFAULT_CONCEPT = 'unemployment-rate';
+export const WORLD_RATING_DEFAULT_CONCEPT = 'gdp-usd';
 
 export function worldRatingPath(concept) {
   return concept ? `/world/rating/${slug(concept)}` : '/world/rating';

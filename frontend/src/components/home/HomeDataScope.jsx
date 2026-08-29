@@ -1,18 +1,18 @@
-import { Database, Globe2, Landmark, Network } from 'lucide-react';
+import { CalendarRange, Database, Globe2, Landmark, MapPinned, Network } from 'lucide-react';
 import { useT } from '../../i18n';
 
 const SCOPE_STATS = [
   { key: 'macro', icon: Landmark },
   { key: 'world', icon: Globe2 },
   { key: 'countries', icon: Network },
-  { key: 'pages', icon: Database },
+  { key: 'regions', icon: MapPinned },
 ];
 
 /**
  * Правая колонка hero главной: состав платформы в цифрах.
  * Официальная витрина масштаба: макроиндикаторы России, мировые показатели,
- * страны мира, объём страниц. Источники и режим обновления — снизу, как
- * гарантия достоверности, без маркетинговых оценок.
+ * страны мира, региональные ряды субъектов РФ, период наблюдений.
+ * Источники и режим обновления — снизу, как гарантия достоверности.
  */
 export default function HomeDataScope() {
   const t = useT();
@@ -45,6 +45,15 @@ export default function HomeDataScope() {
               </dd>
             </div>
           ))}
+          <div className="col-span-2 min-w-0 border-t border-border-subtle pt-4">
+            <dt className="flex items-center gap-1.5 text-[9px] font-medium uppercase tracking-[0.16em] text-text-tertiary">
+              <CalendarRange size={12} className="shrink-0 text-champagne/70" aria-hidden="true" />
+              <span className="leading-snug">{t('home.scope.period.label')}</span>
+            </dt>
+            <dd className="mt-1.5 font-mono text-xl font-bold tabular-nums tracking-tight text-text-primary sm:text-[1.55rem]">
+              {t('home.scope.period.value')}
+            </dd>
+          </div>
         </dl>
 
         <div className="mt-6 border-t border-border-subtle pt-4">

@@ -100,6 +100,10 @@ services:
       RUSTATS_WORLD_EUROSTAT_INGEST_ENABLED: ${RUSTATS_WORLD_EUROSTAT_INGEST_ENABLED:-false}
       RUSTATS_WORLD_EUROSTAT_INGEST_SHADOW: ${RUSTATS_WORLD_EUROSTAT_INGEST_SHADOW:-true}
       RUSTATS_WORLD_FORECAST_ENABLED: ${RUSTATS_WORLD_FORECAST_ENABLED:-false}
+      # National-core keys: empty = AdapterUnavailable on that provider only.
+      RUSTATS_ESTAT_APP_ID: ${RUSTATS_ESTAT_APP_ID:-}
+      RUSTATS_ECOS_API_KEY: ${RUSTATS_ECOS_API_KEY:-}
+      RUSTATS_BANXICO_API_TOKEN: ${RUSTATS_BANXICO_API_TOKEN:-}
       # First-party приём событий фронта (питает «Пульс»). По умолчанию ON и
       # НЕ зависит от ANALYTICS_ENABLED — иначе на проде телеметрия не пишется.
       RUSTATS_FRONTEND_EVENTS_ENABLED: ${RUSTATS_FRONTEND_EVENTS_ENABLED:-true}

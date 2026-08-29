@@ -454,7 +454,7 @@ async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
         },
         "headline": headline,
         "sections": [sections[k] for k in sorted(sections)],
-        # Полный каталог (489) vs показатели с фактическими точками по региону (≈471 у Москвы).
+        # Полный каталог (все RegionIndicator) vs показатели с фактическими точками по региону (≈471 у Москвы).
         "catalog_total": len(inds),
         "available_total": sum(len(s["indicators"]) for s in sections.values()),
     }

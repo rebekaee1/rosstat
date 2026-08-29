@@ -111,4 +111,67 @@ describe('HomeWorkbench', () => {
     expect(screen.getByText('%')).toBeTruthy();
     expect(screen.queryByText(/\.\.\.|…/)).toBeNull();
   });
+
+  it('для ВВП показывает справку МВФ и медиану с сервера, без выдуманного среднего', async () => {
+    mockApiGet([
+      ['/auth/me', { user: null }],
+      [/^\/indicators/, INDICATORS],
+      ['/world/countries', {
+        countries: [
+          { code: 'DE', slug: 'germany', name: 'Германия', name_en: 'Germany', indicators_count: 10 },
+        ],
+        total: 1,
+      }],
+      [/^\/world\/rating\/concepts/, {
+        concepts: [
+          { slug: 'gdp-usd', name: 'ВВП', unit: 'млрд $' },
+          { slug: 'unemployment-rate', name: 'Уровень безработицы', unit: '%' },
+        ],
+        total: 2,
+      }],
+      [/^\/world\/compare\/map-series\/gdp-usd/, {
+        years: [2025],
+        values_by_year: {
+          2025: {
+            DE: {
+              country_code: 'DE',
+              country_slug: 'germany',
+              country_name: 'Германия',
+              indicator_code: 'de-ngdpd',
+              value: 4500,
+            },
+          },
+        },
+        concept: { name: 'ВВП', unit: 'млрд $', slug: 'gdp-usd' },
+        benchmark_by_year: {
+          2025: {
+            value: 12.4,
+            label: 'Медиана по 48 странам с данными',
+            countries_count: 48,
+          },
+        },
+      }],
+    ]);
+
+    renderPage(
+      <HomeWorkbench
+        ratingConcepts={{
+          data: {
+            concepts: [
+              { slug: 'gdp-usd', name: 'ВВП', unit: 'млрд $' },
+              { slug: 'unemployment-rate', name: 'Уровень безработицы', unit: '%' },
+            ],
+          },
+        }}
+      />,
+      { path: '/', route: '/' },
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /Германия/ })).toBeTruthy();
+    });
+    expect(screen.getByRole('button', { name: 'Как читается карта валового внутреннего продукта' })).toBeTruthy();
+    expect(screen.getByText('Медиана по 48 странам с данными')).toBeTruthy();
+    expect(screen.getByText(/12,40/)).toBeTruthy();
+  });
 });

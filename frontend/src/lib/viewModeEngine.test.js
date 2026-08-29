@@ -81,4 +81,19 @@ describe('viewModeEngine — generic resolver', () => {
     expect(resolveViewMode(fam, 'qoq').code).toBe('gdp-qoq');
     expect(resolveViewMode(fam, 'sum-year').code).toBe('gdp-nominal-annual');
   });
+
+  it('WEO GDP families are annual-only T10 without quarterly modes', () => {
+    for (const code of ['weo-gdp-usd', 'weo-gdp-per-capita-usd']) {
+      const fam = getViewModeFamily(code);
+      expect(fam.template).toBe('T10');
+      const modes = fam.modes.map((m) => m.mode);
+      expect(modes).toEqual(['level', 'yoy', 'index']);
+      expect(fam.modes.every((m) => m.frequency === 'annual')).toBe(true);
+      expect(fam.modes.every((m) => !m.forecastable)).toBe(true);
+    }
+    const budget = getViewModeFamily('weo-budget-balance-gdp');
+    expect(budget.template).toBe('T10a');
+    expect(budget.modes.map((m) => m.mode)).toEqual(['level', 'yoy']);
+    expect(budget.modes.every((m) => m.frequency === 'annual')).toBe(true);
+  });
 });

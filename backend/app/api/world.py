@@ -13,7 +13,7 @@ from datetime import date
 from statistics import median
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import case, func, or_, select
+from sqlalchemy import and_, case, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.cache import cache_get, cache_set, versioned_key
@@ -490,7 +490,20 @@ def _compare_series_payload(country: WorldCountry, indicator: WorldIndicator, co
     }
 
 
-_AVERAGE_CONCEPTS = frozenset({"hicp-index", "unemployment-rate", "budget-balance-gdp"})
+_MEDIAN_BENCHMARK_CONCEPTS = frozenset({
+    "hicp-index",
+    "gdp-usd",
+    "gdp-per-capita-usd",
+})
+# Ориентир на карте/рейтинге и ряд /compare/average. ВВП — медиана:
+# среднее по объёмам стран со скошенным распределением вводит в заблуждение.
+_AVERAGE_CONCEPTS = frozenset({
+    "hicp-index",
+    "unemployment-rate",
+    "budget-balance-gdp",
+    "gdp-usd",
+    "gdp-per-capita-usd",
+})
 _MONEY_COMPARE_CONCEPTS = frozenset({
     "gdp-volume-quarterly",
     "gdp-volume-annual",
@@ -513,24 +526,26 @@ def _concept_unit_compatible(concept, indicator: WorldIndicator) -> bool:
 
 
 def _benchmark_value(concept_slug: str, values: list[float]) -> float:
-    if concept_slug == "hicp-index":
+    if concept_slug in _MEDIAN_BENCHMARK_CONCEPTS:
         return float(median(values))
     return sum(values) / len(values)
 
 
 def _benchmark_label(concept_slug: str, count: int) -> str:
     """Locale-facing average/median chip (snapshot / map-series / average)."""
+    uses_median = concept_slug in _MEDIAN_BENCHMARK_CONCEPTS
     if get_locale() == "en":
-        metric = "Median" if concept_slug == "hicp-index" else "Average"
+        metric = "Median" if uses_median else "Average"
         return f"{metric} across {count} countries with data"
-    metric = "Медиана" if concept_slug == "hicp-index" else "Среднее"
+    metric = "Медиана" if uses_median else "Среднее"
     return f"{metric} по {count} странам с данными"
 
 
 def _average_series_copy(concept_slug: str) -> dict[str, str]:
     """User-visible meta for /compare/average (legend + methodology)."""
+    uses_median = concept_slug in _MEDIAN_BENCHMARK_CONCEPTS
     if get_locale() == "en":
-        if concept_slug == "hicp-index":
+        if uses_median:
             return {
                 "country_name": "Median across countries with data",
                 "methodology": "Median across countries with data on each date",
@@ -539,7 +554,7 @@ def _average_series_copy(concept_slug: str) -> dict[str, str]:
             "country_name": "Average across countries with data",
             "methodology": "Unweighted average across countries with data on each date",
         }
-    if concept_slug == "hicp-index":
+    if uses_median:
         return {
             "country_name": "Медиана по странам с данными",
             "methodology": "Медиана по странам с данными на каждую дату",
@@ -550,12 +565,24 @@ def _average_series_copy(concept_slug: str) -> dict[str, str]:
     }
 
 
+def _concept_member_rank(indicator: WorldIndicator, national_codes: frozenset[str]) -> int:
+    """National listed, then other listed, then unlisted eurostat fallback."""
+    if indicator.code in national_codes:
+        return 0
+    if indicator.is_listed:
+        return 1
+    return 2
+
+
 async def _concept_members(
     db: AsyncSession,
     concept,
 ) -> list[tuple[WorldCountry, WorldIndicator]]:
     # Не тянем всю таблицу world_indicators (после deep-expand — 100k+ строк):
-    # только listed + dataset_id понятия (+ явный national crosswalk).
+    # listed + dataset_id понятия (+ явный national crosswalk). Unlisted
+    # eurostat того же среза — только как fallback карты/рейтинга, когда у
+    # активной страны нет listed-члена (national-passport suppress или
+    # unlist после is_active=false). Каталог страны по-прежнему listed-only.
     allowed = {
         str(ds).lower()
         for ds in concept.dataset_ids
@@ -564,18 +591,28 @@ async def _concept_members(
         for ids in concept.provider_dataset_ids.values():
             allowed.update(str(ds).lower() for ds in ids)
     national_codes = national_codes_for_concept(concept.slug)
+    allowed_list = sorted(allowed)
+    listed_match = (
+        or_(
+            func.lower(WorldIndicator.dataset_id).in_(allowed_list),
+            WorldIndicator.code.in_(sorted(national_codes)),
+        )
+        if national_codes
+        else func.lower(WorldIndicator.dataset_id).in_(allowed_list)
+    )
     rows = (
         await db.execute(
             select(WorldCountry, WorldIndicator)
             .join(WorldIndicator, WorldIndicator.country_id == WorldCountry.id)
             .where(
                 WorldCountry.is_active.is_(True),
-                WorldIndicator.is_listed.is_(True),
                 or_(
-                    func.lower(WorldIndicator.dataset_id).in_(sorted(allowed)),
-                    WorldIndicator.code.in_(sorted(national_codes)),
-                ) if national_codes else (
-                    func.lower(WorldIndicator.dataset_id).in_(sorted(allowed))
+                    and_(WorldIndicator.is_listed.is_(True), listed_match),
+                    and_(
+                        WorldIndicator.is_listed.is_(False),
+                        WorldIndicator.points_count > 0,
+                        func.lower(WorldIndicator.dataset_id).in_(allowed_list),
+                    ),
                 ),
             )
             .order_by(WorldCountry.sort_order, WorldCountry.name_ru, WorldIndicator.code)
@@ -592,20 +629,15 @@ async def _concept_members(
             and _concept_unit_compatible(concept, indicator)
         ):
             members.append((country, indicator))
-    # Одна страна — один ряд: national имеет приоритет над eurostat-дублем.
+    # Одна страна — один ряд: national, иначе listed eurostat, иначе unlisted.
     by_country: dict[int, tuple[WorldCountry, WorldIndicator]] = {}
     for country, indicator in members:
         prev = by_country.get(country.id)
-        if prev is None:
+        if prev is None or (
+            _concept_member_rank(indicator, national_codes)
+            < _concept_member_rank(prev[1], national_codes)
+        ):
             by_country[country.id] = (country, indicator)
-            continue
-        prev_is_national = prev[1].code in national_codes
-        cur_is_national = indicator.code in national_codes
-        if cur_is_national and not prev_is_national:
-            by_country[country.id] = (country, indicator)
-        elif prev_is_national == cur_is_national:
-            # Держим первый по стабильному order_by, чтобы страна не исчезала из среза.
-            continue
     return list(by_country.values())
 
 
@@ -743,7 +775,7 @@ async def list_countries(db: AsyncSession = Depends(get_db)):
     )
     if ru_listed > 0:
         # Счётчик России = вся платформа: макрокаталог + региональные ряды
-        # (489 показателей × 85 субъектов). Иначе карточка РФ обещает меньше,
+        # (все RegionIndicator × 85 субъектов). Иначе карточка РФ обещает меньше,
         # чем реально открывается с главной.
         ru_region_indicators = int(
             (
@@ -941,7 +973,7 @@ async def world_compare_snapshot(
     if concept is None or "compare" not in concept.enabled_surfaces:
         raise HTTPException(404, "Понятие для сравнения не найдено")
     cache_key = await versioned_key(
-        "world", f"compare:snapshot:v6:{concept_slug}:{get_locale()}"
+        "world", f"compare:snapshot:v7:{concept_slug}:{get_locale()}"
     )
     cached = await cache_get(cache_key)
     if cached:
@@ -1020,7 +1052,7 @@ async def world_compare_map_series(
     if concept is None or "compare" not in concept.enabled_surfaces:
         raise HTTPException(404, "Понятие для карты не найдено")
     cache_key = await versioned_key(
-        "world", f"compare:map-series:v6:{concept_slug}:{get_locale()}"
+        "world", f"compare:map-series:v7:{concept_slug}:{get_locale()}"
     )
     cached = await cache_get(cache_key)
     if cached:
@@ -1104,13 +1136,13 @@ async def world_compare_average_series(
     mode: str | None = Query(None),
     db: AsyncSession = Depends(get_db),
 ):
-    """Невзвешенное среднее по странам только для совместимых rate/index concepts."""
+    """Межстрановой ориентир (среднее или медиана) для совместимых понятий."""
     concept = CONCEPT_BY_SLUG.get(concept_slug)
     if concept is None or concept_slug not in _AVERAGE_CONCEPTS:
         raise HTTPException(404, "Средний межстрановой ряд для этого показателя недоступен")
     cache_key = await versioned_key(
         "world",
-        f"compare:average:v3:{concept_slug}:{mode or 'native'}:{get_locale()}",
+        f"compare:average:v4:{concept_slug}:{mode or 'native'}:{get_locale()}",
     )
     cached = await cache_get(cache_key)
     if cached:

@@ -61,7 +61,7 @@ from app.services.world_russia_rank import (
 )
 
 _SOURCE_PUBLIC = "Евростат"
-WORLD_RATING_DEFAULT_CONCEPT = "unemployment-rate"
+WORLD_RATING_DEFAULT_CONCEPT = "gdp-usd"
 _WORLD_RATING_LOW_FIRST = frozenset({"unemployment-rate", "long-term-interest-rate"})
 _WORLD_RATING_MONEY_CONCEPTS = frozenset({
     "gdp-volume-quarterly",

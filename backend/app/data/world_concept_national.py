@@ -16,6 +16,8 @@ NATIONAL_CONCEPT_INDICATOR_CODES: dict[str, dict[str, str]] = {
         "CA": "ca-unemployment-rate",
         "CN": "cn-urban-unemployment",
         "IN": "in-unemployment-rate",
+        "JP": "jp-unemployment-rate",
+        "KR": "kr-unemployment-rate",
         "UK": "uk-unemployment-rate",
         "US": "us-unemployment-rate",
     },
@@ -39,11 +41,15 @@ NATIONAL_CONCEPT_INDICATOR_CODES: dict[str, dict[str, str]] = {
     # Движок hicp всегда считает YoY от уровня индекса (`transform_yoy`).
     # CN `cn-cpi-all` — уже индекс «тот же месяц прошлого года = 100», не уровень.
     # BR: `br-cpi-ipca` — % к предыдущему месяцу; `br-cpi-ipca-yoy` — уже YoY %.
-    # JP — национального CPI-ряда в world_indicators нет.
+    # JP — национального CPI-ряда в world_indicators нет, пока e-Stat
+    # не отдал ряд (`jp-cpi-all`); код в crosswalk, чтобы карта подхватила
+    # его сразу после ingest. KR — то же для ECOS (`kr-cpi-all`).
     "hicp-index": {
         "AU": "au-cpi-all",
         "CA": "ca-cpi-all",
         "IN": "in-cpi-all",
+        "JP": "jp-cpi-all",
+        "KR": "kr-cpi-all",
         "MX": "mx-cpi-all",
         "UK": "uk-cpi-all",
         "US": "us-cpi-all",

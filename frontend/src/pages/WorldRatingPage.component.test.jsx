@@ -144,6 +144,12 @@ describe('WorldRatingPage', () => {
 
     expect(screen.getByRole('heading', { name: /Страны без данных за 2025/i })).toBeTruthy();
     expect(screen.getByRole('link', { name: 'Италия' })).toBeTruthy();
+    expect(screen.queryByText('Стран с данными')).toBeNull();
+    expect(screen.queryByText('Всего стран')).toBeNull();
+    expect(screen.queryByText('Доступно лет')).toBeNull();
+    const table = document.querySelector('#rating-table');
+    expect(within(table).getByRole('combobox')).toBeTruthy();
+    expect(within(table).getByRole('button', { name: 'По убыванию' })).toBeTruthy();
 
     // Первый клик по заголовку доп-колонки — смысловое направление её
     // концепта (инфляция desc): Франция (2,2) поднимается наверх.

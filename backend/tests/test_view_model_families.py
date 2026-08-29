@@ -233,5 +233,25 @@ def test_mode_display_suffix_for_sum_quarter():
     assert "квартал" in suffix.lower()
 
 
+def test_weo_gdp_families_are_annual_only():
+    """Оценки МВФ — годовой уровень + Г/г + индекс, без квартальной частоты."""
+    for code in ("weo-gdp-usd", "weo-gdp-per-capita-usd"):
+        fam = vmf.FAMILY_BY_BASE[code]
+        assert fam.template == "T10"
+        assert {m.frequency for m in fam.modes} == {"annual"}
+        assert {m.mode for m in fam.modes} == {"level", "yoy", "index"}
+        assert not any(m.forecastable for m in fam.modes)
+
+
+def test_weo_budget_family_is_signed_annual():
+    fam = vmf.FAMILY_BY_BASE["weo-budget-balance-gdp"]
+    assert fam.template == "T10a"
+    assert {m.frequency for m in fam.modes} == {"annual"}
+    by_mode = {m.mode: m for m in fam.modes}
+    assert set(by_mode) == {"level", "yoy"}
+    assert by_mode["yoy"].unit == "п.п."
+    assert not any(m.forecastable for m in fam.modes)
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

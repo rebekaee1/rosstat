@@ -660,7 +660,7 @@ def test_seo_world_rating(world_seo_client):
 def test_seo_world_rating_default_redirect(world_seo_client):
     r = world_seo_client.get("/seo/world/rating", follow_redirects=False)
     assert r.status_code == 301
-    assert r.headers["location"].endswith("/world/rating/unemployment-rate")
+    assert r.headers["location"].endswith("/world/rating/gdp-usd")
 
 
 def test_seo_world_rating_year_query_301_to_path(world_seo_client):
