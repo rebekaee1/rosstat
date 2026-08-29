@@ -103,49 +103,56 @@ export default function HomeWorkbench({ ratingConcepts }) {
   return (
     <section
       data-block="home-workbench"
-      className="relative z-10 mb-10 md:mb-12 lg:-mt-28 xl:-mt-32"
+      className="relative z-10 mb-10 md:mb-12 lg:-mt-[11.5rem] xl:-mt-[12.5rem]"
       aria-labelledby="home-world-map-title"
     >
-      {/* Заголовок и пикер — под поиском слева; справа уходят под scope-карточку. */}
-      <div className="relative z-10 mb-3 min-w-0 lg:max-w-[calc(100%-min(22rem,38%))]">
-        <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">
-          {t('home.map.eyebrow')}
+      {/*
+        Поднимаем блок в воздух слева от scope (hero mb=0). Заголовок и пикер
+        в той же сетке, что HomeHero — только левая колонка, под scope не
+        заезжают. Карта+рейтинг ниже пикера пересекают низ scope справа.
+      */}
+      <div className="grid items-start gap-3 lg:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)] lg:gap-8">
+        <div className="relative z-20 min-w-0">
+          <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">
+            {t('home.map.eyebrow')}
+          </div>
+          <h2 id="home-world-map-title" className="mt-1 text-base font-semibold text-text-primary sm:text-lg">
+            {t('home.map.title')}
+          </h2>
+          <div className="mt-3">
+            <WorldConceptPicker
+              concepts={mapConcepts.length
+                ? mapConcepts
+                : [{ slug: concept, name: conceptName }]}
+              value={concept}
+              onChange={(slug) => {
+                setPicked(slug);
+                setMapYear(null);
+                track(events.HOME_COUNTRIES_METRIC, { concept: slug });
+              }}
+              label={t('home.map.metricLabel')}
+              searchable={false}
+              trailing={<WorldMapConceptNote conceptSlug={concept} />}
+              hint={fullRatingHref ? (
+                <Link
+                  to={fullRatingHref}
+                  onClick={() => track(events.HOME_COUNTRIES_CTA, { target: 'rating-hint', concept })}
+                  className="inline-flex items-center gap-1 text-[11px] text-text-tertiary transition-colors hover:text-champagne"
+                >
+                  {t('home.map.moreMetrics')}
+                  <ArrowRight size={11} />
+                </Link>
+              ) : null}
+            />
+          </div>
         </div>
-        <h2 id="home-world-map-title" className="mt-1 text-base font-semibold text-text-primary sm:text-lg">
-          {t('home.map.title')}
-        </h2>
-      </div>
-
-      <div className="relative z-10 mb-4 min-w-0 lg:max-w-[calc(100%-min(22rem,38%))]">
-        <WorldConceptPicker
-          concepts={mapConcepts.length
-            ? mapConcepts
-            : [{ slug: concept, name: conceptName }]}
-          value={concept}
-          onChange={(slug) => {
-            setPicked(slug);
-            setMapYear(null);
-            track(events.HOME_COUNTRIES_METRIC, { concept: slug });
-          }}
-          label={t('home.map.metricLabel')}
-          searchable={false}
-          trailing={<WorldMapConceptNote conceptSlug={concept} />}
-          hint={fullRatingHref ? (
-            <Link
-              to={fullRatingHref}
-              onClick={() => track(events.HOME_COUNTRIES_CTA, { target: 'rating-hint', concept })}
-              className="inline-flex items-center gap-1 text-[11px] text-text-tertiary transition-colors hover:text-champagne"
-            >
-              {t('home.map.moreMetrics')}
-              <ArrowRight size={11} />
-            </Link>
-          ) : null}
-        />
+        {/* Правая колонка на уровне пикера пустая — scope из hero выше по z. */}
+        <div className="hidden lg:block" aria-hidden="true" />
       </div>
 
       {(countriesQ.isError || mapSeries.isError) && (
         <ApiRetryBanner
-          className="mb-4"
+          className="mt-4"
           onRetry={() => {
             countriesQ.refetch();
             mapSeries.refetch();
@@ -157,7 +164,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
       )}
 
       {/* Карта задаёт высоту; рейтинг на lg абсолютен по её кромкам — без хвостов. */}
-      <div className="relative">
+      <div className="relative z-0 mt-4">
         <div className="min-w-0 overflow-hidden rounded-2xl border border-border-subtle bg-surface p-2.5 sm:p-4 lg:ml-[calc(18rem+1.25rem)]">
           {(countriesQ.isLoading || mapSeries.isLoading) ? (
             <SkeletonBox className="h-[18rem] w-full rounded-2xl sm:h-[30rem]" />
@@ -189,7 +196,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
           )}
         </div>
 
-        <div className="mt-4 flex max-h-none min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl border border-border-subtle bg-obsidian-light/40 px-3.5 py-3 lg:absolute lg:inset-y-0 lg:left-0 lg:mt-0 lg:w-[18rem]">
+        <div className="relative z-10 mt-4 flex max-h-none min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl border border-border-subtle bg-obsidian-light/40 px-3.5 py-3 lg:absolute lg:inset-y-0 lg:left-0 lg:mt-0 lg:w-[18rem]">
           <div className="shrink-0 text-[10px] font-mono uppercase tracking-[0.16em] text-champagne">
             {t('home.map.rating')}
           </div>

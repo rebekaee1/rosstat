@@ -5,23 +5,18 @@ import { useT } from '../../i18n';
 /**
  * Hero главной: слева заголовок, вводный текст и поиск по индикатору
  * (как на страницах стран), справа — состав платформы в цифрах.
- * На lg+ нижний margin снят: карту поднимает HomeWorkbench отрицательным
- * margin'ом, пересекаясь с нижней частью scope-карточки.
+ * Сетка совпадает с HomeWorkbench: заголовок карты/пикер живут в левой
+ * колонке под поиском, карта справа чуть поднимается под низ scope.
  */
 export default function HomeHero() {
   const t = useT();
   return (
     <header
       data-block="home-hero"
-      className="relative z-20 mb-5 pointer-events-none md:mb-6 lg:mb-0"
+      className="relative z-20 mb-4 md:mb-5 lg:mb-0"
     >
-      {/*
-        pointer-events-none на header: на lg+ карта поднимается под scope и
-        проходит через «воздух» слева от карточки. Без этого пустая область
-        сетки hero перехватывает клики по заголовку/пикеру workbench.
-      */}
       <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)] lg:gap-8">
-        <div className="relative z-20 min-w-0 pointer-events-auto">
+        <div className="relative z-20 min-w-0">
           <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-champagne">
             {t('home.hero.eyebrow')}
           </p>
@@ -36,9 +31,7 @@ export default function HomeHero() {
           </div>
         </div>
 
-        <div className="pointer-events-auto">
-          <HomeDataScope />
-        </div>
+        <HomeDataScope />
       </div>
     </header>
   );
