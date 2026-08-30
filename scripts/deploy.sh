@@ -53,8 +53,12 @@ APPROVED_TARGET="${FULL_SHA}"
 if ! approved_sha "${FULL_SHA}"; then
   PARENT_SHA=$(git rev-parse "${FULL_SHA}^")
   WRAPPER_FILES=$(git diff --name-only "${PARENT_SHA}" "${FULL_SHA}")
-  if approved_sha "${PARENT_SHA}" && [ "${WRAPPER_FILES}" = "deploy/approved-shas.txt
-scripts/deploy.sh" ]; then
+  # Wrapper может менять только файл одобрения ИЛИ файл одобрения + этот скрипт
+  # ( bootstrap: скрипт-гард эволюционирует вместе с правилами одобрения).
+  if approved_sha "${PARENT_SHA}" && {
+     [ "${WRAPPER_FILES}" = "deploy/approved-shas.txt" ] ||
+     [ "${WRAPPER_FILES}" = "deploy/approved-shas.txt
+scripts/deploy.sh" ]; }; then
     APPROVED_TARGET="${PARENT_SHA}"
   else
     echo "FAIL: SHA ${NEW_SHA} (${FULL_SHA}) и его approval-only parent не одобрены."
