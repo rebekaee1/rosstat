@@ -8,3 +8,4 @@ f366fea0d0114ee002269ae4576b470578284273  # RU+CIS geo + browser-lang redirect, 
 30f33d5479410b0ed5c74cbc6e01464651c3edd6  # wrapper-guard fix, owner-approved 2026-08-30
 6b9561221f65a8143b6592d34e932791a061a3ae  # X-Original-URI geo fix, owner-approved 2026-08-30
 5aded6b737e88d5fe0809457163fd9e4528b89a5  # language switcher + ru. webmaster meta, owner-approved 2026-08-31
+8395eee39ef5a60b6f290408d4cbc848d45c1621  # EN category i18n + ru. webmaster recrawl, owner-approved 2026-08-31
