@@ -875,7 +875,9 @@ _SEARCH_BOT_UA = re.compile(
 def _is_html_navigation(request: Request) -> bool:
     if request.method not in {"GET", "HEAD"}:
         return False
-    path = request.url.path
+    # nginx переписывает публичный путь в /seo/… — исключения и inline-SVG
+    # проверяем по публичному оригиналу (X-Original-URI), а не по rewritten.
+    path = (request.headers.get("x-original-uri") or request.url.path).partition("?")[0]
     if path in _GEO_EXCLUDED_EXACT or any(path.startswith(p) for p in _GEO_EXCLUDED_PREFIXES):
         return False
     accept = request.headers.get("accept", "")
@@ -955,9 +957,17 @@ def _geo_locale_redirect(request: Request) -> Response | None:
             and _browser_prefers_russian(request.headers.get("accept-language"))
         ):
             return None
-    target = f"{ru_public_origin()}{request.url.path}"
-    if request.url.query:
-        target += f"?{request.url.query}"
+    # nginx переписывает публичный путь во внутренний /seo/… ДО backend
+    # (path-cut, А-2/А-3), поэтому редиректить надо на публичный оригинал:
+    # он приходит в X-Original-URI ($request_uri). proxy_set_header nginx
+    # перезаписывает входящее значение — клиент подделать его не может.
+    original = request.headers.get("x-original-uri") or request.url.path
+    public_path, _, public_query = original.partition("?")
+    if not public_query:
+        public_query = request.url.query
+    target = f"{ru_public_origin()}{public_path}"
+    if public_query:
+        target += f"?{public_query}"
     return Response(status_code=307, headers={"Location": target, "Vary": "Cookie, Accept-Language"})
 
 class LocaleMiddleware(BaseHTTPMiddleware):

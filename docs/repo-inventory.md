@@ -2,9 +2,9 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Сгенерировано:** 2026-08-30
+**Сгенерировано:** 2026-08-31
 
-**Файлов:** 921  ·  **Строк:** 253 467  ·  **Токенов (≈):** 2 573 589
+**Файлов:** 921  ·  **Строк:** 253 540  ·  **Токенов (≈):** 2 574 576
 
 ## По верхним папкам
 
@@ -12,13 +12,13 @@
 |-------|-------:|------:|------------:|
 | `(root)` | 8 | 1 922 | 48 963 |
 | `.github` | 1 | 150 | 1 250 |
-| `backend` | 505 | 156 837 | 1 515 936 |
+| `backend` | 505 | 156 868 | 1 516 372 |
 | `clickhouse` | 2 | 36 | 445 |
 | `deploy` | 8 | 201 | 1 963 |
 | `docs` | 37 | 11 384 | 202 018 |
-| `frontend` | 302 | 69 461 | 668 046 |
+| `frontend` | 302 | 69 495 | 668 505 |
 | `mcp` | 3 | 158 | 1 120 |
-| `scripts` | 55 | 13 318 | 133 848 |
+| `scripts` | 55 | 13 326 | 133 940 |
 
 ## Все файлы (по убыванию токенов)
 
@@ -56,12 +56,12 @@
 | `frontend/src/pages/CalculatorPage.jsx` | 1 058 | 11 730 |
 | `backend/app/services/forecaster.py` | 1 271 | 11 729 |
 | `backend/app/data/eurostat_unit_codelist_en.json` | 760 | 11 604 |
+| `backend/app/main.py` | 1 048 | 10 977 |
 | `backend/app/data/eurostat_dim_labels_ru.py` | 1 218 | 10 863 |
 | `docs/data_sources.md` | 518 | 10 824 |
-| `backend/app/main.py` | 1 038 | 10 805 |
 | `backend/app/services/admin_bi.py` | 1 041 | 10 583 |
+| `backend/tests/test_i18n_parity.py` | 1 194 | 10 539 |
 | `backend/tests/test_seo_world.py` | 1 001 | 10 512 |
-| `backend/tests/test_i18n_parity.py` | 1 173 | 10 275 |
 | `docs/research/_fpsr_raw/agent01.json` | 779 | 10 111 |
 | `backend/app/services/world_national_ingest.py` | 1 096 | 9 214 |
 | `backend/app/services/calendar_sources/official_calendar.py` | 828 | 9 111 |
@@ -71,10 +71,10 @@
 | `frontend/src/i18n/viewModeContent.en.js` | 901 | 8 694 |
 | `frontend/src/pages/RegionsHome.jsx` | 772 | 8 601 |
 | `backend/app/services/rosstat_weekly_inflation_parser.py` | 905 | 8 570 |
+| `frontend/nginx.conf` | 744 | 8 567 |
 | `frontend/src/pages/IndicatorDetail.jsx` | 810 | 8 472 |
 | `scripts/audit-seo-title-dupes.py` | 909 | 8 178 |
 | `frontend/src/components/IndicatorChart.jsx` | 832 | 8 143 |
-| `frontend/nginx.conf` | 710 | 8 108 |
 | `backend/app/services/eurostat_parser.py` | 838 | 7 832 |
 | `docs/research/_fpsr_raw/agent04.json` | 630 | 7 617 |
 | `frontend/src/components/WorldMap.jsx` | 748 | 7 586 |
@@ -334,6 +334,7 @@
 | `frontend/src/components/IndicatorTile.jsx` | 179 | 2 005 |
 | `frontend/src/pages/Methodology.jsx` | 191 | 2 002 |
 | `backend/tests/forecast_strategies/snapshots/prod_generic_quarterly.json` | 566 | 1 995 |
+| `scripts/deploy.sh` | 175 | 1 983 |
 | `backend/scripts/backfill-metrika-history.py` | 189 | 1 982 |
 | `docs/analytics_api_inventory/yandex_webmaster.md` | 63 | 1 981 |
 | `backend/seed_regional.py` | 193 | 1 976 |
@@ -350,7 +351,6 @@
 | `frontend/src/lib/worldMapColors.js` | 207 | 1 906 |
 | `frontend/src/components/IndicatorTelemetryGrid.jsx` | 179 | 1 896 |
 | `backend/app/services/site_paths.py` | 281 | 1 893 |
-| `scripts/deploy.sh` | 167 | 1 891 |
 | `frontend/src/components/Sparkline.jsx` | 267 | 1 888 |
 | `backend/app/data/world_national_core/in.yaml` | 203 | 1 883 |
 | `backend/app/services/cbr_bop_parser.py` | 221 | 1 881 |

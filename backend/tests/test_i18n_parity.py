@@ -1137,13 +1137,34 @@ def test_geo_locale_redirect_cis_and_browser_language(monkeypatch):
             "server": ("forecasteconomy.com", 443), "client": ("203.0.113.9", 1),
             "headers": headers,
         })
-
     # СНГ-зона (Казахстан, Беларусь, Узбекистан…) редиректится так же, как RU.
     for cc in ("KZ", "BY", "UZ", "AM"):
         monkeypatch.setattr("app.services.geoip.lookup", lambda ip, cc=cc: {"country_code": cc})
         response = _geo_locale_redirect(_request(cc))
         assert response is not None and response.status_code == 307, cc
         assert response.headers["location"] == "https://ru.forecasteconomy.com/russia/indicator/cpi"
+
+    # nginx переписал путь в /seo/…, публичный оригинал пришёл в X-Original-URI:
+    # редирект должен вести на публичный путь, а не на внутренний /seo/.
+    def _rewritten_request(original_uri: str):
+        headers = [
+            (b"host", b"forecasteconomy.com"), (b"accept", b"text/html"),
+            (b"user-agent", b"Mozilla/5.0"),
+            (b"x-original-uri", original_uri.encode()),
+        ]
+        return Request({
+            "type": "http", "method": "GET", "path": "/seo/indicator/cpi",
+            "query_string": b"", "scheme": "https",
+            "server": ("forecasteconomy.com", 443), "client": ("203.0.113.9", 1),
+            "headers": headers,
+        })
+
+    monkeypatch.setattr("app.services.geoip.lookup", lambda ip: {"country_code": "RU"})
+    response = _geo_locale_redirect(_rewritten_request("/russia/indicator/cpi?mode=weekly"))
+    assert response is not None and response.status_code == 307
+    assert response.headers["location"] == (
+        "https://ru.forecasteconomy.com/russia/indicator/cpi?mode=weekly"
+    )
 
     # Гео не из зоны + русский доминирующий браузер → тоже ru.
     monkeypatch.setattr("app.services.geoip.lookup", lambda ip: {"country_code": "DE"})

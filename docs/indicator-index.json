@@ -8356,7 +8356,22 @@
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1146,
+          "line": 1145,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_i18n_parity.py",
+          "line": 1156,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_i18n_parity.py",
+          "line": 1163,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_i18n_parity.py",
+          "line": 1166,
           "kind": "tests"
         },
         {
@@ -9111,7 +9126,7 @@
         },
         {
           "file": "frontend/nginx.conf",
-          "line": 247,
+          "line": 249,
           "kind": "other"
         },
         {
