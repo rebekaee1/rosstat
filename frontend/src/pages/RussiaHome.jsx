@@ -15,7 +15,7 @@ import { useRegionsLanding } from '../lib/regionsApi';
 import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
 import { useLocale, useT } from '../i18n';
-import { CATEGORIES } from '../lib/categories';
+import { CATEGORIES, categoryLabel } from '../lib/categories';
 import {
   groupRussiaCategories,
   russiaIndicatorChange,
@@ -158,6 +158,7 @@ function RussiaIndicatorTile({ indicator }) {
   const { locale } = useLocale();
   const display = russiaIndicatorDisplay(indicator);
   const changeNum = russiaIndicatorChange(indicator);
+  const title = locale === 'en' && indicator.name_en ? indicator.name_en : indicator.name;
 
   return (
     <Link
@@ -166,7 +167,7 @@ function RussiaIndicatorTile({ indicator }) {
     >
       <div className="min-w-0 flex-1">
         <div className="text-[13px] leading-snug text-text-primary transition-colors group-hover:text-champagne sm:text-[14px]">
-          {indicator.name}
+          {title}
         </div>
         <div className="mt-1 flex min-w-0 flex-wrap items-center gap-1.5 text-[10px] text-text-tertiary sm:mt-1.5">
           <FreqBadge item={indicator} t={t} />
@@ -313,7 +314,9 @@ export default function RussiaHome() {
                 <TrendingUp size={13} className="mt-1 shrink-0 text-champagne" />
               </div>
               <div className="mt-1 line-clamp-1 text-[10px] text-text-secondary group-hover:text-text-primary">
-                {chip.indicator.name}
+                {locale === 'en' && chip.indicator.name_en
+                  ? chip.indicator.name_en
+                  : chip.indicator.name}
               </div>
               <div className="mt-1 truncate font-mono text-[9px] text-text-tertiary">
                 {indicatorDate(chip.indicator.current_date, chip.indicator.frequency, locale)}
@@ -393,7 +396,7 @@ export default function RussiaHome() {
                 onChange={setActiveCategory}
                 options={grouped.map((g) => ({
                   value: g.category.slug,
-                  label: g.category.name,
+                  label: categoryLabel(g.category, locale),
                   count: g.indicators.length,
                 }))}
               />
@@ -419,7 +422,7 @@ export default function RussiaHome() {
                       href={`#cat-${g.category.slug}`}
                       className="flex items-center justify-between gap-4 rounded-xl px-3.5 py-2.5 text-left text-sm text-text-secondary transition-colors hover:bg-surface-hover hover:text-text-primary"
                     >
-                      <span className="min-w-0 truncate">{g.category.name}</span>
+                      <span className="min-w-0 truncate">{categoryLabel(g.category, locale)}</span>
                       <span className="shrink-0 font-mono text-[10px] opacity-60">{g.count}</span>
                     </a>
                   ))}
@@ -448,7 +451,7 @@ export default function RussiaHome() {
                         {t('world.country.indicators')}
                       </div>
                       <h2 className="mt-1 font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">
-                        {g.category.name}
+                        {categoryLabel(g.category, locale)}
                       </h2>
                     </div>
                     <span className="shrink-0 font-mono text-xs text-text-tertiary">{g.count}</span>

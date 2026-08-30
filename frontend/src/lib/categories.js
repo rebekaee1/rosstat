@@ -229,6 +229,18 @@ export function getCategoryBySlug(slug) {
   return CATEGORIES.find((c) => c.slug === slug);
 }
 
+/** Locale-facing имя категории (карточки, крошки, сайдбар /russia). */
+export function categoryLabel(cat, locale = 'ru') {
+  if (!cat) return '';
+  return locale === 'en' ? (cat.nameEn || cat.name) : cat.name;
+}
+
+/** Locale-facing описание категории (лид на /russia/category/:slug). */
+export function categoryDescription(cat, locale = 'ru') {
+  if (!cat) return '';
+  return locale === 'en' ? (cat.descriptionEn || cat.description) : cat.description;
+}
+
 /**
  * Признак «индикатор должен быть видим в листинге категорий».
  *

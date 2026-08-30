@@ -6,7 +6,13 @@ import useDocumentMeta from '../lib/useMeta';
 import IndicatorTile from '../components/IndicatorTile';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { TileSkeleton } from '../components/Skeleton';
-import { CATEGORIES, getCategoryBySlug, isIndicatorListed } from '../lib/categories';
+import {
+  CATEGORIES,
+  categoryDescription,
+  categoryLabel,
+  getCategoryBySlug,
+  isIndicatorListed,
+} from '../lib/categories';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import IndicatorSearch from '../components/IndicatorSearch';
 import { track, events } from '../lib/track';
@@ -60,8 +66,8 @@ export default function CategoryPage() {
   }, [cat]);
 
   const crumbs = useMemo(
-    () => (cat ? russiaCategoryTrail(cat.name, slug) : null),
-    [cat, slug],
+    () => (cat ? russiaCategoryTrail(categoryLabel(cat, locale), slug) : null),
+    [cat, locale, slug],
   );
 
   useEffect(() => {
@@ -115,7 +121,7 @@ export default function CategoryPage() {
   if (!cat.apiCategory) {
     return (
       <div className="max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-20 text-center">
-        <p className="text-text-secondary mb-6">{cat.description}</p>
+        <p className="text-text-secondary mb-6">{categoryDescription(cat, locale)}</p>
         <Link to="/" className="text-champagne hover:underline">
           {t('common.backHome')}
         </Link>
@@ -134,9 +140,11 @@ export default function CategoryPage() {
 
       <header className="mb-12 max-w-3xl">
         <h1 className="font-display text-3xl md:text-[2.15rem] font-bold text-text-primary tracking-tight mb-4">
-          {cat.seoH1 || cat.seoTitle}
+          {catSeo?.h1 || categoryLabel(cat, locale)}
         </h1>
-        <p className="text-text-secondary leading-relaxed text-[1.02rem]">{cat.description}</p>
+        <p className="text-text-secondary leading-relaxed text-[1.02rem]">
+          {catSeo?.intro || categoryDescription(cat, locale)}
+        </p>
       </header>
 
       {CATEGORY_FEATURES[slug] && (() => {
@@ -222,10 +230,10 @@ export default function CategoryPage() {
               >
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-text-primary mb-1 truncate">
-                    {rel.name}
+                    {categoryLabel(rel, locale)}
                   </p>
                   <p className="text-xs text-text-tertiary line-clamp-2 leading-relaxed">
-                    {rel.description}
+                    {categoryDescription(rel, locale)}
                   </p>
                 </div>
                 <ArrowRight className="w-4 h-4 text-text-tertiary shrink-0 group-hover:text-champagne group-hover:translate-x-0.5 transition-all" />

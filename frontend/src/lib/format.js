@@ -546,7 +546,11 @@ export function adjustCpiForecastDisplay(forecastResp, code) {
   };
 }
 
-export function relativeTime(dateStr) {
+function relativeTimeEn(n, one, many) {
+  return n === 1 ? `1 ${one} ago` : `${n} ${many} ago`;
+}
+
+export function relativeTime(dateStr, locale) {
   if (!dateStr) return null;
   const d = new Date(dateStr);
   if (isNaN(d.getTime())) return null;
@@ -555,6 +559,15 @@ export function relativeTime(dateStr) {
   const diffMin = Math.floor(diffMs / 60000);
   const diffH = Math.floor(diffMs / 3600000);
   const diffD = Math.floor(diffMs / 86400000);
+  const loc = resolveFormatLocale(locale);
+  if (loc === 'en') {
+    if (diffD > 365) return relativeTimeEn(Math.floor(diffD / 365), 'year', 'years');
+    if (diffD > 30) return relativeTimeEn(Math.floor(diffD / 30), 'month', 'months');
+    if (diffD > 0) return relativeTimeEn(diffD, 'day', 'days');
+    if (diffH > 0) return relativeTimeEn(diffH, 'hour', 'hours');
+    if (diffMin > 0) return relativeTimeEn(diffMin, 'minute', 'minutes');
+    return 'just now';
+  }
   if (diffD > 365) return `${Math.floor(diffD / 365)} г. назад`;
   if (diffD > 30) return `${Math.floor(diffD / 30)} мес. назад`;
   if (diffD > 0) return `${diffD} дн. назад`;

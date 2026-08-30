@@ -675,6 +675,32 @@ async def lifespan(app: FastAPI):
                 replace_existing=True,
             )
             logger.info("Webmaster recrawl auto-submit enabled: daily at 09:10 MSK")
+            # После dual-host cutover у ru. своё свойство Вебмастера и своя
+            # дневная квота (~150 URL). Отдельный курсор Redis — иначе apex и
+            # ru. делили бы один set поданных URL.
+            if settings.apex_locale_en:
+                from app.services.locale import ru_public_origin
+                scheduler.add_job(
+                    recrawl_daily_job,
+                    kwargs={
+                        "origin": ru_public_origin(),
+                        "host_id": settings.webmaster_host_id_for(
+                            "ru.forecasteconomy.com",
+                        ),
+                        "submitted_key": (
+                            "wm:recrawl:submitted:ru.forecasteconomy.com"
+                        ),
+                    },
+                    trigger=CronTrigger(
+                        hour=9, minute=15, timezone="Europe/Moscow",
+                    ),
+                    id="webmaster_recrawl_ru",
+                    name="Yandex.Webmaster recrawl queue (ru. host)",
+                    replace_existing=True,
+                )
+                logger.info(
+                    "Webmaster recrawl (ru.) enabled: daily at 09:15 MSK",
+                )
 
         # Доход РСЯ (Partner Statistics) → BI «Привлечение». Окно 30 дней,
         # upsert по дню; включается только при наличии partner-токена.

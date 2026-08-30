@@ -147,12 +147,12 @@ export default function IndicatorTile({ indicator, delay = 0, displayOverride, s
               {indicator.current_date && (
                 <div className="flex items-center gap-2 flex-wrap">
                   <p className="text-[10px] uppercase tracking-widest text-text-tertiary font-mono">
-                    {formatDate(indicator.current_date, dateFmt)}
+                    {formatDate(indicator.current_date, dateFmt, locale)}
                     {hasHero ? ` ${t('tile.yoy')}` : ''}
                   </p>
-                  {relativeTime(indicator.current_date) && (
+                  {relativeTime(indicator.current_date, locale) && (
                     <span className="text-[9px] text-text-tertiary/60 font-mono">
-                      {relativeTime(indicator.current_date)}
+                      {relativeTime(indicator.current_date, locale)}
                     </span>
                   )}
                 </div>

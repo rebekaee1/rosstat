@@ -10,6 +10,7 @@ import {
   densestCalendarStep,
   formatValue,
   formatChange,
+  relativeTime,
   formatValueWithUnit,
   unitSuffix,
   unitDigits,
@@ -451,5 +452,23 @@ describe('resolveDateFormat', () => {
 
   it('empty input defaults to full', () => {
     expect(resolveDateFormat()).toBe('full');
+  });
+});
+
+describe('relativeTime', () => {
+  function daysAgo(days) {
+    const d = new Date();
+    d.setUTCDate(d.getUTCDate() - days);
+    return d.toISOString();
+  }
+
+  it('returns Russian phrases by default', () => {
+    expect(relativeTime(daysAgo(45), 'ru')).toMatch(/мес\. назад/);
+    expect(relativeTime(new Date().toISOString(), 'ru')).toBe('только что');
+  });
+
+  it('returns English phrases when locale is en', () => {
+    expect(relativeTime(daysAgo(80), 'en')).toMatch(/months ago/);
+    expect(relativeTime(new Date().toISOString(), 'en')).toBe('just now');
   });
 });

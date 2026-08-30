@@ -4,6 +4,8 @@ import {
   getCategoryBySlug,
   countInCategory,
   isIndicatorListed,
+  categoryLabel,
+  categoryDescription,
 } from './categories';
 
 describe('categories', () => {
@@ -59,5 +61,13 @@ describe('categories', () => {
       { category: 'Prices and inflation', category_ru: 'Цены', code: 'hidden', is_listed: false },
     ];
     expect(countInCategory(ind, 'Цены')).toBe(1);
+  });
+
+  it('categoryLabel / categoryDescription follow locale', () => {
+    const gdp = getCategoryBySlug('gdp');
+    expect(categoryLabel(gdp, 'ru')).toBe('ВВП и рост');
+    expect(categoryLabel(gdp, 'en')).toBe('GDP and growth');
+    expect(categoryDescription(gdp, 'en')).toMatch(/Gross domestic/);
+    expect(categoryDescription(gdp, 'ru')).toMatch(/Валовой/);
   });
 });
