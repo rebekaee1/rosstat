@@ -43,14 +43,28 @@ if [ ! -s "${APPROVED_FILE}" ]; then
   git reset --hard "${PREV_SHA}" >/dev/null 2>&1
   exit 1
 fi
-if ! sed 's/#.*//' "${APPROVED_FILE}" | sed 's/[[:space:]]*$//' | grep -qx "${FULL_SHA}"; then
-  echo "FAIL: SHA ${NEW_SHA} (${FULL_SHA}) нет в deploy/approved-shas.txt — деплой запрещён."
-  echo "      Пачка, которую потянуло бы (прод → цель):"
-  git log --oneline "${PREV_SHA}..${NEW_SHA}" | head -40
-  git reset --hard "${PREV_SHA}" >/dev/null 2>&1
-  exit 1
+approved_sha() {
+  sed 's/#.*//' "${APPROVED_FILE}" | sed 's/[[:space:]]*$//' | grep -qx "$1"
+}
+# Approval lives in git, therefore a commit cannot contain its own SHA. The only
+# permitted bootstrap wrapper is one direct child that changes only the approval
+# file and this guard itself; runtime target remains the explicitly approved parent tree.
+APPROVED_TARGET="${FULL_SHA}"
+if ! approved_sha "${FULL_SHA}"; then
+  PARENT_SHA=$(git rev-parse "${FULL_SHA}^")
+  WRAPPER_FILES=$(git diff --name-only "${PARENT_SHA}" "${FULL_SHA}")
+  if approved_sha "${PARENT_SHA}" && [ "${WRAPPER_FILES}" = "deploy/approved-shas.txt
+scripts/deploy.sh" ]; then
+    APPROVED_TARGET="${PARENT_SHA}"
+  else
+    echo "FAIL: SHA ${NEW_SHA} (${FULL_SHA}) и его approval-only parent не одобрены."
+    echo "      Пачка, которую потянуло бы (прод → цель):"
+    git log --oneline "${PREV_SHA}..${NEW_SHA}" | head -40
+    git reset --hard "${PREV_SHA}" >/dev/null 2>&1
+    exit 1
+  fi
 fi
-echo "==> scope: ${NEW_SHA} в approved-shas — ок"
+echo "==> scope: approved runtime target ${APPROVED_TARGET} — ок"
 
 # ── 2c. Migration-direction guard: downgrade схемой деплоя не делаем ────────
 # Разгон схемы необратим для отката кода: после него старый код не стартует.
