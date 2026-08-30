@@ -6,3 +6,4 @@
 31f58bdf70762ef3cae211c2a20a1234ba9e4c7d  # dual-host RU/EN, owner-approved 2026-08-30
 f366fea0d0114ee002269ae4576b470578284273  # RU+CIS geo + browser-lang redirect, owner-approved 2026-08-30
 30f33d5479410b0ed5c74cbc6e01464651c3edd6  # wrapper-guard fix, owner-approved 2026-08-30
+6b9561221f65a8143b6592d34e932791a061a3ae  # X-Original-URI geo fix, owner-approved 2026-08-30
