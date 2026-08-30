@@ -883,6 +883,55 @@ def _is_html_navigation(request: Request) -> bool:
     accept = request.headers.get("accept", "")
     return request.method == "HEAD" or not accept or "text/html" in accept
 
+
+def _locale_preference(request: Request) -> str:
+    """Явный выбор языка: query locale_pref сильнее cookie (первый hop переключателя)."""
+    q = (request.query_params.get("locale_pref") or "").lower()
+    if q in {"en", "ru", "stay-en"}:
+        return q
+    return (request.cookies.get(settings.locale_preference_cookie) or "").lower()
+
+
+def _locale_pref_cookie_domain() -> str | None:
+    from app.services.locale import apex_host
+
+    host = apex_host()
+    if host and "." in host and not host.startswith("localhost"):
+        return f".{host}"
+    return None
+
+
+def _set_locale_preference_cookie(response: Response, value: str) -> None:
+    kw: dict = {
+        "httponly": False,
+        "secure": settings.auth_cookie_secure,
+        "samesite": "lax",
+        "path": "/",
+        "max_age": 365 * 24 * 3600,
+    }
+    domain = _locale_pref_cookie_domain()
+    if domain:
+        kw["domain"] = domain
+    response.set_cookie(settings.locale_preference_cookie, value, **kw)
+
+
+def _persist_locale_pref_redirect(request: Request) -> Response | None:
+    """Первый hop переключателя: запомнить cookie на общем Domain и снять query."""
+    q = (request.query_params.get("locale_pref") or "").lower()
+    if q not in {"en", "ru"}:
+        return None
+    from urllib.parse import urlencode
+
+    kept = [(k, v) for k, v in request.query_params.multi_items() if k != "locale_pref"]
+    original = request.headers.get("x-original-uri") or request.url.path
+    public_path = original.partition("?")[0]
+    target = public_path or "/"
+    if kept:
+        target += "?" + urlencode(kept)
+    response = Response(status_code=303, headers={"Location": target, "Vary": "Cookie"})
+    _set_locale_preference_cookie(response, q)
+    return response
+
 _GEO_RU_CODES: frozenset[str] | None = None
 
 
@@ -940,7 +989,7 @@ def _geo_locale_redirect(request: Request) -> Response | None:
         return None
     if _SEARCH_BOT_UA.search(request.headers.get("user-agent", "")):
         return None
-    preference = request.cookies.get(settings.locale_preference_cookie, "").lower()
+    preference = _locale_preference(request)
     if preference in {"en", "stay-en"}:
         return None
     from app.services.geoip import lookup
@@ -993,6 +1042,9 @@ class LocaleMiddleware(BaseHTTPMiddleware):
         redirect = _geo_locale_redirect(request)
         if redirect is not None:
             return redirect
+        persist = _persist_locale_pref_redirect(request)
+        if persist is not None:
+            return persist
         header = request.headers.get(LOCALE_HEADER)
         locale = resolve_locale_from_request(request)
         # Preview только когда явный override запроса совпал с активной локалью:

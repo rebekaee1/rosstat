@@ -29,12 +29,10 @@ def test_write_requires_live_write_flag_and_approval():
     assert decision.requires_approval is True
 
 
-def test_webmaster_host_id_format_passes_allowlist():
-    # host_id Яндекс.Вебмастера имеет вид `https:domain:443` — не должен
-    # отсекаться allowlist'ом (регрессия: recrawl_daily_job падал на каждом URL).
+def test_webmaster_ru_subdomain_is_allowed():
     decision = evaluate_action(
         "webmaster.recrawl.submit",
-        {"host": "https:forecasteconomy.com:443", "url": "https://forecasteconomy.com/"},
+        {"host": "https:ru.forecasteconomy.com:443", "url": "https://ru.forecasteconomy.com/"},
         approved=True,
     )
     assert "allowlist" not in decision.reason

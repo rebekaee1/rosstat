@@ -1184,6 +1184,29 @@ def test_geo_locale_redirect_cis_and_browser_language(monkeypatch):
     response = _geo_locale_redirect(_request("KZ", cookie="fe_locale_pref=en"))
     assert response is None
 
+    # Первый hop переключателя: query locale_pref=en без cookie — не редиректим.
+    def _request_pref_query():
+        return Request({
+            "type": "http", "method": "GET", "path": "/russia/indicator/cpi",
+            "query_string": b"locale_pref=en", "scheme": "https",
+            "server": ("forecasteconomy.com", 443), "client": ("203.0.113.9", 1),
+            "headers": [(b"host", b"forecasteconomy.com"), (b"accept", b"text/html"),
+                        (b"user-agent", b"Mozilla/5.0")],
+        })
+
+    monkeypatch.setattr("app.services.geoip.lookup", lambda ip: {"country_code": "RU"})
+    response = _geo_locale_redirect(_request_pref_query())
+    assert response is None
+
+    from app.main import _persist_locale_pref_redirect
+
+    persist = _persist_locale_pref_redirect(_request_pref_query())
+    assert persist is not None and persist.status_code == 303
+    assert persist.headers["location"] == "/russia/indicator/cpi"
+    set_cookie = persist.headers.get("set-cookie", "")
+    assert "fe_locale_pref=en" in set_cookie
+    assert "domain=.forecasteconomy.com" in set_cookie.lower()
+
     # Неизвестная страна + русский браузер → редирект (язык решает).
     monkeypatch.setattr("app.services.geoip.lookup", lambda ip: {"country_code": None})
     response = _geo_locale_redirect(_request("XX", accept_language="ru"))

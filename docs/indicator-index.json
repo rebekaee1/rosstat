@@ -163,7 +163,7 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 338,
+          "line": 340,
           "kind": "tests"
         },
         {
@@ -7836,12 +7836,12 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 859,
+          "line": 874,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 860,
+          "line": 875,
           "kind": "seo"
         },
         {
@@ -8375,6 +8375,16 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_i18n_parity.py",
+          "line": 1190,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_i18n_parity.py",
+          "line": 1205,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_indicator_year_landing.py",
           "line": 43,
           "kind": "tests"
@@ -8671,12 +8681,7 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 430,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_seo_og.py",
-          "line": 458,
+          "line": 432,
           "kind": "tests"
         },
         {
@@ -8686,77 +8691,77 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 463,
+          "line": 462,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 476,
+          "line": 465,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 524,
+          "line": 478,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 525,
+          "line": 526,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 532,
+          "line": 527,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 581,
+          "line": 534,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 585,
+          "line": 583,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 595,
+          "line": 587,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 600,
+          "line": 597,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 606,
+          "line": 602,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 637,
+          "line": 608,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 706,
+          "line": 639,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 726,
+          "line": 708,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 740,
+          "line": 728,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 764,
+          "line": 742,
           "kind": "tests"
         },
         {
@@ -8766,7 +8771,12 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 769,
+          "line": 768,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 771,
           "kind": "tests"
         },
         {
@@ -10241,22 +10251,22 @@
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 123,
+          "line": 127,
           "kind": "other"
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 137,
+          "line": 141,
           "kind": "other"
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 154,
+          "line": 158,
           "kind": "other"
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 155,
+          "line": 159,
           "kind": "other"
         },
         {
@@ -10808,7 +10818,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1143,
+          "line": 1158,
           "kind": "seo"
         },
         {
@@ -20652,7 +20662,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 863,
+          "line": 878,
           "kind": "seo"
         },
         {
@@ -22067,7 +22077,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2229,
+          "line": 2244,
           "kind": "seo"
         },
         {
@@ -22601,7 +22611,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2229,
+          "line": 2244,
           "kind": "seo"
         },
         {
@@ -27242,7 +27252,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 865,
+          "line": 880,
           "kind": "seo"
         },
         {
@@ -27397,7 +27407,7 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 401,
+          "line": 403,
           "kind": "tests"
         },
         {
@@ -28251,7 +28261,7 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 458,
+          "line": 460,
           "kind": "tests"
         },
         {
@@ -28896,7 +28906,7 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 374,
+          "line": 376,
           "kind": "tests"
         },
         {
@@ -34130,7 +34140,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1142,
+          "line": 1157,
           "kind": "seo"
         },
         {
@@ -38104,7 +38114,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 857,
+          "line": 872,
           "kind": "seo"
         },
         {
@@ -38259,37 +38269,37 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 339,
+          "line": 341,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 343,
+          "line": 345,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 451,
+          "line": 453,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 458,
+          "line": 460,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 461,
+          "line": 463,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 511,
+          "line": 513,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 581,
+          "line": 583,
           "kind": "tests"
         },
         {
@@ -40519,7 +40529,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 861,
+          "line": 876,
           "kind": "seo"
         },
         {
@@ -40559,7 +40569,7 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 462,
+          "line": 464,
           "kind": "tests"
         },
         {
@@ -45041,7 +45051,7 @@
         },
         {
           "file": "frontend/index.html",
-          "line": 110,
+          "line": 112,
           "kind": "other"
         },
         {
@@ -48839,7 +48849,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 858,
+          "line": 873,
           "kind": "seo"
         },
         {
@@ -48909,22 +48919,12 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 340,
+          "line": 342,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 353,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_seo_og.py",
-          "line": 508,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_seo_og.py",
-          "line": 509,
+          "line": 355,
           "kind": "tests"
         },
         {
@@ -48934,7 +48934,17 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 514,
+          "line": 511,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 512,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 516,
           "kind": "tests"
         },
         {
@@ -53664,7 +53674,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 864,
+          "line": 879,
           "kind": "seo"
         },
         {
@@ -53719,7 +53729,7 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 458,
+          "line": 460,
           "kind": "tests"
         },
         {
@@ -56121,7 +56131,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 862,
+          "line": 877,
           "kind": "seo"
         },
         {
@@ -57921,7 +57931,7 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 458,
+          "line": 460,
           "kind": "tests"
         },
         {

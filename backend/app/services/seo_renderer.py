@@ -668,6 +668,21 @@ def _hreflang_head(canonical_path: str) -> str:
     )
 
 
+# Коды подтверждения Вебмастера: apex (02b4…) и ru. (5e35…). Оба тега на
+# каждой странице — Яндекс принимает несколько meta и ищет свой код.
+YANDEX_VERIFICATION_CODES = (
+    "02b4966d46881470",  # forecasteconomy.com
+    "5e35c47bf83e75a9",  # ru.forecasteconomy.com
+)
+
+
+def _yandex_verification_meta() -> str:
+    return "\n".join(
+        f'<meta name="yandex-verification" content="{code}">'
+        for code in YANDEX_VERIFICATION_CODES
+    )
+
+
 async def build_document(
     *,
     title: str,
@@ -743,7 +758,7 @@ async def build_document(
 <meta name="author" content="Forecast Economy">
 <meta name="robots" content="{robots_content}">
 <meta name="theme-color" content="#F8F9FC">
-<meta name="yandex-verification" content="02b4966d46881470">
+{_yandex_verification_meta()}
 <link rel="canonical" href="{escape(url)}">
 <link rel="alternate" type="application/rss+xml" title="{rss_title}" href="{escape(_absolute("/feed.xml"))}">
 {hreflang}

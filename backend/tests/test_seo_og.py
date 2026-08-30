@@ -293,6 +293,8 @@ def test_seo_critical_css_in_build_document():
     assert SEO_CRITICAL_CSS in html
     assert 'id="seo-critical"' in html
     assert ".seo-page" in html
+    assert 'name="yandex-verification" content="02b4966d46881470"' in html
+    assert 'name="yandex-verification" content="5e35c47bf83e75a9"' in html
 
 
 def test_sort_head_links_stylesheets_first():

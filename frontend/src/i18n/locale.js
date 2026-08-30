@@ -77,10 +77,25 @@ export function languageAlternateOrigin(locale, { ruOrigin, enOrigin } = {}) {
 }
 
 export const LOCALE_PREFERENCE_COOKIE = 'fe_locale_pref';
+export const LOCALE_PREF_QUERY = 'locale_pref';
 
-export function setLocalePreference(locale) {
+/** Shared cookie Domain for apex + ru. (host-only cookie on ru. is invisible on apex). */
+export function localeCookieDomain(hostname) {
+  const h = normalizeHost(hostname);
+  if (h === 'forecasteconomy.com' || h.endsWith('.forecasteconomy.com')) {
+    return '.forecasteconomy.com';
+  }
+  return '';
+}
+
+export function setLocalePreference(locale, { hostname, protocol } = {}) {
   if (typeof document === 'undefined' || !['ru', 'en'].includes(locale)) return;
-  document.cookie = `${LOCALE_PREFERENCE_COOKIE}=${locale}; Path=/; Max-Age=31536000; SameSite=Lax; Secure`;
+  const host = hostname || (typeof window !== 'undefined' ? window.location.hostname : '');
+  const proto = protocol || (typeof window !== 'undefined' ? window.location.protocol : '');
+  const domain = localeCookieDomain(host);
+  const domainPart = domain ? `; Domain=${domain}` : '';
+  const secure = proto === 'https:' ? '; Secure' : '';
+  document.cookie = `${LOCALE_PREFERENCE_COOKIE}=${locale}; Path=/; Max-Age=31536000; SameSite=Lax${domainPart}${secure}`;
 }
 
 /** Navigate to the path-identical language host and persist explicit choice. */
@@ -88,5 +103,11 @@ export function switchLanguage(locale) {
   if (typeof window === 'undefined') return;
   setLocalePreference(locale);
   const origin = languageAlternateOrigin(locale);
-  window.location.assign(`${origin}${window.location.pathname}${window.location.search}${window.location.hash}`);
+  const url = new URL(
+    `${window.location.pathname}${window.location.search}${window.location.hash}`,
+    origin,
+  );
+  // Первый hop: query виден на целевом хосте даже если cookie ещё host-only.
+  url.searchParams.set(LOCALE_PREF_QUERY, locale);
+  window.location.assign(url.toString());
 }

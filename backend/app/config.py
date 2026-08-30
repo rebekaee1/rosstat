@@ -163,7 +163,7 @@ class Settings(BaseSettings):
     # аналитический crawl ходит на другой origin (стейджинг и т.п.).
     analytics_base_url: str = "https://forecasteconomy.com"
     analytics_allowed_counter_ids: str = "107136069"
-    analytics_allowed_hosts: str = "forecasteconomy.com"
+    analytics_allowed_hosts: str = "forecasteconomy.com,ru.forecasteconomy.com"
     analytics_default_retention_days: int = 180
     analytics_raw_log_retention_days: int = 90
     analytics_backfill_days: int = 30

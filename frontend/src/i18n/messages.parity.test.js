@@ -4,6 +4,7 @@ import {
   ogLocale,
   resolveLocale,
   PRODUCTION_APEX_HOSTS,
+  localeCookieDomain,
 } from './locale.js';
 import { MESSAGES } from './messages.js';
 
@@ -43,6 +44,15 @@ describe('htmlLang / ogLocale', () => {
     expect(htmlLang('ru')).toBe('ru');
     expect(ogLocale('en')).toBe('en_US');
     expect(ogLocale('ru')).toBe('ru_RU');
+  });
+});
+
+describe('localeCookieDomain', () => {
+  it('shares cookie across apex and ru. subdomain', () => {
+    expect(localeCookieDomain('forecasteconomy.com')).toBe('.forecasteconomy.com');
+    expect(localeCookieDomain('ru.forecasteconomy.com')).toBe('.forecasteconomy.com');
+    expect(localeCookieDomain('www.forecasteconomy.com')).toBe('.forecasteconomy.com');
+    expect(localeCookieDomain('localhost')).toBe('');
   });
 });
 
