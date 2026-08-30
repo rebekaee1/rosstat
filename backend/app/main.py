@@ -910,11 +910,26 @@ def _is_html_navigation(request: Request) -> bool:
     return request.method == "HEAD" or not accept or "text/html" in accept
 
 
+def _public_query_params(request: Request) -> list[tuple[str, str]]:
+    """Query как у браузера: nginx path-cut срезает ASGI query, оригинал — в X-Original-URI."""
+    from urllib.parse import parse_qsl
+
+    original = request.headers.get("x-original-uri") or ""
+    _, _, qs = original.partition("?")
+    if qs:
+        return parse_qsl(qs, keep_blank_values=True)
+    return list(request.query_params.multi_items())
+
+
 def _locale_preference(request: Request) -> str:
     """Явный выбор языка: query locale_pref сильнее cookie (первый hop переключателя)."""
-    q = (request.query_params.get("locale_pref") or "").lower()
-    if q in {"en", "ru", "stay-en"}:
-        return q
+    for key, value in _public_query_params(request):
+        if key != "locale_pref":
+            continue
+        q = (value or "").lower()
+        if q in {"en", "ru", "stay-en"}:
+            return q
+        break
     return (request.cookies.get(settings.locale_preference_cookie) or "").lower()
 
 
@@ -943,19 +958,24 @@ def _set_locale_preference_cookie(response: Response, value: str) -> None:
 
 def _persist_locale_pref_redirect(request: Request) -> Response | None:
     """Первый hop переключателя: запомнить cookie на общем Domain и снять query."""
-    q = (request.query_params.get("locale_pref") or "").lower()
-    if q not in {"en", "ru"}:
-        return None
     from urllib.parse import urlencode
 
-    kept = [(k, v) for k, v in request.query_params.multi_items() if k != "locale_pref"]
+    pref: str | None = None
+    kept: list[tuple[str, str]] = []
+    for key, value in _public_query_params(request):
+        if key == "locale_pref" and (value or "").lower() in {"en", "ru"}:
+            pref = (value or "").lower()
+            continue
+        kept.append((key, value))
+    if pref is None:
+        return None
     original = request.headers.get("x-original-uri") or request.url.path
     public_path = original.partition("?")[0]
     target = public_path or "/"
     if kept:
         target += "?" + urlencode(kept)
     response = Response(status_code=303, headers={"Location": target, "Vary": "Cookie"})
-    _set_locale_preference_cookie(response, q)
+    _set_locale_preference_cookie(response, pref)
     return response
 
 _GEO_RU_CODES: frozenset[str] | None = None

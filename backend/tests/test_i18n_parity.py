@@ -1207,6 +1207,28 @@ def test_geo_locale_redirect_cis_and_browser_language(monkeypatch):
     assert "fe_locale_pref=en" in set_cookie
     assert "domain=.forecasteconomy.com" in set_cookie.lower()
 
+    # nginx path-cut: ASGI path/query пустые, locale_pref только в X-Original-URI.
+    def _request_pref_via_original_uri():
+        return Request({
+            "type": "http", "method": "GET",
+            "path": "/seo/category/gdp",
+            "query_string": b"", "scheme": "https",
+            "server": ("forecasteconomy.com", 443), "client": ("203.0.113.9", 1),
+            "headers": [
+                (b"host", b"forecasteconomy.com"),
+                (b"accept", b"text/html"),
+                (b"user-agent", b"Mozilla/5.0"),
+                (b"x-original-uri", b"/russia/category/gdp?locale_pref=en"),
+            ],
+        })
+
+    response = _geo_locale_redirect(_request_pref_via_original_uri())
+    assert response is None
+    persist = _persist_locale_pref_redirect(_request_pref_via_original_uri())
+    assert persist is not None and persist.status_code == 303
+    assert persist.headers["location"] == "/russia/category/gdp"
+    assert "fe_locale_pref=en" in persist.headers.get("set-cookie", "")
+
     # Неизвестная страна + русский браузер → редирект (язык решает).
     monkeypatch.setattr("app.services.geoip.lookup", lambda ip: {"country_code": None})
     response = _geo_locale_redirect(_request("XX", accept_language="ru"))
