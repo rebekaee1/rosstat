@@ -881,8 +881,54 @@ def _is_html_navigation(request: Request) -> bool:
     accept = request.headers.get("accept", "")
     return request.method == "HEAD" or not accept or "text/html" in accept
 
+_GEO_RU_CODES: frozenset[str] | None = None
+
+
+def _geo_ru_country_codes() -> frozenset[str]:
+    """RU + СНГ по умолчанию; кэшируется, т.к. строка читается на каждый хит."""
+    global _GEO_RU_CODES
+    if _GEO_RU_CODES is None:
+        raw = (settings.geo_ru_country_codes or "RU").upper()
+        _GEO_RU_CODES = frozenset(
+            code.strip() for code in raw.split(",") if code.strip()
+        )
+    return _GEO_RU_CODES
+
+
+def _browser_prefers_russian(accept_language: str | None) -> bool:
+    """q-взвешенный Accept-Language: русский — доминирующий язык браузера.
+
+    True только если ru стоит первым по весу (по умолчанию q=1) и его вес
+    не ниже порога. `en-US,en;q=0.9` → False; `ru-RU,ru;q=0.9,en;q=0.8` → True.
+    """
+    if not accept_language:
+        return False
+    best_lang, best_q = "", -1.0
+    for part in accept_language.split(","):
+        seg = part.strip().lower()
+        if not seg:
+            continue
+        pieces = seg.split(";q=")
+        lang = pieces[0].strip()
+        try:
+            q = float(pieces[1]) if len(pieces) > 1 else 1.0
+        except ValueError:
+            q = 0.0
+        if q > best_q:
+            best_lang, best_q = lang, q
+    if best_lang.split("-")[0] != "ru":
+        return False
+    return best_q >= settings.browser_lang_min_quality
+
+
 def _geo_locale_redirect(request: Request) -> Response | None:
-    """Russian human on EN apex -> same path on RU host; bots and opt-out stay."""
+    """Человек из RU/CIS-зоны или с русским браузером на EN apex → ru.-хост.
+
+    Боты, техмаршруты и явный opt-out (cookie из переключателя языка)
+    остаются на apex. Двухступенчато: сначала гео (RU + СНГ), затем
+    Accept-Language для остальных — чтобы не редиректить англоязычного
+    немца, находящегося в Германии.
+    """
     if not settings.apex_locale_en or not settings.geo_locale_redirect_enabled:
         return None
     from app.services.locale import apex_host, normalize_host, ru_public_origin
@@ -900,12 +946,19 @@ def _geo_locale_redirect(request: Request) -> Response | None:
         request.headers.get("x-forwarded-for", ""),
         request.client.host if request.client else "",
     )
-    if (lookup(client_ip).get("country_code") or "").upper() != "RU":
-        return None
+    country = (lookup(client_ip).get("country_code") or "").upper()
+    if country not in _geo_ru_country_codes():
+        # Не RU/CIS (включая неизвестную страну): язык браузера решает, и
+        # только если флаг включён и русский явно доминирует в Accept-Language.
+        if not (
+            settings.browser_lang_redirect_enabled
+            and _browser_prefers_russian(request.headers.get("accept-language"))
+        ):
+            return None
     target = f"{ru_public_origin()}{request.url.path}"
     if request.url.query:
         target += f"?{request.url.query}"
-    return Response(status_code=307, headers={"Location": target, "Vary": "Cookie"})
+    return Response(status_code=307, headers={"Location": target, "Vary": "Cookie, Accept-Language"})
 
 class LocaleMiddleware(BaseHTTPMiddleware):
     """Bind request locale + origin (host / X-FE-Locale / ?preview_locale)."""

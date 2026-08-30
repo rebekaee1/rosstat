@@ -1112,3 +1112,62 @@ def test_geo_locale_redirect_contract(monkeypatch):
 
     api = {**scope, "path": "/api/v1/health/ready"}
     assert _geo_locale_redirect(Request(api)) is None
+
+
+def test_geo_locale_redirect_cis_and_browser_language(monkeypatch):
+    """Расширенный контракт: RU + СНГ по гео; русский Accept-Language как фолбэк."""
+    from starlette.requests import Request
+    from app.config import settings
+    from app.main import _geo_locale_redirect
+
+    monkeypatch.setattr(settings, "apex_locale_en", True)
+    monkeypatch.setattr(settings, "geo_locale_redirect_enabled", True)
+    monkeypatch.setattr(settings, "browser_lang_redirect_enabled", True)
+
+    def _request(ip_country: str, accept_language: str | None = None, cookie: str | None = None):
+        headers = [(b"host", b"forecasteconomy.com"), (b"accept", b"text/html"),
+                   (b"user-agent", b"Mozilla/5.0")]
+        if accept_language is not None:
+            headers.append((b"accept-language", accept_language.encode()))
+        if cookie is not None:
+            headers.append((b"cookie", cookie.encode()))
+        return Request({
+            "type": "http", "method": "GET", "path": "/russia/indicator/cpi",
+            "query_string": b"", "scheme": "https",
+            "server": ("forecasteconomy.com", 443), "client": ("203.0.113.9", 1),
+            "headers": headers,
+        })
+
+    # СНГ-зона (Казахстан, Беларусь, Узбекистан…) редиректится так же, как RU.
+    for cc in ("KZ", "BY", "UZ", "AM"):
+        monkeypatch.setattr("app.services.geoip.lookup", lambda ip, cc=cc: {"country_code": cc})
+        response = _geo_locale_redirect(_request(cc))
+        assert response is not None and response.status_code == 307, cc
+        assert response.headers["location"] == "https://ru.forecasteconomy.com/russia/indicator/cpi"
+
+    # Гео не из зоны + русский доминирующий браузер → тоже ru.
+    monkeypatch.setattr("app.services.geoip.lookup", lambda ip: {"country_code": "DE"})
+    response = _geo_locale_redirect(_request("DE", accept_language="ru-RU,ru;q=0.9,en;q=0.8"))
+    assert response is not None and response.status_code == 307
+
+    # Гео не из зоны + английский браузер → остаёмся на apex.
+    response = _geo_locale_redirect(_request("DE", accept_language="en-US,en;q=0.9"))
+    assert response is None
+
+    # Русский язык не доминирует (низкий q) → не редиректим.
+    response = _geo_locale_redirect(_request("DE", accept_language="en;q=0.9,ru;q=0.1"))
+    assert response is None
+
+    # Opt-out cookie сильнее гео и языка.
+    monkeypatch.setattr("app.services.geoip.lookup", lambda ip: {"country_code": "KZ"})
+    response = _geo_locale_redirect(_request("KZ", cookie="fe_locale_pref=en"))
+    assert response is None
+
+    # Неизвестная страна + русский браузер → редирект (язык решает).
+    monkeypatch.setattr("app.services.geoip.lookup", lambda ip: {"country_code": None})
+    response = _geo_locale_redirect(_request("XX", accept_language="ru"))
+    assert response is not None
+
+    # Неизвестная страна + нет Accept-Language → не редиректим.
+    response = _geo_locale_redirect(_request("XX"))
+    assert response is None

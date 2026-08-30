@@ -12,7 +12,6 @@ DATA_IMAGE_PATHS = frozenset({
     "/russia/indicator/cpi", "/russia/indicator/cpi/2024",
     "/russia/indicator/cpi/2024-01", "/russia/today", "/russia/today/cpi",
     "/russia/region-rating/chislennost-naseleniya", "/world/rating/population",
-    "/germany",
 })
 
 DEFAULT_PATHS = (
@@ -22,8 +21,12 @@ DEFAULT_PATHS = (
     "/russia/today", "/russia/today/cpi", "/russia/calendar",
     "/russia/region", "/russia/region/moskva",
     "/russia/region-rating/chislennost-naseleniya",
-    "/world/rating/population", "/germany",
+    "/world/rating/population",
 )
+# Страновые мировые пути (/germany и т.п.) в гейт не входят: мировой data plane
+# на проде сознательно не залит (владелец мировую экономику на прод не выкладывал),
+# поэтому /germany там стабильно 404 и до, и после языкового релиза. Вернуть путь
+# в список можно только вместе с решением о заливке мировых данных на прод.
 CYRILLIC = re.compile(r"[А-Яа-яЁё]")
 
 

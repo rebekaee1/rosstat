@@ -155,7 +155,15 @@ for host in forecasteconomy.com ru.forecasteconomy.com; do
     | grep -q "https://${host}/russia/indicator/cpi" \
     || { echo "FAIL: canonical/SSR smoke ${host}"; rollback; }
 done
-python3 scripts/dual-host-release-gate.py \
+# Гейт-скрипту нужны httpx/bs4: берём выделенный venv на хосте (вне репозитория,
+# чтобы не грязнить git-дерево), системный python3 — фолбэк.
+GATE_PY="python3"
+for candidate in /opt/gate-venv/bin/python /opt/rosstat/.venv/bin/python; do
+  if [ -x "$candidate" ] && "$candidate" -c "import httpx, bs4" >/dev/null 2>&1; then
+    GATE_PY="$candidate"; break
+  fi
+done
+"$GATE_PY" scripts/dual-host-release-gate.py \
   --ru-origin=https://ru.forecasteconomy.com \
   --en-origin=https://forecasteconomy.com \
   || { echo "FAIL: dual-host release gate"; rollback; }

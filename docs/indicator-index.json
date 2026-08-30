@@ -8350,6 +8350,16 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_i18n_parity.py",
+          "line": 1135,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_i18n_parity.py",
+          "line": 1146,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_indicator_year_landing.py",
           "line": 43,
           "kind": "tests"
@@ -10216,22 +10226,22 @@
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 109,
-          "kind": "other"
-        },
-        {
-          "file": "scripts/deploy.sh",
           "line": 123,
           "kind": "other"
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 140,
+          "line": 137,
           "kind": "other"
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 141,
+          "line": 154,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/deploy.sh",
+          "line": 155,
           "kind": "other"
         },
         {
@@ -10246,17 +10256,17 @@
         },
         {
           "file": "scripts/dual-host-release-gate.py",
+          "line": 19,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/dual-host-release-gate.py",
           "line": 20,
           "kind": "other"
         },
         {
           "file": "scripts/dual-host-release-gate.py",
           "line": 21,
-          "kind": "other"
-        },
-        {
-          "file": "scripts/dual-host-release-gate.py",
-          "line": 22,
           "kind": "other"
         },
         {
@@ -45461,7 +45471,7 @@
         },
         {
           "file": "scripts/dual-host-release-gate.py",
-          "line": 25,
+          "line": 24,
           "kind": "other"
         }
       ]

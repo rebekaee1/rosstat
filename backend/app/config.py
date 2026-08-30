@@ -16,6 +16,15 @@ class Settings(BaseSettings):
     apex_locale_en: bool = False
     # Geo-переход включается только после зелёного dual-host cutover.
     geo_locale_redirect_enabled: bool = False
+    # Кто географически считается «русской» аудиторией (redirect + язык по
+    # Accept-Language). По умолчанию Россия и СНГ; перечислять ISO-коды стран.
+    geo_ru_country_codes: str = (
+        "RU,BY,KZ,UA,AM,AZ,GE,KG,TJ,TM,UZ,MD"
+    )
+    # Посетитель без гео-совпадения, но с русским языком браузера (q-взвешенный
+    # Accept-Language, порог уверенности) тоже уходит на ru.-хост.
+    browser_lang_redirect_enabled: bool = True
+    browser_lang_min_quality: float = 0.6
     locale_preference_cookie: str = "fe_locale_pref"
 
     # Database
