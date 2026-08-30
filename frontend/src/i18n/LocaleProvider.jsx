@@ -8,6 +8,7 @@ import {
   isPreviewLocaleActive,
   PREVIEW_QUERY,
   resolveBrowserLocale,
+  switchLanguage,
 } from './locale';
 import { translate } from './messages';
 import { LocaleContext } from './localeContext';
@@ -42,7 +43,7 @@ export function LocaleProvider({ children }) {
       }
       window.location.assign(url.toString());
     };
-    return { locale, t, isPreview, setPreviewLocale };
+    return { locale, t, isPreview, setPreviewLocale, switchLanguage };
   }, [locale, isPreview]);
 
   return <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>;

@@ -75,3 +75,18 @@ export function languageAlternateOrigin(locale, { ruOrigin, enOrigin } = {}) {
   const en = (enOrigin || 'https://forecasteconomy.com').replace(/\/$/, '');
   return locale === 'en' ? en : ru;
 }
+
+export const LOCALE_PREFERENCE_COOKIE = 'fe_locale_pref';
+
+export function setLocalePreference(locale) {
+  if (typeof document === 'undefined' || !['ru', 'en'].includes(locale)) return;
+  document.cookie = `${LOCALE_PREFERENCE_COOKIE}=${locale}; Path=/; Max-Age=31536000; SameSite=Lax; Secure`;
+}
+
+/** Navigate to the path-identical language host and persist explicit choice. */
+export function switchLanguage(locale) {
+  if (typeof window === 'undefined') return;
+  setLocalePreference(locale);
+  const origin = languageAlternateOrigin(locale);
+  window.location.assign(`${origin}${window.location.pathname}${window.location.search}${window.location.hash}`);
+}

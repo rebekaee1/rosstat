@@ -132,3 +132,15 @@ python scripts/seo-audit.py --target=https://forecasteconomy.com
 ## Устойчивость
 
 Чеклист по тому, что закладывать при доработках API, парсеров и UI: **[enterprise_resilience.md](enterprise_resilience.md)**.
+
+## Двуххостовый языковой cutover
+
+`ru.forecasteconomy.com` является русским каноном, apex — английским после
+`RUSTATS_APEX_LOCALE_EN=true`. Это один флаг для backend и frontend build;
+отдельный `VITE_APEX_LOCALE_EN` в окружении запрещён. Geo-переход включается
+последним через `RUSTATS_GEO_LOCALE_REDIRECT_ENABLED=true`; его отключение не
+требует отката кода или схемы. Перед релизом обязательны
+`python3 scripts/dual-host-release-gate.py` и полный `./scripts/check-all.sh`.
+Поисковые роботы, API, sitemap, robots, RSS, OG, embed, health и OAuth callback
+не участвуют в geo-переходе. Явный выбор языка хранится год в host-only cookie
+`fe_locale_pref`.

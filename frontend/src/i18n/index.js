@@ -6,6 +6,7 @@ export {
   ogLocale,
   PREVIEW_QUERY,
   LOCALE_HEADER,
+  switchLanguage,
 } from './locale';
 export { LocaleProvider } from './LocaleProvider';
 export { useLocale, useT } from './localeContext';

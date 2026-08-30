@@ -65,7 +65,7 @@ def _name(block: dict | None, lang: str = "ru") -> str | None:
 
 def lookup(ip: str | None) -> dict[str, str | None]:
     """IP → {country, region, city} (русские имена, фолбэк en). Никогда не бросает."""
-    empty = {"country": None, "region": None, "city": None}
+    empty = {"country": None, "country_code": None, "region": None, "city": None}
     if not ip:
         return empty
     reader = _get_reader()
@@ -81,6 +81,7 @@ def lookup(ip: str | None) -> dict[str, str | None]:
     region = _name(subdivisions[0]) if subdivisions else None
     return {
         "country": _name(rec.get("country")),
+        "country_code": (rec.get("country") or {}).get("iso_code"),
         "region": region,
         "city": _name(rec.get("city")),
     }

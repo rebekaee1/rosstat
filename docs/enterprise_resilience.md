@@ -70,3 +70,12 @@
 6. Если правка касается SEO/SSR — `User-Agent: YandexBot/3.0` запрос к 3+ страницам, проверить `<title>` и `<meta>`.
 
 Без зелёных «6 из 6» в `main` не идём.
+
+### Dual-host locale cutover
+
+RU/EN запускаются как два канонических HTTPS-хоста с одинаковыми путями.
+Sitemap, RSS, canonical, hreflang, OG и JSON-LD формируются от исходного Host;
+кэш разделён по host/locale. Geo-переход применяется только к HTML-навигации
+человека на английском apex, fail-open при недоступном GeoIP и отключается
+отдельным runtime-флагом. Bot UA и служебные маршруты всегда получают ответ
+запрошенного хоста без редиректа. Канарейка: `scripts/dual-host-release-gate.py`.

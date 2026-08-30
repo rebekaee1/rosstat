@@ -101,7 +101,12 @@ async def ping_updated_indicators(updated_codes: list[str]) -> bool:
     url_paths += [
         paths.today(code) for code in updated_codes if code in TODAY_CODES
     ]
-    return await ping_urls(url_paths)
+    ok = await ping_urls(url_paths)
+    if settings.apex_locale_en:
+        from app.services.locale import ru_public_origin
+        ru_ok = await ping_urls(url_paths, origin=ru_public_origin())
+        return ok and ru_ok
+    return ok
 
 
 async def ping_full_site(db, *, origin: str | None = None, host: str | None = None) -> int:

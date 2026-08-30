@@ -14,6 +14,9 @@ class Settings(BaseSettings):
     # (ru. уже канон RU, EN-волна живая). Пока False — forecasteconomy.com = ru,
     # иначе деплой i18n убьёт индекс Яндекса (весь .com станет английским).
     apex_locale_en: bool = False
+    # Geo-переход включается только после зелёного dual-host cutover.
+    geo_locale_redirect_enabled: bool = False
+    locale_preference_cookie: str = "fe_locale_pref"
 
     # Database
     database_url: str = "postgresql+asyncpg://rustats:rustats@localhost:5432/rustats"

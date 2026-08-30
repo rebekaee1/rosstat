@@ -15,7 +15,9 @@ RUN npm ci --no-audit --no-fund \
     --fetch-timeout=300000
 COPY . .
 ARG VITE_PUBLIC_BASE_URL=https://forecasteconomy.com
+ARG VITE_APEX_LOCALE_EN=false
 ENV VITE_PUBLIC_BASE_URL=$VITE_PUBLIC_BASE_URL
+ENV VITE_APEX_LOCALE_EN=$VITE_APEX_LOCALE_EN
 RUN npm run build
 
 # Stage 2: Production

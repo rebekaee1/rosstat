@@ -88,6 +88,16 @@ _UNIT_EN = {
     "изменение за месяц": "monthly change",
     "изменение за квартал, п.п.": "quarterly change, pp",
     "изменение за год, п.п.": "annual change, pp",
+    "% ВВП": "% of GDP",
+    "млн евро": "million EUR",
+    "в текущих ценах, млн евро": "million EUR, current prices",
+    "в постоянных ценах 2015 года, млн евро": "million EUR, 2015 constant prices",
+    "в постоянных ценах 2010 года, млн евро": "million EUR, 2010 constant prices",
+    "ППС на душу населения": "PPS per capita",
+    "тысяча рублей": "thousand RUB",
+    "тысяч рублей": "thousand RUB",
+    "тысяч тонн": "thousand tonnes",
+    "рублей за литр": "RUB per litre",
 }
 
 _RU_MONTHS_GEN = (

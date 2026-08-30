@@ -780,12 +780,12 @@
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 87,
+          "line": 93,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 111,
+          "line": 117,
           "kind": "other"
         },
         {
@@ -925,7 +925,7 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1525,
+          "line": 1527,
           "kind": "other"
         },
         {
@@ -1352,22 +1352,22 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 104,
+          "line": 106,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 109,
+          "line": 111,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 104,
+          "line": 106,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 109,
+          "line": 111,
           "kind": "other"
         },
         {
@@ -2060,22 +2060,22 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 103,
+          "line": 105,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 108,
+          "line": 110,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 103,
+          "line": 105,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 108,
+          "line": 110,
           "kind": "other"
         },
         {
@@ -4895,12 +4895,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1255,
+          "line": 1257,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1256,
+          "line": 1258,
           "kind": "other"
         },
         {
@@ -7655,6 +7655,11 @@
           "kind": "other"
         },
         {
+          "file": "backend/app/data/legacy_redirects.py",
+          "line": 59,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/data/seo_static/llms.en.txt",
           "line": 43,
           "kind": "other"
@@ -8332,6 +8337,16 @@
         {
           "file": "backend/tests/test_i18n_parity.py",
           "line": 789,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_i18n_parity.py",
+          "line": 1092,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_i18n_parity.py",
+          "line": 1100,
           "kind": "tests"
         },
         {
@@ -9216,16 +9231,6 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 986,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.en.js",
-          "line": 987,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.en.js",
           "line": 988,
           "kind": "other"
         },
@@ -9246,22 +9251,22 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1094,
+          "line": 992,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1257,
+          "line": 993,
           "kind": "other"
         },
         {
-          "file": "frontend/src/i18n/messages.ru.js",
-          "line": 985,
+          "file": "frontend/src/i18n/messages.en.js",
+          "line": 1096,
           "kind": "other"
         },
         {
-          "file": "frontend/src/i18n/messages.ru.js",
-          "line": 986,
+          "file": "frontend/src/i18n/messages.en.js",
+          "line": 1259,
           "kind": "other"
         },
         {
@@ -9286,12 +9291,22 @@
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1094,
+          "line": 991,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1258,
+          "line": 992,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.ru.js",
+          "line": 1096,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.ru.js",
+          "line": 1260,
           "kind": "other"
         },
         {
@@ -10210,6 +10225,41 @@
           "kind": "other"
         },
         {
+          "file": "scripts/deploy.sh",
+          "line": 140,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/deploy.sh",
+          "line": 141,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/dual-host-release-gate.py",
+          "line": 12,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/dual-host-release-gate.py",
+          "line": 13,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/dual-host-release-gate.py",
+          "line": 20,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/dual-host-release-gate.py",
+          "line": 21,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/dual-host-release-gate.py",
+          "line": 22,
+          "kind": "other"
+        },
+        {
           "file": "scripts/e2e/navbar-overlap.mjs",
           "line": 25,
           "kind": "other"
@@ -10329,6 +10379,11 @@
           "file": "backend/app/data/indicator_seo.py",
           "line": 1812,
           "kind": "seo"
+        },
+        {
+          "file": "backend/app/data/legacy_redirects.py",
+          "line": 60,
+          "kind": "other"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
@@ -10854,6 +10909,11 @@
           "kind": "seo"
         },
         {
+          "file": "backend/app/data/legacy_redirects.py",
+          "line": 60,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/services/calculation_engine.py",
           "line": 95,
           "kind": "derived"
@@ -11176,6 +11236,11 @@
           "file": "backend/app/data/indicator_seo.py",
           "line": 1896,
           "kind": "seo"
+        },
+        {
+          "file": "backend/app/data/legacy_redirects.py",
+          "line": 61,
+          "kind": "other"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
@@ -11581,6 +11646,11 @@
           "kind": "seo"
         },
         {
+          "file": "backend/app/data/legacy_redirects.py",
+          "line": 61,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/services/calculation_engine.py",
           "line": 100,
           "kind": "derived"
@@ -11906,6 +11976,11 @@
           "kind": "seo"
         },
         {
+          "file": "backend/app/data/legacy_redirects.py",
+          "line": 59,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/services/calculation_engine.py",
           "line": 93,
           "kind": "derived"
@@ -12056,6 +12131,11 @@
           "file": "backend/app/data/indicator_seo.py",
           "line": 1975,
           "kind": "seo"
+        },
+        {
+          "file": "backend/app/data/legacy_redirects.py",
+          "line": 62,
+          "kind": "other"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
@@ -12464,6 +12544,11 @@
           "file": "backend/app/data/indicator_seo.py",
           "line": 1289,
           "kind": "seo"
+        },
+        {
+          "file": "backend/app/data/legacy_redirects.py",
+          "line": 62,
+          "kind": "other"
         },
         {
           "file": "backend/app/services/calculation_engine.py",
@@ -16451,11 +16536,6 @@
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 93,
-          "kind": "other"
-        },
-        {
-          "file": "backend/app/data/i18n/region_indicators_en.py",
           "line": 99,
           "kind": "other"
         },
@@ -16467,6 +16547,11 @@
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
           "line": 111,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/data/i18n/region_indicators_en.py",
+          "line": 117,
           "kind": "other"
         },
         {
@@ -19422,52 +19507,52 @@
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 236,
-          "kind": "other"
-        },
-        {
-          "file": "backend/app/data/i18n/region_indicators_en.py",
           "line": 242,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 272,
+          "line": 248,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 296,
+          "line": 278,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 1238,
+          "line": 302,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 1262,
+          "line": 1244,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 1304,
+          "line": 1268,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 1712,
+          "line": 1310,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 1742,
+          "line": 1718,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 1766,
+          "line": 1748,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/data/i18n/region_indicators_en.py",
+          "line": 1772,
           "kind": "other"
         },
         {
@@ -19612,17 +19697,17 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1050,
+          "line": 1052,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1052,
+          "line": 1054,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1052,
+          "line": 1054,
           "kind": "other"
         },
         {
@@ -20652,12 +20737,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1254,
+          "line": 1256,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1255,
+          "line": 1257,
           "kind": "other"
         },
         {
@@ -21222,22 +21307,22 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 113,
+          "line": 115,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 114,
+          "line": 116,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 113,
+          "line": 115,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 114,
+          "line": 116,
           "kind": "other"
         },
         {
@@ -21832,12 +21917,12 @@
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 2882,
+          "line": 2888,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 2894,
+          "line": 2900,
           "kind": "other"
         },
         {
@@ -22222,32 +22307,32 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 442,
+          "line": 444,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1011,
+          "line": 1013,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1015,
+          "line": 1017,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1126,
+          "line": 1128,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1010,
+          "line": 1012,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1014,
+          "line": 1016,
           "kind": "other"
         },
         {
@@ -23972,12 +24057,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1259,
+          "line": 1261,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1260,
+          "line": 1262,
           "kind": "other"
         },
         {
@@ -24519,12 +24604,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1260,
+          "line": 1262,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1261,
+          "line": 1263,
           "kind": "other"
         },
         {
@@ -25036,12 +25121,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1261,
+          "line": 1263,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1262,
+          "line": 1264,
           "kind": "other"
         },
         {
@@ -29106,12 +29191,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1258,
+          "line": 1260,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1259,
+          "line": 1261,
           "kind": "other"
         },
         {
@@ -32259,12 +32344,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1262,
+          "line": 1264,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1263,
+          "line": 1265,
           "kind": "other"
         },
         {
@@ -32853,12 +32938,12 @@
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 2888,
+          "line": 2894,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 2900,
+          "line": 2906,
           "kind": "other"
         },
         {
@@ -33133,22 +33218,22 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1012,
+          "line": 1014,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1016,
+          "line": 1018,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1011,
+          "line": 1013,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1015,
+          "line": 1017,
           "kind": "other"
         },
         {
@@ -35625,16 +35710,6 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 998,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.en.js",
-          "line": 999,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.en.js",
           "line": 1000,
           "kind": "other"
         },
@@ -35654,13 +35729,13 @@
           "kind": "other"
         },
         {
-          "file": "frontend/src/i18n/messages.ru.js",
-          "line": 997,
+          "file": "frontend/src/i18n/messages.en.js",
+          "line": 1004,
           "kind": "other"
         },
         {
-          "file": "frontend/src/i18n/messages.ru.js",
-          "line": 998,
+          "file": "frontend/src/i18n/messages.en.js",
+          "line": 1005,
           "kind": "other"
         },
         {
@@ -35681,6 +35756,16 @@
         {
           "file": "frontend/src/i18n/messages.ru.js",
           "line": 1002,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.ru.js",
+          "line": 1003,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.ru.js",
+          "line": 1004,
           "kind": "other"
         },
         {
@@ -38339,12 +38424,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1256,
+          "line": 1258,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1257,
+          "line": 1259,
           "kind": "other"
         },
         {
@@ -39469,12 +39554,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1046,
+          "line": 1048,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1046,
+          "line": 1048,
           "kind": "other"
         },
         {
@@ -39934,12 +40019,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1047,
+          "line": 1049,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1047,
+          "line": 1049,
           "kind": "other"
         },
         {
@@ -40534,12 +40619,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1048,
+          "line": 1050,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1048,
+          "line": 1050,
           "kind": "other"
         },
         {
@@ -42041,22 +42126,22 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 107,
+          "line": 109,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 112,
+          "line": 114,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 107,
+          "line": 109,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 112,
+          "line": 114,
           "kind": "other"
         },
         {
@@ -42583,12 +42668,12 @@
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 368,
+          "line": 374,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 374,
+          "line": 380,
           "kind": "other"
         },
         {
@@ -43456,11 +43541,6 @@
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 20,
-          "kind": "other"
-        },
-        {
-          "file": "backend/app/data/i18n/region_indicators_en.py",
           "line": 26,
           "kind": "other"
         },
@@ -43471,12 +43551,7 @@
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 44,
-          "kind": "other"
-        },
-        {
-          "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 45,
+          "line": 38,
           "kind": "other"
         },
         {
@@ -43501,7 +43576,12 @@
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 87,
+          "line": 62,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/data/i18n/region_indicators_en.py",
+          "line": 63,
           "kind": "other"
         },
         {
@@ -43511,37 +43591,32 @@
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 98,
+          "line": 99,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 105,
+          "line": 104,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 116,
+          "line": 111,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 117,
+          "line": 122,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 128,
+          "line": 123,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 146,
-          "kind": "other"
-        },
-        {
-          "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 147,
+          "line": 134,
           "kind": "other"
         },
         {
@@ -43556,77 +43631,82 @@
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 164,
+          "line": 158,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 165,
+          "line": 159,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 254,
+          "line": 170,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 284,
+          "line": 171,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 320,
+          "line": 260,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 374,
+          "line": 290,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 375,
+          "line": 326,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 386,
+          "line": 380,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 405,
+          "line": 381,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 434,
+          "line": 392,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 668,
+          "line": 411,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 698,
+          "line": 440,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 746,
+          "line": 674,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 764,
+          "line": 704,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 776,
+          "line": 752,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/data/i18n/region_indicators_en.py",
+          "line": 770,
           "kind": "other"
         },
         {
@@ -43641,17 +43721,17 @@
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 800,
+          "line": 794,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 818,
+          "line": 806,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 819,
+          "line": 824,
           "kind": "other"
         },
         {
@@ -43736,7 +43816,7 @@
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 920,
+          "line": 921,
           "kind": "other"
         },
         {
@@ -43746,67 +43826,67 @@
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 956,
+          "line": 932,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 968,
+          "line": 962,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 1010,
+          "line": 974,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 1256,
+          "line": 1016,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 1257,
+          "line": 1262,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 1298,
+          "line": 1263,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 1299,
+          "line": 1304,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 1814,
+          "line": 1305,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 1826,
+          "line": 1820,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 1827,
+          "line": 1832,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 1880,
+          "line": 1833,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 1892,
+          "line": 1886,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 1901,
+          "line": 1898,
           "kind": "other"
         },
         {
@@ -43857,11 +43937,6 @@
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
           "line": 1961,
-          "kind": "other"
-        },
-        {
-          "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 1964,
           "kind": "other"
         },
         {
@@ -43971,7 +44046,12 @@
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 2084,
+          "line": 2030,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/data/i18n/region_indicators_en.py",
+          "line": 2033,
           "kind": "other"
         },
         {
@@ -43981,27 +44061,22 @@
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 2091,
-          "kind": "other"
-        },
-        {
-          "file": "backend/app/data/i18n/region_indicators_en.py",
           "line": 2096,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 2204,
+          "line": 2097,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 2205,
+          "line": 2102,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 2206,
+          "line": 2210,
           "kind": "other"
         },
         {
@@ -44026,7 +44101,12 @@
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 2222,
+          "line": 2223,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/data/i18n/region_indicators_en.py",
+          "line": 2224,
           "kind": "other"
         },
         {
@@ -44041,12 +44121,17 @@
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 2930,
+          "line": 2240,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 2931,
+          "line": 2936,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/data/i18n/region_indicators_en.py",
+          "line": 2937,
           "kind": "other"
         },
         {
@@ -44451,7 +44536,7 @@
         },
         {
           "file": "backend/app/services/seo_i18n.py",
-          "line": 399,
+          "line": 400,
           "kind": "other"
         },
         {
@@ -45066,32 +45151,27 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 146,
+          "line": 148,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 189,
+          "line": 191,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 235,
+          "line": 237,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 825,
+          "line": 827,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 832,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.en.js",
-          "line": 835,
+          "line": 834,
           "kind": "other"
         },
         {
@@ -45101,67 +45181,72 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 866,
+          "line": 839,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1052,
+          "line": 868,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1198,
+          "line": 1054,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1267,
+          "line": 1200,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1324,
+          "line": 1269,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1647,
+          "line": 1326,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1648,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.ru.js",
-          "line": 146,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.ru.js",
-          "line": 234,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.ru.js",
-          "line": 824,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1325,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1648,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.ru.js",
           "line": 1649,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.en.js",
+          "line": 1650,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.ru.js",
+          "line": 148,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.ru.js",
+          "line": 236,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.ru.js",
+          "line": 826,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.ru.js",
+          "line": 1327,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.ru.js",
+          "line": 1650,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.ru.js",
+          "line": 1651,
           "kind": "other"
         },
         {
@@ -45367,6 +45452,16 @@
         {
           "file": "scripts/audit_world_lib.py",
           "line": 45,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/dual-host-release-gate.py",
+          "line": 14,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/dual-host-release-gate.py",
+          "line": 25,
           "kind": "other"
         }
       ]
@@ -46166,12 +46261,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 584,
+          "line": 586,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 583,
+          "line": 585,
           "kind": "other"
         },
         {
@@ -48869,12 +48964,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 806,
+          "line": 808,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 805,
+          "line": 807,
           "kind": "other"
         },
         {
@@ -53224,7 +53319,7 @@
       "files": [
         {
           "file": ".env.example",
-          "line": 114,
+          "line": 116,
           "kind": "other"
         },
         {
@@ -53329,7 +53424,7 @@
         },
         {
           "file": "backend/app/data/i18n/region_indicators_en.py",
-          "line": 290,
+          "line": 296,
           "kind": "other"
         },
         {
@@ -53744,42 +53839,42 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 100,
+          "line": 102,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 233,
+          "line": 235,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 250,
+          "line": 252,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 826,
+          "line": 828,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 832,
+          "line": 834,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 837,
+          "line": 839,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 866,
+          "line": 868,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 825,
+          "line": 827,
           "kind": "other"
         },
         {
@@ -55353,22 +55448,22 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 105,
+          "line": 107,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 110,
+          "line": 112,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 105,
+          "line": 107,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 110,
+          "line": 112,
           "kind": "other"
         },
         {
@@ -56196,12 +56291,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1253,
+          "line": 1255,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1254,
+          "line": 1256,
           "kind": "other"
         },
         {
@@ -56839,22 +56934,22 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 106,
+          "line": 108,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 111,
+          "line": 113,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 106,
+          "line": 108,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 111,
+          "line": 113,
           "kind": "other"
         },
         {

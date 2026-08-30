@@ -48,16 +48,16 @@ def test_catalog_world_country_indicator_year_validates_country():
     assert has_en_path("/united-states/indicator/us-cpi-all/2024") is True
     # Не страна каталога (или произвольный первый сегмент) — EN не обещаем.
     assert has_en_path("/not-a-country/indicator/x/2023") is False
+    assert has_en_path("/germany") is True
     assert has_en_path("/not-a-country") is False
 
 
-def test_catalog_world_country_indicator_requires_indicator_segment():
-    """Валидация страны распространяется только на /{country}/indicator/…:
-    прочие ветки первого сегмента (/{country}/category/…) каталогом не
-    покрыты — их EN-твинов ещё нет."""
+def test_catalog_world_country_profile_and_indicator_paths():
+    """Карточка страны и /{country}/indicator/ имеют EN-твины; вымышленные
+    страновые подветки не объявляются."""
     from app.data.i18n.en_catalog import has_en_path
 
-    assert has_en_path("/germany") is False
+    assert has_en_path("/germany") is True
     assert has_en_path("/germany/category/prices") is False
 
 

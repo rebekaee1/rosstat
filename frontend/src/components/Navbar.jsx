@@ -74,7 +74,7 @@ const CALCULATOR_ITEMS = [
 
 export default function Navbar() {
   const t = useT();
-  const { locale } = useLocale();
+  const { locale, switchLanguage } = useLocale();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [calcOpen, setCalcOpen] = useState(false);
@@ -256,6 +256,14 @@ export default function Navbar() {
 
       <div className="hidden lg:flex items-center shrink-0 gap-2 xl:gap-3">
         <IndicatorSearch variant="pill" />
+        <button
+          type="button"
+          onClick={() => switchLanguage(locale === 'en' ? 'ru' : 'en')}
+          className={cn(FOCUS_RING, 'rounded-lg px-1 text-sm font-medium text-text-secondary hover:text-champagne')}
+          aria-label={t('nav.language')}
+        >
+          {t('nav.switchLanguage')}
+        </button>
         <div className="h-5 w-px bg-border-subtle" aria-hidden />
         <AuthCluster />
       </div>
@@ -291,6 +299,13 @@ export default function Navbar() {
             <NavLink to="/about" className={({ isActive }) => navItemClass(isActive)} onClick={closeAll}>
               {t('nav.about')}
             </NavLink>
+            <button
+              type="button"
+              className={navItemClass(false)}
+              onClick={() => switchLanguage(locale === 'en' ? 'ru' : 'en')}
+            >
+              {t('nav.switchLanguage')}
+            </button>
             <div className="mx-2 my-1 h-px bg-border-subtle" />
             <div className="px-2 pt-2">
               <AuthCluster mobile onNavigate={closeAll} />

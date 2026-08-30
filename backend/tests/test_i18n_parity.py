@@ -1078,3 +1078,37 @@ def test_default_keywords_en():
     finally:
         reset_locale(token)
 
+
+
+def test_geo_locale_redirect_contract(monkeypatch):
+    from starlette.requests import Request
+    from app.config import settings
+    from app.main import _geo_locale_redirect
+
+    monkeypatch.setattr(settings, "apex_locale_en", True)
+    monkeypatch.setattr(settings, "geo_locale_redirect_enabled", True)
+    monkeypatch.setattr("app.services.geoip.lookup", lambda ip: {"country_code": "RU"})
+    scope = {
+        "type": "http", "method": "GET", "path": "/russia/indicator/cpi",
+        "query_string": b"mode=weekly", "scheme": "https",
+        "server": ("forecasteconomy.com", 443), "client": ("203.0.113.5", 1),
+        "headers": [(b"host", b"forecasteconomy.com"), (b"accept", b"text/html"),
+                    (b"user-agent", b"Mozilla/5.0")],
+    }
+    response = _geo_locale_redirect(Request(scope))
+    assert response is not None and response.status_code == 307
+    assert response.headers["location"] == "https://ru.forecasteconomy.com/russia/indicator/cpi?mode=weekly"
+
+    bot = {**scope, "headers": [(b"host", b"forecasteconomy.com"),
+                                  (b"accept", b"text/html"),
+                                  (b"user-agent", b"YandexBot/3.0")]}
+    assert _geo_locale_redirect(Request(bot)) is None
+
+    opted = {**scope, "headers": [(b"host", b"forecasteconomy.com"),
+                                    (b"accept", b"text/html"),
+                                    (b"user-agent", b"Mozilla/5.0"),
+                                    (b"cookie", b"fe_locale_pref=en")]}
+    assert _geo_locale_redirect(Request(opted)) is None
+
+    api = {**scope, "path": "/api/v1/health/ready"}
+    assert _geo_locale_redirect(Request(api)) is None

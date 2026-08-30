@@ -108,6 +108,12 @@ services:
       # НЕ зависит от ANALYTICS_ENABLED — иначе на проде телеметрия не пишется.
       RUSTATS_FRONTEND_EVENTS_ENABLED: ${RUSTATS_FRONTEND_EVENTS_ENABLED:-true}
       RUSTATS_PUBLIC_BASE_URL: ${RUSTATS_PUBLIC_BASE_URL:-https://forecasteconomy.com}
+      # Один cutover-флаг управляет backend и frontend build: рассинхрон невозможен.
+      RUSTATS_APEX_LOCALE_EN: ${RUSTATS_APEX_LOCALE_EN:-false}
+      RUSTATS_GEO_LOCALE_REDIRECT_ENABLED: ${RUSTATS_GEO_LOCALE_REDIRECT_ENABLED:-false}
+      # IndexNow-пинг: на локалке выключен (пути новой схемы /russia/* уезжают
+      # Яндексу, а прод со старым кодом отвечает на них 404 — инцидент 2026-08-30).
+      RUSTATS_INDEXNOW_ENABLED: ${RUSTATS_INDEXNOW_ENABLED:-true}
       RUSTATS_ANALYTICS_ENABLED: ${RUSTATS_ANALYTICS_ENABLED:-false}
       RUSTATS_ANALYTICS_SCHEDULER_ENABLED: ${RUSTATS_ANALYTICS_SCHEDULER_ENABLED:-false}
       RUSTATS_ANALYTICS_API_TOKEN: ${RUSTATS_ANALYTICS_API_TOKEN:-}
@@ -196,6 +202,8 @@ services:
       dockerfile: Dockerfile
       args:
         VITE_PUBLIC_BASE_URL: ${VITE_PUBLIC_BASE_URL:-https://forecasteconomy.com}
+        # Намеренно тот же source env, что у backend: отдельного VITE-флага нет.
+        VITE_APEX_LOCALE_EN: ${RUSTATS_APEX_LOCALE_EN:-false}
     ports:
       - "127.0.0.1:3000:80"
     volumes:

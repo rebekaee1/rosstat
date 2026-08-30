@@ -10,6 +10,12 @@ from __future__ import annotations
 
 # code → {name, unit, note, section}
 REGION_INDICATORS_EN: dict[str, dict[str, str | None]] = {
+    'ceni-dt': {"name": 'Consumer price of diesel fuel', "unit": 'roubles per litre', "note": None, "section": 'Prices'},
+    'roznica-dt': {"name": 'Retail sales of diesel fuel', "unit": 'thousand roubles', "note": None, "section": 'Trade'},
+    'opt-benzin': {"name": 'Wholesale sales of motor gasoline', "unit": 'thousand tonnes', "note": None, "section": 'Trade'},
+    'opt-dt': {"name": 'Wholesale sales of diesel fuel', "unit": 'thousand tonnes', "note": None, "section": 'Trade'},
+    'ceni-ai92': {"name": 'Consumer price of AI-92 gasoline', "unit": 'roubles per litre', "note": None, "section": 'Prices'},
+    'ceni-ai95': {"name": 'Consumer price of AI-95 gasoline', "unit": 'roubles per litre', "note": None, "section": 'Prices'},
     'chislennost-naseleniya': {
         "name": 'Population',
         "unit": 'thousand people',

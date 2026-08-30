@@ -78,6 +78,8 @@ def has_en_path(path: str) -> bool:
 
     if path in EN_EXACT_PATHS:
         return True
+    if len(path.split("/")) == 2 and path.split("/")[1] in _country_slugs():
+        return True
     for prefix in EN_PATH_PREFIXES:
         if path == prefix.rstrip("/") or path.startswith(prefix):
             return True

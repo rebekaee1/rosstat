@@ -1,4 +1,4 @@
-{$PUBLIC_HOST:forecasteconomy.com} {
+{$PUBLIC_HOST:forecasteconomy.com}, ru.{$PUBLIC_HOST:forecasteconomy.com} {
 	# О-16: границы на edge — тело запроса и таймауты проксирования.
 	# Стандартная сборка Caddy без rate-limit-плагина; лимит запросов живёт
 	# в backend-middleware (по /api/), SSR-прожиг сдерживают Redis HTML-кэш

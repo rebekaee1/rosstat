@@ -54,6 +54,12 @@ _BESPOKE_UNLISTED_CANONICAL: dict[str, str] = {
     "ppi-qoq": f"{paths.russia_indicator('ppi')}?mode=qoq",
     "ppi-mom": f"{paths.russia_indicator('ppi')}?mode=mom",
     "ppi-annual": f"{paths.russia_indicator('ppi')}?mode=annual",
+    # Недельный ИПЦ-сиблинг bespoke CPI-семьи (не в generic-реестре): URL
+    # был подан в IndexNow из локального стека до отката прода (2026-08-30).
+    "cpi-period-weekly": f"{paths.russia_indicator('cpi')}?mode=period-weekly",
+    "cpi-food-period-weekly": f"{paths.russia_indicator('cpi-food')}?mode=period-weekly",
+    "cpi-nonfood-period-weekly": f"{paths.russia_indicator('cpi-nonfood')}?mode=period-weekly",
+    "cpi-services-period-weekly": f"{paths.russia_indicator('cpi-services')}?mode=period-weekly",
 }
 
 # Суффиксы sibling-рядов generic-семей: длинные раньше коротких, иначе

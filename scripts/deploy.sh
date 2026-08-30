@@ -133,9 +133,18 @@ else
   echo "    Caddyfile unchanged, skip"
 fi
 
-echo "==> smoke: HTTPS через Caddy"
-curl -sf -o /dev/null https://forecasteconomy.com/api/v1/health \
-  || echo "WARN: HTTPS smoke не прошёл (проверь Caddy руками)"
+echo "==> smoke: HTTPS dual-host через Caddy"
+for host in forecasteconomy.com ru.forecasteconomy.com; do
+  curl -sf -o /dev/null "https://${host}/api/v1/health" \
+    || { echo "FAIL: HTTPS smoke ${host}"; rollback; }
+  curl -sf -A 'YandexBot/3.0' "https://${host}/russia/indicator/cpi" \
+    | grep -q "https://${host}/russia/indicator/cpi" \
+    || { echo "FAIL: canonical/SSR smoke ${host}"; rollback; }
+done
+python3 scripts/dual-host-release-gate.py \
+  --ru-origin=https://ru.forecasteconomy.com \
+  --en-origin=https://forecasteconomy.com \
+  || { echo "FAIL: dual-host release gate"; rollback; }
 
 # ── 7. Чистка старых версионированных образов (держим 3 последних) ────
 docker images 'rosstat-backend' --format '{{.Tag}}' | grep -v '^latest$' | tail -n +4 \

@@ -2,6 +2,7 @@ import asyncio
 import ipaddress
 import json
 import logging
+import re
 import time
 from contextlib import asynccontextmanager
 
@@ -860,6 +861,52 @@ app = FastAPI(
     openapi_url="/api/openapi.json" if settings.debug else None,
 )
 
+_GEO_EXCLUDED_PREFIXES = (
+    "/api/", "/assets/", "/og/", "/sitemap", "/embed/", "/oauth/", "/auth/oauth/",
+)
+_GEO_EXCLUDED_EXACT = frozenset({
+    "/robots.txt", "/llms.txt", "/feed.xml", "/health", "/favicon.ico",
+})
+_SEARCH_BOT_UA = re.compile(
+    r"(?:yandex(?:bot|images)|googlebot|bingbot|mail\.ru_bot|duckduckbot|applebot|petalbot)",
+    re.IGNORECASE,
+)
+
+def _is_html_navigation(request: Request) -> bool:
+    if request.method not in {"GET", "HEAD"}:
+        return False
+    path = request.url.path
+    if path in _GEO_EXCLUDED_EXACT or any(path.startswith(p) for p in _GEO_EXCLUDED_PREFIXES):
+        return False
+    accept = request.headers.get("accept", "")
+    return request.method == "HEAD" or not accept or "text/html" in accept
+
+def _geo_locale_redirect(request: Request) -> Response | None:
+    """Russian human on EN apex -> same path on RU host; bots and opt-out stay."""
+    if not settings.apex_locale_en or not settings.geo_locale_redirect_enabled:
+        return None
+    from app.services.locale import apex_host, normalize_host, ru_public_origin
+
+    host = normalize_host(request.headers.get("x-forwarded-host") or request.headers.get("host"))
+    if host not in {apex_host(), f"www.{apex_host()}"} or not _is_html_navigation(request):
+        return None
+    if _SEARCH_BOT_UA.search(request.headers.get("user-agent", "")):
+        return None
+    preference = request.cookies.get(settings.locale_preference_cookie, "").lower()
+    if preference in {"en", "stay-en"}:
+        return None
+    from app.services.geoip import lookup
+    client_ip = pick_client_ip(
+        request.headers.get("x-forwarded-for", ""),
+        request.client.host if request.client else "",
+    )
+    if (lookup(client_ip).get("country_code") or "").upper() != "RU":
+        return None
+    target = f"{ru_public_origin()}{request.url.path}"
+    if request.url.query:
+        target += f"?{request.url.query}"
+    return Response(status_code=307, headers={"Location": target, "Vary": "Cookie"})
+
 class LocaleMiddleware(BaseHTTPMiddleware):
     """Bind request locale + origin (host / X-FE-Locale / ?preview_locale)."""
 
@@ -880,6 +927,9 @@ class LocaleMiddleware(BaseHTTPMiddleware):
         )
 
         host = request.headers.get("x-forwarded-host") or request.headers.get("host")
+        redirect = _geo_locale_redirect(request)
+        if redirect is not None:
+            return redirect
         header = request.headers.get(LOCALE_HEADER)
         locale = resolve_locale_from_request(request)
         # Preview только когда явный override запроса совпал с активной локалью:

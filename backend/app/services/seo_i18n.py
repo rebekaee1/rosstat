@@ -80,6 +80,7 @@ _WORLD_CATEGORY_EN_EXTRA: dict[str, str] = {
     "Прочее": "Other",
     "Национальные счета": "National accounts",
     "Статистика": "Statistics",
+    "Государственные финансы": "Government finance",
     "разделе": "section",
 }
 

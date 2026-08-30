@@ -54,6 +54,8 @@ export default {
   'nav.homeAria': 'Forecast Economy — на главную',
   'nav.homeTitle': 'На главную',
   'nav.openMenu': 'Открыть меню',
+  'nav.language': 'Язык',
+  'nav.switchLanguage': 'English',
   'nav.closeMenu': 'Закрыть меню',
   'nav.calc.inflation': 'Калькулятор инфляции',
   'nav.calc.mortgage': 'Ипотечный калькулятор',
