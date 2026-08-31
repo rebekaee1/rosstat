@@ -120,6 +120,19 @@ for _ in $(seq 1 60); do
   sleep 5
 done
 [ -n "$ready" ] || { echo "FAIL: backend не стал ready за 300s"; docker compose logs backend --tail=50; rollback; }
+
+# Frontend healthy до smoke: readiness-цикл выше ждёт только backend, а
+# frontend пересоздаётся секундами позже — первый HTTPS-пробег гонки
+# «health: starting» ловил 502/000 и ложно откатывал годный релиз.
+echo "==> waiting for frontend healthy (до 120s)"
+fe_ok=""
+for _ in $(seq 1 24); do
+  fe=$(docker inspect --format '{{.State.Health.Status}}' rosstat-frontend-1 2>/dev/null || echo unknown)
+  [ "$fe" = "healthy" ] && { fe_ok=1; break; }
+  sleep 5
+done
+[ -n "$fe_ok" ] || { echo "FAIL: frontend не стал healthy за 120s"; docker compose logs frontend --tail=50; rollback; }
+docker compose ps --format 'table {{.Name}}\t{{.Status}}'
 docker compose ps --format 'table {{.Name}}\t{{.Status}}'
 
 # ── 5. Расширенный smoke (О-6) ─────────────────────────────────────────
@@ -152,11 +165,24 @@ else
 fi
 
 echo "==> smoke: HTTPS dual-host через Caddy"
+# Ретраи: одиночный 000/502 (транзиент TLS/рестарт Caddy-апстрима) не должен
+# откатывать годный релиз; реальная деградация не пройдёт 4 пробы подряд.
+https_probe() {
+  local url="$1" pattern="$2" attempt
+  for attempt in 1 2 3 4; do
+    if [ -n "$pattern" ]; then
+      curl -sf -m 30 -A 'YandexBot/3.0' "$url" | grep -q "$pattern" && return 0
+    else
+      curl -sf -m 30 -o /dev/null "$url" && return 0
+    fi
+    sleep 5
+  done
+  return 1
+}
 for host in forecasteconomy.com ru.forecasteconomy.com; do
-  curl -sf -o /dev/null "https://${host}/api/v1/health" \
+  https_probe "https://${host}/api/v1/health" "" \
     || { echo "FAIL: HTTPS smoke ${host}"; rollback; }
-  curl -sf -A 'YandexBot/3.0' "https://${host}/russia/indicator/cpi" \
-    | grep -q "https://${host}/russia/indicator/cpi" \
+  https_probe "https://${host}/russia/indicator/cpi" "https://${host}/russia/indicator/cpi" \
     || { echo "FAIL: canonical/SSR smoke ${host}"; rollback; }
 done
 # Гейт-скрипту нужны httpx/bs4: берём выделенный venv на хосте (вне репозитория,
