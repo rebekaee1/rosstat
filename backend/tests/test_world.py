@@ -595,6 +595,44 @@ def test_world_country_detail_locale_en_uses_name_en(world_client):
     assert "Гармонизированный" in ru_hicp["name"]
 
 
+def test_world_country_detail_locale_en_units_no_cyrillic(world_client):
+    """EN locale: единицы и категории карточек страны — без кириллицы.
+
+    Жалоба руководителя (2026-08-31): на /united-states в EN-каталоге стояли
+    «тыс. человек», «млрд долларов США (цены 2017)», «% ЭАН». Локализация
+    идёт через display.localize_unit (единая точка) + категории мира.
+    """
+    import re
+
+    from app.services.seo_i18n import localize_category_name
+
+    r = world_client.get(
+        "/api/v1/world/countries/germany",
+        headers={"X-FE-Locale": "en"},
+    )
+    assert r.status_code == 200
+    body = r.json()
+    rows = [i for cat in body["categories"] for i in cat["indicators"]]
+    assert rows
+    for item in rows:
+        assert not re.search(r"[А-Яа-яЁё]", item["unit"]), item["code"]
+        assert not re.search(r"[А-Яа-яЁё]", item["category"]), item["code"]
+        assert not re.search(r"[А-Яа-яЁё]", item["unit_suffix"]), item["code"]
+    # Категория национального паспорта (world_national_core) локализуется.
+    assert localize_category_name("Бизнес и инвестиции", locale="en") == (
+        "Business and investment"
+    )
+    assert localize_category_name("Внешняя торговля", locale="en") == "Foreign trade"
+    # Единицы национальных рядов через словарь display._UNIT_EN.
+    from app.services.display import localize_unit as _lu
+
+    assert _lu("тыс. человек", locale="en") == "thousand people"
+    assert _lu("млрд долларов США (цены 2017)", locale="en") == "billion USD (2017 prices)"
+    assert _lu("% экономически активного населения", locale="en") == "% of the labour force"
+    assert _lu("долларов США за 1 евро", locale="en") == "USD per EUR"
+    assert _lu("индекс (1982–84 = 100)", locale="en") == "index (1982–84 = 100)"
+
+
 def test_append_en_slice_to_title_nace():
     from app.data.eurostat_dim_labels_en import append_en_slice_to_title
 
@@ -754,6 +792,9 @@ def test_world_compare_contract_and_snapshot(world_client):
     item = catalog.json()["items"][0]
     assert item["code"] == "w:germany:hicp-index"
     assert item["indicator_code"] == "de-prc_hicp_midx-cp00-i15"
+    russia_items = [row for row in catalog.json()["items"] if row["country_slug"] == "russia"]
+    assert russia_items, "compare catalog must include Russia via RUSSIA_CONCEPT_LINKS"
+    assert all(row["code"].startswith("w:russia:") for row in russia_items)
 
     snapshot = world_client.get("/api/v1/world/compare/snapshot/hicp-index")
     assert snapshot.status_code == 200
@@ -791,6 +832,12 @@ def test_world_search_and_404(world_client):
     assert world_client.get(
         "/api/v1/world/indicators/germany/no-such-code/data"
     ).status_code == 404
+    russia_series = world_client.get("/api/v1/world/compare/series/russia/hicp-index")
+    assert russia_series.status_code in (200, 404)
+    missing = world_client.get("/api/v1/world/compare/series/russia/gdp-volume-quarterly")
+    assert missing.status_code == 404
+    unknown = world_client.get("/api/v1/world/compare/series/russia/no-such-concept")
+    assert unknown.status_code == 404
 
 
 def test_gdp_ranking_benchmark_is_median_not_mean():

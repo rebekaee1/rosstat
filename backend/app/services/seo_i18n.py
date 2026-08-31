@@ -75,12 +75,16 @@ _HERO_LABEL_EN: dict[str, str] = {
 
 # World/Russia category_ru (api_category) → EN display name.
 # Synced with CATEGORY_META_EN.name / categories.js nameEn; extras for world-only buckets.
+# «Бизнес и инвестиции» / «Внешняя торговля» — категории национальных паспортов
+# (world_national_core/*.yaml); без записи они просачивались в EN-каталог стран.
 _WORLD_CATEGORY_EN_EXTRA: dict[str, str] = {
     "Общество": "Society",
     "Прочее": "Other",
     "Национальные счета": "National accounts",
     "Статистика": "Statistics",
     "Государственные финансы": "Government finance",
+    "Бизнес и инвестиции": "Business and investment",
+    "Внешняя торговля": "Foreign trade",
     "разделе": "section",
 }
 
@@ -343,8 +347,8 @@ def public_indicator_fields(
 
         return {
             "name": name,
-            "description": overlay.get("description") or description_ru,
-            "methodology": overlay.get("methodology") or methodology_ru,
+            "description": overlay.get("description") or None,
+            "methodology": overlay.get("methodology") or None,
             "unit": overlay.get("unit") or localize_unit(unit_ru, locale="en") or unit_ru,
         }
     if loc == "en":
@@ -352,8 +356,8 @@ def public_indicator_fields(
 
         return {
             "name": name,
-            "description": description_ru,
-            "methodology": methodology_ru,
+            "description": None,
+            "methodology": None,
             "unit": localize_unit(unit_ru, locale="en") or unit_ru,
         }
     return {
@@ -519,7 +523,7 @@ def public_indicator_seo(
     # «Актуальное значение» / «за N квартал» onto EN pages).
     en_desc = (fields.get("description") or "").strip()
     if en_desc and any(ch in en_desc for ch in "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя"):
-        # Overlay missing: description_ru leaked via public_indicator_fields.
+        # Overlay must not carry Russian description onto EN pages.
         en_desc = ""
     seo_description = en_desc or tpl["description_fallback"].format(name=name)
     # Never ship Russian FAQ bodies on EN — always template from EN copy.

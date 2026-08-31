@@ -97,8 +97,14 @@ describe('HomeWorkbench', () => {
       expect(screen.getByTestId('world-map-stub')).toBeTruthy();
     });
     const timeline = screen.getByTestId('map-timeline-stub');
-    expect(timeline).toBeTruthy();
     expect(timeline.textContent).toContain('timeline:2024,2025:2025:function');
+
+    const scope = document.querySelector('[data-block="home-data-scope"]');
+    const controls = document.querySelector('[data-block="home-map-controls"]');
+    const workbench = document.querySelector('[data-block="home-workbench"]');
+    expect(scope && controls && workbench).toBeTruthy();
+    expect(scope.compareDocumentPosition(controls) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(workbench.contains(controls)).toBe(true);
 
     await waitFor(() => {
       expect(screen.getByText(/3,10/)).toBeTruthy();

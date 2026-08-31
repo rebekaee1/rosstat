@@ -348,6 +348,15 @@ Eurostat — первый адаптер, а не универсальный и�
 КАЖДОГО тестируемого URL — падение «404 в hreflang-тесте» = дыра в фиксстуре,
 не повод снимать проверку).
 
+### Locale-host trap: IP/VPN не выбирают язык (2026-08-31)
+
+Язык страницы = хост (`ru.` → ru, apex после cutover → en, localhost → ru).
+GeoIP и `Accept-Language` **не** редиректят: с VPN и без поведение должно
+быть одинаковым. Cookie `fe_locale_pref` — память явного выбора переключателя,
+не источник редиректа. `_geo_locale_redirect` в `main.py` — no-op; флаги
+`geo_locale_redirect_enabled` / `browser_lang_redirect_enabled` игнорируются.
+Боты, API, sitemap, OG, RSS, embed отвечают на запрошенном хосте.
+
 ### Anti-scrape stack (nginx + honeypot + fail2ban)
 
 2026-08-27: США ведут систематический скрейп региональных страниц (Cloudflare WARP UA «research/1.0» — 378 req/4 мин; Oracle Cloud stealth-Chrome ~6.5 r/s сутками; webdriver-сессии в behavior_sessions). Стек из четырёх эшелонов:

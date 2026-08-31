@@ -1042,7 +1042,11 @@ def render_today_hub_og(
     from app.services.seo_i18n import today_hub_h1
 
     if title_label is None:
-        title_label = today_hub_h1(locale) or "Экономика России сегодня"
+        title_label = today_hub_h1(locale) or (
+            "Russia economy today"
+            if _effective_locale(locale) == "en"
+            else "Экономика России сегодня"
+        )
     if footer_note is None:
         footer_note = (
             "official data — updated as sources publish"

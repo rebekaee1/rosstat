@@ -126,6 +126,91 @@ def test_indexnow_accepts_second_host_origin(monkeypatch):
     )
 
 
+def test_indexnow_queue_debounce_skips_second_drain(monkeypatch):
+    """Очередь в state-Redis: успешный drain ставит debounce 24ч на URL."""
+    import fakeredis.aioredis
+    import app.core.cache as cache_mod
+    import app.services.indexnow as inx
+
+    redis = fakeredis.aioredis.FakeRedis(decode_responses=True)
+
+    async def _get_state_redis():
+        return redis
+
+    monkeypatch.setattr(cache_mod, "get_state_redis", _get_state_redis)
+    monkeypatch.setattr(inx.settings, "indexnow_enabled", True)
+    monkeypatch.setattr(inx.settings, "indexnow_key", "k" * 32)
+
+    posts = []
+
+    class _FakeResponse:
+        status_code = 200
+        text = "ok"
+
+    class _FakeClient:
+        def __init__(self, **kwargs):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            return False
+
+        async def post(self, url, json=None):
+            posts.append(json)
+            return _FakeResponse()
+
+    monkeypatch.setattr(inx.httpx, "AsyncClient", _FakeClient)
+
+    async def scenario():
+        queued = await inx.enqueue_paths(
+            ["/russia/indicator/cpi", "/russia/indicator/cpi"],
+            host=inx.settings.public_host,
+        )
+        sent = await inx.drain_indexnow_queue()
+        await inx.enqueue_paths(
+            ["/russia/indicator/cpi"],
+            host=inx.settings.public_host,
+        )
+        sent_again = await inx.drain_indexnow_queue()
+        return queued, sent, sent_again
+
+    queued, sent, sent_again = asyncio.run(scenario())
+    assert queued == 1
+    assert sent == 1
+    assert sent_again == 0
+    assert len(posts) == 1
+    assert posts[0]["urlList"] == [
+        f"{inx.settings.public_origin.rstrip('/')}/russia/indicator/cpi"
+    ]
+
+
+def test_ping_full_site_delegates_to_static_sections(monkeypatch):
+    """Полный пинг не тянет years-чанки: только ping_sections."""
+    import app.services.indexnow as inx
+
+    called = {}
+
+    async def fake_ping_sections(db, *, origin=None, host=None):
+        called["origin"] = origin
+        called["host"] = host
+        called["db"] = db
+        return 12
+
+    monkeypatch.setattr(inx, "ping_sections", fake_ping_sections)
+    n = asyncio.run(
+        inx.ping_full_site(
+            object(),
+            origin="https://ru.forecasteconomy.com",
+            host="ru.forecasteconomy.com",
+        )
+    )
+    assert n == 12
+    assert called["host"] == "ru.forecasteconomy.com"
+    assert called["origin"] == "https://ru.forecasteconomy.com"
+
+
 # ---------------------------------------------------------------------------
 # Маршруты /seo/* (monkeypatch рендеров — без БД)
 # ---------------------------------------------------------------------------

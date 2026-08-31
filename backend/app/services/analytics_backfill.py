@@ -194,7 +194,13 @@ async def backfill_metrika_search_phrases(db: AsyncSession, *, date_from: date, 
         raise
 
 
-_WEBMASTER_HOST_ID = "https:forecasteconomy.com:443"
+def webmaster_sync_host_ids() -> list[str]:
+    """Apex + ru. (если cutover включён). Порядок стабильный для идемпотентности."""
+    ids = [settings.webmaster_host_id]
+    ru_id = settings.webmaster_host_id_for("ru.forecasteconomy.com")
+    if settings.apex_locale_en and ru_id not in ids:
+        ids.append(ru_id)
+    return ids
 
 
 async def backfill_webmaster_search_queries(
@@ -205,81 +211,27 @@ async def backfill_webmaster_search_queries(
     До 2026-07-06 таблицу никто не заполнял — блок «Спрос и SEO» в BI был
     вечно пустым. Тянем по дню (у API лаг 2–3 дня: свежие дни отдают нули или
     404 — молча пропускаем, доберём следующим прогоном). Идемпотентно по
-    (host, date, query, url).
+    (host, date, query, url). После dual-host — оба свойства Вебмастера.
     """
-    from app.models import WebmasterSearchQuery
     from app.services.yandex_webmaster_client import YandexWebmasterClient
 
     if not settings.yandex_webmaster_token:
         return 0
     client = YandexWebmasterClient()
     user_id = (await client.user()).data["user_id"]
+    host_ids = webmaster_sync_host_ids()
     run = await start_sync_run(
         db, source="yandex_webmaster", job_type="daily_search_queries",
         date_from=date_from, date_to=date_to,
-        metadata={"host": _WEBMASTER_HOST_ID},
+        metadata={"hosts": host_ids},
     )
     await db.commit()
     processed = 0
     try:
-        for day in daterange(date_from, date_to):
-            # API отдаёт ТОП-3000 запросов за день постранично (limit ≤ 500).
-            # Проходов два: по показам и по кликам — сортировки дают разные срезы
-            # хвоста (запросы с кликами без показов в топ показов не попадают).
-            # Дедуп по тексту запроса: пересечение сортировок склеиваем.
-            fetched: dict[str, dict] = {}
-            for order_by in ("TOTAL_SHOWS", "TOTAL_CLICKS"):
-                offset = 0
-                while True:
-                    try:
-                        resp = await client.search_queries_popular(
-                            user_id, _WEBMASTER_HOST_ID,
-                            order_by=order_by,
-                            query_indicator=["TOTAL_SHOWS", "TOTAL_CLICKS",
-                                             "AVG_SHOW_POSITION", "AVG_CLICK_POSITION"],
-                            date_from=str(day), date_to=str(day),
-                            limit=500, offset=offset,
-                        )
-                    except Exception:  # noqa: BLE001 — свежие дни API ещё не отдаёт
-                        break
-                    queries = (resp.data or {}).get("queries") or []
-                    if not queries:
-                        break
-                    for q in queries:
-                        text = (q.get("query_text") or "").strip()
-                        if not text or text in fetched:
-                            continue
-                        ind = q.get("indicators") or {}
-                        shows = int(ind.get("TOTAL_SHOWS") or 0)
-                        clicks = int(ind.get("TOTAL_CLICKS") or 0)
-                        if not shows and not clicks:
-                            continue
-                        fetched[text] = {
-                            "shows": shows,
-                            "clicks": clicks,
-                            "position": ind.get("AVG_SHOW_POSITION"),
-                        }
-                    if len(queries) < 500:
-                        break
-                    offset += 500
-            for text, m in fetched.items():
-                existing = (await db.execute(
-                    select(WebmasterSearchQuery).where(
-                        WebmasterSearchQuery.host == _WEBMASTER_HOST_ID,
-                        WebmasterSearchQuery.date == day,
-                        WebmasterSearchQuery.query == text,
-                        WebmasterSearchQuery.url.is_(None),
-                    )
-                )).scalar_one_or_none() or WebmasterSearchQuery(
-                    host=_WEBMASTER_HOST_ID, date=day, query=text, url=None,
-                )
-                existing.impressions = m["shows"]
-                existing.clicks = m["clicks"]
-                existing.ctr = round(m["clicks"] / m["shows"], 4) if m["shows"] else None
-                pos = m["position"]
-                existing.position = round(float(pos), 2) if pos is not None else None
-                db.add(existing)
-                processed += 1
+        for host_id in host_ids:
+            processed += await _backfill_webmaster_host(
+                db, client, user_id, host_id, date_from, date_to,
+            )
         await finish_sync_run(db, run, records_processed=processed)
         await db.commit()
         return processed
@@ -288,6 +240,74 @@ async def backfill_webmaster_search_queries(
         await finish_sync_run(db, run, status="failed", error_message=str(exc)[:500])
         await db.commit()
         raise
+
+
+async def _backfill_webmaster_host(
+    db: AsyncSession,
+    client,
+    user_id,
+    host_id: str,
+    date_from: date,
+    date_to: date,
+) -> int:
+    from app.models import WebmasterSearchQuery
+
+    processed = 0
+    for day in daterange(date_from, date_to):
+        fetched: dict[str, dict] = {}
+        for order_by in ("TOTAL_SHOWS", "TOTAL_CLICKS"):
+            offset = 0
+            while True:
+                try:
+                    resp = await client.search_queries_popular(
+                        user_id, host_id,
+                        order_by=order_by,
+                        query_indicator=["TOTAL_SHOWS", "TOTAL_CLICKS",
+                                         "AVG_SHOW_POSITION", "AVG_CLICK_POSITION"],
+                        date_from=str(day), date_to=str(day),
+                        limit=500, offset=offset,
+                    )
+                except Exception:  # noqa: BLE001 — свежие дни / второе свойство ещё не отдаёт
+                    break
+                queries = (resp.data or {}).get("queries") or []
+                if not queries:
+                    break
+                for q in queries:
+                    text = (q.get("query_text") or "").strip()
+                    if not text or text in fetched:
+                        continue
+                    ind = q.get("indicators") or {}
+                    shows = int(ind.get("TOTAL_SHOWS") or 0)
+                    clicks = int(ind.get("TOTAL_CLICKS") or 0)
+                    if not shows and not clicks:
+                        continue
+                    fetched[text] = {
+                        "shows": shows,
+                        "clicks": clicks,
+                        "position": ind.get("AVG_SHOW_POSITION"),
+                    }
+                if len(queries) < 500:
+                    break
+                offset += 500
+        for text, m in fetched.items():
+            existing = (await db.execute(
+                select(WebmasterSearchQuery).where(
+                    WebmasterSearchQuery.host == host_id,
+                    WebmasterSearchQuery.date == day,
+                    WebmasterSearchQuery.query == text,
+                    WebmasterSearchQuery.url.is_(None),
+                )
+            )).scalar_one_or_none() or WebmasterSearchQuery(
+                host=host_id, date=day, query=text, url=None,
+            )
+            existing.impressions = m["shows"]
+            existing.clicks = m["clicks"]
+            existing.ctr = round(m["clicks"] / m["shows"], 4) if m["shows"] else None
+            pos = m["position"]
+            existing.position = round(float(pos), 2) if pos is not None else None
+            db.add(existing)
+            processed += 1
+    return processed
 
 
 async def backfill_seo_snapshots(db: AsyncSession, *, base_url: str | None = None, limit: int | None = None) -> int:

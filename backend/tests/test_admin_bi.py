@@ -54,6 +54,9 @@ def test_bi_dashboard_for_admin(auth_client):
     assert r.status_code == 200, r.text
     data = r.json()
     assert EXPECTED_SECTIONS <= set(data.keys())
+    # Dual-host (ADR-0013 §F): срез спроса по свойствам Вебмастера присутствует.
+    assert "webmaster_by_host" in data["demand"]
+    assert isinstance(data["demand"]["webmaster_by_host"], list)
     assert data["window_days"] == 7
     # Почти пустая БД → витрины считаются без ошибок; сама регистрация
     # админа уже видна в KPI как registration за сегодня.

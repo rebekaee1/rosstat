@@ -152,13 +152,37 @@ async def _seo_snapshot(db) -> dict[str, Any]:
         return {"available": False, "reason": "webmaster token not configured"}
     try:
         from app.services.site_urls import collect_all_paths
-        from app.services.webmaster_indexing_report import _HOST_ID
+        from app.services.webmaster_indexing_report import _report_host_ids
         from app.services.yandex_webmaster_client import YandexWebmasterClient
 
         client = YandexWebmasterClient()
         user = await client.user()
         user_id = user.data["user_id"]
-        summary = (await client.summary(user_id, _HOST_ID)).data
+
+        # Dual-host (ADR-0013 §F): summary по каждому свойству Вебмастера
+        # (apex всегда, ru. после cutover). Верхний уровень снапшота — apex
+        # (обратная совместимость с memory_core/BI), полный срез — summary_by_host.
+        summary_by_host: dict[str, dict[str, Any]] = {}
+        host_ids = _report_host_ids()
+        primary = None
+        for host_id in host_ids:
+            try:
+                data = (await client.summary(user_id, host_id)).data
+            except Exception:
+                logger.warning("Pulse SEO snapshot: summary failed host=%s", host_id, exc_info=True)
+                continue
+            label = host_id.replace("https:", "").replace(":443", "")
+            summary_by_host[label] = {
+                "searchable_pages": data.get("searchable_pages_count"),
+                "excluded_pages": data.get("excluded_pages_count"),
+                "sqi": data.get("sqi"),
+                "site_problems": data.get("site_problems") or {},
+            }
+            if primary is None:
+                primary = data
+        if primary is None or not summary_by_host:
+            return {"available": False, "reason": "summary fetch failed"}
+        summary = primary
         searchable = summary.get("searchable_pages_count")
         total_urls = len(await collect_all_paths(db))
 
@@ -166,9 +190,12 @@ async def _seo_snapshot(db) -> dict[str, Any]:
         # даёт голое число excluded_pages_count без объяснения — LLM не может
         # посоветовать, что чинить. search-urls/events/samples отдаёт по
         # каждому событию reason (excluded_url_status); агрегируем top-5.
+        # Сэмпл тянем с apex: причины общесайтовые, LLM-срезу достаточно одного.
         exclusion_reasons: list[dict[str, Any]] = []
         try:
-            events = (await client.search_events_samples(user_id, _HOST_ID, limit=100)).data
+            events = (await client.search_events_samples(
+                user_id, host_ids[0], limit=100
+            )).data
             reasons: dict[str, int] = {}
             for sample in events.get("samples") or []:
                 if sample.get("event") != "REMOVED_FROM_SEARCH":
@@ -184,6 +211,7 @@ async def _seo_snapshot(db) -> dict[str, Any]:
 
         last_date = await db.scalar(select(func.max(WebmasterSearchQuery.date)))
         top_demand: list[dict[str, Any]] = []
+        demand_by_host: list[dict[str, Any]] = []
         if last_date:
             rows = (await db.execute(
                 select(
@@ -204,6 +232,24 @@ async def _seo_snapshot(db) -> dict[str, Any]:
                 }
                 for q, i, c, p in rows
             ]
+            host_rows = (await db.execute(
+                select(
+                    WebmasterSearchQuery.host,
+                    func.sum(WebmasterSearchQuery.impressions),
+                    func.sum(WebmasterSearchQuery.clicks),
+                )
+                .where(WebmasterSearchQuery.date == last_date)
+                .group_by(WebmasterSearchQuery.host)
+                .order_by(func.sum(WebmasterSearchQuery.impressions).desc())
+            )).all()
+            demand_by_host = [
+                {
+                    "host": h,
+                    "impressions": int(i or 0),
+                    "clicks": int(c or 0),
+                }
+                for h, i, c in host_rows
+            ]
         return {
             "available": True,
             "sitemap_urls_total": total_urls,
@@ -214,9 +260,11 @@ async def _seo_snapshot(db) -> dict[str, Any]:
                 round(100 * searchable / total_urls, 1) if searchable and total_urls else None
             ),
             "site_problems": summary.get("site_problems") or {},
+            "summary_by_host": summary_by_host,
             "exclusion_reasons_sample": exclusion_reasons,
             "top_search_queries_date": last_date.isoformat() if last_date else None,
             "top_search_queries": top_demand,
+            "demand_by_host": demand_by_host,
         }
     except Exception:
         logger.warning("Pulse SEO snapshot failed", exc_info=True)

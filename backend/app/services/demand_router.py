@@ -181,24 +181,26 @@ async def _codes_by_name(db: AsyncSession) -> dict[str, str]:
 
 
 async def build_demand_routes(
-    db: AsyncSession, *, days: int = 30, limit: int = 200
+    db: AsyncSession, *, days: int = 30, limit: int = 200, host: str | None = None
 ) -> list[DemandRoute]:
     """Сводка спроса за N дней: агрегат по запросу + маршрут на страницу.
 
     Ранжирование — по потерянным показам (impressions − clicks): это прямая
     мера того, сколько людей видели нас в выдаче и не кликнули. Запросы без
     маршрута тоже возвращаются (хвост «other») — это карта пробелов.
+    ``host`` — host_id свойства Вебмастера; None = оба контура вместе.
     """
     from app.models import WebmasterSearchQuery
 
     since = date.today() - timedelta(days=days)
-    rows = (await db.execute(
-        select(
-            WebmasterSearchQuery.query,
-            WebmasterSearchQuery.impressions,
-            WebmasterSearchQuery.clicks,
-        ).where(WebmasterSearchQuery.date >= since)
-    )).all()
+    stmt = select(
+        WebmasterSearchQuery.query,
+        WebmasterSearchQuery.impressions,
+        WebmasterSearchQuery.clicks,
+    ).where(WebmasterSearchQuery.date >= since)
+    if host:
+        stmt = stmt.where(WebmasterSearchQuery.host == host)
+    rows = (await db.execute(stmt)).all()
     agg: dict[str, list[int]] = {}
     for query, shows, clicks in rows:
         cell = agg.setdefault((query or "").strip(), [0, 0])
@@ -245,14 +247,14 @@ def demand_report_text(routes: list[DemandRoute], *, days: int = 30) -> str:
 
 
 async def priority_recrawl_paths(
-    db: AsyncSession, *, days: int = 30, limit: int = 150
+    db: AsyncSession, *, days: int = 30, limit: int = 150, host: str | None = None
 ) -> list[tuple[str, int]]:
     """URL для приоритетного переобхода: топ страниц по потерянным показам.
 
     Возвращает [(path, lost_impressions)] — подаётся в очередь Вебмастера
     до квоты, чтобы переобход шёл по спросу, а не по алфавиту реестра.
     """
-    routes = await build_demand_routes(db, days=days, limit=limit * 4)
+    routes = await build_demand_routes(db, days=days, limit=limit * 4, host=host)
     best: dict[str, int] = {}
     for r in routes:
         if r.matched and r.path and r.lost > 0:

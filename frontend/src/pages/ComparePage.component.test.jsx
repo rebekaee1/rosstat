@@ -119,4 +119,76 @@ describe('ComparePage', () => {
     expect(screen.queryByText('Добавить региональный индикатор')).toBeNull();
     expect(screen.queryByText('Единый показатель, затем страна')).toBeNull();
   });
+
+  it('EN: Россия в compare-catalog находится по gross и стоит рядом с US/Canada GDP', async () => {
+    mockApiGet([
+      ['/auth/me', { user: null }],
+      [/^\/indicators\?/, INDICATORS],
+      ['/indicators', INDICATORS],
+      [/^\/indicators\/[a-z0-9-]+\/data/, (url) => ({ ...DATA, indicator: url.split('/')[2] })],
+      [/^\/indicators\/[a-z0-9-]+\/forecast/, { indicator: 'cpi', forecast: null }],
+      ['/regions/catalog', { sections: [] }],
+      [/^\/regions\/?$/, { districts: [], russia: null, totals: { regions: 0, indicators: 0, points: 0 } }],
+      [/^\/regions/, { districts: [], sections: [] }],
+      ['/world/compare/catalog', {
+        items: [
+          {
+            code: 'w:united-states:gdp-usd',
+            country_slug: 'united-states',
+            country_name: 'United States',
+            concept_slug: 'gdp-usd',
+            concept_name: 'Gross domestic product',
+            frequency: 'annual',
+            unit: 'bn $',
+          },
+          {
+            code: 'w:canada:gdp-usd',
+            country_slug: 'canada',
+            country_name: 'Canada',
+            concept_slug: 'gdp-usd',
+            concept_name: 'Gross domestic product',
+            frequency: 'annual',
+            unit: 'bn $',
+          },
+          {
+            code: 'w:russia:gdp-usd',
+            country_slug: 'russia',
+            country_name: 'Russia',
+            concept_slug: 'gdp-usd',
+            concept_name: 'Gross domestic product',
+            frequency: 'annual',
+            unit: 'bn $',
+            national_method: true,
+          },
+        ],
+        total: 3,
+      }],
+      [/^\/world\/compare\/series\//, {
+        meta: {
+          code: 'w:russia:gdp-usd',
+          country_slug: 'russia',
+          country_name: 'Russia',
+          concept_slug: 'gdp-usd',
+          concept_name: 'Gross domestic product',
+          unit: 'bn $',
+          source: 'Rosstat, Bank of Russia',
+          national_method: true,
+        },
+        data: [
+          { date: '2023-01-01', value: 2000 },
+          { date: '2024-01-01', value: 2100 },
+        ],
+      }],
+    ]);
+    renderPage(<ComparePage />, { path: '/compare', route: '/compare', locale: 'en' });
+    const heading = await screen.findByRole('heading', { level: 1 });
+    expect(heading.textContent).toBe('Compare indicators');
+    fireEvent.click(await screen.findByRole('button', { name: 'Russia' }));
+    expect(await screen.findByText('Comparable with other countries')).toBeTruthy();
+    const input = screen.getByPlaceholderText('Select an indicator…');
+    fireEvent.focus(input);
+    fireEvent.change(input, { target: { value: 'gross' } });
+    expect(screen.getByText('Gross domestic product')).toBeTruthy();
+    expect(screen.queryByText(/валового внутреннего/i)).toBeNull();
+  });
 });

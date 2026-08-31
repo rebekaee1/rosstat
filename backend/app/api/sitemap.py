@@ -22,6 +22,7 @@ from app.services.display import (
     format_month_year,
     format_number_ru,
     is_cpi_index,
+    localize_unit,
 )
 from app.services.locale import get_locale
 from app.services.og_image import (
@@ -462,7 +463,7 @@ async def rss_feed(request: Request, db: AsyncSession = Depends(get_db)):
     """
     from app.services import site_paths as paths
     from app.services.i18n_display import public_name
-    from app.services.seo_i18n import indicator_copy_en
+    from app.services.seo_i18n import indicator_copy_en, translate_source
 
     loc = get_locale()
     origin = _request_sitemap_origin(request)
@@ -500,11 +501,18 @@ async def rss_feed(request: Request, db: AsyncSession = Depends(get_db)):
             or ind.name_en,
             locale=loc,
         )
+        source_loc = translate_source(ind.source, loc) or ind.source
         title = escape(f"{name_loc}: {shown}")
-        desc_text = escape(
-            f"{name_loc} \u2014 значение {shown} на {format_date_locale(dt, locale=loc)}. "
-            f"Источник: {ind.source}."
-        )
+        if loc == "en":
+            desc_text = escape(
+                f"{name_loc} — value {shown} as of {format_date_locale(dt, locale=loc)}. "
+                f"Source: {source_loc}."
+            )
+        else:
+            desc_text = escape(
+                f"{name_loc} \u2014 значение {shown} на {format_date_locale(dt, locale=loc)}. "
+                f"Источник: {source_loc}."
+            )
         link = f"{origin}{paths.russia_indicator(ind.code)}"
         items.append(
             f"  <item>\n"
@@ -516,15 +524,29 @@ async def rss_feed(request: Request, db: AsyncSession = Depends(get_db)):
             f"  </item>"
         )
 
+    if loc == "en":
+        channel_title = "Forecast Economy — Russia economic data updates"
+        channel_desc = (
+            "Latest updates of Russia macroeconomic indicators: "
+            "Rosstat, Bank of Russia, Ministry of Finance."
+        )
+        channel_lang = "en"
+    else:
+        channel_title = "Forecast Economy — обновления экономических данных России"
+        channel_desc = (
+            "Последние обновления макроэкономических индикаторов России: "
+            "Росстат, Банк России, Минфин."
+        )
+        channel_lang = "ru"
+
     xml = (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n'
         "<channel>\n"
-        "  <title>Forecast Economy — обновления экономических данных России</title>\n"
+        f"  <title>{escape(channel_title)}</title>\n"
         f"  <link>{origin}</link>\n"
-        "  <description>Последние обновления макроэкономических индикаторов России: "
-        "Росстат, Банк России, Минфин.</description>\n"
-        "  <language>ru</language>\n"
+        f"  <description>{escape(channel_desc)}</description>\n"
+        f"  <language>{channel_lang}</language>\n"
         f'  <atom:link href="{origin}/feed.xml" rel="self" type="application/rss+xml"/>\n'
         + "\n".join(items)
         + "\n</channel>\n</rss>"
@@ -1605,7 +1627,7 @@ async def og_image_world_indicator(
         if len(rows) < 2:
             return Response(status_code=404)
         values = [float(v) for _d, v in rows]
-        unit = unit_suffix((indicator.unit_ru or indicator.unit or "").strip())
+        unit = localize_unit(unit_suffix((indicator.unit_ru or indicator.unit or "").strip()))
         value_text = f"{format_number_ru(values[-1], locale=loc)} {unit}".strip()
         last_date = rows[-1][0]
         first_date = rows[0][0]
@@ -1703,7 +1725,7 @@ async def og_image_world_indicator_year(
         if len(rows) < WORLD_YEAR_LANDING_MIN_POINTS:
             return Response(status_code=404)
 
-        unit = unit_suffix((indicator.unit_ru or indicator.unit or "").strip())
+        unit = localize_unit(unit_suffix((indicator.unit_ru or indicator.unit or "").strip()))
         value_text = f"{format_number_ru(float(rows[-1][1]), locale=loc)} {unit}".strip()
 
         if len(rows) >= 2:

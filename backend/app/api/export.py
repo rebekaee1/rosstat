@@ -24,6 +24,7 @@ from app.security.auth import get_optional_user
 from app.security import download_quota as dq
 from app.services.api_i18n import api_detail
 from app.services.display import format_number_ru, today_msk
+from app.services.locale import get_locale
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/export", tags=["export"])
@@ -140,30 +141,73 @@ def _resolve_meta(body: ExportIn | None = None, **kwargs) -> dict[str, str]:
     }
 
 
+def _export_labels() -> dict[str, str]:
+    if get_locale() == "en":
+        return {
+            "indicator": "Indicator",
+            "unit": "Unit",
+            "frequency": "Frequency",
+            "country": "Country",
+            "source": "Source",
+            "source_url": "Source URL",
+            "exported_at": "Exported at",
+            "value": "Value",
+            "date": "Date",
+            "type": "Type",
+            "actual": "actual",
+            "forecast": "forecast",
+            "description": "Description",
+            "facts": "Actual",
+            "forecasts": "Forecast",
+            "forecast_value": "Forecast {label}",
+            "default_source": "Eurostat",
+        }
+    return {
+        "indicator": "Показатель",
+        "unit": "Единица",
+        "frequency": "Частота",
+        "country": "Страна",
+        "source": "Источник",
+        "source_url": "URL источника",
+        "exported_at": "Дата выгрузки",
+        "value": "Значение",
+        "date": "Дата",
+        "type": "Тип",
+        "actual": "факт",
+        "forecast": "прогноз",
+        "description": "Описание",
+        "facts": "Факт",
+        "forecasts": "Прогноз",
+        "forecast_value": "Прогноз {label}",
+        "default_source": "Евростат",
+    }
+
+
 def _meta_rows(meta: dict[str, str], value_label: str) -> list[tuple[str, str]]:
     """Пары (поле, значение) для шапки файла."""
-    name = meta.get("indicator_name") or value_label or "Значение"
+    labels = _export_labels()
+    name = meta.get("indicator_name") or value_label or labels["value"]
     rows: list[tuple[str, str]] = [
-        ("Показатель", name),
+        (labels["indicator"], name),
     ]
     if meta.get("unit"):
-        rows.append(("Единица", meta["unit"]))
+        rows.append((labels["unit"], meta["unit"]))
     if meta.get("frequency"):
-        rows.append(("Частота", meta["frequency"]))
+        rows.append((labels["frequency"], meta["frequency"]))
     if meta.get("country"):
-        rows.append(("Страна", meta["country"]))
-    source = meta.get("source") or "Евростат"
-    rows.append(("Источник", source))
+        rows.append((labels["country"], meta["country"]))
+    source = meta.get("source") or labels["default_source"]
+    rows.append((labels["source"], source))
     if meta.get("source_url"):
-        rows.append(("URL источника", meta["source_url"]))
-    rows.append(("Дата выгрузки", meta.get("exported_at") or meta.get("exported_date") or ""))
+        rows.append((labels["source_url"], meta["source_url"]))
+    rows.append((labels["exported_at"], meta.get("exported_at") or meta.get("exported_date") or ""))
     return rows
 
 
 def _format_csv_value(val: float | None) -> str:
     if val is None:
         return ""
-    return format_number_ru(val)
+    return format_number_ru(val, locale=get_locale())
 
 
 def _build_xlsx(
@@ -175,20 +219,21 @@ def _build_xlsx(
     from openpyxl import Workbook
 
     meta = meta or _resolve_meta()
+    labels = _export_labels()
     wb = Workbook()
     ws_meta = wb.active
-    ws_meta.title = "Описание"
+    ws_meta.title = labels["description"]
     for label, value in _meta_rows(meta, value_label):
         ws_meta.append([label, value])
 
-    ws = wb.create_sheet("Факт", 1)
-    ws.append(["Дата", value_label])
+    ws = wb.create_sheet(labels["facts"], 1)
+    ws.append([labels["date"], value_label])
     for date, val in facts:
         # Excel хранит число нативно; подпись единицы — в «Описание».
         ws.append([date, val])
     if forecasts:
-        ws2 = wb.create_sheet("Прогноз")
-        ws2.append(["Дата", f"Прогноз {value_label}"])
+        ws2 = wb.create_sheet(labels["forecasts"])
+        ws2.append([labels["date"], labels["forecast_value"].format(label=value_label)])
         for date, val in forecasts:
             ws2.append([date, val])
     buf = io.BytesIO()
@@ -203,16 +248,17 @@ def _build_csv(
     meta: dict[str, str] | None = None,
 ) -> bytes:
     meta = meta or _resolve_meta()
+    labels = _export_labels()
     lines: list[str] = []
     for label, value in _meta_rows(meta, value_label):
         # экранируем ';' в значениях
         safe = str(value).replace(";", ",")
         lines.append(f"# {label};{safe}")
-    lines.append(";".join(["Дата", value_label, "Тип"]))
+    lines.append(";".join([labels["date"], value_label, labels["type"]]))
     for date, val in facts:
-        lines.append(";".join([date, _format_csv_value(val), "факт"]))
+        lines.append(";".join([date, _format_csv_value(val), labels["actual"]]))
     for date, val in forecasts:
-        lines.append(";".join([date, _format_csv_value(val), "прогноз"]))
+        lines.append(";".join([date, _format_csv_value(val), labels["forecast"]]))
     return ("\ufeff" + "\n".join(lines)).encode("utf-8")
 
 

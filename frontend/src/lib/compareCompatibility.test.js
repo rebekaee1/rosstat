@@ -30,7 +30,7 @@ describe('compareCompatibility', () => {
     const codes = ['unemployment', 'r:moskva:2.10.1'];
     const result = compareCompatibility(codes, 'w:germany:unemployment-rate');
     expect(result.allowed).toBe(true);
-    expect(result.note).toContain('сезонной корректировки');
+    expect(result.noteKey).toBe('compare.compat.note.unemployment');
   });
 
   it('закрывает недоказанное смешение HICP и российского CPI', () => {
@@ -38,6 +38,13 @@ describe('compareCompatibility', () => {
       ['cpi'],
       'w:germany:hicp-index',
     ).allowed).toBe(false);
+  });
+
+  it('разрешает российский ВВП из compare-catalog рядом со странами', () => {
+    expect(compareCompatibility(
+      ['w:united-states:gdp-usd', 'w:canada:gdp-usd'],
+      'w:russia:gdp-usd',
+    ).allowed).toBe(true);
   });
 
   it('очищает прямой URL от несовместимых рядов', () => {
@@ -56,7 +63,7 @@ describe('compareCompatibility', () => {
     expect(activeCompatibilityNote([
       'unemployment',
       'w:germany:unemployment-rate',
-    ])).toContain('возрастных границ');
+    ])).toBe('compare.compat.note.unemployment');
     expect(activeCompatibilityNote([
       'w:germany:unemployment-rate',
       'w:france:unemployment-rate',

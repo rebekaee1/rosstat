@@ -159,6 +159,7 @@ describe('compareRepresentation — index base guard', () => {
     expect(isIndexableBase(120, { unit: 'млрд руб.', repId: REP_YOY })).toBe(false);
     // Обычный уровень остаётся индексируемым.
     expect(isIndexableBase(120, { unit: 'млрд руб.', repId: REP_LEVEL })).toBe(true);
+    expect(isIndexableBase(2100, { unit: 'bn $', repId: REP_LEVEL })).toBe(true);
     expect(isIndexableBase(120, { unit: 'индекс' })).toBe(true);
   });
 

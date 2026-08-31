@@ -5,12 +5,12 @@ const BRIDGES = {
   'unemployment-rate': {
     macroCodes: new Set(['unemployment']),
     regionCodes: new Set(['2.10.1']),
-    note: 'Уровень безработицы сопоставляется с оговоркой о различиях сезонной корректировки и возрастных границ.',
+    noteKey: 'compare.compat.note.unemployment',
   },
   population: {
     macroCodes: new Set(['population']),
     regionCodes: new Set(['1.1']),
-    note: 'Численность населения сопоставляется по официальным годовым уровням.',
+    noteKey: 'compare.compat.note.population',
   },
 };
 
@@ -36,9 +36,9 @@ function isAllowedNonWorld(code, bridge) {
 export function compareCompatibility(existingCodes, candidateCode) {
   const existing = (existingCodes || []).filter(Boolean);
   if (!candidateCode || existing.includes(candidateCode)) {
-    return { allowed: false, reason: 'Этот ряд уже добавлен.' };
+    return { allowed: false, reasonKey: 'compare.compat.alreadyAdded', reason: 'compare.compat.alreadyAdded' };
   }
-  if (!existing.length) return { allowed: true, note: null };
+  if (!existing.length) return { allowed: true, note: null, noteKey: null };
 
   const candidateWorld = parseWorldCompareCode(candidateCode);
   const existingWorld = existing
@@ -51,32 +51,40 @@ export function compareCompatibility(existingCodes, candidateCode) {
   )) {
     return {
       allowed: false,
-      reason: 'Страны можно добавлять только для одного и того же показателя.',
+      reasonKey: 'compare.compat.sameConcept',
+      reason: 'compare.compat.sameConcept',
     };
   }
 
   const conceptSlug = candidateWorld?.conceptSlug || existingWorld[0]?.conceptSlug;
-  if (!conceptSlug) return { allowed: true, note: null };
+  if (!conceptSlug) return { allowed: true, note: null, noteKey: null };
 
   const bridge = BRIDGES[conceptSlug];
   const nonWorldCodes = existing.filter((code) => !parseWorldCompareCode(code));
   if (!candidateWorld) nonWorldCodes.push(candidateCode);
 
-  if (!nonWorldCodes.length) return { allowed: true, note: null };
+  if (!nonWorldCodes.length) return { allowed: true, note: null, noteKey: null };
   if (!bridge) {
     return {
       allowed: false,
-      reason: 'Для этого показателя пока нет доказанной сопоставимости с российскими или региональными рядами.',
+      reasonKey: 'compare.compat.noBridge',
+      reason: 'compare.compat.noBridge',
     };
   }
   if (!nonWorldCodes.every((code) => isAllowedNonWorld(code, bridge))) {
     return {
       allowed: false,
-      reason: 'Выбранный ряд не входит в курируемую сопоставимую группу.',
+      reasonKey: 'compare.compat.notInGroup',
+      reason: 'compare.compat.notInGroup',
     };
   }
 
-  return { allowed: true, note: bridge.note, conceptSlug };
+  return {
+    allowed: true,
+    note: bridge.noteKey,
+    noteKey: bridge.noteKey,
+    conceptSlug,
+  };
 }
 
 export function sanitizeCompareCodes(codes) {
@@ -95,5 +103,5 @@ export function activeCompatibilityNote(codes) {
   const bridge = BRIDGES[world.conceptSlug];
   if (!bridge) return null;
   const hasNonWorld = codes.some((code) => !parseWorldCompareCode(code));
-  return hasNonWorld ? bridge.note : null;
+  return hasNonWorld ? bridge.noteKey : null;
 }

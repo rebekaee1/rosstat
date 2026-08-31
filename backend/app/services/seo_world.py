@@ -341,7 +341,11 @@ async def _frequency_links_html(
 
 
 def _unit_of(ind: WorldIndicator) -> str:
-    return (ind.unit_ru or ind.unit or "").strip()
+    """Locale-facing полная единица ряда: на EN — через localize_unit."""
+    from app.services.display import localize_unit
+
+    ru = (ind.unit_ru or ind.unit or "").strip()
+    return localize_unit(ru) or ru
 
 
 def _unit_sfx(unit: str) -> str:
@@ -1855,10 +1859,14 @@ async def render_world_indicator_html(
 
     source_url = (indicator.source_url or "").strip()
     open_src = _wt_ind("indicator_open_source")
-    if open_src:
-        open_label = open_src.format(source=_SOURCE_PUBLIC)
-    else:
-        open_label = f"Открыть ряд на сайте {_SOURCE_PUBLIC}"
+    # EN fail-closed: в подписи ссылки — источник самого ряда (уже
+    # локализованный _source_label), а не константа «Евростат»: у национальных
+    # паспортов (FRED/OECD/…) она просачивалась кириллицей в EN-страницу.
+    open_label = (
+        open_src.format(source=source)
+        if open_src
+        else f"Открыть ряд на сайте {source}"
+    )
     source_link = (
         f'<p><a href="{escape(source_url)}" rel="noopener noreferrer">'
         f"{escape(open_label)}</a></p>"

@@ -137,10 +137,12 @@ python scripts/seo-audit.py --target=https://forecasteconomy.com
 
 `ru.forecasteconomy.com` является русским каноном, apex — английским после
 `RUSTATS_APEX_LOCALE_EN=true`. Это один флаг для backend и frontend build;
-отдельный `VITE_APEX_LOCALE_EN` в окружении запрещён. Geo-переход включается
-последним через `RUSTATS_GEO_LOCALE_REDIRECT_ENABLED=true`; его отключение не
-требует отката кода или схемы. Перед релизом обязательны
-`python3 scripts/dual-host-release-gate.py` и полный `./scripts/check-all.sh`.
-Поисковые роботы, API, sitemap, robots, RSS, OG, embed, health и OAuth callback
-не участвуют в geo-переходе. Явный выбор языка хранится год в host-only cookie
-`fe_locale_pref`.
+отдельный `VITE_APEX_LOCALE_EN` в окружении запрещён. Язык страницы = хост:
+IP, VPN и `Accept-Language` в выборе языка не участвуют (решение владельца
+2026-08-31 — geo-редирект давал разное поведение с VPN и без). Cookie
+`fe_locale_pref` — только память явного выбора переключателя, не источник
+редиректа. Перед релизом обязательны `python3 scripts/dual-host-release-gate.py`
+и полный `./scripts/check-all.sh`. Поисковые роботы, API, sitemap, robots,
+RSS, OG, embed, health и OAuth callback отвечают на запрошенном хосте.
+Явный выбор языка хранится год в cookie `fe_locale_pref` с Domain
+`.forecasteconomy.com`.

@@ -26,6 +26,21 @@ _SNAPSHOT_KEY = "wm:index_report:last"
 _HOST_ID = settings.webmaster_host_id
 
 
+def _host_snapshot_key(host_id: str) -> str:
+    if host_id == settings.webmaster_host_id:
+        return _SNAPSHOT_KEY
+    return f"{_SNAPSHOT_KEY}:{host_id}"
+
+
+def _report_host_ids() -> list[str]:
+    ids = [settings.webmaster_host_id]
+    if settings.apex_locale_en:
+        ru_id = settings.webmaster_host_id_for("ru.forecasteconomy.com")
+        if ru_id not in ids:
+            ids.append(ru_id)
+    return ids
+
+
 def _delta(current: int | None, previous: int | None) -> str:
     if current is None or previous is None:
         return ""
@@ -60,39 +75,55 @@ async def build_indexing_report() -> str | None:
     try:
         user = await client.user()
         user_id = user.data["user_id"]
-        summary = (await client.summary(user_id, settings.webmaster_host_id)).data
     except Exception:
-        logger.exception("Indexing report: summary fetch failed")
+        logger.exception("Indexing report: user fetch failed")
+        return None
+
+    redis = await get_state_redis()
+    blocks: list[str] = ["<b>Индексация Яндекса — недельный отчёт</b>"]
+    any_ok = False
+    for host_id in _report_host_ids():
+        block = await _host_report_block(client, user_id, host_id, redis)
+        if block:
+            any_ok = True
+            blocks.append(block)
+    if not any_ok:
+        return None
+    return "\n".join(blocks)
+
+
+async def _host_report_block(client, user_id, host_id: str, redis) -> str | None:
+    try:
+        summary = (await client.summary(user_id, host_id)).data
+    except Exception:
+        logger.exception("Indexing report: summary fetch failed host=%s", host_id)
         return None
 
     searchable = summary.get("searchable_pages_count")
     excluded = summary.get("excluded_pages_count")
     sqi = summary.get("sqi")
-
-    redis = await get_state_redis()
     previous: dict = {}
+    snap_key = _host_snapshot_key(host_id)
     try:
-        raw = await redis.get(_SNAPSHOT_KEY)
+        raw = await redis.get(snap_key)
         if raw:
             previous = json.loads(raw)
     except Exception:
-        logger.warning("Indexing report: previous snapshot unavailable")
+        logger.warning("Indexing report: previous snapshot unavailable host=%s", host_id)
 
+    host_label = host_id.replace("https:", "").replace(":443", "")
     lines = [
-        "📈 <b>Индексация Яндекса — недельный отчёт</b>",
+        f"<b>{host_label}</b>",
         f"Страниц в поиске: <b>{searchable}</b>{_delta(searchable, previous.get('searchable'))}",
         f"Исключено из поиска: {excluded}{_delta(excluded, previous.get('excluded'))}",
         f"ИКС: {sqi}{_delta(sqi, previous.get('sqi'))}",
     ]
-
     problems = summary.get("site_problems") or {}
     if problems:
         pretty = ", ".join(f"{k}: {v}" for k, v in problems.items())
         lines.append(f"Проблемы сайта: {pretty}")
-
-    # Обход за неделю по HTTP-кодам: всплеск 4xx/5xx = мы сами мешаем роботу (А-1).
     try:
-        history = (await client.indexing_history(user_id, settings.webmaster_host_id)).data
+        history = (await client.indexing_history(user_id, host_id)).data
         totals = _http_breakdown(history)
         if totals:
             crawl = ", ".join(
@@ -102,17 +133,15 @@ async def build_indexing_report() -> str | None:
             errors = sum(n for code, n in totals.items()
                          if any(x in code for x in ("4XX", "5XX", "ERROR")))
             if errors > 100:
-                lines.append(f"⚠️ Роботу отдано {errors} ошибок — проверить деплой-окна и 404-карту")
+                lines.append(f"Роботу отдано {errors} ошибок — проверить деплой-окна и 404-карту")
     except Exception:
-        logger.warning("Indexing report: indexing history unavailable", exc_info=True)
-
+        logger.warning("Indexing report: indexing history unavailable host=%s", host_id, exc_info=True)
     try:
-        await redis.set(_SNAPSHOT_KEY, json.dumps(
+        await redis.set(snap_key, json.dumps(
             {"searchable": searchable, "excluded": excluded, "sqi": sqi}
         ))
     except Exception:
-        logger.warning("Indexing report: snapshot save failed")
-
+        logger.warning("Indexing report: snapshot save failed host=%s", host_id)
     return "\n".join(lines)
 
 

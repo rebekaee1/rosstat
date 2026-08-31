@@ -573,6 +573,106 @@ def test_public_indicator_seo_en_title_and_source():
     assert "Росстат" not in overlay["seo_blocks"][-1]["body"]
 
 
+def test_webmaster_sync_host_ids_include_ru_after_cutover(monkeypatch):
+    from app.config import settings
+    from app.services.analytics_backfill import webmaster_sync_host_ids
+
+    monkeypatch.setattr(settings, "apex_locale_en", False)
+    ids = webmaster_sync_host_ids()
+    assert ids == [settings.webmaster_host_id]
+
+    monkeypatch.setattr(settings, "apex_locale_en", True)
+    ids = webmaster_sync_host_ids()
+    assert settings.webmaster_host_id in ids
+    assert settings.webmaster_host_id_for("ru.forecasteconomy.com") in ids
+
+
+def test_public_indicator_fields_en_does_not_leak_russian():
+    """EN overlay missing → optional copy is omitted, not Russian fallback."""
+    from app.services.seo_i18n import public_indicator_fields
+
+    fields = public_indicator_fields(
+        "no-such-overlay-code",
+        name_ru="Русское имя",
+        name_en="English name",
+        description_ru="Русское описание, которое нельзя показывать",
+        methodology_ru="Русская методология",
+        unit_ru="%",
+        locale="en",
+    )
+    assert fields["name"] == "English name"
+    assert fields["description"] is None
+    assert fields["methodology"] is None
+    cyr = __import__("re").compile(r"[А-Яа-яЁё]")
+    for value in fields.values():
+        if isinstance(value, str):
+            assert not cyr.search(value), value
+
+
+def test_indicator_copy_en_entries_have_name_and_description():
+    missing_name = [
+        code
+        for code, copy in INDICATOR_COPY_EN.items()
+        if not (copy.get("name") or "").strip()
+    ]
+    assert not missing_name, f"INDICATOR_COPY_EN missing name: {missing_name[:20]}"
+    missing_desc = [
+        code
+        for code, copy in INDICATOR_COPY_EN.items()
+        if "description" in copy and not (copy.get("description") or "").strip()
+    ]
+    assert not missing_desc, f"INDICATOR_COPY_EN empty description: {missing_desc[:20]}"
+
+
+_CYRILLIC_RE = __import__("re").compile(r"[А-Яа-яЁё]")
+
+
+def test_en_indicator_copy_payload_has_no_cyrillic():
+    """EN overlay texts that reach the card must not leak Russian."""
+    from app.services.seo_i18n import public_indicator_fields
+
+    leaked = []
+    for code, copy in INDICATOR_COPY_EN.items():
+        fields = public_indicator_fields(
+            code,
+            name_ru="Русское имя",
+            name_en=copy.get("name"),
+            description_ru="Русское описание",
+            methodology_ru="Русская методология",
+            unit_ru=copy.get("unit") or "%",
+            locale="en",
+        )
+        for key, value in fields.items():
+            if not isinstance(value, str) or not _CYRILLIC_RE.search(value):
+                continue
+            leaked.append(f"{code}.{key}: {value[:80]}")
+    assert not leaked, leaked[:15]
+
+
+def test_export_csv_headers_follow_locale():
+    from app.api.export import _build_csv
+    from app.services.locale import reset_locale, set_locale
+
+    token = set_locale("en")
+    try:
+        csv = _build_csv([("2024-01-01", 1.5)], [], "Value").decode("utf-8-sig")
+        assert "Date;Value;Type" in csv
+        assert ";actual" in csv
+        assert "Дата" not in csv
+        assert "факт" not in csv
+        assert "1.5" in csv or "1,5" not in csv.split("\n")[-1]
+    finally:
+        reset_locale(token)
+
+    token = set_locale("ru")
+    try:
+        csv = _build_csv([("2024-01-01", 1.5)], [], "Значение").decode("utf-8-sig")
+        assert "Дата;Значение;Тип" in csv
+        assert ";факт" in csv
+    finally:
+        reset_locale(token)
+
+
 def test_localize_view_mode_label_en():
     from app.services.seo_i18n import localize_hero_label, localize_view_mode_label
 
@@ -1080,42 +1180,8 @@ def test_default_keywords_en():
 
 
 
-def test_geo_locale_redirect_contract(monkeypatch):
-    from starlette.requests import Request
-    from app.config import settings
-    from app.main import _geo_locale_redirect
-
-    monkeypatch.setattr(settings, "apex_locale_en", True)
-    monkeypatch.setattr(settings, "geo_locale_redirect_enabled", True)
-    monkeypatch.setattr("app.services.geoip.lookup", lambda ip: {"country_code": "RU"})
-    scope = {
-        "type": "http", "method": "GET", "path": "/russia/indicator/cpi",
-        "query_string": b"mode=weekly", "scheme": "https",
-        "server": ("forecasteconomy.com", 443), "client": ("203.0.113.5", 1),
-        "headers": [(b"host", b"forecasteconomy.com"), (b"accept", b"text/html"),
-                    (b"user-agent", b"Mozilla/5.0")],
-    }
-    response = _geo_locale_redirect(Request(scope))
-    assert response is not None and response.status_code == 307
-    assert response.headers["location"] == "https://ru.forecasteconomy.com/russia/indicator/cpi?mode=weekly"
-
-    bot = {**scope, "headers": [(b"host", b"forecasteconomy.com"),
-                                  (b"accept", b"text/html"),
-                                  (b"user-agent", b"YandexBot/3.0")]}
-    assert _geo_locale_redirect(Request(bot)) is None
-
-    opted = {**scope, "headers": [(b"host", b"forecasteconomy.com"),
-                                    (b"accept", b"text/html"),
-                                    (b"user-agent", b"Mozilla/5.0"),
-                                    (b"cookie", b"fe_locale_pref=en")]}
-    assert _geo_locale_redirect(Request(opted)) is None
-
-    api = {**scope, "path": "/api/v1/health/ready"}
-    assert _geo_locale_redirect(Request(api)) is None
-
-
-def test_geo_locale_redirect_cis_and_browser_language(monkeypatch):
-    """Расширенный контракт: RU + СНГ по гео; русский Accept-Language как фолбэк."""
+def test_geo_locale_redirect_is_noop(monkeypatch):
+    """IP/VPN/Accept-Language не редиректят: язык = хост (2026-08-31)."""
     from starlette.requests import Request
     from app.config import settings
     from app.main import _geo_locale_redirect
@@ -1123,68 +1189,36 @@ def test_geo_locale_redirect_cis_and_browser_language(monkeypatch):
     monkeypatch.setattr(settings, "apex_locale_en", True)
     monkeypatch.setattr(settings, "geo_locale_redirect_enabled", True)
     monkeypatch.setattr(settings, "browser_lang_redirect_enabled", True)
-
-    def _request(ip_country: str, accept_language: str | None = None, cookie: str | None = None):
-        headers = [(b"host", b"forecasteconomy.com"), (b"accept", b"text/html"),
-                   (b"user-agent", b"Mozilla/5.0")]
-        if accept_language is not None:
-            headers.append((b"accept-language", accept_language.encode()))
-        if cookie is not None:
-            headers.append((b"cookie", cookie.encode()))
-        return Request({
-            "type": "http", "method": "GET", "path": "/russia/indicator/cpi",
-            "query_string": b"", "scheme": "https",
-            "server": ("forecasteconomy.com", 443), "client": ("203.0.113.9", 1),
-            "headers": headers,
-        })
-    # СНГ-зона (Казахстан, Беларусь, Узбекистан…) редиректится так же, как RU.
-    for cc in ("KZ", "BY", "UZ", "AM"):
-        monkeypatch.setattr("app.services.geoip.lookup", lambda ip, cc=cc: {"country_code": cc})
-        response = _geo_locale_redirect(_request(cc))
-        assert response is not None and response.status_code == 307, cc
-        assert response.headers["location"] == "https://ru.forecasteconomy.com/russia/indicator/cpi"
-
-    # nginx переписал путь в /seo/…, публичный оригинал пришёл в X-Original-URI:
-    # редирект должен вести на публичный путь, а не на внутренний /seo/.
-    def _rewritten_request(original_uri: str):
-        headers = [
-            (b"host", b"forecasteconomy.com"), (b"accept", b"text/html"),
-            (b"user-agent", b"Mozilla/5.0"),
-            (b"x-original-uri", original_uri.encode()),
-        ]
-        return Request({
-            "type": "http", "method": "GET", "path": "/seo/indicator/cpi",
-            "query_string": b"", "scheme": "https",
-            "server": ("forecasteconomy.com", 443), "client": ("203.0.113.9", 1),
-            "headers": headers,
-        })
-
     monkeypatch.setattr("app.services.geoip.lookup", lambda ip: {"country_code": "RU"})
-    response = _geo_locale_redirect(_rewritten_request("/russia/indicator/cpi?mode=weekly"))
-    assert response is not None and response.status_code == 307
-    assert response.headers["location"] == (
-        "https://ru.forecasteconomy.com/russia/indicator/cpi?mode=weekly"
-    )
+    scope = {
+        "type": "http", "method": "GET", "path": "/russia/indicator/cpi",
+        "query_string": b"mode=weekly", "scheme": "https",
+        "server": ("forecasteconomy.com", 443), "client": ("203.0.113.5", 1),
+        "headers": [(b"host", b"forecasteconomy.com"), (b"accept", b"text/html"),
+                    (b"user-agent", b"Mozilla/5.0"),
+                    (b"accept-language", b"ru-RU,ru;q=0.9")],
+    }
+    assert _geo_locale_redirect(Request(scope)) is None
 
-    # Гео не из зоны + русский доминирующий браузер → тоже ru.
-    monkeypatch.setattr("app.services.geoip.lookup", lambda ip: {"country_code": "DE"})
-    response = _geo_locale_redirect(_request("DE", accept_language="ru-RU,ru;q=0.9,en;q=0.8"))
-    assert response is not None and response.status_code == 307
+    bot = {**scope, "headers": [(b"host", b"forecasteconomy.com"),
+                                  (b"accept", b"text/html"),
+                                  (b"user-agent", b"YandexBot/3.0")]}
+    assert _geo_locale_redirect(Request(bot)) is None
 
-    # Гео не из зоны + английский браузер → остаёмся на apex.
-    response = _geo_locale_redirect(_request("DE", accept_language="en-US,en;q=0.9"))
-    assert response is None
+    api = {**scope, "path": "/api/v1/health/ready"}
+    assert _geo_locale_redirect(Request(api)) is None
 
-    # Русский язык не доминирует (низкий q) → не редиректим.
-    response = _geo_locale_redirect(_request("DE", accept_language="en;q=0.9,ru;q=0.1"))
-    assert response is None
 
-    # Opt-out cookie сильнее гео и языка.
-    monkeypatch.setattr("app.services.geoip.lookup", lambda ip: {"country_code": "KZ"})
-    response = _geo_locale_redirect(_request("KZ", cookie="fe_locale_pref=en"))
-    assert response is None
+def test_locale_pref_cookie_persist_without_geo_redirect(monkeypatch):
+    """Явный выбор языка пишется в cookie; geo-редирект при этом не срабатывает."""
+    from starlette.requests import Request
+    from app.config import settings
+    from app.main import _geo_locale_redirect, _persist_locale_pref_redirect
 
-    # Первый hop переключателя: query locale_pref=en без cookie — не редиректим.
+    monkeypatch.setattr(settings, "apex_locale_en", True)
+    monkeypatch.setattr(settings, "geo_locale_redirect_enabled", True)
+    monkeypatch.setattr("app.services.geoip.lookup", lambda ip: {"country_code": "RU"})
+
     def _request_pref_query():
         return Request({
             "type": "http", "method": "GET", "path": "/russia/indicator/cpi",
@@ -1194,12 +1228,7 @@ def test_geo_locale_redirect_cis_and_browser_language(monkeypatch):
                         (b"user-agent", b"Mozilla/5.0")],
         })
 
-    monkeypatch.setattr("app.services.geoip.lookup", lambda ip: {"country_code": "RU"})
-    response = _geo_locale_redirect(_request_pref_query())
-    assert response is None
-
-    from app.main import _persist_locale_pref_redirect
-
+    assert _geo_locale_redirect(_request_pref_query()) is None
     persist = _persist_locale_pref_redirect(_request_pref_query())
     assert persist is not None and persist.status_code == 303
     assert persist.headers["location"] == "/russia/indicator/cpi"
@@ -1207,7 +1236,6 @@ def test_geo_locale_redirect_cis_and_browser_language(monkeypatch):
     assert "fe_locale_pref=en" in set_cookie
     assert "domain=.forecasteconomy.com" in set_cookie.lower()
 
-    # nginx path-cut: ASGI path/query пустые, locale_pref только в X-Original-URI.
     def _request_pref_via_original_uri():
         return Request({
             "type": "http", "method": "GET",
@@ -1222,18 +1250,8 @@ def test_geo_locale_redirect_cis_and_browser_language(monkeypatch):
             ],
         })
 
-    response = _geo_locale_redirect(_request_pref_via_original_uri())
-    assert response is None
+    assert _geo_locale_redirect(_request_pref_via_original_uri()) is None
     persist = _persist_locale_pref_redirect(_request_pref_via_original_uri())
     assert persist is not None and persist.status_code == 303
     assert persist.headers["location"] == "/russia/category/gdp"
     assert "fe_locale_pref=en" in persist.headers.get("set-cookie", "")
-
-    # Неизвестная страна + русский браузер → редирект (язык решает).
-    monkeypatch.setattr("app.services.geoip.lookup", lambda ip: {"country_code": None})
-    response = _geo_locale_redirect(_request("XX", accept_language="ru"))
-    assert response is not None
-
-    # Неизвестная страна + нет Accept-Language → не редиректим.
-    response = _geo_locale_redirect(_request("XX"))
-    assert response is None

@@ -98,6 +98,115 @@ _UNIT_EN = {
     "тысяч рублей": "thousand RUB",
     "тысяч тонн": "thousand tonnes",
     "рублей за литр": "RUB per litre",
+    # Eurostat units (unit_ru storage → EN display).
+    "тыс. тонн": "thousand tonnes",
+    "тыс. т н. э.": "thousand tonnes of oil equivalent",
+    "кг н. э.": "kg of oil equivalent",
+    "евро за кг н. э.": "EUR per kg of oil equivalent",
+    "евро": "EUR",
+    "тыс. евро": "thousand EUR",
+    "млн евро, с сезонной корректировкой": "million EUR, seasonally adjusted",
+    "млн евро, в постоянных ценах": "million EUR, constant prices",
+    "в постоянных ценах 2020 года, евро на душу населения": (
+        "EUR per capita, 2020 constant prices"
+    ),
+    "на душу населения, евро": "EUR per capita",
+    "% экономически активного населения": "% of the labour force",
+    "% населения": "% of population",
+    "% населения ЕС": "% of EU population",
+    "% занятости": "% of employment",
+    "% от итога": "% of total",
+    "% к ожидаемому уровню": "% of expected level",
+    "изменение к предыдущему периоду": "change vs previous period",
+    "изменение к тому же периоду прошлого года": "change vs same period previous year",
+    "темп изменения к предыдущему периоду": "rate of change vs previous period",
+    "темп изменения, с сезонной корректировкой": "rate of change, seasonally adjusted",
+    "изменение, %": "change, %",
+    "изменение за год": "annual change",
+    "изменение за год, %": "annual change, %",
+    "среднее изменение за 12 месяцев": "average change over 12 months",
+    "сальдо": "balance",
+    "ГВт·ч": "GWh",
+    "МВт": "MW",
+    "ТДж": "TJ",
+    "млн м³": "million m³",
+    "тыс. м²": "thousand m²",
+    "км": "km",
+    "тыс. баррелей": "thousand barrels",
+    "лет": "years",
+    "часов в неделю": "hours per week",
+    "штук": "units",
+    "тыс. единиц": "thousand units",
+    "автомобилей": "vehicles",
+    "койко-мест": "bed places",
+    "сделок": "transactions",
+    "дней запаса": "days of supply",
+    "градусо-сутки": "degree days",
+    "балл индекса": "index points",
+    "пунктов индекса Джини": "Gini index points",
+    "раз": "ratio",
+    "индекс": "index",
+    "индекс, среднегодовой": "index, annual average",
+    "вероятность / лет": "probability / years",
+    "детей на женщину": "children per woman",
+    "на 1000 женщин соответствующего возраста": "per 1,000 women of the relevant age",
+    "на 1000 человек населения": "per 1,000 population",
+    "на 1000 человек соответствующего возраста": "per 1,000 people of the relevant age",
+    "на 1000 живорождённых": "per 1,000 live births",
+    "на 1000 жителей": "per 1,000 inhabitants",
+    "на одного жителя": "per inhabitant",
+    "на одну женщину": "per woman",
+    "на одного мужчину": "per man",
+    "‰ от суммарных весов стран ЕС": "‰ of total EU country weights",
+    "‰ от суммарных весов категорий": "‰ of total category weights",
+    # Index bases (full unit, shown in the unit field / table header).
+    "индекс (2015 = 100)": "index (2015 = 100)",
+    "индекс (2015 = 100), с сезонной корректировкой": "index (2015 = 100), seasonally adjusted",
+    "индекс (2015 = 100), среднегодовой": "index (2015 = 100), annual average",
+    "индекс (2021 = 100)": "index (2021 = 100)",
+    "индекс (2020 = 100)": "index (2020 = 100)",
+    "индекс (2025 = 100)": "index (2025 = 100)",
+    "индекс (2005 = 100)": "index (2005 = 100)",
+    "индекс (2017 = 100)": "index (2017 = 100)",
+    "индекс (1982–84 = 100)": "index (1982–84 = 100)",
+    "индекс (2011–12 = 100)": "index (2011–12 = 100)",
+    "индекс (2012 = 100)": "index (2012 = 100)",
+    "индекс (2002 = 100)": "index (2002 = 100)",
+    "индекс (2-я половина июля 2018 = 100)": "index (second half of July 2018 = 100)",
+    "индекс (среднее 1995 = 100)": "index (1995 average = 100)",
+    "индекс (тот же месяц прошлого года = 100)": "index (same month previous year = 100)",
+    # National-core units (US/CA/UK/AU/JP/CN/KR/IN/BR/MX passports).
+    "тыс. человек": "thousand people",
+    "тысяч человек": "thousand people",
+    "млн долларов США": "million USD",
+    "млрд долларов США (цены 2017)": "billion USD (2017 prices)",
+    "тыс. долларов США": "thousand USD",
+    "млрд $": "billion $",
+    "$ на человека": "$ per person",
+    "иены": "JPY",
+    "млрд иен": "billion JPY",
+    "иен за 1 доллар США": "JPY per USD",
+    "юаней за 1 доллар США": "CNY per USD",
+    "100 млн юаней": "100 million CNY",
+    "тыс. канадских долларов": "thousand CAD",
+    "млн канадских долларов": "million CAD",
+    "млн канадских долларов (цены 2017)": "million CAD (2017 prices)",
+    "канадских долларов за 1 доллар США": "CAD per USD",
+    "млн австралийских долларов": "million AUD",
+    "млн австралийских долларов (цепные объёмы)": "million AUD (chain-linked volumes)",
+    "долларов США за 1 австралийский доллар": "USD per AUD",
+    "млн фунтов стерлингов": "million GBP",
+    "млн фунтов стерлингов (цепные объёмы)": "million GBP (chain-linked volumes)",
+    "долларов США за 1 фунт стерлингов": "USD per GBP",
+    "долларов США за 1 евро": "USD per EUR",
+    "вон за 1 доллар США": "KRW per USD",
+    "млрд вон": "billion KRW",
+    "млрд вон (цены 2020)": "billion KRW (2020 prices)",
+    "мексиканских песо за 1 доллар США": "MXN per USD",
+    "млн мексиканских песо (постоянные цены 2018)": "million MXN (2018 constant prices)",
+    "бразильских реалов за 1 доллар США": "BRL per USD",
+    "крор рупий": "crore INR",
+    "рупий за 1 доллар США": "INR per USD",
 }
 
 _RU_MONTHS_GEN = (
@@ -148,7 +257,15 @@ def period_label(
 
 
 def localize_unit(unit: str | None, *, locale: str | None = None) -> str:
-    """``руб.`` / ``млрд руб.`` → ``RUB`` / ``bln RUB`` on EN; RU unchanged."""
+    """``руб.`` / ``млрд руб.`` → ``RUB`` / ``bln RUB`` on EN; RU unchanged.
+
+    Составные Eurostat-единицы («в постоянных ценах 2015 года, млн евро»)
+    разбираются по сегментам: точное совпадение — потом перевод сегментов
+    через «, ». Ничего не нашли и в тексте есть кириллица — фолбэк пустой
+    строкой невозможен (вызывающая сторона вернёт RU), поэтому возвращаем
+    исходник только если он уже латиницей; иначе отдаём как есть — EN
+    проверяется аудит-скриптом на поверхностях, где фолбэк недопустим.
+    """
     if not unit:
         return ""
     text = unit.strip()
@@ -161,7 +278,14 @@ def localize_unit(unit: str | None, *, locale: str | None = None) -> str:
         loc = get_locale()
     if loc != "en":
         return text
-    return _UNIT_EN.get(text) or _UNIT_EN.get(text.rstrip(".")) or text
+    exact = _UNIT_EN.get(text) or _UNIT_EN.get(text.rstrip("."))
+    if exact:
+        return exact
+    segments = [s.strip() for s in text.split(",")]
+    if len(segments) > 1:
+        translated = [localize_unit(s, locale="en") for s in segments]
+        return ", ".join(translated)
+    return text
 
 
 def format_number_ru(

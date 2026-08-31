@@ -42,6 +42,11 @@ import {
   regionHubPath,
 } from '../lib/sitePaths';
 
+function compatText(t, compatibility) {
+  const key = compatibility?.reasonKey || compatibility?.reason;
+  return key ? t(key) : undefined;
+}
+
 const RANGE_OPTIONS = [
   { key: '3y', labelKey: 'compare.range.3y', months: 36 },
   { key: '5y', labelKey: 'compare.range.5y', months: 60 },
@@ -430,7 +435,7 @@ function AddRegionSeries({
             ? capHint
             : already
               ? t('compare.alreadyAdded')
-              : compatibility.reason || undefined}
+              : compatText(t, compatibility)}
           className={cn(
             'inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
             canAdd
@@ -502,6 +507,11 @@ function AddIndicator({
         />
         <ChevronDown className="w-4 h-4 shrink-0 text-text-tertiary" />
       </div>
+      {openList && !atCap && results.length === 0 && (
+        <div className="absolute z-40 mt-2 w-full rounded-xl border border-border-subtle bg-surface px-4 py-3 text-sm text-text-tertiary shadow-2xl">
+          {t('compare.nothingFound')}
+        </div>
+      )}
       {openList && !atCap && results.length > 0 && (
         <div className="absolute z-40 mt-2 w-full max-h-80 overflow-auto rounded-xl border border-border-subtle bg-surface shadow-2xl">
           {results.map((ind) => (
@@ -582,7 +592,7 @@ function AddWorldCountrySeries({
           ? capHint
           : already
             ? t('compare.alreadyAdded')
-            : compatibility.reason || undefined}
+            : compatText(t, compatibility)}
         className={cn(
           'inline-flex min-h-10 w-full items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium transition-colors',
           canAdd
@@ -595,7 +605,7 @@ function AddWorldCountrySeries({
       </button>
       {code && !already && !atCap && !compatibility.allowed && (
         <p className="text-xs leading-relaxed text-text-tertiary">
-          {compatibility.reason}
+          {compatText(t, compatibility)}
         </p>
       )}
       {!conceptItems.length && (
@@ -654,9 +664,10 @@ function CompareSeriesPicker({
   const filteredCountries = useMemo(() => {
     const q = countryQuery.trim().toLowerCase();
     const russia = { key: 'russia', label: t('compare.russia') };
-    const rest = q
+    const rest = (q
       ? countries.filter((c) => c.label.toLowerCase().includes(q))
-      : countries;
+      : countries
+    ).filter((c) => c.key !== 'russia');
     const showRussia = !q || 'россия'.includes(q) || 'russia'.includes(q) || russia.label.toLowerCase().includes(q);
     return showRussia ? [russia, ...rest] : rest;
   }, [countries, countryQuery, t]);
@@ -744,6 +755,27 @@ function CompareSeriesPicker({
       {countryKey === 'russia' && !russiaBranch && (
         <div>
           <PickerBack label={t('compare.backToCountry')} onClick={resetCountry} />
+          {worldItems.some((item) => item.country_slug === 'russia') && (
+            <div className="mb-4">
+              <div className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+                {t('compare.russiaComparable')}
+              </div>
+              <p className="mb-3 text-xs leading-relaxed text-text-tertiary">
+                {t('compare.russiaComparableHint')}
+              </p>
+              <div className="rounded-xl border border-border-subtle bg-obsidian-light/45 p-3">
+                <AddWorldCountrySeries
+                  items={worldItems}
+                  countrySlug="russia"
+                  selected={selected}
+                  onAdd={onAdd}
+                  atCap={atCap}
+                  capHint={capHint}
+                  compatibilityFor={compatibilityFor}
+                />
+              </div>
+            </div>
+          )}
           <div className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
             {t('compare.russiaWhat')}
           </div>
@@ -1025,14 +1057,14 @@ export default function ComparePage() {
     }
     const compatibility = compareCompatibility(codes, code);
     if (!compatibility.allowed) {
-      setCompatibilityMessage(compatibility.reason);
+      setCompatibilityMessage(compatText(t, compatibility) || '');
       return;
     }
     setCompatibilityMessage('');
     const next = [...codes, code];
     writeCodes(next);
     track(events.COMPARE_ADD, { code, count: next.length });
-  }, [codes, cap, isAuthed, writeCodes]);
+  }, [codes, cap, isAuthed, writeCodes, t]);
 
   const removeCode = useCallback((code) => {
     writeCodes(codes.filter((c) => c !== code));
@@ -1470,7 +1502,7 @@ export default function ComparePage() {
         )}
         {dataSpacesCount > 1 && compatibilityNote && (
           <div className="mt-3 rounded-xl border border-champagne/20 bg-champagne/[0.06] px-3.5 py-2.5 text-xs leading-relaxed text-text-secondary">
-            {compatibilityNote}
+            {t(compatibilityNote)}
           </div>
         )}
       </section>

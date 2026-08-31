@@ -1184,6 +1184,37 @@ function DemandTab({ d }) {
           </ResponsiveContainer>
         ) : <Empty note="Данные Вебмастера за период отсутствуют — Яндекс отдаёт статистику запросов с задержкой в несколько дней." />}
       </Card>
+      <Card title="Спрос по свойству Вебмастера (хост)" icon={Search} source="metrika"
+        insight="Срез показов и кликов по языковому свойству: forecasteconomy.com (EN) и ru.forecasteconomy.com (RU). Пока оба трафика на apex, второй хост нулевой — срез оживёт после cutover."
+        hint="Агрегаты webmaster_search_queries по полю host за то же окно, что и карта возможностей. Читать: какой языковой витрины касается спрос; ноль у ru. до включения cutover — ожидаемо.">
+        {(dem.webmaster_by_host || []).length ? (
+          <div className="overflow-x-auto">
+            <table className="w-full text-[12.5px]">
+              <thead>
+                <tr className="text-text-tertiary text-[11px] uppercase tracking-wide">
+                  <th className="text-left font-medium py-1.5">Свойство</th>
+                  <th className="text-right font-medium py-1.5">Показы</th>
+                  <th className="text-right font-medium py-1.5">Клики</th>
+                  <th className="text-right font-medium py-1.5">CTR</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(dem.webmaster_by_host || []).map((h) => {
+                  const ctr = h.impressions ? Math.round(100 * h.clicks / h.impressions) : null;
+                  return (
+                    <tr key={h.host} className="border-b border-border-subtle/40 last:border-0">
+                      <td className="py-1.5 pr-3 text-text-primary">{h.host}</td>
+                      <td className="py-1.5 text-right tabular-nums text-text-secondary">{fmtInt(h.impressions)}</td>
+                      <td className="py-1.5 text-right tabular-nums text-text-secondary">{fmtInt(h.clicks)}</td>
+                      <td className="py-1.5 text-right tabular-nums text-text-secondary">{ctr == null ? '—' : `${ctr}%`}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        ) : <Empty note="Данные Вебмастера за период отсутствуют." />}
+      </Card>
       <div className="grid lg:grid-cols-2 gap-5">
         <Card title="Поиски на сайте без результата" icon={AlertTriangle} source="own"
           insight="Прямая карта пробелов каталога: что ищут, но не находят. Приоритет на добавление. Недопечатки схлопнуты, односимвольный мусор отброшен."

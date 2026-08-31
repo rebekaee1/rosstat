@@ -19,7 +19,7 @@ function AuthCluster({ mobile = false, onNavigate }) {
     return (
       <span
         aria-hidden
-        className={cn('inline-block h-8 rounded-full bg-obsidian-lighter/40', mobile ? 'w-full' : 'w-[150px]')}
+        className={cn('inline-block h-8 rounded-full bg-obsidian-lighter/40', mobile ? 'w-full' : 'w-[96px]')}
       />
     );
   }
@@ -184,7 +184,7 @@ export default function Navbar() {
           // части движков blur на время/после смены soft↔surface пропадает.
           'transition-[transform,opacity,background-color,box-shadow,border-color] duration-500 ease-out',
           'rounded-[2rem] px-5 lg:px-6 py-3 flex items-center gap-3',
-          'max-w-7xl w-[calc(100%-2rem)]',
+          'max-w-7xl w-[calc(100%-2rem-env(safe-area-inset-left,0px)-env(safe-area-inset-right,0px))]',
           scrolled
             ? 'glass-surface border border-border-subtle shadow-lg shadow-black/5'
             : 'glass-surface-soft border border-black/[0.04]',
@@ -262,7 +262,8 @@ export default function Navbar() {
           className={cn(FOCUS_RING, 'rounded-lg px-1 text-sm font-medium text-text-secondary hover:text-champagne')}
           aria-label={t('nav.language')}
         >
-          {t('nav.switchLanguage')}
+          <span className="xl:hidden">{locale === 'en' ? 'RU' : 'EN'}</span>
+          <span className="hidden xl:inline">{t('nav.switchLanguage')}</span>
         </button>
         <div className="h-5 w-px bg-border-subtle" aria-hidden />
         <AuthCluster />

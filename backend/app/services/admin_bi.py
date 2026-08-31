@@ -537,6 +537,16 @@ async def _demand_vs_coverage(db: AsyncSession, p: Period) -> dict:
         .limit(200)
     )).all()
 
+    by_host = (await db.execute(
+        select(WebmasterSearchQuery.host,
+               func.sum(WebmasterSearchQuery.impressions),
+               func.sum(WebmasterSearchQuery.clicks))
+        .where(WebmasterSearchQuery.date >= wm_from,
+               WebmasterSearchQuery.date <= wm_to)
+        .group_by(WebmasterSearchQuery.host)
+        .order_by(func.sum(WebmasterSearchQuery.impressions).desc())
+    )).all()
+
     return {
         "metrika_phrases": [
             {"phrase": p, "visits": int(v or 0)} for p, v in metrika
@@ -549,6 +559,14 @@ async def _demand_vs_coverage(db: AsyncSession, p: Period) -> dict:
                 "avg_position": round(float(pos), 1) if pos is not None else None,
             }
             for q, i, c, pos in webmaster
+        ],
+        "webmaster_by_host": [
+            {
+                "host": h,
+                "impressions": int(i or 0),
+                "clicks": int(c or 0),
+            }
+            for h, i, c in by_host
         ],
         "webmaster_window": {
             "from": wm_from.isoformat(), "to": wm_to.isoformat(), "fallback": wm_fallback,

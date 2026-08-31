@@ -23,13 +23,13 @@ export function mockApiGet(routes) {
   });
 }
 
-export function renderPage(ui, { path = '/', route = '/' } = {}) {
+export function renderPage(ui, { path = '/', route = '/', locale } = {}) {
   const qc = new QueryClient({
     defaultOptions: { queries: { retry: false, staleTime: Infinity } },
   });
   return render(
     <QueryClientProvider client={qc}>
-      <LocaleProvider>
+      <LocaleProvider locale={locale}>
         <AuthProvider>
           <MemoryRouter initialEntries={[route]}>
             <Routes>

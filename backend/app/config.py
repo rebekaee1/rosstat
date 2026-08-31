@@ -14,16 +14,16 @@ class Settings(BaseSettings):
     # (ru. уже канон RU, EN-волна живая). Пока False — forecasteconomy.com = ru,
     # иначе деплой i18n убьёт индекс Яндекса (весь .com станет английским).
     apex_locale_en: bool = False
-    # Geo-переход включается только после зелёного dual-host cutover.
+    # Geo-редирект снят (2026-08-31): язык = хост, IP/VPN не участвуют.
+    # Флаг оставлен в Settings, чтобы старые env не падали; значение игнорируется.
     geo_locale_redirect_enabled: bool = False
-    # Кто географически считается «русской» аудиторией (redirect + язык по
-    # Accept-Language). По умолчанию Россия и СНГ; перечислять ISO-коды стран.
+    # Кто географически считается «русской» аудиторией (исторический список;
+    # locale-редирект по IP больше не выполняется).
     geo_ru_country_codes: str = (
         "RU,BY,KZ,UA,AM,AZ,GE,KG,TJ,TM,UZ,MD"
     )
-    # Посетитель без гео-совпадения, но с русским языком браузера (q-взвешенный
-    # Accept-Language, порог уверенности) тоже уходит на ru.-хост.
-    browser_lang_redirect_enabled: bool = True
+    # Accept-Language больше не источник редиректа (язык = хост).
+    browser_lang_redirect_enabled: bool = False
     browser_lang_min_quality: float = 0.6
     locale_preference_cookie: str = "fe_locale_pref"
 

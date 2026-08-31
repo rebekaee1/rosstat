@@ -89,6 +89,18 @@ PRODUCT_CLAIM_ONLY_SURFACES = (
     'frontend/src/components/home/HomeWorkbench.jsx',
 )
 
+# EN-поверхности, где кириллица = утечка. Словарь messages.en.js содержит
+# «Русская версия» у переключателя языка — это имя целевого языка, не утечка.
+EN_NO_CYRILLIC = (
+    'frontend/src/lib/compareCompatibility.js',
+    'frontend/src/i18n/messages.en.js',
+    'backend/app/data/i18n/indicator_copy_en.py',
+)
+EN_CYRILLIC_ALLOW = {
+    'frontend/src/i18n/messages.en.js': ('Русская версия',),
+}
+CYRILLIC_RE = re.compile(r'[А-Яа-яЁё]')
+
 
 def scan_seed() -> list[tuple[str, str, str]]:
     seed_path = ROOT / 'backend' / 'seed_data.py'
@@ -204,6 +216,17 @@ def collect_issues() -> list[tuple[str, str]]:
             if rel.startswith('frontend/src/i18n/') and quantified.search(line):
                 continue
             found.append((f'{rel}:{line_no}:product-claim', line))
+
+    for rel in EN_NO_CYRILLIC:
+        p = ROOT / rel
+        if not p.exists():
+            found.append((rel, 'MISSING FILE'))
+            continue
+        for line_no, line in scan_file(p, CYRILLIC_RE, strip_comments=True):
+            allowed = EN_CYRILLIC_ALLOW.get(rel, ())
+            if any(token in line for token in allowed):
+                continue
+            found.append((f'{rel}:{line_no}:cyrillic-on-en', line))
 
     return found
 

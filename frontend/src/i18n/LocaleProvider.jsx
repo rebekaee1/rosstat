@@ -13,11 +13,12 @@ import {
 import { translate } from './messages';
 import { LocaleContext } from './localeContext';
 
-export function LocaleProvider({ children }) {
+export function LocaleProvider({ children, locale: localeProp }) {
   // Локаль известна до первого рендера (хост или ?preview_locale), поэтому
   // в эффекте только DOM: перезапись состояния давала каскадный рендер.
-  const [locale] = useState(() => resolveBrowserLocale());
-  const [isPreview] = useState(() => isPreviewLocaleActive());
+  // localeProp — для тестов (EN через preview без window.location).
+  const [locale] = useState(() => localeProp || resolveBrowserLocale());
+  const [isPreview] = useState(() => Boolean(localeProp) || isPreviewLocaleActive());
 
   useEffect(() => {
     document.documentElement.lang = htmlLang(locale);

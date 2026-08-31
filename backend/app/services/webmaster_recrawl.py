@@ -100,7 +100,9 @@ async def recrawl_daily_job(
         try:
             from app.services.demand_router import priority_recrawl_paths
 
-            demand = await priority_recrawl_paths(db, days=30, limit=remaining * 3)
+            demand = await priority_recrawl_paths(
+                db, days=30, limit=remaining * 3, host=wm_host_id,
+            )
         except Exception:
             logger.exception("Recrawl job: demand priority failed, fallback to registry")
             demand = []

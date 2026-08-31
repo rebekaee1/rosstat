@@ -2,7 +2,7 @@
 
 - **Status:** Proposed (проектирование 2026-08-16; реализация отдельным заходом)
 - **Date:** 2026-08-16
-- **Last verified:** 2026-08-16 вечер (языковой сплит `ru.forecasteconomy.com` ↔ apex; инвентаризация path-cut: **79 477** публичных путей)
+- **Last verified:** 2026-08-31 (geo-редирект снят: язык = хост, IP/VPN не участвуют)
 - **Part of:** [`AGENTS.md`](../../AGENTS.md), [`CONTEXT.md`](../../CONTEXT.md), [`ADR-0003`](0003-seo-single-source-server-rendered.md), [`ADR-0008`](0008-regional-bounded-context.md), [`ADR-0011`](0011-world-eurostat-data-plane.md)
 - **Backlog:** [`docs/backlog.md`](../backlog.md) — раздел «Карта миграции URL (ADR-0013)» + решения звонка 14 (Р-1…Р-3)
 
@@ -253,3 +253,22 @@ nginx mass-301 + новые SSR locations; sitemap через `site_urls`.
    Страницы без EN-пары — без `hreflang="en"` на 404 и вне EN-sitemap.
    Вебмастер: `ru.` регион «Россия»; apex — не «Россия» (при необходимости —
    без региональной привязки). Полный чеклист — `docs/backlog.md` §F.8.
+
+### 2026-08-31 — geo-редирект снят, язык = хост
+
+Решение владельца: IP/VPN и `Accept-Language` не выбирают язык. Сценарий
+«с VPN — английский, без VPN — русский, хотя язык браузера английский»
+был прямым следствием `_geo_locale_redirect` в `main.py`. Функция стала
+no-op; middleware её не вызывает. Cookie `fe_locale_pref` остаётся памятью
+явного выбора переключателя (`locale_pref` query → Set-Cookie на
+`.forecasteconomy.com`), но не источником редиректа на другой хост.
+Флаги `RUSTATS_GEO_LOCALE_REDIRECT_ENABLED` /
+`RUSTATS_BROWSER_LANG_REDIRECT_ENABLED` в env игнорируются (оставлены,
+чтобы старые окружения не падали). Боты и служебные маршруты по-прежнему
+отвечают на запрошенном хосте.
+
+IndexNow после ETL — карточки + годовые landing текущего/прошлого года;
+полная подача — очередь Redis (`enqueue_paths` / `indexnow_drain_job`)
+по статическим секциям `site_urls`, отдельно на apex и `ru.` после cutover.
+Google Search Console (Domain property, sitemap shards, Request Indexing
+хабов) — руками владельца; Indexing API не строим.

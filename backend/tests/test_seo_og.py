@@ -580,6 +580,7 @@ def test_indexnow_payload(monkeypatch):
             return _FakeResponse()
 
     monkeypatch.setattr(indexnow.httpx, "AsyncClient", _FakeClient)
+    monkeypatch.setattr(indexnow.settings, "indexnow_enabled", True)
     ok = asyncio.run(indexnow.ping_updated_indicators(["cpi", "key-rate", "cpi"]))
     assert ok
     urls = captured["payload"]["urlList"]

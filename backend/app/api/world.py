@@ -17,6 +17,7 @@ from sqlalchemy import and_, case, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.cache import cache_get, cache_set, versioned_key
+from app.services.api_i18n import api_detail
 from app.services.locale import get_locale
 from app.data.eurostat_listing import (
     catalog_merge_key,
@@ -37,7 +38,10 @@ from app.data.world_concepts import (
 )
 from app.data.world_concept_national import national_codes_for_concept
 from app.data.world_concept_russia import (
+    RUSSIA_CONCEPT_LINKS,
     RUSSIA_COUNTRY_PAYLOAD,
+    russia_eligible,
+    russia_link_for_concept,
     russia_list_country_payload,
 )
 from app.data.world_aggregation import aggregation_policy_for
@@ -268,7 +272,10 @@ async def _country_by_slug(db: AsyncSession, slug: str) -> WorldCountry:
         )
     ).scalar_one_or_none()
     if row is None:
-        raise HTTPException(404, "Страна не найдена")
+        raise HTTPException(
+            404,
+            api_detail("Страна не найдена", "Country not found"),
+        )
     return row
 
 
@@ -282,7 +289,10 @@ async def _indicator_by_code(db: AsyncSession, country_id: int, code: str) -> Wo
         )
     ).scalar_one_or_none()
     if row is None:
-        raise HTTPException(404, "Индикатор не найден")
+        raise HTTPException(
+            404,
+            api_detail("Индикатор не найден", "Indicator not found"),
+        )
     return row
 
 
@@ -488,6 +498,17 @@ def _rating_concepts():
         for concept in WORLD_CONCEPTS
         if "rating" in concept.enabled_surfaces
     ]
+
+
+def _locale_safe_copy(text: str | None) -> str | None:
+    """EN payload must not carry Russian description/methodology."""
+    if not text:
+        return text
+    if get_locale() == "en" and any(
+        "а" <= ch.lower() <= "я" or ch in "ёЁ" for ch in text
+    ):
+        return None
+    return text
 
 
 def _compare_series_payload(country: WorldCountry, indicator: WorldIndicator, concept) -> dict:
@@ -858,7 +879,7 @@ async def world_compare_catalog(db: AsyncSession = Depends(get_db)):
     Британия/Индия/Мексика в калькуляторе инфляции отдают свой официальный
     индекс цен с родными юнитом и источником, а не 404.
     """
-    cache_key = await versioned_key("world", f"compare:catalog:v4:{get_locale()}")
+    cache_key = await versioned_key("world", f"compare:catalog:v5:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -923,10 +944,78 @@ async def world_compare_catalog(db: AsyncSession = Depends(get_db)):
             by_country_concept[(concept.slug, country.slug)] = payload
 
     items = list(by_country_concept.values())
+    loc = get_locale()
+    russia_name = "Russia" if loc == "en" else "Россия"
+    for concept in concepts.values():
+        if not russia_eligible(concept.slug):
+            continue
+        link = RUSSIA_CONCEPT_LINKS[concept.slug]
+        items.append({
+            "code": f"w:russia:{concept.slug}",
+            "indicator_code": link.indicator_code,
+            "country_slug": "russia",
+            "country_name": russia_name,
+            "concept_slug": concept.slug,
+            "concept_name": concept_public_name(concept),
+            "frequency": "annual",
+            "unit": concept_public_unit(concept),
+            "national_method": concept.slug in {"gdp-usd", "gdp-per-capita-usd"},
+        })
 
     payload = {"items": items, "total": len(items)}
     await cache_set(cache_key, payload, ttl=_CACHE_TTL)
     return payload
+
+
+async def _russia_compare_series(db: AsyncSession, concept) -> dict:
+    """Годовой ряд России из национального расчёта (`russia_yearly_by_code`)."""
+    from app.services.world_russia_rank import russia_meta_for_concept, russia_yearly_by_code
+
+    if not russia_eligible(concept.slug):
+        raise HTTPException(
+            404,
+            api_detail(
+                "Для страны нет сопоставимого ряда",
+                "No comparable series for this country",
+            ),
+        )
+    public_unit = concept_public_unit(concept)
+    yearly = await russia_yearly_by_code(
+        db, concept.slug, concept_mode="level", public_unit=public_unit,
+    )
+    if not yearly:
+        raise HTTPException(
+            404,
+            api_detail(
+                "Для страны нет сопоставимого ряда",
+                "No comparable series for this country",
+            ),
+        )
+    loc = get_locale()
+    link = russia_link_for_concept(concept.slug)
+    meta_extra = russia_meta_for_concept(concept.slug) or {}
+    data = [
+        {"date": yearly[year]["date"], "value": yearly[year]["value"]}
+        for year in sorted(yearly, key=int)
+    ]
+    sample = next(iter(yearly.values()))
+    freq = normalize_frequency(sample.get("frequency") or "annual")
+    return {
+        "meta": {
+            "code": f"w:russia:{concept.slug}",
+            "indicator_code": link.indicator_code if link else sample.get("indicator_code"),
+            "country_slug": "russia",
+            "country_name": "Russia" if loc == "en" else "Россия",
+            "concept_slug": concept.slug,
+            "concept_name": concept_public_name(concept),
+            "frequency": freq,
+            "unit": sample.get("unit") or public_unit,
+            "note": meta_extra.get("note"),
+            "source": sample.get("source"),
+            "national_method": concept.slug in {"gdp-usd", "gdp-per-capita-usd"},
+        },
+        "data": data,
+    }
 
 
 @router.get("/compare/series/{country_slug}/{concept_slug}")
@@ -944,7 +1033,24 @@ async def world_compare_series(
     """
     concept = CONCEPT_BY_SLUG.get(concept_slug)
     if concept is None or "compare" not in concept.enabled_surfaces:
-        raise HTTPException(404, "Понятие для сравнения не найдено")
+        raise HTTPException(
+            404,
+            api_detail(
+                "Понятие для сравнения не найдено",
+                "Comparison concept not found",
+            ),
+        )
+
+    if country_slug == "russia":
+        cache_key = await versioned_key(
+            "world", f"compare:series:v1:russia:{concept.slug}:{get_locale()}"
+        )
+        cached = await cache_get(cache_key)
+        if cached:
+            return cached
+        payload = await _russia_compare_series(db, concept)
+        await cache_set(cache_key, payload, ttl=_CACHE_TTL)
+        return payload
 
     country = await _country_by_slug(db, country_slug)
     indicators = await _country_indicators(db, country.id)
@@ -959,7 +1065,13 @@ async def world_compare_series(
         )
     ]
     if not members:
-        raise HTTPException(404, "Для страны нет сопоставимого ряда")
+        raise HTTPException(
+            404,
+            api_detail(
+                "Для страны нет сопоставимого ряда",
+                "No comparable series for this country",
+            ),
+        )
     if len(members) > 1 and any(
         indicator.code in national_codes for indicator in members
     ):
@@ -970,7 +1082,13 @@ async def world_compare_series(
         )
         members = [national_member]
     if len(members) > 1:
-        raise HTTPException(409, "Неоднозначный состав ряда для сравнения")
+        raise HTTPException(
+            409,
+            api_detail(
+                "Неоднозначный состав ряда для сравнения",
+                "Ambiguous series composition for comparison",
+            ),
+        )
 
     indicator = members[0]
     points = await _load_points(db, indicator.id)
@@ -992,7 +1110,13 @@ async def world_compare_snapshot(
     """Последние сопоставимые значения для карты и рейтинга стран."""
     concept = CONCEPT_BY_SLUG.get(concept_slug)
     if concept is None or "compare" not in concept.enabled_surfaces:
-        raise HTTPException(404, "Понятие для сравнения не найдено")
+        raise HTTPException(
+            404,
+            api_detail(
+                "Понятие для сравнения не найдено",
+                "Comparison concept not found",
+            ),
+        )
     cache_key = await versioned_key(
         "world", f"compare:snapshot:v8:{concept_slug}:{get_locale()}"
     )
@@ -1072,7 +1196,10 @@ async def world_compare_map_series(
     """Годовые срезы для карты: последнее сопоставимое значение каждого года."""
     concept = CONCEPT_BY_SLUG.get(concept_slug)
     if concept is None or "compare" not in concept.enabled_surfaces:
-        raise HTTPException(404, "Понятие для карты не найдено")
+        raise HTTPException(
+            404,
+            api_detail("Понятие для карты не найдено", "Map concept not found"),
+        )
     cache_key = await versioned_key(
         "world", f"compare:map-series:v8:{concept_slug}:{get_locale()}"
     )
@@ -1162,7 +1289,13 @@ async def world_compare_average_series(
     """Межстрановой ориентир (среднее или медиана) для совместимых понятий."""
     concept = CONCEPT_BY_SLUG.get(concept_slug)
     if concept is None or concept_slug not in _AVERAGE_CONCEPTS:
-        raise HTTPException(404, "Средний межстрановой ряд для этого показателя недоступен")
+        raise HTTPException(
+            404,
+            api_detail(
+                "Средний межстрановой ряд для этого показателя недоступен",
+                "Average cross-country series is not available for this indicator",
+            ),
+        )
     cache_key = await versioned_key(
         "world",
         f"compare:average:v4:{concept_slug}:{mode or 'native'}:{get_locale()}",
@@ -1588,7 +1721,10 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
     if not primary.is_listed:
         signal_ids = await _ids_with_nonzero_signal(db, [ind.id, primary.id])
         if ind.id not in signal_ids and primary.id not in signal_ids:
-            raise HTTPException(404, "Индикатор не найден")
+            raise HTTPException(
+            404,
+            api_detail("Индикатор не найден", "Indicator not found"),
+        )
 
     # точки primary — для знака ряда в матрице
     series_by_code: dict[str, list] = {}
@@ -1675,7 +1811,7 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
         )
     ))
 
-    from app.services.seo_i18n import localize_category_name
+    from app.services.seo_i18n import localize_category_name, translate_source
 
     cat_disp = localize_category_name(ind.category_ru)
     payload = {
@@ -1692,10 +1828,10 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
             "frequency": normalize_frequency(ind.frequency),
             "category": cat_disp,
             "category_ru": ind.category_ru,
-            "source": ind.source,
+            "source": translate_source(ind.source) or ind.source,
             "source_url": ind.source_url,
-            "description": ind.description,
-            "methodology": ind.methodology,
+            "description": _locale_safe_copy(ind.description),
+            "methodology": _locale_safe_copy(ind.methodology),
             "history_start": _fmt_date(ind.history_start),
             "history_end": _fmt_date(ind.history_end),
             "points_count": ind.points_count,
@@ -1743,7 +1879,10 @@ async def indicator_data(
     if not _primary.is_listed:
         signal_ids = await _ids_with_nonzero_signal(db, [ind.id, _primary.id])
         if ind.id not in signal_ids and _primary.id not in signal_ids:
-            raise HTTPException(404, "Индикатор не найден")
+            raise HTTPException(
+            404,
+            api_detail("Индикатор не найден", "Indicator not found"),
+        )
 
     native = normalize_frequency(ind.frequency) or "monthly"
     try:

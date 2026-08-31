@@ -243,6 +243,109 @@ def test_seo_snapshot_computes_indexed_share(monkeypatch):
     assert result["top_search_queries"] == []
 
 
+def test_seo_snapshot_dual_host_summary(monkeypatch):
+    """Dual-host (ADR-0013 §F): apex всегда, ru. при cutover; сбой ru. не валит снапшот."""
+    from app.config import settings
+    from app.services import pulse
+    from app.services import yandex_webmaster_client as ywc
+
+    monkeypatch.setattr(pulse.settings, "yandex_webmaster_token", "token")
+    monkeypatch.setattr(settings, "apex_locale_en", True)
+
+    counts = {"https:forecasteconomy.com:443": 3527, "https:ru.forecasteconomy.com:443": 610}
+
+    class FakeResp:
+        def __init__(self, data):
+            self.data = data
+
+    class FakeClient:
+        async def user(self):
+            return FakeResp({"user_id": "u1"})
+
+        async def summary(self, user_id, host_id):
+            if host_id not in counts:
+                raise AssertionError(f"unexpected host {host_id}")
+            return FakeResp({
+                "searchable_pages_count": counts[host_id],
+                "excluded_pages_count": 2,
+                "sqi": 10,
+                "site_problems": {},
+            })
+
+        async def search_events_samples(self, user_id, host_id, limit=100):
+            return FakeResp({"samples": []})
+
+    monkeypatch.setattr(ywc, "YandexWebmasterClient", FakeClient)
+
+    async def fake_collect_all_paths(db):
+        return ["/x"] * 43300
+
+    monkeypatch.setattr("app.services.site_urls.collect_all_paths", fake_collect_all_paths)
+
+    class FakeDB:
+        async def scalar(self, *a, **kw):
+            return None
+
+    result = asyncio.run(pulse._seo_snapshot(FakeDB()))
+    assert result["available"] is True
+    assert set(result["summary_by_host"]) == {
+        "forecasteconomy.com", "ru.forecasteconomy.com",
+    }
+    assert result["summary_by_host"]["forecasteconomy.com"]["searchable_pages"] == 3527
+    assert result["summary_by_host"]["ru.forecasteconomy.com"]["searchable_pages"] == 610
+    # Верхний уровень — apex, обратная совместимость.
+    assert result["searchable_pages"] == 3527
+    assert result["demand_by_host"] == []
+
+
+def test_seo_snapshot_single_host_before_cutover(monkeypatch):
+    """До cutover (apex_locale_en=false) ru.-свойство не запрашивается вовсе."""
+    from app.config import settings
+    from app.services import pulse
+    from app.services import yandex_webmaster_client as ywc
+
+    monkeypatch.setattr(pulse.settings, "yandex_webmaster_token", "token")
+    monkeypatch.setattr(settings, "apex_locale_en", False)
+
+    seen_hosts: list[str] = []
+
+    class FakeResp:
+        def __init__(self, data):
+            self.data = data
+
+    class FakeClient:
+        async def user(self):
+            return FakeResp({"user_id": "u1"})
+
+        async def summary(self, user_id, host_id):
+            seen_hosts.append(host_id)
+            return FakeResp({
+                "searchable_pages_count": 3527,
+                "excluded_pages_count": 2,
+                "sqi": 10,
+                "site_problems": {},
+            })
+
+        async def search_events_samples(self, user_id, host_id, limit=100):
+            return FakeResp({"samples": []})
+
+    monkeypatch.setattr(ywc, "YandexWebmasterClient", FakeClient)
+
+    async def fake_collect_all_paths(db):
+        return ["/x"] * 100
+
+    monkeypatch.setattr("app.services.site_urls.collect_all_paths", fake_collect_all_paths)
+
+    class FakeDB:
+        async def scalar(self, *a, **kw):
+            return None
+
+    result = asyncio.run(pulse._seo_snapshot(FakeDB()))
+    assert result["available"] is True
+    assert set(result["summary_by_host"]) == {"forecasteconomy.com"}
+    assert seen_hosts.count("https:ru.forecasteconomy.com:443") == 0
+
+
 def test_memory_core_includes_seo_indexed_share():
     from app.services.pulse import memory_core
 

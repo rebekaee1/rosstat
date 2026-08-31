@@ -222,15 +222,21 @@ export default function LiveTicker() {
   }
 
   return (
-    <div className="fixed top-0 inset-x-0 z-[110] h-9 bg-[#faf7f0] border-b border-champagne/15 shadow-sm">
-      <div className="mx-auto h-full max-w-7xl px-1 sm:px-3 md:px-4">
+    <div
+      className="fixed top-0 inset-x-0 z-[110] h-9 bg-[#faf7f0] border-b border-champagne/15 shadow-sm pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]"
+    >
+      <div className="mx-auto h-full max-w-7xl">
         <div
-          className="scrollbar-hide flex h-full w-full items-center gap-0.5 overflow-x-auto sm:gap-1 md:gap-1.5 xl:justify-center xl:gap-3"
+          className="scrollbar-hide h-full w-full overflow-x-auto overscroll-x-contain"
           aria-label={t('ticker.quotes')}
         >
-          {snapshots.map((s) => (
-            <TickerCell key={s.code} snapshot={s} nowMs={dataUpdatedAt} />
-          ))}
+          <div className="flex h-full w-max min-w-full">
+            <div className="mx-auto flex h-full items-center gap-0.5 px-3 sm:gap-1 sm:px-3 md:gap-1.5 md:px-4 xl:gap-3">
+              {snapshots.map((s) => (
+                <TickerCell key={s.code} snapshot={s} nowMs={dataUpdatedAt} />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>

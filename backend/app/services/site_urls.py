@@ -2,7 +2,7 @@
 
 Одна точка истины для трёх потребителей:
   1. sitemap-контура (`/sitemap.xml` → `/sitemap-{section}.xml`) — `app/api/sitemap.py`;
-  2. IndexNow-батч по всему сайту (`indexnow.ping_full_site`);
+  2. IndexNow-очередь приоритетных секций (`indexnow.ping_sections`);
   3. приоритетная очередь переобхода Вебмастера (`webmaster_recrawl.py`).
 
 Секции возвращаются в порядке приоритета обхода: чем раньше секция и чем

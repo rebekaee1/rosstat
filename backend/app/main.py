@@ -2,7 +2,6 @@ import asyncio
 import ipaddress
 import json
 import logging
-import re
 import time
 from contextlib import asynccontextmanager
 
@@ -743,6 +742,24 @@ async def lifespan(app: FastAPI):
             )
             logger.info("Weekly indexing report enabled: Mon 09:30 MSK")
 
+        if settings.indexnow_enabled and settings.indexnow_key:
+            from app.services.indexnow import indexnow_drain_job, indexnow_warm_job
+            scheduler.add_job(
+                indexnow_drain_job,
+                trigger=CronTrigger(minute="*/10", timezone="Europe/Moscow"),
+                id="indexnow_drain",
+                name="IndexNow queue drain (priority sections, debounce 24h)",
+                replace_existing=True,
+            )
+            scheduler.add_job(
+                indexnow_warm_job,
+                trigger=CronTrigger(day_of_week="tue", hour=6, minute=40, timezone="Europe/Moscow"),
+                id="indexnow_warm",
+                name="IndexNow weekly warm (hubs + demand URLs, dual-host)",
+                replace_existing=True,
+            )
+            logger.info("IndexNow drain enabled: every 10 min; warm: Tue 06:40 MSK")
+
         if settings.telegram_digest_enabled:
             from app.tasks.analytics_scheduler import telegram_daily_digest_job
             scheduler.add_job(
@@ -887,29 +904,6 @@ app = FastAPI(
     openapi_url="/api/openapi.json" if settings.debug else None,
 )
 
-_GEO_EXCLUDED_PREFIXES = (
-    "/api/", "/assets/", "/og/", "/sitemap", "/embed/", "/oauth/", "/auth/oauth/",
-)
-_GEO_EXCLUDED_EXACT = frozenset({
-    "/robots.txt", "/llms.txt", "/feed.xml", "/health", "/favicon.ico",
-})
-_SEARCH_BOT_UA = re.compile(
-    r"(?:yandex(?:bot|images)|googlebot|bingbot|mail\.ru_bot|duckduckbot|applebot|petalbot)",
-    re.IGNORECASE,
-)
-
-def _is_html_navigation(request: Request) -> bool:
-    if request.method not in {"GET", "HEAD"}:
-        return False
-    # nginx переписывает публичный путь в /seo/… — исключения и inline-SVG
-    # проверяем по публичному оригиналу (X-Original-URI), а не по rewritten.
-    path = (request.headers.get("x-original-uri") or request.url.path).partition("?")[0]
-    if path in _GEO_EXCLUDED_EXACT or any(path.startswith(p) for p in _GEO_EXCLUDED_PREFIXES):
-        return False
-    accept = request.headers.get("accept", "")
-    return request.method == "HEAD" or not accept or "text/html" in accept
-
-
 def _public_query_params(request: Request) -> list[tuple[str, str]]:
     """Query как у браузера: nginx path-cut срезает ASGI query, оригинал — в X-Original-URI."""
     from urllib.parse import parse_qsl
@@ -978,92 +972,18 @@ def _persist_locale_pref_redirect(request: Request) -> Response | None:
     _set_locale_preference_cookie(response, pref)
     return response
 
-_GEO_RU_CODES: frozenset[str] | None = None
-
-
-def _geo_ru_country_codes() -> frozenset[str]:
-    """RU + СНГ по умолчанию; кэшируется, т.к. строка читается на каждый хит."""
-    global _GEO_RU_CODES
-    if _GEO_RU_CODES is None:
-        raw = (settings.geo_ru_country_codes or "RU").upper()
-        _GEO_RU_CODES = frozenset(
-            code.strip() for code in raw.split(",") if code.strip()
-        )
-    return _GEO_RU_CODES
-
-
-def _browser_prefers_russian(accept_language: str | None) -> bool:
-    """q-взвешенный Accept-Language: русский — доминирующий язык браузера.
-
-    True только если ru стоит первым по весу (по умолчанию q=1) и его вес
-    не ниже порога. `en-US,en;q=0.9` → False; `ru-RU,ru;q=0.9,en;q=0.8` → True.
-    """
-    if not accept_language:
-        return False
-    best_lang, best_q = "", -1.0
-    for part in accept_language.split(","):
-        seg = part.strip().lower()
-        if not seg:
-            continue
-        pieces = seg.split(";q=")
-        lang = pieces[0].strip()
-        try:
-            q = float(pieces[1]) if len(pieces) > 1 else 1.0
-        except ValueError:
-            q = 0.0
-        if q > best_q:
-            best_lang, best_q = lang, q
-    if best_lang.split("-")[0] != "ru":
-        return False
-    return best_q >= settings.browser_lang_min_quality
-
 
 def _geo_locale_redirect(request: Request) -> Response | None:
-    """Человек из RU/CIS-зоны или с русским браузером на EN apex → ru.-хост.
+    """IP/VPN больше не участвует в выборе языка (решение владельца 2026-08-31).
 
-    Боты, техмаршруты и явный opt-out (cookie из переключателя языка)
-    остаются на apex. Двухступенчато: сначала гео (RU + СНГ), затем
-    Accept-Language для остальных — чтобы не редиректить англоязычного
-    немца, находящегося в Германии.
+    Язык = хост. Geo- и Accept-Language-редиректы оставляли VPN-зависимое
+    поведение: с российского IP человека уводило на ru., с VPN — оставляло
+    на EN apex, даже при английском браузере. Сигнатура сохранена: тесты
+    подтверждают, что даже при включённых флагах редиректа нет.
     """
-    if not settings.apex_locale_en or not settings.geo_locale_redirect_enabled:
-        return None
-    from app.services.locale import apex_host, normalize_host, ru_public_origin
+    del request
+    return None
 
-    host = normalize_host(request.headers.get("x-forwarded-host") or request.headers.get("host"))
-    if host not in {apex_host(), f"www.{apex_host()}"} or not _is_html_navigation(request):
-        return None
-    if _SEARCH_BOT_UA.search(request.headers.get("user-agent", "")):
-        return None
-    preference = _locale_preference(request)
-    if preference in {"en", "stay-en"}:
-        return None
-    from app.services.geoip import lookup
-    client_ip = pick_client_ip(
-        request.headers.get("x-forwarded-for", ""),
-        request.client.host if request.client else "",
-    )
-    country = (lookup(client_ip).get("country_code") or "").upper()
-    if country not in _geo_ru_country_codes():
-        # Не RU/CIS (включая неизвестную страну): язык браузера решает, и
-        # только если флаг включён и русский явно доминирует в Accept-Language.
-        if not (
-            settings.browser_lang_redirect_enabled
-            and _browser_prefers_russian(request.headers.get("accept-language"))
-        ):
-            return None
-    # nginx переписывает публичный путь во внутренний /seo/… ДО backend
-    # (path-cut, А-2/А-3), поэтому редиректить надо на публичный оригинал:
-    # он приходит в X-Original-URI ($request_uri). proxy_set_header nginx
-    # перезаписывает входящее значение — клиент подделать его не может.
-    original = request.headers.get("x-original-uri") or request.url.path
-    public_path, _, public_query = original.partition("?")
-    if not public_query:
-        public_query = request.url.query
-    target = f"{ru_public_origin()}{public_path}"
-    if public_query:
-        target += f"?{public_query}"
-    return Response(status_code=307, headers={"Location": target, "Vary": "Cookie, Accept-Language"})
 
 class LocaleMiddleware(BaseHTTPMiddleware):
     """Bind request locale + origin (host / X-FE-Locale / ?preview_locale)."""
@@ -1084,13 +1004,10 @@ class LocaleMiddleware(BaseHTTPMiddleware):
             set_request_origin,
         )
 
-        host = request.headers.get("x-forwarded-host") or request.headers.get("host")
-        redirect = _geo_locale_redirect(request)
-        if redirect is not None:
-            return redirect
         persist = _persist_locale_pref_redirect(request)
         if persist is not None:
             return persist
+        host = request.headers.get("x-forwarded-host") or request.headers.get("host")
         header = request.headers.get(LOCALE_HEADER)
         locale = resolve_locale_from_request(request)
         # Preview только когда явный override запроса совпал с активной локалью:
