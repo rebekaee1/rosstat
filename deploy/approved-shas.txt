@@ -11,3 +11,4 @@ f366fea0d0114ee002269ae4576b470578284273  # RU+CIS geo + browser-lang redirect, 
 8395eee39ef5a60b6f290408d4cbc848d45c1621  # EN category i18n + ru. webmaster recrawl, owner-approved 2026-08-31
 96fe239260bc10c60689973aafdca982f6a1b898  # locale_pref via X-Original-URI, owner-approved 2026-08-31
 d2038647e1ff16b9b07a32573305fb888c74d82d  # i18n UX batch (5 manager complaints) + dual-host indexing, owner-approved 2026-08-31
+9c9a61bf000a7275831c2e5f7af130f9091991b6  # i18n UX batch + deploy.sh smoke hardening, owner-approved 2026-08-31
