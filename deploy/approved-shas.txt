@@ -14,3 +14,5 @@ d2038647e1ff16b9b07a32573305fb888c74d82d  # i18n UX batch (5 manager complaints)
 9c9a61bf000a7275831c2e5f7af130f9091991b6  # i18n UX batch + deploy.sh smoke hardening, owner-approved 2026-08-31
 
 666d35fa8184c14b03f29fcb21bdc5e74424cbbb  # 666d35f OAuth cookie + Host locale + Russia compare + OG, owner-approved 2026-09-02
+
+ce29e48faaf85516695049faa7929b28a3272b9a  # ce29e48 dual-host gate pre-cutover, owner-approved 2026-09-02
