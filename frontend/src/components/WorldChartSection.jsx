@@ -14,10 +14,12 @@ import { ChartSkeleton } from './Skeleton';
 import { worldChartTitle, worldRangePreset } from '../lib/worldViewModes';
 import {
   fetchWorldAverageSeries,
+  fetchWorldCompareSeries,
   fetchWorldIndicatorMode,
   useWorldCompareCatalog,
 } from '../lib/worldApi';
 import { rebaseWorldComparison } from '../lib/worldComparison';
+import { countryMatchesQuery } from '../lib/worldCompareSearch';
 import {
   WORLD_RANKING_AVERAGE_CONCEPTS,
   WORLD_RANKING_MEDIAN_CONCEPTS,
@@ -53,10 +55,7 @@ function ComparisonPicker({
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const selected = new Set(selectedIds);
-  const filtered = options.filter((option) => (
-    !query.trim()
-    || option.country_name.toLowerCase().includes(query.trim().toLowerCase())
-  ));
+  const filtered = options.filter((option) => countryMatchesQuery(option, query));
   useSearchTracking('world-chart-countries', open ? query : '', filtered.length);
   return (
     <div className="relative min-w-0 flex-1">
@@ -212,22 +211,24 @@ export default function WorldChartSection({
   // Meta карточки уже несёт строго совместимых peers. Общий каталог нужен
   // только старым карточкам без peers и загружается по первому намерению сравнить.
   const compareCatalog = useWorldCompareCatalog({
-    enabled: comparisonPeers.length === 0 && comparisonPickerActive,
+    enabled: comparisonPickerActive,
   });
   const [comparisonIds, setComparisonIds] = useState([]);
   const [comparisonScale, setComparisonScale] = useState('values');
   const comparisonOptions = useMemo(() => {
-    const strictPeers = (comparisonPeers || []).map((item) => ({
+    const bySlug = new Map();
+    const add = (item) => {
+      if (!item?.country_slug || item.country_slug === country?.slug) return;
+      if (!bySlug.has(item.country_slug)) bySlug.set(item.country_slug, item);
+    };
+    (comparisonPeers || []).forEach((item) => add({
       ...item,
       code: `peer:${item.country_slug}:${item.indicator_code}`,
     }));
-    const byName = (a, b) => a.country_name.localeCompare(b.country_name, locale);
-    if (strictPeers.length) {
-      return strictPeers.sort(byName);
-    }
-    return (compareCatalog.data?.items || [])
-      .filter((item) => item.concept_slug === conceptSlug && item.country_slug !== country?.slug)
-      .sort(byName);
+    (compareCatalog.data?.items || [])
+      .filter((item) => item.concept_slug === conceptSlug)
+      .forEach(add);
+    return [...bySlug.values()].sort((a, b) => a.country_name.localeCompare(b.country_name, locale));
   }, [comparisonPeers, compareCatalog.data, conceptSlug, country?.slug, locale]);
   const pickerOptions = useMemo(() => {
     const result = [...comparisonOptions];
@@ -251,6 +252,9 @@ export default function WorldChartSection({
         }
         const option = comparisonOptions.find((item) => item.code === id);
         if (!option) return null;
+        if (option.country_slug === 'russia') {
+          return fetchWorldCompareSeries('russia', conceptSlug, { signal });
+        }
         return fetchWorldIndicatorMode(
           option.country_slug,
           option.indicator_code,

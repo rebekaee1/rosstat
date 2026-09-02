@@ -10,7 +10,7 @@ const COLLAPSE_AT = 12;
 
 function chipClass(active) {
   return [
-    'rounded-xl px-2.5 py-1.5 text-xs font-medium transition-colors whitespace-nowrap',
+    'rounded-xl px-2.5 py-1.5 text-xs font-medium leading-snug transition-colors whitespace-normal',
     active
       ? 'bg-champagne/15 text-champagne'
       : 'bg-obsidian-lighter text-text-secondary hover:text-champagne',

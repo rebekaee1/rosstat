@@ -879,7 +879,7 @@ async def world_compare_catalog(db: AsyncSession = Depends(get_db)):
     Британия/Индия/Мексика в калькуляторе инфляции отдают свой официальный
     индекс цен с родными юнитом и источником, а не 404.
     """
-    cache_key = await versioned_key("world", f"compare:catalog:v5:{get_locale()}")
+    cache_key = await versioned_key("world", f"compare:catalog:v6:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -1707,7 +1707,7 @@ async def _card_context(
 @router.get("/indicators/{slug}/{code}")
 async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db)):
     cache_key = await versioned_key(
-        "world", f"ind:v11:{slug}:{code}:{get_locale()}"
+        "world", f"ind:v13:{slug}:{code}:{get_locale()}"
     )
     cached = await cache_get(cache_key)
     if cached:
@@ -1799,6 +1799,21 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
             "country_name": _country_display_name(peer_country),
             "indicator_code": peer_primary.code,
             "frequency": normalize_frequency(peer_primary.frequency),
+        })
+    concept = concept_for_indicator(ind)
+    if (
+        concept is not None
+        and "compare" in concept.enabled_surfaces
+        and russia_eligible(concept.slug)
+    ):
+        link = RUSSIA_CONCEPT_LINKS[concept.slug]
+        loc = get_locale()
+        peers.append({
+            "country_code": "RU",
+            "country_slug": "russia",
+            "country_name": "Russia" if loc == "en" else "Россия",
+            "indicator_code": link.indicator_code,
+            "frequency": "annual",
         })
 
     forecast_available = bool(await db.scalar(

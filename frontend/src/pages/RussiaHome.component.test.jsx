@@ -168,14 +168,12 @@ describe('RussiaHome навигация по категориям', () => {
 });
 
 describe('RussiaHome быстрые входы (SEO-требование)', () => {
-  it('Сегодня, Регионы, Календарь и Демография доступны ряд ссылок-карточек', async () => {
+  it('Регионы, Календарь и Демография доступны ряд ссылок-карточек', async () => {
     renderRussia(LISTING);
 
     await screen.findByRole('heading', { level: 1, name: 'Россия' });
 
-    const today = screen.getByRole('link', { name: /Сегодня/ });
-    expect(today.getAttribute('href')).toBe('/russia/today');
-    expect(today.textContent).toContain('Ключевые показатели на текущую дату');
+    expect(screen.queryByRole('link', { name: /Сегодня/ })).toBeNull();
 
     const regions = screen.getByRole('link', { name: /Регионы/ });
     expect(regions.getAttribute('href')).toBe('/russia/region');

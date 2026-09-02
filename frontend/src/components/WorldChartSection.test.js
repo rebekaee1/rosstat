@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { rebaseWorldComparison } from '../lib/worldComparison';
+import { countryMatchesQuery } from '../lib/worldCompareSearch';
 
 describe('rebaseWorldComparison', () => {
   it('uses the first exact date shared by every country', () => {
@@ -39,5 +40,21 @@ describe('rebaseWorldComparison', () => {
       [{ date: '2020-01-01', value: 10 }],
       [{ label: 'A', data: [{ date: '2021-01-01', value: 20 }] }],
     )).toBeNull();
+  });
+});
+
+describe('countryMatchesQuery', () => {
+  const russia = { country_name: 'Россия', country_slug: 'russia', country_code: 'RU' };
+  const romania = { country_name: 'Romania', country_slug: 'romania', country_code: 'RO' };
+
+  it('finds Russia in RU and EN', () => {
+    expect(countryMatchesQuery(russia, 'рос')).toBe(true);
+    expect(countryMatchesQuery(russia, 'russia')).toBe(true);
+    expect(countryMatchesQuery(russia, 'рф')).toBe(true);
+  });
+
+  it('does not treat Romania as Russia', () => {
+    expect(countryMatchesQuery(russia, 'romania')).toBe(false);
+    expect(countryMatchesQuery(romania, 'romania')).toBe(true);
   });
 });

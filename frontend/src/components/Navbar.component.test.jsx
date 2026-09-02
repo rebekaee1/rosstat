@@ -8,7 +8,6 @@ import {
   demographicsPath,
   regionHubPath,
   russiaHomePath,
-  todayPath,
 } from '../lib/sitePaths';
 
 vi.mock('gsap', () => ({
@@ -88,14 +87,13 @@ describe('Navbar H-4 menu', () => {
     expect(regions.getAttribute('href')).toBe(regionHubPath());
   });
 
-  it('карточка России и «Сегодня» доступны из футера', () => {
+  it('карточка России доступна из футера, «Сегодня» скрыт', () => {
     renderShell();
 
     const footer = screen.getByRole('contentinfo');
     expect(within(footer).getByRole('link', { name: 'Россия' }).getAttribute('href'))
       .toBe(russiaHomePath());
-    expect(within(footer).getByRole('link', { name: 'Сегодня' }).getAttribute('href'))
-      .toBe(todayPath());
+    expect(within(footer).queryByRole('link', { name: 'Сегодня' })).toBeNull();
   });
 
   it('демография не осиротела: ссылка есть в футере', () => {

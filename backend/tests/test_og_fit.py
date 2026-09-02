@@ -17,6 +17,7 @@ from app.services.og_image import (
     FG,
     _layout,
     _layout_indicator,
+    og_hero_number,
 )
 
 LONG_NAME = "Гармонизированный индекс потребительских цен"
@@ -286,3 +287,10 @@ def test_indicator_png_with_long_strings_smoke():
         x_labels=("2015", "2023"),
     )
     assert png[:4] == b"\x89PNG"
+
+
+def test_og_hero_number_plus_only_on_change_series():
+    assert og_hero_number("key-rate", 21.0) == "21,0"
+    assert og_hero_number("key-rate", 21.0, locale="en") == "21.0"
+    assert og_hero_number("cpi", 0.54).startswith("+")
+    assert og_hero_number("key-rate", -1.2).startswith("\u2212")

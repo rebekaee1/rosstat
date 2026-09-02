@@ -8,7 +8,7 @@
 import { Suspense, lazy, useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
-  ArrowRight, ArrowUpRight, CalendarDays, MapPinned, TrendingUp, Users,
+  ArrowUpRight, CalendarDays, MapPinned, TrendingUp, Users,
 } from 'lucide-react';
 import { useIndicators } from '../lib/hooks';
 import { useRegionsLanding } from '../lib/regionsApi';
@@ -30,7 +30,6 @@ import {
   russiaCategoriesPath,
   russiaHomePath,
   russiaIndicatorPath,
-  todayPath,
 } from '../lib/sitePaths';
 import Breadcrumbs from '../components/Breadcrumbs';
 import ApiRetryBanner from '../components/ApiRetryBanner';
@@ -119,7 +118,6 @@ function RussiaTerritoryCard() {
 }
 
 const QUICK_LINK_DEFS = [
-  { to: todayPath(), titleKey: 'russia.link.today.title', descKey: 'russia.link.today.desc', icon: ArrowRight },
   { to: regionHubPath(), titleKey: 'russia.link.regions.title', descKey: 'russia.link.regions.desc', icon: MapPinned },
   { to: calendarPath(), titleKey: 'russia.link.calendar.title', descKey: 'russia.link.calendar.desc', icon: CalendarDays },
   { to: demographicsPath(), titleKey: 'russia.link.demographics.title', descKey: 'russia.link.demographics.desc', icon: Users },
@@ -166,12 +164,12 @@ function RussiaIndicatorTile({ indicator }) {
       className="group flex flex-col gap-2 rounded-xl border border-border-subtle bg-white px-3.5 py-3 transition-all hover:border-border-champagne hover:shadow-[0_12px_30px_rgba(35,30,16,0.06)] sm:min-h-[92px] sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-3.5"
     >
       <div className="min-w-0 flex-1">
-        <div className="text-[13px] leading-snug text-text-primary transition-colors group-hover:text-champagne sm:text-[14px]">
+        <div className="break-words text-[13px] leading-snug text-text-primary transition-colors group-hover:text-champagne sm:text-[14px]">
           {title}
         </div>
         <div className="mt-1 flex min-w-0 flex-wrap items-center gap-1.5 text-[10px] text-text-tertiary sm:mt-1.5">
           <FreqBadge item={indicator} t={t} />
-          {indicator.unit && <span className="line-clamp-1 break-all">{indicator.unit}</span>}
+          {indicator.unit && <span className="min-w-0 break-words">{indicator.unit}</span>}
         </div>
       </div>
       <div className="flex items-baseline justify-between gap-3 border-t border-border-subtle/60 pt-2 sm:w-[7.5rem] sm:shrink-0 sm:flex-col sm:items-end sm:justify-center sm:border-0 sm:pt-0 sm:text-right">

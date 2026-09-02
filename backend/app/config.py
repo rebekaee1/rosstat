@@ -177,7 +177,7 @@ class Settings(BaseSettings):
     # Identity / личный кабинет (Phase 1)
     auth_session_ttl_seconds: int = 60 * 60 * 24 * 30  # 30 дней sliding
     auth_cookie_secure: bool = False  # на проде → true (HTTPS)
-    auth_cookie_domain: str = ""      # пусто = host-only cookie
+    auth_cookie_domain: str = ""      # пусто = auto `.forecasteconomy.com` на проде, host-only на localhost
     auth_oauth_state_ttl_seconds: int = 600  # 10 мин на завершение OAuth
     auth_login_max_fails: int = 8     # порог lockout по (email,ip)
     auth_login_lockout_seconds: int = 900  # 15 мин блокировки

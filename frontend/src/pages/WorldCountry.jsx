@@ -114,12 +114,12 @@ function IndicatorRow({ item, slug, to }) {
       className="group flex flex-col gap-2 rounded-xl border border-border-subtle bg-white px-3.5 py-3 transition-all hover:border-border-champagne hover:shadow-[0_12px_30px_rgba(35,30,16,0.06)] sm:min-h-[92px] sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-3.5"
     >
       <div className="min-w-0 flex-1">
-        <div className="text-[13px] leading-snug text-text-primary transition-colors group-hover:text-champagne sm:text-[14px]">
+        <div className="break-words text-[13px] leading-snug text-text-primary transition-colors group-hover:text-champagne sm:text-[14px]">
           {name}
         </div>
         <div className="mt-1 flex min-w-0 flex-wrap items-center gap-1.5 text-[10px] text-text-tertiary sm:mt-1.5">
           <FreqBadges item={item} t={t} />
-          {item.unit && <span className="line-clamp-1 break-all">{item.unit}</span>}
+          {item.unit && <span className="min-w-0 break-words">{item.unit}</span>}
         </div>
       </div>
       <div className="flex items-baseline justify-between gap-3 border-t border-border-subtle/60 pt-2 sm:w-[7.5rem] sm:shrink-0 sm:flex-col sm:items-end sm:justify-center sm:border-0 sm:pt-0 sm:text-right">

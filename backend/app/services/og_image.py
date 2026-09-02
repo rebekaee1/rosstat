@@ -91,10 +91,20 @@ def fmt_ru(v: float, *, locale: str | None = None) -> str:
 
 
 def fmt_signed(v: float, *, locale: str | None = None) -> str:
-    # U+2212 остаётся и в EN: Golos Text его рисует, для экономиста
-    # типографский минус читабельнее дефиса.
+    # Плюс — у изменений (ИПЦ и т.п.), не у уровней. См. og_hero_number.
     sign = "+" if v >= 0 else "\u2212"
     return f"{sign}{fmt_ru(abs(v), locale=locale)}"
+
+
+def og_hero_number(code: str | None, v: float, *, locale: str | None = None) -> str:
+    """Крупное число на OG: «+» только у рядов-изменений, уровень без плюса."""
+    from app.services.display import display_sign
+
+    if display_sign(code):
+        return fmt_signed(v, locale=locale)
+    if v < 0:
+        return f"\u2212{fmt_ru(abs(v), locale=locale)}"
+    return fmt_ru(v, locale=locale)
 
 
 def fmt_yoy(v: float, *, locale: str | None = None) -> str:
@@ -341,17 +351,12 @@ def _draw_poster_chart(
     grad_full.paste(Image.fromarray(ga, "RGBA"), (0, y0))
     img.paste(grad_full, (0, 0), poly_mask)
 
-    glow_l = Image.new("RGBA", (WIDTH, HEIGHT), (0, 0, 0, 0))
-    ImageDraw.Draw(glow_l).line(sm, fill=GOLD + (150,), width=12, joint="curve")
-    img.alpha_composite(glow_l.filter(ImageFilter.GaussianBlur(9)))
-    img.alpha_composite(glow_l.filter(ImageFilter.GaussianBlur(3)))
-
     d = ImageDraw.Draw(img, "RGBA")
     if lo < 0 < hi:
         zy = y1 - (y1 - y0) * (0 - lo) / rngv
         for i in range(int(x0), int(x1), 14):
             d.line([(i, zy), (i + 7, zy)], fill=(255, 255, 255, 40), width=1)
-    d.line(sm, fill=GOLD_BRIGHT + (255,), width=4, joint="curve")
+    d.line(sm, fill=GOLD_BRIGHT + (255,), width=5, joint="curve")
 
     rf = FG(14, 600)
     d.text((x0 + 10, y0 + 4), _fmt_axis(hi), font=rf, fill=AXIS_TXT)
@@ -518,7 +523,7 @@ def render_indicator_og(
     draw.text((WIDTH // 2 - dw2 / 2, 582), dom, font=df3, fill=GOLD_SOFT)
 
     buf = io.BytesIO()
-    img.convert("RGB").save(buf, format="PNG", optimize=True)
+    img.convert("RGB").save(buf, format="PNG", optimize=False, compress_level=6)
     return buf.getvalue()
 
 

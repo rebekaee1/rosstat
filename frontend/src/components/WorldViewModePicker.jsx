@@ -11,7 +11,7 @@ import {
 
 /** Эталон кнопок — CpiViewModePicker / GenericViewModePicker (Россия). */
 const btnCls = (active) => cn(
-  'shrink-0 rounded-xl px-3 py-2 text-xs font-medium transition-colors',
+  'max-w-full shrink-0 whitespace-normal rounded-xl px-3 py-2 text-center text-xs font-medium leading-snug transition-colors',
   active
     ? 'bg-champagne/15 text-champagne'
     : 'bg-obsidian-lighter text-text-secondary hover:text-champagne',

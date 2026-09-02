@@ -13,7 +13,6 @@ import {
   russiaCategoriesPath,
   russiaCategoryPath,
   russiaHomePath,
-  todayPath,
 } from '../lib/sitePaths';
 import { WORLD_RATING_TO } from '../lib/navItems';
 import { useT, useLocale } from '../i18n';
@@ -97,11 +96,6 @@ export default function Footer() {
               <li>
                 <Link to={russiaHomePath()} className={footLink}>
                   {t('footer.russia')}
-                </Link>
-              </li>
-              <li>
-                <Link to={todayPath()} className={footLink}>
-                  {t('footer.today')}
                 </Link>
               </li>
               <li>

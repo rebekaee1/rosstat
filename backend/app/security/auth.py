@@ -17,6 +17,24 @@ from app.services.api_i18n import api_detail
 from app.services.identity.service import get_user
 
 
+def effective_auth_cookie_domain() -> str:
+    """Cookie Domain shared by apex and ru. so OAuth state survives the hop.
+
+    Host-only ``fe_oauth`` / ``fe_sess`` dies when login starts on
+    ``ru.forecasteconomy.com`` and the provider returns to apex (or the
+    reverse). Explicit ``RUSTATS_AUTH_COOKIE_DOMAIN`` wins; production
+    apex defaults to ``.forecasteconomy.com``; localhost stays host-only.
+    """
+    if settings.auth_cookie_domain:
+        return settings.auth_cookie_domain
+    if settings.debug:
+        return ""
+    host = (settings.public_host or "").removeprefix("www.")
+    if host.endswith("forecasteconomy.com"):
+        return ".forecasteconomy.com"
+    return ""
+
+
 def _cookie_kwargs() -> dict:
     kw = {
         "httponly": True,
@@ -24,8 +42,9 @@ def _cookie_kwargs() -> dict:
         "samesite": "lax",
         "path": "/",
     }
-    if settings.auth_cookie_domain:
-        kw["domain"] = settings.auth_cookie_domain
+    domain = effective_auth_cookie_domain()
+    if domain:
+        kw["domain"] = domain
     return kw
 
 
@@ -42,7 +61,7 @@ def set_session_cookies(response: Response, session_id: str, csrf_token: str) ->
 
 def clear_session_cookies(response: Response) -> None:
     path = "/"
-    domain = settings.auth_cookie_domain or None
+    domain = effective_auth_cookie_domain() or None
     response.delete_cookie(session_svc.SESSION_COOKIE, path=path, domain=domain)
     response.delete_cookie(session_svc.CSRF_COOKIE, path=path, domain=domain)
 

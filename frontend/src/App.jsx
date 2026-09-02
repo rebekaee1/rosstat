@@ -165,7 +165,6 @@ function NotFound() {
 
   const links = [
     { to: '/', labelKey: 'notFound.link.home' },
-    { to: todayPath(), labelKey: 'notFound.link.today' },
     { to: regionHubPath(), labelKey: 'notFound.link.regions' },
     { to: WORLD_RATING_TO, labelKey: 'notFound.link.worldRating' },
     { to: '/compare', labelKey: 'notFound.link.compare' },

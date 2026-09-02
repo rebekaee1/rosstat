@@ -29,6 +29,37 @@ _INDICATOR_COPY_EN_MIN = 160
 _INDICATOR_COPY_EN_REQUIRED = ("cpi", "cpi-food", "wages-nominal", "key-rate")
 
 
+def test_x_forwarded_host_beats_localhost_host():
+    """Caddy/nginx must pass the public host; backend Host can be localhost."""
+    from starlette.requests import Request
+    from app.services.locale import resolve_locale_from_request
+
+    scope = {
+        "type": "http",
+        "asgi": {"version": "3.0"},
+        "http_version": "1.1",
+        "method": "GET",
+        "scheme": "https",
+        "path": "/seo/indicator/key-rate/2025",
+        "raw_path": b"/seo/indicator/key-rate/2025",
+        "query_string": b"",
+        "headers": [
+            (b"host", b"localhost"),
+            (b"x-forwarded-host", b"forecasteconomy.com"),
+        ],
+        "client": ("127.0.0.1", 123),
+        "server": ("localhost", 8000),
+    }
+    assert resolve_locale_from_request(Request(scope)) == "ru"
+
+    scope["headers"] = [
+        (b"host", b"localhost"),
+        (b"x-forwarded-host", b"forecasteconomy.com"),
+        (b"x-fe-locale", b"en"),
+    ]
+    assert resolve_locale_from_request(Request(scope)) == "en"
+
+
 def test_localhost_defaults_to_ru():
     assert resolve_locale(host="localhost") == "ru"
     assert resolve_locale(host="127.0.0.1:8000") == "ru"

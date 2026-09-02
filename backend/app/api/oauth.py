@@ -21,6 +21,7 @@ from app.services.oauth.fake import FakeProvider, encode_code
 from app.services.identity.resolve import resolve_oauth, IdentityConflict, LinkRequiresAuth
 from app.security.auth import (
     get_optional_user, set_session_cookies, current_session,
+    effective_auth_cookie_domain,
 )
 from app.api.auth import audit, AUTH_CONSENT_VERSION
 from app.models import Consent
@@ -65,14 +66,15 @@ def _redirect_uri(provider: str) -> str:
 
 def _oauth_cookie_kwargs() -> dict:
     kw = {"httponly": True, "secure": settings.auth_cookie_secure, "samesite": "lax", "path": "/"}
-    if settings.auth_cookie_domain:
-        kw["domain"] = settings.auth_cookie_domain
+    domain = effective_auth_cookie_domain()
+    if domain:
+        kw["domain"] = domain
     return kw
 
 
 def _fail(error: str, *, to: str = "/login") -> RedirectResponse:
     resp = RedirectResponse(f"{to}?error={error}", status_code=302)
-    resp.delete_cookie(OAUTH_COOKIE, path="/", domain=settings.auth_cookie_domain or None)
+    resp.delete_cookie(OAUTH_COOKIE, path="/", domain=effective_auth_cookie_domain() or None)
     return resp
 
 
@@ -208,7 +210,7 @@ async def oauth_callback(provider: str, request: Request, db: AsyncSession = Dep
     if intent == "login":
         sid, csrf = await session_svc.create_session(str(user.id))
         set_session_cookies(resp, sid, csrf)
-    resp.delete_cookie(OAUTH_COOKIE, path="/", domain=settings.auth_cookie_domain or None)
+    resp.delete_cookie(OAUTH_COOKIE, path="/", domain=effective_auth_cookie_domain() or None)
     return resp
 
 

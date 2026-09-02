@@ -26,8 +26,8 @@ from app.services.display import (
 )
 from app.services.locale import get_locale
 from app.services.og_image import (
-    fmt_signed,
     fmt_yoy,
+    og_hero_number,
     ru_period_lines,
     window_x_labels,
 )
@@ -566,7 +566,7 @@ async def og_image_indicator(code: str, db: AsyncSession = Depends(get_db)):
     from app.services.seo_i18n import indicator_copy_en
 
     loc = get_locale()
-    cache_key = f"j6:{loc}:{code}"
+    cache_key = f"j7:{loc}:{code}"
     png = cached_og(cache_key)
     if png is None:
         q = await db.execute(
@@ -599,7 +599,7 @@ async def og_image_indicator(code: str, db: AsyncSession = Depends(get_db)):
             x_labels = window_x_labels(window[0][1], window[-1][1], locale=loc)
         shown_last = display_value(code, current_value)
         core_number = (
-            fmt_signed(shown_last) if shown_last is not None else value_text
+            og_hero_number(code, shown_last, locale=loc) if shown_last is not None else value_text
         )
         ctx = _og_context(
             code,
@@ -666,7 +666,7 @@ async def og_image_indicator_month(code: str, period: str, db: AsyncSession = De
     year, month = int(period[:4]), int(period[5:])
 
     loc = get_locale()
-    cache_key = f"j6:month:{loc}:{code}:{period}"
+    cache_key = f"j7:month:{loc}:{code}:{period}"
     png = cached_og(cache_key)
     if png is None:
         q = await db.execute(
@@ -717,7 +717,7 @@ async def og_image_indicator_month(code: str, period: str, db: AsyncSession = De
                 x_labels = window_x_labels(by_month[window[0]][1], by_month[window[-1]][1], locale=loc)
 
         shown_last = display_value(code, last_value)
-        core_number = fmt_signed(shown_last) if shown_last is not None else value_text
+        core_number = og_hero_number(code, shown_last, locale=loc) if shown_last is not None else value_text
         overlay = indicator_copy_en(code) if loc == "en" else None
         name = public_name(
             indicator.name,
@@ -761,7 +761,7 @@ async def og_image_indicator_year(code: str, year: int, db: AsyncSession = Depen
     from app.services.site_urls import YEAR_LANDING_MIN_POINTS
 
     loc = get_locale()
-    cache_key = f"j6:{loc}:{code}:{year}"
+    cache_key = f"j7:{loc}:{code}:{year}"
     png = cached_og(cache_key)
     if png is None:
         q = await db.execute(
@@ -838,7 +838,7 @@ async def og_image_indicator_year(code: str, year: int, db: AsyncSession = Depen
                 date_text = compare
 
         shown_last = display_value(code, last_value)
-        year_number = fmt_signed(shown_last) if shown_last is not None else value_text
+        year_number = og_hero_number(code, shown_last, locale=loc) if shown_last is not None else value_text
         year_unit = "%" if (unit == "%" or is_cpi) else None
         year_pill = None
         if is_cpi and len(raw_values) >= 2:
@@ -995,7 +995,7 @@ async def og_image_region_indicator_year(
     from app.services.seo_renderer import neighbor_year_window
 
     loc = get_locale()
-    cache_key = f"j6:ryear:{loc}:{slug}:{code}:{year}"
+    cache_key = f"j7:ryear:{loc}:{slug}:{code}:{year}"
     png = cached_og(cache_key)
     if png is None:
         region = (
@@ -1686,7 +1686,7 @@ async def og_image_world_indicator_year(
     from app.services.site_urls import WORLD_YEAR_LANDING_MIN_POINTS
 
     loc = get_locale()
-    cache_key = f"j6:wyear:{loc}:{country_slug}:{code}:{year}"
+    cache_key = f"j7:wyear:{loc}:{country_slug}:{code}:{year}"
     png = cached_og(cache_key)
     if png is None:
         country = (

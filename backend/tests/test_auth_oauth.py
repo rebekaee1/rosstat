@@ -156,3 +156,36 @@ def test_fake_provider_forbidden_in_prod(monkeypatch):
     with pytest.raises(RuntimeError):
         with TestClient(app):
             pass
+
+
+def test_effective_auth_cookie_domain_shares_apex_and_ru(monkeypatch):
+    from app.config import settings
+    from app.security.auth import effective_auth_cookie_domain
+
+    monkeypatch.setattr(settings, "auth_cookie_domain", "")
+    monkeypatch.setattr(settings, "debug", False)
+    monkeypatch.setattr(settings, "public_base_url", "https://forecasteconomy.com")
+    assert effective_auth_cookie_domain() == ".forecasteconomy.com"
+
+
+def test_effective_auth_cookie_domain_debug_stays_host_only(monkeypatch):
+    from app.config import settings
+    from app.security.auth import effective_auth_cookie_domain
+
+    monkeypatch.setattr(settings, "auth_cookie_domain", "")
+    monkeypatch.setattr(settings, "debug", True)
+    monkeypatch.setattr(settings, "public_base_url", "https://forecasteconomy.com")
+    assert effective_auth_cookie_domain() == ""
+
+
+def test_oauth_start_cookie_uses_shared_apex_domain(oauth_client, monkeypatch):
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "auth_cookie_domain", "")
+    monkeypatch.setattr(settings, "debug", False)
+    monkeypatch.setattr(settings, "public_base_url", "https://forecasteconomy.com")
+    r = oauth_client.get("/api/v1/auth/oauth/fake/start", follow_redirects=False)
+    assert r.status_code == 302
+    header = r.headers.get("set-cookie", "")
+    assert "fe_oauth=" in header
+    assert "Domain=.forecasteconomy.com" in header

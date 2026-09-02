@@ -438,7 +438,7 @@ body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:"DM Sans",system-ui,s
 .seo-page tbody tr:hover{background:rgba(184,148,47,.05)}
 .seo-page td:last-child,.seo-page th:last-child{text-align:right;font-variant-numeric:tabular-nums}
 .seo-chart{margin:1.25rem 0 .75rem;border:1px solid rgba(0,0,0,.08);border-radius:1rem;overflow:hidden;background:#fff;box-shadow:0 1px 3px rgba(26,26,46,.04)}
-.seo-chart img{display:block;width:100%;height:auto}
+.seo-chart img{display:block;width:100%;max-width:1200px;height:auto}
 .seo-chart-link{display:block;text-decoration:none!important;color:inherit}
 .seo-chart-link:hover{opacity:.97}
 .seo-chart figcaption{font-size:.8125rem;color:rgba(26,26,46,.6);padding:.5rem .75rem;border-top:1px solid rgba(0,0,0,.06)}
