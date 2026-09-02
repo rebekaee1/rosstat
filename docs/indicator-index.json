@@ -10266,27 +10266,27 @@
         },
         {
           "file": "scripts/dual-host-release-gate.py",
-          "line": 12,
+          "line": 16,
           "kind": "other"
         },
         {
           "file": "scripts/dual-host-release-gate.py",
-          "line": 13,
+          "line": 17,
           "kind": "other"
         },
         {
           "file": "scripts/dual-host-release-gate.py",
-          "line": 19,
+          "line": 23,
           "kind": "other"
         },
         {
           "file": "scripts/dual-host-release-gate.py",
-          "line": 20,
+          "line": 24,
           "kind": "other"
         },
         {
           "file": "scripts/dual-host-release-gate.py",
-          "line": 21,
+          "line": 25,
           "kind": "other"
         },
         {
@@ -45566,12 +45566,12 @@
         },
         {
           "file": "scripts/dual-host-release-gate.py",
-          "line": 14,
+          "line": 18,
           "kind": "other"
         },
         {
           "file": "scripts/dual-host-release-gate.py",
-          "line": 24,
+          "line": 28,
           "kind": "other"
         }
       ]
