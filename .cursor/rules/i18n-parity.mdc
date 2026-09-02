@@ -1,3 +1,8 @@
+---
+description: RU/EN parity и запрет случайного cutover apex на EN
+alwaysApply: true
+---
+
 # Языковая витрина: parity RU ↔ EN (каркас)
 
 Директива владельца (2026-08-16): целевой сплит — apex `forecasteconomy.com` = en,

@@ -1,73 +1,53 @@
 ---
-description: Forecast Economy — entry point + invariants for any AI agent in this repo
+description: Forecast Economy — инварианты и карта. Длинные доки не вшивать, открывать по задаче.
 alwaysApply: true
 ---
 
 # Forecast Economy — правила проекта
 
-Перед любой работой обязательно прочитай **[`AGENTS.md`](mdc:AGENTS.md)** в корне репозитория. Это карта документации и протокол актуализации.
+Длинные файлы (`AGENTS.md`, `CONTEXT.md`, `docs/backlog.md`, ADR, `docs/data_sources.md`) **не читать целиком в каждом ходе**. Это справочники на диске. Открывать только нужный слой под текущую задачу.
 
-## Документация-spine (читать в этом порядке)
+## Куда смотреть (не вшивать)
 
-1. **[`CONTEXT.md`](mdc:CONTEXT.md)** — domain glossary, операционные инварианты и traps.
-2. **[`README.md`](mdc:README.md)** — стек, ключевые группы endpoint'ов, indicators.
-3. **[`docs/workflow.md`](mdc:docs/workflow.md)** — модель работы, dev, ручной ETL, deploy.
-4. **[`docs/enterprise_resilience.md`](mdc:docs/enterprise_resilience.md)** — runtime invariants, канарейка 6/6.
-5. **[`docs/data_sources.md`](mdc:docs/data_sources.md)** — per-indicator карта `URL/endpoint/sheet/row`. Parser internals — в docstrings `backend/app/services/*_parser.py`.
-6. **[`docs/backlog.md`](mdc:docs/backlog.md)** — живой бэклог: приоритеты + roadmap + история коммитов.
-7. **[`docs/adr/`](mdc:docs/adr)** — архитектурные решения ADR-0001..0006: 0001 derived engine, 0002 idempotency invariant, 0003 SEO single-source SSR, 0004 Rosstat русский canonical (SDDS deprecated), 0005 calendar source-bound, 0006 indicator card unification + 7-пунктный чеклист «новый индикатор».
+| Задача | Файл / команда |
+|--------|----------------|
+| Любой индикатор X | `python scripts/locate-indicator.py X` + `docs/indicator-index.md` |
+| Архитектура / traps | `CONTEXT.md` — точечно, не целиком |
+| Источник ряда | `docs/data_sources.md` + docstring парсера |
+| Новый индикатор / категория | `AGENTS.md` FAST-PATH + чеклист Шаг 4 |
+| Процесс / деплой | `docs/workflow.md` |
+| Живой бэклог | `docs/backlog.md` — только если задача про приоритет/историю |
+| ADR | `docs/adr/` — нужный номер, не папка целиком |
+
+После архитектурной правки: обновить соответствующий .md, `Last updated`, cross-links в `CONTEXT.md` и `AGENTS.md`. Новый ADR — только на новое решение.
 
 ## Жёсткие запреты
 
-- **Не пушить на прод-сервер** (`5.129.204.194`, `/opt/rosstat`) без явной команды пользователя. Прод-деплой — отдельный регламент в `docs/workflow.md`.
-- **Не деплоить на прод накопившийся `main`** (инцидент 2026-08-27, сайт лежал). Прод отстаёт от `main` на недели — в нём могут лежать незаказанные фичи (пример: мировая экономика, которую владелец выкладывать не просил). Разрешено выкатывать **только SHA из явного списка владельца** (`deploy/approved-shas.txt`, полные хэши, по одному на строку, пустой/отсутствующий файл = деплой запрещён). Обновление списка — только явным подтверждением владельца, что выкладываемый коммит (вместе со ВСЕМИ коммитами между продом и ним — ff-only тянет всю пачку) одобрен: «деплой до `<sha>`, включая всё, что он тянет». Запрос такого подтверждения — обязанность агента перед каждым деплоем.
-- **Миграции БД — часть пачки.** Разгон схемы (alembic) необратим для отката кода: после него старый код не стартует (инцидент: auto-rollback к `774e615` против схемы `20260806_world_forecasts` → crash-loop). Перед деплоем смотреть `backend/alembic/versions/` в диапазоне прод→цель; есть миграции — предупредить владельца отдельной строкой и получить добро.
+- **Не пушить на прод** (`5.129.204.194`, `/opt/rosstat`) без явной команды. Деплой — `docs/workflow.md`.
+- **Не деплоить накопившийся `main`.** Только SHA из `deploy/approved-shas.txt` после явного «деплой до `<sha>`, включая всё, что он тянет». Перед деплоем — миграции в диапазоне прод→цель; есть alembic — отдельной строкой спросить.
 - **Не пушить на `main`** без зелёного `./scripts/check-all.sh`.
-- **Не редактировать `git config`**.
-- **Не делать `git push --force`** к `main`.
-- **Не амендить коммиты**, которые уже на remote.
-- **Не создавать новые .md файлы**, если можно обновить существующий. Документация консолидирована — фрактальная сеть выстроена. Roadmap-задачи живут в одном `docs/backlog.md`, не в параллельных `plan.md`/`recap.md`.
-- **Не коммитить** без явной команды пользователя.
-- **Не выдавать «внутренности» в публичных текстах** (`methodology`, `description`, `seo_*`, `categories.js`). См. `.cursor/rules/methodology-language.mdc`.
+- **Не** править `git config`, **не** `--force` на `main`, **не** амлендить уже на remote.
+- **Не коммитить** без явной команды.
+- **Не создавать новые .md**, если можно обновить существующий. Roadmap — только `docs/backlog.md`.
+- **Не выдавать внутренности** в публичных текстах. Правило: `.cursor/rules/methodology-language.mdc`.
 
-### Сохранность БД пользователей (потеря данных = критический инцидент)
+### БД пользователей (потеря = инцидент)
 
-База пользователей живёт в именованном docker-томе `postgres_data` (см. `docker-compose.yml`). Том переживает `build`/`up -d`/`restart`/пересоздание контейнеров. Потерять данные можно только так — и это **запрещено**:
-
-- **Никогда `docker compose down -v`** (флаг `-v` сносит тома вместе с БД). Деплой и перезапуск — только `docker compose build … && docker compose up -d …`, без `down -v`. Если нужен `down` — без `-v`.
-- **Никогда не заливать локальную БД на прод.** Синк только в одну сторону: прод → локаль (`scripts/sync-local-from-prod.py`, read-only на проде). Обратное направление затрёт прод-пользователей.
-- **Не менять** `POSTGRES_USER` / `POSTGRES_DB` / имя тома `postgres_data` — иначе Postgres поднимет новый пустой том.
-- **Перед каждым прод-деплоем** — ручной бэкап `./scripts/pg-backup.sh` (или убедиться, что ночной cron `0 4 * * *` отработал). Полный `pg_dump` + отдельный data-only дамп identity-таблиц (`users/email_credentials/oauth_identities/consents/auth_audit`), ротация 14 дней.
-- Миграции держать **аддитивными** (alembic `upgrade head` на старте контейнера); `seed_data.py` идемпотентен и identity-таблицы не трогает — так и оставлять.
+Том `postgres_data`. Запрещено: `docker compose down -v`; заливка локальной БД на прод; смена `POSTGRES_USER` / `POSTGRES_DB` / имени тома. Синк только прод → локаль. Перед прод-деплоем — `./scripts/pg-backup.sh`. Миграции аддитивные.
 
 ## Архитектурные инварианты
 
-- **ADR-0002**: `bulk_upsert` идемпотентен — `INSERT … ON CONFLICT DO UPDATE WHERE data_points.value <> excluded.value`. Не менять на `DO NOTHING`. См. `backend/app/services/upsert.py`.
-- **ADR-0001**: derived = `DerivedSpec(dst, sources, op)` где `op` чистая. Хранить чистые формулы в `derived_ops.py`, оркестрацию в `calculation_engine.py`. Не возвращать ad-hoc функции в engine. На сегодня: 31 spec, 12 ops (11 active).
-- **ADR-0003**: SEO тексты — single source в `seo_content.py`, SSR через backend `/seo/*` + `__spa-index.html`. Категории дублируются в `frontend/src/lib/categories.js` для UI-карточек; **должны быть синхронны** при правке.
-- **ADR-0004**: Rosstat-русский canonical, SDDS English deprecated. `rosstat_sdds_fetcher.py` файл сохранён, в `PARSER_REGISTRY` не зарегистрирован.
-- **ADR-0005**: Public calendar — только официальные даты с provenance (`event_key`/`source_url`/`source_hash`); estimated скрыты.
-- **ADR-0006**: Индикатор-как-карточка vs derived (view-mode) vs variant (срез) vs frequency — 4 разных оси. Перед добавлением нового indicator пройти 7-пунктный чеклист в `AGENTS.md::Шаг 4`.
-- **Asset-hash trap**: backend и frontend пересобирать и поднимать вместе (`docker compose build backend frontend && up -d backend frontend`). При rebuild только frontend — `--no-cache` обязательно.
-- **Browser-cache trap**: SSR HTML отдаётся с `Cache-Control: no-cache, no-store, must-revalidate` **always** (фикс 2026-05-22 в `frontend/nginx.conf`). Ассеты `/assets/` — `max-age=31536000, immutable`.
-- **Forecast retrain trap**: после деплоя, добавляющего derived, ручной `retrain_indicator_forecast(<source_code>)` + `redis-cli -n 0 FLUSHDB` (только DB 0 — кэш; DB 1 = сессии, не трогать). Daily ETL не подхватит автоматически.
-- **Annual-in-monthly mixing trap**: перед `bulk_upsert` сверить `target.frequency` с фактической частотой добавляемых точек. См. CONTEXT.md::Operational invariants and traps.
+- **ADR-0002**: `bulk_upsert` — `ON CONFLICT DO UPDATE WHERE value <> excluded.value`, не `DO NOTHING`.
+- **ADR-0001**: derived = `DerivedSpec` + чистая op. Формулы в `derived_ops.py`, оркестрация в `calculation_engine.py`.
+- **ADR-0003**: SEO single source `seo_content.py`; `categories.js` синхронен.
+- **ADR-0004**: Rosstat-русский canonical; SDDS fetcher не в `PARSER_REGISTRY`.
+- **ADR-0005**: календарь — только official dates с provenance.
+- **ADR-0006**: карточка ≠ derived ≠ variant ≠ frequency. Новый indicator — чеклист в `AGENTS.md::Шаг 4`.
+- **Asset-hash**: backend+frontend вместе; frontend-only rebuild — `--no-cache`.
+- **Browser-cache**: SSR HTML `no-store`; `/assets/` immutable.
+- **Forecast retrain**: новый derived → `retrain_indicator_forecast` + Redis DB 0 `FLUSHDB` (DB 1 не трогать).
+- **Annual-in-monthly**: перед upsert сверить `frequency` с точками.
 
-## После любой архитектурной правки
+## Стиль
 
-Обязательно по чеклисту из `AGENTS.md::Шаг 4`:
-
-- Документация в соответствующем .md обновлена.
-- Если решение архитектурное — новый ADR создан или существующий дополнен (раздел «Subsequent additions»).
-- `Last updated` / `Last verified` дата проставлена.
-- Cross-links в `CONTEXT.md::Документы рядом` и `AGENTS.md::Шаг 1` целы.
-
-## Стиль и язык
-
-- Отвечать пользователю на русском.
-- Эмодзи не использовать.
-- Тон — senior systems engineer, без воды.
-
-## Стек одной строкой
-
-Backend Python 3.12 / FastAPI / SQLAlchemy 2 async / Postgres 16 / Redis 7 / APScheduler / statsmodels / Alembic. Frontend React 19 / Vite 7 / Tailwind 4 / TanStack Query / Recharts / GSAP / @sentry/react. Infra Docker Compose × 4 / Caddy edge / Nginx-in-frontend / Yandex.Metrika+Webmaster / Forecast Analytics MCP.
+Русский, без эмодзи, тон senior systems engineer. Стек: Python 3.12 / FastAPI / Postgres 16 / Redis 7 / React 19 / Vite 7 / Docker Compose / Caddy.
