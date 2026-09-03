@@ -26,7 +26,7 @@ TRACKING_PARAMS = {
 
 HUMAN_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X) AppleWebKit/537.36 Chrome/124 Safari/537.36"
 YANDEX_UA = "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-GENERIC_TITLE = "Forecast Economy | Бесплатная аналитика экономики России"
+GENERIC_TITLE = "Forecast Economy | Макроэкономические индикаторы стран"
 
 
 class SeoParser(HTMLParser):

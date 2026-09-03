@@ -23,8 +23,8 @@ export default function VariantGroupPicker({
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   if (!group) return null;
-  const modeParam = searchParams.get('mode');
-  const suffix = modeParam ? `?mode=${encodeURIComponent(modeParam)}` : '';
+  const qs = searchParams.toString();
+  const suffix = qs ? `?${qs}` : '';
   const root = (basePath || '/russia/indicator').replace(/\/$/, '');
   const useMobileSelect = group.codes.length >= 3;
   const groupLabel = group.labelKey ? t(group.labelKey) : group.label;

@@ -112,7 +112,8 @@ services:
       # НЕ зависит от ANALYTICS_ENABLED — иначе на проде телеметрия не пишется.
       RUSTATS_FRONTEND_EVENTS_ENABLED: ${RUSTATS_FRONTEND_EVENTS_ENABLED:-true}
       RUSTATS_PUBLIC_BASE_URL: ${RUSTATS_PUBLIC_BASE_URL:-https://forecasteconomy.com}
-      # Один cutover-флаг управляет backend и frontend build: рассинхрон невозможен.
+      # Прод: оба true в .env хоста (apex EN, ru. = RU, люди из РФ → ru.).
+      # Compose-дефолт false — локальный up без .env не переключает витрину.
       RUSTATS_APEX_LOCALE_EN: ${RUSTATS_APEX_LOCALE_EN:-false}
       RUSTATS_GEO_LOCALE_REDIRECT_ENABLED: ${RUSTATS_GEO_LOCALE_REDIRECT_ENABLED:-false}
       # IndexNow-пинг: на локалке выключен (пути новой схемы /russia/* уезжают

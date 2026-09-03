@@ -2,7 +2,7 @@
 
 - **Status:** Proposed (проектирование 2026-08-16; реализация отдельным заходом)
 - **Date:** 2026-08-16
-- **Last verified:** 2026-08-31 (geo-редирект снят: язык = хост, IP/VPN не участвуют)
+- **Last verified:** 2026-09-03 (apex = EN, `ru.` = RU; geo людям из РФ, ботов не редиректим)
 - **Part of:** [`AGENTS.md`](../../AGENTS.md), [`CONTEXT.md`](../../CONTEXT.md), [`ADR-0003`](0003-seo-single-source-server-rendered.md), [`ADR-0008`](0008-regional-bounded-context.md), [`ADR-0011`](0011-world-eurostat-data-plane.md)
 - **Backlog:** [`docs/backlog.md`](../backlog.md) — раздел «Карта миграции URL (ADR-0013)» + решения звонка 14 (Р-1…Р-3)
 
@@ -254,6 +254,23 @@ nginx mass-301 + новые SSR locations; sitemap через `site_urls`.
    Вебмастер: `ru.` регион «Россия»; apex — не «Россия» (при необходимости —
    без региональной привязки). Полный чеклист — `docs/backlog.md` §F.8.
 
+### 2026-09-03 — исходный сплит включён: apex EN, `ru.` RU, geo людям
+
+Владелец подтвердил исходный план ADR-0013 §F, не инверсию Р-Б
+(apex не остаётся русским, отдельный `en.` не нужен).
+
+- `forecasteconomy.com` = английский канон (`x-default`).
+- `ru.forecasteconomy.com` = русский канон; флажок «Русский» ведёт сюда
+  (path-identical, cookie `fe_locale_pref=ru` на `.forecasteconomy.com`).
+- Людей с IP России/СНГ с apex уводим на `ru.` (`RUSTATS_GEO_LOCALE_REDIRECT_ENABLED`).
+  Явный cookie `en` / `stay-en` важнее гео. Accept-Language по-прежнему
+  не редиректит (тот же VPN-баг 2026-08-31).
+- Поисковые и ИИ-краулеры остаются на запрошенном хосте. Индексация:
+  hreflang ru/en/x-default, sitemap на оба хоста, регион Вебмастера
+  «Россия» на свойстве `ru.` (кабинет — снаружи репозитория).
+- Cutover-флаги на проде: `RUSTATS_APEX_LOCALE_EN=true`, geo true.
+  Р-Б (apex=RU, EN на `en.`) в код не принимается.
+
 ### 2026-08-31 — geo-редирект снят, язык = хост
 
 Решение владельца: IP/VPN и `Accept-Language` не выбирают язык. Сценарий
@@ -280,8 +297,6 @@ Google Search Console (Domain property, sitemap shards, Request Indexing
 Зеркало `ru.` не кормит Вебмастер sitemap'ом — иначе 22k холостых запросов
 робота в день. При cutover переключается одним флагом.
 
-**Р-Б (Proposed, в код не включается без слова владельца).** 88% органики —
-Яндекс на apex-URL. Переключение apex на EN переносит русские позиции на
-`ru.` через hreflang, который вес не переносит. Альтернатива: apex остаётся
-RU, EN живёт на `en.forecasteconomy.com`. Path-identical сохраняется.
-До подтверждения cutover-флаг не трогаем.
+**Р-Б (отклонено 2026-09-03).** Владелец подтвердил исходный сплит:
+apex = EN, русский канон на `ru.forecasteconomy.com`. Инверсия
+«apex остаётся RU, EN на `en.`» в код не входит.

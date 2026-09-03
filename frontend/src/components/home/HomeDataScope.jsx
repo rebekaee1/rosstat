@@ -5,9 +5,9 @@ import { useWorldCountries } from '../../lib/worldApi';
 import { useT } from '../../i18n';
 
 const SCOPE_STATS = [
-  { key: 'macro', icon: Landmark },
   { key: 'world', icon: Globe2 },
   { key: 'countries', icon: Network },
+  { key: 'macro', icon: Landmark },
   { key: 'regions', icon: MapPinned },
 ];
 

@@ -15,6 +15,7 @@ import {
   expandedGroupForWorldMode,
   defaultModeForWorldGroup,
   worldVariantsToPickerGroup,
+  indicatorPublicName,
 } from './worldViewModes';
 import { formatWorldValue } from './worldApi';
 import {
@@ -221,6 +222,25 @@ describe('collapseCountryIndicators', () => {
   });
 });
 
+describe('indicatorPublicName', () => {
+  it('на EN берёт name_en, если locale-facing имя русское', () => {
+    const ind = {
+      name: 'Валовой внутренний продукт в текущих ценах',
+      name_en: 'Gross domestic product at current prices',
+      name_ru: 'Валовой внутренний продукт в текущих ценах',
+    };
+    expect(indicatorPublicName(ind, 'en')).toBe('Gross domestic product at current prices');
+    expect(indicatorPublicName(ind, 'ru')).toBe('Валовой внутренний продукт в текущих ценах');
+  });
+
+  it('на EN оставляет латинский locale-facing name (срез в имени)', () => {
+    expect(indicatorPublicName({
+      name: 'Production in services index: information and communication',
+      name_en: 'Production in services index by NACE Rev. 2 activity - monthly data',
+    }, 'en')).toBe('Production in services index: information and communication');
+  });
+});
+
 describe('isEmptySeries', () => {
   it('распознаёт пустой ряд', () => {
     expect(isEmptySeries(null)).toBe(true);
@@ -258,6 +278,19 @@ describe('worldVariantsToPickerGroup', () => {
       { code: 'b', label: 'y' },
     ]);
     expect(group.label).toBe('Срез');
+  });
+
+  it('на EN берёт label_en, если label русский', () => {
+    const group = worldVariantsToPickerGroup(
+      [
+        { code: 'ca-weo-lur', label: '% ЭАН', label_en: 'Unemployment rate' },
+        { code: 'ca-weo-lp', label: 'Численность населения', label_en: 'Population' },
+      ],
+      'Slice',
+      { locale: 'en' },
+    );
+    expect(group.codes.map((c) => c.label)).toEqual(['Unemployment rate', 'Population']);
+    expect(group.codes.every((c) => !/[А-Яа-яЁё]/.test(c.label))).toBe(true);
   });
 });
 

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Fast dual-host release gate for representative public SEO URL shapes.
 
-Until RUSTATS_APEX_LOCALE_EN, production apex stays Russian (Yandex-safe):
-no hreflang, Cyrillic on .com is expected. After cutover, apex must be EN
-with a full hreflang set. The gate reads <html lang> on apex instead of
-guessing the flag.
+After RUSTATS_APEX_LOCALE_EN, production apex is English with a full
+hreflang set; ru. is the Russian canon. The gate reads <html lang> on
+apex instead of guessing the flag. Search-bot UA is used so geo-redirect
+for humans does not fire.
 """
 from __future__ import annotations
 import argparse

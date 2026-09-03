@@ -9,7 +9,8 @@ describe('localizeViewModeLabel', () => {
   it('translates picker labels on en', () => {
     expect(localizeViewModeLabel('Год к году', 'en')).toBe('Year on year');
     expect(localizeViewModeLabel('К прошлому периоду', 'en')).toBe('Vs previous period');
-    expect(localizeViewModeLabel('Режим динамики цен', 'en')).toBe('Режим динамики цен');
+    expect(localizeViewModeLabel('нет официального ряда', 'en')).toBe('no official series');
+    expect(localizeViewModeLabel('расчётный ряд', 'en')).toBe('derived series');
   });
 });
 

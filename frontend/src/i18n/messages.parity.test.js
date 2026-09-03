@@ -8,6 +8,7 @@ import {
   languageAlternateOrigin,
   buildLanguageSwitchUrl,
   isProductionLocaleHost,
+  stickyPreviewFromPreference,
 } from './locale.js';
 import { MESSAGES } from './messages.js';
 
@@ -131,6 +132,16 @@ describe('language switcher until cutover', () => {
     expect(toEn.searchParams.get('preview_locale')).toBeNull();
     expect(toEn.searchParams.get('locale_pref')).toBe('en');
 
+    const toRu = new URL(buildLanguageSwitchUrl('ru', {
+      href: 'https://forecasteconomy.com/canada/indicator/ca-weo-ngdpd',
+      hostname: 'forecasteconomy.com',
+      apexLocaleEn: true,
+    }));
+    expect(toRu.origin).toBe('https://ru.forecasteconomy.com');
+    expect(toRu.pathname).toBe('/canada/indicator/ca-weo-ngdpd');
+    expect(toRu.searchParams.get('preview_locale')).toBeNull();
+    expect(toRu.searchParams.get('locale_pref')).toBe('ru');
+
     const localhostCutover = new URL(buildLanguageSwitchUrl('en', {
       href: 'http://localhost:3000/',
       hostname: 'localhost',
@@ -138,6 +149,27 @@ describe('language switcher until cutover', () => {
     }));
     expect(localhostCutover.origin).toBe('http://localhost:3000');
     expect(localhostCutover.searchParams.get('preview_locale')).toBe('en');
+  });
+});
+
+describe('stickyPreviewFromPreference', () => {
+  it('keeps EN on gated apex / localhost until cutover', () => {
+    expect(stickyPreviewFromPreference('en', {
+      host: 'forecasteconomy.com',
+      apexLocaleEn: false,
+    })).toBe('en');
+    expect(stickyPreviewFromPreference('en', { host: 'localhost', apexLocaleEn: false })).toBe('en');
+  });
+
+  it('does not override en./ru. hosts or post-cutover apex', () => {
+    expect(stickyPreviewFromPreference('ru', {
+      host: 'en.forecasteconomy.com',
+      apexLocaleEn: false,
+    })).toBeNull();
+    expect(stickyPreviewFromPreference('en', {
+      host: 'forecasteconomy.com',
+      apexLocaleEn: true,
+    })).toBeNull();
   });
 });
 

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { LOCALE_HEADER, resolveBrowserLocale } from '../i18n/locale';
+import { LOCALE_HEADER, currentUiLocale } from '../i18n/locale';
 
 const api = axios.create({
   baseURL: '/api/v1',
@@ -21,7 +21,7 @@ function readCookie(name) {
 api.interceptors.request.use((config) => {
   config.headers = config.headers || {};
   if (!config.headers[LOCALE_HEADER]) {
-    config.headers[LOCALE_HEADER] = resolveBrowserLocale();
+    config.headers[LOCALE_HEADER] = currentUiLocale();
   }
   if (MUTATING.has((config.method || '').toLowerCase())) {
     const token = readCookie('XSRF-TOKEN');

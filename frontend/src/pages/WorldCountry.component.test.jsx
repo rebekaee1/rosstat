@@ -76,7 +76,7 @@ const GERMANY = {
   market_indicators: [],
 };
 
-function renderCountry(slug, payload) {
+function renderCountry(slug, payload, locale) {
   mockApiGet([
     ['/auth/me', { user: null }],
     [`/world/countries/${slug}`, payload],
@@ -84,6 +84,7 @@ function renderCountry(slug, payload) {
   return renderPage(<WorldCountry />, {
     path: '/:countrySlug',
     route: `/${slug}`,
+    locale,
   });
 }
 
@@ -277,5 +278,64 @@ describe('WorldCountry coverage copy', () => {
     const stripCopy = document.querySelector('div.sm\\:col-span-3')?.textContent || '';
     expect(stripCopy).not.toMatch(/\d+ \S+ в \d+/);
     expect(stripCopy.length).toBeGreaterThan(0);
+  });
+});
+
+describe('WorldCountry EN overlay', () => {
+  it('при русском payload и locale=en показывает английские имена и единицы', async () => {
+    renderCountry('canada', {
+      country: {
+        code: 'CA',
+        slug: 'canada',
+        name: 'Канада',
+        name_en: 'Canada',
+        region: 'Америка',
+        region_en: 'Americas',
+        indicators_count: 1,
+      },
+      categories: [{
+        name: 'Национальные счета',
+        name_en: 'National accounts',
+        count: 1,
+        indicators: [{
+          code: 'ca-weo-ngdpd',
+          name: 'Валовой внутренний продукт в текущих ценах',
+          name_en: 'Gross domestic product at current prices',
+          unit: 'млрд $',
+          frequency: 'annual',
+          frequencies: ['annual'],
+          last_value: 2319.9,
+          last_date: '2025-01-01',
+        }],
+      }],
+      overview: [{
+        concept_slug: 'gdp-usd',
+        name: 'ВВП в текущих ценах',
+        name_en: 'GDP at current prices',
+        indicator_code: 'ca-weo-ngdpd',
+        frequency: 'annual',
+        date: '2025-01-01',
+        value: 2319.9,
+      }],
+      coverage: {
+        history_start: '1980-01-01',
+        history_end: '2025-01-01',
+        frequencies: ['annual'],
+      },
+      market_indicators: [],
+    }, 'en');
+
+    const heading = await screen.findByRole('heading', { name: /Canada/ });
+    expect(heading.textContent).not.toMatch(/[А-Яа-яЁё]/);
+    expect(await screen.findByRole('heading', { name: 'National accounts' })).toBeTruthy();
+    expect(screen.getByRole('link', {
+      name: /Gross domestic product at current prices/,
+    })).toBeTruthy();
+    expect(document.body.textContent).toContain('billion $');
+    expect(document.body.textContent.replace(/\u00a0/g, ' ')).toContain('2 319.9');
+    expect(document.body.textContent).toContain('Americas');
+    expect(document.body.textContent).not.toContain('млрд $');
+    expect(document.body.textContent).not.toContain('Национальные счета');
+    expect(document.body.textContent).not.toContain('Канада');
   });
 });

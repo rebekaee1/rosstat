@@ -584,4 +584,63 @@ describe('WorldRatingPage', () => {
       expect(dataRows()[1].textContent).toMatch(/2[.,]20/);
     });
   });
+
+  it('EN: крошки, страны и единица без русского, даже если map-series отдал RU', async () => {
+    mockApiGet([
+      ['/auth/me', { user: null }],
+      [/^\/indicators/, []],
+      [/^\/world\/countries/, {
+        countries: [
+          { code: 'US', slug: 'united-states', name: 'США', name_en: 'United States', indicators_count: 10 },
+          { code: 'DE', slug: 'germany', name: 'Германия', name_en: 'Germany', indicators_count: 10 },
+        ],
+        total: 2,
+      }],
+      [/^\/world\/rating\/concepts/, {
+        concepts: [
+          { slug: 'gdp-usd', name: 'GDP in current US dollars', unit: 'млрд $', default_sort: 'desc' },
+        ],
+        total: 1,
+      }],
+      [/^\/world\/compare\/map-series\/gdp-usd/, {
+        concept: { slug: 'gdp-usd', name: 'GDP in current US dollars', unit: 'млрд $' },
+        years: [2025],
+        values_by_year: {
+          2025: {
+            US: {
+              country_code: 'US',
+              country_slug: 'united-states',
+              country_name: 'США',
+              date: '2025-01-01',
+              value: 5048.1,
+              unit: 'млрд $',
+            },
+            DE: {
+              country_code: 'DE',
+              country_slug: 'germany',
+              country_name: 'Германия',
+              date: '2025-01-01',
+              value: 4435.2,
+              unit: 'млрд $',
+            },
+          },
+        },
+      }],
+    ]);
+
+    renderPage(
+      <WorldRatingPage />,
+      { path: '/world/rating/:conceptSlug', route: '/world/rating/gdp-usd', locale: 'en' },
+    );
+
+    await waitFor(() => expect(dataRows()).toHaveLength(2));
+    expect(screen.getByText('Home')).toBeTruthy();
+    expect(screen.getAllByText('Country rankings').length).toBeGreaterThan(0);
+    expect(screen.queryByText('Главная')).toBeNull();
+    expect(screen.getByRole('link', { name: 'United States' })).toBeTruthy();
+    expect(screen.getByRole('link', { name: 'Germany' })).toBeTruthy();
+    expect(screen.queryByRole('link', { name: 'США' })).toBeNull();
+    expect(screen.getByText(/Billion \$/)).toBeTruthy();
+    expect(dataRows()[0].textContent).toMatch(/5[\u00A0 ]?048\.1/);
+  });
 });

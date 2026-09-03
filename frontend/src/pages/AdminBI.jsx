@@ -1185,8 +1185,8 @@ function DemandTab({ d }) {
         ) : <Empty note="Данные Вебмастера за период отсутствуют — Яндекс отдаёт статистику запросов с задержкой в несколько дней." />}
       </Card>
       <Card title="Спрос по свойству Вебмастера (хост)" icon={Search} source="metrika"
-        insight="Срез показов и кликов по языковому свойству: forecasteconomy.com (EN) и ru.forecasteconomy.com (RU). Пока оба трафика на apex, второй хост нулевой — срез оживёт после cutover."
-        hint="Агрегаты webmaster_search_queries по полю host за то же окно, что и карта возможностей. Читать: какой языковой витрины касается спрос; ноль у ru. до включения cutover — ожидаемо.">
+        insight="Срез показов и кликов по языковому свойству: forecasteconomy.com (EN) и ru.forecasteconomy.com (RU). После cutover 2026-09-03 ru. — русский канон; нули у ru. значат, что Вебмастер ещё не видит свойство или синк хоста пустой."
+        hint="Агрегаты webmaster_search_queries по полю host за то же окно, что и карта возможностей. Читать: какой языковой витрины касается спрос.">
         {(dem.webmaster_by_host || []).length ? (
           <div className="overflow-x-auto">
             <table className="w-full text-[12.5px]">

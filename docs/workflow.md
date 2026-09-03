@@ -155,14 +155,13 @@ ClickHouse вторичен: можно `stop clickhouse` без влияния 
 
 ## Двуххостовый языковой cutover
 
-`ru.forecasteconomy.com` является русским каноном, apex — английским после
-`RUSTATS_APEX_LOCALE_EN=true`. Это один флаг для backend и frontend build;
-отдельный `VITE_APEX_LOCALE_EN` в окружении запрещён. Язык страницы = хост:
-IP, VPN и `Accept-Language` в выборе языка не участвуют (решение владельца
-2026-08-31 — geo-редирект давал разное поведение с VPN и без). Cookie
-`fe_locale_pref` — только память явного выбора переключателя, не источник
-редиректа. Перед релизом обязательны `python3 scripts/dual-host-release-gate.py`
-и полный `./scripts/check-all.sh`. Поисковые роботы, API, sitemap, robots,
-RSS, OG, embed, health и OAuth callback отвечают на запрошенном хосте.
-Явный выбор языка хранится год в cookie `fe_locale_pref` с Domain
-`.forecasteconomy.com`.
+`ru.forecasteconomy.com` — русский канон, apex `forecasteconomy.com` — английский
+(`RUSTATS_APEX_LOCALE_EN=true` на проде). Один флаг для backend и frontend
+build; отдельный `VITE_APEX_LOCALE_EN` в окружении запрещён. Людей с IP
+России/СНГ с apex уводим на `ru.`; поисковые и ИИ-боты остаются на
+запрошенном хосте. `Accept-Language` не редиректит. Флажок «Русский» =
+host-swap на `ru.` + cookie `fe_locale_pref`. Перед релизом обязательны
+`python3 scripts/dual-host-release-gate.py` и полный `./scripts/check-all.sh`.
+Поисковые роботы, API, sitemap, robots, RSS, OG, embed, health и OAuth
+callback отвечают на запрошенном хосте. Явный выбор языка хранится год
+в cookie `fe_locale_pref` с Domain `.forecasteconomy.com`.

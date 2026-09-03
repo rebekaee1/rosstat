@@ -106,12 +106,15 @@ describe('public product claims', () => {
     expect(llms).not.toMatch(/регистрация для просмотра не требуется$/m);
   });
 
-  it('index.html сохраняет РФ SEO в title и без 80+/9', () => {
+  it('index.html позиционирует страны и не тащит 80+/9', () => {
     const html = read('frontend/index.html');
-    expect(html).toMatch(/Бесплатная аналитика экономики России/);
-    expect(html).toMatch(/более 100/);
-    expect(html).toMatch(/доступн\S* (статистика|данные).{0,40}стран/i);
+    expect(html).toMatch(/Макроэкономические индикаторы стран/);
+    expect(html).toMatch(/более 36 000/);
+    expect(html).toMatch(/глубокое покрытие/);
+    expect(html).toMatch(/\/russia\/category\/prices/);
     expect(html).not.toMatch(/\b80\s*\+/);
     expect(html).not.toMatch(/9\s+категори/);
+    expect(html).not.toMatch(/href="\/category\//);
+    expect(html).not.toMatch(/href="\/regions"/);
   });
 });

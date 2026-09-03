@@ -35,12 +35,14 @@
 
 ## What this is
 
-`forecasteconomy.com` — публичная аналитическая платформа по экономическим показателям России. Собирает данные с Росстата, ЦБ РФ и Минфина, считает производные ряды и прогнозы, отдаёт фронтенду + поисковикам + соцботам + embed-виджетам.
+`forecasteconomy.com` — публичная аналитическая платформа официальной макроэкономической статистики по странам. Собирает данные национальных статистических ведомств, центральных банков, Евростата и МВФ; по России покрытие особенно глубокое (Росстат, Банк России, Минфин). Считает производные ряды и прогнозы, отдаёт фронтенду + поисковикам + соцботам + embed-виджетам.
+
+Английский канон — apex `forecasteconomy.com`; русский — `ru.forecasteconomy.com` (ADR-0013).
 
 - **Backend**: Python 3.12, FastAPI 0.115 + Uvicorn, SQLAlchemy 2.0 (async, asyncpg), Alembic, APScheduler, statsmodels (forecaster + SARIMA-семейство), pandas/openpyxl/xlrd (parsers), beautifulsoup4 (HTML), requests/httpx (HTTP), Redis 7 (cache).
 - **Frontend**: React 19, Vite 7, Tailwind 4, Recharts 3, TanStack React Query 5, GSAP 3, React Router 7, Axios, Lucide, `xlsx` (Excel-экспорт), `@sentry/react` (только фронт — backend без Sentry).
 - **Infra**: Docker Compose × 4 (backend, frontend, postgres-16, redis-7), Caddy reverse-proxy на хосте (HTTPS + CSP с десятками `mc.yandex.*` доменов + `frame-ancestors *` для embed), Nginx внутри контейнера frontend (роутинг между SPA-shell и backend SSR), Yandex.Metrika (counter `107136069`) + Yandex.Webmaster, Telegram alerts (`alerting.py`), кастомный Forecast Analytics MCP (`mcp/forecast-analytics-mcp/`).
-- **Прод**: `5.129.204.194` (Timeweb Cloud, Ubuntu 24.04, 2 GB RAM).
+- **Прод**: `201.51.11.170` (Timeweb Cloud, Ubuntu 24.04).
 
 ---
 
@@ -365,14 +367,14 @@ AGENTS.md.
 КАЖДОГО тестируемого URL — падение «404 в hreflang-тесте» = дыра в фиксстуре,
 не повод снимать проверку).
 
-### Locale-host trap: IP/VPN не выбирают язык (2026-08-31)
+### Locale-host trap: ботов не редиректим, людей из РФ — на ru. (2026-09-03)
 
-Язык страницы = хост (`ru.` → ru, apex после cutover → en, localhost → ru).
-GeoIP и `Accept-Language` **не** редиректят: с VPN и без поведение должно
-быть одинаковым. Cookie `fe_locale_pref` — память явного выбора переключателя,
-не источник редиректа. `_geo_locale_redirect` в `main.py` — no-op; флаги
-`geo_locale_redirect_enabled` / `browser_lang_redirect_enabled` игнорируются.
-Боты, API, sitemap, OG, RSS, embed отвечают на запрошенном хосте.
+Язык страницы = хост (`ru.` → ru, apex → en, localhost → ru). После cutover
+людей с IP России/СНГ с английского apex уводим на `ru.`; cookie `en` /
+`stay-en` важнее гео. `Accept-Language` **не** редиректит (VPN/браузер
+путали язык в 2026-08-31). Поисковые и ИИ-краулеры, API, sitemap, OG, RSS,
+embed отвечают на запрошенном хосте — иначе cloaking. Флажок «Русский»
+на проде = `https://ru.forecasteconomy.com` + cookie `fe_locale_pref=ru`.
 
 ### Anti-scrape stack (nginx + honeypot + fail2ban + geo)
 

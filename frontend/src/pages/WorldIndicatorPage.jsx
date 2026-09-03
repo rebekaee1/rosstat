@@ -9,14 +9,17 @@ import useDocumentMeta from '../lib/useMeta';
 import { getSiteOrigin } from '../lib/siteOrigin';
 import {
   useWorldIndicator, useWorldIndicatorData, useWorldCountry, formatWorldValue,
+  localizeWorldUnit,
 } from '../lib/worldApi';
 import {
   adaptWorldModes,
   findWorldMode,
+  indicatorPublicName,
   isEmptySeries,
   normalizeWorldFrequencies,
   normalizeWorldModeToken,
   parseWorldModeToken,
+  pickEnDisplay,
   resolveWorldMode,
   stripFrequencySuffix,
   worldModeToLegacyDataToken,
@@ -77,9 +80,9 @@ export default function WorldIndicatorPage() {
   const { countrySlug, slug: slugParam, code } = useParams();
   const slug = countrySlug || slugParam;
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
   const t = useT();
   const { locale } = useLocale();
+  const [searchParams, setSearchParams] = useSearchParams();
   const urlMode = searchParams.get('mode');
 
   const metaQ = useWorldIndicator(slug, code);
@@ -167,7 +170,7 @@ export default function WorldIndicatorPage() {
 
   const [fullChartData, setFullChartData] = useState([]);
 
-  // Канон URL: primary_code + составной ?mode=
+  // Канон URL: primary_code + составной ?mode= (preview_locale не теряем).
   useEffect(() => {
     const primary = metaQ.data?.primary_code;
     if (primary && primary !== code) {
@@ -175,11 +178,15 @@ export default function WorldIndicatorPage() {
         urlMode,
         metaQ.data.indicator?.frequency || 'monthly',
       );
-      navigate(`${indicatorPath(slug, primary)}?mode=${encodeURIComponent(mode)}`, {
-        replace: true,
-      });
+      const next = new URLSearchParams(searchParams);
+      next.set('mode', mode);
+      const search = next.toString();
+      navigate(
+        { pathname: indicatorPath(slug, primary), search: search ? `?${search}` : '' },
+        { replace: true },
+      );
     }
-  }, [metaQ.data?.primary_code, code, slug, navigate, activeMode, urlMode, metaQ.data?.indicator?.frequency]);
+  }, [metaQ.data?.primary_code, code, slug, navigate, activeMode, urlMode, metaQ.data?.indicator?.frequency, searchParams]);
 
   useEffect(() => {
     if (!activeMode) return;
@@ -205,16 +212,22 @@ export default function WorldIndicatorPage() {
 
   const country = metaQ.data?.country;
   const indicator = metaQ.data?.indicator;
-  // API locale-facing `name` (EN: name_en + slice overlay). Never prefer name_ru.
-  const displayName = stripFrequencySuffix(indicator?.name || '');
+  const displayName = indicatorPublicName(indicator, locale);
   const countryName = (locale === 'en' && country?.name_en)
     ? country.name_en
     : (country?.name || '');
   const notFound = metaQ.isError && metaQ.error?.response?.status === 404;
+  const categoryLabel = locale === 'en'
+    ? pickEnDisplay(indicator?.category, indicator?.category_en)
+    : (indicator?.category || '');
 
   const variantGroup = useMemo(
-    () => worldVariantsToPickerGroup(metaQ.data?.variants, t('world.indicator.slice')),
-    [metaQ.data?.variants, t],
+    () => worldVariantsToPickerGroup(
+      metaQ.data?.variants,
+      t('world.indicator.slice'),
+      { locale },
+    ),
+    [metaQ.data?.variants, t, locale],
   );
 
   // Стабильная ссылка обязательна: IndicatorChart сообщает объединённый ряд
@@ -224,14 +237,17 @@ export default function WorldIndicatorPage() {
   const empty = !dataQ.isLoading && isEmptySeries(points);
   const last = points.length ? points[points.length - 1] : null;
   const telemetry = useMemo(() => computeWorldTelemetry(points), [points]);
-  // Prefer locale-facing `unit` (API resolves EN); unit_ru is storage/RU.
-  const displayUnit = dataQ.data?.unit || dataQ.data?.unit_ru
+  const rawUnit = dataQ.data?.unit || dataQ.data?.unit_ru
     || modeMeta?.unit || indicator?.unit || indicator?.unit_ru || '';
-  const unitBesideValue = dataQ.data?.unit_suffix ?? indicator?.unit_suffix ?? '';
+  const displayUnit = localizeWorldUnit(rawUnit, locale);
+  const unitBesideValue = localizeWorldUnit(
+    dataQ.data?.unit_suffix || indicator?.unit_suffix || '',
+    locale,
+  );
   const activeFreq = dataQ.data?.frequency || modeParsed?.freq || indicator?.frequency;
   const aggregated = Boolean(dataQ.data?.aggregated)
     || (modeMeta && modeMeta.official === false);
-  const valueDigits = chartValueDigits(displayUnit);
+  const valueDigits = chartValueDigits(rawUnit || displayUnit);
   const deltaSuffix = activeFreq === 'quarterly' ? t('indicator.telemetry.delta.prevQuarter')
     : activeFreq === 'annual' ? t('indicator.telemetry.delta.prevYear')
       : activeFreq === 'weekly' ? t('indicator.telemetry.delta.prevWeek')
@@ -258,7 +274,7 @@ export default function WorldIndicatorPage() {
   );
   // Один расчёт издателя и на панели методологии, и в блоке «О ряде»
   // (methodologyIndicator ниже переиспользует то же sourceLabel).
-  const valuePart = `${formatWorldValue(last?.value)}${unitBesideValue ? ` ${unitBesideValue}` : ''}`;
+  const valuePart = `${formatWorldValue(last?.value, valueDigits, locale)}${unitBesideValue ? ` ${unitBesideValue}` : ''}`;
   useDocumentMeta(indicator && country ? {
     title: t('world.indicator.metaTitle', { name: displayName, country: countryName }),
     description: last?.date
@@ -315,10 +331,18 @@ export default function WorldIndicatorPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [indicator?.code, slug, code]);
 
-  const methodologyContent = useMemo(() => ({
-    description: indicator?.description,
-    methodology: indicator?.methodology,
-  }), [indicator?.description, indicator?.methodology]);
+  const methodologyContent = useMemo(() => {
+    const description = indicator?.description;
+    const methodology = indicator?.methodology;
+    if (locale !== 'en') return { description, methodology };
+    const hideRu = (text) => (
+      text && /[А-Яа-яЁё]/.test(text) ? undefined : text
+    );
+    return {
+      description: hideRu(description),
+      methodology: hideRu(methodology),
+    };
+  }, [indicator?.description, indicator?.methodology, locale]);
 
   const methodologyIndicator = useMemo(() => {
     if (!indicator) return null;
@@ -433,9 +457,9 @@ export default function WorldIndicatorPage() {
                   {countryName}
                 </Link>
               )}
-              {indicator.category && (
+              {categoryLabel && (
                 <span className="hidden font-mono text-xs text-text-tertiary sm:inline">
-                  {indicator.category}
+                  {categoryLabel}
                 </span>
               )}
             </div>

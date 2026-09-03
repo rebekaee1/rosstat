@@ -1,17 +1,18 @@
 /**
  * Locale resolver (mirror of backend/app/services/locale.py).
  *
- * Language = host, not ?lang=. Localhost and non-apex hosts default to ru.
- * Production apex stays ru until VITE_APEX_LOCALE_EN=true (cutover with
- * ru. as Russian canon). Explicit EN: X-FE-Locale / en.* / preview_locale.
- * Until cutover the language switcher stays on the current origin and uses
- * ?preview_locale=en (noindex, not canonical) — never navigates localhost
- * onto production apex.
+ * Language = host, not ?lang=. After cutover (VITE_APEX_LOCALE_EN=true):
+ * apex = en, ru.forecasteconomy.com = ru. Localhost and non-apex hosts
+ * stay ru. Explicit EN: X-FE-Locale / en.* / preview_locale.
+ * On production hosts the Russian flag goes to ru.forecasteconomy.com
+ * (path-identical). Localhost never navigates onto production apex.
  */
 
 export const LOCALE_HEADER = 'X-FE-Locale';
 export const PREVIEW_QUERY = 'preview_locale';
 export const PRODUCTION_APEX_HOSTS = new Set(['forecasteconomy.com', 'www.forecasteconomy.com']);
+export const LOCALE_PREFERENCE_COOKIE = 'fe_locale_pref';
+export const LOCALE_PREF_QUERY = 'locale_pref';
 
 export function normalizeHost(host) {
   if (!host) return '';
@@ -45,11 +46,53 @@ export function resolveLocale({ host, header, preview, apexLocaleEn } = {}) {
   return 'ru';
 }
 
-/** Browser entry: host + optional preview query (dev / explicit preview only). */
+/**
+ * Until cutover, an explicit language choice (cookie) sticks on apex / localhost
+ * even after in-app Links drop `?preview_locale=`. Host prefixes `en.` / `ru.`
+ * stay authoritative. Cookie is never a bot/SEO signal — SSR still uses host
+ * + preview + X-FE-Locale.
+ */
+export function stickyPreviewFromPreference(pref, { host, apexLocaleEn } = {}) {
+  if (apexLocaleEnEnabled(apexLocaleEn)) return null;
+  const h = normalizeHost(host);
+  if (h.startsWith('en.') || h.startsWith('ru.')) return null;
+  if (pref === 'en' || pref === 'ru') return pref;
+  return null;
+}
+
+export function readLocalePreference() {
+  if (typeof document === 'undefined') return null;
+  const prefix = `${LOCALE_PREFERENCE_COOKIE}=`;
+  for (const part of String(document.cookie || '').split(';')) {
+    const item = part.trim();
+    if (!item.startsWith(prefix)) continue;
+    const value = decodeURIComponent(item.slice(prefix.length)).trim().toLowerCase();
+    if (value === 'en' || value === 'ru') return value;
+  }
+  return null;
+}
+
+/** Bound by LocaleProvider so chrome, crumbs, API and numbers share one locale. */
+let boundUiLocale;
+
+export function bindUiLocale(locale) {
+  boundUiLocale = locale === 'en' || locale === 'ru' ? locale : undefined;
+}
+
+export function currentUiLocale() {
+  if (boundUiLocale === 'en' || boundUiLocale === 'ru') return boundUiLocale;
+  if (typeof window === 'undefined') return 'ru';
+  return resolveBrowserLocale();
+}
+
+/** Browser entry: host + preview query + sticky preference until cutover. */
 export function resolveBrowserLocale() {
   if (typeof window === 'undefined') return 'ru';
   const params = new URLSearchParams(window.location.search);
-  const preview = params.get(PREVIEW_QUERY);
+  const preview = params.get(PREVIEW_QUERY) || stickyPreviewFromPreference(
+    readLocalePreference(),
+    { host: window.location.hostname },
+  );
   return resolveLocale({
     host: window.location.hostname,
     preview,
@@ -121,9 +164,6 @@ export function languageAlternateOrigin(locale, {
   const en = (enOrigin || 'https://forecasteconomy.com').replace(/\/$/, '');
   return locale === 'en' ? en : ru;
 }
-
-export const LOCALE_PREFERENCE_COOKIE = 'fe_locale_pref';
-export const LOCALE_PREF_QUERY = 'locale_pref';
 
 /** Shared cookie Domain for apex + ru. (host-only cookie on ru. is invisible on apex). */
 export function localeCookieDomain(hostname) {

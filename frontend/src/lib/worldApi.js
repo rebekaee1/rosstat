@@ -16,7 +16,7 @@ import {
   indicatorPath,
   worldRatingPath,
 } from './sitePaths';
-import { resolveBrowserLocale } from '../i18n/locale';
+import { currentUiLocale } from '../i18n/locale';
 
 /** Лимит выдачи для глобальной палитры ⌘K (Россия + мир). */
 export const WORLD_GLOBAL_SEARCH_LIMIT = 100;
@@ -28,7 +28,7 @@ const WORLD_SURFACE_RETRY = 1;
 
 /** Locale in queryKey — иначе preview_locale=en оставляет RU payload в кэше. */
 function localeKey() {
-  return resolveBrowserLocale();
+  return currentUiLocale();
 }
 
 /**
@@ -277,10 +277,10 @@ export async function fetchWorldAverageSeries(conceptSlug, mode, { signal } = {}
 }
 
 /**
- * Формат числа для витрины мира: русская запятая, неразрывный пробел.
+ * Формат числа для витрины мира: RU — запятая и неразрывный пробел; EN — точка.
  * Переиспользует formatValue из lib/format.js.
  */
-export function formatWorldValue(value, digits) {
+export function formatWorldValue(value, digits, locale) {
   if (value == null || Number.isNaN(Number(value))) return '—';
   const abs = Math.abs(Number(value));
   let d = digits;
@@ -289,7 +289,33 @@ export function formatWorldValue(value, digits) {
     else if (abs >= 100) d = 1;
     else d = abs < 1 ? 2 : 2;
   }
-  return formatValue(value, d);
+  return formatValue(value, d, locale);
+}
+
+const WORLD_UNIT_EN = Object.freeze({
+  'млрд $': 'billion $',
+  'млн $': 'million $',
+  '$ на человека': '$ per person',
+  '% экономически активного населения': '% of the labour force',
+  '% эан': '% of the labour force',
+  '% ЭАН': '% of the labour force',
+  '% населения': '% of population',
+  '% ВВП': '% of GDP',
+  '% от среднего по ЕС на душу населения': '% of EU average per capita',
+  'изменение за год, %': 'year-over-year change, %',
+  'тыс. человек': 'ths persons',
+  человек: 'people',
+  пунктов: 'points',
+  'млн чел.': 'million people',
+  'млрд долларов США (цены 2017)': 'billion USD (2017 prices)',
+});
+
+/** EN overlay for world units when API still returned a Russian label. */
+export function localizeWorldUnit(unit, locale = 'ru') {
+  const text = String(unit || '').trim();
+  if (!text) return '';
+  if (locale !== 'en') return text;
+  return WORLD_UNIT_EN[text] || WORLD_UNIT_EN[text.toLowerCase()] || text;
 }
 
 /** Русское склонение (копия логики regionsApi — без кросс-импорта домена). */

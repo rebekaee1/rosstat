@@ -16,6 +16,7 @@ import { useRegionsLanding, useRegionsCatalog } from '../lib/regionsApi';
 import { fetchWorldCompareSeries, useWorldCompareCatalog } from '../lib/worldApi';
 import { useAuth } from '../context/authContext';
 import { useT, useLocale } from '../i18n';
+import { currentUiLocale } from '../i18n/locale';
 import {
   formatDate, formatChartAxisDate, formatAxisTick, formatValueWithUnit,
   unitSuffix, unitDigits, cn, pickChartAxisTicks, chartAxisTickBudget,
@@ -208,11 +209,18 @@ async function fetchWorldSeries(code, { signal }) {
   const parsed = parseWorldCompareCode(code);
   if (!parsed) throw new Error('compare.error.worldCode');
   const payload = await fetchWorldCompareSeries(parsed.countrySlug, parsed.conceptSlug, { signal });
+  const loc = currentUiLocale();
+  const countryName = loc === 'en'
+    ? (payload.meta.country_name_en || payload.meta.country_name)
+    : payload.meta.country_name;
+  const conceptName = loc === 'en'
+    ? (payload.meta.concept_name_en || payload.meta.concept_name)
+    : payload.meta.concept_name;
   return {
     data: payload.data,
     __worldMeta: {
       code,
-      name: `${payload.meta.concept_name} — ${payload.meta.country_name}`,
+      name: `${conceptName} — ${countryName}`,
       unit: payload.meta.unit,
       frequency: payload.meta.frequency,
       category: 'compare.category.world',
@@ -645,6 +653,7 @@ function CompareSeriesPicker({
   indicators, worldItems, selected, onAdd, atCap, capHint, compatibilityFor,
 }) {
   const t = useT();
+  const { locale } = useLocale();
   const [countryKey, setCountryKey] = useState(null);
   const [russiaBranch, setRussiaBranch] = useState(null);
   const [countryQuery, setCountryQuery] = useState('');
@@ -655,11 +664,13 @@ function CompareSeriesPicker({
       if (!item.country_slug || map.has(item.country_slug)) continue;
       map.set(item.country_slug, {
         key: item.country_slug,
-        label: item.country_name,
+        label: locale === 'en'
+          ? (item.country_name_en || item.country_name)
+          : item.country_name,
       });
     }
-    return [...map.values()].sort((a, b) => a.label.localeCompare(b.label, 'ru'));
-  }, [worldItems]);
+    return [...map.values()].sort((a, b) => a.label.localeCompare(b.label, locale === 'en' ? 'en' : 'ru'));
+  }, [worldItems, locale]);
 
   const filteredCountries = useMemo(() => {
     const q = countryQuery.trim().toLowerCase();

@@ -28,6 +28,8 @@ const LABELS_EN = {
   'Ежегодно': 'Annually',
   'Еженедельно': 'Weekly',
   'Нерегулярно': 'Irregular',
+  'нет официального ряда': 'no official series',
+  'расчётный ряд': 'derived series',
   'Сглаживание': 'Smoothing',
   '12М среднее': '12M average',
   'Уровень ставки': 'Rate level',
@@ -93,6 +95,7 @@ const SOURCE_EN = {
   'Министерство статистики и программной реализации Индии':
     'Ministry of Statistics and Programme Implementation',
   'Резервный банк Индии': 'Reserve Bank of India',
+  'Международный валютный фонд': 'International Monetary Fund',
 };
 
 export function localizeViewModeLabel(label, locale) {

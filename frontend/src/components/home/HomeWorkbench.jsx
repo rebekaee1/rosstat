@@ -4,6 +4,7 @@ import { ArrowRight } from 'lucide-react';
 import {
   HOME_RATING_LIMIT,
   conceptColorMode,
+  countryPublicName,
   defaultSortForConcept,
   homeConceptLabel,
   homeMapConcepts,
@@ -17,6 +18,7 @@ import {
 } from '../../lib/homeWorkbench';
 import {
   formatWorldValue,
+  localizeWorldUnit,
   ratingHref,
   useWorldCountries,
   useWorldCompareSnapshot,
@@ -29,7 +31,7 @@ import WorldConceptPicker from '../WorldConceptPicker';
 import WorldMapConceptNote from '../WorldMapConceptNote';
 import HomeDataScope from './HomeDataScope';
 import { track, events } from '../../lib/track';
-import { useT } from '../../i18n';
+import { useLocale, useT } from '../../i18n';
 
 const WorldMap = lazy(() => import('../WorldMap'));
 const MapTimeline = lazy(() => import('../MapTimeline'));
@@ -41,6 +43,7 @@ const MapTimeline = lazy(() => import('../MapTimeline'));
  */
 export default function HomeWorkbench({ ratingConcepts }) {
   const t = useT();
+  const { locale } = useLocale();
   const navigate = useNavigate();
   const [picked, setPicked] = useState(null);
   const [mapYear, setMapYear] = useState(null);
@@ -72,12 +75,28 @@ export default function HomeWorkbench({ ratingConcepts }) {
     [countriesQ.data, baseYearItems, seriesPayload],
   );
 
+  const mapCountries = useMemo(
+    () => countries.map((country) => ({
+      ...country,
+      name: countryPublicName(country, locale),
+    })),
+    [countries, locale],
+  );
+  const rankingName = (item) => countryPublicName({
+    name: item.country_name,
+    name_en: countries.find((c) => c.code === item.country_code)?.name_en
+      || item.country_name_en,
+    country_name: item.country_name,
+  }, locale);
   const sortDirection = defaultSortForConcept(concept, ratingConcepts?.data?.concepts);
   const ranking = useMemo(
     () => worldRankingFromYearItems(yearItems, HOME_RATING_LIMIT, sortDirection),
     [yearItems, sortDirection],
   );
-  const conceptUnit = seriesPayload?.concept?.unit || '';
+  const conceptUnit = localizeWorldUnit(
+    seriesPayload?.concept?.unit || '',
+    locale,
+  );
   const conceptName = homeConceptLabel(
     concept,
     t,
@@ -194,7 +213,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
           <div className="min-w-0 overflow-hidden rounded-2xl border border-border-subtle bg-surface p-2.5 sm:p-4 lg:ml-[calc(18rem+1.25rem)]">
             <Suspense fallback={<SkeletonBox className="h-[16rem] w-full rounded-2xl sm:h-[28rem]" />}>
               <WorldMap
-                countries={countries}
+                countries={mapCountries}
                 valuesByCode={valuesByCode}
                 detailsByCode={detailsByCode}
                 unit={conceptUnit}
@@ -254,7 +273,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
                       {
                         code: item.country_code,
                         slug: item.country_slug,
-                        name: item.country_name,
+                        name: rankingName(item),
                       },
                       item,
                     )}
@@ -262,7 +281,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
                   >
                     <span className="font-mono text-[11px] text-text-tertiary">{idx + 1}.</span>
                     <span className="min-w-0 truncate text-[11px] leading-snug text-text-secondary">
-                      {item.country_name}
+                      {rankingName(item)}
                     </span>
                     <span className="font-mono text-[11px] font-semibold tabular-nums text-text-primary">
                       {formatWorldValue(item.value)}

@@ -593,6 +593,9 @@ def test_world_country_detail_locale_en_uses_name_en(world_client):
         if i["code"] == "de-prc_hicp_midx-cp00-i15"
     )
     assert "Гармонизированный" in ru_hicp["name"]
+    assert ru_hicp.get("name_en")
+    assert not re.search(r"[А-Яа-яЁё]", ru_hicp["name_en"])
+    assert ru["categories"][0].get("name_en")
 
 
 def test_world_country_detail_locale_en_units_no_cyrillic(world_client):

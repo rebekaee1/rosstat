@@ -278,10 +278,10 @@ PAGE_META_EN: dict[str, PageSeo] = {
         h1="Official macroeconomic indicators in one place",
         intro=(
             "Forecast Economy collects macroeconomic indicators for countries from "
-            "national statistical agencies, central banks, and Eurostat. "
+            "national statistical agencies, central banks, Eurostat, and the IMF. "
             "Data come only from official primary sources and are shown as charts, "
-            "tables, comparisons, and forecasts. Viewing is open to everyone; "
-            "downloads require free registration."
+            "tables, comparisons, and forecasts. Coverage of Russia is especially deep. "
+            "Viewing is open to everyone; downloads require free registration."
         ),
         keywords=(
             "country macroeconomic indicators, country statistics, "
@@ -303,16 +303,16 @@ PAGE_META_EN: dict[str, PageSeo] = {
         blocks=(
             SeoBlock(
                 "About the platform",
-                "The platform provides more than 100 Russian macroeconomic indicators, "
-                "495 regional indicators, and statistics for available countries. "
+                "The platform provides more than 36,000 country indicators, "
+                "100+ Russian macroeconomic indicators, and 495 regional indicators. "
                 "Cards show history, view modes, tables, and comparable series; "
                 "forecasts appear only where the model has passed a quality check.",
             ),
             SeoBlock(
                 "Data sources",
-                "Official primary sources only: Rosstat, the Bank of Russia, "
-                "the Ministry of Finance, Eurostat, and national statistical "
-                "agencies of available countries.",
+                "Official primary sources only: Eurostat, the IMF, national statistical "
+                "agencies of available countries, Rosstat, the Bank of Russia, "
+                "and the Ministry of Finance.",
             ),
         ),
     ),
@@ -321,19 +321,20 @@ PAGE_META_EN: dict[str, PageSeo] = {
         path="/about",
         title="About Forecast Economy",
         description=(
-            "Analytics platform for official economic data on Russia, regions, "
-            "and available countries: charts, tables, comparisons, and forecasts."
+            "Analytics platform for official economic data by country: "
+            "charts, tables, comparisons, and forecasts. Russia has especially "
+            "deep macro and regional coverage."
         ),
         h1="About Forecast Economy",
         intro=(
-            "Forecast Economy is an analytics project on the economy of Russia, "
-            "its regions, and available countries. We present official indicators "
-            "in a comparable form: charts, tables, sources, analysis modes, "
-            "and quality-checked forecasts."
+            "Forecast Economy is an analytics project for official economic "
+            "statistics by country. We present official indicators in a comparable "
+            "form: charts, tables, sources, analysis modes, and quality-checked "
+            "forecasts. Coverage of Russia is especially deep."
         ),
         keywords=(
-            "Forecast Economy, about, Russia economic data, "
-            "macroeconomic analytics, open Rosstat data, economic forecasts"
+            "Forecast Economy, about, country economic data, "
+            "macroeconomic analytics, official statistics, economic forecasts"
         ),
         links=(("/privacy", "Privacy policy"), ("/", "Home")),
     ),

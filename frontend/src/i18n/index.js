@@ -11,3 +11,4 @@ export {
 export { LocaleProvider } from './LocaleProvider';
 export { useLocale, useT } from './localeContext';
 export { default as LocalePreviewBanner } from './LocalePreviewBanner';
+export { default as LocalePreviewSync } from './LocalePreviewSync';

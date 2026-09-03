@@ -1,6 +1,6 @@
 import ru from './messages.ru.js';
 import en from './messages.en.js';
-import { resolveBrowserLocale } from './locale';
+import { currentUiLocale } from './locale';
 
 export const MESSAGES = { ru, en };
 
@@ -11,7 +11,7 @@ export const MESSAGES = { ru, en };
  * @param {'ru'|'en'} [locale]
  */
 export function translate(key, varsOrFallback, locale) {
-  const loc = locale || (typeof window !== 'undefined' ? resolveBrowserLocale() : 'ru');
+  const loc = locale || currentUiLocale();
   const dict = MESSAGES[loc] || MESSAGES.ru;
   const has = Object.prototype.hasOwnProperty.call(dict, key);
   let text = has ? dict[key] : undefined;
@@ -27,9 +27,9 @@ export function translate(key, varsOrFallback, locale) {
   return text;
 }
 
-/** Standalone t() for modules outside React (reads host / preview locale). */
-export function t(key, varsOrFallback) {
-  return translate(key, varsOrFallback);
+/** Standalone t() for modules outside React (bound UI locale, else host / preview). */
+export function t(key, varsOrFallback, locale) {
+  return translate(key, varsOrFallback, locale);
 }
 
 export function messageKeyCount(locale = 'ru') {

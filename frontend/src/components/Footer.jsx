@@ -24,6 +24,7 @@ const footLink = cn(
 
 const SOURCE_LINKS = [
   { href: 'https://ec.europa.eu/eurostat', key: 'footer.eurostat' },
+  { href: 'https://www.imf.org', key: 'footer.imf' },
   { href: 'https://rosstat.gov.ru', key: 'footer.rosstat' },
   { href: 'https://cbr.ru', key: 'footer.cbr' },
   { href: 'https://minfin.gov.ru', key: 'footer.minfin' },
@@ -90,6 +91,29 @@ export default function Footer() {
 
           <div>
             <h4 className="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-medium">
+              {t('footer.section.world')}
+            </h4>
+            <ul className="space-y-2 text-sm text-text-secondary">
+              <li>
+                <Link to="/#countries" className={footLink}>
+                  {t('footer.countries')}
+                </Link>
+              </li>
+              <li>
+                <Link to={WORLD_RATING_TO} className={footLink}>
+                  {t('footer.worldRating')}
+                </Link>
+              </li>
+              <li>
+                <Link to={comparePath()} className={footLink}>
+                  {t('footer.compare')}
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-medium">
               {t('footer.section.russia')}
             </h4>
             <ul className="space-y-2 text-sm text-text-secondary">
@@ -111,29 +135,6 @@ export default function Footer() {
               <li>
                 <Link to={demographicsPath()} className={footLink}>
                   {t('footer.demographics')}
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-medium">
-              {t('footer.section.world')}
-            </h4>
-            <ul className="space-y-2 text-sm text-text-secondary">
-              <li>
-                <Link to="/#countries" className={footLink}>
-                  {t('footer.countries')}
-                </Link>
-              </li>
-              <li>
-                <Link to={WORLD_RATING_TO} className={footLink}>
-                  {t('footer.worldRating')}
-                </Link>
-              </li>
-              <li>
-                <Link to={comparePath()} className={footLink}>
-                  {t('footer.compare')}
                 </Link>
               </li>
             </ul>

@@ -2,6 +2,7 @@ import asyncio
 import ipaddress
 import json
 import logging
+import re
 import time
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone as dt_timezone
@@ -928,7 +929,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title=settings.app_name,
-    description="API для экономических индикаторов России",
+    description="API for official macroeconomic indicators",
     version="1.0.0",
     lifespan=lifespan,
     docs_url="/api/docs" if settings.debug else None,
@@ -1004,28 +1005,154 @@ def _persist_locale_pref_redirect(request: Request) -> Response | None:
         kept.append((key, value))
     if pref is None:
         return None
-    if not apex_locale_en_enabled() and pref == "en":
+    cutover = apex_locale_en_enabled()
+    if not cutover and pref == "en":
         kept.append((PREVIEW_QUERY, "en"))
     original = request.headers.get("x-original-uri") or request.url.path
-    public_path = original.partition("?")[0]
-    target = public_path or "/"
-    if kept:
-        target += "?" + urlencode(kept)
-    response = Response(status_code=303, headers={"Location": target, "Vary": "Cookie"})
+    public_path = original.partition("?")[0] or "/"
+    qs = ("?" + urlencode(kept)) if kept else ""
+    target = f"{public_path}{qs}"
+    if cutover:
+        from app.services.locale import (
+            apex_host,
+            en_public_origin,
+            normalize_host,
+            ru_public_origin,
+        )
+
+        host = normalize_host(
+            request.headers.get("x-forwarded-host") or request.headers.get("host")
+        )
+        apex = apex_host()
+        on_apex = host in {apex, f"www.{apex}"}
+        on_ru = host.startswith("ru.")
+        if pref == "ru" and on_apex:
+            target = f"{ru_public_origin()}{public_path}{qs}"
+        elif pref == "en" and on_ru:
+            target = f"{en_public_origin()}{public_path}{qs}"
+    response = Response(
+        status_code=303,
+        headers={
+            "Location": target,
+            "Vary": "Cookie",
+            "Cache-Control": "private, no-store",
+        },
+    )
     _set_locale_preference_cookie(response, pref)
     return response
 
 
-def _geo_locale_redirect(request: Request) -> Response | None:
-    """IP/VPN больше не участвует в выборе языка (решение владельца 2026-08-31).
+_GEO_EXCLUDED_PREFIXES = (
+    "/api/", "/assets/", "/og/", "/sitemap", "/embed/", "/oauth/", "/auth/oauth/",
+)
+_GEO_EXCLUDED_EXACT = frozenset({
+    "/robots.txt", "/llms.txt", "/feed.xml", "/health", "/favicon.ico",
+})
+_SEARCH_BOT_UA = re.compile(
+    r"yandex|googlebot|bingbot|mail\.ru|duckduckbot|applebot|gptbot|"
+    r"petalbot|amazonbot|claudebot|perplexitybot|youbot",
+    re.IGNORECASE,
+)
+_GEO_RU_CODES: frozenset[str] | None = None
 
-    Язык = хост. Geo- и Accept-Language-редиректы оставляли VPN-зависимое
-    поведение: с российского IP человека уводило на ru., с VPN — оставляло
-    на EN apex, даже при английском браузере. Сигнатура сохранена: тесты
-    подтверждают, что даже при включённых флагах редиректа нет.
+
+def _geo_ru_country_codes() -> frozenset[str]:
+    global _GEO_RU_CODES
+    if _GEO_RU_CODES is None:
+        raw = (settings.geo_ru_country_codes or "RU").upper()
+        _GEO_RU_CODES = frozenset(
+            code.strip() for code in raw.split(",") if code.strip()
+        )
+    return _GEO_RU_CODES
+
+
+def _is_html_navigation(request: Request) -> bool:
+    if request.method not in {"GET", "HEAD"}:
+        return False
+    path = (request.headers.get("x-original-uri") or request.url.path).partition("?")[0]
+    if path in _GEO_EXCLUDED_EXACT or any(path.startswith(p) for p in _GEO_EXCLUDED_PREFIXES):
+        return False
+    accept = request.headers.get("accept", "")
+    return request.method == "HEAD" or not accept or "text/html" in accept
+
+
+def _public_request_url(request: Request) -> tuple[str, str]:
+    original = request.headers.get("x-original-uri") or request.url.path
+    public_path, _, public_query = original.partition("?")
+    if not public_query:
+        public_query = request.url.query
+    return public_path or "/", public_query
+
+
+def _locale_host_redirect(request: Request) -> Response | None:
+    """После cutover: флажок и гео людей с apex EN на ru. (ботов не трогаем).
+
+    - cookie ``ru`` на apex → ``ru.`` (явный флажок)
+    - cookie ``en`` на ``ru.`` → apex
+    - без EN-cookie, IP из RU/СНГ, человек на apex → ``ru.``
+    Поисковые и ИИ-краулеры остаются на запрошенном хосте (hreflang + sitemap).
     """
-    del request
-    return None
+    if not settings.apex_locale_en:
+        return None
+    from app.services.locale import (
+        apex_host,
+        en_public_origin,
+        normalize_host,
+        ru_public_origin,
+    )
+
+    if not _is_html_navigation(request):
+        return None
+    if _SEARCH_BOT_UA.search(request.headers.get("user-agent", "") or ""):
+        return None
+    host = normalize_host(
+        request.headers.get("x-forwarded-host") or request.headers.get("host")
+    )
+    apex = apex_host()
+    on_apex = host in {apex, f"www.{apex}"}
+    on_ru = host.startswith("ru.")
+    if not on_apex and not on_ru:
+        return None
+
+    preference = _locale_preference(request)
+    public_path, public_query = _public_request_url(request)
+
+    def _to(origin: str) -> Response:
+        target = f"{origin}{public_path}"
+        if public_query:
+            target += f"?{public_query}"
+        return Response(
+            status_code=307,
+            headers={
+                "Location": target,
+                "Vary": "Cookie, User-Agent",
+                "Cache-Control": "private, no-store",
+            },
+        )
+
+    if on_apex and preference == "ru":
+        return _to(ru_public_origin())
+    if on_ru and preference == "en":
+        return _to(en_public_origin())
+    if not on_apex or preference in {"en", "stay-en"}:
+        return None
+    if not settings.geo_locale_redirect_enabled:
+        return None
+    from app.services.geoip import lookup
+
+    client_ip = pick_client_ip(
+        request.headers.get("x-forwarded-for", ""),
+        request.client.host if request.client else "",
+    )
+    country = (lookup(client_ip).get("country_code") or "").upper()
+    if country not in _geo_ru_country_codes():
+        return None
+    return _to(ru_public_origin())
+
+
+def _geo_locale_redirect(request: Request) -> Response | None:
+    """Совместимое имя: cookie-хост + гео людей (не ботов) после cutover."""
+    return _locale_host_redirect(request)
 
 
 class LocaleMiddleware(BaseHTTPMiddleware):
@@ -1050,6 +1177,9 @@ class LocaleMiddleware(BaseHTTPMiddleware):
         persist = _persist_locale_pref_redirect(request)
         if persist is not None:
             return persist
+        host_swap = _locale_host_redirect(request)
+        if host_swap is not None:
+            return host_swap
         host = request.headers.get("x-forwarded-host") or request.headers.get("host")
         header = request.headers.get(LOCALE_HEADER)
         locale = resolve_locale_from_request(request)

@@ -223,11 +223,19 @@ export default function WorldChartSection({
     };
     (comparisonPeers || []).forEach((item) => add({
       ...item,
+      country_name: locale === 'en'
+        ? (item.country_name_en || item.country_name)
+        : item.country_name,
       code: `peer:${item.country_slug}:${item.indicator_code}`,
     }));
     (compareCatalog.data?.items || [])
       .filter((item) => item.concept_slug === conceptSlug)
-      .forEach(add);
+      .forEach((item) => add({
+        ...item,
+        country_name: locale === 'en'
+          ? (item.country_name_en || item.country_name)
+          : item.country_name,
+      }));
     return [...bySlug.values()].sort((a, b) => a.country_name.localeCompare(b.country_name, locale));
   }, [comparisonPeers, compareCatalog.data, conceptSlug, country?.slug, locale]);
   const pickerOptions = useMemo(() => {

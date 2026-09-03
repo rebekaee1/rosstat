@@ -23,7 +23,7 @@ import { cleanPathWithSearch } from './lib/cleanUrl';
 import { behaviorInit, behaviorRouteChange } from './lib/behavior';
 import { isVariantSiblingNavigation } from './lib/indicatorVariants';
 import { AuthProvider } from './context/AuthProvider';
-import { LocaleProvider, LocalePreviewBanner, useT } from './i18n';
+import { LocaleProvider, LocalePreviewBanner, LocalePreviewSync, useT } from './i18n';
 import Dashboard from './pages/Dashboard';
 import {
   RUSSIA,
@@ -243,6 +243,7 @@ function AppRoutes() {
   return (
     <LocaleProvider>
     <AuthProvider>
+      <LocalePreviewSync />
       <LocalePreviewBanner />
       <ScrollToTop />
       <YandexMetrikaHit />

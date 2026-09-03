@@ -11,9 +11,11 @@ import {
   worldCountryTitle,
 } from '../lib/pageMeta';
 import {
-  useWorldCountry, formatWorldValue, pluralRu,
+  useWorldCountry, formatWorldValue, pluralRu, localizeWorldUnit,
 } from '../lib/worldApi';
-import { collapseCountryIndicators, stripFrequencySuffix } from '../lib/worldViewModes';
+import {
+  collapseCountryIndicators, indicatorPublicName, localizedDisplay,
+} from '../lib/worldViewModes';
 import { formatChange, formatDate } from '../lib/format';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import Breadcrumbs from '../components/Breadcrumbs';
@@ -33,6 +35,7 @@ import {
 } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
 import { localizeSource } from '../i18n/viewModeLabels';
+import { countryPublicName } from '../lib/homeWorkbench';
 
 function normalize(s) {
   return (s || '').toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim();
@@ -107,7 +110,8 @@ function FreqBadges({ item, t }) {
 function IndicatorRow({ item, slug, to }) {
   const t = useT();
   const { locale } = useLocale();
-  const name = stripFrequencySuffix(item.name);
+  const name = indicatorPublicName(item, locale);
+  const unit = localizeWorldUnit(item.unit, locale);
   return (
     <Link
       to={to || indicatorPath(slug, item.code)}
@@ -119,12 +123,12 @@ function IndicatorRow({ item, slug, to }) {
         </div>
         <div className="mt-1 flex min-w-0 flex-wrap items-center gap-1.5 text-[10px] text-text-tertiary sm:mt-1.5">
           <FreqBadges item={item} t={t} />
-          {item.unit && <span className="min-w-0 break-words">{item.unit}</span>}
+          {unit && <span className="min-w-0 break-words">{unit}</span>}
         </div>
       </div>
       <div className="flex items-baseline justify-between gap-3 border-t border-border-subtle/60 pt-2 sm:w-[7.5rem] sm:shrink-0 sm:flex-col sm:items-end sm:justify-center sm:border-0 sm:pt-0 sm:text-right">
         <div className="font-mono text-[15px] font-semibold tabular-nums text-text-primary sm:text-[14px] sm:font-medium">
-          {formatWorldValue(item.last_value)}
+          {formatWorldValue(item.last_value, undefined, locale)}
         </div>
         <div className="flex items-center gap-1.5">
           <CompactChange change={item.change} />
@@ -148,7 +152,7 @@ export default function WorldCountry() {
   const deferredQuery = useDeferredValue(query);
   const searching = normalize(deferredQuery).length > 0;
 
-  const countryName = data?.country?.name;
+  const countryName = countryPublicName(data?.country, locale);
   const notFound = isError && error?.response?.status === 404;
 
   const countryMeta = useMemo(() => {
@@ -219,11 +223,14 @@ export default function WorldCountry() {
       .map((cat) => ({
         ...cat,
         indicators: cat.indicators.filter((i) =>
-          normalize(i.name).includes(q) || normalize(i.code).includes(q)),
+          normalize(indicatorPublicName(i, locale)).includes(q)
+          || normalize(i.name).includes(q)
+          || normalize(i.name_en).includes(q)
+          || normalize(i.code).includes(q)),
       }))
       .filter((cat) => cat.indicators.length > 0)
       .map((cat) => ({ ...cat, count: cat.indicators.length }));
-  }, [data, deferredQuery]);
+  }, [data, deferredQuery, locale]);
 
   const totalIndicators = useMemo(
     () => (data?.categories || []).reduce(
@@ -298,7 +305,7 @@ export default function WorldCountry() {
                   <div>
                     <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">
                       <Globe2 size={12} />
-                      {data.country.region}
+                      {localizedDisplay(locale, data.country.region, data.country.region_en)}
                     </div>
                     <div className="mt-1 text-xs text-text-tertiary">{data.country.name_en}</div>
                   </div>
@@ -353,12 +360,12 @@ export default function WorldCountry() {
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="font-mono text-lg font-semibold tabular-nums text-text-primary">
-                      {formatWorldValue(item.value)}
+                      {formatWorldValue(item.value, undefined, locale)}
                     </div>
                     <TrendingUp size={13} className="mt-1 shrink-0 text-champagne" />
                   </div>
                   <div className="mt-1 line-clamp-1 text-[10px] text-text-secondary group-hover:text-text-primary">
-                    {item.name}
+                    {localizedDisplay(locale, item.name, item.name_en)}
                   </div>
                   <div className="mt-1 truncate font-mono text-[9px] text-text-tertiary">
                     {formatIndicatorDate(item.date, item.frequency, locale)}
@@ -442,7 +449,7 @@ export default function WorldCountry() {
               onChange={setActiveCategory}
               options={filteredCategories.map((cat) => ({
                 value: cat.name,
-                label: cat.name,
+                label: localizedDisplay(locale, cat.name, cat.name_en),
                 count: cat.indicators.length,
               }))}
             />
@@ -470,7 +477,7 @@ export default function WorldCountry() {
                           : 'bg-surface text-text-secondary hover:bg-surface-hover hover:text-text-primary',
                       ].join(' ')}
                     >
-                      <span className="min-w-0 truncate">{cat.name}</span>
+                      <span className="min-w-0 truncate">{localizedDisplay(locale, cat.name, cat.name_en)}</span>
                       <span className="shrink-0 font-mono text-[10px] opacity-60">{cat.indicators.length}</span>
                     </button>
                   ))}
@@ -486,7 +493,7 @@ export default function WorldCountry() {
                       <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">
                         {searching ? t('regions.searchResults') : t('world.country.indicators')}
                       </div>
-                      <h2 className="mt-1 font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">{cat.name}</h2>
+                      <h2 className="mt-1 font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">{localizedDisplay(locale, cat.name, cat.name_en)}</h2>
                     </div>
                     <span className="shrink-0 font-mono text-xs text-text-tertiary">{cat.indicators.length}</span>
                   </div>

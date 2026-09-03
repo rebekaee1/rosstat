@@ -5,11 +5,15 @@ alwaysApply: true
 
 # Языковая витрина: parity RU ↔ EN (каркас)
 
-Директива владельца (2026-08-16): целевой сплит — apex `forecasteconomy.com` = en,
+Директива владельца (2026-09-03): **apex `forecasteconomy.com` = en**,
 `ru.forecasteconomy.com` = ru; пути path-identical (ADR-0013 §F).
-**До cutover** (`RUSTATS_APEX_LOCALE_EN` / `VITE_APEX_LOCALE_EN` = true) production
-apex остаётся **ru** — иначе деплой i18n переключит весь `.com` на EN и убьёт Яндекс.
-Localhost и не-apex хосты = **ru**; EN — через `en.*`, header или `?preview_locale=`.
+Флаги прода: `RUSTATS_APEX_LOCALE_EN=true` и `RUSTATS_GEO_LOCALE_REDIRECT_ENABLED=true`.
+Людей с IP России/СНГ с apex уводим на `ru.`; поисковые и ИИ-боты остаются
+на запрошенном хосте (hreflang + два канона). Флажок «Русский» ведёт на
+`ru.forecasteconomy.com`. Accept-Language не редиректит.
+Localhost и не-apex хосты = **ru**; EN на localhost — `?preview_locale=en`.
+Не выключать cutover-флаг на проде: иначе весь `.com` снова станет русским
+и разъедется с индексом Google.
 
 ## Разделение ролей
 

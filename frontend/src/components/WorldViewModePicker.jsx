@@ -42,6 +42,7 @@ export default function WorldViewModePicker({
       modes: g.modes?.map((m) => ({
         ...m,
         label: localizeViewModeLabel(m.label, locale),
+        hint: localizeViewModeLabel(m.hint, locale),
       })),
     }));
   }, [modes, locale]);

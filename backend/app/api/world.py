@@ -126,6 +126,18 @@ def _indicator_display_name(ind: WorldIndicator) -> str:
     return display_name(ind.name_ru, ind.code)
 
 
+def _indicator_name_en(ind: WorldIndicator) -> str:
+    """English title always — overlay when the request locale was RU."""
+    from app.data.legacy_redirects import strip_world_frequency_suffix
+    from app.data.eurostat_dim_labels_en import append_en_slice_to_title
+
+    en_raw = (ind.name_en or "").strip()
+    if not en_raw:
+        return ""
+    base = strip_world_frequency_suffix(en_raw) or en_raw
+    return append_en_slice_to_title(base, ind.slice_json)
+
+
 def _indicator_public_unit(indicator: WorldIndicator) -> str:
     """Locale-facing unit for world indicator rows."""
     ru = (indicator.unit_ru or indicator.unit or "").strip()
@@ -160,12 +172,15 @@ def _indicator_public_unit(indicator: WorldIndicator) -> str:
 
 
 def _country_payload(c: WorldCountry, indicators_count: int | None = None) -> dict:
+    from app.services.world_rank_values import world_region_display
+
     out = {
         "code": c.code,
         "slug": c.slug,
         "name": _country_display_name(c),
         "name_en": c.name_en,
         "region": _region_display(c.region_ru),
+        "region_en": world_region_display(c.region_ru, locale="en"),
     }
     if indicators_count is not None:
         out["indicators_count"] = indicators_count
@@ -517,8 +532,10 @@ def _compare_series_payload(country: WorldCountry, indicator: WorldIndicator, co
         "indicator_code": indicator.code,
         "country_slug": country.slug,
         "country_name": _country_display_name(country),
+        "country_name_en": country.name_en,
         "concept_slug": concept.slug,
         "concept_name": concept_public_name(concept),
+        "concept_name_en": (concept.name_en or "").strip(),
         "frequency": normalize_frequency(indicator.frequency),
         "unit": concept_public_unit(concept),
     }
@@ -879,7 +896,7 @@ async def world_compare_catalog(db: AsyncSession = Depends(get_db)):
     Британия/Индия/Мексика в калькуляторе инфляции отдают свой официальный
     индекс цен с родными юнитом и источником, а не 404.
     """
-    cache_key = await versioned_key("world", f"compare:catalog:v6:{get_locale()}")
+    cache_key = await versioned_key("world", f"compare:catalog:v7:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -955,8 +972,10 @@ async def world_compare_catalog(db: AsyncSession = Depends(get_db)):
             "indicator_code": link.indicator_code,
             "country_slug": "russia",
             "country_name": russia_name,
+            "country_name_en": "Russia",
             "concept_slug": concept.slug,
             "concept_name": concept_public_name(concept),
+            "concept_name_en": (concept.name_en or "").strip(),
             "frequency": "annual",
             "unit": concept_public_unit(concept),
             "national_method": concept.slug in {"gdp-usd", "gdp-per-capita-usd"},
@@ -1454,7 +1473,7 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
     политике (например annual у месячного индекса); клиент помечает такие
     режимы как расчётные.
     """
-    cache_key = await versioned_key("world", f"country:v10:{slug}:{get_locale()}")
+    cache_key = await versioned_key("world", f"country:v11:{slug}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -1569,6 +1588,7 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
             "code": ind.code,
             "name_ru": catalog_name,
             "name": name,  # compat / locale-facing
+            "name_en": _indicator_name_en(ind),
             "unit_ru": ind.unit_ru or ind.unit,
             "unit": unit,
             "unit_suffix": unit_suffix(unit),
@@ -1597,11 +1617,14 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
         for item in items:
             raw_cat = item.get("category_ru") or "Прочее"
             item["category"] = localize_category_name(raw_cat)
+            item["category_en"] = localize_category_name(raw_cat, locale="en")
             # category_ru stays the storage/api key (Russian); category is locale-facing.
 
     categories = [
         {
             "name": localize_category_name(name),
+            "name_en": localize_category_name(name, locale="en"),
+            "name_ru": name,
             "count": len(items),
             "indicators": items,
         }
@@ -1655,6 +1678,7 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
         overview.append({
             "concept_slug": concept.slug,
             "name": concept_public_name(concept),
+            "name_en": (concept.name_en or "").strip(),
             "unit": concept_public_unit(concept),
             "indicator_code": indicator.code,
             "frequency": normalize_frequency(indicator.frequency),
@@ -1708,7 +1732,7 @@ async def _card_context(
 @router.get("/indicators/{slug}/{code}")
 async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db)):
     cache_key = await versioned_key(
-        "world", f"ind:v13:{slug}:{code}:{get_locale()}"
+        "world", f"ind:v14:{slug}:{code}:{get_locale()}"
     )
     cached = await cache_get(cache_key)
     if cached:
@@ -1798,6 +1822,7 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
             "country_code": peer_country.code,
             "country_slug": peer_country.slug,
             "country_name": _country_display_name(peer_country),
+            "country_name_en": peer_country.name_en,
             "indicator_code": peer_primary.code,
             "frequency": normalize_frequency(peer_primary.frequency),
         })
@@ -1813,6 +1838,7 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
             "country_code": "RU",
             "country_slug": "russia",
             "country_name": "Russia" if loc == "en" else "Россия",
+            "country_name_en": "Russia",
             "indicator_code": link.indicator_code,
             "frequency": "annual",
         })
@@ -1837,13 +1863,14 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
             "provider": ind.provider,
             "name": _indicator_display_name(ind),
             "name_ru": display_name(ind.name_ru, ind.code),
-            "name_en": ind.name_en,
+            "name_en": _indicator_name_en(ind) or ind.name_en,
             "unit": unit,
             "unit_ru": ind.unit_ru or ind.unit or "",
             "unit_suffix": unit_suffix(unit),
             "frequency": normalize_frequency(ind.frequency),
             "category": cat_disp,
             "category_ru": ind.category_ru,
+            "category_en": localize_category_name(ind.category_ru, locale="en"),
             "source": translate_source(ind.source) or ind.source,
             "source_url": ind.source_url,
             "description": _locale_safe_copy(ind.description),

@@ -362,7 +362,7 @@ def frequencies_payload(by_freq: dict[str, Any]) -> list[dict]:
     return out
 
 
-def variant_label(ind: Any) -> str:
+def variant_label(ind: Any, *, locale: str | None = None) -> str:
     """Подпись variant-pill по отличающимся измерениям среза.
 
     Locale-facing: RU dim-labels / якоря на ru; EN — eurostat_dim_labels_en.
@@ -376,7 +376,7 @@ def variant_label(ind: Any) -> str:
     )
     from app.services.locale import get_locale
 
-    en = get_locale() == "en"
+    en = (locale or get_locale()) == "en"
     if en:
         from app.data.eurostat_dim_labels_en import (
             label_for_dim_member as label_en,
@@ -517,6 +517,8 @@ def build_variants(
         items.append({
             "code": ind.code,
             "label": variant_label(ind),
+            "label_en": variant_label(ind, locale="en"),
+            "label_ru": variant_label(ind, locale="ru"),
             "current": ind.code == current.code,
         })
     total_prefix = "All " if get_locale() == "en" else "Все"

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { bindUiLocale } from '../i18n/locale';
 import {
   globalMarketIndicatorTrail,
   regionRatingTrail,
@@ -60,6 +61,17 @@ describe('breadcrumbs', () => {
       'Главная', 'Рейтинг стран', 'Безработица',
     ]);
     expect(trail[1].path).toBe(worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT));
+  });
+
+  it('EN-крошки рейтинга не оставляют русские узлы', () => {
+    bindUiLocale('en');
+    try {
+      expect(worldRatingTrail('GDP', 'gdp-usd').map((c) => c.name)).toEqual([
+        'Home', 'Country rankings', 'GDP',
+      ]);
+    } finally {
+      bindUiLocale(undefined);
+    }
   });
 
   it('рейтинг регионов включает узел Рейтинг', () => {

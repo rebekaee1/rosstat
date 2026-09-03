@@ -4,21 +4,29 @@
  */
 import { useEffect, useMemo, useState } from 'react';
 import {
+  apexLocaleEnEnabled,
+  bindUiLocale,
   htmlLang,
   isPreviewLocaleActive,
   PREVIEW_QUERY,
   resolveBrowserLocale,
+  setLocalePreference,
   switchLanguage,
 } from './locale';
 import { translate } from './messages';
 import { LocaleContext } from './localeContext';
 
 export function LocaleProvider({ children, locale: localeProp }) {
-  // Локаль известна до первого рендера (хост или ?preview_locale), поэтому
-  // в эффекте только DOM: перезапись состояния давала каскадный рендер.
+  // Локаль известна до первого рендера (хост, ?preview_locale или cookie).
   // localeProp — для тестов (EN через preview без window.location).
   const [locale] = useState(() => localeProp || resolveBrowserLocale());
   const [isPreview] = useState(() => Boolean(localeProp) || isPreviewLocaleActive());
+  bindUiLocale(locale);
+
+  useEffect(() => {
+    bindUiLocale(locale);
+    return () => bindUiLocale(undefined);
+  }, [locale]);
 
   useEffect(() => {
     document.documentElement.lang = htmlLang(locale);
@@ -38,8 +46,10 @@ export function LocaleProvider({ children, locale: localeProp }) {
     const setPreviewLocale = (next) => {
       const url = new URL(window.location.href);
       if (next === 'ru' || next === 'en') {
+        setLocalePreference(next);
         url.searchParams.set(PREVIEW_QUERY, next);
       } else {
+        if (!apexLocaleEnEnabled()) setLocalePreference('ru');
         url.searchParams.delete(PREVIEW_QUERY);
       }
       window.location.assign(url.toString());

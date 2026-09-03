@@ -1,23 +1,20 @@
 """Locale resolver: language = host (+ optional header / preview), not ?lang=.
 
-Target scheme (ADR-0013 §F), after cutover:
+Target scheme (ADR-0013 §F), live after 2026-09-03:
   ru.forecasteconomy.com → ru
   forecasteconomy.com (apex) → en
 
-Until ``settings.apex_locale_en`` is True, production apex stays **ru** so a
-premature deploy cannot flip Yandex's .com index to English. Explicit
-``en.`` hosts, ``X-FE-Locale``, and ``?preview_locale=`` still opt into EN.
-
-Local / staging: any host that is not an explicit ``en.`` / ``ru.`` prefix
-defaults to **ru** (same as gated apex).
+``settings.apex_locale_en`` is the production cutover switch. Localhost and
+non-apex hosts stay **ru**; explicit ``en.``, ``X-FE-Locale``, and
+``?preview_locale=`` still opt into EN.
 
 Request origin (canonical / sitemap ``<loc>`` / RSS / robots / llms /
-OG absolute URLs) is also host-aware:
+OG absolute URLs) is host-aware:
   Host ``ru.*`` → ``https://ru.{apex}``
-  everything else → ``settings.public_origin`` (current prod path while
-  cutover flag is off — one Russian sitemap on the configured DOMAIN).
+  everything else → ``settings.public_origin``
 
-No geo-IP locale.
+This module does not look at GeoIP. Human geo-redirect (RU/CIS → ``ru.``)
+lives in ``LocaleMiddleware``; search/LLM bots stay on the requested host.
 """
 
 from __future__ import annotations

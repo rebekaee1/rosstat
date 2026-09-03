@@ -142,3 +142,94 @@ describe('WorldIndicatorPage about-series block', () => {
     });
   });
 });
+
+describe('WorldIndicatorPage EN overlay', () => {
+  it('при русском payload и locale=en показывает английский H1, единицы, числа и слайс', async () => {
+    mockApiGet([
+      ['/auth/me', { user: null }],
+      [/^\/world\/indicators\/canada\/ca-weo-ngdpd$/, {
+        country: {
+          code: 'CA', slug: 'canada', name: 'Канада', name_en: 'Canada', region: 'Америка',
+        },
+        primary_code: 'ca-weo-ngdpd',
+        indicator: {
+          code: 'ca-weo-ngdpd',
+          name: 'Валовой внутренний продукт в текущих ценах',
+          name_en: 'Gross domestic product at current prices',
+          name_ru: 'Валовой внутренний продукт в текущих ценах',
+          unit: 'млрд $',
+          unit_ru: 'млрд $',
+          frequency: 'annual',
+          category: 'Национальные счета',
+          category_en: 'National accounts',
+          source: 'Международный валютный фонд',
+        },
+        variants: [
+          {
+            code: 'ca-weo-ngdpd',
+            label: 'Валовой внутренний продукт в текущих ценах',
+            label_en: 'Gross domestic product at current prices',
+            current: true,
+          },
+          { code: 'ca-weo-lur', label: '% ЭАН', label_en: 'Unemployment rate', current: false },
+          {
+            code: 'ca-weo-ggxcnl',
+            label: 'Баланс бюджета сектора государственного управления',
+            label_en: 'General government budget balance',
+            current: false,
+          },
+          { code: 'ca-weo-lp', label: 'Численность населения', label_en: 'Population', current: false },
+        ],
+        modes: [
+          {
+            id: 'level-annual', label: 'По годам', group: 'Уровень',
+            type: 'level', freq: 'annual', unit: 'млрд $',
+          },
+        ],
+        forecast_available: false,
+      }],
+      [/^\/world\/indicators\/canada\/ca-weo-ngdpd\/data/, {
+        code: 'ca-weo-ngdpd',
+        mode: 'level-annual',
+        unit: 'млрд $',
+        frequency: 'annual',
+        points: [
+          { date: '2024-01-01', value: 2200.1 },
+          { date: '2025-01-01', value: 2319.9 },
+        ],
+        count: 2,
+      }],
+      [/^\/world\/countries\/canada$/, {
+        country: {
+          code: 'CA', slug: 'canada', name: 'Канада', name_en: 'Canada', region: 'Америка',
+        },
+        categories: [],
+        overview: [],
+      }],
+    ]);
+    renderPage(<WorldIndicatorPage />, {
+      path: '/:countrySlug/indicator/:code',
+      route: '/canada/indicator/ca-weo-ngdpd?mode=level-annual',
+      locale: 'en',
+    });
+
+    const heading = await waitFor(() => {
+      const h1 = document.querySelector('h1');
+      expect(h1?.textContent).toBe('Gross domestic product at current prices');
+      return h1;
+    });
+    expect(heading.textContent).not.toMatch(/[А-Яа-яЁё]/);
+    await waitFor(() => {
+      const text = document.body.textContent.replace(/\u00a0/g, ' ');
+      expect(text).toContain('billion $');
+      expect(text).toContain('2 319.9');
+      expect(text).toContain('Unemployment rate');
+      expect(text).toContain('Population');
+      expect(text).toContain('National accounts');
+    });
+    expect(document.body.textContent).not.toContain('млрд $');
+    expect(document.body.textContent).not.toContain('% ЭАН');
+    expect(document.body.textContent).not.toContain('Численность населения');
+    expect(document.body.textContent).not.toContain('2319,9');
+  });
+});

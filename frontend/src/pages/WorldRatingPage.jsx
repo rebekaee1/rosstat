@@ -11,6 +11,7 @@ import useDocumentMeta from '../lib/useMeta';
 import { track, events } from '../lib/track';
 import {
   formatWorldValue,
+  localizeWorldUnit,
   pluralRu,
   useWorldCountries,
   useWorldMapSeries,
@@ -18,6 +19,7 @@ import {
 } from '../lib/worldApi';
 import {
   conceptColorMode,
+  countryPublicName,
   defaultSortForConcept,
   homeConceptLabel,
   mapSelectHref,
@@ -185,7 +187,7 @@ export default function WorldRatingPage() {
   const { conceptSlug } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { hash } = useLocation();
+  const { hash, search } = useLocation();
   const activeConcept = conceptSlug || WORLD_RATING_DEFAULT_CONCEPT;
   const [selectedYear, setSelectedYear] = useState(null);
   // Активная колонка сортировки: { slug, dir } | null. null = пользователь ещё
@@ -200,9 +202,12 @@ export default function WorldRatingPage() {
 
   useEffect(() => {
     if (!conceptSlug) {
-      navigate(worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT), { replace: true });
+      navigate(
+        { pathname: worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT), search, hash },
+        { replace: true },
+      );
     }
-  }, [conceptSlug, navigate]);
+  }, [conceptSlug, navigate, search, hash]);
 
   const concepts = useMemo(
     () => (catalogQ.data?.concepts || []).map((item) => ({
@@ -317,13 +322,38 @@ export default function WorldRatingPage() {
     const withData = new Set(Object.values(yearItems).map((item) => item.country_code));
     return countries.filter((country) => !withData.has(country.code));
   }, [countries, yearItems]);
+  const catalogByKey = useMemo(() => {
+    const map = new Map();
+    for (const country of countries) {
+      if (country?.code) map.set(country.code, country);
+      if (country?.slug) map.set(country.slug, country);
+    }
+    return map;
+  }, [countries]);
+  const mapCountries = useMemo(
+    () => countries.map((country) => ({
+      ...country,
+      name: countryPublicName(country, locale),
+    })),
+    [countries, locale],
+  );
+  const ratingCountryName = (item) => {
+    const catalog = catalogByKey.get(item.country_code) || catalogByKey.get(item.country_slug);
+    return countryPublicName({
+      name: item.country_name || catalog?.name,
+      name_en: catalog?.name_en || item.country_name_en,
+      name_ru: catalog?.name_ru,
+      country_name: item.country_name,
+    }, locale);
+  };
 
   // Единица одна на всю таблицу — уносим её в шапку колонки: иначе строка
   // повторяет «изменение за год, %» сорок один раз подряд.
   const sharedUnit = useMemo(() => {
     const units = new Set(ranked.map((item) => (item.unit || concept.unit || '').trim()));
-    return units.size === 1 ? [...units][0] : null;
-  }, [ranked, concept.unit]);
+    const raw = units.size === 1 ? [...units][0] : null;
+    return localizeWorldUnit(raw, locale) || raw;
+  }, [ranked, concept.unit, locale]);
   const valueHeader = useMemo(() => {
     if (!sharedUnit) return t('common.value');
     if (sharedUnit.startsWith('%')) return t('world.rating.valueWithUnit', { unit: sharedUnit });
@@ -449,10 +479,11 @@ export default function WorldRatingPage() {
   }, [ranked, sortedColSlug, sortedColDir, extraColumns, activeYear]);
 
   const extraHeaderLabel = (col) => {
-    if (!col.unit) return col.label;
+    const unit = localizeWorldUnit(col.unit, locale);
+    if (!unit) return col.label;
     return t('world.rating.columnWithUnit', {
       label: col.label,
-      unit: col.unit[0].toUpperCase() + col.unit.slice(1),
+      unit: unit[0].toUpperCase() + unit.slice(1),
     });
   };
 
@@ -536,10 +567,10 @@ export default function WorldRatingPage() {
               ) : (
                 <>
                   <WorldMap
-                    countries={countries}
+                    countries={mapCountries}
                     valuesByCode={valuesByCode}
                     detailsByCode={detailsByCode}
-                    unit={concept.unit || mapSeriesQ.data?.concept?.unit || ''}
+                    unit={localizeWorldUnit(concept.unit || mapSeriesQ.data?.concept?.unit || '', locale)}
                     metricName={shortName}
                     periodLabel={activeYear ? String(activeYear) : ''}
                     colorMode={conceptColorMode(activeConcept)}
@@ -760,7 +791,7 @@ export default function WorldRatingPage() {
                       <td className="px-4 py-3 font-mono text-text-tertiary">{item.rank}</td>
                       <td className="px-4 py-3">
                         <Link to={rowHref(item, { conceptSlug: activeConcept, russiaIndicatorCode })} className="font-medium text-text-primary transition-colors hover:text-champagne">
-                          {item.country_name}
+                          {ratingCountryName(item)}
                         </Link>
                       </td>
                       <td className="px-4 py-3 text-right font-mono font-semibold tabular-nums text-text-primary">
@@ -776,11 +807,11 @@ export default function WorldRatingPage() {
                       ))}
                       {!sharedUnit && (
                         <td className="px-4 py-3 text-xs text-text-secondary">
-                          {item.unit || concept.unit || t('world.rating.fallbackUnit')}
+                          {item.unit ? localizeWorldUnit(item.unit, locale) : (concept.unit ? localizeWorldUnit(concept.unit, locale) : t('world.rating.fallbackUnit'))}
                         </td>
                       )}
                       <td className="px-4 py-3 font-mono text-xs text-text-tertiary">
-                        {item.date ? formatDate(item.date, periodGranularity) : '—'}
+                        {item.date ? formatDate(item.date, periodGranularity, locale) : '—'}
                       </td>
                     </tr>
                   ))}
@@ -837,7 +868,7 @@ export default function WorldRatingPage() {
                     to={country.code === 'RU' ? russiaLinks.countryHref : countryPath(country.slug)}
                     className="rounded-xl bg-obsidian-light px-3 py-2 text-xs text-text-secondary transition-colors hover:text-champagne"
                   >
-                    {country.name}
+                    {countryPublicName(country, locale)}
                   </Link>
                 ))}
               </div>

@@ -29,6 +29,7 @@ import {
   mapSelectHref,
   mapSurfaceCountries,
   isWeoMapConcept,
+  countryPublicName,
 } from './homeWorkbench';
 
 describe('homeWorkbench', () => {
@@ -361,5 +362,12 @@ describe('homeWorkbench', () => {
       total: 10,
     }, { allowMock: true })).toBe(1);
     expect(homeScopeCountriesCount({ total: 55, countries: [] })).toBe(55);
+  });
+
+  it('countryPublicName на EN берёт name_en, даже если name русский', () => {
+    const us = { name: 'США', name_en: 'United States' };
+    expect(countryPublicName(us, 'en')).toBe('United States');
+    expect(countryPublicName(us, 'ru')).toBe('США');
+    expect(countryPublicName({ country_name: 'Германия', name_en: 'Germany' }, 'en')).toBe('Germany');
   });
 });

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ratingHref } from './worldApi';
+import { ratingHref, localizeWorldUnit } from './worldApi';
 
 const RATING_CONCEPTS = [
   { slug: 'unemployment-rate', name: 'Уровень безработицы' },
@@ -21,5 +21,15 @@ describe('ratingHref', () => {
     expect(ratingHref('unemployment-rate', undefined)).toBeNull();
     expect(ratingHref('unemployment-rate', [])).toBeNull();
     expect(ratingHref('', RATING_CONCEPTS)).toBeNull();
+  });
+});
+
+describe('localizeWorldUnit', () => {
+  it('переводит млрд $ на EN и не трогает RU', () => {
+    expect(localizeWorldUnit('млрд $', 'en')).toBe('billion $');
+    expect(localizeWorldUnit('млрд $', 'ru')).toBe('млрд $');
+    expect(localizeWorldUnit('% ВВП', 'en')).toBe('% of GDP');
+    expect(localizeWorldUnit('% ЭАН', 'en')).toBe('% of the labour force');
+    expect(localizeWorldUnit('тыс. человек', 'en')).toBe('ths persons');
   });
 });

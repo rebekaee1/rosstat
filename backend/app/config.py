@@ -10,19 +10,15 @@ class Settings(BaseSettings):
     # Публичный origin сайта (canonical, SSR, sitemap, robots Host, IndexNow, CORS).
     # Единая точка истины для домена; дефолт = текущий прод.
     public_base_url: str = "https://forecasteconomy.com"
-    # Языковой сплит (ADR-0013 §F): apex отдаёт EN только когда флаг включён
-    # (ru. уже канон RU, EN-волна живая). Пока False — forecasteconomy.com = ru,
-    # иначе деплой i18n убьёт индекс Яндекса (весь .com станет английским).
+    # Языковой сплит (ADR-0013 §F): apex = EN, ru. = RU.
     apex_locale_en: bool = False
-    # Geo-редирект снят (2026-08-31): язык = хост, IP/VPN не участвуют.
-    # Флаг оставлен в Settings, чтобы старые env не падали; значение игнорируется.
+    # Людей с IP RU/СНГ с английского apex уводим на ru. Ботов не редиректим.
     geo_locale_redirect_enabled: bool = False
-    # Кто географически считается «русской» аудиторией (исторический список;
-    # locale-редирект по IP больше не выполняется).
+    # Кто географически считается русской аудиторией для geo-редиректа.
     geo_ru_country_codes: str = (
         "RU,BY,KZ,UA,AM,AZ,GE,KG,TJ,TM,UZ,MD"
     )
-    # Accept-Language больше не источник редиректа (язык = хост).
+    # Accept-Language не источник редиректа (VPN/браузер путали язык).
     browser_lang_redirect_enabled: bool = False
     browser_lang_min_quality: float = 0.6
     locale_preference_cookie: str = "fe_locale_pref"

@@ -82,11 +82,40 @@ const FREQUENCY_LONG_EN = {
 };
 
 const FREQ_SUFFIX_RE = /(?:,\s*(помесячно|поквартально|за год|понедельно|по дням)|\s*[-–—]\s*(monthly|quarterly|annual|yearly|weekly|daily)\s+data)\s*$/i;
+const CYRILLIC_RE = /[А-Яа-яЁё]/;
 
 /** Убрать суффикс частоты из публичного имени (частота живёт в переключателе). */
 export function stripFrequencySuffix(name) {
   if (!name) return name || '';
   return name.replace(FREQ_SUFFIX_RE, '').trim();
+}
+
+/**
+ * EN overlay: keep a Latin locale-facing string (it may already include a
+ * slice), otherwise fall back to the dedicated English field.
+ */
+export function pickEnDisplay(facing, englishFallback) {
+  const a = String(facing || '').trim();
+  const b = String(englishFallback || '').trim();
+  if (a && !CYRILLIC_RE.test(a)) return a;
+  return b || a;
+}
+
+export function localizedDisplay(locale, facing, englishFallback) {
+  if (locale === 'en') return pickEnDisplay(facing, englishFallback);
+  return String(facing || '').trim();
+}
+
+/** Locale-facing indicator title. EN never stays on a Cyrillic `name`. */
+export function indicatorPublicName(indicator, locale = 'ru') {
+  if (!indicator) return '';
+  const facing = String(indicator.name || '').trim();
+  const en = String(indicator.name_en || '').trim();
+  const ru = String(indicator.name_ru || '').trim();
+  const raw = locale === 'en'
+    ? (pickEnDisplay(facing, en) || ru)
+    : (facing || ru || en);
+  return stripFrequencySuffix(raw);
 }
 
 /** @param {string|null|undefined} token */
@@ -426,7 +455,7 @@ const LABELS_EN_INLINE = {
  */
 export function worldChartTitle(indicator, mode, activeFreq, locale = 'ru') {
   const fallback = locale === 'en' ? 'Indicator' : 'Показатель';
-  const name = stripFrequencySuffix(indicator?.name || fallback);
+  const name = indicatorPublicName(indicator, locale) || fallback;
   const modeLabelRaw = mode?.group || mode?.label;
   const modeLabel = locale === 'en' && modeLabelRaw
     ? (LABELS_EN_INLINE[modeLabelRaw] || modeLabelRaw)
@@ -465,6 +494,7 @@ export function collapseCountryIndicators(indicators) {
     return indicators.map((i) => ({
       ...i,
       name: stripFrequencySuffix(i.name || i.name_ru),
+      name_en: i.name_en ? stripFrequencySuffix(i.name_en) : i.name_en,
       name_ru: undefined,
     }));
   }
@@ -504,13 +534,19 @@ export function collapseCountryIndicators(indicators) {
 
 /**
  * VariantGroupPicker shape из API variants.
- * @param {Array<{ code: string, label: string, current?: boolean }>|null|undefined} variants
+ * @param {Array<{ code: string, label?: string, label_en?: string, label_ru?: string, current?: boolean }>|null|undefined} variants
  * @param {string} [groupLabel='Срез']
+ * @param {{ locale?: 'ru'|'en' }} [opts]
  */
-export function worldVariantsToPickerGroup(variants, groupLabel = 'Срез') {
+export function worldVariantsToPickerGroup(variants, groupLabel = 'Срез', { locale = 'ru' } = {}) {
   if (!Array.isArray(variants) || variants.length < 2) return null;
   return {
     label: groupLabel,
-    codes: variants.map((v) => ({ code: v.code, label: v.label })),
+    codes: variants.map((v) => ({
+      code: v.code,
+      label: locale === 'en'
+        ? pickEnDisplay(v.label, v.label_en)
+        : (v.label || v.label_ru || ''),
+    })),
   };
 }

@@ -119,6 +119,15 @@ export function homeConceptLabel(slug, t, fallback = '') {
   return fallback || slug || '';
 }
 
+/** Locale-facing country label: EN prefers name_en even if API sent Russian. */
+export function countryPublicName(country, locale = 'ru') {
+  if (!country) return '';
+  const ru = String(country.name || country.country_name || country.name_ru || '').trim();
+  const en = String(country.name_en || country.country_name_en || '').trim();
+  if (locale === 'en') return en || ru;
+  return ru || en;
+}
+
 /**
  * Показатели, у которых содержателен знак: центр шкалы — ноль, а не медиана.
  * Единая точка для карты на главной, на странице рейтинга и в SSR-легенде —
@@ -483,7 +492,7 @@ export function mapSurfaceCountries(catalogCountries = [], yearItems = {}) {
       code,
       slug: item.country_slug,
       name: item.country_name,
-      name_en: item.country_name,
+      name_en: item.country_name_en || item.name_en || item.country_name,
       is_active: true,
     });
   }
@@ -512,8 +521,8 @@ export function withRussiaOnHomeMap({
       list.push({
         code: shell.code || 'RU',
         slug: shell.slug || 'russia',
-        name: shell.name || shell.name_en || shell.name_ru || 'Russia',
-        name_en: shell.name_en || 'Russia',
+        name: shell.name || shell.name_ru || HOME_MAP_RUSSIA_COUNTRY.name,
+        name_en: shell.name_en || HOME_MAP_RUSSIA_COUNTRY.name_en,
         region: shell.region || shell.region_ru || 'Europe',
         indicators_count: shell.indicators_count || 0,
         is_active: true,

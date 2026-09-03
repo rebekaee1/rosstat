@@ -640,3 +640,40 @@ def test_variant_label_building_permits_readable():
     assert any("одноквартир" in lab.lower() for lab in labels)
     variants = build_variants(inds[0], inds)
     assert len({v["label"] for v in variants}) == 4
+
+
+def test_build_variants_always_includes_label_en():
+    """WEO-пилюли: EN overlay даже если текущая locale — ru."""
+    import re
+
+    from app.services.world_cards import build_variants, variant_label
+
+    common = dict(
+        provider="imf", country_id=1, dataset_id="WEO", slice_json=None,
+    )
+    gdp = _Ind(
+        code="ca-weo-ngdpd",
+        name_ru="Валовой внутренний продукт в текущих ценах",
+        name_en="Gross domestic product at current prices",
+        unit="BN_USD",
+        unit_ru="млрд $",
+        **common,
+    )
+    une = _Ind(
+        code="ca-weo-lur",
+        name_ru="Уровень безработицы",
+        name_en="Unemployment rate",
+        unit="PC_ACT",
+        unit_ru="% экономически активного населения",
+        **common,
+    )
+    variants = build_variants(gdp, [gdp, une])
+    assert len(variants) == 2
+    by_code = {item["code"]: item for item in variants}
+    assert "label_en" in by_code["ca-weo-lur"]
+    assert "label_ru" in by_code["ca-weo-lur"]
+    assert not re.search(r"[А-Яа-яЁё]", by_code["ca-weo-lur"]["label_en"])
+    assert not re.search(r"[А-Яа-яЁё]", by_code["ca-weo-ngdpd"]["label_en"])
+    en_gdp = variant_label(gdp, locale="en")
+    assert "gross domestic product" in en_gdp.lower()
+    assert not re.search(r"[А-Яа-яЁё]", en_gdp)

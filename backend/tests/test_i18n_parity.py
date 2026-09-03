@@ -1220,81 +1220,122 @@ def test_default_keywords_en():
 
 
 
-def test_geo_locale_redirect_is_noop(monkeypatch):
-    """IP/VPN/Accept-Language не редиректят: язык = хост (2026-08-31)."""
+def _html_locale_request(
+    *,
+    host="forecasteconomy.com",
+    path="/russia/indicator/cpi",
+    ua="Mozilla/5.0",
+    cookie="",
+    ip="203.0.113.5",
+    extra_headers=None,
+    query=b"",
+    original_uri=None,
+):
     from starlette.requests import Request
+
+    headers = [
+        (b"host", host.encode()),
+        (b"accept", b"text/html"),
+        (b"user-agent", ua.encode()),
+        (b"x-forwarded-for", ip.encode()),
+    ]
+    if cookie:
+        headers.append((b"cookie", cookie.encode()))
+    if original_uri:
+        headers.append((b"x-original-uri", original_uri.encode()))
+    if extra_headers:
+        headers.extend(extra_headers)
+    return Request({
+        "type": "http",
+        "method": "GET",
+        "path": path,
+        "query_string": query,
+        "scheme": "https",
+        "server": (host, 443),
+        "client": (ip, 1),
+        "headers": headers,
+    })
+
+
+def test_locale_host_redirect_after_cutover(monkeypatch):
+    """После cutover: люди из РФ → ru.; боты и явный EN остаются на хосте."""
     from app.config import settings
-    from app.main import _geo_locale_redirect
+    from app.main import _locale_host_redirect
 
     monkeypatch.setattr(settings, "apex_locale_en", True)
     monkeypatch.setattr(settings, "geo_locale_redirect_enabled", True)
     monkeypatch.setattr(settings, "browser_lang_redirect_enabled", True)
+    monkeypatch.setattr(settings, "public_base_url", "https://forecasteconomy.com")
     monkeypatch.setattr("app.services.geoip.lookup", lambda ip: {"country_code": "RU"})
-    scope = {
-        "type": "http", "method": "GET", "path": "/russia/indicator/cpi",
-        "query_string": b"mode=weekly", "scheme": "https",
-        "server": ("forecasteconomy.com", 443), "client": ("203.0.113.5", 1),
-        "headers": [(b"host", b"forecasteconomy.com"), (b"accept", b"text/html"),
-                    (b"user-agent", b"Mozilla/5.0"),
-                    (b"accept-language", b"ru-RU,ru;q=0.9")],
-    }
-    assert _geo_locale_redirect(Request(scope)) is None
 
-    bot = {**scope, "headers": [(b"host", b"forecasteconomy.com"),
-                                  (b"accept", b"text/html"),
-                                  (b"user-agent", b"YandexBot/3.0")]}
-    assert _geo_locale_redirect(Request(bot)) is None
+    ru_ip = _locale_host_redirect(_html_locale_request())
+    assert ru_ip is not None and ru_ip.status_code == 307
+    assert ru_ip.headers["location"] == "https://ru.forecasteconomy.com/russia/indicator/cpi"
 
-    api = {**scope, "path": "/api/v1/health/ready"}
-    assert _geo_locale_redirect(Request(api)) is None
+    monkeypatch.setattr("app.services.geoip.lookup", lambda ip: {"country_code": "US"})
+    assert _locale_host_redirect(_html_locale_request(
+        extra_headers=[(b"accept-language", b"ru-RU,ru;q=0.9")],
+    )) is None
+
+    monkeypatch.setattr("app.services.geoip.lookup", lambda ip: {"country_code": "RU"})
+    assert _locale_host_redirect(_html_locale_request(ua="YandexBot/3.0")) is None
+    assert _locale_host_redirect(_html_locale_request(ua="Googlebot/2.1")) is None
+    assert _locale_host_redirect(_html_locale_request(ua="GPTBot/1.0")) is None
+    assert _locale_host_redirect(_html_locale_request(path="/api/v1/health/ready")) is None
+    assert _locale_host_redirect(_html_locale_request(cookie="fe_locale_pref=en")) is None
+    assert _locale_host_redirect(_html_locale_request(query=b"locale_pref=en")) is None
+
+    cookie_ru = _locale_host_redirect(_html_locale_request(
+        cookie="fe_locale_pref=ru",
+    ))
+    assert cookie_ru is not None
+    assert cookie_ru.headers["location"] == "https://ru.forecasteconomy.com/russia/indicator/cpi"
+
+    from_ru_en = _locale_host_redirect(_html_locale_request(
+        host="ru.forecasteconomy.com",
+        cookie="fe_locale_pref=en",
+    ))
+    assert from_ru_en is not None and from_ru_en.status_code == 307
+    assert from_ru_en.headers["location"] == "https://forecasteconomy.com/russia/indicator/cpi"
+
+    monkeypatch.setattr(settings, "geo_locale_redirect_enabled", False)
+    assert _locale_host_redirect(_html_locale_request()) is None
+
+    monkeypatch.setattr(settings, "apex_locale_en", False)
+    monkeypatch.setattr(settings, "geo_locale_redirect_enabled", True)
+    assert _locale_host_redirect(_html_locale_request()) is None
 
 
-def test_locale_pref_cookie_persist_without_geo_redirect(monkeypatch):
-    """Явный выбор языка пишется в cookie; geo-редирект при этом не срабатывает."""
-    from starlette.requests import Request
+def test_locale_pref_cookie_persist_and_host_swap(monkeypatch):
+    """Явный флажок: cookie на общем Domain; RU с apex сразу на ru."""
     from app.config import settings
-    from app.main import _geo_locale_redirect, _persist_locale_pref_redirect
+    from app.main import _locale_host_redirect, _persist_locale_pref_redirect
 
     monkeypatch.setattr(settings, "apex_locale_en", True)
     monkeypatch.setattr(settings, "geo_locale_redirect_enabled", True)
+    monkeypatch.setattr(settings, "public_base_url", "https://forecasteconomy.com")
     monkeypatch.setattr("app.services.geoip.lookup", lambda ip: {"country_code": "RU"})
 
-    def _request_pref_query():
-        return Request({
-            "type": "http", "method": "GET", "path": "/russia/indicator/cpi",
-            "query_string": b"locale_pref=en", "scheme": "https",
-            "server": ("forecasteconomy.com", 443), "client": ("203.0.113.9", 1),
-            "headers": [(b"host", b"forecasteconomy.com"), (b"accept", b"text/html"),
-                        (b"user-agent", b"Mozilla/5.0")],
-        })
-
-    assert _geo_locale_redirect(_request_pref_query()) is None
-    persist = _persist_locale_pref_redirect(_request_pref_query())
+    persist = _persist_locale_pref_redirect(_html_locale_request(query=b"locale_pref=en"))
     assert persist is not None and persist.status_code == 303
     assert persist.headers["location"] == "/russia/indicator/cpi"
     set_cookie = persist.headers.get("set-cookie", "")
     assert "fe_locale_pref=en" in set_cookie
     assert "domain=.forecasteconomy.com" in set_cookie.lower()
+    assert _locale_host_redirect(_html_locale_request(query=b"locale_pref=en")) is None
 
-    def _request_pref_via_original_uri():
-        return Request({
-            "type": "http", "method": "GET",
-            "path": "/seo/category/gdp",
-            "query_string": b"", "scheme": "https",
-            "server": ("forecasteconomy.com", 443), "client": ("203.0.113.9", 1),
-            "headers": [
-                (b"host", b"forecasteconomy.com"),
-                (b"accept", b"text/html"),
-                (b"user-agent", b"Mozilla/5.0"),
-                (b"x-original-uri", b"/russia/category/gdp?locale_pref=en"),
-            ],
-        })
+    persist_orig = _persist_locale_pref_redirect(_html_locale_request(
+        path="/seo/category/gdp",
+        original_uri="/russia/category/gdp?locale_pref=en",
+    ))
+    assert persist_orig is not None and persist_orig.status_code == 303
+    assert persist_orig.headers["location"] == "/russia/category/gdp"
+    assert "fe_locale_pref=en" in persist_orig.headers.get("set-cookie", "")
 
-    assert _geo_locale_redirect(_request_pref_via_original_uri()) is None
-    persist = _persist_locale_pref_redirect(_request_pref_via_original_uri())
-    assert persist is not None and persist.status_code == 303
-    assert persist.headers["location"] == "/russia/category/gdp"
-    assert "fe_locale_pref=en" in persist.headers.get("set-cookie", "")
+    persist_ru = _persist_locale_pref_redirect(_html_locale_request(query=b"locale_pref=ru"))
+    assert persist_ru is not None and persist_ru.status_code == 303
+    assert persist_ru.headers["location"] == "https://ru.forecasteconomy.com/russia/indicator/cpi"
+    assert "fe_locale_pref=ru" in persist_ru.headers.get("set-cookie", "")
 
 
 def test_persist_locale_pref_keeps_preview_until_cutover(monkeypatch):

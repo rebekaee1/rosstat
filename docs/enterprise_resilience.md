@@ -75,6 +75,6 @@
 
 RU/EN запускаются как два канонических HTTPS-хоста с одинаковыми путями.
 Sitemap, RSS, canonical, hreflang, OG и JSON-LD формируются от исходного Host;
-кэш разделён по host/locale. Язык = хост: IP/VPN/`Accept-Language` не
-выбирают локаль и не редиректят. Bot UA и служебные маршруты всегда получают
-ответ запрошенного хоста. Канарейка: `scripts/dual-host-release-gate.py`.
+кэш разделён по host/locale. После cutover людей с IP России/СНГ с apex
+уводим на `ru.`; `Accept-Language` не редиректит. Bot UA и служебные маршруты
+всегда получают ответ запрошенного хоста. Канарейка: `scripts/dual-host-release-gate.py`.

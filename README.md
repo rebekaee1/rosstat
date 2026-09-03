@@ -1,12 +1,12 @@
-# Forecast Economy — аналитическая платформа экономики России, регионов и стран
+# Forecast Economy — аналитическая платформа официальной макроэкономической статистики по странам
 
-Платформа для сбора, анализа и публикации официальных экономических данных России, 85 регионов и доступных стран. Российский контур использует Росстат, Банк России и Минфин; мировой контур — Eurostat и подключаемые официальные национальные первоисточники. Прогнозы, ежедневный ETL, SSR + SEO, embed-виджеты, календарь публикаций, live ticker (USD/EUR/CNY/BTC/Brent), аналитический MCP. Доступна публично на [forecasteconomy.com](https://forecasteconomy.com).
+Платформа для сбора, анализа и публикации официальных экономических данных по странам. Источники — национальные статистические ведомства, центральные банки, Евростат и МВФ; по России покрытие особенно глубокое (Росстат, Банк России, Минфин, 85 субъектов). Прогнозы, ежедневный ETL, SSR + SEO, embed-виджеты, календарь публикаций, live ticker (USD/EUR/CNY/BTC/Brent), аналитический MCP. Английский канон: [forecasteconomy.com](https://forecasteconomy.com); русский: [ru.forecasteconomy.com](https://ru.forecasteconomy.com).
 
 **Точка входа в документацию (для AI-агентов и людей):** [`AGENTS.md`](AGENTS.md) — карта документации, режим работы, протокол актуализации.
 **Domain glossary и инварианты:** [`CONTEXT.md`](CONTEXT.md).
 **Рабочий процесс, локальный dev, прод-деплой:** [`docs/workflow.md`](docs/workflow.md).
 **Источники данных:** [`docs/data_sources.md`](docs/data_sources.md) (per-indicator карта `URL/endpoint/sheet/row`); parser internals — в docstrings `backend/app/services/*_parser.py`.
-**Архитектурные решения:** [`docs/adr/`](docs/adr/) (ADR-0001..0012).
+**Архитектурные решения:** [`docs/adr/`](docs/adr/) (ADR-0001..0013).
 **Backlog работ:** [`docs/backlog.md`](docs/backlog.md).
 
 ## Архитектура

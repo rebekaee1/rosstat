@@ -7,7 +7,7 @@ import {
   pluralRu,
   useWorldCountries,
 } from '../../lib/worldApi';
-import { HOME_MAP_RUSSIA_COUNTRY } from '../../lib/homeWorkbench';
+import { HOME_MAP_RUSSIA_COUNTRY, countryPublicName } from '../../lib/homeWorkbench';
 import { countryPath, russiaHomePath } from '../../lib/sitePaths';
 import { SkeletonBox } from '../Skeleton';
 import ApiRetryBanner from '../ApiRetryBanner';
@@ -29,6 +29,10 @@ function CountryCard({ country }) {
   const seriesLabel = locale === 'en'
     ? (n === 1 ? t('world.unit.series_one') : t('world.unit.series_many'))
     : pluralRu(n, [t('world.unit.series_one'), t('world.unit.series_few'), t('world.unit.series_many')]);
+  const primary = countryPublicName(country, locale);
+  const secondary = locale === 'en'
+    ? (country.name && country.name !== primary ? country.name : '')
+    : (country.name_en && country.name_en !== primary ? country.name_en : '');
 
   return (
     <Link
@@ -39,11 +43,13 @@ function CountryCard({ country }) {
       <CountryMark code={country.code} />
       <div className="min-w-0 flex-1">
         <div className="truncate text-[14px] font-medium leading-snug text-text-primary transition-colors group-hover:text-champagne">
-          {country.name}
+          {primary}
         </div>
-        <div className="mt-0.5 truncate font-mono text-[11px] text-text-tertiary">
-          {country.name_en}
-        </div>
+        {secondary ? (
+          <div className="mt-0.5 truncate font-mono text-[11px] text-text-tertiary">
+            {secondary}
+          </div>
+        ) : null}
       </div>
       <div className="w-12 shrink-0 text-right sm:w-14">
         <div className="font-mono text-[13px] font-semibold tabular-nums text-text-primary">

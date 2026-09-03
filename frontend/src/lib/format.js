@@ -1,4 +1,4 @@
-import { resolveBrowserLocale } from '../i18n/locale';
+import { currentUiLocale } from '../i18n/locale';
 
 const MONTHS_SHORT = {
   ru: ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'],
@@ -27,7 +27,7 @@ const MONTHS_DAY = {
 
 function resolveFormatLocale(locale) {
   if (locale === 'en' || locale === 'ru') return locale;
-  if (typeof window !== 'undefined') return resolveBrowserLocale();
+  if (typeof window !== 'undefined') return currentUiLocale();
   return 'ru';
 }
 
@@ -412,6 +412,8 @@ const UNIT_CONFIG = {
   'тыс. чел.': { digits: 1, suffix: ' тыс.',   space: false },
   'млрд $':    { digits: 1, suffix: ' млрд $',  space: false },
   'млн $':     { digits: 0, suffix: ' млн $',   space: false },
+  'billion $': { digits: 1, suffix: ' billion $', space: false },
+  'million $': { digits: 0, suffix: ' million $', space: false },
   'индекс':    { digits: 2, suffix: '',          space: false },
   '‰':         { digits: 2, suffix: '‰',         space: false },
   'чел.':      { digits: 0, suffix: ' чел.',     space: false },

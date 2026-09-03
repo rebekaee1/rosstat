@@ -198,9 +198,9 @@
     },
     "pages": {
       "about": {
-        "description": "Analytics platform for official economic data on Russia, regions, and available countries: charts, tables, comparisons, and forecasts.",
+        "description": "Analytics platform for official economic data by country: charts, tables, comparisons, and forecasts. Russia has especially deep macro and regional coverage.",
         "h1": "About Forecast Economy",
-        "intro": "Forecast Economy is an analytics project on the economy of Russia, its regions, and available countries. We present official indicators in a comparable form: charts, tables, sources, analysis modes, and quality-checked forecasts.",
+        "intro": "Forecast Economy is an analytics project for official economic statistics by country. We present official indicators in a comparable form: charts, tables, sources, analysis modes, and quality-checked forecasts. Coverage of Russia is especially deep.",
         "path": "/about",
         "slug": "about",
         "title": "About Forecast Economy"
@@ -256,7 +256,7 @@
       "home": {
         "description": "Official macroeconomic indicators for countries, Russia, and its regions: charts, tables, comparisons, and forecasts from statistical agencies and central banks.",
         "h1": "Official macroeconomic indicators in one place",
-        "intro": "Forecast Economy collects macroeconomic indicators for countries from national statistical agencies, central banks, and Eurostat. Data come only from official primary sources and are shown as charts, tables, comparisons, and forecasts. Viewing is open to everyone; downloads require free registration.",
+        "intro": "Forecast Economy collects macroeconomic indicators for countries from national statistical agencies, central banks, Eurostat, and the IMF. Data come only from official primary sources and are shown as charts, tables, comparisons, and forecasts. Coverage of Russia is especially deep. Viewing is open to everyone; downloads require free registration.",
         "path": "/",
         "slug": "home",
         "title": "Forecast Economy — macroeconomic indicators for countries and Russia"
@@ -320,9 +320,9 @@
   },
   "pages": {
     "about": {
-      "description": "Аналитическая платформа официальных экономических данных России, регионов и доступных стран: графики, таблицы, сравнения и прогнозы.",
+      "description": "Аналитическая платформа официальных экономических данных по странам: графики, таблицы, сравнения и прогнозы. По России — глубокое покрытие макропоказателей и регионов.",
       "h1": "О проекте Forecast Economy",
-      "intro": "Forecast Economy — аналитический проект об экономике России, её регионов и доступных стран. Мы приводим официальные показатели к сопоставимому виду: графики, таблицы, источники, режимы анализа и проверенные прогнозы.",
+      "intro": "Forecast Economy — аналитический проект официальной экономической статистики по странам. Мы приводим официальные показатели к сопоставимому виду: графики, таблицы, источники, режимы анализа и проверенные прогнозы. По России покрытие особенно глубокое.",
       "path": "/about",
       "slug": "about",
       "title": "О проекте Forecast Economy"
@@ -378,7 +378,7 @@
     "home": {
       "description": "Официальные макроэкономические индикаторы по странам, России и её регионам: графики, таблицы, сравнения и статистические прогнозы по данным ведомств статистики и центральных банков.",
       "h1": "Официальные макроэкономические индикаторы в одной рабочей среде",
-      "intro": "Forecast Economy собирает макроэкономические индикаторы стран по данным национальных статистических ведомств, центральных банков и Евростата. Данные поступают только из официальных первоисточников и показаны в виде графиков, таблиц, сравнений и прогнозов. Просмотр открыт всем; скачивание доступно после бесплатной регистрации.",
+      "intro": "Forecast Economy собирает макроэкономические индикаторы стран по данным национальных статистических ведомств, центральных банков, Евростата и МВФ. Данные поступают только из официальных первоисточников и показаны в виде графиков, таблиц, сравнений и прогнозов. По России покрытие особенно глубокое. Просмотр открыт всем; скачивание доступно после бесплатной регистрации.",
       "path": "/",
       "slug": "home",
       "title": "Forecast Economy — макроэкономические индикаторы стран и России"
