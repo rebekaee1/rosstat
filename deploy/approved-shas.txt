@@ -24,3 +24,5 @@ ce29e48faaf85516695049faa7929b28a3272b9a  # ce29e48 dual-host gate pre-cutover, 
 488dba343eea84f164a3970d98b727faa423589e  # 488dba3 deploy.sh/fail2ban follow-up, owner-approved 2026-09-03
 
 c175547e33ce756529b0410447681c9c355fac6a  # c175547 apex EN + ru. RU + geo людям, owner-approved 2026-09-03
+
+f14cac7b10872950cb1cf072688bf6e57c734a12  # f14cac7 deploy ru. canonical smoke after EN cutover, owner-approved 2026-09-03
