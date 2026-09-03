@@ -129,14 +129,14 @@ done
 # Frontend healthy до smoke: readiness-цикл выше ждёт только backend, а
 # frontend пересоздаётся секундами позже — первый HTTPS-пробег гонки
 # «health: starting» ловил 502/000 и ложно откатывал годный релиз.
-echo "==> waiting for frontend healthy (до 120s)"
+echo "==> waiting for frontend healthy (до 180s)"
 fe_ok=""
-for _ in $(seq 1 24); do
+for _ in $(seq 1 36); do
   fe=$(docker inspect --format '{{.State.Health.Status}}' rosstat-frontend-1 2>/dev/null || echo unknown)
   [ "$fe" = "healthy" ] && { fe_ok=1; break; }
   sleep 5
 done
-[ -n "$fe_ok" ] || { echo "FAIL: frontend не стал healthy за 120s"; docker compose logs frontend --tail=50; rollback; }
+[ -n "$fe_ok" ] || { echo "FAIL: frontend не стал healthy за 180s"; docker compose logs frontend --tail=50; rollback; }
 
 echo "==> cache Redis DB 0 FLUSHDB (SSR/asset-hash); redis-state и DB 1 не трогаем"
 REDIS_PASSWORD="$(grep '^REDIS_PASSWORD=' .env | cut -d= -f2- | tr -d '\"' | tr -d "'")"
@@ -192,9 +192,18 @@ https_probe() {
 for host in forecasteconomy.com ru.forecasteconomy.com; do
   https_probe "https://${host}/api/v1/health" "" \
     || { echo "FAIL: HTTPS smoke ${host}"; rollback; }
-  https_probe "https://${host}/russia/indicator/cpi" "https://forecasteconomy.com/russia/indicator/cpi" \
-    || { echo "FAIL: canonical/SSR smoke ${host}"; rollback; }
 done
+# Canonical: apex всегда self. ru. до cutover каноничен на apex (Р-А);
+# после apex EN — self на ru. (hreflang тоже содержит apex URL — не greпать его).
+https_probe "https://forecasteconomy.com/russia/indicator/cpi" \
+  'rel="canonical" href="https://forecasteconomy.com/russia/indicator/cpi"' \
+  || { echo "FAIL: canonical/SSR smoke apex"; rollback; }
+RU_CANON='rel="canonical" href="https://forecasteconomy.com/russia/indicator/cpi"'
+if grep -qE '^RUSTATS_APEX_LOCALE_EN=(true|1)' .env; then
+  RU_CANON='rel="canonical" href="https://ru.forecasteconomy.com/russia/indicator/cpi"'
+fi
+https_probe "https://ru.forecasteconomy.com/russia/indicator/cpi" "${RU_CANON}" \
+  || { echo "FAIL: canonical/SSR smoke ru."; rollback; }
 # Гейт-скрипту нужны httpx/bs4: берём выделенный venv на хосте (вне репозитория,
 # чтобы не грязнить git-дерево), системный python3 — фолбэк.
 GATE_PY="python3"
