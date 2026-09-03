@@ -26,3 +26,5 @@ ce29e48faaf85516695049faa7929b28a3272b9a  # ce29e48 dual-host gate pre-cutover, 
 c175547e33ce756529b0410447681c9c355fac6a  # c175547 apex EN + ru. RU + geo людям, owner-approved 2026-09-03
 
 f14cac7b10872950cb1cf072688bf6e57c734a12  # f14cac7 deploy ru. canonical smoke after EN cutover, owner-approved 2026-09-03
+
+bf7a43c636972280ea16ec994b3cdfd1cfc7b225  # bf7a43c EN region copy + gate, owner-approved 2026-09-03
