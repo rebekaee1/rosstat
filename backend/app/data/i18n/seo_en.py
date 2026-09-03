@@ -1132,6 +1132,7 @@ REGIONAL_TEMPLATES_EN: dict[str, str] = {
     'region_profile.see_also': 'See also',
     'region_profile.all_regions': 'All regions of Russia',
     'region_profile.russia_summary': '{russia} — aggregate figures',
+    'region_profile.top_demand': 'Frequently viewed',
     'region_profile.keywords': (
         '{region} statistics, {region} economy, {region} population, '
         '{region} wages, {region} GRP'

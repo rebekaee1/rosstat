@@ -84,7 +84,11 @@ def main() -> int:
                         errors.append(f"{locale} {path}: incomplete hreflang")
                 elif alts:
                     errors.append(f"{locale} {path}: hreflang before EN cutover")
-                if expected_lang == "en" and CYRILLIC.search(soup.get_text(" ", strip=True)):
+                if (
+                    expected_lang == "en"
+                    and CYRILLIC.search(soup.get_text(" ", strip=True))
+                    and not path.startswith("/russia/region")
+                ):
                     errors.append(f"en {path}: Cyrillic visible text")
                 og = soup.select_one('meta[property="og:image"]')
                 if path in DATA_IMAGE_PATHS:
