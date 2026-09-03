@@ -33,7 +33,9 @@ echo "    ${PREV_SHA} -> ${NEW_SHA}"
 # внесён в deploy/approved-shas.txt (полные хэши, по одному на строку).
 # Пустой/отсутствующий файл = деплой запрещён. Пополнение списка — только
 # явным подтверждением владельца («деплой до <sha>»).
-APPROVED_FILE="$(cd "$(dirname "$0")/.." && pwd)/deploy/approved-shas.txt"
+# pwd, не $0: скрипт иногда копируют в /tmp, чтобы self-update не сдвигал
+# остаток файла после ff-only merge (этот коммит как раз меняет deploy.sh).
+APPROVED_FILE="$(pwd)/deploy/approved-shas.txt"
 FULL_SHA=$(git rev-parse HEAD)
 if [ ! -s "${APPROVED_FILE}" ]; then
   echo "FAIL: deploy/approved-shas.txt пуст или отсутствует — скоуп деплоя не одобрен."
@@ -211,7 +213,7 @@ echo "==> post-deploy watch 15 min"
 WATCH_FAIL=0
 for i in $(seq 1 15); do
   TTFB=$(curl -o /dev/null -s -w '%{time_starttransfer}' -m 8 -A 'YandexBot/3.0' https://forecasteconomy.com/ || echo 99)
-  READY=$(curl -sf -m 5 http://127.0.0.1:8000/api/v1/health/ready | grep -c '"status": "ok"' || true)
+  READY=$(curl -sf -m 5 http://127.0.0.1:8000/api/v1/health/ready | grep -cE '"status": ?"ok"' || true)
   OOM=$(docker inspect rosstat-backend-1 --format '{{.State.OOMKilled}}' 2>/dev/null || echo unknown)
   MEM=$(docker stats --no-stream --format '{{.MemUsage}}' rosstat-backend-1 2>/dev/null || echo n/a)
   echo "    min ${i}: ttfb=${TTFB}s ready=${READY} oom=${OOM} mem=${MEM}"

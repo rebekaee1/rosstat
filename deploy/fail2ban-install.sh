@@ -22,6 +22,10 @@ echo "==> конфиги fail2ban"
 install -m 0644 deploy/fail2ban/jail.local /etc/fail2ban/jail.local
 install -m 0644 deploy/fail2ban/filter.d-nginx-429.conf /etc/fail2ban/filter.d/nginx-429.conf
 install -m 0644 deploy/fail2ban/filter.d-nginx-volume.conf /etc/fail2ban/filter.d/nginx-volume.conf
+install -m 0644 deploy/fail2ban/filter.d-honeytrap.conf /etc/fail2ban/filter.d/honeytrap.conf
+install -d -m 0755 /var/log/rosstat-nginx
+touch /var/log/rosstat-nginx/security.log /var/log/rosstat-nginx/honeypot.log
+chown 101:101 /var/log/rosstat-nginx /var/log/rosstat-nginx/security.log /var/log/rosstat-nginx/honeypot.log
 
 echo "==> logrotate для security/honeypot"
 install -m 0644 deploy/fail2ban/logrotate-rosstat-nginx /etc/logrotate.d/rosstat-nginx

@@ -68,3 +68,8 @@ banaction = iptables-allports
 bantime  = 1w
 findtime = 1d
 maxretry = 2
+
+# Пакет Ubuntu включает sshd jail. Нас банит собственные ретраи агента
+# (banner timeout при нагрузке). SSH только по ключу; jail nginx достаточны.
+[sshd]
+enabled = false
