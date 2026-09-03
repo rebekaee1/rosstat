@@ -10331,7 +10331,27 @@
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 195,
+          "line": 198,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/deploy.sh",
+          "line": 199,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/deploy.sh",
+          "line": 201,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/deploy.sh",
+          "line": 203,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/deploy.sh",
+          "line": 205,
           "kind": "other"
         },
         {
@@ -44316,12 +44336,7 @@
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 1136,
-          "kind": "other"
-        },
-        {
-          "file": "backend/app/data/i18n/seo_en.py",
-          "line": 1261,
+          "line": 1137,
           "kind": "other"
         },
         {
@@ -44331,12 +44346,17 @@
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 1265,
+          "line": 1263,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 1271,
+          "line": 1266,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/data/i18n/seo_en.py",
+          "line": 1272,
           "kind": "other"
         },
         {
@@ -53539,17 +53559,17 @@
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 1262,
+          "line": 1263,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 1265,
+          "line": 1266,
           "kind": "other"
         },
         {
           "file": "backend/app/data/i18n/seo_en.py",
-          "line": 1271,
+          "line": 1272,
           "kind": "other"
         },
         {

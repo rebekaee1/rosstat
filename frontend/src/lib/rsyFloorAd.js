@@ -8,6 +8,14 @@
  * - Рендерим ТОЛЬКО блок текущей платформы через
  *   `Ya.Context.AdvManager.getPlatform()` (официальный рецепт РСЯ). Рендер
  *   обоих подряд оставлял на touch пустой chrome-шелл без креатива.
+ * - SPA-навигация (2026-09-03): маршрут сменился — блок обновляем
+ *   (`destroy` + `render` с инкрементом `pageNumber`, официальный рецепт РСЯ
+ *   для динамического контента), но не чаще `REFRESH_COOLDOWN_MS`. До этой
+ *   правки реклама рендерилась один раз на документ: читатель, смотрящий
+ *   десять карточек, видел одно объявление за визит.
+ * - Запрос объявления делает только человек: гейт по доверенному вводу живёт
+ *   в `frontend/public/consent.js` (`armAdsGate`). Инцидент 2026-08-27:
+ *   роботы просили рекламу на SSR-страницах, fill rate упал 97% → 11%.
  * - Empty-state (2026-07-14, rev.2): watchdog ~6 с с destroy УБРАН.
  *   Он снимал живой Floor Ad после видимого fill (late iframe / video /
  *   Shadow DOM — детектор «пусто» давал false positive). Снос живой рекламы
@@ -147,21 +155,65 @@ function trackFloorFillGoal(blockId) {
   }, FILL_GOAL_CHECK_MS);
 }
 
-export function renderFloorAd() {
-  const adv = window.Ya?.Context?.AdvManager;
-  if (!adv || typeof adv.render !== 'function') return;
-
+/** Блок под текущую платформу (официальный рецепт РСЯ: getPlatform). */
+export function blockForPlatform(adv) {
   const platform =
-    typeof adv.getPlatform === 'function' ? adv.getPlatform() : null;
-  const cfg =
+    adv && typeof adv.getPlatform === 'function' ? adv.getPlatform() : null;
+  return (
     RSY_BLOCKS.find((b) => b.platform === platform) ||
     RSY_BLOCKS.find((b) => b.platform === 'desktop') ||
-    RSY_BLOCKS[0];
+    RSY_BLOCKS[0]
+  );
+}
+
+/**
+ * Минимальный интервал между обновлениями блока на SPA-навигации.
+ *
+ * Зачем: floorAd — прилипающая плашка. Обновлять её на каждый клик по меню
+ * значит мигать рекламой у читателя и множить запросы без показов. 60 с —
+ * компромисс: читатель, изучающий 3–4 карточки подряд, получает новое
+ * объявление, «пролистывание» каталога — нет.
+ */
+export const REFRESH_COOLDOWN_MS = 60_000;
+
+let lastRenderAt = 0;
+let pageNumber = 0;
+
+/** Сброс счётчиков (тесты; в браузере состояние живёт до перезагрузки). */
+export function __resetFloorAdState() {
+  lastRenderAt = 0;
+  pageNumber = 0;
+}
+
+/**
+ * Рендер блока. `refresh=true` — повторный вызов при смене маршрута SPA:
+ * прежний блок сносим (`destroy`) и просим новое объявление с инкрементом
+ * `pageNumber`, как требует документация РСЯ для динамического контента.
+ *
+ * Возвращает true, если запрос объявления ушёл.
+ */
+export function renderFloorAd({ refresh = false, now = Date.now() } = {}) {
+  const adv = window.Ya?.Context?.AdvManager;
+  if (!adv || typeof adv.render !== 'function') return false;
+
+  const cfg = blockForPlatform(adv);
+
+  if (refresh) {
+    if (now - lastRenderAt < REFRESH_COOLDOWN_MS) return false;
+    // Контейнер занят предыдущим объявлением: без destroy SDK молча
+    // проигнорирует повторный render.
+    destroyBlock(cfg.blockId);
+    forceRemoveShell(cfg.blockId);
+  }
+
+  lastRenderAt = now;
+  pageNumber += 1;
 
   adv.render({
     blockId: cfg.blockId,
     type: cfg.type,
     platform: cfg.platform,
+    pageNumber,
     onError: () => {
       // Единственный путь auto-destroy: явный no-bid / ошибка SDK.
       destroyBlock(cfg.blockId);
@@ -171,6 +223,7 @@ export function renderFloorAd() {
       trackFloorFillGoal(cfg.blockId);
     },
   });
+  return true;
 }
 
 // Экспорт маркеров для тестов / CSS-аудита.
@@ -180,6 +233,7 @@ export const __RSY_TEST = {
   isFloorAdShellEmpty,
   EMPTY_CHECK_MS,
   hasLiveMedia,
+  REFRESH_COOLDOWN_MS,
   /** true = timer auto-destroy отключён; снос только через onError. */
   AUTO_DESTROY_DISABLED: true,
 };

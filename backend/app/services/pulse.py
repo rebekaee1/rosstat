@@ -327,7 +327,7 @@ async def _bot_signals(d: date) -> dict[str, Any]:
             await _alert(
                 "sg_scrape",
                 f"Скрейп из Сингапура: {sg_n} сессий ({sg_share}% от {total}) за {d}. "
-                "Гео-блок RUSTATS_SCRAPE_BLOCK_COUNTRIES=SG.",
+                "Гео-блок RUSTATS_SCRAPE_BLOCK_COUNTRIES=SG,PL.",
             )
         except Exception:  # noqa: BLE001
             logger.warning("sg_scrape alert failed", exc_info=True)

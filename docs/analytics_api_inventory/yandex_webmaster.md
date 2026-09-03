@@ -15,7 +15,10 @@ Base URL: `https://api.webmaster.yandex.net`.
 
 Scope: Webmaster OAuth scope required by Yandex for verified site access.
 
-Host allowlist: `forecasteconomy.com`.
+Host allowlist: `forecasteconomy.com` и `ru.forecasteconomy.com` (после cutover оба свойства).
+Языковой сплит — **не** «Переезд сайта»: Яндекс не переклеивает индекс apex→ru. целиком.
+Канон RU живёт на `ru.` (hreflang + self-canonical); apex остаётся EN + x-default.
+Документация: [локализованные страницы](https://yandex.ru/support/webmaster/ru/yandex-indexing/locale-pages).
 
 | Endpoint | Operation | Safety | Storage | MCP tool | Fixture |
 | --- | --- | --- | --- | --- | --- |

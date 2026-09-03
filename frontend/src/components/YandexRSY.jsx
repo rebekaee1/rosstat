@@ -11,7 +11,10 @@ import {
  * Yandex.RTB (РСЯ) floor-ad: React-обвязка. Вся логика блоков, детекции fill
  * и destroy — в `lib/rsyFloorAd.js` (см. контракт и traps там).
  *
- * - SPA-навигация не вызывает повторный рендер (`window.__rsyFloorAdRendered`).
+ * - Первый рендер — один на документ; дальше на каждой смене маршрута блок
+ *   обновляется (`renderFloorAd({ refresh: true })`) с антидребезгом
+ *   `REFRESH_COOLDOWN_MS` внутри lib. До 2026-09-03 повторов не было вовсе:
+ *   читатель десяти карточек видел одно объявление за визит.
  * - Embed-routes (`/embed/*`) монтируют свой ErrorBoundary без YandexRSY.
  * - `/admin/*`: не инициализируем; уже отрисованный floorAd прячется
  *   классом `rsy-hidden` на <html> (CSS в index.css).
@@ -33,18 +36,22 @@ export default function YandexRSY() {
 
   useEffect(() => {
     if (typeof window === 'undefined' || isAdmin) return;
-    if (window.__rsyFloorAdRendered) return;
+
+    // Первый маршрут — обычный рендер, последующие — обновление блока.
+    const refresh = Boolean(window.__rsyFloorAdRendered);
     window.__rsyFloorAdRendered = true;
 
+    // Очередь разбирает context.js, который грузится только после сигнала
+    // человека (public/consent.js). У робота очередь просто не исполнится.
     window.yaContextCb = window.yaContextCb || [];
     window.yaContextCb.push(() => {
       try {
-        renderFloorAd();
+        renderFloorAd({ refresh });
       } catch {
         // Не падаем, если РСЯ не загрузилась (CSP/AdBlock/сетевой блок).
       }
     });
-  }, [isAdmin]);
+  }, [isAdmin, pathname]);
 
   return null;
 }

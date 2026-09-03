@@ -1,5 +1,12 @@
-import { describe, expect, it } from 'vitest';
-import { isFloorAdShellEmpty, __RSY_TEST } from '../lib/rsyFloorAd';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import {
+  isFloorAdShellEmpty,
+  renderFloorAd,
+  blockForPlatform,
+  REFRESH_COOLDOWN_MS,
+  __resetFloorAdState,
+  __RSY_TEST,
+} from '../lib/rsyFloorAd';
 
 /** Минимальный DOM-like шелл без jsdom (vitest environment: node). */
 function shell({ media = [], slots = [], text = '' } = {}) {
@@ -90,6 +97,81 @@ describe('isFloorAdShellEmpty', () => {
         })
       )
     ).toBe(false);
+  });
+});
+
+describe('обновление блока на SPA-навигации', () => {
+  let calls;
+  let destroyed;
+
+  beforeEach(() => {
+    __resetFloorAdState();
+    calls = [];
+    destroyed = [];
+    globalThis.window = {
+      Ya: {
+        Context: {
+          AdvManager: {
+            getPlatform: () => 'desktop',
+            render: (opts) => calls.push(opts),
+            destroy: (opts) => destroyed.push(opts),
+          },
+        },
+      },
+      getComputedStyle: () => ({ position: 'static' }),
+    };
+    globalThis.document = undefined;
+  });
+
+  afterEach(() => {
+    delete globalThis.window;
+    delete globalThis.document;
+  });
+
+  it('первый рендер уходит в РСЯ с pageNumber=1', () => {
+    expect(renderFloorAd({ now: 0 })).toBe(true);
+    expect(calls).toHaveLength(1);
+    expect(calls[0].pageNumber).toBe(1);
+    expect(calls[0].blockId).toBe('R-A-19489903-1');
+  });
+
+  it('смена маршрута после кулдауна обновляет объявление', () => {
+    renderFloorAd({ now: 0 });
+    const ok = renderFloorAd({ refresh: true, now: REFRESH_COOLDOWN_MS + 1 });
+    expect(ok).toBe(true);
+    expect(calls).toHaveLength(2);
+    // Занятый контейнер обязан быть освобождён, иначе SDK молчит.
+    expect(destroyed).toHaveLength(1);
+    expect(calls[1].pageNumber).toBe(2);
+  });
+
+  it('быстрые клики по меню не мигают рекламой', () => {
+    renderFloorAd({ now: 0 });
+    expect(renderFloorAd({ refresh: true, now: 5_000 })).toBe(false);
+    expect(renderFloorAd({ refresh: true, now: 30_000 })).toBe(false);
+    expect(calls).toHaveLength(1);
+    expect(destroyed).toHaveLength(0);
+  });
+
+  it('кулдаун — не «раз в документ»: третий экран получает своё объявление', () => {
+    renderFloorAd({ now: 0 });
+    renderFloorAd({ refresh: true, now: 61_000 });
+    renderFloorAd({ refresh: true, now: 130_000 });
+    expect(calls.map((c) => c.pageNumber)).toEqual([1, 2, 3]);
+  });
+
+  it('без SDK (AdBlock/CSP) ничего не падает и запрос не уходит', () => {
+    globalThis.window = { Ya: undefined };
+    expect(renderFloorAd({ now: 0 })).toBe(false);
+  });
+
+  it('на touch выбирается мобильный блок', () => {
+    const adv = { getPlatform: () => 'touch' };
+    expect(blockForPlatform(adv).blockId).toBe('R-A-19489903-2');
+  });
+
+  it('кулдаун не короче 30 с (защита от мигающей плашки)', () => {
+    expect(REFRESH_COOLDOWN_MS).toBeGreaterThanOrEqual(30_000);
   });
 });
 

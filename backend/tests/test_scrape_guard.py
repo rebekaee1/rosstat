@@ -54,3 +54,27 @@ def test_russia_not_blocked(monkeypatch):
     assert scrape_guard.should_block(
         ip="5.6.7.8", ua="Chrome", path="/"
     ) is None
+
+
+def test_poland_chrome_is_blocked_with_default_list(monkeypatch):
+    monkeypatch.setattr(scrape_guard.settings, "scrape_block_countries", "SG,PL")
+    monkeypatch.setattr(
+        scrape_guard, "geo_lookup", lambda ip: {"country_code": "PL"}
+    )
+    assert scrape_guard.should_block(
+        ip="1.2.3.4",
+        ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0",
+        path="/",
+    ) == "PL"
+
+
+def test_googlebot_from_poland_not_blocked(monkeypatch):
+    monkeypatch.setattr(scrape_guard.settings, "scrape_block_countries", "SG,PL")
+    monkeypatch.setattr(
+        scrape_guard, "geo_lookup", lambda ip: {"country_code": "PL"}
+    )
+    assert scrape_guard.should_block(
+        ip="1.2.3.4",
+        ua="Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+        path="/",
+    ) is None

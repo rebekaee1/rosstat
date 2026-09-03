@@ -1,0 +1,32 @@
+---
+description: Как агент ходит на прод по ключу. Секреты в репозиторий не класть.
+alwaysApply: true
+---
+
+# Прод SSH
+
+Диктовка владельца 2026-09-03: агент **помнит** доступ и заходит сам. Пароль не спрашивать.
+
+## Как заходить
+
+```bash
+ssh fe-prod '…'
+```
+
+Алиас уже в `~/.ssh/config` владельца (не в git):
+
+- Host `fe-prod` → `root@201.51.11.170`
+- ключ `~/.ssh/id_ed25519_fe_prod` (`IdentitiesOnly`, keepalive, ControlMaster 30 мин)
+- каталог на сервере: `/opt/rosstat`
+
+Если `Connection timed out during banner exchange` — повторить ту же команду, не переключаться на пароль и не генерировать новый ключ.
+
+## Запрещено
+
+- Класть приватный ключ, `.env`, токены в репозиторий, чат, коммит, ADR.
+- `git config`, `--force` на `main`, деплой без явной команды владельца.
+- Писать IP/ключ в публичные тексты сайта.
+
+## Данные с прода
+
+Синк только **прод → локаль**. Полный `pg_dump` мира (`world_data_points` ~1 GB) для витринной аналитики не тащить. Для задач про аудиторию/РСЯ/поиск — таблицы `partner_revenue`, `raw_metrika_visits`, `daily_pages`, `metrika_search_phrases`, `webmaster_search_queries`, `daily_traffic`. Identity (`users` / сессии) не копировать без явной команды.

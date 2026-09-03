@@ -386,6 +386,23 @@ async def _startup_data_catch_up() -> None:
         await _catch_up_empty_forecasts_safe("startup")
     except Exception as e:
         logger.warning("Startup forecast catch-up aborted: %s", e)
+    await _catch_up_static_sitemaps()
+
+
+async def _catch_up_static_sitemaps() -> None:
+    """Первый старт после деплоя не ждёт ночной cron 03:40."""
+    try:
+        from app.services.sitemap_static import build_static_sitemaps, read_stats
+
+        if read_stats():
+            return
+        stats = await build_static_sitemaps()
+        logger.info(
+            "Startup sitemap catch-up: %s urls",
+            stats.get("urls_total"),
+        )
+    except Exception as e:
+        logger.warning("Startup sitemap catch-up aborted: %s", e)
 
 
 @asynccontextmanager
@@ -1204,7 +1221,7 @@ class LocaleMiddleware(BaseHTTPMiddleware):
 
 
 class ScrapeGeoBlockMiddleware(BaseHTTPMiddleware):
-    """403 не-поисковым клиентам из RUSTATS_SCRAPE_BLOCK_COUNTRIES (SG)."""
+    """403 не-поисковым клиентам из RUSTATS_SCRAPE_BLOCK_COUNTRIES (SG, PL)."""
 
     async def dispatch(self, request: Request, call_next):
         from app.services.scrape_guard import should_block

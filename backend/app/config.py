@@ -48,9 +48,10 @@ class Settings(BaseSettings):
     # Bearer-токен Search Analytics API. Пусто = джоб не синхронизирует.
     gsc_access_token: str = ""
     # ISO-коды стран, с которых режем не-поисковый трафик (скрейп с ротацией
-    # IP). Дефолт SG: 2026-09-03 Метрика — 1788 робот-визитов из Сингапура
-    # против 347 живых из РФ. Пусто = выкл.
-    scrape_block_countries: str = "SG"
+    # IP). Дефолт SG,PL: 2026-09-03 Метрика — Сингапур 1788 робот-визитов;
+    # вечером тот же паттерн с Польши (Chrome, 1 страница, Direct, 0–20 с).
+    # Поисковики по UA не режутся. Пусто = выкл.
+    scrape_block_countries: str = "SG,PL"
 
     # Redis
     redis_url: str = "redis://localhost:6379/0"

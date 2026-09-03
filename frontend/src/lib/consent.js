@@ -42,7 +42,9 @@ export function saveConsent({ analytics, ads }) {
     // Приватный режим: выбор применится на текущую сессию, но не сохранится.
   }
   if (typeof window.__feApplyConsent === 'function') {
-    window.__feApplyConsent(record);
+    // explicit: выбор сделан кликом по баннеру — доверенный ввод человека,
+    // рекламный гейт в public/consent.js открывается сразу.
+    window.__feApplyConsent(record, { explicit: true });
   }
   return record;
 }
