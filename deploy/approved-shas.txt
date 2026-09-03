@@ -32,3 +32,5 @@ bf7a43c636972280ea16ec994b3cdfd1cfc7b225  # bf7a43c EN region copy + gate, owner
 d3114c247e8f59ae3190bc4225c47e653ea57e6b  # d3114c2 РСЯ: гейт человек + SPA-refresh, гео-блок SG,PL в compose, owner-approved 2026-09-04
 
 e06c19bdb4192000154ab07cfd5e86be138263be  # e06c19b fail2ban polling + HTML volume, honeypot out of sitemap, owner-approved 2026-09-04
+
+dc4864d4217265c8ed715b2b5c5c2a81fea68755  # dc4864d GoogleOther + 66.249.64.0/19 ignore, owner-approved 2026-09-04
