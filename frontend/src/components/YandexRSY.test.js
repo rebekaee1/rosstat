@@ -148,15 +148,15 @@ describe('обновление блока на SPA-навигации', () => {
   it('быстрые клики по меню не мигают рекламой', () => {
     renderFloorAd({ now: 0 });
     expect(renderFloorAd({ refresh: true, now: 5_000 })).toBe(false);
-    expect(renderFloorAd({ refresh: true, now: 30_000 })).toBe(false);
+    expect(renderFloorAd({ refresh: true, now: 14_000 })).toBe(false);
     expect(calls).toHaveLength(1);
     expect(destroyed).toHaveLength(0);
   });
 
   it('кулдаун — не «раз в документ»: третий экран получает своё объявление', () => {
     renderFloorAd({ now: 0 });
-    renderFloorAd({ refresh: true, now: 61_000 });
-    renderFloorAd({ refresh: true, now: 130_000 });
+    renderFloorAd({ refresh: true, now: 16_000 });
+    renderFloorAd({ refresh: true, now: 32_000 });
     expect(calls.map((c) => c.pageNumber)).toEqual([1, 2, 3]);
   });
 
@@ -170,8 +170,8 @@ describe('обновление блока на SPA-навигации', () => {
     expect(blockForPlatform(adv).blockId).toBe('R-A-19489903-2');
   });
 
-  it('кулдаун не короче 30 с (защита от мигающей плашки)', () => {
-    expect(REFRESH_COOLDOWN_MS).toBeGreaterThanOrEqual(30_000);
+  it('кулдаун 15 с: ниже медианы живого 2-го экрана, выше проклика меню', () => {
+    expect(REFRESH_COOLDOWN_MS).toBe(15_000);
   });
 });
 
