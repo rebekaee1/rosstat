@@ -20,3 +20,5 @@ ce29e48faaf85516695049faa7929b28a3272b9a  # ce29e48 dual-host gate pre-cutover, 
 3cf9260f68bf2502cfe7b48a15421fc81ab6301a  # 3cf9260 sitemap 200 / language flags / login telegram, owner-approved 2026-09-03
 
 44e9e3a7b9094c2ec01d60804000d7affdcff01c  # 44e9e3a быстрый кадр + analytics pool + INDEX_POLICY, owner-approved 2026-09-03
+
+488dba343eea84f164a3970d98b727faa423589e  # 488dba3 deploy.sh/fail2ban follow-up, owner-approved 2026-09-03
