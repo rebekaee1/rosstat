@@ -30,3 +30,5 @@ f14cac7b10872950cb1cf072688bf6e57c734a12  # f14cac7 deploy ru. canonical smoke a
 bf7a43c636972280ea16ec994b3cdfd1cfc7b225  # bf7a43c EN region copy + gate, owner-approved 2026-09-03
 
 d3114c247e8f59ae3190bc4225c47e653ea57e6b  # d3114c2 РСЯ: гейт человек + SPA-refresh, гео-блок SG,PL в compose, owner-approved 2026-09-04
+
+e06c19bdb4192000154ab07cfd5e86be138263be  # e06c19b fail2ban polling + HTML volume, honeypot out of sitemap, owner-approved 2026-09-04
