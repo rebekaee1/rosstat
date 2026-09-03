@@ -34,3 +34,5 @@ d3114c247e8f59ae3190bc4225c47e653ea57e6b  # d3114c2 РСЯ: гейт челов�
 e06c19bdb4192000154ab07cfd5e86be138263be  # e06c19b fail2ban polling + HTML volume, honeypot out of sitemap, owner-approved 2026-09-04
 
 dc4864d4217265c8ed715b2b5c5c2a81fea68755  # dc4864d GoogleOther + 66.249.64.0/19 ignore, owner-approved 2026-09-04
+
+5e6dd8df97895709efab163d5becb1a34759d466  # 5e6dd8d Amzn-SearchBot ignore, owner-approved 2026-09-04
